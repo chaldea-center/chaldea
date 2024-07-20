@@ -175,6 +175,7 @@ class _ApkListPageState extends State<ApkListPage> {
                       )
                   ],
                 ),
+                xapkHint,
                 for (final data in _dataList) buildOne(data),
                 TileGroup(
                   header: "Rayshift APK Mod",
@@ -379,6 +380,35 @@ class _ApkListPageState extends State<ApkListPage> {
         },
         icon: const Icon(Icons.copy, size: 18),
         tooltip: S.current.copy,
+      ),
+    );
+  }
+
+  Widget get xapkHint {
+    return Card(
+      margin: const EdgeInsets.all(8),
+      child: Padding(
+        padding: const EdgeInsets.all(8),
+        child: MyMarkdownWidget(
+          scrollable: false,
+          data: Language.isZH
+              ? """**重要 2024.07.19**
+
+Google应用商店已不再提供APK安装包，请前往Google Play更新游戏。若无法使用Google Play，可选择以下网站/App更新或下载XAPK格式安装(需安装支持XAPK安装的应用):
+
+- [APK Combo](https://apkcombo.com/fgo-jp/com.aniplex.fategrandorder/download/apk): 下载XAPK，并使用[APKCombo Installer](https://apkcombo.com/zh/how-to-install)安装XAPK
+- [GamesToday](https://hotplaygames/com)/[ApkPure](https://apkpure.com)等未验证
+
+文档: <https://docs.chaldea.center/zh/guide/fgo_apk>"""
+              : """**IMPORTANT 2024.07.19**
+
+Google Play Store won't provide APK format anymore, please go to Google Play Store to update game. If can't, check following website/app, update inside it or download XAPK and install it via XAPK installer:
+
+- [APK Combo](https://apkcombo.com/fgo-jp/com.aniplex.fategrandorder/download/apk): download XAPK and install using [APKCombo Installer](https://apkcombo.com/how-to-install)
+- [GamesToday](https://hotplaygames/com)/[ApkPure](https://apkpure.com) not validated
+
+See: <https://docs.chaldea.center/guide/fgo_apk>""",
+        ),
       ),
     );
   }
