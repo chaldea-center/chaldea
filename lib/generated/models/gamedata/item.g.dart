@@ -83,6 +83,7 @@ const _$ItemTypeEnumMap = {
   ItemType.ri: 'ri',
   ItemType.stormpod: 'stormpod',
   ItemType.battleItem: 'battleItem',
+  ItemType.aniplexPlusChargeStone: 'aniplexPlusChargeStone',
 };
 
 const _$ItemUseEnumMap = {

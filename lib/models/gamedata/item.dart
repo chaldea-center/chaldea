@@ -526,6 +526,7 @@ enum ItemType {
   ri,
   stormpod,
   battleItem,
+  aniplexPlusChargeStone,
 }
 
 enum ItemBGType {

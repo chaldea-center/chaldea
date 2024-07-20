@@ -1123,6 +1123,12 @@ class _AttackDetailWidget extends StatelessWidget with MultiTargetsWrapper {
               ),
             ),
           ),
+          if (detail.damageParams.isNotMinRoll)
+            coloredText(
+              "RNG ${(detail.damageParams.random / 1000).format()}",
+              Colors.red.shade400,
+              null,
+            ),
           if (record.card != null || result.totalNpGains != 0)
             if (detail.target.isEnemy)
               coloredText(
