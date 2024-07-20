@@ -389,16 +389,9 @@ class ServantListPageState extends State<ServantListPage> with SearchableListSta
   bool? _changedDress;
   int? _changedTd;
 
-  bool _eventSvtOnly = false;
   @override
   bool filter(Servant svt) {
-    if (_eventSvtOnly) {
-      final eventId = widget.eventId ?? 0;
-      if (eventId > 0 && svt.eventSkills(eventId: eventId, includeZero: false).isEmpty) {
-        return false;
-      }
-    }
-    return ServantFilterPage.filter(filterData, svt, planMode: widget.planMode);
+    return ServantFilterPage.filter(filterData, svt, planMode: widget.planMode, eventId: widget.eventId ?? 0);
   }
 
   @override
@@ -564,11 +557,11 @@ class ServantListPageState extends State<ServantListPage> with SearchableListSta
               combined: true,
               padding: const EdgeInsets.symmetric(horizontal: 4),
               shrinkWrap: true,
-              values: FilterRadioData.nonnull(_eventSvtOnly),
+              values: FilterRadioData.nonnull(filterData.isEventSvt),
               options: const [true],
               optionBuilder: (v) => _getBtn(S.current.event),
               onFilterChanged: (v, lastChanged) {
-                _eventSvtOnly = !_eventSvtOnly;
+                filterData.isEventSvt = !filterData.isEventSvt;
                 setState(() {});
               },
             ),

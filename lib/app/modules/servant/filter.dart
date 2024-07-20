@@ -24,7 +24,7 @@ class ServantFilterPage extends FilterPage<SvtFilterData> {
   @override
   _ServantFilterPageState createState() => _ServantFilterPageState();
 
-  static bool filter(SvtFilterData filterData, Servant svt, {bool planMode = false}) {
+  static bool filter(SvtFilterData filterData, Servant svt, {bool planMode = false, int eventId = 0}) {
     final svtStat = db.curUser.svtStatusOf(svt.collectionNo);
     final svtPlan = db.curUser.svtPlanOf(svt.collectionNo);
     final favoriteState = planMode ? filterData.planFavorite : filterData.favorite;
@@ -187,6 +187,11 @@ class ServantFilterPage extends FilterPage<SvtFilterData> {
       if (!freeSvtEvent.shop.any((shop) =>
           (shop.purchaseType == PurchaseType.servant || shop.purchaseType == PurchaseType.eventSvtJoin) &&
           shop.targetIds.contains(svt.id))) {
+        return false;
+      }
+    }
+    if (filterData.isEventSvt && eventId > 0) {
+      if (svt.eventSkills(eventId: eventId, includeZero: false).isEmpty) {
         return false;
       }
     }

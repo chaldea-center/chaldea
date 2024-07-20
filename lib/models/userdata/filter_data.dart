@@ -265,6 +265,7 @@ class SvtFilterData with FilterDataMixin {
   final targetTrait = FilterGroupData<int>();
   final effectType = FilterGroupData<SkillEffect>();
   final freeExchangeSvtEvent = FilterRadioData<Event>();
+  bool isEventSvt = false;
 
   SvtFilterData({
     this.useGrid = false,
@@ -308,6 +309,7 @@ class SvtFilterData with FilterDataMixin {
   void reset() {
     super.reset();
     effectScope.options = {SvtEffectScope.active, SvtEffectScope.td};
+    isEventSvt = false;
     if (db.settings.hideUnreleasedCard) {
       if (db.curUser.region != Region.jp) {
         region.set(db.curUser.region);
