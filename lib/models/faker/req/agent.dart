@@ -113,8 +113,18 @@ class FakerAgent {
     return request.beginRequestAndCheckError('item_recover');
   }
 
+  Future<FResponse> shopPurchase({required int32_t id, required int32_t num, int32_t anotherPayFlag = 0}) async {
+    final request = FRequestBase(network: network, path: '/shop/purchase');
+    request.addFieldInt32('id', id);
+    request.addFieldInt32('num', num);
+    if (anotherPayFlag > 0) {
+      request.addFieldInt32('anotherPayFlag', anotherPayFlag);
+    }
+    return request.beginRequest();
+  }
+
   Future<FResponse> shopPurchaseByStone({required int32_t id, required int32_t num}) async {
-    final request = FRequestBase(network: network, path: '/item/recover');
+    final request = FRequestBase(network: network, path: '/shop/purchaseByStone');
     request.addFieldInt32('id', id);
     request.addFieldInt32('num', num);
     return request.beginRequest();
@@ -439,6 +449,13 @@ extension FakerAgentX on FakerAgent {
     } else {
       throw Exception('resultType=$resultType not supported');
     }
+  }
+
+  Future<FResponse> terminalApSeedExchange(int32_t buyCount) {
+    // TerminalApSeedExchangeManager__OnSelectExchangeItems
+    // shop 13000000
+    // item_103 + 40AP
+    return shopPurchase(id: 13000000, num: buyCount, anotherPayFlag: 0);
   }
 }
 

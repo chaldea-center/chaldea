@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/foundation.dart';
 
 import 'package:auto_size_text/auto_size_text.dart';
@@ -230,13 +232,15 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
         ),
       ],
       onChanged: (v) {
-        if (v != null) {
-          agent.network.user.curBattleOptionIndex = v;
-        } else {
-          agent.network.user.battleOptions.add(AutoBattleOptions());
-          agent.network.user.curBattleOptionIndex = agent.network.user.battleOptions.length - 1;
-        }
-        setState(() {});
+        _lockTask(() {
+          if (v != null) {
+            agent.network.user.curBattleOptionIndex = v;
+          } else {
+            agent.network.user.battleOptions.add(AutoBattleOptions());
+            agent.network.user.curBattleOptionIndex = agent.network.user.battleOptions.length - 1;
+          }
+          if (mounted) setState(() {});
+        });
       },
     );
     return Padding(
@@ -1052,10 +1056,23 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
           onPressed: agent.curBattle != null
               ? null
               : () async {
+                  final buyCount = await ApSeedExchangeCountDialog(mstData: mstData).showDialog<int>(context);
+                  if (buyCount != null) {
+                    await _runTask(() => agent.terminalApSeedExchange(buyCount));
+                  }
+                  if (mounted) setState(() {});
+                },
+          style: buttonStyle,
+          child: const Text('ApSeed'),
+        ),
+        FilledButton.tonal(
+          onPressed: agent.curBattle != null
+              ? null
+              : () async {
                   _runTask(() => agent.battleSetupWithOptions(battleOptions));
                 },
           style: buttonStyle,
-          child: const Text('battle setup'),
+          child: const Text('b.setup'),
         ),
         FilledButton.tonal(
           onPressed: agent.curBattle == null
@@ -1068,7 +1085,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
                       ));
                 },
           style: buttonStyle,
-          child: const Text('battle result'),
+          child: const Text('b.result'),
         ),
       ],
       [
@@ -1364,5 +1381,106 @@ class RecoverSelectDialog extends StatelessWidget {
           onTap: enabled ? () => Navigator.pop(context, recover) : null,
         );
     }
+  }
+}
+
+class ApSeedExchangeCountDialog extends StatefulWidget {
+  final MasterDataManager mstData;
+  const ApSeedExchangeCountDialog({super.key, required this.mstData});
+
+  @override
+  State<ApSeedExchangeCountDialog> createState() => _ApSeedExchangeCountDialogState();
+}
+
+class _ApSeedExchangeCountDialogState extends State<ApSeedExchangeCountDialog> {
+  int buyCount = 1;
+
+  @override
+  Widget build(BuildContext context) {
+    const int apUnit = 40, seedUnit = 1;
+    final apCount = widget.mstData.user?.calCurAp() ?? 0;
+    final seedCount = widget.mstData.userItem[Items.blueSaplingId]?.num ?? 0;
+    final int maxBuyCount = min(apCount ~/ apUnit, seedCount ~/ seedUnit);
+    return AlertDialog(
+      title: const Text('Exchange Count'),
+      scrollable: true,
+      content: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text.rich(TextSpan(children: [
+            TextSpan(text: 'AP×$apCount  '),
+            CenterWidgetSpan(
+              child: Item.iconBuilder(
+                context: context,
+                item: null,
+                itemId: Items.blueSaplingId,
+                width: 24,
+              ),
+            ),
+            TextSpan(text: '×$seedCount'),
+          ])),
+          Text.rich(TextSpan(children: [
+            TextSpan(text: 'AP×${apUnit * buyCount}  '),
+            CenterWidgetSpan(
+              child: Item.iconBuilder(
+                context: context,
+                item: null,
+                itemId: Items.blueSaplingId,
+                width: 24,
+              ),
+            ),
+            TextSpan(text: '×${seedUnit * buyCount} → '),
+            CenterWidgetSpan(
+              child: Item.iconBuilder(
+                context: context,
+                item: null,
+                itemId: Items.blueAppleId,
+                width: 24,
+              ),
+            ),
+            TextSpan(text: '×$buyCount'),
+          ])),
+          if (maxBuyCount >= 1)
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const Text('1'),
+                Expanded(
+                  child: Slider(
+                    value: buyCount.toDouble(),
+                    onChanged: (v) {
+                      setState(() {
+                        buyCount = v.round().clamp(1, maxBuyCount);
+                      });
+                    },
+                    min: 1.0,
+                    max: maxBuyCount.toDouble(),
+                    divisions: maxBuyCount > 1 ? maxBuyCount - 1 : null,
+                    label: buyCount.toString(),
+                  ),
+                ),
+                Text(maxBuyCount.toString()),
+              ],
+            ),
+        ],
+      ),
+      actions: [
+        TextButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          child: Text(S.current.cancel),
+        ),
+        TextButton(
+          onPressed: maxBuyCount > 0 && buyCount <= maxBuyCount
+              ? () {
+                  Navigator.pop(context, buyCount);
+                }
+              : null,
+          child: Text(S.current.confirm),
+        ),
+      ],
+    );
   }
 }

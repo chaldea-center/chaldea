@@ -380,10 +380,10 @@ class Items {
   static Item? get summonTicket => _items[summonTicketId];
 
   static Item? get bronzeApple => _items[bronzeAppleId];
-
   static Item? get silverApple => _items[silverAppleId];
-
   static Item? get goldApple => _items[goldAppleId];
+  static Item? get blueApple => _items[blueAppleId];
+  static Item? get blueSapling => _items[blueSaplingId];
 
   static Item? get crystal => _items[crystalId];
 

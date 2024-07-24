@@ -50,6 +50,7 @@ class SliderWithPrefix extends StatelessWidget {
     } else {
       header = Column(
         crossAxisAlignment: CrossAxisAlignment.end,
+        mainAxisSize: MainAxisSize.min,
         children: [
           AutoSizeText(
             label,
