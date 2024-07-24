@@ -202,7 +202,7 @@ class _MasterMissionListPageState extends State<MasterMissionListPage> {
     title += Transl.enums(mm.type, (enums) => enums.missionType).l;
 
     final now = DateTime.now().timestamp;
-    final detailText = mm.missionIconDetailText;
+    final detailText = mm.lMissionIconDetailText;
     return ListTile(
       key: Key('master_mission_${mm.id}'),
       title: Text.rich(

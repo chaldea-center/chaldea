@@ -102,14 +102,15 @@ class _MasterMissionPageState extends State<MasterMissionPage> with RegionBasedS
     return ListView(
       children: [
         DividerWithTitle(title: "${S.current.master_mission} ${masterMission.id}"),
-        if (masterMission.missionIconDetailText != null)
-          ListTile(
-            dense: true,
-            title: Text(
-              masterMission.missionIconDetailText!,
-              textAlign: TextAlign.center,
+        for (final title in {masterMission.missionIconDetailText, masterMission.lMissionIconDetailText})
+          if (title != null)
+            ListTile(
+              dense: true,
+              title: Text(
+                title,
+                textAlign: TextAlign.center,
+              ),
             ),
-          ),
         ListTile(
           dense: true,
           title: Text(S.current.time_start),

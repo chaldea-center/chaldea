@@ -58,7 +58,7 @@ class TimerMissionItem with TimerItem {
         horizontalTitleGap: 8,
         enabled: mm.endedAt > DateTime.now().timestamp,
         title: Text([
-          if (mm.missionIconDetailText != null) mm.missionIconDetailText,
+          if (mm.lMissionIconDetailText != null) mm.lMissionIconDetailText,
           [fmtDate(mm.startedAt), fmtDate(mm.endedAt)].join(' ~ '),
         ].join('\n')),
         subtitle: Text.rich(TextSpan(

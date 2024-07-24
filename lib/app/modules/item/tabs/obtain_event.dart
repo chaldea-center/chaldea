@@ -187,7 +187,7 @@ class _ItemObtainEventTabState extends State<ItemObtainEventTab> {
       count += itemNum;
       children.add(ListTile(
         title: Text(
-          'ID ${mission.id}',
+          mission.getDispName(),
           style: _textStyle(false, mission.isOutdated()),
           textScaler: const TextScaler.linear(0.9),
         ),

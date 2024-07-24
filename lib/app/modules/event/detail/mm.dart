@@ -33,7 +33,7 @@ class EventRelatedMMPage extends HookWidget {
   Widget itemBuilder(BuildContext context, MstMasterMission mm) {
     return ListTile(
       dense: true,
-      title: Text([if (mm.missionIconDetailText != null) mm.missionIconDetailText, 'ID ${mm.id}'].join('\n')),
+      title: Text(mm.getDispName()),
       subtitle: Text([mm.startedAt, mm.endedAt].map((e) => e.sec2date().toDateString()).join(' ~ ')),
       trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
       onTap: mm.routeTo,

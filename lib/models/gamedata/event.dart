@@ -542,6 +542,19 @@ class MstMasterMission with RouteInfo {
 
   String? get missionIconDetailText => script['missionIconDetailText'];
 
+  String? get lMissionIconDetailText {
+    final text = missionIconDetailText;
+    if (text == null) return null;
+    return Transl.eventNames(text).l;
+  }
+
+  String getDispName([String sep = '\n']) {
+    final title = lMissionIconDetailText;
+    String name = 'ID $id';
+    if (title != null) name = '$title$sep$name';
+    return name;
+  }
+
   MstMasterMission({
     required this.id,
     required this.startedAt,
