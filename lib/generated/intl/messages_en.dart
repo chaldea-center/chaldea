@@ -1114,7 +1114,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "userdata_download_choose_backup": MessageLookupByLibrary.simpleMessage("Choose one backup"),
         "userdata_local": MessageLookupByLibrary.simpleMessage("Userdata (Local)"),
         "userdata_sync_hint": MessageLookupByLibrary.simpleMessage(
-            "Only account data, not include local settings, up to 3 backups within 3 months"),
+            "Only account data, not include local settings, up to 3 backups within 2 months"),
         "userdata_sync_server": MessageLookupByLibrary.simpleMessage("Data synchronization(Server)"),
         "userdata_upload_backup": MessageLookupByLibrary.simpleMessage("Upload Backup"),
         "valentine_craft": MessageLookupByLibrary.simpleMessage("Valentine craft"),

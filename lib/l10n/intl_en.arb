@@ -954,7 +954,7 @@
   "userdata_download_backup": "Download Backup",
   "userdata_download_choose_backup": "Choose one backup",
   "userdata_local": "Userdata (Local)",
-  "userdata_sync_hint": "Only account data, not include local settings, up to 3 backups within 3 months",
+  "userdata_sync_hint": "Only account data, not include local settings, up to 3 backups within 2 months",
   "userdata_sync_server": "Data synchronization(Server)",
   "userdata_upload_backup": "Upload Backup",
   "valentine_craft": "Valentine craft",
