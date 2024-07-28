@@ -549,6 +549,7 @@ Widget addQuestCategoryTile({
           router.pushPage(FreeQuestOverview(
             quests: fqs,
             isMainStory: war?.isMainStory ?? false,
+            needSort: ![311, WarId.ordealCall].contains(war?.id),
           ));
         },
       ));

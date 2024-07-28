@@ -28,8 +28,9 @@ enum _QuestLv {
 class FreeQuestOverview extends StatefulWidget {
   final List<Quest> quests;
   final bool isMainStory;
+  final bool needSort;
 
-  const FreeQuestOverview({super.key, required this.quests, required this.isMainStory});
+  const FreeQuestOverview({super.key, required this.quests, required this.isMainStory, required this.needSort});
 
   @override
   State<FreeQuestOverview> createState() => _FreeQuestOverviewState();
@@ -323,8 +324,9 @@ class _FreeQuestOverviewState extends State<FreeQuestOverview> {
   List<_DropInfo> getInfo() {
     List<_DropInfo> data = [];
     final quests = this.quests.toList();
-    quests.sort2((e) => -e.priority);
-    quests.sortByList((e) => [kLB7SpotLayers[e.spotId] ?? 0, -e.priority]);
+    if (widget.needSort) {
+      quests.sort2((e) => -e.priority);
+    }
     for (final quest in quests) {
       final info = _DropInfo(quest);
       data.add(info);
