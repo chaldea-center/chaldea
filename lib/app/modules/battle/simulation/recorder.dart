@@ -331,6 +331,8 @@ class BattleRecorderPanelBase extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     List<(double, Widget)> children = [
+      if (battleData?.niceQuest?.isLaplaceSharable == false)
+        (10, createCard(Text(S.current.laplace_quest_complex_ai_hint, style: Theme.of(context).textTheme.bodySmall))),
       if (quest != null) (308.0, getQuest(quest!)),
       if (team != null) (115.0, getTeam(context, team!)),
       if (options != null) getOptions(context, options!),

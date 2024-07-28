@@ -619,6 +619,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "laplace_enemy_multi_ver_hint":
             MessageLookupByLibrary.simpleMessage("注意本关卡有多种版本的敌人配置，查找队伍或模拟时需注意切换到对应版本:\n点击详情-选取版本-点击计算器按钮。"),
         "laplace_my_teams": MessageLookupByLibrary.simpleMessage("我的队伍"),
+        "laplace_quest_complex_ai_hint":
+            MessageLookupByLibrary.simpleMessage("此关卡可能存在复杂AI，极有可能无法准确模拟，请确保理解敌方AI/场地AI如何工作的前提下进行模拟和手动触发AI技能。"),
         "laplace_upload_td_multi_dmg_func_hint":
             MessageLookupByLibrary.simpleMessage("以下从者宝具存在多段攻击，请检查最小和最大随机数对NP回收等的影响，确保均能通关"),
         "level": MessageLookupByLibrary.simpleMessage("等级"),

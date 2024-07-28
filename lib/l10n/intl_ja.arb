@@ -521,6 +521,7 @@
   "jump_to": "{site}へ",
   "laplace_enemy_multi_ver_hint": null,
   "laplace_my_teams": null,
+  "laplace_quest_complex_ai_hint": null,
   "laplace_upload_td_multi_dmg_func_hint": null,
   "level": "レベル",
   "limited_event": "期間限定イベント",
