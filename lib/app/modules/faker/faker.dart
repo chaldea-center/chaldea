@@ -360,6 +360,19 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
             if (appendId2Num.containsKey(skillId))
               appendId2Num[skillId]!: userSvt.appendPassiveSkillLvs?.getOrNull(index) ?? 0,
         };
+        bool ceMLB = false;
+        if (userCE != null) {
+          if (userCE.limitCount == 0) {
+            // may be zero even if MLB for support svt
+            final skill =
+                db.gameData.craftEssencesById[userCE.svtId]?.skills.firstWhereOrNull((e) => e.id == userCE.skillId1);
+            if (skill != null && skill.condLimitCount == 4) {
+              ceMLB = true;
+            }
+          } else {
+            ceMLB = userCE.limitCount == 4;
+          }
+        }
 
         return SvtSaveData(
           svtId: userSvt.svtId,
@@ -375,7 +388,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
           // fixedAtk,
           // fixedHp,
           ceId: userCE?.svtId,
-          ceLimitBreak: userCE?.limitCount == 4, // may be zero even if MLB for support svt
+          ceLimitBreak: ceMLB,
           ceLv: userCE?.lv ?? 1,
           supportType: SupportSvtType.fromFollowerType(svt?.followerType ?? 0),
           cardStrengthens: null,

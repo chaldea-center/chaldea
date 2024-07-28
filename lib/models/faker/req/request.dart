@@ -205,7 +205,7 @@ class NetworkManager {
       request._disposed = true;
       record.receivedAt = DateTime.now();
     }
-    throw Exception('Should not reach here');
+    throw Exception('[${request.path}] after $kMaxTries retries, still failed');
   }
 
   Future<FResponse> _requestStart(FRequestBase request) async {

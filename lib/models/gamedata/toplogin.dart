@@ -124,7 +124,11 @@ class FateTopLogin {
   FateResponseDetail getResponse(String nid) {
     final result = getResponseNull(nid);
     if (result != null) return result;
-    throw Exception('response nid="$nid" not found');
+    final errors = responses.where((e) => !e.isSuccess()).map((e) => '[${e.nid}] ${e.resCode} ${e.fail}').toList();
+    if (errors.isNotEmpty) {
+      throw Exception('response nid="$nid" not found, error found:\n${errors.join("\n")}');
+    }
+    throw Exception('response nid="$nid" not found: ${responses.map((e) => "[${e.nid}] ${e.resCode}").join(" ")}');
   }
 
   FateResponseDetail? getResponseNull(String nid) {
