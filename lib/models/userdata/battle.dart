@@ -40,8 +40,8 @@ void _removeEmptyList(Map<String, dynamic> data, List<String> keys,
 
 @JsonSerializable(converters: [RegionConverter()])
 class BattleSimUserData {
-  Set<int> pingedCEs;
-  Set<int> pingedSvts;
+  Set<int> pingedCEs; // collectionNo
+  Set<int> pingedSvts; // collectionNo
   // questId, teamIds
   Map<int, Set<int>> favoriteTeams;
   List<BattleShareData> teams;

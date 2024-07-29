@@ -690,6 +690,8 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
       final leftPulls = times - results.length;
       final ce5Prob = 4 * (times - hasCe5Count) / leftPulls;
       _guarantee({5: 1, 4: 3, 3: 44 - ce5Prob}, {5: ce5Prob, 4: 12, 3: 40}, leftPulls);
+    } else {
+      results.addAll(randomSummon(_cardProbs([], true, true), times));
     }
 
     results.shuffle(random);

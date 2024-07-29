@@ -188,7 +188,7 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
               );
             }
             List<Widget> supports = [];
-            for (final int svtId in TdDamageOptions.optionalSupports) {
+            for (final int svtId in db.curUser.battleSim.pingedSvts.toList()..sort()) {
               final svt = db.gameData.servantsNoDup[svtId];
               if (svt != null) {
                 supports.add(svt.iconBuilder(

@@ -139,6 +139,12 @@ class _MCGachaProbEditPageState extends State<MCGachaProbEditPage> {
               ),
             ],
           ),
+          if (widget.region != Region.jp)
+            Text(
+              'Only JP supports simulator',
+              style: Theme.of(context).textTheme.bodySmall,
+              textAlign: TextAlign.center,
+            ),
           if (allowParse) ...[
             const Divider(height: 16),
             SwitchListTile(
