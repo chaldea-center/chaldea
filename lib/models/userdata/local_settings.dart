@@ -255,7 +255,7 @@ class DisplaySettings {
   bool planPageFullScreen;
   List<SvtTab> sortedSvtTabs;
   List<SvtPlanDetail> hideSvtPlanDetails;
-  bool describeEventMission;
+  bool showOriginalMissionText;
   int? maxWindowWidth; // web only
   int? splitMasterRatio;
   bool enableSplitView;
@@ -275,7 +275,7 @@ class DisplaySettings {
     this.planPageFullScreen = false,
     List<SvtTab?>? sortedSvtTabs,
     List<SvtPlanDetail?>? hideSvtPlanDetails,
-    this.describeEventMission = true,
+    this.showOriginalMissionText = false,
     this.maxWindowWidth,
     this.splitMasterRatio,
     this.enableSplitView = true,

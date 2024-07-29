@@ -292,7 +292,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "delete_reason": MessageLookupByLibrary.simpleMessage("삭제 이유"),
         "delete_unreleased_card": MessageLookupByLibrary.simpleMessage("미구현카드를 제거"),
         "demands": MessageLookupByLibrary.simpleMessage("요구량"),
-        "describe_mission": MessageLookupByLibrary.simpleMessage("미션 설명"),
         "desktop_only": MessageLookupByLibrary.simpleMessage("데스크탑 만"),
         "details": MessageLookupByLibrary.simpleMessage("상세"),
         "detective_mission": MessageLookupByLibrary.simpleMessage("탐정 미션"),

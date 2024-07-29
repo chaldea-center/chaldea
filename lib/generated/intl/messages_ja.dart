@@ -635,6 +635,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "show_carousel": MessageLookupByLibrary.simpleMessage("カルーセルを表示"),
         "show_frame_rate": MessageLookupByLibrary.simpleMessage("フレームレートを表示"),
         "show_fullscreen": MessageLookupByLibrary.simpleMessage("フルスクリーンを表示"),
+        "show_original_mission_text": MessageLookupByLibrary.simpleMessage("召喚"),
         "show_outdated": MessageLookupByLibrary.simpleMessage("期限切れのを表示"),
         "silver": MessageLookupByLibrary.simpleMessage("銀"),
         "simulator": MessageLookupByLibrary.simpleMessage("エミュ"),

@@ -209,7 +209,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "delete": MessageLookupByLibrary.simpleMessage("Удалить"),
         "delete_reason": MessageLookupByLibrary.simpleMessage("Причина удаления"),
         "demands": MessageLookupByLibrary.simpleMessage("Требования"),
-        "describe_mission": MessageLookupByLibrary.simpleMessage("Опишите Миссию"),
         "desktop_only": MessageLookupByLibrary.simpleMessage("Только ПК"),
         "details": MessageLookupByLibrary.simpleMessage("Подробности"),
         "disable": MessageLookupByLibrary.simpleMessage("Отключить"),

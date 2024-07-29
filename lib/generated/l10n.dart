@@ -2560,17 +2560,6 @@ class S {
     );
   }
 
-  /// `Describe Mission`
-  String get describe_mission {
-    return Intl.message(
-      'Describe Mission',
-      name: 'describe_mission',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
   /// `Desktop only`
   String get desktop_only {
     return Intl.message(
@@ -8873,6 +8862,17 @@ class S {
     return Intl.message(
       'Show More',
       name: 'show_more',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Show original mission text`
+  String get show_original_mission_text {
+    return Intl.message(
+      'Show original mission text',
+      name: 'show_original_mission_text',
       desc: '',
       locale: localeName,
       args: [],

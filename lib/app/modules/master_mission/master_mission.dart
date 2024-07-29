@@ -175,11 +175,11 @@ class _MasterMissionPageState extends State<MasterMissionPage> with RegionBasedS
         SwitchListTile(
           dense: true,
           visualDensity: VisualDensity.compact,
-          value: db.settings.display.describeEventMission,
-          title: Text(S.current.describe_mission),
+          value: db.settings.display.showOriginalMissionText,
+          title: Text(S.current.show_original_mission_text),
           onChanged: (v) {
             setState(() {
-              db.settings.display.describeEventMission = v;
+              db.settings.display.showOriginalMissionText = v;
             });
           },
         ),
@@ -192,7 +192,7 @@ class _MasterMissionPageState extends State<MasterMissionPage> with RegionBasedS
   Widget _oneEventMission(EventMission mission) {
     final customMission = CustomMission.fromEventMission(mission);
     final clearConds = mission.conds.where((e) => e.missionProgressType == MissionProgressType.clear).toList();
-    final clearCond = db.settings.display.describeEventMission && clearConds.length == 1 ? clearConds.single : null;
+    final clearCond = !db.settings.display.showOriginalMissionText && clearConds.length == 1 ? clearConds.single : null;
 
     return SimpleAccordion(
       headerBuilder: (context, _) => ListTile(
