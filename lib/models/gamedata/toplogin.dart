@@ -7,6 +7,7 @@ import 'package:chaldea/utils/utils.dart';
 import '_helper.dart';
 import 'command_code.dart';
 import 'common.dart';
+import 'item.dart';
 import 'servant.dart';
 
 part '../../generated/models/gamedata/toplogin.g.dart';
@@ -450,6 +451,22 @@ class MasterDataManager {
       lvs.addAll(Map.fromIterables(appendLv.appendPassiveSkillNums, appendLv.appendPassiveSkillLvs));
     }
     return List.generate(3, (index) => lvs[100 + index] ?? 0);
+  }
+
+  int getItemNum(int itemId) {
+    final user = this.user;
+    if (itemId == Items.qpId) {
+      return user?.qp ?? 0;
+    } else if (itemId == Items.stoneId) {
+      // stone=free+charge
+      return user?.stone ?? 0;
+    } else if (itemId == Items.manaPrismId) {
+      return user?.mana ?? 0;
+    } else if (itemId == Items.rarePrismId) {
+      return user?.rarePri ?? 0;
+    } else {
+      return userItem[itemId]?.num ?? 0;
+    }
   }
 
   // mst schemes

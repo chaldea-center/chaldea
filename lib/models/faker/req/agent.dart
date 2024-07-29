@@ -314,7 +314,7 @@ extension FakerAgentX on FakerAgent {
     }
     if (questPhaseEntity.consumeType.useItem) {
       for (final item in questPhaseEntity.consumeItem) {
-        final itemNum = mstData.userItem[item.itemId]?.num ?? 0;
+        final itemNum = mstData.getItemNum(item.itemId);
         if (itemNum < item.amount) {
           throw Exception('Item not enough: $itemNum<${item.amount}');
         }

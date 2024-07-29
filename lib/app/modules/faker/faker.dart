@@ -188,7 +188,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
         })
           TextSpan(children: [
             CenterWidgetSpan(child: Item.iconBuilder(context: context, item: null, itemId: itemId, width: 20)),
-            TextSpan(text: '×${mstData.userItem[itemId]?.num ?? 0}  '),
+            TextSpan(text: '×${mstData.getItemNum(itemId)}  '),
           ])
       ])),
     ));
@@ -323,7 +323,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
                         height: 36,
                         text: [
                           '+${dropItems[itemId]!.format()}',
-                          (mstData.userItem[itemId]?.num ?? 0).format(),
+                          mstData.getItemNum(itemId).format(),
                         ].join('\n'),
                       ),
             ],
@@ -584,7 +584,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
                         (dropStats.items[itemId]! / dropStats.totalCount).format(percent: true),
                       db.gameData.craftEssencesById.containsKey(itemId)
                           ? (mstData.userSvt.where((e) => e.svtId == itemId).length.toString())
-                          : (mstData.userItem[itemId]?.num ?? 0).format(),
+                          : mstData.getItemNum(itemId).format(),
                     ].join('\n'),
                   ),
               ],
@@ -1172,6 +1172,10 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
     if (questPhaseEntity == null) {
       throw Exception('quest not found');
     }
+    final now = DateTime.now().timestamp;
+    if (questPhaseEntity.openedAt > now || questPhaseEntity.closedAt < now) {
+      throw Exception('quest not open');
+    }
     if (battleOptions.winTargetItemNum.isNotEmpty && !questPhaseEntity.flags.contains(QuestFlag.actConsumeBattleWin)) {
       throw Exception('Win target drops should be used only if Quest has flag actConsumeBattleWin');
     }
@@ -1283,7 +1287,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
   Future<void> _ensureEnoughApItem(List<int> recoverIds, QuestPhase quest, bool isApHalf) async {
     if (quest.consumeType.useItem) {
       for (final item in quest.consumeItem) {
-        final own = mstData.userItem[item.itemId]?.num ?? 0;
+        final own = mstData.getItemNum(item.itemId);
         if (own < item.amount) {
           throw Exception('Consume Item not enough: ${item.itemId}: $own<${item.amount}');
         }
@@ -1305,14 +1309,14 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
           if (item == null) continue;
           if (item.type == ItemType.apAdd) {
             final count = ((apConsume - mstData.user!.calCurAp()) / item.value).ceil();
-            if (count > 0 && count < (mstData.userItem[item.id]?.num ?? 0)) {
+            if (count > 0 && count < mstData.getItemNum(item.id)) {
               await agent.itemRecover(recoverId: recoverId, num: count);
               break;
             }
           } else if (item.type == ItemType.apRecover) {
             final count =
                 ((apConsume - mstData.user!.calCurAp()) / (item.value / 1000 * mstData.user!.actMax).ceil()).ceil();
-            if (count > 0 && count < (mstData.userItem[item.id]?.num ?? 0)) {
+            if (count > 0 && count < mstData.getItemNum(item.id)) {
               await agent.itemRecover(recoverId: recoverId, num: count);
               break;
             }
@@ -1384,7 +1388,7 @@ class RecoverSelectDialog extends StatelessWidget {
         );
       case RecoverType.item:
         final item = db.gameData.items[recover.targetId];
-        final ownCount = mstData?.userItem[recover.targetId]?.num ?? 0;
+        final ownCount = mstData?.getItemNum(recover.targetId) ?? 0;
         bool enabled = mstData == null || (userGame != null && ownCount > 0);
         return ListTile(
           leading: Item.iconBuilder(context: context, item: item, itemId: recover.targetId),
@@ -1412,7 +1416,7 @@ class _ApSeedExchangeCountDialogState extends State<ApSeedExchangeCountDialog> {
   Widget build(BuildContext context) {
     const int apUnit = 40, seedUnit = 1;
     final apCount = widget.mstData.user?.calCurAp() ?? 0;
-    final seedCount = widget.mstData.userItem[Items.blueSaplingId]?.num ?? 0;
+    final seedCount = widget.mstData.getItemNum(Items.blueSaplingId);
     final int maxBuyCount = min(apCount ~/ apUnit, seedCount ~/ seedUnit);
     return AlertDialog(
       title: const Text('Exchange Count'),
