@@ -47,6 +47,10 @@ class AppVersion implements Comparable<AppVersion> {
     return AppVersion(major, minor, patch, build ?? _build);
   }
 
+  static int compare(String a, String b) {
+    return AppVersion.parse(a).compareTo(AppVersion.parse(b));
+  }
+
   @override
   int compareTo(AppVersion other) {
     // build(nullable) then major/minor/patch

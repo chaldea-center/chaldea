@@ -12,6 +12,7 @@ import 'package:chaldea/packages/language.dart';
 import 'package:chaldea/packages/svg.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
+import '../../../models/userdata/version.dart';
 
 class _ApkData {
   Region? region;
@@ -105,10 +106,18 @@ class _ApkListPageState extends State<ApkListPage> {
         final ver = versions?[data.region!.upper];
         final ver32 = versions?['${data.region!.upper}_32'];
         if (ver != null) {
+          final bool useXapk = switch (data.region) {
+            Region.jp => AppVersion.compare(ver, '2.94.2') > 0,
+            Region.na => AppVersion.compare(ver, '2.66.0') > 0,
+            Region.tw => AppVersion.compare(ver, '2.67.0') > 0,
+            Region.kr => AppVersion.compare(ver, '6.0.0') > 0,
+            _ => false,
+          };
+          final ext = useXapk ? 'xapk' : 'apk';
           data.version = ver;
-          url = data.url = '$host/apk/${data.packageId}.v$ver.apk';
+          url = data.url = '$host/apk/${data.packageId}.v$ver.$ext';
           if (ver32 != null) {
-            data.url32 = '$host/apk/${data.packageId}.v$ver32.armeabi_v7a.apk';
+            data.url32 = '$host/apk/${data.packageId}.v$ver32.armeabi_v7a.$ext';
           }
         }
       } else if (data.region == null) {
@@ -175,7 +184,6 @@ class _ApkListPageState extends State<ApkListPage> {
                       )
                   ],
                 ),
-                xapkHint,
                 for (final data in _dataList) buildOne(data),
                 TileGroup(
                   header: "Rayshift APK Mod",
@@ -193,6 +201,7 @@ class _ApkListPageState extends State<ApkListPage> {
                       )
                   ],
                 ),
+                xapkHint,
                 const SizedBox(height: 16),
                 const DividerWithTitle(title: 'Links', indent: 16, height: 16),
                 TileGroup(
@@ -342,7 +351,8 @@ class _ApkListPageState extends State<ApkListPage> {
       region?.upper ?? 'Chaldea App',
       if (ver != null) 'v$ver',
       if (is32) '32-bit/v7a',
-      if ((region == Region.jp || region == Region.na) && !is32) '64-bit/v8a'
+      if ((region == Region.jp || region == Region.na) && !is32) '64-bit/v8a',
+      if (url.endsWith('xapk')) 'XAPK',
     ];
     return ListTile(
       dense: true,
@@ -394,20 +404,18 @@ class _ApkListPageState extends State<ApkListPage> {
           data: Language.isZH
               ? """**重要 2024.07.19**
 
-Google应用商店已不再提供APK安装包，请前往Google Play更新游戏。若无法使用Google Play，可选择以下网站/App更新或下载XAPK格式安装(需安装支持XAPK安装的应用):
+Google 不再提供APK格式安装包。XAPK格式需要通过安装器安装，如ApkPure App、APKCombo Installer、MT管理器、UU加速器等进行安装。等效于Google Play商店安装的官方版本。
 
-- [APK Combo](https://apkcombo.com/fgo-jp/com.aniplex.fategrandorder/download/apk): 下载XAPK，并使用[APKCombo Installer](https://apkcombo.com/zh/how-to-install)安装XAPK
-- [GamesToday](https://hotplaygames/com)/[ApkPure](https://apkpure.com)等未验证
+部分机型需关闭一些系统优化，如MIUI需关闭MIUI优化。
 
-文档: <https://docs.chaldea.center/zh/guide/fgo_apk>"""
+<https://docs.chaldea.center/zh/guide/fgo_apk>"""
               : """**IMPORTANT 2024.07.19**
 
-Google Play Store won't provide APK format anymore, please go to Google Play Store to update game. If can't, check following website/app, update inside it or download XAPK and install it via XAPK installer:
+Google Play Store won't provide APK format anymore. XAPK needs installer: ApkPure App/APKCombo Installer/MT Explorer/...
 
-- [APK Combo](https://apkcombo.com/fgo-jp/com.aniplex.fategrandorder/download/apk): download XAPK and install using [APKCombo Installer](https://apkcombo.com/how-to-install)
-- [GamesToday](https://hotplaygames/com)/[ApkPure](https://apkpure.com) not validated
+Some devices have to turn off optimization, such as MIUI.
 
-See: <https://docs.chaldea.center/guide/fgo_apk>""",
+<https://docs.chaldea.center/guide/fgo_apk>""",
         ),
       ),
     );
