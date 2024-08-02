@@ -1,5 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:tuple/tuple.dart';
 
+import 'package:chaldea/app/api/atlas.dart';
+import 'package:chaldea/app/battle/interactions/_delegate.dart';
 import 'package:chaldea/app/battle/models/battle.dart';
 import 'package:chaldea/app/battle/utils/buff_utils.dart';
 import 'package:chaldea/models/db.dart';
@@ -1300,7 +1303,7 @@ void main() async {
     expect(enemy2.hp, 2603);
     expect(enemy3.hp, 4363);
 
-    expect(aoko.np, 4121); // test AoE card with Mage of Flowers does not stack, also test transformSvt adds new passive
+    expect(aoko.np, 3901); // test AoE card with Mage of Flowers does not stack, also test transformSvt adds new passive
     expect(aoko.hp, 14230); // transformSvt change hp & maxHp & atk
     expect(aoko.maxHp, 14230);
     expect(aoko.atk, 13584);
@@ -1367,6 +1370,66 @@ void main() async {
     }
     await battle.activateSvtSkill(0, 2);
     expect(alice.isDonotSkillSelect(3), true);
+  });
+
+  test('Overkill clear after NP', () async {
+    final battle = BattleData();
+    final quest = await AtlasApi.questPhase(94073901, 1);
+    final playerSettings = [
+      PlayerSvtData.id(900500) // Sherlock
+        ..tdLv = 5
+        ..setSkillStrengthenLvs([2, 1, 1])
+        ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
+        ..ceLimitBreak = true,
+      PlayerSvtData.id(603700) // Kama
+        ..lv = 120
+        ..tdLv = 5
+        ..cardStrengthens = [500, 500, 500, 500, 500]
+        ..commandCodes = [db.gameData.commandCodesById[8400650], null, null, null, null],
+      PlayerSvtData.id(901400)..skillLvs = [10, 5, 10], // swimsuit Skadi
+      PlayerSvtData.id(503900)..ce = db.gameData.craftEssencesById[9302920], // Skadi with bond CE
+    ];
+    final mysticCode = MysticCodeData()
+      ..mysticCode = db.gameData.mysticCodes[20]!
+      ..level = 10;
+    await battle.init(quest!, playerSettings, mysticCode);
+
+    final sherlock = battle.onFieldAllyServants[0]!;
+    final kama = battle.onFieldAllyServants[1]!;
+
+    battle.delegate = BattleDelegate();
+    battle.delegate?.replaceMember = (onFieldSvts, backupSvts) async {
+      return Tuple2(onFieldSvts[2]!, backupSvts[0]!);
+    };
+    int count = 0;
+    battle.delegate?.damageRandom = (random) async {
+      if (count == 0) {
+        count += 1;
+        return 171908;
+      } else {
+        return 54773;
+      }
+    };
+
+    await battle.activateSvtSkill(0, 0);
+    await battle.activateSvtSkill(1, 1);
+    await battle.activateMysticCodeSkill(1);
+
+    battle.playerTargetIndex = 1;
+    await battle.activateSvtSkill(2, 0);
+    await battle.activateSvtSkill(2, 1);
+    await battle.activateSvtSkill(2, 2);
+
+    await battle.activateMysticCodeSkill(2);
+    await battle.activateSvtSkill(2, 2);
+
+    battle.options.tailoredExecution = true;
+    await battle.playerTurn([
+      CombatAction(kama, kama.getNPCard()!),
+      CombatAction(sherlock, sherlock.getNPCard()!),
+      CombatAction(kama, kama.getCards()[0])..cardData.critical = true,
+    ]);
+    expect(kama.np, 3882);
   });
 
   group('Method tests', () {

@@ -936,6 +936,10 @@ class BattleData {
                     await enemy.activateBuff(this, BuffAction.functionDamage, other: actor, card: actualCard);
                     enemy.attacked = false;
                   }
+
+                  if (actualCard.isTD || actualCard.cardDetail.attackType == CommandCardAttackType.all) {
+                    enemy.clearReducedHp();
+                  }
                 }
                 recorder.endPlayerCard(actor, actualCard);
               }
@@ -1053,6 +1057,10 @@ class BattleData {
                 if (svt.attacked) {
                   await svt.activateBuff(this, BuffAction.functionDamage, other: action.actor, card: action.cardData);
                   svt.attacked = false;
+                }
+
+                if (action.cardData.isTD || action.cardData.cardDetail.attackType == CommandCardAttackType.all) {
+                  svt.clearReducedHp();
                 }
               }
               recorder.endPlayerCard(action.actor, action.cardData);
