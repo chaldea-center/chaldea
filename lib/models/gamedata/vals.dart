@@ -257,6 +257,18 @@ class DataVals {
   int? get ExtendBuffHalfTurnInPartyTurn => _vals['ExtendBuffHalfTurnInPartyTurn'];
   int? get ShortenBuffHalfTurnInPartyTurn => _vals['ShortenBuffHalfTurnInPartyTurn'];
   int? get LinkageBuffGrantSuccessEvenIfOtherFailed => _vals['LinkageBuffGrantSuccessEvenIfOtherFailed'];
+  int? get BattlePointId => _vals['BattlePointId'];
+  int? get BattlePointValue => _vals['BattlePointValue'];
+  int? get BattlePointUiUpdateType => _vals['BattlePointUiUpdateType'];
+  int? get BattlePointOverwrite => _vals['BattlePointOverwrite'];
+  String? get CheckOverChargeStageRange => _vals['CheckOverChargeStageRange'];
+  String? get CheckBattlePointPhaseRange => _vals['CheckBattlePointPhaseRange'];
+  int? get StartingPosition => _vals['StartingPosition'];
+  int? get FriendShipAbove => _vals['FriendShipAbove'];
+  int? get DamageRateBattlePointPhase => _vals['DamageRateBattlePointPhase'];
+  int? get ParamAddBattlePointPhaseId => _vals['ParamAddBattlePointPhaseId'];
+  int? get ParamAddBattlePointPhaseValue => _vals['ParamAddBattlePointPhaseValue'];
+  int? get ShortenMaxCountEachSkill => _vals['ShortenMaxCountEachSkill'];
 
   int? get ApplySupportSvt => _vals['ApplySupportSvt'];
   int? get Individuality => _vals['Individuality'];

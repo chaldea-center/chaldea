@@ -417,6 +417,8 @@ const _$FuncTypeEnumMap = {
   FuncType.setBattleValue: 'setBattleValue',
   FuncType.gainMultiplyNp: 'gainMultiplyNp',
   FuncType.lossMultiplyNp: 'lossMultiplyNp',
+  FuncType.addBattlePoint: 'addBattlePoint',
+  FuncType.damageNpBattlePointPhase: 'damageNpBattlePointPhase',
 };
 
 BuffTypeDetail _$BuffTypeDetailFromJson(Map json) => BuffTypeDetail(
@@ -614,6 +616,13 @@ const _$BuffTypeEnumMap = {
   BuffType.subSpecialdamage: 'subSpecialdamage',
   BuffType.addFuncHpReduce: 'addFuncHpReduce',
   BuffType.subFuncHpReduce: 'subFuncHpReduce',
+  BuffType.confirmCommandFunction: 'confirmCommandFunction',
+  BuffType.skillBeforeFunction: 'skillBeforeFunction',
+  BuffType.skillTargetedBeforeFunction: 'skillTargetedBeforeFunction',
+  BuffType.fieldIndividualityChangedFunction: 'fieldIndividualityChangedFunction',
+  BuffType.treasureDeviceBeforeFunction: 'treasureDeviceBeforeFunction',
+  BuffType.startTacticalBeforeFunction: 'startTacticalBeforeFunction',
+  BuffType.shortenSkillAfterUseSkill: 'shortenSkillAfterUseSkill',
   BuffType.changeBgm: 'changeBgm',
   BuffType.toFieldChangeField: 'toFieldChangeField',
   BuffType.toFieldAvoidBuff: 'toFieldAvoidBuff',
@@ -1407,4 +1416,11 @@ const _$BuffActionEnumMap = {
   BuffAction.specialReceiveDamage: 'specialReceiveDamage',
   BuffAction.funcHpReduceValue: 'funcHpReduceValue',
   BuffAction.changeBgm: 'changeBgm',
+  BuffAction.functionConfirmCommand: 'functionConfirmCommand',
+  BuffAction.functionSkillBefore: 'functionSkillBefore',
+  BuffAction.functionSkillTargetedBefore: 'functionSkillTargetedBefore',
+  BuffAction.functionFieldIndividualityChanged: 'functionFieldIndividualityChanged',
+  BuffAction.functionTreasureDeviceBefore: 'functionTreasureDeviceBefore',
+  BuffAction.functionStartTacticalBefore: 'functionStartTacticalBefore',
+  BuffAction.shortenSkillAfterUseSkill: 'shortenSkillAfterUseSkill',
 };

@@ -588,6 +588,8 @@ enum FuncType {
   setBattleValue(139),
   gainMultiplyNp(140),
   lossMultiplyNp(141),
+  addBattlePoint(142),
+  damageNpBattlePointPhase(143),
   ;
 
   final int value;

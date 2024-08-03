@@ -410,4 +410,8 @@ const _$CondTypeEnumMap = {
   CondType.limitedMissionAchieveNumBelow: 'limitedMissionAchieveNumBelow',
   CondType.limitedMissionAchieveNumAbove: 'limitedMissionAchieveNumAbove',
   CondType.notSvtVoicePlayed: 'notSvtVoicePlayed',
+  CondType.battlePointAbove: 'battlePointAbove',
+  CondType.battlePointBelow: 'battlePointBelow',
+  CondType.notHaveChargeStone: 'notHaveChargeStone',
+  CondType.haveChargeStone: 'haveChargeStone',
 };

@@ -698,6 +698,7 @@ const _$MissionTypeEnumMap = {
   MissionType.limited: 'limited',
   MissionType.complete: 'complete',
   MissionType.random: 'random',
+  MissionType.servant: 'servant',
 };
 
 const _$MissionRewardTypeEnumMap = {
@@ -1264,6 +1265,7 @@ const _$SvtClassSupportGroupTypeEnumMap = {
   SvtClassSupportGroupType.berserker: 'berserker',
   SvtClassSupportGroupType.extra: 'extra',
   SvtClassSupportGroupType.mix: 'mix',
+  SvtClassSupportGroupType.recommend: 'recommend',
   SvtClassSupportGroupType.notSupport: 'notSupport',
 };
 

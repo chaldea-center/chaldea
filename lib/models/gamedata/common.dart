@@ -498,33 +498,23 @@ const kSvtClassIdsPlayableAlways = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 23, 25, 2
 final kSvtClassIds = {for (final v in SvtClass.values) v.value: v};
 
 enum SvtClassSupportGroupType {
-  all,
-  saber,
-  archer,
-  lancer,
-  rider,
-  caster,
-  assassin,
-  berserker,
-  extra,
-  mix,
-  notSupport,
-}
+  all(0),
+  saber(1),
+  archer(2),
+  lancer(3),
+  rider(4),
+  caster(5),
+  assassin(6),
+  berserker(7),
+  extra(8),
+  mix(9),
+  recommend(10),
+  notSupport(999),
+  ;
 
-const kSvtClassSupportGroupIds = <int, SvtClassSupportGroupType>{
-  0: SvtClassSupportGroupType.all,
-  1: SvtClassSupportGroupType.saber,
-  2: SvtClassSupportGroupType.archer,
-  3: SvtClassSupportGroupType.lancer,
-  4: SvtClassSupportGroupType.rider,
-  5: SvtClassSupportGroupType.caster,
-  6: SvtClassSupportGroupType.assassin,
-  7: SvtClassSupportGroupType.berserker,
-  8: SvtClassSupportGroupType.extra,
-  9: SvtClassSupportGroupType.mix,
-  999: SvtClassSupportGroupType.notSupport,
-};
-final kSvtClassSupportGroupIdsReverse = kSvtClassSupportGroupIds.map((k, v) => MapEntry(v, k));
+  const SvtClassSupportGroupType(this.value);
+  final int value;
+}
 
 /// Add new entry to common_helper [kTraitIdMapping]
 enum Trait {
@@ -1070,6 +1060,10 @@ enum CondType {
   limitedMissionAchieveNumBelow(221),
   limitedMissionAchieveNumAbove(222),
   notSvtVoicePlayed(223),
+  battlePointAbove(225),
+  battlePointBelow(226),
+  notHaveChargeStone(229),
+  haveChargeStone(230),
   ;
 
   const CondType(this.value);

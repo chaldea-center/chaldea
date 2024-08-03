@@ -71,6 +71,7 @@ const _$GachaFlagEnumMap = {
   GachaFlag.none: 'none',
   GachaFlag.pcMessage: 'pcMessage',
   GachaFlag.bonusSelect: 'bonusSelect',
+  GachaFlag.displayFeaturedSvt: 'displayFeaturedSvt',
 };
 
 GachaStoryAdjust _$GachaStoryAdjustFromJson(Map json) => GachaStoryAdjust(

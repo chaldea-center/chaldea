@@ -1235,6 +1235,13 @@ enum BuffAction {
   specialReceiveDamage(134),
   funcHpReduceValue(135),
   changeBgm(136),
+  functionConfirmCommand(137),
+  functionSkillBefore(138),
+  functionSkillTargetedBefore(139),
+  functionFieldIndividualityChanged(140),
+  functionTreasureDeviceBefore(141),
+  functionStartTacticalBefore(142),
+  shortenSkillAfterUseSkill(143),
   ;
 
   final int value;

@@ -188,6 +188,8 @@ const _$FuncTypeEnumMap = {
   FuncType.setBattleValue: 'setBattleValue',
   FuncType.gainMultiplyNp: 'gainMultiplyNp',
   FuncType.lossMultiplyNp: 'lossMultiplyNp',
+  FuncType.addBattlePoint: 'addBattlePoint',
+  FuncType.damageNpBattlePointPhase: 'damageNpBattlePointPhase',
 };
 
 const _$FuncTargetTypeEnumMap = {

@@ -572,6 +572,7 @@ class MstMasterMission with RouteInfo {
     final b = id ~/ 10000;
     if (b == 8) return MissionType.complete;
     if (id == MasterMission.kExtraMasterMissionId) return MissionType.extra;
+    // TODO: [MissionType.servant]
     return MissionType.none;
   }
 
@@ -2047,6 +2048,7 @@ enum MissionType {
   limited,
   complete,
   random,
+  servant,
 }
 
 enum MissionRewardType {

@@ -307,4 +307,5 @@ enum GachaFlag {
   none,
   pcMessage, // 2
   bonusSelect, // 8
+  displayFeaturedSvt, // 16
 }

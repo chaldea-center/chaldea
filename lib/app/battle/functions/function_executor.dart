@@ -437,6 +437,8 @@ class FunctionExecutor {
         case FuncType.lossCommandSpell:
         case FuncType.gainCommandSpell:
         case FuncType.lastUsePlayerSkillCopy:
+        case FuncType.addBattlePoint:
+        case FuncType.damageNpBattlePointPhase:
           battleData.battleLogger.debug('${S.current.not_implemented}: ${function.funcType}, '
               'Function ID: ${function.funcId}, '
               'Activator: ${activator?.lBattleName}');
