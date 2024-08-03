@@ -218,7 +218,7 @@ class DataVals {
   int? get TriggeredFieldCountTarget => _vals['TriggeredFieldCountTarget'];
 
   List<int>? get TriggeredFieldCountRange => _list('TriggeredFieldCountRange');
-  List<int>? get TargetEnemyRange => _list('TargetEnemyRange');
+  List<int>? get TargetEnemyRange => _list('TargetEnemyRange'); // 1/2/3
 
   // TriggeredFuncPositionSameTarget > TriggeredFuncPositionAll > TriggeredFuncPosition
   int? get TriggeredFuncPositionSameTarget => _vals['TriggeredFuncPositionSameTarget'];
@@ -276,4 +276,35 @@ class DataVals {
   int? get AddCount => _vals['AddCount'];
   int? get RateCount => _vals['RateCount'];
   int? get DropRateCount => _vals['DropRateCount'];
+
+  /// [TriggeredTargetHpRange], [TriggeredTargetHpRateRange]
+  /// [CheckOverChargeStageRange], [CheckBattlePointPhaseRange]
+  static bool isSatisfyRangeText(int value, String? compareText) {
+    if (compareText == null || compareText.isEmpty) return true;
+
+    bool? _check(RegExp reg, bool Function(int target) compare) {
+      final m = reg.firstMatch(compareText);
+      if (m == null) return null;
+      assert(int.tryParse(m.group(1) ?? '') != null, '$reg: $compareText');
+      return compare(int.parse(m.group(1)!));
+    }
+
+    bool? result = _check(RegExp(r'^<(\d+)$'), (target) => value < target) ??
+        _check(RegExp(r'^<=(\d+)$'), (target) => value <= target) ??
+        _check(RegExp(r'^>(\d+)$'), (target) => value > target) ??
+        _check(RegExp(r'^>=(\d+)$'), (target) => value >= target) ??
+        _check(RegExp(r'^(\d+)>$'), (target) => value < target) ??
+        _check(RegExp(r'^(\d+)>=$'), (target) => value <= target) ??
+        _check(RegExp(r'^(\d+)<$'), (target) => value > target) ??
+        _check(RegExp(r'^(\d+)<=$'), (target) => value >= target);
+    if (result == null && RegExp(r'[\d/]+').hasMatch(compareText)) {
+      final targets = compareText.split('/').map((e) => int.tryParse(e.trim())).toList();
+      assert(!targets.contains(null), 'Unexpected range format: $compareText');
+      if (targets.isNotEmpty) {
+        result = targets.contains(value);
+      }
+    }
+    assert(result != null, 'Unknown compare type: $compareText');
+    return result ?? true;
+  }
 }

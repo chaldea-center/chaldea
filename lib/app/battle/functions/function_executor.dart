@@ -841,19 +841,18 @@ class FunctionExecutor {
           ));
     }
 
-    final triggeredHpRateRange = dataVals.TriggeredTargetHpRateRange;
-    if (triggeredHpRateRange != null && RegExp(r'(^<\d+$|^\d+<$)').hasMatch(triggeredHpRateRange)) {
-      final lessThan = triggeredHpRateRange.startsWith('<');
-      final hpRateRange = int.parse(triggeredHpRateRange.replaceAll('<', ''));
-
+    if (dataVals.TriggeredTargetHpRange != null || dataVals.TriggeredTargetHpRateRange != null) {
       targets.retainWhere((svt) {
-        final svtHpRate = (svt.hp / svt.maxHp * 1000).toInt();
-
-        if (lessThan) {
-          return svtHpRate < hpRateRange;
-        } else {
-          return svtHpRate > hpRateRange;
+        if (dataVals.TriggeredTargetHpRange != null &&
+            !DataVals.isSatisfyRangeText(svt.hp, dataVals.TriggeredTargetHpRange)) {
+          return false;
         }
+        final svtHpRate = (svt.hp / svt.maxHp * 1000).toInt();
+        if (dataVals.TriggeredTargetHpRateRange != null &&
+            !DataVals.isSatisfyRangeText(svtHpRate, dataVals.TriggeredTargetHpRateRange)) {
+          return false;
+        }
+        return true;
       });
     }
 
