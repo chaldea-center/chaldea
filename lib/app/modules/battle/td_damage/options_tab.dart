@@ -438,6 +438,18 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
         },
       ),
       CheckboxListTile(
+        enabled: options.twiceActiveSkill,
+        dense: true,
+        value: options.twiceSkillOnTurn3,
+        title: Text(S.current.twice_skill_on_turn_3),
+        subtitle: Text(S.current.twice_skill_turn_3_hint),
+        onChanged: (value) {
+          setState(() {
+            options.twiceSkillOnTurn3 = !options.twiceSkillOnTurn3;
+          });
+        },
+      ),
+      CheckboxListTile(
         dense: true,
         value: options.enableAppendSkills,
         title: Text(S.current.append_skill),

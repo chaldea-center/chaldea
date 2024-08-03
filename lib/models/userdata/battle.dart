@@ -772,6 +772,7 @@ class TdDamageOptions {
   bool upResistSubState; // 5000
   bool enableActiveSkills;
   bool twiceActiveSkill;
+  bool twiceSkillOnTurn3;
   bool enableAppendSkills;
   // bool includeRefundAfterTd = true; // 重蓄力
   SvtLv svtLv;
@@ -812,6 +813,7 @@ class TdDamageOptions {
     this.upResistSubState = true,
     this.enableActiveSkills = true,
     this.twiceActiveSkill = false,
+    this.twiceSkillOnTurn3 = false,
     this.enableAppendSkills = false,
     this.svtLv = SvtLv.maxLv,
     this.fouHpAtk = 1000,

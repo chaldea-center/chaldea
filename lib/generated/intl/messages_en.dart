@@ -1086,6 +1086,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "turn_remain_limit_win": MessageLookupByLibrary.simpleMessage("Considered Win after turn countdown is over"),
         "twice_skill_hint": MessageLookupByLibrary.simpleMessage("Usually for w-Koyan team"),
         "twice_skill_if_cd2": MessageLookupByLibrary.simpleMessage("Twice skills if Cool Down after 2 turns"),
+        "twice_skill_on_turn_3": MessageLookupByLibrary.simpleMessage("On Turn 3"),
+        "twice_skill_turn_3_hint":
+            MessageLookupByLibrary.simpleMessage("Whether the servant cast the second round of skills on T1 or T3"),
         "unknown": MessageLookupByLibrary.simpleMessage("Unknown"),
         "unlock": MessageLookupByLibrary.simpleMessage("Unlock"),
         "unlock_quest": MessageLookupByLibrary.simpleMessage("Unlock Quest"),

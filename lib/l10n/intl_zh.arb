@@ -929,6 +929,8 @@
   "turn_remain_limit_win": "回合倒数结束后视为通关",
   "twice_skill_hint": "通常用于双杀狐组队",
   "twice_skill_if_cd2": "重复释放技能(若2回合后CD恢复)",
+  "twice_skill_on_turn_3": "在第三回合",
+  "twice_skill_turn_3_hint": "从者释放第二轮技能在T1或是T3",
   "unknown": "未知",
   "unlock": "解锁",
   "unlock_quest": "解锁关卡",

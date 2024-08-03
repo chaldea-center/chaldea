@@ -10287,6 +10287,28 @@ class S {
     );
   }
 
+  /// `On Turn 3`
+  String get twice_skill_on_turn_3 {
+    return Intl.message(
+      'On Turn 3',
+      name: 'twice_skill_on_turn_3',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Whether the servant cast the second round of skills on T1 or T3`
+  String get twice_skill_turn_3_hint {
+    return Intl.message(
+      'Whether the servant cast the second round of skills on T1 or T3',
+      name: 'twice_skill_turn_3_hint',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Unknown`
   String get unknown {
     return Intl.message(

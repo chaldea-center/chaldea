@@ -929,6 +929,8 @@
   "turn_remain_limit_win": "Considered Win after turn countdown is over",
   "twice_skill_hint": "Usually for w-Koyan team",
   "twice_skill_if_cd2": "Twice skills if Cool Down after 2 turns",
+  "twice_skill_on_turn_3": "On Turn 3",
+  "twice_skill_turn_3_hint": "Whether the servant cast the second round of skills on T1 or T3",
   "unknown": "Unknown",
   "unlock": "Unlock",
   "unlock_quest": "Unlock Quest",

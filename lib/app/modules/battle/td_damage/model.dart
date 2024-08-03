@@ -190,6 +190,23 @@ class TdDmgSolver {
     if (options.enableActiveSkills) {
       await _activateActiveSkills(battleData, 0);
     }
+
+    if (options.twiceActiveSkill && options.enableActiveSkills) {
+      if (options.twiceSkillOnTurn3) {
+        await battleData.skipTurn();
+        await battleData.skipTurn();
+      } else {
+        for (int index = 0; index < actor.skillInfoList.length; index++) {
+          final skill = actor.skillInfoList[index];
+          skill.chargeTurn -= 2;
+          if (skill.chargeTurn < 0) skill.chargeTurn = 0;
+          // if (skill.chargeTurn == 0) {
+          //   await battleData.activateSvtSkill(0, index);
+          // }
+        }
+      }
+    }
+
     for (final svtId in options.supports) {
       final svt = db.gameData.servantsById[svtId];
       if (svt == null) continue;
@@ -205,17 +222,12 @@ class TdDmgSolver {
     for (int index = 0; index < battleData.masterSkillInfo.length; index++) {
       await battleData.activateMysticCodeSkill(index);
     }
+
+
     if (options.twiceActiveSkill && options.enableActiveSkills) {
-      for (int index = 0; index < actor.skillInfoList.length; index++) {
-        final skill = actor.skillInfoList[index];
-        skill.chargeTurn -= 2;
-        if (skill.chargeTurn < 0) skill.chargeTurn = 0;
-        // if (skill.chargeTurn == 0) {
-        //   await battleData.activateSvtSkill(0, index);
-        // }
-      }
       await _activateActiveSkills(battleData, 0);
     }
+
     actor.np = ConstData.constants.fullTdPoint;
 
     final card = actor.getNPCard();

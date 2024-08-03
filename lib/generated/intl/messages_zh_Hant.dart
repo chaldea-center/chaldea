@@ -1037,6 +1037,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "turn_remain_limit_win": MessageLookupByLibrary.simpleMessage("回合倒數結束後視為通關"),
         "twice_skill_hint": MessageLookupByLibrary.simpleMessage("通常用於雙光高揚組隊"),
         "twice_skill_if_cd2": MessageLookupByLibrary.simpleMessage("重複釋放技能(若2回合後CD恢復)"),
+        "twice_skill_on_turn_3": MessageLookupByLibrary.simpleMessage("在第三回合"),
+        "twice_skill_turn_3_hint": MessageLookupByLibrary.simpleMessage("从者释放第二轮技能在T1或是T3"),
         "unknown": MessageLookupByLibrary.simpleMessage("未知"),
         "unlock": MessageLookupByLibrary.simpleMessage("解鎖"),
         "unlock_quest": MessageLookupByLibrary.simpleMessage("解鎖關卡"),
