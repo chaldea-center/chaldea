@@ -1322,6 +1322,7 @@ const kFuncValPercentType = <FuncType, int>{
   FuncType.damageNpRare: 10,
   FuncType.damageNpStateIndividualFix: 10,
   FuncType.damageNpCounter: 10,
+  FuncType.damageNpBattlePointPhase: 10,
   FuncType.gainHpPer: 10,
   FuncType.qpDropUp: 10,
 };

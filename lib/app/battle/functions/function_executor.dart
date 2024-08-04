@@ -844,12 +844,12 @@ class FunctionExecutor {
     if (dataVals.TriggeredTargetHpRange != null || dataVals.TriggeredTargetHpRateRange != null) {
       targets.retainWhere((svt) {
         if (dataVals.TriggeredTargetHpRange != null &&
-            !DataVals.isSatisfyRangeText(svt.hp, dataVals.TriggeredTargetHpRange)) {
+            !DataVals.isSatisfyRangeText(svt.hp, ranges: dataVals.TriggeredTargetHpRange)) {
           return false;
         }
         final svtHpRate = (svt.hp / svt.maxHp * 1000).toInt();
         if (dataVals.TriggeredTargetHpRateRange != null &&
-            !DataVals.isSatisfyRangeText(svtHpRate, dataVals.TriggeredTargetHpRateRange)) {
+            !DataVals.isSatisfyRangeText(svtHpRate, ranges: dataVals.TriggeredTargetHpRateRange)) {
           return false;
         }
         return true;

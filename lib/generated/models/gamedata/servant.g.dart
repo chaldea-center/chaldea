@@ -173,6 +173,10 @@ Servant _$ServantFromJson(Map json) => Servant(
           const {},
       coin: json['coin'] == null ? null : ServantCoin.fromJson(Map<String, dynamic>.from(json['coin'] as Map)),
       script: json['script'] == null ? null : ServantScript.fromJson(Map<String, dynamic>.from(json['script'] as Map)),
+      battlePoints: (json['battlePoints'] as List<dynamic>?)
+              ?.map((e) => BattlePoint.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
       skills: (json['skills'] as List<dynamic>?)
               ?.map((e) => NiceSkill.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
@@ -250,6 +254,7 @@ Map<String, dynamic> _$ServantToJson(Servant instance) => <String, dynamic>{
       'costumeMaterials': instance.costumeMaterials.map((k, e) => MapEntry(k.toString(), e.toJson())),
       'coin': instance.coin?.toJson(),
       'script': instance.script?.toJson(),
+      'battlePoints': instance.battlePoints.map((e) => e.toJson()).toList(),
       'skills': instance.skills.map((e) => e.toJson()).toList(),
       'classPassive': instance.classPassive.map((e) => e.toJson()).toList(),
       'extraPassive': instance.extraPassive.map((e) => e.toJson()).toList(),
@@ -577,6 +582,7 @@ const _$ServantPersonalityEnumMap = {
   ServantPersonality.goodAndEvil: 'goodAndEvil',
   ServantPersonality.bride: 'bride',
   ServantPersonality.summer: 'summer',
+  ServantPersonality.beast: 'beast',
   ServantPersonality.unknown: 'unknown',
 };
 
@@ -1155,3 +1161,43 @@ const _$ServantOverwriteTypeEnumMap = {
   ServantOverwriteType.none: 'none',
   ServantOverwriteType.treasureDevice: 'treasureDevice',
 };
+
+BattlePoint _$BattlePointFromJson(Map json) => BattlePoint(
+      id: (json['id'] as num).toInt(),
+      name: json['name'] as String?,
+      flags:
+          (json['flags'] as List<dynamic>?)?.map((e) => $enumDecode(_$BattlePointFlagEnumMap, e)).toList() ?? const [],
+      phases: (json['phases'] as List<dynamic>?)
+              ?.map((e) => BattlePointPhase.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
+    );
+
+Map<String, dynamic> _$BattlePointToJson(BattlePoint instance) => <String, dynamic>{
+      'id': instance.id,
+      'name': instance.name,
+      'flags': instance.flags.map((e) => _$BattlePointFlagEnumMap[e]!).toList(),
+      'phases': instance.phases.map((e) => e.toJson()).toList(),
+    };
+
+const _$BattlePointFlagEnumMap = {
+  BattlePointFlag.none: 'none',
+  BattlePointFlag.notTargetOtherPlayer: 'notTargetOtherPlayer',
+  BattlePointFlag.hideUiGaugeAllTime: 'hideUiGaugeAllTime',
+  BattlePointFlag.hideUiGaugeWhenCantAddPoint: 'hideUiGaugeWhenCantAddPoint',
+  BattlePointFlag.hideUiGaugeWhenCantAddPointAndFollowerSupport: 'hideUiGaugeWhenCantAddPointAndFollowerSupport',
+};
+
+BattlePointPhase _$BattlePointPhaseFromJson(Map json) => BattlePointPhase(
+      phase: (json['phase'] as num).toInt(),
+      value: (json['value'] as num).toInt(),
+      name: json['name'] as String? ?? '',
+      effectId: (json['effectId'] as num?)?.toInt() ?? 0,
+    );
+
+Map<String, dynamic> _$BattlePointPhaseToJson(BattlePointPhase instance) => <String, dynamic>{
+      'phase': instance.phase,
+      'value': instance.value,
+      'name': instance.name,
+      'effectId': instance.effectId,
+    };

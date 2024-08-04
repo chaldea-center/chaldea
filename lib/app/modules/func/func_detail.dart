@@ -135,7 +135,7 @@ class _FuncDetailPageState extends State<FuncDetailPage>
           child: Text.rich(
             SharedBuilder.textButtonSpan(
               context: context,
-              text: '${func.funcType.name}\n${Transl.funcType(func.funcType).l}',
+              text: '[${func.funcType.value}] ${func.funcType.name}\n${Transl.funcType(func.funcType).l}',
               onTap: () {
                 router.push(
                   url: Routes.funcs,

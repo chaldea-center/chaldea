@@ -263,6 +263,7 @@ class Transl<K, V> {
       (key) => Transl<String, String>(md.misc[scope] ?? {}, key, key);
 
   static String misc2(String scope, String key) => Transl<String, String>(md.misc[scope] ?? {}, key, key).l;
+  static String miscFunction(String key) => Transl<String, String>(md.misc['Function'] ?? {}, key, key).l;
 
   static final _SpecialTransl special = _SpecialTransl();
 }

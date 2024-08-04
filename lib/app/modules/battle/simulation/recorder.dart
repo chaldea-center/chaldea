@@ -1414,6 +1414,7 @@ class DamageParamDialog extends StatelessWidget with _ParamDialogMixin {
           FuncType.damageNpIndividualSum,
           FuncType.damageNpStateIndividualFix,
           FuncType.damageNpRare,
+          FuncType.damageNpBattlePointPhase,
         }.contains(params.damageFunction?.funcType);
     final npSpecificAttackRate = toModifier(params.npSpecificAttackRate);
     final hitsPercent = params.totalHits / 100.0;

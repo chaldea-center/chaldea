@@ -395,7 +395,8 @@ class _QuestEnemyEditPageState extends State<QuestEnemyEditPage> {
       case SvtClass.berserker:
       case SvtClass.avenger:
       case SvtClass.foreigner:
-      case SvtClass.beast:
+      case SvtClass.beastDoraco:
+      case SvtClass.beastEresh:
         enemy.chargeTurn = 5;
         return;
       case SvtClass.uOlgaMarieFlare:

@@ -373,29 +373,14 @@ Map<String, dynamic> _$ExtraPassiveToJson(ExtraPassive instance) => <String, dyn
     };
 
 SkillScript _$SkillScriptFromJson(Map json) => SkillScript(
-      NP_HIGHER: (json['NP_HIGHER'] as List<dynamic>?)?.map((e) => (e as num).toInt()).toList(),
-      NP_LOWER: (json['NP_LOWER'] as List<dynamic>?)?.map((e) => (e as num).toInt()).toList(),
-      STAR_HIGHER: (json['STAR_HIGHER'] as List<dynamic>?)?.map((e) => (e as num).toInt()).toList(),
-      STAR_LOWER: (json['STAR_LOWER'] as List<dynamic>?)?.map((e) => (e as num).toInt()).toList(),
-      HP_VAL_HIGHER: (json['HP_VAL_HIGHER'] as List<dynamic>?)?.map((e) => (e as num).toInt()).toList(),
-      HP_VAL_LOWER: (json['HP_VAL_LOWER'] as List<dynamic>?)?.map((e) => (e as num).toInt()).toList(),
-      HP_PER_HIGHER: (json['HP_PER_HIGHER'] as List<dynamic>?)?.map((e) => (e as num).toInt()).toList(),
-      HP_PER_LOWER: (json['HP_PER_LOWER'] as List<dynamic>?)?.map((e) => (e as num).toInt()).toList(),
       actRarity: (json['actRarity'] as List<dynamic>?)
           ?.map((e) => (e as List<dynamic>).map((e) => (e as num).toInt()).toList())
           .toList(),
-      battleStartRemainingTurn:
-          (json['battleStartRemainingTurn'] as List<dynamic>?)?.map((e) => (e as num).toInt()).toList(),
-      additionalSkillId: (json['additionalSkillId'] as List<dynamic>?)?.map((e) => (e as num).toInt()).toList(),
-      additionalSkillLv: (json['additionalSkillLv'] as List<dynamic>?)?.map((e) => (e as num).toInt()).toList(),
-      additionalSkillActorType:
-          (json['additionalSkillActorType'] as List<dynamic>?)?.map((e) => (e as num).toInt()).toList(),
-      SelectAddInfo: (json['SelectAddInfo'] as List<dynamic>?)
-          ?.map((e) => SkillSelectAddInfo.fromJson(Map<String, dynamic>.from(e as Map)))
-          .toList(),
-      tdTypeChangeIDs: (json['tdTypeChangeIDs'] as List<dynamic>?)?.map((e) => (e as num).toInt()).toList(),
-      excludeTdChangeTypes: (json['excludeTdChangeTypes'] as List<dynamic>?)?.map((e) => (e as num).toInt()).toList(),
       IgnoreValueUp: json['IgnoreValueUp'],
+      IgnoreBattlePointUp: json['IgnoreBattlePointUp'] as List<dynamic>?,
+      tdChangeByBattlePoint: (json['tdChangeByBattlePoint'] as List<dynamic>?)
+          ?.map((e) => TdChangeByBattlePoint.fromJson(Map<String, dynamic>.from(e as Map)))
+          .toList(),
     );
 
 Map<String, dynamic> _$SkillScriptToJson(SkillScript instance) {
@@ -407,23 +392,10 @@ Map<String, dynamic> _$SkillScriptToJson(SkillScript instance) {
     }
   }
 
-  writeNotNull('NP_HIGHER', instance.NP_HIGHER);
-  writeNotNull('NP_LOWER', instance.NP_LOWER);
-  writeNotNull('STAR_HIGHER', instance.STAR_HIGHER);
-  writeNotNull('STAR_LOWER', instance.STAR_LOWER);
-  writeNotNull('HP_VAL_HIGHER', instance.HP_VAL_HIGHER);
-  writeNotNull('HP_VAL_LOWER', instance.HP_VAL_LOWER);
-  writeNotNull('HP_PER_HIGHER', instance.HP_PER_HIGHER);
-  writeNotNull('HP_PER_LOWER', instance.HP_PER_LOWER);
   writeNotNull('actRarity', instance.actRarity);
-  writeNotNull('battleStartRemainingTurn', instance.battleStartRemainingTurn);
-  writeNotNull('additionalSkillId', instance.additionalSkillId);
-  writeNotNull('additionalSkillLv', instance.additionalSkillLv);
-  writeNotNull('additionalSkillActorType', instance.additionalSkillActorType);
-  writeNotNull('SelectAddInfo', instance.SelectAddInfo?.map((e) => e.toJson()).toList());
-  writeNotNull('tdTypeChangeIDs', instance.tdTypeChangeIDs);
-  writeNotNull('excludeTdChangeTypes', instance.excludeTdChangeTypes);
   writeNotNull('IgnoreValueUp', instance.IgnoreValueUp);
+  writeNotNull('IgnoreBattlePointUp', instance.IgnoreBattlePointUp);
+  writeNotNull('tdChangeByBattlePoint', instance.tdChangeByBattlePoint?.map((e) => e.toJson()).toList());
   return val;
 }
 
@@ -474,6 +446,18 @@ const _$SkillScriptCondEnumMap = {
   SkillScriptCond.hpPerHigher: 'HP_PER_HIGHER',
   SkillScriptCond.hpPerLower: 'HP_PER_LOWER',
 };
+
+TdChangeByBattlePoint _$TdChangeByBattlePointFromJson(Map json) => TdChangeByBattlePoint(
+      battlePointId: (json['battlePointId'] as num).toInt(),
+      phase: (json['phase'] as num).toInt(),
+      noblePhantasmId: (json['noblePhantasmId'] as num).toInt(),
+    );
+
+Map<String, dynamic> _$TdChangeByBattlePointToJson(TdChangeByBattlePoint instance) => <String, dynamic>{
+      'battlePointId': instance.battlePointId,
+      'phase': instance.phase,
+      'noblePhantasmId': instance.noblePhantasmId,
+    };
 
 SkillAdd _$SkillAddFromJson(Map json) => SkillAdd(
       priority: (json['priority'] as num).toInt(),

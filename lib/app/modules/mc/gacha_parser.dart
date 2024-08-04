@@ -189,20 +189,22 @@ class JpGachaParser {
       throw FormatException('Unexpected table count: $tableCount');
     }
 
-    final classMap = {
-      for (final v in ConstData.classInfo.values)
-        if (v.supportGroup < 20) v.name: v.id,
-    };
+    final classNameMap = <String, List<int>>{};
+    for (final v in ConstData.classInfo.values) {
+      if (v.supportGroup < 20) {
+        classNameMap.putIfAbsent(v.name, () => []).add(v.id);
+      }
+    }
 
     Map<String, GachaProbRow> groupMap = {};
 
     for (final (pickup, table) in svtTables) {
       for (final row in table) {
-        final int classId = classMap[row[0]]!;
+        final List<int> classIds = classNameMap[row[0]]!;
         final int rarity = row[1].count(kStar);
         final String name = row[2];
         final String probStr = row[3];
-        final svt = _findCard(name, rarity, classId);
+        final svt = _findCard(name, rarity, classIds);
         final key = 'svt-$pickup-$rarity-$probStr';
         final group = groupMap[key] ??= GachaProbRow(
             isSvt: true, pickup: pickup, rarity: rarity, indivProb: probStr, cards: [], isLuckyBag: gacha.isLuckyBag);
@@ -212,7 +214,7 @@ class JpGachaParser {
     for (final (pickup, table) in ceTables) {
       for (final row in table) {
         final int rarity = row[0].count(kStar);
-        final ce = _findCard(row[1], rarity, 1001);
+        final ce = _findCard(row[1], rarity, [1001]);
         final probStr = row[2];
         final key = 'ce-$pickup-$rarity-$probStr';
         final group = groupMap[key] ??= GachaProbRow(
@@ -240,10 +242,10 @@ class JpGachaParser {
     return tableData;
   }
 
-  BasicServant _findCard(String name, int rarity, int classId) {
+  BasicServant _findCard(String name, int rarity, List<int> classIds) {
     Map<int, BasicServant> targets = {};
     for (final card in db.gameData.entities.values) {
-      if (card.collectionNo <= 0 || card.rarity != rarity || card.classId != classId) continue;
+      if (card.collectionNo <= 0 || card.rarity != rarity || !classIds.contains(card.classId)) continue;
 
       final svt = db.gameData.servantsById[card.id];
       final names = <String?>{
@@ -257,10 +259,10 @@ class JpGachaParser {
       }
     }
 
-    final className = Transl.svtClassId(classId).l;
+    final className = Transl.svtClassId(classIds.first).l;
     if (targets.length == 1) {
       return targets.values.single;
-    } else if (targets.isNotEmpty) {
+    } else if (targets.isEmpty) {
       throw FormatException('NotFound: $name-R$rarity-$className');
     } else {
       throw FormatException("Multiple Found: $name-R$rarity-$className: ${targets.keys.toList()}");

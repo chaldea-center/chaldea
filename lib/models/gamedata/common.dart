@@ -324,11 +324,12 @@ enum SvtClass {
   beastILost(30, '獸I?'),
   uOlgaMarieAlienGod(31, '獸?'),
   uOlgaMarie(32, '?'),
-  beast(33, '獸'),
+  beastDoraco(33, '獸'),
   beastVI(34, '獸Ⅵ'),
   beastVIBoss(35, '獸Ⅵ'),
   uOlgaMarieFlare(36),
   uOlgaMarieAqua(37),
+  beastEresh(38, '獸'),
   unknown(97),
   // 98
   // 99
@@ -344,6 +345,7 @@ enum SvtClass {
   EXTRA2(1005, 'EXTRA2'), // ignore: constant_identifier_names
   uOlgaMarieFlareCollection(9001),
   uOlgaMarieAquaCollection(9002),
+  beastAny(33, '獸'),
   ;
 
   final int value;
@@ -356,10 +358,7 @@ class SvtClassConverter implements JsonConverter<SvtClass, String> {
 
   @override
   SvtClass fromJson(String value) {
-    for (final cls in _$SvtClassEnumMap.keys) {
-      if (_$SvtClassEnumMap[cls] == value) return cls;
-    }
-    return SvtClass.none;
+    return deprecatedTypes[value] ?? decodeEnum(_$SvtClassEnumMap, value, SvtClass.none);
   }
 
   @override
@@ -375,12 +374,16 @@ class SvtClassConverter implements JsonConverter<SvtClass, String> {
     if (pureInt != null && pureInt > 0) return pureInt;
     return mapping.entries.firstWhereOrNull((entry) => entry.value.name == value)?.key;
   }
+
+  static final Map<String, SvtClass> deprecatedTypes = {
+    "beast": SvtClass.beastDoraco,
+  };
 }
 
 const _kSvtClassRarityMap = {0: 0, 1: 1, 2: 1, 3: 2, 4: 3, 5: 3};
 
 extension SvtClassX on SvtClass {
-  static const beast = SvtClass.beast;
+  static const beast = SvtClass.beastAny;
 
   SvtClassInfo? get info => db.gameData.constData.classInfo[value];
   int get iconId => info?.iconImageId ?? 12;
@@ -435,14 +438,15 @@ extension SvtClassX on SvtClass {
     SvtClass.alterEgo,
     SvtClass.foreigner,
     SvtClass.pretender,
-    SvtClass.beast,
+    SvtClass.beastAny,
   ];
   static const extra = <SvtClass>[
     ...extraI,
     ...extraII,
   ];
   static const beasts = <SvtClass>[
-    SvtClass.beast,
+    SvtClass.beastDoraco,
+    SvtClass.beastEresh,
     SvtClass.beastI,
     SvtClass.beastII,
     SvtClass.beastIIIR,

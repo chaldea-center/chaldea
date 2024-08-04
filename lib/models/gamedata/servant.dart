@@ -190,6 +190,7 @@ class Servant extends BasicServant {
   Map<int, LvlUpMaterial> costumeMaterials;
   ServantCoin? coin;
   ServantScript? script;
+  List<BattlePoint> battlePoints;
   List<NiceSkill> skills;
   List<NiceSkill> classPassive;
   List<NiceSkill> extraPassive;
@@ -269,6 +270,7 @@ class Servant extends BasicServant {
     this.costumeMaterials = const {},
     this.coin,
     this.script,
+    this.battlePoints = const [],
     this.skills = const [],
     this.classPassive = const [],
     this.extraPassive = const [],
@@ -335,6 +337,7 @@ class Servant extends BasicServant {
       costumeMaterials: costumeMaterials,
       coin: coin,
       script: script,
+      battlePoints: battlePoints,
       skills: skills,
       classPassive: classPassive,
       extraPassive: extraPassive,
@@ -1612,6 +1615,53 @@ class SvtOverwrite {
   Map<String, dynamic> toJson() => _$SvtOverwriteToJson(this);
 }
 
+// @JsonSerializable()
+// class ServantBattlePoint {
+//   BattlePoint battlePoint;
+//   ServantBattlePoint({
+//     required this.battlePoint,
+//   });
+//   factory ServantBattlePoint.fromJson(Map<String, dynamic> json) => _$ServantBattlePointFromJson(json);
+
+//   Map<String, dynamic> toJson() => _$ServantBattlePointToJson(this);
+// }
+
+@JsonSerializable()
+class BattlePoint {
+  int id;
+  String? name;
+  List<BattlePointFlag> flags;
+  List<BattlePointPhase> phases;
+  // script;
+
+  BattlePoint({
+    required this.id,
+    this.name,
+    this.flags = const [],
+    this.phases = const [],
+  });
+  factory BattlePoint.fromJson(Map<String, dynamic> json) => _$BattlePointFromJson(json);
+
+  Map<String, dynamic> toJson() => _$BattlePointToJson(this);
+}
+
+@JsonSerializable()
+class BattlePointPhase {
+  int phase;
+  int value;
+  String name;
+  int effectId;
+  BattlePointPhase({
+    required this.phase,
+    required this.value,
+    this.name = '',
+    this.effectId = 0,
+  });
+  factory BattlePointPhase.fromJson(Map<String, dynamic> json) => _$BattlePointPhaseFromJson(json);
+
+  Map<String, dynamic> toJson() => _$BattlePointPhaseToJson(this);
+}
+
 enum SvtType {
   normal,
   heroine,
@@ -1714,6 +1764,7 @@ enum ServantPersonality {
   goodAndEvil(6), // 善／悪
   bride(7), // 花嫁
   summer(8), // 夏
+  beast(9), // 獣
   unknown(-1),
   ;
 
@@ -1799,4 +1850,12 @@ enum CommandCardAttackType {
 enum ServantOverwriteType {
   none,
   treasureDevice,
+}
+
+enum BattlePointFlag {
+  none,
+  notTargetOtherPlayer,
+  hideUiGaugeAllTime,
+  hideUiGaugeWhenCantAddPoint,
+  hideUiGaugeWhenCantAddPointAndFollowerSupport,
 }

@@ -814,27 +814,31 @@ class SkillScript with DataScriptBase {
   // int? cutInId;
 
   // mstSkillLv.script
-  final List<int>? NP_HIGHER; // lv, 50->50%
-  final List<int>? NP_LOWER;
-  final List<int>? STAR_HIGHER;
-  final List<int>? STAR_LOWER;
-  final List<int>? HP_VAL_HIGHER;
-  final List<int>? HP_VAL_LOWER;
-  final List<int>? HP_PER_HIGHER; // 500->50%
-  final List<int>? HP_PER_LOWER;
+  List<int>? get NP_HIGHER => toList('NP_HIGHER'); // lv, 50->50%
+  List<int>? get NP_LOWER => toList('NP_LOWER');
+  List<int>? get STAR_HIGHER => toList('STAR_HIGHER');
+  List<int>? get STAR_LOWER => toList('STAR_LOWER');
+  List<int>? get HP_VAL_HIGHER => toList('HP_VAL_HIGHER');
+  List<int>? get HP_VAL_LOWER => toList('HP_VAL_LOWER');
+  List<int>? get HP_PER_HIGHER => toList('HP_PER_HIGHER'); // 500->50%
+  List<int>? get HP_PER_LOWER => toList('HP_PER_LOWER');
   final List<List<int>>? actRarity;
   // ↑ conditions
-  final List<int>? battleStartRemainingTurn;
-  final List<int>? additionalSkillId;
-  final List<int>? additionalSkillLv;
-  final List<int>? additionalSkillActorType; // BattleLogicTask.ACTORTYPE
-  final List<SkillSelectAddInfo>? SelectAddInfo;
+  List<int>? get battleStartRemainingTurn => toList('battleStartRemainingTurn');
+  List<int>? get additionalSkillId => toList('additionalSkillId');
+  List<int>? get additionalSkillLv => toList('additionalSkillLv');
+  List<int>? get additionalSkillActorType => toList('additionalSkillActorType'); // BattleLogicTask.ACTORTYPE
+  List<SkillSelectAddInfo>? get SelectAddInfo => toList('SelectAddInfo');
   // TD script
-  final List<int>? tdTypeChangeIDs;
-  final List<int>? excludeTdChangeTypes;
+  List<int>? get tdTypeChangeIDs => toList('tdTypeChangeIDs');
+  List<int>? get excludeTdChangeTypes => toList('excludeTdChangeTypes');
 
   // skill.script, not in skillLv.script
   final bool? IgnoreValueUp;
+  final List<int>? IgnoreBattlePointUp;
+
+  // td.script, not in tdLv.script;
+  final List<TdChangeByBattlePoint>? tdChangeByBattlePoint;
 
   bool get isNotEmpty =>
       NP_HIGHER?.isNotEmpty == true ||
@@ -853,29 +857,38 @@ class SkillScript with DataScriptBase {
       SelectAddInfo?.isNotEmpty == true ||
       tdTypeChangeIDs?.isNotEmpty == true ||
       excludeTdChangeTypes?.isNotEmpty == true ||
-      IgnoreValueUp != null;
+      IgnoreValueUp != null ||
+      IgnoreBattlePointUp != null ||
+      tdChangeByBattlePoint != null;
 
   SkillScript({
-    this.NP_HIGHER,
-    this.NP_LOWER,
-    this.STAR_HIGHER,
-    this.STAR_LOWER,
-    this.HP_VAL_HIGHER,
-    this.HP_VAL_LOWER,
-    this.HP_PER_HIGHER,
-    this.HP_PER_LOWER,
+    // this.NP_HIGHER,
+    // this.NP_LOWER,
+    // this.STAR_HIGHER,
+    // this.STAR_LOWER,
+    // this.HP_VAL_HIGHER,
+    // this.HP_VAL_LOWER,
+    // this.HP_PER_HIGHER,
+    // this.HP_PER_LOWER,
     this.actRarity,
-    this.battleStartRemainingTurn,
-    this.additionalSkillId,
-    this.additionalSkillLv,
-    this.additionalSkillActorType,
-    this.SelectAddInfo,
-    this.tdTypeChangeIDs,
-    this.excludeTdChangeTypes,
+    // this.battleStartRemainingTurn,
+    // this.additionalSkillId,
+    // this.additionalSkillLv,
+    // this.additionalSkillActorType,
+    // this.SelectAddInfo,
+    // this.tdTypeChangeIDs,
+    // this.excludeTdChangeTypes,
     dynamic IgnoreValueUp,
-  }) : IgnoreValueUp = _parse(IgnoreValueUp);
+    List? IgnoreBattlePointUp,
+    this.tdChangeByBattlePoint,
+  })  : IgnoreValueUp = _parseBaseScript(IgnoreValueUp),
+        IgnoreBattlePointUp = IgnoreBattlePointUp == null
+            ? null
+            : (IgnoreBattlePointUp.isNotEmpty && IgnoreBattlePointUp.first is List)
+                ? List<int>.from(IgnoreBattlePointUp.first)
+                : List<int>.from(IgnoreBattlePointUp);
 
-  static T? _parse<T>(dynamic value) {
+  static T? _parseBaseScript<T>(dynamic value) {
     if (value == null) return null;
     if (value is T) {
       return value;
@@ -938,6 +951,23 @@ class SkillSelectAddInfoBtnCond {
   factory SkillSelectAddInfoBtnCond.fromJson(Map<String, dynamic> json) => _$SkillSelectAddInfoBtnCondFromJson(json);
 
   Map<String, dynamic> toJson() => _$SkillSelectAddInfoBtnCondToJson(this);
+}
+
+@JsonSerializable()
+class TdChangeByBattlePoint {
+  int battlePointId;
+  int phase;
+  int noblePhantasmId;
+
+  TdChangeByBattlePoint({
+    required this.battlePointId,
+    required this.phase,
+    required this.noblePhantasmId,
+  });
+
+  factory TdChangeByBattlePoint.fromJson(Map<String, dynamic> json) => _$TdChangeByBattlePointFromJson(json);
+
+  Map<String, dynamic> toJson() => _$TdChangeByBattlePointToJson(this);
 }
 
 @JsonSerializable()

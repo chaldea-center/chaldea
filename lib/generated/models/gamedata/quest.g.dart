@@ -1091,6 +1091,7 @@ QuestPhaseExtraDetail _$QuestPhaseExtraDetailFromJson(Map json) => QuestPhaseExt
           : OverwriteEquipSkills.fromJson(Map<String, dynamic>.from(json['addEquipSkills'] as Map)),
       waveSetup: (json['waveSetup'] as num?)?.toInt(),
       masterImageId: (json['masterImageId'] as num?)?.toInt(),
+      IgnoreBattlePointUp: (json['IgnoreBattlePointUp'] as List<dynamic>?)?.map((e) => (e as num).toInt()).toList(),
     )..interruptibleQuest = (json['interruptibleQuest'] as num?)?.toInt();
 
 Map<String, dynamic> _$QuestPhaseExtraDetailToJson(QuestPhaseExtraDetail instance) => <String, dynamic>{
@@ -1105,6 +1106,7 @@ Map<String, dynamic> _$QuestPhaseExtraDetailToJson(QuestPhaseExtraDetail instanc
       'waveSetup': instance.waveSetup,
       'interruptibleQuest': instance.interruptibleQuest,
       'masterImageId': instance.masterImageId,
+      'IgnoreBattlePointUp': instance.IgnoreBattlePointUp,
     };
 
 OverwriteEquipSkills _$OverwriteEquipSkillsFromJson(Map json) => OverwriteEquipSkills(

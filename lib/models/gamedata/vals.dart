@@ -2,6 +2,8 @@
 
 import '_helper.dart';
 
+part '../../generated/models/gamedata/vals.g.dart';
+
 @JsonSerializable(createFactory: false, createToJson: false)
 class DataVals {
   Map<String, dynamic> _vals;
@@ -223,8 +225,22 @@ class DataVals {
   // TriggeredFuncPositionSameTarget > TriggeredFuncPositionAll > TriggeredFuncPosition
   int? get TriggeredFuncPositionSameTarget => _vals['TriggeredFuncPositionSameTarget'];
   int? get TriggeredFuncPositionAll => _vals['TriggeredFuncPositionAll'];
-  String? get TriggeredTargetHpRange => _vals['TriggeredTargetHpRange'];
-  String? get TriggeredTargetHpRateRange => _vals['TriggeredTargetHpRateRange'];
+  List<String>? get TriggeredTargetHpRange {
+    final v = _vals['TriggeredTargetHpRange'];
+    if (v is String) {
+      return v.split('/');
+    }
+    return v;
+  }
+
+  List<String>? get TriggeredTargetHpRateRange {
+    final v = _vals['TriggeredTargetHpRateRange'];
+    if (v is String) {
+      return v.split('/');
+    }
+    return v;
+  }
+
   int? get ExcludeUnSubStateIndiv => _vals['ExcludeUnSubStateIndiv'];
   int? get ProgressTurnOnBoard => _vals['ProgressTurnOnBoard'];
   int? get CheckTargetResurrectable => _vals['CheckTargetResurrectable'];
@@ -261,14 +277,17 @@ class DataVals {
   int? get BattlePointValue => _vals['BattlePointValue'];
   int? get BattlePointUiUpdateType => _vals['BattlePointUiUpdateType'];
   int? get BattlePointOverwrite => _vals['BattlePointOverwrite'];
-  String? get CheckOverChargeStageRange => _vals['CheckOverChargeStageRange'];
-  String? get CheckBattlePointPhaseRange => _vals['CheckBattlePointPhaseRange'];
-  int? get StartingPosition => _vals['StartingPosition'];
+  // [CheckOverChargeStageRange]: 0~4 => OC1~5
+  List<String>? get CheckOverChargeStageRange => _list('CheckOverChargeStageRange');
+  List<ValCheckBattlePointPhaseRange>? get CheckBattlePointPhaseRange =>
+      _parseObjList('CheckBattlePointPhaseRange', ValCheckBattlePointPhaseRange.fromJson);
+  List<int>? get StartingPosition => _list('StartingPosition');
   int? get FriendShipAbove => _vals['FriendShipAbove'];
-  int? get DamageRateBattlePointPhase => _vals['DamageRateBattlePointPhase'];
+  List<ValDamageRateBattlePointPhase>? get DamageRateBattlePointPhase =>
+      _parseObjList('DamageRateBattlePointPhase', ValDamageRateBattlePointPhase.fromJson);
   int? get ParamAddBattlePointPhaseId => _vals['ParamAddBattlePointPhaseId'];
   int? get ParamAddBattlePointPhaseValue => _vals['ParamAddBattlePointPhaseValue'];
-  int? get ShortenMaxCountEachSkill => _vals['ShortenMaxCountEachSkill'];
+  List<int>? get ShortenMaxCountEachSkill => _list('ShortenMaxCountEachSkill');
 
   int? get ApplySupportSvt => _vals['ApplySupportSvt'];
   int? get Individuality => _vals['Individuality'];
@@ -277,34 +296,84 @@ class DataVals {
   int? get RateCount => _vals['RateCount'];
   int? get DropRateCount => _vals['DropRateCount'];
 
+  List<T>? _parseObjList<T>(String key, T Function(Map<String, dynamic> json) fromJson) {
+    final v = _vals[key];
+    assert(v == null || v is List, '$key: $v');
+    if (v == null || v is! List) return null;
+    return v.map((e) => fromJson(Map<String, dynamic>.from(e))).toList();
+  }
+
   /// [TriggeredTargetHpRange], [TriggeredTargetHpRateRange]
   /// [CheckOverChargeStageRange], [CheckBattlePointPhaseRange]
-  static bool isSatisfyRangeText(int value, String? compareText) {
-    if (compareText == null || compareText.isEmpty) return true;
+  static bool isSatisfyRangeText(int value, {String? rangeText, List<String>? ranges}) {
+    if (ranges == null && rangeText != null) ranges = rangeText.split('/').map((e) => e.trim()).toList();
+    if (ranges == null || ranges.isEmpty) return true;
 
-    bool? _check(RegExp reg, bool Function(int target) compare) {
-      final m = reg.firstMatch(compareText);
-      if (m == null) return null;
-      assert(int.tryParse(m.group(1) ?? '') != null, '$reg: $compareText');
-      return compare(int.parse(m.group(1)!));
-    }
-
-    bool? result = _check(RegExp(r'^<(\d+)$'), (target) => value < target) ??
-        _check(RegExp(r'^<=(\d+)$'), (target) => value <= target) ??
-        _check(RegExp(r'^>(\d+)$'), (target) => value > target) ??
-        _check(RegExp(r'^>=(\d+)$'), (target) => value >= target) ??
-        _check(RegExp(r'^(\d+)>$'), (target) => value < target) ??
-        _check(RegExp(r'^(\d+)>=$'), (target) => value <= target) ??
-        _check(RegExp(r'^(\d+)<$'), (target) => value > target) ??
-        _check(RegExp(r'^(\d+)<=$'), (target) => value >= target);
-    if (result == null && RegExp(r'[\d/]+').hasMatch(compareText)) {
-      final targets = compareText.split('/').map((e) => int.tryParse(e.trim())).toList();
-      assert(!targets.contains(null), 'Unexpected range format: $compareText');
-      if (targets.isNotEmpty) {
-        result = targets.contains(value);
+    for (final range in ranges) {
+      bool? _check(RegExp reg, bool Function(int target) compare) {
+        final m = reg.firstMatch(range);
+        if (m == null) return null;
+        assert(int.tryParse(m.group(1) ?? '') != null, '$reg: $range');
+        return compare(int.parse(m.group(1)!));
       }
+
+      bool? result = _check(RegExp(r'^<(\d+)$'), (target) => value < target) ??
+          _check(RegExp(r'^<=(\d+)$'), (target) => value <= target) ??
+          _check(RegExp(r'^>(\d+)$'), (target) => value > target) ??
+          _check(RegExp(r'^>=(\d+)$'), (target) => value >= target) ??
+          _check(RegExp(r'^(\d+)>$'), (target) => value < target) ??
+          _check(RegExp(r'^(\d+)>=$'), (target) => value <= target) ??
+          _check(RegExp(r'^(\d+)<$'), (target) => value > target) ??
+          _check(RegExp(r'^(\d+)<=$'), (target) => value >= target);
+      _check(RegExp(r'^=*(\d+)$'), (target) => value == target);
+      assert(result != null, 'Unknown compare type: $range');
+      if (result == false) return false;
     }
-    assert(result != null, 'Unknown compare type: $compareText');
-    return result ?? true;
+    return true;
   }
+
+  static List<String> beautifyRangeTexts(List<String> ranges) {
+    if (ranges.length == 1) {
+      final m = RegExp(r'^(\d+)(<=|<)$').firstMatch(ranges.single);
+      final String range = switch (m?.group(2)) {
+        '<=' => '>=${m?.group(1)}',
+        '<' => '>${m?.group(1)}',
+        _ => ranges.single,
+      };
+      ranges = [range];
+    }
+    return ranges.map((e) => e.replaceAll('>=', '≥').replaceAll('<=', '≤')).toList();
+  }
+}
+
+@JsonSerializable()
+class ValCheckBattlePointPhaseRange {
+  int battlePointId;
+  List<String> range;
+
+  ValCheckBattlePointPhaseRange({
+    required this.battlePointId,
+    required this.range,
+  });
+
+  factory ValCheckBattlePointPhaseRange.fromJson(Map<String, dynamic> json) =>
+      _$ValCheckBattlePointPhaseRangeFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ValCheckBattlePointPhaseRangeToJson(this);
+}
+
+@JsonSerializable()
+class ValDamageRateBattlePointPhase {
+  int battlePointId;
+  int value;
+
+  ValDamageRateBattlePointPhase({
+    required this.battlePointId,
+    required this.value,
+  });
+
+  factory ValDamageRateBattlePointPhase.fromJson(Map<String, dynamic> json) =>
+      _$ValDamageRateBattlePointPhaseFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ValDamageRateBattlePointPhaseToJson(this);
 }

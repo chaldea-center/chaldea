@@ -168,18 +168,14 @@ class ValDsc extends StatelessWidget {
       parts.add("($kStarChar≥${vals.StarHigher})");
     }
     if (vals.TriggeredTargetHpRange != null) {
-      parts.add('HP${vals.TriggeredTargetHpRange}');
+      parts.add('HP ${DataVals.beautifyRangeTexts(vals.TriggeredTargetHpRange!).join(" & ")}');
     }
     if (vals.TriggeredTargetHpRateRange != null) {
-      String rangeText = vals.TriggeredTargetHpRateRange!;
-      final match = RegExp(r'^(\D*)(\d+)$').firstMatch(rangeText);
-      if (match == null) {
-        parts.add('HP$rangeText');
-      } else {
-        final cond = match.group(1)!;
-        final value = int.parse(match.group(2)!);
-        parts.add('HP$cond${value.format(percent: true, base: 10)}');
-      }
+      List<String> ranges = DataVals.beautifyRangeTexts(vals.TriggeredTargetHpRateRange!);
+      ranges = ranges
+          .map((e) => e.replaceAllMapped(RegExp(r'\d+'), (m) => int.parse(m.group(0)!).format(percent: true, base: 10)))
+          .toList();
+      parts.add('HP ${ranges.join(" & ")}');
     }
     // end conditions
 
@@ -257,6 +253,7 @@ class ValDsc extends StatelessWidget {
             _addPercent(parts, vals.Correction, 10, (s) => '×$s');
             break;
           case FuncType.damageNpIndividualSum:
+          case FuncType.damageNpBattlePointPhase:
             if (vals.Value2 != null) {
               parts.add('${_toPercent(vals.Value2, 10)}%+N×${_toPercent(vals.Correction, 10)}%');
               if (vals.ParamAddMaxCount != null) {
@@ -286,6 +283,9 @@ class ValDsc extends StatelessWidget {
             parts.join(vals.Target.toString());
             break;
         }
+      }
+      if (vals.BattlePointValue != null) {
+        _addInt(parts, vals.BattlePointValue, (v) => '+$v');
       }
       if (!ignoreCount && vals.Count != null && vals.Count! > 0) {
         _addInt(parts, vals.Count, (v) => Transl.special.funcValCountTimes(vals.Count!));

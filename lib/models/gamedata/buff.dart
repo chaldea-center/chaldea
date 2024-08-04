@@ -158,6 +158,7 @@ class BuffScript with DataScriptBase {
   int? get IncludeIgnoreIndividuality => toInt('IncludeIgnoreIndividuality');
   int? get ProgressSelfTurn => toInt('ProgressSelfTurn');
   int? get extendLowerLimit => toInt('extendLowerLimit');
+  int? get useFirstTimeInTurn => toInt('useFirstTimeInTurn');
 
   int? get IndvAddBuffPassive => toInt('IndvAddBuffPassive');
   List<int>? get ckSelfCountIndividuality => toList('ckSelfCountIndividuality');
@@ -517,6 +518,12 @@ final Map<BuffType, BuffValueTriggerType Function(DataVals)> kBuffValueTriggerTy
     BuffType.skillAfterFunctionMainOnly,
     BuffType.treasureDeviceAfterFunctionMainOnly,
     BuffType.continueFunction,
+    BuffType.confirmCommandFunction,
+    BuffType.skillBeforeFunction,
+    BuffType.skillTargetedBeforeFunction,
+    BuffType.fieldIndividualityChangedFunction,
+    BuffType.treasureDeviceBeforeFunction,
+    BuffType.startTacticalBeforeFunction,
   }) {
     types[type] = (v) => BuffValueTriggerType(type, skill: v.Value, level: v.Value2, rate: v.UseRate);
   }

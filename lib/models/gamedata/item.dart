@@ -440,6 +440,32 @@ class ItemSelect {
 }
 
 @JsonSerializable()
+class ItemDropEfficiency {
+  // int itemId;
+  ItemTransitionTargetValue targetType;
+  int priority;
+  String title;
+  String iconName;
+  String transitionParam;
+  List<CommonRelease> releaseConditions;
+  String closedMessage;
+
+  ItemDropEfficiency({
+    // required this.itemId,
+    this.targetType = ItemTransitionTargetValue.none,
+    this.priority = 0,
+    this.title = '',
+    this.iconName = '',
+    this.transitionParam = '',
+    this.releaseConditions = const [],
+    this.closedMessage = '',
+  });
+  factory ItemDropEfficiency.fromJson(Map<String, dynamic> json) => _$ItemDropEfficiencyFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ItemDropEfficiencyToJson(this);
+}
+
+@JsonSerializable()
 class ItemAmount {
   int itemId;
   int amount;
@@ -536,6 +562,18 @@ enum ItemBGType {
   gold,
   questClearQPReward,
   aquaBlue,
+}
+
+enum ItemTransitionTargetValue {
+  none,
+  questId,
+  spotId,
+  warId,
+  eventId,
+  missionType,
+  manaPriTargetItemId,
+  purePriTargetItemId,
+  rarePriTargetItemId,
 }
 
 abstract class ItemIconId {

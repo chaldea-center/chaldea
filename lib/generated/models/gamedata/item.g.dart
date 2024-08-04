@@ -116,6 +116,42 @@ Map<String, dynamic> _$ItemSelectToJson(ItemSelect instance) => <String, dynamic
       'requireNum': instance.requireNum,
     };
 
+ItemDropEfficiency _$ItemDropEfficiencyFromJson(Map json) => ItemDropEfficiency(
+      targetType:
+          $enumDecodeNullable(_$ItemTransitionTargetValueEnumMap, json['targetType']) ?? ItemTransitionTargetValue.none,
+      priority: (json['priority'] as num?)?.toInt() ?? 0,
+      title: json['title'] as String? ?? '',
+      iconName: json['iconName'] as String? ?? '',
+      transitionParam: json['transitionParam'] as String? ?? '',
+      releaseConditions: (json['releaseConditions'] as List<dynamic>?)
+              ?.map((e) => CommonRelease.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
+      closedMessage: json['closedMessage'] as String? ?? '',
+    );
+
+Map<String, dynamic> _$ItemDropEfficiencyToJson(ItemDropEfficiency instance) => <String, dynamic>{
+      'targetType': _$ItemTransitionTargetValueEnumMap[instance.targetType]!,
+      'priority': instance.priority,
+      'title': instance.title,
+      'iconName': instance.iconName,
+      'transitionParam': instance.transitionParam,
+      'releaseConditions': instance.releaseConditions.map((e) => e.toJson()).toList(),
+      'closedMessage': instance.closedMessage,
+    };
+
+const _$ItemTransitionTargetValueEnumMap = {
+  ItemTransitionTargetValue.none: 'none',
+  ItemTransitionTargetValue.questId: 'questId',
+  ItemTransitionTargetValue.spotId: 'spotId',
+  ItemTransitionTargetValue.warId: 'warId',
+  ItemTransitionTargetValue.eventId: 'eventId',
+  ItemTransitionTargetValue.missionType: 'missionType',
+  ItemTransitionTargetValue.manaPriTargetItemId: 'manaPriTargetItemId',
+  ItemTransitionTargetValue.purePriTargetItemId: 'purePriTargetItemId',
+  ItemTransitionTargetValue.rarePriTargetItemId: 'rarePriTargetItemId',
+};
+
 ItemAmount _$ItemAmountFromJson(Map json) => ItemAmount(
       item: json['item'] == null ? null : Item.fromJson(Map<String, dynamic>.from(json['item'] as Map)),
       itemId: (json['itemId'] as num?)?.toInt(),

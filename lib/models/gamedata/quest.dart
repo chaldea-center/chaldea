@@ -1,3 +1,5 @@
+// ignore_for_file: non_constant_identifier_names
+
 import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/descriptors/cond_target_value.dart';
 import 'package:chaldea/app/modules/quest/quest.dart';
@@ -820,7 +822,6 @@ class Stage with DataScriptBase {
   int? enemyFieldPosCount;
   int? enemyActCount;
   BattleBg? battleBg;
-  // ignore: non_constant_identifier_names
   List<int>? NoEntryIds;
   List<StageStartMovie> waveStartMovies;
 
@@ -839,7 +840,6 @@ class Stage with DataScriptBase {
     this.enemyFieldPosCount,
     this.enemyActCount,
     this.battleBg,
-    // ignore: non_constant_identifier_names
     this.NoEntryIds,
     this.waveStartMovies = const [],
     Map<String, dynamic>? originalScript,
@@ -1749,6 +1749,7 @@ class QuestPhaseExtraDetail {
   int? waveSetup;
   int? interruptibleQuest;
   int? masterImageId;
+  List<int>? IgnoreBattlePointUp;
   // int? repeatReward;
   // List<int>? consumeItemBattleWin;
 
@@ -1763,6 +1764,7 @@ class QuestPhaseExtraDetail {
     this.addEquipSkills,
     this.waveSetup,
     this.masterImageId,
+    this.IgnoreBattlePointUp,
   });
 
   factory QuestPhaseExtraDetail.fromJson(Map<String, dynamic> json) => _$QuestPhaseExtraDetailFromJson(json);

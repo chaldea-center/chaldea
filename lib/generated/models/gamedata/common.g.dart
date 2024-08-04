@@ -168,11 +168,12 @@ const _$SvtClassEnumMap = {
   SvtClass.beastILost: 'beastILost',
   SvtClass.uOlgaMarieAlienGod: 'uOlgaMarieAlienGod',
   SvtClass.uOlgaMarie: 'uOlgaMarie',
-  SvtClass.beast: 'beast',
+  SvtClass.beastDoraco: 'beastDoraco',
   SvtClass.beastVI: 'beastVI',
   SvtClass.beastVIBoss: 'beastVIBoss',
   SvtClass.uOlgaMarieFlare: 'uOlgaMarieFlare',
   SvtClass.uOlgaMarieAqua: 'uOlgaMarieAqua',
+  SvtClass.beastEresh: 'beastEresh',
   SvtClass.unknown: 'unknown',
   SvtClass.agarthaPenth: 'agarthaPenth',
   SvtClass.cccFinaleEmiyaAlter: 'cccFinaleEmiyaAlter',
@@ -185,6 +186,7 @@ const _$SvtClassEnumMap = {
   SvtClass.EXTRA2: 'EXTRA2',
   SvtClass.uOlgaMarieFlareCollection: 'uOlgaMarieFlareCollection',
   SvtClass.uOlgaMarieAquaCollection: 'uOlgaMarieAquaCollection',
+  SvtClass.beastAny: 'beastAny',
 };
 
 const _$CondTypeEnumMap = {

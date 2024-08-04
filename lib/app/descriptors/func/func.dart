@@ -1183,6 +1183,24 @@ class FuncDescriptor extends StatelessWidget {
       }
     }
 
+    if (vals?.FriendShipAbove != null) {
+      _condSpans.add([TextSpan(text: '${S.current.bond}≥${vals?.FriendShipAbove}')]);
+    }
+    if (vals?.StartingPosition?.isNotEmpty == true) {
+      _condSpans
+          .add([TextSpan(text: '${Transl.miscFunction('StartingPosition')}: ${vals!.StartingPosition!.join("/")}')]);
+    }
+    if (vals?.CheckOverChargeStageRange != null) {
+      final ocRanges = DataVals.beautifyRangeTexts(vals!.CheckOverChargeStageRange!)
+          .map((e) => e.replaceAllMapped(RegExp(r'\d+'), (m) => (int.parse(m.group(0)!) + 1).toString()))
+          .toList();
+      _condSpans.add([TextSpan(text: '${Transl.miscFunction('CheckOverChargeStageRange')}: ${ocRanges.join(" & ")}')]);
+    }
+    if (vals?.CheckBattlePointPhaseRange?.isNotEmpty == true) {
+      final ranges = DataVals.beautifyRangeTexts(vals!.CheckBattlePointPhaseRange!.first.range);
+      _condSpans.add([TextSpan(text: '${Transl.miscFunction('CheckBattlePointPhaseRange')}: ${ranges.join(" & ")}')]);
+    }
+
     if (func.funcquestTvals.isNotEmpty) {
       if (showEvent || func.funcquestTvals.any((e) => !db.gameData.mappingData.fieldTrait.containsKey(e.id))) {
         _condSpans.add(SharedBuilder.replaceSpan(
