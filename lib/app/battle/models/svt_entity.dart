@@ -87,6 +87,28 @@ class BattleServantData {
     return max(_maxHp + addition + percentAddition, 1);
   }
 
+  // TODO: adjustable?
+  int bond = 5;
+  int startingPosition = 0;
+  // initScript will set initial value
+  Map<int, int> curBattlePoints = {};
+
+  int determineBattlePointPhase(final int battlePointId) {
+    final battlePoint = niceSvt?.battlePoints.firstWhereOrNull((battlePoint) => battlePoint.id == battlePointId);
+    final curBattlePoint = curBattlePoints[battlePointId];
+    if (battlePoint == null || curBattlePoint == null) {
+      return 0;
+    }
+
+    int phase = 0;
+    for (final battlePointPhase in battlePoint.phases) {
+      if (battlePointPhase.value <= curBattlePoint) {
+        phase = max(phase, battlePointPhase.phase);
+      }
+    }
+    return phase;
+  }
+
   int np = 0; // player, np/100
   int npLineCount = 0; // enemy
   bool usedNpThisTurn = false;
@@ -136,6 +158,7 @@ class BattleServantData {
       ..svtAi = SvtAiManager(enemy.ai)
       ..niceSvt = niceSvt
       ..uniqueId = uniqueId
+      ..startingPosition = enemy.deckId
       ..hp = enemy.hp
       .._maxHp = enemy.hp
       ..svtId = enemy.svt.id
@@ -156,7 +179,7 @@ class BattleServantData {
     return svt;
   }
 
-  factory BattleServantData.fromPlayerSvtData(final PlayerSvtData settings, final int uniqueId) {
+  factory BattleServantData.fromPlayerSvtData(final PlayerSvtData settings, final int uniqueId, {final int startingPosition = 0,}) {
     final psvt = settings.svt;
     if (psvt == null) {
       throw BattleException('Invalid PlayerSvtData: null svt');
@@ -169,6 +192,7 @@ class BattleServantData {
       ..niceSvt = psvt
       ..svtId = psvt.id
       ..level = settings.lv
+      ..startingPosition = startingPosition
       .._maxHp = settings.fixedHp ?? ((psvt.hpGrowth.getOrNull(settings.lv - 1) ?? 0) + settings.hpFou)
       ..baseAtk = settings.fixedAtk ?? ((psvt.atkGrowth.getOrNull(settings.lv - 1) ?? 0) + settings.atkFou);
     svt.hp = svt._maxHp;
@@ -309,6 +333,15 @@ class BattleServantData {
       if (shouldShift) {
         shiftDeckIndex -= 1; // go to previous shift to shift to desired shift
         await shift(battleData);
+      }
+    }
+
+    if (niceSvt != null && playerSvtData?.supportType != SupportSvtType.friend) {
+      final questBlockList = battleData.niceQuest?.extraDetail?.IgnoreBattlePointUp;
+      for (final battlePoint in niceSvt!.battlePoints) {
+        if (questBlockList == null || !questBlockList.contains(battlePoint.id)) {
+          curBattlePoints[battlePoint.id] = 0;
+        }
       }
     }
   }
@@ -2038,6 +2071,9 @@ class BattleServantData {
       ..uniqueId = uniqueId
       ..svtId = svtId
       ..level = level
+      ..bond = bond
+      ..startingPosition = startingPosition
+      ..curBattlePoints = curBattlePoints.deepCopy()
       ..baseAtk = baseAtk
       ..hp = hp
       .._maxHp = _maxHp

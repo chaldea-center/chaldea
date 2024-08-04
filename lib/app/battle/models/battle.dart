@@ -276,11 +276,15 @@ class BattleData {
 
     fieldBuffs.clear();
 
-    backupAllyServants = playerSettings
-        .map((svtSetting) => svtSetting == null || svtSetting.svt == null
+    backupAllyServants = List.generate(
+      playerSettings.length,
+      (idx) {
+        final svtSetting = playerSettings[idx];
+        return svtSetting == null || svtSetting.svt == null
             ? null
-            : BattleServantData.fromPlayerSvtData(svtSetting, getNextUniqueId()))
-        .toList();
+            : BattleServantData.fromPlayerSvtData(svtSetting, getNextUniqueId(), startingPosition: idx + 1);
+      },
+    );
     await _fetchWaveEnemies();
 
     final overwriteEquip = quest.extraDetail?.getMergedOverwriteEquipSkills();

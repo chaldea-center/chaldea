@@ -1,3 +1,4 @@
+import 'package:chaldea/app/battle/functions/add_battle_point.dart';
 import 'package:chaldea/app/battle/functions/add_field_change_to_field.dart';
 import 'package:chaldea/app/battle/functions/add_state.dart';
 import 'package:chaldea/app/battle/functions/break_gauge_up.dart';
@@ -218,6 +219,7 @@ class FunctionExecutor {
         return true;
       }
 
+      // not in updateTargets because these end execution immediately
       if (!triggeredPositionCheck(battleData, dataVals) || !triggeredPositionAllCheck(battleData, dataVals)) {
         battleData.updateLastFuncResults(function.funcId, funcIndex);
         return true;
@@ -332,6 +334,7 @@ class FunctionExecutor {
         case FuncType.damageNpRare:
         case FuncType.damageNpIndividualSum:
         case FuncType.damageNpStateIndividualFix:
+        case FuncType.damageNpBattlePointPhase:
           await Damage.damage(
             battleData,
             function,
@@ -415,6 +418,9 @@ class FunctionExecutor {
         case FuncType.damageNpCounter:
           DamageNpCounter.damageNpCounter(battleData, dataVals, activator, targets);
           break;
+        case FuncType.addBattlePoint:
+          AddBattlePoint.addBattlePoint(battleData, dataVals, targets);
+          break;
         case FuncType.updateEnemyEntryMaxCountEachTurn:
         case FuncType.damageValue:
         case FuncType.damageValueSafe:
@@ -437,8 +443,6 @@ class FunctionExecutor {
         case FuncType.lossCommandSpell:
         case FuncType.gainCommandSpell:
         case FuncType.lastUsePlayerSkillCopy:
-        case FuncType.addBattlePoint:
-        case FuncType.damageNpBattlePointPhase:
           battleData.battleLogger.debug('${S.current.not_implemented}: ${function.funcType}, '
               'Function ID: ${function.funcId}, '
               'Activator: ${activator?.lBattleName}');
@@ -815,6 +819,8 @@ class FunctionExecutor {
     final activeOnly = dataVals.IncludePassiveIndividuality != 1;
     final includeIgnoreIndividuality = dataVals.IncludeIgnoreIndividuality == 1;
 
+
+    // update base on traits
     if (overwriteTvals.isNotEmpty) {
       targets.retainWhere((svt) {
         final List<NiceTrait> selfTraits = svt.getTraits(
@@ -858,6 +864,8 @@ class FunctionExecutor {
 
     targets.retainWhere((target) => triggeredPositionTargetCheck(battleData, dataVals, target));
 
+    targets.retainWhere((target) => battlePointCheck(dataVals, target));
+
     if (dataVals.CheckDuplicate == 1) {
       final Map<int, bool>? previousExecutionResults = battleData.checkDuplicateFuncData[funcIndex]?[function.funcId];
       if (previousExecutionResults != null) {
@@ -870,6 +878,17 @@ class FunctionExecutor {
         targets.retainWhere((svt) => previousExecutionResults[svt.uniqueId] == false);
       }
     }
+  }
+
+  static bool battlePointCheck(final DataVals dataVals, final BattleServantData target) {
+    final checkBattlePointPhaseRanges = dataVals.CheckBattlePointPhaseRange ?? [];
+    for (final phaseRange in checkBattlePointPhaseRanges) {
+      final curPhase = target.determineBattlePointPhase(phaseRange.battlePointId);
+      if (!DataVals.isSatisfyRangeText(curPhase, ranges: phaseRange.range)) {
+        return false;
+      }
+    }
+    return true;
   }
 
   static bool isDmgFuncType(final FuncType? nextFuncType) {

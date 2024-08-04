@@ -136,6 +136,20 @@ class Damage {
           if (useCorrection) {
             specificAttackRate = dataVals.Correction!;
           }
+        } else if (funcType == FuncType.damageNpBattlePointPhase) {
+          // TODO: tdDamage ranking delegate
+          // final damageNpSEDecision = battleData.delegate?.damageNpSE?.call(activator, damageFunction, dataVals);
+
+          final battlePointId = dataVals.Target!;
+          final curPhase = activator.determineBattlePointPhase(battlePointId);
+          final specifiedPhase = dataVals.DamageRateBattlePointPhase
+              ?.firstWhereOrNull((phase) => phase.battlePointPhase == curPhase);
+
+          if (specifiedPhase != null) {
+            specificAttackRate = specifiedPhase.value;
+          } else {
+            specificAttackRate = dataVals.Value2! + dataVals.Correction! * max(curPhase - 1, 0);
+          }
         }
       }
 

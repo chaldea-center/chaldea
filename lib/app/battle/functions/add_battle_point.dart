@@ -1,0 +1,50 @@
+import 'package:chaldea/app/battle/models/battle.dart';
+import 'package:chaldea/models/gamedata/gamedata.dart';
+
+class AddBattlePoint {
+  AddBattlePoint._();
+
+  static void addBattlePoint(
+    final BattleData battleData,
+    final DataVals dataVals,
+    final List<BattleServantData> targets,
+    // final bool ignoreBattlePointUp,
+  ) {
+    final functionRate = dataVals.Rate ?? 1000;
+    if (functionRate < battleData.options.threshold) {
+      return;
+    }
+
+    // TODO: cleanup if not needed
+    // if (ignoreBattlePointUp) {
+    //   return;
+    // }
+
+    final battlePointId = dataVals.BattlePointId!;
+    final questBlockList = battleData.niceQuest?.extraDetail?.IgnoreBattlePointUp;
+    if (questBlockList != null && questBlockList.contains(battlePointId)) {
+      return;
+    }
+
+    for (final target in targets) {
+      // TODO: this check & starting position might not be specific to addBattlePoints, can move to updateTargets
+      final friendShipAbove = dataVals.FriendShipAbove ?? 0;
+      if (friendShipAbove > target.bond) {
+        continue;
+      }
+
+      final startingPosition = dataVals.StartingPosition;
+      if (startingPosition != null && !startingPosition.contains(target.startingPosition)) {
+        continue;
+      }
+
+      final curBattlePoint = target.curBattlePoints[battlePointId];
+      if (curBattlePoint != null) {
+        target.curBattlePoints[battlePointId] = curBattlePoint + dataVals.BattlePointValue!;
+        battleData.setFuncResult(target.uniqueId, true);
+        battleData.battleLogger.debug("AddBattlePoint ($battlePointId): $curBattlePoint => "
+            "${target.curBattlePoints[battlePointId]}");
+      }
+    }
+  }
+}

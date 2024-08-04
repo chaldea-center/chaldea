@@ -1,3 +1,4 @@
+import 'package:chaldea/models/models.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tuple/tuple.dart';
 
@@ -1462,6 +1463,49 @@ void main() async {
     expect(maqin.skillInfoList[1].chargeTurn, 6);
     await battle.activateSvtSkill(0, 2);
     expect(maqin.skillInfoList[2].chargeTurn, 6);
+  });
+
+  group('Summer Eresh related tests', () {
+    test('bond & starting position & dmgBattlePoint', () async {
+      final List<PlayerSvtData?> setting = [
+        PlayerSvtData.id(3300200)..lv = 90,
+        PlayerSvtData.id(3300200)
+          ..lv = 90
+          ..supportType = SupportSvtType.friend,
+        null,
+        PlayerSvtData.id(3300200)..lv = 90,
+      ];
+      final battle = BattleData();
+      final quest = db.gameData.questPhases[9300040603]!;
+      await battle.init(quest, setting, null);
+
+      final eresh1 = battle.onFieldAllyServants[0]!;
+      final eresh2 = battle.onFieldAllyServants[1]!;
+      final eresh3 = battle.onFieldAllyServants[2]!;
+
+      expect(eresh1.curBattlePoints[3300200], 10);
+      expect(eresh2.curBattlePoints[3300200], null);
+      expect(eresh3.curBattlePoints[3300200], 5);
+
+      eresh1.np = 10000;
+      eresh2.np = 10000;
+      eresh3.np = 10000;
+      
+      final enemy1 = battle.onFieldEnemies[0]!;
+      final previousHp1 = enemy1.hp;
+      await battle.playerTurn([CombatAction(eresh1, eresh1.getNPCard()!)]);
+      expect(previousHp1 - enemy1.hp, 23291);
+
+      final enemy2 = battle.onFieldEnemies[0]!;
+      final previousHp2 = enemy2.hp;
+      await battle.playerTurn([CombatAction(eresh2, eresh2.getNPCard()!)]);
+      expect(previousHp2 - enemy2.hp, 19432);
+
+      final enemy3 = battle.onFieldEnemies[0]!;
+      final previousHp3 = enemy3.hp;
+      await battle.playerTurn([CombatAction(eresh3, eresh3.getNPCard()!)]);
+      expect(previousHp3 - enemy3.hp, 21362);
+    });
   });
 
   group('Method tests', () {
