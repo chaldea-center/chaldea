@@ -1254,6 +1254,17 @@ class BattleServantData {
         uploadEligible: true,
         param: param,
       );
+
+      int shortenSkillAfterUseSkill = 0;
+      for (final buff in collectBuffsPerAction(battleBuff.validBuffs, BuffAction.shortenSkillAfterUseSkill)) {
+        final curSkillUseCount = buff.shortenMaxCountEachSkill?.getOrNull(skillIndex);
+        if (curSkillUseCount == null || curSkillUseCount > 0) {
+          buff.shortenMaxCountEachSkill?[skillIndex] -= 1;
+          shortenSkillAfterUseSkill += buff.param;
+          buff.setUsed(this);
+        }
+      }
+      skillInfo.shortenSkill(shortenSkillAfterUseSkill);
     }
     return activated;
   }

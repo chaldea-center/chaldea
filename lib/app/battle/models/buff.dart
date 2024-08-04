@@ -114,6 +114,7 @@ class BuffData {
   int param = 0;
   int additionalParam = 0;
   NiceTd? tdTypeChange;
+  List<int>? shortenMaxCountEachSkill;
 
   bool checkBuffClear() => count == 0 || logicTurn == 0;
 
@@ -431,6 +432,7 @@ class BuffData {
       ..param = param
       ..additionalParam = additionalParam
       ..tdTypeChange = tdTypeChange
+      ..shortenMaxCountEachSkill = shortenMaxCountEachSkill?.toList()
       ..actorUniqueId = actorUniqueId
       ..actorName = actorName
       ..isUsed = isUsed

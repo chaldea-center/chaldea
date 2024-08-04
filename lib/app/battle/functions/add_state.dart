@@ -65,6 +65,7 @@ class AddState {
         }
         buffData.param += pointBuff.value;
       }
+      buffData.shortenMaxCountEachSkill = dataVals.ShortenMaxCountEachSkill?.toList();
 
       for (final convertBuff in collectBuffsPerAction(target.battleBuff.validBuffs, BuffAction.buffConvert)) {
         Buff? convertedBuff;

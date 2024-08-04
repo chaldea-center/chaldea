@@ -1067,9 +1067,9 @@ void main() async {
     await battle.playerTurn([CombatAction(morgan, morgan.getNPCard()!)]);
     expect(morgan.skillInfoList[1].chargeTurn, 4);
     expect(morgan.skillInfoList[2].chargeTurn, 3);
-    expect(battle.criticalStars, moreOrLessEquals(14.5, epsilon: 0.001));
+    expect(battle.criticalStars, moreOrLessEquals(14.5, epsilon: 0.001)); // end of Turn 10 star if everyone full health
 
-    await battle.activateSvtSkill(1, 0);
+    await battle.activateSvtSkill(1, 0); // this has hp drain
     expect(morgan.skillInfoList[1].chargeTurn, 2);
     expect(morgan.skillInfoList[2].chargeTurn, 1);
 
@@ -1430,6 +1430,38 @@ void main() async {
       CombatAction(kama, kama.getCards()[0])..cardData.critical = true,
     ]);
     expect(kama.np, 3882);
+  });
+
+  test('Append 5', () async {
+    final List<PlayerSvtData> setting = [
+      PlayerSvtData.id(404800)
+        ..skillLvs = [10, 10, 10]
+        ..appendLvs = [10, 10, 10, 10, 10],
+    ];
+    final battle = BattleData();
+    final quest = db.gameData.questPhases[9300040603]!;
+    await battle.init(quest, setting, null);
+
+    final maqin = battle.onFieldAllyServants[0]!;
+    await battle.activateSvtSkill(0, 2);
+    expect(maqin.skillInfoList[2].chargeTurn, 5); // her default is 6, so count in append should be 5
+
+    await battle.resetPlayerSkillCD(isMysticCode: false, svt: maqin);
+    await battle.activateSvtSkill(0, 2);
+    expect(maqin.skillInfoList[2].chargeTurn, 6);
+
+    await battle.activateSvtSkill(0, 0);
+    expect(maqin.skillInfoList[0].chargeTurn, 5);
+    await battle.activateSvtSkill(0, 1);
+    expect(maqin.skillInfoList[1].chargeTurn, 5);
+
+    await battle.resetPlayerSkillCD(isMysticCode: false, svt: maqin);
+    await battle.activateSvtSkill(0, 0);
+    expect(maqin.skillInfoList[0].chargeTurn, 6);
+    await battle.activateSvtSkill(0, 1);
+    expect(maqin.skillInfoList[1].chargeTurn, 6);
+    await battle.activateSvtSkill(0, 2);
+    expect(maqin.skillInfoList[2].chargeTurn, 6);
   });
 
   group('Method tests', () {
