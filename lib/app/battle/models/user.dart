@@ -12,7 +12,7 @@ class PlayerSvtData {
   int limitCount = 4;
   List<int> skillLvs = [10, 10, 10];
   List<NiceSkill?> skills = [null, null, null];
-  List<int> appendLvs = [0, 0, 0];
+  List<int> appendLvs = [0, 0, 0, 0, 0];
   List<NiceSkill> extraPassives = [];
   Set<int> disabledExtraSkills = {};
   List<BaseSkill> customPassives = [];
@@ -90,7 +90,7 @@ class PlayerSvtData {
         ..limitCount = defaults.limitCount
         ..lv = defaultLv
         ..tdLv = defaultTdLv
-        ..skillLvs = List.generate(3, (index) => defaults.activeSkillLv)
+        ..skillLvs = List.generate(kActiveSkillNums.length, (index) => defaults.activeSkillLv)
         ..appendLvs = defaults.appendLvs.toList()
         ..atkFou = defaults.atkFou * 10
         ..hpFou = defaults.hpFou * 10

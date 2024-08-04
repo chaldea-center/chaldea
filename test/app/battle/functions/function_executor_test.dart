@@ -629,7 +629,7 @@ void main() async {
           ..lv = 80,
         PlayerSvtData.id(2500400)
           ..skillLvs = [9, 9, 9]
-          ..appendLvs = [0, 10, 0]
+          ..appendLvs = [0, 10, 0, 0, 0]
           ..tdLv = 3
           ..lv = 90,
         PlayerSvtData.id(2500400)

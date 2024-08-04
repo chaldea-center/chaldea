@@ -469,9 +469,10 @@ class SvtPlan {
     this.fouAtk3 = 20,
     this.bondLimit = 10,
     int? npLv,
-  })  : skills = List.generate(3, (index) => skills?.getOrNull(index) ?? 1, growable: false),
+  })  : skills = List.generate(kActiveSkillNums.length, (index) => skills?.getOrNull(index) ?? 1, growable: false),
         costumes = costumes ?? {},
-        appendSkills = List.generate(3, (index) => appendSkills?.getOrNull(index) ?? 0, growable: false),
+        appendSkills =
+            List.generate(kAppendSkillNums.length, (index) => appendSkills?.getOrNull(index) ?? 0, growable: false),
         _npLv = npLv {
     validate();
   }
@@ -481,8 +482,8 @@ class SvtPlan {
   SvtPlan.max(Servant svt)
       : favorite = true,
         ascension = 4,
-        skills = const [10, 10, 10],
-        appendSkills = const [10, 10, 10],
+        skills = List.filled(kActiveSkillNums.length, 10),
+        appendSkills = List.filled(kAppendSkillNums.length, 10),
         costumes = svt.costumeMaterials.map((key, value) => MapEntry(key, 1)),
         grail = _grailCostByRarity[svt.rarity] + 10,
         fouHp = 50,
@@ -541,9 +542,9 @@ class SvtPlan {
   void reset() {
     favorite = false;
     ascension = 0;
-    skills.fillRange(0, 3, 1);
+    skills.fillRange(0, skills.length, 1);
     costumes.clear();
-    appendSkills.fillRange(0, 3, 0);
+    appendSkills.fillRange(0, appendSkills.length, 0);
     grail = 0;
     fouHp = fouAtk = 0;
     fouHp3 = fouAtk3 = 20;
@@ -555,9 +556,9 @@ class SvtPlan {
     favorite = true;
     ascension = 4;
     if (isActive) {
-      skills.fillRange(0, 3, skill);
+      skills.fillRange(0, skills.length, skill);
     } else {
-      appendSkills.fillRange(0, 3, skill);
+      appendSkills.fillRange(0, appendSkills.length, skill);
     }
     // costumes;
     // appendSkills.fillRange(0, 3, skill);

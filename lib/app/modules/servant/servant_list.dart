@@ -353,12 +353,17 @@ class ServantListPageState extends State<ServantListPage> with SearchableListSta
           ]),
           TableRow(children: [
             _getHeader('${S.current.active_skill_short}:'),
-            for (int i = 0; i < 3; i++) _getRange(cur.skills[i], target.skills[i], 9)
+            for (int i = 0; i < kActiveSkillNums.length; i++) _getRange(cur.skills[i], target.skills[i], 9)
           ]),
-          TableRow(children: [
-            _getHeader('${S.current.append_skill_short}:'),
-            for (int i = 0; i < 3; i++) _getRange(cur.appendSkills[i], target.appendSkills[i], 9)
-          ]),
+          for (int row = 0; row < (kAppendSkillNums.length / 3).ceil(); row++)
+            TableRow(children: [
+              row == 0 ? _getHeader('${S.current.append_skill_short}:') : const SizedBox.shrink(),
+              ...List.generate(3, (col) {
+                final i = row * 3 + col;
+                if (i >= kAppendSkillNums.length) return const SizedBox.shrink();
+                return _getRange(cur.appendSkills[i], target.appendSkills[i], 9);
+              }),
+            ]),
           for (int row = 0; row < costumes.length / 3; row++)
             TableRow(
               children: [
@@ -687,7 +692,7 @@ class ServantListPageState extends State<ServantListPage> with SearchableListSta
             _changedActive = v;
             if (_changedActive == null) return;
             _batchChange((svt, cur, target) {
-              for (int i = 0; i < 3; i++) {
+              for (int i = 0; i < kActiveSkillNums.length; i++) {
                 if (changeTarget) {
                   if (v == 0) {
                     target.skills[i] = min(10, cur.skills[i] + 1);

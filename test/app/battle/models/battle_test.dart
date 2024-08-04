@@ -337,7 +337,7 @@ void main() async {
           ..lv = 120
           ..atkFou = 2000
           ..hpFou = 2000
-          ..appendLvs = [10, 10, 10]
+          ..appendLvs = [10, 10, 10, 0, 0]
           ..ce = db.gameData.craftEssencesById[9401850] // Magical Girl of Sapphire
           ..ceLv = 100
           ..ceLimitBreak = true,

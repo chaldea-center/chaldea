@@ -723,7 +723,7 @@ void main() async {
       final playerSettings = [
         PlayerSvtData.id(600700)
           ..lv = 70
-          ..appendLvs = [10, 10, 10],
+          ..appendLvs = [10, 10, 10, 0, 0],
       ];
       await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
 

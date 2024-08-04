@@ -474,7 +474,7 @@ class _EnemyCombatActionSelectorState extends State<EnemyCombatActionSelector> {
       if (enemy.skillInfoList.any((e) => e.skill != null)) {
         children.add(DividerWithTitle(title: S.current.active_skill));
       }
-      for (int index = 0; index < 3; index++) {
+      for (int index = 0; index < kActiveSkillNums.length; index++) {
         final skill = enemy.skillInfoList.getOrNull(index);
         final baseSkill = skill?.skill;
         if (skill != null && baseSkill != null) {

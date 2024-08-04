@@ -168,14 +168,14 @@ class ItemCenter {
     }
     detail.ascension = _sumMat(svt.ascensionMaterials, [for (int lv = cur.ascension; lv < target.ascension; lv++) lv]);
 
-    for (int skill = 0; skill < 3; skill++) {
+    for (int skill = 0; skill < kActiveSkillNums.length; skill++) {
       Maths.sumDict([
         detail.activeSkill,
         _sumMat(svt.skillMaterials, [for (int lv = cur.skills[skill]; lv < target.skills[skill]; lv++) lv])
       ], inPlace: true);
     }
 
-    for (int skill = 0; skill < 3; skill++) {
+    for (int skill = 0; skill < kAppendSkillNums.length; skill++) {
       Maths.sumDict([
         detail.appendSkill,
         _sumMat(svt.appendSkillMaterials,
@@ -191,7 +191,7 @@ class ItemCenter {
     final coinId = svt.coin?.item.id;
     int coin = 0;
     if (coinId != null) {
-      for (int skill = 0; skill < 3; skill++) {
+      for (int skill = 0; skill < kAppendSkillNums.length; skill++) {
         if (cur.appendSkills[skill] == 0 && target.appendSkills[skill] > 0 && !svt.isDupSvt) {
           coin += 120;
         }

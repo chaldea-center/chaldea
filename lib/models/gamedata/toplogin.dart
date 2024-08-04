@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:chaldea/models/db.dart';
+import 'package:chaldea/models/gamedata/skill.dart';
 import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/utils/utils.dart';
 import '_helper.dart';
@@ -450,7 +451,7 @@ class MasterDataManager {
     if (appendLv != null) {
       lvs.addAll(Map.fromIterables(appendLv.appendPassiveSkillNums, appendLv.appendPassiveSkillLvs));
     }
-    return List.generate(3, (index) => lvs[100 + index] ?? 0);
+    return List.generate(kAppendSkillNums.length, (index) => lvs[100 + index] ?? 0);
   }
 
   int getItemNum(int itemId) {

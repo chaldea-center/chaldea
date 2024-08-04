@@ -36,8 +36,10 @@ class ServantFilterPage extends FilterPage<SvtFilterData> {
       if (!svtStat.favorite) return false;
       final planCompletion = <SvtPlanScope>[
         if (svtPlan.ascension > svtStat.cur.ascension) SvtPlanScope.ascension,
-        if ([for (var i = 0; i < 3; i++) svtPlan.skills[i] > svtStat.cur.skills[i]].any((e) => e)) SvtPlanScope.active,
-        if ([for (var i = 0; i < 3; i++) svtPlan.appendSkills[i] > svtStat.cur.appendSkills[i]].any((e) => e))
+        if ([for (var i = 0; i < kActiveSkillNums.length; i++) svtPlan.skills[i] > svtStat.cur.skills[i]].any((e) => e))
+          SvtPlanScope.active,
+        if ([for (var i = 0; i < kAppendSkillNums.length; i++) svtPlan.appendSkills[i] > svtStat.cur.appendSkills[i]]
+            .any((e) => e))
           SvtPlanScope.append,
         if ([
           for (var costume in svt.profile.costume.values)

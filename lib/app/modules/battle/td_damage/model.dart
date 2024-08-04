@@ -223,7 +223,6 @@ class TdDmgSolver {
       await battleData.activateMysticCodeSkill(index);
     }
 
-
     if (options.twiceActiveSkill && options.enableActiveSkills) {
       await _activateActiveSkills(battleData, 0);
     }
@@ -332,10 +331,10 @@ class TdDmgSolver {
     data.limitCount = limitCount;
     data.updateRankUps(region: options.region);
     if (!options.enableActiveSkills) {
-      data.skills.fillRange(0, 3, null);
+      data.skills.fillRange(0, data.skills.length, null);
     }
     if (options.enableAppendSkills) {
-      data.appendLvs.fillRange(0, 3, 10);
+      data.appendLvs.fillRange(0, data.appendLvs.length, 10);
     }
 
     final extraBuffs = options.extraBuffs.buildSkill();

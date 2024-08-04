@@ -446,8 +446,8 @@ class SvtSaveData {
     List<BaseSkill>? customPassives,
     List<int>? customPassiveLvs,
   })  : skillLvs = skillLvs ?? [10, 10, 10],
-        skillIds = List.generate(3, (index) => skillIds?.getOrNull(index)),
-        appendLvs = List.generate(3, (index) => appendLvs?.getOrNull(index) ?? 0),
+        skillIds = List.generate(kActiveSkillNums.length, (index) => skillIds?.getOrNull(index)),
+        appendLvs = List.generate(kAppendSkillNums.length, (index) => appendLvs?.getOrNull(index) ?? 0),
         cardStrengthens = List.generate(5, (index) => cardStrengthens?.getOrNull(index) ?? 0),
         commandCodeIds = List.generate(5, (index) => commandCodeIds?.getOrNull(index)),
         disabledExtraSkills = disabledExtraSkills ?? {},
@@ -514,7 +514,7 @@ class PlayerSvtDefaultData {
     List<int>? cardStrengthens,
     this.ceMaxLimitBreak = false,
     this.ceMaxLv = false,
-  })  : appendLvs = List.generate(3, (index) => appendLvs?.getOrNull(index) ?? 0),
+  })  : appendLvs = List.generate(kAppendSkillNums.length, (index) => appendLvs?.getOrNull(index) ?? 0),
         cardStrengthens = List.generate(5, (index) => cardStrengthens?.getOrNull(index) ?? 0) {
     validate();
   }

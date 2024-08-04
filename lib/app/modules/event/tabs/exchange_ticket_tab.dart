@@ -241,7 +241,7 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
                   itemExtent: 36,
                   onSelected: (idx) {
                     monthPlan[index] = values[idx];
-                    for (var j = 0; j < 3; j++) {
+                    for (var j = 0; j < monthPlan.length; j++) {
                       final int v = min(monthPlan[j], ticket.days - Maths.sum(monthPlan.getRange(0, j)));
                       monthPlan[j] = v;
                     }

@@ -138,7 +138,7 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
     // append skill
     if (showDetail(SvtPlanDetail.appendSkill)) {
       List<Widget> appendSkillWidgets = [];
-      for (int index = 0; index < 3; index++) {
+      for (int index = 0; index < kAppendSkillNums.length; index++) {
         final skill = svt.appendPassive.getOrNull(index)?.skill;
         if (skill == null) continue;
         appendSkillWidgets.add(buildPlanRow(

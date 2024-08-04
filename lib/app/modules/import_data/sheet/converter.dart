@@ -24,6 +24,8 @@ class PlanDataSheetConverter {
   static const _append1 = 'append1';
   static const _append2 = 'append2';
   static const _append3 = 'append3';
+  static const _append4 = 'append4';
+  static const _append5 = 'append5';
   static const _grail = 'grail';
   static const _fouHp = 'fouHp4';
   static const _fouAtk = 'fouAtk4';
@@ -40,6 +42,8 @@ class PlanDataSheetConverter {
     _append1,
     _append2,
     _append3,
+    _append4,
+    _append5,
     _grail,
     _fouHp,
     _fouAtk,
@@ -75,6 +79,8 @@ class PlanDataSheetConverter {
     _append1: () => '${S.current.append_skill_short} 1',
     _append2: () => '${S.current.append_skill_short} 2',
     _append3: () => '${S.current.append_skill_short} 3',
+    _append4: () => '${S.current.append_skill_short} 4',
+    _append5: () => '${S.current.append_skill_short} 5',
     _grail: () => S.current.grail_up,
     _fouHp: () => '${S.current.foukun} HP',
     _fouAtk: () => '${S.current.foukun} ATK',
@@ -97,6 +103,8 @@ class PlanDataSheetConverter {
     _write(_append1, plan.appendSkills[0]);
     _write(_append2, plan.appendSkills[1]);
     _write(_append3, plan.appendSkills[2]);
+    _write(_append4, plan.appendSkills[3]);
+    _write(_append5, plan.appendSkills[4]);
     _write(_grail, plan.grail);
     _write(_fouHp, plan.fouHp);
     _write(_fouAtk, plan.fouAtk);
@@ -127,6 +135,8 @@ class PlanDataSheetConverter {
         _toInt(_append1) ?? 0,
         _toInt(_append2) ?? 0,
         _toInt(_append3) ?? 0,
+        _toInt(_append4) ?? 0,
+        _toInt(_append5) ?? 0,
       ],
       grail: _toInt(_grail) ?? 0,
       fouHp: _toInt(_fouHp) ?? 0,
