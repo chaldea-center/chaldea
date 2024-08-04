@@ -1164,7 +1164,7 @@ const _$ServantOverwriteTypeEnumMap = {
 
 BattlePoint _$BattlePointFromJson(Map json) => BattlePoint(
       id: (json['id'] as num).toInt(),
-      name: json['name'] as String?,
+      name: json['name'] as String? ?? '',
       flags:
           (json['flags'] as List<dynamic>?)?.map((e) => $enumDecode(_$BattlePointFlagEnumMap, e)).toList() ?? const [],
       phases: (json['phases'] as List<dynamic>?)

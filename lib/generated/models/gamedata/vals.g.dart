@@ -17,11 +17,11 @@ Map<String, dynamic> _$ValCheckBattlePointPhaseRangeToJson(ValCheckBattlePointPh
     };
 
 ValDamageRateBattlePointPhase _$ValDamageRateBattlePointPhaseFromJson(Map json) => ValDamageRateBattlePointPhase(
-      battlePointId: (json['battlePointId'] as num).toInt(),
+      battlePointPhase: (json['battlePointPhase'] as num).toInt(),
       value: (json['value'] as num).toInt(),
     );
 
 Map<String, dynamic> _$ValDamageRateBattlePointPhaseToJson(ValDamageRateBattlePointPhase instance) => <String, dynamic>{
-      'battlePointId': instance.battlePointId,
+      'battlePointPhase': instance.battlePointPhase,
       'value': instance.value,
     };

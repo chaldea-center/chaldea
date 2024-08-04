@@ -1153,6 +1153,15 @@ class FuncDescriptor extends StatelessWidget {
         final v = script.HP_LOWER!.format(percent: true, base: 10);
         _condSpans.add([TextSpan(text: 'HP≤$v')]);
       }
+      if (script.useFirstTimeInTurn == 1) {
+        _condSpans.add([TextSpan(text: Transl.miscFunction('useFirstTimeInTurn'))]);
+      }
+      if (script.fromMasterEquip == 1) {
+        _condSpans.add([TextSpan(text: Transl.miscFunction('fromMasterEquip'))]);
+      }
+      if (script.fromCommandSpell == 1) {
+        _condSpans.add([TextSpan(text: Transl.miscFunction('fromCommandSpell'))]);
+      }
     }
 
     if (func.funcType == FuncType.lastUsePlayerSkillCopy) {

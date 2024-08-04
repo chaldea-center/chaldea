@@ -364,11 +364,11 @@ class ValCheckBattlePointPhaseRange {
 
 @JsonSerializable()
 class ValDamageRateBattlePointPhase {
-  int battlePointId;
+  int battlePointPhase;
   int value;
 
   ValDamageRateBattlePointPhase({
-    required this.battlePointId,
+    required this.battlePointPhase,
     required this.value,
   });
 

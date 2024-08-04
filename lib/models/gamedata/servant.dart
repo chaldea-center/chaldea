@@ -1629,14 +1629,14 @@ class SvtOverwrite {
 @JsonSerializable()
 class BattlePoint {
   int id;
-  String? name;
+  String name;
   List<BattlePointFlag> flags;
   List<BattlePointPhase> phases;
   // script;
 
   BattlePoint({
     required this.id,
-    this.name,
+    this.name = '',
     this.flags = const [],
     this.phases = const [],
   });

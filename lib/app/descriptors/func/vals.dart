@@ -253,7 +253,6 @@ class ValDsc extends StatelessWidget {
             _addPercent(parts, vals.Correction, 10, (s) => '×$s');
             break;
           case FuncType.damageNpIndividualSum:
-          case FuncType.damageNpBattlePointPhase:
             if (vals.Value2 != null) {
               parts.add('${_toPercent(vals.Value2, 10)}%+N×${_toPercent(vals.Correction, 10)}%');
               if (vals.ParamAddMaxCount != null) {
@@ -262,6 +261,10 @@ class ValDsc extends StatelessWidget {
             } else {
               _addPercent(parts, vals.Correction, 10, (s) => '×$s');
             }
+            break;
+          case FuncType.damageNpBattlePointPhase:
+            int value2 = vals.Value2 ?? 0, correction = vals.Correction ?? 0;
+            parts.add('${_toPercent(value2 - correction, 10)}%+N×${_toPercent(correction, 10)}%');
             break;
           default:
             parts.add(vals.Correction.toString());

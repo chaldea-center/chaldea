@@ -190,10 +190,10 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
             break;
           case ResponsiveSizeType.middle:
           case ResponsiveSizeType.large:
-            for (int index in [0, 1, 2]) {
+            for (int index in range(max(activeSkills.length, appendSkills.length))) {
               children
-                ..add(activeSkills[index])
-                ..add(appendSkills[index]);
+                ..add(activeSkills.getOrNull(index) ?? const SizedBox.shrink())
+                ..add(appendSkills.getOrNull(index) ?? const SizedBox.shrink());
             }
             break;
         }

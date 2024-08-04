@@ -159,6 +159,8 @@ class BuffScript with DataScriptBase {
   int? get ProgressSelfTurn => toInt('ProgressSelfTurn');
   int? get extendLowerLimit => toInt('extendLowerLimit');
   int? get useFirstTimeInTurn => toInt('useFirstTimeInTurn');
+  int? get fromMasterEquip => toInt('fromMasterEquip');
+  int? get fromCommandSpell => toInt('fromCommandSpell');
 
   int? get IndvAddBuffPassive => toInt('IndvAddBuffPassive');
   List<int>? get ckSelfCountIndividuality => toList('ckSelfCountIndividuality');

@@ -45,10 +45,19 @@ class SvtTdTab extends StatelessWidget {
       final tds = svt.groupedNoblePhantasms[tdNum]!;
       if (svt.groupedNoblePhantasms.containsKey(1) &&
           tdNum != 1 &&
-          tds.any((e) => e.script?.tdTypeChangeIDs?.isNotEmpty != true)) {
+          tds.any((e) =>
+              (e.script?.tdTypeChangeIDs?.isNotEmpty ?? false) ||
+              (e.script?.tdChangeByBattlePoint?.isNotEmpty ?? false))) {
         children.add(DividerWithTitle(title: S.current.enemy_only_nps, height: 16));
       }
+      if (svt.collectionNo == 417) {
+        // Space Ereshkigal
+        if (svt.groupedNoblePhantasms.containsKey(1) && tdNum == 98 && tds.length == 1 && tds.first.id == 3300298) {
+          continue;
+        }
+      }
       if (svt.collectionNo == 312) {
+        //Melusine Lancer
         List<NiceTd> tds1 = [], tds2 = [];
         for (final td in tds) {
           if (td.svt.releaseConditions.any((e) => e.condType == CondType.equipWithTargetCostume)) {
@@ -60,9 +69,9 @@ class SvtTdTab extends StatelessWidget {
         }
         addOneGroup(tdNum, tds1);
         addOneGroup(tdNum, tds2);
-      } else {
-        addOneGroup(tdNum, tds);
+        continue;
       }
+      addOneGroup(tdNum, tds);
     }
 
     if (svt.extra.tdAnimations.isNotEmpty && kDebugMode) {
@@ -83,6 +92,7 @@ class SvtTdTab extends StatelessWidget {
         ),
       ));
     }
+    children.addAll(_buildBattlePoints());
 
     return ListView.builder(
       itemCount: children.length,
@@ -218,6 +228,54 @@ class SvtTdTab extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  List<Widget> _buildBattlePoints() {
+    List<Widget> children = [];
+
+    for (final battlePoint in svt.battlePoints) {
+      String title = 'マスター好感度';
+      if (svt.battlePoints.length > 1) title += ' ${battlePoint.id}';
+      if (battlePoint.name.isNotEmpty) title += ' ${battlePoint.name}';
+
+      final pointPhases = {
+        for (final phase in battlePoint.phases)
+          if (phase.phase > 0) phase.phase: phase,
+      };
+      final phases = pointPhases.keys.toList();
+      phases.sort();
+      if (phases.isEmpty) continue;
+
+      children.add(LayoutTryBuilder(
+        builder: (context, constraints) {
+          int perLine = (constraints.maxWidth.isFinite && constraints.maxWidth > 600 && phases.length > 5) ? 10 : 5;
+          final int totalRow = (phases.length / perLine).ceil();
+          return CustomTable(children: [
+            CustomTableRow.fromTexts(texts: [title], isHeader: true),
+            for (int row = 0; row < totalRow; row++) ...[
+              CustomTableRow.fromTexts(
+                texts: List.generate(perLine, (col) {
+                  final i = perLine * row + col;
+                  return i < phases.length ? 'Lv${phases[i]}' : '';
+                }),
+                isHeader: true,
+              ),
+              CustomTableRow.fromTexts(
+                  texts: List.generate(perLine, (col) {
+                final pointPhase = pointPhases[phases.getOrNull(perLine * row + col)];
+                return pointPhase?.value.toString() ?? '';
+              })),
+              CustomTableRow.fromTexts(
+                  texts: List.generate(perLine, (col) {
+                final pointPhase = pointPhases[phases.getOrNull(perLine * row + col)];
+                return pointPhase?.name.toString() ?? '';
+              })),
+            ],
+          ]);
+        },
+      ));
+    }
+    return children;
   }
 }
 
