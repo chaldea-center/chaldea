@@ -211,7 +211,9 @@ class ImportHttpPageState extends State<ImportHttpPage> {
           child: ListTile(
             tileColor: Theme.of(context).cardColor,
             leading: const Icon(Icons.supervised_user_circle),
-            title: Text(S.current.account_title),
+            title: Text('${user.name}\n${user.friendCode}'),
+            //  ${user.genderType == 1 ? '♂ ${S.current.guda_male}' : '♀ ${S.current.guda_female}'}
+            subtitle: Text(topLogin!.serverTime?.toStringShort() ?? '?'),
             trailing: ExpandIcon(onPressed: null, isExpanded: _showAccount),
             onTap: () {
               setState(() {
@@ -223,37 +225,36 @@ class ImportHttpPageState extends State<ImportHttpPage> {
         if (_showAccount)
           SliverClip(
             child: MultiSliver(children: [
+              // ListTile(
+              //   dense: true,
+              //   title: Text(S.current.obtain_time),
+              //   trailing: Text(topLogin!.serverTime?.toStringShort() ?? '?'),
+              // ),
+              // ListTile(
+              //   dense: true,
+              //   title: Text(S.current.gender),
+              //   trailing: Text(),
+              // ),
               ListTile(
-                title: Text(S.current.obtain_time),
-                trailing: Text(topLogin!.serverTime?.toStringShort() ?? '?'),
-              ),
-              ListTile(
-                title: Text(S.current.login_username),
-                trailing: Text(user.name),
-              ),
-              ListTile(
-                title: Text(S.current.gender),
-                trailing: Text(user.genderType == 1 ? '♂ ${S.current.guda_male}' : '♀ ${S.current.guda_female}'),
-              ),
-              ListTile(
-                title: const Text('ID'),
-                trailing: Text(user.friendCode),
-              ),
-              ListTile(
-                title: Text(Items.qp?.lName.l ?? "QP"),
-                trailing: Text(user.qp.format(compact: false, groupSeparator: ',')),
-              ),
-              ListTile(
-                title: Text(Items.stone?.lName.l ?? "Saint Quartz"),
-                trailing: Text('${user.stone}(${user.freeStone}+${user.chargeStone})'),
-              ),
-              ListTile(
-                title: Text(Items.manaPrism?.lName.l ?? "Mana Prism"),
-                trailing: Text(user.mana.format(compact: false, groupSeparator: ',')),
-              ),
-              ListTile(
-                title: Text(Items.rarePrism?.lName.l ?? "Rare Prism"),
-                trailing: Text(user.rarePri.format(compact: false, groupSeparator: ',')),
+                title: Wrap(
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  children: [
+                    for (final (itemId, text) in {
+                      Items.stoneId: '${user.stone}(${user.freeStone}+${user.chargeStone})',
+                      Items.rarePrismId: user.rarePri.format(compact: false, groupSeparator: ','),
+                      Items.manaPrismId: user.mana.format(compact: false, groupSeparator: ','),
+                      Items.qpId: user.qp.format(compact: false, groupSeparator: ','),
+                    }.items)
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Item.iconBuilder(context: context, item: null, itemId: itemId, width: 32),
+                          Text('$text  '),
+                        ],
+                      ),
+                  ],
+                ),
               ),
             ]),
           )

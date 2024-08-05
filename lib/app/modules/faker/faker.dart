@@ -1029,12 +1029,25 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
           style: buttonStyle,
           child: const Text('login'),
         ),
+        // FilledButton.tonal(
+        //   onPressed: () {
+        //     _runTask(agent.homeTop);
+        //   },
+        //   style: buttonStyle,
+        //   child: const Text('home'),
+        // ),
         FilledButton.tonal(
-          onPressed: () {
-            _runTask(agent.homeTop);
-          },
+          onPressed: agent.curBattle != null
+              ? null
+              : () async {
+                  final buyCount = await ApSeedExchangeCountDialog(mstData: mstData).showDialog<int>(context);
+                  if (buyCount != null) {
+                    await _runTask(() => agent.terminalApSeedExchange(buyCount));
+                  }
+                  if (mounted) setState(() {});
+                },
           style: buttonStyle,
-          child: const Text('home'),
+          child: const Text('ApSeed'),
         ),
       ],
       [
@@ -1064,19 +1077,6 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
                 },
           style: buttonStyle,
           child: const Text('recover'),
-        ),
-        FilledButton.tonal(
-          onPressed: agent.curBattle != null
-              ? null
-              : () async {
-                  final buyCount = await ApSeedExchangeCountDialog(mstData: mstData).showDialog<int>(context);
-                  if (buyCount != null) {
-                    await _runTask(() => agent.terminalApSeedExchange(buyCount));
-                  }
-                  if (mounted) setState(() {});
-                },
-          style: buttonStyle,
-          child: const Text('ApSeed'),
         ),
         FilledButton.tonal(
           onPressed: agent.curBattle != null
@@ -1117,15 +1117,31 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
             ).showDialog(context);
           },
           style: buttonStyle,
-          child: Text('Loop it ×${battleOptions.loopCount}'),
+          child: Text('Loop ×${battleOptions.loopCount}'),
         ),
         FilledButton.tonal(
           onPressed: () {
             _stopLoopFlag = true;
           },
           style: buttonStyle,
-          child: const Text('Stop Loop'),
+          child: const Text('Stop'),
         ),
+        PopupMenuButton(
+          itemBuilder: (context) => [
+            PopupMenuItem(
+              child: const Text('home'),
+              onTap: () {
+                _runTask(agent.homeTop);
+              },
+            ),
+            PopupMenuItem(
+              child: const Text('ForceNoRunning'),
+              onTap: () {
+                if (mounted) _runningTask = false;
+              },
+            )
+          ],
+        )
       ],
     ];
     return SafeArea(

@@ -95,7 +95,7 @@ class _ImportPageHomeState extends State<ImportPageHome> {
           ListTile(
             leading: const Icon(Icons.screenshot),
             title: Text(S.current.import_append_skill_screenshots),
-            subtitle: Text(S.current.import_append_skill_hint),
+            subtitle: Text('[NO JP] ${S.current.import_append_skill_hint}'),
             trailing: const Icon(Icons.keyboard_arrow_right),
             onTap: () {
               router.pushPage(ImportSkillScreenshotPage(isAppend: true), popDetail: true);
