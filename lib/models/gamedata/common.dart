@@ -497,7 +497,11 @@ extension SvtClassX on SvtClass {
 }
 
 /// non-JP may not contains the last class
-const kSvtClassIdsPlayableAll = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 23, 25, 28, 33];
+Set<int> get kSvtClassIdsPlayableAll => {
+      //
+      1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 23, 25, 28, 33, 38,
+      ...ConstData.constantStr.playableBeastClassIds,
+    };
 const kSvtClassIdsPlayableAlways = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 23, 25, 28];
 final kSvtClassIds = {for (final v in SvtClass.values) v.value: v};
 
@@ -568,6 +572,7 @@ enum Trait {
   alignmentBalanced(305),
   alignmentMadness(306),
   alignmentSummer(308),
+  alignmentBeast(309),
   servant(1000),
   human(1001),
   undead(1002),

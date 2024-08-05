@@ -1247,6 +1247,8 @@ GameConstantStr _$GameConstantStrFromJson(Map json) => GameConstantStr(
           (json['subPtBuffIndivi'] as List<dynamic>?)?.map((e) => (e as num).toInt()).toList() ?? const [3055],
       svtExitPtBuffIndivi:
           (json['svtExitPtBuffIndivi'] as List<dynamic>?)?.map((e) => (e as num).toInt()).toList() ?? const [3069],
+      playableBeastClassIds:
+          (json['playableBeastClassIds'] as List<dynamic>?)?.map((e) => (e as num).toInt()).toList() ?? const [33, 38],
     );
 
 Map<String, dynamic> _$GameConstantStrToJson(GameConstantStr instance) => <String, dynamic>{
@@ -1256,6 +1258,7 @@ Map<String, dynamic> _$GameConstantStrToJson(GameConstantStr instance) => <Strin
       'starRefreshBuffType': instance.starRefreshBuffType,
       'subPtBuffIndivi': instance.subPtBuffIndivi,
       'svtExitPtBuffIndivi': instance.svtExitPtBuffIndivi,
+      'playableBeastClassIds': instance.playableBeastClassIds,
     };
 
 SvtLimitHide _$SvtLimitHideFromJson(Map json) => SvtLimitHide(

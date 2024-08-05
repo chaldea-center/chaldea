@@ -1012,6 +1012,7 @@ class GameConstantStr {
   final List<int> starRefreshBuffType; // 2,61
   final List<int> subPtBuffIndivi; // 3055
   final List<int> svtExitPtBuffIndivi; // 3069
+  final List<int> playableBeastClassIds;
 
   const GameConstantStr({
     this.extendTurnBuffType = const [
@@ -1024,6 +1025,7 @@ class GameConstantStr {
     this.starRefreshBuffType = const [2, 61],
     this.subPtBuffIndivi = const [3055],
     this.svtExitPtBuffIndivi = const [3069],
+    this.playableBeastClassIds = const [33, 38],
   });
 
   factory GameConstantStr.fromJson(Map<String, dynamic> json) {
