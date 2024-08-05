@@ -142,8 +142,8 @@ class Damage {
 
           final battlePointId = dataVals.Target!;
           final curPhase = activator.determineBattlePointPhase(battlePointId);
-          final specifiedPhase = dataVals.DamageRateBattlePointPhase
-              ?.firstWhereOrNull((phase) => phase.battlePointPhase == curPhase);
+          final specifiedPhase =
+              dataVals.DamageRateBattlePointPhase?.firstWhereOrNull((phase) => phase.battlePointPhase == curPhase);
 
           if (specifiedPhase != null) {
             specificAttackRate = specifiedPhase.value;

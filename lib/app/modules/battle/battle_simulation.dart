@@ -458,7 +458,9 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
             : svt.niceEnemy!.chargeTurn != 0 && (svt.niceEnemy?.noblePhantasm.noblePhantasm?.functions.length ?? 0) > 0
                 ? '${S.current.info_charge}: ${svt.npLineCount}/${svt.niceEnemy!.chargeTurn}'
                 : '${S.current.info_charge}: -',
-        if (svt.curBattlePoints.isNotEmpty) '♡: ${svt.curBattlePoints.entries.map((entry) => '${svt.determineBattlePointPhase(entry.key)} (${entry.value})').join(",")}',
+        if (svt.curBattlePoints.isNotEmpty)
+          '♡: ${svt.curBattlePoints.entries.map((entry) => '${svt.determineBattlePointPhase(entry.key)} '
+              '(${entry.value})').join(",")}',
       ].map((e) => AutoSizeText(e, maxLines: 1, minFontSize: 6, style: Theme.of(context).textTheme.bodySmall)).toList(),
     ));
 

@@ -24,8 +24,8 @@ void main() async {
           DataVals({'UseRate': 1000}),
           1);
 
-      expect(buff.shouldActivateBuffNoProbabilityCheck(okuni.getTraits(), cba.getTraits()), true);
-      expect(buff.shouldActivateBuffNoProbabilityCheck(cba.getTraits(), okuni.getTraits()), false);
+      expect(buff.shouldActivateBuffNoProbabilityCheck(okuni.getTraits(), opTraits: cba.getTraits()), true);
+      expect(buff.shouldActivateBuffNoProbabilityCheck(cba.getTraits(), opTraits: okuni.getTraits()), false);
     });
 
     test('checkIndivType 1', () {
@@ -43,8 +43,8 @@ void main() async {
           DataVals({'UseRate': 1000}),
           1);
 
-      expect(buff.shouldActivateBuffNoProbabilityCheck(okuni.getTraits(), cba.getTraits()), true);
-      expect(buff.shouldActivateBuffNoProbabilityCheck(cba.getTraits(), okuni.getTraits()), false);
+      expect(buff.shouldActivateBuffNoProbabilityCheck(okuni.getTraits(), opTraits: cba.getTraits()), true);
+      expect(buff.shouldActivateBuffNoProbabilityCheck(cba.getTraits(), opTraits: okuni.getTraits()), false);
     });
 
     test('probability check', () async {
@@ -57,11 +57,11 @@ void main() async {
           DataVals({'UseRate': 500}),
           1);
 
-      expect(await buff.shouldActivateBuff(battle, okuni.getTraits(), cba.getTraits()), isFalse);
+      expect(await buff.shouldActivateBuff(battle, okuni.getTraits(), opTraits: cba.getTraits()), isFalse);
 
       battle.options.threshold = 500;
 
-      expect(await buff.shouldActivateBuff(battle, okuni.getTraits(), cba.getTraits()), isTrue);
+      expect(await buff.shouldActivateBuff(battle, okuni.getTraits(), opTraits: cba.getTraits()), isTrue);
     });
   });
 

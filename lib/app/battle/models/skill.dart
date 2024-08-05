@@ -173,6 +173,22 @@ class BattleSkillInfoData {
       await activator?.activateBuff(battleData, BuffAction.functionSkillBefore);
     }
 
+    final targetedAlly = battleData.getTargetedAlly(activator, defaultToPlayer: defaultToPlayer);
+    final allyTargetingFuncs = curSkill.functions.where((func) => func.funcTargetType.canTargetAlly);
+    final Set<BattleServantData> wouldAffectAllies = {};
+    for (final func in allyTargetingFuncs) {
+      wouldAffectAllies.addAll(await FunctionExecutor.acquireFunctionTarget(
+        battleData,
+        func.funcTargetType,
+        activator,
+        targetedAlly: targetedAlly,
+        defaultToPlayer: defaultToPlayer,
+      ));
+    }
+    for (final svt in wouldAffectAllies) {
+      await svt.activateBuff(battleData, BuffAction.functionSkillTargetedBefore, skillInfo: this);
+    }
+
     int? selectedActionIndex;
     if (curSkill.script != null &&
         curSkill.script!.SelectAddInfo != null &&
@@ -197,7 +213,7 @@ class BattleSkillInfoData {
       curSkill.functions,
       skillLv,
       activator: activator,
-      targetedAlly: battleData.getTargetedAlly(activator, defaultToPlayer: defaultToPlayer),
+      targetedAlly: targetedAlly,
       targetedEnemy: battleData.getTargetedEnemy(activator, defaultToPlayer: defaultToPlayer),
       card: card,
       script: curSkill.script,

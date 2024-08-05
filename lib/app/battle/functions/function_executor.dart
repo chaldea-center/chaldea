@@ -47,6 +47,7 @@ class FunctionExecutor {
     final CommandCardData? card,
     final int overchargeLvl = 1,
     final int? overchargeState,
+    final List<int>? ignoreBattlePoints,
     final bool isPassive = false,
     final bool isClassPassive = false,
     final bool notActorFunction = false,
@@ -102,6 +103,7 @@ class FunctionExecutor {
           card: card,
           overchargeLvl: overchargeLvl,
           overchargeState: overchargeState,
+          ignoreBattlePoints: ignoreBattlePoints,
           shouldTrigger: !isDmgFuncType(functions.getOrNull(index - 1)?.funcType),
           shouldDamageRelease: !isDmgFuncType(functions.getOrNull(index + 1)?.funcType),
           isPassive: isPassive,
@@ -142,6 +144,7 @@ class FunctionExecutor {
     final CommandCardData? card,
     final int overchargeLvl = 1,
     final int? overchargeState,
+    final List<int>? ignoreBattlePoints,
     final bool shouldTrigger = true,
     final bool shouldDamageRelease = true,
     final bool isPassive = false,
@@ -422,7 +425,7 @@ class FunctionExecutor {
           DamageNpCounter.damageNpCounter(battleData, dataVals, activator, targets);
           break;
         case FuncType.addBattlePoint:
-          AddBattlePoint.addBattlePoint(battleData, dataVals, targets, overchargeState);
+          AddBattlePoint.addBattlePoint(battleData, dataVals, targets, overchargeState, ignoreBattlePoints);
           break;
         case FuncType.updateEnemyEntryMaxCountEachTurn:
         case FuncType.damageValue:
@@ -499,8 +502,9 @@ class FunctionExecutor {
   }
 
   static bool shouldTriggerFunctionFieldIndividualityChanged(final NiceFunction func) {
-    return (func.funcType == FuncType.addState && (func.buff?.type == BuffType.fieldIndividuality || func.buff?.type == BuffType.subFieldIndividuality))
-    || (func.funcType == FuncType.addFieldChangeToField && func.buff?.type == BuffType.toFieldChangeField);
+    return (func.funcType == FuncType.addState &&
+            (func.buff?.type == BuffType.fieldIndividuality || func.buff?.type == BuffType.subFieldIndividuality)) ||
+        (func.funcType == FuncType.addFieldChangeToField && func.buff?.type == BuffType.toFieldChangeField);
     // TODO: subState can also changeField Indiv, but whether will it trigger is unclear
   }
 
@@ -834,7 +838,6 @@ class FunctionExecutor {
     final List<List<NiceTrait>> overwriteTvals = function.getOverwriteTvalsList();
     final activeOnly = dataVals.IncludePassiveIndividuality != 1;
     final includeIgnoreIndividuality = dataVals.IncludeIgnoreIndividuality == 1;
-
 
     // update base on traits
     if (overwriteTvals.isNotEmpty) {

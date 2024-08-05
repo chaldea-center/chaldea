@@ -9,6 +9,7 @@ class AddBattlePoint {
     final DataVals dataVals,
     final List<BattleServantData> targets,
     final int? overchargeState,
+    final List<int>? ignoreBattlePoints,
   ) {
     final functionRate = dataVals.Rate ?? 1000;
     if (functionRate < battleData.options.threshold) {
@@ -18,6 +19,10 @@ class AddBattlePoint {
     final battlePointId = dataVals.BattlePointId!;
     final questBlockList = battleData.niceQuest?.extraDetail?.IgnoreBattlePointUp;
     if (questBlockList != null && questBlockList.contains(battlePointId)) {
+      return;
+    }
+
+    if (ignoreBattlePoints != null && ignoreBattlePoints.contains(battlePointId)) {
       return;
     }
 
@@ -33,8 +38,8 @@ class AddBattlePoint {
       }
 
       final ocStateRange = dataVals.CheckOverChargeStageRange;
-      if (ocStateRange != null
-          && (overchargeState == null || !DataVals.isSatisfyRangeText(overchargeState, ranges: ocStateRange))) {
+      if (ocStateRange != null &&
+          (overchargeState == null || !DataVals.isSatisfyRangeText(overchargeState, ranges: ocStateRange))) {
         continue;
       }
 

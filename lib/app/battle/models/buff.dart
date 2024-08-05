@@ -208,9 +208,19 @@ class BuffData {
     return baseParam + addValue;
   }
 
-  bool shouldActivateBuffNoProbabilityCheck(final List<NiceTrait> selfTraits, [final List<NiceTrait>? opponentTraits]) {
+  bool shouldActivateBuffNoProbabilityCheck(
+    final List<NiceTrait> selfTraits, {
+    final List<NiceTrait>? opTraits,
+    final BattleData? battleData,
+    final SkillInfoType? skillInfoType,
+  }) {
     if (!checkAct()) return false;
     if (!checkBuffDataVals(selfTraits)) return false;
+    if (!checkBuffScript(
+      isFirstSkillInTurn: battleData?.isFirstSkillInTurn,
+      selfTraits: selfTraits,
+      skillInfoType: skillInfoType,
+    )) return false;
 
     /// dw does not check self / op traits for svtTrait related types
     if (buff.type == BuffType.addIndividuality || buff.type == BuffType.subIndividuality) {
@@ -223,7 +233,7 @@ class BuffData {
             negativeMatchFunc: matchFunc,
           ) &&
           checkTraitFunction(
-            myTraits: opponentTraits ?? [],
+            myTraits: opTraits ?? [],
             requiredTraits: buff.ckOpIndv,
             positiveMatchFunc: matchFunc,
             negativeMatchFunc: matchFunc,
@@ -233,12 +243,17 @@ class BuffData {
 
   Future<bool> shouldActivateBuff(
     final BattleData battleData,
-    final List<NiceTrait> selfTraits, [
-    final List<NiceTrait>? opponentTraits,
-  ]) async {
-    if (!checkBuffScript(battleData, selfTraits)) return false;
-
-    return shouldActivateBuffNoProbabilityCheck(selfTraits, opponentTraits) && await probabilityCheck(battleData);
+    final List<NiceTrait> selfTraits, {
+    final List<NiceTrait>? opTraits,
+    final SkillInfoType? skillInfoType,
+  }) async {
+    return shouldActivateBuffNoProbabilityCheck(
+          selfTraits,
+          battleData: battleData,
+          opTraits: opTraits,
+          skillInfoType: skillInfoType,
+        ) &&
+        await probabilityCheck(battleData);
   }
 
   Future<bool> probabilityCheck(final BattleData battleData) async {
@@ -261,7 +276,11 @@ class BuffData {
     return true;
   }
 
-  bool checkBuffScript(final BattleData battleData, final List<NiceTrait> selfTraits) {
+  bool checkBuffScript({
+    final bool? isFirstSkillInTurn,
+    final List<NiceTrait>? selfTraits,
+    final SkillInfoType? skillInfoType,
+  }) {
     if (buff.script.source.isEmpty) {
       return true;
     }
@@ -269,15 +288,22 @@ class BuffData {
     final script = buff.script;
 
     if (script.UpBuffRateBuffIndiv != null) {
-      final isCurrentBuffMatch = checkTraitFunction(myTraits: selfTraits, requiredTraits: script.UpBuffRateBuffIndiv!);
-
-      if (!isCurrentBuffMatch) {
+      if (selfTraits == null ||
+          !checkTraitFunction(myTraits: selfTraits, requiredTraits: script.UpBuffRateBuffIndiv!)) {
         return false;
       }
     }
 
     if (script.useFirstTimeInTurn == 1) {
-      return battleData.isFirstSkillInTurn;
+      return isFirstSkillInTurn ?? false;
+    }
+
+    if (script.fromCommandSpell == 1) {
+      return skillInfoType == SkillInfoType.commandSpell;
+    }
+
+    if (script.fromMasterEquip == 1) {
+      return skillInfoType == SkillInfoType.masterEquip;
     }
 
     return true;

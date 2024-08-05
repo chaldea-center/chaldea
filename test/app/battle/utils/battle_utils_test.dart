@@ -929,7 +929,7 @@ void main() async {
       expect(calculateStar(param).toDouble(), moreOrLessEquals(1189, epsilon: 1));
     });
   });
-  
+
   test('dataVals.changeRange', () {
     expect(DataVals.isSatisfyRangeText(100, ranges: ["<500"]), true);
     expect(DataVals.isSatisfyRangeText(500, ranges: ["<500"]), false);

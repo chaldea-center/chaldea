@@ -1,4 +1,3 @@
-import 'package:chaldea/models/models.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tuple/tuple.dart';
 
@@ -6,6 +5,7 @@ import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/battle/interactions/_delegate.dart';
 import 'package:chaldea/app/battle/models/battle.dart';
 import 'package:chaldea/app/battle/utils/buff_utils.dart';
+import 'package:chaldea/models/models.dart';
 import '../../../test_init.dart';
 
 void main() async {
@@ -1488,7 +1488,7 @@ void main() async {
       eresh1.np = 10000;
       eresh2.np = 10000;
       eresh3.np = 10000;
-      
+
       final enemy1 = battle.onFieldEnemies[0]!;
       final previousHp1 = enemy1.hp;
       await battle.playerTurn([CombatAction(eresh1, eresh1.getNPCard()!)]);
@@ -1507,7 +1507,10 @@ void main() async {
 
     test('how points can be added', () async {
       final List<PlayerSvtData?> setting = [
-        PlayerSvtData.id(3300200)..lv = 1..tdLv = 1..atkFou = 0,
+        PlayerSvtData.id(3300200)
+          ..lv = 1
+          ..tdLv = 1
+          ..atkFou = 0,
         PlayerSvtData.id(2500900), // dark Koyan for OC + 2
         PlayerSvtData.id(304000), // summer lambda for shoreline
       ];
@@ -1520,6 +1523,7 @@ void main() async {
       expect(eresh.curBattlePoints[bpId], 10);
       expect(eresh.determineBattlePointPhase(bpId), 2);
 
+      expect(battle.isFirstSkillInTurn, true);
       await battle.activateSvtSkill(0, 0);
       expect(eresh.curBattlePoints[3300200], 15); // + 3 (skill) + 2 (first use this turn)
       expect(eresh.determineBattlePointPhase(bpId), 2);
@@ -1550,7 +1554,6 @@ void main() async {
       ]);
       expect(eresh.curBattlePoints[3300200], 74); // OC5 + 20 brave chain + 3 + 3 + 6
       expect(eresh.determineBattlePointPhase(bpId), 8);
-
 
       await battle.activateSvtSkill(1, 0); // skill before summer eresh
       await battle.activateSvtSkill(0, 2);
