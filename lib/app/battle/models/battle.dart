@@ -234,6 +234,9 @@ class BattleData {
     } finally {
       _useBuffOnce();
       checkActorStatus();
+      for (final svt in nonnullActors) {
+        await svt.activateBuff(this, BuffAction.functionFieldIndividualityChanged);
+      }
     }
   }
 
@@ -435,10 +438,6 @@ class BattleData {
 
     // start of ally turn
     await withAction(() async {
-      for (final svt in nonnullActors) {
-        await svt.activateBuff(this, BuffAction.functionFieldIndividualityChanged);
-      }
-
       for (final svt in nonnullPlayers) {
         await svt.startOfMyTurn(this);
       }

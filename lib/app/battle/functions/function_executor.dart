@@ -129,9 +129,6 @@ class FunctionExecutor {
         }
       }
     });
-    for (final svt in battleData.nonnullActors) {
-      await svt.activateBuff(battleData, BuffAction.functionFieldIndividualityChanged);
-    }
   }
 
   /// Return value is whether the uniqueIdToFuncResultMap is updated or not
