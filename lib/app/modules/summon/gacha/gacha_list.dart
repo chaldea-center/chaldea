@@ -144,9 +144,9 @@ class _GachaListPageState extends State<GachaListPage>
   Widget buildContent(BuildContext context, List<NiceGacha> gachas) {
     filterShownList();
     if (filterData.sortByClosed) {
-      shownList.sort2((a) => a.closedAt);
+      shownList.sortByList((a) => [a.closedAt, a.id]);
     } else {
-      shownList.sort2((a) => a.openedAt);
+      shownList.sortByList((a) => [a.openedAt, a.id]);
     }
     if (filterData.reversed) {
       final reversed = List.of(shownList.reversed);

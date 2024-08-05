@@ -135,6 +135,7 @@ class NiceGacha with RouteInfo {
   @JsonKey(unknownEnumValue: GachaFlag.none)
   List<GachaFlag> flags;
   List<GachaStoryAdjust> storyAdjusts;
+  List<int> featuredSvtIds;
 
   bool userAdded;
 
@@ -153,6 +154,7 @@ class NiceGacha with RouteInfo {
     this.detailUrl = '',
     this.flags = const [],
     this.storyAdjusts = const [],
+    this.featuredSvtIds = const [],
     this.userAdded = false,
   });
   factory NiceGacha.fromJson(Map<String, dynamic> json) => _$NiceGachaFromJson(json);
