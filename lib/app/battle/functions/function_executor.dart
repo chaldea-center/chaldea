@@ -57,7 +57,7 @@ class FunctionExecutor {
     final bool defaultToPlayer = true,
     final BattleSkillParams? param,
   }) async {
-    return await battleData.withFunctions(() async {
+    await battleData.withFunctions(() async {
       Map<int, List<NiceFunction>> actSets = {};
       for (final func in functions) {
         if (!validateFunctionTargetTeam(func, activator?.isPlayer ?? defaultToPlayer)) continue;
@@ -129,6 +129,9 @@ class FunctionExecutor {
         }
       }
     });
+    for (final svt in battleData.nonnullActors) {
+      await svt.activateBuff(battleData, BuffAction.functionFieldIndividualityChanged);
+    }
   }
 
   /// Return value is whether the uniqueIdToFuncResultMap is updated or not
@@ -491,21 +494,8 @@ class FunctionExecutor {
       battleData.updateLastFuncResults(function.funcId, funcIndex);
       battleData.checkActorStatus();
 
-      if (shouldTriggerFunctionFieldIndividualityChanged(function)) {
-        for (final svt in battleData.nonnullActors) {
-          await svt.activateBuff(battleData, BuffAction.functionFieldIndividualityChanged);
-        }
-      }
-
       return true;
     });
-  }
-
-  static bool shouldTriggerFunctionFieldIndividualityChanged(final NiceFunction func) {
-    return (func.funcType == FuncType.addState &&
-            (func.buff?.type == BuffType.fieldIndividuality || func.buff?.type == BuffType.subFieldIndividuality)) ||
-        (func.funcType == FuncType.addFieldChangeToField && func.buff?.type == BuffType.toFieldChangeField);
-    // TODO: subState can also changeField Indiv, but whether will it trigger is unclear
   }
 
   static bool validateFunctionTargetTeam(
