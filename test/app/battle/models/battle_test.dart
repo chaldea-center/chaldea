@@ -1608,6 +1608,73 @@ void main() async {
       expect(eresh.curBattlePoints[3300200], 13); // attempt N Q A Ex, only Q valid
       expect(eresh.determineBattlePointPhase(bpId), 2);
     });
+
+    test('commandSpell & mysticCode', () async {
+      final List<PlayerSvtData?> setting = [
+        PlayerSvtData.id(3300200),
+        PlayerSvtData.id(2501200),
+        PlayerSvtData.id(2501200),
+        PlayerSvtData.id(2501200),
+      ];
+      final battle = BattleData();
+      final quest = db.gameData.questPhases[9300040603]!;
+      await battle.init(quest, setting, MysticCodeData());
+      const bpId = 3300200;
+
+      final eresh = battle.onFieldAllyServants[0]!;
+      expect(eresh.curBattlePoints[bpId], 10);
+      expect(eresh.determineBattlePointPhase(bpId), 2);
+
+      await battle.activateSvtSkill(1, 2); // other's skills do not affect Eresh
+      expect(eresh.curBattlePoints[bpId], 10);
+      expect(eresh.determineBattlePointPhase(bpId), 2);
+
+      await battle.activateMysticCodeSkill(0); // mystic add 5 points
+      expect(eresh.curBattlePoints[bpId], 15);
+      expect(eresh.determineBattlePointPhase(bpId), 2);
+
+      await battle.commandSpellReleaseNP(); // command spell add 10 points
+      expect(eresh.curBattlePoints[bpId], 25);
+      expect(eresh.determineBattlePointPhase(bpId), 3);
+
+      await battle.commandSpellRepairHp(); // command spell add 10 points
+      expect(eresh.curBattlePoints[bpId], 35);
+      expect(eresh.determineBattlePointPhase(bpId), 4);
+
+      // just realized this test is useless since current implementation doesn't select any svts as actual targets
+      // for replace member. Kept for safety measures on this mechanism I guess
+      battle.delegate = BattleDelegate();
+      battle.delegate?.replaceMember = (onFieldSvts, backupSvts) async {
+        return Tuple2(onFieldSvts[0]!, backupSvts[0]!);
+      };
+      await battle.activateMysticCodeSkill(2);
+      expect(eresh.curBattlePoints[bpId], 35);
+      expect(eresh.determineBattlePointPhase(bpId), 4);
+    });
+
+    test('mysticCode party gainStar', () async {
+      final List<PlayerSvtData?> setting = [
+        PlayerSvtData.id(3300200),
+        PlayerSvtData.id(2501200),
+      ];
+      final battle = BattleData();
+      final quest = db.gameData.questPhases[9300040603]!;
+      await battle.init(quest, setting, MysticCodeData()..mysticCode = db.gameData.mysticCodes[130]);
+      const bpId = 3300200;
+
+      final eresh = battle.onFieldAllyServants[0]!;
+      expect(eresh.curBattlePoints[bpId], 10);
+      expect(eresh.determineBattlePointPhase(bpId), 2);
+
+      battle.playerTargetIndex = 1; // not eresh
+      await battle.activateMysticCodeSkill(2);
+      expect(eresh.curBattlePoints[bpId], 10);
+      expect(eresh.determineBattlePointPhase(bpId), 2);
+
+      await battle.activateMysticCodeSkill(1); // gainStar on party, when bug is fixed check this
+      expect(eresh.curBattlePoints[bpId], 15);
+      expect(eresh.determineBattlePointPhase(bpId), 2);
+    });
   });
 
   group('Method tests', () {
