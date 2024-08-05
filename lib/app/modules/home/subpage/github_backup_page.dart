@@ -226,7 +226,6 @@ class _GithubBackupPageState extends State<GithubBackupPage> {
                     labelText: 'token',
                     border: OutlineInputBorder(),
                     helperText: '<repo> scope permission is required.'),
-                maxLength: 40,
                 obscureText: true,
                 onChanged: (s) {
                   config.token = s.trim();
@@ -374,8 +373,8 @@ class _GithubBackupPageState extends State<GithubBackupPage> {
     if (config.path.startsWith('/')) {
       msg.add('Path cannot start with /');
     }
-    if (config.token.length != 40) {
-      msg.add('Token must be 40 chars');
+    if (!(config.token.length == 40 || config.token.length == 93)) {
+      msg.add('Token must be 40 or 93 chars');
     }
     return msg.isEmpty ? null : msg.join('\n');
   }
