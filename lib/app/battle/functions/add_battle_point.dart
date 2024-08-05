@@ -8,17 +8,12 @@ class AddBattlePoint {
     final BattleData battleData,
     final DataVals dataVals,
     final List<BattleServantData> targets,
-    // final bool ignoreBattlePointUp,
+    final int? overchargeState,
   ) {
     final functionRate = dataVals.Rate ?? 1000;
     if (functionRate < battleData.options.threshold) {
       return;
     }
-
-    // TODO: cleanup if not needed
-    // if (ignoreBattlePointUp) {
-    //   return;
-    // }
 
     final battlePointId = dataVals.BattlePointId!;
     final questBlockList = battleData.niceQuest?.extraDetail?.IgnoreBattlePointUp;
@@ -27,7 +22,6 @@ class AddBattlePoint {
     }
 
     for (final target in targets) {
-      // TODO: this check & starting position might not be specific to addBattlePoints, can move to updateTargets
       final friendShipAbove = dataVals.FriendShipAbove ?? 0;
       if (friendShipAbove > target.bond) {
         continue;
@@ -35,6 +29,12 @@ class AddBattlePoint {
 
       final startingPosition = dataVals.StartingPosition;
       if (startingPosition != null && !startingPosition.contains(target.startingPosition)) {
+        continue;
+      }
+
+      final ocStateRange = dataVals.CheckOverChargeStageRange;
+      if (ocStateRange != null
+          && (overchargeState == null || !DataVals.isSatisfyRangeText(overchargeState, ranges: ocStateRange))) {
         continue;
       }
 

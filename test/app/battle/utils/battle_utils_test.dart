@@ -937,5 +937,10 @@ void main() async {
     expect(DataVals.isSatisfyRangeText(500, ranges: ["500<="]), true);
     expect(DataVals.isSatisfyRangeText(500, ranges: ["500<"]), false);
     expect(DataVals.isSatisfyRangeText(600, ranges: ["500<"]), true);
+
+    expect(DataVals.isSatisfyRangeText(1, ranges: ["1<=", "<=1"]), true);
+    expect(DataVals.isSatisfyRangeText(0, ranges: ["1<=", "<=1"]), false);
+    expect(DataVals.isSatisfyRangeText(2, ranges: ["1<=", "<=1"]), false);
+    expect(DataVals.isSatisfyRangeText(1, ranges: ["0<=", "<=2"]), true);
   });
 }

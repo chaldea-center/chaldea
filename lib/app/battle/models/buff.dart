@@ -210,7 +210,6 @@ class BuffData {
 
   bool shouldActivateBuffNoProbabilityCheck(final List<NiceTrait> selfTraits, [final List<NiceTrait>? opponentTraits]) {
     if (!checkAct()) return false;
-    if (!checkBuffScript(selfTraits)) return false;
     if (!checkBuffDataVals(selfTraits)) return false;
 
     /// dw does not check self / op traits for svtTrait related types
@@ -237,6 +236,8 @@ class BuffData {
     final List<NiceTrait> selfTraits, [
     final List<NiceTrait>? opponentTraits,
   ]) async {
+    if (!checkBuffScript(battleData, selfTraits)) return false;
+
     return shouldActivateBuffNoProbabilityCheck(selfTraits, opponentTraits) && await probabilityCheck(battleData);
   }
 
@@ -260,7 +261,7 @@ class BuffData {
     return true;
   }
 
-  bool checkBuffScript(final List<NiceTrait> selfTraits) {
+  bool checkBuffScript(final BattleData battleData, final List<NiceTrait> selfTraits) {
     if (buff.script.source.isEmpty) {
       return true;
     }
@@ -273,6 +274,10 @@ class BuffData {
       if (!isCurrentBuffMatch) {
         return false;
       }
+    }
+
+    if (script.useFirstTimeInTurn == 1) {
+      return battleData.isFirstSkillInTurn;
     }
 
     return true;

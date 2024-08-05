@@ -147,6 +147,8 @@ class BattleData {
   int mysticCodeLv = 10;
   List<BattleSkillInfoData> masterSkillInfo = []; //BattleSkillInfoData
 
+  bool isFirstSkillInTurn = true;
+
   bool isPlayerTurn = true;
   int waveCount = 0;
   int turnCount = 0;
@@ -351,6 +353,10 @@ class BattleData {
 
     for (final svt in nonnullActors) {
       await svt.enterField(this);
+    }
+
+    for (final svt in nonnullActors) {
+      await svt.activateBuff(this, BuffAction.functionFieldIndividualityChanged);
     }
 
     for (final svt in nonnullActors) {
@@ -796,6 +802,7 @@ class BattleData {
           await _acquireTarget(servantIndex, skillIndex, null);
           recorder.skillActivation(this, servantIndex, skillIndex);
           await svt.activateSkill(this, skillIndex);
+          isFirstSkillInTurn = false;
         });
       },
     );
@@ -896,6 +903,12 @@ class BattleData {
           final actor = actions[0].actor;
           final extraCard = actor.getExtraCard();
           if (extraCard != null) actions.add(CombatAction(actor, extraCard));
+        }
+
+        for (final action in actions) {
+          if (action.isValid(this)) {
+            await action.actor.activateBuff(this, BuffAction.functionConfirmCommand, card: action.cardData);
+          }
         }
 
         final CardType firstCardType = actions.isEmpty
@@ -1149,6 +1162,8 @@ class BattleData {
         buff.turnPass();
       }
       fieldBuffs.removeWhere((buff) => buff.checkBuffClear());
+
+      isFirstSkillInTurn = true;
     });
   }
 
@@ -1186,6 +1201,7 @@ class BattleData {
       }
       fieldBuffs.removeWhere((buff) => buff.checkBuffClear());
     });
+    isFirstSkillInTurn = true;
     isPlayerTurn = true;
   }
 
@@ -1491,6 +1507,7 @@ class BattleData {
       ..mysticCode = mysticCode
       ..mysticCodeLv = mysticCodeLv
       ..masterSkillInfo = masterSkillInfo.map((e) => e.copy()).toList()
+      ..isFirstSkillInTurn = isFirstSkillInTurn
       ..isPlayerTurn = isPlayerTurn
       ..waveCount = waveCount
       ..turnCount = turnCount
@@ -1527,6 +1544,7 @@ class BattleData {
       ..mysticCode = copy.mysticCode
       ..mysticCodeLv = copy.mysticCodeLv
       ..masterSkillInfo = copy.masterSkillInfo
+      ..isFirstSkillInTurn = copy.isFirstSkillInTurn
       ..isPlayerTurn = copy.isPlayerTurn
       ..waveCount = copy.waveCount
       ..turnCount = copy.turnCount

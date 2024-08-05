@@ -6,8 +6,6 @@ import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/battle/interactions/_delegate.dart';
 import 'package:chaldea/app/battle/models/battle.dart';
 import 'package:chaldea/app/battle/utils/buff_utils.dart';
-import 'package:chaldea/models/db.dart';
-import 'package:chaldea/models/gamedata/gamedata.dart';
 import '../../../test_init.dart';
 
 void main() async {
@@ -1505,6 +1503,107 @@ void main() async {
       final previousHp3 = enemy3.hp;
       await battle.playerTurn([CombatAction(eresh3, eresh3.getNPCard()!)]);
       expect(previousHp3 - enemy3.hp, 21362);
+    });
+
+    test('how points can be added', () async {
+      final List<PlayerSvtData?> setting = [
+        PlayerSvtData.id(3300200)..lv = 1..tdLv = 1..atkFou = 0,
+        PlayerSvtData.id(2500900), // dark Koyan for OC + 2
+        PlayerSvtData.id(304000), // summer lambda for shoreline
+      ];
+      final battle = BattleData();
+      final quest = db.gameData.questPhases[9300040603]!;
+      await battle.init(quest, setting, null);
+      const bpId = 3300200;
+
+      final eresh = battle.onFieldAllyServants[0]!;
+      expect(eresh.curBattlePoints[bpId], 10);
+      expect(eresh.determineBattlePointPhase(bpId), 2);
+
+      await battle.activateSvtSkill(0, 0);
+      expect(eresh.curBattlePoints[3300200], 15); // + 3 (skill) + 2 (first use this turn)
+      expect(eresh.determineBattlePointPhase(bpId), 2);
+
+      await battle.activateSvtSkill(2, 1); // add shoreline
+      expect(eresh.curBattlePoints[3300200], 25); // + 10 shoreline
+      expect(eresh.determineBattlePointPhase(bpId), 3);
+
+      eresh.np = 10000;
+      await battle.playerTurn([
+        CombatAction(eresh, eresh.getNPCard()!),
+        CombatAction(eresh, eresh.getCards()[0]),
+        CombatAction(eresh, eresh.getCards()[1]),
+      ]);
+      expect(eresh.curBattlePoints[3300200], 37); // brave chain + 3 + 3 + 6
+      expect(eresh.determineBattlePointPhase(bpId), 4);
+
+      await battle.activateSvtSkill(0, 1);
+      expect(eresh.curBattlePoints[3300200], 42); // + 3 (skill) + 2 (first use this turn)
+      expect(eresh.determineBattlePointPhase(bpId), 5);
+
+      await battle.activateSvtSkill(1, 1); // add OC 2
+      eresh.np = 30000;
+      await battle.playerTurn([
+        CombatAction(eresh, eresh.getNPCard()!),
+        CombatAction(eresh, eresh.getCards()[0]),
+        CombatAction(eresh, eresh.getCards()[1]),
+      ]);
+      expect(eresh.curBattlePoints[3300200], 74); // OC5 + 20 brave chain + 3 + 3 + 6
+      expect(eresh.determineBattlePointPhase(bpId), 8);
+
+
+      await battle.activateSvtSkill(1, 0); // skill before summer eresh
+      await battle.activateSvtSkill(0, 2);
+      expect(eresh.curBattlePoints[3300200], 77); // + 3 skill
+      expect(eresh.determineBattlePointPhase(bpId), 8);
+
+      await battle.playerTurn([
+        CombatAction(eresh, eresh.getCards()[0]),
+        CombatAction(eresh, eresh.getCards()[1]),
+        CombatAction(eresh, eresh.getCards()[2]),
+      ]);
+      expect(eresh.curBattlePoints[3300200], 92); // full brave chain + 15
+      expect(eresh.determineBattlePointPhase(bpId), 10);
+
+      await battle.playerTurn([
+        CombatAction(eresh, eresh.getCards()[0]),
+        CombatAction(eresh, eresh.getCards()[1]),
+        CombatAction(eresh, eresh.getCards()[2]),
+      ]);
+      expect(eresh.curBattlePoints[3300200], 107); // full brave chain + 15
+      expect(eresh.determineBattlePointPhase(bpId), 10);
+    });
+
+    test('only valid command card add points', () async {
+      final List<PlayerSvtData?> setting = [
+        PlayerSvtData.id(3300200),
+        PlayerSvtData.id(2501200), // Cnoc for arts seal
+      ];
+      final battle = BattleData();
+      final quest = db.gameData.questPhases[9300040603]!;
+      await battle.init(quest, setting, null);
+      const bpId = 3300200;
+
+      final eresh = battle.onFieldAllyServants[0]!;
+      expect(eresh.curBattlePoints[bpId], 10);
+      expect(eresh.determineBattlePointPhase(bpId), 2);
+
+      final cnoc = battle.onFieldAllyServants[1]!;
+
+      // do four times since Eresh has debuff immune
+      for (int idx = 0; idx < 4; idx += 1) {
+        await battle.activateSvtSkill(1, 2); // arts seal
+        await battle.resetPlayerSkillCD(isMysticCode: false, svt: cnoc);
+      }
+
+      eresh.np = 10000;
+      await battle.playerTurn([
+        CombatAction(eresh, eresh.getNPCard()!),
+        CombatAction(eresh, eresh.getCards()[0]),
+        CombatAction(eresh, eresh.getCards()[1]),
+      ]);
+      expect(eresh.curBattlePoints[3300200], 13); // attempt N Q A Ex, only Q valid
+      expect(eresh.determineBattlePointPhase(bpId), 2);
     });
   });
 

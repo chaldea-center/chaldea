@@ -666,6 +666,7 @@ class BattleServantData {
       case BuffAction.functionAttackAfter:
       case BuffAction.functionAttackAfterMainOnly:
       case BuffAction.functionDeadattack:
+      case BuffAction.functionConfirmCommand:
       case BuffAction.pierceDefence:
       case BuffAction.pierceSubdamage:
       case BuffAction.pierceInvincible:
@@ -717,6 +718,12 @@ class BattleServantData {
       case BuffAction.turnendStar:
       case BuffAction.turnendNp:
       case BuffAction.gutsHp:
+      case BuffAction.functionFieldIndividualityChanged:
+      case BuffAction.shortenSkillAfterUseSkill:
+      case BuffAction.functionSkillBefore:
+      case BuffAction.functionSkillAfter:
+      case BuffAction.functionTreasureDeviceBefore:
+      case BuffAction.functionTreasureDeviceAfter:
         return self.getTraits();
       default:
         return [];
@@ -827,6 +834,13 @@ class BattleServantData {
       case BuffAction.turnendStar:
       case BuffAction.turnendNp:
       case BuffAction.gutsHp:
+      case BuffAction.functionFieldIndividualityChanged:
+      case BuffAction.functionConfirmCommand:
+      case BuffAction.shortenSkillAfterUseSkill:
+      case BuffAction.functionSkillBefore:
+      case BuffAction.functionSkillAfter:
+      case BuffAction.functionTreasureDeviceBefore:
+      case BuffAction.functionTreasureDeviceAfter:
       default:
         return [];
     }
@@ -1352,6 +1366,8 @@ class BattleServantData {
       overchargeLvl = overchargeLvl.clamp(1, 5);
       battleData.recorder.setOverCharge(this, card, overchargeLvl);
 
+      await activateBuff(battleData, BuffAction.functionTreasureDeviceBefore, overchargeState: overchargeLvl - 1);
+
       np = 0;
       npLineCount = 0;
       usedNpThisTurn = true;
@@ -1367,6 +1383,8 @@ class BattleServantData {
         card: card,
         overchargeLvl: overchargeLvl,
       );
+
+      await activateBuff(battleData, BuffAction.functionTreasureDeviceAfter, overchargeState: overchargeLvl - 1);
     }
   }
 
@@ -1705,8 +1723,9 @@ class BattleServantData {
     final BuffAction buffAction, {
     final BattleServantData? other,
     final CommandCardData? card,
+    final int? overchargeState,
   }) async {
-    return await activateBuffs(battleData, [buffAction], other: other, card: card);
+    return await activateBuffs(battleData, [buffAction], other: other, card: card, overchargeState: overchargeState);
   }
 
   Future<bool> activateBuffs(
@@ -1714,6 +1733,7 @@ class BattleServantData {
     final Iterable<BuffAction> buffActions, {
     final BattleServantData? other,
     final CommandCardData? card,
+    final int? overchargeState,
   }) async {
     bool activated = false;
     for (final buffAction in buffActions) {
@@ -1737,6 +1757,7 @@ class BattleServantData {
             buff.additionalParam.clamp(1, skill.maxLv),
             script: skill.script,
             activator: this,
+            overchargeState: overchargeState,
             targetedAlly: battleData.getTargetedAlly(this),
             targetedEnemy: other,
             isPassive: false,

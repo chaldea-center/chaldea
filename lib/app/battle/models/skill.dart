@@ -169,6 +169,10 @@ class BattleSkillInfoData {
       return false;
     }
 
+    if (curSkill.type == SkillType.active) {
+      await activator?.activateBuff(battleData, BuffAction.functionSkillBefore);
+    }
+
     int? selectedActionIndex;
     if (curSkill.script != null &&
         curSkill.script!.SelectAddInfo != null &&
@@ -206,6 +210,10 @@ class BattleSkillInfoData {
       defaultToPlayer: defaultToPlayer,
       param: param,
     );
+
+    if (curSkill.type == SkillType.active) {
+      await activator?.activateBuff(battleData, BuffAction.functionSkillAfter);
+    }
     return true;
   }
 

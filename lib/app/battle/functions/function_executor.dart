@@ -46,6 +46,7 @@ class FunctionExecutor {
     final BattleServantData? targetedEnemy,
     final CommandCardData? card,
     final int overchargeLvl = 1,
+    final int? overchargeState,
     final bool isPassive = false,
     final bool isClassPassive = false,
     final bool notActorFunction = false,
@@ -100,6 +101,7 @@ class FunctionExecutor {
           targetedEnemy: targetedEnemy,
           card: card,
           overchargeLvl: overchargeLvl,
+          overchargeState: overchargeState,
           shouldTrigger: !isDmgFuncType(functions.getOrNull(index - 1)?.funcType),
           shouldDamageRelease: !isDmgFuncType(functions.getOrNull(index + 1)?.funcType),
           isPassive: isPassive,
@@ -139,6 +141,7 @@ class FunctionExecutor {
     final BattleServantData? targetedEnemy,
     final CommandCardData? card,
     final int overchargeLvl = 1,
+    final int? overchargeState,
     final bool shouldTrigger = true,
     final bool shouldDamageRelease = true,
     final bool isPassive = false,
@@ -419,7 +422,7 @@ class FunctionExecutor {
           DamageNpCounter.damageNpCounter(battleData, dataVals, activator, targets);
           break;
         case FuncType.addBattlePoint:
-          AddBattlePoint.addBattlePoint(battleData, dataVals, targets);
+          AddBattlePoint.addBattlePoint(battleData, dataVals, targets, overchargeState);
           break;
         case FuncType.updateEnemyEntryMaxCountEachTurn:
         case FuncType.damageValue:
@@ -484,8 +487,21 @@ class FunctionExecutor {
 
       battleData.updateLastFuncResults(function.funcId, funcIndex);
       battleData.checkActorStatus();
+
+      if (shouldTriggerFunctionFieldIndividualityChanged(function)) {
+        for (final svt in battleData.nonnullActors) {
+          await svt.activateBuff(battleData, BuffAction.functionFieldIndividualityChanged);
+        }
+      }
+
       return true;
     });
+  }
+
+  static bool shouldTriggerFunctionFieldIndividualityChanged(final NiceFunction func) {
+    return (func.funcType == FuncType.addState && (func.buff?.type == BuffType.fieldIndividuality || func.buff?.type == BuffType.subFieldIndividuality))
+    || (func.funcType == FuncType.addFieldChangeToField && func.buff?.type == BuffType.toFieldChangeField);
+    // TODO: subState can also changeField Indiv, but whether will it trigger is unclear
   }
 
   static bool validateFunctionTargetTeam(

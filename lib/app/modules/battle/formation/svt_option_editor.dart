@@ -228,7 +228,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
           padding: EdgeInsets.zero,
           options: SupportSvtType.values,
           values: FilterRadioData.nonnull(playerSvtData.supportType),
-          enabled: playerSvtData.supportType != SupportSvtType.npc && enableEdit,
+          enabled: enableEdit,
           optionBuilder: (v) => Text(v.shownName, textScaler: const TextScaler.linear(0.9)),
           onFilterChanged: (v, _) {
             setState(() {
