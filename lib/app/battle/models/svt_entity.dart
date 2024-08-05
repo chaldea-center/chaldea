@@ -1345,7 +1345,13 @@ class BattleServantData {
       return selected;
     }
 
-    return getBaseTD();
+    NiceTd? td = getBaseTD();
+    final tdChangeByBattlePoint = td?.script?.tdChangeByBattlePoint?.firstOrNull;
+    if (tdChangeByBattlePoint != null && tdChangeByBattlePoint.phase <= determineBattlePointPhase(tdChangeByBattlePoint.battlePointId)) {
+      return niceSvt?.noblePhantasms.firstWhereOrNull((niceTd) => niceTd.id == tdChangeByBattlePoint.noblePhantasmId) ?? td;
+    }
+
+    return td;
   }
 
   Future<void> activateNP(final BattleData battleData, CommandCardData card, final int extraOverchargeLvl) async {
