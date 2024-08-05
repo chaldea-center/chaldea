@@ -1242,7 +1242,7 @@ enum BuffAction {
   functionSkillTargetedBefore(139),
   functionFieldIndividualityChanged(140),
   functionTreasureDeviceBefore(141),
-  functionStartTacticalBefore(142),
+  functionStepInAfter(142),
   shortenSkillAfterUseSkill(143),
   ;
 

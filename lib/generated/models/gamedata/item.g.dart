@@ -150,6 +150,7 @@ const _$ItemTransitionTargetValueEnumMap = {
   ItemTransitionTargetValue.manaPriTargetItemId: 'manaPriTargetItemId',
   ItemTransitionTargetValue.purePriTargetItemId: 'purePriTargetItemId',
   ItemTransitionTargetValue.rarePriTargetItemId: 'rarePriTargetItemId',
+  ItemTransitionTargetValue.leafExchangeTargetItemId: 'leafExchangeTargetItemId',
 };
 
 ItemAmount _$ItemAmountFromJson(Map json) => ItemAmount(

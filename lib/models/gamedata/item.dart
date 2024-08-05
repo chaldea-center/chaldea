@@ -574,6 +574,7 @@ enum ItemTransitionTargetValue {
   manaPriTargetItemId,
   purePriTargetItemId,
   rarePriTargetItemId,
+  leafExchangeTargetItemId,
 }
 
 abstract class ItemIconId {

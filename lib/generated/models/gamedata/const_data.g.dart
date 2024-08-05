@@ -621,7 +621,7 @@ const _$BuffTypeEnumMap = {
   BuffType.skillTargetedBeforeFunction: 'skillTargetedBeforeFunction',
   BuffType.fieldIndividualityChangedFunction: 'fieldIndividualityChangedFunction',
   BuffType.treasureDeviceBeforeFunction: 'treasureDeviceBeforeFunction',
-  BuffType.startTacticalBeforeFunction: 'startTacticalBeforeFunction',
+  BuffType.stepInAfterFunction: 'stepInAfterFunction',
   BuffType.shortenSkillAfterUseSkill: 'shortenSkillAfterUseSkill',
   BuffType.changeBgm: 'changeBgm',
   BuffType.toFieldChangeField: 'toFieldChangeField',
@@ -1424,6 +1424,6 @@ const _$BuffActionEnumMap = {
   BuffAction.functionSkillTargetedBefore: 'functionSkillTargetedBefore',
   BuffAction.functionFieldIndividualityChanged: 'functionFieldIndividualityChanged',
   BuffAction.functionTreasureDeviceBefore: 'functionTreasureDeviceBefore',
-  BuffAction.functionStartTacticalBefore: 'functionStartTacticalBefore',
+  BuffAction.functionStepInAfter: 'functionStepInAfter',
   BuffAction.shortenSkillAfterUseSkill: 'shortenSkillAfterUseSkill',
 };
