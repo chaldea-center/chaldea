@@ -1,5 +1,16 @@
 # Changelog
 
+## 2.5.11
+- Laplace
+  - Support Append Skill 5 shorten skill after use
+  - Fixed a bug where reduced damage (for overkill bug counting) is not reset after NP
+  - Support Summer Eresh
+    - New NP Dmg type based on battle points
+    - Support battle points system
+    - Support activate skill when being targeted 
+    - Support activate skill before NP/Skill
+    - Support activate skill after select cards
+
 ## 2.5.10
 
 - Support Destiny Order Summon
