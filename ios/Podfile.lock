@@ -4,7 +4,7 @@ PODS:
   - connectivity_plus (0.0.1):
     - Flutter
     - FlutterMacOS
-  - countly_flutter_np (24.7.0):
+  - countly_flutter_np (24.7.1):
     - Flutter
   - device_info_plus (0.0.1):
     - Flutter
@@ -174,7 +174,7 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   audio_session: 088d2483ebd1dc43f51d253d4a1c517d9a2e7207
   connectivity_plus: ddd7f30999e1faaef5967c23d5b6d503d10434db
-  countly_flutter_np: c6eaf78fd162faad2d47d67db48a90e331d3d736
+  countly_flutter_np: 097c7102f86c9e5abefd462591173c5f00b3d78f
   device_info_plus: 97af1d7e84681a90d0693e63169a5d50e0839a0d
   DKImagePickerController: 946cec48c7873164274ecc4624d19e3da4c1ef3c
   DKPhotoGallery: b3834fecb755ee09a593d7c9e389d8b5d6deed60
