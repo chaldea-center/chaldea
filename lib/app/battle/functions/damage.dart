@@ -137,11 +137,11 @@ class Damage {
             specificAttackRate = dataVals.Correction!;
           }
         } else if (funcType == FuncType.damageNpBattlePointPhase) {
-          // TODO: tdDamage ranking delegate
-          // final damageNpSEDecision = battleData.delegate?.damageNpSE?.call(activator, damageFunction, dataVals);
+          final damageNpSEDecision = battleData.delegate?.damageNpSE?.call(activator, damageFunction, dataVals);
 
           final battlePointId = dataVals.Target!;
-          final curPhase = activator.determineBattlePointPhase(battlePointId);
+          int curPhase = damageNpSEDecision?.indivSumCount ?? activator.determineBattlePointPhase(battlePointId);
+          curPhase = curPhase.clamp(0, activator.getMaxBattlePointPhase(battlePointId));
           final specifiedPhase =
               dataVals.DamageRateBattlePointPhase?.firstWhereOrNull((phase) => phase.battlePointPhase == curPhase);
 

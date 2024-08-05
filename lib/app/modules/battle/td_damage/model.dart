@@ -423,6 +423,11 @@ class TdDmgSolver {
             useCorrection: true,
             indivSumCount: options.damageNpIndivSumCount ?? vals.ParamAddMaxCount,
           );
+        } else if (funcType == FuncType.damageNpBattlePointPhase) {
+          return DamageNpSEDecision(
+            useCorrection: true,
+            indivSumCount: options.damageNpIndivSumCount ?? 10,
+          );
         }
         return null;
       };

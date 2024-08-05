@@ -109,6 +109,10 @@ class BattleServantData {
     return phase;
   }
 
+  int getMaxBattlePointPhase(int battlePointId) {
+    return Maths.max(niceSvt?.battlePoints.expand((e) => e.phases).map((e) => e.phase) ?? <int>[], 0);
+  }
+
   int np = 0; // player, np/100
   int npLineCount = 0; // enemy
   bool usedNpThisTurn = false;

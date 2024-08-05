@@ -965,8 +965,9 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
   List<Widget> _buildSEPart() {
     final List<Servant> indivSumSvts = [], hpRatioSvts = [];
     for (final svt in db.gameData.servantsNoDup.values) {
-      if (svt.collectionNo != 153 &&
-          svt.noblePhantasms.any((td) => td.functions.any((func) => func.funcType == FuncType.damageNpIndividualSum))) {
+      if (!const [153, 246].contains(svt.collectionNo) && // 剑武藏/威廉退尔
+          svt.noblePhantasms.any((td) => td.functions.any((func) =>
+              func.funcType == FuncType.damageNpIndividualSum || func.funcType == FuncType.damageNpBattlePointPhase))) {
         indivSumSvts.add(svt);
       }
       if (svt.noblePhantasms.any((td) => td.functions.any(
