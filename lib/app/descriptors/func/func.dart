@@ -381,6 +381,31 @@ class SkillScriptDescriptor extends StatelessWidget {
         style: Theme.of(context).textTheme.bodySmall,
       )));
     }
+    if (script?.tdChangeByBattlePoint?.isNotEmpty == true) {
+      children.add(_pad(Text.rich(
+        TextSpan(children: [
+          TextSpan(text: Transl.misc2('SkillScript', 'tdChangeByBattlePoint')),
+          const TextSpan(text: ': '),
+          ...divideList(
+            List.generate(script!.tdChangeByBattlePoint!.length, (index) {
+              final tdChange = script!.tdChangeByBattlePoint![index];
+              return TextSpan(children: [
+                TextSpan(text: '(Lv≥${tdChange.phase}) '),
+                SharedBuilder.textButtonSpan(
+                  context: context,
+                  text: '${tdChange.noblePhantasmId}',
+                  onTap: () {
+                    router.push(url: Routes.tdI(tdChange.noblePhantasmId));
+                  },
+                ),
+              ]);
+            }),
+            const TextSpan(text: ' / '),
+          ),
+        ]),
+        style: Theme.of(context).textTheme.bodySmall,
+      )));
+    }
     if (script?.SelectAddInfo?.isNotEmpty == true) {
       final infos = script!.SelectAddInfo!;
       final info = infos.first;

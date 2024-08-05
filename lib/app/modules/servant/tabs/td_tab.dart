@@ -234,7 +234,7 @@ class SvtTdTab extends StatelessWidget {
     List<Widget> children = [];
 
     for (final battlePoint in svt.battlePoints) {
-      String title = 'マスター好感度';
+      String title = S.current.master_affection;
       if (svt.battlePoints.length > 1) title += ' ${battlePoint.id}';
       if (battlePoint.name.isNotEmpty) title += ' ${battlePoint.name}';
 

@@ -671,6 +671,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "map_show_header_image": MessageLookupByLibrary.simpleMessage("显示标题图"),
         "map_show_roads": MessageLookupByLibrary.simpleMessage("显示道路"),
         "map_show_spots": MessageLookupByLibrary.simpleMessage("显示地点"),
+        "master_affection": MessageLookupByLibrary.simpleMessage("御主好感度"),
         "master_detail_width": MessageLookupByLibrary.simpleMessage("Master-Detail width"),
         "master_mission": MessageLookupByLibrary.simpleMessage("御主任务"),
         "master_mission_related_quest": MessageLookupByLibrary.simpleMessage("关联关卡"),

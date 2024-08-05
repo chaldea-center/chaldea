@@ -106,6 +106,7 @@ class TdDmgSolver {
         final baseTd = baseSvt?.td;
         if (baseSvt != null && baseTd != null) {
           final tdTypeChangeIds = baseTd.script?.tdTypeChangeIDs ?? const [];
+          // tdChangeByBattlePoint_{}_{}
           for (final tdId in tdTypeChangeIds) {
             if (tdId == baseTd.id) continue;
             final tdChange = baseSvt.svt?.noblePhantasms.firstWhereOrNull((e) => e.id == tdId);

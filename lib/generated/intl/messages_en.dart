@@ -705,6 +705,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "map_show_header_image": MessageLookupByLibrary.simpleMessage("Show Header Image"),
         "map_show_roads": MessageLookupByLibrary.simpleMessage("Show Roads"),
         "map_show_spots": MessageLookupByLibrary.simpleMessage("Show Spots"),
+        "master_affection": MessageLookupByLibrary.simpleMessage("Master Affection"),
         "master_detail_width": MessageLookupByLibrary.simpleMessage("Master-Detail width"),
         "master_mission": MessageLookupByLibrary.simpleMessage("Master Mission"),
         "master_mission_related_quest": MessageLookupByLibrary.simpleMessage("Related Quests"),

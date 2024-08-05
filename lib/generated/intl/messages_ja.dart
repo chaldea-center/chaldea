@@ -494,6 +494,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "main_story": MessageLookupByLibrary.simpleMessage("シナリオ"),
         "main_story_chapter": MessageLookupByLibrary.simpleMessage("チャプター"),
         "map_layer_n": m22,
+        "master_affection": MessageLookupByLibrary.simpleMessage("マスター好感度"),
         "master_detail_width": MessageLookupByLibrary.simpleMessage("Master-Detail width"),
         "master_mission": MessageLookupByLibrary.simpleMessage("マスターミッション"),
         "master_mission_related_quest": MessageLookupByLibrary.simpleMessage("関連クエスト"),

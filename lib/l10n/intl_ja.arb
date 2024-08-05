@@ -571,6 +571,7 @@
   "map_show_header_image": null,
   "map_show_roads": null,
   "map_show_spots": null,
+  "master_affection": "マスター好感度",
   "master_detail_width": "Master-Detail width",
   "master_mission": "マスターミッション",
   "master_mission_related_quest": "関連クエスト",

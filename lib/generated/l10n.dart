@@ -6349,6 +6349,17 @@ class S {
     );
   }
 
+  /// `Master Affection`
+  String get master_affection {
+    return Intl.message(
+      'Master Affection',
+      name: 'master_affection',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Master-Detail width`
   String get master_detail_width {
     return Intl.message(
