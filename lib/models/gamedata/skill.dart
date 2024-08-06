@@ -829,7 +829,7 @@ class SkillScript with DataScriptBase {
   List<int>? get additionalSkillId => toList('additionalSkillId');
   List<int>? get additionalSkillLv => toList('additionalSkillLv');
   List<int>? get additionalSkillActorType => toList('additionalSkillActorType'); // BattleLogicTask.ACTORTYPE
-  List<SkillSelectAddInfo>? get SelectAddInfo => toList('SelectAddInfo');
+  final List<SkillSelectAddInfo>? SelectAddInfo;
   // TD script
   List<int>? get tdTypeChangeIDs => toList('tdTypeChangeIDs');
   List<int>? get excludeTdChangeTypes => toList('excludeTdChangeTypes');
@@ -876,7 +876,7 @@ class SkillScript with DataScriptBase {
     // this.additionalSkillId,
     // this.additionalSkillLv,
     // this.additionalSkillActorType,
-    // this.SelectAddInfo,
+    this.SelectAddInfo,
     // this.tdTypeChangeIDs,
     // this.excludeTdChangeTypes,
     dynamic IgnoreValueUp,

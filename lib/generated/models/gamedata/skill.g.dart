@@ -376,6 +376,9 @@ SkillScript _$SkillScriptFromJson(Map json) => SkillScript(
       actRarity: (json['actRarity'] as List<dynamic>?)
           ?.map((e) => (e as List<dynamic>).map((e) => (e as num).toInt()).toList())
           .toList(),
+      SelectAddInfo: (json['SelectAddInfo'] as List<dynamic>?)
+          ?.map((e) => SkillSelectAddInfo.fromJson(Map<String, dynamic>.from(e as Map)))
+          .toList(),
       IgnoreValueUp: json['IgnoreValueUp'],
       IgnoreBattlePointUp: json['IgnoreBattlePointUp'] as List<dynamic>?,
       tdChangeByBattlePoint: (json['tdChangeByBattlePoint'] as List<dynamic>?)
@@ -393,6 +396,7 @@ Map<String, dynamic> _$SkillScriptToJson(SkillScript instance) {
   }
 
   writeNotNull('actRarity', instance.actRarity);
+  writeNotNull('SelectAddInfo', instance.SelectAddInfo?.map((e) => e.toJson()).toList());
   writeNotNull('IgnoreValueUp', instance.IgnoreValueUp);
   writeNotNull('IgnoreBattlePointUp', instance.IgnoreBattlePointUp);
   writeNotNull('tdChangeByBattlePoint', instance.tdChangeByBattlePoint?.map((e) => e.toJson()).toList());
