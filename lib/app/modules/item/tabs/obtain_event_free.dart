@@ -123,7 +123,7 @@ class _ItemObtainEventFreeTabState extends State<ItemObtainEventFreeTab> {
           List<InlineSpan> subtitles = [
             TextSpan(
               text: 'Lv${quest.recommendLv} ${quest.consume}${quest.consumeType.unit}.  ',
-              style: quest.is90PlusFree ? TextStyle(color: Theme.of(context).colorScheme.primaryContainer) : null,
+              style: quest.is90PlusFree ? TextStyle(color: Theme.of(context).colorScheme.primary) : null,
             ),
             TextSpan(
                 text: sortType == _SortType.dropRate

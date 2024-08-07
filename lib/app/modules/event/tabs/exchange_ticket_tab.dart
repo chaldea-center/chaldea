@@ -64,10 +64,7 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
           if (index == 0) return hintText;
           return buildOneMonth(tickets[index - 1]);
         },
-        separatorBuilder: (context, _) => const Divider(
-          height: 8,
-          indent: 12,
-        ),
+        separatorBuilder: (context, _) => const Divider(height: 8, indent: 12),
       );
     });
   }

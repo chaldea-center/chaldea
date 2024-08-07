@@ -474,7 +474,7 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
                       icon: const Icon(Icons.music_note, size: 18),
                       padding: EdgeInsets.zero,
                       constraints: const BoxConstraints(),
-                      color: Theme.of(context).colorScheme.primaryContainer,
+                      color: Theme.of(context).colorScheme.secondary,
                     ),
                   )
                 ],

@@ -131,9 +131,9 @@ class _SvtClassInfoPageState extends State<SvtClassInfoPage> {
     if (rate == null) return null;
     Color? color;
     if (rate > 1000) {
-      color = Theme.of(context).colorScheme.error;
+      color = Colors.red;
     } else if (rate < 1000) {
-      color = Theme.of(context).colorScheme.primaryContainer;
+      color = Colors.blue;
     } else {
       color = Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.5);
     }

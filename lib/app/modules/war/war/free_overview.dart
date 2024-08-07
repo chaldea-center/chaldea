@@ -234,7 +234,7 @@ class _FreeQuestOverviewState extends State<FreeQuestOverview> {
       name = quest.lName.l;
     }
 
-    final highlightStyle = TextStyle(color: quest.is90PlusFree ? Theme.of(context).colorScheme.primaryContainer : null);
+    final highlightStyle = TextStyle(color: quest.is90PlusFree ? Theme.of(context).colorScheme.primary : null);
 
     cells.add(DataCell(
       AutoSizeText(

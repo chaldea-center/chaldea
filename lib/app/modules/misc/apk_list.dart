@@ -155,7 +155,7 @@ class _ApkListPageState extends State<ApkListPage> {
             onPressed: () {
               launch(ChaldeaUrl.doc('fgo_apk'), external: true);
             },
-            icon: const Icon(Icons.open_in_new),
+            icon: const Icon(Icons.help_outline),
           ),
           IconButton(
             onPressed: load,
