@@ -36,6 +36,8 @@ class DataVals {
     return other is DataVals && hashCode == other.hashCode;
   }
 
+  T? get<T>(String key) => _vals[key];
+
   void set(String key, dynamic value) {
     if (value == null) {
       _vals.remove(key);

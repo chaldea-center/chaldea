@@ -122,7 +122,8 @@ class BaseSkill extends SkillOrTd {
     if (unmodifiedDetail == null) return null;
     String content = Transl.skillDetail(detail ?? '').l;
     if (db.runtimeData.showSkillOriginText) return content;
-    return content.replaceAll('{0}', 'Lv.').replaceFirstMapped(
+    content = content.replaceAll('{0}', 'Lv.');
+    content = content.replaceFirstMapped(
       RegExp(r'\[servantName (\d+)\]'),
       (match) {
         final svt = db.gameData.servantsById[int.parse(match.group(1)!)];
@@ -132,6 +133,19 @@ class BaseSkill extends SkillOrTd {
         return match.group(0).toString();
       },
     );
+    content = content.replaceAllMapped(RegExp(r'\{\{(\d+):([^:]+):(m)\}\}'), (m) {
+      final index = int.parse(m.group(1)!) - 1;
+      final key = m.group(2)!;
+      final fmt = m.group(3)!;
+      String? text;
+      dynamic value = functions.getOrNull(index)?.svals.getOrNull(0)?.get(key);
+      if (fmt == 'm' && value is int) {
+        text = (value / 10).format(compact: false);
+      }
+      // other cases here
+      return text ?? m.group(0)!;
+    });
+    return content;
   }
 
   @override
