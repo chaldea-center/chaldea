@@ -1401,14 +1401,7 @@ void main() async {
       return Tuple2(onFieldSvts[2]!, backupSvts[0]!);
     };
     int count = 0;
-    battle.delegate?.damageRandom = (random) async {
-      if (count == 0) {
-        count += 1;
-        return 171908;
-      } else {
-        return 54773;
-      }
-    };
+    battle.delegate?.damageRandom = (random) async => [171908, 54773][count++];
 
     await battle.activateSvtSkill(0, 0);
     await battle.activateSvtSkill(1, 1);
@@ -1674,6 +1667,158 @@ void main() async {
       await battle.activateMysticCodeSkill(1); // gainStar on party, eresh not targeted. When bug is fixed check this
       expect(eresh.curBattlePoints[bpId], 15);
       expect(eresh.determineBattlePointPhase(bpId), 2);
+    });
+  });
+
+  group('Battle Popup Related Funcs', () {
+    test('act set select', () async {
+      final List<PlayerSvtData?> setting = [
+        PlayerSvtData.id(101000)..setSkillStrengthenLvs([1, 1, 2]), // Saber Eliz
+      ];
+      final battle = BattleData();
+      final quest = db.gameData.questPhases[9300040603]!;
+      await battle.init(quest, setting, MysticCodeData());
+
+      final eliz = battle.onFieldAllyServants[0]!;
+
+      int count = 0;
+      battle.delegate = BattleDelegate();
+      battle.delegate?.actWeight = (_actor) async => [4, 0, 5][count++]; // atk up, gain star, skip
+
+      eliz.np = 10000;
+      await battle.activateSvtSkill(0, 2);
+      expect(await eliz.getBuffValue(battle, BuffAction.atk), 1500);
+      expect(battle.criticalStars, moreOrLessEquals(0, epsilon: 0.1));
+
+      eliz.np = 10000;
+      await battle.resetPlayerSkillCD(isMysticCode: false, svt: eliz);
+      await battle.activateSvtSkill(0, 2);
+      expect(await eliz.getBuffValue(battle, BuffAction.atk), 1500);
+      expect(battle.criticalStars, moreOrLessEquals(0, epsilon: 0.1));
+
+      eliz.np = 10000;
+      await battle.resetPlayerSkillCD(isMysticCode: false, svt: eliz);
+      await battle.activateSvtSkill(0, 2);
+      expect(await eliz.getBuffValue(battle, BuffAction.atk), 1500);
+      expect(battle.criticalStars, moreOrLessEquals(50, epsilon: 0.1));
+    });
+
+    test('replace member', () async {
+      final List<PlayerSvtData?> setting = [
+        PlayerSvtData.id(3300200),
+        PlayerSvtData.id(901400),
+        PlayerSvtData.id(901400),
+        PlayerSvtData.id(901400),
+      ];
+      final battle = BattleData();
+      final quest = db.gameData.questPhases[9300040603]!;
+      await battle.init(quest, setting, MysticCodeData());
+
+      final pos1svt = battle.onFieldAllyServants[0]!;
+      final backupSvt = battle.backupAllyServants[0]!;
+
+      battle.delegate = BattleDelegate();
+      battle.delegate?.replaceMember = (onFieldSvts, backupSvts) async {
+        return Tuple2(onFieldSvts[0]!, backupSvts[0]!);
+      };
+      await battle.activateMysticCodeSkill(2);
+      expect(battle.onFieldAllyServants[0]!, backupSvt);
+      expect(battle.backupAllyServants[0]!, pos1svt);
+    });
+
+    test('skill act select', () async {
+      final List<PlayerSvtData?> setting = [
+        PlayerSvtData.id(2501100), // kuku
+        PlayerSvtData.id(604200), // Koyan
+      ];
+      final battle = BattleData();
+      final quest = db.gameData.questPhases[9300040603]!;
+      await battle.init(quest, setting, MysticCodeData());
+
+      final kuku = battle.onFieldAllyServants[0]!;
+      final btn = kuku.skillInfoList.first.skillScript!.SelectAddInfo![0].btn;
+      expect(btn.first.conds.first.cond, SkillScriptCond.none);
+      expect(btn.last.conds.first.cond, SkillScriptCond.starHigher);
+      expect(btn.last.conds.first.value, 10);
+
+      int count = 0;
+      battle.delegate = BattleDelegate();
+      battle.delegate?.skillActSelect = (_actor) async => [1, 0, 1][count++]; // consume 10, don't, consume 10
+
+      await battle.activateSvtSkill(1, 1);
+      expect(battle.criticalStars, moreOrLessEquals(20, epsilon: 0.1));
+
+      await battle.activateSvtSkill(0, 0);
+      final attack = await kuku.getBuffValue(battle, BuffAction.atk);
+      expect(attack, 1500);
+      expect(battle.criticalStars, moreOrLessEquals(10, epsilon: 0.1));
+
+      await battle.activateSvtSkill(0, 1);
+      expect(kuku.np, 5000);
+      expect(battle.criticalStars, moreOrLessEquals(10, epsilon: 0.1));
+
+      await battle.activateSvtSkill(0, 2);
+      final npDmg = await kuku.getBuffValue(battle, BuffAction.npdamage);
+      expect(npDmg, 300);
+      expect(battle.criticalStars, moreOrLessEquals(0, epsilon: 0.1));
+    });
+
+    test('tailored execution can activate', () async {
+      final List<PlayerSvtData?> setting = [
+        PlayerSvtData.id(100500), // Nero
+      ];
+      final battle = BattleData();
+      final quest = db.gameData.questPhases[9300040603]!;
+      await battle.init(quest, setting, MysticCodeData());
+
+      final nero = battle.onFieldAllyServants[0]!;
+
+      int count = 0;
+      battle.delegate = BattleDelegate();
+      battle.delegate?.canActivate = (_actor) async => [true, false, false, true][count++]; // act, miss, miss, act
+      battle.options.tailoredExecution = true;
+
+      expect(await nero.getBuffValue(battle, BuffAction.atk), 1000);
+      expect(await nero.getBuffValue(battle, BuffAction.defence), 1000);
+
+      await battle.activateSvtSkill(0, 1);
+      expect(await nero.getBuffValue(battle, BuffAction.atk), 1440);
+      expect(await nero.getBuffValue(battle, BuffAction.defence), 1000);
+
+      await battle.resetPlayerSkillCD(isMysticCode: false, svt: nero);
+      await battle.activateSvtSkill(0, 1);
+      expect(await nero.getBuffValue(battle, BuffAction.atk), 1440);
+      expect(await nero.getBuffValue(battle, BuffAction.defence), 1440);
+    });
+
+    test('td type change', () async {
+      final List<PlayerSvtData?> setting = [
+        PlayerSvtData.id(200100)..setSkillStrengthenLvs([1, 1, 3]), // Emiya
+      ];
+      final battle = BattleData();
+      final quest = db.gameData.questPhases[9300040603]!;
+      await battle.init(quest, setting, MysticCodeData());
+
+      final emiya = battle.onFieldAllyServants[0]!;
+
+      final nps = emiya.niceSvt!.noblePhantasms;
+      expect(nps.length, 4);
+      expect(nps.first.script!.tdTypeChangeIDs!.first, 200198);
+      expect(nps.first.script!.excludeTdChangeTypes!.first, 3);
+
+      int count = 0;
+      battle.delegate = BattleDelegate();
+      battle.delegate?.tdTypeChange = (_actor, _list) async => [CardType.arts, CardType.buster][count++];
+
+      expect(emiya.getNPCard()!.cardType, CardType.buster);
+
+      await battle.activateSvtSkill(0, 2);
+      expect(emiya.getNPCard()!.cardType, CardType.arts);
+
+      await battle.skipTurn(); // skip so tdTypeChangeBuff expires
+      await battle.resetPlayerSkillCD(isMysticCode: false, svt: emiya);
+      await battle.activateSvtSkill(0, 2);
+      expect(emiya.getNPCard()!.cardType, CardType.buster);
     });
   });
 
