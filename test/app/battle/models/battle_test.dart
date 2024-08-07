@@ -1618,20 +1618,24 @@ void main() async {
       expect(eresh.curBattlePoints[bpId], 10);
       expect(eresh.determineBattlePointPhase(bpId), 2);
 
+      await battle.activateSvtSkill(1, 1); // other's skills do not affect Eresh
+      expect(eresh.curBattlePoints[bpId], 10);
+      expect(eresh.determineBattlePointPhase(bpId), 2);
+
       await battle.activateSvtSkill(1, 2); // other's skills do not affect Eresh
       expect(eresh.curBattlePoints[bpId], 10);
       expect(eresh.determineBattlePointPhase(bpId), 2);
 
-      await battle.activateMysticCodeSkill(0); // mystic don't add points for ptAll buffs
-      expect(eresh.curBattlePoints[bpId], 10);
+      await battle.activateMysticCodeSkill(0); // mystic add 5 points even for ptAll buffs
+      expect(eresh.curBattlePoints[bpId], 15);
       expect(eresh.determineBattlePointPhase(bpId), 2);
 
       await battle.commandSpellReleaseNP(); // command spell add 10 points
-      expect(eresh.curBattlePoints[bpId], 20);
+      expect(eresh.curBattlePoints[bpId], 25);
       expect(eresh.determineBattlePointPhase(bpId), 3);
 
       await battle.commandSpellRepairHp(); // command spell add 10 points
-      expect(eresh.curBattlePoints[bpId], 30);
+      expect(eresh.curBattlePoints[bpId], 35);
       expect(eresh.determineBattlePointPhase(bpId), 4);
 
       // just realized this test is useless since current implementation doesn't select any svts as actual targets
@@ -1641,7 +1645,7 @@ void main() async {
         return Tuple2(onFieldSvts[0]!, backupSvts[0]!);
       };
       await battle.activateMysticCodeSkill(2);
-      expect(eresh.curBattlePoints[bpId], 30);
+      expect(eresh.curBattlePoints[bpId], 35);
       expect(eresh.determineBattlePointPhase(bpId), 4);
     });
 
@@ -1664,9 +1668,9 @@ void main() async {
       expect(eresh.determineBattlePointPhase(bpId), 2);
 
       battle.playerTargetIndex = 1; // not eresh
-      await battle.activateMysticCodeSkill(1); // gainStar on party, eresh not targeted. When bug is fixed check this
-      expect(eresh.curBattlePoints[bpId], 15);
-      expect(eresh.determineBattlePointPhase(bpId), 2);
+      await battle.activateMysticCodeSkill(1); // gainStar on party, so still add points
+      expect(eresh.curBattlePoints[bpId], 20);
+      expect(eresh.determineBattlePointPhase(bpId), 3);
     });
   });
 
