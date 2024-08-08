@@ -1672,6 +1672,43 @@ void main() async {
       expect(eresh.curBattlePoints[bpId], 20);
       expect(eresh.determineBattlePointPhase(bpId), 3);
     });
+
+    test('mysticCode shuffle', () async {
+      final List<PlayerSvtData?> setting = [
+        PlayerSvtData.id(3300200),
+        PlayerSvtData.id(3300200),
+        PlayerSvtData.id(504400),
+      ];
+      final battle = BattleData();
+      final quest = db.gameData.questPhases[9300040603]!;
+      await battle.init(quest, setting, MysticCodeData()..mysticCode = db.gameData.mysticCodes[30]);
+      const bpId = 3300200;
+
+      final eresh1 = battle.onFieldAllyServants[0]!;
+      final eresh2 = battle.onFieldAllyServants[1]!;
+      expect(eresh1.curBattlePoints[bpId], 10);
+      expect(eresh1.determineBattlePointPhase(bpId), 2);
+      expect(eresh2.curBattlePoints[bpId], 10);
+      expect(eresh2.determineBattlePointPhase(bpId), 2);
+
+      battle.playerTargetIndex = 1; // not eresh
+      await battle.activateMysticCodeSkill(2); // mystic code +5 only for first alive ally
+      expect(eresh1.curBattlePoints[bpId], 15);
+      expect(eresh1.determineBattlePointPhase(bpId), 2);
+      expect(eresh2.curBattlePoints[bpId], 10);
+      expect(eresh2.determineBattlePointPhase(bpId), 2);
+
+      await battle.resetPlayerSkillCD(isMysticCode: true, svt: null);
+      final chenGong = battle.onFieldAllyServants[2]!;
+      chenGong.np = 10000;
+      await battle.playerTurn([CombatAction(chenGong, chenGong.getNPCard()!)]); // kill first eresh
+
+      expect(eresh2.curBattlePoints[bpId], 10);
+      expect(eresh2.determineBattlePointPhase(bpId), 2);
+      await battle.activateMysticCodeSkill(2); // mystic code +5 only for first alive ally
+      expect(eresh2.curBattlePoints[bpId], 15);
+      expect(eresh2.determineBattlePointPhase(bpId), 2);
+    });
   });
 
   group('Battle Popup Related Funcs', () {

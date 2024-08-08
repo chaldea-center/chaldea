@@ -570,6 +570,8 @@ class FunctionExecutor {
       case FuncTargetType.commandTypeSelfTreasureDevice:
         if (activator != null) {
           targets.add(activator);
+        } else if (aliveAllies.isNotEmpty) {
+          targets.add(aliveAllies.first);
         }
         break;
       case FuncTargetType.ptOne:
