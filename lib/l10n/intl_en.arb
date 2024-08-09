@@ -649,7 +649,7 @@
   "permanent": "Permanent",
   "pin_to_top": "Pin to Top",
   "plan": "Plan",
-  "plan_list_only_unlock_append": "Unlocked Append",
+  "plan_list_only_unlock_append": "Only Unlocked Appends",
   "plan_list_set_all": "Set All",
   "plan_list_set_all_current": "Current",
   "plan_list_set_all_target": "Target",

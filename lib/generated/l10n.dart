@@ -7207,10 +7207,10 @@ class S {
     );
   }
 
-  /// `Unlocked Append`
+  /// `Only Unlocked Appends`
   String get plan_list_only_unlock_append {
     return Intl.message(
-      'Unlocked Append',
+      'Only Unlocked Appends',
       name: 'plan_list_only_unlock_append',
       desc: '',
       locale: localeName,

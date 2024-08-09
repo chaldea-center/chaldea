@@ -787,7 +787,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "permanent": MessageLookupByLibrary.simpleMessage("Permanent"),
         "pin_to_top": MessageLookupByLibrary.simpleMessage("Pin to Top"),
         "plan": MessageLookupByLibrary.simpleMessage("Plan"),
-        "plan_list_only_unlock_append": MessageLookupByLibrary.simpleMessage("Unlocked Append"),
+        "plan_list_only_unlock_append": MessageLookupByLibrary.simpleMessage("Only Unlocked Appends"),
         "plan_list_set_all": MessageLookupByLibrary.simpleMessage("Set All"),
         "plan_list_set_all_current": MessageLookupByLibrary.simpleMessage("Current"),
         "plan_list_set_all_target": MessageLookupByLibrary.simpleMessage("Target"),

@@ -174,17 +174,6 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
                 },
                 controlAffinity: ListTileControlAffinity.trailing,
               ),
-              SwitchListTile.adaptive(
-                title: Text(S.current.setting_only_change_second_append_skill),
-                subtitle: Text(S.current.setting_home_plan_list_page),
-                value: db.settings.display.onlyAppendSkillTwo,
-                onChanged: (v) {
-                  setState(() {
-                    db.settings.display.onlyAppendSkillTwo = v;
-                    db.saveSettings();
-                  });
-                },
-              ),
             ],
           ),
           TileGroup(

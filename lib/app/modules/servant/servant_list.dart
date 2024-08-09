@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/modules/common/builders.dart';
@@ -236,23 +237,6 @@ class ServantListPageState extends State<ServantListPage> with SearchableListSta
                   },
                 ),
                 PopupMenuItem(
-                  child: CheckboxWithLabel(
-                    value: db.settings.display.onlyAppendSkillTwo,
-                    label: Text(S.current.setting_only_change_second_append_skill),
-                    onChanged: (v) {
-                      Navigator.pop(context);
-                      setState(() {
-                        db.settings.display.onlyAppendSkillTwo = !db.settings.display.onlyAppendSkillTwo;
-                      });
-                    },
-                  ),
-                  onTap: () {
-                    setState(() {
-                      db.settings.display.onlyAppendSkillTwo = !db.settings.display.onlyAppendSkillTwo;
-                    });
-                  },
-                ),
-                PopupMenuItem(
                   child: Text(S.current.favorite_all_shown_svt),
                   onTap: () {
                     SimpleCancelOkDialog(
@@ -390,7 +374,8 @@ class ServantListPageState extends State<ServantListPage> with SearchableListSta
   bool changeTarget = true;
   int? _changedAscension;
   int? _changedActive;
-  int? _changedAppend; // only append skill 2 - NP related
+  int? _appendNum;
+  int? _changedAppend;
   bool? _changedDress;
   int? _changedTd;
 
@@ -647,8 +632,9 @@ class ServantListPageState extends State<ServantListPage> with SearchableListSta
 
     Text text(String s) => Text(s, style: const TextStyle(fontSize: 14));
 
-    final buttons = [
+    final buttons1 = [
       DropdownButton<int>(
+        isDense: true,
         value: _changedAscension,
         icon: Container(),
         hint: text(S.current.ascension_short),
@@ -674,6 +660,7 @@ class ServantListPageState extends State<ServantListPage> with SearchableListSta
         },
       ),
       DropdownButton<int>(
+        isDense: true,
         value: _changedActive,
         icon: Container(),
         hint: text(S.current.active_skill_short),
@@ -711,50 +698,8 @@ class ServantListPageState extends State<ServantListPage> with SearchableListSta
           });
         },
       ),
-      DropdownButton<int>(
-        value: _changedAppend,
-        icon: Container(),
-        hint: text(S.current.append_skill_short + (db.settings.display.onlyAppendSkillTwo ? '2' : '')),
-        items: List.generate(12, (i) {
-          if (i == 0) {
-            return DropdownMenuItem(value: -1, child: text('x + 1'));
-          } else {
-            return DropdownMenuItem(
-              value: i - 1,
-              child: text(S.current.words_separate(
-                  S.current.append_skill_short + (db.settings.display.onlyAppendSkillTwo ? '2|' : ''),
-                  (i - 1).toString())),
-            );
-          }
-        }),
-        onChanged: (v) {
-          setState(() {
-            _changedAppend = v;
-            if (_changedAppend == null) return;
-            _batchChange((svt, cur, target) {
-              for (int i in (db.settings.display.onlyAppendSkillTwo ? [1] : [0, 1, 2])) {
-                if (db.settings.display.onlyAppendUnlocked && cur.appendSkills[i] == 0) {
-                  continue;
-                }
-                if (changeTarget) {
-                  if (v == -1) {
-                    target.appendSkills[i] = min(10, cur.appendSkills[i] + 1);
-                  } else {
-                    target.appendSkills[i] = max(cur.appendSkills[i], _changedAppend!);
-                  }
-                } else {
-                  if (v == -1) {
-                    cur.appendSkills[i] = min(10, cur.appendSkills[i] + 1);
-                  } else {
-                    cur.appendSkills[i] = _changedAppend!;
-                  }
-                }
-              }
-            });
-          });
-        },
-      ),
       DropdownButton<bool>(
+        isDense: true,
         value: _changedDress,
         icon: Container(),
         hint: text(S.current.costume),
@@ -775,6 +720,7 @@ class ServantListPageState extends State<ServantListPage> with SearchableListSta
         },
       ),
       DropdownButton<int>(
+        isDense: true,
         value: _changedTd,
         icon: Container(),
         hint: text(S.current.np_short),
@@ -800,11 +746,112 @@ class ServantListPageState extends State<ServantListPage> with SearchableListSta
         },
       ),
     ];
-    Icons.lock;
+    final buttons2 = [
+      FilterGroup<bool>(
+        combined: true,
+        shrinkWrap: true,
+        options: const [false, true],
+        padding: const EdgeInsetsDirectional.only(end: 6),
+        values: FilterRadioData.nonnull(changeTarget),
+        onFilterChanged: (v, _) {
+          setState(() {
+            changeTarget = v.radioValue!;
+            _changedAscension = null;
+            _changedActive = null;
+            _changedAppend = null;
+            _changedDress = null;
+            _changedTd = null;
+          });
+        },
+        optionBuilder: (s) => Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+          child: Text(s ? S.current.plan_list_set_all_target : S.current.plan_list_set_all_current),
+        ),
+      ),
+      DropdownButton<int>(
+        // isDense: true,
+        value: _appendNum,
+        icon: Container(),
+        hint: text(S.current.append_skill_short),
+        items: List.generate(5, (i) {
+          return DropdownMenuItem(
+            value: i,
+            child: text(S.current.words_separate(S.current.append_skill_short, '${i + 1}')),
+          );
+        }),
+        onChanged: (v) {
+          setState(() {
+            _appendNum = v;
+          });
+        },
+      ),
+      DropdownButton<int>(
+        // isDense: true,
+        value: _changedAppend,
+        icon: Container(),
+        hint: text('Lv'),
+        items: List.generate(12, (i) {
+          if (i == 0) {
+            return DropdownMenuItem(value: -1, child: text('x+1'));
+          } else {
+            return DropdownMenuItem(
+              value: i - 1,
+              child: text('Lv${i - 1}'),
+            );
+          }
+        }),
+        onChanged: (v) {
+          setState(() {
+            _changedAppend = v;
+            if (_changedAppend == null) return;
+            _batchChange((svt, cur, target) {
+              final List<int> nums =
+                  _appendNum == null ? List.generate(kAppendSkillNums.length, (i) => i) : [_appendNum!];
+              for (int i in nums) {
+                if (db.settings.display.onlyAppendUnlocked && cur.appendSkills[i] == 0) {
+                  continue;
+                }
+                if (changeTarget) {
+                  if (v == -1) {
+                    target.appendSkills[i] = min(10, cur.appendSkills[i] + 1);
+                  } else {
+                    target.appendSkills[i] = max(cur.appendSkills[i], _changedAppend!);
+                  }
+                } else {
+                  if (v == -1) {
+                    cur.appendSkills[i] = min(10, cur.appendSkills[i] + 1);
+                  } else {
+                    cur.appendSkills[i] = _changedAppend!;
+                  }
+                }
+              }
+            });
+          });
+        },
+      ),
+      IconButton(
+        constraints: const BoxConstraints(),
+        onPressed: () {
+          setState(() {
+            db.settings.display.onlyAppendUnlocked = !db.settings.display.onlyAppendUnlocked;
+          });
+          EasyLoading.showToast(
+              '${S.current.plan_list_only_unlock_append}: ${db.settings.display.onlyAppendUnlocked ? "on" : "off"}');
+        },
+        icon: const Icon(Icons.lock_open),
+        iconSize: 18,
+        padding: const EdgeInsets.symmetric(horizontal: 4),
+        color: db.settings.display.onlyAppendUnlocked
+            ? Theme.of(context).colorScheme.primary
+            : Theme.of(context).disabledColor,
+        tooltip: S.current.plan_list_only_unlock_append,
+      )
+    ];
     return PreferredSize(
       preferredSize: const Size.fromHeight(64),
       child: Container(
         decoration: BoxDecoration(border: Border(top: Divider.createBorderSide(context, width: 0.5))),
+        padding: const EdgeInsets.only(top: 4),
         child: Align(
           alignment: Alignment.center,
           child: FittedBox(
@@ -815,55 +862,13 @@ class ServantListPageState extends State<ServantListPage> with SearchableListSta
                 Wrap(
                   spacing: 6,
                   crossAxisAlignment: WrapCrossAlignment.center,
-                  children: buttons,
+                  children: buttons1,
                 ),
+                // const SizedBox(height: 8),
                 Wrap(
                   spacing: 6,
                   crossAxisAlignment: WrapCrossAlignment.center,
-                  children: [
-                    // Padding(
-                    //   padding: const EdgeInsetsDirectional.only(start: 8),
-                    //   child: Text(S.current.plan_list_set_all),
-                    // ),
-                    FilterGroup<bool>(
-                      combined: true,
-                      options: const [false, true],
-                      padding: EdgeInsets.zero,
-                      values: FilterRadioData.nonnull(changeTarget),
-                      onFilterChanged: (v, _) {
-                        setState(() {
-                          changeTarget = v.radioValue!;
-                          _changedAscension = null;
-                          _changedActive = null;
-                          _changedAppend = null;
-                          _changedDress = null;
-                          _changedTd = null;
-                        });
-                      },
-                      optionBuilder: (s) =>
-                          Text(s ? S.current.plan_list_set_all_target : S.current.plan_list_set_all_current),
-                    ),
-                    FilterGroup<bool>(
-                      combined: true,
-                      options: const [true],
-                      padding: EdgeInsets.zero,
-                      values: FilterGroupData(options: {db.settings.display.onlyAppendUnlocked}),
-                      onFilterChanged: (v, _) {
-                        setState(() {
-                          db.settings.display.onlyAppendUnlocked = !db.settings.display.onlyAppendUnlocked;
-                        });
-                      },
-                      optionBuilder: (s) => Text(S.current.plan_list_only_unlock_append),
-                    ),
-                    IconButton(
-                      onPressed: () {
-                        router.push(url: Routes.items);
-                      },
-                      color: AppTheme(context).tertiary,
-                      icon: const Icon(Icons.category),
-                      tooltip: S.current.item,
-                    ),
-                  ],
+                  children: buttons2,
                 ),
                 const SizedBox(height: 4),
               ],

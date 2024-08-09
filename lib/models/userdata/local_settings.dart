@@ -250,7 +250,6 @@ class DisplaySettings {
   bool itemQuestsSortByAp;
   bool autoTurnOnPlanNotReach;
   SvtListClassFilterStyle classFilterStyle;
-  bool onlyAppendSkillTwo;
   bool onlyAppendUnlocked;
   bool planPageFullScreen;
   List<SvtTab> sortedSvtTabs;
@@ -270,7 +269,6 @@ class DisplaySettings {
     this.itemQuestsSortByAp = true,
     this.autoTurnOnPlanNotReach = false,
     this.classFilterStyle = SvtListClassFilterStyle.auto,
-    this.onlyAppendSkillTwo = true,
     this.onlyAppendUnlocked = true,
     this.planPageFullScreen = false,
     List<SvtTab?>? sortedSvtTabs,
