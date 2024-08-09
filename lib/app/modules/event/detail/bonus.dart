@@ -134,7 +134,7 @@ class _EventBonusTabState extends State<EventBonusTab> {
         children.add(ListTile(
           leading: db.getIconImage(skill.icon, height: 28),
           title: Text(skill.lName.l, textScaler: const TextScaler.linear(0.8)),
-          horizontalTitleGap: 4,
+          // horizontalTitleGap: 4,
         ));
       } else {
         children.add(kIndentDivider);

@@ -1135,13 +1135,13 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
               },
             ),
             PopupMenuItem(
-              child: const Text('ForceNoRunning'),
+              child: const Text('Break'),
               onTap: () {
                 if (mounted) _runningTask = false;
               },
             )
           ],
-        )
+        ),
       ],
     ];
     return SafeArea(
