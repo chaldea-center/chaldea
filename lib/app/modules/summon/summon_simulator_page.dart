@@ -265,7 +265,16 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
     List<Widget> svtRow = [];
     for (final block in data.svts) {
       if (block.ids.isEmpty) continue;
-      if (!_expanded && !block.display) continue;
+      if (!_expanded && !block.display) {
+        if (block.rarity == 5 &&
+            summon.isLuckyBag &&
+            data.svts.where((e) => e.rarity == 5).length == 1 &&
+            block.ids.length < 100) {
+          //
+        } else {
+          continue;
+        }
+      }
       double weight = block.weight / block.ids.length;
       for (final id in block.ids) {
         Servant? svt = db.gameData.servantsNoDup[id];

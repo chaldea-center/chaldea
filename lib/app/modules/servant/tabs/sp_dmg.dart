@@ -1,6 +1,7 @@
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/descriptors/func/func.dart';
 import 'package:chaldea/app/modules/common/filter_group.dart';
+import 'package:chaldea/app/modules/common/filter_page_base.dart';
 import 'package:chaldea/app/modules/trait/trait.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
@@ -8,6 +9,7 @@ import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../../common/builders.dart';
 import '../../common/misc.dart';
+import '../filter.dart';
 
 enum _SEScope {
   buff,
@@ -210,6 +212,7 @@ class SpDmgIndivTab extends StatefulWidget {
 
 class _SpDmgIndivTabState extends State<SpDmgIndivTab> {
   final type = FilterGroupData<_SEScope>();
+  final svtFilter = SvtFilterData();
 
   final data = <String, _GroupData>{};
 
@@ -317,17 +320,36 @@ class _SpDmgIndivTabState extends State<SpDmgIndivTab> {
         Expanded(child: buildBody()),
         kDefaultDivider,
         SafeArea(
-          child: ButtonBar(
-            alignment: MainAxisAlignment.center,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              FilterGroup(
-                options: _SEScope.values,
-                values: type,
-                combined: true,
-                onFilterChanged: (optionData, lastChanged) {
-                  setState(() {});
-                },
-                optionBuilder: (v) => Text(v.shownName),
+              Flexible(
+                child: FilterGroup(
+                  options: _SEScope.values,
+                  values: type,
+                  combined: true,
+                  onFilterChanged: (optionData, lastChanged) {
+                    setState(() {});
+                  },
+                  optionBuilder: (v) => Text(v.shownName),
+                ),
+              ),
+              IconButton(
+                icon: const Icon(Icons.filter_alt),
+                tooltip: '${S.current.filter} (${S.current.servant})',
+                onPressed: () => FilterPage.show(
+                  context: context,
+                  builder: (context) => ServantFilterPage(
+                    filterData: svtFilter,
+                    onChanged: (_) {
+                      if (mounted) {
+                        setState(() {});
+                      }
+                    },
+                    planMode: false,
+                  ),
+                ),
               ),
             ],
           ),
@@ -342,6 +364,7 @@ class _SpDmgIndivTabState extends State<SpDmgIndivTab> {
     List<Widget> children = [];
     for (final group in data.values) {
       final cards = <GameCardMixin>{for (final scope in scopes) ...?group.cards[scope]}.toList();
+      cards.removeWhere((card) => card is Servant && !ServantFilterPage.filter(svtFilter, card));
       if (cards.isEmpty) continue;
       children.add(Card(
         margin: const EdgeInsets.all(8),
