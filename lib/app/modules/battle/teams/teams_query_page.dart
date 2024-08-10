@@ -44,7 +44,8 @@ class TeamsQueryPage extends StatefulWidget {
 }
 
 class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListState<UserBattleData, TeamsQueryPage> {
-  static const _pageSize = 200;
+  static const _defaultPageSize = 200;
+  int pageSize = _defaultPageSize;
   final secrets = db.settings.secrets;
   int? get curUserId => secrets.user?.id;
 
@@ -194,7 +195,7 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
   Widget listItemBuilder(UserBattleData record) {
     final index = queryResult.data.indexOf(record);
     final shareData = record.decoded;
-    final shownIndex = _pageSize * pageIndex + index + 1;
+    final shownIndex = pageSize * pageIndex + index + 1;
 
     Widget child = Column(
       children: [
@@ -543,8 +544,8 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
       case TeamQueryMode.user:
         final userId = widget.userId ?? (widget.username != null ? int.tryParse(widget.username!) : null);
         task = showEasyLoading(() => ChaldeaWorkerApi.teamsByUser(
-              limit: _pageSize,
-              offset: _pageSize * page,
+              limit: pageSize,
+              offset: pageSize * page,
               expireAfter: refresh ? Duration.zero : const Duration(days: 2),
               userId: userId,
               username: widget.username,
@@ -557,8 +558,8 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
               questId: quest.id,
               phase: phase,
               enemyHash: widget.phaseInfo?.enemyHash,
-              limit: _pageSize,
-              offset: _pageSize * page,
+              limit: pageSize,
+              offset: pageSize * page,
               expireAfter: refresh ? Duration.zero : null,
             ));
       case TeamQueryMode.id:
@@ -577,6 +578,9 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
     }
     TeamQueryResult? result = await task;
     if (result != null) {
+      if ((result.total ?? 0) > result.limit) {
+        pageSize = result.limit;
+      }
       result.data.sortByList((e) => [
             e.userId == curUserId ? 0 : 1,
             db.curUser.battleSim.favoriteTeams[e.questId]?.contains(e.id) == true ? 0 : 1,
