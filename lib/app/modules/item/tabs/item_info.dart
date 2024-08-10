@@ -1,5 +1,7 @@
 import 'dart:math';
 
+import 'package:flutter/gestures.dart';
+
 import 'package:auto_size_text/auto_size_text.dart';
 
 import 'package:chaldea/app/modules/common/builders.dart';
@@ -126,42 +128,80 @@ class _ItemInfoTabState extends State<ItemInfoTab> {
   }
 
   Servant? svtCoinOwner;
-  final validCoins = const [0, 2, 6, 15, 30, 50, 90];
-  List<int> bondCoins = <int>[
+  final validSummonCoins = const [0, 2, 6, 15, 30, 50, 90];
+  final List<int> bondCoinsAfter9thAnni = [
+    ...List.generate(6, (index) => 5),
+    ...List.generate(3, (index) => 30),
+    ...List.generate(6, (index) => 50),
+  ];
+  final List<int> bondCoinsBefore9thAnni = <int>[
     ...List.generate(6, (index) => 5),
     ...List.generate(3, (index) => 10),
     ...List.generate(6, (index) => 20),
   ];
+  bool _useNewBondCoinRewards = false;
   int _summonCoin = 90;
   int _baseNp = 1;
   int _offsetNp = 0;
 
   List<Widget> _svtCoinObtain() {
+    final bondCoins = _useNewBondCoinRewards ? bondCoinsAfter9thAnni : bondCoinsBefore9thAnni;
     return [
-      CustomTableRow.fromTexts(
-        isHeader: true,
-        texts: const ['Table Setting: coins/NP & NP range'],
+      CustomTableRow(
+        children: [
+          TableCellData(
+            isHeader: true,
+            child: Text.rich(
+              TextSpan(text: 'coins/NP & NP range', children: [
+                const TextSpan(text: ': '),
+                TextSpan(
+                  text: 'NEW',
+                  style: _useNewBondCoinRewards ? TextStyle(color: Theme.of(context).colorScheme.primary) : null,
+                  recognizer: TapGestureRecognizer()
+                    ..onTap = () {
+                      setState(() {
+                        // _useNewBondCoinRewards = true;
+                      });
+                    },
+                ),
+                const TextSpan(text: '/'),
+                TextSpan(
+                  text: 'OLD',
+                  style: !_useNewBondCoinRewards ? TextStyle(color: Theme.of(context).colorScheme.primary) : null,
+                  recognizer: TapGestureRecognizer()
+                    ..onTap = () {
+                      setState(() {
+                        _useNewBondCoinRewards = false;
+                      });
+                    },
+                ),
+              ]),
+              textAlign: TextAlign.center,
+            ),
+          )
+        ],
       ),
       SizedBox(
         height: 36,
         child: CustomTableRow.fromChildren(
           children: List.generate(
-            validCoins.length,
+            validSummonCoins.length,
             (index) => InkWell(
               onTap: () {
                 setState(() {
-                  _summonCoin = validCoins[index];
+                  _summonCoin = validSummonCoins[index];
                 });
               },
               child: SizedBox.expand(
                 child: Center(
                   child: AutoSizeText(
-                    '${validCoins[index]}',
+                    '${validSummonCoins[index]}',
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                      color: _summonCoin == validCoins[index] ? Theme.of(context).colorScheme.error : null,
-                      fontWeight: _summonCoin == validCoins[index] ? FontWeight.bold : null,
-                      decoration: svtCoinOwner?.coin?.summonNum == validCoins[index] ? TextDecoration.underline : null,
+                      color: _summonCoin == validSummonCoins[index] ? Theme.of(context).colorScheme.error : null,
+                      fontWeight: _summonCoin == validSummonCoins[index] ? FontWeight.bold : null,
+                      decoration:
+                          svtCoinOwner?.coin?.summonNum == validSummonCoins[index] ? TextDecoration.underline : null,
                     ),
                     maxLines: 1,
                   ),

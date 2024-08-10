@@ -225,11 +225,11 @@ class BattleRecordManager {
     }
 
     for (final svtData in options.formation.allSvts) {
-      _checkSvtEligible(svtData);
+      _checkSvtEligible(svtData, questPhase);
     }
   }
 
-  void _checkSvtEligible(PlayerSvtData svtData) {
+  void _checkSvtEligible(PlayerSvtData svtData, QuestPhase questPhase) {
     final svt = svtData.svt;
     if (svt == null) return;
     final svtName = svt.lName.l;
@@ -274,7 +274,8 @@ class BattleRecordManager {
     int requiredCoins = 0, maxCoins = 0;
     int? summonCoin = svt.coin?.summonNum ?? 0;
     if (summonCoin > 0 && svt.rarity >= 4 && svtData.tdLv < 5) {
-      maxCoins = summonCoin * svtData.tdLv + 180;
+      // 9th Anniversary
+      maxCoins = summonCoin * svtData.tdLv + (questPhase.closedAt < DateTime(2024, 8, 4).timestamp ? 180 : 420);
       requiredCoins += max(((svtData.lv - 100) / 2).ceil() * 30, 0);
       requiredCoins += svtData.appendLvs.where((e) => e > 0).length * 120;
       if (requiredCoins > maxCoins) {
