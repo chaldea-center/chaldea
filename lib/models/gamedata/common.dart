@@ -480,19 +480,17 @@ extension SvtClassX on SvtClass {
   }
 
   static List<SvtClass> resolveClasses(SvtClass svtClass) {
-    if (svtClass == SvtClass.EXTRA1) {
-      return SvtClassX.extraI;
-    } else if (svtClass == SvtClass.EXTRA2) {
-      return SvtClassX.extraII;
-    } else if (svtClass == SvtClass.EXTRA) {
-      return SvtClassX.extra;
-    } else if (svtClass == SvtClass.ALL) {
-      return [...SvtClassX.regular, ...SvtClassX.extra];
-    } else if (svtClass == SvtClass.none) {
-      return const [];
-    } else {
-      return [svtClass];
-    }
+    final List<SvtClass> svtClasses = switch (svtClass) {
+      SvtClass.EXTRA1 => SvtClassX.extraI,
+      SvtClass.EXTRA2 => SvtClassX.extraII,
+      SvtClass.ALL => [...SvtClassX.regular, ...SvtClassX.extra],
+      SvtClass.beastAny => beasts,
+      SvtClass.none => [],
+      _ => [svtClass],
+    };
+    return <SvtClass>{
+      for (final svtClass in svtClasses) ...(svtClass == SvtClass.beastAny ? beasts : [svtClass])
+    }.toList();
   }
 }
 

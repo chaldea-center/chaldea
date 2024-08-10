@@ -482,11 +482,17 @@ class SharedBuilder {
     bool showUnknown = false,
   }) {
     Widget _oneClsBtn(SvtClass clsName) {
-      const extraClasses = SvtClassX.extra;
+      final extraClasses = {
+            SvtClass.EXTRA: SvtClassX.extra,
+            SvtClass.EXTRA1: SvtClassX.extraI,
+            SvtClass.EXTRA2: SvtClassX.extraII
+          }[clsName] ??
+          [];
+
       int rarity = 1;
       if (clsName == SvtClass.ALL) {
         rarity = data.isEmptyOrContain(SvtClassX.regularAll) || data.isAll(SvtClassX.regularAll) ? 5 : 1;
-      } else if (clsName == SvtClass.EXTRA) {
+      } else if (clsName == SvtClass.EXTRA || clsName == SvtClass.EXTRA1 || clsName == SvtClass.EXTRA2) {
         if (data.isAll(extraClasses)) {
           rarity = 5;
         } else if (data.isEmptyOrContain(extraClasses)) {
@@ -510,7 +516,7 @@ class SharedBuilder {
         onTap: () {
           if (clsName == SvtClass.ALL) {
             data.options = {};
-          } else if (clsName == SvtClass.EXTRA) {
+          } else if (clsName == SvtClass.EXTRA || clsName == SvtClass.EXTRA1 || clsName == SvtClass.EXTRA2) {
             data.options = Set.from(extraClasses);
           } else {
             data.options = {clsName};
@@ -527,7 +533,6 @@ class SharedBuilder {
     final clsExtraBtns = [
       for (var clsName in SvtClassX.extra) _oneClsBtn(clsName),
     ];
-    final extraBtn = _oneClsBtn(SvtClass.EXTRA);
     final unknownBtn = _oneClsBtn(SvtClass.unknown);
     SvtListClassFilterStyle style = db.settings.display.classFilterStyle;
     // full window mode
@@ -564,8 +569,13 @@ class SharedBuilder {
           constraints: const BoxConstraints(maxHeight: 40),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
-            children:
-                [...clsRegularBtns, extraBtn, if (showUnknown) unknownBtn].map((e) => Expanded(child: e)).toList(),
+            children: [
+              ...clsRegularBtns,
+              // _oneClsBtn(SvtClass.EXTRA),
+              _oneClsBtn(SvtClass.EXTRA1),
+              _oneClsBtn(SvtClass.EXTRA2),
+              if (showUnknown) unknownBtn,
+            ].map((e) => Expanded(child: e)).toList(),
           ),
         );
       case SvtListClassFilterStyle.singleRowExpanded:
