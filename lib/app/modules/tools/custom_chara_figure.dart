@@ -384,7 +384,7 @@ class CharaFigurePainter extends CustomPainter {
     if (!faceOnly) {
       final destRect = Rect.fromLTWH((script.faceX - offsetX) * dstScale, (script.faceY - offsetY) * dstScale,
           faceSize * dstScale, faceSize * dstScale);
-      canvas.drawRect(destRect.deflate(dstScale), Paint()..blendMode = BlendMode.clear);
+      canvas.drawRect(destRect.deflate(dstScale * 2), Paint()..blendMode = BlendMode.clear);
       draw(
         canvas,
         figure,
