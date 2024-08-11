@@ -535,6 +535,7 @@
   "logic_type_and": "AND",
   "logic_type_or": "OR",
   "login_auth": "Login Auth",
+  "login_bonus": "Login Bonus",
   "login_change_name": "Change Name",
   "login_change_password": "Change Password",
   "login_confirm_password": "Confirm Password",

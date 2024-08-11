@@ -667,6 +667,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "logic_type_and": MessageLookupByLibrary.simpleMessage("AND"),
         "logic_type_or": MessageLookupByLibrary.simpleMessage("OR"),
         "login_auth": MessageLookupByLibrary.simpleMessage("Login Auth"),
+        "login_bonus": MessageLookupByLibrary.simpleMessage("Login Bonus"),
         "login_change_name": MessageLookupByLibrary.simpleMessage("Change Name"),
         "login_change_password": MessageLookupByLibrary.simpleMessage("Change Password"),
         "login_confirm_password": MessageLookupByLibrary.simpleMessage("Confirm Password"),

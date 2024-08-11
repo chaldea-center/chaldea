@@ -1,10 +1,10 @@
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:chaldea/app/tools/localized_base.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
+import 'package:chaldea/widgets/widgets.dart';
 import 'common.dart';
 
 class SQSettingTab extends StatefulWidget {
@@ -15,24 +15,20 @@ class SQSettingTab extends StatefulWidget {
 }
 
 class _SQSettingTabState extends State<SQSettingTab> {
-  late ScrollController _scrollController;
-  late TextEditingController _curSQController;
-  late TextEditingController _curTicketController;
-  late TextEditingController _curAppleController;
-  late TextEditingController _accLoginController;
-  late TextEditingController _eventDiffController;
+  late final ScrollController _scrollController = ScrollController();
+  late final TextEditingController _curSQController = TextEditingController(text: plan.curSQ.toString());
+  late final TextEditingController _curTicketController = TextEditingController(text: plan.curTicket.toString());
+  late final TextEditingController _curAppleController = TextEditingController(text: plan.curApple.toString());
+  late final TextEditingController _accLoginController = TextEditingController(text: plan.accLogin.toString());
 
   SaintQuartzPlan get plan => db.curUser.saintQuartzPlan;
+
+  DailyBonusData? get dailyBonusData => db.runtimeData.dailyBonusData;
 
   @override
   void initState() {
     super.initState();
-    _scrollController = ScrollController();
-    _curSQController = TextEditingController(text: plan.curSQ.toString());
-    _curTicketController = TextEditingController(text: plan.curTicket.toString());
-    _curAppleController = TextEditingController(text: plan.curApple.toString());
-    _accLoginController = TextEditingController(text: plan.accLogin.toString());
-    _eventDiffController = TextEditingController(text: plan.eventDateDelta.toString());
+    db.runtimeData.loadDailyBonusData().then((v) => update());
   }
 
   @override
@@ -40,17 +36,115 @@ class _SQSettingTabState extends State<SQSettingTab> {
     super.dispose();
     _curSQController.dispose();
     _curTicketController.dispose();
+    _curAppleController.dispose();
     _accLoginController.dispose();
-    _eventDiffController.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    const _decoration = InputDecoration(counter: SizedBox());
+    const _decoration = InputDecoration(counter: SizedBox(), isDense: true);
     return ListView(
       controller: _scrollController,
       children: [
+        Card(
+          child: Padding(
+            padding: const EdgeInsets.all(8),
+            child: Text(LocalizedText.of(chs: '均为日服时间', jpn: null, eng: 'All are JP time now'),
+                textAlign: TextAlign.center),
+          ),
+        ),
         ListTile(
+          dense: true,
+          title: Text('${S.current.dataset_version} (${S.current.login_bonus})'),
+          subtitle: Text(dailyBonusData?.lastPresentTime?.sec2date().toStringShort(omitSec: true) ?? 'Not Found'),
+          trailing: IconButton(
+            onPressed: () {
+              SimpleCancelOkDialog(
+                title: Text(S.current.update),
+                onTapOk: () async {
+                  await showEasyLoading(() => db.runtimeData.loadDailyBonusData(refresh: true));
+                  update();
+                },
+              ).showDialog(context);
+            },
+            icon: const Icon(Icons.replay),
+            tooltip: S.current.update,
+          ),
+        ),
+        DividerWithTitle(title: S.current.options),
+        SwitchListTile.adaptive(
+          dense: true,
+          value: plan.campaignLoginBonus,
+          onChanged: (v) {
+            plan.campaignLoginBonus = v;
+            update();
+          },
+          title: Text('${S.current.login_bonus}(${S.current.event_campaign})'),
+          subtitle: Text('JP ${[
+            dailyBonusData?.info.start,
+            dailyBonusData?.lastPresentTime
+          ].map((e) => e?.sec2date().toDateString() ?? '???').join(' ~ ')}'),
+          controlAffinity: ListTileControlAffinity.trailing,
+        ),
+        SwitchListTile.adaptive(
+          dense: true,
+          value: plan.weeklyMission,
+          onChanged: (v) {
+            plan.weeklyMission = v;
+            update();
+          },
+          title: Text(S.current.master_mission_weekly),
+          subtitle: Text(S.current.sq_fragment_convert),
+          controlAffinity: ListTileControlAffinity.trailing,
+        ),
+        const DividerWithTitle(indent: 16),
+        ListTile(
+          dense: true,
+          title: Text(LocalizedText.of(chs: '起始日期', jpn: '開始日', eng: 'Start Date', kor: '시작일')),
+          trailing: TextButton(
+            onPressed: () async {
+              final newDate = await showDatePicker(
+                context: context,
+                initialDate: plan.startDate,
+                firstDate: DateTime(2015),
+                lastDate: DateTime(2040),
+              );
+              if (newDate != null) {
+                plan.startDate = newDate;
+                if (newDate.isAfter(plan.endDate)) {
+                  plan.endDate = newDate.add(const Duration(days: 365));
+                }
+                update();
+              }
+            },
+            child: Text(plan.startDate.toDateString()),
+          ),
+        ),
+        ListTile(
+          dense: true,
+          title: Text(LocalizedText.of(chs: '结束日期', jpn: '最終日', eng: 'End Date', kor: '마지막 일')),
+          trailing: TextButton(
+            onPressed: () async {
+              final newDate = await showDatePicker(
+                context: context,
+                initialDate: plan.endDate,
+                firstDate: DateUtils.addDaysToDate(plan.startDate, 30),
+                lastDate: DateTime(2041),
+              );
+              if (newDate != null) {
+                plan.endDate = newDate;
+                if (newDate.isBefore(plan.startDate)) {
+                  plan.startDate = newDate.subtract(const Duration(days: 365));
+                }
+                update();
+              }
+            },
+            child: Text(plan.endDate.toDateString()),
+          ),
+        ),
+        DividerWithTitle(title: 'User status at ${plan.startDate.toDateString()}'),
+        ListTile(
+          dense: true,
           title: Text(LocalizedText.of(chs: '持有圣晶石', jpn: '所持聖晶石', eng: 'Held SQ', kor: '가지고 있는 성정석')),
           trailing: SizedBox(
             width: 60,
@@ -68,6 +162,7 @@ class _SQSettingTabState extends State<SQSettingTab> {
           ),
         ),
         ListTile(
+          dense: true,
           title: Text(LocalizedText.of(chs: '持有呼符', jpn: '所持呼符', eng: 'Held Ticket', kor: '가지고 있는 호부')),
           trailing: SizedBox(
             width: 60,
@@ -85,6 +180,7 @@ class _SQSettingTabState extends State<SQSettingTab> {
           ),
         ),
         ListTile(
+          dense: true,
           title: Text(LocalizedText.of(chs: '持有苹果', jpn: '所持果実', eng: 'Held Apple', kor: '가지고 있는 사과')),
           trailing: SizedBox(
             width: 60,
@@ -101,43 +197,9 @@ class _SQSettingTabState extends State<SQSettingTab> {
             ),
           ),
         ),
+        const DividerWithTitle(indent: 16),
         ListTile(
-          title: Text(LocalizedText.of(chs: '起始日期', jpn: '開始日', eng: 'Start Date', kor: '시작일')),
-          trailing: TextButton(
-            onPressed: () async {
-              final newDate = await showDatePicker(
-                context: context,
-                initialDate: plan.startDate,
-                firstDate: DateTime(2015),
-                lastDate: DateTime(2040),
-              );
-              if (newDate != null) {
-                plan.startDate = newDate;
-                update();
-              }
-            },
-            child: Text(plan.startDate.toDateString()),
-          ),
-        ),
-        ListTile(
-          title: Text(LocalizedText.of(chs: '结束日期', jpn: '最終日', eng: 'End Date', kor: '마지막 일')),
-          trailing: TextButton(
-            onPressed: () async {
-              final newDate = await showDatePicker(
-                context: context,
-                initialDate: plan.endDate,
-                firstDate: DateUtils.addDaysToDate(plan.startDate, 30),
-                lastDate: DateTime(2041),
-              );
-              if (newDate != null) {
-                plan.endDate = newDate;
-                update();
-              }
-            },
-            child: Text(plan.endDate.toDateString()),
-          ),
-        ),
-        ListTile(
+          dense: true,
           title: Text(SaintLocalized.accLogin),
           trailing: SizedBox(
             width: 60,
@@ -155,6 +217,7 @@ class _SQSettingTabState extends State<SQSettingTab> {
           ),
         ),
         ListTile(
+          dense: true,
           title: Text(SaintLocalized.continuousLogin),
           trailing: DropdownButton<int>(
             isExpanded: false,
@@ -172,38 +235,9 @@ class _SQSettingTabState extends State<SQSettingTab> {
             },
           ),
         ),
-        ListTile(
-          title: Text(LocalizedText.of(
-              chs: '与日服的时间差(天)',
-              jpn: '日本サーバーとの日付の違い(日)',
-              eng: 'Date diff with JP server(Day)',
-              kor: '일본 서버와의 날짜 차이(일)')),
-          trailing: SizedBox(
-            width: 60,
-            child: TextFormField(
-              controller: _eventDiffController,
-              onChanged: (s) {
-                plan.eventDateDelta = int.tryParse(s) ?? plan.eventDateDelta;
-                update();
-              },
-              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-              textAlign: TextAlign.center,
-              maxLength: 4,
-              decoration: _decoration,
-            ),
-          ),
-        ),
+        DividerWithTitle(title: S.current.display_setting),
         SwitchListTile.adaptive(
-          value: plan.weeklyMission,
-          onChanged: (v) {
-            plan.weeklyMission = v;
-            update();
-          },
-          title: Text(S.current.master_mission_weekly),
-          subtitle: Text(S.current.sq_fragment_convert),
-          controlAffinity: ListTileControlAffinity.trailing,
-        ),
-        SwitchListTile.adaptive(
+          dense: true,
           value: plan.favoriteSummonOnly,
           onChanged: (v) {
             plan.favoriteSummonOnly = v;
@@ -217,25 +251,22 @@ class _SQSettingTabState extends State<SQSettingTab> {
             padding: const EdgeInsets.all(12),
             child: Text(
               LocalizedText.of(
-                chs: """实际可获得量远高于计算值：
-仅计算连续登陆奖励、每月魔力棱镜商店呼符、限时活动的关卡通关报酬;
-特殊御主任务奖励由于数量繁多，不再计入;
-其余纪念活动、转发达标奖励、维护补偿等直接发放到礼物盒中的奖励均未计算、且无法自动统计。""",
-                jpn: """実際に取得したリソースは、計算よりもはるかに多いはずです。
-連続ログイン報酬、毎月のプリスマショップの呼符、および期間限定イベントのクエスト報酬のみが計算されます。
-エクストラマスターミッション報酬は多数あるため、カウントされなくなりました。
-その他の記念イベント、メンテナンス補償、メールボックスに直接配布されるものは計算されず、自動的に数えられないからです。""",
-                eng: """Actual obtained resources should be MUCH MORE than calculated.
+                chs: """各日期和奖励可能由于时区不同和0点结算/4点结算不同的原因存在±1天的误差.
+实际可获得量应高于计算值：
+目前计算：连续登陆奖励、日服2024/1/16以后的纪念活动等登陆奖励、每月魔力棱镜商店5呼符、限时活动的关卡通关报酬、;
+纪念活动登陆奖励数据的统计可能由于各种因素造成统计中断/缺失；可能包含不同用户不同的一次性奖励补发（如周年更新灵基再临奖励带来的补发）;
+特殊御主任务奖励众多且多分阶段开放没有计入。""",
+                jpn: null,
+                eng: """Date time may have ±1 day offset due to timezone and different settlement time (JP 0AM/4AM).
 
-Only the continuous login rewards, monthly prism store tickets, and quest rewards of limited events are calculated.
+Actual obtained resources should be more than predicated.
 
-Extra master mission rewards are removed due to too many missions.
+Current calculated: continuous login bonus, campaign login bonus (started from JP 2024/1/16), monthly 5 prism store tickets, quest rewards from limited events.
 
-The other campaign events, maintenance compensation, and other rewards directly sent to the gift box are not calculated because cannot be automatically counted.""",
-                kor: """실제 획득된 자원은 계산된 것보다 훨씬 더 많아야 합니다.
-연속 로그인 보상, 월별 마나 프리즘 상점 호부, 한정 이벤트의 퀘스트 보상만 계산됩니다.
-엑스트라 마스터 미션 보상은 마지막 날에 추가로 지급됩니다.(Extra missions are removed due to too many missions)
-기타 캠페인 이벤트, 유지 보수, 기타 기프트 박스로 직접 발송되는 보상은 자동 집계가 불가능하여 계산되지 않습니다. """,
+Campaign login bonus may lack some days or even be interrupted due to some external reasons. Some one-time rewards may differ from each user (Such as ascension rewards when anniversary update). 
+
+Extra master mission rewards are not included.""",
+                kor: null,
               ),
               style: Theme.of(context).textTheme.bodySmall,
             ),
@@ -253,6 +284,7 @@ The other campaign events, maintenance compensation, and other rewards directly 
 
   void update() {
     if (mounted) setState(() {});
+    plan.validate();
     EasyDebounce.debounce(
       'sq_plan_solve',
       const Duration(seconds: 1),

@@ -535,6 +535,7 @@
   "logic_type_and": "且",
   "logic_type_or": "或",
   "login_auth": "登入憑證(Auth)",
+  "login_bonus": null,
   "login_change_name": "修改使用者名稱",
   "login_change_password": "修改密碼",
   "login_confirm_password": "確認密碼",

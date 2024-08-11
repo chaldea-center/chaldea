@@ -1,13 +1,14 @@
 import 'dart:math';
 
-import 'package:flutter/material.dart';
-
 import 'package:data_table_2/data_table_2.dart';
 import 'package:intl/intl.dart';
 
+import 'package:chaldea/app/app.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
+import 'package:chaldea/widgets/widgets.dart';
+import 'daily_bonus.dart';
 
 class SQTableTab extends StatefulWidget {
   SQTableTab({super.key});
@@ -85,6 +86,7 @@ class _SQTableTabState extends State<SQTableTab> {
         DataColumn2(
             label: Center(child: Text(S.current.summon_ticket_short, textAlign: TextAlign.center)), fixedWidth: 50),
         DataColumn2(label: Center(child: Text(S.current.item_apple, textAlign: TextAlign.center)), fixedWidth: 50),
+        DataColumn2(label: Center(child: Text(S.current.event_campaign, textAlign: TextAlign.center)), fixedWidth: 50),
         DataColumn2(label: Text(' ${S.current.event}')),
       ],
       empty: const SizedBox.shrink(),
@@ -124,6 +126,8 @@ class _PlanDataSource extends DataTableSource {
       DataCell(_accWithAdd('${detail.accTicket}', detail.addTicket == 0 ? '' : '+${detail.addTicket}')),
       DataCell(_accWithAdd(detail.accApple.format(compact: false, precision: 1),
           detail.addApple == 0.0 ? '' : ('+${detail.addApple.format(compact: false, precision: 1)}'))),
+      DataCell(Center(child: Text(detail.presents.isEmpty ? '' : detail.presents.length.toString())),
+          onTap: detail.presents.isEmpty ? null : () => showPresents(detail))
     ];
 
     cells.add(DataCell(getEvents(detail)));
@@ -205,5 +209,25 @@ class _PlanDataSource extends DataTableSource {
         children: children,
       ),
     );
+  }
+
+  void showPresents(SQDayDetail detail) {
+    if (!context.mounted) return;
+    router.showDialog(
+        context: context,
+        builder: (context) {
+          return SimpleCancelOkDialog(
+            title: Text(detail.date.toDateString()),
+            scrollable: true,
+            hideCancel: true,
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                for (final present in detail.presents)
+                  DailyBonusTabState.buildPresent(context: context, present: present),
+              ],
+            ),
+          );
+        });
   }
 }

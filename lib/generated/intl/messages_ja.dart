@@ -466,6 +466,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "list_count_shown_all": m20,
         "list_count_shown_hidden_all": m21,
         "list_end_hint": m6,
+        "login_bonus": MessageLookupByLibrary.simpleMessage("ログインボーナス"),
         "login_change_name": MessageLookupByLibrary.simpleMessage("ユーザー名を変更"),
         "login_change_password": MessageLookupByLibrary.simpleMessage("パスワードを変更"),
         "login_confirm_password": MessageLookupByLibrary.simpleMessage("パスワードを確認"),

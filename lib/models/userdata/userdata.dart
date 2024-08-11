@@ -8,6 +8,7 @@ import 'package:uuid/uuid.dart';
 
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
+import 'package:chaldea/models/gamedata/toplogin.dart';
 import 'package:chaldea/packages/app_info.dart';
 import '../../utils/basic.dart';
 import '../../utils/extension.dart';

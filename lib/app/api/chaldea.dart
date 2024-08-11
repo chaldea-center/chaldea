@@ -438,6 +438,14 @@ class ChaldeaWorkerApi {
       expireAfter: expireAfter,
     );
   }
+
+  static Future<DailyBonusData?> dailyBonusData({Duration? expireAfter}) async {
+    return cacheManager.getModel(
+      HostsX.proxyWorker("https://github.com/chaldea-center/daily-login-data/raw/main/JP_119238492/_stats/data.json"),
+      (data) => DailyBonusData.fromJson(data)..userPresentBox.sortByList((v) => [v.createdAt, v.presentId]),
+      expireAfter: expireAfter,
+    );
+  }
 }
 
 class CachedApi {

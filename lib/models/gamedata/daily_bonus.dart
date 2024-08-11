@@ -17,6 +17,11 @@ class DailyBonusData {
   });
 
   factory DailyBonusData.fromJson(Map<String, dynamic> json) => _$DailyBonusDataFromJson(json);
+
+  int? get lastPresentTime {
+    if (userPresentBox.isEmpty) return null;
+    return userPresentBox.last.createdAt;
+  }
 }
 
 @JsonSerializable(createToJson: false)
@@ -31,7 +36,7 @@ class DailyBonusAccountInfo {
   int startTotalLoginCount;
 
   DailyBonusAccountInfo({
-    required this.userId,
+    this.userId = 0,
     // required this.friendCode,
     required this.region,
     // required this.name,

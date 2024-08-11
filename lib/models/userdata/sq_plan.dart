@@ -12,14 +12,12 @@ class SaintQuartzPlan {
   int accLogin = 0;
   int continuousLogin = 1;
 
-  // event, in days
-  int eventDateDelta;
-
   // mission
   bool weeklyMission;
-  Map<int, bool> extraMissions;
-  bool minusPlannedBanner;
+  bool campaignLoginBonus;
+  Map<int, bool> extraMissions; // not included
 
+  bool minusPlannedBanner; // not implemented
   // view options
   bool favoriteSummonOnly;
 
@@ -36,14 +34,13 @@ class SaintQuartzPlan {
     DateTime? endDate,
     this.accLogin = 1,
     this.continuousLogin = 1,
-    this.eventDateDelta = 365,
-    bool? weeklyMission,
+    this.weeklyMission = true,
+    this.campaignLoginBonus = true,
     Map<int, bool>? missions,
     bool? minusPlannedBanner,
     this.favoriteSummonOnly = false,
   })  : startDate = startDate ?? DateUtils.dateOnly(DateTime.now()),
         endDate = endDate ?? DateUtils.dateOnly(DateTime.now()),
-        weeklyMission = weeklyMission ?? true,
         extraMissions = missions ?? {},
         minusPlannedBanner = minusPlannedBanner ?? true {
     validate();
@@ -51,7 +48,6 @@ class SaintQuartzPlan {
 
   void validate() {
     continuousLogin = continuousLogin.clamp2(1, 7);
-    eventDateDelta = eventDateDelta.clamp2(0);
     if (!endDate.isAfter(startDate)) {
       endDate = DateUtils.addDaysToDate(startDate, 365);
     }
@@ -59,8 +55,7 @@ class SaintQuartzPlan {
 
   bool isInRange(int? jp) {
     if (jp == null) return false;
-    final _date = DateUtils.dateOnly(DateUtils.addDaysToDate(jp.sec2date(), eventDateDelta));
-    return !_date.isBefore(startDate) && !_date.isAfter(endDate);
+    return jp >= startDate.timestamp && jp <= endDate.timestamp;
   }
 
   factory SaintQuartzPlan.fromJson(Map<String, dynamic> data) => _$SaintQuartzPlanFromJson(data);
@@ -116,30 +111,56 @@ class SaintQuartzPlan {
         addApple: apple,
       );
     }
+    if (campaignLoginBonus) {
+      final presents = db.runtimeData.dailyBonusData?.userPresentBox ?? [];
+      for (final present in presents) {
+        if (present.giftType != GiftType.item.value) continue;
+        if (present.fromType == PresentFromType.totalLogin.value ||
+            present.fromType == PresentFromType.seqLogin.value) {
+          continue;
+        }
+        if (!isInRange(present.createdAt)) continue;
+        final detail = dataMap[DateUtils.dateOnly(present.createdAt.sec2date()).toDateString()];
+        if (detail == null) continue;
+        if (present.objectId == Items.stoneId) {
+          detail.addSQ += present.num;
+        } else if (present.objectId == Items.summonTicketId) {
+          detail.addTicket += present.num;
+        } else if (present.objectId == Items.goldAppleId) {
+          detail.addApple += present.num;
+        } else if (present.objectId == Items.silverAppleId) {
+          detail.addApple += present.num / 2;
+        } else if (present.objectId == Items.bronzeAppleId) {
+          detail.addApple += present.num / 14.4;
+        }
+        detail.presents.add(present);
+      }
+    }
+
     // check event
     void _checkEvent({
       Event? event,
-      DateTime? startDate,
+      DateTime? start,
       Map<int, int>? items,
       String? name,
     }) {
       if (event != null) {
-        startDate ??= event.startedAt.sec2date();
+        start ??= event.startedAt.sec2date();
         items ??= event.statItemFixed;
         name ??= event.shownName;
       }
       items ??= {};
-      if (startDate == null) return;
+      if (start == null) return;
 
-      startDate = DateUtils.dateOnly(DateUtils.addDaysToDate(startDate, eventDateDelta));
-      final detail = dataMap[startDate.toDateString()];
+      start = DateUtils.dateOnly(start);
+      final detail = dataMap[start.toDateString()];
       if (detail == null) return;
 
       detail.addSQ += items[Items.stoneId] ?? 0;
       detail.addTicket += items[Items.summonTicketId] ?? 0;
       detail.addApple += (items[Items.goldAppleId] ?? 0) +
           (items[Items.silverAppleId] ?? 0) / 2 +
-          (items[Items.bronzeAppleId] ?? 0) / 14.2;
+          (items[Items.bronzeAppleId] ?? 0) / 14.4;
       if (event != null) {
         if (event.type != EventType.eventQuest && event.isEmpty && event.campaigns.isNotEmpty) {
           // pass
@@ -178,7 +199,7 @@ class SaintQuartzPlan {
     for (final summon in db.gameData.wiki.summons.values) {
       DateTime? startDate = summon.startTime.jp?.sec2date();
       if (startDate == null) continue;
-      startDate = DateUtils.dateOnly(DateUtils.addDaysToDate(startDate, eventDateDelta));
+      startDate = DateUtils.dateOnly(startDate);
       final detail = dataMap[startDate.toDateString()];
       if (detail == null) continue;
       if (!favoriteSummonOnly || db.curUser.summons.contains(summon.id)) {
@@ -215,6 +236,7 @@ class SQDayDetail {
   double accApple;
   List<Event> events;
   List<LimitedSummon> summons;
+  List<UserPresentBoxEntity> presents;
 
   SQDayDetail({
     required this.date,
@@ -228,7 +250,9 @@ class SQDayDetail {
     this.accApple = 0,
     List<Event>? events,
     List<LimitedSummon>? summons,
-  })  : continuousLogin = continuousLogin.clamp2(1, 7),
+    List<UserPresentBoxEntity>? presents,
+  })  : continuousLogin = continuousLogin.clamp(1, 7),
         events = events ?? [],
-        summons = summons ?? [];
+        summons = summons ?? [],
+        presents = presents ?? [];
 }

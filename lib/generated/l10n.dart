@@ -5953,6 +5953,17 @@ class S {
     );
   }
 
+  /// `Login Bonus`
+  String get login_bonus {
+    return Intl.message(
+      'Login Bonus',
+      name: 'login_bonus',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Change Name`
   String get login_change_name {
     return Intl.message(

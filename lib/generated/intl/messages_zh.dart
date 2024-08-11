@@ -635,6 +635,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "logic_type_and": MessageLookupByLibrary.simpleMessage("且"),
         "logic_type_or": MessageLookupByLibrary.simpleMessage("或"),
         "login_auth": MessageLookupByLibrary.simpleMessage("登陆凭据(Auth)"),
+        "login_bonus": MessageLookupByLibrary.simpleMessage("登陆奖励"),
         "login_change_name": MessageLookupByLibrary.simpleMessage("修改用户名"),
         "login_change_password": MessageLookupByLibrary.simpleMessage("修改密码"),
         "login_confirm_password": MessageLookupByLibrary.simpleMessage("确认密码"),

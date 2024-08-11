@@ -19,7 +19,7 @@ DailyBonusData _$DailyBonusDataFromJson(Map json) => DailyBonusData(
     );
 
 DailyBonusAccountInfo _$DailyBonusAccountInfoFromJson(Map json) => DailyBonusAccountInfo(
-      userId: (json['userId'] as num).toInt(),
+      userId: (json['userId'] as num?)?.toInt() ?? 0,
       region: const RegionConverter().fromJson(json['region'] as String),
       start: (json['start'] as num).toInt(),
       startSeqLoginCount: (json['startSeqLoginCount'] as num).toInt(),

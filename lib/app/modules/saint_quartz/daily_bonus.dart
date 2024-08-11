@@ -1,5 +1,3 @@
-import 'package:chaldea/app/api/chaldea.dart';
-import 'package:chaldea/models/gamedata/daily_bonus.dart';
 import 'package:chaldea/models/gamedata/toplogin.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
@@ -9,26 +7,22 @@ class DailyBonusTab extends StatefulWidget {
   DailyBonusTab({super.key});
 
   @override
-  State<DailyBonusTab> createState() => _DailyBonusTabState();
+  State<DailyBonusTab> createState() => DailyBonusTabState();
 }
 
-class _DailyBonusTabState extends State<DailyBonusTab> {
-  DailyBonusData? _dailyBonusData;
+class DailyBonusTabState extends State<DailyBonusTab> {
+  DailyBonusData? get _dailyBonusData => db.runtimeData.dailyBonusData;
   bool showDaily = false;
   bool showExtra = true;
 
   @override
   void initState() {
     super.initState();
-    loadData();
-  }
-
-  Future<void> loadData() async {
-    _dailyBonusData = await CachedApi.cacheManager.getModel(
-      HostsX.proxyWorker("https://github.com/chaldea-center/daily-login-data/raw/main/JP_119238492/_stats/data.json"),
-      (data) => DailyBonusData.fromJson(data),
-    );
-    if (mounted) setState(() {});
+    if (_dailyBonusData == null) {
+      db.runtimeData.loadDailyBonusData().then((v) {
+        if (mounted) setState(() {});
+      });
+    }
   }
 
   @override
@@ -95,18 +89,20 @@ class _DailyBonusTabState extends State<DailyBonusTab> {
       header: key,
       children: [
         if (showDaily)
-          for (final present in dailyLogins) buildPresent(present, true),
+          for (final present in dailyLogins)
+            buildPresent(
+                context: context, present: present, tileColor: Theme.of(context).disabledColor.withOpacity(0.1)),
         if (showExtra)
-          for (final present in extraBonus) buildPresent(present, false),
+          for (final present in extraBonus) buildPresent(context: context, present: present),
       ],
     );
   }
 
-  Widget buildPresent(UserPresentBoxEntity present, bool isDaily) {
+  static Widget buildPresent({required BuildContext context, required UserPresentBoxEntity present, Color? tileColor}) {
     final flags = present.flags;
     return ListTile(
       dense: true,
-      tileColor: isDaily ? Theme.of(context).disabledColor.withOpacity(0.1) : null,
+      tileColor: tileColor,
       leading: Gift(
         id: 0,
         type: GiftType.fromId(present.giftType),

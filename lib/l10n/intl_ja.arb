@@ -535,6 +535,7 @@
   "logic_type_and": null,
   "logic_type_or": null,
   "login_auth": null,
+  "login_bonus": "ログインボーナス",
   "login_change_name": "ユーザー名を変更",
   "login_change_password": "パスワードを変更",
   "login_confirm_password": "パスワードを確認",

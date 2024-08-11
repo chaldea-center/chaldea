@@ -3,9 +3,10 @@ import 'package:flutter/material.dart';
 
 import 'package:screenshot/screenshot.dart';
 
+import 'package:chaldea/app/api/chaldea.dart';
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/models/db.dart';
-import 'package:chaldea/utils/extension.dart';
+import 'package:chaldea/utils/utils.dart';
 import '../app/routes/delegate.dart';
 import '../app/tools/app_update.dart';
 import '../packages/app_info.dart';
@@ -71,6 +72,16 @@ class RuntimeData {
       (r) => r.index == 0 ? db.settings.filters.laplaceSvtFilterData : SvtFilterData(useGrid: true));
   final ceFilters = _RouterValueMap<CraftFilterData>((r) => CraftFilterData(useGrid: true)
     ..obtain.options = CEObtain.values.toSet().difference({CEObtain.valentine, CEObtain.exp, CEObtain.campaign}));
+
+  // gamedata
+  DailyBonusData? dailyBonusData;
+
+  Future<DailyBonusData?> loadDailyBonusData({bool refresh = false}) async {
+    final data = await EasyThrottle.throttleAsync(
+        'load_daily_bonus', () => ChaldeaWorkerApi.dailyBonusData(expireAfter: refresh ? Duration.zero : null));
+    if (data != null) dailyBonusData = data;
+    return data;
+  }
 }
 
 class AppClipBoard {
