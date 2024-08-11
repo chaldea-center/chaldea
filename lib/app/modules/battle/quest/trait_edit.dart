@@ -37,7 +37,7 @@ class _TraitEditPageState extends State<TraitEditPage> {
           ),
           kDefaultDivider,
           SafeArea(
-            child: ButtonBar(
+            child: OverflowBar(
               alignment: MainAxisAlignment.center,
               children: [
                 FilledButton(

@@ -44,7 +44,7 @@ class _TdDmgRankingTabState extends State<TdDmgRankingTab> {
         Expanded(child: listView),
         kDefaultDivider,
         SafeArea(
-          child: ButtonBar(
+          child: OverflowBar(
             alignment: MainAxisAlignment.center,
             children: [
               Wrap(

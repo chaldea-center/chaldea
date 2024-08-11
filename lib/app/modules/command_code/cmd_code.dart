@@ -119,7 +119,7 @@ class _CmdCodeDetailPageState extends State<CmdCodeDetailPage> {
               ],
             ),
           SafeArea(
-            child: ButtonBar(alignment: MainAxisAlignment.center, children: [
+            child: OverflowBar(alignment: MainAxisAlignment.center, children: [
               // ProfileLangSwitch(
               //   primary: lang,
               //   onChanged: (v) {

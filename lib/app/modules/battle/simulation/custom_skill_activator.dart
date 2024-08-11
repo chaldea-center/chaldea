@@ -138,7 +138,7 @@ class _CustomSkillActivatorState extends State<CustomSkillActivator> {
                     },
                   ),
                 ),
-                ButtonBar(
+                OverflowBar(
                   alignment: MainAxisAlignment.start,
                   children: [
                     FilterGroup<BattleServantData?>(

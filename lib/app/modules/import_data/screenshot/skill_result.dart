@@ -168,7 +168,7 @@ class _SkillResultTabState extends State<SkillResultTab> with ScrollControllerMi
   }
 
   Widget get buttonBar {
-    return ButtonBar(
+    return OverflowBar(
       alignment: MainAxisAlignment.center,
       children: [
         ElevatedButton(

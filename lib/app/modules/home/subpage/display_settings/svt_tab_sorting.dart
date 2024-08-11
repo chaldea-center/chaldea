@@ -22,7 +22,7 @@ class _SvtTabsSortingSettingState extends State<SvtTabsSortingSetting> {
         children: [
           reorderableList(),
           SFooter(S.current.drag_to_sort),
-          ButtonBar(
+          OverflowBar(
             alignment: MainAxisAlignment.center,
             children: [
               ElevatedButton(

@@ -407,7 +407,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
   }
 
   Widget get buttonBar {
-    return ButtonBar(
+    return OverflowBar(
       alignment: MainAxisAlignment.center,
       children: [
         Wrap(
@@ -1387,7 +1387,7 @@ class _CraftEssenceOptionEditPageState extends State<CraftEssenceOptionEditPage>
   }
 
   Widget get buttonBar {
-    return ButtonBar(
+    return OverflowBar(
       alignment: MainAxisAlignment.center,
       children: [
         Wrap(

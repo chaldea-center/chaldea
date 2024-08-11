@@ -108,7 +108,7 @@ class _ChaldeaGateQuestListPageState extends State<ChaldeaGateQuestListPage>
         ),
         kDefaultDivider,
         SafeArea(
-          child: ButtonBar(
+          child: OverflowBar(
             alignment: MainAxisAlignment.center,
             children: [
               const Text("Group by "),

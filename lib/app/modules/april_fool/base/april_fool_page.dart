@@ -235,7 +235,7 @@ mixin AprilFoolPageMixin<T extends StatefulWidget> on State<T> {
 
   Widget buildButtonBar() {
     // final svt = data.curSvt?.svt;
-    Widget child = ButtonBar(
+    Widget child = OverflowBar(
       alignment: MainAxisAlignment.center,
       children: [
         // svt?.iconBuilder(context: context, width: 24) ?? const SizedBox(width: 24),

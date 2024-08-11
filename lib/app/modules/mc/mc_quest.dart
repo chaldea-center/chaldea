@@ -85,7 +85,7 @@ class _MCQuestConvertPageState extends State<MCQuestConvertPage> {
             ),
           ),
           SafeArea(
-            child: ButtonBar(
+            child: OverflowBar(
               alignment: MainAxisAlignment.center,
               children: [
                 FilledButton(
@@ -276,7 +276,7 @@ class _MCQuestListConvertPageState extends State<MCQuestListConvertPage> {
             ),
           ),
           SafeArea(
-            child: ButtonBar(
+            child: OverflowBar(
               alignment: MainAxisAlignment.center,
               children: [
                 FilledButton(

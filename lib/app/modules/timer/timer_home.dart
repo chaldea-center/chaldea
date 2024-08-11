@@ -130,8 +130,7 @@ class _TimerHomePageState extends State<TimerHomePage>
       minimumSize: ButtonStyleButton.allOrNull<Size>(const Size(2, 36)),
       padding: ButtonStyleButton.allOrNull<EdgeInsetsGeometry>(const EdgeInsets.symmetric(horizontal: 4)),
     );
-    return ButtonBar(
-      mainAxisSize: MainAxisSize.min,
+    return OverflowBar(
       alignment: MainAxisAlignment.center,
       children: [
         FilterGroup<TimerSortType>(

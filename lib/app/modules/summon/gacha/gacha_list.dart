@@ -252,7 +252,7 @@ class _GachaListPageState extends State<GachaListPage>
     if (!shouldShowMultiChoice) return null;
     return PreferredSize(
       preferredSize: const Size.fromHeight(48),
-      child: ButtonBar(
+      child: OverflowBar(
         alignment: MainAxisAlignment.center,
         children: [
           const SizedBox(width: kMinInteractiveDimension),

@@ -100,7 +100,7 @@ class _QuestEditPageState extends State<QuestEditPage> {
   }
 
   Widget get buttonBar {
-    return ButtonBar(
+    return OverflowBar(
       alignment: MainAxisAlignment.center,
       children: [
         FilledButton.icon(

@@ -107,7 +107,7 @@ class _SvtLoreTabState extends State<SvtLoreTab> {
     final hasMC = widget.svt.extra.mcProfiles.isNotEmpty,
         hasFandom = widget.svt.extra.fandomProfiles.isNotEmpty,
         hasApril = widget.svt.extra.aprilFoolProfile.values.any((e) => e != null);
-    return ButtonBar(
+    return OverflowBar(
       alignment: MainAxisAlignment.center,
       children: [
         FilterGroup<Region>(

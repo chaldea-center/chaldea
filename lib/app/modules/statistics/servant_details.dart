@@ -129,7 +129,7 @@ class _ServantDemandDetailStatState extends State<ServantDemandDetailStat> {
   }
 
   Widget get buttonBar {
-    return ButtonBar(
+    return OverflowBar(
       children: [
         FilterGroup<SvtMatCostDetailType>(
           options: const [SvtMatCostDetailType.consumed, SvtMatCostDetailType.demands],

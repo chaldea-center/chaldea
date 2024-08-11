@@ -831,8 +831,7 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
           alignment: Alignment.centerRight,
           child: FittedBox(
             fit: BoxFit.scaleDown,
-            child: ButtonBar(
-              buttonPadding: const EdgeInsets.symmetric(horizontal: 2),
+            child: OverflowBar(
               children: buttons,
             ),
           ),

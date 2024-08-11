@@ -49,7 +49,7 @@ class DailyBonusTabState extends State<DailyBonusTab> {
         ),
         kDefaultDivider,
         SafeArea(
-            child: ButtonBar(
+            child: OverflowBar(
           alignment: MainAxisAlignment.center,
           children: [
             CheckboxWithLabel(

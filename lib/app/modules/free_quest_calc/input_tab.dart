@@ -254,7 +254,7 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
   }
 
   Widget _buildButtonBar() {
-    return ButtonBar(
+    return OverflowBar(
       alignment: MainAxisAlignment.center,
       children: <Widget>[
         Wrap(

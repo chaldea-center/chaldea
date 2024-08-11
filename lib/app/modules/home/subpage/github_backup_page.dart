@@ -281,7 +281,7 @@ class _GithubBackupPageState extends State<GithubBackupPage> {
               tooltip: 'Clear local sha (able to overwrite remote content)',
             ),
           ),
-          ButtonBar(
+          OverflowBar(
             alignment: MainAxisAlignment.center,
             children: [
               ElevatedButton(

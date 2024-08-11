@@ -236,7 +236,7 @@ class _MasterMissionPageState extends State<MasterMissionPage> with RegionBasedS
   }
 
   Widget get buttonBar {
-    return ButtonBar(
+    return OverflowBar(
       alignment: MainAxisAlignment.center,
       children: [
         ElevatedButton.icon(

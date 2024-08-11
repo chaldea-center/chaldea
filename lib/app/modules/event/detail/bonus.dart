@@ -153,7 +153,7 @@ class _EventBonusTabState extends State<EventBonusTab> {
   }
 
   Widget get buttonBar {
-    return ButtonBar(
+    return OverflowBar(
       alignment: MainAxisAlignment.center,
       children: [
         FilledButton.icon(

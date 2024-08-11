@@ -137,7 +137,7 @@ class _CraftDetailPageState extends State<CraftDetailPage> {
               ],
             ),
           SafeArea(
-            child: ButtonBar(
+            child: OverflowBar(
               alignment: MainAxisAlignment.center,
               children: [
                 for (var i = 0; i < 2; i++)

@@ -57,7 +57,7 @@ class _BattleLogPageState extends State<BattleLogPage> {
           ),
           kDefaultDivider,
           SafeArea(
-            child: ButtonBar(
+            child: OverflowBar(
               alignment: MainAxisAlignment.center,
               children: [
                 FilterGroup<BattleLogType>(

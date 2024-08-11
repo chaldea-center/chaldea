@@ -310,7 +310,7 @@ class _FormationEditorState extends State<FormationEditor>
     if (sorting || widget.teamToSave == null) return null;
     return PreferredSize(
       preferredSize: const Size.fromHeight(48),
-      child: ButtonBar(
+      child: OverflowBar(
         alignment: MainAxisAlignment.center,
         children: [
           FilledButton.tonalIcon(

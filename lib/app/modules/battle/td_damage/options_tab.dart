@@ -42,7 +42,7 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
         Expanded(child: buildOptions()),
         kDefaultDivider,
         SafeArea(
-          child: ButtonBar(
+          child: OverflowBar(
             alignment: MainAxisAlignment.center,
             children: [
               ValueListenableBuilder(

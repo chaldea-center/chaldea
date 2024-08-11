@@ -163,7 +163,7 @@ class _UserQuestFarmingStatPageState extends State<UserQuestFarmingStatPage> wit
         ),
         kDefaultDivider,
         SafeArea(
-          child: ButtonBar(
+          child: OverflowBar(
             alignment: MainAxisAlignment.center,
             children: [
               FilterGroup<_UserQuestSort>(

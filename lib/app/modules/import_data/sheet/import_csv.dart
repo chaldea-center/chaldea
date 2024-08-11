@@ -52,7 +52,7 @@ class _ImportCSVPageState extends State<ImportCSVPage> {
   }
 
   Widget get buttonBar {
-    return ButtonBar(
+    return OverflowBar(
       alignment: MainAxisAlignment.center,
       children: [
         ElevatedButton(

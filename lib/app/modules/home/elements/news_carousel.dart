@@ -368,7 +368,7 @@ class AppNewsCarousel extends StatefulWidget {
 
 class _AppNewsCarouselState extends State<AppNewsCarousel> {
   int _curCarouselIndex = 0;
-  final CarouselController _carouselController = CarouselController();
+  final CarouselSliderController _carouselController = CarouselSliderController();
 
   CarouselSetting get carouselSetting => db.settings.carousel;
 

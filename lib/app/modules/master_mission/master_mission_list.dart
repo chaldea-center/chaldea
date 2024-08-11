@@ -170,9 +170,9 @@ class _MasterMissionListPageState extends State<MasterMissionListPage> {
   }
 
   Widget buttonBar(List<MstMasterMission> mms) {
-    return ButtonBar(
+    return OverflowBar(
       alignment: MainAxisAlignment.center,
-      overflowButtonSpacing: 4,
+      overflowSpacing: 4,
       children: [
         FilterGroup<MissionType?>(
           options: _allMissionTypes,

@@ -283,7 +283,7 @@ class _EventItemInputTabState extends State<EventItemInputTab> {
   }
 
   Widget _buildButtonBar() {
-    return ButtonBar(
+    return OverflowBar(
       alignment: MainAxisAlignment.center,
       children: <Widget>[
         Wrap(

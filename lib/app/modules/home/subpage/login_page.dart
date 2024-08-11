@@ -102,12 +102,12 @@ class _LoginPageState extends State<LoginPage> {
           ),
           const SizedBox(height: 8),
           mainAction(),
-          ButtonBar(
+          OverflowBar(
             alignment: MainAxisAlignment.center,
             children: otherActions(),
           ),
           if (mode == _PageMode.login)
-            ButtonBar(
+            OverflowBar(
               alignment: MainAxisAlignment.center,
               children: [
                 forgotPwdBtn,
@@ -116,7 +116,7 @@ class _LoginPageState extends State<LoginPage> {
               ],
             ),
           if (db.settings.secrets.user?.isAdmin == true)
-            ButtonBar(
+            OverflowBar(
               alignment: MainAxisAlignment.center,
               children: [
                 TextButton.icon(

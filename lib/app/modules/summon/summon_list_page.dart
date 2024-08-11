@@ -120,7 +120,7 @@ class _SummonListPageState extends State<SummonListPage>
   PreferredSizeWidget get buttonBar {
     return PreferredSize(
       preferredSize: const Size.fromHeight(48),
-      child: ButtonBar(
+      child: OverflowBar(
         alignment: MainAxisAlignment.center,
         children: [
           ElevatedButton(

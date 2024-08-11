@@ -272,7 +272,7 @@ class _MyRoomAssetsPageState extends State<MyRoomAssetsPage>
           Expanded(child: child),
           kDefaultDivider,
           SafeArea(
-            child: ButtonBar(
+            child: OverflowBar(
               alignment: MainAxisAlignment.center,
               children: [
                 FilterGroup<bool>(

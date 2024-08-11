@@ -99,7 +99,7 @@ class _ImportFgoSimuMaterialPageState extends State<ImportFgoSimuMaterialPage> w
         ),
         kDefaultDivider,
         SafeArea(
-          child: ButtonBar(
+          child: OverflowBar(
             alignment: MainAxisAlignment.center,
             children: [
               ElevatedButton(
@@ -174,7 +174,7 @@ class _ImportFgoSimuMaterialPageState extends State<ImportFgoSimuMaterialPage> w
         ),
         kDefaultDivider,
         SafeArea(
-          child: ButtonBar(
+          child: OverflowBar(
             alignment: MainAxisAlignment.center,
             children: [
               ElevatedButton(
@@ -237,7 +237,7 @@ class _ImportFgoSimuMaterialPageState extends State<ImportFgoSimuMaterialPage> w
         ),
         kDefaultDivider,
         SafeArea(
-          child: ButtonBar(
+          child: OverflowBar(
             alignment: MainAxisAlignment.center,
             children: [
               ElevatedButton(

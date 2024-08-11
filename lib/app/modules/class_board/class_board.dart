@@ -260,7 +260,7 @@ class _ClassBoardDetailPageState extends State<ClassBoardDetailPage> with Single
         ),
         kDefaultDivider,
         SafeArea(
-          child: ButtonBar(
+          child: OverflowBar(
             alignment: MainAxisAlignment.center,
             children: [
               ElevatedButton(

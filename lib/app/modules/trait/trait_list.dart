@@ -142,7 +142,7 @@ class _TraitListPageState extends State<TraitListPage> with SearchableListState<
     if (!widget.multipleMode) return null;
     return PreferredSize(
       preferredSize: const Size.fromHeight(48),
-      child: ButtonBar(
+      child: OverflowBar(
         alignment: MainAxisAlignment.center,
         children: [
           FilledButton(
