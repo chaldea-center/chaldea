@@ -1417,7 +1417,9 @@ class BattleServantData {
 
       final skillId = buff.vals.SkillID;
       final skillLv = buff.vals.SkillLV;
-      if (skillId != null && skillLv != null && await buff.shouldActivateBuff(battleData, niceTd.individuality)) {
+      if (skillId != null &&
+          skillLv != null &&
+          await buff.shouldActivateBuff(battleData, getTraits(addTraits: niceTd.individuality))) {
         BaseSkill? skill = db.gameData.baseSkills[skillId];
         skill ??= await showEasyLoading(() => AtlasApi.skill(skillId), mask: true);
         final replacementFunction = skill?.functions.firstOrNull;
@@ -1437,7 +1439,7 @@ class BattleServantData {
         updatedReplacementFunction.svals5 = updatedSvalsList;
 
         updatedFunctions[buff.param] = updatedReplacementFunction;
-
+        print('replacing ${buff.param} func');
         buff.setUsed(this);
       }
     }

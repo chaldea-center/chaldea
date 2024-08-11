@@ -1187,6 +1187,9 @@ class FuncDescriptor extends StatelessWidget {
       if (script.fromCommandSpell == 1) {
         _condSpans.add([TextSpan(text: Transl.miscFunction('fromCommandSpell'))]);
       }
+      if (buff.type == BuffType.npattackPrevBuff) {
+        _condSpans.add([TextSpan(text: '替换宝具效果中的第${(vals?.Value ?? 0) + 1}个效果(包含敌方效果)')]);
+      }
     }
 
     if (func.funcType == FuncType.lastUsePlayerSkillCopy) {
