@@ -129,14 +129,11 @@ class RootAppRouterDelegate extends RouterDelegate<RouteConfiguration>
     return Navigator(
       key: navigatorKey,
       pages: [MaterialPage(child: child)],
-      onPopPage: (route, result) {
-        if (!route.didPop(result)) return false;
+      onDidRemovePage: (page) {
         if (!appState.windowState.isSingle) {
           appState.windowState = WindowStateEnum.single;
-          return true;
         }
         notifyListeners();
-        return true;
       },
     );
   }

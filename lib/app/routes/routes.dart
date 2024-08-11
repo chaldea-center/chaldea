@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import 'package:chaldea/app/modules/ai/ai_page.dart';
@@ -306,7 +308,7 @@ class RouteConfiguration {
         arguments = null,
         detail = null;
 
-  SplitPage createPage() {
+  SplitPage<T> createPage<T>() {
     return SplitPage(
       child: resolvedChild ?? NotFoundPage(configuration: this),
       detail: detail ?? !Routes.masterRoutes.contains(url),
@@ -507,22 +509,42 @@ class RouteConfiguration {
   }
 }
 
-class SplitPage extends MaterialPage {
+class SplitPage<T> extends MaterialPage<T> {
+  final Completer<T?> completer;
   final bool? detail;
 
-  const SplitPage({
+  SplitPage({
     required super.child,
     this.detail,
     super.maintainState,
     super.fullscreenDialog,
+    super.allowSnapshotting,
     super.key,
+    super.canPop,
+    super.onPopInvoked,
     super.name,
     super.arguments,
     super.restorationId,
-  });
+  }) : completer = Completer();
+
+  void onPopInvokedWithComplete(bool didPop, T? result) {
+    super.onPopInvoked(didPop, result);
+    complete(result);
+  }
 
   @override
-  Route createRoute(BuildContext context) {
+  PopInvokedWithResultCallback<T> get onPopInvoked => onPopInvokedWithComplete;
+
+  void complete(FutureOr<T>? result) {
+    if (completer.isCompleted) {
+      print('$this already completed');
+    } else {
+      completer.complete(result);
+    }
+  }
+
+  @override
+  Route<T> createRoute(BuildContext context) {
     return SplitRoute(
       settings: this,
       builder: (context, _) => child,

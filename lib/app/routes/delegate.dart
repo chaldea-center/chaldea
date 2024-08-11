@@ -50,17 +50,16 @@ class AppRouterDelegate extends RouterDelegate<RouteConfiguration>
     addListener(_parent.notifyListeners);
   }
 
-  final List<_PageEntry> _history = [];
+  final List<SplitPage> _history = [];
 
-  List<Page> get pages => List.unmodifiable(_history.map((e) => e.page));
+  List<Page> get pages => List.unmodifiable(_history);
 
   int get index => _parent.appState.children.indexOf(this);
 
   @override
-  RouteConfiguration? get currentConfiguration =>
-      _history.isNotEmpty && _history.last.page.arguments is RouteConfiguration
-          ? _history.last.page.arguments as RouteConfiguration
-          : null;
+  RouteConfiguration? get currentConfiguration => _history.isNotEmpty && _history.last.arguments is RouteConfiguration
+      ? _history.last.arguments as RouteConfiguration
+      : null;
 
   @override
   final GlobalKey<NavigatorState> navigatorKey = GlobalKey();
@@ -74,7 +73,7 @@ class AppRouterDelegate extends RouterDelegate<RouteConfiguration>
   @override
   Widget build(BuildContext context) {
     if (_history.isEmpty) {
-      _history.add(_PageEntry(RouteConfiguration.home().createPage(), Completer()));
+      _history.add(RouteConfiguration.home().createPage());
     }
 
     return SizedBox(
@@ -84,28 +83,25 @@ class AppRouterDelegate extends RouterDelegate<RouteConfiguration>
         child: Navigator(
           key: navigatorKey,
           pages: pages,
-          onPopPage: onPopPage,
+          // onPopPage: onPopPage,
+          onDidRemovePage: onPopPage,
         ),
       ),
     );
   }
 
   // only called when [Page] found
-  bool onPopPage(Route route, dynamic result) {
-    if (!route.didPop(result)) return false;
-    assert(_history.any((p) => p.page == route.settings));
-    bool handled = true;
+  void onPopPage(Page page) {
+    assert(_history.contains(page));
     if (canPop()) {
       for (int index = _history.length - 1; index >= 0; index--) {
-        if (_history[index].page == route.settings) {
-          _history.removeAt(index).complete(result);
+        if (_history[index] == page) {
+          _history.removeAt(index);
+          break;
         }
       }
-    } else {
-      handled = false;
     }
     notifyListeners();
-    return handled;
   }
 
   bool canPop() {
@@ -133,7 +129,7 @@ class AppRouterDelegate extends RouterDelegate<RouteConfiguration>
   void popUntil(bool Function(Page<dynamic> page) predicate) {
     while (canPop()) {
       final candidate = _history.last;
-      if (predicate(candidate.page)) {
+      if (predicate(candidate)) {
         return;
       }
       pop();
@@ -157,14 +153,13 @@ class AppRouterDelegate extends RouterDelegate<RouteConfiguration>
       arguments: arguments,
       region: region,
     ).createPage();
-    final completer = Completer<T?>();
-    _history.add(_PageEntry(page, completer));
+    _history.add(page);
     if (url != null && url.trim().trimChar('/').isNotEmpty) {
       urlHistory.add(url);
     }
     notifyListeners();
     final view = AppAnalysis.instance.startView(url ?? child?.runtimeType.toString());
-    final result = await completer.future;
+    final result = await page.completer.future;
     AppAnalysis.instance.stopView(view);
     return result;
   }
@@ -222,8 +217,8 @@ class AppRouterDelegate extends RouterDelegate<RouteConfiguration>
   void popDetails() {
     while (canPop()) {
       final lastEntry = _history.last;
-      final page = lastEntry.page;
-      if (page is SplitPage && page.detail == true) {
+      final page = lastEntry;
+      if (page.detail == true) {
         _history.remove(lastEntry);
         lastEntry.complete(null);
       } else {
@@ -265,30 +260,31 @@ class AppRouterDelegate extends RouterDelegate<RouteConfiguration>
     if (Routes.masterRoutes.contains(configuration.first)) {
       configuration = configuration.copyWith(detail: false);
     }
-    if (_history.isEmpty || _history.first.page.name != Routes.home) {
-      _history.insert(0, _PageEntry.config(RouteConfiguration.home()));
+    if (_history.isEmpty || _history.first.name != Routes.home) {
+      _history.insert(0, RouteConfiguration.home().createPage());
     }
-    if (configuration.url != _history.last.page.name) {
-      _history.add(_PageEntry.config(configuration));
+    if (configuration.url != _history.last.name) {
+      _history.add(configuration.createPage());
     }
     return SynchronousFuture(null);
   }
 }
 
-class _PageEntry<T> {
-  final Page page;
-  final Completer<T?> _completer;
+// @Deprecated('message')
+// class _PageEntry<T> {
+//   final Page page;
+//   final Completer<T?> _completer;
 
-  _PageEntry(this.page, [Completer<T?>? completer]) : _completer = completer ?? Completer();
+//   _PageEntry(this.page, [Completer<T?>? completer]) : _completer = completer ?? Completer();
 
-  _PageEntry.config(RouteConfiguration config, [Completer<T?>? completer])
-      : page = config.createPage(),
-        _completer = completer ?? Completer();
+//   _PageEntry.config(RouteConfiguration config, [Completer<T?>? completer])
+//       : page = config.createPage(),
+//         _completer = completer ?? Completer();
 
-  void complete([T? result]) {
-    _completer.complete(result);
-  }
-}
+//   void complete([T? result]) {
+//     _completer.complete(result);
+//   }
+// }
 
 class AppRouter extends StatelessWidget {
   final AppRouterDelegate router;
