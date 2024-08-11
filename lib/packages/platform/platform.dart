@@ -32,7 +32,7 @@ class PlatformU {
   static bool get isTargetDesktop => !isTargetMobile;
 
   // plugin supports
-  static final bool supportCopyImage = kIsWeb || Platform.isIOS || Platform.isMacOS;
+  static final bool supportCopyImage = kIsWeb || Platform.isIOS || Platform.isMacOS || Platform.isWindows;
 
   static final bool supportScreenshot = kIsWeb ? kPlatformMethods.rendererCanvasKit : true;
 }
