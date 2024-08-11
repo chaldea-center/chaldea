@@ -247,7 +247,9 @@ class SvtFilterData with FilterDataMixin {
   final priority = FilterGroupData<int>(onChanged: () {
     db.itemCenter.updateSvts(all: true);
   });
-  final bond = FilterGroupData<SvtBondStage>();
+
+  final bondCompare = FilterGroupData<CompareOperator>(options: {CompareOperator.lessThan});
+  final bondValue = FilterRadioData<int>();
   final region = FilterRadioData<Region>();
   late final obtain = FilterGroupData<SvtObtain>(
     options: SvtObtain.values.where((e) => e != SvtObtain.unavailable).toSet(),
@@ -287,7 +289,8 @@ class SvtFilterData with FilterDataMixin {
         curStatus,
         planCompletion,
         svtDuplicated,
-        bond,
+        bondCompare,
+        bondValue,
         // priority,
         region,
         obtain,
@@ -1064,10 +1067,26 @@ enum SvtStatusState {
   }
 }
 
+enum CompareOperator {
+  lessThan('<', -1),
+  moreThan('>', 1),
+  equal('=', 0),
+  ;
+
+  final String text;
+  final int value;
+  const CompareOperator(this.text, this.value);
+
+  bool test<T extends Comparable>(T left, T right) {
+    return left.compareTo(right).sign == value;
+  }
+}
+
 enum SvtBondStage {
-  lessThan5('<5'), // <5
-  lessThan10('<10'), // <10
-  greaterThan10('≤15'), // 10<=x<=15
+  lessThan5('<5'),
+  lessThan6('<6'),
+  lessThan10('<10'),
+  greaterThan10('≤15'),
   ;
 
   final String text;
@@ -1075,6 +1094,7 @@ enum SvtBondStage {
 
   static SvtBondStage fromBond(int bond) {
     if (bond < 5) return lessThan5;
+    if (bond < 6) return lessThan6;
     if (bond < 10) return lessThan10;
     return greaterThan10;
   }

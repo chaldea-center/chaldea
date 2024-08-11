@@ -79,8 +79,11 @@ class ServantFilterPage extends FilterPage<SvtFilterData> {
     if (!filterData.svtDuplicated.matchOne(svt.isDupSvt)) {
       return false;
     }
-    if (!filterData.bond.matchOne(SvtBondStage.fromBond(svtStat.bond))) {
-      return false;
+    final comparedBond = filterData.bondValue.radioValue;
+    if (comparedBond != null && filterData.bondCompare.options.isNotEmpty) {
+      if (filterData.bondCompare.options.every((c) => !c.test(svtStat.bond, comparedBond))) {
+        return false;
+      }
     }
 
     // class name
@@ -408,17 +411,40 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData, ServantFilt
             });
           },
         ),
-        FilterGroup<SvtBondStage>(
-          title: Text(S.current.bond),
-          options: SvtBondStage.values,
-          values: filterData.bond,
-          optionBuilder: (v) => Text(v.text),
-          onFilterChanged: (v, _) {
-            setState(() {
-              update();
-            });
-          },
-        ),
+        getGroup(header: S.current.bond, children: [
+          FilterGroup<CompareOperator>(
+            combined: true,
+            padding: EdgeInsets.zero,
+            options: CompareOperator.values,
+            values: filterData.bondCompare,
+            optionBuilder: (v) => Text(v.text),
+            onFilterChanged: (v, last) {
+              if (v.contain(CompareOperator.lessThan) && v.contain(CompareOperator.moreThan)) {
+                if (last == CompareOperator.lessThan) {
+                  v.options.remove(CompareOperator.moreThan);
+                } else if (last == CompareOperator.moreThan) {
+                  v.options.remove(CompareOperator.lessThan);
+                }
+              }
+              if (v.options.isEmpty && last != null) {
+                v.options.add(last);
+              }
+              setState(() {
+                update();
+              });
+            },
+          ),
+          FilterGroup<int>(
+            combined: true,
+            options: const [5, 6, 10, 15],
+            values: filterData.bondValue,
+            onFilterChanged: (v, _) {
+              setState(() {
+                update();
+              });
+            },
+          ),
+        ]),
         buildGroupDivider(text: S.current.gamedata),
         FilterGroup<Region>(
           title: Text(S.current.game_server, style: textStyle),
