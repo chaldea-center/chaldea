@@ -1439,7 +1439,6 @@ class BattleServantData {
         updatedReplacementFunction.svals5 = updatedSvalsList;
 
         updatedFunctions[buff.param] = updatedReplacementFunction;
-        print('replacing ${buff.param} func');
         buff.setUsed(this);
       }
     }

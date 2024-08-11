@@ -973,7 +973,7 @@ void main() async {
     expect(previousHp2 - enemy1.hp, 6974);
   });
 
-  test('functionNpAttack should happen after NP', () async {
+  test('Hokusai\'s functionNpAttack happens after NP', () async {
     final List<PlayerSvtData> setting = [
       PlayerSvtData.id(2500200)
         ..lv = 90
