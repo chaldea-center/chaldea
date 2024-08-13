@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'package:chaldea/app/api/chaldea.dart';
@@ -51,7 +53,7 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
 
   TeamQueryMode get mode => widget.mode;
 
-  int pageIndex = 0;
+  int offset = 0;
   TeamQueryResult queryResult = TeamQueryResult(data: []);
   final filterData = TeamFilterData(true);
 
@@ -61,7 +63,7 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
   @override
   void initState() {
     super.initState();
-    _queryTeams(pageIndex);
+    _queryTeams(offset);
   }
 
   @override
@@ -153,19 +155,19 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
         ),
         const SizedBox(width: 8),
         TextButton(
-          onPressed: pageIndex == 0 ? null : () => _queryTeams(pageIndex - 1),
+          onPressed: offset == 0 ? null : () => _queryTeams(offset - pageSize),
           style: kTextButtonDenseStyle,
           child: Text(S.current.prev_page),
         ),
         TextButton(
-          onPressed: !queryResult.hasNextPage ? null : () => _queryTeams(pageIndex + 1),
+          onPressed: !queryResult.hasNextPage ? null : () => _queryTeams(offset + pageSize),
           style: kTextButtonDenseStyle,
           child: Text(S.current.next_page),
         ),
         TextButton(
           onPressed: () async {
             EasyThrottle.throttle('team_query_refresh', const Duration(seconds: 2), () {
-              _queryTeams(pageIndex, refresh: true);
+              _queryTeams(offset, refresh: true);
             });
           },
           style: kTextButtonDenseStyle,
@@ -195,7 +197,7 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
   Widget listItemBuilder(UserBattleData record) {
     final index = queryResult.data.indexOf(record);
     final shareData = record.decoded;
-    final shownIndex = pageSize * pageIndex + index + 1;
+    final shownIndex = offset + index + 1;
 
     Widget child = Column(
       children: [
@@ -537,7 +539,9 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
     return filterData.filter(data);
   }
 
-  Future<void> _queryTeams(final int page, {bool refresh = false}) async {
+  Future<void> _queryTeams(int offset, {bool refresh = false}) async {
+    offset = max(0, offset);
+
     if (widget.mode == TeamQueryMode.user && !secrets.isLoggedIn) return;
     Future<TeamQueryResult?> task;
     switch (mode) {
@@ -545,7 +549,7 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
         final userId = widget.userId ?? (widget.username != null ? int.tryParse(widget.username!) : null);
         task = showEasyLoading(() => ChaldeaWorkerApi.teamsByUser(
               limit: pageSize,
-              offset: pageSize * page,
+              offset: offset,
               expireAfter: refresh ? Duration.zero : const Duration(days: 2),
               userId: userId,
               username: widget.username,
@@ -559,7 +563,7 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
               phase: phase,
               enemyHash: widget.phaseInfo?.enemyHash,
               limit: pageSize,
-              offset: pageSize * page,
+              offset: offset,
               expireAfter: refresh ? Duration.zero : null,
             ));
       case TeamQueryMode.id:
@@ -591,7 +595,7 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
         r.parse();
       }
       queryResult = result;
-      pageIndex = page;
+      this.offset = result.offset;
     }
     if (mounted) setState(() {});
   }
