@@ -1292,7 +1292,7 @@ class BattleServantData {
   }
 
   Future<bool> activateSkill(final BattleData battleData, final int skillIndex) async {
-    final skillInfo = skillInfoList.getOrNull(skillIndex);
+    BattleSkillInfoData? skillInfo = skillInfoList.getOrNull(skillIndex);
     if (skillInfo == null || skillInfo.chargeTurn > 0) return false;
 
     final rankUp = countBuffWithTrait([NiceTrait(id: Trait.buffSkillRankUp.value)]);
@@ -1312,16 +1312,19 @@ class BattleServantData {
         param: param,
       );
 
-      int shortenSkillAfterUseSkill = 0;
-      for (final buff in collectBuffsPerAction(battleBuff.validBuffs, BuffAction.shortenSkillAfterUseSkill)) {
-        final curSkillUseCount = buff.shortenMaxCountEachSkill?.getOrNull(skillIndex);
-        if (curSkillUseCount == null || curSkillUseCount > 0) {
-          buff.shortenMaxCountEachSkill?[skillIndex] -= 1;
-          shortenSkillAfterUseSkill += buff.param;
-          buff.setUsed(this);
+      skillInfo = skillInfoList.getOrNull(skillIndex);
+      if (skillInfo != null) {
+        int shortenSkillAfterUseSkill = 0;
+        for (final buff in collectBuffsPerAction(battleBuff.validBuffs, BuffAction.shortenSkillAfterUseSkill)) {
+          final curSkillUseCount = buff.shortenMaxCountEachSkill?.getOrNull(skillIndex);
+          if (curSkillUseCount == null || curSkillUseCount > 0) {
+            buff.shortenMaxCountEachSkill?[skillIndex] -= 1;
+            shortenSkillAfterUseSkill += buff.param;
+            buff.setUsed(this);
+          }
         }
+        skillInfo.shortenSkill(shortenSkillAfterUseSkill);
       }
-      skillInfo.shortenSkill(shortenSkillAfterUseSkill);
     }
     return activated;
   }

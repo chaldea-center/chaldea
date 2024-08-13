@@ -1424,9 +1424,10 @@ void main() async {
     expect(kama.np, 3882);
   });
 
-  test('Append 5', () async {
+  test('Append 5 & transformSvt', () async {
     final List<PlayerSvtData> setting = [
-      PlayerSvtData.id(404800)
+      PlayerSvtData.id(304800)
+        ..limitCount = 0
         ..skillLvs = [10, 10, 10]
         ..appendLvs = [10, 10, 10, 10, 10],
     ];
@@ -1435,25 +1436,25 @@ void main() async {
     await battle.init(quest, setting, null);
 
     final maqin = battle.onFieldAllyServants[0]!;
-    await battle.activateSvtSkill(0, 2);
-    expect(maqin.skillInfoList[2].chargeTurn, 5); // her default is 6, so count in append should be 5
+    await battle.activateSvtSkill(0, 0);
+    expect(maqin.skillInfoList[0].chargeTurn, 5); // her default is 6, so count in append should be 5
 
     await battle.resetPlayerSkillCD(isMysticCode: false, svt: maqin);
-    await battle.activateSvtSkill(0, 2);
-    expect(maqin.skillInfoList[2].chargeTurn, 6);
-
     await battle.activateSvtSkill(0, 0);
-    expect(maqin.skillInfoList[0].chargeTurn, 5);
+    expect(maqin.skillInfoList[0].chargeTurn, 6);
+
     await battle.activateSvtSkill(0, 1);
-    expect(maqin.skillInfoList[1].chargeTurn, 5);
+    expect(maqin.skillInfoList[1].chargeTurn, 4);
+    await battle.activateSvtSkill(0, 2);
+    expect(maqin.skillInfoList[2].chargeTurn, 4);
 
     await battle.resetPlayerSkillCD(isMysticCode: false, svt: maqin);
     await battle.activateSvtSkill(0, 0);
     expect(maqin.skillInfoList[0].chargeTurn, 6);
     await battle.activateSvtSkill(0, 1);
-    expect(maqin.skillInfoList[1].chargeTurn, 6);
+    expect(maqin.skillInfoList[1].chargeTurn, 5);
     await battle.activateSvtSkill(0, 2);
-    expect(maqin.skillInfoList[2].chargeTurn, 6);
+    expect(maqin.skillInfoList[2].chargeTurn, 5);
   });
 
   group('Summer Eresh related tests', () {
