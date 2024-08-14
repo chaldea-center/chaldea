@@ -1069,8 +1069,13 @@ enum CondType {
   notSvtVoicePlayed(223),
   battlePointAbove(225),
   battlePointBelow(226),
+  beforeSpecifiedDate(228),
   notHaveChargeStone(229),
   haveChargeStone(230),
+  battleFunctionTargetAllIndividuality(231),
+  battleFunctionTargetOneIndividuality(232),
+  notBattleFunctionTargetAllIndividuality(235),
+  notBattleFunctionTargetOneIndividuality(236),
   ;
 
   const CondType(this.value);

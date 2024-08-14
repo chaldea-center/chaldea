@@ -414,6 +414,11 @@ const _$CondTypeEnumMap = {
   CondType.notSvtVoicePlayed: 'notSvtVoicePlayed',
   CondType.battlePointAbove: 'battlePointAbove',
   CondType.battlePointBelow: 'battlePointBelow',
+  CondType.beforeSpecifiedDate: 'beforeSpecifiedDate',
   CondType.notHaveChargeStone: 'notHaveChargeStone',
   CondType.haveChargeStone: 'haveChargeStone',
+  CondType.battleFunctionTargetAllIndividuality: 'battleFunctionTargetAllIndividuality',
+  CondType.battleFunctionTargetOneIndividuality: 'battleFunctionTargetOneIndividuality',
+  CondType.notBattleFunctionTargetAllIndividuality: 'notBattleFunctionTargetAllIndividuality',
+  CondType.notBattleFunctionTargetOneIndividuality: 'notBattleFunctionTargetOneIndividuality',
 };

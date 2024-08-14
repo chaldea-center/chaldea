@@ -275,6 +275,7 @@ class DataVals {
   int? get ExtendBuffHalfTurnInPartyTurn => _vals['ExtendBuffHalfTurnInPartyTurn'];
   int? get ShortenBuffHalfTurnInPartyTurn => _vals['ShortenBuffHalfTurnInPartyTurn'];
   int? get LinkageBuffGrantSuccessEvenIfOtherFailed => _vals['LinkageBuffGrantSuccessEvenIfOtherFailed'];
+  String? get DisplayNoEffectCauses => _vals['DisplayNoEffectCauses'];
   int? get BattlePointId => _vals['BattlePointId'];
   int? get BattlePointValue => _vals['BattlePointValue'];
   int? get BattlePointUiUpdateType => _vals['BattlePointUiUpdateType'];
