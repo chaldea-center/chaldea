@@ -349,7 +349,8 @@ class CharaFigurePainter extends CustomPainter {
       return;
     }
     // 1024x1024(768+256),256x256
-    int faceSize = script.extendData?.faceSize ?? 256;
+    final _faceSize = script.extendData?.faceSize; // TODO: handle [w, h]
+    int faceSize = _faceSize is int ? _faceSize : 256;
     int width = 1024, height = faceSize == 256 ? 1024 - 256 : 1024;
     final double dstScale = size.width / width;
     final double srcScale = figure.width / width;

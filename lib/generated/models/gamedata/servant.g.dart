@@ -173,6 +173,10 @@ Servant _$ServantFromJson(Map json) => Servant(
           const {},
       coin: json['coin'] == null ? null : ServantCoin.fromJson(Map<String, dynamic>.from(json['coin'] as Map)),
       script: json['script'] == null ? null : ServantScript.fromJson(Map<String, dynamic>.from(json['script'] as Map)),
+      charaScripts: (json['charaScripts'] as List<dynamic>?)
+              ?.map((e) => SvtScript.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
       battlePoints: (json['battlePoints'] as List<dynamic>?)
               ?.map((e) => BattlePoint.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
@@ -254,6 +258,7 @@ Map<String, dynamic> _$ServantToJson(Servant instance) => <String, dynamic>{
       'costumeMaterials': instance.costumeMaterials.map((k, e) => MapEntry(k.toString(), e.toJson())),
       'coin': instance.coin?.toJson(),
       'script': instance.script?.toJson(),
+      'charaScripts': instance.charaScripts.map((e) => e.toJson()).toList(),
       'battlePoints': instance.battlePoints.map((e) => e.toJson()).toList(),
       'skills': instance.skills.map((e) => e.toJson()).toList(),
       'classPassive': instance.classPassive.map((e) => e.toJson()).toList(),
@@ -1094,6 +1099,8 @@ SvtScript _$SvtScriptFromJson(Map json) => SvtScript(
       offsetY: (json['offsetY'] as num?)?.toInt() ?? 0,
       offsetXMyroom: (json['offsetXMyroom'] as num?)?.toInt() ?? 0,
       offsetYMyroom: (json['offsetYMyroom'] as num?)?.toInt() ?? 0,
+      svtId: (json['svtId'] as num?)?.toInt(),
+      limitCount: (json['limitCount'] as num?)?.toInt(),
     );
 
 Map<String, dynamic> _$SvtScriptToJson(SvtScript instance) => <String, dynamic>{
@@ -1108,10 +1115,12 @@ Map<String, dynamic> _$SvtScriptToJson(SvtScript instance) => <String, dynamic>{
       'offsetY': instance.offsetY,
       'offsetXMyroom': instance.offsetXMyroom,
       'offsetYMyroom': instance.offsetYMyroom,
+      'svtId': instance.svtId,
+      'limitCount': instance.limitCount,
     };
 
 SvtScriptExtendData _$SvtScriptExtendDataFromJson(Map json) => SvtScriptExtendData(
-      faceSize: (json['faceSize'] as num?)?.toInt(),
+      faceSize: json['faceSize'],
       myroomForm: (json['myroomForm'] as num?)?.toInt(),
       combineResultMultipleForm: (json['combineResultMultipleForm'] as num?)?.toInt(),
       photoSvtPosition: (json['photoSvtPosition'] as List<dynamic>?)?.map((e) => (e as num).toInt()).toList(),

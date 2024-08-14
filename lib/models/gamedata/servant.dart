@@ -190,6 +190,7 @@ class Servant extends BasicServant {
   Map<int, LvlUpMaterial> costumeMaterials;
   ServantCoin? coin;
   ServantScript? script;
+  List<SvtScript> charaScripts;
   List<BattlePoint> battlePoints;
   List<NiceSkill> skills;
   List<NiceSkill> classPassive;
@@ -224,7 +225,7 @@ class Servant extends BasicServant {
 
   Servant({
     required super.id,
-    required super.collectionNo,
+    super.collectionNo = 0,
     int? originalCollectionNo,
     super.name = "",
     this.ruby = "",
@@ -270,6 +271,7 @@ class Servant extends BasicServant {
     this.costumeMaterials = const {},
     this.coin,
     this.script,
+    this.charaScripts = const [],
     this.battlePoints = const [],
     this.skills = const [],
     this.classPassive = const [],
@@ -1532,6 +1534,8 @@ class SvtScript {
   int offsetY;
   int offsetXMyroom;
   int offsetYMyroom;
+  int? svtId;
+  int? limitCount;
 
   SvtScript({
     this.extendData,
@@ -1545,6 +1549,8 @@ class SvtScript {
     this.offsetY = 0,
     this.offsetXMyroom = 0,
     this.offsetYMyroom = 0,
+    this.svtId,
+    this.limitCount,
   });
 
   bool get isHeight1024 => (extendData?.faceSize ?? 256) != 256;
@@ -1557,7 +1563,7 @@ class SvtScript {
 
 @JsonSerializable()
 class SvtScriptExtendData {
-  int? faceSize; // default 256
+  Object? faceSize; // default 256, int or list[int] (multi chara)
   int? myroomForm;
   int? combineResultMultipleForm;
   // conds?: { condType: number; value: number }[];
