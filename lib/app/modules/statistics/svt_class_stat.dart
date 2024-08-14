@@ -24,6 +24,8 @@ class _StatisticServantTabState extends State<StatisticServantTab> {
 
   FilterGroupData<int> get priorityFilter => db.settings.filters.svtFilterData.priority;
 
+  static const kAllClasses = <SvtClass>[...SvtClassX.regular, SvtClass.EXTRA1, SvtClass.EXTRA2];
+
   void _calcRarityCounts() {
     rarityTotal = List.filled(6, 0);
     rarityOwn = List.filled(6, 0);
@@ -46,18 +48,20 @@ class _StatisticServantTabState extends State<StatisticServantTab> {
   }
 
   void _calcServantClass() {
-    svtClassCount = Map.fromIterable([...SvtClassX.regular, SvtClass.EXTRA], value: (_) => 0);
+    svtClassCount = {for (final v in kAllClasses) v: 0};
     for (final svt in db.gameData.servantsNoDup.values) {
       final status = db.curUser.svtStatusOf(svt.collectionNo);
-      if (!status.favorite) continue;
+      if (!status.favorite || !svt.isUserSvt) continue;
       if (raritySelected.contains(true) && !raritySelected[svt.rarity]) {
         continue;
       }
       if (!priorityFilter.matchOne(status.priority)) continue;
       if (svtClassCount.containsKey(svt.className)) {
         svtClassCount[svt.className] = (svtClassCount[svt.className] ?? 0) + 1;
-      } else {
-        svtClassCount[SvtClass.EXTRA] = (svtClassCount[SvtClass.EXTRA] ?? 0) + 1;
+      } else if (SvtClassX.extraI.contains(svt.className)) {
+        svtClassCount.addNum(SvtClass.EXTRA1, 1);
+      } else if (SvtClassX.extraII.contains(svt.className)) {
+        svtClassCount.addNum(SvtClass.EXTRA2, 1);
       }
     }
     svtClassCount.removeWhere((key, value) => value <= 0);
@@ -199,7 +203,7 @@ class _StatisticServantTabState extends State<StatisticServantTab> {
         Color(0xFF00CCCC),
         Color(0xFF0066CC),
         Color(0xFF0000CC),
-        // Color(0xFF6600CC),
+        Color(0xFF6600CC),
         // Color(0xFFCC00CC),
         // Color(0xFFCC0066),
       ].reversed.toList();
