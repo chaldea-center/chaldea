@@ -68,6 +68,8 @@ class NiceAi {
   factory NiceAi.fromJson(Map<String, dynamic> json) => _$NiceAiFromJson(json);
 
   Map<String, dynamic> toJson() => _$NiceAiToJson(this);
+
+  String get primaryKey => '$id:$idx';
 }
 
 @JsonSerializable()

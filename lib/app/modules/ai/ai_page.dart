@@ -163,12 +163,12 @@ class _AiPageState extends State<AiPage> with RegionBasedState<NiceAiCollection,
       ),
     ]));
 
-    final allAis = <int, List<NiceAi>>{};
+    final allAis = <int, Map<String, NiceAi>>{};
     for (final ai in [...aiCollection.mainAis, ...aiCollection.relatedAis]) {
-      allAis.putIfAbsent(ai.id, () => []).add(ai);
+      allAis.putIfAbsent(ai.id, () => {}).putIfAbsent(ai.primaryKey, () => ai);
     }
     for (final entry in allAis.entries) {
-      final ais = NiceAiCollection.sortedAis(entry.value);
+      final ais = NiceAiCollection.sortedAis(entry.value.values.toList());
       children.add(AiTable(
         key: getAiKey(entry.key),
         type: widget.aiType,

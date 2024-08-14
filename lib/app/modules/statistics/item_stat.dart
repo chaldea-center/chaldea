@@ -80,6 +80,7 @@ class _ItemStatTabState extends State<ItemStatTab> {
   Widget get buttonBar {
     return OverflowBar(
       alignment: MainAxisAlignment.center,
+      overflowAlignment: OverflowBarAlignment.center,
       children: [
         FilterGroup<int>(
           options: List.generate(5, (index) => index),
