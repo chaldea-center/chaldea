@@ -152,13 +152,14 @@ class _ItemStatTabState extends State<ItemStatTab> {
     shownItems.clear();
     final emptyPlan = SvtStatus();
     emptyPlan.cur.favorite = true;
-    db.curUser.servants.forEach((no, svtStat) {
-      if (!svtStat.favorite) return;
-      if (!db.gameData.servantsWithDup.containsKey(no)) {
-        print('No $no: ${db.gameData.servantsWithDup.length}');
-        return;
+    for (final (collectionNo, svtStat) in db.curUser.servants.items) {
+      if (!svtStat.favorite) continue;
+      if (!db.settings.filters.svtFilterData.priority.matchOne(svtStat.priority)) continue;
+      final svt = db.gameData.servantsWithDup[collectionNo];
+      if (svt == null) {
+        print('No $collectionNo: ${db.gameData.servantsWithDup.length}');
+        continue;
       }
-      final svt = db.gameData.servantsWithDup[no]!;
       final detail = db.itemCenter.calcOneSvt(svt, emptyPlan.cur, svtStat.cur);
       Maths.sumDict(
         [
@@ -172,15 +173,13 @@ class _ItemStatTabState extends State<ItemStatTab> {
         ],
         inPlace: true,
       );
-    });
+    }
     if (svtParts.contain(4)) {
       shownItems.addDict(db.itemCenter.calcClassBoardCostAll(SvtMatCostDetailType.consumed));
     }
 
     Maths.sumDict([shownItems, if (includeOwnedItems) db.curUser.items], inPlace: true);
-    shownItems.removeWhere((key, value) {
-      return value <= 0;
-    });
+    shownItems.removeWhere((key, value) => value <= 0);
   }
 
   void calculateDemand() {
@@ -188,14 +187,15 @@ class _ItemStatTabState extends State<ItemStatTab> {
     if (svtParts.options.isEmpty) {
       shownItems = Map.of(db.itemCenter.statSvtDemands);
     } else {
-      db.curUser.servants.forEach((no, svtStat) {
-        if (!svtStat.favorite) return;
-        final svt = db.gameData.servantsWithDup[no];
+      for (final (collectionNo, svtStat) in db.curUser.servants.items) {
+        if (!svtStat.favorite) continue;
+        final svt = db.gameData.servantsWithDup[collectionNo];
         if (svt == null) {
-          print('No $no: ${db.gameData.servantsWithDup.length}');
-          return;
+          print('No $collectionNo: ${db.gameData.servantsWithDup.length}');
+          continue;
         }
-        final detail = db.itemCenter.calcOneSvt(svt, svtStat.cur, db.curUser.svtPlanOf(no));
+        if (!db.settings.filters.svtFilterData.priority.matchOne(svtStat.priority)) continue;
+        final detail = db.itemCenter.calcOneSvt(svt, svtStat.cur, db.curUser.svtPlanOf(collectionNo));
         Maths.sumDict(
           [
             shownItems,
@@ -206,7 +206,7 @@ class _ItemStatTabState extends State<ItemStatTab> {
           ],
           inPlace: true,
         );
-      });
+      }
     }
     if (svtParts.contain(4)) {
       shownItems.addDict(db.itemCenter.calcClassBoardCostAll(SvtMatCostDetailType.demands));
@@ -216,8 +216,6 @@ class _ItemStatTabState extends State<ItemStatTab> {
       if (subtractOwnedItems) Maths.multiplyDict(db.curUser.items, -1),
       if (subtractEventItems) Maths.multiplyDict(db.itemCenter.statObtain, -1),
     ], inPlace: true);
-    shownItems.removeWhere((key, value) {
-      return value <= 0;
-    });
+    shownItems.removeWhere((key, value) => value <= 0);
   }
 }
