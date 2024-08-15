@@ -1276,5 +1276,23 @@ void main() async {
       await battle.activateSvtSkill(0, 0);
       expect(eliz.np, 8000);
     });
+
+    test('cardRest clear fixCommandCard & donotSelectCommand', () async {
+      final List<PlayerSvtData> setting = [
+        PlayerSvtData.id(2300200), // bb SSR
+        PlayerSvtData.id(2300900), // ciel
+      ];
+      final battle = BattleData();
+      await battle.init(db.gameData.questPhases[9300040603]!, setting, null);
+
+      final bb = battle.onFieldAllyServants[0]!;
+
+      await battle.activateSvtSkill(0, 2);
+      expect(bb.battleBuff.validBuffs.any((buff) => buff.buff.type == BuffType.fixCommandcard), true);
+
+      await battle.activateSvtSkill(1, 2);
+      expect(bb.battleBuff.validBuffs.any((buff) => buff.buff.type == BuffType.fixCommandcard), false);
+      expect(bb.battleBuff.validBuffs.any((buff) => buff.buff.type == BuffType.donotSelectCommandcard), false);
+    });
   });
 }

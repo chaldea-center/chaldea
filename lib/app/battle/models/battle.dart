@@ -1390,7 +1390,7 @@ class BattleData {
         actor.fieldIndex = -1;
         if (actor.isPlayer) {
           for (final svt in nonnullPlayers) {
-            svt.battleBuff.removeBuffWithTrait(NiceTrait(id: Trait.buffLockCardsDeck.value));
+            svt.battleBuff.removeBuffOfType(BuffType.fixCommandcard);
           }
         }
       }

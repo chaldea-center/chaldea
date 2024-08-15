@@ -71,6 +71,13 @@ class BattleBuff {
         ));
   }
 
+  void removeBuffOfType(final BuffType type, {bool includeNoAct = false, bool includeNoField = false}) {
+    _activeList.removeWhere((buff) =>
+    (includeNoAct || !buff.checkState(BuffState.noAct)) &&
+        (includeNoField || !buff.checkState(BuffState.noField)) &&
+        buff.buff.type == type);
+  }
+
   void turnProgress() {
     for (final buff in getAllBuffs()) {
       if (!buff.checkField()) continue;

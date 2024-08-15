@@ -395,7 +395,10 @@ class FunctionExecutor {
           break;
         case FuncType.cardReset:
           for (final svt in battleData.nonnullPlayers) {
-            svt.battleBuff.removeBuffWithTrait(NiceTrait(id: Trait.buffLockCardsDeck.value));
+            svt.battleBuff.removeBuffOfType(BuffType.fixCommandcard);
+            for (final buff in collectBuffsPerType(svt.battleBuff.validBuffs, BuffType.donotSelectCommandcard)) {
+              buff.setUsed(svt);
+            }
           }
           for (final target in targets) {
             battleData.setFuncResult(target.uniqueId, true);
