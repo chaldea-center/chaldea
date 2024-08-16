@@ -27,9 +27,9 @@ class FeedbackPage extends StatefulWidget {
 }
 
 class _FeedbackPageState extends State<FeedbackPage> {
-  late TextEditingController contactController;
-  late TextEditingController subjectController;
-  late TextEditingController bodyController;
+  late final TextEditingController contactController = TextEditingController();
+  late final TextEditingController subjectController = TextEditingController();
+  late final TextEditingController bodyController = TextEditingController();
 
   bool _changed = false;
 
@@ -42,9 +42,6 @@ class _FeedbackPageState extends State<FeedbackPage> {
   @override
   void initState() {
     super.initState();
-    contactController = TextEditingController();
-    subjectController = TextEditingController();
-    bodyController = TextEditingController();
     contactController.addListener(_onTextFieldChanged);
     subjectController.addListener(_onTextFieldChanged);
     bodyController.addListener(_onTextFieldChanged);
@@ -120,6 +117,16 @@ class _FeedbackPageState extends State<FeedbackPage> {
                   copyToClipboard('$kProjectHomepage/issues', toast: true);
                 },
               ),
+              ListTile(
+                title: const Text('Discord'),
+                subtitle: const Text(_kDiscordLink),
+                onTap: () {
+                  launch(_kDiscordLink);
+                },
+                onLongPress: () {
+                  copyToClipboard(_kDiscordLink, toast: true);
+                },
+              ),
               // ListTile(
               //   title: const Text('NGA'),
               //   subtitle:
@@ -152,16 +159,6 @@ class _FeedbackPageState extends State<FeedbackPage> {
                   copyToClipboard(kSupportTeamEmailAddress, toast: true);
                 },
               ),
-              ListTile(
-                title: const Text('Discord'),
-                subtitle: const Text(_kDiscordLink),
-                onTap: () {
-                  launch(_kDiscordLink);
-                },
-                onLongPress: () {
-                  copyToClipboard(_kDiscordLink, toast: true);
-                },
-              ),
               // ListTile(
               //   title: const Text('QQ频道'),
               //   onTap: () {
@@ -176,21 +173,6 @@ class _FeedbackPageState extends State<FeedbackPage> {
             // divider: Container(),
             innerDivider: false,
             children: [
-              const SizedBox(height: 8),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                child: TextFormField(
-                  controller: contactController,
-                  decoration: InputDecoration(
-                    labelText: '${S.current.email}*',
-                    border: const OutlineInputBorder(),
-                    prefixIcon: const Icon(Icons.mail_outline),
-                    hintText: S.current.email,
-                    floatingLabelBehavior: FloatingLabelBehavior.always,
-                  ),
-                  maxLines: 1,
-                ),
-              ),
               const SizedBox(height: 8),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
@@ -216,6 +198,21 @@ class _FeedbackPageState extends State<FeedbackPage> {
                   expands: true,
                   maxLines: null,
                   textAlignVertical: TextAlignVertical.top,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                child: TextFormField(
+                  controller: contactController,
+                  decoration: InputDecoration(
+                    labelText: S.current.email,
+                    border: const OutlineInputBorder(),
+                    prefixIcon: const Icon(Icons.mail_outline),
+                    hintText: S.current.email,
+                    // floatingLabelBehavior: FloatingLabelBehavior.always,
+                  ),
+                  maxLines: 1,
                 ),
               ),
               ListTile(
@@ -288,10 +285,10 @@ class _FeedbackPageState extends State<FeedbackPage> {
       EasyLoading.showInfo(S.current.add_feedback_details_warning);
       return;
     }
-    if (contact.isEmpty) {
-      EasyLoading.showInfo(S.current.contact_information_not_filled);
-      return;
-    }
+    // if (contact.isEmpty) {
+    //   EasyLoading.showInfo(S.current.contact_information_not_filled);
+    //   return;
+    // }
     if (contact.toLowerCase().contains('@chaldea.center')) {
       EasyLoading.showInfo(Language.isZH ? "填写你自己的邮箱啊kora" : "Fill in your own email!!!");
       return;

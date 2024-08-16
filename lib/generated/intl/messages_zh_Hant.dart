@@ -440,7 +440,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "feedback_content_hint": MessageLookupByLibrary.simpleMessage("回饋與建議"),
         "feedback_form_alert": MessageLookupByLibrary.simpleMessage("回饋表未提交，仍然退出?"),
         "feedback_info": MessageLookupByLibrary.simpleMessage(
-            "提交回饋前，請先查閱<**FAQ**>。回饋時請詳細描述:\n- 如何再現/期望表現\n- 應用/數據版本、使用設備系統及版本\n- 附加截圖日誌\n- 以及最好能夠提供聯絡方式(信箱等)\n- 不要問為什麼沒找到某從者"),
+            "提交回饋前，請先查閱<**FAQ**>。回饋時請詳細描述:\n- 如何再現/期望表現\n- 應用/數據版本、使用設備系統及版本\n- 附加截圖日誌\n- 若需要回復請提供聯絡方式(信箱)\n- 不要問為什麼沒找到某從者"),
         "feedback_send": MessageLookupByLibrary.simpleMessage("發送"),
         "feedback_subject": MessageLookupByLibrary.simpleMessage("主題"),
         "ffo_body": MessageLookupByLibrary.simpleMessage("身體"),
