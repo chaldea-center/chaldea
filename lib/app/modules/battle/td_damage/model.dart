@@ -334,8 +334,8 @@ class TdDmgSolver {
     if (!options.enableActiveSkills) {
       data.skills.fillRange(0, data.skills.length, null);
     }
-    if (options.enableAppendSkills) {
-      data.appendLvs.fillRange(0, data.appendLvs.length, 10);
+    for (int index = 0; index < data.appendLvs.length; index++) {
+      data.appendLvs[index] = (options.appendSkills.getOrNull(index) ?? false) ? 10 : 0;
     }
 
     final extraBuffs = options.extraBuffs.buildSkill();

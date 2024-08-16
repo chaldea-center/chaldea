@@ -20,6 +20,7 @@ class FilterGroup<T> extends StatelessWidget {
   final EdgeInsetsGeometry padding;
   final bool showCollapse;
   final BoxConstraints? constraints;
+  final Size? minimumSize;
   final ButtonStyle? buttonStyle;
 
   const FilterGroup({
@@ -37,6 +38,7 @@ class FilterGroup<T> extends StatelessWidget {
     this.padding = const EdgeInsets.symmetric(horizontal: 12),
     this.showCollapse = false,
     this.constraints,
+    this.minimumSize,
     this.buttonStyle,
   });
 
@@ -82,6 +84,7 @@ class FilterGroup<T> extends StatelessWidget {
         value: key,
         shrinkWrap: shrinkWrap,
         constraints: constraints,
+        minimumSize: minimumSize,
         buttonStyle: buttonStyle,
         borderRadius: combined
             ? BorderRadius.horizontal(
@@ -193,6 +196,7 @@ class FilterOption<T> extends StatelessWidget {
   final BorderRadius borderRadius;
   final bool shrinkWrap;
   final BoxConstraints? constraints;
+  final Size? minimumSize;
   final ButtonStyle? buttonStyle;
 
   const FilterOption({
@@ -208,6 +212,7 @@ class FilterOption<T> extends StatelessWidget {
     this.borderRadius = const BorderRadius.all(Radius.circular(3)),
     this.shrinkWrap = false,
     this.constraints,
+    this.minimumSize,
     this.buttonStyle,
   });
 
@@ -232,10 +237,11 @@ class FilterOption<T> extends StatelessWidget {
           backgroundColor: selected
               ? (enabled ? selectedColor : selectedColor.withOpacity(selectedColor.opacity * 0.5))
               : unselectedColor,
-          minimumSize: shrinkWrap ? const Size(2, 2) : const Size(48, 36),
+          minimumSize: minimumSize ?? (shrinkWrap ? const Size(2, 2) : const Size(48, 36)),
           padding: shrinkWrap ? const EdgeInsets.all(0) : null,
           textStyle: const TextStyle(fontWeight: FontWeight.normal),
-          tapTargetSize: shrinkWrap ? MaterialTapTargetSize.shrinkWrap : null,
+          // tapTargetSize: shrinkWrap ? MaterialTapTargetSize.shrinkWrap : null,
+          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
           shape: ContinuousRectangleBorder(borderRadius: borderRadius),
           side: themeData.useMaterial3 ? BorderSide(color: themeData.colorScheme.outline, width: 0.5) : null,
         ).merge(buttonStyle),

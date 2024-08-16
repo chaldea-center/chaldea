@@ -773,7 +773,7 @@ class TdDamageOptions {
   bool enableActiveSkills;
   bool twiceActiveSkill;
   bool twiceSkillOnTurn3;
-  bool enableAppendSkills;
+  List<bool> appendSkills;
   // bool includeRefundAfterTd = true; // 重蓄力
   SvtLv svtLv;
   int fouHpAtk;
@@ -814,7 +814,7 @@ class TdDamageOptions {
     this.enableActiveSkills = true,
     this.twiceActiveSkill = false,
     this.twiceSkillOnTurn3 = false,
-    this.enableAppendSkills = false,
+    List<bool>? appendSkills,
     this.svtLv = SvtLv.maxLv,
     this.fouHpAtk = 1000,
     this.tdR3 = 5,
@@ -838,6 +838,7 @@ class TdDamageOptions {
     this.damageNpHpRatioMax = false,
   })  : enemy = enemy ?? QuestEnemy.blankEnemy(),
         supports = supports ?? [],
+        appendSkills = List.generate(kAppendSkillNums.length, (i) => appendSkills?.getOrNull(i) ?? false),
         extraBuffs = extraBuffs ?? CustomSkillData(buffOnly: true, hasTurnCount: false),
         fieldTraits = fieldTraits ?? [];
 
