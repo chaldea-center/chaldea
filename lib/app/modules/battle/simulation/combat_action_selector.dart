@@ -1,5 +1,7 @@
 import 'dart:math';
 
+import 'package:flutter/foundation.dart';
+
 import 'package:chaldea/app/battle/models/battle.dart';
 import 'package:chaldea/app/battle/utils/battle_utils.dart';
 import 'package:chaldea/app/modules/battle/simulation/recorder.dart';
@@ -93,7 +95,7 @@ class _CombatActionSelectorState extends State<CombatActionSelector> {
           cells.add(Flexible(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 1),
-              child: buildCardIcon(svt, card),
+              child: buildCardIcon(battleData, svt, card),
             ),
           ));
         }
@@ -152,7 +154,8 @@ class _CombatActionSelectorState extends State<CombatActionSelector> {
     );
   }
 
-  Widget buildCardIcon(BattleServantData svt, CommandCardData card) {
+  Widget buildCardIcon(BattleData battleData, BattleServantData svt, CommandCardData card) {
+    final cardInDeck = !kDebugMode || battleData.cardInDeck(svt, card); // only disable in debug mode for now
     final commandCode = card.commandCode;
     Widget cardIcon = Stack(
       alignment: Alignment.center,
@@ -183,7 +186,7 @@ class _CombatActionSelectorState extends State<CombatActionSelector> {
               shadowSize: 3,
             ),
           ),
-        if (!svt.canCommandCard(card)) ...[
+        if (!svt.canCommandCard(card) || !cardInDeck) ...[
           AspectRatio(
             aspectRatio: 1,
             child: Container(
@@ -192,13 +195,19 @@ class _CombatActionSelectorState extends State<CombatActionSelector> {
               color: Colors.black54,
             ),
           ),
-          Text('×', style: TextStyle(fontSize: cardSize * 0.8, color: Colors.white))
-        ]
+          Text(
+            !cardInDeck ? '⊄' : '×',
+            style: TextStyle(fontSize: cardSize * 0.8, color: Colors.white),
+          ),
+        ],
       ],
     );
     cardIcon = GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: () {
+        if (!cardInDeck) {
+          return;
+        }
         final cardIndex = getCardIndex(svt, card);
         if (cardIndex != -1) {
           final combatAction = combatActions[cardIndex]!;

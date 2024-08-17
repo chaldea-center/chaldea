@@ -397,10 +397,8 @@ class FunctionExecutor {
         case FuncType.cardReset:
           for (final svt in battleData.nonnullPlayers) {
             svt.battleBuff.removeBuffOfType(BuffType.fixCommandcard);
-            for (final buff in collectBuffsPerType(svt.battleBuff.validBuffs, BuffType.donotSelectCommandcard)) {
-              buff.setUsed(svt);
-            }
           }
+          battleData.refillCardDeck();
           for (final target in targets) {
             battleData.setFuncResult(target.uniqueId, true);
           }

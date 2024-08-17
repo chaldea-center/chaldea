@@ -1952,6 +1952,9 @@ class BattleServantData {
     battleData.fieldBuffs
         .removeWhere((buff) => buff.vals.RemoveFieldBuffActorDeath == 1 && buff.actorUniqueId == uniqueId);
     battleData.battleLogger.action('$lBattleName ${S.current.battle_death}');
+    if (isPlayer) {
+      battleData.refillCardDeck();
+    }
   }
 
   Future<void> startOfMyTurn(final BattleData battleData) async {

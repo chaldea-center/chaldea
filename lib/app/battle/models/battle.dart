@@ -157,6 +157,9 @@ class BattleData {
   double criticalStars = 0;
   int _uniqueIndex = 1;
   int _addOrder = 1;
+  int cardDealt = 0;
+  Set<int> currentCards = {};
+  Set<int> remainingCards = {};
 
   // unused fields
   // int countEnemyAttack = 0;
@@ -414,6 +417,43 @@ class BattleData {
     }
   }
 
+  void refillCardDeck() {
+    cardDealt = 0;
+    currentCards.clear();
+    remainingCards.clear();
+    bool hasDoNotSelect = false;
+    for (final svt in nonnullPlayers) {
+      if (svt.hasBuffNoProbabilityCheck(BuffAction.donotSelectCommandcard)) {
+        hasDoNotSelect = true;
+        continue;
+      }
+
+      remainingCards.addAll(svt.getCards().map((card) => cardDeckIndex(svt, card)));
+    }
+    cardDealt = 5;
+    currentCards.addAll(remainingCards);
+    if (hasDoNotSelect) {
+      remainingCards.clear();
+    }
+  }
+
+  int cardDeckIndex(final BattleServantData svt, final CommandCardData card) {
+    return svt.fieldIndex * 5 + card.cardIndex;
+  }
+
+  bool cardInDeck(final BattleServantData svt, final CommandCardData card) {
+    return currentCards.contains(cardDeckIndex(svt, card));
+  }
+
+  bool fixCommandCard() {
+    for (final svt in nonnullPlayers) {
+      if (svt.hasBuffNoProbabilityCheck(BuffAction.fixCommandcard)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   int getNextAddOrder() {
     return _addOrder++;
   }
@@ -444,6 +484,15 @@ class BattleData {
     });
     for (final svt in nonnullActors) {
       await svt.svtAi.reactionTurnStart(this, svt);
+    }
+
+    if (!fixCommandCard()) {
+      cardDealt += 5;
+      currentCards.clear();
+      currentCards.addAll(remainingCards);
+      if (remainingCards.isEmpty || cardDealt > nonnullPlayers.length * 5) {
+        refillCardDeck();
+      }
     }
   }
 
@@ -890,6 +939,13 @@ class BattleData {
       task: () async {
         recorder.initiateAttacks(this, actions);
         criticalStars = 0;
+
+        // this would take out cards after they are played
+        for (final action in actions) {
+          if (!action.cardData.isTD) {
+            remainingCards.remove(cardDeckIndex(action.actor, action.cardData));
+          }
+        }
 
         // assumption: only Quick, Arts, and Buster are ever listed as viable actions
         final validActions = actions.where((action) => action.isValid(this)).toList();
@@ -1513,6 +1569,9 @@ class BattleData {
       ..totalTurnCount = totalTurnCount
       ..criticalStars = criticalStars
       .._uniqueIndex = _uniqueIndex
+      ..cardDealt = cardDealt
+      ..currentCards = currentCards.toSet()
+      ..remainingCards = remainingCards.toSet()
       ..options = options.copy()
       ..recorder = recorder.copy()
       ..replayDataRecord = replayDataRecord.copy()
@@ -1550,6 +1609,9 @@ class BattleData {
       ..totalTurnCount = copy.totalTurnCount
       ..criticalStars = copy.criticalStars
       .._uniqueIndex = copy._uniqueIndex
+      ..cardDealt = copy.cardDealt
+      ..currentCards = copy.currentCards
+      ..remainingCards = copy.remainingCards
       ..options = copy.options
       ..recorder = copy.recorder
       ..replayDataRecord = copy.replayDataRecord
