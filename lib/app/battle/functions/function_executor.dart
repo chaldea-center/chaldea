@@ -341,6 +341,7 @@ class FunctionExecutor {
         case FuncType.damageNpIndividualSum:
         case FuncType.damageNpStateIndividualFix:
         case FuncType.damageNpBattlePointPhase:
+        case FuncType.damageNpSafe:
           await Damage.damage(
             battleData,
             function,
@@ -433,7 +434,6 @@ class FunctionExecutor {
         case FuncType.updateEnemyEntryMaxCountEachTurn:
         case FuncType.damageValue:
         case FuncType.damageValueSafe:
-        case FuncType.damageNpSafe:
         // ↑↑↑ should be implemented ↑↑↑
         case FuncType.subFieldBuff:
         case FuncType.damageNpAndCheckIndividuality:

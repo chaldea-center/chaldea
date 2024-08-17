@@ -276,6 +276,9 @@ class Damage {
 
       // real
       final int totalDamage = await DamageAdjustor.show(battleData, activator, target, damageParameters);
+      if (funcType == FuncType.damageNpSafe && totalDamage >= target.hp) {
+        totalDamage = target.hp - 1;
+      }
 
       // calc min/max first, since it doesn't change original target/activator
       final minResult = await _calc(
