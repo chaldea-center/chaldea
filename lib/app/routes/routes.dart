@@ -320,7 +320,7 @@ class RouteConfiguration {
 
   @override
   String toString() {
-    return 'RouteConfiguration(url=$url, detail=$detail)';
+    return 'RouteConfiguration(url=$url, detail=$detail, child=$child)';
   }
 
   RouteConfiguration copyWith({

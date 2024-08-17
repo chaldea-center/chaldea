@@ -92,7 +92,6 @@ class AppRouterDelegate extends RouterDelegate<RouteConfiguration>
 
   // only called when [Page] found
   void onPopPage(Page page) {
-    assert(_history.contains(page));
     if (canPop()) {
       for (int index = _history.length - 1; index >= 0; index--) {
         if (_history[index] == page) {
@@ -216,11 +215,10 @@ class AppRouterDelegate extends RouterDelegate<RouteConfiguration>
   // use `SplitRoute.isMaster`
   void popDetails() {
     while (canPop()) {
-      final lastEntry = _history.last;
-      final page = lastEntry;
+      final page = _history.last;
       if (page.detail == true) {
-        _history.remove(lastEntry);
-        lastEntry.complete(null);
+        _history.remove(page);
+        page.complete(null);
       } else {
         return;
       }
