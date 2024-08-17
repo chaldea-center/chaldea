@@ -275,7 +275,7 @@ class Damage {
       final multiAttack = await activator.getMultiAttackBuffValue(battleData, currentCard, target);
 
       // real
-      final int totalDamage = await DamageAdjustor.show(battleData, activator, target, damageParameters);
+      int totalDamage = await DamageAdjustor.show(battleData, activator, target, damageParameters, currentCard, multiAttack,);
       if (funcType == FuncType.damageNpSafe && totalDamage >= target.hp) {
         totalDamage = target.hp - 1;
       }

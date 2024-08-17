@@ -13,6 +13,8 @@ class DamageAdjustor extends StatefulWidget {
   final BattleServantData activator;
   final BattleServantData target;
   final DamageParameters damageParameters;
+  final CommandCardData currentCard;
+  final int? multiAttack;
 
   const DamageAdjustor({
     super.key,
@@ -20,6 +22,8 @@ class DamageAdjustor extends StatefulWidget {
     required this.activator,
     required this.target,
     required this.damageParameters,
+    required this.currentCard,
+    this.multiAttack,
   });
 
   @override
@@ -30,6 +34,8 @@ class DamageAdjustor extends StatefulWidget {
     final BattleServantData activator,
     final BattleServantData target,
     final DamageParameters damageParameters,
+    final CommandCardData currentCard,
+    final int? multiAttack,
   ) async {
     int damage = 0;
     try {
@@ -47,7 +53,7 @@ class DamageAdjustor extends StatefulWidget {
           barrierDismissible: false,
           builder: (context, _) {
             return DamageAdjustor(
-                battleData: battleData, activator: activator, target: target, damageParameters: damageParameters);
+                battleData: battleData, activator: activator, target: target, damageParameters: damageParameters, currentCard: currentCard, multiAttack: multiAttack,);
           },
         );
         battleData.replayDataRecord.damageSelections.add(damage);
@@ -80,6 +86,31 @@ class _DamageAdjustorState extends State<DamageAdjustor> {
       exceptionThrown = true;
     }
 
+    final List<int> hitDamages = [];
+    final List<int> hits = [];
+    int remainingDamage = totalDamage;
+    if (widget.multiAttack != null && widget.multiAttack! > 0) {
+      for (final hit in widget.currentCard.cardDetail.hitsDistribution) {
+        for (int count = 1; count <= widget.multiAttack!; count += 1) {
+          hits.add(hit);
+        }
+      }
+    } else {
+      hits.addAll(widget.currentCard.cardDetail.hitsDistribution);
+    }
+    final totalHits = Maths.sum(hits);
+    for (int i = 0; i < hits.length; i += 1) {
+      final hitsPercentage = hits[i];
+      final int hitDamage;
+      if (i < hits.length - 1) {
+        hitDamage = totalDamage * hitsPercentage ~/ totalHits;
+      } else {
+        hitDamage = remainingDamage;
+      }
+      hitDamages.add(hitDamage);
+      remainingDamage -= hitDamage;
+    }
+
     return SimpleCancelOkDialog(
       title: Text(S.current.battle_select_effect),
       scrollable: true,
@@ -97,6 +128,7 @@ class _DamageAdjustorState extends State<DamageAdjustor> {
           ),
           const SizedBox(height: 8),
           Text('${S.current.battle_damage}: $totalDamage'),
+          Text(hitDamages.join(', '), style: Theme.of(context).textTheme.bodySmall),
           SliderWithPrefix(
             titled: true,
             label: S.current.battle_random,
