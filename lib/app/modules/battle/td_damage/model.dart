@@ -172,7 +172,7 @@ class TdDmgSolver {
       ..random = options.random
       ..threshold = options.probabilityThreshold;
     final svt = attacker.svt!;
-    if (attacker.td == null || !attacker.td!.functions.any((func) => func.funcType.isDamageNp)) {
+    if (attacker.td == null) {
       return null;
     }
 
@@ -188,6 +188,19 @@ class TdDmgSolver {
     final actor = battleData.onFieldAllyServants[0]!;
     battleData.criticalStars = BattleData.kValidStarMax.toDouble();
     actor.np = ConstData.constants.fullTdPoint;
+
+    if (svt.id == 2501400) {
+      // Aoko
+      if (options.enableActiveSkills) {
+        await battleData.activateSvtSkill(0, 2);
+      }
+      final card = actor.getNPCard();
+      if (card != null) {
+        await battleData.playerTurn([CombatAction(actor, card)]);
+      }
+      actor.np = ConstData.constants.fullTdPoint;
+    }
+
     if (options.enableActiveSkills) {
       await _activateActiveSkills(battleData, 0);
     }
