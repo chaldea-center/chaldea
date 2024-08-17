@@ -1723,18 +1723,20 @@ class InstantDeathParamDialog extends StatelessWidget with _ParamDialogMixin {
 
   @override
   Widget build(BuildContext context) {
+    final enemyDeathRate = params.deathRate.format(percent: true, precision: 3, base: 10);
+    final funcRate = params.functionRate.format(percent: true, precision: 3, base: 10);
+    final upDeathRate = params.buffRate.format(percent: true, precision: 3, base: 10);
     return buildDialog(
       context: context,
       title: S.current.instant_death_params,
       wrapDialog: wrapDialog,
       children: [
         buildCardInfo(context, info),
-        oneParam('[${S.current.target}]${S.current.info_death_rate}',
-            params.deathRate.format(percent: true, precision: 3, base: 10)),
-        oneParam(S.current.death_effect_rate, params.functionRate.format(percent: true, precision: 3, base: 10)),
-        oneParam(Transl.buffNames('即死付与率アップ').l, params.buffRate.format(percent: true, precision: 3, base: 10),
-            buffIcon(337)),
+        oneParam('[${S.current.target}]${S.current.info_death_rate}', enemyDeathRate),
+        oneParam(S.current.death_effect_rate, funcRate),
+        oneParam(Transl.buffNames('即死付与率アップ').l, upDeathRate, buffIcon(337)),
         DividerWithTitle(title: S.current.results, height: 12),
+        oneParam('', '$enemyDeathRate×$funcRate×(1+$upDeathRate)'),
         oneParam(S.current.death_chance, params.activateRate.format(percent: true, precision: 3, base: 10)),
         oneParam(
           '',
