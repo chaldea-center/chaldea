@@ -434,6 +434,7 @@ class FunctionExecutor {
         case FuncType.updateEnemyEntryMaxCountEachTurn:
         case FuncType.damageValue:
         case FuncType.damageValueSafe:
+        case FuncType.damageValueSafeOnce:
         // ↑↑↑ should be implemented ↑↑↑
         case FuncType.subFieldBuff:
         case FuncType.damageNpAndCheckIndividuality:
@@ -482,7 +483,6 @@ class FunctionExecutor {
         case FuncType.setQuestRouteFlag:
         case FuncType.setSystemAliveFlag:
         case FuncType.changeEnemyMasterFace:
-        case FuncType.damageValueSafeOnce:
         case FuncType.addBattleValue:
         case FuncType.setBattleValue:
           battleData.battleLogger.debug('${S.current.skip}: ${function.funcType}, '

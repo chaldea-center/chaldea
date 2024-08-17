@@ -1459,8 +1459,15 @@ void main() async {
 
   test('hitting invincible enemy', () async {
     final List<PlayerSvtData> setting = [
-      PlayerSvtData.id(2800100)..tdLv = 1..lv = 1..atkFou = 0,
-      PlayerSvtData.id(1100600)..tdLv = 1..lv = 1..atkFou = 0..skillLvs = [1, 1, 1],
+      PlayerSvtData.id(2800100)
+        ..tdLv = 1
+        ..lv = 1
+        ..atkFou = 0,
+      PlayerSvtData.id(1100600)
+        ..tdLv = 1
+        ..lv = 1
+        ..atkFou = 0
+        ..skillLvs = [1, 1, 1],
     ];
     final battle = BattleData();
     final quest = db.gameData.questPhases[9300040603]!;

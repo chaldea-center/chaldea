@@ -122,6 +122,9 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
     if (quest.warId >= 1000 && quest.openedAt < DateTime.now().subtract(const Duration(days: 30)).timestamp) {
       expireAfter = const Duration(days: 7);
     }
+    if (quest.flags.contains(QuestFlag.noBattle)) {
+      await Future.delayed(const Duration(milliseconds: 20));
+    }
 
     final data = await AtlasApi.questPhase(questId, phase, hash: hash, region: region, expireAfter: expireAfter);
     if (data != null &&
@@ -246,9 +249,8 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
     }
     final phaseDetail = db.gameData.questPhaseDetails[quest.id * 100 + phase];
 
-    bool noConsume = effPhase.flags.contains(QuestFlag.noBattle) ||
-        ((phaseDetail?.consumeType2 ?? effPhase.consumeType) == ConsumeType.ap &&
-            (phaseDetail?.actConsume ?? effPhase.consume) == 0);
+    bool noConsume = ((curPhase?.consumeType ?? phaseDetail?.consumeType2 ?? effPhase.consumeType) == ConsumeType.ap &&
+        (phaseDetail?.actConsume ?? effPhase.consume) == 0);
     final questSelects = curPhase?.extraDetail?.questSelect;
     List<Widget> headerRows = [
       Row(
@@ -575,7 +577,7 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
   }
 
   Widget? buildQuestIndiv(QuestPhase curPhase) {
-    if (curPhase.individuality.isEmpty || curPhase.flags.contains(QuestFlag.noBattle)) return null;
+    if (curPhase.individuality.isEmpty) return null;
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 3),
       child: Row(

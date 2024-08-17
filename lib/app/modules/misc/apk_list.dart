@@ -8,6 +8,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:chaldea/app/api/chaldea.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
+import 'package:chaldea/packages/app_info.dart';
 import 'package:chaldea/packages/language.dart';
 import 'package:chaldea/packages/svg.dart';
 import 'package:chaldea/utils/utils.dart';
@@ -185,22 +186,23 @@ class _ApkListPageState extends State<ApkListPage> {
                   ],
                 ),
                 for (final data in _dataList) buildOne(data),
-                TileGroup(
-                  header: "Rayshift APK Mod",
-                  footer: "Disclaimer: 3rd party modified apk, use at your own risk.",
-                  children: [
-                    for (final r in const ['jp', 'na'])
-                      ListTile(
-                        dense: true,
-                        title: Text("BFGO ${r.toUpperCase()}"),
-                        subtitle: Text(bfgoVersions[r] ?? 'io.rayshift.betterfgo${r == 'jp' ? '' : ".en"}'),
-                        trailing: const Icon(Icons.open_in_new, size: 18),
-                        onTap: () {
-                          launch('https://rayshift.io/betterfgo/download/$r', external: true);
-                        },
-                      )
-                  ],
-                ),
+                if (AppInfo.isDebugOn)
+                  TileGroup(
+                    header: "Rayshift APK Mod",
+                    footer: "Disclaimer: 3rd party modified apk, use at your own risk.",
+                    children: [
+                      for (final r in const ['jp', 'na'])
+                        ListTile(
+                          dense: true,
+                          title: Text("BFGO ${r.toUpperCase()}"),
+                          subtitle: Text(bfgoVersions[r] ?? 'io.rayshift.betterfgo${r == 'jp' ? '' : ".en"}'),
+                          trailing: const Icon(Icons.open_in_new, size: 18),
+                          onTap: () {
+                            launch('https://rayshift.io/betterfgo/download/$r', external: true);
+                          },
+                        )
+                    ],
+                  ),
                 xapkHint,
                 const SizedBox(height: 16),
                 const DividerWithTitle(title: 'Links', indent: 16, height: 16),
