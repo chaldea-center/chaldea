@@ -7,6 +7,8 @@ import 'package:csv/csv.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import 'package:chaldea/app/modules/common/filter_page_base.dart';
+import 'package:chaldea/app/modules/servant/filter.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/gamedata/toplogin.dart';
 import 'package:chaldea/models/models.dart';
@@ -50,10 +52,12 @@ class _SvtBondDetailPageState extends State<SvtBondDetailPage> with SingleTicker
   _CESortType ceSortType = _CESortType.time;
   bool ceGrid = false;
   bool reversed = false;
+  final svtFilter = SvtFilterData();
 
   Map<int, UserServantCollectionEntity> userSvtCollections = {};
 
   List<MapEntry<Servant, UserServantCollectionEntity>> collections = [];
+  List<MapEntry<Servant, UserServantCollectionEntity>> shownCollections = [];
   List<(CraftEssence, UserServantEntity?, UserServantCollectionEntity)> bondCEs = [];
 
   @override
@@ -87,10 +91,22 @@ class _SvtBondDetailPageState extends State<SvtBondDetailPage> with SingleTicker
       }
     }
 
-    sort();
+    update();
   }
 
-  void sort() {
+  void update() {
+    final bondValue = svtFilter.bondValue.radioValue;
+    svtFilter.bondValue.reset();
+    shownCollections = collections.where((e) {
+      if (bondValue != null && svtFilter.bondCompare.options.isNotEmpty) {
+        if (svtFilter.bondCompare.options.every((c) => !c.test(e.value.friendshipRank, bondValue))) {
+          return false;
+        }
+      }
+      return ServantFilterPage.filter(svtFilter, e.key);
+    }).toList();
+    if (bondValue != null) svtFilter.bondValue.set(bondValue);
+
     switch (ceSortType) {
       case _CESortType.no:
         bondCEs.sort2((e) => e.$1.collectionNo);
@@ -115,22 +131,22 @@ class _SvtBondDetailPageState extends State<SvtBondDetailPage> with SingleTicker
     }
     switch (svtSortType) {
       case _SvtSortType.no:
-        collections.sort2((e) => e.key.collectionNo);
+        shownCollections.sort2((e) => e.key.collectionNo);
         break;
       case _SvtSortType.cls:
-        collections.sort((a, b) {
+        shownCollections.sort((a, b) {
           return SvtFilterData.compare(a.key, b.key,
               keys: [SvtCompare.className, SvtCompare.rarity, SvtCompare.no], reversed: [false, true, false]);
         });
         break;
       case _SvtSortType.rarity:
-        collections.sort((a, b) {
+        shownCollections.sort((a, b) {
           return SvtFilterData.compare(a.key, b.key,
               keys: [SvtCompare.rarity, SvtCompare.className, SvtCompare.no], reversed: [false, false, false]);
         });
         break;
       case _SvtSortType.bondRank:
-        collections.sort((a, b) {
+        shownCollections.sort((a, b) {
           if (a.value.friendshipRank != b.value.friendshipRank) {
             return b.value.friendshipRank - a.value.friendshipRank;
           }
@@ -141,22 +157,23 @@ class _SvtBondDetailPageState extends State<SvtBondDetailPage> with SingleTicker
         });
         break;
       case _SvtSortType.bondNext:
-        collections.sort((a, b) {
+        shownCollections.sort((a, b) {
           int v = _getBondNext(a.key, a.value) - _getBondNext(b.key, b.value);
           if (v != 0) return v;
           return a.key.collectionNo - b.key.collectionNo;
         });
         break;
       case _SvtSortType.bondTotal:
-        collections.sort((a, b) {
+        shownCollections.sort((a, b) {
           return a.value.friendship - b.value.friendship;
         });
         break;
     }
     if (reversed) {
-      collections = collections.reversed.toList();
+      shownCollections = shownCollections.reversed.toList();
       bondCEs = bondCEs.reversed.toList();
     }
+    if (mounted) setState(() {});
   }
 
   int _getBondNext(Servant svt, UserServantCollectionEntity collection) {
@@ -262,92 +279,99 @@ class _SvtBondDetailPageState extends State<SvtBondDetailPage> with SingleTicker
           title: Row(
             children: [
               Expanded(
-                  flex: 2,
-                  child: Align(
-                    alignment: Alignment.center,
-                    child: TextButton(
-                      child: const Text('Rank'),
-                      onPressed: () => onSort(_SvtSortType.bondRank),
-                    ),
-                  )),
+                flex: 2,
+                child: Align(
+                  alignment: Alignment.center,
+                  child: TextButton(
+                    child: const Text('Rank'),
+                    onPressed: () => onSort(_SvtSortType.bondRank),
+                  ),
+                ),
+              ),
               Expanded(
-                  flex: 2,
-                  child: Align(
-                    alignment: Alignment.centerRight,
-                    child: TextButton(
-                      child: const Text("Total"),
-                      onPressed: () => onSort(_SvtSortType.bondTotal),
-                    ),
-                  )),
+                flex: 2,
+                child: Align(
+                  alignment: Alignment.centerRight,
+                  child: TextButton(
+                    child: const Text("Total"),
+                    onPressed: () => onSort(_SvtSortType.bondTotal),
+                  ),
+                ),
+              ),
               Expanded(
-                  flex: 2,
-                  child: Align(
-                    alignment: Alignment.centerRight,
-                    child: TextButton(
-                      child: const Text('Next'),
-                      onPressed: () => onSort(_SvtSortType.bondNext),
-                    ),
-                  )),
+                flex: 2,
+                child: Align(
+                  alignment: Alignment.centerRight,
+                  child: TextButton(
+                    child: const Text('Next'),
+                    onPressed: () => onSort(_SvtSortType.bondNext),
+                  ),
+                ),
+              ),
             ],
           ),
         ),
         kDefaultDivider,
         Expanded(
           child: ListView.separated(
-              itemBuilder: (context, index) {
-                final svt = collections[index].key;
-                final collection = collections[index].value;
-                return ListTile(
-                  leading: svt.iconBuilder(context: context),
-                  title: Row(
-                    children: [
-                      Expanded(
-                          flex: 2,
-                          child: Align(
-                            alignment: Alignment.center,
-                            child: AutoSizeText(
-                              'Lv.${collection.friendshipRank}/'
-                              '${(svt.collectionNo == 1 ? 8 : 10) + collection.friendshipExceedCount}',
-                              maxLines: 1,
-                              maxFontSize: 14,
-                              minFontSize: 6,
-                              style: kMonoStyle,
-                            ),
-                          )),
-                      Expanded(
-                          flex: 2,
-                          child: Align(
-                            alignment: Alignment.centerRight,
-                            child: Container(
-                              color: Theme.of(context).highlightColor,
-                              padding: const EdgeInsets.symmetric(horizontal: 4),
-                              child: AutoSizeText(
-                                collection.friendship.format(),
-                                maxLines: 1,
-                                maxFontSize: 14,
-                                minFontSize: 6,
-                                style: const TextStyle(fontFamily: kMonoFont, fontWeight: FontWeight.bold),
-                              ),
-                            ),
-                          )),
-                      Expanded(
-                          flex: 2,
-                          child: Align(
-                            alignment: Alignment.centerRight,
-                            child: AutoSizeText(
-                              _getBondNext(svt, collection).format(),
-                              maxLines: 1,
-                              maxFontSize: 14,
-                              minFontSize: 6,
-                              style: const TextStyle(fontFamily: kMonoFont),
-                            ),
-                          )),
-                    ],
-                  ),
-                );
-              },
-              separatorBuilder: (_, __) => kDefaultDivider,
-              itemCount: collections.length),
+            itemBuilder: (context, index) {
+              final svt = shownCollections[index].key;
+              final collection = shownCollections[index].value;
+              return ListTile(
+                leading: svt.iconBuilder(context: context),
+                title: Row(
+                  children: [
+                    Expanded(
+                      flex: 2,
+                      child: Align(
+                        alignment: Alignment.center,
+                        child: AutoSizeText(
+                          'Lv.${collection.friendshipRank}/'
+                          '${(svt.collectionNo == 1 ? 8 : 10) + collection.friendshipExceedCount}',
+                          maxLines: 1,
+                          maxFontSize: 14,
+                          minFontSize: 6,
+                          style: kMonoStyle,
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      flex: 2,
+                      child: Align(
+                        alignment: Alignment.centerRight,
+                        child: Container(
+                          color: Theme.of(context).highlightColor,
+                          padding: const EdgeInsets.symmetric(horizontal: 4),
+                          child: AutoSizeText(
+                            collection.friendship.format(),
+                            maxLines: 1,
+                            maxFontSize: 14,
+                            minFontSize: 6,
+                            style: const TextStyle(fontFamily: kMonoFont, fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      flex: 2,
+                      child: Align(
+                        alignment: Alignment.centerRight,
+                        child: AutoSizeText(
+                          _getBondNext(svt, collection).format(),
+                          maxLines: 1,
+                          maxFontSize: 14,
+                          minFontSize: 6,
+                          style: const TextStyle(fontFamily: kMonoFont),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+            separatorBuilder: (_, __) => kDefaultDivider,
+            itemCount: shownCollections.length,
+          ),
         ),
       ],
     );
@@ -410,10 +434,8 @@ class _SvtBondDetailPageState extends State<SvtBondDetailPage> with SingleTicker
                 ],
                 onChanged: (v) {
                   if (v != null) {
-                    setState(() {
-                      svtSortType = v;
-                      sort();
-                    });
+                    svtSortType = v;
+                    update();
                   }
                 },
               )
@@ -439,22 +461,37 @@ class _SvtBondDetailPageState extends State<SvtBondDetailPage> with SingleTicker
                 ],
                 onChanged: (v) {
                   if (v != null) {
-                    setState(() {
-                      ceSortType = v;
-                      sort();
-                    });
+                    ceSortType = v;
+                    update();
                   }
                 },
               ),
         IconButton(
           onPressed: () {
-            setState(() {
-              reversed = !reversed;
-              sort();
-            });
+            reversed = !reversed;
+            update();
           },
           tooltip: S.current.sort_order,
           icon: FaIcon(reversed ? FontAwesomeIcons.arrowUpZA : FontAwesomeIcons.arrowDownZA),
+        ),
+        IconButton(
+          icon: const Icon(Icons.filter_alt),
+          tooltip: '${S.current.filter} (${S.current.servant})',
+          onPressed: () => FilterPage.show(
+            context: context,
+            builder: (context) => ServantFilterPage(
+              filterData: svtFilter,
+              onChanged: (_) {
+                svtFilter
+                  ..planCompletion.reset()
+                  ..curStatus.reset()
+                  ..svtDuplicated.reset()
+                  ..favorite = FavoriteState.all;
+                update();
+              },
+              planMode: false,
+            ),
+          ),
         ),
         const SizedBox(width: 8),
       ],
@@ -462,14 +499,12 @@ class _SvtBondDetailPageState extends State<SvtBondDetailPage> with SingleTicker
   }
 
   void onSort(_SvtSortType _sortType) {
-    setState(() {
-      if (_sortType == svtSortType) {
-        reversed = !reversed;
-      } else {
-        svtSortType = _sortType;
-      }
-      sort();
-    });
+    if (_sortType == svtSortType) {
+      reversed = !reversed;
+    } else {
+      svtSortType = _sortType;
+    }
+    update();
   }
 
   Future<void> exportCSV() async {
