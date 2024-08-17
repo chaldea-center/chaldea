@@ -276,7 +276,7 @@ class Damage {
 
       // real
       int totalDamage = await DamageAdjustor.show(battleData, activator, target, damageParameters, currentCard, multiAttack,);
-      if (funcType == FuncType.damageNpSafe && totalDamage >= target.hp) {
+      if (funcType == FuncType.damageNpSafe && target.hp > 0 && totalDamage >= target.hp) {
         totalDamage = target.hp - 1;
       }
 
