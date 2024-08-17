@@ -1457,6 +1457,35 @@ void main() async {
     expect(maqin.skillInfoList[2].chargeTurn, 5);
   });
 
+  test('hitting invincible enemy', () async {
+    final List<PlayerSvtData> setting = [
+      PlayerSvtData.id(2800100)..tdLv = 1..lv = 1..atkFou = 0,
+      PlayerSvtData.id(1100600)..tdLv = 1..lv = 1..atkFou = 0..skillLvs = [1, 1, 1],
+    ];
+    final battle = BattleData();
+    final quest = db.gameData.questPhases[9300040603]!;
+    await battle.init(quest, setting, null);
+
+    final enemy = battle.onFieldEnemies[0]!;
+    expect(await enemy.getBuffValue(battle, BuffAction.defence), 1000);
+
+    await battle.activateSvtSkill(1, 2);
+    expect(await enemy.getBuffValue(battle, BuffAction.defence), 800);
+    final previousHp = enemy.hp;
+
+    final oberon = battle.onFieldAllyServants[0]!;
+    final salieri = battle.onFieldAllyServants[1]!;
+    oberon.np = 10000;
+    await battle.playerTurn([
+      CombatAction(oberon, oberon.getNPCard()!),
+      CombatAction(salieri, salieri.getCards()[0]),
+      CombatAction(salieri, salieri.getCards()[1]),
+    ]);
+
+    expect(await enemy.getBuffValue(battle, BuffAction.defence), 1000);
+    expect(previousHp - enemy.hp, 2753);
+  });
+
   group('Summer Eresh related tests', () {
     test('bond & starting position & dmgBattlePoint', () async {
       final List<PlayerSvtData?> setting = [

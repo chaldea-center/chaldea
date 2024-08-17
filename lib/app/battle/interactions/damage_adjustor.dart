@@ -53,7 +53,13 @@ class DamageAdjustor extends StatefulWidget {
           barrierDismissible: false,
           builder: (context, _) {
             return DamageAdjustor(
-                battleData: battleData, activator: activator, target: target, damageParameters: damageParameters, currentCard: currentCard, multiAttack: multiAttack,);
+              battleData: battleData,
+              activator: activator,
+              target: target,
+              damageParameters: damageParameters,
+              currentCard: currentCard,
+              multiAttack: multiAttack,
+            );
           },
         );
         battleData.replayDataRecord.damageSelections.add(damage);

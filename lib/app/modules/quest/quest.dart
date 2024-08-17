@@ -65,8 +65,8 @@ class _QuestDetailPageState extends State<QuestDetailPage> {
         if (phase > 0) initHash = (phase, widget.enemyHash);
       } else if (_quest!.isAnyFree && _quest!.phases.isNotEmpty) {
         phase = _quest!.phases.last;
-      // } else if (_quest!.phases.length > 3) {
-      //   phase = _quest!.phases.first;
+        // } else if (_quest!.phases.length > 3) {
+        //   phase = _quest!.phases.first;
       }
     }
     _resolveQuest();

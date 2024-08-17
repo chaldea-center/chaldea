@@ -239,43 +239,101 @@ class Damage {
       }
 
       final skipDamage = await shouldSkipDamage(battleData, activator, target, currentCard);
-      if (!skipDamage) {
-        final hasPierceDefense =
-            await activator.hasBuff(battleData, BuffAction.pierceDefence, other: target, card: currentCard);
-        // no corresponding code found, copying logic of pierceDefence
-        final hasPierceSubDamage =
-            await activator.hasBuff(battleData, BuffAction.pierceSubdamage, other: target, card: currentCard);
-        damageParameters
-          ..cardResist =
-              await target.getBuffValue(battleData, BuffAction.commandDef, other: activator, card: currentCard)
-          ..defenseBuff = damageFunction?.funcType == FuncType.damageNpPierce || hasPierceDefense
-              ? await target.getBuffValue(battleData, BuffAction.defencePierce, other: activator, card: currentCard)
-              : await target.getBuffValue(battleData, BuffAction.defence, other: activator, card: currentCard)
-          ..specificDefenseBuff =
-              await target.getBuffValue(battleData, BuffAction.selfdamage, other: activator, card: currentCard)
-          ..percentDefenseBuff =
-              await target.getBuffValue(battleData, BuffAction.specialdefence, other: activator, card: currentCard)
-          ..damageReceiveAdditionBuff = (hasPierceSubDamage
-                  ? await target.getBuffValue(battleData, BuffAction.receiveDamagePierce,
-                      other: activator, card: currentCard)
-                  : await target.getBuffValue(battleData, BuffAction.receiveDamage,
-                      other: activator, card: currentCard)) +
-              await target.getBuffValue(battleData, BuffAction.specialReceiveDamage,
-                  other: activator, card: currentCard);
+      final hasPierceDefense =
+          await activator.hasBuff(battleData, BuffAction.pierceDefence, other: target, card: currentCard);
+      // no corresponding code found, copying logic of pierceDefence
+      final hasPierceSubDamage =
+          await activator.hasBuff(battleData, BuffAction.pierceSubdamage, other: target, card: currentCard);
 
-        atkNpParameters.cardResist =
-            await target.getBuffValue(battleData, BuffAction.commandNpDef, other: activator, card: currentCard);
+      damageParameters
+        ..cardResist = await target.getBuffValue(
+          battleData,
+          BuffAction.commandDef,
+          other: activator,
+          card: currentCard,
+          skipDamage: skipDamage,
+        )
+        ..defenseBuff = damageFunction?.funcType == FuncType.damageNpPierce || hasPierceDefense
+            ? await target.getBuffValue(
+                battleData,
+                BuffAction.defencePierce,
+                other: activator,
+                card: currentCard,
+                skipDamage: skipDamage,
+              )
+            : await target.getBuffValue(
+                battleData,
+                BuffAction.defence,
+                other: activator,
+                card: currentCard,
+                skipDamage: skipDamage,
+              )
+        ..specificDefenseBuff = await target.getBuffValue(
+          battleData,
+          BuffAction.selfdamage,
+          other: activator,
+          card: currentCard,
+          skipDamage: skipDamage,
+        )
+        ..percentDefenseBuff = await target.getBuffValue(
+          battleData,
+          BuffAction.specialdefence,
+          other: activator,
+          card: currentCard,
+          skipDamage: skipDamage,
+        )
+        ..damageReceiveAdditionBuff = (hasPierceSubDamage
+                ? await target.getBuffValue(
+                    battleData,
+                    BuffAction.receiveDamagePierce,
+                    other: activator,
+                    card: currentCard,
+                    skipDamage: skipDamage,
+                  )
+                : await target.getBuffValue(
+                    battleData,
+                    BuffAction.receiveDamage,
+                    other: activator,
+                    card: currentCard,
+                    skipDamage: skipDamage,
+                  )) +
+            await target.getBuffValue(
+              battleData,
+              BuffAction.specialReceiveDamage,
+              other: activator,
+              card: currentCard,
+              skipDamage: skipDamage,
+            );
 
-        starParameters
-          ..cardResist =
-              await target.getBuffValue(battleData, BuffAction.commandStarDef, other: activator, card: currentCard)
-          ..enemyStarGenResist = await target.getBuffValue(battleData, BuffAction.criticalStarDamageTaken,
-              other: activator, card: currentCard);
-      }
+      atkNpParameters.cardResist = await target.getBuffValue(
+        battleData,
+        BuffAction.commandNpDef,
+        other: activator,
+        card: currentCard,
+        skipDamage: skipDamage,
+      );
+
+      starParameters
+        ..cardResist = await target.getBuffValue(
+          battleData,
+          BuffAction.commandStarDef,
+          other: activator,
+          card: currentCard,
+          skipDamage: skipDamage,
+        )
+        ..enemyStarGenResist = await target.getBuffValue(
+          battleData,
+          BuffAction.criticalStarDamageTaken,
+          other: activator,
+          card: currentCard,
+          skipDamage: skipDamage,
+        );
+
       final multiAttack = await activator.getMultiAttackBuffValue(battleData, currentCard, target);
 
       // real
-      int totalDamage = await DamageAdjustor.show(battleData, activator, target, damageParameters, currentCard, multiAttack,);
+      int totalDamage =
+          await DamageAdjustor.show(battleData, activator, target, damageParameters, currentCard, multiAttack);
       if (funcType == FuncType.damageNpSafe && target.hp > 0 && totalDamage >= target.hp) {
         totalDamage = target.hp - 1;
       }
