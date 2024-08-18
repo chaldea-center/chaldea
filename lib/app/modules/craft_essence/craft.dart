@@ -139,9 +139,10 @@ class _CraftDetailPageState extends State<CraftDetailPage> {
           SafeArea(
             child: OverflowBar(
               alignment: MainAxisAlignment.center,
+              spacing: 4,
               children: [
                 for (var i = 0; i < 2; i++)
-                  ElevatedButton(
+                  FilledButton(
                     onPressed: () {
                       CraftEssence? nextCe;
                       if (widget.onSwitch != null) {
@@ -158,7 +159,7 @@ class _CraftDetailPageState extends State<CraftDetailPage> {
                         });
                       }
                     },
-                    style: ElevatedButton.styleFrom(textStyle: const TextStyle(fontWeight: FontWeight.normal)),
+                    style: FilledButton.styleFrom(textStyle: const TextStyle(fontWeight: FontWeight.normal)),
                     child: Text([S.current.previous_card, S.current.next_card][i]),
                   ),
               ],

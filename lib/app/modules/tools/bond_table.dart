@@ -3,6 +3,8 @@ import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../common/builders.dart';
+import '../common/filter_page_base.dart';
+import '../servant/filter.dart';
 
 class BondTotalTable extends StatefulWidget {
   const BondTotalTable({super.key});
@@ -12,17 +14,19 @@ class BondTotalTable extends StatefulWidget {
 }
 
 class _BondTotalStateTable extends State<BondTotalTable> {
-  final kBondLvs = const [5, 10, 15];
+  final kBondLvs = const [5, 6, 10, 15];
   final int kGroupBondWidth = 5000;
   int maxBondLv = 10;
   // bool get useGroupBond => maxBondLv > 5;
   bool get useGroupBond => false;
+  final svtFilter = SvtFilterData();
 
   List<(int, List<(int, Servant)>)> getData() {
     Map<int, List<(int, Servant)>> groups = {};
     for (final svt in db.gameData.servantsById.values) {
       final int? bond = svt.bondGrowth.getOrNull(maxBondLv - 1) ?? svt.bondGrowth.lastOrNull;
       if (bond == null) continue;
+      if (!ServantFilterPage.filter(svtFilter, svt)) continue;
       int groupValue = bond;
       if (useGroupBond) {
         groupValue = (groupValue / kGroupBondWidth).ceil() * kGroupBondWidth;
@@ -82,6 +86,20 @@ class _BondTotalStateTable extends State<BondTotalTable> {
             },
             underline: const SizedBox(),
           ),
+          IconButton(
+            icon: const Icon(Icons.filter_alt),
+            tooltip: '${S.current.filter} (${S.current.servant})',
+            onPressed: () => FilterPage.show(
+              context: context,
+              builder: (context) => ServantFilterPage(
+                filterData: svtFilter,
+                onChanged: (_) {
+                  if (mounted) setState(() {});
+                },
+                planMode: false,
+              ),
+            ),
+          ),
         ],
       ),
       body: ListView(
@@ -112,10 +130,11 @@ class _BondTotalStateTable extends State<BondTotalTable> {
           svt.iconBuilder(
             context: context,
             width: 56,
-            text: useGroupBond ? fmtBond(bond) : null,
-            option: ImageWithTextOption(
-              fontSize: 12,
-            ),
+            text: [
+              if (maxBondLv > svt.bondGrowth.length) '${S.current.bond} ${svt.bondGrowth.length}',
+              if (useGroupBond) fmtBond(bond)
+            ].join('\n'),
+            option: ImageWithTextOption(fontSize: 12),
           ),
       ],
     );
