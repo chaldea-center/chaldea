@@ -1518,7 +1518,7 @@ class ServantScript with DataScriptBase {
 
   factory ServantScript.fromJson(Map<String, dynamic> json) => _$ServantScriptFromJson(json)..setSource(json);
 
-  Map<String, dynamic> toJson() => _$ServantScriptToJson(this);
+  Map<String, dynamic> toJson() => Map.from(source)..addAll(_$ServantScriptToJson(this));
 }
 
 @JsonSerializable()

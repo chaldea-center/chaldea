@@ -1801,7 +1801,7 @@ class EventBulletinBoardScript with DataScriptBase {
   factory EventBulletinBoardScript.fromJson(Map<String, dynamic> json) =>
       _$EventBulletinBoardScriptFromJson(json)..setSource(json);
 
-  Map<String, dynamic> toJson() => _$EventBulletinBoardScriptToJson(this);
+  Map<String, dynamic> toJson() => Map.from(source)..addAll(_$EventBulletinBoardScriptToJson(this));
 }
 
 @JsonSerializable()

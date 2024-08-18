@@ -183,7 +183,7 @@ class BuffScript with DataScriptBase {
 
   factory BuffScript.fromJson(Map<String, dynamic> json) => _$BuffScriptFromJson(json);
 
-  Map<String, dynamic> toJson() => _$BuffScriptToJson(this);
+  Map<String, dynamic> toJson() => Map.from(source)..addAll(_$BuffScriptToJson(this));
 }
 
 /// Convert [targets] to [convertBuffs]

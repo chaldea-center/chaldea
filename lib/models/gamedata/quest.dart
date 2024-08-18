@@ -861,7 +861,7 @@ class Stage with DataScriptBase {
   // mstBattleMasterImage.id
   int? get battleMasterImageId => toInt('battleMasterImageId');
 
-  Map<String, dynamic> toJson() => _$StageToJson(this);
+  Map<String, dynamic> toJson() => _$StageToJson(this)..['originalScript'] = originalScript;
 }
 
 @JsonSerializable()
@@ -1573,7 +1573,7 @@ class EnemyScript with DataScriptBase {
 
   factory EnemyScript.fromJson(Map<String, dynamic> json) => _$EnemyScriptFromJson(json);
 
-  Map<String, dynamic> toJson() => _$EnemyScriptToJson(this);
+  Map<String, dynamic> toJson() => Map.from(source)..addAll(_$EnemyScriptToJson(this));
 }
 
 @JsonSerializable(includeIfNull: false)
@@ -1584,7 +1584,7 @@ class EnemyInfoScript with DataScriptBase {
 
   factory EnemyInfoScript.fromJson(Map<String, dynamic> json) => _$EnemyInfoScriptFromJson(json);
 
-  Map<String, dynamic> toJson() => _$EnemyInfoScriptToJson(this);
+  Map<String, dynamic> toJson() => Map.from(source)..addAll(_$EnemyInfoScriptToJson(this));
 }
 
 @JsonSerializable()

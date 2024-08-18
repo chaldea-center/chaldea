@@ -920,7 +920,7 @@ class SkillScript with DataScriptBase {
 
   factory SkillScript.fromJson(Map<String, dynamic> json) => _$SkillScriptFromJson(json)..setSource(json);
 
-  Map<String, dynamic> toJson() => _$SkillScriptToJson(this);
+  Map<String, dynamic> toJson() => Map.from(source)..addAll(_$SkillScriptToJson(this));
 }
 
 @JsonSerializable()
