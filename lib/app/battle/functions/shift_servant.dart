@@ -15,7 +15,7 @@ class ShiftServant {
         continue;
       }
       final shiftNpcId = dataVals.ShiftNpcId ?? 0;
-      final skillShiftSvt = battleData.enemyDecks[DeckType.skillShift]?.firstWhereOrNull((e) => e.npcId == shiftNpcId);
+      final skillShiftSvt = battleData.enemyDecks[DeckType.shift]?.firstWhereOrNull((e) => e.npcId == shiftNpcId);
       if (skillShiftSvt == null) {
         battleData.battleLogger.error('SkillShift NpcId=$shiftNpcId not found');
       } else {
@@ -38,7 +38,7 @@ class ShiftServant {
       return;
     }
     final changeNpcId = actor.changeNpcIds.getOrNull(actor.shiftDeckIndex + 1); // use shiftIndex here!
-    final changeSvt = battleData.enemyDecks[DeckType.change]?.firstWhereOrNull((e) => e.npcId == changeNpcId);
+    final changeSvt = battleData.enemyDecks[DeckType.shift]?.firstWhereOrNull((e) => e.npcId == changeNpcId);
     if (changeSvt == null) {
       battleData.battleLogger.error('ChangeServant NpcId=$changeNpcId not found');
       return;

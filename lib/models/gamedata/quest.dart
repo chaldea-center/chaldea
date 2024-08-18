@@ -2167,6 +2167,9 @@ enum DeckType {
   missionTargetSkillShift,
   aiNpc,
   svtFollower,
+  ;
+
+  bool get isInShiftDeck => this == shift || this == change || this == skillShift || this == missionTargetSkillShift;
 }
 
 enum RestrictionType {

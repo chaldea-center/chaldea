@@ -622,10 +622,10 @@ class BattleData {
             await actor.loadEnemySvtData(this);
           }
         } else {
-          if (!enemyDecks.containsKey(enemy.deck)) {
-            enemyDecks[enemy.deck] = [];
+          enemyDecks.putIfAbsent(enemy.deck, () => []).add(enemy);
+          if (enemy.deck.isInShiftDeck && enemy.deck != DeckType.shift) {
+            enemyDecks.putIfAbsent(DeckType.shift, () => []).add(enemy);
           }
-          enemyDecks[enemy.deck]!.add(enemy);
         }
       }
       fieldAi = FieldAiManager(curStage!.fieldAis);

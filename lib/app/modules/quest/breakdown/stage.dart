@@ -176,6 +176,11 @@ class QuestWave extends StatelessWidget {
 
     // others
     final _unknownDeck = stageEnemies.where((e) => !_usedUniqueIds.contains(e.deckNpcId)).toList();
+    final _allShiftNpcIds = stageEnemies
+        .where((e) => e.deck.isInShiftDeck && e.deck != DeckType.missionTargetSkillShift)
+        .map((e) => e.npcId)
+        .toSet();
+    _unknownDeck.removeWhere((e) => e.deck == DeckType.missionTargetSkillShift && _allShiftNpcIds.contains(e.npcId));
     _unknownDeck.sortByList((e) => [e.deck == DeckType.shift ? 999 : e.deck.index, e.deckId, e.npcId]);
     if (_unknownDeck.isNotEmpty) {
       children.add(const Text('- Unknown Deck -', textAlign: TextAlign.center));
