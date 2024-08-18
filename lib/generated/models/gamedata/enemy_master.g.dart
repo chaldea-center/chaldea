@@ -41,15 +41,15 @@ Map<String, dynamic> _$EnemyMasterBattleToJson(EnemyMasterBattle instance) => <S
 
 BattleMasterImage _$BattleMasterImageFromJson(Map json) => BattleMasterImage(
       id: (json['id'] as num).toInt(),
-      type: $enumDecode(_$GenderEnumMap, json['type']),
-      faceIcon: json['faceIcon'] as String,
-      skillCutin: json['skillCutin'] as String,
+      type: $enumDecodeNullable(_$GenderEnumMap, json['type']) ?? Gender.unknown,
+      faceIcon: json['faceIcon'] as String?,
+      skillCutin: json['skillCutin'] as String?,
       skillCutinOffsetX: (json['skillCutinOffsetX'] as num?)?.toInt() ?? 0,
       skillCutinOffsetY: (json['skillCutinOffsetY'] as num?)?.toInt() ?? 0,
-      commandSpellCutin: json['commandSpellCutin'] as String,
+      commandSpellCutin: json['commandSpellCutin'] as String?,
       commandSpellCutinOffsetX: (json['commandSpellCutinOffsetX'] as num?)?.toInt() ?? 0,
       commandSpellCutinOffsetY: (json['commandSpellCutinOffsetY'] as num?)?.toInt() ?? 0,
-      resultImage: json['resultImage'] as String,
+      resultImage: json['resultImage'] as String?,
       releaseConditions: (json['releaseConditions'] as List<dynamic>?)
               ?.map((e) => CommonRelease.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??

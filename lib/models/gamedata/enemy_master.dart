@@ -61,27 +61,27 @@ class EnemyMasterBattle {
 class BattleMasterImage {
   int id;
   Gender type;
-  String faceIcon;
-  String skillCutin;
+  String? faceIcon;
+  String? skillCutin;
   int skillCutinOffsetX;
   int skillCutinOffsetY;
-  String commandSpellCutin;
+  String? commandSpellCutin;
   int commandSpellCutinOffsetX;
   int commandSpellCutinOffsetY;
-  String resultImage;
+  String? resultImage;
   List<CommonRelease> releaseConditions;
 
   BattleMasterImage({
     required this.id,
-    required this.type,
-    required this.faceIcon,
-    required this.skillCutin,
+    this.type = Gender.unknown,
+    this.faceIcon,
+    this.skillCutin,
     this.skillCutinOffsetX = 0,
     this.skillCutinOffsetY = 0,
-    required this.commandSpellCutin,
+    this.commandSpellCutin,
     this.commandSpellCutinOffsetX = 0,
     this.commandSpellCutinOffsetY = 0,
-    required this.resultImage,
+    this.resultImage,
     this.releaseConditions = const [],
   });
 

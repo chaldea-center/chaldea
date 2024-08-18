@@ -301,11 +301,12 @@ class WaveInfoPage extends StatelessWidget {
         onLoading: (context) => Text(battleMasterImageId.toString()),
         builder: (context, images) {
           List<Widget> trailings = [];
-          if (images == null || images.isEmpty) {
+          final faceIcons = images?.map((e) => e.faceIcon).whereType<String>().toList() ?? [];
+          if (faceIcons.isEmpty) {
             trailings.add(Text(battleMasterImageId.toString()));
           } else {
-            for (final image in images) {
-              trailings.add(CachedImage(imageUrl: image.faceIcon, width: 36, height: 36, viewFullOnTap: true));
+            for (final image in faceIcons) {
+              trailings.add(CachedImage(imageUrl: image, width: 36, height: 36, viewFullOnTap: true));
             }
           }
           return Wrap(
