@@ -367,11 +367,17 @@ class FunctionExecutor {
           break;
         case FuncType.gainHp:
         case FuncType.gainHpPer:
+          await GainHP.gainHP(battleData, dataVals, activator, targets, function.funcType);
+          break;
         case FuncType.lossHp:
         case FuncType.lossHpSafe:
         case FuncType.lossHpPer:
         case FuncType.lossHpPerSafe:
-          await GainHP.gainHP(battleData, dataVals, activator, targets, function.funcType);
+          await GainHP.lossHP(battleData, dataVals, activator, targets, function.funcType);
+          break;
+        case FuncType.damageValue:
+        case FuncType.damageValueSafe:
+          await GainHP.damageValue(battleData, dataVals, activator, targets, function.funcType);
           break;
         case FuncType.gainHpFromTargets:
           await GainHpFromTargets.gainHpFromTargets(battleData, dataVals, activator!, targetedAlly, targetedEnemy);
@@ -430,10 +436,8 @@ class FunctionExecutor {
           AddBattlePoint.addBattlePoint(battleData, dataVals, targets, overchargeState, ignoreBattlePoints);
           break;
         case FuncType.updateEnemyEntryMaxCountEachTurn:
-        case FuncType.damageValue:
-        case FuncType.damageValueSafe:
-        case FuncType.damageValueSafeOnce:
         // ↑↑↑ should be implemented ↑↑↑
+        case FuncType.damageValueSafeOnce:
         case FuncType.subFieldBuff:
         case FuncType.damageNpAndCheckIndividuality:
         case FuncType.damageNpStateIndividual:
