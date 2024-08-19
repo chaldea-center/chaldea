@@ -2,9 +2,9 @@ import 'dart:convert';
 
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/generated/l10n.dart';
+import 'package:chaldea/models/faker/jp/network.dart';
 import 'package:chaldea/models/faker/quiz/cat_mouse.dart';
-import 'package:chaldea/models/faker/req/agent.dart';
-import 'package:chaldea/models/faker/req/request.dart';
+import 'package:chaldea/models/faker/shared/agent.dart';
 import 'package:chaldea/models/gamedata/toplogin.dart';
 import 'package:chaldea/packages/json_viewer/json_viewer.dart';
 import 'package:chaldea/utils/utils.dart';

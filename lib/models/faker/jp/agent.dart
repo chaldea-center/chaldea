@@ -1,6 +1,4 @@
 import 'dart:convert';
-import 'dart:math';
-import 'dart:typed_data';
 
 import 'package:archive/archive.dart' show getCrc32;
 
@@ -9,25 +7,20 @@ import 'package:chaldea/models/gamedata/toplogin.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/models/userdata/version.dart';
 import 'package:chaldea/packages/logger.dart';
-import 'package:chaldea/utils/basic.dart';
 import 'package:chaldea/utils/extension.dart';
-import 'request.dart';
+import '../shared/agent.dart';
+import 'network.dart';
 
-class FakerAgent {
-  final NetworkManager network;
-  FakerAgent({required this.network});
-  FakerAgent.s({
+class FakerAgentJP extends FakerAgent<FRequestJP, NetworkManagerJP> {
+  FakerAgentJP({required super.network});
+  FakerAgentJP.s({
     required GameTop gameTop,
     required AutoLoginData user,
-  }) : network = NetworkManager(gameTop: gameTop.copy(), user: user);
+  }) : super(network: NetworkManagerJP(gameTop: gameTop.copy(), user: user));
 
-  BattleEntity? curBattle;
-  BattleEntity? lastBattle;
-  BattleResultData? lastBattleResultData;
-  FResponse? lastResp;
-
+  @override
   Future<FResponse> gamedataTop({bool checkAppUpdate = true}) async {
-    final request = FRequestBase(network: network, path: '/gamedata/top');
+    final request = FRequestJP(network: network, path: '/gamedata/top');
     final fresp = await request.beginRequest();
     if (fresp.data.responses.any((e) => e.fail?['action'] == 'app_version_up')) {
       if (!checkAppUpdate) {
@@ -63,8 +56,9 @@ class FakerAgent {
     }
   }
 
+  @override
   Future<FResponse> loginTop() async {
-    final request = FRequestBase(network: network, path: '/login/top');
+    final request = FRequestJP(network: network, path: '/login/top');
     request.addBaseField();
     if (network.gameTop.region == Region.jp) {
       await request.addSignatureField();
@@ -89,22 +83,25 @@ class FakerAgent {
     return resp.throwError('login');
   }
 
+  @override
   Future<FResponse> homeTop() async {
-    final request = FRequestBase(network: network, path: '/home/top');
+    final request = FRequestJP(network: network, path: '/home/top');
     return request.beginRequestAndCheckError('home');
   }
 
-  Future<FResponse> folowerList(
+  @override
+  Future<FResponse> followerList(
       {required int32_t questId, required int32_t questPhase, required bool isEnfoceRefresh}) async {
-    final request = FRequestBase(network: network, path: '/follower/list');
+    final request = FRequestJP(network: network, path: '/follower/list');
     request.addFieldInt32('questId', questId);
     request.addFieldInt32('questPhase', questPhase);
     request.addFieldInt32('refresh', isEnfoceRefresh ? 1 : 0);
     return request.beginRequestAndCheckError('follower_list');
   }
 
+  @override
   Future<FResponse> itemRecover({required int32_t recoverId, required int32_t num}) async {
-    final request = FRequestBase(network: network, path: '/item/recover');
+    final request = FRequestJP(network: network, path: '/item/recover');
     request.addFieldInt32('recoverId', recoverId);
     request.addFieldInt32('num', num);
     final itemId = mstRecovers[recoverId]?.targetId;
@@ -113,8 +110,9 @@ class FakerAgent {
     return request.beginRequestAndCheckError('item_recover');
   }
 
+  @override
   Future<FResponse> shopPurchase({required int32_t id, required int32_t num, int32_t anotherPayFlag = 0}) async {
-    final request = FRequestBase(network: network, path: '/shop/purchase');
+    final request = FRequestJP(network: network, path: '/shop/purchase');
     request.addFieldInt32('id', id);
     request.addFieldInt32('num', num);
     if (anotherPayFlag > 0) {
@@ -123,13 +121,15 @@ class FakerAgent {
     return request.beginRequest();
   }
 
+  @override
   Future<FResponse> shopPurchaseByStone({required int32_t id, required int32_t num}) async {
-    final request = FRequestBase(network: network, path: '/shop/purchaseByStone');
+    final request = FRequestJP(network: network, path: '/shop/purchaseByStone');
     request.addFieldInt32('id', id);
     request.addFieldInt32('num', num);
     return request.beginRequest();
   }
 
+  @override
   Future<FResponse> battleSetup({
     required int32_t questId,
     required int32_t questPhase,
@@ -150,7 +150,7 @@ class FakerAgent {
     int32_t campaignItemId = 0,
     int32_t restartWave = 0,
   }) async {
-    final request = FRequestBase(network: network, path: '/battle/setup');
+    final request = FRequestJP(network: network, path: '/battle/setup');
     request.addFieldInt32("questId", questId);
     request.addFieldInt32("questPhase", questPhase);
     request.addFieldInt64("activeDeckId", activeDeckId);
@@ -178,6 +178,7 @@ class FakerAgent {
     return resp;
   }
 
+  @override
   Future<FResponse> battleResult({
     required int64_t battleId,
     required BattleResultType battleResult, // 0-none,1-win,2-lose,3-retire
@@ -209,7 +210,7 @@ class FakerAgent {
     List<int32_t> dataLostUniqueIdArray = const [],
     List waveInfos = const [],
   }) async {
-    final request = FRequestBase(network: network, path: '/battle/result');
+    final request = FRequestJP(network: network, path: '/battle/result');
     final _battleResult = battleResult.value, _winResult = winResult.value;
 
     Map<String, Object> dictionary = {
@@ -280,237 +281,5 @@ class FakerAgent {
     }
     network.mstData.battles.clear();
     return resp;
-  }
-}
-
-extension FakerAgentX on FakerAgent {
-  Future<FResponse> battleSetupWithOptions(AutoBattleOptions options) async {
-    final region = network.user.region;
-    final quest = db.gameData.quests[options.questId];
-    final mstData = network.mstData;
-    if (quest == null) {
-      throw Exception('quest ${options.questId} not found');
-    }
-    if (!quest.phases.contains(options.questPhase)) {
-      throw Exception('Invalid phase ${options.questPhase}');
-    }
-    final userQuest = mstData.userQuest[quest.id];
-    if (userQuest != null && userQuest.questPhase > options.questPhase) {
-      throw Exception('Latest phase: ${userQuest.questPhase}, cannot start phase ${options.questPhase}');
-    }
-    if (mstData.userDeck[options.deckId] == null) {
-      throw Exception('Deck ${options.deckId} not found');
-    }
-    final questPhaseEntity = await AtlasApi.questPhase(options.questId, options.questPhase, region: region);
-    if (questPhaseEntity == null) {
-      throw Exception('Quest ${options.questId}/${options.questPhase} not found');
-    }
-    final curAp = mstData.user!.calCurAp();
-    if (questPhaseEntity.consumeType.useAp) {
-      final consume = options.isHpHalf ? quest.consume ~/ 2 : quest.consume;
-      if (curAp < consume) {
-        throw Exception('AP not enough: $curAp<${questPhaseEntity.consume}');
-      }
-    }
-    if (questPhaseEntity.consumeType.useItem) {
-      for (final item in questPhaseEntity.consumeItem) {
-        final itemNum = mstData.getItemNum(item.itemId);
-        if (itemNum < item.amount) {
-          throw Exception('Item not enough: $itemNum<${item.amount}');
-        }
-      }
-    }
-
-    int campaignItemId = 0;
-    if (options.useCampaignItem) {
-      List<UserItemEntity> campaignItems = [];
-      final now = DateTime.now().timestamp;
-      for (final userItem in mstData.userItem) {
-        if (userItem.num <= 0) continue;
-        final jpItem = db.gameData.items[userItem.itemId];
-        if (jpItem != null && jpItem.type != ItemType.friendshipUpItem) continue;
-        final item = region == Region.jp ? jpItem : await AtlasApi.item(userItem.itemId, region: region);
-        if (item == null || item.type != ItemType.friendshipUpItem) continue;
-        if (item.startedAt < now && item.endedAt > now) {
-          campaignItems.add(userItem);
-        }
-      }
-      if (campaignItems.isEmpty) {
-        throw Exception('no valid Teapot item found');
-      }
-      print("Teapot count: ${{for (final x in campaignItems) x.itemId: x.num}}");
-      if (campaignItems.length > 1) {
-        throw Exception('multiple Teapot items found, why??? (${campaignItems.map((e) => e.itemId).join("/")})');
-      }
-      campaignItemId = campaignItems.single.itemId;
-    }
-
-    final (follower, followerSvt) = await _getValidSupport(
-      questId: options.questId,
-      questPhase: options.questPhase,
-      useEventDeck: options.useEventDeck,
-      enforceRefreshSupport: options.enfoceRefreshSupport,
-      supportSvtIds: options.supportSvtIds.toList(),
-      supportEquipIds: options.supportCeIds.toList(),
-      supportEquipMaxLimitBreak: options.supportCeMaxLimitBreak,
-    );
-
-    // print({
-    //   "questId": options.questId,
-    //   "questPhase": options.questPhase,
-    //   "activeDeckId": options.deckId,
-    //   "followerId": follower.userId,
-    //   "followerClassId": followerSvt.classId,
-    //   "followerType": follower.type,
-    //   "followerSupportDeckId": followerSvt.supportDeckId,
-    // });
-    return battleSetup(
-      questId: options.questId,
-      questPhase: options.questPhase,
-      activeDeckId: options.deckId,
-      followerId: follower.userId,
-      followerClassId: followerSvt.classId,
-      followerType: follower.type,
-      followerSupportDeckId: followerSvt.supportDeckId,
-      campaignItemId: campaignItemId,
-    );
-  }
-
-  Future<(FollowerInfo follower, ServantLeaderInfo followerSvt)> _getValidSupport({
-    required int questId,
-    required int questPhase,
-    required bool useEventDeck,
-    required bool enforceRefreshSupport,
-    required List<int> supportSvtIds,
-    required List<int> supportEquipIds,
-    required bool supportEquipMaxLimitBreak,
-  }) async {
-    int refreshCount = 0;
-
-    while (true) {
-      final resp = await folowerList(
-          questId: questId, questPhase: questPhase, isEnfoceRefresh: enforceRefreshSupport || refreshCount > 0);
-      if (refreshCount > 0) {
-        await Future.delayed(const Duration(seconds: 5));
-      }
-      refreshCount += 1;
-      if (refreshCount > 20) {
-        throw Exception('After $refreshCount times refresh, no support svt is valid');
-      }
-      final followers = resp.data.mstData.userFollower.first.followerInfo;
-
-      for (final follower in followers) {
-        for (final svt in useEventDeck ? follower.eventUserSvtLeaderHash : follower.userSvtLeaderHash) {
-          if (supportSvtIds.isNotEmpty && !supportSvtIds.contains(svt.svtId)) {
-            continue;
-          }
-          if (supportEquipIds.isNotEmpty && !supportEquipIds.contains(svt.equipTarget1?.svtId)) {
-            continue;
-          }
-          if (supportEquipMaxLimitBreak && svt.equipTarget1?.limitCount != 4) continue;
-          return (follower, svt);
-        }
-      }
-    }
-  }
-
-  Future<FResponse> battleResultWithOptions(
-      {required BattleEntity battleEntity, required BattleResultType resultType, required String actionLogs}) async {
-    final stageCount = battleEntity.battleInfo!.enemyDeck.length;
-    if (resultType == BattleResultType.cancel) {
-      return battleResult(
-        battleId: battleEntity.id,
-        battleResult: BattleResultType.cancel,
-        winResult: BattleWinResultType.none,
-        action: BattleDataActionList(
-            logs: "", dt: battleEntity.battleInfo!.enemyDeck.first.svts.map((e) => e.uniqueId).toList()),
-        usedTurnArray: List.generate(stageCount, (i) => i == 0 ? 1 : 0),
-        aliveUniqueIds: battleEntity.battleInfo!.enemyDeck.expand((e) => e.svts).map((e) => e.uniqueId).toList(),
-      );
-    } else if (resultType == BattleResultType.win) {
-      final usedTurnArray = List.generate(stageCount, (i) => i == stageCount - 1 ? 1 : 0);
-      final totalTurns = Maths.sum(usedTurnArray.map((e) => max(1, e)));
-      if (actionLogs.isEmpty) {
-        actionLogs = List<String>.generate(totalTurns, (i) => const ['1B2B3B', '1B1D2C', '1B1C2B'][i % 3]).join('');
-      }
-      if (!RegExp(r'^' + (r'[123][BCD]' * totalTurns * 3) + r'$').hasMatch(actionLogs)) {
-        throw Exception('Invalid action logs or not match turn length: $usedTurnArray, $actionLogs');
-      }
-      return battleResult(
-        battleId: battleEntity.id,
-        battleResult: BattleResultType.win,
-        winResult: BattleWinResultType.normal,
-        action: BattleDataActionList(
-          logs: actionLogs,
-          dt: battleEntity.battleInfo!.enemyDeck.last.svts.map((e) => e.uniqueId).toList(),
-        ),
-        usedTurnArray: usedTurnArray,
-      );
-    } else {
-      throw Exception('resultType=$resultType not supported');
-    }
-  }
-
-  Future<FResponse> terminalApSeedExchange(int32_t buyCount) {
-    // TerminalApSeedExchangeManager__OnSelectExchangeItems
-    // shop 13000000
-    // item_103 + 40AP
-    return shopPurchase(id: 13000000, num: buyCount, anotherPayFlag: 0);
-  }
-}
-
-// PlayerServantNoblePhantasmUsageData
-class PlayerServantNoblePhantasmUsageDataEntity {
-  int svtId;
-  int followerType;
-  int seqId;
-  int addCount;
-  PlayerServantNoblePhantasmUsageDataEntity({
-    required this.svtId,
-    required this.followerType,
-    required this.seqId,
-    required this.addCount,
-  });
-
-  Map<String, int> getSaveData() {
-    return {
-      "svtId": svtId,
-      "followerType": followerType,
-      "seqId": seqId,
-      "addCount": addCount,
-    };
-  }
-}
-
-class BattleDataActionList {
-  // commandhistory(uniqueId+commadtype): 1B2B3B1B1D2C1B1C2B
-  String logs;
-  // current wave's enemy info("u"+uniqueId): u13u14u15
-  List<int> dt;
-  String hd;
-  String data;
-
-  BattleDataActionList({
-    required this.logs,
-    required this.dt,
-    this.hd = "",
-    this.data = "",
-  });
-  // { \"logs\":\"1B2B3B1B1D2C1B1C2B\", \"dt\":\"u13u14u15\", \"hd\":\"\", \"data\":\"\" }
-  String getSaveData() {
-    final dtStr = dt.map((e) => 'u$e').join();
-    return """{ "logs":"$logs", "dt":"$dtStr", "hd":"$hd", "data":"$data" }""";
-  }
-}
-
-class BitConverter {
-  static List<int> getInt32(int32_t value) {
-    final data = ByteData(4)..setInt32(0, value, Endian.little);
-    return data.buffer.asUint8List();
-  }
-
-  static List<int> getInt64(int64_t value) {
-    final data = ByteData(8)..setInt64(0, value, Endian.little);
-    return data.buffer.asUint8List();
   }
 }

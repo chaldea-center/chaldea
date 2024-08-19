@@ -6,34 +6,21 @@ import 'package:dio/dio.dart';
 import 'package:uuid/uuid.dart';
 
 import 'package:chaldea/app/api/chaldea.dart';
-import 'package:chaldea/models/db.dart';
-import 'package:chaldea/models/gamedata/gamedata.dart';
 import 'package:chaldea/models/gamedata/toplogin.dart';
-import 'package:chaldea/models/userdata/autologin.dart';
-import 'package:chaldea/packages/app_info.dart';
 import 'package:chaldea/packages/packages.dart';
 import 'package:chaldea/utils/utils.dart';
-import '../quiz/cat_mouse.dart';
+import '../shared/network.dart';
 
-int _getNowTimestamp() => DateTime.now().timestamp;
+export '../shared/network.dart';
 
-class FRequestBase {
-  bool _disposed = false;
+// for JP and NA
 
-  NetworkManager network;
-  RequestOptions? rawRequest;
-  Response? rawResponse;
-  String path;
-
-  FRequestBase({required this.network, required this.path});
+class FRequestJP extends FRequestBase {
+  final NetworkManagerJP network;
+  FRequestJP({required this.network, required super.path});
 
   final Map<String, int> paramInteger = {};
   final Map<String, String> paramString = {};
-
-  int sendTime = 0;
-  int receiveTime = 0;
-  int serverTime = 0;
-  int serverExecutionTime = 0;
 
   // int64/long, float, double should convert to string
   void addFieldInt32(String fieldName, int data, {bool replace = false}) {
@@ -83,11 +70,13 @@ class FRequestBase {
     return (form, authParams);
   }
 
+  @override
   Future<FResponse> beginRequestAndCheckError(String? nid, {bool addBaseFields = true}) async {
     final resp = await beginRequest(addBaseFields: addBaseFields);
     return resp.throwError(nid);
   }
 
+  @override
   Future<FResponse> beginRequest({bool addBaseFields = true}) async {
     if (addBaseFields) {
       addBaseField();
@@ -96,36 +85,12 @@ class FRequestBase {
   }
 }
 
-class FRequestRecord {
-  FRequestBase? request;
-  FResponse? response;
-  DateTime? sendedAt;
-  DateTime? receivedAt;
-}
+class NetworkManagerJP extends NetworkManagerBase<FRequestJP> {
+  NetworkManagerJP({required super.gameTop, required super.user});
 
-class NetworkManager {
-  final GameTop gameTop;
-  final AutoLoginData user;
-  final CatMouseGame catMouseGame;
-  final mstData = MasterDataManager();
-
-  List<FRequestRecord> history = [];
-
-  FRequestBase? _runningTask;
-
-  NetworkManager({required this.gameTop, required this.user}) : catMouseGame = CatMouseGame(gameTop.region);
-
-  // long
-  int _nowTime = -1;
   String? sessionId; // Set-Cookie: ASP.NET_SessionId=.*; path=/; HttpOnly
-  int getTime() {
-    if (_nowTime < 0) {
-      _nowTime = _getNowTimestamp();
-    }
-    return _nowTime;
-  }
 
-  void setBaseField(FRequestBase request) {
+  void setBaseField(FRequestJP request) {
     final auth = user.auth;
     if (auth == null) throw Exception('No auth data');
     request.addFieldStr('userId', auth.userId);
@@ -133,12 +98,12 @@ class NetworkManager {
     request.addFieldStr('appVer', gameTop.appVer);
     request.addFieldInt32('dataVer', gameTop.dataVer);
     request.addFieldInt64('dateVer', gameTop.dateVer);
-    request.addFieldInt64('lastAccessTime', _getNowTimestamp());
+    request.addFieldInt64('lastAccessTime', getNowTimestamp());
     request.addFieldStr('verCode', gameTop.verCode);
     request.addFieldStr('idempotencyKey', const Uuid().v4());
   }
 
-  Future<void> setSignatureField(FRequestBase request) async {
+  Future<void> setSignatureField(FRequestJP request) async {
     final key = const Uuid().v4();
     final signature = await ChaldeaWorkerApi.signData("${user.auth!.userId}$key");
     if (signature == null || signature.isEmpty) throw const FormatException("Invalid signature");
@@ -159,56 +124,8 @@ class NetworkManager {
     return base64.encode(sha1.convert(utf8.encode(text)).bytes);
   }
 
-  // sington
-  Future<FResponse> requestStart(FRequestBase request) async {
-    if (request._disposed) {
-      throw Exception('Already disposed');
-    }
-    if (_runningTask != null) {
-      throw Exception('Previous request is still running');
-    }
-    _runningTask = request;
-
-    if (_nowTime > 0) {
-      final dt = _getNowTimestamp() - _nowTime;
-      if (dt < 2) {
-        await Future.delayed(const Duration(seconds: 2));
-      }
-    }
-
-    final record = FRequestRecord()
-      ..request = request
-      ..sendedAt = DateTime.now();
-    history.add(record);
-
-    const int kMaxTries = 3;
-    int tryCount = 0;
-    try {
-      while (tryCount < kMaxTries) {
-        try {
-          final resp = await _requestStart(request);
-          record.response = resp;
-          return resp;
-        } on DioException catch (e, s) {
-          logger.e('fgo request failed, retry after 5 seconds', e, s);
-          await Future.delayed(const Duration(seconds: 5));
-          tryCount++;
-          _nowTime = _getNowTimestamp();
-          continue;
-        } catch (e) {
-          _runningTask = null;
-          rethrow;
-        }
-      }
-    } finally {
-      _runningTask = null;
-      request._disposed = true;
-      record.receivedAt = DateTime.now();
-    }
-    throw Exception('[${request.path}] after $kMaxTries retries, still failed');
-  }
-
-  Future<FResponse> _requestStart(FRequestBase request) async {
+  @override
+  Future<Response> requestStartImpl(FRequestJP request) async {
     final (form, authParams) = request.getForm();
     final Map<String, dynamic> headers = {};
     headers[HttpHeaders.userAgentHeader] = user.userAgent ?? FakerUA.fallback;
@@ -222,7 +139,7 @@ class NetworkManager {
       headers['X-Unity-Version'] = '2022.3.28f1'; // 2020.3.34f1
     }
 
-    request.sendTime = _getNowTimestamp();
+    request.sendTime = getNowTimestamp();
     Uri uri = Uri.parse(gameTop.host);
     uri = uri.replace(path: request.path, queryParameters: {
       ...uri.queryParameters,
@@ -252,11 +169,6 @@ class NetworkManager {
     }
     buffer.write('============ end ============');
     // final s = buffer.toString();
-    if (AppInfo.isDebugDevice) {
-      await FilePlus(joinPaths(db.paths.tempDir, 'faker',
-              '${DateTime.now().toSafeFileName()}_${request.path.replaceAll('/', '_')}.json'))
-          .writeAsString(jsonEncode(_jsonData));
-    }
     logger.t(buffer.toString());
     final cookie = rawResp.headers['Set-Cookie']?.firstOrNull;
     if (cookie != null) {
@@ -271,87 +183,6 @@ class NetworkManager {
       final serverTime = int.tryParse(serverTimeStr);
       if (serverTime != null) request.serverTime = serverTime;
     }
-
-    _nowTime = _getNowTimestamp();
-
-    request.receiveTime = _getNowTimestamp();
-
-    final resp = FResponse(rawResp);
-
-    for (final detail in resp.data.responses) {
-      if (!detail.isSuccess()) {
-        logger.e('error in response: [${detail.nid}] ${detail.resCode} ${detail.fail}');
-        // throw Exception('${detail.resCode}: ${detail.fail}');
-      } else {
-        logger.t('${detail.nid} ${detail.resCode}');
-      }
-    }
-    mstData.updateCache(resp.data.cache);
-
-    return resp;
+    return rawResp;
   }
-}
-
-class FResponse {
-  final Response rawResponse;
-  final FateTopLogin data;
-
-  FResponse.raw(this.rawResponse, this.data);
-
-  factory FResponse(Response rawResponse) {
-    try {
-      final jsonData = FateTopLogin.parseToMap(rawResponse.data);
-      final resp = FResponse.raw(rawResponse, FateTopLogin.fromJson(jsonData));
-      return resp;
-    } catch (e, s) {
-      logger.e('decode response cache failed', e, s);
-      return FResponse.raw(rawResponse, FateTopLogin.fromJson({}));
-    }
-  }
-
-  FResponse throwError(String? nid) {
-    for (final detail in data.responses) {
-      if (nid != null && nid == detail.nid && detail.isSuccess()) {
-        return this;
-      }
-      if ((nid == null || nid == detail.nid) && !detail.isSuccess()) {
-        throw Exception('[${detail.nid}] ${detail.resCode} ${detail.fail}');
-      }
-    }
-    if (nid != null) {
-      throw Exception('response of nid $nid not found');
-    }
-    return this;
-  }
-}
-
-//
-
-class WWWForm {
-  final List<MapEntry<String, String>> _list = [];
-  // headers
-
-  void addField(String key, String value) {
-    _list.add(MapEntry(key, value));
-  }
-
-  String get data {
-    return _list.map((e) => '${e.key}=${Uri.encodeQueryComponent(e.value)}').join('&');
-  }
-}
-
-abstract class FakerUA {
-  static const fallback = android;
-
-  static const android = 'Dalvik/2.1.0 (Linux; U; Android 8.1; SM-G9500 Build/V417IR)';
-
-  static bool validate(String ua) {
-    if (ua.trim().isEmpty) return false;
-    if (!RegExp(r'^[0-9a-zA-Z\./, ;:\-\(\)]+$').hasMatch(ua)) return false;
-    if (ua.split('(').length != ua.split(')').length) return false;
-    if (RegExp(r'\([^\)]+\(').hasMatch(ua) || RegExp(r'\)[^\()]+\)').hasMatch(ua)) return false;
-    return true;
-  }
-
-  static const deviceinfo = 'samsung SM-G9500 / Android OS 8.1 / API-27 (V417IR/eng.duanlusheng.20221214.192029)';
 }

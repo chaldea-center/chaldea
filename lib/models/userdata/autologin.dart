@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:chaldea/utils/extension.dart';
-import '../faker/req/request.dart';
+import '../faker/jp/network.dart';
 import '../gamedata/common.dart';
 import '../gamedata/toplogin.dart';
 import '_helper.dart';

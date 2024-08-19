@@ -453,6 +453,7 @@ class GameTop extends GameAppVerCode {
   int dateVer; // int64
   // String assetbundle;
   String assetbundleFolder;
+  String? unityVer;
 
   GameTop({
     required this.region,
@@ -463,6 +464,7 @@ class GameTop extends GameAppVerCode {
     required this.dateVer,
     // required this.assetbundle,
     required this.assetbundleFolder,
+    this.unityVer,
   });
 
   String get host {

@@ -10,8 +10,8 @@ import 'package:chaldea/app/modules/common/filter_group.dart';
 import 'package:chaldea/app/modules/faker/faker.dart';
 import 'package:chaldea/app/modules/import_data/import_https_page.dart';
 import 'package:chaldea/generated/l10n.dart';
-import 'package:chaldea/models/faker/req/agent.dart';
-import 'package:chaldea/models/faker/req/request.dart';
+import 'package:chaldea/models/faker/jp/agent.dart';
+import 'package:chaldea/models/faker/jp/network.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/models/userdata/version.dart';
 import 'package:chaldea/packages/analysis/analysis.dart';
@@ -34,7 +34,7 @@ class _AutoLoginPageState extends State<AutoLoginPage> {
   GameTops? gameTops;
   final allData = db.settings.autologins;
   AutoLoginData args = AutoLoginData();
-  FakerAgent? agent;
+  FakerAgentJP? agent;
   dynamic _error;
 
   @override
@@ -77,7 +77,7 @@ class _AutoLoginPageState extends State<AutoLoginPage> {
               child: FilledButton(
                 onPressed: () {
                   if (args.auth == null || top == null) return;
-                  router.pushPage(FakeGrandOrder(agent: FakerAgent.s(gameTop: top, user: args)));
+                  router.pushPage(FakeGrandOrder(agent: FakerAgentJP.s(gameTop: top, user: args)));
                 },
                 child: const Text("Fake/Grand Order"),
               ),
@@ -556,7 +556,7 @@ class _AutoLoginPageState extends State<AutoLoginPage> {
       return;
     }
     if (mounted) setState(() {});
-    final agent = FakerAgent.s(gameTop: top, user: args);
+    final agent = FakerAgentJP.s(gameTop: top, user: args);
     this.agent = agent;
     try {
       EasyLoading.show(status: 'Login...');
