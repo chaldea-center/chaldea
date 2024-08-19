@@ -95,19 +95,22 @@ class BasicServant with GameCardMixin {
   @override
   String? get icon {
     if (id == kSuperAokoSvtId) return _kSuperAokoIcon;
+    return _fixEnemyFace(face);
+  }
 
-    if (collectionNo > 0) return face;
-    final match = RegExp(r'/(?:f_)?(\d+)\.png').firstMatch(face);
+  String? _fixEnemyFace(String? _face) {
+    if (_face == null || collectionNo > 0) return _face;
+    final match = RegExp(r'/(?:f_)?(\d+)\.png').firstMatch(_face);
     if (match != null) {
       final imgId = int.parse(match.group(1)!);
       int svtId = imgId ~/ 10, limit = imgId % 10;
       final limits = ConstData.svtFaceLimits[svtId];
       if (limits != null && limits.isNotEmpty && !limits.contains(limit)) {
         limit = limits.first;
-        return face.replaceFirst('$imgId', '$svtId$limit');
+        return _face.replaceFirst('$imgId', '$svtId$limit');
       }
     }
-    return face;
+    return _face;
   }
 
   bool get shouldBordered =>
@@ -409,7 +412,8 @@ class Servant extends BasicServant {
       final imgIds = limits.map((e) => '_$id$e.png').toList();
       _icon = _icons.firstWhereOrNull((url) => imgIds.any((e) => url.contains(e)));
     }
-    return _icon ?? _icons.firstOrNull;
+    _icon ??= _icons.firstOrNull;
+    return _fixEnemyFace(_icon);
   }
 
   @override
@@ -484,7 +488,7 @@ class Servant extends BasicServant {
     }
     _icon ??= costumes[idx] ?? ascs.values.firstOrNull;
     if (bordered && collectionNo > 0) _icon = this.bordered(_icon);
-    return _icon;
+    return _fixEnemyFace(_icon);
   }
 
   String get classCard {
@@ -1564,6 +1568,7 @@ class SvtScript {
 @JsonSerializable()
 class SvtScriptExtendData {
   Object? faceSize; // default 256, int or list[int] (multi chara)
+  // faceSizeRect
   int? myroomForm;
   int? combineResultMultipleForm;
   // conds?: { condType: number; value: number }[];
