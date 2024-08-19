@@ -63,11 +63,12 @@ class GainNP {
         final targetType = dataVals.Value2 ?? 0;
         if (targetType == 0) {
           countTargets.add(target);
-        }
-        if (targetType == 1 || targetType == 3) {
+        } else if (targetType == 1) {
           countTargets.addAll(aliveAllies);
-        }
-        if (targetType == 2 || targetType == 3) {
+        } else if (targetType == 2) {
+          countTargets.addAll(aliveEnemies);
+        } else if (targetType == 3) {
+          countTargets.addAll(aliveAllies);
           countTargets.addAll(aliveEnemies);
         }
 

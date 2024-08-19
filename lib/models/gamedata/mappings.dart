@@ -793,20 +793,7 @@ class _SpecialTransl {
         na: 'Remove: ',
         kr: '해제: ',
       );
-  String funcTraitPerBuff({
-    // only one of them can be true
-    bool isSelf = false,
-    bool isOpp = false,
-    bool isField = false,
-  }) {
-    String? target;
-    if (isSelf) {
-      target = self;
-    } else if (isOpp) {
-      target = opposite;
-    } else if (isField) {
-      target = field;
-    }
+  String funcTraitPerBuff({String? target}) {
     return M.of(
       jp: '【${target ?? ""}〔{0}〕状態の数によって】',
       cn: '【根据${target ?? ""}〔{0}〕状态的数量】',
@@ -819,6 +806,7 @@ class _SpecialTransl {
   String get self => M.of(jp: '自身', cn: '自身', tw: '自身', na: 'self', kr: '자신');
   String get opposite => M.of(jp: '対象', cn: '对方', tw: '對方', na: 'opposite', kr: '대상');
   String get field => M.of(jp: 'フィールド', cn: '场地', tw: '場地', na: 'Field', kr: null);
+  String get target => M.of(jp: '対象', cn: '对象', tw: '對象', na: 'Target', kr: null);
 
   String get funcTraitOnField => M.of(
         jp: '〔{0}〕のあるフィールドにおいてのみ',

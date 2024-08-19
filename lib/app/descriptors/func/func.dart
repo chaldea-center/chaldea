@@ -1055,9 +1055,12 @@ class FuncDescriptor extends StatelessWidget {
       }
     }
 
-    _addParamAddTrait(() => Transl.special.funcTraitPerBuff(isSelf: true), vals?.ParamAddSelfIndividuality);
-    _addParamAddTrait(() => Transl.special.funcTraitPerBuff(isOpp: true), vals?.ParamAddOpIndividuality);
-    _addParamAddTrait(() => Transl.special.funcTraitPerBuff(isSelf: true), vals?.ParamAddFieldIndividuality);
+    _addParamAddTrait(
+        () => Transl.special.funcTraitPerBuff(target: Transl.special.self), vals?.ParamAddSelfIndividuality);
+    _addParamAddTrait(
+        () => Transl.special.funcTraitPerBuff(target: Transl.special.opposite), vals?.ParamAddOpIndividuality);
+    _addParamAddTrait(
+        () => Transl.special.funcTraitPerBuff(target: Transl.special.field), vals?.ParamAddFieldIndividuality);
 
     List<List<InlineSpan>> _condSpans = [];
     void _addTraits(String? prefix, List<NiceTrait> traits, {bool useAnd = false}) {
@@ -1081,8 +1084,21 @@ class FuncDescriptor extends StatelessWidget {
     if (func.traitVals.isNotEmpty) {
       if (func.funcType == FuncType.subState) {
         _addTraits(Transl.special.funcTraitRemoval, func.traitVals);
-      } else if (func.funcType == FuncType.gainNpBuffIndividualSum || func.funcType == FuncType.gainNpIndividualSum) {
+      } else if (func.funcType == FuncType.gainNpBuffIndividualSum) {
         spans.addAll(SharedBuilder.replaceSpan(Transl.special.funcTraitPerBuff(), '{0}',
+            SharedBuilder.traitSpans(context: context, traits: func.traitVals)));
+      } else if (func.funcType == FuncType.gainNpIndividualSum) {
+        spans.addAll(SharedBuilder.replaceSpan(
+            Transl.special.funcTraitPerBuff(
+              target: {
+                    0: Transl.special.target,
+                    1: Transl.funcTargetType(FuncTargetType.ptAll).l,
+                    2: Transl.funcTargetType(FuncTargetType.enemyAll).l,
+                    3: '${Transl.funcTargetType(FuncTargetType.ptAll).l} & ${Transl.funcTargetType(FuncTargetType.enemyAll).l}',
+                  }[vals?.Value2] ??
+                  '<TargetType${vals?.Value2}>',
+            ),
+            '{0}',
             SharedBuilder.traitSpans(context: context, traits: func.traitVals)));
       } else if (func.funcType == FuncType.eventDropUp) {
         _addTraits(Transl.special.buffCheckSelf, func.traitVals);
