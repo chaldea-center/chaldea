@@ -66,8 +66,12 @@ class _SvtSpDmgTabState extends State<SvtSpDmgTab> with SingleTickerProviderStat
         (const [BuffType.upDamage, BuffType.upDamageIndividuality, BuffType.upDamageIndividualityActiveonly]
                 .contains(func.buff?.type) &&
             func.buff?.ckOpIndv.isNotEmpty == true) ||
-        const [FuncType.damageNpIndividual, FuncType.damageNpIndividualSum, FuncType.damageNpStateIndividualFix]
-            .contains(func.funcType)));
+        const [
+          FuncType.damageNpIndividual,
+          FuncType.damageNpAndCheckIndividuality,
+          FuncType.damageNpIndividualSum,
+          FuncType.damageNpStateIndividualFix
+        ].contains(func.funcType)));
   }
 
   @override
@@ -142,8 +146,12 @@ class SpDmgSelfTab extends StatelessWidget {
         useAnd = false;
       } else if (const [FuncType.damageNpIndividualSum].contains(func.funcType)) {
         final targetList = func.svals.firstOrNull?.TargetList;
-        if (targetList != null && targetList.isNotEmpty) traits = targetList.map((e) => NiceTrait(id: e)).toList();
+        if (targetList != null && targetList.isNotEmpty) traits = NiceTrait.list(targetList);
         useAnd = false;
+      } else if (func.funcType == FuncType.damageNpAndCheckIndividuality) {
+        final targetList = func.svals.firstOrNull?.AndCheckIndividualityList;
+        if (targetList != null && targetList.isNotEmpty) traits = NiceTrait.list(targetList);
+        useAnd = true;
       }
       if (traits.isNotEmpty) {
         parts.addAll([
@@ -288,9 +296,18 @@ class _SpDmgIndivTabState extends State<SpDmgIndivTab> {
               getGroup([vals.Target!], false, null, scope).add(card);
             }
             break;
+          case FuncType.damageNpAndCheckIndividuality:
+            final targetList = vals.AndCheckIndividualityList;
+            if (targetList != null && targetList.isNotEmpty) {
+              if (widget.svtIndivs.toSet().containSubset(targetList.toSet())) {
+                getGroup(targetList, true, null, scope).add(card);
+              }
+            }
+            break;
           case FuncType.damageNpIndividualSum:
-            if (vals.TargetList != null) {
-              for (final trait in vals.TargetList!) {
+            final targetList = vals.TargetList;
+            if (targetList != null) {
+              for (final trait in targetList) {
                 if (widget.svtIndivs.contains(trait)) {
                   getGroup([trait], false, null, scope).add(card);
                 }
@@ -303,7 +320,6 @@ class _SpDmgIndivTabState extends State<SpDmgIndivTab> {
             }
             break;
           case FuncType.damageNpStateIndividual:
-          case FuncType.damageNpAndCheckIndividuality:
             // not used
             break;
           default:

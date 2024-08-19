@@ -1319,6 +1319,7 @@ const kFuncValPercentType = <FuncType, int>{
   FuncType.damageNpSafe: 10,
   FuncType.damageNpHpratioLow: 10,
   FuncType.damageNpIndividual: 10,
+  FuncType.damageNpAndCheckIndividuality: 10,
   FuncType.damageNpIndividualSum: 10,
   FuncType.damageNpPierce: 10,
   FuncType.damageNpRare: 10,

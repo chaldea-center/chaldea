@@ -803,7 +803,7 @@ class FuncDescriptor extends StatelessWidget {
         );
       }
 
-      InlineSpan _replaceTraits(List<int> traits) {
+      InlineSpan _replaceTraits(List<int> traits, {bool useAndJoin = false}) {
         return TextSpan(
           children: SharedBuilder.replaceSpan(
             text,
@@ -811,6 +811,7 @@ class FuncDescriptor extends StatelessWidget {
             SharedBuilder.traitSpans(
               context: context,
               traits: traits.map((e) => NiceTrait(id: e)).toList(),
+              useAndJoin: useAndJoin,
             ),
           ),
           style: style,
@@ -823,6 +824,13 @@ class FuncDescriptor extends StatelessWidget {
           int? indiv = vals?.Target;
           if (indiv != null) {
             spans.add(_replaceTrait(indiv));
+            return;
+          }
+          break;
+        case FuncType.damageNpAndCheckIndividuality:
+          List<int> indivs = vals?.AndCheckIndividualityList ?? [];
+          if (indivs.isNotEmpty) {
+            spans.add(_replaceTraits(indivs, useAndJoin: true));
             return;
           }
           break;
