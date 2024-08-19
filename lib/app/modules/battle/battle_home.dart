@@ -1,6 +1,7 @@
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/db.dart';
+import 'package:chaldea/packages/app_info.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../../../packages/language.dart';
@@ -129,6 +130,14 @@ class BattleHomePage extends StatelessWidget {
                 ).showDialog(context);
               },
             ),
+            if (AppInfo.isDebugOn || db.settings.secrets.user?.isAdmin == true)
+              ListTile(
+                leading: const Icon(Icons.warning_amber_rounded),
+                title: const Text("差评榜"),
+                onTap: () {
+                  router.pushPage(const TeamsQueryPage(mode: TeamQueryMode.ranking));
+                },
+              ),
           ],
         ),
         TileGroup(

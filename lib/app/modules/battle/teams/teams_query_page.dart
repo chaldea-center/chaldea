@@ -19,7 +19,7 @@ import '../../common/filter_page_base.dart';
 import '../utils.dart';
 import 'filter.dart';
 
-enum TeamQueryMode { user, quest, id }
+enum TeamQueryMode { user, quest, id, ranking }
 
 class TeamsQueryPage extends StatefulWidget {
   final TeamQueryMode mode;
@@ -75,14 +75,12 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
   PreferredSizeWidget? get appBar {
     final username = widget.username ?? widget.userId ?? secrets.user?.name ?? "Not Login";
     return AppBar(
-      title: Text.rich(TextSpan(
-        children: [
-          if (mode == TeamQueryMode.user) TextSpan(text: '${S.current.team} @$username'),
-          if (mode == TeamQueryMode.quest && widget.quest != null)
-            TextSpan(text: '${S.current.team} - ${widget.quest?.lDispName.breakWord}'),
-          if (mode == TeamQueryMode.id) TextSpan(text: S.current.team_shared),
-        ],
-      )),
+      title: Text(switch (mode) {
+        TeamQueryMode.user => '${S.current.team} @$username',
+        TeamQueryMode.quest => '${S.current.team} - ${widget.quest?.lDispName.breakWord}',
+        TeamQueryMode.id => S.current.team_shared,
+        TeamQueryMode.ranking => 'Ranking',
+      }),
       actions: [
         IconButton(
           icon: const Icon(Icons.filter_alt),
@@ -579,18 +577,26 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
             return ChaldeaWorkerApi.teams(teamIds: teamIds);
           }
         });
+      case TeamQueryMode.ranking:
+        task = showEasyLoading(() => ChaldeaWorkerApi.teamsRanking(
+              limit: pageSize,
+              offset: offset,
+              expireAfter: refresh ? Duration.zero : null,
+            ));
     }
     TeamQueryResult? result = await task;
     if (result != null) {
       if ((result.total ?? 0) > result.limit) {
         pageSize = result.limit;
       }
-      result.data.sortByList((e) => [
-            e.userId == curUserId ? 0 : 1,
-            db.curUser.battleSim.favoriteTeams[e.questId]?.contains(e.id) == true ? 0 : 1,
-            -e.votes.up + e.votes.down,
-            e.id,
-          ]);
+      if (mode != TeamQueryMode.ranking) {
+        result.data.sortByList((e) => [
+              e.userId == curUserId ? 0 : 1,
+              db.curUser.battleSim.favoriteTeams[e.questId]?.contains(e.id) == true ? 0 : 1,
+              -e.votes.up + e.votes.down,
+              e.id,
+            ]);
+      }
       for (final r in result.data) {
         r.parse();
       }

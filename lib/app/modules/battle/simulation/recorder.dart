@@ -622,6 +622,8 @@ class BattleRecorderPanelBase extends StatelessWidget {
       CenterWidgetSpan(child: svt.iconBuilder(context: context, height: 32, battleData: battleData)),
       if (card != null) ...[
         CenterWidgetSpan(child: CommandCardWidget(card: card.cardType, width: 32)),
+        if (card.critical)
+          TextSpan(text: '${S.current.critical_attack} ', style: const TextStyle(fontWeight: FontWeight.bold)),
         if (card.isTD) TextSpan(text: '${S.current.np_short} ', style: const TextStyle(fontWeight: FontWeight.bold)),
       ],
       if (showDetail)

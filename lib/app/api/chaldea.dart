@@ -392,6 +392,23 @@ class ChaldeaWorkerApi {
     );
   }
 
+  static Future<TeamQueryResult?> teamsRanking({
+    int limit = 200,
+    int offset = 0,
+    Duration? expireAfter = const Duration(hours: 2),
+  }) {
+    final query = _encodeQuery({
+      'limit': limit,
+      if (offset > 0) 'offset': offset,
+    });
+    return cacheManager.getModel(
+      "$apiV4/team/ranking?$query",
+      (data) => TeamQueryResult.fromJson(data),
+      expireAfter: expireAfter,
+      options: addAuthHeader(),
+    );
+  }
+
   // debug/dev
   @visibleForTesting
   static Future<WorkerResponse?> teamUpdate({required UserBattleData team}) {
