@@ -123,6 +123,20 @@ class Damage {
           if (useCorrection) {
             specificAttackRate = dataVals.Correction!;
           }
+        } else if (funcType == FuncType.damageNpAndCheckIndividuality) {
+          final damageNpSEDecision = battleData.delegate?.damageNpSE?.call(activator, damageFunction, dataVals);
+
+          final useCorrection = damageNpSEDecision?.useCorrection ??
+              checkTraitFunction(
+                myTraits: target.getTraits(),
+                requiredTraits: NiceTrait.list(dataVals.AndCheckIndividualityList ?? []),
+                positiveMatchFunc: allMatch,
+                negativeMatchFunc: allMatch,
+              );
+
+          if (useCorrection) {
+            specificAttackRate = dataVals.Correction!;
+          }
         } else if (funcType == FuncType.damageNpStateIndividualFix) {
           final damageNpSEDecision = battleData.delegate?.damageNpSE?.call(activator, damageFunction, dataVals);
           final includeIgnoreIndividuality = dataVals.IncludeIgnoreIndividuality == 1;

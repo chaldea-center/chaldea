@@ -334,6 +334,7 @@ class FunctionExecutor {
         case FuncType.damage:
         case FuncType.damageNp:
         case FuncType.damageNpIndividual:
+        case FuncType.damageNpAndCheckIndividuality:
         case FuncType.damageNpPierce:
         case FuncType.damageNpHpratioLow:
         case FuncType.damageNpHpratioHigh: // no real example yet
@@ -439,7 +440,6 @@ class FunctionExecutor {
         // ↑↑↑ should be implemented ↑↑↑
         case FuncType.damageValueSafeOnce:
         case FuncType.subFieldBuff:
-        case FuncType.damageNpAndCheckIndividuality:
         case FuncType.damageNpStateIndividual:
         case FuncType.releaseState:
         case FuncType.ptShuffle:
@@ -908,21 +908,13 @@ class FunctionExecutor {
     if (nextFuncType == null) {
       return false;
     }
-
-    switch (nextFuncType) {
-      case FuncType.damage:
-      case FuncType.damageNp:
-      case FuncType.damageNpHpratioLow:
-      case FuncType.damageNpHpratioHigh:
-      case FuncType.damageNpIndividual:
-      case FuncType.damageNpIndividualSum:
-      case FuncType.damageNpPierce:
-      case FuncType.damageNpRare:
-      case FuncType.damageNpStateIndividual:
-      case FuncType.damageNpStateIndividualFix:
-        return true;
-      default:
-        return false;
-    }
+    if (nextFuncType.isDamageNp) return true;
+    if ({
+      FuncType.damage,
+      FuncType.damageValue,
+      FuncType.damageValueSafe,
+      FuncType.damageValueSafeOnce,
+    }.contains(nextFuncType)) return true;
+    return false;
   }
 }
