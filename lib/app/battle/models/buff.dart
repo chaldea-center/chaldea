@@ -171,12 +171,13 @@ class BuffData {
     BuffType.downDamageIndividualityActiveonly,
   ];
 
-  int getValue(final BattleServantData self, [final BattleServantData? opponent]) {
+  int getValue(final BattleServantData self, [final BattleServantData? opponent, final BattleData? battleData]) {
     int addValue = 0;
     if (vals.ParamAddValue != null) {
       int addCount = 0;
-      final selfIndiv = vals.ParamAddSelfIndividuality ?? vals.ParamAddFieldIndividuality;
-      final oppIndiv = vals.ParamAddOpIndividuality ?? vals.ParamAddFieldIndividuality;
+      final selfIndiv = vals.ParamAddSelfIndividuality;
+      final oppIndiv = vals.ParamAddOpIndividuality;
+      final fieldIndiv = vals.ParamAddFieldIndividuality;
       if (selfIndiv != null) {
         final targetTraits = NiceTrait.list(selfIndiv);
         addCount += self.countTrait(targetTraits) + self.countBuffWithTrait(targetTraits);
@@ -184,6 +185,10 @@ class BuffData {
       if (oppIndiv != null && opponent != null) {
         final targetTraits = NiceTrait.list(oppIndiv);
         addCount += opponent.countTrait(targetTraits) + opponent.countBuffWithTrait(targetTraits);
+      }
+      if (fieldIndiv != null && battleData != null) {
+        final targetTraits = NiceTrait.list(fieldIndiv);
+        addCount += countAnyTraits(battleData.getFieldTraits(), targetTraits);
       }
 
       if (vals.ParamAddMaxCount != null) {

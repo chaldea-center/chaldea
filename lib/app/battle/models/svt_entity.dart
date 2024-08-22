@@ -1494,7 +1494,7 @@ class BattleServantData {
         opTraits: other.getTraits(),
       )) {
         buff.setUsed(this);
-        final value = buff.getValue(this, other);
+        final value = buff.getValue(this, other, battleData);
         if (actionDetails.plusTypes.contains(buff.buff.type)) {
           return value;
         } else {
@@ -1538,7 +1538,7 @@ class BattleServantData {
 
         buff.setUsed(this);
 
-        int value = buff.getValue(this, other);
+        int value = buff.getValue(this, other, battleData);
         final plusAction = actionDetails.plusAction;
         if (value > 0 && plusAction != BuffAction.none) {
           final effectiveness =
@@ -1579,7 +1579,7 @@ class BattleServantData {
       if (await buff.shouldActivateBuff(battleData, selfTraits, opTraits: otherTraits)) {
         buff.setUsed(this);
 
-        int value = buff.getValue(this, other);
+        int value = buff.getValue(this, other, battleData);
         final plusAction = actionDetails.plusAction;
         if (value > 0 && plusAction != BuffAction.none) {
           final effectiveness =
@@ -1620,7 +1620,7 @@ class BattleServantData {
       if (await buff.shouldActivateBuff(battleData, buffTraits)) {
         buff.setUsed(this);
 
-        int value = buff.getValue(this, other);
+        int value = buff.getValue(this, other, battleData);
 
         if (actionDetails.plusTypes.contains(buff.buff.type)) {
           totalVal += value;
