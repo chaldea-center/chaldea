@@ -85,9 +85,15 @@ class BattleBuff {
     }
   }
 
-  void turnPassParamAdd() {
+  void selfTurnPass() {
     for (final buff in validBuffs) {
       buff.turnPassParamAdd();
+    }
+
+    for (final buff in getAllBuffs()) {
+      if (buff.intervalTurn > 0) {
+        buff.intervalTurn -= 1;
+      }
     }
   }
 
@@ -122,6 +128,7 @@ class BuffData {
   int additionalParam = 0;
   NiceTd? tdTypeChange;
   List<int>? shortenMaxCountEachSkill;
+  int intervalTurn = -1;
 
   bool checkBuffClear() => count == 0 || logicTurn == 0;
 
@@ -336,6 +343,10 @@ class BuffData {
         }
       }
     }
+
+    if (vals.IntervalTurn != null) {
+      intervalTurn = vals.IntervalTurn!;
+    }
   }
 
   void useOnce() {
@@ -421,6 +432,8 @@ class BuffData {
       isAct &= hpRatio <= buff.script.HP_LOWER!;
     }
 
+    isAct &= intervalTurn <= 0;
+
     if (isAct) {
       offState(BuffState.noAct);
     } else {
@@ -476,6 +489,7 @@ class BuffData {
       ..additionalParam = additionalParam
       ..tdTypeChange = tdTypeChange
       ..shortenMaxCountEachSkill = shortenMaxCountEachSkill?.toList()
+      ..intervalTurn = intervalTurn
       ..actorUniqueId = actorUniqueId
       ..actorName = actorName
       ..isUsed = isUsed

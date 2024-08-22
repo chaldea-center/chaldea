@@ -2054,7 +2054,7 @@ class BattleServantData {
     await activateBuff(battleData, BuffAction.functionSelfturnend);
     await activateDelayFunction(battleData, delayedFunctions.where((buff) => buff.logicTurn == 0));
 
-    battleBuff.turnPassParamAdd();
+    battleBuff.selfTurnPass();
 
     battleData.checkActorStatus();
   }

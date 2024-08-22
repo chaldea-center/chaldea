@@ -497,6 +497,20 @@ class BattleBuffIcon extends StatelessWidget {
     if (!buff.checkAct()) {
       child = Opacity(opacity: 0.5, child: child);
     }
+    if (buff.intervalTurn > 0) {
+      child = Stack(
+        alignment: Alignment.center,
+        children: [
+          child,
+          Container(
+            width: size,
+            height: size,
+            color: Colors.black54,
+          ),
+          Text('${buff.intervalTurn}T', style: TextStyle(fontSize: size * 0.8, color: Colors.white)),
+        ],
+      );
+    }
     return child;
   }
 }
