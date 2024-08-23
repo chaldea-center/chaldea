@@ -225,10 +225,21 @@ class OneWindow extends StatelessWidget {
   }
 }
 
-class MultipleWindow extends StatelessWidget {
+class MultipleWindow extends StatefulWidget {
   const MultipleWindow({super.key, required this.root});
 
   final RootAppRouterDelegate root;
+
+  @override
+  State<MultipleWindow> createState() => _MultipleWindowState();
+}
+
+class _MultipleWindowState extends State<MultipleWindow> {
+  static double gridScrollOffset = 0;
+  late final gridScrollController = ScrollController(
+    initialScrollOffset: gridScrollOffset,
+    onDetach: (position) => gridScrollOffset = position.pixels,
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -281,7 +292,7 @@ class MultipleWindow extends StatelessWidget {
         floatingActionButton: FloatingActionButton(
           child: const Icon(Icons.add),
           onPressed: () {
-            root.appState.addWindow();
+            widget.root.appState.addWindow();
           },
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
@@ -294,14 +305,15 @@ class MultipleWindow extends StatelessWidget {
     int crossCount = windowSize.width ~/ 300;
     return SafeArea(
       child: GridView.count(
+        controller: gridScrollController,
         crossAxisCount: max(crossCount, 2),
         childAspectRatio: windowSize.aspectRatio,
         padding: const EdgeInsetsDirectional.fromSTEB(8, 8, 8, 72),
         mainAxisSpacing: 8,
         crossAxisSpacing: 8,
         children: List.generate(
-          root.appState.children.length,
-          (index) => WindowThumb(key: ObjectKey(root.appState.children[index]), root: root, index: index),
+          widget.root.appState.children.length,
+          (index) => WindowThumb(key: ObjectKey(widget.root.appState.children[index]), root: widget.root, index: index),
         ),
       ),
     );
@@ -317,8 +329,8 @@ class MultipleWindow extends StatelessWidget {
             dense: true,
             title: Text(url),
             onTap: () {
-              root.appState.activeRouter.push(url: url);
-              root.appState.windowState = WindowStateEnum.single;
+              widget.root.appState.activeRouter.push(url: url);
+              widget.root.appState.windowState = WindowStateEnum.single;
             },
           );
         },
@@ -348,8 +360,8 @@ class MultipleWindow extends StatelessWidget {
               ).showDialog(context);
             },
             onTap: () {
-              root.appState.activeRouter.push(url: bookmark.url);
-              root.appState.windowState = WindowStateEnum.single;
+              widget.root.appState.activeRouter.push(url: bookmark.url);
+              widget.root.appState.windowState = WindowStateEnum.single;
             },
           );
         },

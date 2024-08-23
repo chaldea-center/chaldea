@@ -483,34 +483,46 @@ class BattleBuffIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Widget child = db.getIconImage(buff.buff.icon, width: size, aspectRatio: 1);
-    child = Container(
-      decoration: buff.irremovable || buff.vals.SetPassiveFrame == 1
-          ? BoxDecoration(
-              border: Border.all(color: Theme.of(context).hintColor),
-              borderRadius: BorderRadius.circular(2),
-            )
-          : null,
-      padding: const EdgeInsets.all(1),
-      child: child,
-    );
+    Widget child = db.getIconImage(buff.buff.icon, aspectRatio: 1);
     if (!buff.checkAct()) {
       child = Opacity(opacity: 0.5, child: child);
     }
     if (buff.intervalTurn > 0) {
       child = Stack(
-        alignment: Alignment.center,
+        alignment: Alignment.bottomCenter,
         children: [
           child,
-          Container(
-            width: size,
-            height: size,
-            color: Colors.black54,
+          ConstrainedBox(
+            constraints: BoxConstraints(maxWidth: size * 0.7),
+            child: FittedBox(
+              fit: BoxFit.fitWidth,
+              child: ImageWithText.paintOutline(
+                text: '${buff.intervalTurn}T',
+                shadowColor: Colors.grey.shade800,
+                shadowSize: size * 0.13,
+                textStyle: TextStyle(
+                  color: Colors.white.withOpacity(0.9),
+                  fontSize: size * 0.8,
+                ),
+              ),
+            ),
           ),
-          Text('${buff.intervalTurn}T', style: TextStyle(fontSize: size * 0.8, color: Colors.white)),
         ],
       );
     }
+
+    child = Container(
+      decoration: buff.irremovable || buff.vals.SetPassiveFrame == 1
+          ? BoxDecoration(
+              border: Border.all(color: Theme.of(context).hintColor),
+              borderRadius: BorderRadius.circular(size * 0.1),
+            )
+          : null,
+      // padding: EdgeInsets.all(size * 0.05),
+      width: size,
+      height: size,
+      child: child,
+    );
     return child;
   }
 }
