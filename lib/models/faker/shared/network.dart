@@ -26,8 +26,9 @@ abstract class FRequestBase {
   RequestOptions? rawRequest;
   Response? rawResponse;
   String path;
+  String key;
 
-  FRequestBase({required this.path});
+  FRequestBase({required this.path, String? key}) : key = key ?? path;
 
   int sendTime = 0;
   int receiveTime = 0;
@@ -75,15 +76,16 @@ class FResponse {
   }
 }
 
-abstract class NetworkManagerBase<TRequest extends FRequestBase> {
+abstract class NetworkManagerBase<TRequest extends FRequestBase, TUser extends AutoLoginData> {
   final GameTop gameTop;
-  final AutoLoginData user;
+  final TUser user;
   final CatMouseGame catMouseGame;
   final mstData = MasterDataManager();
 
   List<FRequestRecord<TRequest>> history = [];
 
   FRequestBase? _runningTask;
+  final Map<String, String> cookies = {};
 
   NetworkManagerBase({required this.gameTop, required this.user}) : catMouseGame = CatMouseGame(gameTop.region);
 
@@ -94,6 +96,19 @@ abstract class NetworkManagerBase<TRequest extends FRequestBase> {
       _nowTime = getNowTimestamp();
     }
     return _nowTime;
+  }
+
+  void clearTask() {
+    _runningTask = null;
+  }
+
+  void updateCookies(Map<String, dynamic> headers) {
+    if (cookies.isEmpty) return;
+    const key = 'Cookie';
+    String cookie = headers[key] ?? '';
+    if (!cookie.endsWith(';')) cookie += ';';
+    cookie += [for (final (k, v) in cookies.items) '$k=$v'].join(';');
+    headers[key] = cookie;
   }
 
   Future<FResponse> requestStart(TRequest request) async {
@@ -125,11 +140,25 @@ abstract class NetworkManagerBase<TRequest extends FRequestBase> {
           final rawResp = await requestStartImpl(request);
           request.rawRequest = rawResp.requestOptions;
           request.rawResponse = rawResp;
+          // cookie
+          final setCookies = rawResp.headers['Set-Cookie'] ?? [];
+          for (final cookie in setCookies) {
+            final m = RegExp('^([^=]+)=([^;]+)').firstMatch(cookie);
+            if (m == null) {
+              logger.w('Set-Cookie not parsed: $cookie');
+            } else {
+              final key = m.group(1)!, value = m.group(2)!;
+              cookies[key] = value;
+              print('Set-Cookie: $key=$value');
+            }
+          }
+
+          // data
           final _jsonData = FateTopLogin.parseToMap(rawResp.data);
           if (AppInfo.isDebugDevice) {
-            await FilePlus(joinPaths(db.paths.tempDir, 'faker',
-                    '${DateTime.now().toSafeFileName()}_${request.path.replaceAll('/', '_')}.json'))
-                .writeAsString(jsonEncode(_jsonData));
+            String fn = '${DateTime.now().toSafeFileName()}_${request.key}';
+            fn = fn.replaceAll(RegExp(r'[/:\s\\]+'), '_');
+            await FilePlus(joinPaths(db.paths.tempDir, 'faker', '$fn.json')).writeAsString(jsonEncode(_jsonData));
           }
           _nowTime = getNowTimestamp();
           request.receiveTime = getNowTimestamp();
@@ -145,6 +174,10 @@ abstract class NetworkManagerBase<TRequest extends FRequestBase> {
             }
           }
           mstData.updateCache(resp.data.cache);
+          final newUserGame = resp.data.mstData.user;
+          if (newUserGame != null) {
+            user.userGame = UserGameEntity.fromJson(newUserGame.toJson());
+          }
 
           record.response = resp;
           return resp;
@@ -185,7 +218,7 @@ class WWWForm {
   }
 
   String get data {
-    return _list.map((e) => '${e.key}=${Uri.encodeQueryComponent(e.value)}').join('&');
+    return _list.map((e) => '${e.key}=${Uri.encodeComponent(e.value)}').join('&');
   }
 }
 

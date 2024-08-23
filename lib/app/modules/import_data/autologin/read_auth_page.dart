@@ -12,8 +12,8 @@ import 'package:chaldea/widgets/widgets.dart';
 import '../../common/builders.dart';
 
 class ReadAuthPage extends StatefulWidget {
-  final UserAuth? auth;
-  final ValueChanged<UserAuth?> onChanged;
+  final AuthSaveData? auth;
+  final ValueChanged<AuthSaveData?> onChanged;
   const ReadAuthPage({super.key, required this.auth, required this.onChanged});
 
   @override
@@ -21,7 +21,7 @@ class ReadAuthPage extends StatefulWidget {
 }
 
 class _ReadAuthPageState extends State<ReadAuthPage> {
-  late UserAuth? auth = widget.auth;
+  late AuthSaveData? auth = widget.auth;
 
   late final _codeCtrl = TextEditingController(text: widget.auth?.code);
   late final _userIdCtrl = TextEditingController(text: widget.auth?.userId);
@@ -108,7 +108,7 @@ class _ReadAuthPageState extends State<ReadAuthPage> {
               label: const Text('Auth File Code'),
               border: const OutlineInputBorder(),
               hintText: 'start from ZSv/ (include ZSv/)',
-              errorText: _codeCtrl.text.isEmpty || UserAuth.isValidCode(_codeCtrl.text) ? null : "Invalid",
+              errorText: _codeCtrl.text.isEmpty || AuthSaveData.isValidCode(_codeCtrl.text) ? null : "Invalid",
               floatingLabelBehavior: FloatingLabelBehavior.always,
             ),
             contextMenuBuilder: (context, editableTextState) =>
@@ -163,7 +163,7 @@ class _ReadAuthPageState extends State<ReadAuthPage> {
         Center(
           child: ElevatedButton(
             onPressed: () {
-              final _auth = UserAuth(
+              final _auth = AuthSaveData(
                 userId: _userIdCtrl.text.trim(),
                 authKey: _authKeyCtrl.text.trim(),
                 secretKey: _secretKeyCtrl.text.trim(),
@@ -242,7 +242,7 @@ class _ReadAuthPageState extends State<ReadAuthPage> {
     );
   }
 
-  Future<UserAuth?> readAuthFile() async {
+  Future<AuthSaveData?> readAuthFile() async {
     try {
       final result = await FilePickerU.pickFiles(clearCache: true);
       if (result == null || result.files.isEmpty) return null;
@@ -279,9 +279,9 @@ class _ReadAuthPageState extends State<ReadAuthPage> {
     return null;
   }
 
-  Future<UserAuth> decodeAuth(String code, [List<int>? source]) async {
+  Future<AuthSaveData> decodeAuth(String code, [List<int>? source]) async {
     // check base64 and length
-    code = UserAuth.normTransferCode(code);
+    code = AuthSaveData.normTransferCode(code);
     if (code.isEmpty) {
       throw ArgumentError('Input string is empty');
     }
@@ -293,7 +293,7 @@ class _ReadAuthPageState extends State<ReadAuthPage> {
     }
 
     final data = CatMouseGame(Region.jp).decryptAuthsave(utf8.encode(code));
-    return auth = UserAuth(
+    return auth = AuthSaveData(
       source: source == null ? null : base64Encode(source),
       code: code,
       authKey: data['authKey'] as String,

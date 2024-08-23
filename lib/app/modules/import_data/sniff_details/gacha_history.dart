@@ -55,11 +55,11 @@ class _SniffGachaHistoryState extends State<SniffGachaHistory> {
         "https://git.atlasacademy.io/atlasacademy/fgo-game-data/raw/branch/${region.upper}/master/mstGacha.json";
     if (db.settings.proxy.worker) url = HostsX.proxyWorker(url);
     AtlasApi.cacheManager.clearFailed();
-    final mstData = await AtlasApi.cacheManager.getModel<List<MstGacha>>(
+    final mstGachas = await AtlasApi.cacheManager.getModel<List<MstGacha>>(
       url,
       (data) => (data as List).map((e) => MstGacha.fromJson(Map.from(e))).toList(),
     );
-    if (mstData == null && mounted) {
+    if (mstGachas == null && mounted) {
       SimpleCancelOkDialog(
         title: Text(S.current.error),
         content: const Text('Download Gacha Data failed, click Refresh to retry'),
@@ -72,10 +72,10 @@ class _SniffGachaHistoryState extends State<SniffGachaHistory> {
         (data) => (data as List).map((e) => MstGacha.fromJson(Map.from(e))).toList(),
       );
       if (extra != null) {
-        mstData?.addAll(extra.map((e) => e..userAdded = true));
+        mstGachas?.addAll(extra.map((e) => e..userAdded = true));
       }
     }
-    return mstData;
+    return mstGachas;
   }
 
   Future<void> loadMstData() async {

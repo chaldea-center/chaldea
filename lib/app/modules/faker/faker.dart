@@ -11,17 +11,19 @@ import 'package:chaldea/app/modules/battle/formation/formation_card.dart';
 import 'package:chaldea/app/modules/craft_essence/craft_list.dart';
 import 'package:chaldea/app/modules/servant/servant_list.dart';
 import 'package:chaldea/generated/l10n.dart';
+import 'package:chaldea/models/faker/cn/agent.dart';
 import 'package:chaldea/models/faker/jp/network.dart';
+import 'package:chaldea/models/faker/quiz/crypt_data.dart';
 import 'package:chaldea/models/faker/shared/agent.dart';
 import 'package:chaldea/models/gamedata/toplogin.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/logger.dart';
-import 'package:chaldea/utils/atlas.dart';
-import 'package:chaldea/utils/basic.dart';
-import 'package:chaldea/utils/extension.dart';
+import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
+import '../import_data/import_https_page.dart';
 import '../import_data/sniff_details/formation_decks.dart';
 import 'history.dart';
+import 'option_list.dart';
 
 class FakeGrandOrder extends StatefulWidget {
   final FakerAgent agent;
@@ -35,7 +37,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
   late final FakerAgent agent = widget.agent;
   late final mstData = agent.network.mstData;
   UserGameEntity? get userGame => mstData.user;
-  AutoBattleOptions get battleOptions => agent.network.user.curBattleOption;
+  AutoBattleOptions get battleOptions => agent.user.curBattleOption;
 
   bool _runningTask = false;
 
@@ -120,6 +122,10 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
             },
             icon: const Icon(Icons.history),
           ),
+          IconButton(
+            onPressed: mstData.user == null ? null : () => router.pushPage(ImportHttpPage(mstData: mstData)),
+            icon: const Icon(Icons.import_export),
+          ),
         ],
       ),
       body: PopScope(
@@ -134,10 +140,10 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
                   optionSelector,
                   const Divider(height: 8),
                   gameInfoSection,
-                  battleLoopOptionSection,
                   battleDetailSection,
                   battleSetupOptionSection,
                   battleResultOptionSection,
+                  battleLoopOptionSection,
                 ],
               ),
             ),
@@ -151,17 +157,14 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
 
   Widget get headerInfo {
     List<Widget> children = [];
-    final userGame = this.userGame;
-    final region = agent.network.user.region;
-    final userId = userGame?.userId ?? agent.network.user.auth?.userId;
-    final friendCode = userGame?.friendCode;
+    final userGame = this.userGame ?? agent.user.userGame;
 
     children.add(ListTile(
       dense: true,
       minTileHeight: 48,
       visualDensity: VisualDensity.compact,
-      title: Text('[${region.upper}] ${userGame?.name ?? "not login"}'),
-      subtitle: Text('${friendCode ?? ""} ($userId)'),
+      title: Text('[${agent.user.serverName}] ${userGame?.name ?? "not login"}'),
+      subtitle: Text('${userGame?.friendCode ?? ""} (${agent.user.internalId})'),
       trailing: userGame == null
           ? null
           : TimerUpdate(builder: (context, time) {
@@ -204,53 +207,20 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
   }
 
   Widget get optionSelector {
-    final dropDown = DropdownButton<int>(
-      isExpanded: true,
-      value: agent.network.user.curBattleOptionIndex,
-      items: [
-        for (final (index, options) in agent.network.user.battleOptions.indexed)
-          DropdownMenuItem(
-            value: index,
-            child: Text.rich(
-              TextSpan(children: [
-                TextSpan(text: 'No.${index + 1}  ${options.questId}/${options.questPhase}'),
-                if (db.gameData.quests.containsKey(options.questId))
-                  TextSpan(
-                    text: '\n${db.gameData.quests[options.questId]!.lDispName.setMaxLines(1)}'
-                        ' @${db.gameData.quests[options.questId]?.war?.lShortName.setMaxLines(1)}',
-                    style: Theme.of(context).textTheme.bodySmall,
-                  ),
-              ]),
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              style: const TextStyle(fontSize: 16),
-            ),
-          ),
-        const DropdownMenuItem(
-          value: null,
-          child: Text('Add new quest'),
-        ),
-      ],
-      onChanged: (v) {
-        _lockTask(() {
-          if (v != null) {
-            agent.network.user.curBattleOptionIndex = v;
-          } else {
-            agent.network.user.battleOptions.add(AutoBattleOptions());
-            agent.network.user.curBattleOptionIndex = agent.network.user.battleOptions.length - 1;
-          }
-          if (mounted) setState(() {});
-        });
+    final option = agent.user.curBattleOption;
+    final quest = db.gameData.quests[option.questId];
+    return ListTile(
+      dense: true,
+      selected: true,
+      leading: db.getIconImage(quest?.spot?.shownImage),
+      title: Text('No.${agent.user.curBattleOptionIndex + 1}  ${option.name}'),
+      subtitle: Text('${quest?.lDispName.setMaxLines(1) ?? option.questId}'
+          ' @${quest?.war?.lShortName.setMaxLines(1)}'),
+      trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
+      onTap: () async {
+        await router.pushPage(BattleOptionListPage(data: agent.user));
+        if (mounted) setState(() {});
       },
-    );
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Row(
-        children: [
-          const Text('Configs:  '),
-          Expanded(child: dropDown),
-        ],
-      ),
     );
   }
 
@@ -281,18 +251,9 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
     final dropItems = battleEntity.battleInfo?.getTotalDrops() ?? {};
 
     return TileGroup(
-      header: 'Battle Details - ${agent.curBattle == null ? "ended" : "ongoing"}',
+      header: 'Battle ${battleEntity.id} - ${agent.curBattle == null ? "ended" : "ongoing"}'
+          ' (${battleEntity.createdAt.sec2date().toStringShort()})',
       children: [
-        ListTile(
-          dense: true,
-          title: const Text('Battle ID'),
-          trailing: Text(battleEntity.id.toString()),
-        ),
-        ListTile(
-          dense: true,
-          title: const Text('Started At'),
-          trailing: Text(battleEntity.createdAt.sec2date().toStringShort()),
-        ),
         ListTile(
           dense: true,
           title: Text('Quest ${battleEntity.questId}/${battleEntity.questPhase}'),
@@ -451,6 +412,26 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
                 });
               },
               child: Text(battleOptions.loopCount.toString())),
+        ),
+        ListTile(
+          dense: true,
+          title: const Text('Battle Duration(seconds)'),
+          trailing: TextButton(
+              onPressed: () {
+                _lockTask(() {
+                  InputCancelOkDialog(
+                    title: 'Battle Duration',
+                    text: battleOptions.battleDuration?.toString(),
+                    keyboardType: TextInputType.number,
+                    validate: (s) => (int.tryParse(s) ?? -1) > 20,
+                    onSubmit: (s) {
+                      battleOptions.battleDuration = int.parse(s);
+                      if (mounted) setState(() {});
+                    },
+                  ).showDialog(context);
+                });
+              },
+              child: Text(battleOptions.battleDuration?.toString() ?? S.current.general_default)),
         ),
         ListTile(
           dense: true,
@@ -922,6 +903,14 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
           },
           controlAffinity: ListTileControlAffinity.trailing,
         ),
+        ListTile(
+          dense: true,
+          title: Text('${mstData.userFollower.firstOrNull?.followerInfo.length} Follower Info(s)'),
+          trailing: Text(
+            '~${mstData.userFollower.firstOrNull?.expireAt.sec2date().toStringShort()}',
+            style: const TextStyle(fontSize: 12),
+          ),
+        ),
       ],
     );
   }
@@ -1137,7 +1126,17 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
             PopupMenuItem(
               child: const Text('Break'),
               onTap: () {
-                if (mounted) _runningTask = false;
+                if (mounted) {
+                  _runningTask = false;
+                  agent.network.clearTask();
+                }
+              },
+            ),
+            PopupMenuItem(
+              child: const Text('Test'),
+              onTap: () async {
+                if (!kDebugMode) return;
+                (agent as FakerAgentCN).usk = CryptData.encryptMD5Usk('842b691bbc2ef299367a');
               },
             )
           ],
@@ -1184,7 +1183,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
       throw Exception('win target drop num must >0');
     }
     final questPhaseEntity =
-        await AtlasApi.questPhase(battleOptions.questId, battleOptions.questPhase, region: agent.network.user.region);
+        await AtlasApi.questPhase(battleOptions.questId, battleOptions.questPhase, region: agent.user.region);
     if (questPhaseEntity == null) {
       throw Exception('quest not found');
     }
@@ -1243,7 +1242,8 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
           actionLogs: "",
         );
       } else {
-        await Future.delayed(const Duration(seconds: 20));
+        final delay = battleOptions.battleDuration ?? (agent.network.gameTop.region == Region.cn ? 40 : 20);
+        await Future.delayed(Duration(seconds: delay));
         resultResp = await agent.battleResultWithOptions(
           battleEntity: battleEntity,
           resultType: BattleResultType.win,

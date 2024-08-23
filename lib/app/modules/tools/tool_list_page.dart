@@ -10,6 +10,7 @@ import '_hidden.dart';
 import 'aa_explorer_preview.dart';
 import 'bond_table.dart';
 import 'chara_figure_marker.dart';
+import 'cipher_test.dart';
 import 'combine_image_page.dart';
 import 'custom_chara_figure.dart';
 import 'event_fatigue.dart';
@@ -54,6 +55,7 @@ class ToolListPage extends StatelessWidget {
               buildOne('Extra CharaFigure Marker', CharaFigureMarker.figure(), supportWeb: false),
               buildOne('Extra CharaImage Marker', CharaFigureMarker.image(), supportWeb: false),
               buildOne('AA Explorer', const AtlasExplorerPreview(), supportWeb: false),
+              buildOne('Ciphers', const CipherTestPage()),
               if (AppInfo.isDebugDevice) buildOne('Y(^o^)Y', const HiddenToolsPage()),
             ],
           ),

@@ -371,12 +371,16 @@ class AtlasApi {
   }
 
   // game top
-  static Future<GameTops?> gametops({Duration? expireAfter = Duration.zero}) async {
-    final tops = await cacheManager.getModel(
+  static Future<GameTops?> gametopsRaw({Duration? expireAfter}) async {
+    return cacheManager.getModel(
       '${HostsX.dataHost}/gametop.json',
       (data) => GameTops.fromJson(data),
       expireAfter: expireAfter,
     );
+  }
+
+  static Future<GameTops?> gametops({Duration? expireAfter}) async {
+    final tops = await gametopsRaw(expireAfter: expireAfter);
     if (tops != null) {
       final tasks = <Future>[
         assetbundle(Region.jp, expireAfter: expireAfter)
@@ -399,7 +403,7 @@ class AtlasApi {
     return tops;
   }
 
-  static Future<AssetBundleDecrypt?> assetbundle(Region region, {Duration? expireAfter = Duration.zero}) {
+  static Future<AssetBundleDecrypt?> assetbundle(Region region, {Duration? expireAfter}) {
     return cacheManager.getModel(
       HostsX.proxyWorker(
           'https://git.atlasacademy.io/atlasacademy/fgo-game-data/raw/branch/${region.upper}/metadata/assetbundle.json'),
@@ -440,7 +444,7 @@ class AtlasApi {
     );
   }
 
-  static Future<GameAppVerCode?> verCode(Region region, {Duration? expireAfter = Duration.zero, bool? proxy}) {
+  static Future<GameAppVerCode?> verCode(Region region, {Duration? expireAfter, bool? proxy}) {
     assert(region == Region.jp || region == Region.na || region == Region.kr);
     proxy ??= HostsX.proxy.worker;
     String url = "https://fgo.bigcereal.com/${region.upper}/verCode.txt";

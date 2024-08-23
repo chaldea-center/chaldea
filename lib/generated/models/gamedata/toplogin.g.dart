@@ -22,6 +22,8 @@ FateResponseDetail _$FateResponseDetailFromJson(Map json) => FateResponseDetail(
       success: json['success'] as Map?,
       fail: json['fail'] as Map?,
       nid: json['nid'] as String?,
+      usk: json['usk'] as String?,
+      encryptApi: (json['encryptApi'] as List<dynamic>?)?.map((e) => e as String).toList(),
     );
 
 UserItemEntity _$UserItemEntityFromJson(Map json) => UserItemEntity(
@@ -171,6 +173,13 @@ Map<String, dynamic> _$UserGameEntityToJson(UserGameEntity instance) => <String,
       'appuid': instance.appuid,
       'appname': instance.appname,
     };
+
+UserLoginEntity _$UserLoginEntityFromJson(Map json) => UserLoginEntity(
+      userId: json['userId'],
+      seqLoginCount: json['seqLoginCount'],
+      totalLoginCount: json['totalLoginCount'],
+      lastLoginAt: json['lastLoginAt'],
+    );
 
 UserServantAppendPassiveSkillEntity _$UserServantAppendPassiveSkillEntityFromJson(Map json) =>
     UserServantAppendPassiveSkillEntity(

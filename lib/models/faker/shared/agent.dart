@@ -8,9 +8,12 @@ import 'package:chaldea/utils/basic.dart';
 import 'package:chaldea/utils/extension.dart';
 import 'network.dart';
 
-abstract class FakerAgent<TRequest extends FRequestBase, TNetworkManager extends NetworkManagerBase<TRequest>> {
+abstract class FakerAgent<TRequest extends FRequestBase, TUser extends AutoLoginData,
+    TNetworkManager extends NetworkManagerBase<TRequest, TUser>> {
   final TNetworkManager network;
   FakerAgent({required this.network});
+
+  TUser get user => network.user;
 
   BattleEntity? curBattle;
   BattleEntity? lastBattle;
@@ -189,19 +192,28 @@ abstract class FakerAgent<TRequest extends FRequestBase, TNetworkManager extends
     required bool supportEquipMaxLimitBreak,
   }) async {
     int refreshCount = 0;
-    // CN: check isEmpty and expire before refresh: network.mstData.userFollower.isEmpty;
-
+    List<FollowerInfo> followers = [];
+    if (network.gameTop.region == Region.cn) {
+      final oldUserFollower =
+          network.mstData.userFollower.firstWhereOrNull((e) => e.expireAt > DateTime.now().timestamp + 1800);
+      if (oldUserFollower != null) {
+        followers = oldUserFollower.followerInfo;
+      }
+    }
     while (true) {
-      final resp = await followerList(
-          questId: questId, questPhase: questPhase, isEnfoceRefresh: enforceRefreshSupport || refreshCount > 0);
-      if (refreshCount > 0) {
-        await Future.delayed(const Duration(seconds: 5));
+      if (refreshCount > 0) followers.clear();
+      if (followers.isEmpty) {
+        if (refreshCount > 20) {
+          throw Exception('After $refreshCount times refresh, no support svt is valid');
+        }
+        final resp = await followerList(
+            questId: questId, questPhase: questPhase, isEnfoceRefresh: enforceRefreshSupport || refreshCount > 0);
+        if (refreshCount > 0) {
+          await Future.delayed(const Duration(seconds: 5));
+        }
+        followers = resp.data.mstData.userFollower.first.followerInfo;
       }
       refreshCount += 1;
-      if (refreshCount > 20) {
-        throw Exception('After $refreshCount times refresh, no support svt is valid');
-      }
-      final followers = resp.data.mstData.userFollower.first.followerInfo;
 
       for (final follower in followers) {
         for (final svt in useEventDeck ? follower.eventUserSvtLeaderHash : follower.userSvtLeaderHash) {

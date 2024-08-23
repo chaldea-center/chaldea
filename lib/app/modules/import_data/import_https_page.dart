@@ -29,7 +29,9 @@ import 'sniff_details/quest_farming.dart';
 
 class ImportHttpPage extends StatefulWidget {
   final String? toploginText;
-  ImportHttpPage({super.key, this.toploginText});
+  final MasterDataManager? mstData;
+
+  ImportHttpPage({super.key, this.toploginText, this.mstData}) : assert(toploginText == null || mstData == null);
 
   @override
   ImportHttpPageState createState() => ImportHttpPageState();
@@ -60,16 +62,15 @@ class ImportHttpPageState extends State<ImportHttpPage> {
   Map<int, UserServantCollectionEntity> cardCollections = {};
 
   // data
-  FateTopLogin? topLogin;
+  // FateTopLogin? topLogin;
   List<List<UserServantEntity>> servants = [];
   List<UserItemEntity> items = [];
   Map<int, CraftStatus> crafts = {}; // craft.no: status
   Map<int, CmdCodeStatus> cmdCodes = {}; // code.no: status
 
-  MasterDataManager? get mstData => topLogin?.mstData;
+  MasterDataManager? mstData;
 
   String get tmpPath => joinPaths(db.paths.userDir, 'sniff', db.curUser.id);
-  String tmpPathOld = joinPaths(db.paths.userDir, 'sniff', calcMd5(db.curUser.name));
 
   @override
   void initState() {
@@ -80,15 +81,18 @@ class ImportHttpPageState extends State<ImportHttpPage> {
   Future<void> loadOrSave() async {
     try {
       if (widget.toploginText != null) {
-        parseResponseBody(utf8.encode(widget.toploginText!), true);
+        mstData = loadMstData(utf8.encode(widget.toploginText!), true);
+        updateFromMstData();
         await FilePlus(tmpPath).create(recursive: true);
         await FilePlus(tmpPath).writeAsString(widget.toploginText!);
+      } else if (widget.mstData != null) {
+        mstData = widget.mstData;
+        updateFromMstData();
       } else {
-        final newFile = FilePlus(tmpPath);
-        final oldFile = FilePlus(tmpPathOld);
-        final f = !newFile.existsSync() && oldFile.existsSync() ? oldFile : newFile;
-        if (f.existsSync()) {
-          parseResponseBody(await f.readAsBytes(), false);
+        final file = FilePlus(tmpPath);
+        if (file.existsSync()) {
+          mstData = loadMstData(await file.readAsBytes(), false);
+          updateFromMstData();
           if (mounted) setState(() {});
         }
       }
@@ -128,7 +132,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
       body: Column(
         children: [
           Expanded(
-            child: topLogin == null
+            child: mstData == null
                 ? Padding(
                     padding: const EdgeInsets.all(16),
                     child: Column(
@@ -213,7 +217,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
             leading: const Icon(Icons.supervised_user_circle),
             title: Text('${user.name}\n${user.friendCode}'),
             //  ${user.genderType == 1 ? '♂ ${S.current.guda_male}' : '♀ ${S.current.guda_female}'}
-            subtitle: Text(topLogin!.serverTime?.toStringShort() ?? '?'),
+            subtitle: Text(mstData?.userLogin.firstOrNull?.lastLoginAt.sec2date().toStringShort() ?? '?'),
             trailing: ExpandIcon(onPressed: null, isExpanded: _showAccount),
             onTap: () {
               setState(() {
@@ -970,7 +974,8 @@ class ImportHttpPageState extends State<ImportHttpPage> {
         }
       }
       if (bytes == null) return;
-      parseResponseBody(bytes, true);
+      mstData = loadMstData(bytes, true);
+      updateFromMstData();
       await FilePlus(tmpPath).create(recursive: true);
       await FilePlus(tmpPath).writeAsBytes(bytes);
     } catch (e, s) {
@@ -988,31 +993,40 @@ class ImportHttpPageState extends State<ImportHttpPage> {
     }
   }
 
-  void parseResponseBody(List<int> bytes, bool logEvent) {
+  MasterDataManager loadMstData(List<int> bytes, bool logEvent) {
     FateTopLogin _topLogin = FateTopLogin.fromBytes(bytes);
-    if (!_topLogin.responses.any((res) => res.nid == 'login')) {
+    if (!_topLogin.responses.any((res) => res.nid == 'login' && res.isSuccess())) {
       throw const FormatException('This is not login data');
     }
-    final body = _topLogin.mstData;
+    if (logEvent) {
+      AppAnalysis.instance.logEvent("import_toplogin", {"region": _topLogin.region?.upper ?? "unknown"});
+    }
+    return _topLogin.mstData;
+  }
 
+  void updateFromMstData() {
+    final mstData = this.mstData;
+    if (mstData == null) {
+      throw Exception('mstData null!');
+    }
     // clear before import
     _validSvts.clear();
     cardCollections.clear();
     servants.clear();
-    items = body.userItem.toList();
+    items = mstData.userItem.toList();
     crafts.clear();
     cmdCodes.clear();
 
     items.sort((a, b) => Item.compare2(a.itemId, b.itemId));
 
     // collections
-    cardCollections = Map.fromEntries(body.userSvtCollection.map((e) => MapEntry(e.svtId, e)));
+    cardCollections = Map.fromEntries(mstData.userSvtCollection.map((e) => MapEntry(e.svtId, e)));
 
     // svt
-    for (final svt in body.userSvt) {
+    for (final svt in mstData.userSvt) {
       if ((svt.dbSvt?.collectionNo ?? 0) <= 0) continue;
       svt.inStorage = false;
-      svt.appendLvs = body.getSvtAppendSkillLv(svt);
+      svt.appendLvs = mstData.getSvtAppendSkillLv(svt);
       final group = servants.firstWhereOrNull((group) => group.any((element) => element.svtId == svt.svtId));
       if (group == null) {
         servants.add([svt]);
@@ -1021,10 +1035,10 @@ class ImportHttpPageState extends State<ImportHttpPage> {
       }
     }
     // svtStorage
-    for (final svt in body.userSvtStorage) {
+    for (final svt in mstData.userSvtStorage) {
       if ((svt.dbSvt?.collectionNo ?? 0) <= 0) continue;
       svt.inStorage = true;
-      svt.appendLvs = body.getSvtAppendSkillLv(svt);
+      svt.appendLvs = mstData.getSvtAppendSkillLv(svt);
       final group = servants.firstWhereOrNull((group) => group.any((element) => element.svtId == svt.svtId));
       if (group == null) {
         servants.add([svt]);
@@ -1059,7 +1073,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
       crafts.putIfAbsent(ce.collectionNo, () => CraftStatus()).status = card.status;
     }
 
-    for (final ce in [...body.userSvt, ...body.userSvtStorage]) {
+    for (final ce in [...mstData.userSvt, ...mstData.userSvtStorage]) {
       if (ce.dbCE == null) continue;
       final status = crafts.putIfAbsent(ce.dbCE!.collectionNo, () => CraftStatus());
       if (status.lv < ce.lv || (status.lv == ce.lv && status.limitCount < ce.limitCount)) {
@@ -1067,13 +1081,13 @@ class ImportHttpPageState extends State<ImportHttpPage> {
         status.limitCount = ce.limitCount;
       }
     }
-    for (final code in body.userCommandCodeCollection) {
+    for (final code in mstData.userCommandCodeCollection) {
       final cc = code.dbCC;
       if (cc == null) continue;
       final status = cmdCodes.putIfAbsent(cc.collectionNo, () => CmdCodeStatus());
       status.status = code.status;
     }
-    for (final code in body.userCommandCode) {
+    for (final code in mstData.userCommandCode) {
       final cc = code.dbCC;
       if (cc == null) continue;
       final status = cmdCodes.putIfAbsent(cc.collectionNo, () => CmdCodeStatus());
@@ -1081,12 +1095,5 @@ class ImportHttpPageState extends State<ImportHttpPage> {
     }
 
     _refreshValidSvts();
-
-    // assign last
-    topLogin = _topLogin;
-
-    if (logEvent) {
-      AppAnalysis.instance.logEvent("import_toplogin", {"region": _topLogin.region?.upper ?? "unknown"});
-    }
   }
 }

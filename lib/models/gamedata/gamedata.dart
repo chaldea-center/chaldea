@@ -405,10 +405,12 @@ class FileVersion {
 class GameTops {
   GameTop jp;
   GameTop na;
+  GameTop cn;
 
   GameTops({
     required this.jp,
     required this.na,
+    required this.cn,
   });
 
   factory GameTops.fromJson(Map<String, dynamic> json) => _$GameTopsFromJson(json);
@@ -434,7 +436,7 @@ class GameAppVerCode {
 
   GameAppVerCode({
     required this.appVer,
-    required this.verCode,
+    this.verCode = "",
   });
 
   factory GameAppVerCode.fromJson(Map<String, dynamic> json) => _$GameAppVerCodeFromJson(json);
@@ -459,11 +461,11 @@ class GameTop extends GameAppVerCode {
     required this.region,
     required this.gameServer,
     required super.appVer,
-    required super.verCode,
+    super.verCode,
     required this.dataVer,
-    required this.dateVer,
+    this.dateVer = 0, // CN has no dateVer
     // required this.assetbundle,
-    required this.assetbundleFolder,
+    this.assetbundleFolder = "",
     this.unityVer,
   });
 

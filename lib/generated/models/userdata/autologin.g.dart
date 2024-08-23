@@ -6,11 +6,11 @@ part of '../../../models/userdata/autologin.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-UserAuth _$UserAuthFromJson(Map json) => $checkedCreate(
-      'UserAuth',
+AuthSaveData _$AuthSaveDataFromJson(Map json) => $checkedCreate(
+      'AuthSaveData',
       json,
       ($checkedConvert) {
-        final val = UserAuth(
+        final val = AuthSaveData(
           source: $checkedConvert('source', (v) => v as String?),
           code: $checkedConvert('code', (v) => v as String?),
           userId: $checkedConvert('userId', (v) => v as String),
@@ -23,7 +23,7 @@ UserAuth _$UserAuthFromJson(Map json) => $checkedCreate(
       },
     );
 
-Map<String, dynamic> _$UserAuthToJson(UserAuth instance) => <String, dynamic>{
+Map<String, dynamic> _$AuthSaveDataToJson(AuthSaveData instance) => <String, dynamic>{
       'source': instance.source,
       'code': instance.code,
       'userId': instance.userId,
@@ -33,45 +33,43 @@ Map<String, dynamic> _$UserAuthToJson(UserAuth instance) => <String, dynamic>{
       'userCreateServer': instance.userCreateServer,
     };
 
-AutoLoginData _$AutoLoginDataFromJson(Map json) => $checkedCreate(
-      'AutoLoginData',
+AutoLoginDataJP _$AutoLoginDataJPFromJson(Map json) => $checkedCreate(
+      'AutoLoginDataJP',
       json,
       ($checkedConvert) {
-        final val = AutoLoginData(
+        final val = AutoLoginDataJP(
           region:
               $checkedConvert('region', (v) => v == null ? Region.jp : const RegionConverter().fromJson(v as String)),
-          auth:
-              $checkedConvert('auth', (v) => v == null ? null : UserAuth.fromJson(Map<String, dynamic>.from(v as Map))),
-          userAgent: $checkedConvert('userAgent', (v) => v as String?),
+          auth: $checkedConvert(
+              'auth', (v) => v == null ? null : AuthSaveData.fromJson(Map<String, dynamic>.from(v as Map))),
           deviceInfo: $checkedConvert('deviceInfo', (v) => v as String?),
           country:
               $checkedConvert('country', (v) => $enumDecodeNullable(_$NACountryEnumMap, v) ?? NACountry.unitedStates),
-          useThisDevice: $checkedConvert('useThisDevice', (v) => v as bool? ?? false),
-          lastLogin: $checkedConvert('lastLogin', (v) => (v as num?)?.toInt()),
-          userGame: $checkedConvert(
-              'userGame', (v) => v == null ? null : UserGameEntity.fromJson(Map<String, dynamic>.from(v as Map))),
+          userAgent: $checkedConvert('userAgent', (v) => v as String? ?? ''),
+          curBattleOptionIndex: $checkedConvert('curBattleOptionIndex', (v) => (v as num?)?.toInt()),
           battleOptions: $checkedConvert(
               'battleOptions',
               (v) => (v as List<dynamic>?)
                   ?.map((e) => AutoBattleOptions.fromJson(Map<String, dynamic>.from(e as Map)))
                   .toList()),
-          curBattleOptionIndex: $checkedConvert('curBattleOptionIndex', (v) => (v as num?)?.toInt()),
+          lastLogin: $checkedConvert('lastLogin', (v) => (v as num?)?.toInt()),
+          userGame: $checkedConvert(
+              'userGame', (v) => v == null ? null : UserGameEntity.fromJson(Map<String, dynamic>.from(v as Map))),
         );
         return val;
       },
     );
 
-Map<String, dynamic> _$AutoLoginDataToJson(AutoLoginData instance) => <String, dynamic>{
+Map<String, dynamic> _$AutoLoginDataJPToJson(AutoLoginDataJP instance) => <String, dynamic>{
       'region': const RegionConverter().toJson(instance.region),
-      'auth': instance.auth?.toJson(),
       'userAgent': instance.userAgent,
-      'deviceInfo': instance.deviceInfo,
-      'country': _$NACountryEnumMap[instance.country]!,
-      'useThisDevice': instance.useThisDevice,
-      'lastLogin': instance.lastLogin,
       'curBattleOptionIndex': instance.curBattleOptionIndex,
       'battleOptions': instance.battleOptions.map((e) => e.toJson()).toList(),
+      'lastLogin': instance.lastLogin,
       'userGame': instance.userGame?.toJson(),
+      'auth': instance.auth?.toJson(),
+      'deviceInfo': instance.deviceInfo,
+      'country': _$NACountryEnumMap[instance.country]!,
     };
 
 const _$NACountryEnumMap = {
@@ -103,11 +101,68 @@ const _$NACountryEnumMap = {
   NACountry.portugal: 'portugal',
 };
 
+AutoLoginDataCN _$AutoLoginDataCNFromJson(Map json) => $checkedCreate(
+      'AutoLoginDataCN',
+      json,
+      ($checkedConvert) {
+        final val = AutoLoginDataCN(
+          region:
+              $checkedConvert('region', (v) => v == null ? Region.cn : const RegionConverter().fromJson(v as String)),
+          gameServer: $checkedConvert(
+              'gameServer', (v) => $enumDecodeNullable(_$BiliGameServerEnumMap, v) ?? BiliGameServer.android),
+          isAndroidDevice: $checkedConvert('isAndroidDevice', (v) => v as bool? ?? true),
+          uid: $checkedConvert('uid', (v) => (v as num?)?.toInt() ?? 0),
+          accessToken: $checkedConvert('accessToken', (v) => v as String? ?? ''),
+          username: $checkedConvert('username', (v) => v as String? ?? ''),
+          nickname: $checkedConvert('nickname', (v) => v as String? ?? ''),
+          deviceId: $checkedConvert('deviceId', (v) => v as String? ?? ''),
+          os: $checkedConvert('os', (v) => v as String? ?? ''),
+          ptype: $checkedConvert('ptype', (v) => v as String? ?? ''),
+          userAgent: $checkedConvert('userAgent', (v) => v as String? ?? ''),
+          curBattleOptionIndex: $checkedConvert('curBattleOptionIndex', (v) => (v as num?)?.toInt()),
+          battleOptions: $checkedConvert(
+              'battleOptions',
+              (v) => (v as List<dynamic>?)
+                  ?.map((e) => AutoBattleOptions.fromJson(Map<String, dynamic>.from(e as Map)))
+                  .toList()),
+          lastLogin: $checkedConvert('lastLogin', (v) => (v as num?)?.toInt()),
+          userGame: $checkedConvert(
+              'userGame', (v) => v == null ? null : UserGameEntity.fromJson(Map<String, dynamic>.from(v as Map))),
+        );
+        return val;
+      },
+    );
+
+Map<String, dynamic> _$AutoLoginDataCNToJson(AutoLoginDataCN instance) => <String, dynamic>{
+      'userAgent': instance.userAgent,
+      'curBattleOptionIndex': instance.curBattleOptionIndex,
+      'battleOptions': instance.battleOptions.map((e) => e.toJson()).toList(),
+      'lastLogin': instance.lastLogin,
+      'userGame': instance.userGame?.toJson(),
+      'region': const RegionConverter().toJson(instance.region),
+      'gameServer': _$BiliGameServerEnumMap[instance.gameServer]!,
+      'isAndroidDevice': instance.isAndroidDevice,
+      'uid': instance.uid,
+      'accessToken': instance.accessToken,
+      'username': instance.username,
+      'nickname': instance.nickname,
+      'deviceId': instance.deviceId,
+      'os': instance.os,
+      'ptype': instance.ptype,
+    };
+
+const _$BiliGameServerEnumMap = {
+  BiliGameServer.ios: 'ios',
+  BiliGameServer.android: 'android',
+  BiliGameServer.uo: 'uo',
+};
+
 AutoBattleOptions _$AutoBattleOptionsFromJson(Map json) => $checkedCreate(
       'AutoBattleOptions',
       json,
       ($checkedConvert) {
         final val = AutoBattleOptions(
+          name: $checkedConvert('name', (v) => v as String? ?? ''),
           questId: $checkedConvert('questId', (v) => (v as num?)?.toInt() ?? 0),
           questPhase: $checkedConvert('questPhase', (v) => (v as num?)?.toInt() ?? 0),
           useEventDeck: $checkedConvert('useEventDeck', (v) => v as bool? ?? false),
@@ -142,11 +197,13 @@ AutoBattleOptions _$AutoBattleOptionsFromJson(Map json) => $checkedCreate(
                     (k, e) => MapEntry(int.parse(k as String), (e as num).toInt()),
                   )),
         );
+        $checkedConvert('battleDuration', (v) => val.battleDuration = (v as num?)?.toInt());
         return val;
       },
     );
 
 Map<String, dynamic> _$AutoBattleOptionsToJson(AutoBattleOptions instance) => <String, dynamic>{
+      'name': instance.name,
       'questId': instance.questId,
       'questPhase': instance.questPhase,
       'isHpHalf': instance.isHpHalf,
@@ -166,6 +223,7 @@ Map<String, dynamic> _$AutoBattleOptionsToJson(AutoBattleOptions instance) => <S
       'loopCount': instance.loopCount,
       'targetDrops': instance.targetDrops.map((k, e) => MapEntry(k.toString(), e)),
       'winTargetItemNum': instance.winTargetItemNum.map((k, e) => MapEntry(k.toString(), e)),
+      'battleDuration': instance.battleDuration,
     };
 
 const _$BattleResultTypeEnumMap = {

@@ -7,7 +7,6 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/modules/common/filter_group.dart';
-import 'package:chaldea/app/modules/faker/faker.dart';
 import 'package:chaldea/app/modules/import_data/import_https_page.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/faker/jp/agent.dart';
@@ -32,8 +31,8 @@ class AutoLoginPage extends StatefulWidget {
 
 class _AutoLoginPageState extends State<AutoLoginPage> {
   GameTops? gameTops;
-  final allData = db.settings.autologins;
-  AutoLoginData args = AutoLoginData();
+  final allData = db.settings.jpAutoLogins;
+  AutoLoginDataJP args = AutoLoginDataJP();
   FakerAgentJP? agent;
   dynamic _error;
 
@@ -41,10 +40,10 @@ class _AutoLoginPageState extends State<AutoLoginPage> {
   void initState() {
     super.initState();
     if (allData.isEmpty) {
-      allData.add(AutoLoginData());
+      allData.add(AutoLoginDataJP());
     }
     args = allData.first;
-    AtlasApi.gametops(expireAfter: null).then((value) {
+    AtlasApi.gametopsRaw().then((value) {
       gameTops ??= value;
       if (mounted) setState(() {});
     });
@@ -71,17 +70,6 @@ class _AutoLoginPageState extends State<AutoLoginPage> {
           warning,
           ...buildAccounts(),
           buildActions(),
-          if (AppInfo.isDebugDevice)
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 16),
-              child: FilledButton(
-                onPressed: () {
-                  if (args.auth == null || top == null) return;
-                  router.pushPage(FakeGrandOrder(agent: FakerAgentJP.s(gameTop: top, user: args)));
-                },
-                child: const Text("Fake/Grand Order"),
-              ),
-            ),
           if (args.region == Region.jp)
             Card(
               margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -120,17 +108,21 @@ class _AutoLoginPageState extends State<AutoLoginPage> {
             subtitle: Text(args.auth?.userId == null
                 ? 'No Auth Loaded'
                 : '${args.auth?.userId} (${args.auth?.userCreateServer ?? "unknown server"})'),
-            trailing: IconButton(
-              onPressed: onEditAuth,
-              icon: const Icon(Icons.edit_note_rounded),
-              tooltip: S.current.edit,
-            ),
-            onTap: onEditAuth,
+            trailing: const Icon(Icons.edit_note_rounded),
+            onTap: () {
+              router.pushPage(ReadAuthPage(
+                auth: args.auth,
+                onChanged: (v) {
+                  if (v != null) args.auth = v;
+                  if (mounted) setState(() {});
+                },
+              ));
+            },
             selected: args.auth?.userId == null,
             selectedColor: Theme.of(context).colorScheme.error,
           ),
           if (args.auth?.userCreateServer != null &&
-              !UserAuth.checkGameServer(args.region, args.auth!.userCreateServer!))
+              !AuthSaveData.checkGameServer(args.region, args.auth!.userCreateServer!))
             Card(
               margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
               child: Padding(
@@ -189,21 +181,17 @@ class _AutoLoginPageState extends State<AutoLoginPage> {
           ListTile(
             dense: true,
             title: const Text('User Agent'),
-            subtitle: Text(args.userAgent ?? FakerUA.fallback),
+            subtitle: Text(args.userAgent),
             onLongPress: () {
-              copyToClipboard(args.userAgent ?? FakerUA.fallback, toast: true);
+              copyToClipboard(args.userAgent, toast: true);
             },
             trailing: IconButton(
               onPressed: () {
                 onEditArg(
                   'User Agent',
-                  args.userAgent ?? FakerUA.fallback,
+                  args.userAgent,
                   (s) {
-                    if (s.trim().isNotEmpty) {
-                      args.userAgent = s.trim();
-                    } else {
-                      args.userAgent = null;
-                    }
+                    args.userAgent = s.trim();
                   },
                   (s) => s.isEmpty || FakerUA.validate(s),
                 );
@@ -337,7 +325,7 @@ class _AutoLoginPageState extends State<AutoLoginPage> {
           textAlign: TextAlign.end,
         );
       });
-      Widget tile = RadioListTile<AutoLoginData>(
+      Widget tile = RadioListTile<AutoLoginDataJP>(
         visualDensity: VisualDensity.compact,
         value: user,
         groupValue: args,
@@ -369,7 +357,7 @@ class _AutoLoginPageState extends State<AutoLoginPage> {
       children: [
         IconButton(
           onPressed: () {
-            allData.add(AutoLoginData());
+            allData.add(AutoLoginDataJP());
             args = allData.last;
             setState(() {});
           },

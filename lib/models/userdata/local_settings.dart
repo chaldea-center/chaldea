@@ -79,7 +79,9 @@ class LocalSettings {
 
   LocalDataFilters filters;
 
-  List<AutoLoginData> autologins;
+  @JsonKey(name: 'autologins')
+  List<AutoLoginDataJP> jpAutoLogins;
+  List<AutoLoginDataCN> cnAutoLogins;
 
   RemoteConfig remoteConfig;
 
@@ -130,7 +132,8 @@ class LocalSettings {
     this.hideUnreleasedCard = false,
     this.hideUnreleasedEnemyCollection = false,
     LocalDataFilters? filters,
-    List<AutoLoginData>? autologins,
+    List<AutoLoginDataJP>? jpAutoLogins,
+    List<AutoLoginDataCN>? cnAutoLogins,
     RemoteConfig? remoteConfig,
     MasterMissionOptions? masterMissionOptions,
     BookmarkHistory? bookmarks,
@@ -151,7 +154,8 @@ class LocalSettings {
         battleSim = battleSim ?? BattleSimSetting(),
         eventItemCalc = eventItemCalc ?? {},
         filters = filters ?? LocalDataFilters(),
-        autologins = autologins ?? [],
+        jpAutoLogins = jpAutoLogins ?? [],
+        cnAutoLogins = cnAutoLogins ?? [],
         remoteConfig = remoteConfig ?? RemoteConfig(),
         masterMissionOptions = masterMissionOptions ?? MasterMissionOptions(),
         bookmarks = bookmarks ?? BookmarkHistory(),

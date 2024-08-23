@@ -78,10 +78,15 @@ LocalSettings _$LocalSettingsFromJson(Map json) => $checkedCreate(
           hideUnreleasedEnemyCollection: $checkedConvert('hideUnreleasedEnemyCollection', (v) => v as bool? ?? false),
           filters: $checkedConvert(
               'filters', (v) => v == null ? null : LocalDataFilters.fromJson(Map<String, dynamic>.from(v as Map))),
-          autologins: $checkedConvert(
+          jpAutoLogins: $checkedConvert(
               'autologins',
               (v) => (v as List<dynamic>?)
-                  ?.map((e) => AutoLoginData.fromJson(Map<String, dynamic>.from(e as Map)))
+                  ?.map((e) => AutoLoginDataJP.fromJson(Map<String, dynamic>.from(e as Map)))
+                  .toList()),
+          cnAutoLogins: $checkedConvert(
+              'cnAutoLogins',
+              (v) => (v as List<dynamic>?)
+                  ?.map((e) => AutoLoginDataCN.fromJson(Map<String, dynamic>.from(e as Map)))
                   .toList()),
           remoteConfig: $checkedConvert(
               'remoteConfig', (v) => v == null ? null : RemoteConfig.fromJson(Map<String, dynamic>.from(v as Map))),
@@ -96,6 +101,7 @@ LocalSettings _$LocalSettingsFromJson(Map json) => $checkedCreate(
         );
         return val;
       },
+      fieldKeyMap: const {'jpAutoLogins': 'autologins'},
     );
 
 Map<String, dynamic> _$LocalSettingsToJson(LocalSettings instance) => <String, dynamic>{
@@ -139,7 +145,8 @@ Map<String, dynamic> _$LocalSettingsToJson(LocalSettings instance) => <String, d
       'hideUnreleasedCard': instance.hideUnreleasedCard,
       'hideUnreleasedEnemyCollection': instance.hideUnreleasedEnemyCollection,
       'filters': instance.filters.toJson(),
-      'autologins': instance.autologins.map((e) => e.toJson()).toList(),
+      'autologins': instance.jpAutoLogins.map((e) => e.toJson()).toList(),
+      'cnAutoLogins': instance.cnAutoLogins.map((e) => e.toJson()).toList(),
       'remoteConfig': instance.remoteConfig.toJson(),
       'masterMissionOptions': instance.masterMissionOptions.toJson(),
       'bookmarks': instance.bookmarks.toJson(),

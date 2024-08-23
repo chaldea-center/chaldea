@@ -144,16 +144,18 @@ Map<String, dynamic> _$FileVersionToJson(FileVersion instance) => <String, dynam
 GameTops _$GameTopsFromJson(Map json) => GameTops(
       jp: GameTop.fromJson(Map<String, dynamic>.from(json['JP'] as Map)),
       na: GameTop.fromJson(Map<String, dynamic>.from(json['NA'] as Map)),
+      cn: GameTop.fromJson(Map<String, dynamic>.from(json['CN'] as Map)),
     );
 
 Map<String, dynamic> _$GameTopsToJson(GameTops instance) => <String, dynamic>{
       'JP': instance.jp.toJson(),
       'NA': instance.na.toJson(),
+      'CN': instance.cn.toJson(),
     };
 
 GameAppVerCode _$GameAppVerCodeFromJson(Map json) => GameAppVerCode(
       appVer: json['appVer'] as String,
-      verCode: json['verCode'] as String,
+      verCode: json['verCode'] as String? ?? "",
     );
 
 Map<String, dynamic> _$GameAppVerCodeToJson(GameAppVerCode instance) => <String, dynamic>{
@@ -165,10 +167,10 @@ GameTop _$GameTopFromJson(Map json) => GameTop(
       region: const RegionConverter().fromJson(json['region'] as String),
       gameServer: json['gameServer'] as String,
       appVer: json['appVer'] as String,
-      verCode: json['verCode'] as String,
+      verCode: json['verCode'] as String? ?? "",
       dataVer: (json['dataVer'] as num).toInt(),
-      dateVer: (json['dateVer'] as num).toInt(),
-      assetbundleFolder: json['assetbundleFolder'] as String,
+      dateVer: (json['dateVer'] as num?)?.toInt() ?? 0,
+      assetbundleFolder: json['assetbundleFolder'] as String? ?? "",
       unityVer: json['unityVer'] as String?,
     );
 

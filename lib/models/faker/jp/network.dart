@@ -9,6 +9,7 @@ import 'package:chaldea/app/api/chaldea.dart';
 import 'package:chaldea/models/gamedata/toplogin.dart';
 import 'package:chaldea/packages/packages.dart';
 import 'package:chaldea/utils/utils.dart';
+import '../../userdata/autologin.dart';
 import '../shared/network.dart';
 
 export '../shared/network.dart';
@@ -17,7 +18,7 @@ export '../shared/network.dart';
 
 class FRequestJP extends FRequestBase {
   final NetworkManagerJP network;
-  FRequestJP({required this.network, required super.path});
+  FRequestJP({required this.network, required super.path, super.key});
 
   final Map<String, int> paramInteger = {};
   final Map<String, String> paramString = {};
@@ -85,10 +86,10 @@ class FRequestJP extends FRequestBase {
   }
 }
 
-class NetworkManagerJP extends NetworkManagerBase<FRequestJP> {
+class NetworkManagerJP extends NetworkManagerBase<FRequestJP, AutoLoginDataJP> {
   NetworkManagerJP({required super.gameTop, required super.user});
 
-  String? sessionId; // Set-Cookie: ASP.NET_SessionId=.*; path=/; HttpOnly
+  // String? sessionId; // Set-Cookie: ASP.NET_SessionId=.*; path=/; HttpOnly
 
   void setBaseField(FRequestJP request) {
     final auth = user.auth;
@@ -128,10 +129,8 @@ class NetworkManagerJP extends NetworkManagerBase<FRequestJP> {
   Future<Response> requestStartImpl(FRequestJP request) async {
     final (form, authParams) = request.getForm();
     final Map<String, dynamic> headers = {};
-    headers[HttpHeaders.userAgentHeader] = user.userAgent ?? FakerUA.fallback;
-    if (sessionId != null) {
-      headers['Cookie'] = sessionId!;
-    }
+    headers[HttpHeaders.userAgentHeader] = user.userAgent.isEmpty ? FakerUA.fallback : user.userAgent;
+    updateCookies(headers);
     final authCode = getAuthCode(authParams);
     form.addField('authCode', authCode);
     headers[HttpHeaders.contentTypeHeader] = Headers.formUrlEncodedContentType;
@@ -167,17 +166,9 @@ class NetworkManagerJP extends NetworkManagerBase<FRequestJP> {
     } else {
       // buffer.writeln(_jsonData);
     }
-    buffer.write('============ end ============');
+    buffer.write('============ end ${request.path} ============');
     // final s = buffer.toString();
     logger.t(buffer.toString());
-    final cookie = rawResp.headers['Set-Cookie']?.firstOrNull;
-    if (cookie != null) {
-      final match = RegExp(r'^(ASP.NET_SessionId=[^;]+);').firstMatch(cookie);
-      if (match != null) {
-        sessionId = match.group(1);
-        print('Set cookie: $sessionId');
-      }
-    }
     final serverTimeStr = rawResp.headers['X-Server-Time']?.firstOrNull;
     if (serverTimeStr != null) {
       final serverTime = int.tryParse(serverTimeStr);

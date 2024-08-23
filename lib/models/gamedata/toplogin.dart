@@ -248,6 +248,9 @@ class FateResponseDetail {
   Map? success;
   Map? fail;
   String? nid;
+  // CN
+  String? usk;
+  List<String>? encryptApi;
 
   bool isSuccess() => resCode == '00' || resCode == '0';
 
@@ -258,6 +261,8 @@ class FateResponseDetail {
     this.success,
     this.fail,
     this.nid,
+    this.usk,
+    this.encryptApi,
   });
 
   factory FateResponseDetail.fromJson(Map<String, dynamic> data) => _$FateResponseDetailFromJson(data);
@@ -265,6 +270,7 @@ class FateResponseDetail {
 
 final _$mstMasterSchemes = <String, (Type, DataMaster Function(String mstName))>{
   "userGame": (UserGameEntity, (mstName) => DataMaster<int, UserGameEntity>(mstName, UserGameEntity.fromJson)),
+  "userLogin": (UserLoginEntity, (mstName) => DataMaster<int, UserLoginEntity>(mstName, UserLoginEntity.fromJson)),
   "userSvtCollection": (
     UserServantCollectionEntity,
     (mstName) => DataMaster<_IntStr, UserServantCollectionEntity>(mstName, UserServantCollectionEntity.fromJson)
@@ -473,6 +479,7 @@ class MasterDataManager {
   // mst schemes
 
   DataMaster<int, UserGameEntity> get userGame => get<int, UserGameEntity>();
+  DataMaster<int, UserLoginEntity> get userLogin => get<int, UserLoginEntity>();
   // svt and ce
   DataMaster<_IntStr, UserServantCollectionEntity> get userSvtCollection => get<_IntStr, UserServantCollectionEntity>();
   DataMaster<int, UserServantEntity> get userSvt => getByName('userSvt')!;
@@ -926,6 +933,31 @@ class UserGameEntity extends DataEntityBase<int> {
   int calCurAp() {
     return (actMax - (actRecoverAt - DateTime.now().timestamp) / 300).floor().clamp(0, actMax) + carryOverActPoint;
   }
+}
+
+@JsonSerializable(createToJson: false)
+class UserLoginEntity extends DataEntityBase<int> {
+  int userId;
+  int seqLoginCount;
+  int totalLoginCount;
+  int lastLoginAt;
+
+  @override
+  int get primaryKey => userId;
+
+  static int createPK(int userId) => userId;
+
+  UserLoginEntity({
+    dynamic userId,
+    dynamic seqLoginCount,
+    dynamic totalLoginCount,
+    dynamic lastLoginAt,
+  })  : userId = _toInt(userId),
+        seqLoginCount = _toInt(seqLoginCount),
+        totalLoginCount = _toInt(totalLoginCount),
+        lastLoginAt = _toInt(lastLoginAt);
+
+  factory UserLoginEntity.fromJson(Map<String, dynamic> data) => _$UserLoginEntityFromJson(data);
 }
 
 @JsonSerializable(createToJson: false)
@@ -1602,6 +1634,7 @@ class UserFollowerEntity extends DataEntityBase<int> {
   List<FollowerInfo> followerInfo;
   int64_t userId;
   int64_t expireAt;
+  // bool isDelete; // CN
 
   @override
   int get primaryKey => userId;

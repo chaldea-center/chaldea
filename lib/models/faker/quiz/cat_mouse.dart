@@ -17,19 +17,23 @@ class CatMouseGame {
   late final List<int> infoData = kAssetKey;
   List<int> infoTop = Uint8List(32);
 
+  // SVEC+SKEY
   late final kBattleKey = utf8.encode({
     Region.jp: 'kzdMtpmzqCHAfx00saU1gIhTjYCuOD1JstqtisXsGYqRVcqrHRydj3k6vJCySu3g',
     Region.na: 'xaVPXPtrkXlUZsJRa3Eu1o1kSDYtjlwhoRQI2MHq2Q4szmpVvDcbmpi7UIZF9Rle',
+    Region.cn: 'd3b13d9093cc6b457fd89766bafa1626ee2ef76626d49ce0d424f4156231ce56',
   }[region]!);
 
+  // IKEY
   late final kAssetKey = utf8.encode({
     Region.jp: 'W0Juh4cFJSYPkebJB9WpswNF51oa6Gm7',
     Region.na: 'nn33CYId2J1ggv0bYDMbYuZ60m4GZt5P',
+    Region.cn: '',
   }[region]!);
 
   CatMouseGame([this.region = Region.jp]) {
-    if (region != Region.jp && region != Region.na) {
-      throw ArgumentError.value(region, 'region', 'Only JP/NA supported');
+    if (region != Region.jp && region != Region.na && region != Region.cn) {
+      throw ArgumentError.value(region, 'region', 'Only JP/NA/CN supported');
     }
     thirdHomeBuilding();
   }

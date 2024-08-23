@@ -11,11 +11,11 @@ import 'package:chaldea/utils/extension.dart';
 import '../shared/agent.dart';
 import 'network.dart';
 
-class FakerAgentJP extends FakerAgent<FRequestJP, NetworkManagerJP> {
+class FakerAgentJP extends FakerAgent<FRequestJP, AutoLoginDataJP, NetworkManagerJP> {
   FakerAgentJP({required super.network});
   FakerAgentJP.s({
     required GameTop gameTop,
-    required AutoLoginData user,
+    required AutoLoginDataJP user,
   }) : super(network: NetworkManagerJP(gameTop: gameTop.copy(), user: user));
 
   @override
@@ -233,6 +233,7 @@ class FakerAgentJP extends FakerAgent<FRequestJP, NetworkManagerJP> {
       "calledEnemyUniqueIds": calledEnemyUniqueIdArray,
       "routeSelect": routeSelectIdArray,
       "dataLostUniqueIds": dataLostUniqueIdArray,
+      "aliveUniqueIds": aliveUniqueIds,
       // "battleStatus": 1393373180,
       // "voicePlayedList": "[]",
       // "usedTurnList": [0, 0, 1]
@@ -254,7 +255,6 @@ class FakerAgentJP extends FakerAgent<FRequestJP, NetworkManagerJP> {
     // }
     int64_t num3 = 0;
 
-    dictionary["aliveUniqueIds"] = aliveUniqueIds;
     for (int num4 in aliveUniqueIds) {
       num3 += num4;
     }

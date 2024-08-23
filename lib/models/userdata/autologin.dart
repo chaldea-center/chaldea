@@ -9,7 +9,7 @@ import '_helper.dart';
 part '../../generated/models/userdata/autologin.g.dart';
 
 @JsonSerializable()
-class UserAuth {
+class AuthSaveData {
   final String? source; // bytes in base64
   final String? code;
 
@@ -21,7 +21,7 @@ class UserAuth {
 
   int get userIdInt => int.parse(userId);
 
-  UserAuth({
+  AuthSaveData({
     this.source,
     this.code,
     required this.userId,
@@ -67,22 +67,15 @@ class UserAuth {
     return false;
   }
 
-  factory UserAuth.fromJson(Map<String, dynamic> json) => _$UserAuthFromJson(json);
+  factory AuthSaveData.fromJson(Map<String, dynamic> json) => _$AuthSaveDataFromJson(json);
 
-  Map<String, dynamic> toJson() => _$UserAuthToJson(this);
+  Map<String, dynamic> toJson() => _$AuthSaveDataToJson(this);
 }
 
-@JsonSerializable()
-class AutoLoginData {
+sealed class AutoLoginData {
   @RegionConverter()
   Region region;
-  UserAuth? auth;
-  String? userAgent;
-  String? deviceInfo;
-  NACountry country;
-  bool useThisDevice;
-  // result
-  int? lastLogin;
+  String userAgent;
 
   int _curBattleOptionIndex;
   int get curBattleOptionIndex => _curBattleOptionIndex.clamp2(0, battleOptions.length - 1);
@@ -94,6 +87,7 @@ class AutoLoginData {
     return battleOptions[curBattleOptionIndex];
   }
 
+  int? lastLogin;
   UserGameEntity? userGame;
 
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -101,25 +95,151 @@ class AutoLoginData {
 
   AutoLoginData({
     this.region = Region.jp,
-    this.auth,
-    this.userAgent,
-    this.deviceInfo,
-    this.country = NACountry.unitedStates,
-    this.useThisDevice = false,
+    this.userAgent = '',
+    int? curBattleOptionIndex,
+    List<AutoBattleOptions>? battleOptions,
     this.lastLogin,
     this.userGame,
-    List<AutoBattleOptions>? battleOptions,
-    int? curBattleOptionIndex,
   })  : battleOptions = battleOptions ?? [AutoBattleOptions()],
         _curBattleOptionIndex = curBattleOptionIndex ?? 0;
 
-  factory AutoLoginData.fromJson(Map<String, dynamic> json) => _$AutoLoginDataFromJson(json);
+  String get serverName;
+  String get internalId;
 
-  Map<String, dynamic> toJson() => _$AutoLoginDataToJson(this);
+  bool validate();
+}
+
+@JsonSerializable(converters: [RegionConverter()])
+class AutoLoginDataJP extends AutoLoginData {
+  AuthSaveData? auth;
+  String? deviceInfo;
+  NACountry country;
+
+  AutoLoginDataJP({
+    super.region,
+    this.auth,
+    this.deviceInfo,
+    this.country = NACountry.unitedStates,
+    super.userAgent,
+    super.curBattleOptionIndex,
+    super.battleOptions,
+    super.lastLogin,
+    super.userGame,
+  });
+
+  factory AutoLoginDataJP.fromJson(Map<String, dynamic> json) => _$AutoLoginDataJPFromJson(json);
+
+  Map<String, dynamic> toJson() => _$AutoLoginDataJPToJson(this);
+
+  @override
+  String get serverName => region.upper;
+
+  @override
+  String get internalId => auth?.userId ?? 'null';
+
+  @override
+  bool validate() {
+    return auth != null && auth!.isValid;
+  }
+}
+
+enum BiliGameServer {
+  ios,
+  android,
+  uo,
+  ;
+
+  String get shownName => switch (this) {
+        ios => 'iOS',
+        android => '安卓B服',
+        uo => '安卓渠道服',
+      };
+}
+
+@JsonSerializable(converters: [RegionConverter()])
+class AutoLoginDataCN extends AutoLoginData {
+  @override
+  Region get region => Region.cn;
+
+  BiliGameServer gameServer;
+  bool isAndroidDevice;
+  int uid; // rkuid
+  String accessToken;
+  String username;
+  String nickname;
+  String deviceId;
+  int get rkchannel => switch (gameServer) {
+        BiliGameServer.android => 24,
+        BiliGameServer.ios => 996,
+        BiliGameServer.uo => 24,
+      };
+  int get cPlat => isAndroidDevice ? 3 : 2; // 系统? ios-2,android-3
+  int get uPlat => switch (gameServer) {
+        BiliGameServer.android => 3,
+        BiliGameServer.ios => 2,
+        BiliGameServer.uo => 3,
+      }; // 账号? ios-2,android-3
+  String os;
+  String ptype;
+
+  AutoLoginDataCN({
+    super.region = Region.cn,
+    this.gameServer = BiliGameServer.android,
+    this.isAndroidDevice = true,
+    this.uid = 0,
+    this.accessToken = '',
+    this.username = '',
+    this.nickname = '',
+    this.deviceId = '',
+    // this.rkchannel = 24,
+    // this.cPlat = 3,
+    // this.uPlat = 3,
+    this.os = '',
+    this.ptype = '',
+    super.userAgent,
+    super.curBattleOptionIndex,
+    super.battleOptions,
+    super.lastLogin,
+    super.userGame,
+  });
+
+  factory AutoLoginDataCN.fromJson(Map<String, dynamic> json) => _$AutoLoginDataCNFromJson(json);
+
+  Map<String, dynamic> toJson() => _$AutoLoginDataCNToJson(this);
+
+  @override
+  String get serverName => '${region.localName} ${gameServer.shownName}';
+
+  @override
+  String get internalId => 'UID $uid';
+
+  String getOS() {
+    if (os.trim().isNotEmpty) return os;
+    return isAndroidDevice ? "Android OS 7.1.2 / API-25 (N2G48C/4565141)" : "iPadOS 15.2";
+  }
+
+  String getPtype() {
+    if (ptype.trim().isNotEmpty) return ptype;
+    return isAndroidDevice ? "vivo V1938CT" : "iPad7,3";
+  }
+
+  @override
+  bool validate() {
+    return gameServer != BiliGameServer.uo &&
+        uid > 0 &&
+        accessToken.isNotEmpty &&
+        rkchannel > 0 &&
+        cPlat > 0 &&
+        uPlat > 0 &&
+        deviceId.isNotEmpty &&
+        username.isNotEmpty &&
+        nickname.isNotEmpty;
+  }
 }
 
 @JsonSerializable()
 class AutoBattleOptions {
+  String name;
   // setup
   int questId;
   int questPhase;
@@ -142,8 +262,10 @@ class AutoBattleOptions {
   int loopCount;
   Map<int, int> targetDrops; // any of target drop reaches
   Map<int, int> winTargetItemNum; // win only if any target reaches, only for QuestFlag.actConsumeBattleWin
+  int? battleDuration;
 
   AutoBattleOptions({
+    this.name = '',
     this.questId = 0,
     this.questPhase = 0,
     this.useEventDeck = false,

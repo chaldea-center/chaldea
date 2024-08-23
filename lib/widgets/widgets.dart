@@ -13,6 +13,7 @@ export 'layout_try_builder.dart';
 export 'markdown_page.dart';
 export 'material.dart';
 export 'picker.dart';
+export 'reorderable_list_page.dart';
 export 'responsive.dart';
 export 'ruby_text.dart';
 export 'search_bar.dart';
