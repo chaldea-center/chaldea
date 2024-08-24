@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.5.13
+
+- batch setting append skills
+- add campaign login bonus for SQ plan
+- fix append 5 not work for transform skill
+- support summer XX NP
+
 ## 2.5.12
 
 - Fix skill option bug: Kulkulcan etc
@@ -7,6 +14,7 @@
 
 ## 2.5.11
 
+- Support planning 5 appends
 - Laplace
   - Support Append Skill 5 shorten skill after use
   - Fixed a bug where reduced damage (for overkill bug counting) is not reset after NP
