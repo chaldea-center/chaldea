@@ -1066,7 +1066,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "userdata_download_backup": MessageLookupByLibrary.simpleMessage("下载备份"),
         "userdata_download_choose_backup": MessageLookupByLibrary.simpleMessage("选择一个备份"),
         "userdata_local": MessageLookupByLibrary.simpleMessage("用户数据(本地)"),
-        "userdata_sync_hint": MessageLookupByLibrary.simpleMessage("仅包含账户数据，不包含本地设置，最多储存2个月内的3个最新备份"),
+        "userdata_sync_hint": MessageLookupByLibrary.simpleMessage("临时备份！仅包含账户数据，不包含本地设置，最多储存1个星期内的3个最新备份"),
         "userdata_sync_server": MessageLookupByLibrary.simpleMessage("同步数据(服务器)"),
         "userdata_upload_backup": MessageLookupByLibrary.simpleMessage("上传备份"),
         "valentine_craft": MessageLookupByLibrary.simpleMessage("情人节礼装"),

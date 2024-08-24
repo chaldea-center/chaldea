@@ -10617,10 +10617,10 @@ class S {
     );
   }
 
-  /// `Only account data, not include local settings, up to 3 backups within 2 months`
+  /// `TEMPORARY! Only account data, not include local settings, up to 3 backups within 1 week!`
   String get userdata_sync_hint {
     return Intl.message(
-      'Only account data, not include local settings, up to 3 backups within 2 months',
+      'TEMPORARY! Only account data, not include local settings, up to 3 backups within 1 week!',
       name: 'userdata_sync_hint',
       desc: '',
       locale: localeName,
