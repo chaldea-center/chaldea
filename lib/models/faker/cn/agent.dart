@@ -24,6 +24,7 @@ class FakerAgentCN extends FakerAgent<FRequestCN, AutoLoginDataCN, NetworkManage
         BiliGameServer.uo => 'https://line1-ts-uo-fate.bilibiligame.net',
       };
 
+  @override
   AutoLoginDataCN get user => network.user;
 
   String rguid = '';

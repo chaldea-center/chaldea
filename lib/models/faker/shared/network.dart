@@ -106,7 +106,7 @@ abstract class NetworkManagerBase<TRequest extends FRequestBase, TUser extends A
     if (cookies.isEmpty) return;
     const key = 'Cookie';
     String cookie = headers[key] ?? '';
-    if (!cookie.endsWith(';')) cookie += ';';
+    if (cookie.isNotEmpty && !cookie.endsWith(';')) cookie += ';';
     cookie += [for (final (k, v) in cookies.items) '$k=$v'].join(';');
     headers[key] = cookie;
   }

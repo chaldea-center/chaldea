@@ -193,9 +193,9 @@ abstract class FakerAgent<TRequest extends FRequestBase, TUser extends AutoLogin
   }) async {
     int refreshCount = 0;
     List<FollowerInfo> followers = [];
-    if (network.gameTop.region == Region.cn) {
+    if (network.gameTop.region == Region.cn && !enforceRefreshSupport) {
       final oldUserFollower =
-          network.mstData.userFollower.firstWhereOrNull((e) => e.expireAt > DateTime.now().timestamp + 1800);
+          network.mstData.userFollower.firstWhereOrNull((e) => e.expireAt > DateTime.now().timestamp + 300);
       if (oldUserFollower != null) {
         followers = oldUserFollower.followerInfo;
       }
@@ -216,6 +216,10 @@ abstract class FakerAgent<TRequest extends FRequestBase, TUser extends AutoLogin
       refreshCount += 1;
 
       for (final follower in followers) {
+        // skip FollowerType.follow
+        if (follower.type != FollowerType.friend.value && follower.type != FollowerType.notFriend.value) {
+          continue;
+        }
         for (final svt in useEventDeck ? follower.eventUserSvtLeaderHash : follower.userSvtLeaderHash) {
           if (supportSvtIds.isNotEmpty && !supportSvtIds.contains(svt.svtId)) {
             continue;

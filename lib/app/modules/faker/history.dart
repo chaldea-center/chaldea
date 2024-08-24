@@ -51,7 +51,7 @@ class _FakerHistoryViewerState extends State<FakerHistoryViewer> {
     return TileGroup(
       headerWidget: SHeader.rich(TextSpan(text: 'No.${index + 1}  ', children: [
         TextSpan(
-          text: record.request?.path.trimChar("/") ?? '???',
+          text: record.request?.key.trimChar("/") ?? '???',
           style: const TextStyle(color: Colors.amber),
         )
       ])),

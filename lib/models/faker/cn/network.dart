@@ -46,6 +46,9 @@ class NetworkManagerCN extends NetworkManagerBase<FRequestCN, AutoLoginDataCN> {
     final String unityVersion = gameTop.unityVer ?? '2022.3.28f1';
 
     headers[HttpHeaders.contentTypeHeader] = Headers.formUrlEncodedContentType;
+    headers[HttpHeaders.connectionHeader] = 'keep-alive';
+    headers[HttpHeaders.acceptHeader] = '*/*';
+    headers[HttpHeaders.acceptEncodingHeader] = 'gzip, deflate';
     // bili-sdk(etc): Mozilla/5.0 BSGameSDK
     headers[HttpHeaders.userAgentHeader] = user.userAgent.isEmpty
         ? (user.isAndroidDevice
@@ -67,8 +70,13 @@ class NetworkManagerCN extends NetworkManagerBase<FRequestCN, AutoLoginDataCN> {
       data: form.data,
       options: Options(
         headers: headers,
+        followRedirects: true,
+        sendTimeout: const Duration(seconds: 10),
+        receiveTimeout: const Duration(seconds: 30),
       ),
     );
+    print('Request headers: ${rawResp.requestOptions.headers}');
+    print('Response headers: ${rawResp.headers.toString().trim()}');
     request.rawRequest = rawResp.requestOptions;
     request.rawResponse = rawResp;
     buffer.clear();
