@@ -603,6 +603,9 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
                           !quest.flags.contains(QuestFlag.raid) &&
                           !quest.flags.contains(QuestFlag.superBoss)) {
                         battleOptions.questId = questId;
+                        if (quest.phases.length == 1) {
+                          battleOptions.questPhase = quest.phases.single;
+                        }
                       } else {
                         EasyLoading.showError('Invalid Quest');
                       }

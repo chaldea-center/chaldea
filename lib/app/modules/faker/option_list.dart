@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 
 import 'package:chaldea/generated/l10n.dart';
@@ -94,36 +96,41 @@ class _BattleOptionListPageState extends State<BattleOptionListPage> {
           ? null
           : Wrap(
               children: [
-                IconButton(
-                  onPressed: () {
-                    InputCancelOkDialog(
-                      title: S.current.rename,
-                      text: option.name,
-                      onSubmit: (s) {
-                        option.name = s.trim();
+                PopupMenuButton(
+                  itemBuilder: (context) => [
+                    PopupMenuItem(
+                      child: Text(S.current.rename),
+                      onTap: () {
+                        InputCancelOkDialog(
+                          title: S.current.rename,
+                          text: option.name,
+                          onSubmit: (s) {
+                            option.name = s.trim();
+                          },
+                        ).showDialog(this.context);
+                      },
+                    ),
+                    PopupMenuItem(
+                      child: Text(S.current.copy),
+                      onTap: () {
+                        data.battleOptions.add(AutoBattleOptions.fromJson(jsonDecode(jsonEncode(option))));
                         if (mounted) setState(() {});
                       },
-                    ).showDialog(context);
-                  },
-                  icon: const Icon(Icons.edit),
-                  tooltip: S.current.rename,
-                ),
-                IconButton(
-                  onPressed: data.battleOptions.length <= 1
-                      ? null
-                      : () {
-                          SimpleCancelOkDialog(
-                            title: Text(S.current.delete),
-                            onTapOk: () {
-                              data.battleOptions.remove(option);
-                              data.curBattleOptionIndex; // update index
-                              if (mounted) setState(() {});
-                            },
-                          ).showDialog(context);
-                        },
-                  icon: const Icon(Icons.delete),
-                  tooltip: S.current.delete,
-                  color: Theme.of(context).colorScheme.error,
+                    ),
+                    PopupMenuItem(
+                      child: Text(S.current.delete),
+                      onTap: () {
+                        SimpleCancelOkDialog(
+                          title: Text(S.current.delete),
+                          onTapOk: () {
+                            data.battleOptions.remove(option);
+                            data.curBattleOptionIndex; // update index
+                            if (mounted) setState(() {});
+                          },
+                        ).showDialog(this.context);
+                      },
+                    )
+                  ],
                 ),
               ],
             ),
