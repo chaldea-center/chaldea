@@ -33,12 +33,36 @@ class NiceScript extends ScriptLink {
 @JsonSerializable()
 class ScriptLink with RouteInfo {
   String scriptId;
-  String script;
+  String? _script;
+  String get script => _script ?? getScriptPath(scriptId);
 
   ScriptLink({
     required this.scriptId,
-    required this.script,
-  });
+    String? script,
+  }) : _script = parseUrl(scriptId, script);
+
+  static String? parseUrl(String scriptId, String? script) {
+    if (script == null) return null;
+    if (!script.contains('/JP/Script/')) return script;
+    if (getScriptPath(scriptId) != script) return script;
+    return null;
+  }
+
+  static String getScriptPath(String scriptId) {
+    String scriptPath;
+    if (scriptId == 'WarEpilogue108') {
+      scriptPath = "01/WarEpilogue108";
+    } else if (scriptId.isNotEmpty && (scriptId.startsWith('0') || scriptId.startsWith('9'))) {
+      if (scriptId.startsWith('94')) {
+        scriptPath = "94/${scriptId.substring(0, 4)}/$scriptId";
+      } else {
+        scriptPath = "${scriptId.substring(0, 2)}/$scriptId";
+      }
+    } else {
+      scriptPath = "Common/$scriptId";
+    }
+    return 'https://static.atlasacademy.io/JP/Script/$scriptPath.txt';
+  }
 
   factory ScriptLink.fromJson(Map<String, dynamic> json) => _$ScriptLinkFromJson(json);
 

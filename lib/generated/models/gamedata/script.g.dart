@@ -9,7 +9,7 @@ part of '../../../models/gamedata/script.dart';
 NiceScript _$NiceScriptFromJson(Map json) => NiceScript(
       scriptId: json['scriptId'] as String,
       scriptSizeBytes: (json['scriptSizeBytes'] as num).toInt(),
-      script: json['script'] as String,
+      script: json['script'] as String?,
       quests:
           (json['quests'] as List<dynamic>).map((e) => Quest.fromJson(Map<String, dynamic>.from(e as Map))).toList(),
     );
@@ -23,7 +23,7 @@ Map<String, dynamic> _$NiceScriptToJson(NiceScript instance) => <String, dynamic
 
 ScriptLink _$ScriptLinkFromJson(Map json) => ScriptLink(
       scriptId: json['scriptId'] as String,
-      script: json['script'] as String,
+      script: json['script'] as String?,
     );
 
 Map<String, dynamic> _$ScriptLinkToJson(ScriptLink instance) => <String, dynamic>{
@@ -33,7 +33,7 @@ Map<String, dynamic> _$ScriptLinkToJson(ScriptLink instance) => <String, dynamic
 
 ValentineScript _$ValentineScriptFromJson(Map json) => ValentineScript(
       scriptId: json['scriptId'] as String,
-      script: json['script'] as String,
+      script: json['script'] as String?,
       scriptName: json['scriptName'] as String,
     );
 
