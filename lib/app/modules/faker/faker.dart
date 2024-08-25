@@ -995,23 +995,30 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
       tapTargetSize: MaterialTapTargetSize.shrinkWrap,
       padding: const EdgeInsets.symmetric(horizontal: 12),
     );
+
+    FilledButton buildButton({
+      bool enabled = true,
+      required VoidCallback onPressed,
+      required String text,
+    }) {
+      return FilledButton.tonal(
+        onPressed: enabled ? onPressed : null,
+        style: buttonStyle,
+        child: Text(text),
+      );
+    }
+
+    final bool loggedIn = mstData.user != null, inBattle = agent.curBattle != null;
+
     List<List<Widget>> btnGroups = [
       [
-        // FilledButton.tonal(
-        //   onPressed: () {
-        //     if (mounted) setState(() {});
-        //   },
-        //   style: buttonStyle,
-        //   child: const Text('test'),
-        // ),
-        FilledButton.tonal(
+        buildButton(
           onPressed: () {
             _runTask(agent.gamedataTop);
           },
-          style: buttonStyle,
-          child: const Text('gamedata'),
+          text: 'gamedata',
         ),
-        FilledButton.tonal(
+        buildButton(
           onPressed: () {
             SimpleCancelOkDialog(
               title: const Text('Login'),
@@ -1020,83 +1027,68 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
               },
             ).showDialog(context);
           },
-          style: buttonStyle,
-          child: const Text('login'),
+          text: 'login',
         ),
-        // FilledButton.tonal(
-        //   onPressed: () {
-        //     _runTask(agent.homeTop);
-        //   },
-        //   style: buttonStyle,
-        //   child: const Text('home'),
-        // ),
-        FilledButton.tonal(
-          onPressed: agent.curBattle != null
-              ? null
-              : () async {
-                  final buyCount = await ApSeedExchangeCountDialog(mstData: mstData).showDialog<int>(context);
-                  if (buyCount != null) {
-                    await _runTask(() => agent.terminalApSeedExchange(buyCount));
-                  }
-                  if (mounted) setState(() {});
-                },
-          style: buttonStyle,
-          child: const Text('ApSeed'),
+        buildButton(
+          enabled: loggedIn && !inBattle,
+          onPressed: () async {
+            final buyCount = await ApSeedExchangeCountDialog(mstData: mstData).showDialog<int>(context);
+            if (buyCount != null) {
+              await _runTask(() => agent.terminalApSeedExchange(buyCount));
+            }
+            if (mounted) setState(() {});
+          },
+          text: 'ApSeed',
         ),
       ],
       [
-        FilledButton.tonal(
-          onPressed: agent.curBattle != null
-              ? null
-              : () async {
-                  final recover = await showDialog<RecoverEntity>(
-                    context: context,
-                    useRootNavigator: false,
-                    builder: (context) => RecoverSelectDialog(recovers: apRecovers, mstData: mstData),
-                  );
-                  if (recover != null) {
-                    switch (recover.recoverType) {
-                      case RecoverType.commandSpell:
-                        EasyLoading.showError('Recover by command spell not supported');
-                        break;
-                      case RecoverType.stone:
-                        await _runTask(() => agent.shopPurchaseByStone(id: recover.targetId, num: 1));
-                        break;
-                      case RecoverType.item:
-                        await _runTask(() => agent.itemRecover(recoverId: recover.id, num: 1));
-                        break;
-                    }
-                  }
-                  if (mounted) setState(() {});
-                },
-          style: buttonStyle,
-          child: const Text('recover'),
+        buildButton(
+          enabled: loggedIn && !inBattle,
+          onPressed: () async {
+            final recover = await showDialog<RecoverEntity>(
+              context: context,
+              useRootNavigator: false,
+              builder: (context) => RecoverSelectDialog(recovers: apRecovers, mstData: mstData),
+            );
+            if (recover != null) {
+              switch (recover.recoverType) {
+                case RecoverType.commandSpell:
+                  EasyLoading.showError('Recover by command spell not supported');
+                  break;
+                case RecoverType.stone:
+                  await _runTask(() => agent.shopPurchaseByStone(id: recover.targetId, num: 1));
+                  break;
+                case RecoverType.item:
+                  await _runTask(() => agent.itemRecover(recoverId: recover.id, num: 1));
+                  break;
+              }
+            }
+            if (mounted) setState(() {});
+          },
+          text: 'recover',
         ),
-        FilledButton.tonal(
-          onPressed: agent.curBattle != null
-              ? null
-              : () async {
-                  _runTask(() => agent.battleSetupWithOptions(battleOptions));
-                },
-          style: buttonStyle,
-          child: const Text('b.setup'),
+        buildButton(
+          enabled: loggedIn && !inBattle,
+          onPressed: () async {
+            _runTask(() => agent.battleSetupWithOptions(battleOptions));
+          },
+          text: 'b.setup',
         ),
-        FilledButton.tonal(
-          onPressed: agent.curBattle == null
-              ? null
-              : () async {
-                  _runTask(() => agent.battleResultWithOptions(
-                        battleEntity: agent.curBattle!,
-                        resultType: battleOptions.resultType,
-                        actionLogs: battleOptions.actionLogs,
-                      ));
-                },
-          style: buttonStyle,
-          child: const Text('b.result'),
+        buildButton(
+          enabled: loggedIn && inBattle,
+          onPressed: () async {
+            _runTask(() => agent.battleResultWithOptions(
+                  battleEntity: agent.curBattle!,
+                  resultType: battleOptions.resultType,
+                  actionLogs: battleOptions.actionLogs,
+                ));
+          },
+          text: 'b.result',
         ),
       ],
       [
-        FilledButton.tonal(
+        buildButton(
+          enabled: loggedIn && !inBattle,
           onPressed: () {
             InputCancelOkDialog(
               title: 'Start Looping Battle',
@@ -1110,15 +1102,13 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
               },
             ).showDialog(context);
           },
-          style: buttonStyle,
-          child: Text('Loop ×${battleOptions.loopCount}'),
+          text: 'Loop ×${battleOptions.loopCount}',
         ),
-        FilledButton.tonal(
+        buildButton(
           onPressed: () {
             _stopLoopFlag = true;
           },
-          style: buttonStyle,
-          child: const Text('Stop'),
+          text: 'Stop',
         ),
         PopupMenuButton(
           itemBuilder: (context) => [
@@ -1137,13 +1127,13 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
                 }
               },
             ),
-            PopupMenuItem(
-              child: const Text('Test'),
-              onTap: () async {
-                if (!kDebugMode) return;
-                (agent as FakerAgentCN).usk = CryptData.encryptMD5Usk('842b691bbc2ef299367a');
-              },
-            )
+            if (kDebugMode)
+              PopupMenuItem(
+                child: const Text('Test'),
+                onTap: () async {
+                  (agent as FakerAgentCN).usk = CryptData.encryptMD5Usk('842b691bbc2ef299367a');
+                },
+              )
           ],
         ),
       ],
