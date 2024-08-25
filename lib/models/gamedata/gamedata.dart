@@ -510,7 +510,7 @@ class _ProcessedData {
 
   Map<int, EnemyMasterBattle> enemyMasterBattles = {};
   Map<int, EventMission> eventMissions = {};
-  Map<int, EventPointGroup> eventPointGroups = {};
+  Map<int, Map<int, EventPointGroup>> eventPointGroups = {}; // eventId, groupId
   Map<int, EventPointBuff> eventPointBuffs = {};
   Map<int, EventPointGroup> eventPointBuffGroups = {};
   Map<QuestGroupType, Map<int, List<int>>> questGroups = {}; // <type,<groupId, questIds>>
@@ -554,7 +554,10 @@ class _ProcessedData {
     };
     eventPointGroups = {
       for (final event in gameData.events.values)
-        for (final pointGroup in event.pointGroups) pointGroup.groupId: pointGroup,
+        if (event.pointGroups.isNotEmpty)
+          event.id: {
+            for (final pointGroup in event.pointGroups) pointGroup.groupId: pointGroup,
+          }
     };
     eventPointBuffs = {
       for (final event in gameData.events.values)
@@ -602,6 +605,12 @@ class _ProcessedData {
 
   List<int> getQuestsOfGroup(QuestGroupType type, int groupId) {
     return questGroups[type]?[groupId] ?? [];
+  }
+
+  EventPointGroup? getEventPointGroup(int? eventId, int groupId) {
+    EventPointGroup? group = eventPointGroups[eventId]?[groupId];
+    group ??= eventPointGroups.values.lastWhereOrNull((e) => e.containsKey(groupId))?[groupId];
+    return group;
   }
 
   void _initFuncBuff() {

@@ -375,7 +375,7 @@ class CondTargetValueDescriptor extends StatelessWidget with DescriptorBase {
         );
       case CondType.eventGroupPoint:
       case CondType.eventNormaPointClear:
-        final group = db.gameData.others.eventPointGroups[target];
+        final group = db.gameData.others.getEventPointGroup(null, target);
         final groupName = group?.lName.l ?? target.toString();
         return localized(
           jp: () => text('イベントポイント$groupNameを$value点獲得'),

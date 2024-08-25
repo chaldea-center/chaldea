@@ -350,6 +350,13 @@ UserEventMissionEntity _$UserEventMissionEntityFromJson(Map json) => UserEventMi
       createdAt: json['createdAt'],
     );
 
+UserEventPointEntity _$UserEventPointEntityFromJson(Map json) => UserEventPointEntity(
+      userId: json['userId'],
+      eventId: json['eventId'],
+      groupId: json['groupId'],
+      value: json['value'],
+    );
+
 UserShopEntity _$UserShopEntityFromJson(Map json) => UserShopEntity(
       userId: json['userId'],
       shopId: json['shopId'],

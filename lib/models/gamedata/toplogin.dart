@@ -333,6 +333,10 @@ final _$mstMasterSchemes = <String, (Type, DataMaster Function(String mstName))>
     UserEventMissionEntity,
     (mstName) => DataMaster<_IntStr, UserEventMissionEntity>(mstName, UserEventMissionEntity.fromJson)
   ),
+  "userEventPoint": (
+    UserEventPointEntity,
+    (mstName) => DataMaster<String, UserEventPointEntity>(mstName, UserEventPointEntity.fromJson)
+  ),
   "userShop": (UserShopEntity, (mstName) => DataMaster<_IntStr, UserShopEntity>(mstName, UserShopEntity.fromJson)),
   "userQuest": (UserQuestEntity, (mstName) => DataMaster<_IntStr, UserQuestEntity>(mstName, UserQuestEntity.fromJson)),
   "userDeck": (UserDeckEntity, (mstName) => DataMaster<int, UserDeckEntity>(mstName, UserDeckEntity.fromJson)),
@@ -472,7 +476,14 @@ class MasterDataManager {
     } else if (itemId == Items.rarePrismId) {
       return user?.rarePri ?? 0;
     } else {
-      return userItem[itemId]?.num ?? 0;
+      int count = userItem[itemId]?.num ?? 0;
+      final item = db.gameData.items[itemId];
+      if (item != null) {
+        if (item.type == ItemType.eventPoint && count == 0) {
+          return userEventPoint[_createPK2(item.eventId, item.eventGroupId)]?.value ?? 0;
+        }
+      }
+      return count;
     }
   }
 
@@ -508,6 +519,7 @@ class MasterDataManager {
   DataMaster<_IntStr, UserPresentBoxEntity> get userPresentBox => get<_IntStr, UserPresentBoxEntity>();
   DataMaster<_IntStr, UserGachaEntity> get userGacha => get<_IntStr, UserGachaEntity>();
   DataMaster<_IntStr, UserEventMissionEntity> get userEventMission => get<_IntStr, UserEventMissionEntity>();
+  DataMaster<String, UserEventPointEntity> get userEventPoint => get<String, UserEventPointEntity>();
   DataMaster<_IntStr, UserShopEntity> get userShop => get<_IntStr, UserShopEntity>();
   // event/quest
   DataMaster<_IntStr, UserQuestEntity> get userQuest => get<_IntStr, UserQuestEntity>();
@@ -534,9 +546,8 @@ class MasterDataManager {
 // dw use "userId:key" as primary key, here use int key directly
 typedef _IntStr = int;
 
-String _createPK2(Object k1, Object k2) {
-  return '$k1:$k2';
-}
+String _createPK2(Object k1, Object k2) => '$k1:$k2';
+// String _createPK3(Object k1, Object k2, Object k3) => '$k1:$k2:$k3';
 
 abstract class DataEntityBase<T> {
   T get primaryKey;
@@ -1544,6 +1555,32 @@ class UserEventMissionEntity extends DataEntityBase<_IntStr> {
         updatedAt = _toInt(updatedAt),
         createdAt = _toInt(createdAt);
   factory UserEventMissionEntity.fromJson(Map<String, dynamic> data) => _$UserEventMissionEntityFromJson(data);
+}
+
+@JsonSerializable(createToJson: false)
+class UserEventPointEntity extends DataEntityBase<String> {
+  int userId;
+  int eventId;
+  int groupId;
+  int value;
+
+  @override
+  String get primaryKey => _createPK2(eventId, groupId);
+
+  static String createPK(int eventId, int groupId) => _createPK2(eventId, groupId);
+
+  UserEventPointEntity({
+    dynamic userId,
+    dynamic eventId,
+    dynamic groupId,
+    dynamic value,
+    dynamic updatedAt,
+    dynamic createdAt,
+  })  : userId = _toInt(userId),
+        eventId = _toInt(eventId),
+        groupId = _toInt(groupId),
+        value = _toInt(value);
+  factory UserEventPointEntity.fromJson(Map<String, dynamic> data) => _$UserEventPointEntityFromJson(data);
 }
 
 @JsonSerializable(createToJson: false)

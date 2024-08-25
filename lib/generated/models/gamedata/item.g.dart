@@ -27,6 +27,8 @@ Item _$ItemFromJson(Map json) => Item(
               ?.map((e) => ItemSelect.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
+      eventId: (json['eventId'] as num?)?.toInt() ?? 0,
+      eventGroupId: (json['eventGroupId'] as num?)?.toInt() ?? 0,
     );
 
 Map<String, dynamic> _$ItemToJson(Item instance) => <String, dynamic>{
@@ -44,6 +46,8 @@ Map<String, dynamic> _$ItemToJson(Item instance) => <String, dynamic>{
       'startedAt': instance.startedAt,
       'endedAt': instance.endedAt,
       'itemSelects': instance.itemSelects.map((e) => e.toJson()).toList(),
+      'eventId': instance.eventId,
+      'eventGroupId': instance.eventGroupId,
     };
 
 const _$ItemTypeEnumMap = {

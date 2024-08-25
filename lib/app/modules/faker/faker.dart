@@ -553,22 +553,24 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
             subtitle: Wrap(
               spacing: 2,
               runSpacing: 2,
-              children: [
-                for (final itemId in dropStats.items.keys.toList()..sort(Item.compare))
-                  GameCardMixin.anyCardItemBuilder(
-                    context: context,
-                    id: itemId,
-                    width: 42,
-                    text: [
-                      dropStats.items[itemId]!.format(),
-                      if (dropStats.totalCount > 0)
-                        (dropStats.items[itemId]! / dropStats.totalCount).format(percent: true),
-                      db.gameData.craftEssencesById.containsKey(itemId)
-                          ? (mstData.userSvt.where((e) => e.svtId == itemId).length.toString())
-                          : mstData.getItemNum(itemId).format(),
-                    ].join('\n'),
-                  ),
-              ],
+              children: (dropStats.items.keys.toList()..sort(Item.compare)).map((itemId) {
+                double prob = 0;
+                if (dropStats.totalCount > 0) {
+                  prob = dropStats.items[itemId]! / dropStats.totalCount;
+                }
+                return GameCardMixin.anyCardItemBuilder(
+                  context: context,
+                  id: itemId,
+                  width: 42,
+                  text: [
+                    dropStats.items[itemId]!.format(),
+                    if (dropStats.totalCount > 0) prob > 1 ? prob.format() : prob.format(percent: true),
+                    db.gameData.craftEssencesById.containsKey(itemId)
+                        ? (mstData.userSvt.where((e) => e.svtId == itemId).length.toString())
+                        : mstData.getItemNum(itemId).format(),
+                  ].join('\n'),
+                );
+              }).toList(),
             ),
           )
       ],

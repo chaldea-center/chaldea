@@ -40,6 +40,8 @@ class Item {
   int startedAt;
   int endedAt;
   List<ItemSelect> itemSelects;
+  int eventId;
+  int eventGroupId;
 
   Item({
     required this.id,
@@ -56,6 +58,8 @@ class Item {
     required this.startedAt,
     required this.endedAt,
     this.itemSelects = const [],
+    this.eventId = 0,
+    this.eventGroupId = 0,
   });
 
   factory Item.fromJson(Map<String, dynamic> json) {

@@ -488,7 +488,9 @@ class _MCQuestConverter extends McConverter {
           conds.add("活动点数${cond.value}以上后");
         }
       } else if (cond.type == CondType.eventGroupPoint) {
-        final pointName = db.gameData.others.eventPointGroups[cond.targetId]?.lName.l ?? "活动点数【${cond.targetId}】";
+        final eventId = quest.war?.eventId;
+        EventPointGroup? group = db.gameData.others.getEventPointGroup(eventId, cond.targetId);
+        final pointName = group?.lName.l ?? "活动点数【${cond.targetId}】";
         conds.add("$pointName${cond.value}以上");
       }
     }

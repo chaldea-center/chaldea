@@ -815,7 +815,7 @@ class ShopRelease {
 
 @JsonSerializable()
 class EventPointReward {
-  int groupId;
+  int groupId; // multi events could have same point groupId: Rider Ishtar events
   int point;
   List<Gift> gifts;
 
