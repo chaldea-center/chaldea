@@ -183,6 +183,34 @@ class __DebugMenuDialogState extends State<_DebugMenuDialog> {
           ),
         ),
         ListTile(
+          leading: const Icon(Icons.account_circle),
+          title: Text(S.current.account_title),
+          trailing: DropdownButton<int>(
+            underline: const Divider(thickness: 0, color: Colors.transparent),
+            value: db.userData.curUserKey,
+            items: [
+              for (final (index, user) in db.userData.users.indexed)
+                DropdownMenuItem(
+                  value: index,
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 180),
+                    child: Text(user.name, maxLines: 1),
+                  ),
+                ),
+            ],
+            onChanged: (index) {
+              if (index != null) {
+                db.userData.curUserKey = index;
+                EasyDebounce.debounce('itemCenter.init', const Duration(seconds: 1), () {
+                  db.itemCenter.init();
+                });
+                db.notifyUserdata();
+              }
+              setState(() {});
+            },
+          ),
+        ),
+        ListTile(
           leading: const Icon(Icons.color_lens_outlined),
           title: const Text('Palette'),
           onTap: () {
