@@ -124,34 +124,36 @@ class ItemCenter {
 
   void _updateSvtStat(_MatrixManager<int, int, SvtMatCostDetail<int>> detail, Map<int, int> stat) {
     stat.clear();
-    List<int> itemSum = List.generate(detail.dim2.length, (index) => 0);
-    for (int itemIndex = 0; itemIndex < itemSum.length; itemIndex++) {
-      for (int svtIndex = 0; svtIndex < detail.dim1.length; svtIndex++) {
-        itemSum[itemIndex] += detail._matrix[svtIndex][itemIndex].all;
+    for (final (_, v) in detail._sparseMatrix.items) {
+      for (final (itemId, vv) in v.items) {
+        stat.addNum(itemId, vv.all);
       }
     }
-    stat.addAll(Map.fromIterables(detail.dim2, itemSum));
   }
 
   void _updateOneSvt(int svtId, {bool max = false}) {
-    final svtIndex = _svtCur._dim1Map[svtId];
+    // final svtIndex = _svtCur._dim1Map[svtId];
     final svt = db.gameData.servantsWithDup[svtId];
-    if (svt == null || svtIndex == null) return;
+    if (svt == null || !_svtCur.dim1.contains(svtId)) return;
     final cur = user.svtStatusOf(svtId).cur;
     final consumed = calcOneSvt(svt, SvtPlan.empty()..favorite = cur.favorite, cur, priorityFiltered: true);
     final demands = calcOneSvt(svt, cur, user.svtPlanOf(svtId), priorityFiltered: true);
 
-    for (int itemIndex = 0; itemIndex < _validItems.length; itemIndex++) {
-      _svtCur._matrix[svtIndex][itemIndex]
-          .updateFrom<Map<int, int>>(consumed, (_, part) => part[_validItems[itemIndex]] ?? 0);
-      _svtDemands._matrix[svtIndex][itemIndex]
-          .updateFrom<Map<int, int>>(demands, (_, part) => part[_validItems[itemIndex]] ?? 0);
+    _svtCur._sparseMatrix.remove(svtId);
+    for (final itemId in consumed.allKeys) {
+      _svtCur.loc(svtId, itemId).updateFrom(consumed, (_, part) => part[itemId] ?? 0);
     }
+
+    _svtDemands._sparseMatrix.remove(svtId);
+    for (final itemId in demands.allKeys) {
+      _svtDemands.loc(svtId, itemId).updateFrom(demands, (_, part) => part[itemId] ?? 0);
+    }
+
     if (max) {
       final allDemands = calcOneSvt(svt, SvtPlan.empty()..favorite = true, SvtPlan.max(svt));
-      for (int itemIndex = 0; itemIndex < _validItems.length; itemIndex++) {
-        _svtFull._matrix[svtIndex][itemIndex]
-            .updateFrom<Map<int, int>>(allDemands, (_, part) => part[_validItems[itemIndex]] ?? 0);
+      _svtFull._sparseMatrix.remove(svtId);
+      for (final itemId in allDemands.allKeys) {
+        _svtFull.loc(svtId, itemId).updateFrom(allDemands, (_, part) => part[itemId] ?? 0);
       }
     }
   }
@@ -217,16 +219,21 @@ class ItemCenter {
     };
 
     detail.all = Maths.sumDict(detail.parts);
+    detail.clean();
     return detail;
   }
 
   void _updateOneEvent(int eventId) {
-    final eventIndex = _eventItem._dim1Map[eventId];
+    // final eventIndex = _eventItem._dim1Map[eventId];
     final event = db.gameData.events[eventId];
-    if (eventIndex == null || event == null) return;
+    if (event == null || !_eventItem.dim1.contains(eventId)) return;
     final eventItems = calcOneEvent(event, user.limitEventPlanOf(event.id));
-    for (int itemIndex = 0; itemIndex < _validItems.length; itemIndex++) {
-      _eventItem._matrix[eventIndex][itemIndex] = eventItems[_validItems[itemIndex]] ?? 0;
+
+    _eventItem._sparseMatrix.remove(eventId);
+    for (final (itemId, value) in eventItems.items) {
+      if (_validItems.contains(itemId)) {
+        _eventItem.getDim1(eventId)[itemId] = value;
+      }
     }
   }
 
@@ -240,13 +247,9 @@ class ItemCenter {
       }
     }
     _statEvent.clear();
-    List<int> itemSum = List.generate(_eventItem.dim2.length, (index) => 0);
-    for (int itemIndex = 0; itemIndex < itemSum.length; itemIndex++) {
-      for (int eventIndex = 0; eventIndex < _eventItem.dim1.length; eventIndex++) {
-        itemSum[itemIndex] += _eventItem._matrix[eventIndex][itemIndex];
-      }
+    for (final v in _eventItem._sparseMatrix.values) {
+      _statEvent.addDict(v);
     }
-    _statEvent.addAll(Map.fromIterables(_eventItem.dim2, itemSum));
     if (notify) {
       updateLeftItems();
     }
@@ -322,6 +325,7 @@ class ItemCenter {
       result.addNum(Items.crystalId, grailToCrystal - plan.rerunGrails);
       result.remove(Items.grailToCrystalId);
     }
+    result.removeWhere((k, v) => v == 0);
     return result;
   }
 
@@ -422,15 +426,15 @@ class ItemCenter {
     db.notifyUserdata();
   }
 
+  // <svtId, details>
   Map<int, SvtMatCostDetail<int>> getItemCostDetail(int itemId, SvtMatCostDetailType type) {
     Map<int, SvtMatCostDetail<int>> details = {};
     final target = getSvtMatrix(type);
-    int? itemIndex = target._dim2Map[itemId];
-    if (itemIndex == null) return details;
-    for (int i = 0; i < target.dim1.length; i++) {
-      final v = target._matrix[i][itemIndex];
-      if (v.all > 0) {
-        details[target.dim1[i]] = v.copy();
+    if (!target.dim2.contains(itemId)) return details;
+    for (final (svtId, v) in target._sparseMatrix.items) {
+      final vv = v[itemId];
+      if (vv != null && vv.isNotEmpty) {
+        details[svtId] = vv.copy();
       }
     }
     return details;
@@ -446,14 +450,13 @@ class ItemCenter {
 
   SvtMatCostDetail<Map<int, int>> getSvtCostDetail(int svtId, SvtMatCostDetailType type) {
     final target = getSvtMatrix(type);
-    final svtIndex = target._dim1Map[svtId];
+    // final svtIndex = target._dim1Map[svtId];
     final details = SvtMatCostDetail<Map<int, int>>(() => {});
-    if (svtIndex == null) return details;
-    for (int i = 0; i < target.dim2.length; i++) {
-      final v = target._matrix[svtIndex][i];
-      if (v.all <= 0) continue;
-      final item = target.dim2[i];
-      details.updateFrom<int>(v, (p1, p2) => p1..addNum(item, p2));
+
+    final v = target._sparseMatrix[svtId] ?? {};
+    for (final (itemId, vv) in v.items) {
+      if (vv.isEmpty) continue;
+      details.updateFrom(vv, (p1, p2) => p1..addNum(itemId, p2));
     }
     return details;
   }
@@ -462,38 +465,34 @@ class ItemCenter {
 class _MatrixManager<K1, K2, V> {
   final List<K1> dim1; // svt, event
   final List<K2> dim2; // item
-  final Map<K1, int> _dim1Map;
-  final Map<K2, int> _dim2Map;
-  final List<List<V>> _matrix;
+  // @Deprecated('')
+  // final Map<K1, int> _dim1Map;
+  // @Deprecated('')
+  // final Map<K2, int> _dim2Map;
+  // @Deprecated('')
+  // final List<List<V>> _matrix;
   final V Function() init;
+  final Map<K1, Map<K2, V>> _sparseMatrix = {};
 
   _MatrixManager({required this.dim1, required this.dim2, required this.init})
       : assert(dim1.toSet().length == dim1.length),
-        assert(dim2.toSet().length == dim2.length),
-        _dim1Map = {
-          for (int index = 0; index < dim1.length; index++) dim1[index]: index,
-        },
-        _dim2Map = {
-          for (int index = 0; index < dim2.length; index++) dim2[index]: index,
-        },
-        _matrix = List.generate(dim1.length, (_) => List.generate(dim2.length, (__) => init()));
+        assert(dim2.toSet().length == dim2.length);
+  // _dim1Map = {
+  //   for (int index = 0; index < dim1.length; index++) dim1[index]: index,
+  // },
+  // _dim2Map = {
+  //   for (int index = 0; index < dim2.length; index++) dim2[index]: index,
+  // },
+  // _matrix = List.generate(dim1.length, (_) => List.generate(dim2.length, (__) => init()));
 
-  void addDim1(K1 k1) {
-    if (dim1.contains(k1)) return;
-    dim1.add(k1);
-    _dim1Map[k1] = dim1.length - 1;
-    _matrix.add(List.generate(dim2.length, (index) => init()));
+  Map<K2, V> getDim1(K1 x) {
+    return _sparseMatrix.putIfAbsent(x, () => {});
   }
 
-  void removeDim1(K1 k1) {
-    final index = _dim1Map.remove(k1);
-    if (index != null) {
-      _matrix.removeAt(index);
-    }
-  }
+  Map<K2, V> _initMap() => {};
 
-  V loc(int x, int y) {
-    return _matrix[x][y];
+  V loc(K1 x1, K2 x2) {
+    return _sparseMatrix.putIfAbsent(x1, _initMap).putIfAbsent(x2, init);
   }
 }
 
@@ -558,6 +557,9 @@ class SvtMatCostDetail<T> {
 }
 
 extension SvtMatCostDetailInt on SvtMatCostDetail<int> {
+  bool get isEmpty => parts.every((e) => e == 0);
+  bool get isNotEmpty => !isEmpty;
+
   void add(SvtMatCostDetail<int> other) {
     ascension += other.ascension;
     activeSkill += other.activeSkill;
@@ -565,6 +567,21 @@ extension SvtMatCostDetailInt on SvtMatCostDetail<int> {
     costume += other.costume;
     special += other.special;
     all += other.all;
+  }
+}
+
+extension SvtMatCostDetailMapInt<K> on SvtMatCostDetail<Map<K, int>> {
+  bool get isEmpty => parts.every((e) => e.isEmpty);
+  bool get isNotEmpty => !isEmpty;
+
+  void clean() {
+    for (final part in parts) {
+      part.removeWhere((k, v) => v == 0);
+    }
+  }
+
+  Set<K> get allKeys {
+    return parts.expand((e) => e.keys).toSet();
   }
 }
 
