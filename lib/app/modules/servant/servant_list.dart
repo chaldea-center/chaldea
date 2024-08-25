@@ -315,12 +315,9 @@ class ServantListPageState extends State<ServantListPage> with SearchableListSta
     if (!status.cur.favorite) {
       return Center(child: Text(S.current.svt_not_planned));
     }
-    if (hiddenPlanServants.contains(svt)) {
-      return Center(child: Text(S.current.svt_plan_hidden));
-    }
     final costumes = svt.profile.costume.values.toList();
     costumes.sort2((e) => e.id);
-    return DefaultTextStyle.merge(
+    Widget child = DefaultTextStyle.merge(
       style: TextStyle(
         fontSize: 12,
         color: Theme.of(context).textTheme.bodySmall?.color,
@@ -365,6 +362,17 @@ class ServantListPageState extends State<ServantListPage> with SearchableListSta
         ],
       ),
     );
+
+    if (hiddenPlanServants.contains(svt)) {
+      child = Stack(
+        alignment: Alignment.center,
+        children: [
+          Opacity(opacity: 0.2, child: child),
+          Text(S.current.svt_plan_hidden),
+        ],
+      );
+    }
+    return child;
   }
 
   bool isSvtFavorite(Servant svt) {
@@ -378,6 +386,7 @@ class ServantListPageState extends State<ServantListPage> with SearchableListSta
   int? _changedAppend;
   bool? _changedDress;
   int? _changedTd;
+  bool _changeFavorite = false;
 
   @override
   bool filter(Servant svt) {
@@ -745,6 +754,19 @@ class ServantListPageState extends State<ServantListPage> with SearchableListSta
           });
         },
       ),
+      IconButton(
+        constraints: const BoxConstraints(),
+        onPressed: () {
+          setState(() {
+            _changeFavorite = !_changeFavorite;
+          });
+        },
+        icon: Icon(_changeFavorite ? Icons.favorite : Icons.favorite_border),
+        iconSize: 18,
+        padding: const EdgeInsets.symmetric(horizontal: 4),
+        color: _changeFavorite ? Colors.red : null,
+        tooltip: S.current.plan_list_only_unlock_append,
+      ),
     ];
     final buttons2 = [
       FilterGroup<bool>(
@@ -947,28 +969,44 @@ class ServantListPageState extends State<ServantListPage> with SearchableListSta
 
   Widget _planListItemBuilder(Servant svt) {
     final _hidden = hiddenPlanServants.contains(svt);
-    final eyeWidget = IconButton(
-      icon: Icon(
-        Icons.remove_red_eye,
-        color:
-            isSvtFavorite(svt) && !_hidden ? Theme.of(context).colorScheme.primary : Theme.of(context).highlightColor,
-      ),
-      onPressed: () {
-        if (!isSvtFavorite(svt)) return;
-        setState(() {
-          if (_hidden) {
-            hiddenPlanServants.remove(svt);
-          } else {
-            hiddenPlanServants.add(svt);
-          }
-        });
-      },
-    );
+    Widget trailingButton;
+    if (_changeFavorite) {
+      final fav = isSvtFavorite(svt);
+      trailingButton = IconButton(
+        onPressed: () {
+          setState(() {
+            if (svt.isUserSvt) {
+              svt.status.cur.favorite = !svt.status.cur.favorite;
+            }
+          });
+        },
+        icon: Icon(fav ? Icons.favorite : Icons.favorite_border),
+        color: fav ? Colors.red : null,
+      );
+    } else {
+      trailingButton = IconButton(
+        icon: Icon(
+          Icons.remove_red_eye,
+          color:
+              isSvtFavorite(svt) && !_hidden ? Theme.of(context).colorScheme.primary : Theme.of(context).highlightColor,
+        ),
+        onPressed: () {
+          if (!isSvtFavorite(svt)) return;
+          setState(() {
+            if (_hidden) {
+              hiddenPlanServants.remove(svt);
+            } else {
+              hiddenPlanServants.add(svt);
+            }
+          });
+        },
+      );
+    }
 
     return db.onUserData((context, snapshot) => CustomTile(
           leading: svt.iconBuilder(context: context, width: 48),
           subtitle: _getDetailTable(svt),
-          trailing: eyeWidget,
+          trailing: trailingButton,
           selected: SplitRoute.isSplit(context) && selected == svt,
           contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 3),
           onTap: () => _onTapSvt(svt),
