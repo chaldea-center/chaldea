@@ -240,13 +240,13 @@ class _EventItemInputTabState extends State<EventItemInputTab> {
             ? TextSpan(
                 text: '${_fmtNum(base)}×(1+',
                 children: [
-                  TextSpan(text: bonus.toString(), style: bonusStyle),
+                  TextSpan(text: bonus.toString(), style: bonus == 0 ? null : bonusStyle),
                   const TextSpan(text: '%)'),
                 ],
               )
             : TextSpan(
                 text: ' ${_fmtNum(base)}+${_fmtNum(group)}×',
-                children: [TextSpan(text: bonus.toString(), style: bonusStyle)],
+                children: [TextSpan(text: bonus.toString(), style: bonus == 0 ? null : bonusStyle)],
               ),
         const TextSpan(text: '  ')
       ]));

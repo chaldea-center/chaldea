@@ -106,6 +106,7 @@ class _BattleOptionListPageState extends State<BattleOptionListPage> {
                           text: option.name,
                           onSubmit: (s) {
                             option.name = s.trim();
+                            if (mounted) setState(() {});
                           },
                         ).showDialog(this.context);
                       },

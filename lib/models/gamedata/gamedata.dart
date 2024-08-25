@@ -421,6 +421,8 @@ class GameTops {
         return jp;
       case Region.na:
         return na;
+      case Region.cn:
+        return cn;
       default:
         return null;
     }

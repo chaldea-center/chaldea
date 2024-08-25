@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -20,7 +21,6 @@ import '../packages/language.dart';
 import '../packages/method_channel/method_channel_chaldea.dart';
 import '../packages/packages.dart';
 import '../packages/split_route/split_route.dart';
-import '../utils/json_helper.dart';
 import 'gamedata/gamedata.dart';
 import 'paths.dart';
 import 'userdata/local_settings.dart';
@@ -179,16 +179,36 @@ class _Database {
     required String fp,
     required T Function(dynamic) fromJson,
     T Function()? onError,
-  }) {
-    return JsonHelper.loadModel<T>(
-      fp: fp,
-      fromJson: fromJson,
-      onError: () => JsonHelper.loadModel<T>(
-        fp: fp + _backSuffix,
-        fromJson: fromJson,
-        onError: onError,
-      ),
-    );
+  }) async {
+    Future<T> load(String _fp) async {
+      final f = FilePlus(_fp);
+      if (!f.existsSync()) {
+        throw OSError('File not found: $fp');
+      }
+      final data = jsonDecode(await f.readAsString());
+      return fromJson(data);
+    }
+
+    final bakFp = fp + _backSuffix;
+
+    if (!FilePlus(fp).existsSync() && !FilePlus(bakFp).existsSync() && onError != null) {
+      return onError();
+    }
+
+    try {
+      return await load(fp);
+    } catch (e, s) {
+      logger.e('Failed to load $fp', e, s);
+      try {
+        return await load(bakFp);
+      } catch (e, s) {
+        logger.e('Failed to load $bakFp', e, s);
+        if (onError != null) {
+          return onError();
+        }
+        rethrow;
+      }
+    }
   }
 
   Future<void> saveAll() async {

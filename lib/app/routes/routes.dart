@@ -559,6 +559,6 @@ class SplitPage<T> extends MaterialPage<T> {
 
   @override
   String toString() {
-    return 'SplitPage("$name", $key, $arguments, ${child.runtimeType})';
+    return 'SplitPage("$name", $arguments, ${child.runtimeType})';
   }
 }
