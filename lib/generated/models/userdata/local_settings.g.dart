@@ -203,6 +203,9 @@ ProxySettings _$ProxySettingsFromJson(Map json) => $checkedCreate(
           data: $checkedConvert('data', (v) => v as bool?),
           atlasApi: $checkedConvert('atlasApi', (v) => v as bool?),
           atlasAsset: $checkedConvert('atlasAsset', (v) => v as bool?),
+          enableHttpProxy: $checkedConvert('enableHttpProxy', (v) => v as bool? ?? false),
+          proxyHost: $checkedConvert('proxyHost', (v) => v as String?),
+          proxyPort: $checkedConvert('proxyPort', (v) => (v as num?)?.toInt()),
         );
         return val;
       },
@@ -215,6 +218,9 @@ Map<String, dynamic> _$ProxySettingsToJson(ProxySettings instance) => <String, d
       'data': instance.data,
       'atlasApi': instance.atlasApi,
       'atlasAsset': instance.atlasAsset,
+      'enableHttpProxy': instance.enableHttpProxy,
+      'proxyHost': instance.proxyHost,
+      'proxyPort': instance.proxyPort,
     };
 
 DisplaySettings _$DisplaySettingsFromJson(Map json) => $checkedCreate(

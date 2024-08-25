@@ -222,6 +222,10 @@ class ProxySettings {
   bool atlasApi;
   bool atlasAsset;
 
+  bool enableHttpProxy = false;
+  String? proxyHost;
+  int? proxyPort;
+
   ProxySettings({
     this.proxy = false,
     bool? api,
@@ -229,6 +233,9 @@ class ProxySettings {
     bool? data,
     bool? atlasApi,
     bool? atlasAsset,
+    this.enableHttpProxy = false,
+    this.proxyHost,
+    this.proxyPort,
   })  : api = api ?? proxy,
         worker = worker ?? proxy,
         data = data ?? proxy,

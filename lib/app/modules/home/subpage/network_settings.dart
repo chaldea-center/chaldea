@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dio/dio.dart';
@@ -39,41 +40,43 @@ class _NetworkSettingsPageState extends State<NetworkSettingsPage> {
   late StreamSubscription<List<ConnectivityResult>> _subscription;
   Map<String, dynamic> testResults = {};
 
+  final settings = db.settings.proxy;
+
   List<_Group> get testGroups => [
         _Group(
           title: 'Chaldea Data',
           globalUrl: '${HostsX.data.global}/version.json',
           cnUrl: '${HostsX.data.cn}/version.json',
-          getValue: () => db.settings.proxy.data,
-          onChanged: (v) => db.settings.proxy.data = v,
+          getValue: () => settings.data,
+          onChanged: (v) => settings.data = v,
         ),
         _Group(
           title: '${S.current.chaldea_server}(Account/Laplace)',
           globalUrl: '${HostsX.worker.global}/network/ping',
           cnUrl: '${HostsX.worker.cn}/network/ping',
-          getValue: () => db.settings.proxy.worker,
-          onChanged: (v) => db.settings.proxy.worker = v,
+          getValue: () => settings.worker,
+          onChanged: (v) => settings.worker = v,
         ),
         _Group(
           title: '${S.current.chaldea_server}(Recognizer)',
           globalUrl: '${HostsX.api.global}/network/ping',
           cnUrl: '${HostsX.api.cn}/network/ping',
-          getValue: () => db.settings.proxy.api,
-          onChanged: (v) => db.settings.proxy.api = v,
+          getValue: () => settings.api,
+          onChanged: (v) => settings.api = v,
         ),
         _Group(
           title: 'Atlas Api',
           globalUrl: '${HostsX.atlasApi.global}/info',
           cnUrl: '${HostsX.atlasApi.cn}/info',
-          getValue: () => db.settings.proxy.atlasApi,
-          onChanged: (v) => db.settings.proxy.atlasApi = v,
+          getValue: () => settings.atlasApi,
+          onChanged: (v) => settings.atlasApi = v,
         ),
         _Group(
           title: 'Atlas Assets',
           globalUrl: '${HostsX.atlasAsset.global}/JP/Script/Common/QuestStart.txt',
           cnUrl: '${HostsX.atlasAsset.cn}/JP/Script/Common/QuestStart.txt',
-          getValue: () => db.settings.proxy.atlasAsset,
-          onChanged: (v) => db.settings.proxy.atlasAsset = v,
+          getValue: () => settings.atlasAsset,
+          onChanged: (v) => settings.atlasAsset = v,
         ),
       ];
 
@@ -124,6 +127,75 @@ class _NetworkSettingsPageState extends State<NetworkSettingsPage> {
                 ),
               ],
             ),
+            if (!kIsWeb)
+              TileGroup(
+                header: 'Http(s) proxy',
+                children: [
+                  SwitchListTile.adaptive(
+                    value: settings.enableHttpProxy,
+                    title: Text(S.current.enable),
+                    dense: true,
+                    onChanged: (v) {
+                      setState(() {
+                        settings.enableHttpProxy = v;
+                      });
+                    },
+                  ),
+                  ListTile(
+                    title: const Text('Host'),
+                    trailing: TextButton(
+                      onPressed: settings.enableHttpProxy
+                          ? () {
+                              InputCancelOkDialog(
+                                title: 'Host',
+                                text: settings.proxyHost,
+                                validate: (s) {
+                                  if (s.isEmpty) return true;
+                                  final m = RegExp(r'^(\d+)\.(\d+)\.(\d+)\.(\d+)$').firstMatch(s);
+                                  if (m == null) return false;
+                                  for (final index in [1, 2, 3, 4]) {
+                                    final v = int.parse(m.group(index)!);
+                                    if (v < 0 || v > 255) return false;
+                                    if (index == 1 && v == 0) return false;
+                                  }
+                                  return true;
+                                },
+                                onSubmit: (s) {
+                                  settings.proxyHost = s.isEmpty ? null : s;
+                                  if (mounted) setState(() {});
+                                },
+                              ).showDialog(context);
+                            }
+                          : null,
+                      child: Text(settings.proxyHost ?? 'not set'),
+                    ),
+                  ),
+                  ListTile(
+                    title: const Text('Port'),
+                    trailing: TextButton(
+                      onPressed: settings.enableHttpProxy
+                          ? () {
+                              InputCancelOkDialog(
+                                title: 'Port',
+                                text: settings.proxyPort?.toString(),
+                                validate: (s) {
+                                  if (s.isEmpty) return true;
+                                  final v = int.tryParse(s);
+                                  if (v == null) return false;
+                                  return v >= 1 && v <= 65535;
+                                },
+                                onSubmit: (s) {
+                                  settings.proxyPort = s.isEmpty ? null : int.tryParse(s);
+                                  if (mounted) setState(() {});
+                                },
+                              ).showDialog(context);
+                            }
+                          : null,
+                      child: Text(settings.proxyPort?.toString() ?? 'not set'),
+                    ),
+                  ),
+                ],
+              ),
             // const Divider(height: 8),
             const SizedBox(height: 8),
             Center(
