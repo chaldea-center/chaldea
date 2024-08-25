@@ -8,6 +8,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/modules/battle/formation/formation_card.dart';
+import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/app/modules/craft_essence/craft_list.dart';
 import 'package:chaldea/app/modules/servant/servant_list.dart';
 import 'package:chaldea/generated/l10n.dart';
@@ -37,7 +38,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
   late final FakerAgent agent = widget.agent;
   late final mstData = agent.network.mstData;
   UserGameEntity? get userGame => mstData.user;
-  AutoBattleOptions get battleOptions => agent.user.curBattleOption;
+  AutoBattleOptions get battleOption => agent.user.curBattleOption;
 
   bool _runningTask = false;
 
@@ -89,6 +90,19 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
       _runningTask = false;
     }
     if (mounted) setState(() {});
+  }
+
+  String _describeQuest(int questId, int phase, String? enemyCounts) {
+    final quest = db.gameData.quests[questId];
+    if (quest == null) return '$questId/$phase';
+    final phaseDetail = db.gameData.questPhaseDetails[questId * 100 + phase];
+    return [
+      if (quest.warId == WarId.ordealCall || (quest.warId > 1000 && quest.isAnyFree))
+        'Lv.${(phaseDetail?.recommendLv ?? quest.recommendLv)}',
+      if (enemyCounts != null) enemyCounts,
+      quest.lDispName.setMaxLines(1),
+      if (quest.war != null) '@${quest.war?.lShortName.setMaxLines(1)}',
+    ].join(' ');
   }
 
   @override
@@ -187,7 +201,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
         for (final itemId in <int>{
           ...Items.apples,
           Items.stormPodId,
-          ...?db.gameData.quests[battleOptions.questId]?.consumeItem.map((e) => e.itemId)
+          ...?db.gameData.quests[battleOption.questId]?.consumeItem.map((e) => e.itemId)
         })
           TextSpan(children: [
             CenterWidgetSpan(child: Item.iconBuilder(context: context, item: null, itemId: itemId, width: 20)),
@@ -214,8 +228,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
       selected: true,
       leading: db.getIconImage(quest?.spot?.shownImage),
       title: Text('No.${agent.user.curBattleOptionIndex + 1}  ${option.name}'),
-      subtitle: Text('${quest?.lDispName.setMaxLines(1) ?? option.questId}'
-          ' @${quest?.war?.lShortName.setMaxLines(1)}'),
+      subtitle: Text(_describeQuest(option.questId, option.questPhase, null)),
       trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
       onTap: () async {
         await router.pushPage(BattleOptionListPage(data: agent.user));
@@ -257,10 +270,10 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
         ListTile(
           dense: true,
           title: Text('Quest ${battleEntity.questId}/${battleEntity.questPhase}'),
-          subtitle: Text([
-            db.gameData.quests[battleEntity.questId]?.lDispName ?? 'Unknown quest',
-            battleEntity.battleInfo?.enemyDeck.map((e) => e.svts.length).join('-'),
-          ].join('\n')),
+          subtitle: Text(
+            _describeQuest(battleEntity.questId, battleEntity.questPhase,
+                battleEntity.battleInfo?.enemyDeck.map((e) => e.svts.length).join('-')),
+          ),
           onTap: () {
             router.push(url: Routes.questI(battleEntity.questId, battleEntity.questPhase));
           },
@@ -370,13 +383,13 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
             spacing: 4,
             runSpacing: 4,
             children: [
-              for (final recoverId in battleOptions.recoverIds)
+              for (final recoverId in battleOption.recoverIds)
                 CachedImage(
                   imageUrl: apRecovers.firstWhereOrNull((e) => e.id == recoverId)?.icon,
                   width: 32,
                   height: 32 * 144 / 132,
                   onTap: () {
-                    battleOptions.recoverIds.remove(recoverId);
+                    battleOption.recoverIds.remove(recoverId);
                     setState(() {});
                   },
                 ),
@@ -386,8 +399,8 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
               onPressed: () async {
                 final recover =
                     await const RecoverSelectDialog(recovers: apRecovers).showDialog<RecoverEntity>(context);
-                if (recover != null && !battleOptions.recoverIds.contains(recover.id)) {
-                  battleOptions.recoverIds.add(recover.id);
+                if (recover != null && !battleOption.recoverIds.contains(recover.id)) {
+                  battleOption.recoverIds.add(recover.id);
                 }
                 if (mounted) setState(() {});
               },
@@ -401,17 +414,17 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
                 _lockTask(() {
                   InputCancelOkDialog(
                     title: 'Battle Count',
-                    text: battleOptions.loopCount.toString(),
+                    text: battleOption.loopCount.toString(),
                     keyboardType: TextInputType.number,
                     validate: (s) => (int.tryParse(s) ?? -1) > 0,
                     onSubmit: (s) {
-                      battleOptions.loopCount = int.parse(s);
+                      battleOption.loopCount = int.parse(s);
                       if (mounted) setState(() {});
                     },
                   ).showDialog(context);
                 });
               },
-              child: Text(battleOptions.loopCount.toString())),
+              child: Text(battleOption.loopCount.toString())),
         ),
         ListTile(
           dense: true,
@@ -421,17 +434,17 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
                 _lockTask(() {
                   InputCancelOkDialog(
                     title: 'Battle Duration',
-                    text: battleOptions.battleDuration?.toString(),
+                    text: battleOption.battleDuration?.toString(),
                     keyboardType: TextInputType.number,
                     validate: (s) => (int.tryParse(s) ?? -1) > 20,
                     onSubmit: (s) {
-                      battleOptions.battleDuration = int.parse(s);
+                      battleOption.battleDuration = int.parse(s);
                       if (mounted) setState(() {});
                     },
                   ).showDialog(context);
                 });
               },
-              child: Text(battleOptions.battleDuration?.toString() ?? S.current.general_default)),
+              child: Text(battleOption.battleDuration?.toString() ?? S.current.general_default)),
         ),
         ListTile(
           dense: true,
@@ -440,16 +453,16 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
             spacing: 2,
             runSpacing: 2,
             children: [
-              for (final itemId in battleOptions.targetDrops.keys.toList()..sort(Item.compare))
+              for (final itemId in battleOption.targetDrops.keys.toList()..sort(Item.compare))
                 GameCardMixin.anyCardItemBuilder(
                   context: context,
                   id: itemId,
                   width: 42,
-                  text: battleOptions.targetDrops[itemId]!.toString(),
+                  text: battleOption.targetDrops[itemId]!.toString(),
                   onTap: () {
                     _lockTask(() {
                       setState(() {
-                        battleOptions.targetDrops.remove(itemId);
+                        battleOption.targetDrops.remove(itemId);
                       });
                     });
                   },
@@ -480,7 +493,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
                 if (itemNumStr == null) return;
                 final itemNum = int.parse(itemNumStr);
                 if (itemNum <= 0) return;
-                battleOptions.targetDrops[itemId] = itemNum;
+                battleOption.targetDrops[itemId] = itemNum;
                 if (mounted) setState(() {});
               });
             },
@@ -495,16 +508,16 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
             spacing: 2,
             runSpacing: 2,
             children: [
-              for (final itemId in battleOptions.winTargetItemNum.keys.toList()..sort(Item.compare))
+              for (final itemId in battleOption.winTargetItemNum.keys.toList()..sort(Item.compare))
                 GameCardMixin.anyCardItemBuilder(
                   context: context,
                   id: itemId,
                   width: 42,
-                  text: battleOptions.winTargetItemNum[itemId]!.toString(),
+                  text: battleOption.winTargetItemNum[itemId]!.toString(),
                   onTap: () {
                     _lockTask(() {
                       setState(() {
-                        battleOptions.winTargetItemNum.remove(itemId);
+                        battleOption.winTargetItemNum.remove(itemId);
                       });
                     });
                   },
@@ -535,7 +548,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
                 if (itemNumStr == null) return;
                 final itemNum = int.parse(itemNumStr);
                 if (itemNum <= 0) return;
-                battleOptions.winTargetItemNum[itemId] = itemNum;
+                battleOption.winTargetItemNum[itemId] = itemNum;
                 if (mounted) setState(() {});
               });
             },
@@ -549,7 +562,17 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
         ])
           ListTile(
             dense: true,
-            title: Text("$header (${dropStats.totalCount} runs)"),
+            title: Text.rich(TextSpan(text: "$header (${dropStats.totalCount} runs)  ", children: [
+              SharedBuilder.textButtonSpan(
+                context: context,
+                text: 'clear',
+                onTap: () {
+                  setState(() {
+                    dropStats.reset();
+                  });
+                },
+              )
+            ])),
             subtitle: Wrap(
               spacing: 2,
               runSpacing: 2,
@@ -578,24 +601,22 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
   }
 
   Widget get battleSetupOptionSection {
-    final quest = db.gameData.quests[battleOptions.questId];
-    final formation = mstData.userDeck[battleOptions.deckId];
+    final quest = db.gameData.quests[battleOption.questId];
+    final formation = mstData.userDeck[battleOption.deckId];
     return TileGroup(
       header: 'Battle Setup',
       children: [
         ListTile(
           dense: true,
           title: const Text("Quest ID"),
-          subtitle: quest == null
-              ? const Text('Quest not selected')
-              : Text([quest.lName.l, '@${quest.spot?.lName.l ?? "???"}', 'Lv.${quest.recommendLv}'].join(' ')),
+          subtitle: Text(_describeQuest(battleOption.questId, battleOption.questPhase, null)),
           onLongPress: quest?.routeTo,
           trailing: TextButton(
               onPressed: () {
                 _lockTask(() {
                   InputCancelOkDialog(
                     title: 'Quest ID',
-                    text: battleOptions.questId.toString(),
+                    text: battleOption.questId.toString(),
                     keyboardType: TextInputType.number,
                     onSubmit: (s) {
                       final questId = int.tryParse(s);
@@ -604,9 +625,9 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
                           quest != null &&
                           !quest.flags.contains(QuestFlag.raid) &&
                           !quest.flags.contains(QuestFlag.superBoss)) {
-                        battleOptions.questId = questId;
+                        battleOption.questId = questId;
                         if (quest.phases.length == 1) {
-                          battleOptions.questPhase = quest.phases.single;
+                          battleOption.questPhase = quest.phases.single;
                         }
                       } else {
                         EasyLoading.showError('Invalid Quest');
@@ -616,7 +637,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
                   ).showDialog(context);
                 });
               },
-              child: Text(battleOptions.questId.toString())),
+              child: Text(battleOption.questId.toString())),
         ),
         ListTile(
           dense: true,
@@ -633,7 +654,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
                           onSubmit: (s) {
                             final phase = int.tryParse(s);
                             if (phase != null && quest.phases.contains(phase)) {
-                              battleOptions.questPhase = phase;
+                              battleOption.questPhase = phase;
                             } else {
                               EasyLoading.showError('Invalid Phase');
                             }
@@ -642,21 +663,21 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
                         ).showDialog(context);
                       });
                     },
-              child: Text(battleOptions.questPhase.toString())),
+              child: Text(battleOption.questPhase.toString())),
         ),
         SwitchListTile.adaptive(
           dense: true,
-          value: battleOptions.isHpHalf,
+          value: battleOption.isHpHalf,
           title: const Text("During AP Half Event"),
           onChanged: (v) {
             setState(() {
-              battleOptions.isHpHalf = v;
+              battleOption.isHpHalf = v;
             });
           },
         ),
         ListTile(
           dense: true,
-          title: Text("Formation Deck - ${battleOptions.deckId}"),
+          title: Text("Formation Deck - ${battleOption.deckId}"),
           subtitle: formation == null ? const Text("Unknown deck") : Text('${formation.deckNo} - ${formation.name}'),
           trailing: IconButton(
             onPressed: () {
@@ -664,7 +685,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
                 router.pushPage(UserFormationDecksPage(
                   mstData: mstData,
                   onSelected: (v) {
-                    battleOptions.deckId = v.id;
+                    battleOption.deckId = v.id;
                     if (mounted) setState(() {});
                   },
                 ));
@@ -750,25 +771,25 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
         ],
         SwitchListTile.adaptive(
           dense: true,
-          value: battleOptions.useCampaignItem,
+          value: battleOption.useCampaignItem,
           secondary: Item.iconBuilder(context: context, item: null, itemId: 94065901, jumpToDetail: false),
           title: Text(Transl.itemNames('星見のティーポット').l),
           onChanged: (v) {
             _lockTask(() {
               setState(() {
-                battleOptions.useCampaignItem = v;
+                battleOption.useCampaignItem = v;
               });
             });
           },
         ),
         SwitchListTile.adaptive(
           dense: true,
-          value: battleOptions.stopIfBondLimit,
+          value: battleOption.stopIfBondLimit,
           title: const Text("Stop if Bond Limit"),
           onChanged: (v) {
             _lockTask(() {
               setState(() {
-                battleOptions.stopIfBondLimit = v;
+                battleOption.stopIfBondLimit = v;
               });
             });
           },
@@ -777,13 +798,13 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
         DividerWithTitle(title: S.current.support_servant_short, indent: 16),
         SwitchListTile.adaptive(
           dense: true,
-          value: battleOptions.useEventDeck,
+          value: battleOption.useEventDeck,
           title: Text("${S.current.support_servant_short} - Use Event Deck"),
-          subtitle: Text("Supposed: ${db.gameData.quests[battleOptions.questId]?.event != null ? 'Yes' : 'No'}"),
+          subtitle: Text("Supposed: ${db.gameData.quests[battleOption.questId]?.event != null ? 'Yes' : 'No'}"),
           onChanged: (v) {
             _lockTask(() {
               setState(() {
-                battleOptions.useEventDeck = v;
+                battleOption.useEventDeck = v;
               });
             });
           },
@@ -791,12 +812,12 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
         ),
         SwitchListTile.adaptive(
           dense: true,
-          value: battleOptions.enfoceRefreshSupport,
+          value: battleOption.enfoceRefreshSupport,
           title: const Text("Force Refresh Support"),
           onChanged: (v) {
             _lockTask(() {
               setState(() {
-                battleOptions.enfoceRefreshSupport = v;
+                battleOption.enfoceRefreshSupport = v;
               });
             });
           },
@@ -809,8 +830,8 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
             spacing: 4,
             runSpacing: 4,
             children: [
-              if (battleOptions.supportSvtIds.isEmpty) Text(S.current.general_any),
-              for (final svtId in battleOptions.supportSvtIds)
+              if (battleOption.supportSvtIds.isEmpty) Text(S.current.general_any),
+              for (final svtId in battleOption.supportSvtIds)
                 GestureDetector(
                   onLongPress: () {
                     db.gameData.servantsById[svtId]?.routeTo();
@@ -821,7 +842,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
                     width: 36,
                     onTap: () {
                       _lockTask(() {
-                        battleOptions.supportSvtIds.remove(svtId);
+                        battleOption.supportSvtIds.remove(svtId);
                         if (mounted) setState(() {});
                       });
                     },
@@ -840,7 +861,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
                       EasyLoading.showError('Not playable');
                       return;
                     }
-                    battleOptions.supportSvtIds.add(svt.id);
+                    battleOption.supportSvtIds.add(svt.id);
                     if (mounted) setState(() {});
                   },
                 ));
@@ -856,8 +877,8 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
             spacing: 4,
             runSpacing: 4,
             children: [
-              if (battleOptions.supportCeIds.isEmpty) Text(S.current.general_any),
-              for (final ceId in battleOptions.supportCeIds)
+              if (battleOption.supportCeIds.isEmpty) Text(S.current.general_any),
+              for (final ceId in battleOption.supportCeIds)
                 GestureDetector(
                   onLongPress: () {
                     db.gameData.craftEssencesById[ceId]?.routeTo();
@@ -868,7 +889,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
                     width: 36,
                     onTap: () {
                       _lockTask(() {
-                        battleOptions.supportCeIds.remove(ceId);
+                        battleOption.supportCeIds.remove(ceId);
                         if (mounted) setState(() {});
                       });
                     },
@@ -886,7 +907,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
                       EasyLoading.showError('Not playable');
                       return;
                     }
-                    battleOptions.supportCeIds.add(ce.id);
+                    battleOption.supportCeIds.add(ce.id);
                     if (mounted) setState(() {});
                   },
                 ));
@@ -897,12 +918,12 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
         ),
         SwitchListTile.adaptive(
           dense: true,
-          value: battleOptions.supportCeMaxLimitBreak,
+          value: battleOption.supportCeMaxLimitBreak,
           title: Text('${S.current.support_servant} - ${S.current.craft_essence_short} ${S.current.max_limit_break}'),
           onChanged: (v) {
             _lockTask(() {
               setState(() {
-                battleOptions.supportCeMaxLimitBreak = v;
+                battleOption.supportCeMaxLimitBreak = v;
               });
             });
           },
@@ -929,7 +950,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
           title: const Text('Result Type'),
           trailing: DropdownButton<BattleResultType>(
             isDense: true,
-            value: battleOptions.resultType,
+            value: battleOption.resultType,
             alignment: AlignmentDirectional.centerEnd,
             items: [
               for (final type in [BattleResultType.win, BattleResultType.cancel])
@@ -938,7 +959,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
             onChanged: (v) {
               _lockTask(() {
                 setState(() {
-                  if (v != null) battleOptions.resultType = v;
+                  if (v != null) battleOption.resultType = v;
                 });
               });
             },
@@ -971,9 +992,9 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
               _lockTask(() {
                 InputCancelOkDialog(
                   title: 'Action Logs',
-                  text: battleOptions.actionLogs,
+                  text: battleOption.actionLogs,
                   onSubmit: (s) {
-                    battleOptions.actionLogs = s;
+                    battleOption.actionLogs = s;
                     if (mounted) setState(() {});
                   },
                 ).showDialog(context);
@@ -981,7 +1002,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
             },
             child: ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: 180),
-              child: Text(battleOptions.actionLogs.isEmpty ? 'empty' : battleOptions.actionLogs),
+              child: Text(battleOption.actionLogs.isEmpty ? 'empty' : battleOption.actionLogs),
             ),
           ),
         ),
@@ -1070,7 +1091,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
         buildButton(
           enabled: loggedIn && !inBattle,
           onPressed: () async {
-            _runTask(() => agent.battleSetupWithOptions(battleOptions));
+            _runTask(() => agent.battleSetupWithOptions(battleOption));
           },
           text: 'b.setup',
         ),
@@ -1079,8 +1100,8 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
           onPressed: () async {
             _runTask(() => agent.battleResultWithOptions(
                   battleEntity: agent.curBattle!,
-                  resultType: battleOptions.resultType,
-                  actionLogs: battleOptions.actionLogs,
+                  resultType: battleOption.resultType,
+                  actionLogs: battleOption.actionLogs,
                 ));
           },
           text: 'b.result',
@@ -1093,16 +1114,16 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
             InputCancelOkDialog(
               title: 'Start Looping Battle',
               keyboardType: TextInputType.number,
-              autofocus: battleOptions.loopCount <= 0,
-              text: battleOptions.loopCount.toString(),
+              autofocus: battleOption.loopCount <= 0,
+              text: battleOption.loopCount.toString(),
               validate: (s) => (int.tryParse(s) ?? -1) > 0,
               onSubmit: (s) {
-                battleOptions.loopCount = int.parse(s);
+                battleOption.loopCount = int.parse(s);
                 _runTask(startLoop);
               },
             ).showDialog(context);
           },
-          text: 'Loop ×${battleOptions.loopCount}',
+          text: 'Loop ×${battleOption.loopCount}',
         ),
         buildButton(
           onPressed: () {
@@ -1167,18 +1188,18 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
     if (agent.curBattle != null) {
       throw Exception('last battle not finished');
     }
-    final battleOptions = this.battleOptions;
-    if (battleOptions.loopCount <= 0) {
-      throw Exception('loop count (${battleOptions.loopCount}) must >0');
+    final battleOption = this.battleOption;
+    if (battleOption.loopCount <= 0) {
+      throw Exception('loop count (${battleOption.loopCount}) must >0');
     }
-    if (battleOptions.targetDrops.values.any((v) => v <= 0)) {
+    if (battleOption.targetDrops.values.any((v) => v <= 0)) {
       throw Exception('loop target drop num must >0');
     }
-    if (battleOptions.winTargetItemNum.values.any((v) => v <= 0)) {
+    if (battleOption.winTargetItemNum.values.any((v) => v <= 0)) {
       throw Exception('win target drop num must >0');
     }
     final questPhaseEntity =
-        await AtlasApi.questPhase(battleOptions.questId, battleOptions.questPhase, region: agent.user.region);
+        await AtlasApi.questPhase(battleOption.questId, battleOption.questPhase, region: agent.user.region);
     if (questPhaseEntity == null) {
       throw Exception('quest not found');
     }
@@ -1186,13 +1207,13 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
     if (questPhaseEntity.openedAt > now || questPhaseEntity.closedAt < now) {
       throw Exception('quest not open');
     }
-    if (battleOptions.winTargetItemNum.isNotEmpty && !questPhaseEntity.flags.contains(QuestFlag.actConsumeBattleWin)) {
+    if (battleOption.winTargetItemNum.isNotEmpty && !questPhaseEntity.flags.contains(QuestFlag.actConsumeBattleWin)) {
       throw Exception('Win target drops should be used only if Quest has flag actConsumeBattleWin');
     }
-    if (battleOptions.useEventDeck != (questPhaseEntity.event != null)) {
+    if (battleOption.useEventDeck != (questPhaseEntity.event != null)) {
       throw Exception('This quest should "Use Event Deck"');
     }
-    int finishedCount = 0, totalCount = battleOptions.loopCount;
+    int finishedCount = 0, totalCount = battleOption.loopCount;
     List<int> elapseSeconds = [];
     curLoopDropStat.reset();
     EasyLoading.showProgress(finishedCount / totalCount, status: 'Battle $finishedCount/$totalCount');
@@ -1207,10 +1228,10 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
       logger.t(msg);
       EasyLoading.showProgress((finishedCount + 0.5) / totalCount, status: msg);
 
-      await _ensureEnoughApItem(battleOptions.recoverIds, questPhaseEntity, battleOptions.isHpHalf);
+      await _ensureEnoughApItem(battleOption.recoverIds, questPhaseEntity, battleOption.isHpHalf);
       if (mounted) setState(() {});
 
-      final setupResp = await agent.battleSetupWithOptions(battleOptions);
+      final setupResp = await agent.battleSetupWithOptions(battleOption);
       if (mounted) setState(() {});
 
       final battleEntity = setupResp.data.mstData.battles.single;
@@ -1219,9 +1240,9 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
 
       bool shouldRetire = false;
       FResponse resultResp;
-      if (battleOptions.winTargetItemNum.isNotEmpty) {
+      if (battleOption.winTargetItemNum.isNotEmpty) {
         shouldRetire = true;
-        for (final (itemId, targetNum) in battleOptions.winTargetItemNum.items) {
+        for (final (itemId, targetNum) in battleOption.winTargetItemNum.items) {
           if ((curBattleDrops[itemId] ?? 0) >= targetNum) {
             shouldRetire = false;
             break;
@@ -1237,12 +1258,12 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
           actionLogs: "",
         );
       } else {
-        final delay = battleOptions.battleDuration ?? (agent.network.gameTop.region == Region.cn ? 40 : 20);
+        final delay = battleOption.battleDuration ?? (agent.network.gameTop.region == Region.cn ? 40 : 20);
         await Future.delayed(Duration(seconds: delay));
         resultResp = await agent.battleResultWithOptions(
           battleEntity: battleEntity,
           resultType: BattleResultType.win,
-          actionLogs: battleOptions.actionLogs,
+          actionLogs: battleOption.actionLogs,
         );
         // if win
         totalDropStat.totalCount += 1;
@@ -1251,15 +1272,15 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
         curLoopDropStat.items.addDict(curBattleDrops);
 
         // check total drop target of this loop
-        if (battleOptions.targetDrops.isNotEmpty) {
-          for (final (itemId, targetNum) in battleOptions.targetDrops.items.toList()) {
+        if (battleOption.targetDrops.isNotEmpty) {
+          for (final (itemId, targetNum) in battleOption.targetDrops.items.toList()) {
             final curDropNum = curLoopDropStat.items[itemId] ?? 0;
             if (curDropNum > 0) {
-              battleOptions.targetDrops[itemId] = targetNum - curDropNum;
+              battleOption.targetDrops[itemId] = targetNum - curDropNum;
             }
           }
           final reachedItems =
-              battleOptions.targetDrops.keys.where((itemId) => battleOptions.targetDrops[itemId]! <= 0).toList();
+              battleOption.targetDrops.keys.where((itemId) => battleOption.targetDrops[itemId]! <= 0).toList();
           if (reachedItems.isNotEmpty) {
             throw Exception(
                 'Target drop reaches: ${reachedItems.map((e) => GameCardMixin.anyCardItemName(e).l).join(', ')}');
@@ -1268,12 +1289,12 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
       }
 
       finishedCount += 1;
-      battleOptions.loopCount -= 1;
+      battleOption.loopCount -= 1;
 
       elapseSeconds.add(DateTime.now().timestamp - startTime);
       if (mounted) setState(() {});
       await Future.delayed(const Duration(seconds: 2));
-      if (battleOptions.stopIfBondLimit) {
+      if (battleOption.stopIfBondLimit) {
         for (final svtCollection in resultResp.data.mstData.userSvtCollection) {
           final svt = db.gameData.servantsById[svtCollection.svtId];
           if (svt == null) continue;

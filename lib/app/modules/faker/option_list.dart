@@ -70,11 +70,19 @@ class _BattleOptionListPageState extends State<BattleOptionListPage> {
     );
   }
 
-  Widget buildOne(int index, AutoBattleOptions option) {
-    final quest = db.gameData.quests[option.questId];
-    final subtitle = '${quest?.lDispName.setMaxLines(1) ?? option.questId}'
-        ' @${quest?.war?.lShortName.setMaxLines(1)}';
+  String _describeQuest(int questId, int phase) {
+    final quest = db.gameData.quests[questId];
+    if (quest == null) return '$questId/$phase';
+    final phaseDetail = db.gameData.questPhaseDetails[questId * 100 + phase];
+    return [
+      if (quest.warId == WarId.ordealCall || (quest.warId > 1000 && quest.isAnyFree))
+        'Lv.${(phaseDetail?.recommendLv ?? quest.recommendLv)}',
+      quest.lDispName.setMaxLines(1),
+      if (quest.war != null) '@${quest.war?.lShortName.setMaxLines(1)}',
+    ].join(' ');
+  }
 
+  Widget buildOne(int index, AutoBattleOptions option) {
     return RadioListTile<int>(
       key: ObjectKey(option),
       value: index,
@@ -91,7 +99,7 @@ class _BattleOptionListPageState extends State<BattleOptionListPage> {
             },
       controlAffinity: ListTileControlAffinity.leading,
       title: Text('No.${index + 1} ${option.name.isEmpty ? "<no name>" : option.name}'),
-      subtitle: Text(subtitle),
+      subtitle: Text(_describeQuest(option.questId, option.questPhase)),
       secondary: sorting
           ? null
           : Wrap(

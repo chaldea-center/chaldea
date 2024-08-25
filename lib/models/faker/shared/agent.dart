@@ -248,7 +248,17 @@ abstract class FakerAgent<TRequest extends FRequestBase, TUser extends AutoLogin
         aliveUniqueIds: battleEntity.battleInfo!.enemyDeck.expand((e) => e.svts).map((e) => e.uniqueId).toList(),
       );
     } else if (resultType == BattleResultType.win) {
-      final usedTurnArray = List.generate(stageCount, (i) => i == stageCount - 1 ? 1 : 0);
+      final quest =
+          await AtlasApi.questPhase(battleEntity.questId, battleEntity.questPhase, region: network.gameTop.region);
+      final usedTurnArray = List.generate(stageCount, (index) {
+        int baseTurn = index == stageCount - 1 ? 1 : 0;
+        final enemyCount = battleEntity.battleInfo!.enemyDeck.getOrNull(index)?.svts.length;
+        if (enemyCount != null) {
+          final posCount = quest?.stages.getOrNull(index)?.enemyFieldPosCountReal ?? 3;
+          baseTurn += (enemyCount / posCount).ceil().clamp(1, 10) - 1;
+        }
+        return baseTurn;
+      });
       final totalTurns = Maths.sum(usedTurnArray.map((e) => max(1, e)));
       if (actionLogs.isEmpty) {
         actionLogs = List<String>.generate(totalTurns, (i) => const ['1B2B3B', '1B1D2C', '1B1C2B'][i % 3]).join('');
