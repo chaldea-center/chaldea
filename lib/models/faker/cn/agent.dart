@@ -1,10 +1,12 @@
 import 'dart:convert';
 
 import 'package:archive/archive.dart';
+import 'package:dio/dio.dart';
 import 'package:uuid/uuid.dart';
 
 import 'package:chaldea/models/gamedata/toplogin.dart';
 import 'package:chaldea/models/models.dart';
+import 'package:chaldea/models/userdata/version.dart';
 import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/utils/extension.dart';
 import '../quiz/crypt_data.dart';
@@ -199,11 +201,13 @@ class FakerAgentCN extends FakerAgent<FRequestCN, AutoLoginDataCN, NetworkManage
     final resp = await request.beginRequest();
     final _usk = resp.data.responses.firstWhereOrNull((e) => e.nid == nid && e.usk?.isNotEmpty == true)?.usk ??
         resp.data.responses.firstWhereOrNull((e) => e.usk?.isNotEmpty == true)?.usk;
-    final oldUsk = usk;
-    usk = CryptData.encryptMD5Usk(_usk!);
-    print('Update usk: $oldUsk->$usk($_usk)');
-    final _encryptApi = resp.data.getResponse(nid).encryptApi;
-    if (_encryptApi != null) encryptApi = _encryptApi;
+    if (_usk != null) {
+      final oldUsk = usk;
+      usk = CryptData.encryptMD5Usk(_usk);
+      print('Update usk: $oldUsk->$usk($_usk)');
+      final _encryptApi = resp.data.getResponseNull(nid)?.encryptApi;
+      if (_encryptApi != null) encryptApi = _encryptApi;
+    }
     resp.throwError(nid);
     return resp;
   }
@@ -228,7 +232,14 @@ class FakerAgentCN extends FakerAgent<FRequestCN, AutoLoginDataCN, NetworkManage
 
   @override
   Future<FResponse> gamedataTop({bool checkAppUpdate = true}) async {
-    throw UnimplementedError();
+    final resp = await Dio()
+        .get('https://static.biligame.com/config/fgo.config.js', options: Options(responseType: ResponseType.plain));
+    final m = RegExp(r"FateGO_(\d+\.\d+\.\d+)_").firstMatch(resp.data as String)!;
+    final newVersion = m.group(1)!;
+    if (AppVersion.compare(newVersion, network.gameTop.appVer) > 0) {
+      network.gameTop.appVer = newVersion;
+    }
+    return _member();
   }
 
   @override

@@ -603,14 +603,19 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
   Widget get battleSetupOptionSection {
     final quest = db.gameData.quests[battleOption.questId];
     final formation = mstData.userDeck[battleOption.deckId];
+    String subtitle = _describeQuest(battleOption.questId, battleOption.questPhase, null);
+    final userQuest = mstData.userQuest[battleOption.questId];
+    if (userQuest != null) {
+      subtitle += '\nP${userQuest.questPhase} clear ${userQuest.clearNum}';
+    }
     return TileGroup(
       header: 'Battle Setup',
       children: [
         ListTile(
           dense: true,
           title: const Text("Quest ID"),
-          subtitle: Text(_describeQuest(battleOption.questId, battleOption.questPhase, null)),
-          onLongPress: quest?.routeTo,
+          subtitle: Text(subtitle),
+          onTap: quest?.routeTo,
           trailing: TextButton(
               onPressed: () {
                 _lockTask(() {
@@ -1231,6 +1236,10 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
       await _ensureEnoughApItem(battleOption.recoverIds, questPhaseEntity, battleOption.isHpHalf);
       if (mounted) setState(() {});
 
+      if (battleOption.stopIfBondLimit) {
+        _checkFriendship(battleOption);
+      }
+
       final setupResp = await agent.battleSetupWithOptions(battleOption);
       if (mounted) setState(() {});
 
@@ -1267,9 +1276,20 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
         );
         // if win
         totalDropStat.totalCount += 1;
-        totalDropStat.items.addDict(curBattleDrops);
         curLoopDropStat.totalCount += 1;
-        curLoopDropStat.items.addDict(curBattleDrops);
+        Map<int, int> resultBattleDrops;
+        final lastBattleResultData = agent.lastBattleResultData;
+        if (lastBattleResultData != null && lastBattleResultData.battleId == battleEntity.questId) {
+          resultBattleDrops = {};
+          for (final drop in lastBattleResultData.resultDropInfos) {
+            resultBattleDrops.addNum(drop.objectId, drop.num);
+          }
+        } else {
+          resultBattleDrops = curBattleDrops;
+          logger.t('last battle result data not found, use cur_battle_drops');
+        }
+        totalDropStat.items.addDict(resultBattleDrops);
+        curLoopDropStat.items.addDict(resultBattleDrops);
 
         // check total drop target of this loop
         if (battleOption.targetDrops.isNotEmpty) {
@@ -1287,6 +1307,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
           }
         }
       }
+      resultResp;
 
       finishedCount += 1;
       battleOption.loopCount -= 1;
@@ -1295,15 +1316,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
       if (mounted) setState(() {});
       await Future.delayed(const Duration(seconds: 2));
       if (battleOption.stopIfBondLimit) {
-        for (final svtCollection in resultResp.data.mstData.userSvtCollection) {
-          final svt = db.gameData.servantsById[svtCollection.svtId];
-          if (svt == null) continue;
-          final maxBondLv = 10 + svtCollection.friendshipExceedCount;
-          final maxBond = svt.bondGrowth.getOrNull(maxBondLv - 1);
-          if (svtCollection.friendship == maxBond) {
-            throw Exception('Svt No.${svt.collectionNo} ${svt.lName.l} reaches max bond Lv.$maxBondLv');
-          }
-        }
+        _checkFriendship(battleOption);
       }
     }
     logger.t('finished all $finishedCount battles');
@@ -1313,6 +1326,28 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
         content: Text('$finishedCount battles'),
         hideCancel: true,
       ).showDialog(context, barrierDismissible: false);
+    }
+  }
+
+  void _checkFriendship(AutoBattleOptions option) {
+    final svts = mstData.userDeck[battleOption.deckId]!.deckInfo?.svts ?? [];
+    for (final svt in svts) {
+      if (svt.userSvtId > 0 && (svt.svtId ?? 0) > 0) {
+        final dbSvt = db.gameData.servantsById[svt.svtId];
+        final svtCollection = mstData.userSvtCollection[svt.svtId];
+        if (dbSvt == null) {
+          throw Exception('Unknown Servant ID ${svt.svtId}');
+        }
+        if (svtCollection == null) {
+          throw Exception('UserServantCollection ${svt.svtId} not found');
+        }
+        if (dbSvt.type == SvtType.heroine) continue;
+        final maxBondLv = 10 + svtCollection.friendshipExceedCount;
+        final maxBond = dbSvt.bondGrowth.getOrNull(maxBondLv - 1);
+        if (svtCollection.friendship == maxBond) {
+          throw Exception('Svt No.${dbSvt.collectionNo} ${dbSvt.lName.l} reaches max bond Lv.$maxBondLv');
+        }
+      }
     }
   }
 
