@@ -379,6 +379,26 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
       children: [
         ListTile(
           dense: true,
+          title: const Text('Battle Count'),
+          trailing: TextButton(
+              onPressed: () {
+                _lockTask(() {
+                  InputCancelOkDialog(
+                    title: 'Battle Count',
+                    text: battleOption.loopCount.toString(),
+                    keyboardType: TextInputType.number,
+                    validate: (s) => (int.tryParse(s) ?? -1) > 0,
+                    onSubmit: (s) {
+                      battleOption.loopCount = int.parse(s);
+                      if (mounted) setState(() {});
+                    },
+                  ).showDialog(context);
+                });
+              },
+              child: Text(battleOption.loopCount.toString())),
+        ),
+        ListTile(
+          dense: true,
           title: const Text('Apples for recover (ordered)'),
           subtitle: Wrap(
             spacing: 4,
@@ -409,26 +429,6 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
         ),
         ListTile(
           dense: true,
-          title: const Text('Battle Count'),
-          trailing: TextButton(
-              onPressed: () {
-                _lockTask(() {
-                  InputCancelOkDialog(
-                    title: 'Battle Count',
-                    text: battleOption.loopCount.toString(),
-                    keyboardType: TextInputType.number,
-                    validate: (s) => (int.tryParse(s) ?? -1) > 0,
-                    onSubmit: (s) {
-                      battleOption.loopCount = int.parse(s);
-                      if (mounted) setState(() {});
-                    },
-                  ).showDialog(context);
-                });
-              },
-              child: Text(battleOption.loopCount.toString())),
-        ),
-        ListTile(
-          dense: true,
           title: const Text('Battle Duration(seconds)'),
           trailing: TextButton(
               onPressed: () {
@@ -437,7 +437,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
                     title: 'Battle Duration',
                     text: battleOption.battleDuration?.toString(),
                     keyboardType: TextInputType.number,
-                    validate: (s) => (int.tryParse(s) ?? -1) > 20,
+                    validate: (s) => (int.tryParse(s) ?? -1) > (agent.user.region == Region.cn ? 40 : 20),
                     onSubmit: (s) {
                       battleOption.battleDuration = int.parse(s);
                       if (mounted) setState(() {});
@@ -671,16 +671,6 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
                     },
               child: Text(battleOption.questPhase.toString())),
         ),
-        SwitchListTile.adaptive(
-          dense: true,
-          value: battleOption.isHpHalf,
-          title: const Text("During AP Half Event"),
-          onChanged: (v) {
-            setState(() {
-              battleOption.isHpHalf = v;
-            });
-          },
-        ),
         ListTile(
           dense: true,
           title: Text("Formation Deck - ${battleOption.deckId}"),
@@ -775,60 +765,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
             ),
           ),
         ],
-        SwitchListTile.adaptive(
-          dense: true,
-          value: battleOption.useCampaignItem,
-          secondary: Item.iconBuilder(context: context, item: null, itemId: 94065901, jumpToDetail: false),
-          title: Text(Transl.itemNames('星見のティーポット').l),
-          onChanged: (v) {
-            _lockTask(() {
-              setState(() {
-                battleOption.useCampaignItem = v;
-              });
-            });
-          },
-        ),
-        SwitchListTile.adaptive(
-          dense: true,
-          value: battleOption.stopIfBondLimit,
-          title: const Text("Stop if Bond Limit"),
-          onChanged: (v) {
-            _lockTask(() {
-              setState(() {
-                battleOption.stopIfBondLimit = v;
-              });
-            });
-          },
-          controlAffinity: ListTileControlAffinity.trailing,
-        ),
         DividerWithTitle(title: S.current.support_servant_short, indent: 16),
-        SwitchListTile.adaptive(
-          dense: true,
-          value: battleOption.useEventDeck,
-          title: Text("${S.current.support_servant_short} - Use Event Deck"),
-          subtitle: Text("Supposed: ${db.gameData.quests[battleOption.questId]?.event != null ? 'Yes' : 'No'}"),
-          onChanged: (v) {
-            _lockTask(() {
-              setState(() {
-                battleOption.useEventDeck = v;
-              });
-            });
-          },
-          controlAffinity: ListTileControlAffinity.trailing,
-        ),
-        SwitchListTile.adaptive(
-          dense: true,
-          value: battleOption.enfoceRefreshSupport,
-          title: const Text("Force Refresh Support"),
-          onChanged: (v) {
-            _lockTask(() {
-              setState(() {
-                battleOption.enfoceRefreshSupport = v;
-              });
-            });
-          },
-          controlAffinity: ListTileControlAffinity.trailing,
-        ),
         ListTile(
           dense: true,
           title: Text(S.current.support_servant),
@@ -930,6 +867,70 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
             _lockTask(() {
               setState(() {
                 battleOption.supportCeMaxLimitBreak = v;
+              });
+            });
+          },
+          controlAffinity: ListTileControlAffinity.trailing,
+        ),
+        SwitchListTile.adaptive(
+          dense: true,
+          value: battleOption.useEventDeck,
+          title: Text("${S.current.support_servant_short} - Use Event Deck"),
+          subtitle: Text("Supposed: ${db.gameData.quests[battleOption.questId]?.event != null ? 'Yes' : 'No'}"),
+          onChanged: (v) {
+            _lockTask(() {
+              setState(() {
+                battleOption.useEventDeck = v;
+              });
+            });
+          },
+          controlAffinity: ListTileControlAffinity.trailing,
+        ),
+        SwitchListTile.adaptive(
+          dense: true,
+          value: battleOption.enfoceRefreshSupport,
+          title: const Text("Force Refresh Support"),
+          onChanged: (v) {
+            _lockTask(() {
+              setState(() {
+                battleOption.enfoceRefreshSupport = v;
+              });
+            });
+          },
+          controlAffinity: ListTileControlAffinity.trailing,
+        ),
+        const Divider(),
+        SwitchListTile.adaptive(
+          dense: true,
+          value: battleOption.useCampaignItem,
+          secondary: Item.iconBuilder(context: context, item: null, itemId: 94065901, jumpToDetail: false),
+          title: Text(Transl.itemNames('星見のティーポット').l),
+          onChanged: (v) {
+            _lockTask(() {
+              setState(() {
+                battleOption.useCampaignItem = v;
+              });
+            });
+          },
+        ),
+        SwitchListTile.adaptive(
+          dense: true,
+          value: battleOption.isHpHalf,
+          title: const Text("During AP Half Event"),
+          onChanged: (v) {
+            setState(() {
+              battleOption.isHpHalf = v;
+            });
+          },
+        ),
+        SwitchListTile.adaptive(
+          dense: true,
+          value: battleOption.stopIfBondLimit,
+          title: const Text("Stop if Bond Limit"),
+          onChanged: (v) {
+            _lockTask(() {
+              setState(() {
+                battleOption.stopIfBondLimit = v;
               });
             });
           },
@@ -1046,6 +1047,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
           text: 'gamedata',
         ),
         buildButton(
+          // enabled: !inBattle,
           onPressed: () {
             SimpleCancelOkDialog(
               title: const Text('Login'),
