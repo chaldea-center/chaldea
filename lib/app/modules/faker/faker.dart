@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:wakelock_plus/wakelock_plus.dart';
 
 import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/app.dart';
@@ -1124,7 +1125,14 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
               validate: (s) => (int.tryParse(s) ?? -1) > 0,
               onSubmit: (s) {
                 battleOption.loopCount = int.parse(s);
-                _runTask(startLoop);
+                _runTask(() async {
+                  try {
+                    WakelockPlus.enable();
+                    return await startLoop();
+                  } finally {
+                    WakelockPlus.disable();
+                  }
+                });
               },
             ).showDialog(context);
           },

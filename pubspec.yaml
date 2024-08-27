@@ -103,6 +103,7 @@ dependencies:
   uuid: ^4.3.3
   video_player: ^2.8.1
   video_player_win: ^2.3.5
+  wakelock_plus: ^1.2.8
   # webview_flutter: ^4.1.0
   # webview_flutter_web: ^0.2.2+1
   worker_manager: ^7.0.1
