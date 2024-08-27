@@ -50,7 +50,7 @@ jobs:
             build_options: --flavor=play
       fail-fast: false
     steps:
-      - uses: subosito/flutter-action@v2.12.0
+      - uses: subosito/flutter-action@v2
         with:
           channel: "stable"
           flutter-version: ${{ env.FLUTTER_VERSION }}
@@ -204,16 +204,14 @@ jobs:
 
       - name: Delete previous beta build
         if: github.ref == 'refs/heads/main'
-        uses: dev-drprasad/delete-tag-and-release@v1.0
-        with:
-          delete_release: true
-          tag_name: beta
-          github_token: ${{ secrets.GH_PAGES_TOKEN }}
+        run: gh release delete beta -y || echo "delete beta failed"
+        env:
+          GH_TOKEN: ${{ secrets.GH_PAGES_TOKEN }}
 
       - name: Publish Beta
         id: release-beta
         if: github.ref == 'refs/heads/main'
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           name: beta
           tag_name: beta
@@ -227,8 +225,9 @@ jobs:
       - name: Publish Stable
         id: release-stable
         if: startsWith(github.ref, 'refs/tags/v')
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
+          fail_on_unmatched_files: true
           body: Built at ${{ steps.get-date.outputs.date }}
           body_path: chaldea-${{ env.VERSION }}-android/release-note.md
           files: "dist/*"
