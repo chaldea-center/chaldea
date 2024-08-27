@@ -107,7 +107,8 @@ class _QuestListPageState extends State<QuestListPage> {
       List<InlineSpan> clsIcons = [];
 
       List<int> clsIconIds = [];
-      if (quest.phases.isNotEmpty && quest.afterClear.isRepeat) {
+      if (quest.phases.isNotEmpty &&
+          (quest.afterClear.isRepeat || (quest.type == QuestType.event && quest.phases.length == 1))) {
         final key = quest.id * 100 + quest.phases.last;
         clsIconIds = db.gameData.questPhases[key]?.className.map((e) => e.value).toList() ??
             db.gameData.questPhaseDetails[key]?.classIds ??

@@ -255,6 +255,10 @@ class _FakerAccountEditPageState extends State<FakerAccountEditPage> {
   Future<void> updateDeviceInfoCN(AutoLoginDataCN user) async {
     try {
       EasyLoading.show();
+      if (user.isAndroidDevice ? PlatformU.isIOS : PlatformU.isAndroid) {
+        EasyLoading.showError('设置的“设备类型”与本机不符');
+        return;
+      }
       if (PlatformU.isAndroid) {
         final gameTop = (await AtlasApi.gametops())?.of(user.region);
         final info = await DeviceInfoPlugin().androidInfo;

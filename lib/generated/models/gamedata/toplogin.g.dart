@@ -125,6 +125,7 @@ UserGameEntity _$UserGameEntityFromJson(Map json) => UserGameEntity(
       id: json['id'],
       appuid: json['appuid'],
       appname: json['appname'] as String?,
+      regtime: json['regtime'],
     );
 
 Map<String, dynamic> _$UserGameEntityToJson(UserGameEntity instance) => <String, dynamic>{
@@ -144,9 +145,8 @@ Map<String, dynamic> _$UserGameEntityToJson(UserGameEntity instance) => <String,
       'friendCode': instance.friendCode,
       'favoriteUserSvtId': instance.favoriteUserSvtId,
       'pushUserSvtId': instance.pushUserSvtId,
-      'grade': instance.grade,
-      'friendKeep': instance.friendKeep,
       'commandSpellRecoverAt': instance.commandSpellRecoverAt,
+      'friendKeep': instance.friendKeep,
       'svtKeep': instance.svtKeep,
       'svtEquipKeep': instance.svtEquipKeep,
       'svtStorageAdjust': instance.svtStorageAdjust,
@@ -154,6 +154,7 @@ Map<String, dynamic> _$UserGameEntityToJson(UserGameEntity instance) => <String,
       'freeStone': instance.freeStone,
       'chargeStone': instance.chargeStone,
       'stone': instance.stone,
+      'grade': instance.grade,
       'stoneVerifiAt': instance.stoneVerifiAt,
       'mana': instance.mana,
       'rarePri': instance.rarePri,
@@ -172,6 +173,7 @@ Map<String, dynamic> _$UserGameEntityToJson(UserGameEntity instance) => <String,
       'id': instance.id,
       'appuid': instance.appuid,
       'appname': instance.appname,
+      'regtime': instance.regtime,
     };
 
 UserLoginEntity _$UserLoginEntityFromJson(Map json) => UserLoginEntity(

@@ -160,7 +160,7 @@ class _CustomPrettyPrinter extends PrettyPrinter {
     } else if ((errorMethodCount ?? 0) > 0) {
       stackTraceStr = formatStackTrace(_fmtStackTrace(stackTrace), errorMethodCount);
     }
-    if (error is DioException && kReleaseMode) {
+    if ((error is DioException && kReleaseMode) || (error is SilentException && error.silent)) {
       stackTraceStr = null;
     }
     if (error is DioException) {
@@ -219,5 +219,17 @@ class _CustomPrettyPrinter extends PrettyPrinter {
       }
     }
     return lines;
+  }
+}
+
+class SilentException implements Exception {
+  final dynamic message;
+  final bool silent;
+
+  SilentException(this.message, {this.silent = true});
+
+  @override
+  String toString() {
+    return "SilentException: $message";
   }
 }

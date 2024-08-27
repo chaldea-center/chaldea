@@ -80,7 +80,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
         SimpleCancelOkDialog(
           title: Text(S.current.error),
           scrollable: true,
-          content: Text(e.toString()),
+          content: Text(e is SilentException ? e.message.toString() : e.toString()),
           hideCancel: true,
         ).showDialog(context, barrierDismissible: false);
       } else {
@@ -1191,32 +1191,32 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
 
   Future<void> startLoop() async {
     if (agent.curBattle != null) {
-      throw Exception('last battle not finished');
+      throw SilentException('last battle not finished');
     }
     final battleOption = this.battleOption;
     if (battleOption.loopCount <= 0) {
-      throw Exception('loop count (${battleOption.loopCount}) must >0');
+      throw SilentException('loop count (${battleOption.loopCount}) must >0');
     }
     if (battleOption.targetDrops.values.any((v) => v <= 0)) {
-      throw Exception('loop target drop num must >0');
+      throw SilentException('loop target drop num must >0');
     }
     if (battleOption.winTargetItemNum.values.any((v) => v <= 0)) {
-      throw Exception('win target drop num must >0');
+      throw SilentException('win target drop num must >0');
     }
     final questPhaseEntity =
         await AtlasApi.questPhase(battleOption.questId, battleOption.questPhase, region: agent.user.region);
     if (questPhaseEntity == null) {
-      throw Exception('quest not found');
+      throw SilentException('quest not found');
     }
     final now = DateTime.now().timestamp;
     if (questPhaseEntity.openedAt > now || questPhaseEntity.closedAt < now) {
-      throw Exception('quest not open');
+      throw SilentException('quest not open');
     }
     if (battleOption.winTargetItemNum.isNotEmpty && !questPhaseEntity.flags.contains(QuestFlag.actConsumeBattleWin)) {
-      throw Exception('Win target drops should be used only if Quest has flag actConsumeBattleWin');
+      throw SilentException('Win target drops should be used only if Quest has flag actConsumeBattleWin');
     }
     if (battleOption.useEventDeck != (questPhaseEntity.event != null)) {
-      throw Exception('This quest should "Use Event Deck"');
+      throw SilentException('This quest should "Use Event Deck"');
     }
     int finishedCount = 0, totalCount = battleOption.loopCount;
     List<int> elapseSeconds = [];
@@ -1225,8 +1225,13 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
     while (finishedCount < totalCount) {
       if (_stopLoopFlag) {
         _stopLoopFlag = false;
-        throw Exception('Manual Stop');
+        throw SilentException('Manual Stop');
       }
+      _checkSvtKeep();
+      if (battleOption.stopIfBondLimit) {
+        _checkFriendship(battleOption);
+      }
+
       final int startTime = DateTime.now().timestamp;
       final msg =
           'Battle ${finishedCount + 1}/$totalCount, ${Maths.mean(elapseSeconds).round()}s/${(Maths.sum(elapseSeconds) / 60).toStringAsFixed(1)}m';
@@ -1234,11 +1239,8 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
       EasyLoading.showProgress((finishedCount + 0.5) / totalCount, status: msg);
 
       await _ensureEnoughApItem(battleOption.recoverIds, questPhaseEntity, battleOption.isHpHalf);
-      if (mounted) setState(() {});
 
-      if (battleOption.stopIfBondLimit) {
-        _checkFriendship(battleOption);
-      }
+      if (mounted) setState(() {});
 
       final setupResp = await agent.battleSetupWithOptions(battleOption);
       if (mounted) setState(() {});
@@ -1279,7 +1281,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
         curLoopDropStat.totalCount += 1;
         Map<int, int> resultBattleDrops;
         final lastBattleResultData = agent.lastBattleResultData;
-        if (lastBattleResultData != null && lastBattleResultData.battleId == battleEntity.questId) {
+        if (lastBattleResultData != null && lastBattleResultData.battleId == battleEntity.id) {
           resultBattleDrops = {};
           for (final drop in lastBattleResultData.resultDropInfos) {
             resultBattleDrops.addNum(drop.objectId, drop.num);
@@ -1302,7 +1304,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
           final reachedItems =
               battleOption.targetDrops.keys.where((itemId) => battleOption.targetDrops[itemId]! <= 0).toList();
           if (reachedItems.isNotEmpty) {
-            throw Exception(
+            throw SilentException(
                 'Target drop reaches: ${reachedItems.map((e) => GameCardMixin.anyCardItemName(e).l).join(', ')}');
           }
         }
@@ -1329,6 +1331,30 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
     }
   }
 
+  void _checkSvtKeep() {
+    int svtCount = 0, svtEquipCount = 0;
+    for (final userSvt in mstData.userSvt) {
+      final svt = db.gameData.entities[userSvt.svtId];
+      if (svt == null) continue;
+      if (svt.type == SvtType.servantEquip) {
+        if (userSvt.dbCE?.flags.contains(SvtFlag.svtEquipFriendShip) == true) {
+          // don't count
+        } else {
+          svtEquipCount += 1;
+        }
+      } else {
+        svtCount += 1;
+      }
+    }
+    final user = mstData.user!;
+    if (svtCount >= user.svtKeep) {
+      throw SilentException('${S.current.servant}: $svtCount>=${user.svtKeep}');
+    }
+    if (svtEquipCount >= user.svtEquipKeep) {
+      throw SilentException('${S.current.craft_essence}: $svtEquipCount>=${user.svtEquipKeep}');
+    }
+  }
+
   void _checkFriendship(AutoBattleOptions option) {
     final svts = mstData.userDeck[battleOption.deckId]!.deckInfo?.svts ?? [];
     for (final svt in svts) {
@@ -1336,16 +1362,16 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
         final dbSvt = db.gameData.servantsById[svt.svtId];
         final svtCollection = mstData.userSvtCollection[svt.svtId];
         if (dbSvt == null) {
-          throw Exception('Unknown Servant ID ${svt.svtId}');
+          throw SilentException('Unknown Servant ID ${svt.svtId}');
         }
         if (svtCollection == null) {
-          throw Exception('UserServantCollection ${svt.svtId} not found');
+          throw SilentException('UserServantCollection ${svt.svtId} not found');
         }
         if (dbSvt.type == SvtType.heroine) continue;
         final maxBondLv = 10 + svtCollection.friendshipExceedCount;
         final maxBond = dbSvt.bondGrowth.getOrNull(maxBondLv - 1);
         if (svtCollection.friendship == maxBond) {
-          throw Exception('Svt No.${dbSvt.collectionNo} ${dbSvt.lName.l} reaches max bond Lv.$maxBondLv');
+          throw SilentException('Svt No.${dbSvt.collectionNo} ${dbSvt.lName.l} reaches max bond Lv.$maxBondLv');
         }
       }
     }
@@ -1356,7 +1382,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
       for (final item in quest.consumeItem) {
         final own = mstData.getItemNum(item.itemId);
         if (own < item.amount) {
-          throw Exception('Consume Item not enough: ${item.itemId}: $own<${item.amount}');
+          throw SilentException('Consume Item not enough: ${item.itemId}: $own<${item.amount}');
         }
       }
     }
@@ -1395,7 +1421,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
       if (mstData.user!.calCurAp() >= quest.consume) {
         return;
       }
-      throw Exception('AP not enough: ${mstData.user!.calCurAp()}<${quest.consume}');
+      throw SilentException('AP not enough: ${mstData.user!.calCurAp()}<${quest.consume}');
     }
   }
 }

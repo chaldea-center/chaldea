@@ -811,9 +811,8 @@ class UserGameEntity extends DataEntityBase<int> {
   String friendCode;
   int favoriteUserSvtId;
   int pushUserSvtId;
-  int? grade;
-  int friendKeep;
   int commandSpellRecoverAt;
+  int friendKeep;
   int svtKeep;
   int svtEquipKeep;
   int svtStorageAdjust;
@@ -821,6 +820,7 @@ class UserGameEntity extends DataEntityBase<int> {
   int freeStone;
   int chargeStone;
   int stone;
+  int? grade; // not exist
   int? stoneVerifiAt;
   int mana;
   int rarePri;
@@ -845,6 +845,13 @@ class UserGameEntity extends DataEntityBase<int> {
   // int? rkchannel;  // ios=996,android=24,渠道服=?
   String? appuid; // (int) bilibili uid, may exceed int64 for 渠道服
   String? appname; // bilibili username, not nickname/display name
+  // int? friendKeepBase;
+  // int? friendKeepAdjust;
+  // int? svtKeepBase;
+  // int? svtKeepAdjust;
+  // int? svtEquipKeepBase;
+  // int? svtEquipKeepAdjust;
+  int? regtime;
 
   @override
   int get primaryKey => userId;
@@ -896,6 +903,7 @@ class UserGameEntity extends DataEntityBase<int> {
     dynamic id,
     dynamic appuid,
     this.appname,
+    dynamic regtime,
   })  : userId = _toInt(userId),
         birthDay = _toIntNull(birthDay),
         actMax = _toInt(actMax),
@@ -935,7 +943,8 @@ class UserGameEntity extends DataEntityBase<int> {
         createdAt = _toInt(createdAt),
         userEquipId = _toInt(userEquipId),
         id = _toIntNull(id),
-        appuid = appuid?.toString();
+        appuid = appuid?.toString(),
+        regtime = _toIntNull(regtime);
 
   factory UserGameEntity.fromJson(Map<String, dynamic> data) => _$UserGameEntityFromJson(data);
 
