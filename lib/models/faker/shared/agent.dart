@@ -64,8 +64,8 @@ abstract class FakerAgent<TRequest extends FRequestBase, TUser extends AutoLogin
     required BattleDataActionList action,
     List<List<int>> voicePlayedArray = const [], // [[svtId, x],...]
     List<int> aliveUniqueIds = const [], // add this if retire/fail
-    List raidResult = const [], // BattleResultRequest.RaidResult[]
-    List superBossResult = const [], // BattleResultRequest.SuperBossResult[]
+    List<BattleRaidResult> raidResult = const [],
+    List<BattleSuperBossResult> superBossResult = const [],
     int32_t elapsedTurn = 1,
     required List<int32_t> usedTurnArray, // win 001, retire 100
     int32_t recordType = 1,
@@ -266,6 +266,24 @@ abstract class FakerAgent<TRequest extends FRequestBase, TUser extends AutoLogin
       if (!RegExp(r'^' + (r'[123][BCD]' * totalTurns * 3) + r'$').hasMatch(actionLogs)) {
         throw Exception('Invalid action logs or not match turn length: $usedTurnArray, $actionLogs');
       }
+      List<BattleRaidResult> raidResults = [];
+      final enemies = battleEntity.battleInfo?.enemyDeck.expand((e) => e.svts).toList() ?? [];
+      final userSvtIdMap = {
+        for (final userSvt in battleEntity.battleInfo?.userSvt ?? <BattleUserServantData>[]) userSvt.id: userSvt,
+      };
+      for (final enemy in enemies) {
+        final raidDay1 = enemy.enemyScript?['raid'] as int?;
+        if (raidDay1 == null) continue;
+        final userSvt = userSvtIdMap[enemy.userSvtId]!;
+        final raidDay =
+            battleEntity.battleInfo?.raidInfo.firstWhereOrNull((e) => e.uniqueId == enemy.uniqueId)?.day ?? -1;
+        assert(raidDay1 == raidDay, 'raid day mismatch: $raidDay1 != $raidDay');
+        raidResults.add(BattleRaidResult(
+          uniqueId: enemy.uniqueId,
+          day: raidDay,
+          addDamage: userSvt.hp,
+        ));
+      }
       return battleResult(
         battleId: battleEntity.id,
         battleResult: BattleResultType.win,
@@ -275,6 +293,7 @@ abstract class FakerAgent<TRequest extends FRequestBase, TUser extends AutoLogin
           dt: battleEntity.battleInfo!.enemyDeck.last.svts.map((e) => e.uniqueId).toList(),
         ),
         usedTurnArray: usedTurnArray,
+        raidResult: raidResults,
       );
     } else {
       throw Exception('resultType=$resultType not supported');

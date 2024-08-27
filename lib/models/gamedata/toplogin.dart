@@ -337,6 +337,18 @@ final _$mstMasterSchemes = <String, (Type, DataMaster Function(String mstName))>
     UserEventPointEntity,
     (mstName) => DataMaster<String, UserEventPointEntity>(mstName, UserEventPointEntity.fromJson)
   ),
+  "mstEventRaid": (
+    EventRaidEntity,
+    (mstName) => DataMaster<String, EventRaidEntity>(mstName, EventRaidEntity.fromJson)
+  ),
+  "totalEventRaid": (
+    TotalEventRaidEntity,
+    (mstName) => DataMaster<String, TotalEventRaidEntity>(mstName, TotalEventRaidEntity.fromJson)
+  ),
+  "userEventRaid": (
+    UserEventRaidEntity,
+    (mstName) => DataMaster<String, UserEventRaidEntity>(mstName, UserEventRaidEntity.fromJson)
+  ),
   "userShop": (UserShopEntity, (mstName) => DataMaster<_IntStr, UserShopEntity>(mstName, UserShopEntity.fromJson)),
   "userQuest": (UserQuestEntity, (mstName) => DataMaster<_IntStr, UserQuestEntity>(mstName, UserQuestEntity.fromJson)),
   "userDeck": (UserDeckEntity, (mstName) => DataMaster<int, UserDeckEntity>(mstName, UserDeckEntity.fromJson)),
@@ -1583,13 +1595,161 @@ class UserEventPointEntity extends DataEntityBase<String> {
     dynamic eventId,
     dynamic groupId,
     dynamic value,
-    dynamic updatedAt,
-    dynamic createdAt,
   })  : userId = _toInt(userId),
         eventId = _toInt(eventId),
         groupId = _toInt(groupId),
         value = _toInt(value);
   factory UserEventPointEntity.fromJson(Map<String, dynamic> data) => _$UserEventPointEntityFromJson(data);
+}
+
+@JsonSerializable(createToJson: false)
+class EventRaidEntity extends DataEntityBase<String> {
+  static const int kSubGroupIndexStart = 1;
+  int eventId;
+  int day;
+  int groupIndex;
+  int subGroupIndex;
+  String name;
+  int maxHp; // maxHp is max battle count for most raids
+  int iconId;
+  int bossColor;
+  // int flag;
+  int startedAt;
+  int endedAt;
+  int timeLimitAt;
+  List<String> splitAiMode;
+  List<int> splitHp;
+  // int giftId;
+  // int presentMessageId;
+  // int loginMessageId；
+  // int defeatNormaAt;
+  // CN
+  // int defeatBaseAt;
+  // int correctStartTime;
+  // int damageAdjustId;
+
+  @override
+  String get primaryKey => _createPK2(eventId, day);
+
+  static String createPK(int eventId, int day) => _createPK2(eventId, day);
+
+  EventRaidEntity({
+    dynamic eventId,
+    dynamic day,
+    dynamic groupIndex,
+    dynamic subGroupIndex,
+    dynamic name,
+    dynamic maxHp,
+    dynamic iconId,
+    dynamic bossColor,
+    dynamic startedAt,
+    dynamic endedAt,
+    dynamic timeLimitAt,
+    dynamic splitAiMode,
+    dynamic splitHp,
+  })  : eventId = _toInt(eventId),
+        day = _toInt(day),
+        groupIndex = _toInt(groupIndex),
+        subGroupIndex = _toInt(subGroupIndex),
+        name = name?.toString() ?? "",
+        maxHp = _toInt(maxHp),
+        iconId = _toInt(iconId),
+        bossColor = _toInt(bossColor),
+        startedAt = _toInt(startedAt),
+        endedAt = _toInt(endedAt),
+        timeLimitAt = _toInt(timeLimitAt),
+        splitAiMode = List.from(splitAiMode ?? []),
+        splitHp = _toIntList(splitHp);
+
+  factory EventRaidEntity.fromJson(Map<String, dynamic> data) => _$EventRaidEntityFromJson(data);
+}
+
+@JsonSerializable(createToJson: false)
+class UserEventRaidEntity extends DataEntityBase<String> {
+  int userId;
+  int eventId;
+  int day;
+  int damage;
+
+  @override
+  String get primaryKey => _createPK2(eventId, day);
+
+  static String createPK(int eventId, int day) => _createPK2(eventId, day);
+
+  UserEventRaidEntity({
+    dynamic userId,
+    dynamic eventId,
+    dynamic day,
+    dynamic damage,
+  })  : userId = _toInt(userId),
+        eventId = _toInt(eventId),
+        day = _toInt(day),
+        damage = _toInt(damage);
+  factory UserEventRaidEntity.fromJson(Map<String, dynamic> data) => _$UserEventRaidEntityFromJson(data);
+}
+
+@JsonSerializable(createToJson: false)
+class TotalEventRaidEntity extends DataEntityBase<String> {
+  int eventId;
+  int day;
+  int totalDamage;
+  int defeatedAt;
+
+  @override
+  String get primaryKey => _createPK2(eventId, day);
+
+  static String createPK(int eventId, int day) => _createPK2(eventId, day);
+
+  TotalEventRaidEntity({
+    dynamic eventId,
+    dynamic day,
+    dynamic totalDamage,
+    dynamic defeatedAt,
+  })  : eventId = _toInt(eventId),
+        day = _toInt(day),
+        totalDamage = _toInt(totalDamage),
+        defeatedAt = _toInt(defeatedAt);
+  factory TotalEventRaidEntity.fromJson(Map<String, dynamic> data) => _$TotalEventRaidEntityFromJson(data);
+}
+
+@JsonSerializable(createToJson: true, createFactory: false)
+class BattleRaidResult {
+  int uniqueId;
+  int day;
+  int addDamage;
+
+  BattleRaidResult({
+    required this.uniqueId,
+    required this.day,
+    required this.addDamage,
+  });
+  // factory BattleRaidResult.fromJson(Map<String, dynamic> data) => _$BattleRaidResultFromJson(data);
+
+  Map<String, dynamic> toJson() => _$BattleRaidResultToJson(this);
+
+  int64_t getStatusLong() {
+    return addDamage + day + uniqueId;
+  }
+}
+
+@JsonSerializable(createToJson: true, createFactory: false)
+class BattleSuperBossResult {
+  int superBossId;
+  int uniqueId;
+  int addDamage;
+
+  BattleSuperBossResult({
+    required this.superBossId,
+    required this.uniqueId,
+    required this.addDamage,
+  });
+  // factory BattleSuperBossResult.fromJson(Map<String, dynamic> data) => _$BattleSuperBossResultFromJson(data);
+
+  Map<String, dynamic> toJson() => _$BattleSuperBossResultToJson(this);
+
+  int64_t getStatusLong() {
+    return addDamage + superBossId + uniqueId;
+  }
 }
 
 @JsonSerializable(createToJson: false)
@@ -1708,7 +1868,7 @@ class FollowerInfo {
   int tutorial1;
   String message;
   int pushUserSvtId;
-  // 	int npcFollowerSvtId;
+  //  int npcFollowerSvtId;
   //  int npcInitIdx;
   //  bool isMySvtOrNpc;
   //  bool isFixedNpc;
@@ -2023,6 +2183,9 @@ class BattleInfoData {
   List<BattleUserServantData> userSvt;
   DeckData? myDeck;
   List<DeckData> enemyDeck;
+  List<BattleRaidInfo> raidInfo;
+  List<BattleRaidInfo> startRaidInfo;
+  List<Map> superBossInfo;
 
   BattleInfoData({
     dynamic dataVer,
@@ -2032,6 +2195,9 @@ class BattleInfoData {
     this.userSvt = const [],
     this.myDeck,
     this.enemyDeck = const [],
+    this.raidInfo = const [],
+    this.startRaidInfo = const [],
+    this.superBossInfo = const [],
   })  : dataVer = _toInt(dataVer),
         appVer = appVer.toString(),
         userEquipId = _toInt(userEquipId),
@@ -2072,7 +2238,7 @@ class BattleDeckServantData {
   int? roleType;
   List<DropInfo> dropInfos;
   int npcId;
-  // Map? enemyScript;
+  Map? enemyScript;
   // Map? infoScript;
   int? index;
   int id;
@@ -2088,7 +2254,7 @@ class BattleDeckServantData {
     dynamic roleType,
     this.dropInfos = const [],
     dynamic npcId,
-    // this.enemyScript,
+    this.enemyScript,
     // this.infoScript,
     dynamic index,
     dynamic id,
@@ -2119,9 +2285,9 @@ class BattleUserServantData {
   int svtId;
 
   int lv;
-  // exp: int
-  // atk: int
-  // hp: int
+  int exp;
+  int atk;
+  int hp;
   int? adjustAtk;
   int? adjustHp;
   // recover: int | None = None
@@ -2186,6 +2352,9 @@ class BattleUserServantData {
     dynamic userId,
     dynamic svtId,
     dynamic lv,
+    dynamic exp,
+    dynamic atk,
+    dynamic hp,
     dynamic adjustAtk,
     dynamic adjustHp,
     dynamic skillId1,
@@ -2206,6 +2375,9 @@ class BattleUserServantData {
         userId = _toIntNull(userId),
         svtId = _toInt(svtId),
         lv = _toInt(lv),
+        exp = _toInt(exp),
+        atk = _toInt(atk),
+        hp = _toInt(hp),
         adjustAtk = _toIntNull(adjustAtk),
         adjustHp = _toIntNull(adjustHp),
         skillId1 = _toInt(skillId1, 0),
@@ -2224,6 +2396,26 @@ class BattleUserServantData {
         dispLimitCount = _toInt(dispLimitCount, 0);
 
   factory BattleUserServantData.fromJson(Map<String, dynamic> data) => _$BattleUserServantDataFromJson(data);
+}
+
+@JsonSerializable(createToJson: false)
+class BattleRaidInfo {
+  int day;
+  int uniqueId;
+  int maxHp;
+  int totalDamage;
+
+  BattleRaidInfo({
+    dynamic day,
+    dynamic uniqueId,
+    dynamic maxHp,
+    dynamic totalDamage,
+  })  : day = _toInt(day),
+        uniqueId = _toInt(uniqueId),
+        maxHp = _toInt(maxHp),
+        totalDamage = _toInt(totalDamage);
+
+  factory BattleRaidInfo.fromJson(Map<String, dynamic> data) => _$BattleRaidInfoFromJson(data);
 }
 
 @JsonSerializable(createToJson: false)

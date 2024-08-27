@@ -362,8 +362,8 @@ class FakerAgentCN extends FakerAgent<FRequestCN, AutoLoginDataCN, NetworkManage
     required BattleDataActionList action,
     List<List<int>> voicePlayedArray = const [], // [[svtId, x],...]
     List<int> aliveUniqueIds = const [], // add this if retire/fail
-    List raidResult = const [], // BattleResultRequest.RaidResult[]
-    List superBossResult = const [], // BattleResultRequest.SuperBossResult[]
+    List<BattleRaidResult> raidResult = const [],
+    List<BattleSuperBossResult> superBossResult = const [],
     int32_t elapsedTurn = 1,
     required List<int32_t> usedTurnArray, // win 001, retire 100
     int32_t recordType = 1,
@@ -414,12 +414,9 @@ class FakerAgentCN extends FakerAgent<FRequestCN, AutoLoginDataCN, NetworkManage
     };
 
     int64_t num1 = 0;
-    if (raidResult.isNotEmpty) {
-      throw ArgumentError.value(raidResult, 'raidResult', 'raidResult is not supported');
+    for (final result in raidResult) {
+      num1 += result.getStatusLong();
     }
-    // for(final result in raidResult){
-    //   num1 += result.getStatusLong();
-    // }
     int64_t num2 = 0;
     if (superBossResult.isNotEmpty) {
       throw ArgumentError.value(superBossResult, 'superBossResult', 'superBossResult is not supported');

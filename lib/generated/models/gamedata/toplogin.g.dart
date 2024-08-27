@@ -359,6 +359,48 @@ UserEventPointEntity _$UserEventPointEntityFromJson(Map json) => UserEventPointE
       value: json['value'],
     );
 
+EventRaidEntity _$EventRaidEntityFromJson(Map json) => EventRaidEntity(
+      eventId: json['eventId'],
+      day: json['day'],
+      groupIndex: json['groupIndex'],
+      subGroupIndex: json['subGroupIndex'],
+      name: json['name'],
+      maxHp: json['maxHp'],
+      iconId: json['iconId'],
+      bossColor: json['bossColor'],
+      startedAt: json['startedAt'],
+      endedAt: json['endedAt'],
+      timeLimitAt: json['timeLimitAt'],
+      splitAiMode: json['splitAiMode'],
+      splitHp: json['splitHp'],
+    );
+
+UserEventRaidEntity _$UserEventRaidEntityFromJson(Map json) => UserEventRaidEntity(
+      userId: json['userId'],
+      eventId: json['eventId'],
+      day: json['day'],
+      damage: json['damage'],
+    );
+
+TotalEventRaidEntity _$TotalEventRaidEntityFromJson(Map json) => TotalEventRaidEntity(
+      eventId: json['eventId'],
+      day: json['day'],
+      totalDamage: json['totalDamage'],
+      defeatedAt: json['defeatedAt'],
+    );
+
+Map<String, dynamic> _$BattleRaidResultToJson(BattleRaidResult instance) => <String, dynamic>{
+      'uniqueId': instance.uniqueId,
+      'day': instance.day,
+      'addDamage': instance.addDamage,
+    };
+
+Map<String, dynamic> _$BattleSuperBossResultToJson(BattleSuperBossResult instance) => <String, dynamic>{
+      'superBossId': instance.superBossId,
+      'uniqueId': instance.uniqueId,
+      'addDamage': instance.addDamage,
+    };
+
 UserShopEntity _$UserShopEntityFromJson(Map json) => UserShopEntity(
       userId: json['userId'],
       shopId: json['shopId'],
@@ -514,6 +556,15 @@ BattleInfoData _$BattleInfoDataFromJson(Map json) => BattleInfoData(
               ?.map((e) => DeckData.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
+      raidInfo: (json['raidInfo'] as List<dynamic>?)
+              ?.map((e) => BattleRaidInfo.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
+      startRaidInfo: (json['startRaidInfo'] as List<dynamic>?)
+              ?.map((e) => BattleRaidInfo.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
+      superBossInfo: (json['superBossInfo'] as List<dynamic>?)?.map((e) => e as Map).toList() ?? const [],
     );
 
 DeckData _$DeckDataFromJson(Map json) => DeckData(
@@ -534,6 +585,7 @@ BattleDeckServantData _$BattleDeckServantDataFromJson(Map json) => BattleDeckSer
               .toList() ??
           const [],
       npcId: json['npcId'],
+      enemyScript: json['enemyScript'] as Map?,
       index: json['index'],
       id: json['id'],
       userSvtId: json['userSvtId'],
@@ -548,6 +600,9 @@ BattleUserServantData _$BattleUserServantDataFromJson(Map json) => BattleUserSer
       userId: json['userId'],
       svtId: json['svtId'],
       lv: json['lv'],
+      exp: json['exp'],
+      atk: json['atk'],
+      hp: json['hp'],
       adjustAtk: json['adjustAtk'],
       adjustHp: json['adjustHp'],
       skillId1: json['skillId1'],
@@ -564,6 +619,13 @@ BattleUserServantData _$BattleUserServantDataFromJson(Map json) => BattleUserSer
       appendPassiveSkillLvs: json['appendPassiveSkillLvs'],
       limitCount: json['limitCount'],
       dispLimitCount: json['dispLimitCount'],
+    );
+
+BattleRaidInfo _$BattleRaidInfoFromJson(Map json) => BattleRaidInfo(
+      day: json['day'],
+      uniqueId: json['uniqueId'],
+      maxHp: json['maxHp'],
+      totalDamage: json['totalDamage'],
     );
 
 DropInfo _$DropInfoFromJson(Map json) => DropInfo(
