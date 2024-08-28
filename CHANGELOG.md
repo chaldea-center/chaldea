@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.5.14
+
+- Servant class passives now ignores debuff immune when adding debuffs
+- Support new Summer BB related functions
+
 ## 2.5.13
 
 - batch setting append skills
