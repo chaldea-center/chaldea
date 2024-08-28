@@ -162,7 +162,7 @@ class BattleSkillInfoData {
       requiredTraits: curSkill.actIndividuality,
     );
 
-    final scriptCheck = checkSkillScript(battleData, activator, curSkill.script, skillLv);
+    final scriptCheck = checkSkillScript(battleData, activator, skillScript, skillLv);
 
     bool canActSkill = battleData.delegate?.whetherSkill?.call(activator, curSkill) ?? actorTraitMatch && scriptCheck;
     if (!canActSkill) {
@@ -191,9 +191,7 @@ class BattleSkillInfoData {
     }
 
     int? selectedActionIndex;
-    if (curSkill.script != null &&
-        curSkill.script!.SelectAddInfo != null &&
-        curSkill.script!.SelectAddInfo!.isNotEmpty) {
+    if (skillScript != null && skillScript!.SelectAddInfo != null && skillScript!.SelectAddInfo!.isNotEmpty) {
       if (battleData.delegate?.skillActSelect != null) {
         selectedActionIndex = await battleData.delegate!.skillActSelect!(activator);
       } else if (battleData.mounted) {
@@ -217,11 +215,9 @@ class BattleSkillInfoData {
       targetedAlly: targetedAlly,
       targetedEnemy: targetedEnemy,
       card: card,
-      script: curSkill.script,
-      isPassive: curSkill.type == SkillType.passive,
-      isClassPassive: type == SkillInfoType.svtClassPassive,
-      notActorFunction: type == SkillInfoType.svtEquip,
-      isCommandCode: type == SkillInfoType.commandCode,
+      script: skillScript,
+      skillType: curSkill.type,
+      skillInfoType: type,
       selectedActionIndex: selectedActionIndex,
       effectiveness: effectiveness,
       defaultToPlayer: defaultToPlayer,

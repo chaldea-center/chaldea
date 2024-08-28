@@ -1810,7 +1810,7 @@ class BattleServantData {
             ignoreBattlePoints: skillInfo?.skillScript?.IgnoreBattlePointUp,
             targetedAlly: battleData.getTargetedAlly(this),
             targetedEnemy: other,
-            isPassive: false,
+            skillType: skill.type,
           );
           buff.setUsed(this);
           activated = true;
@@ -1846,7 +1846,7 @@ class BattleServantData {
           activator: this,
           targetedAlly: battleData.getTargetedAlly(this),
           targetedEnemy: battleData.getTargetedEnemy(this),
-          isPassive: false,
+          skillType: skill.type,
         );
         buff.setUsed(this);
         activated = true;

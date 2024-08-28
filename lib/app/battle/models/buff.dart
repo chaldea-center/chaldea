@@ -102,7 +102,7 @@ class BattleBuff {
   }
 
   void clearClassPassive() {
-    _passiveList.removeWhere((buff) => buff.classPassive);
+    _passiveList.removeWhere((buff) => buff.isClassPassive);
   }
 
   BattleBuff copy() {
@@ -137,7 +137,7 @@ class BuffData {
   bool isUsed = false;
 
   bool passive = false;
-  bool classPassive = false;
+  bool isClassPassive = false;
   bool get irremovable =>
       passive || vals.UnSubState == 1 || vals.IgnoreIndividuality == 1 || vals.UnSubStateWhileLinkedToOthers == 1;
 
@@ -153,11 +153,6 @@ class BuffData {
   int _state = 0;
   // int auraEffectId = -1;
   // bool isActiveCC = false;
-
-  // may not need this field.
-  // Intent is to check should remove passive when transforming servants to only remove actor's passive
-  // Default to Hyde's passive not ever added, which means we don't do any passive cleaning logic in transform script
-  bool notActorPassive = false;
 
   bool get isOnField => vals.OnField == 1;
 
@@ -494,7 +489,7 @@ class BuffData {
       ..actorName = actorName
       ..isUsed = isUsed
       ..passive = passive
-      ..classPassive = classPassive
+      ..isClassPassive = isClassPassive
       .._state = _state;
     return copy;
   }

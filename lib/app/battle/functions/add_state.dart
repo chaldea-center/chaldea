@@ -17,12 +17,14 @@ class AddState {
     final DataVals dataVals,
     final BattleServantData? activator,
     final List<BattleServantData> targets, {
-    bool isPassive = false,
-    final bool isClassPassive = false,
     final bool isShortBuff = false,
-    final bool notActorPassive = false,
-    final bool isCommandCode = false,
+    final SkillType? skillType,
+    final SkillInfoType? skillInfoType,
   }) async {
+    final isClassPassive = skillInfoType == SkillInfoType.svtClassPassive;
+    final isCommandCode = skillInfoType == SkillInfoType.commandCode;
+
+    bool isPassive = skillType == SkillType.passive;
     if (dataVals.ProcActive == 1) {
       isPassive = false;
     } else if (dataVals.ProcPassive == 1) {
@@ -33,9 +35,8 @@ class AddState {
       final buffData = BuffData(buff, dataVals, battleData.getNextAddOrder())
         ..actorUniqueId = activator?.uniqueId
         ..actorName = activator?.lBattleName
-        ..passive = isPassive || notActorPassive
-        ..classPassive = isClassPassive
-        ..notActorPassive = notActorPassive;
+        ..passive = isPassive
+        ..isClassPassive = isClassPassive;
       if (isShortBuff) {
         buffData.logicTurn -= 1;
       }
@@ -98,12 +99,12 @@ class AddState {
         }
       }
 
-      if (await shouldAddState(battleData, dataVals, activator, target, buffData, isCommandCode) &&
+      if (await shouldAddState(battleData, dataVals, activator, target, buffData, isCommandCode, isClassPassive) &&
           target.isBuffStackable(buffData.buff.buffGroup) &&
           checkSameBuffLimitNum(target, dataVals)) {
         target.addBuff(
           buffData,
-          isPassive: isPassive || notActorPassive,
+          isPassive: isPassive,
           isCommandCode: isCommandCode,
         );
         battleData.setFuncResult(target.uniqueId, true);
@@ -129,6 +130,7 @@ class AddState {
     final BattleServantData target,
     final BuffData buffData,
     final bool isCommandCode,
+    final bool isSvtClassPassive,
   ) async {
     if (dataVals.ForceAddState == 1 || isCommandCode) {
       return true;
@@ -141,11 +143,16 @@ class AddState {
 
     functionRate = functionRate.abs();
 
-    final hasAvoidState =
-        await target.hasBuff(battleData, BuffAction.avoidState, other: activator, addTraits: buffData.traits);
-    if (hasAvoidState) {
-      battleData.battleLogger.debug('${S.current.effect_target}: ${target.lBattleName} - ${S.current.battle_invalid}');
-      return false;
+    // based on https://discord.com/channels/839788731108032532/1098222580755861545/1278033086981865646
+    // svtClassPassive should ignore all avoidState buffs
+    if (!isSvtClassPassive) {
+      final hasAvoidState =
+          await target.hasBuff(battleData, BuffAction.avoidState, other: activator, addTraits: buffData.traits);
+      if (hasAvoidState) {
+        battleData.battleLogger
+            .debug('${S.current.effect_target}: ${target.lBattleName} - ${S.current.battle_invalid}');
+        return false;
+      }
     }
 
     final buffReceiveChance =

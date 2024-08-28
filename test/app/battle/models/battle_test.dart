@@ -1746,6 +1746,23 @@ void main() async {
       expect(eresh2.curBattlePoints[bpId], 15);
       expect(eresh2.determineBattlePointPhase(bpId), 2);
     });
+
+    test('passive avoidState vs Passive debuff', () async {
+      final List<PlayerSvtData?> setting = [
+        PlayerSvtData.id(3300200),
+        PlayerSvtData.id(1101900), // avenger
+        PlayerSvtData.id(1101900), // avenger
+        PlayerSvtData.id(1101900), // avenger
+      ];
+      final battle = BattleData();
+      final quest = db.gameData.questPhases[9300040603]!;
+      await battle.init(quest, setting, null);
+
+      final eresh = battle.onFieldAllyServants[0]!;
+      final avoidStates = collectBuffsPerAction(eresh.battleBuff.validBuffs, BuffAction.avoidState);
+      expect(avoidStates.length, 2);
+      expect(avoidStates[0].count, 3);
+    });
   });
 
   group('Battle Popup Related Funcs', () {

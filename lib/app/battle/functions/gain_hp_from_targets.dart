@@ -62,7 +62,6 @@ class GainHpFromTargets {
       battleData,
       [niceFunction],
       1,
-      script: null,
       activator: receiver,
       targetedAlly: targetedAlly,
       targetedEnemy: targetedEnemy,
