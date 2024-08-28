@@ -157,7 +157,7 @@ class BattleSkillInfoData {
     }
     skillScript = curSkill.script;
 
-    final actorTraitMatch = checkTraitFunction(
+    final actorTraitMatch = checkSignedIndividualities2(
       myTraits: activator?.getTraits() ?? [],
       requiredTraits: curSkill.actIndividuality,
     );

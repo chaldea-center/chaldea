@@ -36,19 +36,34 @@ int countAnyTraits(final Iterable<NiceTrait> myTraits, final Iterable<NiceTrait>
       .length;
 }
 
-bool checkTraitFunction({
+bool checkSignedIndividualitiesPartialMatch({
   required final Iterable<NiceTrait> myTraits,
   required final Iterable<NiceTrait> requiredTraits,
   final bool Function(Iterable<NiceTrait>, Iterable<NiceTrait>) positiveMatchFunc = partialMatch,
   final bool Function(Iterable<NiceTrait>, Iterable<NiceTrait>) negativeMatchFunc = partialMatch,
 }) {
-  final positiveTargets = requiredTraits.where((trait) => trait.signedId > 0);
-  final negativeTargets = requiredTraits.where((trait) => trait.signedId < 0);
+  final positiveTargets = requiredTraits.where((trait) => trait.signedId > 0).toList();
+  final negativeTargets = requiredTraits.where((trait) => trait.signedId < 0).toList();
 
   if (requiredTraits.isEmpty) return true;
   if (positiveMatchFunc(myTraits, positiveTargets)) return true;
   if (negativeTargets.isEmpty) return false;
   return !negativeMatchFunc(myTraits, negativeTargets);
+}
+
+bool checkSignedIndividualities2({
+  required final Iterable<NiceTrait> myTraits,
+  required final Iterable<NiceTrait> requiredTraits,
+  final bool Function(Iterable<NiceTrait>, Iterable<NiceTrait>) positiveMatchFunc = partialMatch,
+  final bool Function(Iterable<NiceTrait>, Iterable<NiceTrait>) negativeMatchFunc = partialMatch,
+}) {
+  if (requiredTraits.isEmpty) return true;
+  final positiveTargets = requiredTraits.where((trait) => trait.signedId > 0).toList();
+  final negativeTargets = requiredTraits.where((trait) => trait.signedId < 0).toList();
+
+  final positiveMatch = positiveTargets.isEmpty ? true : positiveMatchFunc(myTraits, positiveTargets);
+  final negativeMatch = negativeTargets.isEmpty ? true : !negativeMatchFunc(myTraits, negativeTargets);
+  return positiveMatch && negativeMatch;
 }
 
 bool partialMatch(final Iterable<NiceTrait> myTraits, final Iterable<NiceTrait> unsignedRequiredTraits) {

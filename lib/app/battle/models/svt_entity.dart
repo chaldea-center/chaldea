@@ -921,7 +921,7 @@ class BattleServantData {
     return buffList.where((buff) {
       if (buff.vals.IgnoreIndividuality == 1 && !includeIgnoreIndiv) return false;
       if (ignoreIndivUnreleaseable && buff.irremovable) return false;
-      return checkTraitFunction(
+      return checkSignedIndividualities2(
         myTraits: buff.traits,
         requiredTraits: traits,
         positiveMatchFunc: partialMatch,

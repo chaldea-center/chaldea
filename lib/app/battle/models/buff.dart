@@ -63,7 +63,7 @@ class BattleBuff {
     _activeList.removeWhere((buff) =>
         (includeNoAct || !buff.checkState(BuffState.noAct)) &&
         (includeNoField || !buff.checkState(BuffState.noField)) &&
-        checkTraitFunction(
+        checkSignedIndividualities2(
           myTraits: buff.traits,
           requiredTraits: [trait],
           positiveMatchFunc: partialMatch,
@@ -140,11 +140,6 @@ class BuffData {
   bool isClassPassive = false;
   bool get irremovable =>
       passive || vals.UnSubState == 1 || vals.IgnoreIndividuality == 1 || vals.UnSubStateWhileLinkedToOthers == 1;
-
-  bool Function(Iterable<NiceTrait> myTraits, Iterable<NiceTrait> unsignedRequiredTraits) get matchFunc {
-    final checkIndivType = buff.script.checkIndvType;
-    return checkIndivType == null || checkIndivType == 0 || checkIndivType == 2 ? partialMatch : allMatch;
-  }
 
   // ignore: unused_field
   // bool isDecide = false;
@@ -240,18 +235,48 @@ class BuffData {
     if (buff.type == BuffType.addIndividuality || buff.type == BuffType.subIndividuality) {
       return true;
     } else {
-      return checkTraitFunction(
-            myTraits: selfTraits,
-            requiredTraits: buff.ckSelfIndv,
-            positiveMatchFunc: matchFunc,
-            negativeMatchFunc: matchFunc,
-          ) &&
-          checkTraitFunction(
-            myTraits: opTraits ?? [],
-            requiredTraits: buff.ckOpIndv,
-            positiveMatchFunc: matchFunc,
-            negativeMatchFunc: matchFunc,
-          );
+      final checkIndivType = buff.script.checkIndvType;
+      if (checkIndivType == 1 || checkIndivType == 3) {
+        return checkSignedIndividualities2(
+              myTraits: selfTraits,
+              requiredTraits: buff.ckSelfIndv,
+              positiveMatchFunc: allMatch,
+              negativeMatchFunc: allMatch,
+            ) &&
+            checkSignedIndividualities2(
+              myTraits: opTraits ?? [],
+              requiredTraits: buff.ckOpIndv,
+              positiveMatchFunc: allMatch,
+              negativeMatchFunc: allMatch,
+            );
+      } else if (checkIndivType == 4) {
+        return checkSignedIndividualitiesPartialMatch(
+              myTraits: selfTraits,
+              requiredTraits: buff.ckSelfIndv,
+              positiveMatchFunc: partialMatch,
+              negativeMatchFunc: partialMatch,
+            ) &&
+            checkSignedIndividualitiesPartialMatch(
+              myTraits: opTraits ?? [],
+              requiredTraits: buff.ckOpIndv,
+              positiveMatchFunc: partialMatch,
+              negativeMatchFunc: partialMatch,
+            );
+      } else {
+        // null, 0, 2
+        return checkSignedIndividualities2(
+              myTraits: selfTraits,
+              requiredTraits: buff.ckSelfIndv,
+              positiveMatchFunc: partialMatch,
+              negativeMatchFunc: partialMatch,
+            ) &&
+            checkSignedIndividualities2(
+              myTraits: opTraits ?? [],
+              requiredTraits: buff.ckOpIndv,
+              positiveMatchFunc: partialMatch,
+              negativeMatchFunc: partialMatch,
+            );
+      }
     }
   }
 
@@ -284,7 +309,7 @@ class BuffData {
   bool checkBuffDataVals(final List<NiceTrait> selfTraits) {
     final hpReduceToRegainIndiv = vals.HpReduceToRegainIndiv;
     if (hpReduceToRegainIndiv != null) {
-      return checkTraitFunction(myTraits: selfTraits, requiredTraits: [NiceTrait(id: hpReduceToRegainIndiv)]);
+      return checkSignedIndividualities2(myTraits: selfTraits, requiredTraits: [NiceTrait(id: hpReduceToRegainIndiv)]);
     }
 
     return true;
@@ -303,7 +328,7 @@ class BuffData {
 
     if (script.UpBuffRateBuffIndiv != null) {
       if (selfTraits == null ||
-          !checkTraitFunction(myTraits: selfTraits, requiredTraits: script.UpBuffRateBuffIndiv!)) {
+          !checkSignedIndividualities2(myTraits: selfTraits, requiredTraits: script.UpBuffRateBuffIndiv!)) {
         return false;
       }
     }
@@ -394,7 +419,7 @@ class BuffData {
       if (requireAtLeast != null) {
         isAct &= countAnyTraits(currentTraits, requiredTraits) >= requireAtLeast;
       } else {
-        isAct &= checkTraitFunction(
+        isAct &= checkSignedIndividualities2(
           myTraits: currentTraits,
           requiredTraits: requiredTraits,
           positiveMatchFunc: matchFunc,
@@ -410,7 +435,7 @@ class BuffData {
       isAct &= allies
           .where((svt) =>
               svt != owner &&
-              checkTraitFunction(
+              checkSignedIndividualities2(
                 myTraits: svt.getTraits(addTraits: svt.getBuffTraits(includeIgnoreIndiv: includeIgnoreIndividuality)),
                 requiredTraits: [buff.script.TargetIndiv!],
               ))

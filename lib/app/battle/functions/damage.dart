@@ -118,7 +118,7 @@ class Damage {
           final damageNpSEDecision = battleData.delegate?.damageNpSE?.call(activator, damageFunction, dataVals);
 
           final useCorrection = damageNpSEDecision?.useCorrection ??
-              checkTraitFunction(myTraits: target.getTraits(), requiredTraits: [NiceTrait(id: dataVals.Target!)]);
+              checkSignedIndividualities2(myTraits: target.getTraits(), requiredTraits: [NiceTrait(id: dataVals.Target!)]);
 
           if (useCorrection) {
             specificAttackRate = dataVals.Correction!;
@@ -127,7 +127,7 @@ class Damage {
           final damageNpSEDecision = battleData.delegate?.damageNpSE?.call(activator, damageFunction, dataVals);
 
           final useCorrection = damageNpSEDecision?.useCorrection ??
-              checkTraitFunction(
+              checkSignedIndividualities2(
                 myTraits: target.getTraits(),
                 requiredTraits: NiceTrait.list(dataVals.AndCheckIndividualityList ?? []),
                 positiveMatchFunc: allMatch,
@@ -142,7 +142,7 @@ class Damage {
           final includeIgnoreIndividuality = dataVals.IncludeIgnoreIndividuality == 1;
 
           final useCorrection = damageNpSEDecision?.useCorrection ??
-              checkTraitFunction(
+              checkSignedIndividualities2(
                 myTraits: target.getBuffTraits(includeIgnoreIndiv: includeIgnoreIndividuality),
                 requiredTraits: [NiceTrait(id: dataVals.Target!)],
               );

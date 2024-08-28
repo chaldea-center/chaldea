@@ -1942,7 +1942,7 @@ void main() async {
 
       final card = battle.onFieldAllyServants[0]!.getCards()[0];
       card.critical = true;
-      expect(checkTraitFunction(myTraits: card.traits, requiredTraits: [NiceTrait(id: Trait.criticalHit.value)]), true);
+      expect(checkSignedIndividualities2(myTraits: card.traits, requiredTraits: [NiceTrait(id: Trait.criticalHit.value)]), true);
     });
   });
 }

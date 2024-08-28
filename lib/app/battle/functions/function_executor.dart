@@ -204,7 +204,7 @@ class FunctionExecutor {
       }
 
       final funcQuestTvalsMatch =
-          checkTraitFunction(myTraits: battleData.getFieldTraits(), requiredTraits: function.funcquestTvals);
+          checkSignedIndividualities2(myTraits: battleData.getFieldTraits(), requiredTraits: function.funcquestTvals);
 
       if (!funcQuestTvalsMatch) {
         battleData.updateLastFuncResults(function.funcId, funcIndex);
@@ -627,7 +627,7 @@ class FunctionExecutor {
           final targetIndiv = dataVals?.TargetIndiv;
           final includeIgnoredIndiv = dataVals?.IncludeIgnoreIndividuality == 1;
           final targetIndivCheck = targetIndiv == null ||
-              checkTraitFunction(
+              checkSignedIndividualities2(
                 myTraits: svt.getTraits(addTraits: svt.getBuffTraits(includeIgnoreIndiv: includeIgnoredIndiv)),
                 requiredTraits: [NiceTrait(id: targetIndiv)],
               );
@@ -642,7 +642,7 @@ class FunctionExecutor {
           final targetIndiv = dataVals?.TargetIndiv;
           final includeIgnoredIndiv = dataVals?.IncludeIgnoreIndividuality == 1;
           final targetIndivCheck = targetIndiv == null ||
-              checkTraitFunction(
+              checkSignedIndividualities2(
                 myTraits: svt.getTraits(addTraits: svt.getBuffTraits(includeIgnoreIndiv: includeIgnoredIndiv)),
                 requiredTraits: [NiceTrait(id: targetIndiv)],
               );
@@ -832,7 +832,7 @@ class FunctionExecutor {
             addTraits: svt.getBuffTraits(activeOnly: activeOnly, includeIgnoreIndiv: includeIgnoreIndividuality));
         for (final List<NiceTrait> requiredTraits in overwriteTvals) {
           // Currently assuming the first array is OR. Need more samples on this
-          final checkTrait = checkTraitFunction(
+          final checkTrait = checkSignedIndividualities2(
             myTraits: selfTraits,
             requiredTraits: requiredTraits,
             positiveMatchFunc: allMatch,
@@ -845,7 +845,7 @@ class FunctionExecutor {
         return false;
       });
     } else {
-      targets.retainWhere((svt) => checkTraitFunction(
+      targets.retainWhere((svt) => checkSignedIndividualities2(
             myTraits: svt.getTraits(
                 addTraits: svt.getBuffTraits(activeOnly: activeOnly, includeIgnoreIndiv: includeIgnoreIndividuality)),
             requiredTraits: function.functvals,

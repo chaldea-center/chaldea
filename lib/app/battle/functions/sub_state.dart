@@ -63,7 +63,7 @@ class SubState {
     final BattleServantData? activator,
     final BattleServantData target,
   ) async {
-    if (!checkTraitFunction(myTraits: buff.traits, requiredTraits: affectTraits)) {
+    if (!checkSignedIndividualities2(myTraits: buff.traits, requiredTraits: affectTraits)) {
       return false;
     }
 
