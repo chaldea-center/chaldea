@@ -265,7 +265,7 @@ class ValDsc extends StatelessWidget {
             break;
           case FuncType.damageNpBattlePointPhase:
             int value2 = vals.Value2 ?? 0, correction = vals.Correction ?? 0;
-            parts.add('${_toPercent(value2 - correction, 10)}%+N×${_toPercent(correction, 10)}%');
+            parts.add('${_toPercent(value2, 10)}%+N×${_toPercent(correction, 10)}%');
             break;
           default:
             parts.add(vals.Correction.toString());

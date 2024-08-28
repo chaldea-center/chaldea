@@ -150,6 +150,9 @@ class _TdDetailPageState extends State<TdDetailPage> with RegionBasedState<BaseT
               child: SharedBuilder.traitList(context: context, traits: td.individuality),
             )
           ]),
+          CustomTableRow.fromTexts(texts: [
+            'num ${td.svt.num} / npNum ${td.svt.npNum} / priority ${td.svt.priority} / strengthStatus ${td.svt.strengthStatus}'
+          ]),
         ]),
         if (svts.isNotEmpty) cardList(S.current.servant, svts),
         if (enemies.isNotEmpty) enemyList(enemies),

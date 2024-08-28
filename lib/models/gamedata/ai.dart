@@ -310,6 +310,15 @@ enum NiceAiCond {
   countMasterSkillHigherThisWave,
   countMasterSkillLowerThisWave,
   countMasterSkillEqualThisWave,
+  countAvailablePlayerAndMasterSkillHigher,
+  countAvailablePlayerAndMasterSkillLower,
+  countAvailablePlayerAndMasterSkillEqual,
+  countAvailablePlayerSkillHigher,
+  countAvailablePlayerSkillLower,
+  countAvailablePlayerSkillEqual,
+  countAvailableMasterSkillHigher,
+  countAvailableMasterSkillLower,
+  countAvailableMasterSkillEqual,
 }
 
 enum AiTiming {

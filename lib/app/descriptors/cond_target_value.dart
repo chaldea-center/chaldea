@@ -85,6 +85,24 @@ class CondTargetValueDescriptor extends StatelessWidget with DescriptorBase {
           na: () => rich('Clear ', quests(context), ' before event start', MultiDescriptor.events(context, [value])),
           kr: null,
         );
+      case CondType.beforeQuestClearTime:
+        final time = DateTime.fromMillisecondsSinceEpoch(value * 1000).toStringShort(omitSec: true);
+        return localized(
+          jp: null,
+          cn: () => rich('在$time前通关', quests(context)),
+          tw: () => rich('在$time前通關', quests(context)),
+          na: () => rich('Clear ', quests(context), ' before $time'),
+          kr: null,
+        );
+      case CondType.afterQuestClearTime:
+        final time = DateTime.fromMillisecondsSinceEpoch(value * 1000).toStringShort(omitSec: true);
+        return localized(
+          jp: null,
+          cn: () => rich('在$time后通关', quests(context)),
+          tw: () => rich('在$time後通關', quests(context)),
+          na: () => rich('Clear ', quests(context), ' after $time'),
+          kr: null,
+        );
       case CondType.notQuestClearBeforeEventStart:
         return localized(
           jp: null,
@@ -345,6 +363,15 @@ class CondTargetValueDescriptor extends StatelessWidget with DescriptorBase {
           cn: () => text('$time后开放'),
           tw: () => text('$time後開放'),
           na: () => text('After $time'),
+          kr: null,
+        );
+      case CondType.beforeSpecifiedDate:
+        final time = DateTime.fromMillisecondsSinceEpoch(value * 1000).toStringShort(omitSec: true);
+        return localized(
+          jp: () => text('$time前に開放'),
+          cn: () => text('$time前开放'),
+          tw: () => text('$time前開放'),
+          na: () => text('Before $time'),
           kr: null,
         );
       case CondType.itemGet:

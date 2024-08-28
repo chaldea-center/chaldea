@@ -45,9 +45,8 @@ class SvtTdTab extends StatelessWidget {
       final tds = svt.groupedNoblePhantasms[tdNum]!;
       if (svt.groupedNoblePhantasms.containsKey(1) &&
           tdNum != 1 &&
-          tds.any((e) =>
-              (e.script?.tdTypeChangeIDs?.isNotEmpty ?? false) ||
-              (e.script?.tdChangeByBattlePoint?.isNotEmpty ?? false))) {
+          tds.every((e) =>
+              (e.script?.tdTypeChangeIDs?.isEmpty ?? true) && (e.script?.tdChangeByBattlePoint?.isEmpty ?? true))) {
         children.add(DividerWithTitle(title: S.current.enemy_only_nps, height: 16));
       }
       if (svt.collectionNo == 417) {

@@ -1074,6 +1074,8 @@ enum CondType {
   haveChargeStone(230),
   battleFunctionTargetAllIndividuality(231),
   battleFunctionTargetOneIndividuality(232),
+  beforeQuestClearTime(233),
+  afterQuestClearTime(234),
   notBattleFunctionTargetAllIndividuality(235),
   notBattleFunctionTargetOneIndividuality(236),
   ;

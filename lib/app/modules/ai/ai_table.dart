@@ -488,6 +488,15 @@ class AiTable extends StatelessWidget {
       case NiceAiCond.countMasterSkillHigherThisWave:
       case NiceAiCond.countMasterSkillLowerThisWave:
       case NiceAiCond.countMasterSkillEqualThisWave:
+      case NiceAiCond.countAvailablePlayerAndMasterSkillHigher:
+      case NiceAiCond.countAvailablePlayerAndMasterSkillLower:
+      case NiceAiCond.countAvailablePlayerAndMasterSkillEqual:
+      case NiceAiCond.countAvailablePlayerSkillHigher:
+      case NiceAiCond.countAvailablePlayerSkillLower:
+      case NiceAiCond.countAvailablePlayerSkillEqual:
+      case NiceAiCond.countAvailableMasterSkillHigher:
+      case NiceAiCond.countAvailableMasterSkillLower:
+      case NiceAiCond.countAvailableMasterSkillEqual:
         return {};
     }
   }

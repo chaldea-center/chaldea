@@ -263,6 +263,15 @@ const _$NiceAiCondEnumMap = {
   NiceAiCond.countMasterSkillHigherThisWave: 'countMasterSkillHigherThisWave',
   NiceAiCond.countMasterSkillLowerThisWave: 'countMasterSkillLowerThisWave',
   NiceAiCond.countMasterSkillEqualThisWave: 'countMasterSkillEqualThisWave',
+  NiceAiCond.countAvailablePlayerAndMasterSkillHigher: 'countAvailablePlayerAndMasterSkillHigher',
+  NiceAiCond.countAvailablePlayerAndMasterSkillLower: 'countAvailablePlayerAndMasterSkillLower',
+  NiceAiCond.countAvailablePlayerAndMasterSkillEqual: 'countAvailablePlayerAndMasterSkillEqual',
+  NiceAiCond.countAvailablePlayerSkillHigher: 'countAvailablePlayerSkillHigher',
+  NiceAiCond.countAvailablePlayerSkillLower: 'countAvailablePlayerSkillLower',
+  NiceAiCond.countAvailablePlayerSkillEqual: 'countAvailablePlayerSkillEqual',
+  NiceAiCond.countAvailableMasterSkillHigher: 'countAvailableMasterSkillHigher',
+  NiceAiCond.countAvailableMasterSkillLower: 'countAvailableMasterSkillLower',
+  NiceAiCond.countAvailableMasterSkillEqual: 'countAvailableMasterSkillEqual',
 };
 
 const _$AiTypeEnumMap = {

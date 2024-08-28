@@ -14,6 +14,7 @@ const kExtraWarEventMapping = <int, int>{
   203: 80072,
   204: 80077,
   311: 80421,
+  404: 80491,
 };
 
 @JsonSerializable()

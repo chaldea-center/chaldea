@@ -419,6 +419,8 @@ const _$CondTypeEnumMap = {
   CondType.haveChargeStone: 'haveChargeStone',
   CondType.battleFunctionTargetAllIndividuality: 'battleFunctionTargetAllIndividuality',
   CondType.battleFunctionTargetOneIndividuality: 'battleFunctionTargetOneIndividuality',
+  CondType.beforeQuestClearTime: 'beforeQuestClearTime',
+  CondType.afterQuestClearTime: 'afterQuestClearTime',
   CondType.notBattleFunctionTargetAllIndividuality: 'notBattleFunctionTargetAllIndividuality',
   CondType.notBattleFunctionTargetOneIndividuality: 'notBattleFunctionTargetOneIndividuality',
 };
