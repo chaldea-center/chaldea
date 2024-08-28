@@ -162,7 +162,7 @@ class Damage {
           if (specifiedPhase != null) {
             specificAttackRate = specifiedPhase.value;
           } else {
-            specificAttackRate = dataVals.Value2! + dataVals.Correction! * max(curPhase - 1, 0);
+            specificAttackRate = dataVals.Value2! + dataVals.Correction! * curPhase;
           }
         }
       }
