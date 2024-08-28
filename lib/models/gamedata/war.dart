@@ -127,8 +127,12 @@ class NiceWar with RouteInfo {
   })  : _name = _fixName(name, id, eventName),
         _longName = _fixName(longName, id, eventName),
         _eventId = eventId {
-    if (id == 404 && banner != null && banner!.contains('questboard_cap_closed')) {
-      banner = banner!.replaceAll('/questboard_cap_closed.png', '/questboard_cap405.png');
+    if (banner != null && banner!.contains('questboard_cap_closed')) {
+      if (id == 404) {
+        banner = banner!.replaceAll('/questboard_cap_closed.png', '/questboard_cap405.png');
+      } else if (id == 405 && spots.isEmpty) {
+        banner = banner!.replaceAll('/questboard_cap_closed.png', '/questboard_cap_closed_406.png');
+      }
     }
   }
 

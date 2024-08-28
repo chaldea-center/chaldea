@@ -118,7 +118,8 @@ class Damage {
           final damageNpSEDecision = battleData.delegate?.damageNpSE?.call(activator, damageFunction, dataVals);
 
           final useCorrection = damageNpSEDecision?.useCorrection ??
-              checkSignedIndividualities2(myTraits: target.getTraits(), requiredTraits: [NiceTrait(id: dataVals.Target!)]);
+              checkSignedIndividualities2(
+                  myTraits: target.getTraits(), requiredTraits: [NiceTrait(id: dataVals.Target!)]);
 
           if (useCorrection) {
             specificAttackRate = dataVals.Correction!;
