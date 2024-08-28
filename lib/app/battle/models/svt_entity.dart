@@ -660,7 +660,8 @@ class BattleServantData {
       case BuffAction.chagetd:
       case BuffAction.guts:
       case BuffAction.functionGuts:
-        return self.getTraits(addTraits: self.getBuffTraits(activeOnly: true));
+        final activeOnly = buff.buff.script.IndvAddBuffPassive != 1;
+        return self.getTraits(addTraits: self.getBuffTraits(activeOnly: activeOnly));
       case BuffAction.functionCommandcodeattackBefore:
       case BuffAction.functionCommandcodeattackBeforeMainOnly:
       case BuffAction.functionCommandattackBefore:
@@ -693,7 +694,11 @@ class BattleServantData {
       case BuffAction.commandStarAtk:
       case BuffAction.grantInstantdeath:
       case BuffAction.multiattack:
-        return self.getTraits(addTraits: [...cardData?.traits ?? [], ...self.getBuffTraits(activeOnly: true)]);
+        final activeOnly = buff.buff.script.IndvAddBuffPassive != 1;
+        return self.getTraits(addTraits: [
+          ...cardData?.traits ?? [],
+          ...self.getBuffTraits(activeOnly: activeOnly),
+        ]);
       case BuffAction.donotActCommandtype:
       case BuffAction.donotNobleCondMismatch:
         return self.getTraits(addTraits: cardData?.traits);
@@ -784,7 +789,8 @@ class BattleServantData {
       case BuffAction.grantSubstate:
       case BuffAction.multiattack:
       case BuffAction.functionGuts:
-        return other?.getTraits(addTraits: other.getBuffTraits(activeOnly: true));
+        final activeOnly = buff.buff.script.IndvAddBuffPassive != 1;
+        return other?.getTraits(addTraits: other.getBuffTraits(activeOnly: activeOnly));
       case BuffAction.damageIndividuality:
         return other?.getBuffTraits(activeOnly: false);
       case BuffAction.damageIndividualityActiveonly:
@@ -816,7 +822,11 @@ class BattleServantData {
       case BuffAction.commandNpDef:
       case BuffAction.commandStarDef:
       case BuffAction.criticalStarDamageTaken:
-        return other?.getTraits(addTraits: [...cardData?.traits ?? [], ...other.getBuffTraits(activeOnly: true)]) ??
+        final activeOnly = buff.buff.script.IndvAddBuffPassive != 1;
+        return other?.getTraits(addTraits: [
+              ...cardData?.traits ?? [],
+              ...other.getBuffTraits(activeOnly: activeOnly),
+            ]) ??
             cardData?.traits;
       case BuffAction.dropNp:
       case BuffAction.criticalPoint:

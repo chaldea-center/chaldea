@@ -1493,6 +1493,32 @@ void main() async {
     expect(previousHp - enemy.hp, 2753);
   });
 
+  test('buffScript IndvAddBuffPassive', () async {
+    final List<PlayerSvtData?> setting = [
+      PlayerSvtData.id(2300600),
+      PlayerSvtData.id(1101900), // alignment balanced, should not trigger bb's passive
+      PlayerSvtData.id(1101900),
+      PlayerSvtData.id(703400)..ce = db.gameData.craftEssencesById[9303870], // sp against good for party if on field
+    ];
+    final battle = BattleData();
+    final quest = db.gameData.questPhases[9300040603]!;
+    await battle.init(quest, setting, MysticCodeData());
+
+    final bb = battle.onFieldAllyServants[0]!;
+    final svtWithoutPassive = battle.onFieldAllyServants[2]!;
+    final defenceWithoutPassive = await bb.getBuffValue(battle, BuffAction.atk, other: svtWithoutPassive);
+    expect(defenceWithoutPassive, 1000);
+
+    battle.delegate = BattleDelegate();
+    battle.delegate?.replaceMember = (onFieldSvts, backupSvts) async {
+      return Tuple2(onFieldSvts[1]!, backupSvts[0]!);
+    };
+    await battle.activateMysticCodeSkill(2);
+    final svtWithPassive = battle.onFieldAllyServants[2]!;
+    final defenceWithPassive = await bb.getBuffValue(battle, BuffAction.atk, other: svtWithPassive);
+    expect(defenceWithPassive, 1100);
+  });
+
   group('Summer Eresh related tests', () {
     test('bond & starting position & dmgBattlePoint', () async {
       final List<PlayerSvtData?> setting = [
