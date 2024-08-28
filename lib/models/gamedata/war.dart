@@ -126,7 +126,11 @@ class NiceWar with RouteInfo {
     this.questSelections = const [],
   })  : _name = _fixName(name, id, eventName),
         _longName = _fixName(longName, id, eventName),
-        _eventId = eventId;
+        _eventId = eventId {
+    if (id == 404 && banner != null && banner!.contains('questboard_cap_closed')) {
+      banner = banner!.replaceAll('/questboard_cap_closed.png', '/questboard_cap405.png');
+    }
+  }
 
   static String? _fixName(String name, int warId, String eventName) {
     if (['', '-'].contains(name)) return null;

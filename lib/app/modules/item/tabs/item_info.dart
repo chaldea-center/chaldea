@@ -130,9 +130,11 @@ class _ItemInfoTabState extends State<ItemInfoTab> {
   Servant? svtCoinOwner;
   final validSummonCoins = const [0, 2, 6, 15, 30, 50, 90];
   final List<int> bondCoinsAfter9thAnni = [
-    ...List.generate(6, (index) => 5),
-    ...List.generate(3, (index) => 30),
-    ...List.generate(6, (index) => 50),
+    ...List.generate(6, (index) => 5), // 1-6
+    ...List.generate(3, (index) => 20), // 7-9
+    40, // 10
+    50, // 11
+    ...List.generate(4, (index) => 60), // 12-15
   ];
   final List<int> bondCoinsBefore9thAnni = <int>[
     ...List.generate(6, (index) => 5),
@@ -160,7 +162,7 @@ class _ItemInfoTabState extends State<ItemInfoTab> {
                   recognizer: TapGestureRecognizer()
                     ..onTap = () {
                       setState(() {
-                        // _useNewBondCoinRewards = true;
+                        _useNewBondCoinRewards = true;
                       });
                     },
                 ),
