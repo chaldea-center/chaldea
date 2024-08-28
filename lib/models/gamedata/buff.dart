@@ -129,6 +129,18 @@ class RelationOverwriteDetail {
   Map<String, dynamic> toJson() => _$RelationOverwriteDetailToJson(this);
 }
 
+enum BuffCheckIndivType {
+  orType(0),
+  andType(1),
+  bothOrOnlyInGroup(2), // bothOrType
+  bothAndAllType(3), // bothAndType
+  bothOrAll(4),
+  ;
+
+  const BuffCheckIndivType(this.value);
+  final int value;
+}
+
 @JsonSerializable(includeIfNull: false)
 class BuffScript with DataScriptBase {
   int? checkIndvType; // 1-AND, default-OR

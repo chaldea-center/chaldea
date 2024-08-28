@@ -847,6 +847,7 @@ class SkillScript with DataScriptBase {
   // TD script
   List<int>? get tdTypeChangeIDs => toList('tdTypeChangeIDs');
   List<int>? get excludeTdChangeTypes => toList('excludeTdChangeTypes');
+  final List<SelectTreasureDeviceInfo>? selectTreasureDeviceInfo;
 
   // skill.script, not in skillLv.script
   final bool? IgnoreValueUp;
@@ -870,6 +871,7 @@ class SkillScript with DataScriptBase {
       additionalSkillLv?.isNotEmpty == true ||
       additionalSkillActorType?.isNotEmpty == true ||
       SelectAddInfo?.isNotEmpty == true ||
+      selectTreasureDeviceInfo?.isNotEmpty == true ||
       tdTypeChangeIDs?.isNotEmpty == true ||
       excludeTdChangeTypes?.isNotEmpty == true ||
       IgnoreValueUp != null ||
@@ -893,6 +895,7 @@ class SkillScript with DataScriptBase {
     this.SelectAddInfo,
     // this.tdTypeChangeIDs,
     // this.excludeTdChangeTypes,
+    this.selectTreasureDeviceInfo,
     dynamic IgnoreValueUp,
     List? IgnoreBattlePointUp,
     this.tdChangeByBattlePoint,
@@ -966,6 +969,42 @@ class SkillSelectAddInfoBtnCond {
   factory SkillSelectAddInfoBtnCond.fromJson(Map<String, dynamic> json) => _$SkillSelectAddInfoBtnCondFromJson(json);
 
   Map<String, dynamic> toJson() => _$SkillSelectAddInfoBtnCondToJson(this);
+}
+
+@JsonSerializable()
+class SelectTreasureDeviceInfo {
+  final int dialogType;
+  final String title;
+  final String messageOnSelected;
+  final List<SelectTdInfoTdChangeParam> treasureDevices;
+
+  SelectTreasureDeviceInfo({
+    this.dialogType = 0,
+    this.title = "",
+    this.messageOnSelected = "",
+    this.treasureDevices = const [],
+  });
+
+  factory SelectTreasureDeviceInfo.fromJson(Map<String, dynamic> json) => _$SelectTreasureDeviceInfoFromJson(json);
+
+  Map<String, dynamic> toJson() => _$SelectTreasureDeviceInfoToJson(this);
+}
+
+@JsonSerializable()
+class SelectTdInfoTdChangeParam {
+  final int id;
+  final CardType type;
+  final String message;
+
+  SelectTdInfoTdChangeParam({
+    this.id = 0,
+    this.type = CardType.none,
+    this.message = "",
+  });
+
+  factory SelectTdInfoTdChangeParam.fromJson(Map<String, dynamic> json) => _$SelectTdInfoTdChangeParamFromJson(json);
+
+  Map<String, dynamic> toJson() => _$SelectTdInfoTdChangeParamToJson(this);
 }
 
 @JsonSerializable()

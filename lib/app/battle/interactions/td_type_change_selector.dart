@@ -11,39 +11,86 @@ import '_dialog.dart';
 
 class TdTypeChangeSelector extends StatelessWidget {
   final BattleData battleData;
-  final List<CardType> tdTypes;
-  final Completer<CardType?> completer;
-  const TdTypeChangeSelector({super.key, required this.battleData, required this.tdTypes, required this.completer});
+  final List<int> tdTypeChangeIds;
+  final List<int> tdIndexes;
+  final SelectTreasureDeviceInfo? selectTdInfo;
+  final Completer<int?> completer;
 
-  static Future<CardType?> show(BattleData battleData, List<CardType> tdTypes) {
+  const TdTypeChangeSelector({
+    super.key,
+    required this.battleData,
+    required this.tdTypeChangeIds,
+    required this.tdIndexes,
+    required this.selectTdInfo,
+    required this.completer,
+  });
+
+  static Future<int?> show(
+      BattleData battleData, List<int> tdTypeChangeIds, List<int> tdIndexes, SelectTreasureDeviceInfo? selectTdInfo) {
     if (!battleData.mounted) return Future.value();
-    return showUserConfirm<CardType>(
+    return showUserConfirm<int>(
       context: battleData.context!,
-      builder: (context, completer) =>
-          TdTypeChangeSelector(battleData: battleData, tdTypes: tdTypes, completer: completer),
+      builder: (context, completer) => TdTypeChangeSelector(
+          battleData: battleData,
+          tdTypeChangeIds: tdTypeChangeIds,
+          tdIndexes: tdIndexes,
+          selectTdInfo: selectTdInfo,
+          completer: completer),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    final tdTypes = this.tdTypes.toList();
-    tdTypes.sort2((e) => [CardType.quick, CardType.arts, CardType.buster].indexOf(e));
+    final tdIndexes = this.tdIndexes.toList();
+    if (selectTdInfo == null) {
+      tdIndexes.sort2((e) => [CardType.quick.value, CardType.arts.value, CardType.buster.value].indexOf(e));
+    }
+    List<Widget> children = [];
+    final transl = Transl.miscScope('selectTreasureDeviceInfo');
+    for (final tdIndex in tdIndexes) {
+      final tdId = tdTypeChangeIds.getOrNull(tdIndex - 1);
+      SelectTdInfoTdChangeParam? tdInfo;
+      if (selectTdInfo != null) {
+        tdInfo = selectTdInfo!.treasureDevices.firstWhereOrNull((e) => e.id == tdId);
+      }
+      CardType cardType = tdInfo?.type ?? CardType.values.firstWhere((e) => e.value == tdIndex);
+      Widget child = CommandCardWidget(card: cardType, width: 80);
+      if (tdInfo != null && tdInfo.message.isNotEmpty) {
+        child = Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            child,
+            Text(
+              transl(tdInfo.message).l,
+              textAlign: TextAlign.center,
+              style: const TextStyle(fontSize: 12),
+            ),
+          ],
+        );
+      }
+      children.add(Flexible(
+        child: InkWell(
+          onTap: () {
+            Navigator.of(context).pop(tdIndex);
+            battleData.battleLogger.action('${S.current.battle_select_effect}: $tdIndex/${cardType.name.toTitle()}'
+                ' ${S.current.battle_np_card}');
+          },
+          child: child,
+        ),
+      ));
+    }
+
+    // String? title;
+    // if (selectTdInfo != null) {
+    //   title = transl(selectTdInfo!.title).l;
+    //   title = title.replaceAll('\n', '');
+    // }
     return SimpleCancelOkDialog(
       title: Text(S.current.battle_select_effect),
       content: Row(
-        children: [
-          for (final tdType in tdTypes)
-            Flexible(
-              child: InkWell(
-                onTap: () {
-                  Navigator.of(context).pop(tdType);
-                  battleData.battleLogger.action('${S.current.battle_select_effect}: ${tdType.name.toUpperCase()}'
-                      ' ${S.current.battle_np_card}');
-                },
-                child: CommandCardWidget(card: tdType, width: 80),
-              ),
-            )
-        ],
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: children,
       ),
       hideOk: true,
       hideCancel: true,

@@ -187,39 +187,37 @@ class AddState {
     final tdTypeChangeIDs = baseTd.script?.tdTypeChangeIDs;
     if (tdTypeChangeIDs == null || tdTypeChangeIDs.isEmpty) return null;
 
-    final validCardTypes = <CardType>[CardType.arts, CardType.buster, CardType.quick];
-    final cardIdTypeMap = {for (final c in validCardTypes) c.value: c};
+    final validCardIndex = <int>[CardType.arts.value, CardType.buster.value, CardType.quick.value];
 
     if (excludeTypes != null && excludeTypes.isNotEmpty) {
-      validCardTypes.removeWhere((e) => excludeTypes.contains(e.value));
+      validCardIndex.removeWhere((e) => excludeTypes.contains(e));
     }
-    final tdExistTypes =
-        cardIdTypeMap.entries.where((e) => e.key <= tdTypeChangeIDs.length).map((e) => e.value).toList();
-    validCardTypes.removeWhere((e) => !tdExistTypes.contains(e));
-    if (validCardTypes.isEmpty) return null;
+    validCardIndex.retainWhere((e) => e <= tdTypeChangeIDs.length);
+    if (validCardIndex.isEmpty) return null;
 
     // in UI, Q/A/B order
-    CardType? targetType;
+    int? targetType;
     if (buff.type == BuffType.tdTypeChangeArts) {
-      targetType = CardType.arts;
+      targetType = CardType.arts.value;
     } else if (buff.type == BuffType.tdTypeChangeBuster) {
-      targetType = CardType.buster;
+      targetType = CardType.buster.value;
     } else if (buff.type == BuffType.tdTypeChangeQuick) {
-      targetType = CardType.quick;
+      targetType = CardType.quick.value;
     } else if (buff.type == BuffType.tdTypeChange) {
       if (battleData.delegate?.tdTypeChange != null) {
-        targetType = await battleData.delegate!.tdTypeChange!(svt, validCardTypes);
+        targetType = await battleData.delegate!.tdTypeChange!(svt, validCardIndex);
       } else if (battleData.mounted) {
-        targetType = await TdTypeChangeSelector.show(battleData, validCardTypes);
+        targetType = await TdTypeChangeSelector.show(battleData, tdTypeChangeIDs, validCardIndex,
+            svt.getBaseTD()?.script?.selectTreasureDeviceInfo?.getOrNull(svt.tdLv - 1));
         if (targetType != null) {
           battleData.replayDataRecord.tdTypeChanges.add(targetType);
         }
       }
     }
     NiceTd? targetTd;
-    if (targetType != null && validCardTypes.contains(targetType)) {
+    if (targetType != null && validCardIndex.contains(targetType)) {
       // start from Q/A/B=1/2/3 -> index 0/1/2
-      final tdId = tdTypeChangeIDs.getOrNull(targetType.value - 1);
+      final tdId = tdTypeChangeIDs.getOrNull(targetType - 1);
       if (tdId == null) return null;
 
       final List<NiceTd?> tds = svt.isPlayer

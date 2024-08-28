@@ -379,6 +379,9 @@ SkillScript _$SkillScriptFromJson(Map json) => SkillScript(
       SelectAddInfo: (json['SelectAddInfo'] as List<dynamic>?)
           ?.map((e) => SkillSelectAddInfo.fromJson(Map<String, dynamic>.from(e as Map)))
           .toList(),
+      selectTreasureDeviceInfo: (json['selectTreasureDeviceInfo'] as List<dynamic>?)
+          ?.map((e) => SelectTreasureDeviceInfo.fromJson(Map<String, dynamic>.from(e as Map)))
+          .toList(),
       IgnoreValueUp: json['IgnoreValueUp'],
       IgnoreBattlePointUp: json['IgnoreBattlePointUp'] as List<dynamic>?,
       tdChangeByBattlePoint: (json['tdChangeByBattlePoint'] as List<dynamic>?)
@@ -397,6 +400,7 @@ Map<String, dynamic> _$SkillScriptToJson(SkillScript instance) {
 
   writeNotNull('actRarity', instance.actRarity);
   writeNotNull('SelectAddInfo', instance.SelectAddInfo?.map((e) => e.toJson()).toList());
+  writeNotNull('selectTreasureDeviceInfo', instance.selectTreasureDeviceInfo?.map((e) => e.toJson()).toList());
   writeNotNull('IgnoreValueUp', instance.IgnoreValueUp);
   writeNotNull('IgnoreBattlePointUp', instance.IgnoreBattlePointUp);
   writeNotNull('tdChangeByBattlePoint', instance.tdChangeByBattlePoint?.map((e) => e.toJson()).toList());
@@ -450,6 +454,35 @@ const _$SkillScriptCondEnumMap = {
   SkillScriptCond.hpPerHigher: 'HP_PER_HIGHER',
   SkillScriptCond.hpPerLower: 'HP_PER_LOWER',
 };
+
+SelectTreasureDeviceInfo _$SelectTreasureDeviceInfoFromJson(Map json) => SelectTreasureDeviceInfo(
+      dialogType: (json['dialogType'] as num?)?.toInt() ?? 0,
+      title: json['title'] as String? ?? "",
+      messageOnSelected: json['messageOnSelected'] as String? ?? "",
+      treasureDevices: (json['treasureDevices'] as List<dynamic>?)
+              ?.map((e) => SelectTdInfoTdChangeParam.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
+    );
+
+Map<String, dynamic> _$SelectTreasureDeviceInfoToJson(SelectTreasureDeviceInfo instance) => <String, dynamic>{
+      'dialogType': instance.dialogType,
+      'title': instance.title,
+      'messageOnSelected': instance.messageOnSelected,
+      'treasureDevices': instance.treasureDevices.map((e) => e.toJson()).toList(),
+    };
+
+SelectTdInfoTdChangeParam _$SelectTdInfoTdChangeParamFromJson(Map json) => SelectTdInfoTdChangeParam(
+      id: (json['id'] as num?)?.toInt() ?? 0,
+      type: $enumDecodeNullable(_$CardTypeEnumMap, json['type']) ?? CardType.none,
+      message: json['message'] as String? ?? "",
+    );
+
+Map<String, dynamic> _$SelectTdInfoTdChangeParamToJson(SelectTdInfoTdChangeParam instance) => <String, dynamic>{
+      'id': instance.id,
+      'type': _$CardTypeEnumMap[instance.type]!,
+      'message': instance.message,
+    };
 
 TdChangeByBattlePoint _$TdChangeByBattlePointFromJson(Map json) => TdChangeByBattlePoint(
       battlePointId: (json['battlePointId'] as num).toInt(),

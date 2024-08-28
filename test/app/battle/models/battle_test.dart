@@ -1903,7 +1903,7 @@ void main() async {
 
       int count = 0;
       battle.delegate = BattleDelegate();
-      battle.delegate?.tdTypeChange = (_actor, _list) async => [CardType.arts, CardType.buster][count++];
+      battle.delegate?.tdTypeChange = (_actor, _list) async => [CardType.arts.value, CardType.buster.value][count++];
 
       expect(emiya.getNPCard()!.cardType, CardType.buster);
 

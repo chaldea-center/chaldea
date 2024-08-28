@@ -978,10 +978,19 @@ enum SupportSvtType {
 
 @JsonSerializable()
 class BattleReplayDelegateData {
+  static List<int>? _readTdTypeChanges(Map data, String key) {
+    List? values = data[key];
+    if (values == null) return null;
+    return values.map<int>((e) {
+      if (e is int) return e;
+      return CardType.values.firstWhere((card) => card.name == e).value;
+    }).toList();
+  }
+
   List<int?> actWeightSelections;
   List<int?> skillActSelectSelections;
-  @JsonKey(unknownEnumValue: CardType.none)
-  List<CardType> tdTypeChanges;
+  @JsonKey(readValue: BattleReplayDelegateData._readTdTypeChanges)
+  List<int> tdTypeChanges;
   List<int?> ptRandomIndexes;
   List<bool> canActivateDecisions;
   List<int> damageSelections;
@@ -990,7 +999,7 @@ class BattleReplayDelegateData {
   BattleReplayDelegateData({
     List<int?>? actWeightSelections,
     List<int?>? skillActSelectSelections,
-    List<CardType>? tdTypeChanges,
+    List<int>? tdTypeChanges,
     List<int?>? ptRandomIndexes,
     List<bool>? canActivateDecisions,
     List<int>? damageSelections,

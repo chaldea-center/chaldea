@@ -7,7 +7,7 @@ import '../models/battle.dart';
 class BattleDelegate {
   Future<int?> Function(BattleServantData? actor)? actWeight;
   Future<int?> Function(BattleServantData? actor)? skillActSelect;
-  Future<CardType?> Function(BattleServantData? actor, List<CardType> tdTypes)? tdTypeChange;
+  Future<int?> Function(BattleServantData? actor, List<int> tdIndex)? tdTypeChange;
   Future<BattleServantData?> Function(List<BattleServantData> targets)? ptRandom;
   Future<bool> Function(bool curResult)? canActivate;
   Future<int> Function(int curRandom)? damageRandom;
