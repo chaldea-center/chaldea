@@ -193,7 +193,7 @@ class _WarDetailPageState extends State<WarDetailPage> with RegionBasedState<Nic
       ));
     }
     Set<int> bgms = {
-      war.bgm.id,
+      if (war.bgm != null) war.bgm!.id,
       ...war.warAdds.where((e) => e.type == WarOverwriteType.bgm).map((e) => e.overwriteId),
       ...war.maps.map((e) => e.bgm.id),
       ...eventAdds.where((e) => e.overwriteType == EventOverwriteType.bgm).map((e) => e.overwriteId),

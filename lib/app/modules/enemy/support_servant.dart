@@ -128,6 +128,20 @@ class _SupportServantPageState extends State<SupportServantPage> {
       ),
       CustomTableRow.fromChildren(
           children: [SharedBuilder.traitList(context: context, traits: svt.traits2.toList()..sort2((e) => e.id))]),
+      if (svt.passiveSkills.isNotEmpty)
+        CustomTableRow.fromTexts(
+          texts: [S.current.extra_passive],
+          isHeader: true,
+        ),
+      for (final passive in svt.passiveSkills)
+        if (passive.skill != null)
+          SkillDescriptor(
+            skill: passive.skill!,
+            level: passive.skillLv,
+            showEnemy: true,
+            showPlayer: true,
+            region: widget.region,
+          ),
       if (svt.skills2.skills.any((e) => e != null))
         CustomTableRow.fromTexts(
           texts: [S.current.skill],

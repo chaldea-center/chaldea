@@ -1101,6 +1101,7 @@ class SupportServant {
   int hp;
   List<NiceTrait> traits;
   EnemySkill skills;
+  List<SupportServantPassiveSkill> passiveSkills; // Only CN has it
   SupportServantTd noblePhantasm;
   @JsonKey(unknownEnumValue: NpcFollowerEntityFlag.none)
   List<NpcFollowerEntityFlag> followerFlags;
@@ -1120,8 +1121,9 @@ class SupportServant {
     required this.lv,
     required this.atk,
     required this.hp,
-    required this.traits,
+    this.traits = const [],
     required this.skills,
+    this.passiveSkills = const [],
     required this.noblePhantasm,
     this.followerFlags = const [],
     this.equips = const [],
@@ -1167,6 +1169,23 @@ class SupportServantRelease {
   factory SupportServantRelease.fromJson(Map<String, dynamic> json) => _$SupportServantReleaseFromJson(json);
 
   Map<String, dynamic> toJson() => _$SupportServantReleaseToJson(this);
+}
+
+@JsonSerializable()
+class SupportServantPassiveSkill {
+  int skillId;
+  NiceSkill? skill;
+  int? skillLv;
+
+  SupportServantPassiveSkill({
+    this.skillId = 0,
+    this.skill,
+    this.skillLv,
+  });
+
+  factory SupportServantPassiveSkill.fromJson(Map<String, dynamic> json) => _$SupportServantPassiveSkillFromJson(json);
+
+  Map<String, dynamic> toJson() => _$SupportServantPassiveSkillToJson(this);
 }
 
 @JsonSerializable()

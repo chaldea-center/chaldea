@@ -33,7 +33,7 @@ class NiceWar with RouteInfo {
   int materialParentWarId;
   int parentBlankEarthSpotId;
   String emptyMessage;
-  Bgm bgm;
+  Bgm? bgm;
   @protected
   String? scriptId;
   @protected
@@ -43,11 +43,52 @@ class NiceWar with RouteInfo {
   int _eventId;
   String eventName;
   int lastQuestId;
+  List<WarRelease> releaseConditions;
   List<WarAdd> warAdds;
   List<WarMap> maps;
   List<NiceSpot> spots;
   List<SpotRoad> spotRoads;
   List<WarQuestSelection> questSelections;
+
+  NiceWar({
+    required this.id,
+    this.coordinates = const [],
+    this.age = "",
+    String name = "",
+    String longName = "",
+    this.flags = const [],
+    this.banner,
+    this.headerImage,
+    this.priority = 0,
+    this.parentWarId = 0,
+    this.materialParentWarId = 0,
+    this.parentBlankEarthSpotId = 0,
+    this.emptyMessage = "",
+    this.bgm,
+    this.scriptId,
+    this.script,
+    this.startType = WarStartType.none,
+    this.targetId = 0,
+    int eventId = 0,
+    this.eventName = "",
+    this.lastQuestId = 0,
+    this.releaseConditions = const [],
+    this.warAdds = const [],
+    this.maps = const [],
+    this.spots = const [],
+    this.spotRoads = const [],
+    this.questSelections = const [],
+  })  : _name = _fixName(name, id, eventName),
+        _longName = _fixName(longName, id, eventName),
+        _eventId = eventId {
+    if (banner != null) {
+      if (id == 404) {
+        banner = banner!.replaceAll('/questboard_cap_closed.png', '/questboard_cap405.png');
+      } else if (id == 405) {
+        banner = banner!.replaceAll(RegExp(r'/questboard.*.png'), '/questboard_cap_closed_406.png');
+      }
+    }
+  }
 
   Set<int> get parentWars => {
         parentWarId,
@@ -95,45 +136,6 @@ class NiceWar with RouteInfo {
       return ScriptLink(scriptId: scriptId!, script: script!);
     }
     return null;
-  }
-
-  NiceWar({
-    required this.id,
-    required this.coordinates,
-    required this.age,
-    required String name,
-    required String longName,
-    this.flags = const [],
-    this.banner,
-    this.headerImage,
-    required this.priority,
-    this.parentWarId = 0,
-    this.materialParentWarId = 0,
-    this.parentBlankEarthSpotId = 0,
-    this.emptyMessage = "",
-    required this.bgm,
-    this.scriptId,
-    this.script,
-    this.startType = WarStartType.none,
-    this.targetId = 0,
-    int eventId = 0,
-    this.eventName = "",
-    this.lastQuestId = 0,
-    this.warAdds = const [],
-    this.maps = const [],
-    this.spots = const [],
-    this.spotRoads = const [],
-    this.questSelections = const [],
-  })  : _name = _fixName(name, id, eventName),
-        _longName = _fixName(longName, id, eventName),
-        _eventId = eventId {
-    if (banner != null && banner!.contains('questboard_cap_closed')) {
-      if (id == 404) {
-        banner = banner!.replaceAll('/questboard_cap_closed.png', '/questboard_cap405.png');
-      } else if (id == 405 && spots.isEmpty) {
-        banner = banner!.replaceAll('/questboard_cap_closed.png', '/questboard_cap_closed_406.png');
-      }
-    }
   }
 
   static String? _fixName(String name, int warId, String eventName) {
@@ -516,6 +518,29 @@ class WarAdd {
 }
 
 @JsonSerializable()
+class WarRelease {
+  int priority;
+  CondType condType;
+  int condId;
+  int condNum;
+  WarReleaseDisplayType warDisplayType;
+  String closedDialogMessage;
+
+  WarRelease({
+    this.priority = 0,
+    this.condType = CondType.none,
+    this.condId = 0,
+    this.condNum = 0,
+    this.warDisplayType = WarReleaseDisplayType.hide,
+    this.closedDialogMessage = "",
+  });
+
+  factory WarRelease.fromJson(Map<String, dynamic> json) => _$WarReleaseFromJson(json);
+
+  Map<String, dynamic> toJson() => _$WarReleaseToJson(this);
+}
+
+@JsonSerializable()
 class WarQuestSelection {
   Quest quest;
   String? shortcutBanner;
@@ -597,6 +622,13 @@ enum WarStartType {
   none,
   script,
   quest,
+}
+
+enum WarReleaseDisplayType {
+  hide,
+  open,
+  close,
+  announcement,
 }
 
 enum SpotOverwriteType {

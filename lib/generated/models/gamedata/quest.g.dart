@@ -645,10 +645,15 @@ SupportServant _$SupportServantFromJson(Map json) => SupportServant(
       lv: (json['lv'] as num).toInt(),
       atk: (json['atk'] as num).toInt(),
       hp: (json['hp'] as num).toInt(),
-      traits: (json['traits'] as List<dynamic>)
-          .map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
-          .toList(),
+      traits: (json['traits'] as List<dynamic>?)
+              ?.map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
       skills: EnemySkill.fromJson(Map<String, dynamic>.from(json['skills'] as Map)),
+      passiveSkills: (json['passiveSkills'] as List<dynamic>?)
+              ?.map((e) => SupportServantPassiveSkill.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
       noblePhantasm: SupportServantTd.fromJson(Map<String, dynamic>.from(json['noblePhantasm'] as Map)),
       followerFlags: (json['followerFlags'] as List<dynamic>?)
               ?.map((e) => $enumDecode(_$NpcFollowerEntityFlagEnumMap, e, unknownValue: NpcFollowerEntityFlag.none))
@@ -680,6 +685,7 @@ Map<String, dynamic> _$SupportServantToJson(SupportServant instance) => <String,
       'hp': instance.hp,
       'traits': instance.traits.map((e) => e.toJson()).toList(),
       'skills': instance.skills.toJson(),
+      'passiveSkills': instance.passiveSkills.map((e) => e.toJson()).toList(),
       'noblePhantasm': instance.noblePhantasm.toJson(),
       'followerFlags': instance.followerFlags.map((e) => _$NpcFollowerEntityFlagEnumMap[e]!).toList(),
       'equips': instance.equips.map((e) => e.toJson()).toList(),
@@ -706,6 +712,18 @@ Map<String, dynamic> _$SupportServantReleaseToJson(SupportServantRelease instanc
       'type': const CondTypeConverter().toJson(instance.type),
       'targetId': instance.targetId,
       'value': instance.value,
+    };
+
+SupportServantPassiveSkill _$SupportServantPassiveSkillFromJson(Map json) => SupportServantPassiveSkill(
+      skillId: (json['skillId'] as num?)?.toInt() ?? 0,
+      skill: json['skill'] == null ? null : NiceSkill.fromJson(Map<String, dynamic>.from(json['skill'] as Map)),
+      skillLv: (json['skillLv'] as num?)?.toInt(),
+    );
+
+Map<String, dynamic> _$SupportServantPassiveSkillToJson(SupportServantPassiveSkill instance) => <String, dynamic>{
+      'skillId': instance.skillId,
+      'skill': instance.skill?.toJson(),
+      'skillLv': instance.skillLv,
     };
 
 SupportServantTd _$SupportServantTdFromJson(Map json) => SupportServantTd(
