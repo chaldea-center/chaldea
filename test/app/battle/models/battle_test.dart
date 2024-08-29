@@ -1915,6 +1915,7 @@ void main() async {
     test('td type change', () async {
       final List<PlayerSvtData?> setting = [
         PlayerSvtData.id(200100)..setSkillStrengthenLvs([1, 1, 3]), // Emiya
+        PlayerSvtData.id(2300600), // new summer BB
       ];
       final battle = BattleData();
       final quest = db.gameData.questPhases[9300040603]!;
@@ -1929,7 +1930,12 @@ void main() async {
 
       int count = 0;
       battle.delegate = BattleDelegate();
-      battle.delegate?.tdTypeChange = (_actor, _list) async => [CardType.arts.value, CardType.buster.value][count++];
+      battle.delegate?.tdTypeChange = (_actor, _list) async => [
+            CardType.arts.value, // Emiya select arts
+            CardType.buster.value, // Emiya select buster
+            1, // summer bb select dmg type
+            2, // summer bb select support type
+          ][count++];
 
       expect(emiya.getNPCard()!.cardType, CardType.buster);
 
@@ -1938,8 +1944,27 @@ void main() async {
 
       await battle.skipTurn(); // skip so tdTypeChangeBuff expires
       await battle.resetPlayerSkillCD(isMysticCode: false, svt: emiya);
+      expect(emiya.getNPCard()!.cardType, CardType.buster);
       await battle.activateSvtSkill(0, 2);
       expect(emiya.getNPCard()!.cardType, CardType.buster);
+
+      final bb = battle.onFieldAllyServants[1]!;
+      expect(bb.getNPCard()!.cardType, CardType.arts);
+      expect(bb.getNPCard()!.td?.damageType, TdEffectFlag.attackEnemyAll);
+
+      await battle.activateSvtSkill(1, 2);
+      expect(bb.getNPCard()!.cardType, CardType.arts);
+      expect(bb.getNPCard()!.td?.damageType, TdEffectFlag.attackEnemyAll);
+
+      for (int idx = 0; idx < 3; idx += 1) {
+        await battle.skipTurn(); // skip so tdTypeChangeBuff expires
+      }
+      await battle.resetPlayerSkillCD(isMysticCode: false, svt: bb);
+      expect(bb.getNPCard()!.cardType, CardType.arts);
+      expect(bb.getNPCard()!.td?.damageType, TdEffectFlag.attackEnemyAll);
+      await battle.activateSvtSkill(1, 2);
+      expect(bb.getNPCard()!.cardType, CardType.arts);
+      expect(bb.getNPCard()!.td?.damageType, TdEffectFlag.support);
     });
   });
 

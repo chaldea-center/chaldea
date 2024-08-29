@@ -254,6 +254,7 @@ class FunctionExecutor {
             activator,
             targets,
             isShortBuff: function.funcType == FuncType.addStateShort,
+            selectTreasureDeviceInfo: script?.selectTreasureDeviceInfo?.getOrNull(skillLevel - 1),
             skillType: skillType,
             skillInfoType: skillInfoType,
           );

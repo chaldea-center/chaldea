@@ -18,6 +18,7 @@ class AddState {
     final BattleServantData? activator,
     final List<BattleServantData> targets, {
     final bool isShortBuff = false,
+    final SelectTreasureDeviceInfo? selectTreasureDeviceInfo,
     final SkillType? skillType,
     final SkillInfoType? skillInfoType,
   }) async {
@@ -57,7 +58,7 @@ class AddState {
       }
 
       if (buff.type.isTdTypeChange) {
-        buffData.tdTypeChange = await getTypeChangeTd(battleData, target, buff);
+        buffData.tdTypeChange = await getTypeChangeTd(battleData, target, buff, selectTreasureDeviceInfo);
       } else if (buff.type == BuffType.upDamageEventPoint) {
         final pointBuff = battleData.options.pointBuffs.values
             .firstWhereOrNull((pointBuff) => pointBuff.funcIds.isEmpty || pointBuff.funcIds.contains(funcId));
@@ -179,7 +180,12 @@ class AddState {
     return success;
   }
 
-  static Future<NiceTd?> getTypeChangeTd(BattleData battleData, BattleServantData svt, Buff buff) async {
+  static Future<NiceTd?> getTypeChangeTd(
+    BattleData battleData,
+    BattleServantData svt,
+    Buff buff,
+    SelectTreasureDeviceInfo? selectTreasureDeviceInfo,
+  ) async {
     final NiceTd? baseTd = svt.getBaseTD();
     if (baseTd == null) return null;
     if (!buff.type.isTdTypeChange) return null;
@@ -196,28 +202,33 @@ class AddState {
     if (validCardIndex.isEmpty) return null;
 
     // in UI, Q/A/B order
-    int? targetType;
+    int? targetTdIndex;
     if (buff.type == BuffType.tdTypeChangeArts) {
-      targetType = CardType.arts.value;
+      targetTdIndex = CardType.arts.value;
     } else if (buff.type == BuffType.tdTypeChangeBuster) {
-      targetType = CardType.buster.value;
+      targetTdIndex = CardType.buster.value;
     } else if (buff.type == BuffType.tdTypeChangeQuick) {
-      targetType = CardType.quick.value;
+      targetTdIndex = CardType.quick.value;
     } else if (buff.type == BuffType.tdTypeChange) {
       if (battleData.delegate?.tdTypeChange != null) {
-        targetType = await battleData.delegate!.tdTypeChange!(svt, validCardIndex);
+        targetTdIndex = await battleData.delegate!.tdTypeChange!(svt, validCardIndex);
       } else if (battleData.mounted) {
-        targetType = await TdTypeChangeSelector.show(battleData, tdTypeChangeIDs, validCardIndex,
-            svt.getBaseTD()?.script?.selectTreasureDeviceInfo?.getOrNull(svt.tdLv - 1));
-        if (targetType != null) {
-          battleData.replayDataRecord.tdTypeChanges.add(targetType);
+        selectTreasureDeviceInfo ??= svt.getBaseTD()?.script?.selectTreasureDeviceInfo?.getOrNull(svt.tdLv - 1);
+        targetTdIndex = await TdTypeChangeSelector.show(
+          battleData,
+          tdTypeChangeIDs,
+          validCardIndex,
+          selectTreasureDeviceInfo,
+        );
+        if (targetTdIndex != null) {
+          battleData.replayDataRecord.tdTypeChanges.add(targetTdIndex);
         }
       }
     }
     NiceTd? targetTd;
-    if (targetType != null && validCardIndex.contains(targetType)) {
+    if (targetTdIndex != null && validCardIndex.contains(targetTdIndex)) {
       // start from Q/A/B=1/2/3 -> index 0/1/2
-      final tdId = tdTypeChangeIDs.getOrNull(targetType - 1);
+      final tdId = tdTypeChangeIDs.getOrNull(targetTdIndex - 1);
       if (tdId == null) return null;
 
       final List<NiceTd?> tds = svt.isPlayer
