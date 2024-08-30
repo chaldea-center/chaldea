@@ -224,8 +224,16 @@ class BattleRecordManager {
       reasons.setUpload('COST ${options.formation.totalCost}>$maxCost');
     }
 
+    Map<int, int> svtCounts = {};
     for (final svtData in options.formation.allSvts) {
+      final svtId = svtData.svt?.id ?? 0;
+      if (svtId != 0) svtCounts.addNum(svtId, 1);
       _checkSvtEligible(svtData, questPhase);
+    }
+    svtCounts.removeWhere((k, v) => v < 2);
+    if (svtCounts.length > 1) {
+      reasons.setUpload(
+          svtCounts.entries.map((e) => '${e.value} ${db.gameData.servantsById[e.key]?.lName.l ?? e.key}').join(', '));
     }
   }
 
