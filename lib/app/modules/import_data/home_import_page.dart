@@ -69,19 +69,6 @@ class _ImportPageHomeState extends State<ImportPageHome> {
                   router.popDetailAndPush(child: ImportHttpPage());
                 },
               ),
-              ListTile(
-                leading: const Icon(Icons.manage_accounts),
-                title: Text(S.current.import_auth_file),
-                trailing: const Icon(Icons.keyboard_arrow_right),
-                subtitle: Text(
-                    ['${Region.jp.localName}/${Region.na.localName}', if (kIsWeb) 'web is not supported'].join(', ')),
-                enabled: !kIsWeb,
-                onTap: kIsWeb
-                    ? null
-                    : () {
-                        router.pushPage(const AutoLoginPage());
-                      },
-              ),
               if (!kIsWeb && AppInfo.isDebugDevice)
                 ListTile(
                   leading: const FaIcon(FontAwesomeIcons.bots, size: 18),
@@ -102,6 +89,19 @@ class _ImportPageHomeState extends State<ImportPageHome> {
                     router.pushPage(const FakerAccountsCNPage());
                   },
                 ),
+              ListTile(
+                leading: const Icon(Icons.manage_accounts),
+                title: Text(S.current.import_auth_file),
+                trailing: const Icon(Icons.keyboard_arrow_right),
+                subtitle: Text(
+                    ['${Region.jp.localName}/${Region.na.localName}', if (kIsWeb) 'web is not supported'].join(', ')),
+                enabled: !kIsWeb,
+                onTap: kIsWeb
+                    ? null
+                    : () {
+                        router.pushPage(const AutoLoginPage());
+                      },
+              ),
             ],
           ),
           // SHeader(S.current.testing),

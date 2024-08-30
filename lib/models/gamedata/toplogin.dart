@@ -476,26 +476,26 @@ class MasterDataManager {
     return List.generate(kAppendSkillNums.length, (index) => lvs[100 + index] ?? 0);
   }
 
-  int getItemNum(int itemId) {
+  int getItemNum(int itemId, [int _default = 0]) {
     final user = this.user;
     if (itemId == Items.qpId) {
-      return user?.qp ?? 0;
+      return user?.qp ?? _default;
     } else if (itemId == Items.stoneId) {
       // stone=free+charge
-      return user?.stone ?? 0;
+      return user?.stone ?? _default;
     } else if (itemId == Items.manaPrismId) {
-      return user?.mana ?? 0;
+      return user?.mana ?? _default;
     } else if (itemId == Items.rarePrismId) {
-      return user?.rarePri ?? 0;
+      return user?.rarePri ?? _default;
     } else {
-      int count = userItem[itemId]?.num ?? 0;
+      int? count = userItem[itemId]?.num;
       final item = db.gameData.items[itemId];
       if (item != null) {
-        if (item.type == ItemType.eventPoint && count == 0) {
-          return userEventPoint[_createPK2(item.eventId, item.eventGroupId)]?.value ?? 0;
+        if (item.type == ItemType.eventPoint && count == null) {
+          return userEventPoint[_createPK2(item.eventId, item.eventGroupId)]?.value ?? _default;
         }
       }
-      return count;
+      return count ?? _default;
     }
   }
 

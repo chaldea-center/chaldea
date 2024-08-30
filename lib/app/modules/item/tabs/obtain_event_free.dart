@@ -23,8 +23,8 @@ class _ItemObtainEventFreeTabState extends State<ItemObtainEventFreeTab> {
 
   Map<int, Quest> getEventQuests() {
     List<int> questsIds = [];
-    for (final questId in db.gameData.dropData.freeDrops2.keys) {
-      final drops = db.gameData.dropData.freeDrops2[questId]!;
+    for (final questId in db.gameData.dropData.eventFreeDrops.keys) {
+      final drops = db.gameData.dropData.eventFreeDrops[questId]!;
       final count = drops.items[widget.itemId] ?? 0;
       if (drops.runs < 10 || count <= 0) continue;
       questsIds.add(questId);
@@ -110,7 +110,7 @@ class _ItemObtainEventFreeTabState extends State<ItemObtainEventFreeTab> {
       }
       if (!widget.showOutdated && outdated) continue;
 
-      final drops = db.gameData.dropData.freeDrops2[questId]!;
+      final drops = db.gameData.dropData.eventFreeDrops[questId]!;
       final dropCount = drops.items[widget.itemId] ?? 0;
       if (drops.runs <= 0) continue;
       final dropRate = dropCount / drops.runs;

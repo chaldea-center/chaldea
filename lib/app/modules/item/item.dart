@@ -108,7 +108,7 @@ class _ItemDetailPageState extends State<ItemDetailPage> with SingleTickerProvid
         break;
     }
     if (_shownTabs.contains(_TabType.eventFree) &&
-        db.gameData.dropData.freeDrops2.values.every((e) => !e.items.containsKey(widget.itemId))) {
+        db.gameData.dropData.eventFreeDrops.values.every((e) => !e.items.containsKey(widget.itemId))) {
       _shownTabs.remove(_TabType.eventFree);
     }
     if (!_shownTabs.contains(_TabType.info)) _shownTabs.add(_TabType.info);

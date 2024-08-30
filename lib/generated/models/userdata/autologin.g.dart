@@ -55,6 +55,11 @@ AutoLoginDataJP _$AutoLoginDataJPFromJson(Map json) => $checkedCreate(
           lastLogin: $checkedConvert('lastLogin', (v) => (v as num?)?.toInt()),
           userGame: $checkedConvert(
               'userGame', (v) => v == null ? null : UserGameEntity.fromJson(Map<String, dynamic>.from(v as Map))),
+          userItems: $checkedConvert(
+              'userItems',
+              (v) => (v as Map?)?.map(
+                    (k, e) => MapEntry(int.parse(k as String), (e as num).toInt()),
+                  )),
         );
         return val;
       },
@@ -67,6 +72,7 @@ Map<String, dynamic> _$AutoLoginDataJPToJson(AutoLoginDataJP instance) => <Strin
       'battleOptions': instance.battleOptions.map((e) => e.toJson()).toList(),
       'lastLogin': instance.lastLogin,
       'userGame': instance.userGame?.toJson(),
+      'userItems': instance.userItems.map((k, e) => MapEntry(k.toString(), e)),
       'auth': instance.auth?.toJson(),
       'deviceInfo': instance.deviceInfo,
       'country': _$NACountryEnumMap[instance.country]!,
@@ -128,6 +134,11 @@ AutoLoginDataCN _$AutoLoginDataCNFromJson(Map json) => $checkedCreate(
           lastLogin: $checkedConvert('lastLogin', (v) => (v as num?)?.toInt()),
           userGame: $checkedConvert(
               'userGame', (v) => v == null ? null : UserGameEntity.fromJson(Map<String, dynamic>.from(v as Map))),
+          userItems: $checkedConvert(
+              'userItems',
+              (v) => (v as Map?)?.map(
+                    (k, e) => MapEntry(int.parse(k as String), (e as num).toInt()),
+                  )),
         );
         return val;
       },
@@ -139,6 +150,7 @@ Map<String, dynamic> _$AutoLoginDataCNToJson(AutoLoginDataCN instance) => <Strin
       'battleOptions': instance.battleOptions.map((e) => e.toJson()).toList(),
       'lastLogin': instance.lastLogin,
       'userGame': instance.userGame?.toJson(),
+      'userItems': instance.userItems.map((k, e) => MapEntry(k.toString(), e)),
       'region': const RegionConverter().toJson(instance.region),
       'gameServer': _$BiliGameServerEnumMap[instance.gameServer]!,
       'isAndroidDevice': instance.isAndroidDevice,

@@ -424,6 +424,8 @@ class Items {
   static const int ember3 = 9770300;
   static const int ember4 = 9770400;
   static const int ember5 = 9770500;
+
+  static const loginSaveItems = [...apples, stormPodId];
 }
 
 @JsonSerializable()

@@ -71,6 +71,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
     try {
       _runningTask = true;
       EasyLoading.show();
+      if (mounted) setState(() {});
       await task();
       EasyLoading.dismiss();
     } catch (e, s) {
@@ -154,11 +155,11 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
                 children: [
                   optionSelector,
                   const Divider(height: 8),
-                  gameInfoSection,
                   battleDetailSection,
                   battleSetupOptionSection,
                   battleResultOptionSection,
                   battleLoopOptionSection,
+                  gameInfoSection,
                 ],
               ),
             ),
@@ -178,6 +179,14 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
       dense: true,
       minTileHeight: 48,
       visualDensity: VisualDensity.compact,
+      minLeadingWidth: 20,
+      leading: Container(
+        constraints: const BoxConstraints(maxWidth: 16, maxHeight: 16),
+        child: CircularProgressIndicator(
+          value: _runningTask ? null : 1.0,
+          color: _runningTask ? Colors.red : Colors.green,
+        ),
+      ),
       title: Text('[${agent.user.serverName}] ${userGame?.name ?? "not login"}'),
       subtitle: Text('${userGame?.friendCode ?? ""} (${agent.user.internalId})'),
       trailing: userGame == null
@@ -200,13 +209,12 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
           TextSpan(text: '×${userGame?.stone ?? 0}  '),
         ]),
         for (final itemId in <int>{
-          ...Items.apples,
-          Items.stormPodId,
+          ...Items.loginSaveItems,
           ...?db.gameData.quests[battleOption.questId]?.consumeItem.map((e) => e.itemId)
         })
           TextSpan(children: [
             CenterWidgetSpan(child: Item.iconBuilder(context: context, item: null, itemId: itemId, width: 20)),
-            TextSpan(text: '×${mstData.getItemNum(itemId)}  '),
+            TextSpan(text: '×${mstData.getItemNum(itemId, agent.user.userItems[itemId] ?? 0)}  '),
           ])
       ])),
     ));
@@ -232,6 +240,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
       subtitle: Text(_describeQuest(option.questId, option.questPhase, null)),
       trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
       onTap: () async {
+        if (_runningTask) return;
         await router.pushPage(BattleOptionListPage(data: agent.user));
         if (mounted) setState(() {});
       },
@@ -254,20 +263,12 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
 
   Widget get battleDetailSection {
     final battleEntity = agent.curBattle ?? agent.lastBattle;
+    List<Widget> children = [];
     if (battleEntity == null) {
-      return const TileGroup(
-        header: 'Battle Details',
-        children: [
-          ListTile(title: Text('No battle')),
-        ],
-      );
-    }
-    final dropItems = battleEntity.battleInfo?.getTotalDrops() ?? {};
-
-    return TileGroup(
-      header: 'Battle ${battleEntity.id} - ${agent.curBattle == null ? "ended" : "ongoing"}'
-          ' (${battleEntity.createdAt.sec2date().toStringShort()})',
-      children: [
+      children.add(const ListTile(dense: true, title: Text('No battle')));
+    } else {
+      final dropItems = battleEntity.battleInfo?.getTotalDrops() ?? {};
+      children.addAll([
         ListTile(
           dense: true,
           title: Text('Quest ${battleEntity.questId}/${battleEntity.questPhase}'),
@@ -308,7 +309,72 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           child: FormationCard(formation: cvtFormation(battleEntity)),
         ),
-      ],
+      ]);
+    }
+    children.add(SimpleAccordion(
+      headerBuilder: (context, _) {
+        return ListTile(dense: true, title: Text('Drops (${totalDropStat.totalCount} runs)'));
+      },
+      contentBuilder: (context) {
+        totalDropStat.items.removeWhere((k, v) => v == 0);
+        final questDropIds = db.gameData.dropData.freeDrops2[battleOption.questId]?.items.keys.toList() ?? [];
+        for (final itemId in questDropIds) {
+          totalDropStat.items.putIfAbsent(itemId, () => 0);
+        }
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            for (final (header, dropStats) in [
+              ('Total Drop Statistics', totalDropStat),
+              ('Current Loop\'s Drop Statistics', curLoopDropStat)
+            ])
+              ListTile(
+                dense: true,
+                title: Text.rich(TextSpan(text: "$header (${dropStats.totalCount} runs)  ", children: [
+                  SharedBuilder.textButtonSpan(
+                    context: context,
+                    text: 'clear',
+                    onTap: () {
+                      setState(() {
+                        dropStats.reset();
+                      });
+                    },
+                  )
+                ])),
+                subtitle: Wrap(
+                  spacing: 2,
+                  runSpacing: 2,
+                  children: (dropStats.items.keys.toList()..sort(Item.compare)).map((itemId) {
+                    double prob = 0;
+                    if (dropStats.totalCount > 0) {
+                      prob = dropStats.items[itemId]! / dropStats.totalCount;
+                    }
+                    return GameCardMixin.anyCardItemBuilder(
+                      context: context,
+                      id: itemId,
+                      width: 42,
+                      text: [
+                        dropStats.items[itemId]!.format(),
+                        if (dropStats.totalCount > 0) prob > 1 ? prob.format() : prob.format(percent: true),
+                        db.gameData.craftEssencesById.containsKey(itemId)
+                            ? (mstData.userSvt.where((e) => e.svtId == itemId).length.toString())
+                            : mstData.getItemNum(itemId).format(),
+                      ].join('\n'),
+                    );
+                  }).toList(),
+                ),
+              ),
+          ],
+        );
+      },
+    ));
+
+    return TileGroup(
+      header: battleEntity == null
+          ? 'Battle Details'
+          : 'Battle ${battleEntity.id} - ${agent.curBattle == null ? "ended" : "ongoing"}'
+              ' (${battleEntity.createdAt.sec2date().toStringShort()})',
+      children: children,
     );
   }
 
@@ -556,47 +622,6 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
             icon: const Icon(Icons.add_circle),
           ),
         ),
-        DividerWithTitle(title: S.current.statistics_title, indent: 16),
-        for (final (header, dropStats) in [
-          ('Total Drop Statistics', totalDropStat),
-          ('Current Loop\'s Drop Statistics', curLoopDropStat)
-        ])
-          ListTile(
-            dense: true,
-            title: Text.rich(TextSpan(text: "$header (${dropStats.totalCount} runs)  ", children: [
-              SharedBuilder.textButtonSpan(
-                context: context,
-                text: 'clear',
-                onTap: () {
-                  setState(() {
-                    dropStats.reset();
-                  });
-                },
-              )
-            ])),
-            subtitle: Wrap(
-              spacing: 2,
-              runSpacing: 2,
-              children: (dropStats.items.keys.toList()..sort(Item.compare)).map((itemId) {
-                double prob = 0;
-                if (dropStats.totalCount > 0) {
-                  prob = dropStats.items[itemId]! / dropStats.totalCount;
-                }
-                return GameCardMixin.anyCardItemBuilder(
-                  context: context,
-                  id: itemId,
-                  width: 42,
-                  text: [
-                    dropStats.items[itemId]!.format(),
-                    if (dropStats.totalCount > 0) prob > 1 ? prob.format() : prob.format(percent: true),
-                    db.gameData.craftEssencesById.containsKey(itemId)
-                        ? (mstData.userSvt.where((e) => e.svtId == itemId).length.toString())
-                        : mstData.getItemNum(itemId).format(),
-                  ].join('\n'),
-                );
-              }).toList(),
-            ),
-          )
       ],
     );
   }

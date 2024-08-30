@@ -1,6 +1,7 @@
 import 'package:chaldea/packages/logger.dart';
 import '../db.dart';
 import '_helper.dart';
+import 'war.dart';
 
 part '../../generated/models/gamedata/drop_rate.g.dart';
 
@@ -10,10 +11,19 @@ class DropData {
   DropRateSheet domusAurea;
   // key=questId*100+phase
   Map<int, QuestDropData> fixedDrops; // one-off quest
+
+  // event + main frees
   @protected
-  final Map<int, QuestDropData> freeDrops; // event free quest
+  final Map<int, QuestDropData> freeDrops; // key = id*100+phase
+
   @JsonKey(includeFromJson: false, includeToJson: false)
-  final Map<int, QuestDropData> freeDrops2;
+  final Map<int, QuestDropData> freeDrops2; // key=questId
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  late final Map<int, QuestDropData> eventFreeDrops = Map.of(freeDrops2)
+    ..removeWhere((questId, drop) {
+      final quest = db.gameData.quests[questId];
+      return quest != null && (quest.warId < 2000 || quest.warId == WarId.chaldeaGate);
+    });
 
   DropData({
     this.domusVer = 0,

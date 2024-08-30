@@ -68,7 +68,7 @@ class _EventItemInputTabState extends State<EventItemInputTab> {
       if (!(quest.isAnyFree && quest.consumeType.useAp && quest.consume > 0 && quest.phases.isNotEmpty)) {
         continue;
       }
-      QuestDropData? drops = db.gameData.dropData.freeDrops2[quest.id];
+      QuestDropData? drops = db.gameData.dropData.eventFreeDrops[quest.id];
       if ((drops == null || drops.runs < 5) && DateTime.now().timestamp - quest.openedAt < kSecsPerDay) {
         final questPhase =
             await AtlasApi.questPhase(quest.id, quest.phases.last, expireAfter: const Duration(minutes: 30));

@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
@@ -178,11 +179,18 @@ abstract class NetworkManagerBase<TRequest extends FRequestBase, TUser extends A
           if (newUserGame != null) {
             user.userGame = UserGameEntity.fromJson(newUserGame.toJson());
           }
+          for (final itemId in Items.loginSaveItems) {
+            final count = resp.data.mstData.userItem[itemId]?.num;
+            if (count != null) {
+              user.userItems[itemId] = count;
+            }
+          }
 
           record.response = resp;
           return resp;
         } on DioException catch (e, s) {
           logger.e('fgo request failed, retry after 5 seconds', e, s);
+          EasyLoading.show(status: 'Error: ${e.toString().substring2(0, 100)}');
           await Future.delayed(const Duration(seconds: 5));
           tryCount++;
           _nowTime = getNowTimestamp();

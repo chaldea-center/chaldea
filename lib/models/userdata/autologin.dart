@@ -89,6 +89,7 @@ sealed class AutoLoginData {
 
   int? lastLogin;
   UserGameEntity? userGame;
+  Map<int, int> userItems = {};
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   FResponse? response;
@@ -100,8 +101,10 @@ sealed class AutoLoginData {
     List<AutoBattleOptions>? battleOptions,
     this.lastLogin,
     this.userGame,
+    Map<int, int>? userItems,
   })  : battleOptions = battleOptions ?? [AutoBattleOptions()],
-        _curBattleOptionIndex = curBattleOptionIndex ?? 0;
+        _curBattleOptionIndex = curBattleOptionIndex ?? 0,
+        userItems = userItems ?? {};
 
   String get serverName;
   String get internalId;
@@ -125,6 +128,7 @@ class AutoLoginDataJP extends AutoLoginData {
     super.battleOptions,
     super.lastLogin,
     super.userGame,
+    super.userItems,
   });
 
   factory AutoLoginDataJP.fromJson(Map<String, dynamic> json) => _$AutoLoginDataJPFromJson(json);
@@ -201,6 +205,7 @@ class AutoLoginDataCN extends AutoLoginData {
     super.battleOptions,
     super.lastLogin,
     super.userGame,
+    super.userItems,
   });
 
   factory AutoLoginDataCN.fromJson(Map<String, dynamic> json) => _$AutoLoginDataCNFromJson(json);
