@@ -71,7 +71,12 @@ class FResponse {
       }
     }
     if (nid != null) {
-      throw Exception('response of nid $nid not found');
+      final errors = data.responses.where((e) => !e.isSuccess()).map((e) => "${e.resCode} ${e.fail}").join("\n");
+      if (errors.isNotEmpty) {
+        throw Exception('[$nid] failed:\n$errors');
+      } else {
+        throw Exception('Response [$nid] not found');
+      }
     }
     return this;
   }

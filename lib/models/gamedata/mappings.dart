@@ -241,6 +241,10 @@ class Transl<K, V> {
     return Transl(mapping(db.gameData.mappingData.enums), value.name, value.name);
   }
 
+  static Transl<int, String> enumsInt(int value, Map<int, MappingBase<String>> Function(EnumMapping enums) mapping) {
+    return Transl(mapping(db.gameData.mappingData.enums), value, value.toString());
+  }
+
   static Transl<String, String> svtSubAttribute(ServantSubAttribute key) {
     String name = key.name2;
     return Transl(md.enums.attribute, name, name);
@@ -693,6 +697,7 @@ class EnumMapping {
   final Map<String, MappingBase<String>> shopType;
   final Map<String, MappingBase<String>> purchaseType;
   final Map<String, MappingBase<String>> restrictionType;
+  final Map<int, MappingBase<String>> presentFromType;
   // ai
   final Map<int, MappingBase<String>> aiActNum;
   final Map<int, MappingBase<String>> aiTiming;
@@ -726,6 +731,7 @@ class EnumMapping {
     this.shopType = const {},
     this.purchaseType = const {},
     this.restrictionType = const {},
+    this.presentFromType = const {},
     this.aiActNum = const {},
     this.aiTiming = const {},
     this.aiCond = const {},

@@ -1,3 +1,4 @@
+import 'package:chaldea/app/modules/common/filter_group.dart';
 import 'package:chaldea/models/gamedata/toplogin.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
@@ -14,6 +15,7 @@ class DailyBonusTabState extends State<DailyBonusTab> {
   DailyBonusData? get _dailyBonusData => db.runtimeData.dailyBonusData;
   bool showDaily = false;
   bool showExtra = true;
+  final fromTypeFilter = FilterGroupData<int>();
 
   @override
   void initState() {
@@ -38,6 +40,8 @@ class DailyBonusTabState extends State<DailyBonusTab> {
     List<String> keys = groups.keys.toList()..sort();
     keys = keys.reversed.toList();
 
+    final fromTypes = <int>{1, 2, for (final present in userPresents) present.fromType}.toList();
+    fromTypes.sort();
     return Column(
       children: [
         Expanded(
@@ -49,51 +53,37 @@ class DailyBonusTabState extends State<DailyBonusTab> {
         ),
         kDefaultDivider,
         SafeArea(
-            child: OverflowBar(
-          alignment: MainAxisAlignment.center,
-          children: [
-            CheckboxWithLabel(
-              value: showDaily,
-              label: const Text("Daily"),
-              onChanged: (v) {
-                setState(() {
-                  showDaily = v ?? showDaily;
-                });
-              },
-            ),
-            CheckboxWithLabel(
-              value: showExtra,
-              label: const Text("Extra"),
-              onChanged: (v) {
-                setState(() {
-                  showExtra = v ?? showExtra;
-                });
-              },
-            ),
-          ],
-        ))
+          child: OverflowBar(
+            alignment: MainAxisAlignment.center,
+            children: [
+              FilterGroup(
+                padding: EdgeInsets.zero,
+                combined: true,
+                options: fromTypes,
+                values: fromTypeFilter,
+                optionBuilder: (v) => Text(Transl.enumsInt(v, (e) => e.presentFromType).l),
+                onFilterChanged: (v, _) {
+                  setState(() {});
+                },
+              ),
+            ],
+          ),
+        )
       ],
     );
   }
 
   Widget buildGroup(BuildContext context, String key, List<UserPresentBoxEntity> presents) {
-    final List<UserPresentBoxEntity> dailyLogins = [], extraBonus = [];
-    for (final present in presents) {
-      if (present.fromType == PresentFromType.totalLogin.value || present.fromType == PresentFromType.seqLogin.value) {
-        dailyLogins.add(present);
-      } else {
-        extraBonus.add(present);
-      }
-    }
     return TileGroup(
       header: key,
       children: [
-        if (showDaily)
-          for (final present in dailyLogins)
+        for (final present in presents)
+          if (fromTypeFilter.matchOne(present.fromType))
             buildPresent(
-                context: context, present: present, tileColor: Theme.of(context).disabledColor.withOpacity(0.1)),
-        if (showExtra)
-          for (final present in extraBonus) buildPresent(context: context, present: present),
+              context: context,
+              present: present,
+              tileColor: present.fromType <= 2 ? Theme.of(context).disabledColor.withOpacity(0.1) : null,
+            ),
       ],
     );
   }

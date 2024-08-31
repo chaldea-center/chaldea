@@ -471,6 +471,11 @@ EnumMapping _$EnumMappingFromJson(Map json) => EnumMapping(
             (k, e) => MapEntry(k as String, MappingBase<String>.fromJson(Map<String, dynamic>.from(e as Map))),
           ) ??
           const {},
+      presentFromType: (json['present_from_type'] as Map?)?.map(
+            (k, e) =>
+                MapEntry(int.parse(k as String), MappingBase<String>.fromJson(Map<String, dynamic>.from(e as Map))),
+          ) ??
+          const {},
       aiActNum: (json['ai_act_num'] as Map?)?.map(
             (k, e) =>
                 MapEntry(int.parse(k as String), MappingBase<String>.fromJson(Map<String, dynamic>.from(e as Map))),
@@ -521,6 +526,7 @@ Map<String, dynamic> _$EnumMappingToJson(EnumMapping instance) => <String, dynam
       'shop_type': instance.shopType.map((k, e) => MapEntry(k, e.toJson())),
       'purchase_type': instance.purchaseType.map((k, e) => MapEntry(k, e.toJson())),
       'restriction_type': instance.restrictionType.map((k, e) => MapEntry(k, e.toJson())),
+      'present_from_type': instance.presentFromType.map((k, e) => MapEntry(k.toString(), e.toJson())),
       'ai_act_num': instance.aiActNum.map((k, e) => MapEntry(k.toString(), e.toJson())),
       'ai_timing': instance.aiTiming.map((k, e) => MapEntry(k.toString(), e.toJson())),
       'ai_cond': instance.aiCond.map((k, e) => MapEntry(k, e.toJson())),
