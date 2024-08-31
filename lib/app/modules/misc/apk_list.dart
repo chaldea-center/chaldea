@@ -8,7 +8,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:chaldea/app/api/chaldea.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
-import 'package:chaldea/packages/app_info.dart';
 import 'package:chaldea/packages/language.dart';
 import 'package:chaldea/packages/svg.dart';
 import 'package:chaldea/utils/utils.dart';
@@ -39,12 +38,12 @@ class ApkListPage extends StatefulWidget {
 
 class _ApkListPageState extends State<ApkListPage> {
   static final apks = [
-    _ApkData(null, kPackageName, 1548713491, 'cn'),
     _ApkData(Region.jp, 'com.aniplex.fategrandorder', 1015521325, 'us'),
     _ApkData(Region.cn, 'com.bilibili.fatego', 1108397779, 'cn'),
     _ApkData(Region.tw, 'com.xiaomeng.fategrandorder', 1225867328, 'tw'),
     _ApkData(Region.na, 'com.aniplex.fategrandorder.en', 1183802626, 'us'),
     _ApkData(Region.kr, 'com.netmarble.fgok', 1241893973, 'kr'),
+    _ApkData(null, kPackageName, 1548713491, 'cn'),
   ];
   static final Map<String, String> bfgoVersions = {};
 
@@ -186,23 +185,24 @@ class _ApkListPageState extends State<ApkListPage> {
                   ],
                 ),
                 for (final data in _dataList) buildOne(data),
-                if (AppInfo.isDebugOn)
-                  TileGroup(
-                    header: "Rayshift APK Mod",
-                    footer: "Disclaimer: 3rd party modified apk, use at your own risk.",
-                    children: [
-                      for (final r in const ['jp', 'na'])
-                        ListTile(
-                          dense: true,
-                          title: Text("BFGO ${r.toUpperCase()}"),
-                          subtitle: Text(bfgoVersions[r] ?? 'io.rayshift.betterfgo${r == 'jp' ? '' : ".en"}'),
-                          trailing: const Icon(Icons.open_in_new, size: 18),
-                          onTap: () {
-                            launch('https://rayshift.io/betterfgo/download/$r', external: true);
-                          },
-                        )
-                    ],
-                  ),
+                TileGroup(
+                  header: "Rayshift APK Mod",
+                  footer: Language.isZH
+                      ? "声明: 第三方修改APK，请自行承担风险。"
+                      : "Disclaimer: 3rd party modified apk, use at your own risk.",
+                  children: [
+                    for (final r in const ['jp', 'na'])
+                      ListTile(
+                        dense: true,
+                        title: Text("BFGO ${r.toUpperCase()}"),
+                        subtitle: Text(bfgoVersions[r] ?? 'io.rayshift.betterfgo${r == 'jp' ? '' : ".en"}'),
+                        trailing: const Icon(Icons.open_in_new, size: 18),
+                        onTap: () {
+                          launch('https://rayshift.io/betterfgo/download/$r', external: true);
+                        },
+                      )
+                  ],
+                ),
                 xapkHint,
                 const SizedBox(height: 16),
                 const DividerWithTitle(title: 'Links', indent: 16, height: 16),
