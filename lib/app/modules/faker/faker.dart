@@ -42,6 +42,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
   AutoBattleOptions get battleOption => agent.user.curBattleOption;
 
   bool _runningTask = false;
+  static final Set<int> awakeTasks = {};
 
   void _lockTask(VoidCallback callback) {
     if (_runningTask) {
@@ -1155,9 +1156,13 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
                 _runTask(() async {
                   try {
                     WakelockPlus.enable();
+                    awakeTasks.add(hashCode);
                     return await startLoop();
                   } finally {
-                    WakelockPlus.disable();
+                    awakeTasks.remove(hashCode);
+                    if (awakeTasks.isEmpty) {
+                      WakelockPlus.disable();
+                    }
                   }
                 });
               },

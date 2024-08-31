@@ -24,7 +24,24 @@ class _FakerHistoryViewerState extends State<FakerHistoryViewer> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("History (${history.length})")),
+      appBar: AppBar(
+        title: Text("History (${history.length})"),
+        actions: [
+          IconButton(
+            onPressed: () {
+              final history = agent.network.history;
+              if (history.length > 5) {
+                history.removeRange(0, history.length - 5);
+              } else {
+                history.clear();
+              }
+              setState(() {});
+            },
+            icon: const Icon(Icons.clear_all),
+            tooltip: S.current.clear,
+          )
+        ],
+      ),
       body: DefaultTextStyle.merge(
         overflow: TextOverflow.ellipsis,
         child: ListTileTheme.merge(

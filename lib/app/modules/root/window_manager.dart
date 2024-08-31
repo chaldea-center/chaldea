@@ -10,7 +10,6 @@ import 'package:chaldea/app/modules/root/global_fab.dart';
 import 'package:chaldea/app/routes/delegate.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
-import 'package:chaldea/packages/language.dart';
 import 'package:chaldea/packages/split_route/split_route.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
@@ -251,29 +250,46 @@ class _MultipleWindowState extends State<MultipleWindow> {
           toolbarHeight: 42,
           title: const Text(kAppName),
           actions: [
-            DropdownButton<Language>(
-              value: Language.getLanguage(S.current.localeName),
+            DropdownButton<int>(
+              value: db.userData.curUserKey,
+              alignment: AlignmentDirectional.centerEnd,
               items: [
-                for (final lang in Language.supportLanguages) DropdownMenuItem(value: lang, child: Text(lang.name))
+                for (final (index, user) in db.userData.users.indexed)
+                  DropdownMenuItem(
+                    value: index,
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 180),
+                      child: Text(user.name, maxLines: 1),
+                    ),
+                  ),
               ],
               icon: Icon(
                 Icons.arrow_drop_down,
                 color: SharedBuilder.appBarForeground(context),
               ),
               selectedItemBuilder: (context) => [
-                for (final lang in Language.supportLanguages)
+                for (final (index, user) in db.userData.users.indexed)
                   DropdownMenuItem(
-                    value: lang,
-                    child: Text(
-                      lang.name,
-                      style: TextStyle(color: SharedBuilder.appBarForeground(context)),
+                    value: index,
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 180),
+                      child: Text(
+                        user.name,
+                        maxLines: 1,
+                        style: TextStyle(color: SharedBuilder.appBarForeground(context)),
+                      ),
                     ),
-                  )
+                  ),
               ],
-              onChanged: (lang) {
-                if (lang == null) return;
-                db.settings.setLanguage(lang);
-                db.notifyAppUpdate();
+              onChanged: (index) {
+                if (index != null) {
+                  db.userData.curUserKey = index;
+                  EasyDebounce.debounce('itemCenter.init', const Duration(seconds: 1), () {
+                    db.itemCenter.init();
+                  });
+                  db.notifyUserdata();
+                }
+                setState(() {});
               },
               underline: const SizedBox(),
             ),
@@ -399,26 +415,44 @@ class WindowThumb extends StatelessWidget {
   Widget build(BuildContext context) {
     final childDelegate = root.appState.children[index];
     final url = childDelegate.currentConfiguration?.url;
+    final size = MediaQuery.of(context).size;
     Widget child = AbsorbPointer(
       absorbing: absorbPointer,
-      child: FittedBox(
-        fit: BoxFit.contain,
-        child: SizedBox.fromSize(
-          size: MediaQuery.of(context).size,
-          child: childDelegate.build(context),
-        ),
-      ),
+      child: LayoutBuilder(builder: (context, constraints) {
+        final biggest = constraints.biggest;
+        biggest.isFinite;
+        return FittedBox(
+          fit: BoxFit.contain,
+          child: SizedBox.fromSize(
+            size: biggest.isFinite ? Size(size.width, size.width / biggest.aspectRatio) : size,
+            child: childDelegate.build(context),
+          ),
+        );
+      }),
+      // child: FittedBox(
+      //   fit: BoxFit.contain,
+      //   child: SizedBox.fromSize(
+      //     size: MediaQuery.of(context).size,
+      //     child: childDelegate.build(context),
+      //   ),
+      // ),
     );
-    child = Stack(
-      // alignment: Alignment.bottomLeft,
+    // child = Stack(
+    //   // alignment: Alignment.bottomLeft,
+    //   children: [
+    //     Positioned.fill(child: child),
+    //     Positioned(
+    //       bottom: 0,
+    //       left: 0,
+    //       right: 0,
+    //       child: buildTitleBar(context, url),
+    //     ),
+    //   ],
+    // );
+    child = Column(
       children: [
-        Positioned.fill(child: child),
-        Positioned(
-          bottom: 0,
-          left: 0,
-          right: 0,
-          child: buildTitleBar(context, url),
-        ),
+        Expanded(child: child),
+        buildTitleBar(context, url),
       ],
     );
 
@@ -501,7 +535,7 @@ class WindowThumb extends StatelessWidget {
 
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: Theme.of(context).secondaryHeaderColor.withOpacity(1),
+        color: Theme.of(context).secondaryHeaderColor.withOpacity(0.8),
         border: Border(
           top: BorderSide(
             width: 1,
@@ -526,6 +560,7 @@ class WindowThumb extends StatelessWidget {
                 child: Text(
                   "[$index] ${url ?? ""}".breakWord,
                   style: Theme.of(context).textTheme.bodySmall,
+                  maxLines: 2,
                 ),
               ),
               bookmarkButton,

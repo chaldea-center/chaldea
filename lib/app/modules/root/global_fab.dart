@@ -183,11 +183,28 @@ class __DebugMenuDialogState extends State<_DebugMenuDialog> {
           ),
         ),
         ListTile(
+          leading: const Icon(Icons.color_lens_outlined),
+          title: const Text('Palette'),
+          onTap: () {
+            Navigator.pop(context);
+            router.pushPage(DarkLightThemePalette());
+          },
+        ),
+        ListTile(
+          leading: const Icon(Icons.color_lens_outlined),
+          title: const Text('Switch M2/M3'),
+          onTap: () {
+            db.settings.useMaterial3 = !db.settings.useMaterial3;
+            db.notifyAppUpdate();
+          },
+        ),
+        ListTile(
           leading: const Icon(Icons.account_circle),
           title: Text(S.current.account_title),
           trailing: DropdownButton<int>(
             underline: const Divider(thickness: 0, color: Colors.transparent),
             value: db.userData.curUserKey,
+            alignment: AlignmentDirectional.centerEnd,
             items: [
               for (final (index, user) in db.userData.users.indexed)
                 DropdownMenuItem(
@@ -211,22 +228,6 @@ class __DebugMenuDialogState extends State<_DebugMenuDialog> {
           ),
         ),
         ListTile(
-          leading: const Icon(Icons.color_lens_outlined),
-          title: const Text('Palette'),
-          onTap: () {
-            Navigator.pop(context);
-            router.pushPage(DarkLightThemePalette());
-          },
-        ),
-        ListTile(
-          leading: const Icon(Icons.color_lens_outlined),
-          title: const Text('Switch M2/M3'),
-          onTap: () {
-            db.settings.useMaterial3 = !db.settings.useMaterial3;
-            db.notifyAppUpdate();
-          },
-        ),
-        ListTile(
           leading: const Icon(Icons.screenshot_monitor),
           title: Text(S.current.screenshots),
           subtitle: enableScreenshot ? null : const Text('Only available in canvaskit renderer'),
@@ -237,14 +238,6 @@ class __DebugMenuDialogState extends State<_DebugMenuDialog> {
               context: context,
               builder: (context) => const _ScreenshotDialog(),
             );
-          },
-        ),
-        ListTile(
-          leading: const Icon(Icons.timer),
-          title: const Text('Hide 60s'),
-          onTap: () {
-            widget.state?.hide(60);
-            Navigator.pop(context);
           },
         ),
         ListTile(
@@ -275,6 +268,14 @@ class __DebugMenuDialogState extends State<_DebugMenuDialog> {
           onTap: () {
             db.gameData.preprocess();
             db.itemCenter.init();
+          },
+        ),
+        ListTile(
+          leading: const Icon(Icons.timer),
+          title: const Text('Hide 60s'),
+          onTap: () {
+            widget.state?.hide(60);
+            Navigator.pop(context);
           },
         ),
         if (!kReleaseMode || AppInfo.isDebugDevice)
