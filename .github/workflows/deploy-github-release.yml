@@ -204,7 +204,7 @@ jobs:
 
       - name: Delete previous beta build
         if: github.ref == 'refs/heads/main'
-        run: gh release delete beta -y || echo "delete beta failed"
+        run: gh release delete beta -R ${{ github.repository }} -y --cleanup-tag || echo "delete beta failed"
         env:
           GH_TOKEN: ${{ secrets.GH_PAGES_TOKEN }}
 
