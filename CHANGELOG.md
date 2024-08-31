@@ -2,6 +2,9 @@
 
 ## 2.5.14
 
+Lasengle shi ne!
+
+- Add new bond coins
 - Servant class passives now ignores debuff immune when adding debuffs
 - Support new Summer BB related functions
 
