@@ -48,6 +48,12 @@ class _StacktraceHandler extends ReportHandler {
   _StacktraceHandler(this.handler, this.maxLines);
 
   @override
+  set logger(Catcher2Logger v) {
+    handler.logger = v;
+    super.logger = v;
+  }
+
+  @override
   List<PlatformType> getSupportedPlatforms() => PlatformType.values;
 
   @override

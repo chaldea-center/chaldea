@@ -303,7 +303,7 @@ class _CachedImageState extends State<CachedImage> {
           }
           fn ??= bytes == null
               ? '${const Uuid().v4()}.png'
-              : '${const Uuid().v5(Uuid.NAMESPACE_URL, sha1.convert(bytes).toString())}.png';
+              : '${const Uuid().v5(Namespace.url.value, sha1.convert(bytes).toString())}.png';
           ImageActions.showSaveShare(
             context: context,
             data: bytes,

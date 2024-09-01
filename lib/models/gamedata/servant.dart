@@ -526,7 +526,9 @@ class Servant extends BasicServant {
     String? name,
     bool showName = false,
   }) {
-    //
+    option =
+        ImageWithTextOption(errorWidget: (context, url, error) => CachedImage(imageUrl: Atlas.common.unknownEnemyIcon))
+            .merge(option);
     return super.iconBuilder(
       context: context,
       width: width,

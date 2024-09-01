@@ -165,7 +165,7 @@ class AppInfo {
         await uuidFile.writeAsString(originId);
       }
     }
-    _uuid = const Uuid().v5(Uuid.NAMESPACE_URL, originId!).toUpperCase();
+    _uuid = const Uuid().v5(Namespace.url.value, originId!).toUpperCase();
     _debugOn = FilePlus(joinPaths(appPath, '.debug')).existsSync();
     logger.t('Unique ID: $_uuid');
   }
