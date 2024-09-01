@@ -916,7 +916,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
           ..fouAtk = max(0, (svt.adjustAtk - 100) ~/ 2)
           ..bondLimit = min(collection.friendshipRank + 1, collection.friendshipExceedCount + 10);
         if (svt.appendLvs != null) {
-          status.cur.appendSkills = svt.appendLvs!;
+          status.cur.appendSkills = List.generate(kAppendSkillNums.length, (i) => svt.appendLvs!.getOrNull(i) ?? 0);
         }
         status.cur.costumes = collection.costumeIdsTo01();
       }

@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'package:chaldea/app/app.dart';
@@ -191,9 +189,9 @@ class _SkillResultTabState extends State<SkillResultTab> with ScrollControllerMi
             // status.cur.ascension = 0;
             status.cur.favorite = true;
             if (widget.isAppend) {
-              status.cur.appendSkills = List.of(detail.skills, growable: false);
+              status.cur.appendSkills.setRange(0, detail.skills.length, detail.skills.map((e) => e.clamp(0, 10)));
             } else {
-              status.cur.skills = List.of(detail.skills.map((e) => max(1, e)), growable: false);
+              status.cur.skills.setRange(0, detail.skills.length, detail.skills.map((e) => e.clamp(1, 10)));
             }
           }
         }
