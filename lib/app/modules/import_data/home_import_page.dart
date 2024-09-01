@@ -58,6 +58,29 @@ class _ImportPageHomeState extends State<ImportPageHome> {
               ),
             ],
           ),
+          if (!kIsWeb && AppInfo.isDebugDevice)
+            TileGroup(
+              children: [
+                ListTile(
+                  leading: const FaIcon(FontAwesomeIcons.bilibili, size: 18),
+                  title: const Text('Fake/Bilili Order'),
+                  trailing: const Icon(Icons.keyboard_arrow_right),
+                  // subtitle: const Text('Yahoo'),
+                  onTap: () {
+                    router.pushPage(const FakerAccountsCNPage());
+                  },
+                ),
+                ListTile(
+                  leading: const FaIcon(FontAwesomeIcons.fishFins, size: 18),
+                  title: const Text('Fake/Grand Order'),
+                  trailing: const Icon(Icons.keyboard_arrow_right),
+                  // subtitle: const Text('Yahoo'),
+                  onTap: () {
+                    router.pushPage(const FakerAccountsJPPage());
+                  },
+                ),
+              ],
+            ),
           TileGroup(
             children: [
               ListTile(
@@ -69,26 +92,6 @@ class _ImportPageHomeState extends State<ImportPageHome> {
                   router.popDetailAndPush(child: ImportHttpPage());
                 },
               ),
-              if (!kIsWeb && AppInfo.isDebugDevice)
-                ListTile(
-                  leading: const FaIcon(FontAwesomeIcons.bots, size: 18),
-                  title: const Text('Fake/Grand Order'),
-                  trailing: const Icon(Icons.keyboard_arrow_right),
-                  subtitle: const Text('Yahoo'),
-                  onTap: () {
-                    router.pushPage(const FakerAccountsJPPage());
-                  },
-                ),
-              if (!kIsWeb && AppInfo.isDebugDevice)
-                ListTile(
-                  leading: const FaIcon(FontAwesomeIcons.bilibili, size: 18),
-                  title: const Text('Fake/Bilili Order'),
-                  trailing: const Icon(Icons.keyboard_arrow_right),
-                  subtitle: const Text('Yahoo'),
-                  onTap: () {
-                    router.pushPage(const FakerAccountsCNPage());
-                  },
-                ),
               ListTile(
                 leading: const Icon(Icons.manage_accounts),
                 title: Text(S.current.import_auth_file),

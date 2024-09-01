@@ -268,7 +268,13 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
     if (battleEntity == null) {
       children.add(const ListTile(dense: true, title: Text('No battle')));
     } else {
-      final dropItems = battleEntity.battleInfo?.getTotalDrops() ?? {};
+      Map<int, int> dropItems = battleEntity.battleInfo?.getTotalDrops() ?? {};
+      if (agent.lastBattleResultData != null && agent.lastBattleResultData!.battleId == battleEntity.id) {
+        dropItems.clear();
+        for (final drop in agent.lastBattleResultData!.resultDropInfos) {
+          dropItems.addNum(drop.objectId, drop.num);
+        }
+      }
       children.addAll([
         ListTile(
           dense: true,
@@ -1019,6 +1025,34 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
         // ),
         ListTile(
           dense: true,
+          title: const Text('Each wave turns'),
+          trailing: TextButton(
+            onPressed: () {
+              _lockTask(() {
+                InputCancelOkDialog(
+                  title: 'Each wave turns',
+                  text: battleOption.usedTurnArray.join(','),
+                  onSubmit: (s) {
+                    try {
+                      final turns = s.split(',').map(int.parse).toList();
+                      battleOption.usedTurnArray = turns;
+                    } catch (e) {
+                      EasyLoading.showError(e.toString());
+                      return;
+                    }
+                    if (mounted) setState(() {});
+                  },
+                ).showDialog(context);
+              });
+            },
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 180),
+              child: Text(battleOption.usedTurnArray.isEmpty ? 'empty' : battleOption.usedTurnArray.toString()),
+            ),
+          ),
+        ),
+        ListTile(
+          dense: true,
           title: const Text('Action Logs'),
           trailing: TextButton(
             onPressed: () {
@@ -1093,7 +1127,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
             }
             if (mounted) setState(() {});
           },
-          text: 'ApSeed',
+          text: 'seed',
         ),
       ],
       [
@@ -1178,11 +1212,18 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
         ),
         PopupMenuButton(
           itemBuilder: (context) => [
+            // PopupMenuItem(
+            //   child: const Text('gamedata'),
+            //   onTap: () {
+            //     _runTask(agent.gamedataTop);
+            //   },
+            // ),
             PopupMenuItem(
-              child: const Text('home'),
+              enabled: loggedIn && !inBattle,
               onTap: () {
                 _runTask(agent.homeTop);
               },
+              child: const Text('home'),
             ),
             PopupMenuItem(
               child: const Text('Break'),

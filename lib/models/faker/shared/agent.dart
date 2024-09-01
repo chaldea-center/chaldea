@@ -234,8 +234,12 @@ abstract class FakerAgent<TRequest extends FRequestBase, TUser extends AutoLogin
     }
   }
 
-  Future<FResponse> battleResultWithOptions(
-      {required BattleEntity battleEntity, required BattleResultType resultType, required String actionLogs}) async {
+  Future<FResponse> battleResultWithOptions({
+    required BattleEntity battleEntity,
+    required BattleResultType resultType,
+    required String actionLogs,
+    List<int> usedTurnArray = const [],
+  }) async {
     final stageCount = battleEntity.battleInfo!.enemyDeck.length;
     if (resultType == BattleResultType.cancel) {
       return battleResult(
@@ -250,7 +254,7 @@ abstract class FakerAgent<TRequest extends FRequestBase, TUser extends AutoLogin
     } else if (resultType == BattleResultType.win) {
       final quest =
           await AtlasApi.questPhase(battleEntity.questId, battleEntity.questPhase, region: network.gameTop.region);
-      final usedTurnArray = List.generate(stageCount, (index) {
+      final _usedTurnArray = List.generate(stageCount, (index) {
         int baseTurn = index == stageCount - 1 ? 1 : 0;
         final enemyCount = battleEntity.battleInfo!.enemyDeck.getOrNull(index)?.svts.length;
         if (enemyCount != null) {
@@ -259,6 +263,9 @@ abstract class FakerAgent<TRequest extends FRequestBase, TUser extends AutoLogin
         }
         return baseTurn;
       });
+      usedTurnArray = [
+        for (final (index, v) in _usedTurnArray.indexed) (usedTurnArray.getOrNull(index) ?? 0).clamp(v, 999),
+      ];
       final totalTurns = Maths.sum(usedTurnArray.map((e) => max(1, e)));
       if (actionLogs.isEmpty) {
         actionLogs = List<String>.generate(totalTurns, (i) => const ['1B2B3B', '1B1D2C', '1B1C2B'][i % 3]).join('');
@@ -294,6 +301,7 @@ abstract class FakerAgent<TRequest extends FRequestBase, TUser extends AutoLogin
         ),
         usedTurnArray: usedTurnArray,
         raidResult: raidResults,
+        aliveUniqueIds: [],
       );
     } else {
       throw Exception('resultType=$resultType not supported');

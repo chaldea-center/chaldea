@@ -20,9 +20,9 @@ class FakerHistoryViewer extends StatefulWidget {
 
 class _FakerHistoryViewerState extends State<FakerHistoryViewer> {
   late final agent = widget.agent;
-  late final history = agent.network.history.toList();
   @override
   Widget build(BuildContext context) {
+    final history = agent.network.history.toList();
     return Scaffold(
       appBar: AppBar(
         title: Text("History (${history.length})"),
