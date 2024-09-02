@@ -1,6 +1,7 @@
 import 'dart:async';
-import 'dart:typed_data';
 import 'dart:ui' as ui;
+
+import 'package:flutter/foundation.dart';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -8,6 +9,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/models/models.dart';
+import 'package:chaldea/packages/platform/platform.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../../../generated/l10n.dart';
@@ -385,7 +387,11 @@ class CharaFigurePainter extends CustomPainter {
     if (!faceOnly) {
       final destRect = Rect.fromLTWH((script.faceX - offsetX) * dstScale, (script.faceY - offsetY) * dstScale,
           faceSize * dstScale, faceSize * dstScale);
-      canvas.drawRect(destRect.deflate(dstScale * 2), Paint()..blendMode = BlendMode.clear);
+      final paint = Paint();
+      if (!kIsWeb || kPlatformMethods.rendererCanvasKit) {
+        paint.blendMode = BlendMode.clear;
+      }
+      canvas.drawRect(destRect.deflate(dstScale * 2), paint);
       draw(
         canvas,
         figure,
