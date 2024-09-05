@@ -56,6 +56,13 @@ abstract class FakerAgent<TRequest extends FRequestBase, TUser extends AutoLogin
     int32_t restartWave = 0,
   });
 
+  Future<FResponse> battleResume({
+    required int64_t battleId,
+    required int32_t questId,
+    required int32_t questPhase,
+    required List<int32_t> usedTurnList,
+  });
+
   Future<FResponse> battleResult({
     required int64_t battleId,
     required BattleResultType battleResult, // 0-none,1-win,2-lose,3-retire
@@ -151,6 +158,20 @@ abstract class FakerAgent<TRequest extends FRequestBase, TUser extends AutoLogin
       campaignItemId = campaignItems.single.itemId;
     }
 
+    if (questPhaseEntity.isNpcOnly) {
+      final npc = questPhaseEntity.supportServants.firstWhere((e) => e.script?.eventDeckIndex == null);
+      return battleSetup(
+        questId: options.questId,
+        questPhase: options.questPhase,
+        activeDeckId: options.deckId,
+        followerId: npc.id,
+        followerClassId: 0,
+        followerType: FollowerType.npc.value,
+        followerSupportDeckId: 0,
+        campaignItemId: campaignItemId,
+      );
+    }
+
     final (follower, followerSvt) = await _getValidSupport(
       questId: options.questId,
       questPhase: options.questPhase,
@@ -161,15 +182,6 @@ abstract class FakerAgent<TRequest extends FRequestBase, TUser extends AutoLogin
       supportEquipMaxLimitBreak: options.supportCeMaxLimitBreak,
     );
 
-    // print({
-    //   "questId": options.questId,
-    //   "questPhase": options.questPhase,
-    //   "activeDeckId": options.deckId,
-    //   "followerId": follower.userId,
-    //   "followerClassId": followerSvt.classId,
-    //   "followerType": follower.type,
-    //   "followerSupportDeckId": followerSvt.supportDeckId,
-    // });
     return battleSetup(
       questId: options.questId,
       questPhase: options.questPhase,

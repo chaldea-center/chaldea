@@ -1,3 +1,5 @@
+import 'dart:convert';
+import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter/foundation.dart';
@@ -14,6 +16,7 @@ import 'package:chaldea/app/modules/craft_essence/craft_list.dart';
 import 'package:chaldea/app/modules/servant/servant_list.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/faker/cn/agent.dart';
+import 'package:chaldea/models/faker/jp/agent.dart';
 import 'package:chaldea/models/faker/jp/network.dart';
 import 'package:chaldea/models/faker/quiz/crypt_data.dart';
 import 'package:chaldea/models/faker/shared/agent.dart';
@@ -1226,6 +1229,29 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
               child: const Text('home'),
             ),
             PopupMenuItem(
+              enabled: loggedIn && !inBattle,
+              onTap: () {
+                _runTask(() async {
+                  final dir = Directory(agent.network.fakerDir);
+                  final files = dir
+                      .listSync(followLinks: false)
+                      .whereType<File>()
+                      .where((e) => e.path.endsWith('.json') && e.path.contains('battle') && e.path.contains('setup'))
+                      .toList();
+                  final modified = DateTime.now().subtract(const Duration(days: 2));
+                  files.removeWhere((e) => e.statSync().modified.isBefore(modified));
+                  files.sort2((e) => e.path, reversed: true);
+                  if (files.isEmpty) {
+                    EasyLoading.showError('not found');
+                    return;
+                  }
+                  final data = FateTopLogin.parseAny(jsonDecode(files.first.readAsStringSync()));
+                  agent.curBattle = data.mstData.battles.firstOrNull ?? agent.curBattle;
+                });
+              },
+              child: const Text('loadBattle'),
+            ),
+            PopupMenuItem(
               child: const Text('Break'),
               onTap: () {
                 if (mounted) {
@@ -1234,6 +1260,36 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
                 }
               },
             ),
+            if (agent is FakerAgentJP)
+              PopupMenuItem(
+                child: const Text('SessionId'),
+                onTap: () {
+                  InputCancelOkDialog(
+                    title: 'SessionId (${agent.network.gameTop.region.upper})',
+                    text: agent.network.cookies['SessionId'],
+                    onSubmit: (s) {
+                      if (s.trim().isEmpty) return;
+                      agent.network.cookies['SessionId'] = s;
+                      if (mounted) setState(() {});
+                    },
+                  ).showDialog(context);
+                },
+              ),
+            if (agent is FakerAgentCN)
+              PopupMenuItem(
+                child: const Text('sgusk'),
+                onTap: () {
+                  InputCancelOkDialog(
+                    title: 'sgusk (${agent.network.gameTop.region.upper})',
+                    text: (agent as FakerAgentCN).usk,
+                    onSubmit: (s) {
+                      if (s.trim().isEmpty) return;
+                      (agent as FakerAgentCN).usk = CryptData.encryptMD5Usk(s);
+                      if (mounted) setState(() {});
+                    },
+                  ).showDialog(context);
+                },
+              ),
             if (kDebugMode)
               PopupMenuItem(
                 child: const Text('Test'),

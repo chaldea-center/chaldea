@@ -22,7 +22,7 @@ class DropData {
   late final Map<int, QuestDropData> eventFreeDrops = Map.of(freeDrops2)
     ..removeWhere((questId, drop) {
       final quest = db.gameData.quests[questId];
-      return quest != null && (quest.warId < 2000 || quest.warId == WarId.chaldeaGate);
+      return quest != null && (quest.warId < 2000 || quest.warId == WarId.daily);
     });
 
   DropData({

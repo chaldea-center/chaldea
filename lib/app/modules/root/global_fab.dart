@@ -199,6 +199,19 @@ class __DebugMenuDialogState extends State<_DebugMenuDialog> {
           },
         ),
         ListTile(
+          leading: const Icon(Icons.screenshot_monitor),
+          title: Text(S.current.screenshots),
+          subtitle: enableScreenshot ? null : const Text('Only available in canvaskit renderer'),
+          enabled: enableScreenshot,
+          onTap: () {
+            Navigator.pop(context);
+            showDialog(
+              context: context,
+              builder: (context) => const _ScreenshotDialog(),
+            );
+          },
+        ),
+        ListTile(
           leading: const Icon(Icons.account_circle),
           title: Text(S.current.account_title),
           trailing: DropdownButton<int>(
@@ -226,19 +239,6 @@ class __DebugMenuDialogState extends State<_DebugMenuDialog> {
               setState(() {});
             },
           ),
-        ),
-        ListTile(
-          leading: const Icon(Icons.screenshot_monitor),
-          title: Text(S.current.screenshots),
-          subtitle: enableScreenshot ? null : const Text('Only available in canvaskit renderer'),
-          enabled: enableScreenshot,
-          onTap: () {
-            Navigator.pop(context);
-            showDialog(
-              context: context,
-              builder: (context) => const _ScreenshotDialog(),
-            );
-          },
         ),
         ListTile(
           title: Text(S.current.show_frame_rate),

@@ -341,10 +341,37 @@ class FakerAgentCN extends FakerAgent<FRequestCN, AutoLoginDataCN, NetworkManage
         "followerRandomLimitCount": followerRandomLimitCount,
         "followerSpoilerProtectionLimitCount": followerSpoilerProtectionLimitCount,
         "followerSupportDeckId": followerSupportDeckId,
+        // "recommendSupportIdx": 0,
         "campaignItemId": campaignItemId,
         // "restartWave": restartWave,
       },
     );
+    final battleEntity = resp.data.mstData.battles.firstOrNull;
+    if (battleEntity != null) {
+      lastBattle = curBattle ?? battleEntity;
+      curBattle = battleEntity;
+    }
+    return resp;
+  }
+
+  @override
+  Future<FResponse> battleResume({
+    required int64_t battleId,
+    required int32_t questId,
+    required int32_t questPhase,
+    required List<int32_t> usedTurnList,
+  }) async {
+    final resp = await _acPhp(
+      key: 'battleresume',
+      nid: 'battle_resume',
+      params3: {
+        "battleId": battleId,
+        "questId": questId,
+        "questPhase": questPhase,
+        "usedTurnList": usedTurnList,
+      },
+    );
+
     final battleEntity = resp.data.mstData.battles.firstOrNull;
     if (battleEntity != null) {
       lastBattle = curBattle ?? battleEntity;
@@ -439,7 +466,7 @@ class FakerAgentCN extends FakerAgent<FRequestCN, AutoLoginDataCN, NetworkManage
     ]);
     dictionary['voicePlayedList'] = jsonEncode(voicePlayedArray);
     dictionary['usedTurnList'] = usedTurnArray;
-    // dictionary['waveInfo'] = "[]";
+    dictionary['waveInfo'] = "[]";
 
     logger.t('battle_result.result=${jsonEncode(dictionary)}');
 

@@ -108,6 +108,8 @@ abstract class NetworkManagerBase<TRequest extends FRequestBase, TUser extends A
     _runningTask = null;
   }
 
+  String get fakerDir => joinPaths(db.paths.tempDir, 'faker');
+
   void updateCookies(Map<String, dynamic> headers) {
     if (cookies.isEmpty) return;
     const key = 'Cookie';
@@ -136,7 +138,11 @@ abstract class NetworkManagerBase<TRequest extends FRequestBase, TUser extends A
     final record = FRequestRecord<TRequest>()
       ..request = request
       ..sendedAt = DateTime.now();
+    // In case memory used out
     history.add(record);
+    if (history.length > 50) {
+      history.removeRange(0, history.length - 50);
+    }
 
     const int kMaxTries = 3;
     int tryCount = 0;
@@ -164,7 +170,7 @@ abstract class NetworkManagerBase<TRequest extends FRequestBase, TUser extends A
           if (AppInfo.isDebugDevice) {
             String fn = '${DateTime.now().toSafeFileName()}_${request.key}';
             fn = fn.replaceAll(RegExp(r'[/:\s\\]+'), '_');
-            await FilePlus(joinPaths(db.paths.tempDir, 'faker', '$fn.json')).writeAsString(jsonEncode(_jsonData));
+            await FilePlus(joinPaths(fakerDir, '$fn.json')).writeAsString(jsonEncode(_jsonData));
           }
           _nowTime = getNowTimestamp();
           request.receiveTime = getNowTimestamp();

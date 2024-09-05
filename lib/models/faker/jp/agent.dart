@@ -20,6 +20,10 @@ class FakerAgentJP extends FakerAgent<FRequestJP, AutoLoginDataJP, NetworkManage
 
   @override
   Future<FResponse> gamedataTop({bool checkAppUpdate = true}) async {
+    final tops = await AtlasApi.gametopsRaw(expireAfter: Duration.zero);
+    if (tops != null) {
+      network.gameTop.updateFrom(tops.jp);
+    }
     final request = FRequestJP(network: network, path: '/gamedata/top');
     final fresp = await request.beginRequest();
     if (fresp.data.responses.any((e) => e.fail?['action'] == 'app_version_up')) {
@@ -166,10 +170,32 @@ class FakerAgentJP extends FakerAgent<FRequestJP, AutoLoginDataJP, NetworkManage
     request.addFieldStr("choiceRandomLimitCounts", choiceRandomLimitCounts);
     request.addFieldInt32("followerRandomLimitCount", followerRandomLimitCount);
     request.addFieldInt32("followerSpoilerProtectionLimitCount", followerSpoilerProtectionLimitCount);
+    request.addFieldInt32("recommendSupportIdx", 0);
     request.addFieldInt32("followerSupportDeckId", followerSupportDeckId);
     request.addFieldInt32("campaignItemId", campaignItemId);
     request.addFieldInt32("restartWave", restartWave);
     final resp = await request.beginRequestAndCheckError('battle_setup');
+    final battleEntity = resp.data.mstData.battles.firstOrNull;
+    if (battleEntity != null) {
+      lastBattle = curBattle ?? battleEntity;
+      curBattle = battleEntity;
+    }
+    return resp;
+  }
+
+  @override
+  Future<FResponse> battleResume({
+    required int64_t battleId,
+    required int32_t questId,
+    required int32_t questPhase,
+    required List<int32_t> usedTurnList,
+  }) async {
+    final request = FRequestJP(network: network, path: '/battle/resume');
+    request.addFieldInt64("battleId", battleId);
+    request.addFieldInt32("questId", questId);
+    request.addFieldInt32("questPhase", questPhase);
+    request.addFieldStr("routeSelect", jsonEncode(usedTurnList));
+    final resp = await request.beginRequestAndCheckError('battle_resume');
     final battleEntity = resp.data.mstData.battles.firstOrNull;
     if (battleEntity != null) {
       lastBattle = curBattle ?? battleEntity;

@@ -487,6 +487,18 @@ class GameTop extends GameAppVerCode {
   Map<String, dynamic> toJson() => _$GameTopToJson(this);
 
   GameTop copy() => GameTop.fromJson(toJson());
+
+  void updateFrom(GameTop other) {
+    if (other.region != region) return;
+    appVer = other.appVer;
+    verCode = other.verCode;
+    if (other.dateVer > dateVer) dateVer = other.dateVer;
+    if (other.dataVer > dataVer) {
+      dataVer = other.dataVer;
+      assetbundleFolder = other.assetbundleFolder;
+    }
+    unityVer = other.unityVer;
+  }
 }
 
 @JsonSerializable()
