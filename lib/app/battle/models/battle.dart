@@ -1444,11 +1444,6 @@ class BattleData {
         }
         actorList[i] = null;
         actor.fieldIndex = -1;
-        if (actor.isPlayer) {
-          for (final svt in nonnullPlayers) {
-            svt.battleBuff.removeBuffOfType(BuffType.fixCommandcard);
-          }
-        }
       }
     }
   }

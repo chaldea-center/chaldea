@@ -685,7 +685,7 @@ void main() async {
       final battle = BattleData();
       final playerSettings = [
         PlayerSvtData.id(1000100)..lv = 80,
-        PlayerSvtData.id(2300300)
+        PlayerSvtData.id(2300200)
           ..lv = 90
           ..ce = db.gameData.craftEssencesById[9404120] // 20 star on entry
           ..ceLv = 100
@@ -702,25 +702,28 @@ void main() async {
       await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
 
       final onField1 = battle.onFieldAllyServants[0]!;
-      final onField2 = battle.onFieldAllyServants[1]!;
+      final summerBB = battle.onFieldAllyServants[1]!;
       final crane = battle.onFieldAllyServants[2]!;
       final backup1 = battle.backupAllyServants[0]!;
       final backup2 = battle.backupAllyServants[1]!;
       final backup3 = battle.backupAllyServants[2]!;
       expect(onField1.fieldIndex, 0);
-      expect(onField2.fieldIndex, 1);
+      expect(summerBB.fieldIndex, 1);
       expect(crane.fieldIndex, 2);
       expect(backup1.fieldIndex, 3);
       expect(backup2.fieldIndex, 4);
       expect(backup3.fieldIndex, 5);
       expect(battle.canUseNp(2), true);
 
+      await battle.activateSvtSkill(1, 2);
+      expect(summerBB.battleBuff.validBuffs.where((buff) => buff.buff.type == BuffType.fixCommandcard).isEmpty, false);
       await battle.playerTurn([CombatAction(crane, crane.getNPCard()!)]);
 
       expect(battle.backupAllyServants.length, 3);
       expect(battle.backupAllyServants.last, crane);
       expect(onField1.fieldIndex, 0);
-      expect(onField2.fieldIndex, 1);
+      expect(summerBB.fieldIndex, 1);
+      expect(summerBB.battleBuff.validBuffs.where((buff) => buff.buff.type == BuffType.fixCommandcard).isEmpty, true);
       expect(backup1.fieldIndex, 2);
       expect(backup2.fieldIndex, 3);
       expect(backup3.fieldIndex, 4);

@@ -1964,6 +1964,10 @@ class BattleServantData {
     battleData.battleLogger.action('$lBattleName ${S.current.battle_death}');
     if (isPlayer) {
       battleData.refillCardDeck();
+
+      for (final svt in battleData.nonnullPlayers) {
+        svt.battleBuff.removeBuffOfType(BuffType.fixCommandcard);
+      }
     }
   }
 

@@ -23,6 +23,10 @@ class MoveToLastSubMember {
         continue;
       }
 
+      for (final svt in battleData.nonnullPlayers) {
+        svt.battleBuff.removeBuffOfType(BuffType.fixCommandcard);
+      }
+
       final onFieldList = target.isPlayer ? battleData.onFieldAllyServants : battleData.onFieldEnemies;
       final backupList = target.isPlayer ? battleData.backupAllyServants : battleData.backupEnemies;
 
