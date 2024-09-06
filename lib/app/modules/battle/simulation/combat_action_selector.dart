@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:flutter/foundation.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'package:chaldea/app/battle/models/battle.dart';
 import 'package:chaldea/app/battle/utils/battle_utils.dart';
@@ -45,7 +45,29 @@ class _CombatActionSelectorState extends State<CombatActionSelector> {
       content: buildContent(),
       insetPadding: const EdgeInsets.symmetric(horizontal: 18.0, vertical: 24.0),
       hideOk: true,
+      hideCancel: true,
       actions: [
+        IconButton(
+          onPressed: () {
+            battleData.options.cardDeckSimulation = !battleData.options.cardDeckSimulation;
+            EasyLoading.showToast('${S.current.battle_card_deck_simulation} (⊄) : '
+                '${battleData.options.cardDeckSimulation ? 'On' : 'Off'}');
+            if (mounted) setState(() {});
+          },
+          icon: Icon(
+            battleData.options.cardDeckSimulation ? Icons.auto_awesome_motion : Icons.auto_awesome_motion_outlined,
+            color: battleData.options.cardDeckSimulation ? Colors.red : Colors.grey,
+          ),
+          tooltip: '${S.current.battle_card_deck_simulation} (⊄)',
+          iconSize: 24,
+          constraints: const BoxConstraints(),
+        ),
+        TextButton(
+          child: Text(S.current.cancel),
+          onPressed: () {
+            Navigator.of(context).pop(false);
+          },
+        ),
         TextButton(
           onPressed: validActions.isEmpty
               ? null
@@ -155,7 +177,7 @@ class _CombatActionSelectorState extends State<CombatActionSelector> {
   }
 
   Widget buildCardIcon(BattleData battleData, BattleServantData svt, CommandCardData card) {
-    final cardInDeck = !kDebugMode || battleData.cardInDeck(svt, card); // only disable in debug mode for now
+    final cardInDeck = !battleData.options.cardDeckSimulation || battleData.cardInDeck(svt, card);
     final commandCode = card.commandCode;
     Widget cardIcon = Stack(
       alignment: Alignment.center,

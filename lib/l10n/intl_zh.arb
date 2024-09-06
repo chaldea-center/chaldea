@@ -59,6 +59,7 @@
   "battle_battle_log": "战斗日志",
   "battle_buff_permanent": "永久",
   "battle_buster_chain": "Buster Chain伤害",
+  "battle_card_deck_simulation": "禁用已使用的指令卡",
   "battle_card_np_rate": "指令卡NP性能",
   "battle_card_star_rate": "指令卡掉星性能",
   "battle_change_ascension": "变更灵基",

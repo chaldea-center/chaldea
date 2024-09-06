@@ -150,6 +150,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "battle_battle_log": MessageLookupByLibrary.simpleMessage("戰鬥日誌"),
         "battle_buff_permanent": MessageLookupByLibrary.simpleMessage("永久"),
         "battle_buster_chain": MessageLookupByLibrary.simpleMessage("Buster Chain傷害"),
+        "battle_card_deck_simulation": MessageLookupByLibrary.simpleMessage("禁用已使用的指令卡"),
         "battle_card_np_rate": MessageLookupByLibrary.simpleMessage("指令卡NP性能"),
         "battle_card_star_rate": MessageLookupByLibrary.simpleMessage("指令卡掉星性能"),
         "battle_change_ascension": MessageLookupByLibrary.simpleMessage("變更靈基"),

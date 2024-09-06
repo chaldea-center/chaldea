@@ -158,6 +158,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "battle_battle_log": MessageLookupByLibrary.simpleMessage("Battle Log"),
         "battle_buff_permanent": MessageLookupByLibrary.simpleMessage("Permanent"),
         "battle_buster_chain": MessageLookupByLibrary.simpleMessage("Buster Chain Damage"),
+        "battle_card_deck_simulation": MessageLookupByLibrary.simpleMessage("Disable used command card"),
         "battle_card_np_rate": MessageLookupByLibrary.simpleMessage("Card NP Rate"),
         "battle_card_star_rate": MessageLookupByLibrary.simpleMessage("Card Star Rate"),
         "battle_change_ascension": MessageLookupByLibrary.simpleMessage("Change Ascension"),

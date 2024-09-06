@@ -712,6 +712,17 @@ class S {
     );
   }
 
+  /// `Disable used command card`
+  String get battle_card_deck_simulation {
+    return Intl.message(
+      'Disable used command card',
+      name: 'battle_card_deck_simulation',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Card NP Rate`
   String get battle_card_np_rate {
     return Intl.message(

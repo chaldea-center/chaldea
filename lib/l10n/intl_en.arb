@@ -59,6 +59,7 @@
   "battle_battle_log": "Battle Log",
   "battle_buff_permanent": "Permanent",
   "battle_buster_chain": "Buster Chain Damage",
+  "battle_card_deck_simulation": "Disable used command card",
   "battle_card_np_rate": "Card NP Rate",
   "battle_card_star_rate": "Card Star Rate",
   "battle_change_ascension": "Change Ascension",

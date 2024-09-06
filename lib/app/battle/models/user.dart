@@ -426,6 +426,7 @@ class BattleOptionsRuntime extends BattleOptionsEnv {
   int threshold = 1000;
   bool tailoredExecution = false;
   bool manualAllySkillTarget = false;
+  bool cardDeckSimulation = false;
 
   @override
   BattleOptionsRuntime copy() {
@@ -439,7 +440,8 @@ class BattleOptionsRuntime extends BattleOptionsEnv {
       ..random = random
       ..threshold = threshold
       ..tailoredExecution = tailoredExecution
-      ..manualAllySkillTarget = manualAllySkillTarget;
+      ..manualAllySkillTarget = manualAllySkillTarget
+      ..cardDeckSimulation = cardDeckSimulation;
   }
 }
 

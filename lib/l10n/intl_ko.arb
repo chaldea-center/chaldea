@@ -59,6 +59,7 @@
   "battle_battle_log": "전투일지",
   "battle_buff_permanent": "영구",
   "battle_buster_chain": "버스터 체인 데미지",
+  "battle_card_deck_simulation": null,
   "battle_card_np_rate": "카드 NP 획득률",
   "battle_card_star_rate": "카드 스타 수급률",
   "battle_change_ascension": "영기 변경",
