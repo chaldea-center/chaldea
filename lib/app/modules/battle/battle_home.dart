@@ -130,7 +130,7 @@ class BattleHomePage extends StatelessWidget {
                 ).showDialog(context);
               },
             ),
-            if (AppInfo.isDebugOn || db.settings.secrets.user?.isAdmin == true)
+            if (AppInfo.isDebugOn || db.settings.secrets.user?.isTeamMod == true)
               ListTile(
                 leading: const Icon(Icons.warning_amber_rounded),
                 title: const Text("差评榜"),

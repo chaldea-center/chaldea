@@ -70,6 +70,7 @@ class WorkerResponse {
 abstract class ChaldeaUserRole {
   static const int member = 1;
   static const int team = 2;
+  static const int teamMod = 8;
   static const int admin = 16;
 }
 
@@ -91,7 +92,8 @@ class ChaldeaUser {
 
   Map<String, dynamic> toJson() => _$ChaldeaUserToJson(this);
 
-  bool get isAdmin => role == 16;
+  bool get isAdmin => role == ChaldeaUserRole.admin;
+  bool get isTeamMod => isAdmin || role == ChaldeaUserRole.teamMod;
 }
 
 @JsonSerializable()

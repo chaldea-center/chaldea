@@ -456,7 +456,7 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
       tooltip: S.current.favorite_teams,
     ));
 
-    if (mode == TeamQueryMode.user || record.userId == curUserId || secrets.user?.isAdmin == true) {
+    if (mode == TeamQueryMode.user || record.userId == curUserId || secrets.user?.isTeamMod == true) {
       actions.add(TextButton(
         onPressed: () {
           final isOthers = record.userId != curUserId;
