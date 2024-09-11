@@ -248,7 +248,7 @@ class AutoBattleOptions {
   // setup
   int questId;
   int questPhase;
-  bool isHpHalf = false;
+  bool isApHalf = false;
   bool useEventDeck;
   int deckId;
   bool enfoceRefreshSupport;
@@ -268,13 +268,14 @@ class AutoBattleOptions {
   Map<int, int> targetDrops; // any of target drop reaches
   Map<int, int> winTargetItemNum; // win only if any target reaches, only for QuestFlag.actConsumeBattleWin
   int? battleDuration;
+  bool waitApRecover = false;
 
   AutoBattleOptions({
     this.name = '',
     this.questId = 0,
     this.questPhase = 0,
     this.useEventDeck = false,
-    this.isHpHalf = false,
+    this.isApHalf = false,
     this.deckId = 0,
     this.enfoceRefreshSupport = false,
     Set<int>? supportSvtIds,
@@ -290,6 +291,7 @@ class AutoBattleOptions {
     this.loopCount = 0,
     Map<int, int>? targetDrops,
     Map<int, int>? winTargetItemNum,
+    this.waitApRecover = false,
   })  : supportSvtIds = supportSvtIds ?? {},
         supportCeIds = supportCeIds ?? {},
         usedTurnArray = usedTurnArray ?? [],

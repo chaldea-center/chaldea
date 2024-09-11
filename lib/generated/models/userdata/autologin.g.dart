@@ -178,7 +178,7 @@ AutoBattleOptions _$AutoBattleOptionsFromJson(Map json) => $checkedCreate(
           questId: $checkedConvert('questId', (v) => (v as num?)?.toInt() ?? 0),
           questPhase: $checkedConvert('questPhase', (v) => (v as num?)?.toInt() ?? 0),
           useEventDeck: $checkedConvert('useEventDeck', (v) => v as bool? ?? false),
-          isHpHalf: $checkedConvert('isHpHalf', (v) => v as bool? ?? false),
+          isApHalf: $checkedConvert('isApHalf', (v) => v as bool? ?? false),
           deckId: $checkedConvert('deckId', (v) => (v as num?)?.toInt() ?? 0),
           enfoceRefreshSupport: $checkedConvert('enfoceRefreshSupport', (v) => v as bool? ?? false),
           supportSvtIds:
@@ -208,6 +208,7 @@ AutoBattleOptions _$AutoBattleOptionsFromJson(Map json) => $checkedCreate(
               (v) => (v as Map?)?.map(
                     (k, e) => MapEntry(int.parse(k as String), (e as num).toInt()),
                   )),
+          waitApRecover: $checkedConvert('waitApRecover', (v) => v as bool? ?? false),
         );
         $checkedConvert('battleDuration', (v) => val.battleDuration = (v as num?)?.toInt());
         return val;
@@ -218,7 +219,7 @@ Map<String, dynamic> _$AutoBattleOptionsToJson(AutoBattleOptions instance) => <S
       'name': instance.name,
       'questId': instance.questId,
       'questPhase': instance.questPhase,
-      'isHpHalf': instance.isHpHalf,
+      'isApHalf': instance.isApHalf,
       'useEventDeck': instance.useEventDeck,
       'deckId': instance.deckId,
       'enfoceRefreshSupport': instance.enfoceRefreshSupport,
@@ -236,6 +237,7 @@ Map<String, dynamic> _$AutoBattleOptionsToJson(AutoBattleOptions instance) => <S
       'targetDrops': instance.targetDrops.map((k, e) => MapEntry(k.toString(), e)),
       'winTargetItemNum': instance.winTargetItemNum.map((k, e) => MapEntry(k.toString(), e)),
       'battleDuration': instance.battleDuration,
+      'waitApRecover': instance.waitApRecover,
     };
 
 const _$BattleResultTypeEnumMap = {

@@ -45,7 +45,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
   AutoBattleOptions get battleOption => agent.user.curBattleOption;
 
   bool _runningTask = false;
-  static final Set<int> awakeTasks = {};
+  static final Set<Object> _awakeTasks = {};
 
   void _lockTask(VoidCallback callback) {
     if (_runningTask) {
@@ -503,6 +503,19 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
               },
               icon: const Icon(Icons.add_circle)),
         ),
+        SwitchListTile.adaptive(
+          dense: true,
+          value: battleOption.waitApRecover,
+          title: const Text("Wait AP recover"),
+          onChanged: (v) {
+            _lockTask(() {
+              setState(() {
+                battleOption.waitApRecover = v;
+              });
+            });
+          },
+          controlAffinity: ListTileControlAffinity.trailing,
+        ),
         ListTile(
           dense: true,
           title: const Text('Battle Duration(seconds)'),
@@ -950,11 +963,11 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
         ),
         SwitchListTile.adaptive(
           dense: true,
-          value: battleOption.isHpHalf,
+          value: battleOption.isApHalf,
           title: const Text("During AP Half Event"),
           onChanged: (v) {
             setState(() {
-              battleOption.isHpHalf = v;
+              battleOption.isApHalf = v;
             });
           },
         ),
@@ -1190,18 +1203,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
               validate: (s) => (int.tryParse(s) ?? -1) > 0,
               onSubmit: (s) {
                 battleOption.loopCount = int.parse(s);
-                _runTask(() async {
-                  try {
-                    WakelockPlus.enable();
-                    awakeTasks.add(hashCode);
-                    return await startLoop();
-                  } finally {
-                    awakeTasks.remove(hashCode);
-                    if (awakeTasks.isEmpty) {
-                      WakelockPlus.disable();
-                    }
-                  }
-                });
+                _runTask(() => _withWakeLock('loop-$hashCode', startLoop));
               },
             ).showDialog(context);
           },
@@ -1260,6 +1262,20 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
                 }
               },
             ),
+            PopupMenuItem(
+              enabled: loggedIn,
+              onTap: () async {
+                InputCancelOkDialog(
+                  title: 'Seed Count (waiting)',
+                  keyboardType: TextInputType.number,
+                  validate: (s) => (int.tryParse(s) ?? -1) > 0,
+                  onSubmit: (s) {
+                    _runTask(() => _withWakeLock('seed-wait-$hashCode', () => seedWait(int.parse(s))));
+                  },
+                ).showDialog(context);
+              },
+              child: const Text('Seed-wait'),
+            ),
             if (agent is FakerAgentJP)
               PopupMenuItem(
                 child: const Text('SessionId'),
@@ -1294,7 +1310,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
               PopupMenuItem(
                 child: const Text('Test'),
                 onTap: () async {
-                  (agent as FakerAgentCN).usk = CryptData.encryptMD5Usk('842b691bbc2ef299367a');
+                  // (agent as FakerAgentCN).usk = CryptData.encryptMD5Usk('842b691bbc2ef299367a');
                 },
               )
           ],
@@ -1340,6 +1356,9 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
     if (battleOption.winTargetItemNum.values.any((v) => v <= 0)) {
       throw SilentException('win target drop num must >0');
     }
+    if (battleOption.recoverIds.isNotEmpty && battleOption.waitApRecover) {
+      throw SilentException('Do not turn on both apple recover and wait AP recover');
+    }
     final questPhaseEntity =
         await AtlasApi.questPhase(battleOption.questId, battleOption.questPhase, region: agent.user.region);
     if (questPhaseEntity == null) {
@@ -1360,10 +1379,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
     curLoopDropStat.reset();
     EasyLoading.showProgress(finishedCount / totalCount, status: 'Battle $finishedCount/$totalCount');
     while (finishedCount < totalCount) {
-      if (_stopLoopFlag) {
-        _stopLoopFlag = false;
-        throw SilentException('Manual Stop');
-      }
+      _checkStop();
       _checkSvtKeep();
       if (battleOption.stopIfBondLimit) {
         _checkFriendship(battleOption);
@@ -1375,7 +1391,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
       logger.t(msg);
       EasyLoading.showProgress((finishedCount + 0.5) / totalCount, status: msg);
 
-      await _ensureEnoughApItem(battleOption.recoverIds, questPhaseEntity, battleOption.isHpHalf);
+      await _ensureEnoughApItem(quest: questPhaseEntity, option: battleOption);
 
       if (mounted) setState(() {});
 
@@ -1468,6 +1484,47 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
     }
   }
 
+  Future<void> seedWait(final int maxBuyCount) async {
+    int boughtCount = 0;
+    while (boughtCount < maxBuyCount) {
+      const int apUnit = 40, seedUnit = 1;
+      final apCount = mstData.user?.calCurAp() ?? 0;
+      final seedCount = mstData.getItemNum(Items.blueSaplingId);
+      if (seedCount <= 0) {
+        throw SilentException('no Blue Sapling left');
+      }
+      int buyCount = min(maxBuyCount, min(apCount ~/ apUnit, seedCount ~/ seedUnit));
+      if (buyCount > 0) {
+        await agent.terminalApSeedExchange(buyCount);
+        boughtCount += buyCount;
+      }
+      if (mounted) setState(() {});
+      EasyLoading.show(status: 'Seed $boughtCount/$maxBuyCount - waiting...');
+      await Future.delayed(const Duration(minutes: 1));
+      _checkStop();
+    }
+  }
+
+  Future<T> _withWakeLock<T>(Object tag, Future<T> Function() task) async {
+    try {
+      WakelockPlus.enable();
+      _awakeTasks.add(tag);
+      return await task();
+    } finally {
+      _awakeTasks.remove(tag);
+      if (_awakeTasks.isEmpty) {
+        WakelockPlus.disable();
+      }
+    }
+  }
+
+  void _checkStop() {
+    if (_stopLoopFlag) {
+      _stopLoopFlag = false;
+      throw SilentException('Manual Stop');
+    }
+  }
+
   void _checkSvtKeep() {
     int svtCount = 0, svtEquipCount = 0;
     for (final userSvt in mstData.userSvt) {
@@ -1514,7 +1571,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
     }
   }
 
-  Future<void> _ensureEnoughApItem(List<int> recoverIds, QuestPhase quest, bool isApHalf) async {
+  Future<void> _ensureEnoughApItem({required QuestPhase quest, required AutoBattleOptions option}) async {
     if (quest.consumeType.useItem) {
       for (final item in quest.consumeItem) {
         final own = mstData.getItemNum(item.itemId);
@@ -1524,11 +1581,11 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
       }
     }
     if (quest.consumeType.useAp) {
-      final apConsume = isApHalf ? quest.consume ~/ 2 : quest.consume;
+      final apConsume = option.isApHalf ? quest.consume ~/ 2 : quest.consume;
       if (mstData.user!.calCurAp() >= apConsume) {
         return;
       }
-      for (final recoverId in recoverIds) {
+      for (final recoverId in option.recoverIds) {
         final recover = mstRecovers[recoverId];
         if (recover == null) continue;
         if (recover.recoverType == RecoverType.stone && mstData.user!.stone > 0) {
@@ -1556,6 +1613,14 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
         }
       }
       if (mstData.user!.calCurAp() >= quest.consume) {
+        return;
+      }
+      if (option.waitApRecover) {
+        while (mstData.user!.calCurAp() < quest.consume) {
+          if (mounted) setState(() {});
+          EasyLoading.show(status: 'Battle - waiting AP recover...');
+          await Future.delayed(const Duration(minutes: 1));
+        }
         return;
       }
       throw SilentException('AP not enough: ${mstData.user!.calCurAp()}<${quest.consume}');

@@ -120,7 +120,7 @@ abstract class FakerAgent<TRequest extends FRequestBase, TUser extends AutoLogin
     }
     final curAp = mstData.user!.calCurAp();
     if (questPhaseEntity.consumeType.useAp) {
-      final consume = options.isHpHalf ? quest.consume ~/ 2 : quest.consume;
+      final consume = options.isApHalf ? quest.consume ~/ 2 : quest.consume;
       if (curAp < consume) {
         throw Exception('AP not enough: $curAp<${questPhaseEntity.consume}');
       }
