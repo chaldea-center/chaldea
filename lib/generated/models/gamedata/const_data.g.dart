@@ -623,6 +623,7 @@ const _$BuffTypeEnumMap = {
   BuffType.treasureDeviceBeforeFunction: 'treasureDeviceBeforeFunction',
   BuffType.stepInAfterFunction: 'stepInAfterFunction',
   BuffType.shortenSkillAfterUseSkill: 'shortenSkillAfterUseSkill',
+  BuffType.pierceSpecialInvincible: 'pierceSpecialInvincible',
   BuffType.changeBgm: 'changeBgm',
   BuffType.toFieldChangeField: 'toFieldChangeField',
   BuffType.toFieldAvoidBuff: 'toFieldAvoidBuff',
@@ -1426,4 +1427,5 @@ const _$BuffActionEnumMap = {
   BuffAction.functionTreasureDeviceBefore: 'functionTreasureDeviceBefore',
   BuffAction.functionStepInAfter: 'functionStepInAfter',
   BuffAction.shortenSkillAfterUseSkill: 'shortenSkillAfterUseSkill',
+  BuffAction.pierceSpecialInvincible: 'pierceSpecialInvincible',
 };

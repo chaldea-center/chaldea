@@ -119,6 +119,10 @@ BuffScript _$BuffScriptFromJson(Map json) => BuffScript(
           ? null
           : NiceTrait.fromJson(Map<String, dynamic>.from(json['TargetIndiv'] as Map)),
       convert: json['convert'] == null ? null : BuffConvert.fromJson(Map<String, dynamic>.from(json['convert'] as Map)),
+      NotPierceIndividuality: (json['NotPierceIndividuality'] as List<dynamic>?)
+          ?.map(
+              (e) => (e as List<dynamic>).map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map))).toList())
+          .toList(),
     );
 
 Map<String, dynamic> _$BuffScriptToJson(BuffScript instance) {
@@ -141,6 +145,8 @@ Map<String, dynamic> _$BuffScriptToJson(BuffScript instance) {
   writeNotNull('UpBuffRateBuffIndiv', instance.UpBuffRateBuffIndiv?.map((e) => e.toJson()).toList());
   writeNotNull('TargetIndiv', instance.TargetIndiv?.toJson());
   writeNotNull('convert', instance.convert?.toJson());
+  writeNotNull('NotPierceIndividuality',
+      instance.NotPierceIndividuality?.map((e) => e.map((e) => e.toJson()).toList()).toList());
   return val;
 }
 
@@ -397,6 +403,7 @@ const _$BuffTypeEnumMap = {
   BuffType.treasureDeviceBeforeFunction: 'treasureDeviceBeforeFunction',
   BuffType.stepInAfterFunction: 'stepInAfterFunction',
   BuffType.shortenSkillAfterUseSkill: 'shortenSkillAfterUseSkill',
+  BuffType.pierceSpecialInvincible: 'pierceSpecialInvincible',
   BuffType.changeBgm: 'changeBgm',
   BuffType.toFieldChangeField: 'toFieldChangeField',
   BuffType.toFieldAvoidBuff: 'toFieldAvoidBuff',

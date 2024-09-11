@@ -180,6 +180,8 @@ class BuffScript with DataScriptBase {
   int? get ckIndvCountAbove => toInt('ckIndvCountAbove');
   int? get ckIndvCountBelow => toInt('ckIndvCountBelow');
 
+  List<List<NiceTrait>>? NotPierceIndividuality;
+
   BuffScript({
     this.checkIndvType,
     this.CheckOpponentBuffTypes,
@@ -191,6 +193,7 @@ class BuffScript with DataScriptBase {
     this.UpBuffRateBuffIndiv,
     this.TargetIndiv,
     this.convert,
+    this.NotPierceIndividuality,
   });
 
   factory BuffScript.fromJson(Map<String, dynamic> json) => _$BuffScriptFromJson(json);
@@ -469,6 +472,7 @@ enum BuffType {
   treasureDeviceBeforeFunction(204),
   stepInAfterFunction(205),
   shortenSkillAfterUseSkill(206),
+  pierceSpecialInvincible(207),
   changeBgm(199),
   toFieldChangeField(10001),
   toFieldAvoidBuff(10002),

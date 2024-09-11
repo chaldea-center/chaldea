@@ -1244,6 +1244,7 @@ enum BuffAction {
   functionTreasureDeviceBefore(141),
   functionStepInAfter(142),
   shortenSkillAfterUseSkill(143),
+  pierceSpecialInvincible(144),
   ;
 
   final int value;
