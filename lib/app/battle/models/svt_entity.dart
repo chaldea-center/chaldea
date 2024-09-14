@@ -1745,15 +1745,16 @@ class BattleServantData {
     final CommandCardData? card,
     final List<NiceTrait>? addTraits,
   }) async {
-    return await useAndGetBuff(battleData, buffAction, other: other, card: card, addTraits: addTraits) != null;
+    return await getBuff(battleData, buffAction, other: other, card: card, addTraits: addTraits, useBuff: true) != null;
   }
 
-  Future<BuffData?> useAndGetBuff(
+  Future<BuffData?> getBuff(
     final BattleData battleData,
     final BuffAction buffAction, {
     final BattleServantData? other,
     final CommandCardData? card,
     final List<NiceTrait>? addTraits,
+    final bool useBuff = true,
   }) async {
     for (final buff in collectBuffsPerAction(battleBuff.validBuffs, buffAction)) {
       final List<NiceTrait> selfTraits = fetchSelfTraits(buffAction, buff, this, cardData: card, addTraits: addTraits);
@@ -1761,7 +1762,9 @@ class BattleServantData {
           fetchOtherTraits(buffAction, buff, other, cardData: card, addTraits: addTraits);
 
       if (await buff.shouldActivateBuff(battleData, selfTraits, opTraits: otherTraits)) {
-        buff.setUsed(this);
+        if (useBuff) {
+          buff.setUsed(this);
+        }
         return buff;
       }
     }

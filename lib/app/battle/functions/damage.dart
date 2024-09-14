@@ -622,31 +622,47 @@ class Damage {
     }
 
     final pierceSpecialInvincible =
-        await activator.useAndGetBuff(battleData, BuffAction.pierceSpecialInvincible, other: target, card: currentCard);
+        await activator.getBuff(battleData, BuffAction.pierceSpecialInvincible, other: target, card: currentCard);
     if (pierceSpecialInvincible != null) {
       final notPierceIndividuality = pierceSpecialInvincible.buff.script.NotPierceIndividuality;
       // assuming this is only used by pierceSpecialInvincible for now
       if (notPierceIndividuality != null) {
         final specialInvincible =
-            await target.useAndGetBuff(battleData, BuffAction.specialInvincible, other: activator, card: currentCard);
+            await target.getBuff(battleData, BuffAction.specialInvincible, other: activator, card: currentCard);
         if (specialInvincible != null && checkNotPierceIndividuality(notPierceIndividuality, specialInvincible)) {
           // cannot pierce special invincible, nothing can help, return true to skip damage
           return true;
         }
 
-        final invincible =
-            await target.useAndGetBuff(battleData, BuffAction.invincible, other: activator, card: currentCard);
+        final invincible = await target.getBuff(
+          battleData,
+          BuffAction.invincible,
+          other: activator,
+          card: currentCard,
+          useBuff: false,
+        );
         if (invincible != null && checkNotPierceIndividuality(notPierceIndividuality, invincible)) {
           // cannot pierce invincible, check pierceInvincible. Not having pierceInvincible => skipDamage => return true
+          invincible.setUsed(target);
           return !await activator.hasBuff(battleData, BuffAction.pierceInvincible, other: target, card: currentCard);
+        } else if (specialInvincible == null) {
+          invincible?.setUsed(target);
         }
 
-        final avoidance =
-            await target.useAndGetBuff(battleData, BuffAction.avoidance, other: activator, card: currentCard);
+        final avoidance = await target.getBuff(
+          battleData,
+          BuffAction.avoidance,
+          other: activator,
+          card: currentCard,
+          useBuff: false,
+        );
         if (avoidance != null && checkNotPierceIndividuality(notPierceIndividuality, avoidance)) {
           // cannot pierce avoidance, check pierceInvincible & breakAvoidance
+          avoidance.setUsed(target);
           return !await activator.hasBuff(battleData, BuffAction.pierceInvincible, other: target, card: currentCard) &&
               !await activator.hasBuff(battleData, BuffAction.breakAvoidance, other: target, card: currentCard);
+        } else if (specialInvincible == null && invincible == null) {
+          avoidance?.setUsed(target);
         }
 
         // pierce successful
@@ -701,7 +717,7 @@ class Damage {
       return false;
     }
 
-    final avoidanceAttackDeathDamage = await target.useAndGetBuff(
+    final avoidanceAttackDeathDamage = await target.getBuff(
       battleData,
       BuffAction.avoidanceAttackDeathDamage,
       other: activator,
@@ -712,7 +728,7 @@ class Damage {
     }
 
     final pierceSpecialInvincible =
-        await activator.useAndGetBuff(battleData, BuffAction.pierceSpecialInvincible, other: target, card: currentCard);
+        await activator.getBuff(battleData, BuffAction.pierceSpecialInvincible, other: target, card: currentCard);
     if (pierceSpecialInvincible != null) {
       final notPierceIndividuality = pierceSpecialInvincible.buff.script.NotPierceIndividuality;
       // assuming this is only used by pierceSpecialInvincible for now
