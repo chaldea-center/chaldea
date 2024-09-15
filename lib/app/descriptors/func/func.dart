@@ -87,10 +87,10 @@ mixin FuncsDescriptor {
         if (pos != null && pos != 0) {
           final pos2 = pos.abs();
           if (pos2 >= 1 && pos2 <= funcs.length) {
-            final newPos = funcs2.indexOf(funcs[pos2 - 1]) + 1;
-            if (newPos >= 1 && newPos != pos2) {
-              func.svals[0].set('TriggeredFuncPositionDisp', newPos * pos.sign);
-            }
+            final preFunc = funcs.getOrNull(pos2 - 1);
+            if (preFunc == null) continue;
+            final newPos = funcs2.indexOf(preFunc) + 1;
+            func.svals[0].set('TriggeredFuncPositionDisp', newPos >= 1 && newPos != pos2 ? newPos * pos.sign : null);
           }
         }
       }
