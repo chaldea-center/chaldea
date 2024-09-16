@@ -73,6 +73,7 @@ class AuthSaveData {
 }
 
 sealed class AutoLoginData {
+  int priority;
   @RegionConverter()
   Region region;
   String userAgent;
@@ -95,6 +96,7 @@ sealed class AutoLoginData {
   FResponse? response;
 
   AutoLoginData({
+    this.priority = 0,
     this.region = Region.jp,
     this.userAgent = '',
     int? curBattleOptionIndex,
@@ -119,6 +121,7 @@ class AutoLoginDataJP extends AutoLoginData {
   NACountry country;
 
   AutoLoginDataJP({
+    super.priority,
     super.region,
     this.auth,
     this.deviceInfo,
@@ -187,6 +190,7 @@ class AutoLoginDataCN extends AutoLoginData {
   String ptype;
 
   AutoLoginDataCN({
+    super.priority,
     super.region = Region.cn,
     this.gameServer = BiliGameServer.android,
     this.isAndroidDevice = true,

@@ -1301,6 +1301,7 @@ const kBuffActionPercentTypes = {
   BuffAction.turnendNp: 100,
   BuffAction.masterSkillValueUp: 10,
   BuffAction.maxhpRate: 10,
+  BuffAction.resistanceDelayNpturn: 10,
 };
 
 const kBuffTypePercentType = <BuffType, int>{

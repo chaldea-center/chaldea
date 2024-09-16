@@ -508,6 +508,15 @@ UserDeckEntity _$UserDeckEntityFromJson(Map json) => UserDeckEntity(
       cost: json['cost'],
     );
 
+UserEventDeckEntity _$UserEventDeckEntityFromJson(Map json) => UserEventDeckEntity(
+      userId: json['userId'],
+      eventId: json['eventId'],
+      deckNo: json['deckNo'],
+      deckInfo: json['deckInfo'] == null
+          ? null
+          : DeckServantEntity.fromJson(Map<String, dynamic>.from(json['deckInfo'] as Map)),
+    );
+
 DeckServantEntity _$DeckServantEntityFromJson(Map json) => DeckServantEntity(
       svts: (json['svts'] as List<dynamic>?)
           ?.map((e) => DeckServantData.fromJson(Map<String, dynamic>.from(e as Map)))

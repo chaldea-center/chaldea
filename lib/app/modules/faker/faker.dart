@@ -1050,8 +1050,12 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
                   text: battleOption.usedTurnArray.join(','),
                   onSubmit: (s) {
                     try {
-                      final turns = s.split(',').map(int.parse).toList();
-                      battleOption.usedTurnArray = turns;
+                      if (s.isEmpty) {
+                        battleOption.usedTurnArray = [];
+                      } else {
+                        final turns = s.split(RegExp(r'[,/]')).map(int.parse).toList();
+                        battleOption.usedTurnArray = turns;
+                      }
                     } catch (e) {
                       EasyLoading.showError(e.toString());
                       return;

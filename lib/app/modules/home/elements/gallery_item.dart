@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -16,6 +17,7 @@ import 'package:chaldea/app/modules/war/wars_page.dart';
 import 'package:chaldea/app/routes/routes.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/db.dart';
+import 'package:chaldea/packages/app_info.dart';
 import 'package:chaldea/packages/platform/platform.dart';
 import 'package:chaldea/widgets/theme.dart';
 import '../../april_fool/april_fool_home.dart';
@@ -30,6 +32,7 @@ import '../../effect_search/effect_search_page.dart';
 import '../../enemy/enemy_list.dart';
 import '../../event/events_page.dart';
 import '../../exp/exp_card_cost_page.dart';
+import '../../faker/accounts.dart';
 import '../../ffo/ffo.dart';
 import '../../free_quest_calc/free_calculator_page.dart';
 import '../../func/func_list.dart';
@@ -129,6 +132,7 @@ class GalleryItem {
         expCard,
         npCharge,
         statistics,
+        if (!kIsWeb && AppInfo.isDebugDevice) fakeGrandOrder,
         importData,
         if (!db.settings.hideApple) apk,
         // default hide
@@ -303,6 +307,14 @@ class GalleryItem {
     icon: Icons.analytics,
     url: Routes.stats,
     page: GameStatisticsPage(),
+    isDetail: true,
+  );
+  static GalleryItem fakeGrandOrder = GalleryItem(
+    name: 'fake_grand_order',
+    titleBuilder: () => 'Faker',
+    icon: FontAwesomeIcons.fishFins,
+    url: null,
+    page: const FakerAccountsPage(),
     isDetail: true,
   );
   static GalleryItem importData = GalleryItem(

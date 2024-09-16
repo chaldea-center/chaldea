@@ -1771,6 +1771,9 @@ class QuestPhaseExtraDetail {
   List<int>? IgnoreBattlePointUp;
   // int? repeatReward;
   // List<int>? consumeItemBattleWin;
+  int? useEventDeckNo;
+  int? masterSkillDelay;
+  String? masterSkillDelayInfo;
 
   QuestPhaseExtraDetail({
     this.questSelect,
@@ -1784,6 +1787,9 @@ class QuestPhaseExtraDetail {
     this.waveSetup,
     this.masterImageId,
     this.IgnoreBattlePointUp,
+    this.useEventDeckNo,
+    this.masterSkillDelay,
+    this.masterSkillDelayInfo,
   });
 
   factory QuestPhaseExtraDetail.fromJson(Map<String, dynamic> json) => _$QuestPhaseExtraDetailFromJson(json);

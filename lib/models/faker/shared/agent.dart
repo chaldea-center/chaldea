@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/models/gamedata/toplogin.dart';
 import 'package:chaldea/models/models.dart';
+import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/utils/basic.dart';
 import 'package:chaldea/utils/extension.dart';
 import 'network.dart';
@@ -158,39 +159,67 @@ abstract class FakerAgent<TRequest extends FRequestBase, TUser extends AutoLogin
       campaignItemId = campaignItems.single.itemId;
     }
 
+    int activeDeckId, followerId, followerClassId, followerType, followerSupportDeckId;
+    int userEquipId = 0;
+
     if (questPhaseEntity.isNpcOnly) {
       final npc = questPhaseEntity.supportServants.firstWhere((e) => e.script?.eventDeckIndex == null);
-      return battleSetup(
+      activeDeckId = options.deckId;
+      followerId = npc.id;
+      followerClassId = 0;
+      followerType = FollowerType.npc.value;
+      followerSupportDeckId = 0;
+    } else if (questPhaseEntity.extraDetail?.waveSetup == 1) {
+      if (!questPhaseEntity.flags.contains(QuestFlag.eventDeckNoSupport) ||
+          !questPhaseEntity.flags.contains(QuestFlag.userEventDeck)) {
+        throw SilentException('WaveSetup quest must have eventDeckNoSupport and userEventDeck flag');
+      }
+      activeDeckId = 0;
+      followerId = 0;
+      followerClassId = 0;
+      followerType = 0;
+      followerSupportDeckId = 0;
+      int? eventId = db.gameData.others.eventQuestGroups.entries
+          .firstWhereOrNull((e) => e.value.contains(questPhaseEntity.id))
+          ?.key;
+      if (eventId == null) {
+        throw SilentException('Quest related event not found');
+      }
+      final deckNo = questPhaseEntity.extraDetail!.useEventDeckNo!;
+      final eventDeck = mstData.userEventDeck[UserEventDeckEntity.createPK(eventId, deckNo)];
+      if (eventDeck == null) {
+        throw SilentException('UserEventDeck(eventId=$eventId,deckNo=$deckNo) not found');
+      }
+      userEquipId = eventDeck.deckInfo!.userEquipId;
+    } else if (questPhaseEntity.flags.contains(QuestFlag.userEventDeck)) {
+      throw SilentException('QuestFlag.userEventDeck not supported');
+    } else {
+      final (follower, followerSvt) = await _getValidSupport(
         questId: options.questId,
         questPhase: options.questPhase,
-        activeDeckId: options.deckId,
-        followerId: npc.id,
-        followerClassId: 0,
-        followerType: FollowerType.npc.value,
-        followerSupportDeckId: 0,
-        campaignItemId: campaignItemId,
+        useEventDeck: options.useEventDeck,
+        enforceRefreshSupport: options.enfoceRefreshSupport,
+        supportSvtIds: options.supportSvtIds.toList(),
+        supportEquipIds: options.supportCeIds.toList(),
+        supportEquipMaxLimitBreak: options.supportCeMaxLimitBreak,
       );
+      activeDeckId = options.deckId;
+      followerId = follower.userId;
+      followerClassId = followerSvt.classId;
+      followerType = follower.type;
+      followerSupportDeckId = followerSvt.supportDeckId;
     }
-
-    final (follower, followerSvt) = await _getValidSupport(
-      questId: options.questId,
-      questPhase: options.questPhase,
-      useEventDeck: options.useEventDeck,
-      enforceRefreshSupport: options.enfoceRefreshSupport,
-      supportSvtIds: options.supportSvtIds.toList(),
-      supportEquipIds: options.supportCeIds.toList(),
-      supportEquipMaxLimitBreak: options.supportCeMaxLimitBreak,
-    );
 
     return battleSetup(
       questId: options.questId,
       questPhase: options.questPhase,
-      activeDeckId: options.deckId,
-      followerId: follower.userId,
-      followerClassId: followerSvt.classId,
-      followerType: follower.type,
-      followerSupportDeckId: followerSvt.supportDeckId,
+      activeDeckId: activeDeckId,
+      followerId: followerId,
+      followerClassId: followerClassId,
+      followerType: followerType,
+      followerSupportDeckId: followerSupportDeckId,
       campaignItemId: campaignItemId,
+      userEquipId: userEquipId,
     );
   }
 

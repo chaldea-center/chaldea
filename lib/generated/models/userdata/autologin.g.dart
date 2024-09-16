@@ -38,6 +38,7 @@ AutoLoginDataJP _$AutoLoginDataJPFromJson(Map json) => $checkedCreate(
       json,
       ($checkedConvert) {
         final val = AutoLoginDataJP(
+          priority: $checkedConvert('priority', (v) => (v as num?)?.toInt() ?? 0),
           region:
               $checkedConvert('region', (v) => v == null ? Region.jp : const RegionConverter().fromJson(v as String)),
           auth: $checkedConvert(
@@ -66,6 +67,7 @@ AutoLoginDataJP _$AutoLoginDataJPFromJson(Map json) => $checkedCreate(
     );
 
 Map<String, dynamic> _$AutoLoginDataJPToJson(AutoLoginDataJP instance) => <String, dynamic>{
+      'priority': instance.priority,
       'region': const RegionConverter().toJson(instance.region),
       'userAgent': instance.userAgent,
       'curBattleOptionIndex': instance.curBattleOptionIndex,
@@ -112,6 +114,7 @@ AutoLoginDataCN _$AutoLoginDataCNFromJson(Map json) => $checkedCreate(
       json,
       ($checkedConvert) {
         final val = AutoLoginDataCN(
+          priority: $checkedConvert('priority', (v) => (v as num?)?.toInt() ?? 0),
           region:
               $checkedConvert('region', (v) => v == null ? Region.cn : const RegionConverter().fromJson(v as String)),
           gameServer: $checkedConvert(
@@ -145,6 +148,7 @@ AutoLoginDataCN _$AutoLoginDataCNFromJson(Map json) => $checkedCreate(
     );
 
 Map<String, dynamic> _$AutoLoginDataCNToJson(AutoLoginDataCN instance) => <String, dynamic>{
+      'priority': instance.priority,
       'userAgent': instance.userAgent,
       'curBattleOptionIndex': instance.curBattleOptionIndex,
       'battleOptions': instance.battleOptions.map((e) => e.toJson()).toList(),

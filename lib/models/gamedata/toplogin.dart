@@ -352,6 +352,10 @@ final _$mstMasterSchemes = <String, (Type, DataMaster Function(String mstName))>
   "userShop": (UserShopEntity, (mstName) => DataMaster<_IntStr, UserShopEntity>(mstName, UserShopEntity.fromJson)),
   "userQuest": (UserQuestEntity, (mstName) => DataMaster<_IntStr, UserQuestEntity>(mstName, UserQuestEntity.fromJson)),
   "userDeck": (UserDeckEntity, (mstName) => DataMaster<int, UserDeckEntity>(mstName, UserDeckEntity.fromJson)),
+  "userEventDeck": (
+    UserEventDeckEntity,
+    (mstName) => DataMaster<String, UserEventDeckEntity>(mstName, UserEventDeckEntity.fromJson)
+  ),
   "userAccountLinkage": (
     UserAccountLinkageEntity,
     (mstName) => DataMaster<int, UserAccountLinkageEntity>(mstName, UserAccountLinkageEntity.fromJson)
@@ -537,6 +541,7 @@ class MasterDataManager {
   DataMaster<_IntStr, UserQuestEntity> get userQuest => get<_IntStr, UserQuestEntity>();
 
   DataMaster<int, UserDeckEntity> get userDeck => get<int, UserDeckEntity>();
+  DataMaster<String, UserEventDeckEntity> get userEventDeck => get<String, UserEventDeckEntity>();
 
   DataMaster<int, BattleEntity> get battles => get<int, BattleEntity>();
   DataMaster<int, UserFollowerEntity> get userFollower => get<int, UserFollowerEntity>();
@@ -2067,6 +2072,30 @@ class UserDeckEntity extends DataEntityBase<int> {
         cost = _toInt(cost);
 
   factory UserDeckEntity.fromJson(Map<String, dynamic> data) => _$UserDeckEntityFromJson(data);
+}
+
+@JsonSerializable(createToJson: false)
+class UserEventDeckEntity extends DataEntityBase<String> {
+  int userId;
+  int eventId;
+  int deckNo;
+  DeckServantEntity? deckInfo;
+
+  @override
+  String get primaryKey => createPK(eventId, deckNo);
+
+  static String createPK(int eventId, int deckNo) => _createPK2(eventId, deckNo);
+
+  UserEventDeckEntity({
+    dynamic userId,
+    dynamic eventId,
+    dynamic deckNo,
+    this.deckInfo,
+  })  : userId = _toInt(userId),
+        eventId = _toInt(eventId),
+        deckNo = _toInt(deckNo);
+
+  factory UserEventDeckEntity.fromJson(Map<String, dynamic> data) => _$UserEventDeckEntityFromJson(data);
 }
 
 @JsonSerializable(createToJson: false)
