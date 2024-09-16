@@ -250,7 +250,7 @@ class AppInfo {
     return buffer.toString();
   }
 
-  static String get uuid => _uuid!;
+  static String get uuid => _uuid ?? '----';
 
   static bool get isDebugDevice {
     if (kDebugMode) return true;

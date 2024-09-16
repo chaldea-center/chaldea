@@ -200,6 +200,15 @@ class _Database {
     } catch (e, s) {
       logger.e('Failed to load $fp', e, s);
       try {
+        final f = FilePlus(fp);
+        if (f.existsSync()) {
+          final t = DateTime.now();
+          FilePlus('$fp.${t.toSafeFileName()}.back').writeAsBytes(await f.readAsBytes());
+        }
+      } catch (e, s) {
+        logger.e('Failed to dump bak for $fp', e, s);
+      }
+      try {
         return await load(bakFp);
       } catch (e, s) {
         logger.e('Failed to load $bakFp', e, s);
@@ -261,8 +270,9 @@ class _Database {
 
     List<String> _saved = [];
     Future<void> _saveBytes(List<int> bytes, String fn) async {
-      final fp = joinPaths(paths.backupDir, fn);
+      final fp = joinPaths(paths.backupDirUser, fn);
       try {
+        await FilePlus(fp).create(recursive: true);
         await FilePlus(fp).writeAsBytes(bytes);
         _saved.add(fp);
       } catch (e, s) {
@@ -281,6 +291,28 @@ class _Database {
       db.settings.lastBackup = DateTime.now().millisecondsSinceEpoch ~/ 1000;
     }
     return _saved;
+  }
+
+  Future<void> backupSettings() async {
+    String timeStamp = DateFormat('yyyyMMddTHHmmss').format(DateTime.now());
+
+    List<String> _saved = [];
+    Future<void> _saveBytes(List<int> bytes, String fn) async {
+      final fp = joinPaths(paths.backupDirSettings, fn);
+      try {
+        await FilePlus(fp).create(recursive: true);
+        await FilePlus(fp).writeAsBytes(bytes);
+        _saved.add(fp);
+      } catch (e, s) {
+        logger.e('backup settings failed', e, s);
+      }
+    }
+
+    final _lastSavedFile = FilePlus(paths.settingsPath);
+    await _saveBytes(utf8.encode(jsonEncode(userData)), 'settings-${timeStamp}m-${userData.appVer}.json');
+    if (_lastSavedFile.existsSync()) {
+      await _saveBytes(await _lastSavedFile.readAsBytes(), 'settings-${timeStamp}d.json');
+    }
   }
 
   final AssetImage errorImage = const AssetImage('res/img/gudako.png');

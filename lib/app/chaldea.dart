@@ -153,6 +153,7 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin, WindowListener
 
     if (DateTime.now().timestamp - db.settings.lastBackup > 24 * 3600) {
       db.backupUserdata();
+      db.backupSettings();
     }
     if (PlatformU.isMobile && !AppInfo.isIPad) {
       if (!db.settings.autoRotate) {

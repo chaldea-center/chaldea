@@ -9,6 +9,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 
 import 'package:dio/dio.dart';
+import 'package:json_annotation/json_annotation.dart';
 import 'package:logger/logger.dart';
 
 class _LoggerWrap {
@@ -192,6 +193,9 @@ class _CustomPrettyPrinter extends PrettyPrinter {
       );
     }
     String? errorStr = error?.toString();
+    if (error is CheckedFromJsonException && error.innerStack != null) {
+      errorStr = '$errorStr\nInnerStack:\n${error.innerStack}';
+    }
     if (printEmojis && errorStr != null) {
       errorStr = (PrettyPrinter.defaultLevelEmojis[event.level] ?? '') + errorStr;
     }

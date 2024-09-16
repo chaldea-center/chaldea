@@ -126,6 +126,8 @@ class PathManager {
       tempDir,
       downloadDir,
       backupDir,
+      backupDirUser,
+      backupDirSettings,
       logDir,
       hiveDir,
       assetsDir,
@@ -163,6 +165,8 @@ class PathManager {
   String get downloadDir => join(appPath, 'downloads');
 
   String get backupDir => join(appPath, 'backup');
+  String get backupDirUser => join(backupDir, 'user');
+  String get backupDirSettings => join(backupDir, 'settings');
 
   String get logDir => join(appPath, 'logs');
 

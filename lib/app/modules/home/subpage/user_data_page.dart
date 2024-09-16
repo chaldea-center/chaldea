@@ -339,15 +339,16 @@ class __BackupHistoryPageState extends State<_BackupHistoryPage> {
   }
 
   Future<void> listBackups() async {
+    final folder = joinPaths(db.paths.backupDir, 'user');
     if (PlatformU.isWeb) {
       for (final fp in FilePlusWeb.list()) {
-        if (fp.startsWith(db.paths.backupDir) && fp.toLowerCase().contains('.json')) {
+        if (fp.startsWith(folder) && fp.toLowerCase().contains('.json')) {
           validFiles.add(MapEntry(fp, null));
         }
       }
       validFiles.sort((a, b) => b.key.compareTo(a.key));
     } else {
-      final dir = Directory(db.paths.backupDir);
+      final dir = Directory(folder);
       if (await dir.exists()) {
         await for (var entry in dir.list()) {
           if (await FileSystemEntity.isFile(entry.path) && entry.path.toLowerCase().contains('.json')) {

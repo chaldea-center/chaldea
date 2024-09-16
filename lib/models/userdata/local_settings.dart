@@ -10,7 +10,6 @@ import 'package:chaldea/models/db.dart';
 import 'package:chaldea/packages/platform/platform.dart';
 import 'package:chaldea/utils/extension.dart';
 import 'package:chaldea/utils/utils.dart';
-import '../../app/modules/home/elements/gallery_item.dart';
 import '../../packages/language.dart';
 import '../api/api.dart';
 import '../gamedata/common.dart';
@@ -160,9 +159,7 @@ class LocalSettings {
         masterMissionOptions = masterMissionOptions ?? MasterMissionOptions(),
         bookmarks = bookmarks ?? BookmarkHistory(),
         misc = misc ?? _MiscSettings(),
-        secrets = secrets ?? _SecretsData() {
-    this.galleries.removeWhere((key, value) => GalleryItem.allItems.every((item) => item.name != key));
-  }
+        secrets = secrets ?? _SecretsData();
 
   String? get language => _language;
 
