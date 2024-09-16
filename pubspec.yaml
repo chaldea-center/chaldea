@@ -34,7 +34,7 @@ dependencies:
   cached_network_image: ^3.3.0
   cached_network_image_platform_interface: ^4.0.0
   carousel_slider: ^5.0.0
-  catcher_2: ^1.0.0
+  catcher_2: ^2.0.0
   connectivity_plus: ^6.0.1
   # cookie_jar: ^4.0.1
   # crclib: ^3.0.0
@@ -50,7 +50,7 @@ dependencies:
   dots_indicator: ^3.0.0
   equatable: ^2.0.5
   file_picker: ^8.0.0+1
-  fl_chart: ^0.68.0
+  fl_chart: ^0.69.0
   flutter_cache_manager: ^3.3.1
   flutter_easyloading: ^3.0.5
   flutter_hooks: ^0.20.1
@@ -80,7 +80,7 @@ dependencies:
   msgpack_dart: ^1.0.1
   octo_image: ^2.0.0
   package_info_plus: ^8.0.0
-  pasteboard: # ^0.2.0
+  pasteboard: # ^0.3.0
     git:
       url: https://github.com/MixinNetwork/flutter-plugins
       path: packages/pasteboard
