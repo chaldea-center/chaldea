@@ -1,23 +1,32 @@
 import 'package:chaldea/app/battle/models/battle.dart';
+import 'package:chaldea/models/gamedata/const_data.dart';
 import 'package:chaldea/models/gamedata/vals.dart';
 
 class HastenNpturn {
   HastenNpturn._();
 
-  static void hastenNpturn(
+  static Future<void> hastenNpturn(
     final BattleData battleData,
     final DataVals dataVals,
+    final BattleServantData? activator,
     final Iterable<BattleServantData> targets, {
     final bool isNegative = false,
-  }) {
+  }) async {
     final functionRate = dataVals.Rate ?? 1000;
-    if (functionRate < battleData.options.threshold) {
-      return;
-    }
 
     for (final target in targets) {
-      target.changeNPLineCount(isNegative ? -dataVals.Value! : dataVals.Value!);
-      battleData.setFuncResult(target.uniqueId, true);
+      if (!target.isEnemy) continue;
+
+      bool shouldChange = true;
+      if (isNegative) {
+        final resistRate = await target.getBuffValue(battleData, BuffAction.resistanceDelayNpturn, other: activator);
+        shouldChange = await battleData.canActivateFunction(functionRate - resistRate);
+      }
+
+      if (shouldChange) {
+        target.changeNPLineCount(isNegative ? -dataVals.Value! : dataVals.Value!);
+        battleData.setFuncResult(target.uniqueId, true);
+      }
     }
   }
 }

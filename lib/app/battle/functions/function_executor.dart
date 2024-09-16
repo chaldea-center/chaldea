@@ -299,8 +299,13 @@ class FunctionExecutor {
           break;
         case FuncType.hastenNpturn:
         case FuncType.delayNpturn:
-          HastenNpturn.hastenNpturn(battleData, dataVals, targets,
-              isNegative: function.funcType == FuncType.delayNpturn);
+          await HastenNpturn.hastenNpturn(
+            battleData,
+            dataVals,
+            activator,
+            targets,
+            isNegative: function.funcType == FuncType.delayNpturn,
+          );
           break;
         case FuncType.gainStar:
         case FuncType.lossStar:

@@ -657,6 +657,9 @@ class BattleServantData {
       case BuffAction.avoidState:
       case BuffAction.resistanceState:
       case BuffAction.toleranceSubstate:
+      case BuffAction.resistInstantdeath:
+      case BuffAction.nonresistInstantdeath:
+      case BuffAction.resistanceDelayNpturn:
       case BuffAction.chagetd:
       case BuffAction.guts:
       case BuffAction.functionGuts:
@@ -723,8 +726,6 @@ class BattleServantData {
       case BuffAction.donotReplace:
       case BuffAction.giveGainHp:
       case BuffAction.gainHp:
-      case BuffAction.resistInstantdeath:
-      case BuffAction.nonresistInstantdeath:
       case BuffAction.masterSkillValueUp:
       case BuffAction.turnvalNp:
       case BuffAction.turnendHpRegain:
@@ -784,6 +785,7 @@ class BattleServantData {
       case BuffAction.giveGainHp:
       case BuffAction.resistInstantdeath:
       case BuffAction.nonresistInstantdeath:
+      case BuffAction.resistanceDelayNpturn:
       case BuffAction.grantInstantdeath:
       case BuffAction.grantState:
       case BuffAction.grantSubstate:
