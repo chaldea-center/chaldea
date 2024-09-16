@@ -160,7 +160,8 @@ class AppWindowUtil {
   // close window if return true
   static Future<bool> _shouldCloseCheckUpload() async {
     logger.i('closing desktop app...');
-    if (!db.settings.alertUploadUserData) {
+    final alertUploadUserData = db.settings.alertUploadUserData && kDebugMode;
+    if (!alertUploadUserData) {
       await Future.delayed(const Duration(milliseconds: 200));
       return true;
     }

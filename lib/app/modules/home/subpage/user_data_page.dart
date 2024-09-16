@@ -101,13 +101,9 @@ class _UserDataPageState extends State<UserDataPage> {
               if (PlatformU.isDesktop)
                 SwitchListTile.adaptive(
                   title: Text(S.current.upload_before_close_app),
-                  subtitle: Text(S.current.desktop_only),
-                  value: db.settings.alertUploadUserData,
-                  onChanged: (v) {
-                    setState(() {
-                      db.settings.alertUploadUserData = v;
-                    });
-                  },
+                  subtitle: Text('${S.current.disabled}/Removed'),
+                  value: false,
+                  onChanged: null,
                 )
             ],
           ),
