@@ -651,7 +651,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Warning that this quest contains multiple enemy configurations, when searching shared teams or simulating check the corresponding version:\nClick Details - Select Version - Click the Calculate Button"),
         "laplace_my_teams": MessageLookupByLibrary.simpleMessage("My Teams"),
         "laplace_quest_complex_ai_hint": MessageLookupByLibrary.simpleMessage(
-            "This quest may have complex AI, which may not be simulated accurately. Please make sure you understand how enemy AI/field AI work before simulating and manually triggering AI skills."),
+            "This quest may have complex mechanism or AI, which may not be simulated accurately. Please make sure you understand how enemy AI/field AI work before simulating and manually triggering AI skills."),
         "laplace_upload_td_multi_dmg_func_hint": MessageLookupByLibrary.simpleMessage(
             "Multi-step NP found, please check MIN/MAX RNG to ensure NP refund is sufficient and able to clear the quest"),
         "level": MessageLookupByLibrary.simpleMessage("Level"),

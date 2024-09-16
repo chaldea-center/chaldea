@@ -275,6 +275,16 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
     return ListView(
       padding: const EdgeInsets.symmetric(vertical: 8),
       children: [
+        Card(
+          margin: const EdgeInsets.symmetric(horizontal: 8),
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(8.0)),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+            child: Text(S.current.laplace_quest_complex_ai_hint, style: Theme.of(context).textTheme.bodySmall),
+          ),
+        ),
         Text(
           '${S.current.quest_wave} ${battleData.waveCount}/${battleData.niceQuest!.stages.length}'
           '  ${S.current.battle_turn} ${battleData.totalTurnCount}',

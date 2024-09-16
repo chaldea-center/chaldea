@@ -5794,10 +5794,10 @@ class S {
     );
   }
 
-  /// `This quest may have complex AI, which may not be simulated accurately. Please make sure you understand how enemy AI/field AI work before simulating and manually triggering AI skills.`
+  /// `This quest may have complex mechanism or AI, which may not be simulated accurately. Please make sure you understand how enemy AI/field AI work before simulating and manually triggering AI skills.`
   String get laplace_quest_complex_ai_hint {
     return Intl.message(
-      'This quest may have complex AI, which may not be simulated accurately. Please make sure you understand how enemy AI/field AI work before simulating and manually triggering AI skills.',
+      'This quest may have complex mechanism or AI, which may not be simulated accurately. Please make sure you understand how enemy AI/field AI work before simulating and manually triggering AI skills.',
       name: 'laplace_quest_complex_ai_hint',
       desc: '',
       locale: localeName,
