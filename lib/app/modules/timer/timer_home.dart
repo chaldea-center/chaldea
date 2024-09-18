@@ -132,6 +132,7 @@ class _TimerHomePageState extends State<TimerHomePage>
     );
     return OverflowBar(
       alignment: MainAxisAlignment.center,
+      spacing: 4,
       children: [
         FilterGroup<TimerSortType>(
           padding: EdgeInsets.zero,

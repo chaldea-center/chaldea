@@ -1,4 +1,6 @@
 import 'package:chaldea/app/modules/common/filter_group.dart';
+import 'package:chaldea/app/modules/common/filter_page_base.dart';
+import 'package:chaldea/app/modules/servant/filter.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
@@ -15,6 +17,7 @@ class TraitServantTab extends StatefulWidget {
 class _TraitServantTabState extends State<TraitServantTab> {
   bool useGrid = false;
   late final _id = widget.ids.firstOrNull ?? 0;
+  final svtFilter = SvtFilterData();
 
   @override
   Widget build(BuildContext context) {
@@ -26,21 +29,40 @@ class _TraitServantTabState extends State<TraitServantTab> {
       entity = db.gameData.entities[_id];
     }
     if (servants.isEmpty && entity == null) return const Center(child: Text('No record'));
-
+    final shownServants = servants.where((e) => ServantFilterPage.filter(svtFilter, e)).toList();
     return CustomScrollView(
       slivers: [
         SliverList.list(children: [
           if (servants.isNotEmpty)
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 8),
-              child: Center(
-                child: FilterGroup.display(
-                  useGrid: useGrid,
-                  onChanged: (v) {
-                    if (v != null) useGrid = v;
-                    setState(() {});
-                  },
-                ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  FilterGroup.display(
+                    useGrid: useGrid,
+                    onChanged: (v) {
+                      if (v != null) useGrid = v;
+                      setState(() {});
+                    },
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.filter_alt),
+                    tooltip: '${S.current.filter} (${S.current.servant})',
+                    onPressed: () => FilterPage.show(
+                      context: context,
+                      builder: (context) => ServantFilterPage(
+                        filterData: svtFilter,
+                        onChanged: (_) {
+                          if (mounted) {
+                            setState(() {});
+                          }
+                        },
+                        planMode: false,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
           if (entity != null)
@@ -55,11 +77,11 @@ class _TraitServantTabState extends State<TraitServantTab> {
             ? SliverGrid.extent(
                 maxCrossAxisExtent: 56,
                 childAspectRatio: 132 / 144,
-                children: [for (final svt in servants) gridItem(context, svt)],
+                children: [for (final svt in shownServants) gridItem(context, svt)],
               )
             : SliverList.builder(
-                itemBuilder: (context, index) => listItem(context, servants[index]),
-                itemCount: servants.length,
+                itemBuilder: (context, index) => listItem(context, shownServants[index]),
+                itemCount: shownServants.length,
               ),
         if (useGrid)
           SliverList.list(children: const [

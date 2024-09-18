@@ -202,6 +202,7 @@ class _FakerAccountEditPageState extends State<FakerAccountEditPage> {
       onTap: () {
         InputCancelOkDialog(
           title: title,
+          text: value,
           onSubmit: (s) {
             try {
               setState(() {

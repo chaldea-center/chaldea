@@ -323,7 +323,24 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
     }
     children.add(SimpleAccordion(
       headerBuilder: (context, _) {
-        return ListTile(dense: true, title: Text('Drops (${totalDropStat.totalCount} runs)'));
+        return ListTile(
+          dense: true,
+          title: Text('Drops (${totalDropStat.totalCount} runs)'),
+          subtitle: shownItemIds.isEmpty
+              ? null
+              : Wrap(
+                  spacing: 2,
+                  runSpacing: 2,
+                  children: (shownItemIds.toList()..sort(Item.compare)).map((itemId) {
+                    return GameCardMixin.anyCardItemBuilder(
+                      context: context,
+                      id: itemId,
+                      width: 30,
+                      text: mstData.getItemNum(itemId).format(),
+                    );
+                  }).toList(),
+                ),
+        );
       },
       contentBuilder: (context) {
         totalDropStat.items.removeWhere((k, v) => v == 0);
@@ -336,7 +353,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
           children: [
             for (final (header, dropStats) in [
               ('Total Drop Statistics', totalDropStat),
-              ('Current Loop\'s Drop Statistics', curLoopDropStat)
+              ('Current Loop\'s Drop Statistics', curLoopDropStat),
             ])
               ListTile(
                 dense: true,
@@ -1343,6 +1360,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
   }
 
   bool _stopLoopFlag = false;
+  final shownItemIds = <int>{};
   final totalDropStat = _DropStatData();
   final curLoopDropStat = _DropStatData();
 
@@ -1466,7 +1484,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
           }
         }
       }
-      resultResp;
+      shownItemIds.addAll(resultResp.data.mstData.userItem.map((e) => e.itemId));
 
       finishedCount += 1;
       battleOption.loopCount -= 1;

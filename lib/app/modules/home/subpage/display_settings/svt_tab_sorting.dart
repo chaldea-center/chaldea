@@ -24,8 +24,9 @@ class _SvtTabsSortingSettingState extends State<SvtTabsSortingSetting> {
           SFooter(S.current.drag_to_sort),
           OverflowBar(
             alignment: MainAxisAlignment.center,
+            spacing: 6,
             children: [
-              ElevatedButton(
+              FilledButton(
                 onPressed: () {
                   setState(() {
                     db.settings.display.sortedSvtTabs = List.of(SvtTab.values);
@@ -34,7 +35,7 @@ class _SvtTabsSortingSettingState extends State<SvtTabsSortingSetting> {
                 },
                 child: Text(S.current.reset),
               ),
-              ElevatedButton(
+              FilledButton(
                 onPressed: db.gameData.isValid
                     ? () {
                         final servants = db.gameData.servantsNoDup.values.toList();

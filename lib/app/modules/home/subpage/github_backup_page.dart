@@ -283,8 +283,9 @@ class _GithubBackupPageState extends State<GithubBackupPage> {
           ),
           OverflowBar(
             alignment: MainAxisAlignment.center,
+            spacing: 6,
             children: [
-              ElevatedButton(
+              FilledButton(
                 onPressed: () {
                   final error = validate();
                   if (error != null) {
@@ -295,7 +296,7 @@ class _GithubBackupPageState extends State<GithubBackupPage> {
                 },
                 child: Text(S.current.upload),
               ),
-              ElevatedButton(
+              FilledButton(
                 onPressed: () {
                   final error = validate();
                   if (error != null) {

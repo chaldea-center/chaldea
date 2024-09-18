@@ -7,6 +7,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/api/chaldea.dart';
+import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/app/tools/gamedata_loader.dart';
 import 'package:chaldea/generated/l10n.dart';
@@ -81,31 +82,8 @@ class _GameDataPageState extends State<GameDataPage> {
                       title: Text(S.current.update),
                       subtitle: Text('Progress: $hint', maxLines: 2),
                       trailing: Text(newVersion == null ? '' : '$newVersion available', textAlign: TextAlign.end),
-                      onTap: () async {
-                        EasyLoading.showInfo('Background Updating...');
-                        final data = await loader.reload();
-                        if (data == null) return;
-                        if (!data.isValid) {
-                          EasyLoading.showError("Invalid game data");
-                          return;
-                        }
-                        showDialog(
-                          context: kAppKey.currentContext!,
-                          useRootNavigator: false,
-                          builder: (context) {
-                            return SimpleCancelOkDialog(
-                              title: Text(S.current.update_dataset),
-                              content: Text('Current: ${db.gameData.version.text(false)}\n'
-                                  'Latest : ${data.version.text(false)}'),
-                              hideOk: data.version.timestamp <= db.gameData.version.timestamp,
-                              onTapOk: () {
-                                db.gameData = data;
-                                db.notifyAppUpdate();
-                              },
-                            );
-                          },
-                        );
-                      },
+                      onTap: () => updateGamedata(false),
+                      onLongPress: () => updateGamedata(true),
                     );
                   }),
               SwitchListTile.adaptive(
@@ -229,6 +207,33 @@ class _GameDataPageState extends State<GameDataPage> {
               ),
             ],
           ),
+          TileGroup(
+            children: [
+              ListTile(
+                title: const Text('Delete Old Data'),
+                subtitle: const Text('Old event/war/summon..., reduce memory.'),
+                trailing: DropdownButton<Region?>(
+                  value: db.settings.removeOldDataRegion,
+                  items: [
+                    const DropdownMenuItem(
+                      value: null,
+                      child: Text('NO'),
+                    ),
+                    for (final region in Region.values)
+                      DropdownMenuItem(
+                        value: region,
+                        child: Text(region.localName),
+                      )
+                  ],
+                  onChanged: (v) {
+                    setState(() {
+                      db.settings.removeOldDataRegion = v;
+                    });
+                  },
+                ),
+              ),
+            ],
+          ),
         ],
       ),
     );
@@ -243,6 +248,30 @@ class _GameDataPageState extends State<GameDataPage> {
         content: Text(e.toString()),
       ).showDialog(context);
     }
+  }
+
+  Future<void> updateGamedata(bool force) async {
+    EasyLoading.showInfo('Background Updating...');
+    final data = await loader.reload(force: force);
+    if (data == null) return;
+    if (!data.isValid) {
+      EasyLoading.showError("Invalid game data");
+      return;
+    }
+    router.showDialog(
+      builder: (context) {
+        return SimpleCancelOkDialog(
+          title: Text(S.current.update_dataset),
+          content: Text('Current: ${db.gameData.version.text(false)}\n'
+              'Latest : ${data.version.text(false)}'),
+          hideOk: data.version.timestamp < db.gameData.version.timestamp,
+          onTapOk: () {
+            db.gameData = data;
+            db.notifyAppUpdate();
+          },
+        );
+      },
+    );
   }
 }
 

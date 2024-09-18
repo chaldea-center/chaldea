@@ -339,7 +339,7 @@ class __BackupHistoryPageState extends State<_BackupHistoryPage> {
   }
 
   Future<void> listBackups() async {
-    final folder = joinPaths(db.paths.backupDir, 'user');
+    final folder = db.paths.backupDirUser;
     if (PlatformU.isWeb) {
       for (final fp in FilePlusWeb.list()) {
         if (fp.startsWith(folder) && fp.toLowerCase().contains('.json')) {
@@ -372,10 +372,10 @@ class __BackupHistoryPageState extends State<_BackupHistoryPage> {
           if (index == 0) {
             return Card(
               child: InkWell(
-                onTap: PlatformU.isDesktop ? () => openFile(db.paths.backupDir) : null,
+                onTap: PlatformU.isDesktop ? () => openFile(db.paths.backupDirUser) : null,
                 child: Padding(
                   padding: const EdgeInsets.all(6),
-                  child: Text(db.paths.convertIosPath(db.paths.backupDir)),
+                  child: Text(db.paths.convertIosPath(db.paths.backupDirUser)),
                 ),
               ),
             );
