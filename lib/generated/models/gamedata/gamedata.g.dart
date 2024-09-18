@@ -87,6 +87,8 @@ GameData _$GameDataFromJson(Map json) => GameData(
       dropData: json['dropData'] == null ? null : DropData.fromJson(Map<String, dynamic>.from(json['dropData'] as Map)),
       addData: json['addData'] == null ? null : GameDataAdd.fromJson(Map<String, dynamic>.from(json['addData'] as Map)),
       spoilerRegion: _$JsonConverterFromJson<String, Region>(json['spoilerRegion'], const RegionConverter().fromJson),
+      removeOldDataRegion:
+          _$JsonConverterFromJson<String, Region>(json['removeOldDataRegion'], const RegionConverter().fromJson),
     );
 
 Value? _$JsonConverterFromJson<Json, Value>(

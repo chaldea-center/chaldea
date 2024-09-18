@@ -72,6 +72,7 @@ class LocalSettings {
 
   // filters
   Region spoilerRegion; // delete unreleased
+  Region? removeOldDataRegion;
   bool autoResetFilter;
   bool hideUnreleasedCard;
   bool hideUnreleasedEnemyCollection;
@@ -127,6 +128,7 @@ class LocalSettings {
     BattleSimSetting? battleSim,
     Map<int, EventItemCalcParams>? eventItemCalc,
     this.spoilerRegion = Region.jp,
+    this.removeOldDataRegion,
     this.autoResetFilter = true,
     this.hideUnreleasedCard = false,
     this.hideUnreleasedEnemyCollection = false,

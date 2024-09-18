@@ -88,6 +88,7 @@ class GameData with _GameDataExtra {
   Map<int, BaseFunction> baseFunctions;
   GameDataAdd? addData;
   Region? spoilerRegion;
+  final Region? removeOldDataRegion;
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   Map<int, Servant> servantsById;
@@ -133,6 +134,7 @@ class GameData with _GameDataExtra {
     DropData? dropData,
     this.addData,
     this.spoilerRegion,
+    this.removeOldDataRegion,
   })  : version = version ?? DataVersion(),
         servantsById = {for (final svt in _sortCards(servants)) svt.id: svt},
         servants = {
@@ -175,6 +177,39 @@ class GameData with _GameDataExtra {
         baseTds = baseTds ?? {},
         baseSkills = baseSkills ?? {},
         baseFunctions = baseFunctions ?? {} {
+    if (removeOldDataRegion != null) {
+      bool _shouldRemove(int jpTime, MappingBase<int>? regionTimes, int latest, int? inferLatest) {
+        final t = removeOldDataRegion == Region.jp ? jpTime : regionTimes?.ofRegion(removeOldDataRegion);
+        if (t == null) {
+          if (inferLatest != null) return jpTime < inferLatest;
+          return false;
+        }
+        return t < latest;
+      }
+
+      final latest = DateTime.now().subtract(const Duration(days: 30)).timestamp;
+      final inferLatest = DateTime.now().timestamp - (removeOldDataRegion!.eventDelayMonth + 3) * 30 * 24 * 3600;
+      final warIdsToRemove = <int>{};
+      this.events.removeWhere((eventId, event) {
+        final eventAdd = this.wiki.events[eventId];
+        final remove = _shouldRemove(event.startedAt, eventAdd?.startTime, latest, inferLatest);
+        if (remove) warIdsToRemove.addAll(event.warIds);
+        return remove;
+      });
+      this.campaigns.removeWhere((eventId, event) {
+        return _shouldRemove(event.startedAt, this.wiki.events[eventId]?.startTime, latest, inferLatest);
+      });
+      this.wars.removeWhere((warId, war) {
+        if (war.isMainStory) return false;
+        return warIdsToRemove.contains(warId);
+      });
+      this.gachas.removeWhere((gachaId, gacha) {
+        return gacha.closedAt < inferLatest;
+      });
+      this.wiki.summons.removeWhere((_, summon) {
+        return _shouldRemove(summon.endTime.jp ?? 0, summon.endTime, latest, inferLatest);
+      });
+    }
     // merge mc campaigns
     String trim(String s) => s.replaceAll(RegExp(r'[\s\n]'), '');
     Set<String> eventKeys = this.events.values.map((e) => [e.extra.mcLink, trim(e.name)].join('/')).toSet();

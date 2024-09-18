@@ -73,6 +73,8 @@ LocalSettings _$LocalSettingsFromJson(Map json) => $checkedCreate(
                   )),
           spoilerRegion: $checkedConvert(
               'spoilerRegion', (v) => v == null ? Region.jp : const RegionConverter().fromJson(v as String)),
+          removeOldDataRegion: $checkedConvert('removeOldDataRegion',
+              (v) => _$JsonConverterFromJson<String, Region>(v, const RegionConverter().fromJson)),
           autoResetFilter: $checkedConvert('autoResetFilter', (v) => v as bool? ?? true),
           hideUnreleasedCard: $checkedConvert('hideUnreleasedCard', (v) => v as bool? ?? false),
           hideUnreleasedEnemyCollection: $checkedConvert('hideUnreleasedEnemyCollection', (v) => v as bool? ?? false),
@@ -141,6 +143,8 @@ Map<String, dynamic> _$LocalSettingsToJson(LocalSettings instance) => <String, d
       'battleSim': instance.battleSim.toJson(),
       'eventItemCalc': instance.eventItemCalc.map((k, e) => MapEntry(k.toString(), e.toJson())),
       'spoilerRegion': const RegionConverter().toJson(instance.spoilerRegion),
+      'removeOldDataRegion':
+          _$JsonConverterToJson<String, Region>(instance.removeOldDataRegion, const RegionConverter().toJson),
       'autoResetFilter': instance.autoResetFilter,
       'hideUnreleasedCard': instance.hideUnreleasedCard,
       'hideUnreleasedEnemyCollection': instance.hideUnreleasedEnemyCollection,

@@ -89,7 +89,7 @@ class GameDataLoader {
     error = null;
     cancelToken = CancelToken();
     try {
-      final result = await _loadJson(offline, force, connectTimeout);
+      final result = await _loadJson(offline, force, connectTimeout, db.settings.removeOldDataRegion);
       if (result.isValid) {
         if (!completer.isCompleted) completer.complete(result);
       } else {
@@ -107,7 +107,7 @@ class GameDataLoader {
     return completer.future;
   }
 
-  Future<GameData> _loadJson(bool offline, bool force, Duration? connectTimeout) async {
+  Future<GameData> _loadJson(bool offline, bool force, Duration? connectTimeout, Region? removeOldDataRegion) async {
     final _versionFile = FilePlus(joinPaths(db.paths.gameDir, 'version.json'));
     DataVersion? oldVersion;
     DataVersion newVersion;
@@ -280,6 +280,8 @@ class GameDataLoader {
     if (db.settings.spoilerRegion != Region.jp) {
       _gameJson['spoilerRegion'] = const RegionConverter().toJson(db.settings.spoilerRegion);
     }
+    _gameJson['removeOldDataRegion'] =
+        removeOldDataRegion == null ? null : const RegionConverter().toJson(removeOldDataRegion);
     tmp.gameJson = _gameJson;
     GameData _gamedata = GameData.fromJson(_gameJson);
     if (!offline) {
