@@ -1809,22 +1809,40 @@ class BattleServantData {
       for (final buff in collectBuffsPerAction(battleBuff.validBuffsActiveFirst, buffAction)) {
         final List<NiceTrait> selfTraits = fetchSelfTraits(buffAction, buff, this, cardData: card);
         final List<NiceTrait>? otherTraits = fetchOtherTraits(buffAction, buff, other, cardData: card);
-
         if (await buff.shouldActivateBuff(
           battleData,
           selfTraits,
           opTraits: otherTraits,
           skillInfoType: skillInfo?.type,
         )) {
-          final skillId = buff.param;
-          BaseSkill? skill = db.gameData.baseSkills[skillId];
-          skill ??= await showEasyLoading(() => AtlasApi.skill(skillId), mask: true);
-          if (skill == null) {
+          BaseSkill? skill;
+          if (buff.buff.type == BuffType.classboardCommandSpellAfterFunction) {
+            final spellId = buff.param;
+            final targetCommandSpell = db.gameData.classBoards.values
+                .expand((e) => e.squares)
+                .map((e) => e.targetCommandSpell)
+                .firstWhereOrNull((e) => e?.id == spellId);
+            if (targetCommandSpell != null) {
+              skill = targetCommandSpell.toSkill();
+            }
+            if (skill == null) {
+              battleData.battleLogger.debug(
+                  'Buff ID [${buff.buff.id}]: ${S.current.command_spell}(classboard) [$spellId] ${S.current.not_found}');
+              continue;
+            }
             battleData.battleLogger
-                .debug('Buff ID [${buff.buff.id}]: ${S.current.skill} [$skillId] ${S.current.not_found}');
-            continue;
+                .function('$lBattleName - ${buff.buff.lName.l} ${S.current.command_spell}(classboard) [$spellId]');
+          } else {
+            final skillId = buff.param;
+            skill = db.gameData.baseSkills[skillId];
+            skill ??= await showEasyLoading(() => AtlasApi.skill(skillId), mask: true);
+            if (skill == null) {
+              battleData.battleLogger
+                  .debug('Buff ID [${buff.buff.id}]: ${S.current.skill} [$skillId] ${S.current.not_found}');
+              continue;
+            }
+            battleData.battleLogger.function('$lBattleName - ${buff.buff.lName.l} ${S.current.skill} [$skillId]');
           }
-          battleData.battleLogger.function('$lBattleName - ${buff.buff.lName.l} ${S.current.skill} [$skillId]');
           await FunctionExecutor.executeFunctions(
             battleData,
             skill.functions,

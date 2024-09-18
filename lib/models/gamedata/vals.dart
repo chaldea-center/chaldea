@@ -298,6 +298,8 @@ class DataVals {
   int? get AddCount => _vals['AddCount'];
   int? get RateCount => _vals['RateCount'];
   int? get DropRateCount => _vals['DropRateCount'];
+  // custom fields
+  int? get CommandSpellId => _vals['CommandSpellId'];
 
   List<T>? _parseObjList<T>(String key, T Function(Map<String, dynamic> json) fromJson) {
     final v = _vals[key];

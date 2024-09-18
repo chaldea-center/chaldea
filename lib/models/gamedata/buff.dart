@@ -477,6 +477,7 @@ enum BuffType {
   toFieldChangeField(10001),
   toFieldAvoidBuff(10002),
   toFieldSubIndividualityField(10003),
+  classboardCommandSpellAfterFunction(200001),
   ;
 
   final int value;

@@ -88,6 +88,12 @@ class FunctionExecutor {
           battleData.functionResults.add(null);
           continue;
         }
+        final actMasterGenderType = dataVal.ActMasterGenderType ?? 0;
+        if (actMasterGenderType != 0) {
+          if (!(db.curUser.isGirl ? actMasterGenderType == 2 : actMasterGenderType == 1)) {
+            continue;
+          }
+        }
 
         final updatedResult = await FunctionExecutor.executeFunction(
           battleData,

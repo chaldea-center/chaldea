@@ -227,6 +227,14 @@ class BattleSkillInfoData {
     if (curSkill.type == SkillType.active) {
       await activator?.activateBuff(battleData, BuffAction.functionSkillAfter);
     }
+    for (final svt in wouldAffectTargets) {
+      if (type == SkillInfoType.commandSpell) {
+        final csId = curSkill.functions.firstOrNull?.svals.firstOrNull?.CommandSpellId;
+        if (csId == 1 || csId == 9) {
+          await svt.activateBuff(battleData, BuffAction.functionClassboardCommandSpellAfter, skillInfo: this);
+        }
+      }
+    }
     return true;
   }
 
@@ -328,6 +336,7 @@ class CommonCustomSkills {
             'Rate': 1000,
             'Value': 1000,
             'Unaffected': 1,
+            "CommandSpellId": 1,
           })
         ],
       )
@@ -352,6 +361,7 @@ class CommonCustomSkills {
             'Rate': 3000,
             'Value': 10000,
             'Unaffected': 1,
+            "CommandSpellId": 9,
           })
         ],
       )
@@ -375,6 +385,7 @@ class CommonCustomSkills {
                 'Rate': 5000,
                 'Value': 10000,
                 'Unaffected': 1,
+                "CommandSpellId": 1001,
               })
             ],
           )

@@ -76,6 +76,18 @@ class ConstGameData {
     this.config = const ConstDataConfig(),
     this.destinyOrderSummons = const [],
   }) : buffTypeActionMap = {} {
+    if (buffActions.isNotEmpty) {
+      buffActions[BuffAction.functionClassboardCommandSpellAfter] = BuffActionInfo(
+        limit: BuffLimit.none,
+        plusTypes: [BuffType.classboardCommandSpellAfterFunction],
+        minusTypes: [],
+        baseParam: 0,
+        baseValue: 0,
+        isRec: true,
+        plusAction: BuffAction.none,
+        maxRate: [0],
+      );
+    }
     for (final entry in buffActions.entries) {
       for (final type in [...entry.value.plusTypes, ...entry.value.minusTypes]) {
         buffTypeActionMap.putIfAbsent(type, () => []).add(entry.key);
@@ -1245,6 +1257,7 @@ enum BuffAction {
   functionStepInAfter(142),
   shortenSkillAfterUseSkill(143),
   pierceSpecialInvincible(144),
+  functionClassboardCommandSpellAfter(301),
   ;
 
   final int value;

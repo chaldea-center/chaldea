@@ -82,25 +82,65 @@ class ClassBoard with RouteInfo {
 
   NiceSkill? toSkill(ClassBoardPlan v) {
     Map<int, NiceSkill> skills = {};
-    Map<int, int> levels = {};
+    Map<int, int> skillLvs = {};
+    Map<int, ClassBoardCommandSpell> spells = {};
+    Map<int, int> spellLvs = {};
     for (final square in squares) {
       final targetSkill = square.targetSkill;
-      if (targetSkill == null) continue;
-      if (v.enhancedSquares.contains(square.id)) {
-        skills.putIfAbsent(targetSkill.id, () => targetSkill);
-        levels.addNum(targetSkill.id, square.upSkillLv);
+      final targetCommandSpell = square.targetCommandSpell;
+      if (targetSkill != null) {
+        if (v.enhancedSquares.contains(square.id)) {
+          skills.putIfAbsent(targetSkill.id, () => targetSkill);
+          skillLvs.addNum(targetSkill.id, square.upSkillLv);
+        }
+      } else if (targetCommandSpell != null) {
+        if (v.enhancedSquares.contains(square.id)) {
+          spells.putIfAbsent(targetCommandSpell.id, () => targetCommandSpell);
+          spellLvs.addNum(targetCommandSpell.id, square.upSkillLv);
+        }
       }
     }
     List<NiceFunction> functions = [];
-    for (final skillId in levels.keys) {
+    for (final skillId in skillLvs.keys) {
       final skill = skills[skillId]!;
-      final lv = levels[skillId]!.clamp(0, skill.maxLv);
+      final lv = skillLvs[skillId]!.clamp(0, skill.maxLv);
       if (lv == 0) continue;
       for (final func in skill.functions) {
         final func2 = NiceFunction.fromJson(func.toJson());
         func2.svals = [func.svals[lv - 1]];
         functions.add(func2);
       }
+    }
+    for (final spellId in spellLvs.keys) {
+      final spell = spells[spellId]!;
+      final lv = spellLvs[spellId]!.clamp(0, spell.functions.firstOrNull?.svals.length ?? 0);
+      if (lv == 0 || spell.functions.isEmpty) continue;
+      final func = spell.functions.first;
+      functions.add(NiceFunction(
+          funcId: -spellId,
+          funcType: FuncType.addState,
+          funcTargetType: FuncTargetType.self,
+          funcPopupText: spell.name,
+          funcPopupIcon: func.funcPopupIcon,
+          buffs: [
+            Buff(
+              id: -spellId,
+              type: BuffType.classboardCommandSpellAfterFunction,
+              name: spell.name,
+              detail: spell.detail,
+              icon: func.funcPopupIcon,
+            )
+          ],
+          svals: [
+            DataVals({
+              "Turn": -1,
+              "Count": -1,
+              "Rate": 5000,
+              // "ClassBoardId": id,
+              "Value": spellId,
+              "Value2": lv,
+            })
+          ]));
     }
     if (functions.isEmpty) return null;
     return NiceSkill(
@@ -214,7 +254,7 @@ class ClassBoardSquare {
 @JsonSerializable()
 class ClassBoardCommandSpell {
   int id;
-  int commandSpellId;
+  int commandSpellId; // current only dump csId=1 one, but not csId=9. They are the same, but should always check csId
   // int lv;
   String name;
   String detail;
@@ -234,7 +274,7 @@ class ClassBoardCommandSpell {
 
   NiceSkill toSkill({String? icon}) {
     return NiceSkill(
-      id: -commandSpellId,
+      id: -id,
       name: name,
       unmodifiedDetail: detail,
       icon: icon ?? ClassBoardSquare.csIcon(db.curUser.isGirl),
