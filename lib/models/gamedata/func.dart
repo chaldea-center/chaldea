@@ -419,9 +419,13 @@ extension BaseFunctionX on BaseFunction {
       (funcTargetTeam == FuncApplyTarget.player && funcTargetType.isEnemy);
   EffectTarget get effectTarget => EffectTarget.fromFunc(funcTargetType);
 
+  List<NiceTrait> getCommonFuncIndividuality() {
+    return ConstData.funcTypeDetail[funcType.value]?.individuality ?? [];
+  }
+
   List<NiceTrait> getFuncIndividuality() {
     return [
-      ...?ConstData.funcTypeDetail[funcType.value]?.individuality,
+      ...getCommonFuncIndividuality(),
       ...?script?.funcIndividuality,
     ];
   }
@@ -590,6 +594,8 @@ enum FuncType {
   lossMultiplyNp(141),
   addBattlePoint(142),
   damageNpBattlePointPhase(143),
+  setNpExecutedState(144),
+  hideOverGauge(145),
   ;
 
   final int value;
@@ -630,6 +636,7 @@ enum FuncTargetType {
   ptOneHpLowestValue,
   ptOneHpLowestRate,
   enemyRange,
+  handCommandcardRandomOne,
   ;
 
   bool get isEnemy => name.toLowerCase().startsWith('enemy') && this != FuncTargetType.enemyOneNoTargetNoAction;

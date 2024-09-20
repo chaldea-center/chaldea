@@ -205,6 +205,7 @@ const _$EventTypeEnumMap = {
   EventType.interludeCampaign: 'interludeCampaign',
   EventType.myroomPhotoCampaign: 'myroomPhotoCampaign',
   EventType.fortuneCampaign: 'fortuneCampaign',
+  EventType.genderSelection: 'genderSelection',
   EventType.mcCampaign: 'mcCampaign',
 };
 

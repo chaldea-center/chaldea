@@ -2108,6 +2108,7 @@ enum EventType {
   interludeCampaign(25),
   myroomPhotoCampaign(26),
   fortuneCampaign(27),
+  genderSelection(28),
   mcCampaign(999); // some campaign events not in master data, use Mooncell data
 
   const EventType(this.value);

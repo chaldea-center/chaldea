@@ -115,27 +115,33 @@ enum AiType {
 }
 
 enum NiceAiActNum {
-  nomal,
-  anytime,
-  reactionPlyaerSkill,
-  reactionEnemyturnStart,
-  reactionEnemyturnEnd,
-  reactionDead,
-  reactionPlayeractionend,
-  reactionWavestart,
-  maxnp,
-  afterTurnPlayerEnd,
-  usenpTarget,
-  reactionTurnstart,
-  reactionPlayeractionstart,
-  reactionEntryUnit,
-  reactionBeforeResurrection,
-  reactionBeforeDead,
-  shiftServantAfter,
-  reactionBeforeMoveWave,
-  reactionEnemyTurnStartPriority,
-  reactionEnemyTurnEndPriority,
-  unknown,
+  nomal(0),
+  anytime(-1),
+  reactionPlyaerSkill(-3),
+  reactionEnemyturnStart(-4),
+  reactionEnemyturnEnd(-5),
+  reactionDead(-6),
+  reactionPlayeractionend(-7),
+  reactionWavestart(-8),
+  maxnp(-9),
+  afterTurnPlayerEnd(-10),
+  usenpTarget(-11),
+  reactionTurnstart(-12),
+  reactionPlayeractionstart(-13),
+  reactionEntryUnit(-14),
+  reactionBeforeResurrection(-15),
+  reactionBeforeDead(-16),
+  shiftServantAfter(-17),
+  reactionBeforeMoveWave(-18),
+  shiftServantBefore(-19),
+  reactionEnemyTurnStartPriority(-401),
+  reactionEnemyTurnEndPriority(-501),
+  shiftServantBeforePriority(-1901),
+  unknown(-9999),
+  ;
+
+  const NiceAiActNum(this.value);
+  final int value;
 }
 
 enum NiceAiCond {

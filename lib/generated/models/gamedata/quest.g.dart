@@ -984,6 +984,7 @@ const _$SvtDeathTypeEnumMap = {
   SvtDeathType.wait: 'wait',
   SvtDeathType.energy: 'energy',
   SvtDeathType.crystal: 'crystal',
+  SvtDeathType.explosion: 'explosion',
 };
 
 EnemyInfoScript _$EnemyInfoScriptFromJson(Map json) => EnemyInfoScript();

@@ -86,8 +86,10 @@ const _$NiceAiActNumEnumMap = {
   NiceAiActNum.reactionBeforeDead: 'reactionBeforeDead',
   NiceAiActNum.shiftServantAfter: 'shiftServantAfter',
   NiceAiActNum.reactionBeforeMoveWave: 'reactionBeforeMoveWave',
+  NiceAiActNum.shiftServantBefore: 'shiftServantBefore',
   NiceAiActNum.reactionEnemyTurnStartPriority: 'reactionEnemyTurnStartPriority',
   NiceAiActNum.reactionEnemyTurnEndPriority: 'reactionEnemyTurnEndPriority',
+  NiceAiActNum.shiftServantBeforePriority: 'shiftServantBeforePriority',
   NiceAiActNum.unknown: 'unknown',
 };
 

@@ -423,4 +423,6 @@ const _$CondTypeEnumMap = {
   CondType.afterQuestClearTime: 'afterQuestClearTime',
   CondType.notBattleFunctionTargetAllIndividuality: 'notBattleFunctionTargetAllIndividuality',
   CondType.notBattleFunctionTargetOneIndividuality: 'notBattleFunctionTargetOneIndividuality',
+  CondType.eventScriptNotPlay: 'eventScriptNotPlay',
+  CondType.eventScriptFlag: 'eventScriptFlag',
 };

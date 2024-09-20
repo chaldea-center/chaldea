@@ -1257,6 +1257,8 @@ enum BuffAction {
   functionStepInAfter(142),
   shortenSkillAfterUseSkill(143),
   pierceSpecialInvincible(144),
+  functionedFunction(145),
+  donotActCommandcard(146),
   functionClassboardCommandSpellAfter(301),
   ;
 

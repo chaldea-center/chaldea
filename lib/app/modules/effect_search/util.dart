@@ -38,7 +38,7 @@ class EffectFilterUtil {
       Trait.cardQuick,
       Trait.cardArts,
       Trait.cardBuster,
-      // Trait.cardExtra,
+      Trait.cardExtra,
       // Trait.faceCard,
       // Trait.cardNP,
       // Trait.criticalHit,

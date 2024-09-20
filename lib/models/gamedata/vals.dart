@@ -291,6 +291,9 @@ class DataVals {
   int? get ParamAddBattlePointPhaseId => _vals['ParamAddBattlePointPhaseId'];
   int? get ParamAddBattlePointPhaseValue => _vals['ParamAddBattlePointPhaseValue'];
   List<int>? get ShortenMaxCountEachSkill => _list('ShortenMaxCountEachSkill');
+  int? get ChargeHpMaxBeforeBreakGaugeUp => _vals['ChargeHpMaxBeforeBreakGaugeUp'];
+  List<int>? get TargetFunctionIndividuality => _list('TargetFunctionIndividuality');
+  List<int>? get TargetBuffIndividuality => _list('TargetBuffIndividuality');
 
   int? get ApplySupportSvt => _vals['ApplySupportSvt'];
   int? get Individuality => _vals['Individuality'];

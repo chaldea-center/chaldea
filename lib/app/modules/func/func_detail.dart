@@ -270,11 +270,19 @@ class _FuncDetailPageState extends State<FuncDetailPage>
 
   List<Widget> _buildScript() {
     List<Widget> children = [];
-    if (func.script?.funcIndividuality?.isNotEmpty == true) {
+    final funcIndivs = func.script?.funcIndividuality ?? [], funcBaseIndivs = func.getCommonFuncIndividuality();
+    if (funcIndivs.isNotEmpty || funcBaseIndivs.isNotEmpty) {
       children.add(CustomTableRow(children: [
         TableCellData(text: "funcIndividuality", isHeader: true),
         TableCellData(
-          child: SharedBuilder.traitList(context: context, traits: func.script!.funcIndividuality!),
+          child: Text.rich(TextSpan(
+            children: divideList([
+              if (funcBaseIndivs.isNotEmpty)
+                TextSpan(children: SharedBuilder.traitSpans(context: context, traits: funcBaseIndivs)),
+              if (funcIndivs.isNotEmpty)
+                TextSpan(children: SharedBuilder.traitSpans(context: context, traits: funcIndivs)),
+            ], const TextSpan(text: ' + ')),
+          )),
           flex: 3,
           alignment: AlignmentDirectional.centerEnd,
         )

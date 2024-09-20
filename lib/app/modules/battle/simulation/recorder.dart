@@ -683,6 +683,7 @@ class BattleRecorderPanelBase extends StatelessWidget {
         case FuncTargetType.ptSelfAnotherRandom:
         case FuncTargetType.enemyOneAnotherRandom:
         case FuncTargetType.enemyRange:
+        case FuncTargetType.handCommandcardRandomOne:
           continue;
       }
     }

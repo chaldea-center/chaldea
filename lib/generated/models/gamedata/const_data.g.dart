@@ -419,6 +419,8 @@ const _$FuncTypeEnumMap = {
   FuncType.lossMultiplyNp: 'lossMultiplyNp',
   FuncType.addBattlePoint: 'addBattlePoint',
   FuncType.damageNpBattlePointPhase: 'damageNpBattlePointPhase',
+  FuncType.setNpExecutedState: 'setNpExecutedState',
+  FuncType.hideOverGauge: 'hideOverGauge',
 };
 
 BuffTypeDetail _$BuffTypeDetailFromJson(Map json) => BuffTypeDetail(
@@ -616,6 +618,7 @@ const _$BuffTypeEnumMap = {
   BuffType.subSpecialdamage: 'subSpecialdamage',
   BuffType.addFuncHpReduce: 'addFuncHpReduce',
   BuffType.subFuncHpReduce: 'subFuncHpReduce',
+  BuffType.changeBgm: 'changeBgm',
   BuffType.confirmCommandFunction: 'confirmCommandFunction',
   BuffType.skillBeforeFunction: 'skillBeforeFunction',
   BuffType.skillTargetedBeforeFunction: 'skillTargetedBeforeFunction',
@@ -624,10 +627,12 @@ const _$BuffTypeEnumMap = {
   BuffType.stepInAfterFunction: 'stepInAfterFunction',
   BuffType.shortenSkillAfterUseSkill: 'shortenSkillAfterUseSkill',
   BuffType.pierceSpecialInvincible: 'pierceSpecialInvincible',
-  BuffType.changeBgm: 'changeBgm',
+  BuffType.functionedFunction: 'functionedFunction',
+  BuffType.donotActCommandcard: 'donotActCommandcard',
   BuffType.toFieldChangeField: 'toFieldChangeField',
   BuffType.toFieldAvoidBuff: 'toFieldAvoidBuff',
   BuffType.toFieldSubIndividualityField: 'toFieldSubIndividualityField',
+  BuffType.classboardCommandSpellAfterFunction: 'classboardCommandSpellAfterFunction',
 };
 
 GameConstants _$GameConstantsFromJson(Map json) => GameConstants(
@@ -1428,4 +1433,7 @@ const _$BuffActionEnumMap = {
   BuffAction.functionStepInAfter: 'functionStepInAfter',
   BuffAction.shortenSkillAfterUseSkill: 'shortenSkillAfterUseSkill',
   BuffAction.pierceSpecialInvincible: 'pierceSpecialInvincible',
+  BuffAction.functionedFunction: 'functionedFunction',
+  BuffAction.donotActCommandcard: 'donotActCommandcard',
+  BuffAction.functionClassboardCommandSpellAfter: 'functionClassboardCommandSpellAfter',
 };

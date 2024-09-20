@@ -190,6 +190,8 @@ const _$FuncTypeEnumMap = {
   FuncType.lossMultiplyNp: 'lossMultiplyNp',
   FuncType.addBattlePoint: 'addBattlePoint',
   FuncType.damageNpBattlePointPhase: 'damageNpBattlePointPhase',
+  FuncType.setNpExecutedState: 'setNpExecutedState',
+  FuncType.hideOverGauge: 'hideOverGauge',
 };
 
 const _$FuncTargetTypeEnumMap = {
@@ -224,6 +226,7 @@ const _$FuncTargetTypeEnumMap = {
   FuncTargetType.ptOneHpLowestValue: 'ptOneHpLowestValue',
   FuncTargetType.ptOneHpLowestRate: 'ptOneHpLowestRate',
   FuncTargetType.enemyRange: 'enemyRange',
+  FuncTargetType.handCommandcardRandomOne: 'handCommandcardRandomOne',
 };
 
 const _$FuncApplyTargetEnumMap = {

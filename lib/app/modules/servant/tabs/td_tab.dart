@@ -47,7 +47,7 @@ class SvtTdTab extends StatelessWidget {
           tdNum != 1 &&
           tds.every((e) =>
               (e.script?.tdTypeChangeIDs?.isEmpty ?? true) && (e.script?.tdChangeByBattlePoint?.isEmpty ?? true))) {
-        children.add(DividerWithTitle(title: S.current.enemy_only_nps, height: 16));
+        // children.add(DividerWithTitle(title: S.current.enemy_only_nps, height: 16));
       }
       if (svt.collectionNo == 417) {
         // Space Ereshkigal

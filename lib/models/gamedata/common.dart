@@ -796,6 +796,7 @@ enum Trait {
   forceInstantDeathFunction(3097),
   demeritFunction(3098),
   extraBuff(3100),
+  buffSpecialInvinciblePierce(3104),
   cardArts(4001),
   cardBuster(4002),
   cardQuick(4003),
@@ -1078,6 +1079,8 @@ enum CondType {
   afterQuestClearTime(234),
   notBattleFunctionTargetAllIndividuality(235),
   notBattleFunctionTargetOneIndividuality(236),
+  eventScriptNotPlay(237),
+  eventScriptFlag(238),
   ;
 
   const CondType(this.value);

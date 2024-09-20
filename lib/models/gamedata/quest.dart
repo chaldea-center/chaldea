@@ -2180,6 +2180,7 @@ enum SvtDeathType {
   wait,
   energy,
   crystal,
+  explosion,
 }
 
 enum DeckType {

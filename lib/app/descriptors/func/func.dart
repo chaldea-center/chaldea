@@ -1136,6 +1136,12 @@ class FuncDescriptor extends StatelessWidget {
         .contains(func.funcType)) {
       _addTraits(Transl.special.funcTargetVals, vals?.TargetList?.map((e) => NiceTrait(id: e)).toList() ?? []);
     }
+    if (vals?.TargetFunctionIndividuality?.isNotEmpty == true) {
+      _addTraits('(func)${Transl.special.funcTargetVals}', NiceTrait.list(vals!.TargetFunctionIndividuality!));
+    }
+    if (vals?.TargetBuffIndividuality?.isNotEmpty == true) {
+      _addTraits('(buff)${Transl.special.funcTargetVals}', NiceTrait.list(vals!.TargetBuffIndividuality!));
+    }
 
     if (buff != null) {
       _addTraits(Transl.special.buffCheckSelf, buff.ckSelfIndv, useAnd: buff.script.checkIndvTypeAnd == true);

@@ -465,6 +465,7 @@ enum BuffType {
   subSpecialdamage(196),
   addFuncHpReduce(197),
   subFuncHpReduce(198),
+  changeBgm(199),
   confirmCommandFunction(200),
   skillBeforeFunction(201),
   skillTargetedBeforeFunction(202),
@@ -473,7 +474,8 @@ enum BuffType {
   stepInAfterFunction(205),
   shortenSkillAfterUseSkill(206),
   pierceSpecialInvincible(207),
-  changeBgm(199),
+  functionedFunction(208),
+  donotActCommandcard(209),
   toFieldChangeField(10001),
   toFieldAvoidBuff(10002),
   toFieldSubIndividualityField(10003),
@@ -543,6 +545,7 @@ final Map<BuffType, BuffValueTriggerType Function(DataVals)> kBuffValueTriggerTy
     BuffType.fieldIndividualityChangedFunction,
     BuffType.treasureDeviceBeforeFunction,
     BuffType.stepInAfterFunction,
+    BuffType.functionedFunction,
   }) {
     types[type] = (v) => BuffValueTriggerType(type, skill: v.Value, level: v.Value2, rate: v.UseRate);
   }
