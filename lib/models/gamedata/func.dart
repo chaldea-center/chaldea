@@ -485,6 +485,12 @@ const kEventFuncTypes = [
   FuncType.eventFortificationPointUp,
 ];
 
+const kAddStateFuncTypes = [
+  FuncType.addState,
+  FuncType.addStateShort,
+  FuncType.addFieldChangeToField,
+];
+
 enum FuncType {
   unknown(-1),
   none(0),
@@ -602,6 +608,8 @@ enum FuncType {
   const FuncType(this.value);
 
   bool get isDamageNp => name.startsWith('damageNp');
+
+  bool get isAddState => kAddStateFuncTypes.contains(this);
 }
 
 enum FuncTargetType {

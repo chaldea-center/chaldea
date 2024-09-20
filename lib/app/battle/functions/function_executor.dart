@@ -541,12 +541,12 @@ class FunctionExecutor {
     }
 
     final funcDetail = ConstData.funcTypeDetail[function.funcType.value];
-    if (funcDetail != null && funcDetail.ignoreValueUp) {
+    if (!function.funcType.isAddState && funcDetail != null && funcDetail.ignoreValueUp) {
       return dataVals;
     }
 
     final buffDetail = ConstData.buffTypeDetail[function.buff?.type.value];
-    if (buffDetail != null && buffDetail.ignoreValueUp) {
+    if (function.funcType.isAddState && buffDetail != null && buffDetail.ignoreValueUp) {
       return dataVals;
     }
 

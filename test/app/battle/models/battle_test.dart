@@ -574,20 +574,22 @@ void main() async {
     expect(tezcatlipoca.np, 0);
     expect(battle.criticalStars, moreOrLessEquals(0, epsilon: 0.001));
     await battle.activateMysticCodeSkill(0);
+    expect(
+      await tezcatlipoca.getBuffValue(
+        battle,
+        BuffAction.npdamage,
+        other: battle.onFieldEnemies[0]!,
+        card: tezcatlipoca.getNPCard(),
+      ),
+      420,
+    );
+
     await battle.activateMysticCodeSkill(1);
-    await battle.activateMysticCodeSkill(2);
-    expect(tezcatlipoca.hp, 15535 + 3600);
     expect(tezcatlipoca.np, 1200);
     expect(battle.criticalStars, moreOrLessEquals(18, epsilon: 0.001));
 
-    expect(
-        await tezcatlipoca.getBuffValue(
-          battle,
-          BuffAction.npdamage,
-          other: battle.onFieldEnemies[0]!,
-          card: tezcatlipoca.getNPCard(),
-        ),
-        420);
+    await battle.activateMysticCodeSkill(2);
+    expect(tezcatlipoca.hp, 15535 + 3600);
   });
 
   test('deathEffect clear accumulation damage', () async {
