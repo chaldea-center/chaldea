@@ -148,7 +148,7 @@ class AddState {
     // svtClassPassive should ignore all avoidState buffs
     if (!isSvtClassPassive) {
       final hasAvoidState =
-          await target.hasBuff(battleData, BuffAction.avoidState, other: activator, addTraits: buffData.traits);
+          await target.hasBuff(battleData, BuffAction.avoidState, opponent: activator, addTraits: buffData.traits);
       if (hasAvoidState) {
         battleData.battleLogger
             .debug('${S.current.effect_target}: ${target.lBattleName} - ${S.current.battle_invalid}');
@@ -156,11 +156,19 @@ class AddState {
       }
     }
 
-    final buffReceiveChance =
-        await target.getBuffValue(battleData, BuffAction.resistanceState, other: activator, addTraits: buffData.traits);
-    final buffChance =
-        await activator?.getBuffValue(battleData, BuffAction.grantState, other: target, addTraits: buffData.traits) ??
-            0;
+    final buffReceiveChance = await target.getBuffValue(
+      battleData,
+      BuffAction.resistanceState,
+      opponent: activator,
+      addTraits: buffData.traits,
+    );
+    final buffChance = await activator?.getBuffValue(
+          battleData,
+          BuffAction.grantState,
+          opponent: target,
+          addTraits: buffData.traits,
+        ) ??
+        0;
 
     final activationRate = functionRate + buffChance;
     final resistRate = buffReceiveChance;

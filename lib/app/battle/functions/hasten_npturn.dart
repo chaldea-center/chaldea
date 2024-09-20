@@ -19,7 +19,7 @@ class HastenNpturn {
 
       bool shouldChange = true;
       if (isNegative) {
-        final resistRate = await target.getBuffValue(battleData, BuffAction.resistanceDelayNpturn, other: activator);
+        final resistRate = await target.getBuffValue(battleData, BuffAction.resistanceDelayNpturn, opponent: activator);
         shouldChange = await battleData.canActivateFunction(functionRate - resistRate);
       }
 

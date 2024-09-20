@@ -1006,7 +1006,7 @@ class BattleData {
                 }
                 for (final enemy in nonnullEnemies) {
                   if (enemy.attacked) {
-                    await enemy.activateBuff(this, BuffAction.functionDamage, other: actor, card: actualCard);
+                    await enemy.activateBuff(this, BuffAction.functionDamage, opponent: actor, card: actualCard);
                     enemy.attacked = false;
                   }
 
@@ -1083,7 +1083,7 @@ class BattleData {
 
           for (final enemy in nonnullEnemies) {
             if (enemy.attacked) {
-              await enemy.activateBuff(this, BuffAction.functionDamage, other: action.actor, card: action.cardData);
+              await enemy.activateBuff(this, BuffAction.functionDamage, opponent: action.actor, card: action.cardData);
               enemy.attacked = false;
             }
           }
@@ -1128,7 +1128,8 @@ class BattleData {
 
               for (final svt in nonnullPlayers) {
                 if (svt.attacked) {
-                  await svt.activateBuff(this, BuffAction.functionDamage, other: action.actor, card: action.cardData);
+                  await svt.activateBuff(this, BuffAction.functionDamage,
+                      opponent: action.actor, card: action.cardData);
                   svt.attacked = false;
                 }
 
@@ -1439,7 +1440,7 @@ class BattleData {
           await actor.lastHitBy!.activateBuff(
             this,
             BuffAction.functionDeadattack,
-            other: actor,
+            opponent: actor,
             card: actor.lastHitByCard,
           );
         }

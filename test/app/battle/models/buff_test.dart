@@ -24,8 +24,8 @@ void main() async {
           DataVals({'UseRate': 1000}),
           1);
 
-      expect(buff.shouldActivateBuffNoProbabilityCheck(okuni.getTraits(), opTraits: cba.getTraits()), true);
-      expect(buff.shouldActivateBuffNoProbabilityCheck(cba.getTraits(), opTraits: okuni.getTraits()), false);
+      expect(buff.shouldActivateBuffNoProbabilityCheck(okuni.getTraits(), opponentTraits: cba.getTraits()), true);
+      expect(buff.shouldActivateBuffNoProbabilityCheck(cba.getTraits(), opponentTraits: okuni.getTraits()), false);
     });
 
     test('checkIndivType 1', () {
@@ -43,8 +43,8 @@ void main() async {
           DataVals({'UseRate': 1000}),
           1);
 
-      expect(buff.shouldActivateBuffNoProbabilityCheck(okuni.getTraits(), opTraits: cba.getTraits()), true);
-      expect(buff.shouldActivateBuffNoProbabilityCheck(cba.getTraits(), opTraits: okuni.getTraits()), false);
+      expect(buff.shouldActivateBuffNoProbabilityCheck(okuni.getTraits(), opponentTraits: cba.getTraits()), true);
+      expect(buff.shouldActivateBuffNoProbabilityCheck(cba.getTraits(), opponentTraits: okuni.getTraits()), false);
     });
 
     test('probability check', () async {
@@ -57,11 +57,11 @@ void main() async {
           DataVals({'UseRate': 500}),
           1);
 
-      expect(await buff.shouldActivateBuff(battle, okuni.getTraits(), opTraits: cba.getTraits()), isFalse);
+      expect(await buff.shouldActivateBuff(battle, okuni.getTraits(), opponentTraits: cba.getTraits()), isFalse);
 
       battle.options.threshold = 500;
 
-      expect(await buff.shouldActivateBuff(battle, okuni.getTraits(), opTraits: cba.getTraits()), isTrue);
+      expect(await buff.shouldActivateBuff(battle, okuni.getTraits(), opponentTraits: cba.getTraits()), isTrue);
     });
   });
 
@@ -331,18 +331,18 @@ void main() async {
 
       final target = battle.onFieldEnemies[0]!;
       final card = oberon.getNPCard();
-      expect(await oberon.getBuffValue(battle, BuffAction.commandAtk, other: target, card: card), 1000);
-      expect(await oberon.getBuffValue(battle, BuffAction.npdamage, other: target, card: card), 0);
+      expect(await oberon.getBuffValue(battle, BuffAction.commandAtk, opponent: target, card: card), 1000);
+      expect(await oberon.getBuffValue(battle, BuffAction.npdamage, opponent: target, card: card), 0);
 
       await battle.activateSvtSkill(0, 0);
 
-      expect(await oberon.getBuffValue(battle, BuffAction.commandAtk, other: target, card: card), 1000);
-      expect(await oberon.getBuffValue(battle, BuffAction.npdamage, other: target, card: card), 300);
+      expect(await oberon.getBuffValue(battle, BuffAction.commandAtk, opponent: target, card: card), 1000);
+      expect(await oberon.getBuffValue(battle, BuffAction.npdamage, opponent: target, card: card), 300);
 
       await battle.activateSvtSkill(0, 2);
 
-      expect(await oberon.getBuffValue(battle, BuffAction.commandAtk, other: target, card: card), 1500);
-      expect(await oberon.getBuffValue(battle, BuffAction.npdamage, other: target, card: card), 600);
+      expect(await oberon.getBuffValue(battle, BuffAction.commandAtk, opponent: target, card: card), 1500);
+      expect(await oberon.getBuffValue(battle, BuffAction.npdamage, opponent: target, card: card), 600);
     });
 
     test('changeCommandCardType', () async {
@@ -448,10 +448,10 @@ void main() async {
 
       await battle.activateSvtSkill(0, 1);
       final card = murasama.getCards()[0];
-      expect(await murasama.getBuffValue(battle, BuffAction.criticalDamage, other: castoria, card: card), 1050);
+      expect(await murasama.getBuffValue(battle, BuffAction.criticalDamage, opponent: castoria, card: card), 1050);
 
       await battle.activateSvtSkill(1, 2);
-      expect(await murasama.getBuffValue(battle, BuffAction.criticalDamage, other: castoria, card: card), 2050);
+      expect(await murasama.getBuffValue(battle, BuffAction.criticalDamage, opponent: castoria, card: card), 2050);
     });
 
     test('overwriteClassRelation kama skill first', () async {
@@ -728,8 +728,8 @@ void main() async {
       await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
 
       final henry = battle.onFieldAllyServants[0]!;
-      expect(await henry.getBuffValue(battle, BuffAction.atk, other: battle.onFieldEnemies[0]!), 1300);
-      expect(await henry.getBuffValue(battle, BuffAction.atk, other: battle.onFieldEnemies[1]!), 1000);
+      expect(await henry.getBuffValue(battle, BuffAction.atk, opponent: battle.onFieldEnemies[0]!), 1300);
+      expect(await henry.getBuffValue(battle, BuffAction.atk, opponent: battle.onFieldEnemies[1]!), 1000);
     });
 
     test('BuffAction turnvalNp', () async {

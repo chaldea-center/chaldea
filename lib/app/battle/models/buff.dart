@@ -219,7 +219,7 @@ class BuffData {
 
   bool shouldActivateBuffNoProbabilityCheck(
     final List<NiceTrait> selfTraits, {
-    final List<NiceTrait>? opTraits,
+    final List<NiceTrait>? opponentTraits,
     final BattleData? battleData,
     final SkillInfoType? skillInfoType,
     final List<NiceFunction>? receiveFunctionsList,
@@ -245,7 +245,7 @@ class BuffData {
               negativeMatchFunc: allMatch,
             ) &&
             checkSignedIndividualities2(
-              myTraits: opTraits ?? [],
+              myTraits: opponentTraits ?? [],
               requiredTraits: buff.ckOpIndv,
               positiveMatchFunc: allMatch,
               negativeMatchFunc: allMatch,
@@ -258,7 +258,7 @@ class BuffData {
               negativeMatchFunc: partialMatch,
             ) &&
             checkSignedIndividualitiesPartialMatch(
-              myTraits: opTraits ?? [],
+              myTraits: opponentTraits ?? [],
               requiredTraits: buff.ckOpIndv,
               positiveMatchFunc: partialMatch,
               negativeMatchFunc: partialMatch,
@@ -272,7 +272,7 @@ class BuffData {
               negativeMatchFunc: partialMatch,
             ) &&
             checkSignedIndividualities2(
-              myTraits: opTraits ?? [],
+              myTraits: opponentTraits ?? [],
               requiredTraits: buff.ckOpIndv,
               positiveMatchFunc: partialMatch,
               negativeMatchFunc: partialMatch,
@@ -284,14 +284,14 @@ class BuffData {
   Future<bool> shouldActivateBuff(
     final BattleData battleData,
     final List<NiceTrait> selfTraits, {
-    final List<NiceTrait>? opTraits,
+    final List<NiceTrait>? opponentTraits,
     final SkillInfoType? skillInfoType,
     final List<NiceFunction>? receivedFunctionsList,
   }) async {
     return shouldActivateBuffNoProbabilityCheck(
           selfTraits,
           battleData: battleData,
-          opTraits: opTraits,
+          opponentTraits: opponentTraits,
           skillInfoType: skillInfoType,
           receiveFunctionsList: receivedFunctionsList,
         ) &&

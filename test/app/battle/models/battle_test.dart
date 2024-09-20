@@ -578,7 +578,7 @@ void main() async {
       await tezcatlipoca.getBuffValue(
         battle,
         BuffAction.npdamage,
-        other: battle.onFieldEnemies[0]!,
+        opponent: battle.onFieldEnemies[0]!,
         card: tezcatlipoca.getNPCard(),
       ),
       420,
@@ -1508,7 +1508,7 @@ void main() async {
 
     final bb = battle.onFieldAllyServants[0]!;
     final svtWithoutPassive = battle.onFieldAllyServants[2]!;
-    final defenceWithoutPassive = await bb.getBuffValue(battle, BuffAction.atk, other: svtWithoutPassive);
+    final defenceWithoutPassive = await bb.getBuffValue(battle, BuffAction.atk, opponent: svtWithoutPassive);
     expect(defenceWithoutPassive, 1000);
 
     battle.delegate = BattleDelegate();
@@ -1517,7 +1517,7 @@ void main() async {
     };
     await battle.activateMysticCodeSkill(2);
     final svtWithPassive = battle.onFieldAllyServants[2]!;
-    final defenceWithPassive = await bb.getBuffValue(battle, BuffAction.atk, other: svtWithPassive);
+    final defenceWithPassive = await bb.getBuffValue(battle, BuffAction.atk, opponent: svtWithPassive);
     expect(defenceWithPassive, 1100);
   });
 

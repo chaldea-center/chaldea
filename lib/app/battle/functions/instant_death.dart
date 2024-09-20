@@ -64,7 +64,7 @@ class InstantDeath {
       return true;
     }
 
-    if (await target.hasBuff(battleData, BuffAction.avoidInstantdeath, other: activator)) {
+    if (await target.hasBuff(battleData, BuffAction.avoidInstantdeath, opponent: activator)) {
       params.immune = true;
       params.success = false;
       params.resultString = kBattleFuncNoEffect;
@@ -72,11 +72,12 @@ class InstantDeath {
       return false;
     }
 
-    final resistInstantDeath = await target.getBuffValue(battleData, BuffAction.resistInstantdeath, other: activator);
+    final resistInstantDeath =
+        await target.getBuffValue(battleData, BuffAction.resistInstantdeath, opponent: activator);
     final nonResistInstantDeath =
-        await target.getBuffValue(battleData, BuffAction.nonresistInstantdeath, other: activator);
+        await target.getBuffValue(battleData, BuffAction.nonresistInstantdeath, opponent: activator);
     final grantInstantDeath =
-        await activator?.getBuffValue(battleData, BuffAction.grantInstantdeath, other: target, card: card) ?? 0;
+        await activator?.getBuffValue(battleData, BuffAction.grantInstantdeath, opponent: target, card: card) ?? 0;
 
     final functionRate = dataVals.Rate ?? 1000;
     final resistRate = resistInstantDeath - nonResistInstantDeath;
