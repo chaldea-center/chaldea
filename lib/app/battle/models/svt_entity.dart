@@ -144,6 +144,7 @@ class BattleServantData {
   // @Deprecated('actionHistory')
   CommandCardData? lastHitByCard;
   NiceFunction? lastHitByFunc;
+  List<NiceFunction> receiveFunctionsList = [];
   List<BattleServantActionHistory> actionHistory = [];
 
   BattleServantData._({required this.isPlayer});
@@ -739,9 +740,10 @@ class BattleServantData {
       case BuffAction.functionTreasureDeviceBefore:
       case BuffAction.functionTreasureDeviceAfter:
       case BuffAction.functionSkillTargetedBefore:
+      case BuffAction.functionedFunction:
         return self.getTraits();
       default:
-        return [];
+        return self.getTraits(addTraits: self.getBuffTraits(activeOnly: false));
     }
   }
 
@@ -863,8 +865,10 @@ class BattleServantData {
       case BuffAction.functionTreasureDeviceBefore:
       case BuffAction.functionTreasureDeviceAfter:
       case BuffAction.functionSkillTargetedBefore:
-      default:
+      case BuffAction.functionedFunction:
         return [];
+      default:
+        return other?.getTraits(addTraits: other.getBuffTraits(activeOnly: false)) ?? [];
     }
   }
 
@@ -1418,6 +1422,14 @@ class BattleServantData {
       );
 
       await activateBuff(battleData, BuffAction.functionTreasureDeviceAfter, overchargeState: overchargeLvl - 1);
+
+      for (final svt in battleData.nonnullActors) {
+        await svt.activateBuff(
+          battleData,
+          BuffAction.functionedFunction,
+          receiveFunctionsList: svt.receiveFunctionsList,
+        );
+      }
     }
   }
 
@@ -1785,6 +1797,7 @@ class BattleServantData {
     final CommandCardData? card,
     final int? overchargeState,
     final BattleSkillInfoData? skillInfo,
+    final List<NiceFunction>? receiveFunctionsList,
   }) async {
     return await activateBuffs(
       battleData,
@@ -1793,6 +1806,7 @@ class BattleServantData {
       card: card,
       overchargeState: overchargeState,
       skillInfo: skillInfo,
+      receiveFunctionsList: receiveFunctionsList,
     );
   }
 
@@ -1803,18 +1817,23 @@ class BattleServantData {
     final CommandCardData? card,
     final int? overchargeState,
     final BattleSkillInfoData? skillInfo,
+    final List<NiceFunction>? receiveFunctionsList,
   }) async {
     bool activated = false;
     for (final buffAction in buffActions) {
       for (final buff in collectBuffsPerAction(battleBuff.validBuffsActiveFirst, buffAction)) {
         final List<NiceTrait> selfTraits = fetchSelfTraits(buffAction, buff, this, cardData: card);
         final List<NiceTrait>? otherTraits = fetchOtherTraits(buffAction, buff, other, cardData: card);
-        if (await buff.shouldActivateBuff(
+
+        final shouldActivate = await buff.shouldActivateBuff(
           battleData,
           selfTraits,
           opTraits: otherTraits,
           skillInfoType: skillInfo?.type,
-        )) {
+          receivedFunctionsList: receiveFunctionsList,
+        );
+
+        if (shouldActivate) {
           BaseSkill? skill;
           if (buff.buff.type == BuffType.classboardCommandSpellAfterFunction) {
             final spellId = buff.param;

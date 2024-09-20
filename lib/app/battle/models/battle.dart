@@ -239,6 +239,7 @@ class BattleData {
       checkActorStatus();
       for (final svt in nonnullActors) {
         await svt.activateBuff(this, BuffAction.functionFieldIndividualityChanged);
+        svt.receiveFunctionsList.clear();
       }
     }
   }

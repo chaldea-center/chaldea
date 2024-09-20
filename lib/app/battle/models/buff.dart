@@ -222,9 +222,10 @@ class BuffData {
     final List<NiceTrait>? opTraits,
     final BattleData? battleData,
     final SkillInfoType? skillInfoType,
+    final List<NiceFunction>? receiveFunctionsList,
   }) {
     if (!checkAct()) return false;
-    if (!checkBuffDataVals(selfTraits)) return false;
+    if (!checkBuffDataVals(selfTraits: selfTraits, receiveFunctionsList: receiveFunctionsList)) return false;
     if (!checkBuffScript(
       isFirstSkillInTurn: battleData?.isFirstSkillInTurn,
       selfTraits: selfTraits,
@@ -285,12 +286,14 @@ class BuffData {
     final List<NiceTrait> selfTraits, {
     final List<NiceTrait>? opTraits,
     final SkillInfoType? skillInfoType,
+    final List<NiceFunction>? receivedFunctionsList,
   }) async {
     return shouldActivateBuffNoProbabilityCheck(
           selfTraits,
           battleData: battleData,
           opTraits: opTraits,
           skillInfoType: skillInfoType,
+          receiveFunctionsList: receivedFunctionsList,
         ) &&
         await probabilityCheck(battleData);
   }
@@ -306,13 +309,41 @@ class BuffData {
     return probabilityCheck;
   }
 
-  bool checkBuffDataVals(final List<NiceTrait> selfTraits) {
+  bool checkBuffDataVals({final List<NiceTrait>? selfTraits, final List<NiceFunction>? receiveFunctionsList}) {
+    return checkHpReduceToRegainIndiv(selfTraits) && checkTargetFunctionIndividuality(receiveFunctionsList);
+  }
+
+  bool checkHpReduceToRegainIndiv(final List<NiceTrait>? selfTraits) {
     final hpReduceToRegainIndiv = vals.HpReduceToRegainIndiv;
-    if (hpReduceToRegainIndiv != null) {
-      return checkSignedIndividualities2(myTraits: selfTraits, requiredTraits: [NiceTrait(id: hpReduceToRegainIndiv)]);
+    return hpReduceToRegainIndiv == null ||
+        checkSignedIndividualities2(
+          myTraits: selfTraits ?? [],
+          requiredTraits: [NiceTrait(id: hpReduceToRegainIndiv)],
+        );
+  }
+
+  bool checkTargetFunctionIndividuality(final List<NiceFunction>? functions) {
+    final targetFuncIndiv = vals.TargetFunctionIndividuality;
+    final targetBuffIndiv = vals.TargetBuffIndividuality;
+    if (targetFuncIndiv == null) {
+      return true;
     }
 
-    return true;
+    final requiredFuncTraits = targetFuncIndiv.map((traitId) => NiceTrait(id: traitId)).toList();
+    final requiredBuffTraits = targetBuffIndiv?.map((traitId) => NiceTrait(id: traitId)).toList();
+    for (final NiceFunction function in functions ?? []) {
+      if (checkSignedIndividualities2(myTraits: function.getFuncIndividuality(), requiredTraits: requiredFuncTraits)) {
+        if (requiredBuffTraits == null || !function.funcType.isAddState) {
+          return true;
+        }
+
+        if (checkSignedIndividualities2(myTraits: function.buff?.vals ?? [], requiredTraits: requiredBuffTraits)) {
+          return true;
+        }
+      }
+    }
+
+    return false;
   }
 
   bool checkBuffScript({

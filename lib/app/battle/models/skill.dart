@@ -177,6 +177,8 @@ class BattleSkillInfoData {
     final targetedEnemy = battleData.getTargetedEnemy(activator, defaultToPlayer: defaultToPlayer);
     final Set<BattleServantData> wouldAffectTargets = {};
     for (final func in curSkill.functions) {
+      if (!FunctionExecutor.validateFunctionTargetTeam(func, activator?.isPlayer ?? defaultToPlayer)) continue;
+
       wouldAffectTargets.addAll(await FunctionExecutor.acquireFunctionTarget(
         battleData,
         func.funcTargetType,
@@ -234,6 +236,10 @@ class BattleSkillInfoData {
           await svt.activateBuff(battleData, BuffAction.functionClassboardCommandSpellAfter, skillInfo: this);
         }
       }
+    }
+
+    for (final svt in battleData.nonnullActors) {
+      await svt.activateBuff(battleData, BuffAction.functionedFunction, receiveFunctionsList: svt.receiveFunctionsList);
     }
     return true;
   }
