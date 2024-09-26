@@ -183,7 +183,7 @@ class JsonObjectViewerState extends State<JsonObjectViewer> {
       );
     } else if (value is String) {
       return TextSpan(
-        text: '"$value"',
+        text: '"${_limitStrLength(value)}"',
         style: const TextStyle(color: Colors.redAccent),
       );
     } else if (value is bool) {
@@ -274,8 +274,40 @@ class _JsonArrayViewerState extends State<JsonArrayViewer> {
 
   List<Widget> _getList() {
     List<Widget> list = [];
-    int i = 0;
-    for (dynamic content in widget.jsonArray) {
+    final int skipStartIndex = 10, skipEndIndex = widget.jsonArray.length - 10;
+    for (final (i, content) in widget.jsonArray.indexed) {
+      if (i >= skipStartIndex && i <= skipEndIndex) {
+        if (i == skipStartIndex) {
+          list.add(Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              const Icon(
+                Icons.arrow_right,
+                color: Colors.transparent,
+                size: 14,
+              ),
+              Text(
+                '[$skipStartIndex~$skipEndIndex]',
+                style: TextStyle(
+                  color: content == null ? Colors.grey : Colors.purple[900],
+                ),
+              ),
+              const Text(
+                ':',
+                style: TextStyle(color: Colors.grey),
+              ),
+              const SizedBox(width: 3),
+              const Expanded(
+                child: Text(
+                  'too long - hidden',
+                  style: TextStyle(color: Colors.grey),
+                ),
+              ),
+            ],
+          ));
+        }
+        continue;
+      }
       bool ex = _isExtensible(content);
       bool ink = _isInkWell(content);
       list.add(Row(
@@ -287,7 +319,7 @@ class _JsonArrayViewerState extends State<JsonArrayViewer> {
                   : Icon(Icons.arrow_right, size: 14, color: Colors.grey[700]))
               : const Icon(
                   Icons.arrow_right,
-                  color: Color.fromARGB(0, 0, 0, 0),
+                  color: Colors.transparent,
                   size: 14,
                 ),
           (ex && ink)
@@ -310,7 +342,6 @@ class _JsonArrayViewerState extends State<JsonArrayViewer> {
       if (ex && openFlag[i]) {
         list.add(JsonObjectViewerState.getContentWidget(content, widget.defaultOpen));
       }
-      i++;
     }
     return list;
   }
@@ -344,7 +375,7 @@ class _JsonArrayViewerState extends State<JsonArrayViewer> {
     } else if (content is String) {
       return Expanded(
         child: Text(
-          '"$content"',
+          '"${_limitStrLength(content)}"',
           style: const TextStyle(color: Colors.redAccent),
         ),
       );
@@ -449,4 +480,9 @@ String _getTypeName(dynamic content) {
     return 'List';
   }
   return 'Object';
+}
+
+String _limitStrLength(String v, [int length = 500]) {
+  if (v.length < length) return v;
+  return '${v.substring(0, length)}...';
 }
