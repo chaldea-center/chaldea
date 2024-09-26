@@ -164,6 +164,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
                   battleResultOptionSection,
                   battleLoopOptionSection,
                   gameInfoSection,
+                  globalSettingSection,
                 ],
               ),
             ),
@@ -1114,6 +1115,43 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
     );
   }
 
+  Widget get globalSettingSection {
+    final fakerSettings = db.settings.fakerSettings;
+    return TileGroup(
+      header: 'Global Settings',
+      children: [
+        SwitchListTile(
+          dense: true,
+          value: fakerSettings.dumpResponse,
+          title: const Text('Dump Responses'),
+          onChanged: (v) {
+            setState(() {
+              fakerSettings.dumpResponse = v;
+            });
+          },
+        ),
+        ListTile(
+          dense: true,
+          title: const Text('Max refresh count of Support list'),
+          trailing: TextButton(
+              onPressed: () {
+                InputCancelOkDialog(
+                  title: 'Max refresh count of Support list',
+                  text: fakerSettings.maxFollowerListRetryCount.toString(),
+                  keyboardType: TextInputType.number,
+                  validate: (s) => (int.tryParse(s) ?? -1) > 0,
+                  onSubmit: (s) {
+                    fakerSettings.maxFollowerListRetryCount = int.parse(s);
+                    if (mounted) setState(() {});
+                  },
+                ).showDialog(context);
+              },
+              child: Text(fakerSettings.maxFollowerListRetryCount.toString())),
+        ),
+      ],
+    );
+  }
+
   Widget get buttonBar {
     final buttonStyle = FilledButton.styleFrom(
       minimumSize: const Size(64, 32),
@@ -1232,7 +1270,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
         ),
         buildButton(
           onPressed: () {
-            _stopLoopFlag = true;
+            agent.network.stopFlag = true;
           },
           text: 'Stop',
         ),
@@ -1359,7 +1397,6 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
     );
   }
 
-  bool _stopLoopFlag = false;
   final shownItemIds = <int>{};
   final totalDropStat = _DropStatData();
   final curLoopDropStat = _DropStatData();
@@ -1541,8 +1578,8 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
   }
 
   void _checkStop() {
-    if (_stopLoopFlag) {
-      _stopLoopFlag = false;
+    if (agent.network.stopFlag) {
+      agent.network.stopFlag = false;
       throw SilentException('Manual Stop');
     }
   }
@@ -1642,6 +1679,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
           if (mounted) setState(() {});
           EasyLoading.show(status: 'Battle - waiting AP recover...');
           await Future.delayed(const Duration(minutes: 1));
+          _checkStop();
         }
         return;
       }

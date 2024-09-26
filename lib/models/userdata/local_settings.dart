@@ -79,8 +79,11 @@ class LocalSettings {
 
   LocalDataFilters filters;
 
+  FakerSettings fakerSettings;
+  @protected
   @JsonKey(name: 'autologins')
   List<AutoLoginDataJP> jpAutoLogins;
+  @protected
   List<AutoLoginDataCN> cnAutoLogins;
 
   RemoteConfig remoteConfig;
@@ -133,6 +136,7 @@ class LocalSettings {
     this.hideUnreleasedCard = false,
     this.hideUnreleasedEnemyCollection = false,
     LocalDataFilters? filters,
+    FakerSettings? fakerSettings,
     List<AutoLoginDataJP>? jpAutoLogins,
     List<AutoLoginDataCN>? cnAutoLogins,
     RemoteConfig? remoteConfig,
@@ -155,6 +159,8 @@ class LocalSettings {
         battleSim = battleSim ?? BattleSimSetting(),
         eventItemCalc = eventItemCalc ?? {},
         filters = filters ?? LocalDataFilters(),
+        fakerSettings =
+            fakerSettings ?? FakerSettings(jpAutoLogins: jpAutoLogins ?? [], cnAutoLogins: cnAutoLogins ?? []),
         jpAutoLogins = jpAutoLogins ?? [],
         cnAutoLogins = cnAutoLogins ?? [],
         remoteConfig = remoteConfig ?? RemoteConfig(),

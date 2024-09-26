@@ -244,7 +244,7 @@ abstract class FakerAgent<TRequest extends FRequestBase, TUser extends AutoLogin
     while (true) {
       if (refreshCount > 0) followers.clear();
       if (followers.isEmpty) {
-        if (refreshCount > 20) {
+        if (refreshCount > 0 && refreshCount >= db.settings.fakerSettings.maxFollowerListRetryCount) {
           throw Exception('After $refreshCount times refresh, no support svt is valid');
         }
         final resp = await followerList(

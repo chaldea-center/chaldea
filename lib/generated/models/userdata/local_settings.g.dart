@@ -80,6 +80,8 @@ LocalSettings _$LocalSettingsFromJson(Map json) => $checkedCreate(
           hideUnreleasedEnemyCollection: $checkedConvert('hideUnreleasedEnemyCollection', (v) => v as bool? ?? false),
           filters: $checkedConvert(
               'filters', (v) => v == null ? null : LocalDataFilters.fromJson(Map<String, dynamic>.from(v as Map))),
+          fakerSettings: $checkedConvert(
+              'fakerSettings', (v) => v == null ? null : FakerSettings.fromJson(Map<String, dynamic>.from(v as Map))),
           jpAutoLogins: $checkedConvert(
               'autologins',
               (v) => (v as List<dynamic>?)
@@ -149,6 +151,7 @@ Map<String, dynamic> _$LocalSettingsToJson(LocalSettings instance) => <String, d
       'hideUnreleasedCard': instance.hideUnreleasedCard,
       'hideUnreleasedEnemyCollection': instance.hideUnreleasedEnemyCollection,
       'filters': instance.filters.toJson(),
+      'fakerSettings': instance.fakerSettings.toJson(),
       'autologins': instance.jpAutoLogins.map((e) => e.toJson()).toList(),
       'cnAutoLogins': instance.cnAutoLogins.map((e) => e.toJson()).toList(),
       'remoteConfig': instance.remoteConfig.toJson(),

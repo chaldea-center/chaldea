@@ -9,6 +9,26 @@ import '_helper.dart';
 part '../../generated/models/userdata/autologin.g.dart';
 
 @JsonSerializable()
+class FakerSettings {
+  bool dumpResponse;
+  int maxFollowerListRetryCount;
+  List<AutoLoginDataJP> jpAutoLogins;
+  List<AutoLoginDataCN> cnAutoLogins;
+
+  FakerSettings({
+    this.dumpResponse = false,
+    this.maxFollowerListRetryCount = 20,
+    List<AutoLoginDataJP>? jpAutoLogins,
+    List<AutoLoginDataCN>? cnAutoLogins,
+  })  : jpAutoLogins = jpAutoLogins ?? [],
+        cnAutoLogins = cnAutoLogins ?? [];
+
+  factory FakerSettings.fromJson(Map<String, dynamic> json) => _$FakerSettingsFromJson(json);
+
+  Map<String, dynamic> toJson() => _$FakerSettingsToJson(this);
+}
+
+@JsonSerializable()
 class AuthSaveData {
   final String? source; // bytes in base64
   final String? code;

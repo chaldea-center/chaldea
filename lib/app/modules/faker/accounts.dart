@@ -20,9 +20,10 @@ class FakerAccountsPage extends StatefulWidget {
 
 class _FakerAccountsPageState extends State<FakerAccountsPage> {
   bool sorting = false;
+  final fakerSettings = db.settings.fakerSettings;
   @override
   Widget build(BuildContext context) {
-    final users = [...db.settings.jpAutoLogins, ...db.settings.cnAutoLogins];
+    final users = [...fakerSettings.jpAutoLogins, ...fakerSettings.cnAutoLogins];
     users.sort2((e) => e.priority);
     return Scaffold(
       appBar: AppBar(
@@ -42,10 +43,10 @@ class _FakerAccountsPageState extends State<FakerAccountsPage> {
                             switch (region) {
                               case Region.jp:
                               case Region.na:
-                                db.settings.jpAutoLogins.add(AutoLoginDataJP(region: region));
+                                fakerSettings.jpAutoLogins.add(AutoLoginDataJP(region: region));
                                 break;
                               case Region.cn:
-                                db.settings.cnAutoLogins.add(AutoLoginDataCN(region: region));
+                                fakerSettings.cnAutoLogins.add(AutoLoginDataCN(region: region));
                                 break;
                               case Region.tw:
                               case Region.kr:
@@ -123,9 +124,9 @@ class _FakerAccountsPageState extends State<FakerAccountsPage> {
                     setState(() {
                       switch (user) {
                         case AutoLoginDataJP():
-                          db.settings.jpAutoLogins.remove(user);
+                          fakerSettings.jpAutoLogins.remove(user);
                         case AutoLoginDataCN():
-                          db.settings.cnAutoLogins.remove(user);
+                          fakerSettings.cnAutoLogins.remove(user);
                       }
                     });
                   }
@@ -206,7 +207,7 @@ class FakerAccountsJPPage extends StatefulWidget {
 class _FakerAccountsJPPageState extends State<FakerAccountsJPPage> {
   @override
   Widget build(BuildContext context) {
-    final users = db.settings.jpAutoLogins;
+    final users = db.settings.fakerSettings.jpAutoLogins;
     return ReorderableListPage(
       title: const Text('Fake/Grand Order'),
       items: users,
@@ -251,7 +252,7 @@ class FakerAccountsCNPage extends StatefulWidget {
 class _FakerAccountsCNPageState extends State<FakerAccountsCNPage> {
   @override
   Widget build(BuildContext context) {
-    final users = db.settings.cnAutoLogins;
+    final users = db.settings.fakerSettings.cnAutoLogins;
     return ReorderableListPage(
       title: const Text('Fake/Bilili Order'),
       items: users,

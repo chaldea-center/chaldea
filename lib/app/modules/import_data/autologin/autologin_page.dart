@@ -31,7 +31,7 @@ class AutoLoginPage extends StatefulWidget {
 
 class _AutoLoginPageState extends State<AutoLoginPage> {
   GameTops? gameTops;
-  final allData = db.settings.jpAutoLogins;
+  final allData = db.settings.fakerSettings.jpAutoLogins;
   AutoLoginDataJP args = AutoLoginDataJP();
   FakerAgentJP? agent;
   dynamic _error;

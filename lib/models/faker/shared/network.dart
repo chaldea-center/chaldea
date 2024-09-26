@@ -7,7 +7,6 @@ import 'package:chaldea/models/db.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
 import 'package:chaldea/models/gamedata/toplogin.dart';
 import 'package:chaldea/models/userdata/autologin.dart';
-import 'package:chaldea/packages/app_info.dart';
 import 'package:chaldea/packages/packages.dart';
 import 'package:chaldea/utils/utils.dart';
 import '../quiz/cat_mouse.dart';
@@ -93,6 +92,8 @@ abstract class NetworkManagerBase<TRequest extends FRequestBase, TUser extends A
   FRequestBase? _runningTask;
   final Map<String, String> cookies = {};
 
+  bool stopFlag = false;
+
   NetworkManagerBase({required this.gameTop, required this.user}) : catMouseGame = CatMouseGame(gameTop.region);
 
   // long
@@ -108,7 +109,7 @@ abstract class NetworkManagerBase<TRequest extends FRequestBase, TUser extends A
     _runningTask = null;
   }
 
-  String get fakerDir => joinPaths(db.paths.tempDir, 'faker');
+  String get fakerDir => joinPaths(db.paths.tempDir, 'faker', gameTop.region.upper);
 
   void updateCookies(Map<String, dynamic> headers) {
     if (cookies.isEmpty) return;
@@ -149,6 +150,10 @@ abstract class NetworkManagerBase<TRequest extends FRequestBase, TUser extends A
     try {
       while (tryCount < kMaxTries) {
         try {
+          if (stopFlag) {
+            stopFlag = false;
+            throw SilentException('Manual Stop Flag, current request: ${request.key}');
+          }
           final rawResp = await requestStartImpl(request);
           request.rawRequest = rawResp.requestOptions;
           request.rawResponse = rawResp;
@@ -167,7 +172,7 @@ abstract class NetworkManagerBase<TRequest extends FRequestBase, TUser extends A
 
           // data
           final _jsonData = FateTopLogin.parseToMap(rawResp.data);
-          if (AppInfo.isDebugDevice) {
+          if (db.settings.fakerSettings.dumpResponse) {
             String fn = '${DateTime.now().toSafeFileName()}_${request.key}';
             fn = fn.replaceAll(RegExp(r'[/:\s\\]+'), '_');
             await FilePlus(joinPaths(fakerDir, '$fn.json')).writeAsString(jsonEncode(_jsonData));
