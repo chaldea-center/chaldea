@@ -222,10 +222,10 @@ class BuffData {
     final List<NiceTrait>? opponentTraits,
     final BattleData? battleData,
     final SkillInfoType? skillInfoType,
-    final List<NiceFunction>? receiveFunctionsList,
+    final List<NiceFunction>? receivedFunctionsList,
   }) {
     if (!checkAct()) return false;
-    if (!checkBuffDataVals(selfTraits: selfTraits, receiveFunctionsList: receiveFunctionsList)) return false;
+    if (!checkBuffDataVals(selfTraits: selfTraits, receivedFunctionsList: receivedFunctionsList)) return false;
     if (!checkBuffScript(
       isFirstSkillInTurn: battleData?.isFirstSkillInTurn,
       selfTraits: selfTraits,
@@ -293,7 +293,7 @@ class BuffData {
           battleData: battleData,
           opponentTraits: opponentTraits,
           skillInfoType: skillInfoType,
-          receiveFunctionsList: receivedFunctionsList,
+          receivedFunctionsList: receivedFunctionsList,
         ) &&
         await probabilityCheck(battleData);
   }
@@ -309,8 +309,8 @@ class BuffData {
     return probabilityCheck;
   }
 
-  bool checkBuffDataVals({final List<NiceTrait>? selfTraits, final List<NiceFunction>? receiveFunctionsList}) {
-    return checkHpReduceToRegainIndiv(selfTraits) && checkTargetFunctionIndividuality(receiveFunctionsList);
+  bool checkBuffDataVals({final List<NiceTrait>? selfTraits, final List<NiceFunction>? receivedFunctionsList}) {
+    return checkHpReduceToRegainIndiv(selfTraits) && checkTargetFunctionIndividuality(receivedFunctionsList);
   }
 
   bool checkHpReduceToRegainIndiv(final List<NiceTrait>? selfTraits) {

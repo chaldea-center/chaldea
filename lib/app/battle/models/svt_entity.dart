@@ -144,7 +144,7 @@ class BattleServantData {
   // @Deprecated('actionHistory')
   CommandCardData? lastHitByCard;
   NiceFunction? lastHitByFunc;
-  List<NiceFunction> receiveFunctionsList = [];
+  List<NiceFunction> receivedFunctionsList = [];
   List<BattleServantActionHistory> actionHistory = [];
 
   BattleServantData._({required this.isPlayer});
@@ -1427,7 +1427,7 @@ class BattleServantData {
         await svt.activateBuff(
           battleData,
           BuffAction.functionedFunction,
-          receiveFunctionsList: svt.receiveFunctionsList,
+          receivedFunctionsList: svt.receivedFunctionsList,
         );
       }
     }
@@ -1805,7 +1805,7 @@ class BattleServantData {
     final CommandCardData? card,
     final int? overchargeState,
     final BattleSkillInfoData? skillInfo,
-    final List<NiceFunction>? receiveFunctionsList,
+    final List<NiceFunction>? receivedFunctionsList,
   }) async {
     return await activateBuffs(
       battleData,
@@ -1814,7 +1814,7 @@ class BattleServantData {
       card: card,
       overchargeState: overchargeState,
       skillInfo: skillInfo,
-      receiveFunctionsList: receiveFunctionsList,
+      receivedFunctionsList: receivedFunctionsList,
     );
   }
 
@@ -1825,7 +1825,7 @@ class BattleServantData {
     final CommandCardData? card,
     final int? overchargeState,
     final BattleSkillInfoData? skillInfo,
-    final List<NiceFunction>? receiveFunctionsList,
+    final List<NiceFunction>? receivedFunctionsList,
   }) async {
     bool activated = false;
     for (final buffAction in buffActions) {
@@ -1838,7 +1838,7 @@ class BattleServantData {
           selfTraits,
           opponentTraits: opponentTraits,
           skillInfoType: skillInfo?.type,
-          receivedFunctionsList: receiveFunctionsList,
+          receivedFunctionsList: receivedFunctionsList,
         );
 
         if (shouldActivate) {

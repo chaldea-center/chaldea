@@ -239,7 +239,8 @@ class BattleSkillInfoData {
     }
 
     for (final svt in battleData.nonnullActors) {
-      await svt.activateBuff(battleData, BuffAction.functionedFunction, receiveFunctionsList: svt.receiveFunctionsList);
+      await svt.activateBuff(battleData, BuffAction.functionedFunction,
+          receivedFunctionsList: svt.receivedFunctionsList);
     }
     return true;
   }

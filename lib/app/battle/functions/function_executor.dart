@@ -207,7 +207,7 @@ class FunctionExecutor {
     return await battleData.withFunction(() async {
       for (final target in targets) {
         battleData.setFuncResult(target.uniqueId, false);
-        target.receiveFunctionsList.add(function);
+        target.receivedFunctionsList.add(function);
       }
 
       final funcQuestTvalsMatch =
