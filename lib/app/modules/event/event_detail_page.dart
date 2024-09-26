@@ -352,6 +352,7 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
             color: TableCellData.resolveHeaderColor(context).withOpacity(0.5),
           )
         ]),
+      if (event.type != EventType.eventQuest) CustomTableRow.fromTexts(texts: [(event.type.name)])
     ];
     final eventJp = db.gameData.events[event.id];
     final startTime = event.extra.startTime.copyWith(jp: eventJp?.startedAt);

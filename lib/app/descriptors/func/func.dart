@@ -878,13 +878,17 @@ class FuncDescriptor extends StatelessWidget {
             if (indiv != null) {
               NiceTrait? guessTrait;
               if (indiv == 0 || indiv == 9999) {
-                final guessTraits = buff.vals
-                    .where((e) =>
-                        (e.signedId >= 2000 && e.signedId < 3000) ||
-                        (e.signedId >= 3050 && e.signedId < 4000) ||
-                        (e.signedId >= 6000 && e.signedId < 7000))
-                    .toList();
+                bool _isGuessTrait(int v) =>
+                    (v >= 2000 && v < 3000) || (v >= 3050 && v < 4000) || (v >= 6000 && v < 7000);
+                final guessTraits = buff.vals.where((e) => _isGuessTrait(e.signedId)).toList();
                 if (guessTraits.length == 1) guessTrait = guessTraits.first;
+                for (final v in [vals?.AddIndividualty, vals?.AddIndividualityEx]) {
+                  if (v == null) continue;
+                  if (guessTrait == null && _isGuessTrait(v)) {
+                    guessTrait = NiceTrait(id: v);
+                    break;
+                  }
+                }
                 // directly show guessTrait for known ones
                 if (guessTrait != null && (const [5359, 5546, 5512, 5586, 5561].contains(buff.id))) {
                   indiv = guessTrait.signedId;

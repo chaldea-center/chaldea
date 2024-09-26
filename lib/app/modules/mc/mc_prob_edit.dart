@@ -83,17 +83,17 @@ class _MCGachaProbEditPageState extends State<MCGachaProbEditPage> {
             CustomTableRow.fromTexts(texts: [
               [gacha.openedAt, gacha.closedAt].map((e) => e.sec2date().toStringShort(omitSec: true)).join(' ~ ')
             ]),
-            if (gacha.featuredSvtIds.isNotEmpty)
-              CustomTableRow.fromChildren(children: [
-                Wrap(
-                  spacing: 4,
-                  runSpacing: 4,
-                  children: [
-                    for (final svtId in gacha.featuredSvtIds)
-                      db.gameData.servantsById[svtId]?.iconBuilder(context: context, width: 48) ?? Text('No.$svtId'),
-                  ],
-                )
-              ]),
+            // if (gacha.featuredSvtIds.isNotEmpty)
+            //   CustomTableRow.fromChildren(children: [
+            //     Wrap(
+            //       spacing: 4,
+            //       runSpacing: 4,
+            //       children: [
+            //         for (final svtId in gacha.featuredSvtIds)
+            //           db.gameData.servantsById[svtId]?.iconBuilder(context: context, width: 48) ?? Text('No.$svtId'),
+            //       ],
+            //     )
+            //   ]),
           ]),
           for (final adjust in gacha.storyAdjusts) ...[
             DividerWithTitle(title: "Case ${adjust.idx}"),

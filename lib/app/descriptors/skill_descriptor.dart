@@ -7,6 +7,8 @@ import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../../generated/l10n.dart';
+import '../modules/skill/skill_detail.dart';
+import '../modules/skill/td_detail.dart';
 import 'func/func.dart';
 
 class SkillDescriptor extends StatelessWidget with FuncsDescriptor, _SkillDescriptorMixin {
@@ -133,7 +135,15 @@ class SkillDescriptor extends StatelessWidget with FuncsDescriptor, _SkillDescri
                     const TextSpan(text: '→'),
                   ),
                 )),
-      onTap: jumpToDetail ? () => skill.routeTo(region: region) : null,
+      onTap: jumpToDetail
+          ? () => skill.routeTo(
+              region: region,
+              child: SkillDetailPage(
+                skill: skill,
+                region: region,
+                initView: FuncApplyTarget.fromBool(showPlayer: showPlayer, showEnemy: showEnemy),
+              ))
+          : null,
     );
     const divider = Divider(indent: 16, endIndent: 16, height: 2, thickness: 1);
     final detailText = skill.lDetail ?? '???';
@@ -413,7 +423,16 @@ class TdDescriptor extends StatelessWidget with FuncsDescriptor, _SkillDescripto
           ]
         ],
       ),
-      onTap: jumpToDetail ? () => td.routeTo(region: region) : null,
+      onTap: jumpToDetail
+          ? () => td.routeTo(
+                region: region,
+                child: TdDetailPage(
+                  td: td,
+                  region: region,
+                  initView: FuncApplyTarget.fromBool(showPlayer: showPlayer, showEnemy: showEnemy),
+                ),
+              )
+          : null,
     );
     final detailText = td.lDetail ?? '???';
 

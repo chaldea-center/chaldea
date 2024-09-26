@@ -138,7 +138,7 @@ class _SupportServantPageState extends State<SupportServantPage> {
           SkillDescriptor(
             skill: passive.skill!,
             level: passive.skillLv,
-            showEnemy: true,
+            showEnemy: false,
             showPlayer: true,
             region: widget.region,
           ),
@@ -152,7 +152,7 @@ class _SupportServantPageState extends State<SupportServantPage> {
           SkillDescriptor(
             skill: svt.skills2.skills[index]!,
             level: svt.skills2.skillLvs[index],
-            showEnemy: true,
+            showEnemy: false,
             showPlayer: true,
             region: widget.region,
           ),
@@ -164,7 +164,7 @@ class _SupportServantPageState extends State<SupportServantPage> {
         TdDescriptor(
           td: svt.td2!,
           level: svt.td2Lv,
-          showEnemy: true,
+          showEnemy: false,
           showPlayer: true,
           region: widget.region,
         ),
@@ -174,7 +174,7 @@ class _SupportServantPageState extends State<SupportServantPage> {
         for (final skill in svt.classPassive.classPassive)
           SkillDescriptor(
             skill: skill,
-            showEnemy: true,
+            showEnemy: false,
             showPlayer: true,
             region: widget.region,
           ),
@@ -182,7 +182,7 @@ class _SupportServantPageState extends State<SupportServantPage> {
           SkillDescriptor(
             skill: svt.classPassive.addPassive[index],
             level: svt.classPassive.addPassiveLvs.getOrNull(index),
-            showEnemy: true,
+            showEnemy: false,
             showPlayer: true,
             region: widget.region,
           ),

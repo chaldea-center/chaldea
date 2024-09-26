@@ -64,7 +64,6 @@ NiceGacha _$NiceGachaFromJson(Map json) => NiceGacha(
               ?.map((e) => GachaStoryAdjust.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
-      featuredSvtIds: (json['featuredSvtIds'] as List<dynamic>?)?.map((e) => (e as num).toInt()).toList() ?? const [],
       userAdded: json['userAdded'] as bool? ?? false,
     );
 

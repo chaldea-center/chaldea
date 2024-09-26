@@ -10,9 +10,9 @@ import '../utils/battle_utils.dart';
 class PlayerSvtData {
   Servant? svt;
   int limitCount = 4;
-  List<int> skillLvs = List.generate(kActiveSkillNums.length, (_) => 10);
-  List<NiceSkill?> skills = [null, null, null];
-  List<int> appendLvs = List.generate(kAppendSkillNums.length, (_) => 0);
+  List<int> skillLvs = List.filled(kActiveSkillNums.length, 10);
+  List<NiceSkill?> skills = List.filled(kActiveSkillNums.length, null);
+  List<int> appendLvs = List.filled(kAppendSkillNums.length, 0);
   List<NiceSkill> extraPassives = [];
   Set<int> disabledExtraSkills = {};
   List<BaseSkill> customPassives = [];

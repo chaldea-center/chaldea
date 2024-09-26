@@ -149,18 +149,19 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
     ];
     final activeSkills = [
       for (int skillNum in kActiveSkillNums)
-        SliderWithPrefix(
-          label: '${S.current.active_skill_short} $skillNum',
-          min: 1,
-          max: 10,
-          value: playerSvtData.skillLvs[skillNum - 1],
-          valueFormatter: (v) => 'Lv.$v',
-          onChange: (v) {
-            _updateState(() {
-              playerSvtData.skillLvs[skillNum - 1] = v.round();
-            });
-          },
-        ),
+        if (playerSvtData.skills[skillNum - 1] != null)
+          SliderWithPrefix(
+            label: '${S.current.active_skill_short} $skillNum',
+            min: 1,
+            max: 10,
+            value: playerSvtData.skillLvs[skillNum - 1],
+            valueFormatter: (v) => 'Lv.$v',
+            onChange: (v) {
+              _updateState(() {
+                playerSvtData.skillLvs[skillNum - 1] = v.round();
+              });
+            },
+          ),
     ];
     final appendSkills = [
       for (int skillNum in kAppendSkillNums)

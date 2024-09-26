@@ -16,7 +16,8 @@ class TdDetailPage extends StatefulWidget {
   final int? id;
   final BaseTd? td;
   final Region? region;
-  const TdDetailPage({super.key, this.id, this.td, this.region}) : assert(id != null || td != null);
+  final FuncApplyTarget? initView;
+  const TdDetailPage({super.key, this.id, this.td, this.region, this.initView}) : assert(id != null || td != null);
 
   @override
   State<TdDetailPage> createState() => _TdDetailPageState();
@@ -28,7 +29,7 @@ class _TdDetailPageState extends State<TdDetailPage> with RegionBasedState<BaseT
 
   int? _lv;
   int? _oc;
-  FuncApplyTarget _view = FuncApplyTarget.playerAndEnemy;
+  late FuncApplyTarget _view = widget.initView ?? FuncApplyTarget.playerAndEnemy;
 
   @override
   void initState() {

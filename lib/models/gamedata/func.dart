@@ -676,4 +676,11 @@ enum FuncApplyTarget {
   player,
   enemy,
   playerAndEnemy,
+  ;
+
+  static FuncApplyTarget fromBool({required bool showPlayer, required bool showEnemy}) {
+    if (showPlayer && !showEnemy) return player;
+    if (!showPlayer && showEnemy) return enemy;
+    return playerAndEnemy;
+  }
 }

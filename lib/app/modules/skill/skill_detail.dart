@@ -21,7 +21,9 @@ class SkillDetailPage extends StatefulWidget {
   final int? id;
   final BaseSkill? skill;
   final Region? region;
-  const SkillDetailPage({super.key, this.id, this.skill, this.region}) : assert(id != null || skill != null);
+  final FuncApplyTarget? initView;
+  const SkillDetailPage({super.key, this.id, this.skill, this.region, this.initView})
+      : assert(id != null || skill != null);
 
   @override
   State<SkillDetailPage> createState() => _SkillDetailPageState();
@@ -32,7 +34,7 @@ class _SkillDetailPageState extends State<SkillDetailPage> with RegionBasedState
   BaseSkill get skill => data!;
 
   int? _lv;
-  FuncApplyTarget _view = FuncApplyTarget.playerAndEnemy;
+  late FuncApplyTarget _view = widget.initView ?? FuncApplyTarget.playerAndEnemy;
 
   @override
   void initState() {
