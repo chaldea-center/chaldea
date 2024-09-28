@@ -109,7 +109,7 @@ abstract class NetworkManagerBase<TRequest extends FRequestBase, TUser extends A
     _runningTask = null;
   }
 
-  String get fakerDir => joinPaths(db.paths.tempDir, 'faker', gameTop.region.upper);
+  late final String fakerDir = joinPaths(db.paths.tempFakerDir, gameTop.region.upper);
 
   void updateCookies(Map<String, dynamic> headers) {
     if (cookies.isEmpty) return;

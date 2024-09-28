@@ -1,5 +1,7 @@
 import 'package:flutter/services.dart';
 
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+
 import 'package:chaldea/app/tools/localized_base.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
@@ -109,13 +111,18 @@ class _SQSettingTabState extends State<SQSettingTab> {
                 firstDate: DateTime(2015),
                 lastDate: DateTime(2040),
               );
-              if (newDate != null) {
-                plan.startDate = newDate;
-                if (newDate.isAfter(plan.endDate)) {
-                  plan.endDate = newDate.add(const Duration(days: 365));
-                }
-                update();
+              if (newDate == null) return;
+              if (newDate.isAfter(DateTime.now().add(const Duration(days: 1)))) {
+                EasyLoading.showError(LocalizedText.of(
+                    chs: '此为日服时间，结束日期需不晚于今日', jpn: null, eng: 'This is JP date, end time should not be after today.'));
+                return;
               }
+
+              plan.startDate = newDate;
+              if (newDate.isAfter(plan.endDate)) {
+                plan.endDate = newDate.add(const Duration(days: 365));
+              }
+              update();
             },
             child: Text(plan.startDate.toDateString()),
           ),
@@ -131,13 +138,18 @@ class _SQSettingTabState extends State<SQSettingTab> {
                 firstDate: DateUtils.addDaysToDate(plan.startDate, 30),
                 lastDate: DateTime(2041),
               );
-              if (newDate != null) {
-                plan.endDate = newDate;
-                if (newDate.isBefore(plan.startDate)) {
-                  plan.startDate = newDate.subtract(const Duration(days: 365));
-                }
-                update();
+              if (newDate == null) return;
+              if (newDate.isAfter(DateTime.now().add(const Duration(days: 1)))) {
+                EasyLoading.showError(LocalizedText.of(
+                    chs: '此为日服时间，结束日期需不晚于今日', jpn: null, eng: 'This is JP date, end time should not be after today.'));
+                return;
               }
+
+              plan.endDate = newDate;
+              if (newDate.isBefore(plan.startDate)) {
+                plan.startDate = newDate.subtract(const Duration(days: 365));
+              }
+              update();
             },
             child: Text(plan.endDate.toDateString()),
           ),

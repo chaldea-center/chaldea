@@ -1148,6 +1148,37 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
               },
               child: Text(fakerSettings.maxFollowerListRetryCount.toString())),
         ),
+        Center(
+          child: TextButton(
+            onPressed: () {
+              SimpleCancelOkDialog(
+                title: const Text('Clear Dumps'),
+                onTapOk: () async {
+                  try {
+                    EasyLoading.show(status: 'clearing');
+                    int deleted = 0;
+                    final folder = Directory(db.paths.tempFakerDir);
+                    final t = DateTime.now().subtract(const Duration(hours: 1));
+                    await for (final file in folder.list(recursive: true)) {
+                      if (file is File) {
+                        final stat = await file.stat();
+                        if (stat.modified.isBefore(t)) {
+                          await file.delete();
+                          deleted += 1;
+                        }
+                      }
+                    }
+                    EasyLoading.showInfo('$deleted deleted');
+                  } catch (e, s) {
+                    logger.e('clear dumps failed', e, s);
+                    EasyLoading.showError(e.toString());
+                  }
+                },
+              ).showDialog(context);
+            },
+            child: const Text('Clear dumps'),
+          ),
+        )
       ],
     );
   }
@@ -1611,19 +1642,22 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
   void _checkFriendship(AutoBattleOptions option) {
     final svts = mstData.userDeck[battleOption.deckId]!.deckInfo?.svts ?? [];
     for (final svt in svts) {
-      if (svt.userSvtId > 0 && (svt.svtId ?? 0) > 0) {
-        final dbSvt = db.gameData.servantsById[svt.svtId];
-        final svtCollection = mstData.userSvtCollection[svt.svtId];
-        if (dbSvt == null) {
-          throw SilentException('Unknown Servant ID ${svt.svtId}');
+      if (svt.userSvtId > 0) {
+        final userSvt = mstData.userSvt[svt.userSvtId];
+        if (userSvt == null) {
+          throw SilentException('UserSvt ${svt.userSvtId} not found');
         }
+        final dbSvt = db.gameData.servantsById[userSvt.svtId];
+        if (dbSvt == null) {
+          throw SilentException('Unknown Servant ID ${userSvt.svtId}');
+        }
+        final svtCollection = mstData.userSvtCollection[userSvt.svtId];
         if (svtCollection == null) {
-          throw SilentException('UserServantCollection ${svt.svtId} not found');
+          throw SilentException('UserServantCollection ${userSvt.svtId} not found');
         }
         if (dbSvt.type == SvtType.heroine) continue;
         final maxBondLv = 10 + svtCollection.friendshipExceedCount;
-        final maxBond = dbSvt.bondGrowth.getOrNull(maxBondLv - 1);
-        if (svtCollection.friendship == maxBond) {
+        if (svtCollection.friendshipRank >= maxBondLv) {
           throw SilentException('Svt No.${dbSvt.collectionNo} ${dbSvt.lName.l} reaches max bond Lv.$maxBondLv');
         }
       }

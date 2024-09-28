@@ -161,6 +161,7 @@ class PathManager {
   String get userDir => join(appPath, 'user');
 
   String get tempDir => join(appPath, 'temp');
+  String get tempFakerDir => join(tempDir, 'faker');
 
   String get downloadDir => join(appPath, 'downloads');
 

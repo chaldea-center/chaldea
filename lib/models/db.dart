@@ -309,7 +309,7 @@ class _Database {
     }
 
     final _lastSavedFile = FilePlus(paths.settingsPath);
-    await _saveBytes(utf8.encode(jsonEncode(userData)), 'settings-${timeStamp}m-${userData.appVer}.json');
+    await _saveBytes(utf8.encode(jsonEncode(settings)), 'settings-${timeStamp}m-${userData.appVer}.json');
     if (_lastSavedFile.existsSync()) {
       await _saveBytes(await _lastSavedFile.readAsBytes(), 'settings-${timeStamp}d.json');
     }
