@@ -132,7 +132,7 @@ class GalleryItem {
         expCard,
         npCharge,
         statistics,
-        if (!kIsWeb && AppInfo.isDebugDevice) fakeGrandOrder,
+        if (!kIsWeb && AppInfo.isDebugOn) fakeGrandOrder,
         importData,
         if (!db.settings.hideApple) apk,
         // default hide

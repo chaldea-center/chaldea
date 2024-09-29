@@ -278,7 +278,7 @@ class __DebugMenuDialogState extends State<_DebugMenuDialog> {
             Navigator.pop(context);
           },
         ),
-        if (!kReleaseMode || AppInfo.isDebugDevice)
+        if (!kReleaseMode || AppInfo.isDebugOn)
           ListTile(
             title: const Text('TestFunc'),
             onTap: () => testFunction(context),

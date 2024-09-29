@@ -326,7 +326,7 @@ class _SettingsPageState extends State<SettingsPage> {
             TileGroup(
               header: S.current.debug,
               children: <Widget>[
-                if (!kReleaseMode)
+                if (AppInfo.isDebugOn)
                   ListTile(
                     title: const Text('Test Func'),
                     onTap: () => testFunction(context),

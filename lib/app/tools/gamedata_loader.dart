@@ -222,7 +222,7 @@ class GameDataLoader {
     }
 
     List<Future> futures = [];
-    final _pool = Pool(offline ? 30 : 5);
+    final _pool = Pool(AppInfo.isDebugOn ? (offline ? 30 : 5) : (offline ? 5 : 3));
     Map<String, String> keys = {
       // keep list
       // 'servants': 'collectionNo',

@@ -58,7 +58,7 @@ class _ImportPageHomeState extends State<ImportPageHome> {
               ),
             ],
           ),
-          if (!kIsWeb && AppInfo.isDebugDevice)
+          if (!kIsWeb && AppInfo.isDebugOn)
             TileGroup(
               children: [
                 ListTile(

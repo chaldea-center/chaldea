@@ -193,7 +193,7 @@ class _MCGachaProbEditPageState extends State<MCGachaProbEditPage> {
             ),
           ],
           const SizedBox(height: 32),
-          if (!result.isInvalid && AppInfo.isDebugDevice)
+          if (!result.isInvalid && AppInfo.isDebugOn)
             Card(
               child: Text(
                 result.getShownHtml(),
