@@ -15,6 +15,7 @@ import 'combine_image_page.dart';
 import 'custom_chara_figure.dart';
 import 'event_fatigue.dart';
 import 'realtime_svt_filter.dart';
+import 'tree_size.dart';
 
 class ToolListPage extends StatelessWidget {
   const ToolListPage({super.key});
@@ -56,6 +57,7 @@ class ToolListPage extends StatelessWidget {
               buildOne('Extra CharaImage Marker', CharaFigureMarker.image(), supportWeb: false),
               buildOne('AA Explorer', const AtlasExplorerPreview(), supportWeb: false),
               buildOne('Ciphers', const CipherTestPage()),
+              if (!kIsWeb) buildOne('TreeSize', const TreeSizePage()),
               if (AppInfo.isDebugDevice) buildOne('Y(^o^)Y', const HiddenToolsPage()),
             ],
           ),

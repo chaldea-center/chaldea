@@ -165,7 +165,7 @@ class ServerFeedbackHandler extends ReportHandler {
     final stackTrace = report.stackTrace.toString();
     final errorAndStackTrace = '$error\n$stackTrace';
     if (kIsWeb) {
-      if ([
+      if (<Pattern>[
         'TypeError: Failed to fetch',
         'Bad state: Future already completed',
         'Bad state: A RenderObject does not have any constraints before it has been laid out.',
@@ -175,6 +175,11 @@ class ServerFeedbackHandler extends ReportHandler {
         "Bad state: Too many elements",
         "Bad state: No element",
         "Unsupported operation: NaN.floor()",
+        "Concurrent modification during iteration: Instance of 'minified",
+        RegExp(r"Invalid argument: \d+\.\d+"),
+        "Unsupported operation: NaN.round()",
+        "Unsupported operation: Infinity.round()",
+        "Bad state: RenderBox was not laid out: minified",
         // "TypeError: Cannot read property 'toString' of null",
         // "TypeError: Cannot read properties of undefined",
         // "TypeError: Cannot read properties of null",
