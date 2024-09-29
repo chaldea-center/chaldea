@@ -45,7 +45,11 @@ PODS:
   - Flutter (1.0.0)
   - flutter_js (0.1.0):
     - Flutter
+  - flutter_local_notifications (0.0.1):
+    - Flutter
   - flutter_mailer (0.0.1):
+    - Flutter
+  - flutter_timezone (0.0.1):
     - Flutter
   - fluttertoast (0.0.2):
     - Flutter
@@ -56,7 +60,7 @@ PODS:
     - Flutter
     - Google-Mobile-Ads-SDK (~> 11.2.0)
     - webview_flutter_wkwebview
-  - GoogleUserMessagingPlatform (2.5.0)
+  - GoogleUserMessagingPlatform (2.6.0)
   - image_gallery_saver (2.0.2):
     - Flutter
   - just_audio (0.0.1):
@@ -102,7 +106,9 @@ DEPENDENCIES:
   - file_picker (from `.symlinks/plugins/file_picker/ios`)
   - Flutter (from `Flutter`)
   - flutter_js (from `.symlinks/plugins/flutter_js/ios`)
+  - flutter_local_notifications (from `.symlinks/plugins/flutter_local_notifications/ios`)
   - flutter_mailer (from `.symlinks/plugins/flutter_mailer/ios`)
+  - flutter_timezone (from `.symlinks/plugins/flutter_timezone/ios`)
   - fluttertoast (from `.symlinks/plugins/fluttertoast/ios`)
   - google_mobile_ads (from `.symlinks/plugins/google_mobile_ads/ios`)
   - image_gallery_saver (from `.symlinks/plugins/image_gallery_saver/ios`)
@@ -144,8 +150,12 @@ EXTERNAL SOURCES:
     :path: Flutter
   flutter_js:
     :path: ".symlinks/plugins/flutter_js/ios"
+  flutter_local_notifications:
+    :path: ".symlinks/plugins/flutter_local_notifications/ios"
   flutter_mailer:
     :path: ".symlinks/plugins/flutter_mailer/ios"
+  flutter_timezone:
+    :path: ".symlinks/plugins/flutter_timezone/ios"
   fluttertoast:
     :path: ".symlinks/plugins/fluttertoast/ios"
   google_mobile_ads:
@@ -187,11 +197,13 @@ SPEC CHECKSUMS:
   file_picker: 09aa5ec1ab24135ccd7a1621c46c84134bfd6655
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
   flutter_js: 95929d4e146e8ceb1c8e1889d8c2065c5d840076
+  flutter_local_notifications: 4cde75091f6327eb8517fa068a0a5950212d2086
   flutter_mailer: 2ef5a67087bc8c6c4cefd04a178bf1ae2c94cd83
+  flutter_timezone: ffb07bdad3c6276af8dada0f11978d8a1f8a20bb
   fluttertoast: e9a18c7be5413da53898f660530c56f35edfba9c
   Google-Mobile-Ads-SDK: 5a6d005a6cb5b5e8f4c7b69ca05cdea79c181139
   google_mobile_ads: 9379c80fdfa9988fb0e105a407890ff8deb3cf86
-  GoogleUserMessagingPlatform: 6b4f48a370e77ce121d034c908cc6ee4fdafaf13
+  GoogleUserMessagingPlatform: 0c3a08353e53ce8c2feab7addd0b652cde522450
   image_gallery_saver: cb43cc43141711190510e92c460eb1655cd343cb
   just_audio: baa7252489dbcf47a4c7cc9ca663e9661c99aafa
   package_info_plus: 58f0028419748fad15bf008b270aaa8e54380b1c

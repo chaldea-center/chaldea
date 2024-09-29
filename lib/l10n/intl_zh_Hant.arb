@@ -22,6 +22,7 @@
   "ap": "AP",
   "ap_campaign_time_mismatch_hint": "關卡AP等相關活動顯示的時間(日服除外)可能不準確",
   "ap_efficiency": "AP效率",
+  "ap_fully_recovered": null,
   "app_data_folder": "數據目錄",
   "app_data_use_external_storage": "使用外部儲存(SD卡)",
   "appearance": "外觀",

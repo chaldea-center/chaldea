@@ -10,8 +10,10 @@ import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/ads/ads.dart';
 import 'package:chaldea/packages/app_info.dart';
+import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/packages/platform/platform.dart';
 import 'package:chaldea/packages/split_route/split_route.dart';
+import 'package:chaldea/utils/notification.dart';
 import 'package:chaldea/widgets/custom_dialogs.dart';
 import 'package:chaldea/widgets/tile_items.dart';
 import '../../root/global_fab.dart';
@@ -373,6 +375,23 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
                   trailing: const Icon(Icons.keyboard_arrow_right),
                   onTap: () {
                     router.pushPage(const AdSettingPage());
+                  },
+                ),
+              if (LocalNotificationUtil.supported)
+                ListTile(
+                  title: const Text('Request Notification Permissions'),
+                  onTap: () async {
+                    try {
+                      final result = await LocalNotificationUtil.requestPermissions();
+                      if (result == true) {
+                        EasyLoading.showSuccess(S.current.success);
+                      } else {
+                        EasyLoading.showError(result.toString());
+                      }
+                    } catch (e, s) {
+                      EasyLoading.showError(e.toString());
+                      logger.e('request notification permission failed', e, s);
+                    }
                   },
                 ),
             ],

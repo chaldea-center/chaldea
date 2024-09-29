@@ -11,12 +11,14 @@ part '../../generated/models/userdata/autologin.g.dart';
 @JsonSerializable()
 class FakerSettings {
   bool dumpResponse;
+  bool apRecoveredNotification;
   int maxFollowerListRetryCount;
   List<AutoLoginDataJP> jpAutoLogins;
   List<AutoLoginDataCN> cnAutoLogins;
 
   FakerSettings({
     this.dumpResponse = false,
+    this.apRecoveredNotification = false,
     this.maxFollowerListRetryCount = 20,
     List<AutoLoginDataJP>? jpAutoLogins,
     List<AutoLoginDataCN>? cnAutoLogins,

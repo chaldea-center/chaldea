@@ -20,6 +20,7 @@ import 'packages/split_route/split_route.dart';
 import 'utils/catcher/catcher_util.dart';
 import 'utils/catcher/server_feedback_handler.dart';
 import 'utils/http_override.dart';
+import 'utils/notification.dart';
 import 'utils/utils.dart';
 
 void main() async {
@@ -92,4 +93,5 @@ Future<void> _initiateCommon() async {
     HttpOverrides.global = CustomHttpOverrides();
   }
   SplitRoute.defaultMasterFillPageBuilder = (context) => const BlankPage();
+  await LocalNotificationUtil.init();
 }

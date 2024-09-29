@@ -22,6 +22,7 @@
   "ap": "AP",
   "ap_campaign_time_mismatch_hint": "Quest Campaigns' start time of non-JP regions may be incorrect",
   "ap_efficiency": "AP rate",
+  "ap_fully_recovered": "All AP Recovered",
   "app_data_folder": "Data Folder",
   "app_data_use_external_storage": "Use External Storage (SD card)",
   "appearance": "Appearance",

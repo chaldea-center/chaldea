@@ -85,6 +85,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "anniversary": MessageLookupByLibrary.simpleMessage("周年"),
         "ap": MessageLookupByLibrary.simpleMessage("AP"),
         "ap_efficiency": MessageLookupByLibrary.simpleMessage("AP効率"),
+        "ap_fully_recovered": MessageLookupByLibrary.simpleMessage("APが全回復しました"),
         "app_data_folder": MessageLookupByLibrary.simpleMessage("データフォルダ"),
         "app_data_use_external_storage": MessageLookupByLibrary.simpleMessage("外部ストレージ（SDカード）を使用"),
         "appearance": MessageLookupByLibrary.simpleMessage("外観"),

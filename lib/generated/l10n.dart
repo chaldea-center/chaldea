@@ -305,6 +305,17 @@ class S {
     );
   }
 
+  /// `All AP Recovered`
+  String get ap_fully_recovered {
+    return Intl.message(
+      'All AP Recovered',
+      name: 'ap_fully_recovered',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Data Folder`
   String get app_data_folder {
     return Intl.message(

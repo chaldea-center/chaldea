@@ -7,6 +7,11 @@
     <uses-permission android:name="com.google.android.gms.permission.AD_ID" />
     <!--  Android 11 will ignore requestLegacyExternalStorage, Google Play also reject it  -->
     <!--<uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />-->
+
+    <!-- flutter_local_notifications -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <!-- <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" /> -->
+    <!-- <uses-permission android:name="android.permission.USE_EXACT_ALARM" /> -->
     
     <!--  Android 10: android:requestLegacyExternalStorage="true"  -->
     <application
@@ -62,6 +67,19 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
+        
+        <!-- flutter_local_notifications -->
+        <receiver android:exported="false" android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationReceiver" />
+        <receiver android:exported="false" android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationBootReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED"/>
+                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
+                <action android:name="com.htc.intent.action.QUICKBOOT_POWERON"/>
+            </intent-filter>
+        </receiver>
+        <!-- <receiver android:exported="false" android:name="com.dexterous.flutterlocalnotifications.ActionBroadcastReceiver" /> -->
+
         <!-- Google Ad Manager -->
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"

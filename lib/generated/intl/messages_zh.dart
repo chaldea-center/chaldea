@@ -112,6 +112,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "ap": MessageLookupByLibrary.simpleMessage("AP"),
         "ap_campaign_time_mismatch_hint": MessageLookupByLibrary.simpleMessage("关卡AP等相关活动显示的时间(日服除外)可能不准确"),
         "ap_efficiency": MessageLookupByLibrary.simpleMessage("AP效率"),
+        "ap_fully_recovered": MessageLookupByLibrary.simpleMessage("AP已全部回复"),
         "app_data_folder": MessageLookupByLibrary.simpleMessage("数据目录"),
         "app_data_use_external_storage": MessageLookupByLibrary.simpleMessage("使用外部储存(SD卡)"),
         "appearance": MessageLookupByLibrary.simpleMessage("外观"),

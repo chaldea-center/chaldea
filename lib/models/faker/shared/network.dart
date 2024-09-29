@@ -3,11 +3,13 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
+import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
 import 'package:chaldea/models/gamedata/toplogin.dart';
 import 'package:chaldea/models/userdata/autologin.dart';
 import 'package:chaldea/packages/packages.dart';
+import 'package:chaldea/utils/notification.dart';
 import 'package:chaldea/utils/utils.dart';
 import '../quiz/cat_mouse.dart';
 
@@ -203,6 +205,7 @@ abstract class NetworkManagerBase<TRequest extends FRequestBase, TUser extends A
           }
 
           record.response = resp;
+          setLocalNotification();
           return resp;
         } on DioException catch (e, s) {
           logger.e('fgo request failed, retry after 5 seconds', e, s);
@@ -225,6 +228,24 @@ abstract class NetworkManagerBase<TRequest extends FRequestBase, TUser extends A
   }
 
   Future<Response> requestStartImpl(TRequest request);
+
+  Future<void> setLocalNotification() async {
+    if (!db.settings.fakerSettings.apRecoveredNotification) return;
+    final userGame = mstData.user;
+    if (userGame == null) return;
+    final int id = LocalNotificationUtil.generateUserApFullId(user.region.index, userGame.userId);
+    if (userGame.actRecoverAt < DateTime.now().timestamp + 2) return;
+    final recoverAt = DateTime.fromMillisecondsSinceEpoch(userGame.actRecoverAt * 1000);
+    await LocalNotificationUtil.scheduleNotification(
+      id: id,
+      dateTime: recoverAt.subtract(const Duration(minutes: 5)),
+      title: S.current.ap_fully_recovered,
+      body: [
+        '[${user.serverName}] ${userGame.name}',
+        recoverAt.toCustomString(year: false, millisecond: false),
+      ].join('\n'),
+    );
+  }
 }
 
 class WWWForm {

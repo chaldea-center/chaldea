@@ -23,6 +23,7 @@ import 'package:chaldea/models/faker/shared/agent.dart';
 import 'package:chaldea/models/gamedata/toplogin.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/logger.dart';
+import 'package:chaldea/utils/notification.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../import_data/import_https_page.dart';
@@ -1122,12 +1123,23 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
       children: [
         SwitchListTile(
           dense: true,
-          value: fakerSettings.dumpResponse,
-          title: const Text('Dump Responses'),
-          onChanged: (v) {
+          value: fakerSettings.apRecoveredNotification,
+          title: const Text('AP Recovered Notification'),
+          onChanged: (v) async {
             setState(() {
-              fakerSettings.dumpResponse = v;
+              fakerSettings.apRecoveredNotification = v;
             });
+            if (v) {
+              await LocalNotificationUtil.requestPermissions();
+              await agent.network.setLocalNotification();
+            } else {
+              final notifications = await LocalNotificationUtil.plugin.getActiveNotifications();
+              for (final notification in notifications) {
+                if (notification.id != null && LocalNotificationUtil.isUserApFullId(notification.id!)) {
+                  LocalNotificationUtil.plugin.cancel(notification.id!);
+                }
+              }
+            }
           },
         ),
         ListTile(
@@ -1147,6 +1159,16 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
                 ).showDialog(context);
               },
               child: Text(fakerSettings.maxFollowerListRetryCount.toString())),
+        ),
+        SwitchListTile(
+          dense: true,
+          value: fakerSettings.dumpResponse,
+          title: const Text('Dump Responses'),
+          onChanged: (v) {
+            setState(() {
+              fakerSettings.dumpResponse = v;
+            });
+          },
         ),
         Center(
           child: TextButton(

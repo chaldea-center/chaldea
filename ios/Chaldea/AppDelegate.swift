@@ -1,5 +1,6 @@
 import Flutter
 import UIKit
+import flutter_local_notifications
 
 @UIApplicationMain
 @objc class AppDelegate: FlutterAppDelegate {
@@ -8,6 +9,13 @@ import UIKit
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
   ) -> Bool {
     
+    FlutterLocalNotificationsPlugin.setPluginRegistrantCallback { (registry) in
+        GeneratedPluginRegistrant.register(with: registry)
+    }
+    if #available(iOS 10.0, *) {
+      UNUserNotificationCenter.current().delegate = self as UNUserNotificationCenterDelegate
+    }
+
     let controller : FlutterViewController = window?.rootViewController as! FlutterViewController
     let chaldeaChannel = FlutterMethodChannel(name: "chaldea.narumi.cc/chaldea",
                                               binaryMessenger: controller.binaryMessenger)
