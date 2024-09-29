@@ -104,11 +104,11 @@ class _ReadAuthPageState extends State<ReadAuthPage> {
           padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
           child: TextFormField(
             controller: _codeCtrl,
-            decoration: InputDecoration(
-              label: const Text('Auth File Code'),
-              border: const OutlineInputBorder(),
+            decoration: const InputDecoration(
+              label: Text('Auth File Code'),
+              border: OutlineInputBorder(),
               hintText: 'start from ZSv/ (include ZSv/)',
-              errorText: _codeCtrl.text.isEmpty || AuthSaveData.isValidCode(_codeCtrl.text) ? null : "Invalid",
+              // errorText: _codeCtrl.text.isEmpty || AuthSaveData.isValidCode(_codeCtrl.text) ? null : "Invalid",
               floatingLabelBehavior: FloatingLabelBehavior.always,
             ),
             contextMenuBuilder: (context, editableTextState) =>
@@ -284,12 +284,6 @@ class _ReadAuthPageState extends State<ReadAuthPage> {
     code = AuthSaveData.normTransferCode(code);
     if (code.isEmpty) {
       throw ArgumentError('Input string is empty');
-    }
-    try {
-      print(base64.decode(code).length);
-    } catch (e, s) {
-      logger.e('invalid base64 string', e, s);
-      throw ArgumentError('Invalid base64 string');
     }
 
     final data = CatMouseGame(Region.jp).decryptAuthsave(utf8.encode(code));

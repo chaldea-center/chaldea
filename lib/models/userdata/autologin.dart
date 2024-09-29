@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:chaldea/utils/extension.dart';
 import '../faker/jp/network.dart';
 import '../gamedata/common.dart';
@@ -64,16 +62,6 @@ class AuthSaveData {
       }
     }
     return code;
-  }
-
-  static bool isValidCode(String code) {
-    code = normTransferCode(code);
-    try {
-      base64Decode(code);
-    } catch (e) {
-      return false;
-    }
-    return true;
   }
 
   static bool isValidKeys(String userId, String authKey, String secretKey) {

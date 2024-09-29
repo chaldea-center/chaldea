@@ -112,15 +112,32 @@ class CatMouseGame {
     if (start > 0) {
       data = data.sublist(start);
     }
+    String srcCode = utf8.decode(data);
 
-    List<int> result = base64Decode(utf8.decode(data));
-    result = decryptDES3(result, authsaveKey, authsaveIV);
-    String text = utf8.decode(result);
-    int left = text.indexOf('{'), right = text.lastIndexOf('}');
-    if (left >= 0 && right > 0) {
-      text = text.substring(left, right + 1);
+    Map<String, dynamic> _decrypt(String _code) {
+      List<int> result = base64Decode(_code);
+      result = decryptDES3(result, authsaveKey, authsaveIV);
+      String text = utf8.decode(result);
+      int left = text.indexOf('{'), right = text.lastIndexOf('}');
+      if (left >= 0 && right > 0) {
+        text = text.substring(left, right + 1);
+      }
+      Map dict = jsonDecode(text);
+      return Map<String, dynamic>.from(dict);
     }
-    return Map<String, dynamic>.from(jsonDecode(text));
+
+    String code = srcCode;
+    for (int i = 0; i < 4; i++) {
+      try {
+        return _decrypt(code);
+      } on FormatException catch (e) {
+        print('Decode error $e, retry after removing last 4 chars');
+        if (code.length > 4) {
+          code = code.substring(0, code.length - 4);
+        }
+      }
+    }
+    return _decrypt(srcCode);
   }
 
   String encryptBattleResult(Map dictionary) {
