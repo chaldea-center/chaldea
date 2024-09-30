@@ -19,6 +19,7 @@ abstract class LocalNotificationUtil {
   static final bool supported = !kIsWeb && (Platform.isIOS || Platform.isMacOS || Platform.isAndroid);
 
   static Future<void> init() async {
+    if (!supported) return;
     try {
       await _configureLocalTimeZone();
       const darwinSettings = DarwinInitializationSettings(
@@ -29,7 +30,7 @@ abstract class LocalNotificationUtil {
       );
       await plugin.initialize(
         const InitializationSettings(
-          android: AndroidInitializationSettings('ic_launcher'),
+          android: AndroidInitializationSettings('ic_stat'),
           iOS: darwinSettings,
           macOS: darwinSettings,
         ),
@@ -45,7 +46,7 @@ abstract class LocalNotificationUtil {
   }
 
   static Future<bool?> requestPermissions() async {
-    if (kIsWeb) return null;
+    if (!supported) return null;
     if (Platform.isIOS) {
       return plugin
           .resolvePlatformSpecificImplementation<IOSFlutterLocalNotificationsPlugin>()
@@ -76,6 +77,7 @@ abstract class LocalNotificationUtil {
     required String? title,
     required String? body,
   }) async {
+    if (!supported) return;
     return plugin.show(
       id ?? _id++,
       title,
@@ -91,6 +93,7 @@ abstract class LocalNotificationUtil {
     required String? body,
     bool autoCancelPrevious = true,
   }) async {
+    if (!supported) return;
     if (id != null && autoCancelPrevious) {
       await plugin.cancel(id);
     }
