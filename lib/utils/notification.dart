@@ -57,7 +57,8 @@ abstract class LocalNotificationUtil {
     } else if (Platform.isAndroid) {
       final AndroidFlutterLocalNotificationsPlugin? androidImplementation =
           plugin.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
-      return androidImplementation?.requestNotificationsPermission();
+      await androidImplementation?.requestNotificationsPermission();
+      return androidImplementation?.requestExactAlarmsPermission();
     }
     return null;
   }
