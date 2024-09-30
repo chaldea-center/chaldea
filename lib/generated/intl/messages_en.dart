@@ -120,7 +120,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "ap_campaign_time_mismatch_hint":
             MessageLookupByLibrary.simpleMessage("Quest Campaigns\' start time of non-JP regions may be incorrect"),
         "ap_efficiency": MessageLookupByLibrary.simpleMessage("AP rate"),
-        "ap_fully_recovered": MessageLookupByLibrary.simpleMessage("All AP Recovered"),
+        "ap_fully_recovered": MessageLookupByLibrary.simpleMessage("All AP Restored"),
         "app_data_folder": MessageLookupByLibrary.simpleMessage("Data Folder"),
         "app_data_use_external_storage": MessageLookupByLibrary.simpleMessage("Use External Storage (SD card)"),
         "appearance": MessageLookupByLibrary.simpleMessage("Appearance"),

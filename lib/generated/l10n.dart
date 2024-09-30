@@ -305,10 +305,10 @@ class S {
     );
   }
 
-  /// `All AP Recovered`
+  /// `All AP Restored`
   String get ap_fully_recovered {
     return Intl.message(
-      'All AP Recovered',
+      'All AP Restored',
       name: 'ap_fully_recovered',
       desc: '',
       locale: localeName,

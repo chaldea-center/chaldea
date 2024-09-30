@@ -233,18 +233,38 @@ abstract class NetworkManagerBase<TRequest extends FRequestBase, TUser extends A
     if (!db.settings.fakerSettings.apRecoveredNotification) return;
     final userGame = mstData.user;
     if (userGame == null) return;
-    final int id = LocalNotificationUtil.generateUserApFullId(user.region.index, userGame.userId);
-    if (userGame.actRecoverAt < DateTime.now().timestamp + 2) return;
-    final recoverAt = DateTime.fromMillisecondsSinceEpoch(userGame.actRecoverAt * 1000);
-    await LocalNotificationUtil.scheduleNotification(
-      id: id,
-      dateTime: recoverAt.subtract(const Duration(minutes: 5)),
-      title: S.current.ap_fully_recovered,
-      body: [
-        '[${user.serverName}] ${userGame.name}',
-        recoverAt.toCustomString(year: false, millisecond: false),
-      ].join('\n'),
-    );
+    for (final targetAp in {0, ...db.settings.fakerSettings.recoveredAps}) {
+      final isFull = targetAp == 0;
+      int recoverAt;
+      if (isFull) {
+        recoverAt = userGame.actRecoverAt;
+      } else if (userGame.calCurAp() < targetAp && targetAp < userGame.actMax) {
+        recoverAt = userGame.actRecoverAt - (userGame.actMax - targetAp) * 60 * 5;
+      } else {
+        continue;
+      }
+      final now = DateTime.now().timestamp;
+      final int id = LocalNotificationUtil.generateUserApRecoverId(user.region.index, userGame.userId, targetAp);
+      if (!isFull && recoverAt < now + 2) {
+        // await LocalNotificationUtil.plugin.cancel(id);
+        continue;
+      }
+      final recoverTime = recoverAt.sec2date();
+      DateTime notifyTime = recoverTime.subtract(Duration(minutes: isFull ? 5 : 1));
+      if (notifyTime.timestamp <= now + 1) {
+        notifyTime = (now + 2).sec2date();
+      }
+
+      await LocalNotificationUtil.scheduleNotification(
+        id: id,
+        dateTime: notifyTime,
+        title: isFull ? S.current.ap_fully_recovered : 'AP $targetAp!',
+        body: [
+          '[${user.serverName}] ${userGame.name}',
+          recoverTime.toCustomString(year: false, millisecond: false),
+        ].join('\n'),
+      );
+    }
   }
 }
 

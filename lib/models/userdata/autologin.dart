@@ -10,6 +10,7 @@ part '../../generated/models/userdata/autologin.g.dart';
 class FakerSettings {
   bool dumpResponse;
   bool apRecoveredNotification;
+  Set<int> recoveredAps;
   int maxFollowerListRetryCount;
   List<AutoLoginDataJP> jpAutoLogins;
   List<AutoLoginDataCN> cnAutoLogins;
@@ -17,10 +18,12 @@ class FakerSettings {
   FakerSettings({
     this.dumpResponse = false,
     this.apRecoveredNotification = false,
+    Set<int>? recoveredAps,
     this.maxFollowerListRetryCount = 20,
     List<AutoLoginDataJP>? jpAutoLogins,
     List<AutoLoginDataCN>? cnAutoLogins,
-  })  : jpAutoLogins = jpAutoLogins ?? [],
+  })  : recoveredAps = recoveredAps ?? {},
+        jpAutoLogins = jpAutoLogins ?? [],
         cnAutoLogins = cnAutoLogins ?? [];
 
   factory FakerSettings.fromJson(Map<String, dynamic> json) => _$FakerSettingsFromJson(json);

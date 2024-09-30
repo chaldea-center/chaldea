@@ -13,6 +13,8 @@ FakerSettings _$FakerSettingsFromJson(Map json) => $checkedCreate(
         final val = FakerSettings(
           dumpResponse: $checkedConvert('dumpResponse', (v) => v as bool? ?? false),
           apRecoveredNotification: $checkedConvert('apRecoveredNotification', (v) => v as bool? ?? false),
+          recoveredAps:
+              $checkedConvert('recoveredAps', (v) => (v as List<dynamic>?)?.map((e) => (e as num).toInt()).toSet()),
           maxFollowerListRetryCount: $checkedConvert('maxFollowerListRetryCount', (v) => (v as num?)?.toInt() ?? 20),
           jpAutoLogins: $checkedConvert(
               'jpAutoLogins',
@@ -32,6 +34,7 @@ FakerSettings _$FakerSettingsFromJson(Map json) => $checkedCreate(
 Map<String, dynamic> _$FakerSettingsToJson(FakerSettings instance) => <String, dynamic>{
       'dumpResponse': instance.dumpResponse,
       'apRecoveredNotification': instance.apRecoveredNotification,
+      'recoveredAps': instance.recoveredAps.toList(),
       'maxFollowerListRetryCount': instance.maxFollowerListRetryCount,
       'jpAutoLogins': instance.jpAutoLogins.map((e) => e.toJson()).toList(),
       'cnAutoLogins': instance.cnAutoLogins.map((e) => e.toJson()).toList(),

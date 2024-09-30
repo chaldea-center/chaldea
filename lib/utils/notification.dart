@@ -129,13 +129,17 @@ abstract class LocalNotificationUtil {
     }
   }
 
-  //
-  static int generateUserApFullId(int region, int userId) {
-    // 8 digits
-    return (10 + region + 1) * 1000000 + userId % 1000000;
+  static const int _kUserIdMod = 10 ^ 5;
+  static int generateUserApRecoverId(int region, int userId, int ap) {
+    // 1+3+17+8=29 bits
+    int v = 1;
+    v = (v << 3) + region;
+    v = (v << 17) + userId % _kUserIdMod;
+    v = (v << 8) + ap;
+    return v;
   }
 
   static bool isUserApFullId(int id) {
-    return id ~/ 10000000 == 1;
+    return (id >> (3 + 17 + 8)) == 1;
   }
 }

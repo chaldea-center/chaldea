@@ -1,3 +1,4 @@
+import 'package:chaldea/utils/extension.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -385,6 +386,10 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
                       final result = await LocalNotificationUtil.requestPermissions();
                       if (result == true) {
                         EasyLoading.showSuccess(S.current.success);
+                        LocalNotificationUtil.showNotification(
+                          title: 'Chaldea',
+                          body: 'LINK START!\n${DateTime.now().toCustomString(year: false)}',
+                        );
                       } else {
                         EasyLoading.showError(result.toString());
                       }
@@ -392,6 +397,20 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
                       EasyLoading.showError(e.toString());
                       logger.e('request notification permission failed', e, s);
                     }
+                  },
+                  onLongPress: () {
+                    InputCancelOkDialog(
+                      title: 'Notify after seconds',
+                      keyboardType: TextInputType.number,
+                      validate: (s) => (int.tryParse(s) ?? -1) > 0,
+                      onSubmit: (s) {
+                        LocalNotificationUtil.scheduleNotification(
+                          title: 'Chaldea',
+                          body: 'LINK START!\n${DateTime.now().toCustomString(year: false)}',
+                          dateTime: DateTime.now().add(Duration(seconds: int.parse(s))),
+                        );
+                      },
+                    ).showDialog(context);
                   },
                 ),
             ],

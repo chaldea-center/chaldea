@@ -12,6 +12,7 @@ import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/modules/battle/formation/formation_card.dart';
 import 'package:chaldea/app/modules/common/builders.dart';
+import 'package:chaldea/app/modules/common/filter_group.dart';
 import 'package:chaldea/app/modules/craft_essence/craft_list.dart';
 import 'package:chaldea/app/modules/servant/servant_list.dart';
 import 'package:chaldea/generated/l10n.dart';
@@ -1144,6 +1145,42 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
         ),
         ListTile(
           dense: true,
+          title: const Text('Notify when AP recovered at'),
+          subtitle: FilterGroup<int>(
+            padding: const EdgeInsets.only(top: 4),
+            options: [...fakerSettings.recoveredAps.toList()..sort(), 0],
+            values: FilterGroupData(),
+            optionBuilder: (v) => v == 0 ? Text(agent.user.userGame?.actMax.toString() ?? 'Full') : Text(v.toString()),
+            onFilterChanged: (_, lastChanged) {
+              setState(() {
+                if (lastChanged != null) {
+                  fakerSettings.recoveredAps.remove(lastChanged);
+                  agent.network.setLocalNotification();
+                }
+              });
+            },
+          ),
+          trailing: IconButton(
+            onPressed: () {
+              InputCancelOkDialog(
+                title: 'AP',
+                keyboardType: TextInputType.number,
+                validate: (s) {
+                  int v = int.tryParse(s) ?? -1;
+                  return v > 0 && v < 200 && v < Maths.max(ConstData.userLevel.values.map((e) => e.maxAp));
+                },
+                onSubmit: (s) {
+                  fakerSettings.recoveredAps.add(int.parse(s));
+                  agent.network.setLocalNotification();
+                  if (mounted) setState(() {});
+                },
+              ).showDialog(context);
+            },
+            icon: const Icon(Icons.add),
+          ),
+        ),
+        ListTile(
+          dense: true,
           title: const Text('Max refresh count of Support list'),
           trailing: TextButton(
               onPressed: () {
@@ -1160,6 +1197,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
               },
               child: Text(fakerSettings.maxFollowerListRetryCount.toString())),
         ),
+        const Divider(),
         SwitchListTile(
           dense: true,
           value: fakerSettings.dumpResponse,
