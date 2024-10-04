@@ -62,6 +62,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
     try {
       // ignore: use_build_context_synchronously
       _runtime = await FakerRuntime.init(widget.user, this);
+      _runtime?.loadTeapots();
     } catch (e, s) {
       if (mounted) {
         SimpleCancelOkDialog(
@@ -657,6 +658,13 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
     if (userQuest != null) {
       subtitle += '\nP${userQuest.questPhase} clear ${userQuest.clearNum}';
     }
+    final now = DateTime.now().timestamp;
+    List<(Item, UserItemEntity)> teapots = [
+      for (final teapot in runtime.teapots.values)
+        if (teapot.startedAt <= now && teapot.endedAt >= now)
+          if ((mstData.userItem[teapot.id]?.num ?? 0) > 0) (teapot, mstData.userItem[teapot.id]!),
+    ];
+    teapots.sort2((e) => e.$1.startedAt);
     return TileGroup(
       header: 'Battle Setup',
       children: [
@@ -956,6 +964,15 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
           value: battleOption.useCampaignItem,
           secondary: Item.iconBuilder(context: context, item: null, itemId: 94065901, jumpToDetail: false),
           title: Text(Transl.itemNames('星見のティーポット').l),
+          subtitle: teapots.isEmpty
+              ? null
+              : Text.rich(TextSpan(children: [
+                  for (final teapot in teapots)
+                    TextSpan(
+                      text: '×${teapot.$2.num}'
+                          '(${teapot.$1.endedAt.sec2date().toCustomString(year: false, second: false)})  ',
+                    ),
+                ])),
           onChanged: (v) {
             runtime.lockTask(() {
               setState(() {

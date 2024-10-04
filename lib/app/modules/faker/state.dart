@@ -24,6 +24,7 @@ class FakerRuntime {
   final shownItemIds = <int>{};
   final totalDropStat = _DropStatData();
   final curLoopDropStat = _DropStatData();
+  final teapots = <int, Item>{};
 
   FakerRuntime._(this.agent, this._state);
 
@@ -62,6 +63,28 @@ class FakerRuntime {
       AutoLoginDataCN() => FakerAgentCN.s(gameTop: top, user: user),
     };
     return _runtimes[user] = FakerRuntime._(agent, state);
+  }
+
+  Future<void> loadTeapots() async {
+    if (teapots.isNotEmpty) return;
+    List<Item> items;
+    if (agent.user.region == Region.jp) {
+      items = db.gameData.items.values.toList();
+    } else {
+      items = (await AtlasApi.exportedData(
+            'nice_item',
+            (data) => (data as List).map((e) => Item.fromJson(e)).toList(),
+            region: agent.user.region,
+          )) ??
+          [];
+    }
+    final now = DateTime.now().timestamp;
+    for (final item in items) {
+      if (item.type == ItemType.friendshipUpItem && item.endedAt > now) {
+        teapots[item.id] = item;
+      }
+    }
+    update();
   }
 
   void dispose() {
