@@ -289,7 +289,7 @@ class SvtFilterData with FilterDataMixin {
         curStatus,
         planCompletion,
         svtDuplicated,
-        bondCompare,
+        // bondCompare,
         bondValue,
         // priority,
         region,

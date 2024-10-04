@@ -123,7 +123,7 @@ class _CraftFilterPageState extends FilterPageState<CraftFilterData, CraftFilter
         EffectFilterUtil.buildTraitFilter(context, filterData.targetTrait, update),
         FilterGroup<SkillEffect>(
           title: Text(S.current.effect_type),
-          options: _getValidEffects(SkillEffect.kAttack),
+          options: _getValidEffects(SkillEffect.kOthers),
           values: filterData.effectType,
           showMatchAll: true,
           showInvert: false,
@@ -132,33 +132,17 @@ class _CraftFilterPageState extends FilterPageState<CraftFilterData, CraftFilter
             update();
           },
         ),
-        const SizedBox(height: 4),
-        FilterGroup<SkillEffect>(
-          options: _getValidEffects(SkillEffect.kDefence),
-          values: filterData.effectType,
-          optionBuilder: (v) => Text(v.lName),
-          onFilterChanged: (value, _) {
-            update();
-          },
-        ),
-        const SizedBox(height: 4),
-        FilterGroup<SkillEffect>(
-          options: _getValidEffects(SkillEffect.kDebuffRelated),
-          values: filterData.effectType,
-          optionBuilder: (v) => Text(v.lName),
-          onFilterChanged: (value, _) {
-            update();
-          },
-        ),
-        const SizedBox(height: 4),
-        FilterGroup<SkillEffect>(
-          options: _getValidEffects(SkillEffect.kOthers),
-          values: filterData.effectType,
-          optionBuilder: (v) => Text(v.lName),
-          onFilterChanged: (value, _) {
-            update();
-          },
-        ),
+        for (final effects in [SkillEffect.kAttack, SkillEffect.kDefence, SkillEffect.kDebuffRelated]) ...[
+          const SizedBox(height: 4),
+          FilterGroup<SkillEffect>(
+            options: _getValidEffects(effects),
+            values: filterData.effectType,
+            optionBuilder: (v) => Text(v.lName),
+            onFilterChanged: (value, _) {
+              update();
+            },
+          ),
+        ],
       ]),
     );
   }

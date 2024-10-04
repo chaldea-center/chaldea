@@ -169,11 +169,16 @@ class NiceWar with RouteInfo {
   }
 
   Transl<String, String> get lName {
-    final warName = _name ?? _longName ?? _defaultName;
-    return Transl.warNames(warName);
+    String warName = _name ?? _longName ?? _defaultName;
+    if (Transl.md.warNames.containsKey(warName)) {
+      return Transl.warNames(warName);
+    } else {
+      return Transl.eventNames(warName);
+    }
   }
 
   String get _defaultName {
+    if (eventName.isNotEmpty) return eventName;
     return 'War $id';
   }
 

@@ -149,7 +149,7 @@ class _QuestListPageState extends State<QuestListPage> {
       }
       String chapter = quest.chapter;
       final title = chapter.isEmpty ? quest.lDispName : '$chapter ${quest.lDispName}';
-      final interludeOwner = quest.type == QuestType.friendship
+      Servant? owner = quest.type == QuestType.friendship || quest.warId == WarId.rankup
           ? db.gameData.servantsById.values.firstWhereOrNull((svt) => svt.relateQuestIds.contains(quest.id))
           : null;
 
@@ -168,12 +168,11 @@ class _QuestListPageState extends State<QuestListPage> {
         leading: leading,
         // minLeadingWidth: 16,
         title: Text(title, textScaler: const TextScaler.linear(0.85)),
-        subtitle: subtitle.isEmpty && interludeOwner == null
+        subtitle: subtitle.isEmpty && owner == null
             ? null
             : Text.rich(
                 TextSpan(children: [
-                  if (interludeOwner != null)
-                    CenterWidgetSpan(child: interludeOwner.iconBuilder(context: context, height: 32)),
+                  if (owner != null) CenterWidgetSpan(child: owner.iconBuilder(context: context, height: 32)),
                   TextSpan(text: subtitle),
                 ]),
                 textScaler: const TextScaler.linear(0.85),

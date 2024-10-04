@@ -114,11 +114,11 @@ class SkillEffect {
     avoidInstantdeath,
   ];
   static List<SkillEffect> kOthers = [
-    friendPointUp,
-    expUp,
-    userEquipExpUp,
     servantFriendshipUp,
     qpUp,
+    expUp,
+    userEquipExpUp,
+    friendPointUp,
     eventDropUp,
     triggerFunc,
     shortenSkill,

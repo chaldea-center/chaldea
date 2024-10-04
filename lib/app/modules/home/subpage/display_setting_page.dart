@@ -1,4 +1,3 @@
-import 'package:chaldea/utils/extension.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -14,6 +13,7 @@ import 'package:chaldea/packages/app_info.dart';
 import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/packages/platform/platform.dart';
 import 'package:chaldea/packages/split_route/split_route.dart';
+import 'package:chaldea/utils/extension.dart';
 import 'package:chaldea/utils/notification.dart';
 import 'package:chaldea/widgets/custom_dialogs.dart';
 import 'package:chaldea/widgets/tile_items.dart';
