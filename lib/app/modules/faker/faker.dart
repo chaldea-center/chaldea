@@ -741,7 +741,10 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
         if (formation != null) ...[
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: FormationCard(formation: formation.toFormation(mstData: mstData)),
+            child: FormationCard(
+              formation: formation.toFormation(mstData: mstData),
+              userSvtCollections: mstData.userSvtCollection.dict,
+            ),
           ),
           Center(
             child: Container(

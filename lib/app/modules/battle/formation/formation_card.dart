@@ -1,5 +1,6 @@
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/battle/models/battle.dart';
+import 'package:chaldea/models/gamedata/toplogin.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
@@ -9,12 +10,14 @@ class FormationCard extends StatelessWidget {
   final BattleTeamFormation formation;
   final bool showAllMysticCodeIcon;
   final bool fadeOutMysticCode;
+  final Map<int, UserServantCollectionEntity>? userSvtCollections;
 
   const FormationCard({
     super.key,
     required this.formation,
     this.showAllMysticCodeIcon = false,
     this.fadeOutMysticCode = false,
+    this.userSvtCollections,
   });
 
   @override
@@ -75,53 +78,66 @@ class FormationCard extends StatelessWidget {
         ));
       },
     );
-    svtIcon = Stack(
-      clipBehavior: Clip.none,
-      alignment: Alignment.topCenter,
-      children: [
-        svtIcon,
-        if (storedData?.supportType.isSupport == true)
-          Positioned(
+
+    List<Widget> extraInfoIcons = [
+      if (storedData?.customPassives.isNotEmpty == true)
+        db.getIconImage(AssetURL.i.buffIcon(302), width: 18, aspectRatio: 1),
+      if (userSvtCollections?[storedData?.svtId]?.isReachBondLimit == true)
+        db.getIconImage(
+          'https://static.atlasacademy.io/file/aa-fgo-extract-jp/Battle/Common/CommonUIAtlas/img_bond_category.png',
+          width: 16,
+          aspectRatio: 1,
+        ),
+      if (storedData?.supportType.isSupport == true) db.getIconImage(AssetURL.i.items(12), width: 24, aspectRatio: 1),
+    ];
+    if (extraInfoIcons.isNotEmpty) {
+      svtIcon = Stack(
+        clipBehavior: Clip.none,
+        alignment: Alignment.topRight,
+        children: [
+          svtIcon,
+          Positioned.fill(
             top: -5,
             right: -5,
-            child: db.getIconImage(AssetURL.i.items(12), width: 24, aspectRatio: 1),
+            child: Wrap(
+              alignment: WrapAlignment.end,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              children: extraInfoIcons,
+            ),
           ),
-        if (storedData?.customPassives.isNotEmpty == true)
-          Positioned(
-            top: -5,
-            child: db.getIconImage(AssetURL.i.buffIcon(302), width: 24, aspectRatio: 1),
-          )
-      ],
-    );
+        ],
+      );
+    }
 
+    final ceIcon = GameCardMixin.cardIconBuilder(
+      context: context,
+      icon: db.gameData.craftEssencesById[storedData?.ceId]?.extraAssets.equipFace.equip?[storedData!.ceId] ??
+          Atlas.common.emptyCeIcon,
+      // width: 80,
+      aspectRatio: 150 / 68,
+      text: ceInfo,
+      option: ImageWithTextOption(
+        textAlign: TextAlign.left,
+        fontSize: 14,
+        alignment: Alignment.bottomLeft,
+        // padding: const EdgeInsets.fromLTRB(22, 0, 2, 4),
+        errorWidget: (context, url, error) => CachedImage(imageUrl: Atlas.common.emptyCeIcon),
+      ),
+      onTap: () async {
+        final data = await PlayerSvtData.fromStoredData(storedData);
+        if (data.ce == null) return;
+        router.pushPage(CraftEssenceOptionEditPage(
+          playerSvtData: data,
+          questPhase: null,
+          onChange: null,
+          craftFilterData: null,
+        ));
+      },
+    );
     Widget child = Column(
       children: [
         svtIcon,
-        GameCardMixin.cardIconBuilder(
-          context: context,
-          icon: db.gameData.craftEssencesById[storedData?.ceId]?.extraAssets.equipFace.equip?[storedData!.ceId] ??
-              Atlas.common.emptyCeIcon,
-          // width: 80,
-          aspectRatio: 150 / 68,
-          text: ceInfo,
-          option: ImageWithTextOption(
-            textAlign: TextAlign.left,
-            fontSize: 14,
-            alignment: Alignment.bottomLeft,
-            // padding: const EdgeInsets.fromLTRB(22, 0, 2, 4),
-            errorWidget: (context, url, error) => CachedImage(imageUrl: Atlas.common.emptyCeIcon),
-          ),
-          onTap: () async {
-            final data = await PlayerSvtData.fromStoredData(storedData);
-            if (data.ce == null) return;
-            router.pushPage(CraftEssenceOptionEditPage(
-              playerSvtData: data,
-              questPhase: null,
-              onChange: null,
-              craftFilterData: null,
-            ));
-          },
-        ),
+        ceIcon,
       ],
     );
     child = Container(

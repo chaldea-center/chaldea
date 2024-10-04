@@ -384,6 +384,7 @@ class DataMaster<K, V extends DataEntityBase<K>> with Iterable<V> {
   V? operator [](Object? key) => lookup[key];
 
   List<V> get list => lookup.values.toList();
+  Map<K, V> get dict => Map.of(lookup);
 
   DataMaster(this.mstName, this.entityFromJson);
 
@@ -805,6 +806,8 @@ class UserServantCollectionEntity extends DataEntityBase<_IntStr> {
     }
     return result;
   }
+
+  bool get isReachBondLimit => friendshipRank >= 10 + friendshipExceedCount;
 
   factory UserServantCollectionEntity.fromJson(Map<String, dynamic> data) =>
       _$UserServantCollectionEntityFromJson(data);
