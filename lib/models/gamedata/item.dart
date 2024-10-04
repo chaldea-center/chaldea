@@ -559,6 +559,7 @@ enum ItemType {
   stormpod,
   battleItem,
   aniplexPlusChargeStone,
+  purePriShopReset,
 }
 
 enum ItemBGType {

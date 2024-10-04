@@ -137,7 +137,7 @@ abstract class FakerAgent<TRequest extends FRequestBase, TUser extends AutoLogin
 
     int campaignItemId = 0;
     if (options.useCampaignItem) {
-      List<UserItemEntity> campaignItems = [];
+      List<(UserItemEntity, Item)> campaignItems = [];
       final now = DateTime.now().timestamp;
       for (final userItem in mstData.userItem) {
         if (userItem.num <= 0) continue;
@@ -146,17 +146,16 @@ abstract class FakerAgent<TRequest extends FRequestBase, TUser extends AutoLogin
         final item = region == Region.jp ? jpItem : await AtlasApi.item(userItem.itemId, region: region);
         if (item == null || item.type != ItemType.friendshipUpItem) continue;
         if (item.startedAt < now && item.endedAt > now) {
-          campaignItems.add(userItem);
+          campaignItems.add((userItem, item));
         }
       }
       if (campaignItems.isEmpty) {
         throw Exception('no valid Teapot item found');
       }
-      print("Teapot count: ${{for (final x in campaignItems) x.itemId: x.num}}");
-      if (campaignItems.length > 1) {
-        throw Exception('multiple Teapot items found, why??? (${campaignItems.map((e) => e.itemId).join("/")})');
-      }
-      campaignItemId = campaignItems.single.itemId;
+      print("Teapot count: ${{for (final x in campaignItems) x.$1.itemId: x.$1.num}}");
+
+      campaignItems.sort2((e) => e.$2.endedAt);
+      campaignItemId = campaignItems.first.$1.itemId;
     }
 
     int activeDeckId, followerId, followerClassId, followerType, followerSupportDeckId;

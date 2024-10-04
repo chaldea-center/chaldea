@@ -88,6 +88,7 @@ const _$ItemTypeEnumMap = {
   ItemType.stormpod: 'stormpod',
   ItemType.battleItem: 'battleItem',
   ItemType.aniplexPlusChargeStone: 'aniplexPlusChargeStone',
+  ItemType.purePriShopReset: 'purePriShopReset',
 };
 
 const _$ItemUseEnumMap = {
