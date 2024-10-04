@@ -230,27 +230,30 @@ abstract class NetworkManagerBase<TRequest extends FRequestBase, TUser extends A
   Future<Response> requestStartImpl(TRequest request);
 
   Future<void> setLocalNotification() async {
+    if (!LocalNotificationUtil.supported) return;
     if (!db.settings.fakerSettings.apRecoveredNotification) return;
+    if (!(await LocalNotificationUtil.checkPermission())) return;
     final userGame = mstData.user;
     if (userGame == null) return;
-    for (final targetAp in {0, ...db.settings.fakerSettings.recoveredAps}) {
+    for (final targetAp in user.recoveredAps) {
       final isFull = targetAp == 0;
+      final int id = LocalNotificationUtil.generateUserApRecoverId(user.region.index, userGame.userId, targetAp);
       int recoverAt;
       if (isFull) {
         recoverAt = userGame.actRecoverAt;
       } else if (userGame.calCurAp() < targetAp && targetAp < userGame.actMax) {
         recoverAt = userGame.actRecoverAt - (userGame.actMax - targetAp) * 60 * 5;
       } else {
+        await LocalNotificationUtil.plugin.cancel(id);
         continue;
       }
       final now = DateTime.now().timestamp;
-      final int id = LocalNotificationUtil.generateUserApRecoverId(user.region.index, userGame.userId, targetAp);
       if (!isFull && recoverAt < now + 2) {
         // await LocalNotificationUtil.plugin.cancel(id);
         continue;
       }
       final recoverTime = recoverAt.sec2date();
-      DateTime notifyTime = recoverTime.subtract(Duration(minutes: isFull ? 5 : 1));
+      DateTime notifyTime = recoverTime.subtract(Duration(minutes: isFull ? 5 : 0));
       if (notifyTime.timestamp <= now + 1) {
         notifyTime = (now + 2).sec2date();
       }

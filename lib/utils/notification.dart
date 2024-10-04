@@ -45,23 +45,43 @@ abstract class LocalNotificationUtil {
     }
   }
 
+  static bool _requested = false;
+  static bool? _hasPermission;
+  static bool? get hasPermission => _hasPermission;
+
   static Future<bool?> requestPermissions() async {
     if (!supported) return null;
+    bool? result;
     if (Platform.isIOS) {
-      return plugin
+      result = await plugin
           .resolvePlatformSpecificImplementation<IOSFlutterLocalNotificationsPlugin>()
           ?.requestPermissions(alert: true, badge: true, sound: true);
     } else if (Platform.isMacOS) {
-      return plugin
+      result = await plugin
           .resolvePlatformSpecificImplementation<MacOSFlutterLocalNotificationsPlugin>()
           ?.requestPermissions(alert: true, badge: true, sound: true);
     } else if (Platform.isAndroid) {
       final AndroidFlutterLocalNotificationsPlugin? androidImplementation =
           plugin.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
-      await androidImplementation?.requestNotificationsPermission();
-      return androidImplementation?.requestExactAlarmsPermission();
+      final a = await androidImplementation?.requestNotificationsPermission();
+      final b = await androidImplementation?.requestExactAlarmsPermission();
+      if (a == null && b == null) {
+        result = null;
+      } else if (a != null && b != null) {
+        result = a && b;
+      } else {
+        result = false;
+      }
     }
-    return null;
+    _hasPermission = result;
+    _requested = true;
+    return result;
+  }
+
+  static Future<bool> checkPermission() async {
+    if (!supported) return false;
+    if (_requested) return _hasPermission ?? false;
+    return (await requestPermissions()) ?? false;
   }
 
   static const _defaultAndroidDetails = AndroidNotificationDetails(

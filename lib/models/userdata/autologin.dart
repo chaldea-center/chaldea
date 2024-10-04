@@ -10,7 +10,6 @@ part '../../generated/models/userdata/autologin.g.dart';
 class FakerSettings {
   bool dumpResponse;
   bool apRecoveredNotification;
-  Set<int> recoveredAps;
   int maxFollowerListRetryCount;
   List<AutoLoginDataJP> jpAutoLogins;
   List<AutoLoginDataCN> cnAutoLogins;
@@ -18,12 +17,10 @@ class FakerSettings {
   FakerSettings({
     this.dumpResponse = false,
     this.apRecoveredNotification = false,
-    Set<int>? recoveredAps,
     this.maxFollowerListRetryCount = 20,
     List<AutoLoginDataJP>? jpAutoLogins,
     List<AutoLoginDataCN>? cnAutoLogins,
-  })  : recoveredAps = recoveredAps ?? {},
-        jpAutoLogins = jpAutoLogins ?? [],
+  })  : jpAutoLogins = jpAutoLogins ?? [],
         cnAutoLogins = cnAutoLogins ?? [];
 
   factory FakerSettings.fromJson(Map<String, dynamic> json) => _$FakerSettingsFromJson(json);
@@ -101,6 +98,10 @@ sealed class AutoLoginData {
     return battleOptions[curBattleOptionIndex];
   }
 
+  //
+  Set<int> recoveredAps;
+
+  //
   int? lastLogin;
   UserGameEntity? userGame;
   Map<int, int> userItems = {};
@@ -114,10 +115,12 @@ sealed class AutoLoginData {
     this.userAgent = '',
     int? curBattleOptionIndex,
     List<AutoBattleOptions>? battleOptions,
+    Set<int>? recoveredAps,
     this.lastLogin,
     this.userGame,
     Map<int, int>? userItems,
   })  : battleOptions = battleOptions ?? [AutoBattleOptions()],
+        recoveredAps = recoveredAps ?? {},
         _curBattleOptionIndex = curBattleOptionIndex ?? 0,
         userItems = userItems ?? {};
 
@@ -142,6 +145,7 @@ class AutoLoginDataJP extends AutoLoginData {
     super.userAgent,
     super.curBattleOptionIndex,
     super.battleOptions,
+    super.recoveredAps,
     super.lastLogin,
     super.userGame,
     super.userItems,
@@ -220,6 +224,7 @@ class AutoLoginDataCN extends AutoLoginData {
     super.userAgent,
     super.curBattleOptionIndex,
     super.battleOptions,
+    super.recoveredAps,
     super.lastLogin,
     super.userGame,
     super.userItems,

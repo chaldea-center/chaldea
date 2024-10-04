@@ -142,7 +142,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
                   battleResultOptionSection,
                   battleLoopOptionSection,
                   gameInfoSection,
-                  globalSettingSection,
+                  ...otherSettingSection,
                 ],
               ),
             ),
@@ -1100,179 +1100,187 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
     );
   }
 
-  Widget get globalSettingSection {
+  List<Widget> get otherSettingSection {
     final fakerSettings = db.settings.fakerSettings;
-    return TileGroup(
-      header: 'Global Settings',
-      children: [
-        SwitchListTile.adaptive(
-          dense: true,
-          value: fakerSettings.apRecoveredNotification,
-          title: const Text('AP Recovered Notification'),
-          onChanged: (v) async {
-            setState(() {
-              fakerSettings.apRecoveredNotification = v;
-            });
-            if (v) {
-              await LocalNotificationUtil.requestPermissions();
-              await agent.network.setLocalNotification();
-            } else {
-              final notifications = await LocalNotificationUtil.plugin.getActiveNotifications();
-              for (final notification in notifications) {
-                if (notification.id != null && LocalNotificationUtil.isUserApFullId(notification.id!)) {
-                  LocalNotificationUtil.plugin.cancel(notification.id!);
-                }
-              }
-            }
-          },
-        ),
-        ListTile(
-          dense: true,
-          title: const Text('Notify when AP recovered at'),
-          subtitle: FilterGroup<int>(
-            padding: const EdgeInsets.only(top: 4),
-            options: [...fakerSettings.recoveredAps.toList()..sort(), 0],
-            values: FilterGroupData(),
-            optionBuilder: (v) => v == 0 ? Text(agent.user.userGame?.actMax.toString() ?? 'Full') : Text(v.toString()),
-            onFilterChanged: (_, lastChanged) {
+    return [
+      TileGroup(
+        header: 'Notifications',
+        children: [
+          SwitchListTile.adaptive(
+            dense: true,
+            value: fakerSettings.apRecoveredNotification,
+            title: const Text('AP Recovered Notification (Global)'),
+            onChanged: (v) async {
               setState(() {
-                if (lastChanged != null) {
-                  fakerSettings.recoveredAps.remove(lastChanged);
-                  agent.network.setLocalNotification();
+                fakerSettings.apRecoveredNotification = v;
+              });
+              if (v) {
+                await LocalNotificationUtil.requestPermissions();
+                await agent.network.setLocalNotification();
+              } else {
+                final notifications = await LocalNotificationUtil.plugin.getActiveNotifications();
+                for (final notification in notifications) {
+                  if (notification.id != null && LocalNotificationUtil.isUserApFullId(notification.id!)) {
+                    LocalNotificationUtil.plugin.cancel(notification.id!);
+                  }
                 }
-              });
-            },
-          ),
-          trailing: IconButton(
-            onPressed: () {
-              InputCancelOkDialog(
-                title: 'AP',
-                keyboardType: TextInputType.number,
-                validate: (s) {
-                  int v = int.tryParse(s) ?? -1;
-                  return v > 0 && v < 200 && v < Maths.max(ConstData.userLevel.values.map((e) => e.maxAp));
-                },
-                onSubmit: (s) {
-                  fakerSettings.recoveredAps.add(int.parse(s));
-                  agent.network.setLocalNotification();
-                  if (mounted) setState(() {});
-                },
-              ).showDialog(context);
-            },
-            icon: const Icon(Icons.add),
-          ),
-        ),
-        Center(
-          child: TextButton(
-            onPressed: () async {
-              final actives = await LocalNotificationUtil.plugin.getActiveNotifications();
-              final pendings = await LocalNotificationUtil.plugin.pendingNotificationRequests();
-              if (actives.isEmpty && pendings.isEmpty) {
-                EasyLoading.showInfo('No notifications');
-                return;
               }
-              router.showDialog(builder: (context) {
-                return SimpleDialog(
-                  title: const Text('Notifications'),
-                  children: [
-                    if (actives.isNotEmpty) SHeader('${actives.length} Active Notifications'),
-                    ...divideList(
-                      [
-                        for (final notification in actives..sort2((e) => e.id ?? 0))
-                          ListTile(
-                            dense: true,
-                            title: Text(notification.title ?? 'no title'),
-                            subtitle: Text('id ${notification.id}\n${notification.body}'),
-                          ),
-                      ],
-                      const Divider(height: 1),
-                      top: true,
-                      bottom: true,
-                    ),
-                    if (actives.isNotEmpty) SHeader('${pendings.length} Pending Notifications'),
-                    ...divideList(
-                      [
-                        for (final notification in pendings..sort2((e) => e.id))
-                          ListTile(
-                            dense: true,
-                            title: Text(notification.title ?? 'no title'),
-                            subtitle: Text('id ${notification.id}\n${notification.body}'),
-                          ),
-                      ],
-                      const Divider(height: 1),
-                      top: true,
-                      bottom: true,
-                    )
-                  ],
-                );
-              });
             },
-            child: const Text('Active/Pending Notifications'),
           ),
-        ),
-        const Divider(),
-        ListTile(
-          dense: true,
-          title: const Text('Max refresh count of Support list'),
-          trailing: TextButton(
+          ListTile(
+            dense: true,
+            title: const Text('Notify when AP recovered at'),
+            subtitle: FilterGroup<int>(
+              padding: const EdgeInsets.only(top: 4),
+              options: agent.user.recoveredAps.toList()..sort2((e) => e == 0 ? 999 : e),
+              values: FilterGroupData(),
+              optionBuilder: (v) =>
+                  v == 0 ? Text(agent.user.userGame?.actMax.toString() ?? 'Full') : Text(v.toString()),
+              onFilterChanged: (_, lastChanged) {
+                setState(() {
+                  if (lastChanged != null) {
+                    agent.user.recoveredAps.remove(lastChanged);
+                    agent.network.setLocalNotification();
+                  }
+                });
+              },
+            ),
+            trailing: IconButton(
               onPressed: () {
                 InputCancelOkDialog(
-                  title: 'Max refresh count of Support list',
-                  text: fakerSettings.maxFollowerListRetryCount.toString(),
+                  title: 'AP',
                   keyboardType: TextInputType.number,
-                  validate: (s) => (int.tryParse(s) ?? -1) > 0,
+                  helperText: '0 = AP full (${(mstData.user ?? agent.user.userGame)?.actMax})',
+                  validate: (s) {
+                    int v = int.tryParse(s) ?? -1;
+                    return v >= 0 && v < 200 && v < Maths.max(ConstData.userLevel.values.map((e) => e.maxAp));
+                  },
                   onSubmit: (s) {
-                    fakerSettings.maxFollowerListRetryCount = int.parse(s);
+                    agent.user.recoveredAps.add(int.parse(s));
+                    agent.network.setLocalNotification();
                     if (mounted) setState(() {});
                   },
                 ).showDialog(context);
               },
-              child: Text(fakerSettings.maxFollowerListRetryCount.toString())),
-        ),
-        const Divider(),
-        SwitchListTile.adaptive(
-          dense: true,
-          value: fakerSettings.dumpResponse,
-          title: const Text('Dump Responses'),
-          onChanged: (v) {
-            setState(() {
-              fakerSettings.dumpResponse = v;
-            });
-          },
-        ),
-        Center(
-          child: TextButton(
-            onPressed: () {
-              SimpleCancelOkDialog(
-                title: const Text('Clear Dumps'),
-                onTapOk: () async {
-                  try {
-                    EasyLoading.show(status: 'clearing');
-                    int deleted = 0;
-                    final folder = Directory(db.paths.tempFakerDir);
-                    final t = DateTime.now().subtract(const Duration(hours: 1));
-                    await for (final file in folder.list(recursive: true)) {
-                      if (file is File) {
-                        final stat = await file.stat();
-                        if (stat.modified.isBefore(t)) {
-                          await file.delete();
-                          deleted += 1;
+              icon: const Icon(Icons.add),
+            ),
+          ),
+          Center(
+            child: TextButton(
+              onPressed: () async {
+                final actives = await LocalNotificationUtil.plugin.getActiveNotifications();
+                final pendings = await LocalNotificationUtil.plugin.pendingNotificationRequests();
+                if (actives.isEmpty && pendings.isEmpty) {
+                  EasyLoading.showInfo('No notifications');
+                  return;
+                }
+                router.showDialog(builder: (context) {
+                  return SimpleDialog(
+                    title: const Text('Notifications'),
+                    children: [
+                      if (actives.isNotEmpty) SHeader('${actives.length} Active Notifications'),
+                      ...divideList(
+                        [
+                          for (final notification in actives..sort2((e) => e.id ?? 0))
+                            ListTile(
+                              dense: true,
+                              title: Text(notification.title ?? 'no title'),
+                              subtitle: Text('id ${notification.id}\n${notification.body}'),
+                            ),
+                        ],
+                        const Divider(height: 1),
+                        top: true,
+                        bottom: true,
+                      ),
+                      if (actives.isNotEmpty) SHeader('${pendings.length} Pending Notifications'),
+                      ...divideList(
+                        [
+                          for (final notification in pendings..sort2((e) => e.id))
+                            ListTile(
+                              dense: true,
+                              title: Text(notification.title ?? 'no title'),
+                              subtitle: Text('id ${notification.id}\n${notification.body}'),
+                            ),
+                        ],
+                        const Divider(height: 1),
+                        top: true,
+                        bottom: true,
+                      )
+                    ],
+                  );
+                });
+              },
+              child: const Text('Active/Pending Notifications'),
+            ),
+          ),
+        ],
+      ),
+      TileGroup(
+        header: 'Global Settings',
+        children: [
+          ListTile(
+            dense: true,
+            title: const Text('Max refresh count of Support list'),
+            trailing: TextButton(
+                onPressed: () {
+                  InputCancelOkDialog(
+                    title: 'Max refresh count of Support list',
+                    text: fakerSettings.maxFollowerListRetryCount.toString(),
+                    keyboardType: TextInputType.number,
+                    validate: (s) => (int.tryParse(s) ?? -1) > 0,
+                    onSubmit: (s) {
+                      fakerSettings.maxFollowerListRetryCount = int.parse(s);
+                      if (mounted) setState(() {});
+                    },
+                  ).showDialog(context);
+                },
+                child: Text(fakerSettings.maxFollowerListRetryCount.toString())),
+          ),
+          const Divider(),
+          SwitchListTile.adaptive(
+            dense: true,
+            value: fakerSettings.dumpResponse,
+            title: const Text('Dump Responses'),
+            onChanged: (v) {
+              setState(() {
+                fakerSettings.dumpResponse = v;
+              });
+            },
+          ),
+          Center(
+            child: TextButton(
+              onPressed: () {
+                SimpleCancelOkDialog(
+                  title: const Text('Clear Dumps'),
+                  onTapOk: () async {
+                    try {
+                      EasyLoading.show(status: 'clearing');
+                      int deleted = 0;
+                      final folder = Directory(db.paths.tempFakerDir);
+                      final t = DateTime.now().subtract(const Duration(hours: 1));
+                      await for (final file in folder.list(recursive: true)) {
+                        if (file is File) {
+                          final stat = await file.stat();
+                          if (stat.modified.isBefore(t)) {
+                            await file.delete();
+                            deleted += 1;
+                          }
                         }
                       }
+                      EasyLoading.showInfo('$deleted deleted');
+                    } catch (e, s) {
+                      logger.e('clear dumps failed', e, s);
+                      EasyLoading.showError(e.toString());
                     }
-                    EasyLoading.showInfo('$deleted deleted');
-                  } catch (e, s) {
-                    logger.e('clear dumps failed', e, s);
-                    EasyLoading.showError(e.toString());
-                  }
-                },
-              ).showDialog(context);
-            },
-            child: const Text('Clear dumps'),
-          ),
-        )
-      ],
-    );
+                  },
+                ).showDialog(context);
+              },
+              child: const Text('Clear dumps'),
+            ),
+          )
+        ],
+      )
+    ];
   }
 
   Widget get buttonBar {
