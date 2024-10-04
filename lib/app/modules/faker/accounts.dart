@@ -1,10 +1,7 @@
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
-import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/generated/l10n.dart';
-import 'package:chaldea/models/faker/cn/agent.dart';
-import 'package:chaldea/models/faker/jp/agent.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
@@ -94,8 +91,30 @@ class _FakerAccountsPageState extends State<FakerAccountsPage> {
               ],
             )
           : ListView.separated(
-              itemCount: users.length,
-              itemBuilder: (context, index) => itemBuilder(context, users[index]),
+              itemCount: users.length + 1,
+              itemBuilder: (context, index) {
+                if (index < users.length) {
+                  return itemBuilder(context, users[index]);
+                }
+                return Center(
+                  child: FilledButton.icon(
+                    onPressed: users.length <= 1
+                        ? null
+                        : () async {
+                            for (final (index, user) in users.indexed) {
+                              if (index != 0) {
+                                rootRouter.appState.addWindow();
+                                await Future.delayed(const Duration(milliseconds: 500));
+                              }
+                              router.pushPage(FakeGrandOrder(user: user));
+                              await Future.delayed(const Duration(milliseconds: 500));
+                            }
+                          },
+                    label: const Text('Open All'),
+                    icon: const Icon(Icons.select_all),
+                  ),
+                );
+              },
               separatorBuilder: (context, index) => const Divider(indent: 16, endIndent: 16),
             ),
     );
@@ -158,13 +177,8 @@ class _FakerAccountsPageState extends State<FakerAccountsPage> {
               icon: const Icon(Icons.edit),
               iconSize: 20,
             ),
-      onTap: () async {
-        final top = (await showEasyLoading(AtlasApi.gametopsRaw))?.of(user.region);
-        if (top == null) {
-          EasyLoading.showError('fetch game data failed');
-          return;
-        }
-        await router.pushPage(FakeGrandOrder(agent: FakerAgentJP.s(gameTop: top, user: user)));
+      onTap: () {
+        router.pushPage(FakeGrandOrder(user: user));
       },
     );
   }
@@ -186,12 +200,7 @@ class _FakerAccountsPageState extends State<FakerAccountsPage> {
               iconSize: 20,
             ),
       onTap: () async {
-        final tops = await showEasyLoading(AtlasApi.gametopsRaw);
-        if (tops == null) {
-          EasyLoading.showError('fetch game data failed');
-          return;
-        }
-        await router.pushPage(FakeGrandOrder(agent: FakerAgentCN.s(gameTop: tops.cn, user: user)));
+        router.pushPage(FakeGrandOrder(user: user));
       },
     );
   }
@@ -228,13 +237,8 @@ class _FakerAccountsJPPageState extends State<FakerAccountsJPPage> {
                   icon: const Icon(Icons.edit),
                   iconSize: 20,
                 ),
-          onTap: () async {
-            final top = (await showEasyLoading(AtlasApi.gametopsRaw))?.of(user.region);
-            if (top == null) {
-              EasyLoading.showError('fetch game data failed');
-              return;
-            }
-            await router.pushPage(FakeGrandOrder(agent: FakerAgentJP.s(gameTop: top, user: user)));
+          onTap: () {
+            router.pushPage(FakeGrandOrder(user: user));
           },
         );
       },
@@ -273,13 +277,8 @@ class _FakerAccountsCNPageState extends State<FakerAccountsCNPage> {
                   icon: const Icon(Icons.edit),
                   iconSize: 20,
                 ),
-          onTap: () async {
-            final tops = await showEasyLoading(AtlasApi.gametopsRaw);
-            if (tops == null) {
-              EasyLoading.showError('fetch game data failed');
-              return;
-            }
-            await router.pushPage(FakeGrandOrder(agent: FakerAgentCN.s(gameTop: tops.cn, user: user)));
+          onTap: () {
+            router.pushPage(FakeGrandOrder(user: user));
           },
         );
       },

@@ -1,14 +1,11 @@
 import 'dart:convert';
 import 'dart:io';
-import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:wakelock_plus/wakelock_plus.dart';
 
-import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/modules/battle/formation/formation_card.dart';
 import 'package:chaldea/app/modules/common/builders.dart';
@@ -18,7 +15,6 @@ import 'package:chaldea/app/modules/servant/servant_list.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/faker/cn/agent.dart';
 import 'package:chaldea/models/faker/jp/agent.dart';
-import 'package:chaldea/models/faker/jp/network.dart';
 import 'package:chaldea/models/faker/quiz/crypt_data.dart';
 import 'package:chaldea/models/faker/shared/agent.dart';
 import 'package:chaldea/models/gamedata/toplogin.dart';
@@ -29,73 +25,52 @@ import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../import_data/import_https_page.dart';
 import '../import_data/sniff_details/formation_decks.dart';
+import 'details/dialogs.dart';
 import 'history.dart';
 import 'option_list.dart';
+import 'state.dart';
 
 class FakeGrandOrder extends StatefulWidget {
-  final FakerAgent agent;
-  const FakeGrandOrder({super.key, required this.agent});
+  final AutoLoginData user;
+  const FakeGrandOrder({super.key, required this.user});
 
   @override
   State<FakeGrandOrder> createState() => _FakeGrandOrderState();
 }
 
 class _FakeGrandOrderState extends State<FakeGrandOrder> {
-  late final FakerAgent agent = widget.agent;
+  FakerRuntime? _runtime;
+  FakerRuntime get runtime => _runtime!;
+
+  late final FakerAgent agent = runtime.agent;
   late final mstData = agent.network.mstData;
-  UserGameEntity? get userGame => mstData.user;
   AutoBattleOptions get battleOption => agent.user.curBattleOption;
 
-  bool _runningTask = false;
-  static final Set<Object> _awakeTasks = {};
-
-  void _lockTask(VoidCallback callback) {
-    if (_runningTask) {
-      if (mounted) {
-        SimpleCancelOkDialog(
-          title: Text(S.current.error),
-          content: const Text("task is till running"),
-          hideCancel: true,
-        ).showDialog(context);
-      }
-      return;
-    }
-    return callback();
+  @override
+  void initState() {
+    super.initState();
+    init();
   }
 
-  Future<void> _runTask(Future Function() task) async {
-    if (_runningTask) {
+  @override
+  void dispose() {
+    _runtime?.dispose();
+    super.dispose();
+  }
+
+  Future<void> init() async {
+    try {
+      // ignore: use_build_context_synchronously
+      _runtime = await FakerRuntime.init(widget.user, this);
+    } catch (e, s) {
       if (mounted) {
         SimpleCancelOkDialog(
           title: Text(S.current.error),
-          content: const Text("previous task is till running"),
-          hideCancel: true,
+          content: Text(e.toString()),
+          scrollable: true,
         ).showDialog(context);
       }
-      return;
-    }
-    try {
-      _runningTask = true;
-      EasyLoading.show();
-      if (mounted) setState(() {});
-      await task();
-      EasyLoading.dismiss();
-    } catch (e, s) {
-      logger.e('task failed', e, s);
-      await Future.delayed(const Duration(milliseconds: 200));
-      if (mounted) {
-        EasyLoading.dismiss();
-        SimpleCancelOkDialog(
-          title: Text(S.current.error),
-          scrollable: true,
-          content: Text(e is SilentException ? e.message.toString() : e.toString()),
-          hideCancel: true,
-        ).showDialog(context, barrierDismissible: false);
-      } else {
-        EasyLoading.showError(e.toString());
-      }
-    } finally {
-      _runningTask = false;
+      logger.e('init FakerState failed', e, s);
     }
     if (mounted) setState(() {});
   }
@@ -115,16 +90,17 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
 
   @override
   Widget build(BuildContext context) {
-    if (kIsWeb) {
+    if (kIsWeb || _runtime == null) {
       return Scaffold(
         appBar: AppBar(title: const Text("Fake/Grand Order")),
+        body: kIsWeb ? const Center(child: Text('Not supported')) : const Center(child: CircularProgressIndicator()),
       );
     }
     return Scaffold(
       appBar: AppBar(
         leading: BackButton(
           onPressed: () async {
-            if (_runningTask) {
+            if (runtime.runningTask.value) {
               SimpleCancelOkDialog(
                 title: Text(S.current.warning),
                 content: const Text("Task is still running! Cannot exit!"),
@@ -180,7 +156,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
 
   Widget get headerInfo {
     List<Widget> children = [];
-    final userGame = this.userGame ?? agent.user.userGame;
+    final userGame = mstData.user ?? agent.user.userGame;
 
     children.add(ListTile(
       dense: true,
@@ -189,9 +165,12 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
       minLeadingWidth: 20,
       leading: Container(
         constraints: const BoxConstraints(maxWidth: 16, maxHeight: 16),
-        child: CircularProgressIndicator(
-          value: _runningTask ? null : 1.0,
-          color: _runningTask ? Colors.red : Colors.green,
+        child: ValueListenableBuilder(
+          valueListenable: runtime.runningTask,
+          builder: (context, running, _) => CircularProgressIndicator(
+            value: running ? null : 1.0,
+            color: running ? Colors.red : Colors.green,
+          ),
         ),
       ),
       title: Text('[${agent.user.serverName}] ${userGame?.name ?? "not login"}'),
@@ -247,7 +226,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
       subtitle: Text(_describeQuest(option.questId, option.questPhase, null)),
       trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
       onTap: () async {
-        if (_runningTask) return;
+        if (runtime.runningTask.value) return;
         await router.pushPage(BattleOptionListPage(data: agent.user));
         if (mounted) setState(() {});
       },
@@ -328,13 +307,13 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
       headerBuilder: (context, _) {
         return ListTile(
           dense: true,
-          title: Text('Drops (${totalDropStat.totalCount} runs)'),
-          subtitle: shownItemIds.isEmpty
+          title: Text('Drops Statistics (${runtime.totalDropStat.totalCount} runs)'),
+          subtitle: runtime.shownItemIds.isEmpty
               ? null
               : Wrap(
                   spacing: 2,
                   runSpacing: 2,
-                  children: (shownItemIds.toList()..sort(Item.compare)).map((itemId) {
+                  children: (runtime.shownItemIds.toList()..sort(Item.compare)).map((itemId) {
                     return GameCardMixin.anyCardItemBuilder(
                       context: context,
                       id: itemId,
@@ -346,17 +325,17 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
         );
       },
       contentBuilder: (context) {
-        totalDropStat.items.removeWhere((k, v) => v == 0);
+        runtime.totalDropStat.items.removeWhere((k, v) => v == 0);
         final questDropIds = db.gameData.dropData.freeDrops2[battleOption.questId]?.items.keys.toList() ?? [];
         for (final itemId in questDropIds) {
-          totalDropStat.items.putIfAbsent(itemId, () => 0);
+          runtime.totalDropStat.items.putIfAbsent(itemId, () => 0);
         }
         return Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             for (final (header, dropStats) in [
-              ('Total Drop Statistics', totalDropStat),
-              ('Current Loop\'s Drop Statistics', curLoopDropStat),
+              ('Total', runtime.totalDropStat),
+              ('Current Loop', runtime.curLoopDropStat)
             ])
               ListTile(
                 dense: true,
@@ -366,6 +345,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
                     text: 'clear',
                     onTap: () {
                       setState(() {
+                        if (dropStats == runtime.totalDropStat) runtime.shownItemIds.clear();
                         dropStats.reset();
                       });
                     },
@@ -478,7 +458,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
           title: const Text('Battle Count'),
           trailing: TextButton(
               onPressed: () {
-                _lockTask(() {
+                runtime.lockTask(() {
                   InputCancelOkDialog(
                     title: 'Battle Count',
                     text: battleOption.loopCount.toString(),
@@ -528,7 +508,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
           value: battleOption.waitApRecover,
           title: const Text("Wait AP recover"),
           onChanged: (v) {
-            _lockTask(() {
+            runtime.lockTask(() {
               setState(() {
                 battleOption.waitApRecover = v;
               });
@@ -541,7 +521,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
           title: const Text('Battle Duration(seconds)'),
           trailing: TextButton(
               onPressed: () {
-                _lockTask(() {
+                runtime.lockTask(() {
                   InputCancelOkDialog(
                     title: 'Battle Duration',
                     text: battleOption.battleDuration?.toString(),
@@ -570,7 +550,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
                   width: 42,
                   text: battleOption.targetDrops[itemId]!.toString(),
                   onTap: () {
-                    _lockTask(() {
+                    runtime.lockTask(() {
                       setState(() {
                         battleOption.targetDrops.remove(itemId);
                       });
@@ -581,7 +561,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
           ),
           trailing: IconButton(
             onPressed: () async {
-              _lockTask(() async {
+              runtime.lockTask(() async {
                 final itemIdStr = await InputCancelOkDialog(
                   title: 'Item id or CE id',
                   keyboardType: TextInputType.number,
@@ -625,7 +605,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
                   width: 42,
                   text: battleOption.winTargetItemNum[itemId]!.toString(),
                   onTap: () {
-                    _lockTask(() {
+                    runtime.lockTask(() {
                       setState(() {
                         battleOption.winTargetItemNum.remove(itemId);
                       });
@@ -636,7 +616,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
           ),
           trailing: IconButton(
             onPressed: () async {
-              _lockTask(() async {
+              runtime.lockTask(() async {
                 final itemIdStr = await InputCancelOkDialog(
                   title: 'Item id or CE id',
                   keyboardType: TextInputType.number,
@@ -687,7 +667,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
           onTap: quest?.routeTo,
           trailing: TextButton(
               onPressed: () {
-                _lockTask(() {
+                runtime.lockTask(() {
                   InputCancelOkDialog(
                     title: 'Quest ID',
                     text: battleOption.questId.toString(),
@@ -721,7 +701,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
               onPressed: quest == null
                   ? null
                   : () {
-                      _lockTask(() {
+                      runtime.lockTask(() {
                         InputCancelOkDialog(
                           title: 'Quest Phase',
                           keyboardType: TextInputType.number,
@@ -745,7 +725,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
           subtitle: formation == null ? const Text("Unknown deck") : Text('${formation.deckNo} - ${formation.name}'),
           trailing: IconButton(
             onPressed: () {
-              _lockTask(() {
+              runtime.lockTask(() {
                 router.pushPage(UserFormationDecksPage(
                   mstData: mstData,
                   onSelected: (v) {
@@ -852,7 +832,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
                     icon: db.gameData.servantsById[svtId]?.borderedIcon ?? Atlas.common.emptySvtIcon,
                     width: 36,
                     onTap: () {
-                      _lockTask(() {
+                      runtime.lockTask(() {
                         battleOption.supportSvtIds.remove(svtId);
                         if (mounted) setState(() {});
                       });
@@ -863,7 +843,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
           ),
           trailing: IconButton(
             onPressed: () {
-              _lockTask(() {
+              runtime.lockTask(() {
                 router.pushPage(ServantListPage(
                   pinged: db.curUser.battleSim.pingedSvts.toList(),
                   showSecondaryFilter: true,
@@ -899,7 +879,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
                     icon: db.gameData.craftEssencesById[ceId]?.borderedIcon ?? Atlas.common.emptyCeIcon,
                     width: 36,
                     onTap: () {
-                      _lockTask(() {
+                      runtime.lockTask(() {
                         battleOption.supportCeIds.remove(ceId);
                         if (mounted) setState(() {});
                       });
@@ -910,7 +890,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
           ),
           trailing: IconButton(
             onPressed: () {
-              _lockTask(() {
+              runtime.lockTask(() {
                 router.pushPage(CraftListPage(
                   pinged: db.curUser.battleSim.pingedCEsWithEventAndBond(quest, null).toList(),
                   onSelected: (ce) {
@@ -932,7 +912,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
           value: battleOption.supportCeMaxLimitBreak,
           title: Text('${S.current.support_servant} - ${S.current.craft_essence_short} ${S.current.max_limit_break}'),
           onChanged: (v) {
-            _lockTask(() {
+            runtime.lockTask(() {
               setState(() {
                 battleOption.supportCeMaxLimitBreak = v;
               });
@@ -946,7 +926,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
           title: Text("${S.current.support_servant_short} - Use Event Deck"),
           subtitle: Text("Supposed: ${db.gameData.quests[battleOption.questId]?.event != null ? 'Yes' : 'No'}"),
           onChanged: (v) {
-            _lockTask(() {
+            runtime.lockTask(() {
               setState(() {
                 battleOption.useEventDeck = v;
               });
@@ -959,7 +939,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
           value: battleOption.enfoceRefreshSupport,
           title: const Text("Force Refresh Support"),
           onChanged: (v) {
-            _lockTask(() {
+            runtime.lockTask(() {
               setState(() {
                 battleOption.enfoceRefreshSupport = v;
               });
@@ -974,7 +954,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
           secondary: Item.iconBuilder(context: context, item: null, itemId: 94065901, jumpToDetail: false),
           title: Text(Transl.itemNames('星見のティーポット').l),
           onChanged: (v) {
-            _lockTask(() {
+            runtime.lockTask(() {
               setState(() {
                 battleOption.useCampaignItem = v;
               });
@@ -996,7 +976,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
           value: battleOption.stopIfBondLimit,
           title: const Text("Stop if Bond Limit"),
           onChanged: (v) {
-            _lockTask(() {
+            runtime.lockTask(() {
               setState(() {
                 battleOption.stopIfBondLimit = v;
               });
@@ -1032,7 +1012,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
                 DropdownMenuItem(value: type, child: Text(type.name)),
             ],
             onChanged: (v) {
-              _lockTask(() {
+              runtime.lockTask(() {
                 setState(() {
                   if (v != null) battleOption.resultType = v;
                 });
@@ -1051,7 +1031,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
         //       for (final type in BattleWinResultType.values) DropdownMenuItem(value: type, child: Text(type.name)),
         //     ],
         //     onChanged: (v) {
-        //       _lockTask(() {
+        //       runtime.lockTask(() {
         //         setState(() {
         //           if (v != null) battleOptions.winType = v;
         //         });
@@ -1064,7 +1044,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
           title: const Text('Each wave turns'),
           trailing: TextButton(
             onPressed: () {
-              _lockTask(() {
+              runtime.lockTask(() {
                 InputCancelOkDialog(
                   title: 'Each wave turns',
                   text: battleOption.usedTurnArray.join(','),
@@ -1096,7 +1076,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
           title: const Text('Action Logs'),
           trailing: TextButton(
             onPressed: () {
-              _lockTask(() {
+              runtime.lockTask(() {
                 InputCancelOkDialog(
                   title: 'Action Logs',
                   text: battleOption.actionLogs,
@@ -1122,7 +1102,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
     return TileGroup(
       header: 'Global Settings',
       children: [
-        SwitchListTile(
+        SwitchListTile.adaptive(
           dense: true,
           value: fakerSettings.apRecoveredNotification,
           title: const Text('AP Recovered Notification'),
@@ -1179,6 +1159,55 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
             icon: const Icon(Icons.add),
           ),
         ),
+        Center(
+          child: TextButton(
+            onPressed: () async {
+              final actives = await LocalNotificationUtil.plugin.getActiveNotifications();
+              final pendings = await LocalNotificationUtil.plugin.pendingNotificationRequests();
+              if (actives.isEmpty && pendings.isEmpty) {
+                EasyLoading.showInfo('No notifications');
+                return;
+              }
+              router.showDialog(builder: (context) {
+                return SimpleDialog(
+                  title: const Text('Notifications'),
+                  children: [
+                    if (actives.isNotEmpty) SHeader('${actives.length} Active Notifications'),
+                    ...divideList(
+                      [
+                        for (final notification in actives..sort2((e) => e.id ?? 0))
+                          ListTile(
+                            dense: true,
+                            title: Text(notification.title ?? 'no title'),
+                            subtitle: Text('id ${notification.id}\n${notification.body}'),
+                          ),
+                      ],
+                      const Divider(height: 1),
+                      top: true,
+                      bottom: true,
+                    ),
+                    if (actives.isNotEmpty) SHeader('${pendings.length} Pending Notifications'),
+                    ...divideList(
+                      [
+                        for (final notification in pendings..sort2((e) => e.id))
+                          ListTile(
+                            dense: true,
+                            title: Text(notification.title ?? 'no title'),
+                            subtitle: Text('id ${notification.id}\n${notification.body}'),
+                          ),
+                      ],
+                      const Divider(height: 1),
+                      top: true,
+                      bottom: true,
+                    )
+                  ],
+                );
+              });
+            },
+            child: const Text('Active/Pending Notifications'),
+          ),
+        ),
+        const Divider(),
         ListTile(
           dense: true,
           title: const Text('Max refresh count of Support list'),
@@ -1198,7 +1227,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
               child: Text(fakerSettings.maxFollowerListRetryCount.toString())),
         ),
         const Divider(),
-        SwitchListTile(
+        SwitchListTile.adaptive(
           dense: true,
           value: fakerSettings.dumpResponse,
           title: const Text('Dump Responses'),
@@ -1268,7 +1297,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
       [
         buildButton(
           onPressed: () {
-            _runTask(agent.gamedataTop);
+            runtime.runTask(agent.gamedataTop);
           },
           text: 'gamedata',
         ),
@@ -1278,7 +1307,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
             SimpleCancelOkDialog(
               title: const Text('Login'),
               onTapOk: () {
-                _runTask(agent.loginTop);
+                runtime.runTask(agent.loginTop);
               },
             ).showDialog(context);
           },
@@ -1289,7 +1318,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
           onPressed: () async {
             final buyCount = await ApSeedExchangeCountDialog(mstData: mstData).showDialog<int>(context);
             if (buyCount != null) {
-              await _runTask(() => agent.terminalApSeedExchange(buyCount));
+              await runtime.runTask(() => agent.terminalApSeedExchange(buyCount));
             }
             if (mounted) setState(() {});
           },
@@ -1311,10 +1340,10 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
                   EasyLoading.showError('Recover by command spell not supported');
                   break;
                 case RecoverType.stone:
-                  await _runTask(() => agent.shopPurchaseByStone(id: recover.targetId, num: 1));
+                  await runtime.runTask(() => agent.shopPurchaseByStone(id: recover.targetId, num: 1));
                   break;
                 case RecoverType.item:
-                  await _runTask(() => agent.itemRecover(recoverId: recover.id, num: 1));
+                  await runtime.runTask(() => agent.itemRecover(recoverId: recover.id, num: 1));
                   break;
               }
             }
@@ -1325,14 +1354,14 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
         buildButton(
           enabled: loggedIn && !inBattle,
           onPressed: () async {
-            _runTask(() => agent.battleSetupWithOptions(battleOption));
+            runtime.runTask(() => agent.battleSetupWithOptions(battleOption));
           },
           text: 'b.setup',
         ),
         buildButton(
           enabled: loggedIn && inBattle,
           onPressed: () async {
-            _runTask(() => agent.battleResultWithOptions(
+            runtime.runTask(() => agent.battleResultWithOptions(
                   battleEntity: agent.curBattle!,
                   resultType: battleOption.resultType,
                   actionLogs: battleOption.actionLogs,
@@ -1353,7 +1382,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
               validate: (s) => (int.tryParse(s) ?? -1) > 0,
               onSubmit: (s) {
                 battleOption.loopCount = int.parse(s);
-                _runTask(() => _withWakeLock('loop-$hashCode', startLoop));
+                runtime.runTask(() => runtime.withWakeLock('loop-$hashCode', runtime.startLoop));
               },
             ).showDialog(context);
           },
@@ -1370,20 +1399,20 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
             // PopupMenuItem(
             //   child: const Text('gamedata'),
             //   onTap: () {
-            //     _runTask(agent.gamedataTop);
+            //     runtime.runTask(agent.gamedataTop);
             //   },
             // ),
             PopupMenuItem(
               enabled: loggedIn && !inBattle,
               onTap: () {
-                _runTask(agent.homeTop);
+                runtime.runTask(agent.homeTop);
               },
               child: const Text('home'),
             ),
             PopupMenuItem(
               enabled: loggedIn && !inBattle,
               onTap: () {
-                _runTask(() async {
+                runtime.runTask(() async {
                   final dir = Directory(agent.network.fakerDir);
                   final files = dir
                       .listSync(followLinks: false)
@@ -1407,7 +1436,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
               child: const Text('Break'),
               onTap: () {
                 if (mounted) {
-                  _runningTask = false;
+                  runtime.runningTask.value = false;
                   agent.network.clearTask();
                 }
               },
@@ -1420,7 +1449,8 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
                   keyboardType: TextInputType.number,
                   validate: (s) => (int.tryParse(s) ?? -1) > 0,
                   onSubmit: (s) {
-                    _runTask(() => _withWakeLock('seed-wait-$hashCode', () => seedWait(int.parse(s))));
+                    runtime.runTask(
+                        () => runtime.withWakeLock('seed-wait-$hashCode', () => runtime.seedWait(int.parse(s))));
                   },
                 ).showDialog(context);
               },
@@ -1485,468 +1515,6 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
           const SizedBox(height: 8),
         ],
       ),
-    );
-  }
-
-  final shownItemIds = <int>{};
-  final totalDropStat = _DropStatData();
-  final curLoopDropStat = _DropStatData();
-
-  Future<void> startLoop() async {
-    if (agent.curBattle != null) {
-      throw SilentException('last battle not finished');
-    }
-    final battleOption = this.battleOption;
-    if (battleOption.loopCount <= 0) {
-      throw SilentException('loop count (${battleOption.loopCount}) must >0');
-    }
-    if (battleOption.targetDrops.values.any((v) => v <= 0)) {
-      throw SilentException('loop target drop num must >0');
-    }
-    if (battleOption.winTargetItemNum.values.any((v) => v <= 0)) {
-      throw SilentException('win target drop num must >0');
-    }
-    if (battleOption.recoverIds.isNotEmpty && battleOption.waitApRecover) {
-      throw SilentException('Do not turn on both apple recover and wait AP recover');
-    }
-    final questPhaseEntity =
-        await AtlasApi.questPhase(battleOption.questId, battleOption.questPhase, region: agent.user.region);
-    if (questPhaseEntity == null) {
-      throw SilentException('quest not found');
-    }
-    final now = DateTime.now().timestamp;
-    if (questPhaseEntity.openedAt > now || questPhaseEntity.closedAt < now) {
-      throw SilentException('quest not open');
-    }
-    if (battleOption.winTargetItemNum.isNotEmpty && !questPhaseEntity.flags.contains(QuestFlag.actConsumeBattleWin)) {
-      throw SilentException('Win target drops should be used only if Quest has flag actConsumeBattleWin');
-    }
-    if (battleOption.useEventDeck != (questPhaseEntity.event != null)) {
-      throw SilentException('This quest should "Use Event Deck"');
-    }
-    int finishedCount = 0, totalCount = battleOption.loopCount;
-    List<int> elapseSeconds = [];
-    curLoopDropStat.reset();
-    EasyLoading.showProgress(finishedCount / totalCount, status: 'Battle $finishedCount/$totalCount');
-    while (finishedCount < totalCount) {
-      _checkStop();
-      _checkSvtKeep();
-      if (battleOption.stopIfBondLimit) {
-        _checkFriendship(battleOption);
-      }
-
-      final int startTime = DateTime.now().timestamp;
-      final msg =
-          'Battle ${finishedCount + 1}/$totalCount, ${Maths.mean(elapseSeconds).round()}s/${(Maths.sum(elapseSeconds) / 60).toStringAsFixed(1)}m';
-      logger.t(msg);
-      EasyLoading.showProgress((finishedCount + 0.5) / totalCount, status: msg);
-
-      await _ensureEnoughApItem(quest: questPhaseEntity, option: battleOption);
-
-      if (mounted) setState(() {});
-
-      final setupResp = await agent.battleSetupWithOptions(battleOption);
-      if (mounted) setState(() {});
-
-      final battleEntity = setupResp.data.mstData.battles.single;
-      final curBattleDrops = battleEntity.battleInfo?.getTotalDrops() ?? {};
-      logger.t('battle id: ${battleEntity.id}');
-
-      bool shouldRetire = false;
-      FResponse resultResp;
-      if (battleOption.winTargetItemNum.isNotEmpty) {
-        shouldRetire = true;
-        for (final (itemId, targetNum) in battleOption.winTargetItemNum.items) {
-          if ((curBattleDrops[itemId] ?? 0) >= targetNum) {
-            shouldRetire = false;
-            break;
-          }
-        }
-      }
-
-      if (shouldRetire) {
-        await Future.delayed(const Duration(seconds: 4));
-        resultResp = await agent.battleResultWithOptions(
-          battleEntity: battleEntity,
-          resultType: BattleResultType.cancel,
-          actionLogs: "",
-        );
-      } else {
-        final delay = battleOption.battleDuration ?? (agent.network.gameTop.region == Region.cn ? 40 : 20);
-        await Future.delayed(Duration(seconds: delay));
-        resultResp = await agent.battleResultWithOptions(
-          battleEntity: battleEntity,
-          resultType: BattleResultType.win,
-          actionLogs: battleOption.actionLogs,
-        );
-        // if win
-        totalDropStat.totalCount += 1;
-        curLoopDropStat.totalCount += 1;
-        Map<int, int> resultBattleDrops;
-        final lastBattleResultData = agent.lastBattleResultData;
-        if (lastBattleResultData != null && lastBattleResultData.battleId == battleEntity.id) {
-          resultBattleDrops = {};
-          for (final drop in lastBattleResultData.resultDropInfos) {
-            resultBattleDrops.addNum(drop.objectId, drop.num);
-          }
-        } else {
-          resultBattleDrops = curBattleDrops;
-          logger.t('last battle result data not found, use cur_battle_drops');
-        }
-        totalDropStat.items.addDict(resultBattleDrops);
-        curLoopDropStat.items.addDict(resultBattleDrops);
-
-        // check total drop target of this loop
-        if (battleOption.targetDrops.isNotEmpty) {
-          for (final (itemId, targetNum) in battleOption.targetDrops.items.toList()) {
-            final curDropNum = curLoopDropStat.items[itemId] ?? 0;
-            if (curDropNum > 0) {
-              battleOption.targetDrops[itemId] = targetNum - curDropNum;
-            }
-          }
-          final reachedItems =
-              battleOption.targetDrops.keys.where((itemId) => battleOption.targetDrops[itemId]! <= 0).toList();
-          if (reachedItems.isNotEmpty) {
-            throw SilentException(
-                'Target drop reaches: ${reachedItems.map((e) => GameCardMixin.anyCardItemName(e).l).join(', ')}');
-          }
-        }
-      }
-      shownItemIds.addAll(resultResp.data.mstData.userItem.map((e) => e.itemId));
-
-      finishedCount += 1;
-      battleOption.loopCount -= 1;
-
-      elapseSeconds.add(DateTime.now().timestamp - startTime);
-      if (mounted) setState(() {});
-      await Future.delayed(const Duration(seconds: 2));
-      if (battleOption.stopIfBondLimit) {
-        _checkFriendship(battleOption);
-      }
-    }
-    logger.t('finished all $finishedCount battles');
-    if (mounted) {
-      SimpleCancelOkDialog(
-        title: const Text('Finished'),
-        content: Text('$finishedCount battles'),
-        hideCancel: true,
-      ).showDialog(context, barrierDismissible: false);
-    }
-  }
-
-  Future<void> seedWait(final int maxBuyCount) async {
-    int boughtCount = 0;
-    while (boughtCount < maxBuyCount) {
-      const int apUnit = 40, seedUnit = 1;
-      final apCount = mstData.user?.calCurAp() ?? 0;
-      final seedCount = mstData.getItemNum(Items.blueSaplingId);
-      if (seedCount <= 0) {
-        throw SilentException('no Blue Sapling left');
-      }
-      int buyCount = min(maxBuyCount, min(apCount ~/ apUnit, seedCount ~/ seedUnit));
-      if (buyCount > 0) {
-        await agent.terminalApSeedExchange(buyCount);
-        boughtCount += buyCount;
-      }
-      if (mounted) setState(() {});
-      EasyLoading.show(status: 'Seed $boughtCount/$maxBuyCount - waiting...');
-      await Future.delayed(const Duration(minutes: 1));
-      _checkStop();
-    }
-  }
-
-  Future<T> _withWakeLock<T>(Object tag, Future<T> Function() task) async {
-    try {
-      WakelockPlus.enable();
-      _awakeTasks.add(tag);
-      return await task();
-    } finally {
-      _awakeTasks.remove(tag);
-      if (_awakeTasks.isEmpty) {
-        WakelockPlus.disable();
-      }
-    }
-  }
-
-  void _checkStop() {
-    if (agent.network.stopFlag) {
-      agent.network.stopFlag = false;
-      throw SilentException('Manual Stop');
-    }
-  }
-
-  void _checkSvtKeep() {
-    int svtCount = 0, svtEquipCount = 0;
-    for (final userSvt in mstData.userSvt) {
-      final svt = db.gameData.entities[userSvt.svtId];
-      if (svt == null) continue;
-      if (svt.type == SvtType.servantEquip) {
-        if (userSvt.dbCE?.flags.contains(SvtFlag.svtEquipFriendShip) == true) {
-          // don't count
-        } else {
-          svtEquipCount += 1;
-        }
-      } else {
-        svtCount += 1;
-      }
-    }
-    final user = mstData.user!;
-    if (svtCount >= user.svtKeep) {
-      throw SilentException('${S.current.servant}: $svtCount>=${user.svtKeep}');
-    }
-    if (svtEquipCount >= user.svtEquipKeep) {
-      throw SilentException('${S.current.craft_essence}: $svtEquipCount>=${user.svtEquipKeep}');
-    }
-  }
-
-  void _checkFriendship(AutoBattleOptions option) {
-    final svts = mstData.userDeck[battleOption.deckId]!.deckInfo?.svts ?? [];
-    for (final svt in svts) {
-      if (svt.userSvtId > 0) {
-        final userSvt = mstData.userSvt[svt.userSvtId];
-        if (userSvt == null) {
-          throw SilentException('UserSvt ${svt.userSvtId} not found');
-        }
-        final dbSvt = db.gameData.servantsById[userSvt.svtId];
-        if (dbSvt == null) {
-          throw SilentException('Unknown Servant ID ${userSvt.svtId}');
-        }
-        final svtCollection = mstData.userSvtCollection[userSvt.svtId];
-        if (svtCollection == null) {
-          throw SilentException('UserServantCollection ${userSvt.svtId} not found');
-        }
-        if (dbSvt.type == SvtType.heroine) continue;
-        final maxBondLv = 10 + svtCollection.friendshipExceedCount;
-        if (svtCollection.friendshipRank >= maxBondLv) {
-          throw SilentException('Svt No.${dbSvt.collectionNo} ${dbSvt.lName.l} reaches max bond Lv.$maxBondLv');
-        }
-      }
-    }
-  }
-
-  Future<void> _ensureEnoughApItem({required QuestPhase quest, required AutoBattleOptions option}) async {
-    if (quest.consumeType.useItem) {
-      for (final item in quest.consumeItem) {
-        final own = mstData.getItemNum(item.itemId);
-        if (own < item.amount) {
-          throw SilentException('Consume Item not enough: ${item.itemId}: $own<${item.amount}');
-        }
-      }
-    }
-    if (quest.consumeType.useAp) {
-      final apConsume = option.isApHalf ? quest.consume ~/ 2 : quest.consume;
-      if (mstData.user!.calCurAp() >= apConsume) {
-        return;
-      }
-      for (final recoverId in option.recoverIds) {
-        final recover = mstRecovers[recoverId];
-        if (recover == null) continue;
-        if (recover.recoverType == RecoverType.stone && mstData.user!.stone > 0) {
-          await agent.shopPurchaseByStone(id: recover.targetId, num: 1);
-          break;
-        } else if (recover.recoverType == RecoverType.item) {
-          final item = db.gameData.items[recover.targetId];
-          if (item == null) continue;
-          if (item.type == ItemType.apAdd) {
-            final count = ((apConsume - mstData.user!.calCurAp()) / item.value).ceil();
-            if (count > 0 && count < mstData.getItemNum(item.id)) {
-              await agent.itemRecover(recoverId: recoverId, num: count);
-              break;
-            }
-          } else if (item.type == ItemType.apRecover) {
-            final count =
-                ((apConsume - mstData.user!.calCurAp()) / (item.value / 1000 * mstData.user!.actMax).ceil()).ceil();
-            if (count > 0 && count < mstData.getItemNum(item.id)) {
-              await agent.itemRecover(recoverId: recoverId, num: count);
-              break;
-            }
-          }
-        } else {
-          continue;
-        }
-      }
-      if (mstData.user!.calCurAp() >= quest.consume) {
-        return;
-      }
-      if (option.waitApRecover) {
-        while (mstData.user!.calCurAp() < quest.consume) {
-          if (mounted) setState(() {});
-          EasyLoading.show(status: 'Battle - waiting AP recover...');
-          await Future.delayed(const Duration(minutes: 1));
-          _checkStop();
-        }
-        return;
-      }
-      throw SilentException('AP not enough: ${mstData.user!.calCurAp()}<${quest.consume}');
-    }
-  }
-}
-
-class _DropStatData {
-  int totalCount = 0;
-  Map<int, int> items = {};
-  // Map<int, int> groups = {};
-
-  void reset() {
-    totalCount = 0;
-    items.clear();
-  }
-}
-
-class RecoverSelectDialog extends StatelessWidget {
-  final List<RecoverEntity> recovers;
-  final MasterDataManager? mstData;
-  const RecoverSelectDialog({super.key, required this.recovers, this.mstData});
-
-  @override
-  Widget build(BuildContext context) {
-    final recovers = this.recovers.toList();
-    recovers.sort2((e) => -e.priority);
-    return ListTileTheme.merge(
-      dense: true,
-      contentPadding: const EdgeInsets.symmetric(horizontal: 24),
-      minLeadingWidth: 32,
-      child: SimpleDialog(
-        title: const Text("Recover AP"),
-        children: [for (final recover in recovers) buildRecoverItem(context, recover)],
-      ),
-    );
-  }
-
-  Widget buildRecoverItem(BuildContext context, RecoverEntity recover) {
-    final userGame = mstData?.user;
-    if (mstData != null && userGame == null) {
-      return const SimpleCancelOkDialog(title: Text("No user data"));
-    }
-    switch (recover.recoverType) {
-      case RecoverType.commandSpell:
-        return const ListTile(
-          title: Text('command spell not supported'),
-          enabled: false,
-        );
-      case RecoverType.stone:
-        final ownCount = userGame?.stone ?? 0;
-        bool enabled = mstData == null ||
-            (userGame != null && userGame.stone > 0 && userGame.calCurAp() < userGame.actMax && ownCount > 0);
-        return ListTile(
-          leading: Item.iconBuilder(context: context, item: null, itemId: Items.stoneId),
-          title: Text(Items.stone?.lName.l ?? "Saint Quartz"),
-          subtitle: mstData == null ? null : Text("${S.current.item_own}: $ownCount"),
-          enabled: enabled,
-          onTap: enabled ? () => Navigator.pop(context, recover) : null,
-        );
-      case RecoverType.item:
-        final item = db.gameData.items[recover.targetId];
-        final ownCount = mstData?.getItemNum(recover.targetId) ?? 0;
-        bool enabled = mstData == null || (userGame != null && ownCount > 0);
-        return ListTile(
-          leading: Item.iconBuilder(context: context, item: item, itemId: recover.targetId),
-          title: Text(item?.lName.l ?? "No.${recover.targetId}"),
-          subtitle: mstData == null ? null : Text("${S.current.item_own}: $ownCount"),
-          enabled: enabled,
-          onTap: enabled ? () => Navigator.pop(context, recover) : null,
-        );
-    }
-  }
-}
-
-class ApSeedExchangeCountDialog extends StatefulWidget {
-  final MasterDataManager mstData;
-  const ApSeedExchangeCountDialog({super.key, required this.mstData});
-
-  @override
-  State<ApSeedExchangeCountDialog> createState() => _ApSeedExchangeCountDialogState();
-}
-
-class _ApSeedExchangeCountDialogState extends State<ApSeedExchangeCountDialog> {
-  int buyCount = 1;
-
-  @override
-  Widget build(BuildContext context) {
-    const int apUnit = 40, seedUnit = 1;
-    final apCount = widget.mstData.user?.calCurAp() ?? 0;
-    final seedCount = widget.mstData.getItemNum(Items.blueSaplingId);
-    final int maxBuyCount = min(apCount ~/ apUnit, seedCount ~/ seedUnit);
-    return AlertDialog(
-      title: const Text('Exchange Count'),
-      scrollable: true,
-      content: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text.rich(TextSpan(children: [
-            TextSpan(text: 'AP×$apCount  '),
-            CenterWidgetSpan(
-              child: Item.iconBuilder(
-                context: context,
-                item: null,
-                itemId: Items.blueSaplingId,
-                width: 24,
-              ),
-            ),
-            TextSpan(text: '×$seedCount'),
-          ])),
-          Text.rich(TextSpan(children: [
-            TextSpan(text: 'AP×${apUnit * buyCount}  '),
-            CenterWidgetSpan(
-              child: Item.iconBuilder(
-                context: context,
-                item: null,
-                itemId: Items.blueSaplingId,
-                width: 24,
-              ),
-            ),
-            TextSpan(text: '×${seedUnit * buyCount} → '),
-            CenterWidgetSpan(
-              child: Item.iconBuilder(
-                context: context,
-                item: null,
-                itemId: Items.blueAppleId,
-                width: 24,
-              ),
-            ),
-            TextSpan(text: '×$buyCount'),
-          ])),
-          if (maxBuyCount >= 1)
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                const Text('1'),
-                Expanded(
-                  child: Slider(
-                    value: buyCount.toDouble(),
-                    onChanged: (v) {
-                      setState(() {
-                        buyCount = v.round().clamp(1, maxBuyCount);
-                      });
-                    },
-                    min: 1.0,
-                    max: maxBuyCount.toDouble(),
-                    divisions: maxBuyCount > 1 ? maxBuyCount - 1 : null,
-                    label: buyCount.toString(),
-                  ),
-                ),
-                Text(maxBuyCount.toString()),
-              ],
-            ),
-        ],
-      ),
-      actions: [
-        TextButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          child: Text(S.current.cancel),
-        ),
-        TextButton(
-          onPressed: maxBuyCount > 0 && buyCount <= maxBuyCount
-              ? () {
-                  Navigator.pop(context, buyCount);
-                }
-              : null,
-          child: Text(S.current.confirm),
-        ),
-      ],
     );
   }
 }
