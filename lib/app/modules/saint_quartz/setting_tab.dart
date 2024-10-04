@@ -99,6 +99,16 @@ class _SQSettingTabState extends State<SQSettingTab> {
           subtitle: Text(S.current.sq_fragment_convert),
           controlAffinity: ListTileControlAffinity.trailing,
         ),
+        SwitchListTile.adaptive(
+          dense: true,
+          value: plan.limitedMission,
+          onChanged: (v) {
+            plan.limitedMission = v;
+            update();
+          },
+          title: Text('${S.current.master_mission} (Limited)'),
+          controlAffinity: ListTileControlAffinity.trailing,
+        ),
         const DividerWithTitle(indent: 16),
         ListTile(
           dense: true,

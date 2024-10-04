@@ -14,6 +14,7 @@ class SaintQuartzPlan {
 
   // mission
   bool weeklyMission;
+  bool limitedMission;
   bool campaignLoginBonus;
   Map<int, bool> extraMissions; // not included
 
@@ -35,6 +36,7 @@ class SaintQuartzPlan {
     this.accLogin = 1,
     this.continuousLogin = 1,
     this.weeklyMission = true,
+    this.limitedMission = true,
     this.campaignLoginBonus = true,
     Map<int, bool>? missions,
     bool? minusPlannedBanner,
@@ -110,6 +112,27 @@ class SaintQuartzPlan {
         addTicket: ticket,
         addApple: apple,
       );
+    }
+    if (limitedMission) {
+      for (final mm in db.gameData.masterMissions.values) {
+        if (mm.type != MissionType.limited && mm.type != MissionType.complete) continue;
+        if (!isInRange(mm.startedAt)) continue;
+        final detail = dataMap[DateUtils.dateOnly(mm.startedAt.sec2date()).toDateString()];
+        if (detail == null) continue;
+        for (final (objectId, count) in mm.gifts.items) {
+          if (objectId == Items.stoneId) {
+            detail.addSQ += count;
+          } else if (objectId == Items.summonTicketId) {
+            detail.addTicket += count;
+          } else if (objectId == Items.goldAppleId) {
+            detail.addApple += count;
+          } else if (objectId == Items.silverAppleId) {
+            detail.addApple += count / 2;
+          } else if (objectId == Items.bronzeAppleId) {
+            detail.addApple += count / 14.4;
+          }
+        }
+      }
     }
     if (campaignLoginBonus) {
       final presents = db.runtimeData.dailyBonusData?.userPresentBox ?? [];
