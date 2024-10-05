@@ -1727,6 +1727,8 @@ enum ServantSubAttribute {
   final Trait? trait;
 
   String get name2 => const ServantSubAttributeConverter().toJson(this);
+
+  static const validValues = <ServantSubAttribute>[human, sky, earth, star, beast];
 }
 
 class ServantSubAttributeConverter extends JsonConverter<ServantSubAttribute, dynamic> {

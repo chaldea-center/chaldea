@@ -650,6 +650,19 @@ DropInfo _$DropInfoFromJson(Map json) => DropInfo(
       isAdd: json['isAdd'],
     );
 
+BattleFriendshipRewardInfo _$BattleFriendshipRewardInfoFromJson(Map json) => BattleFriendshipRewardInfo(
+      isNew: json['isNew'],
+      userSvtId: json['userSvtId'],
+      mstGiftId: json['mstGiftId'],
+      type: json['type'],
+      targetSvtId: json['targetSvtId'],
+      objectId: json['objectId'],
+      num: json['num'],
+      limitCount: json['limitCount'],
+      lv: json['lv'],
+      rarity: json['rarity'],
+    );
+
 BattleResultData _$BattleResultDataFromJson(Map json) => BattleResultData(
       battleId: json['battleId'],
       battleResult: json['battleResult'],
@@ -679,7 +692,9 @@ BattleResultData _$BattleResultDataFromJson(Map json) => BattleResultData(
       originalPhaseClearQp: json['originalPhaseClearQp'],
       phaseClearQp: json['phaseClearQp'],
       friendshipExpBase: json['friendshipExpBase'],
-      friendshipRewardInfos: json['friendshipRewardInfos'],
+      friendshipRewardInfos: (json['friendshipRewardInfos'] as List<dynamic>?)
+          ?.map((e) => BattleFriendshipRewardInfo.fromJson(Map<String, dynamic>.from(e as Map)))
+          .toList(),
       warClearReward: json['warClearReward'],
       rewardInfos: (json['rewardInfos'] as List<dynamic>?)
           ?.map((e) => DropInfo.fromJson(Map<String, dynamic>.from(e as Map)))

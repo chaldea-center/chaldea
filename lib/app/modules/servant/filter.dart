@@ -468,7 +468,7 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData, ServantFilt
         ),
         FilterGroup<ServantSubAttribute>(
           title: Text(S.current.svt_sub_attribute, style: textStyle),
-          options: ServantSubAttribute.values.where((e) => e.trait != null).toList(),
+          options: ServantSubAttribute.validValues,
           values: filterData.attribute,
           optionBuilder: (v) => Text(Transl.svtSubAttribute(v).l),
           onFilterChanged: (value, _) {

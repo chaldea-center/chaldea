@@ -21,7 +21,7 @@ class FakerRuntime {
 
   // runtime data
   final runningTask = ValueNotifier<bool>(false);
-  final shownItemIds = <int>{};
+  final totalRewards = <int, int>{};
   final totalDropStat = _DropStatData();
   final curLoopDropStat = _DropStatData();
   final teapots = <int, Item>{};
@@ -38,6 +38,11 @@ class FakerRuntime {
   void update() {
     // ignore: invalid_use_of_protected_member
     if (mounted) _state?.setState(() {});
+  }
+
+  Future<T?> _showDialog<T>(Widget child, {bool barrierDismissible = true}) async {
+    if (!mounted) return null;
+    return child.showDialog(context, barrierDismissible: barrierDismissible);
   }
 
   // init
@@ -95,13 +100,11 @@ class FakerRuntime {
 
   void lockTask(VoidCallback callback) {
     if (runningTask.value) {
-      if (mounted) {
-        SimpleCancelOkDialog(
-          title: Text(S.current.error),
-          content: const Text("task is till running"),
-          hideCancel: true,
-        ).showDialog(context);
-      }
+      _showDialog(SimpleCancelOkDialog(
+        title: Text(S.current.error),
+        content: const Text("task is till running"),
+        hideCancel: true,
+      ));
       return;
     }
     return callback();
@@ -109,13 +112,11 @@ class FakerRuntime {
 
   Future<void> runTask(Future Function() task) async {
     if (runningTask.value) {
-      if (mounted) {
-        SimpleCancelOkDialog(
-          title: Text(S.current.error),
-          content: const Text("previous task is till running"),
-          hideCancel: true,
-        ).showDialog(context);
-      }
+      _showDialog(SimpleCancelOkDialog(
+        title: Text(S.current.error),
+        content: const Text("previous task is till running"),
+        hideCancel: true,
+      ));
       return;
     }
     try {
@@ -127,14 +128,17 @@ class FakerRuntime {
     } catch (e, s) {
       logger.e('task failed', e, s);
       await Future.delayed(const Duration(milliseconds: 200));
-      if (mounted && context.mounted) {
+      if (mounted) {
         EasyLoading.dismiss();
-        SimpleCancelOkDialog(
-          title: Text(S.current.error),
-          scrollable: true,
-          content: Text(e is SilentException ? e.message.toString() : e.toString()),
-          hideCancel: true,
-        ).showDialog(context, barrierDismissible: false);
+        _showDialog(
+          SimpleCancelOkDialog(
+            title: Text(S.current.error),
+            scrollable: true,
+            content: Text(e is SilentException ? e.message.toString() : e.toString()),
+            hideCancel: true,
+          ),
+          barrierDismissible: false,
+        );
       } else {
         EasyLoading.showError(e.toString());
       }
@@ -256,12 +260,19 @@ class FakerRuntime {
           for (final drop in lastBattleResultData.resultDropInfos) {
             resultBattleDrops.addNum(drop.objectId, drop.num);
           }
+          for (final reward in lastBattleResultData.rewardInfos) {
+            totalRewards.addNum(reward.objectId, reward.num);
+          }
+          for (final reward in lastBattleResultData.friendshipRewardInfos) {
+            totalRewards.addNum(reward.objectId, reward.num);
+          }
         } else {
           resultBattleDrops = curBattleDrops;
           logger.t('last battle result data not found, use cur_battle_drops');
         }
         totalDropStat.items.addDict(resultBattleDrops);
         curLoopDropStat.items.addDict(resultBattleDrops);
+        totalRewards.addDict(resultBattleDrops);
 
         // check total drop target of this loop
         if (battleOption.targetDrops.isNotEmpty) {
@@ -279,7 +290,9 @@ class FakerRuntime {
           }
         }
       }
-      shownItemIds.addAll(resultResp.data.mstData.userItem.map((e) => e.itemId));
+      for (final item in resultResp.data.mstData.userItem) {
+        totalRewards.addNum(item.itemId, 0);
+      }
 
       finishedCount += 1;
       battleOption.loopCount -= 1;
@@ -292,13 +305,14 @@ class FakerRuntime {
       }
     }
     logger.t('finished all $finishedCount battles');
-    if (mounted && context.mounted) {
+    _showDialog(
       SimpleCancelOkDialog(
         title: const Text('Finished'),
         content: Text('$finishedCount battles'),
         hideCancel: true,
-      ).showDialog(context, barrierDismissible: false);
-    }
+      ),
+      barrierDismissible: false,
+    );
   }
 
   Future<void> seedWait(final int maxBuyCount) async {
@@ -306,7 +320,7 @@ class FakerRuntime {
     while (boughtCount < maxBuyCount) {
       const int apUnit = 40, seedUnit = 1;
       final apCount = mstData.user?.calCurAp() ?? 0;
-      final seedCount = mstData.getItemNum(Items.blueSaplingId);
+      final seedCount = mstData.getItemOrSvtNum(Items.blueSaplingId);
       if (seedCount <= 0) {
         throw SilentException('no Blue Sapling left');
       }
@@ -330,26 +344,13 @@ class FakerRuntime {
   }
 
   void _checkSvtKeep() {
-    int svtCount = 0, svtEquipCount = 0;
-    for (final userSvt in mstData.userSvt) {
-      final svt = db.gameData.entities[userSvt.svtId];
-      if (svt == null) continue;
-      if (svt.type == SvtType.servantEquip) {
-        if (userSvt.dbCE?.flags.contains(SvtFlag.svtEquipFriendShip) == true) {
-          // don't count
-        } else {
-          svtEquipCount += 1;
-        }
-      } else {
-        svtCount += 1;
-      }
-    }
+    final counts = mstData.countSvtKeep();
     final user = mstData.user!;
-    if (svtCount >= user.svtKeep) {
-      throw SilentException('${S.current.servant}: $svtCount>=${user.svtKeep}');
+    if (counts.svtCount >= user.svtKeep) {
+      throw SilentException('${S.current.servant}: ${counts.svtCount}>=${user.svtKeep}');
     }
-    if (svtEquipCount >= user.svtEquipKeep) {
-      throw SilentException('${S.current.craft_essence}: $svtEquipCount>=${user.svtEquipKeep}');
+    if (counts.svtEquipCount >= user.svtEquipKeep) {
+      throw SilentException('${S.current.craft_essence}: ${counts.svtEquipCount}>=${user.svtEquipKeep}');
     }
   }
 
@@ -381,7 +382,7 @@ class FakerRuntime {
   Future<void> _ensureEnoughApItem({required QuestPhase quest, required AutoBattleOptions option}) async {
     if (quest.consumeType.useItem) {
       for (final item in quest.consumeItem) {
-        final own = mstData.getItemNum(item.itemId);
+        final own = mstData.getItemOrSvtNum(item.itemId);
         if (own < item.amount) {
           throw SilentException('Consume Item not enough: ${item.itemId}: $own<${item.amount}');
         }
@@ -403,14 +404,14 @@ class FakerRuntime {
           if (item == null) continue;
           if (item.type == ItemType.apAdd) {
             final count = ((apConsume - mstData.user!.calCurAp()) / item.value).ceil();
-            if (count > 0 && count < mstData.getItemNum(item.id)) {
+            if (count > 0 && count < mstData.getItemOrSvtNum(item.id)) {
               await agent.itemRecover(recoverId: recoverId, num: count);
               break;
             }
           } else if (item.type == ItemType.apRecover) {
             final count =
                 ((apConsume - mstData.user!.calCurAp()) / (item.value / 1000 * mstData.user!.actMax).ceil()).ceil();
-            if (count > 0 && count < mstData.getItemNum(item.id)) {
+            if (count > 0 && count < mstData.getItemOrSvtNum(item.id)) {
               await agent.itemRecover(recoverId: recoverId, num: count);
               break;
             }

@@ -66,7 +66,7 @@ class _EnemyFilterPageState extends FilterPageState<EnemyFilterData, EnemyFilter
         buildClassFilter(filterData.svtClass, showUnknown: true),
         FilterGroup<ServantSubAttribute>(
           title: Text(S.current.svt_sub_attribute, style: textStyle),
-          options: ServantSubAttribute.values.sublist(0, 5),
+          options: ServantSubAttribute.validValues,
           values: filterData.attribute,
           optionBuilder: (v) => Text(Transl.svtSubAttribute(v).l),
           onFilterChanged: (value, _) {

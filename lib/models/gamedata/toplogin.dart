@@ -481,27 +481,70 @@ class MasterDataManager {
     return List.generate(kAppendSkillNums.length, (index) => lvs[100 + index] ?? 0);
   }
 
-  int getItemNum(int itemId, [int _default = 0]) {
+  int getItemOrSvtNum(int itemId, {int defaultValue = 0, bool sumEquipLimitCount = true}) {
     final user = this.user;
     if (itemId == Items.qpId) {
-      return user?.qp ?? _default;
+      return user?.qp ?? defaultValue;
     } else if (itemId == Items.stoneId) {
       // stone=free+charge
-      return user?.stone ?? _default;
+      return user?.stone ?? defaultValue;
     } else if (itemId == Items.manaPrismId) {
-      return user?.mana ?? _default;
+      return user?.mana ?? defaultValue;
     } else if (itemId == Items.rarePrismId) {
-      return user?.rarePri ?? _default;
-    } else {
-      int? count = userItem[itemId]?.num;
-      final item = db.gameData.items[itemId];
-      if (item != null) {
-        if (item.type == ItemType.eventPoint && count == null) {
-          return userEventPoint[_createPK2(item.eventId, item.eventGroupId)]?.value ?? _default;
-        }
-      }
-      return count ?? _default;
+      return user?.rarePri ?? defaultValue;
     }
+    int? count = userItem[itemId]?.num;
+    if (count != null) return count;
+    final item = db.gameData.items[itemId];
+    if (item != null) {
+      if (item.type == ItemType.eventPoint) {
+        return userEventPoint[_createPK2(item.eventId, item.eventGroupId)]?.value ?? defaultValue;
+      }
+      if (item.type == ItemType.svtCoin) {
+        return userSvtCoin[item.value]?.num ?? defaultValue;
+      }
+    }
+
+    final svt = db.gameData.entities[itemId];
+    if (svt != null) {
+      switch (svt.type) {
+        case SvtType.normal:
+        case SvtType.heroine:
+        case SvtType.combineMaterial:
+        case SvtType.statusUp:
+        case SvtType.svtMaterialTd:
+          count = userSvt.where((e) => e.svtId == svt.id).length;
+        case SvtType.servantEquip:
+          final equips = userSvt.where((e) => e.svtId == svt.id);
+          count = sumEquipLimitCount ? Maths.sum(equips.map((e) => e.limitCount + 1)) : equips.length;
+        case SvtType.enemy:
+        case SvtType.enemyCollection:
+        case SvtType.enemyCollectionDetail:
+        case SvtType.svtEquipMaterial:
+        case SvtType.all:
+        case SvtType.commandCode:
+          break;
+      }
+    }
+    return count ?? defaultValue;
+  }
+
+  ({int svtCount, int svtEquipCount}) countSvtKeep() {
+    int svtCount = 0, svtEquipCount = 0;
+    for (final svt in userSvt) {
+      final dbSvt = db.gameData.entities[svt.svtId];
+      if (dbSvt == null) continue;
+      if (dbSvt.type == SvtType.servantEquip) {
+        if (svt.dbCE?.flags.contains(SvtFlag.svtEquipFriendShip) == true) {
+          // don't count
+        } else {
+          svtEquipCount += 1;
+        }
+      } else {
+        svtCount += 1;
+      }
+    }
+    return (svtCount: svtCount, svtEquipCount: svtEquipCount);
   }
 
   // mst schemes
@@ -2488,6 +2531,45 @@ class DropInfo {
   factory DropInfo.fromJson(Map<String, dynamic> data) => _$DropInfoFromJson(data);
 }
 
+@JsonSerializable(createToJson: false)
+class BattleFriendshipRewardInfo {
+  bool isNew;
+  int userSvtId; // =0
+  int targetSvtId;
+  // int targetSvtFriendshipRank;
+  int mstGiftId;
+  int type;
+  int objectId;
+  int num;
+  int limitCount;
+  int lv;
+  int rarity;
+
+  BattleFriendshipRewardInfo({
+    dynamic isNew,
+    dynamic userSvtId,
+    dynamic mstGiftId,
+    dynamic type,
+    dynamic targetSvtId,
+    dynamic objectId,
+    dynamic num,
+    dynamic limitCount,
+    dynamic lv,
+    dynamic rarity,
+  })  : isNew = _toBool(isNew),
+        userSvtId = _toInt(userSvtId),
+        mstGiftId = _toInt(mstGiftId),
+        type = _toInt(type),
+        targetSvtId = _toInt(targetSvtId),
+        objectId = _toInt(objectId),
+        num = _toInt(num),
+        limitCount = _toInt(limitCount),
+        lv = _toInt(lv),
+        rarity = _toInt(rarity);
+
+  factory BattleFriendshipRewardInfo.fromJson(Map<String, dynamic> data) => _$BattleFriendshipRewardInfoFromJson(data);
+}
+
 // BattleResultComponent.resultData
 @JsonSerializable(createToJson: false)
 class BattleResultData {
@@ -2514,7 +2596,7 @@ class BattleResultData {
   int phaseClearQp;
   int friendshipExpBase;
 
-  List friendshipRewardInfos; // List<BattleFriendshipRewardInfo>
+  List<BattleFriendshipRewardInfo> friendshipRewardInfos; // List<BattleFriendshipRewardInfo>
   List warClearReward; // List<WarClearReward>
   List<DropInfo> rewardInfos; // List<QuestRewardInfo>, 星光之砂
   List<DropInfo> resultDropInfos;
@@ -2538,7 +2620,7 @@ class BattleResultData {
     dynamic originalPhaseClearQp,
     dynamic phaseClearQp,
     dynamic friendshipExpBase,
-    dynamic friendshipRewardInfos,
+    List<BattleFriendshipRewardInfo>? friendshipRewardInfos,
     dynamic warClearReward,
     List<DropInfo>? rewardInfos,
     List<DropInfo>? resultDropInfos,
@@ -2560,7 +2642,7 @@ class BattleResultData {
         originalPhaseClearQp = _toInt(originalPhaseClearQp, 0),
         phaseClearQp = _toInt(phaseClearQp, 0),
         friendshipExpBase = _toInt(friendshipExpBase, 0),
-        friendshipRewardInfos = friendshipRewardInfos as List? ?? [],
+        friendshipRewardInfos = friendshipRewardInfos ?? [],
         warClearReward = warClearReward as List? ?? [],
         rewardInfos = rewardInfos ?? [],
         resultDropInfos = resultDropInfos ?? [];

@@ -201,7 +201,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
         })
           TextSpan(children: [
             CenterWidgetSpan(child: Item.iconBuilder(context: context, item: null, itemId: itemId, width: 20)),
-            TextSpan(text: '×${mstData.getItemNum(itemId, agent.user.userItems[itemId] ?? 0)}  '),
+            TextSpan(text: '×${mstData.getItemOrSvtNum(itemId, defaultValue: agent.user.userItems[itemId] ?? 0)}  '),
           ])
       ])),
     ));
@@ -236,15 +236,56 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
 
   Widget get gameInfoSection {
     final gameTop = agent.network.gameTop;
-    return TileGroup(
-      header: 'Game Info',
-      children: [
-        ListTile(
-          dense: true,
-          title: Text('AppVer=${gameTop.appVer}  DataVer=${gameTop.dataVer}'
-              '\nDateVer=${gameTop.dateVer.sec2date().toStringShort(omitSec: true)}'),
+    final trailingStyle = TextStyle(fontSize: Theme.of(context).textTheme.bodySmall?.fontSize);
+    List<Widget> children = [
+      ListTile(
+        dense: true,
+        title: Text('AppVer=${gameTop.appVer}  DataVer=${gameTop.dataVer}'
+            '\nDateVer=${gameTop.dateVer.sec2date().toStringShort(omitSec: true)}'),
+      ),
+    ];
+    final userGame = runtime.agent.userGame;
+    if (userGame != null) {
+      final curLv = ConstData.userLevel[userGame.lv];
+      final nextLv = ConstData.userLevel[userGame.lv + 1];
+      children.add(ListTile(
+        dense: true,
+        title: const Text('Master Lv'),
+        trailing: Text(
+          [
+            'Lv.${userGame.lv}',
+            if (nextLv != null) userGame.exp - nextLv.requiredExp,
+          ].join('\n'),
+          textAlign: TextAlign.end,
+          style: trailingStyle,
         ),
-      ],
+      ));
+      if (curLv != null && nextLv != null && userGame.exp >= curLv.requiredExp && userGame.exp <= nextLv.requiredExp) {
+        children.add(Row(
+          children: [
+            const SizedBox(width: 4),
+            Expanded(flex: userGame.exp - curLv.requiredExp, child: Container(height: 4, color: Colors.blue)),
+            Expanded(flex: nextLv.requiredExp - userGame.exp, child: Container(height: 4, color: Colors.red)),
+            const SizedBox(width: 4),
+          ],
+        ));
+      }
+
+      final counts = mstData.countSvtKeep();
+      children.add(ListTile(
+        dense: true,
+        title: Text(S.current.servant),
+        trailing: Text('${counts.svtCount}/${userGame.svtKeep}', style: trailingStyle),
+      ));
+      children.add(ListTile(
+        dense: true,
+        title: Text(S.current.craft_essence),
+        trailing: Text('${counts.svtEquipCount}/${userGame.svtEquipKeep}', style: trailingStyle),
+      ));
+    }
+    return TileGroup(
+      header: 'Misc Info',
+      children: children,
     );
   }
 
@@ -292,7 +333,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
                         height: 36,
                         text: [
                           '+${dropItems[itemId]!.format()}',
-                          mstData.getItemNum(itemId).format(),
+                          mstData.getItemOrSvtNum(itemId).format(),
                         ].join('\n'),
                       ),
             ],
@@ -309,17 +350,20 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
         return ListTile(
           dense: true,
           title: Text('Drops Statistics (${runtime.totalDropStat.totalCount} runs)'),
-          subtitle: runtime.shownItemIds.isEmpty
+          subtitle: runtime.totalRewards.isEmpty
               ? null
               : Wrap(
                   spacing: 2,
                   runSpacing: 2,
-                  children: (runtime.shownItemIds.toList()..sort(Item.compare)).map((itemId) {
+                  children: (runtime.totalRewards.keys.toList()..sort(Item.compare)).map((itemId) {
                     return GameCardMixin.anyCardItemBuilder(
                       context: context,
                       id: itemId,
                       width: 30,
-                      text: mstData.getItemNum(itemId).format(),
+                      text: [
+                        '+${runtime.totalRewards[itemId]}',
+                        mstData.getItemOrSvtNum(itemId).format(),
+                      ].join('\n'),
                     );
                   }).toList(),
                 ),
@@ -346,7 +390,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
                     text: 'clear',
                     onTap: () {
                       setState(() {
-                        if (dropStats == runtime.totalDropStat) runtime.shownItemIds.clear();
+                        if (dropStats == runtime.totalDropStat) runtime.totalRewards.clear();
                         dropStats.reset();
                       });
                     },
@@ -365,11 +409,11 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
                       id: itemId,
                       width: 42,
                       text: [
-                        dropStats.items[itemId]!.format(),
+                        '+${dropStats.items[itemId]!.format()}',
                         if (dropStats.totalCount > 0) prob > 1 ? prob.format() : prob.format(percent: true),
                         db.gameData.craftEssencesById.containsKey(itemId)
                             ? (mstData.userSvt.where((e) => e.svtId == itemId).length.toString())
-                            : mstData.getItemNum(itemId).format(),
+                            : mstData.getItemOrSvtNum(itemId).format(),
                       ].join('\n'),
                     );
                   }).toList(),

@@ -15,6 +15,7 @@ abstract class FakerAgent<TRequest extends FRequestBase, TUser extends AutoLogin
   FakerAgent({required this.network});
 
   TUser get user => network.user;
+  UserGameEntity? get userGame => network.mstData.user ?? user.userGame;
 
   BattleEntity? curBattle;
   BattleEntity? lastBattle;
@@ -128,7 +129,7 @@ abstract class FakerAgent<TRequest extends FRequestBase, TUser extends AutoLogin
     }
     if (questPhaseEntity.consumeType.useItem) {
       for (final item in questPhaseEntity.consumeItem) {
-        final itemNum = mstData.getItemNum(item.itemId);
+        final itemNum = mstData.getItemOrSvtNum(item.itemId);
         if (itemNum < item.amount) {
           throw Exception('Item not enough: $itemNum<${item.amount}');
         }

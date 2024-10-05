@@ -50,7 +50,7 @@ class RecoverSelectDialog extends StatelessWidget {
         );
       case RecoverType.item:
         final item = db.gameData.items[recover.targetId];
-        final ownCount = mstData?.getItemNum(recover.targetId) ?? 0;
+        final ownCount = mstData?.getItemOrSvtNum(recover.targetId) ?? 0;
         bool enabled = mstData == null || (userGame != null && ownCount > 0);
         return ListTile(
           leading: Item.iconBuilder(context: context, item: item, itemId: recover.targetId),
@@ -78,7 +78,7 @@ class _ApSeedExchangeCountDialogState extends State<ApSeedExchangeCountDialog> {
   Widget build(BuildContext context) {
     const int apUnit = 40, seedUnit = 1;
     final apCount = widget.mstData.user?.calCurAp() ?? 0;
-    final seedCount = widget.mstData.getItemNum(Items.blueSaplingId);
+    final seedCount = widget.mstData.getItemOrSvtNum(Items.blueSaplingId);
     final int maxBuyCount = min(apCount ~/ apUnit, seedCount ~/ seedUnit);
     return AlertDialog(
       title: const Text('Exchange Count'),
