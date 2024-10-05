@@ -459,18 +459,38 @@ class ClassBoardSquareDetail extends StatelessWidget {
             ListTile(
               dense: true,
               title: Text(S.current.plan),
+              contentPadding: const EdgeInsetsDirectional.only(start: 16),
               trailing: db.onUserData(
-                (context, snapshot) => FilterGroup<LockPlan>(
-                  combined: true,
-                  padding: EdgeInsets.zero,
-                  options: LockPlan.values,
-                  values: FilterRadioData.nonnull(board.unlockedOf(square.id)),
-                  optionBuilder: (value) => Text(value.dispPlan),
-                  onFilterChanged: (v, _) {
-                    board.status.unlockedSquares.toggle(square.id, v.radioValue!.current);
-                    board.plan_.unlockedSquares.toggle(square.id, v.radioValue!.target);
-                    db.itemCenter.updateClassBoard();
-                  },
+                (context, snapshot) => Wrap(
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  children: [
+                    FilterGroup<LockPlan>(
+                      combined: true,
+                      padding: EdgeInsets.zero,
+                      options: LockPlan.values,
+                      values: FilterRadioData.nonnull(board.unlockedOf(square.id)),
+                      optionBuilder: (value) => Text(value.dispPlan),
+                      onFilterChanged: (v, _) {
+                        board.status.unlockedSquares.toggle(square.id, v.radioValue!.current);
+                        board.plan_.unlockedSquares.toggle(square.id, v.radioValue!.target);
+                        db.itemCenter.updateClassBoard();
+                      },
+                    ),
+                    buildEnhanceButton(
+                      context: context,
+                      title: S.current.unlock,
+                      enabled: board.unlockedOf(square.id) != LockPlan.full,
+                      items: lock.items,
+                      onEnhance: () {
+                        for (final amount in lock.items) {
+                          db.curUser.items.addNum(amount.itemId, amount.amount * -1);
+                        }
+                        board.status.unlockedSquares.toggle(square.id, true);
+                        board.plan_.unlockedSquares.toggle(square.id, true);
+                        db.itemCenter.updateClassBoard();
+                      },
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -517,19 +537,39 @@ class ClassBoardSquareDetail extends StatelessWidget {
         if (square.items.isNotEmpty)
           ListTile(
             dense: true,
+            contentPadding: const EdgeInsetsDirectional.only(start: 16),
             title: Text(S.current.plan),
             trailing: db.onUserData(
-              (context, snapshot) => FilterGroup<LockPlan>(
-                combined: true,
-                padding: EdgeInsets.zero,
-                options: LockPlan.values,
-                values: FilterRadioData.nonnull(board.enhancedOf(square.id)),
-                optionBuilder: (value) => Text(value.dispPlan),
-                onFilterChanged: (v, _) {
-                  board.status.enhancedSquares.toggle(square.id, v.radioValue!.current);
-                  board.plan_.enhancedSquares.toggle(square.id, v.radioValue!.target);
-                  db.itemCenter.updateClassBoard();
-                },
+              (context, snapshot) => Wrap(
+                crossAxisAlignment: WrapCrossAlignment.center,
+                children: [
+                  FilterGroup<LockPlan>(
+                    combined: true,
+                    padding: EdgeInsets.zero,
+                    options: LockPlan.values,
+                    values: FilterRadioData.nonnull(board.enhancedOf(square.id)),
+                    optionBuilder: (value) => Text(value.dispPlan),
+                    onFilterChanged: (v, _) {
+                      board.status.enhancedSquares.toggle(square.id, v.radioValue!.current);
+                      board.plan_.enhancedSquares.toggle(square.id, v.radioValue!.target);
+                      db.itemCenter.updateClassBoard();
+                    },
+                  ),
+                  buildEnhanceButton(
+                    context: context,
+                    title: S.current.enhance,
+                    enabled: board.enhancedOf(square.id) != LockPlan.full,
+                    items: square.items,
+                    onEnhance: () {
+                      for (final amount in square.items) {
+                        db.curUser.items.addNum(amount.itemId, amount.amount * -1);
+                      }
+                      board.status.enhancedSquares.toggle(square.id, true);
+                      board.plan_.enhancedSquares.toggle(square.id, true);
+                      db.itemCenter.updateClassBoard();
+                    },
+                  ),
+                ],
               ),
             ),
           ),
@@ -584,6 +624,44 @@ class ClassBoardSquareDetail extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: children,
+    );
+  }
+
+  Widget buildEnhanceButton({
+    required BuildContext context,
+    required String title,
+    required bool enabled,
+    required List<ItemAmount> items,
+    required VoidCallback onEnhance,
+  }) {
+    return IconButton(
+      onPressed: !enabled
+          ? null
+          : () {
+              SimpleCancelOkDialog(
+                title: Text(title),
+                onTapOk: onEnhance,
+                content: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 360),
+                  child: Wrap(
+                    spacing: 2,
+                    runSpacing: 2,
+                    children: [
+                      for (final amount in items)
+                        Item.iconBuilder(
+                          context: context,
+                          item: null,
+                          itemId: amount.itemId,
+                          text: amount.amount.format(),
+                          width: 48,
+                        ),
+                    ],
+                  ),
+                ),
+              ).showDialog(context);
+            },
+      icon: const Icon(Icons.upgrade),
+      tooltip: title,
     );
   }
 }

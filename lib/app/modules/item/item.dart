@@ -221,11 +221,16 @@ class _ItemDetailPageState extends State<ItemDetailPage> with SingleTickerProvid
           PopupMenuItem(
             child: Text(S.current.item_edit_owned_amount),
             onTap: () {
-              showDialog(
-                context: context,
-                useRootNavigator: false,
-                builder: (context) => _ItemAmountEditDialog(widget.itemId),
-              );
+              InputCancelOkDialog(
+                title: S.current.item_edit_owned_amount,
+                text: db.curUser.items[widget.itemId]?.toString(),
+                validate: (s) => int.tryParse(s) != null,
+                keyboardType: const TextInputType.numberWithOptions(signed: true),
+                onSubmit: (s) {
+                  db.curUser.items[widget.itemId] = int.parse(s);
+                  db.itemCenter.updateLeftItems();
+                },
+              ).showDialog(context);
             },
           ),
           ...SharedBuilder.websitesPopupMenuItems(
@@ -285,47 +290,6 @@ class _ItemDetailPageState extends State<ItemDetailPage> with SingleTickerProvid
           showOutdated = !showOutdated;
         });
       },
-    );
-  }
-}
-
-class _ItemAmountEditDialog extends HookWidget {
-  final int itemId;
-  const _ItemAmountEditDialog(this.itemId);
-
-  @override
-  Widget build(BuildContext context) {
-    final s = (db.curUser.items[itemId] ?? 0).toString();
-    final controller = useTextEditingController.fromValue(TextEditingValue(
-      text: s,
-      selection: TextSelection(baseOffset: 0, extentOffset: s.length),
-    ));
-    return AlertDialog(
-      title: Text(S.current.item_edit_owned_amount),
-      content: TextFormField(
-        controller: controller,
-        keyboardType: const TextInputType.numberWithOptions(signed: true),
-        autofocus: true,
-      ),
-      actions: [
-        TextButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          child: Text(S.current.cancel),
-        ),
-        TextButton(
-          onPressed: () {
-            final v = int.tryParse(controller.text);
-            if (v != null) {
-              db.curUser.items[itemId] = v;
-              db.itemCenter.updateLeftItems();
-            }
-            Navigator.pop(context);
-          },
-          child: Text(S.current.confirm),
-        )
-      ],
     );
   }
 }
