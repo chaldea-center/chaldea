@@ -1,4 +1,4 @@
-library userdata;
+library;
 
 import 'dart:math';
 
