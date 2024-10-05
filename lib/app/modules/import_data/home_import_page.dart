@@ -1,15 +1,11 @@
 import 'package:flutter/foundation.dart';
 
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-
 import 'package:chaldea/app/modules/import_data/autologin/autologin_page.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
-import 'package:chaldea/packages/app_info.dart';
 import 'package:chaldea/packages/split_route/split_route.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../../app.dart';
-import '../faker/accounts.dart';
 import '../home/subpage/account_page.dart';
 import '../home/subpage/user_data_page.dart';
 import 'import_fgo_simu_material_page.dart';
@@ -58,29 +54,6 @@ class _ImportPageHomeState extends State<ImportPageHome> {
               ),
             ],
           ),
-          if (!kIsWeb && AppInfo.isDebugOn)
-            TileGroup(
-              children: [
-                ListTile(
-                  leading: const FaIcon(FontAwesomeIcons.bilibili, size: 18),
-                  title: const Text('Fake/Bilili Order'),
-                  trailing: const Icon(Icons.keyboard_arrow_right),
-                  // subtitle: const Text('Yahoo'),
-                  onTap: () {
-                    router.pushPage(const FakerAccountsCNPage());
-                  },
-                ),
-                ListTile(
-                  leading: const FaIcon(FontAwesomeIcons.fishFins, size: 18),
-                  title: const Text('Fake/Grand Order'),
-                  trailing: const Icon(Icons.keyboard_arrow_right),
-                  // subtitle: const Text('Yahoo'),
-                  onTap: () {
-                    router.pushPage(const FakerAccountsJPPage());
-                  },
-                ),
-              ],
-            ),
           TileGroup(
             children: [
               ListTile(
