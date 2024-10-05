@@ -142,8 +142,10 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
                   battleSetupOptionSection,
                   battleResultOptionSection,
                   battleLoopOptionSection,
-                  gameInfoSection,
-                  ...otherSettingSection,
+                  uncommonSettingSection,
+                  miscInfoSection,
+                  notificationSettingSection,
+                  globalSettingSection,
                 ],
               ),
             ),
@@ -234,7 +236,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
     );
   }
 
-  Widget get gameInfoSection {
+  Widget get miscInfoSection {
     final gameTop = agent.network.gameTop;
     final trailingStyle = TextStyle(fontSize: Theme.of(context).textTheme.bodySmall?.fontSize);
     List<Widget> children = [
@@ -263,10 +265,10 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
       if (curLv != null && nextLv != null && userGame.exp >= curLv.requiredExp && userGame.exp <= nextLv.requiredExp) {
         children.add(Row(
           children: [
-            const SizedBox(width: 4),
+            const SizedBox(width: 16),
             Expanded(flex: userGame.exp - curLv.requiredExp, child: Container(height: 4, color: Colors.blue)),
             Expanded(flex: nextLv.requiredExp - userGame.exp, child: Container(height: 4, color: Colors.red)),
-            const SizedBox(width: 4),
+            const SizedBox(width: 16),
           ],
         ));
       }
@@ -563,26 +565,6 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
         ),
         ListTile(
           dense: true,
-          title: const Text('Battle Duration(seconds)'),
-          trailing: TextButton(
-              onPressed: () {
-                runtime.lockTask(() {
-                  InputCancelOkDialog(
-                    title: 'Battle Duration',
-                    text: battleOption.battleDuration?.toString(),
-                    keyboardType: TextInputType.number,
-                    validate: (s) => (int.tryParse(s) ?? -1) > (agent.user.region == Region.cn ? 40 : 20),
-                    onSubmit: (s) {
-                      battleOption.battleDuration = int.parse(s);
-                      if (mounted) setState(() {});
-                    },
-                  ).showDialog(context);
-                });
-              },
-              child: Text(battleOption.battleDuration?.toString() ?? S.current.general_default)),
-        ),
-        ListTile(
-          dense: true,
           title: const Text("Target drops (stop current loop if reach any)"),
           subtitle: Wrap(
             spacing: 2,
@@ -697,11 +679,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
   Widget get battleSetupOptionSection {
     final quest = db.gameData.quests[battleOption.questId];
     final formation = mstData.userDeck[battleOption.deckId];
-    String subtitle = _describeQuest(battleOption.questId, battleOption.questPhase, null);
     final userQuest = mstData.userQuest[battleOption.questId];
-    if (userQuest != null) {
-      subtitle += '\nP${userQuest.questPhase} clear ${userQuest.clearNum}';
-    }
     final now = DateTime.now().timestamp;
     List<(Item, UserItemEntity)> teapots = [
       for (final teapot in runtime.teapots.values)
@@ -714,8 +692,8 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
       children: [
         ListTile(
           dense: true,
-          title: const Text("Quest ID"),
-          subtitle: Text(subtitle),
+          title: Text(_describeQuest(battleOption.questId, battleOption.questPhase, null)),
+          subtitle: userQuest == null ? null : Text('phase ${userQuest.questPhase} clear ${userQuest.clearNum}'),
           onTap: quest?.routeTo,
           trailing: TextButton(
               onPressed: () {
@@ -825,8 +803,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
                         final int bondA = collection.friendship - prevBondTotal,
                             bondB = curBondTotal - collection.friendship;
 
-                        String bondText =
-                            'Bond\nLv.${collection.friendshipRank}/${10 + collection.friendshipExceedCount}'
+                        String bondText = 'Lv.${collection.friendshipRank}/${10 + collection.friendshipExceedCount}'
                             // '\n${collection.friendship}'
                             '\n${-bondB}';
                         // battle result
@@ -975,33 +952,6 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
           },
           controlAffinity: ListTileControlAffinity.trailing,
         ),
-        SwitchListTile.adaptive(
-          dense: true,
-          value: battleOption.useEventDeck,
-          title: Text("${S.current.support_servant_short} - Use Event Deck"),
-          subtitle: Text("Supposed: ${db.gameData.quests[battleOption.questId]?.event != null ? 'Yes' : 'No'}"),
-          onChanged: (v) {
-            runtime.lockTask(() {
-              setState(() {
-                battleOption.useEventDeck = v;
-              });
-            });
-          },
-          controlAffinity: ListTileControlAffinity.trailing,
-        ),
-        SwitchListTile.adaptive(
-          dense: true,
-          value: battleOption.enfoceRefreshSupport,
-          title: const Text("Force Refresh Support"),
-          onChanged: (v) {
-            runtime.lockTask(() {
-              setState(() {
-                battleOption.enfoceRefreshSupport = v;
-              });
-            });
-          },
-          controlAffinity: ListTileControlAffinity.trailing,
-        ),
         const Divider(),
         SwitchListTile.adaptive(
           dense: true,
@@ -1034,27 +984,6 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
               battleOption.isApHalf = v;
             });
           },
-        ),
-        SwitchListTile.adaptive(
-          dense: true,
-          value: battleOption.stopIfBondLimit,
-          title: const Text("Stop if Bond Limit"),
-          onChanged: (v) {
-            runtime.lockTask(() {
-              setState(() {
-                battleOption.stopIfBondLimit = v;
-              });
-            });
-          },
-          controlAffinity: ListTileControlAffinity.trailing,
-        ),
-        ListTile(
-          dense: true,
-          title: Text('${mstData.userFollower.firstOrNull?.followerInfo.length} Follower Info(s)'),
-          trailing: Text(
-            '~${mstData.userFollower.firstOrNull?.expireAt.sec2date().toStringShort()}',
-            style: const TextStyle(fontSize: 12),
-          ),
         ),
       ],
     );
@@ -1161,187 +1090,257 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
     );
   }
 
-  List<Widget> get otherSettingSection {
-    final fakerSettings = db.settings.fakerSettings;
-    return [
-      TileGroup(
-        header: 'Notifications',
-        children: [
-          SwitchListTile.adaptive(
-            dense: true,
-            value: fakerSettings.apRecoveredNotification,
-            title: const Text('AP Recovered Notification (Global)'),
-            onChanged: (v) async {
+  Widget get uncommonSettingSection {
+    return TileGroup(
+      header: 'Other Options',
+      children: [
+        SwitchListTile.adaptive(
+          dense: true,
+          value: battleOption.stopIfBondLimit,
+          title: const Text("Stop if Bond Limit"),
+          onChanged: (v) {
+            runtime.lockTask(() {
               setState(() {
-                fakerSettings.apRecoveredNotification = v;
+                battleOption.stopIfBondLimit = v;
               });
-              if (v) {
-                await LocalNotificationUtil.requestPermissions();
-                await agent.network.setLocalNotification();
-              } else {
-                final notifications = await LocalNotificationUtil.plugin.getActiveNotifications();
-                for (final notification in notifications) {
-                  if (notification.id != null && LocalNotificationUtil.isUserApFullId(notification.id!)) {
-                    LocalNotificationUtil.plugin.cancel(notification.id!);
-                  }
-                }
-              }
-            },
-          ),
-          ListTile(
-            dense: true,
-            title: const Text('Notify when AP recovered at'),
-            subtitle: FilterGroup<int>(
-              padding: const EdgeInsets.only(top: 4),
-              options: agent.user.recoveredAps.toList()..sort2((e) => e == 0 ? 999 : e),
-              values: FilterGroupData(),
-              optionBuilder: (v) =>
-                  v == 0 ? Text(agent.user.userGame?.actMax.toString() ?? 'Full') : Text(v.toString()),
-              onFilterChanged: (_, lastChanged) {
-                setState(() {
-                  if (lastChanged != null) {
-                    agent.user.recoveredAps.remove(lastChanged);
-                    agent.network.setLocalNotification();
-                  }
+            });
+          },
+          controlAffinity: ListTileControlAffinity.trailing,
+        ),
+        CheckboxListTile.adaptive(
+          dense: true,
+          value: battleOption.useEventDeck,
+          tristate: true,
+          title: Text("${S.current.support_servant_short} - Use Event Deck"),
+          subtitle: Text("Supposed: ${db.gameData.quests[battleOption.questId]?.event != null ? 'Yes' : 'No'}"),
+          onChanged: (v) {
+            runtime.lockTask(() {
+              setState(() {
+                battleOption.useEventDeck = v;
+              });
+            });
+          },
+          controlAffinity: ListTileControlAffinity.trailing,
+        ),
+        SwitchListTile.adaptive(
+          dense: true,
+          value: battleOption.enfoceRefreshSupport,
+          title: const Text("Force Refresh Support"),
+          onChanged: (v) {
+            runtime.lockTask(() {
+              setState(() {
+                battleOption.enfoceRefreshSupport = v;
+              });
+            });
+          },
+          controlAffinity: ListTileControlAffinity.trailing,
+        ),
+        ListTile(
+          dense: true,
+          title: const Text('Battle Duration(seconds)'),
+          trailing: TextButton(
+              onPressed: () {
+                runtime.lockTask(() {
+                  InputCancelOkDialog(
+                    title: 'Battle Duration',
+                    text: battleOption.battleDuration?.toString(),
+                    keyboardType: TextInputType.number,
+                    validate: (s) => (int.tryParse(s) ?? -1) > (agent.user.region == Region.cn ? 40 : 20),
+                    onSubmit: (s) {
+                      battleOption.battleDuration = int.parse(s);
+                      if (mounted) setState(() {});
+                    },
+                  ).showDialog(context);
                 });
               },
-            ),
-            trailing: IconButton(
+              child: Text(battleOption.battleDuration?.toString() ?? S.current.general_default)),
+        ),
+      ],
+    );
+  }
+
+  Widget get notificationSettingSection {
+    final fakerSettings = db.settings.fakerSettings;
+    return TileGroup(
+      header: 'Notifications',
+      children: [
+        SwitchListTile.adaptive(
+          dense: true,
+          value: fakerSettings.apRecoveredNotification,
+          title: const Text('AP Recovered Notification (Global)'),
+          onChanged: (v) async {
+            setState(() {
+              fakerSettings.apRecoveredNotification = v;
+            });
+            if (v) {
+              await LocalNotificationUtil.requestPermissions();
+              await agent.network.setLocalNotification();
+            } else {
+              final notifications = await LocalNotificationUtil.plugin.getActiveNotifications();
+              for (final notification in notifications) {
+                if (notification.id != null && LocalNotificationUtil.isUserApFullId(notification.id!)) {
+                  LocalNotificationUtil.plugin.cancel(notification.id!);
+                }
+              }
+            }
+          },
+        ),
+        ListTile(
+          dense: true,
+          title: const Text('Notify when AP recovered at'),
+          subtitle: FilterGroup<int>(
+            padding: const EdgeInsets.only(top: 4),
+            options: agent.user.recoveredAps.toList()..sort2((e) => e == 0 ? 999 : e),
+            values: FilterGroupData(),
+            optionBuilder: (v) => v == 0 ? Text(agent.user.userGame?.actMax.toString() ?? 'Full') : Text(v.toString()),
+            onFilterChanged: (_, lastChanged) {
+              setState(() {
+                if (lastChanged != null) {
+                  agent.user.recoveredAps.remove(lastChanged);
+                  agent.network.setLocalNotification();
+                }
+              });
+            },
+          ),
+          trailing: IconButton(
+            onPressed: () {
+              InputCancelOkDialog(
+                title: 'AP',
+                keyboardType: TextInputType.number,
+                helperText: '0 = AP full (${(mstData.user ?? agent.user.userGame)?.actMax})',
+                validate: (s) {
+                  int v = int.tryParse(s) ?? -1;
+                  return v >= 0 && v < 200 && v < Maths.max(ConstData.userLevel.values.map((e) => e.maxAp));
+                },
+                onSubmit: (s) {
+                  agent.user.recoveredAps.add(int.parse(s));
+                  agent.network.setLocalNotification();
+                  if (mounted) setState(() {});
+                },
+              ).showDialog(context);
+            },
+            icon: const Icon(Icons.add),
+          ),
+        ),
+        Center(
+          child: TextButton(
+            onPressed: () async {
+              final actives = await LocalNotificationUtil.plugin.getActiveNotifications();
+              final pendings = await LocalNotificationUtil.plugin.pendingNotificationRequests();
+              if (actives.isEmpty && pendings.isEmpty) {
+                EasyLoading.showInfo('No notifications');
+                return;
+              }
+              router.showDialog(builder: (context) {
+                return SimpleDialog(
+                  title: const Text('Notifications'),
+                  children: [
+                    if (actives.isNotEmpty) SHeader('${actives.length} Active Notifications'),
+                    ...divideList(
+                      [
+                        for (final notification in actives..sort2((e) => e.id ?? 0))
+                          ListTile(
+                            dense: true,
+                            title: Text(notification.title ?? 'no title'),
+                            subtitle: Text('id ${notification.id}\n${notification.body}'),
+                          ),
+                      ],
+                      const Divider(height: 1),
+                      top: true,
+                      bottom: true,
+                    ),
+                    if (actives.isNotEmpty) SHeader('${pendings.length} Pending Notifications'),
+                    ...divideList(
+                      [
+                        for (final notification in pendings..sort2((e) => e.id))
+                          ListTile(
+                            dense: true,
+                            title: Text(notification.title ?? 'no title'),
+                            subtitle: Text('id ${notification.id}\n${notification.body}'),
+                          ),
+                      ],
+                      const Divider(height: 1),
+                      top: true,
+                      bottom: true,
+                    )
+                  ],
+                );
+              });
+            },
+            child: const Text('Active/Pending Notifications'),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget get globalSettingSection {
+    final fakerSettings = db.settings.fakerSettings;
+    return TileGroup(
+      header: 'Global Settings',
+      children: [
+        ListTile(
+          dense: true,
+          title: const Text('Max refresh count of Support list'),
+          trailing: TextButton(
               onPressed: () {
                 InputCancelOkDialog(
-                  title: 'AP',
+                  title: 'Max refresh count of Support list',
+                  text: fakerSettings.maxFollowerListRetryCount.toString(),
                   keyboardType: TextInputType.number,
-                  helperText: '0 = AP full (${(mstData.user ?? agent.user.userGame)?.actMax})',
-                  validate: (s) {
-                    int v = int.tryParse(s) ?? -1;
-                    return v >= 0 && v < 200 && v < Maths.max(ConstData.userLevel.values.map((e) => e.maxAp));
-                  },
+                  validate: (s) => (int.tryParse(s) ?? -1) > 0,
                   onSubmit: (s) {
-                    agent.user.recoveredAps.add(int.parse(s));
-                    agent.network.setLocalNotification();
+                    fakerSettings.maxFollowerListRetryCount = int.parse(s);
                     if (mounted) setState(() {});
                   },
                 ).showDialog(context);
               },
-              icon: const Icon(Icons.add),
-            ),
-          ),
-          Center(
-            child: TextButton(
-              onPressed: () async {
-                final actives = await LocalNotificationUtil.plugin.getActiveNotifications();
-                final pendings = await LocalNotificationUtil.plugin.pendingNotificationRequests();
-                if (actives.isEmpty && pendings.isEmpty) {
-                  EasyLoading.showInfo('No notifications');
-                  return;
-                }
-                router.showDialog(builder: (context) {
-                  return SimpleDialog(
-                    title: const Text('Notifications'),
-                    children: [
-                      if (actives.isNotEmpty) SHeader('${actives.length} Active Notifications'),
-                      ...divideList(
-                        [
-                          for (final notification in actives..sort2((e) => e.id ?? 0))
-                            ListTile(
-                              dense: true,
-                              title: Text(notification.title ?? 'no title'),
-                              subtitle: Text('id ${notification.id}\n${notification.body}'),
-                            ),
-                        ],
-                        const Divider(height: 1),
-                        top: true,
-                        bottom: true,
-                      ),
-                      if (actives.isNotEmpty) SHeader('${pendings.length} Pending Notifications'),
-                      ...divideList(
-                        [
-                          for (final notification in pendings..sort2((e) => e.id))
-                            ListTile(
-                              dense: true,
-                              title: Text(notification.title ?? 'no title'),
-                              subtitle: Text('id ${notification.id}\n${notification.body}'),
-                            ),
-                        ],
-                        const Divider(height: 1),
-                        top: true,
-                        bottom: true,
-                      )
-                    ],
-                  );
-                });
-              },
-              child: const Text('Active/Pending Notifications'),
-            ),
-          ),
-        ],
-      ),
-      TileGroup(
-        header: 'Global Settings',
-        children: [
-          ListTile(
-            dense: true,
-            title: const Text('Max refresh count of Support list'),
-            trailing: TextButton(
-                onPressed: () {
-                  InputCancelOkDialog(
-                    title: 'Max refresh count of Support list',
-                    text: fakerSettings.maxFollowerListRetryCount.toString(),
-                    keyboardType: TextInputType.number,
-                    validate: (s) => (int.tryParse(s) ?? -1) > 0,
-                    onSubmit: (s) {
-                      fakerSettings.maxFollowerListRetryCount = int.parse(s);
-                      if (mounted) setState(() {});
-                    },
-                  ).showDialog(context);
-                },
-                child: Text(fakerSettings.maxFollowerListRetryCount.toString())),
-          ),
-          const Divider(),
-          SwitchListTile.adaptive(
-            dense: true,
-            value: fakerSettings.dumpResponse,
-            title: const Text('Dump Responses'),
-            onChanged: (v) {
-              setState(() {
-                fakerSettings.dumpResponse = v;
-              });
-            },
-          ),
-          Center(
-            child: TextButton(
-              onPressed: () {
-                SimpleCancelOkDialog(
-                  title: const Text('Clear Dumps'),
-                  onTapOk: () async {
-                    try {
-                      EasyLoading.show(status: 'clearing');
-                      int deleted = 0;
-                      final folder = Directory(db.paths.tempFakerDir);
-                      final t = DateTime.now().subtract(const Duration(hours: 1));
-                      await for (final file in folder.list(recursive: true)) {
-                        if (file is File) {
-                          final stat = await file.stat();
-                          if (stat.modified.isBefore(t)) {
-                            await file.delete();
-                            deleted += 1;
-                          }
+              child: Text(fakerSettings.maxFollowerListRetryCount.toString())),
+        ),
+        const Divider(),
+        SwitchListTile.adaptive(
+          dense: true,
+          value: fakerSettings.dumpResponse,
+          title: const Text('Dump Responses'),
+          onChanged: (v) {
+            setState(() {
+              fakerSettings.dumpResponse = v;
+            });
+          },
+        ),
+        Center(
+          child: TextButton(
+            onPressed: () {
+              SimpleCancelOkDialog(
+                title: const Text('Clear Dumps'),
+                onTapOk: () async {
+                  try {
+                    EasyLoading.show(status: 'clearing');
+                    int deleted = 0;
+                    final folder = Directory(db.paths.tempFakerDir);
+                    final t = DateTime.now().subtract(const Duration(hours: 1));
+                    await for (final file in folder.list(recursive: true)) {
+                      if (file is File) {
+                        final stat = await file.stat();
+                        if (stat.modified.isBefore(t)) {
+                          await file.delete();
+                          deleted += 1;
                         }
                       }
-                      EasyLoading.showInfo('$deleted deleted');
-                    } catch (e, s) {
-                      logger.e('clear dumps failed', e, s);
-                      EasyLoading.showError(e.toString());
                     }
-                  },
-                ).showDialog(context);
-              },
-              child: const Text('Clear dumps'),
-            ),
-          )
-        ],
-      )
-    ];
+                    EasyLoading.showInfo('$deleted deleted');
+                  } catch (e, s) {
+                    logger.e('clear dumps failed', e, s);
+                    EasyLoading.showError(e.toString());
+                  }
+                },
+              ).showDialog(context);
+            },
+            child: const Text('Clear dumps'),
+          ),
+        )
+      ],
+    );
   }
 
   Widget get buttonBar {

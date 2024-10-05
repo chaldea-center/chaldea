@@ -197,7 +197,7 @@ abstract class FakerAgent<TRequest extends FRequestBase, TUser extends AutoLogin
       final (follower, followerSvt) = await _getValidSupport(
         questId: options.questId,
         questPhase: options.questPhase,
-        useEventDeck: options.useEventDeck,
+        useEventDeck: options.useEventDeck ?? db.gameData.others.shouldUseEventDeck(options.questId),
         enforceRefreshSupport: options.enfoceRefreshSupport,
         supportSvtIds: options.supportSvtIds.toList(),
         supportEquipIds: options.supportCeIds.toList(),

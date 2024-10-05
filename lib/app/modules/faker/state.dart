@@ -185,6 +185,11 @@ class FakerRuntime {
     if (questPhaseEntity == null) {
       throw SilentException('quest not found');
     }
+    if (battleOption.loopCount > 1 &&
+        !(questPhaseEntity.afterClear == QuestAfterClearType.repeatLast &&
+            battleOption.questPhase == questPhaseEntity.phases.lastOrNull)) {
+      throw SilentException('Not repeatable quest or phase');
+    }
     final now = DateTime.now().timestamp;
     if (questPhaseEntity.openedAt > now || questPhaseEntity.closedAt < now) {
       throw SilentException('quest not open');
@@ -192,8 +197,9 @@ class FakerRuntime {
     if (battleOption.winTargetItemNum.isNotEmpty && !questPhaseEntity.flags.contains(QuestFlag.actConsumeBattleWin)) {
       throw SilentException('Win target drops should be used only if Quest has flag actConsumeBattleWin');
     }
-    if (battleOption.useEventDeck != (questPhaseEntity.event != null)) {
-      throw SilentException('This quest should "Use Event Deck"');
+    final shouldUseEventDeck = db.gameData.others.shouldUseEventDeck(questPhaseEntity.id);
+    if (battleOption.useEventDeck != null && battleOption.useEventDeck != shouldUseEventDeck) {
+      throw SilentException('This quest should set "Use Event Deck"=$shouldUseEventDeck');
     }
     int finishedCount = 0, totalCount = battleOption.loopCount;
     List<int> elapseSeconds = [];

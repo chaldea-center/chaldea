@@ -660,6 +660,15 @@ class _ProcessedData {
     return group;
   }
 
+  bool shouldUseEventDeck(int questId) {
+    for (final (eventId, questIds) in eventQuestGroups.items) {
+      if (eventId > 0 && questIds.contains(questId)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   void _initFuncBuff() {
     for (final svt in gameData.servants.values) {
       for (final skill in [
