@@ -422,6 +422,7 @@
   "growth_curve": "Growth Curve",
   "guda_female": "Gudako",
   "guda_male": "Gudao",
+  "guessed_on_time_hint": "Possible related {item} \"GUESSED\" based on time",
   "help": "Help",
   "hide": "Hide",
   "hide_outdated": "Hide Outdated",

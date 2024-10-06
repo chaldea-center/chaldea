@@ -36,9 +36,9 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m5(site) => "Ir a ${site}";
 
-  static String m20(shown, total) => "${shown} mostrado (total ${total})";
+  static String m21(shown, total) => "${shown} mostrado (total ${total})";
 
-  static String m21(shown, ignore, total) => "${shown} mostrado, ${ignore} ignorado (total ${total})";
+  static String m22(shown, ignore, total) => "${shown} mostrado, ${ignore} ignorado (total ${total})";
 
   static String m6(first) => "${Intl.select(first, {
             'true': 'Ya es el primero',
@@ -54,7 +54,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m10(n) => "Restablecer plan ${n} (Mostrado)";
 
-  static String m27(battles, ap) => "Total de batallas: ${battles}, ${ap} AP";
+  static String m28(battles, ap) => "Total de batallas: ${battles}, ${ap} AP";
 
   static String m11(n) => "Perfil ${n}";
 
@@ -364,8 +364,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "level": MessageLookupByLibrary.simpleMessage("Nivel"),
         "limited_event": MessageLookupByLibrary.simpleMessage("Evento Limitado"),
         "link": MessageLookupByLibrary.simpleMessage("enlace"),
-        "list_count_shown_all": m20,
-        "list_count_shown_hidden_all": m21,
+        "list_count_shown_all": m21,
+        "list_count_shown_hidden_all": m22,
         "list_end_hint": m6,
         "login_change_name": MessageLookupByLibrary.simpleMessage("Cambiar nombre"),
         "login_change_password": MessageLookupByLibrary.simpleMessage("Cambiar contraseña"),
@@ -533,7 +533,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "skill_up": MessageLookupByLibrary.simpleMessage("Subir Skill"),
         "solution_battle_count": MessageLookupByLibrary.simpleMessage("Conteo de Batallas"),
         "solution_target_count": MessageLookupByLibrary.simpleMessage("Conteo de Objetivos"),
-        "solution_total_battles_ap": m27,
+        "solution_total_battles_ap": m28,
         "sort_order": MessageLookupByLibrary.simpleMessage("Ordenar"),
         "sprites": MessageLookupByLibrary.simpleMessage("Sprites"),
         "sq_fragment_convert": MessageLookupByLibrary.simpleMessage("21 Fragmentos = 3 SQ"),

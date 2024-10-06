@@ -4705,6 +4705,17 @@ class S {
     );
   }
 
+  /// `Possible related {item} "GUESSED" based on time`
+  String guessed_on_time_hint(Object item) {
+    return Intl.message(
+      'Possible related $item "GUESSED" based on time',
+      name: 'guessed_on_time_hint',
+      desc: '',
+      locale: localeName,
+      args: [item],
+    );
+  }
+
   /// `Help`
   String get help {
     return Intl.message(

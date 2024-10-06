@@ -40,15 +40,17 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m19(rarity) => "${rarity}星從者PickUp";
 
+  static String m20(item) => "根据时间“推测”的可能关联的${item}";
+
   static String m3(error) => "導入失敗，Error:\n${error}";
 
   static String m4(name) => "${name}已存在";
 
   static String m5(site) => "跳轉到${site}";
 
-  static String m20(shown, total) => "顯示${shown}/總計${total}";
+  static String m21(shown, total) => "顯示${shown}/總計${total}";
 
-  static String m21(shown, ignore, total) => "顯示${shown}/忽略${ignore}/總計${total}";
+  static String m22(shown, ignore, total) => "顯示${shown}/忽略${ignore}/總計${total}";
 
   static String m6(first) => "${Intl.select(first, {
             'true': '已經是第一張',
@@ -56,17 +58,17 @@ class MessageLookup extends MessageLookupByLibrary {
             'other': '已經到頭了',
           })}";
 
-  static String m22(layer) => "第${layer}層";
+  static String m23(layer) => "第${layer}層";
 
   static String m7(n) => "第${n}節";
 
-  static String m23(region) => "出現錯誤或${region}無此關卡資料";
+  static String m24(region) => "出現錯誤或${region}無此關卡資料";
 
-  static String m24(runs) => "樣本數${runs}";
+  static String m25(runs) => "樣本數${runs}";
 
-  static String m25(index, total, enemy) => "版本${index}/${total} (${enemy}敵人)";
+  static String m26(index, total, enemy) => "版本${index}/${total} (${enemy}敵人)";
 
-  static String m26(unknown, dup, valid, total, selected) =>
+  static String m27(unknown, dup, valid, total, selected) =>
       "${unknown}不明, ${dup}重複, ${valid}/${total}有效, ${selected}已選";
 
   static String m8(region) => "${region}公告";
@@ -75,17 +77,17 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m10(n) => "重置規劃${n}(已顯示)";
 
-  static String m27(battles, ap) => "總計${battles}次戰鬥, ${ap} AP";
+  static String m28(battles, ap) => "總計${battles}次戰鬥, ${ap} AP";
 
   static String m11(n) => "個人資料${n}";
 
-  static String m28(color, trait) => "此寶具顯示為${color}卡，但不持有[${trait}]特性";
+  static String m29(color, trait) => "此寶具顯示為${color}卡，但不持有[${trait}]特性";
 
-  static String m29(trait) => "這是一個寶具，但不持有[${trait}]特性";
+  static String m30(trait) => "這是一個寶具，但不持有[${trait}]特性";
 
-  static String m30(count) => "存在${count}張滿寶五星，分享隊伍應盡可能低配減配";
+  static String m31(count) => "存在${count}張滿寶五星，分享隊伍應盡可能低配減配";
 
-  static String m31(remain) => "上傳過於頻繁，請等待${remain}秒";
+  static String m32(remain) => "上傳過於頻繁，請等待${remain}秒";
 
   static String m12(a, b) => "${a}${b}";
 
@@ -518,6 +520,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "growth_curve": MessageLookupByLibrary.simpleMessage("成長曲線"),
         "guda_female": MessageLookupByLibrary.simpleMessage("咕噠子"),
         "guda_male": MessageLookupByLibrary.simpleMessage("咕噠夫"),
+        "guessed_on_time_hint": m20,
         "help": MessageLookupByLibrary.simpleMessage("幫助"),
         "hide": MessageLookupByLibrary.simpleMessage("隱藏"),
         "hide_outdated": MessageLookupByLibrary.simpleMessage("隱藏已過期"),
@@ -630,8 +633,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "limited_event": MessageLookupByLibrary.simpleMessage("限時活動"),
         "limited_time": MessageLookupByLibrary.simpleMessage("限時"),
         "link": MessageLookupByLibrary.simpleMessage("連結"),
-        "list_count_shown_all": m20,
-        "list_count_shown_hidden_all": m21,
+        "list_count_shown_all": m21,
+        "list_count_shown_hidden_all": m22,
         "list_end_hint": m6,
         "load_ffo_data": MessageLookupByLibrary.simpleMessage("載入FFO資料"),
         "local_team_save_no_replay_warning": MessageLookupByLibrary.simpleMessage("僅保存關卡和隊伍資訊，無法保存操作資訊"),
@@ -671,7 +674,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "main_story": MessageLookupByLibrary.simpleMessage("主線記錄"),
         "main_story_chapter": MessageLookupByLibrary.simpleMessage("章節"),
         "map_gimmicks": MessageLookupByLibrary.simpleMessage("小部件"),
-        "map_layer_n": m22,
+        "map_layer_n": m23,
         "map_show_fq_spots_only": MessageLookupByLibrary.simpleMessage("僅有Free Quest地點"),
         "map_show_header_image": MessageLookupByLibrary.simpleMessage("顯示標題圖"),
         "map_show_roads": MessageLookupByLibrary.simpleMessage("顯示道路"),
@@ -788,17 +791,17 @@ class MessageLookup extends MessageLookupByLibrary {
         "quest_fields": MessageLookupByLibrary.simpleMessage("場地"),
         "quest_fixed_drop": MessageLookupByLibrary.simpleMessage("固定掉落"),
         "quest_fixed_drop_short": MessageLookupByLibrary.simpleMessage("掉落"),
-        "quest_not_found_error": m23,
+        "quest_not_found_error": m24,
         "quest_prefer_region": MessageLookupByLibrary.simpleMessage("首選區服"),
         "quest_prefer_region_hint": MessageLookupByLibrary.simpleMessage("若該關卡所屬活動在所選區服尚未開放，則預設顯示日服"),
         "quest_region_has_enemy_hint": MessageLookupByLibrary.simpleMessage("僅日服(2020/11之後)和美服(2020/12之後)可能含有敵方資料"),
         "quest_restriction": MessageLookupByLibrary.simpleMessage("編成限制"),
         "quest_reward": MessageLookupByLibrary.simpleMessage("通關獎勵"),
         "quest_reward_short": MessageLookupByLibrary.simpleMessage("獎勵"),
-        "quest_runs": m24,
+        "quest_runs": m25,
         "quest_timeline_sort_campaign_open": MessageLookupByLibrary.simpleMessage("AP消耗活動開放時間"),
         "quest_timeline_sort_quest_open": MessageLookupByLibrary.simpleMessage("關卡開放時間"),
-        "quest_version": m25,
+        "quest_version": m26,
         "quest_wave": MessageLookupByLibrary.simpleMessage("Wave"),
         "quit": MessageLookupByLibrary.simpleMessage("退出"),
         "raid_quest": MessageLookupByLibrary.simpleMessage("伐柱戰"),
@@ -812,7 +815,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "rate_play_store": MessageLookupByLibrary.simpleMessage("Google Play評分"),
         "raw_gacha_data": MessageLookupByLibrary.simpleMessage("原始卡池資料"),
         "read_device_info": MessageLookupByLibrary.simpleMessage("讀取本設備參數"),
-        "recognizer_result_count": m26,
+        "recognizer_result_count": m27,
         "recorder_screenshot_current_view": MessageLookupByLibrary.simpleMessage("當前視窗"),
         "recorder_screenshot_full_view": MessageLookupByLibrary.simpleMessage("完整視窗"),
         "refresh": MessageLookupByLibrary.simpleMessage("重新整理"),
@@ -924,7 +927,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "skip_current_turn": MessageLookupByLibrary.simpleMessage("跳過當前回合"),
         "solution_battle_count": MessageLookupByLibrary.simpleMessage("次數"),
         "solution_target_count": MessageLookupByLibrary.simpleMessage("目標數"),
-        "solution_total_battles_ap": m27,
+        "solution_total_battles_ap": m28,
         "sort_order": MessageLookupByLibrary.simpleMessage("排序"),
         "sound_effect": MessageLookupByLibrary.simpleMessage("音效"),
         "special_reward_hide": MessageLookupByLibrary.simpleMessage("隱藏特殊報酬"),
@@ -994,8 +997,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "target": MessageLookupByLibrary.simpleMessage("目標"),
         "td_animation": MessageLookupByLibrary.simpleMessage("寶具演出"),
         "td_base_hits_hint": MessageLookupByLibrary.simpleMessage("同一寶具不同持有者可能擁有不同的色卡和Hit分布"),
-        "td_cardcolor_hint": m28,
-        "td_cardnp_hint": m29,
+        "td_cardcolor_hint": m29,
+        "td_cardnp_hint": m30,
         "td_rankup": MessageLookupByLibrary.simpleMessage("寶具強化"),
         "team": MessageLookupByLibrary.simpleMessage("隊伍"),
         "team_backup_member": MessageLookupByLibrary.simpleMessage("後排從者"),
@@ -1025,7 +1028,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "time_start": MessageLookupByLibrary.simpleMessage("開始"),
         "tips": MessageLookupByLibrary.simpleMessage("小建議"),
         "toggle_dark_mode": MessageLookupByLibrary.simpleMessage("切換深色模式"),
-        "too_many_td5_svts_warning": m30,
+        "too_many_td5_svts_warning": m31,
         "tooltip_refresh_sliders": MessageLookupByLibrary.simpleMessage("刷新輪播圖"),
         "total": MessageLookupByLibrary.simpleMessage("總計"),
         "total_ap": MessageLookupByLibrary.simpleMessage("總AP"),
@@ -1061,7 +1064,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "upload_and_close_app_alert": MessageLookupByLibrary.simpleMessage("是否上傳資料再關閉?"),
         "upload_before_close_app": MessageLookupByLibrary.simpleMessage("關閉前上傳"),
         "upload_not_eligible_hint": MessageLookupByLibrary.simpleMessage("目前隊伍不滿足上傳條件:"),
-        "upload_paused": m31,
+        "upload_paused": m32,
         "upload_team_confirmation": MessageLookupByLibrary.simpleMessage(
             "確認上傳當前的隊伍?\n\n注意事項：(為了方便其他玩家檢索)\n- 請勿上傳關卡開放時未實裝的從者!!!\n- 請盡量降低隊伍配置(不必要的聖杯、被動技能、 寶具等級、未使用的後排從者等)以供他人參考。\n- 上傳的隊伍可能因數據格式更新/不相容等原因被移除。"),
         "upload_team_critical_team_warning": MessageLookupByLibrary.simpleMessage("普通指令卡過多，請減少不必要出卡。若確實為爆擊隊請勾選:"),

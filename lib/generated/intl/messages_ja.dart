@@ -40,9 +40,9 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m5(site) => "${site}へ";
 
-  static String m20(shown, total) => "表示${shown}/合計${total}";
+  static String m21(shown, total) => "表示${shown}/合計${total}";
 
-  static String m21(shown, ignore, total) => "表示${shown}/無視${ignore}/合計${total}";
+  static String m22(shown, ignore, total) => "表示${shown}/無視${ignore}/合計${total}";
 
   static String m6(first) => "${Intl.select(first, {
             'true': '最初のもの',
@@ -50,7 +50,7 @@ class MessageLookup extends MessageLookupByLibrary {
             'other': '最後のもの',
           })}";
 
-  static String m22(layer) => "第${layer}層";
+  static String m23(layer) => "第${layer}層";
 
   static String m7(n) => "第${n}節";
 
@@ -60,7 +60,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m10(n) => "プラン${n}をリセット(表示のみ)";
 
-  static String m27(battles, ap) => "共${battles}回戦闘、${ap} AP";
+  static String m28(battles, ap) => "共${battles}回戦闘、${ap} AP";
 
   static String m11(n) => "プロフィール${n}";
 
@@ -464,8 +464,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "level": MessageLookupByLibrary.simpleMessage("レベル"),
         "limited_event": MessageLookupByLibrary.simpleMessage("期間限定イベント"),
         "link": MessageLookupByLibrary.simpleMessage("リンク"),
-        "list_count_shown_all": m20,
-        "list_count_shown_hidden_all": m21,
+        "list_count_shown_all": m21,
+        "list_count_shown_hidden_all": m22,
         "list_end_hint": m6,
         "login_bonus": MessageLookupByLibrary.simpleMessage("ログインボーナス"),
         "login_change_name": MessageLookupByLibrary.simpleMessage("ユーザー名を変更"),
@@ -495,7 +495,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "main_quest": MessageLookupByLibrary.simpleMessage("メインクエスト"),
         "main_story": MessageLookupByLibrary.simpleMessage("シナリオ"),
         "main_story_chapter": MessageLookupByLibrary.simpleMessage("チャプター"),
-        "map_layer_n": m22,
+        "map_layer_n": m23,
         "master_affection": MessageLookupByLibrary.simpleMessage("マスター好感度"),
         "master_detail_width": MessageLookupByLibrary.simpleMessage("Master-Detail width"),
         "master_mission": MessageLookupByLibrary.simpleMessage("マスターミッション"),
@@ -646,7 +646,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "skill_up": MessageLookupByLibrary.simpleMessage("スキル強化"),
         "solution_battle_count": MessageLookupByLibrary.simpleMessage("カウント"),
         "solution_target_count": MessageLookupByLibrary.simpleMessage("目標カウント"),
-        "solution_total_battles_ap": m27,
+        "solution_total_battles_ap": m28,
         "sort_order": MessageLookupByLibrary.simpleMessage("ソート"),
         "spirit_origin_release_quest": MessageLookupByLibrary.simpleMessage("霊基解放クエスト"),
         "sprites": MessageLookupByLibrary.simpleMessage("モデル"),

@@ -47,9 +47,9 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m5(site) => "${site}(으)로 이동";
 
-  static String m20(shown, total) => "${shown} 표시 (합계 ${total})";
+  static String m21(shown, total) => "${shown} 표시 (합계 ${total})";
 
-  static String m21(shown, ignore, total) => "${shown} 표시, ${ignore} 무시 (합계 ${total})";
+  static String m22(shown, ignore, total) => "${shown} 표시, ${ignore} 무시 (합계 ${total})";
 
   static String m6(first) => "${Intl.select(first, {
             'true': '이미 첫번째입니다.',
@@ -57,15 +57,15 @@ class MessageLookup extends MessageLookupByLibrary {
             'other': '마지막입니다.',
           })}";
 
-  static String m22(layer) => "제${layer}층";
+  static String m23(layer) => "제${layer}층";
 
   static String m7(n) => "제${n}절";
 
-  static String m23(region) => "문제가 발생했거나 ${region}에 이 퀘스트의 데이터가 없습니다.";
+  static String m24(region) => "문제가 발생했거나 ${region}에 이 퀘스트의 데이터가 없습니다.";
 
-  static String m24(runs) => "실행 횟수 {실행}";
+  static String m25(runs) => "실행 횟수 {실행}";
 
-  static String m26(unknown, dup, valid, total, selected) =>
+  static String m27(unknown, dup, valid, total, selected) =>
       "${unknown}불명, ${dup}중복, ${valid}/${total}유효, ${selected}선택된";
 
   static String m8(region) => "${region} 공고";
@@ -74,7 +74,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m10(n) => "계획 초기화 ${n}(표시된)";
 
-  static String m27(battles, ap) => "합계 ${battles}회 전투, ${ap} AP";
+  static String m28(battles, ap) => "합계 ${battles}회 전투, ${ap} AP";
 
   static String m11(n) => "프로필${n}";
 
@@ -551,8 +551,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "limited_event": MessageLookupByLibrary.simpleMessage("기간 한정 이벤트"),
         "limited_time": MessageLookupByLibrary.simpleMessage("제한 시간"),
         "link": MessageLookupByLibrary.simpleMessage("링크"),
-        "list_count_shown_all": m20,
-        "list_count_shown_hidden_all": m21,
+        "list_count_shown_all": m21,
+        "list_count_shown_hidden_all": m22,
         "list_end_hint": m6,
         "load_ffo_data": MessageLookupByLibrary.simpleMessage("FFO 데이터 로드"),
         "logic_type_and": MessageLookupByLibrary.simpleMessage("그리고"),
@@ -588,7 +588,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "main_story": MessageLookupByLibrary.simpleMessage("메인 스토리"),
         "main_story_chapter": MessageLookupByLibrary.simpleMessage("챕터"),
         "map_gimmicks": MessageLookupByLibrary.simpleMessage("기믹"),
-        "map_layer_n": m22,
+        "map_layer_n": m23,
         "master_detail_width": MessageLookupByLibrary.simpleMessage("Master-Detail width"),
         "master_mission": MessageLookupByLibrary.simpleMessage("마스터 미션"),
         "master_mission_related_quest": MessageLookupByLibrary.simpleMessage("관련된 퀘스트"),
@@ -678,7 +678,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "quest_fields": MessageLookupByLibrary.simpleMessage("필드"),
         "quest_fixed_drop": MessageLookupByLibrary.simpleMessage("드롭"),
         "quest_fixed_drop_short": MessageLookupByLibrary.simpleMessage("드롭"),
-        "quest_not_found_error": m23,
+        "quest_not_found_error": m24,
         "quest_prefer_region": MessageLookupByLibrary.simpleMessage("선호하는 지역"),
         "quest_prefer_region_hint": MessageLookupByLibrary.simpleMessage("퀘스트의 관련 이벤트가 선택된 지역에서 시작되지 않은 경우 JP로 돌아갑니다."),
         "quest_region_has_enemy_hint":
@@ -686,12 +686,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "quest_restriction": MessageLookupByLibrary.simpleMessage("편성 제한"),
         "quest_reward": MessageLookupByLibrary.simpleMessage("보너스"),
         "quest_reward_short": MessageLookupByLibrary.simpleMessage("보너스"),
-        "quest_runs": m24,
+        "quest_runs": m25,
         "random": MessageLookupByLibrary.simpleMessage("랜덤"),
         "rarity": MessageLookupByLibrary.simpleMessage("레어도"),
         "rate_app_store": MessageLookupByLibrary.simpleMessage("App Store에서 평가"),
         "rate_play_store": MessageLookupByLibrary.simpleMessage("Google Play에서 평가"),
-        "recognizer_result_count": m26,
+        "recognizer_result_count": m27,
         "region_cn": MessageLookupByLibrary.simpleMessage("간체 중국 서버"),
         "region_jp": MessageLookupByLibrary.simpleMessage("일본 서버"),
         "region_kr": MessageLookupByLibrary.simpleMessage("한국 서버"),
@@ -779,7 +779,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "skill_up": MessageLookupByLibrary.simpleMessage("스킬 레벨업"),
         "solution_battle_count": MessageLookupByLibrary.simpleMessage("카운트"),
         "solution_target_count": MessageLookupByLibrary.simpleMessage("목표 카운트"),
-        "solution_total_battles_ap": m27,
+        "solution_total_battles_ap": m28,
         "sort_order": MessageLookupByLibrary.simpleMessage("소트"),
         "sound_effect": MessageLookupByLibrary.simpleMessage("음향 효과"),
         "special_reward_hide": MessageLookupByLibrary.simpleMessage("특별 보상 숨기기"),

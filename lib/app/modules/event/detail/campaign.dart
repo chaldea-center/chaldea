@@ -273,7 +273,7 @@ class EventRelatedCampaigns extends StatelessWidget {
     final time = [event.startedAt, event.endedAt].map((e) => e.sec2date().toDateString()).join(" ~ ");
     return ListView(
       children: [
-        SHeader("Guessed Related Campaigns with same start/end time.\n${region.upper}: $time"),
+        SHeader('${S.current.guessed_on_time_hint(S.current.event_campaign)}\n${region.upper}: $time'),
         for (final (index, campaign) in relatedCampaigns.indexed)
           SimpleAccordion(
             expanded: true,

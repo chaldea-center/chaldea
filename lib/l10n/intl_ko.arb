@@ -422,6 +422,7 @@
   "growth_curve": "성장 곡선",
   "guda_female": "구다코",
   "guda_male": "구다오",
+  "guessed_on_time_hint": null,
   "help": "도움말",
   "hide": "숨기기",
   "hide_outdated": "기간종료 숨기기",

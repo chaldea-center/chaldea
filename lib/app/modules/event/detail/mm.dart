@@ -1,3 +1,4 @@
+import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
@@ -12,10 +13,10 @@ class EventRelatedMMPage extends HookWidget {
     final mms = this.mms.toList();
     mms.sort2((e) => e.startedAt);
 
-    String hint = 'Guessed Related Master Mission from start/end time.';
+    String hint = S.current.guessed_on_time_hint(S.current.master_mission);
     final eventJp = db.gameData.events[event.id];
     if (eventJp != null) {
-      hint += '\nJP event: ';
+      hint += '\nJP: ';
       hint += [eventJp.startedAt, eventJp.endedAt].map((e) => e.sec2date().toStringShort(omitSec: true)).join(' ~ ');
     }
     final children = [

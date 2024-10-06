@@ -422,6 +422,7 @@
   "growth_curve": "成长曲线",
   "guda_female": "咕哒子",
   "guda_male": "咕哒夫",
+  "guessed_on_time_hint": "根据时间“推测”的可能关联的{item}",
   "help": "帮助",
   "hide": "隐藏",
   "hide_outdated": "隐藏已过期",

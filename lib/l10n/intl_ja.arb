@@ -422,6 +422,7 @@
   "growth_curve": "成長曲線",
   "guda_female": "ぐだ子",
   "guda_male": "ぐだ男",
+  "guessed_on_time_hint": null,
   "help": "ヘルプ",
   "hide": null,
   "hide_outdated": "期限切れを非表示",

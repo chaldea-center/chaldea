@@ -54,7 +54,7 @@ class TimerEventItem with TimerItem {
         if (event.startedAt > now) {
           // subtitle = Text("Start at ${event.startedAt.sec2date().toStringShort(omitSec: true)}");
         } else if (shopClosedAt > event.endedAt && shopClosedAt < event.endedAt + 35 * kSecsPerDay) {
-          subtitle = Text("Shop closed at ${shopClosedAt.sec2date().toStringShort(omitSec: true)}");
+          subtitle = Text("Shop close ${fmtDate(shopClosedAt)}");
         }
         return ListTile(
           dense: true,
