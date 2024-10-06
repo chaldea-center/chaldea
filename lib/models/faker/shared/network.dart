@@ -229,12 +229,18 @@ abstract class NetworkManagerBase<TRequest extends FRequestBase, TUser extends A
 
   Future<Response> requestStartImpl(TRequest request);
 
-  Future<void> setLocalNotification() async {
+  Future<void> setLocalNotification({List<int>? removedAps}) async {
     if (!LocalNotificationUtil.supported) return;
     if (!db.settings.fakerSettings.apRecoveredNotification) return;
     if (!(await LocalNotificationUtil.checkPermission())) return;
     final userGame = mstData.user;
     if (userGame == null) return;
+    if (removedAps != null) {
+      for (final targetAp in removedAps) {
+        final int id = LocalNotificationUtil.generateUserApRecoverId(user.region.index, userGame.userId, targetAp);
+        await LocalNotificationUtil.plugin.cancel(id);
+      }
+    }
     for (final targetAp in user.recoveredAps) {
       final isFull = targetAp == 0;
       final int id = LocalNotificationUtil.generateUserApRecoverId(user.region.index, userGame.userId, targetAp);

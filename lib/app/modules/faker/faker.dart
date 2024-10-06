@@ -351,7 +351,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
       headerBuilder: (context, _) {
         return ListTile(
           dense: true,
-          title: Text('Drops Statistics (${runtime.totalDropStat.totalCount} runs)'),
+          title: Text('Drop Statistics (${runtime.totalDropStat.totalCount} runs)'),
           subtitle: runtime.totalRewards.isEmpty
               ? null
               : Wrap(
@@ -363,7 +363,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
                       id: itemId,
                       width: 30,
                       text: [
-                        '+${runtime.totalRewards[itemId]}',
+                        '+${runtime.totalRewards[itemId]?.format()}',
                         mstData.getItemOrSvtNum(itemId).format(),
                       ].join('\n'),
                     );
@@ -1176,10 +1176,10 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
               await LocalNotificationUtil.requestPermissions();
               await agent.network.setLocalNotification();
             } else {
-              final notifications = await LocalNotificationUtil.plugin.getActiveNotifications();
+              final notifications = await LocalNotificationUtil.plugin.pendingNotificationRequests();
               for (final notification in notifications) {
-                if (notification.id != null && LocalNotificationUtil.isUserApFullId(notification.id!)) {
-                  LocalNotificationUtil.plugin.cancel(notification.id!);
+                if (LocalNotificationUtil.isUserApId(notification.id)) {
+                  LocalNotificationUtil.plugin.cancel(notification.id);
                 }
               }
             }
@@ -1197,7 +1197,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
               setState(() {
                 if (lastChanged != null) {
                   agent.user.recoveredAps.remove(lastChanged);
-                  agent.network.setLocalNotification();
+                  agent.network.setLocalNotification(removedAps: [lastChanged]);
                 }
               });
             },
@@ -1207,7 +1207,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
               InputCancelOkDialog(
                 title: 'AP',
                 keyboardType: TextInputType.number,
-                helperText: '0 = AP full (${(mstData.user ?? agent.user.userGame)?.actMax})',
+                helperText: '0 = Max AP (${(mstData.user ?? agent.user.userGame)?.actMax})',
                 validate: (s) {
                   int v = int.tryParse(s) ?? -1;
                   return v >= 0 && v < 200 && v < Maths.max(ConstData.userLevel.values.map((e) => e.maxAp));
@@ -1225,49 +1225,34 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
         Center(
           child: TextButton(
             onPressed: () async {
-              final actives = await LocalNotificationUtil.plugin.getActiveNotifications();
               final pendings = await LocalNotificationUtil.plugin.pendingNotificationRequests();
-              if (actives.isEmpty && pendings.isEmpty) {
+              if (pendings.isEmpty) {
                 EasyLoading.showInfo('No notifications');
                 return;
               }
+              pendings.sort2((e) => e.id);
               router.showDialog(builder: (context) {
                 return SimpleDialog(
-                  title: const Text('Notifications'),
-                  children: [
-                    if (actives.isNotEmpty) SHeader('${actives.length} Active Notifications'),
-                    ...divideList(
-                      [
-                        for (final notification in actives..sort2((e) => e.id ?? 0))
-                          ListTile(
-                            dense: true,
-                            title: Text(notification.title ?? 'no title'),
-                            subtitle: Text('id ${notification.id}\n${notification.body}'),
-                          ),
-                      ],
-                      const Divider(height: 1),
-                      top: true,
-                      bottom: true,
-                    ),
-                    if (actives.isNotEmpty) SHeader('${pendings.length} Pending Notifications'),
-                    ...divideList(
-                      [
-                        for (final notification in pendings..sort2((e) => e.id))
-                          ListTile(
-                            dense: true,
-                            title: Text(notification.title ?? 'no title'),
-                            subtitle: Text('id ${notification.id}\n${notification.body}'),
-                          ),
-                      ],
-                      const Divider(height: 1),
-                      top: true,
-                      bottom: true,
-                    )
-                  ],
+                  title: Text('${pendings.length} Pending Notifications'),
+                  children: divideList(
+                    [
+                      for (final notification in pendings)
+                        ListTile(
+                          dense: true,
+                          contentPadding: EdgeInsets.symmetric(horizontal: 24),
+                          title: Text(notification.title ?? 'no title'),
+                          subtitle: Text([
+                            if (kDebugMode) 'id ${notification.id}',
+                            '${notification.body}',
+                          ].join('\n')),
+                        ),
+                    ],
+                    const Divider(height: 1),
+                  ),
                 );
               });
             },
-            child: const Text('Active/Pending Notifications'),
+            child: const Text('Pending Notifications'),
           ),
         ),
       ],

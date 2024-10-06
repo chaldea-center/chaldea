@@ -104,10 +104,10 @@ class _FakerAccountsPageState extends State<FakerAccountsPage> {
                             for (final (index, user) in users.indexed) {
                               if (index != 0) {
                                 rootRouter.appState.addWindow();
-                                await Future.delayed(const Duration(milliseconds: 500));
+                                await Future.delayed(const Duration(milliseconds: 100));
                               }
                               router.pushPage(FakeGrandOrder(user: user));
-                              await Future.delayed(const Duration(milliseconds: 500));
+                              await Future.delayed(const Duration(milliseconds: 400));
                             }
                           },
                     label: const Text('Open All'),

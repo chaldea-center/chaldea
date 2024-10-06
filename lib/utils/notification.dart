@@ -155,7 +155,8 @@ abstract class LocalNotificationUtil {
 
   static const int _kUserIdMod = 10 ^ 5;
   static int generateUserApRecoverId(int region, int userId, int ap) {
-    // 1+3+17+8=29 bits
+    // 1   +3     +17    +8 =29 bits
+    // flag+region+userId+ap
     int v = 1;
     v = (v << 3) + region;
     v = (v << 17) + userId % _kUserIdMod;
@@ -163,7 +164,15 @@ abstract class LocalNotificationUtil {
     return v;
   }
 
-  static bool isUserApFullId(int id) {
-    return (id >> (3 + 17 + 8)) == 1;
+  static int _getBitRange(int value, int skip, int length) {
+    return (value >> skip) & ((1 << length) - 1);
+  }
+
+  static bool isUserApId(int id, {int? region, int? userId, int? ap}) {
+    if ((id >> (3 + 17 + 8)) != 1) return false;
+    if (ap != null && ap != _getBitRange(id, 0, 8)) return false;
+    if (userId != null && userId != _getBitRange(id, 8, 17)) return false;
+    if (region != null && region != _getBitRange(id, 17 + 8, 3)) return false;
+    return true;
   }
 }
