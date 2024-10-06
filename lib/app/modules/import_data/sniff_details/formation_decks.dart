@@ -43,6 +43,8 @@ class UserFormationDecksPageState extends State<UserFormationDecksPage> {
         DividerWithTitle(title: '[${deck.id}] No.${deck.deckNo} ${deck.name}'),
         FormationCard(
           formation: deck.toFormation(mstData: mstData, userSvts: userSvts),
+          userSvtCollections: mstData.userSvtCollection.dict,
+          showBond: true,
         ),
         if (widget.onSelected != null)
           Padding(

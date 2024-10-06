@@ -11,6 +11,7 @@ class FormationCard extends StatelessWidget {
   final bool showAllMysticCodeIcon;
   final bool fadeOutMysticCode;
   final Map<int, UserServantCollectionEntity>? userSvtCollections;
+  final bool showBond;
 
   const FormationCard({
     super.key,
@@ -18,6 +19,7 @@ class FormationCard extends StatelessWidget {
     this.showAllMysticCodeIcon = false,
     this.fadeOutMysticCode = false,
     this.userSvtCollections,
+    this.showBond = false,
   });
 
   @override
@@ -34,13 +36,15 @@ class FormationCard extends StatelessWidget {
 
   Widget _buildServantIcons(BuildContext context, final SvtSaveData? storedData) {
     String svtInfo = '', ceInfo = "";
+    final svtCollection = userSvtCollections?[storedData?.svtId];
     if (storedData != null) {
       if (storedData.svtId != null && storedData.svtId != 0) {
         svtInfo = [
-          ' Lv.${storedData.lv} NP${storedData.tdLv}',
+          if (showBond && svtCollection != null) ' ◈ ${svtCollection.friendshipRank}',
+          ' Lv.${storedData.lv} NP${storedData.tdLv} ',
           if (storedData.atkFou != 1000 || storedData.hpFou != 1000) ' ${storedData.atkFou}/${storedData.hpFou}',
           ' ${storedData.skillLvs.join("/")}',
-          ' ${storedData.appendLvs.map((e) => e == 0 ? "-" : e).join("/")}',
+          ' ${storedData.appendLvs.map((e) => e == 0 ? "-" : e).join("/")} ',
         ].join('\n');
       }
       if (storedData.ceId != null && storedData.ceId != 0) {
@@ -52,10 +56,11 @@ class FormationCard extends StatelessWidget {
       }
     }
 
+    final svt = db.gameData.servantsById[storedData?.svtId];
+
     Widget svtIcon = GameCardMixin.cardIconBuilder(
       context: context,
-      icon:
-          db.gameData.servantsById[storedData?.svtId]?.ascendIcon(storedData!.limitCount) ?? Atlas.common.emptySvtIcon,
+      icon: svt?.ascendIcon(storedData!.limitCount) ?? Atlas.common.emptySvtIcon,
       // width: 80,
       aspectRatio: 132 / 144,
       text: svtInfo,
@@ -134,10 +139,20 @@ class FormationCard extends StatelessWidget {
         ));
       },
     );
+    final bonds =
+        svtCollection == null ? null : svt?.getPastNextBonds(svtCollection.friendshipRank, svtCollection.friendship);
+
     Widget child = Column(
       children: [
         svtIcon,
         ceIcon,
+        if (showBond && bonds != null)
+          BondProgress(
+            value: bonds.$1,
+            total: bonds.$1 + bonds.$2,
+            padding: EdgeInsets.only(top: 1.5),
+            minHeight: 3,
+          ),
       ],
     );
     child = Container(
@@ -195,5 +210,28 @@ class FormationCard extends StatelessWidget {
       flex: mcIcons.length > 1 ? 12 : 8,
       child: child,
     );
+  }
+}
+
+class BondProgress extends StatelessWidget {
+  final int value;
+  final int total;
+  final double? minHeight;
+  final EdgeInsetsGeometry? padding;
+  const BondProgress({super.key, required this.value, required this.total, this.padding, this.minHeight});
+
+  @override
+  Widget build(BuildContext context) {
+    final highlight = value == 0 || value == total;
+    Widget child = LinearProgressIndicator(
+      minHeight: minHeight,
+      value: value / total,
+      color: highlight ? Colors.green : Colors.blue,
+      backgroundColor: highlight ? Colors.amber.shade800 : Colors.red,
+    );
+    if (padding != null) {
+      child = Padding(padding: padding!, child: child);
+    }
+    return child;
   }
 }

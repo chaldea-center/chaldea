@@ -634,6 +634,14 @@ class Servant extends BasicServant {
     return materials;
   }
 
+  (int past, int next) getPastNextBonds(int friendshipRank, int friendship) {
+    if (bondGrowth.isEmpty || bondGrowth.length < friendshipRank) return (1, 0);
+    if (friendshipRank == bondGrowth.length) {
+      return (bondGrowth[friendshipRank - 1] - bondGrowth[friendshipRank - 2], 0);
+    }
+    return (friendship - bondGrowth[friendshipRank - 1], bondGrowth[friendshipRank] - friendship);
+  }
+
   void updateStat() {
     db.itemCenter.updateSvts(svts: [this]);
   }

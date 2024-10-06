@@ -263,13 +263,11 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
         ),
       ));
       if (curLv != null && nextLv != null && userGame.exp >= curLv.requiredExp && userGame.exp <= nextLv.requiredExp) {
-        children.add(Row(
-          children: [
-            const SizedBox(width: 16),
-            Expanded(flex: userGame.exp - curLv.requiredExp, child: Container(height: 4, color: Colors.blue)),
-            Expanded(flex: nextLv.requiredExp - userGame.exp, child: Container(height: 4, color: Colors.red)),
-            const SizedBox(width: 16),
-          ],
+        children.add(BondProgress(
+          value: userGame.exp - curLv.requiredExp,
+          total: nextLv.requiredExp - curLv.requiredExp,
+          padding: EdgeInsets.symmetric(horizontal: 16),
+          minHeight: 4,
         ));
       }
 
@@ -796,12 +794,8 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
                             svt.bondGrowth.length < collection.friendshipRank + 1) {
                           return const Expanded(flex: 10, child: SizedBox.shrink());
                         }
-                        final prevBondTotal =
-                                collection.friendshipRank == 0 ? 0 : svt.bondGrowth[collection.friendshipRank - 1],
-                            curBondTotal = svt.bondGrowth[collection.friendshipRank];
-                        final bool reachBondLimit = collection.friendship >= curBondTotal;
-                        final int bondA = collection.friendship - prevBondTotal,
-                            bondB = curBondTotal - collection.friendship;
+                        final (bondA, bondB) = svt.getPastNextBonds(collection.friendshipRank, collection.friendship);
+                        final bool reachBondLimit = bondB == 0;
 
                         String bondText = 'Lv.${collection.friendshipRank}/${10 + collection.friendshipExceedCount}'
                             // '\n${collection.friendship}'
@@ -825,13 +819,11 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
                                 maxLines: bondText.count('\n') + 1,
                                 style: reachBondLimit ? TextStyle(color: Theme.of(context).colorScheme.error) : null,
                               ),
-                              Row(
-                                children: [
-                                  const SizedBox(width: 4),
-                                  Expanded(flex: bondA, child: Container(height: 4, color: Colors.blue)),
-                                  Expanded(flex: bondB, child: Container(height: 4, color: Colors.red)),
-                                  const SizedBox(width: 4),
-                                ],
+                              BondProgress(
+                                value: bondA,
+                                total: bondA + bondB,
+                                padding: EdgeInsets.symmetric(horizontal: 4),
+                                minHeight: 4,
                               ),
                             ],
                           ),
@@ -939,19 +931,6 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
             icon: const Icon(Icons.add_circle),
           ),
         ),
-        SwitchListTile.adaptive(
-          dense: true,
-          value: battleOption.supportCeMaxLimitBreak,
-          title: Text('${S.current.support_servant} - ${S.current.craft_essence_short} ${S.current.max_limit_break}'),
-          onChanged: (v) {
-            runtime.lockTask(() {
-              setState(() {
-                battleOption.supportCeMaxLimitBreak = v;
-              });
-            });
-          },
-          controlAffinity: ListTileControlAffinity.trailing,
-        ),
         const Divider(),
         SwitchListTile.adaptive(
           dense: true,
@@ -980,8 +959,10 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
           value: battleOption.isApHalf,
           title: const Text("During AP Half Event"),
           onChanged: (v) {
-            setState(() {
-              battleOption.isApHalf = v;
+            runtime.lockTask(() {
+              setState(() {
+                battleOption.isApHalf = v;
+              });
             });
           },
         ),
@@ -1102,6 +1083,19 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
             runtime.lockTask(() {
               setState(() {
                 battleOption.stopIfBondLimit = v;
+              });
+            });
+          },
+          controlAffinity: ListTileControlAffinity.trailing,
+        ),
+        SwitchListTile.adaptive(
+          dense: true,
+          value: battleOption.supportCeMaxLimitBreak,
+          title: Text('${S.current.support_servant} - ${S.current.craft_essence_short} ${S.current.max_limit_break}'),
+          onChanged: (v) {
+            runtime.lockTask(() {
+              setState(() {
+                battleOption.supportCeMaxLimitBreak = v;
               });
             });
           },
