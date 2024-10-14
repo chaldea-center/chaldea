@@ -1521,6 +1521,27 @@ void main() async {
     expect(defenceWithPassive, 1100);
   });
 
+  test('CommandCode are active skills', () async {
+    final List<PlayerSvtData> setting = [
+      PlayerSvtData.id(703300)
+        ..lv = 90
+        ..tdLv = 5
+        ..skillLvs = [10, 10, 10]
+        ..commandCodes = [db.gameData.commandCodesById[8400950], null, null, null, null],
+    ];
+    final battle = BattleData();
+    final quest = db.gameData.questPhases[9300040603]!;
+    await battle.init(quest, setting, null);
+
+    final arjuna = battle.onFieldAllyServants[0]!;
+    await battle.activateSvtSkill(0, 0);
+    final enemy = battle.onFieldEnemies[0]!;
+    final previousHp = enemy.hp;
+
+    await battle.playerTurn([CombatAction(arjuna, arjuna.getCards()[0])]);
+    expect(previousHp - enemy.hp, 7000);
+  });
+
   group('Summer Eresh related tests', () {
     test('bond & starting position & dmgBattlePoint', () async {
       final List<PlayerSvtData?> setting = [

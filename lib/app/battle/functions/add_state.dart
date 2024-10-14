@@ -25,7 +25,9 @@ class AddState {
     final isClassPassive = skillInfoType == SkillInfoType.svtClassPassive;
     final isCommandCode = skillInfoType == SkillInfoType.commandCode;
 
-    bool isPassive = skillType == SkillType.passive;
+    // skillInfoType != null means it's from a proper skill. Otherwise the concept of passive doesn't apply
+    // e.g. from trigger buffs
+    bool isPassive = skillType == SkillType.passive && skillInfoType != null;
     if (dataVals.ProcActive == 1) {
       isPassive = false;
     } else if (dataVals.ProcPassive == 1) {

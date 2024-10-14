@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.5.15
+
+- Fix command codes procing as passive skills
+
 ## 2.5.14
 
 Lasengle shi ne!
