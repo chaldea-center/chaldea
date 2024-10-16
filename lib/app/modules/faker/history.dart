@@ -29,6 +29,12 @@ class _FakerHistoryViewerState extends State<FakerHistoryViewer> {
         actions: [
           IconButton(
             onPressed: () {
+              setState(() {});
+            },
+            icon: Icon(Icons.replay),
+          ),
+          IconButton(
+            onPressed: () {
               final history = agent.network.history;
               if (history.length > 5) {
                 history.removeRange(0, history.length - 5);
@@ -124,6 +130,12 @@ class _FakerHistoryViewerState extends State<FakerHistoryViewer> {
     Map? data;
     if (detail.isSuccess()) {
       data = detail.success;
+      if (detail.nid == 'gamedata' && data != null) {
+        data = {
+          for (final (k, v) in data.items)
+            k: const {'webview', 'assetbundle', 'master', 'assetbundleKey'}.contains(k) && v != '' ? '...' : v
+        };
+      }
       if (data?.isNotEmpty != true && detail.fail?.isNotEmpty == true) {
         data = detail.fail;
       }

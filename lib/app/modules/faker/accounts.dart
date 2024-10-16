@@ -121,13 +121,7 @@ class _FakerAccountsPageState extends State<FakerAccountsPage> {
   }
 
   Widget itemBuilder(BuildContext context, AutoLoginData user) {
-    Widget child;
-    switch (user) {
-      case AutoLoginDataJP():
-        child = buildJP(context, user);
-      case AutoLoginDataCN():
-        child = buildCN(context, user);
-    }
+    Widget child = buildOne(context: context, user: user);
 
     if (!sorting) {
       child = Row(
@@ -161,45 +155,38 @@ class _FakerAccountsPageState extends State<FakerAccountsPage> {
     return child;
   }
 
-  Widget buildJP(BuildContext context, AutoLoginDataJP user) {
+  Widget buildOne({required BuildContext context, required AutoLoginData user}) {
     return ListTile(
       dense: true,
       key: ObjectKey(user),
-      title: Text('[${user.region.upper}] ${user.userGame?.name}'),
-      subtitle: Text(user.userGame?.friendCode ?? user.auth?.userId.toString() ?? 'null'),
+      title: Text('[${user.serverName}] ${user.userGame?.name}'),
+      subtitle: Text(user.userGame?.friendCode ?? 'null'),
       trailing: sorting
           ? null
-          : IconButton(
-              onPressed: () async {
-                await router.pushPage(FakerAccountEditPage(user: user));
-                if (mounted) setState(() {});
-              },
-              icon: const Icon(Icons.edit),
-              iconSize: 20,
+          : Row(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                TimerUpdate(
+                  duration: Duration(seconds: 60),
+                  builder: (context, _) => user.userGame == null
+                      ? SizedBox.shrink()
+                      : Text(
+                          '${user.userGame?.calCurAp()}/${user.userGame?.actMax}',
+                          style: Theme.of(context).textTheme.bodySmall,
+                        ),
+                ),
+                IconButton(
+                  onPressed: () async {
+                    await router.pushPage(FakerAccountEditPage(user: user));
+                    if (mounted) setState(() {});
+                  },
+                  icon: const Icon(Icons.edit),
+                  iconSize: 20,
+                ),
+              ],
             ),
       onTap: () {
-        router.pushPage(FakeGrandOrder(user: user));
-      },
-    );
-  }
-
-  Widget buildCN(BuildContext context, AutoLoginDataCN user) {
-    return ListTile(
-      dense: true,
-      key: ObjectKey(user),
-      title: Text('[${user.region.upper}-${user.gameServer.shownName}] ${user.nickname}'),
-      subtitle: Text(user.userGame?.friendCode ?? "UID ${user.uid}"),
-      trailing: sorting
-          ? null
-          : IconButton(
-              onPressed: () async {
-                await router.pushPage(FakerAccountEditPage(user: user));
-                if (mounted) setState(() {});
-              },
-              icon: const Icon(Icons.edit),
-              iconSize: 20,
-            ),
-      onTap: () async {
         router.pushPage(FakeGrandOrder(user: user));
       },
     );
