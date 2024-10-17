@@ -274,9 +274,10 @@ class BattleServantData {
 
   int get logicalClassId {
     final overwriteBattleClassBuff =
-        collectBuffsPerAction(battleBuff.validBuffsActiveFirst, BuffAction.overwriteBattleclass).lastOrNull;
-    if (overwriteBattleClassBuff != null && overwriteBattleClassBuff.storedClassId != null) {
-      return overwriteBattleClassBuff.storedClassId!;
+        collectBuffsPerAction(battleBuff.validBuffsActiveFirst, BuffAction.overwriteBattleclass)
+            .lastWhereOrNull((buff) => buff.param != 0);
+    if (overwriteBattleClassBuff != null) {
+      return overwriteBattleClassBuff.param;
     }
 
     return isPlayer ? niceSvt!.classId : niceEnemy!.svt.classId;
@@ -901,14 +902,23 @@ class BattleServantData {
     }
 
     if (logicalClassId != originalClassId) {
-      final addClassTraitId = ConstData.classInfo[logicalClassId]?.individuality;
-      if (addClassTraitId != null) {
-        allTraits.add(NiceTrait(id: addClassTraitId));
+      final isServant = allTraits.map((trait) => trait.id).contains(Trait.servant.value);
+      final originalClassInfo = ConstData.classInfo[originalClassId];
+      if (originalClassInfo != null) {
+        final removeClassTraitIds = [
+          originalClassInfo.individuality,
+          if (isServant) ...originalClassInfo.relationSvtIndividuality,
+        ];
+        allTraits.removeWhere((trait) => removeClassTraitIds.contains(trait.id));
       }
 
-      final removeClassTraitId = ConstData.classInfo[originalClassId]?.individuality;
-      if (removeClassTraitId != null) {
-        removeTraitIds.add(removeClassTraitId);
+      final logicalClassInfo = ConstData.classInfo[logicalClassId];
+      if (logicalClassInfo != null) {
+        final addClassTraitIds = [
+          logicalClassInfo.individuality,
+          if (isServant) ...logicalClassInfo.relationSvtIndividuality,
+        ];
+        allTraits.addAll(addClassTraitIds.map((id) => NiceTrait(id: id)));
       }
     }
 

@@ -1582,22 +1582,34 @@ void main() async {
     final traitIdsBefore1 = kazura1.getTraits().map((niceTrait) => niceTrait.id).toList();
     expect(traitIdsBefore1.contains(ConstData.classInfo[SvtClass.alterEgo.value]!.individuality), true);
     expect(traitIdsBefore1.contains(ConstData.classInfo[SvtClass.saber.value]!.individuality), false);
+    for (final relationTraitId in ConstData.classInfo[SvtClass.saber.value]!.relationSvtIndividuality) {
+      expect(traitIdsBefore1.contains(relationTraitId), false);
+    }
     await battle.activateSvtSkill(0, 2);
     expect(kazura1.logicalClassId, SvtClass.saber.value);
     final traitIdsAfter1 = kazura1.getTraits().map((niceTrait) => niceTrait.id).toList();
     expect(traitIdsAfter1.contains(ConstData.classInfo[SvtClass.alterEgo.value]!.individuality), false);
     expect(traitIdsAfter1.contains(ConstData.classInfo[SvtClass.saber.value]!.individuality), true);
+    for (final relationTraitId in ConstData.classInfo[SvtClass.saber.value]!.relationSvtIndividuality) {
+      expect(traitIdsAfter1.contains(relationTraitId), true);
+    }
 
     battle.enemyTargetIndex = 1;
     expect(kazura2.logicalClassId, SvtClass.alterEgo.value);
     final traitIdsBefore2 = kazura2.getTraits().map((niceTrait) => niceTrait.id).toList();
     expect(traitIdsBefore2.contains(ConstData.classInfo[SvtClass.alterEgo.value]!.individuality), true);
     expect(traitIdsBefore2.contains(ConstData.classInfo[SvtClass.caster.value]!.individuality), false);
+    for (final relationTraitId in ConstData.classInfo[SvtClass.caster.value]!.relationSvtIndividuality) {
+      expect(traitIdsBefore2.contains(relationTraitId), false);
+    }
     await battle.activateSvtSkill(1, 2);
     expect(kazura2.logicalClassId, SvtClass.caster.value);
     final traitIdsAfter2 = kazura2.getTraits().map((niceTrait) => niceTrait.id).toList();
     expect(traitIdsAfter2.contains(ConstData.classInfo[SvtClass.alterEgo.value]!.individuality), false);
     expect(traitIdsAfter2.contains(ConstData.classInfo[SvtClass.caster.value]!.individuality), true);
+    for (final relationTraitId in ConstData.classInfo[SvtClass.caster.value]!.relationSvtIndividuality) {
+      expect(traitIdsAfter2.contains(relationTraitId), true);
+    }
 
     battle.enemyTargetIndex = 0;
     final enemy = battle.onFieldEnemies[0]!;

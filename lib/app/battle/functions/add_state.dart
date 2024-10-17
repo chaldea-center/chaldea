@@ -75,7 +75,7 @@ class AddState {
         final targetEnemyClassId = battleData.getTargetedEnemy(target)?.logicalClassId;
         if (dataVals.TargetEnemyClass == 1 &&
             ConstData.constantStr.enableOverwriteClassIds.contains(targetEnemyClassId)) {
-          buffData.storedClassId = targetEnemyClassId;
+          buffData.param = targetEnemyClassId!;
         }
       }
 

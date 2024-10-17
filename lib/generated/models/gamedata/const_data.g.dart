@@ -202,6 +202,8 @@ SvtClassInfo _$SvtClassInfoFromJson(Map json) => SvtClassInfo(
       relationId: (json['relationId'] as num).toInt(),
       supportGroup: (json['supportGroup'] as num).toInt(),
       autoSelSupportType: (json['autoSelSupportType'] as num).toInt(),
+      relationSvtIndividuality:
+          (json['relationSvtIndividuality'] as List<dynamic>?)?.map((e) => (e as num).toInt()).toList() ?? const [],
     );
 
 Map<String, dynamic> _$SvtClassInfoToJson(SvtClassInfo instance) => <String, dynamic>{
@@ -218,6 +220,7 @@ Map<String, dynamic> _$SvtClassInfoToJson(SvtClassInfo instance) => <String, dyn
       'relationId': instance.relationId,
       'supportGroup': instance.supportGroup,
       'autoSelSupportType': instance.autoSelSupportType,
+      'relationSvtIndividuality': instance.relationSvtIndividuality,
     };
 
 CardInfo _$CardInfoFromJson(Map json) => CardInfo(

@@ -200,6 +200,7 @@ class SvtClassInfo {
   int relationId;
   int supportGroup;
   int autoSelSupportType;
+  List<int> relationSvtIndividuality;
   SvtClass? get className => kSvtClassIds[id];
 
   SvtClassInfo({
@@ -216,6 +217,7 @@ class SvtClassInfo {
     required this.relationId,
     required this.supportGroup,
     required this.autoSelSupportType,
+    this.relationSvtIndividuality = const [],
   });
 
   factory SvtClassInfo.fromJson(Map<String, dynamic> json) => _$SvtClassInfoFromJson(json);

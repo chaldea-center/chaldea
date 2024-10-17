@@ -935,13 +935,7 @@ class FuncDescriptor extends StatelessWidget {
                 children: SharedBuilder.replaceSpan(
                   text,
                   '{0}',
-                  [
-                    SharedBuilder.textButtonSpan(
-                      context: context,
-                      text: Transl.svtClassId(clsId).l,
-                      onTap: () => router.push(url: Routes.svtClassI(clsId)),
-                    )
-                  ],
+                  [TextSpan(text: Transl.miscFunction('TargetEnemyClass'))],
                 ),
                 style: style,
               ));
