@@ -452,9 +452,9 @@ const _$ShopTypeEnumMap = {
   ShopType.grailFragments: 'grailFragments',
   ShopType.svtCostume: 'svtCostume',
   ShopType.startUpSummon: 'startUpSummon',
-  ShopType.shop13: 'shop13',
+  ShopType.purePri: 'purePri',
   ShopType.tradeAp: 'tradeAp',
-  ShopType.shop15: 'shop15',
+  ShopType.revivalItem: 'revivalItem',
   ShopType.eventSvtEquip: 'eventSvtEquip',
 };
 

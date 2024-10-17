@@ -602,6 +602,7 @@ enum FuncType {
   damageNpBattlePointPhase(143),
   setNpExecutedState(144),
   hideOverGauge(145),
+  gainNpTargetSum(146),
   ;
 
   final int value;

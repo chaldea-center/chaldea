@@ -48,6 +48,7 @@ const _$QuestTypeEnumMap = {
   QuestType.event: 'event',
   QuestType.heroballad: 'heroballad',
   QuestType.warBoard: 'warBoard',
+  QuestType.autoExecute: 'autoExecute',
 };
 
 const _$QuestAfterClearTypeEnumMap = {

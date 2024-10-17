@@ -292,6 +292,7 @@ class FunctionExecutor {
           GainNP.gainNpPerIndividual(
             battleData,
             dataVals,
+            activator,
             targets,
             function.traitVals,
           );
@@ -442,6 +443,7 @@ class FunctionExecutor {
           AddBattlePoint.addBattlePoint(battleData, dataVals, targets, overchargeState, ignoreBattlePoints);
           break;
         case FuncType.updateEnemyEntryMaxCountEachTurn:
+        case FuncType.gainNpTargetSum:
         // ↑↑↑ should be implemented ↑↑↑
         case FuncType.damageValueSafeOnce:
         case FuncType.subFieldBuff:

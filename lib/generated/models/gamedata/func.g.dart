@@ -192,6 +192,7 @@ const _$FuncTypeEnumMap = {
   FuncType.damageNpBattlePointPhase: 'damageNpBattlePointPhase',
   FuncType.setNpExecutedState: 'setNpExecutedState',
   FuncType.hideOverGauge: 'hideOverGauge',
+  FuncType.gainNpTargetSum: 'gainNpTargetSum',
 };
 
 const _$FuncTargetTypeEnumMap = {

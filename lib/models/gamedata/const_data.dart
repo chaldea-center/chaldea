@@ -1025,6 +1025,7 @@ class GameConstantStr {
   final List<int> subPtBuffIndivi; // 3055
   final List<int> svtExitPtBuffIndivi; // 3069
   final List<int> playableBeastClassIds;
+  final List<int> enableOverwriteClassIds;
 
   const GameConstantStr({
     this.extendTurnBuffType = const [
@@ -1038,6 +1039,7 @@ class GameConstantStr {
     this.subPtBuffIndivi = const [3055],
     this.svtExitPtBuffIndivi = const [3069],
     this.playableBeastClassIds = const [33, 38],
+    this.enableOverwriteClassIds = const [1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 23, 25, 28],
   });
 
   factory GameConstantStr.fromJson(Map<String, dynamic> json) {
@@ -1078,10 +1080,10 @@ enum SvtFrameType {
   bronze,
   silver,
   gold,
-  frame0801,
-  frame0802,
-  frame0803,
-  frame0804,
+  goldRed,
+  goldRedGreat,
+  goldBlack,
+  goldBlackGreat,
 }
 
 // String or int
@@ -1259,6 +1261,7 @@ enum BuffAction {
   pierceSpecialInvincible(144),
   functionedFunction(145),
   donotActCommandcard(146),
+  npdamageIndividuality(147),
   functionClassboardCommandSpellAfter(301),
   ;
 
@@ -1330,6 +1333,7 @@ const kFuncValPercentType = <FuncType, int>{
   FuncType.gainNp: 100,
   FuncType.gainNpBuffIndividualSum: 100,
   FuncType.gainNpIndividualSum: 100,
+  FuncType.gainNpTargetSum: 100,
   FuncType.gainMultiplyNp: 10,
   FuncType.lossNp: 100,
   FuncType.damageNp: 10,

@@ -578,6 +578,12 @@ class _NpChargePageState extends State<NpChargePage> {
         value = '×(1+${sval.Value!.format(base: 10, percent: true)})';
         type = NpChargeType.special;
       }
+    } else if (func.funcType == FuncType.gainNpTargetSum) {
+      if (sval.Value != null) {
+        sortValue = sval.Value!;
+        value = '${_fmt(sortValue)}×N';
+        type = NpChargeType.special;
+      }
     }
     if (sortValue == null || value == null || type == null) return null;
     if (triggerFunc != null) type = NpChargeType.special;

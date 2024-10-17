@@ -52,7 +52,27 @@ class DataVals {
   }
 
   List<T>? _list<T>(String key) {
-    return (_vals[key] as List<dynamic>?)?.cast();
+    final v = _vals[key];
+    return (v as List<dynamic>?)?.cast();
+  }
+
+  List<List<T>>? _2dList<T>(String key) {
+    final v = _vals[key];
+    if (v == null) return null;
+    if (v is String && T == int) {
+      try {
+        List<List<int>> array = [];
+        for (String v1 in v.split('|')) {
+          v1 = v1.trim();
+          if (v1.isEmpty) continue;
+          array.add(v1.split('/').map(int.tryParse).whereType<int>().toList());
+        }
+        return array as List<List<T>>;
+      } catch (e) {
+        return null;
+      }
+    }
+    return (v as List<dynamic>).map((e) => (e as List<dynamic>).cast<T>()).toList();
   }
 
   /// probability, 1000 -> 100%
@@ -294,6 +314,22 @@ class DataVals {
   int? get ChargeHpMaxBeforeBreakGaugeUp => _vals['ChargeHpMaxBeforeBreakGaugeUp'];
   List<int>? get TargetFunctionIndividuality => _list('TargetFunctionIndividuality');
   List<int>? get TargetBuffIndividuality => _list('TargetBuffIndividuality');
+
+  int? get TargetEnemyClass => _vals['TargetEnemyClass'];
+  int? get ParamAddIndividualityTargetType => _vals['ParamAddIndividualityTargetType'];
+  List<int>? get TriggeredFuncIndexAndCheckList => _vals['TriggeredFuncIndexAndCheckList'];
+  int? get FuncCheckTargetIndividualityTargetType => _vals['FuncCheckTargetIndividualityTargetType'];
+  int? get FuncCheckTargetIndividualityCountHigher => _vals['FuncCheckTargetIndividualityCountHigher'];
+  int? get FuncCheckTargetIndividualityCountLower => _vals['FuncCheckTargetIndividualityCountLower'];
+  int? get FuncCheckTargetIndividualityCountEqual => _vals['FuncCheckTargetIndividualityCountEqual'];
+  List<List<int>>? get ParamAddSelfIndividualityAndCheck => _2dList('ParamAddSelfIndividualityAndCheck');
+  List<List<int>>? get ParamAddOpIndividualityAndCheck => _2dList('ParamAddOpIndividualityAndCheck');
+  List<List<int>>? get ParamAddFieldIndividualityAndCheck => _2dList('ParamAddFieldIndividualityAndCheck');
+  List<List<int>>? get SnapShotParamAddSelfIndividualityAndCheck =>
+      _2dList('SnapShotParamAddSelfIndividualityAndCheck');
+  List<List<int>>? get SnapShotParamAddOpIndividualityAndCheck => _2dList('SnapShotParamAddOpIndividualityAndCheck');
+  List<List<int>>? get SnapShotParamAddFieldIndividualityAndCheck =>
+      _2dList('SnapShotParamAddFieldIndividualityAndCheck');
 
   int? get ApplySupportSvt => _vals['ApplySupportSvt'];
   int? get Individuality => _vals['Individuality'];

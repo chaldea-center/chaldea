@@ -244,6 +244,8 @@ class EventCampaignDetail extends StatelessWidget {
       case QuestType.heroballad:
       case QuestType.warBoard:
         return S.current.war_board;
+      case QuestType.autoExecute:
+        return type!.name;
       case null:
         return S.current.unknown;
     }

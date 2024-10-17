@@ -23,8 +23,8 @@ class _ShopListHomeState extends State<ShopListHome> {
   List<ShopType> get _kShownShopTypes => [
         ShopType.mana,
         ShopType.rarePri,
-        ShopType.shop15, // 巡霊の葉
-        ShopType.shop13, // pure prism
+        ShopType.revivalItem,
+        ShopType.purePri,
         ShopType.svtCostume,
         ShopType.eventSvtEquip,
         ShopType.startUpSummon,

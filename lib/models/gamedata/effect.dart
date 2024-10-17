@@ -251,7 +251,8 @@ class SkillEffect {
     FuncType.gainNp,
     FuncType.gainNpFromTargets,
     FuncType.gainNpBuffIndividualSum,
-    FuncType.gainMultiplyNp
+    FuncType.gainMultiplyNp,
+    FuncType.gainNpTargetSum,
   ]);
   static SkillEffect regainNp = SkillEffect._buff('regainNp', BuffType.regainNp);
   static SkillEffect upDropnp = SkillEffect._buff('upDropnp', BuffType.upDropnp);

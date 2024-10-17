@@ -2023,6 +2023,7 @@ enum QuestType {
   event(5),
   heroballad(6),
   warBoard(7),
+  autoExecute(8),
   ;
 
   final int value;
@@ -2037,9 +2038,11 @@ enum QuestType {
         return S.current.interlude;
       case QuestType.event:
         return S.current.event;
-      case QuestType.heroballad:
       case QuestType.warBoard:
         return S.current.war_board;
+      case QuestType.heroballad:
+      case autoExecute:
+        return name;
     }
   }
 }

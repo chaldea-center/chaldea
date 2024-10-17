@@ -2020,9 +2020,9 @@ enum ShopType {
   grailFragments,
   svtCostume,
   startUpSummon,
-  shop13, // pure prism
+  purePri,
   tradeAp,
-  shop15, // 巡霊の葉
+  revivalItem, // 巡霊の葉
   eventSvtEquip,
 }
 

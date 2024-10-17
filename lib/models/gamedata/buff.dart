@@ -281,7 +281,8 @@ class BuffTypeConverter extends JsonConverter<BuffType, String> {
 
 @JsonEnum(alwaysCreate: true)
 enum BuffType {
-  unknown(-1), // custom
+  unknown(-2), // custom
+  invalid(-1),
   none(0),
   upCommandatk(1),
   upStarweight(2),
@@ -476,6 +477,7 @@ enum BuffType {
   pierceSpecialInvincible(207),
   functionedFunction(208),
   donotActCommandcard(209),
+  upNpdamageIndividualitySum(210),
   toFieldChangeField(10001),
   toFieldAvoidBuff(10002),
   toFieldSubIndividualityField(10003),

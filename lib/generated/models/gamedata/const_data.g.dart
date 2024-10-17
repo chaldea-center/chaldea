@@ -259,10 +259,10 @@ const _$SvtFrameTypeEnumMap = {
   SvtFrameType.bronze: 'bronze',
   SvtFrameType.silver: 'silver',
   SvtFrameType.gold: 'gold',
-  SvtFrameType.frame0801: 'frame0801',
-  SvtFrameType.frame0802: 'frame0802',
-  SvtFrameType.frame0803: 'frame0803',
-  SvtFrameType.frame0804: 'frame0804',
+  SvtFrameType.goldRed: 'goldRed',
+  SvtFrameType.goldRedGreat: 'goldRedGreat',
+  SvtFrameType.goldBlack: 'goldBlack',
+  SvtFrameType.goldBlackGreat: 'goldBlackGreat',
 };
 
 MasterUserLvDetail _$MasterUserLvDetailFromJson(Map json) => MasterUserLvDetail(
@@ -421,6 +421,7 @@ const _$FuncTypeEnumMap = {
   FuncType.damageNpBattlePointPhase: 'damageNpBattlePointPhase',
   FuncType.setNpExecutedState: 'setNpExecutedState',
   FuncType.hideOverGauge: 'hideOverGauge',
+  FuncType.gainNpTargetSum: 'gainNpTargetSum',
 };
 
 BuffTypeDetail _$BuffTypeDetailFromJson(Map json) => BuffTypeDetail(
@@ -435,6 +436,7 @@ Map<String, dynamic> _$BuffTypeDetailToJson(BuffTypeDetail instance) => <String,
 
 const _$BuffTypeEnumMap = {
   BuffType.unknown: 'unknown',
+  BuffType.invalid: 'invalid',
   BuffType.none: 'none',
   BuffType.upCommandatk: 'upCommandatk',
   BuffType.upStarweight: 'upStarweight',
@@ -629,6 +631,7 @@ const _$BuffTypeEnumMap = {
   BuffType.pierceSpecialInvincible: 'pierceSpecialInvincible',
   BuffType.functionedFunction: 'functionedFunction',
   BuffType.donotActCommandcard: 'donotActCommandcard',
+  BuffType.upNpdamageIndividualitySum: 'upNpdamageIndividualitySum',
   BuffType.toFieldChangeField: 'toFieldChangeField',
   BuffType.toFieldAvoidBuff: 'toFieldAvoidBuff',
   BuffType.toFieldSubIndividualityField: 'toFieldSubIndividualityField',
@@ -1255,6 +1258,9 @@ GameConstantStr _$GameConstantStrFromJson(Map json) => GameConstantStr(
           (json['svtExitPtBuffIndivi'] as List<dynamic>?)?.map((e) => (e as num).toInt()).toList() ?? const [3069],
       playableBeastClassIds:
           (json['playableBeastClassIds'] as List<dynamic>?)?.map((e) => (e as num).toInt()).toList() ?? const [33, 38],
+      enableOverwriteClassIds:
+          (json['enableOverwriteClassIds'] as List<dynamic>?)?.map((e) => (e as num).toInt()).toList() ??
+              const [1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 23, 25, 28],
     );
 
 Map<String, dynamic> _$GameConstantStrToJson(GameConstantStr instance) => <String, dynamic>{
@@ -1265,6 +1271,7 @@ Map<String, dynamic> _$GameConstantStrToJson(GameConstantStr instance) => <Strin
       'subPtBuffIndivi': instance.subPtBuffIndivi,
       'svtExitPtBuffIndivi': instance.svtExitPtBuffIndivi,
       'playableBeastClassIds': instance.playableBeastClassIds,
+      'enableOverwriteClassIds': instance.enableOverwriteClassIds,
     };
 
 SvtLimitHide _$SvtLimitHideFromJson(Map json) => SvtLimitHide(
@@ -1435,5 +1442,6 @@ const _$BuffActionEnumMap = {
   BuffAction.pierceSpecialInvincible: 'pierceSpecialInvincible',
   BuffAction.functionedFunction: 'functionedFunction',
   BuffAction.donotActCommandcard: 'donotActCommandcard',
+  BuffAction.npdamageIndividuality: 'npdamageIndividuality',
   BuffAction.functionClassboardCommandSpellAfter: 'functionClassboardCommandSpellAfter',
 };

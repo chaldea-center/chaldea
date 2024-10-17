@@ -213,6 +213,7 @@ Map<String, dynamic> _$BuffConvertScriptToJson(BuffConvertScript instance) => <S
 
 const _$BuffTypeEnumMap = {
   BuffType.unknown: 'unknown',
+  BuffType.invalid: 'invalid',
   BuffType.none: 'none',
   BuffType.upCommandatk: 'upCommandatk',
   BuffType.upStarweight: 'upStarweight',
@@ -407,6 +408,7 @@ const _$BuffTypeEnumMap = {
   BuffType.pierceSpecialInvincible: 'pierceSpecialInvincible',
   BuffType.functionedFunction: 'functionedFunction',
   BuffType.donotActCommandcard: 'donotActCommandcard',
+  BuffType.upNpdamageIndividualitySum: 'upNpdamageIndividualitySum',
   BuffType.toFieldChangeField: 'toFieldChangeField',
   BuffType.toFieldAvoidBuff: 'toFieldAvoidBuff',
   BuffType.toFieldSubIndividualityField: 'toFieldSubIndividualityField',

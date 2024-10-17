@@ -44,6 +44,7 @@ class GainNP {
   static void gainNpPerIndividual(
     final BattleData battleData,
     final DataVals dataVals,
+    final BattleServantData? actor,
     final Iterable<BattleServantData> targets,
     final List<NiceTrait>? targetTraits,
   ) {
@@ -61,15 +62,19 @@ class GainNP {
             target.isPlayer ? battleData.nonnullEnemies : battleData.nonnullPlayers;
         final List<BattleServantData> countTargets = [];
         final targetType = dataVals.Value2 ?? 0;
-        if (targetType == 0) {
+        if (targetType == GainNpIndividualSumTarget.self.value) {
           countTargets.add(target);
-        } else if (targetType == 1) {
+        } else if (targetType == GainNpIndividualSumTarget.player.value) {
           countTargets.addAll(aliveAllies);
-        } else if (targetType == 2) {
+        } else if (targetType == GainNpIndividualSumTarget.enemy.value) {
           countTargets.addAll(aliveEnemies);
-        } else if (targetType == 3) {
+        } else if (targetType == GainNpIndividualSumTarget.all.value) {
           countTargets.addAll(aliveAllies);
           countTargets.addAll(aliveEnemies);
+        } else if (targetType == GainNpIndividualSumTarget.otherAll.value) {
+          countTargets.addAll(aliveAllies);
+          countTargets.addAll(aliveEnemies);
+          countTargets.remove(actor);
         }
 
         int count = 0;
@@ -118,4 +123,16 @@ class GainNP {
       battleData.setFuncResult(target.uniqueId, true);
     }
   }
+}
+
+enum GainNpIndividualSumTarget {
+  self(0),
+  player(1),
+  enemy(2),
+  all(3),
+  otherAll(4),
+  ;
+
+  const GainNpIndividualSumTarget(this.value);
+  final int value;
 }

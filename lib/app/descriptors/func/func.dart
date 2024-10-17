@@ -585,6 +585,7 @@ class FuncDescriptor extends StatelessWidget {
       FuncType.gainHpFromTargets,
       FuncType.absorbNpturn,
       FuncType.gainNpFromTargets,
+      FuncType.gainNpTargetSum,
     ].contains(func.funcType)) {
       funcText.write(Transl.special.funcAbsorbFrom);
     }
