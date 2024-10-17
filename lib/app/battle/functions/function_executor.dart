@@ -422,7 +422,6 @@ class FunctionExecutor {
           AddBattlePoint.addBattlePoint(battleData, dataVals, targets, overchargeState, ignoreBattlePoints);
           break;
         case FuncType.updateEnemyEntryMaxCountEachTurn:
-        case FuncType.gainNpTargetSum:
         // ↑↑↑ should be implemented ↑↑↑
         case FuncType.damageValueSafeOnce:
         case FuncType.subFieldBuff:

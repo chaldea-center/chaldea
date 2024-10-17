@@ -20,7 +20,7 @@ class GainNpTargetSum {
     for (final target in targets) {
       int change = dataVals.Value!;
       if (targetTraits != null) {
-        final targetType = dataVals.Value2 ?? dataVals.Target ?? 0;
+        final targetType = dataVals.Value2 ?? 0;
         final List<BattleServantData> countTargets = GainNp.getCountTargets(battleData, target, targetType);
 
         final count = countTargets

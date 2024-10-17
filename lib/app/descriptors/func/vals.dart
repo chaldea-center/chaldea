@@ -192,7 +192,7 @@ class ValDsc extends StatelessWidget {
     } else if (func.funcType == FuncType.gainHpFromTargets) {
       _addInt(parts, vals.DependFuncVals?.Value, (s) => '$s×N');
     } else if (func.funcType == FuncType.gainNpTargetSum) {
-      _addInt(parts, vals.DependFuncVals?.Value, (s) => '$s×N');
+      _addPercent(parts, vals.Value, 100, (s) => '$s×N');
     } else if (func.funcType == FuncType.gainNpFromTargets) {
       // Absorb Value, charge Value2
       _addPercent(parts, vals.DependFuncVals?.Value2 ?? vals.DependFuncVals?.Value, 100, (s) => '$s×N');
@@ -227,6 +227,7 @@ class ValDsc extends StatelessWidget {
             break;
           case FuncType.gainNpIndividualSum:
           case FuncType.gainNpBuffIndividualSum:
+          case FuncType.gainNpTargetSum:
             _addPercent(parts, vals.Value, 100, (s) => '$s×N');
             break;
           case FuncType.transformServant:

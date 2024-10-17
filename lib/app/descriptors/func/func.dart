@@ -554,7 +554,13 @@ class FuncDescriptor extends StatelessWidget {
           }
         }
       }
-    } else if ([
+    } else if (const [
+      FuncType.gainNpIndividualSum,
+      FuncType.gainNpBuffIndividualSum,
+      FuncType.gainNpTargetSum,
+    ].contains(func.funcType)) {
+      funcText.write(Transl.funcPopuptextBase(func.funcType.name).l);
+    } else if (const [
       FuncType.enemyEncountRateUp,
       FuncType.enemyEncountCopyRateUp,
     ].contains(func.funcType)) {
@@ -585,7 +591,6 @@ class FuncDescriptor extends StatelessWidget {
       FuncType.gainHpFromTargets,
       FuncType.absorbNpturn,
       FuncType.gainNpFromTargets,
-      FuncType.gainNpTargetSum,
     ].contains(func.funcType)) {
       funcText.write(Transl.special.funcAbsorbFrom);
     }
@@ -859,6 +864,32 @@ class FuncDescriptor extends StatelessWidget {
             return;
           }
           break;
+        case FuncType.gainNpIndividualSum:
+        case FuncType.gainNpBuffIndividualSum:
+        case FuncType.gainNpTargetSum:
+          spans.addAll(SharedBuilder.replaceSpanMaps(
+            text,
+            {
+              "{0}": (_) {
+                final target = func.funcType == FuncType.gainNpBuffIndividualSum ? 0 : vals?.Value2 ?? 0;
+                String targetText = 'TargetType<$target>';
+                if (target == GainNpIndividualSumTarget.target.value) {
+                  targetText = Transl.special.target;
+                } else if (target == GainNpIndividualSumTarget.player.value) {
+                  targetText = Transl.funcTargetType(FuncTargetType.ptAll).l;
+                } else if (target == GainNpIndividualSumTarget.enemy.value) {
+                  targetText = Transl.funcTargetType(FuncTargetType.enemyAll).l;
+                } else if (target == GainNpIndividualSumTarget.all.value) {
+                  targetText = M.of(jp: '敵味方全体', cn: '敌我双方全体', tw: '敵我雙方全體', na: 'All allies and enemies');
+                } else if (target == GainNpIndividualSumTarget.otherAll.value) {
+                  targetText = Transl.funcTargetType(FuncTargetType.fieldOther).l;
+                }
+                return [TextSpan(text: targetText)];
+              },
+              "{1}": (_) => SharedBuilder.traitSpans(context: context, traits: func.traitVals)
+            },
+          ));
+          return;
         case FuncType.enemyEncountRateUp:
         case FuncType.enemyEncountCopyRateUp:
           int? indiv = vals?.Individuality;
@@ -1083,22 +1114,6 @@ class FuncDescriptor extends StatelessWidget {
     if (func.traitVals.isNotEmpty) {
       if (func.funcType == FuncType.subState) {
         _addTraits(Transl.special.funcTraitRemoval, func.traitVals);
-      } else if (func.funcType == FuncType.gainNpBuffIndividualSum) {
-        spans.addAll(SharedBuilder.replaceSpan(Transl.special.funcTraitPerBuff(), '{0}',
-            SharedBuilder.traitSpans(context: context, traits: func.traitVals)));
-      } else if (func.funcType == FuncType.gainNpIndividualSum) {
-        spans.addAll(SharedBuilder.replaceSpan(
-            Transl.special.funcTraitPerBuff(
-              target: {
-                    0: Transl.special.target,
-                    1: Transl.funcTargetType(FuncTargetType.ptAll).l,
-                    2: Transl.funcTargetType(FuncTargetType.enemyAll).l,
-                    3: '${Transl.funcTargetType(FuncTargetType.ptAll).l} & ${Transl.funcTargetType(FuncTargetType.enemyAll).l}',
-                  }[vals?.Value2] ??
-                  '<TargetType${vals?.Value2}>',
-            ),
-            '{0}',
-            SharedBuilder.traitSpans(context: context, traits: func.traitVals)));
       } else if (func.funcType == FuncType.eventDropUp) {
         _addTraits(Transl.special.buffCheckSelf, func.traitVals);
       }

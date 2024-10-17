@@ -118,7 +118,8 @@ class GainNp {
     final List<BattleServantData> aliveEnemies =
         current.isPlayer ? battleData.nonnullEnemies : battleData.nonnullPlayers;
 
-    if (countType == GainNpIndividualSumTarget.self.value) {
+    if (countType == GainNpIndividualSumTarget.target.value) {
+      // TODO: change to func target
       countTargets.add(current);
     } else if (countType == GainNpIndividualSumTarget.player.value) {
       countTargets.addAll(aliveAllies);
@@ -135,16 +136,4 @@ class GainNp {
 
     return countTargets;
   }
-}
-
-enum GainNpIndividualSumTarget {
-  self(0),
-  player(1),
-  enemy(2),
-  all(3),
-  otherAll(4),
-  ;
-
-  const GainNpIndividualSumTarget(this.value);
-  final int value;
 }

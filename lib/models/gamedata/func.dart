@@ -685,3 +685,15 @@ enum FuncApplyTarget {
     return playerAndEnemy;
   }
 }
+
+enum GainNpIndividualSumTarget {
+  target(0), // func TARGET! original enum name is `self`
+  player(1),
+  enemy(2),
+  all(3),
+  otherAll(4),
+  ;
+
+  const GainNpIndividualSumTarget(this.value);
+  final int value;
+}
