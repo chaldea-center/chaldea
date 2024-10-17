@@ -35,9 +35,11 @@ class GainNpTargetSum {
                   requiredTraits: targetTraits,
                 ))
             .length;
-        target.changeNP(change * count);
 
-        battleData.setFuncResult(target.uniqueId, true);
+        if (count > 0) {
+          target.changeNP(change * count);
+          battleData.setFuncResult(target.uniqueId, true);
+        }
       }
     }
   }

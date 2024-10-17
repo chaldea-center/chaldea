@@ -70,11 +70,12 @@ class GainNp {
           );
           count += countTarget.countTrait(targetTraits);
         }
-        change *= count;
-      }
 
-      target.changeNP(change);
-      battleData.setFuncResult(target.uniqueId, true);
+        if (count > 0) {
+          target.changeNP(change * count);
+          battleData.setFuncResult(target.uniqueId, true);
+        }
+      }
     }
   }
 
@@ -91,36 +92,34 @@ class GainNp {
 
     for (final target in targets) {
       int change = dataVals.Value!;
-      if (targetTraits.isNotEmpty) {
-        int count = target.countBuffWithTrait(
-          targetTraits,
-          activeOnly: dataVals.GainNpTargetPassiveIndividuality != 1,
-          ignoreIndivUnreleaseable: false,
-          includeIgnoreIndiv: false,
-        );
-        change *= count;
-      }
+      int count = target.countBuffWithTrait(
+        targetTraits,
+        activeOnly: dataVals.GainNpTargetPassiveIndividuality != 1,
+        ignoreIndivUnreleaseable: false,
+        includeIgnoreIndiv: false,
+      );
 
-      target.changeNP(change);
-      battleData.setFuncResult(target.uniqueId, true);
+      if (count > 0) {
+        target.changeNP(change * count);
+        battleData.setFuncResult(target.uniqueId, true);
+      }
     }
   }
 
   static List<BattleServantData> getCountTargets(
     final BattleData battleData,
-    final BattleServantData current,
+    final BattleServantData currentTarget,
     final int countType,
   ) {
     final List<BattleServantData> countTargets = [];
 
     final List<BattleServantData> aliveAllies =
-        current.isPlayer ? battleData.nonnullPlayers : battleData.nonnullEnemies;
+      currentTarget.isPlayer ? battleData.nonnullPlayers : battleData.nonnullEnemies;
     final List<BattleServantData> aliveEnemies =
-        current.isPlayer ? battleData.nonnullEnemies : battleData.nonnullPlayers;
+      currentTarget.isPlayer ? battleData.nonnullEnemies : battleData.nonnullPlayers;
 
     if (countType == GainNpIndividualSumTarget.target.value) {
-      // TODO: change to func target
-      countTargets.add(current);
+      countTargets.add(currentTarget);
     } else if (countType == GainNpIndividualSumTarget.player.value) {
       countTargets.addAll(aliveAllies);
     } else if (countType == GainNpIndividualSumTarget.enemy.value) {
@@ -131,7 +130,7 @@ class GainNp {
     } else if (countType == GainNpIndividualSumTarget.otherAll.value) {
       countTargets.addAll(aliveAllies);
       countTargets.addAll(aliveEnemies);
-      countTargets.remove(current);
+      countTargets.remove(currentTarget);
     }
 
     return countTargets;
