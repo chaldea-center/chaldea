@@ -8,6 +8,7 @@ import 'package:chaldea/app/battle/functions/gain_hp.dart';
 import 'package:chaldea/app/battle/functions/gain_hp_from_targets.dart';
 import 'package:chaldea/app/battle/functions/gain_np.dart';
 import 'package:chaldea/app/battle/functions/gain_np_from_targets.dart';
+import 'package:chaldea/app/battle/functions/gain_np_target_sum.dart';
 import 'package:chaldea/app/battle/functions/gain_star.dart';
 import 'package:chaldea/app/battle/functions/hasten_npturn.dart';
 import 'package:chaldea/app/battle/functions/instant_death.dart';
@@ -277,53 +278,31 @@ class FunctionExecutor {
           break;
         case FuncType.gainNp:
         case FuncType.lossNp:
-          GainNP.gainNP(battleData, dataVals, targets, isNegative: function.funcType == FuncType.lossNp);
+          GainNp.gainNp(battleData, dataVals, targets, isNegative: function.funcType == FuncType.lossNp);
           break;
         case FuncType.gainMultiplyNp:
         case FuncType.lossMultiplyNp:
-          GainNP.gainMultiplyNP(
-            battleData,
-            dataVals,
-            targets,
-            isNegative: function.funcType == FuncType.lossMultiplyNp,
-          );
+          final isNegative = function.funcType == FuncType.lossMultiplyNp;
+          GainNp.gainMultiplyNp(battleData, dataVals, targets, isNegative: isNegative);
           break;
         case FuncType.gainNpIndividualSum:
-          GainNP.gainNpPerIndividual(
-            battleData,
-            dataVals,
-            activator,
-            targets,
-            function.traitVals,
-          );
+          GainNp.gainNpPerIndividual(battleData, dataVals, activator, targets, function.traitVals);
           break;
         case FuncType.gainNpBuffIndividualSum:
-          GainNP.gainNpPerBuffIndividual(
-            battleData,
-            dataVals,
-            targets,
-            function.traitVals,
-          );
+          GainNp.gainNpPerBuffIndividual(battleData, dataVals, targets, function.traitVals);
+          break;
+        case FuncType.gainNpTargetSum:
+          GainNpTargetSum.gainNpTargetSum(battleData, dataVals, targets, function.traitVals);
           break;
         case FuncType.hastenNpturn:
         case FuncType.delayNpturn:
-          await HastenNpturn.hastenNpturn(
-            battleData,
-            dataVals,
-            activator,
-            targets,
-            isNegative: function.funcType == FuncType.delayNpturn,
-          );
+        final isNegative = function.funcType == FuncType.delayNpturn;
+          await HastenNpturn.hastenNpturn(battleData, dataVals, activator, targets, isNegative: isNegative);
           break;
         case FuncType.gainStar:
         case FuncType.lossStar:
-          GainStar.gainStar(
-            battleData,
-            dataVals,
-            activator,
-            targets: targets,
-            isNegative: function.funcType == FuncType.lossStar,
-          );
+        final isNegative = function.funcType == FuncType.lossStar;
+          GainStar.gainStar(battleData, dataVals, activator, targets: targets, isNegative: isNegative);
           break;
         case FuncType.shortenSkill:
           SkillChargeTurn.shortenSkill(battleData, dataVals, targets);

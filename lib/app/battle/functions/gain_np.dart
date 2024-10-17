@@ -2,10 +2,10 @@ import 'package:chaldea/app/battle/models/battle.dart';
 import 'package:chaldea/app/battle/utils/battle_utils.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
 
-class GainNP {
-  GainNP._();
+class GainNp {
+  GainNp._();
 
-  static void gainNP(
+  static void gainNp(
     final BattleData battleData,
     final DataVals dataVals,
     final Iterable<BattleServantData> targets, {
@@ -23,7 +23,7 @@ class GainNP {
     }
   }
 
-  static void gainMultiplyNP(
+  static void gainMultiplyNp(
     final BattleData battleData,
     final DataVals dataVals,
     final Iterable<BattleServantData> targets, {
@@ -56,26 +56,8 @@ class GainNP {
     for (final target in targets) {
       int change = dataVals.Value!;
       if (targetTraits != null) {
-        final List<BattleServantData> aliveAllies =
-            target.isPlayer ? battleData.nonnullPlayers : battleData.nonnullEnemies;
-        final List<BattleServantData> aliveEnemies =
-            target.isPlayer ? battleData.nonnullEnemies : battleData.nonnullPlayers;
-        final List<BattleServantData> countTargets = [];
         final targetType = dataVals.Value2 ?? 0;
-        if (targetType == GainNpIndividualSumTarget.self.value) {
-          countTargets.add(target);
-        } else if (targetType == GainNpIndividualSumTarget.player.value) {
-          countTargets.addAll(aliveAllies);
-        } else if (targetType == GainNpIndividualSumTarget.enemy.value) {
-          countTargets.addAll(aliveEnemies);
-        } else if (targetType == GainNpIndividualSumTarget.all.value) {
-          countTargets.addAll(aliveAllies);
-          countTargets.addAll(aliveEnemies);
-        } else if (targetType == GainNpIndividualSumTarget.otherAll.value) {
-          countTargets.addAll(aliveAllies);
-          countTargets.addAll(aliveEnemies);
-          countTargets.remove(actor);
-        }
+        final List<BattleServantData> countTargets = getCountTargets(battleData, target, targetType);
 
         int count = 0;
 
@@ -122,6 +104,36 @@ class GainNP {
       target.changeNP(change);
       battleData.setFuncResult(target.uniqueId, true);
     }
+  }
+
+  static List<BattleServantData> getCountTargets(
+    final BattleData battleData,
+    final BattleServantData current,
+    final int countType,
+  ) {
+    final List<BattleServantData> countTargets = [];
+
+    final List<BattleServantData> aliveAllies =
+        current.isPlayer ? battleData.nonnullPlayers : battleData.nonnullEnemies;
+    final List<BattleServantData> aliveEnemies =
+        current.isPlayer ? battleData.nonnullEnemies : battleData.nonnullPlayers;
+
+    if (countType == GainNpIndividualSumTarget.self.value) {
+      countTargets.add(current);
+    } else if (countType == GainNpIndividualSumTarget.player.value) {
+      countTargets.addAll(aliveAllies);
+    } else if (countType == GainNpIndividualSumTarget.enemy.value) {
+      countTargets.addAll(aliveEnemies);
+    } else if (countType == GainNpIndividualSumTarget.all.value) {
+      countTargets.addAll(aliveAllies);
+      countTargets.addAll(aliveEnemies);
+    } else if (countType == GainNpIndividualSumTarget.otherAll.value) {
+      countTargets.addAll(aliveAllies);
+      countTargets.addAll(aliveEnemies);
+      countTargets.remove(current);
+    }
+
+    return countTargets;
   }
 }
 

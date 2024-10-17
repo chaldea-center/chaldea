@@ -1311,7 +1311,7 @@ class BattleData {
           GainStar.gainStar(this, dataValToUse, null);
         } else if (cardType == CardType.arts) {
           final targets = actions.map((action) => action.actor).toSet();
-          GainNP.gainNP(this, artsChain, targets);
+          GainNp.gainNp(this, artsChain, targets);
         }
       });
     });
