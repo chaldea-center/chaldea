@@ -272,11 +272,21 @@ class BattleServantData {
 
   int get rarity => isPlayer ? niceSvt!.rarity : niceEnemy!.svt.rarity;
 
-  int get classId => isPlayer ? niceSvt!.classId : niceEnemy!.svt.classId;
+  int get logicalClassId {
+    final overwriteBattleClassBuff =
+        collectBuffsPerAction(battleBuff.validBuffsActiveFirst, BuffAction.overwriteBattleclass).lastOrNull;
+    if (overwriteBattleClassBuff != null && overwriteBattleClassBuff.storedClassId != null) {
+      return overwriteBattleClassBuff.storedClassId!;
+    }
+
+    return isPlayer ? niceSvt!.classId : niceEnemy!.svt.classId;
+  }
+
+  int get originalClassId => isPlayer ? niceSvt!.classId : niceEnemy!.svt.classId;
 
   ServantSubAttribute get attribute {
     final overwriteSubattributeBuff =
-        collectBuffsPerType(battleBuff.validBuffsActiveFirst, BuffType.overwriteSubattribute).firstOrNull;
+        collectBuffsPerAction(battleBuff.validBuffsActiveFirst, BuffAction.overwriteSubattribute).firstOrNull;
     final overwriteSubattribute =
         ServantSubAttribute.values.firstWhereOrNull((attr) => attr.value == overwriteSubattributeBuff?.vals.Value);
     if (overwriteSubattribute != null && overwriteSubattribute != ServantSubAttribute.default_) {
@@ -887,6 +897,18 @@ class BattleServantData {
         allTraits.add(NiceTrait(id: buff.param));
       } else if (buff.buff.type == BuffType.subIndividuality) {
         removeTraitIds.add(buff.param);
+      }
+    }
+
+    if (logicalClassId != originalClassId) {
+      final addClassTraitId = ConstData.classInfo[logicalClassId]?.individuality;
+      if (addClassTraitId != null) {
+        allTraits.add(NiceTrait(id: addClassTraitId));
+      }
+
+      final removeClassTraitId = ConstData.classInfo[originalClassId]?.individuality;
+      if (removeClassTraitId != null) {
+        removeTraitIds.add(removeClassTraitId);
       }
     }
 
@@ -1935,19 +1957,25 @@ class BattleServantData {
     final bool isDef,
   ) async {
     int relation = curRelation;
+
     final List<BuffData> buffs = collectBuffsPerAction(battleBuff.validBuffs, BuffAction.overwriteClassRelation);
     for (final buff in buffs.reversed) {
       // did not find corresponding buff
-      if (await buff.shouldActivateBuff(battleData, getTraits(addTraits: card?.traits),
-          opponentTraits: opponent.getTraits())) {
+      final shouldActivate = await buff.shouldActivateBuff(
+        battleData,
+        getTraits(addTraits: card?.traits),
+        opponentTraits: opponent.getTraits(),
+      );
+
+      if (shouldActivate) {
         buff.setUsed(this);
         final relationOverwrite = buff.buff.script.relationId!;
         final overwrite = isDef
-            ? relationOverwrite.defSide2.containsKey(opponent.classId)
-                ? relationOverwrite.defSide2[opponent.classId]![classId]
+            ? relationOverwrite.defSide2.containsKey(opponent.logicalClassId)
+                ? relationOverwrite.defSide2[opponent.logicalClassId]![logicalClassId]
                 : null
-            : relationOverwrite.atkSide2.containsKey(classId)
-                ? relationOverwrite.atkSide2[classId]![opponent.classId]
+            : relationOverwrite.atkSide2.containsKey(logicalClassId)
+                ? relationOverwrite.atkSide2[logicalClassId]![opponent.logicalClassId]
                 : null;
         if (overwrite != null) {
           final overwriteValue = overwrite.damageRate;
@@ -2033,7 +2061,6 @@ class BattleServantData {
   }
 
   Future<void> startOfMyTurn(final BattleData battleData) async {
-    // no corresponding code, but probably similar to BuffAction.functionSelfturnend so no indiv checking on other
     await activateBuff(battleData, BuffAction.functionSelfturnstart);
   }
 

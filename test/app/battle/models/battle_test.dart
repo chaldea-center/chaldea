@@ -1542,6 +1542,84 @@ void main() async {
     expect(previousHp - enemy.hp, 7000);
   });
 
+  test('KazuraDrop related tests', () async {
+    final List<PlayerSvtData> setting = [
+      PlayerSvtData.id(1001800)
+        ..lv = 90
+        ..tdLv = 5
+        ..skillLvs = [10, 10, 10],
+      PlayerSvtData.id(1001800)
+        ..lv = 90
+        ..tdLv = 5
+        ..skillLvs = [10, 10, 10],
+      PlayerSvtData.id(2501600), // non Sakura series
+      PlayerSvtData.id(1001800)
+        ..lv = 90
+        ..tdLv = 5
+        ..skillLvs = [10, 10, 10],
+    ];
+    final battle = BattleData();
+    final quest = db.gameData.questPhases[9300040603]!;
+    await battle.init(quest, setting, MysticCodeData());
+
+    final kazura1 = battle.onFieldAllyServants[0]!;
+    final kazura2 = battle.onFieldAllyServants[1]!;
+    expect(kazura1.np, 0);
+    await battle.activateSvtSkill(0, 1);
+    expect(kazura1.np, 10000);
+
+    battle.delegate = BattleDelegate();
+    battle.delegate?.replaceMember = (onFieldSvts, backupSvts) async {
+      return Tuple2(onFieldSvts[2]!, backupSvts[0]!);
+    };
+    await battle.activateMysticCodeSkill(2);
+
+    expect(kazura2.np, 0);
+    await battle.activateSvtSkill(1, 1);
+    expect(kazura2.np, 15000);
+
+    expect(kazura1.logicalClassId, SvtClass.alterEgo.value);
+    final traitIdsBefore1 = kazura1.getTraits().map((niceTrait) => niceTrait.id).toList();
+    expect(traitIdsBefore1.contains(ConstData.classInfo[SvtClass.alterEgo.value]!.individuality), true);
+    expect(traitIdsBefore1.contains(ConstData.classInfo[SvtClass.saber.value]!.individuality), false);
+    await battle.activateSvtSkill(0, 2);
+    expect(kazura1.logicalClassId, SvtClass.saber.value);
+    final traitIdsAfter1 = kazura1.getTraits().map((niceTrait) => niceTrait.id).toList();
+    expect(traitIdsAfter1.contains(ConstData.classInfo[SvtClass.alterEgo.value]!.individuality), false);
+    expect(traitIdsAfter1.contains(ConstData.classInfo[SvtClass.saber.value]!.individuality), true);
+
+    battle.enemyTargetIndex = 1;
+    expect(kazura2.logicalClassId, SvtClass.alterEgo.value);
+    final traitIdsBefore2 = kazura2.getTraits().map((niceTrait) => niceTrait.id).toList();
+    expect(traitIdsBefore2.contains(ConstData.classInfo[SvtClass.alterEgo.value]!.individuality), true);
+    expect(traitIdsBefore2.contains(ConstData.classInfo[SvtClass.caster.value]!.individuality), false);
+    await battle.activateSvtSkill(1, 2);
+    expect(kazura2.logicalClassId, SvtClass.caster.value);
+    final traitIdsAfter2 = kazura2.getTraits().map((niceTrait) => niceTrait.id).toList();
+    expect(traitIdsAfter2.contains(ConstData.classInfo[SvtClass.alterEgo.value]!.individuality), false);
+    expect(traitIdsAfter2.contains(ConstData.classInfo[SvtClass.caster.value]!.individuality), true);
+
+    battle.enemyTargetIndex = 0;
+    final enemy = battle.onFieldEnemies[0]!;
+
+    // test Kazura's passive
+    final previousHp1 = enemy.hp;
+    await battle.playerTurn([CombatAction(kazura1, kazura1.getCards()[0])]);
+    expect(previousHp1 - enemy.hp, 4780);
+
+    final previousHp2 = enemy.hp;
+    await battle.playerTurn([CombatAction(kazura2, kazura2.getCards()[0])]);
+    expect(previousHp2 - enemy.hp, 2458);
+
+    // test start of turn effects
+    await battle.activateSvtSkill(0, 0);
+    await battle.activateSvtSkill(1, 0);
+    await battle.skipTurn();
+    final previousHp3 = enemy.hp;
+    await battle.playerTurn([CombatAction(kazura1, kazura1.getCards()[0])]);
+    expect(previousHp3 - enemy.hp, 1821);
+  });
+
   group('Summer Eresh related tests', () {
     test('bond & starting position & dmgBattlePoint', () async {
       final List<PlayerSvtData?> setting = [

@@ -1234,7 +1234,7 @@ extension BattleSvtDataUI on BattleServantData {
           Positioned(
             left: 0,
             top: 0,
-            child: db.getIconImage(SvtClassX.clsIcon(classId, rarity), width: dim / 3.2),
+            child: db.getIconImage(SvtClassX.clsIcon(logicalClassId, rarity), width: dim / 3.2),
           ),
         ],
       );

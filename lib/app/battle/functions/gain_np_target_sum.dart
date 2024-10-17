@@ -1,5 +1,4 @@
 import 'package:chaldea/app/battle/models/battle.dart';
-import 'package:chaldea/app/battle/utils/battle_utils.dart';
 import 'package:chaldea/app/battle/utils/buff_utils.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
 import 'gain_np.dart';
@@ -21,12 +20,18 @@ class GainNpTargetSum {
     for (final target in targets) {
       int change = dataVals.Value!;
       if (targetTraits != null) {
-        final targetType = dataVals.Target ?? 0;
+        final targetType = dataVals.Value2 ?? dataVals.Target ?? 0;
         final List<BattleServantData> countTargets = GainNp.getCountTargets(battleData, target, targetType);
 
         final count = countTargets
             .where((svt) => checkSignedIndividualities2(
-                  myTraits: svt.getTraits(),
+                  myTraits: svt.getTraits(
+                    addTraits: svt.getBuffTraits(
+                      activeOnly: dataVals.GainNpTargetPassiveIndividuality != 1,
+                      ignoreIndivUnreleaseable: false,
+                      includeIgnoreIndiv: false,
+                    ),
+                  ),
                   requiredTraits: targetTraits,
                 ))
             .length;

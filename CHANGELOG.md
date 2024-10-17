@@ -3,6 +3,9 @@
 ## 2.5.15
 
 - Fix command codes procing as passive skills
+- Support KazuraDrop
+  - BattleClass overwrite
+  - Gain NP couting targets
 
 ## 2.5.14
 

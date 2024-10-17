@@ -121,7 +121,7 @@ class _BattleSvtDetailState extends State<BattleSvtDetail> with SingleTickerProv
   Widget get header {
     final buffer = StringBuffer('No.${svt.niceEnemy?.shownId ?? svt.niceSvt?.shownId ?? svt.svtId}'
         ' $kStarChar2${svt.rarity}'
-        ' ${Transl.svtClassId(svt.classId).l}'
+        ' ${Transl.svtClassId(svt.logicalClassId).l}'
         '\nATK ${svt.atk}  HP ${svt.hp}'
         '\n${Transl.svtSubAttribute(svt.attribute).l}  Pos ${svt.fieldIndex + 1}');
     if (svt.isEnemy) {
@@ -595,11 +595,11 @@ class BattleSvtAvatar extends StatelessWidget {
         ),
       ));
     }
-    if (svt.isEnemy) {
+    if (svt.isEnemy || svt.logicalClassId != svt.originalClassId) {
       children.add(Positioned(
         left: sized(1),
         top: sized(1),
-        child: db.getIconImage(SvtClassX.clsIcon(svt.classId, svt.rarity), width: sized(20)),
+        child: db.getIconImage(SvtClassX.clsIcon(svt.logicalClassId, svt.rarity), width: sized(20)),
       ));
     }
     Widget stack = SizedBox(

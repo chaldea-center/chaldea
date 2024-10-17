@@ -33,13 +33,14 @@ class AddState {
     } else if (dataVals.ProcPassive == 1) {
       isPassive = true;
     }
-    for (int i = 0; i < targets.length; i += 1) {
-      final target = targets[i];
+    for (final target in targets) {
       final buffData = BuffData(buff, dataVals, battleData.getNextAddOrder())
         ..actorUniqueId = activator?.uniqueId
         ..actorName = activator?.lBattleName
         ..passive = isPassive
         ..isClassPassive = isClassPassive;
+
+      // Processing logicTurn related logic
       if (isShortBuff) {
         buffData.logicTurn -= 1;
       }
@@ -59,6 +60,7 @@ class AddState {
         if (dataVals.ShortenBuffHalfTurnInPartyTurn == 1) buffData.logicTurn -= 1;
       }
 
+      // Processing special logic for certain buff types
       if (buff.type.isTdTypeChange) {
         buffData.tdTypeChange = await getTypeChangeTd(battleData, target, buff, selectTreasureDeviceInfo);
       } else if (buff.type == BuffType.upDamageEventPoint) {
@@ -68,9 +70,18 @@ class AddState {
           continue;
         }
         buffData.param += pointBuff.value;
+      } else if (buff.type == BuffType.overwriteBattleclass) {
+        // it is unclear what this will do for now, the only example is when TargetEnemyClass is set to 1
+        final targetEnemyClassId = battleData.getTargetedEnemy(target)?.logicalClassId;
+        if (dataVals.TargetEnemyClass == 1 &&
+            ConstData.constantStr.enableOverwriteClassIds.contains(targetEnemyClassId)) {
+          buffData.storedClassId = targetEnemyClassId;
+        }
       }
+
       buffData.shortenMaxCountEachSkill = dataVals.ShortenMaxCountEachSkill?.toList();
 
+      // convert Buff checks
       for (final convertBuff in collectBuffsPerAction(target.battleBuff.validBuffs, BuffAction.buffConvert)) {
         Buff? convertedBuff;
         final convert = convertBuff.buff.script.convert;

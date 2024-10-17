@@ -94,7 +94,7 @@ class GainNp {
       if (targetTraits.isNotEmpty) {
         int count = target.countBuffWithTrait(
           targetTraits,
-          activeOnly: true,
+          activeOnly: dataVals.GainNpTargetPassiveIndividuality != 1,
           ignoreIndivUnreleaseable: false,
           includeIgnoreIndiv: false,
         );
