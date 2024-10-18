@@ -2649,3 +2649,41 @@ class BattleResultData {
 
   factory BattleResultData.fromJson(Map<dynamic, dynamic> data) => _$BattleResultDataFromJson(data);
 }
+
+enum UserStatusFlagKind {
+  // FP gacha auto sell
+  combineMaterialC(0),
+  combineMaterialUc(1),
+  combineMaterialR(2),
+  statusUpC(3),
+  statusUpUc(4),
+  statusUpR(5),
+  svtEquipC(6),
+  svtEquipUc(7),
+  svtEquipR(8),
+  //
+  costumeDisplaySetting(9),
+  firstNpSpeed(10),
+  fixMainSupportDeck(11),
+  fixEventSupportDeck(12),
+  //
+  questDropAutoselCombineMaterialC(13),
+  questDropAutoselCombineMaterialUc(14),
+  questDropAutoselCombineMaterialR(15),
+  questDropAutoselCombineMaterialSr(16),
+  //
+  randomLimitCount(17),
+  randomLimitCountSupport(18),
+  svtLimitSpoilerProtection(19),
+  svtLimitDisplaySetting(20),
+  birthdaySetting(21),
+  issuedDeletePassword(22),
+  deleted(23),
+  executedLogin(25),
+  ;
+
+  const UserStatusFlagKind(this.value);
+  final int value;
+
+  int get mask => 1 << value;
+}

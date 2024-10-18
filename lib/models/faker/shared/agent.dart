@@ -37,6 +37,11 @@ abstract class FakerAgent<TRequest extends FRequestBase, TUser extends AutoLogin
 
   Future<FResponse> shopPurchaseByStone({required int32_t id, required int32_t num});
 
+  Future<FResponse> eventMissionClearReward({required List<int32_t> missionIds});
+
+  Future<FResponse> userPresentReceive(
+      {required List<int64_t> presentIds, required int32_t itemSelectIdx, required int32_t itemSelectNum});
+
   Future<FResponse> battleSetup({
     required int32_t questId,
     required int32_t questPhase,
@@ -411,4 +416,17 @@ class BitConverter {
     final data = ByteData(8)..setInt64(0, value, Endian.little);
     return data.buffer.asUint8List();
   }
+}
+
+// UserPresentBoxWindow.PRESENT_OVERFLOW_TYPE
+enum PresentOverflowType {
+  none(0),
+  svt(1),
+  svtEquip(2),
+  item(3),
+  commandCode(4),
+  ;
+
+  const PresentOverflowType(this.value);
+  final int value;
 }

@@ -299,6 +299,29 @@ class FakerAgentCN extends FakerAgent<FRequestCN, AutoLoginDataCN, NetworkManage
   }
 
   @override
+  Future<FResponse> eventMissionClearReward({required List<int32_t> missionIds}) {
+    return _acPhp(key: 'eventmissionreceive', nid: 'event_mission_receive', params1: {
+      'missionIds': jsonEncode(missionIds),
+    });
+  }
+
+  @override
+  Future<FResponse> userPresentReceive(
+      {required List<int64_t> presentIds, required int32_t itemSelectIdx, required int32_t itemSelectNum}) {
+    return _acPhp(
+      key: 'presentreceive',
+      nid: 'present_receive',
+      params2: {
+        'presentIds': jsonEncode(presentIds),
+      },
+      params4: {
+        'itemSelectIdx': itemSelectIdx,
+        'itemSelectNum': itemSelectNum,
+      },
+    );
+  }
+
+  @override
   Future<FResponse> battleSetup({
     required int32_t questId,
     required int32_t questPhase,

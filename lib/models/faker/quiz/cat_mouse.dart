@@ -153,4 +153,13 @@ class CatMouseGame {
     // print(jsonEncode(result));
     return result;
   }
+
+  //
+  String encodeMsgpackBase64(dynamic data) {
+    return base64Encode(msgpack.serialize(data));
+  }
+
+  dynamic decodeBase64Msgpack(String data) {
+    return msgpack.deserialize(Uint8List.fromList(base64Decode(data)));
+  }
 }

@@ -134,6 +134,25 @@ class FakerAgentJP extends FakerAgent<FRequestJP, AutoLoginDataJP, NetworkManage
   }
 
   @override
+  Future<FResponse> eventMissionClearReward({required List<int32_t> missionIds}) {
+    // success: {missionIds:[],overflowType:0,isOverPresentBox:false}
+    final request = FRequestJP(network: network, path: '/eventMission/receive');
+    request.addFieldStr('missionIds', jsonEncode(missionIds));
+    return request.beginRequest();
+  }
+
+  @override
+  Future<FResponse> userPresentReceive(
+      {required List<int64_t> presentIds, required int32_t itemSelectIdx, required int32_t itemSelectNum}) {
+    // success: {overflowType:0,getSvts:[],getCommandCodes:[]}
+    final request = FRequestJP(network: network, path: '/present/receive');
+    request.addFieldStr('presentIds', network.catMouseGame.encodeMsgpackBase64(presentIds));
+    request.addFieldInt32('itemSelectIdx', itemSelectIdx);
+    request.addFieldInt32('itemSelectNum', itemSelectNum);
+    return request.beginRequest();
+  }
+
+  @override
   Future<FResponse> battleSetup({
     required int32_t questId,
     required int32_t questPhase,
