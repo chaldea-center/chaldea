@@ -73,8 +73,11 @@ class AddState {
       } else if (buff.type == BuffType.overwriteBattleclass) {
         // it is unclear what this will do for now, the only example is when TargetEnemyClass is set to 1
         final targetEnemyClassId = battleData.getTargetedEnemy(target)?.logicalClassId;
-        if (dataVals.TargetEnemyClass == 1 &&
-            ConstData.constantStr.enableOverwriteClassIds.contains(targetEnemyClassId)) {
+        if (dataVals.TargetEnemyClass == 1) {
+          if (targetEnemyClassId == target.logicalClassId ||
+              !ConstData.constantStr.enableOverwriteClassIds.contains(targetEnemyClassId)) {
+            continue;
+          }
           buffData.param = targetEnemyClassId!;
         }
       }
@@ -113,9 +116,9 @@ class AddState {
         }
       }
 
-      if (await shouldAddState(battleData, dataVals, activator, target, buffData, isCommandCode, isClassPassive) &&
-          target.isBuffStackable(buffData.buff.buffGroup) &&
-          checkSameBuffLimitNum(target, dataVals)) {
+      final isStackable = target.isBuffStackable(buffData.buff.buffGroup) && checkSameBuffLimitNum(target, dataVals);
+      if (isStackable &&
+          await shouldAddState(battleData, dataVals, activator, target, buffData, isCommandCode, isClassPassive)) {
         target.addBuff(
           buffData,
           isPassive: isPassive,
