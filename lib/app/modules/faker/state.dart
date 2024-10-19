@@ -30,6 +30,7 @@ class FakerRuntime {
 
   // common
   late final mstData = agent.network.mstData;
+  Region get region => agent.user.region;
   AutoBattleOptions get battleOption => agent.user.curBattleOption;
 
   BuildContext get context => _state!.context;
@@ -207,7 +208,7 @@ class FakerRuntime {
     EasyLoading.showProgress(finishedCount / totalCount, status: 'Battle $finishedCount/$totalCount');
     while (finishedCount < totalCount) {
       _checkStop();
-      _checkSvtKeep();
+      checkSvtKeep();
       if (battleOption.stopIfBondLimit) {
         _checkFriendship(battleOption);
       }
@@ -349,7 +350,7 @@ class FakerRuntime {
     }
   }
 
-  void _checkSvtKeep() {
+  void checkSvtKeep() {
     final counts = mstData.countSvtKeep();
     final user = mstData.user!;
     if (counts.svtCount >= user.svtKeep) {

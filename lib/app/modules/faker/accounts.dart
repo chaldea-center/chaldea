@@ -161,6 +161,7 @@ class _FakerAccountsPageState extends State<FakerAccountsPage> {
       key: ObjectKey(user),
       title: Text('[${user.serverName}] ${user.userGame?.name}'),
       subtitle: Text(user.userGame?.friendCode ?? 'null'),
+      contentPadding: const EdgeInsetsDirectional.only(start: 16),
       trailing: sorting
           ? null
           : Row(

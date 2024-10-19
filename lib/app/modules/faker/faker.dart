@@ -28,6 +28,7 @@ import '../import_data/sniff_details/formation_decks.dart';
 import 'details/dialogs.dart';
 import 'history.dart';
 import 'option_list.dart';
+import 'present_box/present_box.dart';
 import 'state.dart';
 
 class FakeGrandOrder extends StatefulWidget {
@@ -97,6 +98,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
         body: kIsWeb ? const Center(child: Text('Not supported')) : const Center(child: CircularProgressIndicator()),
       );
     }
+    final bool isLoggedIn = mstData.user != null;
     return Scaffold(
       appBar: AppBar(
         leading: BackButton(
@@ -121,9 +123,23 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
             },
             icon: const Icon(Icons.history),
           ),
-          IconButton(
-            onPressed: mstData.user == null ? null : () => router.pushPage(ImportHttpPage(mstData: mstData)),
-            icon: const Icon(Icons.import_export),
+          PopupMenuButton(
+            itemBuilder: (context) => [
+              PopupMenuItem(
+                enabled: isLoggedIn,
+                onTap: () {
+                  router.pushPage(ImportHttpPage(mstData: mstData));
+                },
+                child: Text(S.current.general_import),
+              ),
+              PopupMenuItem(
+                enabled: isLoggedIn,
+                onTap: () {
+                  router.pushPage(UserPresentBoxManagePage(runtime: runtime));
+                },
+                child: Text(S.current.present_box),
+              ),
+            ],
           ),
         ],
       ),

@@ -375,7 +375,6 @@ class DataMaster<K, V extends DataEntityBase<K>> with Iterable<V> {
   final String mstName;
   final V Function(Map<String, dynamic>) entityFromJson;
 
-  @protected
   final Map<K, V> lookup = {};
 
   @override
@@ -529,7 +528,7 @@ class MasterDataManager {
     return count ?? defaultValue;
   }
 
-  ({int svtCount, int svtEquipCount}) countSvtKeep() {
+  ({int svtCount, int svtEquipCount, int ccCount}) countSvtKeep() {
     int svtCount = 0, svtEquipCount = 0;
     for (final svt in userSvt) {
       final dbSvt = db.gameData.entities[svt.svtId];
@@ -544,7 +543,7 @@ class MasterDataManager {
         svtCount += 1;
       }
     }
-    return (svtCount: svtCount, svtEquipCount: svtEquipCount);
+    return (svtCount: svtCount, svtEquipCount: svtEquipCount, ccCount: userCommandCode.length);
   }
 
   // mst schemes

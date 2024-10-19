@@ -425,6 +425,43 @@ extension DateTimeX on DateTime {
   int get timestamp => millisecondsSinceEpoch ~/ 1000;
 }
 
+extension DurationX on Duration {
+  String toStringX() {
+    int microseconds = inMicroseconds.abs();
+    bool negative = inMicroseconds < 0;
+    String sign = negative ? "-" : "";
+
+    int days = microseconds ~/ Duration.microsecondsPerDay;
+    microseconds = microseconds.remainder(Duration.microsecondsPerDay);
+
+    int hours = microseconds ~/ Duration.microsecondsPerHour;
+    microseconds = microseconds.remainder(Duration.microsecondsPerHour);
+
+    int minutes = microseconds ~/ Duration.microsecondsPerMinute;
+    microseconds = microseconds.remainder(Duration.microsecondsPerMinute);
+
+    int seconds = microseconds ~/ Duration.microsecondsPerSecond;
+    microseconds = microseconds.remainder(Duration.microsecondsPerSecond);
+
+    int milliseconds = microseconds ~/ Duration.microsecondsPerMillisecond;
+
+    // var microsecondsText = microseconds.toString().padLeft(6, "0");
+    final buffer = StringBuffer(sign);
+    if (days != 0) {
+      buffer.write('${days}d ${hours}h${minutes}m${seconds}s');
+    } else if (hours != 0) {
+      buffer.write('${hours}h${minutes}m${seconds}s');
+    } else if (minutes != 0) {
+      buffer.write('${minutes}m${seconds}s');
+    } else if (seconds != 0) {
+      buffer.write('${seconds}s');
+    } else {
+      buffer.write('${milliseconds}ms');
+    }
+    return buffer.toString();
+  }
+}
+
 /// This widget should not have any dependency of outer [context]
 extension DialogShowMethod on material.Widget {
   /// Don't use this when dialog children depend on [context] or need [State.setState]
