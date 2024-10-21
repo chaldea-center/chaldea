@@ -370,6 +370,7 @@ class BattleData {
       await svt.svtAi.reactionWaveStart(this, svt);
     }
 
+    await _replenishActors();
     await _nextTurn();
   }
 
@@ -464,7 +465,6 @@ class BattleData {
   }
 
   Future<void> _nextTurn() async {
-    await _replenishActors();
     bool addTurn = true;
 
     if (isWaveCleared) {
@@ -1243,6 +1243,9 @@ class BattleData {
 
   Future<void> _endEnemyTurn() async {
     await withAction(() async {
+      await _removeDeadActors();
+      await _replenishActors();
+
       for (final svt in nonnullEnemies) {
         await svt.endOfMyTurn(this);
       }
@@ -1250,8 +1253,6 @@ class BattleData {
       for (final svt in nonnullPlayers) {
         await svt.endOfYourTurn(this);
       }
-
-      await _removeDeadActors();
 
       for (final buff in fieldBuffs) {
         buff.turnPass();
