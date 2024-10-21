@@ -714,7 +714,7 @@ class BattleData {
   }
 
   void _useBuffOnce() {
-    for (final svt in nonnullActors) {
+    for (final svt in [...nonnullActors, ...nonnullBackupPlayers, ...nonnullBackupEnemies]) {
       svt.useBuffOnce();
     }
   }
