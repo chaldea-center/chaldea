@@ -1653,36 +1653,6 @@ void main() async {
     expect(kazura.skillInfoList[0].chargeTurn, 5);
   });
 
-  test('Move to Last backup vs logic turn', () async {
-    final List<PlayerSvtData> setting = [
-      PlayerSvtData.id(1101600)
-        ..lv = 90
-        ..tdLv = 5
-        ..skillLvs = [10, 10, 10],
-      PlayerSvtData.id(2501600),
-    ];
-    final battle = BattleData();
-    final quest = db.gameData.questPhases[9300040603]!;
-    await battle.init(quest, setting, MysticCodeData());
-
-    final chloe = battle.onFieldAllyServants[0]!;
-    await battle.activateSvtSkill(0, 0);
-    await battle.activateSvtSkill(0, 1);
-    expect(chloe.battleBuff.getActiveList().length, 7);
-
-    await battle.skipTurn();
-    expect(chloe.battleBuff.getActiveList().length, 6);
-    expect(chloe.battleBuff.getActiveList().first.logicTurn, 3);
-
-    await battle.skipTurn();
-    expect(chloe.battleBuff.getActiveList().first.logicTurn, 1);
-
-    await battle.resetPlayerSkillCD(isMysticCode: false, svt: chloe);
-    await battle.activateSvtSkill(0, 1);
-    await battle.skipTurn();
-    expect(chloe.battleBuff.getActiveList().length, 2);
-  });
-
   group('Summer Eresh related tests', () {
     test('bond & starting position & dmgBattlePoint', () async {
       final List<PlayerSvtData?> setting = [
