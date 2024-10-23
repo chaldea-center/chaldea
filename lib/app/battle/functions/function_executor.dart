@@ -212,7 +212,9 @@ class FunctionExecutor {
       }
 
       final funcQuestTvalsMatch = checkSignedIndividualities2(
-          myTraits: battleData.getQuestIndividuality(), requiredTraits: function.funcquestTvals,);
+        myTraits: battleData.getQuestIndividuality(),
+        requiredTraits: function.funcquestTvals,
+      );
 
       if (!funcQuestTvalsMatch) {
         battleData.updateLastFuncResults(function.funcId, funcIndex);

@@ -281,7 +281,7 @@ Map<String, dynamic> _$QuestPhaseToJson(QuestPhase instance) => <String, dynamic
       'phase': instance.phase,
       'className': instance.className.map(const SvtClassConverter().toJson).toList(),
       'individuality': instance.individuality.map((e) => e.toJson()).toList(),
-      'phaseIndividuality': instance.phaseIndividuality.map((e) => e.toJson()).toList(),
+      'phaseIndividuality': instance.phaseIndividuality?.map((e) => e.toJson()).toList(),
       'qp': instance.qp,
       'exp': instance.exp,
       'bond': instance.bond,

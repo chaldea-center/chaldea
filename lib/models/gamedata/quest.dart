@@ -370,7 +370,7 @@ class QuestPhase extends Quest {
   int phase;
   List<SvtClass> className;
   List<NiceTrait> individuality;
-  List<NiceTrait> phaseIndividuality;
+  List<NiceTrait>? phaseIndividuality;
   int qp;
   int exp;
   int bond;
@@ -393,11 +393,11 @@ class QuestPhase extends Quest {
   List<EnemyDrop> drops;
 
   List<NiceTrait> get questIndividuality {
-    if (phaseIndividuality.isNotEmpty) {
+    if (phaseIndividuality?.isNotEmpty ?? false) {
       final baseTraits = battleBg?.individuality.toList() ?? [];
-      baseTraits.addAll(phaseIndividuality.where((trait) => !trait.negative));
+      baseTraits.addAll(phaseIndividuality!.where((trait) => !trait.negative));
 
-      final traitIdsToRemove = phaseIndividuality.where((trait) => trait.negative).map((trait) => trait.id).toList();
+      final traitIdsToRemove = phaseIndividuality!.where((trait) => trait.negative).map((trait) => trait.id).toList();
       baseTraits.removeWhere((trait) => traitIdsToRemove.contains(trait.id));
       return baseTraits;
     }
@@ -438,7 +438,7 @@ class QuestPhase extends Quest {
     this.phase = 1,
     this.className = const [],
     List<NiceTrait>? individuality,
-    List<NiceTrait>? phaseIndividuality,
+    this.phaseIndividuality,
     this.qp = 0,
     this.exp = 0,
     this.bond = 0,
@@ -457,7 +457,6 @@ class QuestPhase extends Quest {
     List<Stage>? stages,
     this.drops = const [],
   })  : individuality = individuality ?? [],
-        phaseIndividuality = phaseIndividuality ?? [],
         stages = stages ?? [] {
     if (enemyHashes.length > 1) {
       for (final stage in this.stages) {
@@ -514,9 +513,9 @@ class QuestPhase extends Quest {
   Map<String, dynamic> toJson() => _$QuestPhaseToJson(this);
 
   void removeEventQuestIndividuality() {
-    individuality.removeWhere((e) => e.isEventField);
-    battleBg?.individuality.removeWhere((e) => e.isEventField);
-    phaseIndividuality.removeWhere((e) => e.isEventField);
+    // battleBg.indiv is const, so just clear phaseIndiv and set indiv
+    individuality = questIndividuality.where((trait) => trait.isEventField).toList();
+    phaseIndividuality?.clear();
   }
 }
 

@@ -188,7 +188,8 @@ class _QuestEditPageState extends State<QuestEditPage> {
               quest.warId = v ?? 0;
               quest.removeEventQuestIndividuality();
               if (quest.warId < 1000) return;
-              final questIndivList = quest.phaseIndividuality.isNotEmpty ? quest.phaseIndividuality : quest.individuality;
+              final questIndivList =
+                  quest.phaseIndividuality?.isNotEmpty ?? false ? quest.phaseIndividuality! : quest.individuality;
               for (final entry in db.gameData.mappingData.fieldTrait.entries) {
                 if (entry.value.warIds.contains(quest.warId)) {
                   questIndivList.add(NiceTrait(id: entry.key));
@@ -209,7 +210,7 @@ class _QuestEditPageState extends State<QuestEditPage> {
               traits: quest.questIndividuality,
               onChanged: (traits) {
                 quest.individuality = traits.toList();
-                quest.phaseIndividuality.clear();
+                quest.phaseIndividuality?.clear();
                 if (mounted) setState(() {});
               },
             ));

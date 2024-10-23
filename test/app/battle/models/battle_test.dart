@@ -827,7 +827,7 @@ void main() async {
     final quest = db.gameData.questPhases[9300040603]!;
     final questIndivs = quest.questIndividuality;
     questIndivs.add(NiceTrait(id: 94000119));
-    quest.phaseIndividuality.clear();
+    quest.phaseIndividuality?.clear();
     quest.individuality = questIndivs;
 
     battle.options.pointBuffs = {
