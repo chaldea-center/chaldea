@@ -270,6 +270,7 @@ class FateResponseDetail {
 
 final _$mstMasterSchemes = <String, (Type, DataMaster Function(String mstName))>{
   "userGame": (UserGameEntity, (mstName) => DataMaster<int, UserGameEntity>(mstName, UserGameEntity.fromJson)),
+  "tblUserGame": (TblUserEntity, (mstName) => DataMaster<int, TblUserEntity>(mstName, TblUserEntity.fromJson)),
   "userLogin": (UserLoginEntity, (mstName) => DataMaster<int, UserLoginEntity>(mstName, UserLoginEntity.fromJson)),
   "userSvtCollection": (
     UserServantCollectionEntity,
@@ -329,6 +330,7 @@ final _$mstMasterSchemes = <String, (Type, DataMaster Function(String mstName))>
     (mstName) => DataMaster<_IntStr, UserPresentBoxEntity>(mstName, UserPresentBoxEntity.fromJson)
   ),
   "userGacha": (UserGachaEntity, (mstName) => DataMaster<_IntStr, UserGachaEntity>(mstName, UserGachaEntity.fromJson)),
+  "userEvent": (UserEventEntity, (mstName) => DataMaster<_IntStr, UserEventEntity>(mstName, UserEventEntity.fromJson)),
   "userEventMission": (
     UserEventMissionEntity,
     (mstName) => DataMaster<_IntStr, UserEventMissionEntity>(mstName, UserEventMissionEntity.fromJson)
@@ -549,6 +551,7 @@ class MasterDataManager {
   // mst schemes
 
   DataMaster<int, UserGameEntity> get userGame => get<int, UserGameEntity>();
+  DataMaster<int, TblUserEntity> get tblUserGame => get<int, TblUserEntity>();
   DataMaster<int, UserLoginEntity> get userLogin => get<int, UserLoginEntity>();
   // svt and ce
   DataMaster<_IntStr, UserServantCollectionEntity> get userSvtCollection => get<_IntStr, UserServantCollectionEntity>();
@@ -577,6 +580,7 @@ class MasterDataManager {
       get<_IntStr, UserClassBoardSquareEntity>();
   DataMaster<_IntStr, UserPresentBoxEntity> get userPresentBox => get<_IntStr, UserPresentBoxEntity>();
   DataMaster<_IntStr, UserGachaEntity> get userGacha => get<_IntStr, UserGachaEntity>();
+  DataMaster<_IntStr, UserEventEntity> get userEvent => get<_IntStr, UserEventEntity>();
   DataMaster<_IntStr, UserEventMissionEntity> get userEventMission => get<_IntStr, UserEventMissionEntity>();
   DataMaster<String, UserEventPointEntity> get userEventPoint => get<String, UserEventPointEntity>();
   DataMaster<_IntStr, UserShopEntity> get userShop => get<_IntStr, UserShopEntity>();
@@ -745,6 +749,7 @@ class UserServantEntity extends DataEntityBase<int> {
 
   Servant? get dbSvt => db.gameData.servantsById[svtId];
   CraftEssence? get dbCE => db.gameData.craftEssencesById[svtId];
+  int? get maxLv => dbCE?.ascensionAdd.lvMax.ascension[limitCount];
 }
 
 @JsonSerializable(createToJson: false)
@@ -901,6 +906,7 @@ class UserGameEntity extends DataEntityBase<int> {
   int userEquipId;
 
   // bilibili only
+  @protected
   int? id;
   // String usk;
   // int? rksdkid;
@@ -1015,6 +1021,25 @@ class UserGameEntity extends DataEntityBase<int> {
   int calCurAp() {
     return (actMax - (actRecoverAt - DateTime.now().timestamp) / 300).floor().clamp(0, actMax) + carryOverActPoint;
   }
+}
+
+@JsonSerializable(createToJson: false)
+class TblUserEntity extends DataEntityBase<int> {
+  int userId;
+  int friendPoint;
+
+  @override
+  int get primaryKey => userId;
+
+  static int createPK(int userId) => userId;
+
+  TblUserEntity({
+    dynamic userId,
+    dynamic friendPoint,
+  })  : userId = _toInt(userId),
+        friendPoint = _toInt(friendPoint);
+
+  factory TblUserEntity.fromJson(Map<String, dynamic> data) => _$TblUserEntityFromJson(data);
 }
 
 @JsonSerializable(createToJson: false)
@@ -1169,7 +1194,10 @@ class UserCommandCodeEntity extends DataEntityBase<int> {
   // int userId;
   int commandCodeId;
   int status; // StatusFlag.LOCK=1,CHOICE=16
-  // createdAt, updatedAt
+  int createdAt = 0;
+  // updatedAt
+
+  bool get locked => status & 1 != 0;
 
   @override
   int get primaryKey => id;
@@ -1181,9 +1209,11 @@ class UserCommandCodeEntity extends DataEntityBase<int> {
     dynamic commandCodeId,
     dynamic status,
     dynamic svtId,
+    dynamic createdAt,
   })  : id = _toInt(id),
         commandCodeId = _toInt(commandCodeId),
-        status = _toInt(status);
+        status = _toInt(status),
+        createdAt = _toInt(createdAt);
   factory UserCommandCodeEntity.fromJson(Map<String, dynamic> data) => _$UserCommandCodeEntityFromJson(data);
 
   CommandCode? get dbCC => db.gameData.commandCodesById[commandCodeId];
@@ -1596,6 +1626,50 @@ class UserGachaEntity extends DataEntityBase<_IntStr> {
         status = _toInt(status, 0),
         createdAt = _toIntNull(createdAt);
   factory UserGachaEntity.fromJson(Map<String, dynamic> data) => _$UserGachaEntityFromJson(data);
+}
+
+// public long userId;
+// public int eventId;
+// public int value;
+// public int flag;
+// public int tutorial;
+// public long tutorial2;
+// public int scriptFlag;
+// public long updatedAt;
+
+@JsonSerializable(createToJson: false)
+class UserEventEntity extends DataEntityBase<_IntStr> {
+  int userId;
+  int eventId;
+  int value;
+  int flag;
+  // int tutorial; // may exceed int64
+  // int tutorial2;
+  int scriptFlag;
+  int updatedAt;
+  int createdAt;
+
+  @override
+  _IntStr get primaryKey => eventId;
+
+  static _IntStr createPK(int eventId) => eventId;
+
+  UserEventEntity({
+    dynamic userId,
+    dynamic eventId,
+    dynamic value,
+    dynamic flag,
+    dynamic scriptFlag,
+    dynamic updatedAt,
+    dynamic createdAt,
+  })  : userId = _toInt(userId),
+        eventId = _toInt(eventId),
+        value = _toInt(value),
+        flag = _toInt(flag),
+        scriptFlag = _toInt(scriptFlag),
+        updatedAt = _toInt(updatedAt),
+        createdAt = _toInt(createdAt);
+  factory UserEventEntity.fromJson(Map<String, dynamic> data) => _$UserEventEntityFromJson(data);
 }
 
 @JsonSerializable(createToJson: false)

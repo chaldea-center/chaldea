@@ -17,28 +17,44 @@ class FakerRuntime {
   static final Set<Object> _awakeTasks = {};
 
   final FakerAgent agent;
-  State? _state;
+  State? _rootState;
+  final List<State> _dependencies = [];
 
   // runtime data
   final runningTask = ValueNotifier<bool>(false);
+  final teapots = <int, Item>{};
+  GameConstants constants = ConstData.constants;
+  // stats
   final totalRewards = <int, int>{};
   final totalDropStat = _DropStatData();
   final curLoopDropStat = _DropStatData();
-  final teapots = <int, Item>{};
+  List<GachaInfos> lastGachaResult = [];
 
-  FakerRuntime._(this.agent, this._state);
+  FakerRuntime._(this.agent, this._rootState);
 
   // common
   late final mstData = agent.network.mstData;
   Region get region => agent.user.region;
   AutoBattleOptions get battleOption => agent.user.curBattleOption;
 
-  BuildContext get context => _state!.context;
-  bool get mounted => _state != null && context.mounted;
+  BuildContext get context => _rootState!.context;
+  bool get mounted => _rootState != null && context.mounted;
+
+  void addDependency(State s) {
+    if (!_dependencies.contains(s)) _dependencies.add(s);
+  }
+
+  void removeDependency(State s) {
+    _dependencies.remove(s);
+  }
 
   void update() {
-    // ignore: invalid_use_of_protected_member
-    if (mounted) _state?.setState(() {});
+    for (final s in [_rootState, ..._dependencies]) {
+      if (s != null && s.mounted) {
+        // ignore: invalid_use_of_protected_member
+        s.setState(() {});
+      }
+    }
   }
 
   Future<T?> _showDialog<T>(Widget child, {bool barrierDismissible = true}) async {
@@ -61,7 +77,7 @@ class FakerRuntime {
       throw SilentException('Context already disposed');
     }
     if (previous != null) {
-      previous._state = state;
+      previous._rootState = state;
       return previous;
     }
     final FakerAgent agent = switch (user) {
@@ -71,30 +87,41 @@ class FakerRuntime {
     return _runtimes[user] = FakerRuntime._(agent, state);
   }
 
-  Future<void> loadTeapots() async {
-    if (teapots.isNotEmpty) return;
-    List<Item> items;
-    if (agent.user.region == Region.jp) {
-      items = db.gameData.items.values.toList();
-    } else {
-      items = (await AtlasApi.exportedData(
-            'nice_item',
-            (data) => (data as List).map((e) => Item.fromJson(e)).toList(),
-            region: agent.user.region,
-          )) ??
-          [];
+  Future<void> loadInitData() async {
+    // teapots
+    if (teapots.isEmpty) {
+      List<Item> items;
+      if (agent.user.region == Region.jp) {
+        items = db.gameData.items.values.toList();
+      } else {
+        items = (await AtlasApi.exportedData(
+              'nice_item',
+              (data) => (data as List).map((e) => Item.fromJson(e)).toList(),
+              region: region,
+            )) ??
+            [];
+      }
+      final now = DateTime.now().timestamp;
+      for (final item in items) {
+        if (item.type == ItemType.friendshipUpItem && item.endedAt > now) {
+          teapots[item.id] = item;
+        }
+      }
     }
-    final now = DateTime.now().timestamp;
-    for (final item in items) {
-      if (item.type == ItemType.friendshipUpItem && item.endedAt > now) {
-        teapots[item.id] = item;
+    // constants
+    if (region == Region.jp) {
+      constants = ConstData.constants;
+    } else {
+      final v = await AtlasApi.exportedData('NiceConstant', (v) => GameConstants.fromJson(v), region: region);
+      if (v != null) {
+        constants = v;
       }
     }
     update();
   }
 
   void dispose() {
-    _state = null;
+    _rootState = null;
   }
 
   // task
@@ -108,7 +135,8 @@ class FakerRuntime {
       ));
       return;
     }
-    return callback();
+    callback();
+    update();
   }
 
   Future<void> runTask(Future Function() task) async {
@@ -343,6 +371,143 @@ class FakerRuntime {
     }
   }
 
+  // gacha
+
+  Future<void> fpGachaDraw() async {
+    final counts = mstData.countSvtKeep();
+    final userGame = mstData.user!;
+    if (counts.svtCount >= userGame.svtKeep + 100) {
+      throw SilentException('${S.current.servant}: ${counts.svtCount}>=${userGame.svtKeep}+100');
+    }
+    if (counts.svtEquipCount >= userGame.svtEquipKeep + 100) {
+      throw SilentException('${S.current.craft_essence}: ${counts.svtEquipCount}>=${userGame.svtEquipKeep}+100');
+    }
+    if (counts.ccCount >= constants.maxUserCommandCode + 100) {
+      throw SilentException('${S.current.command_code}: ${counts.ccCount}>=${constants.maxUserCommandCode}+100');
+    }
+    final fp = mstData.tblUserGame[mstData.user?.userId]?.friendPoint ?? 0;
+    if (fp < 2000) {
+      throw SilentException('${Items.friendPoint?.lName.l ?? "Friend Point"} <2000');
+    }
+    final option = agent.user.gacha;
+    final gacha = await AtlasApi.gacha(option.gachaId, region: region);
+    if (gacha == null) {
+      throw SilentException('Gacha ${option.gachaId} not found');
+    }
+    if (gacha.type != GachaType.freeGacha) {
+      throw SilentException('Only FP Gacha supported: ${gacha.type}');
+    }
+    final resp = await agent.gachaDraw(gachaId: option.gachaId, num: 10, gachaSubId: option.gachaSubId);
+    try {
+      final infos = resp.data.getResponseNull('gacha_draw')?.success?['gachaInfos'];
+      if (infos != null) {
+        lastGachaResult = (infos as List).map((e) => GachaInfos.fromJson(e)).toList();
+      }
+    } catch (e, s) {
+      logger.e('parse gacha_infos failed', e, s);
+    }
+  }
+
+  Future<void> loopFpGachaDraw() async {
+    final initCount = agent.user.gacha.loopCount;
+    while (agent.user.gacha.loopCount > 0) {
+      _checkStop();
+      EasyLoading.show(status: 'Draw FP gacha ${initCount - agent.user.gacha.loopCount + 1}/$initCount...');
+      await fpGachaDraw();
+      agent.user.gacha.loopCount -= 1;
+      update();
+
+      final counts = mstData.countSvtKeep();
+      final userGame = mstData.user!;
+      if (counts.svtCount >= userGame.svtKeep + 100 || counts.ccCount >= constants.maxUserCommandCode + 100) {
+        await sellServant();
+      }
+      if (counts.svtEquipCount >= userGame.svtEquipKeep + 100) {
+        await svtEquipCombine(30);
+      }
+    }
+  }
+
+  Future<void> sellServant() async {
+    List<int> sellUserSvtIds = [], sellCommandCodes = [];
+    final timeLimit = DateTime.now().timestamp - 3600 * 36;
+    for (final userSvt in mstData.userSvt) {
+      final svt = db.gameData.servantsById[userSvt.svtId];
+      if (svt == null || svt.rarity > 3 || svt.rarity == 0 || userSvt.locked) continue;
+      if (!svt.obtains.contains(SvtObtain.friendPoint)) continue;
+      if (userSvt.createdAt < timeLimit) continue;
+      sellUserSvtIds.add(userSvt.id);
+    }
+    final equippedCC = mstData.userSvtCommandCode.expand((e) => e.userCommandCodeIds).toSet();
+    for (final userCC in mstData.userCommandCode) {
+      final cc = db.gameData.commandCodesById[userCC.commandCodeId];
+      if (userCC.locked || cc == null || cc.rarity > 2 || equippedCC.contains(userCC.id)) continue;
+      if (userCC.createdAt < timeLimit) continue;
+      sellCommandCodes.add(userCC.id);
+    }
+    sellUserSvtIds.sort2((e) => -e);
+    sellUserSvtIds = sellUserSvtIds.take(200).toList();
+    sellCommandCodes.sort2((e) => -e);
+    sellCommandCodes = sellCommandCodes.take(100).toList();
+    EasyLoading.show(status: 'Sell ${sellUserSvtIds.length} servants, ${sellCommandCodes.length} Command Codes');
+    if (sellUserSvtIds.isNotEmpty || sellCommandCodes.isNotEmpty) {
+      await agent.sellServant(servantUserIds: sellUserSvtIds, commandCodeUserIds: sellCommandCodes);
+    }
+    update();
+  }
+
+  Future<void> svtEquipCombine([int count = 1]) async {
+    final gachaOption = agent.user.gacha;
+    EasyLoading.show(status: 'Combine Craft Essence ...');
+    while (count > 0) {
+      final targetCEs = mstData.userSvt.where((userSvt) {
+        final ce = db.gameData.craftEssencesById[userSvt.svtId];
+        if (ce == null) return false;
+        if (!userSvt.locked) return false;
+        final maxLv = userSvt.maxLv;
+        if (maxLv == null || userSvt.lv >= maxLv - 1) return false;
+        if (gachaOption.ceEnhanceBaseUserSvtIds.contains(userSvt.id)) return true;
+        if (gachaOption.ceEnhanceBaseSvtIds.contains(userSvt.svtId)) {
+          return userSvt.limitCount == 4;
+        }
+        return false;
+      }).toList();
+      if (targetCEs.isEmpty) {
+        throw SilentException('No valid Target Craft Essence');
+      }
+      targetCEs.sort2((e) => e.lv);
+      final targetCE = targetCEs.first;
+      final combineCEs = mstData.userSvt.where((userSvt) {
+        final ce = db.gameData.craftEssencesById[userSvt.svtId];
+        if (ce == null || userSvt.locked || userSvt.lv != 1) return false;
+        final bool isExp = ce.flags.contains(SvtFlag.svtEquipExp);
+        if (ce.rarity > 4) {
+          return false;
+        } else if (ce.rarity == 4) {
+          return gachaOption.feedExp4 && isExp;
+        } else if (ce.rarity == 3) {
+          if (isExp) {
+            return gachaOption.feedExp3;
+          }
+          return ce.obtain == CEObtain.permanent;
+        } else {
+          return true;
+        }
+      }).toList();
+      combineCEs.sort2((e) => -e.createdAt);
+      if (combineCEs.isEmpty) {
+        update();
+        return;
+      }
+      final combineCEIds = combineCEs.take(20).map((e) => e.id).toList();
+      await agent.servantEquipCombine(baseUserSvtId: targetCE.id, materialSvtIds: combineCEIds);
+      count -= 1;
+      update();
+    }
+  }
+
+  // helpers
+
   void _checkStop() {
     if (agent.network.stopFlag) {
       agent.network.stopFlag = false;
@@ -358,6 +523,9 @@ class FakerRuntime {
     }
     if (counts.svtEquipCount >= user.svtEquipKeep) {
       throw SilentException('${S.current.craft_essence}: ${counts.svtEquipCount}>=${user.svtEquipKeep}');
+    }
+    if (counts.ccCount >= constants.maxUserCommandCode) {
+      throw SilentException('${S.current.command_code}: ${counts.ccCount}>=${constants.maxUserCommandCode}');
     }
   }
 

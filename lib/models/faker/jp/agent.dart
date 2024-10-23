@@ -153,6 +153,49 @@ class FakerAgentJP extends FakerAgent<FRequestJP, AutoLoginDataJP, NetworkManage
   }
 
   @override
+  Future<FResponse> gachaDraw({
+    required int32_t gachaId,
+    required int32_t num,
+    // required int32_t warId,
+    int32_t ticketItemId = 0,
+    int32_t shopIdIdx = 1,
+    required int32_t gachaSubId,
+    List<int32_t> storyAdjustIds = const [],
+    String selectBonusListData = "",
+  }) async {
+    final request = FRequestJP(network: network, path: '/gacha/draw');
+    request.addFieldInt32("gachaId", gachaId);
+    request.addFieldInt32("num", num);
+    request.addFieldInt32("ticketItemId", ticketItemId);
+    request.addFieldInt32("shopIdIndex", shopIdIdx);
+    request.addFieldInt32("gachaSubId", gachaSubId);
+    request.addFieldStr("storyAdjustIds", jsonEncode(storyAdjustIds));
+    request.addFieldStr("selectBonusList", selectBonusListData);
+    return request.beginRequestAndCheckError('gacha_draw');
+  }
+
+  @override
+  Future<FResponse> sellServant({required List<int64_t> servantUserIds, required List<int64_t> commandCodeUserIds}) {
+    // success: {"sellRarePriPrice":0,"sellManaPrice":0,"sellQpPrice":2000}
+    List<Map> _useSvtHash(List<int> ids) => [
+          for (final id in ids) {"id": id, "num": 1}
+        ];
+    final request = FRequestJP(network: network, path: '/shop/sellSvt');
+    request.addFieldStr("sellData", network.catMouseGame.encodeMsgpackBase64(_useSvtHash(servantUserIds)));
+    request.addFieldStr("sellCommandCode", network.catMouseGame.encodeMsgpackBase64(_useSvtHash(commandCodeUserIds)));
+    return request.beginRequestAndCheckError('sell_svt');
+  }
+
+  @override
+  Future<FResponse> servantEquipCombine({required int64_t baseUserSvtId, required List<int64_t> materialSvtIds}) {
+    // success: { "addTotalExp": 0, "successResult": 1, "normalExp": 30000 }
+    final request = FRequestJP(network: network, path: '/svtEquip/combine');
+    request.addFieldInt64("baseUserSvtId", baseUserSvtId);
+    request.addFieldStr("materialUserSvtIds", jsonEncode(materialSvtIds));
+    return request.beginRequestAndCheckError('svt_equip_combine');
+  }
+
+  @override
   Future<FResponse> battleSetup({
     required int32_t questId,
     required int32_t questPhase,

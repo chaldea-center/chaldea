@@ -1,5 +1,6 @@
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
+import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
@@ -187,7 +188,8 @@ class _FakerAccountsPageState extends State<FakerAccountsPage> {
                 ),
               ],
             ),
-      onTap: () {
+      onTap: () async {
+        await showEasyLoading(AtlasApi.gametopsRaw);
         router.pushPage(FakeGrandOrder(user: user));
       },
     );

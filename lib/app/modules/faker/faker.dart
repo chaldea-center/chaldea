@@ -26,6 +26,7 @@ import 'package:chaldea/widgets/widgets.dart';
 import '../import_data/import_https_page.dart';
 import '../import_data/sniff_details/formation_decks.dart';
 import 'details/dialogs.dart';
+import 'gacha/gacha_draw.dart';
 import 'history.dart';
 import 'option_list.dart';
 import 'present_box/present_box.dart';
@@ -63,7 +64,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
     try {
       // ignore: use_build_context_synchronously
       _runtime = await FakerRuntime.init(widget.user, this);
-      _runtime?.loadTeapots();
+      _runtime?.loadInitData();
     } catch (e, s) {
       if (mounted) {
         SimpleCancelOkDialog(
@@ -138,6 +139,13 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
                   router.pushPage(UserPresentBoxManagePage(runtime: runtime));
                 },
                 child: Text(S.current.present_box),
+              ),
+              PopupMenuItem(
+                enabled: isLoggedIn,
+                onTap: () {
+                  router.pushPage(GachaDrawPage(runtime: runtime));
+                },
+                child: Text(S.current.gacha),
               ),
             ],
           ),

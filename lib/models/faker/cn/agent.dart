@@ -322,6 +322,30 @@ class FakerAgentCN extends FakerAgent<FRequestCN, AutoLoginDataCN, NetworkManage
   }
 
   @override
+  Future<FResponse> gachaDraw({
+    required int32_t gachaId,
+    required int32_t num,
+    // required int32_t warId,
+    int32_t ticketItemId = 0,
+    int32_t shopIdIdx = 1,
+    required int32_t gachaSubId,
+    List<int32_t> storyAdjustIds = const [],
+    String selectBonusListData = "",
+  }) {
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<FResponse> sellServant({required List<int64_t> servantUserIds, required List<int64_t> commandCodeUserIds}) {
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<FResponse> servantEquipCombine({required int64_t baseUserSvtId, required List<int64_t> materialSvtIds}) {
+    throw UnimplementedError();
+  }
+
+  @override
   Future<FResponse> battleSetup({
     required int32_t questId,
     required int32_t questPhase,

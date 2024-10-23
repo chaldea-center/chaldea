@@ -101,6 +101,9 @@ sealed class AutoLoginData {
   //
   Set<int> recoveredAps;
 
+  // gacha
+  GachaOption gacha;
+
   //
   int? lastLogin;
   UserGameEntity? userGame;
@@ -116,11 +119,13 @@ sealed class AutoLoginData {
     int? curBattleOptionIndex,
     List<AutoBattleOptions>? battleOptions,
     Set<int>? recoveredAps,
+    GachaOption? gacha,
     this.lastLogin,
     this.userGame,
     Map<int, int>? userItems,
   })  : battleOptions = battleOptions ?? [AutoBattleOptions()],
         recoveredAps = recoveredAps ?? {},
+        gacha = gacha ?? GachaOption(),
         _curBattleOptionIndex = curBattleOptionIndex ?? 0,
         userItems = userItems ?? {};
 
@@ -146,6 +151,7 @@ class AutoLoginDataJP extends AutoLoginData {
     super.curBattleOptionIndex,
     super.battleOptions,
     super.recoveredAps,
+    super.gacha,
     super.lastLogin,
     super.userGame,
     super.userItems,
@@ -225,6 +231,7 @@ class AutoLoginDataCN extends AutoLoginData {
     super.curBattleOptionIndex,
     super.battleOptions,
     super.recoveredAps,
+    super.gacha,
     super.lastLogin,
     super.userGame,
     super.userItems,
@@ -383,4 +390,35 @@ enum BattleWinResultType {
 
   const BattleWinResultType(this.value);
   final int value;
+}
+
+@JsonSerializable()
+class GachaOption {
+  // gacha
+  int gachaId;
+  int gachaSubId;
+  int loopCount;
+  // enhance
+  Set<int> ceEnhanceBaseUserSvtIds;
+  Set<int> ceEnhanceBaseSvtIds;
+  bool feedExp3;
+  bool feedExp4;
+  // sell
+  Set<int> sellKeepSvtIds = {};
+  Set<int> sellKeepCommandCodeIds = {};
+
+  GachaOption({
+    this.gachaId = 0,
+    this.gachaSubId = 0,
+    this.loopCount = 0,
+    Set<int>? ceEnhanceBaseUserSvtIds,
+    Set<int>? ceEnhanceBaseSvtIds,
+    this.feedExp3 = false,
+    this.feedExp4 = false,
+  })  : ceEnhanceBaseUserSvtIds = ceEnhanceBaseUserSvtIds ?? {},
+        ceEnhanceBaseSvtIds = ceEnhanceBaseSvtIds ?? {};
+
+  factory GachaOption.fromJson(Map<String, dynamic> json) => _$GachaOptionFromJson(json);
+
+  Map<String, dynamic> toJson() => _$GachaOptionToJson(this);
 }

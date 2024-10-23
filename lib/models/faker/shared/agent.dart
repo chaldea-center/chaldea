@@ -42,6 +42,21 @@ abstract class FakerAgent<TRequest extends FRequestBase, TUser extends AutoLogin
   Future<FResponse> userPresentReceive(
       {required List<int64_t> presentIds, required int32_t itemSelectIdx, required int32_t itemSelectNum});
 
+  Future<FResponse> gachaDraw({
+    required int32_t gachaId,
+    required int32_t num,
+    // required int32_t warId,
+    int32_t ticketItemId = 0,
+    int32_t shopIdIdx = 1,
+    required int32_t gachaSubId,
+    List<int32_t> storyAdjustIds = const [],
+    String selectBonusListData = "",
+  });
+
+  Future<FResponse> sellServant({required List<int64_t> servantUserIds, required List<int64_t> commandCodeUserIds});
+
+  Future<FResponse> servantEquipCombine({required int64_t baseUserSvtId, required List<int64_t> materialSvtIds});
+
   Future<FResponse> battleSetup({
     required int32_t questId,
     required int32_t questPhase,

@@ -36,6 +36,7 @@ export 'drop_rate.dart';
 export 'enemy_master.dart';
 export 'event.dart';
 export 'game_card.dart';
+export 'gift.dart';
 export 'item.dart';
 export 'mappings.dart';
 export 'message.dart';

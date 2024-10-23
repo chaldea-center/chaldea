@@ -86,6 +86,8 @@ AutoLoginDataJP _$AutoLoginDataJPFromJson(Map json) => $checkedCreate(
                   .toList()),
           recoveredAps:
               $checkedConvert('recoveredAps', (v) => (v as List<dynamic>?)?.map((e) => (e as num).toInt()).toSet()),
+          gacha: $checkedConvert(
+              'gacha', (v) => v == null ? null : GachaOption.fromJson(Map<String, dynamic>.from(v as Map))),
           lastLogin: $checkedConvert('lastLogin', (v) => (v as num?)?.toInt()),
           userGame: $checkedConvert(
               'userGame', (v) => v == null ? null : UserGameEntity.fromJson(Map<String, dynamic>.from(v as Map))),
@@ -106,6 +108,7 @@ Map<String, dynamic> _$AutoLoginDataJPToJson(AutoLoginDataJP instance) => <Strin
       'curBattleOptionIndex': instance.curBattleOptionIndex,
       'battleOptions': instance.battleOptions.map((e) => e.toJson()).toList(),
       'recoveredAps': instance.recoveredAps.toList(),
+      'gacha': instance.gacha.toJson(),
       'lastLogin': instance.lastLogin,
       'userGame': instance.userGame?.toJson(),
       'userItems': instance.userItems.map((k, e) => MapEntry(k.toString(), e)),
@@ -170,6 +173,8 @@ AutoLoginDataCN _$AutoLoginDataCNFromJson(Map json) => $checkedCreate(
                   .toList()),
           recoveredAps:
               $checkedConvert('recoveredAps', (v) => (v as List<dynamic>?)?.map((e) => (e as num).toInt()).toSet()),
+          gacha: $checkedConvert(
+              'gacha', (v) => v == null ? null : GachaOption.fromJson(Map<String, dynamic>.from(v as Map))),
           lastLogin: $checkedConvert('lastLogin', (v) => (v as num?)?.toInt()),
           userGame: $checkedConvert(
               'userGame', (v) => v == null ? null : UserGameEntity.fromJson(Map<String, dynamic>.from(v as Map))),
@@ -189,6 +194,7 @@ Map<String, dynamic> _$AutoLoginDataCNToJson(AutoLoginDataCN instance) => <Strin
       'curBattleOptionIndex': instance.curBattleOptionIndex,
       'battleOptions': instance.battleOptions.map((e) => e.toJson()).toList(),
       'recoveredAps': instance.recoveredAps.toList(),
+      'gacha': instance.gacha.toJson(),
       'lastLogin': instance.lastLogin,
       'userGame': instance.userGame?.toJson(),
       'userItems': instance.userItems.map((k, e) => MapEntry(k.toString(), e)),
@@ -295,3 +301,32 @@ const _$BattleWinResultTypeEnumMap = {
   BattleWinResultType.timeLimit: 'timeLimit',
   BattleWinResultType.lose: 'lose',
 };
+
+GachaOption _$GachaOptionFromJson(Map json) => $checkedCreate(
+      'GachaOption',
+      json,
+      ($checkedConvert) {
+        final val = GachaOption(
+          gachaId: $checkedConvert('gachaId', (v) => (v as num?)?.toInt() ?? 0),
+          gachaSubId: $checkedConvert('gachaSubId', (v) => (v as num?)?.toInt() ?? 0),
+          loopCount: $checkedConvert('loopCount', (v) => (v as num?)?.toInt() ?? 0),
+          ceEnhanceBaseUserSvtIds: $checkedConvert(
+              'ceEnhanceBaseUserSvtIds', (v) => (v as List<dynamic>?)?.map((e) => (e as num).toInt()).toSet()),
+          ceEnhanceBaseSvtIds: $checkedConvert(
+              'ceEnhanceBaseSvtIds', (v) => (v as List<dynamic>?)?.map((e) => (e as num).toInt()).toSet()),
+          feedExp3: $checkedConvert('feedExp3', (v) => v as bool? ?? false),
+          feedExp4: $checkedConvert('feedExp4', (v) => v as bool? ?? false),
+        );
+        return val;
+      },
+    );
+
+Map<String, dynamic> _$GachaOptionToJson(GachaOption instance) => <String, dynamic>{
+      'gachaId': instance.gachaId,
+      'gachaSubId': instance.gachaSubId,
+      'loopCount': instance.loopCount,
+      'ceEnhanceBaseUserSvtIds': instance.ceEnhanceBaseUserSvtIds.toList(),
+      'ceEnhanceBaseSvtIds': instance.ceEnhanceBaseSvtIds.toList(),
+      'feedExp3': instance.feedExp3,
+      'feedExp4': instance.feedExp4,
+    };

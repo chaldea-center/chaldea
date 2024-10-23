@@ -142,12 +142,16 @@ class _FakerHistoryViewerState extends State<FakerHistoryViewer> {
     } else {
       data = detail.fail;
     }
+    final label = StringBuffer(detail.nid.toString());
+    final action = detail.fail?['action'];
+    if (action != null) label.write('.$action');
+    if (!detail.isSuccess()) label.write(' | ${detail.resCode}');
     return ListTile(
       title: Text.rich(
         TextSpan(children: [
           CenterWidgetSpan(
             child: _buildBadge(
-              label: [detail.nid, if (!detail.isSuccess()) detail.resCode].join(' | '),
+              label: label.toString(),
               color: detail.isSuccess() ? Colors.green.shade700 : Colors.red,
             ),
           ),
@@ -278,6 +282,7 @@ T? _try<T>(T Function() compute) {
 
 Future<void> _showDataDecryptDialog(BuildContext context, String text) {
   String? base64Text = _try(() => utf8.decode(base64Decode(text)));
+  Object? msgpackBase64Text = _try(() => CatMouseGame().decodeBase64Msgpack(text));
   Object? battleResult = _try(() => CatMouseGame().decryptBattleResult(text));
 
   return showDialog(
@@ -289,26 +294,34 @@ Future<void> _showDataDecryptDialog(BuildContext context, String text) {
         child: SimpleDialog(
           title: const Text("Decrypt?"),
           children: [
-            ListTile(
-              title: const Text("Base64 String"),
-              enabled: base64Text != null,
-              onTap: base64Text == null
-                  ? null
-                  : () {
-                      Navigator.pop(context);
-                      router.pushPage(_StringViewer(data: base64Text));
-                    },
-            ),
-            ListTile(
-              enabled: battleResult != null,
-              onTap: battleResult == null
-                  ? null
-                  : () {
-                      Navigator.pop(context);
-                      router.pushPage(JsonViewerPage(battleResult));
-                    },
-              title: const Text("Battle Result"),
-            ),
+            if (base64Text != null)
+              ListTile(
+                title: const Text("Base64 String"),
+                onTap: () {
+                  Navigator.pop(context);
+                  router.pushPage(_StringViewer(data: base64Text));
+                },
+              ),
+            if (msgpackBase64Text != null)
+              ListTile(
+                title: const Text("msgpack+base64"),
+                onTap: () {
+                  Navigator.pop(context);
+                  if (msgpackBase64Text is List || msgpackBase64Text is Map) {
+                    router.pushPage(JsonViewerPage(msgpackBase64Text));
+                  } else {
+                    router.pushPage(_StringViewer(data: msgpackBase64Text.toString()));
+                  }
+                },
+              ),
+            if (battleResult != null)
+              ListTile(
+                onTap: () {
+                  Navigator.pop(context);
+                  router.pushPage(JsonViewerPage(battleResult));
+                },
+                title: const Text("Battle Result"),
+              ),
             ListTile(
               onTap: () {
                 Navigator.pop(context);

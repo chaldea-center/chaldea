@@ -19,7 +19,7 @@ class ShopListHome extends StatefulWidget {
 }
 
 class _ShopListHomeState extends State<ShopListHome> {
-  Region region = Region.jp;
+  late Region region = db.curUser.region;
   List<ShopType> get _kShownShopTypes => [
         ShopType.mana,
         ShopType.rarePri,

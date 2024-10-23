@@ -64,6 +64,10 @@ NiceGacha _$NiceGachaFromJson(Map json) => NiceGacha(
               ?.map((e) => GachaStoryAdjust.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
+      gachaSubs: (json['gachaSubs'] as List<dynamic>?)
+              ?.map((e) => GachaSub.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
       userAdded: json['userAdded'] as bool? ?? false,
     );
 
@@ -82,6 +86,22 @@ GachaStoryAdjust _$GachaStoryAdjustFromJson(Map json) => GachaStoryAdjust(
       targetId: (json['targetId'] as num?)?.toInt() ?? 0,
       value: (json['value'] as num?)?.toInt() ?? 0,
       imageId: (json['imageId'] as num?)?.toInt() ?? 0,
+    );
+
+GachaSub _$GachaSubFromJson(Map json) => GachaSub(
+      id: (json['id'] as num).toInt(),
+      priority: (json['priority'] as num?)?.toInt() ?? 0,
+      imageId: (json['imageId'] as num?)?.toInt() ?? 0,
+      adjustAddId: (json['adjustAddId'] as num?)?.toInt() ?? 0,
+      openedAt: (json['openedAt'] as num?)?.toInt() ?? 0,
+      closedAt: (json['closedAt'] as num?)?.toInt() ?? 0,
+      releaseConditions: (json['releaseConditions'] as List<dynamic>?)
+              ?.map((e) => CommonRelease.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
+      script: (json['script'] as Map?)?.map(
+        (k, e) => MapEntry(k as String, e),
+      ),
     );
 
 const _$GachaTypeEnumMap = {

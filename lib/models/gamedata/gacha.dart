@@ -135,6 +135,7 @@ class NiceGacha with RouteInfo {
   @JsonKey(unknownEnumValue: GachaFlag.none)
   List<GachaFlag> flags;
   List<GachaStoryAdjust> storyAdjusts;
+  List<GachaSub> gachaSubs;
   // List<int> featuredSvtIds; // only GSSR gacha has data during open and with displayFeaturedSvt flag
 
   bool userAdded;
@@ -154,10 +155,28 @@ class NiceGacha with RouteInfo {
     this.detailUrl = '',
     this.flags = const [],
     this.storyAdjusts = const [],
+    this.gachaSubs = const [],
     // this.featuredSvtIds = const [],
     this.userAdded = false,
   });
+
   factory NiceGacha.fromJson(Map<String, dynamic> json) => _$NiceGachaFromJson(json);
+
+  List<GachaSub> getValidGachaSubs() {
+    final now = DateTime.now().timestamp;
+    final subs = gachaSubs.where((e) => e.openedAt <= now && e.closedAt > now).toList();
+    subs.sort2((e) => e.priority);
+    return subs;
+  }
+
+  int getImageId(int subId) {
+    for (final sub in gachaSubs) {
+      if (sub.id == subId && sub.imageId != 0) {
+        return sub.imageId;
+      }
+    }
+    return imageId;
+  }
 
   String get lName {
     const pujp = 'ピックアップ召喚';
@@ -253,6 +272,41 @@ class GachaStoryAdjust {
   });
 
   factory GachaStoryAdjust.fromJson(Map<String, dynamic> json) => _$GachaStoryAdjustFromJson(json);
+}
+
+// class NiceGachaSub(BaseModelORJson):
+//     id: int
+//     priority: int
+//     imageId: int
+//     adjustAddId: int
+//     openedAt: int
+//     closedAt: int
+//     releaseConditions: list[NiceCommonRelease]
+//     script: dict[str, Any] | None = None
+
+@JsonSerializable(createToJson: false)
+class GachaSub {
+  int id;
+  int priority;
+  int imageId;
+  int adjustAddId;
+  int openedAt;
+  int closedAt;
+  List<CommonRelease> releaseConditions;
+  Map<String, dynamic>? script;
+
+  GachaSub({
+    required this.id,
+    this.priority = 0,
+    this.imageId = 0,
+    this.adjustAddId = 0,
+    this.openedAt = 0,
+    this.closedAt = 0,
+    this.releaseConditions = const [],
+    this.script,
+  });
+
+  factory GachaSub.fromJson(Map<String, dynamic> json) => _$GachaSubFromJson(json);
 }
 
 class GachaTypeConverter extends JsonConverter<GachaType, dynamic> {

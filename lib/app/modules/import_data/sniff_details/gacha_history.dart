@@ -383,8 +383,9 @@ class _SniffGachaHistoryState extends State<SniffGachaHistory> {
   }
 
   bool shouldIgnore(UserGachaEntity record) {
-    // 1-fp, 101-newbie
-    return record.gachaId == 1;
+    // 1/2/3-fp, 101-newbie
+    if (gachas[record.gachaId]?.gachaType == GachaType.freeGacha) return true;
+    return record.gachaId < 100;
   }
 
   Map<int, int> countServantTDOwned(List<UserServantEntity> servants, int rarity) {

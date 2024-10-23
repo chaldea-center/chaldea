@@ -176,6 +176,11 @@ Map<String, dynamic> _$UserGameEntityToJson(UserGameEntity instance) => <String,
       'regtime': instance.regtime,
     };
 
+TblUserEntity _$TblUserEntityFromJson(Map json) => TblUserEntity(
+      userId: json['userId'],
+      friendPoint: json['friendPoint'],
+    );
+
 UserLoginEntity _$UserLoginEntityFromJson(Map json) => UserLoginEntity(
       userId: json['userId'],
       seqLoginCount: json['seqLoginCount'],
@@ -221,6 +226,7 @@ UserCommandCodeEntity _$UserCommandCodeEntityFromJson(Map json) => UserCommandCo
       id: json['id'],
       commandCodeId: json['commandCodeId'],
       status: json['status'],
+      createdAt: json['createdAt'],
     );
 
 UserServantCommandCodeEntity _$UserServantCommandCodeEntityFromJson(Map json) => UserServantCommandCodeEntity(
@@ -340,6 +346,16 @@ UserGachaEntity _$UserGachaEntityFromJson(Map json) => UserGachaEntity(
       num: json['num'],
       freeDrawAt: json['freeDrawAt'],
       status: json['status'],
+      createdAt: json['createdAt'],
+    );
+
+UserEventEntity _$UserEventEntityFromJson(Map json) => UserEventEntity(
+      userId: json['userId'],
+      eventId: json['eventId'],
+      value: json['value'],
+      flag: json['flag'],
+      scriptFlag: json['scriptFlag'],
+      updatedAt: json['updatedAt'],
       createdAt: json['createdAt'],
     );
 
