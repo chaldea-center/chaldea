@@ -154,23 +154,23 @@ void main() async {
       ];
 
       await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
-      expect(battle.getFieldTraits().isEmpty, isTrue);
+      expect(battle.getQuestIndividuality().isEmpty, isTrue);
 
       await battle.activateSvtSkill(0, 1);
-      expect(battle.getFieldTraits().isNotEmpty, isTrue);
+      expect(battle.getQuestIndividuality().isNotEmpty, isTrue);
 
       await battle.activateSvtSkill(1, 2);
-      expect(battle.getFieldTraits().isEmpty, isTrue);
+      expect(battle.getQuestIndividuality().isEmpty, isTrue);
 
       // reset to test order does not affect subFieldIndiv
       await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
-      expect(battle.getFieldTraits().isEmpty, isTrue);
+      expect(battle.getQuestIndividuality().isEmpty, isTrue);
 
       await battle.activateSvtSkill(1, 2);
-      expect(battle.getFieldTraits().isEmpty, isTrue);
+      expect(battle.getQuestIndividuality().isEmpty, isTrue);
 
       await battle.activateSvtSkill(0, 1);
-      expect(battle.getFieldTraits().isEmpty, isTrue);
+      expect(battle.getQuestIndividuality().isEmpty, isTrue);
     });
 
     test('downGrant', () async {

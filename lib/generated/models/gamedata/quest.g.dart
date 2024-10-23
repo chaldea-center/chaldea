@@ -206,6 +206,9 @@ QuestPhase _$QuestPhaseFromJson(Map json) => QuestPhase(
       individuality: (json['individuality'] as List<dynamic>?)
           ?.map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
           .toList(),
+      phaseIndividuality: (json['phaseIndividuality'] as List<dynamic>?)
+          ?.map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
+          .toList(),
       qp: (json['qp'] as num?)?.toInt() ?? 0,
       exp: (json['exp'] as num?)?.toInt() ?? 0,
       bond: (json['bond'] as num?)?.toInt() ?? 0,
@@ -278,6 +281,7 @@ Map<String, dynamic> _$QuestPhaseToJson(QuestPhase instance) => <String, dynamic
       'phase': instance.phase,
       'className': instance.className.map(const SvtClassConverter().toJson).toList(),
       'individuality': instance.individuality.map((e) => e.toJson()).toList(),
+      'phaseIndividuality': instance.phaseIndividuality.map((e) => e.toJson()).toList(),
       'qp': instance.qp,
       'exp': instance.exp,
       'bond': instance.bond,

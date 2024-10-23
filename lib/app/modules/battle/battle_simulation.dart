@@ -317,7 +317,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
               TextSpan(
                 children: SharedBuilder.traitSpans(
                   context: context,
-                  traits: battleData.getFieldTraits(),
+                  traits: battleData.getQuestIndividuality(),
                   format: (trait) {
                     final name = trait.shownName();
                     if (name.contains(':')) {

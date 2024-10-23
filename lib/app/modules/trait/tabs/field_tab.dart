@@ -18,7 +18,7 @@ class _TraitFieldTabState extends State<TraitFieldTab> {
   @override
   Widget build(BuildContext context) {
     final quests = db.gameData.questPhases.values
-        .where((q) => q.individuality.map((e) => e.id).toSet().intersection(widget.ids.toSet()).isNotEmpty)
+        .where((q) => q.questIndividuality.map((e) => e.id).toSet().intersection(widget.ids.toSet()).isNotEmpty)
         .toList();
     quests.sortByList((e) => [-e.warId, -e.id]);
     if (quests.isEmpty) return const Center(child: Text('No record'));
@@ -34,7 +34,7 @@ class _TraitFieldTabState extends State<TraitFieldTab> {
       title: Text(quest.lDispName),
       subtitle: Text([
         quest.war?.lShortName ?? "Unknown War",
-        quest.individuality.map((e) => Transl.trait(e.id).l).join(' / ')
+        quest.questIndividuality.map((e) => Transl.trait(e.id).l).join(' / ')
       ].join('\n')),
       trailing: Text(
         [

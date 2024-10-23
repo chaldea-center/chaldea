@@ -185,7 +185,7 @@ class BuffData {
       }
       if (fieldIndiv != null && battleData != null) {
         final targetTraits = NiceTrait.list(fieldIndiv);
-        addCount += countAnyTraits(battleData.getFieldTraits(), targetTraits);
+        addCount += countAnyTraits(battleData.getQuestIndividuality(), targetTraits);
       }
 
       if (vals.ParamAddMaxCount != null) {
@@ -444,7 +444,7 @@ class BuffData {
     if (requiredTraits != null) {
       final List<NiceTrait> currentTraits = [
         ...owner.getTraits(addTraits: owner.getBuffTraits()),
-        ...battleData.getFieldTraits(),
+        ...battleData.getQuestIndividuality(),
       ];
 
       if (requireAtLeast != null) {

@@ -1137,7 +1137,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
 
     if (options.disableEvent) {
       questCopy.warId = 0;
-      questCopy.individuality.removeWhere((e) => e.isEventField);
+      questCopy.removeEventQuestIndividuality();
     }
 
     options.pointBuffs.removeWhere((key, pointBuff) {

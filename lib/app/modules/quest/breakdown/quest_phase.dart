@@ -577,7 +577,7 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
   }
 
   Widget? buildQuestIndiv(QuestPhase curPhase) {
-    if (curPhase.individuality.isEmpty) return null;
+    if (curPhase.questIndividuality.isEmpty) return null;
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 3),
       child: Row(
@@ -587,7 +587,7 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
           Expanded(
             child: SharedBuilder.traitList(
               context: context,
-              traits: curPhase.individuality,
+              traits: curPhase.questIndividuality,
               textAlign: TextAlign.center,
               format: (trait) {
                 return trait.shownName().replaceFirst(RegExp('^[^:]+:'), '').trim();

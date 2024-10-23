@@ -64,8 +64,8 @@ class MissionSolver extends BaseLPSolver {
             return cond.targetIds.contains(quest.id);
           case CustomMissionType.questTrait:
             return mission.condAnd
-                ? NiceTrait.hasAllTraits(quest.individuality, cond.targetIds)
-                : NiceTrait.hasAnyTrait(quest.individuality, cond.targetIds);
+                ? NiceTrait.hasAllTraits(quest.questIndividuality, cond.targetIds)
+                : NiceTrait.hasAnyTrait(quest.questIndividuality, cond.targetIds);
           default:
             return false;
         }

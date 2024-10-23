@@ -47,7 +47,7 @@ void replaySimulation({required BattleShareData detail, int? replayTeamId}) asyn
 
   if (options.disableEvent) {
     questCopy.warId = 0;
-    questCopy.individuality.removeWhere((e) => e.isEventField);
+    questCopy.removeEventQuestIndividuality();
   }
   if (questCopy.isLaplaceNeedAi) {
     // should always turn on

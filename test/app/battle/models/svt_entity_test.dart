@@ -195,7 +195,8 @@ void main() async {
     ];
 
     final quest = db.gameData.questPhases[9300040603]!;
-    quest.individuality = [...quest.individuality, NiceTrait(id: 94000144)];
+    quest.individuality = [...quest.questIndividuality, NiceTrait(id: 94000144)];
+    quest.phaseIndividuality.clear();
     final battle = BattleData();
     await battle.init(quest, playerSettings, null);
 

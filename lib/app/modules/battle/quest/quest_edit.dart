@@ -186,11 +186,12 @@ class _QuestEditPageState extends State<QuestEditPage> {
           onChanged: (v) {
             setState(() {
               quest.warId = v ?? 0;
-              quest.individuality.removeWhere((e) => e.isEventField);
+              quest.removeEventQuestIndividuality();
               if (quest.warId < 1000) return;
+              final questIndivList = quest.phaseIndividuality.isNotEmpty ? quest.phaseIndividuality : quest.individuality;
               for (final entry in db.gameData.mappingData.fieldTrait.entries) {
                 if (entry.value.warIds.contains(quest.warId)) {
-                  quest.individuality.add(NiceTrait(id: entry.key));
+                  questIndivList.add(NiceTrait(id: entry.key));
                 }
               }
             });
@@ -200,14 +201,15 @@ class _QuestEditPageState extends State<QuestEditPage> {
       ListTile(
         title: Text(S.current.quest_fields),
         subtitle: Text.rich(TextSpan(
-          children: SharedBuilder.traitSpans(context: context, traits: quest.individuality),
+          children: SharedBuilder.traitSpans(context: context, traits: quest.questIndividuality),
         )),
         trailing: IconButton(
           onPressed: () {
             router.pushPage(TraitEditPage(
-              traits: quest.individuality,
+              traits: quest.questIndividuality,
               onChanged: (traits) {
                 quest.individuality = traits.toList();
+                quest.phaseIndividuality.clear();
                 if (mounted) setState(() {});
               },
             ));

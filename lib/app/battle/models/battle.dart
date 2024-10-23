@@ -653,9 +653,9 @@ class BattleData {
     criticalStars = criticalStars.clamp(0, kValidTotalStarMax).toDouble();
   }
 
-  List<NiceTrait> getFieldTraits() {
+  List<NiceTrait> getQuestIndividuality() {
     final List<NiceTrait> allTraits = [];
-    allTraits.addAll(niceQuest!.individuality);
+    allTraits.addAll(niceQuest!.questIndividuality);
 
     final List<int> removeTraitIds = [];
     for (final svt in nonnullActors) {
@@ -677,7 +677,7 @@ class BattleData {
       if (buff.buff.type == BuffType.toFieldChangeField) {
         traitsOnField.addAll((buff.vals.FieldIndividuality ?? []).map((e) => NiceTrait(id: e)));
       } else if (buff.buff.type == BuffType.toFieldSubIndividualityField) {
-        //
+        // TODO: ???
       }
     }
     allTraits.addAll(traitsOnField);
