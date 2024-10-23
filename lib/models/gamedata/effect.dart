@@ -67,6 +67,7 @@ class SkillEffect {
     upArts,
     upBuster,
     upDamage,
+    upDamageEvent,
     addDamage,
     upCriticaldamage,
     upCriticalpoint,
@@ -239,6 +240,31 @@ class SkillEffect {
   static SkillEffect upDamage = SkillEffect(
     'upDamage',
     buffTypes: [BuffType.upDamage, BuffType.upDamageIndividuality, BuffType.upDamageIndividualityActiveonly],
+    validate: (func) {
+      if (func is NiceFunction) {
+        final vals = func.svals.firstOrNull;
+        if ((vals?.EventId ?? 0) != 0) return false;
+        if (func.funcquestTvals.any((e) => e.isEventField)) return false;
+      }
+      return true;
+    },
+  );
+  static SkillEffect upDamageEvent = SkillEffect(
+    'upDamageEvent',
+    buffTypes: [
+      BuffType.upDamage,
+      BuffType.upDamageIndividuality,
+      BuffType.upDamageIndividualityActiveonly,
+      BuffType.upDamageEventPoint
+    ],
+    validate: (func) {
+      if (func is NiceFunction) {
+        final vals = func.svals.firstOrNull;
+        if ((vals?.EventId ?? 0) != 0) return true;
+        if (func.funcquestTvals.any((e) => e.isEventField)) return true;
+      }
+      return false;
+    },
   );
   static SkillEffect addDamage = SkillEffect._buff('addDamage', BuffType.addDamage);
   static SkillEffect upCriticaldamage = SkillEffect._buff('upCriticaldamage', BuffType.upCriticaldamage);

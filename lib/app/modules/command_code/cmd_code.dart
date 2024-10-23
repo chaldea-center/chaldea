@@ -119,37 +119,41 @@ class _CmdCodeDetailPageState extends State<CmdCodeDetailPage> {
               ],
             ),
           SafeArea(
-            child: OverflowBar(alignment: MainAxisAlignment.center, children: [
-              // ProfileLangSwitch(
-              //   primary: lang,
-              //   onChanged: (v) {
-              //     setState(() {
-              //       lang = v;
-              //     });
-              //   },
-              // ),
-              for (var i = 0; i < 2; i++)
-                ElevatedButton(
-                  onPressed: () {
-                    CommandCode? nextCc;
-                    if (widget.onSwitch != null) {
-                      // if navigated from filter list, let filter list decide which is the next one
-                      nextCc = widget.onSwitch!(cc, i == 0);
-                    } else {
-                      nextCc = db.gameData.commandCodes[cc.collectionNo + [-1, 1][i]];
-                    }
-                    if (nextCc == null) {
-                      EasyLoading.showToast(S.current.list_end_hint(i == 0));
-                    } else {
-                      setState(() {
-                        _cc = nextCc!;
-                      });
-                    }
-                  },
-                  style: ElevatedButton.styleFrom(textStyle: const TextStyle(fontWeight: FontWeight.normal)),
-                  child: Text([S.current.previous_card, S.current.next_card][i]),
-                ),
-            ]),
+            child: OverflowBar(
+              alignment: MainAxisAlignment.center,
+              spacing: 4,
+              children: [
+                // ProfileLangSwitch(
+                //   primary: lang,
+                //   onChanged: (v) {
+                //     setState(() {
+                //       lang = v;
+                //     });
+                //   },
+                // ),
+                for (var i = 0; i < 2; i++)
+                  FilledButton(
+                    onPressed: () {
+                      CommandCode? nextCc;
+                      if (widget.onSwitch != null) {
+                        // if navigated from filter list, let filter list decide which is the next one
+                        nextCc = widget.onSwitch!(cc, i == 0);
+                      } else {
+                        nextCc = db.gameData.commandCodes[cc.collectionNo + [-1, 1][i]];
+                      }
+                      if (nextCc == null) {
+                        EasyLoading.showToast(S.current.list_end_hint(i == 0));
+                      } else {
+                        setState(() {
+                          _cc = nextCc!;
+                        });
+                      }
+                    },
+                    style: ElevatedButton.styleFrom(textStyle: const TextStyle(fontWeight: FontWeight.normal)),
+                    child: Text([S.current.previous_card, S.current.next_card][i]),
+                  ),
+              ],
+            ),
           )
         ],
       ),
