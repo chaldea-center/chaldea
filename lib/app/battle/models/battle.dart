@@ -341,7 +341,7 @@ class BattleData {
       }
     }
 
-    _updateTargetedIndex();
+    updateTargetedIndex();
 
     final List<BattleServantData?> allActors = [
       ...onFieldEnemies,
@@ -525,7 +525,7 @@ class BattleData {
       }
     }
 
-    _updateTargetedIndex();
+    updateTargetedIndex();
 
     final List<BattleServantData?> newEnemies = [...onFieldEnemies, ...backupEnemies];
     for (final actor in newEnemies) {
@@ -1035,7 +1035,7 @@ class BattleData {
           await _nextTurn();
         }
 
-        _updateTargetedIndex();
+        updateTargetedIndex();
       },
     );
   }
@@ -1148,7 +1148,7 @@ class BattleData {
           checkActorStatus();
         });
 
-        _updateTargetedIndex();
+        updateTargetedIndex();
       },
     );
   }
@@ -1413,7 +1413,7 @@ class BattleData {
   Future<void> _removeDeadActors() async {
     await _removeDeadActorsFromList(onFieldAllyServants);
     await _removeDeadActorsFromList(onFieldEnemies);
-    _updateTargetedIndex();
+    updateTargetedIndex();
 
     if (niceQuest != null && niceQuest!.flags.contains(QuestFlag.enemyImmediateAppear)) {
       await _replenishActors(replenishAlly: false);
@@ -1450,7 +1450,7 @@ class BattleData {
     }
   }
 
-  void _updateTargetedIndex() {
+  void updateTargetedIndex() {
     playerTargetIndex = getNonNullTargetIndex(onFieldAllyServants, playerTargetIndex, false);
     enemyTargetIndex = getNonNullTargetIndex(onFieldEnemies, enemyTargetIndex, true);
   }
@@ -1613,68 +1613,6 @@ class BattleData {
       ..recorder = copy.recorder
       ..replayDataRecord = copy.replayDataRecord
       ..deadAttackCommandDict = copy.deadAttackCommandDict.map((key, value) => MapEntry(key, value.copy()));
-  }
-
-  // replay
-  Future<void> replay(BattleShareData replayActions) async {
-    recorder.reasons.setReplay('Replaying team');
-    options.manualAllySkillTarget = false;
-    delegate = BattleReplayDelegate(replayActions.delegate ?? BattleReplayDelegateData());
-    for (final action in replayActions.actions) {
-      playerTargetIndex = action.options.playerTarget;
-      enemyTargetIndex = action.options.enemyTarget;
-      options.random = action.options.random;
-      options.threshold = action.options.threshold;
-      options.tailoredExecution = action.options.tailoredExecution;
-      if (action.type == BattleRecordDataType.skill) {
-        await _replaySkill(action);
-      } else if (action.type == BattleRecordDataType.attack) {
-        await _replayBattle(action);
-      }
-    }
-    delegate = null;
-  }
-
-  Future<void> _replaySkill(BattleRecordData action) async {
-    if (action.skill == null) return;
-
-    if (action.svt == null) {
-      await activateMysticCodeSkill(action.skill!);
-    } else {
-      await activateSvtSkill(action.svt!, action.skill!);
-    }
-  }
-
-  Future<void> _replayBattle(BattleRecordData action) async {
-    if (action.attacks == null) return;
-
-    final List<CombatAction> actions = [];
-    for (final attackRecord in action.attacks!) {
-      final svt = onFieldAllyServants[attackRecord.svt];
-      if (svt == null) continue;
-
-      final cardIndex = attackRecord.card;
-
-      CommandCardData? card;
-      if (attackRecord.isTD) {
-        card = svt.getNPCard();
-      } else if (cardIndex != null) {
-        final cards = svt.getCards();
-        if (cardIndex < 0 || cardIndex >= cards.length) {
-          continue;
-        }
-        card = cards[cardIndex];
-      }
-
-      if (card == null) {
-        continue;
-      }
-      card.critical = attackRecord.critical;
-
-      actions.add(CombatAction(svt, card));
-    }
-
-    await playerTurn(actions);
   }
 }
 

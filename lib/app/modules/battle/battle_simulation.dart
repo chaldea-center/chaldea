@@ -14,6 +14,7 @@ import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/app_info.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
+import '../../battle/interactions/_delegate.dart';
 import '../../descriptors/skill_descriptor.dart';
 import '../quest/quest.dart';
 import 'formation/formation_storage.dart';
@@ -84,7 +85,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
 
     final replayActions = widget.replayActions;
     if (replayActions != null) {
-      await battleData.replay(replayActions);
+      await replay(replayActions);
       if (widget.replayTeamId != null && widget.replayTeamId != 0) {
         battleData.recorder.messageRich(BattleMessageRecord(
           'Team ${widget.replayTeamId}',
@@ -97,6 +98,72 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
     }
 
     if (mounted) setState(() {});
+  }
+
+  // replay
+  Future<void> replay(BattleShareData replayActions) async {
+    battleData.recorder.reasons.setReplay('Replaying team');
+    options.manualAllySkillTarget = false;
+    battleData.delegate = BattleReplayDelegate(replayActions.delegate ?? BattleReplayDelegateData());
+    for (final action in replayActions.actions) {
+      battleData.playerTargetIndex = action.options.playerTarget;
+      battleData.enemyTargetIndex = action.options.enemyTarget;
+      battleData.updateTargetedIndex();
+
+      options.random = action.options.random;
+      options.threshold = action.options.threshold;
+      options.tailoredExecution = action.options.tailoredExecution;
+      if (action.type == BattleRecordDataType.skill) {
+        await _replaySkill(action);
+      } else if (action.type == BattleRecordDataType.attack) {
+        await _replayBattle(action);
+      }
+
+      if (mounted) setState(() {});
+    }
+    battleData.delegate = null;
+  }
+
+  Future<void> _replaySkill(BattleRecordData action) async {
+    if (action.skill == null) return;
+
+    if (action.svt == null) {
+      await battleData.activateMysticCodeSkill(action.skill!);
+    } else {
+      await battleData.activateSvtSkill(action.svt!, action.skill!);
+    }
+  }
+
+  Future<void> _replayBattle(BattleRecordData action) async {
+    if (action.attacks == null) return;
+
+    final List<CombatAction> actions = [];
+    for (final attackRecord in action.attacks!) {
+      final svt = battleData.onFieldAllyServants[attackRecord.svt];
+      if (svt == null) continue;
+
+      final cardIndex = attackRecord.card;
+
+      CommandCardData? card;
+      if (attackRecord.isTD) {
+        card = svt.getNPCard();
+      } else if (cardIndex != null) {
+        final cards = svt.getCards();
+        if (cardIndex < 0 || cardIndex >= cards.length) {
+          continue;
+        }
+        card = cards[cardIndex];
+      }
+
+      if (card == null) {
+        continue;
+      }
+      card.critical = attackRecord.critical;
+
+      actions.add(CombatAction(svt, card));
+    }
+
+    await battleData.playerTurn(actions);
   }
 
   @override
