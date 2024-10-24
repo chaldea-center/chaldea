@@ -2102,6 +2102,48 @@ void main() async {
     });
   });
 
+  test('Event indiv checks', () async {
+    final List<PlayerSvtData> setting = [PlayerSvtData.id(703300)];
+    final battle = BattleData();
+    final quest = await AtlasApi.questPhase(94087110, 1);
+    await battle.init(quest!, setting, null);
+
+    expect(battle.getQuestIndividuality().map((trait) => trait.id).contains(94000146), true);
+  });
+
+  test('Can clear wave using dot', () async {
+    final List<PlayerSvtData> setting = [PlayerSvtData.id(1001000)];
+    final battle = BattleData();
+    final quest = await AtlasApi.questPhase(94087110, 1);
+    await battle.init(quest!, setting, null);
+
+    final enemy = battle.onFieldEnemies[1]!;
+    enemy.hp = 2000;
+    await battle.activateSvtSkill(0, 2);
+    await battle.skipTurn();
+
+    expect(enemy.hp, 0);
+    expect(battle.waveCount, 2);
+    expect(battle.nonnullEnemies.length, 2);
+  });
+
+  test('Caster Cu', () async {
+    final List<PlayerSvtData> setting = [PlayerSvtData.id(502100)..lv = 90..setSkillStrengthenLvs([1, 1, 2])];
+    final battle = BattleData();
+    final quest = await AtlasApi.questPhase(94087110, 1);
+    await battle.init(quest!, setting, null);
+
+    final cu = battle.onFieldAllyServants[0]!;
+    expect(cu.hp, 12880);
+    expect(cu.np, 0);
+
+    await battle.activateSvtSkill(0, 2);
+    await battle.skipTurn();
+
+    expect(cu.hp, 3000);
+    expect(cu.np, 8000);
+  });
+
   group('Method tests', () {
     final List<PlayerSvtData> okuniWithDoubleCba = [
       PlayerSvtData.id(504900)..lv = 90,

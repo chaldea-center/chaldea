@@ -393,7 +393,7 @@ class QuestPhase extends Quest {
   List<EnemyDrop> drops;
 
   List<NiceTrait> get questIndividuality {
-    if (phaseIndividuality != null) {
+    if (phaseIndividuality != null && phaseIndividuality!.isNotEmpty) {
       final baseTraits = battleBg?.individuality.toList() ?? [];
       baseTraits.addAll(phaseIndividuality!.where((trait) => !trait.negative));
 
