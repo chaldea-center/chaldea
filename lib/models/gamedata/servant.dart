@@ -639,7 +639,10 @@ class Servant extends BasicServant {
     if (friendshipRank == bondGrowth.length) {
       return (bondGrowth[friendshipRank - 1] - bondGrowth[friendshipRank - 2], 0);
     }
-    return (friendship - bondGrowth[friendshipRank - 1], bondGrowth[friendshipRank] - friendship);
+    final friendshipPreviousRankTotal = friendshipRank > 0 ? bondGrowth[friendshipRank - 1] : 0;
+    final friendshipNextRankTotal = bondGrowth[friendshipRank];
+
+    return (friendship - friendshipPreviousRankTotal, friendshipNextRankTotal - friendship);
   }
 
   void updateStat() {
