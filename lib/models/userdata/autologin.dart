@@ -415,8 +415,12 @@ class GachaOption {
     Set<int>? ceEnhanceBaseSvtIds,
     this.feedExp3 = false,
     this.feedExp4 = false,
+    Set<int>? sellKeepSvtIds,
+    Set<int>? sellKeepCommandCodeIds,
   })  : ceEnhanceBaseUserSvtIds = ceEnhanceBaseUserSvtIds ?? {},
-        ceEnhanceBaseSvtIds = ceEnhanceBaseSvtIds ?? {};
+        ceEnhanceBaseSvtIds = ceEnhanceBaseSvtIds ?? {},
+        sellKeepSvtIds = sellKeepSvtIds ?? {},
+        sellKeepCommandCodeIds = sellKeepCommandCodeIds ?? {};
 
   factory GachaOption.fromJson(Map<String, dynamic> json) => _$GachaOptionFromJson(json);
 

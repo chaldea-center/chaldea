@@ -316,6 +316,10 @@ GachaOption _$GachaOptionFromJson(Map json) => $checkedCreate(
               'ceEnhanceBaseSvtIds', (v) => (v as List<dynamic>?)?.map((e) => (e as num).toInt()).toSet()),
           feedExp3: $checkedConvert('feedExp3', (v) => v as bool? ?? false),
           feedExp4: $checkedConvert('feedExp4', (v) => v as bool? ?? false),
+          sellKeepSvtIds:
+              $checkedConvert('sellKeepSvtIds', (v) => (v as List<dynamic>?)?.map((e) => (e as num).toInt()).toSet()),
+          sellKeepCommandCodeIds: $checkedConvert(
+              'sellKeepCommandCodeIds', (v) => (v as List<dynamic>?)?.map((e) => (e as num).toInt()).toSet()),
         );
         return val;
       },
@@ -329,4 +333,6 @@ Map<String, dynamic> _$GachaOptionToJson(GachaOption instance) => <String, dynam
       'ceEnhanceBaseSvtIds': instance.ceEnhanceBaseSvtIds.toList(),
       'feedExp3': instance.feedExp3,
       'feedExp4': instance.feedExp4,
+      'sellKeepSvtIds': instance.sellKeepSvtIds.toList(),
+      'sellKeepCommandCodeIds': instance.sellKeepCommandCodeIds.toList(),
     };

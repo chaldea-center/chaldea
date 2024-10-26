@@ -376,6 +376,7 @@ class QuestPhase extends Quest {
   int bond;
   bool isNpcOnly;
   // int battleBgId;
+  List<Gift> phaseGifts;
   // v1 `1_{enemy_count_hash:>02}{npc_id_hash:>02}_{sha1_hash}`
   String? enemyHash;
   @JsonKey(name: 'availableEnemyHashes')
@@ -444,6 +445,7 @@ class QuestPhase extends Quest {
     this.bond = 0,
     this.isNpcOnly = false,
     // this.battleBgId = 0,
+    this.phaseGifts = const [],
     this.enemyHash,
     this.enemyHashes = const [],
     this.dropsFromAllHashes,

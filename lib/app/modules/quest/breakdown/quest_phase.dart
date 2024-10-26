@@ -170,7 +170,7 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
     children.addAll([
       getWarBoard(),
       getPhaseScript(phase),
-      getPhasePresent(phase),
+      getPhasePresent(curPhase, phase),
     ]);
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -999,9 +999,9 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
     );
   }
 
-  Widget? getPhasePresent(int phase) {
+  Widget? getPhasePresent(QuestPhase? curPhase, int phase) {
     final present = quest.presents.firstWhereOrNull((e) => e.phase == phase);
-    final phaseGifts = db.gameData.questPhaseDetails[quest.id * 100 + phase]?.gifts ?? const [];
+    final phaseGifts = curPhase?.phaseGifts ?? db.gameData.questPhaseDetails[quest.id * 100 + phase]?.gifts ?? const [];
     List<List<Widget>> giftsList = [
       if (present != null)
         [

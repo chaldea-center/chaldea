@@ -213,6 +213,10 @@ QuestPhase _$QuestPhaseFromJson(Map json) => QuestPhase(
       exp: (json['exp'] as num?)?.toInt() ?? 0,
       bond: (json['bond'] as num?)?.toInt() ?? 0,
       isNpcOnly: json['isNpcOnly'] as bool? ?? false,
+      phaseGifts: (json['phaseGifts'] as List<dynamic>?)
+              ?.map((e) => Gift.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
       enemyHash: json['enemyHash'] as String?,
       enemyHashes: (json['availableEnemyHashes'] as List<dynamic>?)?.map((e) => e as String).toList() ?? const [],
       dropsFromAllHashes: json['dropsFromAllHashes'] as bool?,
@@ -286,6 +290,7 @@ Map<String, dynamic> _$QuestPhaseToJson(QuestPhase instance) => <String, dynamic
       'exp': instance.exp,
       'bond': instance.bond,
       'isNpcOnly': instance.isNpcOnly,
+      'phaseGifts': instance.phaseGifts.map((e) => e.toJson()).toList(),
       'enemyHash': instance.enemyHash,
       'availableEnemyHashes': instance.enemyHashes,
       'dropsFromAllHashes': instance.dropsFromAllHashes,
