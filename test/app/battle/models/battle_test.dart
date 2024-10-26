@@ -2102,13 +2102,21 @@ void main() async {
     });
   });
 
-  test('Event indiv checks', () async {
+  test('Event indiv checks old format & new format', () async {
     final List<PlayerSvtData> setting = [PlayerSvtData.id(703300)];
-    final battle = BattleData();
-    final quest = await AtlasApi.questPhase(94087110, 1);
-    await battle.init(quest!, setting, null);
+    final battle1 = BattleData();
+    final quest1 = await AtlasApi.questPhase(94087109, 1);
+    await battle1.init(quest1!, setting, null);
 
-    expect(battle.getQuestIndividuality().map((trait) => trait.id).contains(94000146), true);
+    expect(battle1.getQuestIndividuality().map((trait) => trait.id).contains(94000146), true);
+    expect(battle1.getQuestIndividuality().map((trait) => trait.id).contains(2038), true);
+
+    final battle2 = BattleData();
+    final quest2 = await AtlasApi.questPhase(94101308, 1);
+    await battle2.init(quest2!, setting, null);
+
+    expect(battle2.getQuestIndividuality().map((trait) => trait.id).contains(94000159), true);
+    expect(battle2.getQuestIndividuality().map((trait) => trait.id).contains(2038), true);
   });
 
   test('Can clear wave using dot', () async {
