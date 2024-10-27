@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.5.17
+
+- Fix event field trait
+
 ## 2.5.16
 
 - Fix order between removing entities & turn end effects
