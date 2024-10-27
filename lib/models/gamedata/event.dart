@@ -1291,7 +1291,7 @@ class WarBoardStageSquare {
   int squareIndex;
   WarBoardStageSquareType type;
   int effectId;
-  List<WarBoardTreasure> treasures;
+  List<WarBoardTreasure> treasures; // only one
 
   WarBoardStageSquare({
     required this.squareIndex,

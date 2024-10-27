@@ -40,6 +40,7 @@ import 'detail/towers.dart';
 import 'detail/trade.dart';
 import 'detail/treasure_box.dart';
 import 'detail/voice.dart';
+import 'detail/war_board.dart';
 
 class EventDetailPage extends StatefulWidget {
   final int? eventId;
@@ -138,6 +139,9 @@ class _EventDetailPageState extends State<EventDetailPage> {
       final tabName =
           event.towers.length == 1 ? Transl.misc2('TowerName', event.towers.first.name) : S.current.event_tower;
       _addTab(tabName, EventTowersPage(towers: event.towers));
+    }
+    if (event.warBoards.isNotEmpty) {
+      _addTab(S.current.war_board, EventWarBoardTab(event: event));
     }
     if (event.treasureBoxes.isNotEmpty) {
       _addTab(S.current.event_treasure_box, EventTreasureBoxTab(event: event));
