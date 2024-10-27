@@ -7,6 +7,7 @@ import 'package:chaldea/models/faker/cn/agent.dart';
 import 'package:chaldea/models/faker/jp/agent.dart';
 import 'package:chaldea/models/faker/shared/agent.dart';
 import 'package:chaldea/models/faker/shared/network.dart';
+import 'package:chaldea/models/gamedata/toplogin.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/utils/utils.dart';
@@ -24,11 +25,12 @@ class FakerRuntime {
   final runningTask = ValueNotifier<bool>(false);
   final teapots = <int, Item>{};
   GameConstants constants = ConstData.constants;
-  // stats
+  // stats - battle
   final totalRewards = <int, int>{};
   final totalDropStat = _DropStatData();
   final curLoopDropStat = _DropStatData();
-  List<GachaInfos> lastGachaResult = [];
+  // stats - gacha
+  final gachaResultStat = _GachaDrawStatData();
 
   FakerRuntime._(this.agent, this._rootState);
 
@@ -401,7 +403,14 @@ class FakerRuntime {
     try {
       final infos = resp.data.getResponseNull('gacha_draw')?.success?['gachaInfos'];
       if (infos != null) {
-        lastGachaResult = (infos as List).map((e) => GachaInfos.fromJson(e)).toList();
+        gachaResultStat.lastDrawResult = (infos as List).map((e) => GachaInfos.fromJson(e)).toList();
+        gachaResultStat.totalCount += gachaResultStat.lastDrawResult.length;
+        for (final info in gachaResultStat.lastDrawResult) {
+          gachaResultStat.servants.addNum(info.objectId, info.num);
+          if (info.svtCoinNum > 0 && info.type == GiftType.servant.value) {
+            gachaResultStat.coins.addNum(info.objectId, info.svtCoinNum);
+          }
+        }
       }
     } catch (e, s) {
       logger.e('parse gacha_infos failed', e, s);
@@ -429,29 +438,36 @@ class FakerRuntime {
   }
 
   Future<void> sellServant() async {
-    List<int> sellUserSvtIds = [], sellCommandCodes = [];
+    List<UserServantEntity> sellUserSvts = [];
+    List<UserCommandCodeEntity> sellCommandCodes = [];
     final timeLimit = DateTime.now().timestamp - 3600 * 36;
     for (final userSvt in mstData.userSvt) {
       final svt = db.gameData.servantsById[userSvt.svtId];
-      if (svt == null || svt.rarity > 3 || svt.rarity == 0 || userSvt.locked) continue;
+      if (svt == null || svt.rarity > 3 || svt.rarity == 0 || userSvt.locked || userSvt.lv != 1) continue;
       if (!svt.obtains.contains(SvtObtain.friendPoint)) continue;
       if (userSvt.createdAt < timeLimit) continue;
-      sellUserSvtIds.add(userSvt.id);
+      sellUserSvts.add(userSvt);
     }
     final equippedCC = mstData.userSvtCommandCode.expand((e) => e.userCommandCodeIds).toSet();
     for (final userCC in mstData.userCommandCode) {
       final cc = db.gameData.commandCodesById[userCC.commandCodeId];
       if (userCC.locked || cc == null || cc.rarity > 2 || equippedCC.contains(userCC.id)) continue;
       if (userCC.createdAt < timeLimit) continue;
-      sellCommandCodes.add(userCC.id);
+      sellCommandCodes.add(userCC);
     }
-    sellUserSvtIds.sort2((e) => -e);
-    sellUserSvtIds = sellUserSvtIds.take(200).toList();
-    sellCommandCodes.sort2((e) => -e);
+    sellUserSvts.sort2((e) => -e.id);
+    sellUserSvts = sellUserSvts.take(200).toList();
+    sellCommandCodes.sort2((e) => -e.id);
     sellCommandCodes = sellCommandCodes.take(100).toList();
-    EasyLoading.show(status: 'Sell ${sellUserSvtIds.length} servants, ${sellCommandCodes.length} Command Codes');
-    if (sellUserSvtIds.isNotEmpty || sellCommandCodes.isNotEmpty) {
-      await agent.sellServant(servantUserIds: sellUserSvtIds, commandCodeUserIds: sellCommandCodes);
+    EasyLoading.show(status: 'Sell ${sellUserSvts.length} servants, ${sellCommandCodes.length} Command Codes');
+    if (sellUserSvts.isNotEmpty || sellCommandCodes.isNotEmpty) {
+      await agent.sellServant(
+        servantUserIds: sellUserSvts.map((e) => e.id).toList(),
+        commandCodeUserIds: sellCommandCodes.map((e) => e.id).toList(),
+      );
+      gachaResultStat.lastSellServants = sellUserSvts.toList();
+      gachaResultStat.lastSellServants.sort((a, b) => SvtFilterData.compareId(a.svtId, b.svtId,
+          keys: const [SvtCompare.rarity, SvtCompare.className], reversed: const [true, false]));
     }
     update();
   }
@@ -477,7 +493,7 @@ class FakerRuntime {
       }
       targetCEs.sort2((e) => e.lv);
       final targetCE = targetCEs.first;
-      final combineCEs = mstData.userSvt.where((userSvt) {
+      List<UserServantEntity> combineMaterialCEs = mstData.userSvt.where((userSvt) {
         final ce = db.gameData.craftEssencesById[userSvt.svtId];
         if (ce == null || userSvt.locked || userSvt.lv != 1) return false;
         final bool isExp = ce.flags.contains(SvtFlag.svtEquipExp);
@@ -494,14 +510,19 @@ class FakerRuntime {
           return true;
         }
       }).toList();
-      combineCEs.sort2((e) => -e.createdAt);
-      if (combineCEs.isEmpty) {
+      combineMaterialCEs.sort2((e) => -e.createdAt);
+      if (combineMaterialCEs.isEmpty) {
         update();
         return;
       }
-      final combineCEIds = combineCEs.take(20).map((e) => e.id).toList();
-      await agent.servantEquipCombine(baseUserSvtId: targetCE.id, materialSvtIds: combineCEIds);
+      combineMaterialCEs = combineMaterialCEs.take(20).toList();
+      await agent.servantEquipCombine(
+          baseUserSvtId: targetCE.id, materialSvtIds: combineMaterialCEs.map((e) => e.id).toList());
       count -= 1;
+      gachaResultStat.lastEnhanceBaseCE = targetCE;
+      gachaResultStat.lastEnhanceMaterialCEs = combineMaterialCEs.toList();
+      gachaResultStat.lastEnhanceMaterialCEs.sort(
+          (a, b) => CraftFilterData.compare(a.dbCE, b.dbCE, keys: const [CraftCompare.rarity], reversed: const [true]));
       update();
     }
   }
@@ -620,5 +641,25 @@ class _DropStatData {
   void reset() {
     totalCount = 0;
     items.clear();
+  }
+}
+
+class _GachaDrawStatData {
+  int totalCount = 0;
+  Map<int, int> servants = {};
+  Map<int, int> coins = {}; //<svtId, num>
+  List<GachaInfos> lastDrawResult = [];
+  UserServantEntity? lastEnhanceBaseCE;
+  List<UserServantEntity> lastEnhanceMaterialCEs = [];
+  List<UserServantEntity> lastSellServants = [];
+
+  void reset() {
+    totalCount = 0;
+    servants.clear();
+    coins.clear();
+    lastDrawResult = [];
+    lastEnhanceBaseCE = null;
+    lastEnhanceMaterialCEs = [];
+    lastSellServants = [];
   }
 }

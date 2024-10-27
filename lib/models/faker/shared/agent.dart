@@ -57,6 +57,15 @@ abstract class FakerAgent<TRequest extends FRequestBase, TUser extends AutoLogin
 
   Future<FResponse> servantEquipCombine({required int64_t baseUserSvtId, required List<int64_t> materialSvtIds});
 
+  // Future<FResponse> servantCombine({
+  //   required int64_t baseUsrSvtId,
+  //   required List<int64_t> materialSvtIds,
+  //   required int32_t useQp,
+  //   required int32_t getExp,
+  // });
+
+  Future<FResponse> userStatusFlagSet({required List<int32_t> onFlagNumbers, required List<int32_t> offFlagNumbers});
+
   Future<FResponse> battleSetup({
     required int32_t questId,
     required int32_t questPhase,

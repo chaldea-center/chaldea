@@ -177,7 +177,7 @@ class FakerAgentJP extends FakerAgent<FRequestJP, AutoLoginDataJP, NetworkManage
   @override
   Future<FResponse> sellServant({required List<int64_t> servantUserIds, required List<int64_t> commandCodeUserIds}) {
     // success: {"sellRarePriPrice":0,"sellManaPrice":0,"sellQpPrice":2000}
-    List<Map> _useSvtHash(List<int> ids) => [
+    List<Map<String, dynamic>> _useSvtHash(List<int> ids) => [
           for (final id in ids) {"id": id, "num": 1}
         ];
     final request = FRequestJP(network: network, path: '/shop/sellSvt');
@@ -193,6 +193,18 @@ class FakerAgentJP extends FakerAgent<FRequestJP, AutoLoginDataJP, NetworkManage
     request.addFieldInt64("baseUserSvtId", baseUserSvtId);
     request.addFieldStr("materialUserSvtIds", jsonEncode(materialSvtIds));
     return request.beginRequestAndCheckError('svt_equip_combine');
+  }
+
+  @override
+  Future<FResponse> userStatusFlagSet({required List<int32_t> onFlagNumbers, required List<int32_t> offFlagNumbers}) {
+    final request = FRequestJP(network: network, path: '/userStatus/flagSet');
+    if (onFlagNumbers.isNotEmpty) {
+      request.addFieldStr("onFlagNumbers", jsonEncode(onFlagNumbers));
+    }
+    if (offFlagNumbers.isNotEmpty) {
+      request.addFieldStr("offFlagNumbers", jsonEncode(offFlagNumbers));
+    }
+    return request.beginRequestAndCheckError('user_status_flag_set');
   }
 
   @override

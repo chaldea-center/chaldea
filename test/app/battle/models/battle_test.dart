@@ -2136,7 +2136,11 @@ void main() async {
   });
 
   test('Caster Cu', () async {
-    final List<PlayerSvtData> setting = [PlayerSvtData.id(502100)..lv = 90..setSkillStrengthenLvs([1, 1, 2])];
+    final List<PlayerSvtData> setting = [
+      PlayerSvtData.id(502100)
+        ..lv = 90
+        ..setSkillStrengthenLvs([1, 1, 2])
+    ];
     final battle = BattleData();
     final quest = await AtlasApi.questPhase(94087110, 1);
     await battle.init(quest!, setting, null);

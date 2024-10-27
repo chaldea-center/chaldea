@@ -2,15 +2,19 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/app.dart';
+import 'package:chaldea/app/modules/enemy/enemy_list.dart';
 import 'package:chaldea/app/modules/faker/state.dart';
+import 'package:chaldea/app/modules/servant/servant_list.dart';
 import 'package:chaldea/app/modules/summon/gacha/gacha_banner.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
+import '../../common/builders.dart';
 import '../../craft_essence/craft_list.dart';
 import '../history.dart';
 import 'select_sub.dart';
+import 'user_status_flag.dart';
 
 class GachaDrawPage extends StatefulWidget {
   final FakerRuntime runtime;
@@ -45,6 +49,7 @@ class _GachaDrawPageState extends State<GachaDrawPage> {
   }
 
   Future<void> initData() async {
+    if (gachaOption.gachaId <= 0) return;
     final _gacha = await AtlasApi.gacha(gachaOption.gachaId, region: runtime.region);
     if (_gacha != null) _cachedGachas[_gacha.id] = _gacha;
     if (mounted) setState(() {});
@@ -131,9 +136,12 @@ class _GachaDrawPageState extends State<GachaDrawPage> {
             ),
           ],
         ),
-        subtitle: Text('${S.current.servant} ${cardCounts.svtCount}/${userGame?.svtKeep}'
-            ' ${S.current.craft_essence_short} ${cardCounts.svtEquipCount}/${userGame?.svtEquipKeep}'
-            ' ${S.current.command_code_short} ${cardCounts.ccCount}/${runtime.constants.maxUserCommandCode}'),
+        subtitle: Text([
+          '${S.current.servant} ${cardCounts.svtCount}/${userGame?.svtKeep}',
+          '${S.current.craft_essence_short} ${cardCounts.svtEquipCount}/${userGame?.svtEquipKeep}',
+          '${S.current.command_code_short} ${cardCounts.ccCount}/${runtime.constants.maxUserCommandCode}',
+          if (cardCounts.unknownCount != 0) '${S.current.unknown} ${cardCounts.unknownCount}',
+        ].join(' ')),
       ),
     );
   }
@@ -255,31 +263,7 @@ class _GachaDrawPageState extends State<GachaDrawPage> {
           ),
         ),
         buildLastResult(),
-        ListTile(
-          dense: true,
-          title: Text('Cards/Coins'),
-          subtitle: Wrap(
-            spacing: 2,
-            runSpacing: 2,
-            children: [
-              for (final svtId in [2300800, 404200, 100300, 9408090])
-                (db.gameData.servantsById[svtId] ?? db.gameData.craftEssencesById[svtId])?.iconBuilder(
-                      context: context,
-                      width: 32,
-                      text: mstData.getItemOrSvtNum(svtId, sumEquipLimitCount: false).toString(),
-                    ) ??
-                    Text(svtId.toString()),
-              for (final itemId in [230080001, 40420001, 10030001])
-                Item.iconBuilder(
-                  context: context,
-                  item: null,
-                  itemId: itemId,
-                  text: mstData.getItemOrSvtNum(itemId).toString(),
-                  width: 32,
-                ),
-            ],
-          ),
-        ),
+        buildGachaStat(),
         TileGroup(
           header: '${S.current.enhance} - ${S.current.craft_essence}',
           children: [
@@ -337,8 +321,34 @@ class _GachaDrawPageState extends State<GachaDrawPage> {
           header: 'Sell - ${S.current.servant} & ${S.current.command_code}',
           children: [
             ListTile(
-              dense: true,
-              title: Text('TODO'),
+              title: Text('Auto Sell/自动变还'),
+              trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
+              onTap: () async {
+                await router.pushPage(UserStatusFlagSetPage(runtime: runtime));
+                if (mounted) setState(() {});
+              },
+            ),
+            ListTile(
+              title: Text('Keep Servants'),
+              subtitle: Wrap(
+                children: [
+                  for (final svtId in gachaOption.sellKeepSvtIds)
+                    GestureDetector(
+                      onLongPress: () {
+                        setState(() {
+                          runtime.lockTask(() {
+                            gachaOption.sellKeepSvtIds.remove(svtId);
+                          });
+                        });
+                      },
+                      child: GameCardMixin.anyCardItemBuilder(context: context, id: svtId, width: 32),
+                    ),
+                ],
+              ),
+              trailing: IconButton(
+                onPressed: addSellKeepSvts,
+                icon: Icon(Icons.add),
+              ),
             ),
           ],
         )
@@ -470,8 +480,65 @@ class _GachaDrawPageState extends State<GachaDrawPage> {
     ));
   }
 
+  void addSellKeepSvts() {
+    router.showDialog(
+      builder: (context) => SimpleDialog(
+        title: Text('Sell Keep'),
+        children: [
+          ListTile(
+            title: Text(S.current.servant),
+            onTap: () {
+              Navigator.pop(context);
+              router.pushPage(ServantListPage(
+                onSelected: (svt) {
+                  runtime.lockTask(() {
+                    gachaOption.sellKeepSvtIds.add(svt.id);
+                  });
+                  if (mounted) setState(() {});
+                },
+              ));
+            },
+          ),
+          ListTile(
+            title: Text(S.current.craft_essence),
+            onTap: () {
+              Navigator.pop(context);
+              router.pushPage(CraftListPage(
+                onSelected: (ce) {
+                  runtime.lockTask(() {
+                    gachaOption.sellKeepSvtIds.add(ce.id);
+                  });
+                  if (mounted) setState(() {});
+                },
+              ));
+            },
+          ),
+          ListTile(
+            title: Text('種火/英霊結晶'),
+            onTap: () {
+              Navigator.pop(context);
+              router.pushPage(EnemyListPage(
+                filterData: EnemyFilterData()..svtType.options = {SvtType.combineMaterial, SvtType.statusUp},
+                onSelected: (svt) {
+                  if (svt.type == SvtType.combineMaterial || svt.type == SvtType.statusUp) {
+                    runtime.lockTask(() {
+                      gachaOption.sellKeepSvtIds.add(svt.id);
+                    });
+                  } else {
+                    EasyLoading.showToast('Invalid choice');
+                  }
+                  if (mounted) setState(() {});
+                },
+              ));
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget buildLastResult() {
-    final cards = runtime.lastGachaResult;
+    final cards = runtime.gachaResultStat.lastDrawResult;
     final row1 = cards.take(6).toList();
     final row2 = cards.skip(6).toList();
     return Column(
@@ -493,9 +560,11 @@ class _GachaDrawPageState extends State<GachaDrawPage> {
                     children: [
                       child,
                       Positioned.fill(
-                        child: Container(
-                          color: Colors.grey.withOpacity(0.6),
-                          margin: EdgeInsets.all(2),
+                        child: IgnorePointer(
+                          child: Container(
+                            color: Colors.grey.withOpacity(0.6),
+                            margin: EdgeInsets.all(2),
+                          ),
                         ),
                       ),
                     ],
@@ -505,6 +574,140 @@ class _GachaDrawPageState extends State<GachaDrawPage> {
               }).toList(),
             )
       ],
+    );
+  }
+
+  Widget buildGachaStat() {
+    final stat = runtime.gachaResultStat;
+    Set<int> shownSvtIds = {}, shownCeIds = {};
+    shownCeIds.addAll(gachaOption.sellKeepSvtIds.where((e) => db.gameData.craftEssencesById.containsKey(e)));
+    for (final svtId in stat.servants.keys) {
+      final svt = db.gameData.servantsById[svtId];
+      if (svt != null) {
+        if (svt.isUserSvt &&
+            (svt.rarity > 3 || svt.obtains.contains(SvtObtain.limited) || svt.obtains.contains(SvtObtain.unknown))) {
+          shownSvtIds.add(svtId);
+        }
+      }
+      final ce = db.gameData.craftEssencesById[svtId];
+      if (ce != null) {
+        if (ce.obtain == CEObtain.limited || ce.obtain == CEObtain.exp || ce.obtain == CEObtain.unknown) {
+          shownCeIds.add(svtId);
+        }
+      }
+    }
+
+    List<Widget> shownCards = [];
+    for (final svtId in shownSvtIds.followedBy(shownCeIds)) {
+      final entity = db.gameData.servantsById[svtId] ?? db.gameData.craftEssencesById[svtId];
+      if (entity == null) continue;
+      shownCards.add(entity.iconBuilder(
+        context: context,
+        width: 32,
+        text: '+${stat.servants[svtId] ?? 0}\n${mstData.getItemOrSvtNum(svtId, sumEquipLimitCount: false)}',
+      ));
+    }
+    for (final svtId in shownSvtIds) {
+      final item = db.gameData.servantsById[svtId]?.coin?.item;
+      if (item == null) continue;
+      shownCards.add(Item.iconBuilder(
+        context: context,
+        item: item,
+        text: '+${stat.coins[svtId] ?? 0}\n${mstData.getItemOrSvtNum(item.id)}',
+        width: 32,
+      ));
+    }
+
+    List<Widget> children = [
+      ListTile(
+        title: Text('${stat.totalCount.format(compact: false, groupSeparator: ",")} ${S.current.summon_pull_unit},'
+            ' ${((stat.totalCount * 200).format(compact: false, groupSeparator: ","))} ${Items.friendPoint?.lName.l}'),
+      ),
+      ListTile(
+        title: Text('${Maths.sum(stat.coins.values)} ${S.current.servant_coin_short}'),
+      ),
+      ListTile(
+        title: Text('Cards/Coins'),
+        subtitle: Wrap(
+          spacing: 2,
+          runSpacing: 2,
+          children: shownCards,
+        ),
+      ),
+      if (stat.lastEnhanceBaseCE != null)
+        SizedBox(
+          height: 36,
+          child: ListView.builder(
+            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 2),
+            scrollDirection: Axis.horizontal,
+            itemCount: 1 + 1 + stat.lastEnhanceMaterialCEs.length,
+            itemBuilder: (context, index) {
+              if (index == 0) {
+                return Text(S.current.enhance, style: Theme.of(context).textTheme.bodySmall);
+              }
+              final userSvt = index == 1 ? stat.lastEnhanceBaseCE : stat.lastEnhanceMaterialCEs.getOrNull(index - 2);
+              Widget child = userSvt?.dbCE?.iconBuilder(
+                    height: 32,
+                    context: context,
+                    text: ' ${userSvt.lv}/${userSvt.maxLv}',
+                  ) ??
+                  Text('${userSvt?.svtId}(${userSvt?.id})');
+              if (index == 1) {
+                child = Padding(padding: EdgeInsets.symmetric(horizontal: 8), child: child);
+              }
+              return child;
+            },
+          ),
+        ),
+    ];
+    if (stat.lastSellServants.isNotEmpty) {
+      final soldServants = <int, int>{};
+      for (final svt in stat.lastSellServants) {
+        soldServants.addNum(svt.svtId, 1);
+      }
+      final svtIds = soldServants.keys.toList();
+      children.add(SizedBox(
+        height: 36,
+        child: ListView.builder(
+          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 2),
+          scrollDirection: Axis.horizontal,
+          itemCount: 1 + svtIds.length,
+          itemBuilder: (context, index) {
+            if (index == 0) {
+              return Text('Sell   ', style: Theme.of(context).textTheme.bodySmall);
+            }
+            final svtId = svtIds.getOrNull(index - 1);
+            final svt = db.gameData.servantsById[svtId];
+            Widget child = svt?.iconBuilder(context: context, height: 32) ?? Text('$svtId');
+            if (index == 0) {
+              child = Padding(padding: EdgeInsetsDirectional.only(end: 16), child: child);
+            }
+            return child;
+          },
+        ),
+      ));
+    }
+
+    return TileGroup(
+      headerWidget: SHeader.rich(TextSpan(
+        text: S.current.statistics_title,
+        children: [
+          SharedBuilder.textButtonSpan(
+            context: context,
+            text: '  clear',
+            onTap: () {
+              SimpleCancelOkDialog(
+                title: Text(S.current.clear),
+                onTapOk: () {
+                  stat.reset();
+                  if (mounted) setState(() {});
+                },
+              ).showDialog(context);
+            },
+          )
+        ],
+      )),
+      children: children,
     );
   }
 
@@ -531,14 +734,40 @@ class _GachaDrawPageState extends State<GachaDrawPage> {
       [
         buildButton(
           onPressed: () {
-            SimpleCancelOkDialog(
-              title: const Text('Draw'),
-              onTapOk: () {
-                runtime.runTask(() async {
-                  return runtime.fpGachaDraw();
-                });
-              },
-            ).showDialog(context);
+            router.showDialog(builder: (context) {
+              return AlertDialog(
+                title: Text('Draw'),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: Text(S.current.cancel),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                      runtime.runTask(() async {
+                        return runtime.fpGachaDraw();
+                      });
+                    },
+                    child: Text('Draw×1'),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                      runtime.runTask(() async {
+                        for (final _ in range(10)) {
+                          await runtime.fpGachaDraw();
+                          if (mounted) setState(() {});
+                        }
+                      });
+                    },
+                    child: Text('Draw×10'),
+                  ),
+                ],
+              );
+            });
           },
           text: 'draw',
         ),

@@ -156,6 +156,7 @@ abstract class NetworkManagerBase<TRequest extends FRequestBase, TUser extends A
             stopFlag = false;
             throw SilentException('Manual Stop Flag, current request: ${request.key}');
           }
+          final oldUserGame = mstData.user;
           final rawResp = await requestStartImpl(request);
           request.rawRequest = rawResp.requestOptions;
           request.rawResponse = rawResp;
@@ -205,7 +206,7 @@ abstract class NetworkManagerBase<TRequest extends FRequestBase, TUser extends A
           }
 
           record.response = resp;
-          setLocalNotification();
+          setLocalNotification(oldUserGame: oldUserGame);
           return resp;
         } on DioException catch (e, s) {
           logger.e('fgo request failed, retry after 5 seconds', e, s);
@@ -229,7 +230,7 @@ abstract class NetworkManagerBase<TRequest extends FRequestBase, TUser extends A
 
   Future<Response> requestStartImpl(TRequest request);
 
-  Future<void> setLocalNotification({List<int>? removedAps}) async {
+  Future<void> setLocalNotification({List<int>? removedAps, UserGameEntity? oldUserGame}) async {
     if (!LocalNotificationUtil.supported) return;
     if (!db.settings.fakerSettings.apRecoveredNotification) return;
     if (!(await LocalNotificationUtil.checkPermission())) return;
@@ -240,6 +241,11 @@ abstract class NetworkManagerBase<TRequest extends FRequestBase, TUser extends A
         final int id = LocalNotificationUtil.generateUserApRecoverId(user.region.index, userGame.userId, targetAp);
         await LocalNotificationUtil.plugin.cancel(id);
       }
+    }
+    Set<int> pendingIds = {};
+    if (oldUserGame != null && oldUserGame.actRecoverAt == userGame.actRecoverAt) {
+      final pendings = await LocalNotificationUtil.plugin.pendingNotificationRequests();
+      pendingIds.addAll(pendings.map((e) => e.id));
     }
     for (final targetAp in user.recoveredAps) {
       final isFull = targetAp == 0;
@@ -258,6 +264,8 @@ abstract class NetworkManagerBase<TRequest extends FRequestBase, TUser extends A
         // await LocalNotificationUtil.plugin.cancel(id);
         continue;
       }
+      if (pendingIds.contains(id)) continue;
+
       final recoverTime = recoverAt.sec2date();
       DateTime notifyTime = recoverTime.subtract(Duration(minutes: isFull ? 5 : 0));
       if (notifyTime.timestamp <= now + 1) {

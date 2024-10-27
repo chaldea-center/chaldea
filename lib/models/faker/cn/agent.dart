@@ -197,6 +197,11 @@ class FakerAgentCN extends FakerAgent<FRequestCN, AutoLoginDataCN, NetworkManage
       ...?params4,
       "dataVer": network.gameTop.dataVer,
     };
+    for (final (k, v) in params.items) {
+      if (v is! int && v is! String && v is! double && v is! bool) {
+        print("[$key]: $k: Invalid value type \"${v.runtimeType}\"($v)");
+      }
+    }
     request.form.addFromMap(params);
     final resp = await request.beginRequest();
     final _usk = resp.data.responses.firstWhereOrNull((e) => e.nid == nid && e.usk?.isNotEmpty == true)?.usk ??
@@ -300,9 +305,13 @@ class FakerAgentCN extends FakerAgent<FRequestCN, AutoLoginDataCN, NetworkManage
 
   @override
   Future<FResponse> eventMissionClearReward({required List<int32_t> missionIds}) {
-    return _acPhp(key: 'eventmissionreceive', nid: 'event_mission_receive', params1: {
-      'missionIds': jsonEncode(missionIds),
-    });
+    return _acPhp(
+      key: 'eventmissionreceive',
+      nid: 'event_mission_receive',
+      params1: {
+        'missionIds': jsonEncode(missionIds),
+      },
+    );
   }
 
   @override
@@ -332,17 +341,60 @@ class FakerAgentCN extends FakerAgent<FRequestCN, AutoLoginDataCN, NetworkManage
     List<int32_t> storyAdjustIds = const [],
     String selectBonusListData = "",
   }) {
-    throw UnimplementedError();
+    return _acPhp(
+      key: 'gachadraw',
+      nid: 'gacha_draw',
+      params2: {
+        "storyAdjustIds": jsonEncode(storyAdjustIds),
+        "selectBonusList": selectBonusListData,
+      },
+      params4: {
+        "gachaId": gachaId,
+        "num": num,
+        "ticketItemId": ticketItemId,
+        "shopIdIndex": shopIdIdx,
+        "gachaSubId": gachaSubId,
+      },
+    );
   }
 
   @override
   Future<FResponse> sellServant({required List<int64_t> servantUserIds, required List<int64_t> commandCodeUserIds}) {
-    throw UnimplementedError();
+    List<Map<String, dynamic>> _useSvtHash(List<int> ids) => [
+          for (final id in ids) {"id": id, "num": 1}
+        ];
+    return _acPhp(
+      key: 'shopsellsvt',
+      nid: 'sell_svt',
+      params2: {
+        "sellData": jsonEncode(_useSvtHash(servantUserIds)),
+        "sellCommandCode": jsonEncode(_useSvtHash(commandCodeUserIds)),
+      },
+    );
   }
 
   @override
   Future<FResponse> servantEquipCombine({required int64_t baseUserSvtId, required List<int64_t> materialSvtIds}) {
-    throw UnimplementedError();
+    return _acPhp(
+      key: 'svtequipcombine',
+      nid: 'svt_equip_combine',
+      params2: {
+        "baseUserSvtId": baseUserSvtId,
+        "materialUserSvtIds": jsonEncode(materialSvtIds),
+      },
+    );
+  }
+
+  @override
+  Future<FResponse> userStatusFlagSet({required List<int32_t> onFlagNumbers, required List<int32_t> offFlagNumbers}) {
+    return _acPhp(
+      key: 'userstatusflagset',
+      nid: 'user_status_flag_set',
+      params2: {
+        if (onFlagNumbers.isNotEmpty) "onFlagNumbers": onFlagNumbers,
+        if (offFlagNumbers.isNotEmpty) "offFlagNumbers": offFlagNumbers,
+      },
+    );
   }
 
   @override

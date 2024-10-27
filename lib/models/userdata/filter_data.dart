@@ -336,8 +336,9 @@ class SvtFilterData with FilterDataMixin {
     if (b == null) return 1;
     user ??= db.curUser;
 
-    if (keys == null || keys.isEmpty) {
-      keys = [SvtCompare.no];
+    keys ??= [];
+    if (!keys.contains(SvtCompare.no)) {
+      keys = [...keys, SvtCompare.no];
     }
     int _classSortKey(int clsId) {
       if (db.gameData.constData.classInfo.isNotEmpty) {
@@ -381,7 +382,7 @@ class SvtFilterData with FilterDataMixin {
           break;
       }
       if (r != 0) {
-        return (reversed?.elementAt(i) ?? false) ? -r : r;
+        return (reversed?.getOrNull(i) ?? false) ? -r : r;
       }
     }
     return 0;
@@ -482,8 +483,10 @@ class CraftFilterData with FilterDataMixin {
     if (a == null) return -1;
     if (b == null) return 1;
 
-    if (keys == null || keys.isEmpty) {
-      keys = [CraftCompare.no];
+    keys ??= [];
+
+    if (!keys.contains(CraftCompare.no)) {
+      keys = [...keys, CraftCompare.no];
     }
     for (var i = 0; i < keys.length; i++) {
       int r;
@@ -502,7 +505,7 @@ class CraftFilterData with FilterDataMixin {
           break;
       }
       if (r != 0) {
-        return (reversed?.elementAt(i) ?? false) ? -r : r;
+        return (reversed?.getOrNull(i) ?? false) ? -r : r;
       }
     }
     return 0;
@@ -595,7 +598,7 @@ class CmdCodeFilterData with FilterDataMixin {
           break;
       }
       if (r != 0) {
-        return (reversed?.elementAt(i) ?? false) ? -r : r;
+        return (reversed?.getOrNull(i) ?? false) ? -r : r;
       }
     }
     return 0;
@@ -891,7 +894,7 @@ class EnemyFilterData with FilterDataMixin {
           r = 0;
       }
       if (r != 0) {
-        return (reversed?.elementAt(i) ?? false) ? -r : r;
+        return (reversed?.getOrNull(i) ?? false) ? -r : r;
       }
     }
     return 0;
@@ -939,7 +942,7 @@ class FfoPartFilterData with FilterDataMixin {
           r = 0;
       }
       if (r != 0) {
-        return (reversed?.elementAt(i) ?? false) ? -r : r;
+        return (reversed?.getOrNull(i) ?? false) ? -r : r;
       }
     }
     return 0;

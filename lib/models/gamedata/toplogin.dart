@@ -8,6 +8,7 @@ import 'package:chaldea/utils/utils.dart';
 import '_helper.dart';
 import 'command_code.dart';
 import 'common.dart';
+import 'gift.dart';
 import 'item.dart';
 import 'servant.dart';
 
@@ -530,22 +531,30 @@ class MasterDataManager {
     return count ?? defaultValue;
   }
 
-  ({int svtCount, int svtEquipCount, int ccCount}) countSvtKeep() {
-    int svtCount = 0, svtEquipCount = 0;
+  ({int svtCount, int svtEquipCount, int ccCount, int unknownCount}) countSvtKeep() {
+    int svtCount = 0, svtEquipCount = 0, unknownCount = 0;
     for (final svt in userSvt) {
-      final dbSvt = db.gameData.entities[svt.svtId];
-      if (dbSvt == null) continue;
-      if (dbSvt.type == SvtType.servantEquip) {
-        if (svt.dbCE?.flags.contains(SvtFlag.svtEquipFriendShip) == true) {
-          // don't count
-        } else {
+      // may contains region specific CEs
+      final ce = db.gameData.craftEssencesById[svt.svtId];
+      if (ce != null) {
+        if (!ce.flags.contains(SvtFlag.svtEquipFriendShip)) {
           svtEquipCount += 1;
         }
+        continue;
+      }
+      final dbSvt = db.gameData.entities[svt.svtId];
+      if (dbSvt == null) {
+        unknownCount += 1;
       } else {
         svtCount += 1;
       }
     }
-    return (svtCount: svtCount, svtEquipCount: svtEquipCount, ccCount: userCommandCode.length);
+    return (
+      svtCount: svtCount,
+      svtEquipCount: svtEquipCount,
+      ccCount: userCommandCode.length,
+      unknownCount: unknownCount
+    );
   }
 
   // mst schemes
@@ -747,6 +756,7 @@ class UserServantEntity extends DataEntityBase<int> {
 
   factory UserServantEntity.fromJson(Map<String, dynamic> data) => _$UserServantEntityFromJson(data);
 
+  BasicServant? get dbEntity => db.gameData.entities[svtId];
   Servant? get dbSvt => db.gameData.servantsById[svtId];
   CraftEssence? get dbCE => db.gameData.craftEssencesById[svtId];
   int? get maxLv => dbCE?.ascensionAdd.lvMax.ascension[limitCount];
@@ -2723,6 +2733,47 @@ class BattleResultData {
   factory BattleResultData.fromJson(Map<dynamic, dynamic> data) => _$BattleResultDataFromJson(data);
 }
 
+// GachaInfos
+@JsonSerializable()
+class GachaInfos extends MstGiftBase {
+  bool isNew;
+  int userSvtId;
+  //  int type;
+  //  int objectId;
+  //  int num;
+  int limitCount;
+  int sellQp;
+  int sellMana;
+  int svtCoinNum;
+
+  GachaInfos({
+    dynamic isNew,
+    dynamic userSvtId,
+    dynamic type,
+    dynamic objectId,
+    dynamic num,
+    dynamic limitCount,
+    dynamic sellQp,
+    dynamic sellMana,
+    dynamic svtCoinNum,
+  })  : isNew = _toBool(isNew),
+        userSvtId = _toInt(userSvtId),
+        limitCount = _toInt(limitCount),
+        sellQp = _toInt(sellQp),
+        sellMana = _toInt(sellMana),
+        svtCoinNum = _toInt(svtCoinNum),
+        super(
+          type: _toInt(type),
+          objectId: _toInt(objectId),
+          num: _toInt(num),
+        );
+
+  factory GachaInfos.fromJson(Map<String, dynamic> json) => _$GachaInfosFromJson(json);
+
+  @override
+  Map<String, dynamic> toJson() => _$GachaInfosToJson(this);
+}
+
 enum UserStatusFlagKind {
   // FP gacha auto sell
   combineMaterialC(0),
@@ -2759,4 +2810,25 @@ enum UserStatusFlagKind {
   final int value;
 
   int get mask => 1 << value;
+
+  static const List<UserStatusFlagKind> kGachaSellCombineMaterials = [
+    combineMaterialR,
+    combineMaterialUc,
+    combineMaterialC,
+  ];
+  static const List<UserStatusFlagKind> kGachaSellStatusUps = [
+    statusUpR,
+    statusUpUc,
+    statusUpC,
+  ];
+  static const List<UserStatusFlagKind> kGachaSellSvtEquips = [
+    svtEquipR,
+    svtEquipUc,
+    svtEquipC,
+  ];
+  static const List<UserStatusFlagKind> kGachaSells = [
+    ...kGachaSellCombineMaterials,
+    ...kGachaSellStatusUps,
+    ...kGachaSellSvtEquips
+  ];
 }

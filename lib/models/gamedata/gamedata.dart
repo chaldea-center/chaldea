@@ -202,6 +202,7 @@ class GameData with _GameDataExtra {
       });
       this.wars.removeWhere((warId, war) {
         if (war.isMainStory) return false;
+        if (war.parentWars.contains(WarId.mainInterlude)) return false;
         return warIdsToRemove.contains(warId);
       });
       this.gachas.removeWhere((gachaId, gacha) {

@@ -102,6 +102,7 @@ class _FakerAccountsPageState extends State<FakerAccountsPage> {
                     onPressed: users.length <= 1
                         ? null
                         : () async {
+                            await showEasyLoading(AtlasApi.gametopsRaw);
                             for (final (index, user) in users.indexed) {
                               if (index != 0) {
                                 rootRouter.appState.addWindow();
@@ -189,7 +190,6 @@ class _FakerAccountsPageState extends State<FakerAccountsPage> {
               ],
             ),
       onTap: () async {
-        await showEasyLoading(AtlasApi.gametopsRaw);
         router.pushPage(FakeGrandOrder(user: user));
       },
     );
