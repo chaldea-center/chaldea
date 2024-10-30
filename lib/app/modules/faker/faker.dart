@@ -28,6 +28,7 @@ import '../import_data/sniff_details/formation_decks.dart';
 import 'details/dialogs.dart';
 import 'gacha/gacha_draw.dart';
 import 'history.dart';
+import 'mission/mission_receive.dart';
 import 'option_list.dart';
 import 'present_box/present_box.dart';
 import 'state.dart';
@@ -64,7 +65,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
     try {
       // ignore: use_build_context_synchronously
       _runtime = await FakerRuntime.init(widget.user, this);
-      _runtime?.loadInitData();
+      await _runtime?.loadInitData();
     } catch (e, s) {
       if (mounted) {
         SimpleCancelOkDialog(
@@ -134,18 +135,25 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
                 child: Text(S.current.general_import),
               ),
               PopupMenuItem(
-                enabled: isLoggedIn,
+                enabled: isLoggedIn && !runtime.runningTask.value,
                 onTap: () {
                   router.pushPage(UserPresentBoxManagePage(runtime: runtime));
                 },
                 child: Text(S.current.present_box),
               ),
               PopupMenuItem(
-                enabled: isLoggedIn,
+                enabled: isLoggedIn && !runtime.runningTask.value,
                 onTap: () {
                   router.pushPage(GachaDrawPage(runtime: runtime));
                 },
                 child: Text(S.current.gacha),
+              ),
+              PopupMenuItem(
+                enabled: isLoggedIn && !runtime.runningTask.value,
+                onTap: () {
+                  router.pushPage(UserEventMissionReceivePage(runtime: runtime));
+                },
+                child: Text(S.current.master_mission),
               ),
             ],
           ),
@@ -710,7 +718,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
     final userQuest = mstData.userQuest[battleOption.questId];
     final now = DateTime.now().timestamp;
     List<(Item, UserItemEntity)> teapots = [
-      for (final teapot in runtime.teapots.values)
+      for (final teapot in runtime.gameData.teapots.values)
         if (teapot.startedAt <= now && teapot.endedAt >= now)
           if ((mstData.userItem[teapot.id]?.num ?? 0) > 0) (teapot, mstData.userItem[teapot.id]!),
     ];

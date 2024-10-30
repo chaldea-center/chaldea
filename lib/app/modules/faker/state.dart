@@ -18,21 +18,20 @@ class FakerRuntime {
   static final Set<Object> _awakeTasks = {};
 
   final FakerAgent agent;
+  final _FakerGameData gameData;
   State? _rootState;
+  FakerRuntime._(this.agent, this._rootState) : gameData = _FakerGameData(agent.user.region);
+
   final List<State> _dependencies = [];
 
   // runtime data
   final runningTask = ValueNotifier<bool>(false);
-  final teapots = <int, Item>{};
-  GameConstants constants = ConstData.constants;
   // stats - battle
   final totalRewards = <int, int>{};
   final totalDropStat = _DropStatData();
   final curLoopDropStat = _DropStatData();
   // stats - gacha
   final gachaResultStat = _GachaDrawStatData();
-
-  FakerRuntime._(this.agent, this._rootState);
 
   // common
   late final mstData = agent.network.mstData;
@@ -50,8 +49,9 @@ class FakerRuntime {
     _dependencies.remove(s);
   }
 
-  void update() {
+  void update() async {
     for (final s in [_rootState, ..._dependencies]) {
+      await null; // in case called during parent build?
       if (s != null && s.mounted) {
         // ignore: invalid_use_of_protected_member
         s.setState(() {});
@@ -90,35 +90,7 @@ class FakerRuntime {
   }
 
   Future<void> loadInitData() async {
-    // teapots
-    if (teapots.isEmpty) {
-      List<Item> items;
-      if (agent.user.region == Region.jp) {
-        items = db.gameData.items.values.toList();
-      } else {
-        items = (await AtlasApi.exportedData(
-              'nice_item',
-              (data) => (data as List).map((e) => Item.fromJson(e)).toList(),
-              region: region,
-            )) ??
-            [];
-      }
-      final now = DateTime.now().timestamp;
-      for (final item in items) {
-        if (item.type == ItemType.friendshipUpItem && item.endedAt > now) {
-          teapots[item.id] = item;
-        }
-      }
-    }
-    // constants
-    if (region == Region.jp) {
-      constants = ConstData.constants;
-    } else {
-      final v = await AtlasApi.exportedData('NiceConstant', (v) => GameConstants.fromJson(v), region: region);
-      if (v != null) {
-        constants = v;
-      }
-    }
+    await gameData.init();
     update();
   }
 
@@ -141,8 +113,8 @@ class FakerRuntime {
     update();
   }
 
-  Future<void> runTask(Future Function() task) async {
-    if (runningTask.value) {
+  Future<void> runTask(Future Function() task, {bool check = true}) async {
+    if (check && runningTask.value) {
       _showDialog(SimpleCancelOkDialog(
         title: Text(S.current.error),
         content: const Text("previous task is till running"),
@@ -151,7 +123,7 @@ class FakerRuntime {
       return;
     }
     try {
-      runningTask.value = true;
+      if (check) runningTask.value = true;
       EasyLoading.show();
       update();
       await task();
@@ -174,7 +146,7 @@ class FakerRuntime {
         EasyLoading.showError(e.toString());
       }
     } finally {
-      runningTask.value = false;
+      if (check) runningTask.value = false;
     }
     update();
   }
@@ -384,8 +356,9 @@ class FakerRuntime {
     if (counts.svtEquipCount >= userGame.svtEquipKeep + 100) {
       throw SilentException('${S.current.craft_essence}: ${counts.svtEquipCount}>=${userGame.svtEquipKeep}+100');
     }
-    if (counts.ccCount >= constants.maxUserCommandCode + 100) {
-      throw SilentException('${S.current.command_code}: ${counts.ccCount}>=${constants.maxUserCommandCode}+100');
+    if (counts.ccCount >= gameData.constants.maxUserCommandCode + 100) {
+      throw SilentException(
+          '${S.current.command_code}: ${counts.ccCount}>=${gameData.constants.maxUserCommandCode}+100');
     }
     final fp = mstData.tblUserGame[mstData.user?.userId]?.friendPoint ?? 0;
     if (fp < 2000) {
@@ -428,7 +401,7 @@ class FakerRuntime {
 
       final counts = mstData.countSvtKeep();
       final userGame = mstData.user!;
-      if (counts.svtCount >= userGame.svtKeep + 100 || counts.ccCount >= constants.maxUserCommandCode + 100) {
+      if (counts.svtCount >= userGame.svtKeep + 100 || counts.ccCount >= gameData.constants.maxUserCommandCode + 100) {
         await sellServant();
       }
       if (counts.svtEquipCount >= userGame.svtEquipKeep + 100) {
@@ -545,8 +518,8 @@ class FakerRuntime {
     if (counts.svtEquipCount >= user.svtEquipKeep) {
       throw SilentException('${S.current.craft_essence}: ${counts.svtEquipCount}>=${user.svtEquipKeep}');
     }
-    if (counts.ccCount >= constants.maxUserCommandCode) {
-      throw SilentException('${S.current.command_code}: ${counts.ccCount}>=${constants.maxUserCommandCode}');
+    if (counts.ccCount >= gameData.constants.maxUserCommandCode) {
+      throw SilentException('${S.current.command_code}: ${counts.ccCount}>=${gameData.constants.maxUserCommandCode}');
     }
   }
 
@@ -630,6 +603,53 @@ class FakerRuntime {
       }
       throw SilentException('AP not enough: ${mstData.user!.calCurAp()}<${quest.consume}');
     }
+  }
+}
+
+class _FakerGameData {
+  final Region region;
+  _FakerGameData(this.region);
+
+  final teapots = <int, Item>{};
+  GameConstants constants = ConstData.constants;
+  Map<int, MasterMission> masterMissions = {};
+
+  Future<void> init() async {
+    // teapots
+    if (teapots.isEmpty) {
+      List<Item> items;
+      if (region == Region.jp) {
+        items = db.gameData.items.values.toList();
+      } else {
+        items = (await AtlasApi.exportedData(
+          'nice_item',
+          (data) => (data as List).map((e) => Item.fromJson(e)).toList(),
+          region: region,
+        ))!;
+      }
+      final now = DateTime.now().timestamp;
+      for (final item in items) {
+        if (item.type == ItemType.friendshipUpItem && item.endedAt > now) {
+          teapots[item.id] = item;
+        }
+      }
+    }
+  }
+
+  Future<void> loadConstants() async {
+    if (region == Region.jp) {
+      constants = ConstData.constants;
+    } else {
+      final v = await AtlasApi.exportedData('NiceConstant', (v) => GameConstants.fromJson(v), region: region);
+      constants = v!;
+    }
+  }
+
+  Future<void> loadMasterMissions() async {
+    final now = DateTime.now().timestamp;
+    final mms = (await AtlasApi.masterMissions(region: region))!;
+    mms.removeWhere((mm) => mm.startedAt > now + 7 * kSecsPerDay || mm.closedAt < now);
+    masterMissions = {for (final mm in mms) mm.id: mm};
   }
 }
 

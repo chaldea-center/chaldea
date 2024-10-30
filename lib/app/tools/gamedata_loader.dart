@@ -217,6 +217,7 @@ class GameDataLoader {
       }
 
       // print('loaded ${fv.filename}');
+      await Future.delayed(Duration(milliseconds: 200));
       finished += 1;
       progress.value = finished / (newVersion.files.length + 0.1);
     }

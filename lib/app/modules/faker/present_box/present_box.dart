@@ -136,6 +136,14 @@ class _UserPresentBoxManagePageState extends State<UserPresentBoxManagePage> {
         title: Text('${S.current.present_box} (${runtime.mstData.userPresentBox.length})'),
         actions: [
           IconButton(
+            onPressed: () {
+              setState(() {
+                filterData.showSelectedOnly = !filterData.showSelectedOnly;
+              });
+            },
+            icon: Icon(filterData.showSelectedOnly ? Icons.check_circle : Icons.check_circle_outline),
+          ),
+          IconButton(
             icon: const Icon(Icons.filter_alt),
             tooltip: S.current.filter,
             onPressed: () => FilterPage.show(
@@ -187,7 +195,16 @@ class _UserPresentBoxManagePageState extends State<UserPresentBoxManagePage> {
       item = items[present.objectId];
     }
     final expireAt = getPresentExpireAt(present);
-    final leftDur = Duration(seconds: expireAt - DateTime.now().timestamp);
+    Duration leftDur = Duration(seconds: expireAt - DateTime.now().timestamp);
+    String leftDurStr = leftDur.isNegative ? '-' : '';
+    leftDur = leftDur.abs();
+    if (leftDur.inDays > 10) {
+      leftDurStr += '${leftDur.inDays}d';
+    } else if (leftDur.inDays != 0) {
+      leftDurStr += '${leftDur.inDays}d ${leftDur.inHours % Duration.hoursPerDay}h';
+    } else {
+      leftDurStr += '${leftDur.inHours}h${leftDur.inMinutes % Duration.minutesPerHour}m';
+    }
     return CheckboxListTile(
       dense: true,
       secondary: Gift(
@@ -213,7 +230,7 @@ class _UserPresentBoxManagePageState extends State<UserPresentBoxManagePage> {
         TextSpan(
           text: present.flags.contains(UserPresentBoxFlag.indefinitePeriod)
               ? 'Forever'
-              : '${leftDur.toStringX()} (${expireAt.sec2date().toStringShort()})',
+              : '$leftDurStr (${expireAt.sec2date().toCustomString(second: false)})',
           style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color),
         ),
       ])),
