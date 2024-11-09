@@ -45,6 +45,7 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
 
   void init() {
     curIndex = shouldShowOverview ? -1 : 0;
+    if (_summon == null) return;
 
     final startJp = summon.startTime.jp, endJp = summon.endTime.jp;
     if (startJp != null && endJp != null) {

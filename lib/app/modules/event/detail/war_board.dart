@@ -2,6 +2,8 @@ import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
+import 'package:chaldea/utils/atlas.dart';
+import 'package:chaldea/utils/extension.dart';
 import 'package:chaldea/widgets/widgets.dart';
 
 class EventWarBoardTab extends HookWidget {
@@ -34,14 +36,37 @@ class EventWarBoardTab extends HookWidget {
           router.push(url: Routes.questI(stage.questId));
         },
       ));
-      final gifts = stage.squares.expand((e) => e.treasures).expand((e) => e.gifts).toList();
-      if (gifts.isNotEmpty) {
+
+      final treasures = stage.squares.expand((e) => e.treasures).toList();
+      if (treasures.isNotEmpty) {
+        treasures.sort2((e) => -e.rarity.index);
+        List<Widget> treasureWidgets = [];
+        for (final treasure in treasures) {
+          final boxItemId = switch (treasure.rarity) {
+            WarBoardTreasureRarity.common => 1,
+            WarBoardTreasureRarity.rare => 2,
+            WarBoardTreasureRarity.srare => 3,
+            _ => null,
+          };
+          if (boxItemId != null) {
+            treasureWidgets.add(db.getIconImage(AssetURL.i.items(boxItemId), width: 36, height: 36));
+          } else {
+            treasureWidgets.add(Text(treasure.rarity.name));
+          }
+          treasureWidgets.addAll(treasure.gifts.map((gift) => gift.iconBuilder(context: context, width: 36)));
+        }
         children.add(ListTile(
           dense: true,
           title: Text(S.current.event_treasure_box),
-          subtitle: SharedBuilder.giftGrid(context: context, gifts: gifts, width: 36),
+          subtitle: Wrap(
+            spacing: 1,
+            runSpacing: 1,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            children: treasureWidgets,
+          ),
         ));
       }
+
       if (quest != null && quest.gifts.isNotEmpty) {
         children.add(ListTile(
           dense: true,

@@ -191,13 +191,29 @@ abstract class FakerAgent<TRequest extends FRequestBase, TUser extends AutoLogin
     int activeDeckId, followerId, followerClassId, followerType, followerSupportDeckId;
     int userEquipId = 0;
 
-    if (questPhaseEntity.isNpcOnly) {
-      final npc = questPhaseEntity.supportServants.firstWhere((e) => e.script?.eventDeckIndex == null);
+    if (questPhaseEntity.flags.contains(QuestFlag.userEventDeck)) {
+      final eventDeckNo = questPhaseEntity.extraDetail?.useEventDeckNo;
+      if (eventDeckNo == null) {
+        throw SilentException('flag userEventDeck: useEventDeckNo not found');
+      }
+      activeDeckId = eventDeckNo;
+    } else {
       activeDeckId = options.deckId;
-      followerId = npc.id;
-      followerClassId = 0;
-      followerType = FollowerType.npc.value;
-      followerSupportDeckId = 0;
+    }
+
+    if (questPhaseEntity.isNpcOnly) {
+      if (questPhaseEntity.flags.contains(QuestFlag.noSupportList)) {
+        followerId = 0;
+        followerClassId = 0;
+        followerType = 0;
+        followerSupportDeckId = 0;
+      } else {
+        final npc = questPhaseEntity.supportServants.firstWhereOrNull((e) => e.script?.eventDeckIndex == null);
+        followerId = npc?.id ?? 0;
+        followerClassId = 0;
+        followerType = FollowerType.npc.value;
+        followerSupportDeckId = 0;
+      }
     } else if (questPhaseEntity.extraDetail?.waveSetup == 1) {
       if (!questPhaseEntity.flags.contains(QuestFlag.eventDeckNoSupport) ||
           !questPhaseEntity.flags.contains(QuestFlag.userEventDeck)) {
@@ -220,9 +236,15 @@ abstract class FakerAgent<TRequest extends FRequestBase, TUser extends AutoLogin
         throw SilentException('UserEventDeck(eventId=$eventId,deckNo=$deckNo) not found');
       }
       userEquipId = eventDeck.deckInfo!.userEquipId;
-    } else if (questPhaseEntity.flags.contains(QuestFlag.userEventDeck)) {
-      throw SilentException('QuestFlag.userEventDeck not supported');
     } else {
+      final notSuppportedFlags = const {
+        QuestFlag.noSupportList,
+        QuestFlag.eventDeckNoSupport,
+        QuestFlag.notSingleSupportOnly
+      }.intersection(questPhaseEntity.flags.toSet());
+      if (notSuppportedFlags.isNotEmpty) {
+        throw SilentException('Finding support but not supported flags: $notSuppportedFlags');
+      }
       final (follower, followerSvt) = await _getValidSupport(
         questId: options.questId,
         questPhase: options.questPhase,
@@ -232,7 +254,6 @@ abstract class FakerAgent<TRequest extends FRequestBase, TUser extends AutoLogin
         supportEquipIds: options.supportCeIds.toList(),
         supportEquipMaxLimitBreak: options.supportCeMaxLimitBreak,
       );
-      activeDeckId = options.deckId;
       followerId = follower.userId;
       followerClassId = followerSvt.classId;
       followerType = follower.type;

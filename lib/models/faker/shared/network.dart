@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
+
 import 'package:dio/dio.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
@@ -175,7 +177,9 @@ abstract class NetworkManagerBase<TRequest extends FRequestBase, TUser extends A
 
           // data
           final _jsonData = FateTopLogin.parseToMap(rawResp.data);
-          if (db.settings.fakerSettings.dumpResponse) {
+          bool dumpResponse = db.settings.fakerSettings.dumpResponse;
+          if (!kReleaseMode && request.key.replaceAll(RegExp(r'[/_]'), '') == 'followerlist') dumpResponse = false;
+          if (dumpResponse) {
             String fn = '${DateTime.now().toSafeFileName()}_${request.key}';
             fn = fn.replaceAll(RegExp(r'[/:\s\\]+'), '_');
             await FilePlus(joinPaths(fakerDir, '$fn.json')).writeAsString(jsonEncode(_jsonData));

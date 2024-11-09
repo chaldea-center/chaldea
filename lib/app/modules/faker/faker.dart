@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
+import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/modules/battle/formation/formation_card.dart';
 import 'package:chaldea/app/modules/common/builders.dart';
@@ -485,49 +486,51 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
         final svt = battleEntity.battleInfo?.myDeck?.svts.getOrNull(i);
         final userSvt = userSvts[svt?.userSvtId], userCE = userSvts[svt?.userSvtEquipIds?.firstOrNull];
         final dbSvt = db.gameData.servantsById[userSvt?.svtId];
-        if (userSvt == null) return null;
-        final appendId2Num = {
-          for (final passive in dbSvt?.appendPassive ?? <ServantAppendPassiveSkill>[]) passive.skill.id: passive.num,
-        };
-        final appendPassive2Lvs = <int, int>{
-          for (final (index, skillId) in (userSvt.appendPassiveSkillIds ?? <int>[]).indexed)
-            if (appendId2Num.containsKey(skillId))
-              appendId2Num[skillId]!: userSvt.appendPassiveSkillLvs?.getOrNull(index) ?? 0,
-        };
-        bool ceMLB = false;
-        if (userCE != null) {
-          if (userCE.limitCount == 0) {
-            // may be zero even if MLB for support svt
-            final skill =
-                db.gameData.craftEssencesById[userCE.svtId]?.skills.firstWhereOrNull((e) => e.id == userCE.skillId1);
-            if (skill != null && skill.condLimitCount == 4) {
-              ceMLB = true;
+        if (userSvt != null) {
+          final appendId2Num = {
+            for (final passive in dbSvt?.appendPassive ?? <ServantAppendPassiveSkill>[]) passive.skill.id: passive.num,
+          };
+          final appendPassive2Lvs = <int, int>{
+            for (final (index, skillId) in (userSvt.appendPassiveSkillIds ?? <int>[]).indexed)
+              if (appendId2Num.containsKey(skillId))
+                appendId2Num[skillId]!: userSvt.appendPassiveSkillLvs?.getOrNull(index) ?? 0,
+          };
+          bool ceMLB = false;
+          if (userCE != null) {
+            if (userCE.limitCount == 0) {
+              // may be zero even if MLB for support svt
+              final skill =
+                  db.gameData.craftEssencesById[userCE.svtId]?.skills.firstWhereOrNull((e) => e.id == userCE.skillId1);
+              if (skill != null && skill.condLimitCount == 4) {
+                ceMLB = true;
+              }
+            } else {
+              ceMLB = userCE.limitCount == 4;
             }
-          } else {
-            ceMLB = userCE.limitCount == 4;
           }
-        }
 
-        return SvtSaveData(
-          svtId: userSvt.svtId,
-          limitCount: userSvt.dispLimitCount,
-          skillLvs: [userSvt.skillLv1, userSvt.skillLv2, userSvt.skillLv3],
-          skillIds: [userSvt.skillId1, userSvt.skillId2, userSvt.skillId3],
-          appendLvs: kAppendSkillNums.map((skillNum) => appendPassive2Lvs[skillNum + 99] ?? 0).toList(),
-          tdId: 0,
-          tdLv: userSvt.treasureDeviceLv ?? 0,
-          lv: userSvt.lv,
-          // atkFou,
-          // hpFou,
-          // fixedAtk,
-          // fixedHp,
-          ceId: userCE?.svtId,
-          ceLimitBreak: ceMLB,
-          ceLv: userCE?.lv ?? 1,
-          supportType: SupportSvtType.fromFollowerType(svt?.followerType ?? 0),
-          cardStrengthens: null,
-          commandCodeIds: null,
-        );
+          return SvtSaveData(
+            svtId: userSvt.svtId,
+            limitCount: userSvt.dispLimitCount,
+            skillLvs: [userSvt.skillLv1, userSvt.skillLv2, userSvt.skillLv3],
+            skillIds: [userSvt.skillId1, userSvt.skillId2, userSvt.skillId3],
+            appendLvs: kAppendSkillNums.map((skillNum) => appendPassive2Lvs[skillNum + 99] ?? 0).toList(),
+            tdId: userSvt.treasureDeviceId,
+            tdLv: userSvt.treasureDeviceLv ?? 0,
+            lv: userSvt.lv,
+            // atkFou,
+            // hpFou,
+            // fixedAtk,
+            // fixedHp,
+            ceId: userCE?.svtId,
+            ceLimitBreak: ceMLB,
+            ceLv: userCE?.lv ?? 1,
+            supportType: SupportSvtType.fromFollowerType(svt?.followerType ?? 0),
+            cardStrengthens: null,
+            commandCodeIds: null,
+          );
+        }
+        return null;
       }),
     );
   }
@@ -714,7 +717,11 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
 
   Widget get battleSetupOptionSection {
     final quest = db.gameData.quests[battleOption.questId];
+    final questPhase = AtlasApi.questPhaseCache(battleOption.questId, battleOption.questPhase, null, runtime.region) ??
+        AtlasApi.questPhaseCache(battleOption.questId, battleOption.questPhase);
     final formation = mstData.userDeck[battleOption.deckId];
+    final eventFormation = mstData.userEventDeck[
+        UserEventDeckEntity.createPK(quest?.event?.id ?? 0, questPhase?.extraDetail?.useEventDeckNo ?? 0)];
     final userQuest = mstData.userQuest[battleOption.questId];
     final now = DateTime.now().timestamp;
     List<(Item, UserItemEntity)> teapots = [
@@ -802,76 +809,19 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
             ));
           },
         ),
-        if (formation != null) ...[
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: FormationCard(
-              formation: formation.toFormation(mstData: mstData),
-              userSvtCollections: mstData.userSvtCollection.dict,
-            ),
+        if (formation != null) ..._buildUserDeck(formation.deckInfo),
+        if (eventFormation != null) ...[
+          ListTile(
+            dense: true,
+            title: Text("Event Deck ${eventFormation.deckNo}"),
+            subtitle: eventFormation.eventId == 0 ? null : Text('Event ${eventFormation.eventId}'),
+            onTap: () {
+              if (eventFormation.eventId != 0) {
+                router.push(url: Routes.eventI(eventFormation.eventId));
+              }
+            },
           ),
-          Center(
-            child: Container(
-              margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 16),
-              constraints: const BoxConstraints(maxWidth: 80 * 6 + 64),
-              child: Builder(
-                builder: (context) {
-                  final svts = formation.deckInfo?.svts ?? [];
-                  final svtsMap = {for (final svt in svts) svt.id: svt};
-                  return Row(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      ...List.generate(6, (index) {
-                        final collection =
-                            mstData.userSvtCollection[mstData.userSvt[svtsMap[index + 1]?.userSvtId]?.svtId];
-                        final svt = db.gameData.servantsById[collection?.svtId];
-                        if (collection == null ||
-                            svt == null ||
-                            svt.bondGrowth.length < collection.friendshipRank + 1) {
-                          return const Expanded(flex: 10, child: SizedBox.shrink());
-                        }
-                        final (bondA, bondB) = svt.getPastNextBonds(collection.friendshipRank, collection.friendship);
-                        final bool reachBondLimit = bondB == 0;
-
-                        String bondText = 'Lv.${collection.friendshipRank}/${10 + collection.friendshipExceedCount}'
-                            // '\n${collection.friendship}'
-                            '\n${-bondB}';
-                        // battle result
-                        final oldCollection = agent.lastBattleResultData?.oldUserSvtCollection
-                            .firstWhereOrNull((e) => e.svtId == collection.svtId);
-                        if (oldCollection != null) {
-                          bondText += '\n+${collection.friendship - oldCollection.friendship}';
-                        }
-                        return Expanded(
-                          flex: 10,
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              AutoSizeText(
-                                bondText,
-                                textAlign: TextAlign.center,
-                                maxFontSize: 10,
-                                minFontSize: 6,
-                                maxLines: bondText.count('\n') + 1,
-                                style: reachBondLimit ? TextStyle(color: Theme.of(context).colorScheme.error) : null,
-                              ),
-                              BondProgress(
-                                value: bondA,
-                                total: bondA + bondB,
-                                padding: EdgeInsets.symmetric(horizontal: 4),
-                                minHeight: 4,
-                              ),
-                            ],
-                          ),
-                        );
-                      }),
-                      const Expanded(flex: 8, child: SizedBox.shrink()),
-                    ],
-                  );
-                },
-              ),
-            ),
-          ),
+          ..._buildUserDeck(eventFormation.deckInfo),
         ],
         DividerWithTitle(title: S.current.support_servant_short, indent: 16),
         ListTile(
@@ -1576,7 +1526,14 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
               PopupMenuItem(
                 child: const Text('Test'),
                 onTap: () async {
-                  // (agent as FakerAgentCN).usk = CryptData.encryptMD5Usk('842b691bbc2ef299367a');
+                  showEasyLoading(() => agent.battleResult(
+                        battleId: 686902263,
+                        battleResult: BattleResultType.win,
+                        winResult: BattleWinResultType.normal,
+                        action: BattleDataActionList(logs: "", dt: []),
+                        elapsedTurn: 3,
+                        usedTurnArray: [0, 0, 1],
+                      )); // (agent as FakerAgentCN).usk = CryptData.encryptMD5Usk('842b691bbc2ef299367a');
                 },
               )
           ],
@@ -1602,5 +1559,76 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
         ],
       ),
     );
+  }
+
+  List<Widget> _buildUserDeck(DeckServantEntity? deckInfo) {
+    return [
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        child: FormationCard(
+          formation: UserDeckEntityX.toFormation(deckInfo: deckInfo, mstData: mstData),
+          userSvtCollections: mstData.userSvtCollection.dict,
+        ),
+      ),
+      Center(
+        child: Container(
+          margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 16),
+          constraints: const BoxConstraints(maxWidth: 80 * 6 + 64),
+          child: Builder(
+            builder: (context) {
+              final svts = deckInfo?.svts ?? [];
+              final svtsMap = {for (final svt in svts) svt.id: svt};
+              return Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  ...List.generate(6, (index) {
+                    final collection = mstData.userSvtCollection[mstData.userSvt[svtsMap[index + 1]?.userSvtId]?.svtId];
+                    final svt = db.gameData.servantsById[collection?.svtId];
+                    if (collection == null || svt == null || svt.bondGrowth.length < collection.friendshipRank + 1) {
+                      return const Expanded(flex: 10, child: SizedBox.shrink());
+                    }
+                    final (bondA, bondB) = svt.getPastNextBonds(collection.friendshipRank, collection.friendship);
+                    final bool reachBondLimit = bondB == 0;
+
+                    String bondText = 'Lv.${collection.friendshipRank}/${10 + collection.friendshipExceedCount}'
+                        // '\n${collection.friendship}'
+                        '\n${-bondB}';
+                    // battle result
+                    final oldCollection = agent.lastBattleResultData?.oldUserSvtCollection
+                        .firstWhereOrNull((e) => e.svtId == collection.svtId);
+                    if (oldCollection != null) {
+                      bondText += '\n+${collection.friendship - oldCollection.friendship}';
+                    }
+                    return Expanded(
+                      flex: 10,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          AutoSizeText(
+                            bondText,
+                            textAlign: TextAlign.center,
+                            maxFontSize: 10,
+                            minFontSize: 6,
+                            maxLines: bondText.count('\n') + 1,
+                            style: reachBondLimit ? TextStyle(color: Theme.of(context).colorScheme.error) : null,
+                          ),
+                          BondProgress(
+                            value: bondA,
+                            total: bondA + bondB,
+                            padding: EdgeInsets.symmetric(horizontal: 4),
+                            minHeight: 4,
+                          ),
+                        ],
+                      ),
+                    );
+                  }),
+                  const Expanded(flex: 8, child: SizedBox.shrink()),
+                ],
+              );
+            },
+          ),
+        ),
+      ),
+    ];
   }
 }

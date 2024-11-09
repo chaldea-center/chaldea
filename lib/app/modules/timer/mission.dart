@@ -85,6 +85,8 @@ class TimerMissionItem with TimerItem {
         ),
       ),
       contentBuilder: (context) {
+        final missions = mm.missions.toList();
+        missions.sort2((e) => e.dispNo);
         return Card(
           margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           child: Column(
@@ -98,13 +100,13 @@ class TimerMissionItem with TimerItem {
                 style: kTextButtonDenseStyle,
                 child: Text('>>> ${S.current.details} >>>'),
               ),
-              for (final mission in mm.missions) ...[
+              for (final mission in missions) ...[
                 const Divider(indent: 8, endIndent: 8, height: 8),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                   child: MissionCondsDescriptor(
                     mission: mission,
-                    missions: mm.missions,
+                    missions: missions,
                     onlyShowClear: true,
                   ),
                 )

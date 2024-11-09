@@ -30,6 +30,13 @@ class _SQSettingTabState extends State<SQSettingTab> {
   @override
   void initState() {
     super.initState();
+    final now = DateTime.now().add(Duration(days: 1));
+    if (plan.endDate.isAfter(now)) {
+      plan.endDate = now;
+    }
+    if (plan.startDate.isAfter(plan.endDate)) {
+      plan.startDate = plan.endDate;
+    }
     db.runtimeData.loadDailyBonusData().then((v) => update());
   }
 

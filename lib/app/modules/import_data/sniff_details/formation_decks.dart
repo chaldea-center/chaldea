@@ -42,7 +42,7 @@ class UserFormationDecksPageState extends State<UserFormationDecksPage> {
       children: [
         DividerWithTitle(title: '[${deck.id}] No.${deck.deckNo} ${deck.name}'),
         FormationCard(
-          formation: deck.toFormation(mstData: mstData, userSvts: userSvts),
+          formation: UserDeckEntityX.toFormation(deckInfo: deck.deckInfo, mstData: mstData, userSvts: userSvts),
           userSvtCollections: mstData.userSvtCollection.dict,
           showBond: true,
         ),
@@ -67,7 +67,10 @@ class UserFormationDecksPageState extends State<UserFormationDecksPage> {
 }
 
 extension UserDeckEntityX on UserDeckEntity {
-  BattleTeamFormation toFormation({required MasterDataManager mstData, Map<int, UserServantEntity>? userSvts}) {
+  static BattleTeamFormation toFormation(
+      {required DeckServantEntity? deckInfo,
+      required MasterDataManager mstData,
+      Map<int, UserServantEntity>? userSvts}) {
     final userEquip = mstData.userEquip.firstWhereOrNull((e) => e.id == deckInfo?.userEquipId);
     final svts = deckInfo?.svts ?? [];
     final svtsMap = {for (final svt in svts) svt.id: svt};

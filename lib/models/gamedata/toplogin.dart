@@ -336,6 +336,11 @@ final _$mstMasterSchemes = <String, (Type, DataMaster Function(String mstName))>
     UserEventMissionEntity,
     (mstName) => DataMaster<_IntStr, UserEventMissionEntity>(mstName, UserEventMissionEntity.fromJson)
   ),
+  "userEventMissionConditionDetail": (
+    UserEventMissionCondDetailEntity,
+    (mstName) =>
+        DataMaster<_IntStr, UserEventMissionCondDetailEntity>(mstName, UserEventMissionCondDetailEntity.fromJson)
+  ),
   "userEventPoint": (
     UserEventPointEntity,
     (mstName) => DataMaster<String, UserEventPointEntity>(mstName, UserEventPointEntity.fromJson)
@@ -591,6 +596,8 @@ class MasterDataManager {
   DataMaster<_IntStr, UserGachaEntity> get userGacha => get<_IntStr, UserGachaEntity>();
   DataMaster<_IntStr, UserEventEntity> get userEvent => get<_IntStr, UserEventEntity>();
   DataMaster<_IntStr, UserEventMissionEntity> get userEventMission => get<_IntStr, UserEventMissionEntity>();
+  DataMaster<_IntStr, UserEventMissionCondDetailEntity> get userEventMissionCondDetail =>
+      get<_IntStr, UserEventMissionCondDetailEntity>();
   DataMaster<String, UserEventPointEntity> get userEventPoint => get<String, UserEventPointEntity>();
   DataMaster<_IntStr, UserShopEntity> get userShop => get<_IntStr, UserShopEntity>();
   // event/quest
@@ -1710,6 +1717,37 @@ class UserEventMissionEntity extends DataEntityBase<_IntStr> {
         updatedAt = _toInt(updatedAt),
         createdAt = _toInt(createdAt);
   factory UserEventMissionEntity.fromJson(Map<String, dynamic> data) => _$UserEventMissionEntityFromJson(data);
+}
+
+@JsonSerializable(createToJson: false)
+class UserEventMissionCondDetailEntity extends DataEntityBase<_IntStr> {
+  int userId;
+  int conditionDetailId;
+  int missionTargetId;
+  int progressNum;
+  int updatedAt;
+  int createdAt;
+
+  @override
+  _IntStr get primaryKey => conditionDetailId;
+
+  static _IntStr createPK(int conditionDetailId) => conditionDetailId;
+
+  UserEventMissionCondDetailEntity({
+    dynamic userId,
+    dynamic conditionDetailId,
+    dynamic missionTargetId,
+    dynamic progressNum,
+    dynamic updatedAt,
+    dynamic createdAt,
+  })  : userId = _toInt(userId),
+        conditionDetailId = _toInt(conditionDetailId),
+        missionTargetId = _toInt(missionTargetId),
+        progressNum = _toInt(progressNum),
+        updatedAt = _toInt(updatedAt),
+        createdAt = _toInt(createdAt);
+  factory UserEventMissionCondDetailEntity.fromJson(Map<String, dynamic> data) =>
+      _$UserEventMissionCondDetailEntityFromJson(data);
 }
 
 @JsonSerializable(createToJson: false)

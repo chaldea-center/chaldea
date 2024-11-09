@@ -33,6 +33,8 @@ class _UserEventMissionReceivePageState extends State<UserEventMissionReceivePag
   final notHavingGifts = FilterGroupData<int>();
   final progressFilter = FilterGroupData<MissionProgressType>();
 
+  late final scrollController = ScrollController();
+
   @override
   void initState() {
     super.initState();
@@ -109,7 +111,9 @@ class _UserEventMissionReceivePageState extends State<UserEventMissionReceivePag
           Expanded(
             child: Scrollbar(
               trackVisibility: PlatformU.isDesktopOrWeb,
+              controller: scrollController,
               child: ListView.builder(
+                controller: scrollController,
                 itemCount: missions.length,
                 itemBuilder: (context, index) {
                   return buildEventMission(missions[index]);
@@ -155,9 +159,11 @@ class _UserEventMissionReceivePageState extends State<UserEventMissionReceivePag
       dense: true,
       selected: clearNum > 0 || notClearNum > 0,
       enabled: !(notClearNum == 0 && clearNum == 0),
-      title: Text('[${Transl.enums(mm.type, (v) => v.missionType).l}] ${mm.getDispName()}'),
+      title: Text('[${mm.missions.length} ${Transl.enums(mm.type, (v) => v.missionType).l}] ${mm.getDispName()}'),
       subtitle: Text([mm.startedAt, mm.endedAt, if (mm.closedAt != mm.endedAt) mm.closedAt]
-          .map((e) => e.sec2date().toCustomString(year: false, second: false))
+          .map((e) => mm.id == MasterMission.kExtraMasterMissionId
+              ? e.sec2date().toDateString()
+              : e.sec2date().toCustomString(year: false, second: false))
           .join(' ~ ')),
       trailing: Text('$notClearNum/$clearNum/$achieveNum'),
     );
@@ -189,12 +195,23 @@ class _UserEventMissionReceivePageState extends State<UserEventMissionReceivePag
             : null,
       );
     } else {
-      final progress = getMissionProgress(mission.id);
+      final progressType = getMissionProgress(mission.id);
+      String? progress;
+      for (final cond in mission.conds) {
+        if (cond.missionProgressType == MissionProgressType.clear && cond.condType == CondType.missionConditionDetail) {
+          final condDetailId = cond.targetIds.firstOrNull;
+          if (condDetailId == null) continue;
+          progress = '${runtime.mstData.userEventMissionCondDetail[condDetailId]?.progressNum}/${cond.targetNum}';
+        }
+      }
       child = ListTile(
         title: title,
         subtitle: subtitle,
-        enabled: progress == MissionProgressType.achieve,
-        trailing: Text(progress.name),
+        enabled: progressType == MissionProgressType.achieve,
+        trailing: Text(
+          [progressType.name, if (progress != null) progress].join('\n'),
+          textAlign: TextAlign.end,
+        ),
       );
     }
     return ListTileTheme.merge(

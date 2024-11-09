@@ -610,13 +610,17 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
           Expanded(
             child: Text.rich(
               TextSpan(
-                children: divideList([
-                  for (final flag in flags)
-                    TextSpan(
-                      text: flag.name.replaceAllMapped(RegExp(r'[A-Z]'), (match) => '\u200B${match.group(0)}'),
-                      style: const TextStyle(fontSize: 12),
-                    )
-                ], const TextSpan(text: ' / ')),
+                children: divideList(flags.map((flag) {
+                  String name = flag.name.replaceAllMapped(RegExp(r'[A-Z]'), (match) => '\u200B${match.group(0)}');
+                  if (flag == QuestFlag.userEventDeck) {
+                    final eventDeckNo = questPhase?.extraDetail?.useEventDeckNo;
+                    if (eventDeckNo != null) name += '($eventDeckNo)';
+                  }
+                  return TextSpan(
+                    text: name,
+                    style: const TextStyle(fontSize: 12),
+                  );
+                }), const TextSpan(text: ' / ')),
               ),
               textAlign: TextAlign.center,
             ),

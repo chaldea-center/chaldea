@@ -57,10 +57,10 @@ class FormationCard extends StatelessWidget {
     }
 
     final svt = db.gameData.servantsById[storedData?.svtId];
-
+    final basicSvt = db.gameData.entities[storedData?.svtId];
     Widget svtIcon = GameCardMixin.cardIconBuilder(
       context: context,
-      icon: svt?.ascendIcon(storedData!.limitCount) ?? Atlas.common.emptySvtIcon,
+      icon: svt?.ascendIcon(storedData!.limitCount) ?? basicSvt?.icon ?? Atlas.common.emptySvtIcon,
       // width: 80,
       aspectRatio: 132 / 144,
       text: svtInfo,
@@ -114,9 +114,13 @@ class FormationCard extends StatelessWidget {
       );
     }
 
+    final ce = db.gameData.craftEssencesById[storedData?.ceId];
+    final basicCe = db.gameData.entities[storedData?.ceId];
+
     final ceIcon = GameCardMixin.cardIconBuilder(
       context: context,
-      icon: db.gameData.craftEssencesById[storedData?.ceId]?.extraAssets.equipFace.equip?[storedData!.ceId] ??
+      icon: ce?.extraAssets.equipFace.equip?[storedData!.ceId] ??
+          basicCe?.icon?.replaceFirst('/Faces/', '/EquipFaces/') ??
           Atlas.common.emptyCeIcon,
       // width: 80,
       aspectRatio: 150 / 68,

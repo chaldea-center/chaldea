@@ -79,7 +79,7 @@ class NetworkManagerCN extends NetworkManagerBase<FRequestCN, AutoLoginDataCN> {
     print('Response headers: ${rawResp.headers.toString().trim()}');
     request.rawRequest = rawResp.requestOptions;
     request.rawResponse = rawResp;
-    buffer.clear();
+    // buffer.clear();
     // buffer.writeln(rawResp.headers);
     final _jsonData = FateTopLogin.parseToMap(rawResp.data);
     // final _jsonData = jsonEncode();

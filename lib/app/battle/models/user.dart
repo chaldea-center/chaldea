@@ -256,7 +256,10 @@ class PlayerSvtData {
 
   static Future<PlayerSvtData> fromStoredData(final SvtSaveData? storedData) async {
     if (storedData == null) return PlayerSvtData.base();
-    final svt = db.gameData.servantsById[storedData.svtId];
+    Servant? svt = db.gameData.servantsById[storedData.svtId];
+    if (svt == null && storedData.svtId != null && storedData.svtId != 0) {
+      svt = await showEasyLoading(() => AtlasApi.svt(storedData.svtId!));
+    }
     final PlayerSvtData playerSvtData = PlayerSvtData.base()
       ..svt = svt
       ..limitCount = storedData.limitCount
@@ -316,8 +319,9 @@ class PlayerSvtData {
       }
     }
 
-    if (storedData.ceId != null) {
+    if (storedData.ceId != null && storedData.ceId != 0) {
       playerSvtData.ce = db.gameData.craftEssencesById[storedData.ceId];
+      playerSvtData.ce ??= await showEasyLoading(() => AtlasApi.ce(storedData.ceId!));
     }
 
     return playerSvtData;

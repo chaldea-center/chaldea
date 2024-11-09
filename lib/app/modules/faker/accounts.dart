@@ -164,34 +164,34 @@ class _FakerAccountsPageState extends State<FakerAccountsPage> {
       title: Text('[${user.serverName}] ${user.userGame?.name}'),
       subtitle: Text(user.userGame?.friendCode ?? 'null'),
       contentPadding: const EdgeInsetsDirectional.only(start: 16),
-      trailing: sorting
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          TimerUpdate(
+            duration: Duration(seconds: 60),
+            builder: (context, _) => user.userGame == null
+                ? SizedBox.shrink()
+                : Text(
+                    '${user.userGame?.calCurAp()}/${user.userGame?.actMax}',
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+          ),
+          IconButton(
+            onPressed: () async {
+              await router.pushPage(FakerAccountEditPage(user: user));
+              if (mounted) setState(() {});
+            },
+            icon: const Icon(Icons.edit),
+            iconSize: 20,
+          ),
+        ],
+      ),
+      onTap: sorting
           ? null
-          : Row(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                TimerUpdate(
-                  duration: Duration(seconds: 60),
-                  builder: (context, _) => user.userGame == null
-                      ? SizedBox.shrink()
-                      : Text(
-                          '${user.userGame?.calCurAp()}/${user.userGame?.actMax}',
-                          style: Theme.of(context).textTheme.bodySmall,
-                        ),
-                ),
-                IconButton(
-                  onPressed: () async {
-                    await router.pushPage(FakerAccountEditPage(user: user));
-                    if (mounted) setState(() {});
-                  },
-                  icon: const Icon(Icons.edit),
-                  iconSize: 20,
-                ),
-              ],
-            ),
-      onTap: () async {
-        router.pushPage(FakeGrandOrder(user: user));
-      },
+          : () async {
+              router.pushPage(FakeGrandOrder(user: user));
+            },
     );
   }
 }

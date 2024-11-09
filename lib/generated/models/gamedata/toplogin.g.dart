@@ -368,6 +368,16 @@ UserEventMissionEntity _$UserEventMissionEntityFromJson(Map json) => UserEventMi
       createdAt: json['createdAt'],
     );
 
+UserEventMissionCondDetailEntity _$UserEventMissionCondDetailEntityFromJson(Map json) =>
+    UserEventMissionCondDetailEntity(
+      userId: json['userId'],
+      conditionDetailId: json['conditionDetailId'],
+      missionTargetId: json['missionTargetId'],
+      progressNum: json['progressNum'],
+      updatedAt: json['updatedAt'],
+      createdAt: json['createdAt'],
+    );
+
 UserEventPointEntity _$UserEventPointEntityFromJson(Map json) => UserEventPointEntity(
       userId: json['userId'],
       eventId: json['eventId'],
