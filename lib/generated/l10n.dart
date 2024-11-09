@@ -5200,6 +5200,17 @@ class S {
     );
   }
 
+  /// `Include event effect`
+  String get include_event_effect {
+    return Intl.message(
+      'Include event effect',
+      name: 'include_event_effect',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Agility`
   String get info_agility {
     return Intl.message(

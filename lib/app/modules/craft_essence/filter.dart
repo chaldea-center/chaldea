@@ -121,6 +121,15 @@ class _CraftFilterPageState extends FilterPageState<CraftFilterData, CraftFilter
           },
         ),
         EffectFilterUtil.buildTraitFilter(context, filterData.targetTrait, update),
+        FilterGroup<bool>(
+          title: Text(S.current.event),
+          options: [true, false],
+          values: filterData.isEventEffect,
+          optionBuilder: (v) => Text(v ? S.current.event : '${Transl.special.not()} ${S.current.event}'),
+          onFilterChanged: (value, _) {
+            update();
+          },
+        ),
         FilterGroup<SkillEffect>(
           title: Text(S.current.effect_type),
           options: _getValidEffects(SkillEffect.kOthers),

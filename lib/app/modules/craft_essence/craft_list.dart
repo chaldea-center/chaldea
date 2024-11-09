@@ -217,6 +217,9 @@ class CraftListPageState extends State<CraftListPage> with SearchableListState<C
       List<BaseFunction> funcs = [
         for (final skill in ce.skills) ...skill.filteredFunction(includeTrigger: true),
       ];
+      if (filterData.isEventEffect.isNotEmpty) {
+        funcs.retainWhere((e) => filterData.isEventEffect.matchOne(e.isEventOnlyEffect));
+      }
       if (filterData.effectTarget.options.isNotEmpty) {
         funcs.retainWhere((func) {
           return filterData.effectTarget.matchOne(EffectTarget.fromFunc(func.funcTargetType));

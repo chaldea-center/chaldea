@@ -67,7 +67,6 @@ class SkillEffect {
     upArts,
     upBuster,
     upDamage,
-    upDamageEvent,
     addDamage,
     upCriticaldamage,
     upCriticalpoint,
@@ -215,21 +214,21 @@ class SkillEffect {
   /// attack side
   static SkillEffect upAtk = SkillEffect(
     'upAtk',
-    buffTypes: [BuffType.upAtk, BuffType.upCommandatk],
+    buffTypes: [BuffType.upAtk],
   );
   static SkillEffect upQuick = SkillEffect(
     'upQuick',
-    buffTypes: [BuffType.upCommandall],
+    buffTypes: [BuffType.upCommandall, BuffType.upCommandatk, BuffType.upCommandstar, BuffType.upCommandnp],
     validate: (func) => func.buffs.any((buff) => buff.ckSelfIndv.any((trait) => trait.name == Trait.cardQuick)),
   );
   static SkillEffect upArts = SkillEffect(
     'upArts',
-    buffTypes: [BuffType.upCommandall],
+    buffTypes: [BuffType.upCommandall, BuffType.upCommandatk, BuffType.upCommandstar, BuffType.upCommandnp],
     validate: (func) => func.buffs.any((buff) => buff.ckSelfIndv.any((trait) => trait.name == Trait.cardArts)),
   );
   static SkillEffect upBuster = SkillEffect(
     'upBuster',
-    buffTypes: [BuffType.upCommandall],
+    buffTypes: [BuffType.upCommandall, BuffType.upCommandatk, BuffType.upCommandstar, BuffType.upCommandnp],
     validate: (func) => func.buffs.any((buff) => buff.ckSelfIndv.any((trait) => trait.name == Trait.cardBuster)),
   );
   // static SkillEffect upExtraAttack=SkillEffect(
@@ -240,31 +239,6 @@ class SkillEffect {
   static SkillEffect upDamage = SkillEffect(
     'upDamage',
     buffTypes: [BuffType.upDamage, BuffType.upDamageIndividuality, BuffType.upDamageIndividualityActiveonly],
-    validate: (func) {
-      if (func is NiceFunction) {
-        final vals = func.svals.firstOrNull;
-        if ((vals?.EventId ?? 0) != 0) return false;
-        if (func.funcquestTvals.any((e) => e.isEventField)) return false;
-      }
-      return true;
-    },
-  );
-  static SkillEffect upDamageEvent = SkillEffect(
-    'upDamageEvent',
-    buffTypes: [
-      BuffType.upDamage,
-      BuffType.upDamageIndividuality,
-      BuffType.upDamageIndividualityActiveonly,
-      BuffType.upDamageEventPoint
-    ],
-    validate: (func) {
-      if (func is NiceFunction) {
-        final vals = func.svals.firstOrNull;
-        if ((vals?.EventId ?? 0) != 0) return true;
-        if (func.funcquestTvals.any((e) => e.isEventField)) return true;
-      }
-      return false;
-    },
   );
   static SkillEffect addDamage = SkillEffect._buff('addDamage', BuffType.addDamage);
   static SkillEffect upCriticaldamage = SkillEffect._buff('upCriticaldamage', BuffType.upCriticaldamage);

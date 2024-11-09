@@ -72,7 +72,7 @@ class _ItemStatTabState extends State<ItemStatTab> {
             ],
           ),
         ),
-        SafeArea(child: buttonBar),
+        SafeArea(child: Padding(padding: EdgeInsets.only(top: 4), child: buttonBar)),
       ],
     );
   }
@@ -91,7 +91,7 @@ class _ItemStatTabState extends State<ItemStatTab> {
             return Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
               child: ConstrainedBox(
-                constraints: const BoxConstraints(minHeight: 32),
+                constraints: const BoxConstraints(minHeight: 24),
                 child: Text([
                   S.current.ascension_short,
                   S.current.active_skill_short,

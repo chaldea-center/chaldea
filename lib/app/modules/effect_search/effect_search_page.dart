@@ -163,6 +163,7 @@ class _EffectSearchPageState extends State<EffectSearchPage>
         for (final skill in card.skills) ..._filterFunc(skill),
       ];
     }
+    functions.retainWhere((e) => filterData.isEventEffect.matchOne(e.isEventOnlyEffect));
     functions.retainWhere((func) => filterData.effectTarget.matchOne(func.funcTargetType,
         compares: {null: (value, option) => BuffFuncFilterData.specialFuncTarget.contains(value)}));
     functions.retainWhere((func) => EffectFilterUtil.checkFuncTraits(func, filterData.targetTrait));

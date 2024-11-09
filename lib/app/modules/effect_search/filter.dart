@@ -26,12 +26,23 @@ class BuffFuncFilterData with FilterDataMixin {
   final funcType = FilterGroupData<FuncType>();
   final buffType = FilterGroupData<BuffType>();
   final targetTrait = FilterGroupData<int>();
+  final isEventEffect = FilterGroupData<bool>();
 
   BuffFuncFilterData();
 
   @override
-  List<FilterGroupData> get groups =>
-      [rarity, svtClass, region, effectScope, effectTarget, funcType, buffType, funcAndBuff, targetTrait];
+  List<FilterGroupData> get groups => [
+        rarity,
+        svtClass,
+        region,
+        effectScope,
+        effectTarget,
+        funcType,
+        buffType,
+        funcAndBuff,
+        targetTrait,
+        isEventEffect
+      ];
 
   @override
   void reset() {
@@ -172,6 +183,15 @@ class _BuffFuncFilterState extends FilterPageState<BuffFuncFilterData, BuffFuncF
         ),
         EffectFilterUtil.buildTraitFilter(context, filterData.targetTrait, update,
             addTraits: [Trait.cardExtra, Trait.faceCard, Trait.cardNP]),
+        FilterGroup<bool>(
+          title: Text(S.current.event),
+          options: [true, false],
+          values: filterData.isEventEffect,
+          optionBuilder: (v) => Text(v ? S.current.event : '${Transl.special.not()} ${S.current.event}'),
+          onFilterChanged: (value, _) {
+            update();
+          },
+        ),
         const Divider(height: 16),
         FilterGroup<dynamic>(
           options: const [],

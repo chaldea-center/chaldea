@@ -440,6 +440,7 @@ class CraftFilterData with FilterDataMixin {
   final effectTarget = FilterGroupData<EffectTarget>();
   final targetTrait = FilterGroupData<int>();
   final effectType = FilterGroupData<SkillEffect>();
+  final isEventEffect = FilterGroupData<bool>();
 
   CraftFilterData({
     this.useGrid = false,
@@ -462,6 +463,7 @@ class CraftFilterData with FilterDataMixin {
         effectTarget,
         targetTrait,
         effectType,
+        isEventEffect,
       ];
 
   @override

@@ -592,6 +592,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "import_screenshot_update_items": MessageLookupByLibrary.simpleMessage("Update Items"),
         "import_source_file": MessageLookupByLibrary.simpleMessage("Import Source File"),
         "import_userdata_more": MessageLookupByLibrary.simpleMessage("More import methods"),
+        "include_event_effect": MessageLookupByLibrary.simpleMessage("Include event effect"),
         "info_agility": MessageLookupByLibrary.simpleMessage("Agility"),
         "info_bond_points": MessageLookupByLibrary.simpleMessage("Bond Points"),
         "info_bond_points_single": MessageLookupByLibrary.simpleMessage("Point"),

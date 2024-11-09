@@ -435,6 +435,15 @@ extension BaseFunctionX on BaseFunction {
     if (tvals != null && tvals.isNotEmpty) return tvals;
     return overWriteTvalsList;
   }
+
+  bool get isEventOnlyEffect {
+    if (this is NiceFunction) {
+      final vals = (this as NiceFunction).svals.firstOrNull;
+      if ((vals?.EventId ?? 0) != 0) return true;
+    }
+    if (funcquestTvals.any((e) => e.isEventField)) return true;
+    return false;
+  }
 }
 
 @JsonSerializable()

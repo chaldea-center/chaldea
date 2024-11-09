@@ -565,6 +565,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "import_screenshot_update_items": MessageLookupByLibrary.simpleMessage("更新素材"),
         "import_source_file": MessageLookupByLibrary.simpleMessage("導入源資料"),
         "import_userdata_more": MessageLookupByLibrary.simpleMessage("更多導入方式"),
+        "include_event_effect": MessageLookupByLibrary.simpleMessage("包括活动效果"),
         "info_agility": MessageLookupByLibrary.simpleMessage("敏捷"),
         "info_bond_points": MessageLookupByLibrary.simpleMessage("羈絆點數"),
         "info_bond_points_single": MessageLookupByLibrary.simpleMessage("點數"),
