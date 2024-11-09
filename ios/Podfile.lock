@@ -54,13 +54,13 @@ PODS:
   - fluttertoast (0.0.2):
     - Flutter
     - Toast
-  - Google-Mobile-Ads-SDK (11.2.0):
+  - Google-Mobile-Ads-SDK (11.10.0):
     - GoogleUserMessagingPlatform (>= 1.1)
-  - google_mobile_ads (5.1.0):
+  - google_mobile_ads (5.2.0):
     - Flutter
-    - Google-Mobile-Ads-SDK (~> 11.2.0)
+    - Google-Mobile-Ads-SDK (~> 11.10.0)
     - webview_flutter_wkwebview
-  - GoogleUserMessagingPlatform (2.6.0)
+  - GoogleUserMessagingPlatform (2.7.0)
   - image_gallery_saver (2.0.2):
     - Flutter
   - just_audio (0.0.1):
@@ -201,9 +201,9 @@ SPEC CHECKSUMS:
   flutter_mailer: 2ef5a67087bc8c6c4cefd04a178bf1ae2c94cd83
   flutter_timezone: ffb07bdad3c6276af8dada0f11978d8a1f8a20bb
   fluttertoast: e9a18c7be5413da53898f660530c56f35edfba9c
-  Google-Mobile-Ads-SDK: 5a6d005a6cb5b5e8f4c7b69ca05cdea79c181139
-  google_mobile_ads: 9379c80fdfa9988fb0e105a407890ff8deb3cf86
-  GoogleUserMessagingPlatform: 0c3a08353e53ce8c2feab7addd0b652cde522450
+  Google-Mobile-Ads-SDK: 13e6e98edfd78ad8d8a791edb927658cc260a56f
+  google_mobile_ads: 2a538d8e42b1813809782792e48f8cf4374c2180
+  GoogleUserMessagingPlatform: a8b56893477f67212fbc8411c139e61d463349f5
   image_gallery_saver: cb43cc43141711190510e92c460eb1655cd343cb
   just_audio: baa7252489dbcf47a4c7cc9ca663e9661c99aafa
   package_info_plus: c0502532a26c7662a62a356cebe2692ec5fe4ec4

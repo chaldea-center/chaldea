@@ -29,6 +29,7 @@ dependencies:
 
   android_id: ^0.4.0
   archive: ^3.4.9
+    # git: https://github.com/brendan-duncan/archive.git
   args: ^2.6.0
   auto_size_text: ^3.0.0
   cached_network_image: ^3.3.0
@@ -54,7 +55,7 @@ dependencies:
   flutter_cache_manager: ^3.3.1
   flutter_easyloading: ^3.0.5
   flutter_hooks: ^0.20.1
-  flutter_local_notifications: ^17.2.4
+  flutter_local_notifications: ^18.0.0
   flutter_markdown: ^0.7.4
   # flutter_qjs: ^0.3.7
   flutter_js: ^0.8.1
@@ -99,7 +100,7 @@ dependencies:
   smooth_page_indicator: ^1.1.0
   string_validator: ^1.0.0
   table_sticky_headers: ^2.0.1
-  timezone: ^0.9.4
+  timezone: ^0.9.0
   tray_manager: ^0.2.2
   tuple: ^2.0.1
   url_launcher: ^6.3.1
@@ -112,7 +113,7 @@ dependencies:
   worker_manager: ^7.2.2
   window_manager: ^0.4.3
   countly_flutter_np: ^24.1.1
-  google_mobile_ads: 5.1.0  # 5.2.0 requires Xcode >=15.3
+  google_mobile_ads: ^5.2.0
   admanager_web: ^0.0.4
 
 dev_dependencies:
