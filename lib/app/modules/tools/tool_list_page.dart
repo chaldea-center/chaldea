@@ -2,12 +2,14 @@ import 'package:flutter/foundation.dart';
 
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/generated/l10n.dart';
+import 'package:chaldea/models/db.dart';
 import 'package:chaldea/packages/app_info.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../exp/master_exp_page.dart';
 import '_hidden.dart';
 import 'aa_explorer_preview.dart';
+import 'admin_tools.dart';
 import 'bond_table.dart';
 import 'chara_figure_marker.dart';
 import 'cipher_test.dart';
@@ -57,6 +59,8 @@ class ToolListPage extends StatelessWidget {
               buildOne('Extra CharaImage Marker', CharaFigureMarker.image(), supportWeb: false),
               buildOne('AA Explorer', const AtlasExplorerPreview(), supportWeb: false),
               buildOne('Ciphers', const CipherTestPage()),
+              if (db.settings.secrets.user?.isAdmin == true)
+                buildOne('Admin Tools', AdminToolsPage(), supportWeb: false),
               if (!kIsWeb) buildOne('TreeSize', const TreeSizePage()),
               if (AppInfo.isDebugDevice) buildOne('Y(^o^)Y', const HiddenToolsPage()),
             ],
