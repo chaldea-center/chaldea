@@ -721,7 +721,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
         AtlasApi.questPhaseCache(battleOption.questId, battleOption.questPhase);
     final formation = mstData.userDeck[battleOption.deckId];
     final eventFormation = mstData.userEventDeck[
-        UserEventDeckEntity.createPK(quest?.event?.id ?? 0, questPhase?.extraDetail?.useEventDeckNo ?? 0)];
+        UserEventDeckEntity.createPK(quest?.logicEvent?.id ?? 0, questPhase?.extraDetail?.useEventDeckNo ?? 0)];
     final userQuest = mstData.userQuest[battleOption.questId];
     final now = DateTime.now().timestamp;
     List<(Item, UserItemEntity)> teapots = [
@@ -1092,7 +1092,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
           value: battleOption.useEventDeck,
           tristate: true,
           title: Text("${S.current.support_servant_short} - Use Event Deck"),
-          subtitle: Text("Supposed: ${db.gameData.quests[battleOption.questId]?.event != null ? 'Yes' : 'No'}"),
+          subtitle: Text("Supposed: ${db.gameData.quests[battleOption.questId]?.logicEvent != null ? 'Yes' : 'No'}"),
           onChanged: (v) {
             runtime.lockTask(() {
               setState(() {
