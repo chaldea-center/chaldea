@@ -534,6 +534,15 @@ UserDeckEntity _$UserDeckEntityFromJson(Map json) => UserDeckEntity(
       cost: json['cost'],
     );
 
+Map<String, dynamic> _$UserDeckEntityToJson(UserDeckEntity instance) => <String, dynamic>{
+      'id': instance.id,
+      'userId': instance.userId,
+      'deckNo': instance.deckNo,
+      'name': instance.name,
+      'deckInfo': instance.deckInfo?.toJson(),
+      'cost': instance.cost,
+    };
+
 UserEventDeckEntity _$UserEventDeckEntityFromJson(Map json) => UserEventDeckEntity(
       userId: json['userId'],
       eventId: json['eventId'],
@@ -548,11 +557,19 @@ DeckServantEntity _$DeckServantEntityFromJson(Map json) => DeckServantEntity(
           ?.map((e) => DeckServantData.fromJson(Map<String, dynamic>.from(e as Map)))
           .toList(),
       userEquipId: json['userEquipId'],
+      waveSvts: json['waveSvts'] as List<dynamic>?,
     );
+
+Map<String, dynamic> _$DeckServantEntityToJson(DeckServantEntity instance) => <String, dynamic>{
+      'svts': instance.svts.map((e) => e.toJson()).toList(),
+      'userEquipId': instance.userEquipId,
+      'waveSvts': instance.waveSvts,
+    };
 
 DeckServantData _$DeckServantDataFromJson(Map json) => DeckServantData(
       id: json['id'],
       userSvtId: json['userSvtId'],
+      userId: json['userId'],
       svtId: json['svtId'],
       userSvtEquipIds: json['userSvtEquipIds'],
       svtEquipIds: json['svtEquipIds'],
@@ -561,6 +578,29 @@ DeckServantData _$DeckServantDataFromJson(Map json) => DeckServantData(
       followerType: json['followerType'],
       initPos: json['initPos'],
     );
+
+Map<String, dynamic> _$DeckServantDataToJson(DeckServantData instance) {
+  final val = <String, dynamic>{
+    'id': instance.id,
+    'userSvtId': instance.userSvtId,
+  };
+
+  void writeNotNull(String key, dynamic value) {
+    if (value != null) {
+      val[key] = value;
+    }
+  }
+
+  writeNotNull('userId', instance.userId);
+  writeNotNull('svtId', instance.svtId);
+  val['userSvtEquipIds'] = instance.userSvtEquipIds;
+  writeNotNull('svtEquipIds', instance.svtEquipIds);
+  val['isFollowerSvt'] = instance.isFollowerSvt;
+  val['npcFollowerSvtId'] = instance.npcFollowerSvtId;
+  writeNotNull('followerType', instance.followerType);
+  writeNotNull('initPos', instance.initPos);
+  return val;
+}
 
 BattleEntity _$BattleEntityFromJson(Map json) => BattleEntity(
       battleInfo: json['battleInfo'] == null

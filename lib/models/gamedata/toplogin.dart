@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
+
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/models/gamedata/skill.dart';
 import 'package:chaldea/packages/logger.dart';
@@ -221,7 +223,11 @@ class FateTopLogin {
       } catch (e) {} // ignore: empty_catches
     }
     if (contents == null) {
-      throw const FormatException("Unknown byte format, gzip or raw deflate or plain utf8");
+      if (kIsWeb) {
+        throw const FormatException("Unknown byte format, web doesn't support gzip/deflate");
+      } else {
+        throw const FormatException("Unknown byte format, gzip or raw deflate or plain utf8");
+      }
     }
     return fromBase64(contents);
   }
@@ -2211,12 +2217,13 @@ class UserAccountLinkageEntity extends DataEntityBase<int> {
   factory UserAccountLinkageEntity.fromJson(Map<String, dynamic> data) => _$UserAccountLinkageEntityFromJson(data);
 }
 
-@JsonSerializable(createToJson: false)
+@JsonSerializable(createToJson: true)
 class UserDeckEntity extends DataEntityBase<int> {
   int id;
   int userId;
   int deckNo;
   String name;
+  // String deskInfoJson; // CN
   DeckServantEntity? deckInfo;
   int cost;
 
@@ -2239,6 +2246,7 @@ class UserDeckEntity extends DataEntityBase<int> {
         cost = _toInt(cost);
 
   factory UserDeckEntity.fromJson(Map<String, dynamic> data) => _$UserDeckEntityFromJson(data);
+  Map<String, dynamic> toJson() => _$UserDeckEntityToJson(this);
 }
 
 @JsonSerializable(createToJson: false)
@@ -2265,29 +2273,31 @@ class UserEventDeckEntity extends DataEntityBase<String> {
   factory UserEventDeckEntity.fromJson(Map<String, dynamic> data) => _$UserEventDeckEntityFromJson(data);
 }
 
-@JsonSerializable(createToJson: false)
+@JsonSerializable(createToJson: true)
 class DeckServantEntity {
   List<DeckServantData> svts;
   int userEquipId;
-  //  List<DeckWaveServantData> waveSvts;
+  List waveSvts; // int wave; int[] uniqueIds;
 
   DeckServantEntity({
     List<DeckServantData>? svts,
     dynamic userEquipId,
+    List? waveSvts,
   })  : svts = svts ?? [],
-        userEquipId = _toInt(userEquipId);
+        userEquipId = _toInt(userEquipId),
+        waveSvts = waveSvts ?? [];
   factory DeckServantEntity.fromJson(Map<String, dynamic> data) => _$DeckServantEntityFromJson(data);
+  Map<String, dynamic> toJson() => _$DeckServantEntityToJson(this);
 }
 
-@JsonSerializable(createToJson: false)
+@JsonSerializable(createToJson: true, includeIfNull: false)
 class DeckServantData {
   int id;
   int userSvtId;
+  int? userId; // CN
+  int? svtId; // for non-user svt
   List<int> userSvtEquipIds;
-
-  // for non-user svt
-  int? svtId;
-  List<int>? svtEquipIds;
+  List<int>? svtEquipIds; // for non-user svt
 
   bool isFollowerSvt;
   int npcFollowerSvtId;
@@ -2297,6 +2307,7 @@ class DeckServantData {
   DeckServantData({
     dynamic id,
     dynamic userSvtId,
+    dynamic userId,
     dynamic svtId,
     dynamic userSvtEquipIds,
     dynamic svtEquipIds,
@@ -2306,6 +2317,7 @@ class DeckServantData {
     dynamic initPos,
   })  : id = _toInt(id),
         userSvtId = _toInt(userSvtId),
+        userId = _toIntNull(userId),
         svtId = _toIntNull(svtId),
         userSvtEquipIds = _toIntList(userSvtEquipIds),
         svtEquipIds = svtEquipIds == null ? null : _toIntList(svtEquipIds),
@@ -2314,6 +2326,7 @@ class DeckServantData {
         followerType = _toIntNull(followerType),
         initPos = _toIntNull(initPos);
   factory DeckServantData.fromJson(Map<String, dynamic> data) => _$DeckServantDataFromJson(data);
+  Map<String, dynamic> toJson() => _$DeckServantDataToJson(this);
 }
 
 @JsonSerializable(createToJson: false)

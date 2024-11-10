@@ -398,6 +398,57 @@ class FakerAgentCN extends FakerAgent<FRequestCN, AutoLoginDataCN, NetworkManage
   }
 
   @override
+  Future<FResponse> deckSetup({required int64_t activeDeckId, required UserDeckEntity userDeck}) {
+    return _acPhp(
+      key: 'decksetup',
+      nid: 'deck_setup',
+      params2: {
+        "activeDeckId": activeDeckId,
+        "userDeck": jsonEncode([userDeck]),
+      },
+    );
+  }
+
+  @override
+  Future<FResponse> eventDeckSetup({
+    required UserEventDeckEntity userEventDeck,
+    required int32_t eventId,
+    required int32_t questId,
+    required int32_t phase,
+    int32_t restartWave = 0,
+  }) {
+    return _acPhp(
+      key: 'eventdecksetup',
+      nid: 'event_deck_setup',
+      params1: {
+        "deckInfo": jsonEncode(userEventDeck.deckInfo),
+      },
+      params3: {
+        "eventId": eventId,
+        "questId": questId,
+        "phase": phase,
+        // "restartWave":restartWave,
+      },
+    );
+  }
+
+  @override
+  Future<FResponse> battleScenario(
+      {required int32_t questId, required int32_t questPhase, required List<int32_t> routeSelect}) {
+    return _acPhp(
+      key: 'battlescenario',
+      nid: 'battle_scenario',
+      params2: {
+        "routeSelect": jsonEncode(routeSelect),
+      },
+      params4: {
+        "questId": questId,
+        "questPhase": questPhase,
+      },
+    );
+  }
+
+  @override
   Future<FResponse> battleSetup({
     required int32_t questId,
     required int32_t questPhase,

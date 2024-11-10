@@ -224,7 +224,9 @@ class FakerRuntime {
       await _ensureEnoughApItem(quest: questPhaseEntity, option: battleOption);
 
       update();
-
+      if (questPhaseEntity.flags.contains(QuestFlag.noBattle)) {
+        throw SilentException('DO NOT loop noBattle quest');
+      }
       final setupResp = await agent.battleSetupWithOptions(battleOption);
       update();
 

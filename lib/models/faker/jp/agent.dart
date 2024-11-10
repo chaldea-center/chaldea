@@ -208,6 +208,41 @@ class FakerAgentJP extends FakerAgent<FRequestJP, AutoLoginDataJP, NetworkManage
   }
 
   @override
+  Future<FResponse> deckSetup({required int64_t activeDeckId, required UserDeckEntity userDeck}) {
+    final request = FRequestJP(network: network, path: '/deck/setup');
+    request.addFieldInt32("activeDeckId", activeDeckId);
+    request.addFieldStr("userDeck", network.catMouseGame.encodeMsgpackBase64([userDeck]));
+    return request.beginRequestAndCheckError('battle_scenario');
+  }
+
+  @override
+  Future<FResponse> eventDeckSetup({
+    required UserEventDeckEntity userEventDeck,
+    required int32_t eventId,
+    required int32_t questId,
+    required int32_t phase,
+    int32_t restartWave = 0,
+  }) {
+    final request = FRequestJP(network: network, path: '/eventDeck/setup');
+    request.addFieldInt32("restartWave", restartWave);
+    request.addFieldInt32("eventId", eventId);
+    request.addFieldInt32("questId", questId);
+    request.addFieldInt32("phase", phase);
+    request.addFieldStr("deckInfo", jsonEncode(userEventDeck.deckInfo!));
+    return request.beginRequestAndCheckError('event_deck_setup');
+  }
+
+  @override
+  Future<FResponse> battleScenario(
+      {required int32_t questId, required int32_t questPhase, required List<int32_t> routeSelect}) {
+    final request = FRequestJP(network: network, path: '/battle/scenario');
+    request.addFieldInt32("questId", questId);
+    request.addFieldInt32("questPhase", questPhase);
+    request.addFieldStr("routeSelect", jsonEncode(routeSelect));
+    return request.beginRequestAndCheckError('battle_scenario');
+  }
+
+  @override
   Future<FResponse> battleSetup({
     required int32_t questId,
     required int32_t questPhase,

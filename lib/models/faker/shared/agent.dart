@@ -66,6 +66,19 @@ abstract class FakerAgent<TRequest extends FRequestBase, TUser extends AutoLogin
 
   Future<FResponse> userStatusFlagSet({required List<int32_t> onFlagNumbers, required List<int32_t> offFlagNumbers});
 
+  Future<FResponse> deckSetup({required int64_t activeDeckId, required UserDeckEntity userDeck});
+
+  Future<FResponse> eventDeckSetup({
+    required UserEventDeckEntity userEventDeck,
+    required int32_t eventId,
+    required int32_t questId,
+    required int32_t phase,
+    int32_t restartWave = 0,
+  });
+
+  Future<FResponse> battleScenario(
+      {required int32_t questId, required int32_t questPhase, required List<int32_t> routeSelect});
+
   Future<FResponse> battleSetup({
     required int32_t questId,
     required int32_t questPhase,
@@ -186,6 +199,17 @@ abstract class FakerAgent<TRequest extends FRequestBase, TUser extends AutoLogin
 
       campaignItems.sort2((e) => e.$2.endedAt);
       campaignItemId = campaignItems.first.$1.itemId;
+    }
+
+    if (questPhaseEntity.flags.contains(QuestFlag.noBattle)) {
+      if (questPhaseEntity.stages.isNotEmpty) {
+        throw SilentException('Has noBattle flag, but does have ${questPhaseEntity.stages.length} stage(s).');
+      }
+      return battleScenario(
+        questId: questPhaseEntity.id,
+        questPhase: questPhaseEntity.phase,
+        routeSelect: [],
+      );
     }
 
     int activeDeckId, followerId, followerClassId, followerType, followerSupportDeckId;
