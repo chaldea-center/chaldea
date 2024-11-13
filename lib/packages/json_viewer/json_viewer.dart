@@ -77,8 +77,10 @@ class JsonViewer extends StatelessWidget {
       return const Text('{}');
     } else if (content is List) {
       return JsonArrayViewer(content, notRoot: false, defaultOpen: defaultOpen);
-    } else {
+    } else if (content is Map) {
       return JsonObjectViewer(content, notRoot: false, defaultOpen: defaultOpen);
+    } else {
+      return Text('${content.runtimeType}: $content');
     }
   }
 }

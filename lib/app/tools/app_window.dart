@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/foundation.dart';
 
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -53,7 +55,9 @@ class AppWindowUtil {
       ).showDialog(kAppKey.currentContext!);
       if (confirm != true) return;
     }
-    windowManager.destroy();
+    await windowManager.setPreventClose(false);
+    await windowManager.destroy();
+    exit(0);
   }
 
   static Future<void> setAlwaysOnTop([bool? onTop]) async {

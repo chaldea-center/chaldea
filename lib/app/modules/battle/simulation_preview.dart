@@ -953,17 +953,23 @@ class _SimulationPreviewState extends State<SimulationPreview> {
     }
     BattleShareData? data;
     BattleQuestInfo? questInfo;
-    if (uri.queryParameters.containsKey('data')) {
-      data = BattleShareData.parseUri(uri);
-    } else {
-      final teamId = int.tryParse(uri.queryParameters['id'] ?? "");
-      if (teamId != null && teamId > 0) {
-        final encoded = await showEasyLoading(() => ChaldeaWorkerApi.team(teamId));
-        if (encoded != null) {
-          data = encoded.parse();
-          questInfo = encoded.questInfo;
+    try {
+      if (uri.queryParameters.containsKey('data')) {
+        data = BattleShareData.parseUri(uri);
+      } else {
+        final teamId = int.tryParse(uri.queryParameters['id'] ?? "");
+        if (teamId != null && teamId > 0) {
+          final encoded = await showEasyLoading(() => ChaldeaWorkerApi.team(teamId));
+          if (encoded != null) {
+            data = encoded.parse();
+            questInfo = encoded.questInfo;
+          }
         }
       }
+    } catch (e, s) {
+      EasyLoading.showError('Parse data failed: $e');
+      logger.e('parse shared team data failed', e, s);
+      return;
     }
     questInfo ??= BattleQuestInfo.fromQuery(uri.queryParameters);
     if (questInfo != null) {

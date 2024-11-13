@@ -238,10 +238,13 @@ class _SettingsPageState extends State<SettingsPage> {
                   router.popDetailAndPush(child: DisplaySettingPage());
                 },
               ),
-              if (kIsWeb)
+              if (kIsWeb || kDebugMode)
                 ListTile(
                   title: Text(S.current.web_renderer),
-                  subtitle: Text(S.current.restart_to_apply_changes),
+                  subtitle: Text([
+                    S.current.restart_to_apply_changes,
+                    Language.isZH ? 'html渲染模式将于2025年初弃用' : 'html renderer will be deprecated in early 2025',
+                  ].join('\n')),
                   trailing: DropdownButton<WebRenderMode>(
                     value: db.runtimeData.webRendererCanvasKit ??
                         (kPlatformMethods.rendererCanvasKit ? WebRenderMode.canvaskit : WebRenderMode.html),

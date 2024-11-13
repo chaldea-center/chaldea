@@ -250,18 +250,22 @@ class _Database {
     }
 
     Timer.periodic(const Duration(seconds: 10), (timer) {
-      final _userHash = _getHash(userData);
-      final _settingHash = _getHash(settings);
-      if (_lastUserHash != null && _lastSettingHash != null) {
-        if (_userHash != _lastUserHash) {
-          saveUserData();
+      try {
+        final _userHash = _getHash(userData);
+        final _settingHash = _getHash(settings);
+        if (_lastUserHash != null && _lastSettingHash != null) {
+          if (_userHash != _lastUserHash) {
+            saveUserData();
+          }
+          if (_settingHash != _lastSettingHash) {
+            saveSettings();
+          }
         }
-        if (_settingHash != _lastSettingHash) {
-          saveSettings();
-        }
+        _lastUserHash = _userHash;
+        _lastSettingHash = _settingHash;
+      } catch (e, s) {
+        logger.e('save loop failed', e, s);
       }
-      _lastUserHash = _userHash;
-      _lastSettingHash = _settingHash;
     });
   }
 

@@ -15,13 +15,15 @@ import '../../common/builders.dart';
 enum _QuestLv {
   all,
   lv90,
-  lv90plus,
+  lv90p,
+  lv90pp,
   ;
 
   String get shownName => switch (this) {
         all => S.current.general_all,
         lv90 => "Lv.90",
-        lv90plus => "Lv.90+",
+        lv90p => "Lv.90+",
+        lv90pp => "Lv.90++",
       };
 }
 
@@ -50,8 +52,10 @@ class _FreeQuestOverviewState extends State<FreeQuestOverview> {
   @override
   void initState() {
     super.initState();
-    if (widget.quests.where((q) => (q.recommendLvInt ?? 999) > 90).length > 3) {
-      minLv = _QuestLv.lv90plus;
+    if (widget.quests.where((q) => q.recommendLv != '90+' && (q.recommendLvInt ?? 999) > 90).length > 3) {
+      minLv = _QuestLv.lv90pp;
+    } else if (widget.quests.where((q) => (q.recommendLvInt ?? 999) > 90).length > 3) {
+      minLv = _QuestLv.lv90p;
     } else if (widget.quests.where((q) => (q.recommendLvInt ?? 999) >= 90).length > 5) {
       minLv = _QuestLv.lv90;
     }
@@ -70,18 +74,22 @@ class _FreeQuestOverviewState extends State<FreeQuestOverview> {
     }
 
     bool has90 = quests.any((q) => q.recommendLv == '90');
-    bool has90plus = quests.any((q) => q.is90PlusFree);
+    bool has90p = quests.any((q) => q.is90PlusFree);
+    bool has90pp = quests.any((q) => q.is90PlusFree && q.recommendLv != '90+');
     validLvs = [
       _QuestLv.all,
       if (has90) _QuestLv.lv90,
-      if (has90plus) _QuestLv.lv90plus,
+      if (has90p) _QuestLv.lv90p,
+      if (has90pp) _QuestLv.lv90pp,
     ];
     if (!validLvs.contains(minLv)) minLv = validLvs.first;
 
     if (minLv == _QuestLv.lv90) {
       quests.removeWhere((quest) => (quest.recommendLvInt ?? 999) < 90);
-    } else if (minLv == _QuestLv.lv90plus) {
+    } else if (minLv == _QuestLv.lv90p) {
       quests.removeWhere((quest) => (quest.recommendLvInt ?? 999) <= 90);
+    } else if (minLv == _QuestLv.lv90pp) {
+      quests.removeWhere((quest) => (quest.recommendLvInt ?? 999) <= 90 || quest.recommendLv == '90+');
     }
 
     if (mounted) setState(() {});

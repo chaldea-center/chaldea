@@ -56,9 +56,9 @@ class _SvtBondDetailPageState extends State<SvtBondDetailPage> with SingleTicker
 
   Map<int, UserServantCollectionEntity> userSvtCollections = {};
 
-  List<MapEntry<Servant, UserServantCollectionEntity>> collections = [];
-  List<MapEntry<Servant, UserServantCollectionEntity>> shownCollections = [];
-  List<(CraftEssence, UserServantEntity?, UserServantCollectionEntity)> bondCEs = [];
+  List<({Servant svt, UserServantCollectionEntity collection})> collections = [];
+  List<({Servant svt, UserServantCollectionEntity collection})> shownCollections = [];
+  List<({CraftEssence ce, UserServantEntity? userCe, UserServantCollectionEntity collection})> bondCEs = [];
 
   @override
   void initState() {
@@ -83,11 +83,11 @@ class _SvtBondDetailPageState extends State<SvtBondDetailPage> with SingleTicker
       if (!collection.isOwned) continue;
       final svt = db.gameData.servantsById[collection.svtId];
       if (svt != null) {
-        collections.add(MapEntry(svt, collection));
+        collections.add((svt: svt, collection: collection));
       }
       final ce = db.gameData.craftEssencesById[collection.svtId];
       if (ce != null && ce.flags.contains(SvtFlag.svtEquipFriendShip)) {
-        bondCEs.add((ce, userCEs[collection.svtId], collection));
+        bondCEs.add((ce: ce, userCe: userCEs[collection.svtId], collection: collection));
       }
     }
 
@@ -99,74 +99,65 @@ class _SvtBondDetailPageState extends State<SvtBondDetailPage> with SingleTicker
     svtFilter.bondValue.reset();
     shownCollections = collections.where((e) {
       if (bondValue != null && svtFilter.bondCompare.options.isNotEmpty) {
-        if (svtFilter.bondCompare.options.every((c) => !c.test(e.value.friendshipRank, bondValue))) {
+        if (svtFilter.bondCompare.options.every((c) => !c.test(e.collection.friendshipRank, bondValue))) {
           return false;
         }
       }
-      return ServantFilterPage.filter(svtFilter, e.key);
+      return ServantFilterPage.filter(svtFilter, e.svt);
     }).toList();
     if (bondValue != null) svtFilter.bondValue.set(bondValue);
 
     switch (ceSortType) {
       case _CESortType.no:
-        bondCEs.sort2((e) => e.$1.collectionNo);
+        bondCEs.sort2((e) => e.ce.collectionNo);
         break;
       case _CESortType.cls:
         bondCEs.sort((a, b) {
           return SvtFilterData.compare(
-              db.gameData.servantsById[a.$1.bondEquipOwner], db.gameData.servantsById[b.$1.bondEquipOwner],
+              db.gameData.servantsById[a.ce.bondEquipOwner], db.gameData.servantsById[b.ce.bondEquipOwner],
               keys: [SvtCompare.className, SvtCompare.rarity, SvtCompare.no], reversed: [false, true, false]);
         });
         break;
       case _CESortType.rarity:
         bondCEs.sort((a, b) {
           return SvtFilterData.compare(
-              db.gameData.servantsById[a.$1.bondEquipOwner], db.gameData.servantsById[b.$1.bondEquipOwner],
+              db.gameData.servantsById[a.ce.bondEquipOwner], db.gameData.servantsById[b.ce.bondEquipOwner],
               keys: [SvtCompare.rarity, SvtCompare.className, SvtCompare.no], reversed: [false, false, false]);
         });
         break;
       case _CESortType.time:
-        bondCEs.sort2((e) => e.$2?.createdAt ?? e.$3.updatedAt, reversed: true);
+        bondCEs.sort2((e) => e.userCe?.createdAt ?? e.collection.updatedAt, reversed: true);
         break;
     }
     switch (svtSortType) {
       case _SvtSortType.no:
-        shownCollections.sort2((e) => e.key.collectionNo);
+        shownCollections.sort2((e) => e.svt.collectionNo);
         break;
       case _SvtSortType.cls:
         shownCollections.sort((a, b) {
-          return SvtFilterData.compare(a.key, b.key,
+          return SvtFilterData.compare(a.svt, b.svt,
               keys: [SvtCompare.className, SvtCompare.rarity, SvtCompare.no], reversed: [false, true, false]);
         });
         break;
       case _SvtSortType.rarity:
         shownCollections.sort((a, b) {
-          return SvtFilterData.compare(a.key, b.key,
+          return SvtFilterData.compare(a.svt, b.svt,
               keys: [SvtCompare.rarity, SvtCompare.className, SvtCompare.no], reversed: [false, false, false]);
         });
         break;
       case _SvtSortType.bondRank:
-        shownCollections.sort((a, b) {
-          if (a.value.friendshipRank != b.value.friendshipRank) {
-            return b.value.friendshipRank - a.value.friendshipRank;
-          }
-          if (a.value.friendshipExceedCount != b.value.friendshipExceedCount) {
-            return b.value.friendshipExceedCount - a.value.friendshipExceedCount;
-          }
-          return a.key.collectionNo - b.key.collectionNo;
-        });
+        shownCollections.sortByList((e) => <int>[
+              -e.collection.friendshipRank,
+              -e.collection.friendshipExceedCount,
+              _getBondNext(e.svt, e.collection),
+              e.svt.collectionNo,
+            ]);
         break;
       case _SvtSortType.bondNext:
-        shownCollections.sort((a, b) {
-          int v = _getBondNext(a.key, a.value) - _getBondNext(b.key, b.value);
-          if (v != 0) return v;
-          return a.key.collectionNo - b.key.collectionNo;
-        });
+        shownCollections.sort2((e) => _getBondNext(e.svt, e.collection));
         break;
       case _SvtSortType.bondTotal:
-        shownCollections.sort((a, b) {
-          return a.value.friendship - b.value.friendship;
-        });
+        shownCollections.sort2((e) => e.collection.friendship);
         break;
     }
     if (reversed) {
@@ -221,12 +212,12 @@ class _SvtBondDetailPageState extends State<SvtBondDetailPage> with SingleTicker
         maxCrossAxisExtent: 60,
         childAspectRatio: 132 / 144,
         children: bondCEs.map((entry) {
-          final (ce, userSvt, collection) = entry;
-          final t = DateTime.fromMillisecondsSinceEpoch((userSvt?.createdAt ?? collection.updatedAt) * 1000)
+          final (:ce, :userCe, :collection) = entry;
+          final t = DateTime.fromMillisecondsSinceEpoch((userCe?.createdAt ?? collection.updatedAt) * 1000)
               .toDateString()
               .substring(2);
           String text;
-          if (userSvt != null) {
+          if (userCe != null) {
             text = ' $t ';
           } else {
             text = ' $t? ';
@@ -240,11 +231,11 @@ class _SvtBondDetailPageState extends State<SvtBondDetailPage> with SingleTicker
     }
     return ListView.separated(
       itemBuilder: (context, index) {
-        final (ce, userSvt, collection) = bondCEs[index];
+        final (:ce, :userCe, :collection) = bondCEs[index];
         final svt = db.gameData.servantsById[ce.bondEquipOwner];
         String subtitle;
-        if (userSvt != null) {
-          subtitle = userSvt.createdAt.sec2date().toStringShort(omitSec: true);
+        if (userCe != null) {
+          subtitle = userCe.createdAt.sec2date().toStringShort(omitSec: true);
         } else {
           subtitle = '??? (${collection.createdAt.sec2date().toStringShort(omitSec: true)}?)';
         }
@@ -315,8 +306,7 @@ class _SvtBondDetailPageState extends State<SvtBondDetailPage> with SingleTicker
         Expanded(
           child: ListView.separated(
             itemBuilder: (context, index) {
-              final svt = shownCollections[index].key;
-              final collection = shownCollections[index].value;
+              final (:svt, :collection) = shownCollections[index];
               return ListTile(
                 leading: svt.iconBuilder(context: context),
                 title: Row(
@@ -378,7 +368,7 @@ class _SvtBondDetailPageState extends State<SvtBondDetailPage> with SingleTicker
   }
 
   Widget get buttonBar {
-    final soldCECount = bondCEs.where((e) => e.$2 == null).length;
+    final soldCECount = bondCEs.where((e) => e.userCe == null).length;
     String ceSummary = '${S.current.bond_craft}: ${bondCEs.length}';
     if (soldCECount > 0) {
       ceSummary += '($soldCECount sold?)';
@@ -520,17 +510,17 @@ class _SvtBondDetailPageState extends State<SvtBondDetailPage> with SingleTicker
       'Next',
       for (int bond = 4; bond < 15; bond++) 'Total(Lv${bond + 1})'
     ]);
-    for (final entry in collections) {
-      final svt = entry.key, status = entry.value;
+    for (final (:svt, :collection) in collections) {
+      // final svt = entry.key, status = entry.value;
       table.add([
         svt.id,
         svt.collectionNo,
         svt.lName.l,
         svt.rarity,
-        status.friendshipRank,
-        (svt.collectionNo == 1 ? 5 : 10) + status.friendshipExceedCount,
-        status.friendship,
-        _getBondNext(svt, status),
+        collection.friendshipRank,
+        (svt.collectionNo == 1 ? 5 : 10) + collection.friendshipExceedCount,
+        collection.friendship,
+        _getBondNext(svt, collection),
         for (int bond = 4; bond < 15; bond++) svt.bondGrowth.getOrNull(bond) ?? "",
       ]);
     }

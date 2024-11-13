@@ -9,10 +9,11 @@ import 'package:chaldea/app/tools/gamedata_loader.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/app_info.dart';
+import 'package:chaldea/packages/language.dart';
+import 'package:chaldea/packages/platform/platform.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/simple_accordion.dart';
 import 'package:chaldea/widgets/tile_items.dart';
-import '../../../packages/packages.dart';
 import 'elements/grid_gallery.dart';
 import 'elements/news_carousel.dart';
 import 'elements/random_image.dart';
@@ -100,6 +101,12 @@ class _GalleryPageState extends State<GalleryPage> {
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 4),
                       child: _dataUpdate(),
+                    ),
+                  if (kDebugMode || (kIsWeb && !kPlatformMethods.rendererCanvasKit))
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 4),
+                      child:
+                          Text(Language.isZH ? 'html渲染模式将于2025年初弃用' : 'html renderer will be deprecated in early 2025'),
                     ),
                 ],
               ),
