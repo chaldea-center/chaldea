@@ -476,6 +476,7 @@ class FunctionExecutor {
         case FuncType.changeEnemyMasterFace:
         case FuncType.addBattleValue:
         case FuncType.setBattleValue:
+        case FuncType.enemyCountChange:
           battleData.battleLogger.debug('${S.current.skip}: ${function.funcType}, '
               'Function ID: ${function.funcId}, '
               'Activator: ${activator?.lBattleName}');
@@ -717,6 +718,10 @@ class FunctionExecutor {
             }
           }
         }
+        break;
+      case FuncTargetType.fieldAll:
+        targets.addAll(aliveAllies);
+        targets.addAll(aliveEnemies);
         break;
       case FuncTargetType.ptAnother:
       case FuncTargetType.enemyAnother:

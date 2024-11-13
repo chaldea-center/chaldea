@@ -560,6 +560,8 @@ enum ItemType {
   battleItem,
   aniplexPlusChargeStone,
   purePriShopReset,
+  shop17Item,
+  reduceTradeTime,
 }
 
 enum ItemBGType {

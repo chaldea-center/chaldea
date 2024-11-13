@@ -456,6 +456,7 @@ const _$ShopTypeEnumMap = {
   ShopType.tradeAp: 'tradeAp',
   ShopType.revivalItem: 'revivalItem',
   ShopType.eventSvtEquip: 'eventSvtEquip',
+  ShopType.shop17: 'shop17',
 };
 
 const _$PayTypeEnumMap = {
@@ -1357,7 +1358,9 @@ EventTradeGoods _$EventTradeGoodsFromJson(Map json) => EventTradeGoods(
               .toList() ??
           const [],
       eventPointNum: (json['eventPointNum'] as num?)?.toInt() ?? 0,
-      eventPointItem: Item.fromJson(Map<String, dynamic>.from(json['eventPointItem'] as Map)),
+      eventPointItem: json['eventPointItem'] == null
+          ? null
+          : Item.fromJson(Map<String, dynamic>.from(json['eventPointItem'] as Map)),
       tradeTime: (json['tradeTime'] as num?)?.toInt() ?? 0,
       maxNum: (json['maxNum'] as num?)?.toInt() ?? 0,
       maxTradeTime: (json['maxTradeTime'] as num?)?.toInt() ?? 0,
@@ -1379,7 +1382,7 @@ Map<String, dynamic> _$EventTradeGoodsToJson(EventTradeGoods instance) => <Strin
       'gifts': instance.gifts.map((e) => e.toJson()).toList(),
       'consumes': instance.consumes.map((e) => e.toJson()).toList(),
       'eventPointNum': instance.eventPointNum,
-      'eventPointItem': instance.eventPointItem.toJson(),
+      'eventPointItem': instance.eventPointItem?.toJson(),
       'tradeTime': instance.tradeTime,
       'maxNum': instance.maxNum,
       'maxTradeTime': instance.maxTradeTime,

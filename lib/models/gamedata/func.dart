@@ -612,6 +612,7 @@ enum FuncType {
   setNpExecutedState(144),
   hideOverGauge(145),
   gainNpTargetSum(146),
+  enemyCountChange(147),
   ;
 
   final int value;
@@ -655,6 +656,7 @@ enum FuncTargetType {
   ptOneHpLowestRate,
   enemyRange,
   handCommandcardRandomOne,
+  fieldAll,
   ;
 
   bool get isEnemy => name.toLowerCase().startsWith('enemy') && this != FuncTargetType.enemyOneNoTargetNoAction;

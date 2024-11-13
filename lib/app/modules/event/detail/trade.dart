@@ -59,13 +59,14 @@ class EventTradePage extends HookWidget {
                     width: 32,
                     showOne: true,
                   ),
-                Item.iconBuilder(
-                  context: context,
-                  item: trade.eventPointItem,
-                  width: 32,
-                  icon: trade.eventPointItem.icon,
-                  text: trade.eventPointNum.format(compact: false, groupSeparator: ','),
-                )
+                if (trade.eventPointItem != null)
+                  Item.iconBuilder(
+                    context: context,
+                    item: trade.eventPointItem,
+                    width: 32,
+                    icon: trade.eventPointItem?.icon,
+                    text: trade.eventPointNum.format(compact: false, groupSeparator: ','),
+                  )
               ],
             ),
           ),

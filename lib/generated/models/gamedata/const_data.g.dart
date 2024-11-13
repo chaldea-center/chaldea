@@ -425,6 +425,7 @@ const _$FuncTypeEnumMap = {
   FuncType.setNpExecutedState: 'setNpExecutedState',
   FuncType.hideOverGauge: 'hideOverGauge',
   FuncType.gainNpTargetSum: 'gainNpTargetSum',
+  FuncType.enemyCountChange: 'enemyCountChange',
 };
 
 BuffTypeDetail _$BuffTypeDetailFromJson(Map json) => BuffTypeDetail(

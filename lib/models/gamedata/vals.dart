@@ -330,6 +330,9 @@ class DataVals {
   List<List<int>>? get SnapShotParamAddOpIndividualityAndCheck => _2dList('SnapShotParamAddOpIndividualityAndCheck');
   List<List<int>>? get SnapShotParamAddFieldIndividualityAndCheck =>
       _2dList('SnapShotParamAddFieldIndividualityAndCheck');
+  int? get EnemyCountChangeTime => _vals['EnemyCountChangeTime'];
+  int? get EnemyCountChangeEffectId => _vals['EnemyCountChangeEffectId'];
+  int? get EnemyCountWaitTimeAfterMessage => _vals['EnemyCountWaitTimeAfterMessage'];
 
   int? get ApplySupportSvt => _vals['ApplySupportSvt'];
   int? get Individuality => _vals['Individuality'];

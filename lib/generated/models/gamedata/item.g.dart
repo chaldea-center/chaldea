@@ -89,6 +89,8 @@ const _$ItemTypeEnumMap = {
   ItemType.battleItem: 'battleItem',
   ItemType.aniplexPlusChargeStone: 'aniplexPlusChargeStone',
   ItemType.purePriShopReset: 'purePriShopReset',
+  ItemType.shop17Item: 'shop17Item',
+  ItemType.reduceTradeTime: 'reduceTradeTime',
 };
 
 const _$ItemUseEnumMap = {

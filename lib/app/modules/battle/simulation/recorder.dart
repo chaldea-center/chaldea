@@ -673,6 +673,7 @@ class BattleRecorderPanelBase extends StatelessWidget {
         case FuncTargetType.enemyOneNoTargetNoAction:
         case FuncTargetType.ptOneHpLowestValue:
         case FuncTargetType.ptOneHpLowestRate:
+        case FuncTargetType.fieldAll:
         // no single target but unused yet
         case FuncTargetType.ptSelfBefore:
         case FuncTargetType.ptSelfAfter:

@@ -1718,7 +1718,7 @@ class EventTradeGoods {
   List<Gift> gifts;
   List<CommonConsume> consumes;
   int eventPointNum;
-  Item eventPointItem;
+  Item? eventPointItem;
   int tradeTime;
   int maxNum;
   int maxTradeTime;
@@ -1734,7 +1734,7 @@ class EventTradeGoods {
     this.gifts = const [],
     this.consumes = const [],
     this.eventPointNum = 0,
-    required this.eventPointItem,
+    this.eventPointItem,
     this.tradeTime = 0,
     this.maxNum = 0,
     this.maxTradeTime = 0,
@@ -2024,6 +2024,7 @@ enum ShopType {
   tradeAp,
   revivalItem, // 巡霊の葉
   eventSvtEquip,
+  shop17,
 }
 
 enum MissionProgressType {

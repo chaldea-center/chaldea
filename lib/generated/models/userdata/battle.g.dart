@@ -473,6 +473,7 @@ const _$FuncTargetTypeEnumMap = {
   FuncTargetType.ptOneHpLowestRate: 'ptOneHpLowestRate',
   FuncTargetType.enemyRange: 'enemyRange',
   FuncTargetType.handCommandcardRandomOne: 'handCommandcardRandomOne',
+  FuncTargetType.fieldAll: 'fieldAll',
 };
 
 TdDamageOptions _$TdDamageOptionsFromJson(Map json) => $checkedCreate(
