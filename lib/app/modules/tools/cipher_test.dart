@@ -1,6 +1,14 @@
 import 'dart:convert';
 
+import 'package:flutter/services.dart';
+
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:msgpack_dart/msgpack_dart.dart' as msgpack;
+
+import 'package:chaldea/app/app.dart';
+import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/faker/quiz/cipher.dart';
+import 'package:chaldea/packages/json_viewer/json_viewer.dart';
 import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/utils/extension.dart';
 import 'package:chaldea/widgets/widgets.dart';
@@ -19,7 +27,7 @@ const String _kRijndaelCbcIV = 'rijndael_iv';
 
 List<int> _tryB64Decode(String s) {
   try {
-    return base64Decode(s.trim());
+    return base64Decode(base64.normalize(Uri.decodeComponent(s.trim())));
   } catch (e) {
     return utf8.encode(s);
   }
@@ -84,7 +92,7 @@ class _CipherTestPageState extends State<CipherTestPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: divideList(
                   [
-                    Text(output),
+                    Text(output.length > 1000 ? output.substring(0, 1000) : output),
                     if (error != null)
                       Text(error.toString(), style: TextStyle(color: Theme.of(context).colorScheme.error))
                   ],
@@ -92,6 +100,85 @@ class _CipherTestPageState extends State<CipherTestPage> {
                 ),
               ),
             ),
+          ),
+          const SizedBox(height: 8),
+          const DividerWithTitle(title: 'View'),
+          Wrap(
+            spacing: 8,
+            alignment: WrapAlignment.center,
+            children: [
+              FilledButton(
+                onPressed: () {
+                  dynamic data = inputController.text;
+                  try {
+                    data = jsonDecode(data);
+                  } catch (e) {
+                    //
+                  }
+                  router.pushPage(JsonViewerPage(data));
+                },
+                child: const Text('Input'),
+              ),
+              FilledButton(
+                onPressed: () {
+                  dynamic data = output;
+                  try {
+                    data = jsonDecode(data);
+                  } catch (e) {
+                    //
+                  }
+                  router.pushPage(JsonViewerPage(data));
+                },
+                child: const Text('Output'),
+              ),
+              FilledButton(
+                onPressed: () async {
+                  String? text = (await Clipboard.getData(Clipboard.kTextPlain))?.text;
+                  if (text == null || text.isEmpty) {
+                    EasyLoading.showError(S.current.empty_hint);
+                    return;
+                  }
+                  dynamic data = text;
+                  try {
+                    data = jsonDecode(text);
+                  } catch (e) {
+                    //
+                  }
+                  router.pushPage(JsonViewerPage(data));
+                },
+                child: const Text('Clipboard'),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          const DividerWithTitle(title: 'Common'),
+          Wrap(
+            spacing: 8,
+            alignment: WrapAlignment.center,
+            children: [
+              FilledButton(
+                onPressed: () {
+                  testCipher((input) {
+                    return utf8.decode(_tryB64Decode(input));
+                  });
+                },
+                child: const Text('Base64'),
+              ),
+              FilledButton(
+                onPressed: () {
+                  testCipher((input) {
+                    dynamic data = msgpack.deserialize(Uint8List.fromList(_tryB64Decode(input)));
+                    if (data is List || data is Map) {
+                      try {
+                        data = jsonEncode(data);
+                      } catch (e) {} // ignore: empty_catches
+                    }
+                    return data.toString();
+                  });
+                },
+                child: const Text('msgpack'),
+              ),
+            ],
           ),
           const SizedBox(height: 8),
           const DividerWithTitle(title: 'DES3'),
