@@ -1714,7 +1714,7 @@ class EventFortification {
 class EventTradeGoods {
   int id;
   String name;
-  String goodsIcon;
+  String? goodsIcon;
   List<Gift> gifts;
   List<CommonConsume> consumes;
   int eventPointNum;
@@ -1730,7 +1730,7 @@ class EventTradeGoods {
   EventTradeGoods({
     required this.id,
     this.name = "",
-    required this.goodsIcon,
+    String? goodsIcon,
     this.gifts = const [],
     this.consumes = const [],
     this.eventPointNum = 0,
@@ -1741,7 +1741,7 @@ class EventTradeGoods {
     this.releaseConditions = const [],
     this.closedMessage = "",
     this.pickups = const [],
-  });
+  }) : goodsIcon = goodsIcon == null || goodsIcon.endsWith('icon_0.png') ? null : goodsIcon;
 
   factory EventTradeGoods.fromJson(Map<String, dynamic> json) => _$EventTradeGoodsFromJson(json);
 

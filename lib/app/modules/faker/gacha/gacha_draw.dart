@@ -680,8 +680,10 @@ class _GachaDrawPageState extends State<GachaDrawPage> {
               return Text('Sell   ', style: Theme.of(context).textTheme.bodySmall);
             }
             final svtId = svtIds.getOrNull(index - 1);
+            final soldNum = soldServants[svtId] ?? 0;
             final svt = db.gameData.servantsById[svtId];
-            Widget child = svt?.iconBuilder(context: context, height: 32) ?? Text('$svtId');
+            Widget child =
+                svt?.iconBuilder(context: context, height: 32, text: soldNum.format()) ?? Text('$svtId×$soldNum');
             if (index == 0) {
               child = Padding(padding: EdgeInsetsDirectional.only(end: 16), child: child);
             }

@@ -8,10 +8,10 @@ part of '../../../models/gamedata/item.dart';
 
 Item _$ItemFromJson(Map json) => Item(
       id: (json['id'] as num).toInt(),
-      name: json['name'] as String,
+      name: json['name'] as String? ?? "",
       type: $enumDecodeNullable(_$ItemTypeEnumMap, json['type']) ?? ItemType.none,
       uses: (json['uses'] as List<dynamic>?)?.map((e) => $enumDecode(_$ItemUseEnumMap, e)).toList() ?? const [],
-      detail: json['detail'] as String,
+      detail: json['detail'] as String? ?? "",
       individuality: (json['individuality'] as List<dynamic>?)
               ?.map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
@@ -19,10 +19,10 @@ Item _$ItemFromJson(Map json) => Item(
       icon: json['icon'] as String,
       background: $enumDecodeNullable(_$ItemBGTypeEnumMap, json['background']) ?? ItemBGType.zero,
       value: (json['value'] as num?)?.toInt() ?? 0,
-      priority: (json['priority'] as num).toInt(),
-      dropPriority: (json['dropPriority'] as num).toInt(),
-      startedAt: (json['startedAt'] as num).toInt(),
-      endedAt: (json['endedAt'] as num).toInt(),
+      priority: (json['priority'] as num?)?.toInt() ?? 0,
+      dropPriority: (json['dropPriority'] as num?)?.toInt() ?? 0,
+      startedAt: (json['startedAt'] as num?)?.toInt() ?? 0,
+      endedAt: (json['endedAt'] as num?)?.toInt() ?? 0,
       itemSelects: (json['itemSelects'] as List<dynamic>?)
               ?.map((e) => ItemSelect.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??

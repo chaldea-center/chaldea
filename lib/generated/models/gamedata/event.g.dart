@@ -1349,7 +1349,7 @@ const _$EventWorkTypeEnumMap = {
 EventTradeGoods _$EventTradeGoodsFromJson(Map json) => EventTradeGoods(
       id: (json['id'] as num).toInt(),
       name: json['name'] as String? ?? "",
-      goodsIcon: json['goodsIcon'] as String,
+      goodsIcon: json['goodsIcon'] as String?,
       gifts:
           (json['gifts'] as List<dynamic>?)?.map((e) => Gift.fromJson(Map<String, dynamic>.from(e as Map))).toList() ??
               const [],

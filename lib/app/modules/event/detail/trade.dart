@@ -26,7 +26,7 @@ class EventTradePage extends HookWidget {
         return ListTile(
           contentPadding: const EdgeInsetsDirectional.only(start: 16),
           horizontalTitleGap: 8,
-          leading: db.getIconImage(trade.goodsIcon, width: 32),
+          leading: trade.goodsIcon == null ? null : db.getIconImage(trade.goodsIcon, width: 32),
           title: Text(Transl.misc2('TradeGoodsName', trade.name), textScaler: const TextScaler.linear(0.9)),
           subtitle: Wrap(
             spacing: 2,
