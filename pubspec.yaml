@@ -100,7 +100,7 @@ dependencies:
   smooth_page_indicator: ^1.1.0
   string_validator: ^1.0.0
   table_sticky_headers: ^2.0.1
-  timezone: ^0.9.0
+  timezone: ^0.10.0
   tray_manager: ^0.2.2
   tuple: ^2.0.1
   url_launcher: ^6.3.1
