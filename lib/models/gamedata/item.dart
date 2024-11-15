@@ -442,6 +442,7 @@ class Items {
 @JsonSerializable()
 class ItemSelect {
   int idx;
+  @GiftsConverter()
   List<Gift> gifts;
   int requireNum;
   // String detail;

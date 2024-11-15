@@ -464,15 +464,16 @@ class _GameLoadingTempData {
     }
   }
 
-  Item getItem(int id, Item Function() ifAbsent) => _get(id, ifAbsent);
-  BgmEntity getBgm(int id, BgmEntity Function() ifAbsent) => _get(id, ifAbsent);
-  BasicServant getBasicSvt(int id, BasicServant Function() ifAbsent) => _get(id, ifAbsent);
-  Buff getBuff(int id, Buff Function() ifAbsent) => _get(id, ifAbsent);
-  BaseFunction getFunc(int id, BaseFunction Function() ifAbsent) => _get(id, ifAbsent);
-  BaseSkill getBaseSkill(int id, BaseSkill Function() ifAbsent) => _get(id, ifAbsent);
-  BaseTd getBaseTd(int id, BaseTd Function() ifAbsent) => _get(id, ifAbsent);
-  SkillSvt getSkillSvt(String key, SkillSvt Function() ifAbsent) => _get(key, ifAbsent);
-  TdSvt getTdSvt(String key, TdSvt Function() ifAbsent) => _get(key, ifAbsent);
+  Item getItem(int id, Item Function() ifAbsent) => _get<int, Item>(id, ifAbsent);
+  BgmEntity getBgm(int id, BgmEntity Function() ifAbsent) => _get<int, BgmEntity>(id, ifAbsent);
+  BasicServant getBasicSvt(int id, BasicServant Function() ifAbsent) => _get<int, BasicServant>(id, ifAbsent);
+  Buff getBuff(int id, Buff Function() ifAbsent) => _get<int, Buff>(id, ifAbsent);
+  BaseFunction getFunc(int id, BaseFunction Function() ifAbsent) => _get<int, BaseFunction>(id, ifAbsent);
+  BaseSkill getBaseSkill(int id, BaseSkill Function() ifAbsent) => _get<int, BaseSkill>(id, ifAbsent);
+  BaseTd getBaseTd(int id, BaseTd Function() ifAbsent) => _get<int, BaseTd>(id, ifAbsent);
+  SkillSvt getSkillSvt(String key, SkillSvt Function() ifAbsent) => _get<String, SkillSvt>(key, ifAbsent);
+  TdSvt getTdSvt(String key, TdSvt Function() ifAbsent) => _get<String, TdSvt>(key, ifAbsent);
   EventMissionConditionDetail getMissionCondDetail(int id, EventMissionConditionDetail Function() ifAbsent) =>
-      _get(id, ifAbsent);
+      _get<int, EventMissionConditionDetail>(id, ifAbsent);
+  List<Gift> getGifts(int id, List<Gift> Function() ifAbsent) => _get<int, List<Gift>>(id, ifAbsent);
 }

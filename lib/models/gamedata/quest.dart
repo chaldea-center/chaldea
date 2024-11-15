@@ -3,6 +3,7 @@
 import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/descriptors/cond_target_value.dart';
 import 'package:chaldea/app/modules/quest/quest.dart';
+import 'package:chaldea/app/tools/gamedata_loader.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/gamedata/game_card.dart';
 import 'package:chaldea/utils/utils.dart';
@@ -83,6 +84,7 @@ class Quest with RouteInfo {
   int chapterSubId;
   String chapterSubStr;
   String? giftIcon;
+  @GiftsConverter()
   List<Gift> gifts;
   List<QuestPhasePresent> presents;
   List<QuestRelease> releaseConditions;
@@ -749,19 +751,14 @@ class Gift extends BaseGift {
   }) : super(type: type ?? GiftType.item);
 
   static final kGift448 = <Gift>[
-    Gift(
-      id: 448,
-      type: GiftType.item,
-      objectId: 16,
-      num: 1,
-    ),
-    Gift(
-      id: 448,
-      type: GiftType.item,
-      objectId: 103,
-      num: 1,
-    )
+    Gift(id: 448, type: GiftType.item, objectId: 16, num: 1),
+    Gift(id: 448, type: GiftType.item, objectId: 103, num: 1),
   ];
+  static final kGift482 = <Gift>[
+    Gift(id: 482, type: GiftType.item, objectId: 46, num: 1),
+    Gift(id: 482, type: GiftType.item, objectId: 103, num: 1),
+  ];
+  static final _commonGifts = {448: kGift448, 482: kGift482};
 
   factory Gift.fromJson(Map<String, dynamic> json) => _$GiftFromJson(json);
 
@@ -1069,6 +1066,7 @@ class QuestHint {
 class QuestPhasePresent {
   // int questId;
   int phase;
+  @GiftsConverter()
   List<Gift> gifts;
   String? giftIcon;
   // String presentMessage;
@@ -2012,6 +2010,7 @@ class BasicQuestPhaseDetail {
   final int exp;
   final int bond;
   final int giftId;
+  @GiftsConverter()
   final List<Gift> gifts;
   final int? spotId;
   @protected
@@ -2037,7 +2036,7 @@ class BasicQuestPhaseDetail {
     this.consumeType,
     this.actConsume,
     this.recommendLv,
-  }) : gifts = gifts ?? (giftId == 448 ? Gift.kGift448 : []);
+  }) : gifts = gifts ?? Gift._commonGifts[giftId] ?? [];
 
   factory BasicQuestPhaseDetail.fromJson(Map<String, dynamic> json) => _$BasicQuestPhaseDetailFromJson(json);
 
@@ -2045,6 +2044,27 @@ class BasicQuestPhaseDetail {
 }
 
 ///
+
+class GiftsConverter extends JsonConverter<List<Gift>, List<dynamic>> {
+  const GiftsConverter();
+  @override
+  List<Gift> fromJson(List<dynamic> values) {
+    if (values.isEmpty) return const [];
+    final _values = values.map((e) => Map<String, dynamic>.from(e as Map)).toList();
+    final ids = _values.map((e) => (e['id'] as num).toInt()).toSet();
+    if (ids.length > 1) {
+      assert(() {
+        throw FormatException('Multiple ids found in gift list: $ids');
+      }());
+      return [for (final value in _values) Gift.fromJson(Map<String, dynamic>.from(value))];
+    }
+    return GameDataLoader.instance.tmp
+        .getGifts(ids.single, () => [for (final value in _values) Gift.fromJson(Map<String, dynamic>.from(value))]);
+  }
+
+  @override
+  List<Map<String, dynamic>> toJson(List<Gift> obj) => obj.map((e) => e.toJson()).toList();
+}
 
 class QuestFlagConverter extends JsonConverter<QuestFlag, String> {
   const QuestFlagConverter();

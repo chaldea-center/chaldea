@@ -111,15 +111,13 @@ const _$ItemBGTypeEnumMap = {
 
 ItemSelect _$ItemSelectFromJson(Map json) => ItemSelect(
       idx: (json['idx'] as num).toInt(),
-      gifts:
-          (json['gifts'] as List<dynamic>?)?.map((e) => Gift.fromJson(Map<String, dynamic>.from(e as Map))).toList() ??
-              const [],
+      gifts: json['gifts'] == null ? const [] : const GiftsConverter().fromJson(json['gifts'] as List),
       requireNum: (json['requireNum'] as num?)?.toInt() ?? 1,
     );
 
 Map<String, dynamic> _$ItemSelectToJson(ItemSelect instance) => <String, dynamic>{
       'idx': instance.idx,
-      'gifts': instance.gifts.map((e) => e.toJson()).toList(),
+      'gifts': const GiftsConverter().toJson(instance.gifts),
       'requireNum': instance.requireNum,
     };
 

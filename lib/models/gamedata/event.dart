@@ -650,6 +650,7 @@ class MasterMission extends MstMasterMission {
 class CompleteMission {
   int objectId;
   int presentMessageId;
+  @GiftsConverter()
   List<Gift> gifts;
   Bgm? bgm;
 
@@ -670,6 +671,7 @@ class ItemSet {
   PurchaseType purchaseType;
   int targetId;
   int setNum;
+  @GiftsConverter()
   List<Gift> gifts;
 
   ItemSet({
@@ -714,6 +716,7 @@ class NiceShop with RouteInfo {
   PurchaseType purchaseType;
   List<int> targetIds; // only kiaraPunisherReset and quest using more than 1
   List<ItemSet> itemSet;
+  @GiftsConverter()
   List<Gift> gifts;
 
   int setNum;
@@ -817,6 +820,7 @@ class ShopRelease {
 class EventPointReward {
   int groupId; // multi events could have same point groupId: Rider Ishtar events
   int point;
+  @GiftsConverter()
   List<Gift> gifts;
 
   // String bgImagePoint;
@@ -997,6 +1001,7 @@ class EventMission {
   int endedAt;
   int closedAt;
   MissionRewardType rewardType;
+  @GiftsConverter()
   List<Gift> gifts;
   int bannerGroup;
   int priority;
@@ -1103,6 +1108,7 @@ class EventCommandAssist {
 @JsonSerializable()
 class EventTowerReward {
   int floor;
+  @GiftsConverter()
   List<Gift> gifts;
 
   // String boardMessage;
@@ -1148,6 +1154,7 @@ class EventLotteryBox {
   int talkId;
   int no;
   int type;
+  @GiftsConverter()
   List<Gift> gifts;
   int maxNum;
   bool isRare;
@@ -1309,6 +1316,7 @@ class WarBoardStageSquare {
 class WarBoardTreasure {
   int warBoardTreasureId;
   WarBoardTreasureRarity rarity;
+  @GiftsConverter()
   List<Gift> gifts;
 
   WarBoardTreasure({
@@ -1326,6 +1334,7 @@ class WarBoardTreasure {
 class EventTreasureBoxGift {
   int id;
   int idx;
+  @GiftsConverter()
   List<Gift> gifts;
   int collateralUpperLimit;
 
@@ -1528,6 +1537,7 @@ class EventDiggingBlock {
 @JsonSerializable()
 class EventDiggingReward {
   int id;
+  @GiftsConverter()
   List<Gift> gifts;
   int rewardSize;
 
@@ -1551,6 +1561,7 @@ class EventCooltimeReward {
   List<CommonRelease> releaseConditions;
   int cooltime;
   int addEventPointRate;
+  @GiftsConverter()
   List<Gift> gifts;
   int upperLimitGiftNum;
 
@@ -1588,6 +1599,7 @@ class EventRecipeGift {
   int idx;
   int displayOrder;
   int topIconId;
+  @GiftsConverter()
   List<Gift> gifts;
 
   EventRecipeGift({
@@ -1685,6 +1697,7 @@ class EventFortification {
   int rewardSceneY;
   int maxFortificationPoint;
   EventWorkType workType;
+  @GiftsConverter()
   List<Gift> gifts;
   List<CommonRelease> releaseConditions;
   List<EventFortificationDetail> details;
@@ -1715,6 +1728,7 @@ class EventTradeGoods {
   int id;
   String name;
   String? goodsIcon;
+  @GiftsConverter()
   List<Gift> gifts;
   List<CommonConsume> consumes;
   int eventPointNum;

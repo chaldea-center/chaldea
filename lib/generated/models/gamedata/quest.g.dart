@@ -89,9 +89,7 @@ Quest _$QuestFromJson(Map json) => Quest(
       chapterSubId: (json['chapterSubId'] as num?)?.toInt() ?? 0,
       chapterSubStr: json['chapterSubStr'] as String? ?? "",
       giftIcon: json['giftIcon'] as String?,
-      gifts:
-          (json['gifts'] as List<dynamic>?)?.map((e) => Gift.fromJson(Map<String, dynamic>.from(e as Map))).toList() ??
-              const [],
+      gifts: json['gifts'] == null ? const [] : const GiftsConverter().fromJson(json['gifts'] as List),
       presents: (json['presents'] as List<dynamic>?)
               ?.map((e) => QuestPhasePresent.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
@@ -134,7 +132,7 @@ Map<String, dynamic> _$QuestToJson(Quest instance) => <String, dynamic>{
       'chapterSubId': instance.chapterSubId,
       'chapterSubStr': instance.chapterSubStr,
       'giftIcon': instance.giftIcon,
-      'gifts': instance.gifts.map((e) => e.toJson()).toList(),
+      'gifts': const GiftsConverter().toJson(instance.gifts),
       'presents': instance.presents.map((e) => e.toJson()).toList(),
       'releaseConditions': instance.releaseConditions.map((e) => e.toJson()).toList(),
       'releaseOverwrites': instance.releaseOverwrites.map((e) => e.toJson()).toList(),
@@ -171,9 +169,7 @@ QuestPhase _$QuestPhaseFromJson(Map json) => QuestPhase(
       chapterId: (json['chapterId'] as num?)?.toInt() ?? 0,
       chapterSubId: (json['chapterSubId'] as num?)?.toInt() ?? 0,
       chapterSubStr: json['chapterSubStr'] as String? ?? "",
-      gifts:
-          (json['gifts'] as List<dynamic>?)?.map((e) => Gift.fromJson(Map<String, dynamic>.from(e as Map))).toList() ??
-              const [],
+      gifts: json['gifts'] == null ? const [] : const GiftsConverter().fromJson(json['gifts'] as List),
       presents: (json['presents'] as List<dynamic>?)
               ?.map((e) => QuestPhasePresent.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
@@ -268,7 +264,7 @@ Map<String, dynamic> _$QuestPhaseToJson(QuestPhase instance) => <String, dynamic
       'chapterSubId': instance.chapterSubId,
       'chapterSubStr': instance.chapterSubStr,
       'giftIcon': instance.giftIcon,
-      'gifts': instance.gifts.map((e) => e.toJson()).toList(),
+      'gifts': const GiftsConverter().toJson(instance.gifts),
       'presents': instance.presents.map((e) => e.toJson()).toList(),
       'releaseConditions': instance.releaseConditions.map((e) => e.toJson()).toList(),
       'releaseOverwrites': instance.releaseOverwrites.map((e) => e.toJson()).toList(),
@@ -575,9 +571,7 @@ Map<String, dynamic> _$QuestHintToJson(QuestHint instance) => <String, dynamic>{
 
 QuestPhasePresent _$QuestPhasePresentFromJson(Map json) => QuestPhasePresent(
       phase: (json['phase'] as num?)?.toInt() ?? 0,
-      gifts:
-          (json['gifts'] as List<dynamic>?)?.map((e) => Gift.fromJson(Map<String, dynamic>.from(e as Map))).toList() ??
-              const [],
+      gifts: json['gifts'] == null ? const [] : const GiftsConverter().fromJson(json['gifts'] as List),
       giftIcon: json['giftIcon'] as String?,
       condType:
           json['condType'] == null ? CondType.none : const CondTypeConverter().fromJson(json['condType'] as String),
@@ -587,7 +581,7 @@ QuestPhasePresent _$QuestPhasePresentFromJson(Map json) => QuestPhasePresent(
 
 Map<String, dynamic> _$QuestPhasePresentToJson(QuestPhasePresent instance) => <String, dynamic>{
       'phase': instance.phase,
-      'gifts': instance.gifts.map((e) => e.toJson()).toList(),
+      'gifts': const GiftsConverter().toJson(instance.gifts),
       'giftIcon': instance.giftIcon,
       'condType': const CondTypeConverter().toJson(instance.condType),
       'condId': instance.condId,
@@ -1290,7 +1284,7 @@ BasicQuestPhaseDetail _$BasicQuestPhaseDetailFromJson(Map json) => BasicQuestPha
       exp: (json['exp'] as num?)?.toInt() ?? 0,
       bond: (json['bond'] as num?)?.toInt() ?? 0,
       giftId: (json['giftId'] as num?)?.toInt() ?? 0,
-      gifts: (json['gifts'] as List<dynamic>?)?.map((e) => Gift.fromJson(Map<String, dynamic>.from(e as Map))).toList(),
+      gifts: _$JsonConverterFromJson<List<dynamic>, List<Gift>>(json['gifts'], const GiftsConverter().fromJson),
       spotId: (json['spotId'] as num?)?.toInt(),
       consumeType: (json['consumeType'] as num?)?.toInt(),
       actConsume: (json['actConsume'] as num?)?.toInt(),
@@ -1305,12 +1299,18 @@ Map<String, dynamic> _$BasicQuestPhaseDetailToJson(BasicQuestPhaseDetail instanc
       'exp': instance.exp,
       'bond': instance.bond,
       'giftId': instance.giftId,
-      'gifts': instance.gifts.map((e) => e.toJson()).toList(),
+      'gifts': const GiftsConverter().toJson(instance.gifts),
       'spotId': instance.spotId,
       'consumeType': instance.consumeType,
       'actConsume': instance.actConsume,
       'recommendLv': instance.recommendLv,
     };
+
+Value? _$JsonConverterFromJson<Json, Value>(
+  Object? json,
+  Value? Function(Json json) fromJson,
+) =>
+    json == null ? null : fromJson(json as Json);
 
 const _$QuestFlagEnumMap = {
   QuestFlag.none: 'none',
