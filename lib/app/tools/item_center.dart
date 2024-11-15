@@ -72,7 +72,7 @@ class ItemCenter {
     _validItems.clear();
     final List<int> _svtIds = [];
     for (final item in db.gameData.items.values) {
-      if (![ItemCategory.other, ItemCategory.event].contains(item.category)) {
+      if (![ItemCategory.other, ItemCategory.event, ItemCategory.itemSelectMonth].contains(item.category)) {
         _validItems.add(item.id);
       }
     }

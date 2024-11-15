@@ -44,6 +44,17 @@ class _ItemInfoTabState extends State<ItemInfoTab> {
         title: Text('NotFound: $itemId'),
       );
     }
+    final eventIds = <int>{if (item.eventId != 0) item.eventId};
+    if (item.isId94 &&
+        const [ItemCategory.eventAscension, ItemCategory.event, ItemCategory.other].contains(item.category)) {
+      for (final event in db.gameData.events.values) {
+        if (eventIds.contains(event.id)) continue;
+        if (isForEvent(item, event)) {
+          eventIds.add(event.id);
+        }
+      }
+    }
+
     return SingleChildScrollView(
       child: SafeArea(
         child: CustomTable(
@@ -88,8 +99,28 @@ class _ItemInfoTabState extends State<ItemInfoTab> {
               CustomTableRow.fromChildren(
                   children: [SharedBuilder.traitList(context: context, traits: item.individuality)])
             ],
-            CustomTableRow.fromTexts(texts: const ['ID', 'Priority', 'Drop Priority'], isHeader: true),
-            CustomTableRow.fromTexts(texts: ['${item.id}', '${item.priority}', '${item.dropPriority}']),
+            CustomTableRow.fromTexts(texts: const ['ID', 'Value', 'Priority', 'Drop Priority'], isHeader: true),
+            CustomTableRow.fromTexts(
+                texts: ['${item.id}', '${item.value}', '${item.priority}', '${item.dropPriority}']),
+            if (eventIds.isNotEmpty) ...[
+              CustomTableRow.fromTexts(texts: [S.current.event], isHeader: true),
+              for (final eventId in eventIds)
+                TextButton(
+                  onPressed: () {
+                    router.push(url: Routes.eventI(eventId));
+                  },
+                  child: Text(
+                    db.gameData.events[eventId]?.lName.l ?? '${S.current.event} $eventId',
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+            ],
+            if (!(item.endedAt > kNeverClosedTimestamp && item.startedAt < 1000000000)) ...[
+              CustomTableRow.fromTexts(texts: [S.current.time], isHeader: true),
+              CustomTableRow.fromTexts(texts: [
+                [item.startedAt, item.endedAt].map((e) => e.sec2date().toStringShort(omitSec: true)).join(' ~ '),
+              ]),
+            ],
             CustomTableRow.fromTexts(texts: [S.current.card_description], isHeader: true),
             CustomTableRow(
               children: [
@@ -285,5 +316,49 @@ class _ItemInfoTabState extends State<ItemInfoTab> {
           ),
         ),
     ];
+  }
+
+  bool isForEvent(Item item, Event event) {
+    Iterable<int> itemIds = (event.shop.map((e) => e.cost?.itemId ?? 0))
+        .followedBy(event.shop.expand((e) => e.consumes).map((e) => e.objectId))
+        .followedBy(event.itemShop.values.expand((e) => e.keys))
+        .followedBy(event.itemPointReward.keys)
+        .followedBy(event.itemMission.keys)
+        .followedBy(event.itemWarDrop.keys)
+        .followedBy(event.itemLottery.values.expand((e) => e.values).expand((e) => e.keys))
+        // event point
+        .followedBy(event.treasureBoxes.expand((box) => box.extraGifts.map(((e) => e.objectId))))
+        .followedBy(event.recipes.map((e) => e.eventPointItem.id))
+        .followedBy(event.tradeGoods.map((e) => e.eventPointItem?.id ?? 0));
+    if (itemIds.contains(item.id)) {
+      return true;
+    }
+
+    for (final warId in event.warIds) {
+      final war = db.gameData.wars[warId];
+      if (war == null) continue;
+      for (final quest in war.quests) {
+        if (quest.gifts.any((e) => e.objectId == item.id)) {
+          return true;
+        }
+        final items = db.gameData.dropData.eventFreeDrops[quest.id]?.items;
+        if (items != null && items.keys.contains(item.id)) {
+          return true;
+        }
+        if (quest.consumeItem.any((e) => e.itemId == item.id)) {
+          return true;
+        }
+      }
+    }
+
+    for (final campaign in event.campaigns) {
+      if (campaign.target == CombineAdjustTarget.questUseFriendshipUpItem && campaign.targetIds.contains(item.id)) {
+        return true;
+      }
+      if (campaign.target == CombineAdjustTarget.questUseContinueItem && campaign.value == item.id) {
+        return true;
+      }
+    }
+    return false;
   }
 }

@@ -67,6 +67,7 @@ class ItemListPageState extends State<ItemListPage> with SingleTickerProviderSta
     ItemCategory.coin,
     ItemCategory.event,
     ItemCategory.other,
+    ItemCategory.itemSelectMonth,
   ];
 
   @override
@@ -165,9 +166,11 @@ class ItemListPageState extends State<ItemListPage> with SingleTickerProviderSta
                       onNavToCalculator: navToDropCalculator,
                       filtered: filtered,
                       showSet999: true,
-                      editable: ![ItemCategory.event, ItemCategory.other].contains(category),
-                      sortType:
-                          [ItemCategory.event, ItemCategory.other].contains(category) ? _ItemSortType.id : sortType,
+                      editable: !const [ItemCategory.event, ItemCategory.other, ItemCategory.itemSelectMonth]
+                          .contains(category),
+                      sortType: const [ItemCategory.event, ItemCategory.other].contains(category)
+                          ? _ItemSortType.id
+                          : sortType,
                       useGrid: useGrid,
                     ),
                   )
@@ -393,6 +396,8 @@ class _ItemListTabState extends State<ItemListTab> {
           sortedEntries.sort2((e) => _coinSvtMap[e.key]?.collectionNo ?? -1);
         } else if (widget.category == ItemCategory.other) {
           sortedEntries.sort2((e) => e.key);
+        } else if (widget.category == ItemCategory.itemSelectMonth) {
+          sortedEntries.sort2((e) => db.gameData.items[e.key]?.startedAt ?? 0);
         } else {
           sortedEntries.sort2((e) => e.key == Items.qpId ? -1 : db.gameData.items[e.key]?.priority ?? e.key);
         }
@@ -797,7 +802,8 @@ class _ItemListTabState extends State<ItemListTab> {
     final itemId = group.data;
     final int countOwn = db.curUser.items[itemId] ?? 0, countLeft = db.itemCenter.itemLeft[itemId] ?? 0;
     String? text;
-    if (group.data != Items.qpId && !const [ItemCategory.other, ItemCategory.event].contains(widget.category)) {
+    if (group.data != Items.qpId &&
+        !const [ItemCategory.other, ItemCategory.event, ItemCategory.itemSelectMonth].contains(widget.category)) {
       text = '$countOwn\n$countLeft';
     }
     return Item.iconBuilder(

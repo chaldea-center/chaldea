@@ -271,7 +271,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
       final dbItem = db.gameData.items[item.itemId];
       if (dbItem != null) {
         final category = dbItem.category;
-        if (category == ItemCategory.event) return false;
+        if (category == ItemCategory.event || category == ItemCategory.itemSelectMonth) return false;
         if (category == ItemCategory.eventAscension && item.num == 0) return false;
         if (category == ItemCategory.other) {
           if (item.num == 0) return false;

@@ -22,6 +22,7 @@ enum ItemCategory {
   event,
   coin,
   other,
+  itemSelectMonth,
 }
 
 @JsonSerializable()
@@ -73,6 +74,8 @@ class Item {
     return icon.replaceFirst(RegExp(r'.png$'), '_bordered.png');
   }
 
+  bool get isId94 => id ~/ 1000000 == 94;
+
   ItemCategory get category {
     // if (type == ItemType.tdLvUp) return SkillUpItemType.ascension;
     // if (type != ItemType.skillLvUp) return SkillUpItemType.none;
@@ -80,12 +83,19 @@ class Item {
     if (id >= 6000 && id < 6300) return ItemCategory.skill;
     if (id >= 6500 && id < 7000) return ItemCategory.normal;
     if (id >= 7000 && id < 7200) return ItemCategory.ascension;
-    if (type == ItemType.eventItem) {
-      return uses.contains(ItemUse.ascension) ? ItemCategory.eventAscension : ItemCategory.event;
-    }
-    if (type == ItemType.boostItem || type == ItemType.dice) return ItemCategory.event;
-    if (type == ItemType.eventPoint) return ItemCategory.event;
     if (type == ItemType.svtCoin) return ItemCategory.coin;
+    if (type == ItemType.itemSelect && id ~/ 1000 == 10) {
+      return ItemCategory.itemSelectMonth;
+    }
+    if (type == ItemType.eventItem && uses.contains(ItemUse.ascension)) {
+      return ItemCategory.eventAscension;
+    }
+    if (isId94 &&
+        const [ItemType.eventItem, ItemType.boostItem, ItemType.dice, ItemType.eventPoint, ItemType.reduceTradeTime]
+            .contains(type)) {
+      return ItemCategory.event;
+    }
+    // if (eventId != 0) return ItemCategory.event;
     return ItemCategory.other;
   }
 
@@ -235,6 +245,7 @@ class Item {
               ItemType.battleItem => 4,
               _ => 0,
             },
+        ItemCategory.itemSelectMonth => 180,
       };
       if (item.id == Items.qpId || item.type == ItemType.questRewardQp) {
         type = 500;

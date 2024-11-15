@@ -59,7 +59,7 @@ class EventTradePage extends HookWidget {
                     width: 32,
                     showOne: true,
                   ),
-                if (trade.eventPointItem != null)
+                if (trade.eventPointItem != null && trade.eventPointNum != 0)
                   Item.iconBuilder(
                     context: context,
                     item: trade.eventPointItem,
@@ -74,10 +74,18 @@ class EventTradePage extends HookWidget {
       },
       contentBuilder: (context) {
         List<Widget> children = [
-          if (trade.releaseConditions.isNotEmpty)
+          if (trade.releaseConditions.isNotEmpty || trade.closedMessage.isNotEmpty)
             TileGroup(
               header: S.current.condition,
               children: [
+                if (trade.closedMessage.isNotEmpty)
+                  ListTile(
+                    dense: true,
+                    title: Text(
+                      '(${trade.closedMessage})',
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                  ),
                 for (final release in trade.releaseConditions)
                   CondTargetValueDescriptor.commonRelease(
                     commonRelease: release,

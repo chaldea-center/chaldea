@@ -390,6 +390,7 @@ class _FreeQuestOverviewState extends State<FreeQuestOverview> {
             break;
           case ItemCategory.event:
           case ItemCategory.other:
+          case ItemCategory.itemSelectMonth:
             info.eventItems[id] = Item.iconBuilder(
               context: context,
               item: item,

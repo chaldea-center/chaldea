@@ -67,8 +67,10 @@ class _ItemDetailPageState extends State<ItemDetailPage> with SingleTickerProvid
       case ItemCategory.normal:
       case ItemCategory.ascension:
       case ItemCategory.skill:
-      case ItemCategory.eventAscension:
         _shownTabs = _TabType.values.toList();
+        break;
+      case ItemCategory.eventAscension:
+        _shownTabs = [_TabType.demand, _TabType.consumed, _TabType.event];
         break;
       case ItemCategory.coin:
         _shownTabs = [_TabType.info, _TabType.demand, _TabType.consumed, _TabType.event];
@@ -98,6 +100,8 @@ class _ItemDetailPageState extends State<ItemDetailPage> with SingleTickerProvid
           _shownTabs.addAll([_TabType.interlude]);
         }
         _shownTabs.sort2((e) => e.index);
+        break;
+      case ItemCategory.itemSelectMonth:
         break;
       case null: // svtMat
         if (Items.fous.contains(widget.itemId)) {
