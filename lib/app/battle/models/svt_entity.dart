@@ -1190,7 +1190,9 @@ class BattleServantData {
     _maxHp = (targetSvt.hpGrowth.getOrNull(playerSvtData!.lv - 1) ?? 0) + playerSvtData!.hpFou + (equip?.hp ?? 0);
     hp = hp > maxHp ? maxHp : hp;
 
-    battleBuff.clearClassPassive();
+    for (final actor in battleData.nonnullAllActors) {
+      actor.battleBuff.clearClassPassive(uniqueId);
+    }
     final List<NiceSkill> passives = [...targetSvt.classPassive];
 
     for (final skill in passives) {
@@ -1217,7 +1219,9 @@ class BattleServantData {
     _maxHp = targetEnemy.hp;
     hp = hp > maxHp ? maxHp : hp;
 
-    battleBuff.clearClassPassive();
+    for (final actor in battleData.nonnullAllActors) {
+      actor.battleBuff.clearClassPassive(uniqueId);
+    }
     final List<NiceSkill> passives = targetEnemy.classPassive.classPassive;
 
     for (final skill in passives) {

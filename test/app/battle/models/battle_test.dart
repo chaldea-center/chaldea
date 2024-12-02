@@ -2156,6 +2156,30 @@ void main() async {
     expect(cu.np, 8000);
   });
 
+  test('Transform & other svt s classPassive', () async {
+    final List<PlayerSvtData> setting = [
+      PlayerSvtData.id(304800)
+        ..limitCount = 0
+        ..lv = 90
+        ..ce = db.gameData.craftEssencesById[9402750] // 50% np + 2 passives
+        ..ceLimitBreak = true,
+      PlayerSvtData.id(1101100), // gives passives to all allies
+      PlayerSvtData.id(2800100), // gives passives to all allies
+    ];
+    final battle = BattleData();
+    final quest = db.gameData.questPhases[9300040603]!;
+    await battle.init(quest, setting, null);
+
+    final melusine = battle.onFieldAllyServants[0]!;
+    expect(melusine.np, 5000);
+    expect(melusine.battleBuff.getPassiveList().length, 6);
+
+    await battle.activateSvtSkill(0, 2);
+
+    expect(melusine.np, 15000);
+    expect(melusine.battleBuff.getPassiveList().length, 6);
+  });
+
   group('Method tests', () {
     final List<PlayerSvtData> okuniWithDoubleCba = [
       PlayerSvtData.id(504900)..lv = 90,

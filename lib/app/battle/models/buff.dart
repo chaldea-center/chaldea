@@ -101,8 +101,8 @@ class BattleBuff {
     _passiveList.removeWhere((buff) => buff.actorUniqueId == uniqueId);
   }
 
-  void clearClassPassive() {
-    _passiveList.removeWhere((buff) => buff.isClassPassive);
+  void clearClassPassive(final int uniqueId) {
+    _passiveList.removeWhere((buff) => buff.skillInfoType == SkillInfoType.svtClassPassive && buff.actorUniqueId == uniqueId);
   }
 
   BattleBuff copy() {
@@ -137,7 +137,7 @@ class BuffData {
   bool isUsed = false;
 
   bool passive = false;
-  bool isClassPassive = false;
+  SkillInfoType? skillInfoType;
   bool get irremovable =>
       passive || vals.UnSubState == 1 || vals.IgnoreIndividuality == 1 || vals.UnSubStateWhileLinkedToOthers == 1;
 
@@ -545,7 +545,7 @@ class BuffData {
       ..actorName = actorName
       ..isUsed = isUsed
       ..passive = passive
-      ..isClassPassive = isClassPassive
+      ..skillInfoType = skillInfoType
       .._state = _state;
     return copy;
   }

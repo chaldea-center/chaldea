@@ -319,6 +319,7 @@ enum SkillInfoType {
   fieldAi,
   svtAi,
   custom,
+  skillAdditional,
 }
 
 class CommonCustomSkills {

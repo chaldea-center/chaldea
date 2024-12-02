@@ -38,7 +38,7 @@ class AddState {
         ..actorUniqueId = activator?.uniqueId
         ..actorName = activator?.lBattleName
         ..passive = isPassive
-        ..isClassPassive = isClassPassive;
+        ..skillInfoType = skillInfoType;
 
       // Processing logicTurn related logic
       if (isShortBuff) {

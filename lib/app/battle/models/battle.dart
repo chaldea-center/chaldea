@@ -133,6 +133,8 @@ class BattleData {
 
   List<BattleServantData> get nonnullBackupPlayers => _getNonnull(backupAllyServants);
 
+  List<BattleServantData> get nonnullAllActors => [...nonnullActors, ...nonnullBackupEnemies, ...nonnullBackupPlayers];
+
   BattleServantData? getServantData(int uniqueId, {bool onFieldOnly = false}) {
     final targets = onFieldOnly
         ? [...onFieldAllyServants, ...onFieldEnemies]
