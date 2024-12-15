@@ -371,7 +371,7 @@ class _NpChargePageState extends State<NpChargePage> {
               Transl.enums(filterData.tdType.radioValue!, (enums) => enums.tdEffectFlag).l
             ].join()),
           if (filterData.bond.options.isNotEmpty)
-            optionBuilder(text: '${S.current.bond}:${filterData.bond.options.map((e) => e.text).join("&")}')
+            optionBuilder(text: '${S.current.bond}:${filterData.bond.options.map((e) => e.text).join("&")}'),
         ],
         if (filterData.effectTarget.options.isNotEmpty)
           optionBuilder(text: filterData.effectTarget.options.map((e) => e.shownName).join('/')),
@@ -528,10 +528,6 @@ class _NpChargePageState extends State<NpChargePage> {
     }
   }
 
-  // FuncType.gainNp,
-  // FuncType.gainNpFromTargets,
-  // FuncType.gainNpBuffIndividualSum
-  // BuffType.regainNp
   _ChargeData? checkFunc(
     GameCardMixin svt,
     SkillOrTd skill,
@@ -551,6 +547,15 @@ class _NpChargePageState extends State<NpChargePage> {
     int? sortValue;
     String? value;
     NpChargeType? type;
+
+    final allVals = func.allDataVals.toList();
+    bool _isChangeable(int? Function(DataVals vals) getVal) {
+      if (allVals.length <= 1) return false;
+      return allVals.map(getVal).toSet().length > 1;
+    }
+
+    bool changeable = _isChangeable((v) => v.Value); // default
+
     if (func.funcType == FuncType.gainNp && sval.Value != null) {
       sortValue = sval.Value!;
       value = _fmt(sortValue);
@@ -566,6 +571,7 @@ class _NpChargePageState extends State<NpChargePage> {
         value = '${_fmt(sortValue)}×N';
         type = NpChargeType.special;
       }
+      changeable = _isChangeable((v) => v.DependFuncVals?.Value2 ?? v.DependFuncVals?.Value);
     } else if (func.funcType == FuncType.gainNpBuffIndividualSum || func.funcType == FuncType.gainNpIndividualSum) {
       if (sval.Value != null) {
         sortValue = sval.Value!;
@@ -584,9 +590,14 @@ class _NpChargePageState extends State<NpChargePage> {
         value = '${_fmt(sortValue)}×N';
         type = NpChargeType.special;
       }
+    } else {
+      changeable = false;
     }
     if (sortValue == null || value == null || type == null) return null;
+    if (!filterData.changeable.matchOne(changeable)) return null;
+
     if (triggerFunc != null) type = NpChargeType.special;
+
     final requiredType = filterData.type.radioValue!;
     if (requiredType != type) {
       if (requiredType == NpChargeType.instantSum && type == NpChargeType.instant) {
@@ -626,6 +637,7 @@ class _NpChargePageState extends State<NpChargePage> {
       sortValue: sortValue,
       value: value,
       pos: pos ?? '?',
+      changeable: changeable,
       // tooltip: buildTooltip(skill),
     );
   }
@@ -641,6 +653,7 @@ class _ChargeData {
   int sortValue;
   String value;
   String pos;
+  bool changeable;
   // WidgetBuilder tooltip;
 
   _ChargeData({
@@ -653,6 +666,7 @@ class _ChargeData {
     required this.sortValue,
     required this.value,
     required this.pos,
+    required this.changeable,
     // required this.tooltip,
   });
 

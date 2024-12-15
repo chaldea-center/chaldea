@@ -45,14 +45,28 @@ class NpFilterData with FilterDataMixin {
   final tdColor = FilterRadioData<CardType>();
   final tdType = FilterRadioData<TdEffectFlag>();
   final bond = FilterGroupData<SvtBondStage>();
+  final changeable = FilterGroupData<bool>();
 
   List<SvtCompare> svtSortKeys = [SvtCompare.no, SvtCompare.no];
   List<CraftCompare> ceSortKeys = [CraftCompare.no, CraftCompare.no];
   List<bool> sortReversed = [false, false];
 
   @override
-  List<FilterGroupData> get groups =>
-      [favorite, ceStatus, type, ceMax, ceAtkType, svtClass, rarity, effectTarget, region, tdColor, tdType, bond];
+  List<FilterGroupData> get groups => [
+        favorite,
+        ceStatus,
+        type,
+        ceMax,
+        ceAtkType,
+        svtClass,
+        rarity,
+        effectTarget,
+        region,
+        tdColor,
+        tdType,
+        bond,
+        changeable
+      ];
 
   @override
   void reset() {
@@ -349,6 +363,17 @@ class _NpChargeFilterPageState extends FilterPageState<NpFilterData, NpChargeFil
               });
             },
           ),
+        FilterGroup<bool>(
+          title: Text('Changeable'),
+          options: const [false, true],
+          values: filterData.changeable,
+          optionBuilder: (v) => Text(v ? 'YES' : 'NO'),
+          onFilterChanged: (v, _) {
+            setState(() {
+              update();
+            });
+          },
+        ),
       ]),
     );
   }
