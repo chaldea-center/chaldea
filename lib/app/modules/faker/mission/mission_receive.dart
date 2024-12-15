@@ -61,7 +61,8 @@ class _UserEventMissionReceivePageState extends State<UserEventMissionReceivePag
 
   MissionProgressType getMissionProgress(int eventMissionId) {
     final progress = userEventMissions[eventMissionId]?.missionProgressType;
-    return MissionProgressType.values.firstWhere((e) => e.value == progress, orElse: () => MissionProgressType.none);
+    if (progress == null) return MissionProgressType.none;
+    return MissionProgressType.fromValue(progress);
   }
 
   bool isMissionClear(int eventMissionId) => getMissionProgress(eventMissionId) == MissionProgressType.clear;
@@ -195,21 +196,37 @@ class _UserEventMissionReceivePageState extends State<UserEventMissionReceivePag
             : null,
       );
     } else {
-      final progressType = getMissionProgress(mission.id);
-      String? progress;
-      for (final cond in mission.conds) {
-        if (cond.missionProgressType == MissionProgressType.clear && cond.condType == CondType.missionConditionDetail) {
+      int? progressNum, targetNum;
+      final eventMissionFix = runtime.mstData.userEventMissionFix[mission.id];
+      if (eventMissionFix != null) {
+        // progressType=eventMissionFix.progressType;
+        progressNum = eventMissionFix.num;
+      }
+      for (final cond in mission.conds.where((e) => e.missionProgressType == MissionProgressType.clear)) {
+        if (cond.condType == CondType.missionConditionDetail) {
           final condDetailId = cond.targetIds.firstOrNull;
           if (condDetailId == null) continue;
-          progress = '${runtime.mstData.userEventMissionCondDetail[condDetailId]?.progressNum}/${cond.targetNum}';
+          progressNum ??= runtime.mstData.userEventMissionCondDetail[condDetailId]?.progressNum;
+          targetNum = cond.targetNum;
+        } else if (cond.condType == CondType.eventMissionClear) {
+          progressNum ??= cond.targetIds
+              .where((mid) =>
+                  runtime.mstData.userEventMission[mid]?.missionProgressType == MissionProgressType.clear.value)
+              .length;
+          targetNum = cond.targetNum;
         }
       }
+
+      final progressType = getMissionProgress(mission.id);
       child = ListTile(
         title: title,
         subtitle: subtitle,
         enabled: progressType == MissionProgressType.achieve,
         trailing: Text(
-          [progressType.name, if (progress != null) progress].join('\n'),
+          [
+            progressType.name,
+            if (progressNum != null || targetNum != null) '${progressNum ?? "?"}/${targetNum ?? "?"}',
+          ].join('\n'),
           textAlign: TextAlign.end,
         ),
       );

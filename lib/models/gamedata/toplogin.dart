@@ -342,6 +342,10 @@ final _$mstMasterSchemes = <String, (Type, DataMaster Function(String mstName))>
     UserEventMissionEntity,
     (mstName) => DataMaster<_IntStr, UserEventMissionEntity>(mstName, UserEventMissionEntity.fromJson)
   ),
+  "userEventMissionFix": (
+    UserEventMissionFixEntity,
+    (mstName) => DataMaster<_IntStr, UserEventMissionFixEntity>(mstName, UserEventMissionFixEntity.fromJson)
+  ),
   "userEventMissionConditionDetail": (
     UserEventMissionCondDetailEntity,
     (mstName) =>
@@ -366,6 +370,10 @@ final _$mstMasterSchemes = <String, (Type, DataMaster Function(String mstName))>
   "userEventRaid": (
     UserEventRaidEntity,
     (mstName) => DataMaster<String, UserEventRaidEntity>(mstName, UserEventRaidEntity.fromJson)
+  ),
+  "userBoxGacha": (
+    UserBoxGachaEntity,
+    (mstName) => DataMaster<_IntStr, UserBoxGachaEntity>(mstName, UserBoxGachaEntity.fromJson)
   ),
   "userShop": (UserShopEntity, (mstName) => DataMaster<_IntStr, UserShopEntity>(mstName, UserShopEntity.fromJson)),
   "userQuest": (UserQuestEntity, (mstName) => DataMaster<_IntStr, UserQuestEntity>(mstName, UserQuestEntity.fromJson)),
@@ -607,12 +615,14 @@ class MasterDataManager {
   DataMaster<_IntStr, UserGachaEntity> get userGacha => get<_IntStr, UserGachaEntity>();
   DataMaster<_IntStr, UserEventEntity> get userEvent => get<_IntStr, UserEventEntity>();
   DataMaster<_IntStr, UserEventMissionEntity> get userEventMission => get<_IntStr, UserEventMissionEntity>();
+  DataMaster<_IntStr, UserEventMissionFixEntity> get userEventMissionFix => get<_IntStr, UserEventMissionFixEntity>();
   DataMaster<_IntStr, UserEventMissionCondDetailEntity> get userEventMissionCondDetail =>
       get<_IntStr, UserEventMissionCondDetailEntity>();
   DataMaster<String, UserEventPointEntity> get userEventPoint => get<String, UserEventPointEntity>();
   DataMaster<_IntStr, UserEventTradeEntity> get userEventTrade => get<_IntStr, UserEventTradeEntity>();
   DataMaster<String, EventRaidEntity> get mstEventRaid => get<String, EventRaidEntity>();
   DataMaster<String, TotalEventRaidEntity> get totalEventRaid => get<String, TotalEventRaidEntity>();
+  DataMaster<_IntStr, UserBoxGachaEntity> get userBoxGacha => get<_IntStr, UserBoxGachaEntity>();
   DataMaster<_IntStr, UserShopEntity> get userShop => get<_IntStr, UserShopEntity>();
   // event/quest
   DataMaster<_IntStr, UserQuestEntity> get userQuest => get<_IntStr, UserQuestEntity>();
@@ -623,14 +633,11 @@ class MasterDataManager {
   DataMaster<int, BattleEntity> get battles => get<int, BattleEntity>();
   DataMaster<int, UserFollowerEntity> get userFollower => get<int, UserFollowerEntity>();
 
-  // userEventPoint, userGachaExtraCount,
-  // userEventSuperBoss, userSvtVoicePlayed, userQuest
-  // userEventMissionFix,
+  // userGachaExtraCount,
+  // userEventSuperBoss, userSvtVoicePlayed
   // userPrivilege
-  // userEventMissionConditionDetail, userGachaDrawLog,userQuestRoute,userNpcSvtRecord,userCoinRoom
-  // userEventRaid
-  // // userEvent.tutorial: int may exceed int64
-  // userQuestInfo,userEvent,
+  // userGachaDrawLog,userQuestRoute,userNpcSvtRecord,userCoinRoom
+  // userQuestInfo
   // beforeBirthDay
 
   // account
@@ -1734,6 +1741,30 @@ class UserEventMissionEntity extends DataEntityBase<_IntStr> {
 }
 
 @JsonSerializable(createToJson: false)
+class UserEventMissionFixEntity extends DataEntityBase<_IntStr> {
+  int userId;
+  int missionId;
+  int progressType;
+  int num;
+
+  @override
+  _IntStr get primaryKey => missionId;
+
+  static _IntStr createPK(int missionId) => missionId;
+
+  UserEventMissionFixEntity({
+    dynamic userId,
+    dynamic missionId,
+    dynamic progressType,
+    dynamic num,
+  })  : userId = _toInt(userId),
+        missionId = _toInt(missionId),
+        progressType = _toInt(progressType),
+        num = _toInt(num);
+  factory UserEventMissionFixEntity.fromJson(Map<String, dynamic> data) => _$UserEventMissionFixEntityFromJson(data);
+}
+
+@JsonSerializable(createToJson: false)
 class UserEventMissionCondDetailEntity extends DataEntityBase<_IntStr> {
   int userId;
   int conditionDetailId;
@@ -2029,6 +2060,38 @@ class BattleSuperBossResult {
   int64_t getStatusLong() {
     return addDamage + superBossId + uniqueId;
   }
+}
+
+@JsonSerializable(createToJson: false)
+class UserBoxGachaEntity extends DataEntityBase<_IntStr> {
+  int userId;
+  int boxGachaId;
+  int resetNum;
+  int drawNum;
+  bool isReset;
+  int boxIndex;
+  // Map script; // replaceGiftIdList
+
+  @override
+  _IntStr get primaryKey => boxGachaId;
+
+  static _IntStr createPK(int boxGachaId) => boxGachaId;
+
+  UserBoxGachaEntity({
+    dynamic userId,
+    dynamic boxGachaId,
+    dynamic resetNum,
+    dynamic drawNum,
+    dynamic isReset,
+    dynamic boxIndex,
+  })  : userId = _toInt(userId),
+        boxGachaId = _toInt(boxGachaId),
+        resetNum = _toInt(resetNum),
+        drawNum = _toInt(drawNum),
+        isReset = _toBool(isReset),
+        boxIndex = _toInt(boxIndex);
+
+  factory UserBoxGachaEntity.fromJson(Map<String, dynamic> data) => _$UserBoxGachaEntityFromJson(data);
 }
 
 @JsonSerializable(createToJson: false)

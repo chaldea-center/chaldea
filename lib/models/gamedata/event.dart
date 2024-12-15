@@ -2054,6 +2054,13 @@ enum MissionProgressType {
 
   const MissionProgressType(this.value);
   final int value;
+
+  static MissionProgressType fromValue(int value) {
+    for (final v in MissionProgressType.values) {
+      if (v.value == value) return v;
+    }
+    return MissionProgressType.none;
+  }
 }
 
 enum MissionType {

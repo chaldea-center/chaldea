@@ -67,8 +67,16 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
   Future<void> init() async {
     try {
       // ignore: use_build_context_synchronously
-      _runtime = await FakerRuntime.init(widget.user, this);
-      await _runtime?.loadInitData();
+      final runtime = await FakerRuntime.init(widget.user, this);
+      if (runtime.hasMultiRoots && mounted) {
+        SimpleCancelOkDialog(
+          title: Text(S.current.warning),
+          content: Text('Another window is already open.'),
+          hideCancel: true,
+        ).showDialog(context);
+      }
+      await runtime.loadInitData();
+      _runtime = runtime;
     } catch (e, s) {
       if (mounted) {
         SimpleCancelOkDialog(
@@ -324,16 +332,15 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
         ));
       }
 
-      final counts = mstData.countSvtKeep();
+      final cardCounts = mstData.countSvtKeep();
       children.add(ListTile(
         dense: true,
-        title: Text(S.current.servant),
-        trailing: Text('${counts.svtCount}/${userGame.svtKeep}', style: trailingStyle),
-      ));
-      children.add(ListTile(
-        dense: true,
-        title: Text(S.current.craft_essence),
-        trailing: Text('${counts.svtEquipCount}/${userGame.svtEquipKeep}', style: trailingStyle),
+        title: Text([
+          '${S.current.servant} ${cardCounts.svtCount}/${userGame.svtKeep}',
+          '${S.current.craft_essence_short} ${cardCounts.svtEquipCount}/${userGame.svtEquipKeep}',
+          '${S.current.command_code_short} ${cardCounts.ccCount}/${runtime.gameData.constants.maxUserCommandCode}',
+          if (cardCounts.unknownCount != 0) '${S.current.unknown} ${cardCounts.unknownCount}',
+        ].join('  ')),
       ));
     }
     return TileGroup(
@@ -833,20 +840,40 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
           if ((mstData.userItem[teapot.id]?.num ?? 0) > 0) (teapot, mstData.userItem[teapot.id]!),
     ];
     teapots.sort2((e) => e.$1.startedAt);
+
+    String? questInfoText;
+    if (userQuest != null) {
+      questInfoText = 'phase ${userQuest.questPhase}  clear ${userQuest.clearNum}  challenge ${userQuest.challengeNum}';
+      final lotteries = quest?.logicEvent?.lotteries ?? [];
+      for (final lottery in lotteries) {
+        final userBoxGacha = mstData.userBoxGacha[lottery.id];
+        if (lottery.limited || userBoxGacha == null) continue;
+        final boxPerLottery =
+            Maths.sum(lottery.boxes.where((e) => e.boxIndex == userBoxGacha.boxIndex).map((e) => e.maxNum));
+        String countInfo = '';
+        double count;
+        if (userBoxGacha.isReset) {
+          countInfo = '${userBoxGacha.resetNum}';
+          count = userBoxGacha.resetNum.toDouble();
+        } else {
+          countInfo = '(${userBoxGacha.resetNum - 1} + ${userBoxGacha.drawNum}/$boxPerLottery)';
+          count = userBoxGacha.resetNum - 1 + userBoxGacha.drawNum / boxPerLottery;
+        }
+        final ownItemNum = mstData.userItem[lottery.cost.itemId]?.num ?? 0;
+        final notGachaLotteryCount = ownItemNum / (lottery.cost.amount * boxPerLottery);
+        countInfo += '+${notGachaLotteryCount.format(compact: false, precision: 1)}';
+        countInfo += '=${(count + notGachaLotteryCount).format(compact: false, precision: 1)}';
+        questInfoText = '$questInfoText\n${S.current.event_lottery} $countInfo';
+      }
+    }
+
     return TileGroup(
       header: 'Battle Setup',
       children: [
         ListTile(
           dense: true,
           title: Text(_describeQuest(battleOption.questId, battleOption.questPhase, null)),
-          subtitle: userQuest == null
-              ? null
-              : Text([
-                  'phase ${userQuest.questPhase}',
-                  'clear ${userQuest.clearNum}',
-                  if (questPhase != null && !questPhase.isMainStoryFree && userQuest.challengeNum != userQuest.clearNum)
-                    'challenge ${userQuest.challengeNum}',
-                ].join(' ')),
+          subtitle: questInfoText == null ? null : Text(questInfoText),
           onTap: quest?.routeTo,
           trailing: TextButton(
               onPressed: () {

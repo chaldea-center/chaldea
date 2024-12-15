@@ -2,6 +2,8 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 
 import 'package:chaldea/app/api/atlas.dart';
+import 'package:chaldea/app/app.dart';
+import 'package:chaldea/app/routes/delegate.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/faker/cn/agent.dart';
 import 'package:chaldea/models/faker/jp/agent.dart';
@@ -19,10 +21,7 @@ class FakerRuntime {
 
   final FakerAgent agent;
   final _FakerGameData gameData;
-  State? _rootState;
-  FakerRuntime._(this.agent, this._rootState) : gameData = _FakerGameData(agent.user.region);
-
-  final List<State> _dependencies = [];
+  FakerRuntime._(this.agent) : gameData = _FakerGameData(agent.user.region);
 
   // runtime data
   final runningTask = ValueNotifier<bool>(false);
@@ -38,11 +37,14 @@ class FakerRuntime {
   Region get region => agent.user.region;
   AutoBattleOptions get battleOption => agent.user.curBattleOption;
 
-  BuildContext get context => _rootState!.context;
-  bool get mounted => _rootState != null && context.mounted;
+  final Map<State, bool> _dependencies = {}; // <state, isRoot>
+
+  BuildContext? get context => _dependencies.keys.firstWhereOrNull((e) => e.mounted)?.context;
+  bool get mounted => context != null;
+  bool get hasMultiRoots => _dependencies.values.where((e) => e).length > 1;
 
   void addDependency(State s) {
-    if (!_dependencies.contains(s)) _dependencies.add(s);
+    if (!_dependencies.containsKey(s)) _dependencies[s] = false;
   }
 
   void removeDependency(State s) {
@@ -50,9 +52,9 @@ class FakerRuntime {
   }
 
   void update() async {
-    for (final s in [_rootState, ..._dependencies]) {
-      await null; // in case called during parent build?
-      if (s != null && s.mounted) {
+    await null; // in case called during parent build?
+    for (final s in _dependencies.keys) {
+      if (s.mounted) {
         // ignore: invalid_use_of_protected_member
         s.setState(() {});
       }
@@ -60,8 +62,21 @@ class FakerRuntime {
   }
 
   Future<T?> _showDialog<T>(Widget child, {bool barrierDismissible = true}) async {
-    if (!mounted) return null;
-    return child.showDialog(context, barrierDismissible: barrierDismissible);
+    BuildContext? ctx;
+    for (final state in _dependencies.keys) {
+      if (state.mounted && AppRouter.of(state.context) == router) {
+        ctx = state.context;
+      }
+    }
+    if (ctx == null) {
+      for (final state in _dependencies.keys) {
+        if (state.mounted) {
+          ctx = state.context;
+        }
+      }
+    }
+    if (ctx == null) return null;
+    return child.showDialog(ctx, barrierDismissible: barrierDismissible);
   }
 
   // init
@@ -71,22 +86,20 @@ class FakerRuntime {
     if (top == null) {
       throw SilentException('fetch game data failed');
     }
-    final previous = _runtimes[user];
-    if (previous != null && previous.mounted) {
-      // throw SilentException('Another window has already opened user (${user.serverName} ${user.userGame?.name})');
-    }
+
     if (!state.mounted) {
       throw SilentException('Context already disposed');
     }
-    if (previous != null) {
-      previous._rootState = state;
-      return previous;
-    }
-    final FakerAgent agent = switch (user) {
-      AutoLoginDataJP() => FakerAgentJP.s(gameTop: top, user: user),
-      AutoLoginDataCN() => FakerAgentCN.s(gameTop: top, user: user),
-    };
-    return _runtimes[user] = FakerRuntime._(agent, state);
+
+    FakerRuntime runtime = _runtimes.putIfAbsent(user, () {
+      final FakerAgent agent = switch (user) {
+        AutoLoginDataJP() => FakerAgentJP.s(gameTop: top, user: user),
+        AutoLoginDataCN() => FakerAgentCN.s(gameTop: top, user: user),
+      };
+      return FakerRuntime._(agent);
+    });
+    runtime._dependencies[state] = true;
+    return runtime;
   }
 
   Future<void> loadInitData() async {
@@ -94,10 +107,8 @@ class FakerRuntime {
     update();
   }
 
-  void dispose(State? state) {
-    if (state != null && state == _rootState) {
-      _rootState = null;
-    }
+  void dispose(State state) {
+    _dependencies.remove(state);
   }
 
   // task

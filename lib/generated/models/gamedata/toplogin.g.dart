@@ -368,6 +368,13 @@ UserEventMissionEntity _$UserEventMissionEntityFromJson(Map json) => UserEventMi
       createdAt: json['createdAt'],
     );
 
+UserEventMissionFixEntity _$UserEventMissionFixEntityFromJson(Map json) => UserEventMissionFixEntity(
+      userId: json['userId'],
+      missionId: json['missionId'],
+      progressType: json['progressType'],
+      num: json['num'],
+    );
+
 UserEventMissionCondDetailEntity _$UserEventMissionCondDetailEntityFromJson(Map json) =>
     UserEventMissionCondDetailEntity(
       userId: json['userId'],
@@ -465,6 +472,15 @@ Map<String, dynamic> _$BattleSuperBossResultToJson(BattleSuperBossResult instanc
       'uniqueId': instance.uniqueId,
       'addDamage': instance.addDamage,
     };
+
+UserBoxGachaEntity _$UserBoxGachaEntityFromJson(Map json) => UserBoxGachaEntity(
+      userId: json['userId'],
+      boxGachaId: json['boxGachaId'],
+      resetNum: json['resetNum'],
+      drawNum: json['drawNum'],
+      isReset: json['isReset'],
+      boxIndex: json['boxIndex'],
+    );
 
 UserShopEntity _$UserShopEntityFromJson(Map json) => UserShopEntity(
       userId: json['userId'],

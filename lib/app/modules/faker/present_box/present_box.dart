@@ -170,6 +170,7 @@ class _UserPresentBoxManagePageState extends State<UserPresentBoxManagePage> {
                     itemCount: shownPresents.length,
                   ),
           ),
+          kDefaultDivider,
           SafeArea(child: buttonBar(shownPresents)),
         ],
       ),
@@ -250,45 +251,63 @@ class _UserPresentBoxManagePageState extends State<UserPresentBoxManagePage> {
   }
 
   Widget buttonBar(List<UserPresentBoxEntity> shownPresents) {
+    final cardCounts = runtime.mstData.countSvtKeep();
+    final userGame = runtime.mstData.user;
+    final cardInfo = [
+      '${S.current.servant} ${cardCounts.svtCount}/${userGame?.svtKeep}',
+      '${S.current.craft_essence_short} ${cardCounts.svtEquipCount}/${userGame?.svtEquipKeep}',
+      '${S.current.command_code_short} ${cardCounts.ccCount}/${runtime.gameData.constants.maxUserCommandCode}',
+      if (cardCounts.unknownCount != 0) '${S.current.unknown} ${cardCounts.unknownCount}',
+    ].join(' ');
+
     bool allChecked = selectedPresents.length >= _kMaxPresentSelectCount ||
         (selectedPresents.length >= shownPresents.length &&
             shownPresents.every((e) => selectedPresents.contains(e.presentId)));
+
+    final buttons = Wrap(
+      alignment: WrapAlignment.center,
+      crossAxisAlignment: WrapCrossAlignment.center,
+      children: [
+        FilledButton(
+          onPressed: () {
+            receivePresents(selectedPresents.toSet());
+          },
+          child: Text('Receive ×${selectedPresents.length}!'),
+        ),
+        IconButton(
+          onPressed: () {
+            setState(() {
+              filterData.reversed = !filterData.reversed;
+            });
+          },
+          icon: FaIcon(filterData.reversed ? FontAwesomeIcons.arrowDown19 : FontAwesomeIcons.arrowUp91),
+          tooltip: S.current.sort_order,
+        ),
+        IconButton(
+          onPressed: filterData.showSelectedOnly
+              ? null
+              : () {
+                  if (allChecked) {
+                    selectedPresents.removeAll(shownPresents.map((e) => e.presentId));
+                  } else {
+                    final leftIds = shownPresents.map((e) => e.presentId).toSet().difference(selectedPresents);
+                    leftIds.removeWhere(isItemSelect);
+                    selectedPresents.addAll(leftIds.take(_kMaxPresentSelectCount - selectedPresents.length));
+                  }
+                  setState(() {});
+                },
+          icon: Icon(allChecked ? Icons.check_box : Icons.square_outlined),
+        )
+      ],
+    );
     return Container(
       padding: EdgeInsets.all(8),
-      child: Wrap(
-        alignment: WrapAlignment.center,
-        crossAxisAlignment: WrapCrossAlignment.center,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          FilledButton(
-            onPressed: () {
-              receivePresents(selectedPresents.toSet());
-            },
-            child: Text('Receive ×${selectedPresents.length}!'),
-          ),
-          IconButton(
-            onPressed: () {
-              setState(() {
-                filterData.reversed = !filterData.reversed;
-              });
-            },
-            icon: FaIcon(filterData.reversed ? FontAwesomeIcons.arrowDown19 : FontAwesomeIcons.arrowUp91),
-            tooltip: S.current.sort_order,
-          ),
-          IconButton(
-            onPressed: filterData.showSelectedOnly
-                ? null
-                : () {
-                    if (allChecked) {
-                      selectedPresents.removeAll(shownPresents.map((e) => e.presentId));
-                    } else {
-                      final leftIds = shownPresents.map((e) => e.presentId).toSet().difference(selectedPresents);
-                      leftIds.removeWhere(isItemSelect);
-                      selectedPresents.addAll(leftIds.take(_kMaxPresentSelectCount - selectedPresents.length));
-                    }
-                    setState(() {});
-                  },
-            icon: Icon(allChecked ? Icons.check_box : Icons.square_outlined),
-          )
+          Text(cardInfo, style: Theme.of(context).textTheme.bodySmall, textAlign: TextAlign.center),
+          buttons,
         ],
       ),
     );
