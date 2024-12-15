@@ -468,7 +468,7 @@ extension DialogShowMethod on material.Widget {
   Future<T?> showDialog<T>(material.BuildContext? context,
       {bool barrierDismissible = true, bool useRootNavigator = false}) {
     context ??= kAppKey.currentContext;
-    if (context == null) return Future.value();
+    if (context == null || !context.mounted) return Future.value();
     return material.showDialog<T>(
       context: context,
       builder: (context) => this,

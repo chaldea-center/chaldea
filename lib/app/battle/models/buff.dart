@@ -102,7 +102,8 @@ class BattleBuff {
   }
 
   void clearClassPassive(final int uniqueId) {
-    _passiveList.removeWhere((buff) => buff.skillInfoType == SkillInfoType.svtClassPassive && buff.actorUniqueId == uniqueId);
+    _passiveList
+        .removeWhere((buff) => buff.skillInfoType == SkillInfoType.svtClassPassive && buff.actorUniqueId == uniqueId);
   }
 
   BattleBuff copy() {

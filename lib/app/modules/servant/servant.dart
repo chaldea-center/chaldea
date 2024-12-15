@@ -383,6 +383,9 @@ class ServantDetailPageState extends State<ServantDetailPage> with SingleTickerP
           ),
         );
       case SvtTab.spDmg:
+        if (const [SvtType.combineMaterial, SvtType.statusUp, SvtType.servantEquip].contains(svt.type)) {
+          return null;
+        }
         return _SubTabInfo(
           tab: tab,
           tabBuilder: () => S.current.super_effective_damage,

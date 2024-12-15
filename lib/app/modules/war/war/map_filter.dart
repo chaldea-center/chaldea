@@ -9,7 +9,7 @@ class WarMapFilterData with FilterDataMixin {
   bool showSpots = true;
   bool freeSpotsOnly = true;
   bool showRoads = false;
-  bool showHeader = true;
+  bool showHeader = false;
 
   final gimmick = FilterGroupData<int?>();
   final validGimmickIds = <int>{};
@@ -22,7 +22,7 @@ class WarMapFilterData with FilterDataMixin {
     super.reset();
     showRoads = showSpots = true;
     freeSpotsOnly = true;
-    showHeader = true;
+    // showHeader = false;
   }
 }
 

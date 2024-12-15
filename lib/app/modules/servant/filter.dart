@@ -607,6 +607,10 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData, ServantFilt
 }
 
 const _traitsForFilter = <Trait>[
+  // ce
+  Trait.havingAnimalsCharacteristics, // 兽科
+  Trait.livingHuman,
+  //
   Trait.dragon,
   Trait.riding,
   Trait.divine,
@@ -626,7 +630,6 @@ const _traitsForFilter = <Trait>[
   Trait.skyOrEarthExceptPseudoAndDemiServant,
   Trait.hominidaeServant,
   Trait.demonicBeastServant, // 魔兽型
-  Trait.livingHuman,
   Trait.childServant,
   Trait.existenceOutsideTheDomain,
   Trait.oni,
@@ -637,7 +640,6 @@ const _traitsForFilter = <Trait>[
   Trait.fairyTaleServant,
   Trait.divineSpirit,
   Trait.hasCostume,
-  Trait.havingAnimalsCharacteristics, // 兽科
   Trait.summerModeServant,
   Trait.immuneToPigify,
 ];

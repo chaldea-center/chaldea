@@ -48,7 +48,7 @@ enum _CESortType {
 
 class _SvtBondDetailPageState extends State<SvtBondDetailPage> with SingleTickerProviderStateMixin {
   late final _tabController = TabController(length: 2, vsync: this);
-  _SvtSortType svtSortType = _SvtSortType.no;
+  _SvtSortType svtSortType = _SvtSortType.bondRank;
   _CESortType ceSortType = _CESortType.time;
   bool ceGrid = false;
   bool reversed = false;

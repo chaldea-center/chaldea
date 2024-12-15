@@ -57,13 +57,15 @@ class _WarMapPageState extends State<WarMapPage> {
   void initState() {
     super.initState();
     final _baseMapId = war.maps.first.id;
+    filterData.showHeader = war.isMainStory;
+
     for (final warAdd in war.warAdds) {
       if (warAdd.type == WarOverwriteType.baseMapId) {
         _overwriteMapIds[warAdd.overwriteId] = _baseMapId;
       }
     }
 
-    for (final url in [map.mapImage, map.headerImage]) {
+    for (final url in [map.mapImage, if (filterData.showHeader) map.headerImage]) {
       loadImage(url);
     }
     for (final gimmick in map.mapGimmicks) {
@@ -136,7 +138,9 @@ class _WarMapPageState extends State<WarMapPage> {
   }
 
   bool isInMap(int mapId) {
-    return (_overwriteMapIds[map.id] ?? map.id) == (_overwriteMapIds[mapId] ?? mapId);
+    // why?
+    // return (_overwriteMapIds[map.id] ?? map.id) == (_overwriteMapIds[mapId] ?? mapId);
+    return mapId == map.id;
   }
 
   Map<int, NiceSpot> getSpots() {

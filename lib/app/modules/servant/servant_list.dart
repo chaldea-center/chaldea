@@ -382,8 +382,8 @@ class ServantListPageState extends State<ServantListPage> with SearchableListSta
   bool changeTarget = true;
   int? _changedAscension;
   int? _changedActive;
-  int? _appendNum;
-  int? _changedAppend;
+  int? _appendNum; // -1=all, 0-4
+  int? _changedAppend; // -1=x+1,0-10
   bool? _changedDress;
   int? _changedTd;
   bool _changeFavorite = false;
@@ -795,12 +795,17 @@ class ServantListPageState extends State<ServantListPage> with SearchableListSta
         value: _appendNum,
         icon: Container(),
         hint: text(S.current.append_skill_short),
-        items: List.generate(5, (i) {
-          return DropdownMenuItem(
-            value: i,
-            child: text(S.current.words_separate(S.current.append_skill_short, '${i + 1}')),
-          );
-        }),
+        items: [
+          DropdownMenuItem(
+            value: -1,
+            child: text(S.current.append_skill_short),
+          ),
+          for (final i in range(5))
+            DropdownMenuItem(
+              value: i,
+              child: text(S.current.words_separate(S.current.append_skill_short, '${i + 1}')),
+            ),
+        ],
         onChanged: (v) {
           setState(() {
             _appendNum = v;
@@ -812,23 +817,18 @@ class ServantListPageState extends State<ServantListPage> with SearchableListSta
         value: _changedAppend,
         icon: Container(),
         hint: text('Lv'),
-        items: List.generate(12, (i) {
-          if (i == 0) {
-            return DropdownMenuItem(value: -1, child: text('x+1'));
-          } else {
-            return DropdownMenuItem(
-              value: i - 1,
-              child: text('Lv${i - 1}'),
-            );
-          }
-        }),
+        items: [
+          DropdownMenuItem(value: -1, child: text('x+1')),
+          for (final i in range(11)) DropdownMenuItem(value: i, child: text('Lv$i')),
+        ],
         onChanged: (v) {
           setState(() {
             _changedAppend = v;
             if (_changedAppend == null) return;
             _batchChange((svt, cur, target) {
-              final List<int> nums =
-                  _appendNum == null ? List.generate(kAppendSkillNums.length, (i) => i) : [_appendNum!];
+              final List<int> nums = _appendNum == null || _appendNum == -1
+                  ? List.generate(kAppendSkillNums.length, (i) => i)
+                  : [_appendNum!];
               for (int i in nums) {
                 if (db.settings.display.onlyAppendUnlocked && cur.appendSkills[i] == 0) {
                   continue;

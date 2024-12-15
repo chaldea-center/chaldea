@@ -80,7 +80,7 @@ class ExtraAssetsPage extends StatelessWidget {
         S.current.april_fool,
         aprilFoolAssets,
         300,
-        expanded: true,
+        expanded: false,
         showMerge: true,
         placeholder: charaGraphPlaceholder,
         actions: [

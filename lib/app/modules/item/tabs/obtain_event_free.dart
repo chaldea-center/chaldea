@@ -94,7 +94,7 @@ class _ItemObtainEventFreeTabState extends State<ItemObtainEventFreeTab> {
     final tmpData = <Tuple4<double, double, Widget, Quest>>[];
     for (final questId in quests.keys) {
       final quest = quests[questId]!;
-      final event = quest.war?.eventReal;
+      final event = quest.event;
 
       bool outdated;
       final delaySecs = db.curUser.region.eventDelayMonth * 30 * kSecsPerDay;
@@ -122,7 +122,7 @@ class _ItemObtainEventFreeTabState extends State<ItemObtainEventFreeTab> {
         headerBuilder: (context, _) {
           List<InlineSpan> subtitles = [
             TextSpan(
-              text: 'Lv${quest.recommendLv} ${quest.consume}${quest.consumeType.unit}.  ',
+              text: 'Lv.${quest.recommendLv} ${quest.consume}${quest.consumeType.unit}.  ',
               style: quest.is90PlusFree ? TextStyle(color: Theme.of(context).colorScheme.primary) : null,
             ),
             TextSpan(
@@ -136,7 +136,14 @@ class _ItemObtainEventFreeTabState extends State<ItemObtainEventFreeTab> {
           return ListTile(
             dense: true,
             title: Text(quest.lDispName.setMaxLines(1)),
-            subtitle: Text.rich(TextSpan(children: subtitles)),
+            subtitle: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (event != null) Text(event.shownName.setMaxLines(1), maxLines: 1, overflow: TextOverflow.ellipsis),
+                Text.rich(TextSpan(children: subtitles)),
+              ],
+            ),
             trailing:
                 Text(sortType != _SortType.dropRate ? '$apRateString ${quest.consumeType.unit}' : '$dropRateString%'),
             isThreeLine: true,
