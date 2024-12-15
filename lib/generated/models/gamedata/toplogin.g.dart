@@ -634,28 +634,18 @@ DeckServantData _$DeckServantDataFromJson(Map json) => DeckServantData(
       initPos: json['initPos'],
     );
 
-Map<String, dynamic> _$DeckServantDataToJson(DeckServantData instance) {
-  final val = <String, dynamic>{
-    'id': instance.id,
-    'userSvtId': instance.userSvtId,
-  };
-
-  void writeNotNull(String key, dynamic value) {
-    if (value != null) {
-      val[key] = value;
-    }
-  }
-
-  writeNotNull('userId', instance.userId);
-  writeNotNull('svtId', instance.svtId);
-  val['userSvtEquipIds'] = instance.userSvtEquipIds;
-  writeNotNull('svtEquipIds', instance.svtEquipIds);
-  val['isFollowerSvt'] = instance.isFollowerSvt;
-  val['npcFollowerSvtId'] = instance.npcFollowerSvtId;
-  writeNotNull('followerType', instance.followerType);
-  writeNotNull('initPos', instance.initPos);
-  return val;
-}
+Map<String, dynamic> _$DeckServantDataToJson(DeckServantData instance) => <String, dynamic>{
+      'id': instance.id,
+      'userSvtId': instance.userSvtId,
+      if (instance.userId case final value?) 'userId': value,
+      if (instance.svtId case final value?) 'svtId': value,
+      'userSvtEquipIds': instance.userSvtEquipIds,
+      if (instance.svtEquipIds case final value?) 'svtEquipIds': value,
+      'isFollowerSvt': instance.isFollowerSvt,
+      'npcFollowerSvtId': instance.npcFollowerSvtId,
+      if (instance.followerType case final value?) 'followerType': value,
+      if (instance.initPos case final value?) 'initPos': value,
+    };
 
 BattleEntity _$BattleEntityFromJson(Map json) => BattleEntity(
       battleInfo: json['battleInfo'] == null

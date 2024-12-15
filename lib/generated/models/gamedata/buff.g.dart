@@ -125,30 +125,21 @@ BuffScript _$BuffScriptFromJson(Map json) => BuffScript(
           .toList(),
     );
 
-Map<String, dynamic> _$BuffScriptToJson(BuffScript instance) {
-  final val = <String, dynamic>{};
-
-  void writeNotNull(String key, dynamic value) {
-    if (value != null) {
-      val[key] = value;
-    }
-  }
-
-  writeNotNull('checkIndvType', instance.checkIndvType);
-  writeNotNull(
-      'CheckOpponentBuffTypes', instance.CheckOpponentBuffTypes?.map(const BuffTypeConverter().toJson).toList());
-  writeNotNull('relationId', instance.relationId?.toJson());
-  writeNotNull('INDIVIDUALITIE', instance.INDIVIDUALITIE?.toJson());
-  writeNotNull('INDIVIDUALITIE_COUNT_ABOVE', instance.INDIVIDUALITIE_COUNT_ABOVE);
-  writeNotNull('INDIVIDUALITIE_AND', instance.INDIVIDUALITIE_AND?.map((e) => e.toJson()).toList());
-  writeNotNull('INDIVIDUALITIE_OR', instance.INDIVIDUALITIE_OR?.map((e) => e.toJson()).toList());
-  writeNotNull('UpBuffRateBuffIndiv', instance.UpBuffRateBuffIndiv?.map((e) => e.toJson()).toList());
-  writeNotNull('TargetIndiv', instance.TargetIndiv?.toJson());
-  writeNotNull('convert', instance.convert?.toJson());
-  writeNotNull('NotPierceIndividuality',
-      instance.NotPierceIndividuality?.map((e) => e.map((e) => e.toJson()).toList()).toList());
-  return val;
-}
+Map<String, dynamic> _$BuffScriptToJson(BuffScript instance) => <String, dynamic>{
+      if (instance.checkIndvType case final value?) 'checkIndvType': value,
+      if (instance.CheckOpponentBuffTypes?.map(const BuffTypeConverter().toJson).toList() case final value?)
+        'CheckOpponentBuffTypes': value,
+      if (instance.relationId?.toJson() case final value?) 'relationId': value,
+      if (instance.INDIVIDUALITIE?.toJson() case final value?) 'INDIVIDUALITIE': value,
+      if (instance.INDIVIDUALITIE_COUNT_ABOVE case final value?) 'INDIVIDUALITIE_COUNT_ABOVE': value,
+      if (instance.INDIVIDUALITIE_AND?.map((e) => e.toJson()).toList() case final value?) 'INDIVIDUALITIE_AND': value,
+      if (instance.INDIVIDUALITIE_OR?.map((e) => e.toJson()).toList() case final value?) 'INDIVIDUALITIE_OR': value,
+      if (instance.UpBuffRateBuffIndiv?.map((e) => e.toJson()).toList() case final value?) 'UpBuffRateBuffIndiv': value,
+      if (instance.TargetIndiv?.toJson() case final value?) 'TargetIndiv': value,
+      if (instance.convert?.toJson() case final value?) 'convert': value,
+      if (instance.NotPierceIndividuality?.map((e) => e.map((e) => e.toJson()).toList()).toList() case final value?)
+        'NotPierceIndividuality': value,
+    };
 
 BuffConvert _$BuffConvertFromJson(Map json) => BuffConvert(
       targetLimit: $enumDecodeNullable(_$BuffConvertLimitTypeEnumMap, json['targetLimit']) ?? BuffConvertLimitType.all,
@@ -171,26 +162,16 @@ BuffConvert _$BuffConvertFromJson(Map json) => BuffConvert(
       effectId: (json['effectId'] as num?)?.toInt() ?? 0,
     );
 
-Map<String, dynamic> _$BuffConvertToJson(BuffConvert instance) {
-  final val = <String, dynamic>{
-    'targetLimit': _$BuffConvertLimitTypeEnumMap[instance.targetLimit]!,
-    'convertType': _$BuffConvertTypeEnumMap[instance.convertType]!,
-    'targets': instance.targets,
-    'targetBuffs': instance.targetBuffs.map((e) => e.toJson()).toList(),
-    'convertBuffs': instance.convertBuffs.map((e) => e.toJson()).toList(),
-  };
-
-  void writeNotNull(String key, dynamic value) {
-    if (value != null) {
-      val[key] = value;
-    }
-  }
-
-  writeNotNull('script', instance.script?.toJson());
-  val['effectId'] = instance.effectId;
-  val['targetIndividualities'] = instance.targetIndividualities.map((e) => e.toJson()).toList();
-  return val;
-}
+Map<String, dynamic> _$BuffConvertToJson(BuffConvert instance) => <String, dynamic>{
+      'targetLimit': _$BuffConvertLimitTypeEnumMap[instance.targetLimit]!,
+      'convertType': _$BuffConvertTypeEnumMap[instance.convertType]!,
+      'targets': instance.targets,
+      'targetBuffs': instance.targetBuffs.map((e) => e.toJson()).toList(),
+      'convertBuffs': instance.convertBuffs.map((e) => e.toJson()).toList(),
+      if (instance.script?.toJson() case final value?) 'script': value,
+      'effectId': instance.effectId,
+      'targetIndividualities': instance.targetIndividualities.map((e) => e.toJson()).toList(),
+    };
 
 const _$BuffConvertLimitTypeEnumMap = {
   BuffConvertLimitType.all: 'all',

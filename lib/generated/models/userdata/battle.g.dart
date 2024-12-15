@@ -125,25 +125,16 @@ BattleShareData _$BattleShareDataFromJson(Map json) => $checkedCreate(
       fieldKeyMap: const {'formation': 'team'},
     );
 
-Map<String, dynamic> _$BattleShareDataToJson(BattleShareData instance) {
-  final val = <String, dynamic>{};
-
-  void writeNotNull(String key, dynamic value) {
-    if (value != null) {
-      val[key] = value;
-    }
-  }
-
-  writeNotNull('minBuild', instance.minBuild);
-  writeNotNull('appBuild', instance.appBuild);
-  writeNotNull('quest', instance.quest?.toJson());
-  val['options'] = instance.options.toJson();
-  val['team'] = instance.formation.toJson();
-  writeNotNull('delegate', instance.delegate?.toJson());
-  val['actions'] = instance.actions.map((e) => e.toJson()).toList();
-  val['isCritTeam'] = instance.isCritTeam;
-  return val;
-}
+Map<String, dynamic> _$BattleShareDataToJson(BattleShareData instance) => <String, dynamic>{
+      if (instance.minBuild case final value?) 'minBuild': value,
+      if (instance.appBuild case final value?) 'appBuild': value,
+      if (instance.quest?.toJson() case final value?) 'quest': value,
+      'options': instance.options.toJson(),
+      'team': instance.formation.toJson(),
+      if (instance.delegate?.toJson() case final value?) 'delegate': value,
+      'actions': instance.actions.map((e) => e.toJson()).toList(),
+      'isCritTeam': instance.isCritTeam,
+    };
 
 BattleShareDataOption _$BattleShareDataOptionFromJson(Map json) => $checkedCreate(
       'BattleShareDataOption',
@@ -188,22 +179,13 @@ BattleQuestInfo _$BattleQuestInfoFromJson(Map json) => $checkedCreate(
       },
     );
 
-Map<String, dynamic> _$BattleQuestInfoToJson(BattleQuestInfo instance) {
-  final val = <String, dynamic>{
-    'id': instance.id,
-    'phase': instance.phase,
-  };
-
-  void writeNotNull(String key, dynamic value) {
-    if (value != null) {
-      val[key] = value;
-    }
-  }
-
-  writeNotNull('enemyHash', instance.enemyHash);
-  writeNotNull('region', _$JsonConverterToJson<String, Region>(instance.region, const RegionConverter().toJson));
-  return val;
-}
+Map<String, dynamic> _$BattleQuestInfoToJson(BattleQuestInfo instance) => <String, dynamic>{
+      'id': instance.id,
+      'phase': instance.phase,
+      if (instance.enemyHash case final value?) 'enemyHash': value,
+      if (_$JsonConverterToJson<String, Region>(instance.region, const RegionConverter().toJson) case final value?)
+        'region': value,
+    };
 
 BattleTeamFormation _$BattleTeamFormationFromJson(Map json) => $checkedCreate(
       'BattleTeamFormation',
@@ -276,38 +258,29 @@ SvtSaveData _$SvtSaveDataFromJson(Map json) => $checkedCreate(
       },
     );
 
-Map<String, dynamic> _$SvtSaveDataToJson(SvtSaveData instance) {
-  final val = <String, dynamic>{};
-
-  void writeNotNull(String key, dynamic value) {
-    if (value != null) {
-      val[key] = value;
-    }
-  }
-
-  writeNotNull('svtId', instance.svtId);
-  val['limitCount'] = instance.limitCount;
-  val['skillIds'] = instance.skillIds;
-  val['skillLvs'] = instance.skillLvs;
-  val['appendLvs'] = instance.appendLvs;
-  writeNotNull('tdId', instance.tdId);
-  val['tdLv'] = instance.tdLv;
-  val['lv'] = instance.lv;
-  val['atkFou'] = instance.atkFou;
-  val['hpFou'] = instance.hpFou;
-  writeNotNull('fixedAtk', instance.fixedAtk);
-  writeNotNull('fixedHp', instance.fixedHp);
-  writeNotNull('ceId', instance.ceId);
-  val['ceLimitBreak'] = instance.ceLimitBreak;
-  val['ceLv'] = instance.ceLv;
-  val['supportType'] = _$SupportSvtTypeEnumMap[instance.supportType]!;
-  val['cardStrengthens'] = instance.cardStrengthens;
-  val['commandCodeIds'] = instance.commandCodeIds;
-  val['disabledExtraSkills'] = instance.disabledExtraSkills.toList();
-  val['customPassives'] = instance.customPassives.map((e) => e.toJson()).toList();
-  val['customPassiveLvs'] = instance.customPassiveLvs;
-  return val;
-}
+Map<String, dynamic> _$SvtSaveDataToJson(SvtSaveData instance) => <String, dynamic>{
+      if (instance.svtId case final value?) 'svtId': value,
+      'limitCount': instance.limitCount,
+      'skillIds': instance.skillIds,
+      'skillLvs': instance.skillLvs,
+      'appendLvs': instance.appendLvs,
+      if (instance.tdId case final value?) 'tdId': value,
+      'tdLv': instance.tdLv,
+      'lv': instance.lv,
+      'atkFou': instance.atkFou,
+      'hpFou': instance.hpFou,
+      if (instance.fixedAtk case final value?) 'fixedAtk': value,
+      if (instance.fixedHp case final value?) 'fixedHp': value,
+      if (instance.ceId case final value?) 'ceId': value,
+      'ceLimitBreak': instance.ceLimitBreak,
+      'ceLv': instance.ceLv,
+      'supportType': _$SupportSvtTypeEnumMap[instance.supportType]!,
+      'cardStrengthens': instance.cardStrengthens,
+      'commandCodeIds': instance.commandCodeIds,
+      'disabledExtraSkills': instance.disabledExtraSkills.toList(),
+      'customPassives': instance.customPassives.map((e) => e.toJson()).toList(),
+      'customPassiveLvs': instance.customPassiveLvs,
+    };
 
 const _$SupportSvtTypeEnumMap = {
   SupportSvtType.none: 'none',
@@ -658,23 +631,13 @@ BattleRecordData _$BattleRecordDataFromJson(Map json) => $checkedCreate(
       },
     );
 
-Map<String, dynamic> _$BattleRecordDataToJson(BattleRecordData instance) {
-  final val = <String, dynamic>{
-    'type': _$BattleRecordDataTypeEnumMap[instance.type]!,
-  };
-
-  void writeNotNull(String key, dynamic value) {
-    if (value != null) {
-      val[key] = value;
-    }
-  }
-
-  writeNotNull('svt', instance.svt);
-  writeNotNull('skill', instance.skill);
-  writeNotNull('attacks', instance.attacks?.map((e) => e.toJson()).toList());
-  val['options'] = instance.options.toJson();
-  return val;
-}
+Map<String, dynamic> _$BattleRecordDataToJson(BattleRecordData instance) => <String, dynamic>{
+      'type': _$BattleRecordDataTypeEnumMap[instance.type]!,
+      if (instance.svt case final value?) 'svt': value,
+      if (instance.skill case final value?) 'skill': value,
+      if (instance.attacks?.map((e) => e.toJson()).toList() case final value?) 'attacks': value,
+      'options': instance.options.toJson(),
+    };
 
 const _$BattleRecordDataTypeEnumMap = {
   BattleRecordDataType.base: 'base',

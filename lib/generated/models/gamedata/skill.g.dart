@@ -389,23 +389,16 @@ SkillScript _$SkillScriptFromJson(Map json) => SkillScript(
           .toList(),
     );
 
-Map<String, dynamic> _$SkillScriptToJson(SkillScript instance) {
-  final val = <String, dynamic>{};
-
-  void writeNotNull(String key, dynamic value) {
-    if (value != null) {
-      val[key] = value;
-    }
-  }
-
-  writeNotNull('actRarity', instance.actRarity);
-  writeNotNull('SelectAddInfo', instance.SelectAddInfo?.map((e) => e.toJson()).toList());
-  writeNotNull('selectTreasureDeviceInfo', instance.selectTreasureDeviceInfo?.map((e) => e.toJson()).toList());
-  writeNotNull('IgnoreValueUp', instance.IgnoreValueUp);
-  writeNotNull('IgnoreBattlePointUp', instance.IgnoreBattlePointUp);
-  writeNotNull('tdChangeByBattlePoint', instance.tdChangeByBattlePoint?.map((e) => e.toJson()).toList());
-  return val;
-}
+Map<String, dynamic> _$SkillScriptToJson(SkillScript instance) => <String, dynamic>{
+      if (instance.actRarity case final value?) 'actRarity': value,
+      if (instance.SelectAddInfo?.map((e) => e.toJson()).toList() case final value?) 'SelectAddInfo': value,
+      if (instance.selectTreasureDeviceInfo?.map((e) => e.toJson()).toList() case final value?)
+        'selectTreasureDeviceInfo': value,
+      if (instance.IgnoreValueUp case final value?) 'IgnoreValueUp': value,
+      if (instance.IgnoreBattlePointUp case final value?) 'IgnoreBattlePointUp': value,
+      if (instance.tdChangeByBattlePoint?.map((e) => e.toJson()).toList() case final value?)
+        'tdChangeByBattlePoint': value,
+    };
 
 SkillSelectAddInfo _$SkillSelectAddInfoFromJson(Map json) => SkillSelectAddInfo(
       title: json['title'] as String? ?? '',

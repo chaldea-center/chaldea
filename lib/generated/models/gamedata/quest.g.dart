@@ -962,23 +962,14 @@ EnemyScript _$EnemyScriptFromJson(Map json) => EnemyScript(
           .toList(),
     );
 
-Map<String, dynamic> _$EnemyScriptToJson(EnemyScript instance) {
-  final val = <String, dynamic>{};
-
-  void writeNotNull(String key, dynamic value) {
-    if (value != null) {
-      val[key] = value;
-    }
-  }
-
-  writeNotNull('deathType', _$SvtDeathTypeEnumMap[instance.deathType]);
-  writeNotNull('hpBarType', instance.hpBarType);
-  writeNotNull('leader', instance.leader);
-  writeNotNull('call', instance.call);
-  writeNotNull('shift', instance.shift);
-  writeNotNull('shiftClear', instance.shiftClear?.map((e) => e.toJson()).toList());
-  return val;
-}
+Map<String, dynamic> _$EnemyScriptToJson(EnemyScript instance) => <String, dynamic>{
+      if (_$SvtDeathTypeEnumMap[instance.deathType] case final value?) 'deathType': value,
+      if (instance.hpBarType case final value?) 'hpBarType': value,
+      if (instance.leader case final value?) 'leader': value,
+      if (instance.call case final value?) 'call': value,
+      if (instance.shift case final value?) 'shift': value,
+      if (instance.shiftClear?.map((e) => e.toJson()).toList() case final value?) 'shiftClear': value,
+    };
 
 const _$SvtDeathTypeEnumMap = {
   SvtDeathType.normal: 'normal',
