@@ -118,7 +118,7 @@ class UserBackupData {
   }) : decoded = decode(content);
 
   static String encode(UserData userData) {
-    return base64Encode(GZipEncoder().encode(utf8.encode(jsonEncode(userData)))!);
+    return base64Encode(GZipEncoder().encode(utf8.encode(jsonEncode(userData))));
   }
 
   static UserData? decode(String content) {

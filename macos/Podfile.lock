@@ -116,7 +116,7 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   audio_session: dea1f41890dbf1718f04a56f1d6150fd50039b72
-  connectivity_plus: 4c41c08fc6d7c91f63bc7aec70ffe3730b04f563
+  connectivity_plus: 18382e7311ba19efcaee94442b23b32507b20695
   device_info_plus: 1b14eed9bf95428983aed283a8d51cce3d8c4215
   flutter_js: c664361655af1d8fc24e278c7d086e9cbe0d68bc
   flutter_local_notifications: 7062189aabf7f50938a7b8b6614ffa97656eb0bf

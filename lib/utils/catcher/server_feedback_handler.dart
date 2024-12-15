@@ -123,9 +123,7 @@ class ServerFeedbackHandler extends ReportHandler {
     List<int>? zippedBytes;
     if (archive.isNotEmpty) {
       zippedBytes = ZipEncoder().encode(archive);
-      if (zippedBytes != null) {
-        resolvedAttachments['attachment.zip'] = Uint8List.fromList(zippedBytes);
-      }
+      resolvedAttachments['attachment.zip'] = Uint8List.fromList(zippedBytes);
     }
 
     if (screenshotBytes != null) {

@@ -214,7 +214,7 @@ class BattleShareData {
 
   String toDataV2() {
     final shareData = jsonEncode(this);
-    String data = base64UrlEncode(GZipEncoder().encode(utf8.encode(shareData), level: Deflate.BEST_COMPRESSION)!);
+    String data = base64UrlEncode(GZipEncoder().encode(utf8.encode(shareData), level: DeflateLevel.bestCompression));
     return 'G$data';
   }
 
