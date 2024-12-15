@@ -31,6 +31,9 @@ abstract class FRequestBase {
   Response? rawResponse;
   String path;
   String key;
+  Map<String, dynamic> params = {};
+
+  String get normKey => key.replaceAll(RegExp(r'[/_]'), '');
 
   FRequestBase({required this.path, String? key}) : key = key ?? path;
 
@@ -48,19 +51,20 @@ abstract class FRequestBase {
 }
 
 class FResponse {
+  final FRequestBase request;
   final Response rawResponse;
   final FateTopLogin data;
 
-  FResponse.raw(this.rawResponse, this.data);
+  FResponse.raw(this.request, this.rawResponse, this.data);
 
-  factory FResponse(Response rawResponse) {
+  factory FResponse(FRequestBase request, Response rawResponse) {
     try {
       final jsonData = FateTopLogin.parseToMap(rawResponse.data);
-      final resp = FResponse.raw(rawResponse, FateTopLogin.fromJson(jsonData));
+      final resp = FResponse.raw(request, rawResponse, FateTopLogin.fromJson(jsonData));
       return resp;
     } catch (e, s) {
       logger.e('decode response cache failed', e, s);
-      return FResponse.raw(rawResponse, FateTopLogin.fromJson({}));
+      return FResponse.raw(request, rawResponse, FateTopLogin.fromJson({}));
     }
   }
 
@@ -178,7 +182,7 @@ abstract class NetworkManagerBase<TRequest extends FRequestBase, TUser extends A
           // data
           final _jsonData = FateTopLogin.parseToMap(rawResp.data);
           bool dumpResponse = db.settings.fakerSettings.dumpResponse;
-          if (!kReleaseMode && request.key.replaceAll(RegExp(r'[/_]'), '') == 'followerlist') dumpResponse = false;
+          if (!kReleaseMode && request.normKey == 'followerlist') dumpResponse = false;
           if (dumpResponse) {
             String fn = '${DateTime.now().toSafeFileName()}_${request.key}';
             fn = fn.replaceAll(RegExp(r'[/:\s\\]+'), '_');
@@ -187,7 +191,7 @@ abstract class NetworkManagerBase<TRequest extends FRequestBase, TUser extends A
           _nowTime = getNowTimestamp();
           request.receiveTime = getNowTimestamp();
 
-          final resp = FResponse(rawResp);
+          final resp = FResponse(request, rawResp);
 
           for (final detail in resp.data.responses) {
             if (!detail.isSuccess()) {
@@ -234,7 +238,7 @@ abstract class NetworkManagerBase<TRequest extends FRequestBase, TUser extends A
 
   Future<Response> requestStartImpl(TRequest request);
 
-  Future<void> setLocalNotification({List<int>? removedAps, UserGameEntity? oldUserGame}) async {
+  Future<void> setLocalNotification({List<int>? removedAps, UserGameEntity? oldUserGame, TRequest? request}) async {
     if (!LocalNotificationUtil.supported) return;
     if (!db.settings.fakerSettings.apRecoveredNotification) return;
     if (!(await LocalNotificationUtil.checkPermission())) return;
@@ -245,11 +249,6 @@ abstract class NetworkManagerBase<TRequest extends FRequestBase, TUser extends A
         final int id = LocalNotificationUtil.generateUserApRecoverId(user.region.index, userGame.userId, targetAp);
         await LocalNotificationUtil.plugin.cancel(id);
       }
-    }
-    Set<int> pendingIds = {};
-    if (oldUserGame != null && oldUserGame.actRecoverAt == userGame.actRecoverAt) {
-      final pendings = await LocalNotificationUtil.plugin.pendingNotificationRequests();
-      pendingIds.addAll(pendings.map((e) => e.id));
     }
     for (final targetAp in user.recoveredAps) {
       final isFull = targetAp == 0;
@@ -268,21 +267,40 @@ abstract class NetworkManagerBase<TRequest extends FRequestBase, TUser extends A
         // await LocalNotificationUtil.plugin.cancel(id);
         continue;
       }
-      if (pendingIds.contains(id)) continue;
 
-      final recoverTime = recoverAt.sec2date();
-      DateTime notifyTime = recoverTime.subtract(Duration(minutes: isFull ? 5 : 0));
-      if (notifyTime.timestamp <= now + 1) {
-        notifyTime = (now + 2).sec2date();
+      int notifyAt;
+      if (isFull) {
+        final t5 = recoverAt - 60 * 5;
+        if (now < t5) {
+          notifyAt = t5;
+        } else if (now < recoverAt) {
+          notifyAt = (now + recoverAt) ~/ 2;
+        } else {
+          if (request != null && request.normKey == 'itemrecover') {
+            notifyAt = recoverAt + 60;
+          } else {
+            notifyAt = recoverAt;
+          }
+        }
+
+        if (oldUserGame?.actRecoverAt == userGame.actRecoverAt && recoverAt < now) {
+          continue;
+        }
+      } else {
+        notifyAt = recoverAt;
+      }
+
+      if (notifyAt <= now + 1) {
+        notifyAt = now + 2;
       }
 
       await LocalNotificationUtil.scheduleNotification(
         id: id,
-        dateTime: notifyTime,
+        dateTime: notifyAt.sec2date(),
         title: isFull ? S.current.ap_fully_recovered : 'AP $targetAp!',
         body: [
           '[${user.serverName}] ${userGame.name}',
-          recoverTime.toCustomString(year: false, millisecond: false),
+          recoverAt.sec2date().toCustomString(year: false, millisecond: false),
         ].join('\n'),
       );
     }
@@ -306,6 +324,8 @@ class WWWForm {
   String get data {
     return _list.map((e) => '${e.key}=${Uri.encodeComponent(e.value)}').join('&');
   }
+
+  Map<String, String> get map => Map.fromEntries(_list);
 }
 
 abstract class FakerUA {

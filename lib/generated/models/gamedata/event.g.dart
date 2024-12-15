@@ -450,7 +450,7 @@ const _$ShopTypeEnumMap = {
   ShopType.tradeAp: 'tradeAp',
   ShopType.revivalItem: 'revivalItem',
   ShopType.eventSvtEquip: 'eventSvtEquip',
-  ShopType.shop17: 'shop17',
+  ShopType.exchangeSvtCoin: 'exchangeSvtCoin',
 };
 
 const _$PayTypeEnumMap = {

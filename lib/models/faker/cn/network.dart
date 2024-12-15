@@ -65,7 +65,8 @@ class NetworkManagerCN extends NetworkManagerBase<FRequestCN, AutoLoginDataCN> {
     // buffer.writeln(headers);
     buffer.writeln(form.data);
     print(buffer.toString());
-    final Response rawResp = await Dio().post(
+    request.params = form.map;
+    final Response rawResp = await Dio(BaseOptions(connectTimeout: const Duration(seconds: 10))).post(
       uri.toString(),
       data: form.data,
       options: Options(

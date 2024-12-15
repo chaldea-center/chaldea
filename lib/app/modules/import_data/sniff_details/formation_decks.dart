@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'package:chaldea/app/app.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/gamedata/toplogin.dart';
 import 'package:chaldea/models/models.dart';
@@ -9,8 +10,11 @@ import '../../battle/formation/formation_card.dart';
 
 class UserFormationDecksPage extends StatefulWidget {
   final MasterDataManager mstData;
+  final int? eventId;
   final ValueChanged<UserDeckEntity>? onSelected;
-  const UserFormationDecksPage({super.key, required this.mstData, this.onSelected});
+  final ValueChanged<UserEventDeckEntity>? onEventDeckSelected;
+  const UserFormationDecksPage(
+      {super.key, required this.mstData, this.eventId, this.onSelected, this.onEventDeckSelected});
 
   @override
   State<UserFormationDecksPage> createState() => UserFormationDecksPageState();
@@ -23,20 +27,22 @@ class UserFormationDecksPageState extends State<UserFormationDecksPage> {
   @override
   Widget build(BuildContext context) {
     final decks = mstData.userDeck.list;
+    final eventDecks = mstData.userEventDeck.list;
+    eventDecks.sortByList((e) => [widget.eventId == e.eventId ? 0 : 1, -e.eventId, e.deckNo]);
     return Scaffold(
       appBar: AppBar(
-        title: const Text("User Formation Decks"),
+        title: Text(widget.eventId == null ? "User Formation Decks" : "Event ${widget.eventId} Formation Decks"),
       ),
       body: ListView.builder(
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-        itemBuilder: (context, index) => buildOne(decks[index]),
-        // separatorBuilder: (context, index) => const Divider(indent: 16, endIndent: 16, height: 16),
-        itemCount: decks.length,
+        itemBuilder: (context, index) =>
+            widget.eventId == null ? buildUserDeck(decks[index]) : buildEventDeck(eventDecks[index]),
+        itemCount: widget.eventId == null ? decks.length : eventDecks.length,
       ),
     );
   }
 
-  Widget buildOne(UserDeckEntity deck) {
+  Widget buildUserDeck(UserDeckEntity deck) {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -54,6 +60,41 @@ class UserFormationDecksPageState extends State<UserFormationDecksPage> {
                 onPressed: () {
                   Navigator.pop(context);
                   widget.onSelected!(deck);
+                },
+                child: Text(S.current.select),
+              ),
+            ),
+          )
+      ],
+    );
+  }
+
+  Widget buildEventDeck(UserEventDeckEntity deck) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        GestureDetector(
+          onTap: deck.eventId == 0
+              ? null
+              : () {
+                  router.push(url: Routes.eventI(deck.eventId));
+                },
+          child: DividerWithTitle(
+              title: '${widget.eventId == deck.eventId ? "※ " : ""}[${deck.eventId}] No.${deck.deckNo}'),
+        ),
+        FormationCard(
+          formation: UserDeckEntityX.toFormation(deckInfo: deck.deckInfo, mstData: mstData, userSvts: userSvts),
+          userSvtCollections: mstData.userSvtCollection.dict,
+          showBond: true,
+        ),
+        if (widget.onSelected != null)
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 4),
+            child: Center(
+              child: FilledButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  widget.onEventDeckSelected!(deck);
                 },
                 child: Text(S.current.select),
               ),

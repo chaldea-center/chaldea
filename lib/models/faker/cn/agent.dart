@@ -219,6 +219,7 @@ class FakerAgentCN extends FakerAgent<FRequestCN, AutoLoginDataCN, NetworkManage
 
   @override
   Future<FResponse> loginTop() async {
+    raidRecords.clear();
     await _member();
     await _loginToMemberCenter();
     await Future.delayed(const Duration(seconds: 2));
@@ -249,7 +250,9 @@ class FakerAgentCN extends FakerAgent<FRequestCN, AutoLoginDataCN, NetworkManage
 
   @override
   Future<FResponse> homeTop() async {
-    return _acPhp(key: 'home', nid: 'home');
+    final resp = await _acPhp(key: 'home', nid: 'home');
+    updateRaidInfo(homeResp: resp);
+    return resp;
   }
 
   @override
@@ -328,6 +331,11 @@ class FakerAgentCN extends FakerAgent<FRequestCN, AutoLoginDataCN, NetworkManage
         'itemSelectNum': itemSelectNum,
       },
     );
+  }
+
+  @override
+  Future<FResponse> userPresentList() {
+    return _acPhp(key: 'presentlist', nid: 'present_list');
   }
 
   @override
@@ -501,6 +509,7 @@ class FakerAgentCN extends FakerAgent<FRequestCN, AutoLoginDataCN, NetworkManage
       lastBattle = curBattle ?? battleEntity;
       curBattle = battleEntity;
     }
+    updateRaidInfo(battleSetupResp: resp);
     return resp;
   }
 
@@ -637,6 +646,19 @@ class FakerAgentCN extends FakerAgent<FRequestCN, AutoLoginDataCN, NetworkManage
       logger.e('parse battle result data failed', e, s);
     }
     network.mstData.battles.clear();
+    return resp;
+  }
+
+  @override
+  Future<FResponse> battleTurn({required int64_t battleId}) async {
+    final resp = await _acPhp(
+      key: 'battleturn',
+      nid: 'battle_turn',
+      params2: {
+        "battleId": battleId,
+      },
+    );
+    updateRaidInfo(battleTurnResp: resp);
     return resp;
   }
 }

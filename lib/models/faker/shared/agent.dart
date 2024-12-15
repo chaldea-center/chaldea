@@ -22,6 +22,10 @@ abstract class FakerAgent<TRequest extends FRequestBase, TUser extends AutoLogin
   BattleResultData? lastBattleResultData;
   FResponse? lastResp;
 
+  Map<int, Map<int, EventRaidInfoRecord>> raidRecords = {};
+  EventRaidInfoRecord getRaidRecord(int eventId, int day) =>
+      raidRecords.putIfAbsent(eventId, () => {}).putIfAbsent(day, () => EventRaidInfoRecord());
+
   Future<FResponse> gamedataTop({bool checkAppUpdate = true});
 
   Future<FResponse> loginTop();
@@ -41,6 +45,7 @@ abstract class FakerAgent<TRequest extends FRequestBase, TUser extends AutoLogin
 
   Future<FResponse> userPresentReceive(
       {required List<int64_t> presentIds, required int32_t itemSelectIdx, required int32_t itemSelectNum});
+  Future<FResponse> userPresentList();
 
   Future<FResponse> gachaDraw({
     required int32_t gachaId,
@@ -139,6 +144,9 @@ abstract class FakerAgent<TRequest extends FRequestBase, TUser extends AutoLogin
     List waveInfos = const [],
   });
 
+  // raid
+  Future<FResponse> battleTurn({required int64_t battleId});
+
   // extended
 
   Future<FResponse> battleSetupWithOptions(AutoBattleOptions options) async {
@@ -216,11 +224,7 @@ abstract class FakerAgent<TRequest extends FRequestBase, TUser extends AutoLogin
     int userEquipId = 0;
 
     if (questPhaseEntity.flags.contains(QuestFlag.userEventDeck)) {
-      final eventDeckNo = questPhaseEntity.extraDetail?.useEventDeckNo;
-      if (eventDeckNo == null) {
-        throw SilentException('flag userEventDeck: useEventDeckNo not found');
-      }
-      activeDeckId = eventDeckNo;
+      activeDeckId = questPhaseEntity.extraDetail?.useEventDeckNo ?? 1;
     } else {
       activeDeckId = options.deckId;
     }
@@ -254,7 +258,7 @@ abstract class FakerAgent<TRequest extends FRequestBase, TUser extends AutoLogin
       if (eventId == null) {
         throw SilentException('Quest related event not found');
       }
-      final deckNo = questPhaseEntity.extraDetail!.useEventDeckNo!;
+      final deckNo = questPhaseEntity.extraDetail?.useEventDeckNo ?? 1;
       final eventDeck = mstData.userEventDeck[UserEventDeckEntity.createPK(eventId, deckNo)];
       if (eventDeck == null) {
         throw SilentException('UserEventDeck(eventId=$eventId,deckNo=$deckNo) not found');
@@ -329,7 +333,9 @@ abstract class FakerAgent<TRequest extends FRequestBase, TUser extends AutoLogin
         followers = resp.data.mstData.userFollower.first.followerInfo;
       }
       refreshCount += 1;
-
+      // some may cause param error, shuffle to avoid keep selecting the same support
+      followers = followers.toList();
+      followers.shuffle();
       for (final follower in followers) {
         // skip FollowerType.follow
         if (follower.type != FollowerType.friend.value && follower.type != FollowerType.notFriend.value) {
@@ -399,7 +405,9 @@ abstract class FakerAgent<TRequest extends FRequestBase, TUser extends AutoLogin
         final userSvt = userSvtIdMap[enemy.userSvtId]!;
         final raidDay =
             battleEntity.battleInfo?.raidInfo.firstWhereOrNull((e) => e.uniqueId == enemy.uniqueId)?.day ?? -1;
-        assert(raidDay1 == raidDay, 'raid day mismatch: $raidDay1 != $raidDay');
+        if (raidDay1 != raidDay) {
+          throw SilentException('raid day mismatch: $raidDay1 != $raidDay');
+        }
         raidResults.add(BattleRaidResult(
           uniqueId: enemy.uniqueId,
           day: raidDay,
@@ -428,6 +436,66 @@ abstract class FakerAgent<TRequest extends FRequestBase, TUser extends AutoLogin
     // shop 13000000
     // item_103 + 40AP
     return shopPurchase(id: 13000000, num: buyCount, anotherPayFlag: 0);
+  }
+
+  void updateRaidInfo({FResponse? homeResp, FResponse? battleSetupResp, FResponse? battleTurnResp}) {
+    final now = DateTime.now().timestamp;
+    // home top
+    if (homeResp != null) {
+      for (final eventRaid in homeResp.data.mstData.mstEventRaid) {
+        getRaidRecord(eventRaid.eventId, eventRaid.day).eventRaid = eventRaid;
+      }
+      for (final raid in homeResp.data.mstData.totalEventRaid) {
+        final record = getRaidRecord(raid.eventId, raid.day);
+        record.history.add((
+          timestamp: homeResp.data.serverTime?.timestamp ?? now,
+          raidInfo: BattleRaidInfo(
+            day: raid.day,
+            uniqueId: 0,
+            maxHp: record.eventRaid?.maxHp ?? 0,
+            totalDamage: raid.totalDamage,
+          ),
+          battleId: null,
+        ));
+      }
+    }
+    // battle setup
+    final battleEntity = battleSetupResp?.data.mstData.battles.firstOrNull;
+    final setupRaidInfos = battleEntity?.battleInfo?.raidInfo ?? [];
+    if (battleEntity != null && setupRaidInfos.isNotEmpty) {
+      for (final raid in setupRaidInfos) {
+        getRaidRecord(battleEntity.eventId, raid.day).history.add((
+          timestamp: battleSetupResp?.data.serverTime?.timestamp ?? now,
+          raidInfo: raid,
+          battleId: battleEntity.id,
+        ));
+      }
+    }
+    // battle turn
+    final turnSuccess = battleTurnResp?.data.getResponseNull('battle_turn')?.success;
+    if (battleTurnResp != null && turnSuccess != null) {
+      final raidInfos = (turnSuccess['raidInfo'] as List?) ?? [];
+      final battleId = int.tryParse(battleTurnResp.request.params['battleId'] ?? '');
+      if (battleId != null) {
+        int? eventId;
+        for (final (eId, records) in raidRecords.items) {
+          if (records.values.expand((e) => e.history).any((e) => e.battleId == battleId)) {
+            eventId = eId;
+            break;
+          }
+        }
+        if (eventId != null) {
+          for (final rawRaid in raidInfos) {
+            final raid = BattleRaidInfo.fromJson(Map<String, dynamic>.from(rawRaid as Map));
+            getRaidRecord(eventId, raid.day).history.add((
+              timestamp: battleTurnResp.data.serverTime?.timestamp ?? now,
+              raidInfo: raid,
+              battleId: battleId,
+            ));
+          }
+        }
+      }
+    }
   }
 }
 
@@ -498,4 +566,9 @@ enum PresentOverflowType {
 
   const PresentOverflowType(this.value);
   final int value;
+}
+
+class EventRaidInfoRecord {
+  EventRaidEntity? eventRaid;
+  List<({int timestamp, BattleRaidInfo raidInfo, int? battleId})> history = [];
 }

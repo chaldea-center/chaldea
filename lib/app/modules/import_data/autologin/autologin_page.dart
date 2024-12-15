@@ -550,7 +550,7 @@ class _AutoLoginPageState extends State<AutoLoginPage> {
       EasyLoading.show(status: 'Login...');
       await agent.gamedataTop();
       final loginResp = await agent.loginTop();
-      args.response = FResponse(loginResp.rawResponse);
+      args.response = FResponse(loginResp.request, loginResp.rawResponse);
       final userGame = args.response?.data.mstData.userGame.firstOrNull;
       final serverTime = args.response?.data.serverTime;
       if (userGame != null) {

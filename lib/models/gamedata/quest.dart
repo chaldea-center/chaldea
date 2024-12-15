@@ -1807,6 +1807,7 @@ class QuestPhaseExtraDetail {
   List<int>? IgnoreBattlePointUp;
   // int? repeatReward;
   // List<int>? consumeItemBattleWin;
+  /// default `1`
   int? useEventDeckNo;
   int? masterSkillDelay;
   String? masterSkillDelayInfo;

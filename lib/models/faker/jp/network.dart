@@ -148,7 +148,8 @@ class NetworkManagerJP extends NetworkManagerBase<FRequestJP, AutoLoginDataJP> {
     buffer.writeln(uri);
     // buffer.writeln(headers);
     buffer.writeln(form.data);
-    final Response rawResp = await Dio().post(
+    request.params = form.map;
+    final Response rawResp = await Dio(BaseOptions(connectTimeout: const Duration(seconds: 10))).post(
       uri.toString(),
       data: form.data,
       options: Options(

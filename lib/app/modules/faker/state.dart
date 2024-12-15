@@ -73,7 +73,7 @@ class FakerRuntime {
     }
     final previous = _runtimes[user];
     if (previous != null && previous.mounted) {
-      throw SilentException('Another window has already opened user (${user.serverName} ${user.userGame?.name})');
+      // throw SilentException('Another window has already opened user (${user.serverName} ${user.userGame?.name})');
     }
     if (!state.mounted) {
       throw SilentException('Context already disposed');
@@ -94,8 +94,10 @@ class FakerRuntime {
     update();
   }
 
-  void dispose() {
-    _rootState = null;
+  void dispose(State? state) {
+    if (state != null && state == _rootState) {
+      _rootState = null;
+    }
   }
 
   // task
@@ -174,8 +176,8 @@ class FakerRuntime {
     if (battleOption.loopCount <= 0) {
       throw SilentException('loop count (${battleOption.loopCount}) must >0');
     }
-    if (battleOption.targetDrops.values.any((v) => v <= 0)) {
-      throw SilentException('loop target drop num must >0');
+    if (battleOption.targetDrops.values.any((v) => v < 0)) {
+      throw SilentException('loop target drop num must >=0 (0=always)');
     }
     if (battleOption.winTargetItemNum.values.any((v) => v <= 0)) {
       throw SilentException('win target drop num must >0');
@@ -224,8 +226,8 @@ class FakerRuntime {
       await _ensureEnoughApItem(quest: questPhaseEntity, option: battleOption);
 
       update();
-      if (questPhaseEntity.flags.contains(QuestFlag.noBattle)) {
-        throw SilentException('DO NOT loop noBattle quest');
+      if (questPhaseEntity.flags.contains(QuestFlag.noBattle) && questPhaseEntity.stages.isNotEmpty) {
+        throw SilentException('noBattle flag but ${questPhaseEntity.stages.length} stages');
       }
       final setupResp = await agent.battleSetupWithOptions(battleOption);
       update();
@@ -244,6 +246,10 @@ class FakerRuntime {
             break;
           }
         }
+      }
+
+      if (questPhaseEntity.flags.contains(QuestFlag.raid)) {
+        await agent.battleTurn(battleId: battleEntity.id);
       }
 
       if (shouldRetire) {
@@ -288,13 +294,13 @@ class FakerRuntime {
         // check total drop target of this loop
         if (battleOption.targetDrops.isNotEmpty) {
           for (final (itemId, targetNum) in battleOption.targetDrops.items.toList()) {
-            final curDropNum = curLoopDropStat.items[itemId] ?? 0;
-            if (curDropNum > 0) {
-              battleOption.targetDrops[itemId] = targetNum - curDropNum;
-            }
+            final dropNum = resultBattleDrops[itemId];
+            if (dropNum == null || dropNum <= 0) continue;
+            battleOption.targetDrops[itemId] = targetNum - dropNum;
           }
-          final reachedItems =
-              battleOption.targetDrops.keys.where((itemId) => battleOption.targetDrops[itemId]! <= 0).toList();
+          final reachedItems = battleOption.targetDrops.keys
+              .where((itemId) => resultBattleDrops.containsKey(itemId) && battleOption.targetDrops[itemId]! <= 0)
+              .toList();
           if (reachedItems.isNotEmpty) {
             throw SilentException(
                 'Target drop reaches: ${reachedItems.map((e) => GameCardMixin.anyCardItemName(e).l).join(', ')}');
@@ -309,6 +315,11 @@ class FakerRuntime {
       battleOption.loopCount -= 1;
 
       elapseSeconds.add(DateTime.now().timestamp - startTime);
+      update();
+      if (questPhaseEntity.flags.contains(QuestFlag.raid) && finishedCount % 5 == 1) {
+        // update raid info
+        await agent.homeTop();
+      }
       update();
       await Future.delayed(const Duration(seconds: 2));
       if (battleOption.stopIfBondLimit) {

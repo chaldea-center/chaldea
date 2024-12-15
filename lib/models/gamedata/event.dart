@@ -1760,6 +1760,8 @@ class EventTradeGoods {
   factory EventTradeGoods.fromJson(Map<String, dynamic> json) => _$EventTradeGoodsFromJson(json);
 
   Map<String, dynamic> toJson() => _$EventTradeGoodsToJson(this);
+
+  String get lName => Transl.misc2('TradeGoodsName', name);
 }
 
 @JsonSerializable()
@@ -2038,7 +2040,7 @@ enum ShopType {
   tradeAp,
   revivalItem, // 巡霊の葉
   eventSvtEquip,
-  shop17,
+  exchangeSvtCoin,
 }
 
 enum MissionProgressType {

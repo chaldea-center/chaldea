@@ -1,5 +1,5 @@
-import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 
@@ -27,6 +27,8 @@ import 'package:chaldea/widgets/widgets.dart';
 import '../import_data/import_https_page.dart';
 import '../import_data/sniff_details/formation_decks.dart';
 import 'details/dialogs.dart';
+import 'details/raids.dart';
+import 'details/trade.dart';
 import 'gacha/gacha_draw.dart';
 import 'history.dart';
 import 'mission/mission_receive.dart';
@@ -58,7 +60,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
 
   @override
   void dispose() {
-    _runtime?.dispose();
+    _runtime?.dispose(this);
     super.dispose();
   }
 
@@ -85,8 +87,8 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
     if (quest == null) return '$questId/$phase';
     final phaseDetail = db.gameData.questPhaseDetails[questId * 100 + phase];
     return [
-      if (quest.warId == WarId.ordealCall || (quest.warId > 1000 && quest.isAnyFree))
-        'Lv.${(phaseDetail?.recommendLv ?? quest.recommendLv)}',
+      // if (quest.warId == WarId.ordealCall || (quest.warId > 1000 && (quest.isAnyFree || quest.isAnyRaid)))
+      'Lv.${(phaseDetail?.recommendLv ?? quest.recommendLv)}',
       if (enemyCounts != null) enemyCounts,
       quest.lDispName.setMaxLines(1),
       if (quest.war != null) '@${quest.war?.lShortName.setMaxLines(1)}',
@@ -156,6 +158,14 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
                 },
                 child: Text(S.current.master_mission),
               ),
+              if (mstData.userEventTrade.isNotEmpty)
+                PopupMenuItem(
+                  enabled: isLoggedIn && !runtime.runningTask.value,
+                  onTap: () async {
+                    router.pushPage(UserEventTradePage(runtime: runtime));
+                  },
+                  child: Text(S.current.event_trade),
+                ),
             ],
           ),
         ],
@@ -334,14 +344,17 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
 
   Widget get battleDetailSection {
     final battleEntity = agent.curBattle ?? agent.lastBattle;
+    final lastResult = agent.lastBattleResultData;
     List<Widget> children = [];
     if (battleEntity == null) {
       children.add(const ListTile(dense: true, title: Text('No battle')));
     } else {
       Map<int, int> dropItems = battleEntity.battleInfo?.getTotalDrops() ?? {};
-      if (agent.lastBattleResultData != null && agent.lastBattleResultData!.battleId == battleEntity.id) {
+      if (lastResult != null &&
+          lastResult.battleId == battleEntity.id &&
+          lastResult.battleResult != BattleResultType.cancel.value) {
         dropItems.clear();
-        for (final drop in agent.lastBattleResultData!.resultDropInfos) {
+        for (final drop in lastResult.resultDropInfos) {
           dropItems.addNum(drop.objectId, drop.num);
         }
       }
@@ -411,7 +424,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
       contentBuilder: (context) {
         runtime.totalDropStat.items.removeWhere((k, v) => v == 0);
         final questDropIds = db.gameData.dropData.freeDrops2[battleOption.questId]?.items.keys.toList() ?? [];
-        for (final itemId in questDropIds) {
+        for (final itemId in questDropIds.followedBy(battleOption.targetDrops.keys)) {
           runtime.totalDropStat.items.putIfAbsent(itemId, () => 0);
         }
         return Column(
@@ -463,12 +476,66 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
       },
     ));
 
+    if (battleEntity?.battleInfo?.raidInfo.isNotEmpty == true ||
+        db.gameData.quests[battleOption.questId]?.flags.contains(QuestFlag.raid) == true) {
+      children.add(_buildRaidTile(battleEntity));
+    }
+
+    final resultType = BattleResultType.values.firstWhereOrNull((e) => e.value == lastResult?.battleResult);
+
     return TileGroup(
       header: battleEntity == null
           ? 'Battle Details'
-          : 'Battle ${battleEntity.id} - ${agent.curBattle == null ? "ended" : "ongoing"}'
+          : 'Battle ${battleEntity.id} - ${agent.curBattle == null ? "${resultType?.name}" : "ongoing"}'
               ' (${battleEntity.createdAt.sec2date().toCustomString(year: false)})',
       children: children,
+    );
+  }
+
+  Widget _buildRaidTile(BattleEntity? battleEntity) {
+    int? eventId, day;
+    if (battleEntity != null) {
+      eventId = battleEntity.eventId;
+      day = battleEntity.battleInfo?.raidInfo.firstOrNull?.day;
+    } else {
+      final quest = db.gameData.quests[battleOption.questId];
+      if (quest != null && quest.flags.contains(QuestFlag.raid)) {
+        eventId = quest.logicEvent?.id;
+      }
+    }
+
+    Widget? title, subtitle;
+    if (eventId != null && day != null) {
+      final mstRaid = mstData.mstEventRaid[EventRaidEntity.createPK(eventId, day)];
+      final record = agent.getRaidRecord(eventId, day).history.lastOrNull;
+      title = Text([
+        'Raid day $day ${mstRaid?.name ?? ""}',
+        '${record?.raidInfo.totalDamage.format(compact: false, groupSeparator: ",")}'
+            '/${record?.raidInfo.maxHp.format(compact: false, groupSeparator: ",")}',
+      ].join(' '));
+      if (record != null) {
+        subtitle = BondProgress(
+          value: record.raidInfo.totalDamage,
+          total: max(record.raidInfo.maxHp, record.raidInfo.maxHp),
+          minHeight: 4,
+        );
+      }
+    } else {
+      title = Text('Raids');
+    }
+
+    return ListTile(
+      dense: true,
+      title: title,
+      subtitle: subtitle,
+      trailing: IconButton(
+        onPressed: eventId == 0
+            ? null
+            : () {
+                router.pushPage(RaidsPage(runtime: runtime, eventId: eventId ?? 0));
+              },
+        icon: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
+      ),
     );
   }
 
@@ -610,18 +677,35 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
             runSpacing: 2,
             children: [
               for (final itemId in battleOption.targetDrops.keys.toList()..sort(Item.compare))
-                GameCardMixin.anyCardItemBuilder(
-                  context: context,
-                  id: itemId,
-                  width: 42,
-                  text: battleOption.targetDrops[itemId]!.toString(),
-                  onTap: () {
+                GestureDetector(
+                  onLongPress: () {
                     runtime.lockTask(() {
                       setState(() {
                         battleOption.targetDrops.remove(itemId);
                       });
                     });
                   },
+                  child: GameCardMixin.anyCardItemBuilder(
+                      context: context,
+                      id: itemId,
+                      width: 42,
+                      text: battleOption.targetDrops[itemId]!.toString(),
+                      onTap: () {
+                        InputCancelOkDialog(
+                          title: 'Target Num of "${GameCardMixin.anyCardItemName(itemId).l}"',
+                          text: battleOption.targetDrops[itemId]?.toString(),
+                          validate: (s) => (int.tryParse(s) ?? -1) >= 0,
+                          onSubmit: (s) {
+                            runtime.lockTask(() {
+                              if (mounted) {
+                                setState(() {
+                                  battleOption.targetDrops[itemId] = int.parse(s);
+                                });
+                              }
+                            });
+                          },
+                        ).showDialog(context);
+                      }),
                 ),
             ],
           ),
@@ -644,11 +728,11 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
                 final itemNumStr = await InputCancelOkDialog(
                   title: 'Stop if "$itemName" total drop num ≥',
                   keyboardType: TextInputType.number,
-                  validate: (s) => (int.tryParse(s) ?? -1) > 0,
+                  validate: (s) => (int.tryParse(s) ?? -1) >= 0,
                 ).showDialog<String>(context);
                 if (itemNumStr == null) return;
                 final itemNum = int.parse(itemNumStr);
-                if (itemNum <= 0) return;
+                if (itemNum < 0) return;
                 battleOption.targetDrops[itemId] = itemNum;
                 if (mounted) setState(() {});
               });
@@ -658,25 +742,42 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
         ),
         ListTile(
           dense: true,
-          // title: const Text("Target drop (retire/lose if no target drop)"),
-          title: const Text("Win target drops (win battle if reaches any, otherwise retire/lose)"),
+          // title: const Text("Target drop (retire/cancel if no target drop)"),
+          title: const Text("Win target drops (win battle if reaches any, otherwise retire/cancel)"),
           subtitle: Wrap(
             spacing: 2,
             runSpacing: 2,
             children: [
               for (final itemId in battleOption.winTargetItemNum.keys.toList()..sort(Item.compare))
-                GameCardMixin.anyCardItemBuilder(
-                  context: context,
-                  id: itemId,
-                  width: 42,
-                  text: battleOption.winTargetItemNum[itemId]!.toString(),
-                  onTap: () {
+                GestureDetector(
+                  onLongPress: () {
                     runtime.lockTask(() {
                       setState(() {
                         battleOption.winTargetItemNum.remove(itemId);
                       });
                     });
                   },
+                  child: GameCardMixin.anyCardItemBuilder(
+                      context: context,
+                      id: itemId,
+                      width: 42,
+                      text: battleOption.winTargetItemNum[itemId]?.toString(),
+                      onTap: () {
+                        InputCancelOkDialog(
+                          title: 'Win Target Num of "${GameCardMixin.anyCardItemName(itemId).l}"',
+                          text: battleOption.winTargetItemNum[itemId]?.toString(),
+                          validate: (s) => (int.tryParse(s) ?? -1) > 0,
+                          onSubmit: (s) {
+                            runtime.lockTask(() {
+                              if (mounted) {
+                                setState(() {
+                                  battleOption.winTargetItemNum[itemId] = int.parse(s);
+                                });
+                              }
+                            });
+                          },
+                        ).showDialog(context);
+                      }),
                 ),
             ],
           ),
@@ -720,8 +821,10 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
     final questPhase = AtlasApi.questPhaseCache(battleOption.questId, battleOption.questPhase, null, runtime.region) ??
         AtlasApi.questPhaseCache(battleOption.questId, battleOption.questPhase);
     final formation = mstData.userDeck[battleOption.deckId];
-    final eventFormation = mstData.userEventDeck[
-        UserEventDeckEntity.createPK(quest?.logicEvent?.id ?? 0, questPhase?.extraDetail?.useEventDeckNo ?? 0)];
+
+    final eventId = quest?.logicEvent?.id ?? 0;
+    final eventDeckNo = questPhase?.extraDetail?.useEventDeckNo ?? 1;
+    final eventFormation = mstData.userEventDeck[UserEventDeckEntity.createPK(eventId, eventDeckNo)];
     final userQuest = mstData.userQuest[battleOption.questId];
     final now = DateTime.now().timestamp;
     List<(Item, UserItemEntity)> teapots = [
@@ -736,7 +839,14 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
         ListTile(
           dense: true,
           title: Text(_describeQuest(battleOption.questId, battleOption.questPhase, null)),
-          subtitle: userQuest == null ? null : Text('phase ${userQuest.questPhase} clear ${userQuest.clearNum}'),
+          subtitle: userQuest == null
+              ? null
+              : Text([
+                  'phase ${userQuest.questPhase}',
+                  'clear ${userQuest.clearNum}',
+                  if (questPhase != null && !questPhase.isMainStoryFree && userQuest.challengeNum != userQuest.clearNum)
+                    'challenge ${userQuest.challengeNum}',
+                ].join(' ')),
           onTap: quest?.routeTo,
           trailing: TextButton(
               onPressed: () {
@@ -748,10 +858,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
                     onSubmit: (s) {
                       final questId = int.tryParse(s);
                       final quest = db.gameData.quests[questId];
-                      if (questId != null &&
-                          quest != null &&
-                          !quest.flags.contains(QuestFlag.raid) &&
-                          !quest.flags.contains(QuestFlag.superBoss)) {
+                      if (questId != null && quest != null && !quest.flags.contains(QuestFlag.superBoss)) {
                         battleOption.questId = questId;
                         if (quest.phases.length == 1) {
                           battleOption.questPhase = quest.phases.single;
@@ -794,7 +901,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
         ),
         ListTile(
           dense: true,
-          title: Text("Formation Deck ${battleOption.deckId}"),
+          title: Text("Deck ${battleOption.deckId}"),
           subtitle: formation == null ? const Text("Unknown deck") : Text('${formation.deckNo} - ${formation.name}'),
           trailing: const Icon(Icons.change_circle),
           onTap: () {
@@ -810,18 +917,20 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
           },
         ),
         if (formation != null) ..._buildUserDeck(formation.deckInfo),
-        if (eventFormation != null) ...[
+        if (questPhase?.flags.contains(QuestFlag.userEventDeck) == true) ...[
           ListTile(
             dense: true,
-            title: Text("Event Deck ${eventFormation.deckNo}"),
-            subtitle: eventFormation.eventId == 0 ? null : Text('Event ${eventFormation.eventId}'),
+            title: Text("Event Deck ${eventFormation?.deckNo ?? eventDeckNo}"),
+            subtitle: eventFormation?.eventId == 0 ? null : Text('Event $eventId'),
+            trailing: const Icon(Icons.change_circle),
             onTap: () {
-              if (eventFormation.eventId != 0) {
-                router.push(url: Routes.eventI(eventFormation.eventId));
-              }
+              router.pushPage(UserFormationDecksPage(
+                mstData: mstData,
+                eventId: eventId,
+              ));
             },
           ),
-          ..._buildUserDeck(eventFormation.deckInfo),
+          if (eventFormation != null) ..._buildUserDeck(eventFormation.deckInfo),
         ],
         DividerWithTitle(title: S.current.support_servant_short, indent: 16),
         ListTile(
@@ -1125,9 +1234,13 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
                     title: 'Battle Duration',
                     text: battleOption.battleDuration?.toString(),
                     keyboardType: TextInputType.number,
-                    validate: (s) => (int.tryParse(s) ?? -1) > (agent.user.region == Region.cn ? 40 : 20),
+                    validate: (s) => s.isEmpty || (int.tryParse(s) ?? -1) > (agent.user.region == Region.jp ? 20 : 40),
                     onSubmit: (s) {
-                      battleOption.battleDuration = int.parse(s);
+                      if (s.isEmpty) {
+                        battleOption.battleDuration = null;
+                      } else {
+                        battleOption.battleDuration = int.parse(s);
+                      }
                       if (mounted) setState(() {});
                     },
                   ).showDialog(context);
@@ -1343,7 +1456,10 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
             SimpleCancelOkDialog(
               title: const Text('Login'),
               onTapOk: () {
-                runtime.runTask(agent.loginTop);
+                runtime.runTask(() async {
+                  await agent.loginTop();
+                  await agent.homeTop();
+                });
               },
             ).showDialog(context);
           },
@@ -1445,29 +1561,29 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
               },
               child: const Text('home'),
             ),
-            PopupMenuItem(
-              enabled: loggedIn && !inBattle,
-              onTap: () {
-                runtime.runTask(() async {
-                  final dir = Directory(agent.network.fakerDir);
-                  final files = dir
-                      .listSync(followLinks: false)
-                      .whereType<File>()
-                      .where((e) => e.path.endsWith('.json') && e.path.contains('battle') && e.path.contains('setup'))
-                      .toList();
-                  final modified = DateTime.now().subtract(const Duration(days: 2));
-                  files.removeWhere((e) => e.statSync().modified.isBefore(modified));
-                  files.sort2((e) => e.path, reversed: true);
-                  if (files.isEmpty) {
-                    EasyLoading.showError('not found');
-                    return;
-                  }
-                  final data = FateTopLogin.parseAny(jsonDecode(files.first.readAsStringSync()));
-                  agent.curBattle = data.mstData.battles.firstOrNull ?? agent.curBattle;
-                });
-              },
-              child: const Text('loadBattle'),
-            ),
+            // PopupMenuItem(
+            //   enabled: loggedIn && !inBattle,
+            //   onTap: () {
+            //     runtime.runTask(() async {
+            //       final dir = Directory(agent.network.fakerDir);
+            //       final files = dir
+            //           .listSync(followLinks: false)
+            //           .whereType<File>()
+            //           .where((e) => e.path.endsWith('.json') && e.path.contains('battle') && e.path.contains('setup'))
+            //           .toList();
+            //       final modified = DateTime.now().subtract(const Duration(days: 2));
+            //       files.removeWhere((e) => e.statSync().modified.isBefore(modified));
+            //       files.sort2((e) => e.path, reversed: true);
+            //       if (files.isEmpty) {
+            //         EasyLoading.showError('not found');
+            //         return;
+            //       }
+            //       final data = FateTopLogin.parseAny(jsonDecode(files.first.readAsStringSync()));
+            //       agent.curBattle = data.mstData.battles.firstOrNull ?? agent.curBattle;
+            //     });
+            //   },
+            //   child: const Text('loadBattle'),
+            // ),
             PopupMenuItem(
               child: const Text('Break'),
               onTap: () {
@@ -1491,6 +1607,12 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
                 ).showDialog(context);
               },
               child: const Text('Seed-wait'),
+            ),
+            PopupMenuItem(
+              child: const Text('present_list'),
+              onTap: () {
+                runtime.runTask(() => agent.userPresentList());
+              },
             ),
             if (agent is FakerAgentJP)
               PopupMenuItem(

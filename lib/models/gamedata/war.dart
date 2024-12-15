@@ -596,6 +596,7 @@ enum WarFlag {
   noticeBoard,
   changeDispClosedMessage,
   chapterSubIdJapaneseNumeralsNormal,
+  caldeagatePriorityDisplay,
 }
 
 enum WarOverwriteType {
@@ -621,6 +622,7 @@ enum WarOverwriteType {
   effectChangeWhiteMark,
   commandSpellIcon,
   masterFaceIcon,
+  priority,
 }
 
 enum WarStartType {

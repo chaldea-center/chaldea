@@ -385,6 +385,42 @@ UserEventPointEntity _$UserEventPointEntityFromJson(Map json) => UserEventPointE
       value: json['value'],
     );
 
+UserEventTradeEntity _$UserEventTradeEntityFromJson(Map json) => UserEventTradeEntity(
+      eventId: json['eventId'],
+      updatedAt: json['updatedAt'],
+      tradeList: (json['tradeList'] as List<dynamic>?)
+          ?.map((e) => EventTradeInfo.fromJson(Map<String, dynamic>.from(e as Map)))
+          .toList(),
+      resultList: (json['resultList'] as List<dynamic>?)
+          ?.map((e) => EventTradeResultInfo.fromJson(Map<String, dynamic>.from(e as Map)))
+          .toList(),
+      pickupList: (json['pickupList'] as List<dynamic>?)
+          ?.map((e) => EventCraftPickupInfo.fromJson(Map<String, dynamic>.from(e as Map)))
+          .toList(),
+    );
+
+EventTradeInfo _$EventTradeInfoFromJson(Map json) => EventTradeInfo(
+      storeIdx: json['storeIdx'],
+      tradeGoodsId: json['tradeGoodsId'],
+      tradeNum: json['tradeNum'],
+      maxTradeNum: json['maxTradeNum'],
+      getNum: json['getNum'],
+      startedAt: json['startedAt'],
+      endedAt: json['endedAt'],
+    );
+
+EventTradeResultInfo _$EventTradeResultInfoFromJson(Map json) => EventTradeResultInfo(
+      tradeGoodsId: json['tradeGoodsId'],
+      getNum: json['getNum'],
+    );
+
+EventCraftPickupInfo _$EventCraftPickupInfoFromJson(Map json) => EventCraftPickupInfo(
+      tradeGoodsId: json['tradeGoodsId'],
+      itemId: json['itemId'],
+      startedAt: json['startedAt'],
+      endedAt: json['endedAt'],
+    );
+
 EventRaidEntity _$EventRaidEntityFromJson(Map json) => EventRaidEntity(
       eventId: json['eventId'],
       day: json['day'],
@@ -399,6 +435,9 @@ EventRaidEntity _$EventRaidEntityFromJson(Map json) => EventRaidEntity(
       timeLimitAt: json['timeLimitAt'],
       splitAiMode: json['splitAiMode'],
       splitHp: json['splitHp'],
+      defeatNormaAt: json['defeatNormaAt'],
+      defeatBaseAt: json['defeatBaseAt'],
+      correctStartTime: json['correctStartTime'],
     );
 
 UserEventRaidEntity _$UserEventRaidEntityFromJson(Map json) => UserEventRaidEntity(
@@ -614,6 +653,7 @@ BattleEntity _$BattleEntityFromJson(Map json) => BattleEntity(
       targetId: json['targetId'],
       followerId: json['followerId'],
       followerType: json['followerType'],
+      eventId: json['eventId'],
       createdAt: json['createdAt'],
     );
 

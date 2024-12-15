@@ -62,6 +62,7 @@ class FakerAgentJP extends FakerAgent<FRequestJP, AutoLoginDataJP, NetworkManage
 
   @override
   Future<FResponse> loginTop() async {
+    raidRecords.clear();
     final request = FRequestJP(network: network, path: '/login/top');
     request.addBaseField();
     if (network.gameTop.region == Region.jp) {
@@ -90,7 +91,9 @@ class FakerAgentJP extends FakerAgent<FRequestJP, AutoLoginDataJP, NetworkManage
   @override
   Future<FResponse> homeTop() async {
     final request = FRequestJP(network: network, path: '/home/top');
-    return request.beginRequestAndCheckError('home');
+    final resp = await request.beginRequestAndCheckError('home');
+    updateRaidInfo(homeResp: resp);
+    return resp;
   }
 
   @override
@@ -150,6 +153,12 @@ class FakerAgentJP extends FakerAgent<FRequestJP, AutoLoginDataJP, NetworkManage
     request.addFieldInt32('itemSelectIdx', itemSelectIdx);
     request.addFieldInt32('itemSelectNum', itemSelectNum);
     return request.beginRequest();
+  }
+
+  @override
+  Future<FResponse> userPresentList() {
+    final request = FRequestJP(network: network, path: '/present/list');
+    return request.beginRequestAndCheckError('present_list');
   }
 
   @override
@@ -289,6 +298,7 @@ class FakerAgentJP extends FakerAgent<FRequestJP, AutoLoginDataJP, NetworkManage
       lastBattle = curBattle ?? battleEntity;
       curBattle = battleEntity;
     }
+    updateRaidInfo(battleSetupResp: resp);
     return resp;
   }
 
@@ -412,6 +422,15 @@ class FakerAgentJP extends FakerAgent<FRequestJP, AutoLoginDataJP, NetworkManage
       logger.e('parse battle result data failed', e, s);
     }
     network.mstData.battles.clear();
+    return resp;
+  }
+
+  @override
+  Future<FResponse> battleTurn({required int64_t battleId}) async {
+    final request = FRequestJP(network: network, path: '/battle/turn');
+    request.addFieldInt64("battleId", battleId);
+    final resp = await request.beginRequestAndCheckError('battle_turn');
+    updateRaidInfo(battleTurnResp: resp);
     return resp;
   }
 }

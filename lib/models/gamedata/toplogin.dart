@@ -351,6 +351,10 @@ final _$mstMasterSchemes = <String, (Type, DataMaster Function(String mstName))>
     UserEventPointEntity,
     (mstName) => DataMaster<String, UserEventPointEntity>(mstName, UserEventPointEntity.fromJson)
   ),
+  "userEventTrade": (
+    UserEventTradeEntity,
+    (mstName) => DataMaster<_IntStr, UserEventTradeEntity>(mstName, UserEventTradeEntity.fromJson)
+  ),
   "mstEventRaid": (
     EventRaidEntity,
     (mstName) => DataMaster<String, EventRaidEntity>(mstName, EventRaidEntity.fromJson)
@@ -511,6 +515,7 @@ class MasterDataManager {
     final item = db.gameData.items[itemId];
     if (item != null) {
       if (item.type == ItemType.eventPoint) {
+        // TODO: eventId may be 0
         return userEventPoint[_createPK2(item.eventId, item.eventGroupId)]?.value ?? defaultValue;
       }
       if (item.type == ItemType.svtCoin) {
@@ -605,6 +610,9 @@ class MasterDataManager {
   DataMaster<_IntStr, UserEventMissionCondDetailEntity> get userEventMissionCondDetail =>
       get<_IntStr, UserEventMissionCondDetailEntity>();
   DataMaster<String, UserEventPointEntity> get userEventPoint => get<String, UserEventPointEntity>();
+  DataMaster<_IntStr, UserEventTradeEntity> get userEventTrade => get<_IntStr, UserEventTradeEntity>();
+  DataMaster<String, EventRaidEntity> get mstEventRaid => get<String, EventRaidEntity>();
+  DataMaster<String, TotalEventRaidEntity> get totalEventRaid => get<String, TotalEventRaidEntity>();
   DataMaster<_IntStr, UserShopEntity> get userShop => get<_IntStr, UserShopEntity>();
   // event/quest
   DataMaster<_IntStr, UserQuestEntity> get userQuest => get<_IntStr, UserQuestEntity>();
@@ -1781,6 +1789,93 @@ class UserEventPointEntity extends DataEntityBase<String> {
 }
 
 @JsonSerializable(createToJson: false)
+class UserEventTradeEntity extends DataEntityBase<_IntStr> {
+  int eventId;
+  int updatedAt;
+  List<EventTradeInfo> tradeList;
+  List<EventTradeResultInfo> resultList;
+  List<EventCraftPickupInfo> pickupList;
+
+  @override
+  _IntStr get primaryKey => eventId;
+
+  static _IntStr createPK(int eventId) => eventId;
+
+  UserEventTradeEntity({
+    dynamic eventId,
+    dynamic updatedAt,
+    List<EventTradeInfo>? tradeList,
+    List<EventTradeResultInfo>? resultList,
+    List<EventCraftPickupInfo>? pickupList,
+  })  : eventId = _toInt(eventId),
+        updatedAt = _toInt(updatedAt),
+        tradeList = tradeList ?? [],
+        resultList = resultList ?? [],
+        pickupList = pickupList ?? [];
+  factory UserEventTradeEntity.fromJson(Map<String, dynamic> data) => _$UserEventTradeEntityFromJson(data);
+}
+
+@JsonSerializable(createToJson: false)
+class EventTradeInfo {
+  int storeIdx;
+  int tradeGoodsId;
+  int tradeNum;
+  int maxTradeNum;
+  int getNum;
+  int startedAt;
+  int endedAt;
+
+  EventTradeInfo({
+    dynamic storeIdx,
+    dynamic tradeGoodsId,
+    dynamic tradeNum,
+    dynamic maxTradeNum,
+    dynamic getNum,
+    dynamic startedAt,
+    dynamic endedAt,
+  })  : storeIdx = _toInt(storeIdx),
+        tradeGoodsId = _toInt(tradeGoodsId),
+        tradeNum = _toInt(tradeNum),
+        maxTradeNum = _toInt(maxTradeNum),
+        getNum = _toInt(getNum),
+        startedAt = _toInt(startedAt),
+        endedAt = _toInt(endedAt);
+  factory EventTradeInfo.fromJson(Map<String, dynamic> data) => _$EventTradeInfoFromJson(data);
+}
+
+@JsonSerializable(createToJson: false)
+class EventTradeResultInfo {
+  int tradeGoodsId;
+  int getNum;
+
+  EventTradeResultInfo({
+    dynamic tradeGoodsId,
+    dynamic getNum,
+  })  : tradeGoodsId = _toInt(tradeGoodsId),
+        getNum = _toInt(getNum);
+  factory EventTradeResultInfo.fromJson(Map<String, dynamic> data) => _$EventTradeResultInfoFromJson(data);
+}
+
+@JsonSerializable(createToJson: false)
+class EventCraftPickupInfo {
+  int tradeGoodsId;
+  int itemId;
+  int startedAt;
+  int endedAt;
+
+  EventCraftPickupInfo({
+    dynamic tradeGoodsId,
+    dynamic itemId,
+    dynamic startedAt,
+    dynamic endedAt,
+  })  : tradeGoodsId = _toInt(tradeGoodsId),
+        itemId = _toInt(itemId),
+        startedAt = _toInt(startedAt),
+        endedAt = _toInt(endedAt);
+  factory EventCraftPickupInfo.fromJson(Map<String, dynamic> data) => _$EventCraftPickupInfoFromJson(data);
+}
+
+@JsonSerializable(createToJson: false)
 class EventRaidEntity extends DataEntityBase<String> {
   static const int kSubGroupIndexStart = 1;
   int eventId;
@@ -1800,10 +1895,10 @@ class EventRaidEntity extends DataEntityBase<String> {
   // int giftId;
   // int presentMessageId;
   // int loginMessageId；
-  // int defeatNormaAt;
-  // CN
-  // int defeatBaseAt;
-  // int correctStartTime;
+  int defeatNormaAt;
+  // CN?
+  int defeatBaseAt;
+  int correctStartTime;
   // int damageAdjustId;
 
   @override
@@ -1825,6 +1920,9 @@ class EventRaidEntity extends DataEntityBase<String> {
     dynamic timeLimitAt,
     dynamic splitAiMode,
     dynamic splitHp,
+    dynamic defeatNormaAt,
+    dynamic defeatBaseAt,
+    dynamic correctStartTime,
   })  : eventId = _toInt(eventId),
         day = _toInt(day),
         groupIndex = _toInt(groupIndex),
@@ -1837,7 +1935,10 @@ class EventRaidEntity extends DataEntityBase<String> {
         endedAt = _toInt(endedAt),
         timeLimitAt = _toInt(timeLimitAt),
         splitAiMode = List.from(splitAiMode ?? []),
-        splitHp = _toIntList(splitHp);
+        splitHp = _toIntList(splitHp),
+        defeatNormaAt = _toInt(defeatNormaAt),
+        defeatBaseAt = _toInt(defeatBaseAt),
+        correctStartTime = _toInt(correctStartTime);
 
   factory EventRaidEntity.fromJson(Map<String, dynamic> data) => _$EventRaidEntityFromJson(data);
 }
@@ -2347,7 +2448,7 @@ class BattleEntity extends DataEntityBase<int> {
   // int commandSpellCnt;
   // int commandSpellMax;
   // int result;
-  // int eventId;
+  int eventId = 0;
   // int rankingEventId;
   // int verifyMode;
   // int questSelect;
@@ -2369,6 +2470,7 @@ class BattleEntity extends DataEntityBase<int> {
     dynamic targetId,
     dynamic followerId,
     dynamic followerType,
+    dynamic eventId,
     dynamic createdAt,
   })  : id = _toInt(id),
         battleType = _toInt(battleType),
@@ -2378,6 +2480,7 @@ class BattleEntity extends DataEntityBase<int> {
         targetId = _toIntNull(targetId),
         followerId = _toIntNull(followerId),
         followerType = _toIntNull(followerType),
+        eventId = _toInt(eventId),
         createdAt = _toInt(createdAt, 0);
 
   factory BattleEntity.fromJson(Map<String, dynamic> data) => _$BattleEntityFromJson(data);
@@ -2621,7 +2724,7 @@ class BattleRaidInfo {
     dynamic totalDamage,
   })  : day = _toInt(day),
         uniqueId = _toInt(uniqueId),
-        maxHp = _toInt(maxHp),
+        maxHp = _toInt(maxHp, 0),
         totalDamage = _toInt(totalDamage);
 
   factory BattleRaidInfo.fromJson(Map<String, dynamic> data) => _$BattleRaidInfoFromJson(data);

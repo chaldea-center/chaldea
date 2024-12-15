@@ -115,6 +115,7 @@ const _$WarFlagEnumMap = {
   WarFlag.noticeBoard: 'noticeBoard',
   WarFlag.changeDispClosedMessage: 'changeDispClosedMessage',
   WarFlag.chapterSubIdJapaneseNumeralsNormal: 'chapterSubIdJapaneseNumeralsNormal',
+  WarFlag.caldeagatePriorityDisplay: 'caldeagatePriorityDisplay',
 };
 
 const _$WarStartTypeEnumMap = {
@@ -359,6 +360,7 @@ const _$WarOverwriteTypeEnumMap = {
   WarOverwriteType.effectChangeWhiteMark: 'effectChangeWhiteMark',
   WarOverwriteType.commandSpellIcon: 'commandSpellIcon',
   WarOverwriteType.masterFaceIcon: 'masterFaceIcon',
+  WarOverwriteType.priority: 'priority',
 };
 
 WarRelease _$WarReleaseFromJson(Map json) => WarRelease(

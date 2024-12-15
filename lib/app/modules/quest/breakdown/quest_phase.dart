@@ -613,8 +613,8 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
                 children: divideList(flags.map((flag) {
                   String name = flag.name.replaceAllMapped(RegExp(r'[A-Z]'), (match) => '\u200B${match.group(0)}');
                   if (flag == QuestFlag.userEventDeck) {
-                    final eventDeckNo = questPhase?.extraDetail?.useEventDeckNo;
-                    if (eventDeckNo != null) name += '($eventDeckNo)';
+                    final eventDeckNo = questPhase?.extraDetail?.useEventDeckNo ?? 1;
+                    name += '($eventDeckNo)';
                   }
                   return TextSpan(
                     text: name,
