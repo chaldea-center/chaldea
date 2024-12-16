@@ -298,6 +298,7 @@ class AutoBattleOptions {
   Map<int, int> winTargetItemNum; // win only if any target reaches, only for QuestFlag.actConsumeBattleWin
   int? battleDuration;
   bool waitApRecover = false;
+  bool waitApRecoverGold = false;
 
   AutoBattleOptions({
     this.name = '',
@@ -321,6 +322,7 @@ class AutoBattleOptions {
     Map<int, int>? targetDrops,
     Map<int, int>? winTargetItemNum,
     this.waitApRecover = false,
+    this.waitApRecoverGold = false,
   })  : supportSvtIds = supportSvtIds ?? {},
         supportCeIds = supportCeIds ?? {},
         usedTurnArray = usedTurnArray ?? [],

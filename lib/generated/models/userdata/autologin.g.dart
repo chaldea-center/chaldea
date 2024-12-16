@@ -256,6 +256,7 @@ AutoBattleOptions _$AutoBattleOptionsFromJson(Map json) => $checkedCreate(
                     (k, e) => MapEntry(int.parse(k as String), (e as num).toInt()),
                   )),
           waitApRecover: $checkedConvert('waitApRecover', (v) => v as bool? ?? false),
+          waitApRecoverGold: $checkedConvert('waitApRecoverGold', (v) => v as bool? ?? false),
         );
         $checkedConvert('battleDuration', (v) => val.battleDuration = (v as num?)?.toInt());
         return val;
@@ -285,6 +286,7 @@ Map<String, dynamic> _$AutoBattleOptionsToJson(AutoBattleOptions instance) => <S
       'winTargetItemNum': instance.winTargetItemNum.map((k, e) => MapEntry(k.toString(), e)),
       'battleDuration': instance.battleDuration,
       'waitApRecover': instance.waitApRecover,
+      'waitApRecoverGold': instance.waitApRecoverGold,
     };
 
 const _$BattleResultTypeEnumMap = {

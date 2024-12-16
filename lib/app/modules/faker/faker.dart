@@ -676,6 +676,19 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
           },
           controlAffinity: ListTileControlAffinity.trailing,
         ),
+        CheckboxListTile.adaptive(
+          dense: true,
+          value: battleOption.waitApRecoverGold,
+          title: const Text("Recover Golden Fruit right after AP changed"),
+          onChanged: (v) {
+            runtime.lockTask(() {
+              setState(() {
+                battleOption.waitApRecoverGold = v!;
+              });
+            });
+          },
+          controlAffinity: ListTileControlAffinity.trailing,
+        ),
         ListTile(
           dense: true,
           title: const Text("Target drops (stop current loop if reach any)"),

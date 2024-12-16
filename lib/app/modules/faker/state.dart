@@ -589,6 +589,13 @@ class FakerRuntime {
       for (final recoverId in option.recoverIds) {
         final recover = mstRecovers[recoverId];
         if (recover == null) continue;
+        int dt = mstData.user!.actRecoverAt - DateTime.now().timestamp;
+        if ((recover.id == 1 || recover.id == 2) && option.waitApRecoverGold && dt > 300) {
+          final nextApSeconds = dt ~/ 300;
+          if (nextApSeconds < 240) {
+            await Future.delayed(Duration(seconds: nextApSeconds + 2));
+          }
+        }
         if (recover.recoverType == RecoverType.stone && mstData.user!.stone > 0) {
           await agent.shopPurchaseByStone(id: recover.targetId, num: 1);
           break;
