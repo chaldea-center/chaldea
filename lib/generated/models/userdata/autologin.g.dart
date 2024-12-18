@@ -88,6 +88,8 @@ AutoLoginDataJP _$AutoLoginDataJPFromJson(Map json) => $checkedCreate(
               $checkedConvert('recoveredAps', (v) => (v as List<dynamic>?)?.map((e) => (e as num).toInt()).toSet()),
           gacha: $checkedConvert(
               'gacha', (v) => v == null ? null : GachaOption.fromJson(Map<String, dynamic>.from(v as Map))),
+          svtCombine: $checkedConvert(
+              'svtCombine', (v) => v == null ? null : SvtCombineOption.fromJson(Map<String, dynamic>.from(v as Map))),
           lastLogin: $checkedConvert('lastLogin', (v) => (v as num?)?.toInt()),
           userGame: $checkedConvert(
               'userGame', (v) => v == null ? null : UserGameEntity.fromJson(Map<String, dynamic>.from(v as Map))),
@@ -109,6 +111,7 @@ Map<String, dynamic> _$AutoLoginDataJPToJson(AutoLoginDataJP instance) => <Strin
       'battleOptions': instance.battleOptions.map((e) => e.toJson()).toList(),
       'recoveredAps': instance.recoveredAps.toList(),
       'gacha': instance.gacha.toJson(),
+      'svtCombine': instance.svtCombine.toJson(),
       'lastLogin': instance.lastLogin,
       'userGame': instance.userGame?.toJson(),
       'userItems': instance.userItems.map((k, e) => MapEntry(k.toString(), e)),
@@ -175,6 +178,8 @@ AutoLoginDataCN _$AutoLoginDataCNFromJson(Map json) => $checkedCreate(
               $checkedConvert('recoveredAps', (v) => (v as List<dynamic>?)?.map((e) => (e as num).toInt()).toSet()),
           gacha: $checkedConvert(
               'gacha', (v) => v == null ? null : GachaOption.fromJson(Map<String, dynamic>.from(v as Map))),
+          svtCombine: $checkedConvert(
+              'svtCombine', (v) => v == null ? null : SvtCombineOption.fromJson(Map<String, dynamic>.from(v as Map))),
           lastLogin: $checkedConvert('lastLogin', (v) => (v as num?)?.toInt()),
           userGame: $checkedConvert(
               'userGame', (v) => v == null ? null : UserGameEntity.fromJson(Map<String, dynamic>.from(v as Map))),
@@ -195,6 +200,7 @@ Map<String, dynamic> _$AutoLoginDataCNToJson(AutoLoginDataCN instance) => <Strin
       'battleOptions': instance.battleOptions.map((e) => e.toJson()).toList(),
       'recoveredAps': instance.recoveredAps.toList(),
       'gacha': instance.gacha.toJson(),
+      'svtCombine': instance.svtCombine.toJson(),
       'lastLogin': instance.lastLogin,
       'userGame': instance.userGame?.toJson(),
       'userItems': instance.userItems.map((k, e) => MapEntry(k.toString(), e)),
@@ -337,4 +343,28 @@ Map<String, dynamic> _$GachaOptionToJson(GachaOption instance) => <String, dynam
       'feedExp4': instance.feedExp4,
       'sellKeepSvtIds': instance.sellKeepSvtIds.toList(),
       'sellKeepCommandCodeIds': instance.sellKeepCommandCodeIds.toList(),
+    };
+
+SvtCombineOption _$SvtCombineOptionFromJson(Map json) => $checkedCreate(
+      'SvtCombineOption',
+      json,
+      ($checkedConvert) {
+        final val = SvtCombineOption(
+          baseUserSvtId: $checkedConvert('baseUserSvtId', (v) => (v as num?)?.toInt() ?? 0),
+          maxMaterialCount: $checkedConvert('maxMaterialCount', (v) => (v as num?)?.toInt() ?? 20),
+          loopCount: $checkedConvert('loopCount', (v) => (v as num?)?.toInt() ?? 0),
+          svtMaterialRarities: $checkedConvert(
+              'svtMaterialRarities', (v) => (v as List<dynamic>?)?.map((e) => (e as num).toInt()).toSet()),
+          doubleExp: $checkedConvert('doubleExp', (v) => v as bool? ?? false),
+        );
+        return val;
+      },
+    );
+
+Map<String, dynamic> _$SvtCombineOptionToJson(SvtCombineOption instance) => <String, dynamic>{
+      'baseUserSvtId': instance.baseUserSvtId,
+      'maxMaterialCount': instance.maxMaterialCount,
+      'loopCount': instance.loopCount,
+      'svtMaterialRarities': instance.svtMaterialRarities.toList(),
+      'doubleExp': instance.doubleExp,
     };

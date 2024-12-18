@@ -367,6 +367,29 @@ class FakerAgentCN extends FakerAgent<FRequestCN, AutoLoginDataCN, NetworkManage
   }
 
   @override
+  Future<FResponse> boxGachaDraw({required int32_t gachaId, required int32_t num}) {
+    return _acPhp(
+      key: 'boxgachadraw',
+      nid: 'box_gacha_draw',
+      params4: {
+        "boxGachaId": gachaId,
+        "num": num,
+      },
+    );
+  }
+
+  @override
+  Future<FResponse> boxGachaReset({required int32_t gachaId}) {
+    return _acPhp(
+      key: 'boxgachareset',
+      nid: 'box_gacha_reset',
+      params4: {
+        "boxGachaId": gachaId,
+      },
+    );
+  }
+
+  @override
   Future<FResponse> sellServant({required List<int64_t> servantUserIds, required List<int64_t> commandCodeUserIds}) {
     List<Map<String, dynamic>> _useSvtHash(List<int> ids) => [
           for (final id in ids) {"id": id, "num": 1}
@@ -377,6 +400,27 @@ class FakerAgentCN extends FakerAgent<FRequestCN, AutoLoginDataCN, NetworkManage
       params2: {
         "sellData": jsonEncode(_useSvtHash(servantUserIds)),
         "sellCommandCode": jsonEncode(_useSvtHash(commandCodeUserIds)),
+      },
+    );
+  }
+
+  @override
+  Future<FResponse> servantCombine({
+    required int64_t baseUserSvtId,
+    required List<int64_t> materialSvtIds,
+    required int32_t useQp,
+    required int32_t getExp,
+  }) {
+    return _acPhp(
+      key: 'cardcombine',
+      nid: 'card_combine',
+      params2: {
+        "baseUserSvtId": baseUserSvtId,
+        "materialUserSvtIds": jsonEncode(materialSvtIds),
+      },
+      params4: {
+        "useQp": useQp,
+        "getExp": getExp,
       },
     );
   }

@@ -184,6 +184,21 @@ class FakerAgentJP extends FakerAgent<FRequestJP, AutoLoginDataJP, NetworkManage
   }
 
   @override
+  Future<FResponse> boxGachaDraw({required int32_t gachaId, required int32_t num}) {
+    final request = FRequestJP(network: network, path: '/boxGacha/draw');
+    request.addFieldInt32("boxGachaId", gachaId);
+    request.addFieldInt32("num", num);
+    return request.beginRequestAndCheckError('box_gacha_draw');
+  }
+
+  @override
+  Future<FResponse> boxGachaReset({required int32_t gachaId}) {
+    final request = FRequestJP(network: network, path: '/boxGacha/reset');
+    request.addFieldInt32("boxGachaId", gachaId);
+    return request.beginRequestAndCheckError('box_gacha_reset');
+  }
+
+  @override
   Future<FResponse> sellServant({required List<int64_t> servantUserIds, required List<int64_t> commandCodeUserIds}) {
     // success: {"sellRarePriPrice":0,"sellManaPrice":0,"sellQpPrice":2000}
     List<Map<String, dynamic>> _useSvtHash(List<int> ids) => [
@@ -193,6 +208,21 @@ class FakerAgentJP extends FakerAgent<FRequestJP, AutoLoginDataJP, NetworkManage
     request.addFieldStr("sellData", network.catMouseGame.encodeMsgpackBase64(_useSvtHash(servantUserIds)));
     request.addFieldStr("sellCommandCode", network.catMouseGame.encodeMsgpackBase64(_useSvtHash(commandCodeUserIds)));
     return request.beginRequestAndCheckError('sell_svt');
+  }
+
+  @override
+  Future<FResponse> servantCombine({
+    required int64_t baseUserSvtId,
+    required List<int64_t> materialSvtIds,
+    required int32_t useQp,
+    required int32_t getExp,
+  }) {
+    final request = FRequestJP(network: network, path: '/card/combine');
+    request.addFieldInt64("baseUserSvtId", baseUserSvtId);
+    request.addFieldStr("materialUserSvtIds", jsonEncode(materialSvtIds));
+    request.addFieldInt32("useQp", useQp);
+    request.addFieldInt32("getExp", getExp);
+    return request.beginRequestAndCheckError('card_combine');
   }
 
   @override

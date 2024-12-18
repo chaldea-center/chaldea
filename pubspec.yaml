@@ -44,13 +44,13 @@ dependencies:
   csv: ^6.0.0
   cupertino_icons: ^1.0.6
   dart_des: ^1.0.2
-  data_table_2: ^2.5.7
+  data_table_2: 2.5.16
   device_info_plus: ^11.2.0
   dio: ^5.3.3
   # dio_cookie_manager: ^3.0.0
   dots_indicator: ^3.0.0
   equatable: ^2.0.5
-  file_picker: 8.1.4
+  file_picker: ^8.1.6
   fl_chart: ^0.69.0
   flutter_cache_manager: ^3.3.1
   flutter_easyloading: ^3.0.5

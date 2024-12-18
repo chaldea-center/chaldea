@@ -787,7 +787,29 @@ class UserServantEntity extends DataEntityBase<int> {
   BasicServant? get dbEntity => db.gameData.entities[svtId];
   Servant? get dbSvt => db.gameData.servantsById[svtId];
   CraftEssence? get dbCE => db.gameData.craftEssencesById[svtId];
-  int? get maxLv => dbCE?.ascensionAdd.lvMax.ascension[limitCount];
+  int? get maxLv {
+    if (dbCE != null) return dbCE?.ascensionAdd.lvMax.ascension[limitCount];
+    final svt = dbSvt;
+    if (svt == null) return null;
+    final baseLv = svt.ascensionAdd.lvMax.ascension[limitCount];
+    if (baseLv == null) return null;
+    if (exceedCount > 0) {
+      final exceedList = <int, List<int>>{
+        1: [10, 5, 5, 5, 5],
+        0: [5, 5, 5, 5, 5],
+        2: [5, 5, 5, 5, 5],
+        3: [5, 5, 5, 5],
+        4: [5, 5],
+        5: [],
+      }[svt.rarity]!;
+      exceedList.addAll(List.generate(15, (_) => 2));
+      if (exceedCount <= exceedList.length) {
+        final addLv = Maths.sum(exceedList.sublist(0, exceedCount));
+        return baseLv + addLv;
+      }
+    }
+    return baseLv;
+  }
 }
 
 @JsonSerializable(createToJson: false)
@@ -2068,7 +2090,7 @@ class UserBoxGachaEntity extends DataEntityBase<_IntStr> {
   int boxGachaId;
   int resetNum;
   int drawNum;
-  bool isReset;
+  bool isReset; // canReset
   int boxIndex;
   // Map script; // replaceGiftIdList
 

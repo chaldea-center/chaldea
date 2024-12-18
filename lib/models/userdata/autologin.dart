@@ -103,6 +103,7 @@ sealed class AutoLoginData {
 
   // gacha
   GachaOption gacha;
+  SvtCombineOption svtCombine;
 
   //
   int? lastLogin;
@@ -120,12 +121,14 @@ sealed class AutoLoginData {
     List<AutoBattleOptions>? battleOptions,
     Set<int>? recoveredAps,
     GachaOption? gacha,
+    SvtCombineOption? svtCombine,
     this.lastLogin,
     this.userGame,
     Map<int, int>? userItems,
   })  : battleOptions = battleOptions ?? [AutoBattleOptions()],
         recoveredAps = recoveredAps ?? {},
         gacha = gacha ?? GachaOption(),
+        svtCombine = svtCombine ?? SvtCombineOption(),
         _curBattleOptionIndex = curBattleOptionIndex ?? 0,
         userItems = userItems ?? {};
 
@@ -152,6 +155,7 @@ class AutoLoginDataJP extends AutoLoginData {
     super.battleOptions,
     super.recoveredAps,
     super.gacha,
+    super.svtCombine,
     super.lastLogin,
     super.userGame,
     super.userItems,
@@ -232,6 +236,7 @@ class AutoLoginDataCN extends AutoLoginData {
     super.battleOptions,
     super.recoveredAps,
     super.gacha,
+    super.svtCombine,
     super.lastLogin,
     super.userGame,
     super.userItems,
@@ -427,4 +432,25 @@ class GachaOption {
   factory GachaOption.fromJson(Map<String, dynamic> json) => _$GachaOptionFromJson(json);
 
   Map<String, dynamic> toJson() => _$GachaOptionToJson(this);
+}
+
+@JsonSerializable()
+class SvtCombineOption {
+  int baseUserSvtId;
+  int maxMaterialCount;
+  int loopCount;
+  Set<int> svtMaterialRarities;
+  bool doubleExp = false;
+
+  SvtCombineOption({
+    this.baseUserSvtId = 0,
+    this.maxMaterialCount = 20,
+    this.loopCount = 0,
+    Set<int>? svtMaterialRarities,
+    this.doubleExp = false,
+  }) : svtMaterialRarities = svtMaterialRarities ?? {};
+
+  factory SvtCombineOption.fromJson(Map<String, dynamic> json) => _$SvtCombineOptionFromJson(json);
+
+  Map<String, dynamic> toJson() => _$SvtCombineOptionToJson(this);
 }

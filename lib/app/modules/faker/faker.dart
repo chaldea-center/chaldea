@@ -26,6 +26,8 @@ import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../import_data/import_https_page.dart';
 import '../import_data/sniff_details/formation_decks.dart';
+import 'card_enhance/svt_combine.dart';
+import 'details/box_gacha.dart';
 import 'details/dialogs.dart';
 import 'details/raids.dart';
 import 'details/trade.dart';
@@ -146,33 +148,48 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
                 child: Text(S.current.general_import),
               ),
               PopupMenuItem(
-                enabled: isLoggedIn && !runtime.runningTask.value,
+                enabled: isLoggedIn,
                 onTap: () {
                   router.pushPage(UserPresentBoxManagePage(runtime: runtime));
                 },
                 child: Text(S.current.present_box),
               ),
               PopupMenuItem(
-                enabled: isLoggedIn && !runtime.runningTask.value,
+                enabled: isLoggedIn,
                 onTap: () {
                   router.pushPage(GachaDrawPage(runtime: runtime));
                 },
                 child: Text(S.current.gacha),
               ),
               PopupMenuItem(
-                enabled: isLoggedIn && !runtime.runningTask.value,
+                enabled: isLoggedIn,
                 onTap: () {
                   router.pushPage(UserEventMissionReceivePage(runtime: runtime));
                 },
                 child: Text(S.current.master_mission),
               ),
+              PopupMenuItem(
+                // enabled: !runtime.runningTask.value,
+                onTap: () {
+                  router.pushPage(SvtCombinePage(runtime: runtime));
+                },
+                child: Text('从者强化'),
+              ),
               if (mstData.userEventTrade.isNotEmpty)
                 PopupMenuItem(
-                  enabled: isLoggedIn && !runtime.runningTask.value,
+                  enabled: isLoggedIn,
                   onTap: () async {
                     router.pushPage(UserEventTradePage(runtime: runtime));
                   },
                   child: Text(S.current.event_trade),
+                ),
+              if (mstData.userBoxGacha.isNotEmpty)
+                PopupMenuItem(
+                  enabled: isLoggedIn,
+                  onTap: () async {
+                    router.pushPage(BoxGachaDrawPage(runtime: runtime));
+                  },
+                  child: Text(S.current.event_lottery),
                 ),
             ],
           ),
@@ -715,6 +732,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
                           title: 'Target Num of "${GameCardMixin.anyCardItemName(itemId).l}"',
                           text: battleOption.targetDrops[itemId]?.toString(),
                           validate: (s) => (int.tryParse(s) ?? -1) >= 0,
+                          keyboardType: TextInputType.number,
                           onSubmit: (s) {
                             runtime.lockTask(() {
                               if (mounted) {
@@ -787,6 +805,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
                           title: 'Win Target Num of "${GameCardMixin.anyCardItemName(itemId).l}"',
                           text: battleOption.winTargetItemNum[itemId]?.toString(),
                           validate: (s) => (int.tryParse(s) ?? -1) > 0,
+                          keyboardType: TextInputType.number,
                           onSubmit: (s) {
                             runtime.lockTask(() {
                               if (mounted) {
@@ -1649,6 +1668,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
               child: const Text('Seed-wait'),
             ),
             PopupMenuItem(
+              enabled: inBattle && !inBattle,
               child: const Text('present_list'),
               onTap: () {
                 runtime.runTask(() => agent.userPresentList());

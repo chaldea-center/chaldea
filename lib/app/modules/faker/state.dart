@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 
@@ -187,9 +189,9 @@ class FakerRuntime {
     if (battleOption.loopCount <= 0) {
       throw SilentException('loop count (${battleOption.loopCount}) must >0');
     }
-    if (battleOption.targetDrops.values.any((v) => v < 0)) {
-      throw SilentException('loop target drop num must >=0 (0=always)');
-    }
+    // if (battleOption.targetDrops.values.any((v) => v < 0)) {
+    //   throw SilentException('loop target drop num must >=0 (0=always)');
+    // }
     if (battleOption.winTargetItemNum.values.any((v) => v <= 0)) {
       throw SilentException('win target drop num must >0');
     }
@@ -524,6 +526,102 @@ class FakerRuntime {
     }
   }
 
+  // box gacha
+  Future<void> boxGachaDraw({required EventLottery lottery, required int num, required Ref<int> loopCount}) async {
+    final boxGachaId = lottery.id;
+    while (loopCount.value > 0) {
+      final userBoxGacha = mstData.userBoxGacha[boxGachaId];
+      if (userBoxGacha == null) throw SilentException('BoxGacha $boxGachaId not in user data');
+      final maxNum = lottery.getMaxNum(userBoxGacha.boxIndex);
+      if (userBoxGacha.isReset && userBoxGacha.drawNum == maxNum) {
+        await agent.boxGachaReset(gachaId: boxGachaId);
+        update();
+        continue;
+      }
+      // if (userBoxGacha.isReset) throw SilentException('isReset=true, not tested');
+      num = min(num, maxNum - userBoxGacha.drawNum);
+      if (userBoxGacha.resetNum <= 10 && num > 10) {
+        throw SilentException('Cannot draw $num times in first 10 lotteries');
+      }
+      final ownItemCount = mstData.userItem[lottery.cost.itemId]?.num ?? 0;
+      final needItemCount = num * lottery.cost.amount;
+      if (ownItemCount < needItemCount) {
+        throw SilentException('Item noy enough: $ownItemCount<$needItemCount');
+      }
+      if (num <= 0 || num > 100) {
+        throw SilentException('Invalid draw num: $num');
+      }
+      if (mstData.userPresentBox.length >= (gameData.constants.maxPresentBoxNum - 10)) {
+        throw SilentException('Present Box Full');
+      }
+      await agent.boxGachaDraw(gachaId: boxGachaId, num: num);
+      loopCount.value -= 1;
+      update();
+    }
+  }
+
+  //
+  Future<void> svtCombine({int? loopCount}) async {
+    final options = agent.user.svtCombine;
+    while ((loopCount ?? options.loopCount) > 0) {
+      final UserServantEntity? baseUserSvt = mstData.userSvt[options.baseUserSvtId];
+      if (baseUserSvt == null) throw SilentException('user svt ${options.baseUserSvtId} not found');
+      final baseSvt = baseUserSvt.dbSvt;
+      if (baseSvt == null) throw SilentException('svt ${baseUserSvt.svtId} not found');
+      if (baseSvt.rarity == 0 || baseSvt.type != SvtType.normal || baseSvt.collectionNo == 0) {
+        throw SilentException('Invalid base svt');
+      }
+      if (baseUserSvt.maxLv == null || baseUserSvt.lv >= baseUserSvt.maxLv!) {
+        throw SilentException('Lv.${baseUserSvt.lv}>=maxLv ${baseUserSvt.maxLv}');
+      }
+      List<UserServantEntity> materialSvts = [];
+      for (final userSvt in mstData.userSvt) {
+        final svt = userSvt.dbEntity;
+        if (svt == null || svt.type != SvtType.combineMaterial) continue;
+        if (userSvt.locked || userSvt.lv != 1) continue;
+        if (!options.svtMaterialRarities.contains(svt.rarity)) continue;
+        materialSvts.add(userSvt);
+      }
+      materialSvts.sort2((e) => e.dbEntity?.rarity ?? 999);
+
+      List<int> materialSvtIds = [];
+      final curLvExp = baseSvt.expGrowth.getOrNull(baseUserSvt.lv - 1),
+          nextLvExp = baseSvt.expGrowth.getOrNull(baseUserSvt.lv);
+      if (curLvExp == null || nextLvExp == null || curLvExp >= nextLvExp) {
+        throw SilentException('no valid exp data of lv $curLvExp or $nextLvExp found');
+      }
+      int needExp = nextLvExp - curLvExp;
+      int totalGetExp = 0, totalUseQp = 0;
+      for (final userSvt in materialSvts) {
+        final svt = userSvt.dbEntity!;
+        final sameClass = svt.classId == SvtClass.ALL.value || svt.classId == baseSvt.classId;
+        int getExp = (1000 * (pow(3, svt.rarity - 1)) * (sameClass ? 1.2 : 1)).round();
+        int useQp = ((100 + (baseUserSvt.lv - 1) * 30) * ([1, 1.5, 2, 4, 6][baseSvt.rarity - 1])).round();
+        if (totalGetExp >= needExp || materialSvtIds.length >= options.maxMaterialCount) break;
+        totalGetExp += getExp * (options.doubleExp ? 2 : 1);
+        totalUseQp += useQp;
+        materialSvtIds.add(userSvt.id);
+      }
+
+      if (materialSvtIds.isEmpty) {
+        throw SilentException('No valid 种火 found');
+      }
+
+      await agent.servantCombine(
+        baseUserSvtId: options.baseUserSvtId,
+        materialSvtIds: materialSvtIds,
+        useQp: totalUseQp,
+        getExp: totalGetExp,
+      );
+      if (loopCount != null) {
+        loopCount -= 1;
+      } else {
+        options.loopCount -= 1;
+      }
+      update();
+    }
+  }
+
   // helpers
 
   void _checkStop() {
@@ -591,9 +689,12 @@ class FakerRuntime {
         if (recover == null) continue;
         int dt = mstData.user!.actRecoverAt - DateTime.now().timestamp;
         if ((recover.id == 1 || recover.id == 2) && option.waitApRecoverGold && dt > 300) {
-          final nextApSeconds = dt ~/ 300;
-          if (nextApSeconds < 240) {
-            await Future.delayed(Duration(seconds: nextApSeconds + 2));
+          final waitUntil = DateTime.now().timestamp + dt % 300 + 2;
+          while (true) {
+            final now = DateTime.now().timestamp;
+            if (now >= waitUntil) break;
+            EasyLoading.show(status: 'Wait ${waitUntil - now} seconds...');
+            await Future.delayed(Duration(seconds: min(5, waitUntil - now)));
           }
         }
         if (recover.recoverType == RecoverType.stone && mstData.user!.stone > 0) {

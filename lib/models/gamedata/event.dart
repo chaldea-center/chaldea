@@ -1230,6 +1230,10 @@ class EventLottery {
   Map<int, int>? _lastBoxItems;
 
   Map<String, dynamic> toJson() => _$EventLotteryToJson(this);
+
+  int getMaxNum(int boxIndex) {
+    return Maths.sum(boxes.map((e) => e.boxIndex == boxIndex ? e.maxNum : 0));
+  }
 }
 
 @JsonSerializable()
