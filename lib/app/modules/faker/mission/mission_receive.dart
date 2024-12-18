@@ -209,10 +209,10 @@ class _UserEventMissionReceivePageState extends State<UserEventMissionReceivePag
           progressNum ??= runtime.mstData.userEventMissionCondDetail[condDetailId]?.progressNum;
           targetNum = cond.targetNum;
         } else if (cond.condType == CondType.eventMissionClear) {
-          progressNum ??= cond.targetIds
-              .where((mid) =>
-                  runtime.mstData.userEventMission[mid]?.missionProgressType == MissionProgressType.clear.value)
-              .length;
+          progressNum ??= cond.targetIds.where((mid) {
+            final progressType = runtime.mstData.userEventMission[mid]?.missionProgressType;
+            return progressType == MissionProgressType.clear.value || progressType == MissionProgressType.achieve.value;
+          }).length;
           targetNum = cond.targetNum;
         }
       }

@@ -81,7 +81,7 @@ class PresentBoxFilterData with FilterDataMixin {
   final rarity = FilterGroupData<int>();
 
   @override
-  List<FilterGroupData> get groups => [presentType];
+  List<FilterGroupData> get groups => [presentType, rarity];
 
   @override
   void reset() {

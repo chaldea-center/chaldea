@@ -46,8 +46,12 @@ class _InputCancelOkDialogState extends State<InputCancelOkDialog> {
   bool validation = true;
 
   bool _validate(String v) {
-    if (widget.validate != null) {
-      return widget.validate!(v);
+    try {
+      if (widget.validate != null) {
+        return widget.validate!(v);
+      }
+    } catch (_) {
+      return false;
     }
     return true;
   }

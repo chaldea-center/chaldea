@@ -209,11 +209,10 @@ class OneWindow extends StatelessWidget {
               routerDelegate: _delegate,
               active: index == root.appState.activeIndex && root.appState.windowState.isSingle,
             );
-            if (index == root.appState.activeIndex) {
-              return child;
-            } else {
-              return Offstage(child: child);
-            }
+            return Offstage(
+              offstage: index != root.appState.activeIndex,
+              child: child,
+            );
           },
         ),
       ),

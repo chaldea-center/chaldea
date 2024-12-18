@@ -43,11 +43,12 @@ class _FreeQuestOverviewState extends State<FreeQuestOverview> {
   Map<int, QuestPhase> phases = {};
   Map<int, List<Quest>> spots = {};
   bool _loading = false;
-  bool _fixFirstCol = false;
+  bool _fixFirstCol = true;
   _QuestLv minLv = _QuestLv.all;
   List<_QuestLv> validLvs = [_QuestLv.all];
   bool hasDifferentEnemyCount = false;
   bool useMaxEnemyCountHash = false;
+  bool showOwnCount = false;
 
   @override
   void initState() {
@@ -166,7 +167,16 @@ class _FreeQuestOverviewState extends State<FreeQuestOverview> {
             },
             icon: const Icon(Icons.view_column),
             tooltip: 'Fixed 1st Column',
-          )
+          ),
+          IconButton(
+            onPressed: () {
+              setState(() {
+                showOwnCount = !showOwnCount;
+              });
+            },
+            icon: Icon(showOwnCount ? Icons.person : Icons.person_off),
+            tooltip: 'Show own item count',
+          ),
         ],
       ),
       body: Column(
@@ -335,6 +345,23 @@ class _FreeQuestOverviewState extends State<FreeQuestOverview> {
     if (widget.needSort) {
       quests.sort2((e) => -e.priority);
     }
+    Widget _withOwnValue(int itemId, String text) {
+      if (showOwnCount && db.itemCenter.isStatItem(itemId)) {
+        text = [
+          (db.curUser.items[itemId] ?? 0).format(),
+          (db.itemCenter.itemLeft[itemId] ?? 0).format(),
+          if (text.isNotEmpty) text,
+        ].join('\n');
+      }
+      return Item.iconBuilder(
+        context: context,
+        item: null,
+        itemId: itemId,
+        width: iconWidth,
+        text: text,
+      );
+    }
+
     for (final quest in quests) {
       final info = _DropInfo(quest);
       data.add(info);
@@ -344,13 +371,7 @@ class _FreeQuestOverviewState extends State<FreeQuestOverview> {
       info.domusRuns = db.gameData.dropData.domusAurea.getQuestRuns(quest.id);
       for (final id in drops.keys) {
         if (quest.warId != WarId.ordealCall && db.gameData.items[id]?.category != ItemCategory.normal) continue;
-        info.domusItems[id] = Item.iconBuilder(
-          context: context,
-          item: null,
-          itemId: id,
-          width: iconWidth,
-          text: drops[id]!.format(percent: true, maxDigits: 3),
-        );
+        info.domusItems[id] = _withOwnValue(id, drops[id]!.format(percent: true, maxDigits: 3));
       }
 
       // rayshift
@@ -381,12 +402,7 @@ class _FreeQuestOverviewState extends State<FreeQuestOverview> {
         if (item == null) continue;
         switch (item.category) {
           case ItemCategory.normal:
-            info.normalItems[id] = Item.iconBuilder(
-              context: context,
-              item: item,
-              width: iconWidth,
-              text: base.format(percent: true, maxDigits: 3),
-            );
+            info.normalItems[id] = _withOwnValue(item.id, base.format(percent: true, maxDigits: 3));
             break;
           case ItemCategory.event:
           case ItemCategory.other:
@@ -405,21 +421,11 @@ class _FreeQuestOverviewState extends State<FreeQuestOverview> {
           case ItemCategory.eventAscension:
           case ItemCategory.coin:
             if (id == Items.qpId) {
-              if (base > 10000) {
-                info.normalItems[id] = Item.iconBuilder(
-                  context: context,
-                  item: item,
-                  width: iconWidth,
-                  text: base.format(),
-                );
+              if (base > 100000) {
+                info.normalItems[id] = _withOwnValue(item.id, base.format());
               }
             } else if (quest.warId == WarId.ordealCall) {
-              info.normalItems[id] = Item.iconBuilder(
-                context: context,
-                item: item,
-                width: iconWidth,
-                text: base.format(percent: true, maxDigits: 3),
-              );
+              info.normalItems[id] = _withOwnValue(item.id, base.format(percent: true, maxDigits: 3));
             }
             break;
         }

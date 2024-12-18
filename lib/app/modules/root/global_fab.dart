@@ -183,22 +183,6 @@ class __DebugMenuDialogState extends State<_DebugMenuDialog> {
           ),
         ),
         ListTile(
-          leading: const Icon(Icons.color_lens_outlined),
-          title: const Text('Palette'),
-          onTap: () {
-            Navigator.pop(context);
-            router.pushPage(DarkLightThemePalette());
-          },
-        ),
-        ListTile(
-          leading: const Icon(Icons.color_lens_outlined),
-          title: const Text('Switch M2/M3'),
-          onTap: () {
-            db.settings.useMaterial3 = !db.settings.useMaterial3;
-            db.notifyAppUpdate();
-          },
-        ),
-        ListTile(
           leading: const Icon(Icons.screenshot_monitor),
           title: Text(S.current.screenshots),
           subtitle: enableScreenshot ? null : const Text('Only available in canvaskit renderer'),
@@ -239,6 +223,22 @@ class __DebugMenuDialogState extends State<_DebugMenuDialog> {
               setState(() {});
             },
           ),
+        ),
+        ListTile(
+          leading: const Icon(Icons.color_lens_outlined),
+          title: const Text('Palette'),
+          onTap: () {
+            Navigator.pop(context);
+            router.pushPage(DarkLightThemePalette());
+          },
+        ),
+        ListTile(
+          leading: const Icon(Icons.color_lens_outlined),
+          title: const Text('Switch M2/M3'),
+          onTap: () {
+            db.settings.useMaterial3 = !db.settings.useMaterial3;
+            db.notifyAppUpdate();
+          },
         ),
         ListTile(
           title: Text(S.current.show_frame_rate),

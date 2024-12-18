@@ -60,6 +60,10 @@ class ItemCenter {
 
   Map<int, int> itemLeft = {};
 
+  bool isStatItem(int itemId) {
+    return _validItems.contains(itemId);
+  }
+
   int demandOf(int itemId) {
     return Maths.sum([
       statSvtDemands[itemId] ?? 0,

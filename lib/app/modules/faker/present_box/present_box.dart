@@ -331,7 +331,7 @@ class _UserPresentBoxManagePageState extends State<UserPresentBoxManagePage> {
     presents = userPresents.where((e) => e.giftType == GiftType.item.value && e.objectId == item.id).toList();
     if (presents.isEmpty) return;
     presents.sort2((e) => e.createdAt);
-    selectNum = selectNum.clamp(1, min(_kMaxItemSelectExchangeCount, presents.length));
+    selectNum = selectNum.clamp(1, min(_kMaxItemSelectExchangeCount, Maths.sum(presents.map((e) => e.num))));
     await runtime.runTask(() => runtime.agent.userPresentReceive(
           presentIds: presents.take(selectNum!).map((e) => e.presentId).toList(),
           itemSelectIdx: itemSelect.idx,
@@ -380,7 +380,7 @@ class _ItemSelectTile extends StatelessWidget {
     return ListTile(
       dense: true,
       contentPadding: padding,
-      leading: gift?.iconBuilder(context: context, text: count.format()),
+      leading: gift?.iconBuilder(context: context, text: count.format(), width: 32),
       title: Wrap(
         crossAxisAlignment: WrapCrossAlignment.center,
         children: [
@@ -440,7 +440,7 @@ class __ItemSelectCountDialogState extends State<_ItemSelectCountDialog> {
     final presents = widget.mstData.userPresentBox
         .where((e) => e.giftType == GiftType.item.value && e.objectId == widget.item.id)
         .toList();
-    final int maxCount = min(presents.length, _kMaxItemSelectExchangeCount);
+    final int maxCount = min(Maths.sum(presents.map((e) => e.num)), _kMaxItemSelectExchangeCount);
     if (count > maxCount) count = maxCount;
     return AlertDialog(
       title: Text(widget.item.lName.l),

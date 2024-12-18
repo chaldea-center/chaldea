@@ -722,7 +722,17 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
           children: [
             for (final itemId in boxItems.keys)
               ListTile(
-                leading: GameCardMixin.anyCardItemBuilder(context: context, id: itemId, width: 36),
+                dense: true,
+                leading: db.onUserData(
+                  (context, snapshot) => Item.iconBuilder(
+                    context: context,
+                    item: null,
+                    itemId: itemId,
+                    text: [db.curUser.items[itemId] ?? 0, db.itemCenter.itemLeft[itemId] ?? 0]
+                        .map((e) => e.format())
+                        .join('\n'),
+                  ),
+                ),
                 title: Text([
                   GameCardMixin.anyCardItemName(itemId).l,
                   if (boxItems[itemId] != 1) ' × ${boxItems[itemId]}'

@@ -177,14 +177,15 @@ class _FakerAccountsPageState extends State<FakerAccountsPage> {
                     style: Theme.of(context).textTheme.bodySmall,
                   ),
           ),
-          IconButton(
-            onPressed: () async {
-              await router.pushPage(FakerAccountEditPage(user: user));
-              if (mounted) setState(() {});
-            },
-            icon: const Icon(Icons.edit),
-            iconSize: 20,
-          ),
+          if (!sorting)
+            IconButton(
+              onPressed: () async {
+                await router.pushPage(FakerAccountEditPage(user: user));
+                if (mounted) setState(() {});
+              },
+              icon: const Icon(Icons.edit),
+              iconSize: 20,
+            ),
         ],
       ),
       onTap: sorting
