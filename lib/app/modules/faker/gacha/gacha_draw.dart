@@ -66,15 +66,11 @@ class _GachaDrawPageState extends State<GachaDrawPage> {
         leading: BackButton(
           onPressed: () async {
             if (runtime.runningTask.value) {
-              SimpleCancelOkDialog(
-                title: Text(S.current.warning),
-                content: const Text("Task is still running! Cannot exit!"),
-                hideCancel: true,
-              ).showDialog(context);
-              return;
+              final confirm = await const SimpleCancelOkDialog(title: Text("Exit?")).showDialog(context);
+              if (confirm == true && context.mounted) Navigator.pop(context);
+            } else {
+              Navigator.pop(context);
             }
-            final confirm = await const SimpleCancelOkDialog(title: Text("Exit?")).showDialog(context);
-            if (confirm == true && context.mounted) Navigator.pop(context);
           },
         ),
         actions: [
@@ -679,11 +675,15 @@ class _GachaDrawPageState extends State<GachaDrawPage> {
             if (index == 0) {
               return Text('Sell   ', style: Theme.of(context).textTheme.bodySmall);
             }
-            final svtId = svtIds.getOrNull(index - 1);
+            final svtId = svtIds[index - 1];
             final soldNum = soldServants[svtId] ?? 0;
-            final svt = db.gameData.servantsById[svtId];
-            Widget child =
-                svt?.iconBuilder(context: context, height: 32, text: soldNum.format()) ?? Text('$svtId×$soldNum');
+            Widget child = GameCardMixin.anyCardItemBuilder(
+              context: context,
+              height: 32,
+              text: soldNum.format(),
+              id: svtId,
+              onDefault: () => Text(' $svtId×$soldNum '),
+            );
             if (index == 0) {
               child = Padding(padding: EdgeInsetsDirectional.only(end: 16), child: child);
             }

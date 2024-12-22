@@ -180,7 +180,23 @@ class _FakerAccountsPageState extends State<FakerAccountsPage> {
           if (!sorting)
             IconButton(
               onPressed: () async {
-                await router.pushPage(FakerAccountEditPage(user: user));
+                await router.pushPage(FakerAccountEditPage(
+                  user: user,
+                  onImportJson: (data) {
+                    AutoLoginData newUser;
+                    List<AutoLoginData> userList;
+                    switch (user) {
+                      case AutoLoginDataJP():
+                        userList = fakerSettings.jpAutoLogins;
+                        newUser = AutoLoginDataJP.fromJson(data);
+                      case AutoLoginDataCN():
+                        userList = fakerSettings.cnAutoLogins;
+                        newUser = AutoLoginDataCN.fromJson(data);
+                    }
+                    userList[userList.indexOf(user)] = newUser;
+                    return newUser;
+                  },
+                ));
                 if (mounted) setState(() {});
               },
               icon: const Icon(Icons.edit),

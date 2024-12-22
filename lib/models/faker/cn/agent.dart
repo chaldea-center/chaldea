@@ -426,6 +426,28 @@ class FakerAgentCN extends FakerAgent<FRequestCN, AutoLoginDataCN, NetworkManage
   }
 
   @override
+  Future<FResponse> servantLimitCombine({required int64_t baseUserSvtId}) {
+    return _acPhp(
+      key: 'cardcombinelimit',
+      nid: 'card_limit',
+      params2: {
+        "baseUserSvtId": baseUserSvtId,
+      },
+    );
+  }
+
+  @override
+  Future<FResponse> servantLevelExceed({required int64_t baseUserSvtId}) {
+    return _acPhp(
+      key: 'cardcombineexceed',
+      nid: 'card_combine_exceed',
+      params2: {
+        "baseUserSvtId": baseUserSvtId,
+      },
+    );
+  }
+
+  @override
   Future<FResponse> servantEquipCombine({required int64_t baseUserSvtId, required List<int64_t> materialSvtIds}) {
     return _acPhp(
       key: 'svtequipcombine',

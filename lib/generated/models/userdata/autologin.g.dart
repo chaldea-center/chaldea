@@ -90,6 +90,8 @@ AutoLoginDataJP _$AutoLoginDataJPFromJson(Map json) => $checkedCreate(
               'gacha', (v) => v == null ? null : GachaOption.fromJson(Map<String, dynamic>.from(v as Map))),
           svtCombine: $checkedConvert(
               'svtCombine', (v) => v == null ? null : SvtCombineOption.fromJson(Map<String, dynamic>.from(v as Map))),
+          presentBox: $checkedConvert('presentBox',
+              (v) => v == null ? null : PresentBoxFilterData.fromJson(Map<String, dynamic>.from(v as Map))),
           lastLogin: $checkedConvert('lastLogin', (v) => (v as num?)?.toInt()),
           userGame: $checkedConvert(
               'userGame', (v) => v == null ? null : UserGameEntity.fromJson(Map<String, dynamic>.from(v as Map))),
@@ -112,6 +114,7 @@ Map<String, dynamic> _$AutoLoginDataJPToJson(AutoLoginDataJP instance) => <Strin
       'recoveredAps': instance.recoveredAps.toList(),
       'gacha': instance.gacha.toJson(),
       'svtCombine': instance.svtCombine.toJson(),
+      'presentBox': instance.presentBox.toJson(),
       'lastLogin': instance.lastLogin,
       'userGame': instance.userGame?.toJson(),
       'userItems': instance.userItems.map((k, e) => MapEntry(k.toString(), e)),
@@ -180,6 +183,8 @@ AutoLoginDataCN _$AutoLoginDataCNFromJson(Map json) => $checkedCreate(
               'gacha', (v) => v == null ? null : GachaOption.fromJson(Map<String, dynamic>.from(v as Map))),
           svtCombine: $checkedConvert(
               'svtCombine', (v) => v == null ? null : SvtCombineOption.fromJson(Map<String, dynamic>.from(v as Map))),
+          presentBox: $checkedConvert('presentBox',
+              (v) => v == null ? null : PresentBoxFilterData.fromJson(Map<String, dynamic>.from(v as Map))),
           lastLogin: $checkedConvert('lastLogin', (v) => (v as num?)?.toInt()),
           userGame: $checkedConvert(
               'userGame', (v) => v == null ? null : UserGameEntity.fromJson(Map<String, dynamic>.from(v as Map))),
@@ -201,6 +206,7 @@ Map<String, dynamic> _$AutoLoginDataCNToJson(AutoLoginDataCN instance) => <Strin
       'recoveredAps': instance.recoveredAps.toList(),
       'gacha': instance.gacha.toJson(),
       'svtCombine': instance.svtCombine.toJson(),
+      'presentBox': instance.presentBox.toJson(),
       'lastLogin': instance.lastLogin,
       'userGame': instance.userGame?.toJson(),
       'userItems': instance.userItems.map((k, e) => MapEntry(k.toString(), e)),
@@ -368,3 +374,44 @@ Map<String, dynamic> _$SvtCombineOptionToJson(SvtCombineOption instance) => <Str
       'svtMaterialRarities': instance.svtMaterialRarities.toList(),
       'doubleExp': instance.doubleExp,
     };
+
+PresentBoxFilterData _$PresentBoxFilterDataFromJson(Map json) => $checkedCreate(
+      'PresentBoxFilterData',
+      json,
+      ($checkedConvert) {
+        final val = PresentBoxFilterData(
+          reversed: $checkedConvert('reversed', (v) => v as bool? ?? false),
+          maxNum: $checkedConvert('maxNum', (v) => (v as num?)?.toInt() ?? 0),
+          presentTypes: $checkedConvert(
+              'presentTypes',
+              (v) => (v as List<dynamic>?)
+                  ?.map((e) => $enumDecode(_$PresentTypeEnumMap, e, unknownValue: PresentType.servantExp))
+                  .toSet()),
+          rarities: $checkedConvert('rarities', (v) => (v as List<dynamic>?)?.map((e) => (e as num).toInt()).toSet()),
+        );
+        return val;
+      },
+    );
+
+Map<String, dynamic> _$PresentBoxFilterDataToJson(PresentBoxFilterData instance) => <String, dynamic>{
+      'reversed': instance.reversed,
+      'maxNum': instance.maxNum,
+      'presentTypes': instance.presentTypes.map((e) => _$PresentTypeEnumMap[e]!).toList(),
+      'rarities': instance.rarities.toList(),
+    };
+
+const _$PresentTypeEnumMap = {
+  PresentType.servant: 'servant',
+  PresentType.servantExp: 'servantExp',
+  PresentType.statusUp: 'statusUp',
+  PresentType.svtEquip: 'svtEquip',
+  PresentType.svtEquipExp: 'svtEquipExp',
+  PresentType.commandCode: 'commandCode',
+  PresentType.fruit: 'fruit',
+  PresentType.summonTicket: 'summonTicket',
+  PresentType.itemSelect: 'itemSelect',
+  PresentType.stone: 'stone',
+  PresentType.manaPrism: 'manaPrism',
+  PresentType.eventItem: 'eventItem',
+  PresentType.others: 'others',
+};

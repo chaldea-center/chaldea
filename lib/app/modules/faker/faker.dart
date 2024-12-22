@@ -169,7 +169,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
                 child: Text(S.current.master_mission),
               ),
               PopupMenuItem(
-                // enabled: !runtime.runningTask.value,
+                enabled: isLoggedIn,
                 onTap: () {
                   router.pushPage(SvtCombinePage(runtime: runtime));
                 },
@@ -966,6 +966,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
           onTap: () {
             router.pushPage(UserFormationDecksPage(
               mstData: mstData,
+              selectedDeckId: battleOption.deckId,
               onSelected: (v) {
                 runtime.lockTask(() {
                   battleOption.deckId = v.id;

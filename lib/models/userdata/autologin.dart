@@ -1,6 +1,9 @@
+import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/utils/extension.dart';
 import '../faker/jp/network.dart';
 import '../gamedata/common.dart';
+import '../gamedata/item.dart';
+import '../gamedata/mappings.dart';
 import '../gamedata/toplogin.dart';
 import '_helper.dart';
 
@@ -104,6 +107,7 @@ sealed class AutoLoginData {
   // gacha
   GachaOption gacha;
   SvtCombineOption svtCombine;
+  PresentBoxFilterData presentBox;
 
   //
   int? lastLogin;
@@ -122,6 +126,7 @@ sealed class AutoLoginData {
     Set<int>? recoveredAps,
     GachaOption? gacha,
     SvtCombineOption? svtCombine,
+    PresentBoxFilterData? presentBox,
     this.lastLogin,
     this.userGame,
     Map<int, int>? userItems,
@@ -129,6 +134,7 @@ sealed class AutoLoginData {
         recoveredAps = recoveredAps ?? {},
         gacha = gacha ?? GachaOption(),
         svtCombine = svtCombine ?? SvtCombineOption(),
+        presentBox = presentBox ?? PresentBoxFilterData(),
         _curBattleOptionIndex = curBattleOptionIndex ?? 0,
         userItems = userItems ?? {};
 
@@ -156,6 +162,7 @@ class AutoLoginDataJP extends AutoLoginData {
     super.recoveredAps,
     super.gacha,
     super.svtCombine,
+    super.presentBox,
     super.lastLogin,
     super.userGame,
     super.userItems,
@@ -237,6 +244,7 @@ class AutoLoginDataCN extends AutoLoginData {
     super.recoveredAps,
     super.gacha,
     super.svtCombine,
+    super.presentBox,
     super.lastLogin,
     super.userGame,
     super.userItems,
@@ -453,4 +461,68 @@ class SvtCombineOption {
   factory SvtCombineOption.fromJson(Map<String, dynamic> json) => _$SvtCombineOptionFromJson(json);
 
   Map<String, dynamic> toJson() => _$SvtCombineOptionToJson(this);
+}
+
+@JsonSerializable()
+class PresentBoxFilterData {
+  bool reversed = false;
+
+  int maxNum = 0;
+  @JsonKey(unknownEnumValue: PresentType.servantExp)
+  Set<PresentType> presentTypes;
+  Set<int> rarities;
+
+  PresentBoxFilterData({
+    this.reversed = false,
+    this.maxNum = 0,
+    Set<PresentType>? presentTypes,
+    Set<int>? rarities,
+  })  : presentTypes = presentTypes ?? {},
+        rarities = rarities ?? {};
+
+  void reset() {
+    presentTypes.clear();
+    rarities.clear();
+    maxNum = 0;
+  }
+
+  factory PresentBoxFilterData.fromJson(Map<String, dynamic> json) => _$PresentBoxFilterDataFromJson(json);
+
+  Map<String, dynamic> toJson() => _$PresentBoxFilterDataToJson(this);
+}
+
+enum PresentType {
+  servant,
+  servantExp,
+  statusUp,
+  svtEquip,
+  svtEquipExp,
+  commandCode,
+  fruit,
+  summonTicket,
+  itemSelect,
+  stone,
+  manaPrism,
+  eventItem,
+  others,
+  ;
+
+  String get shownName {
+    return switch (this) {
+          PresentType.servant => S.current.servant,
+          PresentType.servantExp => '${S.current.servant}(EXP)',
+          PresentType.statusUp => S.current.foukun,
+          PresentType.svtEquip => S.current.craft_essence,
+          PresentType.svtEquipExp => '${S.current.craft_essence}(EXP)',
+          PresentType.commandCode => S.current.command_code,
+          PresentType.fruit => S.current.item_apple,
+          PresentType.summonTicket => Items.summonTicket?.lName.l,
+          PresentType.itemSelect => S.current.exchange_ticket,
+          PresentType.stone => Items.stone?.lName.l,
+          PresentType.manaPrism => Items.manaPrism?.lName.l,
+          PresentType.eventItem => Transl.enums(ItemCategory.event, (e) => e.itemCategory).l,
+          PresentType.others => S.current.general_others,
+        } ??
+        name;
+  }
 }

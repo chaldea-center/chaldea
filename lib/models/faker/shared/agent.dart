@@ -70,6 +70,9 @@ abstract class FakerAgent<TRequest extends FRequestBase, TUser extends AutoLogin
     required int32_t useQp,
     required int32_t getExp,
   });
+  Future<FResponse> servantLimitCombine({required int64_t baseUserSvtId});
+  Future<FResponse> servantLevelExceed({required int64_t baseUserSvtId});
+
   Future<FResponse> servantEquipCombine({required int64_t baseUserSvtId, required List<int64_t> materialSvtIds});
 
   Future<FResponse> userStatusFlagSet({required List<int32_t> onFlagNumbers, required List<int32_t> offFlagNumbers});

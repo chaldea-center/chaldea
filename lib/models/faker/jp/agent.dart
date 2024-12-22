@@ -226,6 +226,20 @@ class FakerAgentJP extends FakerAgent<FRequestJP, AutoLoginDataJP, NetworkManage
   }
 
   @override
+  Future<FResponse> servantLimitCombine({required int64_t baseUserSvtId}) {
+    final request = FRequestJP(network: network, path: '/card/combineLimit');
+    request.addFieldInt64("baseUserSvtId", baseUserSvtId);
+    return request.beginRequest();
+  }
+
+  @override
+  Future<FResponse> servantLevelExceed({required int64_t baseUserSvtId}) {
+    final request = FRequestJP(network: network, path: '/card/combineExceed');
+    request.addFieldInt64("baseUserSvtId", baseUserSvtId);
+    return request.beginRequestAndCheckError('card_combine_exceed');
+  }
+
+  @override
   Future<FResponse> servantEquipCombine({required int64_t baseUserSvtId, required List<int64_t> materialSvtIds}) {
     // success: { "addTotalExp": 0, "successResult": 1, "normalExp": 30000 }
     final request = FRequestJP(network: network, path: '/svtEquip/combine');

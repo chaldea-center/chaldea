@@ -12,6 +12,7 @@ import 'package:chaldea/models/gamedata/toplogin.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
+import '../card_enhance/svt_combine.dart';
 import 'filter.dart';
 
 const int _kMaxPresentSelectCount = 99;
@@ -31,12 +32,14 @@ class _UserPresentBoxManagePageState extends State<UserPresentBoxManagePage> {
 
   Map<int, Item> items = {};
   final selectedPresents = <int>{};
+  bool showSelectedOnly = false;
 
-  final filterData = PresentBoxFilterData();
+  late final filterData = runtime.agent.user.presentBox;
 
   @override
   void initState() {
     super.initState();
+    showSelectedOnly = false;
     Future.microtask(() async {
       if (runtime.region == Region.jp) {
         items = Map.of(db.gameData.items);
@@ -53,13 +56,13 @@ class _UserPresentBoxManagePageState extends State<UserPresentBoxManagePage> {
 
   List<UserPresentBoxEntity> filterPresents() {
     final presents = runtime.mstData.userPresentBox.toList();
-    if (filterData.showSelectedOnly) {
+    if (showSelectedOnly) {
       presents.retainWhere((e) => selectedPresents.contains(e.presentId));
     }
     if (filterData.maxNum > 0) {
       presents.retainWhere((e) => e.num <= filterData.maxNum);
     }
-    if (filterData.presentType.isNotEmpty || filterData.rarity.isNotEmpty) {
+    if (filterData.presentTypes.isNotEmpty || filterData.rarities.isNotEmpty) {
       presents.retainWhere((present) {
         final giftType = GiftType.fromId(present.giftType);
         PresentType presentType = PresentType.others;
@@ -108,8 +111,8 @@ class _UserPresentBoxManagePageState extends State<UserPresentBoxManagePage> {
           default:
             break;
         }
-        if (!filterData.presentType.matchOne(presentType)) return false;
-        if (!filterData.rarity.matchOne(rarity)) return false;
+        if (filterData.presentTypes.isNotEmpty && !filterData.presentTypes.contains(presentType)) return false;
+        if (filterData.rarities.isNotEmpty && !filterData.rarities.contains(rarity)) return false;
         return true;
       });
     }
@@ -133,15 +136,15 @@ class _UserPresentBoxManagePageState extends State<UserPresentBoxManagePage> {
     final shownPresents = filterPresents();
     return Scaffold(
       appBar: AppBar(
-        title: Text('${S.current.present_box} (${runtime.mstData.userPresentBox.length})'),
+        title: Text('${S.current.present_box} (${shownPresents.length}/${runtime.mstData.userPresentBox.length})'),
         actions: [
           IconButton(
             onPressed: () {
               setState(() {
-                filterData.showSelectedOnly = !filterData.showSelectedOnly;
+                showSelectedOnly = !showSelectedOnly;
               });
             },
-            icon: Icon(filterData.showSelectedOnly ? Icons.check_circle : Icons.check_circle_outline),
+            icon: Icon(showSelectedOnly ? Icons.check_circle : Icons.check_circle_outline),
           ),
           IconButton(
             icon: const Icon(Icons.filter_alt),
@@ -264,10 +267,8 @@ class _UserPresentBoxManagePageState extends State<UserPresentBoxManagePage> {
         (selectedPresents.length >= shownPresents.length &&
             shownPresents.every((e) => selectedPresents.contains(e.presentId)));
 
-    final buttons = Wrap(
-      alignment: WrapAlignment.center,
-      crossAxisAlignment: WrapCrossAlignment.center,
-      children: [
+    final buttopnGroups = [
+      [
         FilledButton(
           onPressed: () {
             receivePresents(selectedPresents.toSet());
@@ -284,12 +285,17 @@ class _UserPresentBoxManagePageState extends State<UserPresentBoxManagePage> {
           tooltip: S.current.sort_order,
         ),
         IconButton(
-          onPressed: filterData.showSelectedOnly
+          onPressed: showSelectedOnly
               ? null
               : () {
                   if (allChecked) {
                     selectedPresents.removeAll(shownPresents.map((e) => e.presentId));
                   } else {
+                    if (shownPresents
+                        .every((e) => e.giftType == GiftType.servant.value && Items.embers.contains(e.objectId))) {
+                      shownPresents = shownPresents.toList();
+                      shownPresents.sortByList((e) => [e.objectId, e.num]);
+                    }
                     final leftIds = shownPresents.map((e) => e.presentId).toSet().difference(selectedPresents);
                     leftIds.removeWhere(isItemSelect);
                     selectedPresents.addAll(leftIds.take(_kMaxPresentSelectCount - selectedPresents.length));
@@ -299,7 +305,22 @@ class _UserPresentBoxManagePageState extends State<UserPresentBoxManagePage> {
           icon: Icon(allChecked ? Icons.check_box : Icons.square_outlined),
         )
       ],
-    );
+      [
+        FilledButton(
+          onPressed: () {
+            _SellCombineMaterialDialog(runtime: runtime).showDialog(context);
+          },
+          child: Text('Sell'),
+        ),
+        FilledButton(
+          onPressed: () {
+            SvtCombinePage(runtime: runtime).showDialog(context);
+          },
+          child: Text('从者强化'),
+        ),
+      ]
+    ];
+
     return Container(
       padding: EdgeInsets.all(8),
       child: Column(
@@ -307,7 +328,13 @@ class _UserPresentBoxManagePageState extends State<UserPresentBoxManagePage> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Text(cardInfo, style: Theme.of(context).textTheme.bodySmall, textAlign: TextAlign.center),
-          buttons,
+          for (final buttons in buttopnGroups)
+            Wrap(
+              alignment: WrapAlignment.center,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              spacing: 2,
+              children: buttons,
+            )
         ],
       ),
     );
@@ -359,6 +386,24 @@ class _UserPresentBoxManagePageState extends State<UserPresentBoxManagePage> {
         SimpleCancelOkDialog(
           title: Text('Overflow'),
           content: Text('$overflowType ${PresentOverflowType.values.firstWhereOrNull((e) => e.value == overflowType)}'),
+          actions: [
+            if (overflowType == PresentOverflowType.svt.value)
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  _SellCombineMaterialDialog(runtime: runtime).showDialog(context);
+                },
+                child: Text('Sell'),
+              ),
+            if (overflowType == PresentOverflowType.svt.value)
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  SvtCombinePage(runtime: runtime).showDialog(context);
+                },
+                child: Text('从者强化'),
+              )
+          ],
         ).showDialog(context);
       }
     });
@@ -489,6 +534,62 @@ class __ItemSelectCountDialogState extends State<_ItemSelectCountDialog> {
           child: Text(S.current.confirm),
         )
       ],
+    );
+  }
+}
+
+class _SellCombineMaterialDialog extends StatefulWidget {
+  final FakerRuntime runtime;
+
+  const _SellCombineMaterialDialog({required this.runtime});
+
+  @override
+  State<_SellCombineMaterialDialog> createState() => _SellCombineMaterialDialogState();
+}
+
+class _SellCombineMaterialDialogState extends State<_SellCombineMaterialDialog> {
+  late final runtime = widget.runtime;
+
+  @override
+  Widget build(BuildContext context) {
+    return SimpleDialog(
+      title: Text('变换种火'),
+      children: [
+        buildRarity(3, 200),
+        buildRarity(4, 100),
+        Center(
+          child: IconButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            icon: Icon(Icons.clear),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget buildRarity(int rarity, int maxCount) {
+    final cards = runtime.mstData.userSvt.where((userSvt) {
+      final entity = userSvt.dbEntity;
+      if (entity == null || entity.type != SvtType.combineMaterial || userSvt.locked) return false;
+      if (entity.rarity != rarity) return false;
+      return true;
+    }).toList();
+    cards.sort2((e) => -e.createdAt);
+    final svt = db.gameData.entities[(97700 + rarity) * 100];
+    return ListTile(
+      leading: svt?.iconBuilder(context: context, width: 28),
+      title: Text(svt?.lName.l ?? 'Rarity $rarity'),
+      trailing: Text('${min(maxCount, cards.length)}/${cards.length}'),
+      enabled: cards.isNotEmpty,
+      onTap: () async {
+        await runtime.runTask(() => runtime.agent.sellServant(
+              servantUserIds: cards.take(maxCount).map((e) => e.id).toList(),
+              commandCodeUserIds: [],
+            ));
+        if (mounted) setState(() {});
+      },
     );
   }
 }

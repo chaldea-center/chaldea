@@ -72,6 +72,9 @@ class _BoxGachaDrawPageState extends State<BoxGachaDrawPage> {
       boxGachaId = mstData.userBoxGacha.first.boxGachaId;
     }
     if (boxGachaId == 0) return;
+    if ((mstData.userBoxGacha[boxGachaId]?.resetNum ?? 0) <= 10) {
+      drawNumOnce = 10;
+    }
 
     final jpEvent = jpBoxGachaEvents[boxGachaId];
     if (user.region == Region.jp) {
@@ -94,15 +97,11 @@ class _BoxGachaDrawPageState extends State<BoxGachaDrawPage> {
         leading: BackButton(
           onPressed: () async {
             if (runtime.runningTask.value) {
-              SimpleCancelOkDialog(
-                title: Text(S.current.warning),
-                content: const Text("Task is still running! Cannot exit!"),
-                hideCancel: true,
-              ).showDialog(context);
-              return;
+              final confirm = await const SimpleCancelOkDialog(title: Text("Exit?")).showDialog(context);
+              if (confirm == true && context.mounted) Navigator.pop(context);
+            } else {
+              Navigator.pop(context);
             }
-            final confirm = await const SimpleCancelOkDialog(title: Text("Exit?")).showDialog(context);
-            if (confirm == true && context.mounted) Navigator.pop(context);
           },
         ),
         actions: [

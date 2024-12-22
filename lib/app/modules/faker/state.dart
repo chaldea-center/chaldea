@@ -242,7 +242,17 @@ class FakerRuntime {
       if (questPhaseEntity.flags.contains(QuestFlag.noBattle) && questPhaseEntity.stages.isNotEmpty) {
         throw SilentException('noBattle flag but ${questPhaseEntity.stages.length} stages');
       }
-      final setupResp = await agent.battleSetupWithOptions(battleOption);
+      FResponse setupResp;
+      try {
+        setupResp = await agent.battleSetupWithOptions(battleOption);
+      } on NidCheckException catch (e, s) {
+        if (e.nid == 'battle_setup' && e.detail?.resCode == '99' && e.detail?.fail?['errorType'] == 0) {
+          logger.e('battle setup failed with nid check, retry', e, s);
+          setupResp = await agent.battleSetupWithOptions(battleOption);
+        } else {
+          rethrow;
+        }
+      }
       update();
 
       final battleEntity = setupResp.data.mstData.battles.single;
@@ -440,20 +450,27 @@ class FakerRuntime {
     List<UserServantEntity> sellUserSvts = [];
     List<UserCommandCodeEntity> sellCommandCodes = [];
     final timeLimit = DateTime.now().timestamp - 3600 * 36;
-    for (final userSvt in mstData.userSvt) {
+    sellUserSvts.addAll(mstData.userSvt.where((userSvt) {
+      final entity = db.gameData.entities[userSvt.svtId];
+      if (userSvt.locked ||
+          userSvt.lv != 1 ||
+          entity == null ||
+          userSvt.createdAt < timeLimit ||
+          agent.user.gacha.sellKeepSvtIds.contains(userSvt.svtId)) return false;
+      if (entity.type == SvtType.combineMaterial && entity.rarity <= 3) return true;
       final svt = db.gameData.servantsById[userSvt.svtId];
-      if (svt == null || svt.rarity > 3 || svt.rarity == 0 || userSvt.locked || userSvt.lv != 1) continue;
-      if (!svt.obtains.contains(SvtObtain.friendPoint)) continue;
-      if (userSvt.createdAt < timeLimit) continue;
-      sellUserSvts.add(userSvt);
-    }
+      if (svt == null || svt.rarity > 3 || svt.rarity == 0) return false;
+      if (!svt.obtains.contains(SvtObtain.friendPoint)) return false;
+      return true;
+    }));
+
     final equippedCC = mstData.userSvtCommandCode.expand((e) => e.userCommandCodeIds).toSet();
-    for (final userCC in mstData.userCommandCode) {
+    sellCommandCodes.addAll(mstData.userCommandCode.where((userCC) {
       final cc = db.gameData.commandCodesById[userCC.commandCodeId];
-      if (userCC.locked || cc == null || cc.rarity > 2 || equippedCC.contains(userCC.id)) continue;
-      if (userCC.createdAt < timeLimit) continue;
-      sellCommandCodes.add(userCC);
-    }
+      if (userCC.locked || cc == null || cc.rarity > 2 || equippedCC.contains(userCC.id)) return false;
+      if (userCC.createdAt < timeLimit) return false;
+      return true;
+    }));
     sellUserSvts.sort2((e) => -e.id);
     sellUserSvts = sellUserSvts.take(200).toList();
     sellCommandCodes.sort2((e) => -e.id);
@@ -571,28 +588,28 @@ class FakerRuntime {
       if (baseSvt.rarity == 0 || baseSvt.type != SvtType.normal || baseSvt.collectionNo == 0) {
         throw SilentException('Invalid base svt');
       }
-      if (baseUserSvt.maxLv == null || baseUserSvt.lv >= baseUserSvt.maxLv!) {
-        throw SilentException('Lv.${baseUserSvt.lv}>=maxLv ${baseUserSvt.maxLv}');
+      final maxLv = baseUserSvt.maxLv;
+      if (maxLv == null || baseUserSvt.lv >= maxLv) {
+        throw SilentException('Lv.${baseUserSvt.lv}>=maxLv $maxLv');
       }
-      List<UserServantEntity> materialSvts = [];
-      for (final userSvt in mstData.userSvt) {
+      List<UserServantEntity> candidateMaterialSvts = mstData.userSvt.where((userSvt) {
         final svt = userSvt.dbEntity;
-        if (svt == null || svt.type != SvtType.combineMaterial) continue;
-        if (userSvt.locked || userSvt.lv != 1) continue;
-        if (!options.svtMaterialRarities.contains(svt.rarity)) continue;
-        materialSvts.add(userSvt);
-      }
-      materialSvts.sort2((e) => e.dbEntity?.rarity ?? 999);
+        if (svt == null || svt.type != SvtType.combineMaterial) return false;
+        if (userSvt.locked || userSvt.lv != 1) return false;
+        if (!options.svtMaterialRarities.contains(svt.rarity)) return false;
+        return true;
+      }).toList();
+      candidateMaterialSvts.sort2((e) => e.dbEntity?.rarity ?? 999);
 
       List<int> materialSvtIds = [];
       final curLvExp = baseSvt.expGrowth.getOrNull(baseUserSvt.lv - 1),
-          nextLvExp = baseSvt.expGrowth.getOrNull(baseUserSvt.lv);
-      if (curLvExp == null || nextLvExp == null || curLvExp >= nextLvExp) {
-        throw SilentException('no valid exp data of lv $curLvExp or $nextLvExp found');
+          nextAsenExp = baseSvt.expGrowth.getOrNull((baseUserSvt.maxLv ?? baseSvt.lvMax) - 1);
+      if (curLvExp == null || nextAsenExp == null || curLvExp >= nextAsenExp || curLvExp > baseUserSvt.exp) {
+        throw SilentException('no valid exp data found: $curLvExp <= ${baseUserSvt.exp} <= $nextAsenExp');
       }
-      int needExp = nextLvExp - curLvExp;
+      int needExp = nextAsenExp - baseUserSvt.exp;
       int totalGetExp = 0, totalUseQp = 0;
-      for (final userSvt in materialSvts) {
+      for (final userSvt in candidateMaterialSvts) {
         final svt = userSvt.dbEntity!;
         final sameClass = svt.classId == SvtClass.ALL.value || svt.classId == baseSvt.classId;
         int getExp = (1000 * (pow(3, svt.rarity - 1)) * (sameClass ? 1.2 : 1)).round();
@@ -688,13 +705,14 @@ class FakerRuntime {
         final recover = mstRecovers[recoverId];
         if (recover == null) continue;
         int dt = mstData.user!.actRecoverAt - DateTime.now().timestamp;
-        if ((recover.id == 1 || recover.id == 2) && option.waitApRecoverGold && dt > 300) {
+        if ((recover.id == 1 || recover.id == 2) && option.waitApRecoverGold && dt > 300 && dt % 300 < 240) {
           final waitUntil = DateTime.now().timestamp + dt % 300 + 2;
           while (true) {
             final now = DateTime.now().timestamp;
             if (now >= waitUntil) break;
             EasyLoading.show(status: 'Wait ${waitUntil - now} seconds...');
             await Future.delayed(Duration(seconds: min(5, waitUntil - now)));
+            _checkStop();
           }
         }
         if (recover.recoverType == RecoverType.stone && mstData.user!.stone > 0) {

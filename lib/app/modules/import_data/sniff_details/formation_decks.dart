@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/generated/l10n.dart';
@@ -10,11 +11,12 @@ import '../../battle/formation/formation_card.dart';
 
 class UserFormationDecksPage extends StatefulWidget {
   final MasterDataManager mstData;
+  final int? selectedDeckId;
   final int? eventId;
   final ValueChanged<UserDeckEntity>? onSelected;
   final ValueChanged<UserEventDeckEntity>? onEventDeckSelected;
   const UserFormationDecksPage(
-      {super.key, required this.mstData, this.eventId, this.onSelected, this.onEventDeckSelected});
+      {super.key, required this.mstData, this.selectedDeckId, this.eventId, this.onSelected, this.onEventDeckSelected});
 
   @override
   State<UserFormationDecksPage> createState() => UserFormationDecksPageState();
@@ -23,6 +25,21 @@ class UserFormationDecksPage extends StatefulWidget {
 class UserFormationDecksPageState extends State<UserFormationDecksPage> {
   late final mstData = widget.mstData;
   late final userSvts = {for (final svt in mstData.userSvt.followedBy(mstData.userSvtStorage)) svt.id: svt};
+  final scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.selectedDeckId != null && widget.eventId == null) {
+      final index = mstData.userDeck.list.indexWhere((e) => e.id == widget.selectedDeckId);
+      if (index > 0) {
+        SchedulerBinding.instance.addPostFrameCallback((_) async {
+          final pos = scrollController.position.extentAfter * (index + 1) / mstData.userDeck.length;
+          await scrollController.animateTo(pos, duration: kTabScrollDuration, curve: Curves.easeInOutSine);
+        });
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,9 +48,10 @@ class UserFormationDecksPageState extends State<UserFormationDecksPage> {
     eventDecks.sortByList((e) => [widget.eventId == e.eventId ? 0 : 1, -e.eventId, e.deckNo]);
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.eventId == null ? "User Formation Decks" : "Event ${widget.eventId} Formation Decks"),
+        title: Text(widget.eventId == null ? "User Decks" : "Event ${widget.eventId} Decks"),
       ),
       body: ListView.builder(
+        controller: scrollController,
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
         itemBuilder: (context, index) =>
             widget.eventId == null ? buildUserDeck(decks[index]) : buildEventDeck(eventDecks[index]),

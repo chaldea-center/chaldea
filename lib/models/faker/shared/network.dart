@@ -74,18 +74,33 @@ class FResponse {
         return this;
       }
       if ((nid == null || nid == detail.nid) && !detail.isSuccess()) {
-        throw Exception('[${detail.nid}] ${detail.resCode} ${detail.fail}');
+        throw NidCheckException(nid, detail, detail.fail.toString());
       }
     }
     if (nid != null) {
-      final errors = data.responses.where((e) => !e.isSuccess()).map((e) => "${e.resCode} ${e.fail}").join("\n");
-      if (errors.isNotEmpty) {
-        throw Exception('[$nid] failed:\n$errors');
-      } else {
-        throw Exception('Response [$nid] not found');
-      }
+      throw NidCheckException(nid, null, 'response [$nid] not found');
     }
     return this;
+  }
+}
+
+class NidCheckException implements Exception {
+  final String? nid;
+  final FateResponseDetail? detail;
+  final String message;
+  NidCheckException(this.nid, this.detail, this.message);
+
+  @override
+  String toString() {
+    final buffer = StringBuffer('NidCheckException:');
+    if (nid != null) {
+      buffer.write('[$nid] ');
+    }
+    if (detail != null && detail?.resCode != null) {
+      buffer.write('(${detail?.resCode}) ');
+    }
+    buffer.write(message);
+    return buffer.toString();
   }
 }
 
@@ -139,8 +154,8 @@ abstract class NetworkManagerBase<TRequest extends FRequestBase, TUser extends A
 
     if (_nowTime > 0) {
       final dt = getNowTimestamp() - _nowTime;
-      if (dt < 2) {
-        await Future.delayed(const Duration(seconds: 2));
+      if (dt < 1) {
+        await Future.delayed(const Duration(seconds: 1));
       }
     }
 

@@ -2,7 +2,9 @@ import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/modules/common/filter_group.dart';
 import 'package:chaldea/app/modules/faker/state.dart';
 import 'package:chaldea/generated/l10n.dart';
+import 'package:chaldea/models/gamedata/toplogin.dart';
 import 'package:chaldea/models/models.dart';
+import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../../battle/formation/formation_card.dart';
@@ -44,15 +46,11 @@ class _SvtCombinePageState extends State<SvtCombinePage> {
         leading: BackButton(
           onPressed: () async {
             if (runtime.runningTask.value) {
-              SimpleCancelOkDialog(
-                title: Text(S.current.warning),
-                content: const Text("Task is still running! Cannot exit!"),
-                hideCancel: true,
-              ).showDialog(context);
-              return;
+              final confirm = await const SimpleCancelOkDialog(title: Text("Exit?")).showDialog(context);
+              if (confirm == true && context.mounted) Navigator.pop(context);
+            } else {
+              Navigator.pop(context);
             }
-            final confirm = await const SimpleCancelOkDialog(title: Text("Exit?")).showDialog(context);
-            if (confirm == true && context.mounted) Navigator.pop(context);
           },
         ),
         actions: [
@@ -130,94 +128,180 @@ class _SvtCombinePageState extends State<SvtCombinePage> {
           ' skill ${baseUserSvt.skillLv1}/${baseUserSvt.skillLv2}/${baseUserSvt.skillLv3}\n'
           'exp ${nextLvExp == null ? "?" : (baseUserSvt.exp - nextLvExp).format(compact: false, groupSeparator: ",")}';
     }
-    return ListView(
-      children: [
-        TileGroup(
-          header: 'Base Servant',
-          children: [
-            ListTile(
-              dense: true,
-              title: Text('Change Base Servant'),
-              onTap: selectBaseUserSvt,
-              trailing: Icon(Icons.change_circle),
+    List<Widget> children = [
+      TileGroup(
+        header: 'Base Servant',
+        children: [
+          ListTile(
+            dense: true,
+            title: Text('Change Base Servant'),
+            onTap: selectBaseUserSvt,
+            trailing: Icon(Icons.change_circle),
+          ),
+          ListTile(
+            leading: baseUserSvt?.dbSvt?.iconBuilder(context: context) ?? db.getIconImage(Atlas.common.emptySvtIcon),
+            title: Text(svtTitle ?? 'id ${options.baseUserSvtId}'),
+            subtitle: svtSubtitle == null ? null : Text(svtSubtitle),
+          ),
+          if (curLvExp != null &&
+              nextLvExp != null &&
+              baseUserSvt != null &&
+              baseUserSvt.exp >= curLvExp &&
+              baseUserSvt.exp <= nextLvExp)
+            BondProgress(
+              value: baseUserSvt.exp - curLvExp,
+              total: nextLvExp - curLvExp,
+              padding: EdgeInsets.symmetric(horizontal: 16),
             ),
-            ListTile(
-              leading: baseUserSvt?.dbSvt?.iconBuilder(context: context) ?? db.getIconImage(Atlas.common.emptySvtIcon),
-              title: Text(svtTitle ?? 'id ${options.baseUserSvtId}'),
-              subtitle: svtSubtitle == null ? null : Text(svtSubtitle),
-            ),
-            if (curLvExp != null &&
-                nextLvExp != null &&
-                baseUserSvt != null &&
-                baseUserSvt.exp >= curLvExp &&
-                baseUserSvt.exp <= nextLvExp)
-              BondProgress(
-                value: baseUserSvt.exp - curLvExp,
-                total: nextLvExp - curLvExp,
-                padding: EdgeInsets.symmetric(horizontal: 16),
-              ),
-          ],
-        ),
-        FilterGroup<int>(
-          title: Text('种火 Rarity'),
-          options: const [1, 2, 3, 4, 5],
-          values: FilterGroupData(options: options.svtMaterialRarities),
-          onFilterChanged: (v, __) async {
-            runtime.lockTask(() => options.svtMaterialRarities = v.options);
-            if (mounted) setState(() {});
+        ],
+      ),
+      FilterGroup<int>(
+        title: Text('种火 Rarity'),
+        options: const [1, 2, 3, 4, 5],
+        values: FilterGroupData(options: options.svtMaterialRarities),
+        onFilterChanged: (v, __) async {
+          runtime.lockTask(() => options.svtMaterialRarities = v.options);
+          if (mounted) setState(() {});
+        },
+      ),
+      ListTile(
+        dense: true,
+        title: Text('Max Material Count'),
+        trailing: TextButton(
+          onPressed: () {
+            InputCancelOkDialog(
+              title: 'Max Material Count',
+              text: options.maxMaterialCount.toString(),
+              keyboardType: TextInputType.number,
+              validate: (s) {
+                final v = int.parse(s);
+                return v > 0 && v <= 20;
+              },
+              onSubmit: (s) {
+                runtime.lockTask(() => options.maxMaterialCount = int.parse(s));
+              },
+            ).showDialog(context);
           },
+          child: Text(options.maxMaterialCount.toString()),
         ),
+      ),
+      SwitchListTile.adaptive(
+        dense: true,
+        title: Text('Double EXP'),
+        value: options.doubleExp,
+        onChanged: (v) {
+          runtime.lockTask(() => options.doubleExp = v);
+        },
+      ),
+      ListTile(
+        dense: true,
+        title: Text('Loop Count'),
+        trailing: TextButton(
+          onPressed: () {
+            InputCancelOkDialog(
+              title: 'Loop Count',
+              text: options.loopCount.toString(),
+              keyboardType: TextInputType.number,
+              validate: (s) => (int.tryParse(s) ?? -1) >= 0,
+              onSubmit: (s) {
+                runtime.lockTask(() {
+                  options.loopCount = int.parse(s);
+                });
+              },
+            ).showDialog(context);
+          },
+          child: Text(options.loopCount.toString()),
+        ),
+      ),
+    ];
+    if (baseUserSvt != null && svt != null) {
+      Widget _item(int itemId, int requiredNum) {
+        return Item.iconBuilder(
+          context: context,
+          item: null,
+          itemId: itemId,
+          text: [
+            requiredNum,
+            mstData.getItemOrSvtNum(itemId),
+          ].map((e) => e.format()).join('\n'),
+          width: 36,
+        );
+      }
+
+      final mats = svt.ascensionMaterials[baseUserSvt.limitCount];
+      final Map<int, int> limitCombineItems = {
+        if (mats != null)
+          for (final item in mats.items) item.itemId: item.amount,
+        if (mats != null) Items.qpId: mats.qp,
+      };
+      String combineTitle = '灵基再临 ';
+      combineTitle += [baseUserSvt.limitCount, if (limitCombineItems.isNotEmpty) baseUserSvt.limitCount + 1].join('→');
+      children.addAll([
+        DividerWithTitle(title: '突破'),
         ListTile(
-          dense: true,
-          title: Text('Max Material Count'),
-          trailing: TextButton(
-            onPressed: () {
-              InputCancelOkDialog(
-                title: 'Max Material Count',
-                text: options.maxMaterialCount.toString(),
-                keyboardType: TextInputType.number,
-                validate: (s) {
-                  final v = int.parse(s);
-                  return v > 0 && v <= 20;
-                },
-                onSubmit: (s) {
-                  runtime.lockTask(() => options.maxMaterialCount = int.parse(s));
-                },
-              ).showDialog(context);
-            },
-            child: Text(options.maxMaterialCount.toString()),
+          title: Text(combineTitle),
+          trailing: Wrap(
+            spacing: 2,
+            children: [
+              for (final (itemId, amount) in limitCombineItems.items) _item(itemId, amount),
+            ],
           ),
         ),
-        SwitchListTile.adaptive(
-          dense: true,
-          title: Text('Double EXP'),
-          value: options.doubleExp,
-          onChanged: (v) {
-            runtime.lockTask(() => options.doubleExp = v);
-          },
-        ),
-        ListTile(
-          dense: true,
-          title: Text('Loop Count'),
-          trailing: TextButton(
-            onPressed: () {
-              InputCancelOkDialog(
-                title: 'Loop Count',
-                text: options.loopCount.toString(),
-                keyboardType: TextInputType.number,
-                validate: (s) => (int.tryParse(s) ?? -1) >= 0,
-                onSubmit: (s) {
-                  runtime.lockTask(() {
-                    options.loopCount = int.parse(s);
-                  });
-                },
-              ).showDialog(context);
-            },
-            child: Text(options.loopCount.toString()),
+        if (baseUserSvt.exceedCount == 0 && baseUserSvt.lv == baseUserSvt.maxLv && baseUserSvt.limitCount < 4)
+          Center(
+            child: FilledButton(
+              onPressed: () {
+                SimpleCancelOkDialog(
+                  title: Text('灵基再临'),
+                  onTapOk: () {
+                    runtime.runTask(() {
+                      for (final (itemId, amount) in limitCombineItems.items) {
+                        if (mstData.getItemOrSvtNum(itemId) < amount) {
+                          throw SilentException('Item not enough: ${Item.getName(itemId)}');
+                        }
+                      }
+                      return runtime.agent.servantLimitCombine(baseUserSvtId: baseUserSvt.id);
+                    });
+                  },
+                ).showDialog(context);
+              },
+              child: Text('灵基再临'),
+            ),
           ),
-        ),
-      ],
-    );
+        ListTile(
+            title: Text('圣杯转临'),
+            trailing: Wrap(
+              spacing: 2,
+              children: [
+                _item(Items.grailId, 1),
+                if (baseUserSvt.lv >= 100)
+                  if (svt.coin != null) _item(svt.coin!.item.id, 30),
+              ],
+            )),
+        if ((baseUserSvt.exceedCount > 0 || baseUserSvt.lv >= svt.lvMax) &&
+            baseUserSvt.lv == baseUserSvt.maxLv &&
+            baseUserSvt.lv < 120)
+          Center(
+            child: FilledButton(
+              onPressed: () {
+                SimpleCancelOkDialog(
+                  title: Text('圣杯转临'),
+                  onTapOk: () {
+                    runtime.runTask(() {
+                      if (mstData.getItemOrSvtNum(Items.grailId) < 1) {
+                        throw SilentException('Grail not enough');
+                      }
+                      return runtime.agent.servantLevelExceed(baseUserSvtId: baseUserSvt.id);
+                    });
+                  },
+                ).showDialog(context);
+              },
+              child: Text('圣杯转临'),
+            ),
+          ),
+      ]);
+    }
+    return ListView(children: children);
   }
 
   Widget get buttonBar {
@@ -295,44 +379,70 @@ class _SvtCombinePageState extends State<SvtCombinePage> {
   }
 
   void selectBaseUserSvt() {
-    router.pushPage(ServantListPage(
-      onSelected: (selectedSvt) {
-        final userSvts = mstData.userSvt.where((userSvt) {
-          final svt = userSvt.dbSvt;
-          if (svt == null || userSvt.svtId != selectedSvt.id || svt.type != SvtType.normal) return false;
-          // if (userSvt.lv >= (userSvt.maxLv ?? 0)) return false;
-          // if (userSvt.lv <= 1) return false;
-          return true;
-        }).toList();
-        userSvts.sortByList((e) => <int>[-e.limitCount, -e.lv, -e.exp]);
-        router.showDialog(builder: (context) {
-          return StatefulBuilder(
-            builder: (context, update) {
-              return SimpleDialog(
-                title: Text('Choose User Servant'),
-                children: userSvts.map((userSvt) {
-                  final svt = userSvt.dbSvt;
-                  return ListTile(
-                    dense: true,
-                    leading: svt?.iconBuilder(context: context),
-                    title: Text('Lv.${userSvt.lv}, ${userSvt.limitCount}/4, ${userSvt.lv}/${userSvt.maxLv}'),
-                    subtitle: Text('No.${userSvt.id} ${userSvt.locked ? "locked" : "unlocked"}'),
-                    enabled: userSvt.locked,
-                    onTap: () {
-                      runtime.lockTask(() {
-                        options.baseUserSvtId = userSvt.id;
-                        if (mounted) setState(() {});
-                        Navigator.pop(context);
-                        update(() {});
-                      });
-                    },
-                  );
-                }).toList(),
-              );
+    Widget buildSvt(UserServantEntity userSvt) {
+      final svt = userSvt.dbSvt;
+      return ListTile(
+        dense: true,
+        leading: svt?.iconBuilder(context: context),
+        title: Text('Lv.${userSvt.lv}, ${userSvt.limitCount}/4, ${userSvt.lv}/${userSvt.maxLv}'),
+        subtitle: Text('No.${userSvt.id} ${userSvt.locked ? "locked" : "unlocked"}'),
+        enabled: userSvt.locked,
+        onTap: () {
+          runtime.lockTask(() {
+            options.baseUserSvtId = userSvt.id;
+            if (mounted) setState(() {});
+            Navigator.pop(context);
+          });
+        },
+      );
+    }
+
+    router.showDialog(builder: (context) {
+      final notLvMaxSvts = mstData.userSvt.where((userSvt) {
+        final svt = userSvt.dbSvt;
+        if (!userSvt.locked || svt == null || svt.type != SvtType.normal) return false;
+        if (userSvt.lv >= (userSvt.maxLv ?? 0)) return false;
+        return true;
+      }).toList();
+      notLvMaxSvts.sort2((e) => -e.lv);
+
+      return SimpleDialog(
+        title: Text('Select Servant'),
+        children: [
+          ListTile(
+            title: Text('From servant list'),
+            trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
+            onTap: () {
+              Navigator.pop(context);
+              router.pushPage(ServantListPage(
+                onSelected: (selectedSvt) {
+                  final userSvts = mstData.userSvt.where((userSvt) {
+                    final svt = userSvt.dbSvt;
+                    if (svt == null || userSvt.svtId != selectedSvt.id || svt.type != SvtType.normal) return false;
+                    // if (userSvt.lv >= (userSvt.maxLv ?? 0)) return false;
+                    // if (userSvt.lv <= 1) return false;
+                    return true;
+                  }).toList();
+                  userSvts.sortByList((e) => <int>[-e.limitCount, -e.lv, -e.exp]);
+                  router.showDialog(builder: (context) {
+                    return StatefulBuilder(
+                      builder: (context, update) {
+                        return SimpleDialog(
+                          title: Text('Choose User Servant'),
+                          children: [
+                            for (final userSvt in userSvts) buildSvt(userSvt),
+                          ],
+                        );
+                      },
+                    );
+                  });
+                },
+              ));
             },
-          );
-        });
-      },
-    ));
+          ),
+          for (final userSvt in notLvMaxSvts.take(20)) buildSvt(userSvt),
+        ],
+      );
+    });
   }
 }

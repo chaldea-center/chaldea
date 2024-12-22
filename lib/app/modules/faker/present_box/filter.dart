@@ -31,17 +31,19 @@ class _ShopFilterState extends FilterPageState<PresentBoxFilterData, UserPresent
         FilterGroup<PresentType>(
           title: Text(S.current.general_type),
           options: PresentType.values,
-          values: filterData.presentType,
+          values: FilterGroupData(options: filterData.presentTypes.toSet()),
           optionBuilder: (v) => Text(v.shownName),
           onFilterChanged: (value, _) {
+            filterData.presentTypes = value.options.toSet();
             update();
           },
         ),
         FilterGroup<int>(
           title: Text(S.current.rarity),
           options: const [1, 2, 3, 4, 5],
-          values: filterData.rarity,
+          values: FilterGroupData(options: filterData.rarities.toSet()),
           onFilterChanged: (value, _) {
+            filterData.rarities = value.options.toSet();
             update();
           },
         ),
@@ -69,59 +71,5 @@ class _ShopFilterState extends FilterPageState<PresentBoxFilterData, UserPresent
         )
       ]),
     );
-  }
-}
-
-class PresentBoxFilterData with FilterDataMixin {
-  bool reversed = false;
-  bool showSelectedOnly = false;
-
-  int maxNum = 0;
-  final presentType = FilterGroupData<PresentType>();
-  final rarity = FilterGroupData<int>();
-
-  @override
-  List<FilterGroupData> get groups => [presentType, rarity];
-
-  @override
-  void reset() {
-    super.reset();
-    maxNum = 0;
-  }
-}
-
-enum PresentType {
-  servant,
-  servantExp,
-  statusUp,
-  svtEquip,
-  svtEquipExp,
-  commandCode,
-  fruit,
-  summonTicket,
-  itemSelect,
-  stone,
-  manaPrism,
-  eventItem,
-  others,
-  ;
-
-  String get shownName {
-    return switch (this) {
-          PresentType.servant => S.current.servant,
-          PresentType.servantExp => '${S.current.servant}(EXP)',
-          PresentType.statusUp => S.current.foukun,
-          PresentType.svtEquip => S.current.craft_essence,
-          PresentType.svtEquipExp => '${S.current.craft_essence}(EXP)',
-          PresentType.commandCode => S.current.command_code,
-          PresentType.fruit => S.current.item_apple,
-          PresentType.summonTicket => Items.summonTicket?.lName.l,
-          PresentType.itemSelect => S.current.exchange_ticket,
-          PresentType.stone => Items.stone?.lName.l,
-          PresentType.manaPrism => Items.manaPrism?.lName.l,
-          PresentType.eventItem => Transl.enums(ItemCategory.event, (e) => e.itemCategory).l,
-          PresentType.others => S.current.general_others,
-        } ??
-        name;
   }
 }

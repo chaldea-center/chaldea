@@ -76,8 +76,8 @@ class NetworkManagerCN extends NetworkManagerBase<FRequestCN, AutoLoginDataCN> {
         receiveTimeout: const Duration(seconds: 30),
       ),
     );
-    print('Request headers: ${rawResp.requestOptions.headers}');
-    print('Response headers: ${rawResp.headers.toString().trim()}');
+    // print('Request headers: ${rawResp.requestOptions.headers}');
+    // print('Response headers: ${rawResp.headers.toString().trim()}');
     request.rawRequest = rawResp.requestOptions;
     request.rawResponse = rawResp;
     // buffer.clear();

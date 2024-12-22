@@ -263,10 +263,11 @@ class _MCGachaProbEditPageState extends State<MCGachaProbEditPage> {
       ])),
     );
 
+    Widget svtCell;
     if (!showIcon) {
-      children.add(cell(group.ids.join(", ")));
+      svtCell = cell(group.ids.join(", "));
     } else {
-      children.add(Padding(
+      svtCell = Padding(
         padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
         child: Text.rich(TextSpan(
           // text: '(${group.cards.length}) ',
@@ -281,8 +282,9 @@ class _MCGachaProbEditPageState extends State<MCGachaProbEditPage> {
               ),
           ],
         )),
-      ));
+      );
     }
+    children.add(ConstrainedBox(constraints: BoxConstraints(maxWidth: 500), child: svtCell));
 
     return TableRow(children: children);
   }
