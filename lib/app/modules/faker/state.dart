@@ -27,6 +27,7 @@ class FakerRuntime {
 
   // runtime data
   final runningTask = ValueNotifier<bool>(false);
+  final activeToast = ValueNotifier<String?>(null);
   // stats - battle
   final totalRewards = <int, int>{};
   final totalDropStat = _DropStatData();
@@ -61,6 +62,22 @@ class FakerRuntime {
         s.setState(() {});
       }
     }
+  }
+
+  void displayToast(String? msg, {double? progress}) {
+    activeToast.value = msg;
+    if (db.settings.fakerSettings.showProgressToast) {
+      if (progress == null) {
+        EasyLoading.show(status: msg);
+      } else {
+        EasyLoading.showProgress(progress, status: msg);
+      }
+    }
+  }
+
+  void dismissToast() {
+    activeToast.value = null;
+    EasyLoading.dismiss();
   }
 
   Future<T?> _showDialog<T>(Widget child, {bool barrierDismissible = true}) async {
@@ -139,15 +156,15 @@ class FakerRuntime {
     }
     try {
       if (check) runningTask.value = true;
-      EasyLoading.show();
+      displayToast('running task...');
       update();
       await task();
-      EasyLoading.dismiss();
+      dismissToast();
     } catch (e, s) {
       logger.e('task failed', e, s);
       await Future.delayed(const Duration(milliseconds: 200));
       if (mounted) {
-        EasyLoading.dismiss();
+        dismissToast();
         _showDialog(
           SimpleCancelOkDialog(
             title: Text(S.current.error),
@@ -222,7 +239,7 @@ class FakerRuntime {
     int finishedCount = 0, totalCount = battleOption.loopCount;
     List<int> elapseSeconds = [];
     curLoopDropStat.reset();
-    EasyLoading.showProgress(finishedCount / totalCount, status: 'Battle $finishedCount/$totalCount');
+    displayToast('Battle $finishedCount/$totalCount', progress: finishedCount / totalCount);
     while (finishedCount < totalCount) {
       _checkStop();
       checkSvtKeep();
@@ -234,7 +251,7 @@ class FakerRuntime {
       final msg =
           'Battle ${finishedCount + 1}/$totalCount, ${Maths.mean(elapseSeconds).round()}s/${(Maths.sum(elapseSeconds) / 60).toStringAsFixed(1)}m';
       logger.t(msg);
-      EasyLoading.showProgress((finishedCount + 0.5) / totalCount, status: msg);
+      displayToast(msg, progress: (finishedCount + 0.5) / totalCount);
 
       await _ensureEnoughApItem(quest: questPhaseEntity, option: battleOption);
 
@@ -248,6 +265,7 @@ class FakerRuntime {
       } on NidCheckException catch (e, s) {
         if (e.nid == 'battle_setup' && e.detail?.resCode == '99' && e.detail?.fail?['errorType'] == 0) {
           logger.e('battle setup failed with nid check, retry', e, s);
+          await Future.delayed(Duration(seconds: 10));
           setupResp = await agent.battleSetupWithOptions(battleOption);
         } else {
           rethrow;
@@ -375,7 +393,7 @@ class FakerRuntime {
         boughtCount += buyCount;
       }
       update();
-      EasyLoading.show(status: 'Seed $boughtCount/$maxBuyCount - waiting...');
+      displayToast('Seed $boughtCount/$maxBuyCount - waiting...');
       await Future.delayed(const Duration(minutes: 1));
       _checkStop();
     }
@@ -430,7 +448,7 @@ class FakerRuntime {
     final initCount = agent.user.gacha.loopCount;
     while (agent.user.gacha.loopCount > 0) {
       _checkStop();
-      EasyLoading.show(status: 'Draw FP gacha ${initCount - agent.user.gacha.loopCount + 1}/$initCount...');
+      displayToast('Draw FP gacha ${initCount - agent.user.gacha.loopCount + 1}/$initCount...');
       await fpGachaDraw();
       agent.user.gacha.loopCount -= 1;
       update();
@@ -475,7 +493,7 @@ class FakerRuntime {
     sellUserSvts = sellUserSvts.take(200).toList();
     sellCommandCodes.sort2((e) => -e.id);
     sellCommandCodes = sellCommandCodes.take(100).toList();
-    EasyLoading.show(status: 'Sell ${sellUserSvts.length} servants, ${sellCommandCodes.length} Command Codes');
+    displayToast('Sell ${sellUserSvts.length} servants, ${sellCommandCodes.length} Command Codes');
     if (sellUserSvts.isNotEmpty || sellCommandCodes.isNotEmpty) {
       await agent.sellServant(
         servantUserIds: sellUserSvts.map((e) => e.id).toList(),
@@ -490,7 +508,7 @@ class FakerRuntime {
 
   Future<void> svtEquipCombine([int count = 1]) async {
     final gachaOption = agent.user.gacha;
-    EasyLoading.show(status: 'Combine Craft Essence ...');
+    displayToast('Combine Craft Essence ...');
     while (count > 0) {
       final targetCEs = mstData.userSvt.where((userSvt) {
         final ce = db.gameData.craftEssencesById[userSvt.svtId];
@@ -710,7 +728,7 @@ class FakerRuntime {
           while (true) {
             final now = DateTime.now().timestamp;
             if (now >= waitUntil) break;
-            EasyLoading.show(status: 'Wait ${waitUntil - now} seconds...');
+            displayToast('Wait ${waitUntil - now} seconds...');
             await Future.delayed(Duration(seconds: min(5, waitUntil - now)));
             _checkStop();
           }
@@ -745,7 +763,7 @@ class FakerRuntime {
       if (option.waitApRecover) {
         while (mstData.user!.calCurAp() < quest.consume) {
           update();
-          EasyLoading.show(status: 'Battle - waiting AP recover...');
+          displayToast('Battle - waiting AP recover...');
           await Future.delayed(const Duration(minutes: 1));
           _checkStop();
         }

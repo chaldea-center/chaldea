@@ -1436,6 +1436,20 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
               child: Text(fakerSettings.maxFollowerListRetryCount.toString())),
         ),
         const Divider(),
+        SwitchListTile.adaptive(
+          dense: true,
+          value: fakerSettings.showProgressToast,
+          title: const Text('Show progress toasts'),
+          onChanged: (v) async {
+            setState(() {
+              fakerSettings.showProgressToast = v;
+            });
+            if (!v) {
+              runtime.dismissToast();
+            }
+          },
+        ),
+        const Divider(),
         CheckboxListTile.adaptive(
           dense: true,
           value: fakerSettings.dumpResponse,
@@ -1727,6 +1741,35 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
+          ValueListenableBuilder(
+            valueListenable: runtime.activeToast,
+            builder: (context, msg, _) {
+              if (msg == null) return const SizedBox.shrink();
+              Widget child = Text(
+                msg,
+                style: Theme.of(context).textTheme.bodySmall,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.start,
+              );
+              return InkWell(
+                onTap: () {
+                  SimpleCancelOkDialog(
+                    title: Text('Message'),
+                    scrollable: true,
+                    hideCancel: true,
+                    content: Text(msg),
+                  ).showDialog(context);
+                },
+                child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                  width: double.infinity,
+                  alignment: Alignment.center,
+                  child: child,
+                ),
+              );
+            },
+          ),
           for (final btns in btnGroups)
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),

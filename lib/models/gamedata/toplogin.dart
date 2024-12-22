@@ -2959,7 +2959,7 @@ class BattleResultData {
         oldUserEquip = oldUserEquip ?? [],
         oldUserSvtCollection = oldUserSvtCollection ?? [],
         oldUserSvt = oldUserSvt ?? [],
-        myDeck = myDeck as Map? ?? {},
+        myDeck = myDeck is Map ? myDeck : {}, //
         firstClearRewardQp = _toInt(firstClearRewardQp, 0),
         originalPhaseClearQp = _toInt(originalPhaseClearQp, 0),
         phaseClearQp = _toInt(phaseClearQp, 0),

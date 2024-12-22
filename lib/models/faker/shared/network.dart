@@ -233,7 +233,7 @@ abstract class NetworkManagerBase<TRequest extends FRequestBase, TUser extends A
           return resp;
         } on DioException catch (e, s) {
           logger.e('fgo request failed, retry after 5 seconds', e, s);
-          EasyLoading.show(status: 'Error: ${e.toString().substring2(0, 100)}');
+          EasyLoading.showError('Error: ${e.toString().substring2(0, 100)}');
           await Future.delayed(const Duration(seconds: 5));
           tryCount++;
           _nowTime = getNowTimestamp();

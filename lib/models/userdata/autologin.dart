@@ -14,6 +14,7 @@ class FakerSettings {
   bool dumpResponse;
   bool apRecoveredNotification;
   int maxFollowerListRetryCount;
+  bool showProgressToast = true;
   List<AutoLoginDataJP> jpAutoLogins;
   List<AutoLoginDataCN> cnAutoLogins;
 
@@ -21,6 +22,7 @@ class FakerSettings {
     this.dumpResponse = false,
     this.apRecoveredNotification = false,
     this.maxFollowerListRetryCount = 20,
+    this.showProgressToast = true,
     List<AutoLoginDataJP>? jpAutoLogins,
     List<AutoLoginDataCN>? cnAutoLogins,
   })  : jpAutoLogins = jpAutoLogins ?? [],
