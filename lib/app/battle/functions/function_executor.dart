@@ -477,6 +477,7 @@ class FunctionExecutor {
         case FuncType.addBattleValue:
         case FuncType.setBattleValue:
         case FuncType.enemyCountChange:
+        case FuncType.displayBattleMessage:
           battleData.battleLogger.debug('${S.current.skip}: ${function.funcType}, '
               'Function ID: ${function.funcId}, '
               'Activator: ${activator?.lBattleName}');

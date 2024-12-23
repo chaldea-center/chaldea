@@ -333,6 +333,10 @@ class DataVals {
   int? get EnemyCountChangeTime => _vals['EnemyCountChangeTime'];
   int? get EnemyCountChangeEffectId => _vals['EnemyCountChangeEffectId'];
   int? get EnemyCountWaitTimeAfterMessage => _vals['EnemyCountWaitTimeAfterMessage'];
+  int? get WaitMessageEnd => _vals['WaitMessageEnd'];
+  int? get ContinueDisplayMessage => _vals['ContinueDisplayMessage'];
+  int? get StartIntervalTurn => _vals['StartIntervalTurn'];
+  int? get StartIntervalCount => _vals['StartIntervalCount'];
 
   int? get ApplySupportSvt => _vals['ApplySupportSvt'];
   int? get Individuality => _vals['Individuality'];

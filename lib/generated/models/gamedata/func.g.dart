@@ -194,6 +194,7 @@ const _$FuncTypeEnumMap = {
   FuncType.hideOverGauge: 'hideOverGauge',
   FuncType.gainNpTargetSum: 'gainNpTargetSum',
   FuncType.enemyCountChange: 'enemyCountChange',
+  FuncType.displayBattleMessage: 'displayBattleMessage',
 };
 
 const _$FuncTargetTypeEnumMap = {

@@ -426,6 +426,7 @@ const _$FuncTypeEnumMap = {
   FuncType.hideOverGauge: 'hideOverGauge',
   FuncType.gainNpTargetSum: 'gainNpTargetSum',
   FuncType.enemyCountChange: 'enemyCountChange',
+  FuncType.displayBattleMessage: 'displayBattleMessage',
 };
 
 BuffTypeDetail _$BuffTypeDetailFromJson(Map json) => BuffTypeDetail(
@@ -636,6 +637,9 @@ const _$BuffTypeEnumMap = {
   BuffType.functionedFunction: 'functionedFunction',
   BuffType.donotActCommandcard: 'donotActCommandcard',
   BuffType.upNpdamageIndividualitySum: 'upNpdamageIndividualitySum',
+  BuffType.comboStartFunction: 'comboStartFunction',
+  BuffType.comboEndFunction: 'comboEndFunction',
+  BuffType.overwriteSvtCardType: 'overwriteSvtCardType',
   BuffType.toFieldChangeField: 'toFieldChangeField',
   BuffType.toFieldAvoidBuff: 'toFieldAvoidBuff',
   BuffType.toFieldSubIndividualityField: 'toFieldSubIndividualityField',
@@ -1447,5 +1451,8 @@ const _$BuffActionEnumMap = {
   BuffAction.functionedFunction: 'functionedFunction',
   BuffAction.donotActCommandcard: 'donotActCommandcard',
   BuffAction.npdamageIndividuality: 'npdamageIndividuality',
+  BuffAction.functionComboStart: 'functionComboStart',
+  BuffAction.functionComboEnd: 'functionComboEnd',
+  BuffAction.overwriteSvtCardType: 'overwriteSvtCardType',
   BuffAction.functionClassboardCommandSpellAfter: 'functionClassboardCommandSpellAfter',
 };

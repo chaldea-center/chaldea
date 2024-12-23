@@ -1264,6 +1264,9 @@ enum BuffAction {
   functionedFunction(145),
   donotActCommandcard(146),
   npdamageIndividuality(147),
+  functionComboStart(148),
+  functionComboEnd(149),
+  overwriteSvtCardType(150),
   functionClassboardCommandSpellAfter(301),
   ;
 

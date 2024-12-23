@@ -613,6 +613,7 @@ enum FuncType {
   hideOverGauge(145),
   gainNpTargetSum(146),
   enemyCountChange(147),
+  displayBattleMessage(148),
   ;
 
   final int value;
