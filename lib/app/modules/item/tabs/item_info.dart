@@ -4,7 +4,9 @@ import 'package:flutter/gestures.dart';
 
 import 'package:auto_size_text/auto_size_text.dart';
 
+import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/modules/common/builders.dart';
+import 'package:chaldea/app/modules/common/filter_group.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
@@ -21,7 +23,43 @@ class ItemInfoTab extends StatefulWidget {
 }
 
 class _ItemInfoTabState extends State<ItemInfoTab> {
-  int get itemId => widget.itemId;
+  late final itemId = widget.itemId;
+
+  bool _hasUnknownRegion = false;
+  bool _loading = false;
+  Region? region;
+  Item? _item;
+
+  @override
+  void initState() {
+    super.initState();
+    _item = db.gameData.items[itemId];
+    if (_item != null) {
+      region = Region.fromUrl(_item!.icon);
+      if (region == null) _hasUnknownRegion = true;
+    }
+    svtCoinOwner = db.gameData.servantsById[db.gameData.items[itemId]?.value];
+    if (svtCoinOwner != null) {
+      _summonCoin = svtCoinOwner!.coin?.summonNum ?? 0;
+    }
+  }
+
+  Future<void> fetchItem(Region? r) async {
+    _loading = true;
+    _item = null;
+    if (mounted) setState(() {});
+    Item? result;
+    if (r == null) {
+      result = db.gameData.items[itemId];
+    } else {
+      result = await AtlasApi.item(itemId, region: r);
+    }
+    if (r == region) {
+      _item = result;
+    }
+    _loading = false;
+    if (mounted) setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,25 +76,28 @@ class _ItemInfoTabState extends State<ItemInfoTab> {
         ),
       );
     }
-    final item = db.gameData.items[itemId];
+    Widget child;
+    final item = _item;
     if (item == null) {
-      return ListTile(
-        title: Text('NotFound: $itemId'),
-      );
-    }
-    final eventIds = <int>{if (item.eventId != 0) item.eventId};
-    if (item.isId94 &&
-        const [ItemCategory.eventAscension, ItemCategory.event, ItemCategory.other].contains(item.category)) {
-      for (final event in db.gameData.events.values) {
-        if (eventIds.contains(event.id)) continue;
-        if (isForEvent(item, event)) {
-          eventIds.add(event.id);
+      if (_loading) {
+        child = Center(child: CircularProgressIndicator());
+      } else {
+        child = ListTile(
+          title: Text('NotFound: $itemId'),
+        );
+      }
+    } else {
+      final eventIds = <int>{if (item.eventId != 0) item.eventId};
+      if (item.isId94 &&
+          const [ItemCategory.eventAscension, ItemCategory.event, ItemCategory.other].contains(item.category)) {
+        for (final event in db.gameData.events.values) {
+          if (eventIds.contains(event.id)) continue;
+          if (isForEvent(item, event)) {
+            eventIds.add(event.id);
+          }
         }
       }
-    }
-
-    return SingleChildScrollView(
-      child: SafeArea(
+      child = SingleChildScrollView(
         child: CustomTable(
           selectable: true,
           children: <Widget>[
@@ -141,21 +182,38 @@ class _ItemInfoTabState extends State<ItemInfoTab> {
                 SharedBuilder.giftGrid(
                     context: context, gifts: [for (final select in item.itemSelects) ...select.gifts])
               ]),
-              CustomTableRow.fromTexts(texts: const ['Warning: JP info only!!!']),
             ],
           ],
         ),
-      ),
+      );
+    }
+    return Column(
+      children: [
+        Expanded(child: child),
+        kDefaultDivider,
+        SafeArea(child: buttonBar),
+      ],
     );
   }
 
-  @override
-  void initState() {
-    super.initState();
-    svtCoinOwner = db.gameData.servantsById[db.gameData.items[itemId]?.value];
-    if (svtCoinOwner != null) {
-      _summonCoin = svtCoinOwner!.coin!.summonNum;
-    }
+  Widget get buttonBar {
+    return OverflowBar(
+      alignment: MainAxisAlignment.center,
+      children: [
+        FilterGroup<Region?>(
+          combined: true,
+          padding: EdgeInsets.zero,
+          options: [if (_hasUnknownRegion) null, ...Region.values],
+          optionBuilder: (v) => Text(v?.upper ?? S.current.general_default),
+          values: FilterRadioData(region),
+          onFilterChanged: (v, _) {
+            region = v.radioValue;
+            fetchItem(region);
+            setState(() {});
+          },
+        ),
+      ],
+    );
   }
 
   Servant? svtCoinOwner;
@@ -172,7 +230,7 @@ class _ItemInfoTabState extends State<ItemInfoTab> {
     ...List.generate(3, (index) => 10),
     ...List.generate(6, (index) => 20),
   ];
-  bool _useNewBondCoinRewards = false;
+  bool _useNewBondCoinRewards = const [Region.jp].contains(db.curUser.region) ? true : false;
   int _summonCoin = 90;
   int _baseNp = 1;
   int _offsetNp = 0;

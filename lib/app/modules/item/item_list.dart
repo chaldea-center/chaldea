@@ -77,10 +77,10 @@ class ItemListPageState extends State<ItemListPage> with SingleTickerProviderSta
     _itemRedundantControllers =
         List.generate(3, (index) => TextEditingController(text: db.userData.itemAbundantValue[index].toString()));
     for (final item in db.gameData.items.values) {
+      if (!item.icon.contains('/JP/')) continue;
       categorized.putIfAbsent(item.category, () => []).add(item.id);
     }
-    categorized[ItemCategory.special] =
-        <int>{...categorized[ItemCategory.special] ?? [], ...Items.specialSvtMat}.toList();
+    categorized[ItemCategory.special] = <int>{...?categorized[ItemCategory.special], ...Items.specialSvtMat}.toList();
   }
 
   @override

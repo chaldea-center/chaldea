@@ -34,8 +34,10 @@ class UserFormationDecksPageState extends State<UserFormationDecksPage> {
       final index = mstData.userDeck.list.indexWhere((e) => e.id == widget.selectedDeckId);
       if (index > 0) {
         SchedulerBinding.instance.addPostFrameCallback((_) async {
-          final pos = scrollController.position.extentAfter * (index + 1) / mstData.userDeck.length;
-          await scrollController.animateTo(pos, duration: kTabScrollDuration, curve: Curves.easeInOutSine);
+          double pos = scrollController.position.extentAfter * (index + 1) / mstData.userDeck.length - 16;
+          if (pos > 0) {
+            await scrollController.animateTo(pos, duration: kTabScrollDuration, curve: Curves.easeInOutSine);
+          }
         });
       }
     }
