@@ -285,6 +285,7 @@ class GameDataLoader {
         removeOldDataRegion == null ? null : const RegionConverter().toJson(removeOldDataRegion);
     tmp.gameJson = _gameJson;
     GameData _gamedata = GameData.fromJson(_gameJson);
+    await _debugFixGameData(_gamedata);
     if (!offline) {
       logger.t(
           '[${offline ? "offline" : "online"}]Updating dataset(${_gamedata.version.text(false)}): ${_dataToWrite.length} files updated');
@@ -376,6 +377,10 @@ class GameDataLoader {
       }).toList());
       _applyPatch(data, localPatches);
     }
+  }
+
+  Future<void> _debugFixGameData(GameData gamedata) async {
+    if (!kDebugMode) return;
   }
 
   static bool checkHash(List<int> bytes, String hash) {
