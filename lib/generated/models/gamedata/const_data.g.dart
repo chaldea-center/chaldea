@@ -26,7 +26,7 @@ ConstGameData _$ConstGameDataFromJson(Map json) => ConstGameData(
           const {},
       cardInfo: (json['cardInfo'] as Map?)?.map(
             (k, e) => MapEntry(
-                $enumDecode(_$CardTypeEnumMap, k),
+                const CardTypeConverter().fromJson(k as String),
                 (e as Map).map(
                   (k, e) => MapEntry(int.parse(k as String), CardInfo.fromJson(Map<String, dynamic>.from(e as Map))),
                 )),
@@ -112,8 +112,8 @@ Map<String, dynamic> _$ConstGameDataToJson(ConstGameData instance) => <String, d
           const ServantSubAttributeConverter().toJson(k),
           e.map((k, e) => MapEntry(const ServantSubAttributeConverter().toJson(k), e)))),
       'buffActions': instance.buffActions.map((k, e) => MapEntry(const BuffActionConverter().toJson(k), e.toJson())),
-      'cardInfo': instance.cardInfo
-          .map((k, e) => MapEntry(_$CardTypeEnumMap[k]!, e.map((k, e) => MapEntry(k.toString(), e.toJson())))),
+      'cardInfo': instance.cardInfo.map(
+          (k, e) => MapEntry(const CardTypeConverter().toJson(k), e.map((k, e) => MapEntry(k.toString(), e.toJson())))),
       'classInfo': instance.classInfo.map((k, e) => MapEntry(k.toString(), e.toJson())),
       'classRelation':
           instance.classRelation.map((k, e) => MapEntry(k.toString(), e.map((k, e) => MapEntry(k.toString(), e)))),
@@ -135,17 +135,6 @@ Map<String, dynamic> _$ConstGameDataToJson(ConstGameData instance) => <String, d
       'svtFaceLimits': instance.svtFaceLimits.map((k, e) => MapEntry(k.toString(), e)),
       'config': instance.config.toJson(),
     };
-
-const _$CardTypeEnumMap = {
-  CardType.none: 'none',
-  CardType.arts: 'arts',
-  CardType.buster: 'buster',
-  CardType.quick: 'quick',
-  CardType.extra: 'extra',
-  CardType.blank: 'blank',
-  CardType.weak: 'weak',
-  CardType.strength: 'strength',
-};
 
 ConstDataConfig _$ConstDataConfigFromJson(Map json) => ConstDataConfig(
       autoLoginMinVerJp: json['autoLoginMinVerJp'] as String? ?? '999.999.999',

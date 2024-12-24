@@ -270,6 +270,7 @@ class StageLink {
   Map<String, dynamic> toJson() => _$StageLinkToJson(this);
 }
 
+@JsonEnum(alwaysCreate: true)
 enum CardType {
   none(0),
   arts(1),
@@ -279,15 +280,39 @@ enum CardType {
   blank(5),
   weak(10),
   strength(11),
+  extra2(104),
   ;
 
   final int value;
   const CardType(this.value);
 
-  bool get isQAB => [CardType.quick, CardType.arts, CardType.buster].contains(this);
+  bool isQAB() => isQuick() || isArts() || isBuster();
+
+  bool isQuick() => this == quick;
+  bool isArts() => this == arts;
+  bool isBuster() => this == buster;
+  bool isExtra() => this == extra || this == extra2;
 }
 
 final kCardTypeMapping = {for (final card in CardType.values) card.value: card};
+
+class CardTypeConverter implements JsonConverter<CardType, String> {
+  const CardTypeConverter();
+
+  @override
+  CardType fromJson(String value) {
+    return deprecatedTypes[value] ?? decodeEnum(_$CardTypeEnumMap, value, CardType.none);
+  }
+
+  @override
+  String toJson(CardType card) {
+    return _$CardTypeEnumMap[card] ?? card.name;
+  }
+
+  static final Map<String, CardType> deprecatedTypes = {
+    "addattack2": CardType.extra2,
+  };
+}
 
 @JsonEnum(alwaysCreate: true)
 enum SvtClass {

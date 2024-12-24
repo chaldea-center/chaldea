@@ -232,7 +232,7 @@ TdSvt _$TdSvtFromJson(Map json) => TdSvt(
       condQuestPhase: (json['condQuestPhase'] as num?)?.toInt() ?? 0,
       condLv: (json['condLv'] as num?)?.toInt() ?? 0,
       condFriendshipRank: (json['condFriendshipRank'] as num?)?.toInt() ?? 0,
-      card: $enumDecodeNullable(_$CardTypeEnumMap, json['card']) ?? CardType.none,
+      card: json['card'] == null ? CardType.none : const CardTypeConverter().fromJson(json['card'] as String),
       releaseConditions: (json['releaseConditions'] as List<dynamic>?)
               ?.map((e) => SvtSkillRelease.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
@@ -252,20 +252,9 @@ Map<String, dynamic> _$TdSvtToJson(TdSvt instance) => <String, dynamic>{
       'condQuestPhase': instance.condQuestPhase,
       'condLv': instance.condLv,
       'condFriendshipRank': instance.condFriendshipRank,
-      'card': _$CardTypeEnumMap[instance.card]!,
+      'card': const CardTypeConverter().toJson(instance.card),
       'releaseConditions': instance.releaseConditions.map((e) => e.toJson()).toList(),
     };
-
-const _$CardTypeEnumMap = {
-  CardType.none: 'none',
-  CardType.arts: 'arts',
-  CardType.buster: 'buster',
-  CardType.quick: 'quick',
-  CardType.extra: 'extra',
-  CardType.blank: 'blank',
-  CardType.weak: 'weak',
-  CardType.strength: 'strength',
-};
 
 NiceTd _$NiceTdFromJson(Map json) => NiceTd(
       id: (json['id'] as num).toInt(),
@@ -302,7 +291,7 @@ NiceTd _$NiceTdFromJson(Map json) => NiceTd(
       condQuestPhase: (json['condQuestPhase'] as num?)?.toInt() ?? 0,
       condLv: (json['condLv'] as num?)?.toInt() ?? 0,
       condFriendshipRank: (json['condFriendshipRank'] as num?)?.toInt() ?? 0,
-      card: $enumDecodeNullable(_$CardTypeEnumMap, json['card']) ?? CardType.none,
+      card: json['card'] == null ? CardType.none : const CardTypeConverter().fromJson(json['card'] as String),
       releaseConditions: (json['releaseConditions'] as List<dynamic>?)
               ?.map((e) => SvtSkillRelease.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
@@ -322,7 +311,7 @@ Map<String, dynamic> _$NiceTdToJson(NiceTd instance) => <String, dynamic>{
       'condQuestPhase': instance.condQuestPhase,
       'condLv': instance.condLv,
       'condFriendshipRank': instance.condFriendshipRank,
-      'card': _$CardTypeEnumMap[instance.card]!,
+      'card': const CardTypeConverter().toJson(instance.card),
       'releaseConditions': instance.releaseConditions.map((e) => e.toJson()).toList(),
       'id': instance.id,
       'name': instance.name,
@@ -467,13 +456,13 @@ Map<String, dynamic> _$SelectTreasureDeviceInfoToJson(SelectTreasureDeviceInfo i
 
 SelectTdInfoTdChangeParam _$SelectTdInfoTdChangeParamFromJson(Map json) => SelectTdInfoTdChangeParam(
       id: (json['id'] as num?)?.toInt() ?? 0,
-      type: $enumDecodeNullable(_$CardTypeEnumMap, json['type']) ?? CardType.none,
+      type: json['type'] == null ? CardType.none : const CardTypeConverter().fromJson(json['type'] as String),
       message: json['message'] as String? ?? "",
     );
 
 Map<String, dynamic> _$SelectTdInfoTdChangeParamToJson(SelectTdInfoTdChangeParam instance) => <String, dynamic>{
       'id': instance.id,
-      'type': _$CardTypeEnumMap[instance.type]!,
+      'type': const CardTypeConverter().toJson(instance.type),
       'message': instance.message,
     };
 

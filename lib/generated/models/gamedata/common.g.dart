@@ -140,6 +140,18 @@ const _$RegionEnumMap = {
   Region.kr: 'kr',
 };
 
+const _$CardTypeEnumMap = {
+  CardType.none: 'none',
+  CardType.arts: 'arts',
+  CardType.buster: 'buster',
+  CardType.quick: 'quick',
+  CardType.extra: 'extra',
+  CardType.blank: 'blank',
+  CardType.weak: 'weak',
+  CardType.strength: 'strength',
+  CardType.extra2: 'extra2',
+};
+
 const _$SvtClassEnumMap = {
   SvtClass.none: 'none',
   SvtClass.saber: 'saber',

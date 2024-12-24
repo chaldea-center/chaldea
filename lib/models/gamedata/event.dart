@@ -1082,6 +1082,7 @@ class EventCommandAssist {
   int priority;
   int lv;
   String name;
+  @CardTypeConverter()
   CardType assistCard;
   String image;
   NiceSkill skill;

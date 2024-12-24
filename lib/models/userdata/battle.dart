@@ -1107,6 +1107,7 @@ class BattleAttackRecordData {
   int? card;
   bool isTD;
   bool critical;
+  @CardTypeConverter()
   CardType cardType;
 
   BattleAttackRecordData({

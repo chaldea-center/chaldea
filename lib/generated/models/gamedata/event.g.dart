@@ -733,7 +733,8 @@ EventCommandAssist _$EventCommandAssistFromJson(Map json) => EventCommandAssist(
       priority: (json['priority'] as num?)?.toInt() ?? 0,
       lv: (json['lv'] as num).toInt(),
       name: json['name'] as String,
-      assistCard: $enumDecodeNullable(_$CardTypeEnumMap, json['assistCard']) ?? CardType.none,
+      assistCard:
+          json['assistCard'] == null ? CardType.none : const CardTypeConverter().fromJson(json['assistCard'] as String),
       image: json['image'] as String,
       skill: NiceSkill.fromJson(Map<String, dynamic>.from(json['skill'] as Map)),
       skillLv: (json['skillLv'] as num).toInt(),
@@ -748,23 +749,12 @@ Map<String, dynamic> _$EventCommandAssistToJson(EventCommandAssist instance) => 
       'priority': instance.priority,
       'lv': instance.lv,
       'name': instance.name,
-      'assistCard': _$CardTypeEnumMap[instance.assistCard]!,
+      'assistCard': const CardTypeConverter().toJson(instance.assistCard),
       'image': instance.image,
       'skill': instance.skill.toJson(),
       'skillLv': instance.skillLv,
       'releaseConditions': instance.releaseConditions.map((e) => e.toJson()).toList(),
     };
-
-const _$CardTypeEnumMap = {
-  CardType.none: 'none',
-  CardType.arts: 'arts',
-  CardType.buster: 'buster',
-  CardType.quick: 'quick',
-  CardType.extra: 'extra',
-  CardType.blank: 'blank',
-  CardType.weak: 'weak',
-  CardType.strength: 'strength',
-};
 
 EventTowerReward _$EventTowerRewardFromJson(Map json) => EventTowerReward(
       floor: (json['floor'] as num).toInt(),

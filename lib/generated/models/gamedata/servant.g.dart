@@ -114,10 +114,11 @@ Servant _$ServantFromJson(Map json) => Servant(
       criticalWeight: (json['starAbsorb'] as num?)?.toInt() ?? 0,
       starGen: (json['starGen'] as num?)?.toInt() ?? 0,
       instantDeathChance: (json['instantDeathChance'] as num?)?.toInt() ?? 0,
-      cards: (json['cards'] as List<dynamic>?)?.map((e) => $enumDecode(_$CardTypeEnumMap, e)).toList() ?? const [],
+      cards: (json['cards'] as List<dynamic>?)?.map((e) => const CardTypeConverter().fromJson(e as String)).toList() ??
+          const [],
       cardDetails: (json['cardDetails'] as Map?)?.map(
-            (k, e) =>
-                MapEntry($enumDecode(_$CardTypeEnumMap, k), CardDetail.fromJson(Map<String, dynamic>.from(e as Map))),
+            (k, e) => MapEntry(const CardTypeConverter().fromJson(k as String),
+                CardDetail.fromJson(Map<String, dynamic>.from(e as Map))),
           ) ??
           const {},
       relateQuestIds: (json['relateQuestIds'] as List<dynamic>?)?.map((e) => (e as num).toInt()).toList() ?? const [],
@@ -232,8 +233,8 @@ Map<String, dynamic> _$ServantToJson(Servant instance) => <String, dynamic>{
       'starAbsorb': instance.criticalWeight,
       'starGen': instance.starGen,
       'instantDeathChance': instance.instantDeathChance,
-      'cards': instance.cards.map((e) => _$CardTypeEnumMap[e]!).toList(),
-      'cardDetails': instance.cardDetails.map((k, e) => MapEntry(_$CardTypeEnumMap[k]!, e.toJson())),
+      'cards': instance.cards.map(const CardTypeConverter().toJson).toList(),
+      'cardDetails': instance.cardDetails.map((k, e) => MapEntry(const CardTypeConverter().toJson(k), e.toJson())),
       'atkBase': instance.atkBase,
       'hpBase': instance.hpBase,
       'relateQuestIds': instance.relateQuestIds,
@@ -274,17 +275,6 @@ const _$GenderEnumMap = {
   Gender.male: 'male',
   Gender.female: 'female',
   Gender.unknown: 'unknown',
-};
-
-const _$CardTypeEnumMap = {
-  CardType.none: 'none',
-  CardType.arts: 'arts',
-  CardType.buster: 'buster',
-  CardType.quick: 'quick',
-  CardType.extra: 'extra',
-  CardType.blank: 'blank',
-  CardType.weak: 'weak',
-  CardType.strength: 'strength',
 };
 
 BasicCraftEssence _$BasicCraftEssenceFromJson(Map json) => BasicCraftEssence(

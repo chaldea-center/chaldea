@@ -233,7 +233,7 @@ class _CombatActionSelectorState extends State<CombatActionSelector> {
         final cardIndex = getCardIndex(svt, card);
         if (cardIndex != -1) {
           final combatAction = combatActions[cardIndex]!;
-          if (combatAction.cardData.cardType.isQAB) {
+          if (combatAction.cardData.cardType.isQAB()) {
             if (combatAction.cardData.critical) {
               combatActions[cardIndex] = null;
             } else {
@@ -273,7 +273,7 @@ class _CombatActionSelectorState extends State<CombatActionSelector> {
       alignment: Alignment.center,
       children: [
         tdIcon,
-        if (curTd != null && curTd.svt.card.isQAB) ...[
+        if (curTd != null && curTd.svt.card.isQAB()) ...[
           Positioned(
             bottom: 0,
             child: db.getIconImage(
@@ -533,7 +533,7 @@ class _EnemyCombatActionSelectorState extends State<EnemyCombatActionSelector> {
               final cardData = CommandCardData(enemy, cardType, detail, 1)
                 ..isTD = false
                 ..traits = ConstData.cardInfo[cardType]?[1]?.individuality.toList() ?? [];
-              if (cardType.isQAB) {
+              if (cardType.isQAB()) {
                 cardData.critical = critical;
               } else if (cardType == CardType.strength) {
                 cardData.critical = true;
@@ -544,7 +544,7 @@ class _EnemyCombatActionSelectorState extends State<EnemyCombatActionSelector> {
             },
           ));
         }
-        if (svt.cardDetails.keys.any((e) => e.isQAB)) {
+        if (svt.cardDetails.keys.any((e) => e.isQAB())) {
           children.add(CheckboxListTile(
             dense: true,
             value: critical,

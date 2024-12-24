@@ -521,6 +521,7 @@ class TdSvt implements SkillSvtBase {
   int condLv;
   int condFriendshipRank;
   // int motion;
+  @CardTypeConverter()
   CardType card;
   @override
   List<SvtSkillRelease> releaseConditions;
@@ -555,7 +556,7 @@ class TdSvt implements SkillSvtBase {
   TdSvt copy() => TdSvt.fromJson(toJson());
 }
 
-@JsonSerializable()
+@JsonSerializable(converters: [CardTypeConverter()])
 class NiceTd extends SkillOrTd implements BaseTd {
   BaseTd _base;
   BaseTd get base => _base;
@@ -993,6 +994,7 @@ class SelectTreasureDeviceInfo {
 @JsonSerializable()
 class SelectTdInfoTdChangeParam {
   final int id;
+  @CardTypeConverter()
   final CardType type;
   final String message;
 

@@ -1008,7 +1008,7 @@ class _AttackDetailWidget extends StatelessWidget with MultiTargetsWrapper {
         ),
       ),
     ];
-    if (card.cardType.isQAB) {
+    if (card.cardType.isQAB()) {
       stackChildren.add(Positioned(
         left: -2,
         right: -2,
@@ -1355,6 +1355,7 @@ mixin _ParamDialogMixin {
       case CardType.quick:
         return buffIcon(312);
       case CardType.extra:
+      case CardType.extra2:
         return buffIcon(388);
       case CardType.none:
       case CardType.blank:

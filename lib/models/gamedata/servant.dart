@@ -151,7 +151,7 @@ class BasicServant with GameCardMixin {
         costume = Map.of(svt.profile.costume);
 }
 
-@JsonSerializable()
+@JsonSerializable(converters: [CardTypeConverter()])
 class Servant extends BasicServant {
   String ruby;
   String battleName;
