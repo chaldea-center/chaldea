@@ -2180,6 +2180,26 @@ void main() async {
     expect(melusine.battleBuff.getPassiveList().length, 6);
   });
 
+  test('OverwriteSvtCardBuff - Phantas Moon', () async {
+    final List<PlayerSvtData> setting = [
+      PlayerSvtData.id(2800900),
+    ];
+    final battle = BattleData();
+    final quest = db.gameData.questPhases[9300040603]!;
+    await battle.init(quest, setting, null);
+
+    final phantasMoon = battle.onFieldAllyServants[0]!;
+    final baseExtraCard = phantasMoon.getExtraCard()!;
+    expect(baseExtraCard.cardType, CardType.extra);
+    expect(baseExtraCard.cardDetail.damageRate, null);
+
+    await battle.activateSvtSkill(0, 1);
+
+    final updatedExtraCard = phantasMoon.getExtraCard()!;
+    expect(updatedExtraCard.cardType, CardType.extra2);
+    expect(updatedExtraCard.cardDetail.damageRate, 500);
+  });
+
   group('Method tests', () {
     final List<PlayerSvtData> okuniWithDoubleCba = [
       PlayerSvtData.id(504900)..lv = 90,

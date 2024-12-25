@@ -359,11 +359,11 @@ class BattleRecordManager {
     int totalCards = 0, attackedCards = 0;
     for (final record in records) {
       if (record is BattleAttacksInitiationRecord) {
-        final selectedCards = record.attacks.where((e) => e.cardData.cardType != CardType.extra).toList();
+        final selectedCards = record.attacks.where((e) => !e.cardData.cardType.isExtra()).toList();
         totalCards += selectedCards.length;
         // totalNormalCards += selectedCards.where((e) => !e.cardData.isTD).length;
       } else if (record is BattleAttackRecord) {
-        if (record.card?.cardType != CardType.extra) {
+        if (record.card?.cardType.isQAB() ?? true) {
           attackedCards += 1;
         }
       }

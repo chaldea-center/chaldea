@@ -1085,7 +1085,7 @@ class BattleRecordData {
   }
 
   bool containsTdCardType(final CardType cardType) {
-    return attacks?.any((cardAction) => cardAction.isTD && cardAction.cardType == cardType) ?? false;
+    return attacks?.any((cardAction) => cardAction.isTD && cardAction.cardType.matches(cardType)) ?? false;
   }
 
   int countCrits() {
@@ -1093,7 +1093,7 @@ class BattleRecordData {
   }
 
   int countNormalAttacks() {
-    return attacks?.where((e) => !e.isTD && e.cardType != CardType.extra).length ?? 0;
+    return attacks?.where((e) => !e.isTD && !e.cardType.isExtra()).length ?? 0;
   }
 
   int countTdAttacks() {

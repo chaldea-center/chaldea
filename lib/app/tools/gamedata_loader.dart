@@ -381,6 +381,26 @@ class GameDataLoader {
 
   Future<void> _debugFixGameData(GameData gamedata) async {
     if (!kDebugMode) return;
+    gamedata.servantsById[2800900]!.cardDetails[CardType.extra2] ??= CardDetail(
+      hitsDistribution: [6, 13, 20, 26, 35],
+      attackIndividuality: [NiceTrait(id: 3000)],
+      attackType: CommandCardAttackType.all,
+      damageRate: 500,
+      attackNpRate: 500,
+      defenseNpRate: 1000,
+      dropStarRate: 50,
+    );
+    gamedata.constData.cardInfo[CardType.extra2] ??= {
+      4: CardInfo(
+        individuality: [NiceTrait(id: 4004), NiceTrait(id: 4008)],
+        adjustAtk: 1000,
+        adjustTdGauge: 1000,
+        adjustCritical: 1000,
+        addAtk: 0,
+        addTdGauge: 0,
+        addCritical: 0,
+      ),
+    };
   }
 
   static bool checkHash(List<int> bytes, String hash) {

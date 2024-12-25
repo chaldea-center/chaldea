@@ -217,6 +217,7 @@ class AddState {
     final tdTypeChangeIDs = baseTd.script?.tdTypeChangeIDs;
     if (tdTypeChangeIDs == null || tdTypeChangeIDs.isEmpty) return null;
 
+    // hardcoding since there's no NP with extra card type
     final validCardIndex = <int>[CardType.arts.value, CardType.buster.value, CardType.quick.value];
 
     if (excludeTypes != null && excludeTypes.isNotEmpty) {

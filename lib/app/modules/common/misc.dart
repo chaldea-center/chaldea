@@ -11,7 +11,7 @@ class CommandCardWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (![CardType.arts, CardType.buster, CardType.quick].contains(card)) {
+    if (!card.isQAB()) {
       return Text(
         card.name.toTitle().breakWord,
         maxLines: 2,

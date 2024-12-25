@@ -472,13 +472,13 @@ class BattleServantData {
     for (int index = 0; index < cards.length; index += 1) {
       final isCardInDeck = niceSvt!.cards.getOrNull(index) == cards[index];
 
-      final cardType = changeCardType ?? cards[index];
+      final cardType = checkOverwriteSvtCardType(changeCardType ?? cards[index]);
       final detail = niceSvt!.cardDetails[cardType];
       if (detail == null) continue;
       final card = CommandCardData(this, cardType, detail, index)
         ..isTD = false
         ..npGain = getNPGain(cardType)
-        ..traits = ConstData.cardInfo[cardType]![1]!.individuality.toList();
+        ..traits = ConstData.cardInfo[cardType]!.values.first.individuality.toList();
 
       if (isCardInDeck) {
         // enemy weak+strength 6 cards
@@ -486,9 +486,9 @@ class BattleServantData {
           ..cardStrengthen = playerSvtData!.cardStrengthens.getOrNull(index) ?? 0
           ..commandCode = playerSvtData!.commandCodes.getOrNull(index);
       }
-      if (cardType == CardType.weak) {
+      if (cardType.matches(CardType.weak)) {
         card.critical = false;
-      } else if (cardType == CardType.strength) {
+      } else if (cardType.matches(CardType.strength)) {
         card.critical = true;
       }
 
@@ -571,13 +571,31 @@ class BattleServantData {
     if (isEnemy) {
       return null;
     }
-    final detail = niceSvt!.cardDetails[CardType.extra];
+
+    final cardType = checkOverwriteSvtCardType(CardType.extra);
+    final detail = niceSvt!.cardDetails[cardType];
     if (detail == null) return null;
 
-    return CommandCardData(this, CardType.extra, detail, -1)
+    return CommandCardData(this, cardType, detail, -1)
       ..isTD = false
-      ..npGain = getNPGain(CardType.extra)
-      ..traits = ConstData.cardInfo[CardType.extra]![1]!.individuality.toList();
+      ..npGain = getNPGain(cardType)
+      ..traits = ConstData.cardInfo[cardType]!.values.first.individuality.toList();
+  }
+
+  CardType checkOverwriteSvtCardType(final CardType baseCardType) {
+    final overwriteSvtCardTypeBuff =
+        collectBuffsPerAction(battleBuff.validBuffs, BuffAction.overwriteSvtCardType).lastOrNull;
+    if (overwriteSvtCardTypeBuff == null) {
+      return baseCardType;
+    }
+
+    List<NiceTrait> traits = ConstData.cardInfo[baseCardType]!.values.first.individuality.toList();
+    if (overwriteSvtCardTypeBuff.shouldActivateBuffNoProbabilityCheck(traits) &&
+        kCardTypeMapping.containsKey(overwriteSvtCardTypeBuff.param)) {
+      return kCardTypeMapping[overwriteSvtCardTypeBuff.param]!;
+    } else {
+      return baseCardType;
+    }
   }
 
   int getNPGain(final CardType cardType) {
@@ -589,18 +607,17 @@ class BattleServantData {
       return 0;
     }
 
-    switch (cardType) {
-      case CardType.buster:
-        return currentNp.npGain.buster[playerSvtData!.tdLv - 1];
-      case CardType.arts:
-        return currentNp.npGain.arts[playerSvtData!.tdLv - 1];
-      case CardType.quick:
-        return currentNp.npGain.quick[playerSvtData!.tdLv - 1];
-      case CardType.extra:
-        return currentNp.npGain.extra[playerSvtData!.tdLv - 1];
-      default:
-        return 0;
+    if (cardType.isArts()) {
+      return currentNp.npGain.arts[playerSvtData!.tdLv - 1];
+    } else if (cardType.isBuster()) {
+      return currentNp.npGain.buster[playerSvtData!.tdLv - 1];
+    } else if (cardType.isQuick()) {
+      return currentNp.npGain.quick[playerSvtData!.tdLv - 1];
+    } else if (cardType.isExtra()) {
+      return currentNp.npGain.extra[playerSvtData!.tdLv - 1];
     }
+
+    return 0;
   }
 
   List<NiceTrait> getBasicSvtTraits() {

@@ -49,14 +49,14 @@ int calculateDamage(final DamageParameters param) {
 
   final Float criticalModifier = param.critical ? toModifierFloat(ConstData.constants.criticalAttackRate) : 1.toFloat();
 
-  final int extraRate = param.currentCardType == CardType.extra
+  final int extraRate = param.currentCardType.isExtra()
       ? param.isTypeChain
           ? ConstData.constants.extraAttackRateGrand
           : ConstData.constants.extraAttackRateSingle
       : 1000;
   final extraModifier = toModifierFloat(extraRate);
 
-  final Float busterChainMod = !param.isNp && param.currentCardType == CardType.buster && param.isTypeChain
+  final Float busterChainMod = !param.isNp && param.currentCardType.isBuster() && param.isTypeChain
       ? toModifierFloat(ConstData.constants.chainbonusBusterRate) * param.attack.toFloat()
       : 0.toFloat();
 
@@ -200,7 +200,7 @@ int calculateStar(final StarParameters param) {
 }
 
 bool shouldIgnoreFirstCardBonus(final bool isNP, final CardType firstCardType) {
-  return isNP || !ConstData.cardInfo.containsKey(firstCardType) || firstCardType == CardType.blank;
+  return isNP || !ConstData.cardInfo.containsKey(firstCardType) || firstCardType.matches(CardType.blank);
 }
 
 class DamageParameters {

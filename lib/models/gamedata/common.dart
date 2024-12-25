@@ -292,6 +292,15 @@ enum CardType {
   bool isArts() => this == arts;
   bool isBuster() => this == buster;
   bool isExtra() => this == extra || this == extra2;
+
+  bool matches(final CardType other) {
+    if (other.isArts() && isArts()) return true;
+    if (other.isBuster() && isBuster()) return true;
+    if (other.isQuick() && isQuick()) return true;
+    if (other.isExtra() && isExtra()) return true;
+
+    return this == other;
+  }
 }
 
 final kCardTypeMapping = {for (final card in CardType.values) card.value: card};

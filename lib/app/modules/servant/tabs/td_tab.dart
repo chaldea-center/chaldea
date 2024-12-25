@@ -60,7 +60,7 @@ class SvtTdTab extends StatelessWidget {
         List<NiceTd> tds1 = [], tds2 = [];
         for (final td in tds) {
           if (td.svt.releaseConditions.any((e) => e.condType == CondType.equipWithTargetCostume)) {
-            // if (td.card == CardType.buster) {
+            // if (td.card.isBuster()) {
             tds2.add(td);
           } else {
             tds1.add(td);

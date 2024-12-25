@@ -878,6 +878,13 @@ mixin MultiTargetsWrapper {
     required CommandCardData card,
   }) {
     if (actor == null) return _defaultPlaceholder(context);
+    final cardColor = card.cardType.isQuick()
+        ? Colors.green
+        : card.cardType.isBuster()
+            ? Colors.red
+            : card.cardType.isArts()
+                ? Colors.blue
+                : null;
     return Text.rich(
       TextSpan(
         children: divideList([
@@ -885,13 +892,7 @@ mixin MultiTargetsWrapper {
           if (actor.isPlayer && card.isTD) TextSpan(text: card.np.format(percent: true, base: 100)),
           TextSpan(
             text: card.cardType.name.toTitle(),
-            style: TextStyle(
-              color: {
-                CardType.quick: Colors.green,
-                CardType.arts: Colors.blue,
-                CardType.buster: Colors.red,
-              }[card.cardType],
-            ),
+            style: TextStyle(color: cardColor),
           ),
           if (card.critical) TextSpan(text: S.current.critical_attack)
         ], const TextSpan(text: ' ')),
@@ -1053,7 +1054,7 @@ class _AttackDetailWidget extends StatelessWidget with MultiTargetsWrapper {
           ),
         ));
       }
-    } else if (card.cardType == CardType.extra) {
+    } else if (card.cardType.isExtra()) {
       stackChildren.add(Positioned(
         left: 2,
         right: -4,
@@ -1347,22 +1348,18 @@ mixin _ParamDialogMixin {
   }
 
   String cardBuffIcon(final CardType cardType) {
-    switch (cardType) {
-      case CardType.arts:
-        return buffIcon(313);
-      case CardType.buster:
-        return buffIcon(314);
-      case CardType.quick:
-        return buffIcon(312);
-      case CardType.extra:
-      case CardType.extra2:
-        return buffIcon(388);
-      case CardType.none:
-      case CardType.blank:
-      case CardType.weak:
-      case CardType.strength:
-        return buffIcon(302);
+    if (cardType.isArts()) {
+      return buffIcon(313);
+    } else if (cardType.isBuster()) {
+      return buffIcon(314);
+    } else if (cardType.isQuick()) {
+      return buffIcon(312);
+    } else if (cardType.isExtra()) {
+      return buffIcon(388);
     }
+
+    // none, blank, weak, strength
+    return buffIcon(302);
   }
 
   String buffIcon(int id) => 'https://static.atlasacademy.io/JP/BuffIcons/bufficon_$id.png';
@@ -1433,7 +1430,7 @@ class DamageParamDialog extends StatelessWidget with _ParamDialogMixin {
         : params.isMightyChain
             ? toModifier(ConstData.cardInfo[CardType.buster]![1]!.addAtk)
             : toModifier(ConstData.cardInfo[params.firstCardType]![1]!.addAtk);
-    final busterChainMod = (!params.isNp && params.currentCardType == CardType.buster && params.isTypeChain
+    final busterChainMod = (!params.isNp && params.currentCardType.isBuster() && params.isTypeChain
             ? toModifier(ConstData.constants.chainbonusBusterRate) * params.attack
             : 0)
         .toInt();
@@ -1465,26 +1462,25 @@ class DamageParamDialog extends StatelessWidget with _ParamDialogMixin {
         if (info.targetBefore != null) oneParam('HP', '${info.targetBefore!.hp} → ${info.target.hp}'),
         oneParam(S.current.battle_random, random.toStringAsFixed(3)),
         oneParam('ATK', params.attack.toString()),
-        oneParam(S.current.class_attack_rate, classAttackCorrection.format(precision: 3)),
+        oneParam(S.current.class_attack_rate, classAttackCorrection.format()),
         if (params.damageRate != 1000)
-          oneParam(S.current.battle_damage_rate, damageRate.format(percent: true, precision: 3)),
+          oneParam(S.current.battle_damage_rate, damageRate.format(percent: true, maxDigits: 4)),
         if (isNpSpecificDamage)
-          oneParam(S.current.np_sp_damage_rate, npSpecificAttackRate.format(percent: true, precision: 3)),
-        if (params.totalHits != 100) oneParam('Hits', hitsPercent.format(percent: true, precision: 3)),
-        oneParam(S.current.class_advantage, classAdvantage.format(precision: 3)),
-        oneParam(S.current.sub_attribute_advantage, attributeAdvantage.format(precision: 3)),
-        if (firstCardBonus != 0) oneParam(S.current.battle_first_card_bonus, firstCardBonus.format(precision: 1)),
+          oneParam(S.current.np_sp_damage_rate, npSpecificAttackRate.format(percent: true, maxDigits: 4)),
+        if (params.totalHits != 100) oneParam('Hits', hitsPercent.format(percent: true, maxDigits: 4)),
+        oneParam(S.current.class_advantage, classAdvantage.format()),
+        oneParam(S.current.sub_attribute_advantage, attributeAdvantage.format()),
+        if (firstCardBonus != 0) oneParam(S.current.battle_first_card_bonus, firstCardBonus.format()),
         if (busterChainMod != 0) oneParam(S.current.battle_buster_chain, busterChainMod.toString()),
-        if (params.currentCardType == CardType.extra)
-          oneParam(S.current.battle_extra_rate, extraModifier.format(precision: 1)),
-        oneParam(Transl.buffNames('攻撃力アップ').l, atkSum.format(percent: true, precision: 3), buffIcon(300)),
-        oneParam(Transl.buffNames('カード性能アップ').l, cardSum.format(percent: true, precision: 3),
+        if (params.currentCardType.isExtra()) oneParam(S.current.battle_extra_rate, extraModifier.format()),
+        oneParam(Transl.buffNames('攻撃力アップ').l, atkSum.format(percent: true, maxDigits: 4), buffIcon(300)),
+        oneParam(Transl.buffNames('カード性能アップ').l, cardSum.format(percent: true, maxDigits: 4),
             cardBuffIcon(params.currentCardType)),
-        oneParam(Transl.buffNames('威力アップ').l, specificSum.format(percent: true, precision: 3), buffIcon(302)),
+        oneParam(Transl.buffNames('威力アップ').l, specificSum.format(percent: true, maxDigits: 4), buffIcon(302)),
         if (params.percentAttackBuff != 0)
-          oneParam(Transl.buffNames('特殊威力アップ').l, percentAttack.format(percent: true, precision: 3), buffIcon(359)),
+          oneParam(Transl.buffNames('特殊威力アップ').l, percentAttack.format(percent: true, maxDigits: 4), buffIcon(359)),
         if (params.percentDefenseBuff != 0)
-          oneParam(Transl.buffNames('特殊耐性アップ').l, percentDefense.format(percent: true, precision: 3), buffIcon(334)),
+          oneParam(Transl.buffNames('特殊耐性アップ').l, percentDefense.format(percent: true, maxDigits: 4), buffIcon(334)),
         oneParam(Transl.buffNames('ダメージプラス').l, damageAdd.toString(), buffIcon(302)),
       ],
     );
@@ -1526,13 +1522,13 @@ class AttackerNpParamDialog extends StatelessWidget with _ParamDialogMixin {
             (v) => (v / 100).format(precision: 2),
             npLimitedStates: result.npMaxLimited,
           ),
-        oneParam(S.current.attack_np_rate, attackerNpCharge.format(percent: true, precision: 2)),
-        oneParam(S.current.np_gain_mod, defenderNpRate.format(precision: 3)),
+        oneParam(S.current.attack_np_rate, attackerNpCharge.format(percent: true)),
+        oneParam(S.current.np_gain_mod, defenderNpRate.format()),
         if (params.cardAttackNpRate != 1000)
-          oneParam(S.current.battle_card_np_rate, cardRate.format(percent: true, precision: 3)),
-        oneParam(Transl.buffNames('カード性能アップ').l, cardSum.format(percent: true, precision: 3),
+          oneParam(S.current.battle_card_np_rate, cardRate.format(percent: true, maxDigits: 4)),
+        oneParam(Transl.buffNames('カード性能アップ').l, cardSum.format(percent: true, maxDigits: 4),
             cardBuffIcon(params.currentCardType)),
-        oneParam(Transl.buffNames('NP獲得アップ').l, npGainBuff.format(percent: true, precision: 3), buffIcon(303)),
+        oneParam(Transl.buffNames('NP獲得アップ').l, npGainBuff.format(percent: true, maxDigits: 4), buffIcon(303)),
       ],
     );
   }
@@ -1571,13 +1567,13 @@ class DefenseNpParamDialog extends StatelessWidget with _ParamDialogMixin {
             (v) => (v / 100).format(precision: 2),
             npLimitedStates: result.defNpMaxLimited,
           ),
-        oneParam(S.current.defense_np_rate, defenderNpGainRate.format(precision: 2)),
-        oneParam(S.current.attack_np_rate, attackerNpRate.format(precision: 3)),
+        oneParam(S.current.defense_np_rate, defenderNpGainRate.format()),
+        oneParam(S.current.attack_np_rate, attackerNpRate.format()),
         if (params.cardDefNpRate != 1000)
-          oneParam(S.current.battle_card_np_rate, params.cardDefNpRate.format(percent: true, precision: 3, base: 10)),
+          oneParam(S.current.battle_card_np_rate, params.cardDefNpRate.format(percent: true, maxDigits: 4, base: 10)),
         oneParam(
-            Transl.buffNames('被ダメージ時NP獲得アップ').l, defenseNpGainBuff.format(percent: true, precision: 3), buffIcon(335)),
-        oneParam(Transl.buffNames('NP獲得アップ').l, npGainBuff.format(percent: true, precision: 3), buffIcon(303)),
+            Transl.buffNames('被ダメージ時NP獲得アップ').l, defenseNpGainBuff.format(percent: true, maxDigits: 4), buffIcon(335)),
+        oneParam(Transl.buffNames('NP獲得アップ').l, npGainBuff.format(percent: true, maxDigits: 4), buffIcon(303)),
       ],
     );
   }
@@ -1608,18 +1604,18 @@ class StarParamDialog extends StatelessWidget with _ParamDialogMixin {
       wrapDialog: wrapDialog,
       children: [
         buildCardInfo(context, info),
-        oneParam(S.current.critical_star, (result.totalStars / 1000).format(precision: 3)),
+        oneParam(S.current.critical_star, (result.totalStars / 1000).format()),
         if (minResult != null && maxResult != null)
           oneParam('', '(${minResult!.totalStars / 1000}~${maxResult!.totalStars / 1000})'),
         if (result.stars.any((e) => e > 0))
-          listValueWithOverkill(result.stars, result.overkillStates, (v) => (v / 1000).format(precision: 3)),
-        oneParam(S.current.info_star_rate, attackerStarGen.format(precision: 3)),
-        oneParam(S.current.crit_star_mod, defenderStarRate.format(precision: 3)),
+          listValueWithOverkill(result.stars, result.overkillStates, (v) => (v / 1000).format()),
+        oneParam(S.current.info_star_rate, attackerStarGen.format()),
+        oneParam(S.current.crit_star_mod, defenderStarRate.format()),
         if (params.cardDropStarRate != 1000)
-          oneParam(S.current.battle_card_star_rate, cardRate.format(percent: true, precision: 3)),
-        oneParam(Transl.buffNames('カード性能アップ').l, cardSum.format(percent: true, precision: 3),
+          oneParam(S.current.battle_card_star_rate, cardRate.format(percent: true, maxDigits: 4)),
+        oneParam(Transl.buffNames('カード性能アップ').l, cardSum.format(percent: true, maxDigits: 4),
             cardBuffIcon(params.currentCardType)),
-        oneParam(Transl.buffNames('スター発生アップ').l, starGenBuff.format(percent: true, precision: 3), buffIcon(321)),
+        oneParam(Transl.buffNames('スター発生アップ').l, starGenBuff.format(percent: true, maxDigits: 4), buffIcon(321)),
       ],
     );
   }

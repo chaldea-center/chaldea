@@ -521,10 +521,10 @@ class _EnemyCombatActionSelectorState extends State<EnemyCombatActionSelector> {
       if (svt != null) {
         children.add(DividerWithTitle(title: S.current.battle_command_card));
         for (final cardType in svt.cardDetails.keys) {
-          if (cardType == CardType.extra) continue;
+          if (cardType.isExtra()) continue;
           final detail = svt.cardDetails[cardType]!;
           String name = cardType.name.toTitle();
-          if (cardType == CardType.strength) {
+          if (cardType.matches(CardType.strength)) {
             name += ' (${S.current.critical_attack})';
           }
           children.add(buildRadio(
@@ -535,9 +535,9 @@ class _EnemyCombatActionSelectorState extends State<EnemyCombatActionSelector> {
                 ..traits = ConstData.cardInfo[cardType]?[1]?.individuality.toList() ?? [];
               if (cardType.isQAB()) {
                 cardData.critical = critical;
-              } else if (cardType == CardType.strength) {
+              } else if (cardType.matches(CardType.strength)) {
                 cardData.critical = true;
-              } else if (cardType == CardType.weak) {
+              } else if (cardType.matches(CardType.weak)) {
                 cardData.critical = false;
               }
               await battleData.playEnemyCard(CombatAction(enemy, cardData));

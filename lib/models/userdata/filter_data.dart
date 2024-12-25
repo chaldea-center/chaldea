@@ -1132,9 +1132,9 @@ enum CardDeckType {
   final int b;
 
   static CardDeckType resolve(List<CardType> cards) {
-    int q = cards.where((e) => e == CardType.quick).length;
-    int a = cards.where((e) => e == CardType.arts).length;
-    int b = cards.where((e) => e == CardType.buster).length;
+    int q = cards.where((e) => e.isQuick()).length;
+    int a = cards.where((e) => e.isArts()).length;
+    int b = cards.where((e) => e.isBuster()).length;
     return CardDeckType.values.firstWhere((e) => e.q == q && e.a == a && e.b == b, orElse: () => CardDeckType.others);
   }
 }

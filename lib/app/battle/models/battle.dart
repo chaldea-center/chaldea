@@ -950,11 +950,17 @@ class BattleData {
           }
         }
 
-        // assumption: only Quick, Arts, and Buster are ever listed as viable actions
         final validActions = actions.where((action) => action.isValid(this)).toList();
         final cardTypesSet = validActions.map((action) => action.cardData.cardType).toSet();
-        final isTypeChain = validActions.length == 3 && cardTypesSet.length == 1;
-        final isMightyChain = cardTypesSet.length == 3 && options.mightyChain;
+        final isTypeChain = validActions.length == 3 &&
+            (cardTypesSet.every((card) => card.isArts()) ||
+                cardTypesSet.every((card) => card.isBuster()) ||
+                cardTypesSet.every((card) => card.isQuick()));
+
+        final isMightyChain = options.mightyChain &&
+            cardTypesSet.any((card) => card.isArts()) &&
+            cardTypesSet.any((card) => card.isBuster()) &&
+            cardTypesSet.any((card) => card.isQuick());
         final isBraveChain =
             validActions.length == kMaxCommand && validActions.map((action) => action.actor).toSet().length == 1;
         if (isBraveChain) {
@@ -1047,7 +1053,7 @@ class BattleData {
     final actor = combatAction.actor;
     return (cardData.isTD
             ? actor.getNPCard()
-            : cardData.cardType == CardType.extra
+            : cardData.cardType.isExtra()
                 ? actor.getExtraCard()
                 : actor.getCards().getOrNull(cardData.cardIndex)) ??
         cardData;
@@ -1308,10 +1314,10 @@ class BattleData {
     battleLogger.action('${cardType.name} Chain');
     await withFunctions(() async {
       await withFunction(() async {
-        if (cardType == CardType.quick) {
+        if (cardType.isQuick()) {
           final dataValToUse = options.mightyChain ? quickChainAfter7thAnni : quickChainBefore7thAnni;
           GainStar.gainStar(this, dataValToUse, null);
-        } else if (cardType == CardType.arts) {
+        } else if (cardType.isArts()) {
           final targets = actions.map((action) => action.actor).toSet();
           GainNp.gainNp(this, artsChain, targets);
         }

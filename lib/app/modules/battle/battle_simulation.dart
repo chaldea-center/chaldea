@@ -958,7 +958,7 @@ class _TeamUploadDialogState extends State<_TeamUploadDialog> {
     int totalNormalCards = 0;
     for (final record in battleData.recorder.records) {
       if (record is BattleAttacksInitiationRecord) {
-        final selectedCards = record.attacks.where((e) => e.cardData.cardType != CardType.extra).toList();
+        final selectedCards = record.attacks.where((e) => !e.cardData.cardType.isExtra()).toList();
         totalNormalCards += selectedCards.where((e) => !e.cardData.isTD).length;
       }
     }
