@@ -1,4 +1,5 @@
 import 'package:chaldea/app/app.dart';
+import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/app/modules/common/filter_group.dart';
 import 'package:chaldea/app/modules/faker/state.dart';
 import 'package:chaldea/generated/l10n.dart';
@@ -128,6 +129,15 @@ class _SvtCombinePageState extends State<SvtCombinePage> {
           ' skill ${baseUserSvt.skillLv1}/${baseUserSvt.skillLv2}/${baseUserSvt.skillLv3}\n'
           'exp ${nextLvExp == null ? "?" : (baseUserSvt.exp - nextLvExp).format(compact: false, groupSeparator: ",")}';
     }
+    Map<int, int> materialCounts = {};
+    for (final userSvt in mstData.userSvt) {
+      final svt = userSvt.dbEntity;
+      if (userSvt.locked || svt == null) continue;
+      if (svt.type == SvtType.combineMaterial) {
+        materialCounts.addNum(svt.id, 1);
+      }
+    }
+    materialCounts = Item.sortMapByPriority(materialCounts, removeZero: false, reversed: false);
     List<Widget> children = [
       TileGroup(
         header: 'Base Servant',
@@ -163,6 +173,14 @@ class _SvtCombinePageState extends State<SvtCombinePage> {
           runtime.lockTask(() => options.svtMaterialRarities = v.options);
           if (mounted) setState(() {});
         },
+      ),
+      Padding(
+        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+        child: SharedBuilder.itemGrid(
+          context: context,
+          items: materialCounts.entries,
+          width: 36,
+        ),
       ),
       ListTile(
         dense: true,

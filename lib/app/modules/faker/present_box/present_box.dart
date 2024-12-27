@@ -267,7 +267,7 @@ class _UserPresentBoxManagePageState extends State<UserPresentBoxManagePage> {
         (selectedPresents.length >= shownPresents.length &&
             shownPresents.every((e) => selectedPresents.contains(e.presentId)));
 
-    final buttopnGroups = [
+    final buttonGroups = [
       [
         FilledButton(
           onPressed: () {
@@ -308,13 +308,13 @@ class _UserPresentBoxManagePageState extends State<UserPresentBoxManagePage> {
       [
         FilledButton(
           onPressed: () {
-            _SellCombineMaterialDialog(runtime: runtime).showDialog(context);
+            router.pushPage(_SellCombineMaterialDialog(runtime: runtime));
           },
           child: Text('Sell'),
         ),
         FilledButton(
           onPressed: () {
-            SvtCombinePage(runtime: runtime).showDialog(context);
+            router.pushPage(SvtCombinePage(runtime: runtime));
           },
           child: Text('从者强化'),
         ),
@@ -328,7 +328,7 @@ class _UserPresentBoxManagePageState extends State<UserPresentBoxManagePage> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Text(cardInfo, style: Theme.of(context).textTheme.bodySmall, textAlign: TextAlign.center),
-          for (final buttons in buttopnGroups)
+          for (final buttons in buttonGroups)
             Wrap(
               alignment: WrapAlignment.center,
               crossAxisAlignment: WrapCrossAlignment.center,
@@ -391,7 +391,7 @@ class _UserPresentBoxManagePageState extends State<UserPresentBoxManagePage> {
               TextButton(
                 onPressed: () {
                   Navigator.pop(context);
-                  _SellCombineMaterialDialog(runtime: runtime).showDialog(context);
+                  router.pushPage(_SellCombineMaterialDialog(runtime: runtime));
                 },
                 child: Text('Sell'),
               ),
@@ -399,7 +399,7 @@ class _UserPresentBoxManagePageState extends State<UserPresentBoxManagePage> {
               TextButton(
                 onPressed: () {
                   Navigator.pop(context);
-                  SvtCombinePage(runtime: runtime).showDialog(context);
+                  router.pushPage(SvtCombinePage(runtime: runtime));
                 },
                 child: Text('从者强化'),
               )

@@ -872,6 +872,9 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
           if ((mstData.userItem[teapot.id]?.num ?? 0) > 0) (teapot, mstData.userItem[teapot.id]!),
     ];
     teapots.sort2((e) => e.$1.startedAt);
+    if (mstData.userItem.isNotEmpty && !teapots.any((e) => e.$1.id == battleOption.campaignItemId)) {
+      battleOption.campaignItemId = 0;
+    }
 
     String? questInfoText;
     if (userQuest != null) {
@@ -1086,7 +1089,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
             icon: const Icon(Icons.add_circle),
           ),
         ),
-        const Divider(),
+        DividerWithTitle(title: Transl.itemNames('星見のティーポット').l),
         CheckboxListTile.adaptive(
           dense: true,
           value: battleOption.useCampaignItem,
@@ -1109,6 +1112,44 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
             });
           },
         ),
+        if (mstData.userItem.isNotEmpty && teapots.isNotEmpty)
+          ListTile(
+            dense: true,
+            leading: Text('> '),
+            minLeadingWidth: 20,
+            title: DropdownButton<int>(
+              // isDense: true,
+              underline: SizedBox.shrink(),
+              isExpanded: true,
+              value: battleOption.campaignItemId,
+              items: [
+                DropdownMenuItem(
+                  value: 0,
+                  child: Text('auto select'),
+                ),
+                for (final (teapot, userItem) in teapots)
+                  DropdownMenuItem(
+                    value: teapot.id,
+                    child: Text.rich(TextSpan(children: [
+                      CenterWidgetSpan(child: Item.iconBuilder(context: context, item: teapot, width: 28)),
+                      TextSpan(text: ' ${teapot.lName.l} ×${userItem.num} '),
+                      TextSpan(
+                        text: ' (${teapot.endedAt.sec2date().toCustomString(year: false, second: false)}) ',
+                        style: TextStyle(fontSize: 12),
+                      ),
+                    ])),
+                  )
+              ],
+              onChanged: battleOption.useCampaignItem
+                  ? (v) {
+                      runtime.lockTask(() {
+                        if (v != null) battleOption.campaignItemId = v;
+                      });
+                    }
+                  : null,
+            ),
+          ),
+        const Divider(),
         CheckboxListTile.adaptive(
           dense: true,
           value: battleOption.isApHalf,

@@ -294,7 +294,7 @@ class FakerRuntime {
       }
 
       if (shouldRetire) {
-        await Future.delayed(const Duration(seconds: 4));
+        await Future.delayed(const Duration(seconds: 2));
         resultResp = await agent.battleResultWithOptions(
           battleEntity: battleEntity,
           resultType: BattleResultType.cancel,
@@ -362,7 +362,7 @@ class FakerRuntime {
         await agent.homeTop();
       }
       update();
-      await Future.delayed(const Duration(seconds: 2));
+      await Future.delayed(const Duration(seconds: 1));
       if (battleOption.stopIfBondLimit) {
         _checkFriendship(battleOption);
       }
@@ -633,7 +633,8 @@ class FakerRuntime {
         int getExp = (1000 * (pow(3, svt.rarity - 1)) * (sameClass ? 1.2 : 1)).round();
         int useQp = ((100 + (baseUserSvt.lv - 1) * 30) * ([1, 1.5, 2, 4, 6][baseSvt.rarity - 1])).round();
         if (totalGetExp >= needExp || materialSvtIds.length >= options.maxMaterialCount) break;
-        totalGetExp += getExp * (options.doubleExp ? 2 : 1);
+        if (options.doubleExp) getExp *= 2;
+        totalGetExp += getExp;
         totalUseQp += useQp;
         materialSvtIds.add(userSvt.id);
       }

@@ -155,6 +155,7 @@ class SharedBuilder {
     double? height,
     ValueChanged<int>? onTap,
     bool sort = false,
+    bool showZero = false,
   }) {
     if (width == null && height == null) {
       width = 48;
@@ -167,7 +168,7 @@ class SharedBuilder {
       runSpacing: 1,
       children: [
         for (final entry in items)
-          if (entry.value != 0)
+          if (entry.value != 0 || showZero)
             GameCardMixin.anyCardItemBuilder(
               context: context,
               id: entry.key,

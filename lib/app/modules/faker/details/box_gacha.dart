@@ -1,5 +1,6 @@
 import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/app.dart';
+import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/app/modules/faker/state.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/gamedata/toplogin.dart';
@@ -190,6 +191,18 @@ class _BoxGachaDrawPageState extends State<BoxGachaDrawPage> {
     final boxPerLottery = lottery?.getMaxNum(userBoxGacha?.boxIndex ?? -99) ?? 300;
     final ownItemCount = mstData.userItem[lottery?.cost.itemId]?.num ?? 0;
     final leftLotteryCount = lottery == null ? 0 : ownItemCount / lottery.cost.amount / boxPerLottery;
+    final curBoxIndex = userBoxGacha?.boxIndex ?? 0;
+    final itemIds = <int>{
+      if (lottery != null)
+        for (final box in lottery.boxes)
+          if (box.boxIndex >= curBoxIndex)
+            for (final gift in box.gifts) gift.objectId
+    };
+    final itemCounts = Item.sortMapByPriority(
+      {for (final itemId in itemIds) itemId: mstData.getItemOrSvtNum(itemId)},
+      reversed: true,
+      removeZero: false,
+    );
     return ListView(
       children: [
         ListTile(
@@ -258,6 +271,12 @@ class _BoxGachaDrawPageState extends State<BoxGachaDrawPage> {
             child: Text(loopCount.value.toString()),
           ),
         ),
+        DividerWithTitle(title: S.current.item),
+        ListTile(
+          leading: Item.iconBuilder(context: context, item: Items.qp),
+          title: Text(mstData.user?.qp.format(compact: false, groupSeparator: ',') ?? '0'),
+        ),
+        ListTile(title: SharedBuilder.itemGrid(context: context, items: itemCounts.entries, width: 36, showZero: true)),
       ],
     );
   }

@@ -78,7 +78,12 @@ class FResponse {
       }
     }
     if (nid != null) {
-      throw NidCheckException(nid, null, 'response [$nid] not found');
+      final errors = data.responses.where((e) => !e.isSuccess()).map((e) => "${e.resCode} ${e.fail}").join("\n");
+      if (errors.isNotEmpty) {
+        throw NidCheckException(nid, null, '[$nid] failed:\n$errors');
+      } else {
+        throw NidCheckException(nid, null, 'response [$nid] not found');
+      }
     }
     return this;
   }

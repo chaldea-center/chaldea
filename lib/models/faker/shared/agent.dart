@@ -194,16 +194,27 @@ abstract class FakerAgent<TRequest extends FRequestBase, TUser extends AutoLogin
 
     int campaignItemId = 0;
     if (options.useCampaignItem) {
+      // should check campaign time rather item endedAt
       List<(UserItemEntity, Item)> campaignItems = [];
       final now = DateTime.now().timestamp;
-      for (final userItem in mstData.userItem) {
-        if (userItem.num <= 0) continue;
+
+      Future<void> _checkAddCampaignItem(int itemId) async {
+        final userItem = mstData.userItem[itemId];
+        if (userItem == null || userItem.num <= 0) return;
         final jpItem = db.gameData.items[userItem.itemId];
-        if (jpItem != null && jpItem.type != ItemType.friendshipUpItem) continue;
+        if (jpItem != null && jpItem.type != ItemType.friendshipUpItem) return;
         final item = region == Region.jp ? jpItem : await AtlasApi.item(userItem.itemId, region: region);
-        if (item == null || item.type != ItemType.friendshipUpItem) continue;
+        if (item == null || item.type != ItemType.friendshipUpItem) return;
         if (item.startedAt < now && item.endedAt > now) {
           campaignItems.add((userItem, item));
+        }
+      }
+
+      if (options.campaignItemId != 0) {
+        await _checkAddCampaignItem(options.campaignItemId);
+      } else {
+        for (final userItem in mstData.userItem) {
+          await _checkAddCampaignItem(userItem.itemId);
         }
       }
       if (campaignItems.isEmpty) {
