@@ -11,6 +11,7 @@ import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
+import '../../modules/ai/ai_table.dart';
 import 'vals.dart';
 
 mixin FuncsDescriptor {
@@ -1046,6 +1047,20 @@ class FuncDescriptor extends StatelessWidget {
       if (targetNum > 0) {
         spans.insert(0, TextSpan(text: '(${S.current.skill} $targetNum)'));
       }
+    } else if (func.funcType == FuncType.displayBattleMessage) {
+      final msgId = vals?.Value ?? 0;
+      spans.add(SharedBuilder.textButtonSpan(
+        context: context,
+        text: ' $msgId',
+        onTap: () {
+          if (msgId == 0) return;
+          showDialog(
+            context: context,
+            useRootNavigator: false,
+            builder: (context) => BattleMessageDialog(msgId: msgId, region: region),
+          );
+        },
+      ));
     }
 
     if (buff?.type == BuffType.donotSkillSelect && vals?.Value != null) {

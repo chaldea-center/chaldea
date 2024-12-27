@@ -388,7 +388,7 @@ class GameDataLoader {
       damageRate: 500,
       attackNpRate: 500,
       defenseNpRate: 1000,
-      dropStarRate: 50,
+      dropStarRate: 500,
     );
     gamedata.constData.cardInfo[CardType.extra2] ??= {
       4: CardInfo(

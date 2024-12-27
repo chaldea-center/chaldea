@@ -300,6 +300,7 @@ class AutoBattleOptions {
   Set<int> supportCeIds;
   bool supportCeMaxLimitBreak;
   bool useCampaignItem;
+  int campaignItemId = 0;
   // result
   bool stopIfBondLimit;
   BattleResultType resultType;
@@ -327,6 +328,7 @@ class AutoBattleOptions {
     Set<int>? supportCeIds,
     this.supportCeMaxLimitBreak = true,
     this.useCampaignItem = false,
+    this.campaignItemId = 0,
     this.stopIfBondLimit = true,
     this.resultType = BattleResultType.win,
     this.winType = BattleWinResultType.normal,

@@ -79,7 +79,11 @@ class RuntimeData {
   Future<DailyBonusData?> loadDailyBonusData({bool refresh = false}) async {
     final data = await EasyThrottle.throttleAsync(
         'load_daily_bonus', () => ChaldeaWorkerApi.dailyBonusData(expireAfter: refresh ? Duration.zero : null));
-    if (data != null) dailyBonusData = data;
+    if (data != null) {
+      dailyBonusData = data;
+      data.userPresentBox.removeWhere(
+          (e) => e.fromType == PresentFromType.seqLogin.value || e.fromType == PresentFromType.totalLogin.value);
+    }
     return data;
   }
 }

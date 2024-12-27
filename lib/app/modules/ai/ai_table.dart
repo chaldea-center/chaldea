@@ -207,7 +207,7 @@ class AiTable extends StatelessWidget {
                 showDialog(
                   context: context,
                   useRootNavigator: false,
-                  builder: (context) => _BattleMessageDialog(
+                  builder: (context) => BattleMessageDialog(
                     msgId: msgId,
                     region: region,
                   ),
@@ -565,10 +565,10 @@ class _AiCondDialog extends StatelessWidget {
   }
 }
 
-class _BattleMessageDialog extends StatelessWidget {
+class BattleMessageDialog extends StatelessWidget {
   final int msgId;
   final Region? region;
-  const _BattleMessageDialog({required this.msgId, this.region});
+  const BattleMessageDialog({super.key, required this.msgId, this.region});
 
   @override
   Widget build(BuildContext context) {
@@ -662,7 +662,7 @@ class _BattleMessageGroupDialog extends StatelessWidget {
   List<Widget> buildGroup(BuildContext context, BattleMessageGroup group) {
     return [
       DividerWithTitle(title: 'Message ${group.messages.firstOrNull?.id} (${group.probability}%)'),
-      for (final msg in group.messages) _BattleMessageDialog.buildMessage(context, msg),
+      for (final msg in group.messages) BattleMessageDialog.buildMessage(context, msg),
     ];
   }
 }

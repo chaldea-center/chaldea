@@ -20,20 +20,21 @@ class ShopListHome extends StatefulWidget {
 
 class _ShopListHomeState extends State<ShopListHome> {
   late Region region = db.curUser.region;
-  List<ShopType> get _kShownShopTypes => [
-        ShopType.mana,
-        ShopType.rarePri,
-        ShopType.revivalItem,
-        ShopType.purePri,
-        ShopType.svtCostume,
-        ShopType.eventSvtEquip,
-        ShopType.startUpSummon,
-        ShopType.svtAnonymous,
-        ShopType.limitMaterial,
-        ShopType.bgm,
-        ShopType.svtStorage,
-        ShopType.svtEquipStorage,
-      ];
+  final List<ShopType> _kShownShopTypes = [
+    ShopType.mana,
+    ShopType.rarePri,
+    ShopType.revivalItem,
+    ShopType.purePri,
+    ShopType.svtCostume,
+    ShopType.eventSvtEquip,
+    ShopType.startUpSummon,
+    ShopType.svtAnonymous,
+    ShopType.limitMaterial,
+    ShopType.bgm,
+    ShopType.svtStorage,
+    ShopType.svtEquipStorage,
+    ShopType.exchangeSvtCoin,
+  ];
 
   late final textEditController = TextEditingController();
 

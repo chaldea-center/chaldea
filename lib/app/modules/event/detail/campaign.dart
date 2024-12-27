@@ -72,19 +72,7 @@ class EventCampaignDetail extends StatelessWidget {
         dense: true,
       ),
     ];
-    if (campaign.warIds.isNotEmpty) {
-      children.add(const SHeader('Related Wars'));
-      for (final warId in campaign.warIds) {
-        final war = db.gameData.wars[warId];
-        children.add(ListTile(
-          title: Text(war?.lName.l ?? 'War $warId'),
-          trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
-          onTap: () {
-            router.push(url: Routes.warI(warId));
-          },
-        ));
-      }
-    }
+
     bool targetSame =
         campaign.target == CombineAdjustTarget.questAp && campaign.targetIds.length == event.campaignQuests.length;
     if (targetSame) {
@@ -103,7 +91,42 @@ class EventCampaignDetail extends StatelessWidget {
         ),
       ));
     }
-
+    if (campaign.warIds.isNotEmpty) {
+      children.add(const SHeader('Related Wars'));
+      for (final warId in campaign.warIds) {
+        final war = db.gameData.wars[warId];
+        children.add(ListTile(
+          dense: true,
+          title: Text(war?.lName.l ?? 'War $warId'),
+          trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
+          onTap: () {
+            router.push(url: Routes.warI(warId));
+          },
+        ));
+      }
+    }
+    if (campaign.warGroupIds.isNotEmpty) {
+      children.add(SHeader('War Groups'));
+      for (final groupId in campaign.warGroupIds) {
+        List<NiceWar> wars = [];
+        List<Quest> quests = [];
+        for (final war in db.gameData.wars.values) {
+          final group = war.groups.firstWhereOrNull((e) => e.id == groupId);
+          if (group == null) continue;
+          wars.add(war);
+          quests.addAll(war.quests.where((e) => e.afterClear == group.questAfterClear && e.type == group.questType));
+        }
+        children.add(ListTile(
+          dense: true,
+          title: Text('Group $groupId: ${quests.length} quests'),
+          subtitle: Text(wars.map((e) => e.lShortName).join('/')),
+          trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
+          onTap: () {
+            router.pushPage(QuestListPage(quests: quests, title: 'War Group $groupId'));
+          },
+        ));
+      }
+    }
     return children;
   }
 

@@ -42,6 +42,10 @@ NiceWar _$NiceWarFromJson(Map json) => NiceWar(
               ?.map((e) => WarAdd.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
+      groups: (json['groups'] as List<dynamic>?)
+              ?.map((e) => WarGroup.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
       maps:
           (json['maps'] as List<dynamic>?)?.map((e) => WarMap.fromJson(Map<String, dynamic>.from(e as Map))).toList() ??
               const [],
@@ -80,6 +84,7 @@ Map<String, dynamic> _$NiceWarToJson(NiceWar instance) => <String, dynamic>{
       'lastQuestId': instance.lastQuestId,
       'releaseConditions': instance.releaseConditions.map((e) => e.toJson()).toList(),
       'warAdds': instance.warAdds.map((e) => e.toJson()).toList(),
+      'groups': instance.groups.map((e) => e.toJson()).toList(),
       'maps': instance.maps.map((e) => e.toJson()).toList(),
       'spots': instance.spots.map((e) => e.toJson()).toList(),
       'spotRoads': instance.spotRoads.map((e) => e.toJson()).toList(),
@@ -361,6 +366,37 @@ const _$WarOverwriteTypeEnumMap = {
   WarOverwriteType.commandSpellIcon: 'commandSpellIcon',
   WarOverwriteType.masterFaceIcon: 'masterFaceIcon',
   WarOverwriteType.priority: 'priority',
+};
+
+WarGroup _$WarGroupFromJson(Map json) => WarGroup(
+      id: (json['id'] as num).toInt(),
+      questAfterClear:
+          $enumDecodeNullable(_$QuestAfterClearTypeEnumMap, json['questAfterClear']) ?? QuestAfterClearType.close,
+      questType: $enumDecodeNullable(_$QuestTypeEnumMap, json['questType']) ?? QuestType.main,
+    );
+
+Map<String, dynamic> _$WarGroupToJson(WarGroup instance) => <String, dynamic>{
+      'id': instance.id,
+      'questAfterClear': _$QuestAfterClearTypeEnumMap[instance.questAfterClear]!,
+      'questType': _$QuestTypeEnumMap[instance.questType]!,
+    };
+
+const _$QuestAfterClearTypeEnumMap = {
+  QuestAfterClearType.close: 'close',
+  QuestAfterClearType.repeatFirst: 'repeatFirst',
+  QuestAfterClearType.repeatLast: 'repeatLast',
+  QuestAfterClearType.resetInterval: 'resetInterval',
+  QuestAfterClearType.closeDisp: 'closeDisp',
+};
+
+const _$QuestTypeEnumMap = {
+  QuestType.main: 'main',
+  QuestType.free: 'free',
+  QuestType.friendship: 'friendship',
+  QuestType.event: 'event',
+  QuestType.heroballad: 'heroballad',
+  QuestType.warBoard: 'warBoard',
+  QuestType.autoExecute: 'autoExecute',
 };
 
 WarRelease _$WarReleaseFromJson(Map json) => WarRelease(

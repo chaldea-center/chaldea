@@ -1420,6 +1420,7 @@ Map<String, dynamic> _$EventBulletinBoardReleaseToJson(EventBulletinBoardRelease
 EventCampaign _$EventCampaignFromJson(Map json) => EventCampaign(
       targetIds: (json['targetIds'] as List<dynamic>?)?.map((e) => (e as num).toInt()).toList() ?? const [],
       warIds: (json['warIds'] as List<dynamic>?)?.map((e) => (e as num).toInt()).toList() ?? const [],
+      warGroupIds: (json['warGroupIds'] as List<dynamic>?)?.map((e) => (e as num).toInt()).toList() ?? const [],
       target: $enumDecodeNullable(_$CombineAdjustTargetEnumMap, json['target']) ?? CombineAdjustTarget.none,
       idx: (json['idx'] as num?)?.toInt() ?? 0,
       value: (json['value'] as num).toInt(),
@@ -1429,6 +1430,7 @@ EventCampaign _$EventCampaignFromJson(Map json) => EventCampaign(
 Map<String, dynamic> _$EventCampaignToJson(EventCampaign instance) => <String, dynamic>{
       'targetIds': instance.targetIds,
       'warIds': instance.warIds,
+      'warGroupIds': instance.warGroupIds,
       'target': _$CombineAdjustTargetEnumMap[instance.target]!,
       'idx': instance.idx,
       'value': instance.value,

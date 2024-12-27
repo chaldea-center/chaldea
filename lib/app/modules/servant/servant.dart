@@ -249,11 +249,12 @@ class ServantDetailPageState extends State<ServantDetailPage> with SingleTickerP
           shrinkWrap: true,
           children: <Widget>[
             // more tags/info here
-            for (final badge in getObtainBadges())
-              Padding(
-                padding: const EdgeInsetsDirectional.only(end: 4),
-                child: badge,
-              ),
+            if (!const [SvtType.combineMaterial, SvtType.statusUp].contains(svt.type))
+              for (final badge in getObtainBadges())
+                Padding(
+                  padding: const EdgeInsetsDirectional.only(end: 4),
+                  child: badge,
+                ),
             if (Items.specialSvtMat.contains(svt.id))
               TextButton(
                 onPressed: () {

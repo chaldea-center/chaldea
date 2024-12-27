@@ -1849,6 +1849,7 @@ class EventBulletinBoardRelease {
 class EventCampaign {
   List<int> targetIds;
   List<int> warIds;
+  List<int> warGroupIds;
   CombineAdjustTarget target;
   int idx;
   int value;
@@ -1858,6 +1859,7 @@ class EventCampaign {
   EventCampaign({
     this.targetIds = const [],
     this.warIds = const [],
+    this.warGroupIds = const [],
     this.target = CombineAdjustTarget.none,
     this.idx = 0,
     required this.value,

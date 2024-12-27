@@ -40,7 +40,7 @@ class DailyBonusTabState extends State<DailyBonusTab> {
     List<String> keys = groups.keys.toList()..sort();
     keys = keys.reversed.toList();
 
-    final fromTypes = <int>{1, 2, for (final present in userPresents) present.fromType}.toList();
+    final fromTypes = <int>{for (final present in userPresents) present.fromType}.toList();
     fromTypes.sort();
     return Column(
       children: [

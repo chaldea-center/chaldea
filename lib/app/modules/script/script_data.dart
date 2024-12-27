@@ -778,6 +778,12 @@ class ScriptCommand extends ScriptComponent {
       case 'turnPageOn':
       case 'twt':
       case 'wt':
+      case 'fsmObjSetState':
+      case 'fsmObjDestroy':
+      case 'fsmObjLayer':
+      case 'fsmObjSet':
+      case 'tapSkip':
+      case 'autoAndBackLog':
         return [];
       default:
         break;

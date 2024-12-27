@@ -248,6 +248,7 @@ AutoBattleOptions _$AutoBattleOptionsFromJson(Map json) => $checkedCreate(
               $checkedConvert('supportCeIds', (v) => (v as List<dynamic>?)?.map((e) => (e as num).toInt()).toSet()),
           supportCeMaxLimitBreak: $checkedConvert('supportCeMaxLimitBreak', (v) => v as bool? ?? true),
           useCampaignItem: $checkedConvert('useCampaignItem', (v) => v as bool? ?? false),
+          campaignItemId: $checkedConvert('campaignItemId', (v) => (v as num?)?.toInt() ?? 0),
           stopIfBondLimit: $checkedConvert('stopIfBondLimit', (v) => v as bool? ?? true),
           resultType: $checkedConvert(
               'resultType', (v) => $enumDecodeNullable(_$BattleResultTypeEnumMap, v) ?? BattleResultType.win),
@@ -289,6 +290,7 @@ Map<String, dynamic> _$AutoBattleOptionsToJson(AutoBattleOptions instance) => <S
       'supportCeIds': instance.supportCeIds.toList(),
       'supportCeMaxLimitBreak': instance.supportCeMaxLimitBreak,
       'useCampaignItem': instance.useCampaignItem,
+      'campaignItemId': instance.campaignItemId,
       'stopIfBondLimit': instance.stopIfBondLimit,
       'resultType': _$BattleResultTypeEnumMap[instance.resultType]!,
       'winType': _$BattleWinResultTypeEnumMap[instance.winType]!,

@@ -45,6 +45,7 @@ class NiceWar with RouteInfo {
   int lastQuestId;
   List<WarRelease> releaseConditions;
   List<WarAdd> warAdds;
+  List<WarGroup> groups;
   List<WarMap> maps;
   List<NiceSpot> spots;
   List<SpotRoad> spotRoads;
@@ -74,6 +75,7 @@ class NiceWar with RouteInfo {
     this.lastQuestId = 0,
     this.releaseConditions = const [],
     this.warAdds = const [],
+    this.groups = const [],
     this.maps = const [],
     this.spots = const [],
     this.spotRoads = const [],
@@ -520,6 +522,23 @@ class WarAdd {
   factory WarAdd.fromJson(Map<String, dynamic> json) => _$WarAddFromJson(json);
 
   Map<String, dynamic> toJson() => _$WarAddToJson(this);
+}
+
+@JsonSerializable()
+class WarGroup {
+  int id;
+  QuestAfterClearType questAfterClear;
+  QuestType questType;
+
+  WarGroup({
+    required this.id,
+    this.questAfterClear = QuestAfterClearType.close,
+    this.questType = QuestType.main,
+  });
+
+  factory WarGroup.fromJson(Map<String, dynamic> json) => _$WarGroupFromJson(json);
+
+  Map<String, dynamic> toJson() => _$WarGroupToJson(this);
 }
 
 @JsonSerializable()
