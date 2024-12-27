@@ -1010,6 +1010,8 @@ class BattleData {
                     isMightyChain: isMightyChain,
                     firstCardType: firstCardType,
                     isPlayer: true,
+                    isComboStart: isComboStart(actions, i),
+                    isComboEnd: isComboEnd(actions, i),
                   );
                 }
                 for (final enemy in nonnullEnemies) {
@@ -1048,7 +1050,7 @@ class BattleData {
     );
   }
 
-  CommandCardData getActualCard(final CombatAction combatAction) {
+  static CommandCardData getActualCard(final CombatAction combatAction) {
     final cardData = combatAction.cardData;
     final actor = combatAction.actor;
     return (cardData.isTD
@@ -1131,6 +1133,8 @@ class BattleData {
                   isMightyChain: false,
                   firstCardType: CardType.none,
                   isPlayer: false,
+                  isComboStart: false,
+                  isComboEnd: false,
                 );
               }
 
@@ -1277,6 +1281,8 @@ class BattleData {
     required bool isTypeChain,
     required bool isMightyChain,
     required CardType firstCardType,
+    required bool isComboStart,
+    required bool isComboEnd,
     required bool isPlayer,
   }) async {
     if (isPlayer) {
@@ -1303,6 +1309,8 @@ class BattleData {
           isTypeChain: isTypeChain,
           isMightyChain: isMightyChain,
           firstCardType: firstCardType,
+          isComboStart: isComboStart,
+          isComboEnd: isComboEnd,
         );
       });
     });
@@ -1484,7 +1492,7 @@ class BattleData {
     return -1;
   }
 
-  bool shouldRemoveDeadActors(final List<CombatAction> actions, final int index) {
+  static bool shouldRemoveDeadActors(final List<CombatAction> actions, final int index) {
     final currentAction = actions[index];
     final currentActualCard = getActualCard(currentAction);
     if (currentActualCard.isTD ||
@@ -1498,6 +1506,50 @@ class BattleData {
     return nextActualCard.isTD ||
         nextActualCard.cardDetail.attackType == CommandCardAttackType.all ||
         nextAction.actor != currentAction.actor;
+  }
+
+  static bool isNormalCard(final CombatAction action) {
+    final card = getActualCard(action);
+
+    return !card.isTD && card.cardDetail.attackType != CommandCardAttackType.all;
+  }
+
+  static bool isComboStart(final List<CombatAction> actions, final int index) {
+    // previousAction check
+    final previousAction = actions.getOrNull(index - 1);
+    final currentAction = actions[index];
+    if (previousAction != null) {
+      if (isNormalCard(previousAction) && previousAction.actor == currentAction.actor) {
+        return false;
+      }
+    }
+
+    // currentAction check
+    final nextAction = actions.getOrNull(index + 1);
+    if (!isNormalCard(currentAction) || nextAction == null) {
+      return false;
+    }
+
+    // nextAction check
+    return isNormalCard(nextAction) && nextAction.actor == currentAction.actor;
+  }
+
+  static bool isComboEnd(final List<CombatAction> actions, final int index) {
+    // previousAction check
+    final previousAction = actions.getOrNull(index - 1);
+    final currentAction = actions[index];
+    if (previousAction == null || !isNormalCard(previousAction) || previousAction.actor != currentAction.actor) {
+      return false;
+    }
+
+    // currentAction check
+    if (!isNormalCard(currentAction)) {
+      return false;
+    }
+
+    // nextAction check
+    final nextAction = actions.getOrNull(index + 1);
+    return nextAction == null || !isNormalCard(nextAction) || nextAction.actor != currentAction.actor;
   }
 
   Future<bool> canActivate(final int activationRate, final String description) async {

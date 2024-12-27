@@ -589,8 +589,8 @@ class BattleServantData {
       return baseCardType;
     }
 
-    List<NiceTrait> traits = ConstData.cardInfo[baseCardType]!.values.first.individuality.toList();
-    if (overwriteSvtCardTypeBuff.shouldActivateBuffNoProbabilityCheck(traits) &&
+    final selfTraits = getTraits(addTraits: ConstData.cardInfo[baseCardType]!.values.first.individuality.toList());
+    if (overwriteSvtCardTypeBuff.shouldActivateBuffNoProbabilityCheck(selfTraits) &&
         kCardTypeMapping.containsKey(overwriteSvtCardTypeBuff.param)) {
       return kCardTypeMapping[overwriteSvtCardTypeBuff.param]!;
     } else {
@@ -708,6 +708,8 @@ class BattleServantData {
       case BuffAction.functionAttackAfterMainOnly:
       case BuffAction.functionDeadattack:
       case BuffAction.functionConfirmCommand:
+      case BuffAction.functionComboStart:
+      case BuffAction.functionComboEnd:
       case BuffAction.pierceDefence:
       case BuffAction.pierceSubdamage:
       case BuffAction.pierceInvincible:
@@ -798,6 +800,8 @@ class BattleServantData {
       case BuffAction.functionAttackAfter:
       case BuffAction.functionAttackAfterMainOnly:
       case BuffAction.functionDeadattack:
+      case BuffAction.functionComboStart:
+      case BuffAction.functionComboEnd:
       case BuffAction.commandAtk:
       case BuffAction.atk:
       case BuffAction.criticalDamage:

@@ -28,6 +28,8 @@ class Damage {
     final bool isTypeChain = false,
     final bool isMightyChain = false,
     final CardType firstCardType = CardType.none,
+    final bool isComboStart = false,
+    final bool isComboEnd = false,
     final bool shouldTrigger = true,
     final bool shouldDamageRelease = true,
   }) async {
@@ -61,7 +63,8 @@ class Damage {
             if (!currentCard.isTD) BuffAction.functionCommandattackBefore,
             if (!currentCard.isTD && isMainTarget) BuffAction.functionCommandattackBeforeMainOnly,
             BuffAction.functionAttackBefore,
-            if (isMainTarget) BuffAction.functionAttackBeforeMainOnly
+            if (isMainTarget) BuffAction.functionAttackBeforeMainOnly,
+            if (isComboStart) BuffAction.functionComboStart,
           ],
           opponent: target,
           card: currentCard,
@@ -468,6 +471,7 @@ class Damage {
             if (!currentCard.isTD && isMainTarget) BuffAction.functionCommandattackAfterMainOnly,
             BuffAction.functionAttackAfter,
             if (isMainTarget) BuffAction.functionAttackAfterMainOnly,
+            if (isComboEnd) BuffAction.functionComboEnd,
           ],
           opponent: target,
           card: currentCard,
