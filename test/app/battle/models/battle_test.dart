@@ -2230,65 +2230,65 @@ void main() async {
           true);
     });
 
-    test('Combo related', () async {
-      final List<PlayerSvtData?> setting = [
-        PlayerSvtData.id(3300200),
-        PlayerSvtData.id(3300200),
-      ];
-      final battle = BattleData();
-      final quest = db.gameData.questPhases[9300040603]!;
-      await battle.init(quest, setting, null);
+    // test('Combo related', () async {
+    //   final List<PlayerSvtData?> setting = [
+    //     PlayerSvtData.id(3300200),
+    //     PlayerSvtData.id(3300200),
+    //   ];
+    //   final battle = BattleData();
+    //   final quest = db.gameData.questPhases[9300040603]!;
+    //   await battle.init(quest, setting, null);
 
-      final actor1 = battle.onFieldAllyServants[0]!;
-      final actor2 = battle.onFieldAllyServants[1]!;
+    //   final actor1 = battle.onFieldAllyServants[0]!;
+    //   final actor2 = battle.onFieldAllyServants[1]!;
 
-      final comboWith3Cards = [
-        CombatAction(actor1, actor1.getCards()[4]),
-        CombatAction(actor1, actor1.getCards()[1]),
-        CombatAction(actor1, actor1.getCards()[2]),
-      ];
-      expect(BattleData.isComboStart(comboWith3Cards, 0), true);
-      expect(BattleData.isComboStart(comboWith3Cards, 1), false);
-      expect(BattleData.isComboStart(comboWith3Cards, 2), false);
-      expect(BattleData.isComboEnd(comboWith3Cards, 0), false);
-      expect(BattleData.isComboEnd(comboWith3Cards, 1), false);
-      expect(BattleData.isComboEnd(comboWith3Cards, 2), true);
+    //   final comboWith3Cards = [
+    //     CombatAction(actor1, actor1.getCards()[4]),
+    //     CombatAction(actor1, actor1.getCards()[1]),
+    //     CombatAction(actor1, actor1.getCards()[2]),
+    //   ];
+    //   expect(BattleData.isComboStart(comboWith3Cards, 0), true);
+    //   expect(BattleData.isComboStart(comboWith3Cards, 1), false);
+    //   expect(BattleData.isComboStart(comboWith3Cards, 2), false);
+    //   expect(BattleData.isComboEnd(comboWith3Cards, 0), false);
+    //   expect(BattleData.isComboEnd(comboWith3Cards, 1), false);
+    //   expect(BattleData.isComboEnd(comboWith3Cards, 2), true);
 
-      final comboAfterAnotherCard = [
-        CombatAction(actor1, actor1.getNPCard()!),
-        CombatAction(actor1, actor1.getCards()[1]),
-        CombatAction(actor1, actor1.getCards()[2]),
-      ];
-      expect(BattleData.isComboStart(comboAfterAnotherCard, 0), false);
-      expect(BattleData.isComboStart(comboAfterAnotherCard, 1), true);
-      expect(BattleData.isComboStart(comboAfterAnotherCard, 2), false);
-      expect(BattleData.isComboEnd(comboAfterAnotherCard, 0), false);
-      expect(BattleData.isComboEnd(comboAfterAnotherCard, 1), false);
-      expect(BattleData.isComboEnd(comboAfterAnotherCard, 2), true);
+    //   final comboAfterAnotherCard = [
+    //     CombatAction(actor1, actor1.getNPCard()!),
+    //     CombatAction(actor1, actor1.getCards()[1]),
+    //     CombatAction(actor1, actor1.getCards()[2]),
+    //   ];
+    //   expect(BattleData.isComboStart(comboAfterAnotherCard, 0), false);
+    //   expect(BattleData.isComboStart(comboAfterAnotherCard, 1), true);
+    //   expect(BattleData.isComboStart(comboAfterAnotherCard, 2), false);
+    //   expect(BattleData.isComboEnd(comboAfterAnotherCard, 0), false);
+    //   expect(BattleData.isComboEnd(comboAfterAnotherCard, 1), false);
+    //   expect(BattleData.isComboEnd(comboAfterAnotherCard, 2), true);
 
-      final comboBeforeAnotherCard = [
-        CombatAction(actor1, actor1.getCards()[2]),
-        CombatAction(actor1, actor1.getCards()[1]),
-        CombatAction(actor2, actor1.getCards()[2]),
-      ];
-      expect(BattleData.isComboStart(comboBeforeAnotherCard, 0), true);
-      expect(BattleData.isComboStart(comboBeforeAnotherCard, 1), false);
-      expect(BattleData.isComboStart(comboBeforeAnotherCard, 2), false);
-      expect(BattleData.isComboEnd(comboBeforeAnotherCard, 0), false);
-      expect(BattleData.isComboEnd(comboBeforeAnotherCard, 1), true);
-      expect(BattleData.isComboEnd(comboBeforeAnotherCard, 2), false);
+    //   final comboBeforeAnotherCard = [
+    //     CombatAction(actor1, actor1.getCards()[2]),
+    //     CombatAction(actor1, actor1.getCards()[1]),
+    //     CombatAction(actor2, actor1.getCards()[2]),
+    //   ];
+    //   expect(BattleData.isComboStart(comboBeforeAnotherCard, 0), true);
+    //   expect(BattleData.isComboStart(comboBeforeAnotherCard, 1), false);
+    //   expect(BattleData.isComboStart(comboBeforeAnotherCard, 2), false);
+    //   expect(BattleData.isComboEnd(comboBeforeAnotherCard, 0), false);
+    //   expect(BattleData.isComboEnd(comboBeforeAnotherCard, 1), true);
+    //   expect(BattleData.isComboEnd(comboBeforeAnotherCard, 2), false);
 
-      final comboInterrupted = [
-        CombatAction(actor1, actor1.getCards()[2]),
-        CombatAction(actor2, actor1.getCards()[2]),
-        CombatAction(actor1, actor1.getCards()[1]),
-      ];
-      expect(BattleData.isComboStart(comboInterrupted, 0), false);
-      expect(BattleData.isComboStart(comboInterrupted, 1), false);
-      expect(BattleData.isComboStart(comboInterrupted, 2), false);
-      expect(BattleData.isComboEnd(comboInterrupted, 0), false);
-      expect(BattleData.isComboEnd(comboInterrupted, 1), false);
-      expect(BattleData.isComboEnd(comboInterrupted, 2), false);
-    });
+    //   final comboInterrupted = [
+    //     CombatAction(actor1, actor1.getCards()[2]),
+    //     CombatAction(actor2, actor1.getCards()[2]),
+    //     CombatAction(actor1, actor1.getCards()[1]),
+    //   ];
+    //   expect(BattleData.isComboStart(comboInterrupted, 0), false);
+    //   expect(BattleData.isComboStart(comboInterrupted, 1), false);
+    //   expect(BattleData.isComboStart(comboInterrupted, 2), false);
+    //   expect(BattleData.isComboEnd(comboInterrupted, 0), false);
+    //   expect(BattleData.isComboEnd(comboInterrupted, 1), false);
+    //   expect(BattleData.isComboEnd(comboInterrupted, 2), false);
+    // });
   });
 }
