@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.5.18
+
+- bug fix
+
 ## 2.5.17
 
 - Fix event field trait
@@ -13,7 +17,7 @@
 - Fix command codes procing as passive skills
 - Support KazuraDrop
   - BattleClass overwrite
-  - Gain NP couting targets
+  - Gain NP counting targets
 
 ## 2.5.14
 
