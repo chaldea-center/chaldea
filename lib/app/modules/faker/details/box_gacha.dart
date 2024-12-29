@@ -199,7 +199,12 @@ class _BoxGachaDrawPageState extends State<BoxGachaDrawPage> {
             for (final gift in box.gifts) gift.objectId
     };
     final itemCounts = Item.sortMapByPriority(
-      {for (final itemId in itemIds) itemId: mstData.getItemOrSvtNum(itemId)},
+      {
+        for (final itemId in itemIds)
+          itemId: db.gameData.items[itemId]?.type == ItemType.itemSelect
+              ? Maths.sum(mstData.userPresentBox.where((e) => e.objectId == itemId).map((e) => e.num))
+              : mstData.getItemOrSvtNum(itemId)
+      },
       reversed: true,
       removeZero: false,
     );
@@ -305,8 +310,9 @@ class _BoxGachaDrawPageState extends State<BoxGachaDrawPage> {
     List<List<Widget>> btnGroups = [
       [
         buildButton(
-          enabled: lottery != null,
+          enabled: lottery != null && !runtime.runningTask.value,
           onPressed: () {
+            if (runtime.runningTask.value) return;
             runtime.runTask(() async {
               await runtime.boxGachaDraw(lottery: lottery!, num: drawNumOnce, loopCount: Ref(1));
               if (mounted) setState(() {});

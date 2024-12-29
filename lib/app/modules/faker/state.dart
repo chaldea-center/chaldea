@@ -239,6 +239,7 @@ class FakerRuntime {
     int finishedCount = 0, totalCount = battleOption.loopCount;
     List<int> elapseSeconds = [];
     curLoopDropStat.reset();
+    agent.network.lastTaskStartedAt = 0;
     displayToast('Battle $finishedCount/$totalCount', progress: finishedCount / totalCount);
     while (finishedCount < totalCount) {
       _checkStop();

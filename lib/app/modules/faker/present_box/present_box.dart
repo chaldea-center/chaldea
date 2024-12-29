@@ -308,7 +308,7 @@ class _UserPresentBoxManagePageState extends State<UserPresentBoxManagePage> {
       [
         FilledButton(
           onPressed: () {
-            router.pushPage(_SellCombineMaterialDialog(runtime: runtime));
+            _SellCombineMaterialDialog(runtime: runtime).showDialog(context);
           },
           child: Text('Sell'),
         ),
@@ -317,6 +317,13 @@ class _UserPresentBoxManagePageState extends State<UserPresentBoxManagePage> {
             router.pushPage(SvtCombinePage(runtime: runtime));
           },
           child: Text('从者强化'),
+        ),
+        IconButton(
+          onPressed: () {
+            runtime.runTask(() => runtime.agent.userPresentList());
+          },
+          icon: Icon(Icons.replay),
+          tooltip: S.current.refresh,
         ),
       ]
     ];

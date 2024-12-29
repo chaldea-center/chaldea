@@ -245,12 +245,30 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
       visualDensity: VisualDensity.compact,
       minLeadingWidth: 20,
       leading: Container(
-        constraints: const BoxConstraints(maxWidth: 16, maxHeight: 16),
+        constraints: const BoxConstraints(maxWidth: 20, maxHeight: 20),
         child: ValueListenableBuilder(
           valueListenable: runtime.runningTask,
-          builder: (context, running, _) => CircularProgressIndicator(
-            value: running ? null : 1.0,
-            color: running ? Colors.red : Colors.green,
+          builder: (context, running, _) => Stack(
+            alignment: Alignment.center,
+            children: [
+              CircularProgressIndicator(
+                value: running ? null : 1.0,
+                color: running ? Colors.red : Colors.green,
+              ),
+              if (running)
+                TimerUpdate(
+                  builder: (context, t) {
+                    final startedAt = agent.network.lastTaskStartedAt;
+                    final dt = min(99, t.timestamp - startedAt);
+                    if (startedAt <= 0 || dt < 0) return const SizedBox.shrink();
+                    return Text(
+                      dt.toString(),
+                      style: TextStyle(fontSize: 10),
+                      textAlign: TextAlign.center,
+                    );
+                  },
+                ),
+            ],
           ),
         ),
       ),
@@ -1723,13 +1741,6 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
               },
               child: const Text('Seed-wait'),
             ),
-            PopupMenuItem(
-              enabled: inBattle && !inBattle,
-              child: const Text('present_list'),
-              onTap: () {
-                runtime.runTask(() => agent.userPresentList());
-              },
-            ),
             if (agent is FakerAgentJP)
               PopupMenuItem(
                 child: const Text('SessionId'),
@@ -1764,14 +1775,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
               PopupMenuItem(
                 child: const Text('Test'),
                 onTap: () async {
-                  showEasyLoading(() => agent.battleResult(
-                        battleId: 686902263,
-                        battleResult: BattleResultType.win,
-                        winResult: BattleWinResultType.normal,
-                        action: BattleDataActionList(logs: "", dt: []),
-                        elapsedTurn: 3,
-                        usedTurnArray: [0, 0, 1],
-                      )); // (agent as FakerAgentCN).usk = CryptData.encryptMD5Usk('842b691bbc2ef299367a');
+                  runtime.runTask(() => Future.delayed(Duration(seconds: 15)));
                 },
               )
           ],

@@ -124,6 +124,8 @@ abstract class NetworkManagerBase<TRequest extends FRequestBase, TUser extends A
 
   NetworkManagerBase({required this.gameTop, required this.user}) : catMouseGame = CatMouseGame(gameTop.region);
 
+  int lastTaskStartedAt = 0;
+
   // long
   int _nowTime = -1;
   int getTime() {
@@ -156,6 +158,7 @@ abstract class NetworkManagerBase<TRequest extends FRequestBase, TUser extends A
       throw Exception('Previous request is still running');
     }
     _runningTask = request;
+    lastTaskStartedAt = DateTime.now().timestamp;
 
     if (_nowTime > 0) {
       final dt = getNowTimestamp() - _nowTime;
