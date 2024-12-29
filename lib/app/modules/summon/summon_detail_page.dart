@@ -3,6 +3,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'package:chaldea/app/modules/common/not_found.dart';
+import 'package:chaldea/app/modules/mc/converter.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/packages/language.dart';
 import 'package:chaldea/utils/utils.dart';
@@ -110,8 +111,17 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
   }
 
   Widget get listView {
-    final relatedEvents =
-        db.gameData.events.values.where((event) => event.extra.relatedSummons.contains(summon.id)).toList();
+    List<Event> relatedEvents = [];
+    List<NiceWar> relatedWars = [];
+    if (summon.relatedEvents.isNotEmpty) {
+      relatedEvents = db.gameData.events.values
+          .where((event) => summon.relatedEvents.any((key) => McConverter.isSamePage(key, event.extra.mcLink)))
+          .toList();
+      relatedWars = db.gameData.wars.values
+          .where((war) =>
+              war.isMainStory && summon.relatedEvents.any((key) => McConverter.isSamePage(key, war.extra.mcLink)))
+          .toList();
+    }
     List<Widget> children = [
       CarouselUtil.limitHeightWidget(
         context: context,
@@ -195,7 +205,12 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
       if (relatedEvents.isNotEmpty)
         TileGroup(
           header: S.current.event,
-          children: [for (Event event in relatedEvents) associateEvent(event)],
+          children: [for (final event in relatedEvents) associateEvent(event.shownName, event.route)],
+        ),
+      if (relatedWars.isNotEmpty)
+        TileGroup(
+          header: S.current.war,
+          children: [for (final war in relatedWars) associateEvent(war.lLongName.l, war.route)],
         ),
       SFooter(S.current.summon_info_hint),
     ];
@@ -254,16 +269,16 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
     );
   }
 
-  Widget associateEvent(Event event) {
+  Widget associateEvent(String name, String route) {
     return ListTile(
       leading: Icon(
         Icons.flag,
         color: Theme.of(context).colorScheme.primary,
       ),
-      title: Text(event.shownName),
+      title: Text(name),
       minLeadingWidth: 24,
       dense: true,
-      onTap: () => router.push(url: event.route),
+      onTap: () => router.push(url: route),
     );
   }
 

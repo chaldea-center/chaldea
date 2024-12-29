@@ -916,18 +916,17 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
       }
     }
 
-    if (event.extra.relatedSummons.isNotEmpty) {
+    final summons = event.extra.relatedSummons;
+    if (summons.isNotEmpty) {
       children.add(ListTile(title: Text(S.current.summon_banner)));
-      final summons = event.extra.relatedSummons;
-      summons.sort2((key) => db.gameData.wiki.summons[key]?.startTime.l ?? 0);
+      summons.sort2((summon) => summon.startTime.l ?? 0);
       children.add(TileGroup(
         children: List.generate(summons.length, (index) {
-          final summonKey = summons[index];
-          final summon = db.gameData.wiki.summons[summonKey];
+          final summon = summons[index];
           return ListTile(
             dense: true,
-            title: Text(summon?.lName.l ?? summonKey),
-            onTap: summon == null ? null : () => summon.routeTo(),
+            title: Text(summon.lName.l),
+            onTap: () => summon.routeTo(),
           );
         }),
       ));

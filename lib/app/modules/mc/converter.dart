@@ -11,6 +11,11 @@ class McConverter {
     if (e.isNotEmpty) errors.add(e);
   }
 
+  static bool isSamePage(String? a, String? b) {
+    if (a == null || b == null) return false;
+    return a.trim().replaceAll(' ', '_') == b.trim().replaceAll(' ', '_');
+  }
+
   String? getPageName(String? title) {
     return title?.replaceAll('_', ' ').replaceAll('\n', ' ');
   }

@@ -154,7 +154,7 @@ class GalleryItem {
         enemyMasters,
         myRoom,
         appRoutes,
-        mooncell,
+        // mooncell,
         toolbox,
       ];
 

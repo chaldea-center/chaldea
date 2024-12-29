@@ -172,7 +172,6 @@ EventExtra _$EventExtraFromJson(Map json) => EventExtra(
           : MappingBase<int>.fromJson(Map<String, dynamic>.from(json['startTime'] as Map)),
       endTime:
           json['endTime'] == null ? null : MappingBase<int>.fromJson(Map<String, dynamic>.from(json['endTime'] as Map)),
-      relatedSummons: (json['relatedSummons'] as List<dynamic>?)?.map((e) => e as String).toList() ?? const [],
     );
 
 EventExtraScript _$EventExtraScriptFromJson(Map json) => EventExtraScript(
@@ -247,6 +246,7 @@ LimitedSummon _$LimitedSummonFromJson(Map json) => LimitedSummon(
               ?.map((e) => SubSummon.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
+      relatedEvents: (json['relatedEvents'] as List<dynamic>?)?.map((e) => e as String).toList() ?? const [],
     );
 
 Map<String, dynamic> _$LimitedSummonToJson(LimitedSummon instance) => <String, dynamic>{
@@ -264,6 +264,7 @@ Map<String, dynamic> _$LimitedSummonToJson(LimitedSummon instance) => <String, d
       'puSvt': instance.puSvt,
       'puCE': instance.puCE,
       'subSummons': instance.subSummons.map((e) => e.toJson()).toList(),
+      'relatedEvents': instance.relatedEvents,
     };
 
 const _$SummonTypeEnumMap = {

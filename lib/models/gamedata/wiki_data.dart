@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:chaldea/app/app.dart';
+import 'package:chaldea/app/modules/mc/converter.dart';
 import 'package:chaldea/utils/extension.dart';
 import '../db.dart';
 import '_helper.dart';
@@ -214,7 +215,6 @@ class EventExtra {
 
   MappingBase<int> startTime;
   MappingBase<int> endTime;
-  List<String> relatedSummons;
 
   EventExtra({
     required this.id,
@@ -231,7 +231,6 @@ class EventExtra {
     EventExtraScript? script,
     MappingBase<int>? startTime,
     MappingBase<int>? endTime,
-    this.relatedSummons = const [],
   })  : titleBanner = titleBanner ?? MappingBase(),
         officialBanner = officialBanner ?? MappingBase(),
         extraBanners = extraBanners ?? MappingList(),
@@ -249,6 +248,12 @@ class EventExtra {
       _banners.addAll(extraBanners.ofRegion(region) ?? []);
     }
     return _banners.whereType<String>().toList();
+  }
+
+  List<LimitedSummon> get relatedSummons {
+    return db.gameData.wiki.summons.values
+        .where((summon) => summon.relatedEvents.any((key) => McConverter.isSamePage(key, mcLink)))
+        .toList();
   }
 
   factory EventExtra.fromJson(Map<String, dynamic> json) => _$EventExtraFromJson(json);
@@ -395,6 +400,7 @@ class LimitedSummon with RouteInfo {
   List<int> puSvt;
   List<int> puCE;
   List<SubSummon> subSummons;
+  List<String> relatedEvents;
 
   LimitedSummon({
     required this.id,
@@ -411,6 +417,7 @@ class LimitedSummon with RouteInfo {
     this.puSvt = const [],
     this.puCE = const [],
     this.subSummons = const [],
+    this.relatedEvents = const [],
   })  : name = name ?? id.toString(),
         banner = banner ?? MappingBase(),
         officialBanner = officialBanner ?? MappingBase(),

@@ -461,7 +461,8 @@ class _MCSummonCreatePageState extends State<MCSummonCreatePage> {
 
 }}""");
 
-    return _buildWikitext(buffer.toString(), _cnNameController.text);
+    // return _buildWikitext(buffer.toString(), _cnNameController.text);
+    return _buildWikitext('模版过时了', _cnNameController.text);
   }
 
   Widget get simulatorTab {
