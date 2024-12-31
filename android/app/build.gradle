@@ -50,10 +50,10 @@ android {
 
     defaultConfig {
         applicationId "cc.narumi.chaldea"
-        minSdkVersion 23
-        targetSdkVersion flutter.targetSdkVersion
-        versionCode flutterVersionCode.toInteger()
-        versionName flutterVersionName
+        minSdk 23
+        targetSdk flutter.targetSdkVersion
+        versionCode flutter.versionCode
+        versionName flutter.versionName
         multiDexEnabled true
 
         resValue "string", "app_name", "Chaldea"
