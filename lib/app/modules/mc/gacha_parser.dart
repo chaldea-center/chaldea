@@ -123,14 +123,16 @@ class GachaProbRow {
 }
 
 class JpGachaNotice {
-  final String link;
-  final String title;
+  final String? link;
+  final String? title;
+  final String? fullTitle;
   final String lastUpdate;
   final String? topBanner;
 
   JpGachaNotice({
     required this.link,
     required this.title,
+    required this.fullTitle,
     required this.lastUpdate,
     required this.topBanner,
   });
@@ -304,18 +306,17 @@ class JpGachaParser {
     String lastUpdate = node.children[0].text;
 
     final fullTitle = node.children[1].text;
+    if (!fullTitle.contains('召喚')) return null;
     String? title = [r'「(.+召喚)」', r'『(.+召喚)』', r'「(.*福袋召喚.*)」！', r'『(.*福袋召喚.*)』！']
         .map((e) => RegExp(e).firstMatch(fullTitle)?.group(1))
         .firstWhereOrNull((e) => e != null);
-    if (title == null) return null;
-
-    String? link = node.children[2].attributes['href'];
-    if (link == null) return null;
-    link = baseUri.resolve(link).toString();
+    // if (title == null) return null;
 
     String? topBanner;
-    final noticeHtml = await CachedApi.cacheManager.getText(link);
-    if (noticeHtml != null) {
+    String? link = node.children[2].attributes['href'];
+    if (link != null) {
+      link = baseUri.resolve(link).toString();
+      String? noticeHtml = await CachedApi.cacheManager.getText(link);
       final detailDoc = htmlparser.parse(noticeHtml);
       final imgs = detailDoc.getElementsByClassName('article').firstOrNull?.getElementsByTagName('img') ?? [];
       for (final img in imgs) {
@@ -330,6 +331,7 @@ class JpGachaParser {
     return JpGachaNotice(
       link: link,
       title: title,
+      fullTitle: fullTitle,
       lastUpdate: lastUpdate,
       topBanner: topBanner,
     );

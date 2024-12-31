@@ -106,7 +106,7 @@ class _MCSummonCreatePageState extends State<MCSummonCreatePage> {
                             text: '[${notice.lastUpdate}更新]',
                             style: Theme.of(context).textTheme.bodySmall,
                           ),
-                          TextSpan(text: notice.title)
+                          TextSpan(text: notice.title ?? notice.fullTitle),
                         ],
                       )),
                     )
@@ -114,8 +114,8 @@ class _MCSummonCreatePageState extends State<MCSummonCreatePage> {
                 onChanged: (v) {
                   setState(() {
                     _selectedNotice = v;
-                    if (v != null) {
-                      _jpNameController.text = v.title;
+                    if (v != null && v.title != null) {
+                      _jpNameController.text = v.title!;
                     }
                   });
                 },
@@ -127,10 +127,10 @@ class _MCSummonCreatePageState extends State<MCSummonCreatePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             TextButton(
-              onPressed: _selectedNotice == null
+              onPressed: _selectedNotice?.link == null
                   ? null
                   : () {
-                      launch(_selectedNotice!.link);
+                      launch(_selectedNotice!.link!);
                     },
               child: const Text('打开公告'),
             ),
@@ -332,34 +332,69 @@ class _MCSummonCreatePageState extends State<MCSummonCreatePage> {
     String bannerFilename = bannerFnBase;
     bannerFilename = bannerFilename.isEmpty ? "<!-- 上传标题图 -->" : '${bannerFilename}_jp.png';
     String? jpLink = _selectedNotice?.link ?? "<!-- 填写公告地址 -->";
-
+    """
+{{卡池信息
+|类型=福袋
+|名称cn=
+|标题图文件名cn=
+|开始时间cn=
+|结束时间cn=
+|公告编号cn=
+|公告链接cn=
+|名称ha=2025年新年福袋召唤(男女区别×三骑士·四骑士·EXTRA区别×宝具类型·效果区别)
+|名称jp=2025年お正月福袋召喚(男女別×三騎士･四騎士･EXTRA別×宝具タイプ･効果別)
+|标题图文件名jp=2025年新年福袋召唤(男女区别×三骑士·四骑士·EXTRA区别×宝具类型·效果区别)_jp.png
+|开始时间jp=2025-01-01 00:00
+|结束时间jp=2025-01-15 12:59
+|公告链接jp=https://news.fate-go.jp/2025/luckybag2025/
+|公告翻译=
+|主关联页=2025年新年活动
+|关联页面=
+|推荐召唤从者=
+|推荐召唤礼装=
+|友情召唤从者=
+|圣杯=
+|圣杯转结晶=
+|传承结晶=
+|稀有棱镜=
+|★4芙芙=
+|其他信息=
+}}
+==福袋召唤具体情况==
+""";
+    final isLuckyBag = gachas.any((e) => e.gacha.isLuckyBag);
     final buffer = StringBuffer();
     buffer.writeln("""{{卡池信息
-|卡池名cn=
-|卡池名缩短cn=
-|卡池开始时间cn=
-|卡池结束时间cn=
-|卡池图文件名cn=
-|卡池时间预估cn=
-|卡池官网链接cn=
-|卡池名jp=${_jpNameController.text}
-|卡池名ha=$cnName
-|卡池名缩短jp=
-|卡池开始时间jp=${fmtJpDate(openAt)}
-|卡池结束时间jp=${fmtJpDate(closeAt)}
-|卡池图文件名jp=$bannerFilename
-|卡池官网链接jp=$jpLink
-|关联活动1=
-|关联卡池1=
+|类型=${isLuckyBag ? "福袋" : "限定"}
+|名称cn=
+|标题图文件名cn=
+|开始时间cn=
+|结束时间cn=
+|公告编号cn=
+|公告链接cn=
+|名称ha=$cnName
+|名称jp=${_jpNameController.text}
+|标题图文件名jp=$bannerFilename
+|开始时间jp=${fmtJpDate(openAt)}
+|结束时间jp=${fmtJpDate(closeAt)}
+|公告链接jp=$jpLink
+|公告翻译=
+|主关联页=2025年新年活动
+|关联页面=
 |推荐召唤从者=$svtNames
-|推荐召唤礼装=$ceNames""");
-    if (gachas.any((e) => e.gacha.isLuckyBag)) {
-      buffer.writeln("""|福袋召唤=yes\n|圣杯=""");
-    }
-    buffer.writeln("}}\n");
+|推荐召唤礼装=$ceNames
+|友情召唤从者=
+|圣杯=
+|圣杯转结晶=
+|传承结晶=
+|稀有棱镜=
+|★4芙芙=
+|其他信息=
+}}
+""");
 
     // 卡池情况
-    buffer.writeln('==推荐召唤具体情况==');
+    buffer.writeln('\n==推荐召唤具体情况==');
     for (final gacha in gachas.map((e) => e.gacha)) {
       if (gacha.storyAdjusts.isEmpty) continue;
       final questId = gacha.storyAdjusts.firstWhereOrNull((e) => e.condType == CondType.questClear)?.targetId;
@@ -461,8 +496,8 @@ class _MCSummonCreatePageState extends State<MCSummonCreatePage> {
 
 }}""");
 
-    // return _buildWikitext(buffer.toString(), _cnNameController.text);
-    return _buildWikitext('模版过时了', _cnNameController.text);
+    return _buildWikitext(buffer.toString(), _cnNameController.text);
+    // return _buildWikitext('模版过时了', _cnNameController.text);
   }
 
   Widget get simulatorTab {
@@ -521,7 +556,8 @@ class _MCSummonCreatePageState extends State<MCSummonCreatePage> {
     if (gacha.isInvalid) {
       warning = '该卡池解析失败';
     } else {
-      warning = '检查概率: ${gacha.guessTotalProb()}% (${gacha.getTotalProb()}%)';
+      warning =
+          '检查概率: ${gacha.guessTotalProb().toStringAsPrecision(5)}% (${gacha.getTotalProb().toStringAsPrecision(5)}%)';
     }
 
     return _buildWikitext(table, page, warning: warning);

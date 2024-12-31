@@ -211,7 +211,7 @@ class NiceGacha with RouteInfo {
   bool get isLuckyBag => type == GachaType.chargeStone;
 
   String get detailUrlPrefix {
-    final match = RegExp(r'^(/.+/.+_)[a-z]\d?$').firstMatch(detailUrl);
+    final match = RegExp(r'^(/.+/.+_)(([a-z]\d)|(\d+))?$').firstMatch(detailUrl);
     return match?.group(1) ?? detailUrl;
   }
 
