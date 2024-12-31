@@ -18,8 +18,8 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 version: 2.5.18+979
 
 environment:
-  sdk: ">=3.5.0 <4.0.0"
-  flutter: ">=3.24.0 <4.0.0"
+  sdk: ">=3.6.0 <4.0.0"
+  flutter: ">=3.27.0 <4.0.0"
 
 dependencies:
   flutter:
@@ -44,7 +44,7 @@ dependencies:
   csv: ^6.0.0
   cupertino_icons: ^1.0.6
   dart_des: ^1.0.2
-  data_table_2: 2.5.16
+  data_table_2: ^2.5.16
   device_info_plus: ^11.2.0
   dio: ^5.3.3
   # dio_cookie_manager: ^3.0.0
