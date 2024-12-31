@@ -75,6 +75,8 @@ abstract class FakerAgent<TRequest extends FRequestBase, TUser extends AutoLogin
 
   Future<FResponse> servantEquipCombine({required int64_t baseUserSvtId, required List<int64_t> materialSvtIds});
 
+  Future<FResponse> commandCodeUnlock({required int32_t servantId, required int32_t idx});
+
   Future<FResponse> userStatusFlagSet({required List<int32_t> onFlagNumbers, required List<int32_t> offFlagNumbers});
 
   Future<FResponse> deckSetup({required int64_t activeDeckId, required UserDeckEntity userDeck});

@@ -26,6 +26,7 @@ import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../import_data/import_https_page.dart';
 import '../import_data/sniff_details/formation_decks.dart';
+import 'card_enhance/svt_cc.dart';
 import 'card_enhance/svt_combine.dart';
 import 'details/box_gacha.dart';
 import 'details/dialogs.dart';
@@ -174,6 +175,13 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
                   router.pushPage(SvtCombinePage(runtime: runtime));
                 },
                 child: Text('从者强化'),
+              ),
+              PopupMenuItem(
+                enabled: isLoggedIn,
+                onTap: () {
+                  router.pushPage(UserSvtCommandCodePage(runtime: runtime));
+                },
+                child: Text('指令卡/纹章'),
               ),
               if (mstData.userEventTrade.isNotEmpty)
                 PopupMenuItem(
@@ -552,9 +560,11 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
       final record = agent.getRaidRecord(eventId, day).history.lastOrNull;
       title = Text([
         'Raid day $day ${mstRaid?.name ?? ""}',
-        '${record?.raidInfo.totalDamage.format(compact: false, groupSeparator: ",")}'
-            '/${record?.raidInfo.maxHp.format(compact: false, groupSeparator: ",")}',
-      ].join(' '));
+        if (record != null)
+          '${record.raidInfo.totalDamage.format(compact: false, groupSeparator: ",")}'
+              '/${record.raidInfo.maxHp.format(compact: false, groupSeparator: ",")}'
+              '  (${record.raidInfo.rate.format(percent: true)})',
+      ].join('\n'));
       if (record != null) {
         subtitle = BondProgress(
           value: record.raidInfo.totalDamage,
@@ -935,9 +945,12 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
                     title: 'Quest ID',
                     text: battleOption.questId.toString(),
                     keyboardType: TextInputType.number,
-                    onSubmit: (s) {
+                    onSubmit: (s) async {
                       final questId = int.tryParse(s);
-                      final quest = db.gameData.quests[questId];
+                      Quest? quest = db.gameData.quests[questId];
+                      if (questId != null && questId > 0) {
+                        quest ??= await showEasyLoading(() => AtlasApi.quest(questId, region: agent.user.region));
+                      }
                       if (questId != null && quest != null && !quest.flags.contains(QuestFlag.superBoss)) {
                         battleOption.questId = questId;
                         if (quest.phases.length == 1) {

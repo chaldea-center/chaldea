@@ -2812,6 +2812,8 @@ class BattleRaidInfo {
         maxHp = _toInt(maxHp, 0),
         totalDamage = _toInt(totalDamage);
 
+  double get rate => maxHp == 0 ? 0 : totalDamage / maxHp;
+
   factory BattleRaidInfo.fromJson(Map<String, dynamic> data) => _$BattleRaidInfoFromJson(data);
 }
 

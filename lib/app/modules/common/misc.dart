@@ -11,7 +11,7 @@ class CommandCardWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (!card.isQAB()) {
+    if (!card.isQAB() && !card.isExtra()) {
       return Text(
         card.name.toTitle().breakWord,
         maxLines: 2,
@@ -19,7 +19,18 @@ class CommandCardWidget extends StatelessWidget {
         textAlign: TextAlign.center,
       );
     }
-    final cardName = card.name;
+    String cardName;
+    if (card.isQuick()) {
+      cardName = CardType.quick.name;
+    } else if (card.isArts()) {
+      cardName = CardType.arts.name;
+    } else if (card.isBuster()) {
+      cardName = CardType.buster.name;
+    } else if (card.isExtra()) {
+      cardName = CardType.extra.name;
+    } else {
+      cardName = card.name;
+    }
     final width2 = width * 0.8;
     final dx = (width - width2) / 2;
     return ConstrainedBox(

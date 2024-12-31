@@ -249,6 +249,14 @@ class FakerAgentJP extends FakerAgent<FRequestJP, AutoLoginDataJP, NetworkManage
   }
 
   @override
+  Future<FResponse> commandCodeUnlock({required int32_t servantId, required int32_t idx}) {
+    final request = FRequestJP(network: network, path: '/commandCode/unlock');
+    request.addFieldInt32("svtId", servantId);
+    request.addFieldInt32("idx", idx);
+    return request.beginRequestAndCheckError('command_code_unlock');
+  }
+
+  @override
   Future<FResponse> userStatusFlagSet({required List<int32_t> onFlagNumbers, required List<int32_t> offFlagNumbers}) {
     final request = FRequestJP(network: network, path: '/userStatus/flagSet');
     if (onFlagNumbers.isNotEmpty) {

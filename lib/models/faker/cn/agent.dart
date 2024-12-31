@@ -460,6 +460,11 @@ class FakerAgentCN extends FakerAgent<FRequestCN, AutoLoginDataCN, NetworkManage
   }
 
   @override
+  Future<FResponse> commandCodeUnlock({required int32_t servantId, required int32_t idx}) {
+    throw UnimplementedError();
+  }
+
+  @override
   Future<FResponse> userStatusFlagSet({required List<int32_t> onFlagNumbers, required List<int32_t> offFlagNumbers}) {
     return _acPhp(
       key: 'userstatusflagset',

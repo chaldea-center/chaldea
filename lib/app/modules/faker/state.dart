@@ -295,7 +295,7 @@ class FakerRuntime {
       }
 
       if (shouldRetire) {
-        await Future.delayed(const Duration(seconds: 2));
+        await Future.delayed(const Duration(seconds: 1));
         resultResp = await agent.battleResultWithOptions(
           battleEntity: battleEntity,
           resultType: BattleResultType.cancel,
@@ -363,7 +363,7 @@ class FakerRuntime {
         await agent.homeTop();
       }
       update();
-      await Future.delayed(const Duration(seconds: 1));
+      await Future.delayed(const Duration(milliseconds: 100));
       if (battleOption.stopIfBondLimit) {
         _checkFriendship(battleOption);
       }
@@ -580,10 +580,10 @@ class FakerRuntime {
         throw SilentException('Cannot draw $num times in first 10 lotteries');
       }
       final ownItemCount = mstData.userItem[lottery.cost.itemId]?.num ?? 0;
-      final needItemCount = num * lottery.cost.amount;
-      if (ownItemCount < needItemCount) {
-        throw SilentException('Item noy enough: $ownItemCount<$needItemCount');
+      if (ownItemCount < lottery.cost.amount) {
+        throw SilentException('Item noy enough: $ownItemCount');
       }
+      num = min(num, ownItemCount ~/ lottery.cost.amount);
       if (num <= 0 || num > 100) {
         throw SilentException('Invalid draw num: $num');
       }
@@ -750,7 +750,7 @@ class FakerRuntime {
           } else if (item.type == ItemType.apRecover) {
             final count =
                 ((apConsume - mstData.user!.calCurAp()) / (item.value / 1000 * mstData.user!.actMax).ceil()).ceil();
-            if (count > 0 && count < mstData.getItemOrSvtNum(item.id)) {
+            if (count > 0 && count <= mstData.getItemOrSvtNum(item.id)) {
               await agent.itemRecover(recoverId: recoverId, num: count);
               break;
             }

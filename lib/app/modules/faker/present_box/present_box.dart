@@ -398,7 +398,7 @@ class _UserPresentBoxManagePageState extends State<UserPresentBoxManagePage> {
               TextButton(
                 onPressed: () {
                   Navigator.pop(context);
-                  router.pushPage(_SellCombineMaterialDialog(runtime: runtime));
+                  _SellCombineMaterialDialog(runtime: runtime).showDialog(context);
                 },
                 child: Text('Sell'),
               ),
