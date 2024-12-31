@@ -1,6 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+
 import 'package:chaldea/_test_page.dart';
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/modules/common/frame_rate_layer.dart';
@@ -258,6 +260,10 @@ class _SettingsPageState extends State<SettingsPage> {
                     ],
                     onChanged: (v) {
                       if (v != null) {
+                        if (v != WebRenderMode.canvaskit) {
+                          EasyLoading.showError('Only canvaskit supported. html renderer is deprecated.');
+                          return;
+                        }
                         kPlatformMethods.setLocalStorage('flutterWebRenderer', v.name);
                         db.runtimeData.webRendererCanvasKit = v;
                         setState(() {});

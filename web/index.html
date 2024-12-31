@@ -144,9 +144,10 @@
             onEntrypointLoaded: function (engineInitializer) {
               // config web renderer, only work when built with "auto" option
               let _renderer = window.localStorage.getItem("flutterWebRenderer");
-              if (["html", "canvaskit", "auto"].indexOf(_renderer) === -1) {
-                _renderer = "html";
-              }
+              // if (["html", "canvaskit", "auto"].indexOf(_renderer) === -1) {
+              //   _renderer = "html";
+              // }
+              _renderer = "canvaskit";
               // window.flutterWebRenderer = _renderer;
               engineInitializer
                 .initializeEngine({
