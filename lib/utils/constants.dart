@@ -12,6 +12,7 @@ const String kAppStoreHttpLink = 'https://itunes.apple.com/app/id1548713491';
 const String kGooglePlayLink = 'https://play.google.com/store/apps/details?id=cc.narumi.chaldea';
 const String kICPFilingNumberWeb = '京ICP备17059472号-3';
 const String kICPFilingNumberApp = '京ICP备17059472号-4A';
+const int kCopyrightYear = 2025;
 
 const String kProjectHomepage = 'https://github.com/chaldea-center/chaldea';
 const String kProjectDocRoot = 'https://docs.chaldea.center';

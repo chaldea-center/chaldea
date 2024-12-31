@@ -67,7 +67,7 @@ class _AboutPageState extends State<AboutPage> {
                 height: 120,
                 child: Image.asset('res/img/launcher_icon/app_icon_logo.png', height: 120),
               ),
-              legalese: 'Copyright © 2024 cc.narumi.\nAll rights reserved.',
+              legalese: 'Copyright © $kCopyrightYear cc.narumi.\nAll rights reserved.',
               debugInfo: 'UUID\n${AppInfo.uuid}\n'
                   'Size: ${size.width.toInt()}×${size.height.toInt()} [×$devicePixelRatio]',
               onDoubleTap: () {
@@ -251,7 +251,7 @@ class _AboutPageState extends State<AboutPage> {
                           'res/img/launcher_icon/app_icon_logo.png',
                           height: 120,
                         ),
-                        applicationLegalese: 'Copyright © 2024 cc.narumi.\nAll rights reserved.',
+                        applicationLegalese: 'Copyright © $kCopyrightYear cc.narumi.\nAll rights reserved.',
                       ),
                     ),
                   );
