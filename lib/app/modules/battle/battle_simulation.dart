@@ -327,7 +327,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
         alignment: Alignment.center,
         children: [
           enemyParty,
-          Positioned.fill(child: Container(color: Colors.grey.withOpacity(0.2))),
+          Positioned.fill(child: Container(color: Colors.grey.withAlpha(50))),
           Text(
             "Battle Win",
             style: TextStyle(
@@ -794,7 +794,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
     final cd = skillInfo.chargeTurn;
     Widget cdText = Text(
       cd.toString(),
-      style: TextStyle(fontSize: isSealed || donotSkillSelect ? 14 : 18, color: Colors.white.withOpacity(0.8)),
+      style: TextStyle(fontSize: isSealed || donotSkillSelect ? 14 : 18, color: Colors.white.withAlpha(204)),
       textScaler: const TextScaler.linear(1),
     );
     if ((isSealed && cd > 0) || donotSkillSelect || (isCondFailed && !isSealed)) {

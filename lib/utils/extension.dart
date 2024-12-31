@@ -491,15 +491,25 @@ extension TargetPlatformX on TargetPlatform {
 
 extension ColorX on Color {
   Color get inverted {
-    return Color.fromARGB(alpha, alpha - red, alpha - green, alpha - blue);
+    return Color.from(alpha: a, red: a - r, green: a - g, blue: a - b);
   }
 
   String toCSSHex({bool omitAlpha = true}) {
-    String hex = value.toRadixString(16).toUpperCase().padLeft(8, '0');
+    String hex = intValue.toRadixString(16).toUpperCase().padLeft(8, '0');
     if (omitAlpha && hex.startsWith('FF')) {
       hex = hex.substring(2);
     }
     return '#$hex';
+  }
+
+  int get intValue => _floatToInt8(a) << 24 | _floatToInt8(r) << 16 | _floatToInt8(g) << 8 | _floatToInt8(b) << 0;
+  int get intAlpha => _floatToInt8(a);
+  int get intRed => _floatToInt8(r);
+  int get intGreen => _floatToInt8(g);
+  int get intBlue => _floatToInt8(b);
+
+  static int _floatToInt8(double x) {
+    return (x * 255.0).round() & 0xff;
   }
 }
 

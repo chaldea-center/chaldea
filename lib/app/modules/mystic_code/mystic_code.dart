@@ -190,7 +190,7 @@ class _MysticCodePageState extends State<MysticCodePage> {
         for (int row = 0; row < expRequired.length / 5; row++) ...[
           CustomTableRow.fromTexts(
             texts: ['Lv.', for (int i = row * 5; i < row * 5 + 5; i++) i == 9 ? '-' : '${i + 1}→${i + 2}'],
-            defaults: TableCellData(color: TableCellData.resolveHeaderColor(context).withOpacity(0.5)),
+            defaults: TableCellData(color: TableCellData.resolveHeaderColor(context).withAlpha(128)),
           ),
           CustomTableRow.fromTexts(
             texts: [

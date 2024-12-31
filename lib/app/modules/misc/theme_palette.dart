@@ -209,7 +209,7 @@ class _PaletteForThemeState extends State<_PaletteForTheme> {
               ),
               subtitle: Center(
                 child: AutoSizeText(
-                  color == null ? 'null' : 'Color(0x${color.value.toRadixString(16).padLeft(8, '0')})',
+                  color == null ? 'null' : 'Color(0x${color.intValue.toRadixString(16).padLeft(8, '0')})',
                   maxLines: 1,
                   minFontSize: 2,
                   style: kMonoStyle,

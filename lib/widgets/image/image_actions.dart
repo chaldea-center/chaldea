@@ -238,7 +238,7 @@ class ImageActions {
         }
         children.addAll([
           Material(
-            color: Colors.grey.withOpacity(0.1),
+            color: Colors.grey.withAlpha(26),
             child: const SizedBox(height: 6),
           ),
           ListTile(

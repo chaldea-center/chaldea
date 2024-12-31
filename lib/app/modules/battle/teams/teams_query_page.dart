@@ -335,7 +335,7 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
           child: Icon(
             Icons.report_outlined,
             size: 18,
-            color: Theme.of(context).colorScheme.errorContainer.withOpacity(0.8),
+            color: Theme.of(context).colorScheme.errorContainer.withAlpha(204),
           ),
         ),
         const SizedBox(width: 24),

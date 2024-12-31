@@ -554,7 +554,7 @@ class EnemyThumbBase extends StatelessWidget {
               child: Container(
                 width: 44,
                 height: 44,
-                color: Colors.white.withOpacity(0.3),
+                color: Colors.white.withAlpha(77),
               ),
             ),
           ),

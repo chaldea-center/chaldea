@@ -161,8 +161,7 @@ class ServantDetailPageState extends State<ServantDetailPage> with SingleTickerP
                   child: BackdropFilter(
                     filter: ImageFilter.blur(sigmaX: 9, sigmaY: 9),
                     child: Container(
-                      color:
-                          (Theme.of(context).isDarkMode ? Colors.grey.shade800 : Colors.grey.shade600).withOpacity(0.3),
+                      color: (Theme.of(context).isDarkMode ? Colors.grey.shade800 : Colors.grey.shade600).withAlpha(77),
                       child: const SizedBox.expand(),
                     ),
                   ),
@@ -204,7 +203,7 @@ class ServantDetailPageState extends State<ServantDetailPage> with SingleTickerP
             'No.${svt.collectionNo > 0 ? svt.collectionNo : svt.id}'
             ' $kStarChar2${svt.rarity}'
             '  ${Transl.svtClassId(svt.classId).l} ${Transl.svtSubAttribute(svt.attribute).l}',
-            style: TextStyle(color: Colors.white.withOpacity(0.9)),
+            style: TextStyle(color: Colors.white.withAlpha(230)),
           ),
           if (db.gameData.constData.svtExp.containsKey(svt.growthCurve))
             TextButton(

@@ -299,7 +299,7 @@ class ServantListPageState extends State<ServantListPage> with SearchableListSta
         style = const TextStyle(color: Colors.redAccent);
       } else if (m != null && _c >= m) {
         style = TextStyle(
-          color: Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.4),
+          color: Theme.of(context).textTheme.bodySmall?.color?.withAlpha(100),
           fontStyle: FontStyle.italic,
         );
       }

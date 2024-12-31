@@ -120,7 +120,7 @@ class _WarDetailPageState extends State<WarDetailPage> with RegionBasedState<Nic
               text: longNameJp,
               textAlign: TextAlign.center,
               style: const TextStyle(fontSize: 14),
-              color: TableCellData.resolveHeaderColor(context).withOpacity(0.5),
+              color: TableCellData.resolveHeaderColor(context).withAlpha(128),
             )
           ]),
         if (lShortName != lLongName) CustomTableRow.fromTexts(texts: [lShortName]),

@@ -337,7 +337,7 @@ class _WarMapPainter extends CustomPainter {
         spot1.offset * bgScale,
         spot2.offset * bgScale,
         Paint()
-          ..color = Colors.white.withOpacity(0.8)
+          ..color = Colors.white.withAlpha(204)
           ..strokeWidth = 16 * bgScale
           ..isAntiAlias = true,
       );
@@ -384,7 +384,7 @@ class _WarMapPainter extends CustomPainter {
           textPadding.dx,
           textPadding.dx,
         ),
-        Paint()..color = Colors.black.withOpacity(0.8),
+        Paint()..color = Colors.black.withAlpha(204),
       );
       // draw text
       tp.paint(

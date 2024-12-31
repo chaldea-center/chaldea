@@ -133,7 +133,7 @@ class WrapSideBar extends StatelessWidget {
       padding: const EdgeInsets.all(6),
       child: Icon(
         Icons.menu,
-        color: Theme.of(context).colorScheme.onPrimary.withOpacity(0.8),
+        color: Theme.of(context).colorScheme.onPrimary.withAlpha(204),
       ),
     );
     return Row(
@@ -173,7 +173,7 @@ class WrapSideBar extends StatelessWidget {
           ),
         ),
         VerticalDivider(
-          color: Theme.of(context).dividerColor.withOpacity(0.2),
+          color: Theme.of(context).dividerColor.withAlpha(51),
           width: 0,
         ),
         Expanded(
@@ -244,7 +244,7 @@ class _MultipleWindowState extends State<MultipleWindow> {
     return DefaultTabController(
       length: 3,
       child: Scaffold(
-        backgroundColor: Theme.of(context).highlightColor.withOpacity(0.8),
+        backgroundColor: Theme.of(context).highlightColor.withAlpha(204),
         appBar: AppBar(
           toolbarHeight: 42,
           title: const Text(kAppName),
@@ -534,7 +534,7 @@ class WindowThumb extends StatelessWidget {
 
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: Theme.of(context).secondaryHeaderColor.withOpacity(0.8),
+        color: Theme.of(context).secondaryHeaderColor.withAlpha(204),
         border: Border(
           top: BorderSide(
             width: 1,

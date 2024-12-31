@@ -76,7 +76,7 @@ class AiTable extends StatelessWidget {
             decoration: index == 0
                 ? BoxDecoration(color: Theme.of(context).highlightColor)
                 : index.isEven
-                    ? BoxDecoration(color: Theme.of(context).highlightColor.withOpacity(0.1))
+                    ? BoxDecoration(color: Theme.of(context).highlightColor.withAlpha(25))
                     : null,
           ),
       ],

@@ -328,7 +328,7 @@ class SvtInfoTab extends StatelessWidget {
               for (int row = 0; row < svt.bondGrowth.length / 5; row++) ...[
                 CustomTableRow.fromTexts(
                   texts: ['Lv.', for (int i = row * 5; i < row * 5 + 5; i++) (i + 1).toString()],
-                  defaults: TableCellData(color: TableCellData.resolveHeaderColor(context).withOpacity(0.5)),
+                  defaults: TableCellData(color: TableCellData.resolveHeaderColor(context).withAlpha(128)),
                 ),
                 CustomTableRow.fromTexts(
                   texts: [

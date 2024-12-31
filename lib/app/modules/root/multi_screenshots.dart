@@ -76,7 +76,7 @@ class _MultiScreenshotsState extends State<MultiScreenshots> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).highlightColor.withOpacity(0.8),
+      backgroundColor: Theme.of(context).highlightColor.withAlpha(204),
       appBar: AppBar(
         toolbarHeight: 42,
         centerTitle: true,
@@ -159,7 +159,7 @@ class _MultiScreenshotsState extends State<MultiScreenshots> {
             offset: const Offset(0, 0),
             spreadRadius: 4,
             blurRadius: 8,
-            color: Colors.blue.withOpacity(0.8),
+            color: Colors.blue.withAlpha(204),
           ),
       ]),
       child: Screenshot(

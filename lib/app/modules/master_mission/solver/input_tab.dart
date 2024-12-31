@@ -766,7 +766,7 @@ class _SearchViewState extends State<_SearchView> {
           controller: _textEditingController,
           decoration: InputDecoration(
             hintText: S.current.search,
-            hintStyle: searchTextStyle?.copyWith(color: searchTextStyle.color?.withOpacity(0.8)),
+            hintStyle: searchTextStyle?.copyWith(color: searchTextStyle.color?.withAlpha(204)),
           ),
           style: searchTextStyle,
           onChanged: (s) {

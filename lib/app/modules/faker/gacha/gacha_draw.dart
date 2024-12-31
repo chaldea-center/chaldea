@@ -561,7 +561,7 @@ class _GachaDrawPageState extends State<GachaDrawPage> {
                       Positioned.fill(
                         child: IgnorePointer(
                           child: Container(
-                            color: Colors.grey.withOpacity(0.6),
+                            color: Colors.grey.withAlpha(153),
                             margin: EdgeInsets.all(2),
                           ),
                         ),

@@ -95,7 +95,7 @@ class _FullscreenImageViewerState extends State<FullscreenImageViewer> {
       appBar: showAppBar
           ? AppBar(
               title: const Text('Image'),
-              backgroundColor: bgColor.withOpacity(0.4),
+              backgroundColor: bgColor.withAlpha(102),
             )
           : null,
       extendBodyBehindAppBar: true,

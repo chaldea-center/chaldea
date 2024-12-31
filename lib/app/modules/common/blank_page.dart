@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:chaldea/utils/basic.dart';
+import 'package:chaldea/utils/extension.dart';
 
 class BlankPage extends StatelessWidget {
   final bool showIndicator;
@@ -41,7 +42,7 @@ class BlankPage extends StatelessWidget {
       );
       if (Utility.isDarkMode(context)) {
         // assume r=g=b
-        int b = Theme.of(context).scaffoldBackgroundColor.blue;
+        int b = Theme.of(context).scaffoldBackgroundColor.intBlue;
         double v = (255 - b) / 255;
         if (!kIsWeb) {
           img = ColorFiltered(

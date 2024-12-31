@@ -101,8 +101,7 @@ class _BattleSvtDetailState extends State<BattleSvtDetail> with SingleTickerProv
                 child: BackdropFilter(
                   filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
                   child: Container(
-                    color:
-                        (Theme.of(context).isDarkMode ? Colors.grey.shade800 : Colors.grey.shade200).withOpacity(0.2),
+                    color: (Theme.of(context).isDarkMode ? Colors.grey.shade800 : Colors.grey.shade200).withAlpha(51),
                     child: const SizedBox.expand(),
                   ),
                 ),
@@ -144,7 +143,7 @@ class _BattleSvtDetailState extends State<BattleSvtDetail> with SingleTickerProv
         children: [
           Text(
             buffer.toString(),
-            style: TextStyle(color: Colors.white.withOpacity(0.9)),
+            style: TextStyle(color: Colors.white.withAlpha(223)),
           ),
           const SizedBox(height: 4),
         ],
@@ -501,7 +500,7 @@ class BattleBuffIcon extends StatelessWidget {
                 shadowColor: Colors.grey.shade800,
                 shadowSize: size * 0.13,
                 textStyle: TextStyle(
-                  color: Colors.white.withOpacity(0.9),
+                  color: Colors.white.withAlpha(223),
                   fontSize: size * 0.8,
                 ),
               ),

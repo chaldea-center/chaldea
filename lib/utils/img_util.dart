@@ -77,7 +77,7 @@ class ImageUtil {
     );
     if (Utility.isDarkMode(context)) {
       // assume r=g=b
-      int b = Theme.of(context).scaffoldBackgroundColor.blue;
+      int b = Theme.of(context).scaffoldBackgroundColor.intBlue;
       if (!kIsWeb) {
         double v = (255 - b) / 255;
         img = ColorFiltered(

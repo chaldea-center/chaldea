@@ -142,7 +142,7 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
               text: summon.lName.jp,
               textAlign: TextAlign.center,
               style: const TextStyle(fontSize: 12),
-              color: TableCellData.resolveHeaderColor(context).withOpacity(0.5),
+              color: TableCellData.resolveHeaderColor(context).withAlpha(128),
             )
           ]),
         // if (!summon.isStory)

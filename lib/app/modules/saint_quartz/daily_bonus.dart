@@ -82,7 +82,7 @@ class DailyBonusTabState extends State<DailyBonusTab> {
             buildPresent(
               context: context,
               present: present,
-              tileColor: present.fromType <= 2 ? Theme.of(context).disabledColor.withOpacity(0.1) : null,
+              tileColor: present.fromType <= 2 ? Theme.of(context).disabledColor.withAlpha(26) : null,
             ),
       ],
     );

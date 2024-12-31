@@ -353,7 +353,7 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
             text: jpNames.join('\n'),
             textAlign: TextAlign.center,
             style: const TextStyle(fontSize: 14),
-            color: TableCellData.resolveHeaderColor(context).withOpacity(0.5),
+            color: TableCellData.resolveHeaderColor(context).withAlpha(128),
           )
         ]),
       if (event.type != EventType.eventQuest) CustomTableRow.fromTexts(texts: [(event.type.name)])

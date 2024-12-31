@@ -135,7 +135,7 @@ class _SvtClassInfoPageState extends State<SvtClassInfoPage> {
     } else if (rate < 1000) {
       color = Colors.blue;
     } else {
-      color = Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.5);
+      color = Theme.of(context).textTheme.bodySmall?.color?.withAlpha(128);
     }
     final text = _fmt(rate);
     Widget child = Text(

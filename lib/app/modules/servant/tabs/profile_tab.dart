@@ -306,7 +306,7 @@ class ProfileCommentCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       margin: margin ?? const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
-      color: Theme.of(context).cardColor.withOpacity(0.975),
+      color: Theme.of(context).cardColor.withAlpha(249),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,

@@ -235,7 +235,7 @@ class FilterOption<T> extends StatelessWidget {
         style: OutlinedButton.styleFrom(
           foregroundColor: selected || darkMode ? Colors.white : Colors.black,
           backgroundColor: selected
-              ? (enabled ? selectedColor : selectedColor.withOpacity(selectedColor.opacity * 0.5))
+              ? (enabled ? selectedColor : selectedColor.withValues(alpha: selectedColor.a * 0.5))
               : unselectedColor,
           minimumSize: minimumSize ?? (shrinkWrap ? const Size(2, 2) : const Size(48, 36)),
           padding: shrinkWrap ? const EdgeInsets.all(0) : null,

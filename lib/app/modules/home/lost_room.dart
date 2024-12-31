@@ -20,7 +20,7 @@ class _LostRoomPageState extends State<LostRoomPage> {
             Container(
               constraints: const BoxConstraints(maxHeight: 120),
               padding: const EdgeInsets.symmetric(horizontal: 36, vertical: 18),
-              color: Theme.of(context).highlightColor.withOpacity(0.6),
+              color: Theme.of(context).highlightColor.withAlpha(153),
               child: CachedImage(
                 imageUrl: 'https://anime.fate-go.jp/mllr/assets/img/kv/logo.png',
                 placeholder: (_, __) => Container(),
