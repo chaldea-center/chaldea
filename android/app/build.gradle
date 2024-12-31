@@ -31,7 +31,8 @@ if (keystorePropertiesFile.exists()) {
 
 android {
     namespace "cc.narumi.chaldea"
-    compileSdk flutter.compileSdkVersion
+    // flutter.compileSdkVersion 35 requires AGP8.1+ and namespace added
+    compileSdk 34
     ndkVersion flutter.ndkVersion
 
     compileOptions {
