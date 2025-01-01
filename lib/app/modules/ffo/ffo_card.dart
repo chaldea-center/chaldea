@@ -5,6 +5,7 @@ import 'dart:ui' as ui;
 import 'package:flutter/foundation.dart';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cached_network_image_platform_interface/cached_network_image_platform_interface.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:photo_view/photo_view.dart';
 
@@ -224,7 +225,7 @@ abstract class FFOUtil {
     String url = FFOUtil.imgUrl(fn)!;
     ImageProvider provider;
     if (kIsWeb) {
-      provider = CachedNetworkImageProvider(url);
+      provider = CachedNetworkImageProvider(url, imageRenderMethodForWeb: ImageRenderMethodForWeb.HttpGet);
     } else {
       String? localFp = await AtlasIconLoader.i.get(url);
       if (localFp == null) return null;

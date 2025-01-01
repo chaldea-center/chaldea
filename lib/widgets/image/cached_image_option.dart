@@ -62,7 +62,7 @@ class CachedImageOption {
     this.cacheKey,
     this.maxWidthDiskCache,
     this.maxHeightDiskCache,
-    this.imageRenderMethodForWeb = ImageRenderMethodForWeb.HtmlImage,
+    this.imageRenderMethodForWeb = ImageRenderMethodForWeb.HttpGet,
   });
 
   CachedImageOption copyWith({

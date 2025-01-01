@@ -5,6 +5,7 @@ import 'dart:typed_data';
 import 'dart:ui' as ui;
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cached_network_image_platform_interface/cached_network_image_platform_interface.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:photo_view/photo_view.dart';
 
@@ -429,7 +430,8 @@ class _MergeImagePageState extends State<MergeImagePage> {
         }
       } else {
         url = CachedImage.corsProxyImage(url);
-        provider = CachedNetworkImageProvider(url, cacheManager: ImageViewerCacheManager());
+        provider = CachedNetworkImageProvider(url,
+            cacheManager: ImageViewerCacheManager(), imageRenderMethodForWeb: ImageRenderMethodForWeb.HttpGet);
       }
       if (provider == null) continue;
       final uiImg = await ImageActions.resolveImage(provider);

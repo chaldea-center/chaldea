@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cached_network_image_platform_interface/cached_network_image_platform_interface.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
@@ -269,7 +270,8 @@ class ImageActions {
       }
       provider = FileImage(File(fp));
     } else {
-      provider = CachedNetworkImageProvider(CachedImage.corsProxyImage(url));
+      provider = CachedNetworkImageProvider(CachedImage.corsProxyImage(url),
+          imageRenderMethodForWeb: ImageRenderMethodForWeb.HttpGet);
     }
     if (context != null && context.mounted) {
       return resolveImage(provider, context: context);

@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cached_network_image_platform_interface/cached_network_image_platform_interface.dart';
 
 import 'package:chaldea/app/modules/ffo/ffo_card.dart';
 import 'package:chaldea/generated/l10n.dart';
@@ -92,6 +93,7 @@ class _FFOSummonPageState extends State<FFOSummonPage> {
       child: CachedNetworkImage(
         imageUrl: 'https://news.fate-go.jp/wp-content/uploads/2021/ffo_cp_xikad/top_banner.png',
         errorWidget: (context, e, s) => const SizedBox(),
+        imageRenderMethodForWeb: ImageRenderMethodForWeb.HttpGet,
       ),
     );
   }

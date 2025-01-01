@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cached_network_image_platform_interface/cached_network_image_platform_interface.dart';
 
 import 'package:chaldea/models/gamedata/common.dart';
 import 'package:chaldea/utils/atlas.dart';
@@ -27,7 +28,8 @@ class GachaBanner extends StatelessWidget {
       decoration: background
           ? const BoxDecoration(
               image: DecorationImage(
-                image: CachedNetworkImageProvider("https://assets.chaldea.center/images/summon_bg.jpg"),
+                image: CachedNetworkImageProvider("https://assets.chaldea.center/images/summon_bg.jpg",
+                    imageRenderMethodForWeb: ImageRenderMethodForWeb.HttpGet),
                 fit: BoxFit.cover,
                 alignment: Alignment(0.0, -0.6),
               ),
