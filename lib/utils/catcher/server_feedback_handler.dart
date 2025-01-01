@@ -178,6 +178,7 @@ class ServerFeedbackHandler extends ReportHandler {
         "Unsupported operation: NaN.round()",
         "Unsupported operation: Infinity.round()",
         "Bad state: RenderBox was not laid out: minified",
+        "SecurityError: Failed to execute 'texImage2D'",
         // "TypeError: Cannot read property 'toString' of null",
         // "TypeError: Cannot read properties of undefined",
         // "TypeError: Cannot read properties of null",
