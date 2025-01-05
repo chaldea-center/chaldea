@@ -677,6 +677,14 @@ BattleInfoData _$BattleInfoDataFromJson(Map json) => BattleInfoData(
               ?.map((e) => DeckData.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
+      callDeck: (json['callDeck'] as List<dynamic>?)
+              ?.map((e) => DeckData.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
+      shiftDeck: (json['shiftDeck'] as List<dynamic>?)
+              ?.map((e) => DeckData.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
       raidInfo: (json['raidInfo'] as List<dynamic>?)
               ?.map((e) => BattleRaidInfo.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??

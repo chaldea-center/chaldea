@@ -274,6 +274,8 @@ class Quest with RouteInfo {
     }
   }
 
+  bool isUseUserEventDeck() => flags.contains(QuestFlag.userEventDeck) || flags.contains(QuestFlag.eventDeckNoSupport);
+
   @override
   String get route => Routes.questI(id);
 

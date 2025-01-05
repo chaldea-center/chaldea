@@ -242,7 +242,7 @@ abstract class FakerAgent<TRequest extends FRequestBase, TUser extends AutoLogin
     int activeDeckId, followerId, followerClassId, followerType, followerSupportDeckId;
     int userEquipId = 0;
 
-    if (questPhaseEntity.flags.contains(QuestFlag.userEventDeck)) {
+    if (questPhaseEntity.isUseUserEventDeck()) {
       activeDeckId = questPhaseEntity.extraDetail?.useEventDeckNo ?? 1;
     } else {
       activeDeckId = options.deckId;
@@ -283,12 +283,14 @@ abstract class FakerAgent<TRequest extends FRequestBase, TUser extends AutoLogin
         throw SilentException('UserEventDeck(eventId=$eventId,deckNo=$deckNo) not found');
       }
       userEquipId = eventDeck.deckInfo!.userEquipId;
+    } else if (questPhaseEntity.flags.contains(QuestFlag.eventDeckNoSupport)) {
+      followerId = 0;
+      followerClassId = 0;
+      followerType = 0;
+      followerSupportDeckId = 0;
     } else {
-      final notSuppportedFlags = const {
-        QuestFlag.noSupportList,
-        QuestFlag.eventDeckNoSupport,
-        QuestFlag.notSingleSupportOnly
-      }.intersection(questPhaseEntity.flags.toSet());
+      final notSuppportedFlags =
+          const {QuestFlag.noSupportList, QuestFlag.notSingleSupportOnly}.intersection(questPhaseEntity.flags.toSet());
       if (notSuppportedFlags.isNotEmpty) {
         throw SilentException('Finding support but not supported flags: $notSuppportedFlags');
       }
@@ -380,23 +382,23 @@ abstract class FakerAgent<TRequest extends FRequestBase, TUser extends AutoLogin
     required String actionLogs,
     List<int> usedTurnArray = const [],
   }) async {
-    final stageCount = battleEntity.battleInfo!.enemyDeck.length;
+    final battleInfo = battleEntity.battleInfo!;
+    final stageCount = battleInfo.enemyDeck.length;
     if (resultType == BattleResultType.cancel) {
       return battleResult(
         battleId: battleEntity.id,
         battleResult: BattleResultType.cancel,
         winResult: BattleWinResultType.none,
-        action: BattleDataActionList(
-            logs: "", dt: battleEntity.battleInfo!.enemyDeck.first.svts.map((e) => e.uniqueId).toList()),
+        action: BattleDataActionList(logs: "", dt: battleInfo.enemyDeck.first.svts.map((e) => e.uniqueId).toList()),
         usedTurnArray: List.generate(stageCount, (i) => i == 0 ? 1 : 0),
-        aliveUniqueIds: battleEntity.battleInfo!.enemyDeck.expand((e) => e.svts).map((e) => e.uniqueId).toList(),
+        aliveUniqueIds: battleInfo.enemyDeck.expand((e) => e.svts).map((e) => e.uniqueId).toList(),
       );
     } else if (resultType == BattleResultType.win) {
       final quest =
           await AtlasApi.questPhase(battleEntity.questId, battleEntity.questPhase, region: network.gameTop.region);
       final _usedTurnArray = List.generate(stageCount, (index) {
         int baseTurn = index == stageCount - 1 ? 1 : 0;
-        final enemyCount = battleEntity.battleInfo!.enemyDeck.getOrNull(index)?.svts.length;
+        final enemyCount = battleInfo.enemyDeck.getOrNull(index)?.svts.length;
         if (enemyCount != null) {
           final posCount = quest?.stages.getOrNull(index)?.enemyFieldPosCountReal ?? 3;
           baseTurn += (enemyCount / posCount).ceil().clamp(1, 10) - 1;
@@ -414,16 +416,15 @@ abstract class FakerAgent<TRequest extends FRequestBase, TUser extends AutoLogin
         throw Exception('Invalid action logs or not match turn length: $usedTurnArray, $actionLogs');
       }
       List<BattleRaidResult> raidResults = [];
-      final enemies = battleEntity.battleInfo?.enemyDeck.expand((e) => e.svts).toList() ?? [];
+      final enemies = battleInfo.enemyDeck.expand((e) => e.svts).toList();
       final userSvtIdMap = {
-        for (final userSvt in battleEntity.battleInfo?.userSvt ?? <BattleUserServantData>[]) userSvt.id: userSvt,
+        for (final userSvt in battleInfo.userSvt) userSvt.id: userSvt,
       };
       for (final enemy in enemies) {
         final raidDay1 = enemy.enemyScript?['raid'] as int?;
         if (raidDay1 == null) continue;
         final userSvt = userSvtIdMap[enemy.userSvtId]!;
-        final raidDay =
-            battleEntity.battleInfo?.raidInfo.firstWhereOrNull((e) => e.uniqueId == enemy.uniqueId)?.day ?? -1;
+        final raidDay = battleInfo.raidInfo.firstWhereOrNull((e) => e.uniqueId == enemy.uniqueId)?.day ?? -1;
         if (raidDay1 != raidDay) {
           throw SilentException('raid day mismatch: $raidDay1 != $raidDay');
         }
@@ -433,17 +434,33 @@ abstract class FakerAgent<TRequest extends FRequestBase, TUser extends AutoLogin
           addDamage: userSvt.hp,
         ));
       }
+      final callDeckEnemies = battleInfo.callDeck.expand((e) => e.svts).toList();
+      List<int> calledEnemyUniqueIdArray =
+          callDeckEnemies.where((e) => e.dropInfos.isNotEmpty).map((e) => e.uniqueId).toList();
+      calledEnemyUniqueIdArray = callDeckEnemies.map((e) => e.uniqueId).toList();
+      // final itemDroppedSkillShiftEnemies =
+      //     battleInfo.shiftDeck.expand((e) => e.svts).where((e) => e.dropInfos.isNotEmpty).toList();
+      final skillShiftEnemies = [...battleInfo.enemyDeck, ...battleInfo.callDeck, ...battleInfo.shiftDeck]
+          .expand((e) => e.svts)
+          .where((e) => e.enemyScript?.containsKey('skillShift') == true)
+          .toList();
+      if (skillShiftEnemies.isNotEmpty) {
+        throw SilentException('skillShift not supported');
+      }
       return battleResult(
         battleId: battleEntity.id,
         battleResult: BattleResultType.win,
         winResult: BattleWinResultType.normal,
         action: BattleDataActionList(
           logs: actionLogs,
-          dt: battleEntity.battleInfo!.enemyDeck.last.svts.map((e) => e.uniqueId).toList(),
+          dt: battleInfo.enemyDeck.last.svts.map((e) => e.uniqueId).toList(),
         ),
         usedTurnArray: usedTurnArray,
         raidResult: raidResults,
         aliveUniqueIds: [],
+        calledEnemyUniqueIdArray: calledEnemyUniqueIdArray,
+        // skillShiftUniqueIdArray: itemDroppedSkillShiftEnemies.map((e) => e.uniqueId).toList(),
+        // skillShiftNpcSvtIdArray: itemDroppedSkillShiftEnemies.map((e) => e.npcId).toList(),
       );
     } else {
       throw Exception('resultType=$resultType not supported');

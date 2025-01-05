@@ -246,7 +246,24 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
   Widget get headerInfo {
     List<Widget> children = [];
     final userGame = mstData.user ?? agent.user.userGame;
-
+    List<InlineSpan> subtitle = [TextSpan(text: userGame?.friendCode ?? '')];
+    if (mstData.user != null) {
+      subtitle.addAll([
+        TextSpan(text: '  '),
+        CenterWidgetSpan(
+          child: db.getIconImage(
+            "https://static.atlasacademy.io/file/aa-fgo-extract-jp/Terminal/OrdealCall/TerminalAtlas/status_icongift_open.png",
+            width: 24,
+          ),
+        ),
+        TextSpan(
+          text: ' ${mstData.userPresentBox.length}/${runtime.gameData.constants.maxPresentBoxNum}',
+          style: mstData.userPresentBox.length > runtime.gameData.constants.maxPresentBoxNum - 20
+              ? TextStyle(color: Colors.amber)
+              : null,
+        ),
+      ]);
+    }
     children.add(ListTile(
       dense: true,
       minTileHeight: 48,
@@ -281,14 +298,17 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
         ),
       ),
       title: Text('[${agent.user.serverName}] ${userGame?.name ?? "not login"}'),
-      subtitle: Text('${userGame?.friendCode ?? ""} (${agent.user.internalId})'),
+      subtitle: Text.rich(TextSpan(children: subtitle)),
       trailing: userGame == null
           ? null
           : TimerUpdate(builder: (context, time) {
-              return Text(
-                '${userGame.calCurAp()}/${userGame.actMax}\n${Duration(seconds: (userGame.actRecoverAt - DateTime.now().timestamp)).toString().split('.').first}',
-                textAlign: TextAlign.end,
-                style: const TextStyle(fontSize: 12),
+              return Tooltip(
+                message: userGame.actRecoverAt.sec2date().toCustomString(year: false),
+                child: Text(
+                  '${userGame.calCurAp()}/${userGame.actMax}\n${Duration(seconds: (userGame.actRecoverAt - DateTime.now().timestamp)).toString().split('.').first}',
+                  textAlign: TextAlign.end,
+                  style: const TextStyle(fontSize: 12),
+                ),
               );
             }),
     ));
@@ -296,20 +316,23 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
     children.add(Container(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       alignment: AlignmentDirectional.centerStart,
-      child: Text.rich(TextSpan(children: [
-        TextSpan(children: [
-          CenterWidgetSpan(child: Item.iconBuilder(context: context, item: null, itemId: Items.stoneId, width: 20)),
-          TextSpan(text: '×${userGame?.stone ?? 0}  '),
-        ]),
-        for (final itemId in <int>{
-          ...Items.loginSaveItems,
-          ...?db.gameData.quests[battleOption.questId]?.consumeItem.map((e) => e.itemId)
-        })
+      child: Text.rich(TextSpan(
+        children: [
           TextSpan(children: [
-            CenterWidgetSpan(child: Item.iconBuilder(context: context, item: null, itemId: itemId, width: 20)),
-            TextSpan(text: '×${mstData.getItemOrSvtNum(itemId, defaultValue: agent.user.userItems[itemId] ?? 0)}  '),
-          ])
-      ])),
+            CenterWidgetSpan(child: Item.iconBuilder(context: context, item: null, itemId: Items.stoneId, width: 20)),
+            TextSpan(text: '×${userGame?.stone ?? 0}  '),
+          ]),
+          for (final itemId in <int>{
+            ...Items.loginSaveItems,
+            ...?db.gameData.quests[battleOption.questId]?.consumeItem.map((e) => e.itemId)
+          })
+            TextSpan(children: [
+              CenterWidgetSpan(child: Item.iconBuilder(context: context, item: null, itemId: itemId, width: 20)),
+              TextSpan(text: '×${mstData.getItemOrSvtNum(itemId, defaultValue: agent.user.userItems[itemId] ?? 0)}  '),
+            ])
+        ],
+        style: TextStyle(fontSize: 14),
+      )),
     ));
 
     return Container(
@@ -953,8 +976,18 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
                       }
                       if (questId != null && quest != null && !quest.flags.contains(QuestFlag.superBoss)) {
                         battleOption.questId = questId;
-                        if (quest.phases.length == 1) {
-                          battleOption.questPhase = quest.phases.single;
+                        final userQuest = mstData.userQuest[questId];
+                        if (mstData.user != null) {
+                          if (userQuest != null && userQuest.clearNum > 0) {
+                            battleOption.questPhase = userQuest.questPhase;
+                          } else {
+                            battleOption.questPhase =
+                                quest.phases.firstWhereOrNull((e) => e > (userQuest?.questPhase ?? 0)) ??
+                                    battleOption.questPhase;
+                          }
+                        }
+                        if (quest.phases.isNotEmpty && !quest.phases.contains(battleOption.questPhase)) {
+                          battleOption.questPhase = quest.phases.first;
                         }
                       } else {
                         EasyLoading.showError('Invalid Quest');
@@ -1011,7 +1044,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
           },
         ),
         if (formation != null) ..._buildUserDeck(formation.deckInfo),
-        if (questPhase?.flags.contains(QuestFlag.userEventDeck) == true) ...[
+        if ((questPhase ?? quest)?.isUseUserEventDeck() == true) ...[
           ListTile(
             dense: true,
             title: Text("Event Deck ${eventFormation?.deckNo ?? eventDeckNo}"),

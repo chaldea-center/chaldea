@@ -48,7 +48,7 @@ class _UserEventMissionReceivePageState extends State<UserEventMissionReceivePag
     mms.removeWhere((mm) =>
         mm.startedAt > now ||
         mm.closedAt < now ||
-        !const [MissionType.weekly, MissionType.extra, MissionType.limited].contains(mm.type));
+        !const [MissionType.weekly, MissionType.extra, MissionType.limited, MissionType.complete].contains(mm.type));
     mms.sort2((e) => e.closedAt);
     if (mms.isNotEmpty) {
       onSelectMM(mms.firstWhere(

@@ -237,6 +237,7 @@ class _UserPresentBoxManagePageState extends State<UserPresentBoxManagePage> {
               : '$leftDurStr (${expireAt.sec2date().toCustomString(second: false)})',
           style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color),
         ),
+        TextSpan(text: '\n${present.createdAt.sec2date().toCustomString(second: false)}'),
       ])),
       value: selectedPresents.contains(present.presentId),
       onChanged: (v) async {

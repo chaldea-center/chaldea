@@ -2580,6 +2580,8 @@ class BattleInfoData {
   List<BattleUserServantData> userSvt;
   DeckData? myDeck;
   List<DeckData> enemyDeck;
+  List<DeckData> callDeck;
+  List<DeckData> shiftDeck;
   List<BattleRaidInfo> raidInfo;
   List<BattleRaidInfo> startRaidInfo;
   List<Map> superBossInfo;
@@ -2592,6 +2594,8 @@ class BattleInfoData {
     this.userSvt = const [],
     this.myDeck,
     this.enemyDeck = const [],
+    this.callDeck = const [],
+    this.shiftDeck = const [],
     this.raidInfo = const [],
     this.startRaidInfo = const [],
     this.superBossInfo = const [],

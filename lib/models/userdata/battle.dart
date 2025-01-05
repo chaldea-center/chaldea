@@ -652,7 +652,7 @@ class CustomFuncData {
     if (base != null) {
       text = text.replaceAll('%', '').trim();
       final v = text.isEmpty ? 0.0 : double.tryParse(text);
-      if (v == null) return null;
+      if (v == null || !v.isFinite) return null;
       return (v * base).toInt();
     } else {
       return text.isEmpty ? 0 : int.tryParse(text);
