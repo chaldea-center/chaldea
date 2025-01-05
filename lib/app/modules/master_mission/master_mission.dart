@@ -6,6 +6,7 @@ import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/generated/l10n.dart';
+import 'package:chaldea/models/gamedata/raw.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/audio.dart';
 import 'package:chaldea/utils/utils.dart';
@@ -193,7 +194,14 @@ class _MasterMissionPageState extends State<MasterMissionPage> with RegionBasedS
     final customMission = CustomMission.fromEventMission(mission);
     final clearConds = mission.conds.where((e) => e.missionProgressType == MissionProgressType.clear).toList();
     final clearCond = !db.settings.display.showOriginalMissionText && clearConds.length == 1 ? clearConds.single : null;
-
+    final showSearchViewEnemy = [
+          MissionType.weekly,
+          MissionType.limited,
+          MissionType.complete,
+        ].contains(masterMission.type) &&
+        mission.startedAt < DateTime.now().timestamp &&
+        mission.endedAt > DateTime.now().timestamp &&
+        [CustomMissionType.enemy, CustomMissionType.trait].contains(customMission?.conds.firstOrNull?.type);
     return SimpleAccordion(
       headerBuilder: (context, _) => ListTile(
         title: clearCond != null
@@ -229,6 +237,13 @@ class _MasterMissionPageState extends State<MasterMissionPage> with RegionBasedS
             if (kDebugMode) Text('No.${mission.id}', style: Theme.of(context).textTheme.bodySmall),
             if (clearCond != null) Text(mission.name, style: Theme.of(context).textTheme.bodySmall),
             MissionCondsDescriptor(mission: mission, missions: masterMission.missions),
+            if (showSearchViewEnemy)
+              TextButton(
+                onPressed: () {
+                  router.pushPage(_ViewEnemyMissionTargetPage(mission: mission, region: region ?? Region.jp));
+                },
+                child: Text('Search in viewEnemy'),
+              )
           ],
         ),
       ),
@@ -374,6 +389,116 @@ class _MasterMissionPageState extends State<MasterMissionPage> with RegionBasedS
               }
             : null,
         child: state ? on(context) : off(context),
+      ),
+    );
+  }
+}
+
+class _ViewEnemyMissionTargetPage extends StatefulWidget {
+  final EventMission mission;
+  final Region region;
+  const _ViewEnemyMissionTargetPage({required this.mission, required this.region});
+
+  @override
+  State<_ViewEnemyMissionTargetPage> createState() => __ViewEnemyMissionTargetPageState();
+}
+
+class __ViewEnemyMissionTargetPageState extends State<_ViewEnemyMissionTargetPage> {
+  late final mission = widget.mission;
+  int trait = 0;
+
+  Map<int, List<MstViewEnemy>> mstViewEnemies = {};
+
+  @override
+  void initState() {
+    super.initState();
+    for (final cond in mission.conds) {
+      if (cond.missionProgressType == MissionProgressType.clear &&
+          cond.condType == CondType.missionConditionDetail &&
+          cond.details.length == 1 &&
+          cond.details.single.targetIds.length == 1) {
+        final detail = cond.details.single;
+        if ([CustomMissionType.enemy, CustomMissionType.trait]
+            .contains(CustomMission.kDetailCondMapping[detail.missionCondType])) {
+          trait = cond.details.single.targetIds.single;
+        }
+      }
+    }
+    showEasyLoading(loadData);
+  }
+
+  Future<void> loadData({bool refresh = false}) async {
+    final value = await AtlasApi.mstData(
+      'viewEnemy',
+      (json) => (json as List).map((e) => MstViewEnemy.fromJson(e)).toList(),
+      region: widget.region,
+      expireAfter: refresh ? Duration.zero : null,
+    );
+    if (value != null) {
+      mstViewEnemies.clear();
+      for (final enemy in value) {
+        mstViewEnemies.putIfAbsent(enemy.questId, () => []).add(enemy);
+      }
+    }
+    if (mounted) setState(() {});
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    List<Widget> children = [
+      ListTile(title: Text(mission.name)),
+    ];
+    final quests = <(int questId, int totalCount, Map<MstViewEnemy, int> counts, Widget child)>[];
+    for (final (questId, enemies) in mstViewEnemies.items) {
+      final targetEnemies = enemies.where((e) => e.missionIds.contains(mission.id)).toList();
+      if (targetEnemies.isEmpty) continue;
+      final questPhase = db.gameData.getQuestPhase(questId);
+      final quest = db.gameData.quests[questId];
+      Map<MstViewEnemy, int> counts = {
+        for (final enemy in targetEnemies)
+          enemy: questPhase?.allEnemies.where((e) => e.svt.id == enemy.svtId && e.npcId == enemy.npcSvtId).length ?? 0,
+      };
+      final int totalCount = Maths.sum(counts.values);
+      Widget child = ListTile(
+        dense: true,
+        title: Text(quest?.lDispName ?? ""),
+        subtitle: Text.rich(TextSpan(children: [
+          TextSpan(text: '${quest?.consume ?? "?"}AP ${quest?.war?.lShortName}\n'),
+          for (final (enemy, count) in counts.items) ...[
+            CenterWidgetSpan(
+              child: GameCardMixin.cardIconBuilder(
+                context: context,
+                icon: AssetURL.i.enemyId(enemy.iconId),
+                width: 24,
+                onTap: () => router.push(url: Routes.servantI(enemy.svtId)),
+              ),
+            ),
+            TextSpan(text: '×${count == 0 ? "?" : count}  '),
+          ],
+        ])),
+        trailing: Text(totalCount == 0 ? '??' : '+$totalCount?'),
+        onTap: () => router.push(url: Routes.questI(questId)),
+      );
+      quests.add((questId, totalCount, counts, child));
+    }
+    quests.sortByList((e) => [-e.$2, e.$1]);
+    children.addAll(quests.map((e) => e.$4));
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('${S.current.mission} ${mission.id}'),
+        actions: [
+          IconButton(
+            onPressed: () {
+              showEasyLoading(() => loadData(refresh: true));
+            },
+            icon: Icon(Icons.refresh),
+          )
+        ],
+      ),
+      body: ListView.separated(
+        itemCount: children.length,
+        separatorBuilder: (context, index) => const Divider(height: 1),
+        itemBuilder: (context, index) => children[index],
       ),
     );
   }
