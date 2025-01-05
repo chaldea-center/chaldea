@@ -272,10 +272,14 @@ class ServerFeedbackHandler extends ReportHandler {
     }
 
     buffer.write("<h3>Summary:</h3>");
+    String os = '${PlatformU.operatingSystem} ${PlatformU.operatingSystemVersion}';
+    if (kIsWeb) {
+      os += ' (${AppInfo.deviceParams["userAgent"]})';
+    }
     Map<String, dynamic> summary = {
       'app': '${AppInfo.appName} v${AppInfo.fullVersion2} ${AppInfo.commitHash}-${AppInfo.commitDate}',
       'dataset': db.gameData.version.utc,
-      'os': '${PlatformU.operatingSystem} ${PlatformU.operatingSystemVersion}',
+      'os': os,
       'lang': Language.current.code,
       'locale': Language.systemLocale.toString(),
       'uuid': AppInfo.uuid,

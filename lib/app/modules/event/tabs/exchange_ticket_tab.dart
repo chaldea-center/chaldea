@@ -163,21 +163,19 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
         ),
         const TextSpan(text: '\n'),
         TextSpan(
-            text: db.curUser.region == Region.jp ? maxHint : 'JP ${ticket.year}-${ticket.month}\n$maxHint',
-            children: [
-              if (ticket.multiplier != 1)
-                TextSpan(
-                  text: ' ×${ticket.multiplier}',
-                  style: TextStyle(
-                    color: AppTheme(context).tertiary,
-                    fontWeight: FontWeight.bold,
-                  ),
-                )
-            ],
-            style: TextStyle(
-              color: isThisMonth ? Theme.of(context).colorScheme.primary : Theme.of(context).textTheme.bodySmall?.color,
-              fontSize: 12,
-            )),
+          text: db.curUser.region == Region.jp ? maxHint : 'JP ${ticket.year}-${ticket.month}\n$maxHint',
+          children: [
+            if (ticket.multiplier != 1)
+              TextSpan(
+                text: ' ×${ticket.multiplier}',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              )
+          ],
+          style: TextStyle(
+            color: isThisMonth ? Theme.of(context).colorScheme.primary : Theme.of(context).textTheme.bodySmall?.color,
+            fontSize: 12,
+          ),
+        ),
       ])),
     );
   }

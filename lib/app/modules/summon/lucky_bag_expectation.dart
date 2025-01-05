@@ -261,13 +261,35 @@ class _LuckyBagExpectationState extends State<LuckyBagExpectation> with SingleTi
           children: _result.block.ids.map((id) {
             final svt = db.gameData.servantsNoDup[id];
             if (svt == null) return Text('ID $id');
-            return SummonUtil.svtAvatar(
-              context: context,
-              card: svt,
-              favorite: svt.status.favorite,
-              npLv: true,
-              width: 48,
-              extraText: scoreOf(svt.collectionNo).toString(),
+            return GestureDetector(
+              onLongPress: () {
+                router.showDialog(
+                  builder: (context) {
+                    return SimpleDialog(
+                      title: Text(S.current.lucky_bag_rating),
+                      children: [
+                        for (int score = _kScoreMin; score <= _kScoreMax; score++)
+                          SimpleDialogOption(
+                            onPressed: () {
+                              Navigator.pop(context);
+                              _svtScores[svt.collectionNo] = score;
+                              if (mounted) setState(() {});
+                            },
+                            child: Text(score.toString()),
+                          )
+                      ],
+                    );
+                  },
+                );
+              },
+              child: SummonUtil.svtAvatar(
+                context: context,
+                card: svt,
+                favorite: svt.status.favorite,
+                npLv: true,
+                width: 48,
+                extraText: scoreOf(svt.collectionNo).toString(),
+              ),
             );
           }).toList(),
         ),

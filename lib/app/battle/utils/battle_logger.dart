@@ -366,6 +366,10 @@ class BattleRecordManager {
         if (record.card?.cardType.isQAB() ?? true) {
           attackedCards += 1;
         }
+      } else if (record is BattleInstantDeathRecord) {
+        if (record.card?.isTD == true) {
+          attackedCards += 1;
+        }
       }
     }
     if (totalCards > attackedCards) {

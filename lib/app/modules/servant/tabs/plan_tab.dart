@@ -4,6 +4,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'package:chaldea/app/app.dart';
+import 'package:chaldea/app/modules/common/filter_group.dart';
 import 'package:chaldea/app/modules/common/misc.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
@@ -690,8 +691,7 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
     );
   }
 
-  bool get useActiveSkill => db.runtimeData.svtPlanTabButtonBarUseActive;
-  set useActiveSkill(bool v) => db.runtimeData.svtPlanTabButtonBarUseActive = v;
+  static bool useActiveSkill = true;
 
   Widget buildButtonBar(SvtPlan targetPlan) {
     final curVal = status.cur;
@@ -738,33 +738,26 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
         child: Text(S.current.ok),
       ));
     }
-
-    buttons.add(const SizedBox(
-      height: 28,
-      child: VerticalDivider(
-        width: 8,
-        thickness: 1,
+    buttons.addAll([
+      const SizedBox(
+        height: 28,
+        child: VerticalDivider(
+          width: 8,
+          thickness: 1,
+        ),
       ),
-    ));
-    buttons.add(DropdownButton<bool>(
-      value: useActiveSkill,
-      underline: const SizedBox(),
-      items: [
-        DropdownMenuItem(
-          value: true,
-          child: Text('${S.current.active_skill_short}:'),
-        ),
-        DropdownMenuItem(
-          value: false,
-          child: Text('${S.current.append_skill_short}:'),
-        ),
-      ],
-      onChanged: (v) {
-        setState(() {
-          if (v != null) useActiveSkill = v;
-        });
-      },
-    ));
+      FilterOption(
+        selected: false,
+        value: null,
+        child: Text(useActiveSkill ? '${S.current.active_skill_short}:' : '${S.current.append_skill_short}:'),
+        onChanged: (v) {
+          setState(() {
+            useActiveSkill = !useActiveSkill;
+          });
+        },
+      ),
+      SizedBox(width: 8),
+    ]);
 
     // Lv.x or ≠
     final _rightPlan = enhanceMode ? targetPlan : plan;

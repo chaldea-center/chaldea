@@ -76,6 +76,11 @@ class _UserQuestFarmingStatPageState extends State<UserQuestFarmingStatPage> wit
     failedQuests.sort2((e) => -e.loseNum);
   }
 
+  List<_QuestInfo> getShownQuests(List<_QuestInfo> quests) {
+    if (warId == 0) return quests;
+    return quests.where((quest) => quest.quest?.warId == warId).toList();
+  }
+
   String get hint {
     return Language.isZH
         ? """- clearNum=通关次数(仅关卡最后一个进度)。challengeNum=挑战次数，所有进度，包括失败撤退。
@@ -90,6 +95,7 @@ class _UserQuestFarmingStatPageState extends State<UserQuestFarmingStatPage> wit
 
   @override
   Widget build(BuildContext context) {
+    final war = db.gameData.wars[warId];
     return Scaffold(
       appBar: AppBar(
         title: Text(S.current.quest),
@@ -111,32 +117,65 @@ class _UserQuestFarmingStatPageState extends State<UserQuestFarmingStatPage> wit
           )
         ],
       ),
-      body: TabBarView(
-        controller: _tabController,
+      body: Column(
         children: [
-          buildAllTab(),
-          buildFreeTab(),
-          buildFailTab(),
-          Builder(builder: buildOthers),
+          Expanded(
+            child: TabBarView(
+              controller: _tabController,
+              children: [
+                buildAllTab(),
+                buildFreeTab(),
+                buildFailTab(),
+                Builder(builder: buildOthers),
+              ],
+            ),
+          ),
+          kDefaultDivider,
+          ListTile(
+            dense: true,
+            title: Text(S.current.war),
+            subtitle: Text(war?.lShortName.setMaxLines(1) ?? S.current.general_all, maxLines: 1),
+            tileColor: Theme.of(context).cardColor,
+            onTap: () async {
+              final selected = await router.pushPage<int>(EventChooser(
+                initTab: warId < 1000 ? 0 : 1,
+                showChaldeaGate: true,
+                hasFreeQuest: false,
+              ));
+              if (selected != null) {
+                warId = selected;
+              }
+              if (mounted) setState(() {});
+            },
+            trailing: IconButton(
+              onPressed: () {
+                setState(() {
+                  warId = 0;
+                });
+              },
+              icon: const Icon(Icons.clear),
+            ),
+          ),
         ],
       ),
     );
   }
 
   Widget buildAllTab() {
+    final shownQuests = getShownQuests(allQuests);
     switch (userQuestSortType) {
       case _UserQuestSort.clearNum:
-        allQuests.sortByList((e) => [-e.userQuest.clearNum, -e.userQuest.challengeNum]);
+        shownQuests.sortByList((e) => [-e.userQuest.clearNum, -e.userQuest.challengeNum]);
       case _UserQuestSort.challengeNum:
-        allQuests.sortByList((e) => [-e.userQuest.challengeNum, -e.userQuest.clearNum]);
+        shownQuests.sortByList((e) => [-e.userQuest.challengeNum, -e.userQuest.clearNum]);
     }
     return Column(
       children: [
         Expanded(
           child: ListView.builder(
-            itemCount: allQuests.length,
+            itemCount: shownQuests.length,
             itemBuilder: (context, index) {
-              final info = allQuests[index];
+              final info = shownQuests[index];
               String primary, secondary;
               switch (userQuestSortType) {
                 case _UserQuestSort.clearNum:
@@ -185,62 +224,28 @@ class _UserQuestFarmingStatPageState extends State<UserQuestFarmingStatPage> wit
   }
 
   Widget buildFreeTab() {
-    final war = db.gameData.wars[warId];
-    final shownQuests = freeQuests.toList();
-    if (warId != 0) {
-      shownQuests.retainWhere((quest) => quest.quest?.warId == warId);
-    }
-    return Column(
-      children: [
-        Expanded(
-          child: ListView.builder(
-            itemCount: shownQuests.length,
-            itemBuilder: (context, index) => buildQuest(
-                context,
-                shownQuests[index],
-                Text(
-                  Transl.special.funcValCountTimes(shownQuests[index].winNum),
-                  style: const TextStyle(fontSize: 12),
-                )),
-          ),
-        ),
-        kDefaultDivider,
-        ListTile(
-          title: Text(S.current.war),
-          subtitle: Text(war?.lShortName ?? S.current.general_all),
-          tileColor: Theme.of(context).cardColor,
-          onTap: () async {
-            final selected = await router.pushPage<int>(EventChooser(
-              initTab: warId < 1000 ? 0 : 1,
-              showChaldeaGate: true,
-              hasFreeQuest: false,
-            ));
-            if (selected != null) {
-              warId = selected;
-            }
-            if (mounted) setState(() {});
-          },
-          trailing: IconButton(
-            onPressed: () {
-              setState(() {
-                warId = 0;
-              });
-            },
-            icon: const Icon(Icons.clear),
-          ),
-        ),
-      ],
+    final shownQuests = getShownQuests(freeQuests);
+    return ListView.builder(
+      itemCount: shownQuests.length,
+      itemBuilder: (context, index) => buildQuest(
+          context,
+          shownQuests[index],
+          Text(
+            Transl.special.funcValCountTimes(shownQuests[index].winNum),
+            style: const TextStyle(fontSize: 12),
+          )),
     );
   }
 
   Widget buildFailTab() {
+    final shownQuests = getShownQuests(failedQuests);
     return ListView.builder(
-      itemCount: failedQuests.length,
+      itemCount: shownQuests.length,
       itemBuilder: (context, index) => buildQuest(
         context,
-        failedQuests[index],
+        shownQuests[index],
         Text(
-          Transl.special.funcValCountTimes(failedQuests[index].loseNum),
+          Transl.special.funcValCountTimes(shownQuests[index].loseNum),
           style: const TextStyle(fontSize: 12),
         ),
       ),

@@ -239,6 +239,7 @@ class AssetURL {
   String items(int itemId) => "$publicDir/Items/$itemId.png";
   String coins(int itemId) => "$publicDir/Coins/$itemId.png";
   String face(int itemId, int i) => "$publicDir/Faces/f_$itemId$i.png";
+  String faceId(int iconId) => "$publicDir/Faces/f_$iconId.png";
   String faceChange(int itemId, int i, String suffix) => "$publicDir/Faces/f_$itemId$i$suffix.png";
   String equipFace(int itemId, int i) => "$publicDir/EquipFaces/f_$itemId$i.png";
   String enemy(int itemId, int i) => "$publicDir/Enemys/$itemId$i.png";

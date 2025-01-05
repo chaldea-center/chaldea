@@ -56,8 +56,6 @@ class RuntimeData {
 
   WebRenderMode? webRendererCanvasKit;
 
-  bool svtPlanTabButtonBarUseActive = true;
-
   final AppClipBoard clipBoard = AppClipBoard();
 
   int lastUpload = 0;
