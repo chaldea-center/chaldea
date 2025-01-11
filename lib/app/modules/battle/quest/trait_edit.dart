@@ -83,7 +83,7 @@ class _TraitEditPageState extends State<TraitEditPage> {
         onPressed: () {
           setState(() {
             hasEdit = true;
-            traits.removeAt(index);
+            traits.remove(trait);
           });
         },
         icon: const Icon(Icons.clear),

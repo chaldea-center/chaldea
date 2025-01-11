@@ -110,7 +110,7 @@ class SniffPresentBoxDetailPage extends StatelessWidget {
     final gift = BaseGift(id: 0, type: GiftType.fromId(present.giftType), objectId: present.objectId, num: present.num);
     return ListTile(
       dense: true,
-      leading: gift.iconBuilder(context: context),
+      leading: gift.iconBuilder(context: context, width: 32),
       title: Text('${gift.shownName} ×${gift.num}'),
       subtitle: Text([
         present.message,

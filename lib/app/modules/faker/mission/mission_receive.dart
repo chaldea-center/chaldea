@@ -45,10 +45,9 @@ class _UserEventMissionReceivePageState extends State<UserEventMissionReceivePag
     await runtime.runTask(runtime.gameData.loadMasterMissions, check: false);
     mms = runtime.gameData.masterMissions.values.toList();
     final now = DateTime.now().timestamp;
-    mms.removeWhere((mm) =>
-        mm.startedAt > now ||
-        mm.closedAt < now ||
-        !const [MissionType.weekly, MissionType.extra, MissionType.limited, MissionType.complete].contains(mm.type));
+
+    mms.retainWhere((mm) =>
+        mm.startedAt <= now && mm.closedAt >= now && !const [MissionType.event, MissionType.random].contains(mm.type));
     mms.sort2((e) => e.closedAt);
     if (mms.isNotEmpty) {
       onSelectMM(mms.firstWhere(

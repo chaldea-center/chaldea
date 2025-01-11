@@ -989,6 +989,9 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
                         if (quest.phases.isNotEmpty && !quest.phases.contains(battleOption.questPhase)) {
                           battleOption.questPhase = quest.phases.first;
                         }
+                        if (mounted) setState(() {});
+                        await AtlasApi.questPhase(questId, battleOption.questPhase, region: runtime.region);
+                        if (mounted) setState(() {});
                       } else {
                         EasyLoading.showError('Invalid Quest');
                       }
@@ -1011,13 +1014,16 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
                         InputCancelOkDialog(
                           title: 'Quest Phase',
                           keyboardType: TextInputType.number,
-                          onSubmit: (s) {
+                          onSubmit: (s) async {
                             final phase = int.tryParse(s);
                             if (phase != null && quest.phases.contains(phase)) {
                               battleOption.questPhase = phase;
                             } else {
                               EasyLoading.showError('Invalid Phase');
                             }
+                            if (mounted) setState(() {});
+                            await AtlasApi.questPhase(battleOption.questId, battleOption.questPhase,
+                                region: runtime.region);
                             if (mounted) setState(() {});
                           },
                         ).showDialog(context);
@@ -1153,6 +1159,35 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
             icon: const Icon(Icons.add_circle),
           ),
         ),
+        if (questPhase != null && questPhase.supportServants.isNotEmpty)
+          ListTile(
+            dense: true,
+            title: Text(
+                "Guest Support (${questPhase.flags.where((e) => e.name.toLowerCase().contains('support')).join('/')})"),
+            subtitle: DropdownButton<int>(
+              isDense: true,
+              isExpanded: true,
+              value: questPhase.supportServants.any((e) => e.id == battleOption.npcSupportId)
+                  ? battleOption.npcSupportId
+                  : null,
+              hint: Text('${questPhase.supportServants.length} guest supports'),
+              items: [
+                for (final support in questPhase.supportServants)
+                  DropdownMenuItem(
+                    value: support.id,
+                    child: Text.rich(TextSpan(children: [
+                      CenterWidgetSpan(child: support.svt.iconBuilder(context: context, width: 24)),
+                      TextSpan(text: ' Lv.${support.lv} ${support.skills2.skillLvs.join("/")}'),
+                    ])),
+                  )
+              ],
+              onChanged: (v) {
+                runtime.lockTask(() {
+                  battleOption.npcSupportId = v ?? 0;
+                });
+              },
+            ),
+          ),
         DividerWithTitle(title: Transl.itemNames('星見のティーポット').l),
         CheckboxListTile.adaptive(
           dense: true,

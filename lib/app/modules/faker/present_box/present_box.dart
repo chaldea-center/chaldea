@@ -39,6 +39,7 @@ class _UserPresentBoxManagePageState extends State<UserPresentBoxManagePage> {
   @override
   void initState() {
     super.initState();
+    runtime.addDependency(this);
     showSelectedOnly = false;
     Future.microtask(() async {
       if (runtime.region == Region.jp) {
@@ -52,6 +53,12 @@ class _UserPresentBoxManagePageState extends State<UserPresentBoxManagePage> {
       }
       if (mounted) setState(() {});
     });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    runtime.removeDependency(this);
   }
 
   List<UserPresentBoxEntity> filterPresents() {

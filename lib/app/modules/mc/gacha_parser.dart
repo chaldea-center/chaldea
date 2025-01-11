@@ -282,7 +282,7 @@ class JpGachaParser {
       if (htmlText == null) continue;
 
       final doc = htmlparser.parse(htmlText);
-      final newsList = doc.getElementsByClassName('list_news')[0].getElementsByTagName('li');
+      final newsList = doc.getElementsByClassName('list_news').firstOrNull?.getElementsByTagName('li') ?? [];
 
       futures.addAll(newsList.map((node) async {
         try {
