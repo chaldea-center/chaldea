@@ -247,6 +247,7 @@ AutoBattleOptions _$AutoBattleOptionsFromJson(Map json) => $checkedCreate(
           supportCeIds:
               $checkedConvert('supportCeIds', (v) => (v as List<dynamic>?)?.map((e) => (e as num).toInt()).toSet()),
           supportCeMaxLimitBreak: $checkedConvert('supportCeMaxLimitBreak', (v) => v as bool? ?? true),
+          npcSupportId: $checkedConvert('npcSupportId', (v) => (v as num?)?.toInt() ?? 0),
           useCampaignItem: $checkedConvert('useCampaignItem', (v) => v as bool? ?? false),
           campaignItemId: $checkedConvert('campaignItemId', (v) => (v as num?)?.toInt() ?? 0),
           stopIfBondLimit: $checkedConvert('stopIfBondLimit', (v) => v as bool? ?? true),
@@ -289,6 +290,7 @@ Map<String, dynamic> _$AutoBattleOptionsToJson(AutoBattleOptions instance) => <S
       'supportSvtIds': instance.supportSvtIds.toList(),
       'supportCeIds': instance.supportCeIds.toList(),
       'supportCeMaxLimitBreak': instance.supportCeMaxLimitBreak,
+      'npcSupportId': instance.npcSupportId,
       'useCampaignItem': instance.useCampaignItem,
       'campaignItemId': instance.campaignItemId,
       'stopIfBondLimit': instance.stopIfBondLimit,

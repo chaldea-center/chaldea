@@ -238,12 +238,20 @@ abstract class FakerAgent<TRequest extends FRequestBase, TUser extends AutoLogin
         routeSelect: [],
       );
     }
+    int eventId = db.gameData.others.eventQuestGroups.entries
+            .firstWhereOrNull((e) => e.value.contains(questPhaseEntity.id))
+            ?.key ??
+        0;
 
     int activeDeckId, followerId, followerClassId, followerType, followerSupportDeckId;
     int userEquipId = 0;
 
     if (questPhaseEntity.isUseUserEventDeck()) {
       activeDeckId = questPhaseEntity.extraDetail?.useEventDeckNo ?? 1;
+      final eventDeck = mstData.userEventDeck[UserEventDeckEntity.createPK(eventId, activeDeckId)];
+      if (eventDeck == null) {
+        throw SilentException('UserEventDeck(eventId=$eventId,deckNo=$activeDeckId) not found');
+      }
     } else {
       activeDeckId = options.deckId;
     }
@@ -271,17 +279,7 @@ abstract class FakerAgent<TRequest extends FRequestBase, TUser extends AutoLogin
       followerClassId = 0;
       followerType = 0;
       followerSupportDeckId = 0;
-      int? eventId = db.gameData.others.eventQuestGroups.entries
-          .firstWhereOrNull((e) => e.value.contains(questPhaseEntity.id))
-          ?.key;
-      if (eventId == null) {
-        throw SilentException('Quest related event not found');
-      }
-      final deckNo = questPhaseEntity.extraDetail?.useEventDeckNo ?? 1;
-      final eventDeck = mstData.userEventDeck[UserEventDeckEntity.createPK(eventId, deckNo)];
-      if (eventDeck == null) {
-        throw SilentException('UserEventDeck(eventId=$eventId,deckNo=$deckNo) not found');
-      }
+      final eventDeck = mstData.userEventDeck[UserEventDeckEntity.createPK(eventId, activeDeckId)]!;
       userEquipId = eventDeck.deckInfo!.userEquipId;
     } else if (questPhaseEntity.flags.contains(QuestFlag.eventDeckNoSupport)) {
       followerId = 0;

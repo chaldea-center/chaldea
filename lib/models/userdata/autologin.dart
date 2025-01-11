@@ -299,6 +299,7 @@ class AutoBattleOptions {
   Set<int> supportSvtIds;
   Set<int> supportCeIds;
   bool supportCeMaxLimitBreak;
+  int npcSupportId = 0;
   bool useCampaignItem;
   int campaignItemId = 0;
   // result
@@ -327,6 +328,7 @@ class AutoBattleOptions {
     Set<int>? supportSvtIds,
     Set<int>? supportCeIds,
     this.supportCeMaxLimitBreak = true,
+    this.npcSupportId = 0,
     this.useCampaignItem = false,
     this.campaignItemId = 0,
     this.stopIfBondLimit = true,
