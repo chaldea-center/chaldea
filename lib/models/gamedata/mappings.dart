@@ -162,6 +162,8 @@ class Transl<K, V> {
 
   static Transl<String, String> bgmNames(String jp) => Transl(md.bgmNames, jp, jp);
 
+  static Transl<String, String> missionNames(String jp) => Transl(md.missionNames, jp, jp);
+
   static Transl<String, String> summonNames(String jp) {
     if (!md.summonNames.containsKey(jp)) {
       final jp2 = jp.replaceAll('･', '・');
@@ -289,6 +291,7 @@ class MappingData {
   final Map<String, MappingBase<String>> entityNames;
   final Map<String, MappingBase<String>> tdTypes;
   final Map<String, MappingBase<String>> bgmNames;
+  final Map<String, MappingBase<String>> missionNames;
   final Map<String, MappingBase<String>> summonNames; //
   final Map<String, MappingBase<String>> charaNames; // key: cn
   final Map<String, MappingBase<String>> buffNames;
@@ -332,6 +335,7 @@ class MappingData {
     this.entityNames = const {},
     this.tdTypes = const {},
     this.bgmNames = const {},
+    this.missionNames = const {},
     this.summonNames = const {},
     this.charaNames = const {},
     this.buffNames = const {},
@@ -377,6 +381,7 @@ class MappingData {
     _updateRegion(entityNames, Region.jp);
     _updateRegion(tdTypes, Region.jp);
     _updateRegion(bgmNames, Region.jp);
+    _updateRegion(missionNames, Region.jp);
     _updateRegion(charaNames, Region.cn);
     _updateRegion(buffDetail, Region.jp);
     _updateRegion(skillNames, Region.jp);

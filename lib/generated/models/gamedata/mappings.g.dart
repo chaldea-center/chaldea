@@ -67,6 +67,10 @@ MappingData _$MappingDataFromJson(Map json) => MappingData(
             (k, e) => MapEntry(k as String, MappingBase<String>.fromJson(Map<String, dynamic>.from(e as Map))),
           ) ??
           const {},
+      missionNames: (json['mission_names'] as Map?)?.map(
+            (k, e) => MapEntry(k as String, MappingBase<String>.fromJson(Map<String, dynamic>.from(e as Map))),
+          ) ??
+          const {},
       summonNames: (json['summon_names'] as Map?)?.map(
             (k, e) => MapEntry(k as String, MappingBase<String>.fromJson(Map<String, dynamic>.from(e as Map))),
           ) ??
@@ -185,6 +189,7 @@ Map<String, dynamic> _$MappingDataToJson(MappingData instance) => <String, dynam
       'entity_names': instance.entityNames.map((k, e) => MapEntry(k, e.toJson())),
       'td_types': instance.tdTypes.map((k, e) => MapEntry(k, e.toJson())),
       'bgm_names': instance.bgmNames.map((k, e) => MapEntry(k, e.toJson())),
+      'mission_names': instance.missionNames.map((k, e) => MapEntry(k, e.toJson())),
       'summon_names': instance.summonNames.map((k, e) => MapEntry(k, e.toJson())),
       'chara_names': instance.charaNames.map((k, e) => MapEntry(k, e.toJson())),
       'buff_names': instance.buffNames.map((k, e) => MapEntry(k, e.toJson())),

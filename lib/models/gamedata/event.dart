@@ -545,7 +545,7 @@ class MstMasterMission with RouteInfo {
   String? get lMissionIconDetailText {
     final text = missionIconDetailText;
     if (text == null) return null;
-    return Transl.eventNames(text).l;
+    return Transl.missionNames(text).l;
   }
 
   String getDispName([String sep = '\n']) {
