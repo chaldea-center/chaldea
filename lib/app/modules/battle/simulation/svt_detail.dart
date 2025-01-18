@@ -423,7 +423,7 @@ class _BattleSvtDetailState extends State<BattleSvtDetail> with SingleTickerProv
             useRootNavigator: false,
             builder: (context) {
               return Theme(
-                data: ThemeData.light(),
+                data: ThemeData.light(useMaterial3: Theme.of(context).useMaterial3),
                 child: SimpleCancelOkDialog(
                   title: const Text('Data Vals'),
                   content: JsonViewer(vals, defaultOpen: true),

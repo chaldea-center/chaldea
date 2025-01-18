@@ -114,7 +114,7 @@ class ValDsc extends StatelessWidget {
           useRootNavigator: false,
           builder: (context) {
             return Theme(
-              data: ThemeData.light(),
+              data: ThemeData.light(useMaterial3: Theme.of(context).useMaterial3),
               child: SimpleCancelOkDialog(
                 title: const Text('Data Vals'),
                 content: JsonViewer((originVals ?? vals).toJson(sort: false), defaultOpen: true),
@@ -248,7 +248,7 @@ class ValDsc extends StatelessWidget {
         //   _addPercent(vals.Value2, 10);
         // }
       }
-      if (vals.Correction != null) {
+      if ((originVals ?? vals).Correction != null) {
         switch (func.funcType) {
           case FuncType.damageNpIndividual:
           case FuncType.damageNpAndCheckIndividuality:
@@ -258,8 +258,12 @@ class ValDsc extends StatelessWidget {
             break;
           case FuncType.damageNpIndividualSum:
             if (vals.Value2 != null) {
-              parts.add('${_toPercent(vals.Value2, 10)}%+N×${_toPercent(vals.Correction, 10)}%');
-              if (vals.ParamAddMaxCount != null) {
+              if (vals.Correction != null && vals.Correction != 0) {
+                parts.add('${_toPercent(vals.Value2, 10)}%+N×${_toPercent(vals.Correction, 10)}%');
+              } else {
+                parts.add('${_toPercent(vals.Value2, 10)}%');
+              }
+              if (vals.ParamAddMaxCount != null && vals.ParamAddMaxCount! > 0) {
                 parts.add('N≤${vals.ParamAddMaxCount}');
               }
             } else {

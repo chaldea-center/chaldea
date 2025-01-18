@@ -1,8 +1,11 @@
 import 'package:flutter/foundation.dart';
 
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+
 import 'package:chaldea/app/modules/import_data/autologin/autologin_page.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
+import 'package:chaldea/packages/app_info.dart';
 import 'package:chaldea/packages/split_route/split_route.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../../app.dart';
@@ -62,7 +65,9 @@ class _ImportPageHomeState extends State<ImportPageHome> {
                 subtitle: Text(S.current.http_sniff_hint),
                 trailing: const Icon(Icons.keyboard_arrow_right),
                 onTap: () {
-                  router.popDetailAndPush(child: ImportHttpPage());
+                  if (checkDataRequiredVersion()) {
+                    router.popDetailAndPush(child: ImportHttpPage());
+                  }
                 },
               ),
               ListTile(
@@ -75,7 +80,9 @@ class _ImportPageHomeState extends State<ImportPageHome> {
                 onTap: kIsWeb
                     ? null
                     : () {
-                        router.pushPage(const AutoLoginPage());
+                        if (checkDataRequiredVersion()) {
+                          router.pushPage(const AutoLoginPage());
+                        }
                       },
               ),
             ],
@@ -89,7 +96,7 @@ class _ImportPageHomeState extends State<ImportPageHome> {
                 subtitle: Text(S.current.import_item_hint),
                 trailing: const Icon(Icons.keyboard_arrow_right),
                 onTap: () {
-                  router.pushPage(ImportItemScreenshotPage(), popDetail: true);
+                  if (checkDataRequiredVersion()) router.pushPage(ImportItemScreenshotPage(), popDetail: true);
                 },
               ),
               ListTile(
@@ -98,7 +105,9 @@ class _ImportPageHomeState extends State<ImportPageHome> {
                 subtitle: Text(S.current.import_active_skill_hint),
                 trailing: const Icon(Icons.keyboard_arrow_right),
                 onTap: () {
-                  router.pushPage(ImportSkillScreenshotPage(isAppend: false), popDetail: true);
+                  if (checkDataRequiredVersion()) {
+                    router.pushPage(ImportSkillScreenshotPage(isAppend: false), popDetail: true);
+                  }
                 },
               ),
               ListTile(
@@ -107,7 +116,9 @@ class _ImportPageHomeState extends State<ImportPageHome> {
                 subtitle: Text('[NO JP] ${S.current.import_append_skill_hint}'),
                 trailing: const Icon(Icons.keyboard_arrow_right),
                 onTap: () {
-                  router.pushPage(ImportSkillScreenshotPage(isAppend: true), popDetail: true);
+                  if (checkDataRequiredVersion()) {
+                    router.pushPage(ImportSkillScreenshotPage(isAppend: true), popDetail: true);
+                  }
                 },
               ),
               if (1 > 2)
@@ -134,5 +145,14 @@ class _ImportPageHomeState extends State<ImportPageHome> {
         ],
       ),
     );
+  }
+
+  bool checkDataRequiredVersion() {
+    final requiredVersion = db.runtimeData.dataRequiredAppVer;
+    if (requiredVersion != null && requiredVersion > AppInfo.version) {
+      EasyLoading.showError(S.current.error_required_app_version(requiredVersion.versionString, AppInfo.versionString));
+      return false;
+    }
+    return true;
   }
 }

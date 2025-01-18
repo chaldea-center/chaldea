@@ -461,14 +461,14 @@ class __ViewEnemyMissionTargetPageState extends State<_ViewEnemyMissionTargetPag
       final int totalCount = Maths.sum(counts.values);
       Widget child = ListTile(
         dense: true,
-        title: Text(quest?.lDispName ?? ""),
+        title: Text(quest?.lDispName ?? "Quest $questId"),
         subtitle: Text.rich(TextSpan(children: [
           TextSpan(text: '${quest?.consume ?? "?"}AP ${quest?.war?.lShortName}\n'),
           for (final (enemy, count) in counts.items) ...[
             CenterWidgetSpan(
               child: GameCardMixin.cardIconBuilder(
                 context: context,
-                icon: AssetURL.i.enemyId(enemy.iconId),
+                icon: getEnemyIcon(enemy),
                 width: 24,
                 onTap: () => router.push(url: Routes.servantI(enemy.svtId)),
               ),
@@ -501,5 +501,23 @@ class __ViewEnemyMissionTargetPageState extends State<_ViewEnemyMissionTargetPag
         itemBuilder: (context, index) => children[index],
       ),
     );
+  }
+
+  String getEnemyIcon(MstViewEnemy enemy) {
+    final svt = db.gameData.servantsById[enemy.svtId];
+    final assetUrl = AssetURL();
+    if (enemy.iconId == 0) {
+      if (enemy.limitCount < 10) {
+        return assetUrl.face(enemy.svtId, enemy.limitCount);
+      } else if (svt != null) {
+        String? icon = svt.ascendIcon(enemy.limitCount, true);
+        if (icon != null) return GameCardMixin.makeBordered(icon)!;
+      }
+      return assetUrl.face(enemy.svtId, enemy.limitCount);
+    }
+    if (svt != null) {
+      return GameCardMixin.makeBordered(assetUrl.faceId(enemy.iconId))!;
+    }
+    return assetUrl.enemyId(enemy.iconId);
   }
 }
