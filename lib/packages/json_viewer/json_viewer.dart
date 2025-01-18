@@ -22,7 +22,7 @@ class _JsonViewerPageState extends State<JsonViewerPage> {
 
   @override
   Widget build(BuildContext context) {
-    final lightTheme = ThemeData.light();
+    final lightTheme = ThemeData.light(useMaterial3: Theme.of(context).useMaterial3);
     return Scaffold(
       appBar: AppBar(
         title: const Text("Json Viewer"),
@@ -73,14 +73,19 @@ class JsonViewer extends StatelessWidget {
   }
 
   static Widget getContentWidget(dynamic content, bool defaultOpen) {
-    if (content == null) {
-      return const Text('{}');
+    if (content == null || (content is Map && content.isEmpty)) {
+      return Builder(builder: (context) {
+        return Text('{}', style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color));
+      });
     } else if (content is List) {
       return JsonArrayViewer(content, notRoot: false, defaultOpen: defaultOpen);
     } else if (content is Map) {
       return JsonObjectViewer(content, notRoot: false, defaultOpen: defaultOpen);
     } else {
-      return Text('${content.runtimeType}: $content');
+      return Builder(builder: (context) {
+        return Text('${content.runtimeType}: $content',
+            style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color));
+      });
     }
   }
 }

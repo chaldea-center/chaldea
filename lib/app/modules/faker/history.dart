@@ -244,7 +244,7 @@ Future<void> _showDataFormatDialog(BuildContext context, dynamic data) {
                   ? null
                   : () {
                       Navigator.pop(context);
-                      router.pushPage(_FormDataViewer(data: formData!));
+                      router.pushPage(FormDataViewer(data: formData!));
                     },
               title: const Text("Form"),
             ),
@@ -370,9 +370,9 @@ class _StringViewer extends StatelessWidget {
   }
 }
 
-class _FormDataViewer extends StatelessWidget {
+class FormDataViewer extends StatelessWidget {
   final List<MapEntry<String, String>> data;
-  const _FormDataViewer({required this.data});
+  const FormDataViewer({super.key, required this.data});
 
   @override
   Widget build(BuildContext context) {

@@ -12,6 +12,7 @@ import 'package:chaldea/packages/json_viewer/json_viewer.dart';
 import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/utils/extension.dart';
 import 'package:chaldea/widgets/widgets.dart';
+import '../faker/history.dart';
 
 class CipherTestPage extends StatefulWidget {
   const CipherTestPage({super.key});
@@ -109,42 +110,20 @@ class _CipherTestPageState extends State<CipherTestPage> {
             children: [
               FilledButton(
                 onPressed: () {
-                  dynamic data = inputController.text;
-                  try {
-                    data = jsonDecode(data);
-                  } catch (e) {
-                    //
-                  }
-                  router.pushPage(JsonViewerPage(data));
+                  viewData(inputController.text);
                 },
                 child: const Text('Input'),
               ),
               FilledButton(
                 onPressed: () {
-                  dynamic data = output;
-                  try {
-                    data = jsonDecode(data);
-                  } catch (e) {
-                    //
-                  }
-                  router.pushPage(JsonViewerPage(data));
+                  viewData(output);
                 },
                 child: const Text('Output'),
               ),
               FilledButton(
                 onPressed: () async {
                   String? text = (await Clipboard.getData(Clipboard.kTextPlain))?.text;
-                  if (text == null || text.isEmpty) {
-                    EasyLoading.showError(S.current.empty_hint);
-                    return;
-                  }
-                  dynamic data = text;
-                  try {
-                    data = jsonDecode(text);
-                  } catch (e) {
-                    //
-                  }
-                  router.pushPage(JsonViewerPage(data));
+                  viewData(text);
                 },
                 child: const Text('Clipboard'),
               ),
@@ -268,5 +247,44 @@ class _CipherTestPageState extends State<CipherTestPage> {
         ).showDialog(context);
       },
     );
+  }
+
+  void viewData(dynamic data) {
+    if (data == null || (data is String && data.isEmpty)) {
+      EasyLoading.showError(S.current.empty_hint);
+      return;
+    }
+
+    SimpleDialog(
+      title: Text('Data Format'),
+      children: [
+        SimpleDialogOption(
+          child: Text('Json'),
+          onPressed: () {
+            dynamic jsonData = data;
+            try {
+              jsonData = jsonDecode(jsonData);
+            } catch (e) {
+              //
+            }
+            router.pushPage(JsonViewerPage(jsonData));
+          },
+        ),
+        SimpleDialogOption(
+          child: Text('Form'),
+          onPressed: () {
+            List<MapEntry<String, String>> formData;
+            if (data is Map) {
+              formData = data.entries.map((e) => MapEntry(e.key.toString(), e.value.toString())).toList();
+            } else if (data is String) {
+              formData = Uri.splitQueryString(data).entries.toList();
+            } else {
+              formData = [MapEntry('unknown', data.toString())];
+            }
+            router.pushPage(FormDataViewer(data: formData));
+          },
+        )
+      ],
+    ).showDialog(context);
   }
 }
