@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -248,12 +249,14 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
     final userGame = mstData.user ?? agent.user.userGame;
     List<InlineSpan> subtitle = [TextSpan(text: userGame?.friendCode ?? '')];
     if (mstData.user != null) {
+      onTapPresentBox() => router.pushPage(UserPresentBoxManagePage(runtime: runtime));
       subtitle.addAll([
         TextSpan(text: '  '),
         CenterWidgetSpan(
           child: db.getIconImage(
             "https://static.atlasacademy.io/file/aa-fgo-extract-jp/Terminal/OrdealCall/TerminalAtlas/status_icongift_open.png",
             width: 24,
+            onTap: onTapPresentBox,
           ),
         ),
         TextSpan(
@@ -261,6 +264,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
           style: mstData.userPresentBox.length > runtime.gameData.constants.maxPresentBoxNum - 20
               ? TextStyle(color: Colors.amber)
               : null,
+          recognizer: TapGestureRecognizer()..onTap = onTapPresentBox,
         ),
       ]);
     }

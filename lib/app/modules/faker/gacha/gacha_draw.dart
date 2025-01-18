@@ -241,6 +241,14 @@ class _GachaDrawPageState extends State<GachaDrawPage> {
             region: runtime.region,
             imageId: gacha.getImageId(gachaOption.gachaSubId),
           ),
+        SwitchListTile.adaptive(
+          dense: true,
+          title: Text('100连抽'),
+          value: gachaOption.hundredDraw,
+          onChanged: (v) {
+            runtime.lockTask(() => gachaOption.hundredDraw = v);
+          },
+        ),
         ListTile(
           dense: true,
           title: Text('Loop Count'),
@@ -261,7 +269,7 @@ class _GachaDrawPageState extends State<GachaDrawPage> {
             child: Text(gachaOption.loopCount.toString()),
           ),
         ),
-        buildLastResult(),
+        Padding(padding: EdgeInsets.symmetric(horizontal: 16), child: buildLastResult()),
         buildGachaStat(),
         TileGroup(
           header: '${S.current.enhance} - ${S.current.craft_essence}',
@@ -538,46 +546,54 @@ class _GachaDrawPageState extends State<GachaDrawPage> {
 
   Widget buildLastResult() {
     final cards = runtime.gachaResultStat.lastDrawResult;
-    final row1 = cards.take(6).toList();
-    final row2 = cards.skip(6).toList();
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        for (final row in [row1, row2])
-          if (row.isNotEmpty)
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: row.map((card) {
-                Widget child = card.toGift().iconBuilder(
-                      context: context,
-                      width: 48,
-                      text: card.userSvtId == 0 ? 'sold' : null,
-                      showOne: false,
-                    );
-                if (card.userSvtId == 0) {
-                  child = Stack(
-                    children: [
-                      child,
-                      Positioned.fill(
-                        child: IgnorePointer(
-                          child: Container(
-                            color: Colors.grey.withAlpha(153),
-                            margin: EdgeInsets.all(2),
-                          ),
-                        ),
-                      ),
-                    ],
-                  );
-                }
-                return Flexible(child: child);
-              }).toList(),
-            )
-      ],
-    );
+    final cardWidgets = cards.map((card) {
+      Widget child = card.toGift().iconBuilder(
+            context: context,
+            width: 48,
+            text: card.userSvtId == 0 ? 'sold' : null,
+            showOne: false,
+          );
+      if (card.userSvtId == 0) {
+        child = Stack(
+          children: [
+            child,
+            Positioned.fill(
+              child: IgnorePointer(
+                child: Container(
+                  color: Colors.grey.withAlpha(153),
+                  margin: EdgeInsets.all(2),
+                ),
+              ),
+            ),
+          ],
+        );
+      }
+      return child;
+    }).toList();
+    if (cardWidgets.length > 10) {
+      return Wrap(
+        alignment: WrapAlignment.center,
+        children: cardWidgets,
+      );
+    } else {
+      final rows = [cardWidgets.take(6).toList(), cardWidgets.skip(6).toList()];
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          for (final row in rows)
+            if (row.isNotEmpty)
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [for (final child in row) Flexible(child: child)],
+              )
+        ],
+      );
+    }
   }
 
   Widget buildGachaStat() {
     final stat = runtime.gachaResultStat;
+    final userGacha = mstData.userGacha[gachaOption.gachaId];
     Set<int> shownSvtIds = {}, shownCeIds = {};
     shownCeIds.addAll(gachaOption.sellKeepSvtIds.where((e) => db.gameData.craftEssencesById.containsKey(e)));
     for (final svtId in stat.servants.keys) {
@@ -618,12 +634,13 @@ class _GachaDrawPageState extends State<GachaDrawPage> {
     }
 
     List<Widget> children = [
+      if (userGacha != null) ListTile(title: Text(' Free Draw at ${userGacha.freeDrawAt.sec2date().toStringShort()}')),
       ListTile(
-        title: Text('${stat.totalCount.format(compact: false, groupSeparator: ",")} ${S.current.summon_pull_unit},'
-            ' ${((stat.totalCount * 200).format(compact: false, groupSeparator: ","))} ${Items.friendPoint?.lName.l}'),
-      ),
-      ListTile(
-        title: Text('${Maths.sum(stat.coins.values)} ${S.current.servant_coin_short}'),
+        title: Text([
+          '${stat.totalCount.format(compact: false, groupSeparator: ",")} ${S.current.summon_pull_unit}',
+          '${((stat.totalCount * 200).format(compact: false, groupSeparator: ","))} ${Items.friendPoint?.lName.l}',
+          '${Maths.sum(stat.coins.values)} ${S.current.servant_coin_short}',
+        ].join(', ')),
       ),
       ListTile(
         title: Text('Cards/Coins'),
@@ -753,22 +770,31 @@ class _GachaDrawPageState extends State<GachaDrawPage> {
                     onPressed: () {
                       Navigator.pop(context);
                       runtime.runTask(() async {
-                        return runtime.fpGachaDraw();
+                        return runtime.fpGachaDraw(hundredDraw: false);
                       });
                     },
-                    child: Text('Draw×1'),
+                    child: Text('10'),
                   ),
                   TextButton(
                     onPressed: () {
                       Navigator.pop(context);
                       runtime.runTask(() async {
                         for (final _ in range(10)) {
-                          await runtime.fpGachaDraw();
+                          await runtime.fpGachaDraw(hundredDraw: false);
                           if (mounted) setState(() {});
                         }
                       });
                     },
-                    child: Text('Draw×10'),
+                    child: Text('10×10'),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                      runtime.runTask(() async {
+                        return runtime.fpGachaDraw(hundredDraw: true);
+                      });
+                    },
+                    child: Text('100'),
                   ),
                 ],
               );

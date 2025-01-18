@@ -330,6 +330,7 @@ GachaOption _$GachaOptionFromJson(Map json) => $checkedCreate(
           gachaId: $checkedConvert('gachaId', (v) => (v as num?)?.toInt() ?? 0),
           gachaSubId: $checkedConvert('gachaSubId', (v) => (v as num?)?.toInt() ?? 0),
           loopCount: $checkedConvert('loopCount', (v) => (v as num?)?.toInt() ?? 0),
+          hundredDraw: $checkedConvert('hundredDraw', (v) => v as bool? ?? false),
           ceEnhanceBaseUserSvtIds: $checkedConvert(
               'ceEnhanceBaseUserSvtIds', (v) => (v as List<dynamic>?)?.map((e) => (e as num).toInt()).toSet()),
           ceEnhanceBaseSvtIds: $checkedConvert(
@@ -349,6 +350,7 @@ Map<String, dynamic> _$GachaOptionToJson(GachaOption instance) => <String, dynam
       'gachaId': instance.gachaId,
       'gachaSubId': instance.gachaSubId,
       'loopCount': instance.loopCount,
+      'hundredDraw': instance.hundredDraw,
       'ceEnhanceBaseUserSvtIds': instance.ceEnhanceBaseUserSvtIds.toList(),
       'ceEnhanceBaseSvtIds': instance.ceEnhanceBaseSvtIds.toList(),
       'feedExp3': instance.feedExp3,

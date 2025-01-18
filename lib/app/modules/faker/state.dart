@@ -409,7 +409,7 @@ class FakerRuntime {
 
   // gacha
 
-  Future<void> fpGachaDraw() async {
+  Future<void> fpGachaDraw({bool hundredDraw = false}) async {
     final counts = mstData.countSvtKeep();
     final userGame = mstData.user!;
     if (counts.svtCount >= userGame.svtKeep + 100) {
@@ -434,7 +434,17 @@ class FakerRuntime {
     if (gacha.type != GachaType.freeGacha) {
       throw SilentException('Only FP Gacha supported: ${gacha.type}');
     }
-    final resp = await agent.gachaDraw(gachaId: option.gachaId, num: 10, gachaSubId: option.gachaSubId);
+    int drawNum = 10;
+    final userGacha = mstData.userGacha[option.gachaId];
+    if (hundredDraw && userGacha != null && userGacha.freeDrawAt > 0) {
+      final freeDrawAt = DateTime.fromMillisecondsSinceEpoch(userGacha.freeDrawAt * 1000, isUtc: true)
+          .add(Duration(hours: region.timezone));
+      final now = DateTime.now().toUtc().add(Duration(hours: region.timezone));
+      if (now.isAfter(freeDrawAt) && now.timestamp < freeDrawAt.timestamp + kSecsPerDay && now.day == freeDrawAt.day) {
+        drawNum = 100;
+      }
+    }
+    final resp = await agent.gachaDraw(gachaId: option.gachaId, num: drawNum, gachaSubId: option.gachaSubId);
     try {
       final infos = resp.data.getResponseNull('gacha_draw')?.success?['gachaInfos'];
       if (infos != null) {
@@ -457,7 +467,7 @@ class FakerRuntime {
     while (agent.user.gacha.loopCount > 0) {
       _checkStop();
       displayToast('Draw FP gacha ${initCount - agent.user.gacha.loopCount + 1}/$initCount...');
-      await fpGachaDraw();
+      await fpGachaDraw(hundredDraw: agent.user.gacha.hundredDraw);
       agent.user.gacha.loopCount -= 1;
       update();
 

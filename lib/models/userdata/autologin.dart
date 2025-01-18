@@ -419,6 +419,7 @@ class GachaOption {
   int gachaId;
   int gachaSubId;
   int loopCount;
+  bool hundredDraw;
   // enhance
   Set<int> ceEnhanceBaseUserSvtIds;
   Set<int> ceEnhanceBaseSvtIds;
@@ -432,6 +433,7 @@ class GachaOption {
     this.gachaId = 0,
     this.gachaSubId = 0,
     this.loopCount = 0,
+    this.hundredDraw = false,
     Set<int>? ceEnhanceBaseUserSvtIds,
     Set<int>? ceEnhanceBaseSvtIds,
     this.feedExp3 = false,
