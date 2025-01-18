@@ -440,6 +440,13 @@ class Servant extends BasicServant {
     if (db.userData.svtAscensionIcon == -1 && isUserSvt) {
       ascension = status.cur.ascension;
     }
+    if (ascensionImage.isNotEmpty && collectionNo > 0) {
+      final limits = ascensionImage.where((e) => e.limitCount == ascension).toList();
+      if (limits.isNotEmpty &&
+          limits.every((e) => e.condType == CondType.questClear && !db.gameData.quests.containsKey(e.condTargetId))) {
+        ascension = limits.last.defaultLimitCount;
+      }
+    }
 
     _icon = extraAssets.faces.ascension?[ascension] ?? icon;
     if (db.gameData.isJustAddedCard(id)) return _icon;
