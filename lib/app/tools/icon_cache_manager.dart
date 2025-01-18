@@ -134,7 +134,9 @@ class AtlasIconLoader extends _CachedLoader<String, String> {
     if (!Atlas.isAtlasAsset(url)) return false;
     if (!url.endsWith('.png') ||
         // url.contains('merged') ||
-        url.endsWith('questboard_cap_closed.png')) return false;
+        url.endsWith('questboard_cap_closed.png')) {
+      return false;
+    }
     return true;
   }
 
@@ -154,7 +156,9 @@ class AtlasIconLoader extends _CachedLoader<String, String> {
     if (const <String>[
       '/JP/Banner/questboard_cap13000.png',
       '/JP/Banner/questboard_cap14000.png',
-    ].any((e) => url.endsWith(e))) return null;
+    ].any((e) => url.endsWith(e))) {
+      return null;
+    }
     limiter ??= _rateLimiter;
 
     if (kIsWeb) {

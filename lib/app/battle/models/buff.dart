@@ -231,7 +231,9 @@ class BuffData {
       isFirstSkillInTurn: battleData?.isFirstSkillInTurn,
       selfTraits: selfTraits,
       skillInfoType: skillInfoType,
-    )) return false;
+    )) {
+      return false;
+    }
 
     /// dw does not check self / op traits for svtTrait related types
     if (buff.type == BuffType.addIndividuality || buff.type == BuffType.subIndividuality) {

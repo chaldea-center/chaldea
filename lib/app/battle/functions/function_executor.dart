@@ -910,7 +910,9 @@ class FunctionExecutor {
       FuncType.damageValue,
       FuncType.damageValueSafe,
       FuncType.damageValueSafeOnce,
-    }.contains(nextFuncType)) return true;
+    }.contains(nextFuncType)) {
+      return true;
+    }
     return false;
   }
 }

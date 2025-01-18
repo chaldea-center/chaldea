@@ -492,7 +492,9 @@ class FakerRuntime {
           userSvt.lv != 1 ||
           entity == null ||
           userSvt.createdAt < timeLimit ||
-          agent.user.gacha.sellKeepSvtIds.contains(userSvt.svtId)) return false;
+          agent.user.gacha.sellKeepSvtIds.contains(userSvt.svtId)) {
+        return false;
+      }
       if (entity.type == SvtType.combineMaterial && entity.rarity <= 3) return true;
       final svt = db.gameData.servantsById[userSvt.svtId];
       if (svt == null || svt.rarity > 3 || svt.rarity == 0) return false;

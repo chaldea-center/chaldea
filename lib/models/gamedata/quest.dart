@@ -569,7 +569,9 @@ class BaseGift {
       GiftType.eventHeelPortrait,
       GiftType.battleItem,
       GiftType.unknown,
-    ].contains(type)) return false;
+    ].contains(type)) {
+      return false;
+    }
     return true;
   }
 
