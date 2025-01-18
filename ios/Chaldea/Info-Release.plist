@@ -83,6 +83,8 @@
 	<true/>
 	<key>FlutterDeepLinkingEnabled</key>
 	<true/>
+	<key>FLTEnableImpeller</key>
+	<false/>
 	<key>GADApplicationIdentifier</key>
 	<string>ca-app-pub-1170355046794925~2750337093</string>
 	<key>SKAdNetworkItems</key>
