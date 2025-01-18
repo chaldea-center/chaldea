@@ -274,86 +274,95 @@ class FakerRuntime {
       }
       update();
 
-      final battleEntity = setupResp.data.mstData.battles.single;
-      final curBattleDrops = battleEntity.battleInfo?.getTotalDrops() ?? {};
-      logger.t('battle id: ${battleEntity.id}');
-
-      bool shouldRetire = false;
       FResponse resultResp;
-      if (battleOption.winTargetItemNum.isNotEmpty) {
-        shouldRetire = true;
-        for (final (itemId, targetNum) in battleOption.winTargetItemNum.items) {
-          if ((curBattleDrops[itemId] ?? 0) >= targetNum) {
-            shouldRetire = false;
-            break;
-          }
-        }
-      }
-
-      if (questPhaseEntity.flags.contains(QuestFlag.raid)) {
-        await agent.battleTurn(battleId: battleEntity.id);
-      }
-
-      if (shouldRetire) {
-        await Future.delayed(const Duration(seconds: 1));
-        resultResp = await agent.battleResultWithOptions(
-          battleEntity: battleEntity,
-          resultType: BattleResultType.cancel,
-          actionLogs: "",
-        );
-      } else {
-        final delay = battleOption.battleDuration ?? (agent.network.gameTop.region == Region.cn ? 40 : 20);
-        await Future.delayed(Duration(seconds: delay));
-        resultResp = await agent.battleResultWithOptions(
-          battleEntity: battleEntity,
-          resultType: BattleResultType.win,
-          actionLogs: battleOption.actionLogs,
-        );
-        // if win
-        totalDropStat.totalCount += 1;
-        curLoopDropStat.totalCount += 1;
-        Map<int, int> resultBattleDrops;
-        final lastBattleResultData = agent.lastBattleResultData;
-        if (lastBattleResultData != null && lastBattleResultData.battleId == battleEntity.id) {
-          resultBattleDrops = {};
-          for (final drop in lastBattleResultData.resultDropInfos) {
-            resultBattleDrops.addNum(drop.objectId, drop.num);
-          }
-          for (final reward in lastBattleResultData.rewardInfos) {
-            totalRewards.addNum(reward.objectId, reward.num);
-          }
-          for (final reward in lastBattleResultData.friendshipRewardInfos) {
-            totalRewards.addNum(reward.objectId, reward.num);
-          }
+      if (setupResp.data.mstData.battles.isEmpty) {
+        if (setupResp.request.normKey.contains('scenario')) {
+          // do nothing
+          resultResp = setupResp;
         } else {
-          resultBattleDrops = curBattleDrops;
-          logger.t('last battle result data not found, use cur_battle_drops');
+          throw SilentException('[${setupResp.request.key}] battle data not found');
         }
-        totalDropStat.items.addDict(resultBattleDrops);
-        curLoopDropStat.items.addDict(resultBattleDrops);
-        totalRewards.addDict(resultBattleDrops);
+      } else {
+        final battleEntity = setupResp.data.mstData.battles.single;
+        final curBattleDrops = battleEntity.battleInfo?.getTotalDrops() ?? {};
+        logger.t('battle id: ${battleEntity.id}');
 
-        // check total drop target of this loop
-        if (battleOption.targetDrops.isNotEmpty) {
-          for (final (itemId, targetNum) in battleOption.targetDrops.items.toList()) {
-            final dropNum = resultBattleDrops[itemId];
-            if (dropNum == null || dropNum <= 0) continue;
-            battleOption.targetDrops[itemId] = targetNum - dropNum;
-          }
-          final reachedItems = battleOption.targetDrops.keys
-              .where((itemId) => resultBattleDrops.containsKey(itemId) && battleOption.targetDrops[itemId]! <= 0)
-              .toList();
-          if (reachedItems.isNotEmpty) {
-            throw SilentException(
-                'Target drop reaches: ${reachedItems.map((e) => GameCardMixin.anyCardItemName(e).l).join(', ')}');
+        bool shouldRetire = false;
+        if (battleOption.winTargetItemNum.isNotEmpty) {
+          shouldRetire = true;
+          for (final (itemId, targetNum) in battleOption.winTargetItemNum.items) {
+            if ((curBattleDrops[itemId] ?? 0) >= targetNum) {
+              shouldRetire = false;
+              break;
+            }
           }
         }
 
-        final userQuest = mstData.userQuest[questPhaseEntity.id];
-        if (userQuest != null &&
-            userQuest.clearNum == 0 &&
-            questPhaseEntity.phases.contains(userQuest.questPhase + 1)) {
-          battleOption.questPhase = userQuest.questPhase + 1;
+        if (questPhaseEntity.flags.contains(QuestFlag.raid)) {
+          await agent.battleTurn(battleId: battleEntity.id);
+        }
+
+        if (shouldRetire) {
+          await Future.delayed(const Duration(seconds: 1));
+          resultResp = await agent.battleResultWithOptions(
+            battleEntity: battleEntity,
+            resultType: BattleResultType.cancel,
+            actionLogs: "",
+          );
+        } else {
+          final delay = battleOption.battleDuration ?? (agent.network.gameTop.region == Region.cn ? 40 : 20);
+          await Future.delayed(Duration(seconds: delay));
+          resultResp = await agent.battleResultWithOptions(
+            battleEntity: battleEntity,
+            resultType: BattleResultType.win,
+            actionLogs: battleOption.actionLogs,
+          );
+          // if win
+          totalDropStat.totalCount += 1;
+          curLoopDropStat.totalCount += 1;
+          Map<int, int> resultBattleDrops;
+          final lastBattleResultData = agent.lastBattleResultData;
+          if (lastBattleResultData != null && lastBattleResultData.battleId == battleEntity.id) {
+            resultBattleDrops = {};
+            for (final drop in lastBattleResultData.resultDropInfos) {
+              resultBattleDrops.addNum(drop.objectId, drop.num);
+            }
+            for (final reward in lastBattleResultData.rewardInfos) {
+              totalRewards.addNum(reward.objectId, reward.num);
+            }
+            for (final reward in lastBattleResultData.friendshipRewardInfos) {
+              totalRewards.addNum(reward.objectId, reward.num);
+            }
+          } else {
+            resultBattleDrops = curBattleDrops;
+            logger.t('last battle result data not found, use cur_battle_drops');
+          }
+          totalDropStat.items.addDict(resultBattleDrops);
+          curLoopDropStat.items.addDict(resultBattleDrops);
+          totalRewards.addDict(resultBattleDrops);
+
+          // check total drop target of this loop
+          if (battleOption.targetDrops.isNotEmpty) {
+            for (final (itemId, targetNum) in battleOption.targetDrops.items.toList()) {
+              final dropNum = resultBattleDrops[itemId];
+              if (dropNum == null || dropNum <= 0) continue;
+              battleOption.targetDrops[itemId] = targetNum - dropNum;
+            }
+            final reachedItems = battleOption.targetDrops.keys
+                .where((itemId) => resultBattleDrops.containsKey(itemId) && battleOption.targetDrops[itemId]! <= 0)
+                .toList();
+            if (reachedItems.isNotEmpty) {
+              throw SilentException(
+                  'Target drop reaches: ${reachedItems.map((e) => GameCardMixin.anyCardItemName(e).l).join(', ')}');
+            }
+          }
+
+          final userQuest = mstData.userQuest[questPhaseEntity.id];
+          if (userQuest != null &&
+              userQuest.clearNum == 0 &&
+              questPhaseEntity.phases.contains(userQuest.questPhase + 1)) {
+            battleOption.questPhase = userQuest.questPhase + 1;
+          }
         }
       }
       for (final item in resultResp.data.mstData.userItem) {
