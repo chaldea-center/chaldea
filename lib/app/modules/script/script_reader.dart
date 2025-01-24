@@ -1,3 +1,4 @@
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:tuple/tuple.dart';
 
 import 'package:chaldea/app/app.dart';
@@ -5,6 +6,7 @@ import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/app/modules/common/filter_page_base.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
+import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../war/war/asset_list.dart';
@@ -51,7 +53,12 @@ class _ScriptReaderPageState extends State<ScriptReaderPage> {
         _loading = true;
       });
     }
-    await data.load(force: force);
+    try {
+      await data.load(force: force);
+    } catch (e, s) {
+      logger.e('load script data failed', e, s);
+      EasyLoading.showError(e.toString());
+    }
     if (mounted) {
       setState(() {
         _loading = false;

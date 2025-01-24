@@ -178,6 +178,10 @@ class ServerFeedbackHandler extends ReportHandler {
         "Unsupported operation: NaN.round()",
         "Unsupported operation: Infinity.round()",
         "Bad state: RenderBox was not laid out: minified",
+        "quickReject is not a function",
+        "RuntimeError: Aborted",
+        "Failed to detect image file format using the file header",
+        "null function or function signature mismatch",
         // "SecurityError: Failed to execute 'texImage2D'",
         // "TypeError: Cannot read property 'toString' of null",
         // "TypeError: Cannot read properties of undefined",
@@ -185,6 +189,7 @@ class ServerFeedbackHandler extends ReportHandler {
       ].any(errorAndStackTrace.contains)) {
         return true;
       }
+      if (stackTrace.isEmpty && int.tryParse(error) != null) return true;
       if (report.shownError.contains('Stack Overflow') &&
           report.stackTrace.toString().contains('tear_off.<anonymous>')) {
         return true;

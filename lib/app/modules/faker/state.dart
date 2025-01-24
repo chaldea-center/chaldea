@@ -356,14 +356,12 @@ class FakerRuntime {
                   'Target drop reaches: ${reachedItems.map((e) => GameCardMixin.anyCardItemName(e).l).join(', ')}');
             }
           }
-
-          final userQuest = mstData.userQuest[questPhaseEntity.id];
-          if (userQuest != null &&
-              userQuest.clearNum == 0 &&
-              questPhaseEntity.phases.contains(userQuest.questPhase + 1)) {
-            battleOption.questPhase = userQuest.questPhase + 1;
-          }
         }
+      }
+
+      final userQuest = mstData.userQuest[questPhaseEntity.id];
+      if (userQuest != null && userQuest.clearNum == 0 && questPhaseEntity.phases.contains(userQuest.questPhase + 1)) {
+        battleOption.questPhase = userQuest.questPhase + 1;
       }
       for (final item in resultResp.data.mstData.userItem) {
         totalRewards.addNum(item.itemId, 0);

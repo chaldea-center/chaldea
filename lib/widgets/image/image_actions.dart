@@ -127,7 +127,7 @@ class ImageActions {
             onTap: () async {
               Navigator.pop(context);
               if (PlatformU.isAndroid && await Permission.storage.isDenied) {
-                await Permission.storage.request();
+                await EasyThrottle.throttleAsync('permission.storage.request', Permission.storage.request);
               }
               dynamic result;
               if (srcFp != null) {

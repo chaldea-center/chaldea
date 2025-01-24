@@ -964,7 +964,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
           dense: true,
           title: Text(_describeQuest(battleOption.questId, battleOption.questPhase, null)),
           subtitle: questInfoText == null ? null : Text(questInfoText),
-          onTap: quest?.routeTo,
+          onTap: () => router.push(url: Routes.questI(battleOption.questId, battleOption.questPhase)),
           trailing: TextButton(
               onPressed: () {
                 runtime.lockTask(() {
@@ -1167,15 +1167,18 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
           ListTile(
             dense: true,
             title: Text(
-                "Guest Support (${questPhase.flags.where((e) => e.name.toLowerCase().contains('support')).join('/')})"),
+                "Guest Support (${questPhase.flags.where((e) => e.name.toLowerCase().contains('support') && e != QuestFlag.supportSelectAfterScript).map((e) => e.name).join('/')})"),
             subtitle: DropdownButton<int>(
               isDense: true,
               isExpanded: true,
               value: questPhase.supportServants.any((e) => e.id == battleOption.npcSupportId)
                   ? battleOption.npcSupportId
-                  : null,
-              hint: Text('${questPhase.supportServants.length} guest supports'),
+                  : 0,
               items: [
+                DropdownMenuItem(
+                  value: 0,
+                  child: Text('${questPhase.supportServants.length} guest supports'),
+                ),
                 for (final support in questPhase.supportServants)
                   DropdownMenuItem(
                     value: support.id,
