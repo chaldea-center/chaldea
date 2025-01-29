@@ -541,7 +541,7 @@ class WarGroup {
   Map<String, dynamic> toJson() => _$WarGroupToJson(this);
 }
 
-@JsonSerializable()
+@JsonSerializable(converters: [CondTypeConverter()])
 class WarRelease {
   int priority;
   CondType condType;

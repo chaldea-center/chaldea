@@ -325,6 +325,7 @@ enum NiceAiCond {
   countAvailableMasterSkillHigher,
   countAvailableMasterSkillLower,
   countAvailableMasterSkillEqual,
+  commonReleaseId,
 }
 
 enum AiTiming {
@@ -370,6 +371,7 @@ enum NiceAiActType {
   battleEnd,
   loseEnd,
   battleEndNotRelatedSurvivalStatus,
+  battleEndNotRelatedSurvivalStatusInstantly,
   changeThinking,
 }
 

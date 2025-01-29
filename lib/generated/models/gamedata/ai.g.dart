@@ -274,6 +274,7 @@ const _$NiceAiCondEnumMap = {
   NiceAiCond.countAvailableMasterSkillHigher: 'countAvailableMasterSkillHigher',
   NiceAiCond.countAvailableMasterSkillLower: 'countAvailableMasterSkillLower',
   NiceAiCond.countAvailableMasterSkillEqual: 'countAvailableMasterSkillEqual',
+  NiceAiCond.commonReleaseId: 'commonReleaseId',
 };
 
 const _$AiTypeEnumMap = {
@@ -350,6 +351,7 @@ const _$NiceAiActTypeEnumMap = {
   NiceAiActType.battleEnd: 'battleEnd',
   NiceAiActType.loseEnd: 'loseEnd',
   NiceAiActType.battleEndNotRelatedSurvivalStatus: 'battleEndNotRelatedSurvivalStatus',
+  NiceAiActType.battleEndNotRelatedSurvivalStatusInstantly: 'battleEndNotRelatedSurvivalStatusInstantly',
   NiceAiActType.changeThinking: 'changeThinking',
 };
 

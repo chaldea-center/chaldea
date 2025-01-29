@@ -10,6 +10,7 @@ import 'package:chaldea/app/tools/app_update.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/packages/app_info.dart';
+import 'package:chaldea/packages/file_plus/file_plus.dart';
 import 'package:chaldea/packages/platform/platform.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
@@ -76,7 +77,12 @@ class _AboutPageState extends State<AboutPage> {
                   pressTimes = 0;
                   db.runtimeData.enableDebugTools = true;
                   EasyLoading.showInfo("Enabled Test Mode!");
+                } else if (pressTimes == 10) {
+                  final fp = FilePlus(joinPaths(db.paths.appPath, '.debug'));
+                  fp.writeAsString(calcMd5(AppInfo.uuid));
+                  EasyLoading.showInfo('Debug on, restart');
                 }
+                EasyDebounce.debounce('enable-debug-mode', Duration(milliseconds: 500), () => pressTimes = 0);
               },
               onLongPress: () async {
                 setState(() {

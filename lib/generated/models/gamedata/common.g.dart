@@ -437,4 +437,8 @@ const _$CondTypeEnumMap = {
   CondType.notBattleFunctionTargetOneIndividuality: 'notBattleFunctionTargetOneIndividuality',
   CondType.eventScriptNotPlay: 'eventScriptNotPlay',
   CondType.eventScriptFlag: 'eventScriptFlag',
+  CondType.imagePartsGroup: 'imagePartsGroup',
+  CondType.userLevelAbove: 'userLevelAbove',
+  CondType.userLevelBelow: 'userLevelBelow',
+  CondType.userLevelEqual: 'userLevelEqual',
 };

@@ -158,7 +158,14 @@ class EventCampaignDetail extends StatelessWidget {
           ],
         )),
       );
+    } else if (campaign.target == CombineAdjustTarget.questUseRewardAddItem) {
+      return Text.rich(SharedBuilder.textButtonSpan(
+        context: context,
+        text: 'Gift ${campaign.value}',
+        onTap: () => router.push(url: Routes.giftI(campaign.value)),
+      ));
     }
+
     int? percentBase;
 
     switch (campaign.target) {
@@ -182,25 +189,30 @@ class EventCampaignDetail extends StatelessWidget {
       case CombineAdjustTarget.questFriendship:
         percentBase = 10;
         break;
-      // case CombineAdjustTarget.activeSkill:
-      // case CombineAdjustTarget.limitQp:
-      // case CombineAdjustTarget.limitItem:
-      // case CombineAdjustTarget.skillQp:
-      // case CombineAdjustTarget.skillItem:
-      // case CombineAdjustTarget.treasureDeviceQp:
-      // case CombineAdjustTarget.treasureDeviceItem:
-      // case CombineAdjustTarget.questExp:
-      // case CombineAdjustTarget.questQp:
-      // case CombineAdjustTarget.questDrop:
-      // case CombineAdjustTarget.svtequipCombineExp:
-      // case CombineAdjustTarget.questEventPoint:
-      // case CombineAdjustTarget.enemySvtClassPickUp:
-      // case CombineAdjustTarget.eventEachDropNum:
-      // case CombineAdjustTarget.eventEachDropRate:
-      // case CombineAdjustTarget.dailyDropUp:
+      case CombineAdjustTarget.activeSkill:
+      case CombineAdjustTarget.limitQp:
+      case CombineAdjustTarget.limitItem:
+      case CombineAdjustTarget.skillQp:
+      case CombineAdjustTarget.skillItem:
+      case CombineAdjustTarget.treasureDeviceQp:
+      case CombineAdjustTarget.treasureDeviceItem:
+      case CombineAdjustTarget.questExp:
+      case CombineAdjustTarget.questQp:
+      case CombineAdjustTarget.questDrop:
+      case CombineAdjustTarget.svtequipCombineExp:
+      case CombineAdjustTarget.questEventPoint:
+      case CombineAdjustTarget.enemySvtClassPickUp:
+      case CombineAdjustTarget.eventEachDropNum:
+      case CombineAdjustTarget.eventEachDropRate:
+      case CombineAdjustTarget.dailyDropUp:
       case CombineAdjustTarget.friendPointGachaFreeDrawNum:
-        break;
-      default:
+      case CombineAdjustTarget.none:
+      case CombineAdjustTarget.questUseContinueItem:
+      case CombineAdjustTarget.largeSuccessByClass:
+      case CombineAdjustTarget.superSuccessByClass:
+      case CombineAdjustTarget.exchangeSvt:
+      case CombineAdjustTarget.questItemFirstTime:
+      case CombineAdjustTarget.questUseRewardAddItem:
         break;
     }
     if (campaign.calcType == EventCombineCalc.fixedValue) {
@@ -221,7 +233,9 @@ class EventCampaignDetail extends StatelessWidget {
     final entity = db.gameData.servantsById[id];
     if (entity != null) return entity.iconBuilder(context: context, width: 48);
     final item = db.gameData.items[id];
-    if (item != null && campaign.target == CombineAdjustTarget.questUseFriendshipUpItem) {
+    if (item != null &&
+        const [CombineAdjustTarget.questUseFriendshipUpItem, CombineAdjustTarget.questUseRewardAddItem]
+            .contains(campaign.target)) {
       return Item.iconBuilder(context: context, item: item, width: 48);
     }
     if (campaign.target == CombineAdjustTarget.exchangeSvt ||

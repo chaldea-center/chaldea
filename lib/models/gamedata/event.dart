@@ -1875,12 +1875,12 @@ class EventCampaign {
 /// If [questId]=0 and [phase]=0, means all quests
 @JsonSerializable()
 class EventQuest {
-  int questId;
-  // int phase;  // currently all are 0
+  int questId; // =0 for all quests
+  int phase; // =0 for all phases
 
   EventQuest({
     required this.questId,
-    // this.phase = 0,
+    this.phase = 0,
   });
 
   factory EventQuest.fromJson(Map<String, dynamic> json) => _$EventQuestFromJson(json);
@@ -2250,6 +2250,7 @@ enum CombineAdjustTarget {
   superSuccessByClass,
   exchangeSvt,
   questItemFirstTime,
+  questUseRewardAddItem,
 }
 
 enum EventCombineCalc {

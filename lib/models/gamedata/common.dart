@@ -1115,6 +1115,10 @@ enum CondType {
   notBattleFunctionTargetOneIndividuality(236),
   eventScriptNotPlay(237),
   eventScriptFlag(238),
+  imagePartsGroup(241),
+  userLevelAbove(242),
+  userLevelBelow(243),
+  userLevelEqual(244),
   ;
 
   const CondType(this.value);

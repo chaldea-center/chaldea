@@ -1474,6 +1474,7 @@ const _$CombineAdjustTargetEnumMap = {
   CombineAdjustTarget.superSuccessByClass: 'superSuccessByClass',
   CombineAdjustTarget.exchangeSvt: 'exchangeSvt',
   CombineAdjustTarget.questItemFirstTime: 'questItemFirstTime',
+  CombineAdjustTarget.questUseRewardAddItem: 'questUseRewardAddItem',
 };
 
 const _$EventCombineCalcEnumMap = {
@@ -1484,10 +1485,12 @@ const _$EventCombineCalcEnumMap = {
 
 EventQuest _$EventQuestFromJson(Map json) => EventQuest(
       questId: (json['questId'] as num).toInt(),
+      phase: (json['phase'] as num?)?.toInt() ?? 0,
     );
 
 Map<String, dynamic> _$EventQuestToJson(EventQuest instance) => <String, dynamic>{
       'questId': instance.questId,
+      'phase': instance.phase,
     };
 
 HeelPortrait _$HeelPortraitFromJson(Map json) => HeelPortrait(
