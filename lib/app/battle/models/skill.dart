@@ -273,21 +273,21 @@ class BattleSkillInfoData {
       case SkillScriptCond.none:
         return true;
       case SkillScriptCond.npHigher:
-        return activator!.np / 100 >= value;
+        return activator != null && activator.np / 100 >= value;
       case SkillScriptCond.npLower:
-        return activator!.np / 100 <= value;
+        return activator != null && activator.np / 100 <= value;
       case SkillScriptCond.starHigher:
         return battleData.criticalStars >= value;
       case SkillScriptCond.starLower:
         return battleData.criticalStars <= value;
       case SkillScriptCond.hpValHigher:
-        return activator!.hp >= value;
+        return activator != null && activator.hp >= value;
       case SkillScriptCond.hpValLower:
-        return activator!.hp >= value;
+        return activator != null && activator.hp >= value;
       case SkillScriptCond.hpPerHigher:
-        return activator!.hp / activator.maxHp >= value / 1000;
+        return activator != null && activator.hp / activator.maxHp >= value / 1000;
       case SkillScriptCond.hpPerLower:
-        return activator!.hp / activator.maxHp <= value / 1000;
+        return activator != null && activator.hp / activator.maxHp <= value / 1000;
     }
   }
 }
