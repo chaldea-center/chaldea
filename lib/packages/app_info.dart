@@ -166,7 +166,12 @@ class AppInfo {
       }
     }
     _uuid = const Uuid().v5(Namespace.url.value, originId!).toUpperCase();
-    _debugOn = FilePlus(joinPaths(appPath, '.debug')).existsSync();
+    final debugFp = FilePlus(joinPaths(appPath, '.debug'));
+    try {
+      _debugOn = debugFp.existsSync() && calcMd5(_uuid!) == await debugFp.readAsString();
+    } catch (e) {
+      _debugOn = false;
+    }
     logger.t('Unique ID: $_uuid');
   }
 
@@ -256,7 +261,7 @@ class AppInfo {
     if (kDebugMode) return true;
     const excludeIds = [
       'C9DC5C4C-DB76-561A-8918-EEB334451EC5', // android
-      'C150DF56-B65C-5167-852B-102D487D7159', // ios
+      '06AC4FEB-90D8-58BE-A4EB-82CD4B4D9153', // ios
       '42A8BE37-7BD5-5AFA-9F96-6BDCC13A540A', // ios store
       'BC87303D-6010-5DCE-90FB-68E8758EC260', // ios release
       'EFD686D5-2D83-56E5-8971-8F72D0D42D58', // macos

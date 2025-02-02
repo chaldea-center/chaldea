@@ -62,7 +62,7 @@ class ToolListPage extends StatelessWidget {
               if (db.settings.secrets.user?.isAdmin == true)
                 buildOne('Admin Tools', AdminToolsPage(), supportWeb: false),
               if (!kIsWeb) buildOne('TreeSize', const TreeSizePage()),
-              if (AppInfo.isDebugDevice) buildOne('Y(^o^)Y', const HiddenToolsPage()),
+              if (AppInfo.isDebugOn) buildOne('Y(^o^)Y', const HiddenToolsPage()),
             ],
           ),
         ],
