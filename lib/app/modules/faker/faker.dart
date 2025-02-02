@@ -200,6 +200,12 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
                   },
                   child: Text(S.current.event_lottery),
                 ),
+              PopupMenuItem(
+                child: Text("Reload"),
+                onTap: () {
+                  runtime.runTask(runtime.gameData.reset);
+                },
+              )
             ],
           ),
         ],
@@ -1167,7 +1173,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
           ListTile(
             dense: true,
             title: Text(
-                "Guest Support (${questPhase.flags.where((e) => e.name.toLowerCase().contains('support') && e != QuestFlag.supportSelectAfterScript).map((e) => e.name).join('/')})"),
+                "${questPhase.supportServants.length} Guest Supports (${questPhase.flags.where((e) => e.name.toLowerCase().contains('support') && e != QuestFlag.supportSelectAfterScript).map((e) => e.name).join('/')})"),
             subtitle: DropdownButton<int>(
               isDense: true,
               isExpanded: true,
@@ -1177,14 +1183,14 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
               items: [
                 DropdownMenuItem(
                   value: 0,
-                  child: Text('${questPhase.supportServants.length} guest supports'),
+                  child: Text("Do not use support"),
                 ),
                 for (final support in questPhase.supportServants)
                   DropdownMenuItem(
                     value: support.id,
                     child: Text.rich(TextSpan(children: [
                       CenterWidgetSpan(child: support.svt.iconBuilder(context: context, width: 24)),
-                      TextSpan(text: ' Lv.${support.lv} ${support.skills2.skillLvs.join("/")}'),
+                      TextSpan(text: ' Lv.${support.lv} ${support.skills2.skillLvs.join("/")} ${support.lName.l}'),
                     ])),
                   )
               ],
@@ -1329,7 +1335,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
                       if (s.isEmpty) {
                         battleOption.usedTurnArray = [];
                       } else {
-                        final turns = s.split(RegExp(r'[,/]')).map(int.parse).toList();
+                        final turns = s.split(RegExp(r'[,/\- ]+')).map(int.parse).toList();
                         battleOption.usedTurnArray = turns;
                       }
                     } catch (e) {

@@ -810,6 +810,15 @@ class _FakerGameData {
   GameConstants constants = ConstData.constants;
   Map<int, MasterMission> masterMissions = {};
 
+  Future<void> reset() async {
+    teapots.clear();
+    masterMissions.clear();
+    AtlasApi.cacheManager.clearCache();
+    await init();
+    await loadConstants();
+    await loadMasterMissions();
+  }
+
   Future<void> init() async {
     // teapots
     if (teapots.isEmpty) {

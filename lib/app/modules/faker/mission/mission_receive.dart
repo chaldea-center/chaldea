@@ -20,7 +20,7 @@ class UserEventMissionReceivePage extends StatefulWidget {
 class _UserEventMissionReceivePageState extends State<UserEventMissionReceivePage> {
   late final runtime = widget.runtime;
   late final userEventMissions = runtime.mstData.userEventMission;
-
+  final thisYear = DateTime.now().year;
   List<MasterMission> mms = [];
   // late final mms = runtime.gameData.masterMissions.values.toList();
 
@@ -48,10 +48,17 @@ class _UserEventMissionReceivePageState extends State<UserEventMissionReceivePag
     mms = runtime.gameData.masterMissions.values.toList();
     final now = DateTime.now().timestamp;
 
-    mms.retainWhere((mm) =>
-        mm.startedAt <= now && mm.closedAt >= now && !const [MissionType.event, MissionType.random].contains(mm.type));
-    mms.removeWhere((mm) => mm.type == MissionType.daily && mm.endedAt - mm.startedAt > kSecsPerDay * 40);
-    mms.sort2((e) => e.closedAt);
+    mms.retainWhere((mm) {
+      if (const [MissionType.event, MissionType.random].contains(mm.type)) return false;
+      if (mm.startedAt > now || mm.closedAt < now) return false;
+      if (mm.type == MissionType.daily) {
+        if (mm.endedAt < now - kSecsPerDay * 40) return false;
+      }
+      return true;
+    });
+
+    // mms.removeWhere((mm) => mm.type == MissionType.daily && mm.endedAt - mm.startedAt > kSecsPerDay * 40);
+    mms.sortByList((e) => [e.endedAt, e.closedAt, e.id]);
     if (mms.isNotEmpty) {
       onSelectMM(mms.firstWhere(
         (mm) => mm.missions.any((e) => getMissionProgress(e.id) != MissionProgressType.achieve),
@@ -158,16 +165,19 @@ class _UserEventMissionReceivePageState extends State<UserEventMissionReceivePag
     int clearNum = mm.missions.where((e) => getMissionProgress(e.id) == MissionProgressType.clear).length;
     int achieveNum = mm.missions.where((e) => getMissionProgress(e.id) == MissionProgressType.achieve).length;
     int notClearNum = mm.missions.length - clearNum - achieveNum;
+    final now = DateTime.now().timestamp;
     return ListTile(
       dense: true,
-      selected: clearNum > 0 || notClearNum > 0,
+      selected: (clearNum > 0 || notClearNum > 0) && mm.startedAt < now && mm.endedAt > now,
       enabled: !(notClearNum == 0 && clearNum == 0),
-      title: Text('[${mm.missions.length} ${Transl.enums(mm.type, (v) => v.missionType).l}] ${mm.getDispName()}'),
-      subtitle: Text([mm.startedAt, mm.endedAt, if (mm.closedAt != mm.endedAt) mm.closedAt]
-          .map((e) => mm.id == MasterMission.kExtraMasterMissionId
-              ? e.sec2date().toDateString()
-              : e.sec2date().toCustomString(year: false, second: false))
-          .join(' ~ ')),
+      title: Text(
+          '[${mm.missions.length} ${Transl.enums(mm.type, (v) => v.missionType).l}] ID ${mm.id} ${mm.lMissionIconDetailText ?? ""}'),
+      subtitle: Text([mm.startedAt, mm.endedAt, if (mm.closedAt != mm.endedAt) mm.closedAt].map((e) {
+        final date = e.sec2date();
+        return mm.id == MasterMission.kExtraMasterMissionId
+            ? date.toDateString()
+            : date.toCustomString(year: date.year != thisYear, second: false);
+      }).join(' ~ ')),
       trailing: Text('$notClearNum/$clearNum/$achieveNum'),
     );
   }
