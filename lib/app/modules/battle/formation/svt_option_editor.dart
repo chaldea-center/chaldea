@@ -878,8 +878,10 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
                   onPressed: enableEdit
                       ? () {
                           setState(() {
-                            playerSvtData.customPassives.removeAt(index);
-                            playerSvtData.customPassiveLvs.removeAt(index);
+                            if (index < playerSvtData.customPassives.length) {
+                              playerSvtData.customPassives.removeAt(index);
+                              playerSvtData.customPassiveLvs.removeAt(index);
+                            }
                           });
                         }
                       : null,

@@ -263,7 +263,7 @@ class _QuestEditPageState extends State<QuestEditPage> {
           TextButton(
             onPressed: () {
               setState(() {
-                quest.stages.removeAt(index);
+                quest.stages.remove(stage);
               });
             },
             child: Text(

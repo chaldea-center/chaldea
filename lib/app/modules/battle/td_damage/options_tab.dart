@@ -163,7 +163,7 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
               behavior: HitTestBehavior.opaque,
               onLongPress: () {
                 setState(() {
-                  options.supports.removeAt(index);
+                  if (index < options.supports.length) options.supports.removeAt(index);
                 });
               },
               child: svt?.iconBuilder(context: context, width: 48) ?? Text("ID $svtId"),

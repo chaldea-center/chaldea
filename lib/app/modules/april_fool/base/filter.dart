@@ -7,7 +7,7 @@ import 'package:chaldea/widgets/widgets.dart';
 
 class AprilFoolSvtFilterData with FilterDataMixin {
   bool useGrid = false;
-  final rarity = FilterGroupData<int>();
+  final rarity = FilterGroupData<int?>();
   final classType = FilterGroupData<SvtClass>();
 
   @override

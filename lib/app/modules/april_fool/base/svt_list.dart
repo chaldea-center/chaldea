@@ -90,7 +90,7 @@ class AprilFoolSvtListPageState extends State<AprilFoolSvtListPage>
   @override
   bool filter(AprilFoolSvtData svtData) {
     final svt = svtData.svt;
-    if (svt != null && !filterData.rarity.matchOne(svt.rarity)) {
+    if (!filterData.rarity.matchOne(svt?.rarity)) {
       return false;
     }
     if (!filterData.classType.matchOne(svt?.className ?? SvtClass.unknown)) {
