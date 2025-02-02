@@ -7,6 +7,8 @@ on:
       - main
   pull_request:
   workflow_dispatch:
+  schedule:
+    - cron: "0 16 * * 6"
 
 env:
   FLUTTER_VERSION: "3.27.3"
