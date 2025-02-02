@@ -54,11 +54,11 @@ PODS:
   - fluttertoast (0.0.2):
     - Flutter
     - Toast
-  - Google-Mobile-Ads-SDK (11.10.0):
+  - Google-Mobile-Ads-SDK (11.13.0):
     - GoogleUserMessagingPlatform (>= 1.1)
-  - google_mobile_ads (5.2.0):
+  - google_mobile_ads (5.3.0):
     - Flutter
-    - Google-Mobile-Ads-SDK (~> 11.10.0)
+    - Google-Mobile-Ads-SDK (~> 11.13.0)
     - webview_flutter_wkwebview
   - GoogleUserMessagingPlatform (2.7.0)
   - image_gallery_saver (2.0.2):
@@ -188,7 +188,7 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/webview_flutter_wkwebview/darwin"
 
 SPEC CHECKSUMS:
-  audio_session: 088d2483ebd1dc43f51d253d4a1c517d9a2e7207
+  audio_session: 32a33910dd5bb35d54297e4b50006481071f196b
   connectivity_plus: 18382e7311ba19efcaee94442b23b32507b20695
   countly_flutter_np: 3fa0c37c5ca58f5ca0a6319d702a62ff87b44c4f
   device_info_plus: bf2e3232933866d73fe290f2942f2156cdd10342
@@ -201,8 +201,8 @@ SPEC CHECKSUMS:
   flutter_mailer: 2ef5a67087bc8c6c4cefd04a178bf1ae2c94cd83
   flutter_timezone: ffb07bdad3c6276af8dada0f11978d8a1f8a20bb
   fluttertoast: e9a18c7be5413da53898f660530c56f35edfba9c
-  Google-Mobile-Ads-SDK: 13e6e98edfd78ad8d8a791edb927658cc260a56f
-  google_mobile_ads: 2a538d8e42b1813809782792e48f8cf4374c2180
+  Google-Mobile-Ads-SDK: 14f57f2dc33532a24db288897e26494640810407
+  google_mobile_ads: ead754a66993b12841f9cb6b7acd54d42726ef3a
   GoogleUserMessagingPlatform: a8b56893477f67212fbc8411c139e61d463349f5
   image_gallery_saver: cb43cc43141711190510e92c460eb1655cd343cb
   just_audio: baa7252489dbcf47a4c7cc9ca663e9661c99aafa

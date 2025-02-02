@@ -29,7 +29,6 @@ dependencies:
 
   android_id: ^0.4.0
   archive: ^4.0.1
-    # git: https://github.com/brendan-duncan/archive.git
   args: ^2.6.0
   auto_size_text: ^3.0.0
   cached_network_image: ^3.3.0
