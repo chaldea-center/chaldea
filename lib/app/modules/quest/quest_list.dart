@@ -204,6 +204,7 @@ class _QuestListPageState extends State<QuestListPage> {
         final ids = warQuestIds[warId]!;
         final war = db.gameData.wars[warId];
         children.add(SimpleAccordion(
+          expanded: questIds.length < 25,
           headerBuilder: (context, _) {
             return ListTile(
               dense: true,

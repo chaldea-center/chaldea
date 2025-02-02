@@ -300,6 +300,38 @@ class GameData with _GameDataExtra {
       });
     }
     others = _ProcessedData(this);
+
+    // drop data
+    for (final quest in quests.values) {
+      final questPhase = getQuestPhase(quest.id);
+      if (questPhase == null ||
+          questPhase.consume <= 0 ||
+          !(quest.warId < 1000 && quest.isAnyFree && quest.phases.length == 3)) {
+        continue;
+      }
+      if (dropData.domusAurea.questIds.contains(quest.id)) continue;
+      if (questPhase.drops.isEmpty || questPhase.drops.first.runs < 2) continue;
+      final runs = questPhase.drops.first.runs;
+      Map<int, int> drops = {};
+      for (final drop in questPhase.drops) {
+        if (drop.type != GiftType.item || drop.objectId == Items.qpId) continue;
+        final item = items[drop.objectId];
+        if (item == null ||
+            !const [ItemCategory.normal, ItemCategory.ascension, ItemCategory.skill].contains(item.category)) {
+          continue;
+        }
+        drops.addNum(drop.objectId, drop.num * drop.dropCount);
+      }
+      dropData.domusAurea.addQuest(
+        questId: quest.id,
+        ap: questPhase.consume,
+        run: runs,
+        bond: questPhase.bond,
+        exp: questPhase.exp,
+        drops: {for (final (k, v) in drops.items) k: v / runs},
+      );
+    }
+    dropData.domusAurea.initMatrix();
   }
 
   void updateDupServants(Map<int, int> dupServants) {

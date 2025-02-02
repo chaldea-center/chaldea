@@ -1,4 +1,5 @@
 import 'package:chaldea/packages/logger.dart';
+import 'package:chaldea/utils/extension.dart';
 import '../db.dart';
 import '_helper.dart';
 import 'war.dart';
@@ -48,10 +49,10 @@ class DropRateSheet {
   final List<int> exps;
 
   /// drop rate, not ap rate
-  @protected
+  // @protected
   final Map<int, Map<int, double>> sparseMatrix;
   @JsonKey(includeFromJson: false, includeToJson: false)
-  List<List<double>> matrix; // m*n
+  List<List<double>> matrix = []; // m*n
 
   DropRateSheet({
     this.itemIds = const [],
@@ -61,8 +62,41 @@ class DropRateSheet {
     this.bonds = const [],
     this.exps = const [],
     this.sparseMatrix = const {},
-  }) : matrix = List.generate(
-            itemIds.length, (i) => List.generate(questIds.length, (j) => (sparseMatrix[i]?[j] ?? 0) / 100));
+  }) {
+    initMatrix();
+  }
+
+  void initMatrix() {
+    matrix =
+        List.generate(itemIds.length, (i) => List.generate(questIds.length, (j) => (sparseMatrix[i]?[j] ?? 0) / 100));
+  }
+
+  // call [initMatrix] after added
+  void addQuest({
+    required int questId,
+    required int ap,
+    required int run,
+    required int bond,
+    required int exp,
+    required Map<int, double> drops,
+  }) {
+    assert(!questIds.contains(questId));
+    if (questIds.contains(questId)) return;
+    questIds.add(questId);
+    final int questIndex = questIds.length - 1;
+    apCosts.add(ap);
+    runs.add(run);
+    bonds.add(bond);
+    exps.add(exp);
+    for (final (itemId, dropRate) in drops.items) {
+      int itemIndex = itemIds.indexOf(itemId);
+      if (itemIndex < 0) {
+        itemIds.add(itemId);
+        itemIndex = itemIds.length - 1;
+      }
+      sparseMatrix.putIfAbsent(itemIndex, () => {})[questIndex] = dropRate;
+    }
+  }
 
   DropRateSheet copy() {
     return DropRateSheet(
@@ -73,7 +107,7 @@ class DropRateSheet {
       bonds: List.of(bonds),
       exps: List.of(exps),
       sparseMatrix: sparseMatrix.map((key, value) => MapEntry(key, Map.of(value))),
-    )..matrix = List.generate(matrix.length, (i) => List.generate(matrix[i].length, (j) => matrix[i][j]));
+    );
   }
 
   int getQuestRuns(int questId) {
