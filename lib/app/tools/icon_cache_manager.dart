@@ -369,9 +369,9 @@ abstract class _CachedLoader<K, V> {
           _failed[key] ??= _FailureDetail(time: DateTime.now(), statusCode: code);
           return;
         }
-        logger.errorSkipDio('_CachedLoader.download failed: $key, url=${e.requestOptions.uri}', e, s);
+        logger.e('_CachedLoader.download failed: $key, url=${e.requestOptions.uri}', e, s);
       } else {
-        logger.errorSkipDio('_CachedLoader.download failed: $key', e, s);
+        logger.e('_CachedLoader.download failed: $key', e, s);
       }
 
       final detail = _failed[key];

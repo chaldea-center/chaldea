@@ -40,15 +40,6 @@ class _LoggerWrap {
   bool isClosed() => _l.isClosed();
 
   void close() => _l.close();
-
-  // extra
-  void errorSkipDio(dynamic message, [dynamic error, StackTrace? stackTrace]) {
-    if (e is DioException) {
-      t(message, error);
-    } else {
-      e(message, error, stackTrace);
-    }
-  }
 }
 
 /// default logger
@@ -62,6 +53,14 @@ _LoggerWrap get logger => _logger;
 
 extension LoggerUtils on Logger {
   static void initiateLoggerPath([String? fp]) {
+    DioException.readableStringBuilder = (DioException e) {
+      final buffer = StringBuffer('DioException [${e.response?.statusCode ?? ""} ${e.type.name}]: ');
+      if (e.error != null) {
+        buffer.write('Error: ${e.error}');
+      }
+      return buffer.toString();
+    };
+
     if (fp != null) {
       rollLogFiles(fp, 5, 10 * 1024 * 1024); //10MB
     }
