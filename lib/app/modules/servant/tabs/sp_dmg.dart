@@ -68,7 +68,7 @@ class _SvtSpDmgTabState extends State<SvtSpDmgTab> with SingleTickerProviderStat
             func.buff?.ckOpIndv.isNotEmpty == true) ||
         const [
           FuncType.damageNpIndividual,
-          FuncType.damageNpAndCheckIndividuality,
+          FuncType.damageNpAndOrCheckIndividuality,
           FuncType.damageNpIndividualSum,
           FuncType.damageNpStateIndividualFix
         ].contains(func.funcType)));
@@ -148,7 +148,7 @@ class SpDmgSelfTab extends StatelessWidget {
         final targetList = func.svals.firstOrNull?.TargetList;
         if (targetList != null && targetList.isNotEmpty) traits = NiceTrait.list(targetList);
         useAnd = false;
-      } else if (func.funcType == FuncType.damageNpAndCheckIndividuality) {
+      } else if (func.funcType == FuncType.damageNpAndOrCheckIndividuality) {
         final targetList = func.svals.firstOrNull?.AndCheckIndividualityList;
         if (targetList != null && targetList.isNotEmpty) traits = NiceTrait.list(targetList);
         useAnd = true;
@@ -296,7 +296,7 @@ class _SpDmgIndivTabState extends State<SpDmgIndivTab> {
               getGroup([vals.Target!], false, null, scope).add(card);
             }
             break;
-          case FuncType.damageNpAndCheckIndividuality:
+          case FuncType.damageNpAndOrCheckIndividuality:
             final targetList = vals.AndCheckIndividualityList;
             if (targetList != null && targetList.isNotEmpty) {
               if (widget.svtIndivs.toSet().containSubset(targetList.toSet())) {

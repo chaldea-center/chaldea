@@ -834,7 +834,7 @@ class FuncDescriptor extends StatelessWidget {
             return;
           }
           break;
-        case FuncType.damageNpAndCheckIndividuality:
+        case FuncType.damageNpAndOrCheckIndividuality:
           List<int> indivs = vals?.AndCheckIndividualityList ?? [];
           if (indivs.isNotEmpty) {
             spans.add(_replaceTraits(indivs, useAndJoin: true));

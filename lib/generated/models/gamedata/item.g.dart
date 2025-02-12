@@ -91,6 +91,7 @@ const _$ItemTypeEnumMap = {
   ItemType.purePriShopReset: 'purePriShopReset',
   ItemType.exchangeSvtCoin: 'exchangeSvtCoin',
   ItemType.reduceTradeTime: 'reduceTradeTime',
+  ItemType.eventPassiveSkillGiven: 'eventPassiveSkillGiven',
 };
 
 const _$ItemUseEnumMap = {

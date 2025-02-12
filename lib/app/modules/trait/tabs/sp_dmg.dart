@@ -151,7 +151,7 @@ class _TraitSPDMGTabState extends State<TraitSPDMGTab> {
       for (final func in td.functions) {
         if (![
           FuncType.damageNpIndividual,
-          FuncType.damageNpAndCheckIndividuality,
+          FuncType.damageNpAndOrCheckIndividuality,
           FuncType.damageNpIndividualSum,
           FuncType.damageNpStateIndividual,
           FuncType.damageNpStateIndividualFix,
@@ -169,7 +169,7 @@ class _TraitSPDMGTabState extends State<TraitSPDMGTab> {
           case FuncType.damageNpIndividualSum:
             matched = vals.TargetList?.toSet().containSubset(widget.ids.toSet()) == true;
             break;
-          case FuncType.damageNpAndCheckIndividuality:
+          case FuncType.damageNpAndOrCheckIndividuality:
             matched = vals.AndCheckIndividualityList?.toSet().equalTo(widget.ids.toSet()) == true;
             break;
           case FuncType.damageNpStateIndividual:

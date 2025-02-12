@@ -264,7 +264,9 @@ class BuffTypeConverter extends JsonConverter<BuffType, String> {
 
   @override
   BuffType fromJson(String value) {
-    return deprecatedTypes[value] ?? decodeEnum(_$BuffTypeEnumMap, value, BuffType.unknown);
+    return decodeEnumNullable(_$BuffTypeEnumMap, value) ??
+        deprecatedTypes[value] ??
+        decodeEnum(_$BuffTypeEnumMap, value, BuffType.unknown);
   }
 
   @override
@@ -276,6 +278,11 @@ class BuffTypeConverter extends JsonConverter<BuffType, String> {
     "downDefencecommanDamage": BuffType.downDefenceCommanddamage,
     "attackFunction": BuffType.attackAfterFunction,
     "commandcodeattackFunction": BuffType.commandcodeattackBeforeFunction,
+    // //
+    // "upSelfdamage": BuffType.upDefenceDamage,
+    // "downSelfdamage": BuffType.downDefenceDamage,
+    // "downCommanstar": BuffType.downCommandstar,
+    // "downCommandnpLegacy": BuffType.downCommandnp,
   };
 }
 
@@ -303,8 +310,8 @@ enum BuffType {
   upDropnp(17),
   upCriticaldamage(18),
   downCriticaldamage(19),
-  upSelfdamage(20),
-  downSelfdamage(21),
+  upSelfdamage(20), // Deprecated, move to upDefenceDamage(214)
+  downSelfdamage(21), // Deprecated, move to downDefenceDamage(215)
   addSelfdamage(22),
   subSelfdamage(23),
   avoidance(24),
@@ -336,8 +343,8 @@ enum BuffType {
   upGainHp(64),
   downGainHp(65),
   downCommandatk(66),
-  downCommanstar(67),
-  downCommandnp(68),
+  downCommanstar(67), // Deprecated, moved to downCommandstar(224)
+  downCommandnpLegacy(68), // Deprecated, moved to downCommandnp(221)
   upCriticalrate(70),
   downCriticalrate(71),
   pierceInvincible(72),
@@ -481,6 +488,19 @@ enum BuffType {
   comboStartFunction(211),
   comboEndFunction(212),
   overwriteSvtCardType(213),
+  upDefenceDamage(214), // relacing upSelfdamage(20)
+  downDefenceDamage(215), // replacing downSelfdamage(21)
+  upDefenceCriticaldamage(216),
+  downDefenceCriticaldamage(217),
+  upDefenceNpdamage(218),
+  downDefenceNpdamage(219),
+  upDefenceCommandnp(220),
+  downCommandnp(221), // replacing downCommandnp(68)
+  downDefenceCommandnp(222),
+  upDefenceCommandstar(223),
+  downCommandstar(224), // replacing downCommanstar(67)
+  downDefenceCommandstar(225),
+
   toFieldChangeField(10001),
   toFieldAvoidBuff(10002),
   toFieldSubIndividualityField(10003),

@@ -574,6 +574,7 @@ enum ItemType {
   purePriShopReset,
   exchangeSvtCoin,
   reduceTradeTime,
+  eventPassiveSkillGiven,
 }
 
 enum ItemBGType {

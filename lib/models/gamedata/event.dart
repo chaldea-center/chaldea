@@ -2153,8 +2153,7 @@ enum DetailMissionCondLinkType {
   randomMissionStart,
 }
 
-/// https://github.com/atlasacademy/apps/blob/master/packages/api-connector/src/Schema/Mission.ts
-enum EventMissionCondType {
+enum EventMissionCondDetailType {
   enemyKillNum(1), // traits AND
   enemyIndividualityKillNum(2), // traits OR
   itemGetTotal(3),
@@ -2195,15 +2194,17 @@ enum EventMissionCondType {
   useTreasureDeviceExchangeSvt(38), // 3000 day campaign, exchangeSvt
   playVoiceExchangeSvt(39), // 3000 day campaign, exchangeSvt
   mapGimmickCount(40), // FSR collaboration, touch dog or cat
+  purchaseShopNum(41),
+  itemUseQuestNum(42), // storm pod
 
   /// custom, only used in app
   questClearIndividuality(999);
 
   final int value;
-  const EventMissionCondType(this.value);
+  const EventMissionCondDetailType(this.value);
 
-  static EventMissionCondType? parseId(int id) {
-    return EventMissionCondType.values.firstWhereOrNull((type) => type.value == id);
+  static EventMissionCondDetailType? parseId(int id) {
+    return EventMissionCondDetailType.values.firstWhereOrNull((type) => type.value == id);
   }
 }
 

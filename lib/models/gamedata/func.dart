@@ -15,7 +15,7 @@ export 'buff.dart';
 
 part '../../generated/models/gamedata/func.g.dart';
 
-@JsonSerializable()
+@JsonSerializable(converters: [FuncTypeConverter()])
 class NiceFunction with RouteInfo implements BaseFunction {
   BaseFunction _baseFunc;
 
@@ -316,7 +316,7 @@ class NiceFunction with RouteInfo implements BaseFunction {
   Map<String, dynamic> toJson() => _$NiceFunctionToJson(this);
 }
 
-@JsonSerializable()
+@JsonSerializable(converters: [FuncTypeConverter()])
 class BaseFunction with RouteInfo {
   final int funcId;
   final FuncType funcType;
@@ -500,6 +500,7 @@ const kAddStateFuncTypes = [
   FuncType.addFieldChangeToField,
 ];
 
+@JsonEnum(alwaysCreate: true)
 enum FuncType {
   unknown(-1),
   none(0),
@@ -557,7 +558,7 @@ enum FuncType {
   shortenUserEquipSkill(52),
   quickChangeBg(53),
   shiftServant(54),
-  damageNpAndCheckIndividuality(55),
+  damageNpAndOrCheckIndividuality(55),
   absorbNpturn(56),
   overwriteDeadType(57),
   forceAllBuffNoact(58),
@@ -708,4 +709,22 @@ enum GainNpIndividualSumTarget {
 
   const GainNpIndividualSumTarget(this.value);
   final int value;
+}
+
+class FuncTypeConverter extends JsonConverter<FuncType, String> {
+  const FuncTypeConverter();
+
+  @override
+  FuncType fromJson(String value) {
+    return decodeEnumNullable(_$FuncTypeEnumMap, value) ??
+        deprecatedTypes[value] ??
+        decodeEnum(_$FuncTypeEnumMap, value, FuncType.unknown);
+  }
+
+  @override
+  String toJson(FuncType obj) => _$FuncTypeEnumMap[obj] ?? obj.name;
+
+  static Map<String, FuncType> deprecatedTypes = {
+    "damageNpAndCheckIndividuality": FuncType.damageNpAndOrCheckIndividuality,
+  };
 }

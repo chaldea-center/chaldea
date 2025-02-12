@@ -8,7 +8,8 @@ part of '../../../models/gamedata/func.dart';
 
 NiceFunction _$NiceFunctionFromJson(Map json) => NiceFunction(
       funcId: (json['funcId'] as num).toInt(),
-      funcType: $enumDecodeNullable(_$FuncTypeEnumMap, json['funcType']) ?? FuncType.unknown,
+      funcType:
+          json['funcType'] == null ? FuncType.unknown : const FuncTypeConverter().fromJson(json['funcType'] as String),
       funcTargetType: $enumDecode(_$FuncTargetTypeEnumMap, json['funcTargetType']),
       funcTargetTeam:
           $enumDecodeNullable(_$FuncApplyTargetEnumMap, json['funcTargetTeam']) ?? FuncApplyTarget.playerAndEnemy,
@@ -61,7 +62,7 @@ NiceFunction _$NiceFunctionFromJson(Map json) => NiceFunction(
 
 Map<String, dynamic> _$NiceFunctionToJson(NiceFunction instance) => <String, dynamic>{
       'funcId': instance.funcId,
-      'funcType': _$FuncTypeEnumMap[instance.funcType]!,
+      'funcType': const FuncTypeConverter().toJson(instance.funcType),
       'funcTargetType': _$FuncTargetTypeEnumMap[instance.funcTargetType]!,
       'funcTargetTeam': _$FuncApplyTargetEnumMap[instance.funcTargetTeam]!,
       'funcPopupText': instance.funcPopupText,
@@ -79,6 +80,134 @@ Map<String, dynamic> _$NiceFunctionToJson(NiceFunction instance) => <String, dyn
       'svals4': instance.svals4?.map((e) => e.toJson()).toList(),
       'svals5': instance.svals5?.map((e) => e.toJson()).toList(),
       'followerVals': instance.followerVals?.map((e) => e.toJson()).toList(),
+    };
+
+const _$FuncTargetTypeEnumMap = {
+  FuncTargetType.self: 'self',
+  FuncTargetType.ptOne: 'ptOne',
+  FuncTargetType.ptAnother: 'ptAnother',
+  FuncTargetType.ptAll: 'ptAll',
+  FuncTargetType.enemy: 'enemy',
+  FuncTargetType.enemyAnother: 'enemyAnother',
+  FuncTargetType.enemyAll: 'enemyAll',
+  FuncTargetType.ptFull: 'ptFull',
+  FuncTargetType.enemyFull: 'enemyFull',
+  FuncTargetType.ptOther: 'ptOther',
+  FuncTargetType.ptOneOther: 'ptOneOther',
+  FuncTargetType.ptRandom: 'ptRandom',
+  FuncTargetType.enemyOther: 'enemyOther',
+  FuncTargetType.enemyRandom: 'enemyRandom',
+  FuncTargetType.ptOtherFull: 'ptOtherFull',
+  FuncTargetType.enemyOtherFull: 'enemyOtherFull',
+  FuncTargetType.ptselectOneSub: 'ptselectOneSub',
+  FuncTargetType.ptselectSub: 'ptselectSub',
+  FuncTargetType.ptOneAnotherRandom: 'ptOneAnotherRandom',
+  FuncTargetType.ptSelfAnotherRandom: 'ptSelfAnotherRandom',
+  FuncTargetType.enemyOneAnotherRandom: 'enemyOneAnotherRandom',
+  FuncTargetType.ptSelfAnotherFirst: 'ptSelfAnotherFirst',
+  FuncTargetType.ptSelfBefore: 'ptSelfBefore',
+  FuncTargetType.ptSelfAfter: 'ptSelfAfter',
+  FuncTargetType.ptSelfAnotherLast: 'ptSelfAnotherLast',
+  FuncTargetType.commandTypeSelfTreasureDevice: 'commandTypeSelfTreasureDevice',
+  FuncTargetType.fieldOther: 'fieldOther',
+  FuncTargetType.enemyOneNoTargetNoAction: 'enemyOneNoTargetNoAction',
+  FuncTargetType.ptOneHpLowestValue: 'ptOneHpLowestValue',
+  FuncTargetType.ptOneHpLowestRate: 'ptOneHpLowestRate',
+  FuncTargetType.enemyRange: 'enemyRange',
+  FuncTargetType.handCommandcardRandomOne: 'handCommandcardRandomOne',
+  FuncTargetType.fieldAll: 'fieldAll',
+};
+
+const _$FuncApplyTargetEnumMap = {
+  FuncApplyTarget.player: 'player',
+  FuncApplyTarget.enemy: 'enemy',
+  FuncApplyTarget.playerAndEnemy: 'playerAndEnemy',
+};
+
+BaseFunction _$BaseFunctionFromJson(Map json) => BaseFunction(
+      funcId: (json['funcId'] as num).toInt(),
+      funcType:
+          json['funcType'] == null ? FuncType.unknown : const FuncTypeConverter().fromJson(json['funcType'] as String),
+      funcTargetType: $enumDecode(_$FuncTargetTypeEnumMap, json['funcTargetType']),
+      funcTargetTeam: $enumDecode(_$FuncApplyTargetEnumMap, json['funcTargetTeam']),
+      funcPopupText: json['funcPopupText'] as String? ?? '',
+      funcPopupIcon: json['funcPopupIcon'] as String?,
+      functvals: (json['functvals'] as List<dynamic>?)
+              ?.map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
+      overWriteTvalsList: (json['overWriteTvalsList'] as List<dynamic>?)
+              ?.map((e) =>
+                  (e as List<dynamic>).map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map))).toList())
+              .toList() ??
+          const [],
+      funcquestTvals: (json['funcquestTvals'] as List<dynamic>?)
+              ?.map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
+      funcGroup: (json['funcGroup'] as List<dynamic>?)
+              ?.map((e) => FuncGroup.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
+      traitVals: (json['traitVals'] as List<dynamic>?)
+              ?.map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
+      buffs:
+          (json['buffs'] as List<dynamic>?)?.map((e) => Buff.fromJson(Map<String, dynamic>.from(e as Map))).toList() ??
+              const [],
+      script: json['script'] == null ? null : FuncScript.fromJson(Map<String, dynamic>.from(json['script'] as Map)),
+    );
+
+Map<String, dynamic> _$BaseFunctionToJson(BaseFunction instance) => <String, dynamic>{
+      'funcId': instance.funcId,
+      'funcType': const FuncTypeConverter().toJson(instance.funcType),
+      'funcTargetType': _$FuncTargetTypeEnumMap[instance.funcTargetType]!,
+      'funcTargetTeam': _$FuncApplyTargetEnumMap[instance.funcTargetTeam]!,
+      'funcPopupText': instance.funcPopupText,
+      'funcPopupIcon': instance.funcPopupIcon,
+      'functvals': instance.functvals.map((e) => e.toJson()).toList(),
+      'overWriteTvalsList': instance.overWriteTvalsList.map((e) => e.map((e) => e.toJson()).toList()).toList(),
+      'funcquestTvals': instance.funcquestTvals.map((e) => e.toJson()).toList(),
+      'funcGroup': instance.funcGroup.map((e) => e.toJson()).toList(),
+      'traitVals': instance.traitVals.map((e) => e.toJson()).toList(),
+      'buffs': instance.buffs.map((e) => e.toJson()).toList(),
+      'script': instance.script?.toJson(),
+    };
+
+FuncGroup _$FuncGroupFromJson(Map json) => FuncGroup(
+      eventId: (json['eventId'] as num).toInt(),
+      baseFuncId: (json['baseFuncId'] as num).toInt(),
+      nameTotal: json['nameTotal'] as String,
+      name: json['name'] as String,
+      icon: json['icon'] as String?,
+      priority: (json['priority'] as num).toInt(),
+      isDispValue: json['isDispValue'] as bool,
+    );
+
+Map<String, dynamic> _$FuncGroupToJson(FuncGroup instance) => <String, dynamic>{
+      'eventId': instance.eventId,
+      'baseFuncId': instance.baseFuncId,
+      'nameTotal': instance.nameTotal,
+      'name': instance.name,
+      'icon': instance.icon,
+      'priority': instance.priority,
+      'isDispValue': instance.isDispValue,
+    };
+
+FuncScript _$FuncScriptFromJson(Map json) => FuncScript(
+      overwriteTvals: (json['overwriteTvals'] as List<dynamic>?)
+          ?.map(
+              (e) => (e as List<dynamic>).map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map))).toList())
+          .toList(),
+      funcIndividuality: (json['funcIndividuality'] as List<dynamic>?)
+          ?.map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
+          .toList(),
+    );
+
+Map<String, dynamic> _$FuncScriptToJson(FuncScript instance) => <String, dynamic>{
+      'overwriteTvals': instance.overwriteTvals?.map((e) => e.map((e) => e.toJson()).toList()).toList(),
+      'funcIndividuality': instance.funcIndividuality?.map((e) => e.toJson()).toList(),
     };
 
 const _$FuncTypeEnumMap = {
@@ -138,7 +267,7 @@ const _$FuncTypeEnumMap = {
   FuncType.shortenUserEquipSkill: 'shortenUserEquipSkill',
   FuncType.quickChangeBg: 'quickChangeBg',
   FuncType.shiftServant: 'shiftServant',
-  FuncType.damageNpAndCheckIndividuality: 'damageNpAndCheckIndividuality',
+  FuncType.damageNpAndOrCheckIndividuality: 'damageNpAndOrCheckIndividuality',
   FuncType.absorbNpturn: 'absorbNpturn',
   FuncType.overwriteDeadType: 'overwriteDeadType',
   FuncType.forceAllBuffNoact: 'forceAllBuffNoact',
@@ -196,130 +325,3 @@ const _$FuncTypeEnumMap = {
   FuncType.enemyCountChange: 'enemyCountChange',
   FuncType.displayBattleMessage: 'displayBattleMessage',
 };
-
-const _$FuncTargetTypeEnumMap = {
-  FuncTargetType.self: 'self',
-  FuncTargetType.ptOne: 'ptOne',
-  FuncTargetType.ptAnother: 'ptAnother',
-  FuncTargetType.ptAll: 'ptAll',
-  FuncTargetType.enemy: 'enemy',
-  FuncTargetType.enemyAnother: 'enemyAnother',
-  FuncTargetType.enemyAll: 'enemyAll',
-  FuncTargetType.ptFull: 'ptFull',
-  FuncTargetType.enemyFull: 'enemyFull',
-  FuncTargetType.ptOther: 'ptOther',
-  FuncTargetType.ptOneOther: 'ptOneOther',
-  FuncTargetType.ptRandom: 'ptRandom',
-  FuncTargetType.enemyOther: 'enemyOther',
-  FuncTargetType.enemyRandom: 'enemyRandom',
-  FuncTargetType.ptOtherFull: 'ptOtherFull',
-  FuncTargetType.enemyOtherFull: 'enemyOtherFull',
-  FuncTargetType.ptselectOneSub: 'ptselectOneSub',
-  FuncTargetType.ptselectSub: 'ptselectSub',
-  FuncTargetType.ptOneAnotherRandom: 'ptOneAnotherRandom',
-  FuncTargetType.ptSelfAnotherRandom: 'ptSelfAnotherRandom',
-  FuncTargetType.enemyOneAnotherRandom: 'enemyOneAnotherRandom',
-  FuncTargetType.ptSelfAnotherFirst: 'ptSelfAnotherFirst',
-  FuncTargetType.ptSelfBefore: 'ptSelfBefore',
-  FuncTargetType.ptSelfAfter: 'ptSelfAfter',
-  FuncTargetType.ptSelfAnotherLast: 'ptSelfAnotherLast',
-  FuncTargetType.commandTypeSelfTreasureDevice: 'commandTypeSelfTreasureDevice',
-  FuncTargetType.fieldOther: 'fieldOther',
-  FuncTargetType.enemyOneNoTargetNoAction: 'enemyOneNoTargetNoAction',
-  FuncTargetType.ptOneHpLowestValue: 'ptOneHpLowestValue',
-  FuncTargetType.ptOneHpLowestRate: 'ptOneHpLowestRate',
-  FuncTargetType.enemyRange: 'enemyRange',
-  FuncTargetType.handCommandcardRandomOne: 'handCommandcardRandomOne',
-  FuncTargetType.fieldAll: 'fieldAll',
-};
-
-const _$FuncApplyTargetEnumMap = {
-  FuncApplyTarget.player: 'player',
-  FuncApplyTarget.enemy: 'enemy',
-  FuncApplyTarget.playerAndEnemy: 'playerAndEnemy',
-};
-
-BaseFunction _$BaseFunctionFromJson(Map json) => BaseFunction(
-      funcId: (json['funcId'] as num).toInt(),
-      funcType: $enumDecodeNullable(_$FuncTypeEnumMap, json['funcType']) ?? FuncType.unknown,
-      funcTargetType: $enumDecode(_$FuncTargetTypeEnumMap, json['funcTargetType']),
-      funcTargetTeam: $enumDecode(_$FuncApplyTargetEnumMap, json['funcTargetTeam']),
-      funcPopupText: json['funcPopupText'] as String? ?? '',
-      funcPopupIcon: json['funcPopupIcon'] as String?,
-      functvals: (json['functvals'] as List<dynamic>?)
-              ?.map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
-              .toList() ??
-          const [],
-      overWriteTvalsList: (json['overWriteTvalsList'] as List<dynamic>?)
-              ?.map((e) =>
-                  (e as List<dynamic>).map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map))).toList())
-              .toList() ??
-          const [],
-      funcquestTvals: (json['funcquestTvals'] as List<dynamic>?)
-              ?.map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
-              .toList() ??
-          const [],
-      funcGroup: (json['funcGroup'] as List<dynamic>?)
-              ?.map((e) => FuncGroup.fromJson(Map<String, dynamic>.from(e as Map)))
-              .toList() ??
-          const [],
-      traitVals: (json['traitVals'] as List<dynamic>?)
-              ?.map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
-              .toList() ??
-          const [],
-      buffs:
-          (json['buffs'] as List<dynamic>?)?.map((e) => Buff.fromJson(Map<String, dynamic>.from(e as Map))).toList() ??
-              const [],
-      script: json['script'] == null ? null : FuncScript.fromJson(Map<String, dynamic>.from(json['script'] as Map)),
-    );
-
-Map<String, dynamic> _$BaseFunctionToJson(BaseFunction instance) => <String, dynamic>{
-      'funcId': instance.funcId,
-      'funcType': _$FuncTypeEnumMap[instance.funcType]!,
-      'funcTargetType': _$FuncTargetTypeEnumMap[instance.funcTargetType]!,
-      'funcTargetTeam': _$FuncApplyTargetEnumMap[instance.funcTargetTeam]!,
-      'funcPopupText': instance.funcPopupText,
-      'funcPopupIcon': instance.funcPopupIcon,
-      'functvals': instance.functvals.map((e) => e.toJson()).toList(),
-      'overWriteTvalsList': instance.overWriteTvalsList.map((e) => e.map((e) => e.toJson()).toList()).toList(),
-      'funcquestTvals': instance.funcquestTvals.map((e) => e.toJson()).toList(),
-      'funcGroup': instance.funcGroup.map((e) => e.toJson()).toList(),
-      'traitVals': instance.traitVals.map((e) => e.toJson()).toList(),
-      'buffs': instance.buffs.map((e) => e.toJson()).toList(),
-      'script': instance.script?.toJson(),
-    };
-
-FuncGroup _$FuncGroupFromJson(Map json) => FuncGroup(
-      eventId: (json['eventId'] as num).toInt(),
-      baseFuncId: (json['baseFuncId'] as num).toInt(),
-      nameTotal: json['nameTotal'] as String,
-      name: json['name'] as String,
-      icon: json['icon'] as String?,
-      priority: (json['priority'] as num).toInt(),
-      isDispValue: json['isDispValue'] as bool,
-    );
-
-Map<String, dynamic> _$FuncGroupToJson(FuncGroup instance) => <String, dynamic>{
-      'eventId': instance.eventId,
-      'baseFuncId': instance.baseFuncId,
-      'nameTotal': instance.nameTotal,
-      'name': instance.name,
-      'icon': instance.icon,
-      'priority': instance.priority,
-      'isDispValue': instance.isDispValue,
-    };
-
-FuncScript _$FuncScriptFromJson(Map json) => FuncScript(
-      overwriteTvals: (json['overwriteTvals'] as List<dynamic>?)
-          ?.map(
-              (e) => (e as List<dynamic>).map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map))).toList())
-          .toList(),
-      funcIndividuality: (json['funcIndividuality'] as List<dynamic>?)
-          ?.map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
-          .toList(),
-    );
-
-Map<String, dynamic> _$FuncScriptToJson(FuncScript instance) => <String, dynamic>{
-      'overwriteTvals': instance.overwriteTvals?.map((e) => e.map((e) => e.toJson()).toList()).toList(),
-      'funcIndividuality': instance.funcIndividuality?.map((e) => e.toJson()).toList(),
-    };

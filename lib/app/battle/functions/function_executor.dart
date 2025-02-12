@@ -321,7 +321,7 @@ class FunctionExecutor {
         case FuncType.damage:
         case FuncType.damageNp:
         case FuncType.damageNpIndividual:
-        case FuncType.damageNpAndCheckIndividuality:
+        case FuncType.damageNpAndOrCheckIndividuality:
         case FuncType.damageNpPierce:
         case FuncType.damageNpHpratioLow:
         case FuncType.damageNpHpratioHigh: // no real example yet

@@ -85,9 +85,9 @@ class CustomMission {
         bool useAnd;
         switch (type) {
           case CustomMissionType.trait:
-            if (detail.missionCondType == EventMissionCondType.enemyIndividualityKillNum.value) {
+            if (detail.missionCondType == EventMissionCondDetailType.enemyIndividualityKillNum.value) {
               useAnd = false;
-            } else if (detail.missionCondType == EventMissionCondType.allIndividualityInEnemyKillNum.value) {
+            } else if (detail.missionCondType == EventMissionCondDetailType.allIndividualityInEnemyKillNum.value) {
               useAnd = true;
             } else {
               useAnd = true;
@@ -151,27 +151,27 @@ class CustomMission {
     );
   }
 
-  static final Map<int, CustomMissionType> kDetailCondMapping = <EventMissionCondType, CustomMissionType>{
-    EventMissionCondType.questClearNum: CustomMissionType.quest,
-    EventMissionCondType.questPhaseClearNum: CustomMissionType.quest,
-    EventMissionCondType.enemyKillNum: CustomMissionType.enemy,
-    EventMissionCondType.targetQuestEnemyKillNum: CustomMissionType.enemy,
-    EventMissionCondType.allIndividualityInEnemyKillNum: CustomMissionType.trait,
-    EventMissionCondType.enemyIndividualityKillNum: CustomMissionType.trait,
-    EventMissionCondType.targetQuestEnemyIndividualityKillNum: CustomMissionType.enemy,
-    EventMissionCondType.targetSvtEnemyClassKillNum: CustomMissionType.servantClass,
-    EventMissionCondType.targetEnemyClassKillNum: CustomMissionType.enemyClass,
-    EventMissionCondType.targetEnemyIndividualityClassKillNum: CustomMissionType.enemyNotServantClass,
+  static final Map<int, CustomMissionType> kDetailCondMapping = <EventMissionCondDetailType, CustomMissionType>{
+    EventMissionCondDetailType.questClearNum: CustomMissionType.quest,
+    EventMissionCondDetailType.questPhaseClearNum: CustomMissionType.quest,
+    EventMissionCondDetailType.enemyKillNum: CustomMissionType.enemy,
+    EventMissionCondDetailType.targetQuestEnemyKillNum: CustomMissionType.enemy,
+    EventMissionCondDetailType.allIndividualityInEnemyKillNum: CustomMissionType.trait,
+    EventMissionCondDetailType.enemyIndividualityKillNum: CustomMissionType.trait,
+    EventMissionCondDetailType.targetQuestEnemyIndividualityKillNum: CustomMissionType.enemy,
+    EventMissionCondDetailType.targetSvtEnemyClassKillNum: CustomMissionType.servantClass,
+    EventMissionCondDetailType.targetEnemyClassKillNum: CustomMissionType.enemyClass,
+    EventMissionCondDetailType.targetEnemyIndividualityClassKillNum: CustomMissionType.enemyNotServantClass,
   }.map((key, value) => MapEntry(key.value, value));
 
-  static final Map<CustomMissionType, int> kDetailCondMappingReverse = <CustomMissionType, EventMissionCondType>{
-    CustomMissionType.quest: EventMissionCondType.questClearNum,
-    CustomMissionType.enemy: EventMissionCondType.enemyKillNum,
-    CustomMissionType.trait: EventMissionCondType.allIndividualityInEnemyKillNum,
-    CustomMissionType.servantClass: EventMissionCondType.targetSvtEnemyClassKillNum,
-    CustomMissionType.enemyClass: EventMissionCondType.targetEnemyClassKillNum,
-    CustomMissionType.enemyNotServantClass: EventMissionCondType.targetEnemyIndividualityClassKillNum,
-    CustomMissionType.questTrait: EventMissionCondType.questClearIndividuality,
+  static final Map<CustomMissionType, int> kDetailCondMappingReverse = <CustomMissionType, EventMissionCondDetailType>{
+    CustomMissionType.quest: EventMissionCondDetailType.questClearNum,
+    CustomMissionType.enemy: EventMissionCondDetailType.enemyKillNum,
+    CustomMissionType.trait: EventMissionCondDetailType.allIndividualityInEnemyKillNum,
+    CustomMissionType.servantClass: EventMissionCondDetailType.targetSvtEnemyClassKillNum,
+    CustomMissionType.enemyClass: EventMissionCondDetailType.targetEnemyClassKillNum,
+    CustomMissionType.enemyNotServantClass: EventMissionCondDetailType.targetEnemyIndividualityClassKillNum,
+    CustomMissionType.questTrait: EventMissionCondDetailType.questClearIndividuality,
   }.map((key, value) => MapEntry(key, value.value));
 }
 

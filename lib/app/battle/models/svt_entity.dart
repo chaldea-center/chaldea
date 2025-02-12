@@ -400,6 +400,7 @@ class BattleServantData {
 
   Future<void> activateExtraPassive(final BattleData battleData) async {
     if (isPlayer) {
+      // TODO: skill num check
       for (final skill in playerSvtData!.extraPassives) {
         if (playerSvtData!.disabledExtraSkills.contains(skill.id)) continue;
         if (skill.shouldActiveSvtEventSkill(
@@ -675,7 +676,7 @@ class BattleServantData {
       case BuffAction.commandDef:
       case BuffAction.defencePierce:
       case BuffAction.defence:
-      case BuffAction.selfdamage:
+      case BuffAction.damageDef:
       case BuffAction.specialdefence:
       case BuffAction.receiveDamagePierce:
       case BuffAction.receiveDamage:
@@ -850,7 +851,7 @@ class BattleServantData {
       case BuffAction.commandDef:
       case BuffAction.defencePierce:
       case BuffAction.defence:
-      case BuffAction.selfdamage:
+      case BuffAction.damageDef:
       case BuffAction.specialdefence:
       case BuffAction.receiveDamagePierce:
       case BuffAction.receiveDamage:

@@ -127,7 +127,7 @@ class Damage {
           if (useCorrection) {
             specificAttackRate = dataVals.Correction!;
           }
-        } else if (funcType == FuncType.damageNpAndCheckIndividuality) {
+        } else if (funcType == FuncType.damageNpAndOrCheckIndividuality) {
           final damageNpSEDecision = battleData.delegate?.damageNpSE?.call(activator, damageFunction, dataVals);
 
           final useCorrection = damageNpSEDecision?.useCorrection ??
@@ -289,7 +289,7 @@ class Damage {
               )
         ..specificDefenseBuff = await target.getBuffValue(
           battleData,
-          BuffAction.selfdamage,
+          BuffAction.damageDef,
           opponent: activator,
           card: currentCard,
           skipDamage: skipDamage,

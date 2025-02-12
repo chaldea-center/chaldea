@@ -205,7 +205,7 @@ class SkillEffect {
       FuncType.damageNpStateIndividualFix,
       FuncType.damageNpHpratioLow,
       FuncType.damageNpStateIndividual,
-      FuncType.damageNpAndCheckIndividuality,
+      FuncType.damageNpAndOrCheckIndividuality,
       // FuncType.damageNpHpratioHigh
       FuncType.damageNpBattlePointPhase,
     ],

@@ -152,6 +152,7 @@ class DataVals {
   int? get ShiftNpcId => _vals['ShiftNpcId'];
   int? get DisplayLastFuncInvalidType => _vals['DisplayLastFuncInvalidType'];
   List<int>? get AndCheckIndividualityList => _list('AndCheckIndividualityList');
+  List<int>? get AndOrCheckIndividualityList => _list('AndOrCheckIndividualityList');
   int? get WinBattleNotRelatedSurvivalStatus => _vals['WinBattleNotRelatedSurvivalStatus'];
   int? get ForceSelfInstantDeath => _vals['ForceSelfInstantDeath'];
   int? get ChangeMaxBreakGauge => _vals['ChangeMaxBreakGauge'];

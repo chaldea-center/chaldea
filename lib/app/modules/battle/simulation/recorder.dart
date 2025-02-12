@@ -1413,7 +1413,7 @@ class DamageParamDialog extends StatelessWidget with _ParamDialogMixin {
     final isNpSpecificDamage = params.isNp &&
         {
           FuncType.damageNpIndividual,
-          FuncType.damageNpAndCheckIndividuality,
+          FuncType.damageNpAndOrCheckIndividuality,
           FuncType.damageNpIndividualSum,
           FuncType.damageNpStateIndividualFix,
           FuncType.damageNpRare,

@@ -77,6 +77,23 @@ class ConstGameData {
     this.destinyOrderSummons = const [],
   }) : buffTypeActionMap = {} {
     if (buffActions.isNotEmpty) {
+      void _addBuffTypes(BuffAction action, List<BuffType> plusTypes, List<BuffType> minusTypes) {
+        final actionInfo = buffActions[action];
+        if (actionInfo == null) return;
+        for (final buffType in plusTypes) {
+          if (!actionInfo.plusTypes.contains(buffType)) actionInfo.plusTypes.add(buffType);
+        }
+        for (final buffType in minusTypes) {
+          if (!actionInfo.minusTypes.contains(buffType)) actionInfo.minusTypes.add(buffType);
+        }
+      }
+
+      // renamed and migrated in JP 2.107.0
+      _addBuffTypes(BuffAction.damageDef, [BuffType.upSelfdamage, BuffType.upDefenceDamage],
+          [BuffType.downSelfdamage, BuffType.downDefenceDamage]);
+      _addBuffTypes(BuffAction.commandStarAtk, [], [BuffType.downCommanstar, BuffType.downCommandstar]);
+      _addBuffTypes(BuffAction.commandNpAtk, [], [BuffType.downCommandnpLegacy, BuffType.downCommandnp]);
+
       buffActions[BuffAction.functionClassboardCommandSpellAfter] = BuffActionInfo(
         limit: BuffLimit.none,
         plusTypes: [BuffType.classboardCommandSpellAfterFunction],
@@ -307,7 +324,7 @@ class SvtExpCurve {
   Map<String, dynamic> toJson() => _$SvtExpCurveToJson(this);
 }
 
-@JsonSerializable()
+@JsonSerializable(converters: [FuncTypeConverter()])
 class FuncTypeDetail {
   final FuncType funcType;
   final bool ignoreValueUp;
@@ -324,7 +341,7 @@ class FuncTypeDetail {
   Map<String, dynamic> toJson() => _$FuncTypeDetailToJson(this);
 }
 
-@JsonSerializable()
+@JsonSerializable(converters: [BuffTypeConverter()])
 class BuffTypeDetail {
   final BuffType buffType;
   final bool ignoreValueUp;
@@ -1110,6 +1127,7 @@ class BuffActionConverter extends JsonConverter<BuffAction, dynamic> {
     "functionCommandattack": BuffAction.functionCommandattackAfter,
     "functionAttack": BuffAction.functionAttackAfter,
     "functionCommandcodeattack": BuffAction.functionCommandcodeattackBefore,
+    "selfdamage": BuffAction.damageDef,
   };
 }
 
@@ -1126,7 +1144,7 @@ enum BuffAction {
   damage(7),
   damageIndividuality(8),
   damageIndividualityActiveonly(9),
-  selfdamage(10),
+  damageDef(10),
   criticalDamage(11),
   npdamage(12),
   givenDamage(13),
@@ -1267,6 +1285,9 @@ enum BuffAction {
   functionComboStart(148),
   functionComboEnd(149),
   overwriteSvtCardType(150),
+  criticalDamageDef(151),
+  npdamageDef(152),
+  // custom
   functionClassboardCommandSpellAfter(301),
   ;
 
@@ -1345,7 +1366,7 @@ const kFuncValPercentType = <FuncType, int>{
   FuncType.damageNpSafe: 10,
   FuncType.damageNpHpratioLow: 10,
   FuncType.damageNpIndividual: 10,
-  FuncType.damageNpAndCheckIndividuality: 10,
+  FuncType.damageNpAndOrCheckIndividuality: 10,
   FuncType.damageNpIndividualSum: 10,
   FuncType.damageNpPierce: 10,
   FuncType.damageNpRare: 10,
