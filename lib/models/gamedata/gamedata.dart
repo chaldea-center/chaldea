@@ -310,7 +310,7 @@ class GameData with _GameDataExtra {
         continue;
       }
       if (dropData.domusAurea.questIds.contains(quest.id)) continue;
-      if (questPhase.drops.isEmpty || questPhase.drops.first.runs < 2) continue;
+      if (questPhase.drops.isEmpty || questPhase.drops.first.runs < 50) continue;
       final runs = questPhase.drops.first.runs;
       Map<int, int> drops = {};
       for (final drop in questPhase.drops) {
@@ -328,7 +328,7 @@ class GameData with _GameDataExtra {
         run: runs,
         bond: questPhase.bond,
         exp: questPhase.exp,
-        drops: {for (final (k, v) in drops.items) k: v / runs},
+        drops: {for (final (k, v) in drops.items) k: v / runs * 100},
       );
     }
     dropData.domusAurea.initMatrix();

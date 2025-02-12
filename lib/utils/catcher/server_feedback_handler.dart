@@ -182,6 +182,8 @@ class ServerFeedbackHandler extends ReportHandler {
         "RuntimeError: Aborted",
         "Failed to detect image file format using the file header",
         "null function or function signature mismatch",
+        "memory access out of bounds",
+        "Cannot add event after closing",
         // "SecurityError: Failed to execute 'texImage2D'",
         // "TypeError: Cannot read property 'toString' of null",
         // "TypeError: Cannot read properties of undefined",
