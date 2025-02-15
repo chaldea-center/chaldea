@@ -10,7 +10,6 @@ import 'package:chaldea/utils/utils.dart';
 import '../app/routes/delegate.dart';
 import '../app/tools/app_update.dart';
 import '../packages/app_info.dart';
-import '../packages/platform/platform.dart';
 import 'api/api.dart';
 import 'api/recognizer.dart';
 import 'gamedata/gamedata.dart';
@@ -53,8 +52,6 @@ class RuntimeData {
 
   /// store anything you like
   Map<dynamic, dynamic> tempDict = {};
-
-  WebRenderMode? webRendererCanvasKit;
 
   final AppClipBoard clipBoard = AppClipBoard();
 

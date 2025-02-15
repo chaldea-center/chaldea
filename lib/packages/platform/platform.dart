@@ -4,8 +4,6 @@ import 'package:flutter/foundation.dart';
 
 import 'platform_io.dart' if (dart.library.js) 'platform_web.dart';
 
-export 'platform_interface.dart' show WebRenderMode;
-
 class PlatformU {
   const PlatformU._();
 
@@ -34,8 +32,6 @@ class PlatformU {
   // plugin supports
   static final bool supportCopyImage =
       kIsWeb || Platform.isIOS || Platform.isMacOS || Platform.isWindows || Platform.isAndroid;
-
-  static final bool supportScreenshot = kIsWeb ? kPlatformMethods.rendererCanvasKit : true;
 }
 
 final kPlatformMethods = PlatformMethods();

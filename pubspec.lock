@@ -5,15 +5,10 @@ packages:
     dependency: transitive
     description:
       name: _fe_analyzer_shared
-      sha256: "16e298750b6d0af7ce8a3ba7c18c69c3785d11b15ec83f6dcd0ad2a0009b3cab"
+      sha256: dc27559385e905ad30838356c5f5d574014ba39872d732111cd07ac0beff4c57
       url: "https://pub.dev"
     source: hosted
-    version: "76.0.0"
-  _macros:
-    dependency: transitive
-    description: dart
-    source: sdk
-    version: "0.3.3"
+    version: "80.0.0"
   admanager_web:
     dependency: "direct main"
     description:
@@ -26,10 +21,10 @@ packages:
     dependency: transitive
     description:
       name: analyzer
-      sha256: "1f14db053a8c23e260789e9b0980fa27f2680dd640932cae5e1137cce0e46e1e"
+      sha256: "192d1c5b944e7e53b24b5586db760db934b177d4147c42fbca8c8c5f1eb8d11e"
       url: "https://pub.dev"
     source: hosted
-    version: "6.11.0"
+    version: "7.3.0"
   android_id:
     dependency: "direct main"
     description:
@@ -331,10 +326,10 @@ packages:
     dependency: transitive
     description:
       name: dart_style
-      sha256: "7306ab8a2359a48d22310ad823521d723acfed60ee1f7e37388e8986853b6820"
+      sha256: "27eb0ae77836989a3bc541ce55595e8ceee0992807f14511552a898ddd0d88ac"
       url: "https://pub.dev"
     source: hosted
-    version: "2.3.8"
+    version: "3.0.1"
   data_table_2:
     dependency: "direct main"
     description:
@@ -715,10 +710,10 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: "89f80415e6ee6026b5a2ca8db4d76ec76e2eec1b"
+      resolved-ref: "3074b198fdf167f82686b9e9192e737a1531bffa"
       url: "https://github.com/chaldea-center/intl_utils.git"
     source: git
-    version: "2.8.7"
+    version: "2.8.10"
   io:
     dependency: transitive
     description:
@@ -847,14 +842,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.3"
-  macros:
-    dependency: transitive
-    description:
-      name: macros
-      sha256: "1d9e801cd66f7ea3663c45fc708450db1fa57f988142c64289142c9b7ee80656"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.1.3-main.0"
   mailer:
     dependency: transitive
     description:

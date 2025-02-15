@@ -221,7 +221,6 @@ class ServerFeedbackHandler extends ReportHandler {
   }
 
   Future<Uint8List?> _captureScreenshot() async {
-    if (kIsWeb && !kPlatformMethods.rendererCanvasKit) return null;
     try {
       Uint8List? shotBinary = await screenshotController?.capture(
         pixelRatio: 1,
@@ -292,7 +291,6 @@ class ServerFeedbackHandler extends ReportHandler {
       'locale': Language.systemLocale.toString(),
       'uuid': AppInfo.uuid,
       'user': db.settings.secrets.user?.name ?? "",
-      if (kIsWeb) 'renderer': kPlatformMethods.rendererCanvasKit ? 'canvaskit' : 'html',
     };
     for (var entry in summary.entries) {
       buffer.write("<b>${entry.key}</b>: ${escape(entry.value.toString())}<br>");

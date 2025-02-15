@@ -5,12 +5,10 @@ import 'dart:ui' as ui;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:image/image.dart' as lib_image;
 import 'package:worker_manager/worker_manager.dart';
 
 import 'package:chaldea/packages/logger.dart';
-import 'package:chaldea/packages/platform/platform.dart';
 import 'package:chaldea/utils/utils.dart';
 
 Future<Uint8List> compressToJpgAsync({required Uint8List src, int quality = 90, int? maxWidth, int? maxHeight}) async {
@@ -110,10 +108,6 @@ class ImageUtil {
     ui.ImageByteFormat format = ui.ImageByteFormat.png,
     FutureOr<Uint8List?> Function(dynamic e, dynamic s) onError = _defaultOnError,
   }) async {
-    if (kIsWeb && !kPlatformMethods.rendererCanvasKit) {
-      await EasyLoading.showError('not supported using html renderer');
-      return null;
-    }
     try {
       final recorder = ui.PictureRecorder();
       final size = Size(width.toDouble(), height.toDouble());

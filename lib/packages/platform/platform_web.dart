@@ -16,11 +16,6 @@ class PlatformMethods extends PlatformMethodsInterface {
   void setLocalStorage(String key, String value) => web.window.localStorage[key] = value;
 
   @override
-  bool get rendererCanvasKit {
-    return true;
-  }
-
-  @override
   void downloadFile(List<int> bytes, String name) {
     final xfile = XFile.fromData(Uint8List.fromList(bytes), name: name);
     xfile.saveTo('');

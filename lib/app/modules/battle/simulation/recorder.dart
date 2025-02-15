@@ -171,10 +171,6 @@ class _BattleRecorderPanelState extends State<BattleRecorderPanel> {
   }
 
   Future<void> onTapScreenshot() async {
-    if (kIsWeb && !kPlatformMethods.rendererCanvasKit) {
-      EasyLoading.showError('Web html mode is not supported, please change to canvaskit mode.');
-      return;
-    }
     showDialog(
       context: context,
       useRootNavigator: false,

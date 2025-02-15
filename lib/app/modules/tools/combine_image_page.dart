@@ -15,7 +15,6 @@ import 'package:chaldea/app/modules/servant/servant_list.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/logger.dart';
-import 'package:chaldea/packages/platform/platform.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../common/extra_assets_page.dart';
@@ -151,8 +150,6 @@ class _CombineImagePageState extends State<CombineImagePage> {
     final maxFontSize = max(24, height / 6) ~/ 2 * 2;
     return ListView(
       children: [
-        if (kIsWeb && !kPlatformMethods.rendererCanvasKit)
-          const Text('Web html mode doesn\'t support exporting image!'),
         Text(
           '${urls.length} Images | Selected: ${isSelected ? _selected + 1 : '-'}',
           textAlign: TextAlign.center,
@@ -250,14 +247,8 @@ class _CombineImagePageState extends State<CombineImagePage> {
           alignment: WrapAlignment.center,
           spacing: 8,
           children: [
-            ElevatedButton(
-              onPressed: kIsWeb && !kPlatformMethods.rendererCanvasKit ? null : () => takeScreenshot(height, false),
-              child: Text(S.current.preview),
-            ),
-            ElevatedButton(
-              onPressed: kIsWeb && !kPlatformMethods.rendererCanvasKit ? null : () => takeScreenshot(height, true),
-              child: Text(S.current.save),
-            ),
+            ElevatedButton(onPressed: () => takeScreenshot(height, false), child: Text(S.current.preview)),
+            ElevatedButton(onPressed: () => takeScreenshot(height, true), child: Text(S.current.save)),
           ],
         ),
         TileGroup(

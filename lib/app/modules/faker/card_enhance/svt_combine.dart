@@ -418,8 +418,9 @@ class _SvtCombinePageState extends State<SvtCombinePage> {
                       final userSvts =
                           mstData.userSvt.where((userSvt) {
                             final svt = userSvt.dbSvt;
-                            if (svt == null || userSvt.svtId != selectedSvt.id || svt.type != SvtType.normal)
+                            if (svt == null || userSvt.svtId != selectedSvt.id || svt.type != SvtType.normal) {
                               return false;
+                            }
                             // if (userSvt.lv >= (userSvt.maxLv ?? 0)) return false;
                             // if (userSvt.lv <= 1) return false;
                             return true;

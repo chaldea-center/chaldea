@@ -16,7 +16,6 @@ import 'package:uuid/uuid.dart';
 
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/packages/packages.dart';
-import 'package:chaldea/packages/platform/platform.dart';
 import 'package:chaldea/utils/utils.dart';
 import '../../app/tools/icon_cache_manager.dart';
 import '../../models/userdata/remote_config.dart';
@@ -137,7 +136,7 @@ class CachedImage extends StatefulWidget {
     final uri = Uri.tryParse(url);
     if (uri == null) return url;
     bool cors = false;
-    if (kPlatformMethods.rendererCanvasKit) {
+    if (kIsWeb) {
       cors = const [
         'fgo.wiki',
         'fate-go.jp',
