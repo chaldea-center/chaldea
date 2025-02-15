@@ -273,10 +273,11 @@ packages:
   countly_flutter_np:
     dependency: "direct main"
     description:
-      name: countly_flutter_np
-      sha256: e53ace9d99749371ee75b4382b6ec111006fda45ab3c296f54244498921c18db
-      url: "https://pub.dev"
-    source: hosted
+      path: "."
+      ref: "87cd9552d9b20a4846471f1e8724291e08b3171f"
+      resolved-ref: "87cd9552d9b20a4846471f1e8724291e08b3171f"
+      url: "https://github.com/Countly/countly-sdk-flutter-bridge.git"
+    source: git
     version: "25.1.0"
   cross_file:
     dependency: "direct main"
@@ -478,10 +479,11 @@ packages:
   flutter_js:
     dependency: "direct main"
     description:
-      name: flutter_js
-      sha256: d19cde4bad2f7c301ff5f69d7b3452ff91f2ca89d153569dd03e544579d8610d
-      url: "https://pub.dev"
-    source: hosted
+      path: "."
+      ref: HEAD
+      resolved-ref: "4836b8e5ca47135f9e4049bb7b4c8877b6adfc67"
+      url: "https://github.com/chaldea-center/flutter_js.git"
+    source: git
     version: "0.8.1"
   flutter_lints:
     dependency: "direct dev"
@@ -687,7 +689,7 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: "4d7b74d964aac615ff9965f5043717cec3b2b592"
+      resolved-ref: ce2100eb09bbe82c141c4f49635b4d50c238df3a
       url: "https://github.com/chaldea-center/image_gallery_saver.git"
     source: git
     version: "2.0.3"

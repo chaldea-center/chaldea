@@ -2,7 +2,6 @@ PODS:
   - audio_session (0.0.1):
     - FlutterMacOS
   - connectivity_plus (0.0.1):
-    - Flutter
     - FlutterMacOS
   - device_info_plus (0.0.1):
     - FlutterMacOS
@@ -52,7 +51,7 @@ PODS:
 
 DEPENDENCIES:
   - audio_session (from `Flutter/ephemeral/.symlinks/plugins/audio_session/macos`)
-  - connectivity_plus (from `Flutter/ephemeral/.symlinks/plugins/connectivity_plus/darwin`)
+  - connectivity_plus (from `Flutter/ephemeral/.symlinks/plugins/connectivity_plus/macos`)
   - device_info_plus (from `Flutter/ephemeral/.symlinks/plugins/device_info_plus/macos`)
   - file_picker (from `Flutter/ephemeral/.symlinks/plugins/file_picker/macos`)
   - flutter_js (from `Flutter/ephemeral/.symlinks/plugins/flutter_js/macos`)
@@ -78,7 +77,7 @@ EXTERNAL SOURCES:
   audio_session:
     :path: Flutter/ephemeral/.symlinks/plugins/audio_session/macos
   connectivity_plus:
-    :path: Flutter/ephemeral/.symlinks/plugins/connectivity_plus/darwin
+    :path: Flutter/ephemeral/.symlinks/plugins/connectivity_plus/macos
   device_info_plus:
     :path: Flutter/ephemeral/.symlinks/plugins/device_info_plus/macos
   file_picker:
@@ -121,8 +120,8 @@ EXTERNAL SOURCES:
     :path: Flutter/ephemeral/.symlinks/plugins/window_manager/macos
 
 SPEC CHECKSUMS:
-  audio_session: dea1f41890dbf1718f04a56f1d6150fd50039b72
-  connectivity_plus: 18382e7311ba19efcaee94442b23b32507b20695
+  audio_session: 728ae3823d914f809c485d390274861a24b0904e
+  connectivity_plus: 0a976dfd033b59192912fa3c6c7b54aab5093802
   device_info_plus: 1b14eed9bf95428983aed283a8d51cce3d8c4215
   file_picker: e716a70a9fe5fd9e09ebc922d7541464289443af
   flutter_js: c664361655af1d8fc24e278c7d086e9cbe0d68bc
@@ -146,4 +145,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: ef1a79269797af34dd64252892cb94a71579d1d8
 
-COCOAPODS: 1.14.3
+COCOAPODS: 1.16.2

@@ -19,7 +19,7 @@ version: 2.5.18+979
 
 environment:
   sdk: ">=3.7.0 <4.0.0"
-  flutter: ">=3.29.0 <4.0.0"
+  flutter: 3.29.0
 
 dependencies:
   flutter:
@@ -57,7 +57,8 @@ dependencies:
   flutter_local_notifications: ^18.0.0
   flutter_markdown: ^0.7.4
   # flutter_qjs: ^0.3.7
-  flutter_js: ^0.8.1
+  flutter_js: #^0.8.1
+    git: https://github.com/chaldea-center/flutter_js.git
   flutter_svg: ^2.0.7
   flutter_timezone: ^4.0.0
   font_awesome_flutter: ^10.6.0
@@ -67,8 +68,7 @@ dependencies:
   http: ^1.2.0
   image: ^4.5.0
   image_gallery_saver: # ^1.7.1
-    git:
-      url: https://github.com/chaldea-center/image_gallery_saver.git
+    git: https://github.com/chaldea-center/image_gallery_saver.git
   intl: ">=0.19.0 <0.21.0"
   json_annotation: ^4.9.0
   just_audio: ^0.9.33
@@ -112,7 +112,10 @@ dependencies:
   # webview_flutter_web: ^0.2.2+1
   worker_manager: ^7.2.2
   window_manager: ^0.4.3
-  countly_flutter_np: ^25.1.0
+  countly_flutter_np: #^25.1.0
+    git:
+      url: https://github.com/Countly/countly-sdk-flutter-bridge.git
+      ref: 87cd9552d9b20a4846471f1e8724291e08b3171f # v1-embedding-drop-np
   google_mobile_ads: ^5.2.0
   admanager_web: ^0.0.4
 
