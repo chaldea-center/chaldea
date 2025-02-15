@@ -135,13 +135,7 @@ class Damage {
           final damageNpSEDecision = battleData.delegate?.damageNpSE?.call(activator, damageFunction, dataVals);
 
           final useCorrection =
-              damageNpSEDecision?.useCorrection ??
-              checkSignedIndividualities2(
-                myTraits: target.getTraits(),
-                requiredTraits: NiceTrait.list(dataVals.AndCheckIndividualityList ?? []),
-                positiveMatchFunc: allMatch,
-                negativeMatchFunc: allMatch,
-              );
+              damageNpSEDecision?.useCorrection ?? damageNpAndOrCheckIndividualityDecision(target, dataVals);
 
           if (useCorrection) {
             specificAttackRate = dataVals.Correction!;
@@ -334,22 +328,15 @@ class Damage {
           card: currentCard,
           skipDamage: skipDamage,
         )
-        ..defenseBuff =
-            damageFunction?.funcType == FuncType.damageNpPierce || hasPierceDefense
-                ? await target.getBuffValue(
-                  battleData,
-                  BuffAction.defencePierce,
-                  opponent: activator,
-                  card: currentCard,
-                  skipDamage: skipDamage,
-                )
-                : await target.getBuffValue(
-                  battleData,
-                  BuffAction.defence,
-                  opponent: activator,
-                  card: currentCard,
-                  skipDamage: skipDamage,
-                )
+        ..defenseBuff = await target.getBuffValue(
+          battleData,
+          damageFunction?.funcType == FuncType.damageNpPierce || hasPierceDefense
+              ? BuffAction.defencePierce
+              : BuffAction.defence,
+          opponent: activator,
+          card: currentCard,
+          skipDamage: skipDamage,
+        )
         ..specificDefenseBuff = await target.getBuffValue(
           battleData,
           BuffAction.damageDef,
@@ -365,21 +352,13 @@ class Damage {
           skipDamage: skipDamage,
         )
         ..damageReceiveAdditionBuff =
-            (hasPierceSubDamage
-                ? await target.getBuffValue(
-                  battleData,
-                  BuffAction.receiveDamagePierce,
-                  opponent: activator,
-                  card: currentCard,
-                  skipDamage: skipDamage,
-                )
-                : await target.getBuffValue(
-                  battleData,
-                  BuffAction.receiveDamage,
-                  opponent: activator,
-                  card: currentCard,
-                  skipDamage: skipDamage,
-                )) +
+            await target.getBuffValue(
+              battleData,
+              hasPierceSubDamage ? BuffAction.receiveDamagePierce : BuffAction.receiveDamage,
+              opponent: activator,
+              card: currentCard,
+              skipDamage: skipDamage,
+            ) +
             await target.getBuffValue(
               battleData,
               BuffAction.specialReceiveDamage,
@@ -877,5 +856,29 @@ class Damage {
     relation = await target.getClassRelation(battleData, relation, activator, cardData, true);
 
     return relation;
+  }
+
+  static bool damageNpAndOrCheckIndividualityDecision(BattleServantData target, DataVals dataVals) {
+    final List<List<int>> andListInOrList =
+        dataVals.AndOrCheckIndividualityList ?? [dataVals.AndCheckIndividualityList ?? []];
+
+    if (andListInOrList.every((andList) => andList.isEmpty)) return true;
+
+    for (final List<int> traitAndList in andListInOrList) {
+      if (traitAndList.isEmpty) continue;
+
+      final andMatch = checkSignedIndividualities2(
+        myTraits: target.getTraits(),
+        requiredTraits: NiceTrait.list(traitAndList),
+        positiveMatchFunc: allMatch,
+        negativeMatchFunc: allMatch,
+      );
+
+      if (andMatch) {
+        return andMatch;
+      }
+    }
+
+    return false;
   }
 }
