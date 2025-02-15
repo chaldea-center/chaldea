@@ -441,7 +441,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "passive_skill": MessageLookupByLibrary.simpleMessage("Passive Skill"),
     "passive_skill_short": MessageLookupByLibrary.simpleMessage("Passive"),
     "plan": MessageLookupByLibrary.simpleMessage("Plan"),
-    "plan_list_set_all": MessageLookupByLibrary.simpleMessage("Establecer todos"),
     "plan_list_set_all_current": MessageLookupByLibrary.simpleMessage("Actual"),
     "plan_list_set_all_target": MessageLookupByLibrary.simpleMessage("Objetivo"),
     "plan_objective": MessageLookupByLibrary.simpleMessage("Objetivo del Plan"),
@@ -518,7 +517,6 @@ class MessageLookup extends MessageLookupByLibrary {
       "Encendido automático cuando el Plan no se alcanza",
     ),
     "setting_home_plan_list_page": MessageLookupByLibrary.simpleMessage("Página de lista de Inicio-Plan"),
-    "setting_only_change_second_append_skill": MessageLookupByLibrary.simpleMessage("Solo cambiar la 2da Append Skill"),
     "setting_priority_tagging": MessageLookupByLibrary.simpleMessage("Prioridad de las Etiquetas"),
     "setting_servant_class_filter_style": MessageLookupByLibrary.simpleMessage(
       "Estilo de filtro de la Clase de Servart",
@@ -554,7 +552,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "sq_fragment_convert": MessageLookupByLibrary.simpleMessage("21 Fragmentos = 3 SQ"),
     "sq_short": MessageLookupByLibrary.simpleMessage("SQ"),
     "statistics_title": MessageLookupByLibrary.simpleMessage("Estadísticas"),
-    "still_send": MessageLookupByLibrary.simpleMessage("Enviar de todas formas"),
     "success": MessageLookupByLibrary.simpleMessage("Éxito"),
     "summon_banner": MessageLookupByLibrary.simpleMessage("Summon"),
     "summon_daily": MessageLookupByLibrary.simpleMessage("Diario"),
@@ -622,7 +619,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "war_age": MessageLookupByLibrary.simpleMessage("Era"),
     "war_banner": MessageLookupByLibrary.simpleMessage("Banner"),
     "warning": MessageLookupByLibrary.simpleMessage("Advertencia"),
-    "web_renderer": MessageLookupByLibrary.simpleMessage("Renderizador Web"),
     "words_separate": m12,
   };
 }

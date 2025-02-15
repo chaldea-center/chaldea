@@ -1,3 +1,6 @@
+/// Usage:
+///   dart ./scripts/l10n_add.dart -k key_name --zh "zh" --ja "ja"
+///   dart ./scripts/l10n_add.dart -d key_to_delete
 import 'package:args/args.dart';
 
 import 'shared.dart';

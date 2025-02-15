@@ -331,11 +331,6 @@ class S {
     );
   }
 
-  /// `Auto Add Trait`
-  String get auto_add_trait {
-    return Intl.message('Auto Add Trait', name: 'auto_add_trait', desc: '', locale: localeName, args: []);
-  }
-
   /// `Auto reset`
   String get auto_reset {
     return Intl.message('Auto reset', name: 'auto_reset', desc: '', locale: localeName, args: []);
@@ -369,11 +364,6 @@ class S {
   /// `Backup History`
   String get backup_history {
     return Intl.message('Backup History', name: 'backup_history', desc: '', locale: localeName, args: []);
-  }
-
-  /// `Action`
-  String get battle_action {
-    return Intl.message('Action', name: 'battle_action', desc: '', locale: localeName, args: []);
   }
 
   /// `Activate Custom Skill`
@@ -2319,28 +2309,6 @@ class S {
     return Intl.message('Rarity', name: 'filter_sort_rarity', desc: '', locale: localeName, args: []);
   }
 
-  /// `Fix CORS network error for "Global" source`
-  String get fix_cors_for_chaldea_data {
-    return Intl.message(
-      'Fix CORS network error for "Global" source',
-      name: 'fix_cors_for_chaldea_data',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Usually on FireFox`
-  String get fix_cors_for_chaldea_data_hint {
-    return Intl.message(
-      'Usually on FireFox',
-      name: 'fix_cors_for_chaldea_data_hint',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
   /// `Fixed OC`
   String get fixed_oc {
     return Intl.message('Fixed OC', name: 'fixed_oc', desc: '', locale: localeName, args: []);
@@ -2934,11 +2902,6 @@ class S {
   /// `More import methods`
   String get import_userdata_more {
     return Intl.message('More import methods', name: 'import_userdata_more', desc: '', locale: localeName, args: []);
-  }
-
-  /// `Include event effect`
-  String get include_event_effect {
-    return Intl.message('Include event effect', name: 'include_event_effect', desc: '', locale: localeName, args: []);
   }
 
   /// `Agility`
@@ -3766,11 +3729,6 @@ class S {
     );
   }
 
-  /// `No uploaded teams`
-  String get no_uploaded_teams {
-    return Intl.message('No uploaded teams', name: 'no_uploaded_teams', desc: '', locale: localeName, args: []);
-  }
-
   /// `Noble Phantasm`
   String get noble_phantasm {
     return Intl.message('Noble Phantasm', name: 'noble_phantasm', desc: '', locale: localeName, args: []);
@@ -4025,11 +3983,6 @@ class S {
       locale: localeName,
       args: [],
     );
-  }
-
-  /// `Set All`
-  String get plan_list_set_all {
-    return Intl.message('Set All', name: 'plan_list_set_all', desc: '', locale: localeName, args: []);
   }
 
   /// `Current`
@@ -4412,11 +4365,6 @@ class S {
     return Intl.message('Refresh', name: 'refresh', desc: '', locale: localeName, args: []);
   }
 
-  /// `No new card found`
-  String get refresh_data_no_update {
-    return Intl.message('No new card found', name: 'refresh_data_no_update', desc: '', locale: localeName, args: []);
-  }
-
   /// `CN`
   String get region_cn {
     return Intl.message('CN', name: 'region_cn', desc: '', locale: localeName, args: []);
@@ -4595,17 +4543,6 @@ class S {
     return Intl.message('Screen Size', name: 'screen_size', desc: '', locale: localeName, args: []);
   }
 
-  /// `Screenshot is not supported with html renderer`
-  String get screenshot_not_support_html_renderer {
-    return Intl.message(
-      'Screenshot is not supported with html renderer',
-      name: 'screenshot_not_support_html_renderer',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
   /// `Screenshots`
   String get screenshots {
     return Intl.message('Screenshots', name: 'screenshots', desc: '', locale: localeName, args: []);
@@ -4619,11 +4556,6 @@ class S {
   /// `Choice Branch End`
   String get script_choice_end {
     return Intl.message('Choice Branch End', name: 'script_choice_end', desc: '', locale: localeName, args: []);
-  }
-
-  /// `Fujimaru`
-  String get script_player_name {
-    return Intl.message('Fujimaru', name: 'script_player_name', desc: '', locale: localeName, args: []);
   }
 
   /// `Story`
@@ -4783,17 +4715,6 @@ class S {
     return Intl.message(
       'Home-Plan List Page',
       name: 'setting_home_plan_list_page',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Only Change 2nd Append Skill`
-  String get setting_only_change_second_append_skill {
-    return Intl.message(
-      'Only Change 2nd Append Skill',
-      name: 'setting_only_change_second_append_skill',
       desc: '',
       locale: localeName,
       args: [],
@@ -5119,11 +5040,6 @@ class S {
     return Intl.message('Statistics', name: 'statistics_title', desc: '', locale: localeName, args: []);
   }
 
-  /// `Still Send`
-  String get still_send {
-    return Intl.message('Still Send', name: 'still_send', desc: '', locale: localeName, args: []);
-  }
-
   /// `Story CE`
   String get story_ce {
     return Intl.message('Story CE', name: 'story_ce', desc: '', locale: localeName, args: []);
@@ -5240,11 +5156,6 @@ class S {
   /// `Support`
   String get support_servant_short {
     return Intl.message('Support', name: 'support_servant_short', desc: '', locale: localeName, args: []);
-  }
-
-  /// `Svt AI`
-  String get svt_ai {
-    return Intl.message('Svt AI', name: 'svt_ai', desc: '', locale: localeName, args: []);
   }
 
   /// `Ascension Icon`
@@ -6047,11 +5958,6 @@ class S {
       locale: localeName,
       args: [],
     );
-  }
-
-  /// `Web Renderer`
-  String get web_renderer {
-    return Intl.message('Web Renderer', name: 'web_renderer', desc: '', locale: localeName, args: []);
   }
 
   /// `{a} {b}`

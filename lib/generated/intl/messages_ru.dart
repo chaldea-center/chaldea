@@ -261,7 +261,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "filter_sort": MessageLookupByLibrary.simpleMessage("Сортировать"),
     "filter_sort_number": MessageLookupByLibrary.simpleMessage("№"),
     "filter_sort_rarity": MessageLookupByLibrary.simpleMessage("Редкость"),
-    "fix_cors_for_chaldea_data_hint": MessageLookupByLibrary.simpleMessage("Обычно в FireFox"),
     "foukun": MessageLookupByLibrary.simpleMessage("Фоу"),
     "gallery_tab_name": MessageLookupByLibrary.simpleMessage("Дом"),
     "game_account": MessageLookupByLibrary.simpleMessage("Игровой аккаунт"),
