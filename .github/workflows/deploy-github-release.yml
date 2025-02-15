@@ -9,9 +9,6 @@ on:
       - 'v[0-9]+.[0-9]+.[0-9]+'
   workflow_dispatch:
 
-env:
-  FLUTTER_VERSION: "3.29.0"
-
 jobs:
   create-build:
     name: Create ${{ matrix.target }} build
@@ -50,12 +47,14 @@ jobs:
             build_options: --flavor=play
       fail-fast: false
     steps:
-      - uses: subosito/flutter-action@v2
+      - name: Checkout chaldea code
+        uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2.18.0
         with:
           channel: "stable"
-          flutter-version: ${{ env.FLUTTER_VERSION }}
+          flutter-version-file: "pubspec.yaml"
           cache: true
-          cache-key: flutter-${{ matrix.os }}-${{ matrix.target }}-${{ env.FLUTTER_VERSION }}
 
       - name: Get Version
         shell: bash
@@ -91,8 +90,6 @@ jobs:
       - name: flutter doctor
         if: matrix.target != 'windows'
         run: flutter doctor -v
-      - name: Checkout chaldea code
-        uses: actions/checkout@v4
 
       - name: Configure Keystore for Android
         if: matrix.target == 'android'

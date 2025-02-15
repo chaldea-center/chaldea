@@ -10,20 +10,20 @@ on:
   schedule:
     - cron: "0 16 * * 6"
 
-env:
-  FLUTTER_VERSION: "3.29.0"
-
 jobs:
   test:
     name: Test on linux
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout chaldea code
+        uses: actions/checkout@v4
+
       - uses: subosito/flutter-action@v2
         with:
           channel: "stable"
-          flutter-version: ${{ env.FLUTTER_VERSION }}
+          flutter-version-file: "pubspec.yaml"
           cache: true
-          cache-key: flutter-ubuntu-latest-linux-${{ env.FLUTTER_VERSION }}
+
       - name: Install Linux dependencies
         run: |
           sudo apt-get update
@@ -34,9 +34,6 @@ jobs:
         run: |
           flutter config --enable-linux-desktop
           flutter doctor -v
-
-      - name: Checkout chaldea code
-        uses: actions/checkout@v4
 
       - name: Checkout chaldea data
         uses: actions/checkout@v4
