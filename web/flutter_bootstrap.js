@@ -17,10 +17,11 @@ window.isCNHost =
 const userConfig = {
   canvasKitBaseUrl: "/canvaskit/",
   renderer: "canvaskit",
-  fontFallbackBaseUrl: window.isCNHost
-    ? "https://fonts.gstatic.font.im/s/"
-    : null,
 };
+
+if(window.isCNHost){
+  userConfig.fontFallbackBaseUrl = "https://fonts.gstatic.font.im/s/";
+}
 
 _flutter.loader.load({
   config: userConfig,
