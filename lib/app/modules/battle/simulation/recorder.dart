@@ -1415,15 +1415,15 @@ class DamageParamDialog extends StatelessWidget with _ParamDialogMixin {
     final cardSum = max(toModifier(params.cardBuff - params.cardResist), -1);
     final specificSum = max(
       toModifier(
-        params.specificAttackBuff -
-            params.specificDefenseBuff +
+        params.damageBuff -
+            params.damageDefBuff +
             (params.critical ? params.criticalDamageBuff : 0) +
             (params.isNp ? params.npDamageBuff : 0),
       ),
       0.001 - 1,
     );
-    final percentAttack = max(toModifier(params.percentAttackBuff), 0.01 - 1);
-    final percentDefense = min(toModifier(params.percentDefenseBuff), 1);
+    final specialDamage = max(toModifier(params.specialDamageBuff), 0.01 - 1);
+    final specialDefense = min(toModifier(params.specialDefenseBuff), 1);
     final damageAdd = params.damageAdditionBuff + params.damageReceiveAdditionBuff;
 
     return buildDialog(
@@ -1458,10 +1458,10 @@ class DamageParamDialog extends StatelessWidget with _ParamDialogMixin {
           cardBuffIcon(params.currentCardType),
         ),
         oneParam(Transl.buffNames('威力アップ').l, specificSum.format(percent: true, maxDigits: 4), buffIcon(302)),
-        if (params.percentAttackBuff != 0)
-          oneParam(Transl.buffNames('特殊威力アップ').l, percentAttack.format(percent: true, maxDigits: 4), buffIcon(359)),
-        if (params.percentDefenseBuff != 0)
-          oneParam(Transl.buffNames('特殊耐性アップ').l, percentDefense.format(percent: true, maxDigits: 4), buffIcon(334)),
+        if (params.specialDamageBuff != 0)
+          oneParam(Transl.buffNames('特殊威力アップ').l, specialDamage.format(percent: true, maxDigits: 4), buffIcon(359)),
+        if (params.specialDefenseBuff != 0)
+          oneParam(Transl.buffNames('特殊耐性アップ').l, specialDefense.format(percent: true, maxDigits: 4), buffIcon(334)),
         oneParam(Transl.buffNames('ダメージプラス').l, damageAdd.toString(), buffIcon(302)),
       ],
     );

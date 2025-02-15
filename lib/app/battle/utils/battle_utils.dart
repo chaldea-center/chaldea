@@ -71,14 +71,16 @@ int calculateDamage(final DamageParameters param) {
   final Float cardResist = toModifierFloat(param.cardResist);
   final Float attackBuff = toModifierFloat(param.attackBuff);
   final Float defenseBuff = toModifierFloat(param.defenseBuff);
-  final Float specificAttackBuff = toModifierFloat(param.specificAttackBuff);
-  final Float specificDefenseBuff = toModifierFloat(param.specificDefenseBuff);
-  final Float criticalDamageBuff = param.critical ? toModifierFloat(param.criticalDamageBuff) : 0.toFloat();
-  final Float criticalDamageDefBuff = param.critical ? toModifierFloat(param.criticalDamageDefBuff) : 0.toFloat();
-  final Float npDamageBuff = param.isNp ? toModifierFloat(param.npDamageBuff) : 0.toFloat();
-  final Float npDamageDefBuff = param.isNp ? toModifierFloat(param.npDamageDefBuff) : 0.toFloat();
-  final Float percentAttackBuff = toModifierFloat(param.percentAttackBuff);
-  final Float percentDefenseBuff = toModifierFloat(param.percentDefenseBuff);
+  final Float specialDamageBuff = toModifierFloat(param.specialDamageBuff);
+  final Float specialDefenseBuff = toModifierFloat(param.specialDefenseBuff);
+
+  final Float damageTotal = toModifierFloat(param.damageBuff) - toModifierFloat(param.damageDefBuff);
+  final Float criticalDamageTotal =
+      param.critical
+          ? toModifierFloat(param.criticalDamageBuff) - toModifierFloat(param.criticalDamageDefBuff)
+          : 0.toFloat();
+  final Float npDamageTotal =
+      param.isNp ? toModifierFloat(param.npDamageBuff) - toModifierFloat(param.npDamageDefBuff) : 0.toFloat();
 
   final Float random = toModifierFloat(param.random);
   final Float attackRate = toModifierFloat(ConstData.constants.attackRate);
@@ -96,16 +98,9 @@ int calculateDamage(final DamageParameters param) {
           (1.toFloat() + attackBuff - defenseBuff).ofMax(0) *
           criticalModifier *
           extraModifier *
-          (1.toFloat() - percentDefenseBuff).ofMax(0) *
-          (1.toFloat() +
-                  specificAttackBuff -
-                  specificDefenseBuff +
-                  criticalDamageBuff -
-                  criticalDamageDefBuff +
-                  npDamageBuff -
-                  npDamageDefBuff)
-              .ofMax(0.001) *
-          (1.toFloat() + percentAttackBuff).ofMax(0.001) *
+          (1.toFloat() - specialDefenseBuff).ofMax(0) *
+          (1.toFloat() + damageTotal + criticalDamageTotal + npDamageTotal).ofMax(0.001) *
+          (1.toFloat() + specialDamageBuff).ofMax(0.001) *
           npSpecificAttackRate *
           hits +
       param.damageAdditionBuff.toFloat() +
@@ -243,15 +238,15 @@ class DamageParameters {
   int cardResist = 1000; // cardMod = target.commandDef
   int attackBuff = 1000; // atkMod = actor.atk
   int defenseBuff = 1000; // defMod = target.defence or target.defencePierce
-  int specificAttackBuff =
+  int damageBuff =
       0; // powerMod = actor.damage + actor.damageIndividuality + actor.damageIndividualityActiveonly + actor.damageEventPoint
-  int specificDefenseBuff = 0; // selfDamageMod = target.selfDamage, can rename after I see an instance of this buff
+  int damageDefBuff = 0; // selfDamageMod = target.selfDamage, can rename after I see an instance of this buff
   int criticalDamageBuff = 0; // critDamageMod = actor.criticalDamage
   int criticalDamageDefBuff = 0; // BuffAction.criticalDmgDef
   int npDamageBuff = 0; // npDamageMod = actor.npdamage
   int npDamageDefBuff = 0; // BuffAction.npDamageDef
-  int percentAttackBuff = 0; // damageSpecialMod = actor.damageSpecial
-  int percentDefenseBuff = 0; // specialDefMod = target.specialdefence
+  int specialDamageBuff = 0; // damageSpecialMod = actor.damageSpecial
+  int specialDefenseBuff = 0; // specialDefMod = target.specialdefence
   int damageAdditionBuff = 0; // dmgPlusAdd = actor.givenDamage
   int damageReceiveAdditionBuff = 0; // selfDmgCutAdd = target.receiveDamage
   int random = 0;
@@ -283,14 +278,14 @@ class DamageParameters {
         'cardResist: $cardResist, '
         'attackBuff: $attackBuff, '
         'defenseBuff: $defenseBuff, '
-        'specificAttackBuff: $specificAttackBuff, '
-        'specificDefenseBuff: $specificDefenseBuff, '
+        'damageBuff: $damageBuff, '
+        'damageDefBuff: $damageDefBuff, '
         'criticalDamageBuff: $criticalDamageBuff, '
         'criticalDamageDefBuff: $criticalDamageDefBuff, '
         'npDamageBuff: $npDamageBuff, '
         'npDamageDefBuff: $npDamageDefBuff, '
-        'percentAttackBuff: $percentAttackBuff, '
-        'percentDefenseBuff: $percentDefenseBuff, '
+        'specialDamageBuff: $specialDamageBuff, '
+        'specialDefenseBuff: $specialDefenseBuff, '
         'damageAdditionBuff: $damageAdditionBuff, '
         'damageReceiveAdditionBuff: $damageReceiveAdditionBuff, '
         'random: $random'
@@ -319,14 +314,14 @@ class DamageParameters {
       ..cardResist = cardResist
       ..attackBuff = attackBuff
       ..defenseBuff = defenseBuff
-      ..specificAttackBuff = specificAttackBuff
-      ..specificDefenseBuff = specificDefenseBuff
+      ..damageBuff = damageBuff
+      ..damageDefBuff = damageDefBuff
       ..criticalDamageBuff = criticalDamageBuff
       ..criticalDamageDefBuff = criticalDamageDefBuff
       ..npDamageBuff = npDamageBuff
       ..npDamageDefBuff = npDamageDefBuff
-      ..percentAttackBuff = percentAttackBuff
-      ..percentDefenseBuff = percentDefenseBuff
+      ..specialDamageBuff = specialDamageBuff
+      ..specialDefenseBuff = specialDefenseBuff
       ..damageAdditionBuff = damageAdditionBuff
       ..damageReceiveAdditionBuff = damageReceiveAdditionBuff
       ..random = random

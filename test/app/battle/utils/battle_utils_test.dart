@@ -118,35 +118,35 @@ void main() async {
         expect(calculateDamage(damageParameters), equals(damage));
       });
 
-      test('percentDefenseBuff', () {
-        final damageParameters = oc1Np1BaseParam.copy()..percentDefenseBuff = 400;
+      test('specialDefenseBuff', () {
+        final damageParameters = oc1Np1BaseParam.copy()..specialDefenseBuff = 400;
 
         expect(calculateDamage(damageParameters), equals(7525));
 
-        damageParameters.percentDefenseBuff = 2000;
+        damageParameters.specialDefenseBuff = 2000;
         expect(calculateDamage(damageParameters), equals(0));
       });
 
-      test('specificAttackBuff & specificDefenseBuff & npDamageBuff', () {
-        final damageParameters = oc1Np1BaseParam.copy()..specificAttackBuff = 400;
+      test('damageBuff & damageDefBuff & npDamageBuff', () {
+        final damageParameters = oc1Np1BaseParam.copy()..damageBuff = 400;
 
         final damage = calculateDamage(damageParameters);
         expect(damage, equals(17559));
 
         damageParameters
-          ..specificAttackBuff = 200
+          ..damageBuff = 200
           ..npDamageBuff = 200;
         expect(calculateDamage(damageParameters), equals(damage));
 
         damageParameters
-          ..specificAttackBuff = 375
-          ..specificDefenseBuff = 300
+          ..damageBuff = 375
+          ..damageDefBuff = 300
           ..npDamageBuff = 325;
         expect(calculateDamage(damageParameters), equals(damage));
       });
 
-      test('percentAttackBuff', () {
-        final damageParameters = oc1Np1BaseParam.copy()..percentAttackBuff = 400;
+      test('specialDamageBuff', () {
+        final damageParameters = oc1Np1BaseParam.copy()..specialDamageBuff = 400;
 
         expect(calculateDamage(damageParameters), equals(17559));
       });
@@ -246,7 +246,7 @@ void main() async {
         expect(damage, equals(13546));
 
         damageParameters.criticalDamageBuff = 500;
-        damageParameters.specificAttackBuff = 300;
+        damageParameters.damageBuff = 300;
 
         expect(calculateDamage(damageParameters), equals(damage));
       });

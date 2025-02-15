@@ -200,7 +200,7 @@ class Damage {
               card: currentCard,
             )
             ..attackBuff = await activator.getBuffValue(battleData, BuffAction.atk, opponent: target, card: currentCard)
-            ..specificAttackBuff = await getSpecificDamage(battleData, activator, target, currentCard)
+            ..damageBuff = await getSpecificDamage(battleData, activator, target, currentCard)
             ..criticalDamageBuff =
                 currentCard.critical
                     ? await activator.getBuffValue(
@@ -214,7 +214,7 @@ class Damage {
                 currentCard.isTD
                     ? await activator.getBuffValue(battleData, BuffAction.npdamage, opponent: target, card: currentCard)
                     : 0
-            ..percentAttackBuff = await activator.getBuffValue(
+            ..specialDamageBuff = await activator.getBuffValue(
               battleData,
               BuffAction.damageSpecial,
               opponent: target,
@@ -337,7 +337,7 @@ class Damage {
           card: currentCard,
           skipDamage: skipDamage,
         )
-        ..specificDefenseBuff = await target.getBuffValue(
+        ..damageDefBuff = await target.getBuffValue(
           battleData,
           BuffAction.damageDef,
           opponent: activator,
@@ -364,7 +364,7 @@ class Damage {
                   skipDamage: skipDamage,
                 )
                 : 0
-        ..percentDefenseBuff = await target.getBuffValue(
+        ..specialDefenseBuff = await target.getBuffValue(
           battleData,
           BuffAction.specialdefence,
           opponent: activator,
