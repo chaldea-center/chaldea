@@ -35,6 +35,9 @@ class _ShareAppDialogState extends State<ShareAppDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final themeData = Theme.of(context);
+    final border = OutlineInputBorder(
+        borderSide: BorderSide(color: themeData.dialogTheme.backgroundColor ?? const Color(0xFF000000)));
     return SimpleCancelOkDialog(
       title: Text(S.current.share),
       contentPadding: const EdgeInsetsDirectional.fromSTEB(24.0, 10.0, 24.0, 12.0),
@@ -44,10 +47,10 @@ class _ShareAppDialogState extends State<ShareAppDialog> {
         minLines: 5,
         decoration: InputDecoration(
           filled: true,
-          fillColor: Theme.of(context).highlightColor,
-          focusColor: Theme.of(context).highlightColor,
-          enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Theme.of(context).dialogBackgroundColor)),
-          focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Theme.of(context).dialogBackgroundColor)),
+          fillColor: themeData.highlightColor,
+          focusColor: themeData.highlightColor,
+          enabledBorder: border,
+          focusedBorder: border,
         ),
       ),
       hideOk: true,

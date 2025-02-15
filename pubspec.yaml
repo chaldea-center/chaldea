@@ -18,8 +18,8 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 version: 2.5.18+979
 
 environment:
-  sdk: ">=3.6.0 <4.0.0"
-  flutter: ">=3.27.0 <4.0.0"
+  sdk: ">=3.7.0 <4.0.0"
+  flutter: ">=3.29.0 <4.0.0"
 
 dependencies:
   flutter:
@@ -47,7 +47,7 @@ dependencies:
   device_info_plus: ^11.2.0
   dio: ^5.3.3
   # dio_cookie_manager: ^3.0.0
-  dots_indicator: ^3.0.0
+  dots_indicator: ^4.0.0
   equatable: ^2.0.5
   file_picker: ^8.1.6
   fl_chart: ^0.70.2
@@ -107,11 +107,12 @@ dependencies:
   video_player: ^2.8.1
   video_player_win: ^3.1.0
   wakelock_plus: ^1.2.8
+  web: ^1.1.0
   # webview_flutter: ^4.1.0
   # webview_flutter_web: ^0.2.2+1
   worker_manager: ^7.2.2
   window_manager: ^0.4.3
-  countly_flutter_np: ^24.11.2
+  countly_flutter_np: ^25.1.0
   google_mobile_ads: ^5.2.0
   admanager_web: ^0.0.4
 

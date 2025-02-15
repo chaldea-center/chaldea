@@ -64,10 +64,6 @@ class AppAnalysisImpl implements AppAnalysis {
 
   @override
   Future<void> logEvent(String eventId, [Map<String, String>? attributes]) {
-    return Countly.recordEvent({
-      "key": eventId,
-      "count": 1,
-      if (attributes != null && attributes.isNotEmpty) "segmentation": attributes,
-    });
+    return Countly.instance.events.recordEvent(eventId, attributes, 1);
   }
 }

@@ -1,12 +1,11 @@
-// ignore_for_file: avoid_web_libraries_in_flutter
-
-import 'dart:html' as html;
-import 'dart:ui' as ui;
+import 'dart:js_interop';
+import 'dart:ui_web' as ui;
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:admanager_web/admanager_web.dart';
+import 'package:web/web.dart' as web;
 
 import './interface.dart';
 
@@ -42,10 +41,9 @@ class AppAdImpl implements AppAdInterface {
       return placeholder?.call(context) ?? const SizedBox.shrink();
     }
     final viewID = options.name;
-    // ignore: undefined_prefixed_name
     ui.platformViewRegistry.registerViewFactory(
         viewID,
-        (int id) => html.IFrameElement()
+        (int id) => web.HTMLIFrameElement()
           ..style.width = '100%'
           ..style.height = '100%'
           ..style.border = 'none'
@@ -58,7 +56,8 @@ class AppAdImpl implements AppAdInterface {
      data-full-width="">
   <div overflow=""></div>
 </amp-ad>         
- ''');
+ '''
+              .toJS);
 
     return SizedBox(
       width: adBlockSize.width.toDouble(),

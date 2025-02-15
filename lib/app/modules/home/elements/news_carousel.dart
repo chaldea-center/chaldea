@@ -454,7 +454,7 @@ class _AppNewsCarouselState extends State<AppNewsCarousel> {
             fit: BoxFit.scaleDown,
             child: DotsIndicator(
               dotsCount: pages.length,
-              position: _curCarouselIndex,
+              position: _curCarouselIndex.toDouble(),
               decorator: const DotsDecorator(
                 color: Colors.white70,
                 spacing: EdgeInsets.symmetric(vertical: 6, horizontal: 3),

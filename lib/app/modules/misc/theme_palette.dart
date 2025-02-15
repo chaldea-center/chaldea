@@ -156,7 +156,6 @@ class _PaletteForThemeState extends State<_PaletteForTheme> {
           const Divider(thickness: 2),
           oneColor('canvasColor', themeData.canvasColor),
           oneColor('cardColor', themeData.cardColor),
-          oneColor('dialogBackgroundColor', themeData.dialogBackgroundColor),
           oneColor('disabledColor', themeData.disabledColor),
           oneColor('dividerColor', themeData.dividerColor),
           oneColor('focusColor', themeData.focusColor),

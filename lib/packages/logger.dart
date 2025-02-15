@@ -103,15 +103,11 @@ extension LoggerUtils on Logger {
 
 class _CustomPrettyPrinter extends PrettyPrinter {
   _CustomPrettyPrinter({
-    super.stackTraceBeginIndex = 0,
     super.methodCount = 2,
-    super.errorMethodCount = 8,
     super.lineLength = 10,
     super.colors = true,
     super.printEmojis = true,
     super.printTime = false,
-    super.excludeBox = const {},
-    super.noBoxingByDefault = false,
   });
 
   final _ignoredErrors = <String>{};

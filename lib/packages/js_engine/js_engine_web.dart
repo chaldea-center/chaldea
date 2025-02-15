@@ -1,8 +1,7 @@
 import 'dart:async';
+import 'dart:js_interop';
 
 import 'js_engine_interface.dart';
-
-import 'dart:js' as js; // ignore: avoid_web_libraries_in_flutter
 
 class JsEngine implements JsEngineInterface {
   JsEngine();
@@ -33,9 +32,12 @@ class JsEngine implements JsEngineInterface {
 
   @override
   Future<String?> eval(String command, {String? name}) async {
-    return (await js.context.callMethod('eval', [command])).toString();
+    return _eval(command);
   }
 
   @override
   void dispose() {}
 }
+
+@JS('eval')
+external String? _eval(String script);
