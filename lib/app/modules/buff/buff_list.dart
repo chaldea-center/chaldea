@@ -54,6 +54,11 @@ class _BuffListPageState extends State<BuffListPage> with SearchableListState<Bu
         bottom: searchBar,
         actions: [
           IconButton(
+            icon: const Icon(Icons.category),
+            tooltip: 'Buff Actions',
+            onPressed: () => router.push(url: Routes.buffActions),
+          ),
+          IconButton(
             icon: const Icon(Icons.filter_alt),
             tooltip: S.current.filter,
             onPressed:

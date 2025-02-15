@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:chaldea/app/modules/ai/ai_page.dart';
 import 'package:chaldea/app/modules/battle/td_damage/td_damage_ranking.dart';
 import 'package:chaldea/app/modules/battle/teams/teams_query_page.dart';
+import 'package:chaldea/app/modules/buff/buff_action_list.dart';
 import 'package:chaldea/app/modules/buff/buff_list.dart';
 import 'package:chaldea/app/modules/craft_essence/craft.dart';
 import 'package:chaldea/app/modules/craft_essence/craft_list.dart';
@@ -455,6 +456,7 @@ class RouteConfiguration {
       case Routes.buff:
         return BuffDetailPage(id: _secondInt, region: region);
       case Routes.buffActions:
+        return BuffActionListPage();
       case Routes.buffAction:
         return BuffActionPage(action: const BuffActionConverter().fromJson(second ?? "unknown"));
       case Routes.masterMission:
