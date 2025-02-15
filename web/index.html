@@ -71,18 +71,6 @@
     crossorigin="anonymous"></script>
     <script async custom-element="amp-ad" src="https://cdn.ampproject.org/v0/amp-ad-0.1.js"></script>
     <!-- end analyzers -->
-
-    <!-- WeakRef polyfill Chrome <84 -->
-    <script>
-        var self=this||{};try{self.WeakRef=WeakRef,self.FinalizationGroup=FinalizationGroup}catch(e){!function(e,t){var i=new e;function n(e){i.set(this,e)}t(n.prototype,{deref:{value:function(){return i.get(this)}}});var a=new e;function r(e){a.set(this,[])}t(r.prototype,{register:{value:function(e,t){var i=a.get(this);i.indexOf(t)<0&&i.push(t)}},unregister:{value:function(e,t){var i=a.get(this),n=i.indexOf(t);return-1<n&&i.splice(n,1),-1<n}},cleanupSome:{value:function(e){e(a.get(this))}}}),self.WeakRef=n,self.FinalizationGroup=r}(WeakMap,Object.defineProperties)}
-    </script>
-    <script>
-      // The value below is injected by flutter build, do not touch.
-      const serviceWorkerVersion = null;
-    </script>
-    <!-- This script adds the flutter initialization JS code -->
-    <!-- Replace FLUTTER_VERSION with deployed version in patch -->
-    <script src="/flutter.js?v=FLUTTER_VERSION" defer></script>
   </head>
   <body>
     <noscript> You need to enable JavaScript to run this app. </noscript>
@@ -107,15 +95,6 @@
     </div>
 
     <script>
-      let _host = window.location.hostname.toLowerCase();
-      window.isCNHost =
-        "true" === window.localStorage.getItem("useProxy") ||
-        _host.startsWith("cn.") ||
-        -1 != "narumi.cc".indexOf(_host) ||
-        -1 != ["localhost"].indexOf(_host);
-    </script>
-
-    <script>
       function setErrorMessage(msg) {
         document.getElementById("loading-message").innerHTML = msg;
         const loading_container = document.getElementsByClassName('loading-container')[0]
@@ -134,32 +113,14 @@
       } else if (!window.globalThis) {
         setErrorMessage("Please upgrade browser<br>请升级浏览器")
       } else {
-        window.addEventListener("load", function (ev) {
-          // Download main.dart.js
-          _flutter.loader.loadEntrypoint({
-            serviceWorker: {
-              serviceWorkerVersion: serviceWorkerVersion,
-            },
-            entrypointUrl: "/main.dart.js?v=VERSION",
-            onEntrypointLoaded: function (engineInitializer) {
-              // config web renderer, only work when built with "auto" option
-              let _renderer = window.localStorage.getItem("flutterWebRenderer");
-              // if (["html", "canvaskit", "auto"].indexOf(_renderer) === -1) {
-              //   _renderer = "html";
-              // }
-              _renderer = "canvaskit";
-              // window.flutterWebRenderer = _renderer;
-              engineInitializer
-                .initializeEngine({
-                  canvasKitBaseUrl: "/canvaskit/",
-                  renderer: _renderer,
-                })
-                .then(function (appRunner) {
-                  appRunner.runApp();
-                });
-            },
-          });
-        });
+        (function(){
+          var head = document.getElementsByTagName('head')[0];
+          var flutter_js_script = document.createElement("script");
+          flutter_js_script.type = "text/javascript";
+          flutter_js_script.src = "flutter_bootstrap.js?v=BOOTSTRAP_VERSION";
+          flutter_js_script.async = true;
+          head.appendChild(flutter_js_script);
+        })();
       }
     </script>
   </body>
