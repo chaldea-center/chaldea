@@ -73,19 +73,20 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin, WindowListener
     );
     if (PlatformU.isAndroid) {
       child = AnnotatedRegion<SystemUiOverlayStyle>(
-        value: db.settings.isResolvedDarkMode
-            ? SystemUiOverlayStyle.dark.copyWith(
-                // statusBarColor: Colors.transparent,
-                systemNavigationBarColor: darkTheme.scaffoldBackgroundColor,
-                // statusBarIconBrightness: Brightness.light,
-                systemNavigationBarIconBrightness: Brightness.light,
-              )
-            : SystemUiOverlayStyle.light.copyWith(
-                // statusBarColor: Colors.transparent,
-                systemNavigationBarColor: lightTheme.scaffoldBackgroundColor,
-                // statusBarIconBrightness: Brightness.dark,
-                systemNavigationBarIconBrightness: Brightness.dark,
-              ),
+        value:
+            db.settings.isResolvedDarkMode
+                ? SystemUiOverlayStyle.dark.copyWith(
+                  // statusBarColor: Colors.transparent,
+                  systemNavigationBarColor: darkTheme.scaffoldBackgroundColor,
+                  // statusBarIconBrightness: Brightness.light,
+                  systemNavigationBarIconBrightness: Brightness.light,
+                )
+                : SystemUiOverlayStyle.light.copyWith(
+                  // statusBarColor: Colors.transparent,
+                  systemNavigationBarColor: lightTheme.scaffoldBackgroundColor,
+                  // statusBarIconBrightness: Brightness.dark,
+                  systemNavigationBarIconBrightness: Brightness.dark,
+                ),
         child: child,
       );
     }
@@ -216,9 +217,9 @@ class DraggableScrollBehavior extends MaterialScrollBehavior {
   const DraggableScrollBehavior({this.enableMouse = true});
   @override
   Set<PointerDeviceKind> get dragDevices => {
-        for (final v in PointerDeviceKind.values)
-          if (v != PointerDeviceKind.mouse || enableMouse) v
-      };
+    for (final v in PointerDeviceKind.values)
+      if (v != PointerDeviceKind.mouse || enableMouse) v,
+  };
 }
 
 class _ErrorWidget extends StatelessWidget {
@@ -239,35 +240,34 @@ class _ErrorWidget extends StatelessWidget {
         onLongPress: () {
           final nav = Navigator.maybeOf(context);
           if (nav == null) return;
-          nav.push(PageRouteBuilder(pageBuilder: (context, _, __) {
-            return Scaffold(
-              appBar: AppBar(title: Text(S.current.error)),
-              body: ListView(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                children: [
-                  const DividerWithTitle(title: 'URL'),
-                  Text(router.currentConfiguration?.url ?? 'Unknown'),
-                  const DividerWithTitle(title: 'Error'),
-                  Text(details.exception.toString()),
-                  if (details.stack != null) ...[
-                    const DividerWithTitle(title: 'StackTrace'),
-                    Text(
-                      details.stack.toString(),
-                      style: Theme.of(context).textTheme.bodySmall,
-                    ),
-                  ]
-                ],
-              ),
-            );
-          }));
+          nav.push(
+            PageRouteBuilder(
+              pageBuilder: (context, _, __) {
+                return Scaffold(
+                  appBar: AppBar(title: Text(S.current.error)),
+                  body: ListView(
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    children: [
+                      const DividerWithTitle(title: 'URL'),
+                      Text(router.currentConfiguration?.url ?? 'Unknown'),
+                      const DividerWithTitle(title: 'Error'),
+                      Text(details.exception.toString()),
+                      if (details.stack != null) ...[
+                        const DividerWithTitle(title: 'StackTrace'),
+                        Text(details.stack.toString(), style: Theme.of(context).textTheme.bodySmall),
+                      ],
+                    ],
+                  ),
+                );
+              },
+            ),
+          );
         },
         child: Text.rich(
           TextSpan(
             children: [
-              const WidgetSpan(
-                child: Icon(Icons.announcement, color: Colors.red, size: 40),
-              ),
-              TextSpan(text: '\n${S.current.error_widget_hint}')
+              const WidgetSpan(child: Icon(Icons.announcement, color: Colors.red, size: 40)),
+              TextSpan(text: '\n${S.current.error_widget_hint}'),
             ],
           ),
           overflow: TextOverflow.clip,

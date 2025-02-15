@@ -38,9 +38,11 @@ class CmdCodeListPageState extends State<CmdCodeListPage> with SearchableListSta
     if (db.settings.autoResetFilter && widget.filterData == null) {
       filterData.reset();
     }
-    options = _CmdCodeSearchOptions(onChanged: (_) {
-      if (mounted) setState(() {});
-    });
+    options = _CmdCodeSearchOptions(
+      onChanged: (_) {
+        if (mounted) setState(() {});
+      },
+    );
   }
 
   @override
@@ -59,15 +61,17 @@ class CmdCodeListPageState extends State<CmdCodeListPage> with SearchableListSta
           IconButton(
             icon: const Icon(Icons.filter_alt),
             tooltip: S.current.filter,
-            onPressed: () => FilterPage.show(
-              context: context,
-              builder: (context) => CmdCodeFilterPage(
-                filterData: filterData,
-                onChanged: (_) {
-                  if (mounted) setState(() {});
-                },
-              ),
-            ),
+            onPressed:
+                () => FilterPage.show(
+                  context: context,
+                  builder:
+                      (context) => CmdCodeFilterPage(
+                        filterData: filterData,
+                        onChanged: (_) {
+                          if (mounted) setState(() {});
+                        },
+                      ),
+                ),
           ),
           searchIcon,
         ],
@@ -93,19 +97,13 @@ class CmdCodeListPageState extends State<CmdCodeListPage> with SearchableListSta
       status = cc.status.count.toString();
     }
     return CustomTile(
-      leading: db.getIconImage(
-        cc.borderedIcon,
-        width: 56,
-        aspectRatio: 132 / 144,
-      ),
+      leading: db.getIconImage(cc.borderedIcon, width: 56, aspectRatio: 132 / 144),
       title: AutoSizeText(cc.lName.l, maxLines: 1),
       subtitle: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           if (!Language.isJP) AutoSizeText(cc.name, maxLines: 1),
-          Row(
-            children: [Expanded(child: Text('No.${cc.collectionNo}')), if (status != null) Text(status)],
-          ),
+          Row(children: [Expanded(child: Text('No.${cc.collectionNo}')), if (status != null) Text(status)]),
         ],
       ),
       trailing: IconButton(
@@ -125,12 +123,7 @@ class CmdCodeListPageState extends State<CmdCodeListPage> with SearchableListSta
     if (cc.status.status == CraftStatus.owned && cc.status.count > 0) {
       // status = cc.status.count.toString();
     }
-    return cc.iconBuilder(
-      context: context,
-      width: 72,
-      text: status,
-      onTap: () => _onTapCard(cc),
-    );
+    return cc.iconBuilder(context: context, width: 72, text: status, onTap: () => _onTapCard(cc));
   }
 
   @override
@@ -150,9 +143,7 @@ class CmdCodeListPageState extends State<CmdCodeListPage> with SearchableListSta
     }
 
     if (filterData.effectType.isNotEmpty || filterData.effectTarget.isNotEmpty || filterData.targetTrait.isNotEmpty) {
-      List<BaseFunction> funcs = [
-        for (final skill in cc.skills) ...skill.filteredFunction(includeTrigger: true),
-      ];
+      List<BaseFunction> funcs = [for (final skill in cc.skills) ...skill.filteredFunction(includeTrigger: true)];
       if (filterData.effectTarget.isNotEmpty) {
         funcs.retainWhere((func) {
           return filterData.effectTarget.matchOne(EffectTarget.fromFunc(func.funcTargetType));
@@ -184,10 +175,7 @@ class CmdCodeListPageState extends State<CmdCodeListPage> with SearchableListSta
       router.popDetailAndPush(
         context: context,
         url: cc.route,
-        child: CmdCodeDetailPage(
-          cc: cc,
-          onSwitch: (cur, reversed) => switchNext(cur, reversed, shownList),
-        ),
+        child: CmdCodeDetailPage(cc: cc, onSwitch: (cur, reversed) => switchNext(cur, reversed, shownList)),
         detail: true,
       );
       selected = cc;

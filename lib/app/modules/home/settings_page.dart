@@ -120,10 +120,10 @@ class _SettingsPageState extends State<SettingsPage> {
               ),
               ListTile(
                 title: Text(S.current.gamedata),
-                trailing: db.onUserData((context, snapshot) => _wrapArrowTrailing(Text(
-                      db.gameData.version.text(true),
-                      textAlign: TextAlign.end,
-                    ))),
+                trailing: db.onUserData(
+                  (context, snapshot) =>
+                      _wrapArrowTrailing(Text(db.gameData.version.text(true), textAlign: TextAlign.end)),
+                ),
                 onTap: () {
                   router.popDetailAndPush(child: GameDataPage());
                 },
@@ -142,11 +142,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 title: Text(Language.isZH ? '协助翻译！' : 'Help Translation!'),
                 trailing: const Wrap(
                   crossAxisAlignment: WrapCrossAlignment.center,
-                  children: [
-                    Icon(Icons.sos),
-                    SizedBox(width: 8),
-                    Icon(Icons.translate, size: 20),
-                  ],
+                  children: [Icon(Icons.sos), SizedBox(width: 8), Icon(Icons.translate, size: 20)],
                 ),
                 onTap: () {
                   launch(ChaldeaUrl.doc('translation'));
@@ -174,32 +170,39 @@ class _SettingsPageState extends State<SettingsPage> {
                     // need to check again
                     alignment: AlignmentDirectional.centerEnd,
                     value: Language.getLanguage(S.current.localeName),
-                    items: Language.supportLanguages
-                        .map((lang) => DropdownMenuItem(
-                            value: lang,
-                            child: Text.rich(
-                              TextSpan(text: lang.name, children: [
-                                TextSpan(
-                                  text: '\n${lang.nameEn}',
-                                  style: Theme.of(context).textTheme.bodySmall,
-                                )
-                              ]),
-                              textScaler: const TextScaler.linear(0.9),
-                            )))
-                        .toList(),
+                    items:
+                        Language.supportLanguages
+                            .map(
+                              (lang) => DropdownMenuItem(
+                                value: lang,
+                                child: Text.rich(
+                                  TextSpan(
+                                    text: lang.name,
+                                    children: [
+                                      TextSpan(text: '\n${lang.nameEn}', style: Theme.of(context).textTheme.bodySmall),
+                                    ],
+                                  ),
+                                  textScaler: const TextScaler.linear(0.9),
+                                ),
+                              ),
+                            )
+                            .toList(),
                     selectedItemBuilder: (context) {
                       return Language.supportLanguages
-                          .map((lang) => DropdownMenuItem(
-                                  child: Text.rich(
-                                TextSpan(text: lang.name, children: [
-                                  TextSpan(
-                                    text: '\n${lang.nameEn}',
-                                    style: Theme.of(context).textTheme.bodySmall,
-                                  )
-                                ]),
+                          .map(
+                            (lang) => DropdownMenuItem(
+                              child: Text.rich(
+                                TextSpan(
+                                  text: lang.name,
+                                  children: [
+                                    TextSpan(text: '\n${lang.nameEn}', style: Theme.of(context).textTheme.bodySmall),
+                                  ],
+                                ),
                                 textScaler: const TextScaler.linear(0.9),
                                 textAlign: TextAlign.end,
-                              )))
+                              ),
+                            ),
+                          )
                           .toList();
                     },
                     onChanged: (lang) {
@@ -220,9 +223,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
                     child: Text(
                       'We are seeking translators!',
-                      style: TextStyle(
-                        color: Theme.of(context).colorScheme.onPrimary,
-                      ),
+                      style: TextStyle(color: Theme.of(context).colorScheme.onPrimary),
                     ),
                   ),
                 ),
@@ -243,20 +244,20 @@ class _SettingsPageState extends State<SettingsPage> {
               if (kIsWeb || kDebugMode)
                 ListTile(
                   title: Text(S.current.web_renderer),
-                  subtitle: Text([
-                    S.current.restart_to_apply_changes,
-                    Language.isZH ? 'html渲染模式将于2025年初弃用' : 'html renderer will be deprecated in early 2025',
-                  ].join('\n')),
+                  subtitle: Text(
+                    [
+                      S.current.restart_to_apply_changes,
+                      Language.isZH ? 'html渲染模式将于2025年初弃用' : 'html renderer will be deprecated in early 2025',
+                    ].join('\n'),
+                  ),
                   trailing: DropdownButton<WebRenderMode>(
-                    value: db.runtimeData.webRendererCanvasKit ??
+                    value:
+                        db.runtimeData.webRendererCanvasKit ??
                         (kPlatformMethods.rendererCanvasKit ? WebRenderMode.canvaskit : WebRenderMode.html),
                     underline: const SizedBox(),
                     items: [
                       for (final value in WebRenderMode.values)
-                        DropdownMenuItem(
-                          value: value,
-                          child: Text(value.name, textAlign: TextAlign.end),
-                        ),
+                        DropdownMenuItem(value: value, child: Text(value.name, textAlign: TextAlign.end)),
                     ],
                     onChanged: (v) {
                       if (v != null) {
@@ -270,7 +271,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       }
                     },
                   ),
-                )
+                ),
             ],
           ),
           TileGroup(
@@ -278,12 +279,13 @@ class _SettingsPageState extends State<SettingsPage> {
             children: <Widget>[
               ListTile(
                 title: Text(MaterialLocalizations.of(context).aboutListTileTitle(AppInfo.appName)),
-                trailing: db.runtimeData.upgradableVersion == null
-                    ? Icon(DirectionalIcons.keyboard_arrow_forward(context))
-                    : Text(
-                        '${db.runtimeData.upgradableVersion!.versionString} ↑',
-                        style: TextStyle(color: Theme.of(context).colorScheme.error.withAlpha(200)),
-                      ),
+                trailing:
+                    db.runtimeData.upgradableVersion == null
+                        ? Icon(DirectionalIcons.keyboard_arrow_forward(context))
+                        : Text(
+                          '${db.runtimeData.upgradableVersion!.versionString} ↑',
+                          style: TextStyle(color: Theme.of(context).colorScheme.error.withAlpha(200)),
+                        ),
                 onTap: () => router.popDetailAndPush(child: AboutPage()),
               ),
               ListTile(
@@ -335,11 +337,7 @@ class _SettingsPageState extends State<SettingsPage> {
             TileGroup(
               header: S.current.debug,
               children: <Widget>[
-                if (AppInfo.isDebugOn)
-                  ListTile(
-                    title: const Text('Test Func'),
-                    onTap: () => testFunction(context),
-                  ),
+                if (AppInfo.isDebugOn) ListTile(title: const Text('Test Func'), onTap: () => testFunction(context)),
                 SwitchListTile.adaptive(
                   value: FrameRateLayer.showFps,
                   title: Text(S.current.show_frame_rate),
@@ -385,7 +383,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       value: db.runtimeData.criticalWidth ?? 768,
                       items: const <DropdownMenuItem<double>>[
                         DropdownMenuItem(value: 768, child: Text('768')),
-                        DropdownMenuItem(value: 600, child: Text('600'))
+                        DropdownMenuItem(value: 600, child: Text('600')),
                       ],
                       onChanged: (v) {
                         db.runtimeData.criticalWidth = v;
@@ -416,12 +414,10 @@ class _SettingsPageState extends State<SettingsPage> {
         final user = db.settings.secrets.user;
         if (user == null) return const SizedBox.shrink();
         return Text.rich(
-          TextSpan(text: user.name, children: [
-            TextSpan(
-              text: '\n${user.id}',
-              style: Theme.of(context).textTheme.bodySmall,
-            ),
-          ]),
+          TextSpan(
+            text: user.name,
+            children: [TextSpan(text: '\n${user.id}', style: Theme.of(context).textTheme.bodySmall)],
+          ),
           textAlign: TextAlign.end,
         );
       }),

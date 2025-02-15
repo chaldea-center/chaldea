@@ -12,11 +12,7 @@ class TimerEventTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final groups = filterData.getSorted(TimerEventItem.group(events, region));
-    return ListView(
-      children: [
-        for (final group in groups) group.buildItem(context, expanded: true),
-      ],
-    );
+    return ListView(children: [for (final group in groups) group.buildItem(context, expanded: true)]);
   }
 }
 
@@ -62,14 +58,13 @@ class TimerEventItem with TimerItem {
           leading: const Icon(Icons.flag, size: 24),
           minLeadingWidth: 24,
           horizontalTitleGap: 8,
-          title: Text.rich(TextSpan(children: [
+          title: Text.rich(
             TextSpan(
-              text: [
-                fmtDate(event.startedAt),
-                fmtDate(event.endedAt),
-              ].join(" ~ "),
-            )
-          ])),
+              children: [
+                TextSpan(text: [fmtDate(event.startedAt), fmtDate(event.endedAt)].join(" ~ ")),
+              ],
+            ),
+          ),
           subtitle: subtitle,
           trailing: CountDown(
             endedAt: event.endedAt.sec2date(),
@@ -88,32 +83,30 @@ class TimerEventItem with TimerItem {
             padding: const EdgeInsets.symmetric(vertical: 8),
             child: Column(
               mainAxisSize: MainAxisSize.min,
-              children: divideTiles(
-                [
-                  for (final event in events)
-                    ListTile(
-                      dense: true,
-                      leading: () {
-                        final jpEvent = db.gameData.events[event.id];
-                        if (jpEvent == null) return null;
-                        final banner = jpEvent.extra.allBanners.firstOrNull;
-                        if (banner == null) return null;
-                        return CachedImage(
-                          imageUrl: banner,
-                          aspectRatio: 8 / 3,
-                          cachedOption: CachedImageOption(
-                            placeholder: (context, url) => const SizedBox.shrink(),
-                            errorWidget: (context, url, error) => const SizedBox.shrink(),
-                          ),
-                        );
-                      }(),
-                      title: Text(Transl.eventNames(event.name).l, maxLines: 2, overflow: TextOverflow.ellipsis),
-                      onTap: () {
-                        event.routeTo(region: region);
-                      },
-                    ),
-                ],
-              ),
+              children: divideTiles([
+                for (final event in events)
+                  ListTile(
+                    dense: true,
+                    leading: () {
+                      final jpEvent = db.gameData.events[event.id];
+                      if (jpEvent == null) return null;
+                      final banner = jpEvent.extra.allBanners.firstOrNull;
+                      if (banner == null) return null;
+                      return CachedImage(
+                        imageUrl: banner,
+                        aspectRatio: 8 / 3,
+                        cachedOption: CachedImageOption(
+                          placeholder: (context, url) => const SizedBox.shrink(),
+                          errorWidget: (context, url, error) => const SizedBox.shrink(),
+                        ),
+                      );
+                    }(),
+                    title: Text(Transl.eventNames(event.name).l, maxLines: 2, overflow: TextOverflow.ellipsis),
+                    onTap: () {
+                      event.routeTo(region: region);
+                    },
+                  ),
+              ]),
             ),
           ),
         );

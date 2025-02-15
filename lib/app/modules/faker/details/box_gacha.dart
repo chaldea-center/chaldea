@@ -55,16 +55,17 @@ class _BoxGachaDrawPageState extends State<BoxGachaDrawPage> {
       return;
     } else if (mstData.userBoxGacha.length > 1 && mounted) {
       final gacha = await router.showDialog<UserBoxGachaEntity>(
-        builder: (context) => SimpleDialog(
-          title: Text('Select Lottery'),
-          children: [
-            for (final gacha in mstData.userBoxGacha)
-              SimpleDialogOption(
-                child: Text('${gacha.boxGachaId}: ${gacha.resetNum} ${S.current.event_lottery_unit}'),
-                onPressed: () => Navigator.pop(context, gacha),
-              ),
-          ],
-        ),
+        builder:
+            (context) => SimpleDialog(
+              title: Text('Select Lottery'),
+              children: [
+                for (final gacha in mstData.userBoxGacha)
+                  SimpleDialogOption(
+                    child: Text('${gacha.boxGachaId}: ${gacha.resetNum} ${S.current.event_lottery_unit}'),
+                    onPressed: () => Navigator.pop(context, gacha),
+                  ),
+              ],
+            ),
       );
       if (gacha != null) {
         boxGachaId = gacha.boxGachaId;
@@ -113,22 +114,23 @@ class _BoxGachaDrawPageState extends State<BoxGachaDrawPage> {
             icon: const Icon(Icons.history),
           ),
           PopupMenuButton(
-            itemBuilder: (context) => [
-              PopupMenuItem(
-                // enabled: !runtime.runningTask.value,
-                onTap: () {
-                  router.pushPage(UserPresentBoxManagePage(runtime: runtime));
-                },
-                child: Text(S.current.present_box),
-              ),
-              PopupMenuItem(
-                // enabled: !runtime.runningTask.value,
-                onTap: () {
-                  router.pushPage(SvtCombinePage(runtime: runtime));
-                },
-                child: Text('从者强化'),
-              ),
-            ],
+            itemBuilder:
+                (context) => [
+                  PopupMenuItem(
+                    // enabled: !runtime.runningTask.value,
+                    onTap: () {
+                      router.pushPage(UserPresentBoxManagePage(runtime: runtime));
+                    },
+                    child: Text(S.current.present_box),
+                  ),
+                  PopupMenuItem(
+                    // enabled: !runtime.runningTask.value,
+                    onTap: () {
+                      router.pushPage(SvtCombinePage(runtime: runtime));
+                    },
+                    child: Text('从者强化'),
+                  ),
+                ],
           ),
         ],
       ),
@@ -137,14 +139,7 @@ class _BoxGachaDrawPageState extends State<BoxGachaDrawPage> {
         child: ListTileTheme.merge(
           dense: true,
           visualDensity: VisualDensity.compact,
-          child: Column(
-            children: [
-              headerInfo,
-              Expanded(child: body),
-              const Divider(height: 1),
-              buttonBar,
-            ],
-          ),
+          child: Column(children: [headerInfo, Expanded(child: body), const Divider(height: 1), buttonBar]),
         ),
       ),
     );
@@ -159,7 +154,8 @@ class _BoxGachaDrawPageState extends State<BoxGachaDrawPage> {
       '${S.current.command_code_short} ${cardCounts.ccCount}/${runtime.gameData.constants.maxUserCommandCode}',
       if (cardCounts.unknownCount != 0) '${S.current.unknown} ${cardCounts.unknownCount}',
     ].join(' ');
-    subtitle += '\nQP ${userGame?.qp.format(compact: false, groupSeparator: ",")}  ${S.current.present_box}  '
+    subtitle +=
+        '\nQP ${userGame?.qp.format(compact: false, groupSeparator: ",")}  ${S.current.present_box}  '
         '${mstData.userPresentBox.length}/${runtime.gameData.constants.maxPresentBoxNum}';
     return Container(
       color: Theme.of(context).secondaryHeaderColor,
@@ -173,10 +169,9 @@ class _BoxGachaDrawPageState extends State<BoxGachaDrawPage> {
           constraints: const BoxConstraints(maxWidth: 16, maxHeight: 16),
           child: ValueListenableBuilder(
             valueListenable: runtime.runningTask,
-            builder: (context, running, _) => CircularProgressIndicator(
-              value: running ? null : 1.0,
-              color: running ? Colors.red : Colors.green,
-            ),
+            builder:
+                (context, running, _) =>
+                    CircularProgressIndicator(value: running ? null : 1.0, color: running ? Colors.red : Colors.green),
           ),
         ),
         title: Text('[${agent.user.serverName}] ${userGame?.name}'),
@@ -196,14 +191,15 @@ class _BoxGachaDrawPageState extends State<BoxGachaDrawPage> {
       if (lottery != null)
         for (final box in lottery.boxes)
           if (box.boxIndex >= curBoxIndex)
-            for (final gift in box.gifts) gift.objectId
+            for (final gift in box.gifts) gift.objectId,
     };
     final itemCounts = Item.sortMapByPriority(
       {
         for (final itemId in itemIds)
-          itemId: db.gameData.items[itemId]?.type == ItemType.itemSelect
-              ? Maths.sum(mstData.userPresentBox.where((e) => e.objectId == itemId).map((e) => e.num))
-              : mstData.getItemOrSvtNum(itemId)
+          itemId:
+              db.gameData.items[itemId]?.type == ItemType.itemSelect
+                  ? Maths.sum(mstData.userPresentBox.where((e) => e.objectId == itemId).map((e) => e.num))
+                  : mstData.getItemOrSvtNum(itemId),
       },
       reversed: true,
       removeZero: false,
@@ -223,22 +219,29 @@ class _BoxGachaDrawPageState extends State<BoxGachaDrawPage> {
         ),
         ListTile(
           dense: true,
-          title: Text.rich(TextSpan(text: 'COST ', children: [
-            if (lottery != null) ...[
-              CenterWidgetSpan(
-                child: Item.iconBuilder(
-                  context: context,
-                  item: lottery.cost.item,
-                  itemId: lottery.cost.itemId,
-                  width: 24,
-                ),
-              ),
-              TextSpan(text: ' ×${lottery.cost.amount}'),
-            ]
-          ])),
-          trailing: Text(lottery == null
-              ? '$ownItemCount'
-              : '$ownItemCount/(${lottery.cost.amount}×$boxPerLottery)=${leftLotteryCount.format(precision: 1)}'),
+          title: Text.rich(
+            TextSpan(
+              text: 'COST ',
+              children: [
+                if (lottery != null) ...[
+                  CenterWidgetSpan(
+                    child: Item.iconBuilder(
+                      context: context,
+                      item: lottery.cost.item,
+                      itemId: lottery.cost.itemId,
+                      width: 24,
+                    ),
+                  ),
+                  TextSpan(text: ' ×${lottery.cost.amount}'),
+                ],
+              ],
+            ),
+          ),
+          trailing: Text(
+            lottery == null
+                ? '$ownItemCount'
+                : '$ownItemCount/(${lottery.cost.amount}×$boxPerLottery)=${leftLotteryCount.format(precision: 1)}',
+          ),
         ),
         ListTile(
           dense: true,
@@ -247,7 +250,7 @@ class _BoxGachaDrawPageState extends State<BoxGachaDrawPage> {
             alignment: AlignmentDirectional.centerEnd,
             value: drawNumOnce,
             items: [
-              for (final v in const [1, 10, 100]) DropdownMenuItem(value: v, child: Text(v.toString()))
+              for (final v in const [1, 10, 100]) DropdownMenuItem(value: v, child: Text(v.toString())),
             ],
             onChanged: (v) {
               runtime.lockTask(() {
@@ -293,16 +296,8 @@ class _BoxGachaDrawPageState extends State<BoxGachaDrawPage> {
       padding: const EdgeInsets.symmetric(horizontal: 12),
     );
 
-    FilledButton buildButton({
-      bool enabled = true,
-      required VoidCallback onPressed,
-      required String text,
-    }) {
-      return FilledButton.tonal(
-        onPressed: enabled ? onPressed : null,
-        style: buttonStyle,
-        child: Text(text),
-      );
+    FilledButton buildButton({bool enabled = true, required VoidCallback onPressed, required String text}) {
+      return FilledButton.tonal(onPressed: enabled ? onPressed : null, style: buttonStyle, child: Text(text));
     }
 
     final lottery = curEvent?.lottery;
@@ -326,8 +321,12 @@ class _BoxGachaDrawPageState extends State<BoxGachaDrawPage> {
             SimpleCancelOkDialog(
               title: Text('Loop ×${loopCount.value}'),
               onTapOk: () {
-                runtime.runTask(() => runtime.withWakeLock('loop-box-gacha-$hashCode',
-                    () => runtime.boxGachaDraw(lottery: lottery!, num: drawNumOnce, loopCount: loopCount)));
+                runtime.runTask(
+                  () => runtime.withWakeLock(
+                    'loop-box-gacha-$hashCode',
+                    () => runtime.boxGachaDraw(lottery: lottery!, num: drawNumOnce, loopCount: loopCount),
+                  ),
+                );
               },
             ).showDialog(context);
           },

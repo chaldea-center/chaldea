@@ -169,10 +169,7 @@ class RefreshButton extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Text(text!),
-        btn,
-      ],
+      children: [Text(text!), btn],
     );
   }
 }

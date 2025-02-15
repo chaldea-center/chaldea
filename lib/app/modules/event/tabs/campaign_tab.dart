@@ -11,12 +11,7 @@ class CampaignEventTab extends StatelessWidget {
   final bool reversed;
   final bool showOutdated;
 
-  CampaignEventTab({
-    super.key,
-    required this.campaignEvents,
-    this.reversed = false,
-    this.showOutdated = false,
-  });
+  CampaignEventTab({super.key, required this.campaignEvents, this.reversed = false, this.showOutdated = false});
 
   @override
   Widget build(BuildContext context) {
@@ -38,10 +33,7 @@ class CampaignEventTab extends StatelessWidget {
       children.add(buildOne(context, event, false));
     }
 
-    return ListView.builder(
-      itemCount: children.length,
-      itemBuilder: (context, index) => children[index],
-    );
+    return ListView.builder(itemCount: children.length, itemBuilder: (context, index) => children[index]);
   }
 
   Widget buildOne(BuildContext context, Event event, bool highlight) {
@@ -49,7 +41,7 @@ class CampaignEventTab extends StatelessWidget {
     final region = db.curUser.region;
     Map<Region, int?> dates = {
       Region.jp: event.startedAt,
-      if (region != Region.jp) region: event.extra.startTime.ofRegion(region)
+      if (region != Region.jp) region: event.extra.startTime.ofRegion(region),
     };
     String subtitle = dates.entries
         .where((e) => e.value != null)
@@ -61,10 +53,12 @@ class CampaignEventTab extends StatelessWidget {
       dense: true,
       selected: highlight,
       title: AutoSizeText.rich(
-        TextSpan(children: [
-          if (event.isOnGoing(null)) const TextSpan(text: '● ', style: TextStyle(color: Colors.green)),
-          TextSpan(text: event.shownName)
-        ]),
+        TextSpan(
+          children: [
+            if (event.isOnGoing(null)) const TextSpan(text: '● ', style: TextStyle(color: Colors.green)),
+            TextSpan(text: event.shownName),
+          ],
+        ),
         maxFontSize: 14,
         maxLines: 2,
         style: outdated ? TextStyle(color: _outdatedColor) : null,

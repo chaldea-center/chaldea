@@ -35,26 +35,25 @@ class _LoginPageState extends State<LoginPage> {
   @override
   void initState() {
     super.initState();
-    _nameController = TextEditingController(text: secrets.user?.name)
-      ..addListener(() {
-        setState(() {});
-      });
-    _pwdController = TextEditingController()
-      ..addListener(() {
-        setState(() {});
-      });
-    _newPwdController = TextEditingController()
-      ..addListener(() {
-        setState(() {});
-      });
-    _confirmPwdController = TextEditingController()
-      ..addListener(() {
-        setState(() {});
-      });
-    _newNameController = TextEditingController()
-      ..addListener(() {
-        setState(() {});
-      });
+    _nameController = TextEditingController(text: secrets.user?.name)..addListener(() {
+      setState(() {});
+    });
+    _pwdController =
+        TextEditingController()..addListener(() {
+          setState(() {});
+        });
+    _newPwdController =
+        TextEditingController()..addListener(() {
+          setState(() {});
+        });
+    _confirmPwdController =
+        TextEditingController()..addListener(() {
+          setState(() {});
+        });
+    _newNameController =
+        TextEditingController()..addListener(() {
+          setState(() {});
+        });
   }
 
   @override
@@ -71,11 +70,13 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(mode == _PageMode.login
-            ? S.current.login_login
-            : mode == _PageMode.signup
-                ? S.current.login_signup
-                : S.current.login_change_password),
+        title: Text(
+          mode == _PageMode.login
+              ? S.current.login_login
+              : mode == _PageMode.signup
+              ? S.current.login_signup
+              : S.current.login_change_password,
+        ),
       ),
       body: ListView(
         padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
@@ -84,37 +85,15 @@ class _LoginPageState extends State<LoginPage> {
           const SizedBox(height: 12),
           pwdInput,
           const SizedBox(height: 12),
-          if (mode == _PageMode.changePwd) ...[
-            changePwdInput,
-            const SizedBox(height: 12),
-          ],
-          if (mode == _PageMode.changePwd || mode == _PageMode.signup) ...[
-            confirmPwdInput,
-            const SizedBox(height: 12),
-          ],
-          if (mode == _PageMode.changeName) ...[
-            changeNameInput,
-            const SizedBox(height: 12),
-          ],
-          Text(
-            S.current.chaldea_account_system_hint,
-            style: Theme.of(context).textTheme.bodySmall,
-          ),
+          if (mode == _PageMode.changePwd) ...[changePwdInput, const SizedBox(height: 12)],
+          if (mode == _PageMode.changePwd || mode == _PageMode.signup) ...[confirmPwdInput, const SizedBox(height: 12)],
+          if (mode == _PageMode.changeName) ...[changeNameInput, const SizedBox(height: 12)],
+          Text(S.current.chaldea_account_system_hint, style: Theme.of(context).textTheme.bodySmall),
           const SizedBox(height: 8),
           mainAction(),
-          OverflowBar(
-            alignment: MainAxisAlignment.center,
-            children: otherActions(),
-          ),
+          OverflowBar(alignment: MainAxisAlignment.center, children: otherActions()),
           if (mode == _PageMode.login)
-            OverflowBar(
-              alignment: MainAxisAlignment.center,
-              children: [
-                forgotPwdBtn,
-                logoutBtn,
-                deleteAccountBtn,
-              ],
-            ),
+            OverflowBar(alignment: MainAxisAlignment.center, children: [forgotPwdBtn, logoutBtn, deleteAccountBtn]),
           if (db.settings.secrets.user?.isAdmin == true)
             OverflowBar(
               alignment: MainAxisAlignment.center,
@@ -123,15 +102,10 @@ class _LoginPageState extends State<LoginPage> {
                   onPressed: isLoginAvailable() ? doAdminResetPwd : null,
                   icon: const Icon(Icons.admin_panel_settings),
                   label: Text('${S.current.reset}(Admin)'),
-                )
+                ),
               ],
             ),
-          if (kDebugMode)
-            ListTile(
-              title: Center(
-                child: Text('Server: ${db.apiWorkerDio.options.baseUrl}'),
-              ),
-            ),
+          if (kDebugMode) ListTile(title: Center(child: Text('Server: ${db.apiWorkerDio.options.baseUrl}'))),
         ],
       ),
     );
@@ -161,48 +135,39 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
-  Widget get loginBtn => ElevatedButton(
-        onPressed: isLoginAvailable() ? doLogin : null,
-        child: Text(S.current.login_login),
-      );
+  Widget get loginBtn =>
+      ElevatedButton(onPressed: isLoginAvailable() ? doLogin : null, child: Text(S.current.login_login));
 
   Widget get logoutBtn => TextButton(
-        onPressed: secrets.isLoggedIn ? doLogout : null,
-        child: Text(
-          S.current.login_logout,
-          style: TextStyle(color: Theme.of(context).colorScheme.error),
-        ),
-      );
+    onPressed: secrets.isLoggedIn ? doLogout : null,
+    child: Text(S.current.login_logout, style: TextStyle(color: Theme.of(context).colorScheme.error)),
+  );
 
   Widget get deleteAccountBtn => TextButton(
-        onPressed: doDelete,
-        child: Text(
-          S.current.delete,
-          style: TextStyle(color: Theme.of(context).colorScheme.error),
-        ),
-      );
+    onPressed: doDelete,
+    child: Text(S.current.delete, style: TextStyle(color: Theme.of(context).colorScheme.error)),
+  );
 
-  Widget get signupBtn => ElevatedButton(
-        onPressed: isSignUpAvailable() ? doSignUp : null,
-        child: Text(S.current.login_signup),
-      );
+  Widget get signupBtn =>
+      ElevatedButton(onPressed: isSignUpAvailable() ? doSignUp : null, child: Text(S.current.login_signup));
 
   Widget get changePwdBtn => ElevatedButton(
-        onPressed: isChangePasswordAvailable() ? doChangePwd : null,
-        child: Text(S.current.login_change_password),
-      );
+    onPressed: isChangePasswordAvailable() ? doChangePwd : null,
+    child: Text(S.current.login_change_password),
+  );
 
   Widget get changeNameBtn => ElevatedButton(
-        onPressed: isChangeNameAvailable() ? doChangeName : null,
-        child: Text(S.current.login_change_name),
-      );
+    onPressed: isChangeNameAvailable() ? doChangeName : null,
+    child: Text(S.current.login_change_name),
+  );
 
   Widget get forgotPwdBtn => TextButton(
-        onPressed: () {
-          showDialog(
-            context: context,
-            useRootNavigator: false,
-            builder: (context) => SimpleCancelOkDialog(
+    onPressed: () {
+      showDialog(
+        context: context,
+        useRootNavigator: false,
+        builder:
+            (context) => SimpleCancelOkDialog(
               title: Text(S.current.login_forget_pwd),
               content: Text(S.current.forgot_password_hint),
               scrollable: true,
@@ -220,48 +185,48 @@ class _LoginPageState extends State<LoginPage> {
                     launch(ChaldeaUrl.doc('faq'));
                   },
                   child: Text(S.current.faq),
-                )
+                ),
               ],
             ),
-          );
-        },
-        child: Text(S.current.login_forget_pwd),
       );
+    },
+    child: Text(S.current.login_forget_pwd),
+  );
 
   Widget get _toLoginBtn => TextButton(
-        onPressed: () {
-          setState(() {
-            mode = _PageMode.login;
-          });
-        },
-        child: Text(S.current.login_login),
-      );
+    onPressed: () {
+      setState(() {
+        mode = _PageMode.login;
+      });
+    },
+    child: Text(S.current.login_login),
+  );
 
   Widget get _toSignupBtn => TextButton(
-        onPressed: () {
-          setState(() {
-            mode = _PageMode.signup;
-          });
-        },
-        child: Text(S.current.login_signup),
-      );
+    onPressed: () {
+      setState(() {
+        mode = _PageMode.signup;
+      });
+    },
+    child: Text(S.current.login_signup),
+  );
 
   Widget get _toChangePwdBtn => TextButton(
-        onPressed: () {
-          setState(() {
-            mode = _PageMode.changePwd;
-          });
-        },
-        child: Text(S.current.login_change_password),
-      );
+    onPressed: () {
+      setState(() {
+        mode = _PageMode.changePwd;
+      });
+    },
+    child: Text(S.current.login_change_password),
+  );
   Widget get _toChangeNameBtn => TextButton(
-        onPressed: () {
-          setState(() {
-            mode = _PageMode.changeName;
-          });
-        },
-        child: Text(S.current.login_change_name),
-      );
+    onPressed: () {
+      setState(() {
+        mode = _PageMode.changeName;
+      });
+    },
+    child: Text(S.current.login_change_name),
+  );
 
   Widget get nameInput {
     return TextFormField(
@@ -335,16 +300,13 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Widget get _pwdVisibilityBtn => IconButton(
-        onPressed: () {
-          setState(() {
-            obscurePwd = !obscurePwd;
-          });
-        },
-        icon: FaIcon(
-          obscurePwd ? FontAwesomeIcons.solidEyeSlash : FontAwesomeIcons.solidEye,
-          size: 20,
-        ),
-      );
+    onPressed: () {
+      setState(() {
+        obscurePwd = !obscurePwd;
+      });
+    },
+    icon: FaIcon(obscurePwd ? FontAwesomeIcons.solidEyeSlash : FontAwesomeIcons.solidEye, size: 20),
+  );
 
   String? _validateName([String? name]) {
     name ??= _nameController.text;
@@ -498,7 +460,8 @@ class _LoginPageState extends State<LoginPage> {
       return;
     }
     final user = await showEasyLoading(
-        () => ChaldeaWorkerApi.changePassword(username: name, password: pwd, newPassword: newPwd));
+      () => ChaldeaWorkerApi.changePassword(username: name, password: pwd, newPassword: newPwd),
+    );
     if (user != null) {
       secrets.user = user;
       EasyLoading.showSuccess(S.current.success);
@@ -528,8 +491,9 @@ class _LoginPageState extends State<LoginPage> {
     String name = _nameController.text;
     String pwd = _pwdController.text;
     String newName = _newNameController.text;
-    final user =
-        await showEasyLoading(() => ChaldeaWorkerApi.renameUser(username: name, password: pwd, newUsername: newName));
+    final user = await showEasyLoading(
+      () => ChaldeaWorkerApi.renameUser(username: name, password: pwd, newUsername: newName),
+    );
     if (user != null) {
       secrets.user = user;
       EasyLoading.showSuccess(S.current.success);

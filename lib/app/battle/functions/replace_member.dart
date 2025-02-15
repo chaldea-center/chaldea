@@ -7,10 +7,7 @@ import '../interactions/replace_member.dart';
 class ReplaceMember {
   ReplaceMember._();
 
-  static Future<void> replaceMember(
-    final BattleData battleData,
-    final DataVals dataVals,
-  ) async {
+  static Future<void> replaceMember(final BattleData battleData, final DataVals dataVals) async {
     final functionRate = dataVals.Rate ?? 1000;
     if (functionRate < battleData.options.threshold) {
       return;

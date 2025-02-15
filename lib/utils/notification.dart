@@ -36,7 +36,8 @@ abstract class LocalNotificationUtil {
         ),
         onDidReceiveNotificationResponse: (NotificationResponse resp) {
           print(
-              'onDidReceiveNotificationResponse: ${resp.id},${resp.actionId},${resp.notificationResponseType},${resp.input},${resp.payload}');
+            'onDidReceiveNotificationResponse: ${resp.id},${resp.actionId},${resp.notificationResponseType},${resp.input},${resp.payload}',
+          );
         },
         onDidReceiveBackgroundNotificationResponse: notificationTapBackground,
       );
@@ -92,18 +93,9 @@ abstract class LocalNotificationUtil {
     priority: Priority.high,
   );
 
-  static Future<void> showNotification({
-    int? id,
-    required String? title,
-    required String? body,
-  }) async {
+  static Future<void> showNotification({int? id, required String? title, required String? body}) async {
     if (!supported) return;
-    return plugin.show(
-      id ?? _id++,
-      title,
-      body,
-      const NotificationDetails(android: _defaultAndroidDetails),
-    );
+    return plugin.show(id ?? _id++, title, body, const NotificationDetails(android: _defaultAndroidDetails));
   }
 
   static Future<void> scheduleNotification({
@@ -145,9 +137,11 @@ abstract class LocalNotificationUtil {
 
   @pragma('vm:entry-point')
   static void notificationTapBackground(NotificationResponse resp) {
-    print('notification(${resp.id}) action tapped: '
-        '${resp.actionId} with'
-        ' payload: ${resp.payload}');
+    print(
+      'notification(${resp.id}) action tapped: '
+      '${resp.actionId} with'
+      ' payload: ${resp.payload}',
+    );
     if (resp.input?.isNotEmpty ?? false) {
       print('notification action tapped with input: ${resp.input}');
     }

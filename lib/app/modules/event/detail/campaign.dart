@@ -24,15 +24,17 @@ class EventCampaignDetail extends StatelessWidget {
           final quest = db.gameData.quests[questId];
           counts.addNum(quest?.type, 1);
         }
-        children.add(ListTile(
-          dense: true,
-          title: const Text('Target Quests'),
-          subtitle: Text(counts.entries.map((e) => '${e.value} ${getQuestTypeName(e.key)}').join(', ')),
-          trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
-          onTap: () {
-            router.pushPage(QuestListPage.ids(ids: questIds));
-          },
-        ));
+        children.add(
+          ListTile(
+            dense: true,
+            title: const Text('Target Quests'),
+            subtitle: Text(counts.entries.map((e) => '${e.value} ${getQuestTypeName(e.key)}').join(', ')),
+            trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
+            onTap: () {
+              router.pushPage(QuestListPage.ids(ids: questIds));
+            },
+          ),
+        );
       }
     }
     final campaigns = event.campaigns.toList();
@@ -49,10 +51,7 @@ class EventCampaignDetail extends StatelessWidget {
       Row(
         children: [
           const Expanded(child: Divider(indent: 16, endIndent: 8, thickness: 1, height: 16)),
-          Text(
-            '${S.current.event_campaign} ${index + 1}',
-            style: Theme.of(context).textTheme.bodySmall,
-          ),
+          Text('${S.current.event_campaign} ${index + 1}', style: Theme.of(context).textTheme.bodySmall),
           const Expanded(child: Divider(indent: 8, endIndent: 16, thickness: 1, height: 16)),
         ],
       ),
@@ -61,16 +60,8 @@ class EventCampaignDetail extends StatelessWidget {
         trailing: Text(Transl.enums(campaign.target, (enums) => enums.combineAdjustTarget).l),
         dense: true,
       ),
-      ListTile(
-        title: const Text("Value"),
-        trailing: fmtValue(context, campaign),
-        dense: true,
-      ),
-      ListTile(
-        title: const Text("Calc Type"),
-        trailing: Text(campaign.calcType.name),
-        dense: true,
-      ),
+      ListTile(title: const Text("Value"), trailing: fmtValue(context, campaign), dense: true),
+      ListTile(title: const Text("Calc Type"), trailing: Text(campaign.calcType.name), dense: true),
     ];
 
     bool targetSame =
@@ -82,27 +73,31 @@ class EventCampaignDetail extends StatelessWidget {
 
     if (campaign.targetIds.isNotEmpty && !targetSame) {
       children.add(SHeader('${campaign.targetIds.length} targets'));
-      children.add(Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        child: Wrap(
-          spacing: 2,
-          runSpacing: 2,
-          children: [for (final id in campaign.targetIds) getTarget(context, campaign, id)],
+      children.add(
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Wrap(
+            spacing: 2,
+            runSpacing: 2,
+            children: [for (final id in campaign.targetIds) getTarget(context, campaign, id)],
+          ),
         ),
-      ));
+      );
     }
     if (campaign.warIds.isNotEmpty) {
       children.add(const SHeader('Related Wars'));
       for (final warId in campaign.warIds) {
         final war = db.gameData.wars[warId];
-        children.add(ListTile(
-          dense: true,
-          title: Text(war?.lName.l ?? 'War $warId'),
-          trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
-          onTap: () {
-            router.push(url: Routes.warI(warId));
-          },
-        ));
+        children.add(
+          ListTile(
+            dense: true,
+            title: Text(war?.lName.l ?? 'War $warId'),
+            trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
+            onTap: () {
+              router.push(url: Routes.warI(warId));
+            },
+          ),
+        );
       }
     }
     if (campaign.warGroupIds.isNotEmpty) {
@@ -116,15 +111,17 @@ class EventCampaignDetail extends StatelessWidget {
           wars.add(war);
           quests.addAll(war.quests.where((e) => e.afterClear == group.questAfterClear && e.type == group.questType));
         }
-        children.add(ListTile(
-          dense: true,
-          title: Text('Group $groupId: ${quests.length} quests'),
-          subtitle: Text(wars.map((e) => e.lShortName).join('/')),
-          trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
-          onTap: () {
-            router.pushPage(QuestListPage(quests: quests, title: 'War Group $groupId'));
-          },
-        ));
+        children.add(
+          ListTile(
+            dense: true,
+            title: Text('Group $groupId: ${quests.length} quests'),
+            subtitle: Text(wars.map((e) => e.lShortName).join('/')),
+            trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
+            onTap: () {
+              router.pushPage(QuestListPage(quests: quests, title: 'War Group $groupId'));
+            },
+          ),
+        );
       }
     }
     return children;
@@ -148,22 +145,23 @@ class EventCampaignDetail extends StatelessWidget {
         onTap: () {
           router.push(url: Routes.itemI(campaign.value));
         },
-        child: Text.rich(TextSpan(
-          children: [
-            if (item != null)
-              CenterWidgetSpan(
-                child: Item.iconBuilder(context: context, item: item, width: 36),
-              ),
-            TextSpan(text: ' ${Item.getName(campaign.value)}')
-          ],
-        )),
+        child: Text.rich(
+          TextSpan(
+            children: [
+              if (item != null) CenterWidgetSpan(child: Item.iconBuilder(context: context, item: item, width: 36)),
+              TextSpan(text: ' ${Item.getName(campaign.value)}'),
+            ],
+          ),
+        ),
       );
     } else if (campaign.target == CombineAdjustTarget.questUseRewardAddItem) {
-      return Text.rich(SharedBuilder.textButtonSpan(
-        context: context,
-        text: 'Gift ${campaign.value}',
-        onTap: () => router.push(url: Routes.giftI(campaign.value)),
-      ));
+      return Text.rich(
+        SharedBuilder.textButtonSpan(
+          context: context,
+          text: 'Gift ${campaign.value}',
+          onTap: () => router.push(url: Routes.giftI(campaign.value)),
+        ),
+      );
     }
 
     int? percentBase;
@@ -218,15 +216,14 @@ class EventCampaignDetail extends StatelessWidget {
     if (campaign.calcType == EventCombineCalc.fixedValue) {
       percentBase = null; // not absolutely
     }
-    return Text([
-      getCalcType(campaign.calcType),
-      percentBase == null
-          ? campaign.value.toString()
-          : campaign.value.format(
-              percent: true,
-              base: percentBase.toDouble(),
-            )
-    ].join());
+    return Text(
+      [
+        getCalcType(campaign.calcType),
+        percentBase == null
+            ? campaign.value.toString()
+            : campaign.value.format(percent: true, base: percentBase.toDouble()),
+      ].join(),
+    );
   }
 
   Widget getTarget(BuildContext context, EventCampaign campaign, int id) {
@@ -234,8 +231,10 @@ class EventCampaignDetail extends StatelessWidget {
     if (entity != null) return entity.iconBuilder(context: context, width: 48);
     final item = db.gameData.items[id];
     if (item != null &&
-        const [CombineAdjustTarget.questUseFriendshipUpItem, CombineAdjustTarget.questUseRewardAddItem]
-            .contains(campaign.target)) {
+        const [
+          CombineAdjustTarget.questUseFriendshipUpItem,
+          CombineAdjustTarget.questUseRewardAddItem,
+        ].contains(campaign.target)) {
       return Item.iconBuilder(context: context, item: item, width: 48);
     }
     if (campaign.target == CombineAdjustTarget.exchangeSvt ||
@@ -243,8 +242,11 @@ class EventCampaignDetail extends StatelessWidget {
       final shop = db.gameData.shops[id];
       GameCardMixin? svt;
       if (shop != null &&
-          const [PurchaseType.eventSvtJoin, PurchaseType.eventSvtGet, PurchaseType.servant]
-              .contains(shop.purchaseType)) {
+          const [
+            PurchaseType.eventSvtJoin,
+            PurchaseType.eventSvtGet,
+            PurchaseType.servant,
+          ].contains(shop.purchaseType)) {
         final svtId = shop.targetIds.firstOrNull;
         svt = db.gameData.servantsById[svtId] ?? db.gameData.entities[svtId];
       }
@@ -259,11 +261,7 @@ class EventCampaignDetail extends StatelessWidget {
       if (svt != null) {
         return svt.iconBuilder(context: context, width: 48, onTap: _onTap);
       }
-      return Text.rich(SharedBuilder.textButtonSpan(
-        context: context,
-        text: id.toString(),
-        onTap: _onTap,
-      ));
+      return Text.rich(SharedBuilder.textButtonSpan(context: context, text: id.toString(), onTap: _onTap));
     }
     return Text(id.toString());
   }

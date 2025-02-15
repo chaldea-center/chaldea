@@ -46,7 +46,9 @@ class _UserPresentBoxManagePageState extends State<UserPresentBoxManagePage> {
         items = Map.of(db.gameData.items);
       } else {
         final itemList = await AtlasApi.exportedData<List<Item>>(
-            'nice_item', (data) => (data as List).map((e) => Item.fromJson(Map.from(e))).toList());
+          'nice_item',
+          (data) => (data as List).map((e) => Item.fromJson(Map.from(e))).toList(),
+        );
         if (itemList != null) {
           items = {for (final item in itemList) item.id: item};
         }
@@ -108,8 +110,7 @@ class _UserPresentBoxManagePageState extends State<UserPresentBoxManagePage> {
                 ItemType.stone ||
                 ItemType.chargeStone ||
                 ItemType.aniplexPlusChargeStone ||
-                ItemType.stoneFragments =>
-                  PresentType.stone,
+                ItemType.stoneFragments => PresentType.stone,
                 ItemType.mana || ItemType.purePri || ItemType.rarePri => PresentType.manaPrism,
                 ItemType.eventPoint || ItemType.eventItem => PresentType.eventItem,
                 _ => PresentType.others,
@@ -131,7 +132,7 @@ class _UserPresentBoxManagePageState extends State<UserPresentBoxManagePage> {
       return <int>[
         -e.flags.length,
         item?.type == ItemType.itemSelect ? 0 : 1,
-        filterData.reversed ? e.createdAt : -e.createdAt
+        filterData.reversed ? e.createdAt : -e.createdAt,
       ];
     });
     return presents;
@@ -156,29 +157,32 @@ class _UserPresentBoxManagePageState extends State<UserPresentBoxManagePage> {
           IconButton(
             icon: const Icon(Icons.filter_alt),
             tooltip: S.current.filter,
-            onPressed: () => FilterPage.show(
-              context: context,
-              builder: (context) => UserPresentBoxFilterPage(
-                filterData: filterData,
-                onChanged: (_) {
-                  if (mounted) {
-                    setState(() {});
-                  }
-                },
-              ),
-            ),
+            onPressed:
+                () => FilterPage.show(
+                  context: context,
+                  builder:
+                      (context) => UserPresentBoxFilterPage(
+                        filterData: filterData,
+                        onChanged: (_) {
+                          if (mounted) {
+                            setState(() {});
+                          }
+                        },
+                      ),
+                ),
           ),
         ],
       ),
       body: Column(
         children: [
           Expanded(
-            child: items.isEmpty
-                ? Center(child: CircularProgressIndicator())
-                : ListView.builder(
-                    itemBuilder: (context, index) => buildPresent(shownPresents[index]),
-                    itemCount: shownPresents.length,
-                  ),
+            child:
+                items.isEmpty
+                    ? Center(child: CircularProgressIndicator())
+                    : ListView.builder(
+                      itemBuilder: (context, index) => buildPresent(shownPresents[index]),
+                      itemCount: shownPresents.length,
+                    ),
           ),
           kDefaultDivider,
           SafeArea(child: buttonBar(shownPresents)),
@@ -225,27 +229,31 @@ class _UserPresentBoxManagePageState extends State<UserPresentBoxManagePage> {
         num: present.num,
       ).iconBuilder(context: context, width: 32),
       title: Text('${GameCardMixin.anyCardItemName(present.objectId).l} ×${present.num}'),
-      subtitle: Text.rich(TextSpan(children: [
-        if (flags.isNotEmpty)
-          TextSpan(children: [
-            ...divideList(
-              [
-                for (final flag in flags)
-                  TextSpan(text: flag.name, style: TextStyle(color: Theme.of(context).colorScheme.error))
-              ],
-              const TextSpan(text: ' / '),
-            ),
-            const TextSpan(text: '\n'),
-          ]),
-        TextSpan(text: '${present.message}\n'),
+      subtitle: Text.rich(
         TextSpan(
-          text: present.flags.contains(UserPresentBoxFlag.indefinitePeriod)
-              ? 'Forever'
-              : '$leftDurStr (${expireAt.sec2date().toCustomString(second: false)})',
-          style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color),
+          children: [
+            if (flags.isNotEmpty)
+              TextSpan(
+                children: [
+                  ...divideList([
+                    for (final flag in flags)
+                      TextSpan(text: flag.name, style: TextStyle(color: Theme.of(context).colorScheme.error)),
+                  ], const TextSpan(text: ' / ')),
+                  const TextSpan(text: '\n'),
+                ],
+              ),
+            TextSpan(text: '${present.message}\n'),
+            TextSpan(
+              text:
+                  present.flags.contains(UserPresentBoxFlag.indefinitePeriod)
+                      ? 'Forever'
+                      : '$leftDurStr (${expireAt.sec2date().toCustomString(second: false)})',
+              style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color),
+            ),
+            TextSpan(text: '\n${present.createdAt.sec2date().toCustomString(second: false)}'),
+          ],
         ),
-        TextSpan(text: '\n${present.createdAt.sec2date().toCustomString(second: false)}'),
-      ])),
+      ),
       value: selectedPresents.contains(present.presentId),
       onChanged: (v) async {
         if (item != null && item.type == ItemType.itemSelect) {
@@ -271,7 +279,8 @@ class _UserPresentBoxManagePageState extends State<UserPresentBoxManagePage> {
       if (cardCounts.unknownCount != 0) '${S.current.unknown} ${cardCounts.unknownCount}',
     ].join(' ');
 
-    bool allChecked = selectedPresents.length >= _kMaxPresentSelectCount ||
+    bool allChecked =
+        selectedPresents.length >= _kMaxPresentSelectCount ||
         (selectedPresents.length >= shownPresents.length &&
             shownPresents.every((e) => selectedPresents.contains(e.presentId)));
 
@@ -293,25 +302,27 @@ class _UserPresentBoxManagePageState extends State<UserPresentBoxManagePage> {
           tooltip: S.current.sort_order,
         ),
         IconButton(
-          onPressed: showSelectedOnly
-              ? null
-              : () {
-                  if (allChecked) {
-                    selectedPresents.removeAll(shownPresents.map((e) => e.presentId));
-                  } else {
-                    if (shownPresents
-                        .every((e) => e.giftType == GiftType.servant.value && Items.embers.contains(e.objectId))) {
-                      shownPresents = shownPresents.toList();
-                      shownPresents.sortByList((e) => [e.objectId, e.num]);
+          onPressed:
+              showSelectedOnly
+                  ? null
+                  : () {
+                    if (allChecked) {
+                      selectedPresents.removeAll(shownPresents.map((e) => e.presentId));
+                    } else {
+                      if (shownPresents.every(
+                        (e) => e.giftType == GiftType.servant.value && Items.embers.contains(e.objectId),
+                      )) {
+                        shownPresents = shownPresents.toList();
+                        shownPresents.sortByList((e) => [e.objectId, e.num]);
+                      }
+                      final leftIds = shownPresents.map((e) => e.presentId).toSet().difference(selectedPresents);
+                      leftIds.removeWhere(isItemSelect);
+                      selectedPresents.addAll(leftIds.take(_kMaxPresentSelectCount - selectedPresents.length));
                     }
-                    final leftIds = shownPresents.map((e) => e.presentId).toSet().difference(selectedPresents);
-                    leftIds.removeWhere(isItemSelect);
-                    selectedPresents.addAll(leftIds.take(_kMaxPresentSelectCount - selectedPresents.length));
-                  }
-                  setState(() {});
-                },
+                    setState(() {});
+                  },
           icon: Icon(allChecked ? Icons.check_box : Icons.square_outlined),
-        )
+        ),
       ],
       [
         FilledButton(
@@ -333,7 +344,7 @@ class _UserPresentBoxManagePageState extends State<UserPresentBoxManagePage> {
           icon: Icon(Icons.replay),
           tooltip: S.current.refresh,
         ),
-      ]
+      ],
     ];
 
     return Container(
@@ -349,7 +360,7 @@ class _UserPresentBoxManagePageState extends State<UserPresentBoxManagePage> {
               crossAxisAlignment: WrapCrossAlignment.center,
               spacing: 2,
               children: buttons,
-            )
+            ),
         ],
       ),
     );
@@ -365,20 +376,24 @@ class _UserPresentBoxManagePageState extends State<UserPresentBoxManagePage> {
     if (presents.isEmpty) return;
     if (!mounted) return;
     final itemSelect = await router.showDialog<ItemSelect>(
-        builder: (context) => _ItemSelectListDialog(item: item, mstData: runtime.mstData));
+      builder: (context) => _ItemSelectListDialog(item: item, mstData: runtime.mstData),
+    );
     if (itemSelect == null || itemSelect.gifts.isEmpty) return;
     int? selectNum = await router.showDialog<int>(
-        builder: (context) => _ItemSelectCountDialog(item: item, itemSelect: itemSelect, mstData: runtime.mstData));
+      builder: (context) => _ItemSelectCountDialog(item: item, itemSelect: itemSelect, mstData: runtime.mstData),
+    );
     if (selectNum == null || selectNum <= 0) return;
     presents = userPresents.where((e) => e.giftType == GiftType.item.value && e.objectId == item.id).toList();
     if (presents.isEmpty) return;
     presents.sort2((e) => e.createdAt);
     selectNum = selectNum.clamp(1, min(_kMaxItemSelectExchangeCount, Maths.sum(presents.map((e) => e.num))));
-    await runtime.runTask(() => runtime.agent.userPresentReceive(
-          presentIds: presents.take(selectNum!).map((e) => e.presentId).toList(),
-          itemSelectIdx: itemSelect.idx,
-          itemSelectNum: selectNum,
-        ));
+    await runtime.runTask(
+      () => runtime.agent.userPresentReceive(
+        presentIds: presents.take(selectNum!).map((e) => e.presentId).toList(),
+        itemSelectIdx: itemSelect.idx,
+        itemSelectNum: selectNum,
+      ),
+    );
     _ensureSelected();
     if (mounted) setState(() {});
   }
@@ -386,16 +401,19 @@ class _UserPresentBoxManagePageState extends State<UserPresentBoxManagePage> {
   Future<void> receivePresents(Set<int> presentIds) async {
     _ensureSelected(presentIds);
     if (presentIds.isEmpty) return;
-    final confirm = await router.showDialog(builder: (context) {
-      return SimpleCancelOkDialog(
-        title: Text('Receive ${presentIds.length} presents'),
-      );
-    });
+    final confirm = await router.showDialog(
+      builder: (context) {
+        return SimpleCancelOkDialog(title: Text('Receive ${presentIds.length} presents'));
+      },
+    );
     if (confirm != true) return;
     await runtime.runTask(() async {
       runtime.checkSvtKeep();
-      final resp =
-          await runtime.agent.userPresentReceive(presentIds: presentIds.toList(), itemSelectIdx: 0, itemSelectNum: 0);
+      final resp = await runtime.agent.userPresentReceive(
+        presentIds: presentIds.toList(),
+        itemSelectIdx: 0,
+        itemSelectNum: 0,
+      );
       final overflowType = resp.data.getResponse('present_receive').success?['overflowType'];
       if (overflowType is int && overflowType != 0 && mounted) {
         SimpleCancelOkDialog(
@@ -417,7 +435,7 @@ class _UserPresentBoxManagePageState extends State<UserPresentBoxManagePage> {
                   router.pushPage(SvtCombinePage(runtime: runtime));
                 },
                 child: Text('从者强化'),
-              )
+              ),
           ],
         ).showDialog(context);
       }
@@ -443,9 +461,7 @@ class _ItemSelectTile extends StatelessWidget {
       leading: gift?.iconBuilder(context: context, text: count.format(), width: 32),
       title: Wrap(
         crossAxisAlignment: WrapCrossAlignment.center,
-        children: [
-          for (final gift in itemSelect.gifts) Text('${gift.shownName} ×${gift.num}  '),
-        ],
+        children: [for (final gift in itemSelect.gifts) Text('${gift.shownName} ×${gift.num}  ')],
       ),
       // subtitle: itemSelect.detail
       trailing: Text('COST ${itemSelect.requireNum}'),
@@ -497,9 +513,10 @@ class __ItemSelectCountDialogState extends State<_ItemSelectCountDialog> {
 
   @override
   Widget build(BuildContext context) {
-    final presents = widget.mstData.userPresentBox
-        .where((e) => e.giftType == GiftType.item.value && e.objectId == widget.item.id)
-        .toList();
+    final presents =
+        widget.mstData.userPresentBox
+            .where((e) => e.giftType == GiftType.item.value && e.objectId == widget.item.id)
+            .toList();
     final int maxCount = min(Maths.sum(presents.map((e) => e.num)), _kMaxItemSelectExchangeCount);
     if (count > maxCount) count = maxCount;
     return AlertDialog(
@@ -547,7 +564,7 @@ class __ItemSelectCountDialogState extends State<_ItemSelectCountDialog> {
             Navigator.pop(context, count);
           },
           child: Text(S.current.confirm),
-        )
+        ),
       ],
     );
   }
@@ -585,12 +602,13 @@ class _SellCombineMaterialDialogState extends State<_SellCombineMaterialDialog> 
   }
 
   Widget buildRarity(int rarity, int maxCount) {
-    final cards = runtime.mstData.userSvt.where((userSvt) {
-      final entity = userSvt.dbEntity;
-      if (entity == null || entity.type != SvtType.combineMaterial || userSvt.locked) return false;
-      if (entity.rarity != rarity) return false;
-      return true;
-    }).toList();
+    final cards =
+        runtime.mstData.userSvt.where((userSvt) {
+          final entity = userSvt.dbEntity;
+          if (entity == null || entity.type != SvtType.combineMaterial || userSvt.locked) return false;
+          if (entity.rarity != rarity) return false;
+          return true;
+        }).toList();
     cards.sort2((e) => -e.createdAt);
     final svt = db.gameData.entities[(97700 + rarity) * 100];
     return ListTile(
@@ -599,10 +617,12 @@ class _SellCombineMaterialDialogState extends State<_SellCombineMaterialDialog> 
       trailing: Text('${min(maxCount, cards.length)}/${cards.length}'),
       enabled: cards.isNotEmpty,
       onTap: () async {
-        await runtime.runTask(() => runtime.agent.sellServant(
-              servantUserIds: cards.take(maxCount).map((e) => e.id).toList(),
-              commandCodeUserIds: [],
-            ));
+        await runtime.runTask(
+          () => runtime.agent.sellServant(
+            servantUserIds: cards.take(maxCount).map((e) => e.id).toList(),
+            commandCodeUserIds: [],
+          ),
+        );
         if (mounted) setState(() {});
       },
     );

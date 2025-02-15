@@ -50,8 +50,10 @@ class _CombatActionSelectorState extends State<CombatActionSelector> {
         IconButton(
           onPressed: () {
             battleData.options.cardDeckSimulation = !battleData.options.cardDeckSimulation;
-            EasyLoading.showToast('${S.current.battle_card_deck_simulation} (⊄) : '
-                '${battleData.options.cardDeckSimulation ? 'On' : 'Off'}');
+            EasyLoading.showToast(
+              '${S.current.battle_card_deck_simulation} (⊄) : '
+              '${battleData.options.cardDeckSimulation ? 'On' : 'Off'}',
+            );
             if (mounted) setState(() {});
           },
           icon: Icon(
@@ -69,14 +71,15 @@ class _CombatActionSelectorState extends State<CombatActionSelector> {
           },
         ),
         TextButton(
-          onPressed: validActions.isEmpty
-              ? null
-              : () {
-                  widget.onSelected(validActions);
-                  Navigator.pop(context, validActions);
-                },
+          onPressed:
+              validActions.isEmpty
+                  ? null
+                  : () {
+                    widget.onSelected(validActions);
+                    Navigator.pop(context, validActions);
+                  },
           child: Text(S.current.confirm),
-        )
+        ),
       ],
     );
   }
@@ -96,14 +99,10 @@ class _CombatActionSelectorState extends State<CombatActionSelector> {
           ),
           const SizedBox(width: 16),
           Flexible(
-            child: Text(
-              S.current.battle_command_card,
-              maxLines: 1,
-              style: Theme.of(context).textTheme.bodySmall,
-            ),
+            child: Text(S.current.battle_command_card, maxLines: 1, style: Theme.of(context).textTheme.bodySmall),
           ),
         ],
-      )
+      ),
     ];
     for (final svt in battleData.nonnullPlayers) {
       final tdIcon = buildTdIcon(svt);
@@ -114,66 +113,72 @@ class _CombatActionSelectorState extends State<CombatActionSelector> {
         if (card == null) {
           cells.add(const Flexible(child: SizedBox.shrink()));
         } else {
-          cells.add(Flexible(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 1),
-              child: buildCardIcon(battleData, svt, card),
+          cells.add(
+            Flexible(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 1),
+                child: buildCardIcon(battleData, svt, card),
+              ),
             ),
-          ));
+          );
         }
       }
-      children.add(Row(
-        mainAxisSize: MainAxisSize.min,
-        children: cells,
-      ));
+      children.add(Row(mainAxisSize: MainAxisSize.min, children: cells));
     }
-    children.add(ConstrainedBox(
-      constraints: const BoxConstraints(maxWidth: 360),
-      child: SliderWithPrefix(
-        titled: true,
-        label: S.current.battle_random,
-        min: ConstData.constants.attackRateRandomMin,
-        max: ConstData.constants.attackRateRandomMax - 1,
-        value: battleData.options.random,
-        valueFormatter: (v) => toModifier(v).toStringAsFixed(3),
-        onChange: (v) {
-          battleData.options.random = ((v / 10).round() * 10)
-              .clamp(ConstData.constants.attackRateRandomMin, ConstData.constants.attackRateRandomMax - 1);
-          if (mounted) setState(() {});
-        },
-        onEdit: (v) {
-          battleData.options.random =
-              v.round().clamp(ConstData.constants.attackRateRandomMin, ConstData.constants.attackRateRandomMax - 1);
-          if (mounted) setState(() {});
-        },
+    children.add(
+      ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 360),
+        child: SliderWithPrefix(
+          titled: true,
+          label: S.current.battle_random,
+          min: ConstData.constants.attackRateRandomMin,
+          max: ConstData.constants.attackRateRandomMax - 1,
+          value: battleData.options.random,
+          valueFormatter: (v) => toModifier(v).toStringAsFixed(3),
+          onChange: (v) {
+            battleData.options.random = ((v / 10).round() * 10).clamp(
+              ConstData.constants.attackRateRandomMin,
+              ConstData.constants.attackRateRandomMax - 1,
+            );
+            if (mounted) setState(() {});
+          },
+          onEdit: (v) {
+            battleData.options.random = v.round().clamp(
+              ConstData.constants.attackRateRandomMin,
+              ConstData.constants.attackRateRandomMax - 1,
+            );
+            if (mounted) setState(() {});
+          },
+        ),
       ),
-    ));
-    children.add(ConstrainedBox(
-      constraints: BoxConstraints(maxWidth: cardSize * 7),
-      child: Text(
-        S.current.battle_select_critical_card_hint,
-        style: TextStyle(color: Theme.of(context).colorScheme.error),
-        textScaler: const TextScaler.linear(0.9),
-      ),
-    ));
-    final multiDmgFuncSvts = combatActions
-        .where((e) => e?.cardData.isTD == true && (e?.actor.playerSvtData?.td?.dmgNpFuncCount ?? 0) > 1)
-        .toList();
-    if (multiDmgFuncSvts.isNotEmpty) {
-      children.add(ConstrainedBox(
+    );
+    children.add(
+      ConstrainedBox(
         constraints: BoxConstraints(maxWidth: cardSize * 7),
         child: Text(
-          '${S.current.laplace_upload_td_multi_dmg_func_hint}: ${multiDmgFuncSvts.map((e) => e?.actor.lBattleName).join("/")}',
-          textScaler: const TextScaler.linear(0.8),
+          S.current.battle_select_critical_card_hint,
+          style: TextStyle(color: Theme.of(context).colorScheme.error),
+          textScaler: const TextScaler.linear(0.9),
         ),
-      ));
+      ),
+    );
+    final multiDmgFuncSvts =
+        combatActions
+            .where((e) => e?.cardData.isTD == true && (e?.actor.playerSvtData?.td?.dmgNpFuncCount ?? 0) > 1)
+            .toList();
+    if (multiDmgFuncSvts.isNotEmpty) {
+      children.add(
+        ConstrainedBox(
+          constraints: BoxConstraints(maxWidth: cardSize * 7),
+          child: Text(
+            '${S.current.laplace_upload_td_multi_dmg_func_hint}: ${multiDmgFuncSvts.map((e) => e?.actor.lBattleName).join("/")}',
+            textScaler: const TextScaler.linear(0.8),
+          ),
+        ),
+      );
     }
 
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: children,
-    );
+    return Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: children);
   }
 
   Widget buildCardIcon(BattleData battleData, BattleServantData svt, CommandCardData card) {
@@ -182,10 +187,7 @@ class _CombatActionSelectorState extends State<CombatActionSelector> {
     Widget cardIcon = Stack(
       alignment: Alignment.center,
       children: [
-        AspectRatio(
-          aspectRatio: 1,
-          child: Center(child: CommandCardWidget(card: card.cardType, width: cardSize)),
-        ),
+        AspectRatio(aspectRatio: 1, child: Center(child: CommandCardWidget(card: card.cardType, width: cardSize))),
         if (commandCode != null)
           Positioned(
             top: 0,
@@ -209,18 +211,8 @@ class _CombatActionSelectorState extends State<CombatActionSelector> {
             ),
           ),
         if (!svt.canCommandCard(card) || !cardInDeck) ...[
-          AspectRatio(
-            aspectRatio: 1,
-            child: Container(
-              width: cardSize,
-              height: cardSize,
-              color: Colors.black54,
-            ),
-          ),
-          Text(
-            !cardInDeck ? '⊄' : '×',
-            style: TextStyle(fontSize: cardSize * 0.8, color: Colors.white),
-          ),
+          AspectRatio(aspectRatio: 1, child: Container(width: cardSize, height: cardSize, color: Colors.black54)),
+          Text(!cardInDeck ? '⊄' : '×', style: TextStyle(fontSize: cardSize * 0.8, color: Colors.white)),
         ],
       ],
     );
@@ -276,36 +268,23 @@ class _CombatActionSelectorState extends State<CombatActionSelector> {
         if (curTd != null && curTd.svt.card.isQAB()) ...[
           Positioned(
             bottom: 0,
-            child: db.getIconImage(
-              AssetURL.i.commandAtlas('card_icon_${curTd.svt.card.name}'),
-              width: cardSize * 0.8,
-            ),
+            child: db.getIconImage(AssetURL.i.commandAtlas('card_icon_${curTd.svt.card.name}'), width: cardSize * 0.8),
           ),
           Positioned(
             bottom: cardSize * 0.5 * 0.2,
-            child: db.getIconImage(
-              AssetURL.i.commandAtlas('card_txt_${curTd.svt.card.name}'),
-              width: cardSize * 0.8,
-            ),
+            child: db.getIconImage(AssetURL.i.commandAtlas('card_txt_${curTd.svt.card.name}'), width: cardSize * 0.8),
           ),
         ],
         if (!tdValid) ...[
           AspectRatio(
             aspectRatio: 132 / 144,
-            child: Container(
-              width: cardSize,
-              height: cardSize * 144 / 132,
-              color: Colors.black54,
-            ),
+            child: Container(width: cardSize, height: cardSize * 144 / 132, color: Colors.black54),
           ),
-          Text('×', style: TextStyle(fontSize: cardSize * 0.8, color: Colors.white))
-        ]
+          Text('×', style: TextStyle(fontSize: cardSize * 0.8, color: Colors.white)),
+        ],
       ],
     );
-    tdIcon = ConstrainedBox(
-      constraints: BoxConstraints(maxHeight: cardSize),
-      child: tdIcon,
-    );
+    tdIcon = ConstrainedBox(constraints: BoxConstraints(maxHeight: cardSize), child: tdIcon);
     tdIcon = GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: () async {
@@ -371,12 +350,7 @@ class _CombatActionSelectorState extends State<CombatActionSelector> {
     String text = '';
     bool selected = index != null && index >= 0;
     if (selected) {
-      text = {
-            1: '1st',
-            2: '2nd',
-            3: '3rd',
-          }[index + 1] ??
-          '${index + 1}th';
+      text = {1: '1st', 2: '2nd', 3: '3rd'}[index + 1] ?? '${index + 1}th';
       if (critical) {
         // text += ' ${S.current.critical_attack}';
       }
@@ -396,13 +370,8 @@ class _CombatActionSelectorState extends State<CombatActionSelector> {
         ),
         SizedBox(
           height: 20,
-          child: Text(
-            text,
-            style: TextStyle(color: color),
-            textScaler: const TextScaler.linear(0.8),
-            maxLines: 1,
-          ),
-        )
+          child: Text(text, style: TextStyle(color: color), textScaler: const TextScaler.linear(0.8), maxLines: 1),
+        ),
       ],
     );
   }
@@ -416,9 +385,12 @@ class _CombatActionSelectorState extends State<CombatActionSelector> {
 
   int getCardIndex(final BattleServantData svt, final CommandCardData cardData) {
     return combatActions
-        .map((action) => action != null && action.cardData.cardIndex == cardData.cardIndex && !action.cardData.isTD
-            ? action.actor
-            : null)
+        .map(
+          (action) =>
+              action != null && action.cardData.cardIndex == cardData.cardIndex && !action.cardData.isTD
+                  ? action.actor
+                  : null,
+        )
         .toList()
         .indexOf(svt);
   }
@@ -478,28 +450,28 @@ class _EnemyCombatActionSelectorState extends State<EnemyCombatActionSelector> {
         title: title,
         subtitle: subtitle,
         materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-        onChanged: enabled
-            ? (v) {
-                setState(() {
-                  actionIndex = v;
-                  onConfirm = onSelected;
-                });
-              }
-            : null,
+        onChanged:
+            enabled
+                ? (v) {
+                  setState(() {
+                    actionIndex = v;
+                    onConfirm = onSelected;
+                  });
+                }
+                : null,
       );
     }
 
-    List<Widget> children = [
-      ...getEnemySelector(),
-      const Divider(height: 16),
-    ];
+    List<Widget> children = [...getEnemySelector(), const Divider(height: 16)];
 
-    children.add(buildRadio(
-      title: Text(S.current.end_enemy_turn),
-      onSelected: () async {
-        await battleData.endEnemyActions();
-      },
-    ));
+    children.add(
+      buildRadio(
+        title: Text(S.current.end_enemy_turn),
+        onSelected: () async {
+          await battleData.endEnemyActions();
+        },
+      ),
+    );
     final enemy = selectedEnemy;
     if (enemy != null) {
       if (enemy.skillInfoList.any((e) => e.skill != null)) {
@@ -509,12 +481,14 @@ class _EnemyCombatActionSelectorState extends State<EnemyCombatActionSelector> {
         final skill = enemy.skillInfoList.getOrNull(index);
         final baseSkill = skill?.skill;
         if (skill != null && baseSkill != null) {
-          children.add(buildRadio(
-            title: Text('${S.current.skill} ${index + 1} ${baseSkill.lName.l}'),
-            onSelected: () async {
-              await enemy.activateSkill(battleData, index);
-            },
-          ));
+          children.add(
+            buildRadio(
+              title: Text('${S.current.skill} ${index + 1} ${baseSkill.lName.l}'),
+              onSelected: () async {
+                await enemy.activateSkill(battleData, index);
+              },
+            ),
+          );
         }
       }
       final svt = enemy.niceSvt;
@@ -527,36 +501,41 @@ class _EnemyCombatActionSelectorState extends State<EnemyCombatActionSelector> {
           if (cardType.matches(CardType.strength)) {
             name += ' (${S.current.critical_attack})';
           }
-          children.add(buildRadio(
-            title: Text(name),
-            onSelected: () async {
-              final cardData = CommandCardData(enemy, cardType, detail, 1)
-                ..isTD = false
-                ..traits = ConstData.cardInfo[cardType]?[1]?.individuality.toList() ?? [];
-              if (cardType.isQAB()) {
-                cardData.critical = critical;
-              } else if (cardType.matches(CardType.strength)) {
-                cardData.critical = true;
-              } else if (cardType.matches(CardType.weak)) {
-                cardData.critical = false;
-              }
-              await battleData.playEnemyCard(CombatAction(enemy, cardData));
-            },
-          ));
+          children.add(
+            buildRadio(
+              title: Text(name),
+              onSelected: () async {
+                final cardData =
+                    CommandCardData(enemy, cardType, detail, 1)
+                      ..isTD = false
+                      ..traits = ConstData.cardInfo[cardType]?[1]?.individuality.toList() ?? [];
+                if (cardType.isQAB()) {
+                  cardData.critical = critical;
+                } else if (cardType.matches(CardType.strength)) {
+                  cardData.critical = true;
+                } else if (cardType.matches(CardType.weak)) {
+                  cardData.critical = false;
+                }
+                await battleData.playEnemyCard(CombatAction(enemy, cardData));
+              },
+            ),
+          );
         }
         if (svt.cardDetails.keys.any((e) => e.isQAB())) {
-          children.add(CheckboxListTile(
-            dense: true,
-            value: critical,
-            title: Text(S.current.critical_attack),
-            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-            controlAffinity: ListTileControlAffinity.leading,
-            onChanged: (v) {
-              setState(() {
-                critical = v ?? critical;
-              });
-            },
-          ));
+          children.add(
+            CheckboxListTile(
+              dense: true,
+              value: critical,
+              title: Text(S.current.critical_attack),
+              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              controlAffinity: ListTileControlAffinity.leading,
+              onChanged: (v) {
+                setState(() {
+                  critical = v ?? critical;
+                });
+              },
+            ),
+          );
         }
         final td = enemy.niceEnemy?.noblePhantasm.noblePhantasm;
         if (td != null && td.functions.isNotEmpty) {
@@ -618,20 +597,18 @@ class _EnemyCombatActionSelectorState extends State<EnemyCombatActionSelector> {
       contentPadding: const EdgeInsetsDirectional.fromSTEB(0, 20.0, 0, 24.0),
       content: ListTileTheme.merge(
         minLeadingWidth: 24,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: children,
-        ),
+        child: Column(mainAxisSize: MainAxisSize.min, children: children),
       ),
       hideOk: true,
       actions: [
         TextButton(
-          onPressed: onConfirm == null
-              ? null
-              : () async {
-                  Navigator.pop(context);
-                  widget.onConfirm(onConfirm!);
-                },
+          onPressed:
+              onConfirm == null
+                  ? null
+                  : () async {
+                    Navigator.pop(context);
+                    widget.onConfirm(onConfirm!);
+                  },
           child: Text(S.current.confirm),
         ),
       ],
@@ -675,10 +652,7 @@ class _EnemyCombatActionSelectorState extends State<EnemyCombatActionSelector> {
         }
         rowChildren.add(SizedBox(width: 64, child: child));
       }
-      children.add(Row(
-        mainAxisSize: MainAxisSize.min,
-        children: rowChildren.reversed.toList(),
-      ));
+      children.add(Row(mainAxisSize: MainAxisSize.min, children: rowChildren.reversed.toList()));
     }
     children = children.reversed.toList();
 
@@ -687,22 +661,24 @@ class _EnemyCombatActionSelectorState extends State<EnemyCombatActionSelector> {
     for (final svt in battleData.nonnullPlayers) {
       final counterBuff = svt.battleBuff.validBuffs.lastWhereOrNull((buff) => buff.vals.CounterId != null);
       if (counterBuff == null) continue;
-      counterActors.add(RadioListTile<BattleServantData>(
-        dense: true,
-        value: svt,
-        groupValue: selectedCounter,
-        title: Text(counterBuff.buff.lName.l),
-        subtitle: Text(svt.lBattleName),
-        secondary: svt.iconBuilder(context: context),
-        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-        onChanged: (v) {
-          setState(() {
-            selectedCounter = svt;
-            selectedEnemy = null;
-            onConfirm = () => battleData.activateCounter(svt);
-          });
-        },
-      ));
+      counterActors.add(
+        RadioListTile<BattleServantData>(
+          dense: true,
+          value: svt,
+          groupValue: selectedCounter,
+          title: Text(counterBuff.buff.lName.l),
+          subtitle: Text(svt.lBattleName),
+          secondary: svt.iconBuilder(context: context),
+          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          onChanged: (v) {
+            setState(() {
+              selectedCounter = svt;
+              selectedEnemy = null;
+              onConfirm = () => battleData.activateCounter(svt);
+            });
+          },
+        ),
+      );
     }
     if (counterActors.isNotEmpty && battleData.nonnullEnemies.isNotEmpty) {
       children.insertAll(0, [...counterActors, kDefaultDivider]);

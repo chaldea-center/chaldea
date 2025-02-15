@@ -24,9 +24,9 @@ class EnemyListPage extends StatefulWidget {
 class EnemyListPageState extends State<EnemyListPage> with SearchableListState<BasicServant, EnemyListPage> {
   @override
   Iterable<BasicServant> get wholeData => db.gameData.entities.values.where((svt) {
-        if (svt.collectionNo == 0) return true;
-        return svt.type != SvtType.normal && svt.type != SvtType.servantEquip;
-      });
+    if (svt.collectionNo == 0) return true;
+    return svt.type != SvtType.normal && svt.type != SvtType.servantEquip;
+  });
   Map<int, List<QuestEnemy>> _allEnemies = {};
 
   late final EnemyFilterData filterData = widget.filterData ?? EnemyFilterData();
@@ -41,7 +41,8 @@ class EnemyListPageState extends State<EnemyListPage> with SearchableListState<B
       filterData.reset();
     }
     _allEnemies = ReverseGameData.questEnemies(
-        (enemy) => !(enemy.svt.collectionNo > 0 && [SvtType.normal, SvtType.heroine].contains(enemy.svt.type)));
+      (enemy) => !(enemy.svt.collectionNo > 0 && [SvtType.normal, SvtType.heroine].contains(enemy.svt.type)),
+    );
     for (final enemies in _allEnemies.values) {
       enemies.sort2((e) => e.svt.icon ?? "");
     }
@@ -63,15 +64,17 @@ class EnemyListPageState extends State<EnemyListPage> with SearchableListState<B
           IconButton(
             icon: const Icon(Icons.filter_alt),
             tooltip: S.current.filter,
-            onPressed: () => FilterPage.show(
-              context: context,
-              builder: (context) => EnemyFilterPage(
-                filterData: filterData,
-                onChanged: (_) {
-                  if (mounted) setState(() {});
-                },
-              ),
-            ),
+            onPressed:
+                () => FilterPage.show(
+                  context: context,
+                  builder:
+                      (context) => EnemyFilterPage(
+                        filterData: filterData,
+                        onChanged: (_) {
+                          if (mounted) setState(() {});
+                        },
+                      ),
+                ),
           ),
           searchIcon,
         ],
@@ -89,15 +92,16 @@ class EnemyListPageState extends State<EnemyListPage> with SearchableListState<B
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
             child: LayoutBuilder(
-              builder: (context, constraints) => SharedBuilder.topSvtClassFilter(
-                context: context,
-                maxWidth: constraints.maxWidth,
-                data: filterData.svtClass,
-                showUnknown: true,
-                onChanged: () {
-                  setState(() {});
-                },
-              ),
+              builder:
+                  (context, constraints) => SharedBuilder.topSvtClassFilter(
+                    context: context,
+                    maxWidth: constraints.maxWidth,
+                    data: filterData.svtClass,
+                    showUnknown: true,
+                    onChanged: () {
+                      setState(() {});
+                    },
+                  ),
             ),
           ),
           Expanded(child: super.buildScrollable(useGrid: useGrid)),
@@ -110,18 +114,10 @@ class EnemyListPageState extends State<EnemyListPage> with SearchableListState<B
   Widget listItemBuilder(BasicServant svt) {
     List<String> subtitles = [if (!Language.isJP) svt.name, 'No.${svt.id} ${Transl.svtClassId(svt.classId).l}'];
     return CustomTile(
-      leading: svt.iconBuilder(
-        context: context,
-        height: 56,
-        aspectRatio: 1,
-      ),
+      leading: svt.iconBuilder(context: context, height: 56, aspectRatio: 1),
       title: AutoSizeText(svt.lName.l, maxLines: 1),
       titlePadding: const EdgeInsetsDirectional.only(start: 12),
-      subtitle: Text(
-        subtitles.join('\n'),
-        maxLines: subtitles.length,
-        textScaler: const TextScaler.linear(0.8),
-      ),
+      subtitle: Text(subtitles.join('\n'), maxLines: subtitles.length, textScaler: const TextScaler.linear(0.8)),
       trailing: IconButton(
         icon: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
         constraints: const BoxConstraints(minHeight: 48, minWidth: 2),
@@ -135,11 +131,7 @@ class EnemyListPageState extends State<EnemyListPage> with SearchableListState<B
 
   @override
   Widget gridItemBuilder(BasicServant svt) {
-    return svt.iconBuilder(
-      context: context,
-      width: 72,
-      onTap: () => _onTapCard(svt),
-    );
+    return svt.iconBuilder(context: context, width: 72, onTap: () => _onTapCard(svt));
   }
 
   @override
@@ -193,10 +185,7 @@ class EnemyListPageState extends State<EnemyListPage> with SearchableListState<B
       if (enemies.isEmpty) {
         svt.routeTo(popDetails: popDetails);
       } else {
-        router.pushPage(
-          QuestEnemySummaryPage(svt: enemies.first.svt, enemies: enemies),
-          popDetail: popDetails,
-        );
+        router.pushPage(QuestEnemySummaryPage(svt: enemies.first.svt, enemies: enemies), popDetail: popDetails);
       }
       selected = svt;
     }

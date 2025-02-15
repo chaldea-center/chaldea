@@ -38,12 +38,7 @@ class SimulationPreview extends StatefulWidget {
   final QuestPhase? questPhase;
   final Uri? shareUri;
 
-  const SimulationPreview({
-    super.key,
-    this.region,
-    this.questPhase,
-    this.shareUri,
-  });
+  const SimulationPreview({super.key, this.region, this.questPhase, this.shareUri});
 
   @override
   State<SimulationPreview> createState() => _SimulationPreviewState();
@@ -126,68 +121,73 @@ class _SimulationPreviewState extends State<SimulationPreview> {
     children.add(header(S.current.battle_simulation_setup));
     children.add(partyOption());
     children.add(DividerWithTitle(indent: 16, title: S.current.team));
-    children.add(Wrap(
-      alignment: WrapAlignment.center,
-      children: [
-        TextButton(
-          onPressed: () async {
-            options.formation.clear();
-            saveFormation();
-            if (mounted) setState(() {});
-          },
-          child: Text(
-            S.current.clear,
-            style: TextStyle(color: Theme.of(context).colorScheme.error),
+    children.add(
+      Wrap(
+        alignment: WrapAlignment.center,
+        children: [
+          TextButton(
+            onPressed: () async {
+              options.formation.clear();
+              saveFormation();
+              if (mounted) setState(() {});
+            },
+            child: Text(S.current.clear, style: TextStyle(color: Theme.of(context).colorScheme.error)),
+          ),
+          TextButton(
+            onPressed: () async {
+              final team = saveFormation();
+              await router.pushPage(
+                FormationEditor(
+                  teamToSave: team.formation.allCardIds.isEmpty ? null : team,
+                  onSelected: restoreFormation,
+                ),
+              );
+              if (mounted) setState(() {});
+            },
+            child: Text(S.current.team_local),
+          ),
+          TextButton(
+            onPressed: questPhase == null ? null : () => onTapSharedTeams(questPhase!),
+            style: TextButton.styleFrom(foregroundColor: AppTheme(context).tertiary),
+            child: Text(S.current.team_shared),
+          ),
+        ],
+      ),
+    );
+    children.add(
+      TeamSetupCard(
+        formation: options.formation,
+        quest: questPhase,
+        playerRegion: settings.playerRegion,
+        onChanged: () {
+          if (mounted) setState(() {});
+        },
+      ),
+    );
+    children.add(
+      DividerWithTitle(
+        titleWidget: Text.rich(
+          TextSpan(
+            children: [
+              TextSpan(text: S.current.mystic_code, style: const TextStyle(fontWeight: FontWeight.bold)),
+              SharedBuilder.textButtonSpan(
+                context: context,
+                text: ' ${S.current.disable} ',
+                style: TextStyle(color: Theme.of(context).colorScheme.error),
+                onTap: () {
+                  setState(() {
+                    options.formation.mysticCodeData.level = 0;
+                    options.formation.mysticCodeData.mysticCode = null;
+                  });
+                },
+              ),
+            ],
           ),
         ),
-        TextButton(
-          onPressed: () async {
-            final team = saveFormation();
-            await router.pushPage(FormationEditor(
-              teamToSave: team.formation.allCardIds.isEmpty ? null : team,
-              onSelected: restoreFormation,
-            ));
-            if (mounted) setState(() {});
-          },
-          child: Text(S.current.team_local),
-        ),
-        TextButton(
-          onPressed: questPhase == null ? null : () => onTapSharedTeams(questPhase!),
-          style: TextButton.styleFrom(foregroundColor: AppTheme(context).tertiary),
-          child: Text(S.current.team_shared),
-        ),
-      ],
-    ));
-    children.add(TeamSetupCard(
-      formation: options.formation,
-      quest: questPhase,
-      playerRegion: settings.playerRegion,
-      onChanged: () {
-        if (mounted) setState(() {});
-      },
-    ));
-    children.add(DividerWithTitle(
-      titleWidget: Text.rich(
-        TextSpan(
-          children: [
-            TextSpan(text: S.current.mystic_code, style: const TextStyle(fontWeight: FontWeight.bold)),
-            SharedBuilder.textButtonSpan(
-              context: context,
-              text: ' ${S.current.disable} ',
-              style: TextStyle(color: Theme.of(context).colorScheme.error),
-              onTap: () {
-                setState(() {
-                  options.formation.mysticCodeData.level = 0;
-                  options.formation.mysticCodeData.mysticCode = null;
-                });
-              },
-            )
-          ],
-        ),
+        thickness: 2,
+        padding: const EdgeInsets.only(top: 8),
       ),
-      thickness: 2,
-      padding: const EdgeInsets.only(top: 8),
-    ));
+    );
     children.add(buildMysticCode());
     children.add(header(S.current.battle_misc_config));
     children.add(buildMisc());
@@ -201,18 +201,19 @@ class _SimulationPreviewState extends State<SimulationPreview> {
       ),
       body: Column(
         children: [
-          Expanded(child: LayoutBuilder(builder: (context, constraints) {
-            return ListView(
-              padding: EdgeInsets.symmetric(horizontal: max(0, constraints.maxWidth - 640) / 2),
-              children: children,
-            );
-          })),
+          Expanded(
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                return ListView(
+                  padding: EdgeInsets.symmetric(horizontal: max(0, constraints.maxWidth - 640) / 2),
+                  children: children,
+                );
+              },
+            ),
+          ),
           kDefaultDivider,
           SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-              child: buttonBar(),
-            ),
+            child: Padding(padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16), child: buttonBar()),
           ),
         ],
       ),
@@ -230,17 +231,15 @@ class _SimulationPreviewState extends State<SimulationPreview> {
           }
           BattleQuestInfo? questInfo;
           if (_questPhase != null && _questPhase!.id > 0) {
-            questInfo = BattleQuestInfo.quest(
-              _questPhase!,
-              region: questRegion,
-            );
+            questInfo = BattleQuestInfo.quest(_questPhase!, region: questRegion);
           }
-          final shareUri = BattleShareData(
-            appBuild: AppInfo.buildNumber,
-            quest: questInfo,
-            options: options.toShareData(),
-            formation: settings.curTeam.formation,
-          ).toUriV2();
+          final shareUri =
+              BattleShareData(
+                appBuild: AppInfo.buildNumber,
+                quest: questInfo,
+                options: options.toShareData(),
+                formation: settings.curTeam.formation,
+              ).toUriV2();
           String shareString = shareUri.toString();
           Clipboard.setData(ClipboardData(text: shareString));
           if (shareString.length > 200) {
@@ -283,7 +282,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
           ).showDialog(context);
         },
         child: const Text('Laplace Team ID'),
-      )
+      ),
     ];
 
     return children;
@@ -327,18 +326,16 @@ class _SimulationPreviewState extends State<SimulationPreview> {
             ListTile(
               dense: true,
               title: Text('② ${S.current.battle_quest_from} ${S.current.event}/${S.current.main_story}'),
-              subtitle: Text.rich(TextSpan(
-                text: '${S.current.event}→${S.current.war}→${S.current.quest}→',
-                children: [
-                  CenterWidgetSpan(
-                    child: Icon(
-                      Icons.calculate,
-                      size: 14,
-                      color: Theme.of(context).colorScheme.primary,
+              subtitle: Text.rich(
+                TextSpan(
+                  text: '${S.current.event}→${S.current.war}→${S.current.quest}→',
+                  children: [
+                    CenterWidgetSpan(
+                      child: Icon(Icons.calculate, size: 14, color: Theme.of(context).colorScheme.primary),
                     ),
-                  )
-                ],
-              )),
+                  ],
+                ),
+              ),
               trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
               onTap: () {
                 QuestPhaseWidget.addPhaseSelectCallback(_questSelectCallback);
@@ -403,7 +400,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
                     },
                     child: Text(S.current.atlas_load),
                   ),
-                  ChaldeaUrl.laplaceHelpBtn('faq#atlas-db-url')
+                  ChaldeaUrl.laplaceHelpBtn('faq#atlas-db-url'),
                 ],
               ),
               kIndentDivider,
@@ -414,7 +411,10 @@ class _SimulationPreviewState extends State<SimulationPreview> {
                 onTap: () async {
                   try {
                     final result = await FilePickerU.pickFiles(
-                        type: FileType.custom, allowedExtensions: ['json'], clearCache: true);
+                      type: FileType.custom,
+                      allowedExtensions: ['json'],
+                      clearCache: true,
+                    );
                     final bytes = result?.files.firstOrNull?.bytes;
                     if (bytes == null) return;
                     final phaseData = QuestPhase.fromJson(Map.from(jsonDecode(utf8.decode(bytes))));
@@ -453,50 +453,54 @@ class _SimulationPreviewState extends State<SimulationPreview> {
           children: [
             TextButton(
               onPressed: () {
-                router.pushPage(QuestEditPage(
-                  quest: questPhase,
-                  onComplete: (q) {
-                    q.id = -q.id.abs();
-                    questPhase = q;
-                    if (mounted) setState(() {});
-                  },
-                ));
+                router.pushPage(
+                  QuestEditPage(
+                    quest: questPhase,
+                    onComplete: (q) {
+                      q.id = -q.id.abs();
+                      questPhase = q;
+                      if (mounted) setState(() {});
+                    },
+                  ),
+                );
               },
               style: kTextButtonDenseStyle,
               child: Text(S.current.general_custom),
             ),
             TextButton(
-              onPressed: questPhase == null
-                  ? null
-                  : () {
-                      QuestPhaseWidget.addPhaseSelectCallback(_questSelectCallback);
-                      router.push(
-                        url: Routes.questI(questPhase!.id),
-                        child: QuestDetailPage.phase(questPhase: questPhase!),
-                        detail: true,
-                      );
-                    },
+              onPressed:
+                  questPhase == null
+                      ? null
+                      : () {
+                        QuestPhaseWidget.addPhaseSelectCallback(_questSelectCallback);
+                        router.push(
+                          url: Routes.questI(questPhase!.id),
+                          child: QuestDetailPage.phase(questPhase: questPhase!),
+                          detail: true,
+                        );
+                      },
               style: kTextButtonDenseStyle,
               child: Text(S.current.details),
             ),
             TextButton(
-              onPressed: questPhase == null
-                  ? null
-                  : () async {
-                      try {
-                        final text = const JsonEncoder.withIndent('  ').convert(questPhase);
-                        await FilePickerU.saveFile(
-                          dialogContext: context,
-                          data: utf8.encode(text),
-                          filename:
-                              "quest-${questPhase!.id}-${questPhase!.phase}-${DateTime.now().toSafeFileName()}.json",
-                        );
-                      } catch (e, s) {
-                        EasyLoading.showError(e.toString());
-                        logger.e('dump quest phase json failed', e, s);
-                        return;
-                      }
-                    },
+              onPressed:
+                  questPhase == null
+                      ? null
+                      : () async {
+                        try {
+                          final text = const JsonEncoder.withIndent('  ').convert(questPhase);
+                          await FilePickerU.saveFile(
+                            dialogContext: context,
+                            data: utf8.encode(text),
+                            filename:
+                                "quest-${questPhase!.id}-${questPhase!.phase}-${DateTime.now().toSafeFileName()}.json",
+                          );
+                        } catch (e, s) {
+                          EasyLoading.showError(e.toString());
+                          logger.e('dump quest phase json failed', e, s);
+                          return;
+                        }
+                      },
               style: kTextButtonDenseStyle,
               child: Text('${S.current.general_export} JSON'),
             ),
@@ -504,25 +508,24 @@ class _SimulationPreviewState extends State<SimulationPreview> {
         ),
         ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 540),
-          child: questPhase == null
-              ? Card(
-                  child: SizedBox(
-                    width: double.infinity,
-                    height: 400,
-                    child: Center(
-                      child: Text(S.current.battle_no_quest_phase),
+          child:
+              questPhase == null
+                  ? Card(
+                    child: SizedBox(
+                      width: double.infinity,
+                      height: 400,
+                      child: Center(child: Text(S.current.battle_no_quest_phase)),
                     ),
+                  )
+                  : QuestCard(
+                    key: Key('quest_phase_${questPhase.hashCode}'),
+                    region: questRegion,
+                    offline: false,
+                    quest: questPhase,
+                    displayPhases: {questPhase!.phase: questPhase?.enemyHashOrTotal},
+                    battleOnly: true,
+                    preferredPhases: [questPhase!],
                   ),
-                )
-              : QuestCard(
-                  key: Key('quest_phase_${questPhase.hashCode}'),
-                  region: questRegion,
-                  offline: false,
-                  quest: questPhase,
-                  displayPhases: {questPhase!.phase: questPhase?.enemyHashOrTotal},
-                  battleOnly: true,
-                  preferredPhases: [questPhase!],
-                ),
         ),
         if (questPhase != null && questPhase!.enemyHashes.length > 1) SFooter(S.current.laplace_enemy_multi_ver_hint),
       ],
@@ -543,9 +546,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
             DropdownMenuItem(
               value: null,
               child: Text.rich(
-                TextSpan(children: [
-                  TextSpan(text: "${Region.jp.localName}${jpTime.toDateString('')}"),
-                ]),
+                TextSpan(children: [TextSpan(text: "${Region.jp.localName}${jpTime.toDateString('')}")]),
                 textScaler: const TextScaler.linear(0.8),
               ),
             ),
@@ -553,13 +554,15 @@ class _SimulationPreviewState extends State<SimulationPreview> {
               DropdownMenuItem(
                 value: r,
                 child: Text.rich(
-                  TextSpan(children: [
-                    TextSpan(
-                      text: '${S.current.strength_status}:',
-                      style: TextStyle(fontSize: 15, color: Theme.of(context).textTheme.bodySmall?.color),
-                    ),
-                    TextSpan(text: r.localName),
-                  ]),
+                  TextSpan(
+                    children: [
+                      TextSpan(
+                        text: '${S.current.strength_status}:',
+                        style: TextStyle(fontSize: 15, color: Theme.of(context).textTheme.bodySmall?.color),
+                      ),
+                      TextSpan(text: r.localName),
+                    ],
+                  ),
                   textScaler: const TextScaler.linear(0.9),
                 ),
               ),
@@ -598,16 +601,18 @@ class _SimulationPreviewState extends State<SimulationPreview> {
               DropdownMenuItem(
                 value: source,
                 child: Text.rich(
-                  TextSpan(children: [
-                    TextSpan(
-                      text: '${S.current.player_data}:',
-                      style: TextStyle(fontSize: 15, color: Theme.of(context).textTheme.bodySmall?.color),
-                    ),
-                    TextSpan(text: source.shownName),
-                  ]),
+                  TextSpan(
+                    children: [
+                      TextSpan(
+                        text: '${S.current.player_data}:',
+                        style: TextStyle(fontSize: 15, color: Theme.of(context).textTheme.bodySmall?.color),
+                      ),
+                      TextSpan(text: source.shownName),
+                    ],
+                  ),
                   textScaler: const TextScaler.linear(0.9),
                 ),
-              )
+              ),
           ],
           onChanged: (v) {
             setState(() {
@@ -636,12 +641,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
             children: List.generate(3, (index) {
               final skill = mcData.mysticCode?.skills.getOrNull(row * 3 + index);
               if (skill != null && enabled) {
-                return db.getIconImage(
-                  skill.icon,
-                  width: 24,
-                  aspectRatio: 1,
-                  padding: const EdgeInsets.all(1),
-                );
+                return db.getIconImage(skill.icon, width: 24, aspectRatio: 1, padding: const EdgeInsets.all(1));
               } else {
                 return db.getIconImage(
                   Atlas.common.emptySkillIcon,
@@ -769,10 +769,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
       ...buildEnemyRateUp(),
     ];
 
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: children,
-    );
+    return Column(mainAxisSize: MainAxisSize.min, children: children);
   }
 
   List<Widget> buildPointBuffs() {
@@ -804,59 +801,62 @@ class _SimulationPreviewState extends State<SimulationPreview> {
       String? icon = groupDetail?.icon;
       icon ??= buffs.firstOrNull?.icon;
 
-      rows.add(ListTile(
-        dense: true,
-        leading: icon == null ? null : db.getIconImage(icon, width: 24, aspectRatio: 1),
-        minLeadingWidth: 24,
-        title: Text(Transl.itemNames(groupDetail?.name ?? S.current.event_point).l),
-        trailing: DropdownButton<EventPointBuff?>(
-          isDense: true,
-          value: options.pointBuffs[groupId],
-          hint: Text(S.current.event_bonus, textScaler: const TextScaler.linear(0.8)),
-          items: [
-            DropdownMenuItem(
-              value: null,
-              child: Text(
-                S.current.disable,
-                textScaler: const TextScaler.linear(0.8),
-              ),
-            ),
-            ...buffs.map((buff) {
-              String bonus;
-              if (buff.value == 0 && buff.lv != 0) {
-                bonus = 'Lv.${buff.lv}';
-              } else {
-                bonus = '+${buff.value.format(base: 10, percent: true)}';
-              }
-              return DropdownMenuItem(
-                value: buff,
-                child: Text.rich(
-                  TextSpan(children: [
-                    if (buff.skillIcon != null)
-                      CenterWidgetSpan(
-                        child: db.getIconImage(buff.skillIcon,
-                            width: 18, height: 18, padding: const EdgeInsetsDirectional.only(end: 4)),
-                      ),
-                    TextSpan(text: '$bonus(${buff.eventPoint})'),
-                  ]),
-                  textScaler: const TextScaler.linear(0.8),
-                ),
-              );
-            })
-          ],
-          onChanged: options.disableEvent
-              ? null
-              : (v) {
-                  setState(() {
-                    if (v == null) {
-                      options.pointBuffs.remove(groupId);
-                    } else {
-                      options.pointBuffs[groupId] = v;
-                    }
-                  });
-                },
+      rows.add(
+        ListTile(
+          dense: true,
+          leading: icon == null ? null : db.getIconImage(icon, width: 24, aspectRatio: 1),
+          minLeadingWidth: 24,
+          title: Text(Transl.itemNames(groupDetail?.name ?? S.current.event_point).l),
+          trailing: DropdownButton<EventPointBuff?>(
+            isDense: true,
+            value: options.pointBuffs[groupId],
+            hint: Text(S.current.event_bonus, textScaler: const TextScaler.linear(0.8)),
+            items: [
+              DropdownMenuItem(value: null, child: Text(S.current.disable, textScaler: const TextScaler.linear(0.8))),
+              ...buffs.map((buff) {
+                String bonus;
+                if (buff.value == 0 && buff.lv != 0) {
+                  bonus = 'Lv.${buff.lv}';
+                } else {
+                  bonus = '+${buff.value.format(base: 10, percent: true)}';
+                }
+                return DropdownMenuItem(
+                  value: buff,
+                  child: Text.rich(
+                    TextSpan(
+                      children: [
+                        if (buff.skillIcon != null)
+                          CenterWidgetSpan(
+                            child: db.getIconImage(
+                              buff.skillIcon,
+                              width: 18,
+                              height: 18,
+                              padding: const EdgeInsetsDirectional.only(end: 4),
+                            ),
+                          ),
+                        TextSpan(text: '$bonus(${buff.eventPoint})'),
+                      ],
+                    ),
+                    textScaler: const TextScaler.linear(0.8),
+                  ),
+                );
+              }),
+            ],
+            onChanged:
+                options.disableEvent
+                    ? null
+                    : (v) {
+                      setState(() {
+                        if (v == null) {
+                          options.pointBuffs.remove(groupId);
+                        } else {
+                          options.pointBuffs[groupId] = v;
+                        }
+                      });
+                    },
+          ),
         ),
-      ));
+      );
     }
     if (rows.isNotEmpty) {
       rows.add(kIndentDivider);
@@ -884,19 +884,22 @@ class _SimulationPreviewState extends State<SimulationPreview> {
       }
     }
     for (final indiv in enemyIndivs) {
-      rows.add(SwitchListTile(
-        dense: true,
-        title: Text(Transl.trait(indiv).l),
-        subtitle: Text('${Transl.funcType(FuncType.enemyEncountCopyRateUp).l}: 100%'),
-        value: options.enemyRateUp.contains(indiv),
-        onChanged: options.disableEvent
-            ? null
-            : (v) {
-                setState(() {
-                  options.enemyRateUp.toggle(indiv);
-                });
-              },
-      ));
+      rows.add(
+        SwitchListTile(
+          dense: true,
+          title: Text(Transl.trait(indiv).l),
+          subtitle: Text('${Transl.funcType(FuncType.enemyEncountCopyRateUp).l}: 100%'),
+          value: options.enemyRateUp.contains(indiv),
+          onChanged:
+              options.disableEvent
+                  ? null
+                  : (v) {
+                    setState(() {
+                      options.enemyRateUp.toggle(indiv);
+                    });
+                  },
+        ),
+      );
     }
     options.enemyRateUp.removeWhere((e) => !enemyIndivs.contains(e));
     return rows;
@@ -913,12 +916,13 @@ class _SimulationPreviewState extends State<SimulationPreview> {
           child: Text(' COST: ${options.formation.totalCost} ', textAlign: TextAlign.center),
         ),
         FilledButton.icon(
-          onPressed: errorMsg != null
-              ? null
-              : () {
-                  QuestPhaseWidget.removePhaseSelectCallback(_questSelectCallback);
-                  _startSimulation();
-                },
+          onPressed:
+              errorMsg != null
+                  ? null
+                  : () {
+                    QuestPhaseWidget.removePhaseSelectCallback(_questSelectCallback);
+                    _startSimulation();
+                  },
           icon: const Icon(Icons.play_arrow_rounded),
           label: Text(S.current.start),
         ),
@@ -1128,7 +1132,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
                   onPressed: () {
                     Navigator.pop(context, wave);
                   },
-                )
+                ),
             ],
           );
         },
@@ -1175,9 +1179,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text([
-                  '${S.current.team} ${replayTeamData.id} @${replayTeamData.username}',
-                ].join('\n')),
+                Text(['${S.current.team} ${replayTeamData.id} @${replayTeamData.username}'].join('\n')),
                 IgnorePointer(child: FormationCard(formation: replayTeamData.decoded!.formation)),
               ],
             ),
@@ -1304,5 +1306,5 @@ const _k7KnigntsTraits = [
   Trait.classRider,
   Trait.classCaster,
   Trait.classAssassin,
-  Trait.classBerserker
+  Trait.classBerserker,
 ];

@@ -71,11 +71,13 @@ class _FeedbackPageState extends State<FeedbackPage> {
     Widget child = Scaffold(
       appBar: AppBar(
         title: Text(S.current.about_feedback),
-        leading: BackButton(onPressed: () async {
-          if (await _alertPopPage()) {
-            if (context.mounted) Navigator.of(context).pop();
-          }
-        }),
+        leading: BackButton(
+          onPressed: () async {
+            if (await _alertPopPage()) {
+              if (context.mounted) Navigator.of(context).pop();
+            }
+          },
+        ),
       ),
       body: ListView(
         padding: const EdgeInsets.symmetric(vertical: 8),
@@ -138,11 +140,15 @@ class _FeedbackPageState extends State<FeedbackPage> {
                 subtitle: const Text(kSupportTeamEmailAddress),
                 onTap: () async {
                   String subject = '$kAppName v${AppInfo.fullVersion} Feedback';
-                  String body = "OS: ${PlatformU.operatingSystem}"
+                  String body =
+                      "OS: ${PlatformU.operatingSystem}"
                       " ${PlatformU.operatingSystemVersion}\n\n"
                       "Please attach logs(${db.paths.convertIosPath(db.paths.logDir)})";
-                  final uri =
-                      Uri(scheme: 'mailto', path: kSupportTeamEmailAddress, query: 'subject=$subject&body=$body');
+                  final uri = Uri(
+                    scheme: 'mailto',
+                    path: kSupportTeamEmailAddress,
+                    query: 'subject=$subject&body=$body',
+                  );
                   print(uri);
                   if (await canLaunch(uri.toString())) {
                     launch(uri.toString());
@@ -218,11 +224,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
               ListTile(
                 title: Text(S.current.attachment),
                 subtitle: Text(S.current.feedback_add_attachments),
-                trailing: IconButton(
-                  icon: const Icon(Icons.add),
-                  tooltip: S.current.add,
-                  onPressed: _addAttachments,
-                ),
+                trailing: IconButton(icon: const Icon(Icons.add), tooltip: S.current.add, onPressed: _addAttachments),
               ),
               for (String fn in attachFiles.keys)
                 ListTile(
@@ -241,10 +243,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
                 width: double.infinity,
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                  child: ElevatedButton(
-                    onPressed: sendEmail,
-                    child: Text(S.current.feedback_send),
-                  ),
+                  child: ElevatedButton(onPressed: sendEmail, child: Text(S.current.feedback_send)),
                 ),
               ),
             ],
@@ -299,11 +298,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
     }
     try {
       final handler = ServerFeedbackHandler(
-        attachments: [
-          db.paths.crashLog,
-          db.paths.appLog,
-          db.paths.userDataPath,
-        ],
+        attachments: [db.paths.crashLog, db.paths.appLog, db.paths.userDataPath],
         emailTitle: '[Feedback] $subject',
         senderName: 'Chaldea Feedback',
         // screenshotController: db.runtimeData.screenshotController,

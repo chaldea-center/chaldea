@@ -27,11 +27,13 @@ class InstantDeath {
         target.hp = 0;
         target.lastHitBy = activator;
         target.lastHitByFunc = func;
-        target.actionHistory.add(BattleServantActionHistory(
-          actType: BattleServantActionHistoryType.instantDeath,
-          targetUniqueId: activator?.uniqueId ?? -1,
-          isOpponent: (activator?.isPlayer ?? defaultToPlayer) != target.isPlayer,
-        ));
+        target.actionHistory.add(
+          BattleServantActionHistory(
+            actType: BattleServantActionHistoryType.instantDeath,
+            targetUniqueId: activator?.uniqueId ?? -1,
+            isOpponent: (activator?.isPlayer ?? defaultToPlayer) != target.isPlayer,
+          ),
+        );
 
         if (!isForceInstantDeath && target != activator) {
           target.procAccumulationDamage(previousHp);
@@ -59,8 +61,9 @@ class InstantDeath {
     if (params.isForce) {
       params.success = true;
       params.resultString = S.current.success;
-      battleData.battleLogger
-          .debug('${S.current.effect_target}: ${target.lBattleName} - ${S.current.force_instant_death}');
+      battleData.battleLogger.debug(
+        '${S.current.effect_target}: ${target.lBattleName} - ${S.current.force_instant_death}',
+      );
       return true;
     }
 
@@ -72,10 +75,16 @@ class InstantDeath {
       return false;
     }
 
-    final resistInstantDeath =
-        await target.getBuffValue(battleData, BuffAction.resistInstantdeath, opponent: activator);
-    final nonResistInstantDeath =
-        await target.getBuffValue(battleData, BuffAction.nonresistInstantdeath, opponent: activator);
+    final resistInstantDeath = await target.getBuffValue(
+      battleData,
+      BuffAction.resistInstantdeath,
+      opponent: activator,
+    );
+    final nonResistInstantDeath = await target.getBuffValue(
+      battleData,
+      BuffAction.nonresistInstantdeath,
+      opponent: activator,
+    );
     final grantInstantDeath =
         await activator?.getBuffValue(battleData, BuffAction.grantInstantdeath, opponent: target, card: card) ?? 0;
 
@@ -84,9 +93,10 @@ class InstantDeath {
     final buffRate = grantInstantDeath - resistRate;
     final activationRate = (functionRate * toModifier(target.deathRate) * toModifier(1000 + buffRate)).toInt();
     final success = await battleData.canActivateFunction(activationRate);
-    final resultsString = success
-        ? S.current.success
-        : resistRate > 0
+    final resultsString =
+        success
+            ? S.current.success
+            : resistRate > 0
             ? kBattleFuncGUARD
             : kBattleFuncMiss;
 
@@ -97,9 +107,11 @@ class InstantDeath {
       ..activateRate = activationRate
       ..success = success
       ..resultString = resultsString;
-    battleData.battleLogger.debug('${S.current.effect_target}: ${target.lBattleName} - '
-        '$resultsString'
-        '${battleData.options.tailoredExecution ? '' : ' [$activationRate vs ${battleData.options.threshold}]'}');
+    battleData.battleLogger.debug(
+      '${S.current.effect_target}: ${target.lBattleName} - '
+      '$resultsString'
+      '${battleData.options.tailoredExecution ? '' : ' [$activationRate vs ${battleData.options.threshold}]'}',
+    );
 
     return success;
   }

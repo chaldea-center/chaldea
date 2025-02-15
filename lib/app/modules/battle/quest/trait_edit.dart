@@ -23,9 +23,7 @@ class _TraitEditPageState extends State<TraitEditPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('[${S.current.edit}] ${S.current.trait}'),
-      ),
+      appBar: AppBar(title: Text('[${S.current.edit}] ${S.current.trait}')),
       body: Column(
         children: [
           Expanded(
@@ -42,32 +40,35 @@ class _TraitEditPageState extends State<TraitEditPage> {
               children: [
                 FilledButton(
                   onPressed: () {
-                    router.pushPage(TraitListPage(
-                      onSelected: (value) {
-                        if (value != 0) {
-                          hasEdit = true;
-                          traits.removeWhere((e) => e.id == value);
-                          traits.add(NiceTrait(id: value));
-                          traits.sort2((e) => e.id);
-                        }
-                        if (mounted) setState(() {});
-                      },
-                    ));
+                    router.pushPage(
+                      TraitListPage(
+                        onSelected: (value) {
+                          if (value != 0) {
+                            hasEdit = true;
+                            traits.removeWhere((e) => e.id == value);
+                            traits.add(NiceTrait(id: value));
+                            traits.sort2((e) => e.id);
+                          }
+                          if (mounted) setState(() {});
+                        },
+                      ),
+                    );
                   },
                   child: Text(S.current.add),
                 ),
                 FilledButton(
-                  onPressed: hasEdit
-                      ? () {
-                          widget.onChanged(traits);
-                          Navigator.pop(context);
-                        }
-                      : null,
+                  onPressed:
+                      hasEdit
+                          ? () {
+                            widget.onChanged(traits);
+                            Navigator.pop(context);
+                          }
+                          : null,
                   child: Text(S.current.confirm),
                 ),
               ],
             ),
-          )
+          ),
         ],
       ),
     );

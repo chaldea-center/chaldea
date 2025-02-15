@@ -23,11 +23,7 @@ class EffectFilterUtil {
     return false;
   }
 
-  static const reduceHpTraits = [
-    Trait.buffPoison,
-    Trait.buffCurse,
-    Trait.buffBurn,
-  ];
+  static const reduceHpTraits = [Trait.buffPoison, Trait.buffCurse, Trait.buffBurn];
   static FilterGroup buildTraitFilter(
     BuildContext context,
     FilterGroupData<int> data,
@@ -52,19 +48,20 @@ class EffectFilterUtil {
     options.sort2((e) => e.value ~/ 1000 == 4 ? e.value - 5000 : e.value);
     return FilterGroup<int>(
       title: Text.rich(
-        TextSpan(text: S.current.related_traits, children: const [
-          TextSpan(
-            text: '1*',
-            style: TextStyle(fontFeatures: [FontFeature.enable('sups')]),
-          )
-        ]),
+        TextSpan(
+          text: S.current.related_traits,
+          children: const [
+            TextSpan(text: '1*', style: TextStyle(fontFeatures: [FontFeature.enable('sups')])),
+          ],
+        ),
       ),
       options: options.map((e) => e.value).toList(),
       values: data,
       showMatchAll: false,
       showInvert: false,
       optionBuilder: (v) {
-        String text = {
+        String text =
+            {
               Trait.cardQuick.value: 'Quick',
               Trait.cardArts.value: 'Arts',
               Trait.cardBuster.value: 'Buster',

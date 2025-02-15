@@ -24,15 +24,7 @@ class ItemDetailPage extends StatefulWidget {
   _ItemDetailPageState createState() => _ItemDetailPageState();
 }
 
-enum _TabType {
-  demand,
-  consumed,
-  free,
-  event,
-  eventFree,
-  interlude,
-  info,
-}
+enum _TabType { demand, consumed, free, event, eventFree, interlude, info }
 
 const _kEventTabs = [_TabType.event];
 const _kStatTabs = [_TabType.demand, _TabType.consumed, _TabType.free, _TabType.interlude];
@@ -41,11 +33,7 @@ class _TabInfo {
   final Widget header;
   final Widget view;
   final List<Widget> actions;
-  _TabInfo({
-    required this.header,
-    required this.view,
-    required this.actions,
-  });
+  _TabInfo({required this.header, required this.view, required this.actions});
 }
 
 class _ItemDetailPageState extends State<ItemDetailPage> with SingleTickerProviderStateMixin {
@@ -93,7 +81,7 @@ class _ItemDetailPageState extends State<ItemDetailPage> with SingleTickerProvid
           Items.stellarSandId,
           Items.torchNovaId,
           Items.torchMorningStarId,
-          Items.torchPolarStarId
+          Items.torchPolarStarId,
         ].contains(widget.itemId)) {
           _shownTabs.addAll(_kStatTabs);
         } else if (<int>[Items.stoneId].contains(widget.itemId)) {
@@ -117,11 +105,7 @@ class _ItemDetailPageState extends State<ItemDetailPage> with SingleTickerProvid
     }
     if (!_shownTabs.contains(_TabType.info)) _shownTabs.add(_TabType.info);
 
-    _tabController = TabController(
-      initialIndex: widget.initialTabIndex,
-      length: _shownTabs.length,
-      vsync: this,
-    );
+    _tabController = TabController(initialIndex: widget.initialTabIndex, length: _shownTabs.length, vsync: this);
     _tabController.addListener(() {
       if (!_tabController.indexIsChanging) setState(() {});
     });
@@ -139,44 +123,43 @@ class _ItemDetailPageState extends State<ItemDetailPage> with SingleTickerProvid
       for (final tabType in _shownTabs)
         switch (tabType) {
           _TabType.demand => _TabInfo(
-              header: Tab(text: S.current.demands),
-              view: db.onUserData((context, _) => ItemCostSvtDetailTab(itemId: widget.itemId, matType: null)),
-              actions: [viewTypeButton, sortButton, popupMenu],
-            ),
+            header: Tab(text: S.current.demands),
+            view: db.onUserData((context, _) => ItemCostSvtDetailTab(itemId: widget.itemId, matType: null)),
+            actions: [viewTypeButton, sortButton, popupMenu],
+          ),
           _TabType.consumed => _TabInfo(
-              header: Tab(text: S.current.consumed),
-              view: db.onUserData((context, _) => ItemCostSvtDetailTab(
-                    itemId: widget.itemId,
-                    matType: SvtMatCostDetailType.consumed,
-                  )),
-              actions: [viewTypeButton, sortButton, popupMenu],
+            header: Tab(text: S.current.consumed),
+            view: db.onUserData(
+              (context, _) => ItemCostSvtDetailTab(itemId: widget.itemId, matType: SvtMatCostDetailType.consumed),
             ),
+            actions: [viewTypeButton, sortButton, popupMenu],
+          ),
           _TabType.free => _TabInfo(
-              header: Tab(text: S.current.free_quest),
-              view: ItemObtainFreeTab(itemId: widget.itemId),
-              actions: [popupMenu],
-            ),
+            header: Tab(text: S.current.free_quest),
+            view: ItemObtainFreeTab(itemId: widget.itemId),
+            actions: [popupMenu],
+          ),
           _TabType.event => _TabInfo(
-              header: Tab(text: S.current.event),
-              view: ItemObtainEventTab(itemId: widget.itemId, showOutdated: showOutdated),
-              actions: [filterOutdatedButton, popupMenu],
-            ),
+            header: Tab(text: S.current.event),
+            view: ItemObtainEventTab(itemId: widget.itemId, showOutdated: showOutdated),
+            actions: [filterOutdatedButton, popupMenu],
+          ),
           _TabType.eventFree => _TabInfo(
-              header: Tab(text: S.current.event_free_quest),
-              view: ItemObtainEventFreeTab(itemId: widget.itemId, showOutdated: showOutdated),
-              actions: [filterOutdatedButton, popupMenu],
-            ),
+            header: Tab(text: S.current.event_free_quest),
+            view: ItemObtainEventFreeTab(itemId: widget.itemId, showOutdated: showOutdated),
+            actions: [filterOutdatedButton, popupMenu],
+          ),
           _TabType.interlude => _TabInfo(
-              header: Tab(text: S.current.interlude_and_rankup),
-              view: ItemObtainInterludeTab(itemId: widget.itemId),
-              actions: [sortButton, popupMenu],
-            ),
+            header: Tab(text: S.current.interlude_and_rankup),
+            view: ItemObtainInterludeTab(itemId: widget.itemId),
+            actions: [sortButton, popupMenu],
+          ),
           _TabType.info => _TabInfo(
-              header: Tab(text: S.current.card_info),
-              view: ItemInfoTab(itemId: widget.itemId),
-              actions: [popupMenu],
-            )
-        }
+            header: Tab(text: S.current.card_info),
+            view: ItemInfoTab(itemId: widget.itemId),
+            actions: [popupMenu],
+          ),
+        },
     ];
 
     String? icon = db.gameData.items[widget.itemId]?.icon ?? db.gameData.entities[widget.itemId]?.borderedIcon;
@@ -193,21 +176,22 @@ class _ItemDetailPageState extends State<ItemDetailPage> with SingleTickerProvid
         centerTitle: false,
         titleSpacing: 0,
         actions: tabs.getOrNull(curTab)?.actions ?? [],
-        bottom: tabs.length < 2
-            ? null
-            : FixedHeight.tabBar(TabBar(
-                tabAlignment: TabAlignment.center,
-                controller: _tabController,
-                isScrollable: true,
-                tabs: tabs.map((e) => e.header).toList(),
-              )),
+        bottom:
+            tabs.length < 2
+                ? null
+                : FixedHeight.tabBar(
+                  TabBar(
+                    tabAlignment: TabAlignment.center,
+                    controller: _tabController,
+                    isScrollable: true,
+                    tabs: tabs.map((e) => e.header).toList(),
+                  ),
+                ),
       ),
-      body: tabs.length == 1
-          ? tabs.first.view
-          : TabBarView(
-              controller: _tabController,
-              children: tabs.map((e) => e.view).toList(),
-            ),
+      body:
+          tabs.length == 1
+              ? tabs.first.view
+              : TabBarView(controller: _tabController, children: tabs.map((e) => e.view).toList()),
     );
   }
 
@@ -238,11 +222,8 @@ class _ItemDetailPageState extends State<ItemDetailPage> with SingleTickerProvid
             },
           ),
           ...SharedBuilder.websitesPopupMenuItems(
-            atlas: Atlas.dbUrl(
-              Items.specialSvtMat.contains(widget.itemId) ? 'servant' : 'item',
-              widget.itemId,
-            ),
-          )
+            atlas: Atlas.dbUrl(Items.specialSvtMat.contains(widget.itemId) ? 'servant' : 'item', widget.itemId),
+          ),
         ];
       },
     );
@@ -254,8 +235,10 @@ class _ItemDetailPageState extends State<ItemDetailPage> with SingleTickerProvid
       tooltip: S.current.filter_shown_type,
       onPressed: () {
         setState(() {
-          db.settings.display.itemDetailViewType =
-              EnumUtil.next(ItemDetailViewType.values, db.settings.display.itemDetailViewType);
+          db.settings.display.itemDetailViewType = EnumUtil.next(
+            ItemDetailViewType.values,
+            db.settings.display.itemDetailViewType,
+          );
           db.saveSettings();
         });
       },
@@ -268,8 +251,10 @@ class _ItemDetailPageState extends State<ItemDetailPage> with SingleTickerProvid
       tooltip: _getSortTypeText(db.settings.display.itemDetailSvtSort),
       onPressed: () {
         setState(() {
-          db.settings.display.itemDetailSvtSort =
-              EnumUtil.next(ItemDetailSvtSort.values, db.settings.display.itemDetailSvtSort);
+          db.settings.display.itemDetailSvtSort = EnumUtil.next(
+            ItemDetailSvtSort.values,
+            db.settings.display.itemDetailSvtSort,
+          );
           db.saveSettings();
           EasyLoading.showToast(_getSortTypeText(db.settings.display.itemDetailSvtSort));
         });
@@ -278,11 +263,7 @@ class _ItemDetailPageState extends State<ItemDetailPage> with SingleTickerProvid
   }
 
   String _getSortTypeText(ItemDetailSvtSort type) {
-    return '${S.current.filter_sort}-${[
-      S.current.filter_sort_number,
-      S.current.svt_class,
-      S.current.rarity
-    ][type.index]}';
+    return '${S.current.filter_sort}-${[S.current.filter_sort_number, S.current.svt_class, S.current.rarity][type.index]}';
   }
 
   Widget get filterOutdatedButton {

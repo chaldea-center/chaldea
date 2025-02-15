@@ -108,7 +108,7 @@ class _DamageValueAdjustorState extends State<DamageValueAdjustor> {
             Navigator.of(context).pop(damage);
           },
           child: Text(S.current.confirm),
-        )
+        ),
       ],
     );
   }

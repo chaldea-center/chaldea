@@ -38,36 +38,32 @@ class _CustomMissionPageState extends State<CustomMissionPage> with SingleTicker
     return Scaffold(
       appBar: AppBar(
         title: Text(S.current.custom_mission),
-        bottom: FixedHeight.tabBar(TabBar(
-          controller: _tabController,
-          tabs: [
-            Tab(text: S.current.mission),
-            Tab(text: S.current.master_mission_solution),
-            Tab(text: S.current.master_mission_related_quest)
-          ],
-        )),
-        actions: [
-          ChaldeaUrl.docsHelpBtn('master_mission'),
-        ],
+        bottom: FixedHeight.tabBar(
+          TabBar(
+            controller: _tabController,
+            tabs: [
+              Tab(text: S.current.mission),
+              Tab(text: S.current.master_mission_solution),
+              Tab(text: S.current.master_mission_related_quest),
+            ],
+          ),
+        ),
+        actions: [ChaldeaUrl.docsHelpBtn('master_mission')],
       ),
       body: InheritSelectionArea(
         child: TabBarView(
           controller: _tabController,
           children: [
             KeepAliveBuilder(
-              builder: (context) => MissionInputTab(
-                initMissions: widget.initMissions,
-                initWarId: widget.initWarId,
-                onSolved: _onSolved,
-              ),
+              builder:
+                  (context) => MissionInputTab(
+                    initMissions: widget.initMissions,
+                    initWarId: widget.initWarId,
+                    onSolved: _onSolved,
+                  ),
             ),
             KeepAliveBuilder(builder: (context) => MissionSolutionTab(solution: solution)),
-            KeepAliveBuilder(
-              builder: (context) => MissionSolutionTab(
-                solution: solution,
-                showResult: false,
-              ),
-            ),
+            KeepAliveBuilder(builder: (context) => MissionSolutionTab(solution: solution, showResult: false)),
           ],
         ),
       ),

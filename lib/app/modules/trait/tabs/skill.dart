@@ -43,19 +43,18 @@ class _TraitSkillTabState extends State<TraitSkillTab> {
         }
       }
       if (funcs.isNotEmpty) {
-        children.add(ListTile(
-          dense: true,
-          leading: skill.icon == null ? const SizedBox() : db.getIconImage(skill.icon, height: 28),
-          title: Text(skill.lName.l),
-          onTap: skill.routeTo,
-          subtitle: Text(funcs.map((e) => e.lPopupText.l).join('\n')),
-        ));
+        children.add(
+          ListTile(
+            dense: true,
+            leading: skill.icon == null ? const SizedBox() : db.getIconImage(skill.icon, height: 28),
+            title: Text(skill.lName.l),
+            onTap: skill.routeTo,
+            subtitle: Text(funcs.map((e) => e.lPopupText.l).join('\n')),
+          ),
+        );
       }
     }
 
-    return ListView.builder(
-      itemBuilder: (context, index) => children[index],
-      itemCount: children.length,
-    );
+    return ListView.builder(itemBuilder: (context, index) => children[index], itemCount: children.length);
   }
 }

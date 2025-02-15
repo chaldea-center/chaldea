@@ -27,23 +27,24 @@ class CustomTile extends StatelessWidget {
   static EdgeInsets defaultContentPadding = const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0);
   static EdgeInsets defaultTitlePadding = const EdgeInsets.symmetric(horizontal: 6.0);
 
-  const CustomTile(
-      {super.key,
-      this.leading,
-      this.title,
-      this.subtitle,
-      this.trailing,
-      this.trailingIcon,
-      this.contentPadding,
-      this.titlePadding,
-      this.constraints,
-      this.color,
-      this.alignment = CrossAxisAlignment.center,
-      this.enabled = true,
-      this.selected = false,
-      this.focusNode,
-      this.onTap,
-      this.onLongPress});
+  const CustomTile({
+    super.key,
+    this.leading,
+    this.title,
+    this.subtitle,
+    this.trailing,
+    this.trailingIcon,
+    this.contentPadding,
+    this.titlePadding,
+    this.constraints,
+    this.color,
+    this.alignment = CrossAxisAlignment.center,
+    this.enabled = true,
+    this.selected = false,
+    this.focusNode,
+    this.onTap,
+    this.onLongPress,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -62,39 +63,31 @@ class CustomTile extends StatelessWidget {
     }
 
     final TextStyle? titleStyle = _titleTextStyle(theme, tileTheme);
-    final Widget titleText = titleStyle == null
-        ? title ?? const SizedBox()
-        : AnimatedDefaultTextStyle(
-            style: titleStyle,
-            duration: kThemeChangeDuration,
-            child: title ?? const SizedBox(),
-          );
+    final Widget titleText =
+        titleStyle == null
+            ? title ?? const SizedBox()
+            : AnimatedDefaultTextStyle(
+              style: titleStyle,
+              duration: kThemeChangeDuration,
+              child: title ?? const SizedBox(),
+            );
 
     Widget? subtitleText;
     TextStyle? subtitleStyle;
     if (subtitle != null) {
       subtitleStyle = _subtitleTextStyle(theme, tileTheme);
-      subtitleText = subtitleStyle == null
-          ? subtitle!
-          : AnimatedDefaultTextStyle(
-              style: subtitleStyle,
-              duration: kThemeChangeDuration,
-              child: subtitle!,
-            );
+      subtitleText =
+          subtitleStyle == null
+              ? subtitle!
+              : AnimatedDefaultTextStyle(style: subtitleStyle, duration: kThemeChangeDuration, child: subtitle!);
     }
 
     List<Widget> trailingIcons = [];
     if (trailing != null) {
-      trailingIcons.add(IconTheme.merge(
-        data: iconThemeData!,
-        child: trailing!,
-      ));
+      trailingIcons.add(IconTheme.merge(data: iconThemeData!, child: trailing!));
     }
     if (trailingIcon != null) {
-      trailingIcons.add(IconTheme.merge(
-        data: iconThemeData!,
-        child: trailingIcon!,
-      ));
+      trailingIcons.add(IconTheme.merge(data: iconThemeData!, child: trailingIcon!));
     }
 
     final EdgeInsetsGeometry resolvedContentPadding =
@@ -106,15 +99,16 @@ class CustomTile extends StatelessWidget {
       Expanded(
         flex: 1,
         child: Padding(
-            padding: resolvedTitlePadding,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [titleText, if (subtitleText != null) subtitleText],
-            )),
+          padding: resolvedTitlePadding,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [titleText, if (subtitleText != null) subtitleText],
+          ),
+        ),
       ),
-      ...trailingIcons
+      ...trailingIcons,
     ];
     return InkWell(
       onTap: enabled ? onTap : null,
@@ -129,11 +123,7 @@ class CustomTile extends StatelessWidget {
           constraints: constraints,
           child: Padding(
             padding: resolvedContentPadding,
-            child: Row(
-              crossAxisAlignment: alignment,
-              mainAxisSize: MainAxisSize.max,
-              children: allElements,
-            ),
+            child: Row(crossAxisAlignment: alignment, mainAxisSize: MainAxisSize.max, children: allElements),
           ),
         ),
       ),

@@ -30,21 +30,9 @@ class SvtBondDetailPage extends StatefulWidget {
   _SvtBondDetailPageState createState() => _SvtBondDetailPageState();
 }
 
-enum _SvtSortType {
-  no,
-  cls,
-  rarity,
-  bondRank,
-  bondNext,
-  bondTotal,
-}
+enum _SvtSortType { no, cls, rarity, bondRank, bondNext, bondTotal }
 
-enum _CESortType {
-  no,
-  cls,
-  rarity,
-  time,
-}
+enum _CESortType { no, cls, rarity, time }
 
 class _SvtBondDetailPageState extends State<SvtBondDetailPage> with SingleTickerProviderStateMixin {
   late final _tabController = TabController(length: 2, vsync: this);
@@ -67,9 +55,7 @@ class _SvtBondDetailPageState extends State<SvtBondDetailPage> with SingleTicker
       if (mounted) setState(() {});
     });
 
-    userSvtCollections = {
-      for (final svt in widget.userSvtCollections) svt.svtId: svt,
-    };
+    userSvtCollections = {for (final svt in widget.userSvtCollections) svt.svtId: svt};
 
     final userCEs = <int, UserServantEntity>{};
     for (final userSvt in widget.userSvts) {
@@ -97,14 +83,15 @@ class _SvtBondDetailPageState extends State<SvtBondDetailPage> with SingleTicker
   void update() {
     final bondValue = svtFilter.bondValue.radioValue;
     svtFilter.bondValue.reset();
-    shownCollections = collections.where((e) {
-      if (bondValue != null && svtFilter.bondCompare.options.isNotEmpty) {
-        if (svtFilter.bondCompare.options.every((c) => !c.test(e.collection.friendshipRank, bondValue))) {
-          return false;
-        }
-      }
-      return ServantFilterPage.filter(svtFilter, e.svt);
-    }).toList();
+    shownCollections =
+        collections.where((e) {
+          if (bondValue != null && svtFilter.bondCompare.options.isNotEmpty) {
+            if (svtFilter.bondCompare.options.every((c) => !c.test(e.collection.friendshipRank, bondValue))) {
+              return false;
+            }
+          }
+          return ServantFilterPage.filter(svtFilter, e.svt);
+        }).toList();
     if (bondValue != null) svtFilter.bondValue.set(bondValue);
 
     switch (ceSortType) {
@@ -114,15 +101,21 @@ class _SvtBondDetailPageState extends State<SvtBondDetailPage> with SingleTicker
       case _CESortType.cls:
         bondCEs.sort((a, b) {
           return SvtFilterData.compare(
-              db.gameData.servantsById[a.ce.bondEquipOwner], db.gameData.servantsById[b.ce.bondEquipOwner],
-              keys: [SvtCompare.className, SvtCompare.rarity, SvtCompare.no], reversed: [false, true, false]);
+            db.gameData.servantsById[a.ce.bondEquipOwner],
+            db.gameData.servantsById[b.ce.bondEquipOwner],
+            keys: [SvtCompare.className, SvtCompare.rarity, SvtCompare.no],
+            reversed: [false, true, false],
+          );
         });
         break;
       case _CESortType.rarity:
         bondCEs.sort((a, b) {
           return SvtFilterData.compare(
-              db.gameData.servantsById[a.ce.bondEquipOwner], db.gameData.servantsById[b.ce.bondEquipOwner],
-              keys: [SvtCompare.rarity, SvtCompare.className, SvtCompare.no], reversed: [false, false, false]);
+            db.gameData.servantsById[a.ce.bondEquipOwner],
+            db.gameData.servantsById[b.ce.bondEquipOwner],
+            keys: [SvtCompare.rarity, SvtCompare.className, SvtCompare.no],
+            reversed: [false, false, false],
+          );
         });
         break;
       case _CESortType.time:
@@ -135,23 +128,33 @@ class _SvtBondDetailPageState extends State<SvtBondDetailPage> with SingleTicker
         break;
       case _SvtSortType.cls:
         shownCollections.sort((a, b) {
-          return SvtFilterData.compare(a.svt, b.svt,
-              keys: [SvtCompare.className, SvtCompare.rarity, SvtCompare.no], reversed: [false, true, false]);
+          return SvtFilterData.compare(
+            a.svt,
+            b.svt,
+            keys: [SvtCompare.className, SvtCompare.rarity, SvtCompare.no],
+            reversed: [false, true, false],
+          );
         });
         break;
       case _SvtSortType.rarity:
         shownCollections.sort((a, b) {
-          return SvtFilterData.compare(a.svt, b.svt,
-              keys: [SvtCompare.rarity, SvtCompare.className, SvtCompare.no], reversed: [false, false, false]);
+          return SvtFilterData.compare(
+            a.svt,
+            b.svt,
+            keys: [SvtCompare.rarity, SvtCompare.className, SvtCompare.no],
+            reversed: [false, false, false],
+          );
         });
         break;
       case _SvtSortType.bondRank:
-        shownCollections.sortByList((e) => <int>[
-              -e.collection.friendshipRank,
-              -e.collection.friendshipExceedCount,
-              _getBondNext(e.svt, e.collection),
-              e.svt.collectionNo,
-            ]);
+        shownCollections.sortByList(
+          (e) => <int>[
+            -e.collection.friendshipRank,
+            -e.collection.friendshipExceedCount,
+            _getBondNext(e.svt, e.collection),
+            e.svt.collectionNo,
+          ],
+        );
         break;
       case _SvtSortType.bondNext:
         shownCollections.sort2((e) => _getBondNext(e.svt, e.collection));
@@ -192,10 +195,11 @@ class _SvtBondDetailPageState extends State<SvtBondDetailPage> with SingleTicker
             },
             icon: const Icon(Icons.save_alt),
             tooltip: '${S.current.save_as} CSV',
-          )
+          ),
         ],
         bottom: FixedHeight.tabBar(
-            TabBar(controller: _tabController, tabs: [Tab(text: S.current.bond), Tab(text: S.current.bond_craft)])),
+          TabBar(controller: _tabController, tabs: [Tab(text: S.current.bond), Tab(text: S.current.bond_craft)]),
+        ),
       ),
       body: Column(
         children: [
@@ -211,22 +215,23 @@ class _SvtBondDetailPageState extends State<SvtBondDetailPage> with SingleTicker
       return GridView.extent(
         maxCrossAxisExtent: 60,
         childAspectRatio: 132 / 144,
-        children: bondCEs.map((entry) {
-          final (:ce, :userCe, :collection) = entry;
-          final t = DateTime.fromMillisecondsSinceEpoch((userCe?.createdAt ?? collection.updatedAt) * 1000)
-              .toDateString()
-              .substring(2);
-          String text;
-          if (userCe != null) {
-            text = ' $t ';
-          } else {
-            text = ' $t? ';
-          }
-          final svt = db.gameData.servantsById[ce.bondEquipOwner];
-          text += '\nLv.${userSvtCollections[ce.bondEquipOwner]?.friendshipRank} ';
-          return svt?.iconBuilder(context: context, onTap: ce.routeTo, text: text) ??
-              ce.iconBuilder(context: context, text: text);
-        }).toList(),
+        children:
+            bondCEs.map((entry) {
+              final (:ce, :userCe, :collection) = entry;
+              final t = DateTime.fromMillisecondsSinceEpoch(
+                (userCe?.createdAt ?? collection.updatedAt) * 1000,
+              ).toDateString().substring(2);
+              String text;
+              if (userCe != null) {
+                text = ' $t ';
+              } else {
+                text = ' $t? ';
+              }
+              final svt = db.gameData.servantsById[ce.bondEquipOwner];
+              text += '\nLv.${userSvtCollections[ce.bondEquipOwner]?.friendshipRank} ';
+              return svt?.iconBuilder(context: context, onTap: ce.routeTo, text: text) ??
+                  ce.iconBuilder(context: context, text: text);
+            }).toList(),
       );
     }
     return ListView.separated(
@@ -244,12 +249,12 @@ class _SvtBondDetailPageState extends State<SvtBondDetailPage> with SingleTicker
           dense: true,
           leading: ce.iconBuilder(context: context),
           title: Text.rich(
-            TextSpan(text: ce.lName.l, children: [
-              TextSpan(
-                text: ' (${svt?.lName.l ?? S.current.unknown})',
-                style: Theme.of(context).textTheme.bodySmall,
-              )
-            ]),
+            TextSpan(
+              text: ce.lName.l,
+              children: [
+                TextSpan(text: ' (${svt?.lName.l ?? S.current.unknown})', style: Theme.of(context).textTheme.bodySmall),
+              ],
+            ),
           ),
           subtitle: Text(subtitle),
           trailing: svt?.iconBuilder(context: context),
@@ -273,30 +278,21 @@ class _SvtBondDetailPageState extends State<SvtBondDetailPage> with SingleTicker
                 flex: 2,
                 child: Align(
                   alignment: Alignment.center,
-                  child: TextButton(
-                    child: const Text('Rank'),
-                    onPressed: () => onSort(_SvtSortType.bondRank),
-                  ),
+                  child: TextButton(child: const Text('Rank'), onPressed: () => onSort(_SvtSortType.bondRank)),
                 ),
               ),
               Expanded(
                 flex: 2,
                 child: Align(
                   alignment: Alignment.centerRight,
-                  child: TextButton(
-                    child: const Text("Total"),
-                    onPressed: () => onSort(_SvtSortType.bondTotal),
-                  ),
+                  child: TextButton(child: const Text("Total"), onPressed: () => onSort(_SvtSortType.bondTotal)),
                 ),
               ),
               Expanded(
                 flex: 2,
                 child: Align(
                   alignment: Alignment.centerRight,
-                  child: TextButton(
-                    child: const Text('Next'),
-                    onPressed: () => onSort(_SvtSortType.bondNext),
-                  ),
+                  child: TextButton(child: const Text('Next'), onPressed: () => onSort(_SvtSortType.bondNext)),
                 ),
               ),
             ],
@@ -385,77 +381,41 @@ class _SvtBondDetailPageState extends State<SvtBondDetailPage> with SingleTicker
             },
             icon: Icon(ceGrid ? Icons.grid_view : Icons.list),
           ),
-        Expanded(
-          child: Text(
-            ceSummary,
-            textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.bodySmall,
-          ),
-        ),
+        Expanded(child: Text(ceSummary, textAlign: TextAlign.center, style: Theme.of(context).textTheme.bodySmall)),
         Text(' ${S.current.filter_sort} '),
         _tabController.index == 0
             ? DropdownButton<_SvtSortType>(
-                value: svtSortType,
-                items: [
-                  const DropdownMenuItem(
-                    value: _SvtSortType.no,
-                    child: Text('No.'),
-                  ),
-                  DropdownMenuItem(
-                    value: _SvtSortType.cls,
-                    child: Text(S.current.svt_class),
-                  ),
-                  DropdownMenuItem(
-                    value: _SvtSortType.rarity,
-                    child: Text(S.current.filter_sort_rarity),
-                  ),
-                  const DropdownMenuItem(
-                    value: _SvtSortType.bondRank,
-                    child: Text('Rank'),
-                  ),
-                  const DropdownMenuItem(
-                    value: _SvtSortType.bondTotal,
-                    child: Text('Total'),
-                  ),
-                  const DropdownMenuItem(
-                    value: _SvtSortType.bondNext,
-                    child: Text('Next'),
-                  ),
-                ],
-                onChanged: (v) {
-                  if (v != null) {
-                    svtSortType = v;
-                    update();
-                  }
-                },
-              )
+              value: svtSortType,
+              items: [
+                const DropdownMenuItem(value: _SvtSortType.no, child: Text('No.')),
+                DropdownMenuItem(value: _SvtSortType.cls, child: Text(S.current.svt_class)),
+                DropdownMenuItem(value: _SvtSortType.rarity, child: Text(S.current.filter_sort_rarity)),
+                const DropdownMenuItem(value: _SvtSortType.bondRank, child: Text('Rank')),
+                const DropdownMenuItem(value: _SvtSortType.bondTotal, child: Text('Total')),
+                const DropdownMenuItem(value: _SvtSortType.bondNext, child: Text('Next')),
+              ],
+              onChanged: (v) {
+                if (v != null) {
+                  svtSortType = v;
+                  update();
+                }
+              },
+            )
             : DropdownButton<_CESortType>(
-                value: ceSortType,
-                items: [
-                  DropdownMenuItem(
-                    value: _CESortType.time,
-                    child: Text(S.current.time),
-                  ),
-                  const DropdownMenuItem(
-                    value: _CESortType.no,
-                    child: Text('No.'),
-                  ),
-                  DropdownMenuItem(
-                    value: _CESortType.cls,
-                    child: Text(S.current.svt_class),
-                  ),
-                  DropdownMenuItem(
-                    value: _CESortType.rarity,
-                    child: Text(S.current.filter_sort_rarity),
-                  ),
-                ],
-                onChanged: (v) {
-                  if (v != null) {
-                    ceSortType = v;
-                    update();
-                  }
-                },
-              ),
+              value: ceSortType,
+              items: [
+                DropdownMenuItem(value: _CESortType.time, child: Text(S.current.time)),
+                const DropdownMenuItem(value: _CESortType.no, child: Text('No.')),
+                DropdownMenuItem(value: _CESortType.cls, child: Text(S.current.svt_class)),
+                DropdownMenuItem(value: _CESortType.rarity, child: Text(S.current.filter_sort_rarity)),
+              ],
+              onChanged: (v) {
+                if (v != null) {
+                  ceSortType = v;
+                  update();
+                }
+              },
+            ),
         IconButton(
           onPressed: () {
             reversed = !reversed;
@@ -467,21 +427,23 @@ class _SvtBondDetailPageState extends State<SvtBondDetailPage> with SingleTicker
         IconButton(
           icon: const Icon(Icons.filter_alt),
           tooltip: '${S.current.filter} (${S.current.servant})',
-          onPressed: () => FilterPage.show(
-            context: context,
-            builder: (context) => ServantFilterPage(
-              filterData: svtFilter,
-              onChanged: (_) {
-                svtFilter
-                  ..planCompletion.reset()
-                  ..curStatus.reset()
-                  ..svtDuplicated.reset()
-                  ..favorite = FavoriteState.all;
-                update();
-              },
-              planMode: false,
-            ),
-          ),
+          onPressed:
+              () => FilterPage.show(
+                context: context,
+                builder:
+                    (context) => ServantFilterPage(
+                      filterData: svtFilter,
+                      onChanged: (_) {
+                        svtFilter
+                          ..planCompletion.reset()
+                          ..curStatus.reset()
+                          ..svtDuplicated.reset()
+                          ..favorite = FavoriteState.all;
+                        update();
+                      },
+                      planMode: false,
+                    ),
+              ),
         ),
         const SizedBox(width: 8),
       ],
@@ -508,7 +470,7 @@ class _SvtBondDetailPageState extends State<SvtBondDetailPage> with SingleTicker
       'RankMax',
       'Total',
       'Next',
-      for (int bond = 4; bond < 15; bond++) 'Total(Lv${bond + 1})'
+      for (int bond = 4; bond < 15; bond++) 'Total(Lv${bond + 1})',
     ]);
     for (final (:svt, :collection) in collections) {
       // final svt = entry.key, status = entry.value;

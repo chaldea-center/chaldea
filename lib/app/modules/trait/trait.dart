@@ -44,26 +44,23 @@ class _TraitDetailPageState extends State<TraitDetailPage> {
       length: isEventTrait ? 8 : 7,
       child: Scaffold(
         appBar: AppBar(
-          title: AutoSizeText(
-            title,
-            overflow: TextOverflow.fade,
-            maxLines: 1,
-            minFontSize: 14,
+          title: AutoSizeText(title, overflow: TextOverflow.fade, maxLines: 1, minFontSize: 14),
+          bottom: FixedHeight.tabBar(
+            TabBar(
+              isScrollable: true,
+              tabAlignment: TabAlignment.center,
+              tabs: [
+                if (isEventTrait) Tab(text: S.current.event),
+                Tab(text: S.current.servant),
+                Tab(text: S.current.enemy),
+                Tab(text: S.current.super_effective_damage),
+                Tab(text: S.current.quest),
+                const Tab(text: "Func"),
+                const Tab(text: "Buff"),
+                Tab(text: S.current.skill),
+              ],
+            ),
           ),
-          bottom: FixedHeight.tabBar(TabBar(
-            isScrollable: true,
-            tabAlignment: TabAlignment.center,
-            tabs: [
-              if (isEventTrait) Tab(text: S.current.event),
-              Tab(text: S.current.servant),
-              Tab(text: S.current.enemy),
-              Tab(text: S.current.super_effective_damage),
-              Tab(text: S.current.quest),
-              const Tab(text: "Func"),
-              const Tab(text: "Buff"),
-              Tab(text: S.current.skill),
-            ],
-          )),
         ),
         body: ListTileTheme(
           data: const ListTileThemeData(horizontalTitleGap: 8),

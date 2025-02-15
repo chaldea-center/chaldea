@@ -130,28 +130,16 @@ class _GithubBackupPageState extends State<GithubBackupPage> {
         padding: const EdgeInsets.symmetric(vertical: 8),
         children: [
           if (!_enableEdit) ...[
-            ListTile(
-              dense: true,
-              title: const Text('owner'),
-              trailing: Text(config.owner),
-            ),
-            ListTile(
-              dense: true,
-              title: const Text('repo'),
-              trailing: Text(config.repo),
-            ),
+            ListTile(dense: true, title: const Text('owner'), trailing: Text(config.owner)),
+            ListTile(dense: true, title: const Text('repo'), trailing: Text(config.repo)),
             ListTile(
               dense: true,
               title: const Text('branch/ref'),
-              trailing: Text(config.branch.trim().isEmpty
-                  ? '(default)'
-                  : config.branch.substring(0, min(7, config.branch.length))),
+              trailing: Text(
+                config.branch.trim().isEmpty ? '(default)' : config.branch.substring(0, min(7, config.branch.length)),
+              ),
             ),
-            ListTile(
-              dense: true,
-              title: const Text('path'),
-              trailing: Text(config.path),
-            ),
+            ListTile(dense: true, title: const Text('path'), trailing: Text(config.path)),
             ListTile(
               dense: true,
               title: const Text('token'),
@@ -164,10 +152,7 @@ class _GithubBackupPageState extends State<GithubBackupPage> {
               child: TextFormField(
                 enabled: _enableEdit,
                 controller: _ownerController,
-                decoration: const InputDecoration(
-                  labelText: 'owner',
-                  border: OutlineInputBorder(),
-                ),
+                decoration: const InputDecoration(labelText: 'owner', border: OutlineInputBorder()),
                 onChanged: (s) {
                   config.owner = s.trim();
                 },
@@ -178,10 +163,7 @@ class _GithubBackupPageState extends State<GithubBackupPage> {
               child: TextFormField(
                 enabled: _enableEdit,
                 controller: _repoController,
-                decoration: const InputDecoration(
-                  labelText: 'repo',
-                  border: OutlineInputBorder(),
-                ),
+                decoration: const InputDecoration(labelText: 'repo', border: OutlineInputBorder()),
                 onChanged: (s) {
                   config.repo = s.trim();
                 },
@@ -223,9 +205,10 @@ class _GithubBackupPageState extends State<GithubBackupPage> {
                 enabled: _enableEdit,
                 controller: _tokenController,
                 decoration: const InputDecoration(
-                    labelText: 'token',
-                    border: OutlineInputBorder(),
-                    helperText: '<repo> scope permission is required.'),
+                  labelText: 'token',
+                  border: OutlineInputBorder(),
+                  helperText: '<repo> scope permission is required.',
+                ),
                 obscureText: true,
                 onChanged: (s) {
                   config.token = s.trim();
@@ -239,22 +222,24 @@ class _GithubBackupPageState extends State<GithubBackupPage> {
             title: const Text('Indent with 2 spaces'),
             subtitle: const Text('saved in json format'),
             controlAffinity: ListTileControlAffinity.trailing,
-            onChanged: _enableEdit
-                ? (v) {
-                    setState(() {
-                      config.indent = v;
-                    });
-                  }
-                : null,
+            onChanged:
+                _enableEdit
+                    ? (v) {
+                      setState(() {
+                        config.indent = v;
+                      });
+                    }
+                    : null,
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
             child: TextFormField(
               controller: _messageController,
               decoration: InputDecoration(
-                  labelText: 'commit message',
-                  border: const OutlineInputBorder(),
-                  hintText: DateTime.now().toStringShort(omitSec: false)),
+                labelText: 'commit message',
+                border: const OutlineInputBorder(),
+                hintText: DateTime.now().toStringShort(omitSec: false),
+              ),
               onChanged: (s) {
                 message = s.trim();
               },
@@ -263,9 +248,7 @@ class _GithubBackupPageState extends State<GithubBackupPage> {
           ListTile(
             dense: true,
             title: const Text('Local SHA'),
-            subtitle: Text(
-              config.sha?.substring(0, min(8, config.sha?.length ?? 0)) ?? 'null',
-            ),
+            subtitle: Text(config.sha?.substring(0, min(8, config.sha?.length ?? 0)) ?? 'null'),
             trailing: IconButton(
               onPressed: () {
                 SimpleCancelOkDialog(
@@ -316,28 +299,19 @@ class _GithubBackupPageState extends State<GithubBackupPage> {
                 launch('https://github.com/settings/tokens/new?description=chaldea&scopes=repo');
               },
               style: kTextButtonDenseStyle,
-              child: const Text(
-                'Create token for chaldea',
-                textScaler: TextScaler.linear(0.9),
-              ),
+              child: const Text('Create token for chaldea', textScaler: TextScaler.linear(0.9)),
             ),
           ),
-          Text(
-            '~~~ Github docs ~~~',
-            textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.bodySmall,
-          ),
+          Text('~~~ Github docs ~~~', textAlign: TextAlign.center, style: Theme.of(context).textTheme.bodySmall),
           Center(
             child: TextButton(
               onPressed: () {
                 launch(
-                    'https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token');
+                  'https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token',
+                );
               },
               style: kTextButtonDenseStyle,
-              child: const Text(
-                'Create a personal access token',
-                textScaler: TextScaler.linear(0.9),
-              ),
+              child: const Text('Create a personal access token', textScaler: TextScaler.linear(0.9)),
             ),
           ),
           Center(
@@ -346,10 +320,7 @@ class _GithubBackupPageState extends State<GithubBackupPage> {
                 launch('https://docs.github.com/en/rest/repos/contents#create-or-update-file-contents');
               },
               style: kTextButtonDenseStyle,
-              child: const Text(
-                'Create or update file contents',
-                textScaler: TextScaler.linear(0.9),
-              ),
+              child: const Text('Create or update file contents', textScaler: TextScaler.linear(0.9)),
             ),
           ),
           const SafeArea(child: SizedBox()),

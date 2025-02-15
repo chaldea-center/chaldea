@@ -103,10 +103,7 @@ class _RandomImageSurpriseState extends State<RandomImageSurprise> {
             imageUrl: url,
             width: width,
             aspectRatio: 1,
-            placeholder: (context, url) => const AspectRatio(
-              aspectRatio: 1,
-              child: SizedBox(width: width),
-            ),
+            placeholder: (context, url) => const AspectRatio(aspectRatio: 1, child: SizedBox(width: width)),
           ),
         ),
       ),

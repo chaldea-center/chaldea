@@ -119,20 +119,19 @@ class ClassBoardMapPainter extends CustomPainter {
       return Rect.fromCenter(center: c * scale, width: w * scale, height: h * scale);
     }
 
-    void drawImage(
-      String? url,
-      Rect dest, {
-      Paint? paint,
-      Rect Function(ui.Image img)? src,
-    }) {
+    void drawImage(String? url, Rect dest, {Paint? paint, Rect Function(ui.Image img)? src}) {
       if (url == null) return;
       final img = images[url];
       if (img == null) {
         onLoadImage(url);
         return;
       }
-      canvas.drawImageRect(img, src?.call(img) ?? Rect.fromLTWH(0, 0, img.width.toDouble(), img.height.toDouble()),
-          dest, paint ?? _paint);
+      canvas.drawImageRect(
+        img,
+        src?.call(img) ?? Rect.fromLTWH(0, 0, img.width.toDouble(), img.height.toDouble()),
+        dest,
+        paint ?? _paint,
+      );
     }
 
     drawImage(asset('Bg/bg.png'), getRect(Offset.zero, 2048, 2048));
@@ -148,8 +147,10 @@ class ClassBoardMapPainter extends CustomPainter {
       // paint: getPaint()..color = const Color.fromRGBO(0, 0, 0, 0.7),
     );
     drawImage(asset('Bg/coat_color.png'), getRect(Offset.zero, 512, 512));
-    drawImage(asset2("UI/DownloadClassBoardUIAtlas/DownloadClassBoardUIAtlas1/btn_class.png"),
-        getRect(Offset.zero, 130, 130));
+    drawImage(
+      asset2("UI/DownloadClassBoardUIAtlas/DownloadClassBoardUIAtlas1/btn_class.png"),
+      getRect(Offset.zero, 130, 130),
+    );
     drawImage(board.uiIcon, getRect(Offset.zero, 128, 128));
 
     final squaresMap = {for (final s in board.squares) s.id: s};
@@ -171,19 +172,16 @@ class ClassBoardMapPainter extends CustomPainter {
     for (final line in board.lines) {
       final prev = squaresMap[line.prevSquareId], next = squaresMap[line.nextSquareId];
       if (prev == null || next == null) continue;
-      Paint p = Paint()
-        ..color = Colors.white60
-        ..strokeWidth = sw * scale / 10;
+      Paint p =
+          Paint()
+            ..color = Colors.white60
+            ..strokeWidth = sw * scale / 10;
       if (showPlanned && lightenSquares.contains(prev.id) && lightenSquares.contains(next.id)) {
         p
           ..color = Colors.white
           ..strokeWidth = sw * scale / 5;
       }
-      canvas.drawLine(
-        prev.offset * scale,
-        next.offset * scale,
-        p,
-      );
+      canvas.drawLine(prev.offset * scale, next.offset * scale, p);
     }
 
     final darkenPaint = getPaint()..color = const Color.fromRGBO(0, 0, 0, 0.6);
@@ -217,17 +215,15 @@ class ClassBoardMapPainter extends CustomPainter {
           const double lw = sw * 158 / 110 * 1.2;
           if (showPlanned) {
             drawImage(
-                asset("Icon/lock_${darkenLock ? "off" : "light"}_$itemId.png"), getRect(center, lw * 1.5, lw * 1.5));
+              asset("Icon/lock_${darkenLock ? "off" : "light"}_$itemId.png"),
+              getRect(center, lw * 1.5, lw * 1.5),
+            );
           }
           drawImage(asset("Icon/lock_$itemId.png"), getRect(center, lw, lw), paint: darkenLock ? darkenPaint : null);
         }
       } else {
         final radius = sw / 2 * scale;
-        canvas.drawCircle(
-          center * scale,
-          radius,
-          Paint()..color = Colors.white24,
-        );
+        canvas.drawCircle(center * scale, radius, Paint()..color = Colors.white24);
         canvas.drawCircle(
           center * scale,
           radius,
@@ -245,13 +241,13 @@ class ClassBoardMapPainter extends CustomPainter {
           asset2("Main/DownloadClassBoardSquareLineAtlas1/square_on_light.png"),
           getRect(center, sw * 1.8, sw * 1.8),
         );
-        drawImage(
-          asset2("Main/DownloadClassBoardSquareLineAtlas1/square_on.png"),
-          getRect(center, sw * 2, sw * 2),
-        );
+        drawImage(asset2("Main/DownloadClassBoardSquareLineAtlas1/square_on.png"), getRect(center, sw * 2, sw * 2));
       }
-      drawImage(square.icon, getRect(center, sw, sw),
-          paint: darkenSquare ? (getPaint()..color = const Color.fromRGBO(0, 0, 0, 0.6)) : null);
+      drawImage(
+        square.icon,
+        getRect(center, sw, sw),
+        paint: darkenSquare ? (getPaint()..color = const Color.fromRGBO(0, 0, 0, 0.6)) : null,
+      );
     }
 
     canvas.restore();

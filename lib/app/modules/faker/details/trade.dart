@@ -46,9 +46,7 @@ class _UserEventTradePageState extends State<UserEventTradePage> with SingleTick
   Widget build(BuildContext context) {
     if (eventTrade == null) {
       return Scaffold(
-        appBar: AppBar(
-          title: Text(S.current.event_trade),
-        ),
+        appBar: AppBar(title: Text(S.current.event_trade)),
         body: ListView(
           children: [
             for (final trade in userEventTrades)
@@ -57,7 +55,7 @@ class _UserEventTradePageState extends State<UserEventTradePage> with SingleTick
                 onTap: () {
                   selectTrade(trade);
                 },
-              )
+              ),
           ],
         ),
       );
@@ -82,10 +80,9 @@ class _UserEventTradePageState extends State<UserEventTradePage> with SingleTick
               tooltip: S.current.event,
             ),
         ],
-        bottom: FixedHeight.tabBar(TabBar(
-          controller: tabController,
-          tabs: [Tab(text: 'Trades'), Tab(text: 'Results'), Tab(text: 'Pickups')],
-        )),
+        bottom: FixedHeight.tabBar(
+          TabBar(controller: tabController, tabs: [Tab(text: 'Trades'), Tab(text: 'Results'), Tab(text: 'Pickups')]),
+        ),
       ),
       body: TabBarView(
         controller: tabController,
@@ -109,7 +106,10 @@ class _UserEventTradePageState extends State<UserEventTradePage> with SingleTick
   }
 
   Widget buildTrade(
-      EventTradeInfo tradeInfo, Map<int, EventTradeResultInfo> results, Map<int, EventCraftPickupInfo> pickups) {
+    EventTradeInfo tradeInfo,
+    Map<int, EventTradeResultInfo> results,
+    Map<int, EventCraftPickupInfo> pickups,
+  ) {
     final goods = tradeGoodsMap[tradeInfo.tradeGoodsId];
     final pickup = pickups[tradeInfo.tradeGoodsId];
     final now = DateTime.now().timestamp;
@@ -184,7 +184,8 @@ class _UserEventTradePageState extends State<UserEventTradePage> with SingleTick
       children: [
         Expanded(
           child: Text(
-              [startedAt, endedAt].map((e) => e.sec2date().toCustomString(year: false, second: false)).join(' ~ ')),
+            [startedAt, endedAt].map((e) => e.sec2date().toCustomString(year: false, second: false)).join(' ~ '),
+          ),
         ),
         CountDown(endedAt: endedAt.sec2date()),
       ],
@@ -199,12 +200,7 @@ class _UserEventTradePageState extends State<UserEventTradePage> with SingleTick
         runSpacing: 2,
         alignment: WrapAlignment.start,
         children: [
-          for (final gift in goods.gifts)
-            gift.iconBuilder(
-              context: context,
-              width: 32,
-              showOne: true,
-            ),
+          for (final gift in goods.gifts) gift.iconBuilder(context: context, width: 32, showOne: true),
           if (goods.eventPointItem != null && goods.eventPointNum != 0)
             Item.iconBuilder(
               context: context,
@@ -212,7 +208,7 @@ class _UserEventTradePageState extends State<UserEventTradePage> with SingleTick
               width: 32,
               icon: goods.eventPointItem?.icon,
               text: goods.eventPointNum.format(compact: false, groupSeparator: ','),
-            )
+            ),
         ],
       ),
     );

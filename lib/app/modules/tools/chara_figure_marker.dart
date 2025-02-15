@@ -48,43 +48,48 @@ class CharaFigureMarker<T> extends StatefulWidget {
   const CharaFigureMarker._(this.data, {super.key});
 
   static CharaFigureMarker<int> figure() {
-    return CharaFigureMarker._(_DataSet<int>(
-      title: "CharaFigure",
-      indexPagePath: '/aa-fgo-public/JP/CharaFigure/',
-      regexp: RegExp(r'/CharaFigure/(\d+)/'),
-      imageIdParser: (v) => int.parse(v),
-      repoFilename: 'extra_charafigure.json',
-      constructor: (svtId) => ExtraCharaFigure(svtId: svtId),
-      fromJson: (json) => ExtraCharaFigure.fromJson(Map.from(json)),
-      markedCharaSvtIds: db.settings.misc.markedCharaFigureSvtIds,
-      nonSvtImageIds: db.settings.misc.nonSvtCharaFigureIds,
-      getExistUrls: (extraAssets) => [
-        ...extraAssets.charaFigure.allUrls,
-        for (final multi in [
-          extraAssets.charaFigureMulti,
-          extraAssets.charaFigureMultiCombine,
-          extraAssets.charaFigureMultiLimitUp
-        ])
-          for (final x in multi.values) ...x.allUrls,
-      ],
-      toUrl: (imageId) => 'https://static.atlasacademy.io/JP/CharaFigure/$imageId/$imageId.png',
-    ));
+    return CharaFigureMarker._(
+      _DataSet<int>(
+        title: "CharaFigure",
+        indexPagePath: '/aa-fgo-public/JP/CharaFigure/',
+        regexp: RegExp(r'/CharaFigure/(\d+)/'),
+        imageIdParser: (v) => int.parse(v),
+        repoFilename: 'extra_charafigure.json',
+        constructor: (svtId) => ExtraCharaFigure(svtId: svtId),
+        fromJson: (json) => ExtraCharaFigure.fromJson(Map.from(json)),
+        markedCharaSvtIds: db.settings.misc.markedCharaFigureSvtIds,
+        nonSvtImageIds: db.settings.misc.nonSvtCharaFigureIds,
+        getExistUrls:
+            (extraAssets) => [
+              ...extraAssets.charaFigure.allUrls,
+              for (final multi in [
+                extraAssets.charaFigureMulti,
+                extraAssets.charaFigureMultiCombine,
+                extraAssets.charaFigureMultiLimitUp,
+              ])
+                for (final x in multi.values) ...x.allUrls,
+            ],
+        toUrl: (imageId) => 'https://static.atlasacademy.io/JP/CharaFigure/$imageId/$imageId.png',
+      ),
+    );
   }
 
   static CharaFigureMarker<String> image() {
-    return CharaFigureMarker._(_DataSet<String>(
-      title: "CharaImage",
-      indexPagePath: '/aa-fgo-public/JP/Image/',
-      regexp: RegExp(r'JP/Image/([^/]+)/'),
-      imageIdParser: (v) => v,
-      repoFilename: 'extra_image.json',
-      constructor: (svtId) => ExtraCharaImage(svtId: svtId),
-      fromJson: (json) => ExtraCharaImage.fromJson(Map.from(json)),
-      markedCharaSvtIds: db.settings.misc.markedCharaImageSvtIds,
-      nonSvtImageIds: db.settings.misc.nonSvtCharaImageIds,
-      getExistUrls: (extraAssets) => extraAssets.image.allUrls.toList(),
-      toUrl: (imageId) => 'https://static.atlasacademy.io/JP/Image/$imageId/$imageId.png',
-    ));
+    return CharaFigureMarker._(
+      _DataSet<String>(
+        title: "CharaImage",
+        indexPagePath: '/aa-fgo-public/JP/Image/',
+        regexp: RegExp(r'JP/Image/([^/]+)/'),
+        imageIdParser: (v) => v,
+        repoFilename: 'extra_image.json',
+        constructor: (svtId) => ExtraCharaImage(svtId: svtId),
+        fromJson: (json) => ExtraCharaImage.fromJson(Map.from(json)),
+        markedCharaSvtIds: db.settings.misc.markedCharaImageSvtIds,
+        nonSvtImageIds: db.settings.misc.nonSvtCharaImageIds,
+        getExistUrls: (extraAssets) => extraAssets.image.allUrls.toList(),
+        toUrl: (imageId) => 'https://static.atlasacademy.io/JP/Image/$imageId/$imageId.png',
+      ),
+    );
   }
 
   @override
@@ -121,8 +126,9 @@ class _CharaFigureMarkerState<T> extends State<CharaFigureMarker<T>> with Single
 
     final repoList = await manager.api.getModel(
       HostsX.proxyWorker(
-          'https://github.com/atlasacademy/fgo-game-data-api/raw/master/app/data/mappings/${data.repoFilename}',
-          onlyCN: false),
+        'https://github.com/atlasacademy/fgo-game-data-api/raw/master/app/data/mappings/${data.repoFilename}',
+        onlyCN: false,
+      ),
       (v) => (v as List).map((e) => data.fromJson(e)).toList(),
       expireAfter: refresh ? Duration.zero : null,
     );
@@ -144,63 +150,64 @@ class _CharaFigureMarkerState<T> extends State<CharaFigureMarker<T>> with Single
         title: Text('${data.title} Marker'),
         actions: [
           PopupMenuButton(
-            itemBuilder: (context) => [
-              PopupMenuItem(
-                onTap: () async {
-                  await manager.showAuthInput(context);
-                  if (mounted) setState(() {});
-                },
-                child: const Text('Input Auth'),
-              ),
-              PopupMenuItem(
-                onTap: () {
-                  loadImages(true);
-                },
-                child: const Text('Refresh List'),
-              ),
-              PopupMenuItem(
-                onTap: () {
-                  router.showDialog(
-                    builder: (context) => SimpleDialog(
-                      title: const Text("Max Grid Width"),
-                      children: [
-                        for (final (text, size) in [('Large', 240), ('Medium', 180), ('Small', 120)])
-                          ListTile(
-                            title: Text(text),
-                            subtitle: Text(size.toString()),
-                            selected: gridMaxExtent == size,
-                            onTap: () {
-                              gridMaxExtent = size;
-                              Navigator.pop(context);
-                              if (mounted) setState(() {});
-                            },
-                            contentPadding: const EdgeInsets.symmetric(horizontal: 24.0),
-                          )
-                      ],
-                    ),
-                  );
-                },
-                child: const Text("Grid Size"),
-              ),
-              PopupMenuItem(
-                onTap: exportData,
-                child: const Text('Export Data'),
-              ),
-            ],
+            itemBuilder:
+                (context) => [
+                  PopupMenuItem(
+                    onTap: () async {
+                      await manager.showAuthInput(context);
+                      if (mounted) setState(() {});
+                    },
+                    child: const Text('Input Auth'),
+                  ),
+                  PopupMenuItem(
+                    onTap: () {
+                      loadImages(true);
+                    },
+                    child: const Text('Refresh List'),
+                  ),
+                  PopupMenuItem(
+                    onTap: () {
+                      router.showDialog(
+                        builder:
+                            (context) => SimpleDialog(
+                              title: const Text("Max Grid Width"),
+                              children: [
+                                for (final (text, size) in [('Large', 240), ('Medium', 180), ('Small', 120)])
+                                  ListTile(
+                                    title: Text(text),
+                                    subtitle: Text(size.toString()),
+                                    selected: gridMaxExtent == size,
+                                    onTap: () {
+                                      gridMaxExtent = size;
+                                      Navigator.pop(context);
+                                      if (mounted) setState(() {});
+                                    },
+                                    contentPadding: const EdgeInsets.symmetric(horizontal: 24.0),
+                                  ),
+                              ],
+                            ),
+                      );
+                    },
+                    child: const Text("Grid Size"),
+                  ),
+                  PopupMenuItem(onTap: exportData, child: const Text('Export Data')),
+                ],
           ),
         ],
-        bottom: FixedHeight.tabBar(TabBar(
-          controller: _tabController,
-          isScrollable: true,
-          tabAlignment: TabAlignment.center,
-          tabs: const [
-            Tab(text: 'All'),
-            Tab(text: 'Unknown'),
-            Tab(text: 'Marked'),
-            Tab(text: 'Non-Svt'),
-            Tab(text: 'Repo'),
-          ],
-        )),
+        bottom: FixedHeight.tabBar(
+          TabBar(
+            controller: _tabController,
+            isScrollable: true,
+            tabAlignment: TabAlignment.center,
+            tabs: const [
+              Tab(text: 'All'),
+              Tab(text: 'Unknown'),
+              Tab(text: 'Marked'),
+              Tab(text: 'Non-Svt'),
+              Tab(text: 'Repo'),
+            ],
+          ),
+        ),
       ),
       body: buildBody(),
     );
@@ -260,26 +267,16 @@ class _CharaFigureMarkerState<T> extends State<CharaFigureMarker<T>> with Single
               child: CachedImage(
                 imageUrl: data.toUrl(id),
                 viewFullOnTap: true,
-                cachedOption: CachedImageOption(
-                  errorWidget: (context, url, error) => Text(url),
-                ),
+                cachedOption: CachedImageOption(errorWidget: (context, url, error) => Text(url)),
               ),
             ),
-            AutoSizeText(
-              id.toString(),
-              maxLines: 1,
-              minFontSize: 6,
-              style: Theme.of(context).textTheme.bodySmall,
-            ),
+            AutoSizeText(id.toString(), maxLines: 1, minFontSize: 6, style: Theme.of(context).textTheme.bodySmall),
             if (entity != null)
               InkWell(
                 onTap: entity.routeTo,
                 child: Text(
                   '${entity.id}?',
-                  style: TextStyle(
-                    color: Theme.of(context).colorScheme.primary,
-                    fontSize: 14,
-                  ),
+                  style: TextStyle(color: Theme.of(context).colorScheme.primary, fontSize: 14),
                 ),
               ),
             Expanded(
@@ -316,11 +313,7 @@ class _CharaFigureMarkerState<T> extends State<CharaFigureMarker<T>> with Single
                     },
                     constraints: const BoxConstraints(),
                     padding: EdgeInsets.zero,
-                    icon: Icon(
-                      Icons.clear,
-                      color: Theme.of(context).hintColor,
-                      size: 16,
-                    ),
+                    icon: Icon(Icons.clear, color: Theme.of(context).hintColor, size: 16),
                   ),
                 ],
               ),
@@ -354,11 +347,7 @@ class _CharaFigureMarkerState<T> extends State<CharaFigureMarker<T>> with Single
               child: ListView(
                 scrollDirection: Axis.horizontal,
                 children: [
-                  for (final id in figures.imageIds)
-                    CachedImage(
-                      imageUrl: data.toUrl(id),
-                      viewFullOnTap: true,
-                    )
+                  for (final id in figures.imageIds) CachedImage(imageUrl: data.toUrl(id), viewFullOnTap: true),
                 ],
               ),
             );
@@ -371,15 +360,17 @@ class _CharaFigureMarkerState<T> extends State<CharaFigureMarker<T>> with Single
   final svtFilterData = SvtFilterData(useGrid: true);
 
   Future<void> chooseSvt(T figureId) {
-    return router.pushPage(ServantListPage(
-      filterData: svtFilterData,
-      showSecondaryFilter: true,
-      onSelected: (svt) {
-        data.markedCharaSvtIds[figureId] = svt.id;
-        data.nonSvtImageIds.remove(figureId);
-        if (mounted) setState(() {});
-      },
-    ));
+    return router.pushPage(
+      ServantListPage(
+        filterData: svtFilterData,
+        showSecondaryFilter: true,
+        onSelected: (svt) {
+          data.markedCharaSvtIds[figureId] = svt.id;
+          data.nonSvtImageIds.remove(figureId);
+          if (mounted) setState(() {});
+        },
+      ),
+    );
   }
 
   Future<void> exportData() async {
@@ -389,9 +380,7 @@ class _CharaFigureMarkerState<T> extends State<CharaFigureMarker<T>> with Single
       EasyLoading.showError('repo data didn\'t load, manual merge required.');
       await Future.delayed(const Duration(seconds: 4));
     }
-    Map<int, ExtraCharaImageBase<T>> destData = {
-      for (final v in data.repoData) v.svtId: v,
-    };
+    Map<int, ExtraCharaImageBase<T>> destData = {for (final v in data.repoData) v.svtId: v};
     for (final imageId in data.allImageIds) {
       final svtId = data.markedCharaSvtIds[imageId];
       if (svtId != null) {

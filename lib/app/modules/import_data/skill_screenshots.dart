@@ -51,10 +51,12 @@ class ImportSkillScreenshotPageState extends State<ImportSkillScreenshotPage> wi
       if (!_tabController.indexIsChanging) setState(() {});
     });
 
-    _dio = DioE(db.apiServerDio.options.copyWith(
-      sendTimeout: const Duration(minutes: 10),
-      receiveTimeout: const Duration(minutes: 10),
-    ));
+    _dio = DioE(
+      db.apiServerDio.options.copyWith(
+        sendTimeout: const Duration(minutes: 10),
+        receiveTimeout: const Duration(minutes: 10),
+      ),
+    );
   }
 
   @override
@@ -69,36 +71,36 @@ class ImportSkillScreenshotPageState extends State<ImportSkillScreenshotPage> wi
       appBar: AppBar(
         titleSpacing: 0,
         title: Text(
-            widget.isAppend ? S.current.import_append_skill_screenshots : S.current.import_active_skill_screenshots),
-        actions: [
-          ChaldeaUrl.docsHelpBtn('import_data#skill-recognition'),
-        ],
-        bottom: FixedHeight.tabBar(TabBar(
-          controller: _tabController,
-          tabs: [
-            Tab(text: S.current.screenshots),
-            Tab(text: S.current.results),
-            if (AppInfo.isDebugDevice) const Tab(text: 'Debug')
-          ],
-        )),
+          widget.isAppend ? S.current.import_append_skill_screenshots : S.current.import_active_skill_screenshots,
+        ),
+        actions: [ChaldeaUrl.docsHelpBtn('import_data#skill-recognition')],
+        bottom: FixedHeight.tabBar(
+          TabBar(
+            controller: _tabController,
+            tabs: [
+              Tab(text: S.current.screenshots),
+              Tab(text: S.current.results),
+              if (AppInfo.isDebugDevice) const Tab(text: 'Debug'),
+            ],
+          ),
+        ),
       ),
       body: TabBarView(
         controller: _tabController,
         children: [
           KeepAliveBuilder(
-            builder: (ctx) => ScreenshotsTab(
-              images: imageFiles,
-              onUpload: () {
-                EasyThrottle.throttle('skill_recognizer_upload', const Duration(seconds: 5), _uploadScreenshots);
-              },
-              debugServerRoot: _dio.options.baseUrl,
-            ),
+            builder:
+                (ctx) => ScreenshotsTab(
+                  images: imageFiles,
+                  onUpload: () {
+                    EasyThrottle.throttle('skill_recognizer_upload', const Duration(seconds: 5), _uploadScreenshots);
+                  },
+                  debugServerRoot: _dio.options.baseUrl,
+                ),
           ),
           KeepAliveBuilder(builder: (ctx) => SkillResultTab(isAppend: widget.isAppend, result: output)),
           if (AppInfo.isDebugDevice)
-            KeepAliveBuilder(
-              builder: (ctx) => RecognizerViewerTab(type: RecognizerType.skill),
-            )
+            KeepAliveBuilder(builder: (ctx) => RecognizerViewerTab(type: RecognizerType.skill)),
         ],
       ),
     );
@@ -149,8 +151,9 @@ class ImportSkillScreenshotPageState extends State<ImportSkillScreenshotPage> wi
       logger.i('received recognized: ${output?.details.length} servants');
 
       if (mounted) {
-        AppAnalysis.instance
-            .logEvent('screenshot_recognizer', {"type": widget.isAppend ? "appendSkill" : "activeSkill"});
+        AppAnalysis.instance.logEvent('screenshot_recognizer', {
+          "type": widget.isAppend ? "appendSkill" : "activeSkill",
+        });
         setState(() {});
         SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
           if (mounted) {

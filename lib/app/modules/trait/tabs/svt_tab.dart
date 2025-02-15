@@ -32,71 +32,76 @@ class _TraitServantTabState extends State<TraitServantTab> {
     final shownServants = servants.where((e) => ServantFilterPage.filter(svtFilter, e)).toList();
     return CustomScrollView(
       slivers: [
-        SliverList.list(children: [
-          if (servants.isNotEmpty)
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  FilterGroup.display(
-                    useGrid: useGrid,
-                    onChanged: (v) {
-                      if (v != null) useGrid = v;
-                      setState(() {});
-                    },
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.filter_alt),
-                    tooltip: '${S.current.filter} (${S.current.servant})',
-                    onPressed: () => FilterPage.show(
-                      context: context,
-                      builder: (context) => ServantFilterPage(
-                        filterData: svtFilter,
-                        onChanged: (_) {
-                          if (mounted) {
-                            setState(() {});
-                          }
-                        },
-                        planMode: false,
-                      ),
+        SliverList.list(
+          children: [
+            if (servants.isNotEmpty)
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    FilterGroup.display(
+                      useGrid: useGrid,
+                      onChanged: (v) {
+                        if (v != null) useGrid = v;
+                        setState(() {});
+                      },
                     ),
-                  ),
-                ],
+                    IconButton(
+                      icon: const Icon(Icons.filter_alt),
+                      tooltip: '${S.current.filter} (${S.current.servant})',
+                      onPressed:
+                          () => FilterPage.show(
+                            context: context,
+                            builder:
+                                (context) => ServantFilterPage(
+                                  filterData: svtFilter,
+                                  onChanged: (_) {
+                                    if (mounted) {
+                                      setState(() {});
+                                    }
+                                  },
+                                  planMode: false,
+                                ),
+                          ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-          if (entity != null)
-            ListTile(
-              dense: true,
-              leading: entity.iconBuilder(context: context),
-              title: Text('No.${entity.id}-${entity.lName.l}'),
-              onTap: entity.routeTo,
-            )
-        ]),
+            if (entity != null)
+              ListTile(
+                dense: true,
+                leading: entity.iconBuilder(context: context),
+                title: Text('No.${entity.id}-${entity.lName.l}'),
+                onTap: entity.routeTo,
+              ),
+          ],
+        ),
         useGrid
             ? SliverGrid.extent(
-                maxCrossAxisExtent: 56,
-                childAspectRatio: 132 / 144,
-                children: [for (final svt in shownServants) gridItem(context, svt)],
-              )
+              maxCrossAxisExtent: 56,
+              childAspectRatio: 132 / 144,
+              children: [for (final svt in shownServants) gridItem(context, svt)],
+            )
             : SliverList.builder(
-                itemBuilder: (context, index) => listItem(context, shownServants[index]),
-                itemCount: shownServants.length,
-              ),
-        if (useGrid)
-          SliverList.list(children: const [
-            SafeArea(child: SFooter("Highlight: conditional trait")),
-          ]),
+              itemBuilder: (context, index) => listItem(context, shownServants[index]),
+              itemCount: shownServants.length,
+            ),
+        if (useGrid) SliverList.list(children: const [SafeArea(child: SFooter("Highlight: conditional trait"))]),
       ],
     );
   }
 
   bool isCommonTrait(Servant svt) {
-    final comments = _addComment([
-      ...svt.traits,
-      for (final traitAdd in svt.traitAdd)
-        if (traitAdd.eventId == 0 && traitAdd.limitCount == -1) ...traitAdd.trait
-    ], _id, '');
+    final comments = _addComment(
+      [
+        ...svt.traits,
+        for (final traitAdd in svt.traitAdd)
+          if (traitAdd.eventId == 0 && traitAdd.limitCount == -1) ...traitAdd.trait,
+      ],
+      _id,
+      '',
+    );
     return comments.isNotEmpty;
   }
 
@@ -104,19 +109,13 @@ class _TraitServantTabState extends State<TraitServantTab> {
     List<String> details = [];
     if (widget.ids.length == 1 && !isCommonTrait(svt)) {
       for (final asc in svt.ascensionAdd.individuality.ascension.keys) {
-        details.addAll(_addComment(
-          svt.ascensionAdd.individuality.ascension[asc]!,
-          _id,
-          '${S.current.ascension_short} $asc',
-        ));
+        details.addAll(
+          _addComment(svt.ascensionAdd.individuality.ascension[asc]!, _id, '${S.current.ascension_short} $asc'),
+        );
       }
       for (final costumeId in svt.ascensionAdd.individuality.costume.keys) {
         final costumeName = svt.profile.costume[costumeId]?.lName.l ?? costumeId.toString();
-        details.addAll(_addComment(
-          svt.ascensionAdd.individuality.costume[costumeId]!,
-          _id,
-          costumeName,
-        ));
+        details.addAll(_addComment(svt.ascensionAdd.individuality.costume[costumeId]!, _id, costumeName));
       }
       for (final traitAdd in svt.traitAdd) {
         if (traitAdd.isAlwaysValid) continue;
@@ -166,10 +165,7 @@ class _TraitServantTabState extends State<TraitServantTab> {
       child: svt.iconBuilder(
         context: context,
         text: svt.status.cur.favorite ? 'NP${svt.status.cur.npLv}' : null,
-        option: ImageWithTextOption(
-          fontSize: 10,
-          padding: const EdgeInsets.fromLTRB(0, 0, 2, 12),
-        ),
+        option: ImageWithTextOption(fontSize: 10, padding: const EdgeInsets.fromLTRB(0, 0, 2, 12)),
       ),
     );
   }

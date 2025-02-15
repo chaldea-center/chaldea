@@ -25,9 +25,10 @@ class ChaldeaWorkerApi {
 
   static const apiV4 = '/api/v4';
 
-  static final cacheManager = ApiCacheManager(null)
-    ..dispatchError = dispatchError
-    ..createDio = createDio;
+  static final cacheManager =
+      ApiCacheManager(null)
+        ..dispatchError = dispatchError
+        ..createDio = createDio;
 
   static void dispatchError(RequestOptions options, Response? response, dynamic error, dynamic stackTrace) async {
     dynamic error2;
@@ -77,10 +78,7 @@ class ChaldeaWorkerApi {
     if (authHeader == null) {
       return options;
     }
-    options.headers = {
-      ...?options.headers,
-      "Authorization": "Basic $authHeader",
-    };
+    options.headers = {...?options.headers, "Authorization": "Basic $authHeader"};
     return options;
   }
 
@@ -106,19 +104,12 @@ class ChaldeaWorkerApi {
       if (text != null) 'text': text,
       if (subject != null) 'subject': subject,
       if (senderName != null) 'sender': senderName,
-      'files': [
-        for (final file in files.entries) MultipartFile.fromBytes(file.value, filename: file.key),
-      ]
+      'files': [for (final file in files.entries) MultipartFile.fromBytes(file.value, filename: file.key)],
     });
     return postCommon("${HostsX.apiHost}/feedback", formData);
   }
 
-  static Future<WorkerResponse?> postCommon(
-    String url,
-    dynamic data, {
-    Options? options,
-    bool addAuth = false,
-  }) {
+  static Future<WorkerResponse?> postCommon(String url, dynamic data, {Options? options, bool addAuth = false}) {
     return cacheManager.postModel(
       url,
       fromJson: (data) => WorkerResponse.fromJson(data),
@@ -128,31 +119,19 @@ class ChaldeaWorkerApi {
     );
   }
 
-  static Future<ChaldeaUser?> login({
-    required String username,
-    required String password,
-  }) {
+  static Future<ChaldeaUser?> login({required String username, required String password}) {
     return cacheManager.postModel(
       '$apiV4/user/login',
       fromJson: (data) => ChaldeaUser.fromJson(data),
-      data: {
-        'username': username,
-        'password': password,
-      },
+      data: {'username': username, 'password': password},
     );
   }
 
-  static Future<ChaldeaUser?> signup({
-    required String username,
-    required String password,
-  }) {
+  static Future<ChaldeaUser?> signup({required String username, required String password}) {
     return cacheManager.postModel(
       '$apiV4/user/signup',
       fromJson: (data) => ChaldeaUser.fromJson(data),
-      data: {
-        'username': username,
-        'password': password,
-      },
+      data: {'username': username, 'password': password},
     );
   }
 
@@ -164,26 +143,16 @@ class ChaldeaWorkerApi {
     return cacheManager.postModel(
       '$apiV4/user/change-password',
       fromJson: (data) => ChaldeaUser.fromJson(data),
-      data: {
-        'username': username,
-        'password': password,
-        'new_password': newPassword,
-      },
+      data: {'username': username, 'password': password, 'new_password': newPassword},
     );
   }
 
-  static Future<WorkerResponse?> adminResetPassword({
-    required String username,
-    required String password,
-  }) {
+  static Future<WorkerResponse?> adminResetPassword({required String username, required String password}) {
     return cacheManager.postModel(
       '$apiV4/user/reset-password',
       fromJson: (data) => WorkerResponse.fromJson(data),
       options: addAuthHeader(),
-      data: {
-        'username': username,
-        'password': password,
-      },
+      data: {'username': username, 'password': password},
     );
   }
 
@@ -195,25 +164,15 @@ class ChaldeaWorkerApi {
     return cacheManager.postModel(
       '$apiV4/user/change-password',
       fromJson: (data) => ChaldeaUser.fromJson(data),
-      data: {
-        'username': username,
-        'password': password,
-        'new_username': newUsername,
-      },
+      data: {'username': username, 'password': password, 'new_username': newUsername},
     );
   }
 
-  static Future<WorkerResponse?> deleteUser({
-    required String username,
-    required String password,
-  }) {
+  static Future<WorkerResponse?> deleteUser({required String username, required String password}) {
     return cacheManager.postModel(
       '$apiV4/user/delete',
       fromJson: (data) => WorkerResponse.fromJson(data),
-      data: {
-        'username': username,
-        'password': password,
-      },
+      data: {'username': username, 'password': password},
     );
   }
 
@@ -243,14 +202,12 @@ class ChaldeaWorkerApi {
       data: <String, String>{
         'content': content,
         'appVer': AppInfo.versionString,
-        'os': <String?>[
-          PlatformU.operatingSystem,
-          if (kIsWeb) ...[
-            AppInfo.deviceParams['browserName'],
-            AppInfo.deviceParams['platform'],
-          ],
-          if (!kIsWeb) PlatformU.operatingSystemVersion,
-        ].where((e) => e != null && e.isNotEmpty).join(' ').substring2(0, 60).trim(),
+        'os':
+            <String?>[
+              PlatformU.operatingSystem,
+              if (kIsWeb) ...[AppInfo.deviceParams['browserName'], AppInfo.deviceParams['platform']],
+              if (!kIsWeb) PlatformU.operatingSystemVersion,
+            ].where((e) => e != null && e.isNotEmpty).join(' ').substring2(0, 60).trim(),
       },
     );
   }
@@ -307,13 +264,7 @@ class ChaldeaWorkerApi {
   }) {
     if (username == null) userId ??= db.settings.secrets.user?.id;
     if ((userId == null || userId == 0) && (username == null || username.isEmpty)) return Future.value();
-    return teams(
-      userId: userId,
-      username: username,
-      limit: limit,
-      offset: offset,
-      expireAfter: expireAfter,
-    );
+    return teams(userId: userId, username: username, limit: limit, offset: offset, expireAfter: expireAfter);
   }
 
   static Future<TeamQueryResult?> teamsByQuest({
@@ -375,10 +326,7 @@ class ChaldeaWorkerApi {
     );
   }
 
-  static Future<TeamVoteData?> teamVote({
-    required int teamId,
-    required int voteValue,
-  }) {
+  static Future<TeamVoteData?> teamVote({required int teamId, required int voteValue}) {
     return cacheManager.postModel(
       '$apiV4/team/$teamId/vote',
       fromJson: (data) {
@@ -386,9 +334,7 @@ class ChaldeaWorkerApi {
         return TeamVoteData.fromJson(data);
       },
       options: addAuthHeader(),
-      data: {
-        'value': voteValue,
-      },
+      data: {'value': voteValue},
     );
   }
 
@@ -397,10 +343,7 @@ class ChaldeaWorkerApi {
     int offset = 0,
     Duration? expireAfter = const Duration(hours: 2),
   }) {
-    final query = _encodeQuery({
-      'limit': limit,
-      if (offset > 0) 'offset': offset,
-    });
+    final query = _encodeQuery({'limit': limit, if (offset > 0) 'offset': offset});
     return cacheManager.getModel(
       "$apiV4/team/ranking?$query",
       (data) => TeamQueryResult.fromJson(data),

@@ -25,8 +25,10 @@ class QuestEnemySummaryPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final attributes =
-            _getValues<ServantSubAttribute>((e) => e.svt.attribute, (v) => ServantSubAttribute.values.indexOf(v)),
+    final attributes = _getValues<ServantSubAttribute>(
+          (e) => e.svt.attribute,
+          (v) => ServantSubAttribute.values.indexOf(v),
+        ),
         charges = _getValues((e) => e.chargeTurn),
         deathRates = _getValues((e) => e.deathRate),
         critRates = _getValues((e) => e.criticalRate),
@@ -38,23 +40,22 @@ class QuestEnemySummaryPage extends StatelessWidget {
             allTraits.where((e) => enemies.every((enemy) => enemy.traits.any((trait) => trait.signedId == e))).toList(),
         mutatingTraits = allTraits.where((e) => !staticTraits.contains(e)).toList();
 
-    List<int> skillIds = {
-          for (final enemy in enemies) ...[
-            enemy.skills.skillId1,
-            enemy.skills.skillId2,
-            enemy.skills.skillId3,
-          ],
-        }.where((e) => e > 0 && db.gameData.baseSkills[e] != null).toList(),
-        classPassiveIds = {
-          for (final enemy in enemies) ...[
-            ...enemy.classPassive.classPassive.map((e) => e.id),
-            ...enemy.classPassive.addPassive.map((e) => e.id),
-            ...?enemy.classPassive.appendPassiveSkillIds,
-          ],
-        }.where((e) => e > 0 && db.gameData.baseSkills[e] != null).toList(),
-        tdIds = {
-          for (final enemy in enemies) enemy.noblePhantasm.noblePhantasmId,
-        }.where((e) => e > 0 && db.gameData.baseTds[e] != null).toList();
+    List<int> skillIds =
+            {
+              for (final enemy in enemies) ...[enemy.skills.skillId1, enemy.skills.skillId2, enemy.skills.skillId3],
+            }.where((e) => e > 0 && db.gameData.baseSkills[e] != null).toList(),
+        classPassiveIds =
+            {
+              for (final enemy in enemies) ...[
+                ...enemy.classPassive.classPassive.map((e) => e.id),
+                ...enemy.classPassive.addPassive.map((e) => e.id),
+                ...?enemy.classPassive.appendPassiveSkillIds,
+              ],
+            }.where((e) => e > 0 && db.gameData.baseSkills[e] != null).toList(),
+        tdIds =
+            {
+              for (final enemy in enemies) enemy.noblePhantasm.noblePhantasmId,
+            }.where((e) => e > 0 && db.gameData.baseTds[e] != null).toList();
 
     return Scaffold(
       appBar: AppBar(title: Text('[${S.current.enemy_summary}] ${svt.lName.l}')),
@@ -62,12 +63,14 @@ class QuestEnemySummaryPage extends StatelessWidget {
         children: [
           CustomTable(
             children: <Widget>[
-              CustomTableRow(children: [
-                TableCellData(
-                  child: Text(svt.lName.l, style: const TextStyle(fontWeight: FontWeight.bold)),
-                  isHeader: true,
-                )
-              ]),
+              CustomTableRow(
+                children: [
+                  TableCellData(
+                    child: Text(svt.lName.l, style: const TextStyle(fontWeight: FontWeight.bold)),
+                    isHeader: true,
+                  ),
+                ],
+              ),
               if (!Transl.isJP)
                 CustomTableRow(children: [TableCellData(text: svt.lName.jp, textAlign: TextAlign.center)]),
               TextButton(
@@ -77,16 +80,18 @@ class QuestEnemySummaryPage extends StatelessWidget {
                 style: kTextButtonDenseStyle,
                 child: Text('${S.current.enemy} No.${svt.id} - ${svt.lName.l}'),
               ),
-              CustomTableRow.fromChildren(children: [
-                Wrap(
-                  alignment: WrapAlignment.center,
-                  spacing: 2,
-                  runSpacing: 2,
-                  children: [
-                    for (final icon in _getValues((e) => e.svt.icon)) db.getIconImage(icon, width: 48, height: 48)
-                  ],
-                )
-              ]),
+              CustomTableRow.fromChildren(
+                children: [
+                  Wrap(
+                    alignment: WrapAlignment.center,
+                    spacing: 2,
+                    runSpacing: 2,
+                    children: [
+                      for (final icon in _getValues((e) => e.svt.icon)) db.getIconImage(icon, width: 48, height: 48),
+                    ],
+                  ),
+                ],
+              ),
               CustomTableRow.fromTexts(
                 texts: [
                   S.current.svt_sub_attribute,
@@ -106,92 +111,70 @@ class QuestEnemySummaryPage extends StatelessWidget {
                 defaults: TableCellData(textAlign: TextAlign.center),
               ),
               CustomTableRow.fromTexts(
-                texts: [
-                  S.current.svt_class,
-                  S.current.np_gain_mod,
-                  S.current.def_np_gain_mod,
-                  S.current.crit_star_mod,
-                ],
+                texts: [S.current.svt_class, S.current.np_gain_mod, S.current.def_np_gain_mod, S.current.crit_star_mod],
                 isHeader: true,
               ),
-              CustomTableRow(children: [
-                TableCellData(
-                  textAlign: TextAlign.center,
-                  child: InkWell(
-                    onTap: () => SvtClassX.routeTo(svt.classId),
-                    child: Text.rich(
-                      TextSpan(children: [
-                        CenterWidgetSpan(
-                          child: db.getIconImage(svt.clsIcon, width: 24),
+              CustomTableRow(
+                children: [
+                  TableCellData(
+                    textAlign: TextAlign.center,
+                    child: InkWell(
+                      onTap: () => SvtClassX.routeTo(svt.classId),
+                      child: Text.rich(
+                        TextSpan(
+                          children: [
+                            CenterWidgetSpan(child: db.getIconImage(svt.clsIcon, width: 24)),
+                            TextSpan(text: Transl.svtClassId(svt.classId).l),
+                          ],
                         ),
-                        TextSpan(text: Transl.svtClassId(svt.classId).l)
-                      ]),
-                      textAlign: TextAlign.center,
+                        textAlign: TextAlign.center,
+                      ),
                     ),
                   ),
-                ),
-                TableCellData(text: npGainMods.map((e) => e.format(base: 10, percent: true)).join('/')),
-                TableCellData(text: defNpGainMods.map((e) => e.format(base: 10, percent: true)).join('/')),
-                TableCellData(text: critStarMods.map((e) => e.format(base: 10, percent: true)).join('/')),
-              ]),
-              CustomTableRow.fromTexts(
-                texts: [S.current.trait],
-                isHeader: true,
+                  TableCellData(text: npGainMods.map((e) => e.format(base: 10, percent: true)).join('/')),
+                  TableCellData(text: defNpGainMods.map((e) => e.format(base: 10, percent: true)).join('/')),
+                  TableCellData(text: critStarMods.map((e) => e.format(base: 10, percent: true)).join('/')),
+                ],
               ),
-              CustomTableRow.fromChildren(children: [
-                Text.rich(TextSpan(children: [
-                  ...SharedBuilder.traitSpans(
-                    context: context,
-                    traits: staticTraits.map((e) => NiceTrait.signed(e)).toList(),
+              CustomTableRow.fromTexts(texts: [S.current.trait], isHeader: true),
+              CustomTableRow.fromChildren(
+                children: [
+                  Text.rich(
+                    TextSpan(
+                      children: [
+                        ...SharedBuilder.traitSpans(
+                          context: context,
+                          traits: staticTraits.map((e) => NiceTrait.signed(e)).toList(),
+                        ),
+                        if (mutatingTraits.isNotEmpty) ...[
+                          TextSpan(text: '\n${S.current.general_special}*: '),
+                          ...SharedBuilder.traitSpans(
+                            context: context,
+                            traits: mutatingTraits.map((e) => NiceTrait.signed(e)).toList(),
+                          ),
+                        ],
+                      ],
+                    ),
                   ),
-                  if (mutatingTraits.isNotEmpty) ...[
-                    TextSpan(text: '\n${S.current.general_special}*: '),
-                    ...SharedBuilder.traitSpans(
-                      context: context,
-                      traits: mutatingTraits.map((e) => NiceTrait.signed(e)).toList(),
-                    )
-                  ]
-                ])),
-              ]),
-              CustomTableRow.fromTexts(
-                texts: [S.current.quest],
-                isHeader: true,
+                ],
               ),
+              CustomTableRow.fromTexts(texts: [S.current.quest], isHeader: true),
               questTile(context),
               kDefaultDivider,
               ListTile(subtitle: Text(S.current.quest_enemy_summary_hint)),
               if (skillIds.isNotEmpty) ...[
-                CustomTableRow.fromTexts(
-                  texts: [S.current.skill],
-                  isHeader: true,
-                ),
+                CustomTableRow.fromTexts(texts: [S.current.skill], isHeader: true),
                 for (final skillId in skillIds..sort())
-                  SkillDescriptor(
-                    skill: db.gameData.baseSkills[skillId]!,
-                    showEnemy: true,
-                  ),
+                  SkillDescriptor(skill: db.gameData.baseSkills[skillId]!, showEnemy: true),
               ],
               if (classPassiveIds.isNotEmpty) ...[
-                CustomTableRow.fromTexts(
-                  texts: [S.current.passive_skill],
-                  isHeader: true,
-                ),
+                CustomTableRow.fromTexts(texts: [S.current.passive_skill], isHeader: true),
                 for (final skillId in classPassiveIds..sort())
-                  SkillDescriptor(
-                    skill: db.gameData.baseSkills[skillId]!,
-                    showEnemy: true,
-                  ),
+                  SkillDescriptor(skill: db.gameData.baseSkills[skillId]!, showEnemy: true),
               ],
               if (tdIds.isNotEmpty) ...[
-                CustomTableRow.fromTexts(
-                  texts: [S.current.noble_phantasm],
-                  isHeader: true,
-                ),
-                for (final tdId in tdIds..sort())
-                  TdDescriptor(
-                    td: db.gameData.baseTds[tdId]!,
-                    showEnemy: true,
-                  ),
+                CustomTableRow.fromTexts(texts: [S.current.noble_phantasm], isHeader: true),
+                for (final tdId in tdIds..sort()) TdDescriptor(td: db.gameData.baseTds[tdId]!, showEnemy: true),
               ],
             ],
           ),

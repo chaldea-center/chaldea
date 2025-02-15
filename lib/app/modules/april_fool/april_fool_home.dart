@@ -13,9 +13,7 @@ class AprilFoolHome extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(S.current.april_fool),
-      ),
+      appBar: AppBar(title: Text(S.current.april_fool)),
       body: ListView(
         children: [
           // https://fategrandorder.fandom.com/wiki/Fate/Dream_Striker_Release_Campaign
@@ -68,11 +66,12 @@ class AprilFoolHome extends StatelessWidget {
       leading: db.getIconImage(icon, width: 40, height: 40),
       trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
       enabled: page != null,
-      onTap: page == null
-          ? null
-          : () {
-              router.pushPage(page);
-            },
+      onTap:
+          page == null
+              ? null
+              : () {
+                router.pushPage(page);
+              },
     );
   }
 }

@@ -34,10 +34,7 @@ class CheckboxWithLabel extends StatelessWidget {
       child = Padding(padding: padding!, child: child);
     }
     if (ink) {
-      child = InkWell(
-        onTap: onChanged == null ? null : () => onChanged!(!value),
-        child: child,
-      );
+      child = InkWell(onTap: onChanged == null ? null : () => onChanged!(!value), child: child);
     }
     return child;
   }
@@ -77,9 +74,6 @@ class RadioWithLabel<T> extends StatelessWidget {
     if (padding != null) {
       child = Padding(padding: padding!, child: child);
     }
-    return InkWell(
-      onTap: onChanged == null ? null : () => onChanged!(value),
-      child: child,
-    );
+    return InkWell(onTap: onChanged == null ? null : () => onChanged!(value), child: child);
   }
 }

@@ -52,10 +52,9 @@ class _ItemResultTabState extends State<ItemResultTab> with ScrollControllerMixi
     for (final itemId in keys) {
       final itemList = items[itemId]!;
       for (final item in itemList) {
-        children.add(Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-          child: _buildDetailRow(item),
-        ));
+        children.add(
+          Padding(padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4), child: _buildDetailRow(item)),
+        );
       }
     }
 
@@ -112,9 +111,7 @@ class _ItemResultTabState extends State<ItemResultTab> with ScrollControllerMixi
               Item.getName(item.itemId),
               textAlign: TextAlign.center,
               maxLines: 2,
-              style: TextStyle(
-                color: item.valid && item.checked ? null : Theme.of(context).colorScheme.error,
-              ),
+              style: TextStyle(color: item.valid && item.checked ? null : Theme.of(context).colorScheme.error),
             ),
           ),
         ),
@@ -136,21 +133,22 @@ class _ItemResultTabState extends State<ItemResultTab> with ScrollControllerMixi
         ),
         Checkbox(
           value: item.checked,
-          onChanged: item.valid
-              ? (v) {
-                  if (v == true) {
-                    for (final itemDetail in result.details) {
-                      if (itemDetail.itemId == item.itemId && itemDetail.valid) {
-                        itemDetail.checked = itemDetail == item;
+          onChanged:
+              item.valid
+                  ? (v) {
+                    if (v == true) {
+                      for (final itemDetail in result.details) {
+                        if (itemDetail.itemId == item.itemId && itemDetail.valid) {
+                          itemDetail.checked = itemDetail == item;
+                        }
                       }
+                    } else if (v == false) {
+                      item.checked = false;
                     }
-                  } else if (v == false) {
-                    item.checked = false;
+                    setState(() {});
                   }
-                  setState(() {});
-                }
-              : null,
-        )
+                  : null,
+        ),
       ],
     );
   }

@@ -24,34 +24,16 @@ mixin RegionBasedState<V, T extends StatefulWidget> on State<T> {
       value: region,
       // hint: Text('Region'),
       items: [
-        if (shownNone)
-          const DropdownMenuItem(
-            value: null,
-            child: Text('Inherit'),
-          ),
-        for (final region in Region.values)
-          DropdownMenuItem(
-            value: region,
-            child: Text(region.localName),
-          ),
+        if (shownNone) const DropdownMenuItem(value: null, child: Text('Inherit')),
+        for (final region in Region.values) DropdownMenuItem(value: region, child: Text(region.localName)),
       ],
-      icon: Icon(
-        Icons.arrow_drop_down,
-        color: SharedBuilder.appBarForeground(context),
-      ),
+      icon: Icon(Icons.arrow_drop_down, color: SharedBuilder.appBarForeground(context)),
       selectedItemBuilder: (context) {
         final style = TextStyle(color: SharedBuilder.appBarForeground(context));
         return [
-          if (shownNone)
-            DropdownMenuItem(
-              value: null,
-              child: Text('Inherit', style: style),
-            ),
+          if (shownNone) DropdownMenuItem(value: null, child: Text('Inherit', style: style)),
           for (final region in Region.values)
-            DropdownMenuItem(
-              value: region,
-              child: Text(region.localName, style: style),
-            )
+            DropdownMenuItem(value: region, child: Text(region.localName, style: style)),
         ];
       },
       onChanged: onRegionChanged,

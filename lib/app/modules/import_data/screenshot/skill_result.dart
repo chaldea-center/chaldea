@@ -51,10 +51,9 @@ class _SkillResultTabState extends State<SkillResultTab> with ScrollControllerMi
     for (final itemId in keys) {
       final itemList = items[itemId]!;
       for (final item in itemList) {
-        children.add(Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-          child: _buildDetailRow(item),
-        ));
+        children.add(
+          Padding(padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4), child: _buildDetailRow(item)),
+        );
       }
     }
 
@@ -86,81 +85,78 @@ class _SkillResultTabState extends State<SkillResultTab> with ScrollControllerMi
         item.imgThumb == null
             ? const SizedBox(width: 56, height: 56)
             : InkWell(
-                child: Image.memory(item.imgThumb!, width: 56, height: 56),
-                onTap: () {
-                  SimpleCancelOkDialog(
-                    content: Image.memory(item.imgThumb!, width: 200),
-                    hideCancel: true,
-                  ).showDialog(context);
-                },
-              ),
+              child: Image.memory(item.imgThumb!, width: 56, height: 56),
+              onTap: () {
+                SimpleCancelOkDialog(
+                  content: Image.memory(item.imgThumb!, width: 200),
+                  hideCancel: true,
+                ).showDialog(context);
+              },
+            ),
         const SizedBox(width: 8),
         svt?.iconBuilder(context: context, width: 48) ?? db.getIconImage(null, width: 48),
         Expanded(
           child: TextButton(
             onPressed: () {
               if (widget.viewMode) return;
-              router.pushPage(ServantListPage(
-                onSelected: (v) {
-                  item.svtId = v.collectionNo;
-                  if (result.details.any((e) => e != item && e.svtId == item.svtId)) {
-                    item.checked = false;
-                  }
-                  if (mounted) setState(() {});
-                },
-              ), detail: false);
+              router.pushPage(
+                ServantListPage(
+                  onSelected: (v) {
+                    item.svtId = v.collectionNo;
+                    if (result.details.any((e) => e != item && e.svtId == item.svtId)) {
+                      item.checked = false;
+                    }
+                    if (mounted) setState(() {});
+                  },
+                ),
+                detail: false,
+              );
             },
             child: Text(
               '${item.svtId} - ${svt == null ? S.current.unknown : svt.lName.l}',
-              style: TextStyle(
-                color: item.valid && item.checked ? null : Theme.of(context).colorScheme.error,
-              ),
+              style: TextStyle(color: item.valid && item.checked ? null : Theme.of(context).colorScheme.error),
               maxLines: 2,
               textAlign: TextAlign.center,
             ),
           ),
         ),
         const SizedBox(width: 8),
-        ...divideTiles(
-          [
-            for (int index = 0; index < 3; index++)
-              DropdownButton<int>(
-                icon: const SizedBox(),
-                value: item.skills[index],
-                items: List.generate(12, (lv) {
-                  return DropdownMenuItem(
-                    value: lv - 1,
-                    child: Text((lv - 1).toString()),
-                  );
-                }),
-                onChanged: widget.viewMode
-                    ? null
-                    : (v) {
+        ...divideTiles([
+          for (int index = 0; index < 3; index++)
+            DropdownButton<int>(
+              icon: const SizedBox(),
+              value: item.skills[index],
+              items: List.generate(12, (lv) {
+                return DropdownMenuItem(value: lv - 1, child: Text((lv - 1).toString()));
+              }),
+              onChanged:
+                  widget.viewMode
+                      ? null
+                      : (v) {
                         setState(() {
                           if (v != null && v >= 0) item.setSkill(index, v);
                         });
                       },
-              ),
-          ],
-          divider: const Text(' / '),
-        ),
+            ),
+        ], divider: const Text(' / ')),
         Checkbox(
           value: item.checked,
-          onChanged: item.valid
-              ? (v) {
-                  if (v == true) {
-                    for (final detail in result.details) {
-                      if (detail.svtId == item.svtId && detail.valid) {
-                        detail.checked = detail == item;
+          onChanged:
+              item.valid
+                  ? (v) {
+                    if (v == true) {
+                      for (final detail in result.details) {
+                        if (detail.svtId == item.svtId && detail.valid) {
+                          detail.checked = detail == item;
+                        }
                       }
+                    } else if (v == false) {
+                      item.checked = false;
                     }
-                  } else if (v == false) {
-                    item.checked = false;
+                    setState(() {});
                   }
-                  setState(() {});
-                }
-              : null,
-        )
+                  : null,
+        ),
       ],
     );
   }
@@ -169,10 +165,7 @@ class _SkillResultTabState extends State<SkillResultTab> with ScrollControllerMi
     return OverflowBar(
       alignment: MainAxisAlignment.center,
       children: [
-        ElevatedButton(
-          onPressed: result.details.isNotEmpty ? _doImportResult : null,
-          child: Text(S.current.update),
-        ),
+        ElevatedButton(onPressed: result.details.isNotEmpty ? _doImportResult : null, child: Text(S.current.update)),
       ],
     );
   }

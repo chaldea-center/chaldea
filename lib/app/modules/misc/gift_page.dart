@@ -42,16 +42,8 @@ class _MstGiftPageState extends State<MstGiftPage> with RegionBasedState<List<Gi
     return InheritSelectionArea(
       child: Scaffold(
         appBar: AppBar(
-          title: AutoSizeText(
-            'Gift $id',
-            overflow: TextOverflow.fade,
-            maxLines: 1,
-            minFontSize: 14,
-          ),
-          actions: [
-            dropdownRegion(shownNone: false),
-            popupMenu,
-          ],
+          title: AutoSizeText('Gift $id', overflow: TextOverflow.fade, maxLines: 1, minFontSize: 14),
+          actions: [dropdownRegion(shownNone: false), popupMenu],
         ),
         body: buildBody(context),
       ),
@@ -61,74 +53,89 @@ class _MstGiftPageState extends State<MstGiftPage> with RegionBasedState<List<Gi
   @override
   Widget buildContent(BuildContext context, List<Gift> gifts) {
     List<Widget> children = [
-      CustomTable(children: [
-        CustomTableRow.fromTexts(texts: ['Gift $id'], isHeader: true),
-        CustomTableRow.fromChildren(children: [
-          Wrap(
-            spacing: 2,
-            runSpacing: 2,
-            alignment: WrapAlignment.center,
-            crossAxisAlignment: WrapCrossAlignment.center,
+      CustomTable(
+        children: [
+          CustomTableRow.fromTexts(texts: ['Gift $id'], isHeader: true),
+          CustomTableRow.fromChildren(
             children: [
-              for (final gift in gifts) gift.iconBuilder(context: context, width: 36),
+              Wrap(
+                spacing: 2,
+                runSpacing: 2,
+                alignment: WrapAlignment.center,
+                crossAxisAlignment: WrapCrossAlignment.center,
+                children: [for (final gift in gifts) gift.iconBuilder(context: context, width: 36)],
+              ),
             ],
-          )
-        ]),
-      ]),
+          ),
+        ],
+      ),
     ];
 
     final giftAdds = gifts.firstOrNull?.giftAdds ?? [];
     for (final (index, giftAdd) in giftAdds.indexed) {
-      children.add(Container(
-        margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-        decoration: BoxDecoration(
-          border: Border.fromBorderSide(Divider.createBorderSide(context)),
-          borderRadius: BorderRadius.circular(8),
+      children.add(
+        Container(
+          margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+          decoration: BoxDecoration(
+            border: Border.fromBorderSide(Divider.createBorderSide(context)),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: buildGiftAdd(index, giftAdd),
         ),
-        child: buildGiftAdd(index, giftAdd),
-      ));
+      );
     }
     return ListView(children: children);
   }
 
   Widget buildGiftAdd(int index, GiftAdd giftAdd) {
-    return CustomTable(children: [
-      CustomTableRow.fromTexts(texts: ['>>> Replacement ${index + 1} <<<'], isHeader: true),
-      CustomTableRow.fromChildren(children: [
-        Text.rich(TextSpan(children: [
-          CenterWidgetSpan(child: CachedImage(imageUrl: giftAdd.replacementGiftIcon, width: 36)),
-          TextSpan(text: ' priority ${giftAdd.priority}'),
-        ]))
-      ]),
-      CustomTableRow.fromTexts(texts: [S.current.condition], isHeader: true),
-      CustomTableRow.fromChildren(children: [
-        CondTargetValueDescriptor(
-          condType: giftAdd.condType,
-          target: giftAdd.targetId,
-          value: giftAdd.targetNum,
-        )
-      ]),
-      CustomTableRow.fromTexts(texts: ['Replacement Gift ${giftAdd.replacementGifts.firstOrNull?.id}'], isHeader: true),
-      CustomTableRow.fromChildren(children: [
-        Wrap(
-          spacing: 2,
-          runSpacing: 2,
-          alignment: WrapAlignment.center,
-          crossAxisAlignment: WrapCrossAlignment.center,
+    return CustomTable(
+      children: [
+        CustomTableRow.fromTexts(texts: ['>>> Replacement ${index + 1} <<<'], isHeader: true),
+        CustomTableRow.fromChildren(
           children: [
-            for (final gift in giftAdd.replacementGifts) gift.iconBuilder(context: context, width: 36),
+            Text.rich(
+              TextSpan(
+                children: [
+                  CenterWidgetSpan(child: CachedImage(imageUrl: giftAdd.replacementGiftIcon, width: 36)),
+                  TextSpan(text: ' priority ${giftAdd.priority}'),
+                ],
+              ),
+            ),
           ],
-        )
-      ]),
-    ]);
+        ),
+        CustomTableRow.fromTexts(texts: [S.current.condition], isHeader: true),
+        CustomTableRow.fromChildren(
+          children: [
+            CondTargetValueDescriptor(condType: giftAdd.condType, target: giftAdd.targetId, value: giftAdd.targetNum),
+          ],
+        ),
+        CustomTableRow.fromTexts(
+          texts: ['Replacement Gift ${giftAdd.replacementGifts.firstOrNull?.id}'],
+          isHeader: true,
+        ),
+        CustomTableRow.fromChildren(
+          children: [
+            Wrap(
+              spacing: 2,
+              runSpacing: 2,
+              alignment: WrapAlignment.center,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              children: [for (final gift in giftAdd.replacementGifts) gift.iconBuilder(context: context, width: 36)],
+            ),
+          ],
+        ),
+      ],
+    );
   }
 
   Widget get popupMenu {
     return PopupMenuButton(
-      itemBuilder: (context) => [
-        ...SharedBuilder.websitesPopupMenuItems(
-            atlas: '${AtlasApi.atlasApiHost}/nice/${region?.upper ?? "JP"}/gift/$id'),
-      ],
+      itemBuilder:
+          (context) => [
+            ...SharedBuilder.websitesPopupMenuItems(
+              atlas: '${AtlasApi.atlasApiHost}/nice/${region?.upper ?? "JP"}/gift/$id',
+            ),
+          ],
     );
   }
 }

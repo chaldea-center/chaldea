@@ -43,39 +43,43 @@ class BattleBuff {
   }
 
   List<BuffData> get shownBuffs => [
-        ..._passiveList.where((buff) {
-          final showState = buff.vals.ShowState ?? 0;
-          if (showState == -1) return false;
-          if (buff.vals.SetPassiveFrame == 1 || showState >= 1) return true;
-          return false;
-        }),
-        ..._activeList.where((buff) {
-          final showState = buff.vals.ShowState ?? 0;
-          if (showState == -1) return false;
-          return true;
-        }),
-      ];
+    ..._passiveList.where((buff) {
+      final showState = buff.vals.ShowState ?? 0;
+      if (showState == -1) return false;
+      if (buff.vals.SetPassiveFrame == 1 || showState >= 1) return true;
+      return false;
+    }),
+    ..._activeList.where((buff) {
+      final showState = buff.vals.ShowState ?? 0;
+      if (showState == -1) return false;
+      return true;
+    }),
+  ];
 
   bool get isSelectable =>
       validBuffs.every((buff) => !buff.traits.map((trait) => trait.id).contains(Trait.cantBeSacrificed.value));
 
   void removeBuffWithTrait(final NiceTrait trait, {bool includeNoAct = false, bool includeNoField = false}) {
-    _activeList.removeWhere((buff) =>
-        (includeNoAct || !buff.checkState(BuffState.noAct)) &&
-        (includeNoField || !buff.checkState(BuffState.noField)) &&
-        checkSignedIndividualities2(
-          myTraits: buff.traits,
-          requiredTraits: [trait],
-          positiveMatchFunc: partialMatch,
-          negativeMatchFunc: partialMatch,
-        ));
+    _activeList.removeWhere(
+      (buff) =>
+          (includeNoAct || !buff.checkState(BuffState.noAct)) &&
+          (includeNoField || !buff.checkState(BuffState.noField)) &&
+          checkSignedIndividualities2(
+            myTraits: buff.traits,
+            requiredTraits: [trait],
+            positiveMatchFunc: partialMatch,
+            negativeMatchFunc: partialMatch,
+          ),
+    );
   }
 
   void removeBuffOfType(final BuffType type, {bool includeNoAct = false, bool includeNoField = false}) {
-    _activeList.removeWhere((buff) =>
-        (includeNoAct || !buff.checkState(BuffState.noAct)) &&
-        (includeNoField || !buff.checkState(BuffState.noField)) &&
-        buff.buff.type == type);
+    _activeList.removeWhere(
+      (buff) =>
+          (includeNoAct || !buff.checkState(BuffState.noAct)) &&
+          (includeNoField || !buff.checkState(BuffState.noField)) &&
+          buff.buff.type == type,
+    );
   }
 
   void turnProgress() {
@@ -102,16 +106,18 @@ class BattleBuff {
   }
 
   void clearClassPassive(final int uniqueId) {
-    _passiveList
-        .removeWhere((buff) => buff.skillInfoType == SkillInfoType.svtClassPassive && buff.actorUniqueId == uniqueId);
+    _passiveList.removeWhere(
+      (buff) => buff.skillInfoType == SkillInfoType.svtClassPassive && buff.actorUniqueId == uniqueId,
+    );
   }
 
   BattleBuff copy() {
-    final copy = BattleBuff()
-      .._passiveList = _passiveList.map((e) => e.copy()).toList()
-      .._activeList = _activeList.map((e) => e.copy()).toList()
-      ..commandCodeList = commandCodeList.map((e) => e.copy()).toList()
-      ..auraBuffList = auraBuffList.map((e) => e.copy()).toList();
+    final copy =
+        BattleBuff()
+          .._passiveList = _passiveList.map((e) => e.copy()).toList()
+          .._activeList = _activeList.map((e) => e.copy()).toList()
+          ..commandCodeList = commandCodeList.map((e) => e.copy()).toList()
+          ..auraBuffList = auraBuffList.map((e) => e.copy()).toList();
     return copy;
   }
 }
@@ -305,8 +311,10 @@ class BuffData {
     final probabilityCheck = await battleData.canActivate(buffRate, buff.lName.l);
 
     if (buffRate < 1000) {
-      battleData.battleLogger.debug('${buff.lName.l}: ${probabilityCheck ? S.current.success : S.current.failed}'
-          '${battleData.options.tailoredExecution ? '' : ' [$buffRate vs ${battleData.options.threshold}]'}');
+      battleData.battleLogger.debug(
+        '${buff.lName.l}: ${probabilityCheck ? S.current.success : S.current.failed}'
+        '${battleData.options.tailoredExecution ? '' : ' [$buffRate vs ${battleData.options.threshold}]'}',
+      );
     }
 
     return probabilityCheck;
@@ -319,10 +327,7 @@ class BuffData {
   bool checkHpReduceToRegainIndiv(final List<NiceTrait>? selfTraits) {
     final hpReduceToRegainIndiv = vals.HpReduceToRegainIndiv;
     return hpReduceToRegainIndiv == null ||
-        checkSignedIndividualities2(
-          myTraits: selfTraits ?? [],
-          requiredTraits: [NiceTrait(id: hpReduceToRegainIndiv)],
-        );
+        checkSignedIndividualities2(myTraits: selfTraits ?? [], requiredTraits: [NiceTrait(id: hpReduceToRegainIndiv)]);
   }
 
   bool checkTargetFunctionIndividuality(final List<NiceFunction>? functions) {
@@ -466,14 +471,19 @@ class BuffData {
     if (vals.OnFieldCount == -1 && buff.script.TargetIndiv != null) {
       final List<BattleServantData> allies = owner.isPlayer ? battleData.nonnullPlayers : battleData.nonnullEnemies;
       final includeIgnoreIndividuality = buff.script.IncludeIgnoreIndividuality == 1;
-      isAct &= allies
-          .where((svt) =>
-              svt != owner &&
-              checkSignedIndividualities2(
-                myTraits: svt.getTraits(addTraits: svt.getBuffTraits(includeIgnoreIndiv: includeIgnoreIndividuality)),
-                requiredTraits: [buff.script.TargetIndiv!],
-              ))
-          .isEmpty;
+      isAct &=
+          allies
+              .where(
+                (svt) =>
+                    svt != owner &&
+                    checkSignedIndividualities2(
+                      myTraits: svt.getTraits(
+                        addTraits: svt.getBuffTraits(includeIgnoreIndiv: includeIgnoreIndividuality),
+                      ),
+                      requiredTraits: [buff.script.TargetIndiv!],
+                    ),
+              )
+              .isEmpty;
     }
 
     if (buff.script.HP_HIGHER != null) {
@@ -506,9 +516,9 @@ class BuffData {
     return '${buffRate != 1000 ? '${(buffRate / 10).toStringAsFixed(1)} %' : ''} '
         '${buff.lName.l} '
         '${buff.ckSelfIndv.isNotEmpty ? '${S.current.battle_require_self_traits} '
-            '${buff.ckSelfIndv.map((trait) => trait.shownName())} ' : ''}'
+                '${buff.ckSelfIndv.map((trait) => trait.shownName())} ' : ''}'
         '${buff.ckOpIndv.isNotEmpty ? '${S.current.battle_require_opponent_traits} '
-            '${buff.ckOpIndv.map((trait) => trait.shownName())} ' : ''}'
+                '${buff.ckOpIndv.map((trait) => trait.shownName())} ' : ''}'
         '${getParamString()}'
         '${isOnField ? S.current.battle_require_actor_on_field((actorName ?? actorUniqueId).toString()) : ''}';
   }
@@ -535,21 +545,22 @@ class BuffData {
   }
 
   BuffData copy() {
-    final BuffData copy = BuffData.makeCopy(buff, vals, addOrder)
-      ..buffRate = buffRate
-      ..count = count
-      ..logicTurn = logicTurn
-      ..param = param
-      ..additionalParam = additionalParam
-      ..tdTypeChange = tdTypeChange
-      ..shortenMaxCountEachSkill = shortenMaxCountEachSkill?.toList()
-      ..intervalTurn = intervalTurn
-      ..actorUniqueId = actorUniqueId
-      ..actorName = actorName
-      ..isUsed = isUsed
-      ..passive = passive
-      ..skillInfoType = skillInfoType
-      .._state = _state;
+    final BuffData copy =
+        BuffData.makeCopy(buff, vals, addOrder)
+          ..buffRate = buffRate
+          ..count = count
+          ..logicTurn = logicTurn
+          ..param = param
+          ..additionalParam = additionalParam
+          ..tdTypeChange = tdTypeChange
+          ..shortenMaxCountEachSkill = shortenMaxCountEachSkill?.toList()
+          ..intervalTurn = intervalTurn
+          ..actorUniqueId = actorUniqueId
+          ..actorName = actorName
+          ..isUsed = isUsed
+          ..passive = passive
+          ..skillInfoType = skillInfoType
+          .._state = _state;
     return copy;
   }
 
@@ -569,8 +580,7 @@ class BuffData {
 enum BuffState {
   noField(1),
   noAct(16),
-  cond(32),
-  ;
+  cond(32);
 
   const BuffState(this.value);
   final int value;

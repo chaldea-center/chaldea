@@ -9,11 +9,7 @@ class ItemCostSvtDetailTab extends StatefulWidget {
   final int itemId;
   final SvtMatCostDetailType? matType;
 
-  const ItemCostSvtDetailTab({
-    super.key,
-    required this.itemId,
-    this.matType,
-  });
+  const ItemCostSvtDetailTab({super.key, required this.itemId, this.matType});
 
   @override
   State<ItemCostSvtDetailTab> createState() => _ItemCostSvtDetailTabState();
@@ -63,12 +59,7 @@ class _ItemCostSvtDetailTabState extends State<ItemCostSvtDetailTab> {
                     matType != SvtMatCostDetailType.demands ? TextStyle(color: Theme.of(context).disabledColor) : null,
               ),
             ),
-            Expanded(
-              child: Text(
-                '  ${S.current.demands} ${num2str(allDemand)}',
-                textAlign: TextAlign.end,
-              ),
-            ),
+            Expanded(child: Text('  ${S.current.demands} ${num2str(allDemand)}', textAlign: TextAlign.end)),
           ],
         ),
         Row(
@@ -81,10 +72,11 @@ class _ItemCostSvtDetailTabState extends State<ItemCostSvtDetailTab> {
                   children: [
                     TextSpan(
                       text: num2str(stat.itemLeft[itemId]),
-                      style: matType == SvtMatCostDetailType.demands && (stat.itemLeft[itemId] ?? 0) < 0
-                          ? TextStyle(color: Theme.of(context).colorScheme.error)
-                          : null,
-                    )
+                      style:
+                          matType == SvtMatCostDetailType.demands && (stat.itemLeft[itemId] ?? 0) < 0
+                              ? TextStyle(color: Theme.of(context).colorScheme.error)
+                              : null,
+                    ),
                   ],
                 ),
                 style:
@@ -125,37 +117,33 @@ class _ItemCostSvtDetailTabState extends State<ItemCostSvtDetailTab> {
           ],
         ),
       InheritSelectionArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          child: header,
-        ),
+        child: Padding(padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8), child: header),
       ),
       if (classBoardDemand > 0)
-        CustomTile(
-          title: Text(S.current.class_board),
-          trailing: Text(num2str(classBoardDemand)),
-        ),
+        CustomTile(title: Text(S.current.class_board), trailing: Text(num2str(classBoardDemand))),
     ];
     if (classBoardDemands.isNotEmpty) {
-      children.add(GridView.extent(
-        maxCrossAxisExtent: 48,
-        childAspectRatio: 1,
-        crossAxisSpacing: 2,
-        physics: const NeverScrollableScrollPhysics(),
-        shrinkWrap: true,
-        padding: const EdgeInsetsDirectional.only(start: 16, top: 3, bottom: 3, end: 10),
-        children: [
-          for (final (boardId, count) in classBoardDemands.items)
-            GameCardMixin.cardIconBuilder(
-              context: context,
-              icon: db.gameData.classBoards[boardId]?.btnIcon,
-              text: num2str(count),
-              onTap: () {
-                router.push(url: Routes.classBoardI(boardId));
-              },
-            ),
-        ],
-      ));
+      children.add(
+        GridView.extent(
+          maxCrossAxisExtent: 48,
+          childAspectRatio: 1,
+          crossAxisSpacing: 2,
+          physics: const NeverScrollableScrollPhysics(),
+          shrinkWrap: true,
+          padding: const EdgeInsetsDirectional.only(start: 16, top: 3, bottom: 3, end: 10),
+          children: [
+            for (final (boardId, count) in classBoardDemands.items)
+              GameCardMixin.cardIconBuilder(
+                context: context,
+                icon: db.gameData.classBoards[boardId]?.btnIcon,
+                text: num2str(count),
+                onTap: () {
+                  router.push(url: Routes.classBoardI(boardId));
+                },
+              ),
+          ],
+        ),
+      );
     }
     switch (db.settings.display.itemDetailViewType) {
       case ItemDetailViewType.separated:
@@ -165,7 +153,7 @@ class _ItemCostSvtDetailTabState extends State<ItemCostSvtDetailTab> {
           S.current.active_skill,
           S.current.append_skill,
           S.current.costume_unlock,
-          S.current.general_special
+          S.current.general_special,
         ];
         for (int i = 0; i < headers.length; i++) {
           Map<int, int> partDetail = {};
@@ -175,24 +163,28 @@ class _ItemCostSvtDetailTabState extends State<ItemCostSvtDetailTab> {
             }
           });
           if (partDetail.isNotEmpty) {
-            children.add(Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                CustomTile(
-                  title: Text(headers[i]),
-                  trailing: Text(num2str(svtDemands.parts[i])),
-                ),
-                _buildSvtIconGrid(context, partDetail, highlight: matType == SvtMatCostDetailType.full),
-              ],
-            ));
+            children.add(
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  CustomTile(title: Text(headers[i]), trailing: Text(num2str(svtDemands.parts[i]))),
+                  _buildSvtIconGrid(context, partDetail, highlight: matType == SvtMatCostDetailType.full),
+                ],
+              ),
+            );
           }
         }
 
         break;
       case ItemDetailViewType.grid:
-        children.add(_buildSvtIconGrid(context, details.map((key, value) => MapEntry(key, value.all)),
-            highlight: matType == SvtMatCostDetailType.full));
+        children.add(
+          _buildSvtIconGrid(
+            context,
+            details.map((key, value) => MapEntry(key, value.all)),
+            highlight: matType == SvtMatCostDetailType.full,
+          ),
+        );
         break;
       case ItemDetailViewType.list:
         children.addAll(buildSvtList(context, details));
@@ -232,11 +224,7 @@ class _ItemCostSvtDetailTabState extends State<ItemCostSvtDetailTab> {
                   decoration: BoxDecoration(color: Colors.blueAccent, borderRadius: BorderRadius.circular(3)),
                   child: const Padding(
                     padding: EdgeInsets.all(1.6),
-                    child: Icon(
-                      Icons.favorite,
-                      color: Colors.white,
-                      size: 10,
-                    ),
+                    child: Icon(Icons.favorite, color: Colors.white, size: 10),
                   ),
                 ),
               ),
@@ -265,24 +253,27 @@ class _ItemCostSvtDetailTabState extends State<ItemCostSvtDetailTab> {
 
       final svt = db.gameData.servantsWithDup[svtNo];
       bool _planned = db.curUser.svtStatusOf(svtNo).cur.favorite;
-      final textStyle = _planned && matType == SvtMatCostDetailType.full
-          ? TextStyle(color: AppTheme(context).tertiary)
-          : const TextStyle();
+      final textStyle =
+          _planned && matType == SvtMatCostDetailType.full
+              ? TextStyle(color: AppTheme(context).tertiary)
+              : const TextStyle();
       String subtitle = '${detail.all.format()} (';
       subtitle += detail.parts.map((e) => e.format()).join('/');
       subtitle += ')';
-      children.add(CustomTile(
-        leading: db.getIconImage(svt?.borderedIcon, width: 42),
-        title: Text(svt?.lName.l ?? 'No.$svtNo', style: textStyle, maxLines: 1),
-        subtitle: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 240),
-          child: Text(subtitle, style: textStyle),
+      children.add(
+        CustomTile(
+          leading: db.getIconImage(svt?.borderedIcon, width: 42),
+          title: Text(svt?.lName.l ?? 'No.$svtNo', style: textStyle, maxLines: 1),
+          subtitle: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 240),
+            child: Text(subtitle, style: textStyle),
+          ),
+          trailing: const Icon(Icons.arrow_forward_ios),
+          onTap: () {
+            router.push(url: Routes.servantI(svtNo), detail: true);
+          },
         ),
-        trailing: const Icon(Icons.arrow_forward_ios),
-        onTap: () {
-          router.push(url: Routes.servantI(svtNo), detail: true);
-        },
-      ));
+      );
     }
 
     return children;
@@ -305,8 +296,15 @@ class _ItemCostSvtDetailTabState extends State<ItemCostSvtDetailTab> {
         sortReversed = [true, false, true];
         break;
     }
-    svts.sort((a, b) => SvtFilterData.compare(db.gameData.servantsWithDup[a], db.gameData.servantsWithDup[b],
-        keys: sortKeys, reversed: sortReversed, user: db.curUser));
+    svts.sort(
+      (a, b) => SvtFilterData.compare(
+        db.gameData.servantsWithDup[a],
+        db.gameData.servantsWithDup[b],
+        keys: sortKeys,
+        reversed: sortReversed,
+        user: db.curUser,
+      ),
+    );
     return svts;
   }
 }

@@ -52,10 +52,7 @@ class Buff with RouteInfo {
   String get route => Routes.buffI(id);
   @override
   void routeTo({Widget? child, bool popDetails = false, Region? region}) {
-    return super.routeTo(
-      child: child ?? BuffDetailPage(buff: this, region: region),
-      popDetails: popDetails,
-    );
+    return super.routeTo(child: child ?? BuffDetailPage(buff: this, region: region), popDetails: popDetails);
   }
 
   Transl<String, String> get lName => Transl.buffNames(name.isEmpty ? type.name : name);
@@ -89,10 +86,7 @@ class BuffRelationOverwrite {
   @JsonKey(includeFromJson: false, includeToJson: false)
   late final Map<int, Map<int, RelationOverwriteDetail>> defSide2 = _resolve(defSide);
 
-  BuffRelationOverwrite({
-    this.atkSide = const {},
-    this.defSide = const {},
-  });
+  BuffRelationOverwrite({this.atkSide = const {}, this.defSide = const {}});
 
   static Map<int, Map<int, RelationOverwriteDetail>> _resolve(Map<String, Map<String, RelationOverwriteDetail>> src) {
     final Map<int, Map<int, RelationOverwriteDetail>> dest = {};
@@ -119,10 +113,7 @@ class RelationOverwriteDetail {
   int damageRate;
   ClassRelationOverwriteType type;
 
-  RelationOverwriteDetail({
-    required this.damageRate,
-    required this.type,
-  });
+  RelationOverwriteDetail({required this.damageRate, required this.type});
 
   factory RelationOverwriteDetail.fromJson(Map<String, dynamic> json) => _$RelationOverwriteDetailFromJson(json);
 
@@ -134,8 +125,7 @@ enum BuffCheckIndivType {
   andType(1),
   bothOrOnlyInGroup(2), // bothOrType
   bothAndAllType(3), // bothAndType
-  bothOrAll(4),
-  ;
+  bothOrAll(4);
 
   const BuffCheckIndivType(this.value);
   final int value;
@@ -234,30 +224,17 @@ class BuffConvert {
 @JsonSerializable()
 class BuffConvertScript {
   List<String>? OverwritePopupText;
-  BuffConvertScript({
-    this.OverwritePopupText,
-  });
+  BuffConvertScript({this.OverwritePopupText});
   factory BuffConvertScript.fromJson(Map<String, dynamic> json) => _$BuffConvertScriptFromJson(json);
 
   Map<String, dynamic> toJson() => _$BuffConvertScriptToJson(this);
 }
 
-enum BuffConvertType {
-  none,
-  buff,
-  individuality,
-}
+enum BuffConvertType { none, buff, individuality }
 
-enum BuffConvertLimitType {
-  all,
-  self,
-}
+enum BuffConvertLimitType { all, self }
 
-enum ClassRelationOverwriteType {
-  overwriteForce,
-  overwriteMoreThanTarget,
-  overwriteLessThanTarget,
-}
+enum ClassRelationOverwriteType { overwriteForce, overwriteMoreThanTarget, overwriteLessThanTarget }
 
 class BuffTypeConverter extends JsonConverter<BuffType, String> {
   const BuffTypeConverter();
@@ -504,8 +481,7 @@ enum BuffType {
   toFieldChangeField(10001),
   toFieldAvoidBuff(10002),
   toFieldSubIndividualityField(10003),
-  classboardCommandSpellAfterFunction(200001),
-  ;
+  classboardCommandSpellAfterFunction(200001);
 
   final int value;
   const BuffType(this.value);
@@ -519,20 +495,16 @@ enum BuffType {
     return base;
   }
 
-  bool get isTdTypeChange => const [
-        tdTypeChange,
-        tdTypeChangeArts,
-        tdTypeChangeBuster,
-        tdTypeChangeQuick,
-      ].contains(this);
+  bool get isTdTypeChange =>
+      const [tdTypeChange, tdTypeChangeArts, tdTypeChangeBuster, tdTypeChangeQuick].contains(this);
 }
 
 final Map<BuffType, BuffValueTriggerType Function(DataVals)> kBuffValueTriggerTypes = () {
   final types = <BuffType, BuffValueTriggerType Function(DataVals)>{
-    BuffType.counterFunction: (v) =>
-        BuffValueTriggerType(BuffType.counterFunction, skill: v.CounterId, level: v.CounterLv),
-    BuffType.npattackPrevBuff: (v) =>
-        BuffValueTriggerType(BuffType.npattackPrevBuff, skill: v.SkillID, level: v.SkillLV, position: v.Value),
+    BuffType.counterFunction:
+        (v) => BuffValueTriggerType(BuffType.counterFunction, skill: v.CounterId, level: v.CounterLv),
+    BuffType.npattackPrevBuff:
+        (v) => BuffValueTriggerType(BuffType.npattackPrevBuff, skill: v.SkillID, level: v.SkillLV, position: v.Value),
   };
 
   for (final type in {
@@ -586,11 +558,5 @@ class BuffValueTriggerType {
   int? level;
   final int? rate;
   final int? position;
-  BuffValueTriggerType(
-    this.buffType, {
-    required this.skill,
-    required this.level,
-    this.rate,
-    this.position,
-  });
+  BuffValueTriggerType(this.buffType, {required this.skill, required this.level, this.rate, this.position});
 }

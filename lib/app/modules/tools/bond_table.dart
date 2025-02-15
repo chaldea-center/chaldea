@@ -58,25 +58,12 @@ class _BondTotalStateTable extends State<BondTotalTable> {
         actions: [
           DropdownButton<int>(
             value: maxBondLv,
-            items: [
-              for (final value in kBondLvs)
-                DropdownMenuItem(
-                  value: value,
-                  child: Text('Lv.$value'),
-                ),
-            ],
-            icon: Icon(
-              Icons.arrow_drop_down,
-              color: SharedBuilder.appBarForeground(context),
-            ),
+            items: [for (final value in kBondLvs) DropdownMenuItem(value: value, child: Text('Lv.$value'))],
+            icon: Icon(Icons.arrow_drop_down, color: SharedBuilder.appBarForeground(context)),
             selectedItemBuilder: (context) {
               final style = TextStyle(color: SharedBuilder.appBarForeground(context));
               return [
-                for (final value in kBondLvs)
-                  DropdownMenuItem(
-                    value: value,
-                    child: Text('Lv.$value', style: style),
-                  )
+                for (final value in kBondLvs) DropdownMenuItem(value: value, child: Text('Lv.$value', style: style)),
               ];
             },
             onChanged: (v) {
@@ -89,24 +76,22 @@ class _BondTotalStateTable extends State<BondTotalTable> {
           IconButton(
             icon: const Icon(Icons.filter_alt),
             tooltip: '${S.current.filter} (${S.current.servant})',
-            onPressed: () => FilterPage.show(
-              context: context,
-              builder: (context) => ServantFilterPage(
-                filterData: svtFilter,
-                onChanged: (_) {
-                  if (mounted) setState(() {});
-                },
-                planMode: false,
-              ),
-            ),
+            onPressed:
+                () => FilterPage.show(
+                  context: context,
+                  builder:
+                      (context) => ServantFilterPage(
+                        filterData: svtFilter,
+                        onChanged: (_) {
+                          if (mounted) setState(() {});
+                        },
+                        planMode: false,
+                      ),
+                ),
           ),
         ],
       ),
-      body: ListView(
-        children: [
-          for (final group in groups) buildGroup(group.$1, group.$2),
-        ],
-      ),
+      body: ListView(children: [for (final group in groups) buildGroup(group.$1, group.$2)]),
     );
   }
 
@@ -132,20 +117,13 @@ class _BondTotalStateTable extends State<BondTotalTable> {
             width: 56,
             text: [
               if (maxBondLv > svt.bondGrowth.length) '${S.current.bond} ${svt.bondGrowth.length}',
-              if (useGroupBond) fmtBond(bond)
+              if (useGroupBond) fmtBond(bond),
             ].join('\n'),
             option: ImageWithTextOption(fontSize: 12),
           ),
       ],
     );
-    children.add(Padding(
-      padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
-      child: grid,
-    ));
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: children,
-    );
+    children.add(Padding(padding: const EdgeInsets.fromLTRB(16, 0, 16, 0), child: grid));
+    return Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: children);
   }
 }

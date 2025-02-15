@@ -60,20 +60,23 @@ class _SummonListPageState extends State<SummonListPage>
         title: Text(S.current.summon_banner),
         leading: const MasterBackButton(),
         titleSpacing: 0,
-        bottom: showSearchBar
-            ? searchBar
-            : FixedHeight.tabBar(TabBar(
-                controller: _tabController,
-                tabs: [const Tab(text: "Mooncell"), Tab(text: S.current.raw_gacha_data)],
-                onTap: (index) {
-                  if (index == 1) {
-                    router.push(url: Routes.gachas, child: GachaListPage(region: db.curUser.region));
-                    SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
-                      if (mounted) _tabController.index = 0;
-                    });
-                  }
-                },
-              )),
+        bottom:
+            showSearchBar
+                ? searchBar
+                : FixedHeight.tabBar(
+                  TabBar(
+                    controller: _tabController,
+                    tabs: [const Tab(text: "Mooncell"), Tab(text: S.current.raw_gacha_data)],
+                    onTap: (index) {
+                      if (index == 1) {
+                        router.push(url: Routes.gachas, child: GachaListPage(region: db.curUser.region));
+                        SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+                          if (mounted) _tabController.index = 0;
+                        });
+                      }
+                    },
+                  ),
+                ),
         actions: [
           IconButton(
             icon: FaIcon(
@@ -90,16 +93,18 @@ class _SummonListPageState extends State<SummonListPage>
           IconButton(
             icon: const Icon(Icons.filter_alt),
             tooltip: S.current.filter,
-            onPressed: () => FilterPage.show(
-              context: context,
-              builder: (context) => SummonFilterPage(
-                filterData: filterData,
-                isRawGacha: false,
-                onChanged: (_) {
-                  if (mounted) setState(() {});
-                },
-              ),
-            ),
+            onPressed:
+                () => FilterPage.show(
+                  context: context,
+                  builder:
+                      (context) => SummonFilterPage(
+                        filterData: filterData,
+                        isRawGacha: false,
+                        onChanged: (_) {
+                          if (mounted) setState(() {});
+                        },
+                      ),
+                ),
           ),
           IconButton(
             icon: Icon(filterData.favorite ? Icons.favorite : Icons.favorite_outline),
@@ -144,10 +149,11 @@ class _SummonListPageState extends State<SummonListPage>
         constraints: const BoxConstraints(maxHeight: 108),
         child: CachedImage(
           imageUrl: banner,
-          placeholder: (ctx, url) => Padding(
-            padding: const EdgeInsetsDirectional.only(start: 16),
-            child: Text(summon.lName.l, textScaler: const TextScaler.linear(0.9)),
-          ),
+          placeholder:
+              (ctx, url) => Padding(
+                padding: const EdgeInsetsDirectional.only(start: 16),
+                child: Text(summon.lName.l, textScaler: const TextScaler.linear(0.9)),
+              ),
           aspectRatio: 8 / 3,
           cachedOption: CachedImageOption(errorWidget: (ctx, url, error) => Text(summon.lName.l)),
         ),
@@ -158,12 +164,11 @@ class _SummonListPageState extends State<SummonListPage>
           title,
           Text(
             summon.lName.l,
-            style: Theme.of(context)
-                .textTheme
-                .bodySmall
-                ?.copyWith(fontStyle: summon.isOutdated() ? FontStyle.italic : null),
+            style: Theme.of(
+              context,
+            ).textTheme.bodySmall?.copyWith(fontStyle: summon.isOutdated() ? FontStyle.italic : null),
             textAlign: TextAlign.center,
-          )
+          ),
         ],
       );
     } else {
@@ -176,7 +181,7 @@ class _SummonListPageState extends State<SummonListPage>
       final region = db.curUser.region;
       Map<Region, int?> dates = {
         Region.jp: summon.startTime.jp,
-        if (region != Region.jp) region: summon.startTime.ofRegion(region)
+        if (region != Region.jp) region: summon.startTime.ofRegion(region),
       };
       String subtitleText = dates.entries
           .where((e) => e.value != null)
@@ -190,30 +195,19 @@ class _SummonListPageState extends State<SummonListPage>
       contentPadding: EdgeInsetsDirectional.only(start: filterData.showBanner ? 8 : 16),
       minVerticalPadding: filterData.showBanner ? 0 : null,
       horizontalTitleGap: filterData.showBanner ? 0 : null,
-      trailing: db.onUserData(
-        (context, snapshot) {
-          final planned = db.curUser.summons.contains(summon.id);
-          return IconButton(
-            icon: Icon(
-              planned ? Icons.favorite : Icons.favorite_outline,
-              color: planned ? Colors.redAccent : null,
-            ),
-            padding: const EdgeInsets.symmetric(vertical: 8),
-            onPressed: () {
-              db.curUser.summons.toggle(summon.id);
-              db.notifyUserdata();
-            },
-          );
-        },
-      ),
-      onTap: () {
-        summon.routeTo(
-          child: SummonDetailPage(
-            summon: summon,
-            summonList: shownList.toList(),
-          ),
-          popDetails: true,
+      trailing: db.onUserData((context, snapshot) {
+        final planned = db.curUser.summons.contains(summon.id);
+        return IconButton(
+          icon: Icon(planned ? Icons.favorite : Icons.favorite_outline, color: planned ? Colors.redAccent : null),
+          padding: const EdgeInsets.symmetric(vertical: 8),
+          onPressed: () {
+            db.curUser.summons.toggle(summon.id);
+            db.notifyUserdata();
+          },
         );
+      }),
+      onTap: () {
+        summon.routeTo(child: SummonDetailPage(summon: summon, summonList: shownList.toList()), popDetails: true);
       },
     );
   }

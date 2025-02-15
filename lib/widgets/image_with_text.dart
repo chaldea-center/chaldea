@@ -63,42 +63,43 @@ class ImageWithText extends StatelessWidget {
 
   final ImageWithTextOption? option;
 
-  const ImageWithText({
-    super.key,
-    required this.image,
-    this.text,
-    this.textBuilder,
-    this.option,
-    this.onTap,
-  });
+  const ImageWithText({super.key, required this.image, this.text, this.textBuilder, this.option, this.onTap});
 
   @override
   Widget build(BuildContext context) {
     TextStyle _style = const TextStyle(height: 1).merge(option?.textStyle);
-    double? fontSize = option?.fontSize ??
+    double? fontSize =
+        option?.fontSize ??
         (option?.height != null && option!.height!.isFinite
             ? option!.height! * ((text?.split('\n').length ?? 1) > 1 ? 0.24 : 0.3)
             : null);
-    _style = _style.copyWith(
-      fontSize: fontSize,
-      fontWeight: _style.fontWeight ?? FontWeight.w500,
-    );
+    _style = _style.copyWith(fontSize: fontSize, fontWeight: _style.fontWeight ?? FontWeight.w500);
 
     final padding = option?.padding ?? EdgeInsets.zero;
 
     Widget child = Stack(
       alignment: option?.alignment ?? AlignmentDirectional.bottomEnd,
       children: <Widget>[
-        applyConstraints(Padding(
-          padding: EdgeInsets.fromLTRB(
-              -min(0.0, padding.left), -min(0.0, padding.top), -min(0.0, padding.right), -min(0.0, padding.bottom)),
-          child: image,
-        )),
+        applyConstraints(
+          Padding(
+            padding: EdgeInsets.fromLTRB(
+              -min(0.0, padding.left),
+              -min(0.0, padding.top),
+              -min(0.0, padding.right),
+              -min(0.0, padding.bottom),
+            ),
+            child: image,
+          ),
+        ),
         if (text?.isNotEmpty == true || textBuilder != null)
           applyConstraints(
             Padding(
               padding: EdgeInsets.fromLTRB(
-                  max(0.0, padding.left), max(0.0, padding.top), max(0.0, padding.right), max(0.0, padding.bottom)),
+                max(0.0, padding.left),
+                max(0.0, padding.top),
+                max(0.0, padding.right),
+                max(0.0, padding.bottom),
+              ),
               child: paintOutline(
                 text: text,
                 builder: textBuilder,
@@ -113,11 +114,7 @@ class ImageWithText extends StatelessWidget {
       ],
     );
     if (onTap != null) {
-      child = GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onTap: onTap,
-        child: child,
-      );
+      child = GestureDetector(behavior: HitTestBehavior.opaque, onTap: onTap, child: child);
     }
     return child;
   }
@@ -144,10 +141,11 @@ class ImageWithText extends StatelessWidget {
       return style;
     } else {
       return style.copyWith(
-        foreground: style.foreground ?? Paint()
-          ..style = PaintingStyle.stroke
-          ..strokeWidth = shadowSize
-          ..color = shadowColor ?? Colors.white,
+        foreground:
+            style.foreground ?? Paint()
+              ..style = PaintingStyle.stroke
+              ..strokeWidth = shadowSize
+              ..color = shadowColor ?? Colors.white,
       );
     }
   }
@@ -155,14 +153,16 @@ class ImageWithText extends StatelessWidget {
   static TextStyle toShadowStyle([TextStyle? style, double? shadowSize, Color? shadowColor]) {
     style ??= const TextStyle();
     if (style.shadows?.isNotEmpty == true) return style;
-    return style.copyWith(shadows: [
-      BoxShadow(
-        color: shadowColor ?? Colors.white,
-        offset: Offset.zero,
-        blurRadius: shadowSize ?? 3,
-        blurStyle: BlurStyle.normal,
-      ),
-    ]);
+    return style.copyWith(
+      shadows: [
+        BoxShadow(
+          color: shadowColor ?? Colors.white,
+          offset: Offset.zero,
+          blurRadius: shadowSize ?? 3,
+          blurStyle: BlurStyle.normal,
+        ),
+      ],
+    );
   }
 
   static Widget paintOutline({
@@ -185,16 +185,8 @@ class ImageWithText extends StatelessWidget {
       ];
     } else {
       children = [
-        Text(
-          text!,
-          textAlign: textAlign,
-          style: toGlowStyle(textStyle, shadowSize, shadowColor),
-        ),
-        Text(
-          text,
-          textAlign: textAlign,
-          style: toShadowStyle(textStyle, shadowSize, shadowColor),
-        )
+        Text(text!, textAlign: textAlign, style: toGlowStyle(textStyle, shadowSize, shadowColor)),
+        Text(text, textAlign: textAlign, style: toShadowStyle(textStyle, shadowSize, shadowColor)),
       ];
     }
     return Stack(children: children);

@@ -50,7 +50,8 @@ class _QuestEditPageState extends State<QuestEditPage> {
       final onFieldEnemies = enemies.where((e) => e.deckId <= (stage.enemyFieldPosCountReal)).toList();
       if (onFieldEnemies.isEmpty) {
         EasyLoading.showError(
-            '${S.current.quest_wave} ${stage.wave}: ${S.current.empty_hint} (Pos 1-${stage.enemyFieldPosCountReal})');
+          '${S.current.quest_wave} ${stage.wave}: ${S.current.empty_hint} (Pos 1-${stage.enemyFieldPosCountReal})',
+        );
         return;
       }
     }
@@ -70,31 +71,26 @@ class _QuestEditPageState extends State<QuestEditPage> {
               showDialog(
                 context: context,
                 useRootNavigator: false,
-                builder: (context) => SimpleCancelOkDialog(
-                  title: Text(S.current.save),
-                  confirmText: "YES",
-                  onTapOk: onConfirm,
-                  actions: [
-                    TextButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                        Navigator.pop(context);
-                      },
-                      child: const Text("NO"),
+                builder:
+                    (context) => SimpleCancelOkDialog(
+                      title: Text(S.current.save),
+                      confirmText: "YES",
+                      onTapOk: onConfirm,
+                      actions: [
+                        TextButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                            Navigator.pop(context);
+                          },
+                          child: const Text("NO"),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
               );
             },
           ),
         ),
-        body: Column(
-          children: [
-            Expanded(child: body),
-            kDefaultDivider,
-            SafeArea(child: buttonBar),
-          ],
-        ),
+        body: Column(children: [Expanded(child: body), kDefaultDivider, SafeArea(child: buttonBar)]),
       ),
     );
   }
@@ -112,11 +108,7 @@ class _QuestEditPageState extends State<QuestEditPage> {
           label: Text(S.current.clear),
           style: FilledButton.styleFrom(backgroundColor: Theme.of(context).colorScheme.errorContainer),
         ),
-        FilledButton.icon(
-          onPressed: onConfirm,
-          icon: const Icon(Icons.check),
-          label: Text(S.current.confirm),
-        ),
+        FilledButton.icon(onPressed: onConfirm, icon: const Icon(Icons.check), label: Text(S.current.confirm)),
       ],
     );
   }
@@ -131,10 +123,7 @@ class _QuestEditPageState extends State<QuestEditPage> {
       return event.startedAt;
     }, reversed: true);
     List<Widget> children = [
-      ListTile(
-        leading: const Text("ID"),
-        trailing: Text(quest.id.toString()),
-      ),
+      ListTile(leading: const Text("ID"), trailing: Text(quest.id.toString())),
       ListTile(
         title: Text(S.current.name),
         trailing: ConstrainedBox(
@@ -181,7 +170,7 @@ class _QuestEditPageState extends State<QuestEditPage> {
                     maxLines: 1,
                   ),
                 ),
-              )
+              ),
           ],
           onChanged: (v) {
             setState(() {
@@ -206,19 +195,21 @@ class _QuestEditPageState extends State<QuestEditPage> {
       ),
       ListTile(
         title: Text(S.current.quest_fields),
-        subtitle: Text.rich(TextSpan(
-          children: SharedBuilder.traitSpans(context: context, traits: quest.questIndividuality),
-        )),
+        subtitle: Text.rich(
+          TextSpan(children: SharedBuilder.traitSpans(context: context, traits: quest.questIndividuality)),
+        ),
         trailing: IconButton(
           onPressed: () {
-            router.pushPage(TraitEditPage(
-              traits: quest.questIndividuality,
-              onChanged: (traits) {
-                quest.individuality = traits.toList();
-                quest.phaseIndividuality = null;
-                if (mounted) setState(() {});
-              },
-            ));
+            router.pushPage(
+              TraitEditPage(
+                traits: quest.questIndividuality,
+                onChanged: (traits) {
+                  quest.individuality = traits.toList();
+                  quest.phaseIndividuality = null;
+                  if (mounted) setState(() {});
+                },
+              ),
+            );
           },
           icon: const Icon(Icons.edit),
           tooltip: S.current.edit,
@@ -235,11 +226,13 @@ class _QuestEditPageState extends State<QuestEditPage> {
         child: FilledButton.icon(
           onPressed: () {
             setState(() {
-              quest.stages.add(Stage(
-                wave: quest.stages.length,
-                enemyFieldPosCount: quest.stages.lastOrNull?.enemyFieldPosCount,
-                enemies: [],
-              ));
+              quest.stages.add(
+                Stage(
+                  wave: quest.stages.length,
+                  enemyFieldPosCount: quest.stages.lastOrNull?.enemyFieldPosCount,
+                  enemies: [],
+                ),
+              );
             });
           },
           icon: const Icon(Icons.add),
@@ -266,10 +259,7 @@ class _QuestEditPageState extends State<QuestEditPage> {
                 quest.stages.remove(stage);
               });
             },
-            child: Text(
-              S.current.remove,
-              style: TextStyle(color: Theme.of(context).colorScheme.error),
-            ),
+            child: Text(S.current.remove, style: TextStyle(color: Theme.of(context).colorScheme.error)),
           ),
           Text('${S.current.max_enemy_on_stage}:'),
           DropdownButton<int>(
@@ -283,7 +273,7 @@ class _QuestEditPageState extends State<QuestEditPage> {
                 stage.enemyFieldPosCount = v;
               });
             },
-          )
+          ),
         ],
       ),
     ];
@@ -306,17 +296,19 @@ class _QuestEditPageState extends State<QuestEditPage> {
       if (row == onFieldRowCount) {
         children.add(const CustomPaint(painter: DashedLinePainter(indent: 16), size: Size(double.infinity, 16)));
       }
-      children.add(Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          textDirection: TextDirection.rtl,
-          children: [
-            for (int col = 0; col < colPerRow; col++)
-              Expanded(child: enemyDeck.getOrNull(row * colPerRow + col) ?? const SizedBox.shrink()),
-          ],
+      children.add(
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            textDirection: TextDirection.rtl,
+            children: [
+              for (int col = 0; col < colPerRow; col++)
+                Expanded(child: enemyDeck.getOrNull(row * colPerRow + col) ?? const SizedBox.shrink()),
+            ],
+          ),
         ),
-      ));
+      );
     }
     return children;
   }
@@ -331,42 +323,34 @@ class _QuestEditPageState extends State<QuestEditPage> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Text(
-              '$deckId - ${enemy?.lName.l ?? "none"}',
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
+            Text('$deckId - ${enemy?.lName.l ?? "none"}', maxLines: 1, overflow: TextOverflow.ellipsis),
             if (enemy != null)
               InkWell(
                 onTap: () async {
-                  await router.pushPage(QuestEnemyEditPage(
-                    enemy: enemy,
-                    onPaste: (enemy2) {
-                      enemy2 = QuestEnemy.fromJson(enemy2.toJson());
-                      enemy2
-                        ..deck = DeckType.enemy
-                        ..deckId = deckId
-                        ..npcId = enemy.npcId
-                        ..enemyScript.shift = null;
-                      final index = stage.enemies.indexOf(enemy);
-                      if (index < 0) return enemy;
-                      stage.enemies[index] = enemy2;
-                      EasyLoading.showSuccess(S.current.success);
-                      return enemy2;
-                    },
-                    onClear: () {
-                      stage.enemies.remove(enemy);
-                    },
-                  ));
+                  await router.pushPage(
+                    QuestEnemyEditPage(
+                      enemy: enemy,
+                      onPaste: (enemy2) {
+                        enemy2 = QuestEnemy.fromJson(enemy2.toJson());
+                        enemy2
+                          ..deck = DeckType.enemy
+                          ..deckId = deckId
+                          ..npcId = enemy.npcId
+                          ..enemyScript.shift = null;
+                        final index = stage.enemies.indexOf(enemy);
+                        if (index < 0) return enemy;
+                        stage.enemies[index] = enemy2;
+                        EasyLoading.showSuccess(S.current.success);
+                        return enemy2;
+                      },
+                      onClear: () {
+                        stage.enemies.remove(enemy);
+                      },
+                    ),
+                  );
                   if (mounted) setState(() {});
                 },
-                child: AbsorbPointer(
-                  child: QuestEnemyWidget(
-                    enemy: enemy,
-                    showTrueName: true,
-                    region: null,
-                  ),
-                ),
+                child: AbsorbPointer(child: QuestEnemyWidget(enemy: enemy, showTrueName: true, region: null)),
               )
             else
               Padding(
@@ -386,7 +370,7 @@ class _QuestEditPageState extends State<QuestEditPage> {
                   color: Theme.of(context).colorScheme.primary,
                   tooltip: '${S.current.add} (${S.current.enemy})',
                 ),
-              )
+              ),
           ],
         ),
       ),

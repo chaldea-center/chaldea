@@ -38,7 +38,7 @@ class _FFOSummonPageState extends State<FFOSummonPage> {
             },
             icon: const Icon(Icons.replay),
             tooltip: S.current.reset,
-          )
+          ),
         ],
       ),
       body: ListView(
@@ -63,12 +63,7 @@ class _FFOSummonPageState extends State<FFOSummonPage> {
             ),
           ),
           if (history.isNotEmpty)
-            Center(
-              child: Text(
-                S.current.long_press_to_save_hint,
-                style: const TextStyle(color: Colors.grey),
-              ),
-            ),
+            Center(child: Text(S.current.long_press_to_save_hint, style: const TextStyle(color: Colors.grey))),
         ],
       ),
     );
@@ -106,10 +101,9 @@ class _FFOSummonPageState extends State<FFOSummonPage> {
         child: db.getIconImage(
           FFOUtil.imgUrl('UI/${ten ? 'btn_summon_10.png' : 'btn_summon_01.png'}'),
           height: 50,
-          placeholder: (context) => ElevatedButton(
-            onPressed: () => drawSummon(ten ? 10 : 1),
-            child: Text('Gacha ×${ten ? 10 : 1}'),
-          ),
+          placeholder:
+              (context) =>
+                  ElevatedButton(onPressed: () => drawSummon(ten ? 10 : 1), child: Text('Gacha ×${ten ? 10 : 1}')),
         ),
       ),
     );
@@ -120,11 +114,7 @@ class _FFOSummonPageState extends State<FFOSummonPage> {
       fit: BoxFit.scaleDown,
       child: Row(
         mainAxisSize: MainAxisSize.min,
-        children: [
-          _summonButton(false),
-          const SizedBox(width: 10),
-          _summonButton(true),
-        ],
+        children: [_summonButton(false), const SizedBox(width: 10), _summonButton(true)],
       ),
     );
   }
@@ -145,16 +135,18 @@ class _FFOSummonPageState extends State<FFOSummonPage> {
       return svts[_random.nextInt(svts.length)];
     }
 
-    history.add(List.generate(
-      counts,
-      (index) => FFOParams(
-        headPart: _getRandom(FfoPartWhere.head),
-        bodyPart: _getRandom(FfoPartWhere.body),
-        bgPart: _getRandom(FfoPartWhere.bg),
-        clipOverflow: true,
-        cropNormalizedSize: true,
+    history.add(
+      List.generate(
+        counts,
+        (index) => FFOParams(
+          headPart: _getRandom(FfoPartWhere.head),
+          bodyPart: _getRandom(FfoPartWhere.body),
+          bgPart: _getRandom(FfoPartWhere.bg),
+          clipOverflow: true,
+          cropNormalizedSize: true,
+        ),
       ),
-    ));
+    );
     _curHistory = history.length - 1;
     setState(() {});
   }
@@ -169,12 +161,8 @@ class _FFOSummonPageState extends State<FFOSummonPage> {
           for (final p in rowItems)
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-              child: FfoCard(
-                params: p,
-                showSave: true,
-                showFullScreen: true,
-              ),
-            )
+              child: FfoCard(params: p, showSave: true, showFullScreen: true),
+            ),
         ],
       );
     }
@@ -186,18 +174,11 @@ class _FFOSummonPageState extends State<FFOSummonPage> {
       Widget child = Padding(
         padding: const EdgeInsets.symmetric(vertical: 8),
         child: Center(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
-            children: rows,
-          ),
+          child: Column(crossAxisAlignment: CrossAxisAlignment.center, mainAxisSize: MainAxisSize.min, children: rows),
         ),
       );
       if (data.isNotEmpty) {
-        child = FittedBox(
-          fit: BoxFit.scaleDown,
-          child: child,
-        );
+        child = FittedBox(fit: BoxFit.scaleDown, child: child);
       }
       return child;
     }
@@ -210,37 +191,33 @@ class _FFOSummonPageState extends State<FFOSummonPage> {
         Row(
           children: [
             IconButton(
-              onPressed: _curHistory == 0
-                  ? null
-                  : () {
-                      setState(() {
-                        _curHistory -= 1;
-                      });
-                    },
+              onPressed:
+                  _curHistory == 0
+                      ? null
+                      : () {
+                        setState(() {
+                          _curHistory -= 1;
+                        });
+                      },
               icon: const Icon(Icons.keyboard_arrow_left),
             ),
             Expanded(
-              child: AspectRatio(
-                aspectRatio: (512 * 5) / (720 * 2),
-                child: _buildOneHistory(history[_curHistory]),
-              ),
+              child: AspectRatio(aspectRatio: (512 * 5) / (720 * 2), child: _buildOneHistory(history[_curHistory])),
             ),
             IconButton(
-              onPressed: _curHistory == history.length - 1
-                  ? null
-                  : () {
-                      setState(() {
-                        _curHistory += 1;
-                      });
-                    },
+              onPressed:
+                  _curHistory == history.length - 1
+                      ? null
+                      : () {
+                        setState(() {
+                          _curHistory += 1;
+                        });
+                      },
               icon: const Icon(Icons.keyboard_arrow_right),
             ),
           ],
         ),
-        Text(
-          '${_curHistory + 1}/${history.length}',
-          style: Theme.of(context).textTheme.bodySmall,
-        ),
+        Text('${_curHistory + 1}/${history.length}', style: Theme.of(context).textTheme.bodySmall),
         const SizedBox(height: 6),
       ],
     );

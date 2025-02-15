@@ -72,11 +72,7 @@ class _CvListPageState extends State<CvListPage> with SearchableListState<String
     filterShownList(compare: null);
     return scrollListener(
       useGrid: false,
-      appBar: AppBar(
-        title: Text(S.current.info_cv),
-        bottom: showSearchBar ? searchBar : null,
-        actions: [searchIcon],
-      ),
+      appBar: AppBar(title: Text(S.current.info_cv), bottom: showSearchBar ? searchBar : null, actions: [searchIcon]),
     );
   }
 
@@ -107,13 +103,11 @@ class _CvListPageState extends State<CvListPage> with SearchableListState<String
           contentPadding: const EdgeInsetsDirectional.only(start: 16.0),
         );
       },
-      contentBuilder: (context) => Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          if (svtMap[cv] != null) _cardGrid(svtMap[cv]!),
-          if (ceMap[cv] != null) _cardGrid(ceMap[cv]!),
-        ],
-      ),
+      contentBuilder:
+          (context) => Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [if (svtMap[cv] != null) _cardGrid(svtMap[cv]!), if (ceMap[cv] != null) _cardGrid(ceMap[cv]!)],
+          ),
     );
   }
 

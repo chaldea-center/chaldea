@@ -16,18 +16,13 @@ class EventTowersPage extends StatelessWidget {
       isScrollable: towers.length > 2,
       tabs: [for (final tower in towers) Tab(child: Text(tower.lName, style: Theme.of(context).textTheme.bodyMedium))],
     );
-    final pages = [
-      for (final tower in towers) EventTowerTab(tower: tower),
-    ];
+    final pages = [for (final tower in towers) EventTowerTab(tower: tower)];
 
     return DefaultTabController(
       length: towers.length,
       child: Column(
         mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          FixedHeight.tabBar(tabbar),
-          Expanded(child: TabBarView(children: pages)),
-        ],
+        children: <Widget>[FixedHeight.tabBar(tabbar), Expanded(child: TabBarView(children: pages))],
       ),
     );
   }
@@ -53,23 +48,14 @@ class EventTowerTab extends HookWidget {
     List<InlineSpan> titles = [];
     for (final gift in reward.gifts) {
       if (titles.isNotEmpty) titles.add(const TextSpan(text: '\n'));
-      titles.add(CenterWidgetSpan(
-        child: gift.iconBuilder(
-          context: context,
-          width: 36,
-          text: '',
-          showName: true,
-        ),
-      ));
+      titles.add(CenterWidgetSpan(child: gift.iconBuilder(context: context, width: 36, text: '', showName: true)));
       titles.add(TextSpan(text: ' ×${gift.num.format(compact: false, groupSeparator: ',')}'));
     }
 
     return ListTile(
       key: Key('event_tower_${reward.floor}'),
       leading: Text(reward.floor.toString()),
-      title: Text.rich(
-        TextSpan(children: titles),
-      ),
+      title: Text.rich(TextSpan(children: titles)),
     );
   }
 }

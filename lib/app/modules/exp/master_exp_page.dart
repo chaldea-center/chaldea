@@ -44,10 +44,7 @@ class _MasterExpPageState extends State<MasterExpPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Master Level"),
-        actions: [dropdownRegion()],
-      ),
+      appBar: AppBar(title: const Text("Master Level"), actions: [dropdownRegion()]),
       body: buildBody(context),
     );
   }
@@ -71,46 +68,47 @@ class _MasterExpPageState extends State<MasterExpPage>
         DataColumn2(label: text('Friend')),
         DataColumn2(label: text('Gift')),
       ],
-      rows: [
-        for (final lv in lvs) buildRow(lv, userExps[lv]!),
-      ],
+      rows: [for (final lv in lvs) buildRow(lv, userExps[lv]!)],
     );
   }
 
   DataRow buildRow(int lv, MasterUserLvDetail detail) {
     final prevExp = userExps[lv - 1]?.requiredExp;
     final addExp = prevExp == null ? null : detail.requiredExp - prevExp;
-    return DataRow(cells: [
-      DataCell(text(lv.toString())),
-      DataCell(Center(
-        child: AutoSizeText.rich(
-          TextSpan(
-            text: fmtExp(detail.requiredExp),
-            children: addExp == null
-                ? null
-                : [
-                    TextSpan(
-                      text: '\n+${fmtExp(addExp)}',
-                      style: TextStyle(
-                        // fontSize: 12,
-                        color: Theme.of(context).textTheme.bodySmall?.color,
-                      ),
-                    ),
-                  ],
+    return DataRow(
+      cells: [
+        DataCell(text(lv.toString())),
+        DataCell(
+          Center(
+            child: AutoSizeText.rich(
+              TextSpan(
+                text: fmtExp(detail.requiredExp),
+                children:
+                    addExp == null
+                        ? null
+                        : [
+                          TextSpan(
+                            text: '\n+${fmtExp(addExp)}',
+                            style: TextStyle(
+                              // fontSize: 12,
+                              color: Theme.of(context).textTheme.bodySmall?.color,
+                            ),
+                          ),
+                        ],
+              ),
+              style: const TextStyle(fontSize: 12),
+              maxLines: 2,
+              minFontSize: 6,
+              textAlign: TextAlign.center,
+            ),
           ),
-          style: const TextStyle(fontSize: 12),
-          maxLines: 2,
-          minFontSize: 6,
-          textAlign: TextAlign.center,
         ),
-      )),
-      DataCell(text(detail.maxAp.toString())),
-      DataCell(text(detail.maxCost.toString())),
-      DataCell(text(detail.maxFriend.toString())),
-      DataCell(
-        detail.gift == null ? const SizedBox.shrink() : detail.gift!.iconBuilder(context: context, width: 32),
-      ),
-    ]);
+        DataCell(text(detail.maxAp.toString())),
+        DataCell(text(detail.maxCost.toString())),
+        DataCell(text(detail.maxFriend.toString())),
+        DataCell(detail.gift == null ? const SizedBox.shrink() : detail.gift!.iconBuilder(context: context, width: 32)),
+      ],
+    );
   }
 
   Widget text(String v) {

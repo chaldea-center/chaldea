@@ -15,16 +15,8 @@ class _GameServerPageState extends State<GameServerPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(S.current.game_server),
-      ),
-      body: SingleChildScrollView(
-        child: TileGroup(
-          children: [
-            for (var server in Region.values) radioOf(server),
-          ],
-        ),
-      ),
+      appBar: AppBar(title: Text(S.current.game_server)),
+      body: SingleChildScrollView(child: TileGroup(children: [for (var server in Region.values) radioOf(server)])),
     );
   }
 

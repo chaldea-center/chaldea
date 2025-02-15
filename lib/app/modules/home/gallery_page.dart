@@ -38,17 +38,13 @@ class _GalleryPageState extends State<GalleryPage> {
           if (db.settings.display.showAccountAtHome)
             InkWell(
               child: ConstrainedBox(
-                constraints: const BoxConstraints(
-                  minHeight: 36,
-                  minWidth: 48,
-                ),
+                constraints: const BoxConstraints(minHeight: 36, minWidth: 48),
                 child: Center(
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 8),
-                    child: db.onUserData((context, snapshot) => Text(
-                          db.curUser.name,
-                          textScaler: const TextScaler.linear(0.8),
-                        )),
+                    child: db.onUserData(
+                      (context, snapshot) => Text(db.curUser.name, textScaler: const TextScaler.linear(0.8)),
+                    ),
                   ),
                 ),
               ),
@@ -68,15 +64,16 @@ class _GalleryPageState extends State<GalleryPage> {
             ),
         ],
       ),
-      body: db.settings.carousel.enabled
-          ? RefreshIndicator(
-              child: body,
-              onRefresh: () async {
-                await AppNewsCarousel.resolveSliderImageUrls(true);
-                if (mounted) setState(() {});
-              },
-            )
-          : body,
+      body:
+          db.settings.carousel.enabled
+              ? RefreshIndicator(
+                child: body,
+                onRefresh: () async {
+                  await AppNewsCarousel.resolveSliderImageUrls(true);
+                  if (mounted) setState(() {});
+                },
+              )
+              : body,
     );
   }
 
@@ -93,32 +90,21 @@ class _GalleryPageState extends State<GalleryPage> {
                 children: [
                   if (db.settings.carousel.enabled) AppNewsCarousel(maxWidth: constraints.maxWidth),
                   if (db.settings.carousel.enabled) const Divider(height: 0.5, thickness: 0.5),
-                  GridGallery(
-                    isHome: true,
-                    maxWidth: constraints.maxWidth,
-                  ),
+                  GridGallery(isHome: true, maxWidth: constraints.maxWidth),
                   if (dataVersion != null && dataVersion.timestamp > db.gameData.version.timestamp)
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 4),
-                      child: _dataUpdate(),
-                    ),
+                    Padding(padding: const EdgeInsets.symmetric(vertical: 4), child: _dataUpdate()),
                   if (kDebugMode || (kIsWeb && !kPlatformMethods.rendererCanvasKit))
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 4),
-                      child:
-                          Text(Language.isZH ? 'html渲染模式将于2025年初弃用' : 'html renderer will be deprecated in early 2025'),
+                      child: Text(
+                        Language.isZH ? 'html渲染模式将于2025年初弃用' : 'html renderer will be deprecated in early 2025',
+                      ),
                     ),
                 ],
               ),
             ),
             const RandomImageSurprise(),
-            const ListTile(
-              subtitle: Center(
-                  child: AutoSizeText(
-                '~~~~~ · ~~~~~',
-                maxLines: 1,
-              )),
-            ),
+            const ListTile(subtitle: Center(child: AutoSizeText('~~~~~ · ~~~~~', maxLines: 1))),
             ...notifications,
             if (kDebugMode) buildTestInfoPad(),
           ],
@@ -143,12 +129,12 @@ class _GalleryPageState extends State<GalleryPage> {
             if (mounted) setState(() {});
           },
           child: Text.rich(
-            TextSpan(text: '${S.current.new_data_available}  ', children: [
-              TextSpan(
-                text: S.current.update,
-                style: TextStyle(color: Theme.of(context).colorScheme.primary),
-              )
-            ]),
+            TextSpan(
+              text: '${S.current.new_data_available}  ',
+              children: [
+                TextSpan(text: S.current.update, style: TextStyle(color: Theme.of(context).colorScheme.primary)),
+              ],
+            ),
             textScaler: const TextScaler.linear(0.8),
           ),
         ),
@@ -160,16 +146,18 @@ class _GalleryPageState extends State<GalleryPage> {
     List<Widget> children = [];
 
     if (PlatformU.isWindows && !db.paths.isAppPathValid) {
-      children.add(SimpleAccordion(
-        expanded: true,
-        headerBuilder: (_, __) => ListTile(
-          title: Text(S.current.invalid_startup_path),
-          subtitle: Text(db.paths.appPath),
+      children.add(
+        SimpleAccordion(
+          expanded: true,
+          headerBuilder:
+              (_, __) => ListTile(title: Text(S.current.invalid_startup_path), subtitle: Text(db.paths.appPath)),
+          contentBuilder:
+              (context) => Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                child: Text(S.current.invalid_startup_path_info),
+              ),
         ),
-        contentBuilder: (context) => Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: Text(S.current.invalid_startup_path_info)),
-      ));
+      );
     }
 
     return children;
@@ -185,19 +173,9 @@ class _GalleryPageState extends State<GalleryPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: divideTiles(<Widget>[
-          ListTile(
-            title: Center(
-              child: Text(S.current.test_info_pad, style: const TextStyle(fontSize: 18)),
-            ),
-          ),
-          ListTile(
-            title: const Text('UUID'),
-            subtitle: Text(AppInfo.uuid),
-          ),
-          ListTile(
-            title: Text(S.current.screen_size),
-            trailing: Text(MediaQuery.of(context).size.toString()),
-          ),
+          ListTile(title: Center(child: Text(S.current.test_info_pad, style: const TextStyle(fontSize: 18)))),
+          ListTile(title: const Text('UUID'), subtitle: Text(AppInfo.uuid)),
+          ListTile(title: Text(S.current.screen_size), trailing: Text(MediaQuery.of(context).size.toString())),
           ListTile(
             title: Text(S.current.dataset_version),
             trailing: Text(db.gameData.version.text(), textAlign: TextAlign.end),

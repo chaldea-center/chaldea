@@ -134,11 +134,13 @@ class FakerRuntime {
 
   void lockTask(VoidCallback callback) {
     if (runningTask.value) {
-      _showDialog(SimpleCancelOkDialog(
-        title: Text(S.current.error),
-        content: const Text("task is till running"),
-        hideCancel: true,
-      ));
+      _showDialog(
+        SimpleCancelOkDialog(
+          title: Text(S.current.error),
+          content: const Text("task is till running"),
+          hideCancel: true,
+        ),
+      );
       return;
     }
     callback();
@@ -147,11 +149,13 @@ class FakerRuntime {
 
   Future<void> runTask(Future Function() task, {bool check = true}) async {
     if (check && runningTask.value) {
-      _showDialog(SimpleCancelOkDialog(
-        title: Text(S.current.error),
-        content: const Text("previous task is till running"),
-        hideCancel: true,
-      ));
+      _showDialog(
+        SimpleCancelOkDialog(
+          title: Text(S.current.error),
+          content: const Text("previous task is till running"),
+          hideCancel: true,
+        ),
+      );
       return;
     }
     try {
@@ -215,8 +219,11 @@ class FakerRuntime {
     if (battleOption.recoverIds.isNotEmpty && battleOption.waitApRecover) {
       throw SilentException('Do not turn on both apple recover and wait AP recover');
     }
-    final questPhaseEntity =
-        await AtlasApi.questPhase(battleOption.questId, battleOption.questPhase, region: agent.user.region);
+    final questPhaseEntity = await AtlasApi.questPhase(
+      battleOption.questId,
+      battleOption.questPhase,
+      region: agent.user.region,
+    );
     if (questPhaseEntity == null) {
       throw SilentException('quest not found');
     }
@@ -348,12 +355,14 @@ class FakerRuntime {
               if (dropNum == null || dropNum <= 0) continue;
               battleOption.targetDrops[itemId] = targetNum - dropNum;
             }
-            final reachedItems = battleOption.targetDrops.keys
-                .where((itemId) => resultBattleDrops.containsKey(itemId) && battleOption.targetDrops[itemId]! <= 0)
-                .toList();
+            final reachedItems =
+                battleOption.targetDrops.keys
+                    .where((itemId) => resultBattleDrops.containsKey(itemId) && battleOption.targetDrops[itemId]! <= 0)
+                    .toList();
             if (reachedItems.isNotEmpty) {
               throw SilentException(
-                  'Target drop reaches: ${reachedItems.map((e) => GameCardMixin.anyCardItemName(e).l).join(', ')}');
+                'Target drop reaches: ${reachedItems.map((e) => GameCardMixin.anyCardItemName(e).l).join(', ')}',
+              );
             }
           }
         }
@@ -384,11 +393,7 @@ class FakerRuntime {
     }
     logger.t('finished all $finishedCount battles');
     _showDialog(
-      SimpleCancelOkDialog(
-        title: const Text('Finished'),
-        content: Text('$finishedCount battles'),
-        hideCancel: true,
-      ),
+      SimpleCancelOkDialog(title: const Text('Finished'), content: Text('$finishedCount battles'), hideCancel: true),
       barrierDismissible: false,
     );
   }
@@ -427,7 +432,8 @@ class FakerRuntime {
     }
     if (counts.ccCount >= gameData.constants.maxUserCommandCode + 100) {
       throw SilentException(
-          '${S.current.command_code}: ${counts.ccCount}>=${gameData.constants.maxUserCommandCode}+100');
+        '${S.current.command_code}: ${counts.ccCount}>=${gameData.constants.maxUserCommandCode}+100',
+      );
     }
     final fp = mstData.tblUserGame[mstData.user?.userId]?.friendPoint ?? 0;
     if (fp < 2000) {
@@ -444,8 +450,10 @@ class FakerRuntime {
     int drawNum = 10;
     final userGacha = mstData.userGacha[option.gachaId];
     if (hundredDraw && userGacha != null && userGacha.freeDrawAt > 0) {
-      final freeDrawAt = DateTime.fromMillisecondsSinceEpoch(userGacha.freeDrawAt * 1000, isUtc: true)
-          .add(Duration(hours: region.timezone));
+      final freeDrawAt = DateTime.fromMillisecondsSinceEpoch(
+        userGacha.freeDrawAt * 1000,
+        isUtc: true,
+      ).add(Duration(hours: region.timezone));
       final now = DateTime.now().toUtc().add(Duration(hours: region.timezone));
       if (now.isAfter(freeDrawAt) && now.timestamp < freeDrawAt.timestamp + kSecsPerDay && now.day == freeDrawAt.day) {
         drawNum = 100;
@@ -493,29 +501,33 @@ class FakerRuntime {
     List<UserServantEntity> sellUserSvts = [];
     List<UserCommandCodeEntity> sellCommandCodes = [];
     final timeLimit = DateTime.now().timestamp - 3600 * 36;
-    sellUserSvts.addAll(mstData.userSvt.where((userSvt) {
-      final entity = db.gameData.entities[userSvt.svtId];
-      if (userSvt.locked ||
-          userSvt.lv != 1 ||
-          entity == null ||
-          userSvt.createdAt < timeLimit ||
-          agent.user.gacha.sellKeepSvtIds.contains(userSvt.svtId)) {
-        return false;
-      }
-      if (entity.type == SvtType.combineMaterial && entity.rarity <= 3) return true;
-      final svt = db.gameData.servantsById[userSvt.svtId];
-      if (svt == null || svt.rarity > 3 || svt.rarity == 0) return false;
-      if (!svt.obtains.contains(SvtObtain.friendPoint)) return false;
-      return true;
-    }));
+    sellUserSvts.addAll(
+      mstData.userSvt.where((userSvt) {
+        final entity = db.gameData.entities[userSvt.svtId];
+        if (userSvt.locked ||
+            userSvt.lv != 1 ||
+            entity == null ||
+            userSvt.createdAt < timeLimit ||
+            agent.user.gacha.sellKeepSvtIds.contains(userSvt.svtId)) {
+          return false;
+        }
+        if (entity.type == SvtType.combineMaterial && entity.rarity <= 3) return true;
+        final svt = db.gameData.servantsById[userSvt.svtId];
+        if (svt == null || svt.rarity > 3 || svt.rarity == 0) return false;
+        if (!svt.obtains.contains(SvtObtain.friendPoint)) return false;
+        return true;
+      }),
+    );
 
     final equippedCC = mstData.userSvtCommandCode.expand((e) => e.userCommandCodeIds).toSet();
-    sellCommandCodes.addAll(mstData.userCommandCode.where((userCC) {
-      final cc = db.gameData.commandCodesById[userCC.commandCodeId];
-      if (userCC.locked || cc == null || cc.rarity > 2 || equippedCC.contains(userCC.id)) return false;
-      if (userCC.createdAt < timeLimit) return false;
-      return true;
-    }));
+    sellCommandCodes.addAll(
+      mstData.userCommandCode.where((userCC) {
+        final cc = db.gameData.commandCodesById[userCC.commandCodeId];
+        if (userCC.locked || cc == null || cc.rarity > 2 || equippedCC.contains(userCC.id)) return false;
+        if (userCC.createdAt < timeLimit) return false;
+        return true;
+      }),
+    );
     sellUserSvts.sort2((e) => -e.id);
     sellUserSvts = sellUserSvts.take(200).toList();
     sellCommandCodes.sort2((e) => -e.id);
@@ -527,8 +539,14 @@ class FakerRuntime {
         commandCodeUserIds: sellCommandCodes.map((e) => e.id).toList(),
       );
       gachaResultStat.lastSellServants = sellUserSvts.toList();
-      gachaResultStat.lastSellServants.sort((a, b) => SvtFilterData.compareId(a.svtId, b.svtId,
-          keys: const [SvtCompare.rarity, SvtCompare.className], reversed: const [true, false]));
+      gachaResultStat.lastSellServants.sort(
+        (a, b) => SvtFilterData.compareId(
+          a.svtId,
+          b.svtId,
+          keys: const [SvtCompare.rarity, SvtCompare.className],
+          reversed: const [true, false],
+        ),
+      );
     }
     update();
   }
@@ -537,40 +555,42 @@ class FakerRuntime {
     final gachaOption = agent.user.gacha;
     displayToast('Combine Craft Essence ...');
     while (count > 0) {
-      final targetCEs = mstData.userSvt.where((userSvt) {
-        final ce = db.gameData.craftEssencesById[userSvt.svtId];
-        if (ce == null) return false;
-        if (!userSvt.locked) return false;
-        final maxLv = userSvt.maxLv;
-        if (maxLv == null || userSvt.lv >= maxLv - 1) return false;
-        if (gachaOption.ceEnhanceBaseUserSvtIds.contains(userSvt.id)) return true;
-        if (gachaOption.ceEnhanceBaseSvtIds.contains(userSvt.svtId)) {
-          return userSvt.limitCount == 4;
-        }
-        return false;
-      }).toList();
+      final targetCEs =
+          mstData.userSvt.where((userSvt) {
+            final ce = db.gameData.craftEssencesById[userSvt.svtId];
+            if (ce == null) return false;
+            if (!userSvt.locked) return false;
+            final maxLv = userSvt.maxLv;
+            if (maxLv == null || userSvt.lv >= maxLv - 1) return false;
+            if (gachaOption.ceEnhanceBaseUserSvtIds.contains(userSvt.id)) return true;
+            if (gachaOption.ceEnhanceBaseSvtIds.contains(userSvt.svtId)) {
+              return userSvt.limitCount == 4;
+            }
+            return false;
+          }).toList();
       if (targetCEs.isEmpty) {
         throw SilentException('No valid Target Craft Essence');
       }
       targetCEs.sort2((e) => e.lv);
       final targetCE = targetCEs.first;
-      List<UserServantEntity> combineMaterialCEs = mstData.userSvt.where((userSvt) {
-        final ce = db.gameData.craftEssencesById[userSvt.svtId];
-        if (ce == null || userSvt.locked || userSvt.lv != 1) return false;
-        final bool isExp = ce.flags.contains(SvtFlag.svtEquipExp);
-        if (ce.rarity > 4) {
-          return false;
-        } else if (ce.rarity == 4) {
-          return gachaOption.feedExp4 && isExp;
-        } else if (ce.rarity == 3) {
-          if (isExp) {
-            return gachaOption.feedExp3;
-          }
-          return ce.obtain == CEObtain.permanent;
-        } else {
-          return true;
-        }
-      }).toList();
+      List<UserServantEntity> combineMaterialCEs =
+          mstData.userSvt.where((userSvt) {
+            final ce = db.gameData.craftEssencesById[userSvt.svtId];
+            if (ce == null || userSvt.locked || userSvt.lv != 1) return false;
+            final bool isExp = ce.flags.contains(SvtFlag.svtEquipExp);
+            if (ce.rarity > 4) {
+              return false;
+            } else if (ce.rarity == 4) {
+              return gachaOption.feedExp4 && isExp;
+            } else if (ce.rarity == 3) {
+              if (isExp) {
+                return gachaOption.feedExp3;
+              }
+              return ce.obtain == CEObtain.permanent;
+            } else {
+              return true;
+            }
+          }).toList();
       combineMaterialCEs.sort2((e) => -e.createdAt);
       if (combineMaterialCEs.isEmpty) {
         update();
@@ -578,12 +598,15 @@ class FakerRuntime {
       }
       combineMaterialCEs = combineMaterialCEs.take(20).toList();
       await agent.servantEquipCombine(
-          baseUserSvtId: targetCE.id, materialSvtIds: combineMaterialCEs.map((e) => e.id).toList());
+        baseUserSvtId: targetCE.id,
+        materialSvtIds: combineMaterialCEs.map((e) => e.id).toList(),
+      );
       count -= 1;
       gachaResultStat.lastEnhanceBaseCE = targetCE;
       gachaResultStat.lastEnhanceMaterialCEs = combineMaterialCEs.toList();
       gachaResultStat.lastEnhanceMaterialCEs.sort(
-          (a, b) => CraftFilterData.compare(a.dbCE, b.dbCE, keys: const [CraftCompare.rarity], reversed: const [true]));
+        (a, b) => CraftFilterData.compare(a.dbCE, b.dbCE, keys: const [CraftCompare.rarity], reversed: const [true]),
+      );
       update();
     }
   }
@@ -637,13 +660,14 @@ class FakerRuntime {
       if (maxLv == null || baseUserSvt.lv >= maxLv) {
         throw SilentException('Lv.${baseUserSvt.lv}>=maxLv $maxLv');
       }
-      List<UserServantEntity> candidateMaterialSvts = mstData.userSvt.where((userSvt) {
-        final svt = userSvt.dbEntity;
-        if (svt == null || svt.type != SvtType.combineMaterial) return false;
-        if (userSvt.locked || userSvt.lv != 1) return false;
-        if (!options.svtMaterialRarities.contains(svt.rarity)) return false;
-        return true;
-      }).toList();
+      List<UserServantEntity> candidateMaterialSvts =
+          mstData.userSvt.where((userSvt) {
+            final svt = userSvt.dbEntity;
+            if (svt == null || svt.type != SvtType.combineMaterial) return false;
+            if (userSvt.locked || userSvt.lv != 1) return false;
+            if (!options.svtMaterialRarities.contains(svt.rarity)) return false;
+            return true;
+          }).toList();
       candidateMaterialSvts.sort2((e) => e.dbEntity?.rarity ?? 999);
 
       List<int> materialSvtIds = [];
@@ -826,11 +850,12 @@ class _FakerGameData {
       if (region == Region.jp) {
         items = db.gameData.items.values.toList();
       } else {
-        items = (await AtlasApi.exportedData(
-          'nice_item',
-          (data) => (data as List).map((e) => Item.fromJson(e)).toList(),
-          region: region,
-        ))!;
+        items =
+            (await AtlasApi.exportedData(
+              'nice_item',
+              (data) => (data as List).map((e) => Item.fromJson(e)).toList(),
+              region: region,
+            ))!;
       }
       final now = DateTime.now().timestamp;
       for (final item in items) {

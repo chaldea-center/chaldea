@@ -24,12 +24,7 @@ class WorkerResponse {
   String? message;
   dynamic body;
 
-  WorkerResponse({
-    this.status,
-    this.error,
-    this.message,
-    this.body,
-  });
+  WorkerResponse({this.status, this.error, this.message, this.body});
 
   factory WorkerResponse.fromJson(Map<dynamic, dynamic> json) => _$WorkerResponseFromJson(json);
 
@@ -81,12 +76,7 @@ class ChaldeaUser {
   int role;
   String? secret; // only present in signup/login/change-password
 
-  ChaldeaUser({
-    required this.id,
-    required this.name,
-    this.role = ChaldeaUserRole.member,
-    this.secret,
-  });
+  ChaldeaUser({required this.id, required this.name, this.role = ChaldeaUserRole.member, this.secret});
 
   factory ChaldeaUser.fromJson(Map<String, dynamic> json) => _$ChaldeaUserFromJson(json);
 
@@ -141,11 +131,7 @@ class TeamVoteData {
   int down;
   int mine;
 
-  TeamVoteData({
-    this.up = 0,
-    this.down = 0,
-    this.mine = 0,
-  });
+  TeamVoteData({this.up = 0, this.down = 0, this.mine = 0});
 
   TeamVoteData copy() {
     return TeamVoteData(up: up, down: down, mine: mine);
@@ -243,12 +229,14 @@ class UserBattleData {
 
   Uri toShortUri() {
     Uri shareUri = Uri.parse(ChaldeaUrl.deepLink('/laplace/share'));
-    shareUri = shareUri.replace(queryParameters: {
-      "id": id.toString(),
-      // "questId": questId.toString(),
-      // "phase": phase.toString(),
-      // "enemyHash": enemyHash,
-    });
+    shareUri = shareUri.replace(
+      queryParameters: {
+        "id": id.toString(),
+        // "questId": questId.toString(),
+        // "phase": phase.toString(),
+        // "enemyHash": enemyHash,
+      },
+    );
     return shareUri;
   }
 
@@ -256,12 +244,14 @@ class UserBattleData {
     final detail = parse();
     String? data = detail?.toDataV2();
     Uri shareUri = Uri.parse(ChaldeaUrl.deepLink('/laplace/share'));
-    shareUri = shareUri.replace(queryParameters: {
-      if (data != null) "data": data,
-      "questId": (detail?.quest?.id ?? questId).toString(),
-      "phase": (detail?.quest?.phase ?? phase).toString(),
-      "enemyHash": detail?.quest?.enemyHash ?? enemyHash,
-    });
+    shareUri = shareUri.replace(
+      queryParameters: {
+        if (data != null) "data": data,
+        "questId": (detail?.quest?.id ?? questId).toString(),
+        "phase": (detail?.quest?.phase ?? phase).toString(),
+        "enemyHash": detail?.quest?.enemyHash ?? enemyHash,
+      },
+    );
     return shareUri;
   }
 }
@@ -272,12 +262,7 @@ class PaginatedData<T> {
   final int? total;
   final List<T> data;
 
-  PaginatedData({
-    this.offset = 0,
-    this.limit = 0,
-    this.total,
-    required this.data,
-  });
+  PaginatedData({this.offset = 0, this.limit = 0, this.total, required this.data});
 
   bool get hasNextPage {
     if (total != null) {
@@ -292,12 +277,7 @@ class PaginatedData<T> {
 
 @JsonSerializable()
 class TeamQueryResult extends PaginatedData<UserBattleData> {
-  TeamQueryResult({
-    super.offset = 0,
-    super.limit = 0,
-    super.total,
-    required super.data,
-  });
+  TeamQueryResult({super.offset = 0, super.limit = 0, super.total, required super.data});
 
   factory TeamQueryResult.fromJson(Map<String, dynamic> json) => _$TeamQueryResultFromJson(json);
 

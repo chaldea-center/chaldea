@@ -20,9 +20,10 @@ class SubState {
       final removeTargetCount =
           dataVals.Value != null && dataVals.Value2 != null ? max(dataVals.Value!, dataVals.Value2!) : null;
       int removeCount = 0;
-      final List<BuffData> listToInspect = removeFromStart
-          ? target.battleBuff.originalActiveList.reversed.toList()
-          : target.battleBuff.originalActiveList.toList();
+      final List<BuffData> listToInspect =
+          removeFromStart
+              ? target.battleBuff.originalActiveList.reversed.toList()
+              : target.battleBuff.originalActiveList.toList();
       final List<int> removedFamilyBuff = [];
 
       for (int index = listToInspect.length - 1; index >= 0; index -= 1) {
@@ -42,7 +43,8 @@ class SubState {
       }
 
       listToInspect.removeWhere(
-          (buff) => buff.vals.BehaveAsFamilyBuff == 1 && removedFamilyBuff.contains(buff.vals.AddIndividualty));
+        (buff) => buff.vals.BehaveAsFamilyBuff == 1 && removedFamilyBuff.contains(buff.vals.AddIndividualty),
+      );
 
       target.battleBuff.setActiveList(removeFromStart ? listToInspect.reversed.toList() : listToInspect.toList());
       if (target.hp > 0) {
@@ -77,7 +79,8 @@ class SubState {
       opponent: activator,
       addTraits: affectTraits,
     );
-    final grantSubState = await activator?.getBuffValue(
+    final grantSubState =
+        await activator?.getBuffValue(
           battleData,
           BuffAction.grantSubstate,
           opponent: target,
@@ -89,15 +92,18 @@ class SubState {
     final activationRate = functionRate + grantSubState;
     final resistRate = toleranceSubState;
     final success = await battleData.canActivateFunction(activationRate - resistRate);
-    final resultsString = success
-        ? S.current.success
-        : resistRate > 0
+    final resultsString =
+        success
+            ? S.current.success
+            : resistRate > 0
             ? 'GUARD'
             : 'MISS';
 
-    battleData.battleLogger.debug('${S.current.effect_target}: ${target.lBattleName} - ${buff.buff.lName.l}'
-        '$resultsString'
-        '${battleData.options.tailoredExecution ? '' : ' [($activationRate - $resistRate) vs ${battleData.options.threshold}]'}');
+    battleData.battleLogger.debug(
+      '${S.current.effect_target}: ${target.lBattleName} - ${buff.buff.lName.l}'
+      '$resultsString'
+      '${battleData.options.tailoredExecution ? '' : ' [($activationRate - $resistRate) vs ${battleData.options.threshold}]'}',
+    );
 
     return success;
   }

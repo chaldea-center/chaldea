@@ -16,11 +16,7 @@ class TdDmgRankingTab extends StatefulWidget {
   final TdDmgSolver solver;
   final SvtFilterData svtFilterData;
 
-  const TdDmgRankingTab({
-    super.key,
-    required this.solver,
-    required this.svtFilterData,
-  });
+  const TdDmgRankingTab({super.key, required this.solver, required this.svtFilterData});
 
   @override
   State<TdDmgRankingTab> createState() => _TdDmgRankingTabState();
@@ -57,20 +53,16 @@ class _TdDmgRankingTabState extends State<TdDmgRankingTab> {
                     // isDense: true,
                     value: _sortType,
                     items: [
-                      for (final type in _SortType.values)
-                        DropdownMenuItem(
-                          value: type,
-                          child: Text(type.shownName),
-                        )
+                      for (final type in _SortType.values) DropdownMenuItem(value: type, child: Text(type.shownName)),
                     ],
                     onChanged: (v) {
                       setState(() {
                         if (v != null) _sortType = v;
                       });
                     },
-                  )
+                  ),
                 ],
-              )
+              ),
             ],
           ),
         ),
@@ -123,20 +115,16 @@ class _TdDmgRankingTabState extends State<TdDmgRankingTab> {
           final errors = widget.solver.errors;
           if (errors.isEmpty) return const SizedBox.shrink();
           return SimpleAccordion(
-            headerBuilder: (context, _) => ListTile(
-              dense: true,
-              title: Text(
-                '${errors.length} ${S.current.error}',
-                style: TextStyle(color: Theme.of(context).colorScheme.error),
-              ),
-            ),
-            contentBuilder: (context) {
-              return Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(8),
-                  child: Text(errors.join('\n\n')),
+            headerBuilder:
+                (context, _) => ListTile(
+                  dense: true,
+                  title: Text(
+                    '${errors.length} ${S.current.error}',
+                    style: TextStyle(color: Theme.of(context).colorScheme.error),
+                  ),
                 ),
-              );
+            contentBuilder: (context) {
+              return Card(child: Padding(padding: const EdgeInsets.all(8), child: Text(errors.join('\n\n'))));
             },
           );
         }
@@ -145,15 +133,17 @@ class _TdDmgRankingTabState extends State<TdDmgRankingTab> {
         return SimpleAccordion(
           key: Key('Ranking_${index}_${result.svt.id}'),
           headerBuilder: (context, _) => headerBuilder(rank, result),
-          contentBuilder: (context) => _ResultDetail(
-            key: Key('ResultDetail_${index}_${_sortType}_${result.svt.id}'),
-            result: result,
-            tab: result.hasInstantDeathSuccess
-                ? _ParamType.instantDeath
-                : _sortType.isNp
-                    ? _ParamType.refund
-                    : _ParamType.damage,
-          ),
+          contentBuilder:
+              (context) => _ResultDetail(
+                key: Key('ResultDetail_${index}_${_sortType}_${result.svt.id}'),
+                result: result,
+                tab:
+                    result.hasInstantDeathSuccess
+                        ? _ParamType.instantDeath
+                        : _sortType.isNp
+                        ? _ParamType.refund
+                        : _ParamType.damage,
+              ),
         );
       },
     );
@@ -178,11 +168,13 @@ class _TdDmgRankingTabState extends State<TdDmgRankingTab> {
         oc ??= record.card?.oc;
       }
     }
-    cardIcons.add(Text(
-      [' NP$tdLv', if (oc != null) ' OC$oc'].join('\n'),
-      style: Theme.of(context).textTheme.bodySmall,
-      textScaler: const TextScaler.linear(0.9),
-    ));
+    cardIcons.add(
+      Text(
+        [' NP$tdLv', if (oc != null) ' OC$oc'].join('\n'),
+        style: Theme.of(context).textTheme.bodySmall,
+        textScaler: const TextScaler.linear(0.9),
+      ),
+    );
     return ListTile(
       dense: true,
       leading: Row(
@@ -199,10 +191,7 @@ class _TdDmgRankingTabState extends State<TdDmgRankingTab> {
       ),
       // title: Text('${S.current.damage} $dmgStr'),
       title: Text(dmgStr),
-      subtitle: Padding(
-        padding: const EdgeInsets.only(bottom: 8),
-        child: Text(npStr),
-      ),
+      subtitle: Padding(padding: const EdgeInsets.only(bottom: 8), child: Text(npStr)),
       contentPadding: const EdgeInsetsDirectional.only(start: 12),
       trailing: Wrap(
         alignment: WrapAlignment.end,
@@ -233,9 +222,10 @@ class _ResultDetailState extends State<_ResultDetail> {
     List<Widget> children = [
       FilterGroup<_ParamType>(
         combined: true,
-        options: widget.result.hasInstantDeath
-            ? _ParamType.values
-            : (_ParamType.values.toList()..remove(_ParamType.instantDeath)),
+        options:
+            widget.result.hasInstantDeath
+                ? _ParamType.values
+                : (_ParamType.values.toList()..remove(_ParamType.instantDeath)),
         values: FilterRadioData.nonnull(tab),
         optionBuilder: (v) => Text(v.shownName),
         onFilterChanged: (v, _) {
@@ -243,7 +233,7 @@ class _ResultDetailState extends State<_ResultDetail> {
             _tab = v.radioValue;
           });
         },
-      )
+      ),
     ];
 
     for (final attack in widget.result.attacks) {
@@ -295,27 +285,22 @@ class _ResultDetailState extends State<_ResultDetail> {
         }
       }
       if (paramsCard == null) continue;
-      children.add(Card(
-        margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-          child: paramsCard,
+      children.add(
+        Card(
+          margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+          child: Padding(padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4), child: paramsCard),
         ),
-      ));
+      );
     }
-    children.add(TextButton(
-      onPressed: () {
-        router.pushPage(_BattleLogDetails(
-          title: widget.result.svt.lName.l,
-          battleData: widget.result.battleData,
-        ));
-      },
-      child: Text(S.current.details),
-    ));
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: children,
+    children.add(
+      TextButton(
+        onPressed: () {
+          router.pushPage(_BattleLogDetails(title: widget.result.svt.lName.l, battleData: widget.result.battleData));
+        },
+        child: Text(S.current.details),
+      ),
     );
+    return Column(mainAxisSize: MainAxisSize.min, children: children);
   }
 }
 
@@ -335,7 +320,7 @@ class _BattleLogDetails extends StatelessWidget {
               router.pushPage(BattleLogPage(logger: battleData.battleLogger));
             },
             icon: const Icon(Icons.info_outline),
-          )
+          ),
         ],
       ),
       body: SingleChildScrollView(child: BattleRecorderPanel(records: battleData.recorder.records.toList())),
@@ -347,8 +332,7 @@ enum _SortType {
   damage,
   attackNp,
   totalNp,
-  id,
-  ;
+  id;
 
   bool get isNp => this == _SortType.attackNp || this == _SortType.totalNp;
 
@@ -370,8 +354,7 @@ enum _ParamType {
   damage,
   refund,
   star,
-  instantDeath,
-  ;
+  instantDeath;
 
   String get shownName {
     switch (this) {

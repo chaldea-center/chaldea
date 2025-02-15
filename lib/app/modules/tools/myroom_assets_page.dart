@@ -10,15 +10,17 @@ import '../../api/chaldea.dart';
 import '../common/filter_group.dart';
 
 enum _MyRoomChangeType {
-  bgImage(
-      [MyRoomAddOverwriteType.bgImage, MyRoomAddOverwriteType.servantOverlayObject, MyRoomAddOverwriteType.backObject]),
+  bgImage([
+    MyRoomAddOverwriteType.bgImage,
+    MyRoomAddOverwriteType.servantOverlayObject,
+    MyRoomAddOverwriteType.backObject,
+  ]),
   bgm([MyRoomAddOverwriteType.bgm]),
   special([
     MyRoomAddOverwriteType.servantOverlayObject,
     MyRoomAddOverwriteType.backObject,
-    MyRoomAddOverwriteType.bgImageMultiple
-  ]),
-  ;
+    MyRoomAddOverwriteType.bgImageMultiple,
+  ]);
 
   const _MyRoomChangeType(this.types);
   final List<MyRoomAddOverwriteType> types;
@@ -71,35 +73,36 @@ class _MyRoomAssetsPageState extends State<MyRoomAssetsPage>
         title: AutoSizeText(S.current.my_room, maxLines: 1, minFontSize: 10),
         actions: [
           dropdownRegion(),
-          PopupMenuButton(itemBuilder: (context) {
-            return [
-              PopupMenuItem(
-                onTap: doFetchData,
-                child: Text(S.current.refresh),
-              ),
-              PopupMenuItem(
-                onTap: () {
-                  expanded = false;
-                  _t = DateTime.now().timestamp;
-                  if (mounted) setState(() {});
-                },
-                child: Text(S.current.collapse),
-              ),
-              PopupMenuItem(
-                onTap: () {
-                  expanded = true;
-                  _t = DateTime.now().timestamp;
-                  if (mounted) setState(() {});
-                },
-                child: Text(S.current.expand),
-              ),
-            ];
-          })
+          PopupMenuButton(
+            itemBuilder: (context) {
+              return [
+                PopupMenuItem(onTap: doFetchData, child: Text(S.current.refresh)),
+                PopupMenuItem(
+                  onTap: () {
+                    expanded = false;
+                    _t = DateTime.now().timestamp;
+                    if (mounted) setState(() {});
+                  },
+                  child: Text(S.current.collapse),
+                ),
+                PopupMenuItem(
+                  onTap: () {
+                    expanded = true;
+                    _t = DateTime.now().timestamp;
+                    if (mounted) setState(() {});
+                  },
+                  child: Text(S.current.expand),
+                ),
+              ];
+            },
+          ),
         ],
-        bottom: FixedHeight.tabBar(TabBar(
-          controller: tabController,
-          tabs: [Tab(text: S.current.background), Tab(text: S.current.bgm), Tab(text: S.current.general_special)],
-        )),
+        bottom: FixedHeight.tabBar(
+          TabBar(
+            controller: tabController,
+            tabs: [Tab(text: S.current.background), Tab(text: S.current.bgm), Tab(text: S.current.general_special)],
+          ),
+        ),
       ),
       body: buildBody(context),
     );
@@ -128,10 +131,9 @@ class _MyRoomAssetsPageState extends State<MyRoomAssetsPage>
             contentBuilder: (context) {
               return Column(
                 mainAxisSize: MainAxisSize.min,
-                children: divideList(
-                  [for (final room in rooms) buildOneRoom(context, room)],
-                  const SizedBox(height: 4),
-                ),
+                children: divideList([
+                  for (final room in rooms) buildOneRoom(context, room),
+                ], const SizedBox(height: 4)),
               );
             },
           );
@@ -163,20 +165,32 @@ class _MyRoomAssetsPageState extends State<MyRoomAssetsPage>
     if (events.isEmpty) {
       const eventTypes = [EventType.eventQuest, EventType.warBoard, EventType.mcCampaign];
       final candidateEvents = db.gameData.events.values.where((event) => eventTypes.contains(event.type)).toList();
-      events.addAll(candidateEvents.where((event) =>
-          (checkTime(event.startTimeOf(region), room.startedAt) && checkTime(event.endTime2Of(region), room.endedAt))));
+      events.addAll(
+        candidateEvents.where(
+          (event) =>
+              (checkTime(event.startTimeOf(region), room.startedAt) &&
+                  checkTime(event.endTime2Of(region), room.endedAt)),
+        ),
+      );
       if (events.isEmpty) {
-        final inRangeEvents = candidateEvents
-            .where((event) =>
-                (event.startTimeOf(region) ?? 0) <= room.startedAt && room.endedAt <= (event.endTime2Of(region) ?? 0))
-            .toList();
+        final inRangeEvents =
+            candidateEvents
+                .where(
+                  (event) =>
+                      (event.startTimeOf(region) ?? 0) <= room.startedAt &&
+                      room.endedAt <= (event.endTime2Of(region) ?? 0),
+                )
+                .toList();
         if (inRangeEvents.length == 1) {
           events.add(inRangeEvents.single);
         } else {
-          final sameStartEvents = candidateEvents
-              .where((event) =>
-                  (event.startTimeOf(region) == room.startedAt && room.endedAt <= (event.endTimeOf(region) ?? 0)))
-              .toList();
+          final sameStartEvents =
+              candidateEvents
+                  .where(
+                    (event) =>
+                        (event.startTimeOf(region) == room.startedAt && room.endedAt <= (event.endTimeOf(region) ?? 0)),
+                  )
+                  .toList();
           if (sameStartEvents.isNotEmpty) {
             events.add(sameStartEvents.first);
           }
@@ -196,7 +210,7 @@ class _MyRoomAssetsPageState extends State<MyRoomAssetsPage>
 
     final subtitles = <String>{
       ...events.take(2).map((e) => e.lShortName.l.setMaxLines(1)),
-      ...wars.map((e) => e.lName.l.setMaxLines(1))
+      ...wars.map((e) => e.lName.l.setMaxLines(1)),
     };
 
     return ListTile(
@@ -215,11 +229,7 @@ class _MyRoomAssetsPageState extends State<MyRoomAssetsPage>
         placeholder: (_, __) => AspectRatio(aspectRatio: aspectRatio ?? 1344 / 626),
         showSaveOnLongPress: true,
         viewFullOnTap: true,
-        cachedOption: CachedImageOption(
-          errorWidget: (context, url, error) => Center(
-            child: Text(url.breakWord),
-          ),
-        ),
+        cachedOption: CachedImageOption(errorWidget: (context, url, error) => Center(child: Text(url.breakWord))),
       ),
     );
   }
@@ -249,11 +259,17 @@ class _MyRoomAssetsPageState extends State<MyRoomAssetsPage>
           },
         );
       case MyRoomAddOverwriteType.servantOverlayObject:
-        return _buildImage('${asset.extractDir}/MyRoom/FrontObject/${room.overwriteId}/${room.overwriteId}.png',
-            300 * (useFullscreen ? 1344 / 626 : 1024 / 626), 1024 / 1024);
+        return _buildImage(
+          '${asset.extractDir}/MyRoom/FrontObject/${room.overwriteId}/${room.overwriteId}.png',
+          300 * (useFullscreen ? 1344 / 626 : 1024 / 626),
+          1024 / 1024,
+        );
       case MyRoomAddOverwriteType.backObject:
-        return _buildImage('${asset.extractDir}/MyRoom/BackObject/${room.overwriteId}/ef_MyRoomObj_at.png',
-            300 * (useFullscreen ? 1344 / 626 : 1024 / 626), 1024 / 1024);
+        return _buildImage(
+          '${asset.extractDir}/MyRoom/BackObject/${room.overwriteId}/ef_MyRoomObj_at.png',
+          300 * (useFullscreen ? 1344 / 626 : 1024 / 626),
+          1024 / 1024,
+        );
       case MyRoomAddOverwriteType.bgImageMultiple:
       case MyRoomAddOverwriteType.unknown:
         return ListTile(
@@ -285,10 +301,10 @@ class _MyRoomAssetsPageState extends State<MyRoomAssetsPage>
                       useFullscreen = v.radioValue!;
                     });
                   },
-                )
+                ),
               ],
             ),
-          )
+          ),
         ],
       );
     }

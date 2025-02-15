@@ -32,11 +32,7 @@ class AtlasApi {
   }
 
   static Future<Map<String, dynamic>?> regionInfo({Region region = Region.jp, Duration? expireAfter = Duration.zero}) {
-    return cacheManager.getModel(
-      '$atlasApiHost/info',
-      (data) => data[region.upper],
-      expireAfter: expireAfter,
-    );
+    return cacheManager.getModel('$atlasApiHost/info', (data) => data[region.upper], expireAfter: expireAfter);
   }
 
   static Future<Quest?> quest(int questId, {Region region = Region.jp, Duration? expireAfter}) {
@@ -48,8 +44,13 @@ class AtlasApi {
     );
   }
 
-  static Future<QuestPhase?> questPhase(int questId, int phase,
-      {String? hash, Region region = Region.jp, Duration? expireAfter}) async {
+  static Future<QuestPhase?> questPhase(
+    int questId,
+    int phase, {
+    String? hash,
+    Region region = Region.jp,
+    Duration? expireAfter,
+  }) async {
     if (questId <= 0) return Future.value();
 
     if (hash != null) hash = hash.trim();
@@ -70,19 +71,15 @@ class AtlasApi {
         }
       }
     }
-    return cacheManager.getModel(
-      url,
-      (data) {
-        final quest = QuestPhase.fromJson(data);
-        // what if multi-phases are requesting
-        if (expireAfter != kExpireCacheOnly) {
-          cachedQuestPhases[url] = quest;
-        }
-        cacheDisabledQuests.remove(questId);
-        return quest;
-      },
-      expireAfter: expireAfter,
-    );
+    return cacheManager.getModel(url, (data) {
+      final quest = QuestPhase.fromJson(data);
+      // what if multi-phases are requesting
+      if (expireAfter != kExpireCacheOnly) {
+        cachedQuestPhases[url] = quest;
+      }
+      cacheDisabledQuests.remove(questId);
+      return quest;
+    }, expireAfter: expireAfter);
   }
 
   static String questPhaseUrl(int questId, int phase, String? hash, Region region) {
@@ -199,11 +196,7 @@ class AtlasApi {
     if (tdId <= 0) return Future.value();
     String url = '$atlasApiHost/nice/${region.upper}/NP/$tdId';
     if (svtId != null) url += '?svtId=$svtId';
-    return cacheManager.getModel(
-      url,
-      (data) => NiceTd.fromJson(data),
-      expireAfter: expireAfter,
-    );
+    return cacheManager.getModel(url, (data) => NiceTd.fromJson(data), expireAfter: expireAfter);
   }
 
   static Future<EventMission?> eventMission(int missionId, {Region region = Region.jp, Duration? expireAfter}) {
@@ -238,8 +231,11 @@ class AtlasApi {
     );
   }
 
-  static Future<List<BattleMasterImage>?> battleMasterImage(int imageId,
-      {Region region = Region.jp, Duration? expireAfter}) {
+  static Future<List<BattleMasterImage>?> battleMasterImage(
+    int imageId, {
+    Region region = Region.jp,
+    Duration? expireAfter,
+  }) {
     return cacheManager.getModel(
       '$atlasApiHost/nice/${region.upper}/battle-master-image/$imageId',
       (data) => (data as List).map((e) => BattleMasterImage.fromJson(Map.from(e))).toList(),
@@ -255,8 +251,11 @@ class AtlasApi {
     );
   }
 
-  static Future<List<BattleMessageGroup>?> battleMessageGroup(int groupId,
-      {Region region = Region.jp, Duration? expireAfter}) {
+  static Future<List<BattleMessageGroup>?> battleMessageGroup(
+    int groupId, {
+    Region region = Region.jp,
+    Duration? expireAfter,
+  }) {
     return cacheManager.getModel(
       '$atlasApiHost/nice/${region.upper}/battle-message-group/$groupId',
       (data) => (data as List).map((e) => BattleMessageGroup.fromJson(e)).toList(),
@@ -273,8 +272,10 @@ class AtlasApi {
     );
   }
 
-  static Future<List<BasicCraftEssence>?> basicCraftEssences(
-      {Region region = Region.jp, Duration? expireAfter = Duration.zero}) {
+  static Future<List<BasicCraftEssence>?> basicCraftEssences({
+    Region region = Region.jp,
+    Duration? expireAfter = Duration.zero,
+  }) {
     return cacheManager.getModel(
       '$atlasApiHost/export/${region.upper}/basic_equip.json',
       (data) => (data as List).map((e) => BasicCraftEssence.fromJson(e)).toList(),
@@ -282,8 +283,10 @@ class AtlasApi {
     );
   }
 
-  static Future<List<BasicCommandCode>?> basicCommandCodes(
-      {Region region = Region.jp, Duration? expireAfter = Duration.zero}) {
+  static Future<List<BasicCommandCode>?> basicCommandCodes({
+    Region region = Region.jp,
+    Duration? expireAfter = Duration.zero,
+  }) {
     return cacheManager.getModel(
       '$atlasApiHost/export/${region.upper}/basic_command_code.json',
       (data) => (data as List).map((e) => BasicCommandCode.fromJson(e)).toList(),
@@ -360,11 +363,15 @@ class AtlasApi {
   }) async {
     if (type == null && eventId == null && payType == null) return [];
     return cacheManager.getModel(
-      Uri.parse('$atlasApiHost/nice/${region.upper}/shop/search').replace(queryParameters: {
-        if (type != null) 'type': type.name,
-        if (eventId != null) 'eventId': eventId.toString(),
-        if (payType != null) 'payType': payType.name,
-      }).toString(),
+      Uri.parse('$atlasApiHost/nice/${region.upper}/shop/search')
+          .replace(
+            queryParameters: {
+              if (type != null) 'type': type.name,
+              if (eventId != null) 'eventId': eventId.toString(),
+              if (payType != null) 'payType': payType.name,
+            },
+          )
+          .toString(),
       (data) => (data as List).map((e) => NiceShop.fromJson(e)).toList(),
       expireAfter: expireAfter,
     );
@@ -383,10 +390,14 @@ class AtlasApi {
     final tops = await gametopsRaw(expireAfter: expireAfter);
     if (tops != null) {
       final tasks = <Future>[
-        assetbundle(Region.jp, expireAfter: expireAfter)
-            .then((v) => tops.jp.assetbundleFolder = v?.folderName ?? tops.jp.assetbundleFolder),
-        assetbundle(Region.na, expireAfter: expireAfter)
-            .then((v) => tops.na.assetbundleFolder = v?.folderName ?? tops.na.assetbundleFolder),
+        assetbundle(
+          Region.jp,
+          expireAfter: expireAfter,
+        ).then((v) => tops.jp.assetbundleFolder = v?.folderName ?? tops.jp.assetbundleFolder),
+        assetbundle(
+          Region.na,
+          expireAfter: expireAfter,
+        ).then((v) => tops.na.assetbundleFolder = v?.folderName ?? tops.na.assetbundleFolder),
         verCode(Region.jp, expireAfter: expireAfter).then((v) {
           if (v == null) return;
           tops.jp.appVer = v.appVer;
@@ -406,14 +417,20 @@ class AtlasApi {
   static Future<AssetBundleDecrypt?> assetbundle(Region region, {Duration? expireAfter}) {
     return cacheManager.getModel(
       HostsX.proxyWorker(
-          'https://git.atlasacademy.io/atlasacademy/fgo-game-data/raw/branch/${region.upper}/metadata/assetbundle.json'),
+        'https://git.atlasacademy.io/atlasacademy/fgo-game-data/raw/branch/${region.upper}/metadata/assetbundle.json',
+      ),
       (data) => AssetBundleDecrypt.fromJson(data),
       expireAfter: expireAfter,
     );
   }
 
-  static Future<T?> mstData<T>(String table, T Function(dynamic json) fromJson,
-      {Region region = Region.jp, Duration? expireAfter, bool? proxy}) {
+  static Future<T?> mstData<T>(
+    String table,
+    T Function(dynamic json) fromJson, {
+    Region region = Region.jp,
+    Duration? expireAfter,
+    bool? proxy,
+  }) {
     proxy ??= HostsX.proxy.worker;
     String url = "https://git.atlasacademy.io/atlasacademy/fgo-game-data/raw/branch/${region.upper}/master/$table.json";
     if (proxy) url = HostsX.proxyWorker(url);
@@ -421,19 +438,17 @@ class AtlasApi {
       url,
       fromJson,
       expireAfter: expireAfter,
-      options: Options(headers: {
-        if (expireAfter == Duration.zero) HttpHeaders.cacheControlHeader: 'nocache',
-      }),
+      options: Options(headers: {if (expireAfter == Duration.zero) HttpHeaders.cacheControlHeader: 'nocache'}),
     );
   }
 
-  static Future<T?> exportedData<T>(String name, T Function(dynamic json) fromJson,
-      {Region region = Region.jp, Duration? expireAfter}) {
-    return cacheManager.getModel(
-      '$atlasApiHost/export/${region.upper}/$name.json',
-      fromJson,
-      expireAfter: expireAfter,
-    );
+  static Future<T?> exportedData<T>(
+    String name,
+    T Function(dynamic json) fromJson, {
+    Region region = Region.jp,
+    Duration? expireAfter,
+  }) {
+    return cacheManager.getModel('$atlasApiHost/export/${region.upper}/$name.json', fromJson, expireAfter: expireAfter);
   }
 
   static Future<GameTimerData?> timerData(Region region, {Duration? expireAfter}) async {
@@ -449,24 +464,20 @@ class AtlasApi {
     proxy ??= HostsX.proxy.worker;
     String url = "https://fgo.bigcereal.com/${region.upper}/verCode.txt";
     if (proxy) url = HostsX.proxyWorker(url);
-    return cacheManager.getModelRaw(
-      url,
-      (data) {
-        Map<String, String> out = {};
-        for (final entry in data.split('&')) {
-          final values = entry.split('=');
-          if (values.length == 2) {
-            out[values[0].trim()] = values[1].trim();
-          }
+    return cacheManager.getModelRaw(url, (data) {
+      Map<String, String> out = {};
+      for (final entry in data.split('&')) {
+        final values = entry.split('=');
+        if (values.length == 2) {
+          out[values[0].trim()] = values[1].trim();
         }
-        final v = GameAppVerCode.fromJson(out);
-        if (RegExp(r'^\d+\.\d+\.\d+$').hasMatch(v.appVer) && v.verCode.length == 64) {
-          return v;
-        }
-        throw FormatException("Unexpected ver code format: $data => ${jsonEncode(out)}");
-      },
-      expireAfter: expireAfter,
-    );
+      }
+      final v = GameAppVerCode.fromJson(out);
+      if (RegExp(r'^\d+\.\d+\.\d+$').hasMatch(v.appVer) && v.verCode.length == 64) {
+        return v;
+      }
+      throw FormatException("Unexpected ver code format: $data => ${jsonEncode(out)}");
+    }, expireAfter: expireAfter);
   }
 
   static Future<String?> gPlayVer(Region region, {Duration? expireAfter = Duration.zero}) {
@@ -488,15 +499,11 @@ class AtlasApi {
         bundleId = 'com.netmarble.fgok';
         break;
     }
-    return cacheManager.getModelRaw(
-      '${HostsX.workerHost}/app-ver/gplay?id=$bundleId',
-      (data) {
-        if (RegExp(r'^\d+\.\d+\.\d+$').hasMatch(data)) {
-          return data;
-        }
-        throw ArgumentError(data);
-      },
-      expireAfter: expireAfter,
-    );
+    return cacheManager.getModelRaw('${HostsX.workerHost}/app-ver/gplay?id=$bundleId', (data) {
+      if (RegExp(r'^\d+\.\d+\.\d+$').hasMatch(data)) {
+        return data;
+      }
+      throw ArgumentError(data);
+    }, expireAfter: expireAfter);
   }
 }

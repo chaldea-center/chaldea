@@ -14,11 +14,8 @@ class RateLimiter {
 
   DateTime _lastReset;
 
-  RateLimiter({
-    this.maxCalls = 3,
-    this.period = const Duration(seconds: 1),
-    this.raiseOnLimit = false,
-  }) : _lastReset = DateTime.now();
+  RateLimiter({this.maxCalls = 3, this.period = const Duration(seconds: 1), this.raiseOnLimit = false})
+    : _lastReset = DateTime.now();
 
   final List<_RateLimitTask> _allTasks = [];
   final List<_RateLimitTask> _periodTasks = [];

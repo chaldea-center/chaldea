@@ -60,10 +60,12 @@ class _UserEventMissionReceivePageState extends State<UserEventMissionReceivePag
     // mms.removeWhere((mm) => mm.type == MissionType.daily && mm.endedAt - mm.startedAt > kSecsPerDay * 40);
     mms.sortByList((e) => [e.endedAt, e.closedAt, e.id]);
     if (mms.isNotEmpty) {
-      onSelectMM(mms.firstWhere(
-        (mm) => mm.missions.any((e) => getMissionProgress(e.id) != MissionProgressType.achieve),
-        orElse: () => mms.first,
-      ));
+      onSelectMM(
+        mms.firstWhere(
+          (mm) => mm.missions.any((e) => getMissionProgress(e.id) != MissionProgressType.achieve),
+          orElse: () => mms.first,
+        ),
+      );
     }
     if (mounted) setState(() {});
   }
@@ -112,9 +114,7 @@ class _UserEventMissionReceivePageState extends State<UserEventMissionReceivePag
     });
     missions.sort2((e) => e.dispNo);
     return Scaffold(
-      appBar: AppBar(
-        title: Text(S.current.master_mission),
-      ),
+      appBar: AppBar(title: Text(S.current.master_mission)),
       body: Column(
         children: [
           buildHeader(),
@@ -141,13 +141,7 @@ class _UserEventMissionReceivePageState extends State<UserEventMissionReceivePag
     Widget child = DropdownButton<MasterMission>(
       isExpanded: true,
       value: _mm,
-      items: [
-        for (final mm in mms)
-          DropdownMenuItem(
-            value: mm,
-            child: buildMasterMission(mm),
-          )
-      ],
+      items: [for (final mm in mms) DropdownMenuItem(value: mm, child: buildMasterMission(mm))],
       onChanged: (v) {
         setState(() {
           if (v != null) onSelectMM(v);
@@ -171,23 +165,24 @@ class _UserEventMissionReceivePageState extends State<UserEventMissionReceivePag
       selected: (clearNum > 0 || notClearNum > 0) && mm.startedAt < now && mm.endedAt > now,
       enabled: !(notClearNum == 0 && clearNum == 0),
       title: Text(
-          '[${mm.missions.length} ${Transl.enums(mm.type, (v) => v.missionType).l}] ID ${mm.id} ${mm.lMissionIconDetailText ?? ""}'),
-      subtitle: Text([mm.startedAt, mm.endedAt, if (mm.closedAt != mm.endedAt) mm.closedAt].map((e) {
-        final date = e.sec2date();
-        return mm.id == MasterMission.kExtraMasterMissionId
-            ? date.toDateString()
-            : date.toCustomString(year: date.year != thisYear, second: false);
-      }).join(' ~ ')),
+        '[${mm.missions.length} ${Transl.enums(mm.type, (v) => v.missionType).l}] ID ${mm.id} ${mm.lMissionIconDetailText ?? ""}',
+      ),
+      subtitle: Text(
+        [mm.startedAt, mm.endedAt, if (mm.closedAt != mm.endedAt) mm.closedAt]
+            .map((e) {
+              final date = e.sec2date();
+              return mm.id == MasterMission.kExtraMasterMissionId
+                  ? date.toDateString()
+                  : date.toCustomString(year: date.year != thisYear, second: false);
+            })
+            .join(' ~ '),
+      ),
       trailing: Text('$notClearNum/$clearNum/$achieveNum'),
     );
   }
 
   Widget buildEventMission(EventMission mission) {
-    Widget title = Text(
-      '${mission.dispNo}. ${mission.name}',
-      maxLines: 2,
-      overflow: TextOverflow.ellipsis,
-    );
+    Widget title = Text('${mission.dispNo}. ${mission.name}', maxLines: 2, overflow: TextOverflow.ellipsis);
     Widget subtitle = SharedBuilder.giftGrid(context: context, gifts: mission.gifts, width: 32);
     Widget child;
     if (isMissionClear(mission.id)) {
@@ -195,17 +190,18 @@ class _UserEventMissionReceivePageState extends State<UserEventMissionReceivePag
         title: title,
         subtitle: subtitle,
         value: selectedMissions.contains(mission.id),
-        onChanged: isMissionClear(mission.id)
-            ? (v) {
-                setState(() {
-                  if (v!) {
-                    selectedMissions.add(mission.id);
-                  } else {
-                    selectedMissions.remove(mission.id);
-                  }
-                });
-              }
-            : null,
+        onChanged:
+            isMissionClear(mission.id)
+                ? (v) {
+                  setState(() {
+                    if (v!) {
+                      selectedMissions.add(mission.id);
+                    } else {
+                      selectedMissions.remove(mission.id);
+                    }
+                  });
+                }
+                : null,
       );
     } else {
       int? progressNum, targetNum;
@@ -221,10 +217,12 @@ class _UserEventMissionReceivePageState extends State<UserEventMissionReceivePag
           progressNum ??= runtime.mstData.userEventMissionCondDetail[condDetailId]?.progressNum;
           targetNum = cond.targetNum;
         } else if (cond.condType == CondType.eventMissionClear) {
-          progressNum ??= cond.targetIds.where((mid) {
-            final progressType = runtime.mstData.userEventMission[mid]?.missionProgressType;
-            return progressType == MissionProgressType.clear.value || progressType == MissionProgressType.achieve.value;
-          }).length;
+          progressNum ??=
+              cond.targetIds.where((mid) {
+                final progressType = runtime.mstData.userEventMission[mid]?.missionProgressType;
+                return progressType == MissionProgressType.clear.value ||
+                    progressType == MissionProgressType.achieve.value;
+              }).length;
           targetNum = cond.targetNum;
         }
       }
@@ -243,11 +241,7 @@ class _UserEventMissionReceivePageState extends State<UserEventMissionReceivePag
         ),
       );
     }
-    return ListTileTheme.merge(
-      dense: true,
-      minLeadingWidth: 16,
-      child: child,
-    );
+    return ListTileTheme.merge(dense: true, minLeadingWidth: 16, child: child);
   }
 
   Widget buildButtonBar() {
@@ -334,11 +328,7 @@ class _UserEventMissionReceivePageState extends State<UserEventMissionReceivePag
     SimpleCancelOkDialog(
       title: Text('Receive ${selectedMissions.length} missions'),
       scrollable: true,
-      content: SharedBuilder.itemGrid(
-        context: context,
-        items: gifts.entries.toList(),
-        height: 36,
-      ),
+      content: SharedBuilder.itemGrid(context: context, items: gifts.entries.toList(), height: 36),
       onTapOk: () async {
         await runtime.runTask(() => runtime.agent.eventMissionClearReward(missionIds: selectedMissions.toList()));
         selectedMissions.retainWhere(isMissionClear);

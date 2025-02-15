@@ -61,9 +61,10 @@ class _QuestListPageState extends State<QuestListPage> {
       final quest = allQuestsMap[questId];
 
       final spot = db.gameData.spots[quest?.spotId];
-      final leading = spot == null || spot.shownImage == null
-          ? (hasSpot ? const SizedBox(width: 56) : null)
-          : db.getIconImage(spot.shownImage, width: 56);
+      final leading =
+          spot == null || spot.shownImage == null
+              ? (hasSpot ? const SizedBox(width: 56) : null)
+              : db.getIconImage(spot.shownImage, width: 56);
 
       if (quest == null) {
         return ListTile(
@@ -79,9 +80,7 @@ class _QuestListPageState extends State<QuestListPage> {
       }
       bool isMainFree = quest.isMainStoryFree;
 
-      List<InlineSpan> trailings = [
-        TextSpan(text: 'Lv.${quest.recommendLv}'),
-      ];
+      List<InlineSpan> trailings = [TextSpan(text: 'Lv.${quest.recommendLv}')];
 
       List<InlineSpan> consumes = [];
       if (quest.phases.isNotEmpty &&
@@ -110,7 +109,8 @@ class _QuestListPageState extends State<QuestListPage> {
       if (quest.phases.isNotEmpty &&
           (quest.afterClear.isRepeat || (quest.type == QuestType.event && quest.phases.length == 1))) {
         final key = quest.id * 100 + quest.phases.last;
-        clsIconIds = db.gameData.questPhases[key]?.className.map((e) => e.value).toList() ??
+        clsIconIds =
+            db.gameData.questPhases[key]?.className.map((e) => e.value).toList() ??
             db.gameData.questPhaseDetails[key]?.classIds ??
             [];
       }
@@ -143,15 +143,16 @@ class _QuestListPageState extends State<QuestListPage> {
             Padding(
               padding: const EdgeInsetsDirectional.only(start: 4),
               child: LoopGift(gifts: quest.gifts, giftIcon: quest.giftIcon),
-            )
+            ),
           ],
         );
       }
       String chapter = quest.chapter;
       final title = chapter.isEmpty ? quest.lDispName : '$chapter ${quest.lDispName}';
-      Servant? owner = quest.type == QuestType.friendship || quest.warId == WarId.rankup
-          ? db.gameData.servantsById.values.firstWhereOrNull((svt) => svt.relateQuestIds.contains(quest.id))
-          : null;
+      Servant? owner =
+          quest.type == QuestType.friendship || quest.warId == WarId.rankup
+              ? db.gameData.servantsById.values.firstWhereOrNull((svt) => svt.relateQuestIds.contains(quest.id))
+              : null;
 
       String subtitle;
       if (isMainFree) {
@@ -168,15 +169,18 @@ class _QuestListPageState extends State<QuestListPage> {
         leading: leading,
         // minLeadingWidth: 16,
         title: Text(title, textScaler: const TextScaler.linear(0.85)),
-        subtitle: subtitle.isEmpty && owner == null
-            ? null
-            : Text.rich(
-                TextSpan(children: [
-                  if (owner != null) CenterWidgetSpan(child: owner.iconBuilder(context: context, height: 32)),
-                  TextSpan(text: subtitle),
-                ]),
-                textScaler: const TextScaler.linear(0.85),
-              ),
+        subtitle:
+            subtitle.isEmpty && owner == null
+                ? null
+                : Text.rich(
+                  TextSpan(
+                    children: [
+                      if (owner != null) CenterWidgetSpan(child: owner.iconBuilder(context: context, height: 32)),
+                      TextSpan(text: subtitle),
+                    ],
+                  ),
+                  textScaler: const TextScaler.linear(0.85),
+                ),
         trailing: trailing,
         contentPadding: leading == null ? null : const EdgeInsetsDirectional.fromSTEB(4, 0, 16, 0),
         horizontalTitleGap: 8,
@@ -203,24 +207,22 @@ class _QuestListPageState extends State<QuestListPage> {
       for (final warId in warIds.reversed) {
         final ids = warQuestIds[warId]!;
         final war = db.gameData.wars[warId];
-        children.add(SimpleAccordion(
-          expanded: questIds.length < 25,
-          headerBuilder: (context, _) {
-            return ListTile(
-              dense: true,
-              title: Text(war?.lLongName.l.setMaxLines(2) ?? "War $warId"),
-            );
-          },
-          contentBuilder: (context) {
-            return Column(
-              mainAxisSize: MainAxisSize.min,
-              children: divideList(
-                [for (final questId in ids) buildQuest(questId)],
-                const Divider(indent: 16, endIndent: 16, height: 4),
-              ),
-            );
-          },
-        ));
+        children.add(
+          SimpleAccordion(
+            expanded: questIds.length < 25,
+            headerBuilder: (context, _) {
+              return ListTile(dense: true, title: Text(war?.lLongName.l.setMaxLines(2) ?? "War $warId"));
+            },
+            contentBuilder: (context) {
+              return Column(
+                mainAxisSize: MainAxisSize.min,
+                children: divideList([
+                  for (final questId in ids) buildQuest(questId),
+                ], const Divider(indent: 16, endIndent: 16, height: 4)),
+              );
+            },
+          ),
+        );
       }
       body = ListView.separated(
         separatorBuilder: (context, index) => const Divider(),
@@ -240,9 +242,7 @@ class _QuestListPageState extends State<QuestListPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title ?? '${questIds.length} ${S.current.quest}'),
-        actions: [
-          if (Language.isZH) buildPopupMenu(questIds, allQuestsMap),
-        ],
+        actions: [if (Language.isZH) buildPopupMenu(questIds, allQuestsMap)],
       ),
       body: body,
     );

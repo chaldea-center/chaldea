@@ -4,8 +4,11 @@ import '../utils/utils.dart';
 import 'inherit_selection_area.dart';
 
 const Divider kHorizontalDivider = Divider(color: Color.fromRGBO(162, 169, 177, 1), thickness: 0.2, height: 0.2);
-const VerticalDivider kVerticalDivider =
-    VerticalDivider(color: Color.fromRGBO(162, 169, 177, 1), thickness: 0.2, width: 0.2);
+const VerticalDivider kVerticalDivider = VerticalDivider(
+  color: Color.fromRGBO(162, 169, 177, 1),
+  thickness: 0.2,
+  width: 0.2,
+);
 
 class CustomTable extends StatelessWidget {
   final List<Widget> children;
@@ -34,28 +37,28 @@ class CustomTable extends StatelessWidget {
         _all.add(horizontalDivider);
       }
     }
-    final outlineDecoration = hideOutline
-        ? null
-        : BoxDecoration(
-            border: Border.symmetric(
-              horizontal: BorderSide(
+    final outlineDecoration =
+        hideOutline
+            ? null
+            : BoxDecoration(
+              border: Border.symmetric(
+                horizontal: BorderSide(
                   color: horizontalDivider.color ?? kHorizontalDivider.color!,
-                  width: horizontalDivider.thickness ?? kHorizontalDivider.thickness!),
-              vertical: BorderSide(
+                  width: horizontalDivider.thickness ?? kHorizontalDivider.thickness!,
+                ),
+                vertical: BorderSide(
                   color: verticalDivider.color ?? kVerticalDivider.color!,
-                  width: verticalDivider.thickness ?? kVerticalDivider.thickness!),
-            ),
-          );
+                  width: verticalDivider.thickness ?? kVerticalDivider.thickness!,
+                ),
+              ),
+            );
     Widget child = Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: _all,
     );
     if (outlineDecoration != null) {
-      child = DecoratedBox(
-        decoration: outlineDecoration,
-        child: child,
-      );
+      child = DecoratedBox(decoration: outlineDecoration, child: child);
     }
     if (selectable) {
       child = InheritSelectionArea(child: child);
@@ -71,12 +74,7 @@ class CustomTableRow extends StatefulWidget {
   final Color? color;
   final VerticalDivider? divider;
 
-  CustomTableRow({
-    super.key,
-    required this.children,
-    this.color,
-    this.divider = kVerticalDivider,
-  }) {
+  CustomTableRow({super.key, required this.children, this.color, this.divider = kVerticalDivider}) {
     for (final cell in children) {
       cell.key ??= GlobalKey();
     }
@@ -90,13 +88,14 @@ class CustomTableRow extends StatefulWidget {
     Color? color,
     VerticalDivider? divider = kVerticalDivider,
   }) : this(
-          key: key,
-          children: texts
-              .map((text) => (defaults ?? TableCellData(text: text)).copyWith(text: text, isHeader: isHeader))
-              .toList(),
-          color: color,
-          divider: divider,
-        );
+         key: key,
+         children:
+             texts
+                 .map((text) => (defaults ?? TableCellData(text: text)).copyWith(text: text, isHeader: isHeader))
+                 .toList(),
+         color: color,
+         divider: divider,
+       );
 
   CustomTableRow.fromTextsWithHeader({
     Key? key,
@@ -106,14 +105,17 @@ class CustomTableRow extends StatefulWidget {
     Color? color,
     VerticalDivider? divider = kVerticalDivider,
   }) : this(
-          key: key,
-          children: List.generate(
-              texts.length,
-              (index) => (defaults ?? TableCellData(text: texts[index]))
-                  .copyWith(text: texts[index], isHeader: isHeaders?.getOrNull(index))),
-          color: color,
-          divider: divider,
-        );
+         key: key,
+         children: List.generate(
+           texts.length,
+           (index) => (defaults ?? TableCellData(text: texts[index])).copyWith(
+             text: texts[index],
+             isHeader: isHeaders?.getOrNull(index),
+           ),
+         ),
+         color: color,
+         divider: divider,
+       );
 
   CustomTableRow.fromChildren({
     Key? key,
@@ -122,13 +124,14 @@ class CustomTableRow extends StatefulWidget {
     Color? color,
     VerticalDivider? divider = kVerticalDivider,
   }) : this(
-          key: key,
-          children: children
-              .map((child) => defaults == null ? TableCellData(child: child) : defaults.copyWith(child: child))
-              .toList(),
-          color: color,
-          divider: divider,
-        );
+         key: key,
+         children:
+             children
+                 .map((child) => defaults == null ? TableCellData(child: child) : defaults.copyWith(child: child))
+                 .toList(),
+         color: color,
+         divider: divider,
+       );
 
   @override
   _CustomTableRowState createState() => _CustomTableRowState();
@@ -155,31 +158,13 @@ class _CustomTableRowState extends State<CustomTableRow> {
         /// see https://github.com/leisim/auto_size_text/issues/77
         String text = cell.text ?? "";
         if (cell.maxLines == null || text.isEmpty) {
-          _child = Text(
-            text,
-            textAlign: cell.textAlign,
-            style: cell.style,
-          );
+          _child = Text(text, textAlign: cell.textAlign, style: cell.style);
         } else if (cell.maxLines == 1) {
           // empty string->Text has no size->cannot place in FittedBox
-          _child = FittedBox(
-            child: Text(
-              text,
-              maxLines: cell.maxLines,
-              textAlign: cell.textAlign,
-              style: cell.style,
-            ),
-          );
+          _child = FittedBox(child: Text(text, maxLines: cell.maxLines, textAlign: cell.textAlign, style: cell.style));
         } else {
           assert(false, 'CustomTable: maxLines=${cell.maxLines} > 1 not supported yet!!!');
-          _child = FittedBox(
-            child: Text(
-              text,
-              maxLines: cell.maxLines,
-              textAlign: cell.textAlign,
-              style: cell.style,
-            ),
-          );
+          _child = FittedBox(child: Text(text, maxLines: cell.maxLines, textAlign: cell.textAlign, style: cell.style));
           // _child = AutoSizeText(
           //   cell.text,
           //   maxLines: cell.maxLines,
@@ -187,26 +172,13 @@ class _CustomTableRowState extends State<CustomTableRow> {
           // );
         }
       }
-      _child = Padding(
-        padding: cell.padding,
-        child: _child,
-      );
+      _child = Padding(padding: cell.padding, child: _child);
       if (cell.alignment != null) {
-        _child = Align(
-          alignment: cell.alignment!,
-          child: _child,
-        );
+        _child = Align(alignment: cell.alignment!, child: _child);
       }
-      _child = Container(
-        color: cell.resolveColor(context) ?? widget.color,
-        child: _child,
-      );
+      _child = Container(color: cell.resolveColor(context) ?? widget.color, child: _child);
 
-      _child = Flexible(
-        key: cell.key,
-        flex: cell.flex,
-        child: _child,
-      );
+      _child = Flexible(key: cell.key, flex: cell.flex, child: _child);
 
       children.add(_child);
 
@@ -214,10 +186,7 @@ class _CustomTableRowState extends State<CustomTableRow> {
         children.add(widget.divider!);
       }
     }
-    Widget body = Row(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: children,
-    );
+    Widget body = Row(crossAxisAlignment: CrossAxisAlignment.stretch, children: children);
     body = IntrinsicHeight(child: body);
     return body;
   }
@@ -304,22 +273,21 @@ class TableCellData {
     assert(textAlign == null || textAlignList == null);
     assert(padding == null || paddingList == null);
     assert(fitHeight == null || fitHeightList == null);
-    assert({
-      flexList?.length,
-      isHeaderList?.length,
-      styleList?.length,
-      colorList?.length,
-      maxLinesList?.length,
-      alignmentList?.length,
-      paddingList?.length,
-      fitHeightList?.length
-    }.every((e) => e == null || e == length));
+    assert(
+      {
+        flexList?.length,
+        isHeaderList?.length,
+        styleList?.length,
+        colorList?.length,
+        maxLinesList?.length,
+        alignmentList?.length,
+        paddingList?.length,
+        fitHeightList?.length,
+      }.every((e) => e == null || e == length),
+    );
     final List<TableCellData> rowDataList = []..length = length;
     for (int index = 0; index < rowDataList.length; index++) {
-      final data = TableCellData(
-        text: texts?.elementAt(index),
-        child: children?.elementAt(index),
-      );
+      final data = TableCellData(text: texts?.elementAt(index), child: children?.elementAt(index));
       data.flex = flex ?? flexList?.elementAt(index) ?? data.flex;
       data.style = style ?? styleList?.elementAt(index);
       data.color = color ?? colorList?.elementAt(index);
@@ -335,18 +303,19 @@ class TableCellData {
     return rowDataList;
   }
 
-  TableCellData copyWith(
-      {String? text,
-      Widget? child,
-      int? flex,
-      bool? isHeader,
-      TextStyle? style,
-      Color? color,
-      int? maxLines,
-      AlignmentGeometry? alignment,
-      TextAlign? textAlign,
-      EdgeInsets? padding,
-      bool? fitHeight}) {
+  TableCellData copyWith({
+    String? text,
+    Widget? child,
+    int? flex,
+    bool? isHeader,
+    TextStyle? style,
+    Color? color,
+    int? maxLines,
+    AlignmentGeometry? alignment,
+    TextAlign? textAlign,
+    EdgeInsets? padding,
+    bool? fitHeight,
+  }) {
     text ??= this.text;
     child ??= this.child;
     assert(text == null || child == null);

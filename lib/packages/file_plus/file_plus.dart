@@ -47,12 +47,20 @@ abstract class FilePlus {
   @protected
   void writeAsBytesSync(List<int> bytes, {FileMode mode = FileMode.write, bool flush = false});
 
-  Future<FilePlus> writeAsString(String contents,
-      {FileMode mode = FileMode.write, Encoding encoding = utf8, bool flush = false});
+  Future<FilePlus> writeAsString(
+    String contents, {
+    FileMode mode = FileMode.write,
+    Encoding encoding = utf8,
+    bool flush = false,
+  });
 
   @protected
-  void writeAsStringSync(String contents,
-      {FileMode mode = FileMode.write, Encoding encoding = utf8, bool flush = false});
+  void writeAsStringSync(
+    String contents, {
+    FileMode mode = FileMode.write,
+    Encoding encoding = utf8,
+    bool flush = false,
+  });
 
   Future<void> create({bool recursive = false});
 

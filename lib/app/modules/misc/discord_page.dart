@@ -23,11 +23,7 @@ class DiscordPage extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(
-                Icons.discord,
-                size: 80,
-                color: Theme.of(context).isDarkMode ? null : discordThemeColor,
-              ),
+              Icon(Icons.discord, size: 80, color: Theme.of(context).isDarkMode ? null : discordThemeColor),
               Text(kAppName, style: Theme.of(context).textTheme.headlineSmall),
               const SizedBox(height: 16),
               urlWithCopy(context, 'https://chaldea.center/discord'),
@@ -51,10 +47,7 @@ class DiscordPage extends StatelessWidget {
             onTap: () {
               launch(url);
             },
-            child: Text(
-              url,
-              style: TextStyle(color: Theme.of(context).colorScheme.primary),
-            ),
+            child: Text(url, style: TextStyle(color: Theme.of(context).colorScheme.primary)),
           ),
         ),
         IconButton(

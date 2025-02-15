@@ -147,23 +147,21 @@ class TdDmgSolver {
             detail: 'Manually added',
             type: BuffType.avoidState,
             ckOpIndv: [NiceTrait(id: 3005)],
-          )
+          ),
         ],
         svals: [
-          DataVals({
-            "Rate": 5000,
-            "Turn": -1,
-            "Count": -1,
-            "ForceAddState": 1,
-            "UnSubState": 1,
-          })
+          DataVals({"Rate": 5000, "Turn": -1, "Count": -1, "ForceAddState": 1, "UnSubState": 1}),
         ],
-      )
+      ),
     ],
   );
 
   Future<TdDmgResult?> calcOneSvt(
-      PlayerSvtData svtData, QuestPhase quest, MysticCodeData mcData, BattleDelegate delegate) async {
+    PlayerSvtData svtData,
+    QuestPhase quest,
+    MysticCodeData mcData,
+    BattleDelegate delegate,
+  ) async {
     final battleData = BattleData();
     final data = TdDmgResult(svtData, battleData);
     final attacker = data.originalSvtData.copy();
@@ -328,8 +326,9 @@ class TdDmgSolver {
         limitCount: limitCount,
       );
     }
-    final board =
-        db.gameData.classBoards.values.firstWhereOrNull((e) => e.classes.any((cls) => cls.classId == svt.classId));
+    final board = db.gameData.classBoards.values.firstWhereOrNull(
+      (e) => e.classes.any((cls) => cls.classId == svt.classId),
+    );
     if (board != null) {
       NiceSkill? skill = switch (options.classBoard) {
         PreferClassBoardDataSource.none => null,
@@ -390,13 +389,7 @@ class TdDmgSolver {
       phases: [1],
       warId: options.warId,
       individuality: options.fieldTraits.map((e) => NiceTrait(id: e)).toList(),
-      stages: [
-        Stage(
-          wave: 1,
-          enemyFieldPosCount: max(3, enemies.length),
-          enemies: enemies,
-        )
-      ],
+      stages: [Stage(wave: 1, enemyFieldPosCount: max(3, enemies.length), enemies: enemies)],
     );
   }
 
@@ -438,10 +431,7 @@ class TdDmgSolver {
             indivSumCount: options.damageNpIndivSumCount ?? vals.ParamAddMaxCount,
           );
         } else if (funcType == FuncType.damageNpBattlePointPhase) {
-          return DamageNpSEDecision(
-            useCorrection: true,
-            indivSumCount: options.damageNpIndivSumCount ?? 10,
-          );
+          return DamageNpSEDecision(useCorrection: true, indivSumCount: options.damageNpIndivSumCount ?? 10);
         }
         return null;
       };

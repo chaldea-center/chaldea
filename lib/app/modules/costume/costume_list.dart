@@ -18,32 +18,24 @@ class _CostumeListPageState extends State<CostumeListPage> with SearchableListSt
   bool reversed = false;
 
   @override
-  Iterable<NiceCostume> get wholeData =>
-      [for (final svt in db.gameData.servantsById.values) ...svt.profile.costume.values];
+  Iterable<NiceCostume> get wholeData => [
+    for (final svt in db.gameData.servantsById.values) ...svt.profile.costume.values,
+  ];
 
   bool useGrid = false;
 
   @override
   Widget build(BuildContext context) {
-    filterShownList(
-      compare: (a, b) => a.costumeCollectionNo.compareTo(b.costumeCollectionNo) * (reversed ? -1 : 1),
-    );
+    filterShownList(compare: (a, b) => a.costumeCollectionNo.compareTo(b.costumeCollectionNo) * (reversed ? -1 : 1));
     return scrollListener(
       useGrid: useGrid,
       appBar: AppBar(
         leading: const MasterBackButton(),
-        title: AutoSizeText(
-          S.current.costume,
-          maxLines: 1,
-          overflow: TextOverflow.fade,
-        ),
+        title: AutoSizeText(S.current.costume, maxLines: 1, overflow: TextOverflow.fade),
         bottom: showSearchBar ? searchBar : null,
         actions: [
           IconButton(
-            icon: FaIcon(
-              reversed ? FontAwesomeIcons.arrowDownWideShort : FontAwesomeIcons.arrowUpWideShort,
-              size: 20,
-            ),
+            icon: FaIcon(reversed ? FontAwesomeIcons.arrowDownWideShort : FontAwesomeIcons.arrowUpWideShort, size: 20),
             tooltip: S.current.sort_order,
             onPressed: () => setState(() => reversed = !reversed),
           ),
@@ -78,8 +70,11 @@ class _CostumeListPageState extends State<CostumeListPage> with SearchableListSt
 
   @override
   Widget gridItemBuilder(NiceCostume costume) {
-    return db.getIconImage(costume.borderedIcon,
-        aspectRatio: 132 / 144, onTap: () => costume.routeTo(popDetails: true));
+    return db.getIconImage(
+      costume.borderedIcon,
+      aspectRatio: 132 / 144,
+      onTap: () => costume.routeTo(popDetails: true),
+    );
   }
 
   @override

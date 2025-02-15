@@ -50,7 +50,9 @@ class _HomePageState extends State<HomePage> with AfterLayoutMixin {
           const BottomNavigationBarItem(icon: SafeArea(child: Icon(Icons.bubble_chart)), label: 'Laplace'),
           const BottomNavigationBarItem(icon: SafeArea(child: Icon(Icons.timer_outlined)), label: 'Timer'),
           BottomNavigationBarItem(
-              icon: const SafeArea(child: Icon(Icons.settings)), label: S.current.settings_tab_name),
+            icon: const SafeArea(child: Icon(Icons.settings)),
+            label: S.current.settings_tab_name,
+          ),
         ],
         onTap: (index) {
           // if (_curIndex != index) db2.saveData();
@@ -76,62 +78,60 @@ class _HomePageState extends State<HomePage> with AfterLayoutMixin {
     String? forceUpgradeVersion = db.runtimeData.remoteConfig?.forceUpgradeVersion;
     List<Widget> errors = [];
     if (!db.gameData.isValid) {
-      errors.add(Positioned.fill(
-        child: Container(
-          color: Colors.black38,
-          child: SimpleCancelOkDialog(
-            title: Text(S.current.gamedata),
-            content: Text(S.current.game_data_not_found),
-            hideCancel: true,
-            hideOk: true,
+      errors.add(
+        Positioned.fill(
+          child: Container(
+            color: Colors.black38,
+            child: SimpleCancelOkDialog(
+              title: Text(S.current.gamedata),
+              content: Text(S.current.game_data_not_found),
+              hideCancel: true,
+              hideOk: true,
+            ),
           ),
         ),
-      ));
+      );
     }
     if (!kIsWeb && forceUpgradeVersion != null) {
       final version = const AppVersionConverter().fromJson(forceUpgradeVersion);
       if (AppInfo.version < version) {
-        errors.add(Positioned.fill(
-          child: Container(
-            color: Colors.black38,
-            child: Center(
-              child: SimpleCancelOkDialog(
-                scrollable: true,
-                title: Text(S.current.update),
-                content: Text(
-                  "${S.current.forced_update}: $forceUpgradeVersion+\n"
-                  "${S.current.current_version}: ${AppInfo.versionString}",
-                  // textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: Theme.of(context).colorScheme.error,
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
+        errors.add(
+          Positioned.fill(
+            child: Container(
+              color: Colors.black38,
+              child: Center(
+                child: SimpleCancelOkDialog(
+                  scrollable: true,
+                  title: Text(S.current.update),
+                  content: Text(
+                    "${S.current.forced_update}: $forceUpgradeVersion+\n"
+                    "${S.current.current_version}: ${AppInfo.versionString}",
+                    // textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.error,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
+                  hideCancel: true,
+                  hideOk: true,
+                  actions: [
+                    TextButton(
+                      onPressed: () {
+                        launch(ChaldeaUrl.doc("/install"));
+                      },
+                      child: Text(S.current.details),
+                    ),
+                  ],
                 ),
-                hideCancel: true,
-                hideOk: true,
-                actions: [
-                  TextButton(
-                    onPressed: () {
-                      launch(ChaldeaUrl.doc("/install"));
-                    },
-                    child: Text(S.current.details),
-                  ),
-                ],
               ),
             ),
           ),
-        ));
+        );
       }
     }
     if (errors.isNotEmpty) {
-      child = Stack(
-        alignment: Alignment.center,
-        children: [
-          IgnorePointer(child: child),
-          ...errors,
-        ],
-      );
+      child = Stack(alignment: Alignment.center, children: [IgnorePointer(child: child), ...errors]);
     }
     return child;
   }

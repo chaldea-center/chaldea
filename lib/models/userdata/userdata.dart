@@ -62,11 +62,11 @@ class UserData {
     this.svtAscensionIcon = 1,
     this.preferAprilFoolIcon = false,
     Map<int, String?>? customSvtIcon,
-  })  : version = UserData.modelVersion,
-        _curUserKey = curUserKey.clamp(0, (users?.length ?? 1) - 1),
-        users = users?.isNotEmpty == true ? users! : <User>[User()],
-        itemAbundantValue = List.generate(3, (index) => itemAbundantValue?.getOrNull(index) ?? 0, growable: false),
-        customSvtIcon = customSvtIcon ?? {} {
+  }) : version = UserData.modelVersion,
+       _curUserKey = curUserKey.clamp(0, (users?.length ?? 1) - 1),
+       users = users?.isNotEmpty == true ? users! : <User>[User()],
+       itemAbundantValue = List.generate(3, (index) => itemAbundantValue?.getOrNull(index) ?? 0, growable: false),
+       customSvtIcon = customSvtIcon ?? {} {
     validate();
   }
 
@@ -192,22 +192,22 @@ class User {
     Map<String, Map<int, int>>? luckyBagSvtScores,
     SaintQuartzPlan? saintQuartzPlan,
     BattleSimUserData? battleSim,
-  })  : id = id ?? const Uuid().v4(),
-        servants = servants ?? {},
-        dupServantMapping = dupServantMapping ?? {},
-        plans = List.generate(kSvtPlanMaxNum, (index) => plans?.getOrNull(index) ?? UserPlan()),
-        _curSvtPlanNo = curSvtPlanNo.clamp(0, kSvtPlanMaxNum - 1),
-        items = items ?? {},
-        craftEssences = craftEssences ?? {},
-        cmdCodes = cmdCodes ?? {},
-        mysticCodes = mysticCodes ?? {},
-        summons = summons ?? {},
-        myRoomMusic = myRoomMusic ?? {},
-        classBoards = classBoards ?? {},
-        freeLPParams = freeLPParams ?? FreeLPParams(),
-        luckyBagSvtScores = luckyBagSvtScores ?? {},
-        saintQuartzPlan = saintQuartzPlan ?? SaintQuartzPlan(),
-        battleSim = battleSim ?? BattleSimUserData();
+  }) : id = id ?? const Uuid().v4(),
+       servants = servants ?? {},
+       dupServantMapping = dupServantMapping ?? {},
+       plans = List.generate(kSvtPlanMaxNum, (index) => plans?.getOrNull(index) ?? UserPlan()),
+       _curSvtPlanNo = curSvtPlanNo.clamp(0, kSvtPlanMaxNum - 1),
+       items = items ?? {},
+       craftEssences = craftEssences ?? {},
+       cmdCodes = cmdCodes ?? {},
+       mysticCodes = mysticCodes ?? {},
+       summons = summons ?? {},
+       myRoomMusic = myRoomMusic ?? {},
+       classBoards = classBoards ?? {},
+       freeLPParams = freeLPParams ?? FreeLPParams(),
+       luckyBagSvtScores = luckyBagSvtScores ?? {},
+       saintQuartzPlan = saintQuartzPlan ?? SaintQuartzPlan(),
+       battleSim = battleSim ?? BattleSimUserData();
 
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
 
@@ -243,11 +243,13 @@ class User {
   ClassBoardPlan classBoardStatusOf(int boardId) => classBoards.putIfAbsent(boardId, () => ClassBoardPlan());
 
   LockPlan classBoardUnlockedOf(int boardId, int squareId) => LockPlan.from(
-      classBoardStatusOf(boardId).unlockedSquares.contains(squareId),
-      curPlan_.classBoardPlan(boardId).unlockedSquares.contains(squareId));
+    classBoardStatusOf(boardId).unlockedSquares.contains(squareId),
+    curPlan_.classBoardPlan(boardId).unlockedSquares.contains(squareId),
+  );
   LockPlan classBoardEnhancedOf(int boardId, int squareId) => LockPlan.from(
-      classBoardStatusOf(boardId).enhancedSquares.contains(squareId),
-      curPlan_.classBoardPlan(boardId).enhancedSquares.contains(squareId));
+    classBoardStatusOf(boardId).enhancedSquares.contains(squareId),
+    curPlan_.classBoardPlan(boardId).enhancedSquares.contains(squareId),
+  );
 
   void validate() {
     if (plans.isEmpty) {
@@ -331,16 +333,11 @@ class SvtStatus {
   // 0~25 -> 0~500
   List<int>? cmdCardStrengthen;
 
-  SvtStatus({
-    SvtPlan? cur,
-    this.priority = 1,
-    this.bond = 0,
-    List<int?>? equipCmdCodes,
-    List<int>? cmdCardStrengthen,
-  })  : cur = cur ?? SvtPlan(),
-        equipCmdCodes = List.generate(5, (index) => equipCmdCodes?.getOrNull(index)),
-        cmdCardStrengthen =
-            cmdCardStrengthen == null ? null : List.generate(5, (index) => cmdCardStrengthen.getOrNull(index) ?? 0);
+  SvtStatus({SvtPlan? cur, this.priority = 1, this.bond = 0, List<int?>? equipCmdCodes, List<int>? cmdCardStrengthen})
+    : cur = cur ?? SvtPlan(),
+      equipCmdCodes = List.generate(5, (index) => equipCmdCodes?.getOrNull(index)),
+      cmdCardStrengthen =
+          cmdCardStrengthen == null ? null : List.generate(5, (index) => cmdCardStrengthen.getOrNull(index) ?? 0);
 
   factory SvtStatus.fromJson(Map<String, dynamic> json) => _$SvtStatusFromJson(json);
 
@@ -401,12 +398,12 @@ class UserPlan {
     Map<int, ExchangeTicketPlan>? tickets,
     Map<int, ClassBoardPlan>? classBoards,
     Map<int, bool>? recipes,
-  })  : servants = servants ?? {},
-        limitEvents = limitEvents ?? {},
-        mainStories = mainStories ?? {},
-        tickets = tickets ?? {},
-        classBoards = classBoards ?? {},
-        recipes = recipes ?? {};
+  }) : servants = servants ?? {},
+       limitEvents = limitEvents ?? {},
+       mainStories = mainStories ?? {},
+       tickets = tickets ?? {},
+       classBoards = classBoards ?? {},
+       recipes = recipes ?? {};
 
   factory UserPlan.fromJson(Map<String, dynamic> json) => _$UserPlanFromJson(json);
 
@@ -470,29 +467,32 @@ class SvtPlan {
     this.fouAtk3 = 20,
     this.bondLimit = 10,
     int? npLv,
-  })  : skills = List.generate(kActiveSkillNums.length, (index) => skills?.getOrNull(index) ?? 1, growable: false),
-        costumes = costumes ?? {},
-        appendSkills =
-            List.generate(kAppendSkillNums.length, (index) => appendSkills?.getOrNull(index) ?? 0, growable: false),
-        _npLv = npLv {
+  }) : skills = List.generate(kActiveSkillNums.length, (index) => skills?.getOrNull(index) ?? 1, growable: false),
+       costumes = costumes ?? {},
+       appendSkills = List.generate(
+         kAppendSkillNums.length,
+         (index) => appendSkills?.getOrNull(index) ?? 0,
+         growable: false,
+       ),
+       _npLv = npLv {
     validate();
   }
 
   factory SvtPlan.empty() => SvtPlan(fouHp3: 0, fouAtk3: 0);
 
   SvtPlan.max(Servant svt)
-      : favorite = true,
-        ascension = 4,
-        skills = List.filled(kActiveSkillNums.length, 10),
-        appendSkills = List.filled(kAppendSkillNums.length, 10),
-        costumes = svt.costumeMaterials.map((key, value) => MapEntry(key, 1)),
-        grail = _grailCostByRarity[svt.rarity] + 10,
-        fouHp = 50,
-        fouAtk = 50,
-        fouHp3 = 20,
-        fouAtk3 = 20,
-        bondLimit = 15,
-        _npLv = 5;
+    : favorite = true,
+      ascension = 4,
+      skills = List.filled(kActiveSkillNums.length, 10),
+      appendSkills = List.filled(kAppendSkillNums.length, 10),
+      costumes = svt.costumeMaterials.map((key, value) => MapEntry(key, 1)),
+      grail = _grailCostByRarity[svt.rarity] + 10,
+      fouHp = 50,
+      fouAtk = 50,
+      fouHp3 = 20,
+      fouAtk3 = 20,
+      bondLimit = 15,
+      _npLv = 5;
   static const _grailCostByRarity = [10, 10, 10, 9, 7, 5];
 
   factory SvtPlan.fromJson(Map<String, dynamic> json) => _$SvtPlanFromJson(json);
@@ -604,12 +604,12 @@ class LimitEventPlan {
     Map<int, bool>? extraFixedItems,
     Map<int, Map<int, int>>? extraItems,
     Map<int, int>? customItems,
-  })  : shopBuyCount = shopBuyCount ?? {},
-        lotteries = lotteries ?? {},
-        treasureBoxItems = treasureBoxItems ?? {},
-        extraFixedItems = extraFixedItems ?? {},
-        extraItems = extraItems ?? {},
-        customItems = customItems ?? {};
+  }) : shopBuyCount = shopBuyCount ?? {},
+       lotteries = lotteries ?? {},
+       treasureBoxItems = treasureBoxItems ?? {},
+       extraFixedItems = extraFixedItems ?? {},
+       extraItems = extraItems ?? {},
+       customItems = customItems ?? {};
 
   factory LimitEventPlan.fromJson(Map<String, dynamic> json) => _$LimitEventPlanFromJson(json);
 
@@ -670,10 +670,7 @@ class MainStoryPlan {
   bool fixedDrop;
   bool questReward;
 
-  MainStoryPlan({
-    this.fixedDrop = false,
-    this.questReward = false,
-  });
+  MainStoryPlan({this.fixedDrop = false, this.questReward = false});
 
   factory MainStoryPlan.fromJson(Map<String, dynamic> json) => _$MainStoryPlanFromJson(json);
 
@@ -697,7 +694,7 @@ class ExchangeTicketPlan {
   Iterable<int> getRange(int start, int end) => counts.getRange(start, end);
 
   ExchangeTicketPlan({List<int>? counts})
-      : counts = List.generate(max(3, counts?.length ?? 0), (index) => counts?.getOrNull(index) ?? 0);
+    : counts = List.generate(max(3, counts?.length ?? 0), (index) => counts?.getOrNull(index) ?? 0);
 
   factory ExchangeTicketPlan.fromJson(Map<String, dynamic> json) => _$ExchangeTicketPlanFromJson(json);
 
@@ -730,11 +727,7 @@ class CraftStatus {
   int lv;
   int limitCount;
 
-  CraftStatus({
-    this.status = CraftStatus.notMet,
-    this.lv = 1,
-    this.limitCount = 0,
-  });
+  CraftStatus({this.status = CraftStatus.notMet, this.lv = 1, this.limitCount = 0});
 
   bool get favorite => status == CraftStatus.owned;
 
@@ -766,10 +759,7 @@ class CmdCodeStatus {
   int status;
   int count;
 
-  CmdCodeStatus({
-    this.status = CmdCodeStatus.notMet,
-    this.count = 0,
-  });
+  CmdCodeStatus({this.status = CmdCodeStatus.notMet, this.count = 0});
 
   void validate() {
     status = status.clamp(0, 2);
@@ -786,21 +776,19 @@ class ClassBoardPlan {
   Set<int> unlockedSquares;
   Set<int> enhancedSquares;
 
-  ClassBoardPlan({
-    Set<int>? unlockSquares,
-    Set<int>? enhancedSquares,
-  })  : unlockedSquares = unlockSquares ?? {},
-        enhancedSquares = enhancedSquares ?? {};
+  ClassBoardPlan({Set<int>? unlockSquares, Set<int>? enhancedSquares})
+    : unlockedSquares = unlockSquares ?? {},
+      enhancedSquares = enhancedSquares ?? {};
 
   ClassBoardPlan.full(ClassBoard board)
-      : unlockedSquares = {
-          for (final square in board.squares)
-            if (square.lock != null) square.id,
-        },
-        enhancedSquares = {
-          for (final square in board.squares)
-            if (square.targetSkill != null || square.targetCommandSpell != null) square.id,
-        };
+    : unlockedSquares = {
+        for (final square in board.squares)
+          if (square.lock != null) square.id,
+      },
+      enhancedSquares = {
+        for (final square in board.squares)
+          if (square.targetSkill != null || square.targetCommandSpell != null) square.id,
+      };
 
   void validate() {
     //
@@ -815,8 +803,7 @@ class ClassBoardPlan {
 enum LockPlan {
   none(0),
   planned(1),
-  full(2),
-  ;
+  full(2);
 
   const LockPlan(this.value);
   final int value;

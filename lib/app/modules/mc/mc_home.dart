@@ -11,23 +11,25 @@ class MooncellToolsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Mooncell wiki"),
-      ),
+      appBar: AppBar(title: const Text("Mooncell wiki")),
       body: ListView(
         // padding: EdgeInsets.symmetric(),
         children: [
-          buildCard(Text(
-            Language.isZH ? '一些适用于Mooncell wiki编辑/导出相关的工具' : 'This page contains tools for Mooncell - a Chinese wiki',
-            textAlign: TextAlign.center,
-          )),
-          buildCard(buildMardkown("""### $kStarChar2 注意事项
+          buildCard(
+            Text(
+              Language.isZH ? '一些适用于Mooncell wiki编辑/导出相关的工具' : 'This page contains tools for Mooncell - a Chinese wiki',
+              textAlign: TextAlign.center,
+            ),
+          ),
+          buildCard(
+            buildMardkown("""### $kStarChar2 注意事项
 - App 语言需设置为 **简体中文**, 首选翻译语言需设置为 **国服(简体中文)->日服(日本語)->其他** !!! 否则翻译将会出错
 - 导出结果可能存在错误或未解析的地方，请检查并完善后再编辑至wiki网站
 - 使用前请确保使用最新版app
 - 若存在错误，请积极反馈
 - 前往文档查看本页最新内容: <https://docs.chaldea.center/zh/guide/mooncell>
-""")),
+"""),
+          ),
           TileGroup(
             header: S.current.quest,
             children: [
@@ -43,7 +45,7 @@ class MooncellToolsPage extends StatelessWidget {
 - 开放条件需再次确认并修改/增加
 - 主线关卡的固定掉落和Free本的掉落需留意关卡的样本数，样本数过低可能数据不准确
 """),
-              )
+              ),
             ],
           ),
           TileGroup(
@@ -77,7 +79,7 @@ class MooncellToolsPage extends StatelessWidget {
 - 概率表需检查各行概率及总概率是否正确
 - 关联卡池和活动等需手动填写
 """),
-              )
+              ),
             ],
           ),
         ],
@@ -88,10 +90,7 @@ class MooncellToolsPage extends StatelessWidget {
   Widget buildCard(Widget child) {
     return Card(
       margin: const EdgeInsets.all(8),
-      child: Padding(
-        padding: const EdgeInsets.all(8),
-        child: Center(child: child),
-      ),
+      child: Padding(padding: const EdgeInsets.all(8), child: Center(child: child)),
     );
   }
 

@@ -37,7 +37,8 @@ class _ShareAppDialogState extends State<ShareAppDialog> {
   Widget build(BuildContext context) {
     final themeData = Theme.of(context);
     final border = OutlineInputBorder(
-        borderSide: BorderSide(color: themeData.dialogTheme.backgroundColor ?? const Color(0xFF000000)));
+      borderSide: BorderSide(color: themeData.dialogTheme.backgroundColor ?? const Color(0xFF000000)),
+    );
     return SimpleCancelOkDialog(
       title: Text(S.current.share),
       contentPadding: const EdgeInsetsDirectional.fromSTEB(24.0, 10.0, 24.0, 12.0),
@@ -57,12 +58,14 @@ class _ShareAppDialogState extends State<ShareAppDialog> {
       actions: [
         TextButton(
           onPressed: () {
-            Clipboard.setData(ClipboardData(text: _controller.text)).then((_) {
-              EasyLoading.showSuccess(S.current.copied);
-            }).catchError((e, s) {
-              logger.e('copy share msg failed', e, s);
-              EasyLoading.showError('Copy failed');
-            });
+            Clipboard.setData(ClipboardData(text: _controller.text))
+                .then((_) {
+                  EasyLoading.showSuccess(S.current.copied);
+                })
+                .catchError((e, s) {
+                  logger.e('copy share msg failed', e, s);
+                  EasyLoading.showError('Copy failed');
+                });
           },
           child: Text(MaterialLocalizations.of(context).copyButtonLabel),
         ),

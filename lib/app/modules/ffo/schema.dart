@@ -17,8 +17,7 @@ import 'ffo_card.dart';
 enum FfoPartWhere {
   head,
   body,
-  bg,
-  ;
+  bg;
 
   String get shownName {
     switch (this) {
@@ -51,8 +50,9 @@ class FfoDB {
       servants[svt.collectionNo] = svt;
     }
 
-    final csvrows = const CsvToListConverter(eol: '\n')
-        .convert((await _readFile('CSV/ServantDB-Parts.csv', force)).replaceAll('\r\n', '\n'));
+    final csvrows = const CsvToListConverter(
+      eol: '\n',
+    ).convert((await _readFile('CSV/ServantDB-Parts.csv', force)).replaceAll('\r\n', '\n'));
     for (final row in csvrows) {
       if (row[0] == 'id') {
         assert(row.length == 10, row.toString());
@@ -179,15 +179,15 @@ class FfoCanvasImages {
   });
 
   List<ui.Image?> toList() => [
-        bg_0,
-        bodyBack_1,
-        headBack_2,
-        bodyBack2_3,
-        bodyMiddle_4,
-        headFront_5,
-        bodyFront_6,
-        bgFront_7,
-      ];
+    bg_0,
+    bodyBack_1,
+    headBack_2,
+    bodyBack2_3,
+    bodyMiddle_4,
+    headFront_5,
+    bodyFront_6,
+    bgFront_7,
+  ];
 
   bool get isEmpty => toList().every((e) => e == null);
 }
@@ -228,16 +228,16 @@ class FfoSvtPart {
   }
 
   FfoSvtPart.fromList(List row)
-      : id = _toInt(row[0]),
-        collectionNo = _toInt(row[1]),
-        direction = _toInt(row[2]),
-        scale = _toDouble(row[3]),
-        headX = _toInt(row[4]),
-        _headY = _toInt(row[5]),
-        bodyX = _toInt(row[6]),
-        bodyY = _toInt(row[7]),
-        headX2 = _toInt(row[8]),
-        headY2 = _toInt(row[9]);
+    : id = _toInt(row[0]),
+      collectionNo = _toInt(row[1]),
+      direction = _toInt(row[2]),
+      scale = _toDouble(row[3]),
+      headX = _toInt(row[4]),
+      _headY = _toInt(row[5]),
+      bodyX = _toInt(row[6]),
+      bodyY = _toInt(row[7]),
+      headX2 = _toInt(row[8]),
+      headY2 = _toInt(row[9]);
 }
 
 class FFOParams {
@@ -247,22 +247,16 @@ class FFOParams {
   final bool clipOverflow; // not used
   bool cropNormalizedSize;
 
-  FFOParams({
-    this.headPart,
-    this.bodyPart,
-    this.bgPart,
-    this.clipOverflow = false,
-    this.cropNormalizedSize = false,
-  });
+  FFOParams({this.headPart, this.bodyPart, this.bgPart, this.clipOverflow = false, this.cropNormalizedSize = false});
 
   FFOParams.only({
     required FfoPartWhere where,
     required FfoSvtPart part,
     this.clipOverflow = false,
     this.cropNormalizedSize = false,
-  })  : headPart = where == FfoPartWhere.head ? part : null,
-        bodyPart = where == FfoPartWhere.body ? part : null,
-        bgPart = where == FfoPartWhere.bg ? part : null;
+  }) : headPart = where == FfoPartWhere.head ? part : null,
+       bodyPart = where == FfoPartWhere.body ? part : null,
+       bgPart = where == FfoPartWhere.bg ? part : null;
 
   List<FfoSvtPart?> get parts => [headPart, bodyPart, bgPart];
 

@@ -51,11 +51,7 @@ class _CmdCodeDetailPageState extends State<CmdCodeDetailPage> {
   @override
   Widget build(BuildContext context) {
     if (_cc == null) {
-      return NotFoundPage(
-        title: S.current.command_code,
-        url: Routes.commandCodeI(widget.id ?? 0),
-        loading: _loading,
-      );
+      return NotFoundPage(title: S.current.command_code, url: Routes.commandCodeI(widget.id ?? 0), loading: _loading);
     }
     final status = cc.status;
     return Scaffold(
@@ -71,9 +67,10 @@ class _CmdCodeDetailPageState extends State<CmdCodeDetailPage> {
               db.notifyUserdata();
               EasyLoading.showToast(status.statusText);
             },
-            icon: status.status == CmdCodeStatus.owned
-                ? const Icon(Icons.favorite, color: Colors.redAccent)
-                : status.status == CmdCodeStatus.met
+            icon:
+                status.status == CmdCodeStatus.owned
+                    ? const Icon(Icons.favorite, color: Colors.redAccent)
+                    : status.status == CmdCodeStatus.met
                     ? const Icon(Icons.favorite)
                     : const Icon(Icons.favorite_outline),
             tooltip: status.statusText,
@@ -83,11 +80,7 @@ class _CmdCodeDetailPageState extends State<CmdCodeDetailPage> {
       ),
       body: Column(
         children: <Widget>[
-          Expanded(
-            child: SingleChildScrollView(
-              child: CmdCodeDetailBasePage(cc: cc, showExtra: true),
-            ),
-          ),
+          Expanded(child: SingleChildScrollView(child: CmdCodeDetailBasePage(cc: cc, showExtra: true))),
           if (status.status == CmdCodeStatus.owned)
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -154,7 +147,7 @@ class _CmdCodeDetailPageState extends State<CmdCodeDetailPage> {
                   ),
               ],
             ),
-          )
+          ),
         ],
       ),
     );
@@ -178,12 +171,7 @@ class CmdCodeDetailBasePage extends StatelessWidget {
   final bool showExtra;
   final bool enableLink;
 
-  const CmdCodeDetailBasePage({
-    super.key,
-    required this.cc,
-    this.showExtra = false,
-    this.enableLink = false,
-  });
+  const CmdCodeDetailBasePage({super.key, required this.cc, this.showExtra = false, this.enableLink = false});
 
   @override
   Widget build(BuildContext context) {
@@ -196,21 +184,24 @@ class CmdCodeDetailBasePage extends StatelessWidget {
     return CustomTable(
       selectable: true,
       children: <Widget>[
-        CustomTableRow(children: [
-          TableCellData(
-            child: enableLink
-                ? TextButton(
-                    onPressed: () {
-                      cc.routeTo();
-                    },
-                    style: kTextButtonDenseStyle,
-                    child: name,
-                  )
-                : name,
-            isHeader: true,
-            padding: enableLink ? EdgeInsets.zero : const EdgeInsets.all(4),
-          )
-        ]),
+        CustomTableRow(
+          children: [
+            TableCellData(
+              child:
+                  enableLink
+                      ? TextButton(
+                        onPressed: () {
+                          cc.routeTo();
+                        },
+                        style: kTextButtonDenseStyle,
+                        child: name,
+                      )
+                      : name,
+              isHeader: true,
+              padding: enableLink ? EdgeInsets.zero : const EdgeInsets.all(4),
+            ),
+          ],
+        ),
         if (!Transl.isJP) CustomTableRow(children: [TableCellData(text: cc.lName.l, textAlign: TextAlign.center)]),
         if (!Transl.isEN) CustomTableRow(children: [TableCellData(text: cc.lName.na, textAlign: TextAlign.center)]),
         CustomTableRow(
@@ -219,11 +210,7 @@ class CmdCodeDetailBasePage extends StatelessWidget {
               child: InkWell(
                 child: db.getIconImage(cc.borderedIcon, height: 72),
                 onTap: () {
-                  FullscreenImageViewer.show(
-                    context: context,
-                    urls: [cc.charaGraph],
-                    placeholder: placeholder,
-                  );
+                  FullscreenImageViewer.show(context: context, urls: [cc.charaGraph], placeholder: placeholder);
                 },
               ),
               flex: 1,
@@ -236,23 +223,29 @@ class CmdCodeDetailBasePage extends StatelessWidget {
                 hideOutline: true,
                 children: <Widget>[
                   CustomTableRow.fromTexts(texts: ['No. ${cc.collectionNo}', 'No. ${cc.id}']),
-                  CustomTableRow(children: [
-                    TableCellData(text: S.current.illustrator, isHeader: true),
-                    TableCellData(
-                      child: Text.rich(SharedBuilder.textButtonSpan(
-                        context: context,
-                        text: Transl.illustratorNames(cc.illustrator).l,
-                        onTap: () {
-                          router.pushPage(CreatorDetail.illust(name: cc.illustrator));
-                        },
-                      )),
-                      flex: 3,
-                    )
-                  ]),
-                  CustomTableRow(children: [
-                    TableCellData(text: S.current.rarity, isHeader: true),
-                    TableCellData(text: cc.rarity.toString(), flex: 3),
-                  ]),
+                  CustomTableRow(
+                    children: [
+                      TableCellData(text: S.current.illustrator, isHeader: true),
+                      TableCellData(
+                        child: Text.rich(
+                          SharedBuilder.textButtonSpan(
+                            context: context,
+                            text: Transl.illustratorNames(cc.illustrator).l,
+                            onTap: () {
+                              router.pushPage(CreatorDetail.illust(name: cc.illustrator));
+                            },
+                          ),
+                        ),
+                        flex: 3,
+                      ),
+                    ],
+                  ),
+                  CustomTableRow(
+                    children: [
+                      TableCellData(text: S.current.rarity, isHeader: true),
+                      TableCellData(text: cc.rarity.toString(), flex: 3),
+                    ],
+                  ),
                 ],
               ),
             ),
@@ -276,33 +269,18 @@ class CmdCodeDetailBasePage extends StatelessWidget {
         CustomTableRow(children: [TableCellData(text: S.current.card_description, isHeader: true)]),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 6),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: getProfiles().toList(),
-          ),
+          child: Column(mainAxisSize: MainAxisSize.min, children: getProfiles().toList()),
         ),
-        CustomTableRow.fromTexts(
-          texts: [S.current.illustration],
-          isHeader: true,
-        ),
-        ExtraAssetsPage(
-          assets: cc.extraAssets,
-          scrollable: false,
-        ),
+        CustomTableRow.fromTexts(texts: [S.current.illustration], isHeader: true),
+        ExtraAssetsPage(assets: cc.extraAssets, scrollable: false),
         if (showExtra) ...[
-          CustomTableRow.fromTexts(
-            texts: [S.current.cc_equipped_svt],
-            isHeader: true,
+          CustomTableRow.fromTexts(texts: [S.current.cc_equipped_svt], isHeader: true),
+          CustomTableRow.fromChildren(
+            children: [
+              Wrap(alignment: WrapAlignment.center, spacing: 8, runSpacing: 8, children: _equippedSvts(context)),
+            ],
           ),
-          CustomTableRow.fromChildren(children: [
-            Wrap(
-              alignment: WrapAlignment.center,
-              spacing: 8,
-              runSpacing: 8,
-              children: _equippedSvts(context),
-            ),
-          ]),
-        ]
+        ],
       ],
     );
   }
@@ -320,16 +298,9 @@ class CmdCodeDetailBasePage extends StatelessWidget {
   }
 
   Iterable<Widget> getProfiles() sync* {
-    final profiles = <String?>{
-      cc.comment,
-      if (!Transl.isJP) cc.extra.profile.l,
-      cc.extra.profile.ofRegion(Region.jp),
-    };
+    final profiles = <String?>{cc.comment, if (!Transl.isJP) cc.extra.profile.l, cc.extra.profile.ofRegion(Region.jp)};
     for (final profile in profiles.whereType<String>()) {
-      yield ProfileCommentCard(
-        title: Text(S.current.card_description),
-        comment: profile,
-      );
+      yield ProfileCommentCard(title: Text(S.current.card_description), comment: profile);
     }
   }
 
@@ -340,23 +311,21 @@ class CmdCodeDetailBasePage extends StatelessWidget {
       if (svt == null) {
         children.add(Text('SVT $svtId'));
       } else {
-        children.add(InkWell(
-          child: Text(
-            svt.lName.l,
-            style: TextStyle(color: AppTheme(context).tertiary),
+        children.add(
+          InkWell(
+            child: Text(svt.lName.l, style: TextStyle(color: AppTheme(context).tertiary)),
+            onTap: () => router.push(url: svt.route),
           ),
-          onTap: () => router.push(url: svt.route),
-        ));
+        );
       }
     }
     for (final name in cc.extra.unknownCharacters) {
-      children.add(InkWell(
-        child: Text(
-          Transl.charaNames(name).l,
-          style: TextStyle(color: AppTheme(context).tertiary),
+      children.add(
+        InkWell(
+          child: Text(Transl.charaNames(name).l, style: TextStyle(color: AppTheme(context).tertiary)),
+          onTap: () => router.pushPage(CharaDetail(name: name)),
         ),
-        onTap: () => router.pushPage(CharaDetail(name: name)),
-      ));
+      );
     }
     if (children.isEmpty) {
       return const Text('-');

@@ -337,8 +337,7 @@ enum GachaType {
   payGacha(1),
   freeGacha(3),
   ticketGacha(5),
-  chargeStone(7),
-  ;
+  chargeStone(7);
 
   const GachaType(this.value);
   final int value;

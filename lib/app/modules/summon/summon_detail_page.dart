@@ -50,63 +50,47 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
 
     final startJp = summon.startTime.jp, endJp = summon.endTime.jp;
     if (startJp != null && endJp != null) {
-      gachaGroups = db.gameData.others.gachaGroups.values.where((group) {
-        if (group.isEmpty) return false;
-        return (Maths.min(group.map((e) => e.openedAt)) - startJp).abs() < 3601 &&
-            (Maths.max(group.map((e) => e.closedAt)) - endJp).abs() < 3601;
-      }).toList();
+      gachaGroups =
+          db.gameData.others.gachaGroups.values.where((group) {
+            if (group.isEmpty) return false;
+            return (Maths.min(group.map((e) => e.openedAt)) - startJp).abs() < 3601 &&
+                (Maths.max(group.map((e) => e.closedAt)) - endJp).abs() < 3601;
+          }).toList();
     }
   }
 
   @override
   Widget build(BuildContext context) {
     if (_summon == null) {
-      return NotFoundPage(
-        url: Routes.summonI(widget.id ?? '0'),
-        title: S.current.summon_banner,
-      );
+      return NotFoundPage(url: Routes.summonI(widget.id ?? '0'), title: S.current.summon_banner);
     }
     return Scaffold(
       appBar: AppBar(
         leading: const BackButton(),
-        title: AutoSizeText(
-          summon.lName.l,
-          maxLines: 1,
-          overflow: TextOverflow.fade,
-        ),
+        title: AutoSizeText(summon.lName.l, maxLines: 1, overflow: TextOverflow.fade),
         titleSpacing: 0,
         actions: [
-          db.onUserData(
-            (context, _) {
-              bool planned = db.curUser.summons.contains(summon.id);
-              return IconButton(
-                icon: Icon(planned ? Icons.favorite : Icons.favorite_outline),
-                tooltip: S.current.favorite,
-                onPressed: () {
-                  db.curUser.summons.toggle(summon.id);
-                  db.notifyUserdata();
-                },
-              );
-            },
-          ),
+          db.onUserData((context, _) {
+            bool planned = db.curUser.summons.contains(summon.id);
+            return IconButton(
+              icon: Icon(planned ? Icons.favorite : Icons.favorite_outline),
+              tooltip: S.current.favorite,
+              onPressed: () {
+                db.curUser.summons.toggle(summon.id);
+                db.notifyUserdata();
+              },
+            );
+          }),
           PopupMenuButton(
-            itemBuilder: (context) => [
-              ...SharedBuilder.websitesPopupMenuItems(
-                mooncell: summon.mcLink,
-                fandom: summon.fandomLink,
-              ),
-              ...SharedBuilder.noticeLinkPopupMenuItems(noticeLink: summon.noticeLink),
-            ],
-          )
+            itemBuilder:
+                (context) => [
+                  ...SharedBuilder.websitesPopupMenuItems(mooncell: summon.mcLink, fandom: summon.fandomLink),
+                  ...SharedBuilder.noticeLinkPopupMenuItems(noticeLink: summon.noticeLink),
+                ],
+          ),
         ],
       ),
-      body: Column(
-        children: [
-          Expanded(child: listView),
-          kDefaultDivider,
-          SafeArea(child: buttonBar),
-        ],
-      ),
+      body: Column(children: [Expanded(child: listView), kDefaultDivider, SafeArea(child: buttonBar)]),
     );
   }
 
@@ -114,62 +98,74 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
     List<Event> relatedEvents = [];
     List<NiceWar> relatedWars = [];
     if (summon.relatedEvents.isNotEmpty) {
-      relatedEvents = db.gameData.events.values
-          .where((event) => summon.relatedEvents.any((key) => McConverter.isSamePage(key, event.extra.mcLink)))
-          .toList();
-      relatedWars = db.gameData.wars.values
-          .where((war) =>
-              war.isMainStory && summon.relatedEvents.any((key) => McConverter.isSamePage(key, war.extra.mcLink)))
-          .toList();
+      relatedEvents =
+          db.gameData.events.values
+              .where((event) => summon.relatedEvents.any((key) => McConverter.isSamePage(key, event.extra.mcLink)))
+              .toList();
+      relatedWars =
+          db.gameData.wars.values
+              .where(
+                (war) =>
+                    war.isMainStory && summon.relatedEvents.any((key) => McConverter.isSamePage(key, war.extra.mcLink)),
+              )
+              .toList();
     }
     List<Widget> children = [
-      CarouselUtil.limitHeightWidget(
-        context: context,
-        imageUrls: summon.resolvedBanner.values.toList(),
+      CarouselUtil.limitHeightWidget(context: context, imageUrls: summon.resolvedBanner.values.toList()),
+      CustomTable(
+        selectable: true,
+        children: [
+          CustomTableRow(
+            children: [
+              TableCellData(
+                text: summon.lName.l,
+                textAlign: TextAlign.center,
+                style: const TextStyle(fontSize: 12),
+                color: TableCellData.resolveHeaderColor(context),
+              ),
+            ],
+          ),
+          if (!Transl.isJP && summon.lName.jp != summon.lName.l)
+            CustomTableRow(
+              children: [
+                TableCellData(
+                  text: summon.lName.jp,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(fontSize: 12),
+                  color: TableCellData.resolveHeaderColor(context).withAlpha(128),
+                ),
+              ],
+            ),
+          // if (!summon.isStory)
+          CustomTableRow(
+            children: [
+              TableCellData(
+                text:
+                    'JP: ${summon.startTime.jp?.toDateTimeString() ?? '?'} ~ ${summon.endTime.jp?.toDateTimeString() ?? '?'}',
+                maxLines: 1,
+                style: const TextStyle(fontSize: 14),
+                // alignment: Alignment.centerLeft,
+                padding: const EdgeInsets.fromLTRB(16, 4, 4, 4),
+              ),
+            ],
+          ),
+          if (summon.startTime.cn != null && summon.endTime.cn != null)
+            CustomTableRow(
+              children: [
+                TableCellData(
+                  text:
+                      'CN: ${summon.startTime.cn?.toDateTimeString() ?? '?'} ~ ${summon.endTime.cn?.toDateTimeString() ?? '?'}',
+                  maxLines: 1,
+                  style: const TextStyle(fontSize: 14),
+                  // alignment: Alignment.centerLeft,
+                  padding: const EdgeInsets.fromLTRB(16, 4, 4, 4),
+                ),
+              ],
+            ),
+          if (summon.isLuckyBag)
+            CustomTableRow.fromTexts(texts: [Transl.enums(summon.type, (enums) => enums.summonType).l]),
+        ],
       ),
-      CustomTable(selectable: true, children: [
-        CustomTableRow(children: [
-          TableCellData(
-            text: summon.lName.l,
-            textAlign: TextAlign.center,
-            style: const TextStyle(fontSize: 12),
-            color: TableCellData.resolveHeaderColor(context),
-          )
-        ]),
-        if (!Transl.isJP && summon.lName.jp != summon.lName.l)
-          CustomTableRow(children: [
-            TableCellData(
-              text: summon.lName.jp,
-              textAlign: TextAlign.center,
-              style: const TextStyle(fontSize: 12),
-              color: TableCellData.resolveHeaderColor(context).withAlpha(128),
-            )
-          ]),
-        // if (!summon.isStory)
-        CustomTableRow(children: [
-          TableCellData(
-            text:
-                'JP: ${summon.startTime.jp?.toDateTimeString() ?? '?'} ~ ${summon.endTime.jp?.toDateTimeString() ?? '?'}',
-            maxLines: 1,
-            style: const TextStyle(fontSize: 14),
-            // alignment: Alignment.centerLeft,
-            padding: const EdgeInsets.fromLTRB(16, 4, 4, 4),
-          )
-        ]),
-        if (summon.startTime.cn != null && summon.endTime.cn != null)
-          CustomTableRow(children: [
-            TableCellData(
-              text:
-                  'CN: ${summon.startTime.cn?.toDateTimeString() ?? '?'} ~ ${summon.endTime.cn?.toDateTimeString() ?? '?'}',
-              maxLines: 1,
-              style: const TextStyle(fontSize: 14),
-              // alignment: Alignment.centerLeft,
-              padding: const EdgeInsets.fromLTRB(16, 4, 4, 4),
-            )
-          ]),
-        if (summon.isLuckyBag)
-          CustomTableRow.fromTexts(texts: [Transl.enums(summon.type, (enums) => enums.summonType).l])
-      ]),
       if (summon.subSummons.isEmpty && (summon.puSvt.isNotEmpty || summon.puCE.isNotEmpty)) pickupOverviewOnDetail,
       if (summon.subSummons.isNotEmpty) ...[
         if (summon.subSummons.length > 1) dropdownButton,
@@ -178,14 +174,8 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
           padding: const EdgeInsets.only(bottom: 8, left: 16),
           child: Row(
             children: [
-              Text(
-                '$kStarChar ',
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.yellow),
-              ),
-              Text(
-                'PickUp',
-                style: Theme.of(context).textTheme.bodySmall,
-              )
+              Text('$kStarChar ', style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.yellow)),
+              Text('PickUp', style: Theme.of(context).textTheme.bodySmall),
             ],
           ),
         ),
@@ -219,62 +209,63 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
     if (gachaGroups.isNotEmpty) {
       children.add(const Divider(height: 16));
       for (final (index, group) in gachaGroups.indexed) {
-        children.add(TileGroup(
-          key: index == 0 ? _rawGachaTileKey : null,
-          header: S.current.raw_gacha_data + (gachaGroups.length > 1 ? ' ${index + 1}' : ''),
-          children: [
-            for (final gacha in group)
-              ListTile(
-                dense: true,
-                title: Text(gacha.lName),
-                subtitle: Text([
-                  // gacha.detailUrl,
-                  [gacha.openedAt, gacha.closedAt].map((e) => e.sec2date().toStringShort(omitSec: true)).join(' ~ '),
-                ].join('\n')),
-                trailing: GachaBanner(
-                  imageId: gacha.imageId,
-                  region: Region.jp,
-                  background: false,
+        children.add(
+          TileGroup(
+            key: index == 0 ? _rawGachaTileKey : null,
+            header: S.current.raw_gacha_data + (gachaGroups.length > 1 ? ' ${index + 1}' : ''),
+            children: [
+              for (final gacha in group)
+                ListTile(
+                  dense: true,
+                  title: Text(gacha.lName),
+                  subtitle: Text(
+                    [
+                      // gacha.detailUrl,
+                      [
+                        gacha.openedAt,
+                        gacha.closedAt,
+                      ].map((e) => e.sec2date().toStringShort(omitSec: true)).join(' ~ '),
+                    ].join('\n'),
+                  ),
+                  trailing: GachaBanner(imageId: gacha.imageId, region: Region.jp, background: false),
+                  onTap: () {
+                    gacha.routeTo(region: Region.jp);
+                  },
                 ),
-                onTap: () {
-                  gacha.routeTo(region: Region.jp);
-                },
-              ),
-          ],
-        ));
+            ],
+          ),
+        );
 
         if (Language.isZH) {
-          children.add(Center(
-            child: ElevatedButton(
-              onPressed: () {
-                router.pushPage(MCSummonCreatePage(
-                  gachas: group.toList(),
-                  nameJp: summon.name,
-                  nameZh: summon.mcLink?.replaceAll('_', ' '),
-                ));
-              },
-              child: Text("${S.current.create_mooncell_summon}(${group.length})"),
+          children.add(
+            Center(
+              child: ElevatedButton(
+                onPressed: () {
+                  router.pushPage(
+                    MCSummonCreatePage(
+                      gachas: group.toList(),
+                      nameJp: summon.name,
+                      nameZh: summon.mcLink?.replaceAll('_', ' '),
+                    ),
+                  );
+                },
+                child: Text("${S.current.create_mooncell_summon}(${group.length})"),
+              ),
             ),
-          ));
+          );
         }
       }
     }
 
     return SingleChildScrollView(
       controller: _scrollController,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: children,
-      ),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: children),
     );
   }
 
   Widget associateEvent(String name, String route) {
     return ListTile(
-      leading: Icon(
-        Icons.flag,
-        color: Theme.of(context).colorScheme.primary,
-      ),
+      leading: Icon(Icons.flag, color: Theme.of(context).colorScheme.primary),
       title: Text(name),
       minLeadingWidth: 24,
       dense: true,
@@ -289,16 +280,20 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
   Widget get dropdownButton {
     List<DropdownMenuItem<int>> items = [];
     if (shouldShowOverview) {
-      items.add(DropdownMenuItem(
-        value: -1,
-        child: Text(
-          S.current.overview,
-          style: const TextStyle(fontWeight: FontWeight.bold),
-          textScaler: const TextScaler.linear(0.9),
+      items.add(
+        DropdownMenuItem(
+          value: -1,
+          child: Text(
+            S.current.overview,
+            style: const TextStyle(fontWeight: FontWeight.bold),
+            textScaler: const TextScaler.linear(0.9),
+          ),
         ),
-      ));
+      );
     }
-    items.addAll(summon.subSummons.map((e) => DropdownMenuItem(
+    items.addAll(
+      summon.subSummons.map(
+        (e) => DropdownMenuItem(
           value: summon.subSummons.indexOf(e),
           child: AutoSizeText(
             SummonUtil.summonNameLocalize(e.title),
@@ -307,7 +302,9 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
             textScaleFactor: 0.9,
             style: const TextStyle(fontWeight: FontWeight.bold),
           ),
-        )));
+        ),
+      ),
+    );
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Row(
@@ -328,7 +325,7 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
                 isExpanded: true,
               ),
             ),
-          )
+          ),
         ],
       ),
     );
@@ -353,36 +350,33 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
         for (final (title, svtClasses) in groups) {
           final ids = svtIds.where((e) => svtClasses.contains(db.gameData.servantsNoDup[e]?.className)).toList();
           final favoriteIds = ids.where((e) => db.curUser.svtStatusOf(e).favorite).toList();
-          children.add(Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: SummonUtil.buildBlock(
-              context: context,
-              block: ProbGroup(isSvt: true, rarity: 5, weight: 0, display: true, ids: ids),
-              title: '$title (${favoriteIds.length}/${ids.length})',
-              showProb: false,
-              showStar: false,
+          children.add(
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: SummonUtil.buildBlock(
+                context: context,
+                block: ProbGroup(isSvt: true, rarity: 5, weight: 0, display: true, ids: ids),
+                title: '$title (${favoriteIds.length}/${ids.length})',
+                showProb: false,
+                showStar: false,
+              ),
             ),
-          ));
+          );
         }
       }
     } else {
       for (final block in data.probs) {
         if (!_expanded && !block.display) continue;
-        children.add(Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: SummonUtil.buildBlock(
-            context: context,
-            block: block,
+        children.add(
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: SummonUtil.buildBlock(context: context, block: block),
           ),
-        ));
+        );
       }
     }
 
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: children,
-    );
+    return Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: children);
   }
 
   Widget get gachaOverview {
@@ -408,21 +402,26 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
             }
           }
         }
-        children.add(Padding(
-          padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
-          child: Wrap(
-            spacing: 4,
-            runSpacing: 4,
-            children: pickups
-                .map((id) => SummonUtil.svtAvatar(
-                      context: context,
-                      card: db.gameData.servantsNoDup[id],
-                      star: summon.hasSinglePickupSvt(id),
-                      favorite: db.curUser.svtStatusOf(id).favorite,
-                    ))
-                .toList(),
+        children.add(
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+            child: Wrap(
+              spacing: 4,
+              runSpacing: 4,
+              children:
+                  pickups
+                      .map(
+                        (id) => SummonUtil.svtAvatar(
+                          context: context,
+                          card: db.gameData.servantsNoDup[id],
+                          star: summon.hasSinglePickupSvt(id),
+                          favorite: db.curUser.svtStatusOf(id).favorite,
+                        ),
+                      )
+                      .toList(),
+            ),
           ),
-        ));
+        );
       }
       children.add(const Divider(thickness: 0.5, height: 16, indent: 16, endIndent: 16));
     }
@@ -439,97 +438,101 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
           _addTo(svtIds, block.ids);
         }
       }
-      children.add(Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        child: Wrap(
-          spacing: 4,
-          runSpacing: 4,
-          children: svtIds.entries
-              .map((entry) => SummonUtil.svtAvatar(
-                  context: context,
-                  card: db.gameData.servantsNoDup[entry.key],
-                  star: entry.value,
-                  favorite: db.curUser.svtStatusOf(entry.key).favorite))
-              .toList(),
+      children.add(
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Wrap(
+            spacing: 4,
+            runSpacing: 4,
+            children:
+                svtIds.entries
+                    .map(
+                      (entry) => SummonUtil.svtAvatar(
+                        context: context,
+                        card: db.gameData.servantsNoDup[entry.key],
+                        star: entry.value,
+                        favorite: db.curUser.svtStatusOf(entry.key).favorite,
+                      ),
+                    )
+                    .toList(),
+          ),
         ),
-      ));
+      );
     }
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: children,
-    );
+    return Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: children);
   }
 
   Widget get pickupOverviewOnDetail {
     List<Widget> children = [];
     if (summon.puSvt.isNotEmpty) {
       children.add(SHeader(S.current.servant));
-      children.add(Padding(
-        padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
-        child: Wrap(
-          spacing: 4,
-          runSpacing: 4,
-          children: [
-            for (final id in summon.puSvt)
-              SummonUtil.svtAvatar(
-                context: context,
-                card: db.gameData.servantsNoDup[id],
-                star: summon.hasSinglePickupSvt(id),
-                favorite: db.curUser.svtStatusOf(id).favorite,
-              )
-          ],
+      children.add(
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+          child: Wrap(
+            spacing: 4,
+            runSpacing: 4,
+            children: [
+              for (final id in summon.puSvt)
+                SummonUtil.svtAvatar(
+                  context: context,
+                  card: db.gameData.servantsNoDup[id],
+                  star: summon.hasSinglePickupSvt(id),
+                  favorite: db.curUser.svtStatusOf(id).favorite,
+                ),
+            ],
+          ),
         ),
-      ));
+      );
     }
     if (summon.puCE.isNotEmpty) {
       children.add(SHeader(S.current.craft_essence));
-      children.add(Padding(
-        padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
-        child: Wrap(
-          spacing: 4,
-          runSpacing: 4,
-          children: [
-            for (final id in summon.puCE)
-              SummonUtil.svtAvatar(
-                context: context,
-                card: db.gameData.craftEssences[id],
-                favorite: db.curUser.ceStatusOf(id).favorite,
-              )
-          ],
+      children.add(
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+          child: Wrap(
+            spacing: 4,
+            runSpacing: 4,
+            children: [
+              for (final id in summon.puCE)
+                SummonUtil.svtAvatar(
+                  context: context,
+                  card: db.gameData.craftEssences[id],
+                  favorite: db.curUser.ceStatusOf(id).favorite,
+                ),
+            ],
+          ),
         ),
-      ));
+      );
     }
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: children,
-    );
+    return Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: children);
   }
 
   Widget get buttonBar {
     Widget simulatorBtn = FilledButton(
-      onPressed: summon.subSummons.isEmpty && gachaGroups.isEmpty
-          ? null
-          : () {
-              if (summon.subSummons.isNotEmpty) {
-                router.push(child: SummonSimulatorPage(summon: summon, initIndex: curIndex));
-              } else {
-                EasyLoading.showInfo("→ ${S.current.raw_gacha_data}");
-                final obj = _rawGachaTileKey.currentContext?.findRenderObject();
-                if (obj != null && _scrollController.hasClients && _scrollController.position.hasContentDimensions) {
-                  _scrollController.position.ensureVisible(obj);
+      onPressed:
+          summon.subSummons.isEmpty && gachaGroups.isEmpty
+              ? null
+              : () {
+                if (summon.subSummons.isNotEmpty) {
+                  router.push(child: SummonSimulatorPage(summon: summon, initIndex: curIndex));
+                } else {
+                  EasyLoading.showInfo("→ ${S.current.raw_gacha_data}");
+                  final obj = _rawGachaTileKey.currentContext?.findRenderObject();
+                  if (obj != null && _scrollController.hasClients && _scrollController.position.hasContentDimensions) {
+                    _scrollController.position.ensureVisible(obj);
+                  }
                 }
-              }
-            },
+              },
       child: Text(
         S.current.simulator,
-        style: (summon.subSummons.isNotEmpty || gachaGroups.isNotEmpty) &&
-                (summon.subSummons.isEmpty ||
-                    gachaGroups.length > 1 ||
-                    summon.subSummons.length != gachaGroups.firstOrNull?.length)
-            ? const TextStyle(decoration: TextDecoration.underline)
-            : null,
+        style:
+            (summon.subSummons.isNotEmpty || gachaGroups.isNotEmpty) &&
+                    (summon.subSummons.isEmpty ||
+                        gachaGroups.length > 1 ||
+                        summon.subSummons.length != gachaGroups.firstOrNull?.length)
+                ? const TextStyle(decoration: TextDecoration.underline)
+                : null,
       ),
     );
     Widget? expBtn;
@@ -554,17 +557,14 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
           color: Theme.of(context).colorScheme.primary,
           tooltip: S.current.next_card,
           onPressed: () => moveNext(),
-        )
+        ),
       ],
     );
     if (expBtn != null) {
       btnBar = Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Padding(padding: const EdgeInsets.only(top: 4), child: expBtn),
-          btnBar,
-        ],
+        children: [Padding(padding: const EdgeInsets.only(top: 4), child: expBtn), btnBar],
       );
     }
     return btnBar;

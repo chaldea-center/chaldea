@@ -84,16 +84,9 @@ class ServantSelector extends StatelessWidget {
       children: [
         svtIcon,
         if (playerSvtData.supportType.isSupport)
-          Positioned(
-            top: -5,
-            right: -5,
-            child: db.getIconImage(AssetURL.i.items(12), width: 32, aspectRatio: 1),
-          ),
+          Positioned(top: -5, right: -5, child: db.getIconImage(AssetURL.i.items(12), width: 32, aspectRatio: 1)),
         if (playerSvtData.customPassives.isNotEmpty)
-          Positioned(
-            top: -5,
-            child: db.getIconImage(AssetURL.i.buffIcon(302), width: 24, aspectRatio: 1),
-          )
+          Positioned(top: -5, child: db.getIconImage(AssetURL.i.buffIcon(302), width: 24, aspectRatio: 1)),
       ],
     );
 
@@ -112,11 +105,7 @@ class ServantSelector extends StatelessWidget {
               ServantListPage(
                 planMode: false,
                 onSelected: (selectedSvt) {
-                  playerSvtData.onSelectServant(
-                    selectedSvt,
-                    region: playerRegion,
-                    jpTime: questPhase?.jpOpenAt,
-                  );
+                  playerSvtData.onSelectServant(selectedSvt, region: playerRegion, jpTime: questPhase?.jpOpenAt);
                   onChanged();
                 },
                 filterData: svtFilterData,
@@ -136,13 +125,15 @@ class ServantSelector extends StatelessWidget {
       },
       onTap: () async {
         if (!enableEdit && playerSvtData.svt == null) return;
-        await router.pushPage(ServantOptionEditPage(
-          playerSvtData: enableEdit ? playerSvtData : playerSvtData.copy(),
-          questPhase: questPhase,
-          playerRegion: playerRegion,
-          onChange: onChanged,
-          svtFilterData: svtFilterData,
-        ));
+        await router.pushPage(
+          ServantOptionEditPage(
+            playerSvtData: enableEdit ? playerSvtData : playerSvtData.copy(),
+            questPhase: questPhase,
+            playerRegion: playerRegion,
+            onChange: onChanged,
+            svtFilterData: svtFilterData,
+          ),
+        );
         onChanged();
       },
       onAccept: (detail) {
@@ -153,17 +144,19 @@ class ServantSelector extends StatelessWidget {
     children.add(svtIcon);
 
     // svt name+btn
-    children.add(SizedBox(
-      height: 18,
-      child: AutoSizeText(
-        playerSvtData.svt?.lBattleName(playerSvtData.limitCount).l ?? S.current.servant,
-        maxLines: 1,
-        minFontSize: 10,
-        textAlign: TextAlign.center,
-        textScaleFactor: 0.9,
-        style: playerSvtData.svt == null ? notSelectedStyle : null,
+    children.add(
+      SizedBox(
+        height: 18,
+        child: AutoSizeText(
+          playerSvtData.svt?.lBattleName(playerSvtData.limitCount).l ?? S.current.servant,
+          maxLines: 1,
+          minFontSize: 10,
+          textAlign: TextAlign.center,
+          textScaleFactor: 0.9,
+          style: playerSvtData.svt == null ? notSelectedStyle : null,
+        ),
       ),
-    ));
+    );
     children.add(const SizedBox(height: 8));
 
     // ce icon
@@ -182,13 +175,14 @@ class ServantSelector extends StatelessWidget {
             bottom: 4,
             child: Container(
               decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(color: Colors.yellow)),
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: Colors.yellow),
+              ),
               padding: const EdgeInsets.all(2),
               child: Icon(Icons.auto_awesome, color: Colors.yellow[900], size: 14),
             ),
-          )
+          ),
         ],
       );
     }
@@ -225,12 +219,14 @@ class ServantSelector extends StatelessWidget {
       },
       onTap: () async {
         if (!enableEdit && playerSvtData.ce == null) return;
-        await router.pushPage(CraftEssenceOptionEditPage(
-          playerSvtData: enableEdit ? playerSvtData : playerSvtData.copy(),
-          questPhase: questPhase,
-          onChange: onChanged,
-          craftFilterData: craftFilterData,
-        ));
+        await router.pushPage(
+          CraftEssenceOptionEditPage(
+            playerSvtData: enableEdit ? playerSvtData : playerSvtData.copy(),
+            questPhase: questPhase,
+            onChange: onChanged,
+            craftFilterData: craftFilterData,
+          ),
+        );
         onChanged();
       },
       onAccept: (detail) {
@@ -250,25 +246,23 @@ class ServantSelector extends StatelessWidget {
     } else {
       ceInfo = 'Lv.-';
     }
-    children.add(SizedBox(
-      height: 18,
-      child: AutoSizeText(
-        ceInfo.breakWord,
-        maxLines: 1,
-        minFontSize: 10,
-        textAlign: TextAlign.center,
-        textScaleFactor: 0.9,
-        style: playerSvtData.ce == null ? notSelectedStyle : null,
+    children.add(
+      SizedBox(
+        height: 18,
+        child: AutoSizeText(
+          ceInfo.breakWord,
+          maxLines: 1,
+          minFontSize: 10,
+          textAlign: TextAlign.center,
+          textScaleFactor: 0.9,
+          style: playerSvtData.ce == null ? notSelectedStyle : null,
+        ),
       ),
-    ));
+    );
 
     return Padding(
       padding: const EdgeInsets.all(2),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: children,
-      ),
+      child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.center, children: children),
     );
   }
 
@@ -289,10 +283,7 @@ class ServantSelector extends StatelessWidget {
           left: 0,
           top: -iconSize / 2,
           child: Container(
-            decoration: ShapeDecoration(
-              color: Theme.of(context).colorScheme.primary,
-              shape: const CircleBorder(),
-            ),
+            decoration: ShapeDecoration(color: Theme.of(context).colorScheme.primary, shape: const CircleBorder()),
             child: IconButton(
               onPressed: onTapSelect,
               icon: const Icon(Icons.people),

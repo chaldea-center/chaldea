@@ -17,10 +17,7 @@ class EventFortificationPage extends HookWidget {
     List<Widget> children = [];
     children.add(const SHeader('Summary'));
     void _withColor(Widget child) {
-      children.add(Material(
-        color: Theme.of(context).cardColor,
-        child: child,
-      ));
+      children.add(Material(color: Theme.of(context).cardColor, child: child));
     }
 
     for (final type in EventWorkType.values) {
@@ -30,28 +27,33 @@ class EventFortificationPage extends HookWidget {
       int positionCount = Maths.sum(fortifications.map((e) => e.details.length));
       // int totalPoints =
       //     Maths.sum(fortifications.map((e) => e.maxFortificationPoint));
-      _withColor(ListTile(
-        dense: true,
-        horizontalTitleGap: 8,
-        leading: db.getIconImage(type.icon, width: 28),
-        title: Text(Transl.enums(type, (enums) => enums.eventWorkType).l),
-        subtitle: Text('$spotCount Spots, $positionCount Positions'),
-      ));
+      _withColor(
+        ListTile(
+          dense: true,
+          horizontalTitleGap: 8,
+          leading: db.getIconImage(type.icon, width: 28),
+          title: Text(Transl.enums(type, (enums) => enums.eventWorkType).l),
+          subtitle: Text('$spotCount Spots, $positionCount Positions'),
+        ),
+      );
     }
     if (event.id == 80400) {
       children.add(SHeader(S.current.background));
       for (final bgId in [1, 2, 3]) {
         final bgStr = bgId.toString().padLeft(2, '0');
-        _withColor(ListTile(
-          dense: true,
-          title: Text('${S.current.background} $bgId'),
-          trailing: const Icon(Icons.photo),
-          onTap: () {
-            FullscreenImageViewer.show(
+        _withColor(
+          ListTile(
+            dense: true,
+            title: Text('${S.current.background} $bgId'),
+            trailing: const Icon(Icons.photo),
+            onTap: () {
+              FullscreenImageViewer.show(
                 context: context,
-                urls: ['https://static.atlasacademy.io/JP/EventUI/Prefabs/80400/event_bg_80400$bgStr.png']);
-          },
-        ));
+                urls: ['https://static.atlasacademy.io/JP/EventUI/Prefabs/80400/event_bg_80400$bgStr.png'],
+              );
+            },
+          ),
+        );
       }
     }
     children.add(const SHeader('Details'));
@@ -93,12 +95,7 @@ class EventFortificationPage extends HookWidget {
               runSpacing: 2,
               alignment: WrapAlignment.start,
               children: [
-                for (final gift in fortification.gifts)
-                  gift.iconBuilder(
-                    context: context,
-                    width: 32,
-                    showOne: false,
-                  )
+                for (final gift in fortification.gifts) gift.iconBuilder(context: context, width: 32, showOne: false),
               ],
             ),
           ),
@@ -116,125 +113,128 @@ class EventFortificationPage extends HookWidget {
         for (int index = 0; index < details.length; index++) {
           final detail = details[index];
           List<InlineSpan> spans = [];
-          spans.add(TextSpan(
-            text: detail.name,
-            style: TextStyle(color: Theme.of(context).colorScheme.primary),
-            recognizer: TapGestureRecognizer()
-              ..onTap = () {
-                showDialog(
-                  context: context,
-                  useRootNavigator: false,
-                  builder: (context) {
-                    return SimpleCancelOkDialog(
-                      hideCancel: true,
-                      scrollable: true,
-                      title: Text('${detail.position} - ${detail.name}', textScaler: const TextScaler.linear(0.9)),
-                      content: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          ListTile(
-                            dense: true,
-                            contentPadding: EdgeInsets.zero,
-                            title: Text(S.current.svt_class),
-                            trailing: Text(detail.className.name.toTitle()),
-                          ),
-                          if (detail.releaseConditions.isNotEmpty)
-                            SHeader(
-                              S.current.open_condition,
-                              padding: headerPadding,
+          spans.add(
+            TextSpan(
+              text: detail.name,
+              style: TextStyle(color: Theme.of(context).colorScheme.primary),
+              recognizer:
+                  TapGestureRecognizer()
+                    ..onTap = () {
+                      showDialog(
+                        context: context,
+                        useRootNavigator: false,
+                        builder: (context) {
+                          return SimpleCancelOkDialog(
+                            hideCancel: true,
+                            scrollable: true,
+                            title: Text(
+                              '${detail.position} - ${detail.name}',
+                              textScaler: const TextScaler.linear(0.9),
                             ),
-                          for (final release in detail.releaseConditions)
-                            CondTargetValueDescriptor.commonRelease(
-                              commonRelease: release,
-                              textScaleFactor: 0.85,
-                              leading: const TextSpan(text: kULLeading),
+                            content: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                ListTile(
+                                  dense: true,
+                                  contentPadding: EdgeInsets.zero,
+                                  title: Text(S.current.svt_class),
+                                  trailing: Text(detail.className.name.toTitle()),
+                                ),
+                                if (detail.releaseConditions.isNotEmpty)
+                                  SHeader(S.current.open_condition, padding: headerPadding),
+                                for (final release in detail.releaseConditions)
+                                  CondTargetValueDescriptor.commonRelease(
+                                    commonRelease: release,
+                                    textScaleFactor: 0.85,
+                                    leading: const TextSpan(text: kULLeading),
+                                  ),
+                              ],
                             ),
-                        ],
-                      ),
-                    );
-                  },
-                );
-              },
-          ));
+                          );
+                        },
+                      );
+                    },
+            ),
+          );
           for (final svt in fortification.servants) {
             if (svt.position != detail.position) continue;
             final dbSvt = db.gameData.servantsById[svt.svtId] ?? db.gameData.entities[svt.svtId];
             String? icon = dbSvt?.borderedIcon;
-            spans.add(CenterWidgetSpan(
-              child: GameCardMixin.cardIconBuilder(
-                context: context,
-                icon: icon,
-                width: 32,
-                aspectRatio: 132 / 144,
-                text: svt.type == EventFortificationSvtType.npc ? 'Lv.${svt.lv}' : null,
-                onTap: () {
-                  showDialog(
-                    context: context,
-                    useRootNavigator: false,
-                    builder: (context) {
-                      return SimpleCancelOkDialog(
-                        hideCancel: true,
-                        scrollable: true,
-                        title: Text('${svt.position} - ${svt.type.name}', textScaler: const TextScaler.linear(0.9)),
-                        content: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            ListTile(
-                              horizontalTitleGap: 8,
-                              leading: db.getIconImage(icon),
-                              contentPadding: EdgeInsets.zero,
-                              title: Text(dbSvt?.lName.l ?? 'SVT ${svt.svtId}'),
-                              subtitle: Text([
-                                'No.${svt.svtId}',
-                                svt.type == EventFortificationSvtType.userSvt ? 'Lv.-' : 'Lv.${svt.lv}'
-                              ].join(' ')),
-                              trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
-                              onTap: () {
-                                router.push(url: Routes.servantI(svt.svtId));
-                              },
-                            ),
-                            if (svt.releaseConditions.isNotEmpty)
-                              SHeader(
-                                S.current.open_condition,
-                                padding: headerPadding,
+            spans.add(
+              CenterWidgetSpan(
+                child: GameCardMixin.cardIconBuilder(
+                  context: context,
+                  icon: icon,
+                  width: 32,
+                  aspectRatio: 132 / 144,
+                  text: svt.type == EventFortificationSvtType.npc ? 'Lv.${svt.lv}' : null,
+                  onTap: () {
+                    showDialog(
+                      context: context,
+                      useRootNavigator: false,
+                      builder: (context) {
+                        return SimpleCancelOkDialog(
+                          hideCancel: true,
+                          scrollable: true,
+                          title: Text('${svt.position} - ${svt.type.name}', textScaler: const TextScaler.linear(0.9)),
+                          content: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              ListTile(
+                                horizontalTitleGap: 8,
+                                leading: db.getIconImage(icon),
+                                contentPadding: EdgeInsets.zero,
+                                title: Text(dbSvt?.lName.l ?? 'SVT ${svt.svtId}'),
+                                subtitle: Text(
+                                  [
+                                    'No.${svt.svtId}',
+                                    svt.type == EventFortificationSvtType.userSvt ? 'Lv.-' : 'Lv.${svt.lv}',
+                                  ].join(' '),
+                                ),
+                                trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
+                                onTap: () {
+                                  router.push(url: Routes.servantI(svt.svtId));
+                                },
                               ),
-                            for (final release in svt.releaseConditions)
-                              CondTargetValueDescriptor.commonRelease(
-                                commonRelease: release,
-                                textScaleFactor: 0.85,
-                                leading: const TextSpan(text: kULLeading),
-                              ),
-                          ],
-                        ),
-                      );
-                    },
-                  );
-                },
+                              if (svt.releaseConditions.isNotEmpty)
+                                SHeader(S.current.open_condition, padding: headerPadding),
+                              for (final release in svt.releaseConditions)
+                                CondTargetValueDescriptor.commonRelease(
+                                  commonRelease: release,
+                                  textScaleFactor: 0.85,
+                                  leading: const TextSpan(text: kULLeading),
+                                ),
+                            ],
+                          ),
+                        );
+                      },
+                    );
+                  },
+                ),
               ),
-            ));
+            );
           }
           posChildren.add(Text.rich(TextSpan(children: spans)));
           if (index != details.length - 1) {
             posChildren.add(const Text('/'));
           }
         }
-        children.add(Wrap(
-          spacing: 2,
-          runSpacing: 2,
-          crossAxisAlignment: WrapCrossAlignment.center,
-          children: posChildren,
-        ));
+        children.add(
+          Wrap(spacing: 2, runSpacing: 2, crossAxisAlignment: WrapCrossAlignment.center, children: posChildren),
+        );
 
         if (fortification.releaseConditions.isNotEmpty) {
           children.add(SHeader(S.current.open_condition, padding: headerPadding));
           for (final release in fortification.releaseConditions) {
-            children.add(CondTargetValueDescriptor.commonRelease(
-              commonRelease: release,
-              leading: const TextSpan(text: kULLeading),
-              textScaleFactor: 0.9,
-            ));
+            children.add(
+              CondTargetValueDescriptor.commonRelease(
+                commonRelease: release,
+                leading: const TextSpan(text: kULLeading),
+                textScaleFactor: 0.9,
+              ),
+            );
           }
         }
         return Padding(

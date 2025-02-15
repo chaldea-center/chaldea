@@ -46,64 +46,66 @@ class _DevInfoPageState extends State<DevInfoPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Device Info'),
-      ),
-      body: LayoutBuilder(builder: (context, constraints) {
-        Widget _info(String title, dynamic value) {
-          final text = value.toString();
-          return ListTile(
-            dense: true,
-            title: Text(title),
-            trailing: ConstrainedBox(
-              constraints: BoxConstraints(maxWidth: constraints.maxWidth * 0.6),
-              child: Text(
-                text,
-                textAlign: TextAlign.end,
-                style: Theme.of(context).textTheme.bodySmall,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
+      appBar: AppBar(title: const Text('Device Info')),
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          Widget _info(String title, dynamic value) {
+            final text = value.toString();
+            return ListTile(
+              dense: true,
+              title: Text(title),
+              trailing: ConstrainedBox(
+                constraints: BoxConstraints(maxWidth: constraints.maxWidth * 0.6),
+                child: Text(
+                  text,
+                  textAlign: TextAlign.end,
+                  style: Theme.of(context).textTheme.bodySmall,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
               ),
-            ),
-            onLongPress: () {
-              copyToClipboard(text);
-              EasyLoading.showToast(text);
-            },
-          );
-        }
+              onLongPress: () {
+                copyToClipboard(text);
+                EasyLoading.showToast(text);
+              },
+            );
+          }
 
-        return ListView(
-          children: [
-            TileGroup(
-              header: 'App',
-              children: [
-                _info('UUID', AppInfo.uuid),
-                if (!kIsWeb) _info('Dart', Platform.version.split(' ').take(2).join(' ')),
-                _info('OS', '${PlatformU.operatingSystem} ${PlatformU.operatingSystemVersion}'),
-                for (final key in AppInfo.appParams.keys) _info(key, AppInfo.appParams[key].toString())
-              ],
-            ),
-            TileGroup(
-              header: 'Device',
-              children: [for (final key in AppInfo.deviceParams.keys) _info(key, AppInfo.deviceParams[key].toString())],
-            ),
-            if (logNames.isNotEmpty)
+          return ListView(
+            children: [
               TileGroup(
-                header: 'Logs',
+                header: 'App',
                 children: [
-                  for (final log in logNames)
-                    ListTile(
-                      dense: true,
-                      title: Text(pathlib.basename(log)),
-                      onTap: () {
-                        router.pushPage(_LogViewer(fp: log));
-                      },
-                    ),
+                  _info('UUID', AppInfo.uuid),
+                  if (!kIsWeb) _info('Dart', Platform.version.split(' ').take(2).join(' ')),
+                  _info('OS', '${PlatformU.operatingSystem} ${PlatformU.operatingSystemVersion}'),
+                  for (final key in AppInfo.appParams.keys) _info(key, AppInfo.appParams[key].toString()),
                 ],
-              )
-          ],
-        );
-      }),
+              ),
+              TileGroup(
+                header: 'Device',
+                children: [
+                  for (final key in AppInfo.deviceParams.keys) _info(key, AppInfo.deviceParams[key].toString()),
+                ],
+              ),
+              if (logNames.isNotEmpty)
+                TileGroup(
+                  header: 'Logs',
+                  children: [
+                    for (final log in logNames)
+                      ListTile(
+                        dense: true,
+                        title: Text(pathlib.basename(log)),
+                        onTap: () {
+                          router.pushPage(_LogViewer(fp: log));
+                        },
+                      ),
+                  ],
+                ),
+            ],
+          );
+        },
+      ),
     );
   }
 }
@@ -179,19 +181,11 @@ class __LogViewerState extends State<_LogViewer> {
         children: [
           Expanded(
             child: SingleChildScrollView(
-              child: Text(
-                shownText,
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(fontFamily: kMonoFont),
-              ),
+              child: Text(shownText, style: Theme.of(context).textTheme.bodySmall?.copyWith(fontFamily: kMonoFont)),
             ),
           ),
           kDefaultDivider,
-          SafeArea(
-            child: SizedBox(
-              height: 32,
-              child: pagination(),
-            ),
-          )
+          SafeArea(child: SizedBox(height: 32, child: pagination())),
         ],
       ),
     );
@@ -204,13 +198,7 @@ class __LogViewerState extends State<_LogViewer> {
         controller: controller,
         shrinkWrap: true,
         scrollDirection: Axis.horizontal,
-        children: [
-          for (int index = 0; index < count; index++)
-            SizedBox(
-              width: 36,
-              child: btn(index, count),
-            ),
-        ],
+        children: [for (int index = 0; index < count; index++) SizedBox(width: 36, child: btn(index, count))],
       ),
     );
   }
@@ -230,9 +218,7 @@ class __LogViewerState extends State<_LogViewer> {
       child: Text(
         '${index + 1}',
         textAlign: TextAlign.center,
-        style: TextStyle(
-          color: isActive ? Theme.of(context).colorScheme.onPrimary : Theme.of(context).hintColor,
-        ),
+        style: TextStyle(color: isActive ? Theme.of(context).colorScheme.onPrimary : Theme.of(context).hintColor),
       ),
     );
   }

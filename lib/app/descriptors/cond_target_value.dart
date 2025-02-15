@@ -54,21 +54,15 @@ class CondTargetValueDescriptor extends StatelessWidget with DescriptorBase {
     this.useAnd,
     this.unknownMsg,
     this.padding,
-  })  : condType = commonRelease.condType,
-        target = commonRelease.condId,
-        value = commonRelease.condNum;
+  }) : condType = commonRelease.condType,
+       target = commonRelease.condId,
+       value = commonRelease.condNum;
 
   @override
   List<InlineSpan> buildContent(BuildContext context) {
     switch (condType) {
       case CondType.none:
-        return localized(
-          jp: null,
-          cn: null,
-          tw: () => text('NONE'),
-          na: () => text('NONE'),
-          kr: null,
-        );
+        return localized(jp: null, cn: null, tw: () => text('NONE'), na: () => text('NONE'), kr: null);
       case CondType.questClear:
         return localized(
           jp: () => rich(null, quests(context), 'をクリアした'),
@@ -108,8 +102,13 @@ class CondTargetValueDescriptor extends StatelessWidget with DescriptorBase {
           jp: null,
           cn: () => rich('在活动', MultiDescriptor.events(context, [value]), '开始前未通关', quests(context)),
           tw: () => rich('在活動', MultiDescriptor.events(context, [value]), '開始前未通關', quests(context)),
-          na: () => rich(
-              'Have not cleared ', quests(context), ' before event start', MultiDescriptor.events(context, [value])),
+          na:
+              () => rich(
+                'Have not cleared ',
+                quests(context),
+                ' before event start',
+                MultiDescriptor.events(context, [value]),
+              ),
           kr: null,
         );
       case CondType.questAvailable:
@@ -230,10 +229,7 @@ class CondTargetValueDescriptor extends StatelessWidget with DescriptorBase {
         );
       case CondType.latestQuestPhaseEqual:
       case CondType.notLatestQuestPhaseEqual:
-        final relation = {
-          CondType.latestQuestPhaseEqual: '=',
-          CondType.notLatestQuestPhaseEqual: '!=',
-        }[condType]!;
+        final relation = {CondType.latestQuestPhaseEqual: '=', CondType.notLatestQuestPhaseEqual: '!='}[condType]!;
         return localized(
           jp: null,
           cn: () => rich(null, quests(context), '最新进度 $relation$value'),
@@ -244,11 +240,12 @@ class CondTargetValueDescriptor extends StatelessWidget with DescriptorBase {
       case CondType.questChallengeNum:
       case CondType.questChallengeNumBelow:
       case CondType.questChallengeNumEqual:
-        final relation = {
-          CondType.questChallengeNum: '≥',
-          CondType.questChallengeNumBelow: '<',
-          CondType.questChallengeNumEqual: '=',
-        }[condType]!;
+        final relation =
+            {
+              CondType.questChallengeNum: '≥',
+              CondType.questChallengeNumBelow: '<',
+              CondType.questChallengeNumEqual: '=',
+            }[condType]!;
         return localized(
           jp: null,
           cn: () => rich('关卡挑战次数$relation$value', quests(context)),
@@ -290,20 +287,18 @@ class CondTargetValueDescriptor extends StatelessWidget with DescriptorBase {
           kr: null,
         );
       case CondType.svtRecoverd:
-        return localized(
-          jp: null,
-          cn: null,
-          tw: () => text('從者已回復'),
-          na: () => text('Servant Recovered'),
-          kr: null,
-        );
+        return localized(jp: null, cn: null, tw: () => text('從者已回復'), na: () => text('Servant Recovered'), kr: null);
       case CondType.eventRewardDispCount:
         return localized(
           jp: () => rich(null, events(context), ' のイベントボイス、および少なくとも${value - 1}の他のボイスが再生されました'),
           cn: () => rich(null, events(context), ' 活动语音，且至少${value - 1}条其他语音已播放过'),
           tw: () => rich(null, events(context), ' 活動語音，且至少${value - 1}條其他語音已播放過'),
-          na: () => rich('Event ', events(context),
-              ' reward voice line and at least ${value - 1} other reward lines played before this one'),
+          na:
+              () => rich(
+                'Event ',
+                events(context),
+                ' reward voice line and at least ${value - 1} other reward lines played before this one',
+              ),
           kr: null,
         );
       case CondType.playerGenderType:
@@ -343,11 +338,12 @@ class CondTargetValueDescriptor extends StatelessWidget with DescriptorBase {
       case CondType.limitCountMaxAbove:
       case CondType.limitCountMaxBelow:
       case CondType.limitCountMaxEqual:
-        final arrow = {
-          CondType.limitCountMaxAbove: "≥",
-          CondType.limitCountMaxBelow: "≤",
-          CondType.limitCountMaxEqual: "=",
-        }[condType]!;
+        final arrow =
+            {
+              CondType.limitCountMaxAbove: "≥",
+              CondType.limitCountMaxBelow: "≤",
+              CondType.limitCountMaxEqual: "=",
+            }[condType]!;
         return localized(
           jp: () => rich(null, servants(context), '最大の霊基再臨を $arrow $value段階目にする'),
           cn: () => rich(null, servants(context), '的最高灵基再临 $arrow $value'),
@@ -478,8 +474,13 @@ class CondTargetValueDescriptor extends StatelessWidget with DescriptorBase {
         } else {
           final costumeSpans = [
             CenterWidgetSpan(
-                child: GameCardMixin.cardIconBuilder(
-                    context: context, icon: costume.borderedIcon, onTap: costume.routeTo, width: 32)),
+              child: GameCardMixin.cardIconBuilder(
+                context: context,
+                icon: costume.borderedIcon,
+                onTap: costume.routeTo,
+                width: 32,
+              ),
+            ),
             SharedBuilder.textButtonSpan(context: context, text: costume.lName.l, onTap: costume.routeTo),
           ];
           return localized(
@@ -515,19 +516,13 @@ class CondTargetValueDescriptor extends StatelessWidget with DescriptorBase {
       case CondType.commonValueBelow:
       case CondType.commonValueEqual:
         // UserGameCommonEntity
-        final arrow = {
-          CondType.commonValueAbove: "≥",
-          CondType.commonValueBelow: "≤",
-          CondType.commonValueEqual: "=",
-        }[condType]!;
+        final arrow =
+            {CondType.commonValueAbove: "≥", CondType.commonValueBelow: "≤", CondType.commonValueEqual: "="}[condType]!;
         String? closedMessage = unknownMsg?.replaceAll("\n", "");
-        return rich(
-          "CommonValue$target $arrow$value",
-          [
-            if (closedMessage != null && closedMessage.isNotEmpty)
-              TextSpan(text: ' ($closedMessage)', style: Theme.of(context).textTheme.bodySmall),
-          ],
-        );
+        return rich("CommonValue$target $arrow$value", [
+          if (closedMessage != null && closedMessage.isNotEmpty)
+            TextSpan(text: ' ($closedMessage)', style: Theme.of(context).textTheme.bodySmall),
+        ]);
       case CondType.warClear:
         // value = 0/1 ?
         return localized(
@@ -548,10 +543,7 @@ class CondTargetValueDescriptor extends StatelessWidget with DescriptorBase {
         );
       case CondType.shopFlagOn:
       case CondType.shopFlagOff:
-        final status = {
-          CondType.shopFlagOn: 'On',
-          CondType.shopFlagOff: 'Off',
-        }[condType]!;
+        final status = {CondType.shopFlagOn: 'On', CondType.shopFlagOff: 'Off'}[condType]!;
         final flagName = UserShopFlag.values.where((e) => e.value & value != 0).map((e) => e.name).join('/');
         return localized(
           jp: null,
@@ -565,15 +557,17 @@ class CondTargetValueDescriptor extends StatelessWidget with DescriptorBase {
     }
     return [
       TextSpan(
-        children: wrapMsg(localized(
-          jp: () => text('不明な条件(${condType.name}): $value, $target'),
-          cn: () => text('未知条件(${condType.name}): $value, $target'),
-          tw: () => text('未知條件(${condType.name}): $value, $target'),
-          na: () => text('Unknown Cond(${condType.name}): $value, $target'),
-          kr: null,
-        )),
+        children: wrapMsg(
+          localized(
+            jp: () => text('不明な条件(${condType.name}): $value, $target'),
+            cn: () => text('未知条件(${condType.name}): $value, $target'),
+            tw: () => text('未知條件(${condType.name}): $value, $target'),
+            na: () => text('Unknown Cond(${condType.name}): $value, $target'),
+            kr: null,
+          ),
+        ),
         // style: kDebugMode ? const TextStyle(color: Colors.red) : null,
-      )
+      ),
     ];
   }
 }

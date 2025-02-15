@@ -50,11 +50,12 @@ class NetworkManagerCN extends NetworkManagerBase<FRequestCN, AutoLoginDataCN> {
     headers[HttpHeaders.acceptHeader] = '*/*';
     headers[HttpHeaders.acceptEncodingHeader] = 'gzip, deflate';
     // bili-sdk(etc): Mozilla/5.0 BSGameSDK
-    headers[HttpHeaders.userAgentHeader] = user.userAgent.isEmpty
-        ? (user.isAndroidDevice
-            ? "UnityPlayer/$unityVersion (UnityWebRequest/1.0, libcurl/8.4.0-DEV)"
-            : "fatego/20 CFNetwork/1327.0.4 Darwin/21.2.0")
-        : user.userAgent;
+    headers[HttpHeaders.userAgentHeader] =
+        user.userAgent.isEmpty
+            ? (user.isAndroidDevice
+                ? "UnityPlayer/$unityVersion (UnityWebRequest/1.0, libcurl/8.4.0-DEV)"
+                : "fatego/20 CFNetwork/1327.0.4 Darwin/21.2.0")
+            : user.userAgent;
     updateCookies(headers);
     headers['X-Unity-Version'] = unityVersion;
 

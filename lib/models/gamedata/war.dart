@@ -80,9 +80,9 @@ class NiceWar with RouteInfo {
     this.spots = const [],
     this.spotRoads = const [],
     this.questSelections = const [],
-  })  : _name = _fixName(name, id, eventName),
-        _longName = _fixName(longName, id, eventName),
-        _eventId = eventId {
+  }) : _name = _fixName(name, id, eventName),
+       _longName = _fixName(longName, id, eventName),
+       _eventId = eventId {
     if (banner != null) {
       if (id == 404) {
         banner = banner!.replaceAll('/questboard_cap_closed.png', '/questboard_cap405.png');
@@ -92,7 +92,8 @@ class NiceWar with RouteInfo {
     }
   }
 
-  Set<int> get parentWars => {
+  Set<int> get parentWars =>
+      {
         parentWarId,
         materialParentWarId,
         for (final warAdd in warAdds)
@@ -530,11 +531,7 @@ class WarGroup {
   QuestAfterClearType questAfterClear;
   QuestType questType;
 
-  WarGroup({
-    required this.id,
-    this.questAfterClear = QuestAfterClearType.close,
-    this.questType = QuestType.main,
-  });
+  WarGroup({required this.id, this.questAfterClear = QuestAfterClearType.close, this.questType = QuestType.main});
 
   factory WarGroup.fromJson(Map<String, dynamic> json) => _$WarGroupFromJson(json);
 
@@ -570,11 +567,7 @@ class WarQuestSelection {
   String? shortcutBanner;
   int priority;
 
-  WarQuestSelection({
-    required this.quest,
-    this.shortcutBanner,
-    required this.priority,
-  });
+  WarQuestSelection({required this.quest, this.shortcutBanner, required this.priority});
 
   factory WarQuestSelection.fromJson(Map<String, dynamic> json) => _$WarQuestSelectionFromJson(json);
 
@@ -644,28 +637,11 @@ enum WarOverwriteType {
   priority,
 }
 
-enum WarStartType {
-  none,
-  script,
-  quest,
-}
+enum WarStartType { none, script, quest }
 
-enum WarReleaseDisplayType {
-  hide,
-  open,
-  close,
-  announcement,
-}
+enum WarReleaseDisplayType { hide, open, close, announcement }
 
-enum SpotOverwriteType {
-  none,
-  flag,
-  pathPointRatio,
-  pathPointRatioLimit,
-  namePanelOffsetX,
-  namePanelOffsetY,
-  name,
-}
+enum SpotOverwriteType { none, flag, pathPointRatio, pathPointRatioLimit, namePanelOffsetX, namePanelOffsetY, name }
 
 abstract class WarId {
   static const chaldeaGate = 9999;
@@ -798,5 +774,5 @@ const kLB7SpotLayers = <int, int>{
   31180: 3,
   31181: 3,
   31184: 5,
-  31185: 3
+  31185: 3,
 };

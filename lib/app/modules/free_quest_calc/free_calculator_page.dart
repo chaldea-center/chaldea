@@ -42,23 +42,23 @@ class _FreeQuestCalcPageState extends State<FreeQuestCalcPage> with SingleTicker
     return Scaffold(
       appBar: AppBar(
         title: Text(S.current.free_quest_calculator),
-        actions: [
-          ChaldeaUrl.docsHelpBtn('free_calculator'),
-        ],
-        bottom: FixedHeight.tabBar(TabBar(
-          controller: _tabController,
-          isScrollable: true,
-          tabAlignment: TabAlignment.center,
-          tabs: [
-            Tab(text: S.current.demands),
-            Tab(text: S.current.plan),
-            Tab(text: S.current.efficiency),
-            Tab(text: S.current.free_quest)
-          ],
-          onTap: (_) {
-            FocusScope.of(context).unfocus();
-          },
-        )),
+        actions: [ChaldeaUrl.docsHelpBtn('free_calculator')],
+        bottom: FixedHeight.tabBar(
+          TabBar(
+            controller: _tabController,
+            isScrollable: true,
+            tabAlignment: TabAlignment.center,
+            tabs: [
+              Tab(text: S.current.demands),
+              Tab(text: S.current.plan),
+              Tab(text: S.current.efficiency),
+              Tab(text: S.current.free_quest),
+            ],
+            onTap: (_) {
+              FocusScope.of(context).unfocus();
+            },
+          ),
+        ),
       ),
       body: InheritSelectionArea(
         child: GestureDetector(
@@ -70,16 +70,19 @@ class _FreeQuestCalcPageState extends State<FreeQuestCalcPage> with SingleTicker
             controller: _tabController,
             children: [
               KeepAliveBuilder(
-                  builder: (context) => DropCalcInputTab(objectiveCounts: widget.objectiveCounts, onSolved: onSolved)),
+                builder: (context) => DropCalcInputTab(objectiveCounts: widget.objectiveCounts, onSolved: onSolved),
+              ),
               KeepAliveBuilder(builder: (context) => QuestPlanTab(solution: solution)),
               KeepAliveBuilder(builder: (context) => QuestEfficiencyTab(solution: solution)),
               KeepAliveBuilder(
-                builder: (context) => WarListPage(
-                  wars: db.gameData.wars.values.where((war) {
-                    return war.isMainStory && war.spots.isNotEmpty || war.id == WarId.chaldeaGate;
-                  }).toList(),
-                ),
-              )
+                builder:
+                    (context) => WarListPage(
+                      wars:
+                          db.gameData.wars.values.where((war) {
+                            return war.isMainStory && war.spots.isNotEmpty || war.id == WarId.chaldeaGate;
+                          }).toList(),
+                    ),
+              ),
             ],
           ),
         ),

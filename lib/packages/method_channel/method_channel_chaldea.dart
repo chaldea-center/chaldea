@@ -37,12 +37,9 @@ class MethodChannelChaldea {
   static Future<void> setAlwaysOnTop([bool? onTop]) async {
     if (PlatformU.isWindows || PlatformU.isMacOS) {
       onTop ??= db.settings.alwaysOnTop;
-      return kMethodChannel.invokeMethod<bool?>(
-        'alwaysOnTop',
-        <String, dynamic>{
-          'onTop': onTop,
-        },
-      ).then((value) => print('alwaysOnTop success = $value'));
+      return kMethodChannel
+          .invokeMethod<bool?>('alwaysOnTop', <String, dynamic>{'onTop': onTop})
+          .then((value) => print('alwaysOnTop success = $value'));
     }
   }
 
@@ -52,9 +49,7 @@ class MethodChannelChaldea {
       print('rect ${rect.runtimeType}: $rect');
       if (rect != null && rect is List && rect.length == 4 && rect.any((e) => e is int && e > 0)) {
         print('ready to set window rect: $rect');
-        return kMethodChannel.invokeMethod('setWindowRect', <String, dynamic>{
-          'pos': rect,
-        });
+        return kMethodChannel.invokeMethod('setWindowRect', <String, dynamic>{'pos': rect});
       }
     }
   }

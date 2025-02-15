@@ -43,22 +43,13 @@ class FilterGroupData<T> {
 
   VoidCallback? onChanged;
 
-  FilterGroupData({
-    bool matchAll = false,
-    bool invert = false,
-    Set<T>? options,
-    this.onChanged,
-  })  : _matchAll = matchAll,
-        _invert = invert,
-        _options = options ?? {};
+  FilterGroupData({bool matchAll = false, bool invert = false, Set<T>? options, this.onChanged})
+    : _matchAll = matchAll,
+      _invert = invert,
+      _options = options ?? {};
 
   FilterGroupData<T> copy() {
-    return FilterGroupData(
-      matchAll: _matchAll,
-      invert: _invert,
-      options: options.toSet(),
-      onChanged: onChanged,
-    );
+    return FilterGroupData(matchAll: _matchAll, invert: _invert, options: options.toSet(), onChanged: onChanged);
   }
 
   T? get radioValue => throw UnimplementedError();
@@ -87,32 +78,19 @@ class FilterGroupData<T> {
     onChanged?.call();
   }
 
-  bool _match(
-    T value,
-    T option,
-    _FilterCompare<T>? compare,
-    Map<T, _FilterCompare<T>>? compares,
-  ) {
+  bool _match(T value, T option, _FilterCompare<T>? compare, Map<T, _FilterCompare<T>>? compares) {
     compare ??= compares?[option] ?? (T v, T o) => v == o;
     return compare.call(value, option);
   }
 
-  bool matchOne(
-    T value, {
-    _FilterCompare<T>? compare,
-    Map<T, _FilterCompare<T>>? compares,
-  }) {
+  bool matchOne(T value, {_FilterCompare<T>? compare, Map<T, _FilterCompare<T>>? compares}) {
     if (options.isEmpty) return true;
     assert(!matchAll, 'When `matchAll` enabled, use `matchList` instead');
     bool result = options.any((option) => _match(value, option, compare, compares));
     return invert ? !result : result;
   }
 
-  bool matchAny(
-    Iterable<T> values, {
-    _FilterCompare<T>? compare,
-    Map<T, _FilterCompare<T>>? compares,
-  }) {
+  bool matchAny(Iterable<T> values, {_FilterCompare<T>? compare, Map<T, _FilterCompare<T>>? compares}) {
     if (options.isEmpty) return true;
     bool result;
     if (matchAll) {
@@ -145,13 +123,8 @@ class FilterRadioData<T> extends FilterGroupData<T> {
   @override
   Set<T> get options => {if (_selected != null || _selected is T) _selected as T};
 
-  FilterRadioData([this._selected])
-      : _nonnull = false,
-        _initValue = null;
-  FilterRadioData.nonnull(T selected)
-      : _selected = selected,
-        _nonnull = true,
-        _initValue = selected;
+  FilterRadioData([this._selected]) : _nonnull = false, _initValue = null;
+  FilterRadioData.nonnull(T selected) : _selected = selected, _nonnull = true, _initValue = selected;
 
   @override
   FilterRadioData<T> copy() {
@@ -208,15 +181,15 @@ class LocalDataFilters {
     SummonFilterData? summonFilterData,
     SummonFilterData? gachaFilterData,
     ScriptReaderFilterData? scriptReaderFilterData,
-  })  : svtFilterData = svtFilterData ?? SvtFilterData(),
-        laplaceSvtFilterData = laplaceSvtFilterData ?? SvtFilterData(useGrid: true),
-        craftFilterData = craftFilterData ?? CraftFilterData(),
-        cmdCodeFilterData = cmdCodeFilterData ?? CmdCodeFilterData(),
-        mysticCodeFilterData = mysticCodeFilterData ?? MysticCodeFilterData(),
-        eventFilterData = eventFilterData ?? EventFilterData(),
-        summonFilterData = summonFilterData ?? SummonFilterData(),
-        gachaFilterData = gachaFilterData ?? SummonFilterData(),
-        scriptReaderFilterData = scriptReaderFilterData ?? ScriptReaderFilterData();
+  }) : svtFilterData = svtFilterData ?? SvtFilterData(),
+       laplaceSvtFilterData = laplaceSvtFilterData ?? SvtFilterData(useGrid: true),
+       craftFilterData = craftFilterData ?? CraftFilterData(),
+       cmdCodeFilterData = cmdCodeFilterData ?? CmdCodeFilterData(),
+       mysticCodeFilterData = mysticCodeFilterData ?? MysticCodeFilterData(),
+       eventFilterData = eventFilterData ?? EventFilterData(),
+       summonFilterData = summonFilterData ?? SummonFilterData(),
+       gachaFilterData = gachaFilterData ?? SummonFilterData(),
+       scriptReaderFilterData = scriptReaderFilterData ?? ScriptReaderFilterData();
 
   factory LocalDataFilters.fromJson(Map<String, dynamic> data) => _$LocalDataFiltersFromJson(data);
 
@@ -244,9 +217,11 @@ class SvtFilterData with FilterDataMixin {
   final svtDuplicated = FilterRadioData<bool>();
   final planCompletion = FilterGroupData<SvtPlanScope>();
   final curStatus = FilterGroupData<SvtStatusState>();
-  final priority = FilterGroupData<int>(onChanged: () {
-    db.itemCenter.updateSvts(all: true);
-  });
+  final priority = FilterGroupData<int>(
+    onChanged: () {
+      db.itemCenter.updateSvts(all: true);
+    },
+  );
 
   final bondCompare = FilterGroupData<CompareOperator>(options: {CompareOperator.lessThan});
   final bondValue = FilterRadioData<int>();
@@ -275,38 +250,43 @@ class SvtFilterData with FilterDataMixin {
     this.planFavorite = FavoriteState.all,
     List<SvtCompare?>? sortKeys,
     List<bool>? sortReversed,
-  })  : sortKeys = List.generate(
-            SvtCompare.values.length, (index) => sortKeys?.getOrNull(index) ?? SvtCompare.values[index],
-            growable: false),
-        sortReversed =
-            List.generate(SvtCompare.values.length, (index) => sortReversed?.getOrNull(index) ?? true, growable: false);
+  }) : sortKeys = List.generate(
+         SvtCompare.values.length,
+         (index) => sortKeys?.getOrNull(index) ?? SvtCompare.values[index],
+         growable: false,
+       ),
+       sortReversed = List.generate(
+         SvtCompare.values.length,
+         (index) => sortReversed?.getOrNull(index) ?? true,
+         growable: false,
+       );
 
   @override
   List<FilterGroupData> get groups => [
-        svtClass,
-        rarity,
-        attribute,
-        curStatus,
-        planCompletion,
-        svtDuplicated,
-        // bondCompare,
-        bondValue,
-        // priority,
-        region,
-        obtain,
-        npColor,
-        npType,
-        policy,
-        personality,
-        gender,
-        trait,
-        cardDeck,
-        effectScope,
-        effectTarget,
-        targetTrait,
-        effectType,
-        freeExchangeSvtEvent,
-      ];
+    svtClass,
+    rarity,
+    attribute,
+    curStatus,
+    planCompletion,
+    svtDuplicated,
+    // bondCompare,
+    bondValue,
+    // priority,
+    region,
+    obtain,
+    npColor,
+    npType,
+    policy,
+    personality,
+    gender,
+    trait,
+    cardDeck,
+    effectScope,
+    effectTarget,
+    targetTrait,
+    effectType,
+    freeExchangeSvtEvent,
+  ];
 
   @override
   void reset() {
@@ -395,8 +375,7 @@ enum CraftCompare {
   no,
   rarity,
   atk,
-  hp,
-  ;
+  hp;
 
   String get shownName {
     switch (this) {
@@ -442,29 +421,31 @@ class CraftFilterData with FilterDataMixin {
   final effectType = FilterGroupData<SkillEffect>();
   final isEventEffect = FilterGroupData<bool>();
 
-  CraftFilterData({
-    this.useGrid = false,
-    List<CraftCompare?>? sortKeys,
-    List<bool>? sortReversed,
-  })  : sortKeys = List.generate(
-            CraftCompare.values.length, (index) => sortKeys?.getOrNull(index) ?? CraftCompare.values[index],
-            growable: false),
-        sortReversed = List.generate(CraftCompare.values.length, (index) => sortReversed?.getOrNull(index) ?? true,
-            growable: false);
+  CraftFilterData({this.useGrid = false, List<CraftCompare?>? sortKeys, List<bool>? sortReversed})
+    : sortKeys = List.generate(
+        CraftCompare.values.length,
+        (index) => sortKeys?.getOrNull(index) ?? CraftCompare.values[index],
+        growable: false,
+      ),
+      sortReversed = List.generate(
+        CraftCompare.values.length,
+        (index) => sortReversed?.getOrNull(index) ?? true,
+        growable: false,
+      );
 
   @override
   List<FilterGroupData> get groups => [
-        rarity,
-        region,
-        obtain,
-        atkType,
-        limitCount,
-        status,
-        effectTarget,
-        targetTrait,
-        effectType,
-        isEventEffect,
-      ];
+    rarity,
+    region,
+    obtain,
+    atkType,
+    limitCount,
+    status,
+    effectTarget,
+    targetTrait,
+    effectType,
+    isEventEffect,
+  ];
 
   @override
   void reset() {
@@ -517,8 +498,7 @@ class CraftFilterData with FilterDataMixin {
 /// Command Code
 enum CmdCodeCompare {
   no,
-  rarity,
-  ;
+  rarity;
 
   String get shownName {
     switch (this) {
@@ -554,21 +534,19 @@ class CmdCodeFilterData with FilterDataMixin {
     this.favorite = false,
     List<CmdCodeCompare?>? sortKeys,
     List<bool>? sortReversed,
-  })  : sortKeys = List.generate(
-            CmdCodeCompare.values.length, (index) => sortKeys?.getOrNull(index) ?? CmdCodeCompare.values[index],
-            growable: false),
-        sortReversed = List.generate(CmdCodeCompare.values.length, (index) => sortReversed?.getOrNull(index) ?? true,
-            growable: false);
+  }) : sortKeys = List.generate(
+         CmdCodeCompare.values.length,
+         (index) => sortKeys?.getOrNull(index) ?? CmdCodeCompare.values[index],
+         growable: false,
+       ),
+       sortReversed = List.generate(
+         CmdCodeCompare.values.length,
+         (index) => sortReversed?.getOrNull(index) ?? true,
+         growable: false,
+       );
 
   @override
-  List<FilterGroupData> get groups => [
-        rarity,
-        region,
-        effectTarget,
-        targetTrait,
-        effectType,
-        status,
-      ];
+  List<FilterGroupData> get groups => [rarity, region, effectTarget, targetTrait, effectType, status];
 
   @override
   void reset() {
@@ -622,19 +600,10 @@ class MysticCodeFilterData with FilterDataMixin {
   final targetTrait = FilterGroupData<int>();
   final effectType = FilterGroupData<SkillEffect>();
 
-  MysticCodeFilterData({
-    this.useGrid = false,
-    this.favorite = false,
-    this.ascending = true,
-  });
+  MysticCodeFilterData({this.useGrid = false, this.favorite = false, this.ascending = true});
 
   @override
-  List<FilterGroupData> get groups => [
-        region,
-        effectTarget,
-        targetTrait,
-        effectType,
-      ];
+  List<FilterGroupData> get groups => [region, effectTarget, targetTrait, effectType];
 
   @override
   void reset() {
@@ -650,8 +619,7 @@ class MysticCodeFilterData with FilterDataMixin {
 enum FavoriteState {
   all,
   owned,
-  other,
-  ;
+  other;
 
   IconData get icon {
     switch (this) {
@@ -842,10 +810,16 @@ class EnemyFilterData with FilterDataMixin {
     this.onlyShowQuestEnemy = false,
     List<SvtCompare?>? sortKeys,
     List<bool>? sortReversed,
-  })  : sortKeys = List.generate(enemyCompares.length, (index) => sortKeys?.getOrNull(index) ?? enemyCompares[index],
-            growable: false),
-        sortReversed =
-            List.generate(enemyCompares.length, (index) => sortReversed?.getOrNull(index) ?? true, growable: false);
+  }) : sortKeys = List.generate(
+         enemyCompares.length,
+         (index) => sortKeys?.getOrNull(index) ?? enemyCompares[index],
+         growable: false,
+       ),
+       sortReversed = List.generate(
+         enemyCompares.length,
+         (index) => sortReversed?.getOrNull(index) ?? true,
+         growable: false,
+       );
 
   @override
   List<FilterGroupData> get groups => [region, svtClass, attribute, svtType, trait];
@@ -962,8 +936,7 @@ enum SvtCompare {
   hp,
   priority,
   tdLv,
-  bondLv,
-  ;
+  bondLv;
 
   String get showName {
     switch (this) {
@@ -991,8 +964,7 @@ enum SvtEffectScope {
   active,
   passive,
   append,
-  td,
-  ;
+  td;
 
   String get shownName {
     switch (this) {
@@ -1015,8 +987,7 @@ enum EffectTarget {
   ptOther, //ptOtherFull
   enemy,
   enemyAll,
-  special,
-  ;
+  special;
 
   static EffectTarget fromFunc(FuncTargetType funcTarget) {
     return _funcEffectMapping[funcTarget] ?? EffectTarget.special;
@@ -1051,7 +1022,7 @@ enum SvtStatusState {
   appendTwo9,
   // appendTwo10,
   append8,
-  append9,
+  append9
   // append10
   ;
 
@@ -1075,8 +1046,7 @@ enum SvtStatusState {
 enum CompareOperator {
   lessThan('<', -1),
   moreThan('>', 1),
-  equal('=', 0),
-  ;
+  equal('=', 0);
 
   final String text;
   final int value;
@@ -1091,8 +1061,7 @@ enum SvtBondStage {
   lessThan5('<5'),
   lessThan6('<6'),
   lessThan10('<10'),
-  greaterThan10('≤15'),
-  ;
+  greaterThan10('≤15');
 
   final String text;
   const SvtBondStage(this.text);
@@ -1123,8 +1092,7 @@ enum CardDeckType {
   q2a1b2(2, 1, 2),
   q2a2b1(2, 2, 1),
   q3a1b1(3, 1, 1),
-  others(-1, -1, -1),
-  ;
+  others(-1, -1, -1);
 
   const CardDeckType(this.q, this.a, this.b);
   final int q;

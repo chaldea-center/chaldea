@@ -41,10 +41,10 @@ class SaintQuartzPlan {
     Map<int, bool>? missions,
     bool? minusPlannedBanner,
     this.favoriteSummonOnly = false,
-  })  : startDate = startDate ?? DateUtils.dateOnly(DateTime.now()),
-        endDate = endDate ?? DateUtils.dateOnly(DateTime.now()),
-        extraMissions = missions ?? {},
-        minusPlannedBanner = minusPlannedBanner ?? true {
+  }) : startDate = startDate ?? DateUtils.dateOnly(DateTime.now()),
+       endDate = endDate ?? DateUtils.dateOnly(DateTime.now()),
+       extraMissions = missions ?? {},
+       minusPlannedBanner = minusPlannedBanner ?? true {
     validate();
   }
 
@@ -161,12 +161,7 @@ class SaintQuartzPlan {
     }
 
     // check event
-    void _checkEvent({
-      Event? event,
-      DateTime? start,
-      Map<int, int>? items,
-      String? name,
-    }) {
+    void _checkEvent({Event? event, DateTime? start, Map<int, int>? items, String? name}) {
       if (event != null) {
         start ??= event.startedAt.sec2date();
         items ??= event.statItemFixed;
@@ -181,7 +176,8 @@ class SaintQuartzPlan {
 
       detail.addSQ += items[Items.stoneId] ?? 0;
       detail.addTicket += items[Items.summonTicketId] ?? 0;
-      detail.addApple += (items[Items.goldAppleId] ?? 0) +
+      detail.addApple +=
+          (items[Items.goldAppleId] ?? 0) +
           (items[Items.silverAppleId] ?? 0) / 2 +
           (items[Items.bronzeAppleId] ?? 0) / 14.4;
       if (event != null) {
@@ -274,8 +270,8 @@ class SQDayDetail {
     List<Event>? events,
     List<LimitedSummon>? summons,
     List<UserPresentBoxEntity>? presents,
-  })  : continuousLogin = continuousLogin.clamp(1, 7),
-        events = events ?? [],
-        summons = summons ?? [],
-        presents = presents ?? [];
+  }) : continuousLogin = continuousLogin.clamp(1, 7),
+       events = events ?? [],
+       summons = summons ?? [],
+       presents = presents ?? [];
 }

@@ -15,8 +15,12 @@ import 'filter_data.dart';
 
 part '../../generated/models/userdata/battle.g.dart';
 
-void _removeEmptyList(Map<String, dynamic> data, List<String> keys,
-    {bool removeAllNull = false, bool removeAllZero = false}) {
+void _removeEmptyList(
+  Map<String, dynamic> data,
+  List<String> keys, {
+  bool removeAllNull = false,
+  bool removeAllZero = false,
+}) {
   for (final key in keys) {
     if (!data.containsKey(key)) continue;
     final value = data[key];
@@ -51,10 +55,10 @@ class BattleSimUserData {
     Set<int>? pingedSvts,
     Map<int, Set<int>>? favoriteTeams,
     List<BattleShareData>? teams,
-  })  : pingedCEs = pingedCEs ?? {18, 28, 34, 48, 1080},
-        pingedSvts = pingedSvts ?? {215, 284, 314, 316, 357},
-        favoriteTeams = favoriteTeams ?? {},
-        teams = teams ?? [] {
+  }) : pingedCEs = pingedCEs ?? {18, 28, 34, 48, 1080},
+       pingedSvts = pingedSvts ?? {215, 284, 314, 316, 357},
+       favoriteTeams = favoriteTeams ?? {},
+       teams = teams ?? [] {
     validate();
   }
 
@@ -130,14 +134,17 @@ class BattleSimSetting {
     this.recordScreenshotRatio = 10,
     this.recordShowTwoColumn = false,
     this.manualAllySkillTarget = false,
-  })  : defaultLvs = defaultLvs ?? PlayerSvtDefaultData(),
-        curTeam = curTeam ?? BattleShareData(quest: null, formation: BattleTeamFormation()),
-        svtFilterData = svtFilterData ?? SvtFilterData(useGrid: true),
-        craftFilterData = craftFilterData ?? CraftFilterData(useGrid: true),
-        tdDmgOptions = tdDmgOptions ?? TdDamageOptions() {
+  }) : defaultLvs = defaultLvs ?? PlayerSvtDefaultData(),
+       curTeam = curTeam ?? BattleShareData(quest: null, formation: BattleTeamFormation()),
+       svtFilterData = svtFilterData ?? SvtFilterData(useGrid: true),
+       craftFilterData = craftFilterData ?? CraftFilterData(useGrid: true),
+       tdDmgOptions = tdDmgOptions ?? TdDamageOptions() {
     validate();
-    this.craftFilterData.obtain.options =
-        CEObtain.values.toSet().difference({CEObtain.valentine, CEObtain.exp, CEObtain.campaign});
+    this.craftFilterData.obtain.options = CEObtain.values.toSet().difference({
+      CEObtain.valentine,
+      CEObtain.exp,
+      CEObtain.campaign,
+    });
   }
 
   void validate() {
@@ -172,8 +179,8 @@ class BattleShareData {
     this.delegate,
     List<BattleRecordData>? actions,
     this.isCritTeam = false,
-  })  : options = options ?? BattleShareDataOption(),
-        actions = actions ?? [];
+  }) : options = options ?? BattleShareDataOption(),
+       actions = actions ?? [];
 
   factory BattleShareData.fromJson(Map<String, dynamic> json) => _$BattleShareDataFromJson(json);
 
@@ -183,15 +190,17 @@ class BattleShareData {
     //   svt?.customPassives.clear();
     //   svt?.customPassiveLvs.clear();
     // }
-    return _$BattleShareDataToJson(BattleShareData(
-      minBuild: kMinBuild,
-      appBuild: appBuild ?? AppInfo.buildNumber,
-      quest: quest,
-      options: options,
-      formation: formation,
-      delegate: delegate,
-      actions: actions,
-    ));
+    return _$BattleShareDataToJson(
+      BattleShareData(
+        minBuild: kMinBuild,
+        appBuild: appBuild ?? AppInfo.buildNumber,
+        quest: quest,
+        options: options,
+        formation: formation,
+        delegate: delegate,
+        actions: actions,
+      ),
+    );
   }
 
   BattleShareData copy() {
@@ -201,14 +210,16 @@ class BattleShareData {
   Uri toUriV2() {
     String data = toDataV2();
     Uri shareUri = Uri.parse(ChaldeaUrl.deepLink('/laplace/share'));
-    shareUri = shareUri.replace(queryParameters: {
-      "data": data,
-      if (quest != null) ...{
-        "questId": quest!.id.toString(),
-        "phase": quest!.phase.toString(),
-        if (quest!.enemyHash != null) "enemyHash": quest!.enemyHash,
-      }
-    });
+    shareUri = shareUri.replace(
+      queryParameters: {
+        "data": data,
+        if (quest != null) ...{
+          "questId": quest!.id.toString(),
+          "phase": quest!.phase.toString(),
+          if (quest!.enemyHash != null) "enemyHash": quest!.enemyHash,
+        },
+      },
+    );
     return shareUri;
   }
 
@@ -297,17 +308,12 @@ class BattleQuestInfo {
   String? enemyHash;
   Region? region;
 
-  BattleQuestInfo({
-    required this.id,
-    required this.phase,
-    required this.enemyHash,
-    this.region,
-  });
+  BattleQuestInfo({required this.id, required this.phase, required this.enemyHash, this.region});
 
   BattleQuestInfo.quest(QuestPhase quest, {this.region})
-      : id = quest.id,
-        phase = quest.phase,
-        enemyHash = quest.enemyHash;
+    : id = quest.id,
+      phase = quest.phase,
+      enemyHash = quest.enemyHash;
 
   String toUrl() {
     String url = '$id/$phase';
@@ -347,20 +353,12 @@ class BattleTeamFormation {
     MysticCodeSaveData? mysticCode,
     List<SvtSaveData?>? onFieldSvts,
     List<SvtSaveData?>? backupSvts,
-  })  : mysticCode = mysticCode ?? MysticCodeSaveData(),
-        onFieldSvts = List.generate(3, (index) => onFieldSvts?.getOrNull(index)),
-        backupSvts = List.generate(3, (index) => backupSvts?.getOrNull(index));
+  }) : mysticCode = mysticCode ?? MysticCodeSaveData(),
+       onFieldSvts = List.generate(3, (index) => onFieldSvts?.getOrNull(index)),
+       backupSvts = List.generate(3, (index) => backupSvts?.getOrNull(index));
 
-  BattleTeamFormation.fromList({
-    String? name,
-    MysticCodeSaveData? mysticCode,
-    List<SvtSaveData?>? svts,
-  }) : this(
-          name: name,
-          mysticCode: mysticCode,
-          onFieldSvts: svts?.take(3).toList(),
-          backupSvts: svts?.skip(3).toList(),
-        );
+  BattleTeamFormation.fromList({String? name, MysticCodeSaveData? mysticCode, List<SvtSaveData?>? svts})
+    : this(name: name, mysticCode: mysticCode, onFieldSvts: svts?.take(3).toList(), backupSvts: svts?.skip(3).toList());
 
   factory BattleTeamFormation.fromJson(Map<String, dynamic> json) => _$BattleTeamFormationFromJson(json);
 
@@ -445,14 +443,14 @@ class SvtSaveData {
     Set<int>? disabledExtraSkills,
     List<BaseSkill>? customPassives,
     List<int>? customPassiveLvs,
-  })  : skillLvs = skillLvs ?? [10, 10, 10],
-        skillIds = List.generate(kActiveSkillNums.length, (index) => skillIds?.getOrNull(index)),
-        appendLvs = List.generate(kAppendSkillNums.length, (index) => appendLvs?.getOrNull(index) ?? 0),
-        cardStrengthens = List.generate(5, (index) => cardStrengthens?.getOrNull(index) ?? 0),
-        commandCodeIds = List.generate(5, (index) => commandCodeIds?.getOrNull(index)),
-        disabledExtraSkills = disabledExtraSkills ?? {},
-        customPassives = List<BaseSkill>.from(customPassives ?? []),
-        customPassiveLvs = customPassiveLvs ?? [];
+  }) : skillLvs = skillLvs ?? [10, 10, 10],
+       skillIds = List.generate(kActiveSkillNums.length, (index) => skillIds?.getOrNull(index)),
+       appendLvs = List.generate(kAppendSkillNums.length, (index) => appendLvs?.getOrNull(index) ?? 0),
+       cardStrengthens = List.generate(5, (index) => cardStrengthens?.getOrNull(index) ?? 0),
+       commandCodeIds = List.generate(5, (index) => commandCodeIds?.getOrNull(index)),
+       disabledExtraSkills = disabledExtraSkills ?? {},
+       customPassives = List<BaseSkill>.from(customPassives ?? []),
+       customPassiveLvs = customPassiveLvs ?? [];
 
   factory SvtSaveData.fromJson(Map<String, dynamic> json) => _$SvtSaveDataFromJson(json);
 
@@ -474,10 +472,7 @@ class MysticCodeSaveData {
   int? mysticCodeId;
   int level;
 
-  MysticCodeSaveData({
-    this.mysticCodeId,
-    this.level = 0,
-  });
+  MysticCodeSaveData({this.mysticCodeId, this.level = 0});
 
   factory MysticCodeSaveData.fromJson(Map<String, dynamic> json) => _$MysticCodeSaveDataFromJson(json);
 
@@ -514,8 +509,8 @@ class PlayerSvtDefaultData {
     List<int>? cardStrengthens,
     this.ceMaxLimitBreak = false,
     this.ceMaxLv = false,
-  })  : appendLvs = List.generate(kAppendSkillNums.length, (index) => appendLvs?.getOrNull(index) ?? 0),
-        cardStrengthens = List.generate(5, (index) => cardStrengthens?.getOrNull(index) ?? 0) {
+  }) : appendLvs = List.generate(kAppendSkillNums.length, (index) => appendLvs?.getOrNull(index) ?? 0),
+       cardStrengthens = List.generate(5, (index) => cardStrengthens?.getOrNull(index) ?? 0) {
     validate();
   }
 
@@ -717,44 +712,44 @@ class CustomFuncData {
   static CustomFuncData get addSelfDamage => _debuff(-955, 150);
 
   static List<CustomFuncData> get allTypes => [
-        gainNp,
-        gainStar,
-        upDamage,
-        upAtk,
-        upQuick,
-        upArts,
-        upBuster,
-        upNpDamage,
-        addDamage,
-        upChargeTd,
-        upCriticaldamage,
-        upDropNp,
-        upCriticalpoint,
-        breakAvoidance,
-        pierceInvincible,
-        downDef,
-        downQuick,
-        downArts,
-        downBuster,
-        addSelfDamage,
-      ];
+    gainNp,
+    gainStar,
+    upDamage,
+    upAtk,
+    upQuick,
+    upArts,
+    upBuster,
+    upNpDamage,
+    addDamage,
+    upChargeTd,
+    upCriticaldamage,
+    upDropNp,
+    upCriticalpoint,
+    breakAvoidance,
+    pierceInvincible,
+    downDef,
+    downQuick,
+    downArts,
+    downBuster,
+    addSelfDamage,
+  ];
 
   static List<CustomFuncData> get tdDmgTypes => [
-        upDamage,
-        upAtk,
-        upQuick,
-        upArts,
-        upBuster,
-        upNpDamage,
-        addDamage,
-        upDropNp,
-        upCriticalpoint,
-        downDef,
-        downQuick,
-        downArts,
-        downBuster,
-        addSelfDamage,
-      ];
+    upDamage,
+    upAtk,
+    upQuick,
+    upArts,
+    upBuster,
+    upNpDamage,
+    addDamage,
+    upDropNp,
+    upCriticalpoint,
+    downDef,
+    downQuick,
+    downArts,
+    downBuster,
+    addSelfDamage,
+  ];
 }
 
 @JsonSerializable(converters: [_QuestEnemyConverter(), RegionConverter()])
@@ -836,16 +831,14 @@ class TdDamageOptions {
     this.forceDamageNpSe = false,
     this.damageNpIndivSumCount,
     this.damageNpHpRatioMax = false,
-  })  : enemy = enemy ?? QuestEnemy.blankEnemy(),
-        supports = supports ?? [],
-        appendSkills = List.generate(kAppendSkillNums.length, (i) => appendSkills?.getOrNull(i) ?? false),
-        extraBuffs = extraBuffs ?? CustomSkillData(buffOnly: true, hasTurnCount: false),
-        fieldTraits = fieldTraits ?? [];
+  }) : enemy = enemy ?? QuestEnemy.blankEnemy(),
+       supports = supports ?? [],
+       appendSkills = List.generate(kAppendSkillNums.length, (i) => appendSkills?.getOrNull(i) ?? false),
+       extraBuffs = extraBuffs ?? CustomSkillData(buffOnly: true, hasTurnCount: false),
+       fieldTraits = fieldTraits ?? [];
 
   void initBuffs() {
-    final buffMap = {
-      for (final e in extraBuffs.effects) e.buffId: e,
-    };
+    final buffMap = {for (final e in extraBuffs.effects) e.buffId: e};
     List<CustomFuncData> effects = [];
     for (final effect in CustomFuncData.tdDmgTypes) {
       final prevData = buffMap[effect.buffId];
@@ -887,8 +880,7 @@ enum SvtLv {
   maxLv(null), // Mash's at 70 by default
   lv90(90),
   lv100(100),
-  lv120(120),
-  ;
+  lv120(120);
 
   const SvtLv(this.lv);
   final int? lv;
@@ -897,23 +889,22 @@ enum SvtLv {
 enum PreferPlayerSvtDataSource {
   none,
   current,
-  target,
-  ;
+  target;
 
   bool get isNone => this == PreferPlayerSvtDataSource.none;
 
   PreferPlayerSvtDataSource resolve(bool favorite) => favorite && !isNone ? this : none;
 
   String get shownName => switch (this) {
-        none => S.current.disabled,
-        current => S.current.current_,
-        target => S.current.target,
-      };
+    none => S.current.disabled,
+    current => S.current.current_,
+    target => S.current.target,
+  };
   String get detailName => switch (this) {
-        none => S.current.default_lvs,
-        current => S.current.current_,
-        target => S.current.target,
-      };
+    none => S.current.default_lvs,
+    current => S.current.current_,
+    target => S.current.target,
+  };
 }
 
 enum PreferClassBoardDataSource {
@@ -927,7 +918,7 @@ enum PreferClassBoardDataSource {
       PreferClassBoardDataSource.none => S.current.disabled,
       PreferClassBoardDataSource.current => S.current.current_,
       PreferClassBoardDataSource.target => S.current.target,
-      PreferClassBoardDataSource.full => "Max"
+      PreferClassBoardDataSource.full => "Max",
     };
   }
 }
@@ -947,8 +938,7 @@ enum FollowerType {
 enum SupportSvtType {
   none,
   friend,
-  npc,
-  ;
+  npc;
 
   bool get isSupport => this != SupportSvtType.none;
 
@@ -1004,13 +994,13 @@ class BattleReplayDelegateData {
     List<bool>? canActivateDecisions,
     List<int>? damageSelections,
     List<List<int>>? replaceMemberIndexes,
-  })  : actWeightSelections = actWeightSelections ?? [],
-        skillActSelectSelections = skillActSelectSelections ?? [],
-        tdTypeChanges = tdTypeChanges ?? [],
-        ptRandomIndexes = ptRandomIndexes ?? [],
-        canActivateDecisions = canActivateDecisions ?? [],
-        damageSelections = damageSelections ?? [],
-        replaceMemberIndexes = replaceMemberIndexes ?? [];
+  }) : actWeightSelections = actWeightSelections ?? [],
+       skillActSelectSelections = skillActSelectSelections ?? [],
+       tdTypeChanges = tdTypeChanges ?? [],
+       ptRandomIndexes = ptRandomIndexes ?? [],
+       canActivateDecisions = canActivateDecisions ?? [],
+       damageSelections = damageSelections ?? [],
+       replaceMemberIndexes = replaceMemberIndexes ?? [];
 
   factory BattleReplayDelegateData.fromJson(Map<String, dynamic> json) => _$BattleReplayDelegateDataFromJson(json);
 
@@ -1059,22 +1049,17 @@ class BattleRecordData {
   BattleActionOptions options;
 
   BattleRecordData({BattleActionOptions? options})
-      : type = BattleRecordDataType.base,
-        options = options ?? BattleActionOptions();
+    : type = BattleRecordDataType.base,
+      options = options ?? BattleActionOptions();
 
-  BattleRecordData.skill({
-    this.svt,
-    this.skill,
-    BattleActionOptions? options,
-  })  : type = BattleRecordDataType.skill,
-        options = options ?? BattleActionOptions();
+  BattleRecordData.skill({this.svt, this.skill, BattleActionOptions? options})
+    : type = BattleRecordDataType.skill,
+      options = options ?? BattleActionOptions();
 
-  BattleRecordData.attack({
-    List<BattleAttackRecordData>? attacks,
-    BattleActionOptions? options,
-  })  : type = BattleRecordDataType.attack,
-        attacks = attacks ?? [],
-        options = options ?? BattleActionOptions();
+  BattleRecordData.attack({List<BattleAttackRecordData>? attacks, BattleActionOptions? options})
+    : type = BattleRecordDataType.attack,
+      attacks = attacks ?? [],
+      options = options ?? BattleActionOptions();
 
   factory BattleRecordData.fromJson(Map<String, dynamic> json) => _$BattleRecordDataFromJson(json);
 

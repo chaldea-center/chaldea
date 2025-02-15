@@ -51,20 +51,14 @@ class EventRecipePage extends HookWidget {
                 for (final gift in recipeGift.gifts)
                   DecoratedBox(
                     decoration: BoxDecoration(
-                      border: Border.all(
-                        color: recipeGift.topIconId == 1 ? Colors.red : Colors.transparent,
-                      ),
+                      border: Border.all(color: recipeGift.topIconId == 1 ? Colors.red : Colors.transparent),
                       borderRadius: BorderRadius.circular(6),
                     ),
                     child: Padding(
                       padding: const EdgeInsets.all(2),
-                      child: gift.iconBuilder(
-                        context: context,
-                        width: 32,
-                        showOne: false,
-                      ),
+                      child: gift.iconBuilder(context: context, width: 32, showOne: false),
                     ),
-                  )
+                  ),
             ],
           ),
         );
@@ -95,9 +89,7 @@ class EventRecipePage extends HookWidget {
                     for (final recipeGift in recipe.recipeGifts)
                       if (recipeGift.topIconId == 1)
                         for (final gift in recipeGift.gifts)
-                          CenterWidgetSpan(
-                            child: gift.iconBuilder(context: context, width: 28, showOne: false),
-                          ),
+                          CenterWidgetSpan(child: gift.iconBuilder(context: context, width: 28, showOne: false)),
                     const TextSpan(text: '\nCost: '),
                     for (final consume in recipe.consumes) ...[
                       CenterWidgetSpan(
@@ -112,19 +104,13 @@ class EventRecipePage extends HookWidget {
                       TextSpan(text: '×${consume.num.format()} '),
                     ],
                     TextSpan(text: '\n${S.current.event_point}: '),
-                    CenterWidgetSpan(
-                      child: Item.iconBuilder(
-                        context: context,
-                        item: recipe.eventPointItem,
-                        width: 28,
-                      ),
-                    ),
+                    CenterWidgetSpan(child: Item.iconBuilder(context: context, item: recipe.eventPointItem, width: 28)),
                     TextSpan(text: '×${recipe.eventPointNum}'),
                     TextSpan(text: '\n${S.current.treasure_box_max_draw_once}: ${recipe.maxNum}'),
                   ],
                 ),
               ),
-            )
+            ),
           ],
         );
       },

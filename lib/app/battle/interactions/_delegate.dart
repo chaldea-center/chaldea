@@ -14,7 +14,8 @@ class BattleDelegate {
   Future<Tuple2<BattleServantData, BattleServantData>?> Function(
     List<BattleServantData?> onFieldSvts,
     List<BattleServantData?> backupSvts,
-  )? replaceMember;
+  )?
+  replaceMember;
 
   int? Function(BattleServantData? actor, int baseOC, int upOC)? decideOC;
   bool? Function(BattleServantData? actor, BaseSkill? skill)? whetherSkill;
@@ -28,10 +29,7 @@ class DamageNpSEDecision {
   bool? useCorrection;
   int? indivSumCount;
 
-  DamageNpSEDecision({
-    this.useCorrection,
-    this.indivSumCount,
-  });
+  DamageNpSEDecision({this.useCorrection, this.indivSumCount});
 }
 
 class BattleReplayDelegate extends BattleDelegate {

@@ -67,11 +67,13 @@ class GainHP {
       }
 
       target.lossHp(finalValue, lethal: isLethal);
-      target.actionHistory.add(BattleServantActionHistory(
-        actType: BattleServantActionHistoryType.hploss,
-        targetUniqueId: activator?.uniqueId ?? -1,
-        isOpponent: false,
-      ));
+      target.actionHistory.add(
+        BattleServantActionHistory(
+          actType: BattleServantActionHistoryType.hploss,
+          targetUniqueId: activator?.uniqueId ?? -1,
+          isOpponent: false,
+        ),
+      );
       target.procAccumulationDamage(previousHp);
       battleData.setFuncResult(target.uniqueId, true);
     }
@@ -104,11 +106,13 @@ class GainHP {
       }
 
       target.lossHp(finalValue, lethal: isLethal);
-      target.actionHistory.add(BattleServantActionHistory(
-        actType: BattleServantActionHistoryType.damageValue,
-        targetUniqueId: activator?.uniqueId ?? -1,
-        isOpponent: false,
-      ));
+      target.actionHistory.add(
+        BattleServantActionHistory(
+          actType: BattleServantActionHistoryType.damageValue,
+          targetUniqueId: activator?.uniqueId ?? -1,
+          isOpponent: false,
+        ),
+      );
       target.procAccumulationDamage(previousHp);
       battleData.setFuncResult(target.uniqueId, true);
     }

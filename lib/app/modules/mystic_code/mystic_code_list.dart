@@ -46,9 +46,11 @@ class MysticCodeListPageState extends State<MysticCodeListPage>
 
   @override
   Widget build(BuildContext context) {
-    filterShownList(compare: (a, b) {
-      return filterData.ascending ? a.id - b.id : b.id - a.id;
-    });
+    filterShownList(
+      compare: (a, b) {
+        return filterData.ascending ? a.id - b.id : b.id - a.id;
+      },
+    );
     return scrollListener(
       useGrid: filterData.useGrid,
       appBar: AppBar(
@@ -59,23 +61,22 @@ class MysticCodeListPageState extends State<MysticCodeListPage>
         actions: [
           IconButton(
             onPressed: () => setState(() => db.curUser.isGirl = !db.curUser.isGirl),
-            icon: FaIcon(
-              db.curUser.isGirl ? FontAwesomeIcons.venus : FontAwesomeIcons.mars,
-              size: 20,
-            ),
+            icon: FaIcon(db.curUser.isGirl ? FontAwesomeIcons.venus : FontAwesomeIcons.mars, size: 20),
           ),
           IconButton(
             icon: const Icon(Icons.filter_alt),
             tooltip: S.current.filter,
-            onPressed: () => FilterPage.show(
-              context: context,
-              builder: (context) => MysticCodeFilterPage(
-                filterData: filterData,
-                onChanged: (_) {
-                  if (mounted) setState(() {});
-                },
-              ),
-            ),
+            onPressed:
+                () => FilterPage.show(
+                  context: context,
+                  builder:
+                      (context) => MysticCodeFilterPage(
+                        filterData: filterData,
+                        onChanged: (_) {
+                          if (mounted) setState(() {});
+                        },
+                      ),
+                ),
           ),
         ],
       ),
@@ -85,18 +86,11 @@ class MysticCodeListPageState extends State<MysticCodeListPage>
   @override
   Widget listItemBuilder(MysticCode mc) {
     return CustomTile(
-      leading: db.getIconImage(
-        mc.icon,
-        width: 56,
-        aspectRatio: 132 / 144,
-      ),
+      leading: db.getIconImage(mc.icon, width: 56, aspectRatio: 132 / 144),
       title: AutoSizeText(mc.lName.l, maxLines: 1),
       subtitle: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          if (!Language.isJP) AutoSizeText(mc.name, maxLines: 1),
-          Text('No.${mc.id}'),
-        ],
+        children: [if (!Language.isJP) AutoSizeText(mc.name, maxLines: 1), Text('No.${mc.id}')],
       ),
       trailing: IconButton(
         icon: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
@@ -111,11 +105,7 @@ class MysticCodeListPageState extends State<MysticCodeListPage>
 
   @override
   Widget gridItemBuilder(MysticCode mc) {
-    return InkWell(
-      onTap: () => _onTapCard(mc),
-      onLongPress: mc.routeTo,
-      child: db.getIconImage(mc.borderedIcon),
-    );
+    return InkWell(onTap: () => _onTapCard(mc), onLongPress: mc.routeTo, child: db.getIconImage(mc.borderedIcon));
   }
 
   @override
@@ -129,9 +119,7 @@ class MysticCodeListPageState extends State<MysticCodeListPage>
     }
 
     if (filterData.effectType.isNotEmpty || filterData.effectTarget.isNotEmpty || filterData.targetTrait.isNotEmpty) {
-      List<BaseFunction> funcs = [
-        for (final skill in mc.skills) ...skill.filteredFunction(includeTrigger: true),
-      ];
+      List<BaseFunction> funcs = [for (final skill in mc.skills) ...skill.filteredFunction(includeTrigger: true)];
       if (filterData.effectTarget.isNotEmpty) {
         funcs.retainWhere((func) {
           return filterData.effectTarget.matchOne(EffectTarget.fromFunc(func.funcTargetType));
@@ -160,12 +148,7 @@ class MysticCodeListPageState extends State<MysticCodeListPage>
       Navigator.pop(context);
       widget.onSelected!(mc);
     } else {
-      router.popDetailAndPush(
-        context: context,
-        url: mc.route,
-        child: MysticCodePage(id: mc.id),
-        detail: true,
-      );
+      router.popDetailAndPush(context: context, url: mc.route, child: MysticCodePage(id: mc.id), detail: true);
       selected = mc;
     }
     setState(() {});

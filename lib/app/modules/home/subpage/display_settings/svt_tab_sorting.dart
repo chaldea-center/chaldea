@@ -36,13 +36,14 @@ class _SvtTabsSortingSettingState extends State<SvtTabsSortingSetting> {
                 child: Text(S.current.reset),
               ),
               FilledButton(
-                onPressed: db.gameData.isValid
-                    ? () {
-                        final servants = db.gameData.servantsNoDup.values.toList();
-                        final index = Random().nextInt(servants.length);
-                        servants[index].routeTo();
-                      }
-                    : null,
+                onPressed:
+                    db.gameData.isValid
+                        ? () {
+                          final servants = db.gameData.servantsNoDup.values.toList();
+                          final index = Random().nextInt(servants.length);
+                          servants[index].routeTo();
+                        }
+                        : null,
                 child: Text(S.current.preview),
               ),
             ],
@@ -61,10 +62,7 @@ class _SvtTabsSortingSettingState extends State<SvtTabsSortingSetting> {
           DecoratedBox(
             key: Key('$tab'),
             decoration: BoxDecoration(border: Border(bottom: Divider.createBorderSide(context))),
-            child: ListTile(
-              leading: Text((tabs.indexOf(tab) + 1).toString()),
-              title: Text(tabName(tab)),
-            ),
+            child: ListTile(leading: Text((tabs.indexOf(tab) + 1).toString()), title: Text(tabName(tab))),
           ),
       ],
       onReorder: (int oldIndex, int newIndex) {

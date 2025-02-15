@@ -9,8 +9,7 @@ import 'package:chaldea/utils/utils.dart';
 enum SvtMatCostDetailType {
   consumed,
   demands,
-  full,
-  ;
+  full;
 
   bool shouldCount(LockPlan? plan) {
     switch (this) {
@@ -65,10 +64,7 @@ class ItemCenter {
   }
 
   int demandOf(int itemId) {
-    return Maths.sum([
-      statSvtDemands[itemId] ?? 0,
-      ...statClassBoard.values.map((e) => e[itemId] ?? 0),
-    ]);
+    return Maths.sum([statSvtDemands[itemId] ?? 0, ...statClassBoard.values.map((e) => e[itemId] ?? 0)]);
   }
 
   void init() {
@@ -91,11 +87,7 @@ class ItemCenter {
     _svtDemands = _MatrixManager(dim1: _svtIds, dim2: _validItems, init: () => SvtMatCostDetail(() => 0));
     _svtFull = _MatrixManager(dim1: _svtIds, dim2: _validItems, init: () => SvtMatCostDetail(() => 0));
     // events
-    _eventItem = _MatrixManager(
-      dim1: db.gameData.events.keys.toList(),
-      dim2: _validItems,
-      init: () => 0,
-    );
+    _eventItem = _MatrixManager(dim1: db.gameData.events.keys.toList(), dim2: _validItems, init: () => 0);
     calculate();
   }
 
@@ -162,8 +154,12 @@ class ItemCenter {
     }
   }
 
-  SvtMatCostDetail<Map<int, int>> calcOneSvt(Servant svt, SvtPlan cur, SvtPlan target,
-      {bool priorityFiltered = false}) {
+  SvtMatCostDetail<Map<int, int>> calcOneSvt(
+    Servant svt,
+    SvtPlan cur,
+    SvtPlan target, {
+    bool priorityFiltered = false,
+  }) {
     final detail = SvtMatCostDetail<Map<int, int>>(() => {});
     if (!cur.favorite) {
       return detail;
@@ -177,22 +173,23 @@ class ItemCenter {
     for (int skill = 0; skill < kActiveSkillNums.length; skill++) {
       Maths.sumDict([
         detail.activeSkill,
-        _sumMat(svt.skillMaterials, [for (int lv = cur.skills[skill]; lv < target.skills[skill]; lv++) lv])
+        _sumMat(svt.skillMaterials, [for (int lv = cur.skills[skill]; lv < target.skills[skill]; lv++) lv]),
       ], inPlace: true);
     }
 
     for (int skill = 0; skill < kAppendSkillNums.length; skill++) {
       Maths.sumDict([
         detail.appendSkill,
-        _sumMat(svt.appendSkillMaterials,
-            [for (int lv = cur.appendSkills[skill]; lv < target.appendSkills[skill]; lv++) lv])
+        _sumMat(svt.appendSkillMaterials, [
+          for (int lv = cur.appendSkills[skill]; lv < target.appendSkills[skill]; lv++) lv,
+        ]),
       ], inPlace: true);
     }
 
     detail.costume = _sumMat(svt.costumeMaterials, [
       if (!svt.isDupSvt)
         for (final charaId in target.costumes.keys)
-          if (target.costumes[charaId]! > 0 && (cur.costumes[charaId] ?? 0) == 0) charaId
+          if (target.costumes[charaId]! > 0 && (cur.costumes[charaId] ?? 0) == 0) charaId,
     ]);
     final coinId = svt.coin?.item.id;
     int coin = 0;
@@ -393,16 +390,20 @@ class ItemCenter {
     for (final square in board.squares) {
       final lock = square.lock;
       if (lock != null) {
-        final lockPlan =
-            LockPlan.from(status.unlockedSquares.contains(square.id), plan.unlockedSquares.contains(square.id));
+        final lockPlan = LockPlan.from(
+          status.unlockedSquares.contains(square.id),
+          plan.unlockedSquares.contains(square.id),
+        );
         if (type.shouldCount(lockPlan)) {
           for (final itemAmount in lock.items) {
             items.addNum(itemAmount.itemId, itemAmount.amount);
           }
         }
       }
-      final enhancePlan =
-          LockPlan.from(status.enhancedSquares.contains(square.id), plan.enhancedSquares.contains(square.id));
+      final enhancePlan = LockPlan.from(
+        status.enhancedSquares.contains(square.id),
+        plan.enhancedSquares.contains(square.id),
+      );
       if (type.shouldCount(enhancePlan)) {
         for (final itemAmount in square.items) {
           items.addNum(itemAmount.itemId, itemAmount.amount);
@@ -448,8 +449,8 @@ class ItemCenter {
     return type == SvtMatCostDetailType.consumed
         ? _svtCur
         : type == SvtMatCostDetailType.demands
-            ? _svtDemands
-            : _svtFull;
+        ? _svtDemands
+        : _svtFull;
   }
 
   SvtMatCostDetail<Map<int, int>> getSvtCostDetail(int svtId, SvtMatCostDetailType type) {
@@ -479,8 +480,8 @@ class _MatrixManager<K1, K2, V> {
   final Map<K1, Map<K2, V>> _sparseMatrix = {};
 
   _MatrixManager({required this.dim1, required this.dim2, required this.init})
-      : assert(dim1.toSet().length == dim1.length),
-        assert(dim2.toSet().length == dim2.length);
+    : assert(dim1.toSet().length == dim1.length),
+      assert(dim2.toSet().length == dim2.length);
   // _dim1Map = {
   //   for (int index = 0; index < dim1.length; index++) dim1[index]: index,
   // },
@@ -509,12 +510,12 @@ class SvtMatCostDetail<T> {
   T all;
 
   SvtMatCostDetail(T Function() k)
-      : ascension = k(),
-        activeSkill = k(),
-        appendSkill = k(),
-        costume = k(),
-        special = k(),
-        all = k();
+    : ascension = k(),
+      activeSkill = k(),
+      appendSkill = k(),
+      costume = k(),
+      special = k(),
+      all = k();
 
   SvtMatCostDetail._({
     required this.ascension,
@@ -601,14 +602,14 @@ class EventMatCostDetail<T> {
   T questReward;
 
   EventMatCostDetail(T Function() init)
-      : shop = init(),
-        point = init(),
-        mission = init(),
-        tower = init(),
-        lottery = init(),
-        treasureBox = init(),
-        fixedDrop = init(),
-        questReward = init();
+    : shop = init(),
+      point = init(),
+      mission = init(),
+      tower = init(),
+      lottery = init(),
+      treasureBox = init(),
+      fixedDrop = init(),
+      questReward = init();
 }
 
 Map<int, int> _sumMat(Map<int, LvlUpMaterial> matDetail, List<int> lvs) {

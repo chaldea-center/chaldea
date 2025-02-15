@@ -33,8 +33,9 @@ class _SelectUserSvtCollectionPageState extends State<SelectUserSvtCollectionPag
   @override
   Widget build(BuildContext context) {
     final collections = mstData.userSvtCollection.where(filter).toList();
-    collections.sort((a, b) =>
-        SvtFilterData.compareId(a.svtId, b.svtId, keys: filterData.sortKeys, reversed: filterData.sortReversed));
+    collections.sort(
+      (a, b) => SvtFilterData.compareId(a.svtId, b.svtId, keys: filterData.sortKeys, reversed: filterData.sortReversed),
+    );
     return Scaffold(
       appBar: AppBar(
         title: Text('Select User Svt Collection'),
@@ -42,18 +43,20 @@ class _SelectUserSvtCollectionPageState extends State<SelectUserSvtCollectionPag
           IconButton(
             icon: const Icon(Icons.filter_alt),
             tooltip: S.current.filter,
-            onPressed: () => FilterPage.show(
-              context: context,
-              builder: (context) => ServantFilterPage(
-                filterData: filterData,
-                onChanged: (_) {
-                  if (mounted) {
-                    setState(() {});
-                  }
-                },
-                planMode: false,
-              ),
-            ),
+            onPressed:
+                () => FilterPage.show(
+                  context: context,
+                  builder:
+                      (context) => ServantFilterPage(
+                        filterData: filterData,
+                        onChanged: (_) {
+                          if (mounted) {
+                            setState(() {});
+                          }
+                        },
+                        planMode: false,
+                      ),
+                ),
           ),
         ],
       ),
@@ -73,11 +76,7 @@ class _SelectUserSvtCollectionPageState extends State<SelectUserSvtCollectionPag
           if (svt == null) {
             child = Text(['${collection.svtId}', if (status != null) status].join('\n'));
           } else {
-            child = svt.iconBuilder(
-              context: context,
-              text: status,
-              jumpToDetail: false,
-            );
+            child = svt.iconBuilder(context: context, text: status, jumpToDetail: false);
           }
           child = GestureDetector(
             child: child,

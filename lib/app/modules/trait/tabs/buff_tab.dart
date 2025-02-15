@@ -5,12 +5,7 @@ import 'package:chaldea/models/gamedata/individuality.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 
-enum _BuffCheckPos {
-  vals,
-  ckSelf,
-  ckOpp,
-  script,
-}
+enum _BuffCheckPos { vals, ckSelf, ckOpp, script }
 
 class TraitBuffTab extends StatefulWidget {
   final List<int> ids;
@@ -37,13 +32,14 @@ class _TraitBuffTabState extends State<TraitBuffTab> {
         if (Individuality.containsAllAB(buff.ckSelfIndv, widget.ids)) _BuffCheckPos.ckSelf,
         if (Individuality.containsAllAB(buff.ckOpIndv, widget.ids)) _BuffCheckPos.ckOpp,
         if (Individuality.containsAllAB(
-            <NiceTrait?>[
-              buff.script.INDIVIDUALITIE,
-              ...?buff.script.INDIVIDUALITIE_AND,
-              ...?buff.script.INDIVIDUALITIE_OR,
-              ...buff.script.UpBuffRateBuffIndiv ?? [],
-            ].whereType<NiceTrait>().toList(),
-            widget.ids))
+          <NiceTrait?>[
+            buff.script.INDIVIDUALITIE,
+            ...?buff.script.INDIVIDUALITIE_AND,
+            ...?buff.script.INDIVIDUALITIE_OR,
+            ...buff.script.UpBuffRateBuffIndiv ?? [],
+          ].whereType<NiceTrait>().toList(),
+          widget.ids,
+        ))
           _BuffCheckPos.script,
       ];
       if (positions.isNotEmpty && filter.matchAny(positions)) {
@@ -53,17 +49,12 @@ class _TraitBuffTabState extends State<TraitBuffTab> {
 
     return Column(
       children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 4),
-          child: buttons,
-        ),
+        Padding(padding: const EdgeInsets.symmetric(vertical: 4), child: buttons),
         Expanded(
-          child: children.isEmpty
-              ? const Center(child: Text('No record'))
-              : ListView.builder(
-                  itemBuilder: (context, index) => children[index],
-                  itemCount: children.length,
-                ),
+          child:
+              children.isEmpty
+                  ? const Center(child: Text('No record'))
+                  : ListView.builder(itemBuilder: (context, index) => children[index], itemCount: children.length),
         ),
       ],
     );

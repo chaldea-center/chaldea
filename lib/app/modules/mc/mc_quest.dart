@@ -56,7 +56,7 @@ class _MCQuestConvertPageState extends State<MCQuestConvertPage> {
             },
             icon: const Icon(Icons.refresh),
             tooltip: S.current.refresh,
-          )
+          ),
         ],
       ),
       body: Column(
@@ -69,18 +69,11 @@ class _MCQuestConvertPageState extends State<MCQuestConvertPage> {
                   Card(
                     child: Padding(
                       padding: const EdgeInsets.all(8),
-                      child: Column(
-                        children: [Text(S.current.error), Text(parser.errors.join('\n'))],
-                      ),
+                      child: Column(children: [Text(S.current.error), Text(parser.errors.join('\n'))]),
                     ),
                   ),
                 colorPicker,
-                Card(
-                  child: Padding(
-                    padding: const EdgeInsets.all(8),
-                    child: Text(parser.result),
-                  ),
-                ),
+                Card(child: Padding(padding: const EdgeInsets.all(8), child: Text(parser.result))),
               ],
             ),
           ),
@@ -89,20 +82,18 @@ class _MCQuestConvertPageState extends State<MCQuestConvertPage> {
               alignment: MainAxisAlignment.center,
               children: [
                 FilledButton(
-                  onPressed: parser.result.isEmpty
-                      ? null
-                      : () {
-                          copyToClipboard(parser.result, toast: true);
-                        },
+                  onPressed:
+                      parser.result.isEmpty
+                          ? null
+                          : () {
+                            copyToClipboard(parser.result, toast: true);
+                          },
                   child: Text(S.current.copy),
                 ),
-                FilledButton(
-                  onPressed: () => _jumpToMooncell(quest),
-                  child: const Text("跳转到Mooncell"),
-                ),
+                FilledButton(onPressed: () => _jumpToMooncell(quest), child: const Text("跳转到Mooncell")),
               ],
             ),
-          )
+          ),
         ],
       ),
     );
@@ -128,13 +119,14 @@ class _MCQuestConvertPageState extends State<MCQuestConvertPage> {
           title: const Text('提取颜色'),
           subtitle: Text(parser.bannerColor == null ? '未加载' : parser.bannerColor!.toCSSHex()),
           tileColor: parser.bannerColor,
-          trailing: parser.cropTitleBanner == null
-              ? null
-              : Container(
-                  decoration: BoxDecoration(border: Border.all(color: Colors.white)),
-                  constraints: const BoxConstraints(maxWidth: 180),
-                  child: Image.memory(parser.cropTitleBanner!),
-                ),
+          trailing:
+              parser.cropTitleBanner == null
+                  ? null
+                  : Container(
+                    decoration: BoxDecoration(border: Border.all(color: Colors.white)),
+                    constraints: const BoxConstraints(maxWidth: 180),
+                    child: Image.memory(parser.cropTitleBanner!),
+                  ),
         ),
       ],
     );
@@ -174,12 +166,13 @@ class _MCQuestListConvertPageState extends State<MCQuestListConvertPage> {
     try {
       int finished = 0;
       EasyLoading.show(status: '$finished/${converters.length}...');
-      List<Future> futures = converters.map((converter) async {
-        converter.useTitleBg = _useBgColor;
-        await converter.loadAndConvert(widget.quests);
-        finished += 1;
-        EasyLoading.show(status: '$finished/${converters.length}...');
-      }).toList();
+      List<Future> futures =
+          converters.map((converter) async {
+            converter.useTitleBg = _useBgColor;
+            await converter.loadAndConvert(widget.quests);
+            finished += 1;
+            EasyLoading.show(status: '$finished/${converters.length}...');
+          }).toList();
       await Future.wait(futures);
       await Future.delayed(const Duration(milliseconds: 50));
       EasyLoading.dismiss();
@@ -245,9 +238,7 @@ class _MCQuestListConvertPageState extends State<MCQuestListConvertPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('导出至Mooncell'),
-        actions: [
-          IconButton(onPressed: loadData, icon: const Icon(Icons.refresh)),
-        ],
+        actions: [IconButton(onPressed: loadData, icon: const Icon(Icons.refresh))],
       ),
       body: Column(
         children: [
@@ -266,12 +257,7 @@ class _MCQuestListConvertPageState extends State<MCQuestListConvertPage> {
                     loadData();
                   },
                 ),
-                Card(
-                  child: Padding(
-                    padding: const EdgeInsets.all(8),
-                    child: Text(result),
-                  ),
-                )
+                Card(child: Padding(padding: const EdgeInsets.all(8), child: Text(result))),
               ],
             ),
           ),
@@ -292,7 +278,7 @@ class _MCQuestListConvertPageState extends State<MCQuestListConvertPage> {
                   ),
               ],
             ),
-          )
+          ),
         ],
       ),
     );
@@ -341,18 +327,23 @@ class _MCQuestConverter extends McConverter {
     cnQuestPhases.clear();
     final phases = (quest.isMainStoryFree && quest.phases.length == 3) ? [quest.phases.last] : quest.phases;
     List<Future> futures = [];
-    futures.addAll(phases.map((phase) async {
-      final questPhase = await AtlasApi.questPhase(quest.id, phase,
-          expireAfter: quest.isMainStoryFree ? const Duration(minutes: 10) : null);
-      if (questPhase == null) {
-        errors.add('Phase $phase 获取数据失败');
-      } else {
-        questPhases[phase] = questPhase;
-        if (db.gameData.mappingData.warRelease.cn?.contains(quest.warId) == true) {
-          cnQuestPhases[phase] = await AtlasApi.questPhase(quest.id, phase, region: Region.cn);
+    futures.addAll(
+      phases.map((phase) async {
+        final questPhase = await AtlasApi.questPhase(
+          quest.id,
+          phase,
+          expireAfter: quest.isMainStoryFree ? const Duration(minutes: 10) : null,
+        );
+        if (questPhase == null) {
+          errors.add('Phase $phase 获取数据失败');
+        } else {
+          questPhases[phase] = questPhase;
+          if (db.gameData.mappingData.warRelease.cn?.contains(quest.warId) == true) {
+            cnQuestPhases[phase] = await AtlasApi.questPhase(quest.id, phase, region: Region.cn);
+          }
         }
-      }
-    }).toList());
+      }).toList(),
+    );
     futures.add(_loadRaw());
 
     await Future.wait(futures);
@@ -377,7 +368,7 @@ class _MCQuestConverter extends McConverter {
         "img_questboard_story03",
         "",
         "img_questboard_free_",
-        "img_questboard_hero03"
+        "img_questboard_hero03",
       ];
       // https://explorer.atlasacademy.io/aa-fgo-public/JP/Banner/
       switch (quest.type) {
@@ -409,8 +400,13 @@ class _MCQuestConverter extends McConverter {
     final img = img_lib.decodePng(titleBanner!);
     if (img == null) return;
     final w = img.width, h = img.height;
-    final cropped = img_lib.copyCrop(img,
-        x: (0.35 * w).toInt(), y: (28 / 256 * h).toInt(), width: (0.4 * w).toInt(), height: (80 / 256 * h).toInt());
+    final cropped = img_lib.copyCrop(
+      img,
+      x: (0.35 * w).toInt(),
+      y: (28 / 256 * h).toInt(),
+      width: (0.4 * w).toInt(),
+      height: (80 / 256 * h).toInt(),
+    );
     final r = Maths.sum(cropped.map((e) => e.r.toInt())) ~/ cropped.length;
     final g = Maths.sum(cropped.map((e) => e.g.toInt())) ~/ cropped.length;
     final b = Maths.sum(cropped.map((e) => e.b.toInt())) ~/ cropped.length;
@@ -438,9 +434,10 @@ class _MCQuestConverter extends McConverter {
 
     String chapter = "";
     if (quest.type == QuestType.main) {
-      chapter = quest.chapterSubStr.isEmpty && quest.chapterSubId != 0
-          ? S.current.quest_chapter_n(quest.chapterSubId)
-          : Transl.questNames(quest.chapterSubStr).l;
+      chapter =
+          quest.chapterSubStr.isEmpty && quest.chapterSubId != 0
+              ? S.current.quest_chapter_n(quest.chapterSubId)
+              : Transl.questNames(quest.chapterSubStr).l;
       if (chapter.isEmpty) {
         chapter = nameCn ?? quest.name;
         final match = RegExp(r'^(第\S{1,2}[節节]) \S').firstMatch(chapter);
@@ -557,7 +554,8 @@ class _MCQuestConverter extends McConverter {
         buffer.write('{{强化|宝具|${td.lName.l}}} ');
       }
       if (skill != null) {
-        final skills = svt?.skills
+        final skills =
+            svt?.skills
                 .where((e) => e.id != skill.id && e.svt.num == skill.svt.num && e.svt.priority < skill.svt.priority)
                 .toList() ??
             [];
@@ -696,12 +694,14 @@ class _MCQuestConverter extends McConverter {
           }
           // common/rare/srare
           for (final (rarity, treasures) in treasureDict.items) {
-            dropBuffer.write(const {
-                  WarBoardTreasureRarity.common: '铜箱子',
-                  WarBoardTreasureRarity.rare: '银箱子',
-                  WarBoardTreasureRarity.srare: '金箱子',
-                }[rarity] ??
-                rarity.name);
+            dropBuffer.write(
+              const {
+                    WarBoardTreasureRarity.common: '铜箱子',
+                    WarBoardTreasureRarity.rare: '银箱子',
+                    WarBoardTreasureRarity.srare: '金箱子',
+                  }[rarity] ??
+                  rarity.name,
+            );
             dropBuffer.write('：');
             for (final treasure in treasures) {
               for (final gift in treasure.gifts) {
@@ -750,9 +750,7 @@ class _MCQuestConverter extends McConverter {
       formationConds.add('该关卡的队伍编制将在战斗开始前进行');
     }
     for (final restriction in (cnQuest ?? quest).restrictions) {
-      if (!const [
-        '編成制限あり',
-      ].contains(restriction.restriction.name)) {
+      if (!const ['編成制限あり'].contains(restriction.restriction.name)) {
         formationConds.add(restriction.restriction.name);
       }
     }
@@ -806,11 +804,13 @@ class _MCQuestConverter extends McConverter {
         }
 
         buffer.write('|');
-        buffer.write([
-          getSkillLv(support.skills2.skill1, support.skills2.skillLv1),
-          getSkillLv(support.skills2.skill2, support.skills2.skillLv2),
-          getSkillLv(support.skills2.skill3, support.skills2.skillLv3),
-        ].join('/'));
+        buffer.write(
+          [
+            getSkillLv(support.skills2.skill1, support.skills2.skillLv1),
+            getSkillLv(support.skills2.skill2, support.skills2.skillLv2),
+            getSkillLv(support.skills2.skill3, support.skills2.skillLv3),
+          ].join('/'),
+        );
 
         if (support.equips.isNotEmpty) {
           final ce = support.equips.first;
@@ -856,7 +856,8 @@ class _MCQuestConverter extends McConverter {
       String shiftDisplayName = trimEnemyName(shift);
       buffer.write('|敌人${shift.roleType.index + 1}');
       buffer.write(
-          '|${shiftSvtName == svtName ? "" : shiftSvtName}|${shiftDisplayName == displayName ? "" : shiftDisplayName}');
+        '|${shiftSvtName == svtName ? "" : shiftSvtName}|${shiftDisplayName == displayName ? "" : shiftDisplayName}',
+      );
       buffer.write('|${getSvtClass(shift.svt.classId)}|${shift.lv}|${shift.hp}');
     }
     buffer.write('}}');

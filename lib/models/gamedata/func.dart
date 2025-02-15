@@ -73,22 +73,22 @@ class NiceFunction with RouteInfo implements BaseFunction {
     this.svals4,
     this.svals5,
     this.followerVals,
-  })  : _baseFunc = BaseFunction(
-          funcId: funcId,
-          funcType: funcType,
-          funcTargetType: funcTargetType,
-          funcTargetTeam: funcTargetTeam,
-          funcPopupText: funcPopupText,
-          funcPopupIcon: funcPopupIcon,
-          functvals: functvals,
-          overWriteTvalsList: overWriteTvalsList,
-          funcquestTvals: funcquestTvals,
-          funcGroup: funcGroup,
-          traitVals: traitVals,
-          buffs: buffs,
-          script: script,
-        ),
-        svals = svals ?? [];
+  }) : _baseFunc = BaseFunction(
+         funcId: funcId,
+         funcType: funcType,
+         funcTargetType: funcTargetType,
+         funcTargetTeam: funcTargetTeam,
+         funcPopupText: funcPopupText,
+         funcPopupIcon: funcPopupIcon,
+         functvals: functvals,
+         overWriteTvalsList: overWriteTvalsList,
+         funcquestTvals: funcquestTvals,
+         funcGroup: funcGroup,
+         traitVals: traitVals,
+         buffs: buffs,
+         script: script,
+       ),
+       svals = svals ?? [];
 
   static String normFuncPopupText(String text) {
     if (const <String>{'', '-', 'なし', 'None', 'none', '无', '無', '없음'}.contains(text)) {
@@ -120,9 +120,10 @@ class NiceFunction with RouteInfo implements BaseFunction {
 
   DataVals getStaticVal({bool levelOnly = false, bool ocOnly = false}) {
     assert(!levelOnly || !ocOnly);
-    final _vals = levelOnly
-        ? svals
-        : ocOnly
+    final _vals =
+        levelOnly
+            ? svals
+            : ocOnly
             ? ocVals(0)
             : allDataVals;
 
@@ -150,9 +151,10 @@ class NiceFunction with RouteInfo implements BaseFunction {
     staticVals ??= getStaticVal(levelOnly: levelOnly, ocOnly: ocOnly);
     final staticKeys = staticVals.toJson().keys.toSet();
     List<DataVals> valList = [];
-    final _svals = levelOnly
-        ? svals
-        : ocOnly
+    final _svals =
+        levelOnly
+            ? svals
+            : ocOnly
             ? ocVals(0)
             : crossVals;
     for (int i = 0; i < svals.length; i++) {
@@ -170,7 +172,7 @@ class NiceFunction with RouteInfo implements BaseFunction {
     assert(index >= 0 && index < svals.length, index);
     return [
       for (final sv in [svals, svals2, svals3, svals4, svals5])
-        if (sv != null) sv[index]
+        if (sv != null) sv[index],
     ];
   }
 
@@ -207,30 +209,37 @@ class NiceFunction with RouteInfo implements BaseFunction {
           $enumDecodeNullable(_$FuncApplyTargetEnumMap, json['funcTargetTeam']) ?? FuncApplyTarget.playerAndEnemy,
       funcPopupText: json['funcPopupText'] as String? ?? '',
       funcPopupIcon: json['funcPopupIcon'] as String?,
-      functvals: (json['functvals'] as List<dynamic>?)
+      functvals:
+          (json['functvals'] as List<dynamic>?)
               ?.map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
-      overWriteTvalsList: (json['overWriteTvalsList'] as List<dynamic>?)
-              ?.map((e) =>
-                  (e as List<dynamic>).map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map))).toList())
+      overWriteTvalsList:
+          (json['overWriteTvalsList'] as List<dynamic>?)
+              ?.map(
+                (e) =>
+                    (e as List<dynamic>).map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map))).toList(),
+              )
               .toList() ??
           const [],
-      funcquestTvals: (json['funcquestTvals'] as List<dynamic>?)
+      funcquestTvals:
+          (json['funcquestTvals'] as List<dynamic>?)
               ?.map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
-      funcGroup: (json['funcGroup'] as List<dynamic>?)
+      funcGroup:
+          (json['funcGroup'] as List<dynamic>?)
               ?.map((e) => FuncGroup.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
-      traitVals: (json['traitVals'] as List<dynamic>?)
+      traitVals:
+          (json['traitVals'] as List<dynamic>?)
               ?.map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
       buffs:
           (json['buffs'] as List<dynamic>?)?.map((e) => Buff.fromJson(Map<String, dynamic>.from(e as Map))).toList() ??
-              const [],
+          const [],
       script: json['script'] == null ? null : FuncScript.fromJson(Map<String, dynamic>.from(json['script'] as Map)),
       svals: (json['svals'] as List<dynamic>?)?.map(_toVals).toList(growable: false),
       svals2: (json['svals2'] as List<dynamic>?)?.map(_toVals).toList(growable: false),
@@ -250,31 +259,34 @@ class NiceFunction with RouteInfo implements BaseFunction {
     GameData? gameData,
   }) {
     gameData ??= db.gameData;
-    List<T> filteredFuncs = funcs
-        .where((func) {
-          if (!showNone && func.funcType == FuncType.none) return false;
-          if (func.funcTargetTeam == FuncApplyTarget.playerAndEnemy) {
-            return true;
-          }
-          bool player = func.funcTargetTeam == FuncApplyTarget.player;
-          if (func.funcTargetType.isEnemy) {
-            player = !player;
-          }
-          return player ? showPlayer : showEnemy;
-        })
-        .toList()
-        .cast<T>()
-        .toList(); // avoid type cast error
+    List<T> filteredFuncs =
+        funcs
+            .where((func) {
+              if (!showNone && func.funcType == FuncType.none) return false;
+              if (func.funcTargetTeam == FuncApplyTarget.playerAndEnemy) {
+                return true;
+              }
+              bool player = func.funcTargetTeam == FuncApplyTarget.player;
+              if (func.funcTargetType.isEnemy) {
+                player = !player;
+              }
+              return player ? showPlayer : showEnemy;
+            })
+            .toList()
+            .cast<T>()
+            .toList(); // avoid type cast error
     if (!includeTrigger) return filteredFuncs;
     for (final func in List.of(filteredFuncs)) {
       if (func is! NiceFunction) continue;
-      filteredFuncs.addAll(getTriggerFuncs<T>(
-        func: func,
-        showPlayer: showPlayer,
-        showEnemy: showEnemy,
-        showNone: showNone,
-        gameData: gameData,
-      ));
+      filteredFuncs.addAll(
+        getTriggerFuncs<T>(
+          func: func,
+          showPlayer: showPlayer,
+          showEnemy: showEnemy,
+          showNone: showNone,
+          gameData: gameData,
+        ),
+      );
     }
 
     return filteredFuncs;
@@ -362,24 +374,24 @@ class BaseFunction with RouteInfo {
     List<NiceTrait> traitVals = const [],
     List<Buff> buffs = const [],
     FuncScript? script,
-  }) =>
-      GameDataLoader.instance.tmp.getFunc(
-          funcId,
-          () => BaseFunction.create(
-                funcId: funcId,
-                funcType: funcType,
-                funcTargetType: funcTargetType,
-                funcTargetTeam: funcTargetTeam,
-                funcPopupText: funcPopupText,
-                funcPopupIcon: funcPopupIcon,
-                functvals: functvals,
-                overWriteTvalsList: overWriteTvalsList,
-                funcquestTvals: funcquestTvals,
-                funcGroup: funcGroup,
-                traitVals: traitVals,
-                buffs: buffs,
-                script: script,
-              ));
+  }) => GameDataLoader.instance.tmp.getFunc(
+    funcId,
+    () => BaseFunction.create(
+      funcId: funcId,
+      funcType: funcType,
+      funcTargetType: funcTargetType,
+      funcTargetTeam: funcTargetTeam,
+      funcPopupText: funcPopupText,
+      funcPopupIcon: funcPopupIcon,
+      functvals: functvals,
+      overWriteTvalsList: overWriteTvalsList,
+      funcquestTvals: funcquestTvals,
+      funcGroup: funcGroup,
+      traitVals: traitVals,
+      buffs: buffs,
+      script: script,
+    ),
+  );
 
   factory BaseFunction.fromJson(Map<String, dynamic> json) => _$BaseFunctionFromJson(json);
 
@@ -388,10 +400,7 @@ class BaseFunction with RouteInfo {
 
   @override
   void routeTo({Widget? child, bool popDetails = false, Region? region}) {
-    return super.routeTo(
-      child: child ?? FuncDetailPage(func: this, region: region),
-      popDetails: popDetails,
-    );
+    return super.routeTo(child: child ?? FuncDetailPage(func: this, region: region), popDetails: popDetails);
   }
 
   Map<String, dynamic> toJson() => _$BaseFunctionToJson(this);
@@ -424,10 +433,7 @@ extension BaseFunctionX on BaseFunction {
   }
 
   List<NiceTrait> getFuncIndividuality() {
-    return [
-      ...getCommonFuncIndividuality(),
-      ...?script?.funcIndividuality,
-    ];
+    return [...getCommonFuncIndividuality(), ...?script?.funcIndividuality];
   }
 
   List<List<NiceTrait>> getOverwriteTvalsList() {
@@ -476,10 +482,7 @@ class FuncScript {
   List<List<NiceTrait>>? overwriteTvals;
   List<NiceTrait>? funcIndividuality;
 
-  FuncScript({
-    this.overwriteTvals,
-    this.funcIndividuality,
-  });
+  FuncScript({this.overwriteTvals, this.funcIndividuality});
 
   factory FuncScript.fromJson(Map<String, dynamic> json) => _$FuncScriptFromJson(json);
 
@@ -494,11 +497,7 @@ const kEventFuncTypes = [
   FuncType.eventFortificationPointUp,
 ];
 
-const kAddStateFuncTypes = [
-  FuncType.addState,
-  FuncType.addStateShort,
-  FuncType.addFieldChangeToField,
-];
+const kAddStateFuncTypes = [FuncType.addState, FuncType.addStateShort, FuncType.addFieldChangeToField];
 
 @JsonEnum(alwaysCreate: true)
 enum FuncType {
@@ -614,8 +613,7 @@ enum FuncType {
   hideOverGauge(145),
   gainNpTargetSum(146),
   enemyCountChange(147),
-  displayBattleMessage(148),
-  ;
+  displayBattleMessage(148);
 
   final int value;
   const FuncType(this.value);
@@ -658,8 +656,7 @@ enum FuncTargetType {
   ptOneHpLowestRate,
   enemyRange,
   handCommandcardRandomOne,
-  fieldAll,
-  ;
+  fieldAll;
 
   bool get isEnemy => name.toLowerCase().startsWith('enemy') && this != FuncTargetType.enemyOneNoTargetNoAction;
   bool get isAlly =>
@@ -671,26 +668,16 @@ enum FuncTargetType {
   bool get canTargetAlly => isAlly || isField || isDynamic;
   bool get canTargetEnemy => isEnemy || isField || isDynamic;
 
-  bool get needNormalOneTarget => const [
-        ptOne,
-        ptAnother,
-        ptOneOther,
-      ].contains(this);
+  bool get needNormalOneTarget => const [ptOne, ptAnother, ptOneOther].contains(this);
 
-  bool get needRadomTarget => const [
-        ptRandom,
-        enemyRandom,
-        ptOneAnotherRandom,
-        ptSelfAnotherRandom,
-        enemyOneAnotherRandom,
-      ].contains(this);
+  bool get needRadomTarget =>
+      const [ptRandom, enemyRandom, ptOneAnotherRandom, ptSelfAnotherRandom, enemyOneAnotherRandom].contains(this);
 }
 
 enum FuncApplyTarget {
   player,
   enemy,
-  playerAndEnemy,
-  ;
+  playerAndEnemy;
 
   static FuncApplyTarget fromBool({required bool showPlayer, required bool showEnemy}) {
     if (showPlayer && !showEnemy) return player;
@@ -704,8 +691,7 @@ enum GainNpIndividualSumTarget {
   player(1),
   enemy(2),
   all(3),
-  otherAll(4),
-  ;
+  otherAll(4);
 
   const GainNpIndividualSumTarget(this.value);
   final int value;

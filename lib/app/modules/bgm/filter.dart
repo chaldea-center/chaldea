@@ -22,11 +22,7 @@ class BgmFilterData with FilterDataMixin {
 }
 
 class BgmFilterPage extends FilterPage<BgmFilterData> {
-  const BgmFilterPage({
-    super.key,
-    required super.filterData,
-    super.onChanged,
-  });
+  const BgmFilterPage({super.key, required super.filterData, super.onChanged});
 
   @override
   _NpChargeFilterPageState createState() => _NpChargeFilterPageState();
@@ -37,52 +33,56 @@ class _NpChargeFilterPageState extends FilterPageState<BgmFilterData, BgmFilterP
   Widget build(BuildContext context) {
     return buildAdaptive(
       title: Text(S.current.filter, textScaler: const TextScaler.linear(0.8)),
-      actions: getDefaultActions(onTapReset: () {
-        filterData.reset();
-        update();
-      }),
-      content: getListViewBody(children: [
-        FilterGroup<bool>(
-          title: Text(S.current.filter_sort, style: textStyle),
-          options: const [true, false],
-          values: filterData.sortByPriority,
-          optionBuilder: (v) => Text(v ? 'Priority' : 'ID'),
-          combined: true,
-          onFilterChanged: (v, _) {
-            update();
-          },
-        ),
-        FilterGroup<bool>(
-          title: Text('Released (My Room)', style: textStyle),
-          options: const [true, false],
-          values: filterData.released,
-          combined: true,
-          optionBuilder: (v) => Text(v ? 'Released' : 'Not Released'),
-          onFilterChanged: (v, _) {
-            update();
-          },
-        ),
-        FilterGroup<bool>(
-          title: const Text('Buyable'),
-          options: const [true, false],
-          values: filterData.needItem,
-          combined: true,
-          optionBuilder: (v) => Text(v ? 'Buyable' : 'Free/Unavailable'),
-          onFilterChanged: (value, _) {
-            update();
-          },
-        ),
-        FilterGroup<bool>(
-          title: Text(S.current.favorite),
-          options: const [true, false],
-          values: filterData.favorite,
-          combined: true,
-          optionBuilder: (v) => Text(v ? S.current.favorite : S.current.general_others),
-          onFilterChanged: (value, _) {
-            update();
-          },
-        ),
-      ]),
+      actions: getDefaultActions(
+        onTapReset: () {
+          filterData.reset();
+          update();
+        },
+      ),
+      content: getListViewBody(
+        children: [
+          FilterGroup<bool>(
+            title: Text(S.current.filter_sort, style: textStyle),
+            options: const [true, false],
+            values: filterData.sortByPriority,
+            optionBuilder: (v) => Text(v ? 'Priority' : 'ID'),
+            combined: true,
+            onFilterChanged: (v, _) {
+              update();
+            },
+          ),
+          FilterGroup<bool>(
+            title: Text('Released (My Room)', style: textStyle),
+            options: const [true, false],
+            values: filterData.released,
+            combined: true,
+            optionBuilder: (v) => Text(v ? 'Released' : 'Not Released'),
+            onFilterChanged: (v, _) {
+              update();
+            },
+          ),
+          FilterGroup<bool>(
+            title: const Text('Buyable'),
+            options: const [true, false],
+            values: filterData.needItem,
+            combined: true,
+            optionBuilder: (v) => Text(v ? 'Buyable' : 'Free/Unavailable'),
+            onFilterChanged: (value, _) {
+              update();
+            },
+          ),
+          FilterGroup<bool>(
+            title: Text(S.current.favorite),
+            options: const [true, false],
+            values: filterData.favorite,
+            combined: true,
+            optionBuilder: (v) => Text(v ? S.current.favorite : S.current.general_others),
+            onFilterChanged: (value, _) {
+              update();
+            },
+          ),
+        ],
+      ),
     );
   }
 }

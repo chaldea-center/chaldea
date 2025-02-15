@@ -19,11 +19,7 @@ class BuffFilterData with FilterDataMixin {
 }
 
 class BuffFilter extends FilterPage<BuffFilterData> {
-  const BuffFilter({
-    super.key,
-    required super.filterData,
-    super.onChanged,
-  });
+  const BuffFilter({super.key, required super.filterData, super.onChanged});
 
   @override
   _BuffFilterState createState() => _BuffFilterState();
@@ -46,32 +42,41 @@ class _BuffFilterState extends FilterPageState<BuffFilterData, BuffFilter> {
   Widget build(BuildContext context) {
     return buildAdaptive(
       title: Text(S.current.filter, textScaler: const TextScaler.linear(0.8)),
-      actions: getDefaultActions(onTapReset: () {
-        filterData.reset();
-        update();
-      }),
-      content: getListViewBody(restorationId: 'buff_list_filter', children: [
-        FilterGroup<bool>(
-          title: const Text("Stackable"),
-          options: const [true, false],
-          values: filterData.stackable,
-          optionBuilder: (v) => Text(v ? "Stackable" : "Not-Stackable"),
-          onFilterChanged: (value, _) {
-            update();
-          },
-        ),
-        EffectFilterUtil.buildTraitFilter(context, filterData.trait, update,
-            addTraits: [Trait.cardExtra, Trait.faceCard, Trait.cardNP]),
-        FilterGroup<BuffType>(
-          title: const Text('Buff Type'),
-          options: buffTypes.keys.toList(),
-          values: filterData.buffType,
-          optionBuilder: (v) => Text(Transl.buffType(v).l),
-          onFilterChanged: (value, _) {
-            update();
-          },
-        ),
-      ]),
+      actions: getDefaultActions(
+        onTapReset: () {
+          filterData.reset();
+          update();
+        },
+      ),
+      content: getListViewBody(
+        restorationId: 'buff_list_filter',
+        children: [
+          FilterGroup<bool>(
+            title: const Text("Stackable"),
+            options: const [true, false],
+            values: filterData.stackable,
+            optionBuilder: (v) => Text(v ? "Stackable" : "Not-Stackable"),
+            onFilterChanged: (value, _) {
+              update();
+            },
+          ),
+          EffectFilterUtil.buildTraitFilter(
+            context,
+            filterData.trait,
+            update,
+            addTraits: [Trait.cardExtra, Trait.faceCard, Trait.cardNP],
+          ),
+          FilterGroup<BuffType>(
+            title: const Text('Buff Type'),
+            options: buffTypes.keys.toList(),
+            values: filterData.buffType,
+            optionBuilder: (v) => Text(Transl.buffType(v).l),
+            onFilterChanged: (value, _) {
+              update();
+            },
+          ),
+        ],
+      ),
     );
   }
 }

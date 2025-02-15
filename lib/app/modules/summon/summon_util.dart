@@ -17,30 +17,27 @@ class SummonUtil {
     final grid = Wrap(
       spacing: 4,
       runSpacing: 4,
-      children: block.ids.map((id) {
-        Widget child;
-        if (block.isSvt) {
-          final svt = db.gameData.servantsNoDup[id];
-          if (svt == null) return Text('No.$id');
-          child = svtAvatar(
-            context: context,
-            card: svt,
-            weight: showProb ? block.weight / block.ids.length : null,
-            star: showStar && block.ids.length == 1,
-            favorite: showFavorite && db.curUser.svtStatusOf(id).favorite,
-            npLv: showNpLv,
-          );
-        } else {
-          final ce = db.gameData.craftEssences[id];
-          if (ce == null) return Text('No.$id');
-          child = buildCard(
-            context: context,
-            card: ce,
-            weight: showProb ? block.weight / block.ids.length : null,
-          );
-        }
-        return child;
-      }).toList(),
+      children:
+          block.ids.map((id) {
+            Widget child;
+            if (block.isSvt) {
+              final svt = db.gameData.servantsNoDup[id];
+              if (svt == null) return Text('No.$id');
+              child = svtAvatar(
+                context: context,
+                card: svt,
+                weight: showProb ? block.weight / block.ids.length : null,
+                star: showStar && block.ids.length == 1,
+                favorite: showFavorite && db.curUser.svtStatusOf(id).favorite,
+                npLv: showNpLv,
+              );
+            } else {
+              final ce = db.gameData.craftEssences[id];
+              if (ce == null) return Text('No.$id');
+              child = buildCard(context: context, card: ce, weight: showProb ? block.weight / block.ids.length : null);
+            }
+            return child;
+          }).toList(),
     );
     if (!showRarity) {
       return grid;
@@ -48,10 +45,7 @@ class SummonUtil {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SHeader(
-            title ?? '$kStarChar${block.rarity}',
-            padding: const EdgeInsets.only(left: 0, top: 4, bottom: 2),
-          ),
+          SHeader(title ?? '$kStarChar${block.rarity}', padding: const EdgeInsets.only(left: 0, top: 4, bottom: 2)),
           grid,
         ],
       );
@@ -90,21 +84,13 @@ class SummonUtil {
                   padding: const EdgeInsets.all(1.5),
                   margin: const EdgeInsets.only(bottom: 1),
                   decoration: BoxDecoration(color: Colors.blueAccent, borderRadius: BorderRadius.circular(3)),
-                  child: const Icon(
-                    Icons.favorite,
-                    color: Colors.white,
-                    size: 10,
-                  ),
+                  child: const Icon(Icons.favorite, color: Colors.white, size: 10),
                 ),
               if (star)
                 Container(
                   padding: const EdgeInsets.all(1.5),
                   decoration: BoxDecoration(color: Colors.blueAccent[400], borderRadius: BorderRadius.circular(3)),
-                  child: Icon(
-                    Icons.star,
-                    color: Colors.yellowAccent[400],
-                    size: 10,
-                  ),
+                  child: Icon(Icons.star, color: Colors.yellowAccent[400], size: 10),
                 ),
             ],
           ),
@@ -173,29 +159,35 @@ class SummonUtil {
 
   static String summonNameLocalize(String origin) {
     List<String> names = castBracket(origin.replaceAll('・', '·'))?.split('+') ?? [];
-    return names.map((e) {
-      String name2 = db.gameData.servantsNoDup.values
-              .firstWhereOrNull((svt) => castBracket(svt.extra.mcLink) == e || castBracket(svt.lName.cn) == e)
-              ?.lName
-              .l ??
-          e;
-      if (name2 == e && SvtClass.values.every((cls) => cls.name.toLowerCase() != e.toLowerCase())) {
-        List<String> fragments = e.split('(');
-        fragments[0] = fragments[0].trim();
-        fragments[0] = db.gameData.servantsNoDup.values
-                .firstWhereOrNull((svt) =>
-                    castBracket(svt.extra.mcLink) == fragments[0] ||
-                    castBracket(svt.lName.cn) == fragments[0] ||
-                    svt.extra.nicknames.cn?.contains(fragments[0]) == true)
-                ?.lName
-                .l ??
-            e;
-        name2 = fragments.join('(');
-      }
-      // if (!RegExp(r'[\s\da-zA-Z]+').hasMatch(name2) && !Language.isCN) {
-      //   print(name2);
-      // }
-      return name2;
-    }).join('+');
+    return names
+        .map((e) {
+          String name2 =
+              db.gameData.servantsNoDup.values
+                  .firstWhereOrNull((svt) => castBracket(svt.extra.mcLink) == e || castBracket(svt.lName.cn) == e)
+                  ?.lName
+                  .l ??
+              e;
+          if (name2 == e && SvtClass.values.every((cls) => cls.name.toLowerCase() != e.toLowerCase())) {
+            List<String> fragments = e.split('(');
+            fragments[0] = fragments[0].trim();
+            fragments[0] =
+                db.gameData.servantsNoDup.values
+                    .firstWhereOrNull(
+                      (svt) =>
+                          castBracket(svt.extra.mcLink) == fragments[0] ||
+                          castBracket(svt.lName.cn) == fragments[0] ||
+                          svt.extra.nicknames.cn?.contains(fragments[0]) == true,
+                    )
+                    ?.lName
+                    .l ??
+                e;
+            name2 = fragments.join('(');
+          }
+          // if (!RegExp(r'[\s\da-zA-Z]+').hasMatch(name2) && !Language.isCN) {
+          //   print(name2);
+          // }
+          return name2;
+        })
+        .join('+');
   }
 }

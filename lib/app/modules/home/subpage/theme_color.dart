@@ -13,9 +13,7 @@ class _ThemeColorPageState extends State<ThemeColorPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(S.current.appearance),
-      ),
+      appBar: AppBar(title: Text(S.current.appearance)),
       body: ListView(
         children: [
           TileGroup(
@@ -75,7 +73,7 @@ class _ThemeColorPageState extends State<ThemeColorPage> {
                   },
                 ),
             ],
-          )
+          ),
         ],
       ),
     );

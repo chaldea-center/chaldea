@@ -13,14 +13,15 @@ class WarMapListPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: Text(S.current.war_map)),
       body: ListView(
-        children: war.maps.map((map) {
-          return ListTile(
-            title: Text('${S.current.war_map} ${map.id}'),
-            onTap: () {
-              router.push(child: WarMapPage(war: war, map: map));
-            },
-          );
-        }).toList(),
+        children:
+            war.maps.map((map) {
+              return ListTile(
+                title: Text('${S.current.war_map} ${map.id}'),
+                onTap: () {
+                  router.push(child: WarMapPage(war: war, map: map));
+                },
+              );
+            }).toList(),
       ),
     );
   }

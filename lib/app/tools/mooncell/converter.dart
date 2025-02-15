@@ -22,13 +22,9 @@ class MooncellConverter {
       if (shop.setNum > 1) {
         name += '×${shop.setNum}';
       }
-      buffer.writeln([
-        selected ? 1 : 0,
-        name,
-        shop.limitNum > 0 ? shop.limitNum : "----",
-        shop.cost!.amount,
-        color,
-      ].join(";;"));
+      buffer.writeln(
+        [selected ? 1 : 0, name, shop.limitNum > 0 ? shop.limitNum : "----", shop.cost!.amount, color].join(";;"),
+      );
     }
 
     for (int index = 0; index < payItemIds.length; index++) {

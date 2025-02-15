@@ -19,11 +19,7 @@ class TdFilterData with FilterDataMixin {
 }
 
 class TdFilter extends FilterPage<TdFilterData> {
-  const TdFilter({
-    super.key,
-    required super.filterData,
-    super.onChanged,
-  });
+  const TdFilter({super.key, required super.filterData, super.onChanged});
 
   @override
   _TdFilterState createState() => _TdFilterState();
@@ -34,82 +30,87 @@ class _TdFilterState extends FilterPageState<TdFilterData, TdFilter> with FuncFi
   Widget build(BuildContext context) {
     return buildAdaptive(
       title: Text(S.current.filter, textScaler: const TextScaler.linear(0.8)),
-      actions: getDefaultActions(onTapReset: () {
-        filterData.reset();
-        update();
-      }),
-      content: getListViewBody(restorationId: 'td_list_filter', children: [
-        FilterGroup<CardType>(
-          title: Text(S.current.general_type),
-          options: const [CardType.arts, CardType.buster, CardType.quick],
-          values: filterData.card,
-          optionBuilder: (v) => Text(v.name.toTitle()),
-          onFilterChanged: (value, _) {
-            update();
-          },
-        ),
-        FilterGroup<TdEffectFlag>(
-          options: TdEffectFlag.values,
-          values: filterData.type,
-          optionBuilder: (v) => Text(Transl.enums(v, (enums) => enums.tdEffectFlag).l),
-          onFilterChanged: (value, _) {
-            update();
-          },
-        ),
-        // FilterGroup<SkillSearchScope>(
-        //   title: Text(S.current.effect_scope),
-        //   options: SkillSearchScope.values,
-        //   values: filterData.scope,
-        //   optionBuilder: (v) {
-        //     switch (v) {
-        //       case SkillSearchScope.svt:
-        //         return Text(S.current.servant);
-        //       case SkillSearchScope.ce:
-        //         return Text(S.current.craft_essence);
-        //       case SkillSearchScope.cc:
-        //         return Text(S.current.command_code);
-        //       case SkillSearchScope.mc:
-        //         return Text(S.current.mystic_code);
-        //     }
-        //   },
-        //   onFilterChanged: (value, _) {
-        //     update();
-        //   },
-        // ),
-        FilterGroup<FuncTargetType>(
-          title: Text(S.current.effect_target),
-          options: funcTargetTypes.keys.toList(),
-          values: filterData.funcTargetType,
-          optionBuilder: (v) => Text(Transl.funcTargetType(v).l),
-          onFilterChanged: (value, _) {
-            update();
-          },
-        ),
-        const Divider(height: 16),
-        FilterGroup<FuncType>(
-          title: const Text('Func Type'),
-          options: funcTypes.keys.toList(),
-          values: filterData.funcType,
-          showMatchAll: false,
-          showInvert: false,
-          optionBuilder: (v) => Text(Transl.funcType(v).l),
-          onFilterChanged: (value, _) {
-            update();
-          },
-        ),
-        const Divider(height: 16),
-        FilterGroup<BuffType>(
-          title: const Text('Buff Type'),
-          options: buffTypes.keys.toList(),
-          values: filterData.buffType,
-          showMatchAll: false,
-          showInvert: false,
-          optionBuilder: (v) => Text(Transl.buffType(v).l),
-          onFilterChanged: (value, _) {
-            update();
-          },
-        ),
-      ]),
+      actions: getDefaultActions(
+        onTapReset: () {
+          filterData.reset();
+          update();
+        },
+      ),
+      content: getListViewBody(
+        restorationId: 'td_list_filter',
+        children: [
+          FilterGroup<CardType>(
+            title: Text(S.current.general_type),
+            options: const [CardType.arts, CardType.buster, CardType.quick],
+            values: filterData.card,
+            optionBuilder: (v) => Text(v.name.toTitle()),
+            onFilterChanged: (value, _) {
+              update();
+            },
+          ),
+          FilterGroup<TdEffectFlag>(
+            options: TdEffectFlag.values,
+            values: filterData.type,
+            optionBuilder: (v) => Text(Transl.enums(v, (enums) => enums.tdEffectFlag).l),
+            onFilterChanged: (value, _) {
+              update();
+            },
+          ),
+          // FilterGroup<SkillSearchScope>(
+          //   title: Text(S.current.effect_scope),
+          //   options: SkillSearchScope.values,
+          //   values: filterData.scope,
+          //   optionBuilder: (v) {
+          //     switch (v) {
+          //       case SkillSearchScope.svt:
+          //         return Text(S.current.servant);
+          //       case SkillSearchScope.ce:
+          //         return Text(S.current.craft_essence);
+          //       case SkillSearchScope.cc:
+          //         return Text(S.current.command_code);
+          //       case SkillSearchScope.mc:
+          //         return Text(S.current.mystic_code);
+          //     }
+          //   },
+          //   onFilterChanged: (value, _) {
+          //     update();
+          //   },
+          // ),
+          FilterGroup<FuncTargetType>(
+            title: Text(S.current.effect_target),
+            options: funcTargetTypes.keys.toList(),
+            values: filterData.funcTargetType,
+            optionBuilder: (v) => Text(Transl.funcTargetType(v).l),
+            onFilterChanged: (value, _) {
+              update();
+            },
+          ),
+          const Divider(height: 16),
+          FilterGroup<FuncType>(
+            title: const Text('Func Type'),
+            options: funcTypes.keys.toList(),
+            values: filterData.funcType,
+            showMatchAll: false,
+            showInvert: false,
+            optionBuilder: (v) => Text(Transl.funcType(v).l),
+            onFilterChanged: (value, _) {
+              update();
+            },
+          ),
+          const Divider(height: 16),
+          FilterGroup<BuffType>(
+            title: const Text('Buff Type'),
+            options: buffTypes.keys.toList(),
+            values: filterData.buffType,
+            showMatchAll: false,
+            showInvert: false,
+            optionBuilder: (v) => Text(Transl.buffType(v).l),
+            onFilterChanged: (value, _) {
+              update();
+            },
+          ),
+        ],
+      ),
     );
   }
 

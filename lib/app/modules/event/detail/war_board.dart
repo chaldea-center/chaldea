@@ -22,20 +22,20 @@ class EventWarBoardTab extends HookWidget {
   }
 
   Widget buildOne(BuildContext context, WarBoard warBoard, int index) {
-    List<Widget> children = [
-      DividerWithTitle(title: 'No.${warBoard.warBoardId}'),
-    ];
+    List<Widget> children = [DividerWithTitle(title: 'No.${warBoard.warBoardId}')];
     for (final stage in warBoard.stages) {
       final quest = db.gameData.quests[stage.questId];
-      children.add(ListTile(
-        dense: true,
-        leading: db.getIconImage(quest?.spot?.shownImage),
-        title: Text(quest?.lName.l ?? 'Quest ${stage.questId}/${stage.questPhase}'),
-        subtitle: Text('COST ${stage.formationCost}  ${stage.boardMessage}'),
-        onTap: () {
-          router.push(url: Routes.questI(stage.questId));
-        },
-      ));
+      children.add(
+        ListTile(
+          dense: true,
+          leading: db.getIconImage(quest?.spot?.shownImage),
+          title: Text(quest?.lName.l ?? 'Quest ${stage.questId}/${stage.questPhase}'),
+          subtitle: Text('COST ${stage.formationCost}  ${stage.boardMessage}'),
+          onTap: () {
+            router.push(url: Routes.questI(stage.questId));
+          },
+        ),
+      );
 
       final treasures = stage.squares.expand((e) => e.treasures).toList();
       if (treasures.isNotEmpty) {
@@ -55,24 +55,28 @@ class EventWarBoardTab extends HookWidget {
           }
           treasureWidgets.addAll(treasure.gifts.map((gift) => gift.iconBuilder(context: context, width: 36)));
         }
-        children.add(ListTile(
-          dense: true,
-          title: Text(S.current.event_treasure_box),
-          subtitle: Wrap(
-            spacing: 1,
-            runSpacing: 1,
-            crossAxisAlignment: WrapCrossAlignment.center,
-            children: treasureWidgets,
+        children.add(
+          ListTile(
+            dense: true,
+            title: Text(S.current.event_treasure_box),
+            subtitle: Wrap(
+              spacing: 1,
+              runSpacing: 1,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              children: treasureWidgets,
+            ),
           ),
-        ));
+        );
       }
 
       if (quest != null && quest.gifts.isNotEmpty) {
-        children.add(ListTile(
-          dense: true,
-          title: Text(S.current.quest_reward),
-          subtitle: SharedBuilder.giftGrid(context: context, gifts: quest.gifts, width: 36),
-        ));
+        children.add(
+          ListTile(
+            dense: true,
+            title: Text(S.current.quest_reward),
+            subtitle: SharedBuilder.giftGrid(context: context, gifts: quest.gifts, width: 36),
+          ),
+        );
       }
     }
     return Column(mainAxisSize: MainAxisSize.min, children: children);

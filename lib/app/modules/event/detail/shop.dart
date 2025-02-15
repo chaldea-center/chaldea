@@ -15,13 +15,7 @@ class EventShopsPage extends StatefulWidget {
   final bool showTime;
   final Region? region;
 
-  const EventShopsPage({
-    super.key,
-    required this.event,
-    required this.shops,
-    this.showTime = false,
-    this.region,
-  });
+  const EventShopsPage({super.key, required this.event, required this.shops, this.showTime = false, this.region});
 
   @override
   State<EventShopsPage> createState() => _EventShopsPageState();
@@ -45,67 +39,63 @@ class _EventShopsPageState extends State<EventShopsPage> {
       payItems.putIfAbsent(shop.cost?.itemId ?? -1, () => []).add(shop);
     }
 
-    return db.onUserData(
-      (context, snapshot) {
-        List<Widget> headers = [], views = [];
-        final style = Theme.of(context).textTheme.bodyMedium;
-        headers.add(Tab(child: Text(S.current.general_all, style: style)));
-        views.add(shopList(context, shops, plan));
-        // valentine shop
-        if (payItems.length > 1 && (payItems.length > 2 || payItems.values.every((e) => e.length > 1))) {
-          final itemIds = payItems.keys.toList();
-          itemIds.sort2((e) => db.gameData.items[e]?.priority ?? 999999);
-          for (final itemId in itemIds) {
-            views.add(shopList(context, payItems[itemId]!, plan));
-            if (itemId == -1) {
-              headers.add(Tab(child: Text(S.current.general_others, style: style)));
-            } else {
-              headers.add(Tab(
+    return db.onUserData((context, snapshot) {
+      List<Widget> headers = [], views = [];
+      final style = Theme.of(context).textTheme.bodyMedium;
+      headers.add(Tab(child: Text(S.current.general_all, style: style)));
+      views.add(shopList(context, shops, plan));
+      // valentine shop
+      if (payItems.length > 1 && (payItems.length > 2 || payItems.values.every((e) => e.length > 1))) {
+        final itemIds = payItems.keys.toList();
+        itemIds.sort2((e) => db.gameData.items[e]?.priority ?? 999999);
+        for (final itemId in itemIds) {
+          views.add(shopList(context, payItems[itemId]!, plan));
+          if (itemId == -1) {
+            headers.add(Tab(child: Text(S.current.general_others, style: style)));
+          } else {
+            headers.add(
+              Tab(
                 child: Text.rich(
-                  TextSpan(children: [
-                    CenterWidgetSpan(
-                      child: Item.iconBuilder(
-                        context: context,
-                        item: null,
-                        itemId: itemId,
-                        width: 18,
-                        icon: db.gameData.items[itemId]?.icon,
-                        jumpToDetail: false,
+                  TextSpan(
+                    children: [
+                      CenterWidgetSpan(
+                        child: Item.iconBuilder(
+                          context: context,
+                          item: null,
+                          itemId: itemId,
+                          width: 18,
+                          icon: db.gameData.items[itemId]?.icon,
+                          jumpToDetail: false,
+                        ),
                       ),
-                    ),
-                    TextSpan(text: Item.getName(itemId)),
-                  ]),
+                      TextSpan(text: Item.getName(itemId)),
+                    ],
+                  ),
                   style: style,
                 ),
-              ));
-            }
+              ),
+            );
           }
         }
-        return DefaultTabController(
-          length: views.length,
-          child: Column(
-            children: [
-              if (views.length > 1)
-                FixedHeight.tabBar(TabBar(
-                  tabs: headers,
-                  isScrollable: true,
-                  tabAlignment: TabAlignment.center,
-                )),
-              Expanded(
-                child: views.length == 1 ? views.single : TabBarView(children: views),
+      }
+      return DefaultTabController(
+        length: views.length,
+        child: Column(
+          children: [
+            if (views.length > 1)
+              FixedHeight.tabBar(TabBar(tabs: headers, isScrollable: true, tabAlignment: TabAlignment.center)),
+            Expanded(child: views.length == 1 ? views.single : TabBarView(children: views)),
+            kDefaultDivider,
+            SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                child: getEventItemCost(),
               ),
-              kDefaultDivider,
-              SafeArea(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                  child: getEventItemCost(),
-                ),
-              )
-            ],
-          ),
-        );
-      },
-    );
+            ),
+          ],
+        ),
+      );
+    });
   }
 
   Widget shopList(BuildContext context, List<NiceShop> shops, LimitEventPlan plan) {
@@ -178,10 +168,7 @@ class _EventShopsPageState extends State<EventShopsPage> {
         if (event != null && event!.warIds.isNotEmpty)
           IconButton(
             onPressed: () {
-              router.pushPage(EventItemCalcPage(
-                warId: event!.warIds.first,
-                objectiveCounts: items,
-              ));
+              router.pushPage(EventItemCalcPage(warId: event!.warIds.first, objectiveCounts: items));
             },
             icon: const Icon(Icons.calculate),
             tooltip: S.current.drop_calc_solve,
@@ -205,37 +192,38 @@ class _EventShopsPageState extends State<EventShopsPage> {
         ),
         PopupMenuButton(
           position: PopupMenuPosition.under,
-          itemBuilder: (context) => [
-            PopupMenuItem(
-              onTap: () {
-                SimpleCancelOkDialog(
-                  title: Text(S.current.reset),
-                  onTapOk: () {
-                    plan.shopBuyCount.clear();
-                    event?.updateStat();
+          itemBuilder:
+              (context) => [
+                PopupMenuItem(
+                  onTap: () {
+                    SimpleCancelOkDialog(
+                      title: Text(S.current.reset),
+                      onTapOk: () {
+                        plan.shopBuyCount.clear();
+                        event?.updateStat();
+                        if (mounted) setState(() {});
+                      },
+                    ).showDialog(context);
+                  },
+                  child: Text(S.current.reset),
+                ),
+                PopupMenuItem(
+                  enabled: db.runtimeData.clipBoard.userShops != null,
+                  onTap: () {
+                    final userShops = db.runtimeData.clipBoard.userShops?.toList() ?? [];
+                    final buyCounts = {for (final shop in userShops) shop.shopId: shop.num};
+                    for (final shop in widget.shops) {
+                      final buyCount = buyCounts[shop.id] ?? 0;
+                      if (buyCount > 0 && shop.limitNum > 0 && buyCount <= shop.limitNum) {
+                        plan.shopBuyCount[shop.id] = shop.limitNum - buyCount;
+                      }
+                    }
                     if (mounted) setState(() {});
                   },
-                ).showDialog(context);
-              },
-              child: Text(S.current.reset),
-            ),
-            PopupMenuItem(
-              enabled: db.runtimeData.clipBoard.userShops != null,
-              onTap: () {
-                final userShops = db.runtimeData.clipBoard.userShops?.toList() ?? [];
-                final buyCounts = {for (final shop in userShops) shop.shopId: shop.num};
-                for (final shop in widget.shops) {
-                  final buyCount = buyCounts[shop.id] ?? 0;
-                  if (buyCount > 0 && shop.limitNum > 0 && buyCount <= shop.limitNum) {
-                    plan.shopBuyCount[shop.id] = shop.limitNum - buyCount;
-                  }
-                }
-                if (mounted) setState(() {});
-              },
-              child: const Text("Read Login Data"),
-            )
-          ],
-        )
+                  child: const Text("Read Login Data"),
+                ),
+              ],
+        ),
       ],
     );
   }
@@ -248,8 +236,14 @@ class ShopDescriptor extends StatelessWidget {
   final ValueChanged<int?>? onChanged;
   final Region? region;
 
-  const ShopDescriptor(
-      {super.key, required this.shop, this.showTime = false, this.buyCount, this.onChanged, this.region});
+  const ShopDescriptor({
+    super.key,
+    required this.shop,
+    this.showTime = false,
+    this.buyCount,
+    this.onChanged,
+    this.region,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -350,13 +344,18 @@ class ShopDescriptor extends StatelessWidget {
       leading: leading,
       title: title,
       subtitle: Text.rich(
-        TextSpan(text: '${S.current.cost}:  ', children: [
-          ...costs,
-          if (showTime)
-            TextSpan(
-                text: '\n${shop.openedAt.sec2date().toDateString()}'
-                    ' ~ ${shop.closedAt.sec2date().toDateString()}')
-        ]),
+        TextSpan(
+          text: '${S.current.cost}:  ',
+          children: [
+            ...costs,
+            if (showTime)
+              TextSpan(
+                text:
+                    '\n${shop.openedAt.sec2date().toDateString()}'
+                    ' ~ ${shop.closedAt.sec2date().toDateString()}',
+              ),
+          ],
+        ),
         style: Theme.of(context).textTheme.bodySmall,
       ),
       trailing: trailing,
@@ -433,12 +432,13 @@ class __EditShopNumDialogState extends State<_EditShopNumDialog> {
           child: Text(S.current.cancel.toUpperCase()),
         ),
         TextButton(
-          onPressed: invalid
-              ? null
-              : () {
-                  Navigator.pop(context);
-                  widget.onChanged(buyCount);
-                },
+          onPressed:
+              invalid
+                  ? null
+                  : () {
+                    Navigator.pop(context);
+                    widget.onChanged(buyCount);
+                  },
           child: Text(S.current.confirm.toUpperCase()),
         ),
       ],

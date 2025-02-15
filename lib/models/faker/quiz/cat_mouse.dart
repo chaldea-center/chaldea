@@ -18,18 +18,22 @@ class CatMouseGame {
   List<int> infoTop = Uint8List(32);
 
   // SVEC+SKEY
-  late final kBattleKey = utf8.encode({
-    Region.jp: 'kzdMtpmzqCHAfx00saU1gIhTjYCuOD1JstqtisXsGYqRVcqrHRydj3k6vJCySu3g',
-    Region.na: 'xaVPXPtrkXlUZsJRa3Eu1o1kSDYtjlwhoRQI2MHq2Q4szmpVvDcbmpi7UIZF9Rle',
-    Region.cn: 'd3b13d9093cc6b457fd89766bafa1626ee2ef76626d49ce0d424f4156231ce56',
-  }[region]!);
+  late final kBattleKey = utf8.encode(
+    {
+      Region.jp: 'kzdMtpmzqCHAfx00saU1gIhTjYCuOD1JstqtisXsGYqRVcqrHRydj3k6vJCySu3g',
+      Region.na: 'xaVPXPtrkXlUZsJRa3Eu1o1kSDYtjlwhoRQI2MHq2Q4szmpVvDcbmpi7UIZF9Rle',
+      Region.cn: 'd3b13d9093cc6b457fd89766bafa1626ee2ef76626d49ce0d424f4156231ce56',
+    }[region]!,
+  );
 
   // IKEY
-  late final kAssetKey = utf8.encode({
-    Region.jp: 'W0Juh4cFJSYPkebJB9WpswNF51oa6Gm7',
-    Region.na: 'nn33CYId2J1ggv0bYDMbYuZ60m4GZt5P',
-    Region.cn: '',
-  }[region]!);
+  late final kAssetKey = utf8.encode(
+    {
+      Region.jp: 'W0Juh4cFJSYPkebJB9WpswNF51oa6Gm7',
+      Region.na: 'nn33CYId2J1ggv0bYDMbYuZ60m4GZt5P',
+      Region.cn: '',
+    }[region]!,
+  );
 
   CatMouseGame([this.region = Region.jp]) {
     if (region != Region.jp && region != Region.na && region != Region.cn) {
@@ -61,7 +65,7 @@ class CatMouseGame {
     return base64Encode(array);
   }
 
-  List<int> catHomeMain(List<int> data, List<int> key, List<int> iv, bool isCompress/*= false*/) {
+  List<int> catHomeMain(List<int> data, List<int> key, List<int> iv, bool isCompress /*= false*/) {
     return encryptRijndael(data, key, iv);
   }
 
@@ -72,7 +76,7 @@ class CatMouseGame {
     return mouseHomeMsgpack(array, infoData, infoTop, true);
   }
 
-  dynamic mouseHomeMsgpack(List<int> data, List<int> key, List<int> iv, bool isCompress/*=false*/) {
+  dynamic mouseHomeMsgpack(List<int> data, List<int> key, List<int> iv, bool isCompress /*=false*/) {
     return msgpack.deserialize(Uint8List.fromList(mouseHomeSub(data, key, iv, isCompress)));
   }
 

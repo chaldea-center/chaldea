@@ -68,14 +68,7 @@ class _SvtCombinePageState extends State<SvtCombinePage> {
         child: ListTileTheme.merge(
           dense: true,
           visualDensity: VisualDensity.compact,
-          child: Column(
-            children: [
-              headerInfo,
-              Expanded(child: body),
-              const Divider(height: 1),
-              buttonBar,
-            ],
-          ),
+          child: Column(children: [headerInfo, Expanded(child: body), const Divider(height: 1), buttonBar]),
         ),
       ),
     );
@@ -90,7 +83,8 @@ class _SvtCombinePageState extends State<SvtCombinePage> {
       '${S.current.command_code_short} ${cardCounts.ccCount}/${runtime.gameData.constants.maxUserCommandCode}',
       if (cardCounts.unknownCount != 0) '${S.current.unknown} ${cardCounts.unknownCount}',
     ].join(' ');
-    subtitle += '\nQP ${userGame?.qp.format(compact: false, groupSeparator: ",")}  ${S.current.present_box}  '
+    subtitle +=
+        '\nQP ${userGame?.qp.format(compact: false, groupSeparator: ",")}  ${S.current.present_box}  '
         '${mstData.userPresentBox.length}/${runtime.gameData.constants.maxPresentBoxNum}';
     return Container(
       color: Theme.of(context).secondaryHeaderColor,
@@ -104,10 +98,9 @@ class _SvtCombinePageState extends State<SvtCombinePage> {
           constraints: const BoxConstraints(maxWidth: 16, maxHeight: 16),
           child: ValueListenableBuilder(
             valueListenable: runtime.runningTask,
-            builder: (context, running, _) => CircularProgressIndicator(
-              value: running ? null : 1.0,
-              color: running ? Colors.red : Colors.green,
-            ),
+            builder:
+                (context, running, _) =>
+                    CircularProgressIndicator(value: running ? null : 1.0, color: running ? Colors.red : Colors.green),
           ),
         ),
         title: Text('[${agent.user.serverName}] ${userGame?.name}'),
@@ -124,7 +117,8 @@ class _SvtCombinePageState extends State<SvtCombinePage> {
         nextLvExp = svt?.expGrowth.getOrNull(baseUserSvt?.lv ?? -1);
     if (baseUserSvt != null) {
       svtTitle = 'No.${svt?.collectionNo} ${svt?.lName.l}';
-      svtSubtitle = '${baseUserSvt.locked ? "🔐 " : ""}Lv.${baseUserSvt.lv}/${baseUserSvt.maxLv}'
+      svtSubtitle =
+          '${baseUserSvt.locked ? "🔐 " : ""}Lv.${baseUserSvt.lv}/${baseUserSvt.maxLv}'
           ' limit ${baseUserSvt.limitCount} exceed ${baseUserSvt.exceedCount}'
           ' skill ${baseUserSvt.skillLv1}/${baseUserSvt.skillLv2}/${baseUserSvt.skillLv3}\n'
           'exp ${nextLvExp == null ? "?" : (baseUserSvt.exp - nextLvExp).format(compact: false, groupSeparator: ",")}';
@@ -176,11 +170,7 @@ class _SvtCombinePageState extends State<SvtCombinePage> {
       ),
       Padding(
         padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-        child: SharedBuilder.itemGrid(
-          context: context,
-          items: materialCounts.entries,
-          width: 36,
-        ),
+        child: SharedBuilder.itemGrid(context: context, items: materialCounts.entries, width: 36),
       ),
       ListTile(
         dense: true,
@@ -238,10 +228,7 @@ class _SvtCombinePageState extends State<SvtCombinePage> {
           context: context,
           item: null,
           itemId: itemId,
-          text: [
-            requiredNum,
-            mstData.getItemOrSvtNum(itemId),
-          ].map((e) => e.format()).join('\n'),
+          text: [requiredNum, mstData.getItemOrSvtNum(itemId)].map((e) => e.format()).join('\n'),
           width: 36,
         );
       }
@@ -260,9 +247,7 @@ class _SvtCombinePageState extends State<SvtCombinePage> {
           title: Text(combineTitle),
           trailing: Wrap(
             spacing: 2,
-            children: [
-              for (final (itemId, amount) in limitCombineItems.items) _item(itemId, amount),
-            ],
+            children: [for (final (itemId, amount) in limitCombineItems.items) _item(itemId, amount)],
           ),
         ),
         if (baseUserSvt.exceedCount == 0 && baseUserSvt.lv == baseUserSvt.maxLv && baseUserSvt.limitCount < 4)
@@ -287,15 +272,16 @@ class _SvtCombinePageState extends State<SvtCombinePage> {
             ),
           ),
         ListTile(
-            title: Text('圣杯转临'),
-            trailing: Wrap(
-              spacing: 2,
-              children: [
-                _item(Items.grailId, 1),
-                if (baseUserSvt.lv >= 100)
-                  if (svt.coin != null) _item(svt.coin!.item.id, 30),
-              ],
-            )),
+          title: Text('圣杯转临'),
+          trailing: Wrap(
+            spacing: 2,
+            children: [
+              _item(Items.grailId, 1),
+              if (baseUserSvt.lv >= 100)
+                if (svt.coin != null) _item(svt.coin!.item.id, 30),
+            ],
+          ),
+        ),
         if ((baseUserSvt.exceedCount > 0 || baseUserSvt.lv >= svt.lvMax) &&
             baseUserSvt.lv == baseUserSvt.maxLv &&
             baseUserSvt.lv < 120)
@@ -329,16 +315,8 @@ class _SvtCombinePageState extends State<SvtCombinePage> {
       padding: const EdgeInsets.symmetric(horizontal: 12),
     );
 
-    FilledButton buildButton({
-      bool enabled = true,
-      required VoidCallback onPressed,
-      required String text,
-    }) {
-      return FilledButton.tonal(
-        onPressed: enabled ? onPressed : null,
-        style: buttonStyle,
-        child: Text(text),
-      );
+    FilledButton buildButton({bool enabled = true, required VoidCallback onPressed, required String text}) {
+      return FilledButton.tonal(onPressed: enabled ? onPressed : null, style: buttonStyle, child: Text(text));
     }
 
     final baseUserSvt = mstData.userSvt[options.baseUserSvtId];
@@ -415,52 +393,59 @@ class _SvtCombinePageState extends State<SvtCombinePage> {
       );
     }
 
-    router.showDialog(builder: (context) {
-      final notLvMaxSvts = mstData.userSvt.where((userSvt) {
-        final svt = userSvt.dbSvt;
-        if (!userSvt.locked || svt == null || svt.type != SvtType.normal) return false;
-        if (userSvt.lv >= (userSvt.maxLv ?? 0)) return false;
-        return true;
-      }).toList();
-      notLvMaxSvts.sort2((e) => -e.lv);
+    router.showDialog(
+      builder: (context) {
+        final notLvMaxSvts =
+            mstData.userSvt.where((userSvt) {
+              final svt = userSvt.dbSvt;
+              if (!userSvt.locked || svt == null || svt.type != SvtType.normal) return false;
+              if (userSvt.lv >= (userSvt.maxLv ?? 0)) return false;
+              return true;
+            }).toList();
+        notLvMaxSvts.sort2((e) => -e.lv);
 
-      return SimpleDialog(
-        title: Text('Select Servant'),
-        children: [
-          ListTile(
-            title: Text('From servant list'),
-            trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
-            onTap: () {
-              Navigator.pop(context);
-              router.pushPage(ServantListPage(
-                onSelected: (selectedSvt) {
-                  final userSvts = mstData.userSvt.where((userSvt) {
-                    final svt = userSvt.dbSvt;
-                    if (svt == null || userSvt.svtId != selectedSvt.id || svt.type != SvtType.normal) return false;
-                    // if (userSvt.lv >= (userSvt.maxLv ?? 0)) return false;
-                    // if (userSvt.lv <= 1) return false;
-                    return true;
-                  }).toList();
-                  userSvts.sortByList((e) => <int>[-e.limitCount, -e.lv, -e.exp]);
-                  router.showDialog(builder: (context) {
-                    return StatefulBuilder(
-                      builder: (context, update) {
-                        return SimpleDialog(
-                          title: Text('Choose User Servant'),
-                          children: [
-                            for (final userSvt in userSvts) buildSvt(userSvt),
-                          ],
-                        );
-                      },
-                    );
-                  });
-                },
-              ));
-            },
-          ),
-          for (final userSvt in notLvMaxSvts.take(20)) buildSvt(userSvt),
-        ],
-      );
-    });
+        return SimpleDialog(
+          title: Text('Select Servant'),
+          children: [
+            ListTile(
+              title: Text('From servant list'),
+              trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
+              onTap: () {
+                Navigator.pop(context);
+                router.pushPage(
+                  ServantListPage(
+                    onSelected: (selectedSvt) {
+                      final userSvts =
+                          mstData.userSvt.where((userSvt) {
+                            final svt = userSvt.dbSvt;
+                            if (svt == null || userSvt.svtId != selectedSvt.id || svt.type != SvtType.normal)
+                              return false;
+                            // if (userSvt.lv >= (userSvt.maxLv ?? 0)) return false;
+                            // if (userSvt.lv <= 1) return false;
+                            return true;
+                          }).toList();
+                      userSvts.sortByList((e) => <int>[-e.limitCount, -e.lv, -e.exp]);
+                      router.showDialog(
+                        builder: (context) {
+                          return StatefulBuilder(
+                            builder: (context, update) {
+                              return SimpleDialog(
+                                title: Text('Choose User Servant'),
+                                children: [for (final userSvt in userSvts) buildSvt(userSvt)],
+                              );
+                            },
+                          );
+                        },
+                      );
+                    },
+                  ),
+                );
+              },
+            ),
+            for (final userSvt in notLvMaxSvts.take(20)) buildSvt(userSvt),
+          ],
+        );
+      },
+    );
   }
 }

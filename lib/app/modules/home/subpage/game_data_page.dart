@@ -41,18 +41,13 @@ class _GameDataPageState extends State<GameDataPage> {
                 title: Text(S.current.version),
                 subtitle: Text(S.current.gamedata),
                 trailing: db.onUserData(
-                  (context, snapshot) => Text(
-                    db.gameData.version.text(true),
-                    textAlign: TextAlign.end,
-                  ),
+                  (context, snapshot) => Text(db.gameData.version.text(true), textAlign: TextAlign.end),
                 ),
               ),
               ListTile(
                 title: Text(S.current.fgo_domus_aurea),
                 trailing: db.onUserData(
-                  (context, snapshot) => Text(
-                    db.gameData.dropData.domusVer.sec2date().toDateString(),
-                  ),
+                  (context, snapshot) => Text(db.gameData.dropData.domusVer.sec2date().toDateString()),
                 ),
               ),
             ],
@@ -62,30 +57,31 @@ class _GameDataPageState extends State<GameDataPage> {
             footer: S.current.download_latest_gamedata_hint,
             children: <Widget>[
               ValueListenableBuilder<double?>(
-                  valueListenable: loader.progress,
-                  builder: (context, progress, child) {
-                    String hint;
-                    if (progress == null) {
-                      hint = 'not started';
-                    } else {
-                      hint = '${(progress * 100).toStringAsFixed(2)}%';
-                    }
-                    if (loader.error != null) {
-                      hint = loader.error!.toString();
-                    }
-                    String? newVersion;
-                    if (db.runtimeData.upgradableDataVersion != null &&
-                        db.runtimeData.upgradableDataVersion!.timestamp > db.gameData.version.timestamp) {
-                      newVersion = db.runtimeData.upgradableDataVersion!.text();
-                    }
-                    return ListTile(
-                      title: Text(S.current.update),
-                      subtitle: Text('Progress: $hint', maxLines: 2),
-                      trailing: Text(newVersion == null ? '' : '$newVersion available', textAlign: TextAlign.end),
-                      onTap: () => updateGamedata(false),
-                      onLongPress: () => updateGamedata(true),
-                    );
-                  }),
+                valueListenable: loader.progress,
+                builder: (context, progress, child) {
+                  String hint;
+                  if (progress == null) {
+                    hint = 'not started';
+                  } else {
+                    hint = '${(progress * 100).toStringAsFixed(2)}%';
+                  }
+                  if (loader.error != null) {
+                    hint = loader.error!.toString();
+                  }
+                  String? newVersion;
+                  if (db.runtimeData.upgradableDataVersion != null &&
+                      db.runtimeData.upgradableDataVersion!.timestamp > db.gameData.version.timestamp) {
+                    newVersion = db.runtimeData.upgradableDataVersion!.text();
+                  }
+                  return ListTile(
+                    title: Text(S.current.update),
+                    subtitle: Text('Progress: $hint', maxLines: 2),
+                    trailing: Text(newVersion == null ? '' : '$newVersion available', textAlign: TextAlign.end),
+                    onTap: () => updateGamedata(false),
+                    onLongPress: () => updateGamedata(true),
+                  );
+                },
+              ),
               SwitchListTile.adaptive(
                 value: db.settings.autoUpdateData,
                 title: Text(S.current.auto_update),
@@ -105,14 +101,15 @@ class _GameDataPageState extends State<GameDataPage> {
                       : S.current.update_data_at_start_off_hint,
                   textScaler: const TextScaler.linear(0.8),
                 ),
-                onChanged: !kIsWeb && db.settings.autoUpdateData
-                    ? (v) {
-                        setState(() {
-                          db.settings.updateDataBeforeStart = v;
-                          db.saveSettings();
-                        });
-                      }
-                    : null,
+                onChanged:
+                    !kIsWeb && db.settings.autoUpdateData
+                        ? (v) {
+                          setState(() {
+                            db.settings.updateDataBeforeStart = v;
+                            db.saveSettings();
+                          });
+                        }
+                        : null,
               ),
               // SwitchListTile.adaptive(
               //   value: db.settings.checkDataHash,
@@ -145,25 +142,31 @@ class _GameDataPageState extends State<GameDataPage> {
               ListTile(
                 title: Text(S.current.clear_cache),
                 // subtitle: Text(S.current.clear_cache_hint),
-                onTap: () => showDialog(
-                  context: context,
-                  useRootNavigator: false,
-                  builder: (context) => const _ClearCacheDialog(),
-                ),
+                onTap:
+                    () => showDialog(
+                      context: context,
+                      useRootNavigator: false,
+                      builder: (context) => const _ClearCacheDialog(),
+                    ),
               ),
             ],
           ),
           TileGroup(
             header: S.current.spoiler_setting,
-            footerWidget: SFooter.rich(TextSpan(text: 'Read ', children: [
-              SharedBuilder.textButtonSpan(
-                context: context,
-                text: 'document',
-                onTap: () {
-                  launch(ChaldeaUrl.doc('app_setting#spoiler-settings'));
-                },
-              )
-            ])),
+            footerWidget: SFooter.rich(
+              TextSpan(
+                text: 'Read ',
+                children: [
+                  SharedBuilder.textButtonSpan(
+                    context: context,
+                    text: 'document',
+                    onTap: () {
+                      launch(ChaldeaUrl.doc('app_setting#spoiler-settings'));
+                    },
+                  ),
+                ],
+              ),
+            ),
             children: [
               SwitchListTile.adaptive(
                 value: db.settings.hideUnreleasedCard,
@@ -179,11 +182,7 @@ class _GameDataPageState extends State<GameDataPage> {
                 trailing: DropdownButton<Region>(
                   value: db.settings.spoilerRegion,
                   items: [
-                    for (final region in Region.values)
-                      DropdownMenuItem(
-                        value: region,
-                        child: Text(region.localName),
-                      )
+                    for (final region in Region.values) DropdownMenuItem(value: region, child: Text(region.localName)),
                   ],
                   onChanged: (v) {
                     setState(() {
@@ -215,15 +214,8 @@ class _GameDataPageState extends State<GameDataPage> {
                 trailing: DropdownButton<Region?>(
                   value: db.settings.removeOldDataRegion,
                   items: [
-                    const DropdownMenuItem(
-                      value: null,
-                      child: Text('NO'),
-                    ),
-                    for (final region in Region.values)
-                      DropdownMenuItem(
-                        value: region,
-                        child: Text(region.localName),
-                      )
+                    const DropdownMenuItem(value: null, child: Text('NO')),
+                    for (final region in Region.values) DropdownMenuItem(value: region, child: Text(region.localName)),
                   ],
                   onChanged: (v) {
                     setState(() {
@@ -243,10 +235,7 @@ class _GameDataPageState extends State<GameDataPage> {
     try {
       throw UnimplementedError();
     } catch (e) {
-      SimpleCancelOkDialog(
-        title: Text(S.current.failed),
-        content: Text(e.toString()),
-      ).showDialog(context);
+      SimpleCancelOkDialog(title: Text(S.current.failed), content: Text(e.toString())).showDialog(context);
     }
   }
 
@@ -262,8 +251,10 @@ class _GameDataPageState extends State<GameDataPage> {
       builder: (context) {
         return SimpleCancelOkDialog(
           title: Text(S.current.update_dataset),
-          content: Text('Current: ${db.gameData.version.text(false)}\n'
-              'Latest : ${data.version.text(false)}'),
+          content: Text(
+            'Current: ${db.gameData.version.text(false)}\n'
+            'Latest : ${data.version.text(false)}',
+          ),
           hideOk: data.version.timestamp < db.gameData.version.timestamp,
           onTapOk: () {
             db.gameData = data;

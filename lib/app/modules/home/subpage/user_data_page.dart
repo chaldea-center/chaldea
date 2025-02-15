@@ -56,9 +56,7 @@ class _UserDataPageState extends State<UserDataPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(S.current.userdata),
-      ),
+      appBar: AppBar(title: Text(S.current.userdata)),
       body: ListView(
         children: <Widget>[
           TileGroup(
@@ -83,28 +81,22 @@ class _UserDataPageState extends State<UserDataPage> {
                     EasyLoading.showInfo(S.current.open_in_file_manager);
                   }
                 },
-              )
+              ),
             ],
           ),
           TileGroup(
             header: S.current.userdata_sync_server,
             footer: S.current.userdata_sync_hint,
             children: [
-              ListTile(
-                title: Text(S.current.userdata_upload_backup),
-                onTap: () => _serverBackup.backup(),
-              ),
-              ListTile(
-                title: Text(S.current.userdata_download_backup),
-                onTap: () => _serverBackup.restore(),
-              ),
+              ListTile(title: Text(S.current.userdata_upload_backup), onTap: () => _serverBackup.backup()),
+              ListTile(title: Text(S.current.userdata_download_backup), onTap: () => _serverBackup.restore()),
               if (PlatformU.isDesktop)
                 SwitchListTile.adaptive(
                   title: Text(S.current.upload_before_close_app),
                   subtitle: Text('${S.current.disabled}/Removed'),
                   value: false,
                   onChanged: null,
-                )
+                ),
             ],
           ),
           TileGroup(
@@ -116,22 +108,15 @@ class _UserDataPageState extends State<UserDataPage> {
                 onTap: () {
                   router.pushPage(const GithubBackupPage());
                 },
-              )
+              ),
             ],
           ),
           TileGroup(
             header: S.current.userdata_local,
             footer: S.current.settings_userdata_footer,
             children: <Widget>[
-              if (kIsWeb || PlatformU.isMobile)
-                ListTile(
-                  title: Text(S.current.save_as),
-                  onTap: saveAsUserData,
-                ),
-              ListTile(
-                title: Text(S.current.backup),
-                onTap: backupUserData,
-              ),
+              if (kIsWeb || PlatformU.isMobile) ListTile(title: Text(S.current.save_as), onTap: saveAsUserData),
+              ListTile(title: Text(S.current.backup), onTap: backupUserData),
               ListTile(
                 title: Text(S.current.backup_history),
                 trailing: const Icon(Icons.keyboard_arrow_right),
@@ -205,28 +190,29 @@ class _UserDataPageState extends State<UserDataPage> {
         showDialog(
           context: context,
           useRootNavigator: false,
-          builder: (context) => SimpleCancelOkDialog(
-            title: Text(S.current.backup),
-            content: Text(hint),
-            hideCancel: true,
-            actions: [
-              if (fps.isNotEmpty)
-                PlatformU.isDesktop
-                    ? TextButton(
-                        child: Text(S.current.open),
-                        onPressed: () {
-                          openFile(db.paths.backupDir);
-                        },
-                      )
-                    : TextButton(
-                        child: Text(S.current.share),
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                          ShareX.shareFile(fps.first, context: context);
-                        },
-                      ),
-            ],
-          ),
+          builder:
+              (context) => SimpleCancelOkDialog(
+                title: Text(S.current.backup),
+                content: Text(hint),
+                hideCancel: true,
+                actions: [
+                  if (fps.isNotEmpty)
+                    PlatformU.isDesktop
+                        ? TextButton(
+                          child: Text(S.current.open),
+                          onPressed: () {
+                            openFile(db.paths.backupDir);
+                          },
+                        )
+                        : TextButton(
+                          child: Text(S.current.share),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                            ShareX.shareFile(fps.first, context: context);
+                          },
+                        ),
+                ],
+              ),
         );
       },
     ).showDialog(context);
@@ -248,59 +234,57 @@ class _UserDataPageState extends State<UserDataPage> {
       context: context,
       useRootNavigator: false,
       barrierDismissible: false,
-      builder: (context) => AlertDialog(
-        title: Text(S.current.migrate_external_storage_title),
-        content: Text('From:\n ${from.path}\nTo:\n${to.path}'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: Text(S.current.cancel),
-          ),
-          TextButton(
-            onPressed: () async {
-              db.paths.androidUseExternalStorage = useExternal;
-              Navigator.of(context).pop();
-              SimpleCancelOkDialog(
-                title: Text('⚠️ ${S.current.warning}'),
-                content: Text(S.current.migrate_external_storage_manual_warning),
-                hideCancel: true,
-              ).showDialog(context);
-              final sp = await SharedPreferences.getInstance();
-              sp.setBool('android_use_external', useExternal);
-            },
-            child: Text(S.current.migrate_external_storage_btn_no),
-          ),
-          TextButton(
-            onPressed: () async {
-              try {
-                Navigator.of(context).pop();
-                await showEasyLoading(() => _copyDirectory(from, to));
-                final sp = await SharedPreferences.getInstance();
-                sp.setBool('android_use_external', useExternal);
-                if (context.mounted) {
+      builder:
+          (context) => AlertDialog(
+            title: Text(S.current.migrate_external_storage_title),
+            content: Text('From:\n ${from.path}\nTo:\n${to.path}'),
+            actions: [
+              TextButton(onPressed: () => Navigator.of(context).pop(), child: Text(S.current.cancel)),
+              TextButton(
+                onPressed: () async {
+                  db.paths.androidUseExternalStorage = useExternal;
+                  Navigator.of(context).pop();
                   SimpleCancelOkDialog(
-                    title: const Text('⚠️ Warning'),
-                    content: Text(S.current.restart_to_apply_changes),
+                    title: Text('⚠️ ${S.current.warning}'),
+                    content: Text(S.current.migrate_external_storage_manual_warning),
                     hideCancel: true,
                   ).showDialog(context);
-                }
-                EasyLoading.dismiss();
-              } catch (e, s) {
-                logger.e('migrate android data to external failed', e, s);
-                if (context.mounted) {
-                  SimpleCancelOkDialog(
-                    title: const Text('⚠️ ERROR'),
-                    content: Text(e.toString()),
-                    hideCancel: true,
-                  ).showDialog(context);
-                }
-                EasyLoading.dismiss();
-              }
-            },
-            child: Text(S.current.migrate_external_storage_btn_yes),
+                  final sp = await SharedPreferences.getInstance();
+                  sp.setBool('android_use_external', useExternal);
+                },
+                child: Text(S.current.migrate_external_storage_btn_no),
+              ),
+              TextButton(
+                onPressed: () async {
+                  try {
+                    Navigator.of(context).pop();
+                    await showEasyLoading(() => _copyDirectory(from, to));
+                    final sp = await SharedPreferences.getInstance();
+                    sp.setBool('android_use_external', useExternal);
+                    if (context.mounted) {
+                      SimpleCancelOkDialog(
+                        title: const Text('⚠️ Warning'),
+                        content: Text(S.current.restart_to_apply_changes),
+                        hideCancel: true,
+                      ).showDialog(context);
+                    }
+                    EasyLoading.dismiss();
+                  } catch (e, s) {
+                    logger.e('migrate android data to external failed', e, s);
+                    if (context.mounted) {
+                      SimpleCancelOkDialog(
+                        title: const Text('⚠️ ERROR'),
+                        content: Text(e.toString()),
+                        hideCancel: true,
+                      ).showDialog(context);
+                    }
+                    EasyLoading.dismiss();
+                  }
+                },
+                child: Text(S.current.migrate_external_storage_btn_yes),
+              ),
+            ],
           ),
-        ],
-      ),
     );
     if (mounted) {
       setState(() {});

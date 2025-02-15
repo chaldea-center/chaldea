@@ -57,11 +57,7 @@ class _ItemObtainEventFreeTabState extends State<ItemObtainEventFreeTab> {
           ),
         ),
         kDefaultDivider,
-        Expanded(
-          child: InheritSelectionArea(
-            child: ListView(children: buildEventFree(quests)),
-          ),
-        )
+        Expanded(child: InheritSelectionArea(child: ListView(children: buildEventFree(quests)))),
       ],
     );
   }
@@ -126,12 +122,16 @@ class _ItemObtainEventFreeTabState extends State<ItemObtainEventFreeTab> {
               style: quest.is90PlusFree ? TextStyle(color: Theme.of(context).colorScheme.primary) : null,
             ),
             TextSpan(
-                text: sortType == _SortType.dropRate
-                    ? '${S.current.ap_efficiency} $apRateString ${quest.consumeType.unit}.'
-                    : '${S.current.drop_rate} $dropRateString%.'),
+              text:
+                  sortType == _SortType.dropRate
+                      ? '${S.current.ap_efficiency} $apRateString ${quest.consumeType.unit}.'
+                      : '${S.current.drop_rate} $dropRateString%.',
+            ),
             TextSpan(
-                text: '\nJP ${quest.openedAt.sec2date().toDateString()}.  '
-                    '${S.current.quest_runs(drops.runs)}.')
+              text:
+                  '\nJP ${quest.openedAt.sec2date().toDateString()}.  '
+                  '${S.current.quest_runs(drops.runs)}.',
+            ),
           ];
           return ListTile(
             dense: true,
@@ -144,8 +144,9 @@ class _ItemObtainEventFreeTabState extends State<ItemObtainEventFreeTab> {
                 Text.rich(TextSpan(children: subtitles)),
               ],
             ),
-            trailing:
-                Text(sortType != _SortType.dropRate ? '$apRateString ${quest.consumeType.unit}' : '$dropRateString%'),
+            trailing: Text(
+              sortType != _SortType.dropRate ? '$apRateString ${quest.consumeType.unit}' : '$dropRateString%',
+            ),
             isThreeLine: true,
             enabled: !outdated,
           );

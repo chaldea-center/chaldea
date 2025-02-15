@@ -45,7 +45,7 @@ class _FreeCalcFilterDialogState extends State<FreeCalcFilterDialog> {
                     constraints: const BoxConstraints(maxWidth: 160),
                     child: Text(war.lShortName, textScaler: const TextScaler.linear(0.8)),
                   ),
-                )
+                ),
             ],
             onChanged: (v) => setState(() => params.progress = v?.id ?? -1),
           ),
@@ -68,7 +68,7 @@ class _FreeCalcFilterDialogState extends State<FreeCalcFilterDialog> {
             value: params.costMinimize,
             items: [
               DropdownMenuItem(value: true, child: Text(S.current.ap, textScaler: const TextScaler.linear(0.9))),
-              DropdownMenuItem(value: false, child: Text(S.current.counts, textScaler: const TextScaler.linear(0.9)))
+              DropdownMenuItem(value: false, child: Text(S.current.counts, textScaler: const TextScaler.linear(0.9))),
             ],
             onChanged: (v) => setState(() => params.costMinimize = v ?? params.costMinimize),
           ),
@@ -81,9 +81,13 @@ class _FreeCalcFilterDialogState extends State<FreeCalcFilterDialog> {
             value: params.useAP20,
             items: [
               DropdownMenuItem(
-                  value: true, child: Text(S.current.efficiency_type_ap, textScaler: const TextScaler.linear(0.9))),
+                value: true,
+                child: Text(S.current.efficiency_type_ap, textScaler: const TextScaler.linear(0.9)),
+              ),
               DropdownMenuItem(
-                  value: false, child: Text(S.current.efficiency_type_drop, textScaler: const TextScaler.linear(0.9)))
+                value: false,
+                child: Text(S.current.efficiency_type_drop, textScaler: const TextScaler.linear(0.9)),
+              ),
             ],
             onChanged: (v) => setState(() => params.useAP20 = v ?? params.useAP20),
           ),
@@ -113,36 +117,35 @@ class _FreeCalcFilterDialogState extends State<FreeCalcFilterDialog> {
           },
         ),
         SimpleAccordion(
-          headerBuilder: (context, _) => ListTile(
-            dense: true,
-            title: Text(S.current.blacklist),
-            trailing: Text(params.blacklist.length.toString()),
-          ),
-          contentBuilder: (context) => Column(
-            children: divideTiles(params.blacklist.map((key) {
-              String shownName = db.gameData.quests[key]?.lDispName ?? 'Quest $key';
-              return ListTile(
-                title: Text(shownName),
+          headerBuilder:
+              (context, _) => ListTile(
                 dense: true,
-                trailing: IconButton(
-                  icon: const Icon(Icons.clear, size: 18),
-                  tooltip: S.current.remove_from_blacklist,
-                  onPressed: () {
-                    setState(() {
-                      params.blacklist.remove(key);
-                    });
-                  },
+                title: Text(S.current.blacklist),
+                trailing: Text(params.blacklist.length.toString()),
+              ),
+          contentBuilder:
+              (context) => Column(
+                children: divideTiles(
+                  params.blacklist.map((key) {
+                    String shownName = db.gameData.quests[key]?.lDispName ?? 'Quest $key';
+                    return ListTile(
+                      title: Text(shownName),
+                      dense: true,
+                      trailing: IconButton(
+                        icon: const Icon(Icons.clear, size: 18),
+                        tooltip: S.current.remove_from_blacklist,
+                        onPressed: () {
+                          setState(() {
+                            params.blacklist.remove(key);
+                          });
+                        },
+                      ),
+                    );
+                  }),
                 ),
-              );
-            })),
-          ),
+              ),
         ),
-        Center(
-          child: IconButton(
-            icon: const Icon(Icons.close),
-            onPressed: () => Navigator.of(context).pop(),
-          ),
-        )
+        Center(child: IconButton(icon: const Icon(Icons.close), onPressed: () => Navigator.of(context).pop())),
       ],
     );
   }

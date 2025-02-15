@@ -31,12 +31,7 @@ class SHeader extends StatelessWidget {
       padding: padding,
       child: Text.rich(
         richSpan ?? TextSpan(text: label),
-        style: style ??
-            TextStyle(
-              color: color,
-              fontWeight: FontWeight.normal,
-              fontSize: 14.0,
-            ),
+        style: style ?? TextStyle(color: color, fontWeight: FontWeight.normal, fontSize: 14.0),
       ),
     );
   }
@@ -47,11 +42,8 @@ class SFooter extends StatelessWidget {
   final InlineSpan? richSpan;
   final EdgeInsetsGeometry padding;
 
-  const SFooter(
-    String this.label, {
-    super.key,
-    this.padding = const EdgeInsetsDirectional.fromSTEB(15, 7.5, 15, 5),
-  }) : richSpan = null;
+  const SFooter(String this.label, {super.key, this.padding = const EdgeInsetsDirectional.fromSTEB(15, 7.5, 15, 5)})
+    : richSpan = null;
   const SFooter.rich(
     InlineSpan this.richSpan, {
     super.key,
@@ -64,11 +56,7 @@ class SFooter extends StatelessWidget {
       padding: padding,
       child: Text.rich(
         richSpan ?? TextSpan(text: label),
-        style: TextStyle(
-          color: Theme.of(context).textTheme.bodySmall?.color,
-          fontSize: 13.0,
-          letterSpacing: -0.08,
-        ),
+        style: TextStyle(color: Theme.of(context).textTheme.bodySmall?.color, fontSize: 13.0, letterSpacing: -0.08),
       ),
     );
   }
@@ -86,12 +74,7 @@ class SWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Material(
       color: Theme.of(context).cardColor,
-      child: ListTile(
-        leading: icon,
-        title: Text(label),
-        trailing: trailing,
-        onTap: callback,
-      ),
+      child: ListTile(leading: icon, title: Text(label), trailing: trailing, onTap: callback),
     );
   }
 }
@@ -115,11 +98,7 @@ class SModal extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
             Text(value ?? "", style: const TextStyle(color: Colors.grey)),
-            const IconButton(
-              icon: Icon(Icons.arrow_forward_ios),
-              iconSize: 5.0,
-              onPressed: null,
-            ),
+            const IconButton(icon: Icon(Icons.arrow_forward_ios), iconSize: 5.0, onPressed: null),
           ],
         ),
         onTap: callback,
@@ -134,19 +113,19 @@ class SSwitch extends StatelessWidget {
   final bool? value;
   final ValueChanged<bool>? callback;
 
-  const SSwitch(
-      {super.key, required this.label, this.icon, this.value, this.callback}); //handle switch/tile value change
+  const SSwitch({
+    super.key,
+    required this.label,
+    this.icon,
+    this.value,
+    this.callback,
+  }); //handle switch/tile value change
 
   @override
   Widget build(BuildContext context) {
     return Material(
       color: Theme.of(context).cardColor,
-      child: SwitchListTile(
-        secondary: icon,
-        title: Text(label),
-        value: value ?? false,
-        onChanged: callback,
-      ),
+      child: SwitchListTile(secondary: icon, title: Text(label), value: value ?? false, onChanged: callback),
     );
   }
 }
@@ -162,15 +141,17 @@ class SSelect extends StatelessWidget {
   Widget build(BuildContext context) {
     List<Widget> children = [];
     for (int index = 0; index < labels.length; index++) {
-      children.add(ListTile(
-        title: Text(labels[index]),
-        trailing: index == selected ? Icon(Icons.check, color: Theme.of(context).primaryColor) : null,
-        onTap: () {
-          if (callback != null) {
-            callback!(index);
-          }
-        },
-      ));
+      children.add(
+        ListTile(
+          title: Text(labels[index]),
+          trailing: index == selected ? Icon(Icons.check, color: Theme.of(context).primaryColor) : null,
+          onTap: () {
+            if (callback != null) {
+              callback!(index);
+            }
+          },
+        ),
+      );
     }
     return TileGroup(children: children);
   }
@@ -228,11 +209,7 @@ class TileGroup extends StatelessWidget {
         color: tileColor,
         shape: const RoundedRectangleBorder(),
         margin: const EdgeInsets.all(0),
-        child: Column(
-          crossAxisAlignment: crossAxisAlignment,
-          mainAxisSize: MainAxisSize.min,
-          children: group,
-        ),
+        child: Column(crossAxisAlignment: crossAxisAlignment, mainAxisSize: MainAxisSize.min, children: group),
       ),
       if (footerWidget != null) footerWidget,
     ];
@@ -245,11 +222,7 @@ class TileGroup extends StatelessWidget {
     } else {
       return Padding(
         padding: padding ?? const EdgeInsets.only(bottom: 8),
-        child: Column(
-          crossAxisAlignment: crossAxisAlignment,
-          mainAxisSize: MainAxisSize.min,
-          children: _children,
-        ),
+        child: Column(crossAxisAlignment: crossAxisAlignment, mainAxisSize: MainAxisSize.min, children: _children),
       );
     }
   }
@@ -292,18 +265,11 @@ class SliverTileGroup extends StatelessWidget {
     }
     final _children = <Widget>[
       if (header != null) SHeader(header!),
-      for (final e in group)
-        Material(
-          color: tileColor ?? Theme.of(context).cardColor,
-          child: e,
-        ),
-      if (footer != null) SFooter(footer!)
+      for (final e in group) Material(color: tileColor ?? Theme.of(context).cardColor, child: e),
+      if (footer != null) SFooter(footer!),
     ];
     return SliverList(
-      delegate: SliverChildBuilderDelegate(
-        (context, index) => _children[index],
-        childCount: _children.length,
-      ),
+      delegate: SliverChildBuilderDelegate((context, index) => _children[index], childCount: _children.length),
     );
   }
 }
@@ -321,9 +287,7 @@ class SRadios extends StatefulWidget {
 class _SRadiosState extends State<SRadios> {
   @override
   Widget build(BuildContext context) {
-    return TileGroup(
-      children: widget.tiles,
-    );
+    return TileGroup(children: widget.tiles);
   }
 }
 
@@ -339,17 +303,18 @@ class RangeSelector<T extends num> extends StatefulWidget {
 
   final bool increasing;
 
-  const RangeSelector(
-      {super.key,
-      required this.start,
-      required this.end,
-      required this.startItems,
-      required this.endItems,
-      this.itemBuilder,
-      this.startEnabled = true,
-      this.endEnabled = true,
-      this.increasing = true,
-      this.onChanged});
+  const RangeSelector({
+    super.key,
+    required this.start,
+    required this.end,
+    required this.startItems,
+    required this.endItems,
+    this.itemBuilder,
+    this.startEnabled = true,
+    this.endEnabled = true,
+    this.increasing = true,
+    this.onChanged,
+  });
 
   @override
   _RangeSelectorState createState() => _RangeSelectorState<T>();
@@ -365,43 +330,51 @@ class _RangeSelectorState<T extends num> extends State<RangeSelector<T>> {
       children: <Widget>[
         DropdownButton<T>(
           value: widget.start,
-          items: widget.startItems
-              .map((v) => DropdownMenuItem<T>(
-                    value: v,
-                    child: widget.itemBuilder == null ? Text(v.toString()) : widget.itemBuilder!(context, v),
-                  ))
-              .toList(),
-          onChanged: widget.startEnabled
-              ? (value) {
-                  if (value == null) return;
-                  final start = value;
-                  final end = widget.increasing ? max(start, widget.end) : min(start, widget.end);
-                  if (widget.onChanged != null) {
-                    widget.onChanged!(start, end);
+          items:
+              widget.startItems
+                  .map(
+                    (v) => DropdownMenuItem<T>(
+                      value: v,
+                      child: widget.itemBuilder == null ? Text(v.toString()) : widget.itemBuilder!(context, v),
+                    ),
+                  )
+                  .toList(),
+          onChanged:
+              widget.startEnabled
+                  ? (value) {
+                    if (value == null) return;
+                    final start = value;
+                    final end = widget.increasing ? max(start, widget.end) : min(start, widget.end);
+                    if (widget.onChanged != null) {
+                      widget.onChanged!(start, end);
+                    }
                   }
-                }
-              : null,
+                  : null,
         ),
         const Text('   →   '),
         DropdownButton<T>(
           value: widget.end,
-          items: widget.endItems
-              .map((v) => DropdownMenuItem<T>(
-                    value: v,
-                    child: widget.itemBuilder == null ? Text(v.toString()) : widget.itemBuilder!(context, v),
-                  ))
-              .toList(),
-          onChanged: widget.endEnabled
-              ? (value) {
-                  if (value == null) return;
-                  final end = value;
-                  final start = widget.increasing ? min(widget.start, end) : max(widget.start, end);
-                  if (widget.onChanged != null) {
-                    widget.onChanged!(start, end);
+          items:
+              widget.endItems
+                  .map(
+                    (v) => DropdownMenuItem<T>(
+                      value: v,
+                      child: widget.itemBuilder == null ? Text(v.toString()) : widget.itemBuilder!(context, v),
+                    ),
+                  )
+                  .toList(),
+          onChanged:
+              widget.endEnabled
+                  ? (value) {
+                    if (value == null) return;
+                    final end = value;
+                    final start = widget.increasing ? min(widget.start, end) : max(widget.start, end);
+                    if (widget.onChanged != null) {
+                      widget.onChanged!(start, end);
+                    }
                   }
-                }
-              : null,
-        )
+                  : null,
+        ),
       ],
     );
   }
@@ -428,7 +401,11 @@ List<T> divideList<T>(Iterable<T> tiles, T divider, {bool top = false, bool bott
   return combined;
 }
 
-List<Widget> divideTiles(Iterable<Widget> tiles,
-    {Widget divider = kDefaultDivider, bool top = false, bool bottom = false}) {
+List<Widget> divideTiles(
+  Iterable<Widget> tiles, {
+  Widget divider = kDefaultDivider,
+  bool top = false,
+  bool bottom = false,
+}) {
   return divideList(tiles, divider, top: top, bottom: bottom);
 }

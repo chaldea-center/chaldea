@@ -5,11 +5,7 @@ import 'package:flutter/material.dart';
 class DirectionalIcons {
   const DirectionalIcons._();
 
-  static IconData of(
-    BuildContext context, {
-    required IconData ltr,
-    required IconData rtl,
-  }) {
+  static IconData of(BuildContext context, {required IconData ltr, required IconData rtl}) {
     if (Directionality.of(context) == TextDirection.ltr) {
       return ltr;
     } else {

@@ -21,11 +21,7 @@ class FuncFilterData with FilterDataMixin {
 }
 
 class FuncFilter extends FilterPage<FuncFilterData> {
-  const FuncFilter({
-    super.key,
-    required super.filterData,
-    super.onChanged,
-  });
+  const FuncFilter({super.key, required super.filterData, super.onChanged});
 
   @override
   _FuncFilterState createState() => _FuncFilterState();
@@ -36,56 +32,65 @@ class _FuncFilterState extends FilterPageState<FuncFilterData, FuncFilter> with 
   Widget build(BuildContext context) {
     return buildAdaptive(
       title: Text(S.current.filter, textScaler: const TextScaler.linear(0.8)),
-      actions: getDefaultActions(onTapReset: () {
-        filterData.reset();
-        update();
-      }),
-      content: getListViewBody(restorationId: 'func_list_filter', children: [
-        FilterGroup<FuncApplyTarget>(
-          title: const Text('Target Team'),
-          options: FuncApplyTarget.values,
-          values: filterData.funcTargetTeam,
-          optionBuilder: (v) => Text(v.name),
-          onFilterChanged: (value, _) {
-            update();
-          },
-        ),
-        FilterGroup<FuncTargetType>(
-          title: Text(S.current.effect_target),
-          options: funcTargetTypes.keys.toList(),
-          values: filterData.funcTargetType,
-          optionBuilder: (v) => Text(Transl.funcTargetType(v).l),
-          onFilterChanged: (value, _) {
-            update();
-          },
-        ),
-        EffectFilterUtil.buildTraitFilter(context, filterData.targetTrait, update,
-            addTraits: [Trait.cardExtra, Trait.faceCard, Trait.cardNP]),
-        const Divider(height: 16),
-        FilterGroup<FuncType>(
-          title: const Text('Func Type'),
-          options: funcTypes.keys.toList(),
-          values: filterData.funcType,
-          showMatchAll: false,
-          showInvert: false,
-          optionBuilder: (v) => Text(Transl.funcType(v).l),
-          onFilterChanged: (value, _) {
-            update();
-          },
-        ),
-        const Divider(height: 16),
-        FilterGroup<BuffType>(
-          title: const Text('Buff Type'),
-          options: buffTypes.keys.toList(),
-          values: filterData.buffType,
-          showMatchAll: false,
-          showInvert: false,
-          optionBuilder: (v) => Text(Transl.buffType(v).l),
-          onFilterChanged: (value, _) {
-            update();
-          },
-        ),
-      ]),
+      actions: getDefaultActions(
+        onTapReset: () {
+          filterData.reset();
+          update();
+        },
+      ),
+      content: getListViewBody(
+        restorationId: 'func_list_filter',
+        children: [
+          FilterGroup<FuncApplyTarget>(
+            title: const Text('Target Team'),
+            options: FuncApplyTarget.values,
+            values: filterData.funcTargetTeam,
+            optionBuilder: (v) => Text(v.name),
+            onFilterChanged: (value, _) {
+              update();
+            },
+          ),
+          FilterGroup<FuncTargetType>(
+            title: Text(S.current.effect_target),
+            options: funcTargetTypes.keys.toList(),
+            values: filterData.funcTargetType,
+            optionBuilder: (v) => Text(Transl.funcTargetType(v).l),
+            onFilterChanged: (value, _) {
+              update();
+            },
+          ),
+          EffectFilterUtil.buildTraitFilter(
+            context,
+            filterData.targetTrait,
+            update,
+            addTraits: [Trait.cardExtra, Trait.faceCard, Trait.cardNP],
+          ),
+          const Divider(height: 16),
+          FilterGroup<FuncType>(
+            title: const Text('Func Type'),
+            options: funcTypes.keys.toList(),
+            values: filterData.funcType,
+            showMatchAll: false,
+            showInvert: false,
+            optionBuilder: (v) => Text(Transl.funcType(v).l),
+            onFilterChanged: (value, _) {
+              update();
+            },
+          ),
+          const Divider(height: 16),
+          FilterGroup<BuffType>(
+            title: const Text('Buff Type'),
+            options: buffTypes.keys.toList(),
+            values: filterData.buffType,
+            showMatchAll: false,
+            showInvert: false,
+            optionBuilder: (v) => Text(Transl.buffType(v).l),
+            onFilterChanged: (value, _) {
+              update();
+            },
+          ),
+        ],
+      ),
     );
   }
 }
@@ -114,9 +119,7 @@ mixin FuncFilterMixin {
   }
 
   Map<BuffType, String> _getBuffTypes() {
-    var types = {
-      for (final buff in getAllBuffs()) buff.type: SearchUtil.getSortAlphabet(Transl.buffType(buff.type).l),
-    };
+    var types = {for (final buff in getAllBuffs()) buff.type: SearchUtil.getSortAlphabet(Transl.buffType(buff.type).l)};
     return Map.fromEntries(types.entries.toList()..sort2((e) => e.value));
   }
 }

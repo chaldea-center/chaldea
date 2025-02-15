@@ -44,8 +44,9 @@ class FfoPartListPageState extends State<FfoPartListPage> with SearchableListSta
   @override
   Widget build(BuildContext context) {
     filterShownList(
-      compare: (a, b) =>
-          FfoPartFilterData.compare(a.svt, b.svt, keys: filterData.sortKeys, reversed: filterData.sortReversed),
+      compare:
+          (a, b) =>
+              FfoPartFilterData.compare(a.svt, b.svt, keys: filterData.sortKeys, reversed: filterData.sortReversed),
     );
     return scrollListener(
       useGrid: filterData.useGrid,
@@ -66,17 +67,19 @@ class FfoPartListPageState extends State<FfoPartListPage> with SearchableListSta
           IconButton(
             icon: const Icon(Icons.filter_alt),
             tooltip: S.current.filter,
-            onPressed: () => FilterPage.show(
-              context: context,
-              builder: (context) => FfoPartFilterPage(
-                filterData: filterData,
-                onChanged: (_) {
-                  if (mounted) {
-                    setState(() {});
-                  }
-                },
-              ),
-            ),
+            onPressed:
+                () => FilterPage.show(
+                  context: context,
+                  builder:
+                      (context) => FfoPartFilterPage(
+                        filterData: filterData,
+                        onChanged: (_) {
+                          if (mounted) {
+                            setState(() {});
+                          }
+                        },
+                      ),
+                ),
           ),
           searchIcon,
         ],
@@ -97,12 +100,7 @@ class FfoPartListPageState extends State<FfoPartListPage> with SearchableListSta
         width: 51.2,
         height: 72.0,
         child: FfoCard(
-          params: FFOParams.only(
-            where: widget.where,
-            part: part,
-            clipOverflow: true,
-            cropNormalizedSize: true,
-          ),
+          params: FFOParams.only(where: widget.where, part: part, clipOverflow: true, cropNormalizedSize: true),
         ),
       ),
       title: AutoSizeText(Transl.svtNames(name).l, maxLines: 1),
@@ -122,11 +120,7 @@ class FfoPartListPageState extends State<FfoPartListPage> with SearchableListSta
 
   @override
   Widget gridItemBuilder(FfoSvtPart part) {
-    return db.getIconImage(
-      FFOUtil.imgUrl(part.svt?.icon),
-      width: 72,
-      onTap: _getOnTap(part),
-    );
+    return db.getIconImage(FFOUtil.imgUrl(part.svt?.icon), width: 72, onTap: _getOnTap(part));
   }
 
   VoidCallback? _getOnTap(FfoSvtPart part) {

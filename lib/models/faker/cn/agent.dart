@@ -15,16 +15,14 @@ import 'network.dart';
 
 class FakerAgentCN extends FakerAgent<FRequestCN, AutoLoginDataCN, NetworkManagerCN> {
   FakerAgentCN({required super.network});
-  FakerAgentCN.s({
-    required GameTop gameTop,
-    required AutoLoginDataCN user,
-  }) : super(network: NetworkManagerCN(gameTop: gameTop.copy(), user: user));
+  FakerAgentCN.s({required GameTop gameTop, required AutoLoginDataCN user})
+    : super(network: NetworkManagerCN(gameTop: gameTop.copy(), user: user));
 
   String get host => switch (network.user.gameServer) {
-        BiliGameServer.android => 'https://le1-bili-fate.bilibiligame.net',
-        BiliGameServer.ios => 'https://le1-ios-fate.bilibiligame.net',
-        BiliGameServer.uo => 'https://line1-ts-uo-fate.bilibiligame.net',
-      };
+    BiliGameServer.android => 'https://le1-bili-fate.bilibiligame.net',
+    BiliGameServer.ios => 'https://le1-ios-fate.bilibiligame.net',
+    BiliGameServer.uo => 'https://line1-ts-uo-fate.bilibiligame.net',
+  };
 
   @override
   AutoLoginDataCN get user => network.user;
@@ -76,9 +74,10 @@ class FakerAgentCN extends FakerAgent<FRequestCN, AutoLoginDataCN, NetworkManage
 
   Future<FResponse> _loginToMemberCenter() async {
     final request = FRequestCN(
-        network: network,
-        path: '$host/rongame_beta/rgfate/60_member/logintomembercenter.php',
-        key: 'logintomembercenter');
+      network: network,
+      path: '$host/rongame_beta/rgfate/60_member/logintomembercenter.php',
+      key: 'logintomembercenter',
+    );
     final params = <String, Object>{
       "deviceid": "",
       "t": "22360",
@@ -171,7 +170,10 @@ class FakerAgentCN extends FakerAgent<FRequestCN, AutoLoginDataCN, NetworkManage
   }) async {
     // has Set-Cookie
     final request = FRequestCN(
-        network: network, path: '$host/rongame_beta/rgfate/60_1001/ac.php?_userId=$sguid&_key=$key', key: key);
+      network: network,
+      path: '$host/rongame_beta/rgfate/60_1001/ac.php?_userId=$sguid&_key=$key',
+      key: key,
+    );
     Map<String, Object> params = <String, Object>{
       ...?params1,
       "ac": "action",
@@ -204,7 +206,8 @@ class FakerAgentCN extends FakerAgent<FRequestCN, AutoLoginDataCN, NetworkManage
     }
     request.form.addFromMap(params);
     final resp = await request.beginRequest();
-    final _usk = resp.data.responses.firstWhereOrNull((e) => e.nid == nid && e.usk?.isNotEmpty == true)?.usk ??
+    final _usk =
+        resp.data.responses.firstWhereOrNull((e) => e.nid == nid && e.usk?.isNotEmpty == true)?.usk ??
         resp.data.responses.firstWhereOrNull((e) => e.usk?.isNotEmpty == true)?.usk;
     if (_usk != null) {
       final oldUsk = usk;
@@ -228,18 +231,16 @@ class FakerAgentCN extends FakerAgent<FRequestCN, AutoLoginDataCN, NetworkManage
     return _acPhp(
       key: 'toplogin',
       nid: 'login',
-      params2: {
-        "nickname": user.nickname,
-        "sgtype": sgtype,
-        "sgtag": sgtag,
-      },
+      params2: {"nickname": user.nickname, "sgtype": sgtype, "sgtag": sgtag},
     );
   }
 
   @override
   Future<FResponse> gamedataTop({bool checkAppUpdate = true}) async {
-    final resp = await Dio()
-        .get('https://static.biligame.com/config/fgo.config.js', options: Options(responseType: ResponseType.plain));
+    final resp = await Dio().get(
+      'https://static.biligame.com/config/fgo.config.js',
+      options: Options(responseType: ResponseType.plain),
+    );
     final m = RegExp(r"FateGO_(\d+\.\d+\.\d+)_").firstMatch(resp.data as String)!;
     final newVersion = m.group(1)!;
     if (AppVersion.compare(newVersion, network.gameTop.appVer) > 0) {
@@ -256,29 +257,21 @@ class FakerAgentCN extends FakerAgent<FRequestCN, AutoLoginDataCN, NetworkManage
   }
 
   @override
-  Future<FResponse> followerList(
-      {required int32_t questId, required int32_t questPhase, required bool isEnfoceRefresh}) async {
+  Future<FResponse> followerList({
+    required int32_t questId,
+    required int32_t questPhase,
+    required bool isEnfoceRefresh,
+  }) async {
     return _acPhp(
       key: 'followerlist',
       nid: 'follower_list',
-      params3: {
-        "questId": questId,
-        "questPhase": questPhase,
-        "refresh": isEnfoceRefresh ? 1 : 0,
-      },
+      params3: {"questId": questId, "questPhase": questPhase, "refresh": isEnfoceRefresh ? 1 : 0},
     );
   }
 
   @override
   Future<FResponse> itemRecover({required int32_t recoverId, required int32_t num}) async {
-    return _acPhp(
-      key: 'itemrecover',
-      nid: 'item_recover',
-      params4: {
-        "recoverId": recoverId,
-        "num": num,
-      },
-    );
+    return _acPhp(key: 'itemrecover', nid: 'item_recover', params4: {"recoverId": recoverId, "num": num});
   }
 
   @override
@@ -286,24 +279,13 @@ class FakerAgentCN extends FakerAgent<FRequestCN, AutoLoginDataCN, NetworkManage
     return _acPhp(
       key: 'shoppurchase',
       nid: 'purchase',
-      params4: {
-        "id": id,
-        "num": num,
-        if (anotherPayFlag > 0) "anotherPayFlag": anotherPayFlag,
-      },
+      params4: {"id": id, "num": num, if (anotherPayFlag > 0) "anotherPayFlag": anotherPayFlag},
     );
   }
 
   @override
   Future<FResponse> shopPurchaseByStone({required int32_t id, required int32_t num}) async {
-    return _acPhp(
-      key: 'shoppurchasebystone',
-      nid: 'purchase_by_stone',
-      params4: {
-        "id": id,
-        "num": num,
-      },
-    );
+    return _acPhp(key: 'shoppurchasebystone', nid: 'purchase_by_stone', params4: {"id": id, "num": num});
   }
 
   @override
@@ -311,25 +293,21 @@ class FakerAgentCN extends FakerAgent<FRequestCN, AutoLoginDataCN, NetworkManage
     return _acPhp(
       key: 'eventmissionreceive',
       nid: 'event_mission_receive',
-      params1: {
-        'missionIds': jsonEncode(missionIds),
-      },
+      params1: {'missionIds': jsonEncode(missionIds)},
     );
   }
 
   @override
-  Future<FResponse> userPresentReceive(
-      {required List<int64_t> presentIds, required int32_t itemSelectIdx, required int32_t itemSelectNum}) {
+  Future<FResponse> userPresentReceive({
+    required List<int64_t> presentIds,
+    required int32_t itemSelectIdx,
+    required int32_t itemSelectNum,
+  }) {
     return _acPhp(
       key: 'presentreceive',
       nid: 'present_receive',
-      params2: {
-        'presentIds': jsonEncode(presentIds),
-      },
-      params4: {
-        'itemSelectIdx': itemSelectIdx,
-        'itemSelectNum': itemSelectNum,
-      },
+      params2: {'presentIds': jsonEncode(presentIds)},
+      params4: {'itemSelectIdx': itemSelectIdx, 'itemSelectNum': itemSelectNum},
     );
   }
 
@@ -352,10 +330,7 @@ class FakerAgentCN extends FakerAgent<FRequestCN, AutoLoginDataCN, NetworkManage
     return _acPhp(
       key: 'gachadraw',
       nid: 'gacha_draw',
-      params2: {
-        "storyAdjustIds": jsonEncode(storyAdjustIds),
-        "selectBonusList": selectBonusListData,
-      },
+      params2: {"storyAdjustIds": jsonEncode(storyAdjustIds), "selectBonusList": selectBonusListData},
       params4: {
         "gachaId": gachaId,
         "num": num,
@@ -368,32 +343,19 @@ class FakerAgentCN extends FakerAgent<FRequestCN, AutoLoginDataCN, NetworkManage
 
   @override
   Future<FResponse> boxGachaDraw({required int32_t gachaId, required int32_t num}) {
-    return _acPhp(
-      key: 'boxgachadraw',
-      nid: 'box_gacha_draw',
-      params4: {
-        "boxGachaId": gachaId,
-        "num": num,
-      },
-    );
+    return _acPhp(key: 'boxgachadraw', nid: 'box_gacha_draw', params4: {"boxGachaId": gachaId, "num": num});
   }
 
   @override
   Future<FResponse> boxGachaReset({required int32_t gachaId}) {
-    return _acPhp(
-      key: 'boxgachareset',
-      nid: 'box_gacha_reset',
-      params4: {
-        "boxGachaId": gachaId,
-      },
-    );
+    return _acPhp(key: 'boxgachareset', nid: 'box_gacha_reset', params4: {"boxGachaId": gachaId});
   }
 
   @override
   Future<FResponse> sellServant({required List<int64_t> servantUserIds, required List<int64_t> commandCodeUserIds}) {
     List<Map<String, dynamic>> _useSvtHash(List<int> ids) => [
-          for (final id in ids) {"id": id, "num": 1}
-        ];
+      for (final id in ids) {"id": id, "num": 1},
+    ];
     return _acPhp(
       key: 'shopsellsvt',
       nid: 'sell_svt',
@@ -414,37 +376,19 @@ class FakerAgentCN extends FakerAgent<FRequestCN, AutoLoginDataCN, NetworkManage
     return _acPhp(
       key: 'cardcombine',
       nid: 'card_combine',
-      params2: {
-        "baseUserSvtId": baseUserSvtId,
-        "materialUserSvtIds": jsonEncode(materialSvtIds),
-      },
-      params4: {
-        "useQp": useQp,
-        "getExp": getExp,
-      },
+      params2: {"baseUserSvtId": baseUserSvtId, "materialUserSvtIds": jsonEncode(materialSvtIds)},
+      params4: {"useQp": useQp, "getExp": getExp},
     );
   }
 
   @override
   Future<FResponse> servantLimitCombine({required int64_t baseUserSvtId}) {
-    return _acPhp(
-      key: 'cardcombinelimit',
-      nid: 'card_limit',
-      params2: {
-        "baseUserSvtId": baseUserSvtId,
-      },
-    );
+    return _acPhp(key: 'cardcombinelimit', nid: 'card_limit', params2: {"baseUserSvtId": baseUserSvtId});
   }
 
   @override
   Future<FResponse> servantLevelExceed({required int64_t baseUserSvtId}) {
-    return _acPhp(
-      key: 'cardcombineexceed',
-      nid: 'card_combine_exceed',
-      params2: {
-        "baseUserSvtId": baseUserSvtId,
-      },
-    );
+    return _acPhp(key: 'cardcombineexceed', nid: 'card_combine_exceed', params2: {"baseUserSvtId": baseUserSvtId});
   }
 
   @override
@@ -452,10 +396,7 @@ class FakerAgentCN extends FakerAgent<FRequestCN, AutoLoginDataCN, NetworkManage
     return _acPhp(
       key: 'svtequipcombine',
       nid: 'svt_equip_combine',
-      params2: {
-        "baseUserSvtId": baseUserSvtId,
-        "materialUserSvtIds": jsonEncode(materialSvtIds),
-      },
+      params2: {"baseUserSvtId": baseUserSvtId, "materialUserSvtIds": jsonEncode(materialSvtIds)},
     );
   }
 
@@ -499,9 +440,7 @@ class FakerAgentCN extends FakerAgent<FRequestCN, AutoLoginDataCN, NetworkManage
     return _acPhp(
       key: 'eventdecksetup',
       nid: 'event_deck_setup',
-      params1: {
-        "deckInfo": jsonEncode(userEventDeck.deckInfo),
-      },
+      params1: {"deckInfo": jsonEncode(userEventDeck.deckInfo)},
       params3: {
         "eventId": eventId,
         "questId": questId,
@@ -512,18 +451,16 @@ class FakerAgentCN extends FakerAgent<FRequestCN, AutoLoginDataCN, NetworkManage
   }
 
   @override
-  Future<FResponse> battleScenario(
-      {required int32_t questId, required int32_t questPhase, required List<int32_t> routeSelect}) {
+  Future<FResponse> battleScenario({
+    required int32_t questId,
+    required int32_t questPhase,
+    required List<int32_t> routeSelect,
+  }) {
     return _acPhp(
       key: 'battlescenario',
       nid: 'battle_scenario',
-      params2: {
-        "routeSelect": jsonEncode(routeSelect),
-      },
-      params4: {
-        "questId": questId,
-        "questPhase": questPhase,
-      },
+      params2: {"routeSelect": jsonEncode(routeSelect)},
+      params4: {"questId": questId, "questPhase": questPhase},
     );
   }
 
@@ -594,12 +531,7 @@ class FakerAgentCN extends FakerAgent<FRequestCN, AutoLoginDataCN, NetworkManage
     final resp = await _acPhp(
       key: 'battleresume',
       nid: 'battle_resume',
-      params3: {
-        "battleId": battleId,
-        "questId": questId,
-        "questPhase": questPhase,
-        "usedTurnList": usedTurnList,
-      },
+      params3: {"battleId": battleId, "questId": questId, "questPhase": questPhase, "usedTurnList": usedTurnList},
     );
 
     final battleEntity = resp.data.mstData.battles.firstOrNull;
@@ -624,11 +556,7 @@ class FakerAgentCN extends FakerAgent<FRequestCN, AutoLoginDataCN, NetworkManage
     int32_t elapsedTurn = 1,
     required List<int32_t> usedTurnArray, // win 001, retire 100
     int32_t recordType = 1,
-    Map<String, Object> recordJson = const {
-      "turnMaxDamage": 0,
-      "knockdownNum": 0,
-      "totalDamageToAliveEnemy": 0,
-    },
+    Map<String, Object> recordJson = const {"turnMaxDamage": 0, "knockdownNum": 0, "totalDamageToAliveEnemy": 0},
     List<Map<String, Object>> firstNpPlayList = const [],
     List<PlayerServantNoblePhantasmUsageDataEntity> playerServantNoblePhantasmUsageData =
         const [], // []/ [{"svtId":403500,"followerType":0,"seqId":403500,"addCount":3}]"
@@ -722,13 +650,7 @@ class FakerAgentCN extends FakerAgent<FRequestCN, AutoLoginDataCN, NetworkManage
 
   @override
   Future<FResponse> battleTurn({required int64_t battleId}) async {
-    final resp = await _acPhp(
-      key: 'battleturn',
-      nid: 'battle_turn',
-      params2: {
-        "battleId": battleId,
-      },
-    );
+    final resp = await _acPhp(key: 'battleturn', nid: 'battle_turn', params2: {"battleId": battleId});
     updateRaidInfo(battleTurnResp: resp);
     return resp;
   }

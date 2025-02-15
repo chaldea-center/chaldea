@@ -16,7 +16,8 @@ class CostumeDetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final costume = _costume ??
+    final costume =
+        _costume ??
         db.gameData.costumes[id] ??
         db.gameData.costumes.values.firstWhereOrNull((e) => e.battleCharaId == id);
     if (costume == null) {
@@ -29,27 +30,25 @@ class CostumeDetailPage extends StatelessWidget {
       children: <Widget>[
         CustomTableRow(
           children: [
-            TableCellData(
-              child: db.getIconImage(costume.icon, height: 72),
-              flex: 1,
-              padding: const EdgeInsets.all(3),
-            ),
+            TableCellData(child: db.getIconImage(costume.icon, height: 72), flex: 1, padding: const EdgeInsets.all(3)),
             TableCellData(
               flex: 3,
               padding: EdgeInsets.zero,
               child: CustomTable(
                 hideOutline: true,
                 children: <Widget>[
-                  CustomTableRow(children: [
-                    TableCellData(
-                      child: Text(
-                        costume.lName.l,
-                        style: const TextStyle(fontWeight: FontWeight.bold),
-                        textAlign: TextAlign.center,
+                  CustomTableRow(
+                    children: [
+                      TableCellData(
+                        child: Text(
+                          costume.lName.l,
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                          textAlign: TextAlign.center,
+                        ),
+                        isHeader: true,
                       ),
-                      isHeader: true,
-                    )
-                  ]),
+                    ],
+                  ),
                   if (!Transl.isJP)
                     CustomTableRow(children: [TableCellData(text: costume.name, textAlign: TextAlign.center)]),
                   if (!Transl.isEN)
@@ -57,9 +56,9 @@ class CostumeDetailPage extends StatelessWidget {
                   CustomTableRow(
                     children: [
                       TableCellData(text: 'No. ${costume.costumeCollectionNo}'),
-                      TableCellData(text: 'No. ${costume.battleCharaId} (${costume.id})', flex: 2)
+                      TableCellData(text: 'No. ${costume.battleCharaId} (${costume.id})', flex: 2),
                     ],
-                  )
+                  ),
                 ],
               ),
             ),
@@ -71,28 +70,34 @@ class CostumeDetailPage extends StatelessWidget {
           child: Text(svt?.lName.l ?? '-'),
         ),
         CustomTableRow(children: [TableCellData(text: S.current.item, isHeader: true)]),
-        CustomTableRow(children: [
-          TableCellData(
-            child: unlockMats == null
-                ? const Text('-')
-                : Wrap(
-                    spacing: 4,
-                    runSpacing: 2,
-                    alignment: WrapAlignment.center,
-                    children: unlockMats
-                        .toItemDict()
-                        .entries
-                        .map((e) => Item.iconBuilder(
-                              context: context,
-                              itemId: e.key,
-                              text: e.value.format(),
-                              width: 44,
-                              item: null,
-                            ))
-                        .toList(),
-                  ),
-          )
-        ]),
+        CustomTableRow(
+          children: [
+            TableCellData(
+              child:
+                  unlockMats == null
+                      ? const Text('-')
+                      : Wrap(
+                        spacing: 4,
+                        runSpacing: 2,
+                        alignment: WrapAlignment.center,
+                        children:
+                            unlockMats
+                                .toItemDict()
+                                .entries
+                                .map(
+                                  (e) => Item.iconBuilder(
+                                    context: context,
+                                    itemId: e.key,
+                                    text: e.value.format(),
+                                    width: 44,
+                                    item: null,
+                                  ),
+                                )
+                                .toList(),
+                      ),
+            ),
+          ],
+        ),
         // CustomTableRow(children: [
         //   TableCellData(text: S.current.obtain_methods, isHeader: true)
         // ]),
@@ -106,7 +111,7 @@ class CostumeDetailPage extends StatelessWidget {
                 text: costume.lDetail.l,
                 alignment: Alignment.centerLeft,
                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-              )
+              ),
             ],
           ),
         CustomTableRow(
@@ -115,7 +120,7 @@ class CostumeDetailPage extends StatelessWidget {
               text: costume.detail,
               alignment: Alignment.centerLeft,
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-            )
+            ),
           ],
         ),
         CustomTableRow(children: [TableCellData(text: S.current.illustration, isHeader: true)]),

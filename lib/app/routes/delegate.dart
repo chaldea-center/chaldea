@@ -16,12 +16,7 @@ class AppShell extends StatefulWidget {
   final AppRouterDelegate routerDelegate;
   final bool active;
 
-  const AppShell({
-    super.key,
-    required this.appState,
-    required this.routerDelegate,
-    this.active = false,
-  });
+  const AppShell({super.key, required this.appState, required this.routerDelegate, this.active = false});
 
   @override
   _AppShellState createState() => _AppShellState();
@@ -32,10 +27,7 @@ class _AppShellState extends State<AppShell> {
   Widget build(BuildContext context) {
     final childBackButtonDispatcher = Router.of(context).backButtonDispatcher?.createChildBackButtonDispatcher();
     childBackButtonDispatcher?.takePriority();
-    return Router(
-      routerDelegate: widget.routerDelegate,
-      backButtonDispatcher: childBackButtonDispatcher,
-    );
+    return Router(routerDelegate: widget.routerDelegate, backButtonDispatcher: childBackButtonDispatcher);
   }
 }
 
@@ -57,9 +49,10 @@ class AppRouterDelegate extends RouterDelegate<RouteConfiguration>
   int get index => _parent.appState.children.indexOf(this);
 
   @override
-  RouteConfiguration? get currentConfiguration => _history.isNotEmpty && _history.last.arguments is RouteConfiguration
-      ? _history.last.arguments as RouteConfiguration
-      : null;
+  RouteConfiguration? get currentConfiguration =>
+      _history.isNotEmpty && _history.last.arguments is RouteConfiguration
+          ? _history.last.arguments as RouteConfiguration
+          : null;
 
   @override
   final GlobalKey<NavigatorState> navigatorKey = GlobalKey();
@@ -145,13 +138,8 @@ class AppRouterDelegate extends RouterDelegate<RouteConfiguration>
   }) async {
     assert(url != null || child != null);
     // if (popDetail) popDetails();
-    final page = RouteConfiguration(
-      url: url,
-      child: child,
-      detail: detail,
-      arguments: arguments,
-      region: region,
-    ).createPage();
+    final page =
+        RouteConfiguration(url: url, child: child, detail: detail, arguments: arguments, region: region).createPage();
     _history.add(page);
     if (url != null && url.trim().trimChar('/').isNotEmpty) {
       urlHistory.add(url);
@@ -163,18 +151,8 @@ class AppRouterDelegate extends RouterDelegate<RouteConfiguration>
     return result;
   }
 
-  Future<T?> pushPage<T extends Object?>(
-    Widget child, {
-    dynamic arguments,
-    bool? detail,
-    bool popDetail = false,
-  }) {
-    return popDetailAndPush(
-      child: child,
-      arguments: arguments,
-      detail: detail,
-      popDetail: popDetail,
-    );
+  Future<T?> pushPage<T extends Object?>(Widget child, {dynamic arguments, bool? detail, bool popDetail = false}) {
+    return popDetailAndPush(child: child, arguments: arguments, detail: detail, popDetail: popDetail);
   }
 
   Future<T?> pushBuilder<T extends Object?>({
@@ -203,12 +181,7 @@ class AppRouterDelegate extends RouterDelegate<RouteConfiguration>
       popDetail = !SplitRoute.isDetail(context);
     }
     if (popDetail ?? true) popDetails();
-    return push(
-      url: url,
-      child: child,
-      arguments: arguments,
-      detail: detail,
-    );
+    return push(url: url, child: child, arguments: arguments, detail: detail);
   }
 
   // better to check current route is [master] before pop details
@@ -237,8 +210,12 @@ class AppRouterDelegate extends RouterDelegate<RouteConfiguration>
     Offset? anchorPoint,
     TraversalEdgeBehavior? traversalEdgeBehavior,
   }) {
-    BuildContext _context = [context, navigatorKey.currentContext, _parent.navigatorKey.currentContext]
-        .firstWhere((e) => e != null && e.mounted)!;
+    BuildContext _context =
+        [
+          context,
+          navigatorKey.currentContext,
+          _parent.navigatorKey.currentContext,
+        ].firstWhere((e) => e != null && e.mounted)!;
     return material.showDialog(
       context: _context,
       builder: builder,
@@ -302,10 +279,7 @@ class AppRouter extends StatelessWidget {
 class _AppRouter extends InheritedWidget {
   final AppRouterDelegate router;
 
-  const _AppRouter({
-    required this.router,
-    required super.child,
-  });
+  const _AppRouter({required this.router, required super.child});
 
   @override
   bool updateShouldNotify(_AppRouter oldWidget) {

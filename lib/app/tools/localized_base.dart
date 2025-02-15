@@ -16,27 +16,17 @@ class LocalizedText {
 
   String get kor => _kor?.isNotEmpty == true ? _kor! : eng;
 
-  const LocalizedText({
-    required String? chs,
-    required String? jpn,
-    required String? eng,
-    String? kor,
-  })  : _chs = chs,
-        _jpn = jpn,
-        _eng = eng,
-        _kor = kor;
+  const LocalizedText({required String? chs, required String? jpn, required String? eng, String? kor})
+    : _chs = chs,
+      _jpn = jpn,
+      _eng = eng,
+      _kor = kor;
 
   String get localized {
     return _values.first;
   }
 
-  static String of({
-    required String chs,
-    required String? jpn,
-    required String? eng,
-    String? kor,
-    Language? primary,
-  }) {
+  static String of({required String chs, required String? jpn, required String? eng, String? kor, Language? primary}) {
     final text = LocalizedText(chs: chs, jpn: jpn, eng: eng, kor: kor);
     if (primary == null) {
       return text.localized;

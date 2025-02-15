@@ -62,10 +62,11 @@ class _IllustratorListPageState extends State<IllustratorListPage>
     super.initState();
     _parse();
     options = _IllustratorOptions(
-        onChanged: (_) {
-          if (mounted) setState(() {});
-        },
-        state: this);
+      onChanged: (_) {
+        if (mounted) setState(() {});
+      },
+      state: this,
+    );
   }
 
   @override
@@ -96,16 +97,17 @@ class _IllustratorListPageState extends State<IllustratorListPage>
   Widget listItemBuilder(String creator) {
     int count = (svtMap[creator]?.length ?? 0) + (ceMap[creator]?.length ?? 0) + (codeMap[creator]?.length ?? 0);
     return SimpleAccordion(
-      headerBuilder: (context, _) => ListTile(
-        title: InkWell(
-          onTap: () {
-            router.pushPage(CreatorDetail.illust(name: creator));
-          },
-          child: Text(Transl.illustratorNames(creator).l),
-        ),
-        trailing: Text(count.toString()),
-        contentPadding: const EdgeInsetsDirectional.only(start: 16.0),
-      ),
+      headerBuilder:
+          (context, _) => ListTile(
+            title: InkWell(
+              onTap: () {
+                router.pushPage(CreatorDetail.illust(name: creator));
+              },
+              child: Text(Transl.illustratorNames(creator).l),
+            ),
+            trailing: Text(count.toString()),
+            contentPadding: const EdgeInsetsDirectional.only(start: 16.0),
+          ),
       contentBuilder: (context) {
         return Column(
           mainAxisSize: MainAxisSize.min,

@@ -30,16 +30,19 @@ class FullscreenImageViewer extends StatefulWidget {
     this.galleryOption = const PhotoViewGalleryOption(),
     CachedImageOption? cachedImageOption,
     bool showSaveOnLongPress = false,
-  }) : children = urls
-            .map((e) => CachedImage(
-                  imageUrl: e,
-                  cachedOption: cachedImageOption,
-                  photoViewOption: photoViewOption,
-                  showSaveOnLongPress: showSaveOnLongPress,
-                  viewFullOnTap: false,
-                  onTap: null,
-                ))
-            .toList();
+  }) : children =
+           urls
+               .map(
+                 (e) => CachedImage(
+                   imageUrl: e,
+                   cachedOption: cachedImageOption,
+                   photoViewOption: photoViewOption,
+                   showSaveOnLongPress: showSaveOnLongPress,
+                   viewFullOnTap: false,
+                   onTap: null,
+                 ),
+               )
+               .toList();
 
   /// mostly used
   static Future show({
@@ -55,26 +58,27 @@ class FullscreenImageViewer extends StatefulWidget {
         opaque: opaque, // to avoid create new state of lower routes
         // fullscreenDialog: true,
         // add transition
-        pageBuilder: (context, _, __) => FullscreenImageViewer(
-          galleryOption: PhotoViewGalleryOption(
-            pageController: initialPage == null ? null : PageController(initialPage: initialPage),
-          ),
-          children: List.generate(
-            urls.length,
-            (index) => CachedImage(
-              imageUrl: urls[index],
-              placeholder: placeholder,
-              showSaveOnLongPress: true,
-              viewFullOnTap: false,
-              onTap: null,
-              photoViewOption: PhotoViewOption.limited(),
-              cachedOption: const CachedImageOption(
-                fadeOutDuration: Duration(milliseconds: 1200),
-                fadeInDuration: Duration(milliseconds: 800),
+        pageBuilder:
+            (context, _, __) => FullscreenImageViewer(
+              galleryOption: PhotoViewGalleryOption(
+                pageController: initialPage == null ? null : PageController(initialPage: initialPage),
+              ),
+              children: List.generate(
+                urls.length,
+                (index) => CachedImage(
+                  imageUrl: urls[index],
+                  placeholder: placeholder,
+                  showSaveOnLongPress: true,
+                  viewFullOnTap: false,
+                  onTap: null,
+                  photoViewOption: PhotoViewOption.limited(),
+                  cachedOption: const CachedImageOption(
+                    fadeOutDuration: Duration(milliseconds: 1200),
+                    fadeInDuration: Duration(milliseconds: 800),
+                  ),
+                ),
               ),
             ),
-          ),
-        ),
       ),
     );
   }
@@ -92,12 +96,7 @@ class _FullscreenImageViewerState extends State<FullscreenImageViewer> {
     final bgColor =
         Theme.of(context).isDarkMode ? Theme.of(context).colorScheme.surface : Theme.of(context).colorScheme.primary;
     return Scaffold(
-      appBar: showAppBar
-          ? AppBar(
-              title: const Text('Image'),
-              backgroundColor: bgColor.withAlpha(102),
-            )
-          : null,
+      appBar: showAppBar ? AppBar(title: const Text('Image'), backgroundColor: bgColor.withAlpha(102)) : null,
       extendBodyBehindAppBar: true,
       body: GestureDetector(
         behavior: HitTestBehavior.opaque,
@@ -107,10 +106,7 @@ class _FullscreenImageViewerState extends State<FullscreenImageViewer> {
         child: Stack(
           children: [
             Positioned.fill(
-              child: Padding(
-                padding: MediaQuery.of(context).padding.add(const EdgeInsets.all(6)),
-                child: gallery,
-              ),
+              child: Padding(padding: MediaQuery.of(context).padding.add(const EdgeInsets.all(6)), child: gallery),
             ),
             barrier(right: null, width: _kBackGestureWidth),
             barrier(left: null, width: _kBackGestureWidth),
@@ -144,10 +140,7 @@ class _FullscreenImageViewerState extends State<FullscreenImageViewer> {
             showAppBar = !showAppBar;
           });
         },
-        child: SizedBox(
-          width: width,
-          height: height,
-        ),
+        child: SizedBox(width: width, height: height),
       ),
     );
   }
@@ -158,7 +151,7 @@ class _FullscreenImageViewerState extends State<FullscreenImageViewer> {
         for (final child in widget.children)
           widget.photoViewOption
               .copyWith(onTapUp: (context, _, __) => Navigator.pop(context))
-              .toOriginalWithChild(child)
+              .toOriginalWithChild(child),
       ],
       loadingBuilder: widget.galleryOption.loadingBuilder,
       backgroundDecoration: widget.galleryOption.backgroundDecoration,

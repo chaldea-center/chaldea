@@ -133,13 +133,7 @@ class VoiceCondDescriptor extends StatelessWidget with DescriptorBase {
       case VoiceCondType.masterMission:
         return text('${S.current.master_mission} $value');
       case VoiceCondType.levelUp:
-        return localized(
-          jp: null,
-          cn: null,
-          tw: null,
-          na: () => text('Level up'),
-          kr: null,
-        );
+        return localized(jp: null, cn: null, tw: null, na: () => text('Level up'), kr: null);
       case VoiceCondType.limitCount:
         return text('${S.current.ascension} $value');
       case VoiceCondType.limitCountCommon:
@@ -193,12 +187,14 @@ class VoiceCondDescriptor extends StatelessWidget with DescriptorBase {
       default:
         break;
     }
-    return wrapMsg(localized(
-      jp: null,
-      cn: () => text('未知条件(${condType.name}): $value'),
-      tw: () => text('未知條件(${condType.name}): $value'),
-      na: () => text('Unknown Cond(${condType.name}): $value'),
-      kr: null,
-    ));
+    return wrapMsg(
+      localized(
+        jp: null,
+        cn: () => text('未知条件(${condType.name}): $value'),
+        tw: () => text('未知條件(${condType.name}): $value'),
+        na: () => text('Unknown Cond(${condType.name}): $value'),
+        kr: null,
+      ),
+    );
   }
 }

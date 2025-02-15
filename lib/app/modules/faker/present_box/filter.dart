@@ -8,11 +8,7 @@ import 'package:chaldea/utils/extension.dart';
 import 'package:chaldea/widgets/custom_dialogs.dart';
 
 class UserPresentBoxFilterPage extends FilterPage<PresentBoxFilterData> {
-  const UserPresentBoxFilterPage({
-    super.key,
-    required super.filterData,
-    super.onChanged,
-  });
+  const UserPresentBoxFilterPage({super.key, required super.filterData, super.onChanged});
 
   @override
   _ShopFilterState createState() => _ShopFilterState();
@@ -23,53 +19,58 @@ class _ShopFilterState extends FilterPageState<PresentBoxFilterData, UserPresent
   Widget build(BuildContext context) {
     return buildAdaptive(
       title: Text(S.current.filter, textScaler: const TextScaler.linear(0.8)),
-      actions: getDefaultActions(onTapReset: () {
-        filterData.reset();
-        update();
-      }),
-      content: getListViewBody(restorationId: 'present_box_filter', children: [
-        FilterGroup<PresentType>(
-          title: Text(S.current.general_type),
-          options: PresentType.values,
-          values: FilterGroupData(options: filterData.presentTypes.toSet()),
-          optionBuilder: (v) => Text(v.shownName),
-          onFilterChanged: (value, _) {
-            filterData.presentTypes = value.options.toSet();
-            update();
-          },
-        ),
-        FilterGroup<int>(
-          title: Text(S.current.rarity),
-          options: const [1, 2, 3, 4, 5],
-          values: FilterGroupData(options: filterData.rarities.toSet()),
-          onFilterChanged: (value, _) {
-            filterData.rarities = value.options.toSet();
-            update();
-          },
-        ),
-        ListTile(
-          dense: true,
-          title: Text('Max num'),
-          trailing: TextButton(
-            onPressed: () {
-              InputCancelOkDialog(
-                title: 'Max num',
-                keyboardType: TextInputType.number,
-                validate: (s) => s.isEmpty || (int.tryParse(s) ?? -1) >= 0,
-                onSubmit: (s) {
-                  if (s.trim().isEmpty) {
-                    filterData.maxNum = 0;
-                  } else {
-                    filterData.maxNum = int.parse(s);
-                  }
-                  update();
-                },
-              ).showDialog(context);
+      actions: getDefaultActions(
+        onTapReset: () {
+          filterData.reset();
+          update();
+        },
+      ),
+      content: getListViewBody(
+        restorationId: 'present_box_filter',
+        children: [
+          FilterGroup<PresentType>(
+            title: Text(S.current.general_type),
+            options: PresentType.values,
+            values: FilterGroupData(options: filterData.presentTypes.toSet()),
+            optionBuilder: (v) => Text(v.shownName),
+            onFilterChanged: (value, _) {
+              filterData.presentTypes = value.options.toSet();
+              update();
             },
-            child: Text(filterData.maxNum.toString()),
           ),
-        )
-      ]),
+          FilterGroup<int>(
+            title: Text(S.current.rarity),
+            options: const [1, 2, 3, 4, 5],
+            values: FilterGroupData(options: filterData.rarities.toSet()),
+            onFilterChanged: (value, _) {
+              filterData.rarities = value.options.toSet();
+              update();
+            },
+          ),
+          ListTile(
+            dense: true,
+            title: Text('Max num'),
+            trailing: TextButton(
+              onPressed: () {
+                InputCancelOkDialog(
+                  title: 'Max num',
+                  keyboardType: TextInputType.number,
+                  validate: (s) => s.isEmpty || (int.tryParse(s) ?? -1) >= 0,
+                  onSubmit: (s) {
+                    if (s.trim().isEmpty) {
+                      filterData.maxNum = 0;
+                    } else {
+                      filterData.maxNum = int.parse(s);
+                    }
+                    update();
+                  },
+                ).showDialog(context);
+              },
+              child: Text(filterData.maxNum.toString()),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

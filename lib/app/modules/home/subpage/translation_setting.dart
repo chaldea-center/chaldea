@@ -20,17 +20,19 @@ class _TranslationSettingState extends State<TranslationSetting> {
         children: [
           orderableList,
           Text.rich(
-            TextSpan(children: [
-              TextSpan(
-                text: 'Auto',
-                style: db.settings.preferredRegions == null ? null : Theme.of(context).textTheme.bodySmall,
-              ),
-              const TextSpan(text: ' / '),
-              TextSpan(
-                text: 'Fixed',
-                style: db.settings.preferredRegions == null ? Theme.of(context).textTheme.bodySmall : null,
-              ),
-            ]),
+            TextSpan(
+              children: [
+                TextSpan(
+                  text: 'Auto',
+                  style: db.settings.preferredRegions == null ? null : Theme.of(context).textTheme.bodySmall,
+                ),
+                const TextSpan(text: ' / '),
+                TextSpan(
+                  text: 'Fixed',
+                  style: db.settings.preferredRegions == null ? Theme.of(context).textTheme.bodySmall : null,
+                ),
+              ],
+            ),
             textAlign: TextAlign.center,
             // style: ,
           ),
@@ -46,7 +48,7 @@ class _TranslationSettingState extends State<TranslationSetting> {
                 });
               },
             ),
-          )
+          ),
         ],
       ),
     );

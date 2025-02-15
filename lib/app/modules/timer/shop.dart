@@ -13,9 +13,7 @@ class TimerShopTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final groups = filterData.getSorted(TimerShopItem.group(shops, region));
-    return ListView(children: [
-      for (final group in groups) group.buildItem(context, expanded: true),
-    ]);
+    return ListView(children: [for (final group in groups) group.buildItem(context, expanded: true)]);
   }
 }
 
@@ -57,22 +55,15 @@ class TimerShopItem with TimerItem {
           contentPadding: const EdgeInsetsDirectional.only(start: 16),
           minLeadingWidth: 24,
           horizontalTitleGap: 8,
-          leading: payItem == null
-              ? null
-              : Item.iconBuilder(
-                  context: context,
-                  item: payItem,
-                  icon: payItem.icon,
-                  width: 20,
-                ),
-          title: Text.rich(TextSpan(children: [
+          leading:
+              payItem == null ? null : Item.iconBuilder(context: context, item: payItem, icon: payItem.icon, width: 20),
+          title: Text.rich(
             TextSpan(
-              text: [
-                fmtDate(shop.openedAt),
-                fmtDate(shop.closedAt),
-              ].join(" ~ "),
-            )
-          ])),
+              children: [
+                TextSpan(text: [fmtDate(shop.openedAt), fmtDate(shop.closedAt)].join(" ~ ")),
+              ],
+            ),
+          ),
           trailing: CountDown(
             endedAt: shop.closedAt.sec2date(),
             startedAt: shop.openedAt.sec2date(),
@@ -86,9 +77,7 @@ class TimerShopItem with TimerItem {
           margin: const EdgeInsets.fromLTRB(8, 0, 8, 8),
           child: Column(
             mainAxisSize: MainAxisSize.min,
-            children: [
-              for (final shop in shops) ShopDescriptor(shop: shop, showTime: false, region: region),
-            ],
+            children: [for (final shop in shops) ShopDescriptor(shop: shop, showTime: false, region: region)],
           ),
         );
       },

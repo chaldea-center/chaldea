@@ -40,9 +40,7 @@ class _ClassBoardMissionDemandState extends State<ClassBoardMissionDemand> {
     final boards = db.gameData.classBoards.values.toList();
     boards.sort2((e) => e.id);
     return Scaffold(
-      appBar: AppBar(
-        title: Text(S.current.class_board),
-      ),
+      appBar: AppBar(title: Text(S.current.class_board)),
       body: ListView.separated(
         itemBuilder: (context, index) => buildOne(context, boards[index]),
         separatorBuilder: (_, __) => const Divider(),
@@ -63,8 +61,10 @@ class _ClassBoardMissionDemandState extends State<ClassBoardMissionDemand> {
     return ListTile(
       dense: true,
       leading: db.getIconImage(board.btnIcon),
-      title: Text('${S.current.bond} $bond  ${S.current.skill} $skillLv'
-          '  ${S.current.level} $svtLv  ${S.current.ascension} $svtLimit'),
+      title: Text(
+        '${S.current.bond} $bond  ${S.current.skill} $skillLv'
+        '  ${S.current.level} $svtLv  ${S.current.ascension} $svtLimit',
+      ),
       subtitle: Text('${board.dispName} ×${servants.length}'),
       onTap: board.routeTo,
     );

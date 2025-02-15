@@ -9,61 +9,51 @@ class ValListDsc extends StatelessWidget {
   final List<DataVals> mutaingVals;
   final List<DataVals> originVals;
   final int? selected; // 1-10
-  const ValListDsc({
-    super.key,
-    required this.func,
-    required this.mutaingVals,
-    required this.originVals,
-    this.selected,
-  });
+  const ValListDsc({super.key, required this.func, required this.mutaingVals, required this.originVals, this.selected});
 
   @override
   Widget build(BuildContext context) {
-    return LayoutTryBuilder(builder: (context, constraints) {
-      int perLine = (constraints.maxWidth.isFinite && constraints.maxWidth > 600 && originVals.length > 5) ? 10 : 5;
-      List<Widget> rows = [];
-      int rowCount = (mutaingVals.length / perLine).ceil();
-      for (int i = 0; i < rowCount; i++) {
-        List<Widget> cols = [];
-        for (int j = i * perLine; j < (i + 1) * perLine; j++) {
-          final vals = mutaingVals.getOrNull(j);
-          Widget child;
-          if (vals == null) {
-            child = const SizedBox();
-          } else {
-            child = ValDsc(
-              func: func,
-              vals: vals,
-              originVals: originVals.getOrNull(j),
-              ignoreRate: false,
-              color: j == 5 || j == 9 ? AppTheme(context).tertiary : null,
-              inList: true,
-            );
+    return LayoutTryBuilder(
+      builder: (context, constraints) {
+        int perLine = (constraints.maxWidth.isFinite && constraints.maxWidth > 600 && originVals.length > 5) ? 10 : 5;
+        List<Widget> rows = [];
+        int rowCount = (mutaingVals.length / perLine).ceil();
+        for (int i = 0; i < rowCount; i++) {
+          List<Widget> cols = [];
+          for (int j = i * perLine; j < (i + 1) * perLine; j++) {
+            final vals = mutaingVals.getOrNull(j);
+            Widget child;
+            if (vals == null) {
+              child = const SizedBox();
+            } else {
+              child = ValDsc(
+                func: func,
+                vals: vals,
+                originVals: originVals.getOrNull(j),
+                ignoreRate: false,
+                color: j == 5 || j == 9 ? AppTheme(context).tertiary : null,
+                inList: true,
+              );
+            }
+            child = Padding(padding: const EdgeInsets.symmetric(vertical: 2), child: child);
+            if (selected != null && selected! - 1 == j) {
+              child = DecoratedBox(
+                decoration: BoxDecoration(
+                  border: Border.all(color: AppTheme(context).tertiaryContainer.withAlpha(180)),
+                  borderRadius: BorderRadius.circular(4),
+                ),
+                child: child,
+              );
+            }
+            cols.add(child);
           }
-          child = Padding(
-            padding: const EdgeInsets.symmetric(vertical: 2),
-            child: child,
-          );
-          if (selected != null && selected! - 1 == j) {
-            child = DecoratedBox(
-              decoration: BoxDecoration(
-                border: Border.all(color: AppTheme(context).tertiaryContainer.withAlpha(180)),
-                borderRadius: BorderRadius.circular(4),
-              ),
-              child: child,
-            );
-          }
-          cols.add(child);
+          rows.add(Row(children: cols.map((e) => Expanded(child: e)).toList()));
         }
-        rows.add(Row(children: cols.map((e) => Expanded(child: e)).toList()));
-      }
-      if (rows.isEmpty) return const SizedBox();
-      if (rows.length == 1) return rows.first;
-      return Column(
-        mainAxisSize: MainAxisSize.min,
-        children: rows,
-      );
-    });
+        if (rows.isEmpty) return const SizedBox();
+        if (rows.length == 1) return rows.first;
+        return Column(mainAxisSize: MainAxisSize.min, children: rows);
+      },
+    );
   }
 }
 
@@ -96,10 +86,7 @@ class ValDsc extends StatelessWidget {
     describeFunc();
     TextStyle style = TextStyle(color: color, fontSize: 13);
     if (parts.isEmpty) {
-      style = style.copyWith(
-        fontStyle: FontStyle.italic,
-        color: Theme.of(context).textTheme.bodySmall?.color,
-      );
+      style = style.copyWith(fontStyle: FontStyle.italic, color: Theme.of(context).textTheme.bodySmall?.color);
     }
     final text = parts.isEmpty ? vals.Value?.toString() ?? empty : parts.where((e) => e.isNotEmpty).join(', ');
     return InkWell(
@@ -172,9 +159,13 @@ class ValDsc extends StatelessWidget {
     }
     if (vals.TriggeredTargetHpRateRange != null) {
       List<String> ranges = DataVals.beautifyRangeTexts(vals.TriggeredTargetHpRateRange!);
-      ranges = ranges
-          .map((e) => e.replaceAllMapped(RegExp(r'\d+'), (m) => int.parse(m.group(0)!).format(percent: true, base: 10)))
-          .toList();
+      ranges =
+          ranges
+              .map(
+                (e) =>
+                    e.replaceAllMapped(RegExp(r'\d+'), (m) => int.parse(m.group(0)!).format(percent: true, base: 10)),
+              )
+              .toList();
       parts.add('HP ${ranges.join(" & ")}');
     }
     // end conditions

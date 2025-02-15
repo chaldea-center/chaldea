@@ -39,9 +39,11 @@ class CraftListPageState extends State<CraftListPage> with SearchableListState<C
     if (db.settings.autoResetFilter && widget.filterData == null) {
       filterData.reset();
     }
-    options = _CraftSearchOptions(onChanged: (_) {
-      if (mounted) setState(() {});
-    });
+    options = _CraftSearchOptions(
+      onChanged: (_) {
+        if (mounted) setState(() {});
+      },
+    );
   }
 
   int _compareCE(CraftEssence a, CraftEssence b) {
@@ -62,15 +64,17 @@ class CraftListPageState extends State<CraftListPage> with SearchableListState<C
           IconButton(
             icon: const Icon(Icons.filter_alt),
             tooltip: S.current.filter,
-            onPressed: () => FilterPage.show(
-              context: context,
-              builder: (context) => CraftFilterPage(
-                filterData: filterData,
-                onChanged: (_) {
-                  if (mounted) setState(() {});
-                },
-              ),
-            ),
+            onPressed:
+                () => FilterPage.show(
+                  context: context,
+                  builder:
+                      (context) => CraftFilterPage(
+                        filterData: filterData,
+                        onChanged: (_) {
+                          if (mounted) setState(() {});
+                        },
+                      ),
+                ),
           ),
           searchIcon,
         ],
@@ -92,9 +96,7 @@ class CraftListPageState extends State<CraftListPage> with SearchableListState<C
             mainAxisSpacing: 2,
             crossAxisSpacing: 2,
             childAspectRatio: 132 / 144,
-            children: [
-              for (final datum in pingedCEs) gridItemBuilder(datum),
-            ],
+            children: [for (final datum in pingedCEs) gridItemBuilder(datum)],
           ),
         ),
         ...slivers,
@@ -132,11 +134,7 @@ class CraftListPageState extends State<CraftListPage> with SearchableListState<C
       status = '${ce.status.limitCount} - Lv.${ce.status.lv}';
     }
     return CustomTile(
-      leading: db.getIconImage(
-        ce.borderedIcon,
-        width: 56,
-        aspectRatio: 132 / 144,
-      ),
+      leading: db.getIconImage(ce.borderedIcon, width: 56, aspectRatio: 132 / 144),
       title: AutoSizeText(ce.lName.l, maxLines: 1),
       subtitle: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -165,22 +163,14 @@ class CraftListPageState extends State<CraftListPage> with SearchableListState<C
       // status = '${ce.status.limitCount}-${ce.status.lv}';
     }
     return InkWell(
-      child: ce.iconBuilder(
-        context: context,
-        width: 72,
-        text: status,
-        onTap: () => _onTapCard(ce),
-      ),
+      child: ce.iconBuilder(context: context, width: 72, text: status, onTap: () => _onTapCard(ce)),
       onTap: () => _onTapCard(ce),
       onLongPress: () {
         if (widget.onSelected != null) {
           router.popDetailAndPush(
             context: context,
             url: ce.route,
-            child: CraftDetailPage(
-              ce: ce,
-              onSwitch: (cur, reversed) => switchNext(cur, reversed, shownList),
-            ),
+            child: CraftDetailPage(ce: ce, onSwitch: (cur, reversed) => switchNext(cur, reversed, shownList)),
             detail: true,
           );
         }
@@ -214,9 +204,7 @@ class CraftListPageState extends State<CraftListPage> with SearchableListState<C
     }
 
     if (filterData.effectType.isNotEmpty || filterData.targetTrait.isNotEmpty || filterData.effectTarget.isNotEmpty) {
-      List<BaseFunction> funcs = [
-        for (final skill in ce.skills) ...skill.filteredFunction(includeTrigger: true),
-      ];
+      List<BaseFunction> funcs = [for (final skill in ce.skills) ...skill.filteredFunction(includeTrigger: true)];
       if (filterData.isEventEffect.isNotEmpty) {
         funcs.retainWhere((e) => filterData.isEventEffect.matchOne(e.isEventOnlyEffect));
       }
@@ -251,10 +239,7 @@ class CraftListPageState extends State<CraftListPage> with SearchableListState<C
       router.popDetailAndPush(
         context: context,
         url: ce.route,
-        child: CraftDetailPage(
-          ce: ce,
-          onSwitch: (cur, reversed) => switchNext(cur, reversed, shownList),
-        ),
+        child: CraftDetailPage(ce: ce, onSwitch: (cur, reversed) => switchNext(cur, reversed, shownList)),
         detail: true,
       );
       selected = ce;

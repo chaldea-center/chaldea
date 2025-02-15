@@ -19,8 +19,14 @@ class QuestEnemyEditPage extends StatefulWidget {
   final QuestEnemy Function(QuestEnemy enemy)? onReset;
   final QuestEnemy Function(QuestEnemy enemy)? onPaste;
   final VoidCallback? onClear;
-  const QuestEnemyEditPage(
-      {super.key, required this.enemy, this.simple = false, this.onReset, this.onPaste, this.onClear});
+  const QuestEnemyEditPage({
+    super.key,
+    required this.enemy,
+    this.simple = false,
+    this.onReset,
+    this.onPaste,
+    this.onClear,
+  });
 
   @override
   State<QuestEnemyEditPage> createState() => _QuestEnemyEditPageState();
@@ -67,18 +73,19 @@ class _QuestEnemyEditPageState extends State<QuestEnemyEditPage> {
               tooltip: S.current.reset,
             ),
           PopupMenuButton(
-            itemBuilder: (context) => [
-              PopupMenuItem(
-                child: Text(S.current.copy),
-                onTap: () {
-                  setState(() {
-                    db.runtimeData.clipBoard.questEnemy = enemy;
-                  });
-                  EasyLoading.showSuccess(S.current.copied);
-                },
-              ),
-            ],
-          )
+            itemBuilder:
+                (context) => [
+                  PopupMenuItem(
+                    child: Text(S.current.copy),
+                    onTap: () {
+                      setState(() {
+                        db.runtimeData.clipBoard.questEnemy = enemy;
+                      });
+                      EasyLoading.showSuccess(S.current.copied);
+                    },
+                  ),
+                ],
+          ),
         ],
       ),
       body: buildContent(context),
@@ -92,8 +99,9 @@ class _QuestEnemyEditPageState extends State<QuestEnemyEditPage> {
       CustomTile(
         leading: db.getIconImage(enemy.icon ?? Atlas.common.unknownEnemyIcon, width: 64, aspectRatio: 1),
         title: Text(enemy.lShownName),
-        subtitle:
-            Text('No.${enemy.svt.shownId} $kStarChar2${enemy.svt.rarity} ${Transl.svtClassId(enemy.svt.classId).l}'),
+        subtitle: Text(
+          'No.${enemy.svt.shownId} $kStarChar2${enemy.svt.rarity} ${Transl.svtClassId(enemy.svt.classId).l}',
+        ),
         trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
         onTap: enemy.routeTo,
       ),
@@ -117,13 +125,14 @@ class _QuestEnemyEditPageState extends State<QuestEnemyEditPage> {
           ),
           if (widget.onPaste != null)
             FilledButton(
-              onPressed: db.runtimeData.clipBoard.questEnemy == null
-                  ? null
-                  : () {
-                      final enemy2 = widget.onPaste!(db.runtimeData.clipBoard.questEnemy!);
-                      enemy = initEnemy(enemy2);
-                      setState(() {});
-                    },
+              onPressed:
+                  db.runtimeData.clipBoard.questEnemy == null
+                      ? null
+                      : () {
+                        final enemy2 = widget.onPaste!(db.runtimeData.clipBoard.questEnemy!);
+                        enemy = initEnemy(enemy2);
+                        setState(() {});
+                      },
               child: Text(S.current.paste),
             ),
           if (widget.onClear != null)
@@ -153,7 +162,7 @@ class _QuestEnemyEditPageState extends State<QuestEnemyEditPage> {
         value: enemy.svt.attribute,
         values: [
           for (final v in ServantSubAttribute.values)
-            if (v != ServantSubAttribute.default_) v
+            if (v != ServantSubAttribute.default_) v,
         ],
         itemBuilder: (v) => Text(Transl.svtSubAttribute(v).l, textScaler: const TextScaler.linear(0.9)),
         onChanged: (v) {
@@ -164,18 +173,21 @@ class _QuestEnemyEditPageState extends State<QuestEnemyEditPage> {
       ListTile(
         dense: true,
         title: Text(S.current.trait),
-        subtitle: enemy.traits.isEmpty
-            ? const Text('NONE')
-            : SharedBuilder.traitList(context: context, traits: enemy.traits..sort2((e) => e.id)),
+        subtitle:
+            enemy.traits.isEmpty
+                ? const Text('NONE')
+                : SharedBuilder.traitList(context: context, traits: enemy.traits..sort2((e) => e.id)),
         trailing: IconButton(
           onPressed: () {
-            router.pushPage(TraitEditPage(
-              traits: enemy.traits,
-              onChanged: (traits) {
-                enemy.traits = traits.toList();
-                if (mounted) setState(() {});
-              },
-            ));
+            router.pushPage(
+              TraitEditPage(
+                traits: enemy.traits,
+                onChanged: (traits) {
+                  enemy.traits = traits.toList();
+                  if (mounted) setState(() {});
+                },
+              ),
+            );
           },
           icon: const Icon(Icons.edit),
           tooltip: S.current.edit,
@@ -184,10 +196,11 @@ class _QuestEnemyEditPageState extends State<QuestEnemyEditPage> {
     ];
 
     if (niceSvt != null) {
-      final limits = {
-        ...niceSvt!.ascensionAdd.lvMax.all.keys,
-        if (niceSvt!.isUserSvt) ...[0, 1, 2, 3, 4]
-      }.toList();
+      final limits =
+          {
+            ...niceSvt!.ascensionAdd.lvMax.all.keys,
+            if (niceSvt!.isUserSvt) ...[0, 1, 2, 3, 4],
+          }.toList();
       if (limits.isEmpty) limits.add(0);
       limits.sort();
       final dftValue = limits.first;
@@ -196,34 +209,36 @@ class _QuestEnemyEditPageState extends State<QuestEnemyEditPage> {
       }
 
       if (!limits.contains(enemy.limit.limitCount)) {
-        final costume =
-            enemy.svt.costume.values.firstWhereOrNull((e) => e.id > 10 && e.id < 100 && e.id == enemy.limit.limitCount);
+        final costume = enemy.svt.costume.values.firstWhereOrNull(
+          (e) => e.id > 10 && e.id < 100 && e.id == enemy.limit.limitCount,
+        );
         enemy.limit.limitCount = costume?.battleCharaId ?? dftValue;
       }
-      final costume = niceSvt?.profile.costume.values
-          .firstWhereOrNull((e) => e.id == enemy.limit.limitCount || e.battleCharaId == enemy.limit.limitCount);
-      children.add(enumTile<int>(
-        title: Text(S.current.ascension),
-        subtitle: costume == null ? null : Text(costume.lName.l),
-        value: enemy.limit.limitCount,
-        values: limits,
-        itemBuilder: (v) {
-          if (v < 10) return Text(v.toString());
-          return Text(v.toString());
-        },
-        onChanged: (v) {
-          enemy.limit.limitCount = v;
-          if (niceSvt != null && niceSvt!.id == enemy.svt.id) {
-            updateLimitCount(niceSvt!);
-          }
-        },
-      ));
+      final costume = niceSvt?.profile.costume.values.firstWhereOrNull(
+        (e) => e.id == enemy.limit.limitCount || e.battleCharaId == enemy.limit.limitCount,
+      );
+      children.add(
+        enumTile<int>(
+          title: Text(S.current.ascension),
+          subtitle: costume == null ? null : Text(costume.lName.l),
+          value: enemy.limit.limitCount,
+          values: limits,
+          itemBuilder: (v) {
+            if (v < 10) return Text(v.toString());
+            return Text(v.toString());
+          },
+          onChanged: (v) {
+            enemy.limit.limitCount = v;
+            if (niceSvt != null && niceSvt!.id == enemy.svt.id) {
+              updateLimitCount(niceSvt!);
+            }
+          },
+        ),
+      );
     } else {
-      children.add(ListTile(
-        dense: true,
-        title: Text(S.current.ascension),
-        trailing: Text((enemy.limit.limitCount).toString()),
-      ));
+      children.add(
+        ListTile(dense: true, title: Text(S.current.ascension), trailing: Text((enemy.limit.limitCount).toString())),
+      );
     }
 
     children.add(const Divider(height: 16));
@@ -320,8 +335,12 @@ class _QuestEnemyEditPageState extends State<QuestEnemyEditPage> {
         skillLv3: skill3?.maxLv ?? 0,
       )
       ..classPassive = EnemyPassive(classPassive: svt.classPassive.toList())
-      ..noblePhantasm =
-          EnemyTd(noblePhantasmId: td?.id ?? 0, noblePhantasm: td, noblePhantasmLv: 1, noblePhantasmLv1: 1)
+      ..noblePhantasm = EnemyTd(
+        noblePhantasmId: td?.id ?? 0,
+        noblePhantasm: td,
+        noblePhantasmLv: 1,
+        noblePhantasmLv1: 1,
+      )
       ..limit = EnemyLimit(limitCount: 0);
     if (svt.collectionNo > 0) {
       enemy.deathRate = 0;
@@ -469,9 +488,7 @@ class _QuestEnemyEditPageState extends State<QuestEnemyEditPage> {
         underline: const SizedBox.shrink(),
         value: value,
         alignment: AlignmentDirectional.centerEnd,
-        items: [
-          for (final v in values) DropdownMenuItem(value: v, child: itemBuilder(v)),
-        ],
+        items: [for (final v in values) DropdownMenuItem(value: v, child: itemBuilder(v))],
         onChanged: (v) {
           setState(() {
             if (v is T) onChanged(v);

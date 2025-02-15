@@ -32,7 +32,9 @@ class MyMarkdownWidget extends StatefulWidget {
     this.extensionSet,
     this.disableMd = false,
   }) : assert(
-            (data != null || assetKey != null) && (data == null || assetKey == null), 'Must provide data or assetKey');
+         (data != null || assetKey != null) && (data == null || assetKey == null),
+         'Must provide data or assetKey',
+       );
 
   @override
   _MyMarkdownWidgetState createState() => _MyMarkdownWidgetState();
@@ -45,16 +47,18 @@ class _MyMarkdownWidgetState extends State<MyMarkdownWidget> {
   void initState() {
     super.initState();
     if (widget.assetKey != null) {
-      rootBundle.loadString(widget.assetKey!, cache: false).then((value) => assetData = value).catchError((e, s) async {
-        logger.e('error loading markdown asset ${widget.assetKey}', e, s);
-        return 'Loading error';
-      }).whenComplete(
-        () {
-          SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
-            if (mounted) setState(() {});
+      rootBundle
+          .loadString(widget.assetKey!, cache: false)
+          .then((value) => assetData = value)
+          .catchError((e, s) async {
+            logger.e('error loading markdown asset ${widget.assetKey}', e, s);
+            return 'Loading error';
+          })
+          .whenComplete(() {
+            SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+              if (mounted) setState(() {});
+            });
           });
-        },
-      );
     }
   }
 
@@ -143,9 +147,9 @@ class MarkdownHelpPage extends StatefulWidget {
     this.leading = const BackButton(),
     this.title,
     this.actions = const [],
-  })  : data = null,
-        assetJp = 'jp/$asset',
-        assetEn = 'en/$asset';
+  }) : data = null,
+       assetJp = 'jp/$asset',
+       assetEn = 'en/$asset';
 
   static Future<String?> loadHelpAsset({
     String dir = _kDocDir,
@@ -217,7 +221,8 @@ class _MarkdownHelpPageState extends State<MarkdownHelpPage> {
     if (widget.data != null) {
       _resolvedData = widget.data;
     } else {
-      _resolvedData = await MarkdownHelpPage.loadHelpAsset(
+      _resolvedData =
+          await MarkdownHelpPage.loadHelpAsset(
             dir: widget.dir,
             asset: widget.asset,
             assetJp: widget.assetJp,
@@ -250,14 +255,11 @@ class _MarkdownHelpPageState extends State<MarkdownHelpPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leading: widget.leading,
-        title: widget.title ?? Text(S.current.help),
-        actions: widget.actions,
-      ),
-      body: _resolvedData == null
-          ? const Center(child: CircularProgressIndicator())
-          : MyMarkdownWidget(data: _resolvedData, selectable: true),
+      appBar: AppBar(leading: widget.leading, title: widget.title ?? Text(S.current.help), actions: widget.actions),
+      body:
+          _resolvedData == null
+              ? const Center(child: CircularProgressIndicator())
+              : MyMarkdownWidget(data: _resolvedData, selectable: true),
     );
   }
 }

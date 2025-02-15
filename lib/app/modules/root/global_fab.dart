@@ -64,10 +64,7 @@ class _WindowManagerFabState extends State<WindowManagerFab> {
   @override
   Widget build(BuildContext context) {
     return MovableFab(
-      icon: Icon(
-        rootRouter.appState.windowState.isSingle ? Icons.grid_view : Icons.reply,
-        size: 20,
-      ),
+      icon: Icon(rootRouter.appState.windowState.isSingle ? Icons.grid_view : Icons.reply, size: 20),
       onPressed: () {
         setState(() {
           rootRouter.appState.windowState =
@@ -117,10 +114,7 @@ class _DebugFabState extends State<DebugFab> {
         });
         final context = rootRouter.navigatorKey.currentContext;
         if (context == null) return;
-        showDialog(
-          context: context,
-          builder: (context) => _DebugMenuDialog(state: this),
-        ).then((value) {
+        showDialog(context: context, builder: (context) => _DebugMenuDialog(state: this)).then((value) {
           isMenuShowing = false;
           if (mounted) setState(() {});
         });
@@ -189,10 +183,7 @@ class __DebugMenuDialogState extends State<_DebugMenuDialog> {
           enabled: enableScreenshot,
           onTap: () {
             Navigator.pop(context);
-            showDialog(
-              context: context,
-              builder: (context) => const _ScreenshotDialog(),
-            );
+            showDialog(context: context, builder: (context) => const _ScreenshotDialog());
           },
         ),
         ListTile(
@@ -279,10 +270,7 @@ class __DebugMenuDialogState extends State<_DebugMenuDialog> {
           },
         ),
         if (!kReleaseMode || AppInfo.isDebugOn)
-          ListTile(
-            title: const Text('TestFunc'),
-            onTap: () => testFunction(context),
-          ),
+          ListTile(title: const Text('TestFunc'), onTap: () => testFunction(context)),
         ListTile(
           title: const Text('Save User Data'),
           onTap: () {
@@ -314,7 +302,7 @@ class __DebugMenuDialogState extends State<_DebugMenuDialog> {
               Navigator.of(context).pop();
             },
           ),
-        )
+        ),
       ],
     );
   }

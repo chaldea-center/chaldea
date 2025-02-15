@@ -28,8 +28,9 @@ class _EventMissionsPageState extends State<EventMissionsPage> {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          final customMissions =
-              (selected.toList()..sort2((e) => e.dispNo)).map((e) => CustomMission.fromEventMission(e));
+          final customMissions = (selected.toList()..sort2((e) => e.dispNo)).map(
+            (e) => CustomMission.fromEventMission(e),
+          );
           int? warId;
           for (final int id in widget.event.warIds) {
             final war = db.gameData.wars[id];
@@ -63,21 +64,23 @@ class _EventMissionsPageState extends State<EventMissionsPage> {
   }
 
   Widget buildHeader(BuildContext context) {
-    return Column(children: [
-      if (widget.onSwitchRegion != null)
-        TextButton(onPressed: widget.onSwitchRegion, child: Text(S.current.switch_region)),
-      SwitchListTile(
-        dense: true,
-        visualDensity: VisualDensity.compact,
-        value: db.settings.display.showOriginalMissionText,
-        title: Text(S.current.show_original_mission_text),
-        onChanged: (v) {
-          setState(() {
-            db.settings.display.showOriginalMissionText = v;
-          });
-        },
-      )
-    ]);
+    return Column(
+      children: [
+        if (widget.onSwitchRegion != null)
+          TextButton(onPressed: widget.onSwitchRegion, child: Text(S.current.switch_region)),
+        SwitchListTile(
+          dense: true,
+          visualDensity: VisualDensity.compact,
+          value: db.settings.display.showOriginalMissionText,
+          title: Text(S.current.show_original_mission_text),
+          onChanged: (v) {
+            setState(() {
+              db.settings.display.showOriginalMissionText = v;
+            });
+          },
+        ),
+      ],
+    );
   }
 
   Widget missionBuilder(BuildContext context, int index, List<EventMission> missions) {
@@ -89,39 +92,38 @@ class _EventMissionsPageState extends State<EventMissionsPage> {
 
     return SimpleAccordion(
       key: Key('event_mission_${mission.id}'),
-      headerBuilder: (context, _) => ListTile(
-        leading: Text(mission.dispNo.toString(), textAlign: TextAlign.center),
-        title: clearCond != null
-            ? CondTargetNumDescriptor(
-                condType: clearCond.condType,
-                targetNum: clearCond.targetNum,
-                targetIds: clearCond.targetIds,
-                details: clearCond.details,
-                missions: missions,
-                eventId: widget.event.id,
-                textScaleFactor: 0.8,
-                unknownMsg: mission.name,
-              )
-            : Text(mission.name, textScaler: const TextScaler.linear(0.8)),
-        contentPadding: const EdgeInsetsDirectional.only(start: 16),
-        minLeadingWidth: 32,
-        trailing: customMission == null
-            ? null
-            : Checkbox(
-                visualDensity: VisualDensity.compact,
-                value: selected.contains(mission),
-                onChanged: (v) {
-                  selected.toggle(mission);
-                  setState(() {});
-                },
-              ),
-      ),
+      headerBuilder:
+          (context, _) => ListTile(
+            leading: Text(mission.dispNo.toString(), textAlign: TextAlign.center),
+            title:
+                clearCond != null
+                    ? CondTargetNumDescriptor(
+                      condType: clearCond.condType,
+                      targetNum: clearCond.targetNum,
+                      targetIds: clearCond.targetIds,
+                      details: clearCond.details,
+                      missions: missions,
+                      eventId: widget.event.id,
+                      textScaleFactor: 0.8,
+                      unknownMsg: mission.name,
+                    )
+                    : Text(mission.name, textScaler: const TextScaler.linear(0.8)),
+            contentPadding: const EdgeInsetsDirectional.only(start: 16),
+            minLeadingWidth: 32,
+            trailing:
+                customMission == null
+                    ? null
+                    : Checkbox(
+                      visualDensity: VisualDensity.compact,
+                      value: selected.contains(mission),
+                      onChanged: (v) {
+                        selected.toggle(mission);
+                        setState(() {});
+                      },
+                    ),
+          ),
       contentBuilder: (context) {
-        Widget child = MissionCondsDescriptor(
-          mission: mission,
-          missions: missions,
-          eventId: widget.event.id,
-        );
+        Widget child = MissionCondsDescriptor(mission: mission, missions: missions, eventId: widget.event.id);
         if (clearCond != null) {
           child = Column(
             mainAxisSize: MainAxisSize.min,
@@ -139,10 +141,7 @@ class _EventMissionsPageState extends State<EventMissionsPage> {
             ],
           );
         }
-        return Padding(
-          padding: const EdgeInsetsDirectional.only(start: 24, end: 16),
-          child: child,
-        );
+        return Padding(padding: const EdgeInsetsDirectional.only(start: 24, end: 16), child: child);
       },
     );
   }

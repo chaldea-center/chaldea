@@ -35,17 +35,18 @@ class BattleSkillInfoData {
     List<BaseSkill>? provisionedSkills,
     this.skillNum = -1,
     int skillLv = 0,
-  })  : _provisionedSkills = provisionedSkills ?? [],
-        _skillLv = skillLv {
+  }) : _provisionedSkills = provisionedSkills ?? [],
+       _skillLv = skillLv {
     if (_baseSkill != null && !_provisionedSkills.contains(_baseSkill)) {
       _provisionedSkills.add(_baseSkill);
     }
     skillScript = skill?.script;
   }
 
-  BaseSkill? get skill => rankUp == 0 || rankUps == null || rankUps!.isEmpty
-      ? _baseSkill
-      : rankUp > rankUps!.length
+  BaseSkill? get skill =>
+      rankUp == 0 || rankUps == null || rankUps!.isEmpty
+          ? _baseSkill
+          : rankUp > rankUps!.length
           ? rankUps!.last
           : rankUps![rankUp - 1];
 
@@ -179,14 +180,16 @@ class BattleSkillInfoData {
     for (final func in curSkill.functions) {
       if (!FunctionExecutor.validateFunctionTargetTeam(func, activator?.isPlayer ?? defaultToPlayer)) continue;
 
-      wouldAffectTargets.addAll(await FunctionExecutor.acquireFunctionTarget(
-        battleData,
-        func.funcTargetType,
-        activator,
-        targetedAlly: targetedAlly,
-        targetedEnemy: targetedEnemy,
-        defaultToPlayer: defaultToPlayer,
-      ));
+      wouldAffectTargets.addAll(
+        await FunctionExecutor.acquireFunctionTarget(
+          battleData,
+          func.funcTargetType,
+          activator,
+          targetedAlly: targetedAlly,
+          targetedEnemy: targetedEnemy,
+          defaultToPlayer: defaultToPlayer,
+        ),
+      );
     }
     for (final svt in wouldAffectTargets) {
       await svt.activateBuff(battleData, BuffAction.functionSkillTargetedBefore, skillInfo: this);
@@ -239,19 +242,17 @@ class BattleSkillInfoData {
     }
 
     for (final svt in battleData.nonnullActors) {
-      await svt.activateBuff(battleData, BuffAction.functionedFunction,
-          receivedFunctionsList: svt.receivedFunctionsList);
+      await svt.activateBuff(
+        battleData,
+        BuffAction.functionedFunction,
+        receivedFunctionsList: svt.receivedFunctionsList,
+      );
     }
     return true;
   }
 
   BattleSkillInfoData copy() {
-    return BattleSkillInfoData(
-      _baseSkill,
-      type: type,
-      provisionedSkills: _provisionedSkills,
-      skillNum: skillNum,
-    )
+    return BattleSkillInfoData(_baseSkill, type: type, provisionedSkills: _provisionedSkills, skillNum: skillNum)
       ..rankUps = rankUps
       ..rankUp = rankUp
       ..skillLv = skillLv
@@ -340,14 +341,9 @@ class CommonCustomSkills {
         funcTargetType: FuncTargetType.ptOne,
         funcTargetTeam: FuncApplyTarget.playerAndEnemy,
         svals: [
-          DataVals({
-            'Rate': 1000,
-            'Value': 1000,
-            'Unaffected': 1,
-            "CommandSpellId": 1,
-          })
+          DataVals({'Rate': 1000, 'Value': 1000, 'Unaffected': 1, "CommandSpellId": 1}),
         ],
-      )
+      ),
     ],
   );
 
@@ -365,96 +361,78 @@ class CommonCustomSkills {
         funcTargetTeam: FuncApplyTarget.player,
         funcPopupText: 'NP増加',
         svals: [
-          DataVals({
-            'Rate': 3000,
-            'Value': 10000,
-            'Unaffected': 1,
-            "CommandSpellId": 9,
-          })
+          DataVals({'Rate': 3000, 'Value': 10000, 'Unaffected': 1, "CommandSpellId": 9}),
         ],
-      )
+      ),
     ],
   );
 
   static NiceSkill get chargeAllAlliesNP => NiceSkill(
-        id: _idBase + 3,
-        type: SkillType.active,
-        name: S.current.battle_charge_party,
-        unmodifiedDetail: S.current.battle_charge_party,
-        coolDown: [0],
-        functions: [
-          NiceFunction(
-            funcId: 1,
-            funcType: FuncType.gainNp,
-            funcTargetType: FuncTargetType.ptAll,
-            funcTargetTeam: FuncApplyTarget.playerAndEnemy,
-            svals: [
-              DataVals({
-                'Rate': 5000,
-                'Value': 10000,
-                'Unaffected': 1,
-                "CommandSpellId": 1001,
-              })
-            ],
-          )
+    id: _idBase + 3,
+    type: SkillType.active,
+    name: S.current.battle_charge_party,
+    unmodifiedDetail: S.current.battle_charge_party,
+    coolDown: [0],
+    functions: [
+      NiceFunction(
+        funcId: 1,
+        funcType: FuncType.gainNp,
+        funcTargetType: FuncTargetType.ptAll,
+        funcTargetTeam: FuncApplyTarget.playerAndEnemy,
+        svals: [
+          DataVals({'Rate': 5000, 'Value': 10000, 'Unaffected': 1, "CommandSpellId": 1001}),
         ],
-      );
+      ),
+    ],
+  );
 
   static BaseSkill get forceInstantDeath => NiceSkill(
-        id: _idBase + 101,
-        type: SkillType.active,
-        name: Transl.funcPopuptextBase('即死').l,
-        unmodifiedDetail: '即死',
-        coolDown: [0],
-        functions: [
-          NiceFunction(
-            funcId: 7196,
-            funcType: FuncType.forceInstantDeath,
-            funcTargetType: FuncTargetType.self,
-            funcTargetTeam: FuncApplyTarget.playerAndEnemy,
-            funcPopupText: '即死',
-            svals: [
-              DataVals({
-                'Rate': 5000,
-              })
-            ],
-          )
+    id: _idBase + 101,
+    type: SkillType.active,
+    name: Transl.funcPopuptextBase('即死').l,
+    unmodifiedDetail: '即死',
+    coolDown: [0],
+    functions: [
+      NiceFunction(
+        funcId: 7196,
+        funcType: FuncType.forceInstantDeath,
+        funcTargetType: FuncTargetType.self,
+        funcTargetTeam: FuncApplyTarget.playerAndEnemy,
+        funcPopupText: '即死',
+        svals: [
+          DataVals({'Rate': 5000}),
         ],
-      );
+      ),
+    ],
+  );
 
   static BaseSkill get forceInstantDeathDelay => NiceSkill(
-        id: _idBase + 101,
-        type: SkillType.active,
-        name: Transl.buffNames('遅延発動(即死)').l,
-        unmodifiedDetail: '自身に「ターン終了時に即死する状態」を付与',
-        coolDown: [0],
-        functions: [
-          NiceFunction(
-            funcId: -7195,
-            funcType: FuncType.addStateShort,
-            funcTargetType: FuncTargetType.self,
-            funcTargetTeam: FuncApplyTarget.playerAndEnemy,
-            funcPopupText: '遅延発動(即死)',
-            buffs: [
-              Buff(
-                id: 3631,
-                name: "遅延発動(即死)",
-                detail: "ターン終了時に即死する状態を付与",
-                icon: "https://static.atlasacademy.io/JP/BuffIcons/bufficon_525.png",
-                type: BuffType.delayFunction,
-                buffGroup: 0,
-              )
-            ],
-            svals: [
-              DataVals({
-                'Rate': 5000,
-                "Turn": 1,
-                "Count": -1,
-                "Value": 966262,
-                "Value2": 1,
-              })
-            ],
-          )
+    id: _idBase + 101,
+    type: SkillType.active,
+    name: Transl.buffNames('遅延発動(即死)').l,
+    unmodifiedDetail: '自身に「ターン終了時に即死する状態」を付与',
+    coolDown: [0],
+    functions: [
+      NiceFunction(
+        funcId: -7195,
+        funcType: FuncType.addStateShort,
+        funcTargetType: FuncTargetType.self,
+        funcTargetTeam: FuncApplyTarget.playerAndEnemy,
+        funcPopupText: '遅延発動(即死)',
+        buffs: [
+          Buff(
+            id: 3631,
+            name: "遅延発動(即死)",
+            detail: "ターン終了時に即死する状態を付与",
+            icon: "https://static.atlasacademy.io/JP/BuffIcons/bufficon_525.png",
+            type: BuffType.delayFunction,
+            buffGroup: 0,
+          ),
         ],
-      );
+        svals: [
+          DataVals({'Rate': 5000, "Turn": 1, "Count": -1, "Value": 966262, "Value2": 1}),
+        ],
+      ),
+    ],
+  );
 }

@@ -59,9 +59,9 @@ class FreeLPParams {
   Map<int, double> get objectiveWeights => Map.fromIterable(rows, value: (k) => getPlanItemWeight(k));
 
   Map<int, int> get validBonuses => {
-        for (final e in rows)
-          if (getPlanItemBonus(e) > 0) e: getPlanItemBonus(e)
-      };
+    for (final e in rows)
+      if (getPlanItemBonus(e) > 0) e: getPlanItemBonus(e),
+  };
 
   int getPlanItemCount(int id, [int? _default]) => planItemCounts[id] ??= _default ?? 50;
 
@@ -85,29 +85,29 @@ class FreeLPParams {
     Map<int, int>? planItemCounts,
     Map<int, double>? planItemWeights,
     Map<int, int>? planItemBonus,
-  })  : rows = rows ?? [],
-        blacklist = blacklist ?? {},
-        extraCols = extraCols ?? [],
-        planItemCounts = planItemCounts ?? {},
-        planItemWeights = planItemWeights ?? {},
-        planItemBonus = planItemBonus ?? {};
+  }) : rows = rows ?? [],
+       blacklist = blacklist ?? {},
+       extraCols = extraCols ?? [],
+       planItemCounts = planItemCounts ?? {},
+       planItemWeights = planItemWeights ?? {},
+       planItemBonus = planItemBonus ?? {};
 
   FreeLPParams.from(FreeLPParams other)
-      : rows = List.of(other.rows),
-        progress = other.progress,
-        blacklist = Set.of(other.blacklist),
-        minCost = other.minCost,
-        costMinimize = other.costMinimize,
-        extraCols = List.of(other.extraCols),
-        integerResult = other.integerResult,
-        useAP20 = other.useAP20,
-        apHalfDailyQuest = other.apHalfDailyQuest,
-        apHalfOrdealCall = other.apHalfOrdealCall,
-        bondBonusPercent = other.bondBonusPercent,
-        bondBonusCount = other.bondBonusCount,
-        planItemCounts = Map.of(other.planItemCounts),
-        planItemWeights = Map.of(other.planItemWeights),
-        planItemBonus = Map.of(other.planItemBonus);
+    : rows = List.of(other.rows),
+      progress = other.progress,
+      blacklist = Set.of(other.blacklist),
+      minCost = other.minCost,
+      costMinimize = other.costMinimize,
+      extraCols = List.of(other.extraCols),
+      integerResult = other.integerResult,
+      useAP20 = other.useAP20,
+      apHalfDailyQuest = other.apHalfDailyQuest,
+      apHalfOrdealCall = other.apHalfOrdealCall,
+      bondBonusPercent = other.bondBonusPercent,
+      bondBonusCount = other.bondBonusCount,
+      planItemCounts = Map.of(other.planItemCounts),
+      planItemWeights = Map.of(other.planItemWeights),
+      planItemBonus = Map.of(other.planItemBonus);
 
   DropRateSheet get sheet => db.gameData.dropData.domusAurea;
 
@@ -157,10 +157,10 @@ class LPSolution {
     this.totalNum,
     List<LPVariable>? countVars,
     List<LPVariable>? weightVars,
-  })  : destination = destination ?? 0,
-        originalItems = originalItems ?? [],
-        countVars = countVars ?? [],
-        weightVars = weightVars ?? [];
+  }) : destination = destination ?? 0,
+       originalItems = originalItems ?? [],
+       countVars = countVars ?? [],
+       weightVars = weightVars ?? [];
 
   void clear() {
     totalCost = null;
@@ -200,13 +200,8 @@ class LPVariable<T> {
   // @_Converter()
   Map<int, double> detail;
 
-  LPVariable({
-    required this.name,
-    this.displayName,
-    required this.value,
-    required this.cost,
-    Map<int, double>? detail,
-  }) : detail = detail ?? {};
+  LPVariable({required this.name, this.displayName, required this.value, required this.cost, Map<int, double>? detail})
+    : detail = detail ?? {};
 
   factory LPVariable.fromJson(Map<String, dynamic> data) => _$LPVariableFromJson<T>(data, _fromJsonT);
 
@@ -235,12 +230,12 @@ class BasicLPParams {
     List<num>? bVec,
     List<num>? cVec,
     bool? integer,
-  })  : colNames = colNames ?? [],
-        rowNames = rowNames ?? [],
-        matA = matA ?? [],
-        bVec = bVec ?? [],
-        cVec = cVec ?? [],
-        integer = integer ?? false;
+  }) : colNames = colNames ?? [],
+       rowNames = rowNames ?? [],
+       matA = matA ?? [],
+       bVec = bVec ?? [],
+       cVec = cVec ?? [],
+       integer = integer ?? false;
 
   BasicLPParams.duplicate({
     List<int>? colNames,
@@ -249,12 +244,12 @@ class BasicLPParams {
     List<num>? bVec,
     List<num>? cVec,
     bool? integer,
-  })  : colNames = colNames?.toList() ?? [],
-        rowNames = rowNames?.toList() ?? [],
-        matA = matA?.map((e) => e.toList()).toList() ?? [],
-        bVec = bVec?.toList() ?? [],
-        cVec = cVec?.toList() ?? [],
-        integer = integer ?? false;
+  }) : colNames = colNames?.toList() ?? [],
+       rowNames = rowNames?.toList() ?? [],
+       matA = matA?.map((e) => e.toList()).toList() ?? [],
+       bVec = bVec?.toList() ?? [],
+       cVec = cVec?.toList() ?? [],
+       integer = integer ?? false;
 
   List<num> getCol(int index) {
     return matA.map((e) => e[index]).toList();

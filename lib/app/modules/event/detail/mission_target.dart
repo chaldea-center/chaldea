@@ -66,27 +66,33 @@ class _EventMissionTargetPageState extends State<EventMissionTargetPage> {
       _loading = true;
       filterData.hasRare = filterData.hasAdditional = false;
     });
-    await Future.wait(allQuestData.keys.map((quest) async {
-      if (region == null) return null;
-      allQuestData[quest] = null;
-      final phaseDataOld =
-          await AtlasApi.questPhase(quest.id, quest.phases.last, region: region, expireAfter: kExpireCacheOnly);
-      if (phaseDataOld != null) {
-        allQuestData[quest] = phaseDataOld;
-      }
-      final phaseData = await AtlasApi.questPhase(quest.id, quest.phases.last, region: region);
-      if (phaseData != null) {
-        allQuestData[quest] = phaseData;
-        if (!filterData.hasRare && phaseData.allEnemies.any((e) => e.enemyScript.isRare)) {
-          filterData.hasRare = true;
+    await Future.wait(
+      allQuestData.keys.map((quest) async {
+        if (region == null) return null;
+        allQuestData[quest] = null;
+        final phaseDataOld = await AtlasApi.questPhase(
+          quest.id,
+          quest.phases.last,
+          region: region,
+          expireAfter: kExpireCacheOnly,
+        );
+        if (phaseDataOld != null) {
+          allQuestData[quest] = phaseDataOld;
         }
-        if (!filterData.hasAdditional && phaseData.allEnemies.any((e) => e.infoScript.isAddition)) {
-          filterData.hasAdditional = true;
+        final phaseData = await AtlasApi.questPhase(quest.id, quest.phases.last, region: region);
+        if (phaseData != null) {
+          allQuestData[quest] = phaseData;
+          if (!filterData.hasRare && phaseData.allEnemies.any((e) => e.enemyScript.isRare)) {
+            filterData.hasRare = true;
+          }
+          if (!filterData.hasAdditional && phaseData.allEnemies.any((e) => e.infoScript.isAddition)) {
+            filterData.hasAdditional = true;
+          }
         }
-      }
 
-      if (mounted) setState(() {});
-    }).toList());
+        if (mounted) setState(() {});
+      }).toList(),
+    );
     _loading = false;
     if (mounted) setState(() {});
   }
@@ -98,16 +104,14 @@ class _EventMissionTargetPageState extends State<EventMissionTargetPage> {
         ListTile(
           dense: true,
           title: Text(S.current.switch_region),
-          subtitle: Text.rich(TextSpan(
+          subtitle: Text.rich(
+            TextSpan(
               text: '${S.current.quest}: ${allQuestData.values.where((q) => q != null).length}/${allQuestData.length}',
-              children: [
-                if (_loading) const CenterWidgetSpan(child: CupertinoActivityIndicator()),
-              ])),
+              children: [if (_loading) const CenterWidgetSpan(child: CupertinoActivityIndicator())],
+            ),
+          ),
           trailing: FilterGroup<Region>(
-            options: [
-              Region.jp,
-              if (widget.event.extra.startTime.na != null) Region.na,
-            ],
+            options: [Region.jp, if (widget.event.extra.startTime.na != null) Region.na],
             values: FilterRadioData(region),
             combined: true,
             optionBuilder: (v) => Text(v.localName),
@@ -133,10 +137,12 @@ class _EventMissionTargetPageState extends State<EventMissionTargetPage> {
               children: [
                 CheckboxWithLabel(
                   value: filterData.includeRareAdditional,
-                  label: Text([
-                    if (filterData.hasRare) S.current.rare_enemy,
-                    if (filterData.hasAdditional) S.current.additional_enemy
-                  ].join(' / ')),
+                  label: Text(
+                    [
+                      if (filterData.hasRare) S.current.rare_enemy,
+                      if (filterData.hasAdditional) S.current.additional_enemy,
+                    ].join(' / '),
+                  ),
                   onChanged: (v) {
                     if (v != null) filterData.includeRareAdditional = v;
                     setState(() {});
@@ -149,10 +155,11 @@ class _EventMissionTargetPageState extends State<EventMissionTargetPage> {
           title: Text(S.current.filter),
           options: conds.toList(),
           values: filterData.cond,
-          optionBuilder: (cond) => Padding(
-            padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 4),
-            child: Text(describeCond(cond), textScaler: const TextScaler.linear(0.95)),
-          ),
+          optionBuilder:
+              (cond) => Padding(
+                padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 4),
+                child: Text(describeCond(cond), textScaler: const TextScaler.linear(0.95)),
+              ),
           onFilterChanged: (value, _) {
             setState(() {});
           },
@@ -222,38 +229,39 @@ class _EventMissionTargetPageState extends State<EventMissionTargetPage> {
         InkWell(
           onTap: quest.routeTo,
           child: Text.rich(
-            TextSpan(children: [
-              if (spotImg != null) WidgetSpan(child: db.getIconImage(spotImg, width: 28)),
-              TextSpan(text: name),
-            ]),
+            TextSpan(
+              children: [
+                if (spotImg != null) WidgetSpan(child: db.getIconImage(spotImg, width: 28)),
+                TextSpan(text: name),
+              ],
+            ),
             textScaler: const TextScaler.linear(0.9),
           ),
         ),
         Wrap(
           spacing: 3,
           children: [
-            if (phase?.allEnemies.isNotEmpty != true)
-              const Text(
-                'No enemy data.',
-                textScaler: TextScaler.linear(0.85),
-              ),
+            if (phase?.allEnemies.isNotEmpty != true) const Text('No enemy data.', textScaler: TextScaler.linear(0.85)),
             for (final entry in counts.entries)
               Text.rich(
-                TextSpan(children: [
-                  TextSpan(
-                    text: describeCond(entry.key),
-                    style: const TextStyle(decoration: TextDecoration.underline, fontWeight: FontWeight.w300),
-                  ),
-                  TextSpan(text: '×${entry.value}'),
-                ]),
+                TextSpan(
+                  children: [
+                    TextSpan(
+                      text: describeCond(entry.key),
+                      style: const TextStyle(decoration: TextDecoration.underline, fontWeight: FontWeight.w300),
+                    ),
+                    TextSpan(text: '×${entry.value}'),
+                  ],
+                ),
                 textScaler: const TextScaler.linear(0.85),
               ),
           ],
-        )
+        ),
       ];
 
       children.add(
-          TableRow(children: [for (final cell in rowCells) Padding(padding: const EdgeInsets.all(6), child: cell)]));
+        TableRow(children: [for (final cell in rowCells) Padding(padding: const EdgeInsets.all(6), child: cell)]),
+      );
     }
     return Table(
       columnWidths: const {0: MinColumnWidth(FractionColumnWidth(0.35), FixedColumnWidth(150))},

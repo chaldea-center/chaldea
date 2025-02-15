@@ -28,18 +28,14 @@ class _ImportPageHomeState extends State<ImportPageHome> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leading: const MasterBackButton(),
-        title: Text(S.current.import_data),
-      ),
+      appBar: AppBar(leading: const MasterBackButton(), title: Text(S.current.import_data)),
       body: ListView(
         children: [
           ListTile(
             dense: true,
-            title: db.onUserData((context, snapshot) => Text(
-                  '${S.current.cur_account}: ${db.curUser.name}',
-                  textAlign: TextAlign.center,
-                )),
+            title: db.onUserData(
+              (context, snapshot) => Text('${S.current.cur_account}: ${db.curUser.name}', textAlign: TextAlign.center),
+            ),
             onTap: () {
               router.pushPage(AccountPage(), popDetail: true);
             },
@@ -75,15 +71,17 @@ class _ImportPageHomeState extends State<ImportPageHome> {
                 title: Text(S.current.import_auth_file),
                 trailing: const Icon(Icons.keyboard_arrow_right),
                 subtitle: Text(
-                    ['${Region.jp.localName}/${Region.na.localName}', if (kIsWeb) 'web is not supported'].join(', ')),
+                  ['${Region.jp.localName}/${Region.na.localName}', if (kIsWeb) 'web is not supported'].join(', '),
+                ),
                 enabled: !kIsWeb,
-                onTap: kIsWeb
-                    ? null
-                    : () {
-                        if (checkDataRequiredVersion()) {
-                          router.pushPage(const AutoLoginPage());
-                        }
-                      },
+                onTap:
+                    kIsWeb
+                        ? null
+                        : () {
+                          if (checkDataRequiredVersion()) {
+                            router.pushPage(const AutoLoginPage());
+                          }
+                        },
               ),
             ],
           ),
@@ -141,7 +139,7 @@ class _ImportPageHomeState extends State<ImportPageHome> {
                 },
               ),
             ],
-          )
+          ),
         ],
       ),
     );

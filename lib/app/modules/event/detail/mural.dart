@@ -64,14 +64,8 @@ class EventMuralPage extends HookWidget {
               ),
             Wrap(
               alignment: WrapAlignment.center,
-              children: [
-                for (final img in mural.images)
-                  CachedImage(
-                    imageUrl: img,
-                    showSaveOnLongPress: true,
-                  ),
-              ],
-            )
+              children: [for (final img in mural.images) CachedImage(imageUrl: img, showSaveOnLongPress: true)],
+            ),
           ],
         );
         return Padding(padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8), child: child);

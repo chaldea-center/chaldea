@@ -29,13 +29,7 @@ class WarMapFilterData with FilterDataMixin {
 class WarMapFilter extends FilterPage<WarMapFilterData> {
   final NiceWar war;
   final WarMap map;
-  const WarMapFilter({
-    super.key,
-    required super.filterData,
-    required this.war,
-    required this.map,
-    super.onChanged,
-  });
+  const WarMapFilter({super.key, required super.filterData, required this.war, required this.map, super.onChanged});
 
   @override
   _WarMapFilterPageState createState() => _WarMapFilterPageState();
@@ -89,12 +83,13 @@ class _WarMapFilterPageState extends FilterPageState<WarMapFilterData, WarMapFil
           value: filterData.freeSpotsOnly,
           title: Text(S.current.map_show_fq_spots_only),
           dense: true,
-          onChanged: filterData.showSpots
-              ? (v) {
-                  filterData.freeSpotsOnly = v;
-                  update();
-                }
-              : null,
+          onChanged:
+              filterData.showSpots
+                  ? (v) {
+                    filterData.freeSpotsOnly = v;
+                    update();
+                  }
+                  : null,
         ),
         SwitchListTile.adaptive(
           controlAffinity: ListTileControlAffinity.trailing,

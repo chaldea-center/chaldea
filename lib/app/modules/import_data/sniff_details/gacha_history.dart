@@ -84,23 +84,23 @@ class _SniffGachaHistoryState extends State<SniffGachaHistory> {
     cnGachas.clear();
     final data = await _fetchMst(widget.region);
     if (data != null) {
-      gachas = {
-        for (final v in data) v.id: v,
-      };
+      gachas = {for (final v in data) v.id: v};
       if (widget.region == Region.tw) {
         // TW doesn't contain closed banners
         final dataCN = await _fetchMst(Region.cn);
         if (dataCN != null) {
-          cnGachas = {
-            for (final v in dataCN) v.id: v,
-          };
+          cnGachas = {for (final v in dataCN) v.id: v};
         }
       }
       if (widget.region == Region.tw) {
         records.sort2((e) => e.gachaId <= 100 ? -1000000000000 + e.gachaId : -(e.createdAt ?? e.gachaId));
       } else {
-        records.sort2((e) =>
-            e.gachaId <= 100 ? -1000000000000 + e.gachaId : -(gachas[e.gachaId]?.openedAt ?? e.createdAt ?? e.gachaId));
+        records.sort2(
+          (e) =>
+              e.gachaId <= 100
+                  ? -1000000000000 + e.gachaId
+                  : -(gachas[e.gachaId]?.openedAt ?? e.createdAt ?? e.gachaId),
+        );
       }
     }
     for (final gacha in [...gachas.values, ...cnGachas.values]) {
@@ -115,12 +115,13 @@ class _SniffGachaHistoryState extends State<SniffGachaHistory> {
 
   @override
   Widget build(BuildContext context) {
-    final shownRecords = records.where((record) {
-      if (!gachaType.matchOne(gachas[record.gachaId]?.gachaType ?? GachaType.unknown)) {
-        return false;
-      }
-      return true;
-    }).toList();
+    final shownRecords =
+        records.where((record) {
+          if (!gachaType.matchOne(gachas[record.gachaId]?.gachaType ?? GachaType.unknown)) {
+            return false;
+          }
+          return true;
+        }).toList();
 
     final totalSummonCount = Maths.sum(records.where((e) => !shouldIgnore(e)).map((e) => e.num));
     final allUserSvts = [...widget.userSvt, ...widget.userSvtStorage];
@@ -136,12 +137,14 @@ class _SniffGachaHistoryState extends State<SniffGachaHistory> {
         actions: [
           ValueListenableBuilder(
             valueListenable: loading,
-            builder: (context, v, _) => v
-                ? const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 16),
-                    child: CupertinoActivityIndicator(radius: 8),
-                  )
-                : const SizedBox.shrink(),
+            builder:
+                (context, v, _) =>
+                    v
+                        ? const Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 16),
+                          child: CupertinoActivityIndicator(radius: 8),
+                        )
+                        : const SizedBox.shrink(),
           ),
           IconButton(
             onPressed: gachas.isEmpty ? loadMstData : null,
@@ -152,54 +155,63 @@ class _SniffGachaHistoryState extends State<SniffGachaHistory> {
       ),
       body: CustomScrollView(
         slivers: [
-          SliverList.list(children: [
-            TileGroup(
-              header: S.current.statistics_title,
-              footerWidget: SFooter.rich(TextSpan(text: S.current.gacha_svt_count_hint, children: [
-                const TextSpan(text: '\n'),
-                SharedBuilder.textButtonSpan(
-                  context: context,
-                  text: 'document',
-                  onTap: () {
-                    launch(ChaldeaUrl.doc('import_https/gacha_stat'));
-                  },
-                )
-              ])),
-              children: [
-                ListTile(
-                  dense: true,
-                  title: Text(S.current.total),
-                  trailing: Text('$totalSummonCount ${S.current.summon_pull_unit}'),
+          SliverList.list(
+            children: [
+              TileGroup(
+                header: S.current.statistics_title,
+                footerWidget: SFooter.rich(
+                  TextSpan(
+                    text: S.current.gacha_svt_count_hint,
+                    children: [
+                      const TextSpan(text: '\n'),
+                      SharedBuilder.textButtonSpan(
+                        context: context,
+                        text: 'document',
+                        onTap: () {
+                          launch(ChaldeaUrl.doc('import_https/gacha_stat'));
+                        },
+                      ),
+                    ],
+                  ),
                 ),
-                ...<int>[5, 4].map((rarity) {
-                  final countsOwned = countServantTDOwned(allUserSvts, rarity);
-                  final countOwned = Maths.sum(countsOwned.values);
-                  final countsAll = countServantTDAll(widget.userSvtCollection, rarity);
-                  final countAll = Maths.sum(countsAll.values);
-                  int? countAllNoLucky;
-                  if (rarity == 5) {
-                    countAllNoLucky = countAll - luckyBagCount;
-                  }
-
-                  return ListTile(
+                children: [
+                  ListTile(
                     dense: true,
-                    title: Text('$kStarChar $rarity ${S.current.servant}'),
-                    trailing: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Text.rich(
-                          TextSpan(text: '${S.current.item_own} $countOwned\n', children: [
+                    title: Text(S.current.total),
+                    trailing: Text('$totalSummonCount ${S.current.summon_pull_unit}'),
+                  ),
+                  ...<int>[5, 4].map((rarity) {
+                    final countsOwned = countServantTDOwned(allUserSvts, rarity);
+                    final countOwned = Maths.sum(countsOwned.values);
+                    final countsAll = countServantTDAll(widget.userSvtCollection, rarity);
+                    final countAll = Maths.sum(countsAll.values);
+                    int? countAllNoLucky;
+                    if (rarity == 5) {
+                      countAllNoLucky = countAll - luckyBagCount;
+                    }
+
+                    return ListTile(
+                      dense: true,
+                      title: Text('$kStarChar $rarity ${S.current.servant}'),
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text.rich(
                             TextSpan(
-                              text: '${(countOwned / totalSummonCount * 100).toStringAsFixed(2)}%',
-                              style: Theme.of(context).textTheme.bodySmall,
-                            )
-                          ]),
-                          textAlign: TextAlign.end,
-                        ),
-                        const SizedBox(width: 8),
-                        Text.rich(
-                          TextSpan(
+                              text: '${S.current.item_own} $countOwned\n',
+                              children: [
+                                TextSpan(
+                                  text: '${(countOwned / totalSummonCount * 100).toStringAsFixed(2)}%',
+                                  style: Theme.of(context).textTheme.bodySmall,
+                                ),
+                              ],
+                            ),
+                            textAlign: TextAlign.end,
+                          ),
+                          const SizedBox(width: 8),
+                          Text.rich(
+                            TextSpan(
                               text:
                                   '${S.current.summon} $countAll${countAllNoLucky == null ? "" : "($countAllNoLucky)"}\n',
                               children: [
@@ -207,60 +219,65 @@ class _SniffGachaHistoryState extends State<SniffGachaHistory> {
                                   text:
                                       '${(countAll / totalSummonCount * 100).toStringAsFixed(2)}%${countAllNoLucky == null ? "" : "(${(countAllNoLucky / totalSummonCount * 100).toStringAsFixed(2)}%)"}',
                                   style: Theme.of(context).textTheme.bodySmall,
-                                )
-                              ]),
-                          textAlign: TextAlign.end,
-                        ),
+                                ),
+                              ],
+                            ),
+                            textAlign: TextAlign.end,
+                          ),
+                          Icon(DirectionalIcons.keyboard_arrow_forward(context)),
+                        ],
+                      ),
+                      onTap: () {
+                        router.pushPage(
+                          _SvtTotalNumList(rarity: rarity, countsOwned: countsOwned, countsAll: countsAll),
+                        );
+                      },
+                    );
+                  }),
+                ],
+              ),
+              TileGroup(
+                children: [
+                  ListTile(
+                    dense: true,
+                    title: Text(S.current.lucky_bag),
+                    trailing: Text(hasUnknownLuckyBag ? '≥$luckyBagCount' : '=$luckyBagCount'),
+                  ),
+                  ListTile(
+                    dense: true,
+                    enabled: anonymousShops.isNotEmpty,
+                    title: Text(Transl.itemNames('無記名霊基').l),
+                    trailing: Wrap(
+                      crossAxisAlignment: WrapCrossAlignment.center,
+                      children: [
+                        Text('$curAnonymous+10×$anonymousBuyCount'),
                         Icon(DirectionalIcons.keyboard_arrow_forward(context)),
                       ],
                     ),
-                    onTap: () {
-                      router.pushPage(_SvtTotalNumList(rarity: rarity, countsOwned: countsOwned, countsAll: countsAll));
-                    },
-                  );
-                }),
-              ],
-            ),
-            TileGroup(
-              children: [
-                ListTile(
-                  dense: true,
-                  title: Text(S.current.lucky_bag),
-                  trailing: Text(hasUnknownLuckyBag ? '≥$luckyBagCount' : '=$luckyBagCount'),
-                ),
-                ListTile(
-                  dense: true,
-                  enabled: anonymousShops.isNotEmpty,
-                  title: Text(Transl.itemNames('無記名霊基').l),
-                  trailing: Wrap(
-                    crossAxisAlignment: WrapCrossAlignment.center,
-                    children: [
-                      Text('$curAnonymous+10×$anonymousBuyCount'),
-                      Icon(DirectionalIcons.keyboard_arrow_forward(context)),
-                    ],
+                    onTap:
+                        anonymousShops.isEmpty
+                            ? null
+                            : () {
+                              router.pushPage(_UserShopList(userShops: anonymousShops, region: widget.region));
+                            },
                   ),
-                  onTap: anonymousShops.isEmpty
-                      ? null
-                      : () {
-                          router.pushPage(_UserShopList(userShops: anonymousShops, region: widget.region));
-                        },
-                )
-              ],
-            ),
-            const Divider(height: 2, thickness: 1),
-            const SizedBox(height: 8),
-            Center(
-              child: FilterGroup<GachaType>(
-                combined: true,
-                options: const [GachaType.payGacha, GachaType.chargeStone, GachaType.unknown],
-                values: gachaType,
-                optionBuilder: (v) => Text(v.shownName),
-                onFilterChanged: (v, _) {
-                  setState(() {});
-                },
+                ],
               ),
-            ),
-          ]),
+              const Divider(height: 2, thickness: 1),
+              const SizedBox(height: 8),
+              Center(
+                child: FilterGroup<GachaType>(
+                  combined: true,
+                  options: const [GachaType.payGacha, GachaType.chargeStone, GachaType.unknown],
+                  values: gachaType,
+                  optionBuilder: (v) => Text(v.shownName),
+                  onFilterChanged: (v, _) {
+                    setState(() {});
+                  },
+                ),
+              ),
+            ],
+          ),
           SliverList.separated(
             itemBuilder: (context, index) => buildGacha(context, index, shownRecords[index]),
             separatorBuilder: (context, index) => const SizedBox.shrink(),
@@ -293,11 +310,13 @@ class _SniffGachaHistoryState extends State<SniffGachaHistory> {
           dense: true,
           selected: (_imageIdMap[gacha?.imageId]?.length ?? 0) > 1,
           title: Text.rich(
-            TextSpan(children: [
-              if (gachas[record.gachaId]?.gachaType == GachaType.chargeStone)
-                const TextSpan(text: '$kStarChar2 ', style: TextStyle(color: Colors.red)),
-              TextSpan(text: title),
-            ]),
+            TextSpan(
+              children: [
+                if (gachas[record.gachaId]?.gachaType == GachaType.chargeStone)
+                  const TextSpan(text: '$kStarChar2 ', style: TextStyle(color: Colors.red)),
+                TextSpan(text: title),
+              ],
+            ),
             style: TextStyle(fontStyle: gacha?.userAdded == true ? FontStyle.italic : null),
           ),
           subtitle: Text(subtitle),
@@ -321,37 +340,34 @@ class _SniffGachaHistoryState extends State<SniffGachaHistory> {
         final dupGachas = List<MstGacha>.of(_imageIdMap[_gacha.imageId] ?? []);
         dupGachas.remove(_gacha);
         if (dupGachas.isNotEmpty) {
-          children.add(Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-            child: Text.rich(
-              TextSpan(
-                text: '${S.current.gacha_image_overridden_hint}:\n',
-                style: Theme.of(context).textTheme.bodySmall,
-                children: [
-                  for (final v in dupGachas)
-                    TextSpan(children: [
+          children.add(
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              child: Text.rich(
+                TextSpan(
+                  text: '${S.current.gacha_image_overridden_hint}:\n',
+                  style: Theme.of(context).textTheme.bodySmall,
+                  children: [
+                    for (final v in dupGachas)
                       TextSpan(
-                        text: ' ${v.name} ',
-                        style: const TextStyle(fontWeight: FontWeight.bold),
+                        children: [
+                          TextSpan(text: ' ${v.name} ', style: const TextStyle(fontWeight: FontWeight.bold)),
+                          TextSpan(text: v.openedAt.sec2date().toDateString()),
+                        ],
                       ),
-                      TextSpan(text: v.openedAt.sec2date().toDateString()),
-                    ])
-                ],
+                  ],
+                ),
+                textAlign: TextAlign.center,
               ),
-              textAlign: TextAlign.center,
             ),
-          ));
+          );
         }
         if ((widget.region == Region.jp || widget.region == Region.na) && url != null) {
-          children.add(IconButton(
-            onPressed: () => launch(url, external: false),
-            icon: const Icon(Icons.open_in_browser),
-          ));
+          children.add(
+            IconButton(onPressed: () => launch(url, external: false), icon: const Icon(Icons.open_in_browser)),
+          );
         }
-        return Column(
-          mainAxisSize: MainAxisSize.min,
-          children: children,
-        );
+        return Column(mainAxisSize: MainAxisSize.min, children: children);
       },
     );
   }
@@ -396,8 +412,12 @@ class _SniffGachaHistoryState extends State<SniffGachaHistory> {
       if (svt == null || !svt.isUserSvt || svt.rarity != rarity) continue;
       if (rarity == 4) {
         if (svt.type == SvtType.heroine ||
-            const [SvtObtain.eventReward, SvtObtain.friendPoint, SvtObtain.clearReward, SvtObtain.unavailable]
-                .any((e) => svt.obtains.contains(e))) {
+            const [
+              SvtObtain.eventReward,
+              SvtObtain.friendPoint,
+              SvtObtain.clearReward,
+              SvtObtain.unavailable,
+            ].any((e) => svt.obtains.contains(e))) {
           continue;
         }
       }
@@ -414,8 +434,12 @@ class _SniffGachaHistoryState extends State<SniffGachaHistory> {
       if (svt == null || !svt.isUserSvt || svt.rarity != rarity) continue;
       if (rarity == 4) {
         if (svt.type == SvtType.heroine ||
-            const [SvtObtain.eventReward, SvtObtain.friendPoint, SvtObtain.clearReward, SvtObtain.unavailable]
-                .any((e) => svt.obtains.contains(e))) {
+            const [
+              SvtObtain.eventReward,
+              SvtObtain.friendPoint,
+              SvtObtain.clearReward,
+              SvtObtain.unavailable,
+            ].any((e) => svt.obtains.contains(e))) {
           continue;
         }
       }
@@ -448,9 +472,7 @@ class _UserShopList extends StatelessWidget {
   Widget build(BuildContext context) {
     final userShops = this.userShops.toList()..sort2((e) => -e.updatedAt);
     return Scaffold(
-      appBar: AppBar(
-        title: Text(S.current.shop),
-      ),
+      appBar: AppBar(title: Text(S.current.shop)),
       body: ListView.builder(
         itemCount: userShops.length,
         itemBuilder: (context, index) {
@@ -475,11 +497,7 @@ class _SvtTotalNumList extends StatefulWidget {
   final Map<int, int> countsOwned;
   final Map<int, int> countsAll;
 
-  const _SvtTotalNumList({
-    required this.rarity,
-    required this.countsOwned,
-    required this.countsAll,
-  });
+  const _SvtTotalNumList({required this.rarity, required this.countsOwned, required this.countsAll});
 
   @override
   State<_SvtTotalNumList> createState() => _SvtTotalNumListState();
@@ -491,8 +509,12 @@ class _SvtTotalNumListState extends State<_SvtTotalNumList> {
   Widget build(BuildContext context) {
     final svtIds = {...widget.countsOwned.keys, ...widget.countsAll.keys}.toList();
     svtIds.sort((a, b) {
-      return SvtFilterData.compare(db.gameData.servantsById[a], db.gameData.servantsById[b],
-          keys: [SvtCompare.className, SvtCompare.no], reversed: [false, false]);
+      return SvtFilterData.compare(
+        db.gameData.servantsById[a],
+        db.gameData.servantsById[b],
+        keys: [SvtCompare.className, SvtCompare.no],
+        reversed: [false, false],
+      );
     });
     List<Widget> children = [];
     for (final svtId in svtIds) {
@@ -540,11 +562,7 @@ class _SvtTotalNumListState extends State<_SvtTotalNumList> {
           ),
         ],
       ),
-      body: GridView.extent(
-        maxCrossAxisExtent: 56,
-        childAspectRatio: 132 / 144,
-        children: children,
-      ),
+      body: GridView.extent(maxCrossAxisExtent: 56, childAspectRatio: 132 / 144, children: children),
     );
   }
 }

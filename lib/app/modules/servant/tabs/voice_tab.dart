@@ -71,10 +71,7 @@ class _SvtVoiceTabState extends State<SvtVoiceTab> {
       if (widget.svt.extra.mcLink != null)
         ListTile(
           title: const Text('Mooncell'),
-          trailing: Text(
-            '${Region.jp.localName}/${Region.cn.localName}',
-            style: Theme.of(context).textTheme.bodySmall,
-          ),
+          trailing: Text('${Region.jp.localName}/${Region.cn.localName}', style: Theme.of(context).textTheme.bodySmall),
           onTap: () {
             launch('https://fgo.wiki/w/${widget.svt.extra.mcLink}/语音');
           },
@@ -83,10 +80,7 @@ class _SvtVoiceTabState extends State<SvtVoiceTab> {
       if (widget.svt.extra.fandomLink != null)
         ListTile(
           title: const Text('Fandom'),
-          trailing: Text(
-            '${Region.jp.localName}/${Region.na.localName}',
-            style: Theme.of(context).textTheme.bodySmall,
-          ),
+          trailing: Text('${Region.jp.localName}/${Region.na.localName}', style: Theme.of(context).textTheme.bodySmall),
           onTap: () {
             launch('https://fategrandorder.fandom.com/wiki/Sub:${widget.svt.extra.fandomLink}/Dialogue');
           },
@@ -97,34 +91,30 @@ class _SvtVoiceTabState extends State<SvtVoiceTab> {
     List<VoiceGroup> groups = List.of(_svt?.profile.voices ?? []);
     for (final group in groups) {
       if (group.voiceLines.isEmpty) continue;
-      children.add(VoiceGroupAccordion(
-        group: group,
-        svt: _svt ?? widget.svt,
-        player: audioPlayer,
-      ));
+      children.add(VoiceGroupAccordion(group: group, svt: _svt ?? widget.svt, player: audioPlayer));
     }
     Widget view;
     if (groups.isEmpty) {
-      children.add(Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 48),
-        child: Center(
-          child: _loading
-              ? const CircularProgressIndicator()
-              : _svt == null
-                  ? RefreshButton(
+      children.add(
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 48),
+          child: Center(
+            child:
+                _loading
+                    ? const CircularProgressIndicator()
+                    : _svt == null
+                    ? RefreshButton(
                       text: '???',
                       onPressed: () {
                         fetchSvt(_region);
                       },
                     )
-                  : Text(S.current.empty_hint),
+                    : Text(S.current.empty_hint),
+          ),
         ),
-      ));
+      );
     }
-    view = ListView.builder(
-      itemCount: children.length,
-      itemBuilder: (context, index) => children[index],
-    );
+    view = ListView.builder(itemCount: children.length, itemBuilder: (context, index) => children[index]);
 
     return Column(
       children: [
@@ -145,10 +135,10 @@ class _SvtVoiceTabState extends State<SvtVoiceTab> {
                   }
                   setState(() {});
                 },
-              )
+              ),
             ],
           ),
-        )
+        ),
       ],
     );
   }
@@ -168,13 +158,8 @@ class VoiceGroupAccordion extends StatelessWidget {
   final Servant? _svt;
   final Event? event;
 
-  const VoiceGroupAccordion({
-    super.key,
-    required this.group,
-    required this.player,
-    Servant? svt,
-    this.event,
-  }) : _svt = svt;
+  const VoiceGroupAccordion({super.key, required this.group, required this.player, Servant? svt, this.event})
+    : _svt = svt;
 
   @override
   Widget build(BuildContext context) {
@@ -184,12 +169,14 @@ class VoiceGroupAccordion extends StatelessWidget {
       headerBuilder: (context, _) {
         List<InlineSpan> suffixes = [];
         if (group.voicePrefix != 0) {
-          final ascensions = svt?.ascensionAdd.voicePrefix.ascension.entries
+          final ascensions =
+              svt?.ascensionAdd.voicePrefix.ascension.entries
                   .where((e) => e.value == group.voicePrefix)
                   .map((e) => e.key)
                   .toList() ??
               [];
-          final costumes = svt?.ascensionAdd.voicePrefix.costume.entries
+          final costumes =
+              svt?.ascensionAdd.voicePrefix.costume.entries
                   .where((e) => e.value == group.voicePrefix)
                   .map((e) => e.key)
                   .toList() ??
@@ -199,75 +186,90 @@ class VoiceGroupAccordion extends StatelessWidget {
           }
           for (final costumeId in costumes) {
             final costume = svt?.profile.costume.values.firstWhereOrNull((e) => e.battleCharaId == costumeId);
-            suffixes.add(SharedBuilder.textButtonSpan(
-              context: context,
-              text: costume == null ? '${S.current.costume} $costumeId' : costume.lName.l,
-              onTap: costume == null ? null : () => costume.routeTo(),
-            ));
+            suffixes.add(
+              SharedBuilder.textButtonSpan(
+                context: context,
+                text: costume == null ? '${S.current.costume} $costumeId' : costume.lName.l,
+                onTap: costume == null ? null : () => costume.routeTo(),
+              ),
+            );
           }
         }
         Event? event = _getEvent(voiceLines);
         if (event != null) {
-          suffixes.add(SharedBuilder.textButtonSpan(
-            context: context,
-            text: event.lName.l.replaceAll('\n', ' '),
-            onTap: () => event.routeTo(),
-          ));
+          suffixes.add(
+            SharedBuilder.textButtonSpan(
+              context: context,
+              text: event.lName.l.replaceAll('\n', ' '),
+              onTap: () => event.routeTo(),
+            ),
+          );
         }
         InlineSpan? svtSpan;
         if (group.svtId != _svt?.id) {
           final svtId = db.gameData.storyCharaFigures[group.svtId] ?? group.svtId;
           var curSvt = db.gameData.servantsById[svtId] ?? db.gameData.entities[svtId];
           if (_svt?.id != curSvt?.id || curSvt == null) {
-            svtSpan = curSvt == null
-                ? TextSpan(text: '${group.svtId} ')
-                : SharedBuilder.textButtonSpan(
-                    context: context,
-                    text: '${curSvt.lName.l} ',
-                    onTap: curSvt.routeTo,
-                  );
+            svtSpan =
+                curSvt == null
+                    ? TextSpan(text: '${group.svtId} ')
+                    : SharedBuilder.textButtonSpan(context: context, text: '${curSvt.lName.l} ', onTap: curSvt.routeTo);
           }
         }
         return ListTile(
           dense: true,
-          title: Text.rich(TextSpan(children: [
-            if (svtSpan != null) svtSpan,
-            TextSpan(text: Transl.enums(group.type, (enums) => enums.svtVoiceType).l),
-          ])),
-          subtitle: suffixes.isEmpty
-              ? null
-              : Text.rich(
-                  TextSpan(
-                    children: [
-                      ...divideList(suffixes, const TextSpan(text: ', ')),
-                      // avoid clickable space extends to entire width
-                      const TextSpan(text: ' ')
-                    ],
+          title: Text.rich(
+            TextSpan(
+              children: [
+                if (svtSpan != null) svtSpan,
+                TextSpan(text: Transl.enums(group.type, (enums) => enums.svtVoiceType).l),
+              ],
+            ),
+          ),
+          subtitle:
+              suffixes.isEmpty
+                  ? null
+                  : Text.rich(
+                    TextSpan(
+                      children: [
+                        ...divideList(suffixes, const TextSpan(text: ', ')),
+                        // avoid clickable space extends to entire width
+                        const TextSpan(text: ' '),
+                      ],
+                    ),
+                    textScaler: const TextScaler.linear(0.9),
                   ),
-                  textScaler: const TextScaler.linear(0.9),
-                ),
         );
       },
       contentBuilder: (context) {
         List<Widget> children = [];
         if (group.svtId != svt?.id) {
-          children.add(ListTile(
-            title: Text(S.current.card_asset_chara_figure),
-            trailing: Text(group.svtId.toString()),
-            dense: true,
-            onTap: () {
-              const limitCount = 0;
-              FullscreenImageViewer.show(context: context, urls: [
-                '${HostsX.atlasAssetHost}/JP/CharaFigure/${group.svtId}$limitCount/${group.svtId}${limitCount}_merged.png'
-              ]);
-            },
-          ));
+          children.add(
+            ListTile(
+              title: Text(S.current.card_asset_chara_figure),
+              trailing: Text(group.svtId.toString()),
+              dense: true,
+              onTap: () {
+                const limitCount = 0;
+                FullscreenImageViewer.show(
+                  context: context,
+                  urls: [
+                    '${HostsX.atlasAssetHost}/JP/CharaFigure/${group.svtId}$limitCount/${group.svtId}${limitCount}_merged.png',
+                  ],
+                );
+              },
+            ),
+          );
         }
         Map<String, int> _nameCount = {};
-        children.addAll(voiceLines.map((e) => Padding(
+        children.addAll(
+          voiceLines.map(
+            (e) => Padding(
               padding: const EdgeInsetsDirectional.only(start: 16),
               child: _buildVoiceLine(context, e, _nameCount),
-            )));
+            ),
+          ),
+        );
         return Column(children: children);
       },
     );
@@ -369,10 +371,10 @@ class VoiceGroupAccordion extends StatelessWidget {
                     '· $name',
                     maxLines: 2,
                     maxFontSize: 12,
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyLarge
-                        ?.copyWith(fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.primary),
+                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
                   ),
                   for (final cond in line.conds)
                     if (![VoiceCondType.levelUp, VoiceCondType.event, VoiceCondType.birthDay].contains(cond.condType) &&
@@ -475,7 +477,7 @@ class VoiceGroupAccordion extends StatelessWidget {
                   );
                 },
               ),
-            )
+            ),
           ],
         ),
         // _voicePlayCond(),
@@ -494,8 +496,10 @@ class VoiceGroupAccordion extends StatelessWidget {
       rows.add(url);
       rows.add((line.delay.getOrNull(index) ?? 0).toString());
     }
-    launch(ChaldeaUrl.doc('tools', queryParams: {'audioData': base64Encode(utf8.encode(rows.join('\n')))}),
-        external: true);
+    launch(
+      ChaldeaUrl.doc('tools', queryParams: {'audioData': base64Encode(utf8.encode(rows.join('\n')))}),
+      external: true,
+    );
   }
 }
 
@@ -555,19 +559,24 @@ class __PlayButtonState<T> extends State<_PlayButton<T>> {
         downloading = false;
         if (sources.isEmpty) return;
 
-        widget.player.play(sources, widget.tag).catchError((e, s) {
-          widget.player.resetTag();
-          EasyLoading.showError('Error playing audio (May not support)\n$e');
-          logger.e('Error playing audio', e, s);
-        }).whenComplete(() {
-          if (mounted) setState(() {});
-        });
+        widget.player
+            .play(sources, widget.tag)
+            .catchError((e, s) {
+              widget.player.resetTag();
+              EasyLoading.showError('Error playing audio (May not support)\n$e');
+              logger.e('Error playing audio', e, s);
+            })
+            .whenComplete(() {
+              if (mounted) setState(() {});
+            });
       },
-      icon: Icon(widget.player.isPlaying(widget.tag)
-          ? Icons.pause_circle_outline
-          : _downloading
-              ? Icons.downloading
-              : Icons.play_circle_outline),
+      icon: Icon(
+        widget.player.isPlaying(widget.tag)
+            ? Icons.pause_circle_outline
+            : _downloading
+            ? Icons.downloading
+            : Icons.play_circle_outline,
+      ),
       tooltip: 'Play',
     );
   }
@@ -590,16 +599,22 @@ class __PlayButtonState<T> extends State<_PlayButton<T>> {
               return SimpleCancelOkDialog(
                 title: const Text('Linux MPV'),
                 hideCancel: true,
-                content: Text.rich(TextSpan(text: 'MPV is required to play audio, see\n', children: [
+                content: Text.rich(
                   TextSpan(
-                    text: 'https://github.com/bleonard252/just_audio_mpv',
-                    style: TextStyle(color: Theme.of(context).colorScheme.primary),
-                    recognizer: TapGestureRecognizer()
-                      ..onTap = () {
-                        launch('https://github.com/bleonard252/just_audio_mpv');
-                      },
-                  )
-                ])),
+                    text: 'MPV is required to play audio, see\n',
+                    children: [
+                      TextSpan(
+                        text: 'https://github.com/bleonard252/just_audio_mpv',
+                        style: TextStyle(color: Theme.of(context).colorScheme.primary),
+                        recognizer:
+                            TapGestureRecognizer()
+                              ..onTap = () {
+                                launch('https://github.com/bleonard252/just_audio_mpv');
+                              },
+                      ),
+                    ],
+                  ),
+                ),
               );
             },
           );

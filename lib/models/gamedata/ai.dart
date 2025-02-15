@@ -10,11 +10,7 @@ class NiceAiCollection {
   List<NiceAi> mainAis;
   List<NiceAi> relatedAis;
   List<StageLink> relatedQuests;
-  NiceAiCollection({
-    this.mainAis = const [],
-    this.relatedAis = const [],
-    this.relatedQuests = const [],
-  });
+  NiceAiCollection({this.mainAis = const [], this.relatedAis = const [], this.relatedQuests = const []});
   factory NiceAiCollection.fromJson(Map<String, dynamic> json) => _$NiceAiCollectionFromJson(json);
 
   Map<String, dynamic> toJson() => _$NiceAiCollectionToJson(this);
@@ -106,8 +102,7 @@ class NiceAiAct {
 
 enum AiType {
   svt,
-  field,
-  ;
+  field;
 
   static AiType? fromString(String s) {
     return AiType.values.firstWhere((e) => e.name == s);
@@ -137,8 +132,7 @@ enum NiceAiActNum {
   reactionEnemyTurnStartPriority(-401),
   reactionEnemyTurnEndPriority(-501),
   shiftServantBeforePriority(-1901),
-  unknown(-9999),
-  ;
+  unknown(-9999);
 
   const NiceAiActNum(this.value);
   final int value;
@@ -337,7 +331,7 @@ enum AiTiming {
   turnPlayerStart(3),
   turnPlayerEnd(4),
   turnEnemyStart(5),
-  turnEnemyEnd(6),
+  turnEnemyEnd(6)
   // 7
   // 8
   ;

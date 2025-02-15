@@ -116,7 +116,8 @@ class ClassBoard with RouteInfo {
       final lv = spellLvs[spellId]!.clamp(0, spell.functions.firstOrNull?.svals.length ?? 0);
       if (lv == 0 || spell.functions.isEmpty) continue;
       final func = spell.functions.first;
-      functions.add(NiceFunction(
+      functions.add(
+        NiceFunction(
           funcId: -spellId,
           funcType: FuncType.addState,
           funcTargetType: FuncTargetType.self,
@@ -129,7 +130,7 @@ class ClassBoard with RouteInfo {
               name: spell.name,
               detail: spell.detail,
               icon: func.funcPopupIcon,
-            )
+            ),
           ],
           svals: [
             DataVals({
@@ -139,8 +140,10 @@ class ClassBoard with RouteInfo {
               // "ClassBoardId": id,
               "Value": spellId,
               "Value2": lv,
-            })
-          ]));
+            }),
+          ],
+        ),
+      );
     }
     if (functions.isEmpty) return null;
     return NiceSkill(
@@ -151,11 +154,12 @@ class ClassBoard with RouteInfo {
       num: 0,
       coolDown: [0],
       functions: functions,
-      actIndividuality: classes
-          .map((e) => ConstData.classInfo[e.classId]?.individuality ?? 0)
-          .where((e) => e > 0)
-          .map((e) => NiceTrait(id: e))
-          .toList(),
+      actIndividuality:
+          classes
+              .map((e) => ConstData.classInfo[e.classId]?.individuality ?? 0)
+              .where((e) => e > 0)
+              .map((e) => NiceTrait(id: e))
+              .toList(),
     );
   }
 }
@@ -168,12 +172,7 @@ class ClassBoardClass {
   int condTargetId;
   int condNum;
 
-  ClassBoardClass({
-    required this.classId,
-    this.condType = CondType.none,
-    this.condTargetId = 0,
-    this.condNum = 0,
-  });
+  ClassBoardClass({required this.classId, this.condType = CondType.none, this.condTargetId = 0, this.condNum = 0});
 
   factory ClassBoardClass.fromJson(Map<String, dynamic> json) => _$ClassBoardClassFromJson(json);
 
@@ -312,25 +311,13 @@ class ClassBoardLine {
   int prevSquareId;
   int nextSquareId;
 
-  ClassBoardLine({
-    required this.id,
-    required this.prevSquareId,
-    required this.nextSquareId,
-  });
+  ClassBoardLine({required this.id, required this.prevSquareId, required this.nextSquareId});
 
   factory ClassBoardLine.fromJson(Map<String, dynamic> json) => _$ClassBoardLineFromJson(json);
 
   Map<String, dynamic> toJson() => _$ClassBoardLineToJson(this);
 }
 
-enum ClassBoardSkillType {
-  none,
-  passive,
-  commandSpell,
-}
+enum ClassBoardSkillType { none, passive, commandSpell }
 
-enum ClassBoardSquareFlag {
-  none,
-  start,
-  blank,
-}
+enum ClassBoardSquareFlag { none, start, blank }

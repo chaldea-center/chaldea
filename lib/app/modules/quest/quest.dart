@@ -32,12 +32,12 @@ class QuestDetailPage extends StatefulWidget {
   }) : questPhase = null;
 
   QuestDetailPage.phase({super.key, required QuestPhase this.questPhase})
-      : region = null,
-        id = questPhase.id,
-        phase = questPhase.phase,
-        enemyHash = null,
-        quest = questPhase,
-        questIdList = const [];
+    : region = null,
+      id = questPhase.id,
+      phase = questPhase.phase,
+      enemyHash = null,
+      quest = questPhase,
+      questIdList = const [];
 
   @override
   State<QuestDetailPage> createState() => _QuestDetailPageState();
@@ -109,25 +109,16 @@ class _QuestDetailPageState extends State<QuestDetailPage> {
             DropdownButton<Region>(
               value: region,
               items: [
-                for (final region in Region.values)
-                  DropdownMenuItem(
-                    value: region,
-                    child: Text(region.localName),
-                  ),
+                for (final region in Region.values) DropdownMenuItem(value: region, child: Text(region.localName)),
               ],
-              icon: Icon(
-                Icons.arrow_drop_down,
-                color: SharedBuilder.appBarForeground(context),
-              ),
-              selectedItemBuilder: (context) => [
-                for (final region in Region.values)
-                  DropdownMenuItem(
-                    child: Text(
-                      region.localName,
-                      style: TextStyle(color: SharedBuilder.appBarForeground(context)),
-                    ),
-                  )
-              ],
+              icon: Icon(Icons.arrow_drop_down, color: SharedBuilder.appBarForeground(context)),
+              selectedItemBuilder:
+                  (context) => [
+                    for (final region in Region.values)
+                      DropdownMenuItem(
+                        child: Text(region.localName, style: TextStyle(color: SharedBuilder.appBarForeground(context))),
+                      ),
+                  ],
               onChanged: (v) {
                 setState(() {
                   if (v != null) {
@@ -144,8 +135,9 @@ class _QuestDetailPageState extends State<QuestDetailPage> {
             itemBuilder: (context) {
               String? mcLink;
               if (_quest != null && (_quest!.type == QuestType.friendship || _quest!.warId == WarId.rankup)) {
-                final svt =
-                    db.gameData.servantsById.values.firstWhereOrNull((e) => e.relateQuestIds.contains(_quest!.id));
+                final svt = db.gameData.servantsById.values.firstWhereOrNull(
+                  (e) => e.relateQuestIds.contains(_quest!.id),
+                );
                 mcLink = svt?.extra.mcLink;
                 if (mcLink != null) mcLink += '/从者任务';
               }
@@ -172,20 +164,17 @@ class _QuestDetailPageState extends State<QuestDetailPage> {
                   child: Text(S.current.refresh),
                 ),
                 ...SharedBuilder.websitesPopupMenuItems(
-                  atlas: _quest == null
-                      ? null
-                      : Atlas.dbQuest(
-                          _quest!.id,
-                          _quest!.phases.contains(phase) ? phase : _quest!.phases.firstOrNull,
-                          region,
-                        ),
+                  atlas:
+                      _quest == null
+                          ? null
+                          : Atlas.dbQuest(
+                            _quest!.id,
+                            _quest!.phases.contains(phase) ? phase : _quest!.phases.firstOrNull,
+                            region,
+                          ),
                   mooncell: mcLink,
                 ),
-                if (1 > 2)
-                  PopupMenuItem(
-                    onTap: _showFixRegionDialog,
-                    child: Text(S.current.quest_prefer_region),
-                  ),
+                if (1 > 2) PopupMenuItem(onTap: _showFixRegionDialog, child: Text(S.current.quest_prefer_region)),
                 PopupMenuItem(
                   onTap: () {
                     copyToClipboard((_quest?.id ?? questId ?? widget.id ?? 0).toString(), toast: true);
@@ -195,87 +184,96 @@ class _QuestDetailPageState extends State<QuestDetailPage> {
                 if (region == Region.jp && Language.isZH) ...[
                   const PopupMenuDivider(),
                   PopupMenuItem(
-                    onTap: _quest == null
-                        ? null
-                        : () {
-                            router.pushPage(MCQuestConvertPage(quest: _quest!));
-                          },
+                    onTap:
+                        _quest == null
+                            ? null
+                            : () {
+                              router.pushPage(MCQuestConvertPage(quest: _quest!));
+                            },
                     child: const Text("导出至Mooncell"),
                   ),
                 ],
               ];
             },
-          )
+          ),
         ],
       ),
-      body: _quest == null
-          ? Center(
-              child: _loading
-                  ? const CircularProgressIndicator()
-                  : Text(S.current.quest_not_found_error(region.localName)),
-            )
-          : ListView(
-              padding: const EdgeInsets.symmetric(vertical: 8),
-              children: [
-                ...getHeader(),
-                if (widget.questPhase != null)
-                  QuestCard(
-                    quest: quest,
-                    region: null,
-                    offline: false,
-                    // key: uniqueKey,
-                    displayPhases: {widget.questPhase!.phase: null},
-                    preferredPhases: [widget.questPhase!],
-                  )
-                else
-                  QuestCard(
-                    quest: quest,
-                    region: region,
-                    offline: false,
-                    key: uniqueKey,
-                    displayPhases:
-                        quest.phases.contains(phase) ? {phase: initHash?.$1 == phase ? widget.enemyHash : null} : null,
-                  ),
-                if (quest.isLaplaceSharable) sharedTeamsButton,
-                if (db.gameData.dropData.domusAurea.questIds.contains(quest.id)) blacklistButton,
-                SFooter(S.current.quest_region_has_enemy_hint),
-                ...getCampaigns(),
-                const SafeArea(child: SizedBox())
-              ],
-            ),
+      body:
+          _quest == null
+              ? Center(
+                child:
+                    _loading
+                        ? const CircularProgressIndicator()
+                        : Text(S.current.quest_not_found_error(region.localName)),
+              )
+              : ListView(
+                padding: const EdgeInsets.symmetric(vertical: 8),
+                children: [
+                  ...getHeader(),
+                  if (widget.questPhase != null)
+                    QuestCard(
+                      quest: quest,
+                      region: null,
+                      offline: false,
+                      // key: uniqueKey,
+                      displayPhases: {widget.questPhase!.phase: null},
+                      preferredPhases: [widget.questPhase!],
+                    )
+                  else
+                    QuestCard(
+                      quest: quest,
+                      region: region,
+                      offline: false,
+                      key: uniqueKey,
+                      displayPhases:
+                          quest.phases.contains(phase)
+                              ? {phase: initHash?.$1 == phase ? widget.enemyHash : null}
+                              : null,
+                    ),
+                  if (quest.isLaplaceSharable) sharedTeamsButton,
+                  if (db.gameData.dropData.domusAurea.questIds.contains(quest.id)) blacklistButton,
+                  SFooter(S.current.quest_region_has_enemy_hint),
+                  ...getCampaigns(),
+                  const SafeArea(child: SizedBox()),
+                ],
+              ),
     );
   }
 
   List<Widget> getHeader() {
     List<Widget> children = [];
     if (quest.phases.length > 1 && widget.questPhase == null) {
-      children.add(Expanded(
-        child: Center(
-          child: FilterGroup<int>(
-            combined: true,
-            options: [0, ...quest.phases],
-            values: FilterRadioData.nonnull(phase),
-            padding: EdgeInsets.zero,
-            optionBuilder: (v) => Text(v == 0 ? '※' : v.toString()),
-            onFilterChanged: (v, _) {
-              setState(() {
-                phase = v.radioValue!;
-              });
-            },
+      children.add(
+        Expanded(
+          child: Center(
+            child: FilterGroup<int>(
+              combined: true,
+              options: [0, ...quest.phases],
+              values: FilterRadioData.nonnull(phase),
+              padding: EdgeInsets.zero,
+              optionBuilder: (v) => Text(v == 0 ? '※' : v.toString()),
+              onFilterChanged: (v, _) {
+                setState(() {
+                  phase = v.radioValue!;
+                });
+              },
+            ),
           ),
         ),
-      ));
+      );
     } else {
-      children.add(Expanded(
-        child: Center(
-          child: Text(
-            quest.lNameWithChapter,
-            style: Theme.of(context).textTheme.bodySmall,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
+      children.add(
+        Expanded(
+          child: Center(
+            child: Text(
+              quest.lNameWithChapter,
+              style: Theme.of(context).textTheme.bodySmall,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
           ),
         ),
-      ));
+      );
     }
     final questIds = widget.questIdList.toList();
     final index = questIds.indexOf(quest.id);
@@ -284,11 +282,7 @@ class _QuestDetailPageState extends State<QuestDetailPage> {
         Navigator.pop(context);
         router.push(
           url: Routes.questI(questId),
-          child: QuestDetailPage(
-            id: questId,
-            region: region,
-            questIdList: questIds,
-          ),
+          child: QuestDetailPage(id: questId, region: region, questIdList: questIds),
         );
       }
 
@@ -315,7 +309,7 @@ class _QuestDetailPageState extends State<QuestDetailPage> {
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
         children: children,
-      )
+      ),
     ];
   }
 
@@ -347,10 +341,7 @@ class _QuestDetailPageState extends State<QuestDetailPage> {
           });
         },
         icon: Icon(Icons.clear, color: AppTheme(context).tertiary),
-        label: Text(
-          S.current.remove_from_blacklist,
-          style: TextStyle(color: AppTheme(context).tertiary),
-        ),
+        label: Text(S.current.remove_from_blacklist, style: TextStyle(color: AppTheme(context).tertiary)),
       );
     }
 
@@ -361,10 +352,7 @@ class _QuestDetailPageState extends State<QuestDetailPage> {
         });
       },
       icon: const Icon(Icons.add, color: Colors.redAccent),
-      label: Text(
-        S.current.add_to_blacklist,
-        style: const TextStyle(color: Colors.redAccent),
-      ),
+      label: Text(S.current.add_to_blacklist, style: const TextStyle(color: Colors.redAccent)),
     );
   }
 
@@ -394,7 +382,7 @@ class _QuestDetailPageState extends State<QuestDetailPage> {
                   db.settings.preferredQuestRegion = region;
                 },
               ),
-            SFooter(S.current.quest_prefer_region_hint)
+            SFooter(S.current.quest_prefer_region_hint),
           ],
         );
       },
@@ -404,11 +392,14 @@ class _QuestDetailPageState extends State<QuestDetailPage> {
   bool _showAllCampaign = false;
   List<Widget> getCampaigns() {
     List<Widget> children = [];
-    final events = db.gameData.events.values
-        .where((e) =>
-            e.campaignQuests.any((q) => q.questId == quest.id) ||
-            e.campaigns.any((c) => c.targetIds.contains(quest.id)))
-        .toList();
+    final events =
+        db.gameData.events.values
+            .where(
+              (e) =>
+                  e.campaignQuests.any((q) => q.questId == quest.id) ||
+                  e.campaigns.any((c) => c.targetIds.contains(quest.id)),
+            )
+            .toList();
     if (events.isEmpty) return const [];
     if (!_showAllCampaign) {
       events.removeWhere((e) => e.isOutdated());
@@ -422,36 +413,27 @@ class _QuestDetailPageState extends State<QuestDetailPage> {
           if (start == null) continue;
           times.add('${r.upper}: ${start.sec2date().toDateString()}');
         }
-        children.add(ListTile(
-          dense: true,
-          title: Text(event.lName.l),
-          subtitle: Text(times.join(' / ')),
-          onTap: event.routeTo,
-        ));
+        children.add(
+          ListTile(dense: true, title: Text(event.lName.l), subtitle: Text(times.join(' / ')), onTap: event.routeTo),
+        );
       }
     }
 
-    children.add(Center(
-      child: IconButton(
-        onPressed: () {
-          setState(() {
-            _showAllCampaign = !_showAllCampaign;
-          });
-        },
-        icon: Icon(_showAllCampaign ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down),
+    children.add(
+      Center(
+        child: IconButton(
+          onPressed: () {
+            setState(() {
+              _showAllCampaign = !_showAllCampaign;
+            });
+          },
+          icon: Icon(_showAllCampaign ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down),
+        ),
       ),
-    ));
+    );
     if (children.isEmpty) {
-      children.add(const ListTile(
-        title: Text('No future event'),
-        dense: true,
-      ));
+      children.add(const ListTile(title: Text('No future event'), dense: true));
     }
-    return [
-      TileGroup(
-        header: S.current.event_campaign,
-        children: children,
-      )
-    ];
+    return [TileGroup(header: S.current.event_campaign, children: children)];
   }
 }

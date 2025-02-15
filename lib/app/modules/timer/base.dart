@@ -17,8 +17,8 @@ mixin TimerItem {
     return now > endedAt
         ? OngoingStatus.ended
         : now < startedAt
-            ? OngoingStatus.notStarted
-            : OngoingStatus.ongoing;
+        ? OngoingStatus.notStarted
+        : OngoingStatus.ongoing;
   }
 
   Widget buildItem(BuildContext context, {bool expanded = false});
@@ -38,17 +38,9 @@ mixin TimerItem {
   }
 }
 
-enum TimerSortType {
-  auto,
-  startTime,
-  endTime,
-}
+enum TimerSortType { auto, startTime, endTime }
 
-enum OngoingStatus {
-  ended,
-  ongoing,
-  notStarted,
-}
+enum OngoingStatus { ended, ongoing, notStarted }
 
 class TimerFilterData {
   final sortType = FilterRadioData.nonnull(TimerSortType.auto);
@@ -108,21 +100,20 @@ class CountDown extends StatelessWidget {
       builder: (context) {
         final _now = DateTime.now();
         return Text.rich(
-          TextSpan(children: [
-            if (startedAt != null && startedAt!.isAfter(_now)) ...[
-              TextSpan(text: '${S.current.not_started}\n', style: const TextStyle(fontSize: 12)),
-              if (showFutureStartedAt) ...[
-                buildOne(context, startedAt!, null, color: Colors.blue),
-                const TextSpan(text: '\n'),
+          TextSpan(
+            children: [
+              if (startedAt != null && startedAt!.isAfter(_now)) ...[
+                TextSpan(text: '${S.current.not_started}\n', style: const TextStyle(fontSize: 12)),
+                if (showFutureStartedAt) ...[
+                  buildOne(context, startedAt!, null, color: Colors.blue),
+                  const TextSpan(text: '\n'),
+                ],
               ],
+              if (endedAt.isBefore(_now)) TextSpan(text: '${S.current.ended}\n', style: const TextStyle(fontSize: 12)),
+              buildOne(context, endedAt, startedAt),
+              if (endedAt2 != null) ...[const TextSpan(text: '\n'), buildOne(context, endedAt2!, startedAt2)],
             ],
-            if (endedAt.isBefore(_now)) TextSpan(text: '${S.current.ended}\n', style: const TextStyle(fontSize: 12)),
-            buildOne(context, endedAt, startedAt),
-            if (endedAt2 != null) ...[
-              const TextSpan(text: '\n'),
-              buildOne(context, endedAt2!, startedAt2),
-            ]
-          ]),
+          ),
           textScaler: const TextScaler.linear(0.9),
           textAlign: textAlign,
         );

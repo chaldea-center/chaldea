@@ -89,30 +89,34 @@ class _WarMapPageState extends State<WarMapPage> {
         title: Text('${S.current.war_map} ${map.id}'),
         actions: [
           IconButton(
-            onPressed: map.mapImageW == 0 || map.mapImageH == 0
-                ? null
-                : () async {
-                    EasyLoading.show(status: 'Rendering...');
-                    final bytes = await ImageUtil.recordCanvas(
-                      width: map.mapImageW,
-                      height: map.mapImageH,
-                      paint: (canvas, size) {
-                        final painter = getPainter(size);
-                        painter.paint(canvas, size);
-                      },
-                    );
-                    EasyLoading.dismiss();
-                    if (bytes == null) {
-                      EasyLoading.showError(S.current.error);
-                      return;
-                    }
-                    if (!context.mounted) return;
-                    ImageActions.showSaveShare(
-                      context: context,
-                      data: bytes,
-                      destFp: joinPaths(db.paths.downloadDir, 'WarMap${map.id}-${DateTime.now().toSafeFileName()}.png'),
-                    );
-                  },
+            onPressed:
+                map.mapImageW == 0 || map.mapImageH == 0
+                    ? null
+                    : () async {
+                      EasyLoading.show(status: 'Rendering...');
+                      final bytes = await ImageUtil.recordCanvas(
+                        width: map.mapImageW,
+                        height: map.mapImageH,
+                        paint: (canvas, size) {
+                          final painter = getPainter(size);
+                          painter.paint(canvas, size);
+                        },
+                      );
+                      EasyLoading.dismiss();
+                      if (bytes == null) {
+                        EasyLoading.showError(S.current.error);
+                        return;
+                      }
+                      if (!context.mounted) return;
+                      ImageActions.showSaveShare(
+                        context: context,
+                        data: bytes,
+                        destFp: joinPaths(
+                          db.paths.downloadDir,
+                          'WarMap${map.id}-${DateTime.now().toSafeFileName()}.png',
+                        ),
+                      );
+                    },
             icon: const Icon(Icons.save_outlined),
             tooltip: S.current.save,
           ),
@@ -170,7 +174,7 @@ class _WarMapPageState extends State<WarMapPage> {
     }
     final gimmicks = [
       for (final gimmick in map.mapGimmicks)
-        if (filterData.gimmick.options.contains(gimmick.id)) gimmick
+        if (filterData.gimmick.options.contains(gimmick.id)) gimmick,
     ];
     return _WarMapPainter(
       cachedImages: Map.of(_cachedImages),
@@ -185,9 +189,7 @@ class _WarMapPageState extends State<WarMapPage> {
 
   Widget buildMap() {
     if (map.mapImageW <= 0 || map.mapImageH <= 0) {
-      return Center(
-        child: Text('Invalid Map Size: ${map.mapImageW}×${map.mapImageH}'),
-      );
+      return Center(child: Text('Invalid Map Size: ${map.mapImageW}×${map.mapImageH}'));
     }
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -202,10 +204,7 @@ class _WarMapPageState extends State<WarMapPage> {
         } else {
           size = Size(constraints.maxWidth, constraints.maxWidth / ratio);
         }
-        Widget mapWidget = CustomPaint(
-          size: size,
-          painter: getPainter(size),
-        );
+        Widget mapWidget = CustomPaint(size: size, painter: getPainter(size));
         mapWidget = PhotoView.customChild(
           childSize: size,
           minScale: 1.0,
@@ -215,18 +214,8 @@ class _WarMapPageState extends State<WarMapPage> {
         if (!_showFilter) return mapWidget;
         return ListView(
           children: [
-            ClipRect(
-              child: SizedBox(
-                width: constraints.maxWidth,
-                height: size.height,
-                child: mapWidget,
-              ),
-            ),
-            DividerWithTitle(
-              title: S.current.filter,
-              indent: 16,
-              padding: const EdgeInsets.symmetric(vertical: 8),
-            ),
+            ClipRect(child: SizedBox(width: constraints.maxWidth, height: size.height, child: mapWidget)),
+            DividerWithTitle(title: S.current.filter, indent: 16, padding: const EdgeInsets.symmetric(vertical: 8)),
             WarMapFilter(
               filterData: filterData,
               war: war,
@@ -239,11 +228,7 @@ class _WarMapPageState extends State<WarMapPage> {
               dense: true,
               leading: const Icon(Icons.music_note),
               title: Text(map.bgm.tooltip.setMaxLines(1)),
-              trailing: SoundPlayButton(
-                url: map.bgm.audioAsset,
-                player: audioPlayer,
-                name: map.bgm.fileName,
-              ),
+              trailing: SoundPlayButton(url: map.bgm.audioAsset, player: audioPlayer, name: map.bgm.fileName),
             ),
           ],
         );
@@ -292,9 +277,10 @@ class _WarMapPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final painter = Paint()
-      ..isAntiAlias = true
-      ..filterQuality = FilterQuality.high;
+    final painter =
+        Paint()
+          ..isAntiAlias = true
+          ..filterQuality = FilterQuality.high;
     final bgScale = size.width / map.mapImageW;
     // resize to aspect ratio
     size = Size(size.width, size.width / map.mapImageW * map.mapImageH);
@@ -360,7 +346,8 @@ class _WarMapPainter extends CustomPainter {
       }
     }
     for (final spot in spots.values) {
-      final textTopCenter = (spot.offset - const Offset(0, 50)) * bgScale +
+      final textTopCenter =
+          (spot.offset - const Offset(0, 50)) * bgScale +
           Offset(0, (spotImageSize / 2 + 2) / 2048 * size.width) +
           spot.nameOfs * bgScale;
       final textPadding = Offset(14 * bgScale, 2 * bgScale);
@@ -378,22 +365,17 @@ class _WarMapPainter extends CustomPainter {
       canvas.drawRRect(
         RRect.fromRectXY(
           Rect.fromCenter(
-              center: textTopCenter + Offset(0, textPadding.dy + tp.height / 2),
-              width: tp.width + textPadding.dx * 2,
-              height: tp.height + textPadding.dy * 2),
+            center: textTopCenter + Offset(0, textPadding.dy + tp.height / 2),
+            width: tp.width + textPadding.dx * 2,
+            height: tp.height + textPadding.dy * 2,
+          ),
           textPadding.dx,
           textPadding.dx,
         ),
         Paint()..color = Colors.black.withAlpha(204),
       );
       // draw text
-      tp.paint(
-        canvas,
-        Offset(
-          textTopCenter.dx - tp.width / 2,
-          textTopCenter.dy + textPadding.dy,
-        ),
-      );
+      tp.paint(canvas, Offset(textTopCenter.dx - tp.width / 2, textTopCenter.dy + textPadding.dy));
     }
 
     // top-right header
@@ -403,14 +385,10 @@ class _WarMapPainter extends CustomPainter {
       canvas.drawRect(
         Rect.fromLTWH(0, 0, size.width, h),
         Paint()
-          ..shader = ui.Gradient.linear(
-            Offset(size.width * 0.9, h * 2.5),
-            Offset(size.width * 0.8, -h * 1.5),
-            [
-              Colors.cyan,
-              Colors.transparent,
-            ],
-          ),
+          ..shader = ui.Gradient.linear(Offset(size.width * 0.9, h * 2.5), Offset(size.width * 0.8, -h * 1.5), [
+            Colors.cyan,
+            Colors.transparent,
+          ]),
       );
       canvas.drawImageRect(
         headerImage,

@@ -6,10 +6,7 @@ import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../quest/quest_card.dart';
 
-enum _EfficiencySort {
-  item,
-  bond,
-}
+enum _EfficiencySort { item, bond }
 
 class QuestEfficiencyTab extends StatefulWidget {
   final LPSolution? solution;
@@ -84,25 +81,27 @@ class _QuestEfficiencyTabState extends State<QuestEfficiencyTab> {
 
     final allBonus = widget.solution?.params?.validBonuses ?? {};
     if (allBonus.isNotEmpty) {
-      children.add(Card(
-        margin: const EdgeInsets.all(8),
-        child: Padding(
-          padding: const EdgeInsets.all(8),
-          child: Wrap(
-            spacing: 3,
-            runSpacing: 4,
-            crossAxisAlignment: WrapCrossAlignment.center,
-            children: [
-              Text(S.current.event_bonus),
-              const SizedBox(width: 4),
-              for (final itemId in allBonus.keys) ...[
-                Item.iconBuilder(context: context, item: db.gameData.items[itemId], width: 32),
-                Text('+${allBonus[itemId]}%', style: Theme.of(context).textTheme.bodySmall)
+      children.add(
+        Card(
+          margin: const EdgeInsets.all(8),
+          child: Padding(
+            padding: const EdgeInsets.all(8),
+            child: Wrap(
+              spacing: 3,
+              runSpacing: 4,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              children: [
+                Text(S.current.event_bonus),
+                const SizedBox(width: 4),
+                for (final itemId in allBonus.keys) ...[
+                  Item.iconBuilder(context: context, item: db.gameData.items[itemId], width: 32),
+                  Text('+${allBonus[itemId]}%', style: Theme.of(context).textTheme.bodySmall),
+                ],
               ],
-            ],
+            ),
           ),
         ),
-      ));
+      );
     }
 
     for (final variable in solutionVars) {
@@ -112,43 +111,46 @@ class _QuestEfficiencyTabState extends State<QuestEfficiencyTab> {
       if (filterItems.isEmpty ||
           (matchAll && filterItems.every((e) => variable.detail.containsKey(e))) ||
           (!matchAll && filterItems.any((e) => variable.detail.containsKey(e)))) {
-        children.add(Container(
-          decoration: BoxDecoration(border: Border(bottom: Divider.createBorderSide(context))),
-          child: ValueStatefulBuilder<bool>(
-            key: Key('eff_quest_$questId'),
-            initValue: false,
-            builder: (context, value) {
-              double bondEff = getBondEff(variable);
-              return Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  CustomTile(
-                    title: Text(quest?.lDispName ?? 'Quest $questId'),
-                    subtitle: buildRichText(drops.entries),
-                    trailing: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Text(Maths.sum(drops.values).toStringAsFixed(3)),
-                        Text(
-                          bondEff == double.negativeInfinity ? '???' : bondEff.toStringAsFixed(2),
-                          style: Theme.of(context).textTheme.bodySmall,
-                        )
-                      ],
+        children.add(
+          Container(
+            decoration: BoxDecoration(border: Border(bottom: Divider.createBorderSide(context))),
+            child: ValueStatefulBuilder<bool>(
+              key: Key('eff_quest_$questId'),
+              initValue: false,
+              builder: (context, value) {
+                double bondEff = getBondEff(variable);
+                return Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    CustomTile(
+                      title: Text(quest?.lDispName ?? 'Quest $questId'),
+                      subtitle: buildRichText(drops.entries),
+                      trailing: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Text(Maths.sum(drops.values).toStringAsFixed(3)),
+                          Text(
+                            bondEff == double.negativeInfinity ? '???' : bondEff.toStringAsFixed(2),
+                            style: Theme.of(context).textTheme.bodySmall,
+                          ),
+                        ],
+                      ),
+                      onTap:
+                          quest == null
+                              ? null
+                              : () {
+                                value.value = !value.value;
+                              },
                     ),
-                    onTap: quest == null
-                        ? null
-                        : () {
-                            value.value = !value.value;
-                          },
-                  ),
-                  if (value.value && quest != null) QuestCard(quest: quest),
-                ],
-              );
-            },
+                    if (value.value && quest != null) QuestCard(quest: quest),
+                  ],
+                );
+              },
+            ),
           ),
-        ));
+        );
       }
     }
 
@@ -160,10 +162,7 @@ class _QuestEfficiencyTabState extends State<QuestEfficiencyTab> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(S.current.item_eff),
-              Text(
-                S.current.bond_eff,
-                style: Theme.of(context).textTheme.bodySmall,
-              )
+              Text(S.current.bond_eff, style: Theme.of(context).textTheme.bodySmall),
             ],
           ),
         ),
@@ -187,18 +186,18 @@ class _QuestEfficiencyTabState extends State<QuestEfficiencyTab> {
       } else if (entry.key == Items.expPointId) {
         children.add(const TextSpan(text: 'EXP'));
       } else {
-        children.add(CenterWidgetSpan(
-          child: Opacity(
-            opacity: 0.75,
-            child: db.getIconImage(db.gameData.items[entry.key]?.borderedIcon, height: 18),
+        children.add(
+          CenterWidgetSpan(
+            child: Opacity(
+              opacity: 0.75,
+              child: db.getIconImage(db.gameData.items[entry.key]?.borderedIcon, height: 18),
+            ),
           ),
-        ));
+        );
       }
       children.add(TextSpan(text: '×$v '));
     }
-    return Text.rich(
-      TextSpan(children: children),
-    );
+    return Text.rich(TextSpan(children: children));
   }
 
   Widget _buildButtonBar() {
@@ -206,30 +205,32 @@ class _QuestEfficiencyTabState extends State<QuestEfficiencyTab> {
     List<int> items = allItems.toList()..sort2((e) => db.gameData.items[e]?.priority ?? e);
     List<Widget> children = [];
     for (final itemId in items) {
-      children.add(GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onTap: () {
-          setState(() {
-            if (filterItems.contains(itemId)) {
-              filterItems.remove(itemId);
-            } else {
-              filterItems.add(itemId);
-            }
-          });
-        },
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 2),
-          child: Stack(
-            alignment: Alignment.bottomRight,
-            children: [
-              db.getIconImage(db.gameData.items[itemId]?.borderedIcon, height: height),
-              if (filterItems.contains(itemId)) Icon(Icons.circle, size: height * 0.53, color: Colors.white),
-              if (filterItems.contains(itemId))
-                Icon(Icons.check_circle, size: height * 0.5, color: Theme.of(context).colorScheme.primary)
-            ],
+      children.add(
+        GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: () {
+            setState(() {
+              if (filterItems.contains(itemId)) {
+                filterItems.remove(itemId);
+              } else {
+                filterItems.add(itemId);
+              }
+            });
+          },
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 2),
+            child: Stack(
+              alignment: Alignment.bottomRight,
+              children: [
+                db.getIconImage(db.gameData.items[itemId]?.borderedIcon, height: height),
+                if (filterItems.contains(itemId)) Icon(Icons.circle, size: height * 0.53, color: Colors.white),
+                if (filterItems.contains(itemId))
+                  Icon(Icons.check_circle, size: height * 0.5, color: Theme.of(context).colorScheme.primary),
+              ],
+            ),
           ),
         ),
-      ));
+      );
     }
 
     return Column(
@@ -239,10 +240,7 @@ class _QuestEfficiencyTabState extends State<QuestEfficiencyTab> {
         Wrap(
           crossAxisAlignment: WrapCrossAlignment.center,
           children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8),
-              child: Text(S.current.filter_sort),
-            ),
+            Padding(padding: const EdgeInsets.symmetric(horizontal: 8), child: Text(S.current.filter_sort)),
             RadioWithLabel<_EfficiencySort>(
               value: _EfficiencySort.item,
               groupValue: sortType,
@@ -325,14 +323,11 @@ class _QuestEfficiencyTabState extends State<QuestEfficiencyTab> {
               child: Container(
                 margin: const EdgeInsets.symmetric(vertical: 5),
                 height: height,
-                child: ListView(
-                  scrollDirection: Axis.horizontal,
-                  children: children,
-                ),
+                child: ListView(scrollDirection: Axis.horizontal, children: children),
               ),
-            )
+            ),
           ],
-        )
+        ),
       ],
     );
   }

@@ -1,19 +1,8 @@
 import 'package:flutter/material.dart';
 
 class SpecialTextSpan extends WidgetSpan {
-  SpecialTextSpan(
-    String data, {
-    required Offset offset,
-    double? textScaleFactor,
-    super.style,
-  }) : super(
-          child: _TransformText(
-            data: data,
-            offset: offset,
-            textScaleFactor: textScaleFactor,
-            style: style,
-          ),
-        );
+  SpecialTextSpan(String data, {required Offset offset, double? textScaleFactor, super.style})
+    : super(child: _TransformText(data: data, offset: offset, textScaleFactor: textScaleFactor, style: style));
 
   SpecialTextSpan.superscript(
     String data, {
@@ -35,12 +24,7 @@ class _TransformText extends StatelessWidget {
   final double? textScaleFactor;
   final String data;
   final TextStyle? style;
-  const _TransformText({
-    required this.data,
-    required this.offset,
-    this.textScaleFactor,
-    this.style,
-  });
+  const _TransformText({required this.data, required this.offset, this.textScaleFactor, this.style});
 
   @override
   Widget build(BuildContext context) {

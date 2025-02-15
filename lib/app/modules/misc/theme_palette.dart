@@ -40,7 +40,7 @@ class _DarkLightThemePaletteState extends State<DarkLightThemePalette> {
             },
             icon: const Icon(Icons.settings),
             tooltip: "Settings",
-          )
+          ),
         ],
       ),
       body: SingleChildScrollView(
@@ -215,12 +215,7 @@ class _PaletteForThemeState extends State<_PaletteForTheme> {
                 ),
               ),
             ),
-            Expanded(
-              child: Container(
-                color: color,
-                child: const SizedBox.expand(),
-              ),
-            )
+            Expanded(child: Container(color: color, child: const SizedBox.expand())),
           ],
         ),
       ),

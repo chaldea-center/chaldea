@@ -20,19 +20,14 @@ class DropData {
   @JsonKey(includeFromJson: false, includeToJson: false)
   final Map<int, QuestDropData> freeDrops2; // key=questId
   @JsonKey(includeFromJson: false, includeToJson: false)
-  late final Map<int, QuestDropData> eventFreeDrops = Map.of(freeDrops2)
-    ..removeWhere((questId, drop) {
-      final quest = db.gameData.quests[questId];
-      return quest != null && (quest.warId < 2000 || quest.warId == WarId.daily);
-    });
+  late final Map<int, QuestDropData> eventFreeDrops = Map.of(freeDrops2)..removeWhere((questId, drop) {
+    final quest = db.gameData.quests[questId];
+    return quest != null && (quest.warId < 2000 || quest.warId == WarId.daily);
+  });
 
-  DropData({
-    this.domusVer = 0,
-    DropRateSheet? domusAurea,
-    this.fixedDrops = const {},
-    this.freeDrops = const {},
-  })  : domusAurea = domusAurea ?? DropRateSheet(),
-        freeDrops2 = freeDrops.map((key, value) => MapEntry(key ~/ 100, value));
+  DropData({this.domusVer = 0, DropRateSheet? domusAurea, this.fixedDrops = const {}, this.freeDrops = const {}})
+    : domusAurea = domusAurea ?? DropRateSheet(),
+      freeDrops2 = freeDrops.map((key, value) => MapEntry(key ~/ 100, value));
 
   factory DropData.fromJson(Map<String, dynamic> json) => _$DropDataFromJson(json);
 
@@ -67,8 +62,10 @@ class DropRateSheet {
   }
 
   void initMatrix() {
-    matrix =
-        List.generate(itemIds.length, (i) => List.generate(questIds.length, (j) => (sparseMatrix[i]?[j] ?? 0) / 100));
+    matrix = List.generate(
+      itemIds.length,
+      (i) => List.generate(questIds.length, (j) => (sparseMatrix[i]?[j] ?? 0) / 100),
+    );
   }
 
   // call [initMatrix] after added
@@ -121,7 +118,7 @@ class DropRateSheet {
     if (questIndex < 0) return {};
     return {
       for (int itemIndex = 0; itemIndex < itemIds.length; itemIndex++)
-        if (matrix[itemIndex][questIndex] > 0) itemIds[itemIndex]: matrix[itemIndex][questIndex]
+        if (matrix[itemIndex][questIndex] > 0) itemIds[itemIndex]: matrix[itemIndex][questIndex],
     };
   }
 
@@ -175,11 +172,7 @@ class QuestDropData {
   Map<int, int> items;
   Map<int, int> groups; // default 1
 
-  QuestDropData({
-    this.runs = 0,
-    this.items = const {},
-    this.groups = const {},
-  });
+  QuestDropData({this.runs = 0, this.items = const {}, this.groups = const {}});
 
   double getBase(int itemId) => (items[itemId] ?? 0) / runs;
 

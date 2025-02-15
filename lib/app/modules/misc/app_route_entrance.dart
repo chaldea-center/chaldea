@@ -30,7 +30,7 @@ class _AppRouteEntrancePageState extends State<AppRouteEntrancePage> {
             },
             icon: const Icon(Icons.history),
             tooltip: S.current.history,
-          )
+          ),
         ],
       ),
       body: ListView(
@@ -102,9 +102,7 @@ class _AppRouteEntrancePageState extends State<AppRouteEntrancePage> {
           ConstrainedBox(
             constraints: BoxConstraints(maxWidth: (c.text.length * 12.0).clamp(80, 160)),
             child: TextFormField(
-              decoration: const InputDecoration(
-                isDense: true,
-              ),
+              decoration: const InputDecoration(isDense: true),
               controller: c,
               onChanged: (value) {
                 setState(() {});
@@ -122,7 +120,7 @@ class _AppRouteEntrancePageState extends State<AppRouteEntrancePage> {
             onPressed: v == null ? null : () => router.push(url: '$path/$v'),
             icon: const Icon(Icons.keyboard_double_arrow_right),
             tooltip: 'GO!',
-          )
+          ),
         ],
       ),
     );

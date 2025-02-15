@@ -13,11 +13,7 @@ class NpDamageCalculator extends StatelessWidget {
         title: const AutoSizeText('NP Damage Calculator', maxLines: 1),
         centerTitle: false,
       ),
-      body: const Center(
-        child: Column(
-          children: [],
-        ),
-      ),
+      body: const Center(child: Column(children: [])),
     );
   }
 }

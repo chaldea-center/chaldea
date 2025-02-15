@@ -31,10 +31,7 @@ class ConstGameData {
   final Map<int, int> bondLimitQp = {10: 10000000, 11: 12000000, 12: 14000000, 13: 16000000, 14: 18000000};
   final Map<BuffType, List<BuffAction>> buffTypeActionMap;
 
-  final Map<int, int> svtClassCardImageIdRemap = {
-    285: 123,
-    351: 223,
-  };
+  final Map<int, int> svtClassCardImageIdRemap = {285: 123, 351: 223};
   final Map<int, List<SvtLimitHide>> svtLimitHides;
   // <eventId, <buffGroupId, skillNum>>
   //   // summer 2023
@@ -89,8 +86,11 @@ class ConstGameData {
       }
 
       // renamed and migrated in JP 2.107.0
-      _addBuffTypes(BuffAction.damageDef, [BuffType.upSelfdamage, BuffType.upDefenceDamage],
-          [BuffType.downSelfdamage, BuffType.downDefenceDamage]);
+      _addBuffTypes(
+        BuffAction.damageDef,
+        [BuffType.upSelfdamage, BuffType.upDefenceDamage],
+        [BuffType.downSelfdamage, BuffType.downDefenceDamage],
+      );
       _addBuffTypes(BuffAction.commandStarAtk, [], [BuffType.downCommanstar, BuffType.downCommandstar]);
       _addBuffTypes(BuffAction.commandNpAtk, [], [BuffType.downCommandnpLegacy, BuffType.downCommandnp]);
 
@@ -129,7 +129,7 @@ class ConstGameData {
     }
     return [
       for (int index = 1; index < expData.lv.length; index++)
-        if (expData.lv[index] <= maxLv) baseValue + (maxValue - baseValue) * expData.curve[index] ~/ 1000
+        if (expData.lv[index] <= maxLv) baseValue + (maxValue - baseValue) * expData.curve[index] ~/ 1000,
     ];
   }
 
@@ -165,10 +165,7 @@ class ConstDataConfig {
   final String autoLoginMinVerJp;
   final String autoLoginMinVerNa;
 
-  const ConstDataConfig({
-    this.autoLoginMinVerJp = '999.999.999',
-    this.autoLoginMinVerNa = '2.5.0',
-  });
+  const ConstDataConfig({this.autoLoginMinVerJp = '999.999.999', this.autoLoginMinVerNa = '2.5.0'});
 
   factory ConstDataConfig.fromJson(Map<String, dynamic> json) => _$ConstDataConfigFromJson(json);
 
@@ -273,11 +270,7 @@ class GrailCostDetail {
   int addLvMax;
   SvtFrameType frameType;
 
-  GrailCostDetail({
-    required this.qp,
-    required this.addLvMax,
-    this.frameType = SvtFrameType.gold,
-  });
+  GrailCostDetail({required this.qp, required this.addLvMax, this.frameType = SvtFrameType.gold});
 
   factory GrailCostDetail.fromJson(Map<String, dynamic> json) => _$GrailCostDetailFromJson(json);
 
@@ -312,12 +305,7 @@ class SvtExpCurve {
   List<int> exp;
   List<int> curve;
 
-  SvtExpCurve({
-    required this.type,
-    required this.lv,
-    required this.exp,
-    required this.curve,
-  });
+  SvtExpCurve({required this.type, required this.lv, required this.exp, required this.curve});
 
   factory SvtExpCurve.fromJson(Map<String, dynamic> json) => _$SvtExpCurveFromJson(json);
 
@@ -330,11 +318,7 @@ class FuncTypeDetail {
   final bool ignoreValueUp;
   final List<NiceTrait> individuality;
 
-  FuncTypeDetail({
-    this.funcType = FuncType.unknown,
-    required this.ignoreValueUp,
-    this.individuality = const [],
-  });
+  FuncTypeDetail({this.funcType = FuncType.unknown, required this.ignoreValueUp, this.individuality = const []});
 
   factory FuncTypeDetail.fromJson(Map<String, dynamic> json) => _$FuncTypeDetailFromJson(json);
 
@@ -346,10 +330,7 @@ class BuffTypeDetail {
   final BuffType buffType;
   final bool ignoreValueUp;
 
-  BuffTypeDetail({
-    this.buffType = BuffType.unknown,
-    required this.ignoreValueUp,
-  });
+  BuffTypeDetail({this.buffType = BuffType.unknown, required this.ignoreValueUp});
 
   factory BuffTypeDetail.fromJson(Map<String, dynamic> json) => _$BuffTypeDetailFromJson(json);
 
@@ -362,13 +343,7 @@ class SvtExpData {
   List<int> exp;
   List<int> atk;
   List<int> hp;
-  SvtExpData._({
-    required this.type,
-    required this.lv,
-    required this.exp,
-    required this.atk,
-    required this.hp,
-  });
+  SvtExpData._({required this.type, required this.lv, required this.exp, required this.atk, required this.hp});
 
   static SvtExpData from({
     required int type,
@@ -1049,7 +1024,7 @@ class GameConstantStr {
   const GameConstantStr({
     this.extendTurnBuffType = const [
       //
-      1, 9, 11, 13, 15, 18, 25, 50, 51, 52, 70, 72, 89, 90, 110, 112, 116, 121, 137, 144, 148, 160, 162
+      1, 9, 11, 13, 15, 18, 25, 50, 51, 52, 70, 72, 89, 90, 110, 112, 116, 121, 137, 144, 148, 160, 162,
     ],
     this.invalidSacrificeIndiv = const [3076],
     // this.materialMainInterludeWarId = 307,
@@ -1094,16 +1069,7 @@ class SvtLimitHide {
   Map<String, dynamic> toJson() => _$SvtLimitHideToJson(this);
 }
 
-enum SvtFrameType {
-  black,
-  bronze,
-  silver,
-  gold,
-  goldRed,
-  goldRedGreat,
-  goldBlack,
-  goldBlackGreat,
-}
+enum SvtFrameType { black, bronze, silver, gold, goldRed, goldRedGreat, goldBlack, goldBlackGreat }
 
 // String or int
 class BuffActionConverter extends JsonConverter<BuffAction, dynamic> {
@@ -1288,8 +1254,7 @@ enum BuffAction {
   criticalDamageDef(151),
   npdamageDef(152),
   // custom
-  functionClassboardCommandSpellAfter(301),
-  ;
+  functionClassboardCommandSpellAfter(301);
 
   final int value;
   const BuffAction(this.value);
@@ -1297,12 +1262,7 @@ enum BuffAction {
   bool get isNotNone => this != none && this != unknown;
 }
 
-enum BuffLimit {
-  none,
-  upper,
-  lower,
-  normal,
-}
+enum BuffLimit { none, upper, lower, normal }
 
 const kBuffActionPercentTypes = {
   BuffAction.atk: 10,

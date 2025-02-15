@@ -33,8 +33,8 @@ class FfoCard extends StatefulWidget {
     this.showSave = false,
     this.enableZoom = false,
     this.showFullScreen = false,
-  })  : assert(!enableZoom || !showFullScreen),
-        params = params.copyWith();
+  }) : assert(!enableZoom || !showFullScreen),
+       params = params.copyWith();
 
   @override
   State<FfoCard> createState() => _FfoCardState();
@@ -76,40 +76,36 @@ class _FfoCardState extends State<FfoCard> {
   Widget build(BuildContext context) {
     Widget child = FittedBox(
       fit: widget.fit,
-      child: CustomPaint(
-        size: widget.params.canvasSize,
-        painter: _FFOPainter(widget.params, images),
-      ),
+      child: CustomPaint(size: widget.params.canvasSize, painter: _FFOPainter(widget.params, images)),
     );
     if (widget.showSave || widget.showFullScreen) {
       child = GestureDetector(
         behavior: HitTestBehavior.opaque,
-        onTap: widget.showFullScreen && !widget.params.isEmpty && !images.isEmpty
-            ? () => Navigator.of(context).push(
+        onTap:
+            widget.showFullScreen && !widget.params.isEmpty && !images.isEmpty
+                ? () => Navigator.of(context).push(
                   PageRouteBuilder(
                     opaque: false,
-                    pageBuilder: (context, _, __) => FullscreenImageViewer(children: [
-                      FfoCard(
-                        params: widget.params,
-                        showSave: true,
-                        enableZoom: true,
-                      )
-                    ]),
+                    pageBuilder:
+                        (context, _, __) => FullscreenImageViewer(
+                          children: [FfoCard(params: widget.params, showSave: true, enableZoom: true)],
+                        ),
                   ),
                 )
-            : null,
-        onLongPress: widget.showSave
-            ? () async {
-                final data = await FFOUtil.toBinary(widget.params);
-                if (data == null) {
-                  EasyLoading.showError(S.current.failed);
-                  return;
+                : null,
+        onLongPress:
+            widget.showSave
+                ? () async {
+                  final data = await FFOUtil.toBinary(widget.params);
+                  if (data == null) {
+                    EasyLoading.showError(S.current.failed);
+                    return;
+                  }
+                  if (context.mounted) {
+                    FFOUtil.showSaveShare(context: context, params: widget.params, data: data);
+                  }
                 }
-                if (context.mounted) {
-                  FFOUtil.showSaveShare(context: context, params: widget.params, data: data);
-                }
-              }
-            : null,
+                : null,
         child: child,
       );
     }
@@ -252,12 +248,7 @@ abstract class FFOUtil {
 
     void _drawLand(ui.Image? img) {
       if (img == null) return;
-      canvas.drawImageRect(
-        img,
-        Rect.fromLTWH(0, 0, img.width.toDouble(), img.height.toDouble()),
-        centerRect,
-        Paint(),
-      );
+      canvas.drawImageRect(img, Rect.fromLTWH(0, 0, img.width.toDouble(), img.height.toDouble()), centerRect, Paint());
     }
 
     void _drawBody(ui.Image? img) {
@@ -289,11 +280,7 @@ abstract class FFOUtil {
         head.collectionNo == 402
             ? Rect.fromLTWH(0, -20, img.width.toDouble(), img.height.toDouble())
             : Rect.fromLTWH(0, 0, img.width.toDouble(), img.height.toDouble()),
-        Rect.fromCenter(
-          center: const Offset(0, 0),
-          width: w0 * scale,
-          height: h0 * scale,
-        ),
+        Rect.fromCenter(center: const Offset(0, 0), width: w0 * scale, height: h0 * scale),
         Paint(),
       );
       canvas.restore();
@@ -364,13 +351,7 @@ class PartChooser extends StatelessWidget {
   final FfoSvtPart? part;
   final Widget? placeholder;
   final ValueChanged<FfoSvtPart?> onChanged;
-  const PartChooser({
-    super.key,
-    required this.where,
-    required this.part,
-    this.placeholder,
-    required this.onChanged,
-  });
+  const PartChooser({super.key, required this.where, required this.part, this.placeholder, required this.onChanged});
 
   @override
   Widget build(BuildContext context) {
@@ -396,21 +377,12 @@ class PartChooser extends StatelessWidget {
               : db.getIconImage(FFOUtil.imgUrl(part?.svt?.icon), height: 72),
           Row(
             mainAxisSize: MainAxisSize.min,
-            children: [
-              db.getIconImage(FFOUtil.imgUrl(icon), width: 16),
-              Text(where.shownName),
-            ],
+            children: [db.getIconImage(FFOUtil.imgUrl(icon), width: 16), Text(where.shownName)],
           ),
         ],
       ),
       onTap: () {
-        router.pushPage(
-          FfoPartListPage(
-            where: where,
-            onSelected: onChanged,
-          ),
-          detail: true,
-        );
+        router.pushPage(FfoPartListPage(where: where, onSelected: onChanged), detail: true);
       },
     );
   }

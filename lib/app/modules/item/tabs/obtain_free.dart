@@ -34,18 +34,11 @@ class _ItemObtainFreeTabState extends State<ItemObtainFreeTab> {
             trailing: Row(
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                buildSortRadio(true),
-                buildSortRadio(false),
-              ],
+              children: <Widget>[buildSortRadio(true), buildSortRadio(false)],
             ),
           ),
         ),
-        Expanded(
-          child: InheritSelectionArea(
-            child: ListView(children: buildMainFreeQuests()),
-          ),
-        )
+        Expanded(child: InheritSelectionArea(child: ListView(children: buildMainFreeQuests()))),
       ],
     );
   }
@@ -84,7 +77,8 @@ class _ItemObtainFreeTabState extends State<ItemObtainFreeTab> {
             dense: true,
             title: Text(quest?.lDispName.setMaxLines(1) ?? 'Quest $questId'),
             subtitle: Text(
-                'Cost ${quest?.consume ?? dropRateData.apCosts[i]}$apUnit.  ${sortByAP ? '${S.current.drop_rate} $dropRateString%.' : '${S.current.ap_efficiency} $apRateString $apUnit.'}'),
+              'Cost ${quest?.consume ?? dropRateData.apCosts[i]}$apUnit.  ${sortByAP ? '${S.current.drop_rate} $dropRateString%.' : '${S.current.ap_efficiency} $apRateString $apUnit.'}',
+            ),
             trailing: Text(sortByAP ? '$apRateString $apUnit' : '$dropRateString%'),
           );
         },
@@ -100,7 +94,7 @@ class _ItemObtainFreeTabState extends State<ItemObtainFreeTab> {
     return [
       ...tmpData.map((e) => e.item3),
       const Divider(height: 16, thickness: 0.5, indent: 16, endIndent: 16),
-      const SafeArea(child: SizedBox())
+      const SafeArea(child: SizedBox()),
     ];
   }
 }

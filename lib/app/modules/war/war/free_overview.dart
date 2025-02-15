@@ -16,15 +16,14 @@ enum _QuestLv {
   all,
   lv90,
   lv90p,
-  lv90pp,
-  ;
+  lv90pp;
 
   String get shownName => switch (this) {
-        all => S.current.general_all,
-        lv90 => "Lv.90",
-        lv90p => "Lv.90+",
-        lv90pp => "Lv.90++",
-      };
+    all => S.current.general_all,
+    lv90 => "Lv.90",
+    lv90p => "Lv.90+",
+    lv90pp => "Lv.90++",
+  };
 }
 
 class FreeQuestOverview extends StatefulWidget {
@@ -77,12 +76,7 @@ class _FreeQuestOverviewState extends State<FreeQuestOverview> {
     bool has90 = quests.any((q) => q.recommendLv == '90');
     bool has90p = quests.any((q) => q.is90PlusFree);
     bool has90pp = quests.any((q) => q.is90PlusFree && q.recommendLv != '90+');
-    validLvs = [
-      _QuestLv.all,
-      if (has90) _QuestLv.lv90,
-      if (has90p) _QuestLv.lv90p,
-      if (has90pp) _QuestLv.lv90pp,
-    ];
+    validLvs = [_QuestLv.all, if (has90) _QuestLv.lv90, if (has90p) _QuestLv.lv90p, if (has90pp) _QuestLv.lv90pp];
     if (!validLvs.contains(minLv)) minLv = validLvs.first;
 
     if (minLv == _QuestLv.lv90) {
@@ -94,19 +88,22 @@ class _FreeQuestOverviewState extends State<FreeQuestOverview> {
     }
 
     if (mounted) setState(() {});
-    await Future.wait(quests.reversed.map((quest) async {
-      if (quest.phases.isEmpty) return null;
-      final prevPhase = prevPhases[quest.id];
-      String? enemyHash;
-      if (useMaxEnemyCountHash && prevPhase != null && prevPhase.enemyHashes.length > 1) {
-        enemyHash = prevPhase.enemyHashes.last;
-      }
-      final phase = await AtlasApi.questPhase(quest.id, quest.phases.last, hash: enemyHash);
-      if (phase != null) phases[quest.id] = phase;
-      if (mounted) setState(() {});
-    }).toList());
-    hasDifferentEnemyCount =
-        phases.values.any((phase) => phase.enemyHashes.map((e) => int.parse(e.substring(2, 4))).toSet().length > 1);
+    await Future.wait(
+      quests.reversed.map((quest) async {
+        if (quest.phases.isEmpty) return null;
+        final prevPhase = prevPhases[quest.id];
+        String? enemyHash;
+        if (useMaxEnemyCountHash && prevPhase != null && prevPhase.enemyHashes.length > 1) {
+          enemyHash = prevPhase.enemyHashes.last;
+        }
+        final phase = await AtlasApi.questPhase(quest.id, quest.phases.last, hash: enemyHash);
+        if (phase != null) phases[quest.id] = phase;
+        if (mounted) setState(() {});
+      }).toList(),
+    );
+    hasDifferentEnemyCount = phases.values.any(
+      (phase) => phase.enemyHashes.map((e) => int.parse(e.substring(2, 4))).toSet().length > 1,
+    );
     _loading = false;
     if (mounted) setState(() {});
   }
@@ -115,7 +112,9 @@ class _FreeQuestOverviewState extends State<FreeQuestOverview> {
   Widget build(BuildContext context) {
     final data = getInfo();
     int maxCount = Maths.max(
-        data.map((info) => Maths.max([info.domusItems.length, info.eventItems.length, info.normalItems.length])), 0);
+      data.map((info) => Maths.max([info.domusItems.length, info.eventItems.length, info.normalItems.length])),
+      0,
+    );
     maxCount = maxCount.clamp(3, 8);
     final hasEventItem = data.any((e) => e.phase == null || e.eventItems.isNotEmpty);
     return Scaffold(
@@ -124,33 +123,31 @@ class _FreeQuestOverviewState extends State<FreeQuestOverview> {
         actions: [
           if (hasDifferentEnemyCount)
             IconButton(
-              onPressed: _loading
-                  ? null
-                  : () {
-                      setState(() {
-                        useMaxEnemyCountHash = !useMaxEnemyCountHash;
-                      });
-                      loadData();
-                    },
+              onPressed:
+                  _loading
+                      ? null
+                      : () {
+                        setState(() {
+                          useMaxEnemyCountHash = !useMaxEnemyCountHash;
+                        });
+                        loadData();
+                      },
               icon: Stack(
                 alignment: Alignment.center,
                 children: [
                   db.getIconImage(AssetURL.i.buffIcon(1014), width: 24, height: 24),
-                  Icon(useMaxEnemyCountHash ? Icons.check : Icons.clear,
-                      color: Theme.of(context).colorScheme.error, size: 24),
+                  Icon(
+                    useMaxEnemyCountHash ? Icons.check : Icons.clear,
+                    color: Theme.of(context).colorScheme.error,
+                    size: 24,
+                  ),
                 ],
               ),
             ),
           if (validLvs.length > 1)
             SharedBuilder.appBarDropdown<_QuestLv>(
               context: context,
-              items: [
-                for (final lv in validLvs)
-                  DropdownMenuItem(
-                    value: lv,
-                    child: Text(lv.shownName),
-                  ),
-              ],
+              items: [for (final lv in validLvs) DropdownMenuItem(value: lv, child: Text(lv.shownName))],
               value: minLv,
               onChanged: (v) {
                 setState(() {
@@ -189,10 +186,9 @@ class _FreeQuestOverviewState extends State<FreeQuestOverview> {
           Flexible(
             fit: FlexFit.tight,
             child: ScrollConfiguration(
-              behavior: ScrollConfiguration.of(context).copyWith(
-                overscroll: false,
-                physics: const ClampingScrollPhysics(),
-              ),
+              behavior: ScrollConfiguration.of(
+                context,
+              ).copyWith(overscroll: false, physics: const ClampingScrollPhysics()),
               child: SafeArea(
                 child: DataTable2(
                   columns: [
@@ -204,17 +200,20 @@ class _FreeQuestOverviewState extends State<FreeQuestOverview> {
                     DataColumn2(label: Text(S.current.svt_class), fixedWidth: 90),
                     if (widget.isMainStory) ...[
                       DataColumn2(
-                          label: Text(S.current.quest_runs("").trim(), textScaler: const TextScaler.linear(0.9)),
-                          fixedWidth: 48),
+                        label: Text(S.current.quest_runs("").trim(), textScaler: const TextScaler.linear(0.9)),
+                        fixedWidth: 48,
+                      ),
                       DataColumn2(label: Text(S.current.fgo_domus_aurea), size: ColumnSize.L),
                       DataColumn2(
-                          label: Text(S.current.quest_runs("").trim(), textScaler: const TextScaler.linear(0.9)),
-                          fixedWidth: 48),
+                        label: Text(S.current.quest_runs("").trim(), textScaler: const TextScaler.linear(0.9)),
+                        fixedWidth: 48,
+                      ),
                       const DataColumn2(label: Text("Rayshift"), size: ColumnSize.L),
                     ] else ...[
                       DataColumn2(
-                          label: Text(S.current.quest_runs("").trim(), textScaler: const TextScaler.linear(0.9)),
-                          fixedWidth: 48),
+                        label: Text(S.current.quest_runs("").trim(), textScaler: const TextScaler.linear(0.9)),
+                        fixedWidth: 48,
+                      ),
                       if (hasEventItem) DataColumn2(label: Text(S.current.item), size: ColumnSize.L),
                       DataColumn2(label: Text(S.current.item), size: ColumnSize.L),
                     ],
@@ -254,26 +253,26 @@ class _FreeQuestOverviewState extends State<FreeQuestOverview> {
 
     final highlightStyle = TextStyle(color: quest.is90PlusFree ? Theme.of(context).colorScheme.primary : null);
 
-    cells.add(DataCell(
-      AutoSizeText(
-        name,
-        textScaleFactor: 0.9,
-        maxLines: 2,
-        minFontSize: 10,
-        style: highlightStyle,
+    cells.add(
+      DataCell(
+        AutoSizeText(name, textScaleFactor: 0.9, maxLines: 2, minFontSize: 10, style: highlightStyle),
+        onTap: quest.routeTo,
       ),
-      onTap: quest.routeTo,
-    ));
+    );
 
-    cells.add(DataCell(AutoSizeText(
-      [
-        'Lv.${(effQuest).recommendLv}',
-        if (effQuest.consumeType.useApOrBp) '${effQuest.consume}${effQuest.consumeType.unit}',
-      ].join('\n'),
-      maxLines: 2,
-      minFontSize: 10,
-      style: Theme.of(context).textTheme.bodySmall?.merge(highlightStyle),
-    )));
+    cells.add(
+      DataCell(
+        AutoSizeText(
+          [
+            'Lv.${(effQuest).recommendLv}',
+            if (effQuest.consumeType.useApOrBp) '${effQuest.consume}${effQuest.consumeType.unit}',
+          ].join('\n'),
+          maxLines: 2,
+          minFontSize: 10,
+          style: Theme.of(context).textTheme.bodySmall?.merge(highlightStyle),
+        ),
+      ),
+    );
 
     Widget wrap(Iterable<Widget> children) {
       if (children.isEmpty) return const SizedBox.shrink();
@@ -281,21 +280,28 @@ class _FreeQuestOverviewState extends State<FreeQuestOverview> {
     }
 
     DataCell clsIcons;
-    List<int> clsIconIds = phase?.className.map((e) => e.value).toList() ??
+    List<int> clsIconIds =
+        phase?.className.map((e) => e.value).toList() ??
         db.gameData.questPhaseDetails[quest.id * 100 + (quest.phases.lastOrNull ?? 0)]?.classIds ??
         [];
 
-    clsIcons = DataCell(Text.rich(TextSpan(children: [
-      for (final clsId in clsIconIds)
-        CenterWidgetSpan(child: db.getIconImage(SvtClassX.clsIcon(clsId, 5), width: 24, aspectRatio: 1)),
-      const TextSpan(text: '\n'),
-      phase == null && _loading
-          ? const CenterWidgetSpan(child: CupertinoActivityIndicator(radius: 6))
-          : TextSpan(
-              text: phase?.stages.map((e) => e.enemies.length).join('-') ?? '-',
-              style: Theme.of(context).textTheme.bodySmall,
-            ),
-    ])));
+    clsIcons = DataCell(
+      Text.rich(
+        TextSpan(
+          children: [
+            for (final clsId in clsIconIds)
+              CenterWidgetSpan(child: db.getIconImage(SvtClassX.clsIcon(clsId, 5), width: 24, aspectRatio: 1)),
+            const TextSpan(text: '\n'),
+            phase == null && _loading
+                ? const CenterWidgetSpan(child: CupertinoActivityIndicator(radius: 6))
+                : TextSpan(
+                  text: phase?.stages.map((e) => e.enemies.length).join('-') ?? '-',
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
+          ],
+        ),
+      ),
+    );
 
     cells.add(clsIcons);
 
@@ -306,14 +312,18 @@ class _FreeQuestOverviewState extends State<FreeQuestOverview> {
     }
 
     void _addRuns(int runs) {
-      cells.add(DataCell(Center(
-        child: AutoSizeText(
-          runs > 0 ? runs.toString() : '-',
-          maxLines: 1,
-          minFontSize: 10,
-          style: Theme.of(context).textTheme.bodySmall,
+      cells.add(
+        DataCell(
+          Center(
+            child: AutoSizeText(
+              runs > 0 ? runs.toString() : '-',
+              maxLines: 1,
+              minFontSize: 10,
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
+          ),
         ),
-      )));
+      );
     }
 
     int lines;
@@ -331,10 +341,7 @@ class _FreeQuestOverviewState extends State<FreeQuestOverview> {
     }
 
     if (lines < 1) lines = 1;
-    return DataRow2(
-      cells: cells,
-      specificRowHeight: 48.0 * lines,
-    );
+    return DataRow2(cells: cells, specificRowHeight: 48.0 * lines);
   }
 
   final iconWidth = 36.0;
@@ -353,13 +360,7 @@ class _FreeQuestOverviewState extends State<FreeQuestOverview> {
           if (text.isNotEmpty) text,
         ].join('\n');
       }
-      return Item.iconBuilder(
-        context: context,
-        item: null,
-        itemId: itemId,
-        width: iconWidth,
-        text: text,
-      );
+      return Item.iconBuilder(context: context, item: null, itemId: itemId, width: iconWidth, text: text);
     }
 
     for (final quest in quests) {

@@ -43,7 +43,8 @@ class Rijndael {
     int r_con_pointer = 0;
     while (t < round_key_count) {
       int tt = tk[k_c - 1];
-      tk[0] ^= (C.S[(tt >> 16) & 0xFF] & 0xFF) << 24 ^
+      tk[0] ^=
+          (C.S[(tt >> 16) & 0xFF] & 0xFF) << 24 ^
           (C.S[(tt >> 8) & 0xFF] & 0xFF) << 16 ^
           (C.S[tt & 0xFF] & 0xFF) << 8 ^
           (C.S[(tt >> 24) & 0xFF] & 0xFF) ^
@@ -58,7 +59,8 @@ class Rijndael {
           tk[i] ^= tk[i - 1];
         }
         tt = tk[k_c ~/ 2 - 1];
-        tk[k_c ~/ 2] ^= (C.S[tt & 0xFF] & 0xFF) ^
+        tk[k_c ~/ 2] ^=
+            (C.S[tt & 0xFF] & 0xFF) ^
             (C.S[(tt >> 8) & 0xFF] & 0xFF) << 8 ^
             (C.S[(tt >> 16) & 0xFF] & 0xFF) << 16 ^
             (C.S[(tt >> 24) & 0xFF] & 0xFF) << 24;
@@ -104,7 +106,8 @@ class Rijndael {
     }
     for (int r = 1; r < rounds; r++) {
       for (int i = 0; i < b_c; i++) {
-        a[i] = (C.T1[(t[i] >> 24) & 0xFF] ^
+        a[i] =
+            (C.T1[(t[i] >> 24) & 0xFF] ^
                 C.T2[(t[(i + s1) % b_c] >> 16) & 0xFF] ^
                 C.T3[(t[(i + s2) % b_c] >> 8) & 0xFF] ^
                 C.T4[t[(i + s3) % b_c] & 0xFF]) ^
@@ -142,7 +145,8 @@ class Rijndael {
     }
     for (int r = 1; r < rounds; r++) {
       for (int i = 0; i < b_c; i++) {
-        a[i] = (C.T5[(t[i] >> 24) & 0xFF] ^
+        a[i] =
+            (C.T5[(t[i] >> 24) & 0xFF] ^
                 C.T6[(t[(i + s1) % b_c] >> 16) & 0xFF] ^
                 C.T7[(t[(i + s2) % b_c] >> 8) & 0xFF] ^
                 C.T8[t[(i + s3) % b_c] & 0xFF]) ^
@@ -166,12 +170,7 @@ class RijndaelCbc extends Rijndael {
   late List<int> iv;
   late PaddingBase padding;
 
-  RijndaelCbc({
-    required super.key,
-    required this.iv,
-    required this.padding,
-    super.blockSize = 16,
-  });
+  RijndaelCbc({required super.key, required this.iv, required this.padding, super.blockSize = 16});
 
   @override
   List<int> encrypt(List<int> source) {

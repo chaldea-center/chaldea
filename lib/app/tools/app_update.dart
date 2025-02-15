@@ -43,13 +43,19 @@ class AppUpdater {
     // use https and set UA, or the fetched info may be outdated
     // this http request always return iOS version result
     try {
-      final response = await Dio().get('https://itunes.apple.com/lookup?bundleId=$kPackageName',
-          options: Options(responseType: ResponseType.plain, headers: {
-            'User-Agent': "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)"
+      final response = await Dio().get(
+        'https://itunes.apple.com/lookup?bundleId=$kPackageName',
+        options: Options(
+          responseType: ResponseType.plain,
+          headers: {
+            'User-Agent':
+                "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)"
                 " AppleWebKit/537.36 (KHTML, like Gecko)"
                 " Chrome/88.0.4324.146"
-                " Safari/537.36 Edg/88.0.705.62"
-          }));
+                " Safari/537.36 Edg/88.0.705.62",
+          },
+        ),
+      );
       // print(response.data);
       final jsonData = jsonDecode(response.data.toString().trim());
       // logger.d(jsonData);
@@ -123,10 +129,13 @@ class AppUpdater {
   static Future<AppUpdateDetail?> check() async {
     if (_checkCmpl != null) return _checkCmpl!.future;
     _checkCmpl = Completer();
-    latestAppRelease().then((value) => _checkCmpl!.complete(value)).catchError((e, s) {
-      logger.e('check app update failed', e, s);
-      _checkCmpl!.complete(null);
-    }).whenComplete(() => _checkCmpl = null);
+    latestAppRelease()
+        .then((value) => _checkCmpl!.complete(value))
+        .catchError((e, s) {
+          logger.e('check app update failed', e, s);
+          _checkCmpl!.complete(null);
+        })
+        .whenComplete(() => _checkCmpl = null);
     return _checkCmpl?.future;
   }
 
@@ -134,10 +143,13 @@ class AppUpdater {
     if (_downloadCmpl != null) return _downloadCmpl!.future;
     if (PlatformU.isAndroid) return null;
     _downloadCmpl = Completer();
-    _downloadFileWithCheck(detail).then((value) => _downloadCmpl!.complete(value)).catchError((e, s) {
-      logger.e('download app release failed', e, s);
-      _downloadCmpl!.complete(null);
-    }).whenComplete(() => _downloadCmpl = null);
+    _downloadFileWithCheck(detail)
+        .then((value) => _downloadCmpl!.complete(value))
+        .catchError((e, s) {
+          logger.e('download app release failed', e, s);
+          _downloadCmpl!.complete(null);
+        })
+        .whenComplete(() => _downloadCmpl = null);
     return _downloadCmpl?.future;
   }
 
@@ -212,11 +224,7 @@ class AppUpdateDetail {
   final _Asset installer;
   final _Asset? checksums;
 
-  AppUpdateDetail({
-    required this.release,
-    required this.installer,
-    required this.checksums,
-  });
+  AppUpdateDetail({required this.release, required this.installer, required this.checksums});
 }
 
 Future<_Release?> _githubLatestRelease(String org, String repo) async {
@@ -262,11 +270,7 @@ class _Asset {
   final String browserDownloadUrl;
 
   late final _Release release;
-  _Asset({
-    required this.name,
-    required this.size,
-    required this.browserDownloadUrl,
-  });
+  _Asset({required this.name, required this.size, required this.browserDownloadUrl});
 
   String get downloadUrl {
     return db.settings.proxy.worker ? proxyUrl : browserDownloadUrl;

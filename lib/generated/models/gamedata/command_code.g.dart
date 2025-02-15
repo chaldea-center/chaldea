@@ -7,43 +7,42 @@ part of '../../../models/gamedata/command_code.dart';
 // **************************************************************************
 
 CommandCode _$CommandCodeFromJson(Map json) => CommandCode(
-      id: (json['id'] as num).toInt(),
-      collectionNo: (json['collectionNo'] as num).toInt(),
-      name: json['name'] as String,
-      ruby: json['ruby'] as String? ?? "",
-      rarity: (json['rarity'] as num).toInt(),
-      extraAssets: ExtraCCAssets.fromJson(Map<String, dynamic>.from(json['extraAssets'] as Map)),
-      skills: (json['skills'] as List<dynamic>)
-          .map((e) => NiceSkill.fromJson(Map<String, dynamic>.from(e as Map)))
-          .toList(),
-      illustrator: json['illustrator'] as String,
-      comment: json['comment'] as String,
-    );
+  id: (json['id'] as num).toInt(),
+  collectionNo: (json['collectionNo'] as num).toInt(),
+  name: json['name'] as String,
+  ruby: json['ruby'] as String? ?? "",
+  rarity: (json['rarity'] as num).toInt(),
+  extraAssets: ExtraCCAssets.fromJson(Map<String, dynamic>.from(json['extraAssets'] as Map)),
+  skills:
+      (json['skills'] as List<dynamic>).map((e) => NiceSkill.fromJson(Map<String, dynamic>.from(e as Map))).toList(),
+  illustrator: json['illustrator'] as String,
+  comment: json['comment'] as String,
+);
 
 Map<String, dynamic> _$CommandCodeToJson(CommandCode instance) => <String, dynamic>{
-      'id': instance.id,
-      'collectionNo': instance.collectionNo,
-      'name': instance.name,
-      'ruby': instance.ruby,
-      'rarity': instance.rarity,
-      'extraAssets': instance.extraAssets.toJson(),
-      'skills': instance.skills.map((e) => e.toJson()).toList(),
-      'illustrator': instance.illustrator,
-      'comment': instance.comment,
-    };
+  'id': instance.id,
+  'collectionNo': instance.collectionNo,
+  'name': instance.name,
+  'ruby': instance.ruby,
+  'rarity': instance.rarity,
+  'extraAssets': instance.extraAssets.toJson(),
+  'skills': instance.skills.map((e) => e.toJson()).toList(),
+  'illustrator': instance.illustrator,
+  'comment': instance.comment,
+};
 
 BasicCommandCode _$BasicCommandCodeFromJson(Map json) => BasicCommandCode(
-      id: (json['id'] as num).toInt(),
-      collectionNo: (json['collectionNo'] as num).toInt(),
-      name: json['name'] as String,
-      rarity: (json['rarity'] as num).toInt(),
-      face: json['face'] as String,
-    );
+  id: (json['id'] as num).toInt(),
+  collectionNo: (json['collectionNo'] as num).toInt(),
+  name: json['name'] as String,
+  rarity: (json['rarity'] as num).toInt(),
+  face: json['face'] as String,
+);
 
 Map<String, dynamic> _$BasicCommandCodeToJson(BasicCommandCode instance) => <String, dynamic>{
-      'id': instance.id,
-      'collectionNo': instance.collectionNo,
-      'name': instance.name,
-      'rarity': instance.rarity,
-      'face': instance.face,
-    };
+  'id': instance.id,
+  'collectionNo': instance.collectionNo,
+  'name': instance.name,
+  'rarity': instance.rarity,
+  'face': instance.face,
+};

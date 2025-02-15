@@ -33,8 +33,7 @@ class RecoverEntity {
 enum RecoverType {
   commandSpell(1),
   stone(2),
-  item(3),
-  ;
+  item(3);
 
   const RecoverType(this.value);
   final int value;
@@ -42,8 +41,7 @@ enum RecoverType {
 
 enum RecoverTarget {
   ap(1),
-  rp(2),
-  ;
+  rp(2);
 
   const RecoverTarget(this.value);
   final int value;
@@ -62,6 +60,4 @@ const apRecovers = [
   //     id: 103, target: RecoverTarget.rp, priority: 40, recoverType: RecoverType.item, targetId: 94013002, num: 1),
 ];
 
-final mstRecovers = {
-  for (final recover in apRecovers) recover.id: recover,
-};
+final mstRecovers = {for (final recover in apRecovers) recover.id: recover};

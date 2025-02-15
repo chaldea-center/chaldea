@@ -57,10 +57,7 @@ class _BattleSvtDetailState extends State<BattleSvtDetail> with SingleTickerProv
         body: MediaQuery.removePadding(
           context: context,
           removeTop: true,
-          child: TabBarView(
-            controller: _tabController,
-            children: [buffTab, infoTab, if (showAiTab) aiTab],
-          ),
+          child: TabBarView(controller: _tabController, children: [buffTab, infoTab, if (showAiTab) aiTab]),
         ),
       ),
     );
@@ -70,9 +67,7 @@ class _BattleSvtDetailState extends State<BattleSvtDetail> with SingleTickerProv
     final icon = svt.niceEnemy?.icon ?? svt.niceSvt?.ascendIcon(svt.limitCount, false);
     return SliverAppBar(
       title: AutoSizeText(svt.lBattleName, maxLines: 1),
-      actions: [
-        _popupButton,
-      ],
+      actions: [_popupButton],
       pinned: true,
       expandedHeight: 150,
       toolbarHeight: AppBarTheme.of(context).toolbarHeight ?? kToolbarHeight,
@@ -106,10 +101,7 @@ class _BattleSvtDetailState extends State<BattleSvtDetail> with SingleTickerProv
                   ),
                 ),
               ),
-            Padding(
-              padding: const EdgeInsets.only(top: kToolbarHeight - 16),
-              child: SafeArea(child: header),
-            ),
+            Padding(padding: const EdgeInsets.only(top: kToolbarHeight - 16), child: SafeArea(child: header)),
           ],
         ),
       ),
@@ -118,11 +110,13 @@ class _BattleSvtDetailState extends State<BattleSvtDetail> with SingleTickerProv
   }
 
   Widget get header {
-    final buffer = StringBuffer('No.${svt.niceEnemy?.shownId ?? svt.niceSvt?.shownId ?? svt.svtId}'
-        ' $kStarChar2${svt.rarity}'
-        ' ${Transl.svtClassId(svt.logicalClassId).l}'
-        '\nATK ${svt.atk}  HP ${svt.hp}'
-        '\n${Transl.svtSubAttribute(svt.attribute).l}  Pos ${svt.fieldIndex + 1}');
+    final buffer = StringBuffer(
+      'No.${svt.niceEnemy?.shownId ?? svt.niceSvt?.shownId ?? svt.svtId}'
+      ' $kStarChar2${svt.rarity}'
+      ' ${Transl.svtClassId(svt.logicalClassId).l}'
+      '\nATK ${svt.atk}  HP ${svt.hp}'
+      '\n${Transl.svtSubAttribute(svt.attribute).l}  Pos ${svt.fieldIndex + 1}',
+    );
     if (svt.isEnemy) {
       buffer.write('  ${S.current.info_charge} ');
     } else {
@@ -135,16 +129,14 @@ class _BattleSvtDetailState extends State<BattleSvtDetail> with SingleTickerProv
         width: 72,
         overrideIcon: svt.niceSvt?.ascendIcon(svt.limitCount),
         option: ImageWithTextOption(
-            errorWidget: (context, url, error) => CachedImage(imageUrl: Atlas.common.unknownEnemyIcon)),
+          errorWidget: (context, url, error) => CachedImage(imageUrl: Atlas.common.unknownEnemyIcon),
+        ),
       ),
       title: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            buffer.toString(),
-            style: TextStyle(color: Colors.white.withAlpha(223)),
-          ),
+          Text(buffer.toString(), style: TextStyle(color: Colors.white.withAlpha(223))),
           const SizedBox(height: 4),
         ],
       ),
@@ -162,24 +154,24 @@ class _BattleSvtDetailState extends State<BattleSvtDetail> with SingleTickerProv
   }
 
   PreferredSizeWidget get tabBar {
-    return FixedHeight.tabBar(TabBar(
-      // tabAlignment: TabAlignment.center,
-      controller: _tabController,
-      // labelColor: AppTheme(context).tertiary,
-      indicatorSize: TabBarIndicatorSize.tab,
-      labelPadding: const EdgeInsets.symmetric(horizontal: 8.0),
-      // unselectedLabelColor: Colors.grey,
-      tabs: [const Tab(text: 'Buff'), Tab(text: S.current.card_info), if (showAiTab) const Tab(text: 'AI')],
-      indicatorColor: Theme.of(context).isDarkMode ? null : Colors.white.withAlpha(210),
-    ));
+    return FixedHeight.tabBar(
+      TabBar(
+        // tabAlignment: TabAlignment.center,
+        controller: _tabController,
+        // labelColor: AppTheme(context).tertiary,
+        indicatorSize: TabBarIndicatorSize.tab,
+        labelPadding: const EdgeInsets.symmetric(horizontal: 8.0),
+        // unselectedLabelColor: Colors.grey,
+        tabs: [const Tab(text: 'Buff'), Tab(text: S.current.card_info), if (showAiTab) const Tab(text: 'AI')],
+        indicatorColor: Theme.of(context).isDarkMode ? null : Colors.white.withAlpha(210),
+      ),
+    );
   }
 
   Widget get _popupButton {
     return PopupMenuButton(
       itemBuilder: (context) {
-        return [
-          const PopupMenuItem(enabled: false, child: Text('Nothing')),
-        ];
+        return [const PopupMenuItem(enabled: false, child: Text('Nothing'))];
       },
     );
   }
@@ -196,146 +188,143 @@ class _BattleSvtDetailState extends State<BattleSvtDetail> with SingleTickerProv
       if (enemy == null) {
         shiftNpcs.add(Text('NPC $npcId'));
       } else {
-        shiftNpcs.add(Text.rich(
-          SharedBuilder.textButtonSpan(
-            context: context,
-            text: '$npcId: HP ${enemy.hp}',
-            onTap: () {
-              router.pushPage(QuestEnemyDetail(enemy: enemy));
-            },
+        shiftNpcs.add(
+          Text.rich(
+            SharedBuilder.textButtonSpan(
+              context: context,
+              text: '$npcId: HP ${enemy.hp}',
+              onTap: () {
+                router.pushPage(QuestEnemyDetail(enemy: enemy));
+              },
+            ),
+            style: enemy == svt.niceEnemy ? curEnemyStyle : null,
           ),
-          style: enemy == svt.niceEnemy ? curEnemyStyle : null,
-        ));
+        );
       }
     }
     shiftNpcs = divideList(shiftNpcs, const Text(' → '));
     List<Widget> children = [
-      CustomTable(children: [
-        CustomTableRow.fromTexts(texts: [
-          <String>[
-            svt.lBattleName,
-            if (svt.niceEnemy != null) '(${svt.niceEnemy!.svt.lName.l})',
-          ].join(' ')
-        ]),
-        CustomTableRow.fromTexts(
-            texts: ['HP ${svt.hp}/${svt.maxHp} (${(svt.hp / svt.maxHp).format(percent: true, precision: 2)})']),
-        if (shiftNpcs.isNotEmpty) ...[
-          CustomTableRow.fromTexts(texts: const ['Shift'], isHeader: true),
-          CustomTableRow.fromChildren(children: [
-            Wrap(
-              alignment: WrapAlignment.center,
-              children: shiftNpcs,
-            )
-          ])
-        ],
-        CustomTableRow.fromTexts(
-          texts: [
-            S.current.ascension_stage,
-            S.current.svt_attribute,
-            S.current.info_death_rate,
-            S.current.info_critical_rate,
-          ],
-          isHeader: true,
-        ),
-        CustomTableRow.fromTexts(
-          texts: [
-            svt.limitCount.toString(),
-            Transl.svtSubAttribute(svt.attribute).l,
-            _dscPercent(svt.deathRate, 10),
-            svt.isEnemy ? _dscPercent(svt.niceEnemy!.criticalRate, 10) : svt.niceSvt!.criticalWeight.toString(),
-          ],
-        ),
-        if (svt.isEnemy) ...[
+      CustomTable(
+        children: [
           CustomTableRow.fromTexts(
             texts: [
-              S.current.np_gain_mod,
-              S.current.def_np_gain_mod,
-              S.current.crit_star_mod,
+              <String>[svt.lBattleName, if (svt.niceEnemy != null) '(${svt.niceEnemy!.svt.lName.l})'].join(' '),
+            ],
+          ),
+          CustomTableRow.fromTexts(
+            texts: ['HP ${svt.hp}/${svt.maxHp} (${(svt.hp / svt.maxHp).format(percent: true, precision: 2)})'],
+          ),
+          if (shiftNpcs.isNotEmpty) ...[
+            CustomTableRow.fromTexts(texts: const ['Shift'], isHeader: true),
+            CustomTableRow.fromChildren(children: [Wrap(alignment: WrapAlignment.center, children: shiftNpcs)]),
+          ],
+          CustomTableRow.fromTexts(
+            texts: [
+              S.current.ascension_stage,
+              S.current.svt_attribute,
+              S.current.info_death_rate,
+              S.current.info_critical_rate,
             ],
             isHeader: true,
           ),
           CustomTableRow.fromTexts(
             texts: [
-              _dscPercent(svt.enemyTdRate, 10),
-              _dscPercent(svt.enemyTdAttackRate, 10),
-              _dscPercent(svt.enemyStarRate, 10),
+              svt.limitCount.toString(),
+              Transl.svtSubAttribute(svt.attribute).l,
+              _dscPercent(svt.deathRate, 10),
+              svt.isEnemy ? _dscPercent(svt.niceEnemy!.criticalRate, 10) : svt.niceSvt!.criticalWeight.toString(),
             ],
           ),
+          if (svt.isEnemy) ...[
+            CustomTableRow.fromTexts(
+              texts: [S.current.np_gain_mod, S.current.def_np_gain_mod, S.current.crit_star_mod],
+              isHeader: true,
+            ),
+            CustomTableRow.fromTexts(
+              texts: [
+                _dscPercent(svt.enemyTdRate, 10),
+                _dscPercent(svt.enemyTdAttackRate, 10),
+                _dscPercent(svt.enemyStarRate, 10),
+              ],
+            ),
+          ],
+          CustomTableRow.fromTexts(texts: [S.current.trait], isHeader: true),
+          CustomTableRow.fromChildren(
+            children: [SharedBuilder.traitList(context: context, traits: svt.getTraits()..sort2((e) => e.id))],
+          ),
         ],
-        CustomTableRow.fromTexts(
-          texts: [S.current.trait],
-          isHeader: true,
-        ),
-        CustomTableRow.fromChildren(
-            children: [SharedBuilder.traitList(context: context, traits: svt.getTraits()..sort2((e) => e.id))]),
-      ])
+      ),
     ];
 
     children.add(DividerWithTitle(title: S.current.noble_phantasm, indent: 16, padding: const EdgeInsets.only(top: 8)));
     final td = battleData == null ? svt.playerSvtData?.td : svt.getCurrentNP();
-    children.add(SimpleAccordion(
-      headerBuilder: (context, _) {
-        return ListTile(
-          dense: true,
-          leading: td == null
-              ? db.getIconImage(Atlas.common.emptySkillIcon, width: 32, aspectRatio: 1)
-              : CommandCardWidget(card: td.svt.card, width: 38),
-          title: Text("${S.current.noble_phantasm} Lv.${td == null ? '-' : svt.tdLv}"),
-          subtitle: Text(td?.nameWithRank ?? "NONE"),
-        );
-      },
-      contentBuilder: (context) {
-        if (td == null) return const Center(child: Text('\nNONE\n'));
-        return TdDescriptor(td: td, showEnemy: svt.isEnemy, level: svt.tdLv);
-      },
-    ));
+    children.add(
+      SimpleAccordion(
+        headerBuilder: (context, _) {
+          return ListTile(
+            dense: true,
+            leading:
+                td == null
+                    ? db.getIconImage(Atlas.common.emptySkillIcon, width: 32, aspectRatio: 1)
+                    : CommandCardWidget(card: td.svt.card, width: 38),
+            title: Text("${S.current.noble_phantasm} Lv.${td == null ? '-' : svt.tdLv}"),
+            subtitle: Text(td?.nameWithRank ?? "NONE"),
+          );
+        },
+        contentBuilder: (context) {
+          if (td == null) return const Center(child: Text('\nNONE\n'));
+          return TdDescriptor(td: td, showEnemy: svt.isEnemy, level: svt.tdLv);
+        },
+      ),
+    );
     children.add(DividerWithTitle(title: S.current.active_skill, indent: 16));
     for (final skillNum in kActiveSkillNums) {
       final skill = svt.skillInfoList.getOrNull(skillNum - 1);
       final baseSkill = skill?.skill;
       final cd = skill?.chargeTurn ?? 0;
       final baseCd = baseSkill?.coolDown.getOrNull((skill?.skillLv ?? 1) - 1);
-      children.add(SimpleAccordion(
-        headerBuilder: (context, _) {
-          return ListTile(
-            dense: true,
-            leading: SizedBox(
-              width: 40,
-              child: Center(
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 4),
-                  child: db.getIconImage(
-                    baseSkill?.icon ?? Atlas.common.emptySkillIcon,
-                    width: 32,
-                    aspectRatio: 1,
+      children.add(
+        SimpleAccordion(
+          headerBuilder: (context, _) {
+            return ListTile(
+              dense: true,
+              leading: SizedBox(
+                width: 40,
+                child: Center(
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 4),
+                    child: db.getIconImage(baseSkill?.icon ?? Atlas.common.emptySkillIcon, width: 32, aspectRatio: 1),
                   ),
                 ),
               ),
-            ),
-            title: Text("${S.current.skill} $skillNum  Lv.${baseSkill == null ? '-' : skill?.skillLv}"),
-            subtitle: Text(skill?.lName ?? "NONE"),
-            trailing: Text('CD ${cd > 0 ? cd : "-"}/${baseCd ?? "-"}', textScaler: const TextScaler.linear(0.8)),
-            contentPadding: const EdgeInsetsDirectional.only(start: 16),
-          );
-        },
-        contentBuilder: (context) {
-          if (baseSkill == null) return const Center(child: Text('\nNONE\n'));
-          return SkillDescriptor(skill: baseSkill, showEnemy: svt.isEnemy, level: skill?.skillLv);
-        },
-      ));
+              title: Text("${S.current.skill} $skillNum  Lv.${baseSkill == null ? '-' : skill?.skillLv}"),
+              subtitle: Text(skill?.lName ?? "NONE"),
+              trailing: Text('CD ${cd > 0 ? cd : "-"}/${baseCd ?? "-"}', textScaler: const TextScaler.linear(0.8)),
+              contentPadding: const EdgeInsetsDirectional.only(start: 16),
+            );
+          },
+          contentBuilder: (context) {
+            if (baseSkill == null) return const Center(child: Text('\nNONE\n'));
+            return SkillDescriptor(skill: baseSkill, showEnemy: svt.isEnemy, level: skill?.skillLv);
+          },
+        ),
+      );
     }
 
     final ce = svt.playerSvtData?.ce;
     if (ce != null) {
       children.add(DividerWithTitle(title: S.current.craft_essence, indent: 16));
-      children.add(ListTile(
-        leading: ce.iconBuilder(context: context, width: 40),
-        title: Text(ce.lName.l),
-        trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
-        subtitle:
-            Text('Lv.${svt.playerSvtData!.ceLv}  ${svt.playerSvtData!.ceLimitBreak ? S.current.max_limit_break : ""}'),
-        onTap: ce.routeTo,
-      ));
+      children.add(
+        ListTile(
+          leading: ce.iconBuilder(context: context, width: 40),
+          title: Text(ce.lName.l),
+          trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
+          subtitle: Text(
+            'Lv.${svt.playerSvtData!.ceLv}  ${svt.playerSvtData!.ceLimitBreak ? S.current.max_limit_break : ""}',
+          ),
+          onTap: ce.routeTo,
+        ),
+      );
       final allSkills = ce.getActivatedSkills(svt.playerSvtData!.ceLimitBreak);
       for (final skills in allSkills.values) {
         for (final skill in skills) {
@@ -380,43 +369,48 @@ class _BattleSvtDetailState extends State<BattleSvtDetail> with SingleTickerProv
     ];
     if (valueSpans.isEmpty) valueSpans.add(const TextSpan(text: ' - '));
     final bool showActor = buff.vals.OnField == 1;
-    final buffName = buff.buff.name.isEmpty
-        ? FuncDescriptor.buildBasicFuncText(NiceFunction(
-            funcId: 0,
-            funcType: FuncType.addState,
-            funcTargetType: FuncTargetType.self,
-            funcTargetTeam: FuncApplyTarget.playerAndEnemy,
-            buffs: [buff.buff],
-            svals: [DataVals(buff.vals.toJson(sort: false)..['Value'] = buff.param)],
-          )).toString()
-        : buff.buff.lName.l;
+    final buffName =
+        buff.buff.name.isEmpty
+            ? FuncDescriptor.buildBasicFuncText(
+              NiceFunction(
+                funcId: 0,
+                funcType: FuncType.addState,
+                funcTargetType: FuncTargetType.self,
+                funcTargetTeam: FuncApplyTarget.playerAndEnemy,
+                buffs: [buff.buff],
+                svals: [DataVals(buff.vals.toJson(sort: false)..['Value'] = buff.param)],
+              ),
+            ).toString()
+            : buff.buff.lName.l;
     return ListTile(
       dense: true,
       minLeadingWidth: 24,
       leading: BattleBuffIcon(buff: buff, size: 24),
       title: Text(buffName),
       isThreeLine: showActor,
-      subtitle: Text.rich(TextSpan(
-        text: buff.buff.lDetail.l,
-        children: showActor
-            ? [
-                const TextSpan(text: '\n'),
-                TextSpan(
-                  text: Transl.special.actorOnField
-                      .replaceAll('{0}', buff.actorName ?? buff.actorUniqueId?.toString() ?? '???'),
-                  style: const TextStyle(fontStyle: FontStyle.italic),
-                ),
-              ]
-            : null,
-      )),
+      subtitle: Text.rich(
+        TextSpan(
+          text: buff.buff.lDetail.l,
+          children:
+              showActor
+                  ? [
+                    const TextSpan(text: '\n'),
+                    TextSpan(
+                      text: Transl.special.actorOnField.replaceAll(
+                        '{0}',
+                        buff.actorName ?? buff.actorUniqueId?.toString() ?? '???',
+                      ),
+                      style: const TextStyle(fontStyle: FontStyle.italic),
+                    ),
+                  ]
+                  : null,
+        ),
+      ),
       trailing: InkWell(
         onTap: () {
           Map<String, dynamic> vals = buff.vals.toJson(sort: false);
           if (vals['Value'] != buff.param) {
-            vals = {
-              'param': buff.param,
-              ...vals,
-            };
+            vals = {'param': buff.param, ...vals};
           }
           showDialog(
             context: context,
@@ -450,15 +444,16 @@ class _BattleSvtDetailState extends State<BattleSvtDetail> with SingleTickerProv
         final recorder = battleData?.recorder;
         if (recorder == null) return;
         router.showDialog(
-          builder: (context) => SimpleCancelOkDialog(
-            title: Text(S.current.remove),
-            content: Text(buffName),
-            onTapOk: () {
-              recorder.reasons.setReplay("Manual Remove Buff: ${svt.lBattleName}-$buffName");
-              buffList.remove(buff);
-              if (mounted) setState(() {});
-            },
-          ),
+          builder:
+              (context) => SimpleCancelOkDialog(
+                title: Text(S.current.remove),
+                content: Text(buffName),
+                onTapOk: () {
+                  recorder.reasons.setReplay("Manual Remove Buff: ${svt.lBattleName}-$buffName");
+                  buffList.remove(buff);
+                  if (mounted) setState(() {});
+                },
+              ),
         );
       },
     );
@@ -499,10 +494,7 @@ class BattleBuffIcon extends StatelessWidget {
                 text: '${buff.intervalTurn}T',
                 shadowColor: Colors.grey.shade800,
                 shadowSize: size * 0.13,
-                textStyle: TextStyle(
-                  color: Colors.white.withAlpha(223),
-                  fontSize: size * 0.8,
-                ),
+                textStyle: TextStyle(color: Colors.white.withAlpha(223), fontSize: size * 0.8),
               ),
             ),
           ),
@@ -511,12 +503,13 @@ class BattleBuffIcon extends StatelessWidget {
     }
 
     child = Container(
-      decoration: buff.irremovable || buff.vals.SetPassiveFrame == 1
-          ? BoxDecoration(
-              border: Border.all(color: Theme.of(context).hintColor),
-              borderRadius: BorderRadius.circular(size * 0.1),
-            )
-          : null,
+      decoration:
+          buff.irremovable || buff.vals.SetPassiveFrame == 1
+              ? BoxDecoration(
+                border: Border.all(color: Theme.of(context).hintColor),
+                borderRadius: BorderRadius.circular(size * 0.1),
+              )
+              : null,
       // padding: EdgeInsets.all(size * 0.05),
       width: size,
       height: size,
@@ -545,72 +538,75 @@ class BattleSvtAvatar extends StatelessWidget {
   Widget build(BuildContext context) {
     List<Widget> children = [];
     final aspectRatio = svt.isPlayer ? 132 / 144 : 1.0;
-    children.add(Positioned.fill(
-      child: CachedImage(
-        imageUrl: svt.isPlayer ? svt.niceSvt?.ascendIcon(svt.limitCount) : svt.niceEnemy?.icon,
-        height: size,
-        aspectRatio: aspectRatio,
-        cachedOption: CachedImageOption(
-          fit: BoxFit.contain,
-          errorWidget: (ctx, _, __) => CachedImage(imageUrl: Atlas.common.unknownEnemyIcon),
+    children.add(
+      Positioned.fill(
+        child: CachedImage(
+          imageUrl: svt.isPlayer ? svt.niceSvt?.ascendIcon(svt.limitCount) : svt.niceEnemy?.icon,
+          height: size,
+          aspectRatio: aspectRatio,
+          cachedOption: CachedImageOption(
+            fit: BoxFit.contain,
+            errorWidget: (ctx, _, __) => CachedImage(imageUrl: Atlas.common.unknownEnemyIcon),
+          ),
         ),
       ),
-    ));
+    );
     if (showHpBar) {
-      children.add(Positioned(
-        top: sized(8),
-        left: sized(18),
-        right: sized(4),
-        child: Container(
-          height: sized(5),
-          clipBehavior: Clip.hardEdge,
-          decoration: const BoxDecoration(
-            color: Colors.black,
-            borderRadius: BorderRadius.all(Radius.elliptical(3, 3)),
+      children.add(
+        Positioned(
+          top: sized(8),
+          left: sized(18),
+          right: sized(4),
+          child: Container(
+            height: sized(5),
+            clipBehavior: Clip.hardEdge,
+            decoration: const BoxDecoration(
+              color: Colors.black,
+              borderRadius: BorderRadius.all(Radius.elliptical(3, 3)),
+            ),
           ),
         ),
-      ));
-      children.add(Positioned(
-        top: sized(8),
-        left: sized(18),
-        right: sized(4 + (stdSize - 4 - 18) * (1 - svt.hp / svt.maxHp).clamp(0.0, 1.0)),
-        child: Container(
-          height: sized(5),
-          clipBehavior: Clip.hardEdge,
-          decoration: const BoxDecoration(
-            color: Colors.red,
-            borderRadius: BorderRadius.horizontal(left: Radius.elliptical(3, 3)),
+      );
+      children.add(
+        Positioned(
+          top: sized(8),
+          left: sized(18),
+          right: sized(4 + (stdSize - 4 - 18) * (1 - svt.hp / svt.maxHp).clamp(0.0, 1.0)),
+          child: Container(
+            height: sized(5),
+            clipBehavior: Clip.hardEdge,
+            decoration: const BoxDecoration(
+              color: Colors.red,
+              borderRadius: BorderRadius.horizontal(left: Radius.elliptical(3, 3)),
+            ),
           ),
         ),
-      ));
-      children.add(Positioned(
-        top: sized(7),
-        left: sized(16),
-        right: sized(2),
-        child: const CachedImage(
-          imageUrl:
-              'https://static.atlasacademy.io/file/aa-fgo-extract-jp/Battle/Common/BattleUIAtlas/enemy_frameB.png',
-          cachedOption: CachedImageOption(fit: BoxFit.fitWidth),
+      );
+      children.add(
+        Positioned(
+          top: sized(7),
+          left: sized(16),
+          right: sized(2),
+          child: const CachedImage(
+            imageUrl:
+                'https://static.atlasacademy.io/file/aa-fgo-extract-jp/Battle/Common/BattleUIAtlas/enemy_frameB.png',
+            cachedOption: CachedImageOption(fit: BoxFit.fitWidth),
+          ),
         ),
-      ));
+      );
     }
     if (svt.isEnemy || svt.logicalClassId != svt.originalClassId) {
-      children.add(Positioned(
-        left: sized(1),
-        top: sized(1),
-        child: db.getIconImage(SvtClassX.clsIcon(svt.logicalClassId, svt.rarity), width: sized(20)),
-      ));
-    }
-    Widget stack = SizedBox(
-      height: size,
-      width: size * aspectRatio,
-      child: Stack(children: children),
-    );
-    if (onTap != null) {
-      stack = InkWell(
-        onTap: onTap,
-        child: stack,
+      children.add(
+        Positioned(
+          left: sized(1),
+          top: sized(1),
+          child: db.getIconImage(SvtClassX.clsIcon(svt.logicalClassId, svt.rarity), width: sized(20)),
+        ),
       );
+    }
+    Widget stack = SizedBox(height: size, width: size * aspectRatio, child: Stack(children: children));
+    if (onTap != null) {
+      stack = InkWell(onTap: onTap, child: stack);
     }
     return stack;
   }

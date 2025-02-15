@@ -84,18 +84,19 @@ class _FormationEditorState extends State<FormationEditor>
 
               return FilterPage.show(
                 context: context,
-                builder: (context) => TeamFilterPage(
-                  filterData: filterData,
-                  availableSvts: svtIds,
-                  availableCEs: ceIds,
-                  availableMCs: mcIds,
-                  availableEventWarIds: eventWarIds,
-                  onChanged: (_) {
-                    if (mounted) {
-                      setState(() {});
-                    }
-                  },
-                ),
+                builder:
+                    (context) => TeamFilterPage(
+                      filterData: filterData,
+                      availableSvts: svtIds,
+                      availableCEs: ceIds,
+                      availableMCs: mcIds,
+                      availableEventWarIds: eventWarIds,
+                      onChanged: (_) {
+                        if (mounted) {
+                          setState(() {});
+                        }
+                      },
+                    ),
               );
             },
           ),
@@ -105,11 +106,7 @@ class _FormationEditorState extends State<FormationEditor>
   }
 
   @override
-  Widget buildListView({
-    Widget? topHint,
-    Widget? bottomHint,
-    Widget? separator,
-  }) {
+  Widget buildListView({Widget? topHint, Widget? bottomHint, Widget? separator}) {
     if (sorting) {
       return ReorderableListView(
         children: [
@@ -160,13 +157,7 @@ class _FormationEditorState extends State<FormationEditor>
                 TextSpan(text: title),
                 if (!sorting) ...[
                   const TextSpan(text: ' '),
-                  CenterWidgetSpan(
-                    child: Icon(
-                      Icons.edit,
-                      size: 16,
-                      color: titleStyle?.color,
-                    ),
-                  )
+                  CenterWidgetSpan(child: Icon(Icons.edit, size: 16, color: titleStyle?.color)),
                 ],
               ],
             ),
@@ -179,10 +170,7 @@ class _FormationEditorState extends State<FormationEditor>
       children: [
         titleWidget,
         if (team.quest != null) buildQuest(team.quest!),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8),
-          child: FormationCard(formation: formation),
-        ),
+        Padding(padding: const EdgeInsets.symmetric(horizontal: 8), child: FormationCard(formation: formation)),
         if (!sorting) buildActions(index, team),
       ],
     );
@@ -206,10 +194,12 @@ class _FormationEditorState extends State<FormationEditor>
       questName.add(TextSpan(text: quest.lDispName));
       final eventName = quest.event?.shownName ?? quest.war?.lShortName;
       if (eventName != null) {
-        questName.add(TextSpan(
-          text: '\n${eventName.setMaxLines(1)}',
-          style: TextStyle(fontSize: 12, color: Theme.of(context).textTheme.bodySmall?.color),
-        ));
+        questName.add(
+          TextSpan(
+            text: '\n${eventName.setMaxLines(1)}',
+            style: TextStyle(fontSize: 12, color: Theme.of(context).textTheme.bodySmall?.color),
+          ),
+        );
       }
     }
     return ListTile(
@@ -228,27 +218,25 @@ class _FormationEditorState extends State<FormationEditor>
     final formation = team.formation;
     List<Widget> children = [
       TextButton(
-        onPressed: userData.teams.length > 1
-            ? () {
-                SimpleCancelOkDialog(
-                  title: Text(S.current.delete),
-                  content: Text('${S.current.team} ${index + 1}'),
-                  onTapOk: () {
-                    if (mounted) {
-                      setState(() {
-                        if (userData.teams.length > 1) {
-                          userData.teams.remove(team);
-                        }
-                      });
-                    }
-                  },
-                ).showDialog(context);
-              }
-            : null,
-        child: Text(
-          S.current.delete,
-          style: TextStyle(color: Theme.of(context).colorScheme.error),
-        ),
+        onPressed:
+            userData.teams.length > 1
+                ? () {
+                  SimpleCancelOkDialog(
+                    title: Text(S.current.delete),
+                    content: Text('${S.current.team} ${index + 1}'),
+                    onTapOk: () {
+                      if (mounted) {
+                        setState(() {
+                          if (userData.teams.length > 1) {
+                            userData.teams.remove(team);
+                          }
+                        });
+                      }
+                    },
+                  ).showDialog(context);
+                }
+                : null,
+        child: Text(S.current.delete, style: TextStyle(color: Theme.of(context).colorScheme.error)),
       ),
       if (widget.teamToSave != null)
         TextButton(
@@ -267,11 +255,12 @@ class _FormationEditorState extends State<FormationEditor>
           child: Text(S.current.override_),
         ),
       TextButton(
-        onPressed: team.quest != null && team.actions.isNotEmpty
-            ? () {
-                replaySimulation(detail: team);
-              }
-            : null,
+        onPressed:
+            team.quest != null && team.actions.isNotEmpty
+                ? () {
+                  replaySimulation(detail: team);
+                }
+                : null,
         child: Text(S.current.details),
       ),
       const SizedBox(width: 8),
@@ -298,11 +287,7 @@ class _FormationEditorState extends State<FormationEditor>
       ),
     ];
 
-    return Wrap(
-      alignment: WrapAlignment.center,
-      crossAxisAlignment: WrapCrossAlignment.center,
-      children: children,
-    );
+    return Wrap(alignment: WrapAlignment.center, crossAxisAlignment: WrapCrossAlignment.center, children: children);
   }
 
   @override
@@ -314,13 +299,14 @@ class _FormationEditorState extends State<FormationEditor>
         alignment: MainAxisAlignment.center,
         children: [
           FilledButton.tonalIcon(
-            onPressed: widget.teamToSave == null
-                ? null
-                : () {
-                    userData.teams.add(widget.teamToSave!.copy());
-                    EasyLoading.showSuccess('${S.current.saved}: ${S.current.team} ${userData.teams.length}');
-                    setState(() {});
-                  },
+            onPressed:
+                widget.teamToSave == null
+                    ? null
+                    : () {
+                      userData.teams.add(widget.teamToSave!.copy());
+                      EasyLoading.showSuccess('${S.current.saved}: ${S.current.team} ${userData.teams.length}');
+                      setState(() {});
+                    },
             icon: const Icon(Icons.person_add),
             label: Text(S.current.save_current_team),
           ),

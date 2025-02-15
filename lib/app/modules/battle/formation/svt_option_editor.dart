@@ -70,17 +70,11 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
   @override
   Widget build(final BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(S.current.battle_edit_servant_option),
-        actions: [popupMenu],
-      ),
+      appBar: AppBar(title: Text(S.current.battle_edit_servant_option), actions: [popupMenu]),
       body: Column(
         children: [
           Expanded(child: body),
-          if (enableEdit) ...[
-            kDefaultDivider,
-            SafeArea(child: buttonBar),
-          ]
+          if (enableEdit) ...[kDefaultDivider, SafeArea(child: buttonBar)],
         ],
       ),
     );
@@ -176,7 +170,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
               playerSvtData.appendLvs[skillNum - 1] = v.round();
             });
           },
-        )
+        ),
     ];
 
     return ResponsiveLayout.builder(
@@ -208,17 +202,20 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
       return const Center(child: Text('None'));
     }
     const divider = Divider(height: 8, thickness: 1);
-    final extraPassives = playerSvtData.extraPassives
-        .where((passive) => passive.shouldActiveSvtEventSkill(
-            eventId: questPhase?.war?.eventId ?? 0, svtId: playerSvtData.svt?.id, includeZero: true))
-        .toList();
+    final extraPassives =
+        playerSvtData.extraPassives
+            .where(
+              (passive) => passive.shouldActiveSvtEventSkill(
+                eventId: questPhase?.war?.eventId ?? 0,
+                svtId: playerSvtData.svt?.id,
+                includeZero: true,
+              ),
+            )
+            .toList();
     final List<Widget> children = [
       _header(context),
       divider,
-      Padding(
-        padding: const EdgeInsetsDirectional.only(start: 16, end: 16),
-        child: _buildSliderGroup(),
-      ),
+      Padding(padding: const EdgeInsetsDirectional.only(start: 16, end: 16), child: _buildSliderGroup()),
       tipsCard,
       divider,
       ListTile(
@@ -239,41 +236,38 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
         ),
       ),
       divider,
-      TileGroup(
-        header: S.current.noble_phantasm,
-        children: [
-          _buildTdDescriptor(context),
-        ],
-      ),
+      TileGroup(header: S.current.noble_phantasm, children: [_buildTdDescriptor(context)]),
       TileGroup(
         header: S.current.active_skill,
-        children: [
-          for (final skillNum in kActiveSkillNums) _buildActiveSkill(context, skillNum),
-        ],
+        children: [for (final skillNum in kActiveSkillNums) _buildActiveSkill(context, skillNum)],
       ),
       TileGroup(
         header: '${S.current.custom_skill}/Buff ',
-        headerWidget: SHeader.rich(TextSpan(text: '${S.current.custom_skill}/Buff', children: [
-          CenterWidgetSpan(
-            child: db.getIconImage(AssetURL.i.buffIcon(302), width: 18, aspectRatio: 1),
-          )
-        ])),
+        headerWidget: SHeader.rich(
+          TextSpan(
+            text: '${S.current.custom_skill}/Buff',
+            children: [CenterWidgetSpan(child: db.getIconImage(AssetURL.i.buffIcon(302), width: 18, aspectRatio: 1))],
+          ),
+        ),
         children: [
           for (int index = 0; index < playerSvtData.customPassives.length; index++) _buildAdditionalPassive(index),
           ..._buildHiddenAddPassive(),
           Center(
             child: TextButton(
-              onPressed: enableEdit
-                  ? () async {
-                      await router.pushPage(SkillSelectPage(
-                        skillType: SkillType.passive,
-                        onSelected: (skill) {
-                          playerSvtData.addCustomPassive(skill, skill.maxLv);
-                        },
-                      ));
-                      if (mounted) setState(() {});
-                    }
-                  : null,
+              onPressed:
+                  enableEdit
+                      ? () async {
+                        await router.pushPage(
+                          SkillSelectPage(
+                            skillType: SkillType.passive,
+                            onSelected: (skill) {
+                              playerSvtData.addCustomPassive(skill, skill.maxLv);
+                            },
+                          ),
+                        );
+                        if (mounted) setState(() {});
+                      }
+                      : null,
               child: Text(S.current.select_skill),
             ),
           ),
@@ -282,7 +276,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
               onPressed: enableEdit ? onAddClassBoard : null,
               child: Text('${S.current.custom_skill}-${S.current.class_board}'),
             ),
-          )
+          ),
         ],
       ),
       _buildCmdCodePlanner(),
@@ -295,9 +289,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
       ),
       TileGroup(
         header: S.current.append_skill,
-        children: [
-          for (final skillNum in kAppendSkillNums) _buildAppendSkill(context, skillNum),
-        ],
+        children: [for (final skillNum in kAppendSkillNums) _buildAppendSkill(context, skillNum)],
       ),
     ];
     return ListView(children: children);
@@ -322,10 +314,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
                       textAlign: TextAlign.center,
                     ),
                   ),
-                  Icon(
-                    value.value ? Icons.expand_less : Icons.expand_more,
-                    color: Theme.of(context).disabledColor,
-                  ),
+                  Icon(value.value ? Icons.expand_less : Icons.expand_more, color: Theme.of(context).disabledColor),
                   const SizedBox(width: 8),
                 ],
               ),
@@ -341,10 +330,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
             onTap: () {
               value.value = !value.value;
             },
-            child: Padding(
-              padding: const EdgeInsets.all(8),
-              child: child,
-            ),
+            child: Padding(padding: const EdgeInsets.all(8), child: child),
           );
         },
       ),
@@ -361,12 +347,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
             height: 24,
             child: Text(S.current.select, style: Theme.of(context).textTheme.bodySmall),
           ),
-          const PopupMenuItem(
-            enabled: false,
-            height: 8,
-            padding: EdgeInsets.zero,
-            child: Divider(),
-          ),
+          const PopupMenuItem(enabled: false, height: 8, padding: EdgeInsets.zero, child: Divider()),
           PopupMenuItem(
             onTap: () {
               selectSvt();
@@ -390,10 +371,11 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
           for (final source in [
             PreferPlayerSvtDataSource.current,
             PreferPlayerSvtDataSource.target,
-            PreferPlayerSvtDataSource.none
+            PreferPlayerSvtDataSource.none,
           ])
             PopupMenuItem(
-              enabled: playerSvtData.svt != null &&
+              enabled:
+                  playerSvtData.svt != null &&
                   !playerSvtData.supportType.isSupport &&
                   (source.isNone ||
                       (playerSvtData.svt?.isUserSvt == true && playerSvtData.svt?.status.favorite == true)),
@@ -417,36 +399,33 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
           crossAxisAlignment: WrapCrossAlignment.center,
           children: [
             FilledButton(
-              onPressed: playerSvtData.svt == null
-                  ? null
-                  : () {
-                      _updateState(() {
-                        playerSvtData.svt = null;
-                      });
-                    },
-              style: FilledButton.styleFrom(
-                backgroundColor: Theme.of(context).colorScheme.error,
-              ),
+              onPressed:
+                  playerSvtData.svt == null
+                      ? null
+                      : () {
+                        _updateState(() {
+                          playerSvtData.svt = null;
+                        });
+                      },
+              style: FilledButton.styleFrom(backgroundColor: Theme.of(context).colorScheme.error),
               child: Text(S.current.clear),
             ),
-            FilledButton(
-              onPressed: selectSvt,
-              child: Text(S.current.select_servant),
-            ),
+            FilledButton(onPressed: selectSvt, child: Text(S.current.select_servant)),
             FilledButton(
               onPressed: () {
                 Navigator.pop(context);
               },
               child: Text(S.current.confirm),
-            )
+            ),
           ],
-        )
+        ),
       ],
     );
   }
 
   Widget _header(final BuildContext context) {
-    final ascensionText = svt.getCostume(playerSvtData.limitCount)?.lName.l ??
+    final ascensionText =
+        svt.getCostume(playerSvtData.limitCount)?.lName.l ??
         '${S.current.ascension_stage_short} ${playerSvtData.limitCount}';
     final atk = (svt.atkGrowth.getOrNull(playerSvtData.lv - 1) ?? 0) + playerSvtData.atkFou,
         hp = (svt.hpGrowth.getOrNull(playerSvtData.lv - 1) ?? 0) + playerSvtData.hpFou;
@@ -488,37 +467,42 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
               void _addOne(final int limitCount, final String name, final String? icon) {
                 if (icon == null) return;
                 final borderedIcon = svt.bordered(icon);
-                children.add(ListTile(
-                  contentPadding: EdgeInsets.zero,
-                  leading: db.getIconImage(
-                    borderedIcon,
-                    width: 36,
-                    padding: const EdgeInsets.symmetric(vertical: 2),
-                    errorWidget: (context, url, error) => CachedImage(imageUrl: Atlas.common.unknownEnemyIcon),
-                  ),
-                  title: Text(name, textScaler: const TextScaler.linear(0.9)),
-                  onTap: () {
-                    for (final skillNum in kActiveSkillNums) {
-                      final List<NiceSkill> previousShownSkills =
-                          BattleUtils.getShownSkills(svt, playerSvtData.limitCount, skillNum);
-                      final List<NiceSkill> shownSkills = BattleUtils.getShownSkills(svt, limitCount, skillNum);
-                      if (!listEquals(previousShownSkills, shownSkills)) {
-                        playerSvtData.skills[skillNum - 1] = shownSkills.lastOrNull;
-                        logger.d('Changing skill ID: ${playerSvtData.skills[skillNum - 1]?.id}');
+                children.add(
+                  ListTile(
+                    contentPadding: EdgeInsets.zero,
+                    leading: db.getIconImage(
+                      borderedIcon,
+                      width: 36,
+                      padding: const EdgeInsets.symmetric(vertical: 2),
+                      errorWidget: (context, url, error) => CachedImage(imageUrl: Atlas.common.unknownEnemyIcon),
+                    ),
+                    title: Text(name, textScaler: const TextScaler.linear(0.9)),
+                    onTap: () {
+                      for (final skillNum in kActiveSkillNums) {
+                        final List<NiceSkill> previousShownSkills = BattleUtils.getShownSkills(
+                          svt,
+                          playerSvtData.limitCount,
+                          skillNum,
+                        );
+                        final List<NiceSkill> shownSkills = BattleUtils.getShownSkills(svt, limitCount, skillNum);
+                        if (!listEquals(previousShownSkills, shownSkills)) {
+                          playerSvtData.skills[skillNum - 1] = shownSkills.lastOrNull;
+                          logger.d('Changing skill ID: ${playerSvtData.skills[skillNum - 1]?.id}');
+                        }
                       }
-                    }
 
-                    final List<NiceTd> previousShownTds = BattleUtils.getShownTds(svt, playerSvtData.limitCount);
-                    final List<NiceTd> shownTds = BattleUtils.getShownTds(svt, limitCount);
-                    playerSvtData.limitCount = limitCount;
-                    if (!listEquals(previousShownTds, shownTds)) {
-                      playerSvtData.td = shownTds.last;
-                      logger.d('Capping npId: ${playerSvtData.td?.id}');
-                    }
-                    Navigator.pop(context);
-                    _updateState(() {});
-                  },
-                ));
+                      final List<NiceTd> previousShownTds = BattleUtils.getShownTds(svt, playerSvtData.limitCount);
+                      final List<NiceTd> shownTds = BattleUtils.getShownTds(svt, limitCount);
+                      playerSvtData.limitCount = limitCount;
+                      if (!listEquals(previousShownTds, shownTds)) {
+                        playerSvtData.td = shownTds.last;
+                        logger.d('Capping npId: ${playerSvtData.td?.id}');
+                      }
+                      Navigator.pop(context);
+                      _updateState(() {});
+                    },
+                  ),
+                );
               }
 
               final List<int> limitCounts = {0, ...?svt.extraAssets.faces.ascension?.keys}.toList();
@@ -528,18 +512,16 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
 
               final costumeCharaIds = svt.extraAssets.faces.costume?.keys.toList() ?? [];
               for (final charaId in costumeCharaIds) {
-                _addOne(charaId, svt.profile.costume[charaId]?.lName.l ?? '${S.current.costume} $charaId',
-                    svt.ascendIcon(charaId));
+                _addOne(
+                  charaId,
+                  svt.profile.costume[charaId]?.lName.l ?? '${S.current.costume} $charaId',
+                  svt.ascendIcon(charaId),
+                );
               }
 
               return SimpleCancelOkDialog(
                 title: Text(S.current.battle_change_ascension),
-                content: SingleChildScrollView(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: children,
-                  ),
-                ),
+                content: SingleChildScrollView(child: Column(mainAxisSize: MainAxisSize.min, children: children)),
                 hideOk: true,
               );
             },
@@ -598,42 +580,39 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
                   ),
                 ),
                 TextButton(
-                  onPressed: enableEdit
-                      ? () {
-                          InputCancelOkDialog(
-                            title: '${S.current.noble_phantasm} ID',
-                            validate: (s) {
-                              final v = int.tryParse(s);
-                              return v != null && v > 0;
-                            },
-                            onSubmit: (s) async {
-                              final v = int.tryParse(s);
-                              NiceTd? td;
-                              if (v != null && v > 0) {
-                                EasyLoading.show();
-                                td = await AtlasApi.td(v);
-                                EasyLoading.dismiss();
-                              }
-                              if (td == null) {
-                                EasyLoading.showError(S.current.not_found);
-                                return;
-                              }
-                              playerSvtData.td = td;
-                              _updateState(() {});
-                            },
-                          ).showDialog(context);
-                        }
-                      : null,
+                  onPressed:
+                      enableEdit
+                          ? () {
+                            InputCancelOkDialog(
+                              title: '${S.current.noble_phantasm} ID',
+                              validate: (s) {
+                                final v = int.tryParse(s);
+                                return v != null && v > 0;
+                              },
+                              onSubmit: (s) async {
+                                final v = int.tryParse(s);
+                                NiceTd? td;
+                                if (v != null && v > 0) {
+                                  EasyLoading.show();
+                                  td = await AtlasApi.td(v);
+                                  EasyLoading.dismiss();
+                                }
+                                if (td == null) {
+                                  EasyLoading.showError(S.current.not_found);
+                                  return;
+                                }
+                                playerSvtData.td = td;
+                                _updateState(() {});
+                              },
+                            ).showDialog(context);
+                          }
+                          : null,
                   child: Text(S.current.general_custom),
-                )
+                ),
               ],
             ),
             if (playerSvtData.td != null)
-              TdDescriptor(
-                td: playerSvtData.td!,
-                showEnemy: !svt.isUserSvt,
-                level: playerSvtData.tdLv,
-              )
+              TdDescriptor(td: playerSvtData.td!, showEnemy: !svt.isUserSvt, level: playerSvtData.tdLv),
           ],
         );
       },
@@ -691,20 +670,23 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
                   ),
                 ),
                 TextButton(
-                  onPressed: enableEdit
-                      ? () {
-                          router.pushPage(SkillSelectPage(
-                            skillType: SkillType.active,
-                            onSelected: (skill) {
-                              _updateState(() {
-                                playerSvtData.skills[index] = skill.toNice();
-                              });
-                            },
-                          ));
-                        }
-                      : null,
+                  onPressed:
+                      enableEdit
+                          ? () {
+                            router.pushPage(
+                              SkillSelectPage(
+                                skillType: SkillType.active,
+                                onSelected: (skill) {
+                                  _updateState(() {
+                                    playerSvtData.skills[index] = skill.toNice();
+                                  });
+                                },
+                              ),
+                            );
+                          }
+                          : null,
                   child: Text(S.current.general_custom),
-                )
+                ),
               ],
             ),
             if (playerSvtData.skills[index] != null)
@@ -712,7 +694,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
                 skill: playerSvtData.skills[index]!,
                 showEnemy: !svt.isUserSvt,
                 level: playerSvtData.skillLvs[index],
-              )
+              ),
           ],
         );
       },
@@ -739,11 +721,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
       },
       contentBuilder: (context) {
         if (skill == null) return Center(child: Text('\n${S.current.not_found}\n'));
-        return SkillDescriptor(
-          skill: skill,
-          showEnemy: !svt.isUserSvt,
-          level: playerSvtData.appendLvs[index],
-        );
+        return SkillDescriptor(skill: skill, showEnemy: !svt.isUserSvt, level: playerSvtData.appendLvs[index]);
       },
     );
   }
@@ -752,8 +730,9 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
     List<Widget> children = [];
     int eventId = questPhase?.logicEvent?.id ?? 0;
     if (eventId == 0) return children;
-    for (final skillId
-        in db.gameData.constData.getSvtLimitHides(svt.id, playerSvtData.limitCount).expand((e) => e.addPassives)) {
+    for (final skillId in db.gameData.constData
+        .getSvtLimitHides(svt.id, playerSvtData.limitCount)
+        .expand((e) => e.addPassives)) {
       // 終局特異点
       if (skillId >= 960502 && skillId <= 960507) continue;
       final skill = playerSvtData.extraPassives.firstWhereOrNull((skill) => skill.id == skillId);
@@ -763,29 +742,31 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
       }
 
       if (playerSvtData.customPassives.any((e) => e.id == skillId)) continue;
-      children.add(ListTile(
-        dense: true,
-        enabled: false,
-        minLeadingWidth: 28,
-        contentPadding: const EdgeInsetsDirectional.only(start: 16),
-        leading: db.getIconImage(skill.icon, width: 28, onTap: skill.routeTo),
-        title: Text('[${S.current.disabled}] ${skill.lName.l}'),
-        subtitle: Text(
-          skill.lDetail ?? "???",
-          textScaler: const TextScaler.linear(0.85),
-          maxLines: 2,
-          overflow: TextOverflow.ellipsis,
+      children.add(
+        ListTile(
+          dense: true,
+          enabled: false,
+          minLeadingWidth: 28,
+          contentPadding: const EdgeInsetsDirectional.only(start: 16),
+          leading: db.getIconImage(skill.icon, width: 28, onTap: skill.routeTo),
+          title: Text('[${S.current.disabled}] ${skill.lName.l}'),
+          subtitle: Text(
+            skill.lDetail ?? "???",
+            textScaler: const TextScaler.linear(0.85),
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+          ),
+          trailing: IconButton(
+            onPressed: () {
+              playerSvtData.addCustomPassive(skill, skill.maxLv);
+              setState(() {});
+            },
+            icon: const Icon(Icons.add_circle),
+            tooltip: S.current.enable,
+            color: Theme.of(context).buttonTheme.colorScheme?.primary,
+          ),
         ),
-        trailing: IconButton(
-          onPressed: () {
-            playerSvtData.addCustomPassive(skill, skill.maxLv);
-            setState(() {});
-          },
-          icon: const Icon(Icons.add_circle),
-          tooltip: S.current.enable,
-          color: Theme.of(context).buttonTheme.colorScheme?.primary,
-        ),
-      ));
+      );
     }
     return children;
   }
@@ -817,16 +798,18 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
               spacing: 8,
               children: [
                 TextButton(
-                  onPressed: enableEdit
-                      ? () {
-                          _updateState(() {
-                            playerSvtData.disabledExtraSkills.toggle(skill.id);
-                          });
-                        }
-                      : null,
-                  child: disabled
-                      ? Text(S.current.enable)
-                      : Text(S.current.disable, style: TextStyle(color: Theme.of(context).colorScheme.error)),
+                  onPressed:
+                      enableEdit
+                          ? () {
+                            _updateState(() {
+                              playerSvtData.disabledExtraSkills.toggle(skill.id);
+                            });
+                          }
+                          : null,
+                  child:
+                      disabled
+                          ? Text(S.current.enable)
+                          : Text(S.current.disable, style: TextStyle(color: Theme.of(context).colorScheme.error)),
                 ),
               ],
             ),
@@ -835,12 +818,9 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
               elevation: 4,
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                child: SkillDescriptor(
-                  skill: skill,
-                  showEnemy: !svt.isUserSvt,
-                ),
+                child: SkillDescriptor(skill: skill, showEnemy: !svt.isUserSvt),
               ),
-            )
+            ),
           ],
         );
       },
@@ -863,8 +843,12 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
           minLeadingWidth: 28,
           leading: db.getIconImage(skill.icon ?? Atlas.common.emptySkillIcon, width: 28),
           title: Text(title),
-          subtitle:
-              Text(subtitle, textScaler: const TextScaler.linear(0.85), maxLines: 2, overflow: TextOverflow.ellipsis),
+          subtitle: Text(
+            subtitle,
+            textScaler: const TextScaler.linear(0.85),
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+          ),
         );
       },
       contentBuilder: (context) {
@@ -875,16 +859,17 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
               crossAxisAlignment: WrapCrossAlignment.center,
               children: [
                 TextButton(
-                  onPressed: enableEdit
-                      ? () {
-                          setState(() {
-                            if (index < playerSvtData.customPassives.length) {
-                              playerSvtData.customPassives.removeAt(index);
-                              playerSvtData.customPassiveLvs.removeAt(index);
-                            }
-                          });
-                        }
-                      : null,
+                  onPressed:
+                      enableEdit
+                          ? () {
+                            setState(() {
+                              if (index < playerSvtData.customPassives.length) {
+                                playerSvtData.customPassives.removeAt(index);
+                                playerSvtData.customPassiveLvs.removeAt(index);
+                              }
+                            });
+                          }
+                          : null,
                   child: Text(
                     S.current.remove,
                     // style: TextStyle(color: Theme.of(context).colorScheme.error),
@@ -897,15 +882,16 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
                     items: [
                       for (int lv2 = 1; lv2 <= maxLv; lv2++) DropdownMenuItem(value: lv2, child: Text('Lv.$lv2')),
                     ],
-                    onChanged: enableEdit
-                        ? (v) {
-                            setState(() {
-                              if (v != null) {
-                                playerSvtData.customPassiveLvs[index] = v;
-                              }
-                            });
-                          }
-                        : null,
+                    onChanged:
+                        enableEdit
+                            ? (v) {
+                              setState(() {
+                                if (v != null) {
+                                  playerSvtData.customPassiveLvs[index] = v;
+                                }
+                              });
+                            }
+                            : null,
                   ),
               ],
             ),
@@ -914,13 +900,9 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
               elevation: 4,
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                child: SkillDescriptor(
-                  skill: skill,
-                  showEnemy: !svt.isUserSvt,
-                  level: lv,
-                ),
+                child: SkillDescriptor(skill: skill, showEnemy: !svt.isUserSvt, level: lv),
               ),
-            )
+            ),
           ],
         );
       },
@@ -928,8 +910,9 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
   }
 
   Future<void> onAddClassBoard() async {
-    final board =
-        db.gameData.classBoards.values.firstWhereOrNull((e) => e.classes.any((cls) => cls.classId == svt.classId));
+    final board = db.gameData.classBoards.values.firstWhereOrNull(
+      (e) => e.classes.any((cls) => cls.classId == svt.classId),
+    );
     if (board == null) {
       EasyLoading.showInfo('${S.current.not_found}: ${Transl.svtClassId(svt.classId).l}');
       return;
@@ -945,14 +928,14 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
             for (final source in [
               PreferClassBoardDataSource.current,
               PreferClassBoardDataSource.target,
-              PreferClassBoardDataSource.full
+              PreferClassBoardDataSource.full,
             ])
               SimpleDialogOption(
                 child: Text(source.shownName),
                 onPressed: () {
                   Navigator.pop(context, source);
                 },
-              )
+              ),
           ],
         );
       },
@@ -989,67 +972,77 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
             children: List.generate(svt.cards.length, (index) {
               final card = svt.cards[index];
               if (!svt.cardDetails.containsKey(card)) {
-                return TableRow(children: [
-                  Center(child: CommandCardWidget(card: svt.cards[index], width: 60)),
-                  const SizedBox(),
-                  const SizedBox(),
-                  const SizedBox(),
-                ]);
+                return TableRow(
+                  children: [
+                    Center(child: CommandCardWidget(card: svt.cards[index], width: 60)),
+                    const SizedBox(),
+                    const SizedBox(),
+                    const SizedBox(),
+                  ],
+                );
               }
               final code = playerSvtData.commandCodes[index];
-              return TableRow(children: [
-                Center(child: CommandCardWidget(card: svt.cards[index], width: 60)),
-                InkWell(
-                  onTap: () {
-                    if (!enableEdit) return;
-                    router.pushBuilder(
-                      builder: (context) => CmdCodeListPage(
-                        onSelected: (selectedCode) {
-                          playerSvtData.commandCodes[index] = db.gameData.commandCodes[selectedCode.collectionNo];
-                          _updateState(() {});
-                        },
-                        filterData: db.settings.filters.cmdCodeFilterData,
-                      ),
-                      detail: false,
-                    );
-                  },
-                  onLongPress: code?.routeTo,
-                  child: db.getIconImage(code?.icon ?? Atlas.asset('SkillIcons/skill_999999.png'),
-                      height: 60, aspectRatio: 132 / 144, padding: const EdgeInsets.all(4)),
-                ),
-                IconButton(
-                  onPressed: enableEdit
-                      ? () {
-                          setState(() {
-                            playerSvtData.commandCodes[index] = null;
-                          });
-                        }
-                      : null,
-                  icon: const Icon(Icons.remove_circle_outline, size: 18),
-                  tooltip: S.current.remove,
-                ),
-                Padding(
-                  padding: const EdgeInsetsDirectional.only(start: 8),
-                  child: SliderWithPrefix(
-                    titled: true,
-                    label: S.current.card_strengthen,
-                    min: 0,
-                    max: 500,
-                    value: playerSvtData.cardStrengthens[index],
-                    // valueFormatter: (v) => v.toString(),
-                    onChange: (v) {
-                      _updateState(() {
-                        playerSvtData.cardStrengthens[index] = v.round() ~/ 20 * 20;
-                      });
+              return TableRow(
+                children: [
+                  Center(child: CommandCardWidget(card: svt.cards[index], width: 60)),
+                  InkWell(
+                    onTap: () {
+                      if (!enableEdit) return;
+                      router.pushBuilder(
+                        builder:
+                            (context) => CmdCodeListPage(
+                              onSelected: (selectedCode) {
+                                playerSvtData.commandCodes[index] = db.gameData.commandCodes[selectedCode.collectionNo];
+                                _updateState(() {});
+                              },
+                              filterData: db.settings.filters.cmdCodeFilterData,
+                            ),
+                        detail: false,
+                      );
                     },
+                    onLongPress: code?.routeTo,
+                    child: db.getIconImage(
+                      code?.icon ?? Atlas.asset('SkillIcons/skill_999999.png'),
+                      height: 60,
+                      aspectRatio: 132 / 144,
+                      padding: const EdgeInsets.all(4),
+                    ),
                   ),
-                ),
-              ]);
+                  IconButton(
+                    onPressed:
+                        enableEdit
+                            ? () {
+                              setState(() {
+                                playerSvtData.commandCodes[index] = null;
+                              });
+                            }
+                            : null,
+                    icon: const Icon(Icons.remove_circle_outline, size: 18),
+                    tooltip: S.current.remove,
+                  ),
+                  Padding(
+                    padding: const EdgeInsetsDirectional.only(start: 8),
+                    child: SliderWithPrefix(
+                      titled: true,
+                      label: S.current.card_strengthen,
+                      min: 0,
+                      max: 500,
+                      value: playerSvtData.cardStrengthens[index],
+                      // valueFormatter: (v) => v.toString(),
+                      onChange: (v) {
+                        _updateState(() {
+                          playerSvtData.cardStrengthens[index] = v.round() ~/ 20 * 20;
+                        });
+                      },
+                    ),
+                  ),
+                ],
+              );
             }),
             columnWidths: const {
               0: FixedColumnWidth(56),
               1: FixedColumnWidth(56),
-              2: FixedColumnWidth(32)
+              2: FixedColumnWidth(32),
               // 3:
             },
             border: TableBorder.all(color: const Color.fromRGBO(162, 169, 177, 1), width: 0.25),
@@ -1072,11 +1065,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
       ServantListPage(
         planMode: false,
         onSelected: (selectedSvt) {
-          playerSvtData.onSelectServant(
-            selectedSvt,
-            region: widget.playerRegion,
-            jpTime: questPhase?.jpOpenAt,
-          );
+          playerSvtData.onSelectServant(selectedSvt, region: widget.playerRegion, jpTime: questPhase?.jpOpenAt);
           _updateState(() {});
         },
         filterData: svtFilterData,
@@ -1117,11 +1106,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
             EasyLoading.showError('${S.current.not_found}: ${entity.id}-${entity.lName.l}');
             return;
           }
-          playerSvtData.onSelectServant(
-            svt,
-            region: widget.playerRegion,
-            jpTime: questPhase?.jpOpenAt,
-          );
+          playerSvtData.onSelectServant(svt, region: widget.playerRegion, jpTime: questPhase?.jpOpenAt);
           _updateState(() {});
         },
         filterData: _enemyFilterData,
@@ -1141,17 +1126,13 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
           children: [
             for (final svt in supports)
               SimpleDialogOption(
-                child: SupportServantTile(
-                  svt: svt,
-                  onTap: null,
-                  hasLv100: supports.any((e) => e.lv >= 100),
-                ),
+                child: SupportServantTile(svt: svt, onTap: null, hasLv100: supports.any((e) => e.lv >= 100)),
                 onPressed: () async {
                   Navigator.pop(context);
                   await _onSelectSupport(svt);
                   _updateState(() {});
                 },
-              )
+              ),
           ],
         );
       },
@@ -1271,17 +1252,13 @@ class _CraftEssenceOptionEditPageState extends State<CraftEssenceOptionEditPage>
   @override
   Widget build(final BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('[${S.current.edit}] ${playerSvtData.svt?.lName.l ?? ""}'),
-        actions: [popupMenu],
+      appBar: AppBar(title: Text('[${S.current.edit}] ${playerSvtData.svt?.lName.l ?? ""}'), actions: [popupMenu]),
+      body: Column(
+        children: [
+          Expanded(child: body),
+          if (enableEdit) ...[kDefaultDivider, SafeArea(child: buttonBar)],
+        ],
       ),
-      body: Column(children: [
-        Expanded(child: body),
-        if (enableEdit) ...[
-          kDefaultDivider,
-          SafeArea(child: buttonBar),
-        ]
-      ]),
     );
   }
 
@@ -1292,46 +1269,54 @@ class _CraftEssenceOptionEditPageState extends State<CraftEssenceOptionEditPage>
     List<Widget> children = [];
     children.add(_header(context));
 
-    children.add(Padding(
-      padding: const EdgeInsetsDirectional.only(end: 16),
-      child: SliderWithPrefix(
-        leadingWidth: 36,
-        label: 'Lv',
-        min: 1,
-        max: ce.lvMax,
-        value: playerSvtData.ceLv,
-        onChange: (v) {
-          _updateState(() {
-            playerSvtData.ceLv = v.round();
-            final mlbLv = ce.ascensionAdd.lvMax.ascension[3];
-            if (mlbLv != null && mlbLv > 0 && playerSvtData.ceLv > mlbLv) {
-              playerSvtData.ceLimitBreak = true;
-            }
-          });
-        },
-        // endOffset: -16,
-      ),
-    ));
-    children.add(SwitchListTile.adaptive(
-      value: playerSvtData.ceLimitBreak,
-      title: Text(S.current.max_limit_break),
-      onChanged: enableEdit
-          ? (v) {
-              final ce = playerSvtData.ce;
-              if (v &&
-                  ce != null &&
-                  const [SvtFlag.svtEquipChocolate, SvtFlag.svtEquipExp, SvtFlag.svtEquipFriendShip]
-                      .every((e) => !ce.flags.contains(e))) {
-                int? lvMin = {1: 6, 2: 9, 3: 11, 4: 13, 5: 15}[ce.rarity];
-                if (lvMin != null && lvMin <= ce.lvMax && playerSvtData.ceLv < lvMin) {
-                  playerSvtData.ceLv = lvMin;
-                }
+    children.add(
+      Padding(
+        padding: const EdgeInsetsDirectional.only(end: 16),
+        child: SliderWithPrefix(
+          leadingWidth: 36,
+          label: 'Lv',
+          min: 1,
+          max: ce.lvMax,
+          value: playerSvtData.ceLv,
+          onChange: (v) {
+            _updateState(() {
+              playerSvtData.ceLv = v.round();
+              final mlbLv = ce.ascensionAdd.lvMax.ascension[3];
+              if (mlbLv != null && mlbLv > 0 && playerSvtData.ceLv > mlbLv) {
+                playerSvtData.ceLimitBreak = true;
               }
-              playerSvtData.ceLimitBreak = v;
-              _updateState(() {});
-            }
-          : null,
-    ));
+            });
+          },
+          // endOffset: -16,
+        ),
+      ),
+    );
+    children.add(
+      SwitchListTile.adaptive(
+        value: playerSvtData.ceLimitBreak,
+        title: Text(S.current.max_limit_break),
+        onChanged:
+            enableEdit
+                ? (v) {
+                  final ce = playerSvtData.ce;
+                  if (v &&
+                      ce != null &&
+                      const [
+                        SvtFlag.svtEquipChocolate,
+                        SvtFlag.svtEquipExp,
+                        SvtFlag.svtEquipFriendShip,
+                      ].every((e) => !ce.flags.contains(e))) {
+                    int? lvMin = {1: 6, 2: 9, 3: 11, 4: 13, 5: 15}[ce.rarity];
+                    if (lvMin != null && lvMin <= ce.lvMax && playerSvtData.ceLv < lvMin) {
+                      playerSvtData.ceLv = lvMin;
+                    }
+                  }
+                  playerSvtData.ceLimitBreak = v;
+                  _updateState(() {});
+                }
+                : null,
+      ),
+    );
 
     children = divideTiles(children, divider: const Divider(height: 8, thickness: 1), bottom: true);
 
@@ -1347,11 +1332,7 @@ class _CraftEssenceOptionEditPageState extends State<CraftEssenceOptionEditPage>
     }
     children.addAll([
       DividerWithTitle(title: '${S.current.custom_skill}?'),
-      Text(
-        S.current.ce_custom_skill_hint,
-        style: Theme.of(context).textTheme.bodySmall,
-        textAlign: TextAlign.center,
-      ),
+      Text(S.current.ce_custom_skill_hint, style: Theme.of(context).textTheme.bodySmall, textAlign: TextAlign.center),
       const SizedBox(height: 16),
     ]);
 
@@ -1361,31 +1342,27 @@ class _CraftEssenceOptionEditPageState extends State<CraftEssenceOptionEditPage>
   Widget get popupMenu {
     return PopupMenuButton(
       enabled: enableEdit,
-      itemBuilder: (context) => [
-        PopupMenuItem(
-          enabled: false,
-          height: 24,
-          child: Text(S.current.select, style: Theme.of(context).textTheme.bodySmall),
-        ),
-        const PopupMenuItem(
-          enabled: false,
-          height: 8,
-          padding: EdgeInsets.zero,
-          child: Divider(),
-        ),
-        PopupMenuItem(
-          onTap: () {
-            selectCE();
-          },
-          child: Text(S.current.craft_essence),
-        ),
-        PopupMenuItem(
-          onTap: () {
-            selectStoryCE();
-          },
-          child: Text(S.current.story_ce),
-        ),
-      ],
+      itemBuilder:
+          (context) => [
+            PopupMenuItem(
+              enabled: false,
+              height: 24,
+              child: Text(S.current.select, style: Theme.of(context).textTheme.bodySmall),
+            ),
+            const PopupMenuItem(enabled: false, height: 8, padding: EdgeInsets.zero, child: Divider()),
+            PopupMenuItem(
+              onTap: () {
+                selectCE();
+              },
+              child: Text(S.current.craft_essence),
+            ),
+            PopupMenuItem(
+              onTap: () {
+                selectStoryCE();
+              },
+              child: Text(S.current.story_ce),
+            ),
+          ],
     );
   }
 
@@ -1399,21 +1376,17 @@ class _CraftEssenceOptionEditPageState extends State<CraftEssenceOptionEditPage>
           crossAxisAlignment: WrapCrossAlignment.center,
           children: [
             FilledButton(
-              onPressed: playerSvtData.ce == null
-                  ? null
-                  : () {
-                      playerSvtData.ce = null;
-                      _updateState(() {});
-                    },
-              style: FilledButton.styleFrom(
-                backgroundColor: Theme.of(context).colorScheme.error,
-              ),
+              onPressed:
+                  playerSvtData.ce == null
+                      ? null
+                      : () {
+                        playerSvtData.ce = null;
+                        _updateState(() {});
+                      },
+              style: FilledButton.styleFrom(backgroundColor: Theme.of(context).colorScheme.error),
               child: Text(S.current.clear),
             ),
-            FilledButton(
-              onPressed: selectCE,
-              child: Text(S.current.select_ce),
-            ),
+            FilledButton(onPressed: selectCE, child: Text(S.current.select_ce)),
             FilledButton(
               onPressed: () {
                 Navigator.pop(context);
@@ -1421,7 +1394,7 @@ class _CraftEssenceOptionEditPageState extends State<CraftEssenceOptionEditPage>
               child: Text(S.current.confirm),
             ),
           ],
-        )
+        ),
       ],
     );
   }

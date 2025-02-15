@@ -23,7 +23,7 @@ class MasterMissionPage extends StatefulWidget {
   final Region? region;
 
   MasterMissionPage({super.key, this.id, this.masterMission, this.region})
-      : assert(id != null || masterMission != null);
+    : assert(id != null || masterMission != null);
 
   @override
   _MasterMissionPageState createState() => _MasterMissionPageState();
@@ -68,10 +68,10 @@ class _MasterMissionPageState extends State<MasterMissionPage> with RegionBasedS
           actions: [
             dropdownRegion(shownNone: widget.masterMission != null),
             PopupMenuButton(
-              itemBuilder: (context) => SharedBuilder.websitesPopupMenuItems(
-                atlas: Atlas.dbMasterMission(id, region ?? Region.jp),
-              ),
-            )
+              itemBuilder:
+                  (context) =>
+                      SharedBuilder.websitesPopupMenuItems(atlas: Atlas.dbMasterMission(id, region ?? Region.jp)),
+            ),
           ],
         ),
         body: buildBody(context),
@@ -81,13 +81,7 @@ class _MasterMissionPageState extends State<MasterMissionPage> with RegionBasedS
 
   @override
   Widget buildContent(BuildContext context, MasterMission mm) {
-    return Column(
-      children: [
-        Expanded(child: missionList()),
-        kDefaultDivider,
-        SafeArea(child: buttonBar),
-      ],
-    );
+    return Column(children: [Expanded(child: missionList()), kDefaultDivider, SafeArea(child: buttonBar)]);
   }
 
   Widget missionList() {
@@ -104,14 +98,7 @@ class _MasterMissionPageState extends State<MasterMissionPage> with RegionBasedS
       children: [
         DividerWithTitle(title: "${S.current.master_mission} ${masterMission.id}"),
         for (final title in {masterMission.missionIconDetailText, masterMission.lMissionIconDetailText})
-          if (title != null)
-            ListTile(
-              dense: true,
-              title: Text(
-                title,
-                textAlign: TextAlign.center,
-              ),
-            ),
+          if (title != null) ListTile(dense: true, title: Text(title, textAlign: TextAlign.center)),
         ListTile(
           dense: true,
           title: Text(S.current.time_start),
@@ -133,18 +120,17 @@ class _MasterMissionPageState extends State<MasterMissionPage> with RegionBasedS
         ListTile(
           dense: true,
           title: Text(S.current.mission),
-          trailing: Text(categorized.entries
-              .map((e) => '${e.value} ${Transl.enums(e.key, (enums) => enums.missionType).l}')
-              .join('\n')),
+          trailing: Text(
+            categorized.entries
+                .map((e) => '${e.value} ${Transl.enums(e.key, (enums) => enums.missionType).l}')
+                .join('\n'),
+          ),
         ),
         if (masterMission.completeMission != null) ...[
           ListTile(
             dense: true,
             title: Text(masterMission.completeMission?.bgm?.tooltip ?? S.current.bgm),
-            trailing: SoundPlayButton(
-              player: _audioPlayer,
-              url: masterMission.completeMission!.bgm?.audioAsset,
-            ),
+            trailing: SoundPlayButton(player: _audioPlayer, url: masterMission.completeMission!.bgm?.audioAsset),
             onTap: masterMission.completeMission?.bgm?.routeTo,
           ),
           buildPanel(masterMission.completeMission!),
@@ -152,24 +138,13 @@ class _MasterMissionPageState extends State<MasterMissionPage> with RegionBasedS
         DividerWithTitle(title: S.current.game_rewards),
         ListTile(
           dense: true,
-          title: Center(
-            child: SharedBuilder.itemGrid(
-              context: context,
-              items: gifts.entries,
-              sort: true,
-              height: 36,
-            ),
-          ),
+          title: Center(child: SharedBuilder.itemGrid(context: context, items: gifts.entries, sort: true, height: 36)),
         ),
         if (masterMission.completeMission?.gifts.isNotEmpty == true)
           ListTile(
             dense: true,
             title: Center(
-              child: SharedBuilder.giftGrid(
-                context: context,
-                gifts: masterMission.completeMission!.gifts,
-                height: 36,
-              ),
+              child: SharedBuilder.giftGrid(context: context, gifts: masterMission.completeMission!.gifts, height: 36),
             ),
           ),
         DividerWithTitle(title: S.current.mission),
@@ -185,7 +160,7 @@ class _MasterMissionPageState extends State<MasterMissionPage> with RegionBasedS
           },
         ),
         const Divider(thickness: 1, indent: 16, endIndent: 16),
-        for (final mission in missions) _oneEventMission(mission)
+        for (final mission in missions) _oneEventMission(mission),
       ],
     );
   }
@@ -194,59 +169,60 @@ class _MasterMissionPageState extends State<MasterMissionPage> with RegionBasedS
     final customMission = CustomMission.fromEventMission(mission);
     final clearConds = mission.conds.where((e) => e.missionProgressType == MissionProgressType.clear).toList();
     final clearCond = !db.settings.display.showOriginalMissionText && clearConds.length == 1 ? clearConds.single : null;
-    final showSearchViewEnemy = [
-          MissionType.weekly,
-          MissionType.limited,
-          MissionType.complete,
-        ].contains(masterMission.type) &&
+    final showSearchViewEnemy =
+        [MissionType.weekly, MissionType.limited, MissionType.complete].contains(masterMission.type) &&
         mission.startedAt < DateTime.now().timestamp &&
         mission.endedAt > DateTime.now().timestamp &&
         [CustomMissionType.enemy, CustomMissionType.trait].contains(customMission?.conds.firstOrNull?.type);
     return SimpleAccordion(
-      headerBuilder: (context, _) => ListTile(
-        title: clearCond != null
-            ? CondTargetNumDescriptor(
-                condType: clearCond.condType,
-                targetNum: clearCond.targetNum,
-                targetIds: clearCond.targetIds,
-                details: clearCond.details,
-                missions: masterMission.missions,
-                textScaleFactor: 0.8,
-                unknownMsg: mission.name,
-                leading: TextSpan(text: '${mission.dispNo}. '),
-              )
-            : Text('${mission.dispNo}. ${mission.name}', textScaler: const TextScaler.linear(0.8)),
-        contentPadding: const EdgeInsetsDirectional.only(start: 16),
-        trailing: customMission == null
-            ? null
-            : IconButton(
-                onPressed: () {
-                  router.push(child: CustomMissionPage(initMissions: [customMission]));
-                },
-                icon: const Icon(Icons.search),
-                color: AppTheme(context).tertiary,
-                padding: const EdgeInsets.symmetric(vertical: 8),
-                constraints: const BoxConstraints(minWidth: 24),
-              ),
-      ),
-      contentBuilder: (context) => Padding(
-        padding: const EdgeInsetsDirectional.only(start: 24, end: 16),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            if (kDebugMode) Text('No.${mission.id}', style: Theme.of(context).textTheme.bodySmall),
-            if (clearCond != null) Text(mission.name, style: Theme.of(context).textTheme.bodySmall),
-            MissionCondsDescriptor(mission: mission, missions: masterMission.missions),
-            if (showSearchViewEnemy)
-              TextButton(
-                onPressed: () {
-                  router.pushPage(_ViewEnemyMissionTargetPage(mission: mission, region: region ?? Region.jp));
-                },
-                child: Text('Search in viewEnemy'),
-              )
-          ],
-        ),
-      ),
+      headerBuilder:
+          (context, _) => ListTile(
+            title:
+                clearCond != null
+                    ? CondTargetNumDescriptor(
+                      condType: clearCond.condType,
+                      targetNum: clearCond.targetNum,
+                      targetIds: clearCond.targetIds,
+                      details: clearCond.details,
+                      missions: masterMission.missions,
+                      textScaleFactor: 0.8,
+                      unknownMsg: mission.name,
+                      leading: TextSpan(text: '${mission.dispNo}. '),
+                    )
+                    : Text('${mission.dispNo}. ${mission.name}', textScaler: const TextScaler.linear(0.8)),
+            contentPadding: const EdgeInsetsDirectional.only(start: 16),
+            trailing:
+                customMission == null
+                    ? null
+                    : IconButton(
+                      onPressed: () {
+                        router.push(child: CustomMissionPage(initMissions: [customMission]));
+                      },
+                      icon: const Icon(Icons.search),
+                      color: AppTheme(context).tertiary,
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      constraints: const BoxConstraints(minWidth: 24),
+                    ),
+          ),
+      contentBuilder:
+          (context) => Padding(
+            padding: const EdgeInsetsDirectional.only(start: 24, end: 16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (kDebugMode) Text('No.${mission.id}', style: Theme.of(context).textTheme.bodySmall),
+                if (clearCond != null) Text(mission.name, style: Theme.of(context).textTheme.bodySmall),
+                MissionCondsDescriptor(mission: mission, missions: masterMission.missions),
+                if (showSearchViewEnemy)
+                  TextButton(
+                    onPressed: () {
+                      router.pushPage(_ViewEnemyMissionTargetPage(mission: mission, region: region ?? Region.jp));
+                    },
+                    child: Text('Search in viewEnemy'),
+                  ),
+              ],
+            ),
+          ),
     );
   }
 
@@ -256,10 +232,11 @@ class _MasterMissionPageState extends State<MasterMissionPage> with RegionBasedS
       children: [
         ElevatedButton.icon(
           onPressed: () {
-            final customMissions = masterMission.missions
-                .map((e) => CustomMission.fromEventMission(e))
-                .whereType<CustomMission>()
-                .toList();
+            final customMissions =
+                masterMission.missions
+                    .map((e) => CustomMission.fromEventMission(e))
+                    .whereType<CustomMission>()
+                    .toList();
             int? warId;
             final region = widget.region ?? Region.jp;
             if (region != Region.jp) {
@@ -268,16 +245,11 @@ class _MasterMissionPageState extends State<MasterMissionPage> with RegionBasedS
                 warId = Maths.max(wars);
               }
             }
-            router.push(
-              child: CustomMissionPage(
-                initMissions: customMissions,
-                initWarId: warId,
-              ),
-            );
+            router.push(child: CustomMissionPage(initMissions: customMissions, initWarId: warId));
           },
           icon: const Icon(Icons.search),
           label: Text(S.current.drop_calc_solve),
-        )
+        ),
       ],
     );
   }
@@ -290,22 +262,11 @@ class _MasterMissionPageState extends State<MasterMissionPage> with RegionBasedS
     Widget child = Stack(
       children: [
         Positioned.fill(
-          child: db.getIconImage(
-            assets.eventUi("Prefabs/$eventId/mission_bg_$eventId"),
-            fit: BoxFit.fill,
-          ),
+          child: db.getIconImage(assets.eventUi("Prefabs/$eventId/mission_bg_$eventId"), fit: BoxFit.fill),
         ),
         Positioned.fromRect(
-          rect: Rect.fromCenter(
-            center: center + const Offset(1.5, -1.5),
-            width: 470,
-            height: 470,
-          ),
-          child: db.getIconImage(
-            assets.eventUi("Prefabs/$eventId/img_flame_$eventId"),
-            width: 470,
-            height: 470,
-          ),
+          rect: Rect.fromCenter(center: center + const Offset(1.5, -1.5), width: 470, height: 470),
+          child: db.getIconImage(assets.eventUi("Prefabs/$eventId/img_flame_$eventId"), width: 470, height: 470),
         ),
         Positioned(
           left: 32,
@@ -313,11 +274,12 @@ class _MasterMissionPageState extends State<MasterMissionPage> with RegionBasedS
           child: buildOneGrid(
             idx: -999,
             on: (context) => const SizedBox(width: 132, height: 138),
-            off: (context) => db.getIconImage(
-              assets.eventUi("Prefabs/$eventId/button_mission_$eventId"),
-              width: 132,
-              height: 138,
-            ),
+            off:
+                (context) => db.getIconImage(
+                  assets.eventUi("Prefabs/$eventId/button_mission_$eventId"),
+                  width: 132,
+                  height: 138,
+                ),
           ),
         ),
         for (int index = 0; index < 16; index++)
@@ -329,19 +291,21 @@ class _MasterMissionPageState extends State<MasterMissionPage> with RegionBasedS
             ),
             child: buildOneGrid(
               idx: index,
-              on: (context) => db.getIconImage(
-                assets.extract("CompleteMission/${completeMission.objectId}/$index/$index.png"),
-                errorWidget: (context, url, error) => Container(color: Colors.white),
-                fit: BoxFit.fill,
-                width: a,
-                height: a,
-              ),
-              off: (context) => db.getIconImage(
-                assets.eventUi("Prefabs/$eventId/mission_on_${eventId * 100 + index + 1}"),
-                fit: BoxFit.fill,
-                width: a,
-                height: a,
-              ),
+              on:
+                  (context) => db.getIconImage(
+                    assets.extract("CompleteMission/${completeMission.objectId}/$index/$index.png"),
+                    errorWidget: (context, url, error) => Container(color: Colors.white),
+                    fit: BoxFit.fill,
+                    width: a,
+                    height: a,
+                  ),
+              off:
+                  (context) => db.getIconImage(
+                    assets.eventUi("Prefabs/$eventId/mission_on_${eventId * 100 + index + 1}"),
+                    fit: BoxFit.fill,
+                    width: a,
+                    height: a,
+                  ),
             ),
           ),
       ],
@@ -351,14 +315,7 @@ class _MasterMissionPageState extends State<MasterMissionPage> with RegionBasedS
         aspectRatio: 1344 / 576,
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxHeight: 240),
-          child: FittedBox(
-            fit: BoxFit.scaleDown,
-            child: SizedBox(
-              width: 1344,
-              height: 576,
-              child: child,
-            ),
-          ),
+          child: FittedBox(fit: BoxFit.scaleDown, child: SizedBox(width: 1344, height: 576, child: child)),
         ),
       ),
     );
@@ -377,17 +334,18 @@ class _MasterMissionPageState extends State<MasterMissionPage> with RegionBasedS
             _completeMissionStates[idx] = !state;
           });
         },
-        onLongPress: idx >= 0
-            ? () async {
-                final value = !(_completeMissionStates.values.where((e) => e).length > 8);
-                for (int index = 0; index < 16; index++) {
-                  if ((_completeMissionStates[index] ?? false) == value) continue;
-                  _completeMissionStates[index] = value;
-                  if (mounted) setState(() {});
-                  await Future.delayed(const Duration(milliseconds: 150));
+        onLongPress:
+            idx >= 0
+                ? () async {
+                  final value = !(_completeMissionStates.values.where((e) => e).length > 8);
+                  for (int index = 0; index < 16; index++) {
+                    if ((_completeMissionStates[index] ?? false) == value) continue;
+                    _completeMissionStates[index] = value;
+                    if (mounted) setState(() {});
+                    await Future.delayed(const Duration(milliseconds: 150));
+                  }
                 }
-              }
-            : null,
+                : null,
         child: state ? on(context) : off(context),
       ),
     );
@@ -418,8 +376,10 @@ class __ViewEnemyMissionTargetPageState extends State<_ViewEnemyMissionTargetPag
           cond.details.length == 1 &&
           cond.details.single.targetIds.length == 1) {
         final detail = cond.details.single;
-        if ([CustomMissionType.enemy, CustomMissionType.trait]
-            .contains(CustomMission.kDetailCondMapping[detail.missionCondType])) {
+        if ([
+          CustomMissionType.enemy,
+          CustomMissionType.trait,
+        ].contains(CustomMission.kDetailCondMapping[detail.missionCondType])) {
           trait = cond.details.single.targetIds.single;
         }
       }
@@ -445,9 +405,7 @@ class __ViewEnemyMissionTargetPageState extends State<_ViewEnemyMissionTargetPag
 
   @override
   Widget build(BuildContext context) {
-    List<Widget> children = [
-      ListTile(title: Text(mission.name)),
-    ];
+    List<Widget> children = [ListTile(title: Text(mission.name))];
     final quests = <(int questId, int totalCount, Map<MstViewEnemy, int> counts, Widget child)>[];
     for (final (questId, enemies) in mstViewEnemies.items) {
       final targetEnemies = enemies.where((e) => e.missionIds.contains(mission.id)).toList();
@@ -462,20 +420,24 @@ class __ViewEnemyMissionTargetPageState extends State<_ViewEnemyMissionTargetPag
       Widget child = ListTile(
         dense: true,
         title: Text(quest?.lDispName ?? "Quest $questId"),
-        subtitle: Text.rich(TextSpan(children: [
-          TextSpan(text: '${quest?.consume ?? "?"}AP ${quest?.war?.lShortName}\n'),
-          for (final (enemy, count) in counts.items) ...[
-            CenterWidgetSpan(
-              child: GameCardMixin.cardIconBuilder(
-                context: context,
-                icon: getEnemyIcon(enemy),
-                width: 24,
-                onTap: () => router.push(url: Routes.servantI(enemy.svtId)),
-              ),
-            ),
-            TextSpan(text: '×${count == 0 ? "?" : count}  '),
-          ],
-        ])),
+        subtitle: Text.rich(
+          TextSpan(
+            children: [
+              TextSpan(text: '${quest?.consume ?? "?"}AP ${quest?.war?.lShortName}\n'),
+              for (final (enemy, count) in counts.items) ...[
+                CenterWidgetSpan(
+                  child: GameCardMixin.cardIconBuilder(
+                    context: context,
+                    icon: getEnemyIcon(enemy),
+                    width: 24,
+                    onTap: () => router.push(url: Routes.servantI(enemy.svtId)),
+                  ),
+                ),
+                TextSpan(text: '×${count == 0 ? "?" : count}  '),
+              ],
+            ],
+          ),
+        ),
         trailing: Text(totalCount == 0 ? '??' : '+$totalCount?'),
         onTap: () => router.push(url: Routes.questI(questId)),
       );
@@ -492,7 +454,7 @@ class __ViewEnemyMissionTargetPageState extends State<_ViewEnemyMissionTargetPag
               showEasyLoading(() => loadData(refresh: true));
             },
             icon: Icon(Icons.refresh),
-          )
+          ),
         ],
       ),
       body: ListView.separated(

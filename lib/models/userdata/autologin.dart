@@ -25,8 +25,8 @@ class FakerSettings {
     this.showProgressToast = true,
     List<AutoLoginDataJP>? jpAutoLogins,
     List<AutoLoginDataCN>? cnAutoLogins,
-  })  : jpAutoLogins = jpAutoLogins ?? [],
-        cnAutoLogins = cnAutoLogins ?? [];
+  }) : jpAutoLogins = jpAutoLogins ?? [],
+       cnAutoLogins = cnAutoLogins ?? [];
 
   factory FakerSettings.fromJson(Map<String, dynamic> json) => _$FakerSettingsFromJson(json);
 
@@ -132,13 +132,13 @@ sealed class AutoLoginData {
     this.lastLogin,
     this.userGame,
     Map<int, int>? userItems,
-  })  : battleOptions = battleOptions ?? [AutoBattleOptions()],
-        recoveredAps = recoveredAps ?? {},
-        gacha = gacha ?? GachaOption(),
-        svtCombine = svtCombine ?? SvtCombineOption(),
-        presentBox = presentBox ?? PresentBoxFilterData(),
-        _curBattleOptionIndex = curBattleOptionIndex ?? 0,
-        userItems = userItems ?? {};
+  }) : battleOptions = battleOptions ?? [AutoBattleOptions()],
+       recoveredAps = recoveredAps ?? {},
+       gacha = gacha ?? GachaOption(),
+       svtCombine = svtCombine ?? SvtCombineOption(),
+       presentBox = presentBox ?? PresentBoxFilterData(),
+       _curBattleOptionIndex = curBattleOptionIndex ?? 0,
+       userItems = userItems ?? {};
 
   String get serverName;
   String get internalId;
@@ -189,14 +189,13 @@ class AutoLoginDataJP extends AutoLoginData {
 enum BiliGameServer {
   ios,
   android,
-  uo,
-  ;
+  uo;
 
   String get shownName => switch (this) {
-        ios => 'iOS',
-        android => '安卓B服',
-        uo => '安卓渠道服',
-      };
+    ios => 'iOS',
+    android => '安卓B服',
+    uo => '安卓渠道服',
+  };
 }
 
 @JsonSerializable(converters: [RegionConverter()])
@@ -212,16 +211,16 @@ class AutoLoginDataCN extends AutoLoginData {
   String nickname;
   String deviceId;
   int get rkchannel => switch (gameServer) {
-        BiliGameServer.android => 24,
-        BiliGameServer.ios => 996,
-        BiliGameServer.uo => 24,
-      };
+    BiliGameServer.android => 24,
+    BiliGameServer.ios => 996,
+    BiliGameServer.uo => 24,
+  };
   int get cPlat => isAndroidDevice ? 3 : 2; // 系统? ios-2,android-3
   int get uPlat => switch (gameServer) {
-        BiliGameServer.android => 3,
-        BiliGameServer.ios => 2,
-        BiliGameServer.uo => 3,
-      }; // 账号? ios-2,android-3
+    BiliGameServer.android => 3,
+    BiliGameServer.ios => 2,
+    BiliGameServer.uo => 3,
+  }; // 账号? ios-2,android-3
   String os;
   String ptype;
 
@@ -342,12 +341,12 @@ class AutoBattleOptions {
     Map<int, int>? winTargetItemNum,
     this.waitApRecover = false,
     this.waitApRecoverGold = false,
-  })  : supportSvtIds = supportSvtIds ?? {},
-        supportCeIds = supportCeIds ?? {},
-        usedTurnArray = usedTurnArray ?? [],
-        recoverIds = recoverIds ?? [],
-        targetDrops = targetDrops ?? {},
-        winTargetItemNum = winTargetItemNum ?? {};
+  }) : supportSvtIds = supportSvtIds ?? {},
+       supportCeIds = supportCeIds ?? {},
+       usedTurnArray = usedTurnArray ?? [],
+       recoverIds = recoverIds ?? [],
+       targetDrops = targetDrops ?? {},
+       winTargetItemNum = winTargetItemNum ?? {};
 
   factory AutoBattleOptions.fromJson(Map<String, dynamic> json) => _$AutoBattleOptionsFromJson(json);
 
@@ -381,8 +380,7 @@ enum NACountry {
   belgium(56),
   norway(576),
   denmark(208),
-  portugal(620),
-  ;
+  portugal(620);
 
   const NACountry(this.countryId);
   final int countryId;
@@ -395,8 +393,7 @@ enum BattleResultType {
   win(1),
   lose(2),
   cancel(3),
-  interruption(4),
-  ;
+  interruption(4);
 
   const BattleResultType(this.value);
   final int value;
@@ -406,8 +403,7 @@ enum BattleWinResultType {
   none(0),
   normal(1),
   timeLimit(2),
-  lose(3),
-  ;
+  lose(3);
 
   const BattleWinResultType(this.value);
   final int value;
@@ -440,10 +436,10 @@ class GachaOption {
     this.feedExp4 = false,
     Set<int>? sellKeepSvtIds,
     Set<int>? sellKeepCommandCodeIds,
-  })  : ceEnhanceBaseUserSvtIds = ceEnhanceBaseUserSvtIds ?? {},
-        ceEnhanceBaseSvtIds = ceEnhanceBaseSvtIds ?? {},
-        sellKeepSvtIds = sellKeepSvtIds ?? {},
-        sellKeepCommandCodeIds = sellKeepCommandCodeIds ?? {};
+  }) : ceEnhanceBaseUserSvtIds = ceEnhanceBaseUserSvtIds ?? {},
+       ceEnhanceBaseSvtIds = ceEnhanceBaseSvtIds ?? {},
+       sellKeepSvtIds = sellKeepSvtIds ?? {},
+       sellKeepCommandCodeIds = sellKeepCommandCodeIds ?? {};
 
   factory GachaOption.fromJson(Map<String, dynamic> json) => _$GachaOptionFromJson(json);
 
@@ -480,13 +476,9 @@ class PresentBoxFilterData {
   Set<PresentType> presentTypes;
   Set<int> rarities;
 
-  PresentBoxFilterData({
-    this.reversed = false,
-    this.maxNum = 0,
-    Set<PresentType>? presentTypes,
-    Set<int>? rarities,
-  })  : presentTypes = presentTypes ?? {},
-        rarities = rarities ?? {};
+  PresentBoxFilterData({this.reversed = false, this.maxNum = 0, Set<PresentType>? presentTypes, Set<int>? rarities})
+    : presentTypes = presentTypes ?? {},
+      rarities = rarities ?? {};
 
   void reset() {
     presentTypes.clear();
@@ -512,8 +504,7 @@ enum PresentType {
   stone,
   manaPrism,
   eventItem,
-  others,
-  ;
+  others;
 
   String get shownName {
     return switch (this) {

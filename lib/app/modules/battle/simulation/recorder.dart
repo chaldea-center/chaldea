@@ -74,13 +74,7 @@ class _BattleRecorderPanelState extends State<BattleRecorderPanel> {
       ),
     );
     if (showTwoColumn) {
-      panel = FittedBox(
-        fit: BoxFit.scaleDown,
-        child: SizedBox(
-          width: 1024,
-          child: panel,
-        ),
-      );
+      panel = FittedBox(fit: BoxFit.scaleDown, child: SizedBox(width: 1024, child: panel));
     } else {
       panel = ConstrainedBox(constraints: const BoxConstraints(maxWidth: 640), child: panel);
     }
@@ -89,20 +83,21 @@ class _BattleRecorderPanelState extends State<BattleRecorderPanel> {
       mainAxisSize: MainAxisSize.min,
       children: [
         buildActions(),
-        Screenshot(
-          controller: controller,
-          child: panel,
-        ),
+        Screenshot(controller: controller, child: panel),
         if ((widget.records ?? widget.battleData?.recorder.records)?.any((e) => e is BattleAttackRecord) == true)
-          SFooter.rich(TextSpan(children: [
-            const TextSpan(text: 'DMG', style: TextStyle(color: Colors.red)),
-            const TextSpan(text: '/'),
-            const TextSpan(text: 'NP', style: TextStyle(color: Colors.blue)),
-            const TextSpan(text: '/'),
-            const TextSpan(text: 'Star', style: TextStyle(color: Colors.green)),
-            const TextSpan(text: ': '),
-            TextSpan(text: S.current.damage_recorder_param_hint),
-          ])),
+          SFooter.rich(
+            TextSpan(
+              children: [
+                const TextSpan(text: 'DMG', style: TextStyle(color: Colors.red)),
+                const TextSpan(text: '/'),
+                const TextSpan(text: 'NP', style: TextStyle(color: Colors.blue)),
+                const TextSpan(text: '/'),
+                const TextSpan(text: 'Star', style: TextStyle(color: Colors.green)),
+                const TextSpan(text: ': '),
+                TextSpan(text: S.current.damage_recorder_param_hint),
+              ],
+            ),
+          ),
       ],
     );
   }
@@ -297,11 +292,7 @@ class _BattleRecorderPanelState extends State<BattleRecorderPanel> {
       String fn = [t.month, t.day, t.hour, t.minute, t.second].map((e) => e.toString().padLeft(2, '0')).join('_');
       fn = "battle_log_${quest?.id}_${quest?.phase}_$fn.${useJpg ? 'jpg' : 'png'}";
 
-      ImageActions.showSaveShare(
-        context: context,
-        data: data,
-        destFp: joinPaths(db.paths.downloadDir, fn),
-      );
+      ImageActions.showSaveShare(context: context, data: data, destFp: joinPaths(db.paths.downloadDir, fn));
     } catch (e) {
       EasyLoading.showError(e.toString());
     }
@@ -348,7 +339,7 @@ class BattleRecorderPanelBase extends StatelessWidget {
             style: Theme.of(context).textTheme.bodySmall,
             textAlign: TextAlign.center,
           ),
-        )
+        ),
       ));
     }
     if (showTwoColumn) {
@@ -407,12 +398,9 @@ class BattleRecorderPanelBase extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 8),
             child: Center(
-              child: Text(
-                '${S.current.quest_wave} ${record.wave}',
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
+              child: Text('${S.current.quest_wave} ${record.wave}', style: Theme.of(context).textTheme.titleMedium),
             ),
-          )
+          ),
         ));
       } else if (record is BattleSkipWaveRecord) {
         cardChildren.add((
@@ -421,17 +409,12 @@ class BattleRecorderPanelBase extends StatelessWidget {
             'Skip Wave ${record.wave}',
             style: TextStyle(color: Theme.of(context).colorScheme.error, fontWeight: FontWeight.bold),
             textScaler: const TextScaler.linear(1.2),
-          )
+          ),
         ));
       } else if (record is BattleProgressTurnRecord) {
         cardChildren.add((
           record.estimatedHeight,
-          Center(
-            child: Text(
-              '${S.current.battle_turn} ${record.turn}',
-              style: Theme.of(context).textTheme.titleSmall,
-            ),
-          )
+          Center(child: Text('${S.current.battle_turn} ${record.turn}', style: Theme.of(context).textTheme.titleSmall)),
         ));
       } else if (record is BattleSkillRecord) {
         cardChildren.add((record.estimatedHeight, buildSkillLog(context, record)));
@@ -440,14 +423,18 @@ class BattleRecorderPanelBase extends StatelessWidget {
           record.estimatedHeight,
           prefixIndicator(
             context,
-            Text.rich(TextSpan(children: [
-              const TextSpan(text: 'Order Change', style: TextStyle(fontWeight: FontWeight.bold)),
-              const TextSpan(text: ': '),
-              ...drawSvt(context, record.onField),
-              const TextSpan(text: '⇄ '),
-              ...drawSvt(context, record.backup),
-            ])),
-          )
+            Text.rich(
+              TextSpan(
+                children: [
+                  const TextSpan(text: 'Order Change', style: TextStyle(fontWeight: FontWeight.bold)),
+                  const TextSpan(text: ': '),
+                  ...drawSvt(context, record.onField),
+                  const TextSpan(text: '⇄ '),
+                  ...drawSvt(context, record.backup),
+                ],
+              ),
+            ),
+          ),
         ));
       } else if (record is BattleAttackRecord) {
         cardChildren.add((record.estimatedHeight, _AttackDetailWidget(record: record, battleData: battleData)));
@@ -455,36 +442,36 @@ class BattleRecorderPanelBase extends StatelessWidget {
         cardChildren.add((record.estimatedHeight, _InstantDeathDetailWidget(record: record, battleData: battleData)));
       } else if (record is BattleMessageRecord) {
         Widget child = Text.rich(
-          TextSpan(children: [
-            TextSpan(text: record.message, style: record.style),
-            if (record.target != null) ...[
-              const TextSpan(text: ': '),
-              ...drawSvt(context, record.target!),
+          TextSpan(
+            children: [
+              TextSpan(text: record.message, style: record.style),
+              if (record.target != null) ...[const TextSpan(text: ': '), ...drawSvt(context, record.target!)],
             ],
-          ]),
+          ),
           textAlign: record.textAlign,
         );
         if (record.alignment != null) {
           child = Align(alignment: record.alignment!, child: child);
         }
-        cardChildren.add((
-          record.estimatedHeight,
-          child,
-        ));
+        cardChildren.add((record.estimatedHeight, child));
       } else if (record is BattleAttacksInitiationRecord) {
         cardChildren.add((
           record.estimatedHeight,
           prefixIndicator(
             context,
-            Text.rich(TextSpan(children: [
-              TextSpan(text: S.current.battle_attack, style: const TextStyle(fontWeight: FontWeight.bold)),
-              const TextSpan(text: ': '),
-              if (record.attacks.isEmpty) TextSpan(text: S.current.skip_current_turn),
-              for (final attack in record.attacks) ...drawSvt(context, attack.actor, attack.cardData),
-            ])),
+            Text.rich(
+              TextSpan(
+                children: [
+                  TextSpan(text: S.current.battle_attack, style: const TextStyle(fontWeight: FontWeight.bold)),
+                  const TextSpan(text: ': '),
+                  if (record.attacks.isEmpty) TextSpan(text: S.current.skip_current_turn),
+                  for (final attack in record.attacks) ...drawSvt(context, attack.actor, attack.cardData),
+                ],
+              ),
+            ),
             color: Colors.red,
             top: record.attacks.isEmpty ? 8 : null,
-          )
+          ),
         ));
       } else if (record is BattleSkillActivationRecord) {
         // noop
@@ -501,11 +488,13 @@ class BattleRecorderPanelBase extends StatelessWidget {
   (double, Widget) createWave(BuildContext context, List<(double, Widget)> children) {
     return (
       Maths.sum(children.map((e) => e.$1)) + 12,
-      createCard(Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: children.map((e) => e.$2).toList(),
-      ))
+      createCard(
+        Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: children.map((e) => e.$2).toList(),
+        ),
+      ),
     );
   }
 
@@ -526,11 +515,7 @@ class BattleRecorderPanelBase extends StatelessWidget {
   Widget buildSkillLog(BuildContext context, BattleSkillRecord record) {
     final actor = record.activator;
     final skill = record.skill;
-    List<InlineSpan> spans = [
-      const CenterWidgetSpan(
-        child: SizedBox(height: 32, width: 1),
-      )
-    ];
+    List<InlineSpan> spans = [const CenterWidgetSpan(child: SizedBox(height: 32, width: 1))];
     if (record.prefix != null) {
       spans.add(TextSpan(text: record.prefix));
     }
@@ -577,8 +562,9 @@ class BattleRecorderPanelBase extends StatelessWidget {
           context: context,
           text: '${pskill.lName.l} ',
           onTap: pskill.routeTo,
-          style: (Theme.of(context).textTheme.bodySmall ?? const TextStyle())
-              .copyWith(color: AppTheme(context).tertiaryContainer),
+          style: (Theme.of(context).textTheme.bodySmall ?? const TextStyle()).copyWith(
+            color: AppTheme(context).tertiaryContainer,
+          ),
         ),
       if (skill.skillLv != 0 && showDetail) TextSpan(text: 'Lv.${skill.skillLv} '),
     ]);
@@ -637,7 +623,11 @@ class BattleRecorderPanelBase extends StatelessWidget {
   }
 
   BattleServantData? findSkillTarget(
-      SkillOrTd skill, bool isPlayer, BattleServantData? playerSvt, BattleServantData? enemySvt) {
+    SkillOrTd skill,
+    bool isPlayer,
+    BattleServantData? playerSvt,
+    BattleServantData? enemySvt,
+  ) {
     for (final func in skill.functions) {
       if (func.funcTargetTeam == FuncApplyTarget.enemy && isPlayer) continue;
       if (func.funcTargetTeam == FuncApplyTarget.player && !isPlayer) continue;
@@ -708,9 +698,7 @@ class BattleRecorderPanelBase extends StatelessWidget {
 
   Widget getTeam(BuildContext context, BattleTeamSetup team) {
     return Card(
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.all(Radius.circular(8.0)),
-      ),
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(8.0))),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
         child: Column(
@@ -739,23 +727,31 @@ class BattleRecorderPanelBase extends StatelessWidget {
     if (options.pointBuffs.isNotEmpty) {
       final groupIds = options.pointBuffs.keys.toList();
       groupIds.sort();
-      children.add(Text.rich(TextSpan(
-        text: '${S.current.event_point}: ',
-        children: groupIds.map<InlineSpan>((groupId) {
-          final pointBuff = options.pointBuffs[groupId]!;
-          final group = db.gameData.others.eventPointBuffGroups[groupId];
-          final icon = group?.icon ?? pointBuff.icon;
-          return TextSpan(children: [
-            CenterWidgetSpan(child: db.getIconImage(icon, width: 18)),
-            TextSpan(text: group?.lName.l ?? "Group $groupId ", style: Theme.of(context).textTheme.bodySmall),
-            if (pointBuff.skillIcon != null) CenterWidgetSpan(child: db.getIconImage(pointBuff.skillIcon, width: 18)),
-            if (pointBuff.lv > 0)
-              TextSpan(text: ' Lv${pointBuff.lv}; ')
-            else
-              TextSpan(text: ' ${pointBuff.eventPoint}; '),
-          ]);
-        }).toList(),
-      )));
+      children.add(
+        Text.rich(
+          TextSpan(
+            text: '${S.current.event_point}: ',
+            children:
+                groupIds.map<InlineSpan>((groupId) {
+                  final pointBuff = options.pointBuffs[groupId]!;
+                  final group = db.gameData.others.eventPointBuffGroups[groupId];
+                  final icon = group?.icon ?? pointBuff.icon;
+                  return TextSpan(
+                    children: [
+                      CenterWidgetSpan(child: db.getIconImage(icon, width: 18)),
+                      TextSpan(text: group?.lName.l ?? "Group $groupId ", style: Theme.of(context).textTheme.bodySmall),
+                      if (pointBuff.skillIcon != null)
+                        CenterWidgetSpan(child: db.getIconImage(pointBuff.skillIcon, width: 18)),
+                      if (pointBuff.lv > 0)
+                        TextSpan(text: ' Lv${pointBuff.lv}; ')
+                      else
+                        TextSpan(text: ' ${pointBuff.eventPoint}; '),
+                    ],
+                  );
+                }).toList(),
+          ),
+        ),
+      );
       height += 26;
     }
     if (children.isEmpty) return (height, const SizedBox.shrink());
@@ -764,13 +760,8 @@ class BattleRecorderPanelBase extends StatelessWidget {
 
   Widget createCard(Widget child) {
     return Card(
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.all(Radius.circular(8.0)),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-        child: child,
-      ),
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(8.0))),
+      child: Padding(padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6), child: child),
     );
   }
 
@@ -789,7 +780,7 @@ class BattleRecorderPanelBase extends StatelessWidget {
                 width: 24,
                 height: 24,
                 padding: const EdgeInsets.all(2),
-              )
+              ),
           ],
         ),
       ),
@@ -809,7 +800,7 @@ mixin MultiTargetsWrapper {
   }) {
     Map<int, WidgetBuilder> enemyBuilders = {
       for (final target in targets)
-        if (target.item1) target.item2: target.item3
+        if (target.item1) target.item2: target.item3,
     };
     final maxEnemyIndex = Maths.max(enemyBuilders.keys, -1);
 
@@ -820,7 +811,7 @@ mixin MultiTargetsWrapper {
 
     Map<int, WidgetBuilder> playerBuilders = {
       for (final target in targets)
-        if (!target.item1) target.item2: target.item3
+        if (!target.item1) target.item2: target.item3,
     };
     final maxPlayerIndex = Maths.max(playerBuilders.keys, -1);
 
@@ -829,26 +820,18 @@ mixin MultiTargetsWrapper {
         playerBuilders[index]?.call(context) ?? placeholder(context),
     ];
 
-    List<Widget> allEntities = [
-      ...enemies,
-      ...players.reversed,
-    ];
+    List<Widget> allEntities = [...enemies, ...players.reversed];
     if (allEntities.isEmpty) allEntities.addAll(List.generate(3, (index) => placeholder(context)));
 
     Widget enemyParty = ResponsiveLayout(
       rowDirection: TextDirection.rtl, // enemy rtl
       verticalDirection: VerticalDirection.up,
       verticalAlign: CrossAxisAlignment.center,
-      children: [
-        for (final enemy in allEntities) Responsive(small: 4, child: enemy),
-      ],
+      children: [for (final enemy in allEntities) Responsive(small: 4, child: enemy)],
     );
     final borderSide = Divider.createBorderSide(context);
     return Container(
-      decoration: BoxDecoration(
-        border: Border.fromBorderSide(borderSide),
-        borderRadius: BorderRadius.circular(8),
-      ),
+      decoration: BoxDecoration(border: Border.fromBorderSide(borderSide), borderRadius: BorderRadius.circular(8)),
       margin: const EdgeInsets.all(2),
       child: Row(
         textDirection: isActorEnemy ? TextDirection.ltr : TextDirection.rtl,
@@ -878,23 +861,21 @@ mixin MultiTargetsWrapper {
     required CommandCardData card,
   }) {
     if (actor == null) return _defaultPlaceholder(context);
-    final cardColor = card.cardType.isQuick()
-        ? Colors.green
-        : card.cardType.isBuster()
+    final cardColor =
+        card.cardType.isQuick()
+            ? Colors.green
+            : card.cardType.isBuster()
             ? Colors.red
             : card.cardType.isArts()
-                ? Colors.blue
-                : null;
+            ? Colors.blue
+            : null;
     return Text.rich(
       TextSpan(
         children: divideList([
           if (card.isTD) TextSpan(text: '${S.current.np_short} Lv.${actor.tdLv}'),
           if (actor.isPlayer && card.isTD) TextSpan(text: card.np.format(percent: true, base: 100)),
-          TextSpan(
-            text: card.cardType.name.toTitle(),
-            style: TextStyle(color: cardColor),
-          ),
-          if (card.critical) TextSpan(text: S.current.critical_attack)
+          TextSpan(text: card.cardType.name.toTitle(), style: TextStyle(color: cardColor)),
+          if (card.critical) TextSpan(text: S.current.critical_attack),
         ], const TextSpan(text: ' ')),
       ),
       style: const TextStyle(decoration: TextDecoration.underline),
@@ -958,7 +939,7 @@ class _AttackDetailWidget extends StatelessWidget with MultiTargetsWrapper {
       actorBuilder: buildAttacker,
       targets: [
         for (final target in record.targets)
-          Tuple3(target.target.isEnemy, target.target.fieldIndex, (context) => buildDefender(context, target, record))
+          Tuple3(target.target.isEnemy, target.target.fieldIndex, (context) => buildDefender(context, target, record)),
       ],
     );
   }
@@ -993,100 +974,88 @@ class _AttackDetailWidget extends StatelessWidget with MultiTargetsWrapper {
   Widget buildAttackerCard(BuildContext context) {
     final card = record.card;
     if (card == null) {
-      return record.attacker.iconBuilder(
-        context: context,
-        width: 48,
-        battleData: battleData,
-      );
+      return record.attacker.iconBuilder(context: context, width: 48, battleData: battleData);
     }
     List<Widget> stackChildren = [
       Positioned.fill(
-        child: record.attacker.iconBuilder(
-          context: context,
-          width: 48,
-          battleData: battleData,
-          showClsIcon: true,
-        ),
+        child: record.attacker.iconBuilder(context: context, width: 48, battleData: battleData, showClsIcon: true),
       ),
     ];
     if (card.cardType.isQAB()) {
-      stackChildren.add(Positioned(
-        left: -2,
-        right: -2,
-        bottom: -6,
-        child: db.getIconImage(
-          AssetURL.i.commandAtlas('card_icon_${card.cardType.name}'),
-          fit: BoxFit.fitWidth,
+      stackChildren.add(
+        Positioned(
+          left: -2,
+          right: -2,
+          bottom: -6,
+          child: db.getIconImage(AssetURL.i.commandAtlas('card_icon_${card.cardType.name}'), fit: BoxFit.fitWidth),
         ),
-      ));
+      );
       if (card.isTD) {
         final td = card.td;
         if (td != null && td.icon != null) {
-          stackChildren.add(Positioned(
-            left: -2,
-            right: -2,
-            bottom: -4,
-            child: ClipRect(
-              child: Align(
-                alignment: Alignment.topCenter,
-                heightFactor: 0.5,
-                child: CachedImage(
-                  imageUrl: td.icon,
-                  cachedOption: CachedImageOption(
-                    fit: BoxFit.contain,
-                    errorWidget: (context, url, error) => Text(S.current.noble_phantasm),
+          stackChildren.add(
+            Positioned(
+              left: -2,
+              right: -2,
+              bottom: -4,
+              child: ClipRect(
+                child: Align(
+                  alignment: Alignment.topCenter,
+                  heightFactor: 0.5,
+                  child: CachedImage(
+                    imageUrl: td.icon,
+                    cachedOption: CachedImageOption(
+                      fit: BoxFit.contain,
+                      errorWidget: (context, url, error) => Text(S.current.noble_phantasm),
+                    ),
                   ),
                 ),
               ),
             ),
-          ));
+          );
         } else {
           stackChildren.add(Positioned.fill(child: Text(S.current.noble_phantasm)));
         }
       } else {
-        stackChildren.add(Positioned(
-          left: 2,
-          right: 2,
-          bottom: 0,
-          child: db.getIconImage(
-            AssetURL.i.commandAtlas('card_txt_${card.cardType.name}'),
-            fit: BoxFit.fitWidth,
+        stackChildren.add(
+          Positioned(
+            left: 2,
+            right: 2,
+            bottom: 0,
+            child: db.getIconImage(AssetURL.i.commandAtlas('card_txt_${card.cardType.name}'), fit: BoxFit.fitWidth),
           ),
-        ));
+        );
       }
     } else if (card.cardType.isExtra()) {
-      stackChildren.add(Positioned(
-        left: 2,
-        right: -4,
-        bottom: 0,
-        child: db.getIconImage(
-          AssetURL.i.commandAtlas('card_txt_${card.cardType.name}'),
-          fit: BoxFit.fitWidth,
+      stackChildren.add(
+        Positioned(
+          left: 2,
+          right: -4,
+          bottom: 0,
+          child: db.getIconImage(AssetURL.i.commandAtlas('card_txt_${card.cardType.name}'), fit: BoxFit.fitWidth),
         ),
-      ));
+      );
     }
     final oc = card.oc;
     if (oc != null && oc > 1 && oc <= 5) {
-      stackChildren.add(Positioned(
-        top: -2,
-        right: -16,
-        child: CachedImage(
-          imageUrl:
-              "https://static.atlasacademy.io/file/aa-fgo-extract-jp/Battle/Common/BattleUIAtlas/icon_oc_0${oc - 1}.png",
-          width: 32,
-          aspectRatio: 108 / 65,
+      stackChildren.add(
+        Positioned(
+          top: -2,
+          right: -16,
+          child: CachedImage(
+            imageUrl:
+                "https://static.atlasacademy.io/file/aa-fgo-extract-jp/Battle/Common/BattleUIAtlas/icon_oc_0${oc - 1}.png",
+            width: 32,
+            aspectRatio: 108 / 65,
+          ),
         ),
-      ));
+      );
     }
     return ConstrainedBox(
       constraints: const BoxConstraints(maxWidth: 50, maxHeight: 56),
       child: InkWell(
         onTap: () => router.pushPage(BattleSvtDetail(svt: record.attacker, battleData: battleData)),
-        child: Stack(
-          clipBehavior: Clip.none,
-          alignment: Alignment.bottomCenter,
-          children: stackChildren,
-        ),
+        child: Stack(clipBehavior: Clip.none, alignment: Alignment.bottomCenter, children: stackChildren),
       ),
     );
   }
@@ -1094,7 +1063,11 @@ class _AttackDetailWidget extends StatelessWidget with MultiTargetsWrapper {
   Widget buildDefender(BuildContext context, AttackResultDetail detail, BattleAttackRecord record) {
     final result = detail.result;
     final baseInfo = AttackBaseInfo(
-        actor: record.attacker, target: detail.target, targetBefore: detail.targetBefore, card: record.card);
+      actor: record.attacker,
+      target: detail.target,
+      targetBefore: detail.targetBefore,
+      card: record.card,
+    );
     return Center(
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -1131,11 +1104,7 @@ class _AttackDetailWidget extends StatelessWidget with MultiTargetsWrapper {
             ),
           ),
           if (detail.damageParams.isNotMinRoll)
-            coloredText(
-              "RNG ${(detail.damageParams.random / 1000).format()}",
-              Colors.red.shade400,
-              null,
-            ),
+            coloredText("RNG ${(detail.damageParams.random / 1000).format()}", Colors.red.shade400, null),
           if (record.card != null || result.totalNpGains != 0)
             if (detail.target.isEnemy)
               coloredText(
@@ -1192,11 +1161,7 @@ class _AttackDetailWidget extends StatelessWidget with MultiTargetsWrapper {
   }
 
   void showParams(BuildContext context, Widget child) {
-    showDialog(
-      context: context,
-      useRootNavigator: false,
-      builder: (context) => child,
-    );
+    showDialog(context: context, useRootNavigator: false, builder: (context) => child);
   }
 }
 
@@ -1215,9 +1180,9 @@ extension BattleSvtDataUI on BattleServantData {
   }) {
     final icon = niceEnemy?.icon ?? niceSvt?.ascendIcon(limitCount, true) ?? Atlas.common.unknownEnemyIcon;
     onTap ??= () => router.pushPage(BattleSvtDetail(svt: this, battleData: battleData));
-    option =
-        ImageWithTextOption(errorWidget: (context, url, error) => CachedImage(imageUrl: Atlas.common.unknownEnemyIcon))
-            .merge(option);
+    option = ImageWithTextOption(
+      errorWidget: (context, url, error) => CachedImage(imageUrl: Atlas.common.unknownEnemyIcon),
+    ).merge(option);
     Widget child = GameCardMixin.cardIconBuilder(
       context: context,
       icon: icon,
@@ -1250,12 +1215,7 @@ class AttackBaseInfo {
   final BattleServantData target;
   final BattleServantData? targetBefore;
   final CommandCardData? card;
-  AttackBaseInfo({
-    required this.actor,
-    required this.target,
-    this.targetBefore,
-    required this.card,
-  });
+  AttackBaseInfo({required this.actor, required this.target, this.targetBefore, required this.card});
 }
 
 mixin _ParamDialogMixin {
@@ -1265,19 +1225,21 @@ mixin _ParamDialogMixin {
       alignment: AlignmentDirectional.centerStart,
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 2),
-        child: Text.rich(TextSpan(
-          children: [
-            if (info.actor != null) CenterWidgetSpan(child: info.actor!.iconBuilder(context: context, width: 24)),
-            if (card != null) ...[
-              CenterWidgetSpan(child: CommandCardWidget(card: card.cardType, width: 28)),
-              if (card.isTD) TextSpan(text: '${S.current.np_short} Lv${info.actor?.tdLv} OC${card.oc}'),
-              if (card.critical) TextSpan(text: S.current.critical_attack),
+        child: Text.rich(
+          TextSpan(
+            children: [
+              if (info.actor != null) CenterWidgetSpan(child: info.actor!.iconBuilder(context: context, width: 24)),
+              if (card != null) ...[
+                CenterWidgetSpan(child: CommandCardWidget(card: card.cardType, width: 28)),
+                if (card.isTD) TextSpan(text: '${S.current.np_short} Lv${info.actor?.tdLv} OC${card.oc}'),
+                if (card.critical) TextSpan(text: S.current.critical_attack),
+              ],
+              const TextSpan(text: ' vs. ', style: TextStyle(fontStyle: FontStyle.italic)),
+              CenterWidgetSpan(child: info.target.iconBuilder(context: context, width: 24)),
             ],
-            const TextSpan(text: ' vs. ', style: TextStyle(fontStyle: FontStyle.italic)),
-            CenterWidgetSpan(child: info.target.iconBuilder(context: context, width: 24)),
-          ],
-          style: const TextStyle(fontSize: 12),
-        )),
+            style: const TextStyle(fontSize: 12),
+          ),
+        ),
       ),
     );
   }
@@ -1287,10 +1249,7 @@ mixin _ParamDialogMixin {
       padding: const EdgeInsets.symmetric(vertical: 2),
       child: Row(
         children: [
-          if (icon != null) ...[
-            db.getIconImage(icon, width: 18, aspectRatio: 1),
-            const SizedBox(width: 6),
-          ],
+          if (icon != null) ...[db.getIconImage(icon, width: 18, aspectRatio: 1), const SizedBox(width: 6)],
           Expanded(child: Text(key, style: const TextStyle(fontSize: 14))),
           Text(value, style: const TextStyle(fontSize: 14), textAlign: TextAlign.end),
         ],
@@ -1298,8 +1257,12 @@ mixin _ParamDialogMixin {
     );
   }
 
-  Widget listValueWithOverkill(List<int> values, List<bool> overskills, String Function(int v) format,
-      {List<bool>? npLimitedStates}) {
+  Widget listValueWithOverkill(
+    List<int> values,
+    List<bool> overskills,
+    String Function(int v) format, {
+    List<bool>? npLimitedStates,
+  }) {
     const style = TextStyle(fontSize: 13);
     return Padding(
       padding: const EdgeInsets.only(top: 2, bottom: 4),
@@ -1321,19 +1284,23 @@ mixin _ParamDialogMixin {
               ];
 
               final text = format(value);
-              final textStyle = style.merge(TextStyle(
-                color: ok == true ? Colors.yellow.shade900 : null,
-                decoration: npLimited == true ? TextDecoration.underline : null,
-              ));
+              final textStyle = style.merge(
+                TextStyle(
+                  color: ok == true ? Colors.yellow.shade900 : null,
+                  decoration: npLimited == true ? TextDecoration.underline : null,
+                ),
+              );
 
               Widget child = Text(text, style: textStyle);
               if (tooltips.isNotEmpty) {
                 child = Tooltip(
-                  richMessage: TextSpan(children: [
-                    TextSpan(text: text, style: textStyle),
-                    const TextSpan(text: ': '),
-                    ...divideList(tooltips, const TextSpan(text: ', ')),
-                  ]),
+                  richMessage: TextSpan(
+                    children: [
+                      TextSpan(text: text, style: textStyle),
+                      const TextSpan(text: ': '),
+                      ...divideList(tooltips, const TextSpan(text: ', ')),
+                    ],
+                  ),
                   child: child,
                 );
               }
@@ -1380,7 +1347,7 @@ mixin _ParamDialogMixin {
             color: index.isOdd ? bgColor : null,
             padding: const EdgeInsets.symmetric(horizontal: 4),
             child: children[index],
-          )
+          ),
       ],
     );
     if (!wrapDialog) return content;
@@ -1403,14 +1370,22 @@ class DamageParamDialog extends StatelessWidget with _ParamDialogMixin {
   final DamageResult? maxResult;
   final bool wrapDialog;
 
-  const DamageParamDialog(this.info, this.params, this.result,
-      {super.key, this.wrapDialog = true, this.minResult, this.maxResult});
+  const DamageParamDialog(
+    this.info,
+    this.params,
+    this.result, {
+    super.key,
+    this.wrapDialog = true,
+    this.minResult,
+    this.maxResult,
+  });
 
   @override
   Widget build(BuildContext context) {
     final classAttackCorrection = toModifier(ConstData.classInfo[params.attackerClass]?.attackRate ?? 1000);
     final damageRate = toModifier(params.damageRate);
-    final isNpSpecificDamage = params.isNp &&
+    final isNpSpecificDamage =
+        params.isNp &&
         {
           FuncType.damageNpIndividual,
           FuncType.damageNpAndOrCheckIndividuality,
@@ -1423,27 +1398,34 @@ class DamageParamDialog extends StatelessWidget with _ParamDialogMixin {
     final hitsPercent = params.totalHits / 100.0;
     final random = toModifier(params.random);
     final classAdvantage = toModifier(params.classAdvantage);
-    final attributeAdvantage =
-        toModifier(ConstData.getAttributeRelation(params.attackerAttribute, params.defenderAttribute));
-    final firstCardBonus = shouldIgnoreFirstCardBonus(params.isNp, params.firstCardType)
-        ? 0
-        : params.isMightyChain
+    final attributeAdvantage = toModifier(
+      ConstData.getAttributeRelation(params.attackerAttribute, params.defenderAttribute),
+    );
+    final firstCardBonus =
+        shouldIgnoreFirstCardBonus(params.isNp, params.firstCardType)
+            ? 0
+            : params.isMightyChain
             ? toModifier(ConstData.cardInfo[CardType.buster]![1]!.addAtk)
             : toModifier(ConstData.cardInfo[params.firstCardType]![1]!.addAtk);
-    final busterChainMod = (!params.isNp && params.currentCardType.isBuster() && params.isTypeChain
-            ? toModifier(ConstData.constants.chainbonusBusterRate) * params.attack
-            : 0)
-        .toInt();
+    final busterChainMod =
+        (!params.isNp && params.currentCardType.isBuster() && params.isTypeChain
+                ? toModifier(ConstData.constants.chainbonusBusterRate) * params.attack
+                : 0)
+            .toInt();
     final extraModifier = toModifier(
-        params.isTypeChain ? ConstData.constants.extraAttackRateGrand : ConstData.constants.extraAttackRateSingle);
+      params.isTypeChain ? ConstData.constants.extraAttackRateGrand : ConstData.constants.extraAttackRateSingle,
+    );
     final atkSum = max(toModifier(params.attackBuff - params.defenseBuff), -1);
     final cardSum = max(toModifier(params.cardBuff - params.cardResist), -1);
     final specificSum = max(
-        toModifier(params.specificAttackBuff -
+      toModifier(
+        params.specificAttackBuff -
             params.specificDefenseBuff +
             (params.critical ? params.criticalDamageBuff : 0) +
-            (params.isNp ? params.npDamageBuff : 0)),
-        0.001 - 1);
+            (params.isNp ? params.npDamageBuff : 0),
+      ),
+      0.001 - 1,
+    );
     final percentAttack = max(toModifier(params.percentAttackBuff), 0.01 - 1);
     final percentDefense = min(toModifier(params.percentDefenseBuff), 1);
     final damageAdd = params.damageAdditionBuff + params.damageReceiveAdditionBuff;
@@ -1474,8 +1456,11 @@ class DamageParamDialog extends StatelessWidget with _ParamDialogMixin {
         if (busterChainMod != 0) oneParam(S.current.battle_buster_chain, busterChainMod.toString()),
         if (params.currentCardType.isExtra()) oneParam(S.current.battle_extra_rate, extraModifier.format()),
         oneParam(Transl.buffNames('攻撃力アップ').l, atkSum.format(percent: true, maxDigits: 4), buffIcon(300)),
-        oneParam(Transl.buffNames('カード性能アップ').l, cardSum.format(percent: true, maxDigits: 4),
-            cardBuffIcon(params.currentCardType)),
+        oneParam(
+          Transl.buffNames('カード性能アップ').l,
+          cardSum.format(percent: true, maxDigits: 4),
+          cardBuffIcon(params.currentCardType),
+        ),
         oneParam(Transl.buffNames('威力アップ').l, specificSum.format(percent: true, maxDigits: 4), buffIcon(302)),
         if (params.percentAttackBuff != 0)
           oneParam(Transl.buffNames('特殊威力アップ').l, percentAttack.format(percent: true, maxDigits: 4), buffIcon(359)),
@@ -1495,8 +1480,15 @@ class AttackerNpParamDialog extends StatelessWidget with _ParamDialogMixin {
   final DamageResult? minResult;
   final DamageResult? maxResult;
 
-  const AttackerNpParamDialog(this.info, this.params, this.result,
-      {super.key, this.wrapDialog = true, this.minResult, this.maxResult});
+  const AttackerNpParamDialog(
+    this.info,
+    this.params,
+    this.result, {
+    super.key,
+    this.wrapDialog = true,
+    this.minResult,
+    this.maxResult,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -1526,8 +1518,11 @@ class AttackerNpParamDialog extends StatelessWidget with _ParamDialogMixin {
         oneParam(S.current.np_gain_mod, defenderNpRate.format()),
         if (params.cardAttackNpRate != 1000)
           oneParam(S.current.battle_card_np_rate, cardRate.format(percent: true, maxDigits: 4)),
-        oneParam(Transl.buffNames('カード性能アップ').l, cardSum.format(percent: true, maxDigits: 4),
-            cardBuffIcon(params.currentCardType)),
+        oneParam(
+          Transl.buffNames('カード性能アップ').l,
+          cardSum.format(percent: true, maxDigits: 4),
+          cardBuffIcon(params.currentCardType),
+        ),
         oneParam(Transl.buffNames('NP獲得アップ').l, npGainBuff.format(percent: true, maxDigits: 4), buffIcon(303)),
       ],
     );
@@ -1542,8 +1537,15 @@ class DefenseNpParamDialog extends StatelessWidget with _ParamDialogMixin {
   final DamageResult? minResult;
   final DamageResult? maxResult;
 
-  const DefenseNpParamDialog(this.info, this.params, this.result,
-      {super.key, this.wrapDialog = true, this.minResult, this.maxResult});
+  const DefenseNpParamDialog(
+    this.info,
+    this.params,
+    this.result, {
+    super.key,
+    this.wrapDialog = true,
+    this.minResult,
+    this.maxResult,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -1572,7 +1574,10 @@ class DefenseNpParamDialog extends StatelessWidget with _ParamDialogMixin {
         if (params.cardDefNpRate != 1000)
           oneParam(S.current.battle_card_np_rate, params.cardDefNpRate.format(percent: true, maxDigits: 4, base: 10)),
         oneParam(
-            Transl.buffNames('被ダメージ時NP獲得アップ').l, defenseNpGainBuff.format(percent: true, maxDigits: 4), buffIcon(335)),
+          Transl.buffNames('被ダメージ時NP獲得アップ').l,
+          defenseNpGainBuff.format(percent: true, maxDigits: 4),
+          buffIcon(335),
+        ),
         oneParam(Transl.buffNames('NP獲得アップ').l, npGainBuff.format(percent: true, maxDigits: 4), buffIcon(303)),
       ],
     );
@@ -1587,8 +1592,15 @@ class StarParamDialog extends StatelessWidget with _ParamDialogMixin {
   final DamageResult? minResult;
   final DamageResult? maxResult;
 
-  const StarParamDialog(this.info, this.params, this.result,
-      {super.key, this.wrapDialog = true, this.minResult, this.maxResult});
+  const StarParamDialog(
+    this.info,
+    this.params,
+    this.result, {
+    super.key,
+    this.wrapDialog = true,
+    this.minResult,
+    this.maxResult,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -1613,8 +1625,11 @@ class StarParamDialog extends StatelessWidget with _ParamDialogMixin {
         oneParam(S.current.crit_star_mod, defenderStarRate.format()),
         if (params.cardDropStarRate != 1000)
           oneParam(S.current.battle_card_star_rate, cardRate.format(percent: true, maxDigits: 4)),
-        oneParam(Transl.buffNames('カード性能アップ').l, cardSum.format(percent: true, maxDigits: 4),
-            cardBuffIcon(params.currentCardType)),
+        oneParam(
+          Transl.buffNames('カード性能アップ').l,
+          cardSum.format(percent: true, maxDigits: 4),
+          cardBuffIcon(params.currentCardType),
+        ),
         oneParam(Transl.buffNames('スター発生アップ').l, starGenBuff.format(percent: true, maxDigits: 4), buffIcon(321)),
       ],
     );
@@ -1639,7 +1654,7 @@ class _InstantDeathDetailWidget extends StatelessWidget with MultiTargetsWrapper
       actorBuilder: buildActor,
       targets: [
         for (final target in record.targets)
-          Tuple3(target.target.isEnemy, target.target.fieldIndex, (context) => buildTarget(context, target))
+          Tuple3(target.target.isEnemy, target.target.fieldIndex, (context) => buildTarget(context, target)),
       ],
     );
   }
@@ -1677,8 +1692,11 @@ class _InstantDeathDetailWidget extends StatelessWidget with MultiTargetsWrapper
         showDialog(
           context: context,
           useRootNavigator: false,
-          builder: (context) => InstantDeathParamDialog(
-              AttackBaseInfo(actor: record.activator, target: detail.target, card: record.card), params),
+          builder:
+              (context) => InstantDeathParamDialog(
+                AttackBaseInfo(actor: record.activator, target: detail.target, card: record.card),
+                params,
+              ),
         );
       };
     }
@@ -1703,8 +1721,8 @@ class _InstantDeathDetailWidget extends StatelessWidget with MultiTargetsWrapper
               params.isForce
                   ? S.current.force_instant_death
                   : params.isManualSuccess
-                      ? '${S.current.instant_death}※'
-                      : S.current.instant_death,
+                  ? '${S.current.instant_death}※'
+                  : S.current.instant_death,
               Colors.red,
               onTap,
             )

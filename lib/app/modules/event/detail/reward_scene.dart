@@ -41,14 +41,16 @@ class _EventRewardScenePageState extends State<EventRewardScenePage> {
     return TileGroup(
       headerWidget: Padding(
         padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
-        child: Text.rich(TextSpan(text: 'Slot ${scene.slot} ', children: [
-          CenterWidgetSpan(
-            child: db.getIconImage(
-              Theme.of(context).isDarkMode ? scene.tabOnImage : scene.tabOffImage,
-              height: 20,
-            ),
-          )
-        ])),
+        child: Text.rich(
+          TextSpan(
+            text: 'Slot ${scene.slot} ',
+            children: [
+              CenterWidgetSpan(
+                child: db.getIconImage(Theme.of(context).isDarkMode ? scene.tabOnImage : scene.tabOffImage, height: 20),
+              ),
+            ],
+          ),
+        ),
       ),
       children: [
         if (scene.image != null)
@@ -59,18 +61,12 @@ class _EventRewardScenePageState extends State<EventRewardScenePage> {
           ),
         ListTile(
           title: Text(S.current.background),
-          trailing: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 240),
-            child: db.getIconImage(scene.bg),
-          ),
+          trailing: ConstrainedBox(constraints: const BoxConstraints(maxWidth: 240), child: db.getIconImage(scene.bg)),
           onTap: () => FullscreenImageViewer.show(context: context, urls: [scene.bg]),
         ),
         if (scene.bgm.id != 0) getBgm(scene.bgm),
         if (scene.afterBgm.id != 0 && scene.afterBgm.id != scene.bgm.id) getBgm(scene.afterBgm),
-        if (scene.guides.isNotEmpty) ...const [
-          Divider(),
-          SHeader('Guide'),
-        ],
+        if (scene.guides.isNotEmpty) ...const [Divider(), SHeader('Guide')],
         for (final guide in scene.guides) getGuide(guide),
       ],
     );
@@ -98,10 +94,7 @@ class _EventRewardScenePageState extends State<EventRewardScenePage> {
         width: 100,
         child: CachedImage(
           imageUrl: guide.image,
-          cachedOption: const CachedImageOption(
-            alignment: Alignment.topCenter,
-            fit: BoxFit.fitWidth,
-          ),
+          cachedOption: const CachedImageOption(alignment: Alignment.topCenter, fit: BoxFit.fitWidth),
         ),
       ),
       onTap: () => FullscreenImageViewer.show(context: context, urls: [guide.image]),

@@ -47,11 +47,16 @@ class FilterGroup<T> extends StatelessWidget {
       padding: EdgeInsets.zero,
       options: const [false, true],
       values: FilterRadioData.nonnull(useGrid),
-      optionBuilder: (v) => Text.rich(TextSpan(children: [
-        CenterWidgetSpan(child: Icon(v ? Icons.grid_view_sharp : Icons.list, size: 16)),
-        const TextSpan(text: ' '),
-        TextSpan(text: v ? S.current.display_grid : S.current.display_list)
-      ])),
+      optionBuilder:
+          (v) => Text.rich(
+            TextSpan(
+              children: [
+                CenterWidgetSpan(child: Icon(v ? Icons.grid_view_sharp : Icons.list, size: 16)),
+                const TextSpan(text: ' '),
+                TextSpan(text: v ? S.current.display_grid : S.current.display_list),
+              ],
+            ),
+          ),
       combined: true,
       onFilterChanged: (v, _) {
         onChanged(v.radioValue);
@@ -64,11 +69,8 @@ class FilterGroup<T> extends StatelessWidget {
       onTap: enabled ? onTap : null,
       child: Row(
         children: <Widget>[
-          Icon(
-            checked ? Icons.check_box : Icons.check_box_outline_blank,
-            color: Colors.grey,
-          ),
-          Text(text, textScaler: const TextScaler.linear(0.8))
+          Icon(checked ? Icons.check_box : Icons.check_box_outline_blank, color: Colors.grey),
+          Text(text, textScaler: const TextScaler.linear(0.8)),
         ],
       ),
     );
@@ -79,35 +81,34 @@ class FilterGroup<T> extends StatelessWidget {
     List<Widget> _optionChildren = [];
     for (int index = 0; index < options.length; index++) {
       final key = options[index];
-      _optionChildren.add(FilterOption(
-        selected: values.options.contains(key),
-        value: key,
-        shrinkWrap: shrinkWrap,
-        constraints: constraints,
-        minimumSize: minimumSize,
-        buttonStyle: buttonStyle,
-        borderRadius: combined
-            ? BorderRadius.horizontal(
-                left: Radius.circular(index == 0 ? 3 : 0),
-                right: Radius.circular(index == options.length - 1 ? 3 : 0),
-              )
-            : BorderRadius.circular(3),
-        onChanged: (v) {
-          values.toggle(key);
-          if (onFilterChanged != null) {
-            onFilterChanged!(values, key);
-          }
-        },
-        enabled: enabled,
-        child: optionBuilder == null ? Text(key.toString()) : optionBuilder!(key),
-      ));
+      _optionChildren.add(
+        FilterOption(
+          selected: values.options.contains(key),
+          value: key,
+          shrinkWrap: shrinkWrap,
+          constraints: constraints,
+          minimumSize: minimumSize,
+          buttonStyle: buttonStyle,
+          borderRadius:
+              combined
+                  ? BorderRadius.horizontal(
+                    left: Radius.circular(index == 0 ? 3 : 0),
+                    right: Radius.circular(index == options.length - 1 ? 3 : 0),
+                  )
+                  : BorderRadius.circular(3),
+          onChanged: (v) {
+            values.toggle(key);
+            if (onFilterChanged != null) {
+              onFilterChanged!(values, key);
+            }
+          },
+          enabled: enabled,
+          child: optionBuilder == null ? Text(key.toString()) : optionBuilder!(key),
+        ),
+      );
     }
 
-    Widget child = Wrap(
-      spacing: combined ? 0 : 6,
-      runSpacing: 3,
-      children: _optionChildren,
-    );
+    Widget child = Wrap(spacing: combined ? 0 : 6, runSpacing: 3, children: _optionChildren);
 
     Widget _getTitle([Widget? expandIcon]) {
       return CustomTile(
@@ -156,10 +157,7 @@ class FilterGroup<T> extends StatelessWidget {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              _getTitle(expandIcon),
-              if (value.value) _child,
-            ],
+            children: <Widget>[_getTitle(expandIcon), if (value.value) _child],
           );
         },
       );
@@ -172,10 +170,7 @@ class FilterGroup<T> extends StatelessWidget {
         child = Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            _getTitle(),
-            child,
-          ],
+          children: <Widget>[_getTitle(), child],
         );
       }
     }
@@ -220,23 +215,26 @@ class FilterOption<T> extends StatelessWidget {
   Widget build(BuildContext context) {
     final themeData = Theme.of(context);
     bool darkMode = themeData.brightness == Brightness.dark;
-    final selectedColor = this.selectedColor ??
+    final selectedColor =
+        this.selectedColor ??
         (themeData.useMaterial3 && darkMode ? themeData.colorScheme.primaryContainer : themeData.colorScheme.primary);
     return ConstrainedBox(
       constraints: constraints ?? const BoxConstraints(maxHeight: 30),
       child: OutlinedButton(
-        onPressed: enabled
-            ? () {
-                if (onChanged != null) {
-                  onChanged!(!selected);
+        onPressed:
+            enabled
+                ? () {
+                  if (onChanged != null) {
+                    onChanged!(!selected);
+                  }
                 }
-              }
-            : null,
+                : null,
         style: OutlinedButton.styleFrom(
           foregroundColor: selected || darkMode ? Colors.white : Colors.black,
-          backgroundColor: selected
-              ? (enabled ? selectedColor : selectedColor.withValues(alpha: selectedColor.a * 0.5))
-              : unselectedColor,
+          backgroundColor:
+              selected
+                  ? (enabled ? selectedColor : selectedColor.withValues(alpha: selectedColor.a * 0.5))
+                  : unselectedColor,
           minimumSize: minimumSize ?? (shrinkWrap ? const Size(2, 2) : const Size(48, 36)),
           padding: shrinkWrap ? const EdgeInsets.all(0) : null,
           textStyle: const TextStyle(fontWeight: FontWeight.normal),

@@ -28,15 +28,15 @@ import 'messages_zh_Hant.dart' as messages_zh_hant;
 
 typedef Future<dynamic> LibraryLoader();
 Map<String, LibraryLoader> get _deferredLibraries => {
-      'ar': () => new SynchronousFuture(null),
-      'en': () => new SynchronousFuture(null),
-      'es': () => new SynchronousFuture(null),
-      'ja': () => new SynchronousFuture(null),
-      'ko': () => new SynchronousFuture(null),
-      'ru': () => new SynchronousFuture(null),
-      'zh': () => new SynchronousFuture(null),
-      'zh_Hant': () => new SynchronousFuture(null),
-    };
+  'ar': () => new SynchronousFuture(null),
+  'en': () => new SynchronousFuture(null),
+  'es': () => new SynchronousFuture(null),
+  'ja': () => new SynchronousFuture(null),
+  'ko': () => new SynchronousFuture(null),
+  'ru': () => new SynchronousFuture(null),
+  'zh': () => new SynchronousFuture(null),
+  'zh_Hant': () => new SynchronousFuture(null),
+};
 
 Future<void> reloadMessages() async {
   for (final lib in _deferredLibraries.values) {
@@ -85,8 +85,11 @@ MessageLookupByLibrary? _findExact(String localeName) {
 
 /// User programs should call this before using [localeName] for messages.
 Future<bool> initializeMessages(String localeName) {
-  var availableLocale =
-      Intl.verifiedLocale(localeName, (locale) => _deferredLibraries[locale] != null, onFailure: (_) => null);
+  var availableLocale = Intl.verifiedLocale(
+    localeName,
+    (locale) => _deferredLibraries[locale] != null,
+    onFailure: (_) => null,
+  );
   if (availableLocale == null) {
     return new SynchronousFuture(false);
   }

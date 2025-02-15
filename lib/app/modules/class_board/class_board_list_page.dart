@@ -49,7 +49,7 @@ class ClassBoardListPageState extends State<ClassBoardListPage>
             ),
             // icon: const Icon(Icons.analytics),
             // tooltip: S.current.statistics_title,
-          )
+          ),
         ],
       ),
     );

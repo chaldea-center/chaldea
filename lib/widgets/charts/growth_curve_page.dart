@@ -14,13 +14,7 @@ class GrowthCurvePage extends StatefulWidget {
   final Widget? avatar;
   final int? maxX;
 
-  const GrowthCurvePage({
-    super.key,
-    required this.title,
-    required this.data,
-    this.avatar,
-    this.maxX,
-  });
+  const GrowthCurvePage({super.key, required this.title, required this.data, this.avatar, this.maxX});
 
   GrowthCurvePage.fromCard({
     super.key,
@@ -30,17 +24,19 @@ class GrowthCurvePage extends StatefulWidget {
     required List<int> atks,
     this.avatar,
     this.maxX,
-  })  : assert(lvs.length == atks.length && atks.length == hps.length),
-        data = [
-          SimpleLineChartData(
-              xx: List.generate(hps.length, (index) => index + 1),
-              yy: List.of(hps),
-              tooltipFormatter: (x, y) => 'HP ${y.toInt()}'),
-          SimpleLineChartData(
-              xx: List.generate(atks.length, (index) => index + 1),
-              yy: List.of(atks),
-              tooltipFormatter: (x, y) => 'ATK ${y.toInt()}'),
-        ];
+  }) : assert(lvs.length == atks.length && atks.length == hps.length),
+       data = [
+         SimpleLineChartData(
+           xx: List.generate(hps.length, (index) => index + 1),
+           yy: List.of(hps),
+           tooltipFormatter: (x, y) => 'HP ${y.toInt()}',
+         ),
+         SimpleLineChartData(
+           xx: List.generate(atks.length, (index) => index + 1),
+           yy: List.of(atks),
+           tooltipFormatter: (x, y) => 'ATK ${y.toInt()}',
+         ),
+       ];
 
   @override
   _GrowthCurvePageState createState() => _GrowthCurvePageState();
@@ -70,21 +66,15 @@ class _GrowthCurvePageState extends State<GrowthCurvePage> with SingleTickerProv
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: AutoSizeText(
-          widget.title,
-          maxLines: 1,
-          minFontSize: 8,
-        ),
+        title: AutoSizeText(widget.title, maxLines: 1, minFontSize: 8),
         bottom: FixedHeight.tabBar(
-            TabBar(controller: _tabController, tabs: const [Tab(text: 'Chart'), Tab(text: 'Table')])),
+          TabBar(controller: _tabController, tabs: const [Tab(text: 'Chart'), Tab(text: 'Table')]),
+        ),
       ),
       body: TabBarView(
         controller: _tabController,
         physics: const NeverScrollableScrollPhysics(),
-        children: [
-          chartTab,
-          tableTab,
-        ],
+        children: [chartTab, tableTab],
       ),
     );
   }
@@ -92,33 +82,25 @@ class _GrowthCurvePageState extends State<GrowthCurvePage> with SingleTickerProv
   Widget get chartTab {
     return Stack(
       children: [
-        const Positioned.fill(
-          child: Opacity(
-            opacity: 0.1,
-            child: BlankPage(),
-          ),
-        ),
-        if (widget.avatar != null)
-          Positioned(
-            left: 72,
-            top: 28,
-            child: widget.avatar!,
-          ),
+        const Positioned.fill(child: Opacity(opacity: 0.1, child: BlankPage())),
+        if (widget.avatar != null) Positioned(left: 72, top: 28, child: widget.avatar!),
         Positioned.fill(
           bottom: 24,
-          child: LayoutBuilder(builder: (context, constraints) {
-            return SafeArea(
-              child: SimpleLineChart(
-                data: widget.data,
-                minX: 0,
-                maxX: widget.maxX?.toDouble(),
-                minY: 0,
-                intervalX: constraints.maxWidth > 450 ? 10 : 20,
-                intervalY: _resolveIntervalY(),
-                xFormatter: (v) => 'Lv.${v.toInt()}',
-              ),
-            );
-          }),
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              return SafeArea(
+                child: SimpleLineChart(
+                  data: widget.data,
+                  minX: 0,
+                  maxX: widget.maxX?.toDouble(),
+                  minY: 0,
+                  intervalX: constraints.maxWidth > 450 ? 10 : 20,
+                  intervalY: _resolveIntervalY(),
+                  xFormatter: (v) => 'Lv.${v.toInt()}',
+                ),
+              );
+            },
+          ),
         ),
       ],
     );
@@ -141,41 +123,21 @@ class _GrowthCurvePageState extends State<GrowthCurvePage> with SingleTickerProv
 
     return DataTable2(
       dataRowHeight: 36,
-      headingRowDecoration: BoxDecoration(
-        color: Theme.of(context).cardColor,
-      ),
+      headingRowDecoration: BoxDecoration(color: Theme.of(context).cardColor),
       headingRowHeight: 42,
       columns: [
-        DataColumn2(
-          label: const Text('Lv'),
-          numeric: true,
-          onSort: _onSort,
-          size: ColumnSize.S,
-        ),
-        DataColumn2(
-          label: const Text("ATK"),
-          numeric: true,
-          onSort: _onSort,
-          size: ColumnSize.L,
-        ),
-        DataColumn2(
-          label: const Text("HP"),
-          numeric: true,
-          onSort: _onSort,
-          size: ColumnSize.L,
-        ),
+        DataColumn2(label: const Text('Lv'), numeric: true, onSort: _onSort, size: ColumnSize.S),
+        DataColumn2(label: const Text("ATK"), numeric: true, onSort: _onSort, size: ColumnSize.L),
+        DataColumn2(label: const Text("HP"), numeric: true, onSort: _onSort, size: ColumnSize.L),
       ],
-      rows: indices.map((index) {
-        final lv = hps.xx[index], hp = hps.yy[index], atk = atks.yy.getOrNull(index);
-        final style = lv % 10 == 0 ? TextStyle(color: Theme.of(context).colorScheme.primaryContainer) : null;
-        Text _text(int? s) =>
-            Text(s?.format(compact: false, groupSeparator: ',') ?? "", style: style, textAlign: TextAlign.center);
-        return DataRow2(cells: [
-          DataCell(_text(lv)),
-          DataCell(_text(atk)),
-          DataCell(_text(hp)),
-        ]);
-      }).toList(),
+      rows:
+          indices.map((index) {
+            final lv = hps.xx[index], hp = hps.yy[index], atk = atks.yy.getOrNull(index);
+            final style = lv % 10 == 0 ? TextStyle(color: Theme.of(context).colorScheme.primaryContainer) : null;
+            Text _text(int? s) =>
+                Text(s?.format(compact: false, groupSeparator: ',') ?? "", style: style, textAlign: TextAlign.center);
+            return DataRow2(cells: [DataCell(_text(lv)), DataCell(_text(atk)), DataCell(_text(hp))]);
+          }).toList(),
     );
   }
 }

@@ -52,14 +52,8 @@ class _ShopDetailPageState extends State<ShopDetailPage> with RegionBasedState<N
     return InheritSelectionArea(
       child: Scaffold(
         appBar: AppBar(
-          title: Text(
-            data?.name ?? '${S.current.shop} $id',
-            overflow: TextOverflow.fade,
-          ),
-          actions: [
-            dropdownRegion(shownNone: widget.shop != null),
-            if (kDebugMode) popupMenu,
-          ],
+          title: Text(data?.name ?? '${S.current.shop} $id', overflow: TextOverflow.fade),
+          actions: [dropdownRegion(shownNone: widget.shop != null), if (kDebugMode) popupMenu],
         ),
         body: buildBody(context),
       ),
@@ -70,99 +64,112 @@ class _ShopDetailPageState extends State<ShopDetailPage> with RegionBasedState<N
   Widget buildContent(BuildContext context, NiceShop shop) {
     return ListView(
       children: [
-        CustomTable(children: [
-          CustomTableRow.fromTexts(texts: ['No.${shop.id}'], isHeader: true),
-          CustomTableRow.fromChildren(children: [
-            Text.rich(TextSpan(children: [
-              if (shop.image != null) CenterWidgetSpan(child: db.getIconImage(shop.image, width: 32)),
-              TextSpan(text: shop.name)
-            ]))
-          ]),
-          CustomTableRow.fromTexts(texts: [shop.detail]),
-          CustomTableRow.fromTexts(texts: [S.current.opening_time], isHeader: true),
-          CustomTableRow.fromTexts(texts: [
-            [
-              shop.openedAt.sec2date().toStringShort(omitSec: true),
-              shop.closedAt.sec2date().toStringShort(omitSec: true),
-            ].join(' ~ ')
-          ]),
-          CustomTableRow.fromTexts(texts: [S.current.exchange_count, S.current.cost], isHeader: true),
-          CustomTableRow.fromChildren(children: [
-            Text(shop.limitNum == 0 ? '∞' : shop.limitNum.toString()),
-            Text.rich(TextSpan(children: ShopHelper.cost(context, shop, iconSize: 36)))
-          ]),
-          if (shop.hasFreeCond) ...[
-            CustomTableRow.fromTexts(texts: [S.current.shop_free_condition], isHeader: true),
-            CustomTableRow.fromTexts(texts: [shop.freeShopReleaseDate.sec2date().toStringShort()]),
-            if (shop.freeShopCondMessage.isNotEmpty)
-              CustomTableRow.fromTexts(
-                texts: [shop.freeShopCondMessage],
-                defaults: TableCellData(
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(fontStyle: FontStyle.italic),
+        CustomTable(
+          children: [
+            CustomTableRow.fromTexts(texts: ['No.${shop.id}'], isHeader: true),
+            CustomTableRow.fromChildren(
+              children: [
+                Text.rich(
+                  TextSpan(
+                    children: [
+                      if (shop.image != null) CenterWidgetSpan(child: db.getIconImage(shop.image, width: 32)),
+                      TextSpan(text: shop.name),
+                    ],
+                  ),
                 ),
-              ),
-            if (shop.freeShopConds.isNotEmpty)
-              CustomTableRow.fromChildren(children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
+              ],
+            ),
+            CustomTableRow.fromTexts(texts: [shop.detail]),
+            CustomTableRow.fromTexts(texts: [S.current.opening_time], isHeader: true),
+            CustomTableRow.fromTexts(
+              texts: [
+                [
+                  shop.openedAt.sec2date().toStringShort(omitSec: true),
+                  shop.closedAt.sec2date().toStringShort(omitSec: true),
+                ].join(' ~ '),
+              ],
+            ),
+            CustomTableRow.fromTexts(texts: [S.current.exchange_count, S.current.cost], isHeader: true),
+            CustomTableRow.fromChildren(
+              children: [
+                Text(shop.limitNum == 0 ? '∞' : shop.limitNum.toString()),
+                Text.rich(TextSpan(children: ShopHelper.cost(context, shop, iconSize: 36))),
+              ],
+            ),
+            if (shop.hasFreeCond) ...[
+              CustomTableRow.fromTexts(texts: [S.current.shop_free_condition], isHeader: true),
+              CustomTableRow.fromTexts(texts: [shop.freeShopReleaseDate.sec2date().toStringShort()]),
+              if (shop.freeShopCondMessage.isNotEmpty)
+                CustomTableRow.fromTexts(
+                  texts: [shop.freeShopCondMessage],
+                  defaults: TableCellData(
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(fontStyle: FontStyle.italic),
+                  ),
+                ),
+              if (shop.freeShopConds.isNotEmpty)
+                CustomTableRow.fromChildren(
                   children: [
-                    for (final cond in shop.freeShopConds)
-                      CondTargetValueDescriptor.commonRelease(
-                        commonRelease: cond,
-                        leading: const TextSpan(text: kULLeading),
-                      ),
-                  ],
-                )
-              ])
-          ],
-          CustomTableRow.fromTexts(texts: [S.current.game_rewards], isHeader: true),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
-            child: getRewards(context),
-          ),
-          if (shop.script != null && shop.scriptId != null) ...[
-            CustomTableRow.fromTexts(texts: [S.current.script_story], isHeader: true),
-            TextButton(
-              onPressed: () {
-                ScriptLink(scriptId: shop.scriptId!, script: shop.script!).routeTo(region: region);
-              },
-              style: kTextButtonDenseStyle,
-              child: Text(shop.scriptName ?? shop.scriptId!),
-            )
-          ],
-          if (shop.releaseConditions.isNotEmpty) ...[
-            CustomTableRow.fromTexts(texts: [S.current.open_condition], isHeader: true),
-            CustomTableRow(children: [
-              TableCellData(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    for (final cond in shop.releaseConditions) ...[
-                      CondTargetNumDescriptor(
-                        condType: cond.condType,
-                        targetNum: cond.condNum,
-                        targetIds: cond.condValues,
-                        leading: const TextSpan(text: kULLeading),
-                      ),
-                      if (cond.closedMessage.isNotEmpty)
-                        Text(
-                          cond.closedMessage,
-                          style: Theme.of(context).textTheme.bodySmall?.copyWith(fontStyle: FontStyle.italic),
-                        )
-                    ]
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        for (final cond in shop.freeShopConds)
+                          CondTargetValueDescriptor.commonRelease(
+                            commonRelease: cond,
+                            leading: const TextSpan(text: kULLeading),
+                          ),
+                      ],
+                    ),
                   ],
                 ),
-                alignment: AlignmentDirectional.centerStart,
-              ),
-            ]),
-            if (shop.warningMessage.isNotEmpty) ...[
-              CustomTableRow.fromTexts(texts: [S.current.warning], isHeader: true),
-              CustomTableRow.fromTexts(texts: [shop.warningMessage.replaceAll('{0}', shop.name)]),
             ],
-          ]
-        ]),
+            CustomTableRow.fromTexts(texts: [S.current.game_rewards], isHeader: true),
+            Padding(padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4), child: getRewards(context)),
+            if (shop.script != null && shop.scriptId != null) ...[
+              CustomTableRow.fromTexts(texts: [S.current.script_story], isHeader: true),
+              TextButton(
+                onPressed: () {
+                  ScriptLink(scriptId: shop.scriptId!, script: shop.script!).routeTo(region: region);
+                },
+                style: kTextButtonDenseStyle,
+                child: Text(shop.scriptName ?? shop.scriptId!),
+              ),
+            ],
+            if (shop.releaseConditions.isNotEmpty) ...[
+              CustomTableRow.fromTexts(texts: [S.current.open_condition], isHeader: true),
+              CustomTableRow(
+                children: [
+                  TableCellData(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        for (final cond in shop.releaseConditions) ...[
+                          CondTargetNumDescriptor(
+                            condType: cond.condType,
+                            targetNum: cond.condNum,
+                            targetIds: cond.condValues,
+                            leading: const TextSpan(text: kULLeading),
+                          ),
+                          if (cond.closedMessage.isNotEmpty)
+                            Text(
+                              cond.closedMessage,
+                              style: Theme.of(context).textTheme.bodySmall?.copyWith(fontStyle: FontStyle.italic),
+                            ),
+                        ],
+                      ],
+                    ),
+                    alignment: AlignmentDirectional.centerStart,
+                  ),
+                ],
+              ),
+              if (shop.warningMessage.isNotEmpty) ...[
+                CustomTableRow.fromTexts(texts: [S.current.warning], isHeader: true),
+                CustomTableRow.fromTexts(texts: [shop.warningMessage.replaceAll('{0}', shop.name)]),
+              ],
+            ],
+          ],
+        ),
       ],
     );
   }
@@ -171,15 +178,19 @@ class _ShopDetailPageState extends State<ShopDetailPage> with RegionBasedState<N
     List<Widget> children = [];
     final rewards = ShopHelper.purchases(context, shop, showSvtLvAsc: true);
     for (final reward in rewards) {
-      children.add(Text.rich(TextSpan(text: kULLeading, children: [
-        if (reward.item1 != null) CenterWidgetSpan(child: SizedBox(height: 42, child: reward.item1!)),
-        reward.item2,
-      ])));
+      children.add(
+        Text.rich(
+          TextSpan(
+            text: kULLeading,
+            children: [
+              if (reward.item1 != null) CenterWidgetSpan(child: SizedBox(height: 42, child: reward.item1!)),
+              reward.item2,
+            ],
+          ),
+        ),
+      );
     }
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: children,
-    );
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: children);
   }
 
   Widget cardList(String header, List<GameCardMixin> cards) {
@@ -192,16 +203,16 @@ class _ShopDetailPageState extends State<ShopDetailPage> with RegionBasedState<N
             leading: card.iconBuilder(context: context),
             title: Text(card.lName.l),
             onTap: card.routeTo,
-          )
+          ),
       ],
     );
   }
 
   Widget get popupMenu {
     return PopupMenuButton(
-      itemBuilder: (context) => SharedBuilder.websitesPopupMenuItems(
-        atlas: 'https://api.atlasacademy.io/nice/JP/shop/${shop.id}',
-      ),
+      itemBuilder:
+          (context) =>
+              SharedBuilder.websitesPopupMenuItems(atlas: 'https://api.atlasacademy.io/nice/JP/shop/${shop.id}'),
     );
   }
 }
@@ -215,27 +226,19 @@ class ShopHelper {
     }
     final cost = shop.cost;
     if (cost != null) {
-      children.add(CenterWidgetSpan(
-        child: Item.iconBuilder(
-          context: context,
-          item: null,
-          itemId: cost.itemId,
-          width: iconSize,
-        ),
-      ));
+      children.add(
+        CenterWidgetSpan(child: Item.iconBuilder(context: context, item: null, itemId: cost.itemId, width: iconSize)),
+      );
       children.add(TextSpan(text: '×${cost.amount.format()} '));
     }
     for (final consume in shop.consumes) {
       switch (consume.type) {
         case CommonConsumeType.item:
-          children.add(CenterWidgetSpan(
-            child: Item.iconBuilder(
-              context: context,
-              item: null,
-              itemId: consume.objectId,
-              width: iconSize,
+          children.add(
+            CenterWidgetSpan(
+              child: Item.iconBuilder(context: context, item: null, itemId: consume.objectId, width: iconSize),
             ),
-          ));
+          );
           children.add(TextSpan(text: '×${consume.num.format()} '));
           break;
         case CommonConsumeType.ap:
@@ -252,10 +255,7 @@ class ShopHelper {
     bool showSpecialName = false,
     bool showSvtLvAsc = false,
   }) sync* {
-    final shopName = TextSpan(
-      text: '\n(${shop.name})',
-      style: Theme.of(context).textTheme.bodySmall,
-    );
+    final shopName = TextSpan(text: '\n(${shop.name})', style: Theme.of(context).textTheme.bodySmall);
     switch (shop.purchaseType) {
       case PurchaseType.quest:
         yield Tuple2(
@@ -269,16 +269,21 @@ class ShopHelper {
       case PurchaseType.kiaraPunisherReset:
         yield Tuple2(
           null,
-          TextSpan(
-            text: 'Reset Kiara Punishers: ',
-            children: MultiDescriptor.shops(context, shop.targetIds),
-          ),
+          TextSpan(text: 'Reset Kiara Punishers: ', children: MultiDescriptor.shops(context, shop.targetIds)),
         );
         return;
       case PurchaseType.setItem:
         for (final set in shop.itemSet) {
-          final rewards = onePurchase(context, shop, set.purchaseType, set.targetId, set.setNum, set.gifts,
-              showSvtLvAsc: showSvtLvAsc, showSpecialName: showSpecialName);
+          final rewards = onePurchase(
+            context,
+            shop,
+            set.purchaseType,
+            set.targetId,
+            set.setNum,
+            set.gifts,
+            showSvtLvAsc: showSvtLvAsc,
+            showSpecialName: showSpecialName,
+          );
           if (shop.setNum == 1) {
             yield* rewards;
           } else {
@@ -292,8 +297,16 @@ class ShopHelper {
         }
         return;
       default:
-        yield* onePurchase(context, shop, shop.purchaseType, shop.targetIds.getOrNull(0) ?? 0, shop.setNum, shop.gifts,
-            showSvtLvAsc: showSvtLvAsc, showSpecialName: showSpecialName);
+        yield* onePurchase(
+          context,
+          shop,
+          shop.purchaseType,
+          shop.targetIds.getOrNull(0) ?? 0,
+          shop.setNum,
+          shop.gifts,
+          showSvtLvAsc: showSvtLvAsc,
+          showSpecialName: showSpecialName,
+        );
     }
   }
 
@@ -307,10 +320,7 @@ class ShopHelper {
     bool showSpecialName = false,
     bool showSvtLvAsc = false,
   }) sync* {
-    final shopName = TextSpan(
-      text: '\n(${shop.name})',
-      style: Theme.of(context).textTheme.bodySmall,
-    );
+    final shopName = TextSpan(text: '\n(${shop.name})', style: Theme.of(context).textTheme.bodySmall);
 
     switch (purchaseType) {
       case PurchaseType.none:
@@ -332,30 +342,31 @@ class ShopHelper {
           }
         }
         yield Tuple2(
-          GameCardMixin.anyCardItemBuilder(
-            context: context,
-            id: targetId,
-            text: text,
-          ),
+          GameCardMixin.anyCardItemBuilder(context: context, id: targetId, text: text),
           TextSpan(
-              text: [
-            GameCardMixin.anyCardItemName(targetId).l,
-            if (targetNum != 1) "×${targetNum.format()}",
-            if (showSvtLvAsc &&
-                purchaseType == PurchaseType.servant &&
-                [SvtType.servantEquip, SvtType.normal].contains(db.gameData.entities[targetId]?.type))
-              '(Lv.${shop.defaultLv}, ${S.current.ascension_short} ${shop.defaultLimitCount})',
-          ].join(' ')),
+            text: [
+              GameCardMixin.anyCardItemName(targetId).l,
+              if (targetNum != 1) "×${targetNum.format()}",
+              if (showSvtLvAsc &&
+                  purchaseType == PurchaseType.servant &&
+                  [SvtType.servantEquip, SvtType.normal].contains(db.gameData.entities[targetId]?.type))
+                '(Lv.${shop.defaultLv}, ${S.current.ascension_short} ${shop.defaultLimitCount})',
+            ].join(' '),
+          ),
         );
         return;
       case PurchaseType.equip:
         final equip = db.gameData.mysticCodes[targetId];
-        yield Tuple2(equip?.iconBuilder(context: context),
-            TextSpan(text: equip?.lName.l ?? '${S.current.mystic_code} $targetId'));
+        yield Tuple2(
+          equip?.iconBuilder(context: context),
+          TextSpan(text: equip?.lName.l ?? '${S.current.mystic_code} $targetId'),
+        );
         return;
       case PurchaseType.friendGacha:
-        yield Tuple2(Item.iconBuilder(context: context, item: Items.friendPoint),
-            TextSpan(text: Transl.itemNames('フレンドポイント').l));
+        yield Tuple2(
+          Item.iconBuilder(context: context, item: Items.friendPoint),
+          TextSpan(text: Transl.itemNames('フレンドポイント').l),
+        );
         return;
       case PurchaseType.setItem:
         assert(false, 'Should not reach here');
@@ -364,20 +375,11 @@ class ShopHelper {
       case PurchaseType.quest:
         yield Tuple2(
           null,
-          TextSpan(
-            text: '${S.current.unlock_quest}: ',
-            children: MultiDescriptor.quests(context, [targetId]),
-          ),
+          TextSpan(text: '${S.current.unlock_quest}: ', children: MultiDescriptor.quests(context, [targetId])),
         );
         return;
       case PurchaseType.eventShop:
-        yield Tuple2(
-          null,
-          TextSpan(
-            text: S.current.event_shop,
-            children: MultiDescriptor.events(context, [targetId]),
-          ),
-        );
+        yield Tuple2(null, TextSpan(text: S.current.event_shop, children: MultiDescriptor.events(context, [targetId])));
         return;
       case PurchaseType.eventSvtGet:
       case PurchaseType.eventSvtJoin:
@@ -385,7 +387,8 @@ class ShopHelper {
         yield Tuple2(
           svt?.iconBuilder(context: context),
           TextSpan(
-              text: (svt?.lName.l ?? 'Svt $targetId') + (purchaseType == PurchaseType.eventSvtJoin ? ' Join' : ' Get')),
+            text: (svt?.lName.l ?? 'Svt $targetId') + (purchaseType == PurchaseType.eventSvtJoin ? ' Join' : ' Get'),
+          ),
         );
         return;
       case PurchaseType.manaShop:
@@ -408,7 +411,8 @@ class ShopHelper {
         yield Tuple2(
           null,
           TextSpan(
-            text: '${Transl.enums(purchaseType, (enums) => enums.purchaseType).l}'
+            text:
+                '${Transl.enums(purchaseType, (enums) => enums.purchaseType).l}'
                 ' ×$targetNum',
           ),
         );
@@ -452,10 +456,7 @@ class ShopHelper {
         assert(false, 'Should not reach here');
         yield Tuple2(
           null,
-          TextSpan(
-            text: 'Reset Kiara Punishers: ',
-            children: MultiDescriptor.shops(context, [targetId]),
-          ),
+          TextSpan(text: 'Reset Kiara Punishers: ', children: MultiDescriptor.shops(context, [targetId])),
         );
         return;
     }

@@ -140,22 +140,15 @@ class NetworkManagerJP extends NetworkManagerBase<FRequestJP, AutoLoginDataJP> {
 
     request.sendTime = getNowTimestamp();
     Uri uri = Uri.parse(gameTop.host);
-    uri = uri.replace(path: request.path, queryParameters: {
-      ...uri.queryParameters,
-      '_userId': user.auth!.userId,
-    });
+    uri = uri.replace(path: request.path, queryParameters: {...uri.queryParameters, '_userId': user.auth!.userId});
     final buffer = StringBuffer('============ start ${request.path} ============\n');
     buffer.writeln(uri);
     // buffer.writeln(headers);
     buffer.writeln(form.data);
     request.params = form.map;
-    final Response rawResp = await Dio(BaseOptions(connectTimeout: const Duration(seconds: 10))).post(
-      uri.toString(),
-      data: form.data,
-      options: Options(
-        headers: headers,
-      ),
-    );
+    final Response rawResp = await Dio(
+      BaseOptions(connectTimeout: const Duration(seconds: 10)),
+    ).post(uri.toString(), data: form.data, options: Options(headers: headers));
     request.rawRequest = rawResp.requestOptions;
     request.rawResponse = rawResp;
     // buffer.writeln(rawResp.headers);

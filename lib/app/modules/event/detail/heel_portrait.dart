@@ -38,41 +38,42 @@ class _EventHeelPortraitPageState extends State<EventHeelPortraitPage> {
     return CustomScrollView(
       controller: controller,
       slivers: [
-        SliverList.list(children: [
-          const SizedBox(height: 8),
-          Center(
-            child: FilterGroup<SvtClass>(
-              combined: true,
-              padding: EdgeInsets.zero,
-              shrinkWrap: true,
-              options: SvtClassX.regularAll,
-              values: svtClass,
-              optionBuilder: (v) => db.getIconImage(v.icon(3), width: 24, height: 24, padding: const EdgeInsets.all(2)),
-              onFilterChanged: (_, __) {
-                setState(() {});
-              },
+        SliverList.list(
+          children: [
+            const SizedBox(height: 8),
+            Center(
+              child: FilterGroup<SvtClass>(
+                combined: true,
+                padding: EdgeInsets.zero,
+                shrinkWrap: true,
+                options: SvtClassX.regularAll,
+                values: svtClass,
+                optionBuilder:
+                    (v) => db.getIconImage(v.icon(3), width: 24, height: 24, padding: const EdgeInsets.all(2)),
+                onFilterChanged: (_, __) {
+                  setState(() {});
+                },
+              ),
             ),
-          ),
-          const SizedBox(height: 4),
-          Center(
-            child: FilterGroup<int>(
-              combined: true,
-              padding: EdgeInsets.zero,
-              options: const [5, 4, 3, 2, 1, 0],
-              values: rarity,
-              onFilterChanged: (_, __) {
-                setState(() {});
-              },
+            const SizedBox(height: 4),
+            Center(
+              child: FilterGroup<int>(
+                combined: true,
+                padding: EdgeInsets.zero,
+                options: const [5, 4, 3, 2, 1, 0],
+                values: rarity,
+                onFilterChanged: (_, __) {
+                  setState(() {});
+                },
+              ),
             ),
-          ),
-          const SizedBox(height: 8),
-        ]),
+            const SizedBox(height: 8),
+          ],
+        ),
         SliverGrid.extent(
           maxCrossAxisExtent: 100,
           childAspectRatio: 2 / 3,
-          children: [
-            for (final heel in heelPortraits) itemBuilder(context, heel),
-          ],
+          children: [for (final heel in heelPortraits) itemBuilder(context, heel)],
         ),
       ],
     );
@@ -104,8 +105,10 @@ class _EventHeelPortraitPageState extends State<EventHeelPortraitPage> {
             imageUrl: heel.image,
             showSaveOnLongPress: true,
             cachedOption: CachedImageOption(
-              errorWidget: (context, url, error) => const CachedImage(
-                  imageUrl: "https://static.atlasacademy.io/JP/EventUI/Prefabs/80432/portrait_unknown.png"),
+              errorWidget:
+                  (context, url, error) => const CachedImage(
+                    imageUrl: "https://static.atlasacademy.io/JP/EventUI/Prefabs/80432/portrait_unknown.png",
+                  ),
             ),
           ),
         ),

@@ -87,14 +87,7 @@ class _GachaDrawPageState extends State<GachaDrawPage> {
         child: ListTileTheme.merge(
           dense: true,
           visualDensity: VisualDensity.compact,
-          child: Column(
-            children: [
-              headerInfo,
-              Expanded(child: body),
-              const Divider(height: 1),
-              buttonBar,
-            ],
-          ),
+          child: Column(children: [headerInfo, Expanded(child: body), const Divider(height: 1), buttonBar]),
         ),
       ),
     );
@@ -115,10 +108,9 @@ class _GachaDrawPageState extends State<GachaDrawPage> {
           constraints: const BoxConstraints(maxWidth: 16, maxHeight: 16),
           child: ValueListenableBuilder(
             valueListenable: runtime.runningTask,
-            builder: (context, running, _) => CircularProgressIndicator(
-              value: running ? null : 1.0,
-              color: running ? Colors.red : Colors.green,
-            ),
+            builder:
+                (context, running, _) =>
+                    CircularProgressIndicator(value: running ? null : 1.0, color: running ? Colors.red : Colors.green),
           ),
         ),
         title: Row(
@@ -135,12 +127,14 @@ class _GachaDrawPageState extends State<GachaDrawPage> {
             ),
           ],
         ),
-        subtitle: Text([
-          '${S.current.servant} ${cardCounts.svtCount}/${userGame?.svtKeep}',
-          '${S.current.craft_essence_short} ${cardCounts.svtEquipCount}/${userGame?.svtEquipKeep}',
-          '${S.current.command_code_short} ${cardCounts.ccCount}/${runtime.gameData.constants.maxUserCommandCode}',
-          if (cardCounts.unknownCount != 0) '${S.current.unknown} ${cardCounts.unknownCount}',
-        ].join(' ')),
+        subtitle: Text(
+          [
+            '${S.current.servant} ${cardCounts.svtCount}/${userGame?.svtKeep}',
+            '${S.current.craft_essence_short} ${cardCounts.svtEquipCount}/${userGame?.svtEquipKeep}',
+            '${S.current.command_code_short} ${cardCounts.ccCount}/${runtime.gameData.constants.maxUserCommandCode}',
+            if (cardCounts.unknownCount != 0) '${S.current.unknown} ${cardCounts.unknownCount}',
+          ].join(' '),
+        ),
       ),
     );
   }
@@ -152,11 +146,13 @@ class _GachaDrawPageState extends State<GachaDrawPage> {
         ListTile(
           dense: true,
           title: Text('Gacha ID'),
-          subtitle: Text([
-            gacha?.lName ?? "Unknown",
-            if (gacha != null)
-              [gacha.openedAt, gacha.closedAt].map((e) => e.sec2date().toStringShort(omitSec: true)).join(' ~ '),
-          ].join('\n')),
+          subtitle: Text(
+            [
+              gacha?.lName ?? "Unknown",
+              if (gacha != null)
+                [gacha.openedAt, gacha.closedAt].map((e) => e.sec2date().toStringShort(omitSec: true)).join(' ~ '),
+            ].join('\n'),
+          ),
           trailing: TextButton(
             onPressed: () {
               InputCancelOkDialog(
@@ -197,50 +193,50 @@ class _GachaDrawPageState extends State<GachaDrawPage> {
             mainAxisSize: MainAxisSize.min,
             children: [
               TextButton(
-                onPressed: gacha == null
-                    ? null
-                    : () {
-                        InputCancelOkDialog(
-                          title: 'Gacha Sub Id',
-                          text: gachaOption.gachaSubId.toString(),
-                          keyboardType: TextInputType.number,
-                          validate: (s) => (int.tryParse(s) ?? -1) >= 0,
-                          onSubmit: (s) async {
-                            final subId = int.parse(s);
-                            final subs = gacha.getValidGachaSubs();
-                            if ((subs.isEmpty && subId == 0) || subs.any((e) => e.id == subId)) {
-                              runtime.lockTask(() {
-                                gachaOption.gachaSubId = subId;
-                              });
-                            }
-                          },
-                        ).showDialog(context);
-                      },
+                onPressed:
+                    gacha == null
+                        ? null
+                        : () {
+                          InputCancelOkDialog(
+                            title: 'Gacha Sub Id',
+                            text: gachaOption.gachaSubId.toString(),
+                            keyboardType: TextInputType.number,
+                            validate: (s) => (int.tryParse(s) ?? -1) >= 0,
+                            onSubmit: (s) async {
+                              final subId = int.parse(s);
+                              final subs = gacha.getValidGachaSubs();
+                              if ((subs.isEmpty && subId == 0) || subs.any((e) => e.id == subId)) {
+                                runtime.lockTask(() {
+                                  gachaOption.gachaSubId = subId;
+                                });
+                              }
+                            },
+                          ).showDialog(context);
+                        },
                 child: Text(gachaOption.gachaSubId.toString()),
               ),
               IconButton(
-                onPressed: gacha == null
-                    ? null
-                    : () => router.pushPage(SelectGachaSubPage(
-                          region: runtime.region,
-                          mstData: mstData,
-                          gacha: gacha,
-                          onSelected: (sub) {
-                            runtime.lockTask(() {
-                              gachaOption.gachaSubId = sub?.id ?? 0;
-                            });
-                          },
-                        )),
+                onPressed:
+                    gacha == null
+                        ? null
+                        : () => router.pushPage(
+                          SelectGachaSubPage(
+                            region: runtime.region,
+                            mstData: mstData,
+                            gacha: gacha,
+                            onSelected: (sub) {
+                              runtime.lockTask(() {
+                                gachaOption.gachaSubId = sub?.id ?? 0;
+                              });
+                            },
+                          ),
+                        ),
                 icon: Icon(Icons.change_circle),
-              )
+              ),
             ],
           ),
         ),
-        if (gacha != null)
-          GachaBanner(
-            region: runtime.region,
-            imageId: gacha.getImageId(gachaOption.gachaSubId),
-          ),
+        if (gacha != null) GachaBanner(region: runtime.region, imageId: gacha.getImageId(gachaOption.gachaSubId)),
         SwitchListTile.adaptive(
           dense: true,
           title: Text('100连抽'),
@@ -281,22 +277,14 @@ class _GachaDrawPageState extends State<GachaDrawPage> {
                   for (final userSvtId in gachaOption.ceEnhanceBaseUserSvtIds) buildEnhanceBaseUserSvt(userSvtId),
                 ],
               ),
-              trailing: IconButton(
-                onPressed: addEnhanceBaseUserSvt,
-                icon: Icon(Icons.add),
-              ),
+              trailing: IconButton(onPressed: addEnhanceBaseUserSvt, icon: Icon(Icons.add)),
             ),
             ListTile(
               title: Text('Base CEs'),
               subtitle: Wrap(
-                children: [
-                  for (final svtId in gachaOption.ceEnhanceBaseSvtIds) buildEnhanceBaseSvt(svtId),
-                ],
+                children: [for (final svtId in gachaOption.ceEnhanceBaseSvtIds) buildEnhanceBaseSvt(svtId)],
               ),
-              trailing: IconButton(
-                onPressed: addEnhanceBaseSvt,
-                icon: Icon(Icons.add),
-              ),
+              trailing: IconButton(onPressed: addEnhanceBaseSvt, icon: Icon(Icons.add)),
             ),
             SwitchListTile.adaptive(
               dense: true,
@@ -352,13 +340,10 @@ class _GachaDrawPageState extends State<GachaDrawPage> {
                     ),
                 ],
               ),
-              trailing: IconButton(
-                onPressed: addSellKeepSvts,
-                icon: Icon(Icons.add),
-              ),
+              trailing: IconButton(onPressed: addSellKeepSvts, icon: Icon(Icons.add)),
             ),
           ],
-        )
+        ),
       ],
     );
   }
@@ -396,46 +381,52 @@ class _GachaDrawPageState extends State<GachaDrawPage> {
   CraftFilterData ceFilterData = CraftFilterData();
 
   void addEnhanceBaseUserSvt() {
-    router.pushPage(CraftListPage(
-      filterData: ceFilterData,
-      onSelected: (selectedCE) {
-        final userSvts = mstData.userSvt.where((userSvt) {
-          final ce = userSvt.dbCE;
-          if (ce == null || userSvt.svtId != selectedCE.id) return false;
-          if (userSvt.lv >= (userSvt.maxLv ?? 0)) return false;
-          if (userSvt.lv <= 1) return false;
-          return true;
-        }).toList();
-        userSvts.sortByList((e) => <int>[-e.limitCount, -e.lv, -e.exp]);
-        router.showDialog(builder: (context) {
-          return StatefulBuilder(
-            builder: (context, update) {
-              return SimpleDialog(
-                title: Text('Choose User CE'),
-                children: userSvts.map((userSvt) {
-                  final ce = userSvt.dbCE;
-                  return ListTile(
-                    dense: true,
-                    leading: ce?.iconBuilder(context: context),
-                    title: Text('Lv.${userSvt.lv}, ${userSvt.limitCount}/4, ${userSvt.lv}/${userSvt.maxLv}'),
-                    subtitle: Text('No.${userSvt.id} ${userSvt.locked ? "locked" : "unlocked"}'),
-                    enabled: userSvt.locked && !gachaOption.ceEnhanceBaseUserSvtIds.contains(userSvt.id),
-                    onTap: () {
-                      runtime.lockTask(() {
-                        gachaOption.ceEnhanceBaseUserSvtIds.add(userSvt.id);
-                        EasyLoading.showSuccess("Added ${userSvt.id}");
-                        if (mounted) setState(() {});
-                        update(() {});
-                      });
-                    },
+    router.pushPage(
+      CraftListPage(
+        filterData: ceFilterData,
+        onSelected: (selectedCE) {
+          final userSvts =
+              mstData.userSvt.where((userSvt) {
+                final ce = userSvt.dbCE;
+                if (ce == null || userSvt.svtId != selectedCE.id) return false;
+                if (userSvt.lv >= (userSvt.maxLv ?? 0)) return false;
+                if (userSvt.lv <= 1) return false;
+                return true;
+              }).toList();
+          userSvts.sortByList((e) => <int>[-e.limitCount, -e.lv, -e.exp]);
+          router.showDialog(
+            builder: (context) {
+              return StatefulBuilder(
+                builder: (context, update) {
+                  return SimpleDialog(
+                    title: Text('Choose User CE'),
+                    children:
+                        userSvts.map((userSvt) {
+                          final ce = userSvt.dbCE;
+                          return ListTile(
+                            dense: true,
+                            leading: ce?.iconBuilder(context: context),
+                            title: Text('Lv.${userSvt.lv}, ${userSvt.limitCount}/4, ${userSvt.lv}/${userSvt.maxLv}'),
+                            subtitle: Text('No.${userSvt.id} ${userSvt.locked ? "locked" : "unlocked"}'),
+                            enabled: userSvt.locked && !gachaOption.ceEnhanceBaseUserSvtIds.contains(userSvt.id),
+                            onTap: () {
+                              runtime.lockTask(() {
+                                gachaOption.ceEnhanceBaseUserSvtIds.add(userSvt.id);
+                                EasyLoading.showSuccess("Added ${userSvt.id}");
+                                if (mounted) setState(() {});
+                                update(() {});
+                              });
+                            },
+                          );
+                        }).toList(),
                   );
-                }).toList(),
+                },
               );
             },
           );
-        });
-      },
-    ));
+        },
+      ),
+    );
   }
 
   Widget buildEnhanceBaseSvt(int svtId) {
@@ -465,116 +456,119 @@ class _GachaDrawPageState extends State<GachaDrawPage> {
   }
 
   void addEnhanceBaseSvt() {
-    router.pushPage(CraftListPage(
-      filterData: ceFilterData,
-      onSelected: (selectedCE) {
-        final userSvts = mstData.userSvt.where((userSvt) {
-          final ce = userSvt.dbCE;
-          if (ce == null || userSvt.svtId != selectedCE.id) return false;
-          if (userSvt.lv >= (userSvt.maxLv ?? 0)) return false;
-          if (userSvt.lv <= 1) return false;
-          return true;
-        }).toList();
-        if (userSvts.isEmpty) {
-          EasyLoading.showError('No valid CE (locked & ${S.current.max_limit_break} & lv>1)');
-          return;
-        }
-        runtime.lockTask(() {
-          gachaOption.ceEnhanceBaseSvtIds.add(selectedCE.id);
-          if (mounted) setState(() {});
-        });
-      },
-    ));
+    router.pushPage(
+      CraftListPage(
+        filterData: ceFilterData,
+        onSelected: (selectedCE) {
+          final userSvts =
+              mstData.userSvt.where((userSvt) {
+                final ce = userSvt.dbCE;
+                if (ce == null || userSvt.svtId != selectedCE.id) return false;
+                if (userSvt.lv >= (userSvt.maxLv ?? 0)) return false;
+                if (userSvt.lv <= 1) return false;
+                return true;
+              }).toList();
+          if (userSvts.isEmpty) {
+            EasyLoading.showError('No valid CE (locked & ${S.current.max_limit_break} & lv>1)');
+            return;
+          }
+          runtime.lockTask(() {
+            gachaOption.ceEnhanceBaseSvtIds.add(selectedCE.id);
+            if (mounted) setState(() {});
+          });
+        },
+      ),
+    );
   }
 
   void addSellKeepSvts() {
     router.showDialog(
-      builder: (context) => SimpleDialog(
-        title: Text('Sell Keep'),
-        children: [
-          ListTile(
-            title: Text(S.current.servant),
-            onTap: () {
-              Navigator.pop(context);
-              router.pushPage(ServantListPage(
-                onSelected: (svt) {
-                  runtime.lockTask(() {
-                    gachaOption.sellKeepSvtIds.add(svt.id);
-                  });
-                  if (mounted) setState(() {});
+      builder:
+          (context) => SimpleDialog(
+            title: Text('Sell Keep'),
+            children: [
+              ListTile(
+                title: Text(S.current.servant),
+                onTap: () {
+                  Navigator.pop(context);
+                  router.pushPage(
+                    ServantListPage(
+                      onSelected: (svt) {
+                        runtime.lockTask(() {
+                          gachaOption.sellKeepSvtIds.add(svt.id);
+                        });
+                        if (mounted) setState(() {});
+                      },
+                    ),
+                  );
                 },
-              ));
-            },
-          ),
-          ListTile(
-            title: Text(S.current.craft_essence),
-            onTap: () {
-              Navigator.pop(context);
-              router.pushPage(CraftListPage(
-                onSelected: (ce) {
-                  runtime.lockTask(() {
-                    gachaOption.sellKeepSvtIds.add(ce.id);
-                  });
-                  if (mounted) setState(() {});
+              ),
+              ListTile(
+                title: Text(S.current.craft_essence),
+                onTap: () {
+                  Navigator.pop(context);
+                  router.pushPage(
+                    CraftListPage(
+                      onSelected: (ce) {
+                        runtime.lockTask(() {
+                          gachaOption.sellKeepSvtIds.add(ce.id);
+                        });
+                        if (mounted) setState(() {});
+                      },
+                    ),
+                  );
                 },
-              ));
-            },
-          ),
-          ListTile(
-            title: Text('種火/英霊結晶'),
-            onTap: () {
-              Navigator.pop(context);
-              router.pushPage(EnemyListPage(
-                filterData: EnemyFilterData()..svtType.options = {SvtType.combineMaterial, SvtType.statusUp},
-                onSelected: (svt) {
-                  if (svt.type == SvtType.combineMaterial || svt.type == SvtType.statusUp) {
-                    runtime.lockTask(() {
-                      gachaOption.sellKeepSvtIds.add(svt.id);
-                    });
-                  } else {
-                    EasyLoading.showToast('Invalid choice');
-                  }
-                  if (mounted) setState(() {});
+              ),
+              ListTile(
+                title: Text('種火/英霊結晶'),
+                onTap: () {
+                  Navigator.pop(context);
+                  router.pushPage(
+                    EnemyListPage(
+                      filterData: EnemyFilterData()..svtType.options = {SvtType.combineMaterial, SvtType.statusUp},
+                      onSelected: (svt) {
+                        if (svt.type == SvtType.combineMaterial || svt.type == SvtType.statusUp) {
+                          runtime.lockTask(() {
+                            gachaOption.sellKeepSvtIds.add(svt.id);
+                          });
+                        } else {
+                          EasyLoading.showToast('Invalid choice');
+                        }
+                        if (mounted) setState(() {});
+                      },
+                    ),
+                  );
                 },
-              ));
-            },
+              ),
+            ],
           ),
-        ],
-      ),
     );
   }
 
   Widget buildLastResult() {
     final cards = runtime.gachaResultStat.lastDrawResult;
-    final cardWidgets = cards.map((card) {
-      Widget child = card.toGift().iconBuilder(
+    final cardWidgets =
+        cards.map((card) {
+          Widget child = card.toGift().iconBuilder(
             context: context,
             width: 48,
             text: card.userSvtId == 0 ? 'sold' : null,
             showOne: false,
           );
-      if (card.userSvtId == 0) {
-        child = Stack(
-          children: [
-            child,
-            Positioned.fill(
-              child: IgnorePointer(
-                child: Container(
-                  color: Colors.grey.withAlpha(153),
-                  margin: EdgeInsets.all(2),
+          if (card.userSvtId == 0) {
+            child = Stack(
+              children: [
+                child,
+                Positioned.fill(
+                  child: IgnorePointer(child: Container(color: Colors.grey.withAlpha(153), margin: EdgeInsets.all(2))),
                 ),
-              ),
-            ),
-          ],
-        );
-      }
-      return child;
-    }).toList();
+              ],
+            );
+          }
+          return child;
+        }).toList();
     if (cardWidgets.length > 10) {
-      return Wrap(
-        alignment: WrapAlignment.center,
-        children: cardWidgets,
-      );
+      return Wrap(alignment: WrapAlignment.center, children: cardWidgets);
     } else {
       final rows = [cardWidgets.take(6).toList(), cardWidgets.skip(6).toList()];
       return Column(
@@ -585,7 +579,7 @@ class _GachaDrawPageState extends State<GachaDrawPage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [for (final child in row) Flexible(child: child)],
-              )
+              ),
         ],
       );
     }
@@ -616,40 +610,39 @@ class _GachaDrawPageState extends State<GachaDrawPage> {
     for (final svtId in shownSvtIds.followedBy(shownCeIds)) {
       final entity = db.gameData.servantsById[svtId] ?? db.gameData.craftEssencesById[svtId];
       if (entity == null) continue;
-      shownCards.add(entity.iconBuilder(
-        context: context,
-        width: 32,
-        text: '+${stat.servants[svtId] ?? 0}\n${mstData.getItemOrSvtNum(svtId, sumEquipLimitCount: false)}',
-      ));
+      shownCards.add(
+        entity.iconBuilder(
+          context: context,
+          width: 32,
+          text: '+${stat.servants[svtId] ?? 0}\n${mstData.getItemOrSvtNum(svtId, sumEquipLimitCount: false)}',
+        ),
+      );
     }
     for (final svtId in shownSvtIds) {
       final item = db.gameData.servantsById[svtId]?.coin?.item;
       if (item == null) continue;
-      shownCards.add(Item.iconBuilder(
-        context: context,
-        item: item,
-        text: '+${stat.coins[svtId] ?? 0}\n${mstData.getItemOrSvtNum(item.id)}',
-        width: 32,
-      ));
+      shownCards.add(
+        Item.iconBuilder(
+          context: context,
+          item: item,
+          text: '+${stat.coins[svtId] ?? 0}\n${mstData.getItemOrSvtNum(item.id)}',
+          width: 32,
+        ),
+      );
     }
 
     List<Widget> children = [
       if (userGacha != null) ListTile(title: Text(' Free Draw at ${userGacha.freeDrawAt.sec2date().toStringShort()}')),
       ListTile(
-        title: Text([
-          '${stat.totalCount.format(compact: false, groupSeparator: ",")} ${S.current.summon_pull_unit}',
-          '${((stat.totalCount * 200).format(compact: false, groupSeparator: ","))} ${Items.friendPoint?.lName.l}',
-          '${Maths.sum(stat.coins.values)} ${S.current.servant_coin_short}',
-        ].join(', ')),
-      ),
-      ListTile(
-        title: Text('Cards/Coins'),
-        subtitle: Wrap(
-          spacing: 2,
-          runSpacing: 2,
-          children: shownCards,
+        title: Text(
+          [
+            '${stat.totalCount.format(compact: false, groupSeparator: ",")} ${S.current.summon_pull_unit}',
+            '${((stat.totalCount * 200).format(compact: false, groupSeparator: ","))} ${Items.friendPoint?.lName.l}',
+            '${Maths.sum(stat.coins.values)} ${S.current.servant_coin_short}',
+          ].join(', '),
         ),
       ),
+      ListTile(title: Text('Cards/Coins'), subtitle: Wrap(spacing: 2, runSpacing: 2, children: shownCards)),
       if (stat.lastEnhanceBaseCE != null)
         SizedBox(
           height: 36,
@@ -662,11 +655,8 @@ class _GachaDrawPageState extends State<GachaDrawPage> {
                 return Text(S.current.enhance, style: Theme.of(context).textTheme.bodySmall);
               }
               final userSvt = index == 1 ? stat.lastEnhanceBaseCE : stat.lastEnhanceMaterialCEs.getOrNull(index - 2);
-              Widget child = userSvt?.dbCE?.iconBuilder(
-                    height: 32,
-                    context: context,
-                    text: ' ${userSvt.lv}/${userSvt.maxLv}',
-                  ) ??
+              Widget child =
+                  userSvt?.dbCE?.iconBuilder(height: 32, context: context, text: ' ${userSvt.lv}/${userSvt.maxLv}') ??
                   Text('${userSvt?.svtId}(${userSvt?.id})');
               if (index == 1) {
                 child = Padding(padding: EdgeInsets.symmetric(horizontal: 8), child: child);
@@ -682,53 +672,57 @@ class _GachaDrawPageState extends State<GachaDrawPage> {
         soldServants.addNum(svt.svtId, 1);
       }
       final svtIds = soldServants.keys.toList();
-      children.add(SizedBox(
-        height: 36,
-        child: ListView.builder(
-          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 2),
-          scrollDirection: Axis.horizontal,
-          itemCount: 1 + svtIds.length,
-          itemBuilder: (context, index) {
-            if (index == 0) {
-              return Text('Sell   ', style: Theme.of(context).textTheme.bodySmall);
-            }
-            final svtId = svtIds[index - 1];
-            final soldNum = soldServants[svtId] ?? 0;
-            Widget child = GameCardMixin.anyCardItemBuilder(
-              context: context,
-              height: 32,
-              text: soldNum.format(),
-              id: svtId,
-              onDefault: () => Text(' $svtId×$soldNum '),
-            );
-            if (index == 0) {
-              child = Padding(padding: EdgeInsetsDirectional.only(end: 16), child: child);
-            }
-            return child;
-          },
+      children.add(
+        SizedBox(
+          height: 36,
+          child: ListView.builder(
+            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 2),
+            scrollDirection: Axis.horizontal,
+            itemCount: 1 + svtIds.length,
+            itemBuilder: (context, index) {
+              if (index == 0) {
+                return Text('Sell   ', style: Theme.of(context).textTheme.bodySmall);
+              }
+              final svtId = svtIds[index - 1];
+              final soldNum = soldServants[svtId] ?? 0;
+              Widget child = GameCardMixin.anyCardItemBuilder(
+                context: context,
+                height: 32,
+                text: soldNum.format(),
+                id: svtId,
+                onDefault: () => Text(' $svtId×$soldNum '),
+              );
+              if (index == 0) {
+                child = Padding(padding: EdgeInsetsDirectional.only(end: 16), child: child);
+              }
+              return child;
+            },
+          ),
         ),
-      ));
+      );
     }
 
     return TileGroup(
-      headerWidget: SHeader.rich(TextSpan(
-        text: S.current.statistics_title,
-        children: [
-          SharedBuilder.textButtonSpan(
-            context: context,
-            text: '  clear',
-            onTap: () {
-              SimpleCancelOkDialog(
-                title: Text(S.current.clear),
-                onTapOk: () {
-                  stat.reset();
-                  if (mounted) setState(() {});
-                },
-              ).showDialog(context);
-            },
-          )
-        ],
-      )),
+      headerWidget: SHeader.rich(
+        TextSpan(
+          text: S.current.statistics_title,
+          children: [
+            SharedBuilder.textButtonSpan(
+              context: context,
+              text: '  clear',
+              onTap: () {
+                SimpleCancelOkDialog(
+                  title: Text(S.current.clear),
+                  onTapOk: () {
+                    stat.reset();
+                    if (mounted) setState(() {});
+                  },
+                ).showDialog(context);
+              },
+            ),
+          ],
+        ),
+      ),
       children: children,
     );
   }
@@ -740,65 +734,59 @@ class _GachaDrawPageState extends State<GachaDrawPage> {
       padding: const EdgeInsets.symmetric(horizontal: 12),
     );
 
-    FilledButton buildButton({
-      bool enabled = true,
-      required VoidCallback onPressed,
-      required String text,
-    }) {
-      return FilledButton.tonal(
-        onPressed: enabled ? onPressed : null,
-        style: buttonStyle,
-        child: Text(text),
-      );
+    FilledButton buildButton({bool enabled = true, required VoidCallback onPressed, required String text}) {
+      return FilledButton.tonal(onPressed: enabled ? onPressed : null, style: buttonStyle, child: Text(text));
     }
 
     List<List<Widget>> btnGroups = [
       [
         buildButton(
           onPressed: () {
-            router.showDialog(builder: (context) {
-              return AlertDialog(
-                title: Text('Draw'),
-                actions: [
-                  TextButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    child: Text(S.current.cancel),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                      runtime.runTask(() async {
-                        return runtime.fpGachaDraw(hundredDraw: false);
-                      });
-                    },
-                    child: Text('10'),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                      runtime.runTask(() async {
-                        for (final _ in range(10)) {
-                          await runtime.fpGachaDraw(hundredDraw: false);
-                          if (mounted) setState(() {});
-                        }
-                      });
-                    },
-                    child: Text('10×10'),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                      runtime.runTask(() async {
-                        return runtime.fpGachaDraw(hundredDraw: true);
-                      });
-                    },
-                    child: Text('100'),
-                  ),
-                ],
-              );
-            });
+            router.showDialog(
+              builder: (context) {
+                return AlertDialog(
+                  title: Text('Draw'),
+                  actions: [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: Text(S.current.cancel),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                        runtime.runTask(() async {
+                          return runtime.fpGachaDraw(hundredDraw: false);
+                        });
+                      },
+                      child: Text('10'),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                        runtime.runTask(() async {
+                          for (final _ in range(10)) {
+                            await runtime.fpGachaDraw(hundredDraw: false);
+                            if (mounted) setState(() {});
+                          }
+                        });
+                      },
+                      child: Text('10×10'),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                        runtime.runTask(() async {
+                          return runtime.fpGachaDraw(hundredDraw: true);
+                        });
+                      },
+                      child: Text('100'),
+                    ),
+                  ],
+                );
+              },
+            );
           },
           text: 'draw',
         ),
@@ -817,37 +805,39 @@ class _GachaDrawPageState extends State<GachaDrawPage> {
         ),
         buildButton(
           onPressed: () {
-            router.showDialog(builder: (context) {
-              return AlertDialog(
-                title: Text('Enhance CE'),
-                actions: [
-                  TextButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    child: Text(S.current.cancel),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                      runtime.runTask(() async {
-                        return runtime.svtEquipCombine();
-                      });
-                    },
-                    child: Text('${S.current.enhance}×1'),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                      runtime.runTask(() async {
-                        return runtime.svtEquipCombine(10);
-                      });
-                    },
-                    child: Text('${S.current.enhance}×10'),
-                  ),
-                ],
-              );
-            });
+            router.showDialog(
+              builder: (context) {
+                return AlertDialog(
+                  title: Text('Enhance CE'),
+                  actions: [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: Text(S.current.cancel),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                        runtime.runTask(() async {
+                          return runtime.svtEquipCombine();
+                        });
+                      },
+                      child: Text('${S.current.enhance}×1'),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                        runtime.runTask(() async {
+                          return runtime.svtEquipCombine(10);
+                        });
+                      },
+                      child: Text('${S.current.enhance}×10'),
+                    ),
+                  ],
+                );
+              },
+            );
           },
           text: 'enhance-ce',
         ),

@@ -16,13 +16,19 @@ void main() async {
 
     test('target check', () {
       final buff = BuffData(
-          Buff(id: -1, name: '', detail: '', ckOpIndv: [
+        Buff(
+          id: -1,
+          name: '',
+          detail: '',
+          ckOpIndv: [
             NiceTrait(id: Trait.king.value),
             NiceTrait(id: Trait.divine.value),
             NiceTrait(id: Trait.demon.value),
-          ]),
-          DataVals({'UseRate': 1000}),
-          1);
+          ],
+        ),
+        DataVals({'UseRate': 1000}),
+        1,
+      );
 
       expect(buff.shouldActivateBuffNoProbabilityCheck(okuni.getTraits(), opponentTraits: cba.getTraits()), true);
       expect(buff.shouldActivateBuffNoProbabilityCheck(cba.getTraits(), opponentTraits: okuni.getTraits()), false);
@@ -30,18 +36,16 @@ void main() async {
 
     test('checkIndivType 1', () {
       final buff = BuffData(
-          Buff(
-            id: -1,
-            name: '',
-            detail: '',
-            ckOpIndv: [
-              NiceTrait(id: Trait.attributeSky.value),
-              NiceTrait(id: Trait.alignmentGood.value),
-            ],
-            script: BuffScript(checkIndvType: 1),
-          ),
-          DataVals({'UseRate': 1000}),
-          1);
+        Buff(
+          id: -1,
+          name: '',
+          detail: '',
+          ckOpIndv: [NiceTrait(id: Trait.attributeSky.value), NiceTrait(id: Trait.alignmentGood.value)],
+          script: BuffScript(checkIndvType: 1),
+        ),
+        DataVals({'UseRate': 1000}),
+        1,
+      );
 
       expect(buff.shouldActivateBuffNoProbabilityCheck(okuni.getTraits(), opponentTraits: cba.getTraits()), true);
       expect(buff.shouldActivateBuffNoProbabilityCheck(cba.getTraits(), opponentTraits: okuni.getTraits()), false);
@@ -49,13 +53,15 @@ void main() async {
 
     test('probability check', () async {
       final buff = BuffData(
-          Buff(
-              id: -1,
-              name: '',
-              detail: '',
-              ckOpIndv: [NiceTrait(id: Trait.king.value), NiceTrait(id: Trait.divine.value)]),
-          DataVals({'UseRate': 500}),
-          1);
+        Buff(
+          id: -1,
+          name: '',
+          detail: '',
+          ckOpIndv: [NiceTrait(id: Trait.king.value), NiceTrait(id: Trait.divine.value)],
+        ),
+        DataVals({'UseRate': 500}),
+        1,
+      );
 
       expect(await buff.shouldActivateBuff(battle, okuni.getTraits(), opponentTraits: cba.getTraits()), isFalse);
 
@@ -119,7 +125,8 @@ void main() async {
       final List<PlayerSvtData> setting = [
         PlayerSvtData.id(1001000)
           ..lv = 1
-          ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
+          ..ce =
+              db.gameData.craftEssencesById[9400340] // Kaleidoscope
           ..ceLv = 100
           ..ceLimitBreak = true,
       ];
@@ -175,10 +182,7 @@ void main() async {
 
     test('downGrant', () async {
       final battle = BattleData();
-      final playerSettings = [
-        PlayerSvtData.id(2800100)..lv = 90,
-        PlayerSvtData.id(500800)..lv = 90,
-      ];
+      final playerSettings = [PlayerSvtData.id(2800100)..lv = 90, PlayerSvtData.id(500800)..lv = 90];
       await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
 
       final merlin = battle.onFieldAllyServants[1]!;
@@ -216,7 +220,8 @@ void main() async {
         PlayerSvtData.id(703300)
           ..tdLv = 5
           ..lv = 90
-          ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
+          ..ce =
+              db.gameData.craftEssencesById[9400340] // Kaleidoscope
           ..ceLv = 100
           ..ceLimitBreak = true,
       ];
@@ -260,10 +265,7 @@ void main() async {
 
     test('INDIVIDUALITIE', () async {
       final battle = BattleData();
-      final playerSettings = [
-        PlayerSvtData.id(203200)..lv = 90,
-        PlayerSvtData.id(304000)..lv = 80,
-      ];
+      final playerSettings = [PlayerSvtData.id(203200)..lv = 90, PlayerSvtData.id(304000)..lv = 80];
       await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
 
       final jeanne = battle.onFieldAllyServants[0]!;
@@ -279,10 +281,7 @@ void main() async {
 
     test('maxhp', () async {
       final battle = BattleData();
-      final playerSettings = [
-        PlayerSvtData.id(603700)..lv = 90,
-        PlayerSvtData.id(500800)..lv = 80,
-      ];
+      final playerSettings = [PlayerSvtData.id(603700)..lv = 90, PlayerSvtData.id(500800)..lv = 80];
       await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
 
       final kama = battle.onFieldAllyServants[0]!;
@@ -303,10 +302,7 @@ void main() async {
 
     test('convert', () async {
       final battle = BattleData();
-      final playerSettings = [
-        PlayerSvtData.id(2501100)..lv = 90,
-        PlayerSvtData.id(504500)..lv = 80,
-      ];
+      final playerSettings = [PlayerSvtData.id(2501100)..lv = 90, PlayerSvtData.id(504500)..lv = 80];
       await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
 
       final kukulcan = battle.onFieldAllyServants[0]!;
@@ -322,9 +318,7 @@ void main() async {
 
     test('buffRate', () async {
       final battle = BattleData();
-      final playerSettings = [
-        PlayerSvtData.id(2800100)..lv = 90,
-      ];
+      final playerSettings = [PlayerSvtData.id(2800100)..lv = 90];
       await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
 
       final oberon = battle.onFieldAllyServants[0]!;
@@ -384,9 +378,7 @@ void main() async {
 
     test('multiAttack', () async {
       final battle = BattleData();
-      final playerSettings = [
-        PlayerSvtData.id(703600)..lv = 90,
-      ];
+      final playerSettings = [PlayerSvtData.id(703600)..lv = 90];
       await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
 
       final musashi = battle.onFieldAllyServants[0]!;
@@ -408,12 +400,14 @@ void main() async {
       final playerSettings = [
         PlayerSvtData.id(901000)
           ..lv = 90
-          ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
+          ..ce =
+              db.gameData.craftEssencesById[9400340] // Kaleidoscope
           ..ceLv = 100
           ..ceLimitBreak = true,
         PlayerSvtData.id(901000)
           ..lv = 90
-          ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
+          ..ce =
+              db.gameData.craftEssencesById[9400340] // Kaleidoscope
           ..ceLv = 100
           ..ceLimitBreak = true,
         PlayerSvtData.id(500300)..lv = 90,
@@ -436,10 +430,7 @@ void main() async {
 
     test('CheckOpponentBuffTypes', () async {
       final battle = BattleData();
-      final playerSettings = [
-        PlayerSvtData.id(104900)..lv = 90,
-        PlayerSvtData.id(504500)..lv = 80,
-      ];
+      final playerSettings = [PlayerSvtData.id(104900)..lv = 90, PlayerSvtData.id(504500)..lv = 80];
       await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
 
       final murasama = battle.onFieldAllyServants[0]!;
@@ -460,7 +451,8 @@ void main() async {
         PlayerSvtData.id(603700)..lv = 90,
         PlayerSvtData.id(403200)
           ..lv = 80
-          ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
+          ..ce =
+              db.gameData.craftEssencesById[9400340] // Kaleidoscope
           ..ceLv = 100
           ..ceLimitBreak = true,
         PlayerSvtData.id(1001500)..lv = 80,
@@ -503,7 +495,8 @@ void main() async {
         PlayerSvtData.id(603700)..lv = 90,
         PlayerSvtData.id(403200)
           ..lv = 80
-          ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
+          ..ce =
+              db.gameData.craftEssencesById[9400340] // Kaleidoscope
           ..ceLv = 100
           ..ceLimitBreak = true,
         PlayerSvtData.id(1001500)..lv = 80,
@@ -535,9 +528,7 @@ void main() async {
 
     test('preventDeathByDamage', () async {
       final battle = BattleData();
-      final playerSettings = [
-        PlayerSvtData.id(2500600)..lv = 90,
-      ];
+      final playerSettings = [PlayerSvtData.id(2500600)..lv = 90];
       await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
 
       final vanGogh = battle.onFieldAllyServants[0]!;
@@ -562,7 +553,8 @@ void main() async {
       final List<PlayerSvtData> setting = [
         PlayerSvtData.id(2300400)
           ..lv = 90
-          ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
+          ..ce =
+              db.gameData.craftEssencesById[9400340] // Kaleidoscope
           ..ceLv = 100
           ..ceLimitBreak = true,
       ];
@@ -605,9 +597,7 @@ void main() async {
     });
 
     test('skillRankUp correctly updated', () async {
-      final List<PlayerSvtData> setting = [
-        PlayerSvtData.id(2300400)..lv = 90,
-      ];
+      final List<PlayerSvtData> setting = [PlayerSvtData.id(2300400)..lv = 90];
       final battle = BattleData();
       await battle.init(db.gameData.questPhases[9300040603]!, setting, null);
 
@@ -649,7 +639,7 @@ void main() async {
       await battle.playerTurn([
         CombatAction(kirei1, kirei1.getNPCard()!),
         CombatAction(kirei2, kirei2.getNPCard()!),
-        CombatAction(kirei3, kirei3.getNPCard()!)
+        CombatAction(kirei3, kirei3.getNPCard()!),
       ]);
       expect(prevHp1 - enemy.hp, 1457 + 1514 + 1571 + 1000 * 3 * (1 + 3) * 2);
 
@@ -660,7 +650,7 @@ void main() async {
       await battle.playerTurn([
         CombatAction(kirei1, kirei1.getNPCard()!),
         CombatAction(kirei2, kirei2.getNPCard()!),
-        CombatAction(kirei3, kirei3.getNPCard()!)
+        CombatAction(kirei3, kirei3.getNPCard()!),
       ]);
       expect(prevHp2 - enemy.hp, 1457 + 1514 + 1571 + 1000 * 6 * (1 + 3 + 3) * 2);
 
@@ -671,16 +661,13 @@ void main() async {
       await battle.playerTurn([
         CombatAction(kirei1, kirei1.getNPCard()!),
         CombatAction(kirei2, kirei2.getNPCard()!),
-        CombatAction(kirei3, kirei3.getNPCard()!)
+        CombatAction(kirei3, kirei3.getNPCard()!),
       ]);
       expect(100000 - enemy.hp, 1457 + 1514 + 1571 + 1000 * 9 * (1 + 3 + 3 + 3) * 2);
     });
 
     test('delay & turnend', () async {
-      final List<PlayerSvtData> setting = [
-        PlayerSvtData.id(404200)..lv = 80,
-        PlayerSvtData.id(2800100)..lv = 90,
-      ];
+      final List<PlayerSvtData> setting = [PlayerSvtData.id(404200)..lv = 80, PlayerSvtData.id(2800100)..lv = 90];
       final battle = BattleData();
       await battle.init(db.gameData.questPhases[9300040603]!, setting, null);
 
@@ -701,7 +688,8 @@ void main() async {
         PlayerSvtData.id(403700)..lv = 90,
         PlayerSvtData.id(504400)
           ..lv = 65
-          ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
+          ..ce =
+              db.gameData.craftEssencesById[9400340] // Kaleidoscope
           ..ceLv = 100
           ..ceLimitBreak = true,
       ];
@@ -734,10 +722,7 @@ void main() async {
 
     test('BuffAction turnvalNp', () async {
       final battle = BattleData();
-      final playerSettings = [
-        PlayerSvtData.id(2800300)..lv = 70,
-        PlayerSvtData.id(504200)..lv = 70,
-      ];
+      final playerSettings = [PlayerSvtData.id(2800300)..lv = 70, PlayerSvtData.id(504200)..lv = 70];
       await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
 
       final protoMerlin = battle.onFieldAllyServants[0]!;
@@ -762,10 +747,7 @@ void main() async {
 
     test('BuffAction turnendHpReduceToRegain', () async {
       final battle = BattleData();
-      final playerSettings = [
-        PlayerSvtData.id(604800)..lv = 70,
-        PlayerSvtData.id(2500600)..lv = 70,
-      ];
+      final playerSettings = [PlayerSvtData.id(604800)..lv = 70, PlayerSvtData.id(2500600)..lv = 70];
       await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
 
       final locusta = battle.onFieldAllyServants[0]!;
@@ -841,10 +823,7 @@ void main() async {
 
     test('gainMultiplyNp', () async {
       final battle = BattleData();
-      final playerSettings = [
-        PlayerSvtData.id(704900),
-        PlayerSvtData.id(704900),
-      ];
+      final playerSettings = [PlayerSvtData.id(704900), PlayerSvtData.id(704900)];
       await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
 
       final soujyuro1 = battle.onFieldAllyServants[0]!;
@@ -860,10 +839,7 @@ void main() async {
 
     test('protagonist correction on activator should block', () async {
       final battle = BattleData();
-      final playerSettings = [
-        PlayerSvtData.id(2501400),
-        PlayerSvtData.id(2800100),
-      ];
+      final playerSettings = [PlayerSvtData.id(2501400), PlayerSvtData.id(2800100)];
       await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
 
       final aoko = battle.onFieldAllyServants[0]!;
@@ -880,10 +856,7 @@ void main() async {
 
     test('protagonist correction on target should not block', () async {
       final battle = BattleData();
-      final playerSettings = [
-        PlayerSvtData.id(2501400),
-        PlayerSvtData.id(2800100),
-      ];
+      final playerSettings = [PlayerSvtData.id(2501400), PlayerSvtData.id(2800100)];
       await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
 
       final aoko = battle.onFieldAllyServants[0]!;

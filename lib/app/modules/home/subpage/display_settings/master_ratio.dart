@@ -36,7 +36,7 @@ class _MasterRatioSettingState extends State<MasterRatioSetting> {
               },
               child: Text(S.current.reset),
             ),
-          )
+          ),
         ],
       ),
     );
@@ -59,10 +59,7 @@ class _MasterRatioSettingState extends State<MasterRatioSetting> {
         ),
         ListTile(
           title: Text(S.current.setting_split_ratio),
-          trailing: Text(
-            '${SplitRoute.defaultMasterRatio}:${100 - SplitRoute.defaultMasterRatio}',
-            style: kMonoStyle,
-          ),
+          trailing: Text('${SplitRoute.defaultMasterRatio}:${100 - SplitRoute.defaultMasterRatio}', style: kMonoStyle),
         ),
         Slider.adaptive(
           value: SplitRoute.defaultMasterRatio.toDouble(),
@@ -70,25 +67,23 @@ class _MasterRatioSettingState extends State<MasterRatioSetting> {
           max: 60,
           divisions: 60 - 30,
           activeColor: display.enableSplitView ? null : Theme.of(context).disabledColor,
-          onChanged: display.enableSplitView
-              ? (v) {
-                  setState(() {
-                    SplitRoute.defaultMasterRatio = v.toInt();
-                    display.splitMasterRatio = SplitRoute.defaultMasterRatio;
-                  });
-                }
-              : null,
-          onChangeEnd: display.enableSplitView
-              ? (v) {
-                  EasyDebounce.debounce(
-                    'split_master_ratio_change',
-                    const Duration(seconds: 1),
-                    () {
+          onChanged:
+              display.enableSplitView
+                  ? (v) {
+                    setState(() {
+                      SplitRoute.defaultMasterRatio = v.toInt();
+                      display.splitMasterRatio = SplitRoute.defaultMasterRatio;
+                    });
+                  }
+                  : null,
+          onChangeEnd:
+              display.enableSplitView
+                  ? (v) {
+                    EasyDebounce.debounce('split_master_ratio_change', const Duration(seconds: 1), () {
                       db.notifyAppUpdate();
-                    },
-                  );
-                }
-              : null,
+                    });
+                  }
+                  : null,
         ),
       ],
     );
@@ -127,13 +122,9 @@ class _MasterRatioSettingState extends State<MasterRatioSetting> {
             });
           },
           onChangeEnd: (v) {
-            EasyDebounce.debounce(
-              'max_window_width_change',
-              const Duration(seconds: 1),
-              () {
-                db.notifyAppUpdate();
-              },
-            );
+            EasyDebounce.debounce('max_window_width_change', const Duration(seconds: 1), () {
+              db.notifyAppUpdate();
+            });
           },
         ),
       ],

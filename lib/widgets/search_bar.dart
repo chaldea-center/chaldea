@@ -39,18 +39,13 @@ class _SearchBar2State extends State<SearchBar2> {
   Widget build(BuildContext context) {
     return PreferredSize(
       preferredSize: widget.preferredSize,
-      child: SizedBox.fromSize(
-        size: widget.preferredSize,
-        child: _realBuild(context),
-      ),
+      child: SizedBox.fromSize(size: widget.preferredSize, child: _realBuild(context)),
     );
   }
 
   Widget _realBuild(BuildContext context) {
     TextStyle textStyle = widget.style ?? const TextStyle();
-    textStyle = textStyle.copyWith(
-      color: textStyle.color ?? Theme.of(context).hintColor,
-    );
+    textStyle = textStyle.copyWith(color: textStyle.color ?? Theme.of(context).hintColor);
     final colorScheme = Theme.of(context).colorScheme;
     final iconColor = colorScheme.onSurface;
     return Padding(
@@ -81,19 +76,13 @@ class _SearchBar2State extends State<SearchBar2> {
           if (widget.searchOptionsBuilder != null)
             InkWell(
               onTap: () {
-                showModalBottomSheet(
-                  context: context,
-                  builder: (context) => SafeArea(child: _optionBuilder(context)),
-                );
+                showModalBottomSheet(context: context, builder: (context) => SafeArea(child: _optionBuilder(context)));
               },
               child: Tooltip(
                 message: S.current.search_options,
                 child: Padding(
                   padding: const EdgeInsets.all((36 - 24) / 2),
-                  child: Icon(
-                    Icons.settings,
-                    color: iconColor,
-                  ),
+                  child: Icon(Icons.settings, color: iconColor),
                 ),
               ),
             ),
@@ -104,22 +93,23 @@ class _SearchBar2State extends State<SearchBar2> {
 
   Widget _optionBuilder(BuildContext context) {
     return StatefulBuilder(
-      builder: (context, setState) => Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          ListTile(
-            leading: const Icon(Icons.keyboard_arrow_down),
-            title: Text(S.current.search_options),
-            onTap: () {
-              Navigator.pop(context);
-            },
+      builder:
+          (context, setState) => Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                leading: const Icon(Icons.keyboard_arrow_down),
+                title: Text(S.current.search_options),
+                onTap: () {
+                  Navigator.pop(context);
+                },
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 6, 16, 8),
+                child: widget.searchOptionsBuilder!(context, setState),
+              ),
+            ],
           ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 6, 16, 8),
-            child: widget.searchOptionsBuilder!(context, setState),
-          ),
-        ],
-      ),
     );
   }
 }

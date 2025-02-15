@@ -13,12 +13,7 @@ class ItemResult {
   int endedAt;
   List<ItemDetail> details;
 
-  ItemResult({
-    required this.key,
-    required this.startAt,
-    required this.endedAt,
-    required this.details,
-  });
+  ItemResult({required this.key, required this.startAt, required this.endedAt, required this.details});
 
   factory ItemResult.fromJson(Map<String, dynamic> json) => _$ItemResultFromJson(json);
 
@@ -73,12 +68,7 @@ class SkillResult {
 
   int get lapse => endedAt - startAt;
 
-  SkillResult({
-    required this.key,
-    required this.startAt,
-    required this.endedAt,
-    required this.details,
-  });
+  SkillResult({required this.key, required this.startAt, required this.endedAt, required this.details});
 
   factory SkillResult.fromJson(Map<String, dynamic> json) => _$SkillResultFromJson(json);
 

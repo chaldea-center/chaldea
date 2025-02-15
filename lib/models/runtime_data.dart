@@ -67,20 +67,27 @@ class RuntimeData {
 
   // filters
   final svtFilters = _RouterValueMap<SvtFilterData>(
-      (r) => r.index == 0 ? db.settings.filters.laplaceSvtFilterData : SvtFilterData(useGrid: true));
-  final ceFilters = _RouterValueMap<CraftFilterData>((r) => CraftFilterData(useGrid: true)
-    ..obtain.options = CEObtain.values.toSet().difference({CEObtain.valentine, CEObtain.exp, CEObtain.campaign}));
+    (r) => r.index == 0 ? db.settings.filters.laplaceSvtFilterData : SvtFilterData(useGrid: true),
+  );
+  final ceFilters = _RouterValueMap<CraftFilterData>(
+    (r) =>
+        CraftFilterData(useGrid: true)
+          ..obtain.options = CEObtain.values.toSet().difference({CEObtain.valentine, CEObtain.exp, CEObtain.campaign}),
+  );
 
   // gamedata
   DailyBonusData? dailyBonusData;
 
   Future<DailyBonusData?> loadDailyBonusData({bool refresh = false}) async {
     final data = await EasyThrottle.throttleAsync(
-        'load_daily_bonus', () => ChaldeaWorkerApi.dailyBonusData(expireAfter: refresh ? Duration.zero : null));
+      'load_daily_bonus',
+      () => ChaldeaWorkerApi.dailyBonusData(expireAfter: refresh ? Duration.zero : null),
+    );
     if (data != null) {
       dailyBonusData = data;
       data.userPresentBox.removeWhere(
-          (e) => e.fromType == PresentFromType.seqLogin.value || e.fromType == PresentFromType.totalLogin.value);
+        (e) => e.fromType == PresentFromType.seqLogin.value || e.fromType == PresentFromType.totalLogin.value,
+      );
     }
     return data;
   }

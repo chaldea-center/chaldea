@@ -80,29 +80,33 @@ class _TimerHomePageState extends State<TimerHomePage>
             },
           ),
           PopupMenuButton(
-            itemBuilder: (context) => [
-              PopupMenuItem(
-                child: Text(S.current.refresh),
-                onTap: () {
-                  doFetchData(expireAfter: Duration.zero);
-                },
-              )
-            ],
-          )
+            itemBuilder:
+                (context) => [
+                  PopupMenuItem(
+                    child: Text(S.current.refresh),
+                    onTap: () {
+                      doFetchData(expireAfter: Duration.zero);
+                    },
+                  ),
+                ],
+          ),
         ],
-        bottom: FixedHeight.tabBar(TabBar(
-          isScrollable: true,
-          tabAlignment: TabAlignment.center,
-          controller: _tabController,
-          tabs: [
-            S.current.general_all,
-            S.current.event,
-            S.current.summon_banner,
-            S.current.master_mission,
-            S.current.shop,
-            "Time",
-          ].map((e) => Tab(text: e)).toList(),
-        )),
+        bottom: FixedHeight.tabBar(
+          TabBar(
+            isScrollable: true,
+            tabAlignment: TabAlignment.center,
+            controller: _tabController,
+            tabs:
+                [
+                  S.current.general_all,
+                  S.current.event,
+                  S.current.summon_banner,
+                  S.current.master_mission,
+                  S.current.shop,
+                  "Time",
+                ].map((e) => Tab(text: e)).toList(),
+          ),
+        ),
       ),
       body: buildBody(context),
     );
@@ -111,14 +115,17 @@ class _TimerHomePageState extends State<TimerHomePage>
   @override
   Widget buildContent(BuildContext context, GameTimerData data) {
     final region = this.region!;
-    final view = TabBarView(controller: _tabController, children: [
-      _AllItemTab(region: region, timerData: timerData, filterData: filterData),
-      TimerEventTab(region: region, events: timerData.events, filterData: filterData),
-      TimerGachaTab(region: region, gachas: timerData.gachas, filterData: filterData),
-      TimerMissionTab(region: region, mms: timerData.masterMissions, filterData: filterData),
-      TimerShopTab(region: region, shops: timerData.shownShops, filterData: filterData),
-      RegionTimeTab(region: region),
-    ]);
+    final view = TabBarView(
+      controller: _tabController,
+      children: [
+        _AllItemTab(region: region, timerData: timerData, filterData: filterData),
+        TimerEventTab(region: region, events: timerData.events, filterData: filterData),
+        TimerGachaTab(region: region, gachas: timerData.gachas, filterData: filterData),
+        TimerMissionTab(region: region, mms: timerData.masterMissions, filterData: filterData),
+        TimerShopTab(region: region, shops: timerData.shownShops, filterData: filterData),
+        RegionTimeTab(region: region),
+      ],
+    );
     return Column(
       children: [
         Expanded(child: view),
@@ -147,11 +154,12 @@ class _TimerHomePageState extends State<TimerHomePage>
           onFilterChanged: (v, _) {
             setState(() {});
           },
-          optionBuilder: (value) => Text(switch (value) {
-            TimerSortType.auto => "${S.current.sort_order}:Auto",
-            TimerSortType.startTime => S.current.time_start,
-            TimerSortType.endTime => S.current.time_end,
-          }),
+          optionBuilder:
+              (value) => Text(switch (value) {
+                TimerSortType.auto => "${S.current.sort_order}:Auto",
+                TimerSortType.startTime => S.current.time_start,
+                TimerSortType.endTime => S.current.time_end,
+              }),
           buttonStyle: buttonStyle,
         ),
         FilterGroup<OngoingStatus>(
@@ -162,11 +170,12 @@ class _TimerHomePageState extends State<TimerHomePage>
           onFilterChanged: (v, _) {
             setState(() {});
           },
-          optionBuilder: (value) => Text(switch (value) {
-            OngoingStatus.ended => S.current.ended,
-            OngoingStatus.ongoing => S.current.ongoing,
-            OngoingStatus.notStarted => S.current.not_started,
-          }),
+          optionBuilder:
+              (value) => Text(switch (value) {
+                OngoingStatus.ended => S.current.ended,
+                OngoingStatus.ongoing => S.current.ongoing,
+                OngoingStatus.notStarted => S.current.not_started,
+              }),
           buttonStyle: buttonStyle,
         ),
       ],

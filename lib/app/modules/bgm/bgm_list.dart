@@ -29,11 +29,16 @@ class _BgmListPageState extends State<BgmListPage> with SearchableListState<BgmE
 
   @override
   Widget build(BuildContext context) {
-    filterShownList(compare: (a, b) {
-      int r = ListX.compareByList<BgmEntity, int>(
-          a, b, (v) => filterData.sortByPriority.radioValue! ? [v.priority, v.id] : [v.id, v.priority]);
-      return r * (filterData.reversed ? -1 : 1);
-    });
+    filterShownList(
+      compare: (a, b) {
+        int r = ListX.compareByList<BgmEntity, int>(
+          a,
+          b,
+          (v) => filterData.sortByPriority.radioValue! ? [v.priority, v.id] : [v.id, v.priority],
+        );
+        return r * (filterData.reversed ? -1 : 1);
+      },
+    );
     return scrollListener(
       useGrid: false,
       appBar: AppBar(
@@ -62,12 +67,7 @@ class _BgmListPageState extends State<BgmListPage> with SearchableListState<BgmE
                 builder: (context) {
                   return SimpleCancelOkDialog(
                     title: Text(S.current.statistics_title),
-                    content: SharedBuilder.itemGrid(
-                      context: context,
-                      items: cost.entries,
-                      width: 40,
-                      sort: true,
-                    ),
+                    content: SharedBuilder.itemGrid(context: context, items: cost.entries, width: 40, sort: true),
                     hideCancel: true,
                     scrollable: true,
                   );
@@ -88,15 +88,17 @@ class _BgmListPageState extends State<BgmListPage> with SearchableListState<BgmE
           IconButton(
             icon: const Icon(Icons.filter_alt),
             tooltip: S.current.filter,
-            onPressed: () => FilterPage.show(
-              context: context,
-              builder: (context) => BgmFilterPage(
-                filterData: filterData,
-                onChanged: (_) {
-                  if (mounted) setState(() {});
-                },
-              ),
-            ),
+            onPressed:
+                () => FilterPage.show(
+                  context: context,
+                  builder:
+                      (context) => BgmFilterPage(
+                        filterData: filterData,
+                        onChanged: (_) {
+                          if (mounted) setState(() {});
+                        },
+                      ),
+                ),
           ),
           searchIcon,
         ],
@@ -135,11 +137,7 @@ class _BgmListPageState extends State<BgmListPage> with SearchableListState<BgmE
           child: ListTile(
             dense: true,
             contentPadding: const EdgeInsetsDirectional.fromSTEB(4, 0, 4, 0),
-            leading: db.getIconImage(
-              bgm.logo,
-              aspectRatio: 124 / 60,
-              width: 56,
-            ),
+            leading: db.getIconImage(bgm.logo, aspectRatio: 124 / 60, width: 56),
             horizontalTitleGap: 8,
             title: Text(bgm.lName.l, textScaler: const TextScaler.linear(1)),
             subtitle: Text('No.${bgm.id} ${bgm.fileName}', textScaler: const TextScaler.linear(1)),
@@ -149,20 +147,11 @@ class _BgmListPageState extends State<BgmListPage> with SearchableListState<BgmE
           ),
         ),
         if (bgm.shop?.cost != null)
-          Item.iconBuilder(
-            context: context,
-            item: bgm.shop!.cost!.item,
-            text: bgm.shop!.cost!.amount.format(),
-          ),
+          Item.iconBuilder(context: context, item: bgm.shop!.cost!.item, text: bgm.shop!.cost!.amount.format()),
         if (bgm.shop != null)
           for (final consume in bgm.shop!.consumes)
             if (consume.type == CommonConsumeType.item)
-              Item.iconBuilder(
-                context: context,
-                item: null,
-                itemId: consume.objectId,
-                text: consume.num.format(),
-              ),
+              Item.iconBuilder(context: context, item: null, itemId: consume.objectId, text: consume.num.format()),
         if (bgm.shop != null)
           Checkbox(
             value: db.curUser.myRoomMusic.contains(bgm.id),

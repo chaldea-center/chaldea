@@ -40,10 +40,12 @@ class ImportItemScreenshotPageState extends State<ImportItemScreenshotPage> with
       if (!_tabController.indexIsChanging) setState(() {});
     });
 
-    _dio = DioE(db.apiServerDio.options.copyWith(
-      sendTimeout: const Duration(minutes: 10),
-      receiveTimeout: const Duration(minutes: 10),
-    ));
+    _dio = DioE(
+      db.apiServerDio.options.copyWith(
+        sendTimeout: const Duration(minutes: 10),
+        receiveTimeout: const Duration(minutes: 10),
+      ),
+    );
   }
 
   @override
@@ -58,35 +60,33 @@ class ImportItemScreenshotPageState extends State<ImportItemScreenshotPage> with
       appBar: AppBar(
         titleSpacing: 0,
         title: Text(S.current.item_screenshot),
-        actions: [
-          ChaldeaUrl.docsHelpBtn('import_data#item-screenshots'),
-        ],
-        bottom: FixedHeight.tabBar(TabBar(
-          controller: _tabController,
-          tabs: [
-            Tab(text: S.current.screenshots),
-            Tab(text: S.current.results),
-            if (AppInfo.isDebugDevice) const Tab(text: 'Debug')
-          ],
-        )),
+        actions: [ChaldeaUrl.docsHelpBtn('import_data#item-screenshots')],
+        bottom: FixedHeight.tabBar(
+          TabBar(
+            controller: _tabController,
+            tabs: [
+              Tab(text: S.current.screenshots),
+              Tab(text: S.current.results),
+              if (AppInfo.isDebugDevice) const Tab(text: 'Debug'),
+            ],
+          ),
+        ),
       ),
       body: TabBarView(
         controller: _tabController,
         children: [
           KeepAliveBuilder(
-            builder: (ctx) => ScreenshotsTab(
-              images: imageFiles,
-              onUpload: () {
-                EasyThrottle.throttle('item_recognizer_upload', const Duration(seconds: 5), _uploadScreenshots);
-              },
-              debugServerRoot: _dio.options.baseUrl,
-            ),
+            builder:
+                (ctx) => ScreenshotsTab(
+                  images: imageFiles,
+                  onUpload: () {
+                    EasyThrottle.throttle('item_recognizer_upload', const Duration(seconds: 5), _uploadScreenshots);
+                  },
+                  debugServerRoot: _dio.options.baseUrl,
+                ),
           ),
           KeepAliveBuilder(builder: (ctx) => ItemResultTab(result: result)),
-          if (AppInfo.isDebugDevice)
-            KeepAliveBuilder(
-              builder: (ctx) => RecognizerViewerTab(type: RecognizerType.item),
-            )
+          if (AppInfo.isDebugDevice) KeepAliveBuilder(builder: (ctx) => RecognizerViewerTab(type: RecognizerType.item)),
         ],
       ),
     );

@@ -370,7 +370,8 @@ class DataVals {
         return compare(int.parse(m.group(1)!));
       }
 
-      bool? result = _check(RegExp(r'^<(\d+)$'), (target) => value < target) ??
+      bool? result =
+          _check(RegExp(r'^<(\d+)$'), (target) => value < target) ??
           _check(RegExp(r'^<=(\d+)$'), (target) => value <= target) ??
           _check(RegExp(r'^>(\d+)$'), (target) => value > target) ??
           _check(RegExp(r'^>=(\d+)$'), (target) => value >= target) ??
@@ -404,10 +405,7 @@ class ValCheckBattlePointPhaseRange {
   int battlePointId;
   List<String> range;
 
-  ValCheckBattlePointPhaseRange({
-    required this.battlePointId,
-    required this.range,
-  });
+  ValCheckBattlePointPhaseRange({required this.battlePointId, required this.range});
 
   factory ValCheckBattlePointPhaseRange.fromJson(Map<String, dynamic> json) =>
       _$ValCheckBattlePointPhaseRangeFromJson(json);
@@ -420,10 +418,7 @@ class ValDamageRateBattlePointPhase {
   int battlePointPhase;
   int value;
 
-  ValDamageRateBattlePointPhase({
-    required this.battlePointPhase,
-    required this.value,
-  });
+  ValDamageRateBattlePointPhase({required this.battlePointPhase, required this.value});
 
   factory ValDamageRateBattlePointPhase.fromJson(Map<String, dynamic> json) =>
       _$ValDamageRateBattlePointPhaseFromJson(json);

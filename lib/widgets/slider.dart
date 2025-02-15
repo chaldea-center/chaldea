@@ -40,13 +40,12 @@ class SliderWithPrefix extends StatelessWidget {
     Widget header;
     final valueText = valueFormatter?.call(value) ?? value.toString();
     if (titled) {
-      header = Text.rich(TextSpan(
-        text: label,
-        children: [
-          const TextSpan(text: ': '),
-          TextSpan(text: valueText, style: TextStyle(color: lableColor)),
-        ],
-      ));
+      header = Text.rich(
+        TextSpan(
+          text: label,
+          children: [const TextSpan(text: ': '), TextSpan(text: valueText, style: TextStyle(color: lableColor))],
+        ),
+      );
     } else {
       header = Column(
         crossAxisAlignment: CrossAxisAlignment.end,
@@ -59,13 +58,7 @@ class SliderWithPrefix extends StatelessWidget {
             maxFontSize: 16,
             style: Theme.of(context).textTheme.bodySmall?.copyWith(color: valueText.isEmpty ? lableColor : null),
           ),
-          AutoSizeText(
-            valueText,
-            maxLines: 1,
-            minFontSize: 10,
-            maxFontSize: 14,
-            style: TextStyle(color: lableColor),
-          ),
+          AutoSizeText(valueText, maxLines: 1, minFontSize: 10, maxFontSize: 14, style: TextStyle(color: lableColor)),
         ],
       );
     }
@@ -94,32 +87,17 @@ class SliderWithPrefix extends StatelessWidget {
         },
       ),
     );
-    slider = ConstrainedBox(
-      constraints: const BoxConstraints(maxWidth: 320, maxHeight: 24),
-      child: slider,
-    );
+    slider = ConstrainedBox(constraints: const BoxConstraints(maxWidth: 320, maxHeight: 24), child: slider);
 
     Widget child;
     if (titled) {
       child = Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          header,
-          slider,
-        ],
+        children: [header, slider],
       );
     } else {
-      child = Row(
-        children: [
-          if (!titled)
-            SizedBox(
-              width: leadingWidth,
-              child: header,
-            ),
-          Flexible(child: slider)
-        ],
-      );
+      child = Row(children: [if (!titled) SizedBox(width: leadingWidth, child: header), Flexible(child: slider)]);
     }
     if (padding != null) {
       child = Padding(padding: padding!, child: child);
@@ -158,10 +136,7 @@ class _CustomTrackShape extends RoundedRectSliderTrackShape {
   final double left;
   final double right;
 
-  const _CustomTrackShape({
-    this.left = 0.0,
-    this.right = 0.0,
-  });
+  const _CustomTrackShape({this.left = 0.0, this.right = 0.0});
 
   @override
   Rect getPreferredRect({

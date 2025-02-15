@@ -23,7 +23,7 @@ class _HideSvtPlanDetailSettingPageState extends State<HideSvtPlanDetailSettingP
       body: ListView(
         children: [
           for (final value in SvtPlanDetail.values) _buildOption(value),
-          SafeArea(child: SFooter(S.current.hide_svt_plan_details_hint))
+          SafeArea(child: SFooter(S.current.hide_svt_plan_details_hint)),
         ],
       ),
     );
@@ -35,18 +35,19 @@ class _HideSvtPlanDetailSettingPageState extends State<HideSvtPlanDetailSettingP
     return CheckboxListTile(
       value: checked,
       title: Text(_getName(option)),
-      onChanged: enabled
-          ? (v) {
-              if (v != null) {
-                if (v) {
-                  settings.remove(option);
-                } else {
-                  settings.add(option);
+      onChanged:
+          enabled
+              ? (v) {
+                if (v != null) {
+                  if (v) {
+                    settings.remove(option);
+                  } else {
+                    settings.add(option);
+                  }
                 }
+                setState(() {});
               }
-              setState(() {});
-            }
-          : null,
+              : null,
     );
   }
 

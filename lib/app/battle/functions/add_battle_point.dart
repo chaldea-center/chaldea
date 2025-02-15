@@ -47,8 +47,10 @@ class AddBattlePoint {
       if (curBattlePoint != null) {
         target.curBattlePoints[battlePointId] = curBattlePoint + dataVals.BattlePointValue!;
         battleData.setFuncResult(target.uniqueId, true);
-        battleData.battleLogger.debug("AddBattlePoint ($battlePointId): $curBattlePoint => "
-            "${target.curBattlePoints[battlePointId]}");
+        battleData.battleLogger.debug(
+          "AddBattlePoint ($battlePointId): $curBattlePoint => "
+          "${target.curBattlePoints[battlePointId]}",
+        );
       }
     }
   }

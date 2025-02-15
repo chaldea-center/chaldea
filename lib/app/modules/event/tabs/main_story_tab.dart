@@ -46,19 +46,13 @@ class MainStoryTab extends StatelessWidget {
                 children: <Widget>[
                   ConstrainedBox(
                     constraints: const BoxConstraints(minWidth: 56),
-                    child: Text(
-                      S.current.quest_fixed_drop_short,
-                      textAlign: TextAlign.center,
-                    ),
+                    child: Text(S.current.quest_fixed_drop_short, textAlign: TextAlign.center),
                   ),
                   const SizedBox(width: 2),
                   ConstrainedBox(
                     constraints: const BoxConstraints(minWidth: 56),
-                    child: Text(
-                      S.current.quest_reward_short,
-                      textAlign: TextAlign.center,
-                    ),
-                  )
+                    child: Text(S.current.quest_reward_short, textAlign: TextAlign.center),
+                  ),
                 ],
               ),
             ),
@@ -70,7 +64,7 @@ class MainStoryTab extends StatelessWidget {
               itemBuilder: (context, index) => buildOne(context, mainStories[index]),
             ),
           ),
-        )
+        ),
       ],
     );
   }
@@ -81,9 +75,10 @@ class MainStoryTab extends StatelessWidget {
     String shortName = record.lName.l;
     String longName = record.lLongName.l;
     String titleText = shortName;
-    String subtitleText = longName.startsWith(shortName)
-        ? longName.substring(shortName.length).trimChar(' -\n')
-        : longName.replaceAll('\n', ' ');
+    String subtitleText =
+        longName.startsWith(shortName)
+            ? longName.substring(shortName.length).trimChar(' -\n')
+            : longName.replaceAll('\n', ' ');
     Widget? title, subtitle;
     title = AutoSizeText(
       titleText,
@@ -93,10 +88,7 @@ class MainStoryTab extends StatelessWidget {
       textScaleFactor: 0.9,
     );
     if (subtitleText.isNotEmpty) {
-      subtitle = AutoSizeText(
-        subtitleText,
-        maxLines: 1,
-      );
+      subtitle = AutoSizeText(subtitleText, maxLines: 1);
     }
 
     Widget tile = ListTile(
@@ -104,26 +96,27 @@ class MainStoryTab extends StatelessWidget {
       leading: showBanner ? db.getIconImage(record.shownBanner, width: 150) : null,
       title: title,
       subtitle: subtitle,
-      trailing: titleOnly
-          ? null
-          : Wrap(
-              children: [
-                Switch.adaptive(
-                  value: plan.fixedDrop,
-                  onChanged: (v) {
-                    plan.fixedDrop = v;
-                    db.itemCenter.updateMainStory();
-                  },
-                ),
-                Switch.adaptive(
-                  value: plan.questReward,
-                  onChanged: (v) {
-                    plan.questReward = v;
-                    db.itemCenter.updateMainStory();
-                  },
-                ),
-              ],
-            ),
+      trailing:
+          titleOnly
+              ? null
+              : Wrap(
+                children: [
+                  Switch.adaptive(
+                    value: plan.fixedDrop,
+                    onChanged: (v) {
+                      plan.fixedDrop = v;
+                      db.itemCenter.updateMainStory();
+                    },
+                  ),
+                  Switch.adaptive(
+                    value: plan.questReward,
+                    onChanged: (v) {
+                      plan.questReward = v;
+                      db.itemCenter.updateMainStory();
+                    },
+                  ),
+                ],
+              ),
       onTap: () {
         router.popDetailAndPush(context: context, url: Routes.warI(record.id), detail: true);
       },
@@ -142,13 +135,9 @@ class MainStoryTab extends StatelessWidget {
           // Items.hpFou4,
           // Items.atkFou4,
         ].contains(objectId)) {
-          rewards.add(Item.iconBuilder(
-            context: context,
-            item: null,
-            itemId: objectId,
-            width: 32,
-            text: entry.value.format(),
-          ));
+          rewards.add(
+            Item.iconBuilder(context: context, item: null, itemId: objectId, width: 32, text: entry.value.format()),
+          );
         }
       }
 
@@ -159,11 +148,8 @@ class MainStoryTab extends StatelessWidget {
             tile,
             Padding(
               padding: const EdgeInsetsDirectional.fromSTEB(16, 2, 16, 4),
-              child: Wrap(
-                spacing: 1,
-                children: rewards,
-              ),
-            )
+              child: Wrap(spacing: 1, children: rewards),
+            ),
           ],
         );
       }

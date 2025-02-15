@@ -121,7 +121,7 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
                       },
                     ).showDialog(context);
                   },
-                )
+                ),
               ],
             ),
           ),
@@ -129,7 +129,7 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
         if (params.rows.isEmpty) ListTile(title: Center(child: Text(S.current.drop_calc_empty_hint))),
         Expanded(child: _buildInputRows()),
         kDefaultDivider,
-        SafeArea(child: _buildButtonBar())
+        SafeArea(child: _buildButtonBar()),
       ],
     );
   }
@@ -155,8 +155,8 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
               itemId == Items.bondPointId
                   ? Items.lantern?.icon
                   : itemId == Items.expPointId
-                      ? null
-                      : item?.borderedIcon,
+                  ? null
+                  : item?.borderedIcon,
               width: 36,
               aspectRatio: 132 / 144,
             ),
@@ -239,13 +239,14 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
                 ),
               ),
               IconButton(
-                  icon: const Icon(Icons.delete_outline, color: Colors.redAccent),
-                  focusNode: FocusNode(skipTraversal: true),
-                  onPressed: () {
-                    setState(() {
-                      params.rows.remove(itemId);
-                    });
-                  })
+                icon: const Icon(Icons.delete_outline, color: Colors.redAccent),
+                focusNode: FocusNode(skipTraversal: true),
+                onPressed: () {
+                  setState(() {
+                    params.rows.remove(itemId);
+                  });
+                },
+              ),
             ],
           ),
         );
@@ -265,13 +266,14 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
           children: <Widget>[
             IconButton(
               icon: const Icon(Icons.settings),
-              color: params.minCost > 0 ||
-                      db.gameData.mainStories[params.progress] != null ||
-                      params.blacklist.isNotEmpty ||
-                      params.apHalfDailyQuest ||
-                      params.apHalfOrdealCall
-                  ? Theme.of(context).colorScheme.error
-                  : Theme.of(context).colorScheme.primary,
+              color:
+                  params.minCost > 0 ||
+                          db.gameData.mainStories[params.progress] != null ||
+                          params.blacklist.isNotEmpty ||
+                          params.apHalfDailyQuest ||
+                          params.apHalfOrdealCall
+                      ? Theme.of(context).colorScheme.error
+                      : Theme.of(context).colorScheme.primary,
               tooltip: S.current.settings_tab_name,
               onPressed: () async {
                 await showDialog(
@@ -297,10 +299,7 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
               spacing: 10,
               children: <Widget>[
                 IconButton(
-                  icon: Icon(
-                    Icons.add_circle,
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
+                  icon: Icon(Icons.add_circle, color: Theme.of(context).colorScheme.primary),
                   tooltip: 'Add',
                   onPressed: () {
                     router.push(
@@ -319,12 +318,9 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
                     );
                   },
                 ),
-                ElevatedButton(
-                  onPressed: running ? null : solve,
-                  child: Text(S.current.drop_calc_solve),
-                ),
+                ElevatedButton(onPressed: running ? null : solve, child: Text(S.current.drop_calc_solve)),
               ],
-            )
+            ),
           ],
         ),
       ],
@@ -361,6 +357,6 @@ String _getItemName(int itemId, [Item? item]) {
       (itemId == Items.bondPointId
           ? S.current.bond
           : itemId == Items.expPointId
-              ? 'EXP'
-              : 'Item $itemId');
+          ? 'EXP'
+          : 'Item $itemId');
 }

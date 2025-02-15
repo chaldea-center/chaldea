@@ -26,12 +26,7 @@ class _MasterMissionListPageState extends State<MasterMissionListPage> {
   final typeOptions = FilterGroupData<MissionType?>();
   Set<int> selected = {};
 
-  final _allMissionTypes = const <MissionType?>[
-    MissionType.weekly,
-    MissionType.limited,
-    MissionType.daily,
-    null,
-  ];
+  final _allMissionTypes = const <MissionType?>[MissionType.weekly, MissionType.limited, MissionType.daily, null];
 
   Future<void> _resolveMissions(Region region, {bool force = false}) async {
     errorMsg = null;
@@ -66,24 +61,26 @@ class _MasterMissionListPageState extends State<MasterMissionListPage> {
   Widget build(BuildContext context) {
     final allMissions = List.of(_allRegionMissions[_region] ?? <MasterMission>[]);
     final now = DateTime.now().timestamp;
-    final curWeekly =
-        allMissions.firstWhereOrNull((mm) => mm.type == MissionType.weekly && mm.startedAt <= now && mm.endedAt > now);
-    final missions = allMissions.where((mission) {
-      if (selected.contains(mission.id)) return true;
-      if (!showOutdated) {
-        if (mission.endedAt < now) return false;
-        if (curWeekly != null &&
-            mission.type == MissionType.weekly &&
-            mission.startedAt > kNeverClosedTimestamp &&
-            mission.id < curWeekly.id) {
-          // skipped, won't use
-          return false;
-        }
-        // legacy daily mm didn't update end time
-        if (mission.type == MissionType.daily && mission is! MasterMission) return false;
-      }
-      return typeOptions.matchOne(_allMissionTypes.contains(mission.type) ? mission.type : null);
-    }).toList();
+    final curWeekly = allMissions.firstWhereOrNull(
+      (mm) => mm.type == MissionType.weekly && mm.startedAt <= now && mm.endedAt > now,
+    );
+    final missions =
+        allMissions.where((mission) {
+          if (selected.contains(mission.id)) return true;
+          if (!showOutdated) {
+            if (mission.endedAt < now) return false;
+            if (curWeekly != null &&
+                mission.type == MissionType.weekly &&
+                mission.startedAt > kNeverClosedTimestamp &&
+                mission.id < curWeekly.id) {
+              // skipped, won't use
+              return false;
+            }
+            // legacy daily mm didn't update end time
+            if (mission.type == MissionType.daily && mission is! MasterMission) return false;
+          }
+          return typeOptions.matchOne(_allMissionTypes.contains(mission.type) ? mission.type : null);
+        }).toList();
     missions.sort((a, b) {
       if (a.startedAt == b.startedAt) return a.id.compareTo(b.id);
       return a.startedAt.compareTo(b.startedAt);
@@ -94,26 +91,15 @@ class _MasterMissionListPageState extends State<MasterMissionListPage> {
         actions: [
           DropdownButton<Region>(
             value: _region,
-            items: [
-              for (final region in Region.values)
-                DropdownMenuItem(
-                  value: region,
-                  child: Text(region.localName),
-                ),
-            ],
-            icon: Icon(
-              Icons.arrow_drop_down,
-              color: SharedBuilder.appBarForeground(context),
-            ),
-            selectedItemBuilder: (context) => [
-              for (final region in Region.values)
-                DropdownMenuItem(
-                  child: Text(
-                    region.localName,
-                    style: TextStyle(color: SharedBuilder.appBarForeground(context)),
-                  ),
-                )
-            ],
+            items: [for (final region in Region.values) DropdownMenuItem(value: region, child: Text(region.localName))],
+            icon: Icon(Icons.arrow_drop_down, color: SharedBuilder.appBarForeground(context)),
+            selectedItemBuilder:
+                (context) => [
+                  for (final region in Region.values)
+                    DropdownMenuItem(
+                      child: Text(region.localName, style: TextStyle(color: SharedBuilder.appBarForeground(context))),
+                    ),
+                ],
             onChanged: (v) {
               setState(() {
                 if (v != null) {
@@ -144,26 +130,27 @@ class _MasterMissionListPageState extends State<MasterMissionListPage> {
       body: Column(
         children: [
           Expanded(
-            child: errorMsg != null
-                ? Center(
-                    child: RefreshButton(
-                      text: errorMsg,
-                      onPressed: () {
-                        _resolveMissions(_region, force: true);
-                      },
-                    ),
-                  )
-                : allMissions.isEmpty
+            child:
+                errorMsg != null
+                    ? Center(
+                      child: RefreshButton(
+                        text: errorMsg,
+                        onPressed: () {
+                          _resolveMissions(_region, force: true);
+                        },
+                      ),
+                    )
+                    : allMissions.isEmpty
                     ? const Center(child: CircularProgressIndicator())
                     : RefreshIndicator(
-                        child: ListView.builder(
-                          itemBuilder: (context, index) => _oneMasterMission(missions[index]),
-                          itemCount: missions.length,
-                        ),
-                        onRefresh: () => _resolveMissions(_region, force: true),
+                      child: ListView.builder(
+                        itemBuilder: (context, index) => _oneMasterMission(missions[index]),
+                        itemCount: missions.length,
                       ),
+                      onRefresh: () => _resolveMissions(_region, force: true),
+                    ),
           ),
-          SafeArea(child: buttonBar(missions))
+          SafeArea(child: buttonBar(missions)),
         ],
       ),
     );
@@ -189,7 +176,7 @@ class _MasterMissionListPageState extends State<MasterMissionListPage> {
         ElevatedButton(
           onPressed: () => solveMultiple(mms),
           child: Text(selected.isEmpty ? S.current.general_custom : S.current.drop_calc_solve),
-        )
+        ),
       ],
     );
   }
@@ -206,22 +193,21 @@ class _MasterMissionListPageState extends State<MasterMissionListPage> {
     return ListTile(
       key: Key('master_mission_${mm.id}'),
       title: Text.rich(
-        TextSpan(text: title, children: [
-          if (detailText != null && detailText.isNotEmpty)
-            TextSpan(text: '\n$detailText', style: const TextStyle(fontSize: 14))
-        ]),
+        TextSpan(
+          text: title,
+          children: [
+            if (detailText != null && detailText.isNotEmpty)
+              TextSpan(text: '\n$detailText', style: const TextStyle(fontSize: 14)),
+          ],
+        ),
         textScaler: const TextScaler.linear(0.9),
       ),
       subtitle: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Flexible(
-            child: Text(_showTime(mm.startedAt), textScaler: const TextScaler.linear(0.9)),
-          ),
+          Flexible(child: Text(_showTime(mm.startedAt), textScaler: const TextScaler.linear(0.9))),
           const Text(' ~ '),
-          Flexible(
-            child: Text(_showTime(mm.endedAt), textScaler: const TextScaler.linear(0.9)),
-          ),
+          Flexible(child: Text(_showTime(mm.endedAt), textScaler: const TextScaler.linear(0.9))),
         ],
       ),
       trailing: Checkbox(

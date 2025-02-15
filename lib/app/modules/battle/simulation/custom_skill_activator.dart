@@ -55,10 +55,7 @@ class _CustomSkillActivatorState extends State<CustomSkillActivator> {
                   title: Text(S.current.select_skill),
                   trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
                   onTap: () {
-                    router.pushPage(SkillSelectPage(
-                      skillType: null,
-                      onSelected: onSelectSkill,
-                    ));
+                    router.pushPage(SkillSelectPage(skillType: null, onSelected: onSelectSkill));
                   },
                 ),
                 ListTile(
@@ -75,16 +72,11 @@ class _CustomSkillActivatorState extends State<CustomSkillActivator> {
                 ),
                 if (skillErrorMsg != null)
                   SFooter.rich(
-                      TextSpan(text: skillErrorMsg, style: TextStyle(color: Theme.of(context).colorScheme.error))),
+                    TextSpan(text: skillErrorMsg, style: TextStyle(color: Theme.of(context).colorScheme.error)),
+                  ),
                 const SizedBox(height: 8),
                 if (skill != null)
-                  SkillDescriptor(
-                    skill: skill!,
-                    showEnemy: true,
-                    showNone: true,
-                    jumpToDetail: false,
-                    level: skillLv,
-                  ),
+                  SkillDescriptor(skill: skill!, showEnemy: true, showNone: true, jumpToDetail: false, level: skillLv),
                 if (skill != null && skill!.maxLv > 1)
                   Padding(
                     padding: const EdgeInsetsDirectional.only(start: 16),
@@ -109,8 +101,10 @@ class _CustomSkillActivatorState extends State<CustomSkillActivator> {
                     combined: true,
                     options: SkillType.values,
                     values: FilterRadioData.nonnull(skillType),
-                    optionBuilder: (value) =>
-                        Text(value == SkillType.active ? S.current.active_skill_short : S.current.passive_skill_short),
+                    optionBuilder:
+                        (value) => Text(
+                          value == SkillType.active ? S.current.active_skill_short : S.current.passive_skill_short,
+                        ),
                     onFilterChanged: (v, _) {
                       skillType = v.radioValue!;
                       skill?.type = skillType;
@@ -166,18 +160,20 @@ class _CustomSkillActivatorState extends State<CustomSkillActivator> {
                   Expanded(
                     child: Text(
                       errorMsg ?? "",
-                      style:
-                          Theme.of(context).textTheme.bodySmall?.copyWith(color: Theme.of(context).colorScheme.error),
+                      style: Theme.of(
+                        context,
+                      ).textTheme.bodySmall?.copyWith(color: Theme.of(context).colorScheme.error),
                       textAlign: TextAlign.center,
                     ),
                   ),
                   FilledButton.icon(
-                    onPressed: errorMsg != null
-                        ? null
-                        : () async {
-                            await widget.battleData.activateCustomSkill(activator, skill!, skillLv, isAlly);
-                            if (context.mounted) Navigator.of(context).pop(skill);
-                          },
+                    onPressed:
+                        errorMsg != null
+                            ? null
+                            : () async {
+                              await widget.battleData.activateCustomSkill(activator, skill!, skillLv, isAlly);
+                              if (context.mounted) Navigator.of(context).pop(skill);
+                            },
                     icon: const Icon(Icons.play_arrow_rounded),
                     label: Text(S.current.battle_activate_custom_skill),
                   ),

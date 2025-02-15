@@ -46,10 +46,7 @@ class _EventVoicePageState extends State<EventVoicePage> {
         width: 100,
         child: CachedImage(
           imageUrl: guide.image,
-          cachedOption: const CachedImageOption(
-            alignment: Alignment.topCenter,
-            fit: BoxFit.fitWidth,
-          ),
+          cachedOption: const CachedImageOption(alignment: Alignment.topCenter, fit: BoxFit.fitWidth),
         ),
       ),
       onTap: () => FullscreenImageViewer.show(context: context, urls: [guide.image]),

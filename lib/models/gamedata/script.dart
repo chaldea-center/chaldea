@@ -17,12 +17,7 @@ class NiceScript extends ScriptLink {
   int scriptSizeBytes;
   List<Quest> quests;
 
-  NiceScript({
-    required super.scriptId,
-    required this.scriptSizeBytes,
-    required super.script,
-    required this.quests,
-  });
+  NiceScript({required super.scriptId, required this.scriptSizeBytes, required super.script, required this.quests});
 
   factory NiceScript.fromJson(Map<String, dynamic> json) => _$NiceScriptFromJson(json);
 
@@ -36,10 +31,7 @@ class ScriptLink with RouteInfo {
   String? _script;
   String get script => _script ?? getScriptPath(scriptId);
 
-  ScriptLink({
-    required this.scriptId,
-    String? script,
-  }) : _script = parseUrl(scriptId, script);
+  ScriptLink({required this.scriptId, String? script}) : _script = parseUrl(scriptId, script);
 
   static String? parseUrl(String scriptId, String? script) {
     if (script == null) return null;
@@ -115,11 +107,7 @@ class ScriptLink with RouteInfo {
 class ValentineScript extends ScriptLink {
   String scriptName;
 
-  ValentineScript({
-    required super.scriptId,
-    required super.script,
-    required this.scriptName,
-  });
+  ValentineScript({required super.scriptId, required super.script, required this.scriptName});
 
   factory ValentineScript.fromJson(Map<String, dynamic> json) => _$ValentineScriptFromJson(json);
 

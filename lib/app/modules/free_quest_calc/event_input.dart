@@ -70,19 +70,18 @@ class _EventItemInputTabState extends State<EventItemInputTab> {
       }
       QuestDropData? drops = db.gameData.dropData.eventFreeDrops[quest.id];
       if ((drops == null || drops.runs < 5) && DateTime.now().timestamp - quest.openedAt < kSecsPerDay) {
-        final questPhase =
-            await AtlasApi.questPhase(quest.id, quest.phases.last, expireAfter: const Duration(minutes: 30));
+        final questPhase = await AtlasApi.questPhase(
+          quest.id,
+          quest.phases.last,
+          expireAfter: const Duration(minutes: 30),
+        );
         if (questPhase != null && questPhase.drops.isNotEmpty && questPhase.drops.first.runs > (drops?.runs ?? 0)) {
           Map<int, int> items = {}, groups = {};
           for (final drop in questPhase.drops) {
             items.addNum(drop.objectId, drop.num * drop.dropCount);
             groups.addNum(drop.objectId, drop.dropCount);
           }
-          drops = QuestDropData(
-            runs: questPhase.drops.first.runs,
-            items: items,
-            groups: groups,
-          );
+          drops = QuestDropData(runs: questPhase.drops.first.runs, items: items, groups: groups);
         }
       }
       if (drops == null) continue;
@@ -123,28 +122,34 @@ class _EventItemInputTabState extends State<EventItemInputTab> {
     final itemIds = eventItemIds.toList();
     itemIds.sort(Item.compare2);
 
-    children.add(TileGroup(
-      headerWidget: Padding(
-        padding: const EdgeInsetsDirectional.only(start: 16.0, top: 8.0, bottom: 4.0, end: 8.0),
-        child: Row(children: [
-          Text(S.current.item),
-          const Spacer(),
-          Text('${S.current.demands}(${S.current.shop}) - ${S.current.item_own} = ${S.current.demands} '),
-        ]),
+    children.add(
+      TileGroup(
+        headerWidget: Padding(
+          padding: const EdgeInsetsDirectional.only(start: 16.0, top: 8.0, bottom: 4.0, end: 8.0),
+          child: Row(
+            children: [
+              Text(S.current.item),
+              const Spacer(),
+              Text('${S.current.demands}(${S.current.shop}) - ${S.current.item_own} = ${S.current.demands} '),
+            ],
+          ),
+        ),
+        children: [
+          if (itemIds.isEmpty) const ListTile(title: Text('No event item found')),
+          for (final itemId in itemIds) _buildItemDemand(itemId),
+        ],
       ),
-      children: [
-        if (itemIds.isEmpty) const ListTile(title: Text('No event item found')),
-        for (final itemId in itemIds) _buildItemDemand(itemId),
-      ],
-    ));
+    );
 
-    children.add(TileGroup(
-      header: S.current.event_bonus,
-      children: [
-        if (params.bonusPlans.isEmpty) const ListTile(title: Text('No valid quest found')),
-        for (final plan in params.bonusPlans) _buildQuestBonus(plan),
-      ],
-    ));
+    children.add(
+      TileGroup(
+        header: S.current.event_bonus,
+        children: [
+          if (params.bonusPlans.isEmpty) const ListTile(title: Text('No valid quest found')),
+          for (final plan in params.bonusPlans) _buildQuestBonus(plan),
+        ],
+      ),
+    );
     return Column(
       children: <Widget>[
         Expanded(child: ListView(children: children)),
@@ -223,33 +228,31 @@ class _EventItemInputTabState extends State<EventItemInputTab> {
       final group = plan.drops.getGroup(itemId);
       final bonus = plan.bonus[itemId] ?? 0;
       final percent = _isPercentTypeBonus(itemId);
-      spans.add(TextSpan(children: [
-        CenterWidgetSpan(
-          child: Opacity(
-            opacity: 0.75,
-            child: Item.iconBuilder(
-              context: context,
-              item: null,
-              itemId: itemId,
-              width: 18,
-              jumpToDetail: false,
-            ),
-          ),
-        ),
-        percent
-            ? TextSpan(
-                text: '${_fmtNum(base)}×(1+',
-                children: [
-                  TextSpan(text: bonus.toString(), style: bonus == 0 ? null : bonusStyle),
-                  const TextSpan(text: '%)'),
-                ],
-              )
-            : TextSpan(
-                text: ' ${_fmtNum(base)}+${_fmtNum(group)}×',
-                children: [TextSpan(text: bonus.toString(), style: bonus == 0 ? null : bonusStyle)],
+      spans.add(
+        TextSpan(
+          children: [
+            CenterWidgetSpan(
+              child: Opacity(
+                opacity: 0.75,
+                child: Item.iconBuilder(context: context, item: null, itemId: itemId, width: 18, jumpToDetail: false),
               ),
-        const TextSpan(text: '  ')
-      ]));
+            ),
+            percent
+                ? TextSpan(
+                  text: '${_fmtNum(base)}×(1+',
+                  children: [
+                    TextSpan(text: bonus.toString(), style: bonus == 0 ? null : bonusStyle),
+                    const TextSpan(text: '%)'),
+                  ],
+                )
+                : TextSpan(
+                  text: ' ${_fmtNum(base)}+${_fmtNum(group)}×',
+                  children: [TextSpan(text: bonus.toString(), style: bonus == 0 ? null : bonusStyle)],
+                ),
+            const TextSpan(text: '  '),
+          ],
+        ),
+      );
     }
     String questName = plan.getName();
     return ListTile(
@@ -267,8 +270,9 @@ class _EventItemInputTabState extends State<EventItemInputTab> {
         await _QuestBonusEditDialog(
           plan: plan,
           onCopy: () {
-            params.bonusPlans.add(plan
-                .copy(Maths.max(params.bonusPlans.where((e) => e.questId == plan.questId).map((e) => e.index)) + 1));
+            params.bonusPlans.add(
+              plan.copy(Maths.max(params.bonusPlans.where((e) => e.questId == plan.questId).map((e) => e.index)) + 1),
+            );
             params.bonusPlans.sort2((e) => -e.questId);
             if (mounted) setState(() {});
           },
@@ -293,16 +297,17 @@ class _EventItemInputTabState extends State<EventItemInputTab> {
           spacing: 10,
           children: <Widget>[
             FilledButton(
-              onPressed: running
-                  ? null
-                  : () async {
-                      setState(() {
+              onPressed:
+                  running
+                      ? null
+                      : () async {
+                        setState(() {
+                          running = false;
+                        });
+                        await solve();
                         running = false;
-                      });
-                      await solve();
-                      running = false;
-                      if (mounted) setState(() {});
-                    },
+                        if (mounted) setState(() {});
+                      },
               child: Text(S.current.drop_calc_solve),
             ),
           ],
@@ -318,9 +323,10 @@ class _EventItemInputTabState extends State<EventItemInputTab> {
     EasyLoading.show();
 
     final itemIds = params.itemCounts.keys.where((key) => params.getItemDemand(key) > 0).toList();
-    final plans = params.bonusPlans
-        .where((plan) => plan.enabled && plan.drops.items.keys.any((itemId) => itemIds.contains(itemId)))
-        .toList();
+    final plans =
+        params.bonusPlans
+            .where((plan) => plan.enabled && plan.drops.items.keys.any((itemId) => itemIds.contains(itemId)))
+            .toList();
     if (itemIds.isEmpty || plans.isEmpty) {
       EasyLoading.showInfo(S.current.input_invalid_hint);
       running = false;
@@ -331,9 +337,10 @@ class _EventItemInputTabState extends State<EventItemInputTab> {
       final percent = _isPercentTypeBonus(itemId);
       List<double> row = [];
       for (final detail in plans) {
-        final a = percent
-            ? detail.drops.getBase(itemId) * (1 + detail.getBonus(itemId) / 100)
-            : detail.drops.getBase(itemId) + detail.drops.getGroup(itemId) * detail.getBonus(itemId);
+        final a =
+            percent
+                ? detail.drops.getBase(itemId) * (1 + detail.getBonus(itemId) / 100)
+                : detail.drops.getBase(itemId) + detail.drops.getGroup(itemId) * detail.getBonus(itemId);
         row.add(a);
       }
       matA.add(row);
@@ -367,13 +374,15 @@ class _EventItemInputTabState extends State<EventItemInputTab> {
             _drops[itemId] = a * count;
           }
         }
-        solution.countVars.add(LPVariable<int>(
-          name: plan.questId,
-          displayName: plan.index == 0 ? null : plan.getName(),
-          value: count,
-          cost: plan.ap,
-          detail: _drops,
-        ));
+        solution.countVars.add(
+          LPVariable<int>(
+            name: plan.questId,
+            displayName: plan.index == 0 ? null : plan.getName(),
+            value: count,
+            cost: plan.ap,
+            detail: _drops,
+          ),
+        );
       }
       solution.sortCountVars();
       EasyLoading.dismiss();
@@ -416,10 +425,7 @@ class __QuestBonusEditDialogState extends State<_QuestBonusEditDialog> {
           ListTile(
             dense: true,
             contentPadding: EdgeInsets.zero,
-            title: Text([
-              Quest.getName(plan.questId),
-              if (plan.index != 0) '@${plan.index}',
-            ].join('')),
+            title: Text([Quest.getName(plan.questId), if (plan.index != 0) '@${plan.index}'].join('')),
             trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
             onTap: () => router.push(url: Routes.questI(plan.questId)),
           ),
@@ -464,10 +470,7 @@ class __QuestBonusEditDialogState extends State<_QuestBonusEditDialog> {
               Navigator.pop(context);
               widget.onDelete();
             },
-            child: Text(
-              S.current.remove,
-              style: TextStyle(color: Theme.of(context).colorScheme.error),
-            ),
+            child: Text(S.current.remove, style: TextStyle(color: Theme.of(context).colorScheme.error)),
           ),
         TextButton(
           onPressed: () {
@@ -501,10 +504,7 @@ class __QuestBonusEditDialogState extends State<_QuestBonusEditDialog> {
         width: 50,
         child: TextFormField(
           initialValue: bonus.toString(),
-          decoration: InputDecoration(
-            suffixText: percent ? '%' : null,
-            isDense: true,
-          ),
+          decoration: InputDecoration(suffixText: percent ? '%' : null, isDense: true),
           keyboardType: TextInputType.number,
           onChanged: (s) {
             s = s.trim();

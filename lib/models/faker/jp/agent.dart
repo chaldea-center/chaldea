@@ -13,10 +13,8 @@ import 'network.dart';
 
 class FakerAgentJP extends FakerAgent<FRequestJP, AutoLoginDataJP, NetworkManagerJP> {
   FakerAgentJP({required super.network});
-  FakerAgentJP.s({
-    required GameTop gameTop,
-    required AutoLoginDataJP user,
-  }) : super(network: NetworkManagerJP(gameTop: gameTop.copy(), user: user));
+  FakerAgentJP.s({required GameTop gameTop, required AutoLoginDataJP user})
+    : super(network: NetworkManagerJP(gameTop: gameTop.copy(), user: user));
 
   @override
   Future<FResponse> gamedataTop({bool checkAppUpdate = true}) async {
@@ -97,8 +95,11 @@ class FakerAgentJP extends FakerAgent<FRequestJP, AutoLoginDataJP, NetworkManage
   }
 
   @override
-  Future<FResponse> followerList(
-      {required int32_t questId, required int32_t questPhase, required bool isEnfoceRefresh}) async {
+  Future<FResponse> followerList({
+    required int32_t questId,
+    required int32_t questPhase,
+    required bool isEnfoceRefresh,
+  }) async {
     final request = FRequestJP(network: network, path: '/follower/list');
     request.addFieldInt32('questId', questId);
     request.addFieldInt32('questPhase', questPhase);
@@ -113,7 +114,8 @@ class FakerAgentJP extends FakerAgent<FRequestJP, AutoLoginDataJP, NetworkManage
     request.addFieldInt32('num', num);
     final itemId = mstRecovers[recoverId]?.targetId;
     logger.t(
-        'item/recover($recoverId): Item $itemId ${db.gameData.items[itemId]?.lName.l ?? "unknown recover id"} ×$num');
+      'item/recover($recoverId): Item $itemId ${db.gameData.items[itemId]?.lName.l ?? "unknown recover id"} ×$num',
+    );
     return request.beginRequestAndCheckError('item_recover');
   }
 
@@ -145,8 +147,11 @@ class FakerAgentJP extends FakerAgent<FRequestJP, AutoLoginDataJP, NetworkManage
   }
 
   @override
-  Future<FResponse> userPresentReceive(
-      {required List<int64_t> presentIds, required int32_t itemSelectIdx, required int32_t itemSelectNum}) {
+  Future<FResponse> userPresentReceive({
+    required List<int64_t> presentIds,
+    required int32_t itemSelectIdx,
+    required int32_t itemSelectNum,
+  }) {
     // success: {overflowType:0,getSvts:[],getCommandCodes:[]}
     final request = FRequestJP(network: network, path: '/present/receive');
     request.addFieldStr('presentIds', network.catMouseGame.encodeMsgpackBase64(presentIds));
@@ -202,8 +207,8 @@ class FakerAgentJP extends FakerAgent<FRequestJP, AutoLoginDataJP, NetworkManage
   Future<FResponse> sellServant({required List<int64_t> servantUserIds, required List<int64_t> commandCodeUserIds}) {
     // success: {"sellRarePriPrice":0,"sellManaPrice":0,"sellQpPrice":2000}
     List<Map<String, dynamic>> _useSvtHash(List<int> ids) => [
-          for (final id in ids) {"id": id, "num": 1}
-        ];
+      for (final id in ids) {"id": id, "num": 1},
+    ];
     final request = FRequestJP(network: network, path: '/shop/sellSvt');
     request.addFieldStr("sellData", network.catMouseGame.encodeMsgpackBase64(_useSvtHash(servantUserIds)));
     request.addFieldStr("sellCommandCode", network.catMouseGame.encodeMsgpackBase64(_useSvtHash(commandCodeUserIds)));
@@ -294,8 +299,11 @@ class FakerAgentJP extends FakerAgent<FRequestJP, AutoLoginDataJP, NetworkManage
   }
 
   @override
-  Future<FResponse> battleScenario(
-      {required int32_t questId, required int32_t questPhase, required List<int32_t> routeSelect}) {
+  Future<FResponse> battleScenario({
+    required int32_t questId,
+    required int32_t questPhase,
+    required List<int32_t> routeSelect,
+  }) {
     final request = FRequestJP(network: network, path: '/battle/scenario');
     request.addFieldInt32("questId", questId);
     request.addFieldInt32("questPhase", questPhase);
@@ -389,11 +397,7 @@ class FakerAgentJP extends FakerAgent<FRequestJP, AutoLoginDataJP, NetworkManage
     int32_t elapsedTurn = 1,
     required List<int32_t> usedTurnArray, // win 001, retire 100
     int32_t recordType = 1,
-    Map<String, Object> recordJson = const {
-      "turnMaxDamage": 0,
-      "knockdownNum": 0,
-      "totalDamageToAliveEnemy": 0,
-    },
+    Map<String, Object> recordJson = const {"turnMaxDamage": 0, "knockdownNum": 0, "totalDamageToAliveEnemy": 0},
     List<Map<String, Object>> firstNpPlayList = const [],
     List<PlayerServantNoblePhantasmUsageDataEntity> playerServantNoblePhantasmUsageData =
         const [], // []/ [{"svtId":403500,"followerType":0,"seqId":403500,"addCount":3}]"

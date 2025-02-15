@@ -62,7 +62,7 @@ class _AutoLoginPageState extends State<AutoLoginPage> {
             },
             icon: const Icon(Icons.help_outline),
             tooltip: S.current.help,
-          )
+          ),
         ],
       ),
       body: ListView(
@@ -105,18 +105,22 @@ class _AutoLoginPageState extends State<AutoLoginPage> {
           ListTile(
             title: Text(S.current.login_auth),
             dense: true,
-            subtitle: Text(args.auth?.userId == null
-                ? 'No Auth Loaded'
-                : '${args.auth?.userId} (${args.auth?.userCreateServer ?? "unknown server"})'),
+            subtitle: Text(
+              args.auth?.userId == null
+                  ? 'No Auth Loaded'
+                  : '${args.auth?.userId} (${args.auth?.userCreateServer ?? "unknown server"})',
+            ),
             trailing: const Icon(Icons.edit_note_rounded),
             onTap: () {
-              router.pushPage(ReadAuthPage(
-                auth: args.auth,
-                onChanged: (v) {
-                  if (v != null) args.auth = v;
-                  if (mounted) setState(() {});
-                },
-              ));
+              router.pushPage(
+                ReadAuthPage(
+                  auth: args.auth,
+                  onChanged: (v) {
+                    if (v != null) args.auth = v;
+                    if (mounted) setState(() {});
+                  },
+                ),
+              );
             },
             selected: args.auth?.userId == null,
             selectedColor: Theme.of(context).colorScheme.error,
@@ -166,10 +170,7 @@ class _AutoLoginPageState extends State<AutoLoginPage> {
                 hint: const Text('Country'),
                 items: [
                   for (final c in NACountry.values)
-                    DropdownMenuItem(
-                      value: c,
-                      child: Text(c.displayName, textScaler: const TextScaler.linear(0.8)),
-                    ),
+                    DropdownMenuItem(value: c, child: Text(c.displayName, textScaler: const TextScaler.linear(0.8))),
                 ],
                 onChanged: (v) {
                   setState(() {
@@ -187,14 +188,9 @@ class _AutoLoginPageState extends State<AutoLoginPage> {
             },
             trailing: IconButton(
               onPressed: () {
-                onEditArg(
-                  'User Agent',
-                  args.userAgent,
-                  (s) {
-                    args.userAgent = s.trim();
-                  },
-                  (s) => s.isEmpty || FakerUA.validate(s),
-                );
+                onEditArg('User Agent', args.userAgent, (s) {
+                  args.userAgent = s.trim();
+                }, (s) => s.isEmpty || FakerUA.validate(s));
               },
               icon: const Icon(Icons.edit_note_outlined),
               tooltip: S.current.edit,
@@ -209,29 +205,19 @@ class _AutoLoginPageState extends State<AutoLoginPage> {
             },
             trailing: IconButton(
               onPressed: () {
-                onEditArg(
-                  'Device Info',
-                  args.deviceInfo ?? FakerUA.deviceinfo,
-                  (s) {
-                    if (s.trim().isNotEmpty) {
-                      args.deviceInfo = s.trim();
-                    } else {
-                      args.deviceInfo = null;
-                    }
-                  },
-                  null,
-                );
+                onEditArg('Device Info', args.deviceInfo ?? FakerUA.deviceinfo, (s) {
+                  if (s.trim().isNotEmpty) {
+                    args.deviceInfo = s.trim();
+                  } else {
+                    args.deviceInfo = null;
+                  }
+                }, null);
               },
               icon: const Icon(Icons.edit_note_outlined),
               tooltip: S.current.edit,
             ),
           ),
-          Center(
-            child: FilledButton.tonal(
-              onPressed: updateDeviceInfo,
-              child: Text(S.current.read_device_info),
-            ),
-          ),
+          Center(child: FilledButton.tonal(onPressed: updateDeviceInfo, child: Text(S.current.read_device_info))),
           const Divider(height: 16, indent: 16, endIndent: 16),
           if (args.response != null)
             Card(
@@ -262,19 +248,11 @@ class _AutoLoginPageState extends State<AutoLoginPage> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(
-                S.current.warning,
-                style: TextStyle(
-                  color: Theme.of(context).colorScheme.onErrorContainer,
-                ),
-              ),
+              Text(S.current.warning, style: TextStyle(color: Theme.of(context).colorScheme.onErrorContainer)),
               Text(
                 S.current.authfile_login_warning,
-                style: TextStyle(
-                  fontSize: 14,
-                  color: Theme.of(context).colorScheme.onErrorContainer,
-                ),
-              )
+                style: TextStyle(fontSize: 14, color: Theme.of(context).colorScheme.onErrorContainer),
+              ),
             ],
           ),
         ),
@@ -283,13 +261,15 @@ class _AutoLoginPageState extends State<AutoLoginPage> {
   }
 
   void onEditAuth() {
-    router.pushPage(ReadAuthPage(
-      auth: args.auth,
-      onChanged: (v) {
-        if (v != null) args.auth = v;
-        if (mounted) setState(() {});
-      },
-    ));
+    router.pushPage(
+      ReadAuthPage(
+        auth: args.auth,
+        onChanged: (v) {
+          if (v != null) args.auth = v;
+          if (mounted) setState(() {});
+        },
+      ),
+    );
   }
 
   List<Widget> buildAccounts() {
@@ -299,32 +279,34 @@ class _AutoLoginPageState extends State<AutoLoginPage> {
         '[${user.region}] ${user.userGame?.friendCode ?? "Unknown"} ${user.userGame?.name ?? ""}',
         style: const TextStyle(fontSize: 13),
       );
-      Widget subtitle = Text('${user.auth?.userId}, last: ${user.lastLogin?.sec2date().toCustomString(year: false)}',
-          style: const TextStyle(fontSize: 12));
+      Widget subtitle = Text(
+        '${user.auth?.userId}, last: ${user.lastLogin?.sec2date().toCustomString(year: false)}',
+        style: const TextStyle(fontSize: 12),
+      );
 
-      Widget trailing = TimerUpdate(builder: (context, time) {
-        final userGame = user.userGame;
-        List<InlineSpan> spans = [];
-        if (userGame != null) {
-          final recoverAt = userGame.actRecoverAt;
-          final maxAp = userGame.actMax;
-          final leftDuration = Duration(seconds: max(0, recoverAt - time.timestamp));
-          final curAp =
-              (maxAp - (recoverAt - time.timestamp) / 300).floor().clamp(0, maxAp) + userGame.carryOverActPoint;
-          spans.add(TextSpan(text: 'AP $curAp/$maxAp'));
-          spans.add(TextSpan(
-            text: '\n${leftDuration.toString().split('.').first}',
-            style: TextStyle(color: maxAp - curAp < 24 ? Theme.of(context).colorScheme.error : null),
-          ));
-          spans.add(const TextSpan(text: '\n'));
-          spans.add(TextSpan(text: recoverAt.sec2date().toCustomString(year: false, second: false)));
-        }
-        return Text.rich(
-          TextSpan(children: spans),
-          style: const TextStyle(fontSize: 12),
-          textAlign: TextAlign.end,
-        );
-      });
+      Widget trailing = TimerUpdate(
+        builder: (context, time) {
+          final userGame = user.userGame;
+          List<InlineSpan> spans = [];
+          if (userGame != null) {
+            final recoverAt = userGame.actRecoverAt;
+            final maxAp = userGame.actMax;
+            final leftDuration = Duration(seconds: max(0, recoverAt - time.timestamp));
+            final curAp =
+                (maxAp - (recoverAt - time.timestamp) / 300).floor().clamp(0, maxAp) + userGame.carryOverActPoint;
+            spans.add(TextSpan(text: 'AP $curAp/$maxAp'));
+            spans.add(
+              TextSpan(
+                text: '\n${leftDuration.toString().split('.').first}',
+                style: TextStyle(color: maxAp - curAp < 24 ? Theme.of(context).colorScheme.error : null),
+              ),
+            );
+            spans.add(const TextSpan(text: '\n'));
+            spans.add(TextSpan(text: recoverAt.sec2date().toCustomString(year: false, second: false)));
+          }
+          return Text.rich(TextSpan(children: spans), style: const TextStyle(fontSize: 12), textAlign: TextAlign.end);
+        },
+      );
       Widget tile = RadioListTile<AutoLoginDataJP>(
         visualDensity: VisualDensity.compact,
         value: user,
@@ -339,11 +321,7 @@ class _AutoLoginPageState extends State<AutoLoginPage> {
           setState(() {});
         },
       );
-      tile = ListTileTheme.merge(
-        horizontalTitleGap: 8,
-        minVerticalPadding: 0,
-        child: tile,
-      );
+      tile = ListTileTheme.merge(horizontalTitleGap: 8, minVerticalPadding: 0, child: tile);
       children.add(tile);
     }
     children.add(const Divider(indent: 16, endIndent: 16));
@@ -365,19 +343,20 @@ class _AutoLoginPageState extends State<AutoLoginPage> {
           tooltip: S.current.add,
         ),
         IconButton(
-          onPressed: allData.length > 1
-              ? () {
-                  SimpleCancelOkDialog(
-                    title: Text(S.current.delete),
-                    onTapOk: () {
-                      final prevIndex = allData.indexOf(args);
-                      allData.remove(args);
-                      args = allData[prevIndex.clamp(0, allData.length - 1)];
-                      if (mounted) setState(() {});
-                    },
-                  ).showDialog(context);
-                }
-              : null,
+          onPressed:
+              allData.length > 1
+                  ? () {
+                    SimpleCancelOkDialog(
+                      title: Text(S.current.delete),
+                      onTapOk: () {
+                        final prevIndex = allData.indexOf(args);
+                        allData.remove(args);
+                        args = allData[prevIndex.clamp(0, allData.length - 1)];
+                        if (mounted) setState(() {});
+                      },
+                    ).showDialog(context);
+                  }
+                  : null,
           icon: const Icon(Icons.remove_circle_outline),
           color: Theme.of(context).colorScheme.error,
           tooltip: S.current.remove,
@@ -402,11 +381,12 @@ class _AutoLoginPageState extends State<AutoLoginPage> {
         ),
         const SizedBox(width: 8),
         ElevatedButton(
-          onPressed: args.response?.data.isSuccess('login') == true && args.response?.data != null
-              ? () => _doImport(jsonEncode(args.response!.data.rawMap))
-              : null,
+          onPressed:
+              args.response?.data.isSuccess('login') == true && args.response?.data != null
+                  ? () => _doImport(jsonEncode(args.response!.data.rawMap))
+                  : null,
           child: Text(S.current.import_data),
-        )
+        ),
       ],
     );
   }
@@ -416,7 +396,8 @@ class _AutoLoginPageState extends State<AutoLoginPage> {
       EasyLoading.show();
       if (PlatformU.isAndroid) {
         final info = await DeviceInfoPlugin().androidInfo;
-        args.userAgent = (await MethodChannelChaldea.getUserAgent()) ??
+        args.userAgent =
+            (await MethodChannelChaldea.getUserAgent()) ??
             "Dalvik/2.1.0 (Linux; U; Android ${info.version.release}; ${info.model} Build/${info.id})";
         final deviceModel = "${info.manufacturer} ${info.model}",
             operatingSystem =
@@ -496,13 +477,9 @@ class _AutoLoginPageState extends State<AutoLoginPage> {
       mainAxisSize: MainAxisSize.min,
       // crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Text(
-          "Response",
-          textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.labelLarge,
-        ),
+        Text("Response", textAlign: TextAlign.center, style: Theme.of(context).textTheme.labelLarge),
         const SizedBox(height: 8),
-        Text(buffer.toString())
+        Text(buffer.toString()),
       ],
     );
   }

@@ -19,7 +19,8 @@ mixin SearchableListState<T, St extends StatefulWidget> on State<St> {
 
   String? scrollRestorationId;
   late ScrollController scrollController = ScrollController(
-      initialScrollOffset: scrollRestorationId == null ? 0.0 : ScrollRestoration.get(scrollRestorationId!) ?? 0.0);
+    initialScrollOffset: scrollRestorationId == null ? 0.0 : ScrollRestoration.get(scrollRestorationId!) ?? 0.0,
+  );
   late TextEditingController searchEditingController = TextEditingController();
 
   /// String Search
@@ -111,49 +112,60 @@ mixin SearchableListState<T, St extends StatefulWidget> on State<St> {
 
   PreferredSizeWidget? buttonBar;
 
-  Widget scrollListener({
-    required bool useGrid,
-    PreferredSizeWidget? appBar,
-  }) {
+  Widget scrollListener({required bool useGrid, PreferredSizeWidget? appBar}) {
     return UserScrollListener(
       shouldAnimate: (userScroll) => userScroll.metrics.axis == Axis.vertical,
-      builder: (context, animationController) => Scaffold(
-        appBar: appBar,
-        floatingActionButton: ScaleTransition(
-          scale: animationController,
-          child: Padding(
-            padding: EdgeInsets.only(bottom: buttonBar?.preferredSize.height ?? 0),
-            child: FloatingActionButton(
-              child: const Icon(Icons.arrow_upward),
-              onPressed: () => scrollController.hasClients
-                  ? scrollController.animateTo(0, duration: const Duration(milliseconds: 600), curve: Curves.easeOut)
-                  : null,
+      builder:
+          (context, animationController) => Scaffold(
+            appBar: appBar,
+            floatingActionButton: ScaleTransition(
+              scale: animationController,
+              child: Padding(
+                padding: EdgeInsets.only(bottom: buttonBar?.preferredSize.height ?? 0),
+                child: FloatingActionButton(
+                  child: const Icon(Icons.arrow_upward),
+                  onPressed:
+                      () =>
+                          scrollController.hasClients
+                              ? scrollController.animateTo(
+                                0,
+                                duration: const Duration(milliseconds: 600),
+                                curve: Curves.easeOut,
+                              )
+                              : null,
+                ),
+              ),
             ),
+            body: buildScrollable(useGrid: useGrid),
           ),
-        ),
-        body: buildScrollable(useGrid: useGrid),
-      ),
     );
   }
 
   Widget scrollListener2(Widget Function(BuildContext context, Widget fab) builder) {
     return UserScrollListener(
       shouldAnimate: (userScroll) => userScroll.metrics.axis == Axis.vertical,
-      builder: (context, animationController) => builder(
-        context,
-        ScaleTransition(
-          scale: animationController,
-          child: Padding(
-            padding: EdgeInsets.only(bottom: buttonBar?.preferredSize.height ?? 0),
-            child: FloatingActionButton(
-              child: const Icon(Icons.arrow_upward),
-              onPressed: () => scrollController.hasClients
-                  ? scrollController.animateTo(0, duration: const Duration(milliseconds: 600), curve: Curves.easeOut)
-                  : null,
+      builder:
+          (context, animationController) => builder(
+            context,
+            ScaleTransition(
+              scale: animationController,
+              child: Padding(
+                padding: EdgeInsets.only(bottom: buttonBar?.preferredSize.height ?? 0),
+                child: FloatingActionButton(
+                  child: const Icon(Icons.arrow_upward),
+                  onPressed:
+                      () =>
+                          scrollController.hasClients
+                              ? scrollController.animateTo(
+                                0,
+                                duration: const Duration(milliseconds: 600),
+                                curve: Curves.easeOut,
+                              )
+                              : null,
+                ),
+              ),
             ),
           ),
-        ),
-      ),
     );
   }
 
@@ -162,12 +174,10 @@ mixin SearchableListState<T, St extends StatefulWidget> on State<St> {
     return Scrollbar(
       controller: scrollController,
       trackVisibility: PlatformU.isDesktopOrWeb,
-      child: useGrid
-          ? buildGridView(
-              topHint: hintText,
-              bottomHint: hintText,
-            )
-          : buildListView(topHint: hintText, bottomHint: hintText),
+      child:
+          useGrid
+              ? buildGridView(topHint: hintText, bottomHint: hintText)
+              : buildListView(topHint: hintText, bottomHint: hintText),
     );
   }
 
@@ -178,11 +188,7 @@ mixin SearchableListState<T, St extends StatefulWidget> on State<St> {
     return slivers;
   }
 
-  Widget buildListView({
-    Widget? topHint,
-    Widget? bottomHint,
-    Widget? separator,
-  }) {
+  Widget buildListView({Widget? topHint, Widget? bottomHint, Widget? separator}) {
     List<Widget> slivers = [];
 
     if (topHint != null) {
@@ -193,9 +199,7 @@ mixin SearchableListState<T, St extends StatefulWidget> on State<St> {
         Widget child = listItemBuilder(shownList[index]);
         if (showOddBg) {
           child = DecoratedBox(
-            decoration: BoxDecoration(
-              color: index.isEven ? Theme.of(context).hoverColor : null,
-            ),
+            decoration: BoxDecoration(color: index.isEven ? Theme.of(context).hoverColor : null),
             child: child,
           );
         }
@@ -207,28 +211,21 @@ mixin SearchableListState<T, St extends StatefulWidget> on State<St> {
     if (shownList.isEmpty) {
       // do nothing
     } else if (itemExtent != null) {
-      slivers.add(SliverFixedExtentList(
-        delegate: SliverChildBuilderDelegate(
-          _itemBuilder,
-          childCount: shownList.length,
+      slivers.add(
+        SliverFixedExtentList(
+          delegate: SliverChildBuilderDelegate(_itemBuilder, childCount: shownList.length),
+          itemExtent: itemExtent!,
         ),
-        itemExtent: itemExtent!,
-      ));
+      );
     } else if (prototypeExtent) {
-      slivers.add(SliverPrototypeExtentList(
-        delegate: SliverChildBuilderDelegate(
-          _itemBuilder,
-          childCount: shownList.length,
+      slivers.add(
+        SliverPrototypeExtentList(
+          delegate: SliverChildBuilderDelegate(_itemBuilder, childCount: shownList.length),
+          prototypeItem: listItemBuilder(shownList.first),
         ),
-        prototypeItem: listItemBuilder(shownList.first),
-      ));
+      );
     } else {
-      slivers.add(SliverList(
-        delegate: SliverChildBuilderDelegate(
-          _itemBuilder,
-          childCount: shownList.length,
-        ),
-      ));
+      slivers.add(SliverList(delegate: SliverChildBuilderDelegate(_itemBuilder, childCount: shownList.length)));
     }
 
     if (bottomHint != null && (shownList.length > 5 || bottomHint != topHint)) {
@@ -256,18 +253,18 @@ mixin SearchableListState<T, St extends StatefulWidget> on State<St> {
       slivers.add(SliverToBoxAdapter(child: topHint));
     }
     if (shownList.isNotEmpty) {
-      slivers.add(SliverPadding(
-        padding: const EdgeInsets.symmetric(horizontal: 6),
-        sliver: SliverGrid.extent(
-          maxCrossAxisExtent: maxCrossAxisExtent ?? 72,
-          mainAxisSpacing: 2,
-          crossAxisSpacing: 2,
-          childAspectRatio: childAspectRatio,
-          children: [
-            for (final datum in shownList) gridItemBuilder(datum),
-          ],
+      slivers.add(
+        SliverPadding(
+          padding: const EdgeInsets.symmetric(horizontal: 6),
+          sliver: SliverGrid.extent(
+            maxCrossAxisExtent: maxCrossAxisExtent ?? 72,
+            mainAxisSpacing: 2,
+            crossAxisSpacing: 2,
+            childAspectRatio: childAspectRatio,
+            children: [for (final datum in shownList) gridItemBuilder(datum)],
+          ),
         ),
-      ));
+      );
     }
     if (bottomHint != null && (shownList.length > 20 || bottomHint != topHint)) {
       slivers.add(SliverToBoxAdapter(child: bottomHint));
@@ -288,12 +285,7 @@ mixin SearchableListState<T, St extends StatefulWidget> on State<St> {
     if (buttonBar == null) {
       return child;
     } else {
-      return Column(
-        children: [
-          Expanded(child: child),
-          SafeArea(child: buttonBar),
-        ],
-      );
+      return Column(children: [Expanded(child: child), SafeArea(child: buttonBar)]);
     }
   }
 
@@ -319,12 +311,7 @@ mixin SearchableListState<T, St extends StatefulWidget> on State<St> {
   static Widget defaultHintBuilder(BuildContext context, String text) {
     return CustomTile(
       contentPadding: const EdgeInsets.symmetric(vertical: 2),
-      subtitle: Center(
-        child: Text(
-          text,
-          style: const TextStyle(color: Colors.grey, fontSize: 14),
-        ),
-      ),
+      subtitle: Center(child: Text(text, style: const TextStyle(color: Colors.grey, fontSize: 14))),
     );
   }
 }

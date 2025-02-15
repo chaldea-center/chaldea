@@ -54,14 +54,8 @@ class _TdDetailPageState extends State<TdDetailPage> with RegionBasedState<BaseT
     return InheritSelectionArea(
       child: Scaffold(
         appBar: AppBar(
-          title: Text(
-            data?.lName.l ?? '${S.current.noble_phantasm} $id',
-            overflow: TextOverflow.fade,
-          ),
-          actions: [
-            dropdownRegion(shownNone: widget.td != null),
-            popupMenu,
-          ],
+          title: Text(data?.lName.l ?? '${S.current.noble_phantasm} $id', overflow: TextOverflow.fade),
+          actions: [dropdownRegion(shownNone: widget.td != null), popupMenu],
         ),
         body: buildBody(context),
       ),
@@ -76,85 +70,90 @@ class _TdDetailPageState extends State<TdDetailPage> with RegionBasedState<BaseT
     _oc = (_oc ?? 1).clamp2(1, td.maxOC);
     return ListView(
       children: [
-        CustomTable(children: [
-          CustomTableRow.fromTexts(texts: ['No.${td.id}'], isHeader: true),
-          CustomTableRow.fromChildren(children: [
-            Wrap(
-              alignment: WrapAlignment.center,
-              spacing: 8,
+        CustomTable(
+          children: [
+            CustomTableRow.fromTexts(texts: ['No.${td.id}'], isHeader: true),
+            CustomTableRow.fromChildren(
               children: [
-                DropdownButton<int>(
-                  isDense: true,
-                  items: [
-                    for (int level = 1; level <= td.maxLv; level++)
-                      DropdownMenuItem(value: level, child: Text('Lv.$level')),
+                Wrap(
+                  alignment: WrapAlignment.center,
+                  spacing: 8,
+                  children: [
+                    DropdownButton<int>(
+                      isDense: true,
+                      items: [
+                        for (int level = 1; level <= td.maxLv; level++)
+                          DropdownMenuItem(value: level, child: Text('Lv.$level')),
+                      ],
+                      value: _lv,
+                      onChanged: (v) {
+                        setState(() {
+                          _lv = v;
+                        });
+                      },
+                    ),
+                    DropdownButton<int>(
+                      isDense: true,
+                      items: [
+                        for (int level = 1; level <= td.maxLv; level++)
+                          DropdownMenuItem(value: level, child: Text('OC $level')),
+                      ],
+                      value: _oc,
+                      onChanged: (v) {
+                        setState(() {
+                          _oc = v;
+                        });
+                      },
+                    ),
+                    FilterGroup(
+                      padding: EdgeInsets.zero,
+                      combined: true,
+                      options: const [FuncApplyTarget.playerAndEnemy, FuncApplyTarget.player, FuncApplyTarget.enemy],
+                      values: FilterRadioData.nonnull(_view),
+                      optionBuilder: (v) {
+                        switch (v) {
+                          case FuncApplyTarget.player:
+                            return Text(S.current.player);
+                          case FuncApplyTarget.enemy:
+                            return Text(S.current.enemy);
+                          case FuncApplyTarget.playerAndEnemy:
+                            return Text(S.current.general_all);
+                        }
+                      },
+                      onFilterChanged: (v, _) {
+                        setState(() {
+                          _view = v.radioValue ?? _view;
+                        });
+                      },
+                    ),
                   ],
-                  value: _lv,
-                  onChanged: (v) {
-                    setState(() {
-                      _lv = v;
-                    });
-                  },
-                ),
-                DropdownButton<int>(
-                  isDense: true,
-                  items: [
-                    for (int level = 1; level <= td.maxLv; level++)
-                      DropdownMenuItem(value: level, child: Text('OC $level')),
-                  ],
-                  value: _oc,
-                  onChanged: (v) {
-                    setState(() {
-                      _oc = v;
-                    });
-                  },
-                ),
-                FilterGroup(
-                  padding: EdgeInsets.zero,
-                  combined: true,
-                  options: const [FuncApplyTarget.playerAndEnemy, FuncApplyTarget.player, FuncApplyTarget.enemy],
-                  values: FilterRadioData.nonnull(_view),
-                  optionBuilder: (v) {
-                    switch (v) {
-                      case FuncApplyTarget.player:
-                        return Text(S.current.player);
-                      case FuncApplyTarget.enemy:
-                        return Text(S.current.enemy);
-                      case FuncApplyTarget.playerAndEnemy:
-                        return Text(S.current.general_all);
-                    }
-                  },
-                  onFilterChanged: (v, _) {
-                    setState(() {
-                      _view = v.radioValue ?? _view;
-                    });
-                  },
                 ),
               ],
-            )
-          ]),
-          TdDescriptor(
-            td: td,
-            level: _lv,
-            oc: _oc,
-            showPlayer: _view == FuncApplyTarget.playerAndEnemy || _view == FuncApplyTarget.player,
-            showEnemy: _view == FuncApplyTarget.playerAndEnemy || _view == FuncApplyTarget.enemy,
-            showNone: true,
-            jumpToDetail: false,
-            region: region,
-            isBaseTd: true,
-          ),
-          CustomTableRow(children: [
-            TableCellData(text: S.current.trait, isHeader: true),
-            TableCellData(
-              flex: 3,
-              child: SharedBuilder.traitList(context: context, traits: td.individuality),
-            )
-          ]),
-          CustomTableRow.fromTexts(texts: [
-            'num ${td.svt.num} / npNum ${td.svt.npNum} / priority ${td.svt.priority} / strengthStatus ${td.svt.strengthStatus}'
-          ]),
-        ]),
+            ),
+            TdDescriptor(
+              td: td,
+              level: _lv,
+              oc: _oc,
+              showPlayer: _view == FuncApplyTarget.playerAndEnemy || _view == FuncApplyTarget.player,
+              showEnemy: _view == FuncApplyTarget.playerAndEnemy || _view == FuncApplyTarget.enemy,
+              showNone: true,
+              jumpToDetail: false,
+              region: region,
+              isBaseTd: true,
+            ),
+            CustomTableRow(
+              children: [
+                TableCellData(text: S.current.trait, isHeader: true),
+                TableCellData(flex: 3, child: SharedBuilder.traitList(context: context, traits: td.individuality)),
+              ],
+            ),
+            CustomTableRow.fromTexts(
+              texts: [
+                'num ${td.svt.num} / npNum ${td.svt.npNum} / priority ${td.svt.priority} / strengthStatus ${td.svt.strengthStatus}',
+              ],
+            ),
+          ],
+        ),
         if (svts.isNotEmpty) cardList(S.current.servant, svts),
         if (enemies.isNotEmpty) enemyList(enemies),
       ],
@@ -171,7 +170,7 @@ class _TdDetailPageState extends State<TdDetailPage> with RegionBasedState<BaseT
             leading: card.iconBuilder(context: context),
             title: Text(card.lName.l),
             onTap: card.routeTo,
-          )
+          ),
       ],
     );
   }
@@ -181,19 +180,18 @@ class _TdDetailPageState extends State<TdDetailPage> with RegionBasedState<BaseT
     for (final enemies in allEnemies.values) {
       if (enemies.isEmpty) continue;
       final enemy = enemies.first;
-      children.add(ListTile(
-        dense: true,
-        leading: enemy.iconBuilder(context: context),
-        title: Text(enemy.lName.l),
-        onTap: () {
-          router.pushPage(QuestEnemySummaryPage(svt: enemy.svt, enemies: enemies));
-        },
-      ));
+      children.add(
+        ListTile(
+          dense: true,
+          leading: enemy.iconBuilder(context: context),
+          title: Text(enemy.lName.l),
+          onTap: () {
+            router.pushPage(QuestEnemySummaryPage(svt: enemy.svt, enemies: enemies));
+          },
+        ),
+      );
     }
-    return TileGroup(
-      header: '${S.current.enemy_list}(${S.current.free_quest})',
-      children: children,
-    );
+    return TileGroup(header: '${S.current.enemy_list}(${S.current.free_quest})', children: children);
   }
 
   Widget get popupMenu {

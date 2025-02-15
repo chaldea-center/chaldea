@@ -60,55 +60,62 @@ class _MissionSolutionTabState extends State<MissionSolutionTab> {
 
     Widget header = Padding(
       padding: const EdgeInsetsDirectional.only(end: 16),
-      child: widget.showResult
-          ? ListTile(
-              title: Text(S.current.solution_total_battles_ap(battleCount, apCount)),
-              trailing: Text(S.current.solution_battle_count),
-            )
-          : ListTile(
-              title: Text(S.current.master_mission_related_quest),
-              trailing: Text(S.current.solution_target_count),
-            ),
+      child:
+          widget.showResult
+              ? ListTile(
+                title: Text(S.current.solution_total_battles_ap(battleCount, apCount)),
+                trailing: Text(S.current.solution_battle_count),
+              )
+              : ListTile(
+                title: Text(S.current.master_mission_related_quest),
+                trailing: Text(S.current.solution_target_count),
+              ),
     );
     List<Widget> children = [];
     for (final questId in questIds) {
-      children.add(_oneQuest(
-        questId,
-        widget.showResult ? solution.result[questId]! : targetCounts[questId] ?? 0,
-      ));
+      children.add(_oneQuest(questId, widget.showResult ? solution.result[questId]! : targetCounts[questId] ?? 0));
     }
     if (widget.showResult) {
-      final invalidMissions = solution.missions
-          .where((m) => solution.result.keys.every((q) =>
-              solution.quests[q] == null ||
-              MissionSolver.countMissionTarget(m, solution.quests[q]!, options: solution.options) <= 0))
-          .toList();
+      final invalidMissions =
+          solution.missions
+              .where(
+                (m) => solution.result.keys.every(
+                  (q) =>
+                      solution.quests[q] == null ||
+                      MissionSolver.countMissionTarget(m, solution.quests[q]!, options: solution.options) <= 0,
+                ),
+              )
+              .toList();
       if (invalidMissions.isNotEmpty) {
-        children.add(TileGroup(
-          header: S.current.ignore,
-          children: [
-            for (final mission in invalidMissions)
-              ListTile(
-                leading: Text((solution.missions.indexOf(mission) + 1).toString()),
-                title: mission.buildDescriptor(context),
-                dense: true,
-              ),
-          ],
-        ));
+        children.add(
+          TileGroup(
+            header: S.current.ignore,
+            children: [
+              for (final mission in invalidMissions)
+                ListTile(
+                  leading: Text((solution.missions.indexOf(mission) + 1).toString()),
+                  title: mission.buildDescriptor(context),
+                  dense: true,
+                ),
+            ],
+          ),
+        );
       }
     }
 
-    return Column(children: [
-      header,
-      Expanded(
-        child: ListView.separated(
-          controller: _scrollController,
-          itemBuilder: (context, index) => children[index],
-          separatorBuilder: (context, index) => kDefaultDivider,
-          itemCount: children.length,
+    return Column(
+      children: [
+        header,
+        Expanded(
+          child: ListView.separated(
+            controller: _scrollController,
+            itemBuilder: (context, index) => children[index],
+            separatorBuilder: (context, index) => kDefaultDivider,
+            itemCount: children.length,
+          ),
         ),
-      )
-    ]);
+      ],
+    );
   }
 
   Widget _oneQuest(int questId, int count) {
@@ -138,47 +145,42 @@ class _MissionSolutionTabState extends State<MissionSolutionTab> {
         for (final mission in solution.missions) {
           int count = MissionSolver.countMissionTarget(mission, quest, options: solution.options);
           if (count <= 0) continue;
-          children.add(ListTile(
-            title: mission.buildDescriptor(context),
-            subtitle: mission.originDetail?.isNotEmpty == true ? Text(mission.originDetail!) : null,
-            trailing: Text('+ $count'),
-            minVerticalPadding: 0,
-            visualDensity: VisualDensity.compact,
-            dense: true,
-          ));
+          children.add(
+            ListTile(
+              title: mission.buildDescriptor(context),
+              subtitle: mission.originDetail?.isNotEmpty == true ? Text(mission.originDetail!) : null,
+              trailing: Text('+ $count'),
+              minVerticalPadding: 0,
+              visualDensity: VisualDensity.compact,
+              dense: true,
+            ),
+          );
         }
         children = divideTiles(children, divider: const Divider(indent: 16, endIndent: 16));
         children.add(QuestCard(quest: quest, region: solution.region));
-        children.add(db.settings.masterMissionOptions.blacklist.contains(quest.id)
-            ? TextButton.icon(
+        children.add(
+          db.settings.masterMissionOptions.blacklist.contains(quest.id)
+              ? TextButton.icon(
                 onPressed: () {
                   setState(() {
                     db.settings.masterMissionOptions.blacklist.remove(quest.id);
                   });
                 },
                 icon: Icon(Icons.clear, color: AppTheme(context).tertiary),
-                label: Text(
-                  S.current.remove_from_blacklist,
-                  style: TextStyle(color: AppTheme(context).tertiary),
-                ),
+                label: Text(S.current.remove_from_blacklist, style: TextStyle(color: AppTheme(context).tertiary)),
               )
-            : TextButton.icon(
+              : TextButton.icon(
                 onPressed: () {
                   setState(() {
                     db.settings.masterMissionOptions.blacklist.add(quest.id);
                   });
                 },
                 icon: const Icon(Icons.add, color: Colors.redAccent),
-                label: Text(
-                  S.current.add_to_blacklist,
-                  style: const TextStyle(color: Colors.redAccent),
-                ),
-              ));
-
-        return Column(
-          mainAxisSize: MainAxisSize.min,
-          children: children,
+                label: Text(S.current.add_to_blacklist, style: const TextStyle(color: Colors.redAccent)),
+              ),
         );
+
+        return Column(mainAxisSize: MainAxisSize.min, children: children);
       },
     );
   }

@@ -12,9 +12,7 @@ class EventPointsPage extends StatelessWidget {
     List<Tab> tabs = [];
     List<Widget> views = [];
 
-    final pointGroups = {
-      for (final group in event.pointGroups) group.groupId: group,
-    };
+    final pointGroups = {for (final group in event.pointGroups) group.groupId: group};
 
     Map<int, List<EventPointReward>> pointRewards = {};
     for (final reward in event.pointRewards) {
@@ -38,14 +36,18 @@ class EventPointsPage extends StatelessWidget {
 
       final rewards = pointRewards[groupId]!;
       rewards.sort2((e) => e.point);
-      tabs.add(Tab(
-        child: Text.rich(
-          TextSpan(children: [
-            if (icon != null) CenterWidgetSpan(child: db.getIconImage(icon, width: 24)),
-            TextSpan(text: pointName),
-          ]),
+      tabs.add(
+        Tab(
+          child: Text.rich(
+            TextSpan(
+              children: [
+                if (icon != null) CenterWidgetSpan(child: db.getIconImage(icon, width: 24)),
+                TextSpan(text: pointName),
+              ],
+            ),
+          ),
         ),
-      ));
+      );
       views.add(EventPointTab(rewards: rewards, pointBuffs: pointBuffs[groupId] ?? {}));
     }
     if (views.isEmpty) return const SizedBox.shrink();
@@ -54,11 +56,9 @@ class EventPointsPage extends StatelessWidget {
       length: views.length,
       child: Column(
         children: [
-          FixedHeight.tabBar(TabBar(
-            isScrollable: tabs.length > 2,
-            tabs: tabs,
-            labelStyle: Theme.of(context).textTheme.bodyMedium,
-          )),
+          FixedHeight.tabBar(
+            TabBar(isScrollable: tabs.length > 2, tabs: tabs, labelStyle: Theme.of(context).textTheme.bodyMedium),
+          ),
           Expanded(child: TabBarView(children: views)),
         ],
       ),

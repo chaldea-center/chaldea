@@ -149,7 +149,7 @@ class _PlayerSvtDefaultLvEditPageState extends State<PlayerSvtDefaultLvEditPage>
             },
           ),
           const Divider(height: 16),
-          SFooter(S.current.default_lvs_hint)
+          SFooter(S.current.default_lvs_hint),
         ],
       ),
     );

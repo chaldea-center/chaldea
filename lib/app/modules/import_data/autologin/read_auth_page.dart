@@ -40,29 +40,28 @@ class _ReadAuthPageState extends State<ReadAuthPage> {
       if (code == null) {
         buffer.write('null');
       } else {
-        buffer.writeAll(
-            [code.substring(0, min(8, code.length)), '****', code.substring(max(0, code.length - 8), code.length)]);
+        buffer.writeAll([
+          code.substring(0, min(8, code.length)),
+          '****',
+          code.substring(max(0, code.length - 8), code.length),
+        ]);
         if (!code.startsWith('ZSv/')) {
           buffer.write('\n> Warning: should start with ZSv/');
         }
       }
-      cardChildren.add(Text(
-        buffer.toString(),
-        style: Theme.of(context).textTheme.bodySmall,
-      ));
+      cardChildren.add(Text(buffer.toString(), style: Theme.of(context).textTheme.bodySmall));
       cardChildren.add(const Divider());
-      cardChildren.addAll([
-        'gameServer: ${auth.userCreateServer}',
-        'userId: ${auth.userId}',
-        'authKey: ${auth.authKey}',
-        'secretKey: ${auth.secretKey}',
-        if (auth.saveDataVer != null) 'SaveDataVer: ${auth.saveDataVer}',
-      ].map((e) => Text(
-            e,
-            style: Theme.of(context).textTheme.bodySmall,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          )));
+      cardChildren.addAll(
+        [
+          'gameServer: ${auth.userCreateServer}',
+          'userId: ${auth.userId}',
+          'authKey: ${auth.authKey}',
+          'secretKey: ${auth.secretKey}',
+          if (auth.saveDataVer != null) 'SaveDataVer: ${auth.saveDataVer}',
+        ].map(
+          (e) => Text(e, style: Theme.of(context).textTheme.bodySmall, maxLines: 1, overflow: TextOverflow.ellipsis),
+        ),
+      );
     }
     List<Widget> children = [
       Card(
@@ -81,149 +80,158 @@ class _ReadAuthPageState extends State<ReadAuthPage> {
 
     children.add(_divider('1'));
     final _docLink = ChaldeaUrl.doc('import_https/authfile_login');
-    children.add(TileGroup(
-      header: 'Method 1',
-      footerWidget: SFooter.rich(TextSpan(
-          text: 'more: ',
-          children: [SharedBuilder.textButtonSpan(context: context, text: _docLink, onTap: () => launch(_docLink))])),
-      children: [
-        ListTile(
-          title: Text(S.current.import_from_file),
-          subtitle: const Text('Android: 54cc, iOS: authsave(2).dat'),
-          trailing: const Icon(Icons.file_open),
-          onTap: readAuthFile,
-        )
-      ],
-    ));
+    children.add(
+      TileGroup(
+        header: 'Method 1',
+        footerWidget: SFooter.rich(
+          TextSpan(
+            text: 'more: ',
+            children: [SharedBuilder.textButtonSpan(context: context, text: _docLink, onTap: () => launch(_docLink))],
+          ),
+        ),
+        children: [
+          ListTile(
+            title: Text(S.current.import_from_file),
+            subtitle: const Text('Android: 54cc, iOS: authsave(2).dat'),
+            trailing: const Icon(Icons.file_open),
+            onTap: readAuthFile,
+          ),
+        ],
+      ),
+    );
 
     children.add(_divider('2'));
-    children.add(TileGroup(
-      header: 'Method 2 - text of 54cc auth file',
-      children: [
-        Padding(
-          padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
-          child: TextFormField(
-            controller: _codeCtrl,
-            decoration: const InputDecoration(
-              label: Text('Auth File Code'),
-              border: OutlineInputBorder(),
-              hintText: 'start from ZSv/ (include ZSv/)',
-              // errorText: _codeCtrl.text.isEmpty || AuthSaveData.isValidCode(_codeCtrl.text) ? null : "Invalid",
-              floatingLabelBehavior: FloatingLabelBehavior.always,
+    children.add(
+      TileGroup(
+        header: 'Method 2 - text of 54cc auth file',
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
+            child: TextFormField(
+              controller: _codeCtrl,
+              decoration: const InputDecoration(
+                label: Text('Auth File Code'),
+                border: OutlineInputBorder(),
+                hintText: 'start from ZSv/ (include ZSv/)',
+                // errorText: _codeCtrl.text.isEmpty || AuthSaveData.isValidCode(_codeCtrl.text) ? null : "Invalid",
+                floatingLabelBehavior: FloatingLabelBehavior.always,
+              ),
+              contextMenuBuilder:
+                  (context, editableTextState) =>
+                      AdaptiveTextSelectionToolbar.editableText(editableTextState: editableTextState),
+              maxLines: 4,
+              onChanged: (v) {
+                EasyDebounce.debounce('_auth_code_', const Duration(milliseconds: 300), () {
+                  if (mounted) setState(() {});
+                });
+              },
             ),
-            contextMenuBuilder: (context, editableTextState) =>
-                AdaptiveTextSelectionToolbar.editableText(editableTextState: editableTextState),
-            maxLines: 4,
-            onChanged: (v) {
-              EasyDebounce.debounce('_auth_code_', const Duration(milliseconds: 300), () {
-                if (mounted) setState(() {});
-              });
-            },
           ),
-        ),
-        Center(
-          child: ElevatedButton(
-            onPressed: () async {
-              if (_codeCtrl.text.trim().isEmpty) {
-                EasyLoading.showError('Empty');
-                return;
-              }
-              try {
-                EasyLoading.show(status: 'Decoding...');
-                await decodeAuth(_codeCtrl.text.trim());
-                widget.onChanged(this.auth);
-                EasyLoading.showSuccess(S.current.success);
-              } catch (e, s) {
-                EasyLoading.showError(escapeDioException(e));
-                logger.e('decode auth failed', e, s);
-              } finally {
-                if (mounted) setState(() {});
-              }
-            },
-            child: Text(S.current.update),
+          Center(
+            child: ElevatedButton(
+              onPressed: () async {
+                if (_codeCtrl.text.trim().isEmpty) {
+                  EasyLoading.showError('Empty');
+                  return;
+                }
+                try {
+                  EasyLoading.show(status: 'Decoding...');
+                  await decodeAuth(_codeCtrl.text.trim());
+                  widget.onChanged(this.auth);
+                  EasyLoading.showSuccess(S.current.success);
+                } catch (e, s) {
+                  EasyLoading.showError(escapeDioException(e));
+                  logger.e('decode auth failed', e, s);
+                } finally {
+                  if (mounted) setState(() {});
+                }
+              },
+              child: Text(S.current.update),
+            ),
           ),
-        ),
-        const SizedBox(height: 8),
-      ],
-    ));
+          const SizedBox(height: 8),
+        ],
+      ),
+    );
 
     children.add(_divider('3'));
     const _link2 = 'https://github.com/hexstr/FGODailyBonus';
-    children.add(TileGroup(
-      header: 'Method 3 - manual input',
-      footer: 'Warning: no extra verification',
-      footerWidget: SFooter.rich(TextSpan(
-          text: 'Warning: no extra verification!'
-              ' About how to get above values, check <step 0> from:\n',
-          children: [SharedBuilder.textButtonSpan(context: context, text: _link2, onTap: () => launch(_link2))])),
-      children: [
-        _buildTextField(_userIdCtrl, 'userId'),
-        _buildTextField(_authKeyCtrl, 'authKey'),
-        _buildTextField(_secretKeyCtrl, 'secretKey'),
-        Center(
-          child: ElevatedButton(
-            onPressed: () {
-              final _auth = AuthSaveData(
-                userId: _userIdCtrl.text.trim(),
-                authKey: _authKeyCtrl.text.trim(),
-                secretKey: _secretKeyCtrl.text.trim(),
-              );
-              if (int.tryParse(_auth.userId) == null) {
-                EasyLoading.showError('userId must be number');
-                return;
-              }
-              List<String> hints = [];
-              if (_auth.userId.isEmpty || _auth.authKey.isEmpty || _auth.secretKey.isEmpty) {
-                EasyLoading.showError('Empty');
-                return;
-              }
-              if (_auth.userId.length < 9) {
-                hints.add('<userId> is too short');
-              }
-              if (_auth.authKey.length != 29) {
-                hints.add('<authKey> should be 29 length');
-              }
-              if (_auth.secretKey.length != 29) {
-                hints.add('<secretKey> should be 29 length');
-              }
-              if (hints.isEmpty) {
-                this.auth = _auth;
-                widget.onChanged(this.auth);
-                EasyLoading.showSuccess('Updated');
-              } else {
-                showDialog(
-                  context: context,
-                  useRootNavigator: false,
-                  builder: (context) {
-                    return SimpleCancelOkDialog(
-                      title: Text(S.current.warning),
-                      content: Text([...hints, '\nStill continue?'].join('\n')),
-                      onTapOk: () {
-                        this.auth = _auth;
-                        widget.onChanged(this.auth);
-                        EasyLoading.showSuccess('Updated');
-                        if (mounted) setState(() {});
-                      },
-                    );
-                  },
-                );
-              }
-            },
-            child: Text(S.current.update),
+    children.add(
+      TileGroup(
+        header: 'Method 3 - manual input',
+        footer: 'Warning: no extra verification',
+        footerWidget: SFooter.rich(
+          TextSpan(
+            text:
+                'Warning: no extra verification!'
+                ' About how to get above values, check <step 0> from:\n',
+            children: [SharedBuilder.textButtonSpan(context: context, text: _link2, onTap: () => launch(_link2))],
           ),
         ),
-        const SizedBox(height: 8),
-      ],
-    ));
+        children: [
+          _buildTextField(_userIdCtrl, 'userId'),
+          _buildTextField(_authKeyCtrl, 'authKey'),
+          _buildTextField(_secretKeyCtrl, 'secretKey'),
+          Center(
+            child: ElevatedButton(
+              onPressed: () {
+                final _auth = AuthSaveData(
+                  userId: _userIdCtrl.text.trim(),
+                  authKey: _authKeyCtrl.text.trim(),
+                  secretKey: _secretKeyCtrl.text.trim(),
+                );
+                if (int.tryParse(_auth.userId) == null) {
+                  EasyLoading.showError('userId must be number');
+                  return;
+                }
+                List<String> hints = [];
+                if (_auth.userId.isEmpty || _auth.authKey.isEmpty || _auth.secretKey.isEmpty) {
+                  EasyLoading.showError('Empty');
+                  return;
+                }
+                if (_auth.userId.length < 9) {
+                  hints.add('<userId> is too short');
+                }
+                if (_auth.authKey.length != 29) {
+                  hints.add('<authKey> should be 29 length');
+                }
+                if (_auth.secretKey.length != 29) {
+                  hints.add('<secretKey> should be 29 length');
+                }
+                if (hints.isEmpty) {
+                  this.auth = _auth;
+                  widget.onChanged(this.auth);
+                  EasyLoading.showSuccess('Updated');
+                } else {
+                  showDialog(
+                    context: context,
+                    useRootNavigator: false,
+                    builder: (context) {
+                      return SimpleCancelOkDialog(
+                        title: Text(S.current.warning),
+                        content: Text([...hints, '\nStill continue?'].join('\n')),
+                        onTapOk: () {
+                          this.auth = _auth;
+                          widget.onChanged(this.auth);
+                          EasyLoading.showSuccess('Updated');
+                          if (mounted) setState(() {});
+                        },
+                      );
+                    },
+                  );
+                }
+              },
+              child: Text(S.current.update),
+            ),
+          ),
+          const SizedBox(height: 8),
+        ],
+      ),
+    );
 
     children.add(const SafeArea(child: SizedBox()));
 
-    return Scaffold(
-      appBar: AppBar(title: Text(S.current.login_auth)),
-      body: ListView(
-        children: children,
-      ),
-    );
+    return Scaffold(appBar: AppBar(title: Text(S.current.login_auth)), body: ListView(children: children));
   }
 
   Widget _buildTextField(TextEditingController controller, String label) {
@@ -236,8 +244,9 @@ class _ReadAuthPageState extends State<ReadAuthPage> {
           border: const OutlineInputBorder(),
           floatingLabelBehavior: FloatingLabelBehavior.always,
         ),
-        contextMenuBuilder: (context, editableTextState) =>
-            AdaptiveTextSelectionToolbar.editableText(editableTextState: editableTextState),
+        contextMenuBuilder:
+            (context, editableTextState) =>
+                AdaptiveTextSelectionToolbar.editableText(editableTextState: editableTextState),
       ),
     );
   }

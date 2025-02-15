@@ -20,11 +20,7 @@ class GithubBackup<T> extends BackupBackend<T> {
   final FutureOr<List<int>> Function() encode;
   final FutureOr<T> Function(List<int> data) decode;
 
-  GithubBackup({
-    required this.config,
-    required this.encode,
-    required this.decode,
-  });
+  GithubBackup({required this.config, required this.encode, required this.decode});
 
   @override
   Future<bool> backup({String? message}) async {
@@ -63,27 +59,25 @@ class GithubBackup<T> extends BackupBackend<T> {
   }
 
   Dio _createDio() {
-    final d = DioE(BaseOptions(baseUrl: 'https://api.github.com', headers: {
-      'Accept': 'application/vnd.github+json',
-      if (config.token.isNotEmpty) 'Authorization': 'Bearer ${config.token}',
-      if (!kIsWeb) 'User-Agent': 'chaldea/2.0',
-      "X-GitHub-Api-Version": "2022-11-28",
-    }));
+    final d = DioE(
+      BaseOptions(
+        baseUrl: 'https://api.github.com',
+        headers: {
+          'Accept': 'application/vnd.github+json',
+          if (config.token.isNotEmpty) 'Authorization': 'Bearer ${config.token}',
+          if (!kIsWeb) 'User-Agent': 'chaldea/2.0',
+          "X-GitHub-Api-Version": "2022-11-28",
+        },
+      ),
+    );
     return d;
   }
 
   Future<List<int>> _getRawFile() async {
     final resp = await _createDio().get(
       '/repos/${config.slug}/contents/${config.path}?buster=${DateTime.now().timestamp}',
-      options: Options(
-        headers: {
-          'Accept': 'application/vnd.github.raw+json',
-        },
-        responseType: ResponseType.bytes,
-      ),
-      queryParameters: {
-        if (config.branch.isNotEmpty) 'ref': config.branch,
-      },
+      options: Options(headers: {'Accept': 'application/vnd.github.raw+json'}, responseType: ResponseType.bytes),
+      queryParameters: {if (config.branch.isNotEmpty) 'ref': config.branch},
     );
     return List.from(resp.data);
   }
@@ -92,9 +86,7 @@ class GithubBackup<T> extends BackupBackend<T> {
     try {
       final response = await _createDio().get(
         '/repos/${config.slug}/contents/${config.path}?buster=${DateTime.now().timestamp}',
-        queryParameters: {
-          if (config.branch.isNotEmpty) 'ref': config.branch,
-        },
+        queryParameters: {if (config.branch.isNotEmpty) 'ref': config.branch},
       );
       if (response.data is List) {
         throw GitHubError(github, 'Path is a directory');
@@ -111,11 +103,7 @@ class GithubBackup<T> extends BackupBackend<T> {
     }
   }
 
-  Future<ContentCreation> _updateFile({
-    required String content,
-    required String message,
-    String? sha,
-  }) async {
+  Future<ContentCreation> _updateFile({required String content, required String message, String? sha}) async {
     try {
       final response = await _createDio().put(
         '/repos/${config.slug}/contents/${config.path}',

@@ -82,9 +82,7 @@ class _ItemInfoTabState extends State<ItemInfoTab> {
       if (_loading) {
         child = Center(child: CircularProgressIndicator());
       } else {
-        child = ListTile(
-          title: Text('NotFound: $itemId'),
-        );
+        child = ListTile(title: Text('NotFound: $itemId'));
       }
     } else {
       final eventIds = <int>{if (item.eventId != 0) item.eventId};
@@ -114,13 +112,15 @@ class _ItemInfoTabState extends State<ItemInfoTab> {
                   child: CustomTable(
                     hideOutline: true,
                     children: <Widget>[
-                      CustomTableRow(children: [
-                        TableCellData(
-                          child: Text(item.lName.l, style: const TextStyle(fontWeight: FontWeight.bold)),
-                          isHeader: true,
-                          textAlign: TextAlign.center,
-                        )
-                      ]),
+                      CustomTableRow(
+                        children: [
+                          TableCellData(
+                            child: Text(item.lName.l, style: const TextStyle(fontWeight: FontWeight.bold)),
+                            isHeader: true,
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
+                      ),
                       if (!Transl.isJP) CustomTableRow.fromTexts(texts: [item.name]),
                       if (!Transl.isEN) CustomTableRow.fromTexts(texts: [item.lName.na]),
                       CustomTableRow.fromTexts(texts: [item.type.name, item.category.name]),
@@ -138,11 +138,13 @@ class _ItemInfoTabState extends State<ItemInfoTab> {
             if (item.individuality.isNotEmpty) ...[
               CustomTableRow.fromTexts(texts: [S.current.trait], isHeader: true),
               CustomTableRow.fromChildren(
-                  children: [SharedBuilder.traitList(context: context, traits: item.individuality)])
+                children: [SharedBuilder.traitList(context: context, traits: item.individuality)],
+              ),
             ],
             CustomTableRow.fromTexts(texts: const ['ID', 'Value', 'Priority', 'Drop Priority'], isHeader: true),
             CustomTableRow.fromTexts(
-                texts: ['${item.id}', '${item.value}', '${item.priority}', '${item.dropPriority}']),
+              texts: ['${item.id}', '${item.value}', '${item.priority}', '${item.dropPriority}'],
+            ),
             if (eventIds.isNotEmpty) ...[
               CustomTableRow.fromTexts(texts: [S.current.event], isHeader: true),
               for (final eventId in eventIds)
@@ -158,9 +160,11 @@ class _ItemInfoTabState extends State<ItemInfoTab> {
             ],
             if (!(item.endedAt > kNeverClosedTimestamp && item.startedAt < 1000000000)) ...[
               CustomTableRow.fromTexts(texts: [S.current.time], isHeader: true),
-              CustomTableRow.fromTexts(texts: [
-                [item.startedAt, item.endedAt].map((e) => e.sec2date().toStringShort(omitSec: true)).join(' ~ '),
-              ]),
+              CustomTableRow.fromTexts(
+                texts: [
+                  [item.startedAt, item.endedAt].map((e) => e.sec2date().toStringShort(omitSec: true)).join(' ~ '),
+                ],
+              ),
             ],
             CustomTableRow.fromTexts(texts: [S.current.card_description], isHeader: true),
             CustomTableRow(
@@ -169,31 +173,26 @@ class _ItemInfoTabState extends State<ItemInfoTab> {
                   text: item.detail,
                   alignment: Alignment.centerLeft,
                   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-                )
+                ),
               ],
             ),
             if (item.type == ItemType.svtCoin) ..._svtCoinObtain(),
             if (item.type == ItemType.itemSelect) ...[
-              CustomTableRow.fromTexts(
-                texts: [S.current.exchange_ticket],
-                isHeader: true,
+              CustomTableRow.fromTexts(texts: [S.current.exchange_ticket], isHeader: true),
+              CustomTableRow.fromChildren(
+                children: [
+                  SharedBuilder.giftGrid(
+                    context: context,
+                    gifts: [for (final select in item.itemSelects) ...select.gifts],
+                  ),
+                ],
               ),
-              CustomTableRow.fromChildren(children: [
-                SharedBuilder.giftGrid(
-                    context: context, gifts: [for (final select in item.itemSelects) ...select.gifts])
-              ]),
             ],
           ],
         ),
       );
     }
-    return Column(
-      children: [
-        Expanded(child: child),
-        kDefaultDivider,
-        SafeArea(child: buttonBar),
-      ],
-    );
+    return Column(children: [Expanded(child: child), kDefaultDivider, SafeArea(child: buttonBar)]);
   }
 
   Widget get buttonBar {
@@ -243,33 +242,38 @@ class _ItemInfoTabState extends State<ItemInfoTab> {
           TableCellData(
             isHeader: true,
             child: Text.rich(
-              TextSpan(text: 'coins/NP & NP range', children: [
-                const TextSpan(text: ': '),
-                TextSpan(
-                  text: 'NEW',
-                  style: _useNewBondCoinRewards ? TextStyle(color: Theme.of(context).colorScheme.primary) : null,
-                  recognizer: TapGestureRecognizer()
-                    ..onTap = () {
-                      setState(() {
-                        _useNewBondCoinRewards = true;
-                      });
-                    },
-                ),
-                const TextSpan(text: '/'),
-                TextSpan(
-                  text: 'OLD',
-                  style: !_useNewBondCoinRewards ? TextStyle(color: Theme.of(context).colorScheme.primary) : null,
-                  recognizer: TapGestureRecognizer()
-                    ..onTap = () {
-                      setState(() {
-                        _useNewBondCoinRewards = false;
-                      });
-                    },
-                ),
-              ]),
+              TextSpan(
+                text: 'coins/NP & NP range',
+                children: [
+                  const TextSpan(text: ': '),
+                  TextSpan(
+                    text: 'NEW',
+                    style: _useNewBondCoinRewards ? TextStyle(color: Theme.of(context).colorScheme.primary) : null,
+                    recognizer:
+                        TapGestureRecognizer()
+                          ..onTap = () {
+                            setState(() {
+                              _useNewBondCoinRewards = true;
+                            });
+                          },
+                  ),
+                  const TextSpan(text: '/'),
+                  TextSpan(
+                    text: 'OLD',
+                    style: !_useNewBondCoinRewards ? TextStyle(color: Theme.of(context).colorScheme.primary) : null,
+                    recognizer:
+                        TapGestureRecognizer()
+                          ..onTap = () {
+                            setState(() {
+                              _useNewBondCoinRewards = false;
+                            });
+                          },
+                  ),
+                ],
+              ),
               textAlign: TextAlign.center,
             ),
-          )
+          ),
         ],
       ),
       SizedBox(
@@ -308,70 +312,57 @@ class _ItemInfoTabState extends State<ItemInfoTab> {
           defaults: TableCellData(padding: const EdgeInsets.symmetric(vertical: 4)),
           children: [
             const Text('Range'),
-            ...List.generate(
-              6,
-              (index) {
-                int baseNp = 1 + 5 * (index + max(0, _offsetNp));
-                return InkWell(
-                  onTap: () {
-                    setState(() {
-                      _baseNp = baseNp;
-                      if (index == 4) _offsetNp += 1;
-                      if (index == 0) _offsetNp = max(0, _offsetNp - 1);
-                    });
-                  },
-                  child: SizedBox.expand(
-                    child: Center(
-                      child: AutoSizeText(
-                        '$baseNp~${baseNp + 4}',
-                        textAlign: TextAlign.center,
-                        minFontSize: 6,
-                        style: baseNp == _baseNp
-                            ? TextStyle(
-                                color: Theme.of(context).colorScheme.error,
-                                fontWeight: FontWeight.bold,
-                              )
-                            : null,
-                        maxLines: 1,
-                      ),
+            ...List.generate(6, (index) {
+              int baseNp = 1 + 5 * (index + max(0, _offsetNp));
+              return InkWell(
+                onTap: () {
+                  setState(() {
+                    _baseNp = baseNp;
+                    if (index == 4) _offsetNp += 1;
+                    if (index == 0) _offsetNp = max(0, _offsetNp - 1);
+                  });
+                },
+                child: SizedBox.expand(
+                  child: Center(
+                    child: AutoSizeText(
+                      '$baseNp~${baseNp + 4}',
+                      textAlign: TextAlign.center,
+                      minFontSize: 6,
+                      style:
+                          baseNp == _baseNp
+                              ? TextStyle(color: Theme.of(context).colorScheme.error, fontWeight: FontWeight.bold)
+                              : null,
+                      maxLines: 1,
                     ),
                   ),
-                );
-              },
-            )
+                ),
+              );
+            }),
           ],
         ),
       ),
       CustomTableRow.fromTexts(
-        texts: [
-          (S.current.bond),
-          for (int np = _baseNp; np < _baseNp + 5; np++) 'NP $np',
-        ],
+        texts: [(S.current.bond), for (int np = _baseNp; np < _baseNp + 5; np++) 'NP $np'],
         isHeader: true,
       ),
       for (int index = 0; index < bondCoins.length + 1; index++)
         CustomTableRow(
-          children: List.generate(
-            6,
-            (np) {
-              if (np == 0) {
-                return TableCellData(text: 'Lv.$index');
-              }
-              int coins = Maths.sum(bondCoins.sublist(0, index)) + (np + _baseNp - 1) * _summonCoin;
-              return TableCellData(
-                text: coins.toString(),
-                style: coins > 660
-                    ? TextStyle(
-                        color: Theme.of(context).hintColor,
-                        fontStyle: FontStyle.italic,
-                      )
-                    : coins > 480
-                        ? const TextStyle(fontWeight: FontWeight.w300)
-                        : const TextStyle(fontWeight: FontWeight.bold),
-                maxLines: 1,
-              );
-            },
-          ),
+          children: List.generate(6, (np) {
+            if (np == 0) {
+              return TableCellData(text: 'Lv.$index');
+            }
+            int coins = Maths.sum(bondCoins.sublist(0, index)) + (np + _baseNp - 1) * _summonCoin;
+            return TableCellData(
+              text: coins.toString(),
+              style:
+                  coins > 660
+                      ? TextStyle(color: Theme.of(context).hintColor, fontStyle: FontStyle.italic)
+                      : coins > 480
+                      ? const TextStyle(fontWeight: FontWeight.w300)
+                      : const TextStyle(fontWeight: FontWeight.bold),
+              maxLines: 1,
+            );
+          }),
         ),
     ];
   }

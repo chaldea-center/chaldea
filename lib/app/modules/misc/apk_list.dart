@@ -102,7 +102,9 @@ class _ApkListPageState extends State<ApkListPage> {
       } else if (data.region != null) {
         final workerHost = HostsX.worker.of(proxy || Language.isCHS);
         final versions = await ChaldeaWorkerApi.cacheManager.getModel(
-            '$workerHost/proxy/apk/current_ver.json?t=${DateTime.now().timestamp}', (v) => Map<String, String>.from(v));
+          '$workerHost/proxy/apk/current_ver.json?t=${DateTime.now().timestamp}',
+          (v) => Map<String, String>.from(v),
+        );
         final ver = versions?[data.region!.upper];
         final ver32 = versions?['${data.region!.upper}_32'];
         if (ver != null) {
@@ -126,9 +128,11 @@ class _ApkListPageState extends State<ApkListPage> {
         if (latestRelease != null) {
           final ver = latestRelease.tagName!.trimCharLeft('v');
           data.version = ver;
-          url = data.url = proxy
-              ? '${HostsX.worker.cn}/proxy/github/github.com/chaldea-center/chaldea/releases/download/v$ver/chaldea-$ver-'
-              : 'https://github.com/chaldea-center/chaldea/releases/download/v$ver/chaldea-$ver-';
+          url =
+              data.url =
+                  proxy
+                      ? '${HostsX.worker.cn}/proxy/github/github.com/chaldea-center/chaldea/releases/download/v$ver/chaldea-$ver-'
+                      : 'https://github.com/chaldea-center/chaldea/releases/download/v$ver/chaldea-$ver-';
         }
       }
       if (url == null) {
@@ -158,150 +162,150 @@ class _ApkListPageState extends State<ApkListPage> {
             },
             icon: const Icon(Icons.help_outline),
           ),
-          IconButton(
-            onPressed: load,
-            icon: const Icon(Icons.refresh),
-            tooltip: S.current.refresh,
-          ),
+          IconButton(onPressed: load, icon: const Icon(Icons.refresh), tooltip: S.current.refresh),
         ],
       ),
-      body: _hidden
-          ? const Center(child: Icon(Icons.nearby_error_rounded))
-          : ListView(
-              children: [
-                Wrap(
-                  alignment: WrapAlignment.center,
-                  children: [
-                    for (bool v in [false, true])
-                      RadioWithLabel<bool>(
-                        value: v,
-                        groupValue: proxy,
-                        label: Text(v ? S.current.chaldea_server_cn : S.current.chaldea_server_global),
-                        onChanged: (v) {
-                          setState(() {
-                            if (v != null) proxy = v;
-                          });
-                        },
-                      )
-                  ],
-                ),
-                for (final data in _dataList) buildOne(data),
-                TileGroup(
-                  header: "Rayshift APK Mod",
-                  footer: Language.isZH
-                      ? "声明: 第三方修改APK，请自行承担风险。"
-                      : "Disclaimer: 3rd party modified apk, use at your own risk.",
-                  children: [
-                    for (final r in const ['jp', 'na'])
+      body:
+          _hidden
+              ? const Center(child: Icon(Icons.nearby_error_rounded))
+              : ListView(
+                children: [
+                  Wrap(
+                    alignment: WrapAlignment.center,
+                    children: [
+                      for (bool v in [false, true])
+                        RadioWithLabel<bool>(
+                          value: v,
+                          groupValue: proxy,
+                          label: Text(v ? S.current.chaldea_server_cn : S.current.chaldea_server_global),
+                          onChanged: (v) {
+                            setState(() {
+                              if (v != null) proxy = v;
+                            });
+                          },
+                        ),
+                    ],
+                  ),
+                  for (final data in _dataList) buildOne(data),
+                  TileGroup(
+                    header: "Rayshift APK Mod",
+                    footer:
+                        Language.isZH
+                            ? "声明: 第三方修改APK，请自行承担风险。"
+                            : "Disclaimer: 3rd party modified apk, use at your own risk.",
+                    children: [
+                      for (final r in const ['jp', 'na'])
+                        ListTile(
+                          dense: true,
+                          title: Text("BFGO ${r.toUpperCase()}"),
+                          subtitle: Text(bfgoVersions[r] ?? 'io.rayshift.betterfgo${r == 'jp' ? '' : ".en"}'),
+                          trailing: const Icon(Icons.open_in_new, size: 18),
+                          onTap: () {
+                            launch('https://rayshift.io/betterfgo/download/$r', external: true);
+                          },
+                        ),
+                    ],
+                  ),
+                  xapkHint,
+                  const SizedBox(height: 16),
+                  const DividerWithTitle(title: 'Links', indent: 16, height: 16),
+                  TileGroup(
+                    header: 'Web',
+                    children: [
                       ListTile(
                         dense: true,
-                        title: Text("BFGO ${r.toUpperCase()}"),
-                        subtitle: Text(bfgoVersions[r] ?? 'io.rayshift.betterfgo${r == 'jp' ? '' : ".en"}'),
+                        title: const Text('FGO Apk'),
+                        subtitle: Text(ChaldeaUrl.doc('fgo_apk')),
+                        onTap: () {
+                          launch(ChaldeaUrl.doc('fgo_apk'));
+                        },
+                      ),
+                      ListTile(
+                        dense: true,
+                        title: const Text('Chaldea App'),
+                        subtitle: Text(ChaldeaUrl.doc('install')),
+                        onTap: () {
+                          launch(ChaldeaUrl.doc('install'));
+                        },
+                      ),
+                    ],
+                  ),
+                  TileGroup(
+                    header: 'Credits',
+                    children: [
+                      ListTile(
+                        dense: true,
+                        title: const Text('@Cereal'),
                         trailing: const Icon(Icons.open_in_new, size: 18),
                         onTap: () {
-                          launch('https://rayshift.io/betterfgo/download/$r', external: true);
+                          launch('https://fgo.bigcereal.com/', external: true);
                         },
-                      )
-                  ],
-                ),
-                xapkHint,
-                const SizedBox(height: 16),
-                const DividerWithTitle(title: 'Links', indent: 16, height: 16),
-                TileGroup(
-                  header: 'Web',
-                  children: [
-                    ListTile(
-                      dense: true,
-                      title: const Text('FGO Apk'),
-                      subtitle: Text(ChaldeaUrl.doc('fgo_apk')),
-                      onTap: () {
-                        launch(ChaldeaUrl.doc('fgo_apk'));
-                      },
-                    ),
-                    ListTile(
-                      dense: true,
-                      title: const Text('Chaldea App'),
-                      subtitle: Text(ChaldeaUrl.doc('install')),
-                      onTap: () {
-                        launch(ChaldeaUrl.doc('install'));
-                      },
-                    ),
-                  ],
-                ),
-                TileGroup(
-                  header: 'Credits',
-                  children: [
-                    ListTile(
-                      dense: true,
-                      title: const Text('@Cereal'),
-                      trailing: const Icon(Icons.open_in_new, size: 18),
-                      onTap: () {
-                        launch('https://fgo.bigcereal.com/', external: true);
-                      },
-                    ),
-                    ListTile(
-                      dense: true,
-                      title: const Text('All APKs'),
-                      // subtitle: Text('$apkHost/apk/'),
-                      trailing: const Icon(Icons.open_in_new, size: 18),
-                      onTap: () {
-                        launch('$apkHost/apk/?sort=time&order=desc', external: true);
-                      },
-                    ),
-                    ListTile(
-                      dense: true,
-                      title: const Text('Rayshift'),
-                      trailing: const Icon(Icons.open_in_new, size: 18),
-                      onTap: () {
-                        launch('https://rayshift.io', external: true);
-                      },
-                    ),
-                  ],
-                )
-              ],
-            ),
+                      ),
+                      ListTile(
+                        dense: true,
+                        title: const Text('All APKs'),
+                        // subtitle: Text('$apkHost/apk/'),
+                        trailing: const Icon(Icons.open_in_new, size: 18),
+                        onTap: () {
+                          launch('$apkHost/apk/?sort=time&order=desc', external: true);
+                        },
+                      ),
+                      ListTile(
+                        dense: true,
+                        title: const Text('Rayshift'),
+                        trailing: const Icon(Icons.open_in_new, size: 18),
+                        onTap: () {
+                          launch('https://rayshift.io', external: true);
+                        },
+                      ),
+                    ],
+                  ),
+                ],
+              ),
     );
   }
 
   Widget buildOne(_ApkData data) {
     List<Widget> children = [];
-    children.add(ListTile(
-      dense: true,
-      contentPadding: const EdgeInsetsDirectional.only(start: 16, end: 0),
-      title: Text(data.packageId, style: Theme.of(context).textTheme.bodySmall),
-      trailing: Wrap(
-        crossAxisAlignment: WrapCrossAlignment.center,
-        children: [
-          IconButton(
-            onPressed: () {
-              final appname = data.region == null ? 'Chaldea' : 'fate-grand-order';
-              launch('https://apps.apple.com/${data.countryCode}/app/$appname/id${data.bundleId}', external: true);
-            },
-            icon: const FaIcon(FontAwesomeIcons.appStore),
-            tooltip: 'App Store',
-            iconSize: 18,
-          ),
-          if (data.region != Region.cn)
+    children.add(
+      ListTile(
+        dense: true,
+        contentPadding: const EdgeInsetsDirectional.only(start: 16, end: 0),
+        title: Text(data.packageId, style: Theme.of(context).textTheme.bodySmall),
+        trailing: Wrap(
+          crossAxisAlignment: WrapCrossAlignment.center,
+          children: [
             IconButton(
               onPressed: () {
-                launch('https://play.google.com/store/apps/details?id=${data.packageId}', external: true);
+                final appname = data.region == null ? 'Chaldea' : 'fate-grand-order';
+                launch('https://apps.apple.com/${data.countryCode}/app/$appname/id${data.bundleId}', external: true);
               },
-              icon: const FaIcon(FontAwesomeIcons.googlePlay),
-              tooltip: 'Google Play',
+              icon: const FaIcon(FontAwesomeIcons.appStore),
+              tooltip: 'App Store',
               iconSize: 18,
             ),
-          if (data.region == Region.cn)
-            IconButton(
-              onPressed: () {
-                launch('https://game.bilibili.com/fgo/', external: true);
-              },
-              icon: const FaIcon(FontAwesomeIcons.bilibili),
-              tooltip: 'bilibili',
-              iconSize: 18,
-            ),
-        ],
+            if (data.region != Region.cn)
+              IconButton(
+                onPressed: () {
+                  launch('https://play.google.com/store/apps/details?id=${data.packageId}', external: true);
+                },
+                icon: const FaIcon(FontAwesomeIcons.googlePlay),
+                tooltip: 'Google Play',
+                iconSize: 18,
+              ),
+            if (data.region == Region.cn)
+              IconButton(
+                onPressed: () {
+                  launch('https://game.bilibili.com/fgo/', external: true);
+                },
+                icon: const FaIcon(FontAwesomeIcons.bilibili),
+                tooltip: 'bilibili',
+                iconSize: 18,
+              ),
+          ],
+        ),
       ),
-    ));
+    );
     if (data.region == null) {
       if (data.url != null) {
         children.addAll([
@@ -317,32 +321,29 @@ class _ApkListPageState extends State<ApkListPage> {
       ]);
     }
     if (data.error != null) {
-      children.add(ListTile(
-        dense: true,
-        title: Text(
-          '${S.current.error}: ${escapeDioException(data.error)}',
-          maxLines: 3,
-        ),
-      ));
+      children.add(
+        ListTile(dense: true, title: Text('${S.current.error}: ${escapeDioException(data.error)}', maxLines: 3)),
+      );
     }
     final flag = SvgStrings.getFlag(data.region?.name ?? "");
     return TileGroup(
       headerWidget: Row(
         children: [
           Expanded(
-            child: SHeader.rich(TextSpan(children: [
-              if (flag != null) ...[
-                CenterWidgetSpan(child: SvgPicture.string(flag, width: 24)),
-                const TextSpan(text: ' '),
-              ],
-              TextSpan(text: data.region?.localName ?? 'Chaldea App'),
-            ])),
+            child: SHeader.rich(
+              TextSpan(
+                children: [
+                  if (flag != null) ...[
+                    CenterWidgetSpan(child: SvgPicture.string(flag, width: 24)),
+                    const TextSpan(text: ' '),
+                  ],
+                  TextSpan(text: data.region?.localName ?? 'Chaldea App'),
+                ],
+              ),
+            ),
           ),
           if (data.loading)
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 12),
-              child: CupertinoActivityIndicator(radius: 8),
-            ),
+            const Padding(padding: EdgeInsets.symmetric(horizontal: 12), child: CupertinoActivityIndicator(radius: 8)),
         ],
       ),
       children: children,
@@ -404,15 +405,16 @@ class _ApkListPageState extends State<ApkListPage> {
         padding: const EdgeInsets.all(8),
         child: MyMarkdownWidget(
           scrollable: false,
-          data: Language.isZH
-              ? """**重要 2024.07.19**
+          data:
+              Language.isZH
+                  ? """**重要 2024.07.19**
 
 Google 不再提供APK格式安装包。XAPK格式需要通过安装器安装，如ApkPure App、APKCombo Installer、MT管理器、UU加速器等进行安装。等效于Google Play商店安装的官方版本。
 
 部分机型需关闭一些系统优化，如MIUI需关闭MIUI优化。
 
 <https://docs.chaldea.center/zh/guide/fgo_apk>"""
-              : """**IMPORTANT 2024.07.19**
+                  : """**IMPORTANT 2024.07.19**
 
 Google Play Store won't provide APK format anymore. XAPK needs installer: ApkPure App/APKCombo Installer/MT Explorer/...
 

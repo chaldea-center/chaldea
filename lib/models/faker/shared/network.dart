@@ -167,9 +167,10 @@ abstract class NetworkManagerBase<TRequest extends FRequestBase, TUser extends A
       }
     }
 
-    final record = FRequestRecord<TRequest>()
-      ..request = request
-      ..sendedAt = DateTime.now();
+    final record =
+        FRequestRecord<TRequest>()
+          ..request = request
+          ..sendedAt = DateTime.now();
     // In case memory used out
     history.add(record);
     if (history.length > 50) {

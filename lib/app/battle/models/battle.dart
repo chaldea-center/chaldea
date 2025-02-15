@@ -47,11 +47,7 @@ class BattleRuntime {
     required this.originalQuest,
   });
 
-  BattleShareData getShareData({
-    bool allowNotWin = false,
-    bool isCritTeam = false,
-    bool includeReplayData = true,
-  }) {
+  BattleShareData getShareData({bool allowNotWin = false, bool isCritTeam = false, bool includeReplayData = true}) {
     assert(battleData.isBattleWin || allowNotWin);
     return BattleShareData(
       appBuild: AppInfo.buildNumber,
@@ -111,9 +107,10 @@ class BattleData {
   BattleServantData? get targetedEnemy =>
       onFieldEnemies.length > enemyTargetIndex && enemyTargetIndex >= 0 ? onFieldEnemies[enemyTargetIndex] : null;
 
-  BattleServantData? get targetedPlayer => onFieldAllyServants.length > playerTargetIndex && playerTargetIndex >= 0
-      ? onFieldAllyServants[playerTargetIndex]
-      : null;
+  BattleServantData? get targetedPlayer =>
+      onFieldAllyServants.length > playerTargetIndex && playerTargetIndex >= 0
+          ? onFieldAllyServants[playerTargetIndex]
+          : null;
 
   BattleServantData? getTargetedAlly(final BattleServantData? svt, {bool defaultToPlayer = true}) {
     return svt?.isPlayer ?? defaultToPlayer ? targetedPlayer : targetedEnemy;
@@ -136,9 +133,10 @@ class BattleData {
   List<BattleServantData> get nonnullAllActors => [...nonnullActors, ...nonnullBackupEnemies, ...nonnullBackupPlayers];
 
   BattleServantData? getServantData(int uniqueId, {bool onFieldOnly = false}) {
-    final targets = onFieldOnly
-        ? [...onFieldAllyServants, ...onFieldEnemies]
-        : [...onFieldAllyServants, ...onFieldEnemies, ...backupAllyServants, ...backupEnemies];
+    final targets =
+        onFieldOnly
+            ? [...onFieldAllyServants, ...onFieldEnemies]
+            : [...onFieldAllyServants, ...onFieldEnemies, ...backupAllyServants, ...backupEnemies];
     return targets.firstWhereOrNull((e) => e?.uniqueId == uniqueId);
   }
 
@@ -287,15 +285,12 @@ class BattleData {
 
     fieldBuffs.clear();
 
-    backupAllyServants = List.generate(
-      playerSettings.length,
-      (idx) {
-        final svtSetting = playerSettings[idx];
-        return svtSetting == null || svtSetting.svt == null
-            ? null
-            : BattleServantData.fromPlayerSvtData(svtSetting, getNextUniqueId(), startingPosition: idx + 1);
-      },
-    );
+    backupAllyServants = List.generate(playerSettings.length, (idx) {
+      final svtSetting = playerSettings[idx];
+      return svtSetting == null || svtSetting.svt == null
+          ? null
+          : BattleServantData.fromPlayerSvtData(svtSetting, getNextUniqueId(), startingPosition: idx + 1);
+    });
     await _fetchWaveEnemies();
 
     final overwriteEquip = quest.extraDetail?.getMergedOverwriteEquipSkills();
@@ -501,8 +496,9 @@ class BattleData {
 
   Future<bool> _nextWave() async {
     if (niceQuest?.stages.every((s) => s.wave < waveCount + 1) == true) {
-      recorder.messageRich(BattleMessageRecord('Battle Win \\(^o^)/',
-          alignment: Alignment.center, style: const TextStyle(fontSize: 20)));
+      recorder.messageRich(
+        BattleMessageRecord('Battle Win \\(^o^)/', alignment: Alignment.center, style: const TextStyle(fontSize: 20)),
+      );
       return false;
     }
     waveCount += 1;
@@ -619,8 +615,12 @@ class BattleData {
             backupEnemies.length = enemy.deckId;
           }
 
-          final actor = backupEnemies[enemy.deckId - 1] =
-              BattleServantData.fromEnemy(enemy, getNextUniqueId(), niceQuest?.war?.eventId);
+          final actor =
+              backupEnemies[enemy.deckId - 1] = BattleServantData.fromEnemy(
+                enemy,
+                getNextUniqueId(),
+                niceQuest?.war?.eventId,
+              );
           if (options.simulateEnemy) {
             await actor.loadEnemySvtData(this);
           }
@@ -779,11 +779,7 @@ class BattleData {
     }
   }
 
-  Future<T?> recordError<T>({
-    required bool save,
-    required String action,
-    required Future<T> Function() task,
-  }) async {
+  Future<T?> recordError<T>({required bool save, required String action, required Future<T> Function() task}) async {
     return tryAcquire<T?>(() async {
       bool _saved = false;
       try {
@@ -813,9 +809,10 @@ class BattleData {
 
   Future<void> _acquireTarget(int? svtIndex, int skillIndex, BattleSkillInfoData? skillInfo) async {
     if (!options.manualAllySkillTarget) return;
-    skillInfo ??= svtIndex == null
-        ? masterSkillInfo.getOrNull(skillIndex)
-        : onFieldAllyServants.getOrNull(svtIndex)?.skillInfoList.getOrNull(skillIndex);
+    skillInfo ??=
+        svtIndex == null
+            ? masterSkillInfo.getOrNull(skillIndex)
+            : onFieldAllyServants.getOrNull(svtIndex)?.skillInfoList.getOrNull(skillIndex);
     if (skillInfo == null) return;
     final curSkill = skillInfo.skill;
     if (curSkill == null) return;
@@ -843,8 +840,9 @@ class BattleData {
     final svt = onFieldAllyServants.getOrNull(servantIndex);
     if (svt == null || isBattleFinished) return;
 
-    battleLogger
-        .action('${svt.lBattleName} - ${S.current.active_skill} ${skillIndex + 1}: ${svt.getSkillName(skillIndex)}');
+    battleLogger.action(
+      '${svt.lBattleName} - ${S.current.active_skill} ${skillIndex + 1}: ${svt.getSkillName(skillIndex)}',
+    );
     return recordError(
       save: true,
       action: 'svt_skill-${servantIndex + 1}-${skillIndex + 1}',
@@ -882,8 +880,10 @@ class BattleData {
       return;
     }
 
-    battleLogger.action('${S.current.mystic_code} - ${S.current.active_skill} ${skillIndex + 1}: '
-        '${skillInfo.lName}');
+    battleLogger.action(
+      '${S.current.mystic_code} - ${S.current.active_skill} ${skillIndex + 1}: '
+      '${skillInfo.lName}',
+    );
     return recordError(
       save: true,
       action: 'mystic_code_skill-${skillIndex + 1}',
@@ -892,13 +892,7 @@ class BattleData {
           await _acquireTarget(null, skillIndex, skillInfo);
           recorder.skillActivation(this, null, skillIndex);
           await skillInfo.activate(this);
-          recorder.skill(
-            battleData: this,
-            activator: null,
-            skill: skillInfo,
-            fromPlayer: true,
-            uploadEligible: true,
-          );
+          recorder.skill(battleData: this, activator: null, skill: skillInfo, fromPlayer: true, uploadEligible: true);
         });
       },
     );
@@ -915,8 +909,10 @@ class BattleData {
       action: 'custom_skill-${skill.id}',
       task: () async {
         await withAction(() async {
-          battleLogger.action('${actor == null ? S.current.battle_no_source : actor.lBattleName}'
-              ' - ${S.current.skill}: ${skill.lName.l}');
+          battleLogger.action(
+            '${actor == null ? S.current.battle_no_source : actor.lBattleName}'
+            ' - ${S.current.skill}: ${skill.lName.l}',
+          );
           final skillInfo = BattleSkillInfoData(skill, type: SkillInfoType.custom, skillLv: skillLv);
           await skillInfo.activate(this, activator: actor, defaultToPlayer: isAlly);
           recorder.skill(
@@ -952,12 +948,14 @@ class BattleData {
 
         final validActions = actions.where((action) => action.isValid(this)).toList();
         final cardTypesSet = validActions.map((action) => action.cardData.cardType).toSet();
-        final isTypeChain = validActions.length == 3 &&
+        final isTypeChain =
+            validActions.length == 3 &&
             (cardTypesSet.every((card) => card.isArts()) ||
                 cardTypesSet.every((card) => card.isBuster()) ||
                 cardTypesSet.every((card) => card.isQuick()));
 
-        final isMightyChain = options.mightyChain &&
+        final isMightyChain =
+            options.mightyChain &&
             cardTypesSet.any((card) => card.isArts()) &&
             cardTypesSet.any((card) => card.isBuster()) &&
             cardTypesSet.any((card) => card.isQuick());
@@ -975,9 +973,10 @@ class BattleData {
           }
         }
 
-        final CardType firstCardType = actions.isEmpty
-            ? CardType.blank
-            : options.mightyChain || actions[0].isValid(this)
+        final CardType firstCardType =
+            actions.isEmpty
+                ? CardType.blank
+                : options.mightyChain || actions[0].isValid(this)
                 ? actions[0].cardData.cardType
                 : CardType.blank;
         if (isTypeChain) {
@@ -1056,8 +1055,8 @@ class BattleData {
     return (cardData.isTD
             ? actor.getNPCard()
             : cardData.cardType.isExtra()
-                ? actor.getExtraCard()
-                : actor.getCards().getOrNull(cardData.cardIndex)) ??
+            ? actor.getExtraCard()
+            : actor.getCards().getOrNull(cardData.cardIndex)) ??
         cardData;
   }
 
@@ -1140,8 +1139,12 @@ class BattleData {
 
               for (final svt in nonnullPlayers) {
                 if (svt.attacked) {
-                  await svt.activateBuff(this, BuffAction.functionDamage,
-                      opponent: action.actor, card: action.cardData);
+                  await svt.activateBuff(
+                    this,
+                    BuffAction.functionDamage,
+                    opponent: action.actor,
+                    card: action.cardData,
+                  );
                   svt.attacked = false;
                 }
 
@@ -1349,13 +1352,7 @@ class BattleData {
       task: () async {
         final skillInfo = BattleSkillInfoData(skill, type: SkillInfoType.commandSpell);
         await skillInfo.activate(this);
-        recorder.skill(
-          battleData: this,
-          activator: null,
-          skill: skillInfo,
-          fromPlayer: true,
-          uploadEligible: false,
-        );
+        recorder.skill(battleData: this, activator: null, skill: skillInfo, fromPlayer: true, uploadEligible: false);
       },
     );
   }
@@ -1371,13 +1368,7 @@ class BattleData {
         final skillInfo = BattleSkillInfoData(skill, type: SkillInfoType.commandSpell);
         await _acquireTarget(null, -1, skillInfo);
         await skillInfo.activate(this);
-        recorder.skill(
-          battleData: this,
-          activator: null,
-          skill: skillInfo,
-          fromPlayer: true,
-          uploadEligible: false,
-        );
+        recorder.skill(battleData: this, activator: null, skill: skillInfo, fromPlayer: true, uploadEligible: false);
       },
     );
   }
@@ -1394,13 +1385,7 @@ class BattleData {
         final skillInfo = BattleSkillInfoData(skill, type: SkillInfoType.commandSpell);
         await _acquireTarget(null, -1, skillInfo);
         await skillInfo.activate(this);
-        recorder.skill(
-          battleData: this,
-          activator: null,
-          skill: skillInfo,
-          fromPlayer: true,
-          uploadEligible: false,
-        );
+        recorder.skill(battleData: this, activator: null, skill: skillInfo, fromPlayer: true, uploadEligible: false);
       },
     );
   }
@@ -1564,7 +1549,8 @@ class BattleData {
         return await delegate!.canActivate!.call(curResult);
       } else if (mounted) {
         final curResultString = curResult ? S.current.success : S.current.failed;
-        final String details = '${S.current.results}: $curResultString => '
+        final String details =
+            '${S.current.results}: $curResultString => '
             '${S.current.battle_activate_probability}: '
             '${(activationRate / 10).toStringAsFixed(1)}% '
             'vs ${S.current.probability_expectation}: '
@@ -1586,13 +1572,16 @@ class BattleData {
     final String funcString;
     if (curFunc != null && mounted) {
       final function = curFunc!;
-      final fieldTraitString = function.funcquestTvals.isNotEmpty
-          ? ' - ${S.current.battle_require_field_traits} ${function.funcquestTvals.map((e) => e.shownName()).toList()}'
-          : '';
-      final targetTraitString = function.functvals.isNotEmpty
-          ? ' - ${S.current.battle_require_opponent_traits} ${function.functvals.map((e) => e.shownName()).toList()}'
-          : '';
-      funcString = '${function.lPopupText.l}'
+      final fieldTraitString =
+          function.funcquestTvals.isNotEmpty
+              ? ' - ${S.current.battle_require_field_traits} ${function.funcquestTvals.map((e) => e.shownName()).toList()}'
+              : '';
+      final targetTraitString =
+          function.functvals.isNotEmpty
+              ? ' - ${S.current.battle_require_opponent_traits} ${function.functvals.map((e) => e.shownName()).toList()}'
+              : '';
+      funcString =
+          '${function.lPopupText.l}'
           '$fieldTraitString'
           '$targetTraitString';
     } else {
@@ -1602,37 +1591,38 @@ class BattleData {
   }
 
   void pushSnapshot() {
-    final BattleData copy = BattleData()
-      ..niceQuest = niceQuest
-      ..curStage = curStage
-      ..fieldAi = fieldAi
-      ..enemyOnFieldCount = enemyOnFieldCount
-      ..enemyValidAppear = enemyValidAppear.toList()
-      ..backupEnemies = backupEnemies.map((e) => e?.copy()).toList()
-      ..backupAllyServants = backupAllyServants.map((e) => e?.copy()).toList()
-      ..onFieldEnemies = onFieldEnemies.map((e) => e?.copy()).toList()
-      ..onFieldAllyServants = onFieldAllyServants.map((e) => e?.copy()).toList()
-      ..enemyDecks = enemyDecks
-      ..enemyTargetIndex = enemyTargetIndex
-      ..playerTargetIndex = playerTargetIndex
-      ..fieldBuffs = fieldBuffs.map((e) => e.copy()).toList()
-      ..mysticCode = mysticCode
-      ..mysticCodeLv = mysticCodeLv
-      ..masterSkillInfo = masterSkillInfo.map((e) => e.copy()).toList()
-      ..isFirstSkillInTurn = isFirstSkillInTurn
-      ..isPlayerTurn = isPlayerTurn
-      ..waveCount = waveCount
-      ..turnCount = turnCount
-      ..totalTurnCount = totalTurnCount
-      ..criticalStars = criticalStars
-      .._uniqueIndex = _uniqueIndex
-      ..cardDealt = cardDealt
-      ..currentCards = currentCards.toSet()
-      ..remainingCards = remainingCards.toSet()
-      ..options = options.copy()
-      ..recorder = recorder.copy()
-      ..replayDataRecord = replayDataRecord.copy()
-      ..deadAttackCommandDict = deadAttackCommandDict.map((key, value) => MapEntry(key, value.copy()));
+    final BattleData copy =
+        BattleData()
+          ..niceQuest = niceQuest
+          ..curStage = curStage
+          ..fieldAi = fieldAi
+          ..enemyOnFieldCount = enemyOnFieldCount
+          ..enemyValidAppear = enemyValidAppear.toList()
+          ..backupEnemies = backupEnemies.map((e) => e?.copy()).toList()
+          ..backupAllyServants = backupAllyServants.map((e) => e?.copy()).toList()
+          ..onFieldEnemies = onFieldEnemies.map((e) => e?.copy()).toList()
+          ..onFieldAllyServants = onFieldAllyServants.map((e) => e?.copy()).toList()
+          ..enemyDecks = enemyDecks
+          ..enemyTargetIndex = enemyTargetIndex
+          ..playerTargetIndex = playerTargetIndex
+          ..fieldBuffs = fieldBuffs.map((e) => e.copy()).toList()
+          ..mysticCode = mysticCode
+          ..mysticCodeLv = mysticCodeLv
+          ..masterSkillInfo = masterSkillInfo.map((e) => e.copy()).toList()
+          ..isFirstSkillInTurn = isFirstSkillInTurn
+          ..isPlayerTurn = isPlayerTurn
+          ..waveCount = waveCount
+          ..turnCount = turnCount
+          ..totalTurnCount = totalTurnCount
+          ..criticalStars = criticalStars
+          .._uniqueIndex = _uniqueIndex
+          ..cardDealt = cardDealt
+          ..currentCards = currentCards.toSet()
+          ..remainingCards = remainingCards.toSet()
+          ..options = options.copy()
+          ..recorder = recorder.copy()
+          ..replayDataRecord = replayDataRecord.copy()
+          ..deadAttackCommandDict = deadAttackCommandDict.map((key, value) => MapEntry(key, value.copy()));
 
     snapshots.add(copy);
   }

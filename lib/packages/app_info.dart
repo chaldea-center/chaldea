@@ -52,10 +52,7 @@ class AppInfo {
         deviceParams.addAll(Map.from(windowsInfo.data)..remove('digitalProductId'));
       } else if (PlatformU.isWeb) {
         final webInfo = await DeviceInfoPlugin().webBrowserInfo;
-        deviceParams.addAll({
-          ...webInfo.data,
-          'browserName': webInfo.browserName.name,
-        });
+        deviceParams.addAll({...webInfo.data, 'browserName': webInfo.browserName.name});
       } else {
         deviceParams['operatingSystem'] = PlatformU.operatingSystem;
         deviceParams['operatingSystemVersion'] = PlatformU.operatingSystemVersion;
@@ -74,13 +71,15 @@ class AppInfo {
   ///  - Windows: Not Support
   static Future<void> _loadApplicationInfo() async {
     ///Only android, iOS and macOS are implemented
-    _packageInfo = await PackageInfo.fromPlatform().catchError((e) => PackageInfo(
-          appName: kAppName,
-          packageName: kPackageName,
-          version: '0.0.0',
-          buildNumber: '0',
-          buildSignature: '',
-        ));
+    _packageInfo = await PackageInfo.fromPlatform().catchError(
+      (e) => PackageInfo(
+        appName: kAppName,
+        packageName: kPackageName,
+        version: '0.0.0',
+        buildNumber: '0',
+        buildSignature: '',
+      ),
+    );
     _packageInfo = PackageInfo(
       appName: _packageInfo!.appName.toTitle(),
       packageName: _packageInfo!.packageName,
@@ -93,8 +92,10 @@ class AppInfo {
     appParams["packageName"] = _packageInfo?.packageName;
     appParams["commitHash"] = kCommitHash;
     appParams["commitTimestamp"] = commitDate;
-    logger.t('Resolved app version: ${_packageInfo?.packageName}'
-        ' ${_packageInfo?.version}+${_packageInfo?.buildNumber} $kCommitHash - $commitDate');
+    logger.t(
+      'Resolved app version: ${_packageInfo?.packageName}'
+      ' ${_packageInfo?.version}+${_packageInfo?.buildNumber} $kCommitHash - $commitDate',
+    );
   }
 
   static Future<void> _loadUniqueId(String appPath) async {
@@ -114,20 +115,16 @@ class AppInfo {
       // Output:
       // HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion
       //     ProductId    REG_SZ    XXXXX-XXXXX-XXXXX-XXXXX
-      final result = await Process.run(
-        'reg',
-        [
-          'query',
-          // ProductId
-          // r'HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion',
-          // MachineGuid
-          r'HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Cryptography',
-          '/v',
-          // 'ProductId'
-          'MachineGuid'
-        ],
-        runInShell: true,
-      );
+      final result = await Process.run('reg', [
+        'query',
+        // ProductId
+        // r'HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion',
+        // MachineGuid
+        r'HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Cryptography',
+        '/v',
+        // 'ProductId'
+        'MachineGuid',
+      ], runInShell: true);
       String resultString = result.stdout.toString().trim();
       // print('Windows MachineGuid query:\n$resultString');
       if (resultString.contains('MachineGuid') && resultString.contains('REG_SZ')) {
@@ -144,11 +141,7 @@ class AppInfo {
       originId = (await DeviceInfoPlugin().macOsInfo).systemGUID;
     } else if (PlatformU.isLinux) {
       //cat /etc/machine-id
-      final result = await Process.run(
-        'cat',
-        ['/etc/machine-id'],
-        runInShell: true,
-      );
+      final result = await Process.run('cat', ['/etc/machine-id'], runInShell: true);
       String resultString = result.stdout.toString().trim();
       print('Linux machine id query:\n$resultString');
       originId = resultString;
@@ -177,12 +170,7 @@ class AppInfo {
 
   static void initiateForTest() {
     _uuid = '00000000-0000-0000-0000-000000000000';
-    _packageInfo = PackageInfo(
-      appName: kAppName,
-      packageName: kPackageName,
-      version: '9.9.9',
-      buildNumber: '9999',
-    );
+    _packageInfo = PackageInfo(appName: kAppName, packageName: kPackageName, version: '9.9.9', buildNumber: '9999');
   }
 
   static Future<void> resolve(String appPath) async {
@@ -281,10 +269,4 @@ class AppInfo {
   static bool get isFDroid => PlatformU.isAndroid && packageName == kPackageNameFDroid;
 }
 
-enum MacAppType {
-  unknown,
-  store,
-  notarized,
-  debug,
-  notMacApp,
-}
+enum MacAppType { unknown, store, notarized, debug, notMacApp }

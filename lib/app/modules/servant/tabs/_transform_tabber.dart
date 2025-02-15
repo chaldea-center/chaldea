@@ -35,21 +35,13 @@ class TransformSvtProfileTabber extends StatelessWidget {
                   child: TabBar(
                     isScrollable: true,
                     tabAlignment: TabAlignment.center,
-                    tabs: [
-                      for (final e in transformVariants) buildHeader(context, e),
-                    ],
+                    tabs: [for (final e in transformVariants) buildHeader(context, e)],
                   ),
                 ),
               ),
             ],
           ),
-          Expanded(
-            child: TabBarView(
-              children: [
-                for (final e in transformVariants) builder(context, e),
-              ],
-            ),
-          ),
+          Expanded(child: TabBarView(children: [for (final e in transformVariants) builder(context, e)])),
         ],
       ),
     );
@@ -59,10 +51,9 @@ class TransformSvtProfileTabber extends StatelessWidget {
     String name = svt == this.svt ? svt.lName.l : '${svt.lName.l}(${svt.id})';
     return Tab(
       child: Text.rich(
-        TextSpan(children: [
-          CenterWidgetSpan(child: svt.iconBuilder(context: context, width: 24)),
-          TextSpan(text: ' $name'),
-        ]),
+        TextSpan(
+          children: [CenterWidgetSpan(child: svt.iconBuilder(context: context, width: 24)), TextSpan(text: ' $name')],
+        ),
         style: Theme.of(context).textTheme.bodyMedium,
       ),
     );

@@ -82,11 +82,7 @@ class _EventDetailPageState extends State<EventDetailPage> {
       _loading = true;
       if (mounted) setState(() {});
       EasyLoading.show();
-      newEvent = await AtlasApi.event(
-        eventId!,
-        region: region,
-        expireAfter: force ? Duration.zero : null,
-      );
+      newEvent = await AtlasApi.event(eventId!, region: region, expireAfter: force ? Duration.zero : null);
       EasyLoading.dismiss();
       newEvent?.calcItems(db.gameData);
       _loading = false;
@@ -101,11 +97,7 @@ class _EventDetailPageState extends State<EventDetailPage> {
   @override
   Widget build(BuildContext context) {
     if (_event == null) {
-      return NotFoundPage(
-        title: 'Event ${widget.eventId}',
-        url: Routes.eventI(widget.eventId ?? 0),
-        loading: _loading,
-      );
+      return NotFoundPage(title: 'Event ${widget.eventId}', url: Routes.eventI(widget.eventId ?? 0), loading: _loading);
     }
     List<Tab> tabs = [];
     List<Widget> views = [];
@@ -117,9 +109,7 @@ class _EventDetailPageState extends State<EventDetailPage> {
 
     _addTab(
       S.current.overview,
-      KeepAliveBuilder(
-        builder: (context) => EventItemsOverview(event: event, region: _region),
-      ),
+      KeepAliveBuilder(builder: (context) => EventItemsOverview(event: event, region: _region)),
     );
     // special event mechanisms
     for (int index = 0; index < event.lotteries.length; index++) {
@@ -167,17 +157,18 @@ class _EventDetailPageState extends State<EventDetailPage> {
     }
     final normalMissions = event.missions.where((e) => e.type != MissionType.random).toList();
     if (normalMissions.isNotEmpty) {
-      _addTab(S.current.mission,
-          EventMissionsPage(event: event, missions: normalMissions, onSwitchRegion: _showSwitchRegion));
+      _addTab(
+        S.current.mission,
+        EventMissionsPage(event: event, missions: normalMissions, onSwitchRegion: _showSwitchRegion),
+      );
     }
     if (event.missions.isNotEmpty && event.warIds.isNotEmpty) {
-      if (event.missions.any((em) =>
-          CustomMission.fromEventMission(em)?.conds.any((cond) => cond.type.isTraitType || cond.type.isClassType) ==
-          true)) {
-        _addTab(
-          S.current.mission_target,
-          KeepAliveBuilder(builder: (context) => EventMissionTargetPage(event: event)),
-        );
+      if (event.missions.any(
+        (em) =>
+            CustomMission.fromEventMission(em)?.conds.any((cond) => cond.type.isTraitType || cond.type.isClassType) ==
+            true,
+      )) {
+        _addTab(S.current.mission_target, KeepAliveBuilder(builder: (context) => EventMissionTargetPage(event: event)));
       }
     }
     // point rewards
@@ -200,8 +191,9 @@ class _EventDetailPageState extends State<EventDetailPage> {
       _addTab(S.current.command_assist, EventCommandAssistPage(event: event));
     }
     if (db.gameData.craftEssences.values.any((ce) => ce.eventSkills(event.id).isNotEmpty) ||
-        db.gameData.servantsNoDup.values
-            .any((svt) => svt.eventSkills(eventId: event.id, includeZero: false).isNotEmpty)) {
+        db.gameData.servantsNoDup.values.any(
+          (svt) => svt.eventSkills(eventId: event.id, includeZero: false).isNotEmpty,
+        )) {
       _addTab(S.current.event_bonus, EventBonusTab(event: event));
     }
     if (event.bulletinBoards.isNotEmpty) {
@@ -227,15 +219,13 @@ class _EventDetailPageState extends State<EventDetailPage> {
       length: tabs.length,
       child: Scaffold(
         appBar: AppBar(
-          title: AutoSizeText(
-            event.shownName.replaceAll('\n', ' '),
-            maxLines: 1,
-          ),
+          title: AutoSizeText(event.shownName.replaceAll('\n', ' '), maxLines: 1),
           centerTitle: false,
           actions: [popupMenu],
-          bottom: tabs.length > 1
-              ? FixedHeight.tabBar(TabBar(tabs: tabs, isScrollable: true, tabAlignment: TabAlignment.center))
-              : null,
+          bottom:
+              tabs.length > 1
+                  ? FixedHeight.tabBar(TabBar(tabs: tabs, isScrollable: true, tabAlignment: TabAlignment.center))
+                  : null,
         ),
         body: TabBarView(children: views),
       ),
@@ -245,34 +235,35 @@ class _EventDetailPageState extends State<EventDetailPage> {
   Widget get popupMenu {
     final eventId = widget.event?.id ?? widget.eventId;
     return PopupMenuButton<dynamic>(
-      itemBuilder: (context) => [
-        PopupMenuItem(
-          enabled: false,
-          height: 32,
-          child: Text('No.$eventId', textScaler: const TextScaler.linear(0.9)),
-        ),
-        const PopupMenuDivider(),
-        ...SharedBuilder.websitesPopupMenuItems(
-          atlas: event.id < 0 ? null : Atlas.dbEvent(event.id, _region),
-          mooncell: event.extra.mcLink,
-          fandom: event.extra.fandomLink,
-        ),
-        ...SharedBuilder.noticeLinkPopupMenuItems(noticeLink: event.extra.noticeLink),
-        if (eventId != null && eventId > 0) ...[
-          PopupMenuItem(
-            child: Text(S.current.switch_region),
-            onTap: () {
-              _showSwitchRegion();
-            },
-          ),
-          PopupMenuItem(
-            child: Text(S.current.refresh),
-            onTap: () {
-              fetchData(_region, force: true);
-            },
-          ),
-        ],
-      ],
+      itemBuilder:
+          (context) => [
+            PopupMenuItem(
+              enabled: false,
+              height: 32,
+              child: Text('No.$eventId', textScaler: const TextScaler.linear(0.9)),
+            ),
+            const PopupMenuDivider(),
+            ...SharedBuilder.websitesPopupMenuItems(
+              atlas: event.id < 0 ? null : Atlas.dbEvent(event.id, _region),
+              mooncell: event.extra.mcLink,
+              fandom: event.extra.fandomLink,
+            ),
+            ...SharedBuilder.noticeLinkPopupMenuItems(noticeLink: event.extra.noticeLink),
+            if (eventId != null && eventId > 0) ...[
+              PopupMenuItem(
+                child: Text(S.current.switch_region),
+                onTap: () {
+                  _showSwitchRegion();
+                },
+              ),
+              PopupMenuItem(
+                child: Text(S.current.refresh),
+                onTap: () {
+                  fetchData(_region, force: true);
+                },
+              ),
+            ],
+          ],
     );
   }
 
@@ -283,25 +274,26 @@ class _EventDetailPageState extends State<EventDetailPage> {
     showDialog(
       context: context,
       useRootNavigator: false,
-      builder: (context) => SimpleDialog(
-        children: [
-          for (final region in Region.values)
-            ListTile(
-              title: Text(region.localName),
-              enabled: startTime?.ofRegion(region) != null,
-              onTap: () async {
-                Navigator.pop(context);
-                fetchData(region);
-              },
-            ),
-          IconButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            icon: const Icon(Icons.clear),
-          )
-        ],
-      ),
+      builder:
+          (context) => SimpleDialog(
+            children: [
+              for (final region in Region.values)
+                ListTile(
+                  title: Text(region.localName),
+                  enabled: startTime?.ofRegion(region) != null,
+                  onTap: () async {
+                    Navigator.pop(context);
+                    fetchData(region);
+                  },
+                ),
+              IconButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                icon: const Icon(Icons.clear),
+              ),
+            ],
+          ),
     );
   }
 }
@@ -339,24 +331,28 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
     }
 
     List<Widget> rows = [
-      CustomTableRow(children: [
-        TableCellData(
-          text: shownNames.join('\n'),
-          textAlign: TextAlign.center,
-          style: const TextStyle(fontSize: 14),
-          color: TableCellData.resolveHeaderColor(context),
-        )
-      ]),
-      if (!Transl.isJP)
-        CustomTableRow(children: [
+      CustomTableRow(
+        children: [
           TableCellData(
-            text: jpNames.join('\n'),
+            text: shownNames.join('\n'),
             textAlign: TextAlign.center,
             style: const TextStyle(fontSize: 14),
-            color: TableCellData.resolveHeaderColor(context).withAlpha(128),
-          )
-        ]),
-      if (event.type != EventType.eventQuest) CustomTableRow.fromTexts(texts: [(event.type.name)])
+            color: TableCellData.resolveHeaderColor(context),
+          ),
+        ],
+      ),
+      if (!Transl.isJP)
+        CustomTableRow(
+          children: [
+            TableCellData(
+              text: jpNames.join('\n'),
+              textAlign: TextAlign.center,
+              style: const TextStyle(fontSize: 14),
+              color: TableCellData.resolveHeaderColor(context).withAlpha(128),
+            ),
+          ],
+        ),
+      if (event.type != EventType.eventQuest) CustomTableRow.fromTexts(texts: [(event.type.name)]),
     ];
     final eventJp = db.gameData.events[event.id];
     final startTime = event.extra.startTime.copyWith(jp: eventJp?.startedAt);
@@ -365,28 +361,25 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
       startTime.update(event.startedAt, widget.region);
       endTime.update(event.endedAt, widget.region);
     }
-    rows.add(CustomTableRow.fromChildren(children: [
-      _EventTime(
-        startTime: startTime,
-        endTime: endTime,
-        shownRegions: {
-          Region.jp,
-          db.curUser.region,
-          widget.region,
-        },
-        format: (v) => v?.sec2date().toStringShort(omitSec: true) ?? '?',
-      )
-    ]));
+    rows.add(
+      CustomTableRow.fromChildren(
+        children: [
+          _EventTime(
+            startTime: startTime,
+            endTime: endTime,
+            shownRegions: {Region.jp, db.curUser.region, widget.region},
+            format: (v) => v?.sec2date().toStringShort(omitSec: true) ?? '?',
+          ),
+        ],
+      ),
+    );
 
     if (event.id < 0) {
-      rows.add(CustomTableRow.fromChildren(
-        children: [
-          Text(
-            '* Campaign info from Mooncell wiki *',
-            style: Theme.of(context).textTheme.bodySmall,
-          )
-        ],
-      ));
+      rows.add(
+        CustomTableRow.fromChildren(
+          children: [Text('* Campaign info from Mooncell wiki *', style: Theme.of(context).textTheme.bodySmall)],
+        ),
+      );
     }
 
     children.add(CustomTable(selectable: true, children: rows));
@@ -396,24 +389,28 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
 
     List<Widget> warTiles = [];
     for (final warId in event.warIds) {
-      warTiles.add(LayoutBuilder(builder: (context, constraints) {
-        final war = db.gameData.wars[warId];
-        String title = war == null ? 'War $warId' : war.lLongName.l;
-        final height = min(constraints.maxWidth / 2, 164.0) / 142 * 354;
-        return ListTile(
-          leading: war?.shownBanner == null ? null : db.getIconImage(war?.shownBanner, height: height),
-          horizontalTitleGap: 8,
-          title: Text(
-            title,
-            maxLines: 1,
-            textScaler: const TextScaler.linear(0.8),
-            overflow: TextOverflow.ellipsis,
-          ),
-          onTap: () {
-            router.push(url: Routes.warI(warId));
+      warTiles.add(
+        LayoutBuilder(
+          builder: (context, constraints) {
+            final war = db.gameData.wars[warId];
+            String title = war == null ? 'War $warId' : war.lLongName.l;
+            final height = min(constraints.maxWidth / 2, 164.0) / 142 * 354;
+            return ListTile(
+              leading: war?.shownBanner == null ? null : db.getIconImage(war?.shownBanner, height: height),
+              horizontalTitleGap: 8,
+              title: Text(
+                title,
+                maxLines: 1,
+                textScaler: const TextScaler.linear(0.8),
+                overflow: TextOverflow.ellipsis,
+              ),
+              onTap: () {
+                router.push(url: Routes.warI(warId));
+              },
+            );
           },
-        );
-      }));
+        ),
+      );
     }
 
     // extra quests not in wars
@@ -441,80 +438,83 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
 
     // Mahoyo bonus enemy
     if (event.id == 80472) {
-      children.add(TileGroup(
-        header: 'Temp Data',
-        children: [
-          ListTile(
-            dense: true,
-            title: Text(M.of(cn: "追加怪物的条件", na: "Bonus Enemy Conditions")),
-            subtitle: Text(M.of(cn: "仅活动期间可用", na: "Only available during event")),
-            trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
-            onTap: () {
-              if (widget.region == Region.jp && event.endedAt < DateTime.now().timestamp) {
-                SimpleCancelOkDialog(
-                  title: Text(S.current.hint),
-                  content: Text("${S.current.event}:\n- if ${S.current.ended}: "
-                      "${S.current.quest}→${S.current.additional_enemy}→${S.current.condition}🔍"),
-                  onTapOk: () {
-                    router.pushPage(BonusEnemyCondPage(event: event, region: widget.region));
-                  },
-                ).showDialog(context);
-              } else {
-                router.pushPage(BonusEnemyCondPage(event: event, region: widget.region));
-              }
-            },
-          )
-        ],
-      ));
+      children.add(
+        TileGroup(
+          header: 'Temp Data',
+          children: [
+            ListTile(
+              dense: true,
+              title: Text(M.of(cn: "追加怪物的条件", na: "Bonus Enemy Conditions")),
+              subtitle: Text(M.of(cn: "仅活动期间可用", na: "Only available during event")),
+              trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
+              onTap: () {
+                if (widget.region == Region.jp && event.endedAt < DateTime.now().timestamp) {
+                  SimpleCancelOkDialog(
+                    title: Text(S.current.hint),
+                    content: Text(
+                      "${S.current.event}:\n- if ${S.current.ended}: "
+                      "${S.current.quest}→${S.current.additional_enemy}→${S.current.condition}🔍",
+                    ),
+                    onTapOk: () {
+                      router.pushPage(BonusEnemyCondPage(event: event, region: widget.region));
+                    },
+                  ).showDialog(context);
+                } else {
+                  router.pushPage(BonusEnemyCondPage(event: event, region: widget.region));
+                }
+              },
+            ),
+          ],
+        ),
+      );
     }
     // event svt
     List<Widget> svtTiles = [];
     for (final eventSvt in event.svts) {
       final svt = db.gameData.entities[eventSvt.svtId];
       if (svt?.type == SvtType.svtMaterialTd) continue;
-      svtTiles.add(ListTile(
-        dense: true,
-        leading:
-            svt?.iconBuilder(context: context, overrideIcon: db.gameData.servantsById[eventSvt.svtId]?.borderedIcon),
-        title: Text(svt?.lName.l ?? "SVT ${eventSvt.svtId}"),
-        onTap: () {
-          router.push(url: Routes.servantI(eventSvt.svtId));
-        },
-        trailing: eventSvt.releaseConditions.isEmpty
-            ? null
-            : IconButton(
-                onPressed: () {
-                  SimpleCancelOkDialog(
-                    title: Text(S.current.condition),
-                    scrollable: true,
-                    content: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        for (final release in eventSvt.releaseConditions)
-                          CondTargetValueDescriptor.commonRelease(
-                            commonRelease: release,
-                            textScaleFactor: 0.8,
-                          ),
-                      ],
-                    ),
-                  ).showDialog(context);
-                },
-                icon: const Icon(Icons.info_outline),
-              ),
-      ));
+      svtTiles.add(
+        ListTile(
+          dense: true,
+          leading: svt?.iconBuilder(
+            context: context,
+            overrideIcon: db.gameData.servantsById[eventSvt.svtId]?.borderedIcon,
+          ),
+          title: Text(svt?.lName.l ?? "SVT ${eventSvt.svtId}"),
+          onTap: () {
+            router.push(url: Routes.servantI(eventSvt.svtId));
+          },
+          trailing:
+              eventSvt.releaseConditions.isEmpty
+                  ? null
+                  : IconButton(
+                    onPressed: () {
+                      SimpleCancelOkDialog(
+                        title: Text(S.current.condition),
+                        scrollable: true,
+                        content: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            for (final release in eventSvt.releaseConditions)
+                              CondTargetValueDescriptor.commonRelease(commonRelease: release, textScaleFactor: 0.8),
+                          ],
+                        ),
+                      ).showDialog(context);
+                    },
+                    icon: const Icon(Icons.info_outline),
+                  ),
+        ),
+      );
     }
     if (svtTiles.isNotEmpty) {
-      children.add(TileGroup(
-        header: S.current.event_svt,
-        children: svtTiles,
-      ));
+      children.add(TileGroup(header: S.current.event_svt, children: svtTiles));
     }
 
     int grailToCrystalCount = event.statItemFixed[Items.grailToCrystalId] ?? 0;
     if (grailToCrystalCount > 0) {
-      children.add(db.onUserData(
-        (context, snapshot) {
+      children.add(
+        db.onUserData((context, snapshot) {
           plan.rerunGrails = plan.rerunGrails.clamp(0, grailToCrystalCount);
           var replacedGrails = grailToCrystalCount - plan.rerunGrails;
           return ListTile(
@@ -531,139 +531,147 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
               },
             ),
           );
-        },
-      ));
+        }),
+      );
     }
 
     if (!event.isEmpty) {
-      children.add(db.onUserData(
-        (context, snapshot) => SimpleAccordion(
-          headerBuilder: (context, _) {
-            return CheckboxListTile(
-              title: Text(S.current.plan),
-              value: plan.enabled,
-              onChanged: (v) {
-                if (v != null) plan.enabled = v;
-                event.updateStat();
-              },
-              controlAffinity: ListTileControlAffinity.leading,
-            );
-          },
-          contentBuilder: (context) {
-            final plan2 = plan.copy()..enabled = true;
-            final items = db.itemCenter.calcOneEvent(event, plan2);
-            return TileGroup(
-              children: [
-                SharedBuilder.groupItems(
-                  context: context,
-                  items: items,
-                  width: 48,
-                )
-              ],
-            );
-          },
+      children.add(
+        db.onUserData(
+          (context, snapshot) => SimpleAccordion(
+            headerBuilder: (context, _) {
+              return CheckboxListTile(
+                title: Text(S.current.plan),
+                value: plan.enabled,
+                onChanged: (v) {
+                  if (v != null) plan.enabled = v;
+                  event.updateStat();
+                },
+                controlAffinity: ListTileControlAffinity.leading,
+              );
+            },
+            contentBuilder: (context) {
+              final plan2 = plan.copy()..enabled = true;
+              final items = db.itemCenter.calcOneEvent(event, plan2);
+              return TileGroup(children: [SharedBuilder.groupItems(context: context, items: items, width: 48)]);
+            },
+          ),
         ),
-      ));
+      );
     }
     if (event.itemWarReward.isNotEmpty) {
-      children.addAll(_buildSwitchGroup(
-        value: () => plan.questReward,
-        enabled: () => plan.enabled,
-        onChanged: (v) {
-          plan.questReward = v;
-          event.updateStat();
-        },
-        title: S.current.quest_reward,
-        items: event.itemWarReward,
-      ));
+      children.addAll(
+        _buildSwitchGroup(
+          value: () => plan.questReward,
+          enabled: () => plan.enabled,
+          onChanged: (v) {
+            plan.questReward = v;
+            event.updateStat();
+          },
+          title: S.current.quest_reward,
+          items: event.itemWarReward,
+        ),
+      );
     }
     if (event.itemWarDrop.isNotEmpty) {
-      children.addAll(_buildSwitchGroup(
-        value: () => plan.fixedDrop,
-        enabled: () => plan.enabled,
-        onChanged: (v) {
-          plan.fixedDrop = v;
-          event.updateStat();
-        },
-        title: S.current.quest_fixed_drop,
-        items: event.itemWarDrop,
-      ));
+      children.addAll(
+        _buildSwitchGroup(
+          value: () => plan.fixedDrop,
+          enabled: () => plan.enabled,
+          onChanged: (v) {
+            plan.fixedDrop = v;
+            event.updateStat();
+          },
+          title: S.current.quest_fixed_drop,
+          items: event.itemWarDrop,
+        ),
+      );
     }
     if (event.shop.isNotEmpty) {
-      children.add(db.onUserData((context, snapshot) {
-        Map<int, int> shopItems = {};
-        int customCount = 0;
-        for (final shop in event.shop) {
-          int count = plan.shopBuyCount[shop.id] ?? shop.limitNum;
-          if (count != shop.limitNum) {
-            customCount += 1;
+      children.add(
+        db.onUserData((context, snapshot) {
+          Map<int, int> shopItems = {};
+          int customCount = 0;
+          for (final shop in event.shop) {
+            int count = plan.shopBuyCount[shop.id] ?? shop.limitNum;
+            if (count != shop.limitNum) {
+              customCount += 1;
+            }
+            shopItems.addDict(event.itemShop[shop.id]?.multiple(count) ?? {});
           }
-          shopItems.addDict(event.itemShop[shop.id]?.multiple(count) ?? {});
-        }
-        return Column(
-          children: _buildSwitchGroup(
-            value: () => plan.shop,
-            enabled: () => plan.enabled,
-            onChanged: (v) {
-              plan.shop = v;
-              event.updateStat();
-            },
-            title: S.current.shop,
-            subtitle: customCount > 0 ? '$customCount Customized' : null,
-            items: shopItems,
-          ),
-        );
-      }));
+          return Column(
+            children: _buildSwitchGroup(
+              value: () => plan.shop,
+              enabled: () => plan.enabled,
+              onChanged: (v) {
+                plan.shop = v;
+                event.updateStat();
+              },
+              title: S.current.shop,
+              subtitle: customCount > 0 ? '$customCount Customized' : null,
+              items: shopItems,
+            ),
+          );
+        }),
+      );
     }
     if (event.pointRewards.isNotEmpty) {
-      children.addAll(_buildSwitchGroup(
-        value: () => plan.point,
-        enabled: () => plan.enabled,
-        onChanged: (v) {
-          plan.point = v;
-          event.updateStat();
-        },
-        title: S.current.event_point_reward,
-        items: event.itemPointReward,
-      ));
+      children.addAll(
+        _buildSwitchGroup(
+          value: () => plan.point,
+          enabled: () => plan.enabled,
+          onChanged: (v) {
+            plan.point = v;
+            event.updateStat();
+          },
+          title: S.current.event_point_reward,
+          items: event.itemPointReward,
+        ),
+      );
     }
     if (event.missions.isNotEmpty) {
-      children.addAll(_buildSwitchGroup(
-        value: () => plan.mission,
-        enabled: () => plan.enabled,
-        onChanged: (v) {
-          plan.mission = v;
-          event.updateStat();
-        },
-        title: S.current.mission,
-        items: event.itemMission,
-      ));
+      children.addAll(
+        _buildSwitchGroup(
+          value: () => plan.mission,
+          enabled: () => plan.enabled,
+          onChanged: (v) {
+            plan.mission = v;
+            event.updateStat();
+          },
+          title: S.current.mission,
+          items: event.itemMission,
+        ),
+      );
     }
 
     if (event.towers.isNotEmpty) {
-      children.addAll(_buildSwitchGroup(
-        value: () => plan.tower,
-        enabled: () => plan.enabled,
-        onChanged: (v) {
-          plan.tower = v;
-          event.updateStat();
-        },
-        title: S.current.event_tower,
-        items: event.itemTower,
-      ));
+      children.addAll(
+        _buildSwitchGroup(
+          value: () => plan.tower,
+          enabled: () => plan.enabled,
+          onChanged: (v) {
+            plan.tower = v;
+            event.updateStat();
+          },
+          title: S.current.event_tower,
+          items: event.itemTower,
+        ),
+      );
     }
 
     if (event.warBoards.isNotEmpty) {
-      children.addAll(_buildSwitchGroup(
-        value: () => plan.warBoard,
-        enabled: () => plan.enabled,
-        onChanged: (v) {
-          plan.warBoard = v;
-          event.updateStat();
-        },
-        title: '${S.current.war_board} (${S.current.event_treasure_box})',
-        items: event.itemWarBoard,
-      ));
+      children.addAll(
+        _buildSwitchGroup(
+          value: () => plan.warBoard,
+          enabled: () => plan.enabled,
+          onChanged: (v) {
+            plan.warBoard = v;
+            event.updateStat();
+          },
+          title: '${S.current.war_board} (${S.current.event_treasure_box})',
+          items: event.itemWarBoard,
+        ),
+      );
     }
 
     for (final lottery in event.lotteries) {
@@ -682,11 +690,7 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
             showValue: true,
           ),
         ),
-        SharedBuilder.groupItems(
-          context: context,
-          items: lottery.lastBoxItems,
-          width: 48,
-        ),
+        SharedBuilder.groupItems(context: context, items: lottery.lastBoxItems, width: 48),
       ]);
       final boxesDetail = event.itemLottery[lottery.id];
       if (boxesDetail == null || boxesDetail.isEmpty) continue;
@@ -698,15 +702,13 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
         });
         boxItems.removeWhere((key, value) => value == 0);
         if (boxItems.isEmpty) continue;
-        boxes.add(ListTile(
-          dense: true,
-          leading: Text('No.${boxIndex + 1}'),
-          title: SharedBuilder.itemGrid(
-            context: context,
-            items: boxItems.entries,
-            width: 32,
+        boxes.add(
+          ListTile(
+            dense: true,
+            leading: Text('No.${boxIndex + 1}'),
+            title: SharedBuilder.itemGrid(context: context, items: boxItems.entries, width: 32),
           ),
-        ));
+        );
       }
       if (boxes.isNotEmpty) {
         children.add(TileGroup(children: boxes));
@@ -728,15 +730,15 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
                     context: context,
                     item: null,
                     itemId: itemId,
-                    text: [db.curUser.items[itemId] ?? 0, db.itemCenter.itemLeft[itemId] ?? 0]
-                        .map((e) => e.format())
-                        .join('\n'),
+                    text: [
+                      db.curUser.items[itemId] ?? 0,
+                      db.itemCenter.itemLeft[itemId] ?? 0,
+                    ].map((e) => e.format()).join('\n'),
                   ),
                 ),
-                title: Text([
-                  GameCardMixin.anyCardItemName(itemId).l,
-                  if (boxItems[itemId] != 1) ' × ${boxItems[itemId]}'
-                ].join()),
+                title: Text(
+                  [GameCardMixin.anyCardItemName(itemId).l, if (boxItems[itemId] != 1) ' × ${boxItems[itemId]}'].join(),
+                ),
                 trailing: _inputGroup(
                   value: () => plan.treasureBoxItems[box.id]?[itemId],
                   onChanged: (value) {
@@ -744,133 +746,142 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
                   },
                   tag: 'treasure_box_${box.id}_$itemId',
                 ),
-              )
+              ),
           ],
-        )
+        ),
       ]);
     }
 
     for (final extraItems in event.extra.extraFixedItems) {
-      children.addAll(_buildSwitchGroup(
-        value: () => plan.extraFixedItems[extraItems.id] ?? false,
-        enabled: () => plan.enabled,
-        onChanged: (v) {
-          plan.extraFixedItems[extraItems.id] = v;
-          event.updateStat();
-        },
-        title: '${S.current.event_item_fixed_extra} ${extraItems.id}',
-        subtitle: extraItems.detail.l,
-        items: extraItems.items,
-      ));
+      children.addAll(
+        _buildSwitchGroup(
+          value: () => plan.extraFixedItems[extraItems.id] ?? false,
+          enabled: () => plan.enabled,
+          onChanged: (v) {
+            plan.extraFixedItems[extraItems.id] = v;
+            event.updateStat();
+          },
+          title: '${S.current.event_item_fixed_extra} ${extraItems.id}',
+          subtitle: extraItems.detail.l,
+          items: extraItems.items,
+        ),
+      );
     }
 
     for (final extraItems in event.extra.extraItems) {
-      children.add(ListTile(
-        title: Text('${S.current.event_item_extra} ${extraItems.id}'),
-        subtitle: extraItems.detail.l?.toText(),
-      ));
-      children.add(TileGroup(
-        children: [
-          for (final itemId in extraItems.items.keys)
-            ListTile(
-              dense: true,
-              visualDensity: VisualDensity.compact,
-              minVerticalPadding: 0,
-              leading: db.onUserData(
-                (context, snapshot) => Item.iconBuilder(
-                  context: context,
-                  item: null,
-                  itemId: itemId,
-                  // width: 32,
-                  text: [db.curUser.items[itemId] ?? 0, db.itemCenter.itemLeft[itemId] ?? 0]
-                      .map((e) => e.format())
-                      .join('\n'),
+      children.add(
+        ListTile(
+          title: Text('${S.current.event_item_extra} ${extraItems.id}'),
+          subtitle: extraItems.detail.l?.toText(),
+        ),
+      );
+      children.add(
+        TileGroup(
+          children: [
+            for (final itemId in extraItems.items.keys)
+              ListTile(
+                dense: true,
+                visualDensity: VisualDensity.compact,
+                minVerticalPadding: 0,
+                leading: db.onUserData(
+                  (context, snapshot) => Item.iconBuilder(
+                    context: context,
+                    item: null,
+                    itemId: itemId,
+                    // width: 32,
+                    text: [
+                      db.curUser.items[itemId] ?? 0,
+                      db.itemCenter.itemLeft[itemId] ?? 0,
+                    ].map((e) => e.format()).join('\n'),
+                  ),
+                ),
+                title: Text(Item.getName(itemId)),
+                subtitle: extraItems.items[itemId]?.l?.toText(),
+                horizontalTitleGap: 8,
+                trailing: _inputGroup(
+                  value: () => plan.extraItems[extraItems.id]?[itemId],
+                  onChanged: (value) {
+                    plan.extraItems.putIfAbsent(extraItems.id, () => {})[itemId] = value;
+                  },
+                  tag: 'extra_item_${extraItems.id}_$itemId',
                 ),
               ),
-              title: Text(Item.getName(itemId)),
-              subtitle: extraItems.items[itemId]?.l?.toText(),
-              horizontalTitleGap: 8,
-              trailing: _inputGroup(
-                value: () => plan.extraItems[extraItems.id]?[itemId],
-                onChanged: (value) {
-                  plan.extraItems.putIfAbsent(extraItems.id, () => {})[itemId] = value;
-                },
-                tag: 'extra_item_${extraItems.id}_$itemId',
-              ),
-            )
-        ],
-      ));
+          ],
+        ),
+      );
     }
 
     if (!event.isEmpty) {
-      children.add(ListTile(
-        title: Text(S.current.event_custom_item),
-        trailing: IconButton(
-          onPressed: () {
-            router.push(
-              child: ItemSelectPage(
-                disabledItems: plan.customItems.keys.toList(),
-                onSelected: (v) {
-                  plan.customItems[v] = 0;
-                  event.updateStat();
-                  if (mounted) setState(() {});
-                },
-              ),
-            );
-          },
-          icon: const Icon(Icons.add),
-          tooltip: S.current.add,
+      children.add(
+        ListTile(
+          title: Text(S.current.event_custom_item),
+          trailing: IconButton(
+            onPressed: () {
+              router.push(
+                child: ItemSelectPage(
+                  disabledItems: plan.customItems.keys.toList(),
+                  onSelected: (v) {
+                    plan.customItems[v] = 0;
+                    event.updateStat();
+                    if (mounted) setState(() {});
+                  },
+                ),
+              );
+            },
+            icon: const Icon(Icons.add),
+            tooltip: S.current.add,
+          ),
         ),
-      ));
+      );
       final itemIds = Item.sortMapByPriority(plan.customItems, category: true, removeZero: false).keys.toList();
-      children.add(TileGroup(
-        children: [
-          if (itemIds.isEmpty)
-            ListTile(
-              title: Text(
-                S.current.event_custom_item_empty_hint,
-                style: Theme.of(context).textTheme.bodySmall,
+      children.add(
+        TileGroup(
+          children: [
+            if (itemIds.isEmpty)
+              ListTile(
+                title: Text(S.current.event_custom_item_empty_hint, style: Theme.of(context).textTheme.bodySmall),
               ),
-            ),
-          for (final itemId in itemIds)
-            ListTile(
-              leading: db.onUserData(
-                (context, snapshot) => Item.iconBuilder(
-                  context: context,
-                  item: null,
-                  itemId: itemId,
-                  width: 42,
-                  text: [db.curUser.items[itemId] ?? 0, db.itemCenter.itemLeft[itemId] ?? 0]
-                      .map((e) => e.format())
-                      .join('\n'),
+            for (final itemId in itemIds)
+              ListTile(
+                leading: db.onUserData(
+                  (context, snapshot) => Item.iconBuilder(
+                    context: context,
+                    item: null,
+                    itemId: itemId,
+                    width: 42,
+                    text: [
+                      db.curUser.items[itemId] ?? 0,
+                      db.itemCenter.itemLeft[itemId] ?? 0,
+                    ].map((e) => e.format()).join('\n'),
+                  ),
+                ),
+                title: Text(Item.getName(itemId)),
+                horizontalTitleGap: 8,
+                trailing: Wrap(
+                  children: [
+                    _inputGroup(
+                      value: () => plan.customItems[itemId],
+                      onChanged: (value) {
+                        plan.customItems[itemId] = value;
+                      },
+                      tag: 'custom_item_$itemId',
+                    ),
+                    IconButton(
+                      onPressed: () {
+                        plan.customItems.remove(itemId);
+                        event.updateStat();
+                        if (mounted) setState(() {});
+                      },
+                      icon: const Icon(Icons.clear),
+                      color: Theme.of(context).colorScheme.error,
+                      constraints: const BoxConstraints(minWidth: 24, minHeight: 48),
+                    ),
+                  ],
                 ),
               ),
-              title: Text(Item.getName(itemId)),
-              horizontalTitleGap: 8,
-              trailing: Wrap(
-                children: [
-                  _inputGroup(
-                    value: () => plan.customItems[itemId],
-                    onChanged: (value) {
-                      plan.customItems[itemId] = value;
-                    },
-                    tag: 'custom_item_$itemId',
-                  ),
-                  IconButton(
-                    onPressed: () {
-                      plan.customItems.remove(itemId);
-                      event.updateStat();
-                      if (mounted) setState(() {});
-                    },
-                    icon: const Icon(Icons.clear),
-                    color: Theme.of(context).colorScheme.error,
-                    constraints: const BoxConstraints(minWidth: 24, minHeight: 48),
-                  )
-                ],
-              ),
-            )
-        ],
-      ));
+          ],
+        ),
+      );
     }
 
     if (event.campaignQuests.isNotEmpty || event.campaigns.isNotEmpty) {
@@ -878,41 +889,45 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
     }
 
     if (event.type == EventType.interludeCampaign) {
-      List<Quest> quests = db.gameData.quests.values
-          .where((quest) => quest.releaseOverwrites.any((e) => e.eventId == event.id))
-          .toList();
+      List<Quest> quests =
+          db.gameData.quests.values
+              .where((quest) => quest.releaseOverwrites.any((e) => e.eventId == event.id))
+              .toList();
       quests.sort2((e) => -e.priority);
       if (quests.isNotEmpty) {
-        children.add(TileGroup(
-          header: S.current.interlude,
-          children: quests.map((quest) {
-            final svtId = quest.releaseConditions
-                .firstWhereOrNull((release) => [
-                      CondType.svtGet,
-                      CondType.svtFriendship,
-                    ].contains(release.type))
-                ?.targetId;
-            final svt = db.gameData.servantsById[svtId];
-            return ListTile(
-              leading: svt == null ? const SizedBox.shrink() : svt.iconBuilder(context: context, width: 40),
-              title: Text(quest.lName.l),
-              subtitle: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  for (final release in quest.releaseOverwrites)
-                    if (release.eventId == event.id)
-                      CondTargetValueDescriptor(
-                        condType: release.condType,
-                        target: release.condId,
-                        value: release.condNum,
-                        style: Theme.of(context).textTheme.bodySmall,
-                      )
-                ],
-              ),
-              onTap: quest.routeTo,
-            );
-          }).toList(),
-        ));
+        children.add(
+          TileGroup(
+            header: S.current.interlude,
+            children:
+                quests.map((quest) {
+                  final svtId =
+                      quest.releaseConditions
+                          .firstWhereOrNull(
+                            (release) => [CondType.svtGet, CondType.svtFriendship].contains(release.type),
+                          )
+                          ?.targetId;
+                  final svt = db.gameData.servantsById[svtId];
+                  return ListTile(
+                    leading: svt == null ? const SizedBox.shrink() : svt.iconBuilder(context: context, width: 40),
+                    title: Text(quest.lName.l),
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        for (final release in quest.releaseOverwrites)
+                          if (release.eventId == event.id)
+                            CondTargetValueDescriptor(
+                              condType: release.condType,
+                              target: release.condId,
+                              value: release.condNum,
+                              style: Theme.of(context).textTheme.bodySmall,
+                            ),
+                      ],
+                    ),
+                    onTap: quest.routeTo,
+                  );
+                }).toList(),
+          ),
+        );
       }
     }
 
@@ -920,43 +935,43 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
     if (summons.isNotEmpty) {
       children.add(ListTile(title: Text(S.current.summon_banner)));
       summons.sort2((summon) => summon.startTime.l ?? 0);
-      children.add(TileGroup(
-        children: List.generate(summons.length, (index) {
-          final summon = summons[index];
-          return ListTile(
-            dense: true,
-            title: Text(summon.lName.l),
-            onTap: () => summon.routeTo(),
-          );
-        }),
-      ));
+      children.add(
+        TileGroup(
+          children: List.generate(summons.length, (index) {
+            final summon = summons[index];
+            return ListTile(dense: true, title: Text(summon.lName.l), onTap: () => summon.routeTo());
+          }),
+        ),
+      );
     }
 
     return UserScrollListener(
       shouldAnimate: (userScroll) => userScroll.metrics.axis == Axis.vertical,
       initForward: true,
-      builder: (context, animationController) => Scaffold(
-        floatingActionButton: ScaleTransition(
-          scale: animationController,
-          child: db.onUserData(
-            (context, snapshot) => FloatingActionButton(
-              backgroundColor: plan.enabled ? null : Colors.grey,
-              onPressed: plan.enabled
-                  ? () async {
-                      await _ArchiveEventDialog(event: event, initPlan: plan).showDialog(context);
-                      if (mounted) setState(() {});
-                    }
-                  : null,
-              child: const Icon(Icons.archive_outlined),
+      builder:
+          (context, animationController) => Scaffold(
+            floatingActionButton: ScaleTransition(
+              scale: animationController,
+              child: db.onUserData(
+                (context, snapshot) => FloatingActionButton(
+                  backgroundColor: plan.enabled ? null : Colors.grey,
+                  onPressed:
+                      plan.enabled
+                          ? () async {
+                            await _ArchiveEventDialog(event: event, initPlan: plan).showDialog(context);
+                            if (mounted) setState(() {});
+                          }
+                          : null,
+                  child: const Icon(Icons.archive_outlined),
+                ),
+              ),
+            ),
+            body: ListView.builder(
+              controller: _scrollController,
+              itemBuilder: (context, index) => children[index],
+              itemCount: children.length,
             ),
           ),
-        ),
-        body: ListView.builder(
-          controller: _scrollController,
-          itemBuilder: (context, index) => children[index],
-          itemCount: children.length,
-        ),
-      ),
     );
   }
 
@@ -972,25 +987,19 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
       db.onUserData(
         (context, snapshot) => CheckboxListTile(
           value: value(),
-          onChanged: enabled()
-              ? (v) {
-                  if (v != null) onChanged(v);
-                }
-              : null,
-          title: Text(
-            title,
-            textScaler: subtitle == null ? const TextScaler.linear(0.9) : null,
-          ),
+          onChanged:
+              enabled()
+                  ? (v) {
+                    if (v != null) onChanged(v);
+                  }
+                  : null,
+          title: Text(title, textScaler: subtitle == null ? const TextScaler.linear(0.9) : null),
           subtitle: subtitle?.toText(),
           controlAffinity: ListTileControlAffinity.leading,
           dense: subtitle != null,
         ),
       ),
-      SharedBuilder.groupItems(
-        context: context,
-        items: items,
-        width: 48,
-      )
+      SharedBuilder.groupItems(context: context, items: items, width: 48),
     ];
   }
 
@@ -1022,13 +1031,9 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
           }
           if (n != null && n >= 0) {
             onChanged(n);
-            EasyDebounce.debounce(
-              tag,
-              const Duration(milliseconds: 500),
-              () {
-                event.updateStat();
-              },
-            );
+            EasyDebounce.debounce(tag, const Duration(milliseconds: 500), () {
+              event.updateStat();
+            });
           }
         },
         textAlign: TextAlign.center,
@@ -1046,10 +1051,8 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
         children: [
           if (showValue)
             db.onUserData(
-              (context, snapshot) => Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8),
-                child: Text(value()?.toString() ?? '0'),
-              ),
+              (context, snapshot) =>
+                  Padding(padding: const EdgeInsets.symmetric(horizontal: 8), child: Text(value()?.toString() ?? '0')),
             ),
           child,
         ],
@@ -1105,66 +1108,40 @@ class __ArchiveEventDialogState extends State<_ArchiveEventDialog> {
       required ValueChanged<bool> onChanged,
       String? subtitle,
     }) {
-      children.add(CheckboxListTile(
-        title: Text(title),
-        subtitle: subtitle?.toText(),
-        value: value,
-        onChanged: (v) {
-          setState(() {
-            if (v != null) onChanged(v);
-          });
-        },
-      ));
+      children.add(
+        CheckboxListTile(
+          title: Text(title),
+          subtitle: subtitle?.toText(),
+          value: value,
+          onChanged: (v) {
+            setState(() {
+              if (v != null) onChanged(v);
+            });
+          },
+        ),
+      );
     }
 
     if (event.itemWarReward.isNotEmpty) {
-      _addOption(
-        title: S.current.game_rewards,
-        value: plan.questReward,
-        onChanged: (v) => plan.questReward = v,
-      );
+      _addOption(title: S.current.game_rewards, value: plan.questReward, onChanged: (v) => plan.questReward = v);
     }
     if (event.itemWarDrop.isNotEmpty) {
-      _addOption(
-        title: S.current.quest_fixed_drop,
-        value: plan.fixedDrop,
-        onChanged: (v) => plan.fixedDrop = v,
-      );
+      _addOption(title: S.current.quest_fixed_drop, value: plan.fixedDrop, onChanged: (v) => plan.fixedDrop = v);
     }
     if (event.shop.isNotEmpty) {
-      _addOption(
-        title: S.current.shop,
-        value: plan.shop,
-        onChanged: (v) => plan.shop = v,
-      );
+      _addOption(title: S.current.shop, value: plan.shop, onChanged: (v) => plan.shop = v);
     }
     if (event.pointRewards.isNotEmpty) {
-      _addOption(
-        title: S.current.event_point_reward,
-        value: plan.point,
-        onChanged: (v) => plan.point = v,
-      );
+      _addOption(title: S.current.event_point_reward, value: plan.point, onChanged: (v) => plan.point = v);
     }
     if (event.missions.isNotEmpty) {
-      _addOption(
-        title: S.current.mission,
-        value: plan.mission,
-        onChanged: (v) => plan.mission = v,
-      );
+      _addOption(title: S.current.mission, value: plan.mission, onChanged: (v) => plan.mission = v);
     }
     if (event.towers.isNotEmpty) {
-      _addOption(
-        title: S.current.event_tower,
-        value: plan.tower,
-        onChanged: (v) => plan.tower = v,
-      );
+      _addOption(title: S.current.event_tower, value: plan.tower, onChanged: (v) => plan.tower = v);
     }
     if (event.warBoards.isNotEmpty) {
-      _addOption(
-        title: S.current.war_board,
-        value: plan.warBoard,
-        onChanged: (v) => plan.warBoard = v,
-      );
+      _addOption(title: S.current.war_board, value: plan.warBoard, onChanged: (v) => plan.warBoard = v);
     }
     for (final lottery in event.lotteries) {
       _addOption(
@@ -1197,11 +1174,7 @@ class __ArchiveEventDialogState extends State<_ArchiveEventDialog> {
       );
     }
     if (plan.customItems.isNotEmpty) {
-      _addOption(
-        title: S.current.event_custom_item,
-        value: customItem,
-        onChanged: (v) => customItem = v,
-      );
+      _addOption(title: S.current.event_custom_item, value: customItem, onChanged: (v) => customItem = v);
     }
     if (items.values.any((v) => v != 0)) {
       children.add(SharedBuilder.groupItems(context: context, items: items, width: 36));
@@ -1213,9 +1186,7 @@ class __ArchiveEventDialogState extends State<_ArchiveEventDialog> {
     return SimpleCancelOkDialog(
       contentPadding: const EdgeInsetsDirectional.fromSTEB(0.0, 20.0, 0.0, 24.0),
       title: Text(S.current.event_collect_items),
-      content: SingleChildScrollView(
-        child: Column(children: children),
-      ),
+      content: SingleChildScrollView(child: Column(children: children)),
       scrollable: true,
       onTapOk: archiveItems,
     );
@@ -1267,12 +1238,7 @@ class _EventTime extends StatefulWidget {
   final MappingBase<int>? endTime;
   final Iterable<Region> shownRegions;
   final String Function(int? time) format;
-  const _EventTime({
-    required this.startTime,
-    this.endTime,
-    required this.shownRegions,
-    required this.format,
-  });
+  const _EventTime({required this.startTime, this.endTime, required this.shownRegions, required this.format});
 
   @override
   State<_EventTime> createState() => __EventTimeState();
@@ -1299,14 +1265,18 @@ class __EventTimeState extends State<_EventTime> {
       }
       bool ongoing = start != null && end != null && now >= start && now <= end;
       if (shownRegions.contains(region) || showAll) {
-        children.add(Text.rich(
-          TextSpan(children: [
-            TextSpan(text: '● ', style: TextStyle(color: ongoing ? Colors.green : Colors.transparent)),
-            TextSpan(text: timeStr),
-          ]),
-          style: const TextStyle(fontSize: 14, fontFamily: kMonoFont),
-          textAlign: TextAlign.center,
-        ));
+        children.add(
+          Text.rich(
+            TextSpan(
+              children: [
+                TextSpan(text: '● ', style: TextStyle(color: ongoing ? Colors.green : Colors.transparent)),
+                TextSpan(text: timeStr),
+              ],
+            ),
+            style: const TextStyle(fontSize: 14, fontFamily: kMonoFont),
+            textAlign: TextAlign.center,
+          ),
+        );
       }
       if (!shownRegions.contains(region)) hasExtra = true;
     }
@@ -1320,10 +1290,7 @@ class __EventTimeState extends State<_EventTime> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Expanded(child: child),
-          Icon(
-            showAll ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
-            size: 16,
-          ),
+          Icon(showAll ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down, size: 16),
         ],
       );
     }

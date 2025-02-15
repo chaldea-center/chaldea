@@ -5,12 +5,7 @@ import 'package:chaldea/models/gamedata/individuality.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 
-enum _FuncCheckPos {
-  tvals,
-  questtvals,
-  traitVals,
-  script,
-}
+enum _FuncCheckPos { tvals, questtvals, traitVals, script }
 
 class TraitFuncTab extends StatefulWidget {
   final List<int> ids;
@@ -34,8 +29,11 @@ class _TraitFuncTabState extends State<TraitFuncTab> {
     for (final func in funcs) {
       final positions = [
         if (Individuality.containsAllAB(func.functvals, ids, signed: false) ||
-            Individuality.containsAllAB(func.script?.overwriteTvals?.expand((e) => e).toList() ?? [], ids,
-                signed: false))
+            Individuality.containsAllAB(
+              func.script?.overwriteTvals?.expand((e) => e).toList() ?? [],
+              ids,
+              signed: false,
+            ))
           _FuncCheckPos.tvals,
         if (Individuality.containsAllAB(func.funcquestTvals, ids, signed: false)) _FuncCheckPos.questtvals,
         if (Individuality.containsAllAB(func.traitVals, ids, signed: false)) _FuncCheckPos.traitVals,
@@ -48,17 +46,12 @@ class _TraitFuncTabState extends State<TraitFuncTab> {
 
     return Column(
       children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 4),
-          child: buttons,
-        ),
+        Padding(padding: const EdgeInsets.symmetric(vertical: 4), child: buttons),
         Expanded(
-          child: children.isEmpty
-              ? const Center(child: Text('No record'))
-              : ListView.builder(
-                  itemBuilder: (context, index) => children[index],
-                  itemCount: children.length,
-                ),
+          child:
+              children.isEmpty
+                  ? const Center(child: Text('No record'))
+                  : ListView.builder(itemBuilder: (context, index) => children[index], itemCount: children.length),
         ),
       ],
     );

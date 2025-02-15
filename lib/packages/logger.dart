@@ -43,11 +43,13 @@ class _LoggerWrap {
 }
 
 /// default logger
-_LoggerWrap _logger = _LoggerWrap(Logger(
-  filter: ProductionFilter(),
-  printer: _CustomPrettyPrinter(methodCount: 2, colors: false, printEmojis: false, printTime: true),
-  level: Level.trace,
-));
+_LoggerWrap _logger = _LoggerWrap(
+  Logger(
+    filter: ProductionFilter(),
+    printer: _CustomPrettyPrinter(methodCount: 2, colors: false, printEmojis: false, printTime: true),
+    level: Level.trace,
+  ),
+);
 
 _LoggerWrap get logger => _logger;
 
@@ -64,21 +66,20 @@ extension LoggerUtils on Logger {
     if (fp != null) {
       rollLogFiles(fp, 5, 10 * 1024 * 1024); //10MB
     }
-    _logger = _LoggerWrap(Logger(
-      filter: ProductionFilter(),
-      level: Level.trace,
-      printer: _CustomPrettyPrinter(
-        methodCount: 2,
-        colors: false,
-        printEmojis: false,
-        printTime: true,
-        lineLength: 10,
+    _logger = _LoggerWrap(
+      Logger(
+        filter: ProductionFilter(),
+        level: Level.trace,
+        printer: _CustomPrettyPrinter(
+          methodCount: 2,
+          colors: false,
+          printEmojis: false,
+          printTime: true,
+          lineLength: 10,
+        ),
+        output: MultiOutput([ConsoleOutput(), if (!kIsWeb && fp != null) FileOutput(file: File(fp))]),
       ),
-      output: MultiOutput([
-        ConsoleOutput(),
-        if (!kIsWeb && fp != null) FileOutput(file: File(fp)),
-      ]),
-    ));
+    );
   }
 
   /// fp, fp.1,...,fp.[maxCount], [maxSize] in bytes

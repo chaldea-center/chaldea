@@ -47,11 +47,7 @@ class InheritSelectionArea extends StatelessWidget {
   Widget wrap(TextSelectionControls controls) {
     return _InheritedSelectionControls(
       selectionControls: controls,
-      child: SelectionArea(
-        selectionControls: controls,
-        focusNode: focusNode,
-        child: child,
-      ),
+      child: SelectionArea(selectionControls: controls, focusNode: focusNode, child: child),
     );
   }
 
@@ -63,10 +59,7 @@ class InheritSelectionArea extends StatelessWidget {
 class _InheritedSelectionControls extends InheritedWidget {
   final TextSelectionControls selectionControls;
 
-  const _InheritedSelectionControls({
-    required this.selectionControls,
-    required super.child,
-  });
+  const _InheritedSelectionControls({required this.selectionControls, required super.child});
 
   @override
   bool updateShouldNotify(_InheritedSelectionControls oldWidget) {

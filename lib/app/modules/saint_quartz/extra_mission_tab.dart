@@ -27,28 +27,23 @@ class _ExtraMissionTabState extends State<ExtraMissionTab> {
         for (final gift in mission.gifts) {
           final item = db.gameData.items[gift.objectId];
           if (item != null) {
-            rewards.add(Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Item.iconBuilder(
-                  context: context,
-                  item: item,
-                  width: 20,
-                  jumpToDetail: false,
-                ),
-                Text('*${gift.num}'),
-              ],
-            ));
+            rewards.add(
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Item.iconBuilder(context: context, item: item, width: 20, jumpToDetail: false),
+                  Text('*${gift.num}'),
+                ],
+              ),
+            );
           }
         }
         final cond = mission.conds.firstWhereOrNull((cond) => cond.missionProgressType == MissionProgressType.clear);
         Widget title;
-        final style = hasNoDate || plan.isInRange(mission.startedAt)
-            ? null
-            : TextStyle(
-                color: Theme.of(context).textTheme.bodySmall?.color,
-                fontStyle: FontStyle.italic,
-              );
+        final style =
+            hasNoDate || plan.isInRange(mission.startedAt)
+                ? null
+                : TextStyle(color: Theme.of(context).textTheme.bodySmall?.color, fontStyle: FontStyle.italic);
         if (cond == null) {
           title = Text('${mission.dispNo} - ${mission.name}', style: style, textScaler: const TextScaler.linear(0.8));
         } else {
@@ -75,12 +70,7 @@ class _ExtraMissionTabState extends State<ExtraMissionTab> {
                 style: Theme.of(context).textTheme.bodySmall,
                 textScaler: const TextScaler.linear(0.9),
               ),
-              Wrap(
-                spacing: 4,
-                runSpacing: 4,
-                crossAxisAlignment: WrapCrossAlignment.center,
-                children: rewards,
-              )
+              Wrap(spacing: 4, runSpacing: 4, crossAxisAlignment: WrapCrossAlignment.center, children: rewards),
             ],
           ),
           controlAffinity: ListTileControlAffinity.trailing,

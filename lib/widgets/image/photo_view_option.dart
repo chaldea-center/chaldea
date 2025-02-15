@@ -52,10 +52,7 @@ class PhotoViewOption {
   });
 
   static PhotoViewOption limited({double minScale = 0.4, dynamic maxScale}) {
-    return PhotoViewOption(
-      minScale: PhotoViewComputedScale.contained * minScale,
-      maxScale: maxScale,
-    );
+    return PhotoViewOption(minScale: PhotoViewComputedScale.contained * minScale, maxScale: maxScale);
   }
 
   PhotoViewOption copyWith({

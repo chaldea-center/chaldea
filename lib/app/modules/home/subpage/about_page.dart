@@ -27,19 +27,19 @@ class _AboutPageState extends State<AboutPage> {
   int pressTimes = 0;
 
   Map<String, String> get references => {
-        'TYPE-MOON/FGO PROJECT': 'https://www.fate-go.jp',
-        'Atlas Academy': 'https://atlasacademy.io',
-        'Mooncell': 'https://fgo.wiki',
-        'Fandom-fategrandorder': 'https://fategrandorder.fandom.com/wiki/',
-        'NGA-FGO': 'https://bbs.nga.cn/thread.php?fid=540',
-        S.current.fgo_domus_aurea: 'https://sites.google.com/view/fgo-domus-aurea',
-        '茹西教王的理想鄉': 'http://kazemai.github.io/fgo-vz/'
-      };
+    'TYPE-MOON/FGO PROJECT': 'https://www.fate-go.jp',
+    'Atlas Academy': 'https://atlasacademy.io',
+    'Mooncell': 'https://fgo.wiki',
+    'Fandom-fategrandorder': 'https://fategrandorder.fandom.com/wiki/',
+    'NGA-FGO': 'https://bbs.nga.cn/thread.php?fid=540',
+    S.current.fgo_domus_aurea: 'https://sites.google.com/view/fgo-domus-aurea',
+    '茹西教王的理想鄉': 'http://kazemai.github.io/fgo-vz/',
+  };
   Map<String, String> get inspiredBy => {
-        "Guda@iOS": "https://ngabbs.com/read.php?tid=12082000",
-        "素材规划小程序": "https://ngabbs.com/read.php?tid=12570313",
-        "Teamup": "https://www.fgo-teamup.com",
-      };
+    "Guda@iOS": "https://ngabbs.com/read.php?tid=12082000",
+    "素材规划小程序": "https://ngabbs.com/read.php?tid=12570313",
+    "Teamup": "https://www.fgo-teamup.com",
+  };
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +55,7 @@ class _AboutPageState extends State<AboutPage> {
             },
             icon: const FaIcon(FontAwesomeIcons.github),
             tooltip: 'view on Github',
-          )
+          ),
         ],
       ),
       body: ListView(
@@ -64,12 +64,10 @@ class _AboutPageState extends State<AboutPage> {
             child: _AboutProgram(
               name: AppInfo.appName,
               version: AppInfo.fullVersion2,
-              icon: SizedBox(
-                height: 120,
-                child: Image.asset('res/img/launcher_icon/app_icon_logo.png', height: 120),
-              ),
+              icon: SizedBox(height: 120, child: Image.asset('res/img/launcher_icon/app_icon_logo.png', height: 120)),
               legalese: 'Copyright © $kCopyrightYear cc.narumi.\nAll rights reserved.',
-              debugInfo: 'UUID\n${AppInfo.uuid}\n'
+              debugInfo:
+                  'UUID\n${AppInfo.uuid}\n'
                   'Size: ${size.width.toInt()}×${size.height.toInt()} [×$devicePixelRatio]',
               onDoubleTap: () {
                 pressTimes += 1;
@@ -100,10 +98,13 @@ class _AboutPageState extends State<AboutPage> {
               if (!kIsWeb && !AppInfo.isMacStoreApp && (!PlatformU.isIOS || db.runtimeData.upgradableVersion != null))
                 ListTile(
                   title: Text(S.current.check_update),
-                  trailing: db.runtimeData.upgradableVersion != null
-                      ? Text('${db.runtimeData.upgradableVersion!.versionString}↑',
-                          style: const TextStyle(color: Colors.redAccent))
-                      : null,
+                  trailing:
+                      db.runtimeData.upgradableVersion != null
+                          ? Text(
+                            '${db.runtimeData.upgradableVersion!.versionString}↑',
+                            style: const TextStyle(color: Colors.redAccent),
+                          )
+                          : null,
                   onTap: () async {
                     if (PlatformU.isApple) {
                       launch(kAppStoreLink);
@@ -178,9 +179,7 @@ class _AboutPageState extends State<AboutPage> {
               ),
             ],
           ),
-          ListTile(
-            title: Text(S.current.about_app_declaration_text),
-          ),
+          ListTile(title: Text(S.current.about_app_declaration_text)),
           TileGroup(
             children: [
               ListTile(
@@ -189,7 +188,7 @@ class _AboutPageState extends State<AboutPage> {
                 onTap: () {
                   launch('https://github.com/SharpnelXu/FGOSimulator');
                 },
-              )
+              ),
             ],
           ),
           TileGroup(
@@ -227,7 +226,7 @@ class _AboutPageState extends State<AboutPage> {
                 onTap: () {
                   launch(ChaldeaUrl.doc('/privacy'));
                 },
-              )
+              ),
             ],
           ),
           TileGroup(
@@ -237,11 +236,13 @@ class _AboutPageState extends State<AboutPage> {
                 title: const Text('License'),
                 subtitle: const Text('AGPL-3.0'),
                 onTap: () {
-                  router.pushPage(const _GithubMarkdownPage(
-                    title: 'LICENSE',
-                    link: '$kProjectHomepage/blob/main/LICENSE',
-                    assetKey: 'LICENSE',
-                  ));
+                  router.pushPage(
+                    const _GithubMarkdownPage(
+                      title: 'LICENSE',
+                      link: '$kProjectHomepage/blob/main/LICENSE',
+                      assetKey: 'LICENSE',
+                    ),
+                  );
                 },
               ),
               ListTile(
@@ -250,19 +251,17 @@ class _AboutPageState extends State<AboutPage> {
                   Navigator.push(
                     context,
                     PageRouteBuilder(
-                      pageBuilder: (context, _, __) => LicensePage(
-                        applicationName: AppInfo.appName,
-                        applicationVersion: AppInfo.fullVersion2,
-                        applicationIcon: Image.asset(
-                          'res/img/launcher_icon/app_icon_logo.png',
-                          height: 120,
-                        ),
-                        applicationLegalese: 'Copyright © $kCopyrightYear cc.narumi.\nAll rights reserved.',
-                      ),
+                      pageBuilder:
+                          (context, _, __) => LicensePage(
+                            applicationName: AppInfo.appName,
+                            applicationVersion: AppInfo.fullVersion2,
+                            applicationIcon: Image.asset('res/img/launcher_icon/app_icon_logo.png', height: 120),
+                            applicationLegalese: 'Copyright © $kCopyrightYear cc.narumi.\nAll rights reserved.',
+                          ),
                     ),
                   );
                 },
-              )
+              ),
             ],
           ),
           TileGroup(
@@ -273,7 +272,7 @@ class _AboutPageState extends State<AboutPage> {
                 onTap: () {
                   router.pushPage(const DevInfoPage());
                 },
-              )
+              ),
             ],
           ),
           ListTile(
@@ -316,17 +315,9 @@ class _AboutProgram extends StatelessWidget {
       child: Column(
         children: <Widget>[
           if (icon != null) IconTheme(data: Theme.of(context).iconTheme, child: icon!),
-          Text(
-            name,
-            style: Theme.of(context).textTheme.headlineSmall,
-            textAlign: TextAlign.center,
-          ),
+          Text(name, style: Theme.of(context).textTheme.headlineSmall, textAlign: TextAlign.center),
           const SizedBox(height: 6),
-          Text(
-            version,
-            style: Theme.of(context).textTheme.bodyMedium,
-            textAlign: TextAlign.center,
-          ),
+          Text(version, style: Theme.of(context).textTheme.bodyMedium, textAlign: TextAlign.center),
           const SizedBox(height: 3),
           Text.rich(
             TextSpan(
@@ -337,37 +328,20 @@ class _AboutProgram extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 12),
-          Text(
-            legalese ?? '',
-            style: Theme.of(context).textTheme.bodySmall,
-            textAlign: TextAlign.center,
-          ),
+          Text(legalese ?? '', style: Theme.of(context).textTheme.bodySmall, textAlign: TextAlign.center),
           const SizedBox(height: 12),
           if (debugInfo != null) ...[
             const SizedBox(height: 12),
-            Text(
-              debugInfo!,
-              style: Theme.of(context).textTheme.bodySmall,
-              textAlign: TextAlign.center,
-            )
+            Text(debugInfo!, style: Theme.of(context).textTheme.bodySmall, textAlign: TextAlign.center),
           ],
           const SizedBox(width: double.infinity),
         ],
       ),
     );
     if (onLongPress != null) {
-      child = InkWell(
-        onLongPress: onLongPress,
-        onDoubleTap: onDoubleTap,
-        child: child,
-      );
+      child = InkWell(onLongPress: onLongPress, onDoubleTap: onDoubleTap, child: child);
     }
-    return Card(
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.all(Radius.circular(16)),
-      ),
-      child: child,
-    );
+    return Card(shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(16))), child: child);
   }
 }
 
@@ -377,12 +351,7 @@ class _GithubMarkdownPage extends StatelessWidget {
   final String? assetKey;
   final bool disableMd;
 
-  const _GithubMarkdownPage({
-    required this.title,
-    this.link,
-    this.assetKey,
-    this.disableMd = false,
-  });
+  const _GithubMarkdownPage({required this.title, this.link, this.assetKey, this.disableMd = false});
 
   @override
   Widget build(BuildContext context) {
@@ -397,7 +366,7 @@ class _GithubMarkdownPage extends StatelessWidget {
               },
               icon: const FaIcon(FontAwesomeIcons.github),
               tooltip: 'view on Github',
-            )
+            ),
         ],
       ),
       body: MyMarkdownWidget(assetKey: assetKey, disableMd: disableMd),

@@ -29,10 +29,7 @@ class _SkillListPageState extends State<SkillListPage> with SearchableListState<
   @override
   Iterable<BaseSkill?> get wholeData {
     int? _id = _searchSkillId;
-    return [
-      if (_id != null) null,
-      ...db.gameData.baseSkills.values,
-    ];
+    return [if (_id != null) null, ...db.gameData.baseSkills.values];
   }
 
   @override
@@ -51,15 +48,17 @@ class _SkillListPageState extends State<SkillListPage> with SearchableListState<
           IconButton(
             icon: const Icon(Icons.filter_alt),
             tooltip: S.current.filter,
-            onPressed: () => FilterPage.show(
-              context: context,
-              builder: (context) => SkillFilter(
-                filterData: filterData,
-                onChanged: (_) {
-                  if (mounted) setState(() {});
-                },
-              ),
-            ),
+            onPressed:
+                () => FilterPage.show(
+                  context: context,
+                  builder:
+                      (context) => SkillFilter(
+                        filterData: filterData,
+                        onChanged: (_) {
+                          if (mounted) setState(() {});
+                        },
+                      ),
+                ),
           ),
           searchIcon,
         ],
@@ -79,8 +78,9 @@ class _SkillListPageState extends State<SkillListPage> with SearchableListState<
     if (!filterData.funcType.matchAny(skill.functions.map((e) => e.funcType))) {
       return false;
     }
-    if (!filterData.buffType
-        .matchAny(skill.functions.where((e) => e.buffs.isNotEmpty).map((e) => e.buffs.first.type))) {
+    if (!filterData.buffType.matchAny(
+      skill.functions.where((e) => e.buffs.isNotEmpty).map((e) => e.buffs.first.type),
+    )) {
       return false;
     }
 
@@ -108,7 +108,7 @@ class _SkillListPageState extends State<SkillListPage> with SearchableListState<
           text: skill?.lName.l ?? "Skill $_searchSkillId",
           children: [
             if (skill != null)
-              TextSpan(text: '\n${skill.id} ${skill.type.name}', style: Theme.of(context).textTheme.bodySmall)
+              TextSpan(text: '\n${skill.id} ${skill.type.name}', style: Theme.of(context).textTheme.bodySmall),
           ],
         ),
       ),

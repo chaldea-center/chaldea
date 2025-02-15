@@ -94,8 +94,8 @@ class GalleryItem {
   }
 
   static List<GalleryItem> get persistentPages => [
-        /*more*/
-      ];
+    /*more*/
+  ];
   static GalleryItem edit = GalleryItem(
     name: 'edit',
     titleBuilder: () => '',
@@ -113,50 +113,50 @@ class GalleryItem {
   );
 
   static List<GalleryItem> get allItems => [
-        servants,
-        craftEssences,
-        commandCodes,
-        items,
-        events,
-        wars,
-        plans,
-        freeCalculator,
-        masterMissions,
-        classBoards,
-        saintQuartz,
-        mysticCodes,
-        effectSearch,
-        costumes,
-        summons,
-        enemyList,
-        expCard,
-        npCharge,
-        statistics,
-        if (!kIsWeb && AppInfo.isDebugOn) fakeGrandOrder,
-        importData,
-        if (!db.settings.hideApple) apk,
-        // default hide
-        shops,
-        scriptHome,
-        bgms,
-        // ffo,
-        aprilFool,
-        cvList,
-        illustratorList,
-        charaList,
-        svtQuestTimeline,
-        svtClass,
-        traits,
-        skills,
-        tds,
-        funcs,
-        buffs,
-        enemyMasters,
-        myRoom,
-        appRoutes,
-        // mooncell,
-        toolbox,
-      ];
+    servants,
+    craftEssences,
+    commandCodes,
+    items,
+    events,
+    wars,
+    plans,
+    freeCalculator,
+    masterMissions,
+    classBoards,
+    saintQuartz,
+    mysticCodes,
+    effectSearch,
+    costumes,
+    summons,
+    enemyList,
+    expCard,
+    npCharge,
+    statistics,
+    if (!kIsWeb && AppInfo.isDebugOn) fakeGrandOrder,
+    importData,
+    if (!db.settings.hideApple) apk,
+    // default hide
+    shops,
+    scriptHome,
+    bgms,
+    // ffo,
+    aprilFool,
+    cvList,
+    illustratorList,
+    charaList,
+    svtQuestTimeline,
+    svtClass,
+    traits,
+    skills,
+    tds,
+    funcs,
+    buffs,
+    enemyMasters,
+    myRoom,
+    appRoutes,
+    // mooncell,
+    toolbox,
+  ];
 
   static GalleryItem servants = GalleryItem(
     name: 'servants',
@@ -325,13 +325,13 @@ class GalleryItem {
     page: ImportPageHome(),
     isDetail: false,
   );
-// static GalleryItem faq = GalleryItem(
-//   name: 'faq',
-//   titleBuilder: () => 'FAQ',
-//   icon: Icons.help_center,
-//   page: FAQPage(),
-//   isDetail: true,
-// );
+  // static GalleryItem faq = GalleryItem(
+  //   name: 'faq',
+  //   titleBuilder: () => 'FAQ',
+  //   icon: Icons.help_center,
+  //   page: FAQPage(),
+  //   isDetail: true,
+  // );
   static GalleryItem lostRoom = GalleryItem(
     name: 'lost_room',
     titleBuilder: () => 'LOSTROOM',
@@ -530,36 +530,36 @@ class GalleryItem {
     isDetail: true,
     shownDefault: false,
   );
-// static GalleryItem more = GalleryItem(
-//   name: 'more',
-//   titleBuilder: () => S.current.more,
-//   icon: Icons.add,
-//   page: EditGalleryPage(),
-//   isDetail: true,
-// );
+  // static GalleryItem more = GalleryItem(
+  //   name: 'more',
+  //   titleBuilder: () => S.current.more,
+  //   icon: Icons.add,
+  //   page: EditGalleryPage(),
+  //   isDetail: true,
+  // );
 
   /// debug only
-// static GalleryItem palette = GalleryItem(
-//   name: 'palette',
-//   titleBuilder: () => 'Palette',
-//   icon: Icons.palette_outlined,
-//   page: DarkLightThemePalette(),
-//   isDetail: true,
-// );
+  // static GalleryItem palette = GalleryItem(
+  //   name: 'palette',
+  //   titleBuilder: () => 'Palette',
+  //   icon: Icons.palette_outlined,
+  //   page: DarkLightThemePalette(),
+  //   isDetail: true,
+  // );
 
   /// unpublished pages
-// static GalleryItem apCal = GalleryItem(
-//   name: 'ap_cal',
-//   titleBuilder: () => S.current.ap_calc_title,
-//   icon: Icons.directions_run,
-//   page: APCalcPage(),
-//   isDetail: true,
-// );
-// static GalleryItem damageCalc = GalleryItem(
-//   name: 'damage_calc',
-//   titleBuilder: () => S.current.calculator,
-//   icon: Icons.keyboard,
-//   page: DamageCalcPage(),
-//   isDetail: true,
-// );
+  // static GalleryItem apCal = GalleryItem(
+  //   name: 'ap_cal',
+  //   titleBuilder: () => S.current.ap_calc_title,
+  //   icon: Icons.directions_run,
+  //   page: APCalcPage(),
+  //   isDetail: true,
+  // );
+  // static GalleryItem damageCalc = GalleryItem(
+  //   name: 'damage_calc',
+  //   titleBuilder: () => S.current.calculator,
+  //   icon: Icons.keyboard,
+  //   page: DamageCalcPage(),
+  //   isDetail: true,
+  // );
 }

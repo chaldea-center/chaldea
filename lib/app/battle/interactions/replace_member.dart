@@ -22,10 +22,7 @@ class ReplaceMemberSelectionDialog extends StatefulWidget {
     if (!battleData.mounted) return null;
     return showUserConfirm<Tuple2<BattleServantData, BattleServantData>>(
       context: battleData.context!,
-      builder: (context, completer) => ReplaceMemberSelectionDialog(
-        battleData: battleData,
-        completer: completer,
-      ),
+      builder: (context, completer) => ReplaceMemberSelectionDialog(battleData: battleData, completer: completer),
     );
   }
 }
@@ -43,20 +40,18 @@ class _ReplaceMemberSelectionDialogState extends State<ReplaceMemberSelectionDia
     final List<BattleServantData> selectableOnField =
         battleData.nonnullPlayers.where((svt) => svt.canOrderChange()).toList();
     children.addAll([
-      SHeader(
-        S.current.team_starting_member,
-        padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
-      ),
+      SHeader(S.current.team_starting_member, padding: const EdgeInsets.only(top: 8.0, bottom: 4.0)),
       Wrap(
         children: List.generate(selectableOnField.length, (index) {
           final svt = selectableOnField[index];
           return DecoratedBox(
-            decoration: onFieldSelection == svt
-                ? BoxDecoration(
-                    borderRadius: BorderRadius.circular(5),
-                    border: Border.all(color: Colors.redAccent, width: 4),
-                  )
-                : const BoxDecoration(),
+            decoration:
+                onFieldSelection == svt
+                    ? BoxDecoration(
+                      borderRadius: BorderRadius.circular(5),
+                      border: Border.all(color: Colors.redAccent, width: 4),
+                    )
+                    : const BoxDecoration(),
             child: InkWell(
               child: svt.niceSvt!.iconBuilder(
                 context: context,
@@ -71,26 +66,24 @@ class _ReplaceMemberSelectionDialogState extends State<ReplaceMemberSelectionDia
             ),
           );
         }),
-      )
+      ),
     ]);
 
     final List<BattleServantData> selectableBackup =
         battleData.nonnullBackupPlayers.where((svt) => svt.canOrderChange()).toList();
     children.addAll([
-      SHeader(
-        S.current.team_backup_member,
-        padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
-      ),
+      SHeader(S.current.team_backup_member, padding: const EdgeInsets.only(top: 8.0, bottom: 4.0)),
       Wrap(
         children: List.generate(selectableBackup.length, (index) {
           final svt = selectableBackup[index];
           return DecoratedBox(
-            decoration: backupSelection == svt
-                ? BoxDecoration(
-                    borderRadius: BorderRadius.circular(5),
-                    border: Border.all(color: Colors.redAccent, width: 4),
-                  )
-                : const BoxDecoration(),
+            decoration:
+                backupSelection == svt
+                    ? BoxDecoration(
+                      borderRadius: BorderRadius.circular(5),
+                      border: Border.all(color: Colors.redAccent, width: 4),
+                    )
+                    : const BoxDecoration(),
             child: InkWell(
               child: svt.niceSvt!.iconBuilder(
                 context: context,
@@ -105,17 +98,13 @@ class _ReplaceMemberSelectionDialogState extends State<ReplaceMemberSelectionDia
             ),
           );
         }),
-      )
+      ),
     ]);
 
     return SimpleCancelOkDialog(
       title: Text(S.current.battle_click_to_select_servants),
       scrollable: true,
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: children,
-      ),
+      content: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: children),
       hideCancel: true,
       hideOk: true,
       actions: [
@@ -127,16 +116,18 @@ class _ReplaceMemberSelectionDialogState extends State<ReplaceMemberSelectionDia
           child: Text(S.current.cancel),
         ),
         TextButton(
-          onPressed: onFieldSelection == null || backupSelection == null
-              ? null
-              : () {
-                  final result = Tuple2(onFieldSelection!, backupSelection!);
+          onPressed:
+              onFieldSelection == null || backupSelection == null
+                  ? null
+                  : () {
+                    final result = Tuple2(onFieldSelection!, backupSelection!);
 
-                  battleData.battleLogger
-                      .action('${S.current.team_starting_member}: ${onFieldSelection!.lBattleName} - '
-                          '${S.current.team_backup_member}: ${backupSelection!.lBattleName}');
-                  Navigator.of(context).pop(result);
-                },
+                    battleData.battleLogger.action(
+                      '${S.current.team_starting_member}: ${onFieldSelection!.lBattleName} - '
+                      '${S.current.team_backup_member}: ${backupSelection!.lBattleName}',
+                    );
+                    Navigator.of(context).pop(result);
+                  },
           child: Text(S.current.confirm),
         ),
       ],

@@ -94,20 +94,22 @@ class _ChooseBackupDialog extends StatelessWidget {
         title += ' (Error)';
       }
       final decoded = backup.decoded;
-      children.add(ListTile(
-        dense: true,
-        title: Text(title),
-        subtitle: Text(<String?>[
-          backup.createdAt.sec2date().toStringShort(),
-          backup.os,
-        ].whereType<String>().join('\n')),
-        enabled: decoded != null,
-        onTap: decoded == null
-            ? null
-            : () {
-                Navigator.pop(context, decoded);
-              },
-      ));
+      children.add(
+        ListTile(
+          dense: true,
+          title: Text(title),
+          subtitle: Text(
+            <String?>[backup.createdAt.sec2date().toStringShort(), backup.os].whereType<String>().join('\n'),
+          ),
+          enabled: decoded != null,
+          onTap:
+              decoded == null
+                  ? null
+                  : () {
+                    Navigator.pop(context, decoded);
+                  },
+        ),
+      );
     }
     return SimpleDialog(
       title: Text(S.current.userdata_download_choose_backup),
@@ -118,7 +120,7 @@ class _ChooseBackupDialog extends StatelessWidget {
             Navigator.pop(context);
           },
           icon: const Icon(Icons.clear),
-        )
+        ),
       ],
     );
   }

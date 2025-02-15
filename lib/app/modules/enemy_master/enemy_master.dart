@@ -35,14 +35,7 @@ class _EnemyMasterDetailPageState extends State<EnemyMasterDetailPage> {
         url: Routes.enemyMasterI(widget.master?.id ?? widget.masterId ?? 0),
       );
     }
-    return Scaffold(
-      appBar: AppBar(title: Text(master.lName.l)),
-      body: ListView(
-        children: [
-          info,
-        ],
-      ),
-    );
+    return Scaffold(appBar: AppBar(title: Text(master.lName.l)), body: ListView(children: [info]));
   }
 
   Widget get info {
@@ -50,25 +43,19 @@ class _EnemyMasterDetailPageState extends State<EnemyMasterDetailPage> {
       selectable: true,
       children: <Widget>[
         CustomTableRow.fromTexts(texts: ['No.${master.id}'], isHeader: true),
-        CustomTableRow(children: [
-          TableCellData(
-            child: Text(master.lName.l, style: const TextStyle(fontWeight: FontWeight.bold)),
-          )
-        ]),
+        CustomTableRow(
+          children: [TableCellData(child: Text(master.lName.l, style: const TextStyle(fontWeight: FontWeight.bold)))],
+        ),
         if (!Transl.isJP)
           CustomTableRow(
             children: [
-              TableCellData(
-                child: Text(master.lName.jp, style: const TextStyle(fontWeight: FontWeight.w500)),
-              )
+              TableCellData(child: Text(master.lName.jp, style: const TextStyle(fontWeight: FontWeight.w500))),
             ],
           ),
         if (!Transl.isEN)
           CustomTableRow(
             children: [
-              TableCellData(
-                child: Text(master.lName.na, style: const TextStyle(fontWeight: FontWeight.w500)),
-              )
+              TableCellData(child: Text(master.lName.na, style: const TextStyle(fontWeight: FontWeight.w500))),
             ],
           ),
         CustomTableRow.fromTexts(texts: [S.current.illustration], isHeader: true),
@@ -80,24 +67,19 @@ class _EnemyMasterDetailPageState extends State<EnemyMasterDetailPage> {
             transform: (child, _) {
               return Transform.rotate(
                 angle: -pi / 4,
-                child: Padding(
-                  padding: const EdgeInsets.all(17.5),
-                  child: child,
-                ),
+                child: Padding(padding: const EdgeInsets.all(17.5), child: child),
               );
             },
           ),
           ExtraAssetsPage.oneGroup(S.current.command_spell, master.battles.map((e) => e.commandSpellIcon).toSet(), 160),
           ExtraAssetsPage.oneGroup(
-              S.current.card_asset_chara_figure,
-              <String>{
-                for (final battle in master.battles) ...[
-                  battle.figure,
-                  ...battle.cutin,
-                ],
-              }.toSet(),
-              300),
-        ].whereType<Widget>().map((e) => Padding(padding: const EdgeInsetsDirectional.only(start: 16), child: e))
+            S.current.card_asset_chara_figure,
+            <String>{
+              for (final battle in master.battles) ...[battle.figure, ...battle.cutin],
+            }.toSet(),
+            300,
+          ),
+        ].whereType<Widget>().map((e) => Padding(padding: const EdgeInsetsDirectional.only(start: 16), child: e)),
       ],
     );
   }

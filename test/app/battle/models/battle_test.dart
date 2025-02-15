@@ -20,13 +20,16 @@ void main() async {
           ..setNpStrengthenLv(2)
           ..lv = 90
           ..atkFou = 0
-          ..hpFou = 0
+          ..hpFou = 0,
       ];
 
       test('NP 1 OC 1 no fou as base', () async {
         final battle = BattleData();
-        await battle.init(db.gameData.questPhases[9300040603]!, altriaSettings,
-            null); // this stage has a sky caster in wave 1 at index 1
+        await battle.init(
+          db.gameData.questPhases[9300040603]!,
+          altriaSettings,
+          null,
+        ); // this stage has a sky caster in wave 1 at index 1
 
         final altria = battle.targetedPlayer!;
         altria.np = 10000;
@@ -98,7 +101,7 @@ void main() async {
             ..setNpStrengthenLv(1)
             ..lv = 90
             ..atkFou = 0
-            ..hpFou = 0
+            ..hpFou = 0,
         ];
         final battle = BattleData();
         await battle.init(db.gameData.questPhases[9300040603]!, altriaWithDoubleKoyan, null);
@@ -130,9 +133,10 @@ void main() async {
           ..lv = 90
           ..atkFou = 1000
           ..hpFou = 1000
-          ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
+          ..ce =
+              db.gameData.craftEssencesById[9400340] // Kaleidoscope
           ..ceLv = 100
-          ..ceLimitBreak = true
+          ..ceLimitBreak = true,
       ];
 
       test('NP 5 OC 1 as base', () async {
@@ -184,7 +188,8 @@ void main() async {
             ..lv = 90
             ..atkFou = 1000
             ..hpFou = 1000
-            ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
+            ..ce =
+                db.gameData.craftEssencesById[9400340] // Kaleidoscope
             ..ceLv = 100
             ..ceLimitBreak = true,
           PlayerSvtData.id(504500)
@@ -200,7 +205,7 @@ void main() async {
             ..setNpStrengthenLv(1)
             ..lv = 90
             ..atkFou = 0
-            ..hpFou = 0
+            ..hpFou = 0,
         ];
         final battle = BattleData();
         await battle.init(db.gameData.questPhases[9300040603]!, yuyuWithDoubleCastoria, null);
@@ -235,9 +240,10 @@ void main() async {
           ..lv = 90
           ..atkFou = 1000
           ..hpFou = 1000
-          ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
+          ..ce =
+              db.gameData.craftEssencesById[9400340] // Kaleidoscope
           ..ceLv = 100
-          ..ceLimitBreak = true
+          ..ceLimitBreak = true,
       ];
 
       test('NP 5 OC 1 as base', () async {
@@ -289,7 +295,8 @@ void main() async {
             ..lv = 90
             ..atkFou = 1000
             ..hpFou = 1000
-            ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
+            ..ce =
+                db.gameData.craftEssencesById[9400340] // Kaleidoscope
             ..ceLv = 100
             ..ceLimitBreak = true,
           PlayerSvtData.id(503900)
@@ -305,7 +312,7 @@ void main() async {
             ..setNpStrengthenLv(1)
             ..lv = 90
             ..atkFou = 0
-            ..hpFou = 0
+            ..hpFou = 0,
         ];
         final battle = BattleData();
         await battle.init(db.gameData.questPhases[9300040603]!, okuniWithDoubleCba, null);
@@ -337,7 +344,8 @@ void main() async {
           ..atkFou = 2000
           ..hpFou = 2000
           ..appendLvs = [10, 10, 10, 0, 0]
-          ..ce = db.gameData.craftEssencesById[9401850] // Magical Girl of Sapphire
+          ..ce =
+              db.gameData.craftEssencesById[9401850] // Magical Girl of Sapphire
           ..ceLv = 100
           ..ceLimitBreak = true,
         PlayerSvtData.id(504500)..lv = 90,
@@ -426,10 +434,7 @@ void main() async {
   });
 
   test('Activate skill checks buff status', () async {
-    final List<PlayerSvtData> lipAndJinako = [
-      PlayerSvtData.id(1000100)..lv = 80,
-      PlayerSvtData.id(2300300)..lv = 90,
-    ];
+    final List<PlayerSvtData> lipAndJinako = [PlayerSvtData.id(1000100)..lv = 80, PlayerSvtData.id(2300300)..lv = 90];
     final battle = BattleData();
     await battle.init(db.gameData.questPhases[9300040603]!, lipAndJinako, null);
 
@@ -450,10 +455,7 @@ void main() async {
   });
 
   test('Stun does not provide firstCardBonus before 7th anni', () async {
-    final List<PlayerSvtData> lipAndJinako = [
-      PlayerSvtData.id(1000100)..lv = 80,
-      PlayerSvtData.id(2300300)..lv = 90,
-    ];
+    final List<PlayerSvtData> lipAndJinako = [PlayerSvtData.id(1000100)..lv = 80, PlayerSvtData.id(2300300)..lv = 90];
     final battle = BattleData();
     battle.options.mightyChain = false;
     await battle.init(db.gameData.questPhases[9300040603]!, lipAndJinako, null);
@@ -472,10 +474,7 @@ void main() async {
   });
 
   test('Stun provides firstCardBonus after 7th anni', () async {
-    final List<PlayerSvtData> lipAndJinako = [
-      PlayerSvtData.id(1000100)..lv = 80,
-      PlayerSvtData.id(2300300)..lv = 90,
-    ];
+    final List<PlayerSvtData> lipAndJinako = [PlayerSvtData.id(1000100)..lv = 80, PlayerSvtData.id(2300300)..lv = 90];
     final battle = BattleData();
     battle.options.mightyChain = true;
     await battle.init(db.gameData.questPhases[9300040603]!, lipAndJinako, null);
@@ -492,10 +491,7 @@ void main() async {
   });
 
   test('Stun does not provide typeChain before 7th anni', () async {
-    final List<PlayerSvtData> lipAndJinako = [
-      PlayerSvtData.id(1000100)..lv = 80,
-      PlayerSvtData.id(2300300)..lv = 90,
-    ];
+    final List<PlayerSvtData> lipAndJinako = [PlayerSvtData.id(1000100)..lv = 80, PlayerSvtData.id(2300300)..lv = 90];
     final battle = BattleData();
     await battle.init(db.gameData.questPhases[9300040603]!, lipAndJinako, null);
 
@@ -509,23 +505,20 @@ void main() async {
     await battle.playerTurn([
       CombatAction(lip, lip.getCards()[1]),
       CombatAction(jinako, jinako.getCards()[1]),
-      CombatAction(jinako, jinako.getCards()[2])
+      CombatAction(jinako, jinako.getCards()[2]),
     ]);
     expect(lip.np, 0);
 
     await battle.playerTurn([
       CombatAction(lip, lip.getCards()[1]),
       CombatAction(jinako, jinako.getCards()[1]),
-      CombatAction(jinako, jinako.getCards()[2])
+      CombatAction(jinako, jinako.getCards()[2]),
     ]);
     expect(lip.np, greaterThan(20));
   });
 
   test('Stun does not provide braveChain', () async {
-    final List<PlayerSvtData> lipAndJinako = [
-      PlayerSvtData.id(1000100)..lv = 80,
-      PlayerSvtData.id(2300300)..lv = 90,
-    ];
+    final List<PlayerSvtData> lipAndJinako = [PlayerSvtData.id(1000100)..lv = 80, PlayerSvtData.id(2300300)..lv = 90];
     final battle = BattleData();
     await battle.init(db.gameData.questPhases[9300040603]!, lipAndJinako, null);
 
@@ -538,15 +531,13 @@ void main() async {
     await battle.playerTurn([
       CombatAction(lip, lip.getCards()[1]),
       CombatAction(lip, lip.getCards()[2]),
-      CombatAction(lip, lip.getCards()[3])
+      CombatAction(lip, lip.getCards()[3]),
     ]);
     expect(enemy.hp, previousHp);
   });
 
   test('Nitocris (Alter) bug', () async {
-    final List<PlayerSvtData> lipAndJinako = [
-      PlayerSvtData.id(1101500)..lv = 90,
-    ];
+    final List<PlayerSvtData> lipAndJinako = [PlayerSvtData.id(1101500)..lv = 90];
     final battle = BattleData();
     await battle.init(db.gameData.questPhases[9300040603]!, lipAndJinako, null);
 
@@ -559,13 +550,11 @@ void main() async {
   });
 
   test('Tezcatlipoca passive', () async {
-    final List<PlayerSvtData> setting = [
-      PlayerSvtData.id(604700)..lv = 90,
-      PlayerSvtData.id(604700)..lv = 90,
-    ];
-    final mysticCode = MysticCodeData()
-      ..mysticCode = db.gameData.mysticCodes[130]!
-      ..level = 10;
+    final List<PlayerSvtData> setting = [PlayerSvtData.id(604700)..lv = 90, PlayerSvtData.id(604700)..lv = 90];
+    final mysticCode =
+        MysticCodeData()
+          ..mysticCode = db.gameData.mysticCodes[130]!
+          ..level = 10;
     final battle = BattleData();
     await battle.init(db.gameData.questPhases[9300040603]!, setting, mysticCode);
 
@@ -597,7 +586,8 @@ void main() async {
       PlayerSvtData.id(702800)
         ..lv = 60
         ..setNpStrengthenLv(2)
-        ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
+        ..ce =
+            db.gameData.craftEssencesById[9400340] // Kaleidoscope
         ..ceLv = 100
         ..ceLimitBreak = true,
     ];
@@ -607,10 +597,7 @@ void main() async {
     final bunyan = battle.onFieldAllyServants[0]!;
     await battle.skipWave();
     await battle.activateSvtSkill(0, 0);
-    await battle.playerTurn([
-      CombatAction(bunyan, bunyan.getNPCard()!),
-      CombatAction(bunyan, bunyan.getCards()[1]),
-    ]);
+    await battle.playerTurn([CombatAction(bunyan, bunyan.getNPCard()!), CombatAction(bunyan, bunyan.getCards()[1])]);
     expect(bunyan.np, 993);
   });
 
@@ -620,7 +607,8 @@ void main() async {
         ..lv = 1
         ..setNpStrengthenLv(2)
         ..atkFou = 1000
-        ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
+        ..ce =
+            db.gameData.craftEssencesById[9400340] // Kaleidoscope
         ..ceLv = 100
         ..ceLimitBreak = true,
       PlayerSvtData.id(701400)
@@ -652,12 +640,14 @@ void main() async {
       PlayerSvtData.id(201300)..lv = 1,
       PlayerSvtData.id(2300300)
         ..lv = 90
-        ..ce = db.gameData.craftEssencesById[9404120] // 20 star on entry
+        ..ce =
+            db.gameData.craftEssencesById[9404120] // 20 star on entry
         ..ceLv = 100
         ..ceLimitBreak = true,
       PlayerSvtData.id(504600)
         ..lv = 80
-        ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
+        ..ce =
+            db.gameData.craftEssencesById[9400340] // Kaleidoscope
         ..ceLv = 100
         ..ceLimitBreak = true,
     ];
@@ -681,7 +671,8 @@ void main() async {
       PlayerSvtData.id(901400)
         ..lv = 90
         ..tdLv = 1
-        ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
+        ..ce =
+            db.gameData.craftEssencesById[9400340] // Kaleidoscope
         ..ceLv = 100
         ..ceLimitBreak = true,
       PlayerSvtData.id(701400)
@@ -708,7 +699,8 @@ void main() async {
       PlayerSvtData.id(1100900)
         ..lv = 90
         ..tdLv = 5
-        ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
+        ..ce =
+            db.gameData.craftEssencesById[9400340] // Kaleidoscope
         ..ceLv = 100
         ..ceLimitBreak = true,
     ];
@@ -736,13 +728,15 @@ void main() async {
       PlayerSvtData.id(501900)
         ..lv = 90
         ..tdLv = 5
-        ..ce = db.gameData.craftEssencesById[9400730] // 500 Year
+        ..ce =
+            db.gameData.craftEssencesById[9400730] // 500 Year
         ..ceLv = 100
         ..ceLimitBreak = true,
       PlayerSvtData.id(504400)
         ..lv = 90
         ..tdLv = 5
-        ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
+        ..ce =
+            db.gameData.craftEssencesById[9400340] // Kaleidoscope
         ..ceLv = 100
         ..ceLimitBreak = true,
       PlayerSvtData.id(500300)..lv = 90,
@@ -754,9 +748,7 @@ void main() async {
     expect(battle.canSelectNp(1), true);
     expect(chenGong.hp, 11210);
 
-    await battle.playerTurn([
-      CombatAction(chenGong, chenGong.getNPCard()!),
-    ]);
+    await battle.playerTurn([CombatAction(chenGong, chenGong.getNPCard()!)]);
 
     chenGong.np = 10000;
     expect(battle.canSelectNp(1), false);
@@ -774,7 +766,8 @@ void main() async {
       PlayerSvtData.id(2300500)
         ..lv = 90
         ..tdLv = 5
-        ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
+        ..ce =
+            db.gameData.craftEssencesById[9400340] // Kaleidoscope
         ..ceLv = 100
         ..ceLimitBreak = true,
     ];
@@ -796,9 +789,7 @@ void main() async {
     final enemy3 = battle.onFieldEnemies[2]!;
     final previousHp2 = enemy2.hp;
     final previousHp3 = enemy3.hp;
-    await battle.playerTurn([
-      CombatAction(archtypeEarth, archtypeEarth.getNPCard()!),
-    ]);
+    await battle.playerTurn([CombatAction(archtypeEarth, archtypeEarth.getNPCard()!)]);
 
     expect(previousHp2 - enemy2.hp, 29468);
     expect(previousHp3 - enemy3.hp, 29468);
@@ -819,7 +810,8 @@ void main() async {
       PlayerSvtData.id(2300500)
         ..lv = 90
         ..tdLv = 5
-        ..ce = db.gameData.craftEssencesById[9405160] // crane event point buff ce
+        ..ce =
+            db.gameData.craftEssencesById[9405160] // crane event point buff ce
         ..ceLv = 100
         ..ceLimitBreak = true,
     ];
@@ -832,9 +824,23 @@ void main() async {
 
     battle.options.pointBuffs = {
       0: EventPointBuff(
-          id: 0, funcIds: [6912], eventPoint: 0, name: '', icon: '', background: ItemBGType.zero, value: 100),
+        id: 0,
+        funcIds: [6912],
+        eventPoint: 0,
+        name: '',
+        icon: '',
+        background: ItemBGType.zero,
+        value: 100,
+      ),
       1: EventPointBuff(
-          id: 1, funcIds: [6913], eventPoint: 0, name: '', icon: '', background: ItemBGType.zero, value: 200),
+        id: 1,
+        funcIds: [6913],
+        eventPoint: 0,
+        name: '',
+        icon: '',
+        background: ItemBGType.zero,
+        value: 200,
+      ),
     };
 
     await battle.init(quest, setting, null);
@@ -842,16 +848,12 @@ void main() async {
     final archtypeEarth = battle.onFieldAllyServants[0]!;
     final enemy1 = battle.onFieldEnemies[0]!;
     final previousHp1 = enemy1.hp;
-    await battle.playerTurn([
-      CombatAction(archtypeEarth, archtypeEarth.getCards()[0]),
-    ]);
+    await battle.playerTurn([CombatAction(archtypeEarth, archtypeEarth.getCards()[0])]);
 
     expect(previousHp1 - enemy1.hp, 2659);
 
     final previousHp2 = enemy1.hp;
-    await battle.playerTurn([
-      CombatAction(archtypeEarth, archtypeEarth.getCards()[2]),
-    ]);
+    await battle.playerTurn([CombatAction(archtypeEarth, archtypeEarth.getCards()[2])]);
 
     expect(previousHp2 - enemy1.hp, 4062);
   });
@@ -860,7 +862,7 @@ void main() async {
     final List<PlayerSvtData> setting = [
       PlayerSvtData.id(502600)
         ..lv = 80
-        ..commandCodes = [null, db.gameData.commandCodesById[8400770], null, null, null]
+        ..commandCodes = [null, db.gameData.commandCodesById[8400770], null, null, null],
     ];
     final battle = BattleData();
     final quest = db.gameData.questPhases[9300040603]!;
@@ -869,17 +871,13 @@ void main() async {
     final eliz = battle.onFieldAllyServants[0]!;
     final enemy1 = battle.onFieldEnemies[0]!;
     final previousHp1 = enemy1.hp;
-    await battle.playerTurn([
-      CombatAction(eliz, eliz.getCards()[2]..critical = true),
-    ]);
+    await battle.playerTurn([CombatAction(eliz, eliz.getCards()[2]..critical = true)]);
 
     expect(previousHp1 - enemy1.hp, 4256);
 
     await battle.activateSvtSkill(0, 1);
     final previousHp2 = enemy1.hp;
-    await battle.playerTurn([
-      CombatAction(eliz, eliz.getCards()[1]..critical = true),
-    ]);
+    await battle.playerTurn([CombatAction(eliz, eliz.getCards()[1]..critical = true)]);
 
     expect(previousHp2 - enemy1.hp, 5533 + 300); // 300 burn damage
   });
@@ -888,7 +886,7 @@ void main() async {
     final List<PlayerSvtData> setting = [
       PlayerSvtData.id(1001300)
         ..lv = 90
-        ..tdLv = 1
+        ..tdLv = 1,
     ];
     final battle = BattleData();
     final quest = db.gameData.questPhases[9300040603]!;
@@ -914,7 +912,8 @@ void main() async {
         ..lv = 90
         ..tdLv = 5
         ..setNpStrengthenLv(3)
-        ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
+        ..ce =
+            db.gameData.craftEssencesById[9400340] // Kaleidoscope
         ..ceLv = 100
         ..ceLimitBreak = true,
     ];
@@ -938,9 +937,10 @@ void main() async {
 
     final enemy3 = battle.onFieldEnemies[2]!;
     final previousHp3 = enemy3.hp;
-    enemy3.niceEnemy!.traits = enemy3.niceEnemy!.traits.toList()
-      ..add(NiceTrait(id: 115))
-      ..add(NiceTrait(id: 109));
+    enemy3.niceEnemy!.traits =
+        enemy3.niceEnemy!.traits.toList()
+          ..add(NiceTrait(id: 115))
+          ..add(NiceTrait(id: 109));
     musashi.np = 10000;
     await battle.playerTurn([CombatAction(musashi, musashi.getNPCard()!)]);
     expect(previousHp3 - enemy3.hp, 120179);
@@ -950,13 +950,15 @@ void main() async {
     final List<PlayerSvtData> setting = [
       PlayerSvtData.id(901100)
         ..lv = 90
-        ..ce = db.gameData.craftEssencesById[9405550] // The Dwarf Tailor (debuff immune once)
+        ..ce =
+            db.gameData.craftEssencesById[9405550] // The Dwarf Tailor (debuff immune once)
         ..ceLv = 15
         ..ceLimitBreak = true,
       PlayerSvtData.id(1101100)..lv = 90, // avenger
       PlayerSvtData.id(901100)
         ..lv = 90
-        ..ce = db.gameData.craftEssencesById[9405550] // The Dwarf Tailor (debuff immune once)
+        ..ce =
+            db.gameData.craftEssencesById[9405550] // The Dwarf Tailor (debuff immune once)
         ..ceLv = 15
         ..ceLimitBreak = true,
     ];
@@ -984,7 +986,8 @@ void main() async {
         ..tdLv = 3
         ..skillLvs = [9, 9, 9]
         ..setSkillStrengthenLvs([1, 1, 2])
-        ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
+        ..ce =
+            db.gameData.craftEssencesById[9400340] // Kaleidoscope
         ..ceLv = 100
         ..ceLimitBreak = true,
     ];
@@ -1382,7 +1385,8 @@ void main() async {
       PlayerSvtData.id(900500) // Sherlock
         ..tdLv = 5
         ..setSkillStrengthenLvs([2, 1, 1])
-        ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
+        ..ce =
+            db.gameData.craftEssencesById[9400340] // Kaleidoscope
         ..ceLimitBreak = true,
       PlayerSvtData.id(603700) // Kama
         ..lv = 120
@@ -1392,9 +1396,10 @@ void main() async {
       PlayerSvtData.id(901400)..skillLvs = [10, 5, 10], // swimsuit Skadi
       PlayerSvtData.id(503900)..ce = db.gameData.craftEssencesById[9302920], // Skadi with bond CE
     ];
-    final mysticCode = MysticCodeData()
-      ..mysticCode = db.gameData.mysticCodes[20]!
-      ..level = 10;
+    final mysticCode =
+        MysticCodeData()
+          ..mysticCode = db.gameData.mysticCodes[20]!
+          ..level = 10;
     await battle.init(quest!, playerSettings, mysticCode);
 
     final sherlock = battle.onFieldAllyServants[0]!;
@@ -1847,10 +1852,7 @@ void main() async {
     });
 
     test('mysticCode party gainStar', () async {
-      final List<PlayerSvtData?> setting = [
-        PlayerSvtData.id(3300200),
-        PlayerSvtData.id(2501200),
-      ];
+      final List<PlayerSvtData?> setting = [PlayerSvtData.id(3300200), PlayerSvtData.id(2501200)];
       final battle = BattleData();
       final quest = db.gameData.questPhases[9300040603]!;
       await battle.init(quest, setting, MysticCodeData()..mysticCode = db.gameData.mysticCodes[130]);
@@ -2064,12 +2066,14 @@ void main() async {
 
       int count = 0;
       battle.delegate = BattleDelegate();
-      battle.delegate?.tdTypeChange = (_actor, _list) async => [
-            CardType.arts.value, // Emiya select arts
-            CardType.buster.value, // Emiya select buster
-            1, // summer bb select dmg type
-            2, // summer bb select support type
-          ][count++];
+      battle.delegate?.tdTypeChange =
+          (_actor, _list) async =>
+              [
+                CardType.arts.value, // Emiya select arts
+                CardType.buster.value, // Emiya select buster
+                1, // summer bb select dmg type
+                2, // summer bb select support type
+              ][count++];
 
       expect(emiya.getNPCard()!.cardType, CardType.buster);
 
@@ -2139,7 +2143,7 @@ void main() async {
     final List<PlayerSvtData> setting = [
       PlayerSvtData.id(502100)
         ..lv = 90
-        ..setSkillStrengthenLvs([1, 1, 2])
+        ..setSkillStrengthenLvs([1, 1, 2]),
     ];
     final battle = BattleData();
     final quest = await AtlasApi.questPhase(94087110, 1);
@@ -2161,7 +2165,8 @@ void main() async {
       PlayerSvtData.id(304800)
         ..limitCount = 0
         ..lv = 90
-        ..ce = db.gameData.craftEssencesById[9402750] // 50% np + 2 passives
+        ..ce =
+            db.gameData.craftEssencesById[9402750] // 50% np + 2 passives
         ..ceLimitBreak = true,
       PlayerSvtData.id(1101100), // gives passives to all allies
       PlayerSvtData.id(2800100), // gives passives to all allies
@@ -2181,9 +2186,7 @@ void main() async {
   });
 
   test('OverwriteSvtCardBuff - Phantas Moon', () async {
-    final List<PlayerSvtData> setting = [
-      PlayerSvtData.id(2800900),
-    ];
+    final List<PlayerSvtData> setting = [PlayerSvtData.id(2800900)];
     final battle = BattleData();
     final quest = db.gameData.questPhases[9300040603]!;
     await battle.init(quest, setting, null);
@@ -2226,8 +2229,9 @@ void main() async {
       final card = battle.onFieldAllyServants[0]!.getCards()[0];
       card.critical = true;
       expect(
-          checkSignedIndividualities2(myTraits: card.traits, requiredTraits: [NiceTrait(id: Trait.criticalHit.value)]),
-          true);
+        checkSignedIndividualities2(myTraits: card.traits, requiredTraits: [NiceTrait(id: Trait.criticalHit.value)]),
+        true,
+      );
     });
 
     // test('Combo related', () async {

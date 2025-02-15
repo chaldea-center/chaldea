@@ -25,13 +25,15 @@ class BattleCEData {
     for (final skillNum in skillGroups.keys) {
       final skills = skillGroups[skillNum]!.toList();
       if (hasLvPointBuff && skillNum > 1) {
-        final buffGroupId = ConstData.eventPointBuffGroupSkillNumMap[event?.id]?.entries
-            .firstWhereOrNull((e) => e.value == skillNum)
-            ?.key;
+        final buffGroupId =
+            ConstData.eventPointBuffGroupSkillNumMap[event?.id]?.entries
+                .firstWhereOrNull((e) => e.value == skillNum)
+                ?.key;
         int lv = battleData.options.pointBuffs[buffGroupId]?.lv ?? 0;
-        final eventSkills = skills
-            .where((skill) => skill.functions.any((func) => func.funcGroup.any((g) => g.eventId == eventId)))
-            .toList();
+        final eventSkills =
+            skills
+                .where((skill) => skill.functions.any((func) => func.funcGroup.any((g) => g.eventId == eventId)))
+                .toList();
         if (lv > 0 && eventSkills.isNotEmpty) {
           lv = lv.clamp2(1, eventSkills.length);
           final targetSkill = eventSkills.getOrNull((lv - 1).clamp(0, eventSkills.length - 1));

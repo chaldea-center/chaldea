@@ -60,11 +60,7 @@ class _IconCacheManagePageState extends State<IconCacheManagePage> {
             },
             child: Text(S.current.cancel),
           ),
-        if (!finished)
-          TextButton(
-            onPressed: tasks.isNotEmpty ? null : _startCaching,
-            child: Text(S.current.download),
-          ),
+        if (!finished) TextButton(onPressed: tasks.isNotEmpty ? null : _startCaching, child: Text(S.current.download)),
         if (finished)
           TextButton(
             onPressed: () {
@@ -90,34 +86,37 @@ class _IconCacheManagePageState extends State<IconCacheManagePage> {
       for (final costume in db.gameData.costumes.values) costume.icon,
       for (final ce in db.gameData.craftEssences.values) ce.borderedIcon,
       for (final cc in db.gameData.commandCodes.values) cc.borderedIcon,
-      for (final mc in db.gameData.mysticCodes.values) ...[
-        mc.extraAssets.item.female,
-        mc.extraAssets.item.male,
-      ],
+      for (final mc in db.gameData.mysticCodes.values) ...[mc.extraAssets.item.female, mc.extraAssets.item.male],
       for (final func in db.gameData.baseFunctions.values) ...[
         func.funcPopupIcon,
-        for (final buff in func.buffs) buff.icon
-      ]
+        for (final buff in func.buffs) buff.icon,
+      ],
     };
     _loader._failed.clear();
     for (final url in urls) {
       if (url == null || url.isEmpty) continue;
-      tasks.add(_loader.get(url, limiter: _limiter).then((res) {
-        if (res != null) {
-          success += 1;
-        } else {
-          failed += 1;
-        }
-        return res;
-      }).catchError((e) async {
-        if (e is! RateLimitCancelError) {
-          failed += 1;
-          print('failed $url: ${escapeDioException(e)}');
-        }
-        return '';
-      }).whenComplete(() {
-        if (mounted) setState(() {});
-      }));
+      tasks.add(
+        _loader
+            .get(url, limiter: _limiter)
+            .then((res) {
+              if (res != null) {
+                success += 1;
+              } else {
+                failed += 1;
+              }
+              return res;
+            })
+            .catchError((e) async {
+              if (e is! RateLimitCancelError) {
+                failed += 1;
+                print('failed $url: ${escapeDioException(e)}');
+              }
+              return '';
+            })
+            .whenComplete(() {
+              if (mounted) setState(() {});
+            }),
+      );
     }
     setState(() {});
   }
@@ -181,8 +180,9 @@ class AtlasIconLoader extends _CachedLoader<String, String> {
     })) {
       return path;
     }
-    final resp =
-        await limiter.limited(() => _retry(() => DioE().get(url, options: Options(responseType: ResponseType.bytes))));
+    final resp = await limiter.limited(
+      () => _retry(() => DioE().get(url, options: Options(responseType: ResponseType.bytes))),
+    );
     file.parent.createSync(recursive: true);
     await file.writeAsBytes(List.from(resp.data));
     if (PlatformU.isWindows) {
@@ -246,8 +246,9 @@ class AtlasIconLoader extends _CachedLoader<String, String> {
     })) {
       return path;
     }
-    final resp =
-        await limiter.limited(() => _retry(() => DioE().get(url, options: Options(responseType: ResponseType.bytes))));
+    final resp = await limiter.limited(
+      () => _retry(() => DioE().get(url, options: Options(responseType: ResponseType.bytes))),
+    );
     await file.writeAsBytes(List.from(resp.data));
     print('download file: $url');
     return path;
@@ -274,7 +275,7 @@ class AtlasIconLoader extends _CachedLoader<String, String> {
       HostsX.atlasAsset.kGlobal,
       HostsX.atlasAsset.kCN,
       HostsX.atlasAsset.global,
-      HostsX.atlasAsset.cn
+      HostsX.atlasAsset.cn,
     ]) {
       if (url.startsWith(host)) {
         urlPath = url.replaceFirst(host, '');
@@ -352,37 +353,39 @@ abstract class _CachedLoader<K, V> {
     if (_completers.containsKey(key)) return _completers[key]?.future;
     if (isFailed(key)) return null;
     Completer<V?> _cmpl = Completer();
-    download(key, limiter: limiter, allowWeb: allowWeb).then<void>((value) {
-      if (value != null) {
-        _success[key] = value;
-        _failed.remove(key);
-      } else {
-        _failed[key] = _FailureDetail(time: DateTime.now());
-      }
-      _cmpl.complete(value);
-    }).catchError((e, s) {
-      _cmpl.complete(null);
-      if (e is RateLimitCancelError) return;
-      if (e is DioException) {
-        final code = e.response?.statusCode;
-        if (code == 403 || code == 404) {
-          _failed[key] ??= _FailureDetail(time: DateTime.now(), statusCode: code);
-          return;
-        }
-        logger.e('_CachedLoader.download failed: $key, url=${e.requestOptions.uri}', e, s);
-      } else {
-        logger.e('_CachedLoader.download failed: $key', e, s);
-      }
+    download(key, limiter: limiter, allowWeb: allowWeb)
+        .then<void>((value) {
+          if (value != null) {
+            _success[key] = value;
+            _failed.remove(key);
+          } else {
+            _failed[key] = _FailureDetail(time: DateTime.now());
+          }
+          _cmpl.complete(value);
+        })
+        .catchError((e, s) {
+          _cmpl.complete(null);
+          if (e is RateLimitCancelError) return;
+          if (e is DioException) {
+            final code = e.response?.statusCode;
+            if (code == 403 || code == 404) {
+              _failed[key] ??= _FailureDetail(time: DateTime.now(), statusCode: code);
+              return;
+            }
+            logger.e('_CachedLoader.download failed: $key, url=${e.requestOptions.uri}', e, s);
+          } else {
+            logger.e('_CachedLoader.download failed: $key', e, s);
+          }
 
-      final detail = _failed[key];
-      if (detail == null) {
-        _failed[key] = _FailureDetail(time: DateTime.now(), retryAfter: const Duration(seconds: 30));
-      } else if (detail.neverRetry) {
-        return;
-      } else {
-        detail.retryAfter = Duration(seconds: detail.retryAfter!.inSeconds * 2);
-      }
-    });
+          final detail = _failed[key];
+          if (detail == null) {
+            _failed[key] = _FailureDetail(time: DateTime.now(), retryAfter: const Duration(seconds: 30));
+          } else if (detail.neverRetry) {
+            return;
+          } else {
+            detail.retryAfter = Duration(seconds: detail.retryAfter!.inSeconds * 2);
+          }
+        });
     _completers[key] = _cmpl;
     return _cmpl.future;
   }
@@ -406,9 +409,7 @@ class MyCacheImage extends ImageProvider<MyCacheImage> {
       codec: _loadAsync(key, decode),
       scale: key.scale,
       debugLabel: key.url,
-      informationCollector: () => <DiagnosticsNode>[
-        ErrorDescription('Url: $url'),
-      ],
+      informationCollector: () => <DiagnosticsNode>[ErrorDescription('Url: $url')],
     );
   }
 

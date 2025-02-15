@@ -44,12 +44,7 @@ class _MCSummonCreatePageState extends State<MCSummonCreatePage> {
   @override
   Widget build(BuildContext context) {
     return InheritSelectionArea(
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text(S.current.create_mooncell_summon),
-        ),
-        body: buildBody(),
-      ),
+      child: Scaffold(appBar: AppBar(title: Text(S.current.create_mooncell_summon)), body: buildBody()),
     );
   }
 
@@ -63,21 +58,17 @@ class _MCSummonCreatePageState extends State<MCSummonCreatePage> {
             minLeadingWidth: 24,
             horizontalTitleGap: 8,
             contentPadding: EdgeInsets.zero,
-            leading: gacha.isInvalid
-                ? const Icon(Icons.error, color: Colors.red, size: 18)
-                : const Icon(Icons.check_circle, color: Colors.green, size: 18),
+            leading:
+                gacha.isInvalid
+                    ? const Icon(Icons.error, color: Colors.red, size: 18)
+                    : const Icon(Icons.check_circle, color: Colors.green, size: 18),
             title: Text('${index + 1} - ${gacha.gacha.name.setMaxLines(1)}'),
             onTap: () {
               gacha.gacha.routeTo(region: Region.jp);
             },
             trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
           ),
-        Center(
-          child: ElevatedButton(
-            onPressed: parseProbs,
-            child: const Text('解析所有卡池'),
-          ),
-        ),
+        Center(child: ElevatedButton(onPressed: parseProbs, child: const Text('解析所有卡池'))),
         const Divider(height: 16),
         Row(
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -91,25 +82,21 @@ class _MCSummonCreatePageState extends State<MCSummonCreatePage> {
                 items: [
                   DropdownMenuItem(
                     value: null,
-                    child: Text(
-                      notices.isEmpty ? "解析中..." : "<选择一个公告(若在列表中)>",
-                      style: const TextStyle(fontSize: 14),
-                    ),
+                    child: Text(notices.isEmpty ? "解析中..." : "<选择一个公告(若在列表中)>", style: const TextStyle(fontSize: 14)),
                   ),
                   for (final notice in notices)
                     DropdownMenuItem(
                       value: notice,
-                      child: Text.rich(TextSpan(
-                        style: const TextStyle(fontSize: 12),
-                        children: [
-                          TextSpan(
-                            text: '[${notice.lastUpdate}更新]',
-                            style: Theme.of(context).textTheme.bodySmall,
-                          ),
-                          TextSpan(text: notice.title ?? notice.fullTitle),
-                        ],
-                      )),
-                    )
+                      child: Text.rich(
+                        TextSpan(
+                          style: const TextStyle(fontSize: 12),
+                          children: [
+                            TextSpan(text: '[${notice.lastUpdate}更新]', style: Theme.of(context).textTheme.bodySmall),
+                            TextSpan(text: notice.title ?? notice.fullTitle),
+                          ],
+                        ),
+                      ),
+                    ),
                 ],
                 onChanged: (v) {
                   setState(() {
@@ -127,19 +114,21 @@ class _MCSummonCreatePageState extends State<MCSummonCreatePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             TextButton(
-              onPressed: _selectedNotice?.link == null
-                  ? null
-                  : () {
-                      launch(_selectedNotice!.link!);
-                    },
+              onPressed:
+                  _selectedNotice?.link == null
+                      ? null
+                      : () {
+                        launch(_selectedNotice!.link!);
+                      },
               child: const Text('打开公告'),
             ),
             TextButton(
-              onPressed: _selectedNotice?.topBanner == null
-                  ? null
-                  : () {
-                      launch(_selectedNotice!.topBanner!, external: true);
-                    },
+              onPressed:
+                  _selectedNotice?.topBanner == null
+                      ? null
+                      : () {
+                        launch(_selectedNotice!.topBanner!, external: true);
+                      },
               child: const Text('下载标题图'),
             ),
             TextButton(
@@ -225,8 +214,8 @@ class _MCSummonCreatePageState extends State<MCSummonCreatePage> {
         curTab.radioValue == -2
             ? summonTab
             : curTab.radioValue == -1
-                ? simulatorTab
-                : dataTab(curTab.radioValue!)
+            ? simulatorTab
+            : dataTab(curTab.radioValue!),
       ],
     );
   }
@@ -254,14 +243,15 @@ class _MCSummonCreatePageState extends State<MCSummonCreatePage> {
               child: Text(S.current.copy),
             ),
             FilledButton.tonal(
-              onPressed: page == null || page.isEmpty
-                  ? null
-                  : () {
-                      if (wikitext != null && wikitext.isNotEmpty) {
-                        copyToClipboard(wikitext, toast: true);
-                      }
-                      launch(Uri.parse('https://fgo.wiki/w/$page?action=edit').toString(), external: true);
-                    },
+              onPressed:
+                  page == null || page.isEmpty
+                      ? null
+                      : () {
+                        if (wikitext != null && wikitext.isNotEmpty) {
+                          copyToClipboard(wikitext, toast: true);
+                        }
+                        launch(Uri.parse('https://fgo.wiki/w/$page?action=edit').toString(), external: true);
+                      },
               child: const Text('创建页面'),
             ),
           ],
@@ -271,19 +261,11 @@ class _MCSummonCreatePageState extends State<MCSummonCreatePage> {
             color: Theme.of(context).colorScheme.errorContainer,
             child: Padding(
               padding: const EdgeInsets.all(8),
-              child: Text(
-                warning,
-                style: TextStyle(color: Theme.of(context).colorScheme.onErrorContainer),
-              ),
+              child: Text(warning, style: TextStyle(color: Theme.of(context).colorScheme.onErrorContainer)),
             ),
           ),
         InheritSelectionArea(
-          child: Card(
-            child: Padding(
-              padding: const EdgeInsets.all(8),
-              child: Text(wikitext ?? "解析失败"),
-            ),
-          ),
+          child: Card(child: Padding(padding: const EdgeInsets.all(8), child: Text(wikitext ?? "解析失败"))),
         ),
       ],
     );
@@ -307,18 +289,22 @@ class _MCSummonCreatePageState extends State<MCSummonCreatePage> {
     }
     puSvts = puSvts.toSet().toList();
     puCEs = puCEs.toSet().toList();
-    puSvts.sort((a, b) => SvtFilterData.compare(
-          db.gameData.servantsNoDup[a],
-          db.gameData.servantsNoDup[b],
-          keys: [SvtCompare.rarity, SvtCompare.no],
-          reversed: [true, false],
-        ));
-    puCEs.sort((a, b) => CraftFilterData.compare(
-          db.gameData.craftEssences[a],
-          db.gameData.craftEssences[b],
-          keys: [CraftCompare.rarity, CraftCompare.no],
-          reversed: [true, false],
-        ));
+    puSvts.sort(
+      (a, b) => SvtFilterData.compare(
+        db.gameData.servantsNoDup[a],
+        db.gameData.servantsNoDup[b],
+        keys: [SvtCompare.rarity, SvtCompare.no],
+        reversed: [true, false],
+      ),
+    );
+    puCEs.sort(
+      (a, b) => CraftFilterData.compare(
+        db.gameData.craftEssences[a],
+        db.gameData.craftEssences[b],
+        keys: [CraftCompare.rarity, CraftCompare.no],
+        reversed: [true, false],
+      ),
+    );
 
     String svtNames = puSvts.map((e) => db.gameData.servantsNoDup[e]?.extra.mcLink ?? "从者$e").join(',');
     String ceNames = puCEs.map((e) => db.gameData.craftEssences[e]?.extra.mcLink ?? "礼装$e").join(',');

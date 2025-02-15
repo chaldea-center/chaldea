@@ -17,7 +17,7 @@ class _ClassBoardItemCostPageState extends State<ClassBoardItemCostPage> with Si
   static List<SvtMatCostDetailType> types = [
     SvtMatCostDetailType.full,
     SvtMatCostDetailType.demands,
-    SvtMatCostDetailType.consumed
+    SvtMatCostDetailType.consumed,
   ];
 
   @override
@@ -25,11 +25,12 @@ class _ClassBoardItemCostPageState extends State<ClassBoardItemCostPage> with Si
     return Scaffold(
       appBar: AppBar(
         title: Text('${S.current.class_board} - ${S.current.statistics_title}'),
-        bottom: FixedHeight.tabBar(TabBar(controller: _tabController, tabs: [
-          Tab(text: S.current.general_all),
-          Tab(text: S.current.plan),
-          Tab(text: S.current.consumed),
-        ])),
+        bottom: FixedHeight.tabBar(
+          TabBar(
+            controller: _tabController,
+            tabs: [Tab(text: S.current.general_all), Tab(text: S.current.plan), Tab(text: S.current.consumed)],
+          ),
+        ),
       ),
       body: TabBarView(
         controller: _tabController,
@@ -69,7 +70,7 @@ class _ClassBoardCostDetail extends StatelessWidget {
       title: Wrap(
         children: [
           for (final entry in entries)
-            Item.iconBuilder(context: context, item: null, itemId: entry.key, text: entry.value.format())
+            Item.iconBuilder(context: context, item: null, itemId: entry.key, text: entry.value.format()),
         ],
       ),
     );

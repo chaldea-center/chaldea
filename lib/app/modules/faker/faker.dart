@@ -141,72 +141,73 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
             icon: const Icon(Icons.history),
           ),
           PopupMenuButton(
-            itemBuilder: (context) => [
-              PopupMenuItem(
-                enabled: isLoggedIn,
-                onTap: () {
-                  router.pushPage(ImportHttpPage(mstData: mstData));
-                },
-                child: Text(S.current.general_import),
-              ),
-              PopupMenuItem(
-                enabled: isLoggedIn,
-                onTap: () {
-                  router.pushPage(UserPresentBoxManagePage(runtime: runtime));
-                },
-                child: Text(S.current.present_box),
-              ),
-              PopupMenuItem(
-                enabled: isLoggedIn,
-                onTap: () {
-                  router.pushPage(GachaDrawPage(runtime: runtime));
-                },
-                child: Text(S.current.gacha),
-              ),
-              PopupMenuItem(
-                enabled: isLoggedIn,
-                onTap: () {
-                  router.pushPage(UserEventMissionReceivePage(runtime: runtime));
-                },
-                child: Text(S.current.master_mission),
-              ),
-              PopupMenuItem(
-                enabled: isLoggedIn,
-                onTap: () {
-                  router.pushPage(SvtCombinePage(runtime: runtime));
-                },
-                child: Text('从者强化'),
-              ),
-              PopupMenuItem(
-                enabled: isLoggedIn,
-                onTap: () {
-                  router.pushPage(UserSvtCommandCodePage(runtime: runtime));
-                },
-                child: Text('指令卡/纹章'),
-              ),
-              if (mstData.userEventTrade.isNotEmpty)
-                PopupMenuItem(
-                  enabled: isLoggedIn,
-                  onTap: () async {
-                    router.pushPage(UserEventTradePage(runtime: runtime));
-                  },
-                  child: Text(S.current.event_trade),
-                ),
-              if (mstData.userBoxGacha.isNotEmpty)
-                PopupMenuItem(
-                  enabled: isLoggedIn,
-                  onTap: () async {
-                    router.pushPage(BoxGachaDrawPage(runtime: runtime));
-                  },
-                  child: Text(S.current.event_lottery),
-                ),
-              PopupMenuItem(
-                child: Text("Reload"),
-                onTap: () {
-                  runtime.runTask(runtime.gameData.reset);
-                },
-              )
-            ],
+            itemBuilder:
+                (context) => [
+                  PopupMenuItem(
+                    enabled: isLoggedIn,
+                    onTap: () {
+                      router.pushPage(ImportHttpPage(mstData: mstData));
+                    },
+                    child: Text(S.current.general_import),
+                  ),
+                  PopupMenuItem(
+                    enabled: isLoggedIn,
+                    onTap: () {
+                      router.pushPage(UserPresentBoxManagePage(runtime: runtime));
+                    },
+                    child: Text(S.current.present_box),
+                  ),
+                  PopupMenuItem(
+                    enabled: isLoggedIn,
+                    onTap: () {
+                      router.pushPage(GachaDrawPage(runtime: runtime));
+                    },
+                    child: Text(S.current.gacha),
+                  ),
+                  PopupMenuItem(
+                    enabled: isLoggedIn,
+                    onTap: () {
+                      router.pushPage(UserEventMissionReceivePage(runtime: runtime));
+                    },
+                    child: Text(S.current.master_mission),
+                  ),
+                  PopupMenuItem(
+                    enabled: isLoggedIn,
+                    onTap: () {
+                      router.pushPage(SvtCombinePage(runtime: runtime));
+                    },
+                    child: Text('从者强化'),
+                  ),
+                  PopupMenuItem(
+                    enabled: isLoggedIn,
+                    onTap: () {
+                      router.pushPage(UserSvtCommandCodePage(runtime: runtime));
+                    },
+                    child: Text('指令卡/纹章'),
+                  ),
+                  if (mstData.userEventTrade.isNotEmpty)
+                    PopupMenuItem(
+                      enabled: isLoggedIn,
+                      onTap: () async {
+                        router.pushPage(UserEventTradePage(runtime: runtime));
+                      },
+                      child: Text(S.current.event_trade),
+                    ),
+                  if (mstData.userBoxGacha.isNotEmpty)
+                    PopupMenuItem(
+                      enabled: isLoggedIn,
+                      onTap: () async {
+                        router.pushPage(BoxGachaDrawPage(runtime: runtime));
+                      },
+                      child: Text(S.current.event_lottery),
+                    ),
+                  PopupMenuItem(
+                    child: Text("Reload"),
+                    onTap: () {
+                      runtime.runTask(runtime.gameData.reset);
+                    },
+                  ),
+                ],
           ),
         ],
       ),
@@ -267,91 +268,100 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
         ),
         TextSpan(
           text: ' ${mstData.userPresentBox.length}/${runtime.gameData.constants.maxPresentBoxNum}',
-          style: mstData.userPresentBox.length > runtime.gameData.constants.maxPresentBoxNum - 20
-              ? TextStyle(color: Colors.amber)
-              : null,
+          style:
+              mstData.userPresentBox.length > runtime.gameData.constants.maxPresentBoxNum - 20
+                  ? TextStyle(color: Colors.amber)
+                  : null,
           recognizer: TapGestureRecognizer()..onTap = onTapPresentBox,
         ),
       ]);
     }
-    children.add(ListTile(
-      dense: true,
-      minTileHeight: 48,
-      visualDensity: VisualDensity.compact,
-      minLeadingWidth: 20,
-      leading: Container(
-        constraints: const BoxConstraints(maxWidth: 20, maxHeight: 20),
-        child: ValueListenableBuilder(
-          valueListenable: runtime.runningTask,
-          builder: (context, running, _) => Stack(
-            alignment: Alignment.center,
-            children: [
-              CircularProgressIndicator(
-                value: running ? null : 1.0,
-                color: running ? Colors.red : Colors.green,
-              ),
-              if (running)
-                TimerUpdate(
-                  builder: (context, t) {
-                    final startedAt = agent.network.lastTaskStartedAt;
-                    final dt = min(99, t.timestamp - startedAt);
-                    if (startedAt <= 0 || dt < 0) return const SizedBox.shrink();
-                    return Text(
-                      dt.toString(),
-                      style: TextStyle(fontSize: 10),
-                      textAlign: TextAlign.center,
+    children.add(
+      ListTile(
+        dense: true,
+        minTileHeight: 48,
+        visualDensity: VisualDensity.compact,
+        minLeadingWidth: 20,
+        leading: Container(
+          constraints: const BoxConstraints(maxWidth: 20, maxHeight: 20),
+          child: ValueListenableBuilder(
+            valueListenable: runtime.runningTask,
+            builder:
+                (context, running, _) => Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    CircularProgressIndicator(value: running ? null : 1.0, color: running ? Colors.red : Colors.green),
+                    if (running)
+                      TimerUpdate(
+                        builder: (context, t) {
+                          final startedAt = agent.network.lastTaskStartedAt;
+                          final dt = min(99, t.timestamp - startedAt);
+                          if (startedAt <= 0 || dt < 0) return const SizedBox.shrink();
+                          return Text(dt.toString(), style: TextStyle(fontSize: 10), textAlign: TextAlign.center);
+                        },
+                      ),
+                  ],
+                ),
+          ),
+        ),
+        title: Text('[${agent.user.serverName}] ${userGame?.name ?? "not login"}'),
+        subtitle: Text.rich(TextSpan(children: subtitle)),
+        trailing:
+            userGame == null
+                ? null
+                : TimerUpdate(
+                  builder: (context, time) {
+                    return Tooltip(
+                      message: userGame.actRecoverAt.sec2date().toCustomString(year: false),
+                      child: Text(
+                        '${userGame.calCurAp()}/${userGame.actMax}\n${Duration(seconds: (userGame.actRecoverAt - DateTime.now().timestamp)).toString().split('.').first}',
+                        textAlign: TextAlign.end,
+                        style: const TextStyle(fontSize: 12),
+                      ),
                     );
                   },
                 ),
+      ),
+    );
+
+    children.add(
+      Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        alignment: AlignmentDirectional.centerStart,
+        child: Text.rich(
+          TextSpan(
+            children: [
+              TextSpan(
+                children: [
+                  CenterWidgetSpan(
+                    child: Item.iconBuilder(context: context, item: null, itemId: Items.stoneId, width: 20),
+                  ),
+                  TextSpan(text: '×${userGame?.stone ?? 0}  '),
+                ],
+              ),
+              for (final itemId in <int>{
+                ...Items.loginSaveItems,
+                ...?db.gameData.quests[battleOption.questId]?.consumeItem.map((e) => e.itemId),
+              })
+                TextSpan(
+                  children: [
+                    CenterWidgetSpan(child: Item.iconBuilder(context: context, item: null, itemId: itemId, width: 20)),
+                    TextSpan(
+                      text: '×${mstData.getItemOrSvtNum(itemId, defaultValue: agent.user.userItems[itemId] ?? 0)}  ',
+                    ),
+                  ],
+                ),
             ],
+            style: TextStyle(fontSize: 14),
           ),
         ),
       ),
-      title: Text('[${agent.user.serverName}] ${userGame?.name ?? "not login"}'),
-      subtitle: Text.rich(TextSpan(children: subtitle)),
-      trailing: userGame == null
-          ? null
-          : TimerUpdate(builder: (context, time) {
-              return Tooltip(
-                message: userGame.actRecoverAt.sec2date().toCustomString(year: false),
-                child: Text(
-                  '${userGame.calCurAp()}/${userGame.actMax}\n${Duration(seconds: (userGame.actRecoverAt - DateTime.now().timestamp)).toString().split('.').first}',
-                  textAlign: TextAlign.end,
-                  style: const TextStyle(fontSize: 12),
-                ),
-              );
-            }),
-    ));
-
-    children.add(Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      alignment: AlignmentDirectional.centerStart,
-      child: Text.rich(TextSpan(
-        children: [
-          TextSpan(children: [
-            CenterWidgetSpan(child: Item.iconBuilder(context: context, item: null, itemId: Items.stoneId, width: 20)),
-            TextSpan(text: '×${userGame?.stone ?? 0}  '),
-          ]),
-          for (final itemId in <int>{
-            ...Items.loginSaveItems,
-            ...?db.gameData.quests[battleOption.questId]?.consumeItem.map((e) => e.itemId)
-          })
-            TextSpan(children: [
-              CenterWidgetSpan(child: Item.iconBuilder(context: context, item: null, itemId: itemId, width: 20)),
-              TextSpan(text: '×${mstData.getItemOrSvtNum(itemId, defaultValue: agent.user.userItems[itemId] ?? 0)}  '),
-            ])
-        ],
-        style: TextStyle(fontSize: 14),
-      )),
-    ));
+    );
 
     return Container(
       color: Theme.of(context).secondaryHeaderColor,
       padding: const EdgeInsets.only(bottom: 4),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: children,
-      ),
+      child: Column(mainAxisSize: MainAxisSize.min, children: children),
     );
   }
 
@@ -379,50 +389,54 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
     List<Widget> children = [
       ListTile(
         dense: true,
-        title: Text('AppVer=${gameTop.appVer}  DataVer=${gameTop.dataVer}'
-            '\nDateVer=${gameTop.dateVer.sec2date().toStringShort(omitSec: true)}'),
+        title: Text(
+          'AppVer=${gameTop.appVer}  DataVer=${gameTop.dataVer}'
+          '\nDateVer=${gameTop.dateVer.sec2date().toStringShort(omitSec: true)}',
+        ),
       ),
     ];
     final userGame = runtime.agent.userGame;
     if (userGame != null) {
       final curLv = ConstData.userLevel[userGame.lv];
       final nextLv = ConstData.userLevel[userGame.lv + 1];
-      children.add(ListTile(
-        dense: true,
-        title: const Text('Master Lv'),
-        trailing: Text(
-          [
-            'Lv.${userGame.lv}',
-            if (nextLv != null) userGame.exp - nextLv.requiredExp,
-          ].join('\n'),
-          textAlign: TextAlign.end,
-          style: trailingStyle,
+      children.add(
+        ListTile(
+          dense: true,
+          title: const Text('Master Lv'),
+          trailing: Text(
+            ['Lv.${userGame.lv}', if (nextLv != null) userGame.exp - nextLv.requiredExp].join('\n'),
+            textAlign: TextAlign.end,
+            style: trailingStyle,
+          ),
         ),
-      ));
+      );
       if (curLv != null && nextLv != null && userGame.exp >= curLv.requiredExp && userGame.exp <= nextLv.requiredExp) {
-        children.add(BondProgress(
-          value: userGame.exp - curLv.requiredExp,
-          total: nextLv.requiredExp - curLv.requiredExp,
-          padding: EdgeInsets.symmetric(horizontal: 16),
-          minHeight: 4,
-        ));
+        children.add(
+          BondProgress(
+            value: userGame.exp - curLv.requiredExp,
+            total: nextLv.requiredExp - curLv.requiredExp,
+            padding: EdgeInsets.symmetric(horizontal: 16),
+            minHeight: 4,
+          ),
+        );
       }
 
       final cardCounts = mstData.countSvtKeep();
-      children.add(ListTile(
-        dense: true,
-        title: Text([
-          '${S.current.servant} ${cardCounts.svtCount}/${userGame.svtKeep}',
-          '${S.current.craft_essence_short} ${cardCounts.svtEquipCount}/${userGame.svtEquipKeep}',
-          '${S.current.command_code_short} ${cardCounts.ccCount}/${runtime.gameData.constants.maxUserCommandCode}',
-          if (cardCounts.unknownCount != 0) '${S.current.unknown} ${cardCounts.unknownCount}',
-        ].join('  ')),
-      ));
+      children.add(
+        ListTile(
+          dense: true,
+          title: Text(
+            [
+              '${S.current.servant} ${cardCounts.svtCount}/${userGame.svtKeep}',
+              '${S.current.craft_essence_short} ${cardCounts.svtEquipCount}/${userGame.svtEquipKeep}',
+              '${S.current.command_code_short} ${cardCounts.ccCount}/${runtime.gameData.constants.maxUserCommandCode}',
+              if (cardCounts.unknownCount != 0) '${S.current.unknown} ${cardCounts.unknownCount}',
+            ].join('  '),
+          ),
+        ),
+      );
     }
-    return TileGroup(
-      header: 'Misc Info',
-      children: children,
-    );
+    return TileGroup(header: 'Misc Info', children: children);
   }
 
   Widget get battleDetailSection {
@@ -445,28 +459,28 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
         ListTile(
           dense: true,
           title: Text(
-            _describeQuest(battleEntity.questId, battleEntity.questPhase,
-                battleEntity.battleInfo?.enemyDeck.map((e) => e.svts.length).join('-')),
+            _describeQuest(
+              battleEntity.questId,
+              battleEntity.questPhase,
+              battleEntity.battleInfo?.enemyDeck.map((e) => e.svts.length).join('-'),
+            ),
           ),
           subtitle: Wrap(
             children: [
               for (final itemId in dropItems.keys.toList()..sort((a, b) => Item.compare2(a, b)))
                 db.gameData.craftEssencesById.containsKey(itemId)
                     ? db.gameData.craftEssencesById[itemId]!.iconBuilder(
-                        context: context,
-                        height: 36,
-                        text: '+${dropItems[itemId]!.format()}',
-                      )
+                      context: context,
+                      height: 36,
+                      text: '+${dropItems[itemId]!.format()}',
+                    )
                     : Item.iconBuilder(
-                        context: context,
-                        item: null,
-                        itemId: itemId,
-                        height: 36,
-                        text: [
-                          '+${dropItems[itemId]!.format()}',
-                          mstData.getItemOrSvtNum(itemId).format(),
-                        ].join('\n'),
-                      ),
+                      context: context,
+                      item: null,
+                      itemId: itemId,
+                      height: 36,
+                      text: ['+${dropItems[itemId]!.format()}', mstData.getItemOrSvtNum(itemId).format()].join('\n'),
+                    ),
             ],
           ),
           trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
@@ -480,84 +494,94 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
         ),
       ]);
     }
-    children.add(SimpleAccordion(
-      headerBuilder: (context, _) {
-        return ListTile(
-          dense: true,
-          title: Text('Drop Statistics (${runtime.totalDropStat.totalCount} runs)'),
-          subtitle: runtime.totalRewards.isEmpty
-              ? null
-              : Wrap(
-                  spacing: 2,
-                  runSpacing: 2,
-                  children: (runtime.totalRewards.keys.toList()..sort(Item.compare)).map((itemId) {
-                    return GameCardMixin.anyCardItemBuilder(
-                      context: context,
-                      id: itemId,
-                      width: 30,
-                      text: [
-                        '+${runtime.totalRewards[itemId]?.format()}',
-                        mstData.getItemOrSvtNum(itemId).format(),
-                      ].join('\n'),
-                    );
-                  }).toList(),
+    children.add(
+      SimpleAccordion(
+        headerBuilder: (context, _) {
+          return ListTile(
+            dense: true,
+            title: Text('Drop Statistics (${runtime.totalDropStat.totalCount} runs)'),
+            subtitle:
+                runtime.totalRewards.isEmpty
+                    ? null
+                    : Wrap(
+                      spacing: 2,
+                      runSpacing: 2,
+                      children:
+                          (runtime.totalRewards.keys.toList()..sort(Item.compare)).map((itemId) {
+                            return GameCardMixin.anyCardItemBuilder(
+                              context: context,
+                              id: itemId,
+                              width: 30,
+                              text: [
+                                '+${runtime.totalRewards[itemId]?.format()}',
+                                mstData.getItemOrSvtNum(itemId).format(),
+                              ].join('\n'),
+                            );
+                          }).toList(),
+                    ),
+          );
+        },
+        contentBuilder: (context) {
+          runtime.totalDropStat.items.removeWhere((k, v) => v == 0);
+          final questDropIds = db.gameData.dropData.freeDrops2[battleOption.questId]?.items.keys.toList() ?? [];
+          for (final itemId in questDropIds.followedBy(battleOption.targetDrops.keys)) {
+            runtime.totalDropStat.items.putIfAbsent(itemId, () => 0);
+          }
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              for (final (header, dropStats) in [
+                ('Total', runtime.totalDropStat),
+                ('Current Loop', runtime.curLoopDropStat),
+              ])
+                ListTile(
+                  dense: true,
+                  title: Text.rich(
+                    TextSpan(
+                      text: "$header (${dropStats.totalCount} runs)  ",
+                      children: [
+                        SharedBuilder.textButtonSpan(
+                          context: context,
+                          text: 'clear',
+                          onTap: () {
+                            setState(() {
+                              if (dropStats == runtime.totalDropStat) runtime.totalRewards.clear();
+                              dropStats.reset();
+                            });
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                  subtitle: Wrap(
+                    spacing: 2,
+                    runSpacing: 2,
+                    children:
+                        (dropStats.items.keys.toList()..sort(Item.compare)).map((itemId) {
+                          double prob = 0;
+                          if (dropStats.totalCount > 0) {
+                            prob = dropStats.items[itemId]! / dropStats.totalCount;
+                          }
+                          return GameCardMixin.anyCardItemBuilder(
+                            context: context,
+                            id: itemId,
+                            width: 42,
+                            text: [
+                              '+${dropStats.items[itemId]!.format()}',
+                              if (dropStats.totalCount > 0) prob > 1 ? prob.format() : prob.format(percent: true),
+                              db.gameData.craftEssencesById.containsKey(itemId)
+                                  ? (mstData.userSvt.where((e) => e.svtId == itemId).length.toString())
+                                  : mstData.getItemOrSvtNum(itemId).format(),
+                            ].join('\n'),
+                          );
+                        }).toList(),
+                  ),
                 ),
-        );
-      },
-      contentBuilder: (context) {
-        runtime.totalDropStat.items.removeWhere((k, v) => v == 0);
-        final questDropIds = db.gameData.dropData.freeDrops2[battleOption.questId]?.items.keys.toList() ?? [];
-        for (final itemId in questDropIds.followedBy(battleOption.targetDrops.keys)) {
-          runtime.totalDropStat.items.putIfAbsent(itemId, () => 0);
-        }
-        return Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            for (final (header, dropStats) in [
-              ('Total', runtime.totalDropStat),
-              ('Current Loop', runtime.curLoopDropStat)
-            ])
-              ListTile(
-                dense: true,
-                title: Text.rich(TextSpan(text: "$header (${dropStats.totalCount} runs)  ", children: [
-                  SharedBuilder.textButtonSpan(
-                    context: context,
-                    text: 'clear',
-                    onTap: () {
-                      setState(() {
-                        if (dropStats == runtime.totalDropStat) runtime.totalRewards.clear();
-                        dropStats.reset();
-                      });
-                    },
-                  )
-                ])),
-                subtitle: Wrap(
-                  spacing: 2,
-                  runSpacing: 2,
-                  children: (dropStats.items.keys.toList()..sort(Item.compare)).map((itemId) {
-                    double prob = 0;
-                    if (dropStats.totalCount > 0) {
-                      prob = dropStats.items[itemId]! / dropStats.totalCount;
-                    }
-                    return GameCardMixin.anyCardItemBuilder(
-                      context: context,
-                      id: itemId,
-                      width: 42,
-                      text: [
-                        '+${dropStats.items[itemId]!.format()}',
-                        if (dropStats.totalCount > 0) prob > 1 ? prob.format() : prob.format(percent: true),
-                        db.gameData.craftEssencesById.containsKey(itemId)
-                            ? (mstData.userSvt.where((e) => e.svtId == itemId).length.toString())
-                            : mstData.getItemOrSvtNum(itemId).format(),
-                      ].join('\n'),
-                    );
-                  }).toList(),
-                ),
-              ),
-          ],
-        );
-      },
-    ));
+            ],
+          );
+        },
+      ),
+    );
 
     if (battleEntity?.battleInfo?.raidInfo.isNotEmpty == true ||
         db.gameData.quests[battleOption.questId]?.flags.contains(QuestFlag.raid) == true) {
@@ -567,10 +591,11 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
     final resultType = BattleResultType.values.firstWhereOrNull((e) => e.value == lastResult?.battleResult);
 
     return TileGroup(
-      header: battleEntity == null
-          ? 'Battle Details'
-          : 'Battle ${battleEntity.id} - ${agent.curBattle == null ? "${resultType?.name}" : "ongoing"}'
-              ' (${battleEntity.createdAt.sec2date().toCustomString(year: false)})',
+      header:
+          battleEntity == null
+              ? 'Battle Details'
+              : 'Battle ${battleEntity.id} - ${agent.curBattle == null ? "${resultType?.name}" : "ongoing"}'
+                  ' (${battleEntity.createdAt.sec2date().toCustomString(year: false)})',
       children: children,
     );
   }
@@ -591,13 +616,15 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
     if (eventId != null && day != null) {
       final mstRaid = mstData.mstEventRaid[EventRaidEntity.createPK(eventId, day)];
       final record = agent.getRaidRecord(eventId, day).history.lastOrNull;
-      title = Text([
-        'Raid day $day ${mstRaid?.name ?? ""}',
-        if (record != null)
-          '${record.raidInfo.totalDamage.format(compact: false, groupSeparator: ",")}'
-              '/${record.raidInfo.maxHp.format(compact: false, groupSeparator: ",")}'
-              '  (${record.raidInfo.rate.format(percent: true)})',
-      ].join('\n'));
+      title = Text(
+        [
+          'Raid day $day ${mstRaid?.name ?? ""}',
+          if (record != null)
+            '${record.raidInfo.totalDamage.format(compact: false, groupSeparator: ",")}'
+                '/${record.raidInfo.maxHp.format(compact: false, groupSeparator: ",")}'
+                '  (${record.raidInfo.rate.format(percent: true)})',
+        ].join('\n'),
+      );
       if (record != null) {
         subtitle = BondProgress(
           value: record.raidInfo.totalDamage,
@@ -614,26 +641,22 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
       title: title,
       subtitle: subtitle,
       trailing: IconButton(
-        onPressed: eventId == 0
-            ? null
-            : () {
-                router.pushPage(RaidsPage(runtime: runtime, eventId: eventId ?? 0));
-              },
+        onPressed:
+            eventId == 0
+                ? null
+                : () {
+                  router.pushPage(RaidsPage(runtime: runtime, eventId: eventId ?? 0));
+                },
         icon: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
       ),
     );
   }
 
   BattleTeamFormation cvtFormation(BattleEntity battleEntity) {
-    final userSvts = {
-      for (final svt in battleEntity.battleInfo?.userSvt ?? <BattleUserServantData>[]) svt.id: svt,
-    };
+    final userSvts = {for (final svt in battleEntity.battleInfo?.userSvt ?? <BattleUserServantData>[]) svt.id: svt};
     final userEquip = mstData.userEquip[battleEntity.battleInfo?.userEquipId];
     return BattleTeamFormation.fromList(
-      mysticCode: MysticCodeSaveData(
-        mysticCodeId: userEquip?.equipId,
-        level: userEquip?.lv ?? 0,
-      ),
+      mysticCode: MysticCodeSaveData(mysticCodeId: userEquip?.equipId, level: userEquip?.lv ?? 0),
       svts: List.generate(6, (i) {
         final svt = battleEntity.battleInfo?.myDeck?.svts.getOrNull(i);
         final userSvt = userSvts[svt?.userSvtId], userCE = userSvts[svt?.userSvtEquipIds?.firstOrNull];
@@ -651,8 +674,9 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
           if (userCE != null) {
             if (userCE.limitCount == 0) {
               // may be zero even if MLB for support svt
-              final skill =
-                  db.gameData.craftEssencesById[userCE.svtId]?.skills.firstWhereOrNull((e) => e.id == userCE.skillId1);
+              final skill = db.gameData.craftEssencesById[userCE.svtId]?.skills.firstWhereOrNull(
+                (e) => e.id == userCE.skillId1,
+              );
               if (skill != null && skill.condLimitCount == 4) {
                 ceMLB = true;
               }
@@ -695,21 +719,22 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
           dense: true,
           title: const Text('Battle Count'),
           trailing: TextButton(
-              onPressed: () {
-                runtime.lockTask(() {
-                  InputCancelOkDialog(
-                    title: 'Battle Count',
-                    text: battleOption.loopCount.toString(),
-                    keyboardType: TextInputType.number,
-                    validate: (s) => (int.tryParse(s) ?? -1) > 0,
-                    onSubmit: (s) {
-                      battleOption.loopCount = int.parse(s);
-                      if (mounted) setState(() {});
-                    },
-                  ).showDialog(context);
-                });
-              },
-              child: Text(battleOption.loopCount.toString())),
+            onPressed: () {
+              runtime.lockTask(() {
+                InputCancelOkDialog(
+                  title: 'Battle Count',
+                  text: battleOption.loopCount.toString(),
+                  keyboardType: TextInputType.number,
+                  validate: (s) => (int.tryParse(s) ?? -1) > 0,
+                  onSubmit: (s) {
+                    battleOption.loopCount = int.parse(s);
+                    if (mounted) setState(() {});
+                  },
+                ).showDialog(context);
+              });
+            },
+            child: Text(battleOption.loopCount.toString()),
+          ),
         ),
         ListTile(
           dense: true,
@@ -731,15 +756,15 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
             ],
           ),
           trailing: IconButton(
-              onPressed: () async {
-                final recover =
-                    await const RecoverSelectDialog(recovers: apRecovers).showDialog<RecoverEntity>(context);
-                if (recover != null && !battleOption.recoverIds.contains(recover.id)) {
-                  battleOption.recoverIds.add(recover.id);
-                }
-                if (mounted) setState(() {});
-              },
-              icon: const Icon(Icons.add_circle)),
+            onPressed: () async {
+              final recover = await const RecoverSelectDialog(recovers: apRecovers).showDialog<RecoverEntity>(context);
+              if (recover != null && !battleOption.recoverIds.contains(recover.id)) {
+                battleOption.recoverIds.add(recover.id);
+              }
+              if (mounted) setState(() {});
+            },
+            icon: const Icon(Icons.add_circle),
+          ),
         ),
         CheckboxListTile.adaptive(
           dense: true,
@@ -784,27 +809,28 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
                     });
                   },
                   child: GameCardMixin.anyCardItemBuilder(
-                      context: context,
-                      id: itemId,
-                      width: 42,
-                      text: battleOption.targetDrops[itemId]!.toString(),
-                      onTap: () {
-                        InputCancelOkDialog(
-                          title: 'Target Num of "${GameCardMixin.anyCardItemName(itemId).l}"',
-                          text: battleOption.targetDrops[itemId]?.toString(),
-                          validate: (s) => (int.tryParse(s) ?? -1) >= 0,
-                          keyboardType: TextInputType.number,
-                          onSubmit: (s) {
-                            runtime.lockTask(() {
-                              if (mounted) {
-                                setState(() {
-                                  battleOption.targetDrops[itemId] = int.parse(s);
-                                });
-                              }
-                            });
-                          },
-                        ).showDialog(context);
-                      }),
+                    context: context,
+                    id: itemId,
+                    width: 42,
+                    text: battleOption.targetDrops[itemId]!.toString(),
+                    onTap: () {
+                      InputCancelOkDialog(
+                        title: 'Target Num of "${GameCardMixin.anyCardItemName(itemId).l}"',
+                        text: battleOption.targetDrops[itemId]?.toString(),
+                        validate: (s) => (int.tryParse(s) ?? -1) >= 0,
+                        keyboardType: TextInputType.number,
+                        onSubmit: (s) {
+                          runtime.lockTask(() {
+                            if (mounted) {
+                              setState(() {
+                                battleOption.targetDrops[itemId] = int.parse(s);
+                              });
+                            }
+                          });
+                        },
+                      ).showDialog(context);
+                    },
+                  ),
                 ),
             ],
           ),
@@ -857,27 +883,28 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
                     });
                   },
                   child: GameCardMixin.anyCardItemBuilder(
-                      context: context,
-                      id: itemId,
-                      width: 42,
-                      text: battleOption.winTargetItemNum[itemId]?.toString(),
-                      onTap: () {
-                        InputCancelOkDialog(
-                          title: 'Win Target Num of "${GameCardMixin.anyCardItemName(itemId).l}"',
-                          text: battleOption.winTargetItemNum[itemId]?.toString(),
-                          validate: (s) => (int.tryParse(s) ?? -1) > 0,
-                          keyboardType: TextInputType.number,
-                          onSubmit: (s) {
-                            runtime.lockTask(() {
-                              if (mounted) {
-                                setState(() {
-                                  battleOption.winTargetItemNum[itemId] = int.parse(s);
-                                });
-                              }
-                            });
-                          },
-                        ).showDialog(context);
-                      }),
+                    context: context,
+                    id: itemId,
+                    width: 42,
+                    text: battleOption.winTargetItemNum[itemId]?.toString(),
+                    onTap: () {
+                      InputCancelOkDialog(
+                        title: 'Win Target Num of "${GameCardMixin.anyCardItemName(itemId).l}"',
+                        text: battleOption.winTargetItemNum[itemId]?.toString(),
+                        validate: (s) => (int.tryParse(s) ?? -1) > 0,
+                        keyboardType: TextInputType.number,
+                        onSubmit: (s) {
+                          runtime.lockTask(() {
+                            if (mounted) {
+                              setState(() {
+                                battleOption.winTargetItemNum[itemId] = int.parse(s);
+                              });
+                            }
+                          });
+                        },
+                      ).showDialog(context);
+                    },
+                  ),
                 ),
             ],
           ),
@@ -918,7 +945,8 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
 
   Widget get battleSetupOptionSection {
     final quest = db.gameData.quests[battleOption.questId];
-    final questPhase = AtlasApi.questPhaseCache(battleOption.questId, battleOption.questPhase, null, runtime.region) ??
+    final questPhase =
+        AtlasApi.questPhaseCache(battleOption.questId, battleOption.questPhase, null, runtime.region) ??
         AtlasApi.questPhaseCache(battleOption.questId, battleOption.questPhase);
     final formation = mstData.userDeck[battleOption.deckId];
 
@@ -944,8 +972,9 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
       for (final lottery in lotteries) {
         final userBoxGacha = mstData.userBoxGacha[lottery.id];
         if (lottery.limited || userBoxGacha == null) continue;
-        final boxPerLottery =
-            Maths.sum(lottery.boxes.where((e) => e.boxIndex == userBoxGacha.boxIndex).map((e) => e.maxNum));
+        final boxPerLottery = Maths.sum(
+          lottery.boxes.where((e) => e.boxIndex == userBoxGacha.boxIndex).map((e) => e.maxNum),
+        );
         String countInfo = '';
         double count;
         if (userBoxGacha.isReset) {
@@ -972,54 +1001,56 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
           subtitle: questInfoText == null ? null : Text(questInfoText),
           onTap: () => router.push(url: Routes.questI(battleOption.questId, battleOption.questPhase)),
           trailing: TextButton(
-              onPressed: () {
-                runtime.lockTask(() {
-                  InputCancelOkDialog(
-                    title: 'Quest ID',
-                    text: battleOption.questId.toString(),
-                    keyboardType: TextInputType.number,
-                    onSubmit: (s) async {
-                      final questId = int.tryParse(s);
-                      Quest? quest = db.gameData.quests[questId];
-                      if (questId != null && questId > 0) {
-                        quest ??= await showEasyLoading(() => AtlasApi.quest(questId, region: agent.user.region));
+            onPressed: () {
+              runtime.lockTask(() {
+                InputCancelOkDialog(
+                  title: 'Quest ID',
+                  text: battleOption.questId.toString(),
+                  keyboardType: TextInputType.number,
+                  onSubmit: (s) async {
+                    final questId = int.tryParse(s);
+                    Quest? quest = db.gameData.quests[questId];
+                    if (questId != null && questId > 0) {
+                      quest ??= await showEasyLoading(() => AtlasApi.quest(questId, region: agent.user.region));
+                    }
+                    if (questId != null && quest != null && !quest.flags.contains(QuestFlag.superBoss)) {
+                      battleOption.questId = questId;
+                      final userQuest = mstData.userQuest[questId];
+                      if (mstData.user != null) {
+                        if (userQuest != null && userQuest.clearNum > 0) {
+                          battleOption.questPhase = userQuest.questPhase;
+                        } else {
+                          battleOption.questPhase =
+                              quest.phases.firstWhereOrNull((e) => e > (userQuest?.questPhase ?? 0)) ??
+                              battleOption.questPhase;
+                        }
                       }
-                      if (questId != null && quest != null && !quest.flags.contains(QuestFlag.superBoss)) {
-                        battleOption.questId = questId;
-                        final userQuest = mstData.userQuest[questId];
-                        if (mstData.user != null) {
-                          if (userQuest != null && userQuest.clearNum > 0) {
-                            battleOption.questPhase = userQuest.questPhase;
-                          } else {
-                            battleOption.questPhase =
-                                quest.phases.firstWhereOrNull((e) => e > (userQuest?.questPhase ?? 0)) ??
-                                    battleOption.questPhase;
-                          }
-                        }
-                        if (quest.phases.isNotEmpty && !quest.phases.contains(battleOption.questPhase)) {
-                          battleOption.questPhase = quest.phases.first;
-                        }
-                        if (mounted) setState(() {});
-                        await AtlasApi.questPhase(questId, battleOption.questPhase, region: runtime.region);
-                        if (mounted) setState(() {});
-                      } else {
-                        EasyLoading.showError('Invalid Quest');
+                      if (quest.phases.isNotEmpty && !quest.phases.contains(battleOption.questPhase)) {
+                        battleOption.questPhase = quest.phases.first;
                       }
                       if (mounted) setState(() {});
-                    },
-                  ).showDialog(context);
-                });
-              },
-              child: Text(battleOption.questId.toString())),
+                      await AtlasApi.questPhase(questId, battleOption.questPhase, region: runtime.region);
+                      if (mounted) setState(() {});
+                    } else {
+                      EasyLoading.showError('Invalid Quest');
+                    }
+                    if (mounted) setState(() {});
+                  },
+                ).showDialog(context);
+              });
+            },
+            child: Text(battleOption.questId.toString()),
+          ),
         ),
         ListTile(
           dense: true,
           title: const Text("Quest Phase"),
           subtitle: Text('phases: ${quest?.phases.join('/') ?? '-'}'),
           trailing: TextButton(
-              onPressed: quest == null
-                  ? null
-                  : () {
+            onPressed:
+                quest == null
+                    ? null
+                    : () {
                       runtime.lockTask(() {
                         InputCancelOkDialog(
                           title: 'Quest Phase',
@@ -1032,14 +1063,18 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
                               EasyLoading.showError('Invalid Phase');
                             }
                             if (mounted) setState(() {});
-                            await AtlasApi.questPhase(battleOption.questId, battleOption.questPhase,
-                                region: runtime.region);
+                            await AtlasApi.questPhase(
+                              battleOption.questId,
+                              battleOption.questPhase,
+                              region: runtime.region,
+                            );
                             if (mounted) setState(() {});
                           },
                         ).showDialog(context);
                       });
                     },
-              child: Text(battleOption.questPhase.toString())),
+            child: Text(battleOption.questPhase.toString()),
+          ),
         ),
         ListTile(
           dense: true,
@@ -1047,16 +1082,18 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
           subtitle: formation == null ? const Text("Unknown deck") : Text('${formation.deckNo} - ${formation.name}'),
           trailing: const Icon(Icons.change_circle),
           onTap: () {
-            router.pushPage(UserFormationDecksPage(
-              mstData: mstData,
-              selectedDeckId: battleOption.deckId,
-              onSelected: (v) {
-                runtime.lockTask(() {
-                  battleOption.deckId = v.id;
-                });
-                if (mounted) setState(() {});
-              },
-            ));
+            router.pushPage(
+              UserFormationDecksPage(
+                mstData: mstData,
+                selectedDeckId: battleOption.deckId,
+                onSelected: (v) {
+                  runtime.lockTask(() {
+                    battleOption.deckId = v.id;
+                  });
+                  if (mounted) setState(() {});
+                },
+              ),
+            );
           },
         ),
         if (formation != null) ..._buildUserDeck(formation.deckInfo),
@@ -1067,10 +1104,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
             subtitle: eventFormation?.eventId == 0 ? null : Text('Event $eventId'),
             trailing: const Icon(Icons.change_circle),
             onTap: () {
-              router.pushPage(UserFormationDecksPage(
-                mstData: mstData,
-                eventId: eventId,
-              ));
+              router.pushPage(UserFormationDecksPage(mstData: mstData, eventId: eventId));
             },
           ),
           if (eventFormation != null) ..._buildUserDeck(eventFormation.deckInfo),
@@ -1100,24 +1134,26 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
                       });
                     },
                   ),
-                )
+                ),
             ],
           ),
           trailing: IconButton(
             onPressed: () {
               runtime.lockTask(() {
-                router.pushPage(ServantListPage(
-                  pinged: db.curUser.battleSim.pingedSvts.toList(),
-                  showSecondaryFilter: true,
-                  onSelected: (svt) {
-                    if (!svt.isUserSvt) {
-                      EasyLoading.showError('Not playable');
-                      return;
-                    }
-                    battleOption.supportSvtIds.add(svt.id);
-                    if (mounted) setState(() {});
-                  },
-                ));
+                router.pushPage(
+                  ServantListPage(
+                    pinged: db.curUser.battleSim.pingedSvts.toList(),
+                    showSecondaryFilter: true,
+                    onSelected: (svt) {
+                      if (!svt.isUserSvt) {
+                        EasyLoading.showError('Not playable');
+                        return;
+                      }
+                      battleOption.supportSvtIds.add(svt.id);
+                      if (mounted) setState(() {});
+                    },
+                  ),
+                );
               });
             },
             icon: const Icon(Icons.add_circle),
@@ -1147,23 +1183,25 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
                       });
                     },
                   ),
-                )
+                ),
             ],
           ),
           trailing: IconButton(
             onPressed: () {
               runtime.lockTask(() {
-                router.pushPage(CraftListPage(
-                  pinged: db.curUser.battleSim.pingedCEsWithEventAndBond(quest, null).toList(),
-                  onSelected: (ce) {
-                    if (ce.collectionNo <= 0) {
-                      EasyLoading.showError('Not playable');
-                      return;
-                    }
-                    battleOption.supportCeIds.add(ce.id);
-                    if (mounted) setState(() {});
-                  },
-                ));
+                router.pushPage(
+                  CraftListPage(
+                    pinged: db.curUser.battleSim.pingedCEsWithEventAndBond(quest, null).toList(),
+                    onSelected: (ce) {
+                      if (ce.collectionNo <= 0) {
+                        EasyLoading.showError('Not playable');
+                        return;
+                      }
+                      battleOption.supportCeIds.add(ce.id);
+                      if (mounted) setState(() {});
+                    },
+                  ),
+                );
               });
             },
             icon: const Icon(Icons.add_circle),
@@ -1173,26 +1211,29 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
           ListTile(
             dense: true,
             title: Text(
-                "${questPhase.supportServants.length} Guest Supports (${questPhase.flags.where((e) => e.name.toLowerCase().contains('support') && e != QuestFlag.supportSelectAfterScript).map((e) => e.name).join('/')})"),
+              "${questPhase.supportServants.length} Guest Supports (${questPhase.flags.where((e) => e.name.toLowerCase().contains('support') && e != QuestFlag.supportSelectAfterScript).map((e) => e.name).join('/')})",
+            ),
             subtitle: DropdownButton<int>(
               isDense: true,
               isExpanded: true,
-              value: questPhase.supportServants.any((e) => e.id == battleOption.npcSupportId)
-                  ? battleOption.npcSupportId
-                  : 0,
+              value:
+                  questPhase.supportServants.any((e) => e.id == battleOption.npcSupportId)
+                      ? battleOption.npcSupportId
+                      : 0,
               items: [
-                DropdownMenuItem(
-                  value: 0,
-                  child: Text("Do not use support"),
-                ),
+                DropdownMenuItem(value: 0, child: Text("Do not use support")),
                 for (final support in questPhase.supportServants)
                   DropdownMenuItem(
                     value: support.id,
-                    child: Text.rich(TextSpan(children: [
-                      CenterWidgetSpan(child: support.svt.iconBuilder(context: context, width: 24)),
-                      TextSpan(text: ' Lv.${support.lv} ${support.skills2.skillLvs.join("/")} ${support.lName.l}'),
-                    ])),
-                  )
+                    child: Text.rich(
+                      TextSpan(
+                        children: [
+                          CenterWidgetSpan(child: support.svt.iconBuilder(context: context, width: 24)),
+                          TextSpan(text: ' Lv.${support.lv} ${support.skills2.skillLvs.join("/")} ${support.lName.l}'),
+                        ],
+                      ),
+                    ),
+                  ),
               ],
               onChanged: (v) {
                 runtime.lockTask(() {
@@ -1207,15 +1248,21 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
           value: battleOption.useCampaignItem,
           secondary: Item.iconBuilder(context: context, item: null, itemId: 94065901, jumpToDetail: false),
           title: Text(Transl.itemNames('星見のティーポット').l),
-          subtitle: teapots.isEmpty
-              ? null
-              : Text.rich(TextSpan(children: [
-                  for (final teapot in teapots)
+          subtitle:
+              teapots.isEmpty
+                  ? null
+                  : Text.rich(
                     TextSpan(
-                      text: '×${teapot.$2.num}'
-                          '(${teapot.$1.endedAt.sec2date().toCustomString(year: false, second: false)})  ',
+                      children: [
+                        for (final teapot in teapots)
+                          TextSpan(
+                            text:
+                                '×${teapot.$2.num}'
+                                '(${teapot.$1.endedAt.sec2date().toCustomString(year: false, second: false)})  ',
+                          ),
+                      ],
                     ),
-                ])),
+                  ),
           onChanged: (v) {
             runtime.lockTask(() {
               setState(() {
@@ -1235,30 +1282,32 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
               isExpanded: true,
               value: battleOption.campaignItemId,
               items: [
-                DropdownMenuItem(
-                  value: 0,
-                  child: Text('auto select'),
-                ),
+                DropdownMenuItem(value: 0, child: Text('auto select')),
                 for (final (teapot, userItem) in teapots)
                   DropdownMenuItem(
                     value: teapot.id,
-                    child: Text.rich(TextSpan(children: [
-                      CenterWidgetSpan(child: Item.iconBuilder(context: context, item: teapot, width: 28)),
-                      TextSpan(text: ' ${teapot.lName.l} ×${userItem.num} '),
+                    child: Text.rich(
                       TextSpan(
-                        text: ' (${teapot.endedAt.sec2date().toCustomString(year: false, second: false)}) ',
-                        style: TextStyle(fontSize: 12),
+                        children: [
+                          CenterWidgetSpan(child: Item.iconBuilder(context: context, item: teapot, width: 28)),
+                          TextSpan(text: ' ${teapot.lName.l} ×${userItem.num} '),
+                          TextSpan(
+                            text: ' (${teapot.endedAt.sec2date().toCustomString(year: false, second: false)}) ',
+                            style: TextStyle(fontSize: 12),
+                          ),
+                        ],
                       ),
-                    ])),
-                  )
+                    ),
+                  ),
               ],
-              onChanged: battleOption.useCampaignItem
-                  ? (v) {
-                      runtime.lockTask(() {
-                        if (v != null) battleOption.campaignItemId = v;
-                      });
-                    }
-                  : null,
+              onChanged:
+                  battleOption.useCampaignItem
+                      ? (v) {
+                        runtime.lockTask(() {
+                          if (v != null) battleOption.campaignItemId = v;
+                        });
+                      }
+                      : null,
             ),
           ),
         const Divider(),
@@ -1441,25 +1490,26 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
           dense: true,
           title: const Text('Battle Duration(seconds)'),
           trailing: TextButton(
-              onPressed: () {
-                runtime.lockTask(() {
-                  InputCancelOkDialog(
-                    title: 'Battle Duration',
-                    text: battleOption.battleDuration?.toString(),
-                    keyboardType: TextInputType.number,
-                    validate: (s) => s.isEmpty || (int.tryParse(s) ?? -1) > (agent.user.region == Region.jp ? 20 : 40),
-                    onSubmit: (s) {
-                      if (s.isEmpty) {
-                        battleOption.battleDuration = null;
-                      } else {
-                        battleOption.battleDuration = int.parse(s);
-                      }
-                      if (mounted) setState(() {});
-                    },
-                  ).showDialog(context);
-                });
-              },
-              child: Text(battleOption.battleDuration?.toString() ?? S.current.general_default)),
+            onPressed: () {
+              runtime.lockTask(() {
+                InputCancelOkDialog(
+                  title: 'Battle Duration',
+                  text: battleOption.battleDuration?.toString(),
+                  keyboardType: TextInputType.number,
+                  validate: (s) => s.isEmpty || (int.tryParse(s) ?? -1) > (agent.user.region == Region.jp ? 20 : 40),
+                  onSubmit: (s) {
+                    if (s.isEmpty) {
+                      battleOption.battleDuration = null;
+                    } else {
+                      battleOption.battleDuration = int.parse(s);
+                    }
+                    if (mounted) setState(() {});
+                  },
+                ).showDialog(context);
+              });
+            },
+            child: Text(battleOption.battleDuration?.toString() ?? S.current.general_default),
+          ),
         ),
       ],
     );
@@ -1537,26 +1587,22 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
                 return;
               }
               pendings.sort2((e) => e.id);
-              router.showDialog(builder: (context) {
-                return SimpleDialog(
-                  title: Text('${pendings.length} Pending Notifications'),
-                  children: divideList(
-                    [
+              router.showDialog(
+                builder: (context) {
+                  return SimpleDialog(
+                    title: Text('${pendings.length} Pending Notifications'),
+                    children: divideList([
                       for (final notification in pendings)
                         ListTile(
                           dense: true,
                           contentPadding: EdgeInsets.symmetric(horizontal: 24),
                           title: Text(notification.title ?? 'no title'),
-                          subtitle: Text([
-                            if (kDebugMode) 'id ${notification.id}',
-                            '${notification.body}',
-                          ].join('\n')),
+                          subtitle: Text([if (kDebugMode) 'id ${notification.id}', '${notification.body}'].join('\n')),
                         ),
-                    ],
-                    const Divider(height: 1),
-                  ),
-                );
-              });
+                    ], const Divider(height: 1)),
+                  );
+                },
+              );
             },
             child: const Text('Pending Notifications'),
           ),
@@ -1574,19 +1620,20 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
           dense: true,
           title: const Text('Max refresh count of Support list'),
           trailing: TextButton(
-              onPressed: () {
-                InputCancelOkDialog(
-                  title: 'Max refresh count of Support list',
-                  text: fakerSettings.maxFollowerListRetryCount.toString(),
-                  keyboardType: TextInputType.number,
-                  validate: (s) => (int.tryParse(s) ?? -1) > 0,
-                  onSubmit: (s) {
-                    fakerSettings.maxFollowerListRetryCount = int.parse(s);
-                    if (mounted) setState(() {});
-                  },
-                ).showDialog(context);
-              },
-              child: Text(fakerSettings.maxFollowerListRetryCount.toString())),
+            onPressed: () {
+              InputCancelOkDialog(
+                title: 'Max refresh count of Support list',
+                text: fakerSettings.maxFollowerListRetryCount.toString(),
+                keyboardType: TextInputType.number,
+                validate: (s) => (int.tryParse(s) ?? -1) > 0,
+                onSubmit: (s) {
+                  fakerSettings.maxFollowerListRetryCount = int.parse(s);
+                  if (mounted) setState(() {});
+                },
+              ).showDialog(context);
+            },
+            child: Text(fakerSettings.maxFollowerListRetryCount.toString()),
+          ),
         ),
         const Divider(),
         SwitchListTile.adaptive(
@@ -1643,7 +1690,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
             },
             child: const Text('Clear dumps'),
           ),
-        )
+        ),
       ],
     );
   }
@@ -1655,16 +1702,8 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
       padding: const EdgeInsets.symmetric(horizontal: 12),
     );
 
-    FilledButton buildButton({
-      bool enabled = true,
-      required VoidCallback onPressed,
-      required String text,
-    }) {
-      return FilledButton.tonal(
-        onPressed: enabled ? onPressed : null,
-        style: buttonStyle,
-        child: Text(text),
-      );
+    FilledButton buildButton({bool enabled = true, required VoidCallback onPressed, required String text}) {
+      return FilledButton.tonal(onPressed: enabled ? onPressed : null, style: buttonStyle, child: Text(text));
     }
 
     final bool loggedIn = mstData.user != null, inBattle = agent.curBattle != null;
@@ -1740,11 +1779,13 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
         buildButton(
           enabled: loggedIn && inBattle,
           onPressed: () async {
-            runtime.runTask(() => agent.battleResultWithOptions(
-                  battleEntity: agent.curBattle!,
-                  resultType: battleOption.resultType,
-                  actionLogs: battleOption.actionLogs,
-                ));
+            runtime.runTask(
+              () => agent.battleResultWithOptions(
+                battleEntity: agent.curBattle!,
+                resultType: battleOption.resultType,
+                actionLogs: battleOption.actionLogs,
+              ),
+            );
           },
           text: 'b.result',
         ),
@@ -1774,105 +1815,107 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
           text: 'Stop',
         ),
         PopupMenuButton(
-          itemBuilder: (context) => [
-            // PopupMenuItem(
-            //   child: const Text('gamedata'),
-            //   onTap: () {
-            //     runtime.runTask(agent.gamedataTop);
-            //   },
-            // ),
-            PopupMenuItem(
-              enabled: loggedIn && !inBattle,
-              onTap: () {
-                runtime.runTask(agent.homeTop);
-              },
-              child: const Text('home'),
-            ),
-            // PopupMenuItem(
-            //   enabled: loggedIn && !inBattle,
-            //   onTap: () {
-            //     runtime.runTask(() async {
-            //       final dir = Directory(agent.network.fakerDir);
-            //       final files = dir
-            //           .listSync(followLinks: false)
-            //           .whereType<File>()
-            //           .where((e) => e.path.endsWith('.json') && e.path.contains('battle') && e.path.contains('setup'))
-            //           .toList();
-            //       final modified = DateTime.now().subtract(const Duration(days: 2));
-            //       files.removeWhere((e) => e.statSync().modified.isBefore(modified));
-            //       files.sort2((e) => e.path, reversed: true);
-            //       if (files.isEmpty) {
-            //         EasyLoading.showError('not found');
-            //         return;
-            //       }
-            //       final data = FateTopLogin.parseAny(jsonDecode(files.first.readAsStringSync()));
-            //       agent.curBattle = data.mstData.battles.firstOrNull ?? agent.curBattle;
-            //     });
-            //   },
-            //   child: const Text('loadBattle'),
-            // ),
-            PopupMenuItem(
-              child: const Text('Break'),
-              onTap: () {
-                if (mounted) {
-                  runtime.runningTask.value = false;
-                  agent.network.clearTask();
-                }
-              },
-            ),
-            PopupMenuItem(
-              enabled: loggedIn,
-              onTap: () async {
-                InputCancelOkDialog(
-                  title: 'Seed Count (waiting)',
-                  keyboardType: TextInputType.number,
-                  validate: (s) => (int.tryParse(s) ?? -1) > 0,
-                  onSubmit: (s) {
-                    runtime.runTask(
-                        () => runtime.withWakeLock('seed-wait-$hashCode', () => runtime.seedWait(int.parse(s))));
+          itemBuilder:
+              (context) => [
+                // PopupMenuItem(
+                //   child: const Text('gamedata'),
+                //   onTap: () {
+                //     runtime.runTask(agent.gamedataTop);
+                //   },
+                // ),
+                PopupMenuItem(
+                  enabled: loggedIn && !inBattle,
+                  onTap: () {
+                    runtime.runTask(agent.homeTop);
                   },
-                ).showDialog(context);
-              },
-              child: const Text('Seed-wait'),
-            ),
-            if (agent is FakerAgentJP)
-              PopupMenuItem(
-                child: const Text('SessionId'),
-                onTap: () {
-                  InputCancelOkDialog(
-                    title: 'SessionId (${agent.network.gameTop.region.upper})',
-                    text: agent.network.cookies['SessionId'],
-                    onSubmit: (s) {
-                      if (s.trim().isEmpty) return;
-                      agent.network.cookies['SessionId'] = s;
-                      if (mounted) setState(() {});
+                  child: const Text('home'),
+                ),
+                // PopupMenuItem(
+                //   enabled: loggedIn && !inBattle,
+                //   onTap: () {
+                //     runtime.runTask(() async {
+                //       final dir = Directory(agent.network.fakerDir);
+                //       final files = dir
+                //           .listSync(followLinks: false)
+                //           .whereType<File>()
+                //           .where((e) => e.path.endsWith('.json') && e.path.contains('battle') && e.path.contains('setup'))
+                //           .toList();
+                //       final modified = DateTime.now().subtract(const Duration(days: 2));
+                //       files.removeWhere((e) => e.statSync().modified.isBefore(modified));
+                //       files.sort2((e) => e.path, reversed: true);
+                //       if (files.isEmpty) {
+                //         EasyLoading.showError('not found');
+                //         return;
+                //       }
+                //       final data = FateTopLogin.parseAny(jsonDecode(files.first.readAsStringSync()));
+                //       agent.curBattle = data.mstData.battles.firstOrNull ?? agent.curBattle;
+                //     });
+                //   },
+                //   child: const Text('loadBattle'),
+                // ),
+                PopupMenuItem(
+                  child: const Text('Break'),
+                  onTap: () {
+                    if (mounted) {
+                      runtime.runningTask.value = false;
+                      agent.network.clearTask();
+                    }
+                  },
+                ),
+                PopupMenuItem(
+                  enabled: loggedIn,
+                  onTap: () async {
+                    InputCancelOkDialog(
+                      title: 'Seed Count (waiting)',
+                      keyboardType: TextInputType.number,
+                      validate: (s) => (int.tryParse(s) ?? -1) > 0,
+                      onSubmit: (s) {
+                        runtime.runTask(
+                          () => runtime.withWakeLock('seed-wait-$hashCode', () => runtime.seedWait(int.parse(s))),
+                        );
+                      },
+                    ).showDialog(context);
+                  },
+                  child: const Text('Seed-wait'),
+                ),
+                if (agent is FakerAgentJP)
+                  PopupMenuItem(
+                    child: const Text('SessionId'),
+                    onTap: () {
+                      InputCancelOkDialog(
+                        title: 'SessionId (${agent.network.gameTop.region.upper})',
+                        text: agent.network.cookies['SessionId'],
+                        onSubmit: (s) {
+                          if (s.trim().isEmpty) return;
+                          agent.network.cookies['SessionId'] = s;
+                          if (mounted) setState(() {});
+                        },
+                      ).showDialog(context);
                     },
-                  ).showDialog(context);
-                },
-              ),
-            if (agent is FakerAgentCN)
-              PopupMenuItem(
-                child: const Text('sgusk'),
-                onTap: () {
-                  InputCancelOkDialog(
-                    title: 'sgusk (${agent.network.gameTop.region.upper})',
-                    text: (agent as FakerAgentCN).usk,
-                    onSubmit: (s) {
-                      if (s.trim().isEmpty) return;
-                      (agent as FakerAgentCN).usk = CryptData.encryptMD5Usk(s);
-                      if (mounted) setState(() {});
+                  ),
+                if (agent is FakerAgentCN)
+                  PopupMenuItem(
+                    child: const Text('sgusk'),
+                    onTap: () {
+                      InputCancelOkDialog(
+                        title: 'sgusk (${agent.network.gameTop.region.upper})',
+                        text: (agent as FakerAgentCN).usk,
+                        onSubmit: (s) {
+                          if (s.trim().isEmpty) return;
+                          (agent as FakerAgentCN).usk = CryptData.encryptMD5Usk(s);
+                          if (mounted) setState(() {});
+                        },
+                      ).showDialog(context);
                     },
-                  ).showDialog(context);
-                },
-              ),
-            if (kDebugMode)
-              PopupMenuItem(
-                child: const Text('Test'),
-                onTap: () async {
-                  runtime.runTask(() => Future.delayed(Duration(seconds: 15)));
-                },
-              )
-          ],
+                  ),
+                if (kDebugMode)
+                  PopupMenuItem(
+                    child: const Text('Test'),
+                    onTap: () async {
+                      runtime.runTask(() => Future.delayed(Duration(seconds: 15)));
+                    },
+                  ),
+              ],
         ),
       ],
     ];
@@ -1955,12 +1998,14 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
                     final (bondA, bondB) = svt.getPastNextBonds(collection.friendshipRank, collection.friendship);
                     final bool reachBondLimit = bondB == 0;
 
-                    String bondText = 'Lv.${collection.friendshipRank}/${10 + collection.friendshipExceedCount}'
+                    String bondText =
+                        'Lv.${collection.friendshipRank}/${10 + collection.friendshipExceedCount}'
                         // '\n${collection.friendship}'
                         '\n${-bondB}';
                     // battle result
-                    final oldCollection = agent.lastBattleResultData?.oldUserSvtCollection
-                        .firstWhereOrNull((e) => e.svtId == collection.svtId);
+                    final oldCollection = agent.lastBattleResultData?.oldUserSvtCollection.firstWhereOrNull(
+                      (e) => e.svtId == collection.svtId,
+                    );
                     if (oldCollection != null) {
                       bondText += '\n+${collection.friendship - oldCollection.friendship}';
                     }

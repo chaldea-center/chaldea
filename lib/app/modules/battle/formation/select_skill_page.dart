@@ -63,9 +63,9 @@ class _SkillSelectPageState extends State<SkillSelectPage> {
                       title: Text(S.current.skill_list),
                       trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
                       onTap: () {
-                        router.pushPage(SkillListPage(
-                          onSelected: (skill, skillId) => loadSkill(skill, skillId, Region.jp),
-                        ));
+                        router.pushPage(
+                          SkillListPage(onSelected: (skill, skillId) => loadSkill(skill, skillId, Region.jp)),
+                        );
                       },
                     ),
                   ],
@@ -108,10 +108,7 @@ class _SkillSelectPageState extends State<SkillSelectPage> {
                       },
                       child: Text(S.current.atlas_load),
                     ),
-                    SizedBox(
-                      width: kMinInteractiveDimension,
-                      child: ChaldeaUrl.laplaceHelpBtn('faq#atlas-db-url'),
-                    )
+                    SizedBox(width: kMinInteractiveDimension, child: ChaldeaUrl.laplaceHelpBtn('faq#atlas-db-url')),
                   ],
                 ),
                 const DividerWithTitle(title: '3', height: 16),
@@ -122,7 +119,10 @@ class _SkillSelectPageState extends State<SkillSelectPage> {
                   onTap: () async {
                     try {
                       final result = await FilePickerU.pickFiles(
-                          type: FileType.custom, allowedExtensions: ['json'], clearCache: true);
+                        type: FileType.custom,
+                        allowedExtensions: ['json'],
+                        clearCache: true,
+                      );
                       final bytes = result?.files.firstOrNull?.bytes;
                       if (bytes == null) return;
                       final skill = NiceSkill.fromJson(Map.from(jsonDecode(utf8.decode(bytes))));
@@ -140,10 +140,7 @@ class _SkillSelectPageState extends State<SkillSelectPage> {
                   },
                 ),
                 DividerWithTitle(title: '4 - ${S.current.general_custom}', height: 16),
-                Material(
-                  color: Theme.of(context).cardColor,
-                  child: CustomSkillForm(skillData: skillData),
-                ),
+                Material(color: Theme.of(context).cardColor, child: CustomSkillForm(skillData: skillData)),
               ],
             ),
           ),
@@ -152,10 +149,7 @@ class _SkillSelectPageState extends State<SkillSelectPage> {
             child: Padding(
               padding: const EdgeInsets.all(4),
               child: Center(
-                child: FilledButton(
-                  onPressed: createCustomSkill,
-                  child: Text(S.current.create_custom_skill),
-                ),
+                child: FilledButton(onPressed: createCustomSkill, child: Text(S.current.create_custom_skill)),
               ),
             ),
           ),
@@ -340,38 +334,39 @@ class _CustomSkillFormState extends State<CustomSkillForm> {
       title: Text(effect.popupText),
       horizontalTitleGap: 8,
       subtitle: subtitles.isEmpty ? null : Text(subtitles.join(' ')),
-      trailing: !effect.useValue
-          ? Checkbox(
-              visualDensity: VisualDensity.compact,
-              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              value: effect.enabled,
-              onChanged: (v) {
-                setState(() {
-                  if (v != null) effect.enabled = v;
-                });
-                widget.onChanged?.call();
-              },
-            )
-          : SizedBox(
-              width: 80,
-              child: TextFormField(
-                controller: getController(effect),
-                decoration: InputDecoration(
-                  isDense: true,
-                  suffixIcon: percentBase == null ? null : Text('%', style: Theme.of(context).textTheme.bodySmall),
-                  suffixIconConstraints: const BoxConstraints(),
-                ),
-                keyboardType: const TextInputType.numberWithOptions(decimal: true, signed: true),
-                textAlign: TextAlign.end,
-                onChanged: (s) {
-                  final v = effect.parseValue(s);
-                  if (v == null) return;
-                  effect.value = v;
-                  setState(() {});
+      trailing:
+          !effect.useValue
+              ? Checkbox(
+                visualDensity: VisualDensity.compact,
+                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                value: effect.enabled,
+                onChanged: (v) {
+                  setState(() {
+                    if (v != null) effect.enabled = v;
+                  });
                   widget.onChanged?.call();
                 },
+              )
+              : SizedBox(
+                width: 80,
+                child: TextFormField(
+                  controller: getController(effect),
+                  decoration: InputDecoration(
+                    isDense: true,
+                    suffixIcon: percentBase == null ? null : Text('%', style: Theme.of(context).textTheme.bodySmall),
+                    suffixIconConstraints: const BoxConstraints(),
+                  ),
+                  keyboardType: const TextInputType.numberWithOptions(decimal: true, signed: true),
+                  textAlign: TextAlign.end,
+                  onChanged: (s) {
+                    final v = effect.parseValue(s);
+                    if (v == null) return;
+                    effect.value = v;
+                    setState(() {});
+                    widget.onChanged?.call();
+                  },
+                ),
               ),
-            ),
     );
     if (widget.valueOnly) return header;
     return SimpleAccordion(
@@ -388,11 +383,8 @@ class _CustomSkillFormState extends State<CustomSkillForm> {
                 for (final type in usedTargetTypes)
                   DropdownMenuItem(
                     value: type,
-                    child: Text(
-                      Transl.funcTargetType(type).l,
-                      textScaler: const TextScaler.linear(0.8),
-                    ),
-                  )
+                    child: Text(Transl.funcTargetType(type).l, textScaler: const TextScaler.linear(0.8)),
+                  ),
               ],
               onChanged: (v) {
                 setState(() {
@@ -454,13 +446,10 @@ class _CustomSkillFormState extends State<CustomSkillForm> {
                 child: Text('${effect.rate.format(percent: true, base: 10)} Rate'),
               ),
             ],
-          )
+          ),
         ];
 
-        return Column(
-          mainAxisSize: MainAxisSize.min,
-          children: children,
-        );
+        return Column(mainAxisSize: MainAxisSize.min, children: children);
       },
     );
   }

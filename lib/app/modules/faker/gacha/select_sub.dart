@@ -12,8 +12,13 @@ class SelectGachaSubPage extends StatefulWidget {
   final MasterDataManager mstData;
   final NiceGacha gacha;
   final ValueChanged<GachaSub?>? onSelected;
-  const SelectGachaSubPage(
-      {super.key, required this.region, required this.mstData, required this.gacha, this.onSelected});
+  const SelectGachaSubPage({
+    super.key,
+    required this.region,
+    required this.mstData,
+    required this.gacha,
+    this.onSelected,
+  });
 
   @override
   State<SelectGachaSubPage> createState() => _SelectGachaSubPageState();
@@ -37,7 +42,7 @@ class _SelectGachaSubPageState extends State<SelectGachaSubPage> {
               });
             },
             icon: Icon(timeValidOnly ? Icons.timer : Icons.timer_off),
-          )
+          ),
         ],
       ),
       body: Column(
@@ -58,10 +63,10 @@ class _SelectGachaSubPageState extends State<SelectGachaSubPage> {
                       widget.onSelected!(null);
                     },
                     child: Text('Set Base 0'),
-                  )
+                  ),
                 ],
               ),
-            )
+            ),
         ],
       ),
     );
@@ -98,11 +103,13 @@ class _SelectGachaSubPageState extends State<SelectGachaSubPage> {
         hasFailed = true;
         leading.add(TextSpan(text: '× ', style: TextStyle(color: Colors.red)));
       }
-      releases.add(CondTargetValueDescriptor.commonRelease(
-        padding: EdgeInsets.symmetric(horizontal: 16),
-        commonRelease: release,
-        leading: TextSpan(children: leading),
-      ));
+      releases.add(
+        CondTargetValueDescriptor.commonRelease(
+          padding: EdgeInsets.symmetric(horizontal: 16),
+          commonRelease: release,
+          leading: TextSpan(children: leading),
+        ),
+      );
     }
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -115,20 +122,23 @@ class _SelectGachaSubPageState extends State<SelectGachaSubPage> {
             alignment: WrapAlignment.center,
             children: [
               Text('sub ${sub.id}  priority ${sub.priority}', textAlign: TextAlign.center),
-              Text([sub.openedAt, sub.closedAt].map((e) => e.sec2date().toStringShort(omitSec: true)).join(' ~ '),
-                  textAlign: TextAlign.center),
+              Text(
+                [sub.openedAt, sub.closedAt].map((e) => e.sec2date().toStringShort(omitSec: true)).join(' ~ '),
+                textAlign: TextAlign.center,
+              ),
             ],
           ),
         ),
         ...releases,
         if (widget.onSelected != null)
           FilledButton(
-            onPressed: hasFailed
-                ? null
-                : () {
-                    Navigator.pop(context, sub);
-                    widget.onSelected!(sub);
-                  },
+            onPressed:
+                hasFailed
+                    ? null
+                    : () {
+                      Navigator.pop(context, sub);
+                      widget.onSelected!(sub);
+                    },
             child: Text(S.current.select),
           ),
         const SizedBox(height: 8),

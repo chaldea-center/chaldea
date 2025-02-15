@@ -72,25 +72,12 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
     return Scaffold(
       appBar: AppBar(
         leading: const BackButton(),
-        title: AutoSizeText(
-          summon.lName.l,
-          maxLines: 1,
-          overflow: TextOverflow.fade,
-        ),
+        title: AutoSizeText(summon.lName.l, maxLines: 1, overflow: TextOverflow.fade),
         titleSpacing: 0,
         actions: [
-          IconButton(
-            icon: const Icon(Icons.replay),
-            tooltip: S.current.reset,
-            onPressed: reset,
-          ),
+          IconButton(icon: const Icon(Icons.replay), tooltip: S.current.reset, onPressed: reset),
           PopupMenuButton(
-            itemBuilder: (context) => [
-              PopupMenuItem(
-                onTap: monteCarloTest,
-                child: const Text('Monte Carlo Test'),
-              ),
-            ],
+            itemBuilder: (context) => [PopupMenuItem(onTap: monteCarloTest, child: const Text('Monte Carlo Test'))],
           ),
         ],
       ),
@@ -103,18 +90,10 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
       slivers: [
         SliverList(
           delegate: SliverChildListDelegate([
-            CarouselUtil.limitHeightWidget(
-              context: context,
-              imageUrls: summon.resolvedBanner.values.toList(),
-            ),
+            CarouselUtil.limitHeightWidget(context: context, imageUrls: summon.resolvedBanner.values.toList()),
             if (summon.subSummons.length > 1) dropdownButton,
             data.probs.isEmpty
-                ? const Padding(
-                    padding: EdgeInsets.all(16),
-                    child: Center(
-                      child: Text('No data'),
-                    ),
-                  )
+                ? const Padding(padding: EdgeInsets.all(16), child: Center(child: Text('No data')))
                 : details,
             if (summon.isDestiny) destinyOrderSelects,
           ]),
@@ -140,10 +119,7 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
               statisticHint,
               SimpleAccordion(
                 expanded: true,
-                headerBuilder: (context, _) => ListTile(
-                  dense: true,
-                  title: Text(S.current.summon_gacha_result),
-                ),
+                headerBuilder: (context, _) => ListTile(dense: true, title: Text(S.current.summon_gacha_result)),
                 contentBuilder: (context) => curResult(),
               ),
               for (bool isSvt in [true, false])
@@ -157,9 +133,9 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
                     textAlign: TextAlign.center,
                   ),
                 ),
-              )
+              ),
             ]),
-          )
+          ),
         ],
       ],
     );
@@ -170,31 +146,32 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
     String title, subtitle;
     int extraLeft = 9 - totalPulls % 11;
     if (Language.isZH) {
-      title = '共计: $totalPulls抽'
+      title =
+          '共计: $totalPulls抽'
           ' $totalQuartz石'
           '(${suits.toStringAsFixed(2)}单,'
           ' ${(suits * 518).round()}RMB)';
       subtitle = '剩余$extraLeft次获得额外召唤';
     } else if (Language.isJP) {
       suits = (totalQuartz / 168);
-      title = '合計: $totalPulls回'
+      title =
+          '合計: $totalPulls回'
           ' $totalQuartz石'
           '(${suits.toStringAsFixed(2)}×10000='
           '${(suits * 10000).round()}円)';
       subtitle = 'あと$extraLeft回で1回ボーナス召喚';
     } else if (Language.isKO) {
-      title = '합계: $totalPulls회 $totalQuartz석'
+      title =
+          '합계: $totalPulls회 $totalQuartz석'
           ' (${suits.toStringAsFixed(2)}×93200/95000=₩${(suits * 93200).round()}/${(suits * 95000).round()})';
       subtitle = '$extraLeft번 더 돌리면 보너스 소환 기회 획득';
     } else {
-      title = 'Total $totalPulls Pulls $totalQuartz SQ'
+      title =
+          'Total $totalPulls Pulls $totalQuartz SQ'
           ' (${suits.toStringAsFixed(2)}×100=\$${(suits * 100).round()})';
       subtitle = '$extraLeft more pulls to get 1 extra summon';
     }
-    return ListTile(
-      title: Text(title),
-      subtitle: (summon.rollCount == 11) ? Text(subtitle) : null,
-    );
+    return ListTile(title: Text(title), subtitle: (summon.rollCount == 11) ? Text(subtitle) : null);
   }
 
   Widget accResultOf(bool isSvt, int rarity) {
@@ -209,23 +186,25 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
     });
     return SimpleAccordion(
       expanded: rarity > 3,
-      headerBuilder: (context, _) => ListTile(
-        dense: true,
-        title: Text('$kStarChar$rarity ${isSvt ? S.current.servant : S.current.craft_essence}'),
-        trailing: Text(totalCount.toString()),
-      ),
-      contentBuilder: (context) => Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
-        child: Center(
-          child: Wrap(children: counts),
-        ),
-      ),
+      headerBuilder:
+          (context, _) => ListTile(
+            dense: true,
+            title: Text('$kStarChar$rarity ${isSvt ? S.current.servant : S.current.craft_essence}'),
+            trailing: Text(totalCount.toString()),
+          ),
+      contentBuilder:
+          (context) => Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
+            child: Center(child: Wrap(children: counts)),
+          ),
     );
   }
 
   Widget get dropdownButton {
     List<DropdownMenuItem<int>> items = [];
-    items.addAll(summon.subSummons.map((e) => DropdownMenuItem(
+    items.addAll(
+      summon.subSummons.map(
+        (e) => DropdownMenuItem(
           value: summon.subSummons.indexOf(e),
           child: AutoSizeText(
             SummonUtil.summonNameLocalize(e.title),
@@ -233,7 +212,9 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
             maxFontSize: 14,
             style: const TextStyle(fontWeight: FontWeight.bold),
           ),
-        )));
+        ),
+      ),
+    );
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 14),
       child: Row(
@@ -253,7 +234,7 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
                 isExpanded: true,
               ),
             ),
-          )
+          ),
         ],
       ),
     );
@@ -279,13 +260,9 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
       for (final id in block.ids) {
         Servant? svt = db.gameData.servantsNoDup[id];
         if (svt == null) continue;
-        svtRow.add(SummonUtil.buildCard(
-          context: context,
-          card: svt,
-          weight: weight,
-          showCategory: true,
-          showNpLv: false,
-        ));
+        svtRow.add(
+          SummonUtil.buildCard(context: context, card: svt, weight: weight, showCategory: true, showNpLv: false),
+        );
       }
     }
 
@@ -297,11 +274,7 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
       for (final id in block.ids) {
         CraftEssence? ce = db.gameData.craftEssences[id];
         if (ce == null) continue;
-        craftRow.add(SummonUtil.buildCard(
-          context: context,
-          card: ce,
-          weight: weight,
-        ));
+        craftRow.add(SummonUtil.buildCard(context: context, card: ce, weight: weight));
       }
     }
 
@@ -324,7 +297,7 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
               isExpanded: _expanded,
               padding: EdgeInsets.zero,
             ),
-          )
+          ),
         ],
       ),
     );
@@ -344,7 +317,7 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
                 constraints: const BoxConstraints(maxWidth: 56),
                 child: buildDestinyClassSelect(svtClass),
               ),
-            )
+            ),
         ],
       ),
     );
@@ -359,35 +332,35 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
       mainAxisSize: MainAxisSize.min,
       children: [
         db.getIconImage(svtClass.icon(5), width: 32, height: 32, padding: const EdgeInsets.all(4)),
-        CachedImage(
-          imageUrl: svt?.customIcon ?? Atlas.common.emptySvtIcon,
-          aspectRatio: 132 / 144,
-        )
+        CachedImage(imageUrl: svt?.customIcon ?? Atlas.common.emptySvtIcon, aspectRatio: 132 / 144),
       ],
     );
     child = InkWell(
       onTap: () {
         final validClasses = SvtClassX.resolveClasses(svtClass);
-        router.pushPage(ServantListPage(
-          filterData: destinyOrderSvtFilter
-            ..svtClass.options = validClasses.toSet()
-            ..rarity.options = {5},
-          onSelected: (selectedSvt) {
-            if (selectedSvt.type == SvtType.normal &&
-                selectedSvt.collectionNo > 0 &&
-                selectedSvt.rarity == 5 &&
-                validClasses.contains(selectedSvt.className) &&
-                data.svts.any((e) => e.ids.contains(selectedSvt.collectionNo))) {
-              if (mounted) {
-                setState(() {
-                  selectedDestinyOrderServants[svtClass] = selectedSvt;
-                });
+        router.pushPage(
+          ServantListPage(
+            filterData:
+                destinyOrderSvtFilter
+                  ..svtClass.options = validClasses.toSet()
+                  ..rarity.options = {5},
+            onSelected: (selectedSvt) {
+              if (selectedSvt.type == SvtType.normal &&
+                  selectedSvt.collectionNo > 0 &&
+                  selectedSvt.rarity == 5 &&
+                  validClasses.contains(selectedSvt.className) &&
+                  data.svts.any((e) => e.ids.contains(selectedSvt.collectionNo))) {
+                if (mounted) {
+                  setState(() {
+                    selectedDestinyOrderServants[svtClass] = selectedSvt;
+                  });
+                }
+              } else {
+                EasyLoading.showError(S.current.invalid_input);
               }
-            } else {
-              EasyLoading.showError(S.current.invalid_input);
-            }
-          },
-        ));
+            },
+          ),
+        );
       },
       onLongPress: () {
         selectedDestinyOrderServants.remove(svtClass);
@@ -402,10 +375,7 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
     if (history.isEmpty) return Container();
 
     Widget _buildRow(List rowItems) {
-      return Row(
-        mainAxisSize: MainAxisSize.min,
-        children: rowItems.map((e) => _cardIcon(e)).toList(),
-      );
+      return Row(mainAxisSize: MainAxisSize.min, children: rowItems.map((e) => _cardIcon(e)).toList());
     }
 
     Widget _buildOneHistory(List data) {
@@ -415,18 +385,11 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
       Widget child = Padding(
         padding: const EdgeInsets.symmetric(vertical: 4),
         child: Center(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
-            children: rows,
-          ),
+          child: Column(crossAxisAlignment: CrossAxisAlignment.center, mainAxisSize: MainAxisSize.min, children: rows),
         ),
       );
       if (data.isNotEmpty) {
-        child = FittedBox(
-          fit: BoxFit.contain,
-          child: child,
-        );
+        child = FittedBox(fit: BoxFit.contain, child: child);
       }
       return child;
     }
@@ -439,40 +402,36 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
         Row(
           children: [
             IconButton(
-              onPressed: _curHistory == 0
-                  ? null
-                  : () {
-                      setState(() {
-                        _curHistory -= 1;
-                      });
-                    },
+              onPressed:
+                  _curHistory == 0
+                      ? null
+                      : () {
+                        setState(() {
+                          _curHistory -= 1;
+                        });
+                      },
               icon: const Icon(Icons.keyboard_arrow_left),
             ),
             Expanded(
               child: ConstrainedBox(
                 constraints: const BoxConstraints(maxHeight: 240),
-                child: AspectRatio(
-                  aspectRatio: 6 / 2 * 132 / 144,
-                  child: _buildOneHistory(history[_curHistory]),
-                ),
+                child: AspectRatio(aspectRatio: 6 / 2 * 132 / 144, child: _buildOneHistory(history[_curHistory])),
               ),
             ),
             IconButton(
-              onPressed: _curHistory == history.length - 1
-                  ? null
-                  : () {
-                      setState(() {
-                        _curHistory += 1;
-                      });
-                    },
+              onPressed:
+                  _curHistory == history.length - 1
+                      ? null
+                      : () {
+                        setState(() {
+                          _curHistory += 1;
+                        });
+                      },
               icon: const Icon(Icons.keyboard_arrow_right),
             ),
           ],
         ),
-        Text(
-          '${_curHistory + 1}/${history.length}',
-          style: Theme.of(context).textTheme.bodySmall,
-        ),
+        Text('${_curHistory + 1}/${history.length}', style: Theme.of(context).textTheme.bodySmall),
         const SizedBox(height: 6),
       ],
     );
@@ -494,7 +453,10 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
 
   Widget get gacha10 {
     return _summonButton(
-        times: summon.rollCount, quartz: 30, fn: summon.rollCount == 11 ? 'gacha11.png' : 'gacha10_old.png');
+      times: summon.rollCount,
+      quartz: 30,
+      fn: summon.rollCount == 11 ? 'gacha11.png' : 'gacha10_old.png',
+    );
   }
 
   Widget get gachaLucky {
@@ -513,10 +475,8 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
         child: db.getIconImage(
           'https://assets.chaldea.center/images/$fn',
           height: 50,
-          placeholder: (context) => ElevatedButton(
-            onPressed: () => startGacha(times, quartz),
-            child: Text('Gacha $times'),
-          ),
+          placeholder:
+              (context) => ElevatedButton(onPressed: () => startGacha(times, quartz), child: Text('Gacha $times')),
         ),
       ),
     );
@@ -535,7 +495,8 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
   void startGacha(int times, int quartz) {
     if (summon.isDestiny && !selectedDestinyOrderServants.keys.toSet().equalTo(ConstData.destinyOrderClasses.toSet())) {
       EasyLoading.showInfo(
-          "Only ${selectedDestinyOrderServants.length}/${ConstData.destinyOrderClasses.length} selected!");
+        "Only ${selectedDestinyOrderServants.length}/${ConstData.destinyOrderClasses.length} selected!",
+      );
       return;
     }
     List<GameCardMixin> newAdded = summonWithGuarantee(times);
@@ -582,13 +543,15 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
       c4 += cards.where((e) => e is CraftEssence && e.rarity == 4).length;
       c3 += cards.where((e) => e is CraftEssence && e.rarity == 3).length;
       if ((i + 1) % (inputTenCount / 100) == 0 || i + 1 == inputTenCount) {
-        print('${i + 1}: 100($total) ='
-            ' ${_percent(s5)} +'
-            ' ${_percent(s4)} +'
-            ' ${_percent(s3)} +'
-            ' ${_percent(c5)} +'
-            ' ${_percent(c4)} +'
-            ' ${_percent(c3)}');
+        print(
+          '${i + 1}: 100($total) ='
+          ' ${_percent(s5)} +'
+          ' ${_percent(s4)} +'
+          ' ${_percent(s3)} +'
+          ' ${_percent(c5)} +'
+          ' ${_percent(c4)} +'
+          ' ${_percent(c3)}',
+        );
       }
     }
     if (!mounted) return;
@@ -596,31 +559,39 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
       scrollable: true,
       hideCancel: true,
       title: const Text("Monte Carlo Test"),
-      content: Text.rich(TextSpan(children: [
+      content: Text.rich(
         TextSpan(
-          style: Theme.of(context).textTheme.bodySmall,
           children: [
-            TextSpan(text: summon.lName.l),
             TextSpan(
-                text:
-                    '\ntype=${Transl.enums(summon.type, (enums) => enums.summonType).l}, destiny=${summon.isDestiny}'),
+              style: Theme.of(context).textTheme.bodySmall,
+              children: [
+                TextSpan(text: summon.lName.l),
+                TextSpan(
+                  text:
+                      '\ntype=${Transl.enums(summon.type, (enums) => enums.summonType).l}, destiny=${summon.isDestiny}',
+                ),
+              ],
+            ),
+            TextSpan(
+              style: kMonoStyle,
+              children: [
+                TextSpan(
+                  text:
+                      '\nCount: $inputTenCount×${summon.rollCount}=${total.format(compact: false, groupSeparator: ",")}',
+                ),
+                TextSpan(
+                  text:
+                      '\nsvt : ${_percent(s5 + s4 + s3)}\n  5★ ${_percent(s5)}\n  4★ ${_percent(s4)}\n  3★ ${_percent(s3)}',
+                ),
+                TextSpan(
+                  text:
+                      '\nce  : ${_percent(c5 + c4 + c3)}\n  5★ ${_percent(c5)}\n  4★ ${_percent(c4)}\n  3★ ${_percent(c3)}',
+                ),
+              ],
+            ),
           ],
         ),
-        TextSpan(
-          style: kMonoStyle,
-          children: [
-            TextSpan(
-                text:
-                    '\nCount: $inputTenCount×${summon.rollCount}=${total.format(compact: false, groupSeparator: ",")}'),
-            TextSpan(
-                text:
-                    '\nsvt : ${_percent(s5 + s4 + s3)}\n  5★ ${_percent(s5)}\n  4★ ${_percent(s4)}\n  3★ ${_percent(s3)}'),
-            TextSpan(
-                text:
-                    '\nce  : ${_percent(c5 + c4 + c3)}\n  5★ ${_percent(c5)}\n  4★ ${_percent(c4)}\n  3★ ${_percent(c3)}'),
-          ],
-        )
-      ])),
+      ),
     ).showDialog(context, barrierDismissible: false);
   }
 

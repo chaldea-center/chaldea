@@ -9,20 +9,10 @@ typedef _CastFunction<R> = R Function(Object?);
 T $checkedCreate<T>(
   String className,
   Map map,
-  T Function(
-    S Function<S>(
-      String,
-      _CastFunction<S>, {
-      Object? Function(Map, String)? readValue,
-    }),
-  ) constructor, {
+  T Function(S Function<S>(String, _CastFunction<S>, {Object? Function(Map, String)? readValue})) constructor, {
   Map<String, String> fieldKeyMap = const {},
 }) {
-  Q _checkedConvert<Q>(
-    String key,
-    _CastFunction<Q> convertFunction, {
-    Object? Function(Map, String)? readValue,
-  }) {
+  Q _checkedConvert<Q>(String key, _CastFunction<Q> convertFunction, {Object? Function(Map, String)? readValue}) {
     try {
       return json_annotation.$checkedConvert<Q>(map, key, convertFunction, readValue: readValue);
     } catch (e, s) {
@@ -31,19 +21,10 @@ T $checkedCreate<T>(
     }
   }
 
-  return json_annotation.$checkedNew(
-    className,
-    map,
-    () => constructor(_checkedConvert),
-    fieldKeyMap: fieldKeyMap,
-  );
+  return json_annotation.$checkedNew(className, map, () => constructor(_checkedConvert), fieldKeyMap: fieldKeyMap);
 }
 
-K? $enumDecodeNullable<K extends Enum, V>(
-  Map<K, V> enumValues,
-  Object? source, {
-  Enum? unknownValue,
-}) {
+K? $enumDecodeNullable<K extends Enum, V>(Map<K, V> enumValues, Object? source, {Enum? unknownValue}) {
   return json_annotation.$enumDecodeNullable(
     enumValues,
     source,

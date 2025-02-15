@@ -14,14 +14,7 @@ class AdOptions {
   final String? androidId;
   final bool cached;
 
-  const AdOptions({
-    required this.name,
-    required this.size,
-    this.webId,
-    this.iosId,
-    this.androidId,
-    this.cached = true,
-  });
+  const AdOptions({required this.name, required this.size, this.webId, this.iosId, this.androidId, this.cached = true});
 
   AdOptions copyWith({String? name, AppAdSize? size, String? webId, String? iosId, String? androidId, bool? cached}) {
     return AdOptions(
@@ -45,13 +38,13 @@ class AdOptions {
   );
 
   static AdOptions get appOpen => const AdOptions(
-        name: 'app-open',
-        size: AppAdSize(800, 800),
-        // androidId: 'ca-app-pub-3940256099942544/9257395921',
-        // iosId: 'ca-app-pub-3940256099942544/5575463023',
-        androidId: 'ca-app-pub-1170355046794925/9012265171',
-        iosId: 'ca-app-pub-1170355046794925/8214188824',
-      );
+    name: 'app-open',
+    size: AppAdSize(800, 800),
+    // androidId: 'ca-app-pub-3940256099942544/9257395921',
+    // iosId: 'ca-app-pub-3940256099942544/5575463023',
+    androidId: 'ca-app-pub-1170355046794925/9012265171',
+    iosId: 'ca-app-pub-1170355046794925/8214188824',
+  );
 }
 
 abstract class AppAdInterface {

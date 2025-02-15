@@ -29,21 +29,11 @@ class _ImportCSVPageState extends State<ImportCSVPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(S.current.import_csv_title),
-        actions: [
-          ChaldeaUrl.docsHelpBtn('import_data.html#csv-template'),
-        ],
+        actions: [ChaldeaUrl.docsHelpBtn('import_data.html#csv-template')],
       ),
       body: Column(
         children: [
-          Expanded(
-            child: ListView(
-              children: [
-                ListTile(
-                  title: Text('${parsedRows.length} records'),
-                ),
-              ],
-            ),
-          ),
+          Expanded(child: ListView(children: [ListTile(title: Text('${parsedRows.length} records'))])),
           kDefaultDivider,
           SafeArea(child: buttonBar),
         ],
@@ -106,7 +96,7 @@ class _ImportCSVPageState extends State<ImportCSVPage> {
                         Navigator.pop(context);
                       },
                       icon: const Icon(Icons.clear),
-                    )
+                    ),
                   ],
                 );
               },
@@ -115,36 +105,38 @@ class _ImportCSVPageState extends State<ImportCSVPage> {
           child: Text(S.current.import_csv_export_template),
         ),
         ElevatedButton(
-          onPressed: parsedRows.isEmpty
-              ? null
-              : () {
-                  showDialog(
-                    context: context,
-                    useRootNavigator: false,
-                    builder: (context) {
-                      return SimpleCancelOkDialog(
-                        title: Text(S.current.confirm),
-                        onTapOk: () {
-                          for (final row in parsedRows) {
-                            final svt = db.gameData.servantsWithDup[row.collectionNo];
-                            if (svt == null) continue;
-                            db.curUser.servants[row.collectionNo] =
-                                row.mergeStatus(db.curUser.servants[row.collectionNo]);
-                            db.curSvtPlan[row.collectionNo] = row.mergePlan(db.curSvtPlan[row.collectionNo]);
-                            final coinId = svt.coin?.item.id;
-                            if (coinId != null && row.coin != null) {
-                              db.curUser.items[coinId] = row.coin!;
+          onPressed:
+              parsedRows.isEmpty
+                  ? null
+                  : () {
+                    showDialog(
+                      context: context,
+                      useRootNavigator: false,
+                      builder: (context) {
+                        return SimpleCancelOkDialog(
+                          title: Text(S.current.confirm),
+                          onTapOk: () {
+                            for (final row in parsedRows) {
+                              final svt = db.gameData.servantsWithDup[row.collectionNo];
+                              if (svt == null) continue;
+                              db.curUser.servants[row.collectionNo] = row.mergeStatus(
+                                db.curUser.servants[row.collectionNo],
+                              );
+                              db.curSvtPlan[row.collectionNo] = row.mergePlan(db.curSvtPlan[row.collectionNo]);
+                              final coinId = svt.coin?.item.id;
+                              if (coinId != null && row.coin != null) {
+                                db.curUser.items[coinId] = row.coin!;
+                              }
                             }
-                          }
-                          db.itemCenter.init();
-                          EasyLoading.showSuccess(S.current.import_data_success);
-                        },
-                      );
-                    },
-                  );
-                },
+                            db.itemCenter.init();
+                            EasyLoading.showSuccess(S.current.import_data_success);
+                          },
+                        );
+                      },
+                    );
+                  },
           child: Text(S.current.import_data),
-        )
+        ),
       ],
     );
   }

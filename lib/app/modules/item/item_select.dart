@@ -39,41 +39,45 @@ class ItemSelectPage extends StatelessWidget {
     for (int key in titles.keys) {
       if (key == 0) {
         if (!includeSpecial) continue;
-        children.add(TileGroup(
-          header: titles[key],
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-              child: Wrap(
-                spacing: 2,
-                runSpacing: 2,
-                children: [
-                  _oneItem(context, Items.bondPointId, Items.lantern?.icon, S.current.bond),
-                  _oneItem(context, Items.expPointId, '', 'EXP'),
-                ],
+        children.add(
+          TileGroup(
+            header: titles[key],
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                child: Wrap(
+                  spacing: 2,
+                  runSpacing: 2,
+                  children: [
+                    _oneItem(context, Items.bondPointId, Items.lantern?.icon, S.current.bond),
+                    _oneItem(context, Items.expPointId, '', 'EXP'),
+                  ],
+                ),
               ),
-            )
-          ],
-        ));
+            ],
+          ),
+        );
       } else {
         final items = groupedItems[key];
         if (items == null || items.isEmpty) continue;
         items.sort2((e) => e.priority);
-        children.add(TileGroup(
-          header: titles[key],
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-              child: GridView.extent(
-                maxCrossAxisExtent: 50,
-                childAspectRatio: 132 / 144,
-                physics: const NeverScrollableScrollPhysics(),
-                shrinkWrap: true,
-                children: [for (final item in items) _oneItem(context, item.id, item.borderedIcon, item.lName.l)],
+        children.add(
+          TileGroup(
+            header: titles[key],
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                child: GridView.extent(
+                  maxCrossAxisExtent: 50,
+                  childAspectRatio: 132 / 144,
+                  physics: const NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  children: [for (final item in items) _oneItem(context, item.id, item.borderedIcon, item.lName.l)],
+                ),
               ),
-            )
-          ],
-        ));
+            ],
+          ),
+        );
       }
     }
     return Scaffold(
@@ -97,10 +101,7 @@ class ItemSelectPage extends StatelessWidget {
       },
     );
     if (disabledItems.contains(id)) {
-      child = Opacity(
-        opacity: 0.3,
-        child: AbsorbPointer(child: child),
-      );
+      child = Opacity(opacity: 0.3, child: AbsorbPointer(child: child));
     }
     return child;
   }

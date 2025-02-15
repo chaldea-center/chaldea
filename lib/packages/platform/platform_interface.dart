@@ -15,8 +15,4 @@ abstract class PlatformMethodsInterface {
   }
 }
 
-enum WebRenderMode {
-  auto,
-  canvaskit,
-  html,
-}
+enum WebRenderMode { auto, canvaskit, html }

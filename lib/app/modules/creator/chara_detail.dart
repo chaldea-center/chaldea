@@ -18,16 +18,14 @@ class CharaDetail extends StatelessWidget {
     final table = CustomTable(
       selectable: true,
       children: <Widget>[
-        CustomTableRow(children: [
-          TableCellData(
-            child: Text(
-              lName.l,
-              style: const TextStyle(fontWeight: FontWeight.bold),
-              textAlign: TextAlign.center,
+        CustomTableRow(
+          children: [
+            TableCellData(
+              child: Text(lName.l, style: const TextStyle(fontWeight: FontWeight.bold), textAlign: TextAlign.center),
+              isHeader: true,
             ),
-            isHeader: true,
-          )
-        ]),
+          ],
+        ),
         if (!Transl.isJP) CustomTableRow(children: [TableCellData(text: lName.jp, textAlign: TextAlign.center)]),
         if (!Transl.isEN) CustomTableRow(children: [TableCellData(text: lName.na, textAlign: TextAlign.center)]),
       ],
@@ -61,14 +59,7 @@ class CharaDetail extends StatelessWidget {
     ces.sort2((e) => e.collectionNo);
     ccs.sort2((e) => e.collectionNo);
     return Scaffold(
-      appBar: AppBar(
-        title: AutoSizeText(
-          lName.l,
-          minFontSize: 12,
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-        ),
-      ),
+      appBar: AppBar(title: AutoSizeText(lName.l, minFontSize: 12, maxLines: 1, overflow: TextOverflow.ellipsis)),
       body: ListView(children: children),
     );
   }

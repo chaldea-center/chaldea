@@ -90,32 +90,25 @@ class AppWindowUtil {
     try {
       final icon = 'res/img/launcher_icon/${PlatformU.isWindows ? 'app_icon.ico' : 'app_icon_rounded.png'}';
       trayManager.setIcon(icon);
-      final _menuMain = Menu(items: [
-        MenuItem(
-          label: '$kAppName v${AppInfo.versionString}',
-          disabled: true,
-        ),
-        MenuItem.separator(),
-        MenuItem(
-          label: S.current.show,
-          onClick: (menuItem) => showWindow(),
-        ),
-        MenuItem.separator(),
-        MenuItem(
-          label: S.current.hide,
-          onClick: (menuItem) => minimizeWindow(),
-        ),
-        MenuItem.separator(),
-        MenuItem(
-          label: S.current.quit,
-          onClick: (menuItem) async {
-            await db.saveAll();
-            if (await _shouldCloseCheckUpload()) {
-              await destroyWindow();
-            }
-          },
-        ),
-      ]);
+      final _menuMain = Menu(
+        items: [
+          MenuItem(label: '$kAppName v${AppInfo.versionString}', disabled: true),
+          MenuItem.separator(),
+          MenuItem(label: S.current.show, onClick: (menuItem) => showWindow()),
+          MenuItem.separator(),
+          MenuItem(label: S.current.hide, onClick: (menuItem) => minimizeWindow()),
+          MenuItem.separator(),
+          MenuItem(
+            label: S.current.quit,
+            onClick: (menuItem) async {
+              await db.saveAll();
+              if (await _shouldCloseCheckUpload()) {
+                await destroyWindow();
+              }
+            },
+          ),
+        ],
+      );
 
       await trayManager.setContextMenu(_menuMain);
       print('set tray menu');
@@ -178,35 +171,36 @@ class AppWindowUtil {
 
     final close = await showDialog(
       context: ctx,
-      builder: (context) => AlertDialog(
-        content: Text(S.current.upload_and_close_app_alert),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context, false);
-            },
-            child: Text(S.current.cancel),
+      builder:
+          (context) => AlertDialog(
+            content: Text(S.current.upload_and_close_app_alert),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context, false);
+                },
+                child: Text(S.current.cancel),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context, true);
+                },
+                child: Text(S.current.general_close),
+              ),
+              TextButton(
+                onPressed: () async {
+                  bool success;
+                  if (kDebugMode) {
+                    success = true;
+                  } else {
+                    success = await ChaldeaServerBackup().backup();
+                  }
+                  if (success && context.mounted) Navigator.pop(context, true);
+                },
+                child: Text(S.current.upload_and_close_app),
+              ),
+            ],
           ),
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context, true);
-            },
-            child: Text(S.current.general_close),
-          ),
-          TextButton(
-            onPressed: () async {
-              bool success;
-              if (kDebugMode) {
-                success = true;
-              } else {
-                success = await ChaldeaServerBackup().backup();
-              }
-              if (success && context.mounted) Navigator.pop(context, true);
-            },
-            child: Text(S.current.upload_and_close_app),
-          ),
-        ],
-      ),
     );
     return close == true;
   }

@@ -21,17 +21,19 @@ class BaseLPSolver {
     // only load once
     // use callback to setState, not Future.
     print('=========loading js libs=========');
-    await engine.init(() async {
-      print('loading glpk.min.js ...');
-      await engine.eval(await rootBundle.loadString('res/js/glpk.min.js'), name: '<glpk.min.js>');
-      print('loading solver.js ...');
-      await engine.eval(await rootBundle.loadString('res/js/glpk_solver.js'), name: '<glpk_solver.js>');
-      print('=========js libs loaded.=========');
-    }).catchError((e, s) {
-      logger.e('initiate js libs error', e, s);
-      Catcher2.reportCheckedError(e, s);
-      EasyLoading.showToast('initiation error\n$e');
-    });
+    await engine
+        .init(() async {
+          print('loading glpk.min.js ...');
+          await engine.eval(await rootBundle.loadString('res/js/glpk.min.js'), name: '<glpk.min.js>');
+          print('loading solver.js ...');
+          await engine.eval(await rootBundle.loadString('res/js/glpk_solver.js'), name: '<glpk_solver.js>');
+          print('=========js libs loaded.=========');
+        })
+        .catchError((e, s) {
+          logger.e('initiate js libs error', e, s);
+          Catcher2.reportCheckedError(e, s);
+          EasyLoading.showToast('initiation error\n$e');
+        });
   }
 
   Future<Map<int, num>> callSolver(BasicLPParams params) async {
@@ -60,17 +62,19 @@ class FreeLPSolver {
     // only load once
     // use callback to setState, not Future.
     print('=========loading js libs=========');
-    await engine.init(() async {
-      print('loading glpk.min.js ...');
-      await engine.eval(await rootBundle.loadString('res/js/glpk.min.js'), name: '<glpk.min.js>');
-      print('loading solver.js ...');
-      await engine.eval(await rootBundle.loadString('res/js/glpk_solver.js'), name: '<glpk_solver.js>');
-      print('=========js libs loaded.=========');
-    }).catchError((e, s) {
-      logger.e('initiate js libs error', e, s);
-      Catcher2.reportCheckedError(e, s);
-      EasyLoading.showToast('initiation error\n$e');
-    });
+    await engine
+        .init(() async {
+          print('loading glpk.min.js ...');
+          await engine.eval(await rootBundle.loadString('res/js/glpk.min.js'), name: '<glpk.min.js>');
+          print('loading solver.js ...');
+          await engine.eval(await rootBundle.loadString('res/js/glpk_solver.js'), name: '<glpk_solver.js>');
+          print('=========js libs loaded.=========');
+        })
+        .catchError((e, s) {
+          logger.e('initiate js libs error', e, s);
+          Catcher2.reportCheckedError(e, s);
+          EasyLoading.showToast('initiation error\n$e');
+        });
   }
 
   /// two part: glpk linear programming +(then) efficiency sort
@@ -88,14 +92,18 @@ class FreeLPSolver {
     data.matrix.add(data.exps.map((e) => e.toDouble()).toList());
     _preProcess(data: data, params: params);
     if (params.rows.isEmpty) {
-      logger.d('after pre processing, params has no valid rows.\n'
-          'params=${json.encode(params)}');
+      logger.d(
+        'after pre processing, params has no valid rows.\n'
+        'params=${json.encode(params)}',
+      );
       EasyLoading.showToast('Invalid inputs');
       return solution;
     }
     if (Maths.max(params.weights, 0.0) <= 0) {
-      logger.d('after pre processing, params has no positive weights.\n'
-          'params=${json.encode(params)}');
+      logger.d(
+        'after pre processing, params has no positive weights.\n'
+        'params=${json.encode(params)}',
+      );
       EasyLoading.showToast('At least one weight > 0');
       return solution;
     }
@@ -115,9 +123,10 @@ class FreeLPSolver {
         }
       }
       glpkParams.matA = matrix;
-      final _debugParams = FreeLPParams.from(params)
-        ..planItemCounts.clear()
-        ..planItemWeights.clear();
+      final _debugParams =
+          FreeLPParams.from(params)
+            ..planItemCounts.clear()
+            ..planItemWeights.clear();
       logger.i('glpk params: ${jsonEncode(_debugParams)}');
       await ensureEngine();
       final resultString = await engine.eval('''glpk_solver(`${jsonEncode(glpkParams)}`)''', name: 'solver_caller');
@@ -144,12 +153,7 @@ class FreeLPSolver {
             details[itemId] = matrix[row][col] * count;
           }
         }
-        solution.countVars.add(LPVariable<int>(
-          name: questId,
-          value: count,
-          cost: data.apCosts[col],
-          detail: details,
-        ));
+        solution.countVars.add(LPVariable<int>(name: questId, value: count, cost: data.apCosts[col], detail: details));
       });
       solution.sortCountVars();
       //
@@ -176,7 +180,8 @@ class FreeLPSolver {
       for (int row = 0; row < data.itemIds.length; row++) {
         int itemId = data.itemIds[row];
         if (objectiveWeights.keys.contains(itemId) && data.matrix[row][col] > 0) {
-          dropWeights[itemId] = (params.useAP20 ? 20 / data.apCosts[col] : 1) *
+          dropWeights[itemId] =
+              (params.useAP20 ? 20 / data.apCosts[col] : 1) *
               data.matrix[row][col] *
               objectiveWeights[itemId]! *
               (1 + params.getPlanItemBonus(itemId) / 100);
@@ -210,12 +215,13 @@ DropRateSheet _preProcess({required DropRateSheet data, required FreeLPParams pa
   // free quests for different server
   final wars = Map.of(db.gameData.mainStories);
   wars.removeWhere((key, value) => !value.quests.any((q) => q.isMainStoryFree));
-  List<int> cols = data.questIds.where((questId) {
-    if (!wars.containsKey(params.progress)) return true;
-    final warId = db.gameData.quests[questId]?.warId;
-    // some error that db not loaded || fit progress || chaldea gate quests
-    return warId == null || warId <= params.progress || warId >= 1000;
-  }).toList();
+  List<int> cols =
+      data.questIds.where((questId) {
+        if (!wars.containsKey(params.progress)) return true;
+        final warId = db.gameData.quests[questId]?.warId;
+        // some error that db not loaded || fit progress || chaldea gate quests
+        return warId == null || warId <= params.progress || warId >= 1000;
+      }).toList();
   // only append extra columns having drop data in gpk matrix
   for (final col in params.extraCols) {
     if (data.questIds.contains(col)) cols.add(col);
@@ -256,9 +262,11 @@ DropRateSheet _preProcess({required DropRateSheet data, required FreeLPParams pa
 
   // remove cols don't contain any objective rows
   for (int col = 0; col < data.questIds.length; col++) {
-    double apRateSum = Maths.sum(objective.keys.map((rowName) {
-      return data.matrix[data.itemIds.indexOf(rowName)][col];
-    }));
+    double apRateSum = Maths.sum(
+      objective.keys.map((rowName) {
+        return data.matrix[data.itemIds.indexOf(rowName)][col];
+      }),
+    );
     if (apRateSum == 0) {
       // this col don't contain any objective rows
       removeCols.add(data.questIds[col]);
@@ -320,8 +328,10 @@ DropRateSheet _preProcess({required DropRateSheet data, required FreeLPParams pa
     }
   }
 
-  logger.t('processed data: ${data.itemIds.length} rows,'
-      ' ${data.questIds.length} columns');
+  logger.t(
+    'processed data: ${data.itemIds.length} rows,'
+    ' ${data.questIds.length} columns',
+  );
   // print(const JsonEncoder.withIndent('  ').convert(params));
   return data;
 }

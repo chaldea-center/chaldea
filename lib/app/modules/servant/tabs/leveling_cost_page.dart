@@ -41,22 +41,20 @@ class LevelingCostPageState extends State<LevelingCostPage> {
     return AlertDialog(
       contentPadding: EdgeInsets.zero,
       titlePadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      title: Text(
-        widget.title,
-        style: const TextStyle(fontSize: 16),
-      ),
+      title: Text(widget.title, style: const TextStyle(fontSize: 16)),
       content: SizedBox(
         width: min(380, size.width * 0.8),
         child: ListView(
           shrinkWrap: true,
-          children: widget.costList.isEmpty
-              ? [const ListTile(title: Text('Nothing needed'))]
-              : List.generate(lvb - lva, (i) {
-                  return buildOneLevel(
-                    '${_formatLevel(lva + i)}→${_formatLevel(lva + i + 1)}',
-                    widget.costList[lva + i],
-                  );
-                }),
+          children:
+              widget.costList.isEmpty
+                  ? [const ListTile(title: Text('Nothing needed'))]
+                  : List.generate(lvb - lva, (i) {
+                    return buildOneLevel(
+                      '${_formatLevel(lva + i)}→${_formatLevel(lva + i + 1)}',
+                      widget.costList[lva + i],
+                    );
+                  }),
         ),
       ),
       actions: [
@@ -68,10 +66,7 @@ class LevelingCostPageState extends State<LevelingCostPage> {
           // style: TextButton.styleFrom(),
           child: Text(showAll ? 'SHOW LESS' : 'SHOW MORE'),
         ),
-        TextButton(
-          onPressed: () => Navigator.pop(context),
-          child: const Text('OK'),
-        )
+        TextButton(onPressed: () => Navigator.pop(context), child: const Text('OK')),
       ],
     );
   }
@@ -81,32 +76,16 @@ class LevelingCostPageState extends State<LevelingCostPage> {
     if (lvCost != null) {
       for (final itemAmount in [...lvCost.items, ItemAmount(amount: lvCost.qp, item: Items.qp)]) {
         if (itemAmount.amount > 0) {
-          items.add(Item.iconBuilder(
-            context: context,
-            item: itemAmount.item,
-            text: itemAmount.amount.format(),
-            width: 36,
-          ));
+          items.add(
+            Item.iconBuilder(context: context, item: itemAmount.item, text: itemAmount.amount.format(), width: 36),
+          );
         }
       }
     }
     return CustomTile(
-      leading: SizedBox(
-        width: 42,
-        child: AutoSizeText(
-          title,
-          maxLines: 2,
-          maxFontSize: 14,
-        ),
-      ),
+      leading: SizedBox(width: 42, child: AutoSizeText(title, maxLines: 2, maxFontSize: 14)),
       contentPadding: const EdgeInsets.symmetric(vertical: 4, horizontal: 16),
-      title: items.isEmpty
-          ? const Text('No item')
-          : Wrap(
-              spacing: 2,
-              runSpacing: 2,
-              children: items,
-            ),
+      title: items.isEmpty ? const Text('No item') : Wrap(spacing: 2, runSpacing: 2, children: items),
     );
   }
 

@@ -89,11 +89,7 @@ class _GachaProbCalcPageState extends State<GachaProbCalcPage> {
                 width: 120,
                 child: TextFormField(
                   controller: _rateController,
-                  decoration: const InputDecoration(
-                    suffixText: '%',
-                    isDense: true,
-                    border: OutlineInputBorder(),
-                  ),
+                  decoration: const InputDecoration(suffixText: '%', isDense: true, border: OutlineInputBorder()),
                   inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'\d*\.?\d*'))],
                   onChanged: (s) {
                     onChanged();
@@ -123,19 +119,19 @@ class _GachaProbCalcPageState extends State<GachaProbCalcPage> {
           ),
           const Divider(height: 16, thickness: 1),
           ListTile(
-            title: Text.rich(TextSpan(children: [
-              TextSpan(text: '$_tickets '),
-              CenterWidgetSpan(
-                child: db.getIconImage(Items.summonTicket?.icon, width: 32),
+            title: Text.rich(
+              TextSpan(
+                children: [
+                  TextSpan(text: '$_tickets '),
+                  CenterWidgetSpan(child: db.getIconImage(Items.summonTicket?.icon, width: 32)),
+                  TextSpan(text: ' = $sq '),
+                  CenterWidgetSpan(child: db.getIconImage(Items.stone?.icon, width: 32)),
+                  TextSpan(text: '\n= $pulls ${S.current.summon_pull_unit} = $x11×11+$xleft'),
+                  TextSpan(text: '\n=  ${(sq / 168).toStringAsPrecision(4)} ${S.current.sq_buy_pack_unit}'),
+                  TextSpan(text: '\n${S.current.probability_expectation} E = ${expect ?? "?"}'),
+                ],
               ),
-              TextSpan(text: ' = $sq '),
-              CenterWidgetSpan(
-                child: db.getIconImage(Items.stone?.icon, width: 32),
-              ),
-              TextSpan(text: '\n= $pulls ${S.current.summon_pull_unit} = $x11×11+$xleft'),
-              TextSpan(text: '\n=  ${(sq / 168).toStringAsPrecision(4)} ${S.current.sq_buy_pack_unit}'),
-              TextSpan(text: '\n${S.current.probability_expectation} E = ${expect ?? "?"}')
-            ])),
+            ),
           ),
           // ListTile(
           //   title: Text(
@@ -144,10 +140,7 @@ class _GachaProbCalcPageState extends State<GachaProbCalcPage> {
           // const Divider(height: 16),
           CustomTable(
             children: [
-              CustomTableRow.fromTexts(
-                texts: ['${S.current.probability} (%)'],
-                isHeader: true,
-              ),
+              CustomTableRow.fromTexts(texts: ['${S.current.probability} (%)'], isHeader: true),
               CustomTableRow.fromTexts(
                 texts: const [
                   'NP(x)',
@@ -179,13 +172,9 @@ class _GachaProbCalcPageState extends State<GachaProbCalcPage> {
   }
 
   void onChanged() {
-    EasyDebounce.debounce(
-      'prob_calc_update',
-      const Duration(milliseconds: 500),
-      () {
-        if (mounted) setState(() {});
-      },
-    );
+    EasyDebounce.debounce('prob_calc_update', const Duration(milliseconds: 500), () {
+      if (mounted) setState(() {});
+    });
   }
 
   List<Widget> calculate(int pulls, double rate) {
@@ -203,10 +192,7 @@ class _GachaProbCalcPageState extends State<GachaProbCalcPage> {
     }
     return [
       for (final row in data)
-        CustomTableRow.fromTexts(texts: [
-          row[0].toString(),
-          for (final v in row.skip(1)) _fmt(v),
-        ])
+        CustomTableRow.fromTexts(texts: [row[0].toString(), for (final v in row.skip(1)) _fmt(v)]),
     ];
   }
 

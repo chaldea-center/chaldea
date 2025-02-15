@@ -86,13 +86,15 @@ class ServantListPageState extends State<ServantListPage> with SearchableListSta
           SvtPlanScope.ascension,
           SvtPlanScope.active,
           SvtPlanScope.append,
-          SvtPlanScope.costume
+          SvtPlanScope.costume,
         };
       }
     }
-    options = _ServantOptions(onChanged: (_) {
-      if (mounted) setState(() {});
-    });
+    options = _ServantOptions(
+      onChanged: (_) {
+        if (mounted) setState(() {});
+      },
+    );
   }
 
   int _compareSvt(Servant a, Servant b) {
@@ -102,10 +104,7 @@ class ServantListPageState extends State<ServantListPage> with SearchableListSta
   @override
   Widget build(BuildContext context) {
     filterShownList(compare: _compareSvt);
-    return scrollListener(
-      useGrid: widget.planMode ? false : filterData.useGrid,
-      appBar: appBar,
-    );
+    return scrollListener(useGrid: widget.planMode ? false : filterData.useGrid, appBar: appBar);
   }
 
   PreferredSizeWidget? get appBar {
@@ -164,28 +163,26 @@ class ServantListPageState extends State<ServantListPage> with SearchableListSta
         IconButton(
           icon: const Icon(Icons.filter_alt),
           tooltip: S.current.filter,
-          onPressed: () => FilterPage.show(
-            context: context,
-            builder: (context) => ServantFilterPage(
-              filterData: filterData,
-              onChanged: (_) {
-                if (mounted) {
-                  setState(() {});
-                }
-              },
-              planMode: widget.planMode,
-            ),
-          ),
+          onPressed:
+              () => FilterPage.show(
+                context: context,
+                builder:
+                    (context) => ServantFilterPage(
+                      filterData: filterData,
+                      onChanged: (_) {
+                        if (mounted) {
+                          setState(() {});
+                        }
+                      },
+                      planMode: widget.planMode,
+                    ),
+              ),
         ),
         searchIcon,
         PopupMenuButton(
           itemBuilder: (context) {
             return [
-              if (!widget.planMode)
-                PopupMenuItem(
-                  enabled: false,
-                  child: Text(db.curUser.getFriendlyPlanName()),
-                ),
+              if (!widget.planMode) PopupMenuItem(enabled: false, child: Text(db.curUser.getFriendlyPlanName())),
               PopupMenuItem(
                 child: Text(S.current.select_plan),
                 onTap: () {
@@ -266,7 +263,7 @@ class ServantListPageState extends State<ServantListPage> with SearchableListSta
                     launch(ChaldeaUrl.doc('servant_plan'));
                   },
                 ),
-              ]
+              ],
             ];
           },
         ),
@@ -303,9 +300,7 @@ class ServantListPageState extends State<ServantListPage> with SearchableListSta
           fontStyle: FontStyle.italic,
         );
       }
-      return Center(
-        child: Text('$_c-$_t', style: style),
-      );
+      return Center(child: Text('$_c-$_t', style: style));
     }
 
     Widget _getHeader(String header) {
@@ -318,33 +313,35 @@ class ServantListPageState extends State<ServantListPage> with SearchableListSta
     final costumes = svt.profile.costume.values.toList();
     costumes.sort2((e) => e.id);
     Widget child = DefaultTextStyle.merge(
-      style: TextStyle(
-        fontSize: 12,
-        color: Theme.of(context).textTheme.bodySmall?.color,
-        fontFamily: kMonoFont,
-      ),
+      style: TextStyle(fontSize: 12, color: Theme.of(context).textTheme.bodySmall?.color, fontFamily: kMonoFont),
       child: Table(
         // border: TableBorder.all(),
         children: [
-          TableRow(children: [
-            _getHeader('${S.current.ascension_short}:'),
-            _getRange(cur.ascension, target.ascension, 4),
-            _getHeader('${S.current.np_short}:'),
-            _getRange(cur.npLv, target.npLv, 5),
-          ]),
-          TableRow(children: [
-            _getHeader('${S.current.active_skill_short}:'),
-            for (int i = 0; i < kActiveSkillNums.length; i++) _getRange(cur.skills[i], target.skills[i], 9)
-          ]),
+          TableRow(
+            children: [
+              _getHeader('${S.current.ascension_short}:'),
+              _getRange(cur.ascension, target.ascension, 4),
+              _getHeader('${S.current.np_short}:'),
+              _getRange(cur.npLv, target.npLv, 5),
+            ],
+          ),
+          TableRow(
+            children: [
+              _getHeader('${S.current.active_skill_short}:'),
+              for (int i = 0; i < kActiveSkillNums.length; i++) _getRange(cur.skills[i], target.skills[i], 9),
+            ],
+          ),
           for (int row = 0; row < (kAppendSkillNums.length / 3).ceil(); row++)
-            TableRow(children: [
-              row == 0 ? _getHeader('${S.current.append_skill_short}:') : const SizedBox.shrink(),
-              ...List.generate(3, (col) {
-                final i = row * 3 + col;
-                if (i >= kAppendSkillNums.length) return const SizedBox.shrink();
-                return _getRange(cur.appendSkills[i], target.appendSkills[i], 9);
-              }),
-            ]),
+            TableRow(
+              children: [
+                row == 0 ? _getHeader('${S.current.append_skill_short}:') : const SizedBox.shrink(),
+                ...List.generate(3, (col) {
+                  final i = row * 3 + col;
+                  if (i >= kAppendSkillNums.length) return const SizedBox.shrink();
+                  return _getRange(cur.appendSkills[i], target.appendSkills[i], 9);
+                }),
+              ],
+            ),
           for (int row = 0; row < costumes.length / 3; row++)
             TableRow(
               children: [
@@ -356,7 +353,7 @@ class ServantListPageState extends State<ServantListPage> with SearchableListSta
                     return Container();
                   }
                   return _getRange(cur.costumes[costumeId] ?? 0, target.costumes[costumeId] ?? 0, null);
-                })
+                }),
               ],
             ),
         ],
@@ -366,10 +363,7 @@ class ServantListPageState extends State<ServantListPage> with SearchableListSta
     if (hiddenPlanServants.contains(svt)) {
       child = Stack(
         alignment: Alignment.center,
-        children: [
-          Opacity(opacity: 0.2, child: child),
-          Text(S.current.svt_plan_hidden),
-        ],
+        children: [Opacity(opacity: 0.2, child: child), Text(S.current.svt_plan_hidden)],
       );
     }
     return child;
@@ -407,9 +401,7 @@ class ServantListPageState extends State<ServantListPage> with SearchableListSta
             mainAxisSpacing: 2,
             crossAxisSpacing: 2,
             childAspectRatio: 132 / 144,
-            children: [
-              for (final datum in pingedSvts) gridItemBuilder(datum),
-            ],
+            children: [for (final datum in pingedSvts) gridItemBuilder(datum)],
           ),
         ),
         ...slivers,
@@ -430,16 +422,14 @@ class ServantListPageState extends State<ServantListPage> with SearchableListSta
     );
     Widget scrollable = Scrollbar(
       controller: scrollController,
-      child: useGrid
-          ? buildGridView(
-              topHint: hintText,
-              bottomHint: hintText,
-            )
-          : buildListView(
-              topHint: hintText,
-              bottomHint: hintText,
-              separator: widget.planMode ? const Divider(height: 1, thickness: 0.5, indent: 72, endIndent: 16) : null,
-            ),
+      child:
+          useGrid
+              ? buildGridView(topHint: hintText, bottomHint: hintText)
+              : buildListView(
+                topHint: hintText,
+                bottomHint: hintText,
+                separator: widget.planMode ? const Divider(height: 1, thickness: 0.5, indent: 72, endIndent: 16) : null,
+              ),
     );
     scrollable = RefreshIndicator(
       onRefresh: () async {
@@ -456,18 +446,19 @@ class ServantListPageState extends State<ServantListPage> with SearchableListSta
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
           child: LayoutBuilder(
-            builder: (context, constraints) => SharedBuilder.topSvtClassFilter(
-              context: context,
-              maxWidth: constraints.maxWidth,
-              data: filterData.svtClass,
-              onChanged: () {
-                setState(() {});
-              },
-            ),
+            builder:
+                (context, constraints) => SharedBuilder.topSvtClassFilter(
+                  context: context,
+                  maxWidth: constraints.maxWidth,
+                  data: filterData.svtClass,
+                  onChanged: () {
+                    setState(() {});
+                  },
+                ),
           ),
         ),
         if (widget.showSecondaryFilter) secondaryTopFilters,
-        Expanded(child: scrollable)
+        Expanded(child: scrollable),
       ],
     );
   }
@@ -476,11 +467,7 @@ class ServantListPageState extends State<ServantListPage> with SearchableListSta
     const double height = 36;
     Widget _getBtn(String text) {
       return Container(
-        constraints: const BoxConstraints(
-          minHeight: height,
-          maxHeight: height,
-          minWidth: 28,
-        ),
+        constraints: const BoxConstraints(minHeight: height, maxHeight: height, minWidth: 28),
         padding: const EdgeInsets.symmetric(horizontal: 4),
         child: Center(child: Text(text)),
       );
@@ -534,11 +521,13 @@ class ServantListPageState extends State<ServantListPage> with SearchableListSta
             padding: const EdgeInsets.symmetric(horizontal: 2),
             shrinkWrap: true,
             options: const [-1, 4, 5],
-            values: FilterGroupData(options: {
-              if (filterData.rarity.options.contains(5)) 5,
-              if (filterData.rarity.options.contains(4)) 4,
-              if (filterData.rarity.options.containSubset(<int>{0, 1, 2, 3})) -1,
-            }),
+            values: FilterGroupData(
+              options: {
+                if (filterData.rarity.options.contains(5)) 5,
+                if (filterData.rarity.options.contains(4)) 4,
+                if (filterData.rarity.options.containSubset(<int>{0, 1, 2, 3})) -1,
+              },
+            ),
             optionBuilder: (v) => _getBtn(v == -1 ? '$kStarChar≤3' : v.toString()),
             onFilterChanged: (v, lastChanged) {
               if (lastChanged != null) {
@@ -574,28 +563,25 @@ class ServantListPageState extends State<ServantListPage> with SearchableListSta
     final status = db.curUser.svtStatusOf(svt.collectionNo);
     Widget textBuilder(TextStyle style) {
       return Text.rich(
-        TextSpan(style: style, children: [
-          WidgetSpan(
-            style: style,
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(6),
-                boxShadow: const [
-                  BoxShadow(
-                    color: Colors.white,
-                    blurRadius: 3,
-                    spreadRadius: 1,
-                  )
-                ],
+        TextSpan(
+          style: style,
+          children: [
+            WidgetSpan(
+              style: style,
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(6),
+                  boxShadow: const [BoxShadow(color: Colors.white, blurRadius: 3, spreadRadius: 1)],
+                ),
+                child: db.getIconImage(Atlas.asset('Terminal/Info/CommonUIAtlas/icon_nplv.png'), width: 13, height: 13),
               ),
-              child: db.getIconImage(Atlas.asset('Terminal/Info/CommonUIAtlas/icon_nplv.png'), width: 13, height: 13),
             ),
-          ),
-          TextSpan(text: status.cur.npLv.toString()),
-          TextSpan(text: '\n${status.cur.ascension}-${status.cur.skills.join('/')}'),
-          if (status.cur.appendSkills.any((lv) => lv > 0))
-            TextSpan(text: "\n${status.cur.appendSkills.map((e) => e == 0 ? '-' : e.toString()).join('/')}"),
-        ]),
+            TextSpan(text: status.cur.npLv.toString()),
+            TextSpan(text: '\n${status.cur.ascension}-${status.cur.skills.join('/')}'),
+            if (status.cur.appendSkills.any((lv) => lv > 0))
+              TextSpan(text: "\n${status.cur.appendSkills.map((e) => e == 0 ? '-' : e.toString()).join('/')}"),
+          ],
+        ),
         textScaler: const TextScaler.linear(0.9),
       );
     }
@@ -649,10 +635,7 @@ class ServantListPageState extends State<ServantListPage> with SearchableListSta
         hint: text(S.current.ascension_short),
         items: List.generate(
           5,
-          (i) => DropdownMenuItem(
-            value: i,
-            child: text(S.current.words_separate(S.current.ascension_short, '$i')),
-          ),
+          (i) => DropdownMenuItem(value: i, child: text(S.current.words_separate(S.current.ascension_short, '$i'))),
         ),
         onChanged: (v) {
           setState(() {
@@ -714,7 +697,7 @@ class ServantListPageState extends State<ServantListPage> with SearchableListSta
         hint: text(S.current.costume),
         items: [
           DropdownMenuItem(value: false, child: text('${S.current.costume}×')),
-          DropdownMenuItem(value: true, child: text('${S.current.costume}√'))
+          DropdownMenuItem(value: true, child: text('${S.current.costume}√')),
         ],
         onChanged: (v) {
           setState(() {
@@ -733,13 +716,7 @@ class ServantListPageState extends State<ServantListPage> with SearchableListSta
         value: _changedTd,
         icon: Container(),
         hint: text(S.current.np_short),
-        items: List.generate(
-          6,
-          (i) => DropdownMenuItem(
-            value: i,
-            child: text('${S.current.np_short}$i'),
-          ),
-        ),
+        items: List.generate(6, (i) => DropdownMenuItem(value: i, child: text('${S.current.np_short}$i'))),
         onChanged: (v) {
           setState(() {
             _changedTd = v;
@@ -785,10 +762,11 @@ class ServantListPageState extends State<ServantListPage> with SearchableListSta
             _changedTd = null;
           });
         },
-        optionBuilder: (s) => Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
-          child: Text(s ? S.current.plan_list_set_all_target : S.current.plan_list_set_all_current),
-        ),
+        optionBuilder:
+            (s) => Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+              child: Text(s ? S.current.plan_list_set_all_target : S.current.plan_list_set_all_current),
+            ),
       ),
       DropdownButton<int>(
         // isDense: true,
@@ -796,15 +774,9 @@ class ServantListPageState extends State<ServantListPage> with SearchableListSta
         icon: Container(),
         hint: text(S.current.append_skill_short),
         items: [
-          DropdownMenuItem(
-            value: -1,
-            child: text(S.current.append_skill_short),
-          ),
+          DropdownMenuItem(value: -1, child: text(S.current.append_skill_short)),
           for (final i in range(5))
-            DropdownMenuItem(
-              value: i,
-              child: text(S.current.words_separate(S.current.append_skill_short, '${i + 1}')),
-            ),
+            DropdownMenuItem(value: i, child: text(S.current.words_separate(S.current.append_skill_short, '${i + 1}'))),
         ],
         onChanged: (v) {
           setState(() {
@@ -826,9 +798,10 @@ class ServantListPageState extends State<ServantListPage> with SearchableListSta
             _changedAppend = v;
             if (_changedAppend == null) return;
             _batchChange((svt, cur, target) {
-              final List<int> nums = _appendNum == null || _appendNum == -1
-                  ? List.generate(kAppendSkillNums.length, (i) => i)
-                  : [_appendNum!];
+              final List<int> nums =
+                  _appendNum == null || _appendNum == -1
+                      ? List.generate(kAppendSkillNums.length, (i) => i)
+                      : [_appendNum!];
               for (int i in nums) {
                 if (db.settings.display.onlyAppendUnlocked && cur.appendSkills[i] == 0) {
                   continue;
@@ -858,16 +831,18 @@ class ServantListPageState extends State<ServantListPage> with SearchableListSta
             db.settings.display.onlyAppendUnlocked = !db.settings.display.onlyAppendUnlocked;
           });
           EasyLoading.showToast(
-              '${S.current.plan_list_only_unlock_append}: ${db.settings.display.onlyAppendUnlocked ? "on" : "off"}');
+            '${S.current.plan_list_only_unlock_append}: ${db.settings.display.onlyAppendUnlocked ? "on" : "off"}',
+          );
         },
         icon: const Icon(Icons.lock_open),
         iconSize: 18,
         padding: const EdgeInsets.symmetric(horizontal: 4),
-        color: db.settings.display.onlyAppendUnlocked
-            ? Theme.of(context).colorScheme.primary
-            : Theme.of(context).disabledColor,
+        color:
+            db.settings.display.onlyAppendUnlocked
+                ? Theme.of(context).colorScheme.primary
+                : Theme.of(context).disabledColor,
         tooltip: S.current.plan_list_only_unlock_append,
-      )
+      ),
     ];
     return PreferredSize(
       preferredSize: const Size.fromHeight(64),
@@ -881,17 +856,9 @@ class ServantListPageState extends State<ServantListPage> with SearchableListSta
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Wrap(
-                  spacing: 6,
-                  crossAxisAlignment: WrapCrossAlignment.center,
-                  children: buttons1,
-                ),
+                Wrap(spacing: 6, crossAxisAlignment: WrapCrossAlignment.center, children: buttons1),
                 // const SizedBox(height: 8),
-                Wrap(
-                  spacing: 6,
-                  crossAxisAlignment: WrapCrossAlignment.center,
-                  children: buttons2,
-                ),
+                Wrap(spacing: 6, crossAxisAlignment: WrapCrossAlignment.center, children: buttons2),
                 const SizedBox(height: 4),
               ],
             ),
@@ -947,18 +914,12 @@ class ServantListPageState extends State<ServantListPage> with SearchableListSta
     }
     return CustomTile(
       leading: svt.iconBuilder(context: context, height: 64),
-      title: Text(
-        svt.lAscName.l,
-        maxLines: 1,
-      ),
+      title: Text(svt.lAscName.l, maxLines: 1),
       subtitle: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           if (!Language.isJP) Text(svt.lAscName.jp, maxLines: 1),
-          Text(
-            'No.${svt.collectionNo} ${Transl.svtClassId(svt.classId).l}  $additionalText',
-            maxLines: 1,
-          )
+          Text('No.${svt.collectionNo} ${Transl.svtClassId(svt.classId).l}  $additionalText', maxLines: 1),
         ],
       ),
       trailing: db.onUserData((context, snapshot) => getStatusText(context) ?? const SizedBox()),
@@ -1003,14 +964,16 @@ class ServantListPageState extends State<ServantListPage> with SearchableListSta
       );
     }
 
-    return db.onUserData((context, snapshot) => CustomTile(
-          leading: svt.iconBuilder(context: context, width: 48),
-          subtitle: _getDetailTable(svt),
-          trailing: trailingButton,
-          selected: SplitRoute.isSplit(context) && selected == svt,
-          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 3),
-          onTap: () => _onTapSvt(svt),
-        ));
+    return db.onUserData(
+      (context, snapshot) => CustomTile(
+        leading: svt.iconBuilder(context: context, width: 48),
+        subtitle: _getDetailTable(svt),
+        trailing: trailingButton,
+        selected: SplitRoute.isSplit(context) && selected == svt,
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 3),
+        onTap: () => _onTapSvt(svt),
+      ),
+    );
   }
 
   void _batchChange(void Function(Servant svt, SvtPlan cur, SvtPlan target) onChanged) {
@@ -1027,26 +990,28 @@ class ServantListPageState extends State<ServantListPage> with SearchableListSta
     showDialog(
       context: context,
       useRootNavigator: false,
-      builder: (context) => SimpleDialog(
-        title: Text(S.current.select_copy_plan_source),
-        children: List.generate(db.curUser.plans.length, (index) {
-          bool isCur = index == db.curUser.curSvtPlanNo;
-          String title = db.curUser.getFriendlyPlanName(index);
-          if (isCur) title += ' (${S.current.current_})';
-          return ListTile(
-            title: Text(title),
-            onTap: isCur
-                ? null
-                : () {
-                    final src = UserPlan.fromJson(jsonDecode(jsonEncode(db.curUser.plans[index])));
-                    db.curPlan_.servants = src.servants;
-                    db.curUser.ensurePlanLarger();
-                    db.itemCenter.calculate();
-                    Navigator.of(context).pop();
-                  },
-          );
-        }),
-      ),
+      builder:
+          (context) => SimpleDialog(
+            title: Text(S.current.select_copy_plan_source),
+            children: List.generate(db.curUser.plans.length, (index) {
+              bool isCur = index == db.curUser.curSvtPlanNo;
+              String title = db.curUser.getFriendlyPlanName(index);
+              if (isCur) title += ' (${S.current.current_})';
+              return ListTile(
+                title: Text(title),
+                onTap:
+                    isCur
+                        ? null
+                        : () {
+                          final src = UserPlan.fromJson(jsonDecode(jsonEncode(db.curUser.plans[index])));
+                          db.curPlan_.servants = src.servants;
+                          db.curUser.ensurePlanLarger();
+                          db.itemCenter.calculate();
+                          Navigator.of(context).pop();
+                        },
+              );
+            }),
+          ),
     );
   }
 }

@@ -107,16 +107,18 @@ class _GachaListPageState extends State<GachaListPage>
           IconButton(
             icon: const Icon(Icons.filter_alt),
             tooltip: S.current.filter,
-            onPressed: () => FilterPage.show(
-              context: context,
-              builder: (context) => SummonFilterPage(
-                filterData: filterData,
-                isRawGacha: true,
-                onChanged: (_) {
-                  if (mounted) setState(() {});
-                },
-              ),
-            ),
+            onPressed:
+                () => FilterPage.show(
+                  context: context,
+                  builder:
+                      (context) => SummonFilterPage(
+                        filterData: filterData,
+                        isRawGacha: true,
+                        onChanged: (_) {
+                          if (mounted) setState(() {});
+                        },
+                      ),
+                ),
           ),
           searchIcon,
         ],
@@ -178,7 +180,8 @@ class _GachaListPageState extends State<GachaListPage>
                 if (v != null && v && _selectedGachas.isEmpty && gacha.detailUrl.isNotEmpty) {
                   final prefix = gacha.detailUrlPrefix;
                   final related = wholeData.where(
-                      (e) => (e.openedAt - gacha.openedAt).abs() < kSecsPerDay * 30 && e.detailUrl.startsWith(prefix));
+                    (e) => (e.openedAt - gacha.openedAt).abs() < kSecsPerDay * 30 && e.detailUrl.startsWith(prefix),
+                  );
                   _selectedGachas.addAll(related);
                   return;
                 }
@@ -195,11 +198,13 @@ class _GachaListPageState extends State<GachaListPage>
           // minLeadingWidth: 12,
           // leading: isLuckyBag ? const Icon(Icons.currency_yen, size: 16) : null,
           title: Text.rich(
-            TextSpan(children: [
-              if (gacha.type == GachaType.chargeStone)
-                const TextSpan(text: '$kStarChar2 ', style: TextStyle(color: Colors.red)),
-              TextSpan(text: title),
-            ]),
+            TextSpan(
+              children: [
+                if (gacha.type == GachaType.chargeStone)
+                  const TextSpan(text: '$kStarChar2 ', style: TextStyle(color: Colors.red)),
+                TextSpan(text: title),
+              ],
+            ),
             style: TextStyle(fontStyle: gacha.userAdded ? FontStyle.italic : null),
           ),
           subtitle: Text(subtitle),
@@ -208,41 +213,34 @@ class _GachaListPageState extends State<GachaListPage>
         );
       },
       contentBuilder: (context) {
-        List<Widget> children = [
-          GachaBanner(imageId: gacha.imageId, region: region ?? Region.jp),
-        ];
+        List<Widget> children = [GachaBanner(imageId: gacha.imageId, region: region ?? Region.jp)];
         final dupGachas = List<NiceGacha>.of(_imageIdMap[gacha.imageId] ?? []);
         dupGachas.remove(gacha);
         if (dupGachas.isNotEmpty) {
-          children.add(Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-            child: Text.rich(
-              TextSpan(
-                text: '${S.current.gacha_image_overridden_hint}:\n',
-                style: Theme.of(context).textTheme.bodySmall,
-                children: [
-                  for (final v in dupGachas)
-                    TextSpan(children: [
+          children.add(
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              child: Text.rich(
+                TextSpan(
+                  text: '${S.current.gacha_image_overridden_hint}:\n',
+                  style: Theme.of(context).textTheme.bodySmall,
+                  children: [
+                    for (final v in dupGachas)
                       TextSpan(
-                        text: ' ${v.name} ',
-                        style: const TextStyle(fontWeight: FontWeight.bold),
+                        children: [
+                          TextSpan(text: ' ${v.name} ', style: const TextStyle(fontWeight: FontWeight.bold)),
+                          TextSpan(text: v.openedAt.sec2date().toDateString()),
+                        ],
                       ),
-                      TextSpan(text: v.openedAt.sec2date().toDateString()),
-                    ])
-                ],
+                  ],
+                ),
+                textAlign: TextAlign.center,
               ),
-              textAlign: TextAlign.center,
             ),
-          ));
+          );
         }
-        children.add(TextButton(
-          onPressed: () => gacha.routeTo(region: region!),
-          child: Text(S.current.details),
-        ));
-        return Column(
-          mainAxisSize: MainAxisSize.min,
-          children: children,
-        );
+        children.add(TextButton(onPressed: () => gacha.routeTo(region: region!), child: Text(S.current.details)));
+        return Column(mainAxisSize: MainAxisSize.min, children: children);
       },
     );
   }
@@ -257,11 +255,12 @@ class _GachaListPageState extends State<GachaListPage>
         children: [
           const SizedBox(width: kMinInteractiveDimension),
           ElevatedButton(
-            onPressed: _selectedGachas.isEmpty
-                ? null
-                : () {
-                    router.pushPage(MCSummonCreatePage(gachas: _selectedGachas.toList()));
-                  },
+            onPressed:
+                _selectedGachas.isEmpty
+                    ? null
+                    : () {
+                      router.pushPage(MCSummonCreatePage(gachas: _selectedGachas.toList()));
+                    },
             child: Text("${S.current.create_mooncell_summon}(${_selectedGachas.length})"),
           ),
           IconButton(
@@ -270,7 +269,7 @@ class _GachaListPageState extends State<GachaListPage>
               setState(() {});
             },
             icon: const Icon(Icons.clear_all),
-          )
+          ),
         ],
       ),
     );

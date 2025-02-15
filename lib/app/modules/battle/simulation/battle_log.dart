@@ -36,25 +36,23 @@ class _BattleLogPageState extends State<BattleLogPage> {
           icon = Icon(Icons.error_outline, size: 8, color: Colors.red.shade900);
           break;
       }
-      children.add(ListTile(
-        dense: true,
-        title: Text(log.log),
-        subtitle: Text(log.type.name),
-        horizontalTitleGap: 16,
-        minLeadingWidth: 0,
-        leading: icon,
-      ));
+      children.add(
+        ListTile(
+          dense: true,
+          title: Text(log.log),
+          subtitle: Text(log.type.name),
+          horizontalTitleGap: 16,
+          minLeadingWidth: 0,
+          leading: icon,
+        ),
+      );
     }
 
     return Scaffold(
       appBar: AppBar(title: Text(S.current.battle_battle_log)),
       body: Column(
         children: [
-          Expanded(
-            child: ListView(
-              children: divideTiles(children),
-            ),
-          ),
+          Expanded(child: ListView(children: divideTiles(children))),
           kDefaultDivider,
           SafeArea(
             child: OverflowBar(
@@ -72,7 +70,7 @@ class _BattleLogPageState extends State<BattleLogPage> {
                 ),
               ],
             ),
-          )
+          ),
         ],
       ),
     );

@@ -38,10 +38,7 @@ class _MysticCodePageState extends State<MysticCodePage> {
     }
     final MysticCode? mysticCode = codes[_selected];
     if (codes.isEmpty) {
-      return NotFoundPage(
-        title: S.current.mystic_code,
-        url: Routes.mysticCodeI(_selected ?? 0),
-      );
+      return NotFoundPage(title: S.current.mystic_code, url: Routes.mysticCodeI(_selected ?? 0));
     }
     _level = db.curUser.mysticCodes[_selected]?.clamp(1, 10) ?? 10;
     return Scaffold(
@@ -50,23 +47,20 @@ class _MysticCodePageState extends State<MysticCodePage> {
         actions: [
           IconButton(
             onPressed: () => setState(() => db.curUser.isGirl = !db.curUser.isGirl),
-            icon: FaIcon(
-              db.curUser.isGirl ? FontAwesomeIcons.venus : FontAwesomeIcons.mars,
-            ),
-          )
+            icon: FaIcon(db.curUser.isGirl ? FontAwesomeIcons.venus : FontAwesomeIcons.mars),
+          ),
         ],
       ),
-      body: mysticCode == null
-          ? Container()
-          : Column(
-              children: [
-                buildScrollHeader(),
-                Expanded(
-                  child: SingleChildScrollView(child: buildDetails(mysticCode)),
-                ),
-                SafeArea(child: levelSlider)
-              ],
-            ),
+      body:
+          mysticCode == null
+              ? Container()
+              : Column(
+                children: [
+                  buildScrollHeader(),
+                  Expanded(child: SingleChildScrollView(child: buildDetails(mysticCode))),
+                  SafeArea(child: levelSlider),
+                ],
+              ),
     );
   }
 
@@ -84,7 +78,7 @@ class _MysticCodePageState extends State<MysticCodePage> {
             divisions: 9,
             label: _level.toString(),
           ),
-        )
+        ),
       ],
     );
   }
@@ -93,10 +87,7 @@ class _MysticCodePageState extends State<MysticCodePage> {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        IconButton(
-          onPressed: () => _scrollTo(-1),
-          icon: const Icon(Icons.keyboard_arrow_left, color: Colors.grey),
-        ),
+        IconButton(onPressed: () => _scrollTo(-1), icon: const Icon(Icons.keyboard_arrow_left, color: Colors.grey)),
         Expanded(
           child: Container(
             margin: const EdgeInsets.symmetric(vertical: 10),
@@ -104,29 +95,28 @@ class _MysticCodePageState extends State<MysticCodePage> {
             child: ListView(
               controller: _scrollController,
               scrollDirection: Axis.horizontal,
-              children: codes.entries.map((e) {
-                final code = e.value;
-                return Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 2),
-                  child: Container(
-                    decoration:
-                        BoxDecoration(border: Border.all(color: _selected == e.key ? Colors.blue : Colors.transparent)),
-                    child: db.getIconImage(
-                      code.icon,
-                      width: 50,
-                      height: 50,
-                      onTap: () => setState(() => _selected = e.key),
-                    ),
-                  ),
-                );
-              }).toList(),
+              children:
+                  codes.entries.map((e) {
+                    final code = e.value;
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 2),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(color: _selected == e.key ? Colors.blue : Colors.transparent),
+                        ),
+                        child: db.getIconImage(
+                          code.icon,
+                          width: 50,
+                          height: 50,
+                          onTap: () => setState(() => _selected = e.key),
+                        ),
+                      ),
+                    );
+                  }).toList(),
             ),
           ),
         ),
-        IconButton(
-          onPressed: () => _scrollTo(1),
-          icon: const Icon(Icons.keyboard_arrow_right, color: Colors.grey),
-        ),
+        IconButton(onPressed: () => _scrollTo(1), icon: const Icon(Icons.keyboard_arrow_right, color: Colors.grey)),
       ],
     );
   }
@@ -153,37 +143,37 @@ class _MysticCodePageState extends State<MysticCodePage> {
       selectable: true,
       children: <Widget>[
         CustomTableRow.fromTexts(texts: ['No.${mysticCode.id}']),
-        CustomTableRow(children: [
-          TableCellData(
-            child: Text(mysticCode.lName.l, style: const TextStyle(fontWeight: FontWeight.bold)),
-            isHeader: true,
-          )
-        ]),
+        CustomTableRow(
+          children: [
+            TableCellData(
+              child: Text(mysticCode.lName.l, style: const TextStyle(fontWeight: FontWeight.bold)),
+              isHeader: true,
+            ),
+          ],
+        ),
         if (!Transl.isJP)
           CustomTableRow(
             children: [
-              TableCellData(
-                child: Text(mysticCode.name, style: const TextStyle(fontWeight: FontWeight.w500)),
-              )
+              TableCellData(child: Text(mysticCode.name, style: const TextStyle(fontWeight: FontWeight.w500))),
             ],
           ),
         if (!Transl.isEN)
           CustomTableRow(
             children: [
-              TableCellData(
-                child: Text(mysticCode.lName.na, style: const TextStyle(fontWeight: FontWeight.w500)),
-              )
+              TableCellData(child: Text(mysticCode.lName.na, style: const TextStyle(fontWeight: FontWeight.w500))),
             ],
             // color: TableCellData.headerColor.withAlpha(120),
           ),
         for (final detail in {Transl.mcDetail(mysticCode.id).l, mysticCode.detail})
-          CustomTableRow(children: [
-            TableCellData(
-              text: detail,
-              alignment: Alignment.centerLeft,
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-            ),
-          ]),
+          CustomTableRow(
+            children: [
+              TableCellData(
+                text: detail,
+                alignment: Alignment.centerLeft,
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+              ),
+            ],
+          ),
         CustomTableRow(children: [TableCellData(text: S.current.skill, isHeader: true)]),
         for (final skill in mysticCode.skills) SkillDescriptor(skill: skill, level: _level),
         CustomTableRow(children: [TableCellData(text: S.current.game_experience, isHeader: true)]),
@@ -226,11 +216,13 @@ class _MysticCodePageState extends State<MysticCodePage> {
       masterFaces.addAll([assets.masterFace.female, assets.masterFace.male]);
       masterFigures.addAll([assets.masterFigure.female, assets.masterFigure.male]);
     }
-    children.addAll([
-      _oneGroup(S.current.icons, items, 80),
-      _oneGroup(S.current.card_asset_face, masterFaces, 120),
-      _oneGroup(S.current.illustration, masterFigures, 300),
-    ].whereType<Widget>());
+    children.addAll(
+      [
+        _oneGroup(S.current.icons, items, 80),
+        _oneGroup(S.current.card_asset_face, masterFaces, 120),
+        _oneGroup(S.current.illustration, masterFigures, 300),
+      ].whereType<Widget>(),
+    );
 
     return children;
   }
@@ -242,42 +234,42 @@ class _MysticCodePageState extends State<MysticCodePage> {
       expanded: expanded,
       headerBuilder: (context, _) => ListTile(title: Text(title)),
       expandElevation: 0,
-      contentBuilder: (context) => SizedBox(
-        height: height,
-        child: Align(
-          alignment: AlignmentDirectional.centerStart,
-          child: ListView.separated(
-            scrollDirection: Axis.horizontal,
-            shrinkWrap: true,
-            itemCount: urls.length,
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            itemBuilder: (context, index) => CachedImage(
-              imageUrl: urls[index],
-              onTap: () {
-                FullscreenImageViewer.show(context: context, urls: urls, initialPage: index);
-              },
-              showSaveOnLongPress: true,
+      contentBuilder:
+          (context) => SizedBox(
+            height: height,
+            child: Align(
+              alignment: AlignmentDirectional.centerStart,
+              child: ListView.separated(
+                scrollDirection: Axis.horizontal,
+                shrinkWrap: true,
+                itemCount: urls.length,
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                itemBuilder:
+                    (context, index) => CachedImage(
+                      imageUrl: urls[index],
+                      onTap: () {
+                        FullscreenImageViewer.show(context: context, urls: urls, initialPage: index);
+                      },
+                      showSaveOnLongPress: true,
+                    ),
+                separatorBuilder: (context, index) => const SizedBox(width: 8),
+              ),
             ),
-            separatorBuilder: (context, index) => const SizedBox(width: 8),
           ),
-        ),
-      ),
     );
   }
 
   List<Widget> buildObtains(MysticCode mysticCode) {
     List<Widget> children = [
-      CustomTableRow.fromTexts(texts: [S.current.filter_obtain], isHeader: true)
+      CustomTableRow.fromTexts(texts: [S.current.filter_obtain], isHeader: true),
     ];
     for (final quest in db.gameData.quests.values) {
       if (quest.giftsWithPhasePresents.any((gift) => gift.type == GiftType.equip && gift.objectId == mysticCode.id)) {
-        children.add(CustomTableRow.fromChildren(children: [
-          CondTargetValueDescriptor(
-            condType: CondType.questClear,
-            target: quest.id,
-            value: 1,
+        children.add(
+          CustomTableRow.fromChildren(
+            children: [CondTargetValueDescriptor(condType: CondType.questClear, target: quest.id, value: 1)],
           ),
-        ]));
+        );
       }
     }
     if (children.length == 1) {

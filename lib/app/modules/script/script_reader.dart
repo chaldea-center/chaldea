@@ -113,10 +113,7 @@ class _ScriptReaderPageState extends State<ScriptReaderPage> {
     return InheritSelectionArea(
       child: Scaffold(
         appBar: AppBar(
-          title: Text(
-            'Script $scriptName',
-            overflow: TextOverflow.fade,
-          ),
+          title: Text('Script $scriptName', overflow: TextOverflow.fade),
           actions: [
             SharedBuilder.appBarRegionDropdown(
               context: context,
@@ -150,29 +147,20 @@ class _ScriptReaderPageState extends State<ScriptReaderPage> {
             enabled: data.uri != null,
             child: Text(S.current.media_assets),
             onTap: () {
-              router.pushPage(WarAssetListPage(
-                title: scriptName,
-                scripts: [data.uri!.toString()],
-              ));
+              router.pushPage(WarAssetListPage(title: scriptName, scripts: [data.uri!.toString()]));
             },
           ),
           PopupMenuItem(
             child: Text(S.current.jump_to('Atlas')),
             onTap: () {
-              launch(
-                '${Atlas.appHost}${data.state.region.upper}/script/${widget.script.scriptId}',
-                external: true,
-              );
+              launch('${Atlas.appHost}${data.state.region.upper}/script/${widget.script.scriptId}', external: true);
             },
           ),
           if (db.runtimeData.enableDebugTools)
             PopupMenuItem(
               child: const Text('Source Script'),
               onTap: () {
-                launch(
-                  data.uri?.toString() ?? widget.script.script,
-                  external: true,
-                );
+                launch(data.uri?.toString() ?? widget.script.script, external: true);
               },
             ),
           PopupMenuItem(
@@ -180,12 +168,13 @@ class _ScriptReaderPageState extends State<ScriptReaderPage> {
             onTap: () {
               FilterPage.show(
                 context: context,
-                builder: (context) => ScriptReaderFilterPage(
-                  filterData: db.settings.filters.scriptReaderFilterData,
-                  onChanged: (v) {
-                    if (mounted) setState(() {});
-                  },
-                ),
+                builder:
+                    (context) => ScriptReaderFilterPage(
+                      filterData: db.settings.filters.scriptReaderFilterData,
+                      onChanged: (v) {
+                        if (mounted) setState(() {});
+                      },
+                    ),
               );
             },
           ),
@@ -199,74 +188,63 @@ class _ScriptReaderPageState extends State<ScriptReaderPage> {
     if (relatedQuests.length == 1) {
       final war = relatedQuests.first.item1;
       final quest = relatedQuests.first.item2;
-      questSpans.add(TextSpan(children: [
-        SharedBuilder.textButtonSpan(
-          context: context,
-          text: war.lShortName,
-          onTap: war.routeTo,
+      questSpans.add(
+        TextSpan(
+          children: [
+            SharedBuilder.textButtonSpan(context: context, text: war.lShortName, onTap: war.routeTo),
+            const TextSpan(text: ' - '),
+            quest == null
+                ? const TextSpan(text: ' Opening Script')
+                : SharedBuilder.textButtonSpan(context: context, text: quest.lName.l, onTap: quest.routeTo),
+          ],
         ),
-        const TextSpan(text: ' - '),
-        quest == null
-            ? const TextSpan(text: ' Opening Script')
-            : SharedBuilder.textButtonSpan(
-                context: context,
-                text: quest.lName.l,
-                onTap: quest.routeTo,
-              ),
-      ]));
+      );
     } else {
       NiceWar? lastWar;
       for (final entry in relatedQuests) {
         if (lastWar != entry.item1) {
           lastWar = entry.item1;
-          questSpans.add(SharedBuilder.textButtonSpan(
-            context: context,
-            text: lastWar.lShortName,
-            onTap: lastWar.routeTo,
-          ));
+          questSpans.add(
+            SharedBuilder.textButtonSpan(context: context, text: lastWar.lShortName, onTap: lastWar.routeTo),
+          );
         }
         final quest = entry.item2;
         if (quest == null) {
           questSpans.add(const TextSpan(text: '$kULLeading Open Script'));
         } else {
-          questSpans.add(TextSpan(
-            children: [
-              const TextSpan(text: kULLeading),
-              SharedBuilder.textButtonSpan(context: context, text: quest.lName.l, onTap: quest.routeTo),
-            ],
-            style: const TextStyle(fontSize: 12),
-          ));
+          questSpans.add(
+            TextSpan(
+              children: [
+                const TextSpan(text: kULLeading),
+                SharedBuilder.textButtonSpan(context: context, text: quest.lName.l, onTap: quest.routeTo),
+              ],
+              style: const TextStyle(fontSize: 12),
+            ),
+          );
         }
       }
     }
 
     questSpans = questSpans.divided((index) => const TextSpan(text: '\n'));
 
-    return CustomTable(children: [
-      CustomTableRow(children: [
-        TableCellData(text: 'ID', isHeader: true),
-        TableCellData(text: widget.script.scriptId, flex: 3),
-      ]),
-      CustomTableRow.fromTexts(texts: [S.current.quest], isHeader: true),
-      if (questSpans.isEmpty) CustomTableRow.fromTexts(texts: const ['-']),
-      if (questSpans.isNotEmpty)
-        CustomTableRow(children: [
-          TableCellData(
-            child: Text.rich(TextSpan(children: questSpans)),
-          )
-        ]),
-      CustomTableRow.fromChildren(children: [navButtons])
-    ]);
+    return CustomTable(
+      children: [
+        CustomTableRow(
+          children: [TableCellData(text: 'ID', isHeader: true), TableCellData(text: widget.script.scriptId, flex: 3)],
+        ),
+        CustomTableRow.fromTexts(texts: [S.current.quest], isHeader: true),
+        if (questSpans.isEmpty) CustomTableRow.fromTexts(texts: const ['-']),
+        if (questSpans.isNotEmpty)
+          CustomTableRow(children: [TableCellData(child: Text.rich(TextSpan(children: questSpans)))]),
+        CustomTableRow.fromChildren(children: [navButtons]),
+      ],
+    );
   }
 
   Widget get navButtons {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Expanded(child: Center(child: prevButton)),
-        homeButton,
-        Expanded(child: Center(child: nextButton)),
-      ],
+      children: [Expanded(child: Center(child: prevButton)), homeButton, Expanded(child: Center(child: nextButton))],
     );
   }
 
@@ -297,39 +275,47 @@ class _ScriptReaderPageState extends State<ScriptReaderPage> {
   }
 
   Widget get prevButton {
-    return Text.rich(TextSpan(children: [
-      CenterWidgetSpan(child: Icon(DirectionalIcons.keyboard_arrow_back(context), size: 20)),
-      prevScript == null
-          ? const TextSpan(text: '     -     ', style: kMonoStyle)
-          : SharedBuilder.textButtonSpan(
-              context: context,
-              text: prevScript!,
-              onTap: () {
-                router.push(
-                  url: Routes.scriptI(prevScript!),
-                  child: ScriptIdLoadingPage(scriptId: prevScript!, region: data.state.region),
-                );
-              },
-            )
-    ]));
+    return Text.rich(
+      TextSpan(
+        children: [
+          CenterWidgetSpan(child: Icon(DirectionalIcons.keyboard_arrow_back(context), size: 20)),
+          prevScript == null
+              ? const TextSpan(text: '     -     ', style: kMonoStyle)
+              : SharedBuilder.textButtonSpan(
+                context: context,
+                text: prevScript!,
+                onTap: () {
+                  router.push(
+                    url: Routes.scriptI(prevScript!),
+                    child: ScriptIdLoadingPage(scriptId: prevScript!, region: data.state.region),
+                  );
+                },
+              ),
+        ],
+      ),
+    );
   }
 
   Widget get nextButton {
-    return Text.rich(TextSpan(children: [
-      nextScript == null
-          ? const TextSpan(text: '     -     ', style: kMonoStyle)
-          : SharedBuilder.textButtonSpan(
-              context: context,
-              text: nextScript!,
-              onTap: () {
-                router.push(
-                  url: Routes.scriptI(nextScript!),
-                  child: ScriptIdLoadingPage(scriptId: nextScript!, region: data.state.region),
-                );
-              },
-            ),
-      CenterWidgetSpan(child: Icon(DirectionalIcons.keyboard_arrow_forward(context), size: 20)),
-    ]));
+    return Text.rich(
+      TextSpan(
+        children: [
+          nextScript == null
+              ? const TextSpan(text: '     -     ', style: kMonoStyle)
+              : SharedBuilder.textButtonSpan(
+                context: context,
+                text: nextScript!,
+                onTap: () {
+                  router.push(
+                    url: Routes.scriptI(nextScript!),
+                    child: ScriptIdLoadingPage(scriptId: nextScript!, region: data.state.region),
+                  );
+                },
+              ),
+          CenterWidgetSpan(child: Icon(DirectionalIcons.keyboard_arrow_forward(context), size: 20)),
+        ],
+      ),
+    );
   }
 
   Widget reader() {
@@ -348,11 +334,13 @@ class _ScriptReaderPageState extends State<ScriptReaderPage> {
         spans.addAll(part.build(context, data.state, showMore: true));
       } else if (part is ScriptDialog) {
         final prevPart = index == 0 ? null : data.components[index - 1];
-        spans.addAll(part.build(
-          context,
-          data.state,
-          hideSpeaker: prevPart is ScriptDialog && prevPart.speakerSrc == part.speakerSrc,
-        ));
+        spans.addAll(
+          part.build(
+            context,
+            data.state,
+            hideSpeaker: prevPart is ScriptDialog && prevPart.speakerSrc == part.speakerSrc,
+          ),
+        );
       } else {
         spans.addAll(part.build(context, data.state));
       }
@@ -367,11 +355,7 @@ class _ScriptReaderPageState extends State<ScriptReaderPage> {
       children: [
         info,
         const SizedBox(height: 8),
-        for (final child in children)
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: child,
-          ),
+        for (final child in children) Padding(padding: const EdgeInsets.symmetric(horizontal: 16), child: child),
         const Divider(height: 16),
         if (!_loading) navButtons,
         const SafeArea(child: SizedBox(height: 8)),

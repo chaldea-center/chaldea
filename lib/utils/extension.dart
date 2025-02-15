@@ -43,13 +43,14 @@ extension NumX on num {
     if (compact && (minVal == null || abs() >= minVal)) {
       return NumberFormat.compact(locale: 'en').format(number);
     }
-    final pattern = [
-      if (groupSeparator != null && groupSeparator.isNotEmpty && (minVal == null || abs() >= minVal))
-        '###$groupSeparator',
-      '###',
-      if (precision > 0) '.${(omit ? '#' : '0') * precision}',
-      // if (percent) '%'
-    ].join();
+    final pattern =
+        [
+          if (groupSeparator != null && groupSeparator.isNotEmpty && (minVal == null || abs() >= minVal))
+            '###$groupSeparator',
+          '###',
+          if (precision > 0) '.${(omit ? '#' : '0') * precision}',
+          // if (percent) '%'
+        ].join();
     String s = NumberFormat(pattern, 'en').format(number);
     s = s.replaceFirstMapped(RegExp(r'^(\d+)\.(\d+)$'), (match) {
       String s1 = match.group(1)!, s2 = match.group(2)!;
@@ -393,11 +394,7 @@ extension DateTimeX on DateTime {
   }
 
   String toCustomString({bool year = true, bool second = true, bool millisecond = false}) {
-    String output = [
-      if (year) this.year,
-      month.toString().padLeft(2, '0'),
-      day.toString().padLeft(2, '0'),
-    ].join('-');
+    String output = [if (year) this.year, month.toString().padLeft(2, '0'), day.toString().padLeft(2, '0')].join('-');
     output += ' ';
     output += [hour, minute, if (second) this.second].map((e) => e.toString().padLeft(2, '0')).join(":");
     if (second && millisecond) {
@@ -465,8 +462,11 @@ extension DurationX on Duration {
 /// This widget should not have any dependency of outer [context]
 extension DialogShowMethod on material.Widget {
   /// Don't use this when dialog children depend on [context] or need [State.setState]
-  Future<T?> showDialog<T>(material.BuildContext? context,
-      {bool barrierDismissible = true, bool useRootNavigator = false}) {
+  Future<T?> showDialog<T>(
+    material.BuildContext? context, {
+    bool barrierDismissible = true,
+    bool useRootNavigator = false,
+  }) {
     context ??= kAppKey.currentContext;
     if (context == null || !context.mounted) return Future.value();
     return material.showDialog<T>(
@@ -533,13 +533,15 @@ Dio DioE([BaseOptions? options]) {
   final ver = AppInfo.versionString;
   final platform = PlatformU.operatingSystem;
 
-  return Dio(options.copyWith(
-    headers: {
-      if (!kIsWeb) HttpHeaders.userAgentHeader: 'chaldea/$ver ($platform)',
-      if (!kIsWeb) HttpHeaders.refererHeader: 'https://$platform.chaldea.app',
-      ...options.headers,
-    },
-  ));
+  return Dio(
+    options.copyWith(
+      headers: {
+        if (!kIsWeb) HttpHeaders.userAgentHeader: 'chaldea/$ver ($platform)',
+        if (!kIsWeb) HttpHeaders.refererHeader: 'https://$platform.chaldea.app',
+        ...options.headers,
+      },
+    ),
+  );
 }
 
 enum HttpRequestMethod {
@@ -548,8 +550,7 @@ enum HttpRequestMethod {
   post,
   delete,
   patch,
-  head,
-  ;
+  head;
 
   String get methodName => name.toUpperCase();
 }
@@ -612,10 +613,7 @@ Future<T?> tryEasyLoading<T>(Future<T> Function() task) async {
   return null;
 }
 
-Future<T> showEasyLoading<T>(
-  Future<T> Function() computation, {
-  bool mask = false,
-}) async {
+Future<T> showEasyLoading<T>(Future<T> Function() computation, {bool mask = false}) async {
   final mounted = EasyLoading.instance.overlayEntry?.mounted == true;
   if (!mounted) return computation();
   Widget? widget;

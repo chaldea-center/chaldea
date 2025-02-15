@@ -91,10 +91,7 @@ class _SvtSkillTabState extends State<SvtSkillTab> {
           shownSkills.addAll(skillRankUps[skill.id] ?? []);
         }
       }
-      children.add(_buildSkill(
-        shownSkills,
-        status.favorite ? status.skills.getOrNull(skills.first.svt.num - 1) : -1,
-      ));
+      children.add(_buildSkill(shownSkills, status.favorite ? status.skills.getOrNull(skills.first.svt.num - 1) : -1));
     }
 
     List<NiceSkill> extraPassiveFixed = [], extraPassiveEvent = [], extraPassiveMain = [];
@@ -114,55 +111,43 @@ class _SvtSkillTabState extends State<SvtSkillTab> {
 
     children.add(SHeader(S.current.passive_skill));
     for (final skill in [...svt.classPassive, ...extraPassiveFixed]) {
-      children.add(SkillDescriptor(
-        skill: skill,
-        showEnemy: !svt.isUserSvt,
-      ));
+      children.add(SkillDescriptor(skill: skill, showEnemy: !svt.isUserSvt));
     }
     if (svt.appendPassive.isNotEmpty) children.add(SHeader(S.current.append_skill));
     for (final appendSkill in svt.appendPassive) {
-      children.add(SkillDescriptor(
-        skill: appendSkill.skill,
-        showEnemy: !svt.isUserSvt,
-        level: status.favorite ? status.appendSkills.getOrNull(appendSkill.num - 100) : -1,
-      ));
+      children.add(
+        SkillDescriptor(
+          skill: appendSkill.skill,
+          showEnemy: !svt.isUserSvt,
+          level: status.favorite ? status.appendSkills.getOrNull(appendSkill.num - 100) : -1,
+        ),
+      );
     }
 
     for (final (index, passives) in [extraPassiveEvent, extraPassiveMain].indexed) {
       if (passives.isEmpty) continue;
-      children.add(SimpleAccordion(
-        headerBuilder: (context, expanded) {
-          return SHeader('${passives.length} ${S.current.extra_passive}${index == 1 ? " *" : ""}');
-        },
-        contentBuilder: (context) {
-          return Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              for (final skill in passives)
-                SkillDescriptor(
-                  skill: skill,
-                  showEnemy: !svt.isUserSvt,
-                )
-            ],
-          );
-        },
-      ));
+      children.add(
+        SimpleAccordion(
+          headerBuilder: (context, expanded) {
+            return SHeader('${passives.length} ${S.current.extra_passive}${index == 1 ? " *" : ""}');
+          },
+          contentBuilder: (context) {
+            return Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [for (final skill in passives) SkillDescriptor(skill: skill, showEnemy: !svt.isUserSvt)],
+            );
+          },
+        ),
+      );
     }
 
     children.add(const SafeArea(child: SizedBox()));
-    return ListView.builder(
-      itemCount: children.length,
-      itemBuilder: (context, index) => children[index],
-    );
+    return ListView.builder(itemCount: children.length, itemBuilder: (context, index) => children[index]);
   }
 
   Widget _buildSkill(List<NiceSkill> skills, int? level) {
     if (skills.length == 1 && skills.first.svt.condQuestId <= 0) {
-      return SkillDescriptor(
-        skill: skills.first,
-        level: level,
-        showEnemy: !svt.isUserSvt,
-      );
+      return SkillDescriptor(skill: skills.first, level: level, showEnemy: !svt.isUserSvt);
     }
     NiceSkill initSkill = svt.getDefaultSkill(skills, db.curUser.region) ?? skills.last;
     return ValueStatefulBuilder<NiceSkill>(
@@ -180,10 +165,7 @@ class _SvtSkillTabState extends State<SvtSkillTab> {
                 optionBuilder: (v) {
                   String name = Transl.skillNames(v.name).l;
                   if (name.trim().isEmpty) name = '???';
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
-                    child: Text(name),
-                  );
+                  return Padding(padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6), child: Text(name));
                 },
                 values: FilterRadioData.nonnull(skill),
                 onFilterChanged: (v, _) {
@@ -194,15 +176,13 @@ class _SvtSkillTabState extends State<SvtSkillTab> {
             if (skill.svt.condQuestId > 0 || SvtSkillTab.hasUnusualLimitCond(skill))
               IconButton(
                 padding: const EdgeInsets.all(2),
-                constraints: const BoxConstraints(
-                  minWidth: 48,
-                  minHeight: 24,
-                ),
-                onPressed: () => showDialog(
-                  context: context,
-                  useRootNavigator: false,
-                  builder: (_) => SvtSkillTab.releaseCondition(skill),
-                ),
+                constraints: const BoxConstraints(minWidth: 48, minHeight: 24),
+                onPressed:
+                    () => showDialog(
+                      context: context,
+                      useRootNavigator: false,
+                      builder: (_) => SvtSkillTab.releaseCondition(skill),
+                    ),
                 icon: const Icon(Icons.info_outline),
                 color: Theme.of(context).hintColor,
                 tooltip: S.current.open_condition,
@@ -211,10 +191,7 @@ class _SvtSkillTabState extends State<SvtSkillTab> {
         );
         return Column(
           mainAxisSize: MainAxisSize.min,
-          children: [
-            toggle,
-            SkillDescriptor(skill: skill, showEnemy: !svt.isUserSvt, level: level),
-          ],
+          children: [toggle, SkillDescriptor(skill: skill, showEnemy: !svt.isUserSvt, level: level)],
         );
       },
     );

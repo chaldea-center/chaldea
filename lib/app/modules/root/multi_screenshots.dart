@@ -23,12 +23,7 @@ class ScreenSpec {
   final int height;
   final double deviceRatio;
 
-  const ScreenSpec({
-    required this.name,
-    required this.width,
-    required this.height,
-    required this.deviceRatio,
-  });
+  const ScreenSpec({required this.name, required this.width, required this.height, required this.deviceRatio});
 
   static ScreenSpec get iphone6i7 =>
       const ScreenSpec(name: "iphone_6.7", width: 1290, height: 2796, deviceRatio: 3); // optional
@@ -39,13 +34,7 @@ class ScreenSpec {
   static ScreenSpec get mac => const ScreenSpec(name: "mac", width: 2569, height: 1600, deviceRatio: 2);
   // static const ipad_2th_12i9 = ScreenSpec(name: "ipad_2th_12.9", width: 2048, height: 2732);
 
-  static List<ScreenSpec> get allDevices => [
-        iphone6i7,
-        iphone6i5,
-        iphone5i5,
-        ipad_6th_12i9,
-        mac,
-      ];
+  static List<ScreenSpec> get allDevices => [iphone6i7, iphone6i5, iphone5i5, ipad_6th_12i9, mac];
 }
 
 class MultiScreenshots extends StatefulWidget {
@@ -67,8 +56,9 @@ class _MultiScreenshotsState extends State<MultiScreenshots> {
 
   ScreenshotController getController(int index) {
     if (index >= _screenshotControllers.length) {
-      _screenshotControllers
-          .addAll(List.generate((index + 1) - _screenshotControllers.length, (index) => ScreenshotController()));
+      _screenshotControllers.addAll(
+        List.generate((index + 1) - _screenshotControllers.length, (index) => ScreenshotController()),
+      );
     }
     return _screenshotControllers[index];
   }
@@ -82,46 +72,44 @@ class _MultiScreenshotsState extends State<MultiScreenshots> {
         centerTitle: true,
         title: const Text(kAppName),
         actions: [
-          IconButton(
-            onPressed: takeScreenshot,
-            icon: const Icon(Icons.screenshot_monitor),
-          ),
+          IconButton(onPressed: takeScreenshot, icon: const Icon(Icons.screenshot_monitor)),
           PopupMenuButton<dynamic>(
-            itemBuilder: (context) => [
-              PopupMenuItem(
-                child: const Text("Show/Hide Title"),
-                onTap: () {
-                  setState(() {
-                    showTitle = !showTitle;
-                  });
-                },
-              ),
-              const PopupMenuDivider(),
-              for (final count in <int>[2, 3, 4, 5, 6, 8])
-                PopupMenuItem(
-                  height: 30,
-                  child: Text('Cross count $count'),
-                  onTap: () {
-                    setState(() {
-                      crossCount = count;
-                    });
-                  },
-                ),
-              const PopupMenuDivider(),
-              for (final spec in ScreenSpec.allDevices)
-                PopupMenuItem(
-                  child: Text(
-                    spec.name,
-                    style: spec == curSpec ? TextStyle(color: Theme.of(context).colorScheme.primary) : null,
+            itemBuilder:
+                (context) => [
+                  PopupMenuItem(
+                    child: const Text("Show/Hide Title"),
+                    onTap: () {
+                      setState(() {
+                        showTitle = !showTitle;
+                      });
+                    },
                   ),
-                  onTap: () {
-                    setState(() {
-                      curSpec = spec;
-                    });
-                  },
-                ),
-            ],
-          )
+                  const PopupMenuDivider(),
+                  for (final count in <int>[2, 3, 4, 5, 6, 8])
+                    PopupMenuItem(
+                      height: 30,
+                      child: Text('Cross count $count'),
+                      onTap: () {
+                        setState(() {
+                          crossCount = count;
+                        });
+                      },
+                    ),
+                  const PopupMenuDivider(),
+                  for (final spec in ScreenSpec.allDevices)
+                    PopupMenuItem(
+                      child: Text(
+                        spec.name,
+                        style: spec == curSpec ? TextStyle(color: Theme.of(context).colorScheme.primary) : null,
+                      ),
+                      onTap: () {
+                        setState(() {
+                          curSpec = spec;
+                        });
+                      },
+                    ),
+                ],
+          ),
         ],
       ),
       body: SingleChildScrollView(
@@ -153,28 +141,19 @@ class _MultiScreenshotsState extends State<MultiScreenshots> {
   Widget buildOne(int index, AppRouterDelegate childDelegate) {
     return DecoratedBox(
       key: ObjectKey(childDelegate),
-      decoration: BoxDecoration(boxShadow: [
-        if (index == root.appState.activeIndex)
-          BoxShadow(
-            offset: const Offset(0, 0),
-            spreadRadius: 4,
-            blurRadius: 8,
-            color: Colors.blue.withAlpha(204),
-          ),
-      ]),
+      decoration: BoxDecoration(
+        boxShadow: [
+          if (index == root.appState.activeIndex)
+            BoxShadow(offset: const Offset(0, 0), spreadRadius: 4, blurRadius: 8, color: Colors.blue.withAlpha(204)),
+        ],
+      ),
       child: Screenshot(
         controller: getController(index),
         child: MediaQuery(
-          data: MediaQuery.of(context).copyWith(
-            size: Size(curSpec.width / curSpec.deviceRatio, curSpec.height / curSpec.deviceRatio),
-          ),
-          child: WindowThumb(
-            root: root,
-            index: index,
-            absorbPointer: false,
-            gesture: false,
-            showTitle: showTitle,
-          ),
+          data: MediaQuery.of(
+            context,
+          ).copyWith(size: Size(curSpec.width / curSpec.deviceRatio, curSpec.height / curSpec.deviceRatio)),
+          child: WindowThumb(root: root, index: index, absorbPointer: false, gesture: false, showTitle: showTitle),
         ),
       ),
     );
@@ -188,8 +167,9 @@ class _MultiScreenshotsState extends State<MultiScreenshots> {
         return;
       }
       EasyLoading.show();
-      final folder =
-          Directory(joinPaths(db.paths.assetsDir, 'screenshots', [spec.name, Language.current.code].join('_')));
+      final folder = Directory(
+        joinPaths(db.paths.assetsDir, 'screenshots', [spec.name, Language.current.code].join('_')),
+      );
       folder.createSync(recursive: true);
       final uiImage = await _screenshotControllers[0].captureAsUiImage(pixelRatio: 1);
       final ratio = spec.width / uiImage!.width;

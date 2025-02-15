@@ -15,11 +15,7 @@ class AprilFoolSvtFilterData with FilterDataMixin {
 }
 
 class AprilFoolSvtFilterPage extends FilterPage<AprilFoolSvtFilterData> {
-  const AprilFoolSvtFilterPage({
-    super.key,
-    required super.filterData,
-    super.onChanged,
-  });
+  const AprilFoolSvtFilterPage({super.key, required super.filterData, super.onChanged});
 
   @override
   _AprilFoolSvtFilterPageState createState() => _AprilFoolSvtFilterPageState();
@@ -30,31 +26,38 @@ class _AprilFoolSvtFilterPageState extends FilterPageState<AprilFoolSvtFilterDat
   Widget build(BuildContext context) {
     return buildAdaptive(
       title: Text(S.current.filter, textScaler: const TextScaler.linear(0.8)),
-      actions: getDefaultActions(onTapReset: () {
-        filterData.reset();
-        update();
-      }),
-      content: getListViewBody(children: [
-        getGroup(header: S.current.filter_sort, children: [
-          FilterGroup.display(
-            useGrid: filterData.useGrid,
-            onChanged: (v) {
-              if (v != null) filterData.useGrid = v;
+      actions: getDefaultActions(
+        onTapReset: () {
+          filterData.reset();
+          update();
+        },
+      ),
+      content: getListViewBody(
+        children: [
+          getGroup(
+            header: S.current.filter_sort,
+            children: [
+              FilterGroup.display(
+                useGrid: filterData.useGrid,
+                onChanged: (v) {
+                  if (v != null) filterData.useGrid = v;
+                  update();
+                },
+              ),
+            ],
+          ),
+          buildClassFilter(filterData.classType, showUnknown: true, onChanged: update),
+          FilterGroup<int?>(
+            title: Text(S.current.rarity),
+            options: const [1, 2, 3, 4, 5, null],
+            values: filterData.rarity,
+            optionBuilder: (v) => Text(v == null ? S.current.unknown : '$v$kStarChar'),
+            onFilterChanged: (value, _) {
               update();
             },
           ),
-        ]),
-        buildClassFilter(filterData.classType, showUnknown: true, onChanged: update),
-        FilterGroup<int?>(
-          title: Text(S.current.rarity),
-          options: const [1, 2, 3, 4, 5, null],
-          values: filterData.rarity,
-          optionBuilder: (v) => Text(v == null ? S.current.unknown : '$v$kStarChar'),
-          onFilterChanged: (value, _) {
-            update();
-          },
-        ),
-      ]),
+        ],
+      ),
     );
   }
 }

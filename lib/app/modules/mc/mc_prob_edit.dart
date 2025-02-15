@@ -73,28 +73,35 @@ class _MCGachaProbEditPageState extends State<MCGachaProbEditPage> {
         padding: const EdgeInsets.symmetric(vertical: 8),
         children: [
           GachaBanner(imageId: gacha.imageId, region: widget.region),
-          CustomTable(children: [
-            for (final name in {gacha.lName, gacha.name})
+          CustomTable(
+            children: [
+              for (final name in {gacha.lName, gacha.name})
+                CustomTableRow.fromTexts(
+                  texts: [name],
+                  defaults: TableCellData(
+                    textAlign: TextAlign.center,
+                    color: TableCellData.resolveHeaderColor(context),
+                  ),
+                ),
+              CustomTableRow.fromTexts(texts: ['No.${gacha.id}', gacha.type.shownName]),
               CustomTableRow.fromTexts(
-                texts: [name],
-                defaults: TableCellData(textAlign: TextAlign.center, color: TableCellData.resolveHeaderColor(context)),
+                texts: [
+                  [gacha.openedAt, gacha.closedAt].map((e) => e.sec2date().toStringShort(omitSec: true)).join(' ~ '),
+                ],
               ),
-            CustomTableRow.fromTexts(texts: ['No.${gacha.id}', gacha.type.shownName]),
-            CustomTableRow.fromTexts(texts: [
-              [gacha.openedAt, gacha.closedAt].map((e) => e.sec2date().toStringShort(omitSec: true)).join(' ~ ')
-            ]),
-            // if (gacha.featuredSvtIds.isNotEmpty)
-            //   CustomTableRow.fromChildren(children: [
-            //     Wrap(
-            //       spacing: 4,
-            //       runSpacing: 4,
-            //       children: [
-            //         for (final svtId in gacha.featuredSvtIds)
-            //           db.gameData.servantsById[svtId]?.iconBuilder(context: context, width: 48) ?? Text('No.$svtId'),
-            //       ],
-            //     )
-            //   ]),
-          ]),
+              // if (gacha.featuredSvtIds.isNotEmpty)
+              //   CustomTableRow.fromChildren(children: [
+              //     Wrap(
+              //       spacing: 4,
+              //       runSpacing: 4,
+              //       children: [
+              //         for (final svtId in gacha.featuredSvtIds)
+              //           db.gameData.servantsById[svtId]?.iconBuilder(context: context, width: 48) ?? Text('No.$svtId'),
+              //       ],
+              //     )
+              //   ]),
+            ],
+          ),
           for (final adjust in gacha.storyAdjusts) ...[
             DividerWithTitle(title: "Case ${adjust.idx}"),
             CondTargetValueDescriptor(
@@ -120,32 +127,34 @@ class _MCGachaProbEditPageState extends State<MCGachaProbEditPage> {
                   child: Text(S.current.open_in_browser),
                 ),
               FilledButton(
-                onPressed: result.isInvalid
-                    ? null
-                    : () async {
-                        final summon = result.toSummon();
-                        if (gacha.isLuckyBag) {
-                          final type = await showDialog<SummonType>(
-                            context: context,
-                            useRootNavigator: false,
-                            builder: (context) => SimpleDialog(
-                              title: Text(S.current.lucky_bag),
-                              children: [
-                                for (final type in [SummonType.gssr, SummonType.gssrsr])
-                                  SimpleDialogOption(
-                                    child: Text(Transl.enums(type, (enums) => enums.summonType).l),
-                                    onPressed: () {
-                                      Navigator.pop(context, type);
-                                    },
-                                  )
-                              ],
-                            ),
-                          );
-                          if (type == null) return;
-                          summon.type = type;
-                        }
-                        router.push(child: SummonSimulatorPage(summon: summon));
-                      },
+                onPressed:
+                    result.isInvalid
+                        ? null
+                        : () async {
+                          final summon = result.toSummon();
+                          if (gacha.isLuckyBag) {
+                            final type = await showDialog<SummonType>(
+                              context: context,
+                              useRootNavigator: false,
+                              builder:
+                                  (context) => SimpleDialog(
+                                    title: Text(S.current.lucky_bag),
+                                    children: [
+                                      for (final type in [SummonType.gssr, SummonType.gssrsr])
+                                        SimpleDialogOption(
+                                          child: Text(Transl.enums(type, (enums) => enums.summonType).l),
+                                          onPressed: () {
+                                            Navigator.pop(context, type);
+                                          },
+                                        ),
+                                    ],
+                                  ),
+                            );
+                            if (type == null) return;
+                            summon.type = type;
+                          }
+                          router.push(child: SummonSimulatorPage(summon: summon));
+                        },
                 child: Text(S.current.simulator),
               ),
             ],
@@ -162,13 +171,14 @@ class _MCGachaProbEditPageState extends State<MCGachaProbEditPage> {
               dense: true,
               value: showIcon,
               title: Text(S.current.icons),
-              onChanged: result.isInvalid
-                  ? null
-                  : (v) {
-                      setState(() {
-                        showIcon = v;
-                      });
-                    },
+              onChanged:
+                  result.isInvalid
+                      ? null
+                      : (v) {
+                        setState(() {
+                          showIcon = v;
+                        });
+                      },
             ),
             buildTable(),
             const Padding(
@@ -183,23 +193,18 @@ class _MCGachaProbEditPageState extends State<MCGachaProbEditPage> {
             ),
             Center(
               child: FilledButton(
-                onPressed: result.isInvalid
-                    ? null
-                    : () {
-                        copyToClipboard(result.toOutput(), toast: true);
-                      },
+                onPressed:
+                    result.isInvalid
+                        ? null
+                        : () {
+                          copyToClipboard(result.toOutput(), toast: true);
+                        },
                 child: Text('${S.current.copy} Mooncell wikitext'),
               ),
             ),
           ],
           const SizedBox(height: 32),
-          if (!result.isInvalid && AppInfo.isDebugOn)
-            Card(
-              child: Text(
-                result.getShownHtml(),
-                style: kMonoStyle,
-              ),
-            ),
+          if (!result.isInvalid && AppInfo.isDebugOn) Card(child: Text(result.getShownHtml(), style: kMonoStyle)),
         ],
       ),
     );
@@ -219,18 +224,20 @@ class _MCGachaProbEditPageState extends State<MCGachaProbEditPage> {
       final totalProb = result.getTotalProb();
       final guessTotalProb = result.guessTotalProb();
       children.add(Text('${S.current.total}: $guessTotalProb% ($totalProb%)'));
-      children.add(SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: Table(
-          defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-          defaultColumnWidth: const IntrinsicColumnWidth(),
-          border: TableBorder.all(color: Theme.of(context).dividerColor),
-          children: [
-            TableRow(children: ['type', 'star', 'weight', 'display', 'ids'].map(cell).toList()),
-            for (final group in result.groups) buildRow(group),
-          ],
+      children.add(
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Table(
+            defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+            defaultColumnWidth: const IntrinsicColumnWidth(),
+            border: TableBorder.all(color: Theme.of(context).dividerColor),
+            children: [
+              TableRow(children: ['type', 'star', 'weight', 'display', 'ids'].map(cell).toList()),
+              for (final group in result.groups) buildRow(group),
+            ],
+          ),
         ),
-      ));
+      );
     }
 
     return SingleChildScrollView(
@@ -255,12 +262,17 @@ class _MCGachaProbEditPageState extends State<MCGachaProbEditPage> {
     List<Widget> children = texts.map(cell).toList();
     children[2] = Padding(
       padding: const EdgeInsets.symmetric(horizontal: 2),
-      child: Text.rich(TextSpan(text: texts[2], children: [
+      child: Text.rich(
         TextSpan(
-          text: ' (${group.indivProb}×${group.cards.length}=${group.getTotalProb().toStringAsFixed(2)}%)',
-          style: Theme.of(context).textTheme.bodySmall,
-        )
-      ])),
+          text: texts[2],
+          children: [
+            TextSpan(
+              text: ' (${group.indivProb}×${group.cards.length}=${group.getTotalProb().toStringAsFixed(2)}%)',
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
+          ],
+        ),
+      ),
     );
 
     Widget svtCell;
@@ -269,19 +281,15 @@ class _MCGachaProbEditPageState extends State<MCGachaProbEditPage> {
     } else {
       svtCell = Padding(
         padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
-        child: Text.rich(TextSpan(
-          // text: '(${group.cards.length}) ',
-          children: [
-            for (final card in group.cards)
-              CenterWidgetSpan(
-                child: GameCardMixin.anyCardItemBuilder(
-                  context: context,
-                  width: 28,
-                  id: card.id,
-                ),
-              ),
-          ],
-        )),
+        child: Text.rich(
+          TextSpan(
+            // text: '(${group.cards.length}) ',
+            children: [
+              for (final card in group.cards)
+                CenterWidgetSpan(child: GameCardMixin.anyCardItemBuilder(context: context, width: 28, id: card.id)),
+            ],
+          ),
+        ),
       );
     }
     children.add(ConstrainedBox(constraints: BoxConstraints(maxWidth: 500), child: svtCell));

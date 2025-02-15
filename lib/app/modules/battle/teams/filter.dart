@@ -15,8 +15,7 @@ enum TeamFilterMiscType {
   noSameSvt,
   noDoubleCastoria,
   noDoubleKoyan,
-  noDoubleOberon,
-  ;
+  noDoubleOberon;
 
   String get shownName {
     return switch (this) {
@@ -53,17 +52,17 @@ class TeamFilterData with FilterDataMixin {
 
   @override
   List<FilterGroupData> get groups => [
-        attackerTdCardType,
-        blockSvts,
-        useSvts,
-        blockCEs,
-        normalAttackCount,
-        criticalAttackCount,
-        tdAttackCount,
-        mysticCode,
-        miscOptions,
-        eventWarId,
-      ];
+    attackerTdCardType,
+    blockSvts,
+    useSvts,
+    blockCEs,
+    normalAttackCount,
+    criticalAttackCount,
+    tdAttackCount,
+    mysticCode,
+    miscOptions,
+    eventWarId,
+  ];
 
   @override
   void reset() {
@@ -92,8 +91,9 @@ class TeamFilterData with FilterDataMixin {
     }
     if (filterData.useSvts.options.length == 1 && filterData.useSvtTdLv > 0) {
       final svtId = filterData.useSvts.options.single;
-      if (!data.formation.allSvts
-          .any((e) => e != null && e.svtId == svtId && (e.tdId ?? 0) != 0 && e.tdLv <= filterData.useSvtTdLv)) {
+      if (!data.formation.allSvts.any(
+        (e) => e != null && e.svtId == svtId && (e.tdId ?? 0) != 0 && e.tdLv <= filterData.useSvtTdLv,
+      )) {
         return false;
       }
     }
@@ -226,285 +226,304 @@ class _TeamFilterPageState extends FilterPageState<TeamFilterData, TeamFilterPag
   Widget build(BuildContext context) {
     final availableSvts =
         {...widget.availableSvts, ...filterData.useSvts.options, ...filterData.blockSvts.options}.toList();
-    availableSvts.sort((a, b) => SvtFilterData.compare(db.gameData.servantsById[a], db.gameData.servantsById[b],
-        keys: [SvtCompare.rarity, SvtCompare.className, SvtCompare.no], reversed: [true, false, true]));
+    availableSvts.sort(
+      (a, b) => SvtFilterData.compare(
+        db.gameData.servantsById[a],
+        db.gameData.servantsById[b],
+        keys: [SvtCompare.rarity, SvtCompare.className, SvtCompare.no],
+        reversed: [true, false, true],
+      ),
+    );
     final availableCEs = {...widget.availableCEs, ...filterData.blockCEs.options}.toList();
-    availableCEs.sort((a, b) => CraftFilterData.compare(
-        db.gameData.craftEssencesById[a], db.gameData.craftEssencesById[b],
-        keys: [CraftCompare.rarity, CraftCompare.no], reversed: [true, true]));
+    availableCEs.sort(
+      (a, b) => CraftFilterData.compare(
+        db.gameData.craftEssencesById[a],
+        db.gameData.craftEssencesById[b],
+        keys: [CraftCompare.rarity, CraftCompare.no],
+        reversed: [true, true],
+      ),
+    );
     final availableMCs = {0, ...widget.availableMCs, ...filterData.mysticCode.options}.toList()..sort();
-    final availableEventWarIds = {...widget.availableEventWarIds, ...filterData.eventWarId.options}.toList()
-      ..sortByList((e) => [db.gameData.events.containsKey(e) ? 1 : 0, -(db.gameData.events[e]?.startedAt ?? -e)]);
+    final availableEventWarIds =
+        {...widget.availableEventWarIds, ...filterData.eventWarId.options}.toList()
+          ..sortByList((e) => [db.gameData.events.containsKey(e) ? 1 : 0, -(db.gameData.events[e]?.startedAt ?? -e)]);
 
     return buildAdaptive(
       title: Text(S.current.filter, textScaler: const TextScaler.linear(0.8)),
-      actions: getDefaultActions(onTapReset: () {
-        filterData.reset();
-        update();
-      }),
-      content: getListViewBody(restorationId: 'team_list_filter', children: [
-        if (filterData.hasFavorite)
-          FilterGroup<bool>(
-            options: const [true],
-            values: FilterRadioData(filterData.favorite),
-            optionBuilder: (v) => Text(S.current.favorite),
+      actions: getDefaultActions(
+        onTapReset: () {
+          filterData.reset();
+          update();
+        },
+      ),
+      content: getListViewBody(
+        restorationId: 'team_list_filter',
+        children: [
+          if (filterData.hasFavorite)
+            FilterGroup<bool>(
+              options: const [true],
+              values: FilterRadioData(filterData.favorite),
+              optionBuilder: (v) => Text(S.current.favorite),
+              onFilterChanged: (value, _) {
+                filterData.favorite = !filterData.favorite;
+                update();
+              },
+            ),
+          if (availableEventWarIds.length > 1)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: DropdownButton<int?>(
+                isExpanded: true,
+                value: filterData.eventWarId.radioValue,
+                items: [
+                  DropdownMenuItem(
+                    value: null,
+                    child: Text('${S.current.war}: ${S.current.general_any}', style: const TextStyle(fontSize: 14)),
+                  ),
+                  for (final id in availableEventWarIds)
+                    DropdownMenuItem(
+                      value: id,
+                      child: Text(
+                        (db.gameData.events[id]?.lName.l ?? db.gameData.wars[id]?.lName.l ?? id.toString()).setMaxLines(
+                          1,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(fontSize: 14),
+                      ),
+                    ),
+                ],
+                onChanged: (v) {
+                  if (v == null) {
+                    filterData.eventWarId.reset();
+                  } else {
+                    filterData.eventWarId.set(v);
+                  }
+                  update();
+                },
+              ),
+            ),
+          FilterGroup<CardType>(
+            title: Text(S.current.noble_phantasm, style: textStyle),
+            options: const [CardType.arts, CardType.buster, CardType.quick],
+            values: filterData.attackerTdCardType,
+            optionBuilder: (v) => Text(v.name.toTitle()),
             onFilterChanged: (value, _) {
-              filterData.favorite = !filterData.favorite;
               update();
             },
           ),
-        if (availableEventWarIds.length > 1)
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: DropdownButton<int?>(
-              isExpanded: true,
-              value: filterData.eventWarId.radioValue,
-              items: [
-                DropdownMenuItem(
-                  value: null,
-                  child: Text(
-                    '${S.current.war}: ${S.current.general_any}',
-                    style: const TextStyle(fontSize: 14),
-                  ),
-                ),
-                for (final id in availableEventWarIds)
-                  DropdownMenuItem(
-                    value: id,
-                    child: Text(
-                      (db.gameData.events[id]?.lName.l ?? db.gameData.wars[id]?.lName.l ?? id.toString())
-                          .setMaxLines(1),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(fontSize: 14),
-                    ),
-                  ),
-              ],
-              onChanged: (v) {
-                if (v == null) {
-                  filterData.eventWarId.reset();
-                } else {
-                  filterData.eventWarId.set(v);
-                }
-                update();
-              },
-            ),
+          FilterGroup<TeamFilterMiscType>(
+            title: Text("Misc", style: textStyle),
+            options: TeamFilterMiscType.values,
+            values: filterData.miscOptions,
+            optionBuilder: (v) => Text(v.shownName),
+            onFilterChanged: (value, _) {
+              update();
+            },
           ),
-        FilterGroup<CardType>(
-          title: Text(S.current.noble_phantasm, style: textStyle),
-          options: const [CardType.arts, CardType.buster, CardType.quick],
-          values: filterData.attackerTdCardType,
-          optionBuilder: (v) => Text(v.name.toTitle()),
-          onFilterChanged: (value, _) {
-            update();
-          },
-        ),
-        FilterGroup<TeamFilterMiscType>(
-          title: Text("Misc", style: textStyle),
-          options: TeamFilterMiscType.values,
-          values: filterData.miscOptions,
-          optionBuilder: (v) => Text(v.shownName),
-          onFilterChanged: (value, _) {
-            update();
-          },
-        ),
-        getGroup(
-          header: S.current.battle_command_card,
-          children: [
-            DropdownButton(
-              isDense: true,
-              value: filterData.normalAttackCount.radioValue,
-              items: [
-                for (int count in [-1, 0, 1, 2, 3, 4, 5])
-                  DropdownMenuItem(
-                    value: count,
-                    child: Text(
-                      "${S.current.battle_command_card} ${count == -1 ? S.current.general_any : "≤$count"}",
-                      textScaler: const TextScaler.linear(0.8),
+          getGroup(
+            header: S.current.battle_command_card,
+            children: [
+              DropdownButton(
+                isDense: true,
+                value: filterData.normalAttackCount.radioValue,
+                items: [
+                  for (int count in [-1, 0, 1, 2, 3, 4, 5])
+                    DropdownMenuItem(
+                      value: count,
+                      child: Text(
+                        "${S.current.battle_command_card} ${count == -1 ? S.current.general_any : "≤$count"}",
+                        textScaler: const TextScaler.linear(0.8),
+                      ),
                     ),
-                  ),
-              ],
-              onChanged: (v) {
-                if (v != null) {
-                  filterData.normalAttackCount.set(v);
-                }
-                update();
-              },
-            ),
-            DropdownButton(
-              isDense: true,
-              value: filterData.criticalAttackCount.radioValue,
-              items: [
-                for (int count in [-1, 0, 1, 2, 3, 4, 5])
-                  DropdownMenuItem(
-                    value: count,
-                    child: Text(
-                      "${S.current.critical_attack} ${count == -1 ? S.current.general_any : "≤$count"}",
-                      textScaler: const TextScaler.linear(0.8),
-                    ),
-                  ),
-              ],
-              onChanged: (v) {
-                if (v != null) {
-                  filterData.criticalAttackCount.set(v);
-                }
-                update();
-              },
-            ),
-            DropdownButton(
-              isDense: true,
-              value: filterData.tdAttackCount.radioValue,
-              items: [
-                for (int count in [-1, 2, 3, 4, 5])
-                  DropdownMenuItem(
-                    value: count,
-                    child: Text(
-                      "${S.current.np_short} ${count == -1 ? S.current.general_any : "≤$count"}",
-                      textScaler: const TextScaler.linear(0.8),
-                    ),
-                  ),
-              ],
-              onChanged: (v) {
-                if (v != null) {
-                  filterData.tdAttackCount.set(v);
-                }
-                update();
-              },
-            ),
-          ],
-        ),
-        FilterGroup<int>(
-          title: Text(S.current.mystic_code),
-          showInvert: true,
-          options: availableMCs,
-          values: filterData.mysticCode,
-          constraints: const BoxConstraints(maxHeight: 50),
-          optionBuilder: (v) => cardIcon(v, db.gameData.mysticCodes[v]),
-          shrinkWrap: true,
-          onFilterChanged: (value, _) {
-            update();
-          },
-        ),
-        FilterGroup<int>(
-          title: Text(S.current.team_block_servant),
-          options: availableSvts,
-          values: filterData.blockSvts,
-          constraints: const BoxConstraints(maxHeight: 50),
-          optionBuilder: (v) => cardIcon(v, db.gameData.servantsById[v]),
-          shrinkWrap: true,
-          onFilterChanged: (value, _) {
-            update();
-          },
-        ),
-        FilterGroup<int>(
-          title: Text(S.current.team_use_servant),
-          options: availableSvts,
-          values: filterData.useSvts,
-          optionBuilder: (v) => cardIcon(v, db.gameData.servantsById[v]),
-          shrinkWrap: true,
-          constraints: const BoxConstraints(maxHeight: 50),
-          onFilterChanged: (value, _) {
-            update();
-          },
-        ),
-        ListTile(
-          dense: true,
-          enabled: filterData.useSvts.options.length == 1,
-          title: Text(S.current.noble_phantasm_level),
-          subtitle: Text.rich(TextSpan(text: '${S.current.team_use_servant}: ', children: [
-            filterData.useSvts.options.length == 1
-                ? CenterWidgetSpan(
-                    child: GameCardMixin.anyCardItemBuilder(
-                        context: context, id: filterData.useSvts.options.single, width: 18))
-                : const TextSpan(text: "Select 1 servant"),
-          ])),
-          trailing: DropdownButton<int>(
-            isDense: true,
-            value: filterData.useSvtTdLv,
-            items: [
-              for (final tdLv in range(5))
-                DropdownMenuItem(value: tdLv, child: Text(tdLv == 0 ? S.current.general_any : '≤Lv$tdLv'))
-            ],
-            onChanged: filterData.useSvts.options.length == 1
-                ? (v) {
-                    if (v != null) filterData.useSvtTdLv = v;
-                    update();
+                ],
+                onChanged: (v) {
+                  if (v != null) {
+                    filterData.normalAttackCount.set(v);
                   }
-                : null,
+                  update();
+                },
+              ),
+              DropdownButton(
+                isDense: true,
+                value: filterData.criticalAttackCount.radioValue,
+                items: [
+                  for (int count in [-1, 0, 1, 2, 3, 4, 5])
+                    DropdownMenuItem(
+                      value: count,
+                      child: Text(
+                        "${S.current.critical_attack} ${count == -1 ? S.current.general_any : "≤$count"}",
+                        textScaler: const TextScaler.linear(0.8),
+                      ),
+                    ),
+                ],
+                onChanged: (v) {
+                  if (v != null) {
+                    filterData.criticalAttackCount.set(v);
+                  }
+                  update();
+                },
+              ),
+              DropdownButton(
+                isDense: true,
+                value: filterData.tdAttackCount.radioValue,
+                items: [
+                  for (int count in [-1, 2, 3, 4, 5])
+                    DropdownMenuItem(
+                      value: count,
+                      child: Text(
+                        "${S.current.np_short} ${count == -1 ? S.current.general_any : "≤$count"}",
+                        textScaler: const TextScaler.linear(0.8),
+                      ),
+                    ),
+                ],
+                onChanged: (v) {
+                  if (v != null) {
+                    filterData.tdAttackCount.set(v);
+                  }
+                  update();
+                },
+              ),
+            ],
           ),
-        ),
-        FilterGroup<int>(
-          title: Text.rich(TextSpan(text: '${S.current.team_block_ce}  ( ', children: [
-            TextSpan(
-              text: S.current.disabled,
-              style: TextStyle(color: Theme.of(context).colorScheme.error),
+          FilterGroup<int>(
+            title: Text(S.current.mystic_code),
+            showInvert: true,
+            options: availableMCs,
+            values: filterData.mysticCode,
+            constraints: const BoxConstraints(maxHeight: 50),
+            optionBuilder: (v) => cardIcon(v, db.gameData.mysticCodes[v]),
+            shrinkWrap: true,
+            onFilterChanged: (value, _) {
+              update();
+            },
+          ),
+          FilterGroup<int>(
+            title: Text(S.current.team_block_servant),
+            options: availableSvts,
+            values: filterData.blockSvts,
+            constraints: const BoxConstraints(maxHeight: 50),
+            optionBuilder: (v) => cardIcon(v, db.gameData.servantsById[v]),
+            shrinkWrap: true,
+            onFilterChanged: (value, _) {
+              update();
+            },
+          ),
+          FilterGroup<int>(
+            title: Text(S.current.team_use_servant),
+            options: availableSvts,
+            values: filterData.useSvts,
+            optionBuilder: (v) => cardIcon(v, db.gameData.servantsById[v]),
+            shrinkWrap: true,
+            constraints: const BoxConstraints(maxHeight: 50),
+            onFilterChanged: (value, _) {
+              update();
+            },
+          ),
+          ListTile(
+            dense: true,
+            enabled: filterData.useSvts.options.length == 1,
+            title: Text(S.current.noble_phantasm_level),
+            subtitle: Text.rich(
+              TextSpan(
+                text: '${S.current.team_use_servant}: ',
+                children: [
+                  filterData.useSvts.options.length == 1
+                      ? CenterWidgetSpan(
+                        child: GameCardMixin.anyCardItemBuilder(
+                          context: context,
+                          id: filterData.useSvts.options.single,
+                          width: 18,
+                        ),
+                      )
+                      : const TextSpan(text: "Select 1 servant"),
+                ],
+              ),
             ),
-            const TextSpan(text: '  '),
-            TextSpan(
-              text: S.current.disallow_mlb,
-              style: TextStyle(color: Theme.of(context).colorScheme.primary),
+            trailing: DropdownButton<int>(
+              isDense: true,
+              value: filterData.useSvtTdLv,
+              items: [
+                for (final tdLv in range(5))
+                  DropdownMenuItem(value: tdLv, child: Text(tdLv == 0 ? S.current.general_any : '≤Lv$tdLv')),
+              ],
+              onChanged:
+                  filterData.useSvts.options.length == 1
+                      ? (v) {
+                        if (v != null) filterData.useSvtTdLv = v;
+                        update();
+                      }
+                      : null,
             ),
-            const TextSpan(text: ' )'),
-          ])),
-          options: availableCEs,
-          values: filterData.blockCEs.copy(),
-          constraints: const BoxConstraints(maxHeight: 50),
-          optionBuilder: (v) => cardIcon(v, db.gameData.craftEssencesById[v],
-              color: filterData.blockCEs.options.contains(v)
-                  ? (filterData.blockCEMLBOnly[v] ?? false)
-                      ? Theme.of(context).colorScheme.primary
-                      : Theme.of(context).colorScheme.error
-                  : null),
-          shrinkWrap: true,
-          onFilterChanged: (_, last) {
-            if (last != null) {
-              // null-false-true
-              if (!filterData.blockCEs.options.contains(last)) {
-                filterData.blockCEs.options.add(last);
-                filterData.blockCEMLBOnly[last] = false;
-              } else {
-                if (filterData.blockCEMLBOnly[last] != true) {
-                  filterData.blockCEMLBOnly[last] = true;
+          ),
+          FilterGroup<int>(
+            title: Text.rich(
+              TextSpan(
+                text: '${S.current.team_block_ce}  ( ',
+                children: [
+                  TextSpan(text: S.current.disabled, style: TextStyle(color: Theme.of(context).colorScheme.error)),
+                  const TextSpan(text: '  '),
+                  TextSpan(
+                    text: S.current.disallow_mlb,
+                    style: TextStyle(color: Theme.of(context).colorScheme.primary),
+                  ),
+                  const TextSpan(text: ' )'),
+                ],
+              ),
+            ),
+            options: availableCEs,
+            values: filterData.blockCEs.copy(),
+            constraints: const BoxConstraints(maxHeight: 50),
+            optionBuilder:
+                (v) => cardIcon(
+                  v,
+                  db.gameData.craftEssencesById[v],
+                  color:
+                      filterData.blockCEs.options.contains(v)
+                          ? (filterData.blockCEMLBOnly[v] ?? false)
+                              ? Theme.of(context).colorScheme.primary
+                              : Theme.of(context).colorScheme.error
+                          : null,
+                ),
+            shrinkWrap: true,
+            onFilterChanged: (_, last) {
+              if (last != null) {
+                // null-false-true
+                if (!filterData.blockCEs.options.contains(last)) {
+                  filterData.blockCEs.options.add(last);
+                  filterData.blockCEMLBOnly[last] = false;
                 } else {
-                  filterData.blockCEs.options.remove(last);
-                  filterData.blockCEMLBOnly.remove(last);
+                  if (filterData.blockCEMLBOnly[last] != true) {
+                    filterData.blockCEMLBOnly[last] = true;
+                  } else {
+                    filterData.blockCEs.options.remove(last);
+                    filterData.blockCEMLBOnly.remove(last);
+                  }
                 }
               }
-            }
-            update();
-          },
-        ),
-      ]),
+              update();
+            },
+          ),
+        ],
+      ),
     );
   }
 
   Widget cardIcon(int id, GameCardMixin? card, {Color? color}) {
     // final card = db.gameData.servantsById[id] ?? db.gameData.craftEssencesById[id];
-    Widget child = card == null
-        ? GameCardMixin.cardIconBuilder(
-            context: context,
-            icon: null,
-            text: id == 0 ? null : id.toString(),
-            height: 42,
-          )
-        : Opacity(
-            opacity: 0.9,
-            child: card.iconBuilder(
+    Widget child =
+        card == null
+            ? GameCardMixin.cardIconBuilder(
               context: context,
+              icon: null,
+              text: id == 0 ? null : id.toString(),
               height: 42,
-              jumpToDetail: false,
-            ),
-          );
+            )
+            : Opacity(opacity: 0.9, child: card.iconBuilder(context: context, height: 42, jumpToDetail: false));
     if (color != null) {
-      child = Container(
-        padding: const EdgeInsets.all(2),
-        color: color,
-        child: child,
-      );
+      child = Container(padding: const EdgeInsets.all(2), color: color, child: child);
     } else {
-      child = Padding(
-        padding: const EdgeInsets.all(2),
-        child: child,
-      );
+      child = Padding(padding: const EdgeInsets.all(2), child: child);
     }
     return child;
   }

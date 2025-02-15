@@ -167,16 +167,20 @@ class FunctionExecutor {
       case FuncType.none:
         return false;
       default:
-        final fieldTraitString = function.funcquestTvals.isNotEmpty
-            ? ' - ${S.current.battle_require_field_traits} ${function.funcquestTvals.map((e) => e.shownName())}'
-            : '';
-        final targetTraitString = function.functvals.isNotEmpty
-            ? ' - ${S.current.battle_require_opponent_traits} ${function.functvals.map((e) => e.shownName())}'
-            : '';
-        battleData.battleLogger.function('${activator?.lBattleName ?? S.current.battle_no_source} - '
-            '${function.lPopupText.l}'
-            '$fieldTraitString'
-            '$targetTraitString');
+        final fieldTraitString =
+            function.funcquestTvals.isNotEmpty
+                ? ' - ${S.current.battle_require_field_traits} ${function.funcquestTvals.map((e) => e.shownName())}'
+                : '';
+        final targetTraitString =
+            function.functvals.isNotEmpty
+                ? ' - ${S.current.battle_require_opponent_traits} ${function.functvals.map((e) => e.shownName())}'
+                : '';
+        battleData.battleLogger.function(
+          '${activator?.lBattleName ?? S.current.battle_no_source} - '
+          '${function.lPopupText.l}'
+          '$fieldTraitString'
+          '$targetTraitString',
+        );
         break;
     }
 
@@ -224,8 +228,10 @@ class FunctionExecutor {
 
       if (dataVals.StarHigher != null && battleData.criticalStars < dataVals.StarHigher!) {
         battleData.updateLastFuncResults(function.funcId, funcIndex);
-        battleData.battleLogger.function('${S.current.critical_star} ${battleData.criticalStars.toStringAsFixed(3)} < '
-            '${dataVals.StarHigher}');
+        battleData.battleLogger.function(
+          '${S.current.critical_star} ${battleData.criticalStars.toStringAsFixed(3)} < '
+          '${dataVals.StarHigher}',
+        );
         return true;
       }
 
@@ -235,7 +241,8 @@ class FunctionExecutor {
         return true;
       }
 
-      final hasAvoidFunctionExecuteSelf = await activator?.hasBuff(
+      final hasAvoidFunctionExecuteSelf =
+          await activator?.hasBuff(
             battleData,
             BuffAction.avoidFunctionExecuteSelf,
             addTraits: function.getFuncIndividuality(),
@@ -444,9 +451,11 @@ class FunctionExecutor {
         case FuncType.lastUsePlayerSkillCopy:
         case FuncType.setNpExecutedState:
         case FuncType.hideOverGauge:
-          battleData.battleLogger.debug('${S.current.not_implemented}: ${function.funcType}, '
-              'Function ID: ${function.funcId}, '
-              'Activator: ${activator?.lBattleName}');
+          battleData.battleLogger.debug(
+            '${S.current.not_implemented}: ${function.funcType}, '
+            'Function ID: ${function.funcId}, '
+            'Activator: ${activator?.lBattleName}',
+          );
           break;
         case FuncType.unknown:
         case FuncType.none:
@@ -478,9 +487,11 @@ class FunctionExecutor {
         case FuncType.setBattleValue:
         case FuncType.enemyCountChange:
         case FuncType.displayBattleMessage:
-          battleData.battleLogger.debug('${S.current.skip}: ${function.funcType}, '
-              'Function ID: ${function.funcId}, '
-              'Activator: ${activator?.lBattleName}');
+          battleData.battleLogger.debug(
+            '${S.current.skip}: ${function.funcType}, '
+            'Function ID: ${function.funcId}, '
+            'Activator: ${activator?.lBattleName}',
+          );
           break;
       }
 
@@ -491,20 +502,13 @@ class FunctionExecutor {
     });
   }
 
-  static bool validateFunctionTargetTeam(
-    final BaseFunction function,
-    final bool isPlayer,
-  ) {
+  static bool validateFunctionTargetTeam(final BaseFunction function, final bool isPlayer) {
     return function.funcTargetTeam == FuncApplyTarget.playerAndEnemy ||
         (function.canBePlayerFunc && isPlayer) ||
         (function.canBeEnemyFunc && !isPlayer);
   }
 
-  static DataVals getDataVals(
-    final NiceFunction function,
-    final int skillLevel,
-    int overchargeLevel,
-  ) {
+  static DataVals getDataVals(final NiceFunction function, final int skillLevel, int overchargeLevel) {
     if (overchargeLevel > function.svalsList.length) {
       overchargeLevel = function.svalsList.length;
     }
@@ -625,7 +629,8 @@ class FunctionExecutor {
         final firstOtherSelectable = aliveAllies.firstWhereOrNull((svt) {
           final targetIndiv = dataVals?.TargetIndiv;
           final includeIgnoredIndiv = dataVals?.IncludeIgnoreIndividuality == 1;
-          final targetIndivCheck = targetIndiv == null ||
+          final targetIndivCheck =
+              targetIndiv == null ||
               checkSignedIndividualities2(
                 myTraits: svt.getTraits(addTraits: svt.getBuffTraits(includeIgnoreIndiv: includeIgnoredIndiv)),
                 requiredTraits: [NiceTrait(id: targetIndiv)],
@@ -640,7 +645,8 @@ class FunctionExecutor {
         final lastOtherSelectable = aliveAllies.lastWhereOrNull((svt) {
           final targetIndiv = dataVals?.TargetIndiv;
           final includeIgnoredIndiv = dataVals?.IncludeIgnoreIndividuality == 1;
-          final targetIndivCheck = targetIndiv == null ||
+          final targetIndivCheck =
+              targetIndiv == null ||
               checkSignedIndividualities2(
                 myTraits: svt.getTraits(addTraits: svt.getBuffTraits(includeIgnoreIndiv: includeIgnoredIndiv)),
                 requiredTraits: [NiceTrait(id: targetIndiv)],
@@ -734,19 +740,18 @@ class FunctionExecutor {
       case FuncTargetType.enemyOneAnotherRandom:
       case FuncTargetType.enemyRange:
       case FuncTargetType.handCommandcardRandomOne:
-        battleData.battleLogger.debug('${S.current.not_implemented}: $funcTargetType, '
-            'Function ID: $funcId, '
-            'Activator: ${activator?.lBattleName}');
+        battleData.battleLogger.debug(
+          '${S.current.not_implemented}: $funcTargetType, '
+          'Function ID: $funcId, '
+          'Activator: ${activator?.lBattleName}',
+        );
         break;
     }
 
     return targets;
   }
 
-  static bool triggeredPositionCheck(
-    final BattleData battleData,
-    final DataVals dataVals,
-  ) {
+  static bool triggeredPositionCheck(final BattleData battleData, final DataVals dataVals) {
     final triggeredFuncPosition = dataVals.TriggeredFuncPosition;
     if (triggeredFuncPosition == null || triggeredFuncPosition == 0) {
       return true;
@@ -768,10 +773,7 @@ class FunctionExecutor {
     return false;
   }
 
-  static bool triggeredPositionAllCheck(
-    final BattleData battleData,
-    final DataVals dataVals,
-  ) {
+  static bool triggeredPositionAllCheck(final BattleData battleData, final DataVals dataVals) {
     final triggeredFuncPositionAll = dataVals.TriggeredFuncPositionAll;
     if (triggeredFuncPositionAll == null || triggeredFuncPositionAll == 0) {
       return true;
@@ -833,7 +835,8 @@ class FunctionExecutor {
     if (overwriteTvals.isNotEmpty) {
       targets.retainWhere((svt) {
         final List<NiceTrait> selfTraits = svt.getTraits(
-            addTraits: svt.getBuffTraits(activeOnly: activeOnly, includeIgnoreIndiv: includeIgnoreIndividuality));
+          addTraits: svt.getBuffTraits(activeOnly: activeOnly, includeIgnoreIndiv: includeIgnoreIndividuality),
+        );
         for (final List<NiceTrait> requiredTraits in overwriteTvals) {
           // Currently assuming the first array is OR. Need more samples on this
           final checkTrait = checkSignedIndividualities2(
@@ -849,11 +852,14 @@ class FunctionExecutor {
         return false;
       });
     } else {
-      targets.retainWhere((svt) => checkSignedIndividualities2(
-            myTraits: svt.getTraits(
-                addTraits: svt.getBuffTraits(activeOnly: activeOnly, includeIgnoreIndiv: includeIgnoreIndividuality)),
-            requiredTraits: function.functvals,
-          ));
+      targets.retainWhere(
+        (svt) => checkSignedIndividualities2(
+          myTraits: svt.getTraits(
+            addTraits: svt.getBuffTraits(activeOnly: activeOnly, includeIgnoreIndiv: includeIgnoreIndividuality),
+          ),
+          requiredTraits: function.functvals,
+        ),
+      );
     }
 
     if (dataVals.TriggeredTargetHpRange != null || dataVals.TriggeredTargetHpRateRange != null) {

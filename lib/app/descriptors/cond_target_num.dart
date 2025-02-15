@@ -70,33 +70,30 @@ class CondTargetNumDescriptor extends HookWidget with DescriptorBase {
 
       List<InlineSpan> spans = [
         if (leading != null) leading!,
-        TextSpan(
-          text: M.of(
-            jp: null,
-            cn: '总计$targetNum: ',
-            tw: '總計$targetNum: ',
-            na: 'Total $targetNum: ',
-            kr: null,
-          ),
-        )
+        TextSpan(text: M.of(jp: null, cn: '总计$targetNum: ', tw: '總計$targetNum: ', na: 'Total $targetNum: ', kr: null)),
       ];
 
       for (int index = 0; index < details.length; index++) {
         spans.add(const TextSpan(text: '『'));
-        spans.addAll(MissionCondDetailDescriptor(
-          targetNum: null,
-          detail: details[index],
-          useAnd: details[index].useAnd,
-          eventId: eventId,
-          // unknownMsg: null,
-        ).buildContent(context));
+        spans.addAll(
+          MissionCondDetailDescriptor(
+            targetNum: null,
+            detail: details[index],
+            useAnd: details[index].useAnd,
+            eventId: eventId,
+            // unknownMsg: null,
+          ).buildContent(context),
+        );
         spans.add(const TextSpan(text: '』'));
         if (index != details.length - 1) {
-          spans.add(TextSpan(
-            text: (useAnd ?? false)
-                ? M.of(jp: null, cn: '且', tw: '且', na: ' AND ', kr: null)
-                : M.of(jp: null, cn: '或', tw: '或', na: ' OR ', kr: null),
-          ));
+          spans.add(
+            TextSpan(
+              text:
+                  (useAnd ?? false)
+                      ? M.of(jp: null, cn: '且', tw: '且', na: ' AND ', kr: null)
+                      : M.of(jp: null, cn: '或', tw: '或', na: ' OR ', kr: null),
+            ),
+          );
         }
       }
 
@@ -113,13 +110,7 @@ class CondTargetNumDescriptor extends HookWidget with DescriptorBase {
   List<InlineSpan> buildContent(BuildContext context) {
     switch (condType) {
       case CondType.none:
-        return localized(
-          jp: null,
-          cn: null,
-          tw: () => text('NONE'),
-          na: () => text('NONE'),
-          kr: null,
-        );
+        return localized(jp: null, cn: null, tw: () => text('NONE'), na: () => text('NONE'), kr: null);
       case CondType.forceFalse:
         return localized(
           jp: () => text('不可能です'),
@@ -132,19 +123,10 @@ class CondTargetNumDescriptor extends HookWidget with DescriptorBase {
         bool all = targetNum == targetIds.length && targetNum != 1 && useAnd != false;
         bool onlyOne = targetNum == 1 && targetIds.length == 1;
         return localized(
-          jp: () => rich(
-            '${all ? "すべての" : ""}クエストを${onlyOne ? "" : "$targetNum種"}クリアせよ',
-            quests(context),
-          ),
-          cn: () => rich(
-            '通关${all ? "所有" : ""}${onlyOne ? "" : "$targetNum个"}关卡',
-            quests(context),
-          ),
+          jp: () => rich('${all ? "すべての" : ""}クエストを${onlyOne ? "" : "$targetNum種"}クリアせよ', quests(context)),
+          cn: () => rich('通关${all ? "所有" : ""}${onlyOne ? "" : "$targetNum个"}关卡', quests(context)),
           tw: () => rich('通關${all ? "所有" : ""}${onlyOne ? "" : "$targetNum個"}關卡', quests(context)),
-          na: () => rich(
-            'Clear ${all ? "all " : ""}${onlyOne ? "quest" : "$targetNum quests"} of ',
-            quests(context),
-          ),
+          na: () => rich('Clear ${all ? "all " : ""}${onlyOne ? "quest" : "$targetNum quests"} of ', quests(context)),
           kr: null,
         );
       case CondType.questNotClear:
@@ -184,7 +166,7 @@ class CondTargetNumDescriptor extends HookWidget with DescriptorBase {
         );
       case CondType.questGroupClear:
         final questIds = [
-          for (final groupId in targetIds) ...db.gameData.others.getQuestsOfGroup(QuestGroupType.questRelease, groupId)
+          for (final groupId in targetIds) ...db.gameData.others.getQuestsOfGroup(QuestGroupType.questRelease, groupId),
         ];
         final questSpans = MultiDescriptor.quests(context, questIds, useAnd: useAnd);
         return localized(
@@ -448,7 +430,7 @@ class CondTargetNumDescriptor extends HookWidget with DescriptorBase {
             for (int index = 0; index < svtIds.length; index++) ...[
               ...MultiDescriptor.servants(context, [svtIds[index]], useAnd: useAnd),
               TextSpan(text: 'Lv.${lvs[index]} '),
-            ]
+            ],
           ];
           return localized(
             jp: () => rich('サーヴァント$targetNum騎をレベル以上に強化せよ: ', svts),
@@ -521,8 +503,10 @@ class CondTargetNumDescriptor extends HookWidget with DescriptorBase {
           jp: () => text('『$targetClassIds』クラスのサーヴァントのスキルを合計$targetNum回強化せよ(同一霊基不可) '),
           cn: () => text('『$targetClassIds』职阶从者技能强化累计$targetNum次（不计算相同灵基）'),
           tw: () => text('『$targetClassIds』職階從者技能強化累計$targetNum次（不計算相同靈基）'),
-          na: () => text(
-              'Leveled up skills of [$targetClassIds] class servants $targetNum times (not include duplicate servants)'),
+          na:
+              () => text(
+                'Leveled up skills of [$targetClassIds] class servants $targetNum times (not include duplicate servants)',
+              ),
           kr: null,
         );
       case CondType.svtClassLvUpCount:
@@ -530,8 +514,9 @@ class CondTargetNumDescriptor extends HookWidget with DescriptorBase {
           jp: () => text('『$targetClassIds』クラスのサーヴァントのLvを合計$targetNum回強化せよ(同一霊基不可) '),
           cn: () => text('『$targetClassIds』职阶从者等级强化累计$targetNum次（不计算相同灵基）'),
           tw: () => text('『$targetClassIds』職階從者等級強化累計$targetNum次（不計算相同靈基）'),
-          na: () =>
-              text('Leveled up [$targetClassIds] class servants $targetNum times (not include duplicate servants)'),
+          na:
+              () =>
+                  text('Leveled up [$targetClassIds] class servants $targetNum times (not include duplicate servants)'),
           kr: null,
         );
       case CondType.svtClassLimitUpCount:
@@ -634,41 +619,54 @@ class CondTargetNumDescriptor extends HookWidget with DescriptorBase {
               jp: () => rich(claim ? 'ミッションを達成(報酬を受け取り): ' : 'ミッションをクリア: ', missionList(context, missionMap)),
               cn: () => rich(claim ? '达成任务(领取奖励): ' : '完成任务: ', missionList(context, missionMap)),
               tw: () => rich(claim ? '達成任務(領取獎勵): ' : '完成任務: ', missionList(context, missionMap)),
-              na: () => rich(
-                  claim ? 'Achieve mission (claim rewards): ' : 'Clear mission: ', missionList(context, missionMap)),
+              na:
+                  () => rich(
+                    claim ? 'Achieve mission (claim rewards): ' : 'Clear mission: ',
+                    missionList(context, missionMap),
+                  ),
               kr: null,
             );
           } else {
             return localized(
-              jp: () => rich(
-                  claim ? '以下のすべてのミッションを達成せよ(報酬を受け取り): ' : '以下のすべてのミッションをクリアせよ: ', missionList(context, missionMap)),
+              jp:
+                  () => rich(
+                    claim ? '以下のすべてのミッションを達成せよ(報酬を受け取り): ' : '以下のすべてのミッションをクリアせよ: ',
+                    missionList(context, missionMap),
+                  ),
               cn: () => rich(claim ? '达成以下全部任务(领取奖励): ' : '完成以下全部任务: ', missionList(context, missionMap)),
               tw: () => rich(claim ? '達成以下全部任務(領取獎勵): ' : '完成以下全部任務: ', missionList(context, missionMap)),
-              na: () => rich(claim ? 'Achieve all missions (claim rewards) of ' : 'Clear all missions of ',
-                  missionList(context, missionMap)),
+              na:
+                  () => rich(
+                    claim ? 'Achieve all missions (claim rewards) of ' : 'Clear all missions of ',
+                    missionList(context, missionMap),
+                  ),
               kr: null,
             );
           }
         } else {
           return localized(
-            jp: () => rich(
-              claim ? '以下の異なるクエスト$targetNum個を達成せよ(報酬を受け取り): ' : '以下の異なるクエスト$targetNum個をクリアせよ: ',
-              missionList(context, missionMap),
-            ),
-            cn: () => rich(
-              claim ? '达成$targetNum个不同的任务(领取奖励): ' : '完成$targetNum个不同的任务: ',
-              missionList(context, missionMap),
-            ),
-            tw: () => rich(
-              claim ? '達成$targetNum個不同的任務(領取獎勵): ' : '完成$targetNum個不同的任務: ',
-              missionList(context, missionMap),
-            ),
-            na: () => rich(
-              claim
-                  ? 'Achieve $targetNum different missions (claim rewards) from '
-                  : 'Clear $targetNum different missions from ',
-              missionList(context, missionMap),
-            ),
+            jp:
+                () => rich(
+                  claim ? '以下の異なるクエスト$targetNum個を達成せよ(報酬を受け取り): ' : '以下の異なるクエスト$targetNum個をクリアせよ: ',
+                  missionList(context, missionMap),
+                ),
+            cn:
+                () => rich(
+                  claim ? '达成$targetNum个不同的任务(领取奖励): ' : '完成$targetNum个不同的任务: ',
+                  missionList(context, missionMap),
+                ),
+            tw:
+                () => rich(
+                  claim ? '達成$targetNum個不同的任務(領取獎勵): ' : '完成$targetNum個不同的任務: ',
+                  missionList(context, missionMap),
+                ),
+            na:
+                () => rich(
+                  claim
+                      ? 'Achieve $targetNum different missions (claim rewards) from '
+                      : 'Clear $targetNum different missions from ',
+                  missionList(context, missionMap),
+                ),
             kr: null,
           );
         }
@@ -775,15 +773,17 @@ class CondTargetNumDescriptor extends HookWidget with DescriptorBase {
 
     return [
       TextSpan(
-        children: wrapMsg(localized(
-          jp: () => text('不明な条件(${condType.name}): $targetNum, $targetIds'),
-          cn: () => text('未知条件(${condType.name}): $targetNum, $targetIds'),
-          tw: () => text('未知條件(${condType.name}): $targetNum, $targetIds'),
-          na: () => text('Unknown Cond(${condType.name}): $targetNum, $targetIds'),
-          kr: () => text('미확인 (${condType.name}): $targetNum, $targetIds'),
-        )),
+        children: wrapMsg(
+          localized(
+            jp: () => text('不明な条件(${condType.name}): $targetNum, $targetIds'),
+            cn: () => text('未知条件(${condType.name}): $targetNum, $targetIds'),
+            tw: () => text('未知條件(${condType.name}): $targetNum, $targetIds'),
+            na: () => text('Unknown Cond(${condType.name}): $targetNum, $targetIds'),
+            kr: () => text('미확인 (${condType.name}): $targetNum, $targetIds'),
+          ),
+        ),
         // style: kDebugMode ? const TextStyle(color: Colors.red) : null,
-      )
+      ),
     ];
   }
 

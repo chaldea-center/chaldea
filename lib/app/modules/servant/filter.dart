@@ -38,12 +38,13 @@ class ServantFilterPage extends FilterPage<SvtFilterData> {
         if (svtPlan.ascension > svtStat.cur.ascension) SvtPlanScope.ascension,
         if ([for (var i = 0; i < kActiveSkillNums.length; i++) svtPlan.skills[i] > svtStat.cur.skills[i]].any((e) => e))
           SvtPlanScope.active,
-        if ([for (var i = 0; i < kAppendSkillNums.length; i++) svtPlan.appendSkills[i] > svtStat.cur.appendSkills[i]]
-            .any((e) => e))
+        if ([
+          for (var i = 0; i < kAppendSkillNums.length; i++) svtPlan.appendSkills[i] > svtStat.cur.appendSkills[i],
+        ].any((e) => e))
           SvtPlanScope.append,
         if ([
           for (var costume in svt.profile.costume.values)
-            (svtPlan.costumes[costume.battleCharaId] ?? 0) > (svtStat.cur.costumes[costume.battleCharaId] ?? 0)
+            (svtPlan.costumes[costume.battleCharaId] ?? 0) > (svtStat.cur.costumes[costume.battleCharaId] ?? 0),
         ].any((e) => e))
           SvtPlanScope.costume,
         if ([
@@ -101,8 +102,9 @@ class ServantFilterPage extends FilterPage<SvtFilterData> {
     }
 
     if (filterData.npColor.options.isNotEmpty && filterData.npType.options.isNotEmpty) {
-      if (!svt.noblePhantasms
-          .any((np) => filterData.npColor.contain(np.svt.card) && filterData.npType.contain(np.damageType))) {
+      if (!svt.noblePhantasms.any(
+        (np) => filterData.npColor.contain(np.svt.card) && filterData.npType.contain(np.damageType),
+      )) {
         return false;
       }
     } else {
@@ -140,8 +142,10 @@ class ServantFilterPage extends FilterPage<SvtFilterData> {
     if (!filterData.policy.matchAny({policy, ...svt.limits.values.map((e) => e.policy ?? policy)})) {
       return false;
     }
-    if (!filterData.personality
-        .matchAny({personality, ...svt.limits.values.map((e) => e.personality ?? personality)})) {
+    if (!filterData.personality.matchAny({
+      personality,
+      ...svt.limits.values.map((e) => e.personality ?? personality),
+    })) {
       return false;
     }
 
@@ -189,9 +193,11 @@ class ServantFilterPage extends FilterPage<SvtFilterData> {
     }
     final freeSvtEvent = filterData.freeExchangeSvtEvent.radioValue;
     if (freeSvtEvent != null) {
-      if (!freeSvtEvent.shop.any((shop) =>
-          (shop.purchaseType == PurchaseType.servant || shop.purchaseType == PurchaseType.eventSvtJoin) &&
-          shop.targetIds.contains(svt.id))) {
+      if (!freeSvtEvent.shop.any(
+        (shop) =>
+            (shop.purchaseType == PurchaseType.servant || shop.purchaseType == PurchaseType.eventSvtJoin) &&
+            shop.targetIds.contains(svt.id),
+      )) {
         return false;
       }
     }
@@ -219,385 +225,404 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData, ServantFilt
   Widget build(BuildContext context) {
     return buildAdaptive(
       title: Text(S.current.filter, textScaler: const TextScaler.linear(0.8)),
-      actions: getDefaultActions(onTapReset: () {
-        filterData.reset();
-        final now = DateTime.now().timestamp;
-        if (now - _lastResetTime < 2) {
-          filterData.favorite = FavoriteState.all;
-        }
-        _lastResetTime = now;
-        update();
-      }),
-      content: getListViewBody(restorationId: 'svt_list_filter', children: [
-        getGroup(
-          header: S.current.filter_shown_type,
-          children: [
-            if (!widget.planMode)
-              FilterGroup.display(
-                useGrid: filterData.useGrid,
-                onChanged: (v) {
-                  if (v != null) filterData.useGrid = v;
+      actions: getDefaultActions(
+        onTapReset: () {
+          filterData.reset();
+          final now = DateTime.now().timestamp;
+          if (now - _lastResetTime < 2) {
+            filterData.favorite = FavoriteState.all;
+          }
+          _lastResetTime = now;
+          update();
+        },
+      ),
+      content: getListViewBody(
+        restorationId: 'svt_list_filter',
+        children: [
+          getGroup(
+            header: S.current.filter_shown_type,
+            children: [
+              if (!widget.planMode)
+                FilterGroup.display(
+                  useGrid: filterData.useGrid,
+                  onChanged: (v) {
+                    if (v != null) filterData.useGrid = v;
+                    update();
+                  },
+                ),
+              FilterGroup<FavoriteState>(
+                options: FavoriteState.values,
+                combined: true,
+                values: FilterRadioData.nonnull(widget.planMode ? filterData.planFavorite : filterData.favorite),
+                padding: EdgeInsets.zero,
+                optionBuilder: (v) {
+                  return Text.rich(
+                    TextSpan(children: [CenterWidgetSpan(child: Icon(v.icon, size: 16)), TextSpan(text: v.shownName)]),
+                  );
+                },
+                onFilterChanged: (v, _) {
+                  if (widget.planMode) {
+                    filterData.planFavorite = v.radioValue!;
+                  } else {
+                    filterData.favorite = v.radioValue!;
+                  }
                   update();
                 },
               ),
-            FilterGroup<FavoriteState>(
-              options: FavoriteState.values,
-              combined: true,
-              values: FilterRadioData.nonnull(widget.planMode ? filterData.planFavorite : filterData.favorite),
-              padding: EdgeInsets.zero,
-              optionBuilder: (v) {
-                return Text.rich(TextSpan(children: [
-                  CenterWidgetSpan(child: Icon(v.icon, size: 16)),
-                  TextSpan(text: v.shownName),
-                ]));
-              },
-              onFilterChanged: (v, _) {
-                if (widget.planMode) {
-                  filterData.planFavorite = v.radioValue!;
-                } else {
-                  filterData.favorite = v.radioValue!;
-                }
-                update();
-              },
+            ],
+          ),
+          if (widget.showSort)
+            getGroup(
+              header: S.current.filter_sort,
+              children: [
+                for (int i = 0; i < min(4, filterData.sortKeys.length); i++)
+                  getSortButton<SvtCompare>(
+                    prefix: '${i + 1}',
+                    value: filterData.sortKeys[i],
+                    items: {for (final e in SvtCompare.values) e: e.showName},
+                    onSortAttr: (key) {
+                      filterData.sortKeys[i] = key ?? filterData.sortKeys[i];
+                      update();
+                    },
+                    reversed: filterData.sortReversed[i],
+                    onSortDirectional: (reversed) {
+                      filterData.sortReversed[i] = reversed;
+                      update();
+                    },
+                  ),
+              ],
             ),
-          ],
-        ),
-        if (widget.showSort)
-          getGroup(header: S.current.filter_sort, children: [
-            for (int i = 0; i < min(4, filterData.sortKeys.length); i++)
-              getSortButton<SvtCompare>(
-                prefix: '${i + 1}',
-                value: filterData.sortKeys[i],
-                items: {for (final e in SvtCompare.values) e: e.showName},
-                onSortAttr: (key) {
-                  filterData.sortKeys[i] = key ?? filterData.sortKeys[i];
-                  update();
-                },
-                reversed: filterData.sortReversed[i],
-                onSortDirectional: (reversed) {
-                  filterData.sortReversed[i] = reversed;
-                  update();
-                },
-              ),
-          ]),
-        buildClassFilter(filterData.svtClass),
-        FilterGroup<int>(
-          title: Text(S.current.filter_sort_rarity, style: textStyle),
-          options: const [0, 1, 2, 3, 4, 5],
-          values: filterData.rarity,
-          optionBuilder: (v) => Text('$v$kStarChar'),
-          onFilterChanged: (value, _) {
-            update();
-          },
-        ),
-        FilterGroup<CardType>(
-          title: Text(S.current.noble_phantasm, style: textStyle),
-          options: const [CardType.arts, CardType.buster, CardType.quick],
-          values: filterData.npColor,
-          optionBuilder: (v) => Text(v.name.toTitle()),
-          onFilterChanged: (value, _) {
-            update();
-          },
-        ),
-        FilterGroup<TdEffectFlag>(
-          values: filterData.npType,
-          options: TdEffectFlag.values,
-          optionBuilder: (v) => Text(Transl.enums(v, (enums) => enums.tdEffectFlag).l),
-          onFilterChanged: (value, _) {
-            update();
-          },
-        ),
-        buildGroupDivider(text: S.current.plan),
-        FilterGroup<int>(
-          title: Text('${S.current.priority} (${S.current.display_setting} - ${S.current.setting_priority_tagging})',
-              style: textStyle),
-          options: const [1, 2, 3, 4, 5],
-          values: filterData.priority,
-          optionBuilder: (value) {
-            String text = value.toString();
-            final tag = db.settings.priorityTags[value];
-            if (tag != null && tag.isNotEmpty) {
-              text += ' $tag';
-            }
-            return Text(text);
-          },
-          onFilterChanged: (value, _) {
-            update();
-          },
-        ),
-        FilterGroup<SvtPlanScope>(
-          title: Text(S.current.filter_plan_not_reached, style: textStyle),
-          options: SvtPlanScope.values,
-          values: filterData.planCompletion,
-          showMatchAll: true,
-          optionBuilder: (v) {
-            String text;
-            switch (v) {
-              case SvtPlanScope.all:
-                text = '(${S.current.general_all})';
-                break;
-              case SvtPlanScope.ascension:
-                text = S.current.ascension_short;
-                break;
-              case SvtPlanScope.active:
-                text = S.current.active_skill_short;
-                break;
-              case SvtPlanScope.append:
-                text = S.current.append_skill_short;
-                break;
-              case SvtPlanScope.costume:
-                text = S.current.costume;
-                break;
-              case SvtPlanScope.misc:
-                text = S.current.general_others;
-                break;
-            }
-            return Text(text);
-          },
-          onFilterChanged: (value, lastChanged) {
-            if (lastChanged == SvtPlanScope.all) {
-              if (value.contain(SvtPlanScope.all)) {
-                value.options = SvtPlanScope.values.toSet();
-              } else {
-                value.options.clear();
-              }
-            } else if (lastChanged != null) {
-              value.options.remove(SvtPlanScope.all);
-            }
-            update();
-          },
-        ),
-        FilterGroup<SvtStatusState>(
-          title: Text("${S.current.current_}: ${S.current.ascension_short}/${S.current.active_skill_short}"),
-          options: const [
-            SvtStatusState.asc3,
-            SvtStatusState.asc4,
-            SvtStatusState.active8,
-            SvtStatusState.active9,
-            SvtStatusState.active10,
-          ],
-          values: filterData.curStatus,
-          optionBuilder: (v) => Text(v.shownName),
-          onFilterChanged: (value, _) {
-            update();
-          },
-        ),
-        FilterGroup<SvtStatusState>(
-          title: Text(
-              "${S.current.current_}: ${S.current.append_skill_short}2/${S.current.append_skill_short}(Unlocked only)"),
-          options: const [
-            SvtStatusState.appendTwo8,
-            SvtStatusState.appendTwo9,
-            // SvtStatusState.appendTwo10,
-            SvtStatusState.append8,
-            SvtStatusState.append9,
-            // SvtStatusState.append10,
-          ],
-          values: filterData.curStatus,
-          optionBuilder: (v) => Text(v.shownName),
-          onFilterChanged: (value, _) {
-            update();
-          },
-        ),
-        FilterGroup<bool>(
-          title: Text(S.current.duplicated_servant),
-          options: const [false, true],
-          values: filterData.svtDuplicated,
-          optionBuilder: (v) =>
-              Text(v ? S.current.duplicated_servant_duplicated : S.current.duplicated_servant_primary),
-          onFilterChanged: (v, _) {
-            setState(() {
+          buildClassFilter(filterData.svtClass),
+          FilterGroup<int>(
+            title: Text(S.current.filter_sort_rarity, style: textStyle),
+            options: const [0, 1, 2, 3, 4, 5],
+            values: filterData.rarity,
+            optionBuilder: (v) => Text('$v$kStarChar'),
+            onFilterChanged: (value, _) {
               update();
-            });
-          },
-        ),
-        getGroup(header: S.current.bond, children: [
-          FilterGroup<CompareOperator>(
-            combined: true,
-            padding: EdgeInsets.zero,
-            options: CompareOperator.values,
-            values: filterData.bondCompare,
-            optionBuilder: (v) => Text(v.text),
-            onFilterChanged: (v, last) {
-              if (v.contain(CompareOperator.lessThan) && v.contain(CompareOperator.moreThan)) {
-                if (last == CompareOperator.lessThan) {
-                  v.options.remove(CompareOperator.moreThan);
-                } else if (last == CompareOperator.moreThan) {
-                  v.options.remove(CompareOperator.lessThan);
-                }
-              }
-              if (v.options.isEmpty && last != null) {
-                v.options.add(last);
-              }
-              setState(() {
-                update();
-              });
             },
           ),
+          FilterGroup<CardType>(
+            title: Text(S.current.noble_phantasm, style: textStyle),
+            options: const [CardType.arts, CardType.buster, CardType.quick],
+            values: filterData.npColor,
+            optionBuilder: (v) => Text(v.name.toTitle()),
+            onFilterChanged: (value, _) {
+              update();
+            },
+          ),
+          FilterGroup<TdEffectFlag>(
+            values: filterData.npType,
+            options: TdEffectFlag.values,
+            optionBuilder: (v) => Text(Transl.enums(v, (enums) => enums.tdEffectFlag).l),
+            onFilterChanged: (value, _) {
+              update();
+            },
+          ),
+          buildGroupDivider(text: S.current.plan),
           FilterGroup<int>(
-            combined: true,
-            padding: EdgeInsets.zero,
-            options: const [5, 6, 10, 15],
-            minimumSize: const Size(36, 36),
-            values: filterData.bondValue,
+            title: Text(
+              '${S.current.priority} (${S.current.display_setting} - ${S.current.setting_priority_tagging})',
+              style: textStyle,
+            ),
+            options: const [1, 2, 3, 4, 5],
+            values: filterData.priority,
+            optionBuilder: (value) {
+              String text = value.toString();
+              final tag = db.settings.priorityTags[value];
+              if (tag != null && tag.isNotEmpty) {
+                text += ' $tag';
+              }
+              return Text(text);
+            },
+            onFilterChanged: (value, _) {
+              update();
+            },
+          ),
+          FilterGroup<SvtPlanScope>(
+            title: Text(S.current.filter_plan_not_reached, style: textStyle),
+            options: SvtPlanScope.values,
+            values: filterData.planCompletion,
+            showMatchAll: true,
+            optionBuilder: (v) {
+              String text;
+              switch (v) {
+                case SvtPlanScope.all:
+                  text = '(${S.current.general_all})';
+                  break;
+                case SvtPlanScope.ascension:
+                  text = S.current.ascension_short;
+                  break;
+                case SvtPlanScope.active:
+                  text = S.current.active_skill_short;
+                  break;
+                case SvtPlanScope.append:
+                  text = S.current.append_skill_short;
+                  break;
+                case SvtPlanScope.costume:
+                  text = S.current.costume;
+                  break;
+                case SvtPlanScope.misc:
+                  text = S.current.general_others;
+                  break;
+              }
+              return Text(text);
+            },
+            onFilterChanged: (value, lastChanged) {
+              if (lastChanged == SvtPlanScope.all) {
+                if (value.contain(SvtPlanScope.all)) {
+                  value.options = SvtPlanScope.values.toSet();
+                } else {
+                  value.options.clear();
+                }
+              } else if (lastChanged != null) {
+                value.options.remove(SvtPlanScope.all);
+              }
+              update();
+            },
+          ),
+          FilterGroup<SvtStatusState>(
+            title: Text("${S.current.current_}: ${S.current.ascension_short}/${S.current.active_skill_short}"),
+            options: const [
+              SvtStatusState.asc3,
+              SvtStatusState.asc4,
+              SvtStatusState.active8,
+              SvtStatusState.active9,
+              SvtStatusState.active10,
+            ],
+            values: filterData.curStatus,
+            optionBuilder: (v) => Text(v.shownName),
+            onFilterChanged: (value, _) {
+              update();
+            },
+          ),
+          FilterGroup<SvtStatusState>(
+            title: Text(
+              "${S.current.current_}: ${S.current.append_skill_short}2/${S.current.append_skill_short}(Unlocked only)",
+            ),
+            options: const [
+              SvtStatusState.appendTwo8,
+              SvtStatusState.appendTwo9,
+              // SvtStatusState.appendTwo10,
+              SvtStatusState.append8,
+              SvtStatusState.append9,
+              // SvtStatusState.append10,
+            ],
+            values: filterData.curStatus,
+            optionBuilder: (v) => Text(v.shownName),
+            onFilterChanged: (value, _) {
+              update();
+            },
+          ),
+          FilterGroup<bool>(
+            title: Text(S.current.duplicated_servant),
+            options: const [false, true],
+            values: filterData.svtDuplicated,
+            optionBuilder:
+                (v) => Text(v ? S.current.duplicated_servant_duplicated : S.current.duplicated_servant_primary),
             onFilterChanged: (v, _) {
               setState(() {
                 update();
               });
             },
           ),
-        ]),
-        buildGroupDivider(text: S.current.gamedata),
-        FilterGroup<Region>(
-          title: Text(S.current.game_server, style: textStyle),
-          options: Region.values,
-          values: filterData.region,
-          optionBuilder: (v) => Text(v.localName),
-          onFilterChanged: (v, _) {
-            update();
-          },
-        ),
-        FilterGroup<SvtObtain>(
-          title: Text(S.current.filter_obtain, style: textStyle),
-          options: SvtObtain.values,
-          values: filterData.obtain,
-          optionBuilder: (v) => Text(Transl.svtObtain(v).l),
-          onFilterChanged: (value, _) {
-            update();
-          },
-        ),
-        FilterGroup<ServantSubAttribute>(
-          title: Text(S.current.svt_sub_attribute, style: textStyle),
-          options: ServantSubAttribute.validValues,
-          values: filterData.attribute,
-          optionBuilder: (v) => Text(Transl.svtSubAttribute(v).l),
-          onFilterChanged: (value, _) {
-            update();
-          },
-        ),
-        FilterGroup<ServantPolicy>(
-          title: Text(S.current.svt_attribute, style: textStyle),
-          options: ServantPolicy.values.sublist(1, ServantPolicy.values.length - 1),
-          values: filterData.policy,
-          optionBuilder: (v) => Text(Transl.servantPolicy(v).l),
-          onFilterChanged: (value, _) {
-            update();
-          },
-        ),
-        FilterGroup<ServantPersonality>(
-          values: filterData.personality,
-          options: ServantPersonality.values.sublist(1, ServantPersonality.values.length - 1),
-          optionBuilder: (v) => Text(Transl.servantPersonality(v).l),
-          onFilterChanged: (value, _) {
-            update();
-          },
-        ),
-        FilterGroup<Gender>(
-          title: Text(S.current.gender, style: textStyle),
-          options: Gender.values.toList(),
-          values: filterData.gender,
-          optionBuilder: (v) => Text(Transl.gender(v).l),
-          onFilterChanged: (value, _) {
-            update();
-          },
-        ),
-        FilterGroup<CardDeckType>(
-          title: Text(S.current.info_cards, style: textStyle),
-          options: CardDeckType.values,
-          values: filterData.cardDeck,
-          optionBuilder: (v) => v == CardDeckType.others
-              ? Text(S.current.general_others)
-              : Text.rich(TextSpan(children: [
-                  for (final (card, count, color) in [
-                    ('Q', v.q, Colors.green.shade800),
-                    ('A', v.a, Colors.blue.shade800),
-                    ('B', v.b, Colors.red)
-                  ])
-                    TextSpan(text: card * count, style: TextStyle(color: color))
-                ])),
-          onFilterChanged: (value, _) {
-            update();
-          },
-        ),
-        FilterGroup<Trait>(
-          title: Text(S.current.trait, style: textStyle),
-          options: _traitsForFilter,
-          values: filterData.trait,
-          optionBuilder: (v) => Text(Transl.trait(v.value).l),
-          showMatchAll: true,
-          showInvert: true,
-          onFilterChanged: (value, _) {
-            update();
-          },
-        ),
-        buildGroupDivider(text: S.current.effect_search),
-        FilterGroup<SvtEffectScope>(
-          title: Text(S.current.effect_scope),
-          options: SvtEffectScope.values,
-          values: filterData.effectScope,
-          optionBuilder: (v) => Text(v.shownName),
-          onFilterChanged: (value, _) {
-            update();
-          },
-        ),
-        FilterGroup<EffectTarget>(
-          title: Text(S.current.effect_target),
-          options: EffectTarget.values,
-          values: filterData.effectTarget,
-          optionBuilder: (v) => Text(v.shownName),
-          onFilterChanged: (value, _) {
-            update();
-          },
-        ),
-        EffectFilterUtil.buildTraitFilter(context, filterData.targetTrait, update),
-        FilterGroup<SkillEffect>(
-          title: Text(S.current.effect_type),
-          options: _getValidEffects(SkillEffect.kAttack),
-          values: filterData.effectType,
-          showMatchAll: true,
-          showInvert: false,
-          optionBuilder: (v) => Text(v.lName),
-          onFilterChanged: (value, _) {
-            update();
-          },
-        ),
-        const SizedBox(height: 4),
-        FilterGroup<SkillEffect>(
-          options: _getValidEffects(SkillEffect.kDefence),
-          values: filterData.effectType,
-          optionBuilder: (v) => Text(v.lName),
-          onFilterChanged: (value, _) {
-            update();
-          },
-        ),
-        const SizedBox(height: 4),
-        FilterGroup<SkillEffect>(
-          options: _getValidEffects(SkillEffect.kDebuffRelated),
-          values: filterData.effectType,
-          optionBuilder: (v) => Text(v.lName),
-          onFilterChanged: (value, _) {
-            update();
-          },
-        ),
-        const SizedBox(height: 4),
-        FilterGroup<SkillEffect>(
-          options: _getValidEffects(SkillEffect.kOthers),
-          values: filterData.effectType,
-          optionBuilder: (v) => Text(v.lName),
-          onFilterChanged: (value, _) {
-            update();
-          },
-        ),
-        FilterGroup<Event>(
-          title: Text(S.current.free_exchange_svt),
-          options: freeExchangeSvtEvents.toList(),
-          values: filterData.freeExchangeSvtEvent,
-          optionBuilder: (v) => Text(v.lShortName.l.setMaxLines(1)),
-          onFilterChanged: (value, _) {
-            update();
-          },
-        ),
-      ]),
+          getGroup(
+            header: S.current.bond,
+            children: [
+              FilterGroup<CompareOperator>(
+                combined: true,
+                padding: EdgeInsets.zero,
+                options: CompareOperator.values,
+                values: filterData.bondCompare,
+                optionBuilder: (v) => Text(v.text),
+                onFilterChanged: (v, last) {
+                  if (v.contain(CompareOperator.lessThan) && v.contain(CompareOperator.moreThan)) {
+                    if (last == CompareOperator.lessThan) {
+                      v.options.remove(CompareOperator.moreThan);
+                    } else if (last == CompareOperator.moreThan) {
+                      v.options.remove(CompareOperator.lessThan);
+                    }
+                  }
+                  if (v.options.isEmpty && last != null) {
+                    v.options.add(last);
+                  }
+                  setState(() {
+                    update();
+                  });
+                },
+              ),
+              FilterGroup<int>(
+                combined: true,
+                padding: EdgeInsets.zero,
+                options: const [5, 6, 10, 15],
+                minimumSize: const Size(36, 36),
+                values: filterData.bondValue,
+                onFilterChanged: (v, _) {
+                  setState(() {
+                    update();
+                  });
+                },
+              ),
+            ],
+          ),
+          buildGroupDivider(text: S.current.gamedata),
+          FilterGroup<Region>(
+            title: Text(S.current.game_server, style: textStyle),
+            options: Region.values,
+            values: filterData.region,
+            optionBuilder: (v) => Text(v.localName),
+            onFilterChanged: (v, _) {
+              update();
+            },
+          ),
+          FilterGroup<SvtObtain>(
+            title: Text(S.current.filter_obtain, style: textStyle),
+            options: SvtObtain.values,
+            values: filterData.obtain,
+            optionBuilder: (v) => Text(Transl.svtObtain(v).l),
+            onFilterChanged: (value, _) {
+              update();
+            },
+          ),
+          FilterGroup<ServantSubAttribute>(
+            title: Text(S.current.svt_sub_attribute, style: textStyle),
+            options: ServantSubAttribute.validValues,
+            values: filterData.attribute,
+            optionBuilder: (v) => Text(Transl.svtSubAttribute(v).l),
+            onFilterChanged: (value, _) {
+              update();
+            },
+          ),
+          FilterGroup<ServantPolicy>(
+            title: Text(S.current.svt_attribute, style: textStyle),
+            options: ServantPolicy.values.sublist(1, ServantPolicy.values.length - 1),
+            values: filterData.policy,
+            optionBuilder: (v) => Text(Transl.servantPolicy(v).l),
+            onFilterChanged: (value, _) {
+              update();
+            },
+          ),
+          FilterGroup<ServantPersonality>(
+            values: filterData.personality,
+            options: ServantPersonality.values.sublist(1, ServantPersonality.values.length - 1),
+            optionBuilder: (v) => Text(Transl.servantPersonality(v).l),
+            onFilterChanged: (value, _) {
+              update();
+            },
+          ),
+          FilterGroup<Gender>(
+            title: Text(S.current.gender, style: textStyle),
+            options: Gender.values.toList(),
+            values: filterData.gender,
+            optionBuilder: (v) => Text(Transl.gender(v).l),
+            onFilterChanged: (value, _) {
+              update();
+            },
+          ),
+          FilterGroup<CardDeckType>(
+            title: Text(S.current.info_cards, style: textStyle),
+            options: CardDeckType.values,
+            values: filterData.cardDeck,
+            optionBuilder:
+                (v) =>
+                    v == CardDeckType.others
+                        ? Text(S.current.general_others)
+                        : Text.rich(
+                          TextSpan(
+                            children: [
+                              for (final (card, count, color) in [
+                                ('Q', v.q, Colors.green.shade800),
+                                ('A', v.a, Colors.blue.shade800),
+                                ('B', v.b, Colors.red),
+                              ])
+                                TextSpan(text: card * count, style: TextStyle(color: color)),
+                            ],
+                          ),
+                        ),
+            onFilterChanged: (value, _) {
+              update();
+            },
+          ),
+          FilterGroup<Trait>(
+            title: Text(S.current.trait, style: textStyle),
+            options: _traitsForFilter,
+            values: filterData.trait,
+            optionBuilder: (v) => Text(Transl.trait(v.value).l),
+            showMatchAll: true,
+            showInvert: true,
+            onFilterChanged: (value, _) {
+              update();
+            },
+          ),
+          buildGroupDivider(text: S.current.effect_search),
+          FilterGroup<SvtEffectScope>(
+            title: Text(S.current.effect_scope),
+            options: SvtEffectScope.values,
+            values: filterData.effectScope,
+            optionBuilder: (v) => Text(v.shownName),
+            onFilterChanged: (value, _) {
+              update();
+            },
+          ),
+          FilterGroup<EffectTarget>(
+            title: Text(S.current.effect_target),
+            options: EffectTarget.values,
+            values: filterData.effectTarget,
+            optionBuilder: (v) => Text(v.shownName),
+            onFilterChanged: (value, _) {
+              update();
+            },
+          ),
+          EffectFilterUtil.buildTraitFilter(context, filterData.targetTrait, update),
+          FilterGroup<SkillEffect>(
+            title: Text(S.current.effect_type),
+            options: _getValidEffects(SkillEffect.kAttack),
+            values: filterData.effectType,
+            showMatchAll: true,
+            showInvert: false,
+            optionBuilder: (v) => Text(v.lName),
+            onFilterChanged: (value, _) {
+              update();
+            },
+          ),
+          const SizedBox(height: 4),
+          FilterGroup<SkillEffect>(
+            options: _getValidEffects(SkillEffect.kDefence),
+            values: filterData.effectType,
+            optionBuilder: (v) => Text(v.lName),
+            onFilterChanged: (value, _) {
+              update();
+            },
+          ),
+          const SizedBox(height: 4),
+          FilterGroup<SkillEffect>(
+            options: _getValidEffects(SkillEffect.kDebuffRelated),
+            values: filterData.effectType,
+            optionBuilder: (v) => Text(v.lName),
+            onFilterChanged: (value, _) {
+              update();
+            },
+          ),
+          const SizedBox(height: 4),
+          FilterGroup<SkillEffect>(
+            options: _getValidEffects(SkillEffect.kOthers),
+            values: filterData.effectType,
+            optionBuilder: (v) => Text(v.lName),
+            onFilterChanged: (value, _) {
+              update();
+            },
+          ),
+          FilterGroup<Event>(
+            title: Text(S.current.free_exchange_svt),
+            options: freeExchangeSvtEvents.toList(),
+            values: filterData.freeExchangeSvtEvent,
+            optionBuilder: (v) => Text(v.lShortName.l.setMaxLines(1)),
+            onFilterChanged: (value, _) {
+              update();
+            },
+          ),
+        ],
+      ),
     );
   }
 

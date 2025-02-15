@@ -78,8 +78,13 @@ class ScriptParsedData {
       // ？1,1000：狩りに行く（ロビンフッド同行）
       final selectMatch = RegExp(r'^[？?]([\d,]+)[：:](.*)$').firstMatch(line);
       if (selectMatch != null) {
-        children.add(ScriptSelect(selectMatch.group(0)!, int.parse(selectMatch.group(1)!.split(',').first),
-            _parseDialog(selectMatch.group(2)!)));
+        children.add(
+          ScriptSelect(
+            selectMatch.group(0)!,
+            int.parse(selectMatch.group(1)!.split(',').first),
+            _parseDialog(selectMatch.group(2)!),
+          ),
+        );
         continue;
       }
       if (RegExp(r'^\[[^\[\]]+\]$').hasMatch(line)) {
@@ -115,11 +120,14 @@ class ScriptParsedData {
     final _childReg = RegExp(r'\[[^\[\]]+\]');
     List<ScriptComponent> out = [];
     final p1 = dialog.split(_childReg);
-    dialog.splitMapJoin(_childReg, onMatch: (match) {
-      out.add(ScriptText(p1.removeAt(0)));
-      out.add(ScriptCommand.parse(match.group(0)!));
-      return '';
-    });
+    dialog.splitMapJoin(
+      _childReg,
+      onMatch: (match) {
+        out.add(ScriptText(p1.removeAt(0)));
+        out.add(ScriptCommand.parse(match.group(0)!));
+        return '';
+      },
+    );
     out.addAll(p1.map((e) => ScriptText(e)));
     return out;
   }
@@ -136,11 +144,7 @@ class _TextStyleState {
   TextStyle style;
   ScriptComponent component;
   _CompType type;
-  _TextStyleState({
-    required this.style,
-    required this.component,
-    required this.type,
-  });
+  _TextStyleState({required this.style, required this.component, required this.type});
 }
 
 class ScriptState {
@@ -235,11 +239,7 @@ class ScriptDialog extends ScriptTexts {
     state.clear();
     List<InlineSpan> spans = [];
     if (!hideSpeaker) {
-      state.push(
-        headerStyle.copyWith(color: AppTheme(context).tertiaryContainer),
-        this,
-        _CompType.none,
-      );
+      state.push(headerStyle.copyWith(color: AppTheme(context).tertiaryContainer), this, _CompType.none);
       spans.add(state.textSpan(text: kHeaderLeading));
       for (final c in speaker) {
         spans.addAll(c.build(context, state));
@@ -356,11 +356,8 @@ class ScriptCommand extends ScriptComponent {
         WidgetSpan(
           alignment: PlaceholderAlignment.baseline,
           baseline: TextBaseline.ideographic,
-          child: RubyText(
-            [RubyTextData(aa.first, ruby: aa.sublist(1).join(':'))],
-            style: state.mergeStyles(),
-          ),
-        )
+          child: RubyText([RubyTextData(aa.first, ruby: aa.sublist(1).join(':'))], style: state.mergeStyles()),
+        ),
       ];
     }
     // [&male:female]
@@ -368,15 +365,9 @@ class ScriptCommand extends ScriptComponent {
       final match = RegExp(r'^&(.*):(.*)$').firstMatch(src);
       if (match != null) {
         return [
-          state.textSpan(
-            text: match.group(1),
-            style: const TextStyle(decoration: TextDecoration.underline),
-          ),
+          state.textSpan(text: match.group(1), style: const TextStyle(decoration: TextDecoration.underline)),
           state.textSpan(text: '('),
-          state.textSpan(
-            text: match.group(2),
-            style: const TextStyle(decoration: TextDecoration.underline),
-          ),
+          state.textSpan(text: match.group(2), style: const TextStyle(decoration: TextDecoration.underline)),
           state.textSpan(text: ')'),
         ];
       }
@@ -426,17 +417,11 @@ class ScriptCommand extends ScriptComponent {
         int length = double.tryParse(args.getOrNull(0) ?? '1')?.toInt() ?? 1;
         if (length < 1) length = 1;
         return [
-          state.textSpan(
-            text: '\u3000' * length,
-            style: const TextStyle(decoration: TextDecoration.lineThrough),
-          )
+          state.textSpan(text: '\u3000' * length, style: const TextStyle(decoration: TextDecoration.lineThrough)),
         ];
       case '%1':
         return [
-          state.textSpan(
-            text: Transl.misc('Fujimaru').of(state.region),
-            style: TextStyle(color: Colors.amber[800]),
-          )
+          state.textSpan(text: Transl.misc('Fujimaru').of(state.region), style: TextStyle(color: Colors.amber[800])),
         ];
       case 'i':
       case 'image':
@@ -505,7 +490,7 @@ class ScriptCommand extends ScriptComponent {
               url: Atlas.asset('Audio/$folder/$filename.mp3', state.region),
               player: state.sePlayer,
             ),
-          )
+          ),
         ];
       case 'cueSe':
         if (!filterData.bgm) return [];
@@ -517,7 +502,7 @@ class ScriptCommand extends ScriptComponent {
               url: Atlas.asset('Audio/$arg1/$arg2.mp3', state.region),
               player: state.sePlayer,
             ),
-          )
+          ),
         ];
       case 'bgm':
         if (!filterData.bgm) return [];
@@ -530,7 +515,7 @@ class ScriptCommand extends ScriptComponent {
               url: Atlas.asset('Audio/$filename/$filename.mp3', state.region),
               player: state.bgmPlayer,
             ),
-          )
+          ),
         ];
       case 'tVoice': // valentine voice
         if (!filterData.voice) return [];
@@ -543,7 +528,7 @@ class ScriptCommand extends ScriptComponent {
               url: Atlas.asset('Audio/$folder/$filename.mp3', state.region),
               player: state.voicePlayer,
             ),
-          )
+          ),
         ];
       case 'tVoiceUser': // female/male voices
         if (!filterData.voice) return [];
@@ -555,7 +540,7 @@ class ScriptCommand extends ScriptComponent {
                 url: Atlas.asset('Audio/${args[index * 2]}/${args[index * 2 + 1]}.mp3', state.region),
                 player: state.voicePlayer,
               ),
-            )
+            ),
         ];
       case 'voice':
         if (!filterData.voice) return [];
@@ -566,7 +551,7 @@ class ScriptCommand extends ScriptComponent {
               url: Atlas.asset('Audio/ChrVoice_${arg1.replaceFirst('_', '/')}.mp3', state.region),
               player: state.voicePlayer,
             ),
-          )
+          ),
         ];
       case 'movie':
       case 'criMovie':
@@ -574,14 +559,15 @@ class ScriptCommand extends ScriptComponent {
         final url = state.assetUrl.movie(arg1);
         return [
           WidgetSpan(
-            child: filterData.video
-                ? GestureDetector(
-                    onLongPress: () {
-                      router.pushPage(VideoPlayPage(url: url, title: arg1));
-                    },
-                    child: MyVideoPlayer.url(url: url, autoPlay: filterData.autoPlayVideo),
-                  )
-                : MyVideoPlayer.defaultFailedBuilder(context, url, null),
+            child:
+                filterData.video
+                    ? GestureDetector(
+                      onLongPress: () {
+                        router.pushPage(VideoPlayPage(url: url, title: arg1));
+                      },
+                      child: MyVideoPlayer.url(url: url, autoPlay: filterData.autoPlayVideo),
+                    )
+                    : MyVideoPlayer.defaultFailedBuilder(context, url, null),
           ),
         ];
       case 'selectionUse':
@@ -594,31 +580,28 @@ class ScriptCommand extends ScriptComponent {
           state.textSpan(text: 'Flag: ', style: boldStyle),
           state.textSpan(text: 'Set '),
           if (args.isNotEmpty) state.textSpan(text: arg1, style: codeStyle),
-          if (args.length > 1) ...[
-            state.textSpan(text: ' to '),
-            state.textSpan(text: arg2, style: codeStyle),
-          ],
+          if (args.length > 1) ...[state.textSpan(text: ' to '), state.textSpan(text: arg2, style: codeStyle)],
         ];
       case 'label':
         return [
           state.textSpan(text: 'Label  ', style: boldStyle),
-          for (final arg in args) state.textSpan(text: '$arg  ', style: codeStyle)
+          for (final arg in args) state.textSpan(text: '$arg  ', style: codeStyle),
         ];
       case 'branch':
         return [
           state.textSpan(text: 'Branch: ', style: boldStyle),
           state.textSpan(text: 'Go to label '),
-          for (final arg in args) state.textSpan(text: '$arg  ', style: codeStyle)
+          for (final arg in args) state.textSpan(text: '$arg  ', style: codeStyle),
         ];
       case 'masterBranch':
         return [
           state.textSpan(text: 'Master Branch: ', style: boldStyle),
-          for (final arg in args) state.textSpan(text: '$arg  ', style: codeStyle)
+          for (final arg in args) state.textSpan(text: '$arg  ', style: codeStyle),
         ];
       case 'revivalBranch':
         return [
           state.textSpan(text: 'Revival Branch: ', style: boldStyle),
-          for (final arg in args) state.textSpan(text: '$arg  ', style: codeStyle)
+          for (final arg in args) state.textSpan(text: '$arg  ', style: codeStyle),
         ];
       case 'branchQuestClear':
       case 'branchQuestNotClear':
@@ -637,11 +620,12 @@ class ScriptCommand extends ScriptComponent {
           SharedBuilder.textButtonSpan(
             context: context,
             text: quest == null || quest.lDispName.isEmpty ? 'Quest $questId' : quest.lDispName,
-            onTap: questId == null
-                ? null
-                : () {
-                    router.push(url: Routes.questI(questId));
-                  },
+            onTap:
+                questId == null
+                    ? null
+                    : () {
+                      router.push(url: Routes.questI(questId));
+                    },
           ),
           if (phase != null) state.textSpan(text: ' phase $phase'),
         ];
@@ -804,15 +788,9 @@ class ScriptCommand extends ScriptComponent {
               '/Image/back10000/back10000.png',
               '/Image/back10001/back10001.png',
               '/Image/cut063_cinema/cut063_cinema.png',
-              '/Image/cut063_cinema_fs/cut063_cinema_fs.png'
+              '/Image/cut063_cinema_fs/cut063_cinema_fs.png',
             ].every((e) => !url.endsWith(e)))
-          WidgetSpan(
-            child: CachedImage(
-              imageUrl: url,
-              showSaveOnLongPress: true,
-              viewFullOnTap: true,
-            ),
-          ),
+          WidgetSpan(child: CachedImage(imageUrl: url, showSaveOnLongPress: true, viewFullOnTap: true)),
     ];
   }
 }

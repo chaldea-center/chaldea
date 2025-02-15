@@ -7,11 +7,7 @@ class TailoredExecutionConfirm extends StatelessWidget {
   final String details;
   const TailoredExecutionConfirm({super.key, required this.description, required this.details});
 
-  static Future<bool> show({
-    required BuildContext context,
-    required String description,
-    required String details,
-  }) {
+  static Future<bool> show({required BuildContext context, required String description, required String details}) {
     return showUserConfirm<bool>(
       context: context,
       builder: (context, _) => TailoredExecutionConfirm(description: description, details: details),
@@ -26,22 +22,14 @@ class TailoredExecutionConfirm extends StatelessWidget {
       content: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: divideTiles(
-          [
-            Padding(
-              padding: const EdgeInsets.all(4.0),
-              child: Text(description, textScaler: const TextScaler.linear(0.85)),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(4.0),
-              child: Text(details, textScaler: const TextScaler.linear(0.85)),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(4.0),
-              child: Text('${S.current.battle_should_activate}?'),
-            ),
-          ],
-        ),
+        children: divideTiles([
+          Padding(
+            padding: const EdgeInsets.all(4.0),
+            child: Text(description, textScaler: const TextScaler.linear(0.85)),
+          ),
+          Padding(padding: const EdgeInsets.all(4.0), child: Text(details, textScaler: const TextScaler.linear(0.85))),
+          Padding(padding: const EdgeInsets.all(4.0), child: Text('${S.current.battle_should_activate}?')),
+        ]),
       ),
       hideOk: true,
       hideCancel: true,

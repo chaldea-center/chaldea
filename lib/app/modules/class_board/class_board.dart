@@ -43,31 +43,28 @@ class _ClassBoardDetailPageState extends State<ClassBoardDetailPage> with Single
   @override
   Widget build(BuildContext context) {
     if (_board == null) {
-      return NotFoundPage(
-        title: S.current.class_board,
-        url: Routes.commandCodeI(widget.id ?? 0),
-      );
+      return NotFoundPage(title: S.current.class_board, url: Routes.commandCodeI(widget.id ?? 0));
     }
 
     return Scaffold(
       appBar: AppBar(
         title: Text('${S.current.class_board} ${board.dispName}'),
-        bottom: FixedHeight.tabBar(TabBar(controller: _tabController, tabs: [
-          const Tab(text: 'Info'),
-          Tab(text: S.current.class_board_square),
-          const Tab(text: 'Map'),
-          Tab(text: S.current.mission),
-        ])),
+        bottom: FixedHeight.tabBar(
+          TabBar(
+            controller: _tabController,
+            tabs: [
+              const Tab(text: 'Info'),
+              Tab(text: S.current.class_board_square),
+              const Tab(text: 'Map'),
+              Tab(text: S.current.mission),
+            ],
+          ),
+        ),
       ),
       body: TabBarView(
         controller: _tabController,
         physics: _tabController.index == 2 ? const NeverScrollableScrollPhysics() : null,
-        children: [
-          db.onUserData((context, snapshot) => infoTab),
-          squareTab,
-          mapTab,
-          missionTab,
-        ],
+        children: [db.onUserData((context, snapshot) => infoTab), squareTab, mapTab, missionTab],
       ),
     );
   }
@@ -124,22 +121,26 @@ class _ClassBoardDetailPageState extends State<ClassBoardDetailPage> with Single
 
     List<Widget> rows = [
       CustomTableRow.fromTexts(texts: ['No.${board.id}'], isHeader: true),
-      CustomTableRow.fromChildren(children: [
-        Text.rich(TextSpan(children: [
-          CenterWidgetSpan(child: db.getIconImage(board.btnIcon, width: 24, aspectRatio: 1)),
-          const TextSpan(text: ' '),
-          TextSpan(text: board.dispName),
-        ]))
-      ]),
+      CustomTableRow.fromChildren(
+        children: [
+          Text.rich(
+            TextSpan(
+              children: [
+                CenterWidgetSpan(child: db.getIconImage(board.btnIcon, width: 24, aspectRatio: 1)),
+                const TextSpan(text: ' '),
+                TextSpan(text: board.dispName),
+              ],
+            ),
+          ),
+        ],
+      ),
       if (board.condType != CondType.none) ...[
         CustomTableRow.fromTexts(texts: [S.current.condition], isHeader: true),
-        CustomTableRow.fromChildren(children: [
-          CondTargetValueDescriptor(
-            condType: board.condType,
-            target: board.condTargetId,
-            value: board.condNum,
-          )
-        ]),
+        CustomTableRow.fromChildren(
+          children: [
+            CondTargetValueDescriptor(condType: board.condType, target: board.condTargetId, value: board.condNum),
+          ],
+        ),
       ],
       CustomTableRow.fromTexts(texts: [S.current.svt_class], isHeader: true),
       for (final boardClass in board.classes) CustomTableRow.fromChildren(children: [_buildBoardClass(boardClass)]),
@@ -148,40 +149,44 @@ class _ClassBoardDetailPageState extends State<ClassBoardDetailPage> with Single
       CustomTableRow.fromTexts(texts: [S.current.item], isHeader: true),
       for (final items in [unlockItems, enhanceItems])
         if (items.isNotEmpty)
-          CustomTableRow.fromChildren(children: [
-            Wrap(
-              // alignment: WrapAlignment.center,
-              children: [
-                for (final itemId in items.keys.toList()..sort(Item.compare2))
-                  Item.iconBuilder(
-                    context: context,
-                    item: null,
-                    itemId: itemId,
-                    text: items[itemId]?.format(),
-                    width: 32,
-                  )
-              ],
-            )
-          ]),
+          CustomTableRow.fromChildren(
+            children: [
+              Wrap(
+                // alignment: WrapAlignment.center,
+                children: [
+                  for (final itemId in items.keys.toList()..sort(Item.compare2))
+                    Item.iconBuilder(
+                      context: context,
+                      item: null,
+                      itemId: itemId,
+                      text: items[itemId]?.format(),
+                      width: 32,
+                    ),
+                ],
+              ),
+            ],
+          ),
       CustomTableRow.fromTexts(texts: ['${S.current.item}(${S.current.plan})'], isHeader: true),
       if (planUnlockItems.isEmpty && planEnhanceItems.isEmpty) CustomTableRow.fromTexts(texts: const ['-']),
       for (final items in [planUnlockItems, planEnhanceItems])
         if (items.isNotEmpty)
-          CustomTableRow.fromChildren(children: [
-            Wrap(
-              // alignment: WrapAlignment.center,
-              children: [
-                for (final itemId in items.keys.toList()..sort(Item.compare2))
-                  Item.iconBuilder(
-                    context: context,
-                    item: null,
-                    itemId: itemId,
-                    text: items[itemId]?.format(),
-                    width: 32,
-                  )
-              ],
-            )
-          ]),
+          CustomTableRow.fromChildren(
+            children: [
+              Wrap(
+                // alignment: WrapAlignment.center,
+                children: [
+                  for (final itemId in items.keys.toList()..sort(Item.compare2))
+                    Item.iconBuilder(
+                      context: context,
+                      item: null,
+                      itemId: itemId,
+                      text: items[itemId]?.format(),
+                      width: 32,
+                    ),
+                ],
+              ),
+            ],
+          ),
       if (spells.isNotEmpty) ...[
         CustomTableRow.fromTexts(texts: [S.current.command_spell], isHeader: true),
         for (final cs in spells.values)
@@ -222,9 +227,9 @@ class _ClassBoardDetailPageState extends State<ClassBoardDetailPage> with Single
                     color: Theme.of(context).textTheme.bodySmall?.color,
                   ),
                 ],
-              )
+              ),
           ],
-        )
+        ),
       ],
     ];
 
@@ -239,10 +244,9 @@ class _ClassBoardDetailPageState extends State<ClassBoardDetailPage> with Single
       condType: boardClass.condType,
       target: boardClass.condTargetId,
       value: boardClass.condNum,
-      leading: TextSpan(children: [
-        SvtClassWidget.rich(context: context, classId: boardClass.classId),
-        const TextSpan(text: ': '),
-      ]),
+      leading: TextSpan(
+        children: [SvtClassWidget.rich(context: context, classId: boardClass.classId), const TextSpan(text: ': ')],
+      ),
     );
   }
 
@@ -271,7 +275,7 @@ class _ClassBoardDetailPageState extends State<ClassBoardDetailPage> with Single
               ),
             ],
           ),
-        )
+        ),
       ],
     );
   }
@@ -299,10 +303,14 @@ class _ClassBoardDetailPageState extends State<ClassBoardDetailPage> with Single
             if (square.lock != null) {
               final lockPlan = db.curUser.classBoardUnlockedOf(board.id, square.id);
               if (lockPlan != LockPlan.none) {
-                status.add(TextSpan(children: [
-                  const CenterWidgetSpan(child: Icon(Icons.lock, size: 16)),
-                  TextSpan(text: lockPlan.dispPlan),
-                ]));
+                status.add(
+                  TextSpan(
+                    children: [
+                      const CenterWidgetSpan(child: Icon(Icons.lock, size: 16)),
+                      TextSpan(text: lockPlan.dispPlan),
+                    ],
+                  ),
+                );
               }
             }
             final enhancePlan = db.curUser.classBoardEnhancedOf(board.id, square.id);
@@ -331,12 +339,7 @@ class _ClassBoardDetailPageState extends State<ClassBoardDetailPage> with Single
                 const Text('  '),
               ],
               for (final itemAmount in square.items)
-                Item.iconBuilder(
-                  context: context,
-                  item: itemAmount.item,
-                  width: 24,
-                  text: itemAmount.amount.format(),
-                ),
+                Item.iconBuilder(context: context, item: itemAmount.item, width: 24, text: itemAmount.amount.format()),
             ],
           ),
         );
@@ -405,10 +408,7 @@ class _ClassBoardDetailPageState extends State<ClassBoardDetailPage> with Single
       children: [
         for (final isCur in [true, false]) ...[
           SimpleDialogOption(
-            child: Text(
-              isCur ? S.current.current_ : S.current.target,
-              style: Theme.of(context).textTheme.bodySmall,
-            ),
+            child: Text(isCur ? S.current.current_ : S.current.target, style: Theme.of(context).textTheme.bodySmall),
           ),
           for (final value in [false, true])
             SimpleDialogOption(
@@ -452,14 +452,96 @@ class ClassBoardSquareDetail extends StatelessWidget {
       if (lock.condType == CondType.eventMissionClear || lock.condType == CondType.eventMissionAchieve) {
         mission = db.gameData.others.eventMissions[lock.condTargetId];
       }
-      children.add(TileGroup(
-        header: S.current.unlock,
-        children: [
-          if (lock.items.isNotEmpty)
+      children.add(
+        TileGroup(
+          header: S.current.unlock,
+          children: [
+            if (lock.items.isNotEmpty)
+              ListTile(
+                dense: true,
+                title: Text(S.current.plan),
+                contentPadding: const EdgeInsetsDirectional.only(start: 16),
+                trailing: db.onUserData(
+                  (context, snapshot) => Wrap(
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    children: [
+                      FilterGroup<LockPlan>(
+                        combined: true,
+                        padding: EdgeInsets.zero,
+                        options: LockPlan.values,
+                        values: FilterRadioData.nonnull(board.unlockedOf(square.id)),
+                        optionBuilder: (value) => Text(value.dispPlan),
+                        onFilterChanged: (v, _) {
+                          board.status.unlockedSquares.toggle(square.id, v.radioValue!.current);
+                          board.plan_.unlockedSquares.toggle(square.id, v.radioValue!.target);
+                          db.itemCenter.updateClassBoard();
+                        },
+                      ),
+                      buildEnhanceButton(
+                        context: context,
+                        title: S.current.unlock,
+                        enabled: board.unlockedOf(square.id) != LockPlan.full,
+                        items: lock.items,
+                        onEnhance: () {
+                          for (final amount in lock.items) {
+                            db.curUser.items.addNum(amount.itemId, amount.amount * -1);
+                          }
+                          board.status.unlockedSquares.toggle(square.id, true);
+                          board.plan_.unlockedSquares.toggle(square.id, true);
+                          db.itemCenter.updateClassBoard();
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ),
             ListTile(
               dense: true,
-              title: Text(S.current.plan),
+              title: Text('${S.current.item}(${S.current.unlock})'),
+              leading: const Icon(Icons.lock, size: 18),
+              minLeadingWidth: 24,
+              horizontalTitleGap: 8,
+              trailing: Wrap(
+                children: [
+                  for (final itemAmount in lock.items)
+                    Item.iconBuilder(
+                      context: context,
+                      item: itemAmount.item,
+                      text: itemAmount.amount.format(),
+                      width: 28,
+                    ),
+                ],
+              ),
+            ),
+            if (lock.condType != CondType.none)
+              ListTile(
+                dense: true,
+                title: Text(S.current.condition),
+                subtitle: CondTargetValueDescriptor(
+                  condType: lock.condType,
+                  target: lock.condTargetId,
+                  value: lock.condNum,
+                ),
+              ),
+            if (mission != null &&
+                (lock.condType == CondType.eventMissionClear || lock.condType == CondType.eventMissionAchieve))
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                child: MissionCondsDescriptor(mission: mission, onlyShowClear: true),
+              ),
+          ],
+        ),
+      );
+    }
+    children.add(
+      TileGroup(
+        header: square.skillTypeStr,
+        children: [
+          if (square.items.isNotEmpty)
+            ListTile(
+              dense: true,
               contentPadding: const EdgeInsetsDirectional.only(start: 16),
+              title: Text(S.current.plan),
               trailing: db.onUserData(
                 (context, snapshot) => Wrap(
                   crossAxisAlignment: WrapCrossAlignment.center,
@@ -468,25 +550,25 @@ class ClassBoardSquareDetail extends StatelessWidget {
                       combined: true,
                       padding: EdgeInsets.zero,
                       options: LockPlan.values,
-                      values: FilterRadioData.nonnull(board.unlockedOf(square.id)),
+                      values: FilterRadioData.nonnull(board.enhancedOf(square.id)),
                       optionBuilder: (value) => Text(value.dispPlan),
                       onFilterChanged: (v, _) {
-                        board.status.unlockedSquares.toggle(square.id, v.radioValue!.current);
-                        board.plan_.unlockedSquares.toggle(square.id, v.radioValue!.target);
+                        board.status.enhancedSquares.toggle(square.id, v.radioValue!.current);
+                        board.plan_.enhancedSquares.toggle(square.id, v.radioValue!.target);
                         db.itemCenter.updateClassBoard();
                       },
                     ),
                     buildEnhanceButton(
                       context: context,
-                      title: S.current.unlock,
-                      enabled: board.unlockedOf(square.id) != LockPlan.full,
-                      items: lock.items,
+                      title: S.current.enhance,
+                      enabled: board.enhancedOf(square.id) != LockPlan.full,
+                      items: square.items,
                       onEnhance: () {
-                        for (final amount in lock.items) {
+                        for (final amount in square.items) {
                           db.curUser.items.addNum(amount.itemId, amount.amount * -1);
                         }
-                        board.status.unlockedSquares.toggle(square.id, true);
-                        board.plan_.unlockedSquares.toggle(square.id, true);
+                        board.status.enhancedSquares.toggle(square.id, true);
+                        board.plan_.enhancedSquares.toggle(square.id, true);
                         db.itemCenter.updateClassBoard();
                       },
                     ),
@@ -496,13 +578,18 @@ class ClassBoardSquareDetail extends StatelessWidget {
             ),
           ListTile(
             dense: true,
-            title: Text('${S.current.item}(${S.current.unlock})'),
-            leading: const Icon(Icons.lock, size: 18),
+            title: Text(square.skillTypeStr),
+            subtitle: square.flags.isEmpty ? null : Text(square.flags.map((e) => e.name).join(" / ")),
+            trailing: Text('Lv.+${square.upSkillLv}'),
+          ),
+          ListTile(
+            dense: true,
+            title: Text('${S.current.item}(${S.current.enhance})'),
             minLeadingWidth: 24,
             horizontalTitleGap: 8,
             trailing: Wrap(
               children: [
-                for (final itemAmount in lock.items)
+                for (final itemAmount in square.items)
                   Item.iconBuilder(
                     context: context,
                     item: itemAmount.item,
@@ -512,119 +599,32 @@ class ClassBoardSquareDetail extends StatelessWidget {
               ],
             ),
           ),
-          if (lock.condType != CondType.none)
+          if (square.targetSkill != null) SkillDescriptor(skill: square.targetSkill!),
+          if (square.targetCommandSpell != null)
+            SkillDescriptor(skill: square.targetCommandSpell!.toSkill(), jumpToDetail: false),
+        ],
+      ),
+    );
+    if (prevs.isNotEmpty || nexts.isNotEmpty) {
+      children.add(
+        TileGroup(
+          header: 'Line',
+          children: [
             ListTile(
               dense: true,
-              title: Text(S.current.condition),
-              subtitle: CondTargetValueDescriptor(
-                condType: lock.condType,
-                target: lock.condTargetId,
-                value: lock.condNum,
-              ),
+              title: Text(S.current.general_previous),
+              trailing: Text(prevs.isEmpty ? '-' : '${S.current.class_board_square} ${prevs.join("/")}'),
             ),
-          if (mission != null &&
-              (lock.condType == CondType.eventMissionClear || lock.condType == CondType.eventMissionAchieve))
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-              child: MissionCondsDescriptor(mission: mission, onlyShowClear: true),
-            )
-        ],
-      ));
-    }
-    children.add(TileGroup(
-      header: square.skillTypeStr,
-      children: [
-        if (square.items.isNotEmpty)
-          ListTile(
-            dense: true,
-            contentPadding: const EdgeInsetsDirectional.only(start: 16),
-            title: Text(S.current.plan),
-            trailing: db.onUserData(
-              (context, snapshot) => Wrap(
-                crossAxisAlignment: WrapCrossAlignment.center,
-                children: [
-                  FilterGroup<LockPlan>(
-                    combined: true,
-                    padding: EdgeInsets.zero,
-                    options: LockPlan.values,
-                    values: FilterRadioData.nonnull(board.enhancedOf(square.id)),
-                    optionBuilder: (value) => Text(value.dispPlan),
-                    onFilterChanged: (v, _) {
-                      board.status.enhancedSquares.toggle(square.id, v.radioValue!.current);
-                      board.plan_.enhancedSquares.toggle(square.id, v.radioValue!.target);
-                      db.itemCenter.updateClassBoard();
-                    },
-                  ),
-                  buildEnhanceButton(
-                    context: context,
-                    title: S.current.enhance,
-                    enabled: board.enhancedOf(square.id) != LockPlan.full,
-                    items: square.items,
-                    onEnhance: () {
-                      for (final amount in square.items) {
-                        db.curUser.items.addNum(amount.itemId, amount.amount * -1);
-                      }
-                      board.status.enhancedSquares.toggle(square.id, true);
-                      board.plan_.enhancedSquares.toggle(square.id, true);
-                      db.itemCenter.updateClassBoard();
-                    },
-                  ),
-                ],
-              ),
+            ListTile(
+              dense: true,
+              title: Text(S.current.general_next),
+              trailing: Text(nexts.isEmpty ? '-' : '${S.current.class_board_square} ${nexts.join("/")}'),
             ),
-          ),
-        ListTile(
-          dense: true,
-          title: Text(square.skillTypeStr),
-          subtitle: square.flags.isEmpty ? null : Text(square.flags.map((e) => e.name).join(" / ")),
-          trailing: Text('Lv.+${square.upSkillLv}'),
+          ],
         ),
-        ListTile(
-          dense: true,
-          title: Text('${S.current.item}(${S.current.enhance})'),
-          minLeadingWidth: 24,
-          horizontalTitleGap: 8,
-          trailing: Wrap(
-            children: [
-              for (final itemAmount in square.items)
-                Item.iconBuilder(
-                  context: context,
-                  item: itemAmount.item,
-                  text: itemAmount.amount.format(),
-                  width: 28,
-                ),
-            ],
-          ),
-        ),
-        if (square.targetSkill != null) SkillDescriptor(skill: square.targetSkill!),
-        if (square.targetCommandSpell != null)
-          SkillDescriptor(
-            skill: square.targetCommandSpell!.toSkill(),
-            jumpToDetail: false,
-          )
-      ],
-    ));
-    if (prevs.isNotEmpty || nexts.isNotEmpty) {
-      children.add(TileGroup(
-        header: 'Line',
-        children: [
-          ListTile(
-            dense: true,
-            title: Text(S.current.general_previous),
-            trailing: Text(prevs.isEmpty ? '-' : '${S.current.class_board_square} ${prevs.join("/")}'),
-          ),
-          ListTile(
-            dense: true,
-            title: Text(S.current.general_next),
-            trailing: Text(nexts.isEmpty ? '-' : '${S.current.class_board_square} ${nexts.join("/")}'),
-          ),
-        ],
-      ));
+      );
     }
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: children,
-    );
+    return Column(mainAxisSize: MainAxisSize.min, children: children);
   }
 
   Widget buildEnhanceButton({
@@ -635,31 +635,32 @@ class ClassBoardSquareDetail extends StatelessWidget {
     required VoidCallback onEnhance,
   }) {
     return IconButton(
-      onPressed: !enabled
-          ? null
-          : () {
-              SimpleCancelOkDialog(
-                title: Text(title),
-                onTapOk: onEnhance,
-                content: ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 360),
-                  child: Wrap(
-                    spacing: 2,
-                    runSpacing: 2,
-                    children: [
-                      for (final amount in items)
-                        Item.iconBuilder(
-                          context: context,
-                          item: null,
-                          itemId: amount.itemId,
-                          text: amount.amount.format(),
-                          width: 48,
-                        ),
-                    ],
+      onPressed:
+          !enabled
+              ? null
+              : () {
+                SimpleCancelOkDialog(
+                  title: Text(title),
+                  onTapOk: onEnhance,
+                  content: ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 360),
+                    child: Wrap(
+                      spacing: 2,
+                      runSpacing: 2,
+                      children: [
+                        for (final amount in items)
+                          Item.iconBuilder(
+                            context: context,
+                            item: null,
+                            itemId: amount.itemId,
+                            text: amount.amount.format(),
+                            width: 48,
+                          ),
+                      ],
+                    ),
                   ),
-                ),
-              ).showDialog(context);
-            },
+                ).showDialog(context);
+              },
       icon: const Icon(Icons.upgrade),
       tooltip: title,
     );

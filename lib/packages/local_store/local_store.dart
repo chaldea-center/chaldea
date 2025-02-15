@@ -9,11 +9,7 @@ class LocalStore<T> {
   final String? indent;
   Map<String, dynamic> _data = {};
 
-  LocalStore({
-    required this.fp,
-    this.lapse = const Duration(seconds: 1),
-    this.indent,
-  });
+  LocalStore({required this.fp, this.lapse = const Duration(seconds: 1), this.indent});
 
   LocalStoreItem<S> newItem<S>(String key) => LocalStoreItem<S>(this, key);
 

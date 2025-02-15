@@ -66,17 +66,21 @@ class MyVideoPlayer extends StatefulWidget {
     }
     String errorStr = error?.toString() ?? 'Error';
     name ??= String.fromCharCodes(errorStr.runes.take(50));
-    return Text.rich(TextSpan(children: [
-      const TextSpan(text: 'Video  ', style: TextStyle(fontWeight: FontWeight.bold)),
-      SharedBuilder.textButtonSpan(
-        context: context,
-        text: '▶ $name',
-        style: TextStyle(color: AppTheme(context).tertiaryContainer),
-        onTap: () {
-          if (url != null) launch(url);
-        },
-      )
-    ]));
+    return Text.rich(
+      TextSpan(
+        children: [
+          const TextSpan(text: 'Video  ', style: TextStyle(fontWeight: FontWeight.bold)),
+          SharedBuilder.textButtonSpan(
+            context: context,
+            text: '▶ $name',
+            style: TextStyle(color: AppTheme(context).tertiaryContainer),
+            onTap: () {
+              if (url != null) launch(url);
+            },
+          ),
+        ],
+      ),
+    );
   }
 }
 
@@ -132,11 +136,15 @@ class _MyVideoPlayerState extends State<MyVideoPlayer> {
     final fp = kIsWeb ? null : await AtlasIconLoader.i.get(url);
     if (!mounted) return;
     if (fp != null) {
-      _fallbackController =
-          VideoPlayerController.file(File(fp), videoPlayerOptions: VideoPlayerOptions(mixWithOthers: true));
+      _fallbackController = VideoPlayerController.file(
+        File(fp),
+        videoPlayerOptions: VideoPlayerOptions(mixWithOthers: true),
+      );
     } else {
-      _fallbackController =
-          VideoPlayerController.networkUrl(Uri.parse(url), videoPlayerOptions: VideoPlayerOptions(mixWithOthers: true));
+      _fallbackController = VideoPlayerController.networkUrl(
+        Uri.parse(url),
+        videoPlayerOptions: VideoPlayerOptions(mixWithOthers: true),
+      );
     }
     try {
       await _fallbackController!.initialize();
@@ -179,7 +187,8 @@ class _MyVideoPlayerState extends State<MyVideoPlayer> {
     final themeData = Theme.of(context);
     progressIndicator = Theme(
       data: themeData.copyWith(
-          progressIndicatorTheme: themeData.progressIndicatorTheme.copyWith(linearMinHeight: widget.indicatorHeight)),
+        progressIndicatorTheme: themeData.progressIndicatorTheme.copyWith(linearMinHeight: widget.indicatorHeight),
+      ),
       child: progressIndicator,
     );
 
@@ -187,9 +196,10 @@ class _MyVideoPlayerState extends State<MyVideoPlayer> {
       alignment: Alignment.bottomCenter,
       children: [
         Padding(
-          padding: widget.indicatorBelow
-              ? EdgeInsets.only(bottom: widget.indicatorHeight + widget.indicatorPadding.bottom)
-              : EdgeInsets.zero,
+          padding:
+              widget.indicatorBelow
+                  ? EdgeInsets.only(bottom: widget.indicatorHeight + widget.indicatorPadding.bottom)
+                  : EdgeInsets.zero,
           child: AspectRatio(
             aspectRatio: controller.value.isInitialized ? controller.value.aspectRatio : widget.initAspectRatio,
             child: player,
@@ -199,18 +209,13 @@ class _MyVideoPlayerState extends State<MyVideoPlayer> {
           child: AnimatedSwitcher(
             duration: const Duration(milliseconds: 50),
             reverseDuration: const Duration(milliseconds: 200),
-            child: !controller.value.isPlaying && controller.value.position == Duration.zero
-                ? Container(
-                    color: Colors.black26,
-                    child: const Center(
-                      child: Icon(
-                        Icons.play_arrow_rounded,
-                        color: Colors.white,
-                        size: 100.0,
-                      ),
-                    ),
-                  )
-                : const SizedBox.shrink(),
+            child:
+                !controller.value.isPlaying && controller.value.position == Duration.zero
+                    ? Container(
+                      color: Colors.black26,
+                      child: const Center(child: Icon(Icons.play_arrow_rounded, color: Colors.white, size: 100.0)),
+                    )
+                    : const SizedBox.shrink(),
           ),
         ),
         Positioned.fill(
@@ -223,7 +228,7 @@ class _MyVideoPlayerState extends State<MyVideoPlayer> {
             },
           ),
         ),
-        progressIndicator
+        progressIndicator,
       ],
     );
     return stack;
@@ -270,9 +275,7 @@ class _VideoPlayPageState extends State<VideoPlayPage> {
           ),
         ],
       ),
-      body: Center(
-        child: MyVideoPlayer.url(key: playerKey, url: widget.url),
-      ),
+      body: Center(child: MyVideoPlayer.url(key: playerKey, url: widget.url)),
     );
   }
 }

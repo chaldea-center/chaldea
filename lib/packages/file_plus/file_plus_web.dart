@@ -19,9 +19,7 @@ class FilePlusWeb implements FilePlus {
 
   LazyBox<Uint8List> get effectiveBox => _box ?? _defaultBox;
 
-  FilePlusWeb(String fp, {LazyBox<Uint8List>? box})
-      : _path = normalizePath(fp),
-        _box = box;
+  FilePlusWeb(String fp, {LazyBox<Uint8List>? box}) : _path = normalizePath(fp), _box = box;
 
   static Future<void> initWebFileSystem() async {
     assert(kIsWeb, 'DO NOT init for non-web');
@@ -94,15 +92,23 @@ class FilePlusWeb implements FilePlus {
   }
 
   @override
-  Future<FilePlus> writeAsString(String contents,
-      {FileMode mode = FileMode.write, Encoding encoding = utf8, bool flush = false}) async {
+  Future<FilePlus> writeAsString(
+    String contents, {
+    FileMode mode = FileMode.write,
+    Encoding encoding = utf8,
+    bool flush = false,
+  }) async {
     return writeAsBytes(encoding.encode(contents), mode: mode, flush: flush);
   }
 
   /// not sync
   @override
-  void writeAsStringSync(String contents,
-      {FileMode mode = FileMode.write, Encoding encoding = utf8, bool flush = false}) {
+  void writeAsStringSync(
+    String contents, {
+    FileMode mode = FileMode.write,
+    Encoding encoding = utf8,
+    bool flush = false,
+  }) {
     writeAsString(contents, mode: mode, encoding: encoding, flush: flush);
   }
 

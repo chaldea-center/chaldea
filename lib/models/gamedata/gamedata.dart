@@ -136,48 +136,48 @@ class GameData with _GameDataExtra {
     this.addData,
     this.spoilerRegion,
     this.removeOldDataRegion,
-  })  : version = version ?? DataVersion(),
-        servantsById = {for (final svt in _sortCards(servants)) svt.id: svt},
-        servants = {
-          for (final svt in _sortCards(servants))
-            if (svt.collectionNo > 0) svt.collectionNo: svt
-        },
-        allCraftEssences = _sortCards(craftEssences),
-        craftEssencesById = {for (final ce in _sortCards(craftEssences)) ce.id: ce},
-        craftEssences = {
-          for (final ce in _sortCards(craftEssences))
-            if (ce.collectionNo > 0) ce.collectionNo: ce
-        },
-        commandCodesById = {for (final cc in _sortCards(commandCodes)) cc.id: cc},
-        commandCodes = {
-          for (final cc in _sortCards(commandCodes))
-            if (cc.collectionNo > 0) cc.collectionNo: cc
-        },
-        mysticCodes = mysticCodes ?? {},
-        campaigns = campaigns ?? {},
-        events = events ?? {},
-        wars = wars ?? {},
-        classBoards = classBoards ?? {},
-        items = items ?? {},
-        questPhases = questPhases ?? {},
-        exchangeTickets = exchangeTickets ?? {},
-        entities = entities ?? {},
-        bgms = bgms ?? {},
-        enemyMasters = enemyMasters ?? {},
-        masterMissions = masterMissions ?? {},
-        extraMasterMission = extraMasterMission ?? {},
-        questGroups = questGroups ?? [],
-        questPhaseDetails = {
-          for (final phase in questPhaseDetails ?? <BasicQuestPhaseDetail>[]) phase.questId * 100 + phase.phase: phase,
-        },
-        gachas = gachas ?? {},
-        wiki = wiki ?? WikiData(),
-        mappingData = mappingData ?? MappingData(),
-        constData = constData ?? ConstGameData(),
-        dropData = dropData ?? DropData(),
-        baseTds = baseTds ?? {},
-        baseSkills = baseSkills ?? {},
-        baseFunctions = baseFunctions ?? {} {
+  }) : version = version ?? DataVersion(),
+       servantsById = {for (final svt in _sortCards(servants)) svt.id: svt},
+       servants = {
+         for (final svt in _sortCards(servants))
+           if (svt.collectionNo > 0) svt.collectionNo: svt,
+       },
+       allCraftEssences = _sortCards(craftEssences),
+       craftEssencesById = {for (final ce in _sortCards(craftEssences)) ce.id: ce},
+       craftEssences = {
+         for (final ce in _sortCards(craftEssences))
+           if (ce.collectionNo > 0) ce.collectionNo: ce,
+       },
+       commandCodesById = {for (final cc in _sortCards(commandCodes)) cc.id: cc},
+       commandCodes = {
+         for (final cc in _sortCards(commandCodes))
+           if (cc.collectionNo > 0) cc.collectionNo: cc,
+       },
+       mysticCodes = mysticCodes ?? {},
+       campaigns = campaigns ?? {},
+       events = events ?? {},
+       wars = wars ?? {},
+       classBoards = classBoards ?? {},
+       items = items ?? {},
+       questPhases = questPhases ?? {},
+       exchangeTickets = exchangeTickets ?? {},
+       entities = entities ?? {},
+       bgms = bgms ?? {},
+       enemyMasters = enemyMasters ?? {},
+       masterMissions = masterMissions ?? {},
+       extraMasterMission = extraMasterMission ?? {},
+       questGroups = questGroups ?? [],
+       questPhaseDetails = {
+         for (final phase in questPhaseDetails ?? <BasicQuestPhaseDetail>[]) phase.questId * 100 + phase.phase: phase,
+       },
+       gachas = gachas ?? {},
+       wiki = wiki ?? WikiData(),
+       mappingData = mappingData ?? MappingData(),
+       constData = constData ?? ConstGameData(),
+       dropData = dropData ?? DropData(),
+       baseTds = baseTds ?? {},
+       baseSkills = baseSkills ?? {},
+       baseFunctions = baseFunctions ?? {} {
     if (removeOldDataRegion != null) {
       bool _shouldRemove(int jpTime, MappingBase<int>? regionTimes, int latest, int? inferLatest) {
         final t = removeOldDataRegion == Region.jp ? jpTime : regionTimes?.ofRegion(removeOldDataRegion);
@@ -215,8 +215,9 @@ class GameData with _GameDataExtra {
     // merge mc campaigns
     String trim(String s) => s.replaceAll(RegExp(r'[\s\n]'), '');
     Set<String> eventKeys = this.events.values.map((e) => [e.extra.mcLink, trim(e.name)].join('/')).toSet();
-    final campaignsToAdd =
-        this.campaigns.values.where((e) => !eventKeys.contains([e.extra.mcLink, trim(e.name)].join('/')));
+    final campaignsToAdd = this.campaigns.values.where(
+      (e) => !eventKeys.contains([e.extra.mcLink, trim(e.name)].join('/')),
+    );
     this.events.addAll({for (final e in campaignsToAdd) e.id: e});
 
     // process
@@ -264,28 +265,28 @@ class GameData with _GameDataExtra {
     );
     costumes = {
       for (final svt in servants.values)
-        for (final costume in svt.profile.costume.values) costume.costumeCollectionNo: costume
+        for (final costume in svt.profile.costume.values) costume.costumeCollectionNo: costume,
     };
     costumesById = {for (final costume in costumes.values) costume.battleCharaId: costume};
     mainStories = {
       for (final war in wars.values)
-        if (war.isMainStory) war.id: war
+        if (war.isMainStory) war.id: war,
     };
     shops = {
       for (final event in events.values)
-        for (final shop in event.shop) shop.id: shop
+        for (final shop in event.shop) shop.id: shop,
     };
     spots = {
       for (final war in wars.values)
-        for (final spot in war.spots) spot.id: spot
+        for (final spot in war.spots) spot.id: spot,
     };
     maps = {
       for (final war in wars.values)
-        for (final map in war.maps) map.id: map
+        for (final map in war.maps) map.id: map,
     };
     quests = {
       for (final spot in spots.values)
-        for (final quest in spot.quests) quest.id: quest
+        for (final quest in spot.quests) quest.id: quest,
     };
     // calculation at last
     for (final war in wars.values) {
@@ -417,12 +418,7 @@ class DataVersion {
   final String minimalApp;
   final Map<String, FileVersion> files;
 
-  DataVersion({
-    this.timestamp = 0,
-    this.utc = "",
-    this.minimalApp = '1.0.0',
-    this.files = const {},
-  });
+  DataVersion({this.timestamp = 0, this.utc = "", this.minimalApp = '1.0.0', this.files = const {}});
 
   AppVersion get appVersion => AppVersion.tryParse(minimalApp) ?? const AppVersion(1, 0, 0);
 
@@ -476,11 +472,7 @@ class GameTops {
   GameTop na;
   GameTop cn;
 
-  GameTops({
-    required this.jp,
-    required this.na,
-    required this.cn,
-  });
+  GameTops({required this.jp, required this.na, required this.cn});
 
   factory GameTops.fromJson(Map<String, dynamic> json) => _$GameTopsFromJson(json);
 
@@ -505,10 +497,7 @@ class GameAppVerCode {
   String appVer;
   String verCode;
 
-  GameAppVerCode({
-    required this.appVer,
-    this.verCode = "",
-  });
+  GameAppVerCode({required this.appVer, this.verCode = ""});
 
   factory GameAppVerCode.fromJson(Map<String, dynamic> json) => _$GameAppVerCodeFromJson(json);
 
@@ -576,11 +565,7 @@ class AssetBundleDecrypt {
   String animalName;
   String zooName;
 
-  AssetBundleDecrypt({
-    required this.folderName,
-    required this.animalName,
-    required this.zooName,
-  });
+  AssetBundleDecrypt({required this.folderName, required this.animalName, required this.zooName});
   factory AssetBundleDecrypt.fromJson(Map<String, dynamic> json) => _$AssetBundleDecryptFromJson(json);
 
   Map<String, dynamic> toJson() => _$AssetBundleDecryptToJson(this);
@@ -625,7 +610,7 @@ class _ProcessedData {
     }
     enemyMasterBattles = {
       for (final master in gameData.enemyMasters.values)
-        for (final battle in master.battles) battle.id: battle
+        for (final battle in master.battles) battle.id: battle,
     };
     eventMissions = {
       for (final mm in gameData.extraMasterMission.values)
@@ -636,9 +621,7 @@ class _ProcessedData {
     eventPointGroups = {
       for (final event in gameData.events.values)
         if (event.pointGroups.isNotEmpty)
-          event.id: {
-            for (final pointGroup in event.pointGroups) pointGroup.groupId: pointGroup,
-          }
+          event.id: {for (final pointGroup in event.pointGroups) pointGroup.groupId: pointGroup},
     };
     eventPointBuffs = {
       for (final event in gameData.events.values)
@@ -646,7 +629,7 @@ class _ProcessedData {
     };
     eventPointBuffGroups = {
       for (final event in gameData.events.values)
-        for (final group in event.pointGroups) group.groupId: group
+        for (final group in event.pointGroups) group.groupId: group,
     };
     for (final quest in gameData.questGroups) {
       final type = quest.type2;
@@ -709,10 +692,13 @@ class _ProcessedData {
         ...svt.skills,
         ...svt.noblePhantasms,
         ...svt.classPassive,
-        ...svt.appendPassive.map((e) => e.skill)
+        ...svt.appendPassive.map((e) => e.skill),
       ]) {
         for (final func in NiceFunction.filterFuncs<BaseFunction>(
-            funcs: skill.functions, includeTrigger: true, gameData: gameData)) {
+          funcs: skill.functions,
+          includeTrigger: true,
+          gameData: gameData,
+        )) {
           svtFuncs.add(func.funcType);
           svtBuffs.addAll(func.buffs.map((e) => e.type));
           funcTargets.add(func.funcTargetType);
@@ -722,7 +708,10 @@ class _ProcessedData {
     for (final ce in gameData.craftEssences.values) {
       for (final skill in ce.skills) {
         for (final func in NiceFunction.filterFuncs<BaseFunction>(
-            funcs: skill.functions, includeTrigger: true, gameData: gameData)) {
+          funcs: skill.functions,
+          includeTrigger: true,
+          gameData: gameData,
+        )) {
           ceFuncs.add(func.funcType);
           ceBuffs.addAll(func.buffs.map((e) => e.type));
           funcTargets.add(func.funcTargetType);
@@ -732,7 +721,10 @@ class _ProcessedData {
     for (final cc in gameData.commandCodes.values) {
       for (final skill in cc.skills) {
         for (final func in NiceFunction.filterFuncs<BaseFunction>(
-            funcs: skill.functions, includeTrigger: true, gameData: gameData)) {
+          funcs: skill.functions,
+          includeTrigger: true,
+          gameData: gameData,
+        )) {
           ccFuncs.add(func.funcType);
           ccBuffs.addAll(func.buffs.map((e) => e.type));
           funcTargets.add(func.funcTargetType);
@@ -742,7 +734,10 @@ class _ProcessedData {
     for (final mc in gameData.mysticCodes.values) {
       for (final skill in mc.skills) {
         for (final func in NiceFunction.filterFuncs<BaseFunction>(
-            funcs: skill.functions, includeTrigger: true, gameData: gameData)) {
+          funcs: skill.functions,
+          includeTrigger: true,
+          gameData: gameData,
+        )) {
           mcFuncs.add(func.funcType);
           mcBuffs.addAll(func.buffs.map((e) => e.type));
           funcTargets.add(func.funcTargetType);

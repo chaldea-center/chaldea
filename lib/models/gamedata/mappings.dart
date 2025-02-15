@@ -68,9 +68,7 @@ class Transl<K, V> {
 
   static MappingData get md => db.gameData.mappingData;
 
-  Transl.fromMapping(this.key, MappingBase<V> m, this._default)
-      : _m = m,
-        mappings = {key: m};
+  Transl.fromMapping(this.key, MappingBase<V> m, this._default) : _m = m, mappings = {key: m};
 
   static Transl<int, String> trait(int id, {bool addSvtId = true, bool field = false}) {
     final eventTrait = md.eventTrait[id];
@@ -86,8 +84,11 @@ class Transl<K, V> {
         if (war != null) {
           final lWarName = war.lName.m;
           if (((warId > 8000 && warId < 9900) || warId < 1000)) {
-            return Transl({if (lWarName != null) id: lWarName.convert((v, region) => v?.setMaxLines(1))}, id,
-                war.name.setMaxLines(1));
+            return Transl(
+              {if (lWarName != null) id: lWarName.convert((v, region) => v?.setMaxLines(1))},
+              id,
+              war.name.setMaxLines(1),
+            );
           }
         }
       }
@@ -239,7 +240,9 @@ class Transl<K, V> {
 
   // enums
   static Transl<String, String> enums(
-      Enum value, Map<String, MappingBase<String>> Function(EnumMapping enums) mapping) {
+    Enum value,
+    Map<String, MappingBase<String>> Function(EnumMapping enums) mapping,
+  ) {
     return Transl(mapping(db.gameData.mappingData.enums), value.name, value.name);
   }
 
@@ -361,11 +364,11 @@ class MappingData {
     this.questRelease = const {},
     EnumMapping? enums,
     this.misc = const {},
-  })  : entityRelease = entityRelease ?? MappingList(),
-        ccRelease = ccRelease ?? MappingList(),
-        mcRelease = mcRelease ?? MappingList(),
-        warRelease = warRelease ?? MappingList(),
-        enums = enums ?? EnumMapping() {
+  }) : entityRelease = entityRelease ?? MappingList(),
+       ccRelease = ccRelease ?? MappingList(),
+       mcRelease = mcRelease ?? MappingList(),
+       warRelease = warRelease ?? MappingList(),
+       enums = enums ?? EnumMapping() {
     _updateRegion(itemNames, Region.jp);
     _updateRegion(mcNames, Region.jp);
     _updateRegion(costumeNames, Region.jp);
@@ -401,8 +404,9 @@ class MappingData {
         final idx = match.group(1)!;
         String jp2 = nameJp.replaceAll('ピックアップ$idx召喚', 'ピックアップ召喚');
         if (baseSummonsName.containsKey(jp2)) continue;
-        summonNames[jp2] = names
-            .convert((v, region) => v != null && v.endsWith(idx) ? v.substring(0, v.length - idx.length).trim() : null);
+        summonNames[jp2] = names.convert(
+          (v, region) => v != null && v.endsWith(idx) ? v.substring(0, v.length - idx.length).trim() : null,
+        );
       }
     }
     _updateRegion(summonNames, Region.jp);
@@ -440,10 +444,7 @@ Object? _toJsonT<T>(T value) => value;
 // ignore: unused_element
 void _addStrMappingValues(Map<String, dynamic> json, String field, Map<String, Map<String, String?>> values) {
   print('patching $field with ${values.length} values, ${json.keys.firstOrNull}, ${values.keys.firstOrNull}');
-  json[field] = {
-    ...?(json[field] as Map?),
-    ...values,
-  };
+  json[field] = {...?(json[field] as Map?), ...values};
 }
 
 @JsonSerializable(genericArgumentFactories: true, createToJson: true, includeIfNull: false)
@@ -469,13 +470,7 @@ class MappingBase<T> {
     yield (Region.kr, kr);
   }
 
-  MappingBase({
-    this.jp,
-    this.cn,
-    this.tw,
-    this.na,
-    this.kr,
-  });
+  MappingBase({this.jp, this.cn, this.tw, this.na, this.kr});
 
   T? get l {
     for (final region in db.settings.resolvedPreferredRegions) {
@@ -551,13 +546,7 @@ class MappingBase<T> {
 
   Map<String, dynamic> toJson() => _$MappingBaseToJson(this, _toJsonT);
 
-  MappingBase<T> copyWith({
-    T? jp,
-    T? cn,
-    T? tw,
-    T? na,
-    T? kr,
-  }) {
+  MappingBase<T> copyWith({T? jp, T? cn, T? tw, T? na, T? kr}) {
     return MappingBase<T>(
       jp: jp ?? this.jp,
       cn: cn ?? this.cn,
@@ -585,13 +574,7 @@ class MappingBase<T> {
 
 @JsonSerializable(genericArgumentFactories: true)
 class MappingList<T> extends MappingBase<List<T>> {
-  MappingList({
-    super.jp,
-    super.cn,
-    super.tw,
-    super.na,
-    super.kr,
-  });
+  MappingList({super.jp, super.cn, super.tw, super.na, super.kr});
 
   factory MappingList.fromJson(Map<String, dynamic> json) => _$MappingListFromJson(json, _fromJsonT);
 
@@ -601,13 +584,7 @@ class MappingList<T> extends MappingBase<List<T>> {
 
 @JsonSerializable(genericArgumentFactories: true)
 class MappingDict<V> extends MappingBase<Map<int, V>> {
-  MappingDict({
-    super.jp,
-    super.cn,
-    super.tw,
-    super.na,
-    super.kr,
-  });
+  MappingDict({super.jp, super.cn, super.tw, super.na, super.kr});
 
   factory MappingDict.fromJson(Map<String, dynamic> json) => _$MappingDictFromJson(json, _fromJsonT);
 
@@ -620,15 +597,7 @@ class EventTraitMapping extends MappingBase<String> {
   int? eventId;
   int? relatedTrait; // the similar normal trait, not used yet.
 
-  EventTraitMapping({
-    this.eventId,
-    this.relatedTrait,
-    super.jp,
-    super.cn,
-    super.tw,
-    super.na,
-    super.kr,
-  });
+  EventTraitMapping({this.eventId, this.relatedTrait, super.jp, super.cn, super.tw, super.na, super.kr});
 
   factory EventTraitMapping.fromJson(Map<String, dynamic> json) => _$EventTraitMappingFromJson(json);
 
@@ -640,14 +609,7 @@ class EventTraitMapping extends MappingBase<String> {
 class FieldTraitMapping extends MappingBase<String> {
   List<int> warIds;
 
-  FieldTraitMapping({
-    this.warIds = const [],
-    super.jp,
-    super.cn,
-    super.tw,
-    super.na,
-    super.kr,
-  });
+  FieldTraitMapping({this.warIds = const [], super.jp, super.cn, super.tw, super.na, super.kr});
 
   factory FieldTraitMapping.fromJson(Map<String, dynamic> json) => _$FieldTraitMappingFromJson(json);
 
@@ -660,14 +622,7 @@ class SvtClassMapping extends MappingBase<String> {
   /// name of [SvtClass]
   String? name;
 
-  SvtClassMapping({
-    this.name,
-    super.jp,
-    super.cn,
-    super.tw,
-    super.na,
-    super.kr,
-  });
+  SvtClassMapping({this.name, super.jp, super.cn, super.tw, super.na, super.kr});
 
   factory SvtClassMapping.fromJson(Map<String, dynamic> json) => _$SvtClassMappingFromJson(json);
 
@@ -754,56 +709,16 @@ class EnumMapping {
 }
 
 class _SpecialTransl {
-  String not() => M.of(
-        jp: null,
-        cn: '非',
-        tw: null,
-        na: 'Not',
-        kr: null,
-      );
+  String not() => M.of(jp: null, cn: '非', tw: null, na: 'Not', kr: null);
 
-  String funcValChance(String v) => M.of(
-        jp: '$v確率',
-        cn: '$v概率',
-        tw: '$v概率',
-        na: '$v Chance',
-        kr: '$v 확률',
-      );
-  String funcValActChance(String v) => M.of(
-        jp: '$v確率発動',
-        cn: '$v概率发动',
-        tw: '$v概率發動',
-        na: '$v Act Chance',
-        kr: null,
-      );
-  String funcValWeight(String v) => M.of(
-        jp: null,
-        cn: '$v权重',
-        tw: '$v權重',
-        na: '$v Weight',
-        kr: '$v 무게',
-      );
-  String funcValCountTimes(Object count) => M.of(
-        jp: '$count回',
-        cn: '$count次',
-        tw: '$count次',
-        na: '$count Times',
-        kr: '$count 회',
-      );
-  String funcValTurns(Object turn) => M.of(
-        jp: '$turnターン',
-        cn: '$turn回合',
-        tw: '$turn回合',
-        na: '$turn Turns',
-        kr: '$turn 턴',
-      );
-  String get funcTraitRemoval => M.of(
-        jp: '解除: ',
-        cn: '解除: ',
-        tw: '解除: ',
-        na: 'Remove: ',
-        kr: '해제: ',
-      );
+  String funcValChance(String v) => M.of(jp: '$v確率', cn: '$v概率', tw: '$v概率', na: '$v Chance', kr: '$v 확률');
+  String funcValActChance(String v) => M.of(jp: '$v確率発動', cn: '$v概率发动', tw: '$v概率發動', na: '$v Act Chance', kr: null);
+  String funcValWeight(String v) => M.of(jp: null, cn: '$v权重', tw: '$v權重', na: '$v Weight', kr: '$v 무게');
+  String funcValCountTimes(Object count) =>
+      M.of(jp: '$count回', cn: '$count次', tw: '$count次', na: '$count Times', kr: '$count 회');
+  String funcValTurns(Object turn) =>
+      M.of(jp: '$turnターン', cn: '$turn回合', tw: '$turn回合', na: '$turn Turns', kr: '$turn 턴');
+  String get funcTraitRemoval => M.of(jp: '解除: ', cn: '解除: ', tw: '解除: ', na: 'Remove: ', kr: '해제: ');
   String funcTraitPerBuff({String? target}) {
     return M.of(
       jp: '【${target ?? ""}〔{0}〕状態の数によって】',
@@ -820,87 +735,25 @@ class _SpecialTransl {
   String get target => M.of(jp: '対象', cn: '对象', tw: '對象', na: 'Target', kr: null);
 
   String get funcTraitOnField => M.of(
-        jp: '〔{0}〕のあるフィールドにおいてのみ',
-        cn: '仅在〔{0}〕场地上时',
-        tw: '僅在〔{0}〕場地上時',
-        na: 'When on [{0}] field',
-        kr: '〔{0}〕 있는 필드에서만',
-      );
-  String get actorOnField => M.of(
-        jp: '〔{0}〕がフィールドにいる間',
-        cn: '仅当〔{0}〕在场时',
-        tw: '僅在〔{0}〕在場時',
-        na: 'When [{0}] is on the field',
-        kr: null,
-      );
-  String get funcTargetVals => M.of(
-        jp: '目標特性: ',
-        cn: '目标特性: ',
-        tw: '目標特性: ',
-        na: 'Target Trait: ',
-        kr: '목표의 특성: ',
-      );
-  String get buffCheckSelf => M.of(
-        jp: '自身特性: ',
-        cn: '自身特性: ',
-        tw: '自身特性: ',
-        na: 'Self Trait: ',
-        kr: '자신의 특성: ',
-      );
-  String get buffCheckOpposite => M.of(
-        jp: 'バフ目標: ',
-        cn: 'Buff目标: ',
-        tw: 'Buff目標: ',
-        na: 'Buff Target: ',
-        kr: '버프 목표: ',
-      );
-  String get buffOwnerIndiv => M.of(
-        jp: '{0}を所持で有効',
-        cn: '拥有{0}时生效',
-        tw: null,
-        na: 'Active when having {0}',
-        kr: null,
-      );
-  String get funcEventOnly => M.of(
-        jp: '『{0}』イベント期間限定',
-        cn: '『{0}』活动期间限定',
-        tw: '『{0}』活動限定',
-        na: '『{0}』Event Only',
-        kr: '『{0}』 이벤트 기간한정',
-      );
-  String get funcAbsorbFrom => M.of(
-        jp: '(ターゲットごとに)',
-        cn: '(每个目标)',
-        tw: "(每個目標)",
-        na: '(per target)',
-        kr: '(목표당)',
-      );
-  String get funcSupportOnly => M.of(
-        jp: '[サポート時]',
-        cn: '[助战时]',
-        tw: "[支援时]",
-        na: '[Support Only]',
-        kr: '[서포트 시는]',
-      );
-  String get variousPositiveBuffs => M.of(
-        jp: "さまざまな強化状態",
-        cn: '各种强化状态',
-        tw: "各種強化狀態",
-        na: 'Various Positive Buffs',
-        kr: null,
-      );
-  String get succeed => M.of(
-        jp: "成功",
-        cn: '成功',
-        tw: '成功',
-        na: 'succeed',
-        kr: null,
-      );
-  String get fail => M.of(
-        jp: "失敗",
-        cn: '失败',
-        tw: '失敗',
-        na: 'fail',
-        kr: null,
-      );
+    jp: '〔{0}〕のあるフィールドにおいてのみ',
+    cn: '仅在〔{0}〕场地上时',
+    tw: '僅在〔{0}〕場地上時',
+    na: 'When on [{0}] field',
+    kr: '〔{0}〕 있는 필드에서만',
+  );
+  String get actorOnField =>
+      M.of(jp: '〔{0}〕がフィールドにいる間', cn: '仅当〔{0}〕在场时', tw: '僅在〔{0}〕在場時', na: 'When [{0}] is on the field', kr: null);
+  String get funcTargetVals => M.of(jp: '目標特性: ', cn: '目标特性: ', tw: '目標特性: ', na: 'Target Trait: ', kr: '목표의 특성: ');
+  String get buffCheckSelf => M.of(jp: '自身特性: ', cn: '自身特性: ', tw: '自身特性: ', na: 'Self Trait: ', kr: '자신의 특성: ');
+  String get buffCheckOpposite =>
+      M.of(jp: 'バフ目標: ', cn: 'Buff目标: ', tw: 'Buff目標: ', na: 'Buff Target: ', kr: '버프 목표: ');
+  String get buffOwnerIndiv => M.of(jp: '{0}を所持で有効', cn: '拥有{0}时生效', tw: null, na: 'Active when having {0}', kr: null);
+  String get funcEventOnly =>
+      M.of(jp: '『{0}』イベント期間限定', cn: '『{0}』活动期间限定', tw: '『{0}』活動限定', na: '『{0}』Event Only', kr: '『{0}』 이벤트 기간한정');
+  String get funcAbsorbFrom => M.of(jp: '(ターゲットごとに)', cn: '(每个目标)', tw: "(每個目標)", na: '(per target)', kr: '(목표당)');
+  String get funcSupportOnly => M.of(jp: '[サポート時]', cn: '[助战时]', tw: "[支援时]", na: '[Support Only]', kr: '[서포트 시는]');
+  String get variousPositiveBuffs =>
+      M.of(jp: "さまざまな強化状態", cn: '各种强化状态', tw: "各種強化狀態", na: 'Various Positive Buffs', kr: null);
+  String get succeed => M.of(jp: "成功", cn: '成功', tw: '成功', na: 'succeed', kr: null);
+  String get fail => M.of(jp: "失敗", cn: '失败', tw: '失敗', na: 'fail', kr: null);
 }

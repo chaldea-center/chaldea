@@ -112,8 +112,8 @@ class FateTopLogin {
   String sign;
 
   FateTopLogin({this.responses = const [], Map<String, dynamic>? cache, String? sign})
-      : cache = cache ?? {},
-        sign = sign ?? '' {
+    : cache = cache ?? {},
+      sign = sign ?? '' {
     mstData.updateCache(this.cache);
   }
 
@@ -263,14 +263,7 @@ class FateResponseDetail {
 
   int? get code => resCode == null ? null : int.tryParse(resCode!);
 
-  FateResponseDetail({
-    this.resCode,
-    this.success,
-    this.fail,
-    this.nid,
-    this.usk,
-    this.encryptApi,
-  });
+  FateResponseDetail({this.resCode, this.success, this.fail, this.nid, this.usk, this.encryptApi});
 
   factory FateResponseDetail.fromJson(Map<String, dynamic> data) => _$FateResponseDetailFromJson(data);
 }
@@ -281,115 +274,116 @@ final _$mstMasterSchemes = <String, (Type, DataMaster Function(String mstName))>
   "userLogin": (UserLoginEntity, (mstName) => DataMaster<int, UserLoginEntity>(mstName, UserLoginEntity.fromJson)),
   "userSvtCollection": (
     UserServantCollectionEntity,
-    (mstName) => DataMaster<_IntStr, UserServantCollectionEntity>(mstName, UserServantCollectionEntity.fromJson)
+    (mstName) => DataMaster<_IntStr, UserServantCollectionEntity>(mstName, UserServantCollectionEntity.fromJson),
   ),
   "userSvtStorage": (
     UserServantEntity,
-    (mstName) => DataMaster<int, UserServantEntity>(mstName, UserServantEntity.fromJson)
+    (mstName) => DataMaster<int, UserServantEntity>(mstName, UserServantEntity.fromJson),
   ),
   "userSvt": (UserServantEntity, (mstName) => DataMaster<int, UserServantEntity>(mstName, UserServantEntity.fromJson)),
   "userSvtAppendPassiveSkill": (
     UserServantAppendPassiveSkillEntity,
     (mstName) =>
-        DataMaster<_IntStr, UserServantAppendPassiveSkillEntity>(mstName, UserServantAppendPassiveSkillEntity.fromJson)
+        DataMaster<_IntStr, UserServantAppendPassiveSkillEntity>(mstName, UserServantAppendPassiveSkillEntity.fromJson),
   ),
   "userSvtAppendPassiveSkillLv": (
     UserServantAppendPassiveSkillLvEntity,
     (mstName) =>
-        DataMaster<int, UserServantAppendPassiveSkillLvEntity>(mstName, UserServantAppendPassiveSkillLvEntity.fromJson)
+        DataMaster<int, UserServantAppendPassiveSkillLvEntity>(mstName, UserServantAppendPassiveSkillLvEntity.fromJson),
   ),
   "userCommandCodeCollection": (
     UserCommandCodeCollectionEntity,
-    (mstName) => DataMaster<_IntStr, UserCommandCodeCollectionEntity>(mstName, UserCommandCodeCollectionEntity.fromJson)
+    (mstName) =>
+        DataMaster<_IntStr, UserCommandCodeCollectionEntity>(mstName, UserCommandCodeCollectionEntity.fromJson),
   ),
   "userCommandCode": (
     UserCommandCodeEntity,
-    (mstName) => DataMaster<int, UserCommandCodeEntity>(mstName, UserCommandCodeEntity.fromJson)
+    (mstName) => DataMaster<int, UserCommandCodeEntity>(mstName, UserCommandCodeEntity.fromJson),
   ),
   "userSvtCommandCode": (
     UserServantCommandCodeEntity,
-    (mstName) => DataMaster<_IntStr, UserServantCommandCodeEntity>(mstName, UserServantCommandCodeEntity.fromJson)
+    (mstName) => DataMaster<_IntStr, UserServantCommandCodeEntity>(mstName, UserServantCommandCodeEntity.fromJson),
   ),
   "userSvtCommandCard": (
     UserServantCommandCardEntity,
-    (mstName) => DataMaster<_IntStr, UserServantCommandCardEntity>(mstName, UserServantCommandCardEntity.fromJson)
+    (mstName) => DataMaster<_IntStr, UserServantCommandCardEntity>(mstName, UserServantCommandCardEntity.fromJson),
   ),
   "userItem": (UserItemEntity, (mstName) => DataMaster<_IntStr, UserItemEntity>(mstName, UserItemEntity.fromJson)),
   "userSvtCoin": (
     UserSvtCoinEntity,
-    (mstName) => DataMaster<_IntStr, UserSvtCoinEntity>(mstName, UserSvtCoinEntity.fromJson)
+    (mstName) => DataMaster<_IntStr, UserSvtCoinEntity>(mstName, UserSvtCoinEntity.fromJson),
   ),
   "userEquip": (UserEquipEntity, (mstName) => DataMaster<int, UserEquipEntity>(mstName, UserEquipEntity.fromJson)),
   "userSupportDeck": (
     UserSupportDeckEntity,
-    (mstName) => DataMaster<_IntStr, UserSupportDeckEntity>(mstName, UserSupportDeckEntity.fromJson)
+    (mstName) => DataMaster<_IntStr, UserSupportDeckEntity>(mstName, UserSupportDeckEntity.fromJson),
   ),
   "userSvtLeader": (
     UserServantLeaderEntity,
-    (mstName) => DataMaster<String, UserServantLeaderEntity>(mstName, UserServantLeaderEntity.fromJson)
+    (mstName) => DataMaster<String, UserServantLeaderEntity>(mstName, UserServantLeaderEntity.fromJson),
   ),
   "userClassBoardSquare": (
     UserClassBoardSquareEntity,
-    (mstName) => DataMaster<_IntStr, UserClassBoardSquareEntity>(mstName, UserClassBoardSquareEntity.fromJson)
+    (mstName) => DataMaster<_IntStr, UserClassBoardSquareEntity>(mstName, UserClassBoardSquareEntity.fromJson),
   ),
   "userPresentBox": (
     UserPresentBoxEntity,
-    (mstName) => DataMaster<_IntStr, UserPresentBoxEntity>(mstName, UserPresentBoxEntity.fromJson)
+    (mstName) => DataMaster<_IntStr, UserPresentBoxEntity>(mstName, UserPresentBoxEntity.fromJson),
   ),
   "userGacha": (UserGachaEntity, (mstName) => DataMaster<_IntStr, UserGachaEntity>(mstName, UserGachaEntity.fromJson)),
   "userEvent": (UserEventEntity, (mstName) => DataMaster<_IntStr, UserEventEntity>(mstName, UserEventEntity.fromJson)),
   "userEventMission": (
     UserEventMissionEntity,
-    (mstName) => DataMaster<_IntStr, UserEventMissionEntity>(mstName, UserEventMissionEntity.fromJson)
+    (mstName) => DataMaster<_IntStr, UserEventMissionEntity>(mstName, UserEventMissionEntity.fromJson),
   ),
   "userEventMissionFix": (
     UserEventMissionFixEntity,
-    (mstName) => DataMaster<_IntStr, UserEventMissionFixEntity>(mstName, UserEventMissionFixEntity.fromJson)
+    (mstName) => DataMaster<_IntStr, UserEventMissionFixEntity>(mstName, UserEventMissionFixEntity.fromJson),
   ),
   "userEventMissionConditionDetail": (
     UserEventMissionCondDetailEntity,
     (mstName) =>
-        DataMaster<_IntStr, UserEventMissionCondDetailEntity>(mstName, UserEventMissionCondDetailEntity.fromJson)
+        DataMaster<_IntStr, UserEventMissionCondDetailEntity>(mstName, UserEventMissionCondDetailEntity.fromJson),
   ),
   "userEventPoint": (
     UserEventPointEntity,
-    (mstName) => DataMaster<String, UserEventPointEntity>(mstName, UserEventPointEntity.fromJson)
+    (mstName) => DataMaster<String, UserEventPointEntity>(mstName, UserEventPointEntity.fromJson),
   ),
   "userEventTrade": (
     UserEventTradeEntity,
-    (mstName) => DataMaster<_IntStr, UserEventTradeEntity>(mstName, UserEventTradeEntity.fromJson)
+    (mstName) => DataMaster<_IntStr, UserEventTradeEntity>(mstName, UserEventTradeEntity.fromJson),
   ),
   "mstEventRaid": (
     EventRaidEntity,
-    (mstName) => DataMaster<String, EventRaidEntity>(mstName, EventRaidEntity.fromJson)
+    (mstName) => DataMaster<String, EventRaidEntity>(mstName, EventRaidEntity.fromJson),
   ),
   "totalEventRaid": (
     TotalEventRaidEntity,
-    (mstName) => DataMaster<String, TotalEventRaidEntity>(mstName, TotalEventRaidEntity.fromJson)
+    (mstName) => DataMaster<String, TotalEventRaidEntity>(mstName, TotalEventRaidEntity.fromJson),
   ),
   "userEventRaid": (
     UserEventRaidEntity,
-    (mstName) => DataMaster<String, UserEventRaidEntity>(mstName, UserEventRaidEntity.fromJson)
+    (mstName) => DataMaster<String, UserEventRaidEntity>(mstName, UserEventRaidEntity.fromJson),
   ),
   "userBoxGacha": (
     UserBoxGachaEntity,
-    (mstName) => DataMaster<_IntStr, UserBoxGachaEntity>(mstName, UserBoxGachaEntity.fromJson)
+    (mstName) => DataMaster<_IntStr, UserBoxGachaEntity>(mstName, UserBoxGachaEntity.fromJson),
   ),
   "userShop": (UserShopEntity, (mstName) => DataMaster<_IntStr, UserShopEntity>(mstName, UserShopEntity.fromJson)),
   "userQuest": (UserQuestEntity, (mstName) => DataMaster<_IntStr, UserQuestEntity>(mstName, UserQuestEntity.fromJson)),
   "userDeck": (UserDeckEntity, (mstName) => DataMaster<int, UserDeckEntity>(mstName, UserDeckEntity.fromJson)),
   "userEventDeck": (
     UserEventDeckEntity,
-    (mstName) => DataMaster<String, UserEventDeckEntity>(mstName, UserEventDeckEntity.fromJson)
+    (mstName) => DataMaster<String, UserEventDeckEntity>(mstName, UserEventDeckEntity.fromJson),
   ),
   "userAccountLinkage": (
     UserAccountLinkageEntity,
-    (mstName) => DataMaster<int, UserAccountLinkageEntity>(mstName, UserAccountLinkageEntity.fromJson)
+    (mstName) => DataMaster<int, UserAccountLinkageEntity>(mstName, UserAccountLinkageEntity.fromJson),
   ),
   "battle": (BattleEntity, (mstName) => DataMaster<int, BattleEntity>(mstName, BattleEntity.fromJson)),
   "userFollower": (
     UserFollowerEntity,
-    (mstName) => DataMaster<int, UserFollowerEntity>(mstName, UserFollowerEntity.fromJson)
+    (mstName) => DataMaster<int, UserFollowerEntity>(mstName, UserFollowerEntity.fromJson),
   ),
 };
 
@@ -497,8 +491,10 @@ class MasterDataManager {
   UserGameEntity? get user => userGame.firstOrNull;
 
   List<int> getSvtAppendSkillLv(UserServantEntity svt) {
-    final Map<int, int> lvs =
-        Map.fromIterable(userSvtAppendPassiveSkill[svt.svtId]?.unlockNums ?? <int>[], value: (_) => 1);
+    final Map<int, int> lvs = Map.fromIterable(
+      userSvtAppendPassiveSkill[svt.svtId]?.unlockNums ?? <int>[],
+      value: (_) => 1,
+    );
     final appendLv = userSvtAppendPassiveSkillLv[svt.id];
     if (appendLv != null) {
       lvs.addAll(Map.fromIterables(appendLv.appendPassiveSkillNums, appendLv.appendPassiveSkillLvs));
@@ -577,7 +573,7 @@ class MasterDataManager {
       svtCount: svtCount,
       svtEquipCount: svtEquipCount,
       ccCount: userCommandCode.length,
-      unknownCount: unknownCount
+      unknownCount: unknownCount,
     );
   }
 
@@ -665,11 +661,7 @@ class UserItemEntity extends DataEntityBase<_IntStr> {
 
   static _IntStr createPK(int itemId) => itemId;
 
-  UserItemEntity({
-    required dynamic itemId,
-    required dynamic num,
-  })  : itemId = _toInt(itemId),
-        num = _toInt(num);
+  UserItemEntity({required dynamic itemId, required dynamic num}) : itemId = _toInt(itemId), num = _toInt(num);
 
   factory UserItemEntity.fromJson(Map<String, dynamic> data) => _$UserItemEntityFromJson(data);
 }
@@ -760,27 +752,27 @@ class UserServantEntity extends DataEntityBase<int> {
     dynamic isLock,
     dynamic hp,
     dynamic atk,
-  })  : id = _toInt(id),
-        svtId = _toInt(svtId),
-        status = _toInt(status),
-        limitCount = _toInt(limitCount),
-        dispLimitCount = _toInt(dispLimitCount),
-        imageLimitCount = _toInt(imageLimitCount),
-        commandCardLimitCount = _toInt(commandCardLimitCount),
-        lv = _toInt(lv),
-        exp = _toInt(exp),
-        adjustHp = _toInt(adjustHp),
-        adjustAtk = _toInt(adjustAtk),
-        skillLv1 = _toInt(skillLv1),
-        skillLv2 = _toInt(skillLv2),
-        skillLv3 = _toInt(skillLv3),
-        treasureDeviceLv1 = _toInt(treasureDeviceLv1),
-        exceedCount = _toInt(exceedCount),
-        createdAt = _toInt(createdAt),
-        updatedAt = _toInt(updatedAt, 0),
-        isLock = _toIntNull(isLock),
-        hp = _toInt(hp),
-        atk = _toInt(atk);
+  }) : id = _toInt(id),
+       svtId = _toInt(svtId),
+       status = _toInt(status),
+       limitCount = _toInt(limitCount),
+       dispLimitCount = _toInt(dispLimitCount),
+       imageLimitCount = _toInt(imageLimitCount),
+       commandCardLimitCount = _toInt(commandCardLimitCount),
+       lv = _toInt(lv),
+       exp = _toInt(exp),
+       adjustHp = _toInt(adjustHp),
+       adjustAtk = _toInt(adjustAtk),
+       skillLv1 = _toInt(skillLv1),
+       skillLv2 = _toInt(skillLv2),
+       skillLv3 = _toInt(skillLv3),
+       treasureDeviceLv1 = _toInt(treasureDeviceLv1),
+       exceedCount = _toInt(exceedCount),
+       createdAt = _toInt(createdAt),
+       updatedAt = _toInt(updatedAt, 0),
+       isLock = _toIntNull(isLock),
+       hp = _toInt(hp),
+       atk = _toInt(atk);
 
   factory UserServantEntity.fromJson(Map<String, dynamic> data) => _$UserServantEntityFromJson(data);
 
@@ -794,14 +786,15 @@ class UserServantEntity extends DataEntityBase<int> {
     final baseLv = svt.ascensionAdd.lvMax.ascension[limitCount];
     if (baseLv == null) return null;
     if (exceedCount > 0) {
-      final exceedList = <int, List<int>>{
-        1: [10, 5, 5, 5, 5],
-        0: [5, 5, 5, 5, 5],
-        2: [5, 5, 5, 5, 5],
-        3: [5, 5, 5, 5],
-        4: [5, 5],
-        5: [],
-      }[svt.rarity]!;
+      final exceedList =
+          <int, List<int>>{
+            1: [10, 5, 5, 5, 5],
+            0: [5, 5, 5, 5, 5],
+            2: [5, 5, 5, 5, 5],
+            3: [5, 5, 5, 5],
+            4: [5, 5],
+            5: [],
+          }[svt.rarity]!;
       exceedList.addAll(List.generate(15, (_) => 2));
       if (exceedCount <= exceedList.length) {
         final addLv = Maths.sum(exceedList.sublist(0, exceedCount));
@@ -877,36 +870,37 @@ class UserServantCollectionEntity extends DataEntityBase<_IntStr> {
     dynamic updatedAt,
     dynamic createdAt,
     // List<int> releasedCostumeIds,
-  })  : userId = _toInt(userId),
-        svtId = _toInt(svtId),
-        status = _toInt(status),
-        maxLv = _toInt(maxLv),
-        maxHp = _toInt(maxHp),
-        maxAtk = _toInt(maxAtk),
-        maxLimitCount = _toInt(maxLimitCount),
-        skillLv1 = _toInt(skillLv1),
-        skillLv2 = _toInt(skillLv2),
-        skillLv3 = _toInt(skillLv3),
-        treasureDeviceLv1 = _toInt(treasureDeviceLv1),
-        svtCommonFlag = _toInt(svtCommonFlag),
-        flag = _toInt(flag),
-        friendship = _toInt(friendship),
-        friendshipRank = _toInt(friendshipRank),
-        friendshipExceedCount = _toInt(friendshipExceedCount),
-        getNum = _toInt(getNum, 0),
-        totalGetNum = _toInt(totalGetNum, 0),
-        costumeIds = _toIntList(costumeIds)..sort((a, b) => a.abs() - b.abs()),
-        releasedCostumeIds = _toIntList(releasedCostumeIds)..sort((a, b) => a.abs() - b.abs()),
-        updatedAt = _toInt(updatedAt),
-        createdAt = _toInt(createdAt);
+  }) : userId = _toInt(userId),
+       svtId = _toInt(svtId),
+       status = _toInt(status),
+       maxLv = _toInt(maxLv),
+       maxHp = _toInt(maxHp),
+       maxAtk = _toInt(maxAtk),
+       maxLimitCount = _toInt(maxLimitCount),
+       skillLv1 = _toInt(skillLv1),
+       skillLv2 = _toInt(skillLv2),
+       skillLv3 = _toInt(skillLv3),
+       treasureDeviceLv1 = _toInt(treasureDeviceLv1),
+       svtCommonFlag = _toInt(svtCommonFlag),
+       flag = _toInt(flag),
+       friendship = _toInt(friendship),
+       friendshipRank = _toInt(friendshipRank),
+       friendshipExceedCount = _toInt(friendshipExceedCount),
+       getNum = _toInt(getNum, 0),
+       totalGetNum = _toInt(totalGetNum, 0),
+       costumeIds = _toIntList(costumeIds)..sort((a, b) => a.abs() - b.abs()),
+       releasedCostumeIds = _toIntList(releasedCostumeIds)..sort((a, b) => a.abs() - b.abs()),
+       updatedAt = _toInt(updatedAt),
+       createdAt = _toInt(createdAt);
 
   bool get isOwned => status == 2;
 
   Map<int, int> costumeIdsTo01() {
     Map<int, int> result = {};
     for (final costumeId in costumeIds) {
-      final costume =
-          db.gameData.servantsById[svtId]?.profile.costume.values.firstWhereOrNull((e) => e.id == costumeId);
+      final costume = db.gameData.servantsById[svtId]?.profile.costume.values.firstWhereOrNull(
+        (e) => e.id == costumeId,
+      );
       if (costume != null) {
         result[costume.battleCharaId] = 1;
       }
@@ -1032,47 +1026,47 @@ class UserGameEntity extends DataEntityBase<int> {
     dynamic appuid,
     this.appname,
     dynamic regtime,
-  })  : userId = _toInt(userId),
-        birthDay = _toIntNull(birthDay),
-        actMax = _toInt(actMax),
-        actRecoverAt = _toInt(actRecoverAt),
-        carryOverActPoint = _toInt(carryOverActPoint),
-        rpRecoverAt = _toInt(rpRecoverAt),
-        carryOverRaidPoint = _toInt(carryOverRaidPoint),
-        genderType = _toInt(genderType),
-        lv = _toInt(lv),
-        exp = _toInt(exp),
-        qp = _toInt(qp),
-        costMax = _toInt(costMax),
-        favoriteUserSvtId = _toInt(favoriteUserSvtId),
-        pushUserSvtId = _toInt(pushUserSvtId),
-        grade = _toIntNull(grade),
-        friendKeep = _toInt(friendKeep),
-        commandSpellRecoverAt = _toInt(commandSpellRecoverAt),
-        svtKeep = _toInt(svtKeep),
-        svtEquipKeep = _toInt(svtEquipKeep),
-        svtStorageAdjust = _toInt(svtStorageAdjust),
-        svtEquipStorageAdjust = _toInt(svtEquipStorageAdjust),
-        freeStone = _toInt(freeStone),
-        chargeStone = _toInt(chargeStone),
-        stone = _toInt(stone),
-        stoneVerifiAt = _toIntNull(stoneVerifiAt),
-        mana = _toInt(mana),
-        rarePri = _toInt(rarePri),
-        activeDeckId = _toInt(activeDeckId),
-        mainSupportDeckId = _toInt(mainSupportDeckId),
-        eventSupportDeckId = _toInt(eventSupportDeckId),
-        fixMainSupportDeckIds = _toIntList(fixMainSupportDeckIds),
-        fixEventSupportDeckIds = _toIntList(fixEventSupportDeckIds),
-        tutorial1 = _toInt(tutorial1),
-        tutorial2 = _toInt(tutorial2),
-        flag = _toInt(flag),
-        updatedAt = _toInt(updatedAt),
-        createdAt = _toInt(createdAt),
-        userEquipId = _toInt(userEquipId),
-        id = _toIntNull(id),
-        appuid = appuid?.toString(),
-        regtime = _toIntNull(regtime);
+  }) : userId = _toInt(userId),
+       birthDay = _toIntNull(birthDay),
+       actMax = _toInt(actMax),
+       actRecoverAt = _toInt(actRecoverAt),
+       carryOverActPoint = _toInt(carryOverActPoint),
+       rpRecoverAt = _toInt(rpRecoverAt),
+       carryOverRaidPoint = _toInt(carryOverRaidPoint),
+       genderType = _toInt(genderType),
+       lv = _toInt(lv),
+       exp = _toInt(exp),
+       qp = _toInt(qp),
+       costMax = _toInt(costMax),
+       favoriteUserSvtId = _toInt(favoriteUserSvtId),
+       pushUserSvtId = _toInt(pushUserSvtId),
+       grade = _toIntNull(grade),
+       friendKeep = _toInt(friendKeep),
+       commandSpellRecoverAt = _toInt(commandSpellRecoverAt),
+       svtKeep = _toInt(svtKeep),
+       svtEquipKeep = _toInt(svtEquipKeep),
+       svtStorageAdjust = _toInt(svtStorageAdjust),
+       svtEquipStorageAdjust = _toInt(svtEquipStorageAdjust),
+       freeStone = _toInt(freeStone),
+       chargeStone = _toInt(chargeStone),
+       stone = _toInt(stone),
+       stoneVerifiAt = _toIntNull(stoneVerifiAt),
+       mana = _toInt(mana),
+       rarePri = _toInt(rarePri),
+       activeDeckId = _toInt(activeDeckId),
+       mainSupportDeckId = _toInt(mainSupportDeckId),
+       eventSupportDeckId = _toInt(eventSupportDeckId),
+       fixMainSupportDeckIds = _toIntList(fixMainSupportDeckIds),
+       fixEventSupportDeckIds = _toIntList(fixEventSupportDeckIds),
+       tutorial1 = _toInt(tutorial1),
+       tutorial2 = _toInt(tutorial2),
+       flag = _toInt(flag),
+       updatedAt = _toInt(updatedAt),
+       createdAt = _toInt(createdAt),
+       userEquipId = _toInt(userEquipId),
+       id = _toIntNull(id),
+       appuid = appuid?.toString(),
+       regtime = _toIntNull(regtime);
 
   factory UserGameEntity.fromJson(Map<String, dynamic> data) => _$UserGameEntityFromJson(data);
 
@@ -1093,11 +1087,7 @@ class TblUserEntity extends DataEntityBase<int> {
 
   static int createPK(int userId) => userId;
 
-  TblUserEntity({
-    dynamic userId,
-    dynamic friendPoint,
-  })  : userId = _toInt(userId),
-        friendPoint = _toInt(friendPoint);
+  TblUserEntity({dynamic userId, dynamic friendPoint}) : userId = _toInt(userId), friendPoint = _toInt(friendPoint);
 
   factory TblUserEntity.fromJson(Map<String, dynamic> data) => _$TblUserEntityFromJson(data);
 }
@@ -1114,15 +1104,11 @@ class UserLoginEntity extends DataEntityBase<int> {
 
   static int createPK(int userId) => userId;
 
-  UserLoginEntity({
-    dynamic userId,
-    dynamic seqLoginCount,
-    dynamic totalLoginCount,
-    dynamic lastLoginAt,
-  })  : userId = _toInt(userId),
-        seqLoginCount = _toInt(seqLoginCount),
-        totalLoginCount = _toInt(totalLoginCount),
-        lastLoginAt = _toInt(lastLoginAt);
+  UserLoginEntity({dynamic userId, dynamic seqLoginCount, dynamic totalLoginCount, dynamic lastLoginAt})
+    : userId = _toInt(userId),
+      seqLoginCount = _toInt(seqLoginCount),
+      totalLoginCount = _toInt(totalLoginCount),
+      lastLoginAt = _toInt(lastLoginAt);
 
   factory UserLoginEntity.fromJson(Map<String, dynamic> data) => _$UserLoginEntityFromJson(data);
 }
@@ -1138,13 +1124,10 @@ class UserServantAppendPassiveSkillEntity extends DataEntityBase<_IntStr> {
 
   static _IntStr createPK(int svtId) => svtId;
 
-  UserServantAppendPassiveSkillEntity({
-    dynamic userId,
-    List<int>? unlockNums,
-    dynamic svtId,
-  })  : userId = _toInt(userId),
-        unlockNums = unlockNums ?? [],
-        svtId = _toInt(svtId);
+  UserServantAppendPassiveSkillEntity({dynamic userId, List<int>? unlockNums, dynamic svtId})
+    : userId = _toInt(userId),
+      unlockNums = unlockNums ?? [],
+      svtId = _toInt(svtId);
 
   factory UserServantAppendPassiveSkillEntity.fromJson(Map<String, dynamic> data) =>
       _$UserServantAppendPassiveSkillEntityFromJson(data);
@@ -1161,13 +1144,10 @@ class UserSvtCoinEntity extends DataEntityBase<_IntStr> {
 
   static _IntStr createPK(int svtId) => svtId;
 
-  UserSvtCoinEntity({
-    dynamic userId,
-    dynamic svtId,
-    dynamic num,
-  })  : userId = _toInt(userId),
-        svtId = _toInt(svtId),
-        num = _toInt(num);
+  UserSvtCoinEntity({dynamic userId, dynamic svtId, dynamic num})
+    : userId = _toInt(userId),
+      svtId = _toInt(svtId),
+      num = _toInt(num);
 
   factory UserSvtCoinEntity.fromJson(Map<String, dynamic> data) => _$UserSvtCoinEntityFromJson(data);
 }
@@ -1207,15 +1187,11 @@ class UserEquipEntity extends DataEntityBase<int> {
 
   static int createPK(int id) => id;
 
-  UserEquipEntity({
-    dynamic id,
-    dynamic equipId,
-    dynamic lv,
-    dynamic exp,
-  })  : id = _toInt(id),
-        equipId = _toInt(equipId),
-        lv = _toInt(lv),
-        exp = _toInt(exp);
+  UserEquipEntity({dynamic id, dynamic equipId, dynamic lv, dynamic exp})
+    : id = _toInt(id),
+      equipId = _toInt(equipId),
+      lv = _toInt(lv),
+      exp = _toInt(exp);
 
   factory UserEquipEntity.fromJson(Map<String, dynamic> data) => _$UserEquipEntityFromJson(data);
 }
@@ -1233,15 +1209,11 @@ class UserCommandCodeCollectionEntity extends DataEntityBase<_IntStr> {
 
   static _IntStr createPK(int commandCodeId) => commandCodeId;
 
-  UserCommandCodeCollectionEntity({
-    dynamic userId,
-    dynamic commandCodeId,
-    dynamic status,
-    dynamic getNum,
-  })  : userId = _toInt(userId),
-        commandCodeId = _toInt(commandCodeId),
-        status = _toInt(status),
-        getNum = _toInt(getNum);
+  UserCommandCodeCollectionEntity({dynamic userId, dynamic commandCodeId, dynamic status, dynamic getNum})
+    : userId = _toInt(userId),
+      commandCodeId = _toInt(commandCodeId),
+      status = _toInt(status),
+      getNum = _toInt(getNum);
   factory UserCommandCodeCollectionEntity.fromJson(Map<String, dynamic> data) =>
       _$UserCommandCodeCollectionEntityFromJson(data);
 
@@ -1264,16 +1236,11 @@ class UserCommandCodeEntity extends DataEntityBase<int> {
 
   static int createPK(int id) => id;
 
-  UserCommandCodeEntity({
-    dynamic id,
-    dynamic commandCodeId,
-    dynamic status,
-    dynamic svtId,
-    dynamic createdAt,
-  })  : id = _toInt(id),
-        commandCodeId = _toInt(commandCodeId),
-        status = _toInt(status),
-        createdAt = _toInt(createdAt);
+  UserCommandCodeEntity({dynamic id, dynamic commandCodeId, dynamic status, dynamic svtId, dynamic createdAt})
+    : id = _toInt(id),
+      commandCodeId = _toInt(commandCodeId),
+      status = _toInt(status),
+      createdAt = _toInt(createdAt);
   factory UserCommandCodeEntity.fromJson(Map<String, dynamic> data) => _$UserCommandCodeEntityFromJson(data);
 
   CommandCode? get dbCC => db.gameData.commandCodesById[commandCodeId];
@@ -1291,13 +1258,10 @@ class UserServantCommandCodeEntity extends DataEntityBase<_IntStr> {
 
   static _IntStr createPK(int svtId) => svtId;
 
-  UserServantCommandCodeEntity({
-    dynamic userId,
-    dynamic userCommandCodeIds,
-    dynamic svtId,
-  })  : userId = _toInt(userId),
-        userCommandCodeIds = _toIntList(userCommandCodeIds),
-        svtId = _toInt(svtId);
+  UserServantCommandCodeEntity({dynamic userId, dynamic userCommandCodeIds, dynamic svtId})
+    : userId = _toInt(userId),
+      userCommandCodeIds = _toIntList(userCommandCodeIds),
+      svtId = _toInt(svtId);
   factory UserServantCommandCodeEntity.fromJson(Map<String, dynamic> data) =>
       _$UserServantCommandCodeEntityFromJson(data);
 }
@@ -1314,13 +1278,10 @@ class UserServantCommandCardEntity extends DataEntityBase<_IntStr> {
 
   static _IntStr createPK(int svtId) => svtId;
 
-  UserServantCommandCardEntity({
-    dynamic userId,
-    dynamic commandCardParam,
-    dynamic svtId,
-  })  : userId = _toInt(userId),
-        commandCardParam = _toIntList(commandCardParam),
-        svtId = _toInt(svtId);
+  UserServantCommandCardEntity({dynamic userId, dynamic commandCardParam, dynamic svtId})
+    : userId = _toInt(userId),
+      commandCardParam = _toIntList(commandCardParam),
+      svtId = _toInt(svtId);
   factory UserServantCommandCardEntity.fromJson(Map<String, dynamic> data) =>
       _$UserServantCommandCardEntityFromJson(data);
 }
@@ -1337,13 +1298,10 @@ class UserSupportDeckEntity extends DataEntityBase<_IntStr> {
 
   static _IntStr createPK(int supportDeckId) => supportDeckId;
 
-  UserSupportDeckEntity({
-    dynamic userId,
-    dynamic supportDeckId,
-    dynamic name,
-  })  : userId = _toInt(userId),
-        supportDeckId = _toInt(supportDeckId),
-        name = name.toString();
+  UserSupportDeckEntity({dynamic userId, dynamic supportDeckId, dynamic name})
+    : userId = _toInt(userId),
+      supportDeckId = _toInt(supportDeckId),
+      name = name.toString();
   factory UserSupportDeckEntity.fromJson(Map<String, dynamic> data) => _$UserSupportDeckEntityFromJson(data);
 }
 
@@ -1433,42 +1391,42 @@ class UserServantLeaderEntity extends DataEntityBase<String> {
     dynamic randomLimitCountSupport,
     // dynamic limitCountSupport,
     List<SvtLeaderAppendSkillStatus>? appendPassiveSkill,
-  })  : userId = _toInt(userId),
-        supportDeckId = _toInt(supportDeckId),
-        classId = _toInt(classId),
-        userSvtId = _toInt(userSvtId),
-        svtId = _toInt(svtId),
-        limitCount = _toInt(limitCount),
-        dispLimitCount = _toInt(dispLimitCount),
-        lv = _toInt(lv),
-        exp = _toInt(exp),
-        hp = _toInt(hp),
-        atk = _toInt(atk),
-        adjustHp = _toInt(adjustHp),
-        adjustAtk = _toInt(adjustAtk),
-        skillId1 = _toInt(skillId1),
-        skillId2 = _toInt(skillId2),
-        skillId3 = _toInt(skillId3),
-        skillLv1 = _toInt(skillLv1),
-        skillLv2 = _toInt(skillLv2),
-        skillLv3 = _toInt(skillLv3),
-        classPassive = _toIntList(classPassive),
-        treasureDeviceId = _toInt(treasureDeviceId),
-        treasureDeviceLv = _toInt(treasureDeviceLv),
-        exceedCount = _toInt(exceedCount),
-        // displayInfo=jsonDecode(displayInfo??"{}"),
-        commandCode = commandCode ?? [],
-        commandCardParam = _toIntList(commandCardParam),
-        // updatedAt = _toInt(updatedAt),
-        // createdAt = _toInt(createdAt),
-        imageLimitCount = _toInt(imageLimitCount),
-        commandCardLimitCount = _toInt(commandCardLimitCount),
-        iconLimitCount = _toInt(iconLimitCount),
-        portraitLimitCount = _toInt(portraitLimitCount),
-        battleVoice = _toInt(battleVoice),
-        // randomLimitCountSupport=_toInt(randomLimitCountSupport),
-        // limitCountSupport=_toInt(limitCountSupport);
-        appendPassiveSkill = appendPassiveSkill ?? [];
+  }) : userId = _toInt(userId),
+       supportDeckId = _toInt(supportDeckId),
+       classId = _toInt(classId),
+       userSvtId = _toInt(userSvtId),
+       svtId = _toInt(svtId),
+       limitCount = _toInt(limitCount),
+       dispLimitCount = _toInt(dispLimitCount),
+       lv = _toInt(lv),
+       exp = _toInt(exp),
+       hp = _toInt(hp),
+       atk = _toInt(atk),
+       adjustHp = _toInt(adjustHp),
+       adjustAtk = _toInt(adjustAtk),
+       skillId1 = _toInt(skillId1),
+       skillId2 = _toInt(skillId2),
+       skillId3 = _toInt(skillId3),
+       skillLv1 = _toInt(skillLv1),
+       skillLv2 = _toInt(skillLv2),
+       skillLv3 = _toInt(skillLv3),
+       classPassive = _toIntList(classPassive),
+       treasureDeviceId = _toInt(treasureDeviceId),
+       treasureDeviceLv = _toInt(treasureDeviceLv),
+       exceedCount = _toInt(exceedCount),
+       // displayInfo=jsonDecode(displayInfo??"{}"),
+       commandCode = commandCode ?? [],
+       commandCardParam = _toIntList(commandCardParam),
+       // updatedAt = _toInt(updatedAt),
+       // createdAt = _toInt(createdAt),
+       imageLimitCount = _toInt(imageLimitCount),
+       commandCardLimitCount = _toInt(commandCardLimitCount),
+       iconLimitCount = _toInt(iconLimitCount),
+       portraitLimitCount = _toInt(portraitLimitCount),
+       battleVoice = _toInt(battleVoice),
+       // randomLimitCountSupport=_toInt(randomLimitCountSupport),
+       // limitCountSupport=_toInt(limitCountSupport);
+       appendPassiveSkill = appendPassiveSkill ?? [];
 
   factory UserServantLeaderEntity.fromJson(Map<String, dynamic> data) => _$UserServantLeaderEntityFromJson(data);
 }
@@ -1507,20 +1465,20 @@ class SvtLeaderEquipTargetInfo {
     dynamic skillLv3,
     List<Map>? addSkills,
     // dynamic updatedAt,
-  })  : userSvtId = _toInt(userSvtId),
-        svtId = _toInt(svtId),
-        limitCount = _toInt(limitCount),
-        lv = _toInt(lv),
-        exp = _toInt(exp),
-        hp = _toInt(hp),
-        atk = _toInt(atk),
-        skillId1 = _toInt(skillId1),
-        skillLv1 = _toInt(skillLv1),
-        skillId2 = _toInt(skillId2, 0),
-        skillLv2 = _toInt(skillLv2, 0),
-        skillId3 = _toInt(skillId3, 0),
-        skillLv3 = _toInt(skillLv3, 0),
-        addSkills = addSkills ?? [];
+  }) : userSvtId = _toInt(userSvtId),
+       svtId = _toInt(svtId),
+       limitCount = _toInt(limitCount),
+       lv = _toInt(lv),
+       exp = _toInt(exp),
+       hp = _toInt(hp),
+       atk = _toInt(atk),
+       skillId1 = _toInt(skillId1),
+       skillLv1 = _toInt(skillLv1),
+       skillId2 = _toInt(skillId2, 0),
+       skillLv2 = _toInt(skillLv2, 0),
+       skillId3 = _toInt(skillId3, 0),
+       skillLv3 = _toInt(skillLv3, 0),
+       addSkills = addSkills ?? [];
 
   factory SvtLeaderEquipTargetInfo.fromJson(Map<String, dynamic> data) => _$SvtLeaderEquipTargetInfoFromJson(data);
 }
@@ -1529,11 +1487,7 @@ class SvtLeaderEquipTargetInfo {
 class SvtLeaderAppendSkillStatus {
   int skillId;
   int skillLv;
-  SvtLeaderAppendSkillStatus({
-    dynamic skillId,
-    dynamic skillLv,
-  })  : skillId = _toInt(skillId),
-        skillLv = _toInt(skillLv);
+  SvtLeaderAppendSkillStatus({dynamic skillId, dynamic skillLv}) : skillId = _toInt(skillId), skillLv = _toInt(skillLv);
 
   factory SvtLeaderAppendSkillStatus.fromJson(Map<String, dynamic> data) => _$SvtLeaderAppendSkillStatusFromJson(data);
 }
@@ -1544,13 +1498,10 @@ class SvtLeaderCommandCodeStatus {
   int commandCodeId;
   int userCommandCodeId;
 
-  SvtLeaderCommandCodeStatus({
-    dynamic idx,
-    dynamic commandCodeId,
-    dynamic userCommandCodeId,
-  })  : idx = _toInt(idx),
-        commandCodeId = _toInt(commandCodeId),
-        userCommandCodeId = _toInt(userCommandCodeId);
+  SvtLeaderCommandCodeStatus({dynamic idx, dynamic commandCodeId, dynamic userCommandCodeId})
+    : idx = _toInt(idx),
+      commandCodeId = _toInt(commandCodeId),
+      userCommandCodeId = _toInt(userCommandCodeId);
 
   factory SvtLeaderCommandCodeStatus.fromJson(Map<String, dynamic> data) => _$SvtLeaderCommandCodeStatusFromJson(data);
 }
@@ -1574,20 +1525,15 @@ class UserClassBoardSquareEntity extends DataEntityBase<_IntStr> {
     dynamic classBoardBaseId,
     dynamic classBoardSquareIds,
     dynamic classBoardUnlockSquareIds,
-  })  : userId = _toInt(userId),
-        classBoardBaseId = _toInt(classBoardBaseId),
-        classBoardSquareIds = _toIntList(classBoardSquareIds),
-        classBoardUnlockSquareIds = _toIntList(classBoardUnlockSquareIds);
+  }) : userId = _toInt(userId),
+       classBoardBaseId = _toInt(classBoardBaseId),
+       classBoardSquareIds = _toIntList(classBoardSquareIds),
+       classBoardUnlockSquareIds = _toIntList(classBoardUnlockSquareIds);
 
   factory UserClassBoardSquareEntity.fromJson(Map<String, dynamic> data) => _$UserClassBoardSquareEntityFromJson(data);
 }
 
-enum UserPresentBoxFlag {
-  importantForEvent,
-  indefinitePeriod,
-  payTypeRarePri,
-  importantForLimit,
-}
+enum UserPresentBoxFlag { importantForEvent, indefinitePeriod, payTypeRarePri, importantForLimit }
 
 @JsonSerializable(createToJson: false)
 class UserPresentBoxEntity extends DataEntityBase<_IntStr> {
@@ -1607,9 +1553,9 @@ class UserPresentBoxEntity extends DataEntityBase<_IntStr> {
   int createdAt;
 
   List<UserPresentBoxFlag> get flags => [
-        for (final v in UserPresentBoxFlag.values)
-          if (flag & (1 << (v.index + 1)) != 0) v,
-      ];
+    for (final v in UserPresentBoxFlag.values)
+      if (flag & (1 << (v.index + 1)) != 0) v,
+  ];
 
   @override
   _IntStr get primaryKey => presentId;
@@ -1631,27 +1577,26 @@ class UserPresentBoxEntity extends DataEntityBase<_IntStr> {
     dynamic flag,
     dynamic updatedAt,
     dynamic createdAt,
-  })  : receiveUserId = _toInt(receiveUserId),
-        presentId = _toInt(presentId),
-        messageRefType = _toInt(messageRefType),
-        messageId = _toInt(messageId),
-        message = message.toString(),
-        fromType = _toInt(fromType),
-        giftType = _toInt(giftType),
-        objectId = _toInt(objectId),
-        num = _toInt(num),
-        limitCount = _toInt(limitCount),
-        lv = _toInt(lv),
-        flag = _toInt(flag),
-        updatedAt = _toInt(updatedAt),
-        createdAt = _toInt(createdAt);
+  }) : receiveUserId = _toInt(receiveUserId),
+       presentId = _toInt(presentId),
+       messageRefType = _toInt(messageRefType),
+       messageId = _toInt(messageId),
+       message = message.toString(),
+       fromType = _toInt(fromType),
+       giftType = _toInt(giftType),
+       objectId = _toInt(objectId),
+       num = _toInt(num),
+       limitCount = _toInt(limitCount),
+       lv = _toInt(lv),
+       flag = _toInt(flag),
+       updatedAt = _toInt(updatedAt),
+       createdAt = _toInt(createdAt);
   factory UserPresentBoxEntity.fromJson(Map<String, dynamic> data) => _$UserPresentBoxEntityFromJson(data);
 }
 
 enum PresentFromType {
   totalLogin(1),
-  seqLogin(2),
-  ;
+  seqLogin(2);
 
   const PresentFromType(this.value);
   final int value;
@@ -1672,19 +1617,13 @@ class UserGachaEntity extends DataEntityBase<_IntStr> {
 
   static _IntStr createPK(int gachaId) => gachaId;
 
-  UserGachaEntity({
-    dynamic userId,
-    dynamic gachaId,
-    dynamic num,
-    dynamic freeDrawAt,
-    dynamic status,
-    dynamic createdAt,
-  })  : userId = _toInt(userId),
-        gachaId = _toInt(gachaId),
-        num = _toInt(num),
-        freeDrawAt = _toInt(freeDrawAt),
-        status = _toInt(status, 0),
-        createdAt = _toIntNull(createdAt);
+  UserGachaEntity({dynamic userId, dynamic gachaId, dynamic num, dynamic freeDrawAt, dynamic status, dynamic createdAt})
+    : userId = _toInt(userId),
+      gachaId = _toInt(gachaId),
+      num = _toInt(num),
+      freeDrawAt = _toInt(freeDrawAt),
+      status = _toInt(status, 0),
+      createdAt = _toIntNull(createdAt);
   factory UserGachaEntity.fromJson(Map<String, dynamic> data) => _$UserGachaEntityFromJson(data);
 }
 
@@ -1722,13 +1661,13 @@ class UserEventEntity extends DataEntityBase<_IntStr> {
     dynamic scriptFlag,
     dynamic updatedAt,
     dynamic createdAt,
-  })  : userId = _toInt(userId),
-        eventId = _toInt(eventId),
-        value = _toInt(value),
-        flag = _toInt(flag),
-        scriptFlag = _toInt(scriptFlag),
-        updatedAt = _toInt(updatedAt),
-        createdAt = _toInt(createdAt);
+  }) : userId = _toInt(userId),
+       eventId = _toInt(eventId),
+       value = _toInt(value),
+       flag = _toInt(flag),
+       scriptFlag = _toInt(scriptFlag),
+       updatedAt = _toInt(updatedAt),
+       createdAt = _toInt(createdAt);
   factory UserEventEntity.fromJson(Map<String, dynamic> data) => _$UserEventEntityFromJson(data);
 }
 
@@ -1753,12 +1692,12 @@ class UserEventMissionEntity extends DataEntityBase<_IntStr> {
     dynamic missionProgressType,
     dynamic updatedAt,
     dynamic createdAt,
-  })  : userId = _toInt(userId),
-        missionId = _toInt(missionId),
-        missionTargetId = _toInt(missionTargetId),
-        missionProgressType = _toInt(missionProgressType),
-        updatedAt = _toInt(updatedAt),
-        createdAt = _toInt(createdAt);
+  }) : userId = _toInt(userId),
+       missionId = _toInt(missionId),
+       missionTargetId = _toInt(missionTargetId),
+       missionProgressType = _toInt(missionProgressType),
+       updatedAt = _toInt(updatedAt),
+       createdAt = _toInt(createdAt);
   factory UserEventMissionEntity.fromJson(Map<String, dynamic> data) => _$UserEventMissionEntityFromJson(data);
 }
 
@@ -1774,15 +1713,11 @@ class UserEventMissionFixEntity extends DataEntityBase<_IntStr> {
 
   static _IntStr createPK(int missionId) => missionId;
 
-  UserEventMissionFixEntity({
-    dynamic userId,
-    dynamic missionId,
-    dynamic progressType,
-    dynamic num,
-  })  : userId = _toInt(userId),
-        missionId = _toInt(missionId),
-        progressType = _toInt(progressType),
-        num = _toInt(num);
+  UserEventMissionFixEntity({dynamic userId, dynamic missionId, dynamic progressType, dynamic num})
+    : userId = _toInt(userId),
+      missionId = _toInt(missionId),
+      progressType = _toInt(progressType),
+      num = _toInt(num);
   factory UserEventMissionFixEntity.fromJson(Map<String, dynamic> data) => _$UserEventMissionFixEntityFromJson(data);
 }
 
@@ -1807,12 +1742,12 @@ class UserEventMissionCondDetailEntity extends DataEntityBase<_IntStr> {
     dynamic progressNum,
     dynamic updatedAt,
     dynamic createdAt,
-  })  : userId = _toInt(userId),
-        conditionDetailId = _toInt(conditionDetailId),
-        missionTargetId = _toInt(missionTargetId),
-        progressNum = _toInt(progressNum),
-        updatedAt = _toInt(updatedAt),
-        createdAt = _toInt(createdAt);
+  }) : userId = _toInt(userId),
+       conditionDetailId = _toInt(conditionDetailId),
+       missionTargetId = _toInt(missionTargetId),
+       progressNum = _toInt(progressNum),
+       updatedAt = _toInt(updatedAt),
+       createdAt = _toInt(createdAt);
   factory UserEventMissionCondDetailEntity.fromJson(Map<String, dynamic> data) =>
       _$UserEventMissionCondDetailEntityFromJson(data);
 }
@@ -1829,15 +1764,11 @@ class UserEventPointEntity extends DataEntityBase<String> {
 
   static String createPK(int eventId, int groupId) => _createPK2(eventId, groupId);
 
-  UserEventPointEntity({
-    dynamic userId,
-    dynamic eventId,
-    dynamic groupId,
-    dynamic value,
-  })  : userId = _toInt(userId),
-        eventId = _toInt(eventId),
-        groupId = _toInt(groupId),
-        value = _toInt(value);
+  UserEventPointEntity({dynamic userId, dynamic eventId, dynamic groupId, dynamic value})
+    : userId = _toInt(userId),
+      eventId = _toInt(eventId),
+      groupId = _toInt(groupId),
+      value = _toInt(value);
   factory UserEventPointEntity.fromJson(Map<String, dynamic> data) => _$UserEventPointEntityFromJson(data);
 }
 
@@ -1860,11 +1791,11 @@ class UserEventTradeEntity extends DataEntityBase<_IntStr> {
     List<EventTradeInfo>? tradeList,
     List<EventTradeResultInfo>? resultList,
     List<EventCraftPickupInfo>? pickupList,
-  })  : eventId = _toInt(eventId),
-        updatedAt = _toInt(updatedAt),
-        tradeList = tradeList ?? [],
-        resultList = resultList ?? [],
-        pickupList = pickupList ?? [];
+  }) : eventId = _toInt(eventId),
+       updatedAt = _toInt(updatedAt),
+       tradeList = tradeList ?? [],
+       resultList = resultList ?? [],
+       pickupList = pickupList ?? [];
   factory UserEventTradeEntity.fromJson(Map<String, dynamic> data) => _$UserEventTradeEntityFromJson(data);
 }
 
@@ -1886,13 +1817,13 @@ class EventTradeInfo {
     dynamic getNum,
     dynamic startedAt,
     dynamic endedAt,
-  })  : storeIdx = _toInt(storeIdx),
-        tradeGoodsId = _toInt(tradeGoodsId),
-        tradeNum = _toInt(tradeNum),
-        maxTradeNum = _toInt(maxTradeNum),
-        getNum = _toInt(getNum),
-        startedAt = _toInt(startedAt),
-        endedAt = _toInt(endedAt);
+  }) : storeIdx = _toInt(storeIdx),
+       tradeGoodsId = _toInt(tradeGoodsId),
+       tradeNum = _toInt(tradeNum),
+       maxTradeNum = _toInt(maxTradeNum),
+       getNum = _toInt(getNum),
+       startedAt = _toInt(startedAt),
+       endedAt = _toInt(endedAt);
   factory EventTradeInfo.fromJson(Map<String, dynamic> data) => _$EventTradeInfoFromJson(data);
 }
 
@@ -1901,11 +1832,9 @@ class EventTradeResultInfo {
   int tradeGoodsId;
   int getNum;
 
-  EventTradeResultInfo({
-    dynamic tradeGoodsId,
-    dynamic getNum,
-  })  : tradeGoodsId = _toInt(tradeGoodsId),
-        getNum = _toInt(getNum);
+  EventTradeResultInfo({dynamic tradeGoodsId, dynamic getNum})
+    : tradeGoodsId = _toInt(tradeGoodsId),
+      getNum = _toInt(getNum);
   factory EventTradeResultInfo.fromJson(Map<String, dynamic> data) => _$EventTradeResultInfoFromJson(data);
 }
 
@@ -1916,15 +1845,11 @@ class EventCraftPickupInfo {
   int startedAt;
   int endedAt;
 
-  EventCraftPickupInfo({
-    dynamic tradeGoodsId,
-    dynamic itemId,
-    dynamic startedAt,
-    dynamic endedAt,
-  })  : tradeGoodsId = _toInt(tradeGoodsId),
-        itemId = _toInt(itemId),
-        startedAt = _toInt(startedAt),
-        endedAt = _toInt(endedAt);
+  EventCraftPickupInfo({dynamic tradeGoodsId, dynamic itemId, dynamic startedAt, dynamic endedAt})
+    : tradeGoodsId = _toInt(tradeGoodsId),
+      itemId = _toInt(itemId),
+      startedAt = _toInt(startedAt),
+      endedAt = _toInt(endedAt);
   factory EventCraftPickupInfo.fromJson(Map<String, dynamic> data) => _$EventCraftPickupInfoFromJson(data);
 }
 
@@ -1976,22 +1901,22 @@ class EventRaidEntity extends DataEntityBase<String> {
     dynamic defeatNormaAt,
     dynamic defeatBaseAt,
     dynamic correctStartTime,
-  })  : eventId = _toInt(eventId),
-        day = _toInt(day),
-        groupIndex = _toInt(groupIndex),
-        subGroupIndex = _toInt(subGroupIndex),
-        name = name?.toString() ?? "",
-        maxHp = _toInt(maxHp),
-        iconId = _toInt(iconId),
-        bossColor = _toInt(bossColor),
-        startedAt = _toInt(startedAt),
-        endedAt = _toInt(endedAt),
-        timeLimitAt = _toInt(timeLimitAt),
-        splitAiMode = List.from(splitAiMode ?? []),
-        splitHp = _toIntList(splitHp),
-        defeatNormaAt = _toInt(defeatNormaAt),
-        defeatBaseAt = _toInt(defeatBaseAt),
-        correctStartTime = _toInt(correctStartTime);
+  }) : eventId = _toInt(eventId),
+       day = _toInt(day),
+       groupIndex = _toInt(groupIndex),
+       subGroupIndex = _toInt(subGroupIndex),
+       name = name?.toString() ?? "",
+       maxHp = _toInt(maxHp),
+       iconId = _toInt(iconId),
+       bossColor = _toInt(bossColor),
+       startedAt = _toInt(startedAt),
+       endedAt = _toInt(endedAt),
+       timeLimitAt = _toInt(timeLimitAt),
+       splitAiMode = List.from(splitAiMode ?? []),
+       splitHp = _toIntList(splitHp),
+       defeatNormaAt = _toInt(defeatNormaAt),
+       defeatBaseAt = _toInt(defeatBaseAt),
+       correctStartTime = _toInt(correctStartTime);
 
   factory EventRaidEntity.fromJson(Map<String, dynamic> data) => _$EventRaidEntityFromJson(data);
 }
@@ -2008,15 +1933,11 @@ class UserEventRaidEntity extends DataEntityBase<String> {
 
   static String createPK(int eventId, int day) => _createPK2(eventId, day);
 
-  UserEventRaidEntity({
-    dynamic userId,
-    dynamic eventId,
-    dynamic day,
-    dynamic damage,
-  })  : userId = _toInt(userId),
-        eventId = _toInt(eventId),
-        day = _toInt(day),
-        damage = _toInt(damage);
+  UserEventRaidEntity({dynamic userId, dynamic eventId, dynamic day, dynamic damage})
+    : userId = _toInt(userId),
+      eventId = _toInt(eventId),
+      day = _toInt(day),
+      damage = _toInt(damage);
   factory UserEventRaidEntity.fromJson(Map<String, dynamic> data) => _$UserEventRaidEntityFromJson(data);
 }
 
@@ -2032,15 +1953,11 @@ class TotalEventRaidEntity extends DataEntityBase<String> {
 
   static String createPK(int eventId, int day) => _createPK2(eventId, day);
 
-  TotalEventRaidEntity({
-    dynamic eventId,
-    dynamic day,
-    dynamic totalDamage,
-    dynamic defeatedAt,
-  })  : eventId = _toInt(eventId),
-        day = _toInt(day),
-        totalDamage = _toInt(totalDamage),
-        defeatedAt = _toInt(defeatedAt);
+  TotalEventRaidEntity({dynamic eventId, dynamic day, dynamic totalDamage, dynamic defeatedAt})
+    : eventId = _toInt(eventId),
+      day = _toInt(day),
+      totalDamage = _toInt(totalDamage),
+      defeatedAt = _toInt(defeatedAt);
   factory TotalEventRaidEntity.fromJson(Map<String, dynamic> data) => _$TotalEventRaidEntityFromJson(data);
 }
 
@@ -2050,11 +1967,7 @@ class BattleRaidResult {
   int day;
   int addDamage;
 
-  BattleRaidResult({
-    required this.uniqueId,
-    required this.day,
-    required this.addDamage,
-  });
+  BattleRaidResult({required this.uniqueId, required this.day, required this.addDamage});
   // factory BattleRaidResult.fromJson(Map<String, dynamic> data) => _$BattleRaidResultFromJson(data);
 
   Map<String, dynamic> toJson() => _$BattleRaidResultToJson(this);
@@ -2070,11 +1983,7 @@ class BattleSuperBossResult {
   int uniqueId;
   int addDamage;
 
-  BattleSuperBossResult({
-    required this.superBossId,
-    required this.uniqueId,
-    required this.addDamage,
-  });
+  BattleSuperBossResult({required this.superBossId, required this.uniqueId, required this.addDamage});
   // factory BattleSuperBossResult.fromJson(Map<String, dynamic> data) => _$BattleSuperBossResultFromJson(data);
 
   Map<String, dynamic> toJson() => _$BattleSuperBossResultToJson(this);
@@ -2106,12 +2015,12 @@ class UserBoxGachaEntity extends DataEntityBase<_IntStr> {
     dynamic drawNum,
     dynamic isReset,
     dynamic boxIndex,
-  })  : userId = _toInt(userId),
-        boxGachaId = _toInt(boxGachaId),
-        resetNum = _toInt(resetNum),
-        drawNum = _toInt(drawNum),
-        isReset = _toBool(isReset),
-        boxIndex = _toInt(boxIndex);
+  }) : userId = _toInt(userId),
+       boxGachaId = _toInt(boxGachaId),
+       resetNum = _toInt(resetNum),
+       drawNum = _toInt(drawNum),
+       isReset = _toBool(isReset),
+       boxIndex = _toInt(boxIndex);
 
   factory UserBoxGachaEntity.fromJson(Map<String, dynamic> data) => _$UserBoxGachaEntityFromJson(data);
 }
@@ -2130,19 +2039,13 @@ class UserShopEntity extends DataEntityBase<_IntStr> {
 
   static _IntStr createPK(int shopId) => shopId;
 
-  UserShopEntity({
-    dynamic userId,
-    dynamic shopId,
-    dynamic num,
-    dynamic flag,
-    dynamic updatedAt,
-    dynamic createdAt,
-  })  : userId = _toInt(userId),
-        shopId = _toInt(shopId),
-        num = _toInt(num),
-        flag = _toInt(flag),
-        updatedAt = _toInt(updatedAt ?? createdAt, 0),
-        createdAt = _toInt(createdAt ?? updatedAt, 0);
+  UserShopEntity({dynamic userId, dynamic shopId, dynamic num, dynamic flag, dynamic updatedAt, dynamic createdAt})
+    : userId = _toInt(userId),
+      shopId = _toInt(shopId),
+      num = _toInt(num),
+      flag = _toInt(flag),
+      updatedAt = _toInt(updatedAt ?? createdAt, 0),
+      createdAt = _toInt(createdAt ?? updatedAt, 0);
 
   factory UserShopEntity.fromJson(Map<String, dynamic> data) => _$UserShopEntityFromJson(data);
 }
@@ -2183,18 +2086,18 @@ class UserQuestEntity extends DataEntityBase<_IntStr> {
     dynamic status,
     dynamic updatedAt,
     dynamic createdAt,
-  })  : userId = _toInt(userId),
-        questId = _toInt(questId),
-        questPhase = _toInt(questPhase),
-        clearNum = _toInt(clearNum),
-        isEternalOpen = _toBool(isEternalOpen),
-        expireAt = _toInt(expireAt),
-        challengeNum = _toInt(challengeNum),
-        isNew = _toBool(isNew),
-        lastStartedAt = _toInt(lastStartedAt),
-        status = _toInt(status),
-        updatedAt = _toInt(updatedAt),
-        createdAt = _toInt(createdAt);
+  }) : userId = _toInt(userId),
+       questId = _toInt(questId),
+       questPhase = _toInt(questPhase),
+       clearNum = _toInt(clearNum),
+       isEternalOpen = _toBool(isEternalOpen),
+       expireAt = _toInt(expireAt),
+       challengeNum = _toInt(challengeNum),
+       isNew = _toBool(isNew),
+       lastStartedAt = _toInt(lastStartedAt),
+       status = _toInt(status),
+       updatedAt = _toInt(updatedAt),
+       createdAt = _toInt(createdAt);
 
   factory UserQuestEntity.fromJson(Map<String, dynamic> data) => _$UserQuestEntityFromJson(data);
 }
@@ -2211,12 +2114,9 @@ class UserFollowerEntity extends DataEntityBase<int> {
 
   static int createPK(int userId) => userId;
 
-  UserFollowerEntity({
-    this.followerInfo = const [],
-    dynamic userId,
-    dynamic expireAt,
-  })  : userId = _toInt(userId),
-        expireAt = _toInt(expireAt);
+  UserFollowerEntity({this.followerInfo = const [], dynamic userId, dynamic expireAt})
+    : userId = _toInt(userId),
+      expireAt = _toInt(expireAt);
 
   factory UserFollowerEntity.fromJson(Map<String, dynamic> data) => _$UserFollowerEntityFromJson(data);
 }
@@ -2255,17 +2155,17 @@ class FollowerInfo {
     required dynamic mainSupportDeckIds,
     required dynamic eventSupportDeckIds,
     // required dynamic userClassBoardInfo,
-  })  : userId = _toInt(userId),
-        userName = userName.toString(),
-        userLv = _toInt(userLv),
-        type = _toInt(type),
-        tutorial1 = _toInt(tutorial1),
-        message = message.toString(),
-        pushUserSvtId = _toInt(pushUserSvtId),
-        userSvtLeaderHash = userSvtLeaderHash ?? [],
-        eventUserSvtLeaderHash = eventUserSvtLeaderHash ?? [],
-        mainSupportDeckIds = _toIntList(mainSupportDeckIds),
-        eventSupportDeckIds = _toIntList(eventSupportDeckIds);
+  }) : userId = _toInt(userId),
+       userName = userName.toString(),
+       userLv = _toInt(userLv),
+       type = _toInt(type),
+       tutorial1 = _toInt(tutorial1),
+       message = message.toString(),
+       pushUserSvtId = _toInt(pushUserSvtId),
+       userSvtLeaderHash = userSvtLeaderHash ?? [],
+       eventUserSvtLeaderHash = eventUserSvtLeaderHash ?? [],
+       mainSupportDeckIds = _toIntList(mainSupportDeckIds),
+       eventSupportDeckIds = _toIntList(eventSupportDeckIds);
 
   factory FollowerInfo.fromJson(Map<String, dynamic> data) => _$FollowerInfoFromJson(data);
 }
@@ -2344,39 +2244,39 @@ class ServantLeaderInfo {
     required dynamic commandCardParam,
     List<Map>? appendPassiveSkill,
     required dynamic eventSvtPoint,
-  })  : supportDeckId = _toInt(supportDeckId),
-        userId = _toInt(userId),
-        classId = _toInt(classId),
-        userSvtId = _toInt(userSvtId),
-        svtId = _toInt(svtId),
-        limitCount = _toInt(limitCount),
-        lv = _toInt(lv),
-        exp = _toInt(exp),
-        hp = _toInt(hp),
-        atk = _toInt(atk),
-        adjustAtk = _toInt(adjustAtk),
-        adjustHp = _toInt(adjustHp),
-        skillId1 = _toInt(skillId1),
-        skillId2 = _toInt(skillId2),
-        skillId3 = _toInt(skillId3),
-        skillLv1 = _toInt(skillLv1),
-        skillLv2 = _toInt(skillLv2),
-        skillLv3 = _toInt(skillLv3),
-        classPassive = _toIntList(classPassive),
-        treasureDeviceId = _toInt(treasureDeviceId),
-        treasureDeviceLv = _toInt(treasureDeviceLv),
-        exceedCount = _toInt(exceedCount),
-        updatedAt = _toInt(updatedAt),
-        imageLimitCount = _toInt(imageLimitCount),
-        dispLimitCount = _toInt(dispLimitCount),
-        commandCardLimitCount = _toInt(commandCardLimitCount),
-        iconLimitCount = _toInt(iconLimitCount),
-        portraitLimitCount = _toInt(portraitLimitCount),
-        randomLimitCountTargets = _toIntList(randomLimitCountTargets),
-        commandCode = commandCode ?? [],
-        commandCardParam = _toIntList(commandCardParam),
-        appendPassiveSkill = appendPassiveSkill ?? [],
-        eventSvtPoint = _toInt(eventSvtPoint);
+  }) : supportDeckId = _toInt(supportDeckId),
+       userId = _toInt(userId),
+       classId = _toInt(classId),
+       userSvtId = _toInt(userSvtId),
+       svtId = _toInt(svtId),
+       limitCount = _toInt(limitCount),
+       lv = _toInt(lv),
+       exp = _toInt(exp),
+       hp = _toInt(hp),
+       atk = _toInt(atk),
+       adjustAtk = _toInt(adjustAtk),
+       adjustHp = _toInt(adjustHp),
+       skillId1 = _toInt(skillId1),
+       skillId2 = _toInt(skillId2),
+       skillId3 = _toInt(skillId3),
+       skillLv1 = _toInt(skillLv1),
+       skillLv2 = _toInt(skillLv2),
+       skillLv3 = _toInt(skillLv3),
+       classPassive = _toIntList(classPassive),
+       treasureDeviceId = _toInt(treasureDeviceId),
+       treasureDeviceLv = _toInt(treasureDeviceLv),
+       exceedCount = _toInt(exceedCount),
+       updatedAt = _toInt(updatedAt),
+       imageLimitCount = _toInt(imageLimitCount),
+       dispLimitCount = _toInt(dispLimitCount),
+       commandCardLimitCount = _toInt(commandCardLimitCount),
+       iconLimitCount = _toInt(iconLimitCount),
+       portraitLimitCount = _toInt(portraitLimitCount),
+       randomLimitCountTargets = _toIntList(randomLimitCountTargets),
+       commandCode = commandCode ?? [],
+       commandCardParam = _toIntList(commandCardParam),
+       appendPassiveSkill = appendPassiveSkill ?? [],
+       eventSvtPoint = _toInt(eventSvtPoint);
 
   factory ServantLeaderInfo.fromJson(Map<String, dynamic> data) => _$ServantLeaderInfoFromJson(data);
 }
@@ -2392,13 +2292,10 @@ class UserAccountLinkageEntity extends DataEntityBase<int> {
 
   static int createPK(int userId) => userId;
 
-  UserAccountLinkageEntity({
-    dynamic userId,
-    dynamic type,
-    dynamic linkedAt,
-  })  : userId = _toInt(userId),
-        type = _toInt(type),
-        linkedAt = _toInt(linkedAt);
+  UserAccountLinkageEntity({dynamic userId, dynamic type, dynamic linkedAt})
+    : userId = _toInt(userId),
+      type = _toInt(type),
+      linkedAt = _toInt(linkedAt);
 
   factory UserAccountLinkageEntity.fromJson(Map<String, dynamic> data) => _$UserAccountLinkageEntityFromJson(data);
 }
@@ -2418,18 +2315,12 @@ class UserDeckEntity extends DataEntityBase<int> {
 
   static int createPK(int id) => id;
 
-  UserDeckEntity({
-    dynamic id,
-    dynamic userId,
-    dynamic deckNo,
-    dynamic name,
-    this.deckInfo,
-    dynamic cost,
-  })  : id = _toInt(id),
-        userId = _toInt(userId),
-        deckNo = _toInt(deckNo),
-        name = name.toString(),
-        cost = _toInt(cost);
+  UserDeckEntity({dynamic id, dynamic userId, dynamic deckNo, dynamic name, this.deckInfo, dynamic cost})
+    : id = _toInt(id),
+      userId = _toInt(userId),
+      deckNo = _toInt(deckNo),
+      name = name.toString(),
+      cost = _toInt(cost);
 
   factory UserDeckEntity.fromJson(Map<String, dynamic> data) => _$UserDeckEntityFromJson(data);
   Map<String, dynamic> toJson() => _$UserDeckEntityToJson(this);
@@ -2447,14 +2338,10 @@ class UserEventDeckEntity extends DataEntityBase<String> {
 
   static String createPK(int eventId, int deckNo) => _createPK2(eventId, deckNo);
 
-  UserEventDeckEntity({
-    dynamic userId,
-    dynamic eventId,
-    dynamic deckNo,
-    this.deckInfo,
-  })  : userId = _toInt(userId),
-        eventId = _toInt(eventId),
-        deckNo = _toInt(deckNo);
+  UserEventDeckEntity({dynamic userId, dynamic eventId, dynamic deckNo, this.deckInfo})
+    : userId = _toInt(userId),
+      eventId = _toInt(eventId),
+      deckNo = _toInt(deckNo);
 
   factory UserEventDeckEntity.fromJson(Map<String, dynamic> data) => _$UserEventDeckEntityFromJson(data);
 }
@@ -2465,13 +2352,10 @@ class DeckServantEntity {
   int userEquipId;
   List waveSvts; // int wave; int[] uniqueIds;
 
-  DeckServantEntity({
-    List<DeckServantData>? svts,
-    dynamic userEquipId,
-    List? waveSvts,
-  })  : svts = svts ?? [],
-        userEquipId = _toInt(userEquipId),
-        waveSvts = waveSvts ?? [];
+  DeckServantEntity({List<DeckServantData>? svts, dynamic userEquipId, List? waveSvts})
+    : svts = svts ?? [],
+      userEquipId = _toInt(userEquipId),
+      waveSvts = waveSvts ?? [];
   factory DeckServantEntity.fromJson(Map<String, dynamic> data) => _$DeckServantEntityFromJson(data);
   Map<String, dynamic> toJson() => _$DeckServantEntityToJson(this);
 }
@@ -2501,16 +2385,16 @@ class DeckServantData {
     dynamic npcFollowerSvtId,
     dynamic followerType,
     dynamic initPos,
-  })  : id = _toInt(id),
-        userSvtId = _toInt(userSvtId),
-        userId = _toIntNull(userId),
-        svtId = _toIntNull(svtId),
-        userSvtEquipIds = _toIntList(userSvtEquipIds),
-        svtEquipIds = svtEquipIds == null ? null : _toIntList(svtEquipIds),
-        isFollowerSvt = _toBool(isFollowerSvt),
-        npcFollowerSvtId = _toInt(npcFollowerSvtId),
-        followerType = _toIntNull(followerType),
-        initPos = _toIntNull(initPos);
+  }) : id = _toInt(id),
+       userSvtId = _toInt(userSvtId),
+       userId = _toIntNull(userId),
+       svtId = _toIntNull(svtId),
+       userSvtEquipIds = _toIntList(userSvtEquipIds),
+       svtEquipIds = svtEquipIds == null ? null : _toIntList(svtEquipIds),
+       isFollowerSvt = _toBool(isFollowerSvt),
+       npcFollowerSvtId = _toInt(npcFollowerSvtId),
+       followerType = _toIntNull(followerType),
+       initPos = _toIntNull(initPos);
   factory DeckServantData.fromJson(Map<String, dynamic> data) => _$DeckServantDataFromJson(data);
   Map<String, dynamic> toJson() => _$DeckServantDataToJson(this);
 }
@@ -2557,16 +2441,16 @@ class BattleEntity extends DataEntityBase<int> {
     dynamic followerType,
     dynamic eventId,
     dynamic createdAt,
-  })  : id = _toInt(id),
-        battleType = _toInt(battleType),
-        questId = _toInt(questId),
-        questPhase = _toInt(questPhase),
-        userId = _toInt(userId),
-        targetId = _toIntNull(targetId),
-        followerId = _toIntNull(followerId),
-        followerType = _toIntNull(followerType),
-        eventId = _toInt(eventId),
-        createdAt = _toInt(createdAt, 0);
+  }) : id = _toInt(id),
+       battleType = _toInt(battleType),
+       questId = _toInt(questId),
+       questPhase = _toInt(questPhase),
+       userId = _toInt(userId),
+       targetId = _toIntNull(targetId),
+       followerId = _toIntNull(followerId),
+       followerType = _toIntNull(followerType),
+       eventId = _toInt(eventId),
+       createdAt = _toInt(createdAt, 0);
 
   factory BattleEntity.fromJson(Map<String, dynamic> data) => _$BattleEntityFromJson(data);
 }
@@ -2599,10 +2483,10 @@ class BattleInfoData {
     this.raidInfo = const [],
     this.startRaidInfo = const [],
     this.superBossInfo = const [],
-  })  : dataVer = _toInt(dataVer),
-        appVer = appVer.toString(),
-        userEquipId = _toInt(userEquipId),
-        useEventEquip = _toBool(useEventEquip);
+  }) : dataVer = _toInt(dataVer),
+       appVer = appVer.toString(),
+       userEquipId = _toInt(userEquipId),
+       useEventEquip = _toBool(useEventEquip);
 
   factory BattleInfoData.fromJson(Map<String, dynamic> data) => _$BattleInfoDataFromJson(data);
 
@@ -2622,12 +2506,9 @@ class DeckData {
   int? followerType;
   int? stageId;
 
-  DeckData({
-    this.svts = const [],
-    dynamic followerType,
-    dynamic stageId,
-  })  : followerType = _toIntNull(followerType),
-        stageId = _toIntNull(stageId);
+  DeckData({this.svts = const [], dynamic followerType, dynamic stageId})
+    : followerType = _toIntNull(followerType),
+      stageId = _toIntNull(stageId);
 
   factory DeckData.fromJson(Map<String, dynamic> data) => _$DeckDataFromJson(data);
 }
@@ -2664,17 +2545,17 @@ class BattleDeckServantData {
     dynamic isFollowerSvt,
     dynamic npcFollowerSvtId,
     dynamic followerType,
-  })  : uniqueId = _toInt(uniqueId),
-        name = name?.toString(),
-        roleType = _toIntNull(roleType),
-        npcId = _toInt(npcId, 0),
-        index = _toIntNull(index),
-        id = _toInt(id),
-        userSvtId = _toInt(userSvtId),
-        userSvtEquipIds = _toIntList(userSvtEquipIds),
-        isFollowerSvt = _toBool(isFollowerSvt),
-        npcFollowerSvtId = _toIntNull(npcFollowerSvtId),
-        followerType = _toIntNull(followerType);
+  }) : uniqueId = _toInt(uniqueId),
+       name = name?.toString(),
+       roleType = _toIntNull(roleType),
+       npcId = _toInt(npcId, 0),
+       index = _toIntNull(index),
+       id = _toInt(id),
+       userSvtId = _toInt(userSvtId),
+       userSvtEquipIds = _toIntList(userSvtEquipIds),
+       isFollowerSvt = _toBool(isFollowerSvt),
+       npcFollowerSvtId = _toIntNull(npcFollowerSvtId),
+       followerType = _toIntNull(followerType);
 
   factory BattleDeckServantData.fromJson(Map<String, dynamic> data) => _$BattleDeckServantDataFromJson(data);
 }
@@ -2772,29 +2653,29 @@ class BattleUserServantData {
     dynamic appendPassiveSkillLvs,
     dynamic limitCount,
     dynamic dispLimitCount,
-  })  : id = _toInt(id),
-        userId = _toIntNull(userId),
-        svtId = _toInt(svtId),
-        lv = _toInt(lv),
-        exp = _toInt(exp),
-        atk = _toInt(atk),
-        hp = _toInt(hp),
-        adjustAtk = _toIntNull(adjustAtk),
-        adjustHp = _toIntNull(adjustHp),
-        skillId1 = _toInt(skillId1, 0),
-        skillId2 = _toInt(skillId2, 0),
-        skillId3 = _toInt(skillId3, 0),
-        skillLv1 = _toInt(skillLv1, 0),
-        skillLv2 = _toInt(skillLv2, 0),
-        skillLv3 = _toInt(skillLv3, 0),
-        treasureDeviceId = _toIntNull(treasureDeviceId),
-        treasureDeviceLv = _toIntNull(treasureDeviceLv),
-        equipTargetId1 = _toIntNull(equipTargetId1),
-        equipTargetIds = _toIntList(equipTargetIds),
-        appendPassiveSkillIds = _toIntList(appendPassiveSkillIds),
-        appendPassiveSkillLvs = _toIntList(appendPassiveSkillLvs),
-        limitCount = _toInt(limitCount),
-        dispLimitCount = _toInt(dispLimitCount, 0);
+  }) : id = _toInt(id),
+       userId = _toIntNull(userId),
+       svtId = _toInt(svtId),
+       lv = _toInt(lv),
+       exp = _toInt(exp),
+       atk = _toInt(atk),
+       hp = _toInt(hp),
+       adjustAtk = _toIntNull(adjustAtk),
+       adjustHp = _toIntNull(adjustHp),
+       skillId1 = _toInt(skillId1, 0),
+       skillId2 = _toInt(skillId2, 0),
+       skillId3 = _toInt(skillId3, 0),
+       skillLv1 = _toInt(skillLv1, 0),
+       skillLv2 = _toInt(skillLv2, 0),
+       skillLv3 = _toInt(skillLv3, 0),
+       treasureDeviceId = _toIntNull(treasureDeviceId),
+       treasureDeviceLv = _toIntNull(treasureDeviceLv),
+       equipTargetId1 = _toIntNull(equipTargetId1),
+       equipTargetIds = _toIntList(equipTargetIds),
+       appendPassiveSkillIds = _toIntList(appendPassiveSkillIds),
+       appendPassiveSkillLvs = _toIntList(appendPassiveSkillLvs),
+       limitCount = _toInt(limitCount),
+       dispLimitCount = _toInt(dispLimitCount, 0);
 
   factory BattleUserServantData.fromJson(Map<String, dynamic> data) => _$BattleUserServantDataFromJson(data);
 }
@@ -2806,15 +2687,11 @@ class BattleRaidInfo {
   int maxHp;
   int totalDamage;
 
-  BattleRaidInfo({
-    dynamic day,
-    dynamic uniqueId,
-    dynamic maxHp,
-    dynamic totalDamage,
-  })  : day = _toInt(day),
-        uniqueId = _toInt(uniqueId),
-        maxHp = _toInt(maxHp, 0),
-        totalDamage = _toInt(totalDamage);
+  BattleRaidInfo({dynamic day, dynamic uniqueId, dynamic maxHp, dynamic totalDamage})
+    : day = _toInt(day),
+      uniqueId = _toInt(uniqueId),
+      maxHp = _toInt(maxHp, 0),
+      totalDamage = _toInt(totalDamage);
 
   double get rate => maxHp == 0 ? 0 : totalDamage / maxHp;
 
@@ -2845,16 +2722,16 @@ class DropInfo {
     dynamic originalNum,
     dynamic effectType,
     dynamic isAdd,
-  })  : type = _toInt(type),
-        objectId = _toInt(objectId),
-        num = _toInt(num),
-        limitCount = _toInt(limitCount),
-        lv = _toInt(lv),
-        rarity = _toInt(rarity),
-        isRateUp = _toBoolNull(isRateUp),
-        originalNum = _toIntNull(originalNum),
-        effectType = _toIntNull(effectType),
-        isAdd = _toBoolNull(isAdd);
+  }) : type = _toInt(type),
+       objectId = _toInt(objectId),
+       num = _toInt(num),
+       limitCount = _toInt(limitCount),
+       lv = _toInt(lv),
+       rarity = _toInt(rarity),
+       isRateUp = _toBoolNull(isRateUp),
+       originalNum = _toIntNull(originalNum),
+       effectType = _toIntNull(effectType),
+       isAdd = _toBoolNull(isAdd);
 
   factory DropInfo.fromJson(Map<String, dynamic> data) => _$DropInfoFromJson(data);
 }
@@ -2884,16 +2761,16 @@ class BattleFriendshipRewardInfo {
     dynamic limitCount,
     dynamic lv,
     dynamic rarity,
-  })  : isNew = _toBool(isNew),
-        userSvtId = _toInt(userSvtId),
-        mstGiftId = _toInt(mstGiftId),
-        type = _toInt(type),
-        targetSvtId = _toInt(targetSvtId),
-        objectId = _toInt(objectId),
-        num = _toInt(num),
-        limitCount = _toInt(limitCount),
-        lv = _toInt(lv),
-        rarity = _toInt(rarity);
+  }) : isNew = _toBool(isNew),
+       userSvtId = _toInt(userSvtId),
+       mstGiftId = _toInt(mstGiftId),
+       type = _toInt(type),
+       targetSvtId = _toInt(targetSvtId),
+       objectId = _toInt(objectId),
+       num = _toInt(num),
+       limitCount = _toInt(limitCount),
+       lv = _toInt(lv),
+       rarity = _toInt(rarity);
 
   factory BattleFriendshipRewardInfo.fromJson(Map<String, dynamic> data) => _$BattleFriendshipRewardInfoFromJson(data);
 }
@@ -2952,28 +2829,28 @@ class BattleResultData {
     dynamic warClearReward,
     List<DropInfo>? rewardInfos,
     List<DropInfo>? resultDropInfos,
-  })  : battleId = _toInt(battleId),
-        battleResult = _toInt(battleResult),
-        eventId = _toInt(eventId, 0),
-        followerId = _toInt(followerId, 0),
-        followerClassId = _toInt(followerClassId, 0),
-        followerSupportDeckId = _toInt(followerSupportDeckId, 0),
-        followerType = _toInt(followerType, 0),
-        followerStatus = _toInt(followerStatus, 0),
-        oldUserGame = oldUserGame ?? [],
-        oldUserQuest = oldUserQuest ?? [],
-        oldUserEquip = oldUserEquip ?? [],
-        oldUserSvtCollection = oldUserSvtCollection ?? [],
-        oldUserSvt = oldUserSvt ?? [],
-        myDeck = myDeck is Map ? myDeck : {}, //
-        firstClearRewardQp = _toInt(firstClearRewardQp, 0),
-        originalPhaseClearQp = _toInt(originalPhaseClearQp, 0),
-        phaseClearQp = _toInt(phaseClearQp, 0),
-        friendshipExpBase = _toInt(friendshipExpBase, 0),
-        friendshipRewardInfos = friendshipRewardInfos ?? [],
-        warClearReward = warClearReward as List? ?? [],
-        rewardInfos = rewardInfos ?? [],
-        resultDropInfos = resultDropInfos ?? [];
+  }) : battleId = _toInt(battleId),
+       battleResult = _toInt(battleResult),
+       eventId = _toInt(eventId, 0),
+       followerId = _toInt(followerId, 0),
+       followerClassId = _toInt(followerClassId, 0),
+       followerSupportDeckId = _toInt(followerSupportDeckId, 0),
+       followerType = _toInt(followerType, 0),
+       followerStatus = _toInt(followerStatus, 0),
+       oldUserGame = oldUserGame ?? [],
+       oldUserQuest = oldUserQuest ?? [],
+       oldUserEquip = oldUserEquip ?? [],
+       oldUserSvtCollection = oldUserSvtCollection ?? [],
+       oldUserSvt = oldUserSvt ?? [],
+       myDeck = myDeck is Map ? myDeck : {}, //
+       firstClearRewardQp = _toInt(firstClearRewardQp, 0),
+       originalPhaseClearQp = _toInt(originalPhaseClearQp, 0),
+       phaseClearQp = _toInt(phaseClearQp, 0),
+       friendshipExpBase = _toInt(friendshipExpBase, 0),
+       friendshipRewardInfos = friendshipRewardInfos ?? [],
+       warClearReward = warClearReward as List? ?? [],
+       rewardInfos = rewardInfos ?? [],
+       resultDropInfos = resultDropInfos ?? [];
 
   factory BattleResultData.fromJson(Map<dynamic, dynamic> data) => _$BattleResultDataFromJson(data);
 }
@@ -3001,17 +2878,13 @@ class GachaInfos extends MstGiftBase {
     dynamic sellQp,
     dynamic sellMana,
     dynamic svtCoinNum,
-  })  : isNew = _toBool(isNew),
-        userSvtId = _toInt(userSvtId),
-        limitCount = _toInt(limitCount),
-        sellQp = _toInt(sellQp),
-        sellMana = _toInt(sellMana),
-        svtCoinNum = _toInt(svtCoinNum),
-        super(
-          type: _toInt(type),
-          objectId: _toInt(objectId),
-          num: _toInt(num),
-        );
+  }) : isNew = _toBool(isNew),
+       userSvtId = _toInt(userSvtId),
+       limitCount = _toInt(limitCount),
+       sellQp = _toInt(sellQp),
+       sellMana = _toInt(sellMana),
+       svtCoinNum = _toInt(svtCoinNum),
+       super(type: _toInt(type), objectId: _toInt(objectId), num: _toInt(num));
 
   factory GachaInfos.fromJson(Map<String, dynamic> json) => _$GachaInfosFromJson(json);
 
@@ -3048,8 +2921,7 @@ enum UserStatusFlagKind {
   birthdaySetting(21),
   issuedDeletePassword(22),
   deleted(23),
-  executedLogin(25),
-  ;
+  executedLogin(25);
 
   const UserStatusFlagKind(this.value);
   final int value;
@@ -3061,19 +2933,11 @@ enum UserStatusFlagKind {
     combineMaterialUc,
     combineMaterialC,
   ];
-  static const List<UserStatusFlagKind> kGachaSellStatusUps = [
-    statusUpR,
-    statusUpUc,
-    statusUpC,
-  ];
-  static const List<UserStatusFlagKind> kGachaSellSvtEquips = [
-    svtEquipR,
-    svtEquipUc,
-    svtEquipC,
-  ];
+  static const List<UserStatusFlagKind> kGachaSellStatusUps = [statusUpR, statusUpUc, statusUpC];
+  static const List<UserStatusFlagKind> kGachaSellSvtEquips = [svtEquipR, svtEquipUc, svtEquipC];
   static const List<UserStatusFlagKind> kGachaSells = [
     ...kGachaSellCombineMaterials,
     ...kGachaSellStatusUps,
-    ...kGachaSellSvtEquips
+    ...kGachaSellSvtEquips,
   ];
 }

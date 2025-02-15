@@ -15,10 +15,7 @@ class FixedHeight extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: preferredSize.height,
-      child: child,
-    );
+    return SizedBox(height: preferredSize.height, child: child);
   }
 }
 
@@ -52,13 +49,7 @@ class DividerWithTitle extends StatelessWidget {
     }
     Widget child;
     if (titleWidget == null) {
-      child = Divider(
-        height: height,
-        thickness: thickness,
-        indent: indent,
-        endIndent: endIndent,
-        color: color,
-      );
+      child = Divider(height: height, thickness: thickness, indent: indent, endIndent: endIndent, color: color);
     } else {
       child = Row(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -81,7 +72,7 @@ class DividerWithTitle extends StatelessWidget {
               endIndent: indent,
               color: color,
             ),
-          )
+          ),
         ],
       );
     }
@@ -98,18 +89,14 @@ class DashedLinePainter extends CustomPainter {
   final double indent;
   final double strokeWidth;
 
-  const DashedLinePainter({
-    this.dashWidth = 9,
-    this.space = 5,
-    this.indent = 0,
-    this.strokeWidth = 1,
-  });
+  const DashedLinePainter({this.dashWidth = 9, this.space = 5, this.indent = 0, this.strokeWidth = 1});
 
   @override
   void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = Colors.grey
-      ..strokeWidth = strokeWidth;
+    final paint =
+        Paint()
+          ..color = Colors.grey
+          ..strokeWidth = strokeWidth;
     double startX = indent;
     final maxX = max(startX, size.width - indent);
     final y = size.height / 2;
@@ -180,7 +167,7 @@ class _FutureBuilder2State<K, V> extends State<FutureBuilder2<K, V>> {
     return _loading == widget.id
         ? widget.onLoading?.call(context) ?? const SizedBox()
         : _data is V
-            ? widget.builder(context, _data as V)
-            : widget.onFailed?.call(context) ?? const SizedBox();
+        ? widget.builder(context, _data as V)
+        : widget.onFailed?.call(context) ?? const SizedBox();
   }
 }

@@ -63,10 +63,7 @@ class _ExpCardCostPageState extends State<ExpCardCostPage> {
       ),
       body: ListView(
         children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8),
-            child: selector,
-          ),
+          Padding(padding: const EdgeInsets.symmetric(horizontal: 8), child: selector),
           kDefaultDivider,
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -83,9 +80,10 @@ class _ExpCardCostPageState extends State<ExpCardCostPage> {
               ),
               CheckboxWithLabel(
                 value: sameClass,
-                onChanged: (v) => setState(() {
-                  sameClass = v ?? sameClass;
-                }),
+                onChanged:
+                    (v) => setState(() {
+                      sameClass = v ?? sameClass;
+                    }),
                 label: Text(S.current.exp_card_same_class),
               ),
             ],
@@ -103,11 +101,7 @@ class _ExpCardCostPageState extends State<ExpCardCostPage> {
     Widget _oneGroup(String text, List<Widget> children) {
       return Wrap(
         crossAxisAlignment: WrapCrossAlignment.center,
-        children: [
-          Text(text),
-          const SizedBox(width: 4),
-          ...children,
-        ],
+        children: [Text(text), const SizedBox(width: 4), ...children],
       );
     }
 
@@ -121,10 +115,7 @@ class _ExpCardCostPageState extends State<ExpCardCostPage> {
             width: 48,
             child: TextFormField(
               controller: _startController,
-              decoration: const InputDecoration(
-                counter: SizedBox(),
-                isDense: true,
-              ),
+              decoration: const InputDecoration(counter: SizedBox(), isDense: true),
               maxLength: 3,
               textAlign: TextAlign.center,
               inputFormatters: [FilteringTextInputFormatter.digitsOnly],
@@ -140,10 +131,7 @@ class _ExpCardCostPageState extends State<ExpCardCostPage> {
             width: 48,
             child: TextFormField(
               controller: _endController,
-              decoration: const InputDecoration(
-                counter: SizedBox(),
-                isDense: true,
-              ),
+              decoration: const InputDecoration(counter: SizedBox(), isDense: true),
               maxLength: 3,
               textAlign: TextAlign.center,
               inputFormatters: [FilteringTextInputFormatter.digitsOnly],
@@ -159,14 +147,12 @@ class _ExpCardCostPageState extends State<ExpCardCostPage> {
             value: data.rarity,
             items: List.generate(
               6,
-              (index) => DropdownMenuItem(
-                value: 5 - index,
-                child: Text('${5 - index}$kStarChar'),
-              ),
+              (index) => DropdownMenuItem(value: 5 - index, child: Text('${5 - index}$kStarChar')),
             ),
-            onChanged: (v) => setState(() {
-              data.rarity = v ?? data.rarity;
-            }),
+            onChanged:
+                (v) => setState(() {
+                  data.rarity = v ?? data.rarity;
+                }),
             itemHeight: null,
             isDense: true,
           ),
@@ -176,10 +162,7 @@ class _ExpCardCostPageState extends State<ExpCardCostPage> {
             width: 120,
             child: TextFormField(
               controller: _nextController,
-              decoration: const InputDecoration(
-                counter: SizedBox(),
-                isDense: true,
-              ),
+              decoration: const InputDecoration(counter: SizedBox(), isDense: true),
               // maxLength: ,
               textAlign: TextAlign.center,
               inputFormatters: [FilteringTextInputFormatter.digitsOnly],
@@ -229,7 +212,7 @@ class _ExpCardCostPageState extends State<ExpCardCostPage> {
           _itemIcon(Items.grailId),
           _itemIcon(db.gameData.servantsNoDup[1]?.coin?.item.id),
         ],
-      )
+      ),
     ];
     Widget _valToWidget(String val, [bool header = false]) {
       if (val == '0' || val.isEmpty) {
@@ -238,38 +221,31 @@ class _ExpCardCostPageState extends State<ExpCardCostPage> {
       return Center(
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 8),
-          child: AutoSizeText(
-            val,
-            style: TextStyle(
-              fontWeight: header ? FontWeight.bold : null,
-            ),
-            maxLines: 1,
-          ),
+          child: AutoSizeText(val, style: TextStyle(fontWeight: header ? FontWeight.bold : null), maxLines: 1),
         ),
       );
     }
 
     for (int index = 0; index < data.stageNames.length; index++) {
-      rows.add(TableRow(
-        decoration: index == 0 ? BoxDecoration(color: headerColor) : null,
-        children: [
-          _valToWidget(data.stageNames[index], index == 0),
-          _valToWidget(data.expStages[index].toString(), index == 0),
-          _valToWidget(data.qpStages[index].format(), index == 0),
-          _valToWidget(data.grailStages[index].format(), index == 0),
-          _valToWidget(data.coinStages[index].format(), index == 0),
-        ],
-      ));
+      rows.add(
+        TableRow(
+          decoration: index == 0 ? BoxDecoration(color: headerColor) : null,
+          children: [
+            _valToWidget(data.stageNames[index], index == 0),
+            _valToWidget(data.expStages[index].toString(), index == 0),
+            _valToWidget(data.qpStages[index].format(), index == 0),
+            _valToWidget(data.grailStages[index].format(), index == 0),
+            _valToWidget(data.coinStages[index].format(), index == 0),
+          ],
+        ),
+      );
     }
     //2 1 1 1 2 1
     return Table(
       border: TableBorder(horizontalInside: Divider.createBorderSide(context)),
       defaultColumnWidth: const FlexColumnWidth(1),
       defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-      columnWidths: const {
-        0: FlexColumnWidth(2),
-        2: FlexColumnWidth(1.5),
-      },
+      columnWidths: const {0: FlexColumnWidth(2), 2: FlexColumnWidth(1.5)},
       children: rows,
     );
   }
@@ -301,15 +277,17 @@ class ExpUpData {
     grailStages.clear();
     coinStages.clear();
 
-    final svt = db.gameData.servantsNoDup.values
-        .firstWhere((svt) => svt.rarity == rarity && svt.isUserSvt && svt.originalCollectionNo > 1);
+    final svt = db.gameData.servantsNoDup.values.firstWhere(
+      (svt) => svt.rarity == rarity && svt.isUserSvt && svt.originalCollectionNo > 1,
+    );
 
     // level->ascension
     final ascensionLevels = svt.ascensionAdd.lvMax.ascension.map((key, value) => MapEntry(value, key));
     int maxAscensionLv = Maths.max(ascensionLevels.keys, 0);
     final grailCost = db.gameData.constData.svtGrailCost[svt.rarity]!;
-    Map<int, int> grailLvQp = grailCost
-        .map((key, value) => MapEntry(maxAscensionLv + (grailCost[key - 1]?.addLvMax ?? 0), grailCost[key]?.qp ?? 0));
+    Map<int, int> grailLvQp = grailCost.map(
+      (key, value) => MapEntry(maxAscensionLv + (grailCost[key - 1]?.addLvMax ?? 0), grailCost[key]?.qp ?? 0),
+    );
     int lv = startLv;
     List<int> addedLvs = [];
     int _nextExp = next;

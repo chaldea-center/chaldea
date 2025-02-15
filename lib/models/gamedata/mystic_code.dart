@@ -59,10 +59,7 @@ class MCAssets {
   String male;
   String female;
 
-  MCAssets({
-    required this.male,
-    required this.female,
-  });
+  MCAssets({required this.male, required this.female});
 
   String get masterGender => db.curUser.isGirl ? female : male;
 
@@ -77,11 +74,7 @@ class ExtraMCAssets {
   MCAssets masterFace;
   MCAssets masterFigure;
 
-  ExtraMCAssets({
-    required this.item,
-    required this.masterFace,
-    required this.masterFigure,
-  });
+  ExtraMCAssets({required this.item, required this.masterFace, required this.masterFigure});
 
   factory ExtraMCAssets.fromJson(Map<String, dynamic> json) => _$ExtraMCAssetsFromJson(json);
 
@@ -94,11 +87,7 @@ class MysticCodeCostume {
   List<CommonRelease> releaseConditions;
   ExtraMCAssets extraAssets;
 
-  MysticCodeCostume({
-    required this.id,
-    this.releaseConditions = const [],
-    required this.extraAssets,
-  });
+  MysticCodeCostume({required this.id, this.releaseConditions = const [], required this.extraAssets});
 
   factory MysticCodeCostume.fromJson(Map<String, dynamic> json) => _$MysticCodeCostumeFromJson(json);
 

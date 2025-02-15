@@ -42,31 +42,26 @@ class _BattleOptionListPageState extends State<BattleOptionListPage> {
             },
             icon: Icon(sorting ? Icons.done : Icons.sort),
             tooltip: S.current.sort_order,
-          )
+          ),
         ],
       ),
-      body: sorting
-          ? ReorderableListView(
-              children: [
-                for (final (index, option) in data.battleOptions.indexed) buildOne(index, option),
-              ],
-              onReorder: (int oldIndex, int newIndex) {
-                setState(() {
-                  final selectedItem = data.curBattleOption;
-                  if (oldIndex < newIndex) {
-                    newIndex -= 1;
-                  }
-                  final item = data.battleOptions.removeAt(oldIndex);
-                  data.battleOptions.insert(newIndex, item);
-                  data.curBattleOptionIndex = data.battleOptions.indexOf(selectedItem);
-                });
-              },
-            )
-          : ListView(
-              children: [
-                for (final (index, option) in data.battleOptions.indexed) buildOne(index, option),
-              ],
-            ),
+      body:
+          sorting
+              ? ReorderableListView(
+                children: [for (final (index, option) in data.battleOptions.indexed) buildOne(index, option)],
+                onReorder: (int oldIndex, int newIndex) {
+                  setState(() {
+                    final selectedItem = data.curBattleOption;
+                    if (oldIndex < newIndex) {
+                      newIndex -= 1;
+                    }
+                    final item = data.battleOptions.removeAt(oldIndex);
+                    data.battleOptions.insert(newIndex, item);
+                    data.curBattleOptionIndex = data.battleOptions.indexOf(selectedItem);
+                  });
+                },
+              )
+              : ListView(children: [for (final (index, option) in data.battleOptions.indexed) buildOne(index, option)]),
     );
   }
 
@@ -88,61 +83,64 @@ class _BattleOptionListPageState extends State<BattleOptionListPage> {
       value: index,
       dense: true,
       groupValue: data.curBattleOptionIndex,
-      onChanged: sorting
-          ? null
-          : (v) {
-              setState(() {
-                if (v != null) {
-                  data.curBattleOptionIndex = v;
-                }
-              });
-            },
+      onChanged:
+          sorting
+              ? null
+              : (v) {
+                setState(() {
+                  if (v != null) {
+                    data.curBattleOptionIndex = v;
+                  }
+                });
+              },
       controlAffinity: ListTileControlAffinity.leading,
       title: Text('No.${index + 1} ${option.name.isEmpty ? "<no name>" : option.name}'),
       subtitle: Text(_describeQuest(option.questId, option.questPhase)),
-      secondary: sorting
-          ? null
-          : Wrap(
-              children: [
-                PopupMenuButton(
-                  itemBuilder: (context) => [
-                    PopupMenuItem(
-                      child: Text(S.current.rename),
-                      onTap: () {
-                        InputCancelOkDialog(
-                          title: S.current.rename,
-                          text: option.name,
-                          onSubmit: (s) {
-                            option.name = s.trim();
-                            if (mounted) setState(() {});
-                          },
-                        ).showDialog(this.context);
-                      },
-                    ),
-                    PopupMenuItem(
-                      child: Text(S.current.copy),
-                      onTap: () {
-                        data.battleOptions.add(AutoBattleOptions.fromJson(jsonDecode(jsonEncode(option))));
-                        if (mounted) setState(() {});
-                      },
-                    ),
-                    PopupMenuItem(
-                      child: Text(S.current.delete),
-                      onTap: () {
-                        SimpleCancelOkDialog(
-                          title: Text(S.current.delete),
-                          onTapOk: () {
-                            data.battleOptions.remove(option);
-                            data.curBattleOptionIndex; // update index
-                            if (mounted) setState(() {});
-                          },
-                        ).showDialog(this.context);
-                      },
-                    )
-                  ],
-                ),
-              ],
-            ),
+      secondary:
+          sorting
+              ? null
+              : Wrap(
+                children: [
+                  PopupMenuButton(
+                    itemBuilder:
+                        (context) => [
+                          PopupMenuItem(
+                            child: Text(S.current.rename),
+                            onTap: () {
+                              InputCancelOkDialog(
+                                title: S.current.rename,
+                                text: option.name,
+                                onSubmit: (s) {
+                                  option.name = s.trim();
+                                  if (mounted) setState(() {});
+                                },
+                              ).showDialog(this.context);
+                            },
+                          ),
+                          PopupMenuItem(
+                            child: Text(S.current.copy),
+                            onTap: () {
+                              data.battleOptions.add(AutoBattleOptions.fromJson(jsonDecode(jsonEncode(option))));
+                              if (mounted) setState(() {});
+                            },
+                          ),
+                          PopupMenuItem(
+                            child: Text(S.current.delete),
+                            onTap: () {
+                              SimpleCancelOkDialog(
+                                title: Text(S.current.delete),
+                                onTapOk: () {
+                                  data.battleOptions.remove(option);
+                                  data.curBattleOptionIndex; // update index
+                                  if (mounted) setState(() {});
+                                },
+                              ).showDialog(this.context);
+                            },
+                          ),
+                        ],
+                  ),
+                ],
+              ),
     );
   }
 }

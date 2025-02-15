@@ -101,13 +101,14 @@ class _CharaListPageState extends State<CharaListPage> with SearchableListState<
           contentPadding: const EdgeInsetsDirectional.only(start: 16.0),
         );
       },
-      contentBuilder: (context) => Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          if (ceMap[chara] != null) _cardGrid(ceMap[chara]!),
-          if (ccMap[chara] != null) _cardGrid(ccMap[chara]!),
-        ],
-      ),
+      contentBuilder:
+          (context) => Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (ceMap[chara] != null) _cardGrid(ceMap[chara]!),
+              if (ccMap[chara] != null) _cardGrid(ccMap[chara]!),
+            ],
+          ),
     );
   }
 

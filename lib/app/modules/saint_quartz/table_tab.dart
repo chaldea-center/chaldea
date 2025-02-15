@@ -45,10 +45,7 @@ class _SQTableTabState extends State<SQTableTab> {
       behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
       child: SafeArea(
         child: ScrollConfiguration(
-          behavior: ScrollConfiguration.of(context).copyWith(
-            overscroll: false,
-            physics: const ClampingScrollPhysics(),
-          ),
+          behavior: ScrollConfiguration.of(context).copyWith(overscroll: false, physics: const ClampingScrollPhysics()),
           child: dataTable(),
         ),
       ),
@@ -84,7 +81,9 @@ class _SQTableTabState extends State<SQTableTab> {
         DataColumn2(label: Center(child: Text(S.current.date, textAlign: TextAlign.center)), fixedWidth: 120),
         DataColumn2(label: Center(child: Text(S.current.sq_short, textAlign: TextAlign.center)), fixedWidth: 50),
         DataColumn2(
-            label: Center(child: Text(S.current.summon_ticket_short, textAlign: TextAlign.center)), fixedWidth: 50),
+          label: Center(child: Text(S.current.summon_ticket_short, textAlign: TextAlign.center)),
+          fixedWidth: 50,
+        ),
         DataColumn2(label: Center(child: Text(S.current.item_apple, textAlign: TextAlign.center)), fixedWidth: 50),
         DataColumn2(label: Center(child: Text(S.current.event_campaign, textAlign: TextAlign.center)), fixedWidth: 50),
         DataColumn2(label: Text(' ${S.current.event}')),
@@ -117,17 +116,25 @@ class _PlanDataSource extends DataTableSource {
     final detail = plan.solution[index];
     final height = max(48, detail.events.length * _eventHeight + detail.summons.length * _summonHeight + 4);
     List<DataCell> cells = [
-      DataCell(_accWithAdd(
-        detail.date.toDateString(),
-        '${DateFormat(DateFormat.ABBR_WEEKDAY).format(detail.date)}'
-        ' ${detail.accLogin}(${detail.continuousLogin})',
-      )),
+      DataCell(
+        _accWithAdd(
+          detail.date.toDateString(),
+          '${DateFormat(DateFormat.ABBR_WEEKDAY).format(detail.date)}'
+          ' ${detail.accLogin}(${detail.continuousLogin})',
+        ),
+      ),
       DataCell(_accWithAdd('${detail.accSQ}', detail.addSQ == 0 ? '' : '+${detail.addSQ}')),
       DataCell(_accWithAdd('${detail.accTicket}', detail.addTicket == 0 ? '' : '+${detail.addTicket}')),
-      DataCell(_accWithAdd(detail.accApple.format(compact: false, precision: 1),
-          detail.addApple == 0.0 ? '' : ('+${detail.addApple.format(compact: false, precision: 1)}'))),
-      DataCell(Center(child: Text(detail.presents.isEmpty ? '' : detail.presents.length.toString())),
-          onTap: detail.presents.isEmpty ? null : () => showPresents(detail))
+      DataCell(
+        _accWithAdd(
+          detail.accApple.format(compact: false, precision: 1),
+          detail.addApple == 0.0 ? '' : ('+${detail.addApple.format(compact: false, precision: 1)}'),
+        ),
+      ),
+      DataCell(
+        Center(child: Text(detail.presents.isEmpty ? '' : detail.presents.length.toString())),
+        onTap: detail.presents.isEmpty ? null : () => showPresents(detail),
+      ),
     ];
 
     cells.add(DataCell(getEvents(detail)));
@@ -142,10 +149,12 @@ class _PlanDataSource extends DataTableSource {
   Widget _accWithAdd(String acc, String add) {
     return Center(
       child: Text.rich(
-        TextSpan(children: [
-          TextSpan(text: acc),
-          if (add.trim().isNotEmpty) TextSpan(text: '\n$add', style: Theme.of(context).textTheme.bodySmall),
-        ]),
+        TextSpan(
+          children: [
+            TextSpan(text: acc),
+            if (add.trim().isNotEmpty) TextSpan(text: '\n$add', style: Theme.of(context).textTheme.bodySmall),
+          ],
+        ),
         textAlign: TextAlign.center,
       ),
     );
@@ -155,13 +164,7 @@ class _PlanDataSource extends DataTableSource {
     Widget _wrap({required Widget child, required VoidCallback? onTap, double height = _eventHeight}) {
       return InkWell(
         onTap: onTap,
-        child: SizedBox(
-          height: height,
-          child: Align(
-            alignment: Alignment.centerLeft,
-            child: child,
-          ),
-        ),
+        child: SizedBox(height: height, child: Align(alignment: Alignment.centerLeft, child: child)),
       );
     }
 
@@ -179,19 +182,19 @@ class _PlanDataSource extends DataTableSource {
       for (final summon in detail.summons)
         _wrap(
           child: Text.rich(
-            TextSpan(children: [
-              for (final svt in summon.shownSvts)
-                WidgetSpan(
+            TextSpan(
+              children: [
+                for (final svt in summon.shownSvts)
+                  WidgetSpan(
                     child: GameCardMixin.cardIconBuilder(
-                  icon: db.gameData.servantsNoDup[svt]?.borderedIcon,
-                  context: context,
-                  height: _summonHeight,
-                )),
-              TextSpan(
-                text: summon.lName.l,
-                style: Theme.of(context).textTheme.bodyMedium,
-              ),
-            ]),
+                      icon: db.gameData.servantsNoDup[svt]?.borderedIcon,
+                      context: context,
+                      height: _summonHeight,
+                    ),
+                  ),
+                TextSpan(text: summon.lName.l, style: Theme.of(context).textTheme.bodyMedium),
+              ],
+            ),
             maxLines: 1,
             textScaler: const TextScaler.linear(0.8),
             overflow: TextOverflow.ellipsis,
@@ -203,31 +206,28 @@ class _PlanDataSource extends DataTableSource {
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 4),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: children,
-      ),
+      child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: children),
     );
   }
 
   void showPresents(SQDayDetail detail) {
     if (!context.mounted) return;
     router.showDialog(
-        context: context,
-        builder: (context) {
-          return SimpleCancelOkDialog(
-            title: Text(detail.date.toDateString()),
-            scrollable: true,
-            hideCancel: true,
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                for (final present in detail.presents)
-                  DailyBonusTabState.buildPresent(context: context, present: present),
-              ],
-            ),
-          );
-        });
+      context: context,
+      builder: (context) {
+        return SimpleCancelOkDialog(
+          title: Text(detail.date.toDateString()),
+          scrollable: true,
+          hideCancel: true,
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              for (final present in detail.presents)
+                DailyBonusTabState.buildPresent(context: context, present: present),
+            ],
+          ),
+        );
+      },
+    );
   }
 }

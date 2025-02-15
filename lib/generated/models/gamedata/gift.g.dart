@@ -7,13 +7,13 @@ part of '../../../models/gamedata/gift.dart';
 // **************************************************************************
 
 MstGiftBase _$MstGiftBaseFromJson(Map json) => MstGiftBase(
-      type: (json['type'] as num?)?.toInt() ?? 0,
-      objectId: (json['objectId'] as num?)?.toInt() ?? 0,
-      num: (json['num'] as num?)?.toInt() ?? 0,
-    );
+  type: (json['type'] as num?)?.toInt() ?? 0,
+  objectId: (json['objectId'] as num?)?.toInt() ?? 0,
+  num: (json['num'] as num?)?.toInt() ?? 0,
+);
 
 Map<String, dynamic> _$MstGiftBaseToJson(MstGiftBase instance) => <String, dynamic>{
-      'type': instance.type,
-      'objectId': instance.objectId,
-      'num': instance.num,
-    };
+  'type': instance.type,
+  'objectId': instance.objectId,
+  'num': instance.num,
+};

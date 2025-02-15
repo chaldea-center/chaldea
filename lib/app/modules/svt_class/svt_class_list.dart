@@ -9,9 +9,11 @@ class SvtClassListPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // 98-NPC test, 99-enemy test, 100-test?
-    final clsIds = {...db.gameData.constData.classInfo.keys, ...SvtClass.values.map((e) => e.value)}
-        .where((e) => ![0, 98, 99, 100].contains(e))
-        .toList();
+    final clsIds =
+        {
+          ...db.gameData.constData.classInfo.keys,
+          ...SvtClass.values.map((e) => e.value),
+        }.where((e) => ![0, 98, 99, 100].contains(e)).toList();
     clsIds.sort();
     return Scaffold(
       appBar: AppBar(
@@ -19,12 +21,13 @@ class SvtClassListPage extends StatelessWidget {
         actions: [
           IconButton(
             onPressed: () {
-              FullscreenImageViewer.show(context: context, urls: [
-                for (final region in Region.values) Atlas.asset('ClassIcons/img_classchart.png', region),
-              ]);
+              FullscreenImageViewer.show(
+                context: context,
+                urls: [for (final region in Region.values) Atlas.asset('ClassIcons/img_classchart.png', region)],
+              );
             },
             icon: const Icon(Icons.sync_alt_rounded),
-          )
+          ),
         ],
       ),
       body: ListView.builder(

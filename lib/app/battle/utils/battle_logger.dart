@@ -91,15 +91,17 @@ class BattleRecordManager {
   }
 
   void skillActivation(final BattleData battleData, final int? svt, final int skill) {
-    records.add(BattleSkillActivationRecord(
-      playerTarget: battleData.playerTargetIndex,
-      enemyTarget: battleData.enemyTargetIndex,
-      random: battleData.options.random,
-      threshold: battleData.options.threshold,
-      tailoredExecution: battleData.options.tailoredExecution,
-      svt: svt,
-      skill: skill,
-    ));
+    records.add(
+      BattleSkillActivationRecord(
+        playerTarget: battleData.playerTargetIndex,
+        enemyTarget: battleData.enemyTargetIndex,
+        random: battleData.options.random,
+        threshold: battleData.options.threshold,
+        tailoredExecution: battleData.options.tailoredExecution,
+        svt: svt,
+        skill: skill,
+      ),
+    );
   }
 
   void skill({
@@ -115,15 +117,17 @@ class BattleRecordManager {
       reasons.setUpload('${S.current.skill} ${skill.type.name}: ${skill.lName}');
     }
 
-    records.add(BattleSkillRecord(
-      prefix: prefix,
-      activator: activator,
-      targetPlayerSvt: battleData.targetedPlayer,
-      targetEnemySvt: battleData.targetedEnemy,
-      skill: skill,
-      fromPlayer: fromPlayer,
-      param: param,
-    ));
+    records.add(
+      BattleSkillRecord(
+        prefix: prefix,
+        activator: activator,
+        targetPlayerSvt: battleData.targetedPlayer,
+        targetEnemySvt: battleData.targetedEnemy,
+        skill: skill,
+        fromPlayer: fromPlayer,
+        param: param,
+      ),
+    );
   }
 
   void orderChange({required BattleServantData onField, required BattleServantData backup}) {
@@ -133,14 +137,16 @@ class BattleRecordManager {
   List<_BattleCardTempData> _cardHistory = [];
 
   void initiateAttacks(final BattleData battleData, final List<CombatAction> combatActions) {
-    records.add(BattleAttacksInitiationRecord(
-      playerTarget: battleData.playerTargetIndex,
-      enemyTarget: battleData.enemyTargetIndex,
-      random: battleData.options.random,
-      threshold: battleData.options.threshold,
-      tailoredExecution: battleData.options.tailoredExecution,
-      attacks: combatActions,
-    ));
+    records.add(
+      BattleAttacksInitiationRecord(
+        playerTarget: battleData.playerTargetIndex,
+        enemyTarget: battleData.enemyTargetIndex,
+        random: battleData.options.random,
+        threshold: battleData.options.threshold,
+        tailoredExecution: battleData.options.tailoredExecution,
+        attacks: combatActions,
+      ),
+    );
   }
 
   void startPlayerCard(BattleServantData activator, CommandCardData card) {
@@ -174,8 +180,17 @@ class BattleRecordManager {
     assert(_last.actor.uniqueId == activator.uniqueId && _last.card?.cardIndex == card.cardIndex);
     if (!_last.hasAttack) {
       // supporter TD
-      records.add(BattleAttackRecord(
-          activator: activator, card: card, targets: [], damage: 0, attackNp: 0, defenseNp: 0, star: 0));
+      records.add(
+        BattleAttackRecord(
+          activator: activator,
+          card: card,
+          targets: [],
+          damage: 0,
+          attackNp: 0,
+          defenseNp: 0,
+          star: 0,
+        ),
+      );
     }
   }
 
@@ -233,7 +248,8 @@ class BattleRecordManager {
     svtCounts.removeWhere((k, v) => v < 2);
     if (svtCounts.length > 1) {
       reasons.setUpload(
-          svtCounts.entries.map((e) => '${e.value} ${db.gameData.servantsById[e.key]?.lName.l ?? e.key}').join(', '));
+        svtCounts.entries.map((e) => '${e.value} ${db.gameData.servantsById[e.key]?.lName.l ?? e.key}').join(', '),
+      );
     }
   }
 
@@ -271,8 +287,9 @@ class BattleRecordManager {
     }
     final validTds = BattleUtils.getShownTds(dbSvt, svtData.limitCount).map((e) => e.id).toSet();
     if (svtData.td != null && !validTds.contains(svtData.td?.id)) {
-      reasons
-          .setUpload('${S.current.general_custom} ${S.current.noble_phantasm}: ID ${svtData.td!.id}, valid: $validTds');
+      reasons.setUpload(
+        '${S.current.general_custom} ${S.current.noble_phantasm}: ID ${svtData.td!.id}, valid: $validTds',
+      );
     }
     if (svtData.ce != null && svtData.ce!.collectionNo <= 0) {
       reasons.setUpload('${S.current.craft_essence}: ID ${svtData.ce!.id}, not player CE');
@@ -287,8 +304,10 @@ class BattleRecordManager {
       requiredCoins += max(((svtData.lv - 100) / 2).ceil() * 30, 0);
       requiredCoins += svtData.appendLvs.where((e) => e > 0).length * 120;
       if (requiredCoins > maxCoins) {
-        reasons.setUpload('${S.current.servant_coin}(${svt.lName.l}): required $requiredCoins, '
-            'but max $maxCoins at ${S.current.np_short}${svtData.tdLv} & ${S.current.bond}15 ');
+        reasons.setUpload(
+          '${S.current.servant_coin}(${svt.lName.l}): required $requiredCoins, '
+          'but max $maxCoins at ${S.current.np_short}${svtData.tdLv} & ${S.current.bond}15 ',
+        );
       }
     }
   }
@@ -325,11 +344,12 @@ class BattleRecordManager {
     //
     final records = runtime.battleData.recorder.records;
 
-    final multiDmgFuncSvts = records
-        .whereType<BattleAttackRecord>()
-        .where((e) => e.card?.isTD == true && (e.card?.td?.dmgNpFuncCount ?? 0) > 1)
-        .map((e) => e.attacker.lBattleName)
-        .toSet();
+    final multiDmgFuncSvts =
+        records
+            .whereType<BattleAttackRecord>()
+            .where((e) => e.card?.isTD == true && (e.card?.td?.dmgNpFuncCount ?? 0) > 1)
+            .map((e) => e.attacker.lBattleName)
+            .toSet();
     if (multiDmgFuncSvts.isNotEmpty) {
       reasons2.setWarning('${S.current.laplace_upload_td_multi_dmg_func_hint}: ${multiDmgFuncSvts.join(" / ")}');
     }
@@ -350,7 +370,8 @@ class BattleRecordManager {
     }
     if (unreleasedSvts.isNotEmpty) {
       reasons2.setWarning(
-          '$kStarChar2 ${S.current.svt_not_release_hint} $kStarChar2:\n   $kStarChar2 ${unreleasedSvts.join(" / ")}');
+        '$kStarChar2 ${S.current.svt_not_release_hint} $kStarChar2:\n   $kStarChar2 ${unreleasedSvts.join(" / ")}',
+      );
     }
     if (r5td5 >= 2) {
       reasons2.setWarning(S.current.too_many_td5_svts_warning(r5td5));
@@ -398,13 +419,10 @@ class BattleIllegalReasons {
   final Set<String> notUploadable;
   final Set<String> warnings;
 
-  BattleIllegalReasons({
-    Set<String>? reproduces,
-    Set<String>? uploads,
-    Set<String>? warnings,
-  })  : notReplayable = reproduces ?? {},
-        notUploadable = uploads ?? {},
-        warnings = warnings ?? {};
+  BattleIllegalReasons({Set<String>? reproduces, Set<String>? uploads, Set<String>? warnings})
+    : notReplayable = reproduces ?? {},
+      notUploadable = uploads ?? {},
+      warnings = warnings ?? {};
 
   void setReplay(String msg) => notReplayable.add(msg);
   void setUpload(String msg) => notUploadable.add(msg);
@@ -451,12 +469,17 @@ class BattleMessageRecord extends BattleRecord {
   final TextAlign? textAlign;
   final BattleServantData? target;
   BattleMessageRecord(this.message, {BattleServantData? target, this.alignment, this.style, this.textAlign})
-      : target = target?.copy();
+    : target = target?.copy();
 
   @override
   BattleMessageRecord copy() {
-    return BattleMessageRecord(message,
-        target: target?.copy(), alignment: alignment, style: style?.copyWith(), textAlign: textAlign);
+    return BattleMessageRecord(
+      message,
+      target: target?.copy(),
+      alignment: alignment,
+      style: style?.copyWith(),
+      textAlign: textAlign,
+    );
   }
 
   @override
@@ -532,16 +555,16 @@ class BattleSkillActivationRecord extends BattleRecord {
     required final int? svt,
     required final int skill,
   }) : recordData = BattleRecordData.skill(
-          options: BattleActionOptions(
-            playerTarget: playerTarget,
-            enemyTarget: enemyTarget,
-            random: random,
-            threshold: threshold,
-            tailoredExecution: tailoredExecution,
-          ),
-          svt: svt,
-          skill: skill,
-        );
+         options: BattleActionOptions(
+           playerTarget: playerTarget,
+           enemyTarget: enemyTarget,
+           random: random,
+           threshold: threshold,
+           tailoredExecution: tailoredExecution,
+         ),
+         svt: svt,
+         skill: skill,
+       );
 
   @override
   BattleRecord copy() {
@@ -570,18 +593,10 @@ class BattleSkillParams {
   int? actSet;
   int? tdTypeChange;
 
-  BattleSkillParams({
-    this.selectAddIndex,
-    this.actSet,
-    this.tdTypeChange,
-  });
+  BattleSkillParams({this.selectAddIndex, this.actSet, this.tdTypeChange});
 
   BattleSkillParams copy() {
-    return BattleSkillParams(
-      selectAddIndex: selectAddIndex,
-      actSet: actSet,
-      tdTypeChange: tdTypeChange,
-    );
+    return BattleSkillParams(selectAddIndex: selectAddIndex, actSet: actSet, tdTypeChange: tdTypeChange);
   }
 }
 
@@ -602,11 +617,11 @@ class BattleSkillRecord extends BattleRecord {
     required BattleSkillInfoData skill,
     required this.fromPlayer,
     BattleSkillParams? param,
-  })  : activator = activator?.copy(),
-        targetPlayerSvt = targetPlayerSvt?.copy(),
-        targetEnemySvt = targetEnemySvt?.copy(),
-        skill = skill.copy(),
-        param = param ?? BattleSkillParams();
+  }) : activator = activator?.copy(),
+       targetPlayerSvt = targetPlayerSvt?.copy(),
+       targetEnemySvt = targetEnemySvt?.copy(),
+       skill = skill.copy(),
+       param = param ?? BattleSkillParams();
 
   @override
   String toString() {
@@ -633,11 +648,9 @@ class BattleSkillRecord extends BattleRecord {
 class BattleOrderChangeRecord extends BattleRecord {
   final BattleServantData onField;
   final BattleServantData backup;
-  BattleOrderChangeRecord({
-    required BattleServantData onField,
-    required BattleServantData backup,
-  })  : onField = onField.copy(),
-        backup = backup.copy();
+  BattleOrderChangeRecord({required BattleServantData onField, required BattleServantData backup})
+    : onField = onField.copy(),
+      backup = backup.copy();
 
   @override
   String toString() {
@@ -700,7 +713,7 @@ class BattleAttacksInitiationRecord extends BattleRecord {
             isTD: attack.cardData.isTD,
             critical: attack.cardData.critical,
             cardType: attack.cardData.cardType,
-          )
+          ),
       ],
     );
   }
@@ -726,8 +739,8 @@ class BattleAttackRecord extends BattleRecord {
     required this.attackNp,
     required this.defenseNp,
     required this.star,
-  })  : attacker = activator.copy(),
-        card = card?.copy();
+  }) : attacker = activator.copy(),
+       card = card?.copy();
   @override
   String toString() {
     return '${attacker.lBattleName} Play ${card?.cardType.name.toTitle()} Card.'
@@ -777,15 +790,15 @@ class AttackResultDetail {
     required DamageResult result,
     required DamageResult? minResult,
     required DamageResult? maxResult,
-  })  : target = target.copy(),
-        targetBefore = targetBefore.copy(),
-        damageParams = damageParams.copy(),
-        attackNpParams = attackNpParams.copy(),
-        defenseNpParams = defenseNpParams.copy(),
-        starParams = starParams.copy(),
-        result = result.copy(),
-        minResult = minResult?.copy(),
-        maxResult = maxResult?.copy();
+  }) : target = target.copy(),
+       targetBefore = targetBefore.copy(),
+       damageParams = damageParams.copy(),
+       attackNpParams = attackNpParams.copy(),
+       defenseNpParams = defenseNpParams.copy(),
+       starParams = starParams.copy(),
+       result = result.copy(),
+       minResult = minResult?.copy(),
+       maxResult = maxResult?.copy();
 
   AttackResultDetail copy() {
     return AttackResultDetail(
@@ -829,8 +842,8 @@ class BattleInstantDeathRecord extends BattleRecord {
     required BattleServantData? activator,
     CommandCardData? card,
     required this.targets,
-  })  : activator = activator?.copy(),
-        card = card?.copy();
+  }) : activator = activator?.copy(),
+       card = card?.copy();
 
   @override
   BattleInstantDeathRecord copy() {
@@ -858,11 +871,9 @@ class InstantDeathResultDetail {
   final BattleServantData target;
   final InstantDeathParameters params;
 
-  InstantDeathResultDetail({
-    required BattleServantData target,
-    required InstantDeathParameters params,
-  })  : target = target.copy(),
-        params = params.copy();
+  InstantDeathResultDetail({required BattleServantData target, required InstantDeathParameters params})
+    : target = target.copy(),
+      params = params.copy();
 
   InstantDeathResultDetail copy() {
     return InstantDeathResultDetail(target: target, params: params.copy());

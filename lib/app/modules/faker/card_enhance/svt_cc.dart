@@ -55,14 +55,7 @@ class _UserSvtCommandCodePageState extends State<UserSvtCommandCodePage> {
       body: ListTileTheme.merge(
         dense: true,
         visualDensity: VisualDensity.compact,
-        child: Column(
-          children: [
-            headerInfo,
-            Expanded(child: body),
-            const Divider(height: 1),
-            buttonBar,
-          ],
-        ),
+        child: Column(children: [headerInfo, Expanded(child: body), const Divider(height: 1), buttonBar]),
       ),
     );
   }
@@ -71,14 +64,7 @@ class _UserSvtCommandCodePageState extends State<UserSvtCommandCodePage> {
     final userGame = mstData.user ?? agent.user.userGame;
     List<InlineSpan> subtitleSpans = [
       for (final itemId in [_kQuickKey, _kArtsKey, _kBusterKey, _kBeastFoot]) ...[
-        CenterWidgetSpan(
-          child: Item.iconBuilder(
-            context: context,
-            item: null,
-            itemId: itemId,
-            width: 20,
-          ),
-        ),
+        CenterWidgetSpan(child: Item.iconBuilder(context: context, item: null, itemId: itemId, width: 20)),
         TextSpan(text: '×${mstData.userItem[itemId]?.num ?? 0}  '),
       ],
       TextSpan(text: '\nQP ${userGame?.qp.format(compact: false, groupSeparator: ",")} '),
@@ -95,10 +81,9 @@ class _UserSvtCommandCodePageState extends State<UserSvtCommandCodePage> {
           constraints: const BoxConstraints(maxWidth: 16, maxHeight: 16),
           child: ValueListenableBuilder(
             valueListenable: runtime.runningTask,
-            builder: (context, running, _) => CircularProgressIndicator(
-              value: running ? null : 1.0,
-              color: running ? Colors.red : Colors.green,
-            ),
+            builder:
+                (context, running, _) =>
+                    CircularProgressIndicator(value: running ? null : 1.0, color: running ? Colors.red : Colors.green),
           ),
         ),
         title: Text('[${agent.user.serverName}] ${userGame?.name}'),
@@ -116,23 +101,25 @@ class _UserSvtCommandCodePageState extends State<UserSvtCommandCodePage> {
         title: Text('No.$curSvtId ${svt?.lName.l ?? ""}'),
         trailing: IconButton(
           onPressed: () {
-            router.pushPage(SelectUserSvtCollectionPage(
-              runtime: runtime,
-              getStatus: (collection) {
-                final svtCC = mstData.userSvtCommandCode[collection.svtId];
-                return [
-                  'Lv.${collection.maxLv}',
-                  svtCC?.userCommandCodeIds
-                          .map((e) => e == -1 ? '-' : (e == 0 ? '0' : (e > 0 ? '1' : '$e')))
-                          .join('/') ??
-                      '-/-/-'
-                ].join('\n');
-              },
-              onSelected: (value) {
-                curSvtId = value.svtId;
-                if (mounted) setState(() {});
-              },
-            ));
+            router.pushPage(
+              SelectUserSvtCollectionPage(
+                runtime: runtime,
+                getStatus: (collection) {
+                  final svtCC = mstData.userSvtCommandCode[collection.svtId];
+                  return [
+                    'Lv.${collection.maxLv}',
+                    svtCC?.userCommandCodeIds
+                            .map((e) => e == -1 ? '-' : (e == 0 ? '0' : (e > 0 ? '1' : '$e')))
+                            .join('/') ??
+                        '-/-/-',
+                  ].join('\n');
+                },
+                onSelected: (value) {
+                  curSvtId = value.svtId;
+                  if (mounted) setState(() {});
+                },
+              ),
+            );
           },
           icon: Icon(Icons.change_circle),
         ),
@@ -141,28 +128,25 @@ class _UserSvtCommandCodePageState extends State<UserSvtCommandCodePage> {
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            ...List.generate(
-              5,
-              (index) {
-                final cardType = svt.cards.getOrNull(index);
-                final status = userSvtCmdCode?.userCommandCodeIds.getOrNull(index) ?? -1;
-                Widget child;
-                if (cardType == null) {
-                  child = Text('$index:UnknownCard');
-                } else {
-                  child = CommandCardWidget(card: cardType, width: 42);
-                  if (status == -1) {
-                    child = InkWell(
-                      onTap: () async {
-                        await runtime.runTask(() => unlockIndex(svt.id, [index]));
-                      },
-                      child: Opacity(opacity: 0.5, child: child),
-                    );
-                  }
+            ...List.generate(5, (index) {
+              final cardType = svt.cards.getOrNull(index);
+              final status = userSvtCmdCode?.userCommandCodeIds.getOrNull(index) ?? -1;
+              Widget child;
+              if (cardType == null) {
+                child = Text('$index:UnknownCard');
+              } else {
+                child = CommandCardWidget(card: cardType, width: 42);
+                if (status == -1) {
+                  child = InkWell(
+                    onTap: () async {
+                      await runtime.runTask(() => unlockIndex(svt.id, [index]));
+                    },
+                    child: Opacity(opacity: 0.5, child: child),
+                  );
                 }
-                return Flexible(child: child);
-              },
-            ),
+              }
+              return Flexible(child: child);
+            }),
             IconButton(
               onPressed: () {
                 runtime.runTask(() => unlockIndex(svt.id, List.generate(5, (i) => i)));
@@ -170,13 +154,10 @@ class _UserSvtCommandCodePageState extends State<UserSvtCommandCodePage> {
               icon: Icon(Icons.done_all),
             ),
           ],
-        )
+        ),
     ];
 
-    return ListView(
-      padding: EdgeInsets.symmetric(vertical: 16),
-      children: children,
-    );
+    return ListView(padding: EdgeInsets.symmetric(vertical: 16), children: children);
   }
 
   Widget get buttonBar {
@@ -186,16 +167,8 @@ class _UserSvtCommandCodePageState extends State<UserSvtCommandCodePage> {
       padding: const EdgeInsets.symmetric(horizontal: 12),
     );
 
-    FilledButton buildButton({
-      bool enabled = true,
-      required VoidCallback onPressed,
-      required String text,
-    }) {
-      return FilledButton.tonal(
-        onPressed: enabled ? onPressed : null,
-        style: buttonStyle,
-        child: Text(text),
-      );
+    FilledButton buildButton({bool enabled = true, required VoidCallback onPressed, required String text}) {
+      return FilledButton.tonal(onPressed: enabled ? onPressed : null, style: buttonStyle, child: Text(text));
     }
 
     List<List<Widget>> btnGroups = [

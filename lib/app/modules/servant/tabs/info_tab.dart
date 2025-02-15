@@ -20,7 +20,7 @@ class SvtInfoTab extends StatelessWidget {
     Set<String> names = {
       svt.name,
       ...svt.ascensionAdd.overWriteServantName.all.values,
-      ...svt.svtChange.map((e) => e.name)
+      ...svt.svtChange.map((e) => e.name),
     };
     final baseTraits = [
       ...svt.traits,
@@ -39,13 +39,7 @@ class SvtInfoTab extends StatelessWidget {
         child: CustomTable(
           selectable: true,
           children: <Widget>[
-            CustomTableRow(children: [
-              TableCellData(
-                child: name,
-                isHeader: true,
-                padding: const EdgeInsets.all(4),
-              )
-            ]),
+            CustomTableRow(children: [TableCellData(child: name, isHeader: true, padding: const EdgeInsets.all(4))]),
             if (names.length > 1)
               CustomTableRow.fromTexts(
                 texts: [names.join(' / ')],
@@ -61,22 +55,24 @@ class SvtInfoTab extends StatelessWidget {
                 texts: [names.map((e) => Transl.svtNames(e).na).join(' / ')],
                 defaults: TableCellData(textAlign: TextAlign.center),
               ),
-            CustomTableRow.fromChildren(children: [
-              Wrap(
-                alignment: WrapAlignment.center,
-                spacing: 4,
-                children: [
-                  for (final rarity in <int>{...svt.limits.values.map((e) => e.rarity ?? svt.rarity), svt.rarity})
-                    if (rarity != 0)
-                      CachedImage(
-                        imageUrl:
-                            "https://static.atlasacademy.io/JP/CharaGraphOption/CharaGraphOption/CharaGraphOptionAtlas/rarity${rarity}_0.png",
-                        height: 24,
-                        placeholder: (_, __) => Text(kStarChar2 * rarity),
-                      ),
-                ],
-              ),
-            ]),
+            CustomTableRow.fromChildren(
+              children: [
+                Wrap(
+                  alignment: WrapAlignment.center,
+                  spacing: 4,
+                  children: [
+                    for (final rarity in <int>{...svt.limits.values.map((e) => e.rarity ?? svt.rarity), svt.rarity})
+                      if (rarity != 0)
+                        CachedImage(
+                          imageUrl:
+                              "https://static.atlasacademy.io/JP/CharaGraphOption/CharaGraphOption/CharaGraphOptionAtlas/rarity${rarity}_0.png",
+                          height: 24,
+                          placeholder: (_, __) => Text(kStarChar2 * rarity),
+                        ),
+                  ],
+                ),
+              ],
+            ),
             CustomTableRow.fromChildren(
               children: [
                 Text(
@@ -89,92 +85,107 @@ class SvtInfoTab extends StatelessWidget {
                     SvtClassX.routeTo(svt.classId);
                   },
                   child: Text.rich(
-                    TextSpan(children: [
-                      CenterWidgetSpan(child: db.getIconImage(svt.clsIcon, width: 20, aspectRatio: 1)),
-                      SharedBuilder.textButtonSpan(
-                        context: context,
-                        text: ' ${Transl.svtClassId(svt.classId).l}',
-                      )
-                    ]),
+                    TextSpan(
+                      children: [
+                        CenterWidgetSpan(child: db.getIconImage(svt.clsIcon, width: 20, aspectRatio: 1)),
+                        SharedBuilder.textButtonSpan(context: context, text: ' ${Transl.svtClassId(svt.classId).l}'),
+                      ],
+                    ),
                     textAlign: TextAlign.center,
                   ),
-                )
+                ),
               ],
             ),
-            CustomTableRow.fromTexts(texts: [
-              S.current.illustrator,
-              S.current.info_cv,
-              S.current.gender,
-            ], defaults: headerData),
-            CustomTableRow(children: [
-              TableCellData(
-                child: Text.rich(
-                  SharedBuilder.textButtonSpan(
-                    context: context,
-                    text: Transl.illustratorNames(svt.profile.illustrator).l,
-                    onTap: () {
-                      router.pushPage(CreatorDetail.illust(name: svt.profile.illustrator));
-                    },
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-              TableCellData(
-                child: Text.rich(
-                  SharedBuilder.textButtonSpan(
-                    context: context,
-                    text: Transl.cvNames(svt.profile.cv).l,
-                    onTap: () {
-                      router.pushPage(CreatorDetail.cv(name: svt.profile.cv));
-                    },
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-              TableCellData(
-                text: Transl.enums(svt.gender, (enums) => enums.gender).l,
-                textAlign: TextAlign.center,
-              )
-            ]),
-            CustomTableRow.fromTexts(texts: [
-              S.current.info_strength,
-              S.current.info_endurance,
-              S.current.info_agility,
-              S.current.info_mana,
-              S.current.info_luck,
-              S.current.info_np
-            ], defaults: headerData),
-            CustomTableRow.fromTexts(texts: [
-              _infoWithLimits(svt.profile.stats?.strength ?? '-', svt.limits.values.map((e) => e.strength)),
-              _infoWithLimits(svt.profile.stats?.endurance ?? '-', svt.limits.values.map((e) => e.endurance)),
-              _infoWithLimits(svt.profile.stats?.agility ?? '-', svt.limits.values.map((e) => e.agility)),
-              _infoWithLimits(svt.profile.stats?.magic ?? '-', svt.limits.values.map((e) => e.magic)),
-              _infoWithLimits(svt.profile.stats?.luck ?? '-', svt.limits.values.map((e) => e.luck)),
-              _infoWithLimits(svt.profile.stats?.np ?? '-', svt.limits.values.map((e) => e.np)),
-            ], defaults: contentData),
-            CustomTableRow(children: [
-              TableCellData(text: S.current.svt_sub_attribute, isHeader: true, flex: 2),
-              TableCellData(text: S.current.svt_attribute, isHeader: true, flex: 2),
-              TableCellData(text: S.current.general_type, isHeader: true, flex: 2),
-            ]),
-            CustomTableRow(children: [
-              TableCellData(
-                  text: _infoWithLimits(
-                      svt.attribute, svt.ascensionAdd.attribute.all.values, (v) => Transl.svtSubAttribute(v).l)),
-              TableCellData(
-                text: _infoWithLimits<(ServantPolicy?, ServantPersonality?)>(
-                    (svt.profile.stats?.policy, svt.profile.stats?.personality), svt.limits.values.map((e) {
-                  if (e.policy == null && e.personality == null) return null;
-                  return (e.policy ?? svt.profile.stats?.policy, e.personality ?? svt.profile.stats?.personality);
-                }),
-                    (v) =>
-                        '${Transl.servantPolicy(v.$1 ?? ServantPolicy.none).l}·${Transl.servantPersonality(v.$2 ?? ServantPersonality.none).l}'),
-                textAlign: TextAlign.center,
-              ),
-              TableCellData(text: Transl.enums(svt.type, (enums) => enums.svtType).l),
-            ]),
             CustomTableRow.fromTexts(
-                texts: [S.current.info_value, 'Lv.1', 'Lv.Max', 'Lv.90', 'Lv.100', 'Lv.120'], defaults: headerData),
+              texts: [S.current.illustrator, S.current.info_cv, S.current.gender],
+              defaults: headerData,
+            ),
+            CustomTableRow(
+              children: [
+                TableCellData(
+                  child: Text.rich(
+                    SharedBuilder.textButtonSpan(
+                      context: context,
+                      text: Transl.illustratorNames(svt.profile.illustrator).l,
+                      onTap: () {
+                        router.pushPage(CreatorDetail.illust(name: svt.profile.illustrator));
+                      },
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                TableCellData(
+                  child: Text.rich(
+                    SharedBuilder.textButtonSpan(
+                      context: context,
+                      text: Transl.cvNames(svt.profile.cv).l,
+                      onTap: () {
+                        router.pushPage(CreatorDetail.cv(name: svt.profile.cv));
+                      },
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                TableCellData(text: Transl.enums(svt.gender, (enums) => enums.gender).l, textAlign: TextAlign.center),
+              ],
+            ),
+            CustomTableRow.fromTexts(
+              texts: [
+                S.current.info_strength,
+                S.current.info_endurance,
+                S.current.info_agility,
+                S.current.info_mana,
+                S.current.info_luck,
+                S.current.info_np,
+              ],
+              defaults: headerData,
+            ),
+            CustomTableRow.fromTexts(
+              texts: [
+                _infoWithLimits(svt.profile.stats?.strength ?? '-', svt.limits.values.map((e) => e.strength)),
+                _infoWithLimits(svt.profile.stats?.endurance ?? '-', svt.limits.values.map((e) => e.endurance)),
+                _infoWithLimits(svt.profile.stats?.agility ?? '-', svt.limits.values.map((e) => e.agility)),
+                _infoWithLimits(svt.profile.stats?.magic ?? '-', svt.limits.values.map((e) => e.magic)),
+                _infoWithLimits(svt.profile.stats?.luck ?? '-', svt.limits.values.map((e) => e.luck)),
+                _infoWithLimits(svt.profile.stats?.np ?? '-', svt.limits.values.map((e) => e.np)),
+              ],
+              defaults: contentData,
+            ),
+            CustomTableRow(
+              children: [
+                TableCellData(text: S.current.svt_sub_attribute, isHeader: true, flex: 2),
+                TableCellData(text: S.current.svt_attribute, isHeader: true, flex: 2),
+                TableCellData(text: S.current.general_type, isHeader: true, flex: 2),
+              ],
+            ),
+            CustomTableRow(
+              children: [
+                TableCellData(
+                  text: _infoWithLimits(
+                    svt.attribute,
+                    svt.ascensionAdd.attribute.all.values,
+                    (v) => Transl.svtSubAttribute(v).l,
+                  ),
+                ),
+                TableCellData(
+                  text: _infoWithLimits<(ServantPolicy?, ServantPersonality?)>(
+                    (svt.profile.stats?.policy, svt.profile.stats?.personality),
+                    svt.limits.values.map((e) {
+                      if (e.policy == null && e.personality == null) return null;
+                      return (e.policy ?? svt.profile.stats?.policy, e.personality ?? svt.profile.stats?.personality);
+                    }),
+                    (v) =>
+                        '${Transl.servantPolicy(v.$1 ?? ServantPolicy.none).l}·${Transl.servantPersonality(v.$2 ?? ServantPersonality.none).l}',
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                TableCellData(text: Transl.enums(svt.type, (enums) => enums.svtType).l),
+              ],
+            ),
+            CustomTableRow.fromTexts(
+              texts: [S.current.info_value, 'Lv.1', 'Lv.Max', 'Lv.90', 'Lv.100', 'Lv.120'],
+              defaults: headerData,
+            ),
             _addAtkHpRow(context, 'ATK', [
               svt.atkBase,
               svt.atkMax,
@@ -182,18 +193,13 @@ class SvtInfoTab extends StatelessWidget {
               svt.atkGrowth.getOrNull(99),
               svt.atkGrowth.getOrNull(119),
             ]),
-            _addAtkHpRow(
-              context,
-              'ATK*',
-              [
-                svt.atkBase,
-                svt.atkMax,
-                svt.atkGrowth.getOrNull(89),
-                svt.atkGrowth.getOrNull(99),
-                svt.atkGrowth.getOrNull(119),
-              ],
-              db.gameData.constData.classInfo[svt.classId]?.attackRate,
-            ),
+            _addAtkHpRow(context, 'ATK*', [
+              svt.atkBase,
+              svt.atkMax,
+              svt.atkGrowth.getOrNull(89),
+              svt.atkGrowth.getOrNull(99),
+              svt.atkGrowth.getOrNull(119),
+            ], db.gameData.constData.classInfo[svt.classId]?.attackRate),
             _addAtkHpRow(context, 'HP', [
               svt.hpBase,
               svt.hpMax,
@@ -202,59 +208,67 @@ class SvtInfoTab extends StatelessWidget {
               svt.hpGrowth.getOrNull(119),
             ]),
             CustomTableRow.fromTexts(texts: [S.current.info_cards], defaults: headerData),
-            CustomTableRow(children: [
-              if (svt.noblePhantasms.isNotEmpty)
-                TableCellData(
-                  child: FittedBox(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: svt.noblePhantasms
-                          .map((e) => e.svt.card)
-                          .toSet()
-                          .map((e) => CommandCardWidget(card: e, width: 55))
-                          .toList(),
-                    ),
-                  ),
-                  flex: 2,
-                ),
-              TableCellData(
-                child: svt.cards.isEmpty
-                    ? const Text(' ')
-                    : Opacity(
-                        opacity: svt.cards.any((card) => !svt.cardDetails.containsKey(card)) ? 0.6 : 1,
-                        child: FittedBox(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: svt.cards.map((e) => CommandCardWidget(card: e, width: 44)).toList(),
-                          ),
-                        ),
+            CustomTableRow(
+              children: [
+                if (svt.noblePhantasms.isNotEmpty)
+                  TableCellData(
+                    child: FittedBox(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children:
+                            svt.noblePhantasms
+                                .map((e) => e.svt.card)
+                                .toSet()
+                                .map((e) => CommandCardWidget(card: e, width: 55))
+                                .toList(),
                       ),
-                flex: 4,
-              )
-            ]),
-            if (svt.cards.any((card) => !svt.cardDetails.containsKey(card)))
-              CustomTableRow(children: [
+                    ),
+                    flex: 2,
+                  ),
                 TableCellData(
-                  text: S.current.svt_card_deck_incorrect,
-                  style: Theme.of(context).textTheme.bodySmall,
-                )
-              ]),
+                  child:
+                      svt.cards.isEmpty
+                          ? const Text(' ')
+                          : Opacity(
+                            opacity: svt.cards.any((card) => !svt.cardDetails.containsKey(card)) ? 0.6 : 1,
+                            child: FittedBox(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: svt.cards.map((e) => CommandCardWidget(card: e, width: 44)).toList(),
+                              ),
+                            ),
+                          ),
+                  flex: 4,
+                ),
+              ],
+            ),
+            if (svt.cards.any((card) => !svt.cardDetails.containsKey(card)))
+              CustomTableRow(
+                children: [
+                  TableCellData(text: S.current.svt_card_deck_incorrect, style: Theme.of(context).textTheme.bodySmall),
+                ],
+              ),
             if (svt.cardDetails.isNotEmpty) CustomTableRow.fromTexts(texts: const ['Hits'], defaults: headerData),
             for (final entry in svt.cardDetails.entries) _addCardDetail(context, entry.key.name.toTitle(), entry.value),
             for (final td in tdHits.values)
               if (td.damageType != TdEffectFlag.support)
                 _addCardDetail(
-                    context, S.current.np_short, CardDetail(attackIndividuality: [], hitsDistribution: td.damage)),
+                  context,
+                  S.current.np_short,
+                  CardDetail(attackIndividuality: [], hitsDistribution: td.damage),
+                ),
             if (svt.noblePhantasms.isNotEmpty) ...[
               CustomTableRow.fromTexts(texts: [S.current.info_np_rate], defaults: headerData),
               CustomTableRow.fromTexts(
-                  texts: const ['Buster', 'Arts', 'Quick', 'Extra', 'NP', 'Def'],
-                  defaults: TableCellData(isHeader: true, maxLines: 1)),
+                texts: const ['Buster', 'Arts', 'Quick', 'Extra', 'NP', 'Def'],
+                defaults: TableCellData(isHeader: true, maxLines: 1),
+              ),
             ],
             ..._npRates(),
             CustomTableRow.fromTexts(
-                texts: [S.current.info_star_rate, S.current.info_death_rate, S.current.info_critical_rate],
-                defaults: headerData),
+              texts: [S.current.info_star_rate, S.current.info_death_rate, S.current.info_critical_rate],
+              defaults: headerData,
+            ),
             CustomTableRow.fromTexts(
               texts: [
                 '${svt.starGen / 10}%',
@@ -267,7 +281,11 @@ class SvtInfoTab extends StatelessWidget {
             ..._addTraits(context, null, baseTraits, []),
             for (final entry in svt.ascensionAdd.individuality.ascension.entries)
               ..._addTraits(
-                  context, TextSpan(text: '${S.current.ascension_short} ${entry.key}: '), entry.value, baseTraits),
+                context,
+                TextSpan(text: '${S.current.ascension_short} ${entry.key}: '),
+                entry.value,
+                baseTraits,
+              ),
             for (final entry in svt.ascensionAdd.individuality.costume.entries)
               ..._addTraits(
                 context,
@@ -285,11 +303,7 @@ class SvtInfoTab extends StatelessWidget {
                       if (traitAdd.condType != CondType.none)
                         CenterWidgetSpan(
                           child: InkWell(
-                            child: Icon(
-                              Icons.info_outline,
-                              size: 16,
-                              color: AppTheme(context).tertiary,
-                            ),
+                            child: Icon(Icons.info_outline, size: 16, color: AppTheme(context).tertiary),
                             onTap: () {
                               SimpleCancelOkDialog(
                                 title: Text(S.current.condition),
@@ -315,7 +329,7 @@ class SvtInfoTab extends StatelessWidget {
                         TextSpan(text: (idxStr.startsWith(eventIdStr) ? idxStr.substring(eventIdStr.length) : idxStr)),
                       ],
                       if (traitAdd.eventId == 0) TextSpan(text: idxStr),
-                      const TextSpan(text: ': ')
+                      const TextSpan(text: ': '),
                     ],
                   );
                 }(),
@@ -354,7 +368,8 @@ class SvtInfoTab extends StatelessWidget {
             if (svt.isUserSvt && svt.collectionNo > 1) ...[
               CustomTableRow.fromTexts(texts: ['${S.current.time}(estimated)'], isHeader: true),
               CustomTableRow.fromTexts(
-                  texts: [svt.extra.getReleasedAt()].map((e) => e == 0 ? '-' : e.sec2date().toDateString()).toList()),
+                texts: [svt.extra.getReleasedAt()].map((e) => e == 0 ? '-' : e.sec2date().toDateString()).toList(),
+              ),
             ],
           ],
         ),
@@ -371,11 +386,7 @@ class SvtInfoTab extends StatelessWidget {
     if (svt.obtains.contains(SvtObtain.eventReward) || svt.type == SvtType.svtMaterialTd) {
       for (final event in db.gameData.events.values) {
         if (event.statItemFixed.containsKey(svt.id)) {
-          children.add(ListTile(
-            dense: true,
-            title: Text(event.lName.l),
-            onTap: event.routeTo,
-          ));
+          children.add(ListTile(dense: true, title: Text(event.lName.l), onTap: event.routeTo));
         }
       }
     }
@@ -411,41 +422,44 @@ class SvtInfoTab extends StatelessWidget {
     if (prefix != null) children.add(prefix);
     children.addAll(SharedBuilder.traitSpans(context: context, traits: shownTraits));
     if (showMore) {
-      children.add(CenterWidgetSpan(
-        child: InkWell(
-          child: const Icon(Icons.more_outlined, size: 16),
-          onTap: () {
-            showDialog(
-              context: context,
-              useRootNavigator: false,
-              builder: (context) {
-                return SimpleCancelOkDialog(
-                  title: Text.rich(TextSpan(
-                    text: S.current.trait,
-                    children: prefix == null ? null : [const TextSpan(text: ' '), prefix],
-                  )),
-                  hideCancel: true,
-                  content: SharedBuilder.traitList(
-                    context: context,
-                    traits: traits,
-                  ),
-                );
-              },
-            );
-          },
+      children.add(
+        CenterWidgetSpan(
+          child: InkWell(
+            child: const Icon(Icons.more_outlined, size: 16),
+            onTap: () {
+              showDialog(
+                context: context,
+                useRootNavigator: false,
+                builder: (context) {
+                  return SimpleCancelOkDialog(
+                    title: Text.rich(
+                      TextSpan(
+                        text: S.current.trait,
+                        children: prefix == null ? null : [const TextSpan(text: ' '), prefix],
+                      ),
+                    ),
+                    hideCancel: true,
+                    content: SharedBuilder.traitList(context: context, traits: traits),
+                  );
+                },
+              );
+            },
+          ),
         ),
-      ));
+      );
     }
     return [
-      CustomTableRow(children: [
-        TableCellData(
-          alignment: null,
-          child: Text.rich(
-            TextSpan(children: children),
-            textScaler: textScaleFactor == null ? null : TextScaler.linear(textScaleFactor),
+      CustomTableRow(
+        children: [
+          TableCellData(
+            alignment: null,
+            child: Text.rich(
+              TextSpan(children: children),
+              textScaler: textScaleFactor == null ? null : TextScaler.linear(textScaleFactor),
+            ),
           ),
-        )
-      ]),
+        ],
+      ),
     ];
   }
 
@@ -455,8 +469,10 @@ class SvtInfoTab extends StatelessWidget {
     if (detail.hitsDistribution.isEmpty) {
       buffer.write('-');
     } else {
-      buffer.write('${detail.hitsDistribution.length} Hits '
-          '(${detail.hitsDistribution.join(', ')})');
+      buffer.write(
+        '${detail.hitsDistribution.length} Hits '
+        '(${detail.hitsDistribution.join(', ')})',
+      );
     }
     if (detail.attackType == CommandCardAttackType.all) {
       buffer.write(' ');
@@ -472,30 +488,36 @@ class SvtInfoTab extends StatelessWidget {
     scripts.removeWhere(((key, value) => value == null));
     if (scripts.isNotEmpty) {
       spans.add(const TextSpan(text: '\n'));
-      spans.add(TextSpan(
+      spans.add(
+        TextSpan(
           text: '   (${scripts.entries.map((e) => '${e.key} ${e.value}').join(', ')})',
-          style: const TextStyle(fontSize: 12)));
+          style: const TextStyle(fontSize: 12),
+        ),
+      );
     }
-    return CustomTableRow(children: [
-      TableCellData(text: card, isHeader: true),
-      TableCellData(
-        child: Text.rich(TextSpan(children: spans)),
-        flex: 5,
-        alignment: Alignment.centerLeft,
-      )
-    ]);
+    return CustomTableRow(
+      children: [
+        TableCellData(text: card, isHeader: true),
+        TableCellData(child: Text.rich(TextSpan(children: spans)), flex: 5, alignment: Alignment.centerLeft),
+      ],
+    );
   }
 
   Widget _addAtkHpRow(BuildContext context, String header, List<int?> vals, [int? multiplier]) {
-    final texts = vals.map((e) => e == null
-        ? '-'
-        : multiplier == null
-            ? e.toString()
-            : (e * multiplier ~/ 1000).toString());
-    return CustomTableRow(children: [
-      TableCellData(text: header, isHeader: true, maxLines: 1),
-      for (final text in texts) TableCellData(text: text, maxLines: 1),
-    ]);
+    final texts = vals.map(
+      (e) =>
+          e == null
+              ? '-'
+              : multiplier == null
+              ? e.toString()
+              : (e * multiplier ~/ 1000).toString(),
+    );
+    return CustomTableRow(
+      children: [
+        TableCellData(text: header, isHeader: true, maxLines: 1),
+        for (final text in texts) TableCellData(text: text, maxLines: 1),
+      ],
+    );
   }
 
   List<Widget> _npRates() {
@@ -505,10 +527,12 @@ class SvtInfoTab extends StatelessWidget {
       final v = td.npGain.firstValues;
       if (values.any((e) => e.toString() == v.toString())) continue;
       values.add(v);
-      rows.add(CustomTableRow.fromTexts(
-        texts: v.map((e) => '${(e ?? 0) / 100}%').toList(),
-        defaults: TableCellData(textAlign: TextAlign.center, maxLines: 1),
-      ));
+      rows.add(
+        CustomTableRow.fromTexts(
+          texts: v.map((e) => '${(e ?? 0) / 100}%').toList(),
+          defaults: TableCellData(textAlign: TextAlign.center, maxLines: 1),
+        ),
+      );
     }
     return rows;
   }

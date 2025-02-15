@@ -24,10 +24,7 @@ class _QuestInfo {
   _QuestInfo(this.userQuest, this.quest, this.winNum, this.loseNum);
 }
 
-enum _UserQuestSort {
-  clearNum,
-  challengeNum,
-}
+enum _UserQuestSort { clearNum, challengeNum }
 
 class _UserQuestFarmingStatPageState extends State<UserQuestFarmingStatPage> with SingleTickerProviderStateMixin {
   late final _tabController = TabController(length: 4, vsync: this);
@@ -99,12 +96,17 @@ class _UserQuestFarmingStatPageState extends State<UserQuestFarmingStatPage> wit
     return Scaffold(
       appBar: AppBar(
         title: Text(S.current.quest),
-        bottom: FixedHeight.tabBar(TabBar(controller: _tabController, tabs: [
-          Tab(text: S.current.general_all),
-          Tab(text: S.current.free_quest),
-          Tab(text: S.current.failed),
-          Tab(text: S.current.general_others),
-        ])),
+        bottom: FixedHeight.tabBar(
+          TabBar(
+            controller: _tabController,
+            tabs: [
+              Tab(text: S.current.general_all),
+              Tab(text: S.current.free_quest),
+              Tab(text: S.current.failed),
+              Tab(text: S.current.general_others),
+            ],
+          ),
+        ),
         actions: [
           IconButton(
             onPressed: () {
@@ -114,7 +116,7 @@ class _UserQuestFarmingStatPageState extends State<UserQuestFarmingStatPage> wit
               ).showDialog(context);
             },
             icon: const Icon(Icons.help_outline),
-          )
+          ),
         ],
       ),
       body: Column(
@@ -122,12 +124,7 @@ class _UserQuestFarmingStatPageState extends State<UserQuestFarmingStatPage> wit
           Expanded(
             child: TabBarView(
               controller: _tabController,
-              children: [
-                buildAllTab(),
-                buildFreeTab(),
-                buildFailTab(),
-                Builder(builder: buildOthers),
-              ],
+              children: [buildAllTab(), buildFreeTab(), buildFailTab(), Builder(builder: buildOthers)],
             ),
           ),
           kDefaultDivider,
@@ -137,11 +134,9 @@ class _UserQuestFarmingStatPageState extends State<UserQuestFarmingStatPage> wit
             subtitle: Text(war?.lShortName.setMaxLines(1) ?? S.current.general_all, maxLines: 1),
             tileColor: Theme.of(context).cardColor,
             onTap: () async {
-              final selected = await router.pushPage<int>(EventChooser(
-                initTab: warId < 1000 ? 0 : 1,
-                showChaldeaGate: true,
-                hasFreeQuest: false,
-              ));
+              final selected = await router.pushPage<int>(
+                EventChooser(initTab: warId < 1000 ? 0 : 1, showChaldeaGate: true, hasFreeQuest: false),
+              );
               if (selected != null) {
                 warId = selected;
               }
@@ -186,13 +181,15 @@ class _UserQuestFarmingStatPageState extends State<UserQuestFarmingStatPage> wit
                   secondary = info.userQuest.clearNum.toString();
               }
               final trailing = Text.rich(
-                TextSpan(children: [
-                  TextSpan(text: primary),
-                  TextSpan(
-                    text: '\n$secondary',
-                    style: TextStyle(color: Theme.of(context).textTheme.bodySmall?.color, fontSize: 10),
-                  )
-                ]),
+                TextSpan(
+                  children: [
+                    TextSpan(text: primary),
+                    TextSpan(
+                      text: '\n$secondary',
+                      style: TextStyle(color: Theme.of(context).textTheme.bodySmall?.color, fontSize: 10),
+                    ),
+                  ],
+                ),
                 style: const TextStyle(fontSize: 12),
                 textAlign: TextAlign.end,
               );
@@ -227,13 +224,12 @@ class _UserQuestFarmingStatPageState extends State<UserQuestFarmingStatPage> wit
     final shownQuests = getShownQuests(freeQuests);
     return ListView.builder(
       itemCount: shownQuests.length,
-      itemBuilder: (context, index) => buildQuest(
-          context,
-          shownQuests[index],
-          Text(
-            Transl.special.funcValCountTimes(shownQuests[index].winNum),
-            style: const TextStyle(fontSize: 12),
-          )),
+      itemBuilder:
+          (context, index) => buildQuest(
+            context,
+            shownQuests[index],
+            Text(Transl.special.funcValCountTimes(shownQuests[index].winNum), style: const TextStyle(fontSize: 12)),
+          ),
     );
   }
 
@@ -241,14 +237,12 @@ class _UserQuestFarmingStatPageState extends State<UserQuestFarmingStatPage> wit
     final shownQuests = getShownQuests(failedQuests);
     return ListView.builder(
       itemCount: shownQuests.length,
-      itemBuilder: (context, index) => buildQuest(
-        context,
-        shownQuests[index],
-        Text(
-          Transl.special.funcValCountTimes(shownQuests[index].loseNum),
-          style: const TextStyle(fontSize: 12),
-        ),
-      ),
+      itemBuilder:
+          (context, index) => buildQuest(
+            context,
+            shownQuests[index],
+            Text(Transl.special.funcValCountTimes(shownQuests[index].loseNum), style: const TextStyle(fontSize: 12)),
+          ),
     );
   }
 
@@ -263,13 +257,15 @@ class _UserQuestFarmingStatPageState extends State<UserQuestFarmingStatPage> wit
         placeholder: (_, __) => const SizedBox.shrink(),
       ),
       title: Text(info.quest?.lDispName ?? info.userQuest.questId.toString()),
-      subtitle: Text(info.quest == null
-          ? S.current.unknown
-          : (info.quest?.event?.shownName ??
-                  info.quest?.war?.eventReal?.shownName ??
-                  info.quest?.war?.lShortName ??
-                  "War ${info.quest?.warId}")
-              .setMaxLines(1)),
+      subtitle: Text(
+        info.quest == null
+            ? S.current.unknown
+            : (info.quest?.event?.shownName ??
+                    info.quest?.war?.eventReal?.shownName ??
+                    info.quest?.war?.lShortName ??
+                    "War ${info.quest?.warId}")
+                .setMaxLines(1),
+      ),
       trailing: trailing,
       onTap: () {
         router.push(url: Routes.questI(info.userQuest.questId));
@@ -277,9 +273,11 @@ class _UserQuestFarmingStatPageState extends State<UserQuestFarmingStatPage> wit
       onLongPress: () {
         SimpleCancelOkDialog(
           title: Text(info.quest?.dispName ?? info.userQuest.questId.toString()),
-          content: Text('phase: ${info.userQuest.questPhase}/${info.quest?.phases.lastOrNull}\n'
-              'clearNum: ${info.userQuest.clearNum}\n'
-              'challengeNum: ${info.userQuest.challengeNum}'),
+          content: Text(
+            'phase: ${info.userQuest.questPhase}/${info.quest?.phases.lastOrNull}\n'
+            'clearNum: ${info.userQuest.clearNum}\n'
+            'challengeNum: ${info.userQuest.challengeNum}',
+          ),
           hideCancel: true,
         ).showDialog(context);
       },
@@ -309,11 +307,7 @@ class _UserQuestFarmingStatPageState extends State<UserQuestFarmingStatPage> wit
           title: Text('${S.current.interlude} + ${S.current.spirit_origin_release_quest}'),
           trailing: Text('$interludes+$spiritReleases=${interludes + spiritReleases}'),
         ),
-        ListTile(
-          dense: true,
-          title: Text(S.current.rankup_quest),
-          trailing: Text(rankups.toString()),
-        )
+        ListTile(dense: true, title: Text(S.current.rankup_quest), trailing: Text(rankups.toString())),
       ],
     );
   }

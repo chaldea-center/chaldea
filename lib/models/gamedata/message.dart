@@ -34,11 +34,7 @@ class BattleMessageGroup {
   int probability;
   List<BattleMessage> messages;
 
-  BattleMessageGroup({
-    required this.groupId,
-    required this.probability,
-    this.messages = const [],
-  });
+  BattleMessageGroup({required this.groupId, required this.probability, this.messages = const []});
 
   factory BattleMessageGroup.fromJson(Map<String, dynamic> json) => _$BattleMessageGroupFromJson(json);
 

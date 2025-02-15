@@ -29,10 +29,7 @@ class _TdListPageState extends State<TdListPage> with SearchableListState<BaseTd
   @override
   Iterable<BaseTd?> get wholeData {
     int? _id = _searchTdId;
-    return [
-      if (_id != null) null,
-      ...db.gameData.baseTds.values,
-    ];
+    return [if (_id != null) null, ...db.gameData.baseTds.values];
   }
 
   @override
@@ -51,15 +48,17 @@ class _TdListPageState extends State<TdListPage> with SearchableListState<BaseTd
           IconButton(
             icon: const Icon(Icons.filter_alt),
             tooltip: S.current.filter,
-            onPressed: () => FilterPage.show(
-              context: context,
-              builder: (context) => TdFilter(
-                filterData: filterData,
-                onChanged: (_) {
-                  if (mounted) setState(() {});
-                },
-              ),
-            ),
+            onPressed:
+                () => FilterPage.show(
+                  context: context,
+                  builder:
+                      (context) => TdFilter(
+                        filterData: filterData,
+                        onChanged: (_) {
+                          if (mounted) setState(() {});
+                        },
+                      ),
+                ),
           ),
           searchIcon,
         ],
@@ -111,8 +110,9 @@ class _TdListPageState extends State<TdListPage> with SearchableListState<BaseTd
           children: [
             if (td != null)
               TextSpan(
-                  text: '\n${td.id} ${Transl.enums(td.damageType, (enums) => enums.tdEffectFlag).l}',
-                  style: Theme.of(context).textTheme.bodySmall)
+                text: '\n${td.id} ${Transl.enums(td.damageType, (enums) => enums.tdEffectFlag).l}',
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
           ],
         ),
       ),

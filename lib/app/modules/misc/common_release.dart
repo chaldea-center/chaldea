@@ -54,10 +54,7 @@ class _CommonReleasesPageState extends State<CommonReleasesPage>
             maxLines: 1,
             minFontSize: 6,
           ),
-          actions: [
-            if (useId) dropdownRegion(),
-            if (useId) popupMenu,
-          ],
+          actions: [if (useId) dropdownRegion(), if (useId) popupMenu],
         ),
         body: buildBody(context),
       ),
@@ -88,11 +85,7 @@ class _CommonReleasesPageState extends State<CommonReleasesPage>
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        ListTile(
-          title: Text('Group $group'),
-          leading: const Icon(Icons.group_work),
-          minLeadingWidth: 28,
-        ),
+        ListTile(title: Text('Group $group'), leading: const Icon(Icons.group_work), minLeadingWidth: 28),
         for (final (index, release) in releases.indexed)
           CondTargetValueDescriptor.commonRelease(
             commonRelease: release,
@@ -113,15 +106,17 @@ class _CommonReleasesPageState extends State<CommonReleasesPage>
             leading: card.iconBuilder(context: context),
             title: Text(card.lName.l),
             onTap: card.routeTo,
-          )
+          ),
       ],
     );
   }
 
   Widget get popupMenu {
     return PopupMenuButton(
-      itemBuilder: (context) => SharedBuilder.websitesPopupMenuItems(
-          atlas: 'https://api.atlasacademy.io/nice/JP/common-release/${widget.id}'),
+      itemBuilder:
+          (context) => SharedBuilder.websitesPopupMenuItems(
+            atlas: 'https://api.atlasacademy.io/nice/JP/common-release/${widget.id}',
+          ),
     );
   }
 }

@@ -23,8 +23,7 @@ enum _ItemSortType {
   id,
   owned,
   left,
-  demands,
-  ;
+  demands;
 
   String get shownName {
     switch (this) {
@@ -74,8 +73,10 @@ class ItemListPageState extends State<ItemListPage> with SingleTickerProviderSta
   void initState() {
     super.initState();
     _tabController = TabController(length: shownCategories.length, vsync: this);
-    _itemRedundantControllers =
-        List.generate(3, (index) => TextEditingController(text: db.userData.itemAbundantValue[index].toString()));
+    _itemRedundantControllers = List.generate(
+      3,
+      (index) => TextEditingController(text: db.userData.itemAbundantValue[index].toString()),
+    );
     for (final item in db.gameData.items.values) {
       if (!item.icon.contains('/JP/')) continue;
       categorized.putIfAbsent(item.category, () => []).add(item.id);
@@ -137,20 +138,20 @@ class ItemListPageState extends State<ItemListPage> with SingleTickerProviderSta
             },
           ),
         ],
-        bottom: FixedHeight.tabBar(TabBar(
-          controller: _tabController,
-          isScrollable: true,
-          tabAlignment: TabAlignment.center,
-          tabs: [
-            for (final category in shownCategories)
-              Tab(
-                text: Transl.enums(category, (enums) => enums.itemCategory).l,
-              ),
-          ],
-          onTap: (_) {
-            FocusScope.of(context).unfocus();
-          },
-        )),
+        bottom: FixedHeight.tabBar(
+          TabBar(
+            controller: _tabController,
+            isScrollable: true,
+            tabAlignment: TabAlignment.center,
+            tabs: [
+              for (final category in shownCategories)
+                Tab(text: Transl.enums(category, (enums) => enums.itemCategory).l),
+            ],
+            onTap: (_) {
+              FocusScope.of(context).unfocus();
+            },
+          ),
+        ),
       ),
       body: Column(
         children: [
@@ -166,14 +167,19 @@ class ItemListPageState extends State<ItemListPage> with SingleTickerProviderSta
                       onNavToCalculator: navToDropCalculator,
                       filtered: filtered,
                       showSet999: true,
-                      editable: !const [ItemCategory.event, ItemCategory.other, ItemCategory.itemSelectMonth]
-                          .contains(category),
-                      sortType: const [ItemCategory.event, ItemCategory.other].contains(category)
-                          ? _ItemSortType.id
-                          : sortType,
+                      editable:
+                          !const [
+                            ItemCategory.event,
+                            ItemCategory.other,
+                            ItemCategory.itemSelectMonth,
+                          ].contains(category),
+                      sortType:
+                          const [ItemCategory.event, ItemCategory.other].contains(category)
+                              ? _ItemSortType.id
+                              : sortType,
                       useGrid: useGrid,
                     ),
-                  )
+                  ),
               ],
             ),
           ),
@@ -199,10 +205,7 @@ class ItemListPageState extends State<ItemListPage> with SingleTickerProviderSta
     }
 
     SimpleCancelOkDialog(
-      title: Text(
-        S.current.item_exceed_hint,
-        style: const TextStyle(fontSize: 16),
-      ),
+      title: Text(S.current.item_exceed_hint, style: const TextStyle(fontSize: 16)),
       confirmText: S.current.plan,
       content: Wrap(
         spacing: 6,
@@ -228,17 +231,14 @@ class ItemListPageState extends State<ItemListPage> with SingleTickerProviderSta
                       }
                     },
                   ),
-                )
+                ),
               ],
-            )
+            ),
         ],
       ),
       onTapOk: () {
         Future.delayed(const Duration(milliseconds: 500), () {
-          router.push(
-            url: Routes.freeCalc,
-            child: FreeQuestCalcPage(objectiveCounts: _getObjective()),
-          );
+          router.push(url: Routes.freeCalc, child: FreeQuestCalcPage(objectiveCounts: _getObjective()));
         });
       },
       actions: [
@@ -250,7 +250,7 @@ class ItemListPageState extends State<ItemListPage> with SingleTickerProviderSta
             db.userData.itemAbundantValue.fillRange(0, db.userData.itemAbundantValue.length, 0);
           },
           child: Text(S.current.clear),
-        )
+        ),
       ],
     ).showDialog(context);
   }
@@ -284,7 +284,7 @@ class _ItemFilterDialogState extends State<ItemFilterDialog> {
             Navigator.of(context).pop();
           },
           child: Text(S.current.confirm.toUpperCase()),
-        )
+        ),
       ],
       contentPadding: const EdgeInsets.symmetric(horizontal: 6),
       content: Column(
@@ -478,12 +478,9 @@ class _ItemListTabState extends State<ItemListTab> {
       }
     }
     if (widget.showSet999 && widget.editable && !widget.useGrid) {
-      children.add((context) => Center(
-            child: TextButton(
-              onPressed: setAll999,
-              child: const Text('  >>> SET ALL 999 <<<  '),
-            ),
-          ));
+      children.add(
+        (context) => Center(child: TextButton(onPressed: setAll999, child: const Text('  >>> SET ALL 999 <<<  '))),
+      );
     }
     Widget listView;
     if (widget.useGrid) {
@@ -492,9 +489,7 @@ class _ItemListTabState extends State<ItemListTab> {
         maxCrossAxisExtent: 56,
         childAspectRatio: 132 / 144,
         padding: const EdgeInsets.symmetric(horizontal: 8),
-        children: [
-          for (final builder in children) builder(context),
-        ],
+        children: [for (final builder in children) builder(context)],
       );
     } else {
       listView = ListView.builder(
@@ -504,11 +499,7 @@ class _ItemListTabState extends State<ItemListTab> {
       );
     }
 
-    return Column(children: [
-      Expanded(child: listView),
-      kDefaultDivider,
-      SafeArea(child: buttonBar),
-    ]);
+    return Column(children: [Expanded(child: listView), kDefaultDivider, SafeArea(child: buttonBar)]);
   }
 
   Widget get buttonBar {
@@ -634,14 +625,10 @@ class _ItemListTabState extends State<ItemListTab> {
         } else {
           db.curUser.items[itemId] = int.tryParse(v.replaceAll(',', '')) ?? db.curUser.items[itemId] ?? 0;
         }
-        EasyDebounce.debounce(
-          'item_list_edit',
-          const Duration(milliseconds: 500),
-          () {
-            db.itemCenter.updateLeftItems();
-            if (mounted) setState(() {});
-          },
-        );
+        EasyDebounce.debounce('item_list_edit', const Duration(milliseconds: 500), () {
+          db.itemCenter.updateLeftItems();
+          if (mounted) setState(() {});
+        });
       },
       onTap: () {
         // select all text at first tap
@@ -657,8 +644,11 @@ class _ItemListTabState extends State<ItemListTab> {
           if (index < 0) return;
           final start = _scrollController.position.minScrollExtent, end = _scrollController.position.maxScrollExtent;
           final newOffset = _scrollController.offset + (end - start) / _shownGroups.length;
-          _scrollController.animateTo(min(end, newOffset),
-              duration: const Duration(milliseconds: 200), curve: Curves.easeOut);
+          _scrollController.animateTo(
+            min(end, newOffset),
+            duration: const Duration(milliseconds: 200),
+            curve: Curves.easeOut,
+          );
         }
       },
       onEditingComplete: () {
@@ -668,9 +658,7 @@ class _ItemListTabState extends State<ItemListTab> {
     );
     Widget title, subtitle;
     if (isQp) {
-      title = Row(
-        children: <Widget>[const Text('QP  '), Expanded(child: textField)],
-      );
+      title = Row(children: <Widget>[const Text('QP  '), Expanded(child: textField)]);
       final demand = db.itemCenter.demandOf(itemId).format(compact: false, groupSeparator: ','),
           left = (db.itemCenter.itemLeft[itemId] ?? 0).format(compact: false, groupSeparator: ',');
       subtitle = Row(
@@ -694,7 +682,7 @@ class _ItemListTabState extends State<ItemListTab> {
               minFontSize: 1,
               overflow: TextOverflow.visible,
             ),
-          )
+          ),
         ],
       );
     } else {
@@ -708,34 +696,20 @@ class _ItemListTabState extends State<ItemListTab> {
 
       title = Row(
         children: <Widget>[
-          Expanded(
-            child: AutoSizeText(
-              _coinSvtMap[itemId]?.lName.l ?? Item.getName(itemId),
-              maxLines: 1,
-            ),
-          ),
+          Expanded(child: AutoSizeText(_coinSvtMap[itemId]?.lName.l ?? Item.getName(itemId), maxLines: 1)),
           Text('  ${S.current.item_left}', style: const TextStyle(fontSize: 14)),
           ConstrainedBox(
             constraints: const BoxConstraints(minWidth: 36),
             child: Align(
               alignment: Alignment.centerRight,
-              child: Text(
-                '  $leftCount',
-                style: highlightStyle.copyWith(fontSize: 14),
-                maxLines: 1,
-              ),
+              child: Text('  $leftCount', style: highlightStyle.copyWith(fontSize: 14), maxLines: 1),
             ),
           ),
         ],
       );
       subtitle = Row(
         children: <Widget>[
-          Expanded(
-            child: AutoSizeText(
-              '${S.current.demands}  $demandCount',
-              maxLines: 1,
-            ),
-          ),
+          Expanded(child: AutoSizeText('${S.current.demands}  $demandCount', maxLines: 1)),
           if (coinOwner == null) ...[
             Text(S.current.event, style: const TextStyle(fontSize: 14)),
             ConstrainedBox(
@@ -757,10 +731,7 @@ class _ItemListTabState extends State<ItemListTab> {
       subtitle = Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          subtitle,
-          Text(itemId.toString(), textScaler: const TextScaler.linear(0.85)),
-        ],
+        children: [subtitle, Text(itemId.toString(), textScaler: const TextScaler.linear(0.85))],
       );
     }
 
@@ -806,13 +777,7 @@ class _ItemListTabState extends State<ItemListTab> {
         !const [ItemCategory.other, ItemCategory.event, ItemCategory.itemSelectMonth].contains(widget.category)) {
       text = '$countOwn\n$countLeft';
     }
-    return Item.iconBuilder(
-      context: context,
-      item: null,
-      itemId: itemId,
-      width: 52,
-      text: text,
-    );
+    return Item.iconBuilder(context: context, item: null, itemId: itemId, width: 52, text: text);
   }
 
   void moveToNext(FocusNode node, [bool reversed = false]) {

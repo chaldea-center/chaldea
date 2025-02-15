@@ -136,9 +136,11 @@ class _ChaldeaGateQuestListPageState extends State<ChaldeaGateQuestListPage>
       headerBuilder: (context, expanded) {
         return ListTile(
           dense: true,
-          title: Text(group.months == 1
-              ? "${group.startYear}/${group.startMonth}"
-              : "${group.startYear}/${group.startMonth} ~ ${group.endYear}/${group.endMonth}"),
+          title: Text(
+            group.months == 1
+                ? "${group.startYear}/${group.startMonth}"
+                : "${group.startYear}/${group.startMonth} ~ ${group.endYear}/${group.endMonth}",
+          ),
           subtitle: Text('${group.quests.length} ${S.current.quest}'),
           contentPadding: const EdgeInsetsDirectional.only(start: 16),
           selected: expanded,
@@ -153,7 +155,8 @@ class _ChaldeaGateQuestListPageState extends State<ChaldeaGateQuestListPage>
                 dense: true,
                 title: Text(quest.lName.l),
                 subtitle: Text(
-                    [quest.openedAt.sec2date().toDateString(), quest.closedAt.sec2date().toDateString()].join(" ~ ")),
+                  [quest.openedAt.sec2date().toDateString(), quest.closedAt.sec2date().toDateString()].join(" ~ "),
+                ),
                 trailing: Text(
                   [
                     'Lv.${quest.recommendLv}',
@@ -196,9 +199,7 @@ class _GroupData {
     final endYear = endTime.year, endMonth = endTime.month;
     int year = 2015, month = 7;
 
-    List<_GroupData> groups = [
-      _GroupData(1900, 1, year, month, tz),
-    ];
+    List<_GroupData> groups = [_GroupData(1900, 1, year, month, tz)];
     while (year * 12 + month < endYear * 12 + endMonth) {
       var (int y2, int m2) = normMonth(year, month + dm);
       groups.add(_GroupData(year, month, y2, m2, tz));
@@ -210,10 +211,7 @@ class _GroupData {
   }
 }
 
-enum _SortType {
-  openedAt,
-  closedAt,
-}
+enum _SortType { openedAt, closedAt }
 
 (int year, int month) normMonth(int y, int m) {
   int m2 = (m - 1) % 12 + 1;

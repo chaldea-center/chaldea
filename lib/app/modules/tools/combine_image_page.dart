@@ -56,12 +56,9 @@ class _CombineImagePageState extends State<CombineImagePage> {
       body: Column(
         children: [
           const SizedBox(height: 8),
-          SizedBox(
-            height: height,
-            child: getCanvas(),
-          ),
+          SizedBox(height: height, child: getCanvas()),
           const Divider(height: 16),
-          Expanded(child: buildOptions(height))
+          Expanded(child: buildOptions(height)),
         ],
       ),
     );
@@ -71,21 +68,22 @@ class _CombineImagePageState extends State<CombineImagePage> {
     List<Widget> images = [];
     for (int index = 0; index < urls.length; index++) {
       final uri = urls[index];
-      Widget image = uri.scheme.toLowerCase().startsWith('http')
-          ? CachedImage(
-              imageUrl: urls[index].toString(),
-              cachedOption: CachedImageOption(
-                fit: option.imgFit,
-                errorWidget: (context, url, error) => db.getIconImage(null),
-              ),
-            )
-          : CachedImage.fromProvider(
-              imageProvider: FileImage(File(urls[index].toFilePath())),
-              cachedOption: CachedImageOption(
-                fit: option.imgFit,
-                errorWidget: (context, url, error) => db.getIconImage(null),
-              ),
-            );
+      Widget image =
+          uri.scheme.toLowerCase().startsWith('http')
+              ? CachedImage(
+                imageUrl: urls[index].toString(),
+                cachedOption: CachedImageOption(
+                  fit: option.imgFit,
+                  errorWidget: (context, url, error) => db.getIconImage(null),
+                ),
+              )
+              : CachedImage.fromProvider(
+                imageProvider: FileImage(File(urls[index].toFilePath())),
+                cachedOption: CachedImageOption(
+                  fit: option.imgFit,
+                  errorWidget: (context, url, error) => db.getIconImage(null),
+                ),
+              );
 
       image = GestureDetector(
         key: Key('$index'),
@@ -96,18 +94,13 @@ class _CombineImagePageState extends State<CombineImagePage> {
         },
         child: Container(
           color: _selected == index ? Theme.of(context).colorScheme.primaryContainer : null,
-          child: Padding(
-            padding: const EdgeInsets.all(4),
-            child: image,
-          ),
+          child: Padding(padding: const EdgeInsets.all(4), child: image),
         ),
       );
       images.add(image);
     }
     if (images.isEmpty) {
-      images.add(
-        const AspectRatio(key: Key('NONE'), aspectRatio: 512 / 724),
-      );
+      images.add(const AspectRatio(key: Key('NONE'), aspectRatio: 512 / 724));
     }
     Widget canvas = ReorderableListView(
       buildDefaultDragHandles: true,
@@ -127,10 +120,7 @@ class _CombineImagePageState extends State<CombineImagePage> {
       children: images,
     );
     // by default, an reorder icon on trailing will be added on descktop
-    canvas = Theme(
-      data: Theme.of(context).copyWith(platform: TargetPlatform.iOS),
-      child: canvas,
-    );
+    canvas = Theme(data: Theme.of(context).copyWith(platform: TargetPlatform.iOS), child: canvas);
 
     if (option.title != null) {
       canvas = Column(
@@ -139,13 +129,7 @@ class _CombineImagePageState extends State<CombineImagePage> {
           if (option.title != null)
             Padding(
               padding: const EdgeInsets.fromLTRB(4, 0, 4, 4),
-              child: Text(
-                option.title!,
-                style: TextStyle(
-                  fontSize: option.titleSize.toDouble(),
-                  color: Colors.black,
-                ),
-              ),
+              child: Text(option.title!, style: TextStyle(fontSize: option.titleSize.toDouble(), color: Colors.black)),
             ),
           Expanded(child: canvas),
         ],
@@ -159,13 +143,7 @@ class _CombineImagePageState extends State<CombineImagePage> {
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Container(
-        color: Colors.white,
-        child: Screenshot(
-          controller: _controller,
-          child: canvas,
-        ),
-      ),
+      child: Container(color: Colors.white, child: Screenshot(controller: _controller, child: canvas)),
     );
   }
 
@@ -190,31 +168,37 @@ class _CombineImagePageState extends State<CombineImagePage> {
           children: [
             ElevatedButton(
               onPressed: () {
-                router.pushPage(ServantListPage(
-                  onSelected: (svt) {
-                    router.pushPage(fromSvt(svt));
-                  },
-                ));
+                router.pushPage(
+                  ServantListPage(
+                    onSelected: (svt) {
+                      router.pushPage(fromSvt(svt));
+                    },
+                  ),
+                );
               },
               child: Text(S.current.servant),
             ),
             ElevatedButton(
               onPressed: () {
-                router.pushPage(CraftListPage(
-                  onSelected: (ce) {
-                    router.pushPage(fromCE(ce));
-                  },
-                ));
+                router.pushPage(
+                  CraftListPage(
+                    onSelected: (ce) {
+                      router.pushPage(fromCE(ce));
+                    },
+                  ),
+                );
               },
               child: Text(S.current.craft_essence),
             ),
             ElevatedButton(
               onPressed: () {
-                router.pushPage(CmdCodeListPage(
-                  onSelected: (cc) {
-                    router.pushPage(fromCC(cc));
-                  },
-                ));
+                router.pushPage(
+                  CmdCodeListPage(
+                    onSelected: (cc) {
+                      router.pushPage(fromCC(cc));
+                    },
+                  ),
+                );
               },
               child: Text(S.current.command_code),
             ),
@@ -234,31 +218,34 @@ class _CombineImagePageState extends State<CombineImagePage> {
               child: const Text('URL'),
             ),
             ElevatedButton(
-              onPressed: kIsWeb
-                  ? null
-                  : () async {
-                      final result = await FilePickerU.pickFiles(type: FileType.image, withData: false);
-                      final fp = result?.files.getOrNull(0)?.path;
-                      if (fp != null) {
-                        _onChangeUrl(Uri.file(fp));
-                      }
-                    },
+              onPressed:
+                  kIsWeb
+                      ? null
+                      : () async {
+                        final result = await FilePickerU.pickFiles(type: FileType.image, withData: false);
+                        final fp = result?.files.getOrNull(0)?.path;
+                        if (fp != null) {
+                          _onChangeUrl(Uri.file(fp));
+                        }
+                      },
               child: const Text('File'),
             ),
             TextButton(
-              onPressed: isSelected
-                  ? () {
-                      setState(() {
-                        urls.removeAt(_selected);
-                      });
-                    }
-                  : null,
+              onPressed:
+                  isSelected
+                      ? () {
+                        setState(() {
+                          urls.removeAt(_selected);
+                        });
+                      }
+                      : null,
               child: Text(S.current.delete),
             ),
           ],
         ),
         const SFooter(
-            'Click to insert new image before the selected one or add to the end.\nLong press then drag to reorder.'),
+          'Click to insert new image before the selected one or add to the end.\nLong press then drag to reorder.',
+        ),
         Wrap(
           alignment: WrapAlignment.center,
           spacing: 8,
@@ -338,10 +325,7 @@ class _CombineImagePageState extends State<CombineImagePage> {
                 value: option.titleSize.clamp(8, maxFontSize),
                 items: [
                   for (int size = 8; size <= maxFontSize; size = size + 2)
-                    DropdownMenuItem(
-                      value: size,
-                      child: Text(size.toString()),
-                    ),
+                    DropdownMenuItem(value: size, child: Text(size.toString())),
                 ],
                 onChanged: (v) {
                   setState(() {
@@ -357,10 +341,7 @@ class _CombineImagePageState extends State<CombineImagePage> {
                 value: option.titleAlign,
                 items: [
                   for (final align in [CrossAxisAlignment.start, CrossAxisAlignment.center, CrossAxisAlignment.end])
-                    DropdownMenuItem(
-                      value: align,
-                      child: Text(align.name),
-                    ),
+                    DropdownMenuItem(value: align, child: Text(align.name)),
                 ],
                 onChanged: (v) {
                   setState(() {
@@ -381,10 +362,7 @@ class _CombineImagePageState extends State<CombineImagePage> {
                 value: option.imgFit,
                 items: [
                   for (final fit in [BoxFit.none, BoxFit.fitHeight, BoxFit.scaleDown, BoxFit.cover])
-                    DropdownMenuItem(
-                      value: fit,
-                      child: Text(fit.name),
-                    ),
+                    DropdownMenuItem(value: fit, child: Text(fit.name)),
                 ],
                 onChanged: (v) {
                   setState(() {
@@ -400,10 +378,7 @@ class _CombineImagePageState extends State<CombineImagePage> {
                 value: option.imgAlign,
                 items: [
                   for (final align in [CrossAxisAlignment.start, CrossAxisAlignment.center, CrossAxisAlignment.end])
-                    DropdownMenuItem(
-                      value: align,
-                      child: Text(align.name),
-                    ),
+                    DropdownMenuItem(value: align, child: Text(align.name)),
                 ],
                 onChanged: (v) {
                   setState(() {
@@ -457,21 +432,22 @@ class _CombineImagePageState extends State<CombineImagePage> {
         Navigator.of(context).push(
           PageRouteBuilder(
             opaque: false,
-            pageBuilder: (context, _, __) => FullscreenImageViewer(
-              children: [
-                CachedImage.fromProvider(
-                  imageProvider: MemoryImage(data),
-                  showSaveOnLongPress: true,
-                  viewFullOnTap: false,
-                  onTap: null,
-                  photoViewOption: PhotoViewOption.limited(),
-                  cachedOption: const CachedImageOption(
-                    fadeOutDuration: Duration(milliseconds: 1200),
-                    fadeInDuration: Duration(milliseconds: 800),
-                  ),
-                )
-              ],
-            ),
+            pageBuilder:
+                (context, _, __) => FullscreenImageViewer(
+                  children: [
+                    CachedImage.fromProvider(
+                      imageProvider: MemoryImage(data),
+                      showSaveOnLongPress: true,
+                      viewFullOnTap: false,
+                      onTap: null,
+                      photoViewOption: PhotoViewOption.limited(),
+                      cachedOption: const CachedImageOption(
+                        fadeOutDuration: Duration(milliseconds: 1200),
+                        fadeInDuration: Duration(milliseconds: 800),
+                      ),
+                    ),
+                  ],
+                ),
           ),
         );
       }
@@ -546,12 +522,8 @@ class _SelectImageFromAssets extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Select one Image'),
-      ),
-      body: SingleChildScrollView(
-        child: builder(context),
-      ),
+      appBar: AppBar(title: const Text('Select one Image')),
+      body: SingleChildScrollView(child: builder(context)),
     );
   }
 }

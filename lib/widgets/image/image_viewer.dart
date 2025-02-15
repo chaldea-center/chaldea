@@ -67,8 +67,8 @@ class CachedImage extends StatefulWidget {
     this.photoViewOption,
     bool? viewFullOnTap,
     this.onTap,
-  })  : imageProvider = null,
-        viewFullOnTap = viewFullOnTap ?? showSaveOnLongPress;
+  }) : imageProvider = null,
+       viewFullOnTap = viewFullOnTap ?? showSaveOnLongPress;
 
   const CachedImage.fromProvider({
     super.key,
@@ -82,10 +82,10 @@ class CachedImage extends StatefulWidget {
     this.photoViewOption,
     bool? viewFullOnTap,
     this.onTap,
-  })  : imageUrl = null,
-        cacheDir = null,
-        cacheName = null,
-        viewFullOnTap = viewFullOnTap ?? showSaveOnLongPress;
+  }) : imageUrl = null,
+       cacheDir = null,
+       cacheName = null,
+       viewFullOnTap = viewFullOnTap ?? showSaveOnLongPress;
 
   @override
   _CachedImageState createState() => _CachedImageState();
@@ -99,11 +99,7 @@ class CachedImage extends StatefulWidget {
         if (width.isFinite) width = min(width, 50);
         if (width.isFinite) {
           return Center(
-            child: SizedBox(
-              width: width,
-              height: width,
-              child: const Center(child: CircularProgressIndicator()),
-            ),
+            child: SizedBox(width: width, height: width, child: const Center(child: CircularProgressIndicator())),
           );
         } else {
           return const Center(child: CircularProgressIndicator());
@@ -113,10 +109,7 @@ class CachedImage extends StatefulWidget {
   }
 
   static Widget defaultErrorWidget(BuildContext context, String? url, dynamic error) {
-    return Padding(
-      padding: const EdgeInsets.all(10),
-      child: Image(image: db.errorImage),
-    );
+    return Padding(padding: const EdgeInsets.all(10), child: Image(image: db.errorImage));
   }
 
   static Widget sizeChild({required Widget child, double? width, double? height, double? aspectRatio}) {
@@ -154,10 +147,7 @@ class CachedImage extends StatefulWidget {
         'pstatic.net',
       ].any((e) => uri.host.endsWith(e));
     } else {
-      cors = const [
-        'hdslb.com',
-        'pstatic.net',
-      ].any((e) => uri.host.endsWith(e));
+      cors = const ['hdslb.com', 'pstatic.net'].any((e) => uri.host.endsWith(e));
     }
     if (cors) {
       return Uri.parse(HostsX.workerHost).replace(path: '/corsproxy/', queryParameters: {'url': url}).toString();
@@ -193,39 +183,41 @@ class _CachedImageState extends State<CachedImage> {
         Navigator.of(context).push(
           PageRouteBuilder(
             opaque: false,
-            pageBuilder: (context, _, __) => FullscreenImageViewer(children: [
-              CachedImage(
-                imageUrl: widget.imageUrl,
-                cacheDir: widget.cacheDir,
-                cacheName: widget.cacheName,
-                showSaveOnLongPress: true,
-                placeholder: widget.placeholder,
-                // cachedOption: widget.cachedOption,
-                // photoViewOption: widget.photoViewOption,
-                viewFullOnTap: false,
-                onTap: null,
-              )
-            ]),
+            pageBuilder:
+                (context, _, __) => FullscreenImageViewer(
+                  children: [
+                    CachedImage(
+                      imageUrl: widget.imageUrl,
+                      cacheDir: widget.cacheDir,
+                      cacheName: widget.cacheName,
+                      showSaveOnLongPress: true,
+                      placeholder: widget.placeholder,
+                      // cachedOption: widget.cachedOption,
+                      // photoViewOption: widget.photoViewOption,
+                      viewFullOnTap: false,
+                      onTap: null,
+                    ),
+                  ],
+                ),
           ),
         );
       };
     }
     if (onTap != null) {
-      child = GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onTap: onTap,
-        child: child,
-      );
+      child = GestureDetector(behavior: HitTestBehavior.opaque, onTap: onTap, child: child);
     }
     return child;
   }
 
   Widget resolveChild() {
     if (widget.imageProvider != null) {
-      return _withProvider(widget.imageProvider!, onClearCache: () {
-        imageCache.evict(widget.imageProvider!);
-        return Future.value();
-      });
+      return _withProvider(
+        widget.imageProvider!,
+        onClearCache: () {
+          imageCache.evict(widget.imageProvider!);
+          return Future.value();
+        },
+      );
     }
     String? url = widget.imageUrl;
     if (url == null) return _withPlaceholder(context, '');
@@ -301,9 +293,10 @@ class _CachedImageState extends State<CachedImage> {
           if (uri != null && uri.pathSegments.isNotEmpty) {
             fn = UriX.tryDecodeComponent(uri.pathSegments.last) ?? uri.pathSegments.last;
           }
-          fn ??= bytes == null
-              ? '${const Uuid().v4()}.png'
-              : '${const Uuid().v5(Namespace.url.value, sha1.convert(bytes).toString())}.png';
+          fn ??=
+              bytes == null
+                  ? '${const Uuid().v4()}.png'
+                  : '${const Uuid().v5(Namespace.url.value, sha1.convert(bytes).toString())}.png';
           ImageActions.showSaveShare(
             context: context,
             data: bytes,
@@ -392,13 +385,17 @@ class _CachedImageState extends State<CachedImage> {
       imageBuilder:
           cachedOption.imageBuilder == null ? null : (context, _) => cachedOption.imageBuilder!(context, image),
       placeholderBuilder: (context) => _withPlaceholder(context, widget.imageUrl ?? ''),
-      progressIndicatorBuilder: cachedOption.progressIndicatorBuilder == null
-          ? null
-          : (context, progress) => cachedOption.progressIndicatorBuilder!(
+      progressIndicatorBuilder:
+          cachedOption.progressIndicatorBuilder == null
+              ? null
+              : (context, progress) => cachedOption.progressIndicatorBuilder!(
                 context,
                 widget.imageUrl ?? "",
                 DownloadProgress(
-                    widget.imageUrl ?? "", progress?.expectedTotalBytes, progress?.cumulativeBytesLoaded ?? 0),
+                  widget.imageUrl ?? "",
+                  progress?.expectedTotalBytes,
+                  progress?.cumulativeBytesLoaded ?? 0,
+                ),
               ),
       errorBuilder: (context, e, s) => _withError(context, widget.imageUrl ?? ""),
       fadeOutDuration: cachedOption.fadeOutDuration,
@@ -431,7 +428,7 @@ class ImageViewerCacheManager extends CacheManager with ImageCacheManager {
   }
 
   ImageViewerCacheManager._()
-      : super(Config(key, stalePeriod: const Duration(days: 30), fileService: _MyHttpFileService()));
+    : super(Config(key, stalePeriod: const Duration(days: 30), fileService: _MyHttpFileService()));
 }
 
 class _MyHttpFileService extends FileService {

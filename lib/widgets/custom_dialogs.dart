@@ -60,12 +60,15 @@ class _InputCancelOkDialogState extends State<InputCancelOkDialog> {
   void initState() {
     super.initState();
     final text = widget.text ?? '';
-    _controller = TextEditingController.fromValue(TextEditingValue(
-      text: text,
-      selection: text.isEmpty
-          ? const TextSelection.collapsed(offset: -1)
-          : TextSelection(baseOffset: 0, extentOffset: text.length),
-    ));
+    _controller = TextEditingController.fromValue(
+      TextEditingValue(
+        text: text,
+        selection:
+            text.isEmpty
+                ? const TextSelection.collapsed(offset: -1)
+                : TextSelection(baseOffset: 0, extentOffset: text.length),
+      ),
+    );
   }
 
   @override
@@ -109,27 +112,25 @@ class _InputCancelOkDialogState extends State<InputCancelOkDialog> {
         },
       ),
       actions: <Widget>[
+        TextButton(child: Text(S.current.cancel), onPressed: () => Navigator.pop(context)),
         TextButton(
-          child: Text(S.current.cancel),
-          onPressed: () => Navigator.pop(context),
-        ),
-        TextButton(
-          onPressed: validation
-              ? () {
-                  String _value = _controller.text;
-                  validation = _validate(_value);
-                  setState(() {
-                    if (validation) {
-                      if (widget.onSubmit != null) {
-                        widget.onSubmit!(_value);
+          onPressed:
+              validation
+                  ? () {
+                    String _value = _controller.text;
+                    validation = _validate(_value);
+                    setState(() {
+                      if (validation) {
+                        if (widget.onSubmit != null) {
+                          widget.onSubmit!(_value);
+                        }
+                        Navigator.pop(context, _value);
                       }
-                      Navigator.pop(context, _value);
-                    }
-                  });
-                }
-              : null,
+                    });
+                  }
+                  : null,
           child: Text(S.current.ok),
-        )
+        ),
       ],
     );
   }
@@ -196,13 +197,7 @@ class SimpleCancelOkDialog extends StatelessWidget {
     ];
     if (wrapActionsInRow) {
       children = [
-        FittedBox(
-          fit: BoxFit.scaleDown,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: children,
-          ),
-        ),
+        FittedBox(fit: BoxFit.scaleDown, child: Row(mainAxisAlignment: MainAxisAlignment.end, children: children)),
       ];
     }
     return AlertDialog(
@@ -229,24 +224,26 @@ Future<void> jumpToExternalLinkAlert({required String url, String? name, String?
   return showDialog(
     context: kAppKey.currentContext!,
     useRootNavigator: false,
-    builder: (context) => SimpleCancelOkDialog(
-      title: Text(S.current.jump_to(name ?? S.current.link)),
-      content: Text.rich(TextSpan(children: [
-        if (content != null) TextSpan(text: '$content\n\n'),
-        TextSpan(
-          text: shownLink,
-          style: const TextStyle(decoration: TextDecoration.underline),
-        )
-      ])),
-      hideOk: !valid,
-      onTapOk: () async {
-        String link = safeLink ?? url;
-        if (await canLaunch(link)) {
-          launch(link);
-        } else {
-          EasyLoading.showToast('Could not launch url:\n$link');
-        }
-      },
-    ),
+    builder:
+        (context) => SimpleCancelOkDialog(
+          title: Text(S.current.jump_to(name ?? S.current.link)),
+          content: Text.rich(
+            TextSpan(
+              children: [
+                if (content != null) TextSpan(text: '$content\n\n'),
+                TextSpan(text: shownLink, style: const TextStyle(decoration: TextDecoration.underline)),
+              ],
+            ),
+          ),
+          hideOk: !valid,
+          onTapOk: () async {
+            String link = safeLink ?? url;
+            if (await canLaunch(link)) {
+              launch(link);
+            } else {
+              EasyLoading.showToast('Could not launch url:\n$link');
+            }
+          },
+        ),
   );
 }

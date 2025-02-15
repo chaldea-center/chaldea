@@ -57,9 +57,9 @@ class CommandCardData {
   CommandCardData._(this.svtId, this.svtLimit, this.uniqueId, this.cardType, this.cardDetail, this.cardIndex);
 
   CommandCardData(BattleServantData svt, this.cardType, this.cardDetail, this.cardIndex)
-      : svtId = svt.svtId,
-        svtLimit = svt.limitCount,
-        uniqueId = svt.uniqueId;
+    : svtId = svt.svtId,
+      svtLimit = svt.limitCount,
+      uniqueId = svt.uniqueId;
 
   CommandCardData copy() {
     return CommandCardData._(svtId, svtLimit, uniqueId, cardType, cardDetail, cardIndex)

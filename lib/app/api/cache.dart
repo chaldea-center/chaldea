@@ -16,8 +16,8 @@ import 'package:chaldea/utils/utils.dart';
 import '../../models/models.dart';
 
 const kExpireCacheOnly = Duration(days: -999);
-typedef DispatchErrorCallback = void Function(
-    RequestOptions options, Response? response, dynamic error, dynamic stackTrace);
+typedef DispatchErrorCallback =
+    void Function(RequestOptions options, Response? response, dynamic error, dynamic stackTrace);
 
 extension _RequestOptionsX on RequestOptions {
   static String getHashKey(String method, String url, dynamic data) {
@@ -61,14 +61,14 @@ class ApiCachedInfo {
     );
   }
   Map<String, dynamic> toJson() => {
-        'key': key,
-        'method': method,
-        'url': url,
-        'statusCode': statusCode,
-        'crc': crc,
-        'timestamp': timestamp,
-        'fp': fp,
-      };
+    'key': key,
+    'method': method,
+    'url': url,
+    'statusCode': statusCode,
+    'crc': crc,
+    'timestamp': timestamp,
+    'fp': fp,
+  };
 }
 
 class _DownloadingTask {
@@ -77,12 +77,9 @@ class _DownloadingTask {
   DateTime startedAt;
   bool canceled;
 
-  _DownloadingTask({
-    required this.key,
-    required this.completer,
-    DateTime? startedAt,
-  })  : startedAt = startedAt ?? DateTime.now(),
-        canceled = false;
+  _DownloadingTask({required this.key, required this.completer, DateTime? startedAt})
+    : startedAt = startedAt ?? DateTime.now(),
+      canceled = false;
 
   void cancel() {
     canceled = true;
@@ -105,9 +102,10 @@ class ApiCacheManager {
   }
 
   LazyBox<Uint8List>? _webBox;
-  late final FilePlus? _infoFile = cacheKey == null
-      ? null
-      : FilePlus(kIsWeb ? 'api_cache/$cacheKey.json' : joinPaths(db.paths.tempDir, 'api_cache/$cacheKey.json'));
+  late final FilePlus? _infoFile =
+      cacheKey == null
+          ? null
+          : FilePlus(kIsWeb ? 'api_cache/$cacheKey.json' : joinPaths(db.paths.tempDir, 'api_cache/$cacheKey.json'));
 
   ApiCacheManager(this.cacheKey);
 
@@ -193,10 +191,7 @@ class ApiCacheManager {
 
   FilePlus? _getCacheFile(String key) {
     if (cacheKey == null) return null;
-    return FilePlus(
-      kIsWeb ? '$cacheKey/$key' : joinPaths(db.paths.tempDir, '$cacheKey/$key'),
-      box: _webBox,
-    );
+    return FilePlus(kIsWeb ? '$cacheKey/$key' : joinPaths(db.paths.tempDir, '$cacheKey/$key'), box: _webBox);
   }
 
   Future<void> _saveEntry(String key, RequestOptions requestOptions, Response<List<int>> response) async {
@@ -275,8 +270,12 @@ class ApiCacheManager {
   }
 
   // fetch
-  Future<List<int>?> fetch(RequestOptions options,
-      {Duration? expireAfter, bool cacheOnly = false, DispatchErrorCallback? onError}) async {
+  Future<List<int>?> fetch(
+    RequestOptions options, {
+    Duration? expireAfter,
+    bool cacheOnly = false,
+    DispatchErrorCallback? onError,
+  }) async {
     onError ??= dispatchError;
     final key = options.hashKey();
     try {
@@ -323,17 +322,22 @@ class ApiCacheManager {
 
       final task = _downloading[key] = _DownloadingTask(key: key, completer: Completer());
       _failed.remove(key);
-      unawaited(rateLimiter.limited(() => _fetch(options, onError)).then((value) {
-        _downloading.remove(key);
-        _failed.remove(key);
-        if (!task.completer.isCompleted) task.completer.complete(value);
-        return Future.value();
-      }).catchError((e, s) {
-        _downloading.remove(key);
-        if (!task.canceled) _failed[key] = DateTime.now();
-        if (!task.completer.isCompleted) task.completer.completeError(e, s);
-        return Future.value();
-      }));
+      unawaited(
+        rateLimiter
+            .limited(() => _fetch(options, onError))
+            .then((value) {
+              _downloading.remove(key);
+              _failed.remove(key);
+              if (!task.completer.isCompleted) task.completer.complete(value);
+              return Future.value();
+            })
+            .catchError((e, s) {
+              _downloading.remove(key);
+              if (!task.canceled) _failed[key] = DateTime.now();
+              if (!task.completer.isCompleted) task.completer.completeError(e, s);
+              return Future.value();
+            }),
+      );
       return await task.completer.future;
     } catch (e, s) {
       _data.remove(key);
@@ -345,8 +349,12 @@ class ApiCacheManager {
     return null;
   }
 
-  Future<String?> fetchText(RequestOptions options,
-      {Duration? expireAfter, bool cacheOnly = false, DispatchErrorCallback? onError}) async {
+  Future<String?> fetchText(
+    RequestOptions options, {
+    Duration? expireAfter,
+    bool cacheOnly = false,
+    DispatchErrorCallback? onError,
+  }) async {
     onError ??= dispatchError;
     try {
       final data = await fetch(options, expireAfter: expireAfter, cacheOnly: cacheOnly, onError: onError);
@@ -360,8 +368,12 @@ class ApiCacheManager {
     }
   }
 
-  Future<dynamic> fetchJson(RequestOptions options,
-      {Duration? expireAfter, bool cacheOnly = false, DispatchErrorCallback? onError}) async {
+  Future<dynamic> fetchJson(
+    RequestOptions options, {
+    Duration? expireAfter,
+    bool cacheOnly = false,
+    DispatchErrorCallback? onError,
+  }) async {
     onError ??= dispatchError;
     dynamic result;
     try {
@@ -390,8 +402,13 @@ class ApiCacheManager {
     }
   }
 
-  Future<T?> fetchModelRaw<T>(RequestOptions options, T Function(String data) fromText,
-      {Duration? expireAfter, bool cacheOnly = false, DispatchErrorCallback? onError}) async {
+  Future<T?> fetchModelRaw<T>(
+    RequestOptions options,
+    T Function(String data) fromText, {
+    Duration? expireAfter,
+    bool cacheOnly = false,
+    DispatchErrorCallback? onError,
+  }) async {
     onError ??= dispatchError;
 
     try {
@@ -414,8 +431,13 @@ class ApiCacheManager {
     return null;
   }
 
-  Future<T?> fetchModel<T>(RequestOptions options, T Function(dynamic data) fromJson,
-      {Duration? expireAfter, bool cacheOnly = false, DispatchErrorCallback? onError}) async {
+  Future<T?> fetchModel<T>(
+    RequestOptions options,
+    T Function(dynamic data) fromJson, {
+    Duration? expireAfter,
+    bool cacheOnly = false,
+    DispatchErrorCallback? onError,
+  }) async {
     onError ??= dispatchError;
     dynamic obj;
     try {
@@ -447,19 +469,33 @@ class ApiCacheManager {
   }
 
   Future<String?> getText(String url, {Duration? expireAfter, bool cacheOnly = false}) {
-    return fetchText(createDio().createRequest(HttpRequestMethod.get, url),
-        expireAfter: expireAfter, cacheOnly: cacheOnly);
+    return fetchText(
+      createDio().createRequest(HttpRequestMethod.get, url),
+      expireAfter: expireAfter,
+      cacheOnly: cacheOnly,
+    );
   }
 
   Future<dynamic> getJson(String url, {Duration? expireAfter, bool cacheOnly = false}) {
-    return fetchJson(createDio().createRequest(HttpRequestMethod.get, url),
-        expireAfter: expireAfter, cacheOnly: cacheOnly);
+    return fetchJson(
+      createDio().createRequest(HttpRequestMethod.get, url),
+      expireAfter: expireAfter,
+      cacheOnly: cacheOnly,
+    );
   }
 
-  Future<T?> getModelRaw<T>(String url, T Function(String data) fromText,
-      {Duration? expireAfter, bool cacheOnly = false}) async {
-    return fetchModelRaw(createDio().createRequest(HttpRequestMethod.get, url), fromText,
-        expireAfter: expireAfter, cacheOnly: cacheOnly);
+  Future<T?> getModelRaw<T>(
+    String url,
+    T Function(String data) fromText, {
+    Duration? expireAfter,
+    bool cacheOnly = false,
+  }) async {
+    return fetchModelRaw(
+      createDio().createRequest(HttpRequestMethod.get, url),
+      fromText,
+      expireAfter: expireAfter,
+      cacheOnly: cacheOnly,
+    );
   }
 
   Future<T?> getModel<T>(
@@ -471,10 +507,11 @@ class ApiCacheManager {
     Options? options,
   }) {
     return fetchModel(
-        createDio().createRequest(HttpRequestMethod.get, url, queryParameters: queryParameters, options: options),
-        fromJson,
-        expireAfter: expireAfter,
-        cacheOnly: cacheOnly);
+      createDio().createRequest(HttpRequestMethod.get, url, queryParameters: queryParameters, options: options),
+      fromJson,
+      expireAfter: expireAfter,
+      cacheOnly: cacheOnly,
+    );
   }
 
   Future<T?> postModel<T>(
@@ -488,8 +525,13 @@ class ApiCacheManager {
     Options? options,
   }) {
     return fetchModel(
-      createDio()
-          .createRequest(HttpRequestMethod.post, url, data: data, queryParameters: queryParameters, options: options),
+      createDio().createRequest(
+        HttpRequestMethod.post,
+        url,
+        data: data,
+        queryParameters: queryParameters,
+        options: options,
+      ),
       fromJson,
       expireAfter: expireAfter,
       cacheOnly: cacheOnly,
@@ -507,8 +549,13 @@ class ApiCacheManager {
     Options? options,
   }) {
     return fetchModel(
-      createDio()
-          .createRequest(HttpRequestMethod.put, url, data: data, queryParameters: queryParameters, options: options),
+      createDio().createRequest(
+        HttpRequestMethod.put,
+        url,
+        data: data,
+        queryParameters: queryParameters,
+        options: options,
+      ),
       fromJson,
       expireAfter: expireAfter,
       cacheOnly: cacheOnly,
@@ -526,8 +573,13 @@ class ApiCacheManager {
     Options? options,
   }) {
     return fetchModel(
-      createDio()
-          .createRequest(HttpRequestMethod.patch, url, data: data, queryParameters: queryParameters, options: options),
+      createDio().createRequest(
+        HttpRequestMethod.patch,
+        url,
+        data: data,
+        queryParameters: queryParameters,
+        options: options,
+      ),
       fromJson,
       expireAfter: expireAfter,
       cacheOnly: cacheOnly,
@@ -545,8 +597,13 @@ class ApiCacheManager {
     Options? options,
   }) {
     return fetchModel(
-      createDio()
-          .createRequest(HttpRequestMethod.delete, url, data: data, queryParameters: queryParameters, options: options),
+      createDio().createRequest(
+        HttpRequestMethod.delete,
+        url,
+        data: data,
+        queryParameters: queryParameters,
+        options: options,
+      ),
       fromJson,
       expireAfter: expireAfter,
       cacheOnly: cacheOnly,

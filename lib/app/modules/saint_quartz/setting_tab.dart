@@ -58,8 +58,10 @@ class _SQSettingTabState extends State<SQSettingTab> {
         Card(
           child: Padding(
             padding: const EdgeInsets.all(8),
-            child: Text(LocalizedText.of(chs: '均为日服时间', jpn: null, eng: 'All are JP time now'),
-                textAlign: TextAlign.center),
+            child: Text(
+              LocalizedText.of(chs: '均为日服时间', jpn: null, eng: 'All are JP time now'),
+              textAlign: TextAlign.center,
+            ),
           ),
         ),
         ListTile(
@@ -89,10 +91,9 @@ class _SQSettingTabState extends State<SQSettingTab> {
             update();
           },
           title: Text('${S.current.login_bonus}(${S.current.event_campaign})'),
-          subtitle: Text('JP ${[
-            dailyBonusData?.info.start,
-            dailyBonusData?.lastPresentTime
-          ].map((e) => e?.sec2date().toDateString() ?? '???').join(' ~ ')}'),
+          subtitle: Text(
+            'JP ${[dailyBonusData?.info.start, dailyBonusData?.lastPresentTime].map((e) => e?.sec2date().toDateString() ?? '???').join(' ~ ')}',
+          ),
           controlAffinity: ListTileControlAffinity.trailing,
         ),
         SwitchListTile.adaptive(
@@ -130,8 +131,13 @@ class _SQSettingTabState extends State<SQSettingTab> {
               );
               if (newDate == null) return;
               if (newDate.isAfter(DateTime.now().add(const Duration(days: 1)))) {
-                EasyLoading.showError(LocalizedText.of(
-                    chs: '此为日服时间，结束日期需不晚于今日', jpn: null, eng: 'This is JP date, end time should not be after today.'));
+                EasyLoading.showError(
+                  LocalizedText.of(
+                    chs: '此为日服时间，结束日期需不晚于今日',
+                    jpn: null,
+                    eng: 'This is JP date, end time should not be after today.',
+                  ),
+                );
                 return;
               }
 
@@ -157,8 +163,13 @@ class _SQSettingTabState extends State<SQSettingTab> {
               );
               if (newDate == null) return;
               if (newDate.isAfter(DateTime.now().add(const Duration(days: 1)))) {
-                EasyLoading.showError(LocalizedText.of(
-                    chs: '此为日服时间，结束日期需不晚于今日', jpn: null, eng: 'This is JP date, end time should not be after today.'));
+                EasyLoading.showError(
+                  LocalizedText.of(
+                    chs: '此为日服时间，结束日期需不晚于今日',
+                    jpn: null,
+                    eng: 'This is JP date, end time should not be after today.',
+                  ),
+                );
                 return;
               }
 
@@ -251,13 +262,7 @@ class _SQSettingTabState extends State<SQSettingTab> {
           trailing: DropdownButton<int>(
             isExpanded: false,
             value: plan.continuousLogin,
-            items: List.generate(
-              7,
-              (index) => DropdownMenuItem(
-                value: index + 1,
-                child: Text((index + 1).toString()),
-              ),
-            ),
+            items: List.generate(7, (index) => DropdownMenuItem(value: index + 1, child: Text((index + 1).toString()))),
             onChanged: (v) {
               plan.continuousLogin = v ?? plan.continuousLogin;
               update();
@@ -302,11 +307,8 @@ Extra master mission rewards are not included.""",
           ),
         ),
         const Card(
-          child: Padding(
-            padding: EdgeInsets.all(12),
-            child: Text('Just for fun', textAlign: TextAlign.center),
-          ),
-        )
+          child: Padding(padding: EdgeInsets.all(12), child: Text('Just for fun', textAlign: TextAlign.center)),
+        ),
       ],
     );
   }
@@ -314,12 +316,8 @@ Extra master mission rewards are not included.""",
   void update() {
     if (mounted) setState(() {});
     plan.validate();
-    EasyDebounce.debounce(
-      'sq_plan_solve',
-      const Duration(seconds: 1),
-      () {
-        plan.solve();
-      },
-    );
+    EasyDebounce.debounce('sq_plan_solve', const Duration(seconds: 1), () {
+      plan.solve();
+    });
   }
 }

@@ -73,10 +73,7 @@ class _AiPageState extends State<AiPage> with RegionBasedState<NiceAiCollection,
           maxLines: 1,
           minFontSize: 14,
         ),
-        actions: [
-          dropdownRegion(shownNone: widget.aiCollection != null),
-          popupMenu,
-        ],
+        actions: [dropdownRegion(shownNone: widget.aiCollection != null), popupMenu],
       ),
       body: buildBody(context),
     );
@@ -84,24 +81,25 @@ class _AiPageState extends State<AiPage> with RegionBasedState<NiceAiCollection,
 
   Widget get popupMenu {
     return PopupMenuButton(
-      itemBuilder: (context) => [
-        ...SharedBuilder.websitesPopupMenuItems(
-          atlas: Atlas.ai(
-            id,
-            widget.aiType == AiType.svt,
-            region: region ?? Region.jp,
-            skillId1: widget.skills?.skillId1 ?? 0,
-            skillId2: widget.skills?.skillId2 ?? 0,
-            skillId3: widget.skills?.skillId3 ?? 0,
-          ),
-        ),
-        PopupMenuItem(
-          child: const Text("How to read AI?"),
-          onTap: () {
-            launch("https://apps.atlasacademy.io/db/JP/faq#svt-field-ai");
-          },
-        )
-      ],
+      itemBuilder:
+          (context) => [
+            ...SharedBuilder.websitesPopupMenuItems(
+              atlas: Atlas.ai(
+                id,
+                widget.aiType == AiType.svt,
+                region: region ?? Region.jp,
+                skillId1: widget.skills?.skillId1 ?? 0,
+                skillId2: widget.skills?.skillId2 ?? 0,
+                skillId3: widget.skills?.skillId3 ?? 0,
+              ),
+            ),
+            PopupMenuItem(
+              child: const Text("How to read AI?"),
+              onTap: () {
+                launch("https://apps.atlasacademy.io/db/JP/faq#svt-field-ai");
+              },
+            ),
+          ],
     );
   }
 
@@ -111,57 +109,69 @@ class _AiPageState extends State<AiPage> with RegionBasedState<NiceAiCollection,
 
     final parentAis = aiCollection.mainAis.firstOrNull?.parentAis ?? {};
 
-    children.add(CustomTable(children: [
-      CustomTableRow(
+    children.add(
+      CustomTable(
         children: [
-          TableCellData(text: "Parent AI", isHeader: true),
-          TableCellData(
-            flex: 3,
-            child: Wrap(
-              spacing: 4,
-              children: [
-                if (parentAis.values.every((e) => e.isEmpty)) const Text('-'),
-                for (final entry in parentAis.entries)
-                  for (final aiId in entry.value) AiLink(type: entry.key, aiId: aiId, region: region)
-              ],
-            ),
-          )
+          CustomTableRow(
+            children: [
+              TableCellData(text: "Parent AI", isHeader: true),
+              TableCellData(
+                flex: 3,
+                child: Wrap(
+                  spacing: 4,
+                  children: [
+                    if (parentAis.values.every((e) => e.isEmpty)) const Text('-'),
+                    for (final entry in parentAis.entries)
+                      for (final aiId in entry.value) AiLink(type: entry.key, aiId: aiId, region: region),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          CustomTableRow(
+            children: [
+              TableCellData(text: S.current.quest, isHeader: true),
+              TableCellData(
+                flex: 3,
+                child: Wrap(
+                  spacing: 4,
+                  alignment: WrapAlignment.center,
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  children: [
+                    for (final link in aiCollection.relatedQuests.take(5))
+                      Text.rich(
+                        SharedBuilder.textButtonSpan(
+                          context: context,
+                          text: db.gameData.quests[link.questId]?.lNameWithChapter ?? "Quest ${link.questId}",
+                          onTap: () {
+                            router.push(url: Routes.questI(link.questId, link.phase));
+                          },
+                        ),
+                      ),
+                    if (aiCollection.relatedQuests.length > 5 || widget.aiType == AiType.svt)
+                      TextButton(
+                        onPressed: () {
+                          launch(
+                            Uri.parse("https://apps.atlasacademy.io/db/JP/quests")
+                                .replace(
+                                  queryParameters: {
+                                    if (widget.aiType == AiType.svt) "enemySvtAiId": id.toString(),
+                                    if (widget.aiType == AiType.field) "fieldAiId": id.toString(),
+                                  },
+                                )
+                                .toString(),
+                          );
+                        },
+                        child: Text(S.current.show_more, textScaler: const TextScaler.linear(0.8)),
+                      ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ],
       ),
-      CustomTableRow(
-        children: [
-          TableCellData(text: S.current.quest, isHeader: true),
-          TableCellData(
-            flex: 3,
-            child: Wrap(
-              spacing: 4,
-              alignment: WrapAlignment.center,
-              crossAxisAlignment: WrapCrossAlignment.center,
-              children: [
-                for (final link in aiCollection.relatedQuests.take(5))
-                  Text.rich(SharedBuilder.textButtonSpan(
-                    context: context,
-                    text: db.gameData.quests[link.questId]?.lNameWithChapter ?? "Quest ${link.questId}",
-                    onTap: () {
-                      router.push(url: Routes.questI(link.questId, link.phase));
-                    },
-                  )),
-                if (aiCollection.relatedQuests.length > 5 || widget.aiType == AiType.svt)
-                  TextButton(
-                    onPressed: () {
-                      launch(Uri.parse("https://apps.atlasacademy.io/db/JP/quests").replace(queryParameters: {
-                        if (widget.aiType == AiType.svt) "enemySvtAiId": id.toString(),
-                        if (widget.aiType == AiType.field) "fieldAiId": id.toString(),
-                      }).toString());
-                    },
-                    child: Text(S.current.show_more, textScaler: const TextScaler.linear(0.8)),
-                  ),
-              ],
-            ),
-          )
-        ],
-      ),
-    ]));
+    );
 
     final allAis = <int, Map<String, NiceAi>>{};
     for (final ai in [...aiCollection.mainAis, ...aiCollection.relatedAis]) {
@@ -169,20 +179,19 @@ class _AiPageState extends State<AiPage> with RegionBasedState<NiceAiCollection,
     }
     for (final entry in allAis.entries) {
       final ais = NiceAiCollection.sortedAis(entry.value.values.toList());
-      children.add(AiTable(
-        key: getAiKey(entry.key),
-        type: widget.aiType,
-        ais: ais,
-        region: region,
-        skills: widget.skills,
-        td: widget.td,
-        onClickNextAi: onClickNextAi,
-      ));
+      children.add(
+        AiTable(
+          key: getAiKey(entry.key),
+          type: widget.aiType,
+          ais: ais,
+          region: region,
+          skills: widget.skills,
+          td: widget.td,
+          onClickNextAi: onClickNextAi,
+        ),
+      );
     }
-    return SingleChildScrollView(
-      controller: scrollController,
-      child: ListBody(children: children),
-    );
+    return SingleChildScrollView(controller: scrollController, child: ListBody(children: children));
   }
 
   void onClickNextAi(int nextAiId) {
@@ -218,10 +227,7 @@ class AiLink extends StatelessWidget {
       onTap: () {
         router.push(url: Routes.aiI(type, aiId), region: region);
       },
-      child: Text(
-        "${type.name}-$aiId",
-        style: TextStyle(color: Theme.of(context).colorScheme.primary),
-      ),
+      child: Text("${type.name}-$aiId", style: TextStyle(color: Theme.of(context).colorScheme.primary)),
     );
   }
 }

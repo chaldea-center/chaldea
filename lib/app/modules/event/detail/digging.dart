@@ -69,67 +69,64 @@ class _EventDiggingTabState extends State<EventDiggingTab> {
     for (final block in digging.blocks) {
       final rewardIds = EventDigging.blockRewards[event.id]?[block.id % event.id] ?? [];
       final rewards = digging.rewards.where((e) => rewardIds.contains(e.id % event.id)).toList();
-      children.add(ListTile(
-        leading: ImageWithText(
-          image: CachedImage(imageUrl: block.image, width: 36, aspectRatio: 1),
-          text: '×${block.blockNum}',
-          option: ImageWithTextOption(fontSize: 12, textStyle: const TextStyle(fontWeight: FontWeight.w500)),
-        ),
-        // horizontalTitleGap: 8,
-        title: Text.rich(
-          TextSpan(children: [
-            for (final consume in block.consumes) ...[
-              CenterWidgetSpan(
-                child: Item.iconBuilder(
-                  context: context,
-                  item: null,
-                  itemId: consume.objectId,
-                  width: 24,
-                ),
-              ),
-              TextSpan(text: '×${consume.num} '),
-            ],
-            CenterWidgetSpan(
-              child: Item.iconBuilder(
-                context: context,
-                item: digging.eventPointItem,
-                width: 24,
-                icon: digging.eventPointItem.icon,
-              ),
-            ),
-            TextSpan(text: '+${block.diggingEventPoint}')
-          ]),
-          style: const TextStyle(fontSize: 12),
-        ),
-        trailing: db.onUserData(
-          (context, snapshot) => Wrap(
-            spacing: 1,
-            children: [
-              for (final reward in rewards)
-                ...reward.gifts.map((gift) {
-                  final itemCounts = [
-                    db.curUser.items[gift.objectId] ?? 0,
-                    db.itemCenter.itemLeft[gift.objectId] ?? 0,
-                  ];
-                  final notEnough = itemCounts.any((e) => e < 0);
-                  return gift.iconBuilder(
+      children.add(
+        ListTile(
+          leading: ImageWithText(
+            image: CachedImage(imageUrl: block.image, width: 36, aspectRatio: 1),
+            text: '×${block.blockNum}',
+            option: ImageWithTextOption(fontSize: 12, textStyle: const TextStyle(fontWeight: FontWeight.w500)),
+          ),
+          // horizontalTitleGap: 8,
+          title: Text.rich(
+            TextSpan(
+              children: [
+                for (final consume in block.consumes) ...[
+                  CenterWidgetSpan(
+                    child: Item.iconBuilder(context: context, item: null, itemId: consume.objectId, width: 24),
+                  ),
+                  TextSpan(text: '×${consume.num} '),
+                ],
+                CenterWidgetSpan(
+                  child: Item.iconBuilder(
                     context: context,
-                    width: 36,
-                    showOne: false,
-                    text: showItemPlan ? itemCounts.map((e) => e.format()).join('\n') : null,
-                    option: ImageWithTextOption(
-                      fontSize: 10,
-                      shadowColor: notEnough ? Colors.white : null,
-                      textStyle: TextStyle(
-                        color: notEnough ? Theme.of(context).colorScheme.errorContainer : null,
+                    item: digging.eventPointItem,
+                    width: 24,
+                    icon: digging.eventPointItem.icon,
+                  ),
+                ),
+                TextSpan(text: '+${block.diggingEventPoint}'),
+              ],
+            ),
+            style: const TextStyle(fontSize: 12),
+          ),
+          trailing: db.onUserData(
+            (context, snapshot) => Wrap(
+              spacing: 1,
+              children: [
+                for (final reward in rewards)
+                  ...reward.gifts.map((gift) {
+                    final itemCounts = [
+                      db.curUser.items[gift.objectId] ?? 0,
+                      db.itemCenter.itemLeft[gift.objectId] ?? 0,
+                    ];
+                    final notEnough = itemCounts.any((e) => e < 0);
+                    return gift.iconBuilder(
+                      context: context,
+                      width: 36,
+                      showOne: false,
+                      text: showItemPlan ? itemCounts.map((e) => e.format()).join('\n') : null,
+                      option: ImageWithTextOption(
+                        fontSize: 10,
+                        shadowColor: notEnough ? Colors.white : null,
+                        textStyle: TextStyle(color: notEnough ? Theme.of(context).colorScheme.errorContainer : null),
                       ),
-                    ),
-                  );
-                }),
-            ],
+                    );
+                  }),
+              ],
+            ),
           ),
         ),
-      ));
+      );
     }
 
     children.add(const SHeader('Rewards'));
@@ -149,33 +146,26 @@ class _EventDiggingTabState extends State<EventDiggingTab> {
             ),
             borderRadius: BorderRadius.circular(8),
           ),
-          child: Text.rich(TextSpan(children: [
-            for (final gift in reward.gifts) ...[
-              CenterWidgetSpan(
-                child: Item.iconBuilder(
-                  context: context,
-                  item: null,
-                  itemId: gift.objectId,
-                  width: 36,
-                ),
-              ),
-              if (gift.num != 1) TextSpan(text: '×${gift.num.format()}')
-            ]
-          ])),
-        )
+          child: Text.rich(
+            TextSpan(
+              children: [
+                for (final gift in reward.gifts) ...[
+                  CenterWidgetSpan(
+                    child: Item.iconBuilder(context: context, item: null, itemId: gift.objectId, width: 36),
+                  ),
+                  if (gift.num != 1) TextSpan(text: '×${gift.num.format()}'),
+                ],
+              ],
+            ),
+          ),
+        ),
     ];
-    children.add(Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Wrap(
-        spacing: 1,
-        runSpacing: 2,
-        crossAxisAlignment: WrapCrossAlignment.center,
-        children: rewardWidgets,
+    children.add(
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        child: Wrap(spacing: 1, runSpacing: 2, crossAxisAlignment: WrapCrossAlignment.center, children: rewardWidgets),
       ),
-    ));
-    return ListView.builder(
-      itemBuilder: (context, index) => children[index],
-      itemCount: children.length,
     );
+    return ListView.builder(itemBuilder: (context, index) => children[index], itemCount: children.length);
   }
 }

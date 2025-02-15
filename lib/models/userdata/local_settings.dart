@@ -144,30 +144,31 @@ class LocalSettings {
     BookmarkHistory? bookmarks,
     _MiscSettings? misc,
     _SecretsData? secrets,
-  })  : _language = language,
-        _preferredFavorite = preferredFavorite ?? (launchTimes == 0 ? FavoriteState.all : null),
-        preferredRegions = preferredRegions == null
-            ? null
-            : (List.of(Region.values)..sort2((e) => preferredRegions.indexOf(e) % Region.values.length)),
-        priorityTags = priorityTags ?? {},
-        galleries = galleries ?? {},
-        proxy = proxy ?? ProxySettings(proxy: proxyServer),
-        display = display ?? DisplaySettings(),
-        carousel = carousel ?? CarouselSetting(),
-        github = github ?? GithubSetting(),
-        tips = tips ?? TipsSetting(),
-        battleSim = battleSim ?? BattleSimSetting(),
-        eventItemCalc = eventItemCalc ?? {},
-        filters = filters ?? LocalDataFilters(),
-        fakerSettings =
-            fakerSettings ?? FakerSettings(jpAutoLogins: jpAutoLogins ?? [], cnAutoLogins: cnAutoLogins ?? []),
-        jpAutoLogins = jpAutoLogins ?? [],
-        cnAutoLogins = cnAutoLogins ?? [],
-        remoteConfig = remoteConfig ?? RemoteConfig(),
-        masterMissionOptions = masterMissionOptions ?? MasterMissionOptions(),
-        bookmarks = bookmarks ?? BookmarkHistory(),
-        misc = misc ?? _MiscSettings(),
-        secrets = secrets ?? _SecretsData();
+  }) : _language = language,
+       _preferredFavorite = preferredFavorite ?? (launchTimes == 0 ? FavoriteState.all : null),
+       preferredRegions =
+           preferredRegions == null
+               ? null
+               : (List.of(Region.values)..sort2((e) => preferredRegions.indexOf(e) % Region.values.length)),
+       priorityTags = priorityTags ?? {},
+       galleries = galleries ?? {},
+       proxy = proxy ?? ProxySettings(proxy: proxyServer),
+       display = display ?? DisplaySettings(),
+       carousel = carousel ?? CarouselSetting(),
+       github = github ?? GithubSetting(),
+       tips = tips ?? TipsSetting(),
+       battleSim = battleSim ?? BattleSimSetting(),
+       eventItemCalc = eventItemCalc ?? {},
+       filters = filters ?? LocalDataFilters(),
+       fakerSettings =
+           fakerSettings ?? FakerSettings(jpAutoLogins: jpAutoLogins ?? [], cnAutoLogins: cnAutoLogins ?? []),
+       jpAutoLogins = jpAutoLogins ?? [],
+       cnAutoLogins = cnAutoLogins ?? [],
+       remoteConfig = remoteConfig ?? RemoteConfig(),
+       masterMissionOptions = masterMissionOptions ?? MasterMissionOptions(),
+       bookmarks = bookmarks ?? BookmarkHistory(),
+       misc = misc ?? _MiscSettings(),
+       secrets = secrets ?? _SecretsData();
 
   String? get language => _language;
 
@@ -241,11 +242,11 @@ class ProxySettings {
     this.enableHttpProxy = false,
     this.proxyHost,
     this.proxyPort,
-  })  : api = api ?? proxy,
-        worker = worker ?? proxy,
-        data = data ?? proxy,
-        atlasApi = atlasApi ?? proxy,
-        atlasAsset = atlasAsset ?? false;
+  }) : api = api ?? proxy,
+       worker = worker ?? proxy,
+       data = data ?? proxy,
+       atlasApi = atlasApi ?? proxy,
+       atlasAsset = atlasAsset ?? false;
 
   void setAll(bool v) {
     proxy = api = worker = data = atlasApi = v;
@@ -294,9 +295,9 @@ class DisplaySettings {
     this.splitMasterRatio,
     this.enableSplitView = true,
     AdSetting? ad,
-  })  : sortedSvtTabs = sortedSvtTabs?.whereType<SvtTab>().toList() ?? List.of(SvtTab.values),
-        hideSvtPlanDetails = hideSvtPlanDetails?.whereType<SvtPlanDetail>().toList() ?? [],
-        ad = ad ?? AdSetting() {
+  }) : sortedSvtTabs = sortedSvtTabs?.whereType<SvtTab>().toList() ?? List.of(SvtTab.values),
+       hideSvtPlanDetails = hideSvtPlanDetails?.whereType<SvtPlanDetail>().toList() ?? [],
+       ad = ad ?? AdSetting() {
     validateSvtTabs();
   }
 
@@ -329,12 +330,7 @@ class AdSetting {
     return (appOpen ?? true) && DateTime.now().timestamp - lastAppOpen > 2 * 3600;
   }
 
-  AdSetting({
-    this.enabled,
-    this.banner,
-    this.appOpen,
-    this.lastAppOpen = 0,
-  });
+  AdSetting({this.enabled, this.banner, this.appOpen, this.lastAppOpen = 0});
 
   factory AdSetting.fromJson(Map<String, dynamic> data) => _$AdSettingFromJson(data);
 
@@ -470,11 +466,11 @@ class CarouselItem {
     List<String>? summonIds,
     this.child,
     this.fit,
-  })  : startTime = startTime ?? DateTime(2000),
-        endTime = endTime ?? DateTime(2099),
-        eventIds = eventIds ?? [],
-        warIds = warIds ?? [],
-        summonIds = summonIds ?? [];
+  }) : startTime = startTime ?? DateTime(2000),
+       endTime = endTime ?? DateTime(2099),
+       eventIds = eventIds ?? [],
+       warIds = warIds ?? [],
+       summonIds = summonIds ?? [];
 
   factory CarouselItem.fromJson(Map<String, dynamic> data) => _$CarouselItemFromJson(data);
 
@@ -529,11 +525,7 @@ class TipsSetting {
   int servantList;
   int servantDetail;
 
-  TipsSetting({
-    this.starter = true,
-    this.servantList = 2,
-    this.servantDetail = 2,
-  });
+  TipsSetting({this.starter = true, this.servantList = 2, this.servantDetail = 2});
 
   factory TipsSetting.fromJson(Map<String, dynamic> json) => _$TipsSettingFromJson(json);
 
@@ -546,11 +538,9 @@ class EventItemCalcParams {
   Map<int, int> itemCounts;
   List<QuestBonusPlan> bonusPlans;
 
-  EventItemCalcParams({
-    Map<int, int>? itemCounts,
-    List<QuestBonusPlan>? bonusPlans,
-  })  : itemCounts = itemCounts ?? {},
-        bonusPlans = bonusPlans ?? [];
+  EventItemCalcParams({Map<int, int>? itemCounts, List<QuestBonusPlan>? bonusPlans})
+    : itemCounts = itemCounts ?? {},
+      bonusPlans = bonusPlans ?? [];
 
   int getItemDemand(int itemId) {
     return max(0, (itemCounts[itemId] ?? 0) - (db.curUser.items[itemId] ?? 0));
@@ -574,13 +564,8 @@ class QuestBonusPlan {
   @JsonKey(includeFromJson: false, includeToJson: false)
   QuestDropData drops = QuestDropData();
 
-  QuestBonusPlan({
-    this.enabled = true,
-    this.questId = 0,
-    this.index = 0,
-    this.name = "",
-    Map<int, int>? bonus,
-  }) : bonus = bonus ?? {};
+  QuestBonusPlan({this.enabled = true, this.questId = 0, this.index = 0, this.name = "", Map<int, int>? bonus})
+    : bonus = bonus ?? {};
 
   int getBonus(int itemId) => bonus[itemId] ?? 0;
 
@@ -597,12 +582,7 @@ class QuestBonusPlan {
   }
 
   QuestBonusPlan copy(int index) {
-    return QuestBonusPlan(
-      enabled: enabled,
-      questId: questId,
-      index: index,
-      bonus: Map.of(bonus),
-    )
+    return QuestBonusPlan(enabled: enabled, questId: questId, index: index, bonus: Map.of(bonus))
       ..ap = ap
       ..drops = drops;
   }
@@ -613,10 +593,7 @@ class MasterMissionOptions {
   Set<int> blacklist;
   bool excludeRandomEnemyQuests;
 
-  MasterMissionOptions({
-    Set<int>? blacklist,
-    this.excludeRandomEnemyQuests = false,
-  }) : blacklist = blacklist ?? {};
+  MasterMissionOptions({Set<int>? blacklist, this.excludeRandomEnemyQuests = false}) : blacklist = blacklist ?? {};
 
   factory MasterMissionOptions.fromJson(Map<String, dynamic> json) => _$MasterMissionOptionsFromJson(json);
 
@@ -637,10 +614,10 @@ class _MiscSettings {
     Map<int, int>? markedCharaFigureSvtIds,
     Set<String>? nonSvtCharaImageIds,
     Map<String, int>? markedCharaImageSvtIds,
-  })  : nonSvtCharaFigureIds = nonSvtCharaFigureIds ?? <int>{},
-        markedCharaFigureSvtIds = markedCharaFigureSvtIds ?? {},
-        nonSvtCharaImageIds = nonSvtCharaImageIds ?? <String>{},
-        markedCharaImageSvtIds = markedCharaImageSvtIds ?? {};
+  }) : nonSvtCharaFigureIds = nonSvtCharaFigureIds ?? <int>{},
+       markedCharaFigureSvtIds = markedCharaFigureSvtIds ?? {},
+       nonSvtCharaImageIds = nonSvtCharaImageIds ?? <String>{},
+       markedCharaImageSvtIds = markedCharaImageSvtIds ?? {};
 
   factory _MiscSettings.fromJson(Map<String, dynamic> json) => _$MiscSettingsFromJson(json);
 
@@ -652,10 +629,7 @@ class _SecretsData {
   ChaldeaUser? user;
   String? explorerAuth;
 
-  _SecretsData({
-    this.user,
-    this.explorerAuth,
-  });
+  _SecretsData({this.user, this.explorerAuth});
 
   bool get isLoggedIn => user?.secret?.isNotEmpty == true;
 
@@ -668,9 +642,7 @@ class _SecretsData {
 class BookmarkHistory {
   List<BookmarkEntry> bookmarks;
 
-  BookmarkHistory({
-    List<BookmarkEntry>? bookmarks,
-  }) : bookmarks = bookmarks ?? [];
+  BookmarkHistory({List<BookmarkEntry>? bookmarks}) : bookmarks = bookmarks ?? [];
 
   factory BookmarkHistory.fromJson(Map<String, dynamic> json) => _$BookmarkHistoryFromJson(json);
 
@@ -683,11 +655,7 @@ class BookmarkEntry {
   String url;
   int createdAt;
 
-  BookmarkEntry({
-    this.name,
-    required this.url,
-    int? createdAt,
-  }) : createdAt = createdAt ?? DateTime.now().timestamp;
+  BookmarkEntry({this.name, required this.url, int? createdAt}) : createdAt = createdAt ?? DateTime.now().timestamp;
 
   factory BookmarkEntry.fromJson(Map<String, dynamic> json) => _$BookmarkEntryFromJson(json);
 
@@ -702,19 +670,7 @@ enum SvtListClassFilterStyle {
   doNotShow,
 }
 
-enum SvtTab {
-  plan,
-  skill,
-  np,
-  info,
-  spDmg,
-  lore,
-  illustration,
-  relatedCards,
-  summon,
-  voice,
-  quest,
-}
+enum SvtTab { plan, skill, np, info, spDmg, lore, illustration, relatedCards, summon, voice, quest }
 
 enum SvtPlanDetail {
   ascension,
@@ -736,17 +692,9 @@ enum SvtPlanInputMode {
   // input,
 }
 
-enum ItemDetailViewType {
-  separated,
-  grid,
-  list,
-}
+enum ItemDetailViewType { separated, grid, list }
 
-enum ItemDetailSvtSort {
-  collectionNo,
-  clsName,
-  rarity,
-}
+enum ItemDetailSvtSort { collectionNo, clsName, rarity }
 
 enum ColorSeed {
   baseColor('M3 Baseline', Color(0xff6750a4)),

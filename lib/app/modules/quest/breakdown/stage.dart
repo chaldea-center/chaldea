@@ -60,14 +60,16 @@ class QuestWave extends StatelessWidget {
         return style;
       }
 
-      parts.add(QuestEnemyWidget(
-        enemy: enemy,
-        showTrueName: showTrueName,
-        showFace: showFace,
-        showDeck: showDeck,
-        region: region,
-        textStyle: getShiftStyle(-1),
-      ));
+      parts.add(
+        QuestEnemyWidget(
+          enemy: enemy,
+          showTrueName: showTrueName,
+          showFace: showFace,
+          showDeck: showDeck,
+          region: region,
+          textStyle: getShiftStyle(-1),
+        ),
+      );
       _usedUniqueIds.add(enemy.deckNpcId);
       if (enemy.enemyScript.shift != null) {
         QuestEnemy prev = enemy;
@@ -75,14 +77,16 @@ class QuestWave extends StatelessWidget {
           final shiftEnemy = npcs[DeckType.shift]?[enemy.enemyScript.shift![index]];
           if (shiftEnemy == null) continue;
           _usedUniqueIds.add(shiftEnemy.deckNpcId);
-          parts.add(QuestEnemyWidget(
-            enemy: shiftEnemy,
-            showTrueName: showTrueName,
-            showDeck: showDeck,
-            showFace: shiftEnemy.svt.icon == prev.svt.icon ? false : showFace,
-            textStyle: getShiftStyle(index),
-            region: region,
-          ));
+          parts.add(
+            QuestEnemyWidget(
+              enemy: shiftEnemy,
+              showTrueName: showTrueName,
+              showDeck: showDeck,
+              showFace: shiftEnemy.svt.icon == prev.svt.icon ? false : showFace,
+              textStyle: getShiftStyle(index),
+              region: region,
+            ),
+          );
           prev = shiftEnemy;
         }
       }
@@ -92,11 +96,7 @@ class QuestWave extends StatelessWidget {
         child: Material(
           color: Theme.of(context).highlightColor,
           borderRadius: BorderRadius.circular(8),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: parts,
-          ),
+          child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.center, children: parts),
         ),
       );
     }
@@ -109,11 +109,7 @@ class QuestWave extends StatelessWidget {
     }) {
       List<QuestEnemy?> _enemies;
       if (needSort) {
-        _enemies = List.filled(
-          enemies.fold(0, (p, e) => max(p, e?.deckId ?? 0)),
-          null,
-          growable: true,
-        );
+        _enemies = List.filled(enemies.fold(0, (p, e) => max(p, e?.deckId ?? 0)), null, growable: true);
         for (final enemy in enemies) {
           if (enemy != null) {
             assert(_enemies[enemy.deckId - 1] == null || questPhase == null || questPhase?.type == QuestType.warBoard);
@@ -137,19 +133,16 @@ class QuestWave extends StatelessWidget {
         for (int i = 0; i < _enemies.length / 3; i++)
           Row(
             textDirection: TextDirection.rtl,
-            children: List.generate(
-              3,
-              (j) {
-                final enemy = _enemies.getOrNull(i * 3 + j);
-                if (skipUsedShift &&
-                    enemy != null &&
-                    enemy.deck == DeckType.shift &&
-                    _usedUniqueIds.contains(enemy.deckNpcId)) {
-                  return const Expanded(child: SizedBox.shrink());
-                }
-                return Expanded(child: _buildEnemyWithShift(enemy, showDeck: showDeck));
-              },
-            ),
+            children: List.generate(3, (j) {
+              final enemy = _enemies.getOrNull(i * 3 + j);
+              if (skipUsedShift &&
+                  enemy != null &&
+                  enemy.deck == DeckType.shift &&
+                  _usedUniqueIds.contains(enemy.deckNpcId)) {
+                return const Expanded(child: SizedBox.shrink());
+              }
+              return Expanded(child: _buildEnemyWithShift(enemy, showDeck: showDeck));
+            }),
           ),
       ];
     }
@@ -176,10 +169,11 @@ class QuestWave extends StatelessWidget {
 
     // others
     final _unknownDeck = stageEnemies.where((e) => !_usedUniqueIds.contains(e.deckNpcId)).toList();
-    final _allShiftNpcIds = stageEnemies
-        .where((e) => e.deck.isInShiftDeck && e.deck != DeckType.missionTargetSkillShift)
-        .map((e) => e.npcId)
-        .toSet();
+    final _allShiftNpcIds =
+        stageEnemies
+            .where((e) => e.deck.isInShiftDeck && e.deck != DeckType.missionTargetSkillShift)
+            .map((e) => e.npcId)
+            .toSet();
     _unknownDeck.removeWhere((e) => e.deck == DeckType.missionTargetSkillShift && _allShiftNpcIds.contains(e.npcId));
     _unknownDeck.sortByList((e) => [e.deck == DeckType.shift ? 999 : e.deck.index, e.deckId, e.npcId]);
     if (_unknownDeck.isNotEmpty) {
@@ -191,10 +185,7 @@ class QuestWave extends StatelessWidget {
       children.addAll(_buildAiNpc());
     }
 
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: children,
-    );
+    return Column(mainAxisSize: MainAxisSize.min, children: children);
   }
 
   Iterable<Widget> _buildAiNpc() sync* {
@@ -205,19 +196,18 @@ class QuestWave extends StatelessWidget {
         if (aiNpc == null) {
           children.add(const SizedBox());
         } else {
-          children.add(QuestPhaseAiNpcWidget(
-            aiNpc: aiNpc,
-            showTrueName: showTrueName,
-            showFace: showFace,
-            showDeck: false,
-            region: region,
-          ));
+          children.add(
+            QuestPhaseAiNpcWidget(
+              aiNpc: aiNpc,
+              showTrueName: showTrueName,
+              showFace: showFace,
+              showDeck: false,
+              region: region,
+            ),
+          );
         }
       }
-      yield Row(
-        textDirection: TextDirection.rtl,
-        children: [for (final c in children) Expanded(child: c)],
-      );
+      yield Row(textDirection: TextDirection.rtl, children: [for (final c in children) Expanded(child: c)]);
     }
   }
 }
@@ -245,24 +235,20 @@ class WaveInfoPage extends StatelessWidget {
           if (stage.turn != null)
             ListTile(
               title: Text(S.current.turn_remain_limit),
-              subtitle: Text({
-                    StageLimitActType.win: S.current.turn_remain_limit_win,
-                    StageLimitActType.lose: S.current.turn_remain_limit_lose,
-                  }[stage.limitAct] ??
-                  stage.limitAct?.toString() ??
-                  "?"),
+              subtitle: Text(
+                {
+                      StageLimitActType.win: S.current.turn_remain_limit_win,
+                      StageLimitActType.lose: S.current.turn_remain_limit_lose,
+                    }[stage.limitAct] ??
+                    stage.limitAct?.toString() ??
+                    "?",
+              ),
               trailing: Text(stage.turn.toString()),
             ),
           if (stage.enemyFieldPosCount != null)
-            ListTile(
-              title: Text(S.current.max_enemy_on_stage),
-              trailing: Text(stage.enemyFieldPosCount.toString()),
-            ),
+            ListTile(title: Text(S.current.max_enemy_on_stage), trailing: Text(stage.enemyFieldPosCount.toString())),
           if (stage.enemyActCount != null)
-            ListTile(
-              title: Text(S.current.max_enemy_act_count),
-              trailing: Text(stage.enemyActCount.toString()),
-            ),
+            ListTile(title: Text(S.current.max_enemy_act_count), trailing: Text(stage.enemyActCount.toString())),
           if (stage.fieldAis.isNotEmpty) buildFieldAis(context, stage.fieldAis),
           if (stage.aiAllocations?.isNotEmpty == true) buildAiAllocations(context, stage.aiAllocations!),
           if ((questPhase?.extraDetail?.masterImageId ?? 0) > 0)
@@ -270,7 +256,7 @@ class WaveInfoPage extends StatelessWidget {
           if ((stage.battleMasterImageId ?? 0) > 0) buildMasterImage(battleMasterImageId: stage.battleMasterImageId),
           for (final masterId in [
             if (stage.enemyMasterBattleId != null) stage.enemyMasterBattleId!,
-            ...?stage.enemyMasterBattleIdByPlayerGender
+            ...?stage.enemyMasterBattleIdByPlayerGender,
           ])
             buildEnemyMaster(masterId),
           if (stage.waveStartMovies.isNotEmpty) ListTile(title: Text(S.current.stage_opening_movie)),
@@ -283,7 +269,7 @@ class WaveInfoPage extends StatelessWidget {
                 padding: const EdgeInsets.all(8),
                 child: Text(const JsonEncoder.withIndent('  ').convert(originalScript)),
               ),
-            )
+            ),
           ],
         ],
       ),
@@ -314,19 +300,13 @@ class WaveInfoPage extends StatelessWidget {
               trailings.add(CachedImage(imageUrl: image, width: 36, height: 36, viewFullOnTap: true));
             }
           }
-          return Wrap(
-            spacing: 2,
-            children: trailings,
-          );
+          return Wrap(spacing: 2, children: trailings);
         },
       );
     } else {
       trailing = const Text("???");
     }
-    return ListTile(
-      title: const Text("Master"),
-      trailing: trailing,
-    );
+    return ListTile(title: const Text("Master"), trailing: trailing);
   }
 
   Widget buildEnemyMaster(int battleId) {
@@ -348,18 +328,19 @@ class WaveInfoPage extends StatelessWidget {
   }
 
   Widget buildFieldAis(BuildContext context, List<FieldAi> ais) {
-    List<Widget> children = ais.map((ai) {
-      return Text.rich(
-        SharedBuilder.textButtonSpan(
-          context: context,
-          text: ai.id.toString(),
-          onTap: () {
-            router.push(url: Routes.aiI(AiType.field, ai.id), region: region);
-          },
-        ),
-        style: const TextStyle(fontSize: 14),
-      );
-    }).toList();
+    List<Widget> children =
+        ais.map((ai) {
+          return Text.rich(
+            SharedBuilder.textButtonSpan(
+              context: context,
+              text: ai.id.toString(),
+              onTap: () {
+                router.push(url: Routes.aiI(AiType.field, ai.id), region: region);
+              },
+            ),
+            style: const TextStyle(fontSize: 14),
+          );
+        }).toList();
     children = divideList(children, const Text(' / ', style: TextStyle(fontSize: 14)));
     return ListTile(
       title: Row(
@@ -367,12 +348,7 @@ class WaveInfoPage extends StatelessWidget {
         children: [
           Text(S.current.field_ai),
           const SizedBox(width: 16),
-          Expanded(
-            child: Wrap(
-              alignment: WrapAlignment.end,
-              children: children,
-            ),
-          )
+          Expanded(child: Wrap(alignment: WrapAlignment.end, children: children)),
         ],
       ),
     );
@@ -404,18 +380,17 @@ class WaveInfoPage extends StatelessWidget {
             onTap: () {
               router.push(url: Routes.aiI(AiType.svt, aiId), region: region);
             },
-          )
+          ),
       ];
-      children.add(ListTile(
-        dense: true,
-        title: Text.rich(TextSpan(children: titleSpans)),
-        trailing: Text.rich(TextSpan(children: divideList(trailings, const TextSpan(text: ' / ')))),
-      ));
+      children.add(
+        ListTile(
+          dense: true,
+          title: Text.rich(TextSpan(children: titleSpans)),
+          trailing: Text.rich(TextSpan(children: divideList(trailings, const TextSpan(text: ' / ')))),
+        ),
+      );
     }
-    return TileGroup(
-      header: "AI Allocation",
-      children: children,
-    );
+    return TileGroup(header: "AI Allocation", children: children);
   }
 }
 
@@ -441,9 +416,7 @@ class QuestEnemyWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     TextStyle? textStyle = this.textStyle;
     if (enemy.isRareOrAddition) {
-      textStyle = (textStyle ?? const TextStyle()).copyWith(
-        color: Colors.amber.shade800,
-      );
+      textStyle = (textStyle ?? const TextStyle()).copyWith(color: Colors.amber.shade800);
     }
     return EnemyThumbBase(
       icon: enemy.svt.icon,
@@ -492,14 +465,7 @@ class QuestPhaseAiNpcWidget extends StatelessWidget {
       deck: [if (showDeck) '[${DeckType.aiNpc.name}]', '*'].join(),
       onTap: () {
         if (enemy != null) {
-          router.push(
-            child: QuestEnemyDetail(
-              enemy: enemy,
-              npcAis: aiNpc.aiIds,
-              region: region,
-              overrideTitle: 'NPC',
-            ),
-          );
+          router.push(child: QuestEnemyDetail(enemy: enemy, npcAis: aiNpc.aiIds, region: region, overrideTitle: 'NPC'));
         }
       },
     );
@@ -547,15 +513,8 @@ class EnemyThumbBase extends StatelessWidget {
           face,
           ClipRect(
             child: BackdropFilter(
-              filter: ui.ImageFilter.blur(
-                sigmaX: 4.5,
-                sigmaY: 4.5,
-              ),
-              child: Container(
-                width: 44,
-                height: 44,
-                color: Colors.white.withAlpha(77),
-              ),
+              filter: ui.ImageFilter.blur(sigmaX: 4.5, sigmaY: 4.5),
+              child: Container(width: 44, height: 44, color: Colors.white.withAlpha(77)),
             ),
           ),
         ],
@@ -576,7 +535,7 @@ class EnemyThumbBase extends StatelessWidget {
             textAlign: TextAlign.center,
             style: textStyle,
           ),
-        )
+        ),
       ],
     );
     return InkWell(
@@ -586,16 +545,18 @@ class EnemyThumbBase extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           if (face != null) AnimatedSwitcher(duration: const Duration(milliseconds: 200), child: face),
-          LayoutTryBuilder(builder: (context, constraints) {
-            return AutoSizeText(
-              [name, if (deck != null && deck!.isNotEmpty) deck].join(),
-              textAlign: TextAlign.center,
-              textScaleFactor: 0.8,
-              maxFontSize: constraints.maxWidth < 120 ? 14 : 24,
-              maxLines: constraints.maxWidth < 120 ? 2 : 1,
-            );
-          }),
-          clsHP
+          LayoutTryBuilder(
+            builder: (context, constraints) {
+              return AutoSizeText(
+                [name, if (deck != null && deck!.isNotEmpty) deck].join(),
+                textAlign: TextAlign.center,
+                textScaleFactor: 0.8,
+                maxFontSize: constraints.maxWidth < 120 ? 14 : 24,
+                maxLines: constraints.maxWidth < 120 ? 2 : 1,
+              );
+            },
+          ),
+          clsHP,
         ],
       ),
     );

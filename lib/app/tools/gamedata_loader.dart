@@ -47,10 +47,7 @@ class GameDataLoader {
     }
   }
 
-  Future<GameData?> reloadAndUpdate({
-    bool offline = false,
-    bool silent = false,
-  }) async {
+  Future<GameData?> reloadAndUpdate({bool offline = false, bool silent = false}) async {
     final data = await reload(offline: offline, silent: silent);
     if (data != null) {
       db.gameData = data;
@@ -93,8 +90,10 @@ class GameDataLoader {
       if (result.isValid) {
         if (!completer.isCompleted) completer.complete(result);
       } else {
-        logger.d('Invalid game data: ${result.version.text(false)}, '
-            '${result.servantsById.length} servants, ${result.items.length} items');
+        logger.d(
+          'Invalid game data: ${result.version.text(false)}, '
+          '${result.servantsById.length} servants, ${result.items.length} items',
+        );
         throw UpdateError("Invalid game data!");
       }
     } catch (e, s) {
@@ -163,17 +162,10 @@ class GameDataLoader {
           throw S.current.file_not_found_or_mismatched_hash(fv.filename, fv.hash, _localHash ?? '');
         }
         downloading.value += 1;
-        var resp = await _downFile(
-          fv.filename,
-          options: Options(responseType: ResponseType.bytes),
-        );
+        var resp = await _downFile(fv.filename, options: Options(responseType: ResponseType.bytes));
         var _hash = md5.convert(List.from(resp.data)).toString().toLowerCase();
         if (db.settings.checkDataHash && !_hash.startsWith(fv.hash)) {
-          resp = await _downFile(
-            fv.filename,
-            options: Options(responseType: ResponseType.bytes),
-            t: true,
-          );
+          resp = await _downFile(fv.filename, options: Options(responseType: ResponseType.bytes), t: true);
           _hash = md5.convert(List.from(resp.data)).toString().toLowerCase();
           if (!_hash.startsWith(fv.hash)) {
             throw S.current.file_not_found_or_mismatched_hash(fv.filename, fv.hash, _hash);
@@ -288,7 +280,8 @@ class GameDataLoader {
     await _debugFixGameData(_gamedata);
     if (!offline) {
       logger.t(
-          '[${offline ? "offline" : "online"}]Updating dataset(${_gamedata.version.text(false)}): ${_dataToWrite.length} files updated');
+        '[${offline ? "offline" : "online"}]Updating dataset(${_gamedata.version.text(false)}): ${_dataToWrite.length} files updated',
+      );
       if (newVersion != oldVersion) {
         _dataToWrite[_versionFile] = utf8.encode(jsonEncode(newVersion));
       }
@@ -370,11 +363,15 @@ class GameDataLoader {
     if (kDebugMode && 1 > 2) {
       const files = <String>['buff_names', 'enums', 'event_trait', 'trait'];
       Map localPatches = {};
-      await Future.wait(files.map((fn) async {
-        final resp = await Dio()
-            .get('http://127.0.0.1:5500/mappings/$fn.json', options: Options(responseType: ResponseType.plain));
-        localPatches[fn] = jsonDecode(resp.data as String);
-      }).toList());
+      await Future.wait(
+        files.map((fn) async {
+          final resp = await Dio().get(
+            'http://127.0.0.1:5500/mappings/$fn.json',
+            options: Options(responseType: ResponseType.plain),
+          );
+          localPatches[fn] = jsonDecode(resp.data as String);
+        }).toList(),
+      );
       _applyPatch(data, localPatches);
     }
   }
@@ -407,19 +404,11 @@ class GameDataLoader {
     return md5.convert(bytes).toString().toLowerCase().startsWith(hash.toLowerCase());
   }
 
-  static Future<Response<T>> _downFile<T>(
-    String filename, {
-    Options? options,
-    bool t = false,
-    Duration? timeout,
-  }) {
+  static Future<Response<T>> _downFile<T>(String filename, {Options? options, bool t = false, Duration? timeout}) {
     String url = '${HostsX.dataHost}/$filename';
     if (t) {
       final uri = Uri.parse(url);
-      url = uri.replace(queryParameters: {
-        ...uri.queryParameters,
-        't': DateTime.now().timestamp.toString(),
-      }).toString();
+      url = uri.replace(queryParameters: {...uri.queryParameters, 't': DateTime.now().timestamp.toString()}).toString();
     }
     if (AppInfo.packageName.startsWith(utf8.decode(base64Decode('Y29tLmxkcy4=')))) {
       url = 'https://$filename';

@@ -10,11 +10,7 @@ class DailyBonusData {
   List<UserPresentBoxEntity> userPresentBox;
   List<CampaignBonusData> campaignbonus;
 
-  DailyBonusData({
-    required this.info,
-    this.userPresentBox = const [],
-    this.campaignbonus = const [],
-  });
+  DailyBonusData({required this.info, this.userPresentBox = const [], this.campaignbonus = const []});
 
   factory DailyBonusData.fromJson(Map<String, dynamic> json) => _$DailyBonusDataFromJson(json);
 

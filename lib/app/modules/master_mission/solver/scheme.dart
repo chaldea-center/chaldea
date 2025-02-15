@@ -10,11 +10,7 @@ class CustomMissionCond {
   set useAnd(bool v) => _useAnd = v;
   bool get useAnd => fixedLogicType ?? _useAnd;
 
-  CustomMissionCond({
-    required this.type,
-    required this.targetIds,
-    required bool useAnd,
-  }) : _useAnd = useAnd;
+  CustomMissionCond({required this.type, required this.targetIds, required bool useAnd}) : _useAnd = useAnd;
 
   bool? get fixedLogicType {
     switch (type) {
@@ -31,11 +27,7 @@ class CustomMissionCond {
   }
 
   CustomMissionCond copy() {
-    return CustomMissionCond(
-      type: type,
-      targetIds: targetIds.toList(),
-      useAnd: useAnd,
-    );
+    return CustomMissionCond(type: type, targetIds: targetIds.toList(), useAnd: useAnd);
   }
 
   @override
@@ -184,9 +176,7 @@ class MissionSolverOptions {
   ];
 
   bool addNotBasedOnSvtForTraum;
-  MissionSolverOptions({
-    this.addNotBasedOnSvtForTraum = false,
-  });
+  MissionSolverOptions({this.addNotBasedOnSvtForTraum = false});
 }
 
 class MissionSolution {
@@ -212,8 +202,7 @@ enum CustomMissionType {
   enemyNotServantClass,
   enemy,
   quest,
-  questTrait,
-  ;
+  questTrait;
 
   bool get isQuestType => this == CustomMissionType.questTrait || this == CustomMissionType.quest;
   bool get isEnemyType => !isQuestType;

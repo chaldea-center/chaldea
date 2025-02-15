@@ -99,7 +99,7 @@ void main() async {
           // QAABB
           null,
           db.gameData.commandCodesById[8400840]!, // 鞍馬の申し子, critical dmg 20%
-          null, null, null
+          null, null, null,
         ],
     ];
 
@@ -112,7 +112,7 @@ void main() async {
 
     await battle.playerTurn([
       CombatAction(altria, altria.getCards()[1]..critical = true),
-      CombatAction(altria, altria.getCards()[2]..critical = true)
+      CombatAction(altria, altria.getCards()[2]..critical = true),
     ]);
     expect(enemy.hp, 9166);
   });
@@ -153,7 +153,8 @@ void main() async {
       PlayerSvtData.id(101000)..lv = 80,
       PlayerSvtData.id(504600)
         ..lv = 90
-        ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
+        ..ce =
+            db.gameData.craftEssencesById[9400340] // Kaleidoscope
         ..ceLv = 100
         ..ceLimitBreak = true,
     ];
@@ -211,7 +212,8 @@ void main() async {
     final List<PlayerSvtData> playerSettings = [
       PlayerSvtData.id(504400)
         ..lv = 80
-        ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
+        ..ce =
+            db.gameData.craftEssencesById[9400340] // Kaleidoscope
         ..ceLv = 100
         ..ceLimitBreak = true,
       PlayerSvtData.id(2800100)..lv = 90,

@@ -88,54 +88,51 @@ class _StatisticServantTabState extends State<StatisticServantTab> {
     final priority = db.settings.filters.svtFilterData.priority;
     List<Widget> children = [
       ListTile(
-        title: Text(
-          S.current.priority,
-          style: Theme.of(context).textTheme.bodySmall,
-        ),
-        trailing:
-            Text(priority.options.isEmpty ? S.current.general_all : (priority.options.toList()..sort()).join(', ')),
-      )
-    ];
-    children.add(pieChart());
-    children.add(ListTile(
-      title: Text(S.current.rarity),
-      trailing: Text(S.current.svt_stat_own_total),
-      // dense: true,
-    ));
-    children.addAll(_oneRarity(
-      selected: raritySelected.every((e) => e),
-      title: 'ALL',
-      skillMax: Maths.sum(rarity999),
-      own: Maths.sum(rarityOwn),
-      total: Maths.sum(rarityTotal),
-      onChanged: (v) {
-        setState(() {
-          raritySelected.fillRange(0, raritySelected.length, v);
-        });
-      },
-    ));
-    for (int i = rarityTotal.length - 1; i >= 0; i--) {
-      children.addAll(_oneRarity(
-        selected: raritySelected[i],
-        title: '$kStarChar$i ${S.current.servant}',
-        skillMax: rarity999[i],
-        own: rarityOwn[i],
-        total: rarityTotal[i],
-        onChanged: (v) {
-          setState(() {
-            raritySelected[i] = v;
-          });
-        },
-      ));
-    }
-    children.add(const SafeArea(
-      child: Center(
-        child: Text(
-          'Red: skill >=999',
-          style: TextStyle(color: Colors.grey),
+        title: Text(S.current.priority, style: Theme.of(context).textTheme.bodySmall),
+        trailing: Text(
+          priority.options.isEmpty ? S.current.general_all : (priority.options.toList()..sort()).join(', '),
         ),
       ),
-    ));
+    ];
+    children.add(pieChart());
+    children.add(
+      ListTile(
+        title: Text(S.current.rarity),
+        trailing: Text(S.current.svt_stat_own_total),
+        // dense: true,
+      ),
+    );
+    children.addAll(
+      _oneRarity(
+        selected: raritySelected.every((e) => e),
+        title: 'ALL',
+        skillMax: Maths.sum(rarity999),
+        own: Maths.sum(rarityOwn),
+        total: Maths.sum(rarityTotal),
+        onChanged: (v) {
+          setState(() {
+            raritySelected.fillRange(0, raritySelected.length, v);
+          });
+        },
+      ),
+    );
+    for (int i = rarityTotal.length - 1; i >= 0; i--) {
+      children.addAll(
+        _oneRarity(
+          selected: raritySelected[i],
+          title: '$kStarChar$i ${S.current.servant}',
+          skillMax: rarity999[i],
+          own: rarityOwn[i],
+          total: rarityTotal[i],
+          onChanged: (v) {
+            setState(() {
+              raritySelected[i] = v;
+            });
+          },
+        ),
+      );
+    }
+    children.add(const SafeArea(child: Center(child: Text('Red: skill >=999', style: TextStyle(color: Colors.grey)))));
     children = divideTiles(children);
     return ListView(
       controller: _scrollController,
@@ -160,32 +157,14 @@ class _StatisticServantTabState extends State<StatisticServantTab> {
           if (v != null) onChanged(v);
         },
         title: Row(
-          children: [
-            Expanded(child: Text(title)),
-            Text(
-              '($skillMax) ${'$own/$total'.padLeft(7)}',
-              style: kMonoStyle,
-            )
-          ],
+          children: [Expanded(child: Text(title)), Text('($skillMax) ${'$own/$total'.padLeft(7)}', style: kMonoStyle)],
         ),
       ),
       Row(
         children: [
-          Expanded(
-            flex: skillMax,
-            child: Container(height: 8, color: Colors.red[400]),
-          ),
-          Expanded(
-            flex: own - skillMax,
-            child: Container(
-              height: 8,
-              color: Colors.blue,
-            ),
-          ),
-          Expanded(
-            flex: total - own,
-            child: Container(height: 8, color: Colors.grey[300]),
-          ),
+          Expanded(flex: skillMax, child: Container(height: 8, color: Colors.red[400])),
+          Expanded(flex: own - skillMax, child: Container(height: 8, color: Colors.blue)),
+          Expanded(flex: total - own, child: Container(height: 8, color: Colors.grey[300])),
         ],
       ),
     ];
@@ -193,7 +172,8 @@ class _StatisticServantTabState extends State<StatisticServantTab> {
 
   SvtClass? selectedPie;
 
-  List<Color> get palette => const [
+  List<Color> get palette =>
+      const [
         // Color(0xFFCC0000),
         Color(0xFFCC6600),
         Color(0xFFCCCC00),
@@ -217,42 +197,46 @@ class _StatisticServantTabState extends State<StatisticServantTab> {
         if (total <= 0) return Container(height: 280 * mag);
         return SizedBox(
           height: 280 * mag,
-          child: PieChart(PieChartData(
-            sections: List.generate(svtClassCount.length, (index) {
-              final entry = svtClassCount.entries.elementAt(index);
-              return _pieSection(entry.key, entry.value, total, mag, palette[index]);
-            }),
-            centerSpaceRadius: 0,
-            pieTouchData: PieTouchData(touchCallback: (event, pieTouchResponse) {
-              if (pieTouchResponse == null) return;
-              bool _needsBuild = false;
-              if (event is FlTapUpEvent &&
-                  pieTouchResponse.touchedSection != null &&
-                  pieTouchResponse.touchedSection!.touchedSectionIndex >= 0) {
-                _needsBuild = true;
-              }
-              if (event is FlTapUpEvent || event is FlTapCancelEvent) {
-                _needsBuild = true;
-              }
-              final desiredTouch = event is! FlTapUpEvent && event is! FlTapCancelEvent;
-              if (desiredTouch && pieTouchResponse.touchedSection != null) {
-                SvtClass? _newSelected;
-                int index = pieTouchResponse.touchedSection!.touchedSectionIndex;
-                if (index >= 0 && index < svtClassCount.length) {
-                  _newSelected = svtClassCount.keys.elementAt(index);
-                } else {
-                  _newSelected = null;
-                }
-                if (selectedPie != _newSelected) {
-                  selectedPie = _newSelected;
-                  _needsBuild = true;
-                }
-              }
-              if (_needsBuild) {
-                setState(() {});
-              }
-            }),
-          )),
+          child: PieChart(
+            PieChartData(
+              sections: List.generate(svtClassCount.length, (index) {
+                final entry = svtClassCount.entries.elementAt(index);
+                return _pieSection(entry.key, entry.value, total, mag, palette[index]);
+              }),
+              centerSpaceRadius: 0,
+              pieTouchData: PieTouchData(
+                touchCallback: (event, pieTouchResponse) {
+                  if (pieTouchResponse == null) return;
+                  bool _needsBuild = false;
+                  if (event is FlTapUpEvent &&
+                      pieTouchResponse.touchedSection != null &&
+                      pieTouchResponse.touchedSection!.touchedSectionIndex >= 0) {
+                    _needsBuild = true;
+                  }
+                  if (event is FlTapUpEvent || event is FlTapCancelEvent) {
+                    _needsBuild = true;
+                  }
+                  final desiredTouch = event is! FlTapUpEvent && event is! FlTapCancelEvent;
+                  if (desiredTouch && pieTouchResponse.touchedSection != null) {
+                    SvtClass? _newSelected;
+                    int index = pieTouchResponse.touchedSection!.touchedSectionIndex;
+                    if (index >= 0 && index < svtClassCount.length) {
+                      _newSelected = svtClassCount.keys.elementAt(index);
+                    } else {
+                      _newSelected = null;
+                    }
+                    if (selectedPie != _newSelected) {
+                      selectedPie = _newSelected;
+                      _needsBuild = true;
+                    }
+                  }
+                  if (_needsBuild) {
+                    setState(() {});
+                  }
+                },
+              ),
+            ),
+          ),
         );
       },
     );
@@ -267,11 +251,7 @@ class _StatisticServantTabState extends State<StatisticServantTab> {
       title: selected ? '$count\n(${'${(ratio * 100).toStringAsFixed(0)}%'})' : count.toString(),
       titleStyle: TextStyle(color: Colors.white, fontSize: 16 * mag, fontWeight: FontWeight.bold),
       radius: (selected ? 120 : 100) * mag,
-      badgeWidget: db.getIconImage(
-        clsName.icon(5),
-        width: 30 * mag,
-        height: 30 * mag,
-      ),
+      badgeWidget: db.getIconImage(clsName.icon(5), width: 30 * mag, height: 30 * mag),
       badgePositionPercentageOffset: 1 * posRatio,
       titlePositionPercentageOffset: 0.6 * posRatio,
       color: color,

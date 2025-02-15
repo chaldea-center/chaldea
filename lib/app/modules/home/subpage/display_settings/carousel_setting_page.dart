@@ -37,73 +37,79 @@ class _CarouselSettingPageState extends State<CarouselSettingPage> {
             value: carousel.enableChaldea,
             title: const Text('Chaldea Announcements'),
             subtitle: const Text('https://docs.chaldea.center'),
-            onChanged: carousel.enabled
-                ? (v) => setState(() {
+            onChanged:
+                carousel.enabled
+                    ? (v) => setState(() {
                       carousel.needUpdate = true;
                       carousel.enableChaldea = v ?? carousel.enableChaldea;
                       updateHome();
                     })
-                : null,
+                    : null,
           ),
           CheckboxListTile(
             value: carousel.enableMooncell,
             title: const Text('Mooncell News'),
             subtitle: const Text('CN/JP'),
-            onChanged: carousel.enabled
-                ? (v) => setState(() {
+            onChanged:
+                carousel.enabled
+                    ? (v) => setState(() {
                       carousel.needUpdate = true;
                       carousel.enableMooncell = v ?? carousel.enableMooncell;
                       updateHome();
                     })
-                : null,
+                    : null,
           ),
           CheckboxListTile(
             value: carousel.enableJP,
             title: const Text('JP News'),
             subtitle: const Text('https://view.fate-go.jp/'),
-            onChanged: carousel.enabled
-                ? (v) => setState(() {
+            onChanged:
+                carousel.enabled
+                    ? (v) => setState(() {
                       carousel.needUpdate = true;
                       carousel.enableJP = v ?? carousel.enableJP;
                       updateHome();
                     })
-                : null,
+                    : null,
           ),
           CheckboxListTile(
             value: carousel.enableCN,
             title: const Text('CN News'),
             subtitle: const Text('https://game.bilibili.com/fgo/news.html'),
-            onChanged: carousel.enabled
-                ? (v) => setState(() {
+            onChanged:
+                carousel.enabled
+                    ? (v) => setState(() {
                       carousel.needUpdate = true;
                       carousel.enableCN = v ?? carousel.enableCN;
                       updateHome();
                     })
-                : null,
+                    : null,
           ),
           CheckboxListTile(
             value: carousel.enableTW,
             title: const Text('TW News'),
             subtitle: const Text('https://www.fate-go.com.tw/news.html'),
-            onChanged: carousel.enabled
-                ? (v) => setState(() {
+            onChanged:
+                carousel.enabled
+                    ? (v) => setState(() {
                       carousel.needUpdate = true;
                       carousel.enableTW = v ?? carousel.enableTW;
                       updateHome();
                     })
-                : null,
+                    : null,
           ),
           CheckboxListTile(
             value: carousel.enableNA,
             title: const Text('NA News'),
             subtitle: const Text('https://webview.fate-go.us/'),
-            onChanged: carousel.enabled
-                ? (v) => setState(() {
+            onChanged:
+                carousel.enabled
+                    ? (v) => setState(() {
                       carousel.needUpdate = true;
                       carousel.enableNA = v ?? carousel.enableNA;
                       updateHome();
                     })
-                : null,
+                    : null,
           ),
           const CheckboxListTile(
             // value: carousel.enableKR,

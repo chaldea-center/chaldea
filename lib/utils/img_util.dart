@@ -13,21 +13,11 @@ import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/packages/platform/platform.dart';
 import 'package:chaldea/utils/utils.dart';
 
-Future<Uint8List> compressToJpgAsync({
-  required Uint8List src,
-  int quality = 90,
-  int? maxWidth,
-  int? maxHeight,
-}) async {
+Future<Uint8List> compressToJpgAsync({required Uint8List src, int quality = 90, int? maxWidth, int? maxHeight}) async {
   return workerManager.execute(() => _compressToJpg(src, quality, maxWidth, maxHeight));
 }
 
-Uint8List compressToJpg({
-  required Uint8List src,
-  int quality = 90,
-  int? maxWidth,
-  int? maxHeight,
-}) =>
+Uint8List compressToJpg({required Uint8List src, int quality = 90, int? maxWidth, int? maxHeight}) =>
     _compressToJpg(src, quality, maxWidth, maxHeight);
 
 Uint8List _compressToJpg(Uint8List src, int quality, int? maxWidth, int? maxHeight) {
@@ -48,13 +38,18 @@ Uint8List _compressToJpg(Uint8List src, int quality, int? maxWidth, int? maxHeig
   }
   lib_image.Image destImage = srcImage;
   if (r != null) {
-    destImage =
-        lib_image.copyResize(srcImage, width: (srcImage.width / r).round(), height: (srcImage.height / r).round());
+    destImage = lib_image.copyResize(
+      srcImage,
+      width: (srcImage.width / r).round(),
+      height: (srcImage.height / r).round(),
+    );
   }
   final dest = Uint8List.fromList(lib_image.encodeJpg(destImage, quality: quality));
-  logger.i('compress image(q=$quality): ${src.length ~/ 1024}KB'
-      ' ${srcImage.width}x${srcImage.height} ->'
-      ' ${dest.length ~/ 1024}KB ${destImage.width}x${destImage.height}');
+  logger.i(
+    'compress image(q=$quality): ${src.length ~/ 1024}KB'
+    ' ${srcImage.width}x${srcImage.height} ->'
+    ' ${dest.length ~/ 1024}KB ${destImage.width}x${destImage.height}',
+  );
   return dest;
 }
 

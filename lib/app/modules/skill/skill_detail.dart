@@ -23,7 +23,7 @@ class SkillDetailPage extends StatefulWidget {
   final Region? region;
   final FuncApplyTarget? initView;
   const SkillDetailPage({super.key, this.id, this.skill, this.region, this.initView})
-      : assert(id != null || skill != null);
+    : assert(id != null || skill != null);
 
   @override
   State<SkillDetailPage> createState() => _SkillDetailPageState();
@@ -65,10 +65,7 @@ class _SkillDetailPageState extends State<SkillDetailPage> with RegionBasedState
             maxLines: 1,
             minFontSize: 14,
           ),
-          actions: [
-            dropdownRegion(shownNone: widget.skill != null),
-            popupMenu,
-          ],
+          actions: [dropdownRegion(shownNone: widget.skill != null), popupMenu],
         ),
         body: buildBody(context),
       ),
@@ -81,80 +78,91 @@ class _SkillDetailPageState extends State<SkillDetailPage> with RegionBasedState
     final ces = ReverseGameData.skill2CE(id).toList()..sort2((e) => e.collectionNo);
     final ccs = ReverseGameData.skill2CC(id).toList()..sort2((e) => e.collectionNo);
     final mcs = ReverseGameData.skill2MC(id).toList()..sort2((e) => e.id);
-    final enemies =
-        ReverseGameData.questEnemies((e) => e.skills.skillIds.contains(id) || e.classPassive.containSkill(id));
+    final enemies = ReverseGameData.questEnemies(
+      (e) => e.skills.skillIds.contains(id) || e.classPassive.containSkill(id),
+    );
     _lv = (_lv ?? skill.maxLv).clamp2(1, skill.maxLv);
 
     return ListView(
       children: [
-        CustomTable(children: [
-          CustomTableRow.fromTexts(texts: ['No.${skill.id}'], isHeader: true),
-          CustomTableRow.fromChildren(children: [
-            RubyText(
-              [RubyTextData(skill.name, ruby: skill.ruby)],
-              style: const TextStyle(fontWeight: FontWeight.bold),
-              textAlign: TextAlign.center,
-            )
-          ]),
-          CustomTableRow.fromChildren(children: [
-            Wrap(
-              alignment: WrapAlignment.center,
-              spacing: 8,
+        CustomTable(
+          children: [
+            CustomTableRow.fromTexts(texts: ['No.${skill.id}'], isHeader: true),
+            CustomTableRow.fromChildren(
               children: [
-                DropdownButton<int>(
-                  isDense: true,
-                  items: [
-                    for (int level = 1; level <= skill.maxLv; level++)
-                      DropdownMenuItem(value: level, child: Text('Lv.$level')),
-                  ],
-                  value: _lv,
-                  onChanged: (v) {
-                    setState(() {
-                      _lv = v;
-                    });
-                  },
-                ),
-                FilterGroup(
-                  padding: EdgeInsets.zero,
-                  combined: true,
-                  options: const [FuncApplyTarget.playerAndEnemy, FuncApplyTarget.player, FuncApplyTarget.enemy],
-                  values: FilterRadioData.nonnull(_view),
-                  optionBuilder: (v) {
-                    switch (v) {
-                      case FuncApplyTarget.player:
-                        return Text(S.current.player);
-                      case FuncApplyTarget.enemy:
-                        return Text(S.current.enemy);
-                      case FuncApplyTarget.playerAndEnemy:
-                        return Text(S.current.general_all);
-                    }
-                  },
-                  onFilterChanged: (v, _) {
-                    setState(() {
-                      _view = v.radioValue ?? _view;
-                    });
-                  },
+                RubyText(
+                  [RubyTextData(skill.name, ruby: skill.ruby)],
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.center,
                 ),
               ],
-            )
-          ]),
-          SkillDescriptor(
-            skill: skill,
-            showPlayer: _view == FuncApplyTarget.playerAndEnemy || _view == FuncApplyTarget.player,
-            showEnemy: _view == FuncApplyTarget.playerAndEnemy || _view == FuncApplyTarget.enemy,
-            showNone: true,
-            jumpToDetail: false,
-            level: _lv,
-            region: region,
-          ),
-          CustomTableRow(children: [
-            TableCellData(text: S.current.general_type, isHeader: true),
-            TableCellData(flex: 2, text: skill.type.name)
-          ]),
-          CustomTableRow.fromTexts(texts: [
-            'num ${skill.svt.num} / priority ${skill.svt.priority} / strengthStatus ${skill.svt.strengthStatus}'
-          ]),
-        ]),
+            ),
+            CustomTableRow.fromChildren(
+              children: [
+                Wrap(
+                  alignment: WrapAlignment.center,
+                  spacing: 8,
+                  children: [
+                    DropdownButton<int>(
+                      isDense: true,
+                      items: [
+                        for (int level = 1; level <= skill.maxLv; level++)
+                          DropdownMenuItem(value: level, child: Text('Lv.$level')),
+                      ],
+                      value: _lv,
+                      onChanged: (v) {
+                        setState(() {
+                          _lv = v;
+                        });
+                      },
+                    ),
+                    FilterGroup(
+                      padding: EdgeInsets.zero,
+                      combined: true,
+                      options: const [FuncApplyTarget.playerAndEnemy, FuncApplyTarget.player, FuncApplyTarget.enemy],
+                      values: FilterRadioData.nonnull(_view),
+                      optionBuilder: (v) {
+                        switch (v) {
+                          case FuncApplyTarget.player:
+                            return Text(S.current.player);
+                          case FuncApplyTarget.enemy:
+                            return Text(S.current.enemy);
+                          case FuncApplyTarget.playerAndEnemy:
+                            return Text(S.current.general_all);
+                        }
+                      },
+                      onFilterChanged: (v, _) {
+                        setState(() {
+                          _view = v.radioValue ?? _view;
+                        });
+                      },
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            SkillDescriptor(
+              skill: skill,
+              showPlayer: _view == FuncApplyTarget.playerAndEnemy || _view == FuncApplyTarget.player,
+              showEnemy: _view == FuncApplyTarget.playerAndEnemy || _view == FuncApplyTarget.enemy,
+              showNone: true,
+              jumpToDetail: false,
+              level: _lv,
+              region: region,
+            ),
+            CustomTableRow(
+              children: [
+                TableCellData(text: S.current.general_type, isHeader: true),
+                TableCellData(flex: 2, text: skill.type.name),
+              ],
+            ),
+            CustomTableRow.fromTexts(
+              texts: [
+                'num ${skill.svt.num} / priority ${skill.svt.priority} / strengthStatus ${skill.svt.strengthStatus}',
+              ],
+            ),
+          ],
+        ),
         if (svts.isNotEmpty) cardList(S.current.servant, svts),
         if (ces.isNotEmpty) cardList(S.current.craft_essence, ces),
         if (ccs.isNotEmpty) cardList(S.current.command_code, ccs),
@@ -174,7 +182,7 @@ class _SkillDetailPageState extends State<SkillDetailPage> with RegionBasedState
             leading: card.iconBuilder(context: context),
             title: Text(card.lName.l),
             onTap: card.routeTo,
-          )
+          ),
       ],
     );
   }
@@ -184,45 +192,45 @@ class _SkillDetailPageState extends State<SkillDetailPage> with RegionBasedState
     for (final enemies in allEnemies.values) {
       if (enemies.isEmpty) continue;
       final enemy = enemies.first;
-      children.add(ListTile(
-        dense: true,
-        leading: enemy.iconBuilder(context: context),
-        title: Text(enemy.lName.l),
-        onTap: () {
-          router.pushPage(QuestEnemySummaryPage(svt: enemy.svt, enemies: enemies));
-        },
-      ));
+      children.add(
+        ListTile(
+          dense: true,
+          leading: enemy.iconBuilder(context: context),
+          title: Text(enemy.lName.l),
+          onTap: () {
+            router.pushPage(QuestEnemySummaryPage(svt: enemy.svt, enemies: enemies));
+          },
+        ),
+      );
     }
-    return TileGroup(
-      header: '${S.current.enemy_list}(${S.current.free_quest})',
-      children: children,
-    );
+    return TileGroup(header: '${S.current.enemy_list}(${S.current.free_quest})', children: children);
   }
 
   Widget get popupMenu {
     return PopupMenuButton(
-      itemBuilder: (context) => [
-        PopupMenuItem(
-          enabled: data != null,
-          onTap: () async {
-            try {
-              final text = const JsonEncoder.withIndent('  ').convert(skill);
-              // ignore: use_build_context_synchronously
-              await FilePickerU.saveFile(
-                dialogContext: context,
-                data: utf8.encode(text),
-                filename: "skill-${skill.id}-${DateTime.now().toSafeFileName()}.json",
-              );
-            } catch (e, s) {
-              EasyLoading.showError(e.toString());
-              logger.e('dump skill json failed', e, s);
-              return;
-            }
-          },
-          child: Text('${S.current.general_export} JSON'),
-        ),
-        ...SharedBuilder.websitesPopupMenuItems(atlas: Atlas.dbSkill(id, region ?? Region.jp)),
-      ],
+      itemBuilder:
+          (context) => [
+            PopupMenuItem(
+              enabled: data != null,
+              onTap: () async {
+                try {
+                  final text = const JsonEncoder.withIndent('  ').convert(skill);
+                  // ignore: use_build_context_synchronously
+                  await FilePickerU.saveFile(
+                    dialogContext: context,
+                    data: utf8.encode(text),
+                    filename: "skill-${skill.id}-${DateTime.now().toSafeFileName()}.json",
+                  );
+                } catch (e, s) {
+                  EasyLoading.showError(e.toString());
+                  logger.e('dump skill json failed', e, s);
+                  return;
+                }
+              },
+              child: Text('${S.current.general_export} JSON'),
+            ),
+            ...SharedBuilder.websitesPopupMenuItems(atlas: Atlas.dbSkill(id, region ?? Region.jp)),
+          ],
     );
   }
 }

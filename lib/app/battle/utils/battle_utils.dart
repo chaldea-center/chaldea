@@ -28,11 +28,13 @@ int calculateDamage(final DamageParameters param) {
   }
 
   final Float classAttackCorrection = toModifierFloat(ConstData.classInfo[param.attackerClass]?.attackRate ?? 1000);
-  final Float classAdvantage =
-      toModifierFloat(param.classAdvantage); // class relation is provisioned due to overwriteClassRelation
+  final Float classAdvantage = toModifierFloat(
+    param.classAdvantage,
+  ); // class relation is provisioned due to overwriteClassRelation
 
-  final Float attributeAdvantage =
-      toModifierFloat(ConstData.getAttributeRelation(param.attackerAttribute, param.defenderAttribute));
+  final Float attributeAdvantage = toModifierFloat(
+    ConstData.getAttributeRelation(param.attackerAttribute, param.defenderAttribute),
+  );
 
   if (!ConstData.cardInfo.containsKey(param.currentCardType)) {
     throw BattleException('Invalid current card type: ${param.currentCardType}');
@@ -41,24 +43,27 @@ int calculateDamage(final DamageParameters param) {
   final int chainPos = param.isNp ? 1 : param.chainPos;
   final Float cardCorrection = toModifierFloat(ConstData.cardInfo[param.currentCardType]![chainPos]!.adjustAtk);
 
-  final Float firstCardBonus = shouldIgnoreFirstCardBonus(param.isNp, param.firstCardType)
-      ? 0.toFloat()
-      : param.isMightyChain
+  final Float firstCardBonus =
+      shouldIgnoreFirstCardBonus(param.isNp, param.firstCardType)
+          ? 0.toFloat()
+          : param.isMightyChain
           ? toModifierFloat(ConstData.cardInfo[CardType.buster]![1]!.addAtk)
           : toModifierFloat(ConstData.cardInfo[param.firstCardType]![1]!.addAtk);
 
   final Float criticalModifier = param.critical ? toModifierFloat(ConstData.constants.criticalAttackRate) : 1.toFloat();
 
-  final int extraRate = param.currentCardType.isExtra()
-      ? param.isTypeChain
-          ? ConstData.constants.extraAttackRateGrand
-          : ConstData.constants.extraAttackRateSingle
-      : 1000;
+  final int extraRate =
+      param.currentCardType.isExtra()
+          ? param.isTypeChain
+              ? ConstData.constants.extraAttackRateGrand
+              : ConstData.constants.extraAttackRateSingle
+          : 1000;
   final extraModifier = toModifierFloat(extraRate);
 
-  final Float busterChainMod = !param.isNp && param.currentCardType.isBuster() && param.isTypeChain
-      ? toModifierFloat(ConstData.constants.chainbonusBusterRate) * param.attack.toFloat()
-      : 0.toFloat();
+  final Float busterChainMod =
+      !param.isNp && param.currentCardType.isBuster() && param.isTypeChain
+          ? toModifierFloat(ConstData.constants.chainbonusBusterRate) * param.attack.toFloat()
+          : 0.toFloat();
 
   final Float damageRate = toModifierFloat(param.damageRate);
   final Float npSpecificAttackRate = toModifierFloat(param.npSpecificAttackRate);
@@ -77,7 +82,8 @@ int calculateDamage(final DamageParameters param) {
   final Float attackRate = toModifierFloat(ConstData.constants.attackRate);
   final Float hits = (param.totalHits / 100.0).toFloat();
 
-  final totalDamage = param.attack.toFloat() *
+  final totalDamage =
+      param.attack.toFloat() *
           damageRate *
           (firstCardBonus + cardCorrection * (1.toFloat() + cardBuff - cardResist).ofMax(0)) *
           classAttackCorrection *
@@ -122,9 +128,10 @@ int calculateAttackNpGain(final AttackNpGainParameters param) {
   final chainPos = param.isNp ? 1 : param.chainPos;
   final cardCorrection = toModifierFloat(ConstData.cardInfo[param.currentCardType]![chainPos]!.adjustTdGauge);
 
-  final firstCardBonus = shouldIgnoreFirstCardBonus(param.isNp, param.firstCardType)
-      ? 0.toFloat()
-      : param.isMightyChain
+  final firstCardBonus =
+      shouldIgnoreFirstCardBonus(param.isNp, param.firstCardType)
+          ? 0.toFloat()
+          : param.isMightyChain
           ? toModifierFloat(ConstData.cardInfo[CardType.arts]![1]!.addTdGauge)
           : toModifierFloat(ConstData.cardInfo[param.firstCardType]![1]!.addTdGauge);
   final criticalModifier = param.critical ? toModifierFloat(ConstData.constants.criticalTdPointRate) : 1.toFloat();
@@ -135,7 +142,8 @@ int calculateAttackNpGain(final AttackNpGainParameters param) {
   final cardAttackNpRate = toModifierFloat(param.cardAttackNpRate);
   final overkillModifier = param.isOverkill ? toModifierFloat(ConstData.constants.overKillNpRate) : 1.toFloat();
 
-  final beforeOverkill = param.attackerNpCharge.toFloat() *
+  final beforeOverkill =
+      param.attackerNpCharge.toFloat() *
       criticalModifier *
       defenderNpRate *
       (firstCardBonus + cardCorrection * (1.toFloat() + cardBuff - cardResist).ofMax(0)) *
@@ -169,9 +177,10 @@ int calculateStar(final StarParameters param) {
   final int chainPos = param.isNp ? 1 : param.chainPos;
   final int cardCorrection = ConstData.cardInfo[param.currentCardType]![chainPos]!.adjustCritical;
 
-  final int firstCardBonus = shouldIgnoreFirstCardBonus(param.isNp, param.firstCardType)
-      ? 0
-      : param.isMightyChain
+  final int firstCardBonus =
+      shouldIgnoreFirstCardBonus(param.isNp, param.firstCardType)
+          ? 0
+          : param.isMightyChain
           ? ConstData.cardInfo[CardType.quick]![1]!.addCritical
           : ConstData.cardInfo[param.firstCardType]![1]!.addCritical;
   final int criticalModifier = param.critical ? ConstData.constants.criticalStarRate : 0;
@@ -188,7 +197,8 @@ int calculateStar(final StarParameters param) {
 
   // not converted to modifier since mostly just additions.
   final Float cardGain = (cardCorrection.toFloat() * (1.toFloat() + cardBuff - cardResist).ofMax(0));
-  final Float rawDropRate = param.attackerStarGen.toFloat() +
+  final Float rawDropRate =
+      param.attackerStarGen.toFloat() +
       firstCardBonus.toFloat() +
       cardGain +
       defenderStarRate.toFloat() +
@@ -504,7 +514,8 @@ class InstantDeathParameters {
 Future<BaseFunction> getDependFunc(BattleLogger logger, DataVals dataVals) async {
   BaseFunction? dependFunction;
   if (dataVals.DependFuncId != null) {
-    dependFunction = db.gameData.baseFunctions[dataVals.DependFuncId!] ??
+    dependFunction =
+        db.gameData.baseFunctions[dataVals.DependFuncId!] ??
         await showEasyLoading(() => AtlasApi.func(dataVals.DependFuncId!), mask: true);
   }
   if (dependFunction == null) {

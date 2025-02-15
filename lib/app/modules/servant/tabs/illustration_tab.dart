@@ -56,7 +56,7 @@ class _SvtIllustrationTabState extends State<SvtIllustrationTab> {
             getUrls: filter.options.isEmpty ? null : getUrls,
             charaGraphPlaceholder: (_, __) => db.getIconImage(svt.classCard),
           ),
-        )
+        ),
       ],
     );
   }

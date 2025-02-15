@@ -45,7 +45,7 @@ class _SvtSummonTabState extends State<SvtSummonTab> {
         ],
       ),
       if (summons.isEmpty) const ListTile(title: Text('No related summons')),
-      for (final summon in summons) summonTile(context, summon)
+      for (final summon in summons) summonTile(context, summon),
     ];
     return ListView.separated(
       itemBuilder: (context, index) => children[index],
@@ -64,37 +64,31 @@ class _SvtSummonTabState extends State<SvtSummonTab> {
     return ListTile(
       dense: true,
       title: Text.rich(
-        TextSpan(children: [
-          if (summon.hasSinglePickupSvt(widget.svt.collectionNo))
-            TextSpan(text: kStarChar, style: TextStyle(color: Colors.yellow[800])),
-          if (summon.subSummons.isEmpty) const TextSpan(text: '(?)'),
-          TextSpan(
-            text: summon.lName.l,
-            style: outdated ? TextStyle(color: Theme.of(context).textTheme.bodySmall?.color) : null,
-          )
-        ]),
+        TextSpan(
+          children: [
+            if (summon.hasSinglePickupSvt(widget.svt.collectionNo))
+              TextSpan(text: kStarChar, style: TextStyle(color: Colors.yellow[800])),
+            if (summon.subSummons.isEmpty) const TextSpan(text: '(?)'),
+            TextSpan(
+              text: summon.lName.l,
+              style: outdated ? TextStyle(color: Theme.of(context).textTheme.bodySmall?.color) : null,
+            ),
+          ],
+        ),
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
       ),
-      subtitle: Text(
-        subtitle,
-        style: outdated ? const TextStyle(fontStyle: FontStyle.italic) : null,
-      ),
-      trailing: db.onUserData(
-        (context, snapshot) {
-          bool planned = db.curUser.summons.contains(summon.id);
-          return IconButton(
-            icon: Icon(
-              planned ? Icons.favorite : Icons.favorite_outline,
-              color: planned ? Colors.redAccent : null,
-            ),
-            onPressed: () {
-              db.curUser.summons.toggle(summon.id);
-              db.notifyUserdata();
-            },
-          );
-        },
-      ),
+      subtitle: Text(subtitle, style: outdated ? const TextStyle(fontStyle: FontStyle.italic) : null),
+      trailing: db.onUserData((context, snapshot) {
+        bool planned = db.curUser.summons.contains(summon.id);
+        return IconButton(
+          icon: Icon(planned ? Icons.favorite : Icons.favorite_outline, color: planned ? Colors.redAccent : null),
+          onPressed: () {
+            db.curUser.summons.toggle(summon.id);
+            db.notifyUserdata();
+          },
+        );
+      }),
       onTap: () {
         router.push(url: summon.route);
       },

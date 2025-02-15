@@ -79,7 +79,8 @@ class ServerFeedbackHandler extends ReportHandler {
     Map<String, Uint8List> generatedAttachments = onGenerateAttachments == null ? {} : onGenerateAttachments!();
 
     return _pool.withResource<bool>(
-        () => _sendMail(report, screenshotBytes: screenshotBytes, generatedAttachments: generatedAttachments));
+      () => _sendMail(report, screenshotBytes: screenshotBytes, generatedAttachments: generatedAttachments),
+    );
   }
 
   /// store html message that has already be sent
@@ -358,7 +359,7 @@ class FeedbackReport extends Report {
   final String body;
 
   FeedbackReport(this.contactInfo, this.body)
-      : super(null, '', DateTime.now(), AppInfo.deviceParams, AppInfo.appParams, {}, null, PlatformType.unknown, null);
+    : super(null, '', DateTime.now(), AppInfo.deviceParams, AppInfo.appParams, {}, null, PlatformType.unknown, null);
 }
 
 extension _ReportX on Report {

@@ -25,8 +25,9 @@ class EventBulletinBoardPage extends HookWidget {
       padding: const EdgeInsets.symmetric(vertical: 8),
       controller: useScrollController(),
       itemBuilder: (context, index) => children[index],
-      separatorBuilder: (_, index) =>
-          onSwitchRegion != null && index == 0 ? const Divider(height: 1) : const Divider(indent: 48, height: 1),
+      separatorBuilder:
+          (_, index) =>
+              onSwitchRegion != null && index == 0 ? const Divider(height: 1) : const Divider(indent: 48, height: 1),
       itemCount: children.length,
     );
   }
@@ -48,13 +49,7 @@ class EventBulletinBoardPage extends HookWidget {
       title = Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text.rich(
-            TextSpan(children: spans),
-            style: Theme.of(context).textTheme.bodySmall,
-          ),
-          title,
-        ],
+        children: [Text.rich(TextSpan(children: spans), style: Theme.of(context).textTheme.bodySmall), title],
       );
     }
 
@@ -68,11 +63,7 @@ class EventBulletinBoardPage extends HookWidget {
         EasyLoading.showInfo(S.current.copied);
       },
       onTap: () {
-        showDialog(
-          context: context,
-          useRootNavigator: false,
-          builder: (context) => showConditions(context, bulletin),
-        );
+        showDialog(context: context, useRootNavigator: false, builder: (context) => showConditions(context, bulletin));
       },
     );
   }

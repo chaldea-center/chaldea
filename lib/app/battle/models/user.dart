@@ -51,8 +51,12 @@ class PlayerSvtData {
     td = svt!.groupedNoblePhantasms[1]?.first;
   }
 
-  PreferPlayerSvtDataSource onSelectServant(Servant selectedSvt,
-      {PreferPlayerSvtDataSource? source, Region? region, int? jpTime}) {
+  PreferPlayerSvtDataSource onSelectServant(
+    Servant selectedSvt, {
+    PreferPlayerSvtDataSource? source,
+    Region? region,
+    int? jpTime,
+  }) {
     source ??= db.settings.battleSim.playerDataSource;
     svt = selectedSvt;
     if (supportType == SupportSvtType.npc) {
@@ -104,12 +108,7 @@ class PlayerSvtData {
     return source;
   }
 
-  void fromUserSvt({
-    required Servant svt,
-    required SvtStatus status,
-    required SvtPlan plan,
-    int? limitCount,
-  }) {
+  void fromUserSvt({required Servant svt, required SvtStatus status, required SvtPlan plan, int? limitCount}) {
     this
       ..limitCount = limitCount ?? plan.ascension
       ..lv = svt.grailedLv(plan.grail)
@@ -172,9 +171,10 @@ class PlayerSvtData {
       if (region == Region.jp) {
         skills[skillNum - 1] = validSkills.last;
       } else if (region != null) {
-        final releaseSkills = validSkills
-            .where((skill) => db.gameData.mappingData.skillPriority[svt.id]?.ofRegion(region)?[skill.id] != null)
-            .toList();
+        final releaseSkills =
+            validSkills
+                .where((skill) => db.gameData.mappingData.skillPriority[svt.id]?.ofRegion(region)?[skill.id] != null)
+                .toList();
         skills[skillNum - 1] = releaseSkills.lastOrNull ?? validSkills.last;
       } else if (jpTime != null) {
         List<NiceSkill> releasedSkills = [];
@@ -202,9 +202,10 @@ class PlayerSvtData {
     } else {
       ceLimitBreak = db.settings.battleSim.defaultLvs.ceMaxLimitBreak;
       int? lvMin = {1: 6, 2: 9, 3: 11, 4: 13, 5: 15}[selectedCE.rarity];
-      ceLv = db.settings.battleSim.defaultLvs.ceMaxLv
-          ? selectedCE.lvMax
-          : ceLimitBreak && lvMin != null && lvMin <= selectedCE.lvMax && ceLv < lvMin
+      ceLv =
+          db.settings.battleSim.defaultLvs.ceMaxLv
+              ? selectedCE.lvMax
+              : ceLimitBreak && lvMin != null && lvMin <= selectedCE.lvMax && ceLv < lvMin
               ? lvMin
               : 1;
     }
@@ -260,24 +261,25 @@ class PlayerSvtData {
     if (svt == null && storedData.svtId != null && storedData.svtId != 0) {
       svt = await showEasyLoading(() => AtlasApi.svt(storedData.svtId!));
     }
-    final PlayerSvtData playerSvtData = PlayerSvtData.base()
-      ..svt = svt
-      ..limitCount = storedData.limitCount
-      ..skillLvs = storedData.skillLvs.toList()
-      ..appendLvs = storedData.appendLvs.toList()
-      ..disabledExtraSkills = storedData.disabledExtraSkills.toSet()
-      ..customPassives = List<BaseSkill>.of(storedData.customPassives)
-      ..customPassiveLvs = storedData.customPassiveLvs.toList()
-      ..tdLv = storedData.tdLv
-      ..lv = storedData.lv
-      ..atkFou = storedData.atkFou
-      ..hpFou = storedData.hpFou
-      ..fixedAtk = storedData.fixedAtk
-      ..fixedHp = storedData.fixedHp
-      ..ceLimitBreak = storedData.ceLimitBreak
-      ..ceLv = storedData.ceLv
-      ..supportType = storedData.supportType
-      ..cardStrengthens = storedData.cardStrengthens.toList();
+    final PlayerSvtData playerSvtData =
+        PlayerSvtData.base()
+          ..svt = svt
+          ..limitCount = storedData.limitCount
+          ..skillLvs = storedData.skillLvs.toList()
+          ..appendLvs = storedData.appendLvs.toList()
+          ..disabledExtraSkills = storedData.disabledExtraSkills.toSet()
+          ..customPassives = List<BaseSkill>.of(storedData.customPassives)
+          ..customPassiveLvs = storedData.customPassiveLvs.toList()
+          ..tdLv = storedData.tdLv
+          ..lv = storedData.lv
+          ..atkFou = storedData.atkFou
+          ..hpFou = storedData.hpFou
+          ..fixedAtk = storedData.fixedAtk
+          ..fixedHp = storedData.fixedHp
+          ..ceLimitBreak = storedData.ceLimitBreak
+          ..ceLv = storedData.ceLv
+          ..supportType = storedData.supportType
+          ..cardStrengthens = storedData.cardStrengthens.toList();
 
     if (svt != null) {
       playerSvtData.skills = List.generate(kActiveSkillNums.length, (index) => null);
@@ -297,7 +299,8 @@ class PlayerSvtData {
       playerSvtData.customPassiveLvs.clear();
       for (int index = 0; index < storedData.customPassives.length; index++) {
         final storedSkill = storedData.customPassives[index];
-        final targetSkill = db.gameData.baseSkills[storedSkill.id] ??
+        final targetSkill =
+            db.gameData.baseSkills[storedSkill.id] ??
             (storedSkill.id == 0 ? null : await showEasyLoading(() => AtlasApi.skill(storedSkill.id), mask: true)) ??
             storedSkill;
 
@@ -460,9 +463,9 @@ class BattleTeamSetup {
     List<PlayerSvtData?>? onFieldSvtDataList,
     List<PlayerSvtData?>? backupSvtDataList,
     MysticCodeData? mysticCodeData,
-  })  : onFieldSvtDataList = List.generate(3, (index) => onFieldSvtDataList?.getOrNull(index) ?? PlayerSvtData.base()),
-        backupSvtDataList = List.generate(3, (index) => backupSvtDataList?.getOrNull(index) ?? PlayerSvtData.base()),
-        mysticCodeData = mysticCodeData ?? MysticCodeData();
+  }) : onFieldSvtDataList = List.generate(3, (index) => onFieldSvtDataList?.getOrNull(index) ?? PlayerSvtData.base()),
+       backupSvtDataList = List.generate(3, (index) => backupSvtDataList?.getOrNull(index) ?? PlayerSvtData.base()),
+       mysticCodeData = mysticCodeData ?? MysticCodeData();
 
   List<PlayerSvtData> get allSvts => [...onFieldSvtDataList, ...backupSvtDataList];
 

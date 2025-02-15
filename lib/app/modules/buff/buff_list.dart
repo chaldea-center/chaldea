@@ -29,10 +29,7 @@ class _BuffListPageState extends State<BuffListPage> with SearchableListState<Bu
   @override
   Iterable<Buff?> get wholeData {
     int? _id = _searchBuffId;
-    return [
-      if (_id != null) null,
-      ...db.gameData.baseBuffs.values,
-    ];
+    return [if (_id != null) null, ...db.gameData.baseBuffs.values];
   }
 
   @override
@@ -59,15 +56,17 @@ class _BuffListPageState extends State<BuffListPage> with SearchableListState<Bu
           IconButton(
             icon: const Icon(Icons.filter_alt),
             tooltip: S.current.filter,
-            onPressed: () => FilterPage.show(
-              context: context,
-              builder: (context) => BuffFilter(
-                filterData: filterData,
-                onChanged: (_) {
-                  if (mounted) setState(() {});
-                },
-              ),
-            ),
+            onPressed:
+                () => FilterPage.show(
+                  context: context,
+                  builder:
+                      (context) => BuffFilter(
+                        filterData: filterData,
+                        onChanged: (_) {
+                          if (mounted) setState(() {});
+                        },
+                      ),
+                ),
           ),
         ],
       ),
@@ -83,13 +82,15 @@ class _BuffListPageState extends State<BuffListPage> with SearchableListState<Bu
     if (!filterData.buffType.matchOne(buff.type)) {
       return false;
     }
-    if (!filterData.trait.matchAny([
-      ...buff.vals,
-      ...buff.ckSelfIndv,
-      ...buff.ckOpIndv,
-      if (buff.script.INDIVIDUALITIE != null) buff.script.INDIVIDUALITIE!,
-      if (buff.script.UpBuffRateBuffIndiv != null) ...buff.script.UpBuffRateBuffIndiv!,
-    ].map((e) => e.id))) {
+    if (!filterData.trait.matchAny(
+      [
+        ...buff.vals,
+        ...buff.ckSelfIndv,
+        ...buff.ckOpIndv,
+        if (buff.script.INDIVIDUALITIE != null) buff.script.INDIVIDUALITIE!,
+        if (buff.script.UpBuffRateBuffIndiv != null) ...buff.script.UpBuffRateBuffIndiv!,
+      ].map((e) => e.id),
+    )) {
       return false;
     }
     if (filterData.trait.isNotEmpty) {
@@ -130,10 +131,7 @@ class _BuffListPageState extends State<BuffListPage> with SearchableListState<Bu
       onTap: () {
         final id = buff?.id ?? _searchBuffId;
         if (id != null) {
-          router.popDetailAndPush(
-            context: context,
-            url: Routes.buffI(id),
-          );
+          router.popDetailAndPush(context: context, url: Routes.buffI(id));
         }
       },
     );

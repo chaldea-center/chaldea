@@ -34,8 +34,8 @@ class QuestPhaseWidget extends StatefulWidget {
     this.showTrueName = true,
     this.showFace,
     this.battleOnly = false,
-  })  : assert(quest.phases.contains(phase)),
-        questPhase = null;
+  }) : assert(quest.phases.contains(phase)),
+       questPhase = null;
 
   QuestPhaseWidget.phase({
     super.key,
@@ -45,9 +45,9 @@ class QuestPhaseWidget extends StatefulWidget {
     this.showTrueName = true,
     this.showFace,
     this.battleOnly = false,
-  })  : quest = questPhase,
-        phase = questPhase.phase,
-        enemyHash = questPhase.enemyHash;
+  }) : quest = questPhase,
+       phase = questPhase.phase,
+       enemyHash = questPhase.enemyHash;
 
   @override
   State<QuestPhaseWidget> createState() => _QuestPhaseWidgetState();
@@ -145,9 +145,7 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
   @override
   Widget build(BuildContext context) {
     QuestPhase? curPhase = questPhase ?? getCachedData();
-    List<Widget?> children = [
-      getPhaseHeader(phase, curPhase),
-    ];
+    List<Widget?> children = [getPhaseHeader(phase, curPhase)];
     if (curPhase != null) {
       for (final stage in curPhase.stages) {
         children.add(buildStage(curPhase, stage));
@@ -167,32 +165,23 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
       ]);
     }
 
-    children.addAll([
-      getWarBoard(),
-      getPhaseScript(phase),
-      getPhasePresent(curPhase, phase),
-    ]);
+    children.addAll([getWarBoard(), getPhaseScript(phase), getPhasePresent(curPhase, phase)]);
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.center,
-      children: divideTiles(
-        children.whereType<Widget>(),
-        divider: const Divider(height: 5, thickness: 0.5),
-      ),
+      children: divideTiles(children.whereType<Widget>(), divider: const Divider(height: 5, thickness: 0.5)),
     );
   }
 
   Text _header(String text, [TextStyle? style]) {
-    return Text(
-      text,
-      style: const TextStyle(fontWeight: FontWeight.w600).merge(style),
-    );
+    return Text(text, style: const TextStyle(fontWeight: FontWeight.w600).merge(style));
   }
 
   Widget getPhaseHeader(int phase, QuestPhase? curPhase) {
     final effPhase = curPhase ?? (quest.phases.length == 1 ? quest : null);
-    final failed =
-        AtlasApi.cacheManager.isFailed(AtlasApi.questPhaseUrl(quest.id, phase, _enemyHash, widget.region ?? Region.jp));
+    final failed = AtlasApi.cacheManager.isFailed(
+      AtlasApi.questPhaseUrl(quest.id, phase, _enemyHash, widget.region ?? Region.jp),
+    );
     if (effPhase == null) {
       List<Widget> rowChildren = [];
       rowChildren.add(Text('  $phase/${quest.phases.length}  '));
@@ -220,10 +209,7 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
         } else {
           rowChildren.add(
             const Expanded(
-              child: Padding(
-                padding: EdgeInsets.all(4),
-                child: Center(child: CircularProgressIndicator()),
-              ),
+              child: Padding(padding: EdgeInsets.all(4), child: Center(child: CircularProgressIndicator())),
             ),
           );
         }
@@ -232,12 +218,7 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
       }
       return Column(
         mainAxisSize: MainAxisSize.min,
-        children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: rowChildren,
-          ),
-        ],
+        children: [Row(crossAxisAlignment: CrossAxisAlignment.center, children: rowChildren)],
       );
     }
     String spotJp = effPhase.lSpot.jp;
@@ -249,20 +230,15 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
     }
     final phaseDetail = db.gameData.questPhaseDetails[quest.id * 100 + phase];
 
-    bool noConsume = ((curPhase?.consumeType ?? phaseDetail?.consumeType2 ?? effPhase.consumeType) == ConsumeType.ap &&
-        (phaseDetail?.actConsume ?? effPhase.consume) == 0);
+    bool noConsume =
+        ((curPhase?.consumeType ?? phaseDetail?.consumeType2 ?? effPhase.consumeType) == ConsumeType.ap &&
+            (phaseDetail?.actConsume ?? effPhase.consume) == 0);
     final questSelects = curPhase?.extraDetail?.questSelect;
     List<Widget> headerRows = [
       Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          SizedBox(
-            width: 48,
-            child: Text(
-              '$phase/${Maths.max(effPhase.phases, 0)}',
-              textAlign: TextAlign.center,
-            ),
-          ),
+          SizedBox(width: 48, child: Text('$phase/${Maths.max(effPhase.phases, 0)}', textAlign: TextAlign.center)),
           Expanded(
             flex: 4,
             child: Text(
@@ -280,18 +256,21 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
           ConstrainedBox(
             constraints: const BoxConstraints(minWidth: 48),
             child: Text.rich(
-              TextSpan(children: [
-                if (effPhase.consumeType.useApOrBp) TextSpan(text: '${effPhase.consumeType.unit} ${effPhase.consume}'),
-                for (final itemAmount in effPhase.consumeItem)
-                  WidgetSpan(
-                    child: Item.iconBuilder(
-                      context: context,
-                      item: itemAmount.item,
-                      text: itemAmount.amount.format(),
-                      width: 20,
+              TextSpan(
+                children: [
+                  if (effPhase.consumeType.useApOrBp)
+                    TextSpan(text: '${effPhase.consumeType.unit} ${effPhase.consume}'),
+                  for (final itemAmount in effPhase.consumeItem)
+                    WidgetSpan(
+                      child: Item.iconBuilder(
+                        context: context,
+                        item: itemAmount.item,
+                        text: itemAmount.amount.format(),
+                        width: 20,
+                      ),
                     ),
-                  )
-              ]),
+                ],
+              ),
               textAlign: TextAlign.center,
             ),
           ),
@@ -320,17 +299,20 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
       ),
       if (questSelects != null && questSelects.isNotEmpty)
         Text.rich(
-          TextSpan(text: '${S.current.branch_quest}: ', children: [
-            for (final selectId in questSelects)
-              if (selectId != effPhase.id)
-                SharedBuilder.textButtonSpan(
-                  context: context,
-                  text: ' $selectId ',
-                  onTap: () => router.push(url: Routes.questI(selectId)),
-                )
-          ]),
+          TextSpan(
+            text: '${S.current.branch_quest}: ',
+            children: [
+              for (final selectId in questSelects)
+                if (selectId != effPhase.id)
+                  SharedBuilder.textButtonSpan(
+                    context: context,
+                    text: ' $selectId ',
+                    onTap: () => router.push(url: Routes.questI(selectId)),
+                  ),
+            ],
+          ),
           textAlign: TextAlign.center,
-        )
+        ),
     ];
     if (curPhase != null) {
       if (_enemyHash != null && !curPhase.enemyHashes.contains(_enemyHash)) {
@@ -340,10 +322,7 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
         headerRows.add(getQuestVersionDropdown(curPhase));
       }
     }
-    Widget header = Column(
-      mainAxisSize: MainAxisSize.min,
-      children: headerRows,
-    );
+    Widget header = Column(mainAxisSize: MainAxisSize.min, children: headerRows);
     final spotImage = effPhase.spot?.shownImage;
     header = Row(
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -365,10 +344,7 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
               if (found != null) {
                 QuestPhaseWidget._phaseCallbacks.remove(found);
               } else {
-                curRouter.pushPage(SimulationPreview(
-                  region: widget.region,
-                  questPhase: questPhase,
-                ));
+                curRouter.pushPage(SimulationPreview(region: widget.region, questPhase: questPhase));
               }
             },
             icon: const Icon(Icons.calculate, size: 18),
@@ -385,10 +361,7 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
         mainAxisSize: MainAxisSize.min,
         children: [
           header,
-          const Padding(
-            padding: EdgeInsets.all(4),
-            child: Center(child: CircularProgressIndicator()),
-          ),
+          const Padding(padding: EdgeInsets.all(4), child: Center(child: CircularProgressIndicator())),
         ],
       );
     }
@@ -437,21 +410,19 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
                   style ??= const TextStyle();
                   style = style.copyWith(fontWeight: FontWeight.bold);
                 }
-                return DropdownMenuItem(
-                  value: hash,
-                  child: Text(text, style: style),
-                );
+                return DropdownMenuItem(value: hash, child: Text(text, style: style));
               }),
-              onChanged: widget.battleOnly
-                  ? null
-                  : (v) {
-                      _enemyHash = v;
-                      _fetchData();
-                      setState(() {});
-                    },
+              onChanged:
+                  widget.battleOnly
+                      ? null
+                      : (v) {
+                        _enemyHash = v;
+                        _fetchData();
+                        setState(() {});
+                      },
             ),
           ),
-        )
+        ),
       ],
     );
   }
@@ -464,24 +435,21 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
           width: 32,
           child: Text.rich(
             TextSpan(
-              children: divideList(
-                [
-                  TextSpan(text: '${stage.wave}'),
-                  if (stage.enemyFieldPosCount != null) TextSpan(text: '(${stage.enemyFieldPosCount})'),
-                  WidgetSpan(
-                    child: IconButton(
-                      onPressed: () {
-                        router.pushPage(WaveInfoPage(questPhase: curPhase, stage: stage, region: widget.region));
-                      },
-                      icon: const Icon(Icons.music_note, size: 18),
-                      padding: EdgeInsets.zero,
-                      constraints: const BoxConstraints(),
-                      color: Theme.of(context).colorScheme.secondary,
-                    ),
-                  )
-                ],
-                const TextSpan(text: '\n'),
-              ),
+              children: divideList([
+                TextSpan(text: '${stage.wave}'),
+                if (stage.enemyFieldPosCount != null) TextSpan(text: '(${stage.enemyFieldPosCount})'),
+                WidgetSpan(
+                  child: IconButton(
+                    onPressed: () {
+                      router.pushPage(WaveInfoPage(questPhase: curPhase, stage: stage, region: widget.region));
+                    },
+                    icon: const Icon(Icons.music_note, size: 18),
+                    padding: EdgeInsets.zero,
+                    constraints: const BoxConstraints(),
+                    color: Theme.of(context).colorScheme.secondary,
+                  ),
+                ),
+              ], const TextSpan(text: '\n')),
             ),
             textAlign: TextAlign.center,
           ),
@@ -494,61 +462,64 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
             showFace: widget.showFace,
             region: widget.region,
           ),
-        )
+        ),
       ],
     );
   }
 
   Widget _buildStageCutin(BuildContext context, QuestPhase curPhase, StageCutin cutin) {
     List<Widget> children = [];
-    children.add(Text(
-      'Stage Cutin (${S.current.quest_runs(cutin.runs)})',
-      style: const TextStyle(
-        // fontWeight: FontWeight.bold,
-        fontSize: 14,
+    children.add(
+      Text(
+        'Stage Cutin (${S.current.quest_runs(cutin.runs)})',
+        style: const TextStyle(
+          // fontWeight: FontWeight.bold,
+          fontSize: 14,
+        ),
       ),
-    ));
+    );
     if (cutin.skills.isNotEmpty) {
-      children.add(Text.rich(SharedBuilder.textButtonSpan(
-        context: context,
-        text: '${cutin.skills.length} ${S.current.skill}',
-        onTap: () {
-          showDialog(
+      children.add(
+        Text.rich(
+          SharedBuilder.textButtonSpan(
             context: context,
-            useRootNavigator: false,
-            builder: (context) {
-              return SimpleDialog(
-                title: const Text('Stage Cutin Skills'),
-                titlePadding: const EdgeInsets.fromLTRB(16.0, 24.0, 24.0, 0.0),
-                children: [
-                  for (final skill in cutin.skills)
-                    ListTile(
-                      dense: true,
-                      minLeadingWidth: 24,
-                      title: Text(skill.skill.dispName),
-                      leading: skill.skill.icon != null ? db.getIconImage(skill.skill.icon, width: 24) : null,
-                      trailing: Text(
-                        '${(skill.appearCount / cutin.runs * 100).toStringAsPrecision(3)}%'
-                        '\n(${skill.appearCount}/${cutin.runs})',
-                        style: const TextStyle(fontSize: 12),
-                        textAlign: TextAlign.end,
-                      ),
-                      onTap: skill.skill.routeTo,
-                    ),
-                ],
+            text: '${cutin.skills.length} ${S.current.skill}',
+            onTap: () {
+              showDialog(
+                context: context,
+                useRootNavigator: false,
+                builder: (context) {
+                  return SimpleDialog(
+                    title: const Text('Stage Cutin Skills'),
+                    titlePadding: const EdgeInsets.fromLTRB(16.0, 24.0, 24.0, 0.0),
+                    children: [
+                      for (final skill in cutin.skills)
+                        ListTile(
+                          dense: true,
+                          minLeadingWidth: 24,
+                          title: Text(skill.skill.dispName),
+                          leading: skill.skill.icon != null ? db.getIconImage(skill.skill.icon, width: 24) : null,
+                          trailing: Text(
+                            '${(skill.appearCount / cutin.runs * 100).toStringAsPrecision(3)}%'
+                            '\n(${skill.appearCount}/${cutin.runs})',
+                            style: const TextStyle(fontSize: 12),
+                            textAlign: TextAlign.end,
+                          ),
+                          onTap: skill.skill.routeTo,
+                        ),
+                    ],
+                  );
+                },
               );
             },
-          );
-        },
-      )));
+          ),
+        ),
+      );
     }
     if (cutin.drops.isNotEmpty) {
       children.add(_getRayshiftDrops(curPhase, cutin.drops, false));
     }
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: children,
-    );
+    return Column(mainAxisSize: MainAxisSize.min, children: children);
   }
 
   Widget? buildAiNpc(QuestPhase curPhase) {
@@ -558,10 +529,7 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: <Widget>[
-        const SizedBox(
-          width: 32,
-          child: Text('NPC', textAlign: TextAlign.center),
-        ),
+        const SizedBox(width: 32, child: Text('NPC', textAlign: TextAlign.center)),
         Expanded(
           child: QuestWave(
             questPhase: curPhase,
@@ -571,7 +539,7 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
             showFace: widget.showFace,
             region: widget.region,
           ),
-        )
+        ),
       ],
     );
   }
@@ -593,7 +561,7 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
                 return trait.shownName().replaceFirst(RegExp('^[^:]+:'), '').trim();
               },
             ),
-          )
+          ),
         ],
       ),
     );
@@ -610,30 +578,32 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
           Expanded(
             child: Text.rich(
               TextSpan(
-                children: divideList(flags.map((flag) {
-                  String name = flag.name.replaceAllMapped(RegExp(r'[A-Z]'), (match) => '\u200B${match.group(0)}');
-                  if (flag == QuestFlag.userEventDeck) {
-                    final eventDeckNo = questPhase?.extraDetail?.useEventDeckNo ?? 1;
-                    name += '($eventDeckNo)';
-                  }
-                  return TextSpan(
-                    text: name,
-                    style: const TextStyle(fontSize: 12),
-                  );
-                }), const TextSpan(text: ' / ')),
+                children: divideList(
+                  flags.map((flag) {
+                    String name = flag.name.replaceAllMapped(RegExp(r'[A-Z]'), (match) => '\u200B${match.group(0)}');
+                    if (flag == QuestFlag.userEventDeck) {
+                      final eventDeckNo = questPhase?.extraDetail?.useEventDeckNo ?? 1;
+                      name += '($eventDeckNo)';
+                    }
+                    return TextSpan(text: name, style: const TextStyle(fontSize: 12));
+                  }),
+                  const TextSpan(text: ' / '),
+                ),
               ),
               textAlign: TextAlign.center,
             ),
-          )
+          ),
         ],
       ),
     );
   }
 
   Widget? getOverwriteMysticCode(QuestPhase curPhase) {
-    final equips = [curPhase.extraDetail?.overwriteEquipSkills, curPhase.extraDetail?.addEquipSkills]
-        .whereType<OverwriteEquipSkills>()
-        .toList();
+    final equips =
+        [
+          curPhase.extraDetail?.overwriteEquipSkills,
+          curPhase.extraDetail?.addEquipSkills,
+        ].whereType<OverwriteEquipSkills>().toList();
     if (equips.isEmpty) return null;
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 3),
@@ -654,10 +624,7 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
                     loader: () => AtlasApi.skill(equipSkill.id),
                     builder: (context, skill) {
                       if (skill == null) {
-                        return Text(
-                          equipSkill.id.toString(),
-                          style: const TextStyle(fontStyle: FontStyle.italic),
-                        );
+                        return Text(equipSkill.id.toString(), style: const TextStyle(fontStyle: FontStyle.italic));
                       }
                       return db.getIconImage(
                         skill.icon ?? Atlas.common.unknownSkillIcon,
@@ -671,7 +638,7 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
                 Text('  Lv.${equip.skillLv}   '),
               ],
             ],
-          )
+          ),
         ],
       ),
     );
@@ -681,23 +648,23 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
     if (curPhase.supportServants.isEmpty || widget.battleOnly || widget.offline) return null;
     List<Widget> supports = [];
     for (final svt in curPhase.supportServants) {
-      supports.add(SupportServantTile(
-        svt: svt,
-        onTap: () {
-          router.pushPage(SupportServantPage(svt, region: widget.region));
-        },
-        region: widget.region,
-        hasLv100: curPhase.supportServants.any((e) => e.lv >= 100),
-      ));
+      supports.add(
+        SupportServantTile(
+          svt: svt,
+          onTap: () {
+            router.pushPage(SupportServantPage(svt, region: widget.region));
+          },
+          region: widget.region,
+          hasLv100: curPhase.supportServants.any((e) => e.lv >= 100),
+        ),
+      );
     }
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 3),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          _header(
-            '${S.current.support_servant}${curPhase.isNpcOnly ? " (${S.current.support_servant_forced})" : ""}',
-          ),
+          _header('${S.current.support_servant}${curPhase.isNpcOnly ? " (${S.current.support_servant_forced})" : ""}'),
           ...supports,
         ],
       ),
@@ -746,60 +713,66 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
     if (eventItems.values.any((e) => e > 1)) hasMultiEventItem = true;
 
     if (curPhase.drops.isNotEmpty || _questIndex >= 0) {
-      children.add(Wrap(
-        spacing: 2,
-        crossAxisAlignment: WrapCrossAlignment.center,
-        children: [
-          _header('${S.current.game_drop}:'),
-          FilterGroup<bool>(
-            options: const [true, false],
-            values: FilterRadioData.nonnull(preferApRate),
-            optionBuilder: (v) => Text(v ? 'AP' : S.current.drop_rate),
-            combined: true,
-            onFilterChanged: (v, _) {
-              setState(() {
-                preferApRate = v.radioValue ?? preferApRate;
-              });
-            },
-          ),
-          if (hasMultiEventItem)
-            IconButton(
-              icon: Icon(_sumEventItem ? Icons.unfold_more : Icons.unfold_less),
-              constraints: const BoxConstraints(),
-              padding: EdgeInsets.zero,
-              tooltip: S.current.merge_same_drop,
-              onPressed: () {
+      children.add(
+        Wrap(
+          spacing: 2,
+          crossAxisAlignment: WrapCrossAlignment.center,
+          children: [
+            _header('${S.current.game_drop}:'),
+            FilterGroup<bool>(
+              options: const [true, false],
+              values: FilterRadioData.nonnull(preferApRate),
+              optionBuilder: (v) => Text(v ? 'AP' : S.current.drop_rate),
+              combined: true,
+              onFilterChanged: (v, _) {
                 setState(() {
-                  _sumEventItem = !_sumEventItem;
+                  preferApRate = v.radioValue ?? preferApRate;
                 });
               },
-            )
-        ],
-      ));
+            ),
+            if (hasMultiEventItem)
+              IconButton(
+                icon: Icon(_sumEventItem ? Icons.unfold_more : Icons.unfold_less),
+                constraints: const BoxConstraints(),
+                padding: EdgeInsets.zero,
+                tooltip: S.current.merge_same_drop,
+                onPressed: () {
+                  setState(() {
+                    _sumEventItem = !_sumEventItem;
+                  });
+                },
+              ),
+          ],
+        ),
+      );
     }
     if (_questIndex >= 0) {
       int runs = sheetData.runs.getOrNull(_questIndex) ?? 0;
-      children.add(Column(
-        children: [
-          const SizedBox(height: 3),
-          Text('${S.current.fgo_domus_aurea} (${S.current.quest_runs(runs)})'),
-          const SizedBox(height: 2),
-          _getDomusAureaWidget(),
-          const SizedBox(height: 3),
-        ],
-      ));
+      children.add(
+        Column(
+          children: [
+            const SizedBox(height: 3),
+            Text('${S.current.fgo_domus_aurea} (${S.current.quest_runs(runs)})'),
+            const SizedBox(height: 2),
+            _getDomusAureaWidget(),
+            const SizedBox(height: 3),
+          ],
+        ),
+      );
     }
 
     if (curPhase.drops.isNotEmpty) {
       final bool showDropHint = curPhase.dropsFromAllHashes == true && curPhase.enemyHashes.length > 1;
-      Widget header = Text.rich(TextSpan(
-        text: 'Rayshift Drops (',
-        children: [
-          TextSpan(text: S.current.quest_runs(curPhase.drops.first.runs)),
-          if (showDropHint) const CenterWidgetSpan(child: Icon(Icons.help_outline, size: 18)),
-          const TextSpan(text: ')'),
-        ],
-      ));
+      Widget header = Text.rich(
+        TextSpan(
+          text: 'Rayshift Drops (',
+          children: [
+            TextSpan(text: S.current.quest_runs(curPhase.drops.first.runs)),
+            if (showDropHint) const CenterWidgetSpan(child: Icon(Icons.help_outline, size: 18)),
+            const TextSpan(text: ')'),
+          ],
+        ),
+      );
       if (showDropHint) {
         header = InkWell(
           child: header,
@@ -812,24 +785,23 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
           },
         );
       }
-      children.add(Column(
-        children: [
-          const SizedBox(height: 3),
-          header,
-          if (_enemyHash == null && curPhase.allEnemies.any((e) => e.isRareOrAddition))
-            Text(
-              S.current.drops_warning_has_rare_enemy,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 12,
-                color: Colors.amber.shade900,
+      children.add(
+        Column(
+          children: [
+            const SizedBox(height: 3),
+            header,
+            if (_enemyHash == null && curPhase.allEnemies.any((e) => e.isRareOrAddition))
+              Text(
+                S.current.drops_warning_has_rare_enemy,
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 12, color: Colors.amber.shade900),
               ),
-            ),
-          const SizedBox(height: 2),
-          _getRayshiftDrops(curPhase, curPhase.drops, hasMultiEventItem && _sumEventItem),
-          const SizedBox(height: 3),
-        ],
-      ));
+            const SizedBox(height: 2),
+            _getRayshiftDrops(curPhase, curPhase.drops, hasMultiEventItem && _sumEventItem),
+            const SizedBox(height: 3),
+          ],
+        ),
+      );
     }
     return children;
   }
@@ -864,7 +836,7 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
             text: entry.value,
             width: _itemSize,
             option: ImageWithTextOption(fontSize: _itemSize * 0.27, padding: EdgeInsets.zero),
-          )
+          ),
       ],
     );
   }
@@ -920,19 +892,17 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
         }
         double base = Maths.sum(subdrops.map((e) => e.num * e.dropCount / e.runs));
         double bonus = Maths.sum(subdrops.map((e) => e.dropCount / e.runs));
-        children.add(drop.iconBuilder(
-          width: _itemSize,
-          context: context,
-          text: '${base.format(maxDigits: 3)}\n+${bonus.format(maxDigits: 3)}b',
-          option: ImageWithTextOption(textAlign: TextAlign.end, fontSize: _itemSize * 0.27, padding: EdgeInsets.zero),
-        ));
+        children.add(
+          drop.iconBuilder(
+            width: _itemSize,
+            context: context,
+            text: '${base.format(maxDigits: 3)}\n+${bonus.format(maxDigits: 3)}b',
+            option: ImageWithTextOption(textAlign: TextAlign.end, fontSize: _itemSize * 0.27, padding: EdgeInsets.zero),
+          ),
+        );
       }
     }
-    return Wrap(
-      spacing: 3,
-      runSpacing: 2,
-      children: children,
-    );
+    return Wrap(spacing: 3, runSpacing: 2, children: children);
   }
 
   Widget? getWarBoard() {
@@ -947,14 +917,14 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
           }
           final gifts = stage.squares.expand((e) => e.treasures).expand((e) => e.gifts);
           if (gifts.isNotEmpty) {
-            children.add(Wrap(
-              alignment: WrapAlignment.center,
-              spacing: 2,
-              runSpacing: 2,
-              children: [
-                for (final gift in gifts) gift.iconBuilder(context: context, width: _itemSize),
-              ],
-            ));
+            children.add(
+              Wrap(
+                alignment: WrapAlignment.center,
+                spacing: 2,
+                runSpacing: 2,
+                children: [for (final gift in gifts) gift.iconBuilder(context: context, width: _itemSize)],
+              ),
+            );
           }
           break;
         }
@@ -963,11 +933,7 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
     if (children.isEmpty) return null;
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 3),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: children,
-      ),
+      child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.center, children: children),
     );
   }
 
@@ -987,17 +953,19 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
               runSpacing: 4,
               children: [
                 for (final s in scripts)
-                  Text.rich(SharedBuilder.textButtonSpan(
-                    context: context,
-                    text: '{${s.shortId()}}',
-                    style: TextStyle(color: Theme.of(context).colorScheme.primaryContainer),
-                    onTap: () {
-                      s.routeTo(region: widget.region);
-                    },
-                  ))
+                  Text.rich(
+                    SharedBuilder.textButtonSpan(
+                      context: context,
+                      text: '{${s.shortId()}}',
+                      style: TextStyle(color: Theme.of(context).colorScheme.primaryContainer),
+                      onTap: () {
+                        s.routeTo(region: widget.region);
+                      },
+                    ),
+                  ),
               ],
             ),
-          )
+          ),
         ],
       ),
     );
@@ -1027,15 +995,10 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 for (final gifts in giftsList)
-                  Wrap(
-                    spacing: 1,
-                    runSpacing: 1,
-                    crossAxisAlignment: WrapCrossAlignment.center,
-                    children: gifts,
-                  )
+                  Wrap(spacing: 1, runSpacing: 1, crossAxisAlignment: WrapCrossAlignment.center, children: gifts),
               ],
             ),
-          )
+          ),
         ],
       ),
     );
@@ -1075,38 +1038,48 @@ class _QuestRestriction extends StatelessWidget {
           rangeText += 'Between(a≤x≤b)';
           break;
       }
-      children.add(CustomTable(
-        children: [
-          CustomTableRow(children: [
-            TableCellData(
-              text: getText(restriction: restriction, all: true, leading: true),
-              alignment: AlignmentDirectional.centerStart,
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-            )
-          ]),
-          CustomTableRow(children: [
-            TableCellData(text: S.current.general_type, isHeader: true),
-            TableCellData(text: restriction.restriction.type.name, flex: 3)
-          ]),
-          CustomTableRow(children: [
-            TableCellData(text: 'Value', isHeader: true),
-            TableCellData(
-              child: Text.rich(TextSpan(text: rangeText, children: [
-                if (re.targetVals.isNotEmpty && rangeText.isNotEmpty) const TextSpan(text: ': '),
-                ...guessVal(context, re.targetVals, restriction.restriction.type),
-                if (re.targetVals2.isNotEmpty) const TextSpan(text: '; '),
-                ...guessVal(context, re.targetVals2, restriction.restriction.type),
-              ])),
-              flex: 3,
-            )
-          ]),
-        ],
-      ));
+      children.add(
+        CustomTable(
+          children: [
+            CustomTableRow(
+              children: [
+                TableCellData(
+                  text: getText(restriction: restriction, all: true, leading: true),
+                  alignment: AlignmentDirectional.centerStart,
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                ),
+              ],
+            ),
+            CustomTableRow(
+              children: [
+                TableCellData(text: S.current.general_type, isHeader: true),
+                TableCellData(text: restriction.restriction.type.name, flex: 3),
+              ],
+            ),
+            CustomTableRow(
+              children: [
+                TableCellData(text: 'Value', isHeader: true),
+                TableCellData(
+                  child: Text.rich(
+                    TextSpan(
+                      text: rangeText,
+                      children: [
+                        if (re.targetVals.isNotEmpty && rangeText.isNotEmpty) const TextSpan(text: ': '),
+                        ...guessVal(context, re.targetVals, restriction.restriction.type),
+                        if (re.targetVals2.isNotEmpty) const TextSpan(text: '; '),
+                        ...guessVal(context, re.targetVals2, restriction.restriction.type),
+                      ],
+                    ),
+                  ),
+                  flex: 3,
+                ),
+              ],
+            ),
+          ],
+        ),
+      );
     }
-    return Scaffold(
-      appBar: AppBar(title: Text(S.current.quest_restriction)),
-      body: ListView(children: children),
-    );
+    return Scaffold(appBar: AppBar(title: Text(S.current.quest_restriction)), body: ListView(children: children));
   }
 
   List<InlineSpan> guessVal(BuildContext context, List<int> vals, RestrictionType type) {
@@ -1114,25 +1087,21 @@ class _QuestRestriction extends StatelessWidget {
       for (final val in vals)
         val > 99
             ? SharedBuilder.textButtonSpan(
-                context: context,
-                text: val.toString(),
-                onTap: () {
-                  if (type == RestrictionType.alloutBattleUniqueSvt) {
-                    router.push(url: Routes.eventI(val));
-                  } else {
-                    router.push(url: Routes.traitI(val));
-                  }
-                },
-              )
-            : TextSpan(text: val.toString())
+              context: context,
+              text: val.toString(),
+              onTap: () {
+                if (type == RestrictionType.alloutBattleUniqueSvt) {
+                  router.push(url: Routes.eventI(val));
+                } else {
+                  router.push(url: Routes.traitI(val));
+                }
+              },
+            )
+            : TextSpan(text: val.toString()),
     ], const TextSpan(text: ', '));
   }
 
-  static String getText({
-    required QuestPhaseRestriction restriction,
-    required bool all,
-    required bool leading,
-  }) {
+  static String getText({required QuestPhaseRestriction restriction, required bool all, required bool leading}) {
     final messages = <String>{};
     for (final msg in [restriction.noticeMessage, restriction.dialogMessage, restriction.restriction.name]) {
       if (msg.isNotEmpty && msg != '0') {

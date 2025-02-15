@@ -89,7 +89,7 @@ class _WarAssetListPageState extends State<WarAssetListPage> with AfterLayoutMix
         war.bgm,
         ...war.maps.map((e) => e.bgm),
         for (final warAdd in war.warAdds)
-          if (warAdd.type == WarOverwriteType.bgm) db.gameData.bgms[warAdd.overwriteId]
+          if (warAdd.type == WarOverwriteType.bgm) db.gameData.bgms[warAdd.overwriteId],
       ]) {
         if (bgm != null && bgm.id != 0 && bgm.audioAsset != null) {
           audios[bgm.audioAsset!] ??= bgm.fileName;
@@ -101,22 +101,23 @@ class _WarAssetListPageState extends State<WarAssetListPage> with AfterLayoutMix
     final reg = RegExp(r'\[([^\]]+)\]');
     bool anyFullscreen = false;
 
-    final futures = scripts.map<Future<String?>>((script) async {
-      if (force) await AtlasIconLoader.i.deleteFromDisk(script);
-      final fp = await AtlasIconLoader.i.get(script, allowWeb: true);
-      if (fp == null) return null;
-      try {
-        return FilePlus(fp).readAsString();
-      } catch (e, s) {
-        logger.e('read $fp failed', e, s);
-        return null;
-      } finally {
-        progress += 1;
-        if (mounted) {
-          setState(() {});
-        }
-      }
-    }).toList();
+    final futures =
+        scripts.map<Future<String?>>((script) async {
+          if (force) await AtlasIconLoader.i.deleteFromDisk(script);
+          final fp = await AtlasIconLoader.i.get(script, allowWeb: true);
+          if (fp == null) return null;
+          try {
+            return FilePlus(fp).readAsString();
+          } catch (e, s) {
+            logger.e('read $fp failed', e, s);
+            return null;
+          } finally {
+            progress += 1;
+            if (mounted) {
+              setState(() {});
+            }
+          }
+        }).toList();
     for (final _content in futures) {
       final content = await _content;
       if (content == null) continue;
@@ -160,24 +161,28 @@ class _WarAssetListPageState extends State<WarAssetListPage> with AfterLayoutMix
               default:
                 return null;
             }
-          })
+          }),
         ].whereType(),
         ...bgImages,
       };
     }
 
-    bgImages.removeWhere((url) => [
-          '/Back/back10000.png',
-          '/Back/back10001.png',
-          '/Back/back10000_1344_626.png',
-          '/Back/back10001_1344_626.png',
-        ].any((e) => url.endsWith(e)));
-    figures.removeWhere((url) => [
-          '/Image/back10000/back10000.png',
-          '/Image/back10001/back10001.png',
-          '/Image/cut063_cinema/cut063_cinema.png',
-          '/Image/cut063_cinema_fs/cut063_cinema_fs.png'
-        ].any((e) => url.endsWith(e)));
+    bgImages.removeWhere(
+      (url) => [
+        '/Back/back10000.png',
+        '/Back/back10001.png',
+        '/Back/back10000_1344_626.png',
+        '/Back/back10001_1344_626.png',
+      ].any((e) => url.endsWith(e)),
+    );
+    figures.removeWhere(
+      (url) => [
+        '/Image/back10000/back10000.png',
+        '/Image/back10001/back10001.png',
+        '/Image/cut063_cinema/cut063_cinema.png',
+        '/Image/cut063_cinema_fs/cut063_cinema_fs.png',
+      ].any((e) => url.endsWith(e)),
+    );
     _loading = false;
     if (mounted) setState(() {});
   }
@@ -281,32 +286,33 @@ class _WarAssetListPageState extends State<WarAssetListPage> with AfterLayoutMix
           title: Text(widget.war?.lName.l ?? widget.title ?? S.current.media_assets),
           actions: [
             PopupMenuButton(
-              itemBuilder: (context) => [
-                PopupMenuItem(
-                  child: Text(S.current.refresh),
-                  onTap: () => fetchData(force: true),
-                )
-              ],
-            )
+              itemBuilder:
+                  (context) => [PopupMenuItem(child: Text(S.current.refresh), onTap: () => fetchData(force: true))],
+            ),
           ],
-          bottom: _loading
-              ? null
-              : FixedHeight.tabBar(TabBar(
-                  isScrollable: true, tabAlignment: TabAlignment.center, tabs: tabs.map((e) => e.item1).toList())),
-        ),
-        body: _loading
-            ? Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Center(
-                    child: CircularProgressIndicator(value: total > 0 ? progress / total : null),
+          bottom:
+              _loading
+                  ? null
+                  : FixedHeight.tabBar(
+                    TabBar(
+                      isScrollable: true,
+                      tabAlignment: TabAlignment.center,
+                      tabs: tabs.map((e) => e.item1).toList(),
+                    ),
                   ),
-                  const SizedBox(height: 16),
-                  Text('${S.current.downloading}  $progress/$total'),
-                ],
-              )
-            : TabBarView(children: tabs.map((e) => e.item2).toList()),
+        ),
+        body:
+            _loading
+                ? Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Center(child: CircularProgressIndicator(value: total > 0 ? progress / total : null)),
+                    const SizedBox(height: 16),
+                    Text('${S.current.downloading}  $progress/$total'),
+                  ],
+                )
+                : TabBarView(children: tabs.map((e) => e.item2).toList()),
       ),
     );
   }
@@ -320,16 +326,10 @@ class _WarAssetListPageState extends State<WarAssetListPage> with AfterLayoutMix
           constraints: const BoxConstraints(maxHeight: 300),
           child: CachedImage(
             imageUrl: bgImages[index],
-            placeholder: (_, __) => AspectRatio(
-              aspectRatio: url.endsWith('_1344_626.png') ? 1344 / 626 : 1024 / 626,
-            ),
+            placeholder: (_, __) => AspectRatio(aspectRatio: url.endsWith('_1344_626.png') ? 1344 / 626 : 1024 / 626),
             showSaveOnLongPress: true,
             viewFullOnTap: true,
-            cachedOption: CachedImageOption(
-              errorWidget: (context, url, error) => Center(
-                child: Text(url.breakWord),
-              ),
-            ),
+            cachedOption: CachedImageOption(errorWidget: (context, url, error) => Center(child: Text(url.breakWord))),
             onTap: () {
               FullscreenImageViewer.show(context: context, urls: bgImages, initialPage: index);
             },
@@ -356,9 +356,8 @@ class _WarAssetListPageState extends State<WarAssetListPage> with AfterLayoutMix
           cachedOption: CachedImageOption(
             alignment: charaFigure ? Alignment.topCenter : Alignment.center,
             fit: charaFigure ? BoxFit.fitWidth : null,
-            errorWidget: (context, url, error) => Center(
-              child: Text((kReleaseMode ? url.split('/').last : url).breakWord),
-            ),
+            errorWidget:
+                (context, url, error) => Center(child: Text((kReleaseMode ? url.split('/').last : url).breakWord)),
           ),
           onTap: () {
             FullscreenImageViewer.show(context: context, urls: figures, initialPage: index);

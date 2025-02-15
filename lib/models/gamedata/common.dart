@@ -19,8 +19,7 @@ enum Region {
   cn(Language.chs),
   tw(Language.cht),
   na(Language.en),
-  kr(Language.ko),
-  ;
+  kr(Language.ko);
 
   final Language language;
   const Region(this.language);
@@ -228,13 +227,7 @@ class Bgm with RouteInfo {
   bool notReleased;
   String? audioAsset;
 
-  Bgm({
-    required this.id,
-    this.name = '',
-    this.fileName = "",
-    this.notReleased = true,
-    this.audioAsset,
-  });
+  Bgm({required this.id, this.name = '', this.fileName = "", this.notReleased = true, this.audioAsset});
 
   Transl<String, String> get lName => Transl.bgmNames(name);
 
@@ -260,11 +253,7 @@ class StageLink {
   int phase;
   int stage;
 
-  StageLink({
-    this.questId = 0,
-    this.phase = 1,
-    this.stage = 1,
-  });
+  StageLink({this.questId = 0, this.phase = 1, this.stage = 1});
   factory StageLink.fromJson(Map<String, dynamic> json) => _$StageLinkFromJson(json);
 
   Map<String, dynamic> toJson() => _$StageLinkToJson(this);
@@ -280,8 +269,7 @@ enum CardType {
   blank(5),
   weak(10),
   strength(11),
-  extra2(104),
-  ;
+  extra2(104);
 
   final int value;
   const CardType(this.value);
@@ -318,9 +306,7 @@ class CardTypeConverter implements JsonConverter<CardType, String> {
     return _$CardTypeEnumMap[card] ?? card.name;
   }
 
-  static final Map<String, CardType> deprecatedTypes = {
-    "addattack2": CardType.extra2,
-  };
+  static final Map<String, CardType> deprecatedTypes = {"addattack2": CardType.extra2};
 }
 
 @JsonEnum(alwaysCreate: true)
@@ -379,8 +365,7 @@ enum SvtClass {
   EXTRA2(1005, 'EXTRA2'), // ignore: constant_identifier_names
   uOlgaMarieFlareCollection(9001),
   uOlgaMarieAquaCollection(9002),
-  beastAny(33, '獸'),
-  ;
+  beastAny(33, '獸');
 
   final int value;
   final String shortName;
@@ -409,9 +394,7 @@ class SvtClassConverter implements JsonConverter<SvtClass, String> {
     return mapping.entries.firstWhereOrNull((entry) => entry.value.name == value)?.key;
   }
 
-  static final Map<String, SvtClass> deprecatedTypes = {
-    "beast": SvtClass.beastDoraco,
-  };
+  static final Map<String, SvtClass> deprecatedTypes = {"beast": SvtClass.beastDoraco};
 }
 
 const _kSvtClassRarityMap = {0: 0, 1: 1, 2: 1, 3: 2, 4: 3, 5: 3};
@@ -427,11 +410,7 @@ extension SvtClassX on SvtClass {
   static String clsIcon(int clsId, int svtRarity, [int? iconId]) {
     iconId ??= ConstData.classInfo[clsId]?.iconImageId;
     int rarity = _kSvtClassRarityMap[svtRarity] ?? svtRarity;
-    rarity = const <int, int>{
-          1003: 2,
-          17: 3,
-        }[iconId] ??
-        rarity;
+    rarity = const <int, int>{1003: 2, 17: 3}[iconId] ?? rarity;
     return Atlas.asset('ClassIcons/class${rarity}_${iconId ?? 12}.png');
   }
 
@@ -441,15 +420,9 @@ extension SvtClassX on SvtClass {
 
   String get lName => Transl.svtClassId(value).l;
 
-  static List<SvtClass> regularAll = [
-    ...regular,
-    ...extra,
-  ];
+  static List<SvtClass> regularAll = [...regular, ...extra];
 
-  static List<SvtClass> regularAllWithBeasts = <SvtClass>{
-    ...regularAll,
-    ...beasts,
-  }.toList();
+  static List<SvtClass> regularAllWithBeasts = <SvtClass>{...regularAll, ...beasts}.toList();
 
   static const regular = <SvtClass>[
     SvtClass.saber,
@@ -461,23 +434,10 @@ extension SvtClassX on SvtClass {
     SvtClass.berserker,
   ];
 
-  static const extraI = <SvtClass>[
-    SvtClass.ruler,
-    SvtClass.avenger,
-    SvtClass.moonCancer,
-    SvtClass.shielder,
-  ];
+  static const extraI = <SvtClass>[SvtClass.ruler, SvtClass.avenger, SvtClass.moonCancer, SvtClass.shielder];
 
-  static const extraII = <SvtClass>[
-    SvtClass.alterEgo,
-    SvtClass.foreigner,
-    SvtClass.pretender,
-    SvtClass.beastAny,
-  ];
-  static const extra = <SvtClass>[
-    ...extraI,
-    ...extraII,
-  ];
+  static const extraII = <SvtClass>[SvtClass.alterEgo, SvtClass.foreigner, SvtClass.pretender, SvtClass.beastAny];
+  static const extra = <SvtClass>[...extraI, ...extraII];
   static const beasts = <SvtClass>[
     SvtClass.beastDoraco,
     SvtClass.beastEresh,
@@ -523,17 +483,17 @@ extension SvtClassX on SvtClass {
       _ => [svtClass],
     };
     return <SvtClass>{
-      for (final svtClass in svtClasses) ...(svtClass == SvtClass.beastAny ? beasts : [svtClass])
+      for (final svtClass in svtClasses) ...(svtClass == SvtClass.beastAny ? beasts : [svtClass]),
     }.toList();
   }
 }
 
 /// non-JP may not contains the last class
 Set<int> get kSvtClassIdsPlayableAll => {
-      //
-      1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 23, 25, 28, 33, 38,
-      ...ConstData.constantStr.playableBeastClassIds,
-    };
+  //
+  1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 23, 25, 28, 33, 38,
+  ...ConstData.constantStr.playableBeastClassIds,
+};
 const kSvtClassIdsPlayableAlways = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 23, 25, 28];
 final kSvtClassIds = {for (final v in SvtClass.values) v.value: v};
 
@@ -549,8 +509,7 @@ enum SvtClassSupportGroupType {
   extra(8),
   mix(9),
   recommend(10),
-  notSupport(999),
-  ;
+  notSupport(999);
 
   const SvtClassSupportGroupType(this.value);
   final int value;
@@ -865,8 +824,7 @@ enum Trait {
   eventBattleInNewYork2(94000092),
   eventSaberWarsII(94000095),
   eventSummerCamp(94000107),
-  eventGuda5(94000108),
-  ;
+  eventGuda5(94000108);
 
   final int value;
   const Trait(this.value);
@@ -1118,8 +1076,7 @@ enum CondType {
   imagePartsGroup(241),
   userLevelAbove(242),
   userLevelBelow(243),
-  userLevelEqual(244),
-  ;
+  userLevelEqual(244);
 
   const CondType(this.value);
   final int value;
@@ -1133,13 +1090,7 @@ class CommonConsume {
   int objectId;
   int num;
 
-  CommonConsume({
-    required this.id,
-    this.priority = 0,
-    required this.type,
-    required this.objectId,
-    required this.num,
-  });
+  CommonConsume({required this.id, this.priority = 0, required this.type, required this.objectId, required this.num});
 
   factory CommonConsume.fromJson(Map<String, dynamic> json) => _$CommonConsumeFromJson(json);
 

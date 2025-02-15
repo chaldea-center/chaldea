@@ -13,23 +13,18 @@ class SvtClassWidget extends StatelessWidget {
 
   static TextSpan rich({required BuildContext context, required int classId, int? rarity}) {
     void onTap() => router.push(url: Routes.svtClassI(classId));
-    return TextSpan(children: [
-      CenterWidgetSpan(
-        child: db.getIconImage(SvtClassX.clsIcon(classId, rarity ?? 5), width: 20, aspectRatio: 1, onTap: onTap),
-      ),
-      SharedBuilder.textButtonSpan(
-        context: context,
-        text: ' ${Transl.svtClassId(classId).l}',
-        onTap: onTap,
-      )
-    ]);
+    return TextSpan(
+      children: [
+        CenterWidgetSpan(
+          child: db.getIconImage(SvtClassX.clsIcon(classId, rarity ?? 5), width: 20, aspectRatio: 1, onTap: onTap),
+        ),
+        SharedBuilder.textButtonSpan(context: context, text: ' ${Transl.svtClassId(classId).l}', onTap: onTap),
+      ],
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Text.rich(
-      rich(context: context, classId: classId, rarity: rarity),
-      textAlign: TextAlign.center,
-    );
+    return Text.rich(rich(context: context, classId: classId, rarity: rarity), textAlign: TextAlign.center);
   }
 }

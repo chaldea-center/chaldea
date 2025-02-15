@@ -14,13 +14,14 @@ class SkillActSelectDialog extends StatelessWidget {
   final int skillLevel;
   final Completer<int> completer;
 
-  const SkillActSelectDialog(
-      {super.key,
-      required this.battleData,
-      required this.activator,
-      required this.skill,
-      required this.skillLevel,
-      required this.completer});
+  const SkillActSelectDialog({
+    super.key,
+    required this.battleData,
+    required this.activator,
+    required this.skill,
+    required this.skillLevel,
+    required this.completer,
+  });
 
   static Future<int> show(
     final BattleData battleData,
@@ -31,13 +32,14 @@ class SkillActSelectDialog extends StatelessWidget {
     if (!battleData.mounted) return Future.value(-1);
     return showUserConfirm<int>(
       context: battleData.context!,
-      builder: (context, completer) => SkillActSelectDialog(
-        battleData: battleData,
-        activator: activator,
-        skill: skill,
-        skillLevel: skillLevel,
-        completer: completer,
-      ),
+      builder:
+          (context, completer) => SkillActSelectDialog(
+            battleData: battleData,
+            activator: activator,
+            skill: skill,
+            skillLevel: skillLevel,
+            completer: completer,
+          ),
     );
   }
 
@@ -71,14 +73,23 @@ class SkillActSelectDialog extends StatelessWidget {
               ),
             );
             return TextButton(
-              onPressed: button.conds.every((cond) =>
-                      !BattleSkillInfoData.checkSkillScriptCondition(battleData, activator, cond.cond, cond.value))
-                  ? null
-                  : () {
-                      Navigator.of(context).pop(index);
-                      battleData.battleLogger
-                          .action('${S.current.battle_select_effect}: ${transl('Option').l} ${index + 1}');
-                    },
+              onPressed:
+                  button.conds.every(
+                        (cond) =>
+                            !BattleSkillInfoData.checkSkillScriptCondition(
+                              battleData,
+                              activator,
+                              cond.cond,
+                              cond.value,
+                            ),
+                      )
+                      ? null
+                      : () {
+                        Navigator.of(context).pop(index);
+                        battleData.battleLogger.action(
+                          '${S.current.battle_select_effect}: ${transl('Option').l} ${index + 1}',
+                        );
+                      },
               child: textWidget,
             );
           }),

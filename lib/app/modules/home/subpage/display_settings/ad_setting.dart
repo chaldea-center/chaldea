@@ -58,9 +58,9 @@ class _AdSettingPageState extends State<AdSettingPage> {
                 onTap: () {
                   router.pushPage(FeedbackPage());
                 },
-              )
+              ),
             ],
-          )
+          ),
         ],
       ),
     );

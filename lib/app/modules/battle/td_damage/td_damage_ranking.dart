@@ -56,10 +56,7 @@ class _TdDamageRankingState extends State<TdDamageRanking> with SingleTickerProv
               }
             },
           ),
-          TdDmgRankingTab(
-            solver: solver,
-            svtFilterData: svtFilterData,
-          ),
+          TdDmgRankingTab(solver: solver, svtFilterData: svtFilterData),
         ];
 
         final useTabView = constraints.maxWidth < 600;
@@ -67,17 +64,10 @@ class _TdDamageRankingState extends State<TdDamageRanking> with SingleTickerProv
         if (useTabView) {
           body = TabBarView(
             controller: _tabController,
-            children: [
-              for (final page in pages) KeepAliveBuilder(builder: (_) => page),
-            ],
+            children: [for (final page in pages) KeepAliveBuilder(builder: (_) => page)],
           );
         } else {
-          body = Row(
-            children: divideList(
-              [for (final page in pages) Expanded(child: page)],
-              kVerticalDivider,
-            ),
-          );
+          body = Row(children: divideList([for (final page in pages) Expanded(child: page)], kVerticalDivider));
         }
         return Scaffold(
           appBar: AppBar(
@@ -87,30 +77,32 @@ class _TdDamageRankingState extends State<TdDamageRanking> with SingleTickerProv
               IconButton(
                 icon: const Icon(Icons.filter_alt),
                 tooltip: S.current.filter,
-                onPressed: () => FilterPage.show(
-                  context: context,
-                  builder: (context) => ServantFilterPage(
-                    filterData: svtFilterData,
-                    onChanged: (_) {
-                      if (mounted) {
-                        setState(() {});
-                      }
-                    },
-                    planMode: false,
-                    showSort: false,
-                  ),
-                ),
+                onPressed:
+                    () => FilterPage.show(
+                      context: context,
+                      builder:
+                          (context) => ServantFilterPage(
+                            filterData: svtFilterData,
+                            onChanged: (_) {
+                              if (mounted) {
+                                setState(() {});
+                              }
+                            },
+                            planMode: false,
+                            showSort: false,
+                          ),
+                    ),
               ),
             ],
-            bottom: useTabView
-                ? FixedHeight.tabBar(TabBar(
-                    controller: _tabController,
-                    tabs: [
-                      Tab(text: S.current.options),
-                      Tab(text: S.current.damage),
-                    ],
-                  ))
-                : null,
+            bottom:
+                useTabView
+                    ? FixedHeight.tabBar(
+                      TabBar(
+                        controller: _tabController,
+                        tabs: [Tab(text: S.current.options), Tab(text: S.current.damage)],
+                      ),
+                    )
+                    : null,
           ),
           body: body,
         );

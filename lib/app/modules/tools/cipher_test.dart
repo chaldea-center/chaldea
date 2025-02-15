@@ -67,9 +67,7 @@ class _CipherTestPageState extends State<CipherTestPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Ciphers'),
-      ),
+      appBar: AppBar(title: const Text('Ciphers')),
       body: ListView(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
         children: [
@@ -91,14 +89,11 @@ class _CipherTestPageState extends State<CipherTestPage> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: divideList(
-                  [
-                    Text(output.length > 1000 ? output.substring(0, 1000) : output),
-                    if (error != null)
-                      Text(error.toString(), style: TextStyle(color: Theme.of(context).colorScheme.error))
-                  ],
-                  const SizedBox(height: 8),
-                ),
+                children: divideList([
+                  Text(output.length > 1000 ? output.substring(0, 1000) : output),
+                  if (error != null)
+                    Text(error.toString(), style: TextStyle(color: Theme.of(context).colorScheme.error)),
+                ], const SizedBox(height: 8)),
               ),
             ),
           ),
@@ -168,11 +163,9 @@ class _CipherTestPageState extends State<CipherTestPage> {
               FilledButton(
                 onPressed: () {
                   testCipher((input) {
-                    return _tryUtf8OrB64(encryptDES3(
-                      _tryB64Decode(input),
-                      getSecretBytes(_kDES3Key),
-                      getSecretBytes(_kDES3IV),
-                    ));
+                    return _tryUtf8OrB64(
+                      encryptDES3(_tryB64Decode(input), getSecretBytes(_kDES3Key), getSecretBytes(_kDES3IV)),
+                    );
                   });
                 },
                 child: const Text('Encrypt'),
@@ -180,11 +173,9 @@ class _CipherTestPageState extends State<CipherTestPage> {
               FilledButton(
                 onPressed: () {
                   testCipher((input) {
-                    return _tryUtf8OrB64(decryptDES3(
-                      _tryB64Decode(input),
-                      getSecretBytes(_kDES3Key),
-                      getSecretBytes(_kDES3IV),
-                    ));
+                    return _tryUtf8OrB64(
+                      decryptDES3(_tryB64Decode(input), getSecretBytes(_kDES3Key), getSecretBytes(_kDES3IV)),
+                    );
                   });
                 },
                 child: const Text('Decrypt'),
@@ -201,11 +192,9 @@ class _CipherTestPageState extends State<CipherTestPage> {
               FilledButton(
                 onPressed: () {
                   testCipher((input) {
-                    return _tryUtf8OrB64(encryptRijndael(
-                      _tryB64Decode(input),
-                      getSecretBytes(_kDES3Key),
-                      getSecretBytes(_kDES3IV),
-                    ));
+                    return _tryUtf8OrB64(
+                      encryptRijndael(_tryB64Decode(input), getSecretBytes(_kDES3Key), getSecretBytes(_kDES3IV)),
+                    );
                   });
                 },
                 child: const Text('Encrypt'),
@@ -213,11 +202,9 @@ class _CipherTestPageState extends State<CipherTestPage> {
               FilledButton(
                 onPressed: () {
                   testCipher((input) {
-                    return _tryUtf8OrB64(decryptRijndael(
-                      _tryB64Decode(input),
-                      getSecretBytes(_kDES3Key),
-                      getSecretBytes(_kDES3IV),
-                    ));
+                    return _tryUtf8OrB64(
+                      decryptRijndael(_tryB64Decode(input), getSecretBytes(_kDES3Key), getSecretBytes(_kDES3IV)),
+                    );
                   });
                 },
                 child: const Text('Decrypt'),
@@ -283,7 +270,7 @@ class _CipherTestPageState extends State<CipherTestPage> {
             }
             router.pushPage(FormDataViewer(data: formData));
           },
-        )
+        ),
       ],
     ).showDialog(context);
   }

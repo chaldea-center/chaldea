@@ -44,17 +44,19 @@ class AprilFoolSvtListPageState extends State<AprilFoolSvtListPage>
           IconButton(
             icon: const Icon(Icons.filter_alt),
             tooltip: S.current.filter,
-            onPressed: () => FilterPage.show(
-              context: context,
-              builder: (context) => AprilFoolSvtFilterPage(
-                filterData: filterData,
-                onChanged: (_) {
-                  if (mounted) {
-                    setState(() {});
-                  }
-                },
-              ),
-            ),
+            onPressed:
+                () => FilterPage.show(
+                  context: context,
+                  builder:
+                      (context) => AprilFoolSvtFilterPage(
+                        filterData: filterData,
+                        onChanged: (_) {
+                          if (mounted) {
+                            setState(() {});
+                          }
+                        },
+                      ),
+                ),
           ),
           searchIcon,
         ],
@@ -75,11 +77,7 @@ class AprilFoolSvtListPageState extends State<AprilFoolSvtListPage>
 
   @override
   Widget gridItemBuilder(AprilFoolSvtData svt) {
-    return db.getIconImage(
-      svt.icon,
-      width: 72,
-      onTap: () => _onTap(svt),
-    );
+    return db.getIconImage(svt.icon, width: 72, onTap: () => _onTap(svt));
   }
 
   void _onTap(AprilFoolSvtData svt) {

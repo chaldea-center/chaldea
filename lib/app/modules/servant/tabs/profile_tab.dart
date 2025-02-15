@@ -19,11 +19,7 @@ class SvtLoreTab extends StatefulWidget {
   State<SvtLoreTab> createState() => _SvtLoreTabState();
 }
 
-enum _WikiSource {
-  mc,
-  fandom,
-  aprilFool,
-}
+enum _WikiSource { mc, fandom, aprilFool }
 
 class _SvtLoreTabState extends State<SvtLoreTab> {
   _WikiSource? _wikiSource;
@@ -98,7 +94,7 @@ class _SvtLoreTabState extends State<SvtLoreTab> {
             ),
           ),
         ),
-        SafeArea(child: buttonBar)
+        SafeArea(child: buttonBar),
       ],
     );
   }
@@ -164,23 +160,13 @@ class _SvtLoreTabState extends State<SvtLoreTab> {
         case CondType.none:
           return null;
         case CondType.questClear:
-          return CondTargetValueDescriptor(
-            condType: condType,
-            target: condValue,
-            value: 0,
-            textScaleFactor: 0.9,
-          );
+          return CondTargetValueDescriptor(condType: condType, target: condValue, value: 0, textScaleFactor: 0.9);
         case CondType.svtFriendship:
           return Text('${S.current.bond} Lv.$condValue', textScaler: const TextScaler.linear(0.9));
         case CondType.svtLimit:
           return Text('${S.current.ascension_short} Lv.$condValue', textScaler: const TextScaler.linear(0.9));
         case CondType.svtGet:
-          return CondTargetValueDescriptor(
-            condType: condType,
-            target: condValue,
-            value: 0,
-            textScaleFactor: 0.9,
-          );
+          return CondTargetValueDescriptor(condType: condType, target: condValue, value: 0, textScaleFactor: 0.9);
         default:
           break;
       }
@@ -222,33 +208,36 @@ class _SvtLoreTabState extends State<SvtLoreTab> {
         conds.add(Text('(${lore.condMessage})', textScaler: const TextScaler.linear(0.85)));
       }
 
-      children.add(ProfileCommentCard(
-        title: Text(title),
-        subtitle: conds.any((e) => e != null)
-            ? Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: conds.whereType<Widget>().toList(),
-              )
-            : null,
-        comment: lore.comment,
-      ));
+      children.add(
+        ProfileCommentCard(
+          title: Text(title),
+          subtitle:
+              conds.any((e) => e != null)
+                  ? Column(crossAxisAlignment: CrossAxisAlignment.start, children: conds.whereType<Widget>().toList())
+                  : null,
+          comment: lore.comment,
+        ),
+      );
     }
     if (comments.isEmpty) {
-      children.add(Center(
-        child: Padding(
-          padding: const EdgeInsets.all(48),
-          child: _loading
-              ? const CircularProgressIndicator()
-              : RefreshButton(
-                  text: '???',
-                  onPressed: () {
-                    if (_region != null) {
-                      fetchSvt(_region!);
-                    }
-                  },
-                ),
+      children.add(
+        Center(
+          child: Padding(
+            padding: const EdgeInsets.all(48),
+            child:
+                _loading
+                    ? const CircularProgressIndicator()
+                    : RefreshButton(
+                      text: '???',
+                      onPressed: () {
+                        if (_region != null) {
+                          fetchSvt(_region!);
+                        }
+                      },
+                    ),
+          ),
         ),
-      ));
+      );
     }
     return children;
   }
@@ -278,11 +267,7 @@ class _SvtLoreTabState extends State<SvtLoreTab> {
     for (final region in Region.values) {
       final text = widget.svt.extra.aprilFoolProfile.ofRegion(region);
       if (text == null) continue;
-      children.add(ProfileCommentCard(
-        title: Text(S.current.april_fool),
-        subtitle: Text(region.upper),
-        comment: text,
-      ));
+      children.add(ProfileCommentCard(title: Text(S.current.april_fool), subtitle: Text(region.upper), comment: text));
     }
     return children;
   }
@@ -294,13 +279,7 @@ class ProfileCommentCard extends StatelessWidget {
   final String comment;
   final EdgeInsetsGeometry? margin;
 
-  const ProfileCommentCard({
-    super.key,
-    required this.title,
-    this.subtitle,
-    required this.comment,
-    this.margin,
-  });
+  const ProfileCommentCard({super.key, required this.title, this.subtitle, required this.comment, this.margin});
 
   @override
   Widget build(BuildContext context) {
@@ -330,7 +309,7 @@ class ProfileCommentCard extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             child: Text(comment, textScaler: const TextScaler.linear(0.9)),
-          )
+          ),
         ],
       ),
     );

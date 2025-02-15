@@ -37,11 +37,7 @@ class _GroupData {
   final int? rarity;
   final Map<_SEScope, Set<GameCardMixin>> cards = {};
 
-  _GroupData({
-    required this.traits,
-    required this.useAnd,
-    required this.rarity,
-  });
+  _GroupData({required this.traits, required this.useAnd, required this.rarity});
 }
 
 class SvtSpDmgTab extends StatefulWidget {
@@ -61,26 +57,30 @@ class _SvtSpDmgTabState extends State<SvtSpDmgTab> with SingleTickerProviderStat
       ...widget.svt.skills,
       ...widget.svt.classPassive,
       ...widget.svt.extraPassiveNonEvent,
-      ...widget.svt.noblePhantasms
-    ].any((skill) => skill.functions.any((func) =>
-        (const [BuffType.upDamage, BuffType.upDamageIndividuality, BuffType.upDamageIndividualityActiveonly]
-                .contains(func.buff?.type) &&
-            func.buff?.ckOpIndv.isNotEmpty == true) ||
-        const [
-          FuncType.damageNpIndividual,
-          FuncType.damageNpAndOrCheckIndividuality,
-          FuncType.damageNpIndividualSum,
-          FuncType.damageNpStateIndividualFix
-        ].contains(func.funcType)));
+      ...widget.svt.noblePhantasms,
+    ].any(
+      (skill) => skill.functions.any(
+        (func) =>
+            (const [
+                  BuffType.upDamage,
+                  BuffType.upDamageIndividuality,
+                  BuffType.upDamageIndividualityActiveonly,
+                ].contains(func.buff?.type) &&
+                func.buff?.ckOpIndv.isNotEmpty == true) ||
+            const [
+              FuncType.damageNpIndividual,
+              FuncType.damageNpAndOrCheckIndividuality,
+              FuncType.damageNpIndividualSum,
+              FuncType.damageNpStateIndividualFix,
+            ].contains(func.funcType),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     if (!hasSpDmg) {
-      return SpDmgIndivTab(
-        svtIndivs: widget.svt.traitsAll.toList(),
-        svtRarity: widget.svt.rarity,
-      );
+      return SpDmgIndivTab(svtIndivs: widget.svt.traitsAll.toList(), svtRarity: widget.svt.rarity);
     }
     return DefaultTabController(
       length: 2,
@@ -93,22 +93,23 @@ class _SvtSpDmgTabState extends State<SvtSpDmgTab> with SingleTickerProviderStat
                 child: SizedBox(
                   height: 36,
                   child: TabBar(
-                    tabs: ["vs. Others", "vs. this"]
-                        .map((e) => Tab(child: Text(e, style: Theme.of(context).textTheme.bodyMedium)))
-                        .toList(),
+                    tabs:
+                        [
+                          "vs. Others",
+                          "vs. this",
+                        ].map((e) => Tab(child: Text(e, style: Theme.of(context).textTheme.bodyMedium))).toList(),
                   ),
                 ),
               ),
             ],
           ),
           Expanded(
-            child: TabBarView(children: [
-              SpDmgSelfTab(svt: widget.svt),
-              SpDmgIndivTab(
-                svtIndivs: widget.svt.traitsAll.toList(),
-                svtRarity: widget.svt.rarity,
-              ),
-            ]),
+            child: TabBarView(
+              children: [
+                SpDmgSelfTab(svt: widget.svt),
+                SpDmgIndivTab(svtIndivs: widget.svt.traitsAll.toList(), svtRarity: widget.svt.rarity),
+              ],
+            ),
           ),
         ],
       ),
@@ -122,10 +123,12 @@ class SpDmgSelfTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView(children: [
-      for (final skill in [...svt.skills, ...svt.classPassive, ...svt.extraPassiveNonEvent, ...svt.noblePhantasms])
-        ...checkSkills(context, skill),
-    ]);
+    return ListView(
+      children: [
+        for (final skill in [...svt.skills, ...svt.classPassive, ...svt.extraPassiveNonEvent, ...svt.noblePhantasms])
+          ...checkSkills(context, skill),
+      ],
+    );
   }
 
   List<Widget> checkSkills(BuildContext context, SkillOrTd skill) {
@@ -135,8 +138,11 @@ class SpDmgSelfTab extends StatelessWidget {
       bool useAnd = false;
       final buff = func.buff;
       if (buff != null &&
-          const [BuffType.upDamage, BuffType.upDamageIndividuality, BuffType.upDamageIndividualityActiveonly]
-              .contains(buff.type) &&
+          const [
+            BuffType.upDamage,
+            BuffType.upDamageIndividuality,
+            BuffType.upDamageIndividualityActiveonly,
+          ].contains(buff.type) &&
           buff.ckOpIndv.isNotEmpty) {
         traits = buff.ckOpIndv;
         useAnd = buff.script.checkIndvTypeAnd == true;
@@ -160,26 +166,30 @@ class SpDmgSelfTab extends StatelessWidget {
           const Divider(indent: 16, endIndent: 16, thickness: 0.5),
         ]);
         if (useAnd) {
-          parts.add(ListTile(
-            dense: true,
-            selected: true,
-            selectedColor: AppTheme(context).tertiary,
-            title: Text(traits.map((e) => e.shownName()).join(" & ")),
-            trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
-            onTap: () {
-              router.pushPage(TraitDetailPage.ids(ids: traits.map((e) => e.signedId).toList()));
-            },
-          ));
-        } else {
-          for (final trait in traits) {
-            parts.add(ListTile(
+          parts.add(
+            ListTile(
               dense: true,
               selected: true,
               selectedColor: AppTheme(context).tertiary,
-              title: Text(trait.shownName()),
+              title: Text(traits.map((e) => e.shownName()).join(" & ")),
               trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
-              onTap: trait.routeTo,
-            ));
+              onTap: () {
+                router.pushPage(TraitDetailPage.ids(ids: traits.map((e) => e.signedId).toList()));
+              },
+            ),
+          );
+        } else {
+          for (final trait in traits) {
+            parts.add(
+              ListTile(
+                dense: true,
+                selected: true,
+                selectedColor: AppTheme(context).tertiary,
+                title: Text(trait.shownName()),
+                trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
+                onTap: trait.routeTo,
+              ),
+            );
           }
         }
       }
@@ -193,16 +203,17 @@ class SpDmgSelfTab extends StatelessWidget {
             children: [
               ListTile(
                 dense: true,
-                leading: skill is BaseTd
-                    ? CommandCardWidget(card: skill.svt.card, width: 32)
-                    : db.getIconImage(skill.icon, width: 28),
+                leading:
+                    skill is BaseTd
+                        ? CommandCardWidget(card: skill.svt.card, width: 32)
+                        : db.getIconImage(skill.icon, width: 28),
                 title: Text(skill.lName.l),
                 onTap: skill.routeTo,
               ),
               ...parts,
             ],
           ),
-        )
+        ),
       ];
     }
     return [];
@@ -244,8 +255,12 @@ class _SpDmgIndivTabState extends State<SpDmgIndivTab> {
   void initData() {
     data.clear();
     for (final card in db.gameData.servantsById.values) {
-      checkBuffType(_SEScope.buff, card,
-          [...card.skills, ...card.classPassive, ...card.extraPassiveNonEvent, ...card.noblePhantasms]);
+      checkBuffType(_SEScope.buff, card, [
+        ...card.skills,
+        ...card.classPassive,
+        ...card.extraPassiveNonEvent,
+        ...card.noblePhantasms,
+      ]);
       checkTdSE(_SEScope.td, card, card.noblePhantasms);
     }
     for (final card in db.gameData.craftEssencesById.values) {
@@ -354,18 +369,20 @@ class _SpDmgIndivTabState extends State<SpDmgIndivTab> {
               IconButton(
                 icon: const Icon(Icons.filter_alt),
                 tooltip: '${S.current.filter} (${S.current.servant})',
-                onPressed: () => FilterPage.show(
-                  context: context,
-                  builder: (context) => ServantFilterPage(
-                    filterData: svtFilter,
-                    onChanged: (_) {
-                      if (mounted) {
-                        setState(() {});
-                      }
-                    },
-                    planMode: false,
-                  ),
-                ),
+                onPressed:
+                    () => FilterPage.show(
+                      context: context,
+                      builder:
+                          (context) => ServantFilterPage(
+                            filterData: svtFilter,
+                            onChanged: (_) {
+                              if (mounted) {
+                                setState(() {});
+                              }
+                            },
+                            planMode: false,
+                          ),
+                    ),
               ),
             ],
           ),
@@ -382,45 +399,46 @@ class _SpDmgIndivTabState extends State<SpDmgIndivTab> {
       final cards = <GameCardMixin>{for (final scope in scopes) ...?group.cards[scope]}.toList();
       cards.removeWhere((card) => card is Servant && !ServantFilterPage.filter(svtFilter, card));
       if (cards.isEmpty) continue;
-      children.add(Card(
-        margin: const EdgeInsets.all(8),
-        child: Padding(
-          padding: const EdgeInsets.all(8),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text.rich(TextSpan(
-                children: [
-                  ...SharedBuilder.traitSpans(
-                    context: context,
-                    traits: group.traits.map((e) => NiceTrait(id: e)).toList(),
-                    useAndJoin: group.useAnd,
-                  ),
-                  if (group.rarity != null) TextSpan(text: '${S.current.rarity} $kStarChar2${group.rarity}')
-                ],
-              )),
-              const SizedBox(height: 8),
-              Wrap(
-                spacing: 2,
-                runSpacing: 4,
-                children: [
-                  for (final card in cards)
-                    card.iconBuilder(
-                      context: context,
-                      width: 48,
-                      text: card is Servant && card.status.favorite ? 'NP${card.status.cur.npLv}' : null,
-                      option: ImageWithTextOption(
-                        fontSize: 12,
-                        padding: const EdgeInsets.fromLTRB(0, 0, 3, 12),
+      children.add(
+        Card(
+          margin: const EdgeInsets.all(8),
+          child: Padding(
+            padding: const EdgeInsets.all(8),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text.rich(
+                  TextSpan(
+                    children: [
+                      ...SharedBuilder.traitSpans(
+                        context: context,
+                        traits: group.traits.map((e) => NiceTrait(id: e)).toList(),
+                        useAndJoin: group.useAnd,
                       ),
-                    ),
-                ],
-              )
-            ],
+                      if (group.rarity != null) TextSpan(text: '${S.current.rarity} $kStarChar2${group.rarity}'),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Wrap(
+                  spacing: 2,
+                  runSpacing: 4,
+                  children: [
+                    for (final card in cards)
+                      card.iconBuilder(
+                        context: context,
+                        width: 48,
+                        text: card is Servant && card.status.favorite ? 'NP${card.status.cur.npLv}' : null,
+                        option: ImageWithTextOption(fontSize: 12, padding: const EdgeInsets.fromLTRB(0, 0, 3, 12)),
+                      ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
-      ));
+      );
     }
     return ListView(children: children);
   }

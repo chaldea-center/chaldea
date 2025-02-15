@@ -39,9 +39,11 @@ class _EffectSearchPageState extends State<EffectSearchPage>
   @override
   void initState() {
     super.initState();
-    options = _BuffOptions(onChanged: (_) {
-      if (mounted) setState(() {});
-    });
+    options = _BuffOptions(
+      onChanged: (_) {
+        if (mounted) setState(() {});
+      },
+    );
     _tabController = TabController(length: 4, vsync: this);
     _tabController.addListener(() {
       if (!_tabController.indexIsChanging) {
@@ -71,16 +73,18 @@ class _EffectSearchPageState extends State<EffectSearchPage>
           IconButton(
             icon: const Icon(Icons.filter_alt),
             tooltip: S.current.filter,
-            onPressed: () => FilterPage.show(
-              context: context,
-              builder: (context) => BuffFuncFilter(
-                filterData: filterData,
-                type: (options as _BuffOptions).type,
-                onChanged: (_) {
-                  if (mounted) setState(() {});
-                },
-              ),
-            ),
+            onPressed:
+                () => FilterPage.show(
+                  context: context,
+                  builder:
+                      (context) => BuffFuncFilter(
+                        filterData: filterData,
+                        type: (options as _BuffOptions).type,
+                        onChanged: (_) {
+                          if (mounted) setState(() {});
+                        },
+                      ),
+                ),
           ),
           searchIcon,
         ],
@@ -89,17 +93,19 @@ class _EffectSearchPageState extends State<EffectSearchPage>
     );
   }
 
-  PreferredSizeWidget get tabBar => FixedHeight.tabBar(TabBar(
-        controller: _tabController,
-        isScrollable: true,
-        tabAlignment: TabAlignment.center,
-        tabs: [
-          Tab(text: S.current.servant),
-          Tab(text: S.current.craft_essence),
-          Tab(text: S.current.command_code),
-          Tab(text: S.current.mystic_code)
-        ],
-      ));
+  PreferredSizeWidget get tabBar => FixedHeight.tabBar(
+    TabBar(
+      controller: _tabController,
+      isScrollable: true,
+      tabAlignment: TabAlignment.center,
+      tabs: [
+        Tab(text: S.current.servant),
+        Tab(text: S.current.craft_essence),
+        Tab(text: S.current.command_code),
+        Tab(text: S.current.mystic_code),
+      ],
+    ),
+  );
 
   @override
   bool filter(GameCardMixin card) {
@@ -151,38 +157,32 @@ class _EffectSearchPageState extends State<EffectSearchPage>
           for (final skill in card.classPassive) ..._filterFunc(skill),
       ];
     } else if (card is CraftEssence) {
-      functions = [
-        for (final skill in card.skills) ..._filterFunc(skill),
-      ];
+      functions = [for (final skill in card.skills) ..._filterFunc(skill)];
     } else if (card is CommandCode) {
-      functions = [
-        for (final skill in card.skills) ..._filterFunc(skill),
-      ];
+      functions = [for (final skill in card.skills) ..._filterFunc(skill)];
     } else if (card is MysticCode) {
-      functions = [
-        for (final skill in card.skills) ..._filterFunc(skill),
-      ];
+      functions = [for (final skill in card.skills) ..._filterFunc(skill)];
     }
     functions.retainWhere((e) => filterData.isEventEffect.matchOne(e.isEventOnlyEffect));
-    functions.retainWhere((func) => filterData.effectTarget.matchOne(func.funcTargetType,
-        compares: {null: (value, option) => BuffFuncFilterData.specialFuncTarget.contains(value)}));
+    functions.retainWhere(
+      (func) => filterData.effectTarget.matchOne(
+        func.funcTargetType,
+        compares: {null: (value, option) => BuffFuncFilterData.specialFuncTarget.contains(value)},
+      ),
+    );
     functions.retainWhere((func) => EffectFilterUtil.checkFuncTraits(func, filterData.targetTrait));
     if (functions.isEmpty) return false;
 
-    Set<FuncType> funcTypes = {
-      for (final func in functions) func.funcType,
-    };
+    Set<FuncType> funcTypes = {for (final func in functions) func.funcType};
     Set<BuffType> buffTypes = {
       for (final func in functions)
         for (final buff in func.buffs) buff.type,
     };
     if (!FilterGroupData<dynamic>(
-        matchAll: filterData.funcAndBuff.matchAll,
-        invert: filterData.funcAndBuff.invert,
-        options: {
-          ...filterData.funcType.options,
-          ...filterData.buffType.options,
-        }).matchAny({...funcTypes, ...buffTypes})) {
+      matchAll: filterData.funcAndBuff.matchAll,
+      invert: filterData.funcAndBuff.invert,
+      options: {...filterData.funcType.options, ...filterData.buffType.options},
+    ).matchAny({...funcTypes, ...buffTypes})) {
       return false;
     }
     return true;
@@ -190,12 +190,7 @@ class _EffectSearchPageState extends State<EffectSearchPage>
 
   @override
   Widget gridItemBuilder(GameCardMixin card) {
-    return card.iconBuilder(
-      context: context,
-      padding: const EdgeInsets.all(2),
-      jumpToDetail: true,
-      popDetail: true,
-    );
+    return card.iconBuilder(context: context, padding: const EdgeInsets.all(2), jumpToDetail: true, popDetail: true);
   }
 
   @override
@@ -203,12 +198,7 @@ class _EffectSearchPageState extends State<EffectSearchPage>
     return ListTile(
       leading: card.iconBuilder(context: context, height: 48),
       visualDensity: VisualDensity.compact,
-      title: AutoSizeText(
-        card.lName.l,
-        maxLines: 2,
-        maxFontSize: 14,
-        minFontSize: 8,
-      ),
+      title: AutoSizeText(card.lName.l, maxLines: 2, maxFontSize: 14, minFontSize: 8),
       subtitle: Text('No.${card.collectionNo}'),
       onTap: () {
         card.routeTo(popDetails: true);

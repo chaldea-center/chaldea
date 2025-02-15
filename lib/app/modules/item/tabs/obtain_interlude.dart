@@ -7,10 +7,7 @@ import '../../quest/quest_card.dart';
 class ItemObtainInterludeTab extends StatefulWidget {
   final int itemId;
 
-  const ItemObtainInterludeTab({
-    super.key,
-    required this.itemId,
-  });
+  const ItemObtainInterludeTab({super.key, required this.itemId});
 
   @override
   _ItemObtainInterludeTabState createState() => _ItemObtainInterludeTabState();
@@ -57,20 +54,17 @@ class _ItemObtainInterludeTabState extends State<ItemObtainInterludeTab> {
           itemCount += db.gameData.dropData.fixedDrops[questId * 100 + phase]?.items[widget.itemId] ?? 0;
         }
         if (itemCount > 0) {
-          children.add(_buildOneQuest(
-            quest: quest,
-            itemCount: itemCount.format(),
-            favorite: svtFavorite,
-            svt: svt,
-          ));
+          children.add(_buildOneQuest(quest: quest, itemCount: itemCount.format(), favorite: svtFavorite, svt: svt));
         }
       }
     }
     if (children.isEmpty) {
-      children.add(ListTile(
-        title: Text(S.current.no_servant_quest_hint),
-        subtitle: _favorite ? Text(S.current.no_servant_quest_hint_subtitle) : null,
-      ));
+      children.add(
+        ListTile(
+          title: Text(S.current.no_servant_quest_hint),
+          subtitle: _favorite ? Text(S.current.no_servant_quest_hint_subtitle) : null,
+        ),
+      );
     }
     return ListView.separated(
       itemBuilder: (context, index) => children[index],
@@ -93,7 +87,7 @@ class _ItemObtainInterludeTabState extends State<ItemObtainInterludeTab> {
           subtitle: Row(
             children: [
               Expanded(child: Text(quest.lName.l)),
-              Text(itemCount, style: TextStyle(color: favorite ? Colors.blue : null))
+              Text(itemCount, style: TextStyle(color: favorite ? Colors.blue : null)),
             ],
           ),
         );

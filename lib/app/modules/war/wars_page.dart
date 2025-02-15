@@ -48,10 +48,7 @@ class _WarsPageState extends State<WarsPage> with SingleTickerProviderStateMixin
         title: Text(S.current.war),
         actions: [
           IconButton(
-            icon: FaIcon(
-              reversed ? FontAwesomeIcons.arrowDownWideShort : FontAwesomeIcons.arrowUpWideShort,
-              size: 20,
-            ),
+            icon: FaIcon(reversed ? FontAwesomeIcons.arrowDownWideShort : FontAwesomeIcons.arrowUpWideShort, size: 20),
             tooltip: S.current.sort_order,
             onPressed: () {
               setState(() {
@@ -60,16 +57,14 @@ class _WarsPageState extends State<WarsPage> with SingleTickerProviderStateMixin
             },
           ),
         ],
-        bottom: FixedHeight.tabBar(TabBar(
-          isScrollable: true,
-          tabAlignment: TabAlignment.center,
-          controller: _tabController,
-          tabs: [
-            Tab(text: S.current.main_story),
-            Tab(text: S.current.event),
-            Tab(text: S.current.chaldea_gate),
-          ],
-        )),
+        bottom: FixedHeight.tabBar(
+          TabBar(
+            isScrollable: true,
+            tabAlignment: TabAlignment.center,
+            controller: _tabController,
+            tabs: [Tab(text: S.current.main_story), Tab(text: S.current.event), Tab(text: S.current.chaldea_gate)],
+          ),
+        ),
       ),
       body: TabBarView(
         controller: _tabController,
@@ -87,12 +82,7 @@ class WarListPage extends StatelessWidget {
   final List<NiceWar> wars;
   final bool reversed;
   final bool sortByEvent;
-  const WarListPage({
-    super.key,
-    required this.wars,
-    this.reversed = true,
-    this.sortByEvent = false,
-  });
+  const WarListPage({super.key, required this.wars, this.reversed = true, this.sortByEvent = false});
 
   @override
   Widget build(BuildContext context) {
@@ -127,16 +117,17 @@ class WarListPage extends StatelessWidget {
             overflow: TextOverflow.ellipsis,
             textScaleFactor: 0.9,
           ),
-          subtitle: subtitle == null
-              ? null
-              : AutoSizeText(
-                  subtitle,
-                  maxLines: 1,
-                  minFontSize: 10,
-                  maxFontSize: 14,
-                  overflow: TextOverflow.ellipsis,
-                  // textScaler: const TextScaler.linear(0.9),
-                ),
+          subtitle:
+              subtitle == null
+                  ? null
+                  : AutoSizeText(
+                    subtitle,
+                    maxLines: 1,
+                    minFontSize: 10,
+                    maxFontSize: 14,
+                    overflow: TextOverflow.ellipsis,
+                    // textScaler: const TextScaler.linear(0.9),
+                  ),
           horizontalTitleGap: 8,
           onTap: () {
             war.routeTo(popDetails: SplitRoute.isMaster(context));

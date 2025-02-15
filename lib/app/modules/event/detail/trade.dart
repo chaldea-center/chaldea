@@ -53,12 +53,7 @@ class EventTradePage extends HookWidget {
               runSpacing: 2,
               alignment: WrapAlignment.start,
               children: [
-                for (final gift in trade.gifts)
-                  gift.iconBuilder(
-                    context: context,
-                    width: 32,
-                    showOne: true,
-                  ),
+                for (final gift in trade.gifts) gift.iconBuilder(context: context, width: 32, showOne: true),
                 if (trade.eventPointItem != null && trade.eventPointNum != 0)
                   Item.iconBuilder(
                     context: context,
@@ -66,7 +61,7 @@ class EventTradePage extends HookWidget {
                     width: 32,
                     icon: trade.eventPointItem?.icon,
                     text: trade.eventPointNum.format(compact: false, groupSeparator: ','),
-                  )
+                  ),
               ],
             ),
           ),
@@ -81,10 +76,7 @@ class EventTradePage extends HookWidget {
                 if (trade.closedMessage.isNotEmpty)
                   ListTile(
                     dense: true,
-                    title: Text(
-                      '(${trade.closedMessage})',
-                      style: Theme.of(context).textTheme.bodySmall,
-                    ),
+                    title: Text('(${trade.closedMessage})', style: Theme.of(context).textTheme.bodySmall),
                   ),
                 for (final release in trade.releaseConditions)
                   CondTargetValueDescriptor.commonRelease(
@@ -100,14 +92,19 @@ class EventTradePage extends HookWidget {
                 for (final pickup in trade.pickups)
                   ListTile(
                     dense: true,
-                    title: Text([pickup.startedAt, pickup.endedAt]
-                        .map((e) => e.sec2date().toStringShort(omitSec: true))
-                        .join(' ~ ')),
-                    subtitle: Text('Time ×${pickup.tradeTimeRate.format(percent: true, base: 10)}'
-                        '  (${getTradeTime(trade.tradeTime, trade.maxTradeTime, pickup.tradeTimeRate)})'),
-                  )
+                    title: Text(
+                      [
+                        pickup.startedAt,
+                        pickup.endedAt,
+                      ].map((e) => e.sec2date().toStringShort(omitSec: true)).join(' ~ '),
+                    ),
+                    subtitle: Text(
+                      'Time ×${pickup.tradeTimeRate.format(percent: true, base: 10)}'
+                      '  (${getTradeTime(trade.tradeTime, trade.maxTradeTime, pickup.tradeTimeRate)})',
+                    ),
+                  ),
               ],
-            )
+            ),
         ];
 
         return Padding(

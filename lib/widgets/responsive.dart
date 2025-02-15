@@ -3,11 +3,7 @@ import 'package:flutter/material.dart';
 import '../utils/basic.dart';
 import 'tile_items.dart';
 
-enum ResponsiveSizeType {
-  small,
-  middle,
-  large,
-}
+enum ResponsiveSizeType { small, middle, large }
 
 class ResponsiveLayout extends StatelessWidget {
   final List<Responsive> children;
@@ -59,41 +55,43 @@ class ResponsiveLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(builder: (context, constraints) {
-      final ResponsiveSizeType type;
-      if (constraints.maxWidth > ml) {
-        type = ResponsiveSizeType.large;
-      } else if (constraints.maxWidth > sm) {
-        type = ResponsiveSizeType.middle;
-      } else {
-        type = ResponsiveSizeType.small;
-      }
-      List<Widget> rows = [];
-      List<Responsive> cells = [];
-      final children = builder != null ? builder!(context, type) : this.children;
-      for (final child in children) {
-        if (Maths.sum(cells.map((e) => e.getFlex(type))) + (child.getFlex(type) ?? 0) > maxFlex) {
-          // insert one row
-          rows.add(insertRow(cells, type));
-          cells = [child];
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final ResponsiveSizeType type;
+        if (constraints.maxWidth > ml) {
+          type = ResponsiveSizeType.large;
+        } else if (constraints.maxWidth > sm) {
+          type = ResponsiveSizeType.middle;
         } else {
-          cells.add(child);
+          type = ResponsiveSizeType.small;
         }
-      }
-      if (cells.isNotEmpty) {
-        rows.add(insertRow(cells, type));
-        cells = [];
-      }
-      if (horizontalDivider != null) {
-        rows = divideList(rows, horizontalDivider!);
-      }
-      return Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        verticalDirection: verticalDirection,
-        children: rows,
-      );
-    });
+        List<Widget> rows = [];
+        List<Responsive> cells = [];
+        final children = builder != null ? builder!(context, type) : this.children;
+        for (final child in children) {
+          if (Maths.sum(cells.map((e) => e.getFlex(type))) + (child.getFlex(type) ?? 0) > maxFlex) {
+            // insert one row
+            rows.add(insertRow(cells, type));
+            cells = [child];
+          } else {
+            cells.add(child);
+          }
+        }
+        if (cells.isNotEmpty) {
+          rows.add(insertRow(cells, type));
+          cells = [];
+        }
+        if (horizontalDivider != null) {
+          rows = divideList(rows, horizontalDivider!);
+        }
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          verticalDirection: verticalDirection,
+          children: rows,
+        );
+      },
+    );
   }
 
   Widget insertRow(List<Responsive> cells, ResponsiveSizeType type) {
@@ -104,11 +102,7 @@ class ResponsiveLayout extends StatelessWidget {
       children.add(flex == null ? cell : Flexible(flex: flex, fit: flexFit, child: cell));
     }
     if (verticalDivider != null) children = divideList(children, verticalDivider!);
-    return Row(
-      textDirection: rowDirection,
-      crossAxisAlignment: verticalAlign,
-      children: children,
-    );
+    return Row(textDirection: rowDirection, crossAxisAlignment: verticalAlign, children: children);
   }
 }
 

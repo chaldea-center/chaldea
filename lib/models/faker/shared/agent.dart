@@ -9,8 +9,11 @@ import 'package:chaldea/utils/basic.dart';
 import 'package:chaldea/utils/extension.dart';
 import 'network.dart';
 
-abstract class FakerAgent<TRequest extends FRequestBase, TUser extends AutoLoginData,
-    TNetworkManager extends NetworkManagerBase<TRequest, TUser>> {
+abstract class FakerAgent<
+  TRequest extends FRequestBase,
+  TUser extends AutoLoginData,
+  TNetworkManager extends NetworkManagerBase<TRequest, TUser>
+> {
   final TNetworkManager network;
   FakerAgent({required this.network});
 
@@ -32,8 +35,11 @@ abstract class FakerAgent<TRequest extends FRequestBase, TUser extends AutoLogin
 
   Future<FResponse> homeTop();
 
-  Future<FResponse> followerList(
-      {required int32_t questId, required int32_t questPhase, required bool isEnfoceRefresh});
+  Future<FResponse> followerList({
+    required int32_t questId,
+    required int32_t questPhase,
+    required bool isEnfoceRefresh,
+  });
 
   Future<FResponse> itemRecover({required int32_t recoverId, required int32_t num});
 
@@ -43,8 +49,11 @@ abstract class FakerAgent<TRequest extends FRequestBase, TUser extends AutoLogin
 
   Future<FResponse> eventMissionClearReward({required List<int32_t> missionIds});
 
-  Future<FResponse> userPresentReceive(
-      {required List<int64_t> presentIds, required int32_t itemSelectIdx, required int32_t itemSelectNum});
+  Future<FResponse> userPresentReceive({
+    required List<int64_t> presentIds,
+    required int32_t itemSelectIdx,
+    required int32_t itemSelectNum,
+  });
   Future<FResponse> userPresentList();
 
   Future<FResponse> gachaDraw({
@@ -89,8 +98,11 @@ abstract class FakerAgent<TRequest extends FRequestBase, TUser extends AutoLogin
     int32_t restartWave = 0,
   });
 
-  Future<FResponse> battleScenario(
-      {required int32_t questId, required int32_t questPhase, required List<int32_t> routeSelect});
+  Future<FResponse> battleScenario({
+    required int32_t questId,
+    required int32_t questPhase,
+    required List<int32_t> routeSelect,
+  });
 
   Future<FResponse> battleSetup({
     required int32_t questId,
@@ -133,11 +145,7 @@ abstract class FakerAgent<TRequest extends FRequestBase, TUser extends AutoLogin
     int32_t elapsedTurn = 1,
     required List<int32_t> usedTurnArray, // win 001, retire 100
     int32_t recordType = 1,
-    Map<String, Object> recordJson = const {
-      "turnMaxDamage": 0,
-      "knockdownNum": 0,
-      "totalDamageToAliveEnemy": 0,
-    },
+    Map<String, Object> recordJson = const {"turnMaxDamage": 0, "knockdownNum": 0, "totalDamageToAliveEnemy": 0},
     List<Map<String, Object>> firstNpPlayList = const [],
     List<PlayerServantNoblePhantasmUsageDataEntity> playerServantNoblePhantasmUsageData =
         const [], // []/ [{"svtId":403500,"followerType":0,"seqId":403500,"addCount":3}]"
@@ -232,13 +240,10 @@ abstract class FakerAgent<TRequest extends FRequestBase, TUser extends AutoLogin
       if (questPhaseEntity.stages.isNotEmpty) {
         throw SilentException('Has noBattle flag, but does have ${questPhaseEntity.stages.length} stage(s).');
       }
-      return battleScenario(
-        questId: questPhaseEntity.id,
-        questPhase: questPhaseEntity.phase,
-        routeSelect: [],
-      );
+      return battleScenario(questId: questPhaseEntity.id, questPhase: questPhaseEntity.phase, routeSelect: []);
     }
-    int eventId = db.gameData.others.eventQuestGroups.entries
+    int eventId =
+        db.gameData.others.eventQuestGroups.entries
             .firstWhereOrNull((e) => e.value.contains(questPhaseEntity.id))
             ?.key ??
         0;
@@ -287,8 +292,10 @@ abstract class FakerAgent<TRequest extends FRequestBase, TUser extends AutoLogin
       followerType = 0;
       followerSupportDeckId = 0;
     } else {
-      final notSuppportedFlags =
-          const {QuestFlag.noSupportList, QuestFlag.notSingleSupportOnly}.intersection(questPhaseEntity.flags.toSet());
+      final notSuppportedFlags = const {
+        QuestFlag.noSupportList,
+        QuestFlag.notSingleSupportOnly,
+      }.intersection(questPhaseEntity.flags.toSet());
       if (notSuppportedFlags.isNotEmpty) {
         throw SilentException('Finding support but not supported flags: $notSuppportedFlags');
       }
@@ -332,8 +339,9 @@ abstract class FakerAgent<TRequest extends FRequestBase, TUser extends AutoLogin
     int refreshCount = 0;
     List<FollowerInfo> followers = [];
     if (network.gameTop.region == Region.cn && !enforceRefreshSupport) {
-      final oldUserFollower =
-          network.mstData.userFollower.firstWhereOrNull((e) => e.expireAt > DateTime.now().timestamp + 300);
+      final oldUserFollower = network.mstData.userFollower.firstWhereOrNull(
+        (e) => e.expireAt > DateTime.now().timestamp + 300,
+      );
       if (oldUserFollower != null) {
         followers = oldUserFollower.followerInfo;
       }
@@ -345,7 +353,10 @@ abstract class FakerAgent<TRequest extends FRequestBase, TUser extends AutoLogin
           throw Exception('After $refreshCount times refresh, no support svt is valid');
         }
         final resp = await followerList(
-            questId: questId, questPhase: questPhase, isEnfoceRefresh: enforceRefreshSupport || refreshCount > 0);
+          questId: questId,
+          questPhase: questPhase,
+          isEnfoceRefresh: enforceRefreshSupport || refreshCount > 0,
+        );
         if (refreshCount > 0) {
           await Future.delayed(const Duration(seconds: 5));
         }
@@ -392,8 +403,11 @@ abstract class FakerAgent<TRequest extends FRequestBase, TUser extends AutoLogin
         aliveUniqueIds: battleInfo.enemyDeck.expand((e) => e.svts).map((e) => e.uniqueId).toList(),
       );
     } else if (resultType == BattleResultType.win) {
-      final quest =
-          await AtlasApi.questPhase(battleEntity.questId, battleEntity.questPhase, region: network.gameTop.region);
+      final quest = await AtlasApi.questPhase(
+        battleEntity.questId,
+        battleEntity.questPhase,
+        region: network.gameTop.region,
+      );
       final _usedTurnArray = List.generate(stageCount, (index) {
         int baseTurn = index == stageCount - 1 ? 1 : 0;
         final enemyCount = battleInfo.enemyDeck.getOrNull(index)?.svts.length;
@@ -415,9 +429,7 @@ abstract class FakerAgent<TRequest extends FRequestBase, TUser extends AutoLogin
       }
       List<BattleRaidResult> raidResults = [];
       final enemies = battleInfo.enemyDeck.expand((e) => e.svts).toList();
-      final userSvtIdMap = {
-        for (final userSvt in battleInfo.userSvt) userSvt.id: userSvt,
-      };
+      final userSvtIdMap = {for (final userSvt in battleInfo.userSvt) userSvt.id: userSvt};
       for (final enemy in enemies) {
         final raidDay1 = enemy.enemyScript?['raid'] as int?;
         if (raidDay1 == null) continue;
@@ -426,11 +438,7 @@ abstract class FakerAgent<TRequest extends FRequestBase, TUser extends AutoLogin
         if (raidDay1 != raidDay) {
           throw SilentException('raid day mismatch: $raidDay1 != $raidDay');
         }
-        raidResults.add(BattleRaidResult(
-          uniqueId: enemy.uniqueId,
-          day: raidDay,
-          addDamage: userSvt.hp,
-        ));
+        raidResults.add(BattleRaidResult(uniqueId: enemy.uniqueId, day: raidDay, addDamage: userSvt.hp));
       }
       final callDeckEnemies = battleInfo.callDeck.expand((e) => e.svts).toList();
       List<int> calledEnemyUniqueIdArray =
@@ -438,10 +446,12 @@ abstract class FakerAgent<TRequest extends FRequestBase, TUser extends AutoLogin
       calledEnemyUniqueIdArray = callDeckEnemies.map((e) => e.uniqueId).toList();
       // final itemDroppedSkillShiftEnemies =
       //     battleInfo.shiftDeck.expand((e) => e.svts).where((e) => e.dropInfos.isNotEmpty).toList();
-      final skillShiftEnemies = [...battleInfo.enemyDeck, ...battleInfo.callDeck, ...battleInfo.shiftDeck]
-          .expand((e) => e.svts)
-          .where((e) => e.enemyScript?.containsKey('skillShift') == true)
-          .toList();
+      final skillShiftEnemies =
+          [
+            ...battleInfo.enemyDeck,
+            ...battleInfo.callDeck,
+            ...battleInfo.shiftDeck,
+          ].expand((e) => e.svts).where((e) => e.enemyScript?.containsKey('skillShift') == true).toList();
       if (skillShiftEnemies.isNotEmpty) {
         throw SilentException('skillShift not supported');
       }
@@ -547,12 +557,7 @@ class PlayerServantNoblePhantasmUsageDataEntity {
   });
 
   Map<String, int> getSaveData() {
-    return {
-      "svtId": svtId,
-      "followerType": followerType,
-      "seqId": seqId,
-      "addCount": addCount,
-    };
+    return {"svtId": svtId, "followerType": followerType, "seqId": seqId, "addCount": addCount};
   }
 }
 
@@ -564,12 +569,7 @@ class BattleDataActionList {
   String hd;
   String data;
 
-  BattleDataActionList({
-    required this.logs,
-    required this.dt,
-    this.hd = "",
-    this.data = "",
-  });
+  BattleDataActionList({required this.logs, required this.dt, this.hd = "", this.data = ""});
   // { \"logs\":\"1B2B3B1B1D2C1B1C2B\", \"dt\":\"u13u14u15\", \"hd\":\"\", \"data\":\"\" }
   String getSaveData() {
     final dtStr = dt.map((e) => 'u$e').join();
@@ -595,8 +595,7 @@ enum PresentOverflowType {
   svt(1),
   svtEquip(2),
   item(3),
-  commandCode(4),
-  ;
+  commandCode(4);
 
   const PresentOverflowType(this.value);
   final int value;

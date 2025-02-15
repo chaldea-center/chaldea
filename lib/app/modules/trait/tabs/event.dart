@@ -20,9 +20,11 @@ class TraitEventTab extends StatelessWidget {
       for (final mission in event.missions) {
         final cm = CustomMission.fromEventMission(mission);
         if (cm == null) continue;
-        if (cm.conds.any((cond) =>
-            const [CustomMissionType.trait, CustomMissionType.questTrait].contains(cond.type) &&
-            cond.targetIds.contains(id))) {
+        if (cm.conds.any(
+          (cond) =>
+              const [CustomMissionType.trait, CustomMissionType.questTrait].contains(cond.type) &&
+              cond.targetIds.contains(id),
+        )) {
           events.add(event);
           break;
         }
@@ -50,7 +52,7 @@ class TraitEventTab extends StatelessWidget {
                   title: Text(event.lName.l.setMaxLines(1)),
                   trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
                   onTap: event.routeTo,
-                )
+                ),
             ],
           ),
         if (warIds.isNotEmpty)
@@ -67,7 +69,7 @@ class TraitEventTab extends StatelessWidget {
                   },
                 ),
             ],
-          )
+          ),
       ],
     );
   }

@@ -73,9 +73,10 @@ class AiTable extends StatelessWidget {
         for (int index = 0; index < rows.length; index++)
           TableRow(
             children: rows[index].map(sized).toList(),
-            decoration: index == 0
-                ? BoxDecoration(color: Theme.of(context).highlightColor)
-                : index.isEven
+            decoration:
+                index == 0
+                    ? BoxDecoration(color: Theme.of(context).highlightColor)
+                    : index.isEven
                     ? BoxDecoration(color: Theme.of(context).highlightColor.withAlpha(25))
                     : null,
           ),
@@ -118,15 +119,15 @@ class AiTable extends StatelessWidget {
   }
 
   Widget _desActTarget(BuildContext context, NiceAiActTarget target, List<NiceTrait> traits) {
-    return Text.rich(TextSpan(
-      text: Transl.enums(target, (enums) => enums.aiActTarget).l,
-      children: traits.isEmpty
-          ? null
-          : [
-              const TextSpan(text: ' - '),
-              ...SharedBuilder.traitSpans(context: context, traits: traits),
-            ],
-    ));
+    return Text.rich(
+      TextSpan(
+        text: Transl.enums(target, (enums) => enums.aiActTarget).l,
+        children:
+            traits.isEmpty
+                ? null
+                : [const TextSpan(text: ' - '), ...SharedBuilder.traitSpans(context: context, traits: traits)],
+      ),
+    );
   }
 
   Widget _desActSkill(BuildContext context, NiceAi ai) {
@@ -150,14 +151,21 @@ class AiTable extends StatelessWidget {
     }
 
     if (skill != null) {
-      spans.add(SharedBuilder.textButtonSpan(
-          context: context, text: skill.dispName, onTap: () => skill!.routeTo(region: region)));
+      spans.add(
+        SharedBuilder.textButtonSpan(
+          context: context,
+          text: skill.dispName,
+          onTap: () => skill!.routeTo(region: region),
+        ),
+      );
     } else if (skillId != null) {
-      spans.add(SharedBuilder.textButtonSpan(
-        context: context,
-        text: skillId.toString(),
-        onTap: () => router.push(url: Routes.skillI(skillId!), region: region),
-      ));
+      spans.add(
+        SharedBuilder.textButtonSpan(
+          context: context,
+          text: skillId.toString(),
+          onTap: () => router.push(url: Routes.skillI(skillId!), region: region),
+        ),
+      );
     }
     if (aiAct.skillLv != null) {
       spans.add(TextSpan(text: ' Lv.${aiAct.skillLv}'));
@@ -175,17 +183,17 @@ class AiTable extends StatelessWidget {
         _tdId = td!.noblePhantasmId;
       }
       if (_td != null) {
-        spans.add(SharedBuilder.textButtonSpan(
-          context: context,
-          text: _td.dispName,
-          onTap: () => _td!.routeTo(region: region),
-        ));
+        spans.add(
+          SharedBuilder.textButtonSpan(context: context, text: _td.dispName, onTap: () => _td!.routeTo(region: region)),
+        );
       } else if (_tdId != null) {
-        spans.add(SharedBuilder.textButtonSpan(
-          context: context,
-          text: _tdId.toString(),
-          onTap: () => router.push(url: Routes.tdI(_tdId!), region: region),
-        ));
+        spans.add(
+          SharedBuilder.textButtonSpan(
+            context: context,
+            text: _tdId.toString(),
+            onTap: () => router.push(url: Routes.tdI(_tdId!), region: region),
+          ),
+        );
       }
       if (aiAct.noblePhantasmLv != null) {
         spans.add(TextSpan(text: ' Lv.${aiAct.noblePhantasmLv}'));
@@ -198,40 +206,40 @@ class AiTable extends StatelessWidget {
     // message
     if (aiAct.type == NiceAiActType.message) {
       final msgId = ai.avals.getOrNull(1) ?? 0;
-      spans.add(SharedBuilder.textButtonSpan(
-        context: context,
-        text: 'message',
-        onTap: msgId == 0
-            ? null
-            : () {
-                showDialog(
-                  context: context,
-                  useRootNavigator: false,
-                  builder: (context) => BattleMessageDialog(
-                    msgId: msgId,
-                    region: region,
-                  ),
-                );
-              },
-      ));
+      spans.add(
+        SharedBuilder.textButtonSpan(
+          context: context,
+          text: 'message',
+          onTap:
+              msgId == 0
+                  ? null
+                  : () {
+                    showDialog(
+                      context: context,
+                      useRootNavigator: false,
+                      builder: (context) => BattleMessageDialog(msgId: msgId, region: region),
+                    );
+                  },
+        ),
+      );
     } else if (aiAct.type == NiceAiActType.messageGroup) {
       final groupId = ai.avals.getOrNull(1) ?? 0;
-      spans.add(SharedBuilder.textButtonSpan(
-        context: context,
-        text: 'messageGroup',
-        onTap: groupId == 0
-            ? null
-            : () {
-                showDialog(
-                  context: context,
-                  useRootNavigator: false,
-                  builder: (context) => _BattleMessageGroupDialog(
-                    groupId: groupId,
-                    region: region,
-                  ),
-                );
-              },
-      ));
+      spans.add(
+        SharedBuilder.textButtonSpan(
+          context: context,
+          text: 'messageGroup',
+          onTap:
+              groupId == 0
+                  ? null
+                  : () {
+                    showDialog(
+                      context: context,
+                      useRootNavigator: false,
+                      builder: (context) => _BattleMessageGroupDialog(groupId: groupId, region: region),
+                    );
+                  },
+        ),
+      );
     }
 
     return Text.rich(TextSpan(children: spans));
@@ -239,11 +247,9 @@ class AiTable extends StatelessWidget {
 
   Widget _desNextAi(BuildContext context, List<int> avals) {
     if (avals.isEmpty || avals.first == 0) return const SizedBox.shrink();
-    return Text.rich(SharedBuilder.textButtonSpan(
-      context: context,
-      text: '[${avals.first}]',
-      onTap: () => onClickNextAi(avals.first),
-    ));
+    return Text.rich(
+      SharedBuilder.textButtonSpan(context: context, text: '[${avals.first}]', onTap: () => onClickNextAi(avals.first)),
+    );
   }
 
   // cond descriptor
@@ -277,7 +283,11 @@ class AiTable extends StatelessWidget {
   }
 
   Map<String, List<InlineSpan> Function(String match)> _getCondVals(
-      BuildContext context, NiceAiCond cond, bool isNegative, List<int> vals) {
+    BuildContext context,
+    NiceAiCond cond,
+    bool isNegative,
+    List<int> vals,
+  ) {
     if (vals.isEmpty) return const {};
     Map<String, List<InlineSpan> Function(String match)> _repl0(List<InlineSpan> v) => {"{0}": (_) => v};
     switch (cond) {
@@ -362,10 +372,7 @@ class AiTable extends StatelessWidget {
       case NiceAiCond.checkOpponentAllBuffActive:
         return _repl0([
           for (final val in vals)
-            SharedBuilder.textButtonSpan(
-              context: context,
-              text: db.gameData.baseBuffs[val]?.lName.l ?? val.toString(),
-            )
+            SharedBuilder.textButtonSpan(context: context, text: db.gameData.baseBuffs[val]?.lName.l ?? val.toString()),
         ]);
       // [count,trait]
       case NiceAiCond.checkSelfBuffcountIndividuality:
@@ -421,7 +428,7 @@ class AiTable extends StatelessWidget {
         final count = vals.getOrNull(0) ?? 0, trait = vals.getOrNull(1) ?? 0;
         return {
           "{count}": (_) => [TextSpan(text: ' $count ')],
-          "{trait}": (_) => [SharedBuilder.traitSpan(context: context, trait: NiceTrait(id: trait))]
+          "{trait}": (_) => [SharedBuilder.traitSpan(context: context, trait: NiceTrait(id: trait))],
         };
       // [count, itemId]
       case NiceAiCond.countItemHigher:
@@ -429,15 +436,16 @@ class AiTable extends StatelessWidget {
         final count = vals.getOrNull(0) ?? 0, itemId = vals.getOrNull(1) ?? 0;
         return {
           "{count}": (_) => [TextSpan(text: ' $count ')],
-          "{trait}": (_) => [
+          "{trait}":
+              (_) => [
                 SharedBuilder.textButtonSpan(
                   context: context,
                   text: db.gameData.items[itemId]?.lName.l ?? 'Item $itemId',
                   onTap: () {
                     router.push(url: Routes.itemI(itemId));
                   },
-                )
-              ]
+                ),
+              ],
         };
       // unknown
       case NiceAiCond.none:
@@ -525,19 +533,16 @@ class _AiCondDialog extends StatelessWidget {
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          ListTile(
-            dense: true,
-            title: Text(condText),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16),
-          ),
-          ListTile(
-            dense: true,
-            title: Text('vals: $vals'),
-          ),
+          ListTile(dense: true, title: Text(condText), contentPadding: const EdgeInsets.symmetric(horizontal: 16)),
+          ListTile(dense: true, title: Text('vals: $vals')),
           const Divider(indent: 16, endIndent: 16),
           guessType(context, "Trait?", (v) => Transl.trait(v).l, (v) => router.push(url: Routes.traitI(v))),
           guessType(
-              context, "Buff?", (v) => db.gameData.baseBuffs[v]?.lName.l, (v) => router.push(url: Routes.buffI(v))),
+            context,
+            "Buff?",
+            (v) => db.gameData.baseBuffs[v]?.lName.l,
+            (v) => router.push(url: Routes.buffI(v)),
+          ),
         ],
       ),
     );
@@ -549,19 +554,14 @@ class _AiCondDialog extends StatelessWidget {
       // tileColor: Colors.amber,
       contentPadding: const EdgeInsets.symmetric(horizontal: 16),
       dense: true,
-      subtitle: Text.rich(TextSpan(
-        children: divideList(
-          [
+      subtitle: Text.rich(
+        TextSpan(
+          children: divideList([
             for (final v in vals)
-              SharedBuilder.textButtonSpan(
-                context: context,
-                text: text(v) ?? v.toString(),
-                onTap: () => onTap(v),
-              )
-          ],
-          const TextSpan(text: ' / '),
+              SharedBuilder.textButtonSpan(context: context, text: text(v) ?? v.toString(), onTap: () => onTap(v)),
+          ], const TextSpan(text: ' / ')),
         ),
-      )),
+      ),
     );
   }
 }
@@ -587,9 +587,7 @@ class BattleMessageDialog extends StatelessWidget {
           return Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              for (final msg in messages) buildMessage(context, msg),
-            ],
+            children: [for (final msg in messages) buildMessage(context, msg)],
           );
         },
         onFailed: (context) => const Text("Load Failed"),
@@ -649,9 +647,7 @@ class _BattleMessageGroupDialog extends StatelessWidget {
           return Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              for (final group in groups) ...buildGroup(context, group),
-            ],
+            children: [for (final group in groups) ...buildGroup(context, group)],
           );
         },
         onFailed: (context) => const Text("Load Failed"),

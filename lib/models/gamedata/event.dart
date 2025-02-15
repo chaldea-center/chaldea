@@ -115,10 +115,10 @@ class Event with RouteInfo {
     this.murals = const [],
     this.voicePlays = const [],
     this.voices = const [],
-  })  : _shortName = ['', '-'].contains(shortName) ? null : shortName,
-        _warIds = warIds,
-        noticeAt = noticeAt ?? startedAt,
-        finishedAt = finishedAt ?? endedAt;
+  }) : _shortName = ['', '-'].contains(shortName) ? null : shortName,
+       _warIds = warIds,
+       noticeAt = noticeAt ?? startedAt,
+       finishedAt = finishedAt ?? endedAt;
 
   factory Event.fromJson(Map<String, dynamic> json) {
     final event = _$EventFromJson(json);
@@ -143,10 +143,7 @@ class Event with RouteInfo {
   @override
   void routeTo({Widget? child, bool popDetails = false, Region? region}) {
     // router.push(url: Routes.eventI(id))
-    super.routeTo(
-      child: child ?? EventDetailPage(event: this, region: region),
-      popDetails: popDetails,
-    );
+    super.routeTo(child: child ?? EventDetailPage(event: this, region: region), popDetails: popDetails);
   }
 
   String get shortName => lShortName.jp;
@@ -226,9 +223,10 @@ class Event with RouteInfo {
     final region = db.curUser.region;
     final now = DateTime.now();
     if (region == Region.jp) {
-      final t = endedAt > kNeverClosedTimestamp || endedAt - startedAt > 30 * kSecsPerDay
-          ? startedAt + 7 * kSecsPerDay
-          : endedAt;
+      final t =
+          endedAt > kNeverClosedTimestamp || endedAt - startedAt > 30 * kSecsPerDay
+              ? startedAt + 7 * kSecsPerDay
+              : endedAt;
       return now.difference(t.sec2date()) > const Duration(days: 365);
     }
     int? _start = region == Region.jp ? startedAt : extra.startTime.ofRegion(region);
@@ -586,10 +584,7 @@ class MstMasterMission with RouteInfo {
 
   @override
   void routeTo({Widget? child, bool popDetails = false, Region? region}) {
-    return super.routeTo(
-      child: child ?? MasterMissionPage(id: id, region: region),
-      popDetails: popDetails,
-    );
+    return super.routeTo(child: child ?? MasterMissionPage(id: id, region: region), popDetails: popDetails);
   }
 
   factory MstMasterMission.fromJson(Map<String, dynamic> json) => _$MstMasterMissionFromJson(json);
@@ -654,12 +649,7 @@ class CompleteMission {
   List<Gift> gifts;
   Bgm? bgm;
 
-  CompleteMission({
-    required this.objectId,
-    this.presentMessageId = 0,
-    this.gifts = const [],
-    this.bgm,
-  });
+  CompleteMission({required this.objectId, this.presentMessageId = 0, this.gifts = const [], this.bgm});
   factory CompleteMission.fromJson(Map<String, dynamic> json) => _$CompleteMissionFromJson(json);
 
   Map<String, dynamic> toJson() => _$CompleteMissionToJson(this);
@@ -772,10 +762,7 @@ class NiceShop with RouteInfo {
 
   @override
   void routeTo({Widget? child, bool popDetails = false, Region? region}) {
-    return super.routeTo(
-      child: child ?? ShopDetailPage(shop: this, region: region),
-      popDetails: popDetails,
-    );
+    return super.routeTo(child: child ?? ShopDetailPage(shop: this, region: region), popDetails: popDetails);
   }
 
   Map<String, dynamic> toJson() => _$NiceShopToJson(this);
@@ -845,11 +832,8 @@ class EventPointGroup {
   String name;
   String? icon;
 
-  EventPointGroup({
-    this.groupId = 0,
-    this.name = "",
-    String? icon,
-  }) : icon = icon != null && icon.endsWith('/Items/0.png') ? null : icon;
+  EventPointGroup({this.groupId = 0, this.name = "", String? icon})
+    : icon = icon != null && icon.endsWith('/Items/0.png') ? null : icon;
 
   Transl<String, String> get lName => Transl.itemNames(name);
 
@@ -1066,10 +1050,7 @@ class NiceEventMissionGroup {
   int id;
   List<int> missionIds;
 
-  NiceEventMissionGroup({
-    required this.id,
-    this.missionIds = const [],
-  });
+  NiceEventMissionGroup({required this.id, this.missionIds = const []});
 
   factory NiceEventMissionGroup.fromJson(Map<String, dynamic> json) => _$NiceEventMissionGroupFromJson(json);
 
@@ -1135,11 +1116,7 @@ class EventTower {
   String name;
   List<EventTowerReward> rewards;
 
-  EventTower({
-    required this.towerId,
-    required this.name,
-    required this.rewards,
-  });
+  EventTower({required this.towerId, required this.name, required this.rewards});
 
   String get lName => Transl.misc2('TowerName', name);
 
@@ -1265,10 +1242,7 @@ class WarBoard {
   int warBoardId;
   List<WarBoardStage> stages;
 
-  WarBoard({
-    required this.warBoardId,
-    this.stages = const [],
-  });
+  WarBoard({required this.warBoardId, this.stages = const []});
 
   factory WarBoard.fromJson(Map<String, dynamic> json) => _$WarBoardFromJson(json);
 
@@ -1512,7 +1486,7 @@ class EventDigging {
       9: [25, 26, 27],
       10: [34, 37, 36],
       11: [43, 44, 45],
-    }
+    },
   };
 }
 
@@ -1546,11 +1520,7 @@ class EventDiggingReward {
   List<Gift> gifts;
   int rewardSize;
 
-  EventDiggingReward({
-    required this.id,
-    this.gifts = const [],
-    required this.rewardSize,
-  });
+  EventDiggingReward({required this.id, this.gifts = const [], required this.rewardSize});
 
   factory EventDiggingReward.fromJson(Map<String, dynamic> json) => _$EventDiggingRewardFromJson(json);
 
@@ -1590,9 +1560,7 @@ class EventCooltimeReward {
 class EventCooltime {
   List<EventCooltimeReward> rewards;
 
-  EventCooltime({
-    this.rewards = const [],
-  });
+  EventCooltime({this.rewards = const []});
 
   factory EventCooltime.fromJson(Map<String, dynamic> json) => _$EventCooltimeFromJson(json);
 
@@ -1607,12 +1575,7 @@ class EventRecipeGift {
   @GiftsConverter()
   List<Gift> gifts;
 
-  EventRecipeGift({
-    required this.idx,
-    required this.displayOrder,
-    this.topIconId = 0,
-    this.gifts = const [],
-  });
+  EventRecipeGift({required this.idx, required this.displayOrder, this.topIconId = 0, this.gifts = const []});
 
   factory EventRecipeGift.fromJson(Map<String, dynamic> json) => _$EventRecipeGiftFromJson(json);
 
@@ -1773,14 +1736,10 @@ class EventTradeGoods {
 class EventTradePickup {
   int startedAt;
   int endedAt;
-//  int pickupIconId;
+  //  int pickupIconId;
   int tradeTimeRate;
 
-  EventTradePickup({
-    required this.startedAt,
-    required this.endedAt,
-    required this.tradeTimeRate,
-  });
+  EventTradePickup({required this.startedAt, required this.endedAt, required this.tradeTimeRate});
 
   factory EventTradePickup.fromJson(Map<String, dynamic> json) => _$EventTradePickupFromJson(json);
 
@@ -1814,10 +1773,7 @@ class EventBulletinBoardScript with DataScriptBase {
   String? icon;
   String? name;
 
-  EventBulletinBoardScript({
-    this.icon,
-    this.name,
-  });
+  EventBulletinBoardScript({this.icon, this.name});
 
   factory EventBulletinBoardScript.fromJson(Map<String, dynamic> json) =>
       _$EventBulletinBoardScriptFromJson(json)..setSource(json);
@@ -1878,10 +1834,7 @@ class EventQuest {
   int questId; // =0 for all quests
   int phase; // =0 for all phases
 
-  EventQuest({
-    required this.questId,
-    this.phase = 0,
-  });
+  EventQuest({required this.questId, this.phase = 0});
 
   factory EventQuest.fromJson(Map<String, dynamic> json) => _$EventQuestFromJson(json);
 
@@ -1898,11 +1851,7 @@ class HeelPortrait {
   // int dispCondNum;
   // Map<String,dynamic> script;
 
-  HeelPortrait({
-    required this.id,
-    this.name = "",
-    required this.image,
-  });
+  HeelPortrait({required this.id, this.name = "", required this.image});
 
   factory HeelPortrait.fromJson(Map<String, dynamic> json) => _$HeelPortraitFromJson(json);
 
@@ -1959,8 +1908,8 @@ class EventSvt {
     this.releaseConditions = const [],
     this.startedAt = 0,
     this.endedAt = 0,
-  })  : script = script ?? EventSvtScript(),
-        originalScript = originalScript ?? {};
+  }) : script = script ?? EventSvtScript(),
+       originalScript = originalScript ?? {};
 
   factory EventSvt.fromJson(Map<String, dynamic> json) => _$EventSvtFromJson(json);
 
@@ -1994,14 +1943,7 @@ class EventSvtScript {
   Map<String, dynamic> toJson() => _$EventSvtScriptToJson(this);
 }
 
-enum EventOverwriteType {
-  unknown,
-  bgImage,
-  bgm,
-  name,
-  banner,
-  noticeBanner,
-}
+enum EventOverwriteType { unknown, bgImage, bgm, name, banner, noticeBanner }
 
 enum PurchaseType {
   none,
@@ -2056,8 +1998,7 @@ enum MissionProgressType {
   openCondition(2),
   start(3),
   clear(4),
-  achieve(5),
-  ;
+  achieve(5);
 
   const MissionProgressType(this.value);
   final int value;
@@ -2070,23 +2011,9 @@ enum MissionProgressType {
   }
 }
 
-enum MissionType {
-  none,
-  event,
-  weekly,
-  daily,
-  extra,
-  limited,
-  complete,
-  random,
-  servant,
-}
+enum MissionType { none, event, weekly, daily, extra, limited, complete, random, servant }
 
-enum MissionRewardType {
-  gift,
-  extra,
-  set,
-}
+enum MissionRewardType { gift, extra, set }
 
 enum PayType {
   stone,
@@ -2105,10 +2032,7 @@ enum PayType {
   commonConsume,
 }
 
-enum CommonConsumeType {
-  item,
-  ap,
-}
+enum CommonConsumeType { item, ap }
 
 enum EventType {
   none(0),
@@ -2146,12 +2070,7 @@ enum EventType {
   final int value;
 }
 
-enum DetailMissionCondLinkType {
-  eventStart,
-  missionStart,
-  masterMissionStart,
-  randomMissionStart,
-}
+enum DetailMissionCondLinkType { eventStart, missionStart, masterMissionStart, randomMissionStart }
 
 enum EventMissionCondDetailType {
   enemyKillNum(1), // traits AND
@@ -2208,11 +2127,7 @@ enum EventMissionCondDetailType {
   }
 }
 
-enum EventRewardSceneFlag {
-  npcGuide,
-  isChangeSvtByChangedTab,
-  isHideTab,
-}
+enum EventRewardSceneFlag { npcGuide, isChangeSvtByChangedTab, isHideTab }
 
 enum CombineAdjustTarget {
   none, // custom
@@ -2254,18 +2169,14 @@ enum CombineAdjustTarget {
   questUseRewardAddItem,
 }
 
-enum EventCombineCalc {
-  addition,
-  multiplication,
-  fixedValue,
-}
+enum EventCombineCalc { addition, multiplication, fixedValue }
 
 // FuncType.eventFortificationPointUp: DataVal.Individuality
 enum EventWorkType {
   militsryAffairs, // 1 军务 √
   internalAffairs, // 2 政务 x
   farmming, // 3 内务 x
-  unknown, // in case DW correct the naming
+  unknown // in case DW correct the naming
   ;
 
   String get shownName => Transl.enums(this, (enums) => enums.eventWorkType).l;
@@ -2276,26 +2187,11 @@ enum EventWorkType {
   }
 }
 
-enum EventFortificationSvtType {
-  userSvt,
-  npc,
-  none,
-}
+enum EventFortificationSvtType { userSvt, npc, none }
 
-enum EventPointActivityObjectType {
-  none,
-  questId,
-  skillId,
-  shopId,
-}
+enum EventPointActivityObjectType { none, questId, skillId, shopId }
 
-enum WarBoardStageSquareType {
-  normal,
-  item,
-  effect,
-  treasure,
-  wall,
-}
+enum WarBoardStageSquareType { normal, item, effect, treasure, wall }
 
 enum WarBoardTreasureRarity {
   unknown,
@@ -2313,20 +2209,14 @@ enum WarBoardTreasureRarity {
   itemIconPlus2,
 }
 
-enum EventSvtType {
-  none,
-  join,
-  condJoin,
-  directJoin,
-}
+enum EventSvtType { none, join, condJoin, directJoin }
 
 enum UserShopFlag {
   unknown(0),
   receivedShopItem(2),
   usedAddBuffItem(4),
   returnExchangeItem(8),
-  returnRarePriShop(16),
-  ;
+  returnRarePriShop(16);
 
   const UserShopFlag(this.value);
   final int value;

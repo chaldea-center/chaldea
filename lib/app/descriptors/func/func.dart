@@ -30,23 +30,22 @@ mixin FuncsDescriptor {
     bool showActIndiv = true,
     LoopTargets? loops,
     Region? region,
-  }) =>
-      describe(
-        funcs: funcs,
-        script: script,
-        showPlayer: showPlayer,
-        showEnemy: showEnemy,
-        showNone: showNone,
-        level: level,
-        oc: oc,
-        padding: padding,
-        showBuffDetail: showBuffDetail,
-        owner: owner,
-        showEvent: showEvent,
-        showActIndiv: showActIndiv,
-        loops: loops,
-        region: region,
-      );
+  }) => describe(
+    funcs: funcs,
+    script: script,
+    showPlayer: showPlayer,
+    showEnemy: showEnemy,
+    showNone: showNone,
+    level: level,
+    oc: oc,
+    padding: padding,
+    showBuffDetail: showBuffDetail,
+    owner: owner,
+    showEvent: showEvent,
+    showActIndiv: showActIndiv,
+    loops: loops,
+    region: region,
+  );
 
   static List<Widget> describe({
     required List<NiceFunction> funcs,
@@ -64,15 +63,16 @@ mixin FuncsDescriptor {
     LoopTargets? loops,
     Region? region,
   }) {
-    final funcs2 = funcs.where((func) {
-      if (!showNone && func.funcType == FuncType.none) return false;
-      if (func.funcTargetTeam == FuncApplyTarget.playerAndEnemy) {
-        return true;
-      }
-      if (func.isPlayerOnlyFunc) return showPlayer;
-      if (func.isEnemyOnlyFunc) return showEnemy;
-      return true;
-    }).toList();
+    final funcs2 =
+        funcs.where((func) {
+          if (!showNone && func.funcType == FuncType.none) return false;
+          if (func.funcTargetTeam == FuncApplyTarget.playerAndEnemy) {
+            return true;
+          }
+          if (func.isPlayerOnlyFunc) return showPlayer;
+          if (func.isEnemyOnlyFunc) return showEnemy;
+          return true;
+        }).toList();
     List<Widget> children = [];
     final actIndiv = (showActIndiv && owner is BaseSkill) ? owner.actIndividuality : <NiceTrait>[];
     if (script?.isNotEmpty == true || actIndiv.isNotEmpty) {
@@ -95,20 +95,22 @@ mixin FuncsDescriptor {
           }
         }
       }
-      children.add(FuncDescriptor(
-        func: func,
-        lastFuncTarget: index == 0 ? null : funcs2[index - 1].funcTargetType,
-        level: level,
-        oc: oc,
-        padding: padding,
-        showPlayer: showPlayer,
-        showEnemy: showEnemy,
-        showBuffDetail: showBuffDetail,
-        owner: owner,
-        showEvent: showEvent,
-        loops: loops,
-        region: region,
-      ));
+      children.add(
+        FuncDescriptor(
+          func: func,
+          lastFuncTarget: index == 0 ? null : funcs2[index - 1].funcTargetType,
+          level: level,
+          oc: oc,
+          padding: padding,
+          showPlayer: showPlayer,
+          showEnemy: showEnemy,
+          showBuffDetail: showBuffDetail,
+          owner: owner,
+          showEvent: showEvent,
+          loops: loops,
+          region: region,
+        ),
+      );
     }
     final additionalSkillId =
         script?.additionalSkillId?.getOrNull(level ?? 0) ?? script?.additionalSkillId?.firstOrNull;
@@ -116,25 +118,28 @@ mixin FuncsDescriptor {
         script?.additionalSkillLv?.getOrNull(level ?? 0) ?? script?.additionalSkillLv?.firstOrNull;
 
     if (additionalSkillId != null && additionalSkillId != 0) {
-      children.add(Builder(
-        builder: (context) => Container(
-          margin: const EdgeInsetsDirectional.only(start: 4),
-          decoration: BoxDecoration(
-            border: Border.all(color: Theme.of(context).hintColor),
-            borderRadius: BorderRadius.circular(6),
-          ),
-          child: _LazyTrigger(
-            trigger: BuffValueTriggerType(BuffType.none, skill: additionalSkillId, level: additionalSkillLv),
-            buff: null,
-            isNp: false,
-            useRate: null,
-            showPlayer: showPlayer,
-            showEnemy: showEnemy,
-            loops: loops ?? LoopTargets(),
-            region: region,
-          ),
+      children.add(
+        Builder(
+          builder:
+              (context) => Container(
+                margin: const EdgeInsetsDirectional.only(start: 4),
+                decoration: BoxDecoration(
+                  border: Border.all(color: Theme.of(context).hintColor),
+                  borderRadius: BorderRadius.circular(6),
+                ),
+                child: _LazyTrigger(
+                  trigger: BuffValueTriggerType(BuffType.none, skill: additionalSkillId, level: additionalSkillLv),
+                  buff: null,
+                  isNp: false,
+                  useRate: null,
+                  showPlayer: showPlayer,
+                  showEnemy: showEnemy,
+                  loops: loops ?? LoopTargets(),
+                  region: region,
+                ),
+              ),
         ),
-      ));
+      );
     }
 
     return children;
@@ -162,71 +167,68 @@ class _DescriptorWrapper extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutTryBuilder(builder: (context, constraints) {
-      double maxWidth = 80;
-      int perLine = 5;
-      if (constraints.maxWidth.isFinite) {
-        maxWidth = max(maxWidth, constraints.maxWidth / 3);
-        maxWidth = min(maxWidth, constraints.maxWidth / 2.5);
-        if (constraints.maxWidth > 600 && [lvCells, ocCells, supportCells].any((e) => e.length > 5)) {
-          perLine = 10;
-        }
-      }
-
-      List<Widget> children = [];
-      if (trailing == null) {
-        children.add(title);
-      } else {
-        children.add(Row(
-          children: [
-            Expanded(flex: perLine - 1, child: title),
-            ConstrainedBox(
-              constraints: BoxConstraints(maxWidth: maxWidth, minWidth: min(20, maxWidth)),
-              child: trailing,
-            ),
-          ],
-        ));
-      }
-      final cellsList = [lvCells, ocCells, supportCells];
-      for (int cellIndex = 0; cellIndex < cellsList.length; cellIndex++) {
-        final _cells = cellsList[cellIndex];
-        if (_cells.isEmpty) continue;
-        List<Widget> rows = [];
-        int _perLine = perLine;
-        if (_cells.length == 1) _perLine = 1;
-        int rowCount = (_cells.length / _perLine).ceil();
-        for (int i = 0; i < rowCount; i++) {
-          List<Widget> cols = [];
-          for (int j = i * _perLine; j < (i + 1) * _perLine; j++) {
-            Widget cell = _cells.getOrNull(j) ?? const SizedBox();
-            cell = Padding(
-              padding: const EdgeInsets.symmetric(vertical: 2),
-              child: cell,
-            );
-            if ((cellIndex == 0 && lv != null && lv! - 1 == j) || (cellIndex == 1 && oc != null && oc! - 1 == j)) {
-              cell = DecoratedBox(
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color: cellIndex == 1 ? Colors.amber.withAlpha(180) : AppTheme(context).tertiary.withAlpha(180),
-                  ),
-                  borderRadius: BorderRadius.circular(4),
-                ),
-                child: cell,
-              );
-            }
-            cols.add(cell);
+    return LayoutTryBuilder(
+      builder: (context, constraints) {
+        double maxWidth = 80;
+        int perLine = 5;
+        if (constraints.maxWidth.isFinite) {
+          maxWidth = max(maxWidth, constraints.maxWidth / 3);
+          maxWidth = min(maxWidth, constraints.maxWidth / 2.5);
+          if (constraints.maxWidth > 600 && [lvCells, ocCells, supportCells].any((e) => e.length > 5)) {
+            perLine = 10;
           }
-          rows.add(Row(children: cols.map((e) => Expanded(child: e)).toList()));
         }
-        children.addAll(rows);
-      }
-      if (children.length == 1) return children.first;
-      return Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: children,
-      );
-    });
+
+        List<Widget> children = [];
+        if (trailing == null) {
+          children.add(title);
+        } else {
+          children.add(
+            Row(
+              children: [
+                Expanded(flex: perLine - 1, child: title),
+                ConstrainedBox(
+                  constraints: BoxConstraints(maxWidth: maxWidth, minWidth: min(20, maxWidth)),
+                  child: trailing,
+                ),
+              ],
+            ),
+          );
+        }
+        final cellsList = [lvCells, ocCells, supportCells];
+        for (int cellIndex = 0; cellIndex < cellsList.length; cellIndex++) {
+          final _cells = cellsList[cellIndex];
+          if (_cells.isEmpty) continue;
+          List<Widget> rows = [];
+          int _perLine = perLine;
+          if (_cells.length == 1) _perLine = 1;
+          int rowCount = (_cells.length / _perLine).ceil();
+          for (int i = 0; i < rowCount; i++) {
+            List<Widget> cols = [];
+            for (int j = i * _perLine; j < (i + 1) * _perLine; j++) {
+              Widget cell = _cells.getOrNull(j) ?? const SizedBox();
+              cell = Padding(padding: const EdgeInsets.symmetric(vertical: 2), child: cell);
+              if ((cellIndex == 0 && lv != null && lv! - 1 == j) || (cellIndex == 1 && oc != null && oc! - 1 == j)) {
+                cell = DecoratedBox(
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: cellIndex == 1 ? Colors.amber.withAlpha(180) : AppTheme(context).tertiary.withAlpha(180),
+                    ),
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: cell,
+                );
+              }
+              cols.add(cell);
+            }
+            rows.add(Row(children: cols.map((e) => Expanded(child: e)).toList()));
+          }
+          children.addAll(rows);
+        }
+        if (children.length == 1) return children.first;
+        return Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: children);
+      },
+    );
   }
 }
 
@@ -242,33 +244,39 @@ class SkillScriptDescriptor extends StatelessWidget {
 
     if (actIndividuality.isNotEmpty) {
       final isSvt = actIndividuality.any((indiv) => db.gameData.servantsById.containsKey(indiv.id));
-      children.add(_pad(_DescriptorWrapper(
-        title: Text.rich(
-          TextSpan(children: [
-            ...SharedBuilder.replaceSpan(
-              Transl.misc2('SkillScript', isSvt ? 'actIndividuality' : 'actIndividuality2'),
-              '{0}',
-              divideList(
-                actIndividuality.map((indiv) {
-                  final svt = db.gameData.servantsById[indiv.id];
-                  String name = indiv.shownName(addSvtId: false);
-                  if (svt != null) {
-                    name += '(${Transl.svtClassId(svt.classId).l})';
-                  }
-                  return SharedBuilder.textButtonSpan(
-                    context: context,
-                    text: name,
-                    onTap: svt?.routeTo ?? indiv.routeTo,
-                  );
-                }).toList(),
-                const TextSpan(text: '/'),
+      children.add(
+        _pad(
+          _DescriptorWrapper(
+            title: Text.rich(
+              TextSpan(
+                children: [
+                  ...SharedBuilder.replaceSpan(
+                    Transl.misc2('SkillScript', isSvt ? 'actIndividuality' : 'actIndividuality2'),
+                    '{0}',
+                    divideList(
+                      actIndividuality.map((indiv) {
+                        final svt = db.gameData.servantsById[indiv.id];
+                        String name = indiv.shownName(addSvtId: false);
+                        if (svt != null) {
+                          name += '(${Transl.svtClassId(svt.classId).l})';
+                        }
+                        return SharedBuilder.textButtonSpan(
+                          context: context,
+                          text: name,
+                          onTap: svt?.routeTo ?? indiv.routeTo,
+                        );
+                      }).toList(),
+                      const TextSpan(text: '/'),
+                    ),
+                  ),
+                ],
               ),
-            )
-          ]),
-          style: Theme.of(context).textTheme.bodySmall,
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
+            trailing: null,
+          ),
         ),
-        trailing: null,
-      )));
+      );
     }
     if (script?.NP_HIGHER?.isNotEmpty == true) {
       children.add(_keyLv(context, 'NP_HIGHER', script!.NP_HIGHER!, (v) => '$v%'));
@@ -289,27 +297,47 @@ class SkillScriptDescriptor extends StatelessWidget {
       children.add(_keyLv(context, 'HP_VAL_LOWER', script!.HP_VAL_LOWER!, (v) => '$v'));
     }
     if (script?.HP_PER_HIGHER?.isNotEmpty == true) {
-      children.add(_keyLv(
-          context, 'HP_PER_HIGHER', script!.HP_PER_HIGHER!, (v) => v.format(compact: false, percent: true, base: 10)));
+      children.add(
+        _keyLv(
+          context,
+          'HP_PER_HIGHER',
+          script!.HP_PER_HIGHER!,
+          (v) => v.format(compact: false, percent: true, base: 10),
+        ),
+      );
     }
     if (script?.HP_PER_LOWER?.isNotEmpty == true) {
-      children.add(_keyLv(
-          context, 'HP_PER_LOWER', script!.HP_PER_LOWER!, (v) => v.format(compact: false, percent: true, base: 10)));
+      children.add(
+        _keyLv(
+          context,
+          'HP_PER_LOWER',
+          script!.HP_PER_LOWER!,
+          (v) => v.format(compact: false, percent: true, base: 10),
+        ),
+      );
     }
     if (script?.actRarity?.isNotEmpty == true) {
-      children.add(_keyLv(context, 'actRarity', script!.actRarity!, (v) {
-        if (v.length <= 1) return v.join();
-        for (int index = 1; index < v.length; index++) {
-          if (v[index] != v.first + index) {
-            return v.join("&");
+      children.add(
+        _keyLv(context, 'actRarity', script!.actRarity!, (v) {
+          if (v.length <= 1) return v.join();
+          for (int index = 1; index < v.length; index++) {
+            if (v[index] != v.first + index) {
+              return v.join("&");
+            }
           }
-        }
-        return "${v.first}-${v.last}";
-      }));
+          return "${v.first}-${v.last}";
+        }),
+      );
     }
     if (script?.battleStartRemainingTurn?.isNotEmpty == true) {
-      children.add(_keyLv(context, 'battleStartRemainingTurn', script!.battleStartRemainingTurn!,
-          (v) => Transl.special.funcValTurns(v)));
+      children.add(
+        _keyLv(
+          context,
+          'battleStartRemainingTurn',
+          script!.battleStartRemainingTurn!,
+          (v) => Transl.special.funcValTurns(v),
+        ),
+      );
     }
 
     if (script?.additionalSkillId?.isNotEmpty == true) {
@@ -317,7 +345,7 @@ class SkillScriptDescriptor extends StatelessWidget {
       final lvs = script?.additionalSkillLv ?? <int>[];
       List<InlineSpan> titleSpans = [
         TextSpan(text: Transl.misc2('SkillScript', 'additionalSkillId')),
-        const TextSpan(text: ": ")
+        const TextSpan(text: ": "),
       ];
       Widget? trailing;
       List<Widget> cells = [];
@@ -326,13 +354,15 @@ class SkillScriptDescriptor extends StatelessWidget {
         trailing = Text('Lv.${lvs.first}', style: const TextStyle(fontSize: 13));
       }
       if (ids.toSet().length == 1) {
-        titleSpans.add(SharedBuilder.textButtonSpan(
-          context: context,
-          text: ids.first.toString(),
-          onTap: () {
-            router.push(url: Routes.skillI(ids.first));
-          },
-        ));
+        titleSpans.add(
+          SharedBuilder.textButtonSpan(
+            context: context,
+            text: ids.first.toString(),
+            onTap: () {
+              router.push(url: Routes.skillI(ids.first));
+            },
+          ),
+        );
         if (lvs.toSet().length > 1) {
           cells = lvs.map((e) => Text('Lv.$e', style: const TextStyle(fontSize: 13))).toList();
         }
@@ -341,100 +371,118 @@ class SkillScriptDescriptor extends StatelessWidget {
           final id = ids[index];
           final lv = lvs.getOrNull(index);
           return Text.rich(
-            TextSpan(children: [
-              SharedBuilder.textButtonSpan(
+            TextSpan(
+              children: [
+                SharedBuilder.textButtonSpan(
                   context: context,
                   text: id.toString(),
                   onTap: () {
                     router.push(url: Routes.skillI(id));
-                  }),
-              if (lv != null) TextSpan(text: '\n(Lv.$lv)')
-            ]),
+                  },
+                ),
+                if (lv != null) TextSpan(text: '\n(Lv.$lv)'),
+              ],
+            ),
             textAlign: TextAlign.center,
           );
         });
       }
-      children.add(_pad(_DescriptorWrapper(
-        title: Text.rich(TextSpan(children: titleSpans), style: Theme.of(context).textTheme.bodySmall),
-        trailing: trailing,
-        lvCells: cells,
-      )));
+      children.add(
+        _pad(
+          _DescriptorWrapper(
+            title: Text.rich(TextSpan(children: titleSpans), style: Theme.of(context).textTheme.bodySmall),
+            trailing: trailing,
+            lvCells: cells,
+          ),
+        ),
+      );
     }
     if (script?.tdTypeChangeIDs?.isNotEmpty == true) {
-      children.add(_pad(Text.rich(
-        TextSpan(children: [
-          TextSpan(text: Transl.misc2('SkillScript', 'tdTypeChangeIDs')),
-          const TextSpan(text: ': '),
-          ...divideList(
-            List.generate(script!.tdTypeChangeIDs!.length, (index) {
-              final tdId = script!.tdTypeChangeIDs![index];
-              return SharedBuilder.textButtonSpan(
-                context: context,
-                text: '$tdId',
-                onTap: () {
-                  router.push(url: Routes.tdI(tdId));
-                },
-              );
-            }),
-            const TextSpan(text: ' / '),
+      children.add(
+        _pad(
+          Text.rich(
+            TextSpan(
+              children: [
+                TextSpan(text: Transl.misc2('SkillScript', 'tdTypeChangeIDs')),
+                const TextSpan(text: ': '),
+                ...divideList(
+                  List.generate(script!.tdTypeChangeIDs!.length, (index) {
+                    final tdId = script!.tdTypeChangeIDs![index];
+                    return SharedBuilder.textButtonSpan(
+                      context: context,
+                      text: '$tdId',
+                      onTap: () {
+                        router.push(url: Routes.tdI(tdId));
+                      },
+                    );
+                  }),
+                  const TextSpan(text: ' / '),
+                ),
+              ],
+            ),
+            style: Theme.of(context).textTheme.bodySmall,
           ),
-        ]),
-        style: Theme.of(context).textTheme.bodySmall,
-      )));
+        ),
+      );
     }
     if (script?.tdChangeByBattlePoint?.isNotEmpty == true) {
-      children.add(_pad(Text.rich(
-        TextSpan(children: [
-          TextSpan(text: Transl.misc2('SkillScript', 'tdChangeByBattlePoint')),
-          const TextSpan(text: ': '),
-          ...divideList(
-            List.generate(script!.tdChangeByBattlePoint!.length, (index) {
-              final tdChange = script!.tdChangeByBattlePoint![index];
-              return TextSpan(children: [
-                TextSpan(text: '(Lv≥${tdChange.phase}) '),
-                SharedBuilder.textButtonSpan(
-                  context: context,
-                  text: '${tdChange.noblePhantasmId}',
-                  onTap: () {
-                    router.push(url: Routes.tdI(tdChange.noblePhantasmId));
-                  },
+      children.add(
+        _pad(
+          Text.rich(
+            TextSpan(
+              children: [
+                TextSpan(text: Transl.misc2('SkillScript', 'tdChangeByBattlePoint')),
+                const TextSpan(text: ': '),
+                ...divideList(
+                  List.generate(script!.tdChangeByBattlePoint!.length, (index) {
+                    final tdChange = script!.tdChangeByBattlePoint![index];
+                    return TextSpan(
+                      children: [
+                        TextSpan(text: '(Lv≥${tdChange.phase}) '),
+                        SharedBuilder.textButtonSpan(
+                          context: context,
+                          text: '${tdChange.noblePhantasmId}',
+                          onTap: () {
+                            router.push(url: Routes.tdI(tdChange.noblePhantasmId));
+                          },
+                        ),
+                      ],
+                    );
+                  }),
+                  const TextSpan(text: ' / '),
                 ),
-              ]);
-            }),
-            const TextSpan(text: ' / '),
+              ],
+            ),
+            style: Theme.of(context).textTheme.bodySmall,
           ),
-        ]),
-        style: Theme.of(context).textTheme.bodySmall,
-      )));
+        ),
+      );
     }
     if (script?.SelectAddInfo?.isNotEmpty == true) {
       final infos = script!.SelectAddInfo!;
       final info = infos.first;
       final transl = Transl.miscScope('SelectAddInfo');
-      children.add(_pad(Text(
-        [
-          '* ${transl('Optional').l}: ${transl(info.title).l}',
-          for (int index = 0; index < info.btn.length; index++)
-            '${transl('Option').l} ${index + 1}: ${transl(info.btn[index].name).l}'
-        ].join('\n'),
-        style: Theme.of(context).textTheme.bodySmall,
-        textScaler: const TextScaler.linear(0.9),
-      )));
+      children.add(
+        _pad(
+          Text(
+            [
+              '* ${transl('Optional').l}: ${transl(info.title).l}',
+              for (int index = 0; index < info.btn.length; index++)
+                '${transl('Option').l} ${index + 1}: ${transl(info.btn[index].name).l}',
+            ].join('\n'),
+            style: Theme.of(context).textTheme.bodySmall,
+            textScaler: const TextScaler.linear(0.9),
+          ),
+        ),
+      );
     }
     if (children.isEmpty) return const SizedBox();
     return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(4),
-        color: Theme.of(context).hoverColor,
-      ),
+      decoration: BoxDecoration(borderRadius: BorderRadius.circular(4), color: Theme.of(context).hoverColor),
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       child: SizedBox(
         width: double.infinity,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: children,
-        ),
+        child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: children),
       ),
     );
   }
@@ -451,31 +499,24 @@ class SkillScriptDescriptor extends StatelessWidget {
     Widget? trailing;
     List<Widget> cells = [];
     if (vals.toSet().length == 1) {
-      trailing = Text(
-        builder(vals.first),
-        style: const TextStyle(fontSize: 13),
-      );
+      trailing = Text(builder(vals.first), style: const TextStyle(fontSize: 13));
     } else {
       for (final v in vals) {
-        cells.add(Text(
-          builder(v),
-          style: const TextStyle(fontSize: 13),
-        ));
+        cells.add(Text(builder(v), style: const TextStyle(fontSize: 13)));
       }
     }
 
-    return _pad(_DescriptorWrapper(
-      title: Text.rich(title, style: Theme.of(context).textTheme.bodySmall),
-      trailing: trailing,
-      lvCells: cells,
-    ));
+    return _pad(
+      _DescriptorWrapper(
+        title: Text.rich(title, style: Theme.of(context).textTheme.bodySmall),
+        trailing: trailing,
+        lvCells: cells,
+      ),
+    );
   }
 
   Widget _pad(Widget child) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      child: child,
-    );
+    return Padding(padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4), child: child);
   }
 }
 
@@ -561,10 +602,7 @@ class FuncDescriptor extends StatelessWidget {
       FuncType.gainNpTargetSum,
     ].contains(func.funcType)) {
       funcText.write(Transl.funcPopuptextBase(func.funcType.name).l);
-    } else if (const [
-      FuncType.enemyEncountRateUp,
-      FuncType.enemyEncountCopyRateUp,
-    ].contains(func.funcType)) {
+    } else if (const [FuncType.enemyEncountRateUp, FuncType.enemyEncountCopyRateUp].contains(func.funcType)) {
       funcText.write(Transl.funcPopuptextBase(func.funcType.name).l);
     } else if (func.funcType == FuncType.updateEntryPositions) {
       funcText.write(Transl.enums(func.funcType, (enums) => enums.funcType).l);
@@ -588,11 +626,7 @@ class FuncDescriptor extends StatelessWidget {
       funcText.write('(.ChangeMaxBreakGauge)');
     }
 
-    if ([
-      FuncType.gainHpFromTargets,
-      FuncType.absorbNpturn,
-      FuncType.gainNpFromTargets,
-    ].contains(func.funcType)) {
+    if ([FuncType.gainHpFromTargets, FuncType.absorbNpturn, FuncType.gainNpFromTargets].contains(func.funcType)) {
       funcText.write(Transl.special.funcAbsorbFrom);
     }
 
@@ -601,10 +635,12 @@ class FuncDescriptor extends StatelessWidget {
     int turn = staticVal.Turn ?? -1, count = staticVal.Count ?? -1;
     if (turn > 0 || count > 0) {
       funcText.write(' (');
-      funcText.write([
-        if (count > 0) Transl.special.funcValCountTimes(count),
-        if (turn > 0) Transl.special.funcValTurns(turn),
-      ].join(M.of(jp: '·', cn: '·', tw: '·', na: ', ', kr: ', ')));
+      funcText.write(
+        [
+          if (count > 0) Transl.special.funcValCountTimes(count),
+          if (turn > 0) Transl.special.funcValTurns(turn),
+        ].join(M.of(jp: '·', cn: '·', tw: '·', na: ', ', kr: ', ')),
+      );
       funcText.write(')');
     }
     return funcText;
@@ -646,18 +682,30 @@ class FuncDescriptor extends StatelessWidget {
 
     if (mutatingLvVals.isNotEmpty) {
       funcText.write('<Lv>');
-      lvCells.addAll(List.generate(
-          mutatingLvVals.length, (index) => _listVal(mutatingLvVals[index], func.svals.getOrNull(index), index)));
+      lvCells.addAll(
+        List.generate(
+          mutatingLvVals.length,
+          (index) => _listVal(mutatingLvVals[index], func.svals.getOrNull(index), index),
+        ),
+      );
     }
     if (mutatingOCVals.isNotEmpty) {
       funcText.write('<OC>');
-      ocCells.addAll(List.generate(
-          mutatingOCVals.length, (index) => _listVal(mutatingOCVals[index], func.ocVals(0).getOrNull(index), index)));
+      ocCells.addAll(
+        List.generate(
+          mutatingOCVals.length,
+          (index) => _listVal(mutatingOCVals[index], func.ocVals(0).getOrNull(index), index),
+        ),
+      );
     }
     if (func.followerVals?.isNotEmpty == true) {
       // doesn't split static or mutating vals, it is rarely used.
-      supportCells.addAll(List.generate(
-          func.followerVals!.length, (index) => _listVal(func.followerVals![index], null, index, support: true)));
+      supportCells.addAll(
+        List.generate(
+          func.followerVals!.length,
+          (index) => _listVal(func.followerVals![index], null, index, support: true),
+        ),
+      );
     }
 
     DataVals? vals = func.svals.getOrNull(0);
@@ -673,10 +721,7 @@ class FuncDescriptor extends StatelessWidget {
             border: Border.all(color: Theme.of(context).hintColor),
             borderRadius: BorderRadius.circular(3),
           ),
-          child: Padding(
-            padding: const EdgeInsets.all(1),
-            child: icon,
-          ),
+          child: Padding(padding: const EdgeInsets.all(1), child: icon),
         );
       }
       if (vals?.ShowState == -1 || vals?.ShowState == -2) {
@@ -689,13 +734,7 @@ class FuncDescriptor extends StatelessWidget {
       String indivName;
       indivName = workType != null ? Transl.enums(workType, (enums) => enums.eventWorkType).l : '$indiv';
       if (indiv != null) {
-        spans.add(CenterWidgetSpan(
-          child: db.getIconImage(
-            EventWorkType.getIcon(indiv),
-            width: 20,
-            aspectRatio: 1,
-          ),
-        ));
+        spans.add(CenterWidgetSpan(child: db.getIconImage(EventWorkType.getIcon(indiv), width: 20, aspectRatio: 1)));
       }
       spans.add(TextSpan(text: '〔$indivName〕'));
     } else if ([
@@ -711,25 +750,19 @@ class FuncDescriptor extends StatelessWidget {
         spans.add(TextSpan(text: '$indiv  '));
       }
       for (final item in items) {
-        spans.add(TextSpan(
-          children: [
-            CenterWidgetSpan(child: Item.iconBuilder(context: context, item: item, width: 20)),
-            TextSpan(text: ' ${item.lName.l}  ')
-          ],
-          recognizer: TapGestureRecognizer()..onTap = item.routeTo,
-        ));
+        spans.add(
+          TextSpan(
+            children: [
+              CenterWidgetSpan(child: Item.iconBuilder(context: context, item: item, width: 20)),
+              TextSpan(text: ' ${item.lName.l}  '),
+            ],
+            recognizer: TapGestureRecognizer()..onTap = item.routeTo,
+          ),
+        );
       }
     }
     if (icon != null) {
-      spans.insert(
-        0,
-        CenterWidgetSpan(
-          child: Padding(
-            padding: const EdgeInsetsDirectional.only(end: 4),
-            child: icon,
-          ),
-        ),
-      );
+      spans.insert(0, CenterWidgetSpan(child: Padding(padding: const EdgeInsetsDirectional.only(end: 4), child: icon)));
     }
 
     final posVal =
@@ -799,12 +832,9 @@ class FuncDescriptor extends StatelessWidget {
             ),
             if (guessTrait != null) ...[
               const TextSpan(text: '('),
-              SharedBuilder.traitSpan(
-                context: context,
-                trait: guessTrait,
-              ),
+              SharedBuilder.traitSpan(context: context, trait: guessTrait),
               const TextSpan(text: '?)'),
-            ]
+            ],
           ]),
           style: style,
         );
@@ -843,34 +873,29 @@ class FuncDescriptor extends StatelessWidget {
           break;
         case FuncType.damageNpIndividualSum:
           if ((vals?.TargetList?.length ?? 0) > 0) {
-            spans.addAll(SharedBuilder.replaceSpanMaps(
-              text,
-              {
-                "{0}": (_) => [
+            spans.addAll(
+              SharedBuilder.replaceSpanMaps(text, {
+                "{0}":
+                    (_) => [
                       TextSpan(
                         children: SharedBuilder.traitSpans(
                           context: context,
-                          traits: [
-                            for (int indiv in vals?.TargetList ?? []) NiceTrait(id: indiv),
-                          ],
+                          traits: [for (int indiv in vals?.TargetList ?? []) NiceTrait(id: indiv)],
                         ),
                         style: style,
-                      )
+                      ),
                     ],
-                "{1}": (_) => [
-                      TextSpan(text: vals?.Target == 0 ? Transl.special.self : Transl.special.opposite),
-                    ]
-              },
-            ));
+                "{1}": (_) => [TextSpan(text: vals?.Target == 0 ? Transl.special.self : Transl.special.opposite)],
+              }),
+            );
             return;
           }
           break;
         case FuncType.gainNpIndividualSum:
         case FuncType.gainNpBuffIndividualSum:
         case FuncType.gainNpTargetSum:
-          spans.addAll(SharedBuilder.replaceSpanMaps(
-            text,
-            {
+          spans.addAll(
+            SharedBuilder.replaceSpanMaps(text, {
               "{0}": (_) {
                 final target = func.funcType == FuncType.gainNpBuffIndividualSum ? 0 : vals?.Value2 ?? 0;
                 String targetText = 'TargetType<$target>';
@@ -887,9 +912,9 @@ class FuncDescriptor extends StatelessWidget {
                 }
                 return [TextSpan(text: targetText)];
               },
-              "{1}": (_) => SharedBuilder.traitSpans(context: context, traits: func.traitVals)
-            },
-          ));
+              "{1}": (_) => SharedBuilder.traitSpans(context: context, traits: func.traitVals),
+            }),
+          );
           return;
         case FuncType.enemyEncountRateUp:
         case FuncType.enemyEncountCopyRateUp:
@@ -936,20 +961,19 @@ class FuncDescriptor extends StatelessWidget {
           case BuffType.toFieldSubIndividualityField: // need verify
             List<int>? indivs = vals?.TargetList;
             if (indivs != null && indivs.isNotEmpty) {
-              spans.add(TextSpan(
-                children: SharedBuilder.replaceSpan(
-                  text,
-                  '{0}',
-                  divideList([
-                    for (final indiv in indivs)
-                      SharedBuilder.traitSpan(
-                        context: context,
-                        trait: NiceTrait(id: indiv),
-                      )
-                  ], const TextSpan(text: ' / ')),
+              spans.add(
+                TextSpan(
+                  children: SharedBuilder.replaceSpan(
+                    text,
+                    '{0}',
+                    divideList([
+                      for (final indiv in indivs)
+                        SharedBuilder.traitSpan(context: context, trait: NiceTrait(id: indiv)),
+                    ], const TextSpan(text: ' / ')),
+                  ),
+                  style: style,
                 ),
-                style: style,
-              ));
+              );
               return;
             }
             break;
@@ -963,14 +987,14 @@ class FuncDescriptor extends StatelessWidget {
           case BuffType.overwriteBattleclass:
             final clsId = vals?.Value;
             if (clsId != null) {
-              spans.add(TextSpan(
-                children: SharedBuilder.replaceSpan(
-                  text,
-                  '{0}',
-                  [TextSpan(text: Transl.miscFunction('TargetEnemyClass'))],
+              spans.add(
+                TextSpan(
+                  children: SharedBuilder.replaceSpan(text, '{0}', [
+                    TextSpan(text: Transl.miscFunction('TargetEnemyClass')),
+                  ]),
+                  style: style,
                 ),
-                style: style,
-              ));
+              );
               return;
             }
             break;
@@ -979,14 +1003,9 @@ class FuncDescriptor extends StatelessWidget {
             if (attri != null) {
               final svtAttri = ServantSubAttribute.values.firstWhereOrNull((e) => e.value == attri);
               final attriName = svtAttri == null ? attri.toString() : Transl.svtSubAttribute(svtAttri).l;
-              spans.add(TextSpan(
-                children: SharedBuilder.replaceSpan(
-                  text,
-                  '{0}',
-                  [TextSpan(text: attriName)],
-                ),
-                style: style,
-              ));
+              spans.add(
+                TextSpan(children: SharedBuilder.replaceSpan(text, '{0}', [TextSpan(text: attriName)]), style: style),
+              );
               return;
             }
             break;
@@ -1002,15 +1021,11 @@ class FuncDescriptor extends StatelessWidget {
     if (buff != null && buff.type == BuffType.changeBgm) {
       final bgm = db.gameData.bgms[vals?.BgmId];
       if (bgm != null) {
-        spans.add(TextSpan(
-          children: [
-            SharedBuilder.textButtonSpan(
-              context: context,
-              text: '  ${bgm.tooltip}',
-              onTap: bgm.routeTo,
-            )
-          ],
-        ));
+        spans.add(
+          TextSpan(
+            children: [SharedBuilder.textButtonSpan(context: context, text: '  ${bgm.tooltip}', onTap: bgm.routeTo)],
+          ),
+        );
       }
     }
 
@@ -1019,23 +1034,29 @@ class FuncDescriptor extends StatelessWidget {
       if (transformId != null) {
         final transformSvt = db.gameData.servantsById[transformId] ?? db.gameData.entities[transformId];
         if (transformSvt != null) {
-          spans.add(CenterWidgetSpan(
-            child: transformSvt.iconBuilder(
-              context: context,
-              width: 20,
-              overrideIcon:
-                  transformLimit != null && transformSvt is Servant ? transformSvt.ascendIcon(transformLimit) : null,
+          spans.add(
+            CenterWidgetSpan(
+              child: transformSvt.iconBuilder(
+                context: context,
+                width: 20,
+                overrideIcon:
+                    transformLimit != null && transformSvt is Servant ? transformSvt.ascendIcon(transformLimit) : null,
+              ),
             ),
-          ));
+          );
         }
-        spans.add(SharedBuilder.textButtonSpan(
-          context: context,
-          text:
-              transformLimit == null ? ' $transformId ' : ' $transformId[${S.current.ascension_short}$transformLimit] ',
-          onTap: () {
-            router.push(url: Routes.servantI(transformId));
-          },
-        ));
+        spans.add(
+          SharedBuilder.textButtonSpan(
+            context: context,
+            text:
+                transformLimit == null
+                    ? ' $transformId '
+                    : ' $transformId[${S.current.ascension_short}$transformLimit] ',
+            onTap: () {
+              router.push(url: Routes.servantI(transformId));
+            },
+          ),
+        );
       }
     } else if (const [
       FuncType.shortenSkill,
@@ -1049,18 +1070,20 @@ class FuncDescriptor extends StatelessWidget {
       }
     } else if (func.funcType == FuncType.displayBattleMessage) {
       final msgId = vals?.Value ?? 0;
-      spans.add(SharedBuilder.textButtonSpan(
-        context: context,
-        text: ' $msgId',
-        onTap: () {
-          if (msgId == 0) return;
-          showDialog(
-            context: context,
-            useRootNavigator: false,
-            builder: (context) => BattleMessageDialog(msgId: msgId, region: region),
-          );
-        },
-      ));
+      spans.add(
+        SharedBuilder.textButtonSpan(
+          context: context,
+          text: ' $msgId',
+          onTap: () {
+            if (msgId == 0) return;
+            showDialog(
+              context: context,
+              useRootNavigator: false,
+              builder: (context) => BattleMessageDialog(msgId: msgId, region: region),
+            );
+          },
+        ),
+      );
     }
 
     if (buff?.type == BuffType.donotSkillSelect && vals?.Value != null) {
@@ -1073,21 +1096,9 @@ class FuncDescriptor extends StatelessWidget {
     if (vals?.AddLinkageTargetIndividualty != null && vals?.BehaveAsFamilyBuff == 1) {
       final color = Theme.of(context).textTheme.bodySmall?.color;
       spans.add(const TextSpan(text: '('));
-      spans.add(CenterWidgetSpan(
-        child: FaIcon(
-          FontAwesomeIcons.link,
-          size: 12,
-          color: color,
-        ),
-      ));
+      spans.add(CenterWidgetSpan(child: FaIcon(FontAwesomeIcons.link, size: 12, color: color)));
       if (vals?.UnSubStateWhileLinkedToOthers == 1) {
-        spans.add(CenterWidgetSpan(
-          child: FaIcon(
-            FontAwesomeIcons.linkSlash,
-            size: 12,
-            color: color,
-          ),
-        ));
+        spans.add(CenterWidgetSpan(child: FaIcon(FontAwesomeIcons.linkSlash, size: 12, color: color)));
       }
       spans.add(TextSpan(text: '${vals?.AddLinkageTargetIndividualty}'));
       spans.add(const TextSpan(text: ')'));
@@ -1095,33 +1106,41 @@ class FuncDescriptor extends StatelessWidget {
     //
     void _addParamAddTrait(String Function() template, List<int>? traitIds) {
       if (traitIds != null && traitIds.isNotEmpty) {
-        spans.addAll(SharedBuilder.replaceSpan(
-            template(), '{0}', SharedBuilder.traitSpans(context: context, traits: NiceTrait.list(traitIds))));
+        spans.addAll(
+          SharedBuilder.replaceSpan(
+            template(),
+            '{0}',
+            SharedBuilder.traitSpans(context: context, traits: NiceTrait.list(traitIds)),
+          ),
+        );
       }
     }
 
     _addParamAddTrait(
-        () => Transl.special.funcTraitPerBuff(target: Transl.special.self), vals?.ParamAddSelfIndividuality);
+      () => Transl.special.funcTraitPerBuff(target: Transl.special.self),
+      vals?.ParamAddSelfIndividuality,
+    );
     _addParamAddTrait(
-        () => Transl.special.funcTraitPerBuff(target: Transl.special.opposite), vals?.ParamAddOpIndividuality);
+      () => Transl.special.funcTraitPerBuff(target: Transl.special.opposite),
+      vals?.ParamAddOpIndividuality,
+    );
     _addParamAddTrait(
-        () => Transl.special.funcTraitPerBuff(target: Transl.special.field), vals?.ParamAddFieldIndividuality);
+      () => Transl.special.funcTraitPerBuff(target: Transl.special.field),
+      vals?.ParamAddFieldIndividuality,
+    );
 
     List<List<InlineSpan>> _condSpans = [];
     void _addTraits(String? prefix, List<NiceTrait> traits, {bool useAnd = false}) {
       if ([BuffType.upCommandall, BuffType.downCommandall].contains(buff?.type)) {
-        traits = traits
-            .where((e) => ![Trait.cardQuick, Trait.cardArts, Trait.cardBuster, Trait.cardExtra].contains(e.name))
-            .toList();
+        traits =
+            traits
+                .where((e) => ![Trait.cardQuick, Trait.cardArts, Trait.cardBuster, Trait.cardExtra].contains(e.name))
+                .toList();
       }
       if (traits.isEmpty) return;
       _condSpans.add([
         if (prefix != null) TextSpan(text: prefix),
-        ...SharedBuilder.traitSpans(
-          context: context,
-          traits: traits,
-          useAndJoin: useAnd,
-        ),
+        ...SharedBuilder.traitSpans(context: context, traits: traits, useAndJoin: useAnd),
         const TextSpan(text: ' '), // not let recognizer extends its width
       ]);
     }
@@ -1138,19 +1157,10 @@ class FuncDescriptor extends StatelessWidget {
       if (overwriteTvals.isNotEmpty) {
         _condSpans.add([
           TextSpan(text: Transl.special.funcTargetVals),
-          ...divideList(
-            [
-              for (final traits in overwriteTvals)
-                TextSpan(
-                  children: SharedBuilder.traitSpans(
-                    context: context,
-                    traits: traits,
-                    useAndJoin: true,
-                  ),
-                ),
-            ],
-            const TextSpan(text: '  /  '),
-          ),
+          ...divideList([
+            for (final traits in overwriteTvals)
+              TextSpan(children: SharedBuilder.traitSpans(context: context, traits: traits, useAndJoin: true)),
+          ], const TextSpan(text: '  /  ')),
           const TextSpan(text: ' '), // not let recognizer extends its width
         ]);
       } else if (func.traitVals.map((e) => e.id).join(',') != func.functvals.map((e) => e.id).join(',')) {
@@ -1161,8 +1171,12 @@ class FuncDescriptor extends StatelessWidget {
     //     func.traitVals.map((e) => e.id).join(',') != func.functvals.map((e) => e.id).join(',')) {
     //   _addTraits(Transl.special.funcTargetVals, func.functvals);
     // }
-    if ([FuncType.extendBuffcount, FuncType.extendBuffturn, FuncType.shortenBuffcount, FuncType.shortenBuffturn]
-        .contains(func.funcType)) {
+    if ([
+      FuncType.extendBuffcount,
+      FuncType.extendBuffturn,
+      FuncType.shortenBuffcount,
+      FuncType.shortenBuffturn,
+    ].contains(func.funcType)) {
       _addTraits(Transl.special.funcTargetVals, vals?.TargetList?.map((e) => NiceTrait(id: e)).toList() ?? []);
     }
     if (vals?.TargetFunctionIndividuality?.isNotEmpty == true) {
@@ -1181,10 +1195,7 @@ class FuncDescriptor extends StatelessWidget {
               .equalTo(NiceTrait.upToleranceSubstateBuffTraits.map((e) => e.value).toSet())) {
         _condSpans.add([
           TextSpan(text: Transl.special.buffCheckOpposite),
-          SharedBuilder.textButtonSpan(
-            context: context,
-            text: Transl.special.variousPositiveBuffs,
-          ),
+          SharedBuilder.textButtonSpan(context: context, text: Transl.special.variousPositiveBuffs),
           const TextSpan(text: ' '),
         ]);
       } else {
@@ -1218,14 +1229,10 @@ class FuncDescriptor extends StatelessWidget {
             countCond == null) {
           // don't show gutsBlock
         } else {
-          final ownerIndivSpans = SharedBuilder.replaceSpan(
-            Transl.special.buffOwnerIndiv,
-            '{0}',
-            [
-              ...SharedBuilder.traitSpans(context: context, traits: ownerIndivs, useAndJoin: ownerIndivAnd),
-              if (countCond != null) TextSpan(text: countCond)
-            ],
-          );
+          final ownerIndivSpans = SharedBuilder.replaceSpan(Transl.special.buffOwnerIndiv, '{0}', [
+            ...SharedBuilder.traitSpans(context: context, traits: ownerIndivs, useAndJoin: ownerIndivAnd),
+            if (countCond != null) TextSpan(text: countCond),
+          ]);
           _condSpans.add(ownerIndivSpans);
         }
       }
@@ -1283,13 +1290,15 @@ class FuncDescriptor extends StatelessWidget {
       _condSpans.add([TextSpan(text: '${S.current.bond}≥${vals?.FriendShipAbove}')]);
     }
     if (vals?.StartingPosition?.isNotEmpty == true) {
-      _condSpans
-          .add([TextSpan(text: '${Transl.miscFunction('StartingPosition')}: ${vals!.StartingPosition!.join("/")}')]);
+      _condSpans.add([
+        TextSpan(text: '${Transl.miscFunction('StartingPosition')}: ${vals!.StartingPosition!.join("/")}'),
+      ]);
     }
     if (vals?.CheckOverChargeStageRange != null) {
-      final ocRanges = DataVals.beautifyRangeTexts(vals!.CheckOverChargeStageRange!)
-          .map((e) => e.replaceAllMapped(RegExp(r'\d+'), (m) => (int.parse(m.group(0)!) + 1).toString()))
-          .toList();
+      final ocRanges =
+          DataVals.beautifyRangeTexts(
+            vals!.CheckOverChargeStageRange!,
+          ).map((e) => e.replaceAllMapped(RegExp(r'\d+'), (m) => (int.parse(m.group(0)!) + 1).toString())).toList();
       _condSpans.add([TextSpan(text: '${Transl.miscFunction('CheckOverChargeStageRange')}: ${ocRanges.join(" & ")}')]);
     }
     if (vals?.CheckBattlePointPhaseRange?.isNotEmpty == true) {
@@ -1299,30 +1308,35 @@ class FuncDescriptor extends StatelessWidget {
 
     if (func.funcquestTvals.isNotEmpty) {
       if (showEvent || func.funcquestTvals.any((e) => !db.gameData.mappingData.fieldTrait.containsKey(e.id))) {
-        _condSpans.add(SharedBuilder.replaceSpan(
-          Transl.special.funcTraitOnField,
-          '{0}',
-          SharedBuilder.traitSpans(
-            context: context,
-            traits: func.funcquestTvals,
-            format: (v) => v.shownName(field: true),
+        _condSpans.add(
+          SharedBuilder.replaceSpan(
+            Transl.special.funcTraitOnField,
+            '{0}',
+            SharedBuilder.traitSpans(
+              context: context,
+              traits: func.funcquestTvals,
+              format: (v) => v.shownName(field: true),
+            ),
           ),
-        ));
+        );
       }
     }
     if (vals?.EventId != null && vals?.EventId != 0 && showEvent) {
       final eventName =
           db.gameData.events[vals?.EventId]?.lShortName.l.replaceAll('\n', ' ') ?? 'Event ${vals?.EventId}';
-      _condSpans.add(SharedBuilder.replaceSpan(Transl.special.funcEventOnly, '{0}', [
-        TextSpan(
-          text: eventName,
-          style: TextStyle(color: AppTheme(context).tertiary),
-          recognizer: TapGestureRecognizer()
-            ..onTap = () {
-              router.push(url: Routes.eventI(vals!.EventId!));
-            },
-        ),
-      ]));
+      _condSpans.add(
+        SharedBuilder.replaceSpan(Transl.special.funcEventOnly, '{0}', [
+          TextSpan(
+            text: eventName,
+            style: TextStyle(color: AppTheme(context).tertiary),
+            recognizer:
+                TapGestureRecognizer()
+                  ..onTap = () {
+                    router.push(url: Routes.eventI(vals!.EventId!));
+                  },
+          ),
+        ]),
+      );
     }
 
     for (int index = 0; index < _condSpans.length; index++) {
@@ -1330,14 +1344,8 @@ class FuncDescriptor extends StatelessWidget {
       spans.addAll(_condSpans[index]);
     }
 
-    Widget title = Text.rich(
-      TextSpan(children: spans),
-      style: Theme.of(context).textTheme.bodySmall,
-    );
-    title = InkWell(
-      onTap: () => func.routeTo(region: region),
-      child: title,
-    );
+    Widget title = Text.rich(TextSpan(children: spans), style: Theme.of(context).textTheme.bodySmall);
+    title = InkWell(onTap: () => func.routeTo(region: region), child: title);
     Widget last = _DescriptorWrapper(
       title: title,
       trailing: trailing,
@@ -1356,10 +1364,7 @@ class FuncDescriptor extends StatelessWidget {
         children: [last, triggerSkill, dependFunc].whereType<Widget>().toList(),
       );
     }
-    last = Padding(
-      padding: padding ?? const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-      child: last,
-    );
+    last = Padding(padding: padding ?? const EdgeInsets.symmetric(horizontal: 16, vertical: 4), child: last);
     return last;
   }
 
@@ -1371,7 +1376,8 @@ class FuncDescriptor extends StatelessWidget {
     final ocDetails = func.ocVals(0).map((e) => trigger(e)).toList();
     func.svalsList.getOrNull((oc ?? 1) - 1)?.getOrNull((level ?? 1) - 1);
     final detail = vals != null ? trigger(vals) : details.getOrNull((level ?? -1) - 1) ?? details.firstOrNull;
-    bool noLevel = details.isEmpty ||
+    bool noLevel =
+        details.isEmpty ||
         ((level == null || level == -1) && details.map((e) => e.level).toSet().length > 1) ||
         ((oc == null || oc == -1) && ocDetails.map((e) => e.level).toSet().length > 1);
 
@@ -1461,8 +1467,8 @@ class FuncDescriptor extends StatelessWidget {
           if (script.INDIVIDUALITIE != null) "INDIVIDUALITIE": script.INDIVIDUALITIE?.shownName(),
           if (script.UpBuffRateBuffIndiv != null) "UpBuffRateBuffIndiv": _traitList(script.UpBuffRateBuffIndiv!),
           if (script.HP_LOWER != null) "HP_LOWER": script.HP_LOWER,
-        }
-      }
+        },
+      },
     };
   }
 }
@@ -1548,17 +1554,16 @@ class __LazyTriggerState extends State<_LazyTrigger> with FuncsDescriptor {
       children: [
         InkWell(
           onTap: () => skill?.routeTo(region: widget.region),
-          child: Text.rich(TextSpan(
-            style: Theme.of(context).textTheme.bodySmall,
-            children: [
-              TextSpan(
-                text: '  $title ',
-                style: const TextStyle(decoration: TextDecoration.underline),
-              ),
-              if (hints.isNotEmpty) TextSpan(text: ' [${hints.join(", ")}]')
-            ],
-            // recognizer: TapGestureRecognizer()..onTap = () => skill?.routeTo(),
-          )),
+          child: Text.rich(
+            TextSpan(
+              style: Theme.of(context).textTheme.bodySmall,
+              children: [
+                TextSpan(text: '  $title ', style: const TextStyle(decoration: TextDecoration.underline)),
+                if (hints.isNotEmpty) TextSpan(text: ' [${hints.join(", ")}]'),
+              ],
+              // recognizer: TapGestureRecognizer()..onTap = () => skill?.routeTo(),
+            ),
+          ),
         ),
         if (!loop)
           ...describeFunctions(
@@ -1576,20 +1581,23 @@ class __LazyTriggerState extends State<_LazyTrigger> with FuncsDescriptor {
         if (loop)
           Center(
             child: Text.rich(
-              TextSpan(text: '∞ ${widget.isNp ? S.current.noble_phantasm : S.current.skill} ', children: [
-                SharedBuilder.textButtonSpan(
-                  context: context,
-                  text: widget.trigger.skill.toString(),
-                  onTap: () {
-                    if (widget.trigger.skill != null) {
-                      router.push(url: Routes.skillI(widget.trigger.skill!));
-                    }
-                  },
-                )
-              ]),
+              TextSpan(
+                text: '∞ ${widget.isNp ? S.current.noble_phantasm : S.current.skill} ',
+                children: [
+                  SharedBuilder.textButtonSpan(
+                    context: context,
+                    text: widget.trigger.skill.toString(),
+                    onTap: () {
+                      if (widget.trigger.skill != null) {
+                        router.push(url: Routes.skillI(widget.trigger.skill!));
+                      }
+                    },
+                  ),
+                ],
+              ),
               style: Theme.of(context).textTheme.bodySmall,
             ),
-          )
+          ),
       ],
     );
   }
@@ -1681,15 +1689,18 @@ class ___LazyFuncState extends State<_LazyFunc> with FuncsDescriptor {
         if (loop)
           Center(
             child: Text.rich(
-              TextSpan(text: '∞ Function ', children: [
-                SharedBuilder.textButtonSpan(
-                  context: context,
-                  text: widget.dependFuncId.toString(),
-                  onTap: () {
-                    router.push(url: Routes.funcI(widget.dependFuncId));
-                  },
-                )
-              ]),
+              TextSpan(
+                text: '∞ Function ',
+                children: [
+                  SharedBuilder.textButtonSpan(
+                    context: context,
+                    text: widget.dependFuncId.toString(),
+                    onTap: () {
+                      router.push(url: Routes.funcI(widget.dependFuncId));
+                    },
+                  ),
+                ],
+              ),
               style: Theme.of(context).textTheme.bodySmall,
             ),
           ),

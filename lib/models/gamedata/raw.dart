@@ -41,10 +41,7 @@ class ExtraCharaFigure implements ExtraCharaImageBase<int> {
   @override
   List<int> get imageIds => charaFigureIds;
 
-  ExtraCharaFigure({
-    required this.svtId,
-    List<int>? charaFigureIds,
-  }) : charaFigureIds = charaFigureIds ?? [];
+  ExtraCharaFigure({required this.svtId, List<int>? charaFigureIds}) : charaFigureIds = charaFigureIds ?? [];
 
   factory ExtraCharaFigure.fromJson(Map<dynamic, dynamic> json) => _$ExtraCharaFigureFromJson(json);
   Map<String, dynamic> toJson() => _$ExtraCharaFigureToJson(this);
@@ -57,10 +54,8 @@ class ExtraCharaImage implements ExtraCharaImageBase<String> {
   @override
   List<String> imageIds;
 
-  ExtraCharaImage({
-    required this.svtId,
-    List<dynamic>? imageIds,
-  }) : imageIds = imageIds?.map((e) => e.toString()).toList() ?? [];
+  ExtraCharaImage({required this.svtId, List<dynamic>? imageIds})
+    : imageIds = imageIds?.map((e) => e.toString()).toList() ?? [];
 
   factory ExtraCharaImage.fromJson(Map<dynamic, dynamic> json) => _$ExtraCharaImageFromJson(json);
   Map<String, dynamic> toJson() => _$ExtraCharaImageToJson(this);

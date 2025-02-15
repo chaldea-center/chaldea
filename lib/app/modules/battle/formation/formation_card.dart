@@ -74,13 +74,15 @@ class FormationCard extends StatelessWidget {
       onTap: () async {
         final data = await PlayerSvtData.fromStoredData(storedData);
         if (data.svt == null) return;
-        router.pushPage(ServantOptionEditPage(
-          playerSvtData: data,
-          questPhase: null,
-          playerRegion: null,
-          onChange: null,
-          svtFilterData: null,
-        ));
+        router.pushPage(
+          ServantOptionEditPage(
+            playerSvtData: data,
+            questPhase: null,
+            playerRegion: null,
+            onChange: null,
+            svtFilterData: null,
+          ),
+        );
       },
     );
 
@@ -119,7 +121,8 @@ class FormationCard extends StatelessWidget {
 
     final ceIcon = GameCardMixin.cardIconBuilder(
       context: context,
-      icon: ce?.extraAssets.equipFace.equip?[storedData!.ceId] ??
+      icon:
+          ce?.extraAssets.equipFace.equip?[storedData!.ceId] ??
           basicCe?.icon?.replaceFirst('/Faces/', '/EquipFaces/') ??
           Atlas.common.emptyCeIcon,
       // width: 80,
@@ -135,12 +138,9 @@ class FormationCard extends StatelessWidget {
       onTap: () async {
         final data = await PlayerSvtData.fromStoredData(storedData);
         if (data.ce == null) return;
-        router.pushPage(CraftEssenceOptionEditPage(
-          playerSvtData: data,
-          questPhase: null,
-          onChange: null,
-          craftFilterData: null,
-        ));
+        router.pushPage(
+          CraftEssenceOptionEditPage(playerSvtData: data, questPhase: null, onChange: null, craftFilterData: null),
+        );
       },
     );
     final bonds =
@@ -151,12 +151,7 @@ class FormationCard extends StatelessWidget {
         svtIcon,
         ceIcon,
         if (showBond && bonds != null)
-          BondProgress(
-            value: bonds.$1,
-            total: bonds.$1 + bonds.$2,
-            padding: EdgeInsets.only(top: 1.5),
-            minHeight: 3,
-          ),
+          BondProgress(value: bonds.$1, total: bonds.$1 + bonds.$2, padding: EdgeInsets.only(top: 1.5), minHeight: 3),
       ],
     );
     child = Container(
@@ -191,11 +186,12 @@ class FormationCard extends StatelessWidget {
                   enabled ? icon : null,
                   aspectRatio: 1,
                   width: 56,
-                  onTap: enabled
-                      ? () => router.push(url: Routes.mysticCodeI(formation.mysticCode.mysticCodeId ?? 0))
-                      : null,
+                  onTap:
+                      enabled
+                          ? () => router.push(url: Routes.mysticCodeI(formation.mysticCode.mysticCodeId ?? 0))
+                          : null,
                 ),
-              )
+              ),
           ],
         ),
         if (enabled)
@@ -203,17 +199,14 @@ class FormationCard extends StatelessWidget {
             "Lv.${formation.mysticCode.level}",
             style: fadeOutMysticCode ? const TextStyle(decoration: TextDecoration.lineThrough) : null,
             textScaler: const TextScaler.linear(0.9),
-          )
+          ),
       ],
     );
     if (fadeOutMysticCode) {
       child = Opacity(opacity: 0.5, child: child);
     }
 
-    return Flexible(
-      flex: mcIcons.length > 1 ? 12 : 8,
-      child: child,
-    );
+    return Flexible(flex: mcIcons.length > 1 ? 12 : 8, child: child);
   }
 }
 

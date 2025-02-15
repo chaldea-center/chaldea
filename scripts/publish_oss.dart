@@ -50,17 +50,13 @@ void main(List<String> args) async {
     }
 
     print('>>> Uploading $key ...');
-    final res = await Process.run(
-      ossutil,
-      [
-        'cp',
-        file.absolute.path,
-        'oss://$bucketName/$key',
-        '-f',
-        if (key.endsWith('.html')) ...['--meta', 'Cache-Control:no-cache']
-      ],
-      runInShell: true,
-    );
+    final res = await Process.run(ossutil, [
+      'cp',
+      file.absolute.path,
+      'oss://$bucketName/$key',
+      '-f',
+      if (key.endsWith('.html')) ...['--meta', 'Cache-Control:no-cache'],
+    ], runInShell: true);
     if (res.exitCode == 0) {
       uploaded += 1;
       print(res.stdout);
@@ -82,6 +78,8 @@ void main(List<String> args) async {
     }
   }
 
-  print('>>> Published to OSS:'
-      ' $uploaded uploaded, $deleted deleted, $remained remained unchanged.');
+  print(
+    '>>> Published to OSS:'
+    ' $uploaded uploaded, $deleted deleted, $remained remained unchanged.',
+  );
 }

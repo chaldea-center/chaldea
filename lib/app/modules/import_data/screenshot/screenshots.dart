@@ -12,12 +12,7 @@ class ScreenshotsTab extends StatefulWidget {
   final Set<Uint8List> images;
   final VoidCallback onUpload;
   final String? debugServerRoot;
-  const ScreenshotsTab({
-    super.key,
-    required this.images,
-    required this.onUpload,
-    this.debugServerRoot,
-  });
+  const ScreenshotsTab({super.key, required this.images, required this.onUpload, this.debugServerRoot});
 
   @override
   State<ScreenshotsTab> createState() => _ScreenshotsTabState();
@@ -99,21 +94,23 @@ class _ScreenshotsTabState extends State<ScreenshotsTab> with ScrollControllerMi
   }
 
   void importImages() {
-    SharedBuilder.pickImageOrFiles(context: context).then((result) {
-      final files = result?.files;
-      if (files != null) {
-        for (final file in files) {
-          if (file.bytes != null) {
-            widget.images.add(file.bytes!);
+    SharedBuilder.pickImageOrFiles(context: context)
+        .then((result) {
+          final files = result?.files;
+          if (files != null) {
+            for (final file in files) {
+              if (file.bytes != null) {
+                widget.images.add(file.bytes!);
+              }
+            }
           }
-        }
-      }
-      if (mounted) {
-        setState(() {});
-      }
-    }).catchError((e, s) {
-      logger.e('import images error', e, s);
-      EasyLoading.showError(e.toString());
-    });
+          if (mounted) {
+            setState(() {});
+          }
+        })
+        .catchError((e, s) {
+          logger.e('import images error', e, s);
+          EasyLoading.showError(e.toString());
+        });
   }
 }

@@ -50,7 +50,7 @@ class PlanDataSheetConverter {
     _fouHp3,
     _fouAtk3,
     _bondLimit,
-    _npLv
+    _npLv,
   ];
 
   static final _headers = <String>[
@@ -126,11 +126,7 @@ class PlanDataSheetConverter {
     return SvtPlan(
       favorite: row[_favorite] == "1",
       ascension: _toInt(_ascension) ?? 0,
-      skills: [
-        _toInt(_skill1) ?? 0,
-        _toInt(_skill2) ?? 0,
-        _toInt(_skill3) ?? 0,
-      ],
+      skills: [_toInt(_skill1) ?? 0, _toInt(_skill2) ?? 0, _toInt(_skill3) ?? 0],
       appendSkills: [
         _toInt(_append1) ?? 0,
         _toInt(_append2) ?? 0,
@@ -167,7 +163,7 @@ class PlanDataSheetConverter {
 
   ParedSvtCsvRow csvToSvt(List<String> row, List<String> header) {
     Map<String, String> rowData = {
-      for (int index = 0; index < min(row.length, header.length); index++) header[index]: row[index]
+      for (int index = 0; index < min(row.length, header.length); index++) header[index]: row[index],
     };
 
     int? _toInt(String? key) {
@@ -177,10 +173,7 @@ class PlanDataSheetConverter {
     }
 
     final plan = _svtPlanFromCsv(rowData, true);
-    final status = SvtStatus(
-      cur: _svtPlanFromCsv(rowData, false),
-      priority: _toInt(_priority) ?? 1,
-    );
+    final status = SvtStatus(cur: _svtPlanFromCsv(rowData, false), priority: _toInt(_priority) ?? 1);
 
     final coin = _toInt(_coin);
 
@@ -236,12 +229,7 @@ class ParedSvtCsvRow {
   SvtPlan plan;
   int? coin;
 
-  ParedSvtCsvRow({
-    required this.collectionNo,
-    required this.status,
-    required this.plan,
-    this.coin,
-  });
+  ParedSvtCsvRow({required this.collectionNo, required this.status, required this.plan, this.coin});
 
   // modify in-place
   SvtStatus mergeStatus(SvtStatus? dest) {

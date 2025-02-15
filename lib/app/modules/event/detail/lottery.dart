@@ -35,24 +35,23 @@ class _EventLotteryTabState extends State<EventLotteryTab> {
       itemBuilder: (context, index) {
         if (index == 0) {
           return ListTile(
-            subtitle: Text.rich(TextSpan(
-              children: [
-                TextSpan(
-                    text: lottery.limited
-                        ? '${S.current.event_lottery_limited}: ${S.current.event_lottery_limit_hint(Maths.max(boxIndices, 0) + 1)}'
-                        : S.current.event_lottery_unlimited),
-                TextSpan(text: '\n${S.current.lottery_cost_per_roll}: '),
-                CenterWidgetSpan(
-                  child: Item.iconBuilder(
-                    context: context,
-                    item: lottery.cost.item,
-                    width: 24,
-                    showName: true,
+            subtitle: Text.rich(
+              TextSpan(
+                children: [
+                  TextSpan(
+                    text:
+                        lottery.limited
+                            ? '${S.current.event_lottery_limited}: ${S.current.event_lottery_limit_hint(Maths.max(boxIndices, 0) + 1)}'
+                            : S.current.event_lottery_unlimited,
                   ),
-                ),
-                TextSpan(text: ' ×${lottery.cost.amount}')
-              ],
-            )),
+                  TextSpan(text: '\n${S.current.lottery_cost_per_roll}: '),
+                  CenterWidgetSpan(
+                    child: Item.iconBuilder(context: context, item: lottery.cost.item, width: 24, showName: true),
+                  ),
+                  TextSpan(text: ' ×${lottery.cost.amount}'),
+                ],
+              ),
+            ),
           );
         }
         return boxItemBuilder(context, boxes[index - 1]);
@@ -73,7 +72,7 @@ class _EventLotteryTabState extends State<EventLotteryTab> {
                 DropdownMenuItem(
                   value: index,
                   child: Text(!lottery.limited && index == maxBoxIdx ? 'Box ${index + 1}+' : 'Box ${index + 1}'),
-                )
+                ),
             ],
             onChanged: (v) {
               setState(() {
@@ -82,7 +81,7 @@ class _EventLotteryTabState extends State<EventLotteryTab> {
             },
           ),
         ),
-        Expanded(child: listView)
+        Expanded(child: listView),
       ],
     );
   }
@@ -99,12 +98,16 @@ class _EventLotteryTabState extends State<EventLotteryTab> {
       }
       title = Text(titleText);
     } else {
-      title = Text.rich(TextSpan(children: [
-        for (final gift in box.gifts) ...[
-          CenterWidgetSpan(child: gift.iconBuilder(context: context, width: 28, text: '')),
-          TextSpan(text: '×${gift.num.format()} ')
-        ],
-      ]));
+      title = Text.rich(
+        TextSpan(
+          children: [
+            for (final gift in box.gifts) ...[
+              CenterWidgetSpan(child: gift.iconBuilder(context: context, width: 28, text: '')),
+              TextSpan(text: '×${gift.num.format()} '),
+            ],
+          ],
+        ),
+      );
     }
 
     return ListTile(

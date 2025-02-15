@@ -42,16 +42,19 @@ class GachaProbData {
       officialBanner: MappingBase(jp: AssetURL.i.summonBanner(gacha.imageId)),
       type: gacha.isLuckyBag ? SummonType.gssr : SummonType.limited,
       subSummons: [
-        SubSummon(title: gacha.name.setMaxLines(1), probs: [
-          for (final group in groups)
-            ProbGroup(
-              isSvt: group.isSvt,
-              rarity: group.rarity,
-              weight: group.guessTotalProb(),
-              display: group.pickup,
-              ids: group.ids,
-            ),
-        ])
+        SubSummon(
+          title: gacha.name.setMaxLines(1),
+          probs: [
+            for (final group in groups)
+              ProbGroup(
+                isSvt: group.isSvt,
+                rarity: group.rarity,
+                weight: group.guessTotalProb(),
+                display: group.pickup,
+                ids: group.ids,
+              ),
+          ],
+        ),
       ],
     );
   }
@@ -61,10 +64,12 @@ class GachaProbData {
     final lines = const LineSplitter().convert(text);
     lines.removeWhere((line) => line.trim().isEmpty);
     return lines
-        .map((e) => e.replaceFirstMapped(RegExp(r'^\s+'), (match) {
-              final spaces = match.group(0)!;
-              return ' ' * (spaces.length ~/ 4);
-            }))
+        .map(
+          (e) => e.replaceFirstMapped(RegExp(r'^\s+'), (match) {
+            final spaces = match.group(0)!;
+            return ' ' * (spaces.length ~/ 4);
+          }),
+        )
         .join('\n');
   }
 }
@@ -104,13 +109,7 @@ class GachaProbRow {
   }
 
   List<String> toRow() {
-    return [
-      isSvt ? 'svt' : 'ce',
-      rarity.toString(),
-      formatProb(getTotalProb()),
-      pickup ? '1' : '0',
-      ids.join(', '),
-    ];
+    return [isSvt ? 'svt' : 'ce', rarity.toString(), formatProb(getTotalProb()), pickup ? '1' : '0', ids.join(', ')];
   }
 
   String formatProb(double v) {
@@ -142,14 +141,15 @@ class JpGachaParser {
   static const String kStar = '★';
 
   Future<List<GachaProbData>> parseMultiple(List<NiceGacha> gachas) async {
-    final futures = gachas.map((gacha) async {
-      try {
-        return await parseProb(gacha);
-      } catch (e, s) {
-        logger.e('parse gacha prob failed', e, s);
-        return GachaProbData(gacha, '', []);
-      }
-    }).toList();
+    final futures =
+        gachas.map((gacha) async {
+          try {
+            return await parseProb(gacha);
+          } catch (e, s) {
+            logger.e('parse gacha prob failed', e, s);
+            return GachaProbData(gacha, '', []);
+          }
+        }).toList();
     final allData = await Future.wait(futures);
     allData.sort2((e) => e.gacha.openedAt);
     return allData;
@@ -208,8 +208,15 @@ class JpGachaParser {
         final String probStr = row[3];
         final svt = _findCard(name, rarity, classIds);
         final key = 'svt-$pickup-$rarity-$probStr';
-        final group = groupMap[key] ??= GachaProbRow(
-            isSvt: true, pickup: pickup, rarity: rarity, indivProb: probStr, cards: [], isLuckyBag: gacha.isLuckyBag);
+        final group =
+            groupMap[key] ??= GachaProbRow(
+              isSvt: true,
+              pickup: pickup,
+              rarity: rarity,
+              indivProb: probStr,
+              cards: [],
+              isLuckyBag: gacha.isLuckyBag,
+            );
         group.cards.add(svt);
       }
     }
@@ -219,8 +226,15 @@ class JpGachaParser {
         final ce = _findCard(row[1], rarity, [1001]);
         final probStr = row[2];
         final key = 'ce-$pickup-$rarity-$probStr';
-        final group = groupMap[key] ??= GachaProbRow(
-            isSvt: false, pickup: pickup, rarity: rarity, indivProb: probStr, cards: [], isLuckyBag: gacha.isLuckyBag);
+        final group =
+            groupMap[key] ??= GachaProbRow(
+              isSvt: false,
+              pickup: pickup,
+              rarity: rarity,
+              indivProb: probStr,
+              cards: [],
+              isLuckyBag: gacha.isLuckyBag,
+            );
         group.cards.add(ce);
       }
     }
@@ -250,11 +264,12 @@ class JpGachaParser {
       if (card.collectionNo <= 0 || card.rarity != rarity || !classIds.contains(card.classId)) continue;
 
       final svt = db.gameData.servantsById[card.id];
-      final names = <String?>{
-        card.name,
-        svt?.ascensionAdd.overWriteServantName.ascension[0],
-        ...?svt?.svtChange.map((e) => e.name),
-      }.whereType<String>().toList();
+      final names =
+          <String?>{
+            card.name,
+            svt?.ascensionAdd.overWriteServantName.ascension[0],
+            ...?svt?.svtChange.map((e) => e.name),
+          }.whereType<String>().toList();
 
       if (names.contains(name)) {
         targets[card.id] = card;
@@ -284,14 +299,16 @@ class JpGachaParser {
       final doc = htmlparser.parse(htmlText);
       final newsList = doc.getElementsByClassName('list_news').firstOrNull?.getElementsByTagName('li') ?? [];
 
-      futures.addAll(newsList.map((node) async {
-        try {
-          final notice = await _parseNoticeNode(baseUri, node);
-          if (notice != null) notices.add(notice);
-        } catch (e, s) {
-          logger.e('parse notice node failed', e, s);
-        }
-      }).toList());
+      futures.addAll(
+        newsList.map((node) async {
+          try {
+            final notice = await _parseNoticeNode(baseUri, node);
+            if (notice != null) notices.add(notice);
+          } catch (e, s) {
+            logger.e('parse notice node failed', e, s);
+          }
+        }).toList(),
+      );
     }
     await Future.wait(futures);
 
@@ -307,9 +324,12 @@ class JpGachaParser {
 
     final fullTitle = node.children[1].text;
     if (!fullTitle.contains('召喚')) return null;
-    String? title = [r'「(.+召喚)」', r'『(.+召喚)』', r'「(.*福袋召喚.*)」！', r'『(.*福袋召喚.*)』！']
-        .map((e) => RegExp(e).firstMatch(fullTitle)?.group(1))
-        .firstWhereOrNull((e) => e != null);
+    String? title = [
+      r'「(.+召喚)」',
+      r'『(.+召喚)』',
+      r'「(.*福袋召喚.*)」！',
+      r'『(.*福袋召喚.*)』！',
+    ].map((e) => RegExp(e).firstMatch(fullTitle)?.group(1)).firstWhereOrNull((e) => e != null);
     // if (title == null) return null;
 
     String? topBanner;
@@ -328,13 +348,7 @@ class JpGachaParser {
       }
     }
 
-    return JpGachaNotice(
-      link: link,
-      title: title,
-      fullTitle: fullTitle,
-      lastUpdate: lastUpdate,
-      topBanner: topBanner,
-    );
+    return JpGachaNotice(link: link, title: title, fullTitle: fullTitle, lastUpdate: lastUpdate, topBanner: topBanner);
   }
 }
 

@@ -37,33 +37,35 @@ class _EventRandomMissionsPageState extends State<EventRandomMissionsPage> {
       length: ranks.length,
       child: Column(
         children: [
-          FixedHeight.tabBar(Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Text(' ${S.current.detective_rank}: '),
-              Expanded(
-                child: TabBar(
-                  isScrollable: true,
-                  tabAlignment: TabAlignment.center,
-                  tabs: [
-                    for (final rank in ranks)
-                      Tab(
-                        child: Text.rich(
-                          TextSpan(children: [
-                            CenterWidgetSpan(child: rankIcon(rank, width: 24)),
-                            TextSpan(text: ' ${rankText(rank)}')
-                          ]),
-                          style: Theme.of(context).textTheme.bodyMedium,
+          FixedHeight.tabBar(
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(' ${S.current.detective_rank}: '),
+                Expanded(
+                  child: TabBar(
+                    isScrollable: true,
+                    tabAlignment: TabAlignment.center,
+                    tabs: [
+                      for (final rank in ranks)
+                        Tab(
+                          child: Text.rich(
+                            TextSpan(
+                              children: [
+                                CenterWidgetSpan(child: rankIcon(rank, width: 24)),
+                                TextSpan(text: ' ${rankText(rank)}'),
+                              ],
+                            ),
+                            style: Theme.of(context).textTheme.bodyMedium,
+                          ),
                         ),
-                      ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-            ],
-          )),
-          Expanded(
-            child: TabBarView(children: [for (final rank in ranks) oneRankGroup(rank, groups[rank]!)]),
-          )
+              ],
+            ),
+          ),
+          Expanded(child: TabBarView(children: [for (final rank in ranks) oneRankGroup(rank, groups[rank]!)])),
         ],
       ),
     );
@@ -84,35 +86,41 @@ class _EventRandomMissionsPageState extends State<EventRandomMissionsPage> {
     final mission = allMissions[randomMission.missionId];
     final customMission = CustomMission.fromEventMission(mission);
     return SimpleAccordion(
-      headerBuilder: (context, _) => ListTile(
-        leading: Text.rich(
-          TextSpan(children: [
-            CenterWidgetSpan(child: rankIcon(randomMission.missionRank, width: 24)),
-            TextSpan(text: ' ${mission?.dispNo}')
-          ]),
-          textAlign: TextAlign.center,
-        ),
-        title: Text(mission?.name ?? randomMission.missionId.toString(), textScaler: const TextScaler.linear(0.75)),
-        horizontalTitleGap: 8,
-        minLeadingWidth: 24,
-        contentPadding: const EdgeInsetsDirectional.only(start: 8),
-        trailing: customMission == null
-            ? null
-            : Checkbox(
-                visualDensity: VisualDensity.compact,
-                value: selected.contains(randomMission),
-                onChanged: (v) {
-                  selected.toggle(randomMission);
-                  setState(() {});
-                },
+      headerBuilder:
+          (context, _) => ListTile(
+            leading: Text.rich(
+              TextSpan(
+                children: [
+                  CenterWidgetSpan(child: rankIcon(randomMission.missionRank, width: 24)),
+                  TextSpan(text: ' ${mission?.dispNo}'),
+                ],
               ),
-      ),
-      contentBuilder: (context) => Padding(
-        padding: const EdgeInsetsDirectional.only(start: 24, end: 16),
-        child: mission == null
-            ? Text('Mission ${randomMission.missionId} Not Found')
-            : MissionCondsDescriptor(mission: mission, missions: widget.event.missions),
-      ),
+              textAlign: TextAlign.center,
+            ),
+            title: Text(mission?.name ?? randomMission.missionId.toString(), textScaler: const TextScaler.linear(0.75)),
+            horizontalTitleGap: 8,
+            minLeadingWidth: 24,
+            contentPadding: const EdgeInsetsDirectional.only(start: 8),
+            trailing:
+                customMission == null
+                    ? null
+                    : Checkbox(
+                      visualDensity: VisualDensity.compact,
+                      value: selected.contains(randomMission),
+                      onChanged: (v) {
+                        selected.toggle(randomMission);
+                        setState(() {});
+                      },
+                    ),
+          ),
+      contentBuilder:
+          (context) => Padding(
+            padding: const EdgeInsetsDirectional.only(start: 24, end: 16),
+            child:
+                mission == null
+                    ? Text('Mission ${randomMission.missionId} Not Found')
+                    : MissionCondsDescriptor(mission: mission, missions: widget.event.missions),
+          ),
     );
   }
 
@@ -123,7 +131,7 @@ class _EventRandomMissionsPageState extends State<EventRandomMissionsPage> {
         randomMissions.sort2((e) => allMissions[e.missionId]?.dispNo ?? e.missionId);
 
         final customMissions = [
-          for (final m in randomMissions) CustomMission.fromEventMission(allMissions[m.missionId])
+          for (final m in randomMissions) CustomMission.fromEventMission(allMissions[m.missionId]),
         ];
 
         int? warId;
@@ -136,10 +144,7 @@ class _EventRandomMissionsPageState extends State<EventRandomMissionsPage> {
           }
         }
         router.push(
-          child: CustomMissionPage(
-            initMissions: customMissions.whereType<CustomMission>().toList(),
-            initWarId: warId,
-          ),
+          child: CustomMissionPage(initMissions: customMissions.whereType<CustomMission>().toList(), initWarId: warId),
         );
       },
       child: Text(selected.where((e) => e.condNum == rank).length.toString()),

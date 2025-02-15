@@ -18,12 +18,15 @@ abstract class FilterPage<T> extends StatefulWidget {
       showModalBottomSheet(
         context: context,
         isScrollControlled: true,
-        builder: (context) => LayoutBuilder(builder: (context, constraints) {
-          return ConstrainedBox(
-            constraints: constraints.copyWith(maxHeight: constraints.maxHeight * 0.7),
-            child: SafeArea(child: builder(context)),
-          );
-        }),
+        builder:
+            (context) => LayoutBuilder(
+              builder: (context, constraints) {
+                return ConstrainedBox(
+                  constraints: constraints.copyWith(maxHeight: constraints.maxHeight * 0.7),
+                  child: SafeArea(child: builder(context)),
+                );
+              },
+            ),
       );
     }
   }
@@ -100,26 +103,15 @@ abstract class FilterPageState<T, St extends FilterPage<T>> extends State<St> {
         ...extraActions,
         TextButton(
           onPressed: onTapReset,
-          child: Text(
-            S.current.reset.toUpperCase(),
-            style: const TextStyle(color: Colors.redAccent),
-          ),
+          child: Text(S.current.reset.toUpperCase(), style: const TextStyle(color: Colors.redAccent)),
         ),
-        if (showOk)
-          TextButton(
-            child: Text(S.current.ok.toUpperCase()),
-            onPressed: () => Navigator.pop(context),
-          ),
+        if (showOk) TextButton(child: Text(S.current.ok.toUpperCase()), onPressed: () => Navigator.pop(context)),
       ];
     } else {
       return [
         ...extraActions,
         IconButton(icon: const Icon(Icons.replay), onPressed: onTapReset),
-        if (showOk)
-          IconButton(
-            icon: const Icon(Icons.done),
-            onPressed: () => Navigator.pop(context),
-          )
+        if (showOk) IconButton(icon: const Icon(Icons.done), onPressed: () => Navigator.pop(context)),
       ];
     }
   }
@@ -130,12 +122,13 @@ abstract class FilterPageState<T, St extends FilterPage<T>> extends State<St> {
       maxHeight: min(420, size.height * 0.65),
       child: ScrollRestoration(
         restorationId: restorationId,
-        builder: (context, controller) => ListView(
-          controller: controller,
-          padding: const EdgeInsets.symmetric(vertical: 6),
-          shrinkWrap: true,
-          children: divideTiles(children, divider: const Divider(color: Colors.transparent, height: 5)),
-        ),
+        builder:
+            (context, controller) => ListView(
+              controller: controller,
+              padding: const EdgeInsets.symmetric(vertical: 6),
+              shrinkWrap: true,
+              children: divideTiles(children, divider: const Divider(color: Colors.transparent, height: 5)),
+            ),
       ),
     );
   }
@@ -150,17 +143,8 @@ abstract class FilterPageState<T, St extends FilterPage<T>> extends State<St> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          if (header != null)
-            CustomTile(
-              title: Text(header, style: textStyle),
-              contentPadding: EdgeInsets.zero,
-            ),
-          Wrap(
-            spacing: 8,
-            runSpacing: 3,
-            crossAxisAlignment: WrapCrossAlignment.center,
-            children: children,
-          )
+          if (header != null) CustomTile(title: Text(header, style: textStyle), contentPadding: EdgeInsets.zero),
+          Wrap(spacing: 8, runSpacing: 3, crossAxisAlignment: WrapCrossAlignment.center, children: children),
         ],
       ),
     );
@@ -173,27 +157,21 @@ abstract class FilterPageState<T, St extends FilterPage<T>> extends State<St> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          CustomTile(
-            title: Text(header, style: textStyle),
-            contentPadding: EdgeInsets.zero,
-          ),
-          Wrap(
-            spacing: 8,
-            crossAxisAlignment: WrapCrossAlignment.center,
-            children: children,
-          )
+          CustomTile(title: Text(header, style: textStyle), contentPadding: EdgeInsets.zero),
+          Wrap(spacing: 8, crossAxisAlignment: WrapCrossAlignment.center, children: children),
         ],
       ),
     );
   }
 
-  Widget getSortButton<S>(
-      {String? prefix,
-      required S value,
-      required Map<S, String> items,
-      ValueChanged<S?>? onSortAttr,
-      bool reversed = true,
-      ValueChanged<bool>? onSortDirectional}) {
+  Widget getSortButton<S>({
+    String? prefix,
+    required S value,
+    required Map<S, String> items,
+    ValueChanged<S?>? onSortAttr,
+    bool reversed = true,
+    ValueChanged<bool>? onSortDirectional,
+  }) {
     return DropdownButton(
       isDense: true,
       value: value,
@@ -210,28 +188,21 @@ abstract class FilterPageState<T, St extends FilterPage<T>> extends State<St> {
         splashColor: Colors.transparent,
         highlightColor: Colors.transparent,
       ),
-      items: items.entries
-          .map((e) => DropdownMenuItem(
-              value: e.key,
-              child: Text(
-                e.value,
-                style: textStyle,
-                textScaler: const TextScaler.linear(0.9),
-              )))
-          .toList(),
+      items:
+          items.entries
+              .map(
+                (e) => DropdownMenuItem(
+                  value: e.key,
+                  child: Text(e.value, style: textStyle, textScaler: const TextScaler.linear(0.9)),
+                ),
+              )
+              .toList(),
       onChanged: onSortAttr,
     );
   }
 
-  Widget buildClassFilter(
-    FilterGroupData<SvtClass> data, {
-    VoidCallback? onChanged,
-    bool showUnknown = false,
-  }) {
-    final shownClasses = [
-      ...SvtClassX.regularAll,
-      if (showUnknown) SvtClass.unknown,
-    ];
+  Widget buildClassFilter(FilterGroupData<SvtClass> data, {VoidCallback? onChanged, bool showUnknown = false}) {
+    final shownClasses = [...SvtClassX.regularAll, if (showUnknown) SvtClass.unknown];
     int crossCount = (shownClasses.length / 2).ceil();
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -273,20 +244,21 @@ abstract class FilterPageState<T, St extends FilterPage<T>> extends State<St> {
                     shrinkWrap: true,
                     childAspectRatio: 1.2,
                     physics: const NeverScrollableScrollPhysics(),
-                    children: shownClasses.map((className) {
-                      final selected = data.options.contains(className);
-                      return db.getIconImage(
-                        className.icon(selected ? 5 : 1),
-                        aspectRatio: 1,
-                        onTap: () {
-                          data.toggle(className);
-                          update();
-                          onChanged?.call();
-                        },
-                      );
-                    }).toList(),
+                    children:
+                        shownClasses.map((className) {
+                          final selected = data.options.contains(className);
+                          return db.getIconImage(
+                            className.icon(selected ? 5 : 1),
+                            aspectRatio: 1,
+                            onTap: () {
+                              data.toggle(className);
+                              update();
+                              onChanged?.call();
+                            },
+                          );
+                        }).toList(),
                   ),
-                )
+                ),
               ],
             ),
           ),
@@ -297,35 +269,16 @@ abstract class FilterPageState<T, St extends FilterPage<T>> extends State<St> {
 
   Widget buildGroupDivider({String? text, Widget? child}) {
     if (text == null && child == null) {
-      return const Divider(
-        height: 16,
-        indent: 12,
-        endIndent: 12,
-        thickness: 1,
-      );
+      return const Divider(height: 16, indent: 12, endIndent: 12, thickness: 1);
     }
     return Padding(
       padding: const EdgeInsets.only(top: 8),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          const Expanded(
-            child: Divider(
-              height: 16,
-              indent: 12,
-              endIndent: 8,
-              thickness: 1,
-            ),
-          ),
+          const Expanded(child: Divider(height: 16, indent: 12, endIndent: 8, thickness: 1)),
           child ?? Text(text!, style: Theme.of(context).textTheme.bodySmall),
-          const Expanded(
-            child: Divider(
-              height: 16,
-              indent: 8,
-              endIndent: 12,
-              thickness: 1,
-            ),
-          ),
+          const Expanded(child: Divider(height: 16, indent: 8, endIndent: 12, thickness: 1)),
         ],
       ),
     );

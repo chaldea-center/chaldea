@@ -77,19 +77,20 @@ class _SvtQuestTimelineState extends State<SvtQuestTimeline> {
 
   @override
   Widget build(BuildContext context) {
-    final shownQuests = relatedQuests.where((quest) {
-      final svt = relatedServants[quest.id];
-      if (!filterData.favorite.check(svt?.status.favorite ?? false)) {
-        return false;
-      }
-      if (filterData.questType.options.isNotEmpty && !filterData.questType.matchAny(getQuestTypes(quest))) {
-        return false;
-      }
-      if (filterData.upgradeType.isNotEmpty && !filterData.upgradeType.matchAny(getUpgradeTypes(quest))) {
-        return false;
-      }
-      return true;
-    }).toList();
+    final shownQuests =
+        relatedQuests.where((quest) {
+          final svt = relatedServants[quest.id];
+          if (!filterData.favorite.check(svt?.status.favorite ?? false)) {
+            return false;
+          }
+          if (filterData.questType.options.isNotEmpty && !filterData.questType.matchAny(getQuestTypes(quest))) {
+            return false;
+          }
+          if (filterData.upgradeType.isNotEmpty && !filterData.upgradeType.matchAny(getUpgradeTypes(quest))) {
+            return false;
+          }
+          return true;
+        }).toList();
     // <openAt, list>
     final Map<int, _GroupData> grouped = {};
     switch (filterData.sortType.radioValue!) {
@@ -163,54 +164,51 @@ class _SvtQuestTimelineState extends State<SvtQuestTimeline> {
         actions: [
           DropdownButton<Region>(
             value: filterData.region,
-            items: [
-              for (final region in Region.values)
-                DropdownMenuItem(
-                  value: region,
-                  child: Text(region.localName),
-                ),
-            ],
-            icon: Icon(
-              Icons.arrow_drop_down,
-              color: SharedBuilder.appBarForeground(context),
-            ),
-            selectedItemBuilder: (context) => [
-              for (final region in Region.values)
-                DropdownMenuItem(
-                  child: Text(
-                    region.localName,
-                    style: TextStyle(
-                        color: filterData.useApCampaign
-                            ? Theme.of(context).disabledColor
-                            : SharedBuilder.appBarForeground(context)),
-                  ),
-                )
-            ],
-            onChanged: filterData.useApCampaign
-                ? null
-                : (v) {
-                    setState(() {
-                      if (v != null) {
-                        setState(() {
-                          filterData.region = v;
-                        });
-                      }
-                    });
-                  },
+            items: [for (final region in Region.values) DropdownMenuItem(value: region, child: Text(region.localName))],
+            icon: Icon(Icons.arrow_drop_down, color: SharedBuilder.appBarForeground(context)),
+            selectedItemBuilder:
+                (context) => [
+                  for (final region in Region.values)
+                    DropdownMenuItem(
+                      child: Text(
+                        region.localName,
+                        style: TextStyle(
+                          color:
+                              filterData.useApCampaign
+                                  ? Theme.of(context).disabledColor
+                                  : SharedBuilder.appBarForeground(context),
+                        ),
+                      ),
+                    ),
+                ],
+            onChanged:
+                filterData.useApCampaign
+                    ? null
+                    : (v) {
+                      setState(() {
+                        if (v != null) {
+                          setState(() {
+                            filterData.region = v;
+                          });
+                        }
+                      });
+                    },
             underline: const SizedBox(),
           ),
           IconButton(
             icon: const Icon(Icons.filter_alt),
             tooltip: S.current.filter,
-            onPressed: () => FilterPage.show(
-              context: context,
-              builder: (context) => SvtQuestTimelineFilter(
-                filterData: filterData,
-                onChanged: (_) {
-                  if (mounted) setState(() {});
-                },
-              ),
-            ),
+            onPressed:
+                () => FilterPage.show(
+                  context: context,
+                  builder:
+                      (context) => SvtQuestTimelineFilter(
+                        filterData: filterData,
+                        onChanged: (_) {
+                          if (mounted) setState(() {});
+                        },
+                      ),
+                ),
           ),
           IconButton(
             icon: FaIcon(
@@ -266,16 +264,13 @@ class _SvtQuestTimelineState extends State<SvtQuestTimeline> {
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
                     child: SizedBox(
-                      child: Text(
-                        event.lName.l.setMaxLines(1),
-                        style: Theme.of(context).textTheme.bodySmall,
-                      ),
+                      child: Text(event.lName.l.setMaxLines(1), style: Theme.of(context).textTheme.bodySmall),
                     ),
                   ),
                 ),
             ],
           ),
-        )
+        ),
     ];
     if (data.quests.length > maxShown) {
       Map<dynamic, int> types = {};
@@ -288,52 +283,58 @@ class _SvtQuestTimelineState extends State<SvtQuestTimeline> {
         }
       }
       String countText = '${data.quests.length} ${S.current.quest}: ';
-      countText +=
-          [...TimelineQuestType.values, ...TimelineUpgradeType.values].where((e) => types.containsKey(e)).map((e) {
-        final name = e is TimelineQuestType
-            ? e.shownName
-            : e is TimelineUpgradeType
-                ? e.shownName
-                : e.name;
-        return '${types[e]} $name';
-      }).join(', ');
-      children.add(ListTile(
-        title: Text(
-          countText,
-          style: TextStyle(color: AppTheme(context).tertiary),
-          textScaler: const TextScaler.linear(0.8),
-        ),
-        onTap: () {
-          router.pushPage(Builder(
-            builder: (context) => Scaffold(
-              appBar: AppBar(title: Text('${data.quests.length} ${S.current.quest}(s)')),
-              body: GridView.extent(
-                maxCrossAxisExtent: 64,
-                childAspectRatio: 132 / 144,
-                shrinkWrap: true,
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                children: data.quests.map((q) => _buildIcon(context, q)).toList(),
+      countText += [...TimelineQuestType.values, ...TimelineUpgradeType.values]
+          .where((e) => types.containsKey(e))
+          .map((e) {
+            final name =
+                e is TimelineQuestType
+                    ? e.shownName
+                    : e is TimelineUpgradeType
+                    ? e.shownName
+                    : e.name;
+            return '${types[e]} $name';
+          })
+          .join(', ');
+      children.add(
+        ListTile(
+          title: Text(
+            countText,
+            style: TextStyle(color: AppTheme(context).tertiary),
+            textScaler: const TextScaler.linear(0.8),
+          ),
+          onTap: () {
+            router.pushPage(
+              Builder(
+                builder:
+                    (context) => Scaffold(
+                      appBar: AppBar(title: Text('${data.quests.length} ${S.current.quest}(s)')),
+                      body: GridView.extent(
+                        maxCrossAxisExtent: 64,
+                        childAspectRatio: 132 / 144,
+                        shrinkWrap: true,
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                        children: data.quests.map((q) => _buildIcon(context, q)).toList(),
+                      ),
+                    ),
               ),
-            ),
-          ));
-        },
-      ));
+            );
+          },
+        ),
+      );
     } else {
-      children.add(GridView.extent(
-        maxCrossAxisExtent: 64,
-        childAspectRatio: 132 / 144,
-        physics: const NeverScrollableScrollPhysics(),
-        shrinkWrap: true,
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        children: data.quests.map((q) => _buildIcon(context, q)).toList(),
-      ));
+      children.add(
+        GridView.extent(
+          maxCrossAxisExtent: 64,
+          childAspectRatio: 132 / 144,
+          physics: const NeverScrollableScrollPhysics(),
+          shrinkWrap: true,
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          children: data.quests.map((q) => _buildIcon(context, q)).toList(),
+        ),
+      );
     }
 
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: children,
-    );
+    return Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: children);
   }
 
   Widget _buildIcon(BuildContext context, Quest quest) {
@@ -405,14 +406,15 @@ class _SvtQuestTimelineState extends State<SvtQuestTimeline> {
                     context: context,
                     icon: Atlas.assetItem(iconId),
                     width: 20,
-                    text: iconId == ItemIconId.skillUpgrade
-                        ? targetSkills.values.map((e) => e.svt.num).toSet().toList().sortReturn().join()
-                        : null,
+                    text:
+                        iconId == ItemIconId.skillUpgrade
+                            ? targetSkills.values.map((e) => e.svt.num).toSet().toList().sortReturn().join()
+                            : null,
                     option: ImageWithTextOption(fontSize: 12),
                   ),
               ],
             ),
-          )
+          ),
         ],
       ),
     );

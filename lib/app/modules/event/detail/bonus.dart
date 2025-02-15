@@ -53,19 +53,13 @@ class _EventBonusTabState extends State<EventBonusTab> {
         Column(
           children: [
             Expanded(
-              child: ListView.builder(
-                itemBuilder: (context, index) => svtWidgets[index],
-                itemCount: svtWidgets.length,
-              ),
+              child: ListView.builder(itemBuilder: (context, index) => svtWidgets[index], itemCount: svtWidgets.length),
             ),
             SafeArea(child: buttonBar),
           ],
         ),
       if (ceWidgets.isNotEmpty)
-        ListView.builder(
-          itemBuilder: (context, index) => ceWidgets[index],
-          itemCount: ceWidgets.length,
-        ),
+        ListView.builder(itemBuilder: (context, index) => ceWidgets[index], itemCount: ceWidgets.length),
     ];
     if (tabs.isEmpty) return const SizedBox();
     return DefaultTabController(
@@ -73,7 +67,7 @@ class _EventBonusTabState extends State<EventBonusTab> {
       child: Column(
         children: [
           if (tabs.length > 1) FixedHeight.tabBar(TabBar(tabs: tabs)),
-          Expanded(child: TabBarView(children: views))
+          Expanded(child: TabBarView(children: views)),
         ],
       ),
     );
@@ -81,8 +75,14 @@ class _EventBonusTabState extends State<EventBonusTab> {
 
   Widget svtDetail(BaseSkill skill, List<Servant> servants) {
     servants.retainWhere((e) => ServantFilterPage.filter(svtFilterData, e));
-    servants.sort((a, b) => SvtFilterData.compare(a, b,
-        keys: [SvtCompare.className, SvtCompare.rarity, SvtCompare.no], reversed: [false, true, true]));
+    servants.sort(
+      (a, b) => SvtFilterData.compare(
+        a,
+        b,
+        keys: [SvtCompare.className, SvtCompare.rarity, SvtCompare.no],
+        reversed: [false, true, true],
+      ),
+    );
     return TileGroup(
       children: [
         SkillDescriptor(
@@ -107,7 +107,7 @@ class _EventBonusTabState extends State<EventBonusTab> {
                   fontSize: 12,
                   padding: const EdgeInsets.only(bottom: 4),
                 ),
-              )
+              ),
           ],
         ),
       ],
@@ -124,29 +124,33 @@ class _EventBonusTabState extends State<EventBonusTab> {
         title: Text(ce.lName.l, maxLines: 1),
         subtitle: Text(subtitle.toString()),
         onTap: ce.routeTo,
-      )
+      ),
     ];
 
     int? _lastTag;
     for (final skill in ce.eventSkills(widget.event.id)) {
       final tag = Object.hash(skill.icon, skill.lName.l);
       if (_lastTag != tag) {
-        children.add(ListTile(
-          leading: db.getIconImage(skill.icon, height: 28),
-          title: Text(skill.lName.l, textScaler: const TextScaler.linear(0.8)),
-          // horizontalTitleGap: 4,
-        ));
+        children.add(
+          ListTile(
+            leading: db.getIconImage(skill.icon, height: 28),
+            title: Text(skill.lName.l, textScaler: const TextScaler.linear(0.8)),
+            // horizontalTitleGap: 4,
+          ),
+        );
       } else {
         children.add(kIndentDivider);
       }
       _lastTag = tag;
-      children.addAll(FuncsDescriptor.describe(
-        funcs: skill.functions,
-        script: skill.script,
-        showPlayer: true,
-        showEnemy: false,
-        showEvent: false,
-      ));
+      children.addAll(
+        FuncsDescriptor.describe(
+          funcs: skill.functions,
+          script: skill.script,
+          showPlayer: true,
+          showEnemy: false,
+          showEvent: false,
+        ),
+      );
     }
 
     return TileGroup(children: children);
@@ -159,18 +163,20 @@ class _EventBonusTabState extends State<EventBonusTab> {
         FilledButton.icon(
           icon: const Icon(Icons.filter_alt),
           label: Text(S.current.filter),
-          onPressed: () => FilterPage.show(
-            context: context,
-            builder: (context) => ServantFilterPage(
-              filterData: svtFilterData,
-              onChanged: (_) {
-                if (mounted) {
-                  setState(() {});
-                }
-              },
-              planMode: false,
-            ),
-          ),
+          onPressed:
+              () => FilterPage.show(
+                context: context,
+                builder:
+                    (context) => ServantFilterPage(
+                      filterData: svtFilterData,
+                      onChanged: (_) {
+                        if (mounted) {
+                          setState(() {});
+                        }
+                      },
+                      planMode: false,
+                    ),
+              ),
         ),
       ],
     );

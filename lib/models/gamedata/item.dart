@@ -13,17 +13,7 @@ import 'servant.dart';
 
 part '../../generated/models/gamedata/item.g.dart';
 
-enum ItemCategory {
-  normal,
-  ascension,
-  skill,
-  special,
-  eventAscension,
-  event,
-  coin,
-  other,
-  itemSelectMonth,
-}
+enum ItemCategory { normal, ascension, skill, special, eventAscension, event, coin, other, itemSelectMonth }
 
 @JsonSerializable()
 class Item {
@@ -91,8 +81,13 @@ class Item {
       return ItemCategory.eventAscension;
     }
     if (isId94 &&
-        const [ItemType.eventItem, ItemType.boostItem, ItemType.dice, ItemType.eventPoint, ItemType.reduceTradeTime]
-            .contains(type)) {
+        const [
+          ItemType.eventItem,
+          ItemType.boostItem,
+          ItemType.dice,
+          ItemType.eventPoint,
+          ItemType.reduceTradeTime,
+        ].contains(type)) {
       return ItemCategory.event;
     }
     // if (eventId != 0) return ItemCategory.event;
@@ -150,11 +145,7 @@ class Item {
                     title: Text(Items.grail?.lName.l ?? "Grail"),
                     onTap: () {
                       Navigator.pop(context);
-                      router.popDetailAndPush(
-                        url: Routes.itemI(Items.grailId),
-                        popDetail: popDetail,
-                        detail: true,
-                      );
+                      router.popDetailAndPush(url: Routes.itemI(Items.grailId), popDetail: popDetail, detail: true);
                     },
                   ),
                   ListTile(
@@ -162,13 +153,9 @@ class Item {
                     title: Text(Items.crystal?.lName.l ?? "Lore"),
                     onTap: () {
                       Navigator.pop(context);
-                      router.popDetailAndPush(
-                        url: Routes.itemI(Items.crystalId),
-                        popDetail: popDetail,
-                        detail: true,
-                      );
+                      router.popDetailAndPush(url: Routes.itemI(Items.crystalId), popDetail: popDetail, detail: true);
                     },
-                  )
+                  ),
                 ],
               );
             },
@@ -176,11 +163,7 @@ class Item {
         };
       } else {
         onTap = () {
-          router.popDetailAndPush(
-            url: Routes.itemI(_itemId),
-            popDetail: popDetail,
-            detail: true,
-          );
+          router.popDetailAndPush(url: Routes.itemI(_itemId), popDetail: popDetail, detail: true);
         };
       }
     }
@@ -225,26 +208,28 @@ class Item {
       type = switch (category) {
         ItemCategory.coin => 100,
         ItemCategory.eventAscension => 110,
-        ItemCategory.event => 120 +
-            switch (item.type) {
-              ItemType.eventPoint => 1,
-              ItemType.boostItem => 2,
-              ItemType.dice => 3,
-              ItemType.eventItem => 8,
-              _ => 9,
-            },
+        ItemCategory.event =>
+          120 +
+              switch (item.type) {
+                ItemType.eventPoint => 1,
+                ItemType.boostItem => 2,
+                ItemType.dice => 3,
+                ItemType.eventItem => 8,
+                _ => 9,
+              },
         ItemCategory.special => 130,
         ItemCategory.normal => 140,
         ItemCategory.skill => 150,
         ItemCategory.ascension => 160,
-        ItemCategory.other => 170 +
-            switch (item.type) {
-              ItemType.friendshipUpItem => 1,
-              ItemType.continueItem => 2,
-              ItemType.itemSelect => 3,
-              ItemType.battleItem => 4,
-              _ => 0,
-            },
+        ItemCategory.other =>
+          170 +
+              switch (item.type) {
+                ItemType.friendshipUpItem => 1,
+                ItemType.continueItem => 2,
+                ItemType.itemSelect => 3,
+                ItemType.battleItem => 4,
+                _ => 0,
+              },
         ItemCategory.itemSelectMonth => 180,
       };
       if (item.id == Items.qpId || item.type == ItemType.questRewardQp) {
@@ -316,14 +301,12 @@ class Item {
 
     return {
       for (final k in items.keys.toList()..sort2(_getPriority, reversed: reversed))
-        if (items[k]! > 0 || !removeZero) k: items[k]!
+        if (items[k]! > 0 || !removeZero) k: items[k]!,
     };
   }
 
   static Map<ItemCategory, Map<int, int>> groupItems(Map<int, int> items) {
-    Map<ItemCategory, Map<int, int>> result = {
-      for (final type in ItemCategory.values) type: {},
-    };
+    Map<ItemCategory, Map<int, int>> result = {for (final type in ItemCategory.values) type: {}};
     for (int itemId in items.keys) {
       ItemCategory? type = db.gameData.items[itemId]?.category;
       if (type == null && Items.specialSvtMat.contains(itemId)) {
@@ -333,9 +316,7 @@ class Item {
       result[type]![itemId] = items[itemId]!;
     }
 
-    return {
-      for (final type in ItemCategory.values) type: sortMapByPriority(result[type]!),
-    };
+    return {for (final type in ItemCategory.values) type: sortMapByPriority(result[type]!)};
   }
 
   Map<String, dynamic> toJson() => _$ItemToJson(this);
@@ -415,15 +396,7 @@ class Items {
     summonTicketId, goldAppleId, silverAppleId, bronzeAppleId, blueSaplingId,
     blueAppleId, grailFragId, grailId, grailToCrystalId, lanternId,
   ];
-  static const List<int> specialSvtMat = [
-    hpFou3,
-    atkFou3,
-    hpFou4,
-    atkFou4,
-    ember5,
-    ember4,
-    ember3,
-  ];
+  static const List<int> specialSvtMat = [hpFou3, atkFou3, hpFou4, atkFou4, ember5, ember4, ember3];
   static const apples = [goldAppleId, silverAppleId, blueAppleId, bronzeAppleId];
   static const fous = [hpFou3, hpFou4, atkFou3, atkFou4];
   static const int hpFou3 = 9570300;
@@ -489,13 +462,10 @@ class ItemAmount {
   int amount;
   Item? _item;
 
-  ItemAmount({
-    Item? item,
-    int? itemId,
-    required this.amount,
-  })  : assert(item != null || itemId != null),
-        _item = item,
-        itemId = item?.id ?? itemId ?? 0;
+  ItemAmount({Item? item, int? itemId, required this.amount})
+    : assert(item != null || itemId != null),
+      _item = item,
+      itemId = item?.id ?? itemId ?? 0;
 
   Item? get item => _item ?? db.gameData.items[itemId];
 
@@ -509,29 +479,18 @@ class LvlUpMaterial {
   List<ItemAmount> items;
   int qp;
 
-  LvlUpMaterial({
-    required this.items,
-    required this.qp,
-  });
+  LvlUpMaterial({required this.items, required this.qp});
 
   factory LvlUpMaterial.fromJson(Map<String, dynamic> json) => _$LvlUpMaterialFromJson(json);
 
   Map<int, int> toItemDict() {
-    return {
-      for (final item in items) item.itemId: item.amount,
-      Items.qpId: qp,
-    };
+    return {for (final item in items) item.itemId: item.amount, Items.qpId: qp};
   }
 
   Map<String, dynamic> toJson() => _$LvlUpMaterialToJson(this);
 }
 
-enum ItemUse {
-  skill,
-  appendSkill,
-  ascension,
-  costume,
-}
+enum ItemUse { skill, appendSkill, ascension, costume }
 
 enum ItemType {
   none, // custom
@@ -577,14 +536,7 @@ enum ItemType {
   eventPassiveSkillGiven,
 }
 
-enum ItemBGType {
-  zero,
-  bronze,
-  silver,
-  gold,
-  questClearQPReward,
-  aquaBlue,
-}
+enum ItemBGType { zero, bronze, silver, gold, questClearQPReward, aquaBlue }
 
 enum ItemTransitionTargetValue {
   none,

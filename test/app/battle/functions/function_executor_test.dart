@@ -28,7 +28,7 @@ void main() async {
       ..lv = 90,
     PlayerSvtData.id(503200)
       ..tdLv = 2
-      ..lv = 90
+      ..lv = 90,
   ];
 
   await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
@@ -38,46 +38,67 @@ void main() async {
 
   group('Test FunctionExecutor.validateFunctionTargetTeam', () {
     test('FuncApplyTarget.enemy', () {
-      final BaseFunction enemyFunction =
-          BaseFunction(funcId: -1, funcTargetType: FuncTargetType.self, funcTargetTeam: FuncApplyTarget.enemy);
+      final BaseFunction enemyFunction = BaseFunction(
+        funcId: -1,
+        funcTargetType: FuncTargetType.self,
+        funcTargetTeam: FuncApplyTarget.enemy,
+      );
       expect(FunctionExecutor.validateFunctionTargetTeam(enemyFunction, ally.isPlayer), isFalse);
       expect(FunctionExecutor.validateFunctionTargetTeam(enemyFunction, enemy.isPlayer), isTrue);
     });
 
     test('FuncApplyTarget.player', () {
-      final BaseFunction allyFunction =
-          BaseFunction(funcId: -1, funcTargetType: FuncTargetType.self, funcTargetTeam: FuncApplyTarget.player);
+      final BaseFunction allyFunction = BaseFunction(
+        funcId: -1,
+        funcTargetType: FuncTargetType.self,
+        funcTargetTeam: FuncApplyTarget.player,
+      );
       expect(FunctionExecutor.validateFunctionTargetTeam(allyFunction, ally.isPlayer), isTrue);
       expect(FunctionExecutor.validateFunctionTargetTeam(allyFunction, enemy.isPlayer), isFalse);
     });
 
     test('FuncApplyTarget.playerAndEnemy', () {
-      final BaseFunction playerAndEnemyFunction =
-          BaseFunction(funcId: -1, funcTargetType: FuncTargetType.self, funcTargetTeam: FuncApplyTarget.playerAndEnemy);
+      final BaseFunction playerAndEnemyFunction = BaseFunction(
+        funcId: -1,
+        funcTargetType: FuncTargetType.self,
+        funcTargetTeam: FuncApplyTarget.playerAndEnemy,
+      );
       expect(FunctionExecutor.validateFunctionTargetTeam(playerAndEnemyFunction, ally.isPlayer), isTrue);
       expect(FunctionExecutor.validateFunctionTargetTeam(playerAndEnemyFunction, enemy.isPlayer), isTrue);
     });
 
     test('FuncTargetType.fieldOther', () {
-      final BaseFunction allyFunction =
-          BaseFunction(funcId: -1, funcTargetType: FuncTargetType.fieldOther, funcTargetTeam: FuncApplyTarget.player);
+      final BaseFunction allyFunction = BaseFunction(
+        funcId: -1,
+        funcTargetType: FuncTargetType.fieldOther,
+        funcTargetTeam: FuncApplyTarget.player,
+      );
       expect(FunctionExecutor.validateFunctionTargetTeam(allyFunction, ally.isPlayer), isTrue);
       expect(FunctionExecutor.validateFunctionTargetTeam(allyFunction, enemy.isPlayer), isTrue);
 
-      final BaseFunction enemyFunction =
-          BaseFunction(funcId: -1, funcTargetType: FuncTargetType.fieldOther, funcTargetTeam: FuncApplyTarget.enemy);
+      final BaseFunction enemyFunction = BaseFunction(
+        funcId: -1,
+        funcTargetType: FuncTargetType.fieldOther,
+        funcTargetTeam: FuncApplyTarget.enemy,
+      );
       expect(FunctionExecutor.validateFunctionTargetTeam(enemyFunction, ally.isPlayer), isTrue);
       expect(FunctionExecutor.validateFunctionTargetTeam(enemyFunction, enemy.isPlayer), isTrue);
     });
 
     test('FuncTargetType.enemyOneNoTargetNoAction', () {
       final BaseFunction allyFunction = BaseFunction(
-          funcId: -1, funcTargetType: FuncTargetType.enemyOneNoTargetNoAction, funcTargetTeam: FuncApplyTarget.player);
+        funcId: -1,
+        funcTargetType: FuncTargetType.enemyOneNoTargetNoAction,
+        funcTargetTeam: FuncApplyTarget.player,
+      );
       expect(FunctionExecutor.validateFunctionTargetTeam(allyFunction, ally.isPlayer), isTrue);
       expect(FunctionExecutor.validateFunctionTargetTeam(allyFunction, enemy.isPlayer), isTrue);
 
       final BaseFunction enemyFunction = BaseFunction(
-          funcId: -1, funcTargetType: FuncTargetType.enemyOneNoTargetNoAction, funcTargetTeam: FuncApplyTarget.enemy);
+        funcId: -1,
+        funcTargetType: FuncTargetType.enemyOneNoTargetNoAction,
+        funcTargetTeam: FuncApplyTarget.enemy,
+      );
       expect(FunctionExecutor.validateFunctionTargetTeam(enemyFunction, ally.isPlayer), isTrue);
       expect(FunctionExecutor.validateFunctionTargetTeam(enemyFunction, enemy.isPlayer), isTrue);
     });
@@ -130,12 +151,18 @@ void main() async {
     });
 
     test('Select all types', () async {
-      final ptAll =
-          await FunctionExecutor.acquireFunctionTarget(battle, FuncTargetType.ptAll, battle.onFieldAllyServants[1]);
+      final ptAll = await FunctionExecutor.acquireFunctionTarget(
+        battle,
+        FuncTargetType.ptAll,
+        battle.onFieldAllyServants[1],
+      );
       expect(ptAll, unorderedEquals(battle.nonnullPlayers));
 
-      final ptFull =
-          await FunctionExecutor.acquireFunctionTarget(battle, FuncTargetType.ptFull, battle.onFieldAllyServants[1]);
+      final ptFull = await FunctionExecutor.acquireFunctionTarget(
+        battle,
+        FuncTargetType.ptFull,
+        battle.onFieldAllyServants[1],
+      );
       expect(ptFull, unorderedEquals([...battle.nonnullPlayers, ...battle.nonnullBackupPlayers]));
 
       final enemyAll = await FunctionExecutor.acquireFunctionTarget(battle, FuncTargetType.enemyAll, ally);
@@ -177,12 +204,9 @@ void main() async {
         targetedAlly: battle.getTargetedAlly(ally),
       );
       expect(
-          ptOtherFull,
-          unorderedEquals([
-            battle.onFieldAllyServants[0],
-            battle.onFieldAllyServants[2],
-            ...battle.nonnullBackupPlayers,
-          ]));
+        ptOtherFull,
+        unorderedEquals([battle.onFieldAllyServants[0], battle.onFieldAllyServants[2], ...battle.nonnullBackupPlayers]),
+      );
 
       final enemyOtherFullAsEnemy = await FunctionExecutor.acquireFunctionTarget(
         battle,
@@ -191,44 +215,52 @@ void main() async {
         targetedEnemy: battle.getTargetedEnemy(enemy),
       );
       expect(
-          enemyOtherFullAsEnemy,
-          unorderedEquals([
-            battle.onFieldAllyServants[1],
-            battle.onFieldAllyServants[2],
-            ...battle.nonnullBackupPlayers,
-          ]));
+        enemyOtherFullAsEnemy,
+        unorderedEquals([battle.onFieldAllyServants[1], battle.onFieldAllyServants[2], ...battle.nonnullBackupPlayers]),
+      );
     });
 
     test('Dynamic types', () async {
       final as0 = await FunctionExecutor.acquireFunctionTarget(
-          battle, FuncTargetType.ptSelfAnotherFirst, battle.onFieldAllyServants[0]);
+        battle,
+        FuncTargetType.ptSelfAnotherFirst,
+        battle.onFieldAllyServants[0],
+      );
       expect(as0.length, 1);
       expect(as0.first, battle.onFieldAllyServants[1]);
 
       final as1 = await FunctionExecutor.acquireFunctionTarget(
-          battle, FuncTargetType.ptSelfAnotherFirst, battle.onFieldAllyServants[1]);
+        battle,
+        FuncTargetType.ptSelfAnotherFirst,
+        battle.onFieldAllyServants[1],
+      );
       expect(as1.length, 1);
       expect(as1.first, battle.onFieldAllyServants[0]);
 
-      battle.onFieldAllyServants[0]!.addBuff(BuffData(
-        Buff(id: -1, name: '', detail: '', vals: [NiceTrait(id: Trait.cantBeSacrificed.value)]),
-        DataVals(),
-        1,
-      ));
+      battle.onFieldAllyServants[0]!.addBuff(
+        BuffData(
+          Buff(id: -1, name: '', detail: '', vals: [NiceTrait(id: Trait.cantBeSacrificed.value)]),
+          DataVals(),
+          1,
+        ),
+      );
 
       final as1With0Unselectable = await FunctionExecutor.acquireFunctionTarget(
-          battle, FuncTargetType.ptSelfAnotherFirst, battle.onFieldAllyServants[1],
-          dataVals: DataVals({
-            'TargetIndiv': -Trait.cantBeSacrificed.value,
-            "IncludeIgnoreIndividuality": 1,
-          }));
+        battle,
+        FuncTargetType.ptSelfAnotherFirst,
+        battle.onFieldAllyServants[1],
+        dataVals: DataVals({'TargetIndiv': -Trait.cantBeSacrificed.value, "IncludeIgnoreIndividuality": 1}),
+      );
       expect(as1With0Unselectable.length, 1);
       expect(as1With0Unselectable.first, battle.onFieldAllyServants[2]);
 
       battle.onFieldAllyServants[0]!.battleBuff.originalActiveList.removeLast();
 
       final as1AfterRemove = await FunctionExecutor.acquireFunctionTarget(
-          battle, FuncTargetType.ptSelfAnotherFirst, battle.onFieldAllyServants[1]);
+        battle,
+        FuncTargetType.ptSelfAnotherFirst,
+        battle.onFieldAllyServants[1],
+      );
       expect(as1AfterRemove.length, 1);
       expect(as1AfterRemove.first, battle.onFieldAllyServants[0]);
     });
@@ -346,15 +378,12 @@ void main() async {
     });
 
     test('TriggeredFuncPosition', () async {
-      await battle.init(
-          db.gameData.questPhases[9300040603]!,
-          [
-            PlayerSvtData.id(600200) // cursed arm
-              ..tdLv = 5
-              ..setNpStrengthenLv(2)
-              ..lv = 65,
-          ],
-          null); // no field traits
+      await battle.init(db.gameData.questPhases[9300040603]!, [
+        PlayerSvtData.id(600200) // cursed arm
+          ..tdLv = 5
+          ..setNpStrengthenLv(2)
+          ..lv = 65,
+      ], null); // no field traits
       final enemy1 = battle.onFieldEnemies[0]!;
       final cursedArm = battle.onFieldAllyServants[0]!;
       final npCard = cursedArm.getNPCard()!;
@@ -391,17 +420,13 @@ void main() async {
     });
 
     test('Function checks avoidFunctionExecuteSelf', () async {
-      await battle.init(
-        db.gameData.questPhases[9300040603]!,
-        [
-          PlayerSvtData.id(502800) // Illyasviel
-            ..tdLv = 5
-            ..setNpStrengthenLv(2)
-            ..lv = 90,
-          PlayerSvtData.id(2501400), // Aoko
-        ],
-        null,
-      );
+      await battle.init(db.gameData.questPhases[9300040603]!, [
+        PlayerSvtData.id(502800) // Illyasviel
+          ..tdLv = 5
+          ..setNpStrengthenLv(2)
+          ..lv = 90,
+        PlayerSvtData.id(2501400), // Aoko
+      ], null);
       final illya = battle.onFieldAllyServants[0]!;
       illya.np = 10000;
       final buffCountBefore = illya.battleBuff.originalActiveList.length;
@@ -449,9 +474,7 @@ void main() async {
 
     test('addState & addStateShort', () async {
       final battle = BattleData();
-      final playerSettings = [
-        PlayerSvtData.id(200900),
-      ];
+      final playerSettings = [PlayerSvtData.id(200900)];
       await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
 
       final orion = battle.onFieldAllyServants[0]!;
@@ -481,13 +504,15 @@ void main() async {
         PlayerSvtData.id(2300500)
           ..tdLv = 3
           ..lv = 90
-          ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
+          ..ce =
+              db.gameData.craftEssencesById[9400340] // Kaleidoscope
           ..ceLv = 100
           ..ceLimitBreak = true,
         PlayerSvtData.id(2300500)
           ..tdLv = 3
           ..lv = 90
-          ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
+          ..ce =
+              db.gameData.craftEssencesById[9400340] // Kaleidoscope
           ..ceLv = 100
           ..ceLimitBreak = true,
       ];
@@ -579,7 +604,8 @@ void main() async {
       final playerSettings = [
         PlayerSvtData.id(701600)
           ..lv = 80
-          ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
+          ..ce =
+              db.gameData.craftEssencesById[9400340] // Kaleidoscope
           ..ceLv = 100
           ..ceLimitBreak = true,
         PlayerSvtData.id(2800100)..lv = 90,
@@ -636,7 +662,8 @@ void main() async {
           ..skillLvs = [9, 9, 9]
           ..tdLv = 3
           ..lv = 90
-          ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
+          ..ce =
+              db.gameData.craftEssencesById[9400340] // Kaleidoscope
           ..ceLv = 100
           ..ceLimitBreak = true,
       ];
@@ -687,12 +714,14 @@ void main() async {
         PlayerSvtData.id(1000100)..lv = 80,
         PlayerSvtData.id(2300200)
           ..lv = 90
-          ..ce = db.gameData.craftEssencesById[9404120] // 20 star on entry
+          ..ce =
+              db.gameData.craftEssencesById[9404120] // 20 star on entry
           ..ceLv = 100
           ..ceLimitBreak = true,
         PlayerSvtData.id(504600)
           ..lv = 80
-          ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
+          ..ce =
+              db.gameData.craftEssencesById[9400340] // Kaleidoscope
           ..ceLv = 100
           ..ceLimitBreak = true,
         PlayerSvtData.id(504500)..lv = 80,
@@ -735,12 +764,14 @@ void main() async {
       final playerSettings = [
         PlayerSvtData.id(105200)
           ..lv = 90
-          ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
+          ..ce =
+              db.gameData.craftEssencesById[9400340] // Kaleidoscope
           ..ceLv = 100
           ..ceLimitBreak = true,
         PlayerSvtData.id(105200)
           ..lv = 90
-          ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
+          ..ce =
+              db.gameData.craftEssencesById[9400340] // Kaleidoscope
           ..ceLv = 100
           ..ceLimitBreak = true,
       ];
@@ -802,9 +833,7 @@ void main() async {
 
     test('DataVals StarHigher', () async {
       final battle = BattleData();
-      final playerSettings = [
-        PlayerSvtData.id(203700)..lv = 80,
-      ];
+      final playerSettings = [PlayerSvtData.id(203700)..lv = 80];
       await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
       final jane = battle.onFieldAllyServants[0]!;
       final prevCount = jane.battleBuff.getAllBuffs().length;
@@ -832,10 +861,7 @@ void main() async {
 
     test('DataVals Negative Rates', () async {
       final battle = BattleData();
-      final playerSettings = [
-        PlayerSvtData.id(501100)..lv = 70,
-        PlayerSvtData.id(2300100)..lv = 80,
-      ];
+      final playerSettings = [PlayerSvtData.id(501100)..lv = 70, PlayerSvtData.id(2300100)..lv = 80];
       await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
       final babbage = battle.onFieldAllyServants[0]!;
       final prevCount = babbage.battleBuff.getAllBuffs().length;
@@ -857,7 +883,8 @@ void main() async {
         PlayerSvtData.id(702500)
           ..lv = 90
           ..setNpStrengthenLv(2)
-          ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
+          ..ce =
+              db.gameData.craftEssencesById[9400340] // Kaleidoscope
           ..ceLv = 100
           ..ceLimitBreak = true,
       ];
@@ -896,7 +923,8 @@ void main() async {
       final List<PlayerSvtData> setting = [
         PlayerSvtData.id(2300400)
           ..lv = 90
-          ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
+          ..ce =
+              db.gameData.craftEssencesById[9400340] // Kaleidoscope
           ..ceLv = 100
           ..ceLimitBreak = true,
         PlayerSvtData.id(2500700)..lv = 90,
@@ -926,7 +954,8 @@ void main() async {
       final List<PlayerSvtData> setting = [
         PlayerSvtData.id(1101600)
           ..lv = 80
-          ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
+          ..ce =
+              db.gameData.craftEssencesById[9400340] // Kaleidoscope
           ..ceLv = 100
           ..ceLimitBreak = true,
       ];
@@ -968,7 +997,8 @@ void main() async {
       final List<PlayerSvtData> setting = [
         PlayerSvtData.id(1001300)
           ..lv = 90
-          ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
+          ..ce =
+              db.gameData.craftEssencesById[9400340] // Kaleidoscope
           ..ceLv = 100
           ..ceLimitBreak = true,
       ];
@@ -1002,7 +1032,8 @@ void main() async {
       final List<PlayerSvtData> setting = [
         PlayerSvtData.id(403400)
           ..lv = 60
-          ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
+          ..ce =
+              db.gameData.craftEssencesById[9400340] // Kaleidoscope
           ..ceLv = 100
           ..ceLimitBreak = true,
       ];
@@ -1027,7 +1058,8 @@ void main() async {
       final List<PlayerSvtData> setting = [
         PlayerSvtData.id(2300400)
           ..lv = 1
-          ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
+          ..ce =
+              db.gameData.craftEssencesById[9400340] // Kaleidoscope
           ..ceLv = 100
           ..ceLimitBreak = true,
       ];
@@ -1057,7 +1089,8 @@ void main() async {
       final List<PlayerSvtData> setting = [
         PlayerSvtData.id(201300)
           ..lv = 60
-          ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
+          ..ce =
+              db.gameData.craftEssencesById[9400340] // Kaleidoscope
           ..ceLv = 100
           ..ceLimitBreak = true,
         PlayerSvtData.id(701400)
@@ -1123,9 +1156,7 @@ void main() async {
     });
 
     test('gainHpPerTarget', () async {
-      final List<PlayerSvtData> setting = [
-        PlayerSvtData.id(403600)..lv = 80,
-      ];
+      final List<PlayerSvtData> setting = [PlayerSvtData.id(403600)..lv = 80];
       final battle = BattleData();
       await battle.init(db.gameData.questPhases[9300040603]!, setting, null);
 
@@ -1175,17 +1206,18 @@ void main() async {
     test('transformSvt 304800 asc 4', () async {
       final playerSvtData = PlayerSvtData.id(304800)..lv = 90;
       for (final skillNum in kActiveSkillNums) {
-        final List<NiceSkill> shownSkills =
-            BattleUtils.getShownSkills(playerSvtData.svt!, playerSvtData.limitCount, skillNum);
+        final List<NiceSkill> shownSkills = BattleUtils.getShownSkills(
+          playerSvtData.svt!,
+          playerSvtData.limitCount,
+          skillNum,
+        );
         playerSvtData.skills[skillNum - 1] = shownSkills.lastOrNull;
       }
 
       final List<NiceTd> shownTds = BattleUtils.getShownTds(playerSvtData.svt!, playerSvtData.limitCount);
       playerSvtData.td = shownTds.last;
 
-      final List<PlayerSvtData> setting = [
-        playerSvtData,
-      ];
+      final List<PlayerSvtData> setting = [playerSvtData];
       final battle = BattleData();
       await battle.init(db.gameData.questPhases[9300040603]!, setting, null);
 
@@ -1198,20 +1230,22 @@ void main() async {
     });
 
     test('transformSvt 304800 asc 11', () async {
-      final playerSvtData = PlayerSvtData.id(304800)
-        ..lv = 90
-        ..limitCount = 304830;
+      final playerSvtData =
+          PlayerSvtData.id(304800)
+            ..lv = 90
+            ..limitCount = 304830;
       for (final skillNum in kActiveSkillNums) {
-        final List<NiceSkill> shownSkills =
-            BattleUtils.getShownSkills(playerSvtData.svt!, playerSvtData.limitCount, skillNum);
+        final List<NiceSkill> shownSkills = BattleUtils.getShownSkills(
+          playerSvtData.svt!,
+          playerSvtData.limitCount,
+          skillNum,
+        );
         playerSvtData.skills[skillNum - 1] = shownSkills.lastOrNull;
       }
 
       final List<NiceTd> shownTds = BattleUtils.getShownTds(playerSvtData.svt!, playerSvtData.limitCount);
       playerSvtData.td = shownTds.last;
-      final List<PlayerSvtData> setting = [
-        playerSvtData,
-      ];
+      final List<PlayerSvtData> setting = [playerSvtData];
       final battle = BattleData();
       await battle.init(db.gameData.questPhases[9300040603]!, setting, null);
 
@@ -1224,12 +1258,11 @@ void main() async {
     });
 
     test('transformSvt preserve CD & upgrades', () async {
-      final playerSvtData = PlayerSvtData.id(600700)
-        ..lv = 70
-        ..setSkillStrengthenLvs([1, 1, 1]);
-      final List<PlayerSvtData> setting = [
-        playerSvtData,
-      ];
+      final playerSvtData =
+          PlayerSvtData.id(600700)
+            ..lv = 70
+            ..setSkillStrengthenLvs([1, 1, 1]);
+      final List<PlayerSvtData> setting = [playerSvtData];
       final battle = BattleData();
       await battle.init(db.gameData.questPhases[9300040603]!, setting, null);
 

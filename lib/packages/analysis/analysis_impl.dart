@@ -14,19 +14,22 @@ class AppAnalysisImpl implements AppAnalysis {
   Future<void> initiate() async {
     final isInitialized = await Countly.isInitialized();
     if (!isInitialized) {
-      CountlyConfig config =
-          CountlyConfig("https://countly.chaldea.center", '46e56e032869aa7dc7e8627bfb6b00c4f0dc1b41');
+      CountlyConfig config = CountlyConfig(
+        "https://countly.chaldea.center",
+        '46e56e032869aa7dc7e8627bfb6b00c4f0dc1b41',
+      );
       // if (kDebugMode) config.setLoggingEnabled(true);
       // after db init
       config
         ..setUserProperties({
           "language": Language.current.code,
           "region": db.settings.resolvedPreferredRegions.firstOrNull?.upper,
-          "channel": PlatformU.isAndroid
-              ? (AppInfo.isFDroid ? 'f-droid' : 'android')
-              : PlatformU.isIOS
+          "channel":
+              PlatformU.isAndroid
+                  ? (AppInfo.isFDroid ? 'f-droid' : 'android')
+                  : PlatformU.isIOS
                   ? 'ios'
-                  : "unknown"
+                  : "unknown",
         })
         ..setUpdateSessionTimerDelay(600)
         ..setEventQueueSizeToSend(50);

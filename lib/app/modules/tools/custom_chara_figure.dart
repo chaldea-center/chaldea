@@ -25,12 +25,7 @@ class CustomCharaFigureIntro extends HookWidget {
       body: ListView(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         children: [
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Text(S.current.custom_chara_figure_intro),
-            ),
-          ),
+          Card(child: Padding(padding: const EdgeInsets.all(16), child: Text(S.current.custom_chara_figure_intro))),
           const SizedBox(height: 16),
           Padding(
             padding: const EdgeInsets.all(4),
@@ -56,7 +51,7 @@ class CustomCharaFigureIntro extends HookWidget {
               router.pushPage(CustomCharaFigurePage(figure: asset.charaFigureId(figureId)));
             },
             icon: const Icon(Icons.arrow_circle_right_outlined),
-          )
+          ),
         ],
       ),
     );
@@ -102,12 +97,7 @@ class _CustomCharaFigurePageState extends State<CustomCharaFigurePage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(S.current.card_asset_chara_figure),
-        actions: [
-          IconButton(
-            onPressed: export,
-            icon: const Icon(Icons.save_alt),
-          )
-        ],
+        actions: [IconButton(onPressed: export, icon: const Icon(Icons.save_alt))],
       ),
       body: Column(
         children: [
@@ -133,7 +123,7 @@ class _CustomCharaFigurePageState extends State<CustomCharaFigurePage> {
                 itemBuilder: buildFace,
               ),
             ),
-          )
+          ),
         ],
       ),
     );
@@ -142,32 +132,20 @@ class _CustomCharaFigurePageState extends State<CustomCharaFigurePage> {
   Widget? buildFace(BuildContext context, int index) {
     Widget child;
     if (index == 0) {
-      child = Center(
-        child: AutoSizeText(
-          S.current.general_default,
-          maxLines: 1,
-          minFontSize: 6,
-        ),
-      );
+      child = Center(child: AutoSizeText(S.current.general_default, maxLines: 1, minFontSize: 6));
     } else {
-      child = CharaFigureImage(
-        figureUrl: widget.figure,
-        face: index,
-        faceOnly: true,
-      );
+      child = CharaFigureImage(figureUrl: widget.figure, face: index, faceOnly: true);
     }
     child = AspectRatio(
       aspectRatio: 1,
       child: DecoratedBox(
         decoration: BoxDecoration(
-            border: Border.all(
-          width: 2,
-          color: face == index ? Theme.of(context).colorScheme.primaryContainer : Colors.transparent,
-        )),
-        child: Padding(
-          padding: const EdgeInsets.all(2),
-          child: child,
+          border: Border.all(
+            width: 2,
+            color: face == index ? Theme.of(context).colorScheme.primaryContainer : Colors.transparent,
+          ),
         ),
+        child: Padding(padding: const EdgeInsets.all(2), child: child),
       ),
     );
     child = InkWell(
@@ -203,8 +181,8 @@ class CharaFigureImage extends StatefulWidget {
   final bool faceOnly;
 
   const CharaFigureImage({super.key, required String this.figureUrl, this.face, this.faceOnly = false})
-      : figureId = null,
-        region = null;
+    : figureId = null,
+      region = null;
 
   const CharaFigureImage.id({
     super.key,
@@ -286,12 +264,7 @@ class _CharaFigureImageState extends State<CharaFigureImage> {
   @override
   Widget build(BuildContext context) {
     return CustomPaint(
-      painter: CharaFigurePainter(
-        figure: image,
-        face: widget.face,
-        script: script,
-        faceOnly: widget.faceOnly,
-      ),
+      painter: CharaFigurePainter(figure: image, face: widget.face, script: script, faceOnly: widget.faceOnly),
       size: Size.infinite,
     );
   }
@@ -301,13 +274,14 @@ class _CharaFigureImageState extends State<CharaFigureImage> {
     return ImageUtil.recordCanvas(
       width: 1024,
       height: script!.isHeight1024 ? 1024 : 768,
-      paint: CharaFigurePainter(
-        figure: image,
-        face: widget.face,
-        script: script,
-        faceOnly: widget.faceOnly,
-        applyOffset: false,
-      ).paint,
+      paint:
+          CharaFigurePainter(
+            figure: image,
+            face: widget.face,
+            script: script,
+            faceOnly: widget.faceOnly,
+            applyOffset: false,
+          ).paint,
     );
   }
 }
@@ -385,8 +359,12 @@ class CharaFigurePainter extends CustomPainter {
     int row = (face - 1) ~/ colCount;
     int col = (face - 1) % colCount;
     if (!faceOnly) {
-      final destRect = Rect.fromLTWH((script.faceX - offsetX) * dstScale, (script.faceY - offsetY) * dstScale,
-          faceSize * dstScale, faceSize * dstScale);
+      final destRect = Rect.fromLTWH(
+        (script.faceX - offsetX) * dstScale,
+        (script.faceY - offsetY) * dstScale,
+        faceSize * dstScale,
+        faceSize * dstScale,
+      );
       final paint = Paint();
       if (!kIsWeb || kPlatformMethods.rendererCanvasKit) {
         paint.blendMode = BlendMode.clear;
@@ -395,8 +373,12 @@ class CharaFigurePainter extends CustomPainter {
       draw(
         canvas,
         figure,
-        Rect.fromLTWH((col * faceSize) * srcScale, (height + faceSize * row) * srcScale, faceSize * srcScale,
-            faceSize * srcScale),
+        Rect.fromLTWH(
+          (col * faceSize) * srcScale,
+          (height + faceSize * row) * srcScale,
+          faceSize * srcScale,
+          faceSize * srcScale,
+        ),
         destRect,
         dstScale,
       );
@@ -404,8 +386,12 @@ class CharaFigurePainter extends CustomPainter {
       draw(
         canvas,
         figure,
-        Rect.fromLTWH((col * faceSize) * srcScale, (height + faceSize * row) * srcScale, faceSize * srcScale,
-            faceSize * srcScale),
+        Rect.fromLTWH(
+          (col * faceSize) * srcScale,
+          (height + faceSize * row) * srcScale,
+          faceSize * srcScale,
+          faceSize * srcScale,
+        ),
         Rect.fromLTWH(0, 0, size.width, size.height),
         dstScale,
       );
@@ -416,12 +402,7 @@ class CharaFigurePainter extends CustomPainter {
   void draw(Canvas canvas, ui.Image image, Rect src, Rect dst, double? deflate, {Paint? paint}) {
     canvas.save();
     if (deflate != null) canvas.clipRect(dst.deflate(deflate));
-    canvas.drawImageRect(
-      image,
-      src,
-      dst,
-      paint ?? Paint(),
-    );
+    canvas.drawImageRect(image, src, dst, paint ?? Paint());
     canvas.restore();
   }
 

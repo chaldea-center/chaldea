@@ -15,12 +15,8 @@ class SimpleLineChartData<T extends num> {
     return y.toInt().toString();
   }
 
-  SimpleLineChartData({
-    required this.xx,
-    required this.yy,
-    this.tooltipFormatter = _tooltip,
-    this.color,
-  }) : assert(xx.length == yy.length);
+  SimpleLineChartData({required this.xx, required this.yy, this.tooltipFormatter = _tooltip, this.color})
+    : assert(xx.length == yy.length);
 
   List<T> ofAxis({required bool x}) => x ? xx : yy;
 }
@@ -39,16 +35,16 @@ class SimpleLineChart<T extends num> extends StatelessWidget {
   }) : assert(data.length > 0);
 
   static List<Color> get colors => [
-        Colors.blue,
-        Colors.red,
-        Colors.green,
-        Colors.cyan,
-        Colors.pink,
-        Colors.yellow,
-        Colors.purple,
-        // Colors.black,
-        // Colors.white,
-      ];
+    Colors.blue,
+    Colors.red,
+    Colors.green,
+    Colors.cyan,
+    Colors.pink,
+    Colors.yellow,
+    Colors.purple,
+    // Colors.black,
+    // Colors.white,
+  ];
 
   Color getColor(int index) {
     return data[index].color ?? colors[index % colors.length];
@@ -70,38 +66,44 @@ class SimpleLineChart<T extends num> extends StatelessWidget {
         lineTouchData: LineTouchData(
           handleBuiltInTouches: true,
           touchTooltipData: LineTouchTooltipData(
-              getTooltipColor: (touchedSpot) => Theme.of(context).scaffoldBackgroundColor.withAlpha(153),
-              // getTooltipColor: (touchedSpot) => Theme.of(context).hintColor.withAlpha(128),
-              fitInsideHorizontally: true,
-              fitInsideVertically: true,
-              getTooltipItems: (spots) {
-                List<LineTooltipItem> items = [];
-                for (int index = 0; index < spots.length; index++) {
-                  final spot = spots[index];
-                  final formatter = data[spot.barIndex].tooltipFormatter;
-                  if (index == 0 && xFormatter != null) {
-                    items.add(LineTooltipItem('${xFormatter!(spot.x)}\n', const TextStyle(fontSize: 14), children: [
-                      TextSpan(
-                        text: formatter(spot.x, spot.y),
-                        style: TextStyle(
-                          color: spot.bar.color,
-                          fontSize: 14,
+            getTooltipColor: (touchedSpot) => Theme.of(context).scaffoldBackgroundColor.withAlpha(153),
+            // getTooltipColor: (touchedSpot) => Theme.of(context).hintColor.withAlpha(128),
+            fitInsideHorizontally: true,
+            fitInsideVertically: true,
+            getTooltipItems: (spots) {
+              List<LineTooltipItem> items = [];
+              for (int index = 0; index < spots.length; index++) {
+                final spot = spots[index];
+                final formatter = data[spot.barIndex].tooltipFormatter;
+                if (index == 0 && xFormatter != null) {
+                  items.add(
+                    LineTooltipItem(
+                      '${xFormatter!(spot.x)}\n',
+                      const TextStyle(fontSize: 14),
+                      children: [
+                        TextSpan(
+                          text: formatter(spot.x, spot.y),
+                          style: TextStyle(color: spot.bar.color, fontSize: 14),
                         ),
-                      )
-                    ]));
-                  } else {
-                    items.add(LineTooltipItem(
+                      ],
+                    ),
+                  );
+                } else {
+                  items.add(
+                    LineTooltipItem(
                       formatter(spot.x, spot.y),
                       TextStyle(
                         color: spot.bar.color,
                         // fontWeight: FontWeight.bold,
                         fontSize: 14,
                       ),
-                    ));
-                  }
+                    ),
+                  );
                 }
-                return items;
-              }),
+              }
+              return items;
+            },
+          ),
         ),
         gridData: const FlGridData(show: false),
         titlesData: FlTitlesData(
@@ -133,35 +135,19 @@ class SimpleLineChart<T extends num> extends StatelessWidget {
                 return Padding(
                   // You can use any widget here
                   padding: const EdgeInsets.only(top: 4),
-                  child: AutoSizeText(
-                    titleMeta.formattedValue,
-                    maxLines: 1,
-                    maxFontSize: 14,
-                    minFontSize: 6,
-                  ),
+                  child: AutoSizeText(titleMeta.formattedValue, maxLines: 1, maxFontSize: 14, minFontSize: 6),
                 );
               },
             ),
           ),
           rightTitles: AxisTitles(
-            sideTitles: SideTitles(
-              showTitles: true,
-              reservedSize: 16,
-              getTitlesWidget: (_, __) => const Text(''),
-            ),
+            sideTitles: SideTitles(showTitles: true, reservedSize: 16, getTitlesWidget: (_, __) => const Text('')),
           ),
           topTitles: AxisTitles(
-            sideTitles: SideTitles(
-              showTitles: true,
-              reservedSize: 16,
-              getTitlesWidget: (_, __) => const Text(''),
-            ),
+            sideTitles: SideTitles(showTitles: true, reservedSize: 16, getTitlesWidget: (_, __) => const Text('')),
           ),
         ),
-        borderData: FlBorderData(
-          show: true,
-          border: Border.all(color: Theme.of(context).hintColor, width: 2),
-        ),
+        borderData: FlBorderData(show: true, border: Border.all(color: Theme.of(context).hintColor, width: 2)),
         lineBarsData: List.generate(data.length, (index) {
           final datum = data[index];
           return LineChartBarData(
@@ -173,10 +159,7 @@ class SimpleLineChart<T extends num> extends StatelessWidget {
             belowBarData: BarAreaData(show: false),
             spots: [
               for (int index = 0; index < min(datum.xx.length, datum.yy.length); index++)
-                FlSpot(
-                  datum.xx[index].toDouble(),
-                  datum.yy[index].toDouble(),
-                ),
+                FlSpot(datum.xx[index].toDouble(), datum.yy[index].toDouble()),
             ],
           );
         }),

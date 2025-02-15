@@ -102,30 +102,35 @@ class CarouselUtil {
     double aspectRatio = _kAspectRatio,
     CarouselOptions? baseOption,
   }) {
-    final items = imageUrls
-        .whereType<String>()
-        .map((e) => CachedImage(
-              imageUrl: e,
-              cachedOption: CachedImageOption(
-                imageBuilder: (context, image) => FittedBox(child: Image(image: image)),
-                errorWidget: (context, url, error) => const SizedBox(),
+    final items =
+        imageUrls
+            .whereType<String>()
+            .map(
+              (e) => CachedImage(
+                imageUrl: e,
+                cachedOption: CachedImageOption(
+                  imageBuilder: (context, image) => FittedBox(child: Image(image: image)),
+                  errorWidget: (context, url, error) => const SizedBox(),
+                ),
+                placeholder: (_, __) => const SizedBox(),
               ),
-              placeholder: (_, __) => const SizedBox(),
-            ))
-        .toList();
+            )
+            .toList();
     if (items.isEmpty) return const SizedBox();
     baseOption ??= CarouselOptions(autoPlay: items.length > 1, autoPlayInterval: const Duration(seconds: 6));
-    return LayoutTryBuilder(builder: (context, constraints) {
-      return CarouselSlider(
-        items: items,
-        options: limitHeightOption(
-          width: constraints.maxWidth,
-          maxHeight: maxHeight,
-          maxViewport: maxViewport,
-          aspectRatio: aspectRatio,
-          baseOption: baseOption,
-        ),
-      );
-    });
+    return LayoutTryBuilder(
+      builder: (context, constraints) {
+        return CarouselSlider(
+          items: items,
+          options: limitHeightOption(
+            width: constraints.maxWidth,
+            maxHeight: maxHeight,
+            maxViewport: maxViewport,
+            aspectRatio: aspectRatio,
+            baseOption: baseOption,
+          ),
+        );
+      },
+    );
   }
 }

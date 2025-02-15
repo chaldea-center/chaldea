@@ -88,35 +88,41 @@ class AppNewsCarousel extends StatefulWidget {
       final _dio = DioE();
 
       // app news
-      taskChaldea = _dio.get('${HostsX.data.cn}/news.json').then((response) async {
-        List<CarouselItem> items = [];
-        final newsData = List.from(response.data);
-        items.addAll((newsData).map((e) => CarouselItem.fromJson(e)));
-        final datVer = (await _dio.get('${HostsX.dataHost}/version.json')).data as Map;
-        final minVer = AppVersion.parse(datVer['minimalApp']);
-        if (minVer > AppInfo.version) {
-          items.add(CarouselItem(
-            type: 1,
-            title: S.current.update,
-            content: '${S.current.dataset_version}: ${datVer["utc"]}\n'
-                '${S.current.error_required_app_version(minVer.versionString, AppInfo.versionString)}',
-            link: ChaldeaUrl.doc('install'),
-          ));
-        }
+      taskChaldea = _dio
+          .get('${HostsX.data.cn}/news.json')
+          .then((response) async {
+            List<CarouselItem> items = [];
+            final newsData = List.from(response.data);
+            items.addAll((newsData).map((e) => CarouselItem.fromJson(e)));
+            final datVer = (await _dio.get('${HostsX.dataHost}/version.json')).data as Map;
+            final minVer = AppVersion.parse(datVer['minimalApp']);
+            if (minVer > AppInfo.version) {
+              items.add(
+                CarouselItem(
+                  type: 1,
+                  title: S.current.update,
+                  content:
+                      '${S.current.dataset_version}: ${datVer["utc"]}\n'
+                      '${S.current.error_required_app_version(minVer.versionString, AppInfo.versionString)}',
+                  link: ChaldeaUrl.doc('install'),
+                ),
+              );
+            }
 
-        if (!carouselSetting.enableChaldea) {
-          items.removeWhere((item) => item.type != 1);
-        }
-        if (db.settings.hideApple) {
-          items.removeWhere((item) {
-            return [item.title, item.content, item.image].any((e) => (e ?? '').toLowerCase().contains('donation'));
+            if (!carouselSetting.enableChaldea) {
+              items.removeWhere((item) => item.type != 1);
+            }
+            if (db.settings.hideApple) {
+              items.removeWhere((item) {
+                return [item.title, item.content, item.image].any((e) => (e ?? '').toLowerCase().contains('donation'));
+              });
+            }
+            return items;
+          })
+          .catchError((e, s) async {
+            logger.d('parse chaldea news failed', e, s);
+            return <CarouselItem>[];
           });
-        }
-        return items;
-      }).catchError((e, s) async {
-        logger.d('parse chaldea news failed', e, s);
-        return <CarouselItem>[];
-      });
 
       Future<Response> _getUrl(String url, {Map<String, String>? headers, bool? proxy}) {
         Map<String, String>? queryParameters;
@@ -128,17 +134,15 @@ class AppNewsCarousel extends StatefulWidget {
         return _dio.get(
           url,
           queryParameters: queryParameters,
-          options: headers != null
-              ? Options(
-                  headers: {
-                    if (proxy) ...{
-                      'x-cors-headers': jsonEncode(headers),
-                      'x-cors-fresh': '1',
+          options:
+              headers != null
+                  ? Options(
+                    headers: {
+                      if (proxy) ...{'x-cors-headers': jsonEncode(headers), 'x-cors-fresh': '1'},
+                      if (!proxy) ...headers,
                     },
-                    if (!proxy) ...headers,
-                  },
-                )
-              : null,
+                  )
+                  : null,
         );
       }
 
@@ -164,173 +168,194 @@ class AppNewsCarousel extends StatefulWidget {
       // mc slides
       if (carouselSetting.enableMooncell) {
         const mcUrl = 'https://fgo.wiki/w/模板:自动取值轮播';
-        taskMC = _getUrl(mcUrl).then((response) {
-          var doc = parser.parse(response.data.toString());
-          var ele = doc.getElementById('transImageBox');
-          updated = true;
-          final items = _getImageLinks(element: ele, uri: Uri.parse('https://fgo.wiki/'));
-          for (final item in items) {
-            final fragments = item.link?.split('fgo.wiki/w/');
-            if (fragments == null || fragments.length < 2) continue;
-            String page = fragments[1];
-            item.eventIds = _getEvents((event) => WikiTool.isSamePage(event.extra.mcLink, page));
-            item.warIds = _getWars((war) => WikiTool.isSamePage(war.extra.mcLink, page));
-            item.summonIds = _getSummons((summon) => WikiTool.isSamePage(summon.mcLink, page));
-          }
-          return items;
-        }).catchError((e, s) async {
-          logger.d('parse mc slides failed', e, s);
-          return <CarouselItem>[];
-        });
+        taskMC = _getUrl(mcUrl)
+            .then((response) {
+              var doc = parser.parse(response.data.toString());
+              var ele = doc.getElementById('transImageBox');
+              updated = true;
+              final items = _getImageLinks(element: ele, uri: Uri.parse('https://fgo.wiki/'));
+              for (final item in items) {
+                final fragments = item.link?.split('fgo.wiki/w/');
+                if (fragments == null || fragments.length < 2) continue;
+                String page = fragments[1];
+                item.eventIds = _getEvents((event) => WikiTool.isSamePage(event.extra.mcLink, page));
+                item.warIds = _getWars((war) => WikiTool.isSamePage(war.extra.mcLink, page));
+                item.summonIds = _getSummons((summon) => WikiTool.isSamePage(summon.mcLink, page));
+              }
+              return items;
+            })
+            .catchError((e, s) async {
+              logger.d('parse mc slides failed', e, s);
+              return <CarouselItem>[];
+            });
       }
 
       // jp slides
       if (carouselSetting.enableJP) {
         const jpUrl = 'https://view.fate-go.jp';
-        taskJP = _getUrl(jpUrl).then((response) {
-          var doc = parser.parse(response.data.toString());
-          var ele = doc.getElementsByClassName('slide').getOrNull(0);
-          updated = true;
-          final items = _getImageLinks(element: ele, uri: Uri.parse(jpUrl));
-          for (final item in items) {
-            final link = item.link;
-            if (link == null) continue;
-            item.eventIds = _getEvents((event) => isSameUrlPath(event.extra.noticeLink.jp, link));
-            item.warIds = _getWars((war) => isSameUrlPath(war.extra.noticeLink.jp, link));
-            item.summonIds = _getSummons((summon) => isSameUrlPath(summon.noticeLink.jp, link));
-          }
-          return items;
-        }).catchError((e, s) async {
-          logger.d('parse JP slides failed', e, s);
-          return <CarouselItem>[];
-        });
+        taskJP = _getUrl(jpUrl)
+            .then((response) {
+              var doc = parser.parse(response.data.toString());
+              var ele = doc.getElementsByClassName('slide').getOrNull(0);
+              updated = true;
+              final items = _getImageLinks(element: ele, uri: Uri.parse(jpUrl));
+              for (final item in items) {
+                final link = item.link;
+                if (link == null) continue;
+                item.eventIds = _getEvents((event) => isSameUrlPath(event.extra.noticeLink.jp, link));
+                item.warIds = _getWars((war) => isSameUrlPath(war.extra.noticeLink.jp, link));
+                item.summonIds = _getSummons((summon) => isSameUrlPath(summon.noticeLink.jp, link));
+              }
+              return items;
+            })
+            .catchError((e, s) async {
+              logger.d('parse JP slides failed', e, s);
+              return <CarouselItem>[];
+            });
       }
 
       if (carouselSetting.enableCN) {
         taskCN = _getUrl(
-                'https://api.biligame.com/news/list.action?gameExtensionId=45&positionId=2&pageNum=1&pageSize=6&typeId=1')
+              'https://api.biligame.com/news/list.action?gameExtensionId=45&positionId=2&pageNum=1&pageSize=6&typeId=1',
+            )
             .then((response) async {
-          final notices = (response.data as Map)["data"] as List;
-          List<CarouselItem> items = [];
-          for (final Map notice in notices) {
-            final id = notice["id"] as int;
-            final title = notice["title"] as String;
-            if (id == 1509 || title.contains('维护')) continue;
-            final data = (await _getUrl('https://api.biligame.com/news/$id.action')).data["data"];
-            final content = data["content"] as String;
-            String? img = RegExp(r'^([\s\S]{0,16})<img src="([^"]*)"').firstMatch(content)?.group(2);
-            if (img == null) continue;
-            img = Uri.https('game.bilibili.com', '/fgo/news.html').resolve(img).toString();
-            items.add(CarouselItem(
-              image: img,
-              title: data['title'],
-              link: PlatformU.isTargetMobile
-                  ? 'https://game.bilibili.com/fgo/h5/news.html#detailId=$id'
-                  : 'https://game.bilibili.com/fgo/news.html#!news/1/1/$id',
-              eventIds: _getEvents((event) => event.extra.noticeLink.cn == id.toString()),
-              warIds: _getWars((war) => war.extra.noticeLink.cn == id.toString()),
-              summonIds: _getSummons((summon) => summon.noticeLink.cn == id.toString()),
-            ));
-          }
-          updated = true;
-          return items;
-        }).catchError((e, s) async {
-          logger.d('parse CN notices failed', e, s);
-          return <CarouselItem>[];
-        });
+              final notices = (response.data as Map)["data"] as List;
+              List<CarouselItem> items = [];
+              for (final Map notice in notices) {
+                final id = notice["id"] as int;
+                final title = notice["title"] as String;
+                if (id == 1509 || title.contains('维护')) continue;
+                final data = (await _getUrl('https://api.biligame.com/news/$id.action')).data["data"];
+                final content = data["content"] as String;
+                String? img = RegExp(r'^([\s\S]{0,16})<img src="([^"]*)"').firstMatch(content)?.group(2);
+                if (img == null) continue;
+                img = Uri.https('game.bilibili.com', '/fgo/news.html').resolve(img).toString();
+                items.add(
+                  CarouselItem(
+                    image: img,
+                    title: data['title'],
+                    link:
+                        PlatformU.isTargetMobile
+                            ? 'https://game.bilibili.com/fgo/h5/news.html#detailId=$id'
+                            : 'https://game.bilibili.com/fgo/news.html#!news/1/1/$id',
+                    eventIds: _getEvents((event) => event.extra.noticeLink.cn == id.toString()),
+                    warIds: _getWars((war) => war.extra.noticeLink.cn == id.toString()),
+                    summonIds: _getSummons((summon) => summon.noticeLink.cn == id.toString()),
+                  ),
+                );
+              }
+              updated = true;
+              return items;
+            })
+            .catchError((e, s) async {
+              logger.d('parse CN notices failed', e, s);
+              return <CarouselItem>[];
+            });
       }
 
       if (carouselSetting.enableTW) {
         // https://www.fate-go.com.tw/newsmng/2026.json
         // https://www.fate-go.com.tw/newsmng/index.json
-        taskTW = _getUrl('https://www.fate-go.com.tw/newsmng/index.json').then((response) async {
-          final notices = List<Map>.from(response.data as List);
-          notices.retainWhere((e) => e["category"] == 1);
-          notices.sort2((e) => e["publish_time"] as int, reversed: true);
-          List<CarouselItem> items = [];
-          for (final Map notice in notices.take(5)) {
-            final id = notice["id"] as int;
-            final title = notice["title"] as String;
-            if (title.contains('維護')) continue;
-            final data = (await _getUrl('https://www.fate-go.com.tw/newsmng/$id.json')).data as Map;
-            final content = data["content"] as String;
-            String? img = RegExp(r'<img src="([^"]*)"').firstMatch(content)?.group(1);
-            if (img == null) continue;
-            img = Uri.https('www.fate-go.com.tw', '/news.html').resolve(img).toString();
-            items.add(CarouselItem(
-              image: img,
-              title: data['title'],
-              link: PlatformU.isTargetMobile
-                  ? 'https://www.fate-go.com.tw/h5/news-m.html#detailId=$id'
-                  : 'https://www.fate-go.com.tw/news.html#!news/1/1/$id',
-              eventIds: _getEvents((event) => event.extra.noticeLink.tw == id.toString()),
-              warIds: _getWars((war) => war.extra.noticeLink.tw == id.toString()),
-              summonIds: _getSummons((summon) => summon.noticeLink.tw == id.toString()),
-            ));
-          }
-          updated = true;
-          return items;
-        }).catchError((e, s) async {
-          logger.d('parse TW notices failed', e, s);
-          return <CarouselItem>[];
-        });
+        taskTW = _getUrl('https://www.fate-go.com.tw/newsmng/index.json')
+            .then((response) async {
+              final notices = List<Map>.from(response.data as List);
+              notices.retainWhere((e) => e["category"] == 1);
+              notices.sort2((e) => e["publish_time"] as int, reversed: true);
+              List<CarouselItem> items = [];
+              for (final Map notice in notices.take(5)) {
+                final id = notice["id"] as int;
+                final title = notice["title"] as String;
+                if (title.contains('維護')) continue;
+                final data = (await _getUrl('https://www.fate-go.com.tw/newsmng/$id.json')).data as Map;
+                final content = data["content"] as String;
+                String? img = RegExp(r'<img src="([^"]*)"').firstMatch(content)?.group(1);
+                if (img == null) continue;
+                img = Uri.https('www.fate-go.com.tw', '/news.html').resolve(img).toString();
+                items.add(
+                  CarouselItem(
+                    image: img,
+                    title: data['title'],
+                    link:
+                        PlatformU.isTargetMobile
+                            ? 'https://www.fate-go.com.tw/h5/news-m.html#detailId=$id'
+                            : 'https://www.fate-go.com.tw/news.html#!news/1/1/$id',
+                    eventIds: _getEvents((event) => event.extra.noticeLink.tw == id.toString()),
+                    warIds: _getWars((war) => war.extra.noticeLink.tw == id.toString()),
+                    summonIds: _getSummons((summon) => summon.noticeLink.tw == id.toString()),
+                  ),
+                );
+              }
+              updated = true;
+              return items;
+            })
+            .catchError((e, s) async {
+              logger.d('parse TW notices failed', e, s);
+              return <CarouselItem>[];
+            });
       }
 
       // NA slides
       if (carouselSetting.enableNA) {
         const usUrl = 'https://webview.fate-go.us';
-        taskNA = _getUrl(usUrl).then((response) {
-          var doc = parser.parse(response.data.toString());
-          var ele = doc.getElementsByClassName('slide').getOrNull(0);
-          updated = true;
-          final items = _getImageLinks(element: ele, uri: Uri.parse(usUrl));
-          for (final item in items) {
-            final link = item.link;
-            if (link == null) continue;
-            item.eventIds = _getEvents((event) => isSameUrlPath(event.extra.noticeLink.na, link));
-            item.warIds = _getWars((war) => isSameUrlPath(war.extra.noticeLink.na, link));
-            item.summonIds = _getSummons((summon) => isSameUrlPath(summon.noticeLink.na, link));
-          }
-          return items;
-        }).catchError((e, s) async {
-          logger.d('parse NA slides failed', e, s);
-          return <CarouselItem>[];
-        });
+        taskNA = _getUrl(usUrl)
+            .then((response) {
+              var doc = parser.parse(response.data.toString());
+              var ele = doc.getElementsByClassName('slide').getOrNull(0);
+              updated = true;
+              final items = _getImageLinks(element: ele, uri: Uri.parse(usUrl));
+              for (final item in items) {
+                final link = item.link;
+                if (link == null) continue;
+                item.eventIds = _getEvents((event) => isSameUrlPath(event.extra.noticeLink.na, link));
+                item.warIds = _getWars((war) => isSameUrlPath(war.extra.noticeLink.na, link));
+                item.summonIds = _getSummons((summon) => isSameUrlPath(summon.noticeLink.na, link));
+              }
+              return items;
+            })
+            .catchError((e, s) async {
+              logger.d('parse NA slides failed', e, s);
+              return <CarouselItem>[];
+            });
       }
 
       if (carouselSetting.enableKR && 1 > 2) {
         const krUrl = 'https://cafe.naver.com/MyCafeIntro.nhn?clubid=29199987';
         taskKR = _getUrl(krUrl, headers: {HttpHeaders.refererHeader: 'https://cafe.naver.com/fategokr'}, proxy: true)
             .then((response) {
-          var doc = parser.parse(response.data.toString());
-          var ele = doc.getElementsByTagName('table').getOrNull(0);
-          updated = true;
-          final items = _getImageLinks(element: ele, uri: Uri.parse(krUrl));
-          items.retainWhere((e) =>
-              e.image != null &&
-              e.image!.contains('https://cafeskthumb-phinf.pstatic.net') &&
-              !['http://fgo.netmarble.com/', 'https://www.facebook.com/FateGO.KR', 'https://twitter.com/FateGO_KR']
-                  .contains(e.link));
-          for (final item in items) {
-            final link = item.link;
-            if (link == null) continue;
-            item.eventIds = _getEvents((event) => isSameUrlPath(event.extra.noticeLink.kr, link));
-            item.warIds = _getWars((war) => isSameUrlPath(war.extra.noticeLink.kr, link));
-            item.summonIds = _getSummons((summon) => isSameUrlPath(summon.noticeLink.kr, link));
-          }
-          return items;
-        }).catchError((e, s) async {
-          logger.d('parse KR slides failed', e, s);
-          return <CarouselItem>[];
-        });
+              var doc = parser.parse(response.data.toString());
+              var ele = doc.getElementsByTagName('table').getOrNull(0);
+              updated = true;
+              final items = _getImageLinks(element: ele, uri: Uri.parse(krUrl));
+              items.retainWhere(
+                (e) =>
+                    e.image != null &&
+                    e.image!.contains('https://cafeskthumb-phinf.pstatic.net') &&
+                    ![
+                      'http://fgo.netmarble.com/',
+                      'https://www.facebook.com/FateGO.KR',
+                      'https://twitter.com/FateGO_KR',
+                    ].contains(e.link),
+              );
+              for (final item in items) {
+                final link = item.link;
+                if (link == null) continue;
+                item.eventIds = _getEvents((event) => isSameUrlPath(event.extra.noticeLink.kr, link));
+                item.warIds = _getWars((war) => isSameUrlPath(war.extra.noticeLink.kr, link));
+                item.summonIds = _getSummons((summon) => isSameUrlPath(summon.noticeLink.kr, link));
+              }
+              return items;
+            })
+            .catchError((e, s) async {
+              logger.d('parse KR slides failed', e, s);
+              return <CarouselItem>[];
+            });
       }
 
-      await Future.forEach<Future<List<CarouselItem>>?>(
-        [taskChaldea, taskMC, taskJP, taskCN, taskTW, taskNA, taskKR],
-        (e) async {
-          if (e != null) result.addAll(await e);
-        },
-      );
+      await Future.forEach<Future<List<CarouselItem>>?>([taskChaldea, taskMC, taskJP, taskCN, taskTW, taskNA, taskKR], (
+        e,
+      ) async {
+        if (e != null) result.addAll(await e);
+      });
       // key: img url, value: href url
       if (carouselSetting.options.every((e) => !e)) {
         carouselSetting.items.clear();
@@ -383,39 +408,43 @@ class _AppNewsCarouselState extends State<AppNewsCarousel> {
     final limitOption = CarouselUtil.limitHeight(width: widget.maxWidth, maxHeight: 150);
 
     final pages = getPages(
-        limitOption.height ?? (widget.maxWidth == null ? null : widget.maxWidth! / limitOption.aspectRatio),
-        limitOption.aspectRatio);
+      limitOption.height ?? (widget.maxWidth == null ? null : widget.maxWidth! / limitOption.aspectRatio),
+      limitOption.aspectRatio,
+    );
 
     if (pages.isEmpty) {
-      pages.add(GestureDetector(
-        onTap: () {
-          launch(ChaldeaUrl.docHome);
-        },
-        child: const AspectRatio(
-          aspectRatio: 8 / 3,
-          child: CachedImage(
-            imageUrl: 'https://docs.chaldea.center/images/banner.jpg',
-            // cachedOption: CachedImageOption(fit: BoxFit.cover),
+      pages.add(
+        GestureDetector(
+          onTap: () {
+            launch(ChaldeaUrl.docHome);
+          },
+          child: const AspectRatio(
+            aspectRatio: 8 / 3,
+            child: CachedImage(
+              imageUrl: 'https://docs.chaldea.center/images/banner.jpg',
+              // cachedOption: CachedImageOption(fit: BoxFit.cover),
+            ),
           ),
         ),
-      ));
+      );
     }
     _curCarouselIndex = pages.isEmpty ? 0 : _curCarouselIndex.clamp(0, pages.length - 1);
 
     CarouselOptions options = CarouselOptions(
-        height: limitOption.height,
-        aspectRatio: limitOption.aspectRatio,
-        autoPlay: pages.length > 1,
-        autoPlayInterval: const Duration(seconds: 6),
-        viewportFraction: limitOption.viewportFraction,
-        enlargeCenterPage: limitOption.enlargeCenterPage,
-        enlargeStrategy: limitOption.enlargeStrategy,
-        initialPage: _curCarouselIndex,
-        onPageChanged: (v, _) {
-          setState(() {
-            _curCarouselIndex = v;
-          });
+      height: limitOption.height,
+      aspectRatio: limitOption.aspectRatio,
+      autoPlay: pages.length > 1,
+      autoPlayInterval: const Duration(seconds: 6),
+      viewportFraction: limitOption.viewportFraction,
+      enlargeCenterPage: limitOption.enlargeCenterPage,
+      enlargeStrategy: limitOption.enlargeStrategy,
+      initialPage: _curCarouselIndex,
+      onPageChanged: (v, _) {
+        setState(() {
+          _curCarouselIndex = v;
         });
+      },
+    );
     // if (useFullWidth) {
     //   options = CarouselOptions(
     //     aspectRatio: 8.0 / 3.0,
@@ -444,11 +473,7 @@ class _AppNewsCarouselState extends State<AppNewsCarousel> {
     return Stack(
       alignment: Alignment.bottomCenter,
       children: [
-        CarouselSlider(
-          carouselController: _carouselController,
-          items: pages,
-          options: options,
-        ),
+        CarouselSlider(carouselController: _carouselController, items: pages, options: options),
         if (pages.length > 1)
           FittedBox(
             fit: BoxFit.scaleDown,
@@ -490,25 +515,28 @@ class _AppNewsCarouselState extends State<AppNewsCarousel> {
       return false;
     });
     if (AppAds.shouldShowBannerAd(context)) {
-      items.addAll(List.generate(
-        items.length ~/ 4 + 1,
-        (index) => CarouselItem(
-          child: FittedBox(
-            fit: BoxFit.contain,
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(minWidth: 80, minHeight: 30, maxHeight: 300, maxWidth: 800),
-              child: BannerAdWidget(
-                options: AdOptions.homeCarousel,
-                placeholder: (_) => const CachedImage(
-                  imageUrl: 'https://docs.chaldea.center/images/banner.jpg',
-                  cachedOption: CachedImageOption(fit: BoxFit.cover),
+      items.addAll(
+        List.generate(
+          items.length ~/ 4 + 1,
+          (index) => CarouselItem(
+            child: FittedBox(
+              fit: BoxFit.contain,
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(minWidth: 80, minHeight: 30, maxHeight: 300, maxWidth: 800),
+                child: BannerAdWidget(
+                  options: AdOptions.homeCarousel,
+                  placeholder:
+                      (_) => const CachedImage(
+                        imageUrl: 'https://docs.chaldea.center/images/banner.jpg',
+                        cachedOption: CachedImageOption(fit: BoxFit.cover),
+                      ),
                 ),
               ),
             ),
+            priority: 12 + index * 4,
           ),
-          priority: 12 + index * 4,
         ),
-      ));
+      );
     }
     items.sort((a, b) {
       if (a.priority != b.priority) return a.priority - b.priority;
@@ -526,18 +554,15 @@ class _AppNewsCarouselState extends State<AppNewsCarousel> {
           imageUrl: img,
           aspectRatio: aspectRatio,
           cachedOption: CachedImageOption(
-            errorWidget: (context, url, error) => Container(
-              child: kDebugMode ? Text(url) : const SizedBox(width: 80, height: 30),
-            ),
+            errorWidget:
+                (context, url, error) =>
+                    Container(child: kDebugMode ? Text(url) : const SizedBox(width: 80, height: 30)),
             fit: item.fit,
           ),
         );
       } else if (content != null && content.isNotEmpty) {
         if (item.md) {
-          child = FittedBox(
-            fit: BoxFit.scaleDown,
-            child: MarkdownBody(data: content),
-          );
+          child = FittedBox(fit: BoxFit.scaleDown, child: MarkdownBody(data: content));
         } else {
           child = AutoSizeText(
             content,
@@ -548,18 +573,9 @@ class _AppNewsCarouselState extends State<AppNewsCarousel> {
           );
         }
 
-        child = Center(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 4),
-            child: child,
-          ),
-        );
+        child = Center(child: Padding(padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 4), child: child));
         if (height != null && height > 0) {
-          child = SizedBox(
-            height: height,
-            width: height * aspectRatio,
-            child: Card(child: child),
-          );
+          child = SizedBox(height: height, width: height * aspectRatio, child: Card(child: child));
         }
       }
       if (child == null) continue;
@@ -568,10 +584,7 @@ class _AppNewsCarouselState extends State<AppNewsCarousel> {
           item.eventIds.isNotEmpty ||
           item.warIds.isNotEmpty ||
           item.summonIds.isNotEmpty) {
-        child = GestureDetector(
-          onTap: () => onTap(item),
-          child: child,
-        );
+        child = GestureDetector(onTap: () => onTap(item), child: child);
       }
       sliders.add(child);
     }
@@ -635,19 +648,23 @@ class _AppNewsCarouselState extends State<AppNewsCarousel> {
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text.rich(TextSpan(children: [
-                if (content != null) TextSpan(text: content),
-                if (content != null && shownLink != null) const TextSpan(text: '\n\n'),
-                if (shownLink != null)
-                  SharedBuilder.textButtonSpan(
-                    context: context,
-                    text: shownLink,
-                    onTap: () {
-                      Navigator.pop(context);
-                      openLink(shownLink!);
-                    },
-                  ),
-              ])),
+              Text.rich(
+                TextSpan(
+                  children: [
+                    if (content != null) TextSpan(text: content),
+                    if (content != null && shownLink != null) const TextSpan(text: '\n\n'),
+                    if (shownLink != null)
+                      SharedBuilder.textButtonSpan(
+                        context: context,
+                        text: shownLink,
+                        onTap: () {
+                          Navigator.pop(context);
+                          openLink(shownLink!);
+                        },
+                      ),
+                  ],
+                ),
+              ),
               for (final eventId in item.eventIds)
                 _tile(
                   db.gameData.events[eventId]?.lName.l.setMaxLines(1) ?? '${S.current.event} $eventId',

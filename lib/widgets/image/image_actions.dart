@@ -110,68 +110,74 @@ class ImageActions {
             ),
         ];
         if (kIsWeb && srcFp != null && !srcFp.startsWith(kStaticHostRoot)) {
-          children.add(ListTile(
-            leading: const Icon(Icons.download),
-            title: Text(S.current.download),
-            onTap: () async {
-              if (await canLaunch(srcFp)) {
-                launch(srcFp);
-              }
-            },
-          ));
+          children.add(
+            ListTile(
+              leading: const Icon(Icons.download),
+              title: Text(S.current.download),
+              onTap: () async {
+                if (await canLaunch(srcFp)) {
+                  launch(srcFp);
+                }
+              },
+            ),
+          );
         }
         if (gallery && PlatformU.isMobile) {
-          children.add(ListTile(
-            leading: const Icon(Icons.photo_library),
-            title: Text(S.current.save_to_photos),
-            onTap: () async {
-              Navigator.pop(context);
-              if (PlatformU.isAndroid && await Permission.storage.isDenied) {
-                await EasyThrottle.throttleAsync('permission.storage.request', Permission.storage.request);
-              }
-              dynamic result;
-              if (srcFp != null) {
-                result = await ImageGallerySaver.saveFile(srcFp);
-              } else if (data != null) {
-                result = await ImageGallerySaver.saveImage(data, quality: 100);
-              }
-              if (result is Map && result['isSuccess'] == true) {
-                EasyLoading.showSuccess(S.current.saved);
-              } else {
-                String? msg;
-                if (result is Map) {
-                  msg = result['errorMessage'];
+          children.add(
+            ListTile(
+              leading: const Icon(Icons.photo_library),
+              title: Text(S.current.save_to_photos),
+              onTap: () async {
+                Navigator.pop(context);
+                if (PlatformU.isAndroid && await Permission.storage.isDenied) {
+                  await EasyThrottle.throttleAsync('permission.storage.request', Permission.storage.request);
                 }
-                EasyLoading.showError((msg ?? result).toString());
-              }
-            },
-          ));
+                dynamic result;
+                if (srcFp != null) {
+                  result = await ImageGallerySaver.saveFile(srcFp);
+                } else if (data != null) {
+                  result = await ImageGallerySaver.saveImage(data, quality: 100);
+                }
+                if (result is Map && result['isSuccess'] == true) {
+                  EasyLoading.showSuccess(S.current.saved);
+                } else {
+                  String? msg;
+                  if (result is Map) {
+                    msg = result['errorMessage'];
+                  }
+                  EasyLoading.showError((msg ?? result).toString());
+                }
+              },
+            ),
+          );
         }
         if (!PlatformU.isWeb && destFp != null) {
-          children.add(ListTile(
-            leading: const Icon(Icons.save),
-            title: Text(S.current.save),
-            onTap: () {
-              Navigator.pop(context);
-              final bytes = data ?? File(srcFp!).readAsBytesSync();
-              File(destFp).parent.createSync(recursive: true);
-              File(destFp).writeAsBytesSync(bytes);
-              SimpleCancelOkDialog(
-                hideCancel: true,
-                title: Text(S.current.saved),
-                content: Text(db.paths.convertIosPath(destFp)),
-                actions: [
-                  if (PlatformU.isDesktop)
-                    TextButton(
-                      onPressed: () {
-                        openFile(dirname(destFp));
-                      },
-                      child: Text(S.current.open),
-                    ),
-                ],
-              ).showDialog(context);
-            },
-          ));
+          children.add(
+            ListTile(
+              leading: const Icon(Icons.save),
+              title: Text(S.current.save),
+              onTap: () {
+                Navigator.pop(context);
+                final bytes = data ?? File(srcFp!).readAsBytesSync();
+                File(destFp).parent.createSync(recursive: true);
+                File(destFp).writeAsBytesSync(bytes);
+                SimpleCancelOkDialog(
+                  hideCancel: true,
+                  title: Text(S.current.saved),
+                  content: Text(db.paths.convertIosPath(destFp)),
+                  actions: [
+                    if (PlatformU.isDesktop)
+                      TextButton(
+                        onPressed: () {
+                          openFile(dirname(destFp));
+                        },
+                        child: Text(S.current.open),
+                      ),
+                  ],
+                ).showDialog(context);
+              },
+            ),
+          );
         }
         if ((data != null || srcFp != null) && !kIsWeb) {
           if (defaultFilename == null) {
@@ -185,70 +191,72 @@ class ImageActions {
               defaultFilename ??= basename(srcFp);
             }
           }
-          children.add(ListTile(
-            leading: const Icon(Icons.save),
-            title: Text(S.current.save_as),
-            onTap: () {
-              FilePickerU.saveFile(
-                data: data ?? File(srcFp!).readAsBytesSync(),
-                filename: defaultFilename,
-              );
-            },
-          ));
+          children.add(
+            ListTile(
+              leading: const Icon(Icons.save),
+              title: Text(S.current.save_as),
+              onTap: () {
+                FilePickerU.saveFile(data: data ?? File(srcFp!).readAsBytesSync(), filename: defaultFilename);
+              },
+            ),
+          );
         }
         if (kIsWeb && data != null) {
-          children.add(ListTile(
-            leading: const Icon(Icons.save),
-            title: Text(S.current.save),
-            onTap: () {
-              Navigator.pop(context);
-              kPlatformMethods.downloadFile(data, pathlib.basename(destFp ?? 'downloadimage.png'));
-            },
-          ));
+          children.add(
+            ListTile(
+              leading: const Icon(Icons.save),
+              title: Text(S.current.save),
+              onTap: () {
+                Navigator.pop(context);
+                kPlatformMethods.downloadFile(data, pathlib.basename(destFp ?? 'downloadimage.png'));
+              },
+            ),
+          );
         }
 
         if (share && PlatformU.isMobile) {
-          children.add(ListTile(
-            leading: const Icon(Icons.share),
-            title: Text(S.current.share),
-            onTap: () async {
-              Navigator.pop(context);
-              if (srcFp != null) {
-                await ShareX.shareFile(srcFp, text: shareText, context: context);
-              } else if (data != null) {
-                // Although, it may not be PNG
-                String fn = '${const Uuid().v5(Namespace.url.value, data.hashCode.toString())}.png';
-                String tmpFp = join(db.paths.tempDir, fn);
-                File(tmpFp)
-                  ..createSync(recursive: true)
-                  ..writeAsBytesSync(data);
-                await ShareX.shareFile(tmpFp, text: shareText, context: context);
-              }
-            },
-          ));
+          children.add(
+            ListTile(
+              leading: const Icon(Icons.share),
+              title: Text(S.current.share),
+              onTap: () async {
+                Navigator.pop(context);
+                if (srcFp != null) {
+                  await ShareX.shareFile(srcFp, text: shareText, context: context);
+                } else if (data != null) {
+                  // Although, it may not be PNG
+                  String fn = '${const Uuid().v5(Namespace.url.value, data.hashCode.toString())}.png';
+                  String tmpFp = join(db.paths.tempDir, fn);
+                  File(tmpFp)
+                    ..createSync(recursive: true)
+                    ..writeAsBytesSync(data);
+                  await ShareX.shareFile(tmpFp, text: shareText, context: context);
+                }
+              },
+            ),
+          );
         }
         if (onClearCache != null) {
-          children.add(ListTile(
-            leading: const Icon(Icons.cached),
-            title: Text(S.current.clear_cache),
-            onTap: () {
-              Navigator.pop(context);
-              onClearCache();
-            },
-          ));
+          children.add(
+            ListTile(
+              leading: const Icon(Icons.cached),
+              title: Text(S.current.clear_cache),
+              onTap: () {
+                Navigator.pop(context);
+                onClearCache();
+              },
+            ),
+          );
         }
         children.addAll([
-          Material(
-            color: Colors.grey.withAlpha(26),
-            child: const SizedBox(height: 6),
-          ),
+          Material(color: Colors.grey.withAlpha(26), child: const SizedBox(height: 6)),
           ListTile(
             leading: const Icon(Icons.close),
             title: Text(S.current.cancel),
             onTap: () {
               Navigator.pop(context);
             },
-          )
+          ),
         ]);
         return ListView.separated(
           shrinkWrap: true,
@@ -270,8 +278,10 @@ class ImageActions {
       }
       provider = FileImage(File(fp));
     } else {
-      provider = CachedNetworkImageProvider(CachedImage.corsProxyImage(url),
-          imageRenderMethodForWeb: ImageRenderMethodForWeb.HttpGet);
+      provider = CachedNetworkImageProvider(
+        CachedImage.corsProxyImage(url),
+        imageRenderMethodForWeb: ImageRenderMethodForWeb.HttpGet,
+      );
     }
     if (context != null && context.mounted) {
       return resolveImage(provider, context: context);
@@ -284,7 +294,8 @@ class ImageActions {
     final completer = Completer<ui.Image?>();
     // context ??= kAppKey.currentContext;
     final stream = provider.resolve(
-        context != null && context.mounted ? createLocalImageConfiguration(context) : ImageConfiguration.empty);
+      context != null && context.mounted ? createLocalImageConfiguration(context) : ImageConfiguration.empty,
+    );
     ImageStreamListener? listener;
     listener = ImageStreamListener(
       (image, synchronousCall) {

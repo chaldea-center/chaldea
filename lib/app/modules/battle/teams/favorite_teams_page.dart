@@ -16,15 +16,15 @@ class _FavoriteTeamsPageState extends State<FavoriteTeamsPage> {
   final favoriteTeams = db.curUser.battleSim.favoriteTeams;
 
   List<Quest> getQuests() {
-    final quests = favoriteTeams.entries
-        .where((e) => e.value.isNotEmpty)
-        .map((e) => db.gameData.quests[e.key])
-        .whereType<Quest>()
-        .toList();
-    quests.sortByList((e) => [
-          e.warId < 1000 ? -e.warId : -(e.war?.event?.startedAt ?? e.event?.startedAt ?? e.openedAt),
-          e.priority,
-        ]);
+    final quests =
+        favoriteTeams.entries
+            .where((e) => e.value.isNotEmpty)
+            .map((e) => db.gameData.quests[e.key])
+            .whereType<Quest>()
+            .toList();
+    quests.sortByList(
+      (e) => [e.warId < 1000 ? -e.warId : -(e.war?.event?.startedAt ?? e.event?.startedAt ?? e.openedAt), e.priority],
+    );
     quests.sort((a, b) => -Quest.compare(a, b, spotLayer: true));
     return quests;
   }
@@ -34,10 +34,14 @@ class _FavoriteTeamsPageState extends State<FavoriteTeamsPage> {
     final quests = getQuests();
     return Scaffold(
       appBar: AppBar(
-        title: Text.rich(TextSpan(children: [
-          const TextSpan(text: '★ ', style: TextStyle(color: Colors.yellow)),
-          TextSpan(text: S.current.favorite_teams),
-        ])),
+        title: Text.rich(
+          TextSpan(
+            children: [
+              const TextSpan(text: '★ ', style: TextStyle(color: Colors.yellow)),
+              TextSpan(text: S.current.favorite_teams),
+            ],
+          ),
+        ),
       ),
       body: ListView.separated(
         itemBuilder: (context, index) => listItemBuilder(context, quests[index]),
@@ -51,10 +55,7 @@ class _FavoriteTeamsPageState extends State<FavoriteTeamsPage> {
     final teamIds = favoriteTeams[quest.id]?.toList() ?? [];
     return ListTile(
       dense: true,
-      leading: CachedImage(
-        imageUrl: quest.spot?.shownImage,
-        placeholder: (context, url) => const SizedBox(),
-      ),
+      leading: CachedImage(imageUrl: quest.spot?.shownImage, placeholder: (context, url) => const SizedBox()),
       title: Text('Lv.${quest.recommendLv} ${quest.lDispName}'),
       subtitle: Text(quest.event?.lName.l ?? quest.war?.lName.l ?? 'Unknown Event'),
       trailing: Row(

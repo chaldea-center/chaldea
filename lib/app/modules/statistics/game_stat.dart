@@ -50,17 +50,19 @@ class _GameStatisticsPageState extends State<GameStatisticsPage> with SingleTick
             ),
             SharedBuilder.priorityIcon(context: context),
           ],
-          bottom: FixedHeight.tabBar(TabBar(
-            controller: _tabController,
-            isScrollable: true,
-            tabAlignment: TabAlignment.center,
-            tabs: [
-              Tab(text: S.current.demands),
-              Tab(text: S.current.consumed),
-              Tab(text: S.current.details),
-              Tab(text: S.current.svt_class_dist),
-            ],
-          )),
+          bottom: FixedHeight.tabBar(
+            TabBar(
+              controller: _tabController,
+              isScrollable: true,
+              tabAlignment: TabAlignment.center,
+              tabs: [
+                Tab(text: S.current.demands),
+                Tab(text: S.current.consumed),
+                Tab(text: S.current.details),
+                Tab(text: S.current.svt_class_dist),
+              ],
+            ),
+          ),
         ),
         body: TabBarView(
           controller: _tabController,
@@ -68,7 +70,7 @@ class _GameStatisticsPageState extends State<GameStatisticsPage> with SingleTick
             KeepAliveBuilder(builder: (context) => ItemStatTab(demandMode: true)),
             KeepAliveBuilder(builder: (context) => ItemStatTab(demandMode: false)),
             ServantDemandDetailStat(),
-            KeepAliveBuilder(builder: (context) => StatisticServantTab())
+            KeepAliveBuilder(builder: (context) => StatisticServantTab()),
           ],
         ),
       ),

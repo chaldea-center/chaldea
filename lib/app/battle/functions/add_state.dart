@@ -34,11 +34,12 @@ class AddState {
       isPassive = true;
     }
     for (final target in targets) {
-      final buffData = BuffData(buff, dataVals, battleData.getNextAddOrder())
-        ..actorUniqueId = activator?.uniqueId
-        ..actorName = activator?.lBattleName
-        ..passive = isPassive
-        ..skillInfoType = skillInfoType;
+      final buffData =
+          BuffData(buff, dataVals, battleData.getNextAddOrder())
+            ..actorUniqueId = activator?.uniqueId
+            ..actorName = activator?.lBattleName
+            ..passive = isPassive
+            ..skillInfoType = skillInfoType;
 
       // Processing logicTurn related logic
       if (isShortBuff) {
@@ -64,8 +65,9 @@ class AddState {
       if (buff.type.isTdTypeChange) {
         buffData.tdTypeChange = await getTypeChangeTd(battleData, target, buff, selectTreasureDeviceInfo);
       } else if (buff.type == BuffType.upDamageEventPoint) {
-        final pointBuff = battleData.options.pointBuffs.values
-            .firstWhereOrNull((pointBuff) => pointBuff.funcIds.isEmpty || pointBuff.funcIds.contains(funcId));
+        final pointBuff = battleData.options.pointBuffs.values.firstWhereOrNull(
+          (pointBuff) => pointBuff.funcIds.isEmpty || pointBuff.funcIds.contains(funcId),
+        );
         if (pointBuff == null) {
           continue;
         }
@@ -119,11 +121,7 @@ class AddState {
       final isStackable = target.isBuffStackable(buffData.buff.buffGroup) && checkSameBuffLimitNum(target, dataVals);
       if (isStackable &&
           await shouldAddState(battleData, dataVals, activator, target, buffData, isCommandCode, isClassPassive)) {
-        target.addBuff(
-          buffData,
-          isPassive: isPassive,
-          isCommandCode: isCommandCode,
-        );
+        target.addBuff(buffData, isPassive: isPassive, isCommandCode: isCommandCode);
         battleData.setFuncResult(target.uniqueId, true);
 
         target.postAddStateProcessing(buff, dataVals);
@@ -131,10 +129,7 @@ class AddState {
     }
   }
 
-  static bool checkSameBuffLimitNum(
-    final BattleServantData target,
-    final DataVals dataVals,
-  ) {
+  static bool checkSameBuffLimitNum(final BattleServantData target, final DataVals dataVals) {
     return dataVals.SameBuffLimitNum == null ||
         dataVals.SameBuffLimitNum! >
             target.countBuffWithTrait([NiceTrait(id: dataVals.SameBuffLimitTargetIndividuality!)]);
@@ -163,11 +158,16 @@ class AddState {
     // based on https://discord.com/channels/839788731108032532/1098222580755861545/1278033086981865646
     // svtClassPassive should ignore all avoidState buffs
     if (!isSvtClassPassive) {
-      final hasAvoidState =
-          await target.hasBuff(battleData, BuffAction.avoidState, opponent: activator, addTraits: buffData.traits);
+      final hasAvoidState = await target.hasBuff(
+        battleData,
+        BuffAction.avoidState,
+        opponent: activator,
+        addTraits: buffData.traits,
+      );
       if (hasAvoidState) {
-        battleData.battleLogger
-            .debug('${S.current.effect_target}: ${target.lBattleName} - ${S.current.battle_invalid}');
+        battleData.battleLogger.debug(
+          '${S.current.effect_target}: ${target.lBattleName} - ${S.current.battle_invalid}',
+        );
         return false;
       }
     }
@@ -178,7 +178,8 @@ class AddState {
       opponent: activator,
       addTraits: buffData.traits,
     );
-    final buffChance = await activator?.getBuffValue(
+    final buffChance =
+        await activator?.getBuffValue(
           battleData,
           BuffAction.grantState,
           opponent: target,
@@ -191,15 +192,18 @@ class AddState {
 
     final success = await battleData.canActivateFunction(activationRate - resistRate);
 
-    final resultsString = success
-        ? S.current.success
-        : resistRate > 0
+    final resultsString =
+        success
+            ? S.current.success
+            : resistRate > 0
             ? 'GUARD'
             : 'MISS';
 
-    battleData.battleLogger.debug('${S.current.effect_target}: ${target.lBattleName} - '
-        '$resultsString'
-        '${battleData.options.tailoredExecution ? '' : ' [($activationRate - $resistRate) vs ${battleData.options.threshold}]'}');
+    battleData.battleLogger.debug(
+      '${S.current.effect_target}: ${target.lBattleName} - '
+      '$resultsString'
+      '${battleData.options.tailoredExecution ? '' : ' [($activationRate - $resistRate) vs ${battleData.options.threshold}]'}',
+    );
 
     return success;
   }
@@ -256,9 +260,10 @@ class AddState {
       final tdId = tdTypeChangeIDs.getOrNull(targetTdIndex - 1);
       if (tdId == null) return null;
 
-      final List<NiceTd?> tds = svt.isPlayer
-          ? (svt.playerSvtData?.svt?.noblePhantasms ?? [])
-          : (svt.niceSvt?.noblePhantasms ?? [svt.niceEnemy?.noblePhantasm.noblePhantasm]);
+      final List<NiceTd?> tds =
+          svt.isPlayer
+              ? (svt.playerSvtData?.svt?.noblePhantasms ?? [])
+              : (svt.niceSvt?.noblePhantasms ?? [svt.niceEnemy?.noblePhantasm.noblePhantasm]);
       targetTd = tds.lastWhereOrNull((e) => e?.id == tdId);
       targetTd ??= await showEasyLoading(() => AtlasApi.td(tdId, svtId: svt.svtId), mask: true);
     }

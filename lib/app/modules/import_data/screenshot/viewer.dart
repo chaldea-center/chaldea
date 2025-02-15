@@ -10,10 +10,7 @@ import 'package:chaldea/utils/utils.dart';
 import 'item_result.dart';
 import 'skill_result.dart';
 
-enum RecognizerType {
-  item,
-  skill,
-}
+enum RecognizerType { item, skill }
 
 class RecognizerViewerTab extends StatefulWidget {
   final RecognizerType type;
@@ -31,28 +28,15 @@ class _RecognizerViewerTabState extends State<RecognizerViewerTab> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        topBar,
-        kDefaultDivider,
-        if (result != null) Expanded(child: details),
-      ],
-    );
+    return Column(children: [topBar, kDefaultDivider, if (result != null) Expanded(child: details)]);
   }
 
   Widget get details {
     switch (widget.type) {
       case RecognizerType.item:
-        return ItemResultTab(
-          result: result,
-          viewMode: true,
-        );
+        return ItemResultTab(result: result, viewMode: true);
       case RecognizerType.skill:
-        return SkillResultTab(
-          isAppend: true,
-          result: result,
-          viewMode: true,
-        );
+        return SkillResultTab(isAppend: true, result: result, viewMode: true);
     }
   }
 
@@ -104,7 +88,7 @@ class _RecognizerViewerTabState extends State<RecognizerViewerTab> {
             },
           ),
         ),
-        IconButton(onPressed: loadList, icon: const Icon(Icons.search))
+        IconButton(onPressed: loadList, icon: const Icon(Icons.search)),
       ],
     );
   }
@@ -113,8 +97,11 @@ class _RecognizerViewerTabState extends State<RecognizerViewerTab> {
     try {
       EasyLoading.show();
       recentFiles = List.from(
-          (await db.apiServerDio.get('/recognizer/viewer/${widget.type.name}/list', queryParameters: {"count": count}))
-              .data);
+        (await db.apiServerDio.get(
+          '/recognizer/viewer/${widget.type.name}/list',
+          queryParameters: {"count": count},
+        )).data,
+      );
       EasyLoading.dismiss();
     } catch (e, s) {
       logger.e('read recognizer skill list failed', e, s);
@@ -126,8 +113,10 @@ class _RecognizerViewerTabState extends State<RecognizerViewerTab> {
   Future<void> loadOne(String filename) async {
     try {
       EasyLoading.show();
-      final resp = await db.apiServerDio
-          .get('/recognizer/viewer/${widget.type.name}/result', queryParameters: {"filename": filename});
+      final resp = await db.apiServerDio.get(
+        '/recognizer/viewer/${widget.type.name}/result',
+        queryParameters: {"filename": filename},
+      );
       switch (widget.type) {
         case RecognizerType.item:
           result = ItemResult.fromJson(resp.data);

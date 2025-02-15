@@ -7,21 +7,12 @@ class StartupFailedPage extends StatelessWidget {
   final dynamic error;
   final StackTrace? stackTrace;
   final bool wrapApp;
-  const StartupFailedPage({
-    super.key,
-    required this.error,
-    this.stackTrace,
-    this.wrapApp = false,
-  });
+  const StartupFailedPage({super.key, required this.error, this.stackTrace, this.wrapApp = false});
 
   @override
   Widget build(BuildContext context) {
     if (wrapApp) {
-      return MaterialApp(
-        title: kAppName,
-        themeMode: ThemeMode.light,
-        home: Scaffold(body: buildContent(context)),
-      );
+      return MaterialApp(title: kAppName, themeMode: ThemeMode.light, home: Scaffold(body: buildContent(context)));
     }
     return buildContent(context);
   }
@@ -30,10 +21,7 @@ class StartupFailedPage extends StatelessWidget {
     return ListView(
       padding: const EdgeInsetsDirectional.all(24),
       children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: ImageUtil.getChaldeaBackground(context),
-        ),
+        Padding(padding: const EdgeInsets.symmetric(horizontal: 16), child: ImageUtil.getChaldeaBackground(context)),
         const SizedBox(height: 12),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -55,11 +43,12 @@ class StartupFailedPage extends StatelessWidget {
         const SizedBox(height: 8),
         if (kIsWeb)
           const Text(
-              'Web? InPrivate or "Clear history when close" in some browsers (e.g. FireFox) may block IndexedDB which app needed.\n'
-              '部分浏览器如FireFox在无痕模式下或开启退出时清除历史记录时会禁用IndexedDB而使app无法启动\n'),
+            'Web? InPrivate or "Clear history when close" in some browsers (e.g. FireFox) may block IndexedDB which app needed.\n'
+            '部分浏览器如FireFox在无痕模式下或开启退出时清除历史记录时会禁用IndexedDB而使app无法启动\n',
+          ),
         Text('Error: $error', style: Theme.of(context).textTheme.titleMedium),
         if (stackTrace != null) Text('\n\n$stackTrace', style: Theme.of(context).textTheme.bodySmall),
-        const SafeArea(child: SizedBox())
+        const SafeArea(child: SizedBox()),
       ],
     );
   }

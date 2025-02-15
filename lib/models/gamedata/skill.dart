@@ -123,16 +123,13 @@ class BaseSkill extends SkillOrTd {
     String content = Transl.skillDetail(detail ?? '').l;
     if (db.runtimeData.showSkillOriginText) return content;
     content = content.replaceAll('{0}', 'Lv.');
-    content = content.replaceFirstMapped(
-      RegExp(r'\[servantName (\d+)\]'),
-      (match) {
-        final svt = db.gameData.servantsById[int.parse(match.group(1)!)];
-        if (svt != null) {
-          return svt.lName.l;
-        }
-        return match.group(0).toString();
-      },
-    );
+    content = content.replaceFirstMapped(RegExp(r'\[servantName (\d+)\]'), (match) {
+      final svt = db.gameData.servantsById[int.parse(match.group(1)!)];
+      if (svt != null) {
+        return svt.lName.l;
+      }
+      return match.group(0).toString();
+    });
     content = content.replaceAllMapped(RegExp(r'\{\{(\d+):([^:]+):(m)\}\}'), (m) {
       final index = int.parse(m.group(1)!) - 1;
       final key = m.group(2)!;
@@ -152,10 +149,7 @@ class BaseSkill extends SkillOrTd {
   String get route => Routes.skillI(id);
   @override
   void routeTo({Widget? child, bool popDetails = false, Region? region}) {
-    return super.routeTo(
-      child: child ?? SkillDetailPage(skill: this, region: region),
-      popDetails: popDetails,
-    );
+    return super.routeTo(child: child ?? SkillDetailPage(skill: this, region: region), popDetails: popDetails);
   }
 
   Map<String, dynamic> toJson() => _$BaseSkillToJson(this);
@@ -218,39 +212,41 @@ class NiceSkill extends SkillOrTd implements BaseSkill {
     // int flag = 0,
     // this.releaseConditions = const [],
     this.extraPassive = const [],
-  })  : _base = GameDataLoader.instance.tmp.getBaseSkill(
-            id,
-            () => BaseSkill(
-                  id: id,
-                  name: name,
-                  ruby: ruby,
-                  unmodifiedDetail: unmodifiedDetail,
-                  type: type,
-                  icon: icon,
-                  coolDown: coolDown,
-                  actIndividuality: actIndividuality,
-                  script: script,
-                  skillAdd: skillAdd,
-                  aiIds: aiIds,
-                  groupOverwrites: groupOverwrites,
-                  functions: functions,
-                  skillSvts: skillSvts,
-                )),
-        svt = skillSvts.firstWhereOrNull((e) => e.svtId == svtId && e.num == num && e.priority == priority)?.copy() ??
-            SkillSvt(
-              svtId: svtId,
-              num: num,
-              priority: priority,
-              // script: script,
-              strengthStatus: strengthStatus,
-              condQuestId: condQuestId,
-              condQuestPhase: condQuestPhase,
-              condLv: condLv,
-              condLimitCount: condLimitCount,
-              // eventId: eventId,
-              // flag: flag,
-              // releaseConditions: releaseConditions,
-            );
+  }) : _base = GameDataLoader.instance.tmp.getBaseSkill(
+         id,
+         () => BaseSkill(
+           id: id,
+           name: name,
+           ruby: ruby,
+           unmodifiedDetail: unmodifiedDetail,
+           type: type,
+           icon: icon,
+           coolDown: coolDown,
+           actIndividuality: actIndividuality,
+           script: script,
+           skillAdd: skillAdd,
+           aiIds: aiIds,
+           groupOverwrites: groupOverwrites,
+           functions: functions,
+           skillSvts: skillSvts,
+         ),
+       ),
+       svt =
+           skillSvts.firstWhereOrNull((e) => e.svtId == svtId && e.num == num && e.priority == priority)?.copy() ??
+           SkillSvt(
+             svtId: svtId,
+             num: num,
+             priority: priority,
+             // script: script,
+             strengthStatus: strengthStatus,
+             condQuestId: condQuestId,
+             condQuestPhase: condQuestPhase,
+             condLv: condLv,
+             condLimitCount: condLimitCount,
+             // eventId: eventId,
+             // flag: flag,
+             // releaseConditions: releaseConditions,
+           );
 
   factory NiceSkill.fromJson(Map<String, dynamic> json) {
     if (json['type'] == null) {
@@ -260,8 +256,12 @@ class NiceSkill extends SkillOrTd implements BaseSkill {
     return _$NiceSkillFromJson(json);
   }
 
-  bool shouldActiveSvtEventSkill(
-      {required int eventId, required int? svtId, required bool includeZero, bool includeHidden = false}) {
+  bool shouldActiveSvtEventSkill({
+    required int eventId,
+    required int? svtId,
+    required bool includeZero,
+    bool includeHidden = false,
+  }) {
     final hidePassives = ConstData.getSvtLimitHides(svtId ?? 0, null).expand((e) => e.addPassives).toList();
     if (!includeHidden && hidePassives.contains(id)) return false;
     if (extraPassive.isEmpty && includeZero) return true;
@@ -356,10 +356,8 @@ class NiceSkill extends SkillOrTd implements BaseSkill {
   @override
   String get route => _base.route;
   @override
-  void routeTo({Widget? child, bool popDetails = false, Region? region}) => super.routeTo(
-        child: child ?? SkillDetailPage(skill: this, region: region),
-        popDetails: popDetails,
-      );
+  void routeTo({Widget? child, bool popDetails = false, Region? region}) =>
+      super.routeTo(child: child ?? SkillDetailPage(skill: this, region: region), popDetails: popDetails);
 }
 
 extension BaseSkillMethods on BaseSkill {
@@ -412,8 +410,10 @@ class SkillSvt implements SkillSvtBase {
   static String getPrimaryKey(int? svtId, int? num, int? priority) => "${svtId ?? 0}:${num ?? 0}:${priority ?? 0}";
 
   factory SkillSvt.fromJson(Map<String, dynamic> json) {
-    return GameDataLoader.instance.tmp
-        .getSkillSvt(getPrimaryKey(json["svtId"], json["num"], json["priority"]), () => _$SkillSvtFromJson(json));
+    return GameDataLoader.instance.tmp.getSkillSvt(
+      getPrimaryKey(json["svtId"], json["num"], json["priority"]),
+      () => _$SkillSvtFromJson(json),
+    );
   }
 
   Map<String, dynamic> toJson() => _$SkillSvtToJson(this);
@@ -461,8 +461,8 @@ class BaseTd extends SkillOrTd {
     this.script,
     this.functions = const [],
     List<TdSvt>? npSvts,
-  })  : npGain = npGain ?? NpGain(),
-        npSvts = npSvts ?? [];
+  }) : npGain = npGain ?? NpGain(),
+       npSvts = npSvts ?? [];
 
   factory BaseTd.fromJson(Map<String, dynamic> json) {
     return GameDataLoader.instance.tmp.getBaseTd(json["id"]!, () => _$BaseTdFromJson(json));
@@ -485,10 +485,7 @@ class BaseTd extends SkillOrTd {
   String get route => Routes.tdI(id);
   @override
   void routeTo({Widget? child, bool popDetails = false, Region? region}) {
-    return super.routeTo(
-      child: child ?? TdDetailPage(td: this, region: region),
-      popDetails: popDetails,
-    );
+    return super.routeTo(child: child ?? TdDetailPage(td: this, region: region), popDetails: popDetails);
   }
 
   Map<String, dynamic> toJson() => _$BaseTdToJson(this);
@@ -547,8 +544,10 @@ class TdSvt implements SkillSvtBase {
   static String getPrimaryKey(int? svtId, int? num, int? priority) => "${svtId ?? 0}:${num ?? 1}:${priority ?? 0}";
 
   factory TdSvt.fromJson(Map<String, dynamic> json) {
-    return GameDataLoader.instance.tmp
-        .getTdSvt(getPrimaryKey(json["svtId"], json["num"], json["priority"]), () => _$TdSvtFromJson(json));
+    return GameDataLoader.instance.tmp.getTdSvt(
+      getPrimaryKey(json["svtId"], json["num"], json["priority"]),
+      () => _$TdSvtFromJson(json),
+    );
   }
 
   Map<String, dynamic> toJson() => _$TdSvtToJson(this);
@@ -612,24 +611,44 @@ class NiceTd extends SkillOrTd implements BaseTd {
     // this.motion = 0,
     CardType card = CardType.none,
     List<SvtSkillRelease> releaseConditions = const [],
-  })  : _base = GameDataLoader.instance.tmp.getBaseTd(
-            id,
-            () => BaseTd(
-                  id: id,
-                  name: name,
-                  ruby: ruby,
-                  icon: icon,
-                  rank: rank,
-                  type: type,
-                  effectFlags: effectFlags,
-                  unmodifiedDetail: unmodifiedDetail,
-                  npGain: npGain,
-                  individuality: individuality,
-                  script: script,
-                  functions: functions,
-                  npSvts: npSvts,
-                )),
-        svt = TdSvt(
+  }) : _base = GameDataLoader.instance.tmp.getBaseTd(
+         id,
+         () => BaseTd(
+           id: id,
+           name: name,
+           ruby: ruby,
+           icon: icon,
+           rank: rank,
+           type: type,
+           effectFlags: effectFlags,
+           unmodifiedDetail: unmodifiedDetail,
+           npGain: npGain,
+           individuality: individuality,
+           script: script,
+           functions: functions,
+           npSvts: npSvts,
+         ),
+       ),
+       svt = TdSvt(
+         svtId: svtId,
+         num: num,
+         npNum: npNum,
+         priority: priority,
+         damage: damage,
+         strengthStatus: strengthStatus,
+         flag: flag,
+         imageIndex: imageIndex,
+         condQuestId: condQuestId,
+         condQuestPhase: condQuestPhase,
+         condLv: condLv,
+         condFriendshipRank: condFriendshipRank,
+         card: card,
+         releaseConditions: releaseConditions,
+       ) {
+    if (svtId > 0 && num > 0 && !_base.npSvts.any((e) => e.svtId == svtId && e.num == num && e.priority == priority)) {
+      // recreate instance in case of wrong reference
+      _base.npSvts.add(
+        TdSvt(
           svtId: svtId,
           num: num,
           npNum: npNum,
@@ -644,25 +663,8 @@ class NiceTd extends SkillOrTd implements BaseTd {
           condFriendshipRank: condFriendshipRank,
           card: card,
           releaseConditions: releaseConditions,
-        ) {
-    if (svtId > 0 && num > 0 && !_base.npSvts.any((e) => e.svtId == svtId && e.num == num && e.priority == priority)) {
-      // recreate instance in case of wrong reference
-      _base.npSvts.add(TdSvt(
-        svtId: svtId,
-        num: num,
-        npNum: npNum,
-        priority: priority,
-        damage: damage,
-        strengthStatus: strengthStatus,
-        flag: flag,
-        imageIndex: imageIndex,
-        condQuestId: condQuestId,
-        condQuestPhase: condQuestPhase,
-        condLv: condLv,
-        condFriendshipRank: condFriendshipRank,
-        card: card,
-        releaseConditions: releaseConditions,
-      ));
+        ),
+      );
     }
   }
 
@@ -740,10 +742,8 @@ class NiceTd extends SkillOrTd implements BaseTd {
   @override
   String get route => _base.route;
   @override
-  void routeTo({Widget? child, bool popDetails = false, Region? region}) => super.routeTo(
-        child: child ?? TdDetailPage(td: this, region: region),
-        popDetails: popDetails,
-      );
+  void routeTo({Widget? child, bool popDetails = false, Region? region}) =>
+      super.routeTo(child: child ?? TdDetailPage(td: this, region: region), popDetails: popDetails);
 }
 
 extension TdMethods on BaseTd {
@@ -763,7 +763,7 @@ extension TdMethods on BaseTd {
           FuncTargetType.enemyAll,
           FuncTargetType.enemyFull,
           FuncTargetType.enemyOtherFull,
-          FuncTargetType.enemyOther
+          FuncTargetType.enemyOther,
         ].contains(func.funcTargetType)) {
           return TdEffectFlag.attackEnemyAll;
         } else if ([
@@ -900,12 +900,13 @@ class SkillScript with DataScriptBase {
     dynamic IgnoreValueUp,
     List? IgnoreBattlePointUp,
     this.tdChangeByBattlePoint,
-  })  : IgnoreValueUp = _parseBaseScript(IgnoreValueUp),
-        IgnoreBattlePointUp = IgnoreBattlePointUp == null
-            ? null
-            : (IgnoreBattlePointUp.isNotEmpty && IgnoreBattlePointUp.first is List)
-                ? List<int>.from(IgnoreBattlePointUp.first)
-                : List<int>.from(IgnoreBattlePointUp);
+  }) : IgnoreValueUp = _parseBaseScript(IgnoreValueUp),
+       IgnoreBattlePointUp =
+           IgnoreBattlePointUp == null
+               ? null
+               : (IgnoreBattlePointUp.isNotEmpty && IgnoreBattlePointUp.first is List)
+               ? List<int>.from(IgnoreBattlePointUp.first)
+               : List<int>.from(IgnoreBattlePointUp);
 
   static T? _parseBaseScript<T>(dynamic value) {
     if (value == null) return null;
@@ -932,10 +933,7 @@ class SkillSelectAddInfo {
   final String title;
   final List<SkillSelectAddInfoBtn> btn;
 
-  SkillSelectAddInfo({
-    this.title = '',
-    this.btn = const [],
-  });
+  SkillSelectAddInfo({this.title = '', this.btn = const []});
 
   factory SkillSelectAddInfo.fromJson(Map<String, dynamic> json) => _$SkillSelectAddInfoFromJson(json);
 
@@ -947,10 +945,7 @@ class SkillSelectAddInfoBtn {
   final String name;
   final List<SkillSelectAddInfoBtnCond> conds;
 
-  SkillSelectAddInfoBtn({
-    this.name = '',
-    this.conds = const [],
-  });
+  SkillSelectAddInfoBtn({this.name = '', this.conds = const []});
 
   factory SkillSelectAddInfoBtn.fromJson(Map<String, dynamic> json) => _$SkillSelectAddInfoBtnFromJson(json);
 
@@ -962,10 +957,7 @@ class SkillSelectAddInfoBtnCond {
   final SkillScriptCond cond;
   final int? value;
 
-  SkillSelectAddInfoBtnCond({
-    this.cond = SkillScriptCond.none,
-    this.value,
-  });
+  SkillSelectAddInfoBtnCond({this.cond = SkillScriptCond.none, this.value});
 
   factory SkillSelectAddInfoBtnCond.fromJson(Map<String, dynamic> json) => _$SkillSelectAddInfoBtnCondFromJson(json);
 
@@ -998,11 +990,7 @@ class SelectTdInfoTdChangeParam {
   final CardType type;
   final String message;
 
-  SelectTdInfoTdChangeParam({
-    this.id = 0,
-    this.type = CardType.none,
-    this.message = "",
-  });
+  SelectTdInfoTdChangeParam({this.id = 0, this.type = CardType.none, this.message = ""});
 
   factory SelectTdInfoTdChangeParam.fromJson(Map<String, dynamic> json) => _$SelectTdInfoTdChangeParamFromJson(json);
 
@@ -1015,11 +1003,7 @@ class TdChangeByBattlePoint {
   int phase;
   int noblePhantasmId;
 
-  TdChangeByBattlePoint({
-    required this.battlePointId,
-    required this.phase,
-    required this.noblePhantasmId,
-  });
+  TdChangeByBattlePoint({required this.battlePointId, required this.phase, required this.noblePhantasmId});
 
   factory TdChangeByBattlePoint.fromJson(Map<String, dynamic> json) => _$TdChangeByBattlePointFromJson(json);
 
@@ -1033,12 +1017,7 @@ class SkillAdd {
   String name;
   String ruby;
 
-  SkillAdd({
-    required this.priority,
-    required this.releaseConditions,
-    required this.name,
-    required this.ruby,
-  });
+  SkillAdd({required this.priority, required this.releaseConditions, required this.name, required this.ruby});
 
   factory SkillAdd.fromJson(Map<String, dynamic> json) => _$SkillAddFromJson(json);
 
@@ -1122,13 +1101,13 @@ class NpGain {
   });
 
   List<int?> get firstValues => [
-        buster.getOrNull(0),
-        arts.getOrNull(0),
-        quick.getOrNull(0),
-        extra.getOrNull(0),
-        np.getOrNull(0),
-        defence.getOrNull(0),
-      ];
+    buster.getOrNull(0),
+    arts.getOrNull(0),
+    quick.getOrNull(0),
+    extra.getOrNull(0),
+    np.getOrNull(0),
+    defence.getOrNull(0),
+  ];
 
   factory NpGain.fromJson(Map<String, dynamic> json) => _$NpGainFromJson(json);
 
@@ -1137,8 +1116,7 @@ class NpGain {
 
 enum SkillType {
   active,
-  passive,
-  ;
+  passive;
 
   String get shortName {
     switch (this) {
@@ -1150,11 +1128,7 @@ enum SkillType {
   }
 }
 
-enum TdEffectFlag {
-  support,
-  attackEnemyAll,
-  attackEnemyOne,
-}
+enum TdEffectFlag { support, attackEnemyAll, attackEnemyOne }
 
 @JsonEnum(fieldRename: FieldRename.screamingSnake)
 enum SkillScriptCond {
@@ -1166,8 +1140,7 @@ enum SkillScriptCond {
   hpValHigher,
   hpValLower,
   hpPerHigher,
-  hpPerLower,
-  ;
+  hpPerLower;
 
   String get rawName => _$SkillScriptCondEnumMap[this] ?? name;
 }

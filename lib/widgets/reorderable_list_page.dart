@@ -58,26 +58,26 @@ class _ReorderableListPageState<T> extends State<ReorderableListPage<T>> {
           ),
         ],
       ),
-      body: sorting
-          ? ReorderableListView(
-              onReorder: widget.onReorder ??
-                  (oldIndex, newIndex) {
-                    if (oldIndex < newIndex) {
-                      newIndex -= 1;
-                    }
-                    final item = widget.items.removeAt(oldIndex);
-                    widget.items.insert(newIndex, item);
-                    setState(() {});
-                  },
-              children: [
-                for (final item in widget.items) itemBuilder(context, item),
-              ],
-            )
-          : ListView.separated(
-              itemCount: widget.items.length,
-              itemBuilder: (context, index) => itemBuilder(context, widget.items[index]),
-              separatorBuilder: (context, index) => const Divider(indent: 16, endIndent: 16),
-            ),
+      body:
+          sorting
+              ? ReorderableListView(
+                onReorder:
+                    widget.onReorder ??
+                    (oldIndex, newIndex) {
+                      if (oldIndex < newIndex) {
+                        newIndex -= 1;
+                      }
+                      final item = widget.items.removeAt(oldIndex);
+                      widget.items.insert(newIndex, item);
+                      setState(() {});
+                    },
+                children: [for (final item in widget.items) itemBuilder(context, item)],
+              )
+              : ListView.separated(
+                itemCount: widget.items.length,
+                itemBuilder: (context, index) => itemBuilder(context, widget.items[index]),
+                separatorBuilder: (context, index) => const Divider(indent: 16, endIndent: 16),
+              ),
     );
   }
 

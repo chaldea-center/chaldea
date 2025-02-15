@@ -63,17 +63,12 @@ class _TraitSPDMGTabState extends State<TraitSPDMGTab> {
 
     return Column(
       children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 4),
-          child: buttons,
-        ),
+        Padding(padding: const EdgeInsets.symmetric(vertical: 4), child: buttons),
         Expanded(
-          child: children.isEmpty
-              ? const Center(child: Text('No record'))
-              : ListView.builder(
-                  itemBuilder: (context, index) => children[index],
-                  itemCount: children.length,
-                ),
+          child:
+              children.isEmpty
+                  ? const Center(child: Text('No record'))
+                  : ListView.builder(itemBuilder: (context, index) => children[index], itemCount: children.length),
         ),
       ],
     );
@@ -91,7 +86,7 @@ class _TraitSPDMGTabState extends State<TraitSPDMGTab> {
             // _BuffSEScope.append
           ],
           [_SEScope.tdSE],
-          [_SEScope.ce, _SEScope.cc]
+          [_SEScope.ce, _SEScope.cc],
         ])
           FilterGroup<_SEScope>(
             options: scopes,
@@ -119,7 +114,7 @@ class _TraitSPDMGTabState extends State<TraitSPDMGTab> {
             onFilterChanged: (v, _) {
               setState(() {});
             },
-          )
+          ),
       ],
     );
   }

@@ -29,12 +29,16 @@ class EventCooltimePage extends HookWidget {
 
   Widget itemBuilder(BuildContext context, List<EventCooltimeReward> rewards) {
     final first = rewards.first;
-    assert(rewards.every((e) =>
-        e.name == first.name &&
-        e.upperLimitGiftNum == first.upperLimitGiftNum &&
-        e.gifts.length == 1 &&
-        e.gifts.first.objectId == first.gifts.first.objectId &&
-        e.gifts.first.num == first.gifts.first.num));
+    assert(
+      rewards.every(
+        (e) =>
+            e.name == first.name &&
+            e.upperLimitGiftNum == first.upperLimitGiftNum &&
+            e.gifts.length == 1 &&
+            e.gifts.first.objectId == first.gifts.first.objectId &&
+            e.gifts.first.num == first.gifts.first.num,
+      ),
+    );
     final spot = db.gameData.spots[rewards.first.spotId];
     final maxPointRate = Maths.max(rewards.map((e) => e.addEventPointRate), 0);
     return SimpleAccordion(
@@ -45,25 +49,31 @@ class EventCooltimePage extends HookWidget {
           dense: true,
           leading: spot?.shownImage == null ? null : db.getIconImage(spot?.shownImage),
           title: Text(Transl.spotNames(first.name).l),
-          subtitle: Text('${_fmtCooltime(rewards.first.cooltime)}→${_fmtCooltime(rewards.last.cooltime)},'
-              ' +${(maxPointRate / 1000).toStringAsFixed(1)}'),
+          subtitle: Text(
+            '${_fmtCooltime(rewards.first.cooltime)}→${_fmtCooltime(rewards.last.cooltime)},'
+            ' +${(maxPointRate / 1000).toStringAsFixed(1)}',
+          ),
           trailing: Text.rich(
-            TextSpan(children: [
-              for (final gift in first.gifts) CenterWidgetSpan(child: gift.iconBuilder(context: context, width: 28)),
-              TextSpan(text: '×${first.upperLimitGiftNum.format()}')
-            ]),
+            TextSpan(
+              children: [
+                for (final gift in first.gifts) CenterWidgetSpan(child: gift.iconBuilder(context: context, width: 28)),
+                TextSpan(text: '×${first.upperLimitGiftNum.format()}'),
+              ],
+            ),
             textScaler: const TextScaler.linear(0.9),
           ),
         );
       },
       contentBuilder: (context) {
-        return CustomTable(children: [
-          if (rewards.isNotEmpty)
-            for (final cond in rewards.first.releaseConditions)
-              CustomTableRow.fromChildren(children: [CondTargetValueDescriptor.commonRelease(commonRelease: cond)]),
-          CustomTableRow.fromTexts(texts: const ['Lv.', 'Cooltime', 'Point Rate', 'Cost'], isHeader: true),
-          for (final reward in rewards) buildRow(context, reward)
-        ]);
+        return CustomTable(
+          children: [
+            if (rewards.isNotEmpty)
+              for (final cond in rewards.first.releaseConditions)
+                CustomTableRow.fromChildren(children: [CondTargetValueDescriptor.commonRelease(commonRelease: cond)]),
+            CustomTableRow.fromTexts(texts: const ['Lv.', 'Cooltime', 'Point Rate', 'Cost'], isHeader: true),
+            for (final reward in rewards) buildRow(context, reward),
+          ],
+        );
       },
     );
   }
@@ -85,17 +95,19 @@ class EventCooltimePage extends HookWidget {
                 itemId: itemAmount.itemId,
                 text: itemAmount.amount.format(),
                 width: 28,
-              )
+              ),
           ],
         );
       }
     }
-    return CustomTableRow(children: [
-      TableCellData(text: reward.lv.toString()),
-      TableCellData(text: _fmtCooltime(reward.cooltime)),
-      TableCellData(text: '+${(reward.addEventPointRate / 1000).toStringAsFixed(1)}'),
-      TableCellData(child: itemCost ?? const SizedBox.shrink()),
-    ]);
+    return CustomTableRow(
+      children: [
+        TableCellData(text: reward.lv.toString()),
+        TableCellData(text: _fmtCooltime(reward.cooltime)),
+        TableCellData(text: '+${(reward.addEventPointRate / 1000).toStringAsFixed(1)}'),
+        TableCellData(child: itemCost ?? const SizedBox.shrink()),
+      ],
+    );
   }
 
   String _fmtCooltime(int sec) {

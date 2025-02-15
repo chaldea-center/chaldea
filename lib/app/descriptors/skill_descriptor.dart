@@ -51,14 +51,10 @@ class SkillDescriptor extends StatelessWidget with FuncsDescriptor, _SkillDescri
     this.showExtraPassiveCond = true,
     this.showEvent = true,
     this.region,
-  })  : showPlayer = isPlayer,
-        showEnemy = !isPlayer;
+  }) : showPlayer = isPlayer,
+       showEnemy = !isPlayer;
 
-  static Widget fromId({
-    required int id,
-    required WidgetDataBuilder<BaseSkill> builder,
-    Region? region,
-  }) {
+  static Widget fromId({required int id, required WidgetDataBuilder<BaseSkill> builder, Region? region}) {
     return FutureBuilder2(
       id: '$id$region',
       loader: () async {
@@ -81,69 +77,67 @@ class SkillDescriptor extends StatelessWidget with FuncsDescriptor, _SkillDescri
     final header = CustomTile(
       contentPadding: const EdgeInsetsDirectional.fromSTEB(16, 6, 16, 6),
       leading: db.getIconImage(skill.icon ?? Atlas.common.unknownSkillIcon, width: 33, aspectRatio: 1),
-      title: Text.rich(TextSpan(text: skill.lName.l, children: [
-        if (skill.skillAdd.isNotEmpty)
-          CenterWidgetSpan(
-            child: InkWell(
-              onTap: () => showDialog(
-                context: context,
-                useRootNavigator: false,
-                builder: _skillAddDialog,
+      title: Text.rich(
+        TextSpan(
+          text: skill.lName.l,
+          children: [
+            if (skill.skillAdd.isNotEmpty)
+              CenterWidgetSpan(
+                child: InkWell(
+                  onTap: () => showDialog(context: context, useRootNavigator: false, builder: _skillAddDialog),
+                  child: Icon(Icons.info_outline, size: 16, color: Theme.of(context).hintColor),
+                ),
               ),
-              child: Icon(
-                Icons.info_outline,
-                size: 16,
-                color: Theme.of(context).hintColor,
+            if (skill is NiceSkill && (skill as NiceSkill).extraPassive.isNotEmpty)
+              CenterWidgetSpan(
+                child: InkWell(
+                  onTap:
+                      () => showDialog(
+                        context: context,
+                        useRootNavigator: false,
+                        builder: (context) => _extraPassiveDialog(context, skill as NiceSkill),
+                      ),
+                  child: Icon(Icons.info_outline, size: 16, color: Theme.of(context).hintColor),
+                ),
               ),
-            ),
-          ),
-        if (skill is NiceSkill && (skill as NiceSkill).extraPassive.isNotEmpty)
-          CenterWidgetSpan(
-            child: InkWell(
-              onTap: () => showDialog(
-                context: context,
-                useRootNavigator: false,
-                builder: (context) => _extraPassiveDialog(context, skill as NiceSkill),
-              ),
-              child: Icon(
-                Icons.info_outline,
-                size: 16,
-                color: Theme.of(context).hintColor,
-              ),
-            ),
-          ),
-      ])),
-      subtitle: Transl.isJP || hideDetail || (skill.lName.l == skill.name && skill.lName.m?.ofRegion() == null)
-          ? null
-          : Text(skill.name),
-      trailing: cds.isEmpty || (cds.length == 1 && cds.single <= 0)
-          ? null
-          : cds.length == 1
+          ],
+        ),
+      ),
+      subtitle:
+          Transl.isJP || hideDetail || (skill.lName.l == skill.name && skill.lName.m?.ofRegion() == null)
+              ? null
+              : Text(skill.name),
+      trailing:
+          cds.isEmpty || (cds.length == 1 && cds.single <= 0)
+              ? null
+              : cds.length == 1
               ? Text('   CD: ${cds.single}')
-              : Text.rich(TextSpan(
+              : Text.rich(
+                TextSpan(
                   text: '   CD: ',
-                  children: divideList(
-                    [
-                      for (final cd in cds)
-                        TextSpan(
-                          text: cd.toString(),
-                          style: skill.coolDown.getOrNull((level ?? 0) - 1) == cd
-                              ? TextStyle(color: AppTheme(context).tertiary)
-                              : null,
-                        )
-                    ],
-                    const TextSpan(text: '→'),
-                  ),
-                )),
-      onTap: jumpToDetail
-          ? () => skill.routeTo(
-              region: region,
-              child: SkillDetailPage(
-                skill: skill,
+                  children: divideList([
+                    for (final cd in cds)
+                      TextSpan(
+                        text: cd.toString(),
+                        style:
+                            skill.coolDown.getOrNull((level ?? 0) - 1) == cd
+                                ? TextStyle(color: AppTheme(context).tertiary)
+                                : null,
+                      ),
+                  ], const TextSpan(text: '→')),
+                ),
+              ),
+      onTap:
+          jumpToDetail
+              ? () => skill.routeTo(
                 region: region,
-                initView: FuncApplyTarget.fromBool(showPlayer: showPlayer, showEnemy: showEnemy),
-              ))
-          : null,
+                child: SkillDetailPage(
+                  skill: skill,
+                  region: region,
+                  initView: FuncApplyTarget.fromBool(showPlayer: showPlayer, showEnemy: showEnemy),
+                ),
+              )
+              : null,
     );
     const divider = Divider(indent: 16, endIndent: 16, height: 2, thickness: 1);
     final detailText = skill.lDetail ?? '???';
@@ -184,30 +178,30 @@ class SkillDescriptor extends StatelessWidget with FuncsDescriptor, _SkillDescri
   Widget _skillAddDialog(BuildContext context) {
     List<Widget> children = [];
     for (final skillAdd in skill.skillAdd) {
-      children.add(ListTile(
-        title: Text(Transl.skillNames(skillAdd.name).l),
-        subtitle: Transl.isJP ? Text(skillAdd.ruby) : Text('${skillAdd.ruby}\n${skillAdd.name}'),
-        dense: true,
-        contentPadding: EdgeInsets.zero,
-      ));
+      children.add(
+        ListTile(
+          title: Text(Transl.skillNames(skillAdd.name).l),
+          subtitle: Transl.isJP ? Text(skillAdd.ruby) : Text('${skillAdd.ruby}\n${skillAdd.name}'),
+          dense: true,
+          contentPadding: EdgeInsets.zero,
+        ),
+      );
       for (final release in skillAdd.releaseConditions) {
-        children.add(CondTargetValueDescriptor(
-          condType: release.condType,
-          target: release.condId,
-          value: release.condNum,
-          textScaleFactor: 0.8,
-          leading: const TextSpan(text: ' ꔷ '),
-        ));
+        children.add(
+          CondTargetValueDescriptor(
+            condType: release.condType,
+            target: release.condId,
+            value: release.condNum,
+            textScaleFactor: 0.8,
+            leading: const TextSpan(text: ' ꔷ '),
+          ),
+        );
       }
     }
 
     return SimpleCancelOkDialog(
       // title: Text(skill.lName.l),
-      content: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: children,
-      ),
+      content: Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisSize: MainAxisSize.min, children: children),
       hideCancel: true,
       scrollable: true,
     );
@@ -221,13 +215,15 @@ class SkillDescriptor extends StatelessWidget with FuncsDescriptor, _SkillDescri
       final cond = skill.extraPassive[index];
       List<Widget> condDetails = [];
       if (cond.condQuestId != 0) {
-        condDetails.add(CondTargetValueDescriptor(
-          condType: CondType.questClearPhase,
-          target: cond.condQuestId,
-          value: cond.condQuestPhase,
-          leading: const TextSpan(text: ' ꔷ '),
-          style: style,
-        ));
+        condDetails.add(
+          CondTargetValueDescriptor(
+            condType: CondType.questClearPhase,
+            target: cond.condQuestId,
+            value: cond.condQuestPhase,
+            leading: const TextSpan(text: ' ꔷ '),
+            style: style,
+          ),
+        );
       }
       if (cond.condLv != 0) {
         condDetails.add(Text(' ꔷ Servant Level ${cond.condLv}', style: style));
@@ -240,35 +236,41 @@ class SkillDescriptor extends StatelessWidget with FuncsDescriptor, _SkillDescri
       }
       if (cond.eventId != 0) {
         final event = db.gameData.events[cond.eventId];
-        condDetails.add(Text.rich(
-          TextSpan(
-            text: ' ꔷ ${S.current.event} ',
-            children: [
-              SharedBuilder.textButtonSpan(
-                context: context,
-                text: event?.lName.l ?? cond.eventId.toString(),
-                onTap: () => router.push(url: Routes.eventI(cond.eventId)),
-              )
-            ],
+        condDetails.add(
+          Text.rich(
+            TextSpan(
+              text: ' ꔷ ${S.current.event} ',
+              children: [
+                SharedBuilder.textButtonSpan(
+                  context: context,
+                  text: event?.lName.l ?? cond.eventId.toString(),
+                  onTap: () => router.push(url: Routes.eventI(cond.eventId)),
+                ),
+              ],
+            ),
+            style: style,
           ),
-          style: style,
-        ));
+        );
       } else if (cond.isLimited) {
-        condDetails.add(Text(' ꔷ ${[cond.startedAt, cond.endedAt].map((e) => e.sec2date().toDateString()).join(' ~ ')}',
-            style: style));
+        condDetails.add(
+          Text(
+            ' ꔷ ${[cond.startedAt, cond.endedAt].map((e) => e.sec2date().toDateString()).join(' ~ ')}',
+            style: style,
+          ),
+        );
       }
       for (final release in cond.releaseConditions) {
-        condDetails.add(CondTargetValueDescriptor.commonRelease(
-          commonRelease: release,
-          leading: const TextSpan(text: ' ꔷ '),
-          style: style,
-        ));
+        condDetails.add(
+          CondTargetValueDescriptor.commonRelease(
+            commonRelease: release,
+            leading: const TextSpan(text: ' ꔷ '),
+            style: style,
+          ),
+        );
       }
-      children.add(Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: condDetails,
-      ));
+      children.add(
+        Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: condDetails),
+      );
     }
 
     return SimpleCancelOkDialog(
@@ -362,8 +364,8 @@ class TdDescriptor extends StatelessWidget with FuncsDescriptor, _SkillDescripto
     this.jumpToDetail = true,
     this.region,
     this.isBaseTd = false,
-  })  : showPlayer = isPlayer,
-        showEnemy = !isPlayer;
+  }) : showPlayer = isPlayer,
+       showEnemy = !isPlayer;
   final cardMap = const <CardType, Trait>{
     CardType.quick: Trait.cardQuick,
     CardType.arts: Trait.cardArts,
@@ -394,12 +396,8 @@ class TdDescriptor extends StatelessWidget with FuncsDescriptor, _SkillDescripto
           CommandCardWidget(card: td.svt.card, width: 90),
           ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 110 * 0.9),
-            child: Text(
-              '${tdType.l} $tdRank',
-              style: const TextStyle(fontSize: 14),
-              textAlign: TextAlign.center,
-            ),
-          )
+            child: Text('${tdType.l} $tdRank', style: const TextStyle(fontSize: 14), textAlign: TextAlign.center),
+          ),
         ],
       ),
       title: Column(
@@ -408,9 +406,7 @@ class TdDescriptor extends StatelessWidget with FuncsDescriptor, _SkillDescripto
           Text(
             tdRuby.l,
             textScaler: const TextScaler.linear(0.95),
-            style: TextStyle(
-              color: Theme.of(context).textTheme.bodySmall?.color,
-            ),
+            style: TextStyle(color: Theme.of(context).textTheme.bodySmall?.color),
           ),
           Text(tdName.l, style: const TextStyle(fontWeight: FontWeight.w600)),
           if (!Transl.isJP) ...[
@@ -420,11 +416,12 @@ class TdDescriptor extends StatelessWidget with FuncsDescriptor, _SkillDescripto
               style: TextStyle(color: Theme.of(context).textTheme.bodySmall?.color),
             ),
             Text(tdName.jp, style: const TextStyle(fontWeight: FontWeight.w600)),
-          ]
+          ],
         ],
       ),
-      onTap: jumpToDetail
-          ? () => td.routeTo(
+      onTap:
+          jumpToDetail
+              ? () => td.routeTo(
                 region: region,
                 child: TdDetailPage(
                   td: td,
@@ -432,7 +429,7 @@ class TdDescriptor extends StatelessWidget with FuncsDescriptor, _SkillDescripto
                   initView: FuncApplyTarget.fromBool(showPlayer: showPlayer, showEnemy: showEnemy),
                 ),
               )
-          : null,
+              : null,
     );
     final detailText = td.lDetail ?? '???';
 
@@ -459,48 +456,61 @@ class TdDescriptor extends StatelessWidget with FuncsDescriptor, _SkillDescripto
           loops: LoopTargets()..addSkill(td.id),
           region: region,
         ),
-        CustomTable(children: [
-          CustomTableRow.fromTexts(
+        CustomTable(
+          children: [
+            CustomTableRow.fromTexts(
               texts: const ['Buster', 'Arts', 'Quick', 'Extra', 'NP', 'Def'],
-              defaults: TableCellData(isHeader: true, maxLines: 1)),
-          CustomTableRow.fromTexts(
-            texts: [
-              td.npGain.buster,
-              td.npGain.arts,
-              td.npGain.quick,
-              td.npGain.extra,
-              td.npGain.np,
-              td.npGain.defence,
-            ].map((e) => '${e.first / 100}%').toList(),
-          ),
-          CustomTableRow(children: [
-            TableCellData(
-              child: Text.rich(TextSpan(
-                  text: 'Hits', children: [if (isBaseTd) SpecialTextSpan.superscript('[${ref.add("base")}]')])),
-              isHeader: true,
+              defaults: TableCellData(isHeader: true, maxLines: 1),
             ),
-            TableCellData(
-              text: td.svt.damage.isEmpty
-                  ? '   -  '
-                  : '   ${td.svt.damage.length} Hits '
-                      '(${td.svt.damage.join(', ')})  ',
-              flex: 5,
-              alignment: Alignment.centerLeft,
-              style: TextStyle(
-                fontStyle: isBaseTd ? FontStyle.italic : null,
-                decoration: td.damageType == TdEffectFlag.support ? TextDecoration.lineThrough : null,
-              ),
-            )
-          ]),
-        ]),
+            CustomTableRow.fromTexts(
+              texts:
+                  [
+                    td.npGain.buster,
+                    td.npGain.arts,
+                    td.npGain.quick,
+                    td.npGain.extra,
+                    td.npGain.np,
+                    td.npGain.defence,
+                  ].map((e) => '${e.first / 100}%').toList(),
+            ),
+            CustomTableRow(
+              children: [
+                TableCellData(
+                  child: Text.rich(
+                    TextSpan(
+                      text: 'Hits',
+                      children: [if (isBaseTd) SpecialTextSpan.superscript('[${ref.add("base")}]')],
+                    ),
+                  ),
+                  isHeader: true,
+                ),
+                TableCellData(
+                  text:
+                      td.svt.damage.isEmpty
+                          ? '   -  '
+                          : '   ${td.svt.damage.length} Hits '
+                              '(${td.svt.damage.join(', ')})  ',
+                  flex: 5,
+                  alignment: Alignment.centerLeft,
+                  style: TextStyle(
+                    fontStyle: isBaseTd ? FontStyle.italic : null,
+                    decoration: td.damageType == TdEffectFlag.support ? TextDecoration.lineThrough : null,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
         if (ref._tags.isNotEmpty)
-          SFooter([
-            if (ref.contain('base')) '[${ref.add("base")}] ${S.current.td_base_hits_hint}',
-            if (ref.contain("cardNP"))
-              '[${ref.add("cardNP")}] ${S.current.td_cardnp_hint(Transl.trait(Trait.cardNP.value).l)}',
-            if (ref.contain("cardQAB"))
-              '[${ref.add("cardQAB")}] ${S.current.td_cardcolor_hint(td.svt.card.name.toTitle(), Transl.trait(cardMap[td.svt.card]!.value).l)}',
-          ].join('\n')),
+          SFooter(
+            [
+              if (ref.contain('base')) '[${ref.add("base")}] ${S.current.td_base_hits_hint}',
+              if (ref.contain("cardNP"))
+                '[${ref.add("cardNP")}] ${S.current.td_cardnp_hint(Transl.trait(Trait.cardNP.value).l)}',
+              if (ref.contain("cardQAB"))
+                '[${ref.add("cardQAB")}] ${S.current.td_cardcolor_hint(td.svt.card.name.toTitle(), Transl.trait(cardMap[td.svt.card]!.value).l)}',
+            ].join('\n'),
+          ),
       ],
     );
     return InheritSelectionArea(child: child);
@@ -512,9 +522,10 @@ mixin _SkillDescriptorMixin {
     List<InlineSpan> spans = [];
 
     for (final skillSvt in skillSvts) {
-      final releaseConditions = skillSvt.releaseConditions
-          .where((e) => e.condType == CondType.equipWithTargetCostume && e.condTargetId == skillSvt.svtId)
-          .toList();
+      final releaseConditions =
+          skillSvt.releaseConditions
+              .where((e) => e.condType == CondType.equipWithTargetCostume && e.condTargetId == skillSvt.svtId)
+              .toList();
       if (releaseConditions.isEmpty) continue;
 
       for (final release in releaseConditions) {
@@ -537,13 +548,7 @@ mixin _SkillDescriptorMixin {
             overrideIcon = svt.ascendIcon(limitCount);
           }
           spans.addAll([
-            CenterWidgetSpan(
-              child: svt.iconBuilder(
-                context: context,
-                width: 36,
-                overrideIcon: overrideIcon,
-              ),
-            ),
+            CenterWidgetSpan(child: svt.iconBuilder(context: context, width: 36, overrideIcon: overrideIcon)),
             TextSpan(text: ' ${S.current.ascension_stage_short} $limitCount  '),
           ]);
         } else {
@@ -561,10 +566,7 @@ mixin _SkillDescriptorMixin {
       }
     }
     if (spans.isEmpty) return null;
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
-      child: Text.rich(TextSpan(children: spans)),
-    );
+    return Padding(padding: const EdgeInsets.fromLTRB(16, 8, 16, 0), child: Text.rich(TextSpan(children: spans)));
   }
 }
 

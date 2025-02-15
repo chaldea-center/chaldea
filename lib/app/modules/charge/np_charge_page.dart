@@ -36,13 +36,14 @@ class _NpChargePageState extends State<NpChargePage> {
         children: [
           Expanded(
             child: ListView.builder(
-              itemBuilder: (context, index) => DecoratedBox(
-                decoration: BoxDecoration(color: index.isEven ? null : Theme.of(context).cardColor),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-                  child: children[index],
-                ),
-              ),
+              itemBuilder:
+                  (context, index) => DecoratedBox(
+                    decoration: BoxDecoration(color: index.isEven ? null : Theme.of(context).cardColor),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                      child: children[index],
+                    ),
+                  ),
               itemCount: children.length,
             ),
           ),
@@ -52,18 +53,19 @@ class _NpChargePageState extends State<NpChargePage> {
             onTap: () {
               FilterPage.show(
                 context: context,
-                builder: (context) => NpChargeFilterPage(
-                  filterData: filterData,
-                  onChanged: (v) {
-                    if (mounted) {
-                      filter();
-                      setState(() {});
-                    }
-                  },
-                ),
+                builder:
+                    (context) => NpChargeFilterPage(
+                      filterData: filterData,
+                      onChanged: (v) {
+                        if (mounted) {
+                          filter();
+                          setState(() {});
+                        }
+                      },
+                    ),
               );
             },
-          )
+          ),
         ],
       ),
     );
@@ -75,57 +77,55 @@ class _NpChargePageState extends State<NpChargePage> {
     keys.sort2((e) => groupedData[e]!.first.sortValue, reversed: true);
     for (final key in keys) {
       final details = groupedData[key]!;
-      children.add(Wrap(
-        crossAxisAlignment: WrapCrossAlignment.center,
-        spacing: 4,
-        runSpacing: 4,
-        children: [
-          DecoratedBox(
-            decoration: BoxDecoration(
-              border: Border.all(color: AppTheme(context).tertiary),
-              borderRadius: BorderRadius.circular(6),
-            ),
-            child: SizedBox(
-              height: 45,
-              width: 45,
-              child: Center(
-                child: AutoSizeText(
-                  details.first.value,
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(fontWeight: FontWeight.bold),
-                  maxLines: 1,
-                  minFontSize: 6,
-                  maxFontSize: 12,
+      children.add(
+        Wrap(
+          crossAxisAlignment: WrapCrossAlignment.center,
+          spacing: 4,
+          runSpacing: 4,
+          children: [
+            DecoratedBox(
+              decoration: BoxDecoration(
+                border: Border.all(color: AppTheme(context).tertiary),
+                borderRadius: BorderRadius.circular(6),
+              ),
+              child: SizedBox(
+                height: 45,
+                width: 45,
+                child: Center(
+                  child: AutoSizeText(
+                    details.first.value,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                    maxLines: 1,
+                    minFontSize: 6,
+                    maxFontSize: 12,
+                  ),
                 ),
               ),
             ),
-          ),
-          for (final detail in details)
-            Tooltip(
-              decoration: BoxDecoration(
-                color: Theme.of(context).cardColor,
-                borderRadius: const BorderRadius.all(Radius.circular(8)),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.withAlpha(200),
-                    offset: const Offset(2, 2),
-                    blurRadius: 2,
-                    spreadRadius: 2,
-                  )
-                ],
+            for (final detail in details)
+              Tooltip(
+                decoration: BoxDecoration(
+                  color: Theme.of(context).cardColor,
+                  borderRadius: const BorderRadius.all(Radius.circular(8)),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withAlpha(200),
+                      offset: const Offset(2, 2),
+                      blurRadius: 2,
+                      spreadRadius: 2,
+                    ),
+                  ],
+                ),
+                margin: const EdgeInsets.all(16),
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                waitDuration: const Duration(seconds: 1),
+                richMessage: WidgetSpan(child: _tooltipMsg(detail)),
+                child: detail.svt.iconBuilder(context: context, width: 45, text: detail.pos),
               ),
-              margin: const EdgeInsets.all(16),
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              waitDuration: const Duration(seconds: 1),
-              richMessage: WidgetSpan(child: _tooltipMsg(detail)),
-              child: detail.svt.iconBuilder(
-                context: context,
-                width: 45,
-                text: detail.pos,
-              ),
-            )
-        ],
-      ));
+          ],
+        ),
+      );
     }
     return children;
   }
@@ -199,42 +199,50 @@ class _NpChargePageState extends State<NpChargePage> {
       groupedServants.putIfAbsent(svtNps[svtId]!, () => []).add(svtId);
     }
     for (final svts in groupedServants.values) {
-      svts.sort((a, b) => SvtFilterData.compare(db.gameData.servantsNoDup[a], db.gameData.servantsNoDup[b],
-          keys: filterData.svtSortKeys, reversed: filterData.sortReversed));
+      svts.sort(
+        (a, b) => SvtFilterData.compare(
+          db.gameData.servantsNoDup[a],
+          db.gameData.servantsNoDup[b],
+          keys: filterData.svtSortKeys,
+          reversed: filterData.sortReversed,
+        ),
+      );
     }
     List<Widget> children = [];
     final keys = groupedServants.keys.toList()..sort((a, b) => b - a);
     for (final key in keys) {
       final svtIds = groupedServants[key]!;
-      children.add(Wrap(
-        crossAxisAlignment: WrapCrossAlignment.center,
-        spacing: 4,
-        runSpacing: 4,
-        children: [
-          DecoratedBox(
-            decoration: BoxDecoration(
-              border: Border.all(color: AppTheme(context).tertiary),
-              borderRadius: BorderRadius.circular(6),
-            ),
-            child: SizedBox(
-              height: 45,
-              width: 45,
-              child: Center(
-                child: AutoSizeText(
-                  (key / 100).format(compact: false),
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(fontWeight: FontWeight.bold),
-                  maxLines: 1,
-                  minFontSize: 8,
-                  maxFontSize: 12,
+      children.add(
+        Wrap(
+          crossAxisAlignment: WrapCrossAlignment.center,
+          spacing: 4,
+          runSpacing: 4,
+          children: [
+            DecoratedBox(
+              decoration: BoxDecoration(
+                border: Border.all(color: AppTheme(context).tertiary),
+                borderRadius: BorderRadius.circular(6),
+              ),
+              child: SizedBox(
+                height: 45,
+                width: 45,
+                child: Center(
+                  child: AutoSizeText(
+                    (key / 100).format(compact: false),
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                    maxLines: 1,
+                    minFontSize: 8,
+                    maxFontSize: 12,
+                  ),
                 ),
               ),
             ),
-          ),
-          for (final svtId in svtIds)
-            db.gameData.servantsNoDup[svtId]?.iconBuilder(context: context, width: 45) ?? Text(svtId.toString()),
-        ],
-      ));
+            for (final svtId in svtIds)
+              db.gameData.servantsNoDup[svtId]?.iconBuilder(context: context, width: 45) ?? Text(svtId.toString()),
+          ],
+        ),
+      );
     }
 
     return children;
@@ -248,21 +256,24 @@ class _NpChargePageState extends State<NpChargePage> {
         detail.svt.iconBuilder(context: context, height: 56),
         const SizedBox(width: 8),
         Flexible(
-          child: Text.rich(TextSpan(
-            text: detail.svt.lName.l,
-            children: [
-              const TextSpan(text: '\n'),
-              TextSpan(
-                text: detail.isPassive
-                    ? S.current.passive_skill
-                    : detail.isTd
-                        ? S.current.noble_phantasm
-                        : "${S.current.skill} ${detail.pos}",
-                style: Theme.of(context).textTheme.bodySmall,
-              )
-            ],
-          )),
-        )
+          child: Text.rich(
+            TextSpan(
+              text: detail.svt.lName.l,
+              children: [
+                const TextSpan(text: '\n'),
+                TextSpan(
+                  text:
+                      detail.isPassive
+                          ? S.current.passive_skill
+                          : detail.isTd
+                          ? S.current.noble_phantasm
+                          : "${S.current.skill} ${detail.pos}",
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
+              ],
+            ),
+          ),
+        ),
       ],
     );
     final skillWidget = Column(
@@ -270,18 +281,22 @@ class _NpChargePageState extends State<NpChargePage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text.rich(
-          TextSpan(children: [
-            CenterWidgetSpan(
-                child: skill is NiceTd
-                    ? CommandCardWidget(card: skill.svt.card, width: 42)
-                    : db.getIconImage(skill.icon, width: 24, aspectRatio: 1)),
-            TextSpan(text: '  ${skill.lName.l}'),
-            if (skill is BaseSkill && skill.type == SkillType.active && skill.coolDown.isNotEmpty)
-              TextSpan(
-                text: '     CD ${skill.coolDown.first}→${skill.coolDown.last}',
-                style: Theme.of(context).textTheme.bodySmall,
-              )
-          ]),
+          TextSpan(
+            children: [
+              CenterWidgetSpan(
+                child:
+                    skill is NiceTd
+                        ? CommandCardWidget(card: skill.svt.card, width: 42)
+                        : db.getIconImage(skill.icon, width: 24, aspectRatio: 1),
+              ),
+              TextSpan(text: '  ${skill.lName.l}'),
+              if (skill is BaseSkill && skill.type == SkillType.active && skill.coolDown.isNotEmpty)
+                TextSpan(
+                  text: '     CD ${skill.coolDown.first}→${skill.coolDown.last}',
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
+            ],
+          ),
         ),
         const SizedBox(height: 2),
         Text(skill.lDetail ?? '???', style: Theme.of(context).textTheme.bodySmall),
@@ -300,11 +315,7 @@ class _NpChargePageState extends State<NpChargePage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
-        children: [
-          header,
-          const SizedBox(height: 8),
-          skillWidget,
-        ],
+        children: [header, const SizedBox(height: 8), skillWidget],
       ),
     );
   }
@@ -322,54 +333,55 @@ class _NpChargePageState extends State<NpChargePage> {
             optionBuilder(
               text: [
                 if (filterData.ceMax.options.contains(false)) 'NOT ${S.current.max_limit_break}',
-                if (filterData.ceMax.options.contains(true)) S.current.max_limit_break
+                if (filterData.ceMax.options.contains(true)) S.current.max_limit_break,
               ].join(' & '),
             ),
           if (filterData.ceAtkType.options.isNotEmpty)
-            optionBuilder(
-              text: filterData.ceAtkType.options.map((e) => e.shownName).join('/'),
-            ),
+            optionBuilder(text: filterData.ceAtkType.options.map((e) => e.shownName).join('/')),
           if (filterData.ceStatus.radioValue != null)
             optionBuilder(text: CraftStatus.shownText(filterData.ceStatus.radioValue!)),
         ],
         if (filterData.isSvt) ...[
-          if (filterData.skillLv != -1)
-            optionBuilder(
-              text: NpFilterData.textSkillLv(filterData.skillLv),
-            ),
+          if (filterData.skillLv != -1) optionBuilder(text: NpFilterData.textSkillLv(filterData.skillLv)),
           if (filterData.skillCD > 0 && filterData.skillLv >= 1) optionBuilder(text: 'CD≤${filterData.skillCD}'),
           if (filterData.tdLv != 0) optionBuilder(text: NpFilterData.textTdLv(filterData.tdLv)),
           if (filterData.tdLv != 0) optionBuilder(text: NpFilterData.textTdOC(filterData.tdOC)),
           if (filterData.favorite.radioValue! != FavoriteState.all)
             optionBuilder(
-                child: Text.rich(TextSpan(children: [
-              WidgetSpan(
-                  child: Icon(
-                filterData.favorite.radioValue!.icon,
-                size: 16,
-              )),
-              TextSpan(text: filterData.favorite.radioValue!.shownName)
-            ]))),
+              child: Text.rich(
+                TextSpan(
+                  children: [
+                    WidgetSpan(child: Icon(filterData.favorite.radioValue!.icon, size: 16)),
+                    TextSpan(text: filterData.favorite.radioValue!.shownName),
+                  ],
+                ),
+              ),
+            ),
         ],
         if (filterData.rarity.options.isNotEmpty)
           optionBuilder(
-            text: '${S.current.rarity}:'
+            text:
+                '${S.current.rarity}:'
                 '${filterData.rarity.options.toList().sortReturn().join('/')}',
           ),
         if (filterData.isSvt && filterData.svtClass.options.isNotEmpty)
           optionBuilder(
-              text: '${S.current.svt_class}:'
-                  '${filterData.svtClass.options.map((e) => e.lName).join("/")}'),
+            text:
+                '${S.current.svt_class}:'
+                '${filterData.svtClass.options.map((e) => e.lName).join("/")}',
+          ),
         if (filterData.region.radioValue != null) optionBuilder(text: (filterData.region.radioValue!).localName),
         if (filterData.isSvt) ...[
           if (filterData.tdColor.radioValue != null)
             optionBuilder(text: '${S.current.np_short}:${filterData.tdColor.radioValue!.name.toTitle()}'),
           if (filterData.tdType.radioValue != null)
             optionBuilder(
-                text: [
-              '${S.current.np_short}:',
-              Transl.enums(filterData.tdType.radioValue!, (enums) => enums.tdEffectFlag).l
-            ].join()),
+              text:
+                  [
+                    '${S.current.np_short}:',
+                    Transl.enums(filterData.tdType.radioValue!, (enums) => enums.tdEffectFlag).l,
+                  ].join(),
+            ),
           if (filterData.bond.options.isNotEmpty)
             optionBuilder(text: '${S.current.bond}:${filterData.bond.options.map((e) => e.text).join("&")}'),
         ],
@@ -382,10 +394,7 @@ class _NpChargePageState extends State<NpChargePage> {
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
       child: Row(
         children: [
-          Icon(
-            Icons.settings,
-            color: Theme.of(context).colorScheme.primary,
-          ),
+          Icon(Icons.settings, color: Theme.of(context).colorScheme.primary),
           const SizedBox(width: 8),
           Expanded(child: child),
         ],
@@ -505,8 +514,12 @@ class _NpChargePageState extends State<NpChargePage> {
     for (final details in groupedData.values) {
       details.sort((a, b) {
         if (a.svt is Servant && b.svt is Servant) {
-          return SvtFilterData.compare(a.svt as Servant, b.svt as Servant,
-              keys: filterData.svtSortKeys, reversed: filterData.sortReversed);
+          return SvtFilterData.compare(
+            a.svt as Servant,
+            b.svt as Servant,
+            keys: filterData.svtSortKeys,
+            reversed: filterData.sortReversed,
+          );
         } else if (a.svt is CraftEssence && b.svt is CraftEssence) {
           return CraftFilterData.compare(a.svt as CraftEssence, b.svt as CraftEssence);
         } else {
@@ -606,14 +619,15 @@ class _NpChargePageState extends State<NpChargePage> {
         return null;
       }
     }
-    String? pos = skill is BaseTd
-        ? 'NP'
-        : skill is NiceSkill
+    String? pos =
+        skill is BaseTd
+            ? 'NP'
+            : skill is NiceSkill
             ? skill.type == SkillType.active
                 ? skill.svt.num.toString()
                 : svt is CraftEssence && skill.svt.priority > 1
-                    ? "✧"
-                    : " " // passive
+                ? "✧"
+                : " " // passive
             : null;
     if (pos == null && svt is Servant) {
       final rankups = svt.script?.skillRankUp ?? {};

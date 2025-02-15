@@ -30,21 +30,21 @@ class _SaintQuartzPlanningState extends State<SaintQuartzPlanning> with SingleTi
     return Scaffold(
       appBar: AppBar(
         title: Text(Items.stone?.lName.l ?? "Stone"),
-        bottom: FixedHeight.tabBar(TabBar(
-          controller: _tabController,
-          isScrollable: true,
-          tabAlignment: TabAlignment.center,
-          tabs: [
-            Tab(text: S.current.settings_tab_name),
-            // Tab(
-            //   text: LocalizedText.of(chs: '特殊御主任务', jpn: 'エクストラミッション', eng: 'Extra Mission', kor: '엑스트라 미션'),
-            // ),
-            Tab(
-              text: LocalizedText.of(chs: '攒石表', jpn: '結果表', eng: 'Table', kor: '결과표'),
-            ),
-            Tab(text: S.current.login_bonus),
-          ],
-        )),
+        bottom: FixedHeight.tabBar(
+          TabBar(
+            controller: _tabController,
+            isScrollable: true,
+            tabAlignment: TabAlignment.center,
+            tabs: [
+              Tab(text: S.current.settings_tab_name),
+              // Tab(
+              //   text: LocalizedText.of(chs: '特殊御主任务', jpn: 'エクストラミッション', eng: 'Extra Mission', kor: '엑스트라 미션'),
+              // ),
+              Tab(text: LocalizedText.of(chs: '攒石表', jpn: '結果表', eng: 'Table', kor: '결과표')),
+              Tab(text: S.current.login_bonus),
+            ],
+          ),
+        ),
       ),
       body: TabBarView(
         controller: _tabController,

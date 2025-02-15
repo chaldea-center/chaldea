@@ -129,10 +129,10 @@ class Quest with RouteInfo {
     this.noticeAt = 0,
     this.openedAt = 0,
     this.closedAt = 0,
-  })  : _spotName = spotName == '0' ? null : spotName,
-        _warLongName = warLongName,
-        giftIcon = _isSQGiftIcon(giftIcon, gifts) ? null : giftIcon,
-        consume = consumeType.useApOrBp ? consume : 0;
+  }) : _spotName = spotName == '0' ? null : spotName,
+       _warLongName = warLongName,
+       giftIcon = _isSQGiftIcon(giftIcon, gifts) ? null : giftIcon,
+       consume = consumeType.useApOrBp ? consume : 0;
 
   int? get recommendLvInt => int.tryParse(recommendLv);
 
@@ -160,7 +160,10 @@ class Quest with RouteInfo {
       if (la != null && lb != null && la != lb) return la - lb;
     }
     final v1 = ListX.compareByList(
-        a, b, (v) => [v.warId < 1000 ? 0 : 1, v.warId < 1000 ? v.warId : (v.war?.event?.startedAt ?? v.openedAt)]);
+      a,
+      b,
+      (v) => [v.warId < 1000 ? 0 : 1, v.warId < 1000 ? v.warId : (v.war?.event?.startedAt ?? v.openedAt)],
+    );
     if (v1 != 0) return v1;
     if (a.priority == b.priority) return a.id - b.id;
     return b.priority - a.priority;
@@ -203,7 +206,7 @@ class Quest with RouteInfo {
         final name2 = <String?>[
           Transl.questNames('強化クエスト').l,
           Transl.svtNames(match.group(1)!).l,
-          match.group(2)?.trim()
+          match.group(2)?.trim(),
         ].whereType<String>().join(' ');
         return Transl.questNames(name2);
       }
@@ -213,11 +216,12 @@ class Quest with RouteInfo {
 
   String get lNameWithChapter {
     String questName = lName.l;
-    String chapter = type == QuestType.main
-        ? chapterSubStr.isEmpty && chapterSubId != 0
-            ? S.current.quest_chapter_n(chapterSubId)
-            : Transl.questNames(chapterSubStr).l
-        : '';
+    String chapter =
+        type == QuestType.main
+            ? chapterSubStr.isEmpty && chapterSubId != 0
+                ? S.current.quest_chapter_n(chapterSubId)
+                : Transl.questNames(chapterSubStr).l
+            : '';
     if (chapter.isNotEmpty) {
       questName = '$chapter $questName';
     }
@@ -477,8 +481,8 @@ class QuestPhase extends Quest {
     this.supportServants = const [],
     List<Stage>? stages,
     this.drops = const [],
-  })  : individuality = individuality ?? [],
-        stages = stages ?? [] {
+  }) : individuality = individuality ?? [],
+       stages = stages ?? [] {
     if (enemyHashes.length > 1) {
       for (final stage in this.stages) {
         for (final enemy in stage.enemies) {
@@ -803,18 +807,23 @@ class Gift extends BaseGift {
           final giftAdd = giftAdds[index];
           children.add(db.getIconImage(giftAdd.replacementGiftIcon, width: size, height: size));
           children.addAll(giftAdd.replacementGifts.map(itemBuilder));
-          children.add(InkWell(
-            onTap: () {
-              SimpleCancelOkDialog(
-                title: Text(S.current.condition),
-                content: CondTargetValueDescriptor(
-                    condType: giftAdd.condType, target: giftAdd.targetId, value: giftAdd.targetNum),
-                scrollable: true,
-                hideCancel: true,
-              ).showDialog(context);
-            },
-            child: Icon(Icons.info_outline, size: size * 0.5),
-          ));
+          children.add(
+            InkWell(
+              onTap: () {
+                SimpleCancelOkDialog(
+                  title: Text(S.current.condition),
+                  content: CondTargetValueDescriptor(
+                    condType: giftAdd.condType,
+                    target: giftAdd.targetId,
+                    value: giftAdd.targetNum,
+                  ),
+                  scrollable: true,
+                  hideCancel: true,
+                ).showDialog(context);
+              },
+              child: Icon(Icons.info_outline, size: size * 0.5),
+            ),
+          );
         }
         if (multiGroup) children.add(text(')'));
       }
@@ -885,9 +894,9 @@ class Stage with DataScriptBase {
     this.cutin,
     this.aiAllocations,
     List<QuestEnemy>? enemies,
-  })  : fieldAis = fieldAis ?? [],
-        call = call ?? [],
-        enemies = enemies ?? [] {
+  }) : fieldAis = fieldAis ?? [],
+       call = call ?? [],
+       enemies = enemies ?? [] {
     setSource(originalScript);
   }
 
@@ -910,11 +919,7 @@ class AiAllocationInfo {
   List<AiAllocationApplySvtFlag> applySvtType;
   NiceTrait? individuality;
 
-  AiAllocationInfo({
-    this.aiIds = const [],
-    this.applySvtType = const [],
-    this.individuality,
-  });
+  AiAllocationInfo({this.aiIds = const [], this.applySvtType = const [], this.individuality});
 
   factory AiAllocationInfo.fromJson(Map<String, dynamic> json) => _$AiAllocationInfoFromJson(json);
 
@@ -927,11 +932,7 @@ class StageCutin {
   List<StageCutInSkill> skills;
   List<EnemyDrop> drops;
 
-  StageCutin({
-    required this.runs,
-    this.skills = const [],
-    this.drops = const [],
-  });
+  StageCutin({required this.runs, this.skills = const [], this.drops = const []});
 
   factory StageCutin.fromJson(Map<String, dynamic> json) => _$StageCutinFromJson(json);
 
@@ -969,12 +970,7 @@ class QuestRelease {
   int value;
   String closedMessage;
 
-  QuestRelease({
-    required this.type,
-    required this.targetId,
-    this.value = 0,
-    this.closedMessage = "",
-  });
+  QuestRelease({required this.type, required this.targetId, this.value = 0, this.closedMessage = ""});
 
   factory QuestRelease.fromJson(Map<String, dynamic> json) => _$QuestReleaseFromJson(json);
 
@@ -1017,10 +1013,7 @@ class QuestPhaseScript {
   int phase;
   List<ScriptLink> scripts;
 
-  QuestPhaseScript({
-    required this.phase,
-    required this.scripts,
-  });
+  QuestPhaseScript({required this.phase, required this.scripts});
 
   factory QuestPhaseScript.fromJson(Map<String, dynamic> json) => _$QuestPhaseScriptFromJson(json);
 
@@ -1055,11 +1048,7 @@ class QuestHint {
   String message;
   int leftIndent;
 
-  QuestHint({
-    this.title = '',
-    this.message = '',
-    this.leftIndent = 0,
-  });
+  QuestHint({this.title = '', this.message = '', this.leftIndent = 0});
 
   factory QuestHint.fromJson(Map<String, dynamic> json) => _$QuestHintFromJson(json);
 
@@ -1200,11 +1189,7 @@ class SupportServantRelease {
   int targetId;
   int value;
 
-  SupportServantRelease({
-    this.type = CondType.none,
-    required this.targetId,
-    required this.value,
-  });
+  SupportServantRelease({this.type = CondType.none, required this.targetId, required this.value});
 
   factory SupportServantRelease.fromJson(Map<String, dynamic> json) => _$SupportServantReleaseFromJson(json);
 
@@ -1217,11 +1202,7 @@ class SupportServantPassiveSkill {
   NiceSkill? skill;
   int? skillLv;
 
-  SupportServantPassiveSkill({
-    this.skillId = 0,
-    this.skill,
-    this.skillLv,
-  });
+  SupportServantPassiveSkill({this.skillId = 0, this.skill, this.skillLv});
 
   factory SupportServantPassiveSkill.fromJson(Map<String, dynamic> json) => _$SupportServantPassiveSkillFromJson(json);
 
@@ -1234,11 +1215,7 @@ class SupportServantTd {
   NiceTd? noblePhantasm;
   int noblePhantasmLv;
 
-  SupportServantTd({
-    required this.noblePhantasmId,
-    this.noblePhantasm,
-    required this.noblePhantasmLv,
-  });
+  SupportServantTd({required this.noblePhantasmId, this.noblePhantasm, required this.noblePhantasmLv});
 
   factory SupportServantTd.fromJson(Map<String, dynamic> json) => _$SupportServantTdFromJson(json);
 
@@ -1253,11 +1230,7 @@ class SupportServantEquip {
   int lv;
   int limitCount;
 
-  SupportServantEquip({
-    required this.equip,
-    required this.lv,
-    required this.limitCount,
-  });
+  SupportServantEquip({required this.equip, required this.lv, required this.limitCount});
 
   factory SupportServantEquip.fromJson(Map<String, dynamic> json) => _$SupportServantEquipFromJson(json);
 
@@ -1269,10 +1242,7 @@ class SupportServantScript {
   int? dispLimitCount;
   int? eventDeckIndex;
 
-  SupportServantScript({
-    this.dispLimitCount,
-    this.eventDeckIndex,
-  });
+  SupportServantScript({this.dispLimitCount, this.eventDeckIndex});
 
   factory SupportServantScript.fromJson(Map<String, dynamic> json) => _$SupportServantScriptFromJson(json);
 
@@ -1283,9 +1253,7 @@ class SupportServantScript {
 class SupportServantLimit {
   int limitCount;
 
-  SupportServantLimit({
-    required this.limitCount,
-  });
+  SupportServantLimit({required this.limitCount});
 
   factory SupportServantLimit.fromJson(Map<String, dynamic> json) => _$SupportServantLimitFromJson(json);
 
@@ -1460,14 +1428,14 @@ class QuestEnemy with GameCardMixin {
     Map<String, dynamic>? originalInfoScript,
     EnemyLimit? limit,
     this.misc,
-  })  : traits = traits ?? [],
-        skills = skills ?? EnemySkill(),
-        classPassive = classPassive ?? EnemyPassive(),
-        noblePhantasm = noblePhantasm ?? EnemyTd(),
-        serverMod = serverMod ?? EnemyServerMod(),
-        enemyScript = (enemyScript ?? EnemyScript())..setSource(originalEnemyScript),
-        infoScript = (infoScript ?? EnemyInfoScript())..setSource(originalInfoScript),
-        limit = limit ?? EnemyLimit();
+  }) : traits = traits ?? [],
+       skills = skills ?? EnemySkill(),
+       classPassive = classPassive ?? EnemyPassive(),
+       noblePhantasm = noblePhantasm ?? EnemyTd(),
+       serverMod = serverMod ?? EnemyServerMod(),
+       enemyScript = (enemyScript ?? EnemyScript())..setSource(originalEnemyScript),
+       infoScript = (infoScript ?? EnemyInfoScript())..setSource(originalInfoScript),
+       limit = limit ?? EnemyLimit();
 
   static QuestEnemy blankEnemy() {
     return QuestEnemy(
@@ -1531,10 +1499,7 @@ class QuestEnemy with GameCardMixin {
 
   @override
   void routeTo({Widget? child, bool popDetails = false, Quest? quest}) {
-    super.routeTo(
-      child: QuestEnemyDetail(enemy: this, quest: quest),
-      popDetails: popDetails,
-    );
+    super.routeTo(child: QuestEnemyDetail(enemy: this, quest: quest), popDetails: popDetails);
   }
 
   factory QuestEnemy.fromJson(Map<String, dynamic> json) => _$QuestEnemyFromJson(json);
@@ -1550,11 +1515,7 @@ class EnemyServerMod {
 
   // lots of others
 
-  EnemyServerMod({
-    this.tdRate = 1000,
-    this.tdAttackRate = 1000,
-    this.starRate = 0,
-  });
+  EnemyServerMod({this.tdRate = 1000, this.tdAttackRate = 1000, this.starRate = 0});
 
   factory EnemyServerMod.fromJson(Map<String, dynamic> json) => _$EnemyServerModFromJson(json);
 
@@ -1614,14 +1575,7 @@ class EnemyScript with DataScriptBase {
   List<NiceTrait>? shiftClear;
   List<int>? get change => toList('change');
 
-  EnemyScript({
-    this.deathType,
-    this.hpBarType,
-    this.leader,
-    this.call,
-    this.shift,
-    this.shiftClear,
-  });
+  EnemyScript({this.deathType, this.hpBarType, this.leader, this.call, this.shift, this.shiftClear});
 
   // the enemy is one of possible versions or not appear
   bool get isRare => (toInt('probability_type') ?? 0) != 0;
@@ -1675,10 +1629,10 @@ class EnemySkill {
   List<int> get skillIds => [skillId1, skillId2, skillId3];
 
   List<int?> get skillLvs => [
-        skill1 == null ? null : skillLv1,
-        skill2 == null ? null : skillLv2,
-        skill3 == null ? null : skillLv3,
-      ];
+    skill1 == null ? null : skillLv1,
+    skill2 == null ? null : skillLv2,
+    skill3 == null ? null : skillLv3,
+  ];
 
   factory EnemySkill.fromJson(Map<String, dynamic> json) => _$EnemySkillFromJson(json);
 
@@ -1722,10 +1676,12 @@ class EnemyPassive {
     List<int>? addPassiveLvs,
     this.appendPassiveSkillIds,
     this.appendPassiveSkillLvs,
-  })  : classPassive = classPassive ?? [],
-        addPassive = addPassive ?? [],
-        addPassiveLvs = List.generate(addPassive?.length ?? 0,
-            (index) => addPassiveLvs?.getOrNull(index) ?? addPassive?.getOrNull(index)?.maxLv ?? 1);
+  }) : classPassive = classPassive ?? [],
+       addPassive = addPassive ?? [],
+       addPassiveLvs = List.generate(
+         addPassive?.length ?? 0,
+         (index) => addPassiveLvs?.getOrNull(index) ?? addPassive?.getOrNull(index)?.maxLv ?? 1,
+       );
 
   factory EnemyPassive.fromJson(Map<String, dynamic> json) => _$EnemyPassiveFromJson(json);
 
@@ -1749,12 +1705,7 @@ class EnemyAi {
   int maxActNum;
   int? minActNum;
 
-  EnemyAi({
-    required this.aiId,
-    required this.actPriority,
-    required this.maxActNum,
-    this.minActNum,
-  });
+  EnemyAi({required this.aiId, required this.actPriority, required this.maxActNum, this.minActNum});
 
   factory EnemyAi.fromJson(Map<String, dynamic> json) => _$EnemyAiFromJson(json);
 
@@ -1767,11 +1718,7 @@ class FieldAi {
   int? day;
   int id;
 
-  FieldAi({
-    this.raid,
-    this.day,
-    required this.id,
-  });
+  FieldAi({this.raid, this.day, required this.id});
 
   factory FieldAi.fromJson(Map<String, dynamic> json) => _$FieldAiFromJson(json);
 
@@ -1784,11 +1731,7 @@ class QuestPhaseAiNpc {
   QuestEnemy? detail;
   List<int> aiIds;
 
-  QuestPhaseAiNpc({
-    required this.npc,
-    this.detail,
-    this.aiIds = const [],
-  });
+  QuestPhaseAiNpc({required this.npc, this.detail, this.aiIds = const []});
 
   factory QuestPhaseAiNpc.fromJson(Map<String, dynamic> json) => _$QuestPhaseAiNpcFromJson(json);
 
@@ -1839,10 +1782,10 @@ class QuestPhaseExtraDetail {
 
   OverwriteEquipSkills? getMergedOverwriteEquipSkills() {
     if (overwriteEquipSkills?.skills.isNotEmpty == true || addEquipSkills?.skills.isNotEmpty == true) {
-      return OverwriteEquipSkills(iconId: overwriteEquipSkills?.iconId ?? addEquipSkills?.iconId, skills: [
-        ...?overwriteEquipSkills?.skills,
-        ...?addEquipSkills?.skills,
-      ]);
+      return OverwriteEquipSkills(
+        iconId: overwriteEquipSkills?.iconId ?? addEquipSkills?.iconId,
+        skills: [...?overwriteEquipSkills?.skills, ...?addEquipSkills?.skills],
+      );
     }
     return null;
   }
@@ -1855,10 +1798,7 @@ class OverwriteEquipSkills {
   // int? notDispEquipSkillIconSplit;
   List<OverwriteEquipSkill> skills;
 
-  OverwriteEquipSkills({
-    this.iconId,
-    this.skills = const [],
-  });
+  OverwriteEquipSkills({this.iconId, this.skills = const []});
 
   String get icon {
     final iconId = this.iconId ?? 0;
@@ -1910,11 +1850,7 @@ class OverwriteEquipSkill {
   int lv;
   int condId; // common release id
 
-  OverwriteEquipSkill({
-    required this.id,
-    this.lv = 0,
-    this.condId = 0,
-  });
+  OverwriteEquipSkill({required this.id, this.lv = 0, this.condId = 0});
 
   factory OverwriteEquipSkill.fromJson(Map<String, dynamic> json) => _$OverwriteEquipSkillFromJson(json);
 
@@ -1973,11 +1909,7 @@ class QuestGroup {
 
   QuestGroupType get type2 => kQuestGroupTypeMapping[type] ?? QuestGroupType.none;
 
-  QuestGroup({
-    required this.questId,
-    required this.type,
-    required this.groupId,
-  });
+  QuestGroup({required this.questId, required this.type, required this.groupId});
 
   factory QuestGroup.fromJson(Map<String, dynamic> json) => _$QuestGroupFromJson(json);
 
@@ -2063,8 +1995,10 @@ class GiftsConverter extends JsonConverter<List<Gift>, List<dynamic>> {
       }());
       return [for (final value in _values) Gift.fromJson(Map<String, dynamic>.from(value))];
     }
-    return GameDataLoader.instance.tmp
-        .getGifts(ids.single, () => [for (final value in _values) Gift.fromJson(Map<String, dynamic>.from(value))]);
+    return GameDataLoader.instance.tmp.getGifts(
+      ids.single,
+      () => [for (final value in _values) Gift.fromJson(Map<String, dynamic>.from(value))],
+    );
   }
 
   @override
@@ -2086,8 +2020,7 @@ enum QuestType {
   event(5),
   heroballad(6),
   warBoard(7),
-  autoExecute(8),
-  ;
+  autoExecute(8);
 
   final int value;
   const QuestType(this.value);
@@ -2133,8 +2066,7 @@ enum QuestAfterClearType {
   repeatFirst,
   repeatLast,
   resetInterval,
-  closeDisp,
-  ;
+  closeDisp;
 
   bool get isRepeat => this == repeatLast || this == repeatFirst;
 }
@@ -2221,8 +2153,7 @@ enum GiftType {
   eventBoardGameToken(13), // 80285047=eventId*1000+tokenId in mstEventBoardGameToken
   eventCommandAssist(14), // 80505
   eventHeelPortrait(15), // =svtId
-  battleItem(16),
-  ;
+  battleItem(16);
 
   const GiftType(this.value);
   final int value;
@@ -2232,22 +2163,9 @@ enum GiftType {
   }
 }
 
-enum EnemyRoleType {
-  normal,
-  danger,
-  servant,
-}
+enum EnemyRoleType { normal, danger, servant }
 
-enum SvtDeathType {
-  normal,
-  escape,
-  stand,
-  effect,
-  wait,
-  energy,
-  crystal,
-  explosion,
-}
+enum SvtDeathType { normal, escape, stand, effect, wait, energy, crystal, explosion }
 
 enum DeckType {
   enemy,
@@ -2258,8 +2176,7 @@ enum DeckType {
   skillShift,
   missionTargetSkillShift,
   aiNpc,
-  svtFollower,
-  ;
+  svtFollower;
 
   bool get isInShiftDeck => this == shift || this == change || this == skillShift || this == missionTargetSkillShift;
 }
@@ -2285,14 +2202,7 @@ enum RestrictionType {
   dataLostBattleUniqueSvt,
 }
 
-enum RestrictionRangeType {
-  none,
-  equal,
-  notEqual,
-  above,
-  below,
-  between,
-}
+enum RestrictionRangeType { none, equal, notEqual, above, below, between }
 
 enum FrequencyType {
   none,
@@ -2305,10 +2215,7 @@ enum FrequencyType {
   onceUntilRemind,
 }
 
-enum StageLimitActType {
-  win,
-  lose,
-}
+enum StageLimitActType { win, lose }
 
 enum NpcServantFollowerFlag {
   unknown,
@@ -2325,12 +2232,7 @@ enum NpcServantFollowerFlag {
   notClassBoard,
 }
 
-enum NpcFollowerEntityFlag {
-  none,
-  recommendedIcon,
-  isMySvtOrNpc,
-  fixedNpc,
-}
+enum NpcFollowerEntityFlag { none, recommendedIcon, isMySvtOrNpc, fixedNpc }
 
 enum QuestGroupType {
   none(0),
@@ -2351,8 +2253,7 @@ enum QuestGroupType {
   battleGroup(15),
   shareQuestInfo(16),
   alloutBattleQuest(17),
-  eventFortification(18),
-  ;
+  eventFortification(18);
 
   const QuestGroupType(this.value);
   final int value;

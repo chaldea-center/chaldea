@@ -28,12 +28,12 @@ class WikiData {
     Map<int, WarExtra>? wars,
     Map<String, LimitedSummon>? summons,
     this.webcrowMapping = const {},
-  })  : servants = servants ?? {},
-        craftEssences = craftEssences ?? {},
-        commandCodes = commandCodes ?? {},
-        events = events ?? {},
-        summons = summons ?? {},
-        wars = wars ?? {};
+  }) : servants = servants ?? {},
+       craftEssences = craftEssences ?? {},
+       commandCodes = commandCodes ?? {},
+       events = events ?? {},
+       summons = summons ?? {},
+       wars = wars ?? {};
 
   factory WikiData.fromJson(Map<String, dynamic> json) => _$WikiDataFromJson(json);
 }
@@ -70,8 +70,8 @@ class ServantExtra {
     this.mcProfiles = const {},
     this.fandomProfiles = const {},
     this.tdAnimations = const [],
-  })  : nicknames = nicknames ?? MappingList(),
-        aprilFoolProfile = aprilFoolProfile ?? MappingBase();
+  }) : nicknames = nicknames ?? MappingList(),
+       aprilFoolProfile = aprilFoolProfile ?? MappingBase();
 
   factory ServantExtra.fromJson(Map<String, dynamic> json) => _$ServantExtraFromJson(json);
 
@@ -95,11 +95,7 @@ class BiliVideo {
   int? p;
   String? bv;
 
-  BiliVideo({
-    this.av,
-    this.p,
-    this.bv,
-  });
+  BiliVideo({this.av, this.p, this.bv});
 
   factory BiliVideo.fromJson(Map<String, dynamic> json) => _$BiliVideoFromJson(json);
 
@@ -176,8 +172,8 @@ class EventExtraItems {
     this.infinite = false,
     MappingBase<String>? detail,
     Map<int, MappingBase<String>?> items = const {},
-  })  : detail = detail ?? MappingBase(),
-        items = items.map((key, value) => MapEntry(key, value ?? MappingBase()));
+  }) : detail = detail ?? MappingBase(),
+       items = items.map((key, value) => MapEntry(key, value ?? MappingBase()));
 
   factory EventExtraItems.fromJson(Map<String, dynamic> json) => _$EventExtraItemsFromJson(json);
 }
@@ -188,12 +184,9 @@ class EventExtraFixedItems {
   MappingBase<String> detail;
   Map<int, int> items;
 
-  EventExtraFixedItems({
-    required this.id,
-    MappingBase<String>? detail,
-    Map<int, int>? items,
-  })  : detail = detail ?? MappingBase(),
-        items = items ?? {};
+  EventExtraFixedItems({required this.id, MappingBase<String>? detail, Map<int, int>? items})
+    : detail = detail ?? MappingBase(),
+      items = items ?? {};
 
   factory EventExtraFixedItems.fromJson(Map<String, dynamic> json) => _$EventExtraFixedItemsFromJson(json);
 }
@@ -231,13 +224,13 @@ class EventExtra {
     EventExtraScript? script,
     MappingBase<int>? startTime,
     MappingBase<int>? endTime,
-  })  : titleBanner = titleBanner ?? MappingBase(),
-        officialBanner = officialBanner ?? MappingBase(),
-        extraBanners = extraBanners ?? MappingList(),
-        noticeLink = noticeLink ?? MappingBase(),
-        script = script ?? EventExtraScript(),
-        startTime = startTime ?? MappingBase(),
-        endTime = endTime ?? MappingBase();
+  }) : titleBanner = titleBanner ?? MappingBase(),
+       officialBanner = officialBanner ?? MappingBase(),
+       extraBanners = extraBanners ?? MappingList(),
+       noticeLink = noticeLink ?? MappingBase(),
+       script = script ?? EventExtraScript(),
+       startTime = startTime ?? MappingBase(),
+       endTime = endTime ?? MappingBase();
 
   MappingBase<String> get resolvedBanner => titleBanner.merge(officialBanner);
 
@@ -264,10 +257,7 @@ class EventExtraScript {
   final int huntingId;
   final Map<Region, String> raidLink;
 
-  EventExtraScript({
-    this.huntingId = 0,
-    this.raidLink = const {},
-  });
+  EventExtraScript({this.huntingId = 0, this.raidLink = const {}});
 
   factory EventExtraScript.fromJson(Map<String, dynamic> json) => _$EventExtraScriptFromJson(json);
 }
@@ -290,10 +280,10 @@ class WarExtra {
     MappingBase<String>? titleBanner,
     MappingBase<String>? officialBanner,
     MappingList<String>? extraBanners,
-  })  : noticeLink = noticeLink ?? MappingBase(),
-        titleBanner = titleBanner ?? MappingBase(),
-        officialBanner = officialBanner ?? MappingBase(),
-        extraBanners = extraBanners ?? MappingList();
+  }) : noticeLink = noticeLink ?? MappingBase(),
+       titleBanner = titleBanner ?? MappingBase(),
+       officialBanner = officialBanner ?? MappingBase(),
+       extraBanners = extraBanners ?? MappingList();
 
   MappingBase<String> get resolvedBanner => titleBanner.merge(officialBanner);
 
@@ -376,10 +366,7 @@ class FixedDrop {
   final int id;
   final Map<int, int> items;
 
-  FixedDrop({
-    required this.id,
-    required this.items,
-  });
+  FixedDrop({required this.id, required this.items});
 
   factory FixedDrop.fromJson(Map<String, dynamic> json) => _$FixedDropFromJson(json);
 }
@@ -418,12 +405,12 @@ class LimitedSummon with RouteInfo {
     this.puCE = const [],
     this.subSummons = const [],
     this.relatedEvents = const [],
-  })  : name = name ?? id.toString(),
-        banner = banner ?? MappingBase(),
-        officialBanner = officialBanner ?? MappingBase(),
-        noticeLink = noticeLink ?? MappingBase(),
-        startTime = startTime ?? MappingBase(),
-        endTime = endTime ?? MappingBase();
+  }) : name = name ?? id.toString(),
+       banner = banner ?? MappingBase(),
+       officialBanner = officialBanner ?? MappingBase(),
+       noticeLink = noticeLink ?? MappingBase(),
+       startTime = startTime ?? MappingBase(),
+       endTime = endTime ?? MappingBase();
 
   factory LimitedSummon.fromJson(Map<String, dynamic> json) => _$LimitedSummonFromJson(json);
   Map<String, dynamic> toJson() => _$LimitedSummonToJson(this);
@@ -439,12 +426,7 @@ class LimitedSummon with RouteInfo {
 
   MappingBase<String> get resolvedBanner => banner.merge(officialBanner);
 
-  List<int> allCards({
-    bool svt = false,
-    bool ce = false,
-    bool includeHidden = false,
-    bool includeGSSR = false,
-  }) {
+  List<int> allCards({bool svt = false, bool ce = false, bool includeHidden = false, bool includeGSSR = false}) {
     List<int> cards = [];
     for (final sub in subSummons) {
       for (final prob in sub.probs) {
@@ -492,7 +474,7 @@ class LimitedSummon with RouteInfo {
     return {
       for (final s in subSummons)
         for (final block in s.svts)
-          if (block.display) ...block.ids
+          if (block.display) ...block.ids,
     };
   }
 
@@ -515,10 +497,7 @@ class SubSummon {
   String title;
   List<ProbGroup> probs;
 
-  SubSummon({
-    required this.title,
-    this.probs = const [],
-  });
+  SubSummon({required this.title, this.probs = const []});
 
   factory SubSummon.fromJson(Map<String, dynamic> json) => _$SubSummonFromJson(json);
 

@@ -38,11 +38,13 @@ class Atlas {
         } else if (Language.isKO) {
           uiLang = 'ko-KR';
         }
-        uri = uri.replace(queryParameters: {
-          if (uiLang.isNotEmpty) 'lang': uiLang,
-          if (dataLang.isNotEmpty) 'dataLang': dataLang,
-          ...uri.queryParametersAll,
-        });
+        uri = uri.replace(
+          queryParameters: {
+            if (uiLang.isNotEmpty) 'lang': uiLang,
+            if (dataLang.isNotEmpty) 'dataLang': dataLang,
+            ...uri.queryParametersAll,
+          },
+        );
         url = uri.toString();
       }
     }

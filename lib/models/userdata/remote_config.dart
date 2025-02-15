@@ -23,8 +23,8 @@ class RemoteConfig {
     this.silenceStart = 0,
     this.silenceEnd = 0,
     AdConfig? ad,
-  })  : urls = urls ?? ServerUrlConfig(),
-        ad = ad ?? AdConfig();
+  }) : urls = urls ?? ServerUrlConfig(),
+       ad = ad ?? AdConfig();
 
   factory RemoteConfig.fromJson(Map<String, dynamic> data) => _$RemoteConfigFromJson(data);
 
@@ -45,17 +45,12 @@ class ServerUrlConfig {
   UrlProxy atlasApi;
   UrlProxy atlasAsset;
 
-  ServerUrlConfig({
-    UrlProxy? api,
-    UrlProxy? worker,
-    UrlProxy? data,
-    UrlProxy? atlasApi,
-    UrlProxy? atlasAsset,
-  })  : api = UrlProxy(src: api, kGlobal: Hosts0.kApiHostGlobal, kCN: Hosts0.kApiHostCN),
-        worker = UrlProxy(src: worker, kGlobal: Hosts0.kWorkerHostGlobal, kCN: Hosts0.kWorkerHostCN),
-        data = UrlProxy(src: data, kGlobal: Hosts0.kDataHostGlobal, kCN: Hosts0.kDataHostCN),
-        atlasApi = UrlProxy(src: atlasApi, kGlobal: Hosts0.kAtlasApiHostGlobal, kCN: Hosts0.kAtlasApiHostCN),
-        atlasAsset = UrlProxy(src: atlasApi, kGlobal: Hosts0.kAtlasAssetHostGlobal, kCN: Hosts0.kAtlasAssetHostCN);
+  ServerUrlConfig({UrlProxy? api, UrlProxy? worker, UrlProxy? data, UrlProxy? atlasApi, UrlProxy? atlasAsset})
+    : api = UrlProxy(src: api, kGlobal: Hosts0.kApiHostGlobal, kCN: Hosts0.kApiHostCN),
+      worker = UrlProxy(src: worker, kGlobal: Hosts0.kWorkerHostGlobal, kCN: Hosts0.kWorkerHostCN),
+      data = UrlProxy(src: data, kGlobal: Hosts0.kDataHostGlobal, kCN: Hosts0.kDataHostCN),
+      atlasApi = UrlProxy(src: atlasApi, kGlobal: Hosts0.kAtlasApiHostGlobal, kCN: Hosts0.kAtlasApiHostCN),
+      atlasAsset = UrlProxy(src: atlasApi, kGlobal: Hosts0.kAtlasAssetHostGlobal, kCN: Hosts0.kAtlasAssetHostCN);
 
   factory ServerUrlConfig.fromJson(Map<String, dynamic> data) => _$ServerUrlConfigFromJson(data);
 
@@ -73,23 +68,17 @@ class UrlProxy {
   @JsonKey(includeFromJson: false, includeToJson: false)
   final String Function(String url)? _post;
 
-  UrlProxy._({
-    String? global,
-    String? cn,
-  })  : _global = _check(global),
-        _cn = _check(cn),
-        kGlobal = "",
-        kCN = "",
-        _post = null;
+  UrlProxy._({String? global, String? cn})
+    : _global = _check(global),
+      _cn = _check(cn),
+      kGlobal = "",
+      kCN = "",
+      _post = null;
 
-  UrlProxy({
-    required UrlProxy? src,
-    required this.kGlobal,
-    required this.kCN,
-    String Function(String url)? post,
-  })  : _global = _check(src?.global),
-        _cn = _check(src?.cn),
-        _post = post;
+  UrlProxy({required UrlProxy? src, required this.kGlobal, required this.kCN, String Function(String url)? post})
+    : _global = _check(src?.global),
+      _cn = _check(src?.cn),
+      _post = post;
 
   String get global => of(false);
   String get cn => of(true);
@@ -116,9 +105,7 @@ class UrlProxy {
 class AdConfig {
   bool enabled;
 
-  AdConfig({
-    this.enabled = false,
-  });
+  AdConfig({this.enabled = false});
 
   factory AdConfig.fromJson(Map<String, dynamic> data) => _$AdConfigFromJson(data);
 

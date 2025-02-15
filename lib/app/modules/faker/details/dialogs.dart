@@ -33,13 +33,11 @@ class RecoverSelectDialog extends StatelessWidget {
     }
     switch (recover.recoverType) {
       case RecoverType.commandSpell:
-        return const ListTile(
-          title: Text('command spell not supported'),
-          enabled: false,
-        );
+        return const ListTile(title: Text('command spell not supported'), enabled: false);
       case RecoverType.stone:
         final ownCount = userGame?.stone ?? 0;
-        bool enabled = mstData == null ||
+        bool enabled =
+            mstData == null ||
             (userGame != null && userGame.stone > 0 && userGame.calCurAp() < userGame.actMax && ownCount > 0);
         return ListTile(
           leading: Item.iconBuilder(context: context, item: null, itemId: Items.stoneId),
@@ -87,39 +85,32 @@ class _ApSeedExchangeCountDialogState extends State<ApSeedExchangeCountDialog> {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text.rich(TextSpan(children: [
-            TextSpan(text: 'AP×$apCount  '),
-            CenterWidgetSpan(
-              child: Item.iconBuilder(
-                context: context,
-                item: null,
-                itemId: Items.blueSaplingId,
-                width: 24,
-              ),
+          Text.rich(
+            TextSpan(
+              children: [
+                TextSpan(text: 'AP×$apCount  '),
+                CenterWidgetSpan(
+                  child: Item.iconBuilder(context: context, item: null, itemId: Items.blueSaplingId, width: 24),
+                ),
+                TextSpan(text: '×$seedCount'),
+              ],
             ),
-            TextSpan(text: '×$seedCount'),
-          ])),
-          Text.rich(TextSpan(children: [
-            TextSpan(text: 'AP×${apUnit * buyCount}  '),
-            CenterWidgetSpan(
-              child: Item.iconBuilder(
-                context: context,
-                item: null,
-                itemId: Items.blueSaplingId,
-                width: 24,
-              ),
+          ),
+          Text.rich(
+            TextSpan(
+              children: [
+                TextSpan(text: 'AP×${apUnit * buyCount}  '),
+                CenterWidgetSpan(
+                  child: Item.iconBuilder(context: context, item: null, itemId: Items.blueSaplingId, width: 24),
+                ),
+                TextSpan(text: '×${seedUnit * buyCount} → '),
+                CenterWidgetSpan(
+                  child: Item.iconBuilder(context: context, item: null, itemId: Items.blueAppleId, width: 24),
+                ),
+                TextSpan(text: '×$buyCount'),
+              ],
             ),
-            TextSpan(text: '×${seedUnit * buyCount} → '),
-            CenterWidgetSpan(
-              child: Item.iconBuilder(
-                context: context,
-                item: null,
-                itemId: Items.blueAppleId,
-                width: 24,
-              ),
-            ),
-            TextSpan(text: '×$buyCount'),
-          ])),
+          ),
           if (maxBuyCount >= 1)
             Row(
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -152,11 +143,12 @@ class _ApSeedExchangeCountDialogState extends State<ApSeedExchangeCountDialog> {
           child: Text(S.current.cancel),
         ),
         TextButton(
-          onPressed: maxBuyCount > 0 && buyCount <= maxBuyCount
-              ? () {
-                  Navigator.pop(context, buyCount);
-                }
-              : null,
+          onPressed:
+              maxBuyCount > 0 && buyCount <= maxBuyCount
+                  ? () {
+                    Navigator.pop(context, buyCount);
+                  }
+                  : null,
           child: Text(S.current.confirm),
         ),
       ],

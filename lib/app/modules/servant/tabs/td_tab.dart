@@ -45,8 +45,9 @@ class SvtTdTab extends StatelessWidget {
       final tds = svt.groupedNoblePhantasms[tdNum]!;
       if (svt.groupedNoblePhantasms.containsKey(1) &&
           tdNum != 1 &&
-          tds.every((e) =>
-              (e.script?.tdTypeChangeIDs?.isEmpty ?? true) && (e.script?.tdChangeByBattlePoint?.isEmpty ?? true))) {
+          tds.every(
+            (e) => (e.script?.tdTypeChangeIDs?.isEmpty ?? true) && (e.script?.tdChangeByBattlePoint?.isEmpty ?? true),
+          )) {
         // children.add(DividerWithTitle(title: S.current.enemy_only_nps, height: 16));
       }
       if (svt.collectionNo == 417) {
@@ -74,29 +75,27 @@ class SvtTdTab extends StatelessWidget {
     }
 
     if (svt.extra.tdAnimations.isNotEmpty && kDebugMode) {
-      children.add(Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-        child: ElevatedButton(
-          onPressed: () {
-            // if (!BiliPlayer.isSupport && svt.extra.tdAnimations.length == 1) {
-            //   launch(svt.extra.tdAnimations.first.weburl);
-            //   return;
-            // }
-            router.pushPage(BiliTdAnimations(
-              videos: svt.extra.tdAnimations,
-              title: '${S.current.td_animation} - ${svt.lName.l}',
-            ));
-          },
-          child: Text(S.current.td_animation),
+      children.add(
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+          child: ElevatedButton(
+            onPressed: () {
+              // if (!BiliPlayer.isSupport && svt.extra.tdAnimations.length == 1) {
+              //   launch(svt.extra.tdAnimations.first.weburl);
+              //   return;
+              // }
+              router.pushPage(
+                BiliTdAnimations(videos: svt.extra.tdAnimations, title: '${S.current.td_animation} - ${svt.lName.l}'),
+              );
+            },
+            child: Text(S.current.td_animation),
+          ),
         ),
-      ));
+      );
     }
     children.addAll(_buildBattlePoints());
 
-    return ListView.builder(
-      itemCount: children.length,
-      itemBuilder: (context, index) => children[index],
-    );
+    return ListView.builder(itemCount: children.length, itemBuilder: (context, index) => children[index]);
   }
 
   Widget _buildTds(BuildContext context, List<NiceTd> tds, int? level, List<OverrideTDData?> overrideTds) {
@@ -133,10 +132,7 @@ class SvtTdTab extends StatelessWidget {
                     name = '$name $rank';
                   }
                   if (name.trim().isEmpty) name = '???';
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
-                    child: Text(name),
-                  );
+                  return Padding(padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6), child: Text(name));
                 },
                 values: FilterRadioData.nonnull(tdIndex),
                 onFilterChanged: (v, _) {
@@ -147,15 +143,13 @@ class SvtTdTab extends StatelessWidget {
             if (td.svt.condQuestId > 0 || oTdData != null)
               IconButton(
                 padding: const EdgeInsets.all(2),
-                constraints: const BoxConstraints(
-                  minWidth: 48,
-                  minHeight: 24,
-                ),
-                onPressed: () => showDialog(
-                  context: context,
-                  useRootNavigator: false,
-                  builder: (_) => releaseCondition(svt, td, oTdData),
-                ),
+                constraints: const BoxConstraints(minWidth: 48, minHeight: 24),
+                onPressed:
+                    () => showDialog(
+                      context: context,
+                      useRootNavigator: false,
+                      builder: (_) => releaseCondition(svt, td, oTdData),
+                    ),
                 icon: const Icon(Icons.info_outline),
                 color: Theme.of(context).hintColor,
                 tooltip: S.current.open_condition,
@@ -167,12 +161,7 @@ class SvtTdTab extends StatelessWidget {
           children: [
             const SizedBox(height: 4),
             toggle,
-            TdDescriptor(
-              td: td,
-              showEnemy: !svt.isUserSvt,
-              level: level,
-              overrideData: overrideTds.getOrNull(tdIndex),
-            ),
+            TdDescriptor(td: td, showEnemy: !svt.isUserSvt, level: level, overrideData: overrideTds.getOrNull(tdIndex)),
           ],
         );
       },
@@ -219,8 +208,12 @@ class SvtTdTab extends StatelessWidget {
             ),
           if (ascensions.isNotEmpty) Text('${S.current.ascension_short} ${ascensions.join('&')}'),
           if (costumes.isNotEmpty)
-            Text(['${S.current.costume}:', for (final c in costumes) svt.profile.costume[c]?.lName.l ?? c.toString()]
-                .join(' ')),
+            Text(
+              [
+                '${S.current.costume}:',
+                for (final c in costumes) svt.profile.costume[c]?.lName.l ?? c.toString(),
+              ].join(' '),
+            ),
           if (jpTime != null) Text('JP: ${jpTime.sec2date().toDateString()}'),
           if (db.curUser.region != Region.jp && localTime != null)
             Text('${db.curUser.region.upper}: ${localTime.sec2date().toDateString()}'),
@@ -245,34 +238,40 @@ class SvtTdTab extends StatelessWidget {
       phases.sort();
       if (phases.isEmpty) continue;
 
-      children.add(LayoutTryBuilder(
-        builder: (context, constraints) {
-          int perLine = (constraints.maxWidth.isFinite && constraints.maxWidth > 600 && phases.length > 5) ? 10 : 5;
-          final int totalRow = (phases.length / perLine).ceil();
-          return CustomTable(children: [
-            CustomTableRow.fromTexts(texts: [title], isHeader: true),
-            for (int row = 0; row < totalRow; row++) ...[
-              CustomTableRow.fromTexts(
-                texts: List.generate(perLine, (col) {
-                  final i = perLine * row + col;
-                  return i < phases.length ? 'Lv${phases[i]}' : '';
-                }),
-                isHeader: true,
-              ),
-              CustomTableRow.fromTexts(
-                  texts: List.generate(perLine, (col) {
-                final pointPhase = pointPhases[phases.getOrNull(perLine * row + col)];
-                return pointPhase?.value.toString() ?? '';
-              })),
-              CustomTableRow.fromTexts(
-                  texts: List.generate(perLine, (col) {
-                final pointPhase = pointPhases[phases.getOrNull(perLine * row + col)];
-                return pointPhase?.name.toString() ?? '';
-              })),
-            ],
-          ]);
-        },
-      ));
+      children.add(
+        LayoutTryBuilder(
+          builder: (context, constraints) {
+            int perLine = (constraints.maxWidth.isFinite && constraints.maxWidth > 600 && phases.length > 5) ? 10 : 5;
+            final int totalRow = (phases.length / perLine).ceil();
+            return CustomTable(
+              children: [
+                CustomTableRow.fromTexts(texts: [title], isHeader: true),
+                for (int row = 0; row < totalRow; row++) ...[
+                  CustomTableRow.fromTexts(
+                    texts: List.generate(perLine, (col) {
+                      final i = perLine * row + col;
+                      return i < phases.length ? 'Lv${phases[i]}' : '';
+                    }),
+                    isHeader: true,
+                  ),
+                  CustomTableRow.fromTexts(
+                    texts: List.generate(perLine, (col) {
+                      final pointPhase = pointPhases[phases.getOrNull(perLine * row + col)];
+                      return pointPhase?.value.toString() ?? '';
+                    }),
+                  ),
+                  CustomTableRow.fromTexts(
+                    texts: List.generate(perLine, (col) {
+                      final pointPhase = pointPhases[phases.getOrNull(perLine * row + col)];
+                      return pointPhase?.name.toString() ?? '';
+                    }),
+                  ),
+                ],
+              ],
+            );
+          },
+        ),
+      );
     }
     return children;
   }
@@ -301,23 +300,20 @@ class BiliTdAnimations extends StatelessWidget {
       //     ),
       //   ));
       // }
-      children.add(Center(
-        child: TextButton(
-          onPressed: () {
-            launch(video.weburl);
-          },
-          child: Text(videos.length == 1 ? 'Mooncell@bilibili' : '${index + 1} - Mooncell@bilibili'),
+      children.add(
+        Center(
+          child: TextButton(
+            onPressed: () {
+              launch(video.weburl);
+            },
+            child: Text(videos.length == 1 ? 'Mooncell@bilibili' : '${index + 1} - Mooncell@bilibili'),
+          ),
         ),
-      ));
+      );
     }
     return Scaffold(
-      appBar: AppBar(
-        title: Text(title ?? S.current.td_animation),
-      ),
-      body: ListView(
-        shrinkWrap: true,
-        children: children,
-      ),
+      appBar: AppBar(title: Text(title ?? S.current.td_animation)),
+      body: ListView(shrinkWrap: true, children: children),
     );
   }
 }

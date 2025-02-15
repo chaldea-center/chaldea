@@ -28,41 +28,50 @@ class MissionCondsDescriptor extends StatelessWidget {
         continue;
       }
       if (!onlyShowClear) {
-        children.add(Text(
-          '~~~ ${Transl.enums(cond.missionProgressType, (enums) => enums.missionProgressType).l} ~~~',
-          textAlign: TextAlign.center,
-          textScaler: const TextScaler.linear(0.9),
-          style: TextStyle(
-            color: isClearCond
-                ? Theme.of(context).colorScheme.primaryContainer
-                : Theme.of(context).textTheme.bodySmall?.color,
-            fontWeight: isClearCond ? FontWeight.bold : null,
+        children.add(
+          Text(
+            '~~~ ${Transl.enums(cond.missionProgressType, (enums) => enums.missionProgressType).l} ~~~',
+            textAlign: TextAlign.center,
+            textScaler: const TextScaler.linear(0.9),
+            style: TextStyle(
+              color:
+                  isClearCond
+                      ? Theme.of(context).colorScheme.primaryContainer
+                      : Theme.of(context).textTheme.bodySmall?.color,
+              fontWeight: isClearCond ? FontWeight.bold : null,
+            ),
           ),
-        ));
+        );
       }
       if (![mission.name, "???", "？？？"].contains(cond.conditionMessage)) {
-        children.add(Text(
-          cond.conditionMessage,
-          style: Theme.of(context).textTheme.bodySmall,
-          textScaler: const TextScaler.linear(0.9),
-        ));
+        children.add(
+          Text(
+            cond.conditionMessage,
+            style: Theme.of(context).textTheme.bodySmall,
+            textScaler: const TextScaler.linear(0.9),
+          ),
+        );
       }
-      children.add(CondTargetNumDescriptor(
-        condType: cond.condType,
-        targetNum: cond.targetNum,
-        targetIds: cond.targetIds,
-        details: cond.details,
-        missions: missions,
-        eventId: eventId,
-      ));
+      children.add(
+        CondTargetNumDescriptor(
+          condType: cond.condType,
+          targetNum: cond.targetNum,
+          targetIds: cond.targetIds,
+          details: cond.details,
+          missions: missions,
+          eventId: eventId,
+        ),
+      );
     }
     if (!onlyShowClear && mission.gifts.isNotEmpty) {
-      children.add(Text(
-        '~~~ ${S.current.game_rewards} ~~~',
-        textAlign: TextAlign.center,
-        textScaler: const TextScaler.linear(0.9),
-        style: TextStyle(color: Theme.of(context).textTheme.bodySmall?.color),
-      ));
+      children.add(
+        Text(
+          '~~~ ${S.current.game_rewards} ~~~',
+          textAlign: TextAlign.center,
+          textScaler: const TextScaler.linear(0.9),
+          style: TextStyle(color: Theme.of(context).textTheme.bodySmall?.color),
+        ),
+      );
       children.add(SharedBuilder.giftGrid(context: context, gifts: mission.gifts));
     }
     if (!onlyShowClear) {
@@ -71,11 +80,7 @@ class MissionCondsDescriptor extends StatelessWidget {
     final mq = MediaQuery.of(context);
     return MediaQuery(
       data: mq.copyWith(textScaler: TextScaler.linear(mq.textScaler.scale(0.9))),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: children,
-      ),
+      child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: children),
     );
   }
 }

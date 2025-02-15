@@ -19,10 +19,7 @@ class EventRelatedMMPage extends HookWidget {
       hint += '\nJP: ';
       hint += [eventJp.startedAt, eventJp.endedAt].map((e) => e.sec2date().toStringShort(omitSec: true)).join(' ~ ');
     }
-    final children = [
-      SHeader(hint),
-      for (final mm in mms) itemBuilder(context, mm),
-    ];
+    final children = [SHeader(hint), for (final mm in mms) itemBuilder(context, mm)];
     return ListView.separated(
       controller: useScrollController(),
       itemCount: children.length,

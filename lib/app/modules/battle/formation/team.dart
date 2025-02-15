@@ -38,14 +38,15 @@ class _TeamSetupCardState extends State<TeamSetupCard> {
   Widget build(BuildContext context) {
     return ValueListenableBuilder(
       valueListenable: hovered,
-      builder: (context, _, __) => ResponsiveLayout(
-        horizontalDivider: kIndentDivider,
-        children: [
-          partyOrganization(onFieldSvts, S.current.team_starting_member),
-          if (widget.showEmptyBackup || backupSvts.any((e) => e.svt != null))
-            partyOrganization(backupSvts, S.current.team_backup_member),
-        ],
-      ),
+      builder:
+          (context, _, __) => ResponsiveLayout(
+            horizontalDivider: kIndentDivider,
+            children: [
+              partyOrganization(onFieldSvts, S.current.team_starting_member),
+              if (widget.showEmptyBackup || backupSvts.any((e) => e.svt != null))
+                partyOrganization(backupSvts, S.current.team_backup_member),
+            ],
+          ),
     );
   }
 
@@ -74,7 +75,7 @@ class _TeamSetupCardState extends State<TeamSetupCard> {
                     onDragCE: widget.enableEdit ? (svtFrom) => onDrag(svtFrom, svt, true) : null,
                     enableEdit: widget.enableEdit,
                   ),
-                )
+                ),
             ],
           ),
         ],

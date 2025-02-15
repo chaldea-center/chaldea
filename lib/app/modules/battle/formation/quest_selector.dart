@@ -18,12 +18,7 @@ class _OptionData {
   NiceWar? war;
   Event? event;
   List<Quest> quests;
-  _OptionData({
-    required this.id,
-    required this.war,
-    required this.event,
-    required this.quests,
-  });
+  _OptionData({required this.id, required this.war, required this.event, required this.quests});
 }
 
 class _FQSelectDropdownState extends State<FQSelectDropdown> {
@@ -74,10 +69,9 @@ class _FQSelectDropdownState extends State<FQSelectDropdown> {
       }
     }
 
-    optionList.sortByList((e) => <int>[
-          e.war != null ? (e.id < 1000 ? 0 : 1) : 2,
-          e.war != null ? -e.id : -(e.event?.startedAt ?? e.id),
-        ]);
+    optionList.sortByList(
+      (e) => <int>[e.war != null ? (e.id < 1000 ? 0 : 1) : 2, e.war != null ? -e.id : -(e.event?.startedAt ?? e.id)],
+    );
 
     final initQuest = db.gameData.quests[widget.initQuestId];
     final option = optionList.lastWhereOrNull((option) => option.quests.contains(initQuest));
@@ -113,32 +107,33 @@ class _FQSelectDropdownState extends State<FQSelectDropdown> {
       // isDense: true,
       isExpanded: true,
       value: eventWarId,
-      hint: Text(
-        '${S.current.event}/${S.current.war}',
-        style: const TextStyle(fontSize: 14),
-      ),
-      items: options.values.map((option) {
-        final outdated = option.event?.isOutdated(const Duration(days: 1)) == true;
-        final ongoing = option.event?.isOnGoing(db.curUser.region) == true;
-        String name = option.war?.lShortName ?? option.event?.shownName ?? option.id.toString();
-        if (option.war != null) name = 'ꔷ $name';
-        return DropdownMenuItem(
-          value: option.id,
-          child: Text(
-            name.setMaxLines(1).breakWord,
-            maxLines: 2,
-            style: const TextStyle(fontSize: 12).merge(TextStyle(
-              color: ongoing
-                  ? Theme.of(context).colorScheme.primary
-                  : outdated
-                      ? Theme.of(context).textTheme.bodySmall?.color
-                      : null,
-              // decoration: option.event != null && !outdated ? TextDecoration.underline : null,
-            )),
-            overflow: TextOverflow.ellipsis,
-          ),
-        );
-      }).toList(),
+      hint: Text('${S.current.event}/${S.current.war}', style: const TextStyle(fontSize: 14)),
+      items:
+          options.values.map((option) {
+            final outdated = option.event?.isOutdated(const Duration(days: 1)) == true;
+            final ongoing = option.event?.isOnGoing(db.curUser.region) == true;
+            String name = option.war?.lShortName ?? option.event?.shownName ?? option.id.toString();
+            if (option.war != null) name = 'ꔷ $name';
+            return DropdownMenuItem(
+              value: option.id,
+              child: Text(
+                name.setMaxLines(1).breakWord,
+                maxLines: 2,
+                style: const TextStyle(fontSize: 12).merge(
+                  TextStyle(
+                    color:
+                        ongoing
+                            ? Theme.of(context).colorScheme.primary
+                            : outdated
+                            ? Theme.of(context).textTheme.bodySmall?.color
+                            : null,
+                    // decoration: option.event != null && !outdated ? TextDecoration.underline : null,
+                  ),
+                ),
+                overflow: TextOverflow.ellipsis,
+              ),
+            );
+          }).toList(),
       onChanged: (v) {
         setState(() {
           eventWarId = v;
@@ -155,22 +150,26 @@ class _FQSelectDropdownState extends State<FQSelectDropdown> {
       isExpanded: true,
       value: quest,
       hint: Text(S.current.quest, style: const TextStyle(fontSize: 14)),
-      items: quests.map((quest) {
-        List<InlineSpan> spans = [
-          if (quest.event != null || quest.is90PlusFree)
-            TextSpan(text: '${quest.recommendLv} ', style: const TextStyle(fontSize: 10)),
-          TextSpan(text: quest.lDispName.setMaxLines(1).breakWord),
-        ];
-        return DropdownMenuItem(
-          value: quest,
-          child: Text.rich(
-            TextSpan(children: spans),
-            maxLines: 1,
-            style: TextStyle(fontSize: 12, color: quest.is90PlusFree ? Theme.of(context).colorScheme.primary : null),
-            overflow: TextOverflow.ellipsis,
-          ),
-        );
-      }).toList(),
+      items:
+          quests.map((quest) {
+            List<InlineSpan> spans = [
+              if (quest.event != null || quest.is90PlusFree)
+                TextSpan(text: '${quest.recommendLv} ', style: const TextStyle(fontSize: 10)),
+              TextSpan(text: quest.lDispName.setMaxLines(1).breakWord),
+            ];
+            return DropdownMenuItem(
+              value: quest,
+              child: Text.rich(
+                TextSpan(children: spans),
+                maxLines: 1,
+                style: TextStyle(
+                  fontSize: 12,
+                  color: quest.is90PlusFree ? Theme.of(context).colorScheme.primary : null,
+                ),
+                overflow: TextOverflow.ellipsis,
+              ),
+            );
+          }).toList(),
 
       onChanged: (v) {
         setState(() {

@@ -45,15 +45,16 @@ class ChooseTargetsDialog extends StatefulWidget {
     if (!battleData.mounted) return null;
     return showUserConfirm<List<BattleServantData>>(
       context: battleData.context!,
-      builder: (context, completer) => ChooseTargetsDialog(
-        battleData: battleData,
-        completer: completer,
-        targetType: targetType,
-        targets: targets,
-        maxCount: maxCount,
-        minCount: minCount,
-        autoConfirmOneTarget: autoConfirmOneTarget,
-      ),
+      builder:
+          (context, completer) => ChooseTargetsDialog(
+            battleData: battleData,
+            completer: completer,
+            targetType: targetType,
+            targets: targets,
+            maxCount: maxCount,
+            minCount: minCount,
+            autoConfirmOneTarget: autoConfirmOneTarget,
+          ),
     );
   }
 }
@@ -70,27 +71,25 @@ class _ChooseTargetsDialogState extends State<ChooseTargetsDialog> {
         enemies = widget.targets.where((e) => e.isEnemy).toList();
     final showHeader = playerSvts.isNotEmpty && enemies.isNotEmpty;
 
-    children.add(Text([
-      "${S.current.select} ${{widget.minCount, widget.maxCount}.join('~')} ${S.current.effect_target}",
-      if (widget.minCount == 0) S.current.select_skip,
-    ].join("\n")));
+    children.add(
+      Text(
+        [
+          "${S.current.select} ${{widget.minCount, widget.maxCount}.join('~')} ${S.current.effect_target}",
+          if (widget.minCount == 0) S.current.select_skip,
+        ].join("\n"),
+      ),
+    );
 
     if (playerSvts.isNotEmpty) {
       if (showHeader) {
-        children.add(const SHeader(
-          "Player Servants",
-          padding: EdgeInsets.only(top: 8.0, bottom: 4.0),
-        ));
+        children.add(const SHeader("Player Servants", padding: EdgeInsets.only(top: 8.0, bottom: 4.0)));
       }
       children.add(Wrap(spacing: 8, children: playerSvts.map((e) => buildSvt(e)).toList()));
     }
 
     if (enemies.isNotEmpty) {
       if (showHeader) {
-        children.add(const SHeader(
-          "Enemies",
-          padding: EdgeInsets.only(top: 8.0, bottom: 4.0),
-        ));
+        children.add(const SHeader("Enemies", padding: EdgeInsets.only(top: 8.0, bottom: 4.0)));
       }
       children.add(Wrap(spacing: 8, children: enemies.map((e) => buildSvt(e)).toList()));
     }
@@ -98,11 +97,7 @@ class _ChooseTargetsDialogState extends State<ChooseTargetsDialog> {
     return SimpleCancelOkDialog(
       title: Text('${S.current.select}(${Transl.funcTargetType(widget.targetType).l})'),
       scrollable: true,
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: children,
-      ),
+      content: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: children),
       hideCancel: true,
       hideOk: true,
       actions: [
@@ -123,12 +118,13 @@ class _ChooseTargetsDialogState extends State<ChooseTargetsDialog> {
 
   Widget buildSvt(BattleServantData svt) {
     return DecoratedBox(
-      decoration: selected.contains(svt)
-          ? BoxDecoration(
-              borderRadius: BorderRadius.circular(5),
-              border: Border.all(color: Colors.redAccent, width: 8),
-            )
-          : const BoxDecoration(),
+      decoration:
+          selected.contains(svt)
+              ? BoxDecoration(
+                borderRadius: BorderRadius.circular(5),
+                border: Border.all(color: Colors.redAccent, width: 8),
+              )
+              : const BoxDecoration(),
       child: InkWell(
         child: svt.iconBuilder(
           context: context,
@@ -156,8 +152,10 @@ class _ChooseTargetsDialogState extends State<ChooseTargetsDialog> {
   void onConfirm() {
     final chosen = selected.toList();
     chosen.sortByList((e) => [e.isPlayer ? -1 : 1, e.fieldIndex]);
-    battleData.battleLogger.action('${S.current.select} (${Transl.funcTargetType(widget.targetType).l}):'
-        ' ${chosen.map((e) => "${e.fieldIndex}-${e.lBattleName}")}');
+    battleData.battleLogger.action(
+      '${S.current.select} (${Transl.funcTargetType(widget.targetType).l}):'
+      ' ${chosen.map((e) => "${e.fieldIndex}-${e.lBattleName}")}',
+    );
     Navigator.of(context).pop(chosen);
   }
 }

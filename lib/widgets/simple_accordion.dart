@@ -59,10 +59,7 @@ class _SimpleAccordionState extends State<SimpleAccordion> {
         expandIcon = GestureDetector(onTap: toggle, child: expandIcon);
       }
     } else {
-      expandIcon = ExpandIcon(
-        isExpanded: expanded,
-        onPressed: widget.canTapOnHeader ? null : (_) => toggle(),
-      );
+      expandIcon = ExpandIcon(isExpanded: expanded, onPressed: widget.canTapOnHeader ? null : (_) => toggle());
     }
     Widget header = widget.headerBuilder(context, expanded);
     header = Row(children: [Expanded(child: header), expandIcon]);
@@ -96,10 +93,7 @@ class _SimpleAccordionState extends State<SimpleAccordion> {
         color: Material.maybeOf(context)?.color,
         child: DecoratedBox(
           decoration: BoxDecoration(border: Border(top: widget.topBorderSide)),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [header, content],
-          ),
+          child: Column(mainAxisSize: MainAxisSize.min, children: [header, content]),
         ),
       ),
     );

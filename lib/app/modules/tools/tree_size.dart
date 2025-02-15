@@ -16,11 +16,7 @@ class TreeSizePage extends StatefulWidget {
   State<TreeSizePage> createState() => _TreeSizePageState();
 }
 
-enum _SortType {
-  name,
-  size,
-  modified,
-}
+enum _SortType { name, size, modified }
 
 class _TreeSizePageState extends State<TreeSizePage> {
   final basePath = db.paths.appPath;
@@ -117,20 +113,18 @@ class _TreeSizePageState extends State<TreeSizePage> {
             },
             icon: const Icon(Icons.sort_by_alpha),
           ),
+          IconButton(onPressed: loadStat, icon: const Icon(Icons.replay)),
           IconButton(
-            onPressed: loadStat,
-            icon: const Icon(Icons.replay),
-          ),
-          IconButton(
-            onPressed: rootStat == null
-                ? null
-                : () {
-                    setState(() {
-                      cur = rootStat;
-                    });
-                  },
+            onPressed:
+                rootStat == null
+                    ? null
+                    : () {
+                      setState(() {
+                        cur = rootStat;
+                      });
+                    },
             icon: const Icon(Icons.home),
-          )
+          ),
         ],
       ),
       body: Column(
@@ -148,7 +142,7 @@ class _TreeSizePageState extends State<TreeSizePage> {
               },
               separatorBuilder: (_, __) => const Divider(indent: 40),
             ),
-          )
+          ),
         ],
       ),
     );
@@ -164,16 +158,18 @@ class _TreeSizePageState extends State<TreeSizePage> {
       tileColor: stat == cur || stat == cur?.parent ? Theme.of(context).highlightColor : null,
       leading: isDirectory ? const Icon(Icons.folder) : const SizedBox.shrink(),
       title: Text(overwriteName ?? pathlib.basename(stat.entity.path)),
-      subtitle:
-          Text(isDirectory ? '${stat.getPrettySize()}, $dirCount folders, $fileCount files' : stat.getPrettySize()),
+      subtitle: Text(
+        isDirectory ? '${stat.getPrettySize()}, $dirCount folders, $fileCount files' : stat.getPrettySize(),
+      ),
       trailing: isDirectory ? const Icon(Icons.keyboard_arrow_right) : null,
-      onTap: isDirectory && stat != cur
-          ? () {
-              setState(() {
-                cur = stat;
-              });
-            }
-          : null,
+      onTap:
+          isDirectory && stat != cur
+              ? () {
+                setState(() {
+                  cur = stat;
+                });
+              }
+              : null,
       onLongPress: () {
         SimpleCancelOkDialog(
           title: const Text('Stat'),
@@ -181,19 +177,16 @@ class _TreeSizePageState extends State<TreeSizePage> {
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              for (final entry in {
-                'rawSize': stat.size,
-                'size': '${stat.getSize()} (${stat.getPrettySize()})',
-                'type': stat.type,
-                'path': stat.entity.path,
-                'changed': stat.changed.toString(),
-                'modified': stat.modified.toString(),
-              }.entries)
-                ListTile(
-                  dense: true,
-                  title: Text(entry.key),
-                  subtitle: Text(entry.value.toString()),
-                )
+              for (final entry
+                  in {
+                    'rawSize': stat.size,
+                    'size': '${stat.getSize()} (${stat.getPrettySize()})',
+                    'type': stat.type,
+                    'path': stat.entity.path,
+                    'changed': stat.changed.toString(),
+                    'modified': stat.modified.toString(),
+                  }.entries)
+                ListTile(dense: true, title: Text(entry.key), subtitle: Text(entry.value.toString())),
             ],
           ),
         ).showDialog(context);

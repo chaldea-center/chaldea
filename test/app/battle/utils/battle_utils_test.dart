@@ -22,22 +22,24 @@ void main() async {
       final oc1Np1DataSpec = upgradedNp.functions.first.svals.first;
       final oc1Np1NpSpecificAtkRate = oc1Np1DataSpec.Correction ?? 1000;
 
-      final baseParam = DamageParameters()
-        ..attack = altria.atkGrowth[level - 1]
-        ..attackerClass = altria.classId
-        ..defenderClass = defenderClass.value
-        ..classAdvantage = classAdvantage
-        ..attackerAttribute = altria.attribute
-        ..defenderAttribute = defenderAttribute
-        ..random = 900;
+      final baseParam =
+          DamageParameters()
+            ..attack = altria.atkGrowth[level - 1]
+            ..attackerClass = altria.classId
+            ..defenderClass = defenderClass.value
+            ..classAdvantage = classAdvantage
+            ..attackerAttribute = altria.attribute
+            ..defenderAttribute = defenderAttribute
+            ..random = 900;
 
-      final oc1Np1BaseParam = baseParam.copy()
-        ..damageRate = oc1Np1DataSpec.Value!
-        ..totalHits = Maths.sum(upgradedNp.svt.damage)
-        ..npSpecificAttackRate = oc1Np1NpSpecificAtkRate
-        ..isNp = true
-        ..currentCardType = upgradedNp.svt.card
-        ..firstCardType = upgradedNp.svt.card;
+      final oc1Np1BaseParam =
+          baseParam.copy()
+            ..damageRate = oc1Np1DataSpec.Value!
+            ..totalHits = Maths.sum(upgradedNp.svt.damage)
+            ..npSpecificAttackRate = oc1Np1NpSpecificAtkRate
+            ..isNp = true
+            ..currentCardType = upgradedNp.svt.card
+            ..firstCardType = upgradedNp.svt.card;
 
       const baseDamage = 12542;
       test('NP 1 OC 1 no fou as base', () {
@@ -59,16 +61,17 @@ void main() async {
       test('NP does not benefit from busterChainMod', () {
         expect(upgradedNp.svt.card, equals(CardType.buster));
 
-        final damageParameters = oc1Np1BaseParam.copy()
-          ..firstCardType = CardType.buster
-          ..isTypeChain = true;
+        final damageParameters =
+            oc1Np1BaseParam.copy()
+              ..firstCardType = CardType.buster
+              ..isTypeChain = true;
 
         expect(calculateDamage(damageParameters), equals(baseDamage));
       });
 
       test('servant attack change', () {
-        final damageParameters = oc1Np1BaseParam.copy()
-          ..attack = altria.atkGrowth[120 - 1] + 2000 + 1000; // 2000 Atk CE & 1000 Atk Fou
+        final damageParameters =
+            oc1Np1BaseParam.copy()..attack = altria.atkGrowth[120 - 1] + 2000 + 1000; // 2000 Atk CE & 1000 Atk Fou
 
         expect(calculateDamage(damageParameters), equals(19469));
       });
@@ -77,9 +80,10 @@ void main() async {
         final oc1Np5DataSpec = upgradedNp.functions.first.svals.last;
         final oc1Np5NpSpecificAtkRate = oc1Np5DataSpec.Correction ?? 1000;
 
-        final damageParameters = oc1Np1BaseParam.copy()
-          ..damageRate = oc1Np5DataSpec.Value!
-          ..npSpecificAttackRate = oc1Np5NpSpecificAtkRate;
+        final damageParameters =
+            oc1Np1BaseParam.copy()
+              ..damageRate = oc1Np5DataSpec.Value!
+              ..npSpecificAttackRate = oc1Np5NpSpecificAtkRate;
 
         expect(calculateDamage(damageParameters), equals(18814));
       });
@@ -163,11 +167,12 @@ void main() async {
       });
 
       test('with 1000 Fou & double Koyanskaya of Light', () {
-        final damageParameters = oc1Np1BaseParam.copy()
-          ..attack = baseParam.attack + 1000
-          ..attackBuff = 1180
-          ..cardBuff = 500 + 500 + 500 + 1000
-          ..npDamageBuff = 300;
+        final damageParameters =
+            oc1Np1BaseParam.copy()
+              ..attack = baseParam.attack + 1000
+              ..attackBuff = 1180
+              ..cardBuff = 500 + 500 + 500 + 1000
+              ..npDamageBuff = 300;
         expect(calculateDamage(damageParameters), equals(52388));
       });
 
@@ -177,11 +182,12 @@ void main() async {
       final extraCard = altria.cardDetails[CardType.extra]!;
 
       test('firstCardBonus', () {
-        final damageParameters = baseParam.copy()
-          ..totalHits = Maths.sum(artsCard.hitsDistribution)
-          ..chainPos = 2
-          ..currentCardType = CardType.arts
-          ..firstCardType = CardType.arts;
+        final damageParameters =
+            baseParam.copy()
+              ..totalHits = Maths.sum(artsCard.hitsDistribution)
+              ..chainPos = 2
+              ..currentCardType = CardType.arts
+              ..firstCardType = CardType.arts;
 
         final damageWithoutBonus = calculateDamage(damageParameters);
         expect(damageWithoutBonus, equals(2508));
@@ -203,12 +209,14 @@ void main() async {
       });
 
       test('cardCorrection', () {
-        final damageParameters = baseParam.copy()
-          ..totalHits = Maths.sum(quickCard.hitsDistribution)
-          ..cardBuff = 1080 // passive
-          ..chainPos = 1
-          ..currentCardType = CardType.quick
-          ..firstCardType = CardType.quick;
+        final damageParameters =
+            baseParam.copy()
+              ..totalHits = Maths.sum(quickCard.hitsDistribution)
+              ..cardBuff =
+                  1080 // passive
+              ..chainPos = 1
+              ..currentCardType = CardType.quick
+              ..firstCardType = CardType.quick;
 
         expect(calculateDamage(damageParameters), equals(1806));
 
@@ -222,12 +230,13 @@ void main() async {
       });
 
       test('criticalDamageBuff', () {
-        final damageParameters = baseParam.copy()
-          ..totalHits = Maths.sum(busterCard.hitsDistribution)
-          ..chainPos = 2
-          ..critical = true
-          ..currentCardType = CardType.buster
-          ..firstCardType = CardType.arts;
+        final damageParameters =
+            baseParam.copy()
+              ..totalHits = Maths.sum(busterCard.hitsDistribution)
+              ..chainPos = 2
+              ..critical = true
+              ..currentCardType = CardType.buster
+              ..firstCardType = CardType.arts;
 
         expect(calculateDamage(damageParameters), equals(7525));
 
@@ -243,11 +252,12 @@ void main() async {
       });
 
       test('buster chain', () {
-        final damageParameters = baseParam.copy()
-          ..totalHits = Maths.sum(busterCard.hitsDistribution)
-          ..chainPos = 1
-          ..currentCardType = CardType.buster
-          ..firstCardType = CardType.buster;
+        final damageParameters =
+            baseParam.copy()
+              ..totalHits = Maths.sum(busterCard.hitsDistribution)
+              ..chainPos = 1
+              ..currentCardType = CardType.buster
+              ..firstCardType = CardType.buster;
 
         expect(calculateDamage(damageParameters), equals(4180));
 
@@ -261,11 +271,12 @@ void main() async {
       });
 
       test('extraModifier', () {
-        final damageParameters = baseParam.copy()
-          ..totalHits = Maths.sum(extraCard.hitsDistribution)
-          ..chainPos = 4
-          ..currentCardType = CardType.extra
-          ..firstCardType = CardType.buster;
+        final damageParameters =
+            baseParam.copy()
+              ..totalHits = Maths.sum(extraCard.hitsDistribution)
+              ..chainPos = 4
+              ..currentCardType = CardType.extra
+              ..firstCardType = CardType.buster;
 
         expect(calculateDamage(damageParameters), equals(6271));
 
@@ -280,25 +291,27 @@ void main() async {
       const level = 80;
       final busterCard = altria.cardDetails[CardType.buster]!;
 
-      final baseParam = DamageParameters()
-        ..attack = altria.atkGrowth[level - 1] + 1000
-        ..attackerClass = altria.classId
-        ..attackerAttribute = altria.attribute
-        ..totalHits = Maths.sum(busterCard.hitsDistribution)
-        ..chainPos = 1
-        ..currentCardType = CardType.buster
-        ..firstCardType = CardType.buster
-        ..random = 900;
+      final baseParam =
+          DamageParameters()
+            ..attack = altria.atkGrowth[level - 1] + 1000
+            ..attackerClass = altria.classId
+            ..attackerAttribute = altria.attribute
+            ..totalHits = Maths.sum(busterCard.hitsDistribution)
+            ..chainPos = 1
+            ..currentCardType = CardType.buster
+            ..firstCardType = CardType.buster
+            ..random = 900;
 
       test('vs Sky Lancer', () {
         const defenderClass = SvtClass.lancer;
         const defenderAttribute = ServantSubAttribute.sky;
         final classAdvantage = ConstData.getClassRelation(altria.className, defenderClass);
 
-        final damageParameters = baseParam.copy()
-          ..defenderClass = defenderClass.value
-          ..classAdvantage = classAdvantage
-          ..defenderAttribute = defenderAttribute;
+        final damageParameters =
+            baseParam.copy()
+              ..defenderClass = defenderClass.value
+              ..classAdvantage = classAdvantage
+              ..defenderAttribute = defenderAttribute;
 
         expect(calculateDamage(damageParameters), equals(4767));
       });
@@ -308,10 +321,11 @@ void main() async {
         const defenderAttribute = ServantSubAttribute.earth;
         final classAdvantage = ConstData.getClassRelation(altria.className, defenderClass);
 
-        final damageParameters = baseParam.copy()
-          ..defenderClass = defenderClass.value
-          ..classAdvantage = classAdvantage
-          ..defenderAttribute = defenderAttribute;
+        final damageParameters =
+            baseParam.copy()
+              ..defenderClass = defenderClass.value
+              ..classAdvantage = classAdvantage
+              ..defenderAttribute = defenderAttribute;
 
         expect(calculateDamage(damageParameters), equals(2622));
       });
@@ -321,10 +335,11 @@ void main() async {
         const defenderAttribute = ServantSubAttribute.human;
         final classAdvantage = ConstData.getClassRelation(altria.className, defenderClass);
 
-        final damageParameters = baseParam.copy()
-          ..defenderClass = defenderClass.value
-          ..classAdvantage = classAdvantage
-          ..defenderAttribute = defenderAttribute;
+        final damageParameters =
+            baseParam.copy()
+              ..defenderClass = defenderClass.value
+              ..classAdvantage = classAdvantage
+              ..defenderAttribute = defenderAttribute;
 
         expect(calculateDamage(damageParameters), equals(8582));
       });
@@ -335,14 +350,15 @@ void main() async {
         const defenderAttribute = ServantSubAttribute.sky;
         final classAdvantage = ConstData.getClassRelation(altria.className, defenderClass);
 
-        final damageParameters = baseParam.copy()
-          ..totalHits = Maths.sum(extra.hitsDistribution)
-          ..chainPos = 4
-          ..currentCardType = CardType.extra
-          ..firstCardType = CardType.buster
-          ..defenderClass = defenderClass.value
-          ..classAdvantage = classAdvantage
-          ..defenderAttribute = defenderAttribute;
+        final damageParameters =
+            baseParam.copy()
+              ..totalHits = Maths.sum(extra.hitsDistribution)
+              ..chainPos = 4
+              ..currentCardType = CardType.extra
+              ..firstCardType = CardType.buster
+              ..defenderClass = defenderClass.value
+              ..classAdvantage = classAdvantage
+              ..defenderAttribute = defenderAttribute;
 
         expect(calculateDamage(damageParameters), equals(7151));
       });
@@ -359,71 +375,79 @@ void main() async {
       final np = yuyu.noblePhantasms.last;
       final npDamageSpecs = np.functions.first;
 
-      final baseParam = DamageParameters()
-        ..attack = yuyu.atkGrowth[level - 1] + 1000
-        ..attackerClass = yuyu.classId
-        ..defenderClass = defenderClass.value
-        ..classAdvantage = classAdvantage
-        ..attackerAttribute = yuyu.attribute
-        ..defenderAttribute = defenderAttribute
-        ..totalHits = Maths.sum(np.svt.damage)
-        ..isNp = true
-        ..currentCardType = np.svt.card
-        ..firstCardType = np.svt.card
-        ..damageAdditionBuff = 175 // passive
-        ..random = 900;
+      final baseParam =
+          DamageParameters()
+            ..attack = yuyu.atkGrowth[level - 1] + 1000
+            ..attackerClass = yuyu.classId
+            ..defenderClass = defenderClass.value
+            ..classAdvantage = classAdvantage
+            ..attackerAttribute = yuyu.attribute
+            ..defenderAttribute = defenderAttribute
+            ..totalHits = Maths.sum(np.svt.damage)
+            ..isNp = true
+            ..currentCardType = np.svt.card
+            ..firstCardType = np.svt.card
+            ..damageAdditionBuff =
+                175 // passive
+            ..random = 900;
 
       test('NP 5 OC 1 with no npSpecificDamage', () {
         final oc1Np5DataSpec = npDamageSpecs.svals.last;
 
-        final damageParameters = baseParam.copy()
-          ..damageRate = oc1Np5DataSpec.Value!
-          ..npSpecificAttackRate = 1000;
+        final damageParameters =
+            baseParam.copy()
+              ..damageRate = oc1Np5DataSpec.Value!
+              ..npSpecificAttackRate = 1000;
         expect(calculateDamage(damageParameters), equals(45744));
       });
 
       test('NP 5 OC 3 with no npSpecificDamage', () {
         final oc3Np5DataSpec = npDamageSpecs.svals3!.last;
 
-        final damageParameters = baseParam.copy()
-          ..damageRate = oc3Np5DataSpec.Value!
-          ..npSpecificAttackRate = 1000;
+        final damageParameters =
+            baseParam.copy()
+              ..damageRate = oc3Np5DataSpec.Value!
+              ..npSpecificAttackRate = 1000;
         expect(calculateDamage(damageParameters), equals(45744));
       });
 
       test('NP 5 OC 1 with npSpecificDamage', () {
         final oc1Np5DataSpec = npDamageSpecs.svals.last;
 
-        final damageParameters = baseParam.copy()
-          ..damageRate = oc1Np5DataSpec.Value!
-          ..npSpecificAttackRate = oc1Np5DataSpec.Correction!;
+        final damageParameters =
+            baseParam.copy()
+              ..damageRate = oc1Np5DataSpec.Value!
+              ..npSpecificAttackRate = oc1Np5DataSpec.Correction!;
         expect(calculateDamage(damageParameters), equals(68529));
       });
 
       test('NP 5 OC 3 with npSpecificDamage', () {
         final oc3Np5DataSpec = npDamageSpecs.svals3!.last;
 
-        final damageParameters = baseParam.copy()
-          ..damageRate = oc3Np5DataSpec.Value!
-          ..npSpecificAttackRate = oc3Np5DataSpec.Correction!;
+        final damageParameters =
+            baseParam.copy()
+              ..damageRate = oc3Np5DataSpec.Value!
+              ..npSpecificAttackRate = oc3Np5DataSpec.Correction!;
         expect(calculateDamage(damageParameters), equals(79921));
       });
 
       test('NP 5 OC 4 with npSpecificDamage', () {
         final oc4Np5DataSpec = npDamageSpecs.svals4!.last;
 
-        final damageParameters = baseParam.copy()
-          ..damageRate = oc4Np5DataSpec.Value!
-          ..npSpecificAttackRate = oc4Np5DataSpec.Correction!;
+        final damageParameters =
+            baseParam.copy()
+              ..damageRate = oc4Np5DataSpec.Value!
+              ..npSpecificAttackRate = oc4Np5DataSpec.Correction!;
         expect(calculateDamage(damageParameters), equals(85617));
       });
 
       test('NP 5 OC 5 with npSpecificDamage', () {
         final oc5Np5DataSpec = npDamageSpecs.svals5!.last;
 
-        final damageParameters = baseParam.copy()
-          ..damageRate = oc5Np5DataSpec.Value!
-          ..npSpecificAttackRate = oc5Np5DataSpec.Correction!;
+        final damageParameters =
+            baseParam.copy()
+              ..damageRate = oc5Np5DataSpec.Value!
+              ..npSpecificAttackRate = oc5Np5DataSpec.Correction!;
         expect(calculateDamage(damageParameters), equals(91314));
       });
     });
@@ -440,40 +464,42 @@ void main() async {
       final npDamageSpecs = np.functions.first;
       final oc1Np5DataSpec = npDamageSpecs.svals.last;
 
-      final damageParameters = DamageParameters()
-        ..attack = vald.atkGrowth[level - 1] + 1000 + 1000 + 2400
-        ..attackerClass = vald.classId
-        ..defenderClass = defenderClass.value
-        ..classAdvantage = classAdvantage
-        ..attackerAttribute = vald.attribute
-        ..defenderAttribute = defenderAttribute
-        ..totalHits = Maths.sum(np.svt.damage)
-        ..isNp = true
-        ..currentCardType = np.svt.card
-        ..firstCardType = np.svt.card
-        ..random = 1099
-        ..attackBuff = 1700
-        ..cardBuff = 2000
-        ..npDamageBuff = 950
-        ..damageRate = oc1Np5DataSpec.Value!
-        ..npSpecificAttackRate = 1000;
+      final damageParameters =
+          DamageParameters()
+            ..attack = vald.atkGrowth[level - 1] + 1000 + 1000 + 2400
+            ..attackerClass = vald.classId
+            ..defenderClass = defenderClass.value
+            ..classAdvantage = classAdvantage
+            ..attackerAttribute = vald.attribute
+            ..defenderAttribute = defenderAttribute
+            ..totalHits = Maths.sum(np.svt.damage)
+            ..isNp = true
+            ..currentCardType = np.svt.card
+            ..firstCardType = np.svt.card
+            ..random = 1099
+            ..attackBuff = 1700
+            ..cardBuff = 2000
+            ..npDamageBuff = 950
+            ..damageRate = oc1Np5DataSpec.Value!
+            ..npSpecificAttackRate = 1000;
       expect(calculateDamage(damageParameters), equals(954401));
     });
   });
 
   group('calculateAttackNpGain', () {
     test('float32 test in Atlas', () {
-      final param = AttackNpGainParameters()
-        ..firstCardType = CardType.quick
-        ..isMightyChain = true
-        ..currentCardType = CardType.arts
-        ..chainPos = 3
-        ..attackerNpCharge = 25
-        ..defenderNpRate = 1000
-        ..cardBuff = 2600
-        ..cardResist = 1800
-        ..npGainBuff = 1300
-        ..critical = true;
+      final param =
+          AttackNpGainParameters()
+            ..firstCardType = CardType.quick
+            ..isMightyChain = true
+            ..currentCardType = CardType.arts
+            ..chainPos = 3
+            ..attackerNpCharge = 25
+            ..defenderNpRate = 1000
+            ..cardBuff = 2600
+            ..cardResist = 1800
+            ..npGainBuff = 1300
+            ..critical = true;
 
       expect(calculateAttackNpGain(param), equals(766));
     });
@@ -486,11 +512,12 @@ void main() async {
 
       final baseParam = AttackNpGainParameters()..defenderNpRate = defenderNpRate;
 
-      final npBaseParam = baseParam.copy()
-        ..isNp = true
-        ..attackerNpCharge = np.npGain.np.last
-        ..currentCardType = np.svt.card
-        ..firstCardType = np.svt.card;
+      final npBaseParam =
+          baseParam.copy()
+            ..isNp = true
+            ..attackerNpCharge = np.npGain.np.last
+            ..currentCardType = np.svt.card
+            ..firstCardType = np.svt.card;
 
       const baseHitNpGain = 183;
       test('NP 5 as base', () {
@@ -539,19 +566,21 @@ void main() async {
       });
 
       test('with double Altria Caster & overkill', () {
-        final param = npBaseParam.copy()
-          ..cardBuff = 2000
-          ..npGainBuff = 1600
-          ..isOverkill = true;
+        final param =
+            npBaseParam.copy()
+              ..cardBuff = 2000
+              ..npGainBuff = 1600
+              ..isOverkill = true;
         expect(calculateAttackNpGain(param), equals(880));
       });
 
       test('firstCardBonus', () {
-        final params = baseParam.copy()
-          ..attackerNpCharge = np.npGain.arts.last
-          ..chainPos = 2
-          ..currentCardType = CardType.arts
-          ..firstCardType = CardType.quick;
+        final params =
+            baseParam.copy()
+              ..attackerNpCharge = np.npGain.arts.last
+              ..chainPos = 2
+              ..currentCardType = CardType.arts
+              ..firstCardType = CardType.quick;
 
         final hitNpGainWithoutBonus = calculateAttackNpGain(params);
         expect(hitNpGainWithoutBonus, equals(275));
@@ -573,11 +602,12 @@ void main() async {
       });
 
       test('cardCorrection', () {
-        final params = baseParam.copy()
-          ..attackerNpCharge = np.npGain.quick.last
-          ..chainPos = 1
-          ..currentCardType = CardType.quick
-          ..firstCardType = CardType.quick;
+        final params =
+            baseParam.copy()
+              ..attackerNpCharge = np.npGain.quick.last
+              ..chainPos = 1
+              ..currentCardType = CardType.quick
+              ..firstCardType = CardType.quick;
 
         expect(calculateAttackNpGain(params), equals(61));
 
@@ -603,12 +633,13 @@ void main() async {
       });
 
       test('criticalModifier', () {
-        final params = baseParam.copy()
-          ..attackerNpCharge = np.npGain.arts.last
-          ..chainPos = 2
-          ..critical = true
-          ..currentCardType = CardType.arts
-          ..firstCardType = CardType.arts;
+        final params =
+            baseParam.copy()
+              ..attackerNpCharge = np.npGain.arts.last
+              ..chainPos = 2
+              ..critical = true
+              ..currentCardType = CardType.arts
+              ..firstCardType = CardType.arts;
 
         expect(calculateAttackNpGain(params), equals(673));
       });
@@ -620,13 +651,14 @@ void main() async {
       final gilgamesh = db.gameData.servantsById[501800]!;
       final np = gilgamesh.noblePhantasms.last;
 
-      final param = AttackNpGainParameters()
-        ..defenderNpRate = defenderNpRate
-        ..isNp = true
-        ..attackerNpCharge = np.npGain.np.last
-        ..currentCardType = np.svt.card
-        ..firstCardType = np.svt.card
-        ..cardBuff = 1100; // passive
+      final param =
+          AttackNpGainParameters()
+            ..defenderNpRate = defenderNpRate
+            ..isNp = true
+            ..attackerNpCharge = np.npGain.np.last
+            ..currentCardType = np.svt.card
+            ..firstCardType = np.svt.card
+            ..cardBuff = 1100; // passive
 
       expect(calculateAttackNpGain(param), equals(42));
     });
@@ -637,14 +669,15 @@ void main() async {
       final raikou = db.gameData.servantsById[702300]!;
       final np = raikou.noblePhantasms.last;
 
-      final param = AttackNpGainParameters()
-        ..defenderNpRate = defenderNpRate
-        ..attackerNpCharge = np.npGain.arts.last
-        ..currentCardType = CardType.arts
-        ..firstCardType = np.svt.card
-        ..critical = true
-        ..npGainBuff = 1450
-        ..isOverkill = true;
+      final param =
+          AttackNpGainParameters()
+            ..defenderNpRate = defenderNpRate
+            ..attackerNpCharge = np.npGain.arts.last
+            ..currentCardType = CardType.arts
+            ..firstCardType = np.svt.card
+            ..critical = true
+            ..npGainBuff = 1450
+            ..isOverkill = true;
 
       param.chainPos = 2;
       expect(calculateAttackNpGain(param), equals(900));
@@ -665,16 +698,17 @@ void main() async {
       final abby = db.gameData.servantsById[2500100]!;
       final np = abby.noblePhantasms.last;
 
-      final param = AttackNpGainParameters()
-        ..defenderNpRate = defenderNpRate
-        ..attackerNpCharge = np.npGain.arts.last
-        ..currentCardType = CardType.arts
-        ..firstCardType = CardType.arts
-        ..critical = true
-        ..cardBuff = 1800
-        ..npGainBuff = 1300
-        ..chainPos = 3
-        ..isOverkill = true;
+      final param =
+          AttackNpGainParameters()
+            ..defenderNpRate = defenderNpRate
+            ..attackerNpCharge = np.npGain.arts.last
+            ..currentCardType = CardType.arts
+            ..firstCardType = CardType.arts
+            ..critical = true
+            ..cardBuff = 1800
+            ..npGainBuff = 1300
+            ..chainPos = 3
+            ..isOverkill = true;
 
       expect(calculateAttackNpGain(param), equals(1149));
     });
@@ -685,16 +719,17 @@ void main() async {
       final vlad = db.gameData.servantsById[700700]!;
       final np = vlad.noblePhantasms.last;
 
-      final param = AttackNpGainParameters()
-        ..defenderNpRate = defenderNpRate
-        ..attackerNpCharge = np.npGain.arts.last
-        ..currentCardType = CardType.arts
-        ..firstCardType = CardType.arts
-        ..critical = true
-        ..cardBuff = 1800
-        ..npGainBuff = 1300
-        ..chainPos = 3
-        ..isOverkill = true;
+      final param =
+          AttackNpGainParameters()
+            ..defenderNpRate = defenderNpRate
+            ..attackerNpCharge = np.npGain.arts.last
+            ..currentCardType = CardType.arts
+            ..firstCardType = CardType.arts
+            ..critical = true
+            ..cardBuff = 1800
+            ..npGainBuff = 1300
+            ..chainPos = 3
+            ..isOverkill = true;
 
       expect(calculateAttackNpGain(param), equals(2299));
     });
@@ -707,9 +742,10 @@ void main() async {
       final yuyu = db.gameData.servantsById[2500400]!;
       final np = yuyu.noblePhantasms.last;
 
-      final baseParam = DefendNpGainParameters()
-        ..defenderNpGainRate = np.npGain.defence.last
-        ..attackerNpRate = attackerNpRate;
+      final baseParam =
+          DefendNpGainParameters()
+            ..defenderNpGainRate = np.npGain.defence.last
+            ..attackerNpRate = attackerNpRate;
 
       const baseHitNpGain = 360;
       test('NP 5 as base', () {
@@ -741,9 +777,10 @@ void main() async {
       final gilgamesh = db.gameData.servantsById[501800]!;
       final np = gilgamesh.noblePhantasms.last;
 
-      final baseParam = DefendNpGainParameters()
-        ..defenderNpGainRate = np.npGain.defence.last
-        ..attackerNpRate = attackerNpRate;
+      final baseParam =
+          DefendNpGainParameters()
+            ..defenderNpGainRate = np.npGain.defence.last
+            ..attackerNpRate = attackerNpRate;
 
       expect(calculateDefendNpGain(baseParam), equals(240));
     });
@@ -754,10 +791,11 @@ void main() async {
       final douman = db.gameData.servantsById[1001000]!;
       final np = douman.noblePhantasms.last;
 
-      final baseParam = DefendNpGainParameters()
-        ..defenderNpGainRate = np.npGain.defence.last
-        ..attackerNpRate = attackerNpRate
-        ..defenseNpGainBuff = 1200;
+      final baseParam =
+          DefendNpGainParameters()
+            ..defenderNpGainRate = np.npGain.defence.last
+            ..attackerNpRate = attackerNpRate
+            ..defenseNpGainBuff = 1200;
 
       expect(calculateDefendNpGain(baseParam), equals(576));
 
@@ -774,15 +812,17 @@ void main() async {
       final okumi = db.gameData.servantsById[504900]!;
       final np = okumi.noblePhantasms.last;
 
-      final baseParam = StarParameters()
-        ..attackerStarGen = okumi.starGen
-        ..defenderStarRate = defenderStarRate;
+      final baseParam =
+          StarParameters()
+            ..attackerStarGen = okumi.starGen
+            ..defenderStarRate = defenderStarRate;
 
-      final npBaseParam = baseParam.copy()
-        ..isNp = true
-        ..currentCardType = np.svt.card
-        ..firstCardType = np.svt.card
-        ..cardResist = 800; // np first function
+      final npBaseParam =
+          baseParam.copy()
+            ..isNp = true
+            ..currentCardType = np.svt.card
+            ..firstCardType = np.svt.card
+            ..cardResist = 800; // np first function
 
       const baseHitStarGen = 1169;
       test('NP 5 as base', () {
@@ -842,17 +882,19 @@ void main() async {
       });
 
       test('with double Scathach-Skadi (Caster) & overkill', () {
-        final param = npBaseParam.copy()
-          ..cardBuff = 2000
-          ..isOverkill = true;
+        final param =
+            npBaseParam.copy()
+              ..cardBuff = 2000
+              ..isOverkill = true;
         expect(calculateStar(param).toDouble(), moreOrLessEquals(2269, epsilon: 1));
       });
 
       test('firstCardBonus', () {
-        final params = baseParam.copy()
-          ..chainPos = 2
-          ..currentCardType = CardType.buster
-          ..firstCardType = CardType.buster;
+        final params =
+            baseParam.copy()
+              ..chainPos = 2
+              ..currentCardType = CardType.buster
+              ..firstCardType = CardType.buster;
 
         final hitStarGenWithoutBonus = calculateStar(params).toDouble();
         expect(hitStarGenWithoutBonus, moreOrLessEquals(359, epsilon: 1));
@@ -874,10 +916,11 @@ void main() async {
       });
 
       test('cardCorrection', () {
-        final params = baseParam.copy()
-          ..chainPos = 1
-          ..currentCardType = CardType.buster
-          ..firstCardType = CardType.buster;
+        final params =
+            baseParam.copy()
+              ..chainPos = 1
+              ..currentCardType = CardType.buster
+              ..firstCardType = CardType.buster;
 
         expect(calculateStar(params).toDouble(), moreOrLessEquals(309, epsilon: 1));
 
@@ -902,11 +945,12 @@ void main() async {
       });
 
       test('criticalModifier', () {
-        final params = baseParam.copy()
-          ..chainPos = 2
-          ..critical = true
-          ..currentCardType = CardType.quick
-          ..firstCardType = CardType.quick;
+        final params =
+            baseParam.copy()
+              ..chainPos = 2
+              ..critical = true
+              ..currentCardType = CardType.quick
+              ..firstCardType = CardType.quick;
 
         expect(calculateStar(params).toDouble(), moreOrLessEquals(1909, epsilon: 1));
       });
@@ -918,13 +962,14 @@ void main() async {
       final kama = db.gameData.servantsById[603700]!;
       final np = kama.noblePhantasms.last;
 
-      final param = StarParameters()
-        ..attackerStarGen = kama.starGen
-        ..defenderStarRate = defenderStarRate
-        ..isNp = true
-        ..currentCardType = np.svt.card
-        ..firstCardType = np.svt.card
-        ..cardBuff = 1300; // passive + np first function
+      final param =
+          StarParameters()
+            ..attackerStarGen = kama.starGen
+            ..defenderStarRate = defenderStarRate
+            ..isNp = true
+            ..currentCardType = np.svt.card
+            ..firstCardType = np.svt.card
+            ..cardBuff = 1300; // passive + np first function
 
       expect(calculateStar(param).toDouble(), moreOrLessEquals(1189, epsilon: 1));
     });

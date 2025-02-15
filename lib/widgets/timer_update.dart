@@ -23,7 +23,7 @@ class TimerUpdate extends StatelessWidget {
   final Widget Function(BuildContext context, DateTime time) builder;
 
   TimerUpdate({super.key, Duration duration = const Duration(milliseconds: 500), required this.builder})
-      : notifier = _register(duration);
+    : notifier = _register(duration);
 
   @override
   Widget build(BuildContext context) {

@@ -31,8 +31,12 @@ int countAnyTraits(final Iterable<NiceTrait> myTraits, final Iterable<NiceTrait>
   }
 
   return myTraits
-      .where((myTrait) => requiredTraits.any((requiredTrait) =>
-          myTrait.signedId == requiredTrait.signedId || (requiredTrait.negative && myTrait.id != requiredTrait.id)))
+      .where(
+        (myTrait) => requiredTraits.any(
+          (requiredTrait) =>
+              myTrait.signedId == requiredTrait.signedId || (requiredTrait.negative && myTrait.id != requiredTrait.id),
+        ),
+      )
       .length;
 }
 

@@ -11,11 +11,7 @@ class EnemyMaster with RouteInfo {
   int id;
   String name;
   List<EnemyMasterBattle> battles;
-  EnemyMaster({
-    required this.id,
-    this.name = "",
-    this.battles = const [],
-  });
+  EnemyMaster({required this.id, this.name = "", this.battles = const []});
 
   Transl<String, String> get lName {
     String name = this.name;

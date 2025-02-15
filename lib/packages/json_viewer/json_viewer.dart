@@ -35,7 +35,7 @@ class _JsonViewerPageState extends State<JsonViewerPage> {
             },
             icon: const Icon(Icons.expand),
             tooltip: 'Expand',
-          )
+          ),
         ],
       ),
       backgroundColor: lightTheme.scaffoldBackgroundColor,
@@ -43,11 +43,7 @@ class _JsonViewerPageState extends State<JsonViewerPage> {
         data: lightTheme,
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(8),
-          child: JsonViewer(
-            widget.jsonObj,
-            defaultOpen: defaultOpen,
-            key: Key('_json_viewer_key_$defaultOpen'),
-          ),
+          child: JsonViewer(widget.jsonObj, defaultOpen: defaultOpen, key: Key('_json_viewer_key_$defaultOpen')),
         ),
       ),
     );
@@ -64,28 +60,31 @@ class JsonViewer extends StatelessWidget {
     return InheritSelectionArea(
       child: Directionality(
         textDirection: TextDirection.ltr,
-        child: Align(
-          alignment: Alignment.centerLeft,
-          child: getContentWidget(jsonObj, defaultOpen),
-        ),
+        child: Align(alignment: Alignment.centerLeft, child: getContentWidget(jsonObj, defaultOpen)),
       ),
     );
   }
 
   static Widget getContentWidget(dynamic content, bool defaultOpen) {
     if (content == null || (content is Map && content.isEmpty)) {
-      return Builder(builder: (context) {
-        return Text('{}', style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color));
-      });
+      return Builder(
+        builder: (context) {
+          return Text('{}', style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color));
+        },
+      );
     } else if (content is List) {
       return JsonArrayViewer(content, notRoot: false, defaultOpen: defaultOpen);
     } else if (content is Map) {
       return JsonObjectViewer(content, notRoot: false, defaultOpen: defaultOpen);
     } else {
-      return Builder(builder: (context) {
-        return Text('${content.runtimeType}: $content',
-            style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color));
-      });
+      return Builder(
+        builder: (context) {
+          return Text(
+            '${content.runtimeType}: $content',
+            style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color),
+          );
+        },
+      );
     }
   }
 }
@@ -96,7 +95,7 @@ class JsonObjectViewer extends StatefulWidget {
   final bool defaultOpen;
 
   JsonObjectViewer(Map<dynamic, dynamic> jsonObj, {super.key, this.notRoot = false, this.defaultOpen = false})
-      : jsonObj = jsonObj.map((key, value) => MapEntry(key.toString(), value));
+    : jsonObj = jsonObj.map((key, value) => MapEntry(key.toString(), value));
 
   @override
   JsonObjectViewerState createState() => JsonObjectViewerState();
@@ -113,10 +112,7 @@ class JsonObjectViewerState extends State<JsonObjectViewer> {
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: _getList()),
       );
     }
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: _getList(),
-    );
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: _getList());
   }
 
   List<Widget> _getList() {
@@ -125,40 +121,36 @@ class JsonObjectViewerState extends State<JsonObjectViewer> {
       bool extensible = _isExtensible(entry.value);
       bool ink = _isInkWell(entry.value);
       bool isNullEmpty = _isNullOrEmpty(entry.value);
-      list.add(Text.rich(TextSpan(children: [
-        WidgetSpan(
-          child: extensible
-              ? ((openFlag[entry.key] ?? widget.defaultOpen)
-                  ? Icon(Icons.arrow_drop_down, size: 14, color: Colors.grey[700])
-                  : Icon(Icons.arrow_right, size: 14, color: Colors.grey[700]))
-              : const Icon(
-                  Icons.arrow_right,
-                  color: Color.fromARGB(0, 0, 0, 0),
-                  size: 14,
-                ),
-        ),
-        (extensible && ink)
-            ? WidgetSpan(
-                child: InkWell(
-                child: Text(entry.key, style: TextStyle(color: isNullEmpty ? Colors.grey : Colors.purple[900])),
-                onTap: () {
-                  setState(() {
-                    openFlag[entry.key] = !(openFlag[entry.key] ?? widget.defaultOpen);
-                  });
-                },
-              ))
-            : TextSpan(
-                text: entry.key,
-                style: TextStyle(
-                  color: isNullEmpty ? Colors.grey : Colors.purple[900],
-                ),
+      list.add(
+        Text.rich(
+          TextSpan(
+            children: [
+              WidgetSpan(
+                child:
+                    extensible
+                        ? ((openFlag[entry.key] ?? widget.defaultOpen)
+                            ? Icon(Icons.arrow_drop_down, size: 14, color: Colors.grey[700])
+                            : Icon(Icons.arrow_right, size: 14, color: Colors.grey[700]))
+                        : const Icon(Icons.arrow_right, color: Color.fromARGB(0, 0, 0, 0), size: 14),
               ),
-        const TextSpan(
-          text: ': ',
-          style: TextStyle(color: Colors.grey),
+              (extensible && ink)
+                  ? WidgetSpan(
+                    child: InkWell(
+                      child: Text(entry.key, style: TextStyle(color: isNullEmpty ? Colors.grey : Colors.purple[900])),
+                      onTap: () {
+                        setState(() {
+                          openFlag[entry.key] = !(openFlag[entry.key] ?? widget.defaultOpen);
+                        });
+                      },
+                    ),
+                  )
+                  : TextSpan(text: entry.key, style: TextStyle(color: isNullEmpty ? Colors.grey : Colors.purple[900])),
+              const TextSpan(text: ': ', style: TextStyle(color: Colors.grey)),
+              getValueWidget(entry),
+            ],
+          ),
         ),
-        getValueWidget(entry)
-      ])));
+      );
 
       list.add(const SizedBox(height: 4));
       if (extensible && (openFlag[entry.key] ?? widget.defaultOpen)) {
@@ -179,43 +171,22 @@ class JsonObjectViewerState extends State<JsonObjectViewer> {
   InlineSpan getValueWidget(MapEntry entry) {
     final value = entry.value;
     if (value == null) {
-      return const TextSpan(
-        text: 'null',
-        style: TextStyle(color: Colors.grey),
-      );
+      return const TextSpan(text: 'null', style: TextStyle(color: Colors.grey));
     } else if (value is int) {
-      return TextSpan(
-        text: value.toString(),
-        style: const TextStyle(color: Colors.teal),
-      );
+      return TextSpan(text: value.toString(), style: const TextStyle(color: Colors.teal));
     } else if (value is String) {
-      return TextSpan(
-        text: '"${_limitStrLength(value)}"',
-        style: const TextStyle(color: Colors.redAccent),
-      );
+      return TextSpan(text: '"${_limitStrLength(value)}"', style: const TextStyle(color: Colors.redAccent));
     } else if (value is bool) {
-      return TextSpan(
-        text: value.toString(),
-        style: const TextStyle(color: Colors.purple),
-      );
+      return TextSpan(text: value.toString(), style: const TextStyle(color: Colors.purple));
     } else if (value is double) {
-      return TextSpan(
-        text: value.toString(),
-        style: const TextStyle(color: Colors.teal),
-      );
+      return TextSpan(text: value.toString(), style: const TextStyle(color: Colors.teal));
     } else if (value is List) {
       if (value.isEmpty) {
-        return const TextSpan(
-          text: 'Array[0]',
-          style: TextStyle(color: Colors.grey),
-        );
+        return const TextSpan(text: 'Array[0]', style: TextStyle(color: Colors.grey));
       } else {
         return WidgetSpan(
           child: InkWell(
-            child: Text(
-              '<${_getTypeName(value[0])}>[${value.length}]',
-              style: const TextStyle(color: Colors.grey),
-            ),
+            child: Text('<${_getTypeName(value[0])}>[${value.length}]', style: const TextStyle(color: Colors.grey)),
             onTap: () {
               setState(() {
                 openFlag[entry.key] = !(openFlag[entry.key] ?? widget.defaultOpen);
@@ -227,10 +198,7 @@ class JsonObjectViewerState extends State<JsonObjectViewer> {
     }
     return WidgetSpan(
       child: InkWell(
-        child: const Text(
-          'Object',
-          style: TextStyle(color: Colors.grey),
-        ),
+        child: const Text('Object', style: TextStyle(color: Colors.grey)),
         onTap: () {
           setState(() {
             openFlag[entry.key] = !(openFlag[entry.key] ?? widget.defaultOpen);
@@ -261,16 +229,10 @@ class _JsonArrayViewerState extends State<JsonArrayViewer> {
     if (widget.notRoot) {
       return Container(
         padding: const EdgeInsets.only(left: _kIndentWidth),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: _getList(),
-        ),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: _getList()),
       );
     }
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: _getList(),
-    );
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: _getList());
   }
 
   @override
@@ -285,66 +247,44 @@ class _JsonArrayViewerState extends State<JsonArrayViewer> {
     for (final (i, content) in widget.jsonArray.indexed) {
       if (i >= skipStartIndex && i <= skipEndIndex) {
         if (i == skipStartIndex) {
-          list.add(Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              const Icon(
-                Icons.arrow_right,
-                color: Colors.transparent,
-                size: 14,
-              ),
-              Text(
-                '[$skipStartIndex~$skipEndIndex]',
-                style: TextStyle(
-                  color: content == null ? Colors.grey : Colors.purple[900],
+          list.add(
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                const Icon(Icons.arrow_right, color: Colors.transparent, size: 14),
+                Text(
+                  '[$skipStartIndex~$skipEndIndex]',
+                  style: TextStyle(color: content == null ? Colors.grey : Colors.purple[900]),
                 ),
-              ),
-              const Text(
-                ':',
-                style: TextStyle(color: Colors.grey),
-              ),
-              const SizedBox(width: 3),
-              const Expanded(
-                child: Text(
-                  'too long - hidden',
-                  style: TextStyle(color: Colors.grey),
-                ),
-              ),
-            ],
-          ));
+                const Text(':', style: TextStyle(color: Colors.grey)),
+                const SizedBox(width: 3),
+                const Expanded(child: Text('too long - hidden', style: TextStyle(color: Colors.grey))),
+              ],
+            ),
+          );
         }
         continue;
       }
       bool ex = _isExtensible(content);
       bool ink = _isInkWell(content);
-      list.add(Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          ex
-              ? ((openFlag[i])
-                  ? Icon(Icons.arrow_drop_down, size: 14, color: Colors.grey[700])
-                  : Icon(Icons.arrow_right, size: 14, color: Colors.grey[700]))
-              : const Icon(
-                  Icons.arrow_right,
-                  color: Colors.transparent,
-                  size: 14,
-                ),
-          (ex && ink)
-              ? getInkWell(i)
-              : Text(
-                  '[$i]',
-                  style: TextStyle(
-                    color: content == null ? Colors.grey : Colors.purple[900],
-                  ),
-                ),
-          const Text(
-            ':',
-            style: TextStyle(color: Colors.grey),
-          ),
-          const SizedBox(width: 3),
-          getValueWidget(content, i)
-        ],
-      ));
+      list.add(
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            ex
+                ? ((openFlag[i])
+                    ? Icon(Icons.arrow_drop_down, size: 14, color: Colors.grey[700])
+                    : Icon(Icons.arrow_right, size: 14, color: Colors.grey[700]))
+                : const Icon(Icons.arrow_right, color: Colors.transparent, size: 14),
+            (ex && ink)
+                ? getInkWell(i)
+                : Text('[$i]', style: TextStyle(color: content == null ? Colors.grey : Colors.purple[900])),
+            const Text(':', style: TextStyle(color: Colors.grey)),
+            const SizedBox(width: 3),
+            getValueWidget(content, i),
+          ],
+        ),
+      );
       list.add(const SizedBox(height: 4));
       if (ex && openFlag[i]) {
         list.add(JsonObjectViewerState.getContentWidget(content, widget.defaultOpen));
@@ -366,52 +306,21 @@ class _JsonArrayViewerState extends State<JsonArrayViewer> {
 
   Widget getValueWidget(dynamic content, int index) {
     if (content == null) {
-      return const Expanded(
-        child: Text(
-          'null',
-          style: TextStyle(color: Colors.grey),
-        ),
-      );
+      return const Expanded(child: Text('null', style: TextStyle(color: Colors.grey)));
     } else if (content is int) {
-      return Expanded(
-        child: Text(
-          content.toString(),
-          style: const TextStyle(color: Colors.teal),
-        ),
-      );
+      return Expanded(child: Text(content.toString(), style: const TextStyle(color: Colors.teal)));
     } else if (content is String) {
-      return Expanded(
-        child: Text(
-          '"${_limitStrLength(content)}"',
-          style: const TextStyle(color: Colors.redAccent),
-        ),
-      );
+      return Expanded(child: Text('"${_limitStrLength(content)}"', style: const TextStyle(color: Colors.redAccent)));
     } else if (content is bool) {
-      return Expanded(
-        child: Text(
-          content.toString(),
-          style: const TextStyle(color: Colors.purple),
-        ),
-      );
+      return Expanded(child: Text(content.toString(), style: const TextStyle(color: Colors.purple)));
     } else if (content is double) {
-      return Expanded(
-        child: Text(
-          content.toString(),
-          style: const TextStyle(color: Colors.teal),
-        ),
-      );
+      return Expanded(child: Text(content.toString(), style: const TextStyle(color: Colors.teal)));
     } else if (content is List) {
       if (content.isEmpty) {
-        return const Text(
-          'Array[0]',
-          style: TextStyle(color: Colors.grey),
-        );
+        return const Text('Array[0]', style: TextStyle(color: Colors.grey));
       } else {
         return InkWell(
-          child: Text(
-            'Array<${_getTypeName(content)}>[${content.length}]',
-            style: const TextStyle(color: Colors.grey),
-          ),
+          child: Text('Array<${_getTypeName(content)}>[${content.length}]', style: const TextStyle(color: Colors.grey)),
           onTap: () {
             setState(() {
               openFlag[index] = !(openFlag[index]);
@@ -421,10 +330,7 @@ class _JsonArrayViewerState extends State<JsonArrayViewer> {
       }
     }
     return InkWell(
-      child: const Text(
-        'Object',
-        style: TextStyle(color: Colors.grey),
-      ),
+      child: const Text('Object', style: TextStyle(color: Colors.grey)),
       onTap: () {
         setState(() {
           openFlag[index] = !(openFlag[index]);

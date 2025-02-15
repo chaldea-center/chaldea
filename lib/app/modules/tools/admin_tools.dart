@@ -23,18 +23,12 @@ class _AdminToolsPageState extends State<AdminToolsPage> {
           TileGroup(
             header: 'Actions',
             children: [
-              ListTile(
-                title: Text('DB GC'),
-                onTap: () => callRequest('POST', '/api/v4/admin/db-gc'),
-              ),
+              ListTile(title: Text('DB GC'), onTap: () => callRequest('POST', '/api/v4/admin/db-gc')),
               ListTile(
                 title: Text('Chaldea Update'),
                 onTap: () => callRequest('POST', '/webhook/check-chaldea-update'),
               ),
-              ListTile(
-                title: Text('Neon Metrics'),
-                onTap: () => callRequest('GET', '/api/v4/admin/neon-metrics'),
-              ),
+              ListTile(title: Text('Neon Metrics'), onTap: () => callRequest('GET', '/api/v4/admin/neon-metrics')),
             ],
           ),
           for (final resp in responses.reversed)
@@ -54,7 +48,7 @@ class _AdminToolsPageState extends State<AdminToolsPage> {
                   ],
                 ),
               ),
-            )
+            ),
         ],
       ),
     );

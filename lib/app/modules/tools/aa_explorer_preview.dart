@@ -71,10 +71,7 @@ class AtlasExplorerManager {
             mainAxisSize: MainAxisSize.min,
             children: [
               TextFormField(
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'User',
-                ),
+                decoration: const InputDecoration(border: OutlineInputBorder(), labelText: 'User'),
                 maxLines: 1,
                 onChanged: (s) {
                   user = s;
@@ -82,10 +79,7 @@ class AtlasExplorerManager {
               ),
               const SizedBox(height: 8),
               TextFormField(
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'Password',
-                ),
+                decoration: const InputDecoration(border: OutlineInputBorder(), labelText: 'Password'),
                 maxLines: 1,
                 onChanged: (s) {
                   pwd = s;
@@ -233,10 +227,7 @@ class _AtlasExplorerPreviewState extends State<AtlasExplorerPreview> {
         canPop: false,
         child: Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-              child: inputField,
-            ),
+            Padding(padding: const EdgeInsets.fromLTRB(16, 16, 16, 0), child: inputField),
             breadcrumbNav,
             kDefaultDivider,
             Expanded(child: pageView),
@@ -253,23 +244,22 @@ class _AtlasExplorerPreviewState extends State<AtlasExplorerPreview> {
         isDense: true,
         border: const OutlineInputBorder(),
         labelText: 'Path',
-        suffix: InkWell(
-          onTap: loadFolder,
-          child: const Icon(Icons.cloud_download, size: 18),
-        ),
+        suffix: InkWell(onTap: loadFolder, child: const Icon(Icons.cloud_download, size: 18)),
       ),
       onFieldSubmitted: loadFolder,
     );
   }
 
   Widget _navLink(String name, String folderLink) {
-    return Text.rich(SharedBuilder.textButtonSpan(
-      context: context,
-      text: ' $name ',
-      onTap: () {
-        loadFolder(folderLink);
-      },
-    ));
+    return Text.rich(
+      SharedBuilder.textButtonSpan(
+        context: context,
+        text: ' $name ',
+        onTap: () {
+          loadFolder(folderLink);
+        },
+      ),
+    );
   }
 
   Widget get breadcrumbNav {
@@ -307,10 +297,7 @@ class _AtlasExplorerPreviewState extends State<AtlasExplorerPreview> {
       } else if (link.endsWith('.png') || link.endsWith('.jpg')) {
         isImage = true;
         name = link.split('/').last;
-        content = CachedImage(
-          imageUrl: link,
-          placeholder: (context, url) => const SizedBox.shrink(),
-        );
+        content = CachedImage(imageUrl: link, placeholder: (context, url) => const SizedBox.shrink());
         onTap = () {
           FullscreenImageViewer.show(context: context, urls: pngLinks, initialPage: pngLinks.indexOf(link));
         };
@@ -326,41 +313,42 @@ class _AtlasExplorerPreviewState extends State<AtlasExplorerPreview> {
       }
 
       if (useGrid) {
-        children.add(InkWell(
-          onTap: onTap,
-          onLongPress: _onLongPress,
-          child: Column(
-            children: [
-              Expanded(child: Center(child: content)),
-              SizedBox(
-                height: 36,
-                child: AutoSizeText(
-                  name.breakWord,
-                  style: Theme.of(context).textTheme.bodySmall,
-                  maxLines: 2,
-                  minFontSize: 10,
-                  textAlign: TextAlign.center,
+        children.add(
+          InkWell(
+            onTap: onTap,
+            onLongPress: _onLongPress,
+            child: Column(
+              children: [
+                Expanded(child: Center(child: content)),
+                SizedBox(
+                  height: 36,
+                  child: AutoSizeText(
+                    name.breakWord,
+                    style: Theme.of(context).textTheme.bodySmall,
+                    maxLines: 2,
+                    minFontSize: 10,
+                    textAlign: TextAlign.center,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-        ));
+        );
       } else {
         content = ConstrainedBox(
-          constraints: BoxConstraints(
-            minWidth: 40,
-            maxWidth: maxWidth == null ? 120 : maxWidth * 0.5,
-          ),
+          constraints: BoxConstraints(minWidth: 40, maxWidth: maxWidth == null ? 120 : maxWidth * 0.5),
           child: content,
         );
-        children.add(ListTile(
-          leading: isImage ? null : content,
-          title: Text(name),
-          trailing: isImage ? content : null,
-          onTap: onTap,
-          onLongPress: _onLongPress,
-          dense: true,
-        ));
+        children.add(
+          ListTile(
+            leading: isImage ? null : content,
+            title: Text(name),
+            trailing: isImage ? content : null,
+            onTap: onTap,
+            onLongPress: _onLongPress,
+            dense: true,
+          ),
+        );
       }
     }
     if (useGrid) {
@@ -374,10 +362,7 @@ class _AtlasExplorerPreviewState extends State<AtlasExplorerPreview> {
         children: children,
       );
     } else {
-      return ListView(
-        controller: _scrollController,
-        children: children,
-      );
+      return ListView(controller: _scrollController, children: children);
     }
   }
 }

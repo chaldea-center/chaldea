@@ -28,9 +28,7 @@ class _SvtPriorityTaggingState extends State<SvtPriorityTagging> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(S.current.setting_priority_tagging),
-      ),
+      appBar: AppBar(title: Text(S.current.setting_priority_tagging)),
       body: ListView(
         children: [
           for (final priority in [1, 2, 3, 4, 5])
@@ -38,11 +36,7 @@ class _SvtPriorityTaggingState extends State<SvtPriorityTagging> {
               decoration: BoxDecoration(border: Border(bottom: Divider.createBorderSide(context))),
               child: Row(
                 children: [
-                  Expanded(
-                    child: ListTile(
-                      title: Text('${S.current.priority} $priority'),
-                    ),
-                  ),
+                  Expanded(child: ListTile(title: Text('${S.current.priority} $priority'))),
                   SizedBox(
                     width: 88,
                     child: TextFormField(
@@ -55,7 +49,7 @@ class _SvtPriorityTaggingState extends State<SvtPriorityTagging> {
                       },
                     ),
                   ),
-                  const SizedBox(width: 16)
+                  const SizedBox(width: 16),
                 ],
               ),
             ),

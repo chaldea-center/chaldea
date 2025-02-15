@@ -23,18 +23,21 @@ class GainNpTargetSum {
         final targetType = dataVals.Value2 ?? 0;
         final List<BattleServantData> countTargets = GainNp.getCountTargets(battleData, target, targetType);
 
-        final count = countTargets
-            .where((svt) => checkSignedIndividualities2(
-                  myTraits: svt.getTraits(
-                    addTraits: svt.getBuffTraits(
-                      activeOnly: dataVals.GainNpTargetPassiveIndividuality != 1,
-                      ignoreIndivUnreleaseable: false,
-                      includeIgnoreIndiv: false,
+        final count =
+            countTargets
+                .where(
+                  (svt) => checkSignedIndividualities2(
+                    myTraits: svt.getTraits(
+                      addTraits: svt.getBuffTraits(
+                        activeOnly: dataVals.GainNpTargetPassiveIndividuality != 1,
+                        ignoreIndivUnreleaseable: false,
+                        includeIgnoreIndiv: false,
+                      ),
                     ),
+                    requiredTraits: targetTraits,
                   ),
-                  requiredTraits: targetTraits,
-                ))
-            .length;
+                )
+                .length;
 
         if (count > 0) {
           target.changeNP(change * count);

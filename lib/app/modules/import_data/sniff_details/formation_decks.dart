@@ -15,8 +15,14 @@ class UserFormationDecksPage extends StatefulWidget {
   final int? eventId;
   final ValueChanged<UserDeckEntity>? onSelected;
   final ValueChanged<UserEventDeckEntity>? onEventDeckSelected;
-  const UserFormationDecksPage(
-      {super.key, required this.mstData, this.selectedDeckId, this.eventId, this.onSelected, this.onEventDeckSelected});
+  const UserFormationDecksPage({
+    super.key,
+    required this.mstData,
+    this.selectedDeckId,
+    this.eventId,
+    this.onSelected,
+    this.onEventDeckSelected,
+  });
 
   @override
   State<UserFormationDecksPage> createState() => UserFormationDecksPageState();
@@ -49,14 +55,13 @@ class UserFormationDecksPageState extends State<UserFormationDecksPage> {
     final eventDecks = mstData.userEventDeck.list;
     eventDecks.sortByList((e) => [widget.eventId == e.eventId ? 0 : 1, -e.eventId, e.deckNo]);
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.eventId == null ? "User Decks" : "Event ${widget.eventId} Decks"),
-      ),
+      appBar: AppBar(title: Text(widget.eventId == null ? "User Decks" : "Event ${widget.eventId} Decks")),
       body: ListView.builder(
         controller: scrollController,
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-        itemBuilder: (context, index) =>
-            widget.eventId == null ? buildUserDeck(decks[index]) : buildEventDeck(eventDecks[index]),
+        itemBuilder:
+            (context, index) =>
+                widget.eventId == null ? buildUserDeck(decks[index]) : buildEventDeck(eventDecks[index]),
         itemCount: widget.eventId == null ? decks.length : eventDecks.length,
       ),
     );
@@ -84,7 +89,7 @@ class UserFormationDecksPageState extends State<UserFormationDecksPage> {
                 child: Text(S.current.select),
               ),
             ),
-          )
+          ),
       ],
     );
   }
@@ -94,13 +99,15 @@ class UserFormationDecksPageState extends State<UserFormationDecksPage> {
       mainAxisSize: MainAxisSize.min,
       children: [
         GestureDetector(
-          onTap: deck.eventId == 0
-              ? null
-              : () {
-                  router.push(url: Routes.eventI(deck.eventId));
-                },
+          onTap:
+              deck.eventId == 0
+                  ? null
+                  : () {
+                    router.push(url: Routes.eventI(deck.eventId));
+                  },
           child: DividerWithTitle(
-              title: '${widget.eventId == deck.eventId ? "※ " : ""}[${deck.eventId}] No.${deck.deckNo}'),
+            title: '${widget.eventId == deck.eventId ? "※ " : ""}[${deck.eventId}] No.${deck.deckNo}',
+          ),
         ),
         FormationCard(
           formation: UserDeckEntityX.toFormation(deckInfo: deck.deckInfo, mstData: mstData, userSvts: userSvts),
@@ -119,7 +126,7 @@ class UserFormationDecksPageState extends State<UserFormationDecksPage> {
                 child: Text(S.current.select),
               ),
             ),
-          )
+          ),
       ],
     );
   }
@@ -128,10 +135,11 @@ class UserFormationDecksPageState extends State<UserFormationDecksPage> {
 }
 
 extension UserDeckEntityX on UserDeckEntity {
-  static BattleTeamFormation toFormation(
-      {required DeckServantEntity? deckInfo,
-      required MasterDataManager mstData,
-      Map<int, UserServantEntity>? userSvts}) {
+  static BattleTeamFormation toFormation({
+    required DeckServantEntity? deckInfo,
+    required MasterDataManager mstData,
+    Map<int, UserServantEntity>? userSvts,
+  }) {
     final userEquip = mstData.userEquip.firstWhereOrNull((e) => e.id == deckInfo?.userEquipId);
     final svts = deckInfo?.svts ?? [];
     final svtsMap = {for (final svt in svts) svt.id: svt};
@@ -170,10 +178,7 @@ extension UserDeckEntityX on UserDeckEntity {
     return BattleTeamFormation(
       onFieldSvts: [1, 2, 3].map((idx) => cvtSvt(svtsMap[idx])).toList(),
       backupSvts: [4, 5, 6].map((idx) => cvtSvt(svtsMap[idx])).toList(),
-      mysticCode: MysticCodeSaveData(
-        mysticCodeId: userEquip?.equipId,
-        level: userEquip?.lv ?? 1,
-      ),
+      mysticCode: MysticCodeSaveData(mysticCodeId: userEquip?.equipId, level: userEquip?.lv ?? 1),
     );
   }
 }

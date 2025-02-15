@@ -78,22 +78,23 @@ class _StartupLoadingPageState extends State<StartupLoadingPage> {
             showHint = showHint || hint != null;
             return Text.rich(
               TextSpan(
-                children: showHint
-                    ? [
-                        TextSpan(text: hint ?? 'Updating '),
-                        CenterWidgetSpan(
-                          child: IconButton(
-                            onPressed: () {
-                              _loader.interrupt();
-                              setState(() {});
-                            },
-                            color: Theme.of(context).colorScheme.primaryContainer,
-                            icon: const Icon(Icons.clear),
-                            iconSize: 12,
+                children:
+                    showHint
+                        ? [
+                          TextSpan(text: hint ?? 'Updating '),
+                          CenterWidgetSpan(
+                            child: IconButton(
+                              onPressed: () {
+                                _loader.interrupt();
+                                setState(() {});
+                              },
+                              color: Theme.of(context).colorScheme.primaryContainer,
+                              icon: const Icon(Icons.clear),
+                              iconSize: 12,
+                            ),
                           ),
-                        ),
-                      ]
-                    : [const TextSpan(text: '  ')],
+                        ]
+                        : [const TextSpan(text: '  ')],
               ),
               textAlign: TextAlign.center,
             );

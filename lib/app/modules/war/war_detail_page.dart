@@ -58,10 +58,7 @@ class _WarDetailPageState extends State<WarDetailPage> with RegionBasedState<Nic
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: AutoSizeText(
-          data?.lLongName.l.replaceAll('\n', ' ') ?? "War $warId",
-          maxLines: 1,
-        ),
+        title: AutoSizeText(data?.lLongName.l.replaceAll('\n', ' ') ?? "War $warId", maxLines: 1),
         centerTitle: false,
         actions: [popupMenu],
       ),
@@ -74,15 +71,17 @@ class _WarDetailPageState extends State<WarDetailPage> with RegionBasedState<Nic
     final banners = war.extra.allBanners;
     final warAdds = war.warAdds.toList()..sort2((e) => -e.startedAt);
     final eventAdds = war.event?.eventAdds ?? [];
-    List<String> warBanners = {
-      for (final warAdd in warAdds) warAdd.overwriteBanner,
-      for (final eventAdd in eventAdds) eventAdd.overwriteBanner,
-    }.whereType<String>().toList();
-    warBanners = {
-      war.shownBanner,
-      war.banner,
-      ...warBanners.take(war.id == WarId.chaldeaGate ? 4 : 6).toList().reversed
-    }.whereType<String>().toList();
+    List<String> warBanners =
+        {
+          for (final warAdd in warAdds) warAdd.overwriteBanner,
+          for (final eventAdd in eventAdds) eventAdd.overwriteBanner,
+        }.whereType<String>().toList();
+    warBanners =
+        {
+          war.shownBanner,
+          war.banner,
+          ...warBanners.take(war.id == WarId.chaldeaGate ? 4 : 6).toList().reversed,
+        }.whereType<String>().toList();
 
     List<Widget> children = [
       if (banners.isNotEmpty) CarouselUtil.limitHeightWidget(context: context, imageUrls: banners),
@@ -103,70 +102,74 @@ class _WarDetailPageState extends State<WarDetailPage> with RegionBasedState<Nic
     String lShortName = shortNames.map((e) => Transl.warNames(e).l).join('\n');
     String shortNameJp = shortNames.join('\n');
 
-    children.add(CustomTable(
-      selectable: true,
-      children: [
-        CustomTableRow(children: [
-          TableCellData(
-            text: lLongName,
-            textAlign: TextAlign.center,
-            style: const TextStyle(fontSize: 14),
-            color: TableCellData.resolveHeaderColor(context),
-          )
-        ]),
-        if (!Transl.isJP)
-          CustomTableRow(children: [
-            TableCellData(
-              text: longNameJp,
-              textAlign: TextAlign.center,
-              style: const TextStyle(fontSize: 14),
-              color: TableCellData.resolveHeaderColor(context).withAlpha(128),
-            )
-          ]),
-        if (lShortName != lLongName) CustomTableRow.fromTexts(texts: [lShortName]),
-        if (shortNameJp != longNameJp && !Transl.isJP) CustomTableRow.fromTexts(texts: [shortNameJp]),
-        CustomTableRow(children: [
-          TableCellData(text: S.current.war_age, isHeader: true),
-          TableCellData(text: war.age, flex: 3),
-        ]),
-        if (warBanners.isNotEmpty)
-          CustomTableRow(children: [
-            TableCellData(text: S.current.war_banner, isHeader: true),
-            TableCellData(
-              flex: 3,
-              child: Wrap(
-                spacing: 4,
-                alignment: WrapAlignment.center,
-                children: warBanners
-                    .map((e) => CachedImage(
-                          imageUrl: e,
-                          height: 48,
-                          showSaveOnLongPress: true,
-                        ))
-                    .toList(),
+    children.add(
+      CustomTable(
+        selectable: true,
+        children: [
+          CustomTableRow(
+            children: [
+              TableCellData(
+                text: lLongName,
+                textAlign: TextAlign.center,
+                style: const TextStyle(fontSize: 14),
+                color: TableCellData.resolveHeaderColor(context),
               ),
-            ),
-          ]),
-        if (war.eventId > 0)
-          CustomTableRow(children: [
-            TableCellData(isHeader: true, text: S.current.event),
-            TableCellData(
-              flex: 3,
-              child: TextButton(
-                onPressed: () {
-                  router.push(url: Routes.eventI(war.eventId), detail: true);
-                },
-                style: kTextButtonDenseStyle,
-                child: Text(
-                  war.event?.lShortName.l ?? Transl.eventNames(war.eventName).l,
+            ],
+          ),
+          if (!Transl.isJP)
+            CustomTableRow(
+              children: [
+                TableCellData(
+                  text: longNameJp,
                   textAlign: TextAlign.center,
-                  textScaler: const TextScaler.linear(0.9),
+                  style: const TextStyle(fontSize: 14),
+                  color: TableCellData.resolveHeaderColor(context).withAlpha(128),
                 ),
-              ),
-            )
-          ]),
-      ],
-    ));
+              ],
+            ),
+          if (lShortName != lLongName) CustomTableRow.fromTexts(texts: [lShortName]),
+          if (shortNameJp != longNameJp && !Transl.isJP) CustomTableRow.fromTexts(texts: [shortNameJp]),
+          CustomTableRow(
+            children: [TableCellData(text: S.current.war_age, isHeader: true), TableCellData(text: war.age, flex: 3)],
+          ),
+          if (warBanners.isNotEmpty)
+            CustomTableRow(
+              children: [
+                TableCellData(text: S.current.war_banner, isHeader: true),
+                TableCellData(
+                  flex: 3,
+                  child: Wrap(
+                    spacing: 4,
+                    alignment: WrapAlignment.center,
+                    children:
+                        warBanners.map((e) => CachedImage(imageUrl: e, height: 48, showSaveOnLongPress: true)).toList(),
+                  ),
+                ),
+              ],
+            ),
+          if (war.eventId > 0)
+            CustomTableRow(
+              children: [
+                TableCellData(isHeader: true, text: S.current.event),
+                TableCellData(
+                  flex: 3,
+                  child: TextButton(
+                    onPressed: () {
+                      router.push(url: Routes.eventI(war.eventId), detail: true);
+                    },
+                    style: kTextButtonDenseStyle,
+                    child: Text(
+                      war.event?.lShortName.l ?? Transl.eventNames(war.eventName).l,
+                      textAlign: TextAlign.center,
+                      textScaler: const TextScaler.linear(0.9),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+        ],
+      ),
+    );
 
     if (war.spots.isNotEmpty || war.questSelections.isNotEmpty) {
       children.add(addQuestCategoryTile(context: context, war: war));
@@ -179,60 +182,67 @@ class _WarDetailPageState extends State<WarDetailPage> with RegionBasedState<Nic
 
     List<Widget> extraTiles = [];
     if (war.quests.any((q) => q.phaseScripts.isNotEmpty)) {
-      extraTiles.add(ListTile(
-        title: Text(S.current.script_story),
-        onTap: () {
-          router.pushPage(ScriptListPage(war: war));
-        },
-      ));
-      extraTiles.add(ListTile(
-        title: Text(S.current.media_assets),
-        onTap: () {
-          router.pushPage(WarAssetListPage(war: war));
-        },
-      ));
+      extraTiles.add(
+        ListTile(
+          title: Text(S.current.script_story),
+          onTap: () {
+            router.pushPage(ScriptListPage(war: war));
+          },
+        ),
+      );
+      extraTiles.add(
+        ListTile(
+          title: Text(S.current.media_assets),
+          onTap: () {
+            router.pushPage(WarAssetListPage(war: war));
+          },
+        ),
+      );
     }
-    Set<int> bgms = {
-      if (war.bgm != null) war.bgm!.id,
-      ...war.warAdds.where((e) => e.type == WarOverwriteType.bgm).map((e) => e.overwriteId),
-      ...war.maps.map((e) => e.bgm.id),
-      ...eventAdds.where((e) => e.overwriteType == EventOverwriteType.bgm).map((e) => e.overwriteId),
-    }.where((e) => e != 0).toSet();
+    Set<int> bgms =
+        {
+          if (war.bgm != null) war.bgm!.id,
+          ...war.warAdds.where((e) => e.type == WarOverwriteType.bgm).map((e) => e.overwriteId),
+          ...war.maps.map((e) => e.bgm.id),
+          ...eventAdds.where((e) => e.overwriteType == EventOverwriteType.bgm).map((e) => e.overwriteId),
+        }.where((e) => e != 0).toSet();
     if (bgms.isNotEmpty) {
       if (bgms.length == 1) {
         final bgm = db.gameData.bgms[bgms.first];
         final name = bgm?.tooltip.setMaxLines(1);
-        extraTiles.add(ListTile(
-          title: Text(S.current.bgm),
-          subtitle: name?.toText(),
-          onTap: bgm?.routeTo,
-        ));
+        extraTiles.add(ListTile(title: Text(S.current.bgm), subtitle: name?.toText(), onTap: bgm?.routeTo));
       } else {
-        extraTiles.add(ListTile(
-          title: Text(S.current.bgm),
-          onTap: () {
-            router.pushPage(WarBgmListPage(bgmIds: bgms.toList()));
-          },
-        ));
+        extraTiles.add(
+          ListTile(
+            title: Text(S.current.bgm),
+            onTap: () {
+              router.pushPage(WarBgmListPage(bgmIds: bgms.toList()));
+            },
+          ),
+        );
       }
     }
     final maps = war.maps.where((e) => e.mapImageW > 0 && e.mapImageH > 0).toList();
     if (maps.isNotEmpty) {
       if (maps.length == 1) {
         final map = maps.first;
-        extraTiles.add(ListTile(
-          title: Text('${S.current.war_map} ${map.id}'),
-          onTap: () {
-            router.push(child: WarMapPage(war: war, map: map));
-          },
-        ));
+        extraTiles.add(
+          ListTile(
+            title: Text('${S.current.war_map} ${map.id}'),
+            onTap: () {
+              router.push(child: WarMapPage(war: war, map: map));
+            },
+          ),
+        );
       } else {
-        extraTiles.add(ListTile(
-          title: Text(S.current.war_map),
-          onTap: () {
-            router.push(child: WarMapListPage(war: war));
-          },
-        ));
+        extraTiles.add(
+          ListTile(
+            title: Text(S.current.war_map),
+            onTap: () {
+              router.push(child: WarMapListPage(war: war));
+            },
+          ),
+        );
       }
     }
     if (extraTiles.isNotEmpty) {
@@ -244,80 +254,84 @@ class _WarDetailPageState extends State<WarDetailPage> with RegionBasedState<Nic
       subWars.sort2((e) => -e.priority);
       List<Widget> warTiles = [];
       for (final _w in subWars) {
-        warTiles.add(LayoutBuilder(builder: (context, constraints) {
-          String title = _w.lLongName.l;
-          return ListTile(
-            leading: _w.shownBanner == null
-                ? null
-                : db.getIconImage(_w.shownBanner, height: min(constraints.maxWidth / 2, 164.0), aspectRatio: 450 / 134),
-            horizontalTitleGap: 8,
-            title: Text(
-              title,
-              maxLines: 1,
-              textScaler: const TextScaler.linear(0.8),
-              overflow: TextOverflow.ellipsis,
-            ),
-            onTap: () {
-              _w.routeTo();
+        warTiles.add(
+          LayoutBuilder(
+            builder: (context, constraints) {
+              String title = _w.lLongName.l;
+              return ListTile(
+                leading:
+                    _w.shownBanner == null
+                        ? null
+                        : db.getIconImage(
+                          _w.shownBanner,
+                          height: min(constraints.maxWidth / 2, 164.0),
+                          aspectRatio: 450 / 134,
+                        ),
+                horizontalTitleGap: 8,
+                title: Text(
+                  title,
+                  maxLines: 1,
+                  textScaler: const TextScaler.linear(0.8),
+                  overflow: TextOverflow.ellipsis,
+                ),
+                onTap: () {
+                  _w.routeTo();
+                },
+              );
             },
-          );
-        }));
+          ),
+        );
       }
-      children.add(TileGroup(
-        header: 'Sub Wars',
-        children: warTiles,
-      ));
+      children.add(TileGroup(header: 'Sub Wars', children: warTiles));
     }
 
     if (war.itemReward.isNotEmpty) {
       children.add(
         ListTile(
           title: Text(S.current.game_rewards),
-          trailing: war.isMainStory
-              ? db.onUserData((context, snapshot) => Switch.adaptive(
-                    value: plan.questReward,
-                    onChanged: (v) {
-                      plan.questReward = v;
-                      db.itemCenter.updateMainStory();
-                    },
-                  ))
-              : null,
+          trailing:
+              war.isMainStory
+                  ? db.onUserData(
+                    (context, snapshot) => Switch.adaptive(
+                      value: plan.questReward,
+                      onChanged: (v) {
+                        plan.questReward = v;
+                        db.itemCenter.updateMainStory();
+                      },
+                    ),
+                  )
+                  : null,
           onTap: () {
             plan.questReward = !plan.questReward;
             db.itemCenter.updateMainStory();
           },
         ),
       );
-      children.add(SharedBuilder.groupItems(
-        context: context,
-        items: war.itemReward,
-        width: 48,
-      ));
+      children.add(SharedBuilder.groupItems(context: context, items: war.itemReward, width: 48));
     }
     if (war.itemDrop.isNotEmpty) {
       children.add(
         ListTile(
           title: Text(S.current.quest_fixed_drop),
-          trailing: war.isMainStory
-              ? db.onUserData((context, snapshot) => Switch.adaptive(
-                    value: plan.fixedDrop,
-                    onChanged: (v) {
-                      plan.fixedDrop = v;
-                      db.itemCenter.updateMainStory();
-                    },
-                  ))
-              : null,
+          trailing:
+              war.isMainStory
+                  ? db.onUserData(
+                    (context, snapshot) => Switch.adaptive(
+                      value: plan.fixedDrop,
+                      onChanged: (v) {
+                        plan.fixedDrop = v;
+                        db.itemCenter.updateMainStory();
+                      },
+                    ),
+                  )
+                  : null,
           onTap: () {
             plan.fixedDrop = !plan.fixedDrop;
             db.itemCenter.updateMainStory();
           },
         ),
       );
-      children.add(SharedBuilder.groupItems(
-        context: context,
-        items: war.itemDrop,
-        width: 48,
-      ));
+      children.add(SharedBuilder.groupItems(context: context, items: war.itemDrop, width: 48));
     }
 
     return ListView(children: children);
@@ -326,61 +340,57 @@ class _WarDetailPageState extends State<WarDetailPage> with RegionBasedState<Nic
   Widget get popupMenu {
     final war = data;
     return PopupMenuButton<dynamic>(
-      itemBuilder: (context) => [
-        PopupMenuItem(
-          enabled: false,
-          height: 32,
-          child: Text('No.${widget.war?.id ?? widget.warId}', textScaler: const TextScaler.linear(0.9)),
-        ),
-        const PopupMenuDivider(),
-        if (war != null)
-          ...SharedBuilder.websitesPopupMenuItems(
-            atlas: Atlas.dbWar(war.id),
-            mooncell: war.extra.mcLink ?? war.event?.extra.mcLink,
-            fandom: war.extra.fandomLink ?? war.event?.extra.fandomLink,
-          ),
-        if (war != null)
-          ...SharedBuilder.noticeLinkPopupMenuItems(
-            noticeLink: war.extra.noticeLink,
-          ),
-        if (warId > 0) ...[
-          PopupMenuItem(
-            child: Text(S.current.switch_region),
-            onTap: () {
-              _showSwitchRegion();
-            },
-          ),
-          PopupMenuItem(
-            child: Text(S.current.refresh),
-            onTap: () {
-              doFetchData(expireAfter: Duration.zero);
-            },
-          ),
-        ],
-      ],
+      itemBuilder:
+          (context) => [
+            PopupMenuItem(
+              enabled: false,
+              height: 32,
+              child: Text('No.${widget.war?.id ?? widget.warId}', textScaler: const TextScaler.linear(0.9)),
+            ),
+            const PopupMenuDivider(),
+            if (war != null)
+              ...SharedBuilder.websitesPopupMenuItems(
+                atlas: Atlas.dbWar(war.id),
+                mooncell: war.extra.mcLink ?? war.event?.extra.mcLink,
+                fandom: war.extra.fandomLink ?? war.event?.extra.fandomLink,
+              ),
+            if (war != null) ...SharedBuilder.noticeLinkPopupMenuItems(noticeLink: war.extra.noticeLink),
+            if (warId > 0) ...[
+              PopupMenuItem(
+                child: Text(S.current.switch_region),
+                onTap: () {
+                  _showSwitchRegion();
+                },
+              ),
+              PopupMenuItem(
+                child: Text(S.current.refresh),
+                onTap: () {
+                  doFetchData(expireAfter: Duration.zero);
+                },
+              ),
+            ],
+          ],
     );
   }
 
   Widget? getCondWar() {
     NiceWar? condWar = data?.releaseCondWar;
     if (condWar == null) return null;
-    return CustomTableRow(children: [
-      TableCellData(isHeader: true, text: S.current.open_condition),
-      TableCellData(
-        flex: 3,
-        child: TextButton(
-          onPressed: () {
-            condWar.routeTo();
-          },
-          style: kTextButtonDenseStyle,
-          child: Text(
-            condWar.lShortName,
-            textAlign: TextAlign.center,
-            textScaler: const TextScaler.linear(0.9),
+    return CustomTableRow(
+      children: [
+        TableCellData(isHeader: true, text: S.current.open_condition),
+        TableCellData(
+          flex: 3,
+          child: TextButton(
+            onPressed: () {
+              condWar.routeTo();
+            },
+            style: kTextButtonDenseStyle,
+            child: Text(condWar.lShortName, textAlign: TextAlign.center, textScaler: const TextScaler.linear(0.9)),
           ),
         ),
-      )
-    ]);
+      ],
+    );
   }
 
   Widget buildRaidLinks(Map<Region, String> raidLink) {
@@ -393,7 +403,7 @@ class _WarDetailPageState extends State<WarDetailPage> with RegionBasedState<Nic
             onTap: () {
               launch(url);
             },
-          )
+          ),
       ],
     );
   }
@@ -403,28 +413,29 @@ class _WarDetailPageState extends State<WarDetailPage> with RegionBasedState<Nic
     showDialog(
       context: context,
       useRootNavigator: false,
-      builder: (context) => SimpleDialog(
-        children: [
-          ...Region.values.map((region) {
-            final released = db.gameData.mappingData.warRelease.ofRegion(region);
-            return ListTile(
-              title: Text(region.localName),
-              enabled: released == null || released.isEmpty || released.contains(warId),
-              onTap: () async {
-                Navigator.pop(context);
-                this.region = region;
-                doFetchData();
-              },
-            );
-          }),
-          IconButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            icon: const Icon(Icons.clear),
-          )
-        ],
-      ),
+      builder:
+          (context) => SimpleDialog(
+            children: [
+              ...Region.values.map((region) {
+                final released = db.gameData.mappingData.warRelease.ofRegion(region);
+                return ListTile(
+                  title: Text(region.localName),
+                  enabled: released == null || released.isEmpty || released.contains(warId),
+                  onTap: () async {
+                    Navigator.pop(context);
+                    this.region = region;
+                    doFetchData();
+                  },
+                );
+              }),
+              IconButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                icon: const Icon(Icons.clear),
+              ),
+            ],
+          ),
     );
   }
 }
@@ -435,9 +446,7 @@ Widget addQuestCategoryTile({
   Event? event,
   List<Quest> extraQuests = const [],
 }) {
-  final allQuests = [
-    ...extraQuests,
-  ];
+  final allQuests = [...extraQuests];
   if (war != null) {
     if (war.id == WarId.chaldeaGate) {
       final ignoreQuestIds = <int>{};
@@ -479,8 +488,11 @@ Widget addQuestCategoryTile({
         oneOffQuests.add(quest);
       } else if (quest.flags.contains(QuestFlag.raid)) {
         raidQuests.add(quest);
-      } else if ([QuestFlag.notRetrievable, QuestFlag.dropFirstTimeOnly, QuestFlag.forceToNoDrop]
-          .any((flag) => quest.flags.contains(flag))) {
+      } else if ([
+        QuestFlag.notRetrievable,
+        QuestFlag.dropFirstTimeOnly,
+        QuestFlag.forceToNoDrop,
+      ].any((flag) => quest.flags.contains(flag))) {
         difficultQuests.add(quest);
       } else if (quest.flags.contains(QuestFlag.noBattle)) {
         eventQuests.add(quest);
@@ -512,15 +524,15 @@ Widget addQuestCategoryTile({
 
   void _addTile(String name, List<Quest> quests, {bool needSort = true}) {
     if (quests.isEmpty) return;
-    children.add(ListTile(
-      title: Text(name),
-      trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
-      onTap: () {
-        router.push(
-          child: QuestListPage(title: name, quests: quests, needSort: needSort, war: war),
-        );
-      },
-    ));
+    children.add(
+      ListTile(
+        title: Text(name),
+        trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
+        onTap: () {
+          router.push(child: QuestListPage(title: name, quests: quests, needSort: needSort, war: war));
+        },
+      ),
+    );
   }
 
   _addTile(S.current.main_quest, mainQuests);
@@ -542,28 +554,34 @@ Widget addQuestCategoryTile({
   if (war?.id != WarId.daily && war?.id != WarId.chaldeaGate) {
     for (final (fqs, title) in [(freeQuests, S.current.free_quest), (raidQuests, S.current.raid_quest)]) {
       if (fqs.isEmpty) continue;
-      children.add(ListTile(
-        title: Text("${S.current.game_drop} ($title)"),
-        trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
-        onTap: () {
-          router.pushPage(FreeQuestOverview(
-            quests: fqs,
-            isMainStory: war?.isMainStory ?? false,
-            needSort: ![311, WarId.ordealCall].contains(war?.id),
-          ));
-        },
-      ));
+      children.add(
+        ListTile(
+          title: Text("${S.current.game_drop} ($title)"),
+          trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
+          onTap: () {
+            router.pushPage(
+              FreeQuestOverview(
+                quests: fqs,
+                isMainStory: war?.isMainStory ?? false,
+                needSort: ![311, WarId.ordealCall].contains(war?.id),
+              ),
+            );
+          },
+        ),
+      );
     }
   }
   _addTile(S.current.war_board, warBoardQuests);
   _addTile(S.current.event_quest, eventQuests);
   _addTile(S.current.one_off_quest, oneOffQuests);
   if (war?.id == WarId.advanced) {
-    difficultQuests.sortByList((e) => <Comparable>[
-          int.tryParse(RegExp(r'\d+').firstMatch(e.recommendLv)?.group(0) ?? "") ?? 999,
-          e.recommendLv,
-          -e.priority,
-        ]);
+    difficultQuests.sortByList(
+      (e) => <Comparable>[
+        int.tryParse(RegExp(r'\d+').firstMatch(e.recommendLv)?.group(0) ?? "") ?? 999,
+        e.recommendLv,
+        -e.priority,
+      ],
+    );
     _addTile(S.current.high_difficulty_quest, difficultQuests, needSort: false);
   } else {
     _addTile(S.current.high_difficulty_quest, difficultQuests);
@@ -572,43 +590,40 @@ Widget addQuestCategoryTile({
   _addTile('Selections', selectionQuests, needSort: false);
 
   if (war?.id == WarId.chaldeaGate) {
-    children.add(ListTile(
-      title: Text("${S.current.sort_order}: ${S.current.time}"),
-      trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
-      onTap: () {
-        router.push(child: const ChaldeaGateQuestListPage());
-      },
-    ));
+    children.add(
+      ListTile(
+        title: Text("${S.current.sort_order}: ${S.current.time}"),
+        trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
+        onTap: () {
+          router.push(child: const ChaldeaGateQuestListPage());
+        },
+      ),
+    );
   }
 
   event ??= war?.eventReal;
   if (event != null && event.towers.isNotEmpty) {
     children.add(Divider(color: Theme.of(context).scaffoldBackgroundColor, thickness: 2, height: 2));
     for (final tower in event.towers) {
-      final towerQuestIds = db.gameData.others.eventTowerQuestGroups[tower.towerId]
-              ?.toSet()
-              .intersection(allQuests.map((e) => e.id).toSet()) ??
+      final towerQuestIds =
+          db.gameData.others.eventTowerQuestGroups[tower.towerId]?.toSet().intersection(
+            allQuests.map((e) => e.id).toSet(),
+          ) ??
           <int>{};
       if (towerQuestIds.isNotEmpty) {
-        children.add(ListTile(
-          dense: true,
-          title: Text('${tower.lName}(${towerQuestIds.length})'),
-          trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
-          onTap: () {
-            router.push(
-              child: QuestListPage.ids(
-                title: tower.lName,
-                ids: towerQuestIds.toList(),
-              ),
-            );
-          },
-        ));
+        children.add(
+          ListTile(
+            dense: true,
+            title: Text('${tower.lName}(${towerQuestIds.length})'),
+            trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
+            onTap: () {
+              router.push(child: QuestListPage.ids(title: tower.lName, ids: towerQuestIds.toList()));
+            },
+          ),
+        );
       }
     }
   }
 
-  return TileGroup(
-    header: S.current.quest,
-    children: children,
-  );
+  return TileGroup(header: S.current.quest, children: children);
 }

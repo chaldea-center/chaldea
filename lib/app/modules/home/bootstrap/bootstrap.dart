@@ -67,33 +67,32 @@ class _BootstrapPageState extends State<BootstrapPage> with SingleTickerProvider
   @override
   Widget build(BuildContext context) {
     if (invalidStartup) {
-      return wrapChild(StartupFailedPage(
-        error: '${S.current.invalid_startup_path}\n'
-            '${db.paths.appPath}\n\n'
-            '${S.current.invalid_startup_path_info}',
-      ));
+      return wrapChild(
+        StartupFailedPage(
+          error:
+              '${S.current.invalid_startup_path}\n'
+              '${db.paths.appPath}\n\n'
+              '${S.current.invalid_startup_path_info}',
+        ),
+      );
     }
     if (!_startupLoadingFailed && !db.settings.tips.starter) {
-      return wrapChild(StartupLoadingPage(
-        onSuccess: () {
-          rootRouter.appState.dataReady = true;
-        },
-        onFailed: () {
-          _startupLoadingFailed = true;
-          if (mounted) setState(() {});
-        },
-      ));
+      return wrapChild(
+        StartupLoadingPage(
+          onSuccess: () {
+            rootRouter.appState.dataReady = true;
+          },
+          onFailed: () {
+            _startupLoadingFailed = true;
+            if (mounted) setState(() {});
+          },
+        ),
+      );
     }
-    pages = db.settings.tips.starter
-        ? [
-            welcomePage,
-            languagePage,
-            if (kIsWeb) webDomainPage,
-            darkModePage,
-            createAccountPage,
-            dataPage,
-          ]
-        : [dataPage];
+    pages =
+        db.settings.tips.starter
+            ? [welcomePage, languagePage, if (kIsWeb) webDomainPage, darkModePage, createAccountPage, dataPage]
+            : [dataPage];
 
     Widget child = PageView(
       controller: _pageController,
@@ -112,18 +111,9 @@ class _BootstrapPageState extends State<BootstrapPage> with SingleTickerProvider
 
   Widget wrapChild(Widget child) {
     return Scaffold(
-      appBar: AppBar(
-        toolbarHeight: 0,
-        elevation: 0,
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      ),
+      appBar: AppBar(toolbarHeight: 0, elevation: 0, backgroundColor: Theme.of(context).scaffoldBackgroundColor),
       body: SafeArea(
-        child: Center(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 768),
-            child: child,
-          ),
-        ),
+        child: Center(child: ConstrainedBox(constraints: const BoxConstraints(maxWidth: 768), child: child)),
       ),
     );
   }
@@ -141,14 +131,10 @@ class _BootstrapPageState extends State<BootstrapPage> with SingleTickerProvider
             width: 180,
           ),
         ),
-        Text(
-          'Chaldea',
-          style: Theme.of(context).textTheme.headlineMedium,
-          textAlign: TextAlign.center,
-        ),
+        Text('Chaldea', style: Theme.of(context).textTheme.headlineMedium, textAlign: TextAlign.center),
         const SizedBox(height: 24),
         _AnimatedHello(),
-        const SizedBox(height: 100)
+        const SizedBox(height: 100),
       ],
     );
   }
@@ -172,11 +158,7 @@ class _BootstrapPageState extends State<BootstrapPage> with SingleTickerProvider
             },
           );
         },
-        separatorBuilder: (context, _) => const Divider(
-          height: 1,
-          indent: 48,
-          endIndent: 48,
-        ),
+        separatorBuilder: (context, _) => const Divider(height: 1, indent: 48, endIndent: 48),
         itemCount: Language.supportLanguages.length,
       ),
     );
@@ -193,11 +175,12 @@ class _BootstrapPageState extends State<BootstrapPage> with SingleTickerProvider
         subtitle: Text(domain.toString()),
         minLeadingWidth: 24,
         trailing: selected ? null : const Icon(Icons.open_in_new),
-        onTap: selected
-            ? null
-            : () {
-                launch(domain.toString());
-              },
+        onTap:
+            selected
+                ? null
+                : () {
+                  launch(domain.toString());
+                },
       );
     }
 
@@ -225,7 +208,7 @@ class _BootstrapPageState extends State<BootstrapPage> with SingleTickerProvider
               // textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.bodySmall,
             ),
-          )
+          ),
         ],
       ),
     );
@@ -260,11 +243,7 @@ class _BootstrapPageState extends State<BootstrapPage> with SingleTickerProvider
             },
           );
         },
-        separatorBuilder: (context, _) => const Divider(
-          height: 1,
-          indent: 48,
-          endIndent: 48,
-        ),
+        separatorBuilder: (context, _) => const Divider(height: 1, indent: 48, endIndent: 48),
         itemCount: ThemeMode.values.length,
       ),
     );
@@ -288,10 +267,7 @@ class _BootstrapPageState extends State<BootstrapPage> with SingleTickerProvider
             ),
           ),
           const SizedBox(height: 8),
-          Text(
-            S.current.game_server,
-            textAlign: TextAlign.center,
-          ),
+          Text(S.current.game_server, textAlign: TextAlign.center),
           const SizedBox(height: 8),
           ...divideTiles(
             List.generate(Region.values.length, (index) {
@@ -308,11 +284,7 @@ class _BootstrapPageState extends State<BootstrapPage> with SingleTickerProvider
                 },
               );
             }),
-            divider: const Divider(
-              height: 1,
-              indent: 48,
-              endIndent: 48,
-            ),
+            divider: const Divider(height: 1, indent: 48, endIndent: 48),
           ),
         ],
       ),
@@ -320,11 +292,7 @@ class _BootstrapPageState extends State<BootstrapPage> with SingleTickerProvider
   }
 
   Widget get dataPage {
-    return _IntroPage(
-      icon: FontAwesomeIcons.database,
-      title: S.current.database,
-      content: _DatabaseIntro(),
-    );
+    return _IntroPage(icon: FontAwesomeIcons.database, title: S.current.database, content: _DatabaseIntro());
   }
 
   Widget _bottom() {
@@ -332,77 +300,71 @@ class _BootstrapPageState extends State<BootstrapPage> with SingleTickerProvider
     if (page <= 0) {
       children.add(const SizedBox(width: 64));
     } else {
-      children.add(TextButton(
-        child: Text(S.current.prev_page),
-        onPressed: () {
-          _pageController.previousPage(
-            duration: kTabScrollDuration,
-            curve: Curves.easeInOut,
-          );
-        },
-      ));
-    }
-    children.add(Expanded(
-      flex: 2,
-      child: Center(
-        child: SmoothPageIndicator(
-          controller: _pageController,
-          count: pages.length,
-          effect: const WormEffect(dotHeight: 10, dotWidth: 10, activeDotColor: Colors.blue),
-          onDotClicked: (i) {
-            setState(() {
-              page = i;
-              _pageController.animateToPage(
-                i,
-                duration: kTabScrollDuration,
-                curve: Curves.easeInOut,
-              );
-            });
+      children.add(
+        TextButton(
+          child: Text(S.current.prev_page),
+          onPressed: () {
+            _pageController.previousPage(duration: kTabScrollDuration, curve: Curves.easeInOut);
           },
         ),
-      ),
-    ));
-    if (page >= pages.length - 1) {
-      children.add(TextButton(
-        child: Text(S.current.done),
-        onPressed: () {
-          if (db.gameData.version.timestamp > 0) {
-            db.settings.tips.starter = false;
-            rootRouter.appState.dataReady = true;
-            db.saveSettings();
-          } else {
-            showDialog(
-              context: context,
-              useRootNavigator: false,
-              builder: (context) => SimpleCancelOkDialog(
-                content: Text(S.current.database_not_downloaded),
-                onTapOk: () {
-                  db.settings.tips.starter = false;
-                  db.saveSettings();
-                  rootRouter.appState.dataReady = true;
-                },
-              ),
-            );
-          }
-        },
-      ));
-    } else {
-      children.add(TextButton(
-        child: Text(S.current.next_page),
-        onPressed: () {
-          _pageController.nextPage(
-            duration: kTabScrollDuration,
-            curve: Curves.easeInOut,
-          );
-        },
-      ));
+      );
     }
-    return PositionedDirectional(
-      bottom: 10.0,
-      start: 10.0,
-      end: 10.0,
-      child: Row(children: children),
+    children.add(
+      Expanded(
+        flex: 2,
+        child: Center(
+          child: SmoothPageIndicator(
+            controller: _pageController,
+            count: pages.length,
+            effect: const WormEffect(dotHeight: 10, dotWidth: 10, activeDotColor: Colors.blue),
+            onDotClicked: (i) {
+              setState(() {
+                page = i;
+                _pageController.animateToPage(i, duration: kTabScrollDuration, curve: Curves.easeInOut);
+              });
+            },
+          ),
+        ),
+      ),
     );
+    if (page >= pages.length - 1) {
+      children.add(
+        TextButton(
+          child: Text(S.current.done),
+          onPressed: () {
+            if (db.gameData.version.timestamp > 0) {
+              db.settings.tips.starter = false;
+              rootRouter.appState.dataReady = true;
+              db.saveSettings();
+            } else {
+              showDialog(
+                context: context,
+                useRootNavigator: false,
+                builder:
+                    (context) => SimpleCancelOkDialog(
+                      content: Text(S.current.database_not_downloaded),
+                      onTapOk: () {
+                        db.settings.tips.starter = false;
+                        db.saveSettings();
+                        rootRouter.appState.dataReady = true;
+                      },
+                    ),
+              );
+            }
+          },
+        ),
+      );
+    } else {
+      children.add(
+        TextButton(
+          child: Text(S.current.next_page),
+          onPressed: () {
+            _pageController.nextPage(duration: kTabScrollDuration, curve: Curves.easeInOut);
+          },
+        ),
+      );
+    }
+    return PositionedDirectional(bottom: 10.0, start: 10.0, end: 10.0, child: Row(children: children));
   }
 }
 
@@ -432,10 +394,13 @@ class _DatabaseIntroState extends State<_DatabaseIntro> {
                 value: db.settings.proxy.data,
                 items: [
                   DropdownMenuItem(
-                      value: false,
-                      child: Text(S.current.chaldea_server_global, textScaler: const TextScaler.linear(0.8))),
+                    value: false,
+                    child: Text(S.current.chaldea_server_global, textScaler: const TextScaler.linear(0.8)),
+                  ),
                   DropdownMenuItem(
-                      value: true, child: Text(S.current.chaldea_server_cn, textScaler: const TextScaler.linear(0.8))),
+                    value: true,
+                    child: Text(S.current.chaldea_server_cn, textScaler: const TextScaler.linear(0.8)),
+                  ),
                 ],
                 onChanged: (v) {
                   setState(() {
@@ -447,13 +412,14 @@ class _DatabaseIntroState extends State<_DatabaseIntro> {
               ),
               IconButton(
                 onPressed: () async {
-                  await Navigator.of(context)
-                      .push(MaterialPageRoute(builder: (context) => const NetworkSettingsPage()));
+                  await Navigator.of(
+                    context,
+                  ).push(MaterialPageRoute(builder: (context) => const NetworkSettingsPage()));
                   if (mounted) setState(() {});
                 },
                 icon: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
                 tooltip: S.current.details,
-              )
+              ),
             ],
           ),
         ),
@@ -474,9 +440,9 @@ class _DatabaseIntroState extends State<_DatabaseIntro> {
           title: Text(S.current.current_version),
           trailing: Text(
             db.gameData.version.timestamp > 0
-                ? DateTime.fromMillisecondsSinceEpoch(db.gameData.version.timestamp * 1000)
-                    .toStringShort()
-                    .replaceFirst(' ', '\n')
+                ? DateTime.fromMillisecondsSinceEpoch(
+                  db.gameData.version.timestamp * 1000,
+                ).toStringShort().replaceFirst(' ', '\n')
                 : S.current.not_found,
             textAlign: TextAlign.end,
             textScaler: const TextScaler.linear(0.9),
@@ -529,11 +495,8 @@ class _DatabaseIntroState extends State<_DatabaseIntro> {
                   }
                   EasyLoading.showSuccess(S.current.clear_cache_finish);
                 },
-                child: Text(
-                  S.current.clear_cache,
-                  style: TextStyle(color: Theme.of(context).colorScheme.error),
-                ),
-              )
+                child: Text(S.current.clear_cache, style: TextStyle(color: Theme.of(context).colorScheme.error)),
+              ),
           ],
         ),
         progressIcon,
@@ -559,15 +522,13 @@ class _DatabaseIntroState extends State<_DatabaseIntro> {
                 Icon(
                   _loader.error != null ? Icons.clear_rounded : Icons.done,
                   size: 80,
-                  color: _loader.error != null
-                      ? Theme.of(context).colorScheme.error
-                      : Theme.of(context).colorScheme.primary,
+                  color:
+                      _loader.error != null
+                          ? Theme.of(context).colorScheme.error
+                          : Theme.of(context).colorScheme.primary,
                 ),
               if (progress != null && progress < 1.0)
-                Text(
-                  '${(progress * 100).toInt()}%',
-                  style: const TextStyle(fontSize: 24),
-                ),
+                Text('${(progress * 100).toInt()}%', style: const TextStyle(fontSize: 24)),
               Center(
                 child: SizedBox(
                   width: 120,
@@ -627,16 +588,16 @@ class _AnimatedHello extends StatefulWidget {
 
 class _AnimatedHelloState extends State<_AnimatedHello> {
   List<String> get _hellos => const [
-        // 'φ(≧ω≦*)♪'
-        'ヽ(^o^)丿',
-        '你好',
-        'Hello',
-        'こんにちは',
-        '哈嘍',
-        '안녕하세요',
-        '¡Buenas!',
-        '\u0645\u0631\u062d\u0628\u0627', // Arabic
-      ];
+    // 'φ(≧ω≦*)♪'
+    'ヽ(^o^)丿',
+    '你好',
+    'Hello',
+    'こんにちは',
+    '哈嘍',
+    '안녕하세요',
+    '¡Buenas!',
+    '\u0645\u0631\u062d\u0628\u0627', // Arabic
+  ];
   bool shown = false;
   int index = 0;
 
@@ -667,11 +628,7 @@ class _AnimatedHelloState extends State<_AnimatedHello> {
       },
       child: SizedBox(
         height: 36,
-        child: Text(
-          _hellos[index],
-          style: const TextStyle(fontSize: 18),
-          textAlign: TextAlign.center,
-        ),
+        child: Text(_hellos[index], style: const TextStyle(fontSize: 18), textAlign: TextAlign.center),
       ),
     );
   }

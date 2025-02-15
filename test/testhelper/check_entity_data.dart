@@ -38,14 +38,18 @@ void checkSvtData(final String path, final Servant svtData) {
 
       for (int k = 1; k <= skill.functions.length; k += 1) {
         final function = skill.functions[k - 1];
-        checkStrings.add('Function type for function [$k] in skill [$j] in group [$i]: ${function.funcType}, '
-            'DataVal sample: ${function.svals.last.toJson()}');
+        checkStrings.add(
+          'Function type for function [$k] in skill [$j] in group [$i]: ${function.funcType}, '
+          'DataVal sample: ${function.svals.last.toJson()}',
+        );
 
         if (function.buff != null) {
           final buff = function.buff!;
           final scriptCheck = buff.script.source.isNotEmpty;
-          checkStrings.add('Buff in function has type [${buff.type}]'
-              '${scriptCheck ? ' and script [${buff.script.source}]' : ''}');
+          checkStrings.add(
+            'Buff in function has type [${buff.type}]'
+            '${scriptCheck ? ' and script [${buff.script.source}]' : ''}',
+          );
         }
       }
       checkStrings.add('+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++');
@@ -67,13 +71,17 @@ void checkSvtData(final String path, final Servant svtData) {
     for (int j = 1; j <= niceTd.functions.length; j += 1) {
       checkStrings.add('Checking function [$j] in noblePhantasm [$i]');
       final function = niceTd.functions[j - 1];
-      checkStrings.add('Function type for function [$j] in noblePhantasms [$i]: ${function.funcType} '
-          'DataVal sample: ${function.svals.last.toJson()}');
+      checkStrings.add(
+        'Function type for function [$j] in noblePhantasms [$i]: ${function.funcType} '
+        'DataVal sample: ${function.svals.last.toJson()}',
+      );
       if (function.buff != null) {
         final buff = function.buff!;
         final scriptCheck = buff.script.source.isNotEmpty;
-        checkStrings.add('Buff in function has type [${buff.type}]'
-            '${scriptCheck ? ' and script [${buff.script.source}]' : ''}');
+        checkStrings.add(
+          'Buff in function has type [${buff.type}]'
+          '${scriptCheck ? ' and script [${buff.script.source}]' : ''}',
+        );
       }
     }
     checkStrings.add('===============================================================');
@@ -90,7 +98,10 @@ void checkByType(final String path) {
   final Map<String, Map<String, List<String>>> buffTypeToScripts = {};
 
   void logSkills(
-      final Map<String, dynamic>? skillScriptMap, final List<NiceFunction> skillFunctions, final String identifier) {
+    final Map<String, dynamic>? skillScriptMap,
+    final List<NiceFunction> skillFunctions,
+    final String identifier,
+  ) {
     if (skillScriptMap != null && skillScriptMap.isNotEmpty) {
       for (final entry in skillScriptMap.entries) {
         if (!skillScripts.containsKey(entry.key)) {
@@ -144,8 +155,11 @@ void checkByType(final String path) {
         if (buff.type.name.endsWith('Function')) {
           final activatedSkill = db.gameData.baseSkills[dataVal.Value];
           if (activatedSkill != null) {
-            logSkills(activatedSkill.script?.source, activatedSkill.functions,
-                '$identifier - skill ${dataVal.Value} activated by buff ${buff.type.name}');
+            logSkills(
+              activatedSkill.script?.source,
+              activatedSkill.functions,
+              '$identifier - skill ${dataVal.Value} activated by buff ${buff.type.name}',
+            );
           }
         }
       }
@@ -167,20 +181,29 @@ void checkByType(final String path) {
       for (int j = 1; j <= groupedSkills.length; j += 1) {
         final skill = groupedSkills[j - 1];
         logSkills(
-            skill.script?.source, skill.functions, '${svtData.collectionNo} ${svtData.lName.cn} skill [$i] - [$j]');
+          skill.script?.source,
+          skill.functions,
+          '${svtData.collectionNo} ${svtData.lName.cn} skill [$i] - [$j]',
+        );
       }
     }
 
     for (int j = 1; j <= svtData.classPassive.length; j += 1) {
       final skill = svtData.classPassive[j - 1];
       logSkills(
-          skill.script?.source, skill.functions, '${svtData.collectionNo} ${svtData.lName.cn} passive skill [$j]');
+        skill.script?.source,
+        skill.functions,
+        '${svtData.collectionNo} ${svtData.lName.cn} passive skill [$j]',
+      );
     }
 
     for (int j = 1; j <= svtData.extraPassive.length; j += 1) {
       final skill = svtData.extraPassive[j - 1];
-      logSkills(skill.script?.source, skill.functions,
-          '${svtData.collectionNo} ${svtData.lName.cn} extra passive skill [$j]');
+      logSkills(
+        skill.script?.source,
+        skill.functions,
+        '${svtData.collectionNo} ${svtData.lName.cn} extra passive skill [$j]',
+      );
     }
 
     for (int j = 1; j <= svtData.appendPassive.length; j += 1) {
@@ -191,7 +214,10 @@ void checkByType(final String path) {
     for (int i = 1; i <= svtData.noblePhantasms.length; i += 1) {
       final niceTd = svtData.noblePhantasms[i - 1];
       logSkills(
-          niceTd.script?.source, niceTd.functions, '${svtData.collectionNo} ${svtData.lName.cn} noblePhantasms [$i]');
+        niceTd.script?.source,
+        niceTd.functions,
+        '${svtData.collectionNo} ${svtData.lName.cn} noblePhantasms [$i]',
+      );
     }
   }
 

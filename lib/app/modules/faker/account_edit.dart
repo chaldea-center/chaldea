@@ -37,18 +37,13 @@ class _FakerAccountEditPageState extends State<FakerAccountEditPage> {
   Widget build(BuildContext context) {
     final user = this.user;
     return Scaffold(
-      appBar: AppBar(
-        title: Text('[${user.serverName}] ${user.userGame?.name ?? ""} ${user.userGame?.friendCode}'),
-      ),
+      appBar: AppBar(title: Text('[${user.serverName}] ${user.userGame?.name ?? ""} ${user.userGame?.friendCode}')),
       body: ListView(
         padding: const EdgeInsets.only(bottom: 16),
         children: [
           if (user is AutoLoginDataCN) ...buildCNRows(user),
           if (user is AutoLoginDataJP) ...buildJPRows(user),
-          DividerWithTitle(
-            title: '${S.current.general_export}/${S.current.general_import}',
-            height: 16,
-          ),
+          DividerWithTitle(title: '${S.current.general_export}/${S.current.general_import}', height: 16),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -128,18 +123,22 @@ class _FakerAccountEditPageState extends State<FakerAccountEditPage> {
       ListTile(
         title: Text(S.current.login_auth),
         dense: true,
-        subtitle: Text(user.auth?.userId == null
-            ? 'No Auth Loaded'
-            : '${user.auth?.userId} (${user.auth?.userCreateServer ?? "unknown server"})'),
+        subtitle: Text(
+          user.auth?.userId == null
+              ? 'No Auth Loaded'
+              : '${user.auth?.userId} (${user.auth?.userCreateServer ?? "unknown server"})',
+        ),
         trailing: const Icon(Icons.edit_note_rounded),
         onTap: () {
-          router.pushPage(ReadAuthPage(
-            auth: user.auth,
-            onChanged: (v) {
-              if (v != null) user.auth = v;
-              if (mounted) setState(() {});
-            },
-          ));
+          router.pushPage(
+            ReadAuthPage(
+              auth: user.auth,
+              onChanged: (v) {
+                if (v != null) user.auth = v;
+                if (mounted) setState(() {});
+              },
+            ),
+          );
         },
         selected: user.auth?.userId == null,
         selectedColor: Theme.of(context).colorScheme.error,
@@ -166,10 +165,7 @@ class _FakerAccountEditPageState extends State<FakerAccountEditPage> {
             hint: const Text('Country'),
             items: [
               for (final c in NACountry.values)
-                DropdownMenuItem(
-                  value: c,
-                  child: Text(c.displayName, textScaler: const TextScaler.linear(0.8)),
-                ),
+                DropdownMenuItem(value: c, child: Text(c.displayName, textScaler: const TextScaler.linear(0.8))),
             ],
             onChanged: (v) {
               setState(() {
@@ -182,10 +178,7 @@ class _FakerAccountEditPageState extends State<FakerAccountEditPage> {
       buildRow('Device Info', user.deviceInfo, (s) => user.deviceInfo = s.trim().isEmpty ? null : s.trim()),
       buildRow('User-Agent', user.userAgent, (s) => user.userAgent = s.trim()),
       Center(
-        child: FilledButton.tonal(
-          onPressed: () => updateDeviceInfoJP(user),
-          child: Text(S.current.read_device_info),
-        ),
+        child: FilledButton.tonal(onPressed: () => updateDeviceInfoJP(user), child: Text(S.current.read_device_info)),
       ),
     ];
   }
@@ -195,17 +188,15 @@ class _FakerAccountEditPageState extends State<FakerAccountEditPage> {
       ListTile(
         dense: true,
         title: const Text('区服'),
-        subtitle: user.gameServer == BiliGameServer.uo
-            ? Text('不支持渠道服!', style: TextStyle(color: Theme.of(context).colorScheme.error))
-            : null,
+        subtitle:
+            user.gameServer == BiliGameServer.uo
+                ? Text('不支持渠道服!', style: TextStyle(color: Theme.of(context).colorScheme.error))
+                : null,
         trailing: DropdownButton<BiliGameServer>(
           value: user.gameServer,
           items: [
             for (final server in BiliGameServer.values)
-              DropdownMenuItem(
-                value: server,
-                child: Text(server.shownName, style: const TextStyle(fontSize: 14)),
-              )
+              DropdownMenuItem(value: server, child: Text(server.shownName, style: const TextStyle(fontSize: 14))),
           ],
           onChanged: (v) {
             setState(() {
@@ -249,10 +240,7 @@ class _FakerAccountEditPageState extends State<FakerAccountEditPage> {
       buildRow('ptype', user.ptype, (s) => user.ptype = s.trim()),
       buildRow('User-Agent', user.userAgent, (s) => user.userAgent = s.trim()),
       Center(
-        child: FilledButton.tonal(
-          onPressed: () => updateDeviceInfoCN(user),
-          child: Text(S.current.read_device_info),
-        ),
+        child: FilledButton.tonal(onPressed: () => updateDeviceInfoCN(user), child: Text(S.current.read_device_info)),
       ),
     ];
   }
@@ -293,7 +281,8 @@ class _FakerAccountEditPageState extends State<FakerAccountEditPage> {
       EasyLoading.show();
       if (PlatformU.isAndroid) {
         final info = await DeviceInfoPlugin().androidInfo;
-        user.userAgent = (await MethodChannelChaldea.getUserAgent()) ??
+        user.userAgent =
+            (await MethodChannelChaldea.getUserAgent()) ??
             "Dalvik/2.1.0 (Linux; U; Android ${info.version.release}; ${info.model} Build/${info.id})";
         final deviceModel = "${info.manufacturer} ${info.model}",
             operatingSystem =

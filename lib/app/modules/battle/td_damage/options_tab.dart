@@ -47,10 +47,9 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
             children: [
               ValueListenableBuilder(
                 valueListenable: widget.solver.running,
-                builder: (context, value, child) => ElevatedButton(
-                  onPressed: value ? null : widget.onStart,
-                  child: Text(S.current.calculate),
-                ),
+                builder:
+                    (context, value, child) =>
+                        ElevatedButton(onPressed: value ? null : widget.onStart, child: Text(S.current.calculate)),
               ),
             ],
           ),
@@ -69,32 +68,37 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
     ];
     children.add(DividerWithTitle(title: S.current.enemy));
     final enemy = options.enemy;
-    children.add(ListTile(
-      dense: true,
-      isThreeLine: true,
-      leading: db.getIconImage(
-        enemy.icon,
-        width: 40,
-        errorWidget: (context, url, error) => CachedImage(imageUrl: Atlas.common.unknownEnemyIcon),
-      ),
-      title: Text(enemy.lShownName),
-      subtitle: Text(
+    children.add(
+      ListTile(
+        dense: true,
+        isThreeLine: true,
+        leading: db.getIconImage(
+          enemy.icon,
+          width: 40,
+          errorWidget: (context, url, error) => CachedImage(imageUrl: Atlas.common.unknownEnemyIcon),
+        ),
+        title: Text(enemy.lShownName),
+        subtitle: Text(
           '$kStarChar2${enemy.svt.rarity} ${Transl.svtClassId(enemy.svt.classId).l}  ${Transl.svtSubAttribute(enemy.svt.attribute).l}  HP ${enemy.hp} '
           '\n${S.current.info_death_rate} ${enemy.deathRate.format(percent: true, base: 10)}'
-          ' ${S.current.defense_np_rate} ${enemy.serverMod.tdRate.format(percent: true, base: 10)}'),
-      trailing: const Icon(Icons.edit),
-      onTap: () async {
-        await router.pushPage(QuestEnemyEditPage(
-          enemy: enemy,
-          onReset: (_) {
-            options.enemy = QuestEnemy.blankEnemy();
-            if (mounted) setState(() {});
-            return options.enemy;
-          },
-        ));
-        if (mounted) setState(() {});
-      },
-    ));
+          ' ${S.current.defense_np_rate} ${enemy.serverMod.tdRate.format(percent: true, base: 10)}',
+        ),
+        trailing: const Icon(Icons.edit),
+        onTap: () async {
+          await router.pushPage(
+            QuestEnemyEditPage(
+              enemy: enemy,
+              onReset: (_) {
+                options.enemy = QuestEnemy.blankEnemy();
+                if (mounted) setState(() {});
+                return options.enemy;
+              },
+            ),
+          );
+          if (mounted) setState(() {});
+        },
+      ),
+    );
     children.addAll([
       TextButton(
         onPressed: () {
@@ -149,83 +153,89 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
     ]);
 
     children.add(DividerWithTitle(title: S.current.support_servant));
-    children.add(Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Wrap(
-        crossAxisAlignment: WrapCrossAlignment.center,
-        spacing: 2,
-        children: [
-          if (options.supports.isEmpty) const Text('None'),
-          ...List.generate(options.supports.length, (index) {
-            final svtId = options.supports[index];
-            final svt = db.gameData.servantsById[svtId];
-            return GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              onLongPress: () {
-                setState(() {
-                  if (index < options.supports.length) options.supports.removeAt(index);
-                });
-              },
-              child: svt?.iconBuilder(context: context, width: 48) ?? Text("ID $svtId"),
-            );
-          })
-        ],
+    children.add(
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        child: Wrap(
+          crossAxisAlignment: WrapCrossAlignment.center,
+          spacing: 2,
+          children: [
+            if (options.supports.isEmpty) const Text('None'),
+            ...List.generate(options.supports.length, (index) {
+              final svtId = options.supports[index];
+              final svt = db.gameData.servantsById[svtId];
+              return GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onLongPress: () {
+                  setState(() {
+                    if (index < options.supports.length) options.supports.removeAt(index);
+                  });
+                },
+                child: svt?.iconBuilder(context: context, width: 48) ?? Text("ID $svtId"),
+              );
+            }),
+          ],
+        ),
       ),
-    ));
+    );
     if (options.supports.isNotEmpty) children.add(SFooter(S.current.long_press_to_remove));
 
-    children.add(TextButton(
-      onPressed: () {
-        showDialog(
-          context: context,
-          useRootNavigator: false,
-          builder: (context) {
-            if (options.supports.length >= 5) {
+    children.add(
+      TextButton(
+        onPressed: () {
+          showDialog(
+            context: context,
+            useRootNavigator: false,
+            builder: (context) {
+              if (options.supports.length >= 5) {
+                return SimpleCancelOkDialog(
+                  title: Text(S.current.support_servant),
+                  content: const Text('Max 5 supports'),
+                  hideCancel: true,
+                );
+              }
+              List<Widget> supports = [];
+              for (final int svtId in db.curUser.battleSim.pingedSvts.toList()..sort()) {
+                final svt = db.gameData.servantsNoDup[svtId];
+                if (svt != null) {
+                  supports.add(
+                    svt.iconBuilder(
+                      context: context,
+                      width: 56,
+                      padding: const EdgeInsets.all(2),
+                      onTap: () {
+                        options.supports.add(svt.id);
+                        Navigator.pop(context);
+                        if (mounted) setState(() {});
+                      },
+                    ),
+                  );
+                }
+              }
               return SimpleCancelOkDialog(
                 title: Text(S.current.support_servant),
-                content: const Text('Max 5 supports'),
-                hideCancel: true,
+                scrollable: true,
+                content: Wrap(children: supports),
+                confirmText: S.current.general_custom,
+                onTapOk: () {
+                  if (!mounted) return;
+                  router.pushPage(
+                    ServantListPage(
+                      pinged: db.curUser.battleSim.pingedSvts.toList(),
+                      onSelected: (svt) {
+                        options.supports.add(svt.id);
+                        if (mounted) setState(() {});
+                      },
+                    ),
+                  );
+                },
               );
-            }
-            List<Widget> supports = [];
-            for (final int svtId in db.curUser.battleSim.pingedSvts.toList()..sort()) {
-              final svt = db.gameData.servantsNoDup[svtId];
-              if (svt != null) {
-                supports.add(svt.iconBuilder(
-                  context: context,
-                  width: 56,
-                  padding: const EdgeInsets.all(2),
-                  onTap: () {
-                    options.supports.add(svt.id);
-                    Navigator.pop(context);
-                    if (mounted) setState(() {});
-                  },
-                ));
-              }
-            }
-            return SimpleCancelOkDialog(
-              title: Text(S.current.support_servant),
-              scrollable: true,
-              content: Wrap(
-                children: supports,
-              ),
-              confirmText: S.current.general_custom,
-              onTapOk: () {
-                if (!mounted) return;
-                router.pushPage(ServantListPage(
-                  pinged: db.curUser.battleSim.pingedSvts.toList(),
-                  onSelected: (svt) {
-                    options.supports.add(svt.id);
-                    if (mounted) setState(() {});
-                  },
-                ));
-              },
-            );
-          },
-        );
-      },
-      child: Text(S.current.add),
-    ));
+            },
+          );
+        },
+        child: Text(S.current.add),
+      ),
+    );
 
     children.add(DividerWithTitle(title: '${S.current.craft_essence}/${S.current.mystic_code}'));
     children.add(_buildCEPart());
@@ -262,10 +272,7 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
           value: options.usePlayerSvt,
           items: [
             for (final source in PreferPlayerSvtDataSource.values)
-              DropdownMenuItem(
-                value: source,
-                child: Text(source.shownName, textScaler: const TextScaler.linear(0.9)),
-              )
+              DropdownMenuItem(value: source, child: Text(source.shownName, textScaler: const TextScaler.linear(0.9))),
           ],
           onChanged: (v) {
             setState(() {
@@ -284,19 +291,17 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
             for (final lv in SvtLv.values)
               DropdownMenuItem(
                 value: lv,
-                child: Text(
-                  lv == SvtLv.maxLv ? 'Lv.MAX' : 'Lv.${lv.lv}',
-                  textScaler: const TextScaler.linear(0.9),
-                ),
+                child: Text(lv == SvtLv.maxLv ? 'Lv.MAX' : 'Lv.${lv.lv}', textScaler: const TextScaler.linear(0.9)),
               ),
           ],
-          onChanged: !options.usePlayerSvt.isNone
-              ? null
-              : (v) {
-                  setState(() {
-                    if (v != null) options.svtLv = v;
-                  });
-                },
+          onChanged:
+              !options.usePlayerSvt.isNone
+                  ? null
+                  : (v) {
+                    setState(() {
+                      if (v != null) options.svtLv = v;
+                    });
+                  },
         ),
       ),
       SliderWithPrefix(
@@ -324,13 +329,14 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
           isDense: true,
           value: options.tdR5,
           items: List.generate(5, (index) => DropdownMenuItem(value: index + 1, child: Text('Lv.${index + 1}'))),
-          onChanged: !options.usePlayerSvt.isNone
-              ? null
-              : (v) {
-                  setState(() {
-                    if (v != null) options.tdR5 = v;
-                  });
-                },
+          onChanged:
+              !options.usePlayerSvt.isNone
+                  ? null
+                  : (v) {
+                    setState(() {
+                      if (v != null) options.tdR5 = v;
+                    });
+                  },
         ),
       ),
       ListTile(
@@ -341,13 +347,14 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
           value: options.tdR4,
           isDense: true,
           items: List.generate(5, (index) => DropdownMenuItem(value: index + 1, child: Text('Lv.${index + 1}'))),
-          onChanged: !options.usePlayerSvt.isNone
-              ? null
-              : (v) {
-                  setState(() {
-                    if (v != null) options.tdR4 = v;
-                  });
-                },
+          onChanged:
+              !options.usePlayerSvt.isNone
+                  ? null
+                  : (v) {
+                    setState(() {
+                      if (v != null) options.tdR4 = v;
+                    });
+                  },
         ),
       ),
       ListTile(
@@ -359,13 +366,14 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
           isDense: true,
           value: options.tdR3,
           items: List.generate(5, (index) => DropdownMenuItem(value: index + 1, child: Text('Lv.${index + 1}'))),
-          onChanged: !options.usePlayerSvt.isNone
-              ? null
-              : (v) {
-                  setState(() {
-                    if (v != null) options.tdR3 = v;
-                  });
-                },
+          onChanged:
+              !options.usePlayerSvt.isNone
+                  ? null
+                  : (v) {
+                    setState(() {
+                      if (v != null) options.tdR3 = v;
+                    });
+                  },
         ),
       ),
       kIndentDivider,
@@ -401,12 +409,13 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
         trailing: DropdownButton<PreferClassBoardDataSource>(
           isDense: true,
           value: options.classBoard,
-          items: PreferClassBoardDataSource.values.map((source) {
-            return DropdownMenuItem(
-              value: source,
-              child: Text(source.shownName, textScaler: const TextScaler.linear(0.9)),
-            );
-          }).toList(),
+          items:
+              PreferClassBoardDataSource.values.map((source) {
+                return DropdownMenuItem(
+                  value: source,
+                  child: Text(source.shownName, textScaler: const TextScaler.linear(0.9)),
+                );
+              }).toList(),
           onChanged: (v) {
             setState(() {
               if (v != null) options.classBoard = v;
@@ -457,10 +466,12 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
           padding: EdgeInsets.zero,
           options: List.generate(options.appendSkills.length, (i) => i),
           optionBuilder: (value) => Text(options.appendSkills[value] ? '10' : 'x'),
-          values: FilterGroupData(options: {
-            for (final (index, enabled) in options.appendSkills.indexed)
-              if (enabled) index,
-          }),
+          values: FilterGroupData(
+            options: {
+              for (final (index, enabled) in options.appendSkills.indexed)
+                if (enabled) index,
+            },
+          ),
           onFilterChanged: (v, lastChanged) {
             for (int index = 0; index < options.appendSkills.length; index++) {
               options.appendSkills[index] = v.options.contains(index);
@@ -562,10 +573,7 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
           trailing = Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
-            children: [
-              ce.iconBuilder(context: context, width: 36),
-              Text(' Lv.${options.ceLv}'),
-            ],
+            children: [ce.iconBuilder(context: context, width: 36), Text(' Lv.${options.ceLv}')],
           );
         }
         return ListTile(
@@ -590,15 +598,17 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
               title: Text(ce?.lName.l ?? S.current.select_ce),
               trailing: const Icon(Icons.change_circle),
               onTap: () {
-                router.pushPage(CraftListPage(
-                  pinged: db.curUser.battleSim.pingedCEs.toList(),
-                  filterData: CraftFilterData(useGrid: true),
-                  onSelected: (ce) {
-                    options.ceId = ce.id;
-                    options.ceLv = options.ceLv.clamp(0, ce.lvMax);
-                    if (mounted) setState(() {});
-                  },
-                ));
+                router.pushPage(
+                  CraftListPage(
+                    pinged: db.curUser.battleSim.pingedCEs.toList(),
+                    filterData: CraftFilterData(useGrid: true),
+                    onSelected: (ce) {
+                      options.ceId = ce.id;
+                      options.ceLv = options.ceLv.clamp(0, ce.lvMax);
+                      if (mounted) setState(() {});
+                    },
+                  ),
+                );
               },
             ),
             if (skill != null)
@@ -606,10 +616,7 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
                 margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 child: Padding(
                   padding: const EdgeInsets.all(8),
-                  child: Text(
-                    skill.lDetail ?? "???",
-                    style: Theme.of(context).textTheme.bodySmall,
-                  ),
+                  child: Text(skill.lDetail ?? "???", style: Theme.of(context).textTheme.bodySmall),
                 ),
               ),
             SwitchListTile.adaptive(
@@ -625,8 +632,10 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
             ListTile(
               dense: true,
               title: Text(S.current.level),
-              subtitle: Text('HP ${ce?.hpGrowth.getOrNull(options.ceLv - 1) ?? 0}'
-                  ' / ATK ${ce?.atkGrowth.getOrNull(options.ceLv - 1) ?? 0}'),
+              subtitle: Text(
+                'HP ${ce?.hpGrowth.getOrNull(options.ceLv - 1) ?? 0}'
+                ' / ATK ${ce?.atkGrowth.getOrNull(options.ceLv - 1) ?? 0}',
+              ),
               trailing: Text('Lv.${options.ceLv}'),
               minVerticalPadding: 0,
             ),
@@ -650,11 +659,8 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
                     options.ceId = null;
                   });
                 },
-                child: Text(
-                  S.current.remove,
-                  style: TextStyle(color: Theme.of(context).colorScheme.error),
-                ),
-              )
+                child: Text(S.current.remove, style: TextStyle(color: Theme.of(context).colorScheme.error)),
+              ),
           ],
         );
       },
@@ -671,10 +677,7 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
           trailing = Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
-            children: [
-              mc.iconBuilder(context: context, width: 36),
-              Text(' Lv.${options.mcLv}'),
-            ],
+            children: [mc.iconBuilder(context: context, width: 36), Text(' Lv.${options.mcLv}')],
           );
         }
         return ListTile(
@@ -697,12 +700,14 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
               title: Text(mc?.lName.l ?? S.current.select),
               trailing: const Icon(Icons.change_circle),
               onTap: () {
-                router.pushPage(MysticCodeListPage(
-                  onSelected: (mc) {
-                    options.mcId = mc.id;
-                    if (mounted) setState(() {});
-                  },
-                ));
+                router.pushPage(
+                  MysticCodeListPage(
+                    onSelected: (mc) {
+                      options.mcId = mc.id;
+                      if (mounted) setState(() {});
+                    },
+                  ),
+                );
               },
             ),
             ListTile(
@@ -730,11 +735,8 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
                     options.mcId = null;
                   });
                 },
-                child: Text(
-                  S.current.remove,
-                  style: TextStyle(color: Theme.of(context).colorScheme.error),
-                ),
-              )
+                child: Text(S.current.remove, style: TextStyle(color: Theme.of(context).colorScheme.error)),
+              ),
           ],
         );
       },
@@ -796,14 +798,16 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
         List<Widget> rows = [
           TextButton(
             onPressed: () {
-              router.pushPage(SkillSelectPage(
-                skillType: null,
-                onSelected: (v) {
-                  final skill = BaseSkill.fromJson(v.toJson());
-                  options.enemySkills.add((skill, skill.maxLv));
-                  if (mounted) setState(() {});
-                },
-              ));
+              router.pushPage(
+                SkillSelectPage(
+                  skillType: null,
+                  onSelected: (v) {
+                    final skill = BaseSkill.fromJson(v.toJson());
+                    options.enemySkills.add((skill, skill.maxLv));
+                    if (mounted) setState(() {});
+                  },
+                ),
+              );
             },
             child: Text(S.current.add),
           ),
@@ -813,55 +817,49 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
           final (skill, skillLv) = skillAndLv;
           final maxLv = skill.maxLv;
           rows.add(kDefaultDivider);
-          rows.add(ListTile(
-            dense: true,
-            selected: true,
-            leading: Text('No.${index + 1}'),
-            title: Wrap(
-              spacing: 16,
-              crossAxisAlignment: WrapCrossAlignment.center,
-              children: [
-                Text(skill.lName.l),
-                if (maxLv > 1)
-                  DropdownButton<int>(
-                    isDense: true,
-                    value: skillLv,
-                    items: [
-                      for (int lv = 1; lv <= maxLv; lv++)
-                        DropdownMenuItem(
-                          value: lv,
-                          child: Text('Lv.$lv', style: const TextStyle(fontSize: 14)),
-                        )
-                    ],
-                    onChanged: (v) {
-                      setState(() {
-                        if (v != null) {
-                          options.enemySkills[index] = (skill, v);
-                        }
-                      });
-                    },
-                  )
-              ],
+          rows.add(
+            ListTile(
+              dense: true,
+              selected: true,
+              leading: Text('No.${index + 1}'),
+              title: Wrap(
+                spacing: 16,
+                crossAxisAlignment: WrapCrossAlignment.center,
+                children: [
+                  Text(skill.lName.l),
+                  if (maxLv > 1)
+                    DropdownButton<int>(
+                      isDense: true,
+                      value: skillLv,
+                      items: [
+                        for (int lv = 1; lv <= maxLv; lv++)
+                          DropdownMenuItem(value: lv, child: Text('Lv.$lv', style: const TextStyle(fontSize: 14))),
+                      ],
+                      onChanged: (v) {
+                        setState(() {
+                          if (v != null) {
+                            options.enemySkills[index] = (skill, v);
+                          }
+                        });
+                      },
+                    ),
+                ],
+              ),
+              trailing: IconButton(
+                onPressed: () {
+                  setState(() {
+                    options.enemySkills.remove(skillAndLv);
+                  });
+                },
+                icon: const Icon(Icons.clear),
+                color: Theme.of(context).colorScheme.error,
+              ),
             ),
-            trailing: IconButton(
-              onPressed: () {
-                setState(() {
-                  options.enemySkills.remove(skillAndLv);
-                });
-              },
-              icon: const Icon(Icons.clear),
-              color: Theme.of(context).colorScheme.error,
-            ),
-          ));
+          );
           rows.add(SkillDescriptor(skill: skill));
         }
 
-        return Card(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: rows,
-          ),
-        );
+        return Card(child: Column(mainAxisSize: MainAxisSize.min, children: rows));
       },
     );
   }
@@ -873,17 +871,19 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
       horizontalTitleGap: 8,
       contentPadding: const EdgeInsetsDirectional.only(start: 16),
       title: Text(S.current.event),
-      subtitle: options.warId <= 0
-          ? null
-          : Text(db.gameData.wars[options.warId]?.lShortName.setMaxLines(1) ?? "War ${options.warId}"),
+      subtitle:
+          options.warId <= 0
+              ? null
+              : Text(db.gameData.wars[options.warId]?.lShortName.setMaxLines(1) ?? "War ${options.warId}"),
       trailing: IconButton(
-        onPressed: options.warId == 0
-            ? null
-            : () {
-                setState(() {
-                  options.warId = 0;
-                });
-              },
+        onPressed:
+            options.warId == 0
+                ? null
+                : () {
+                  setState(() {
+                    options.warId = 0;
+                  });
+                },
         icon: const Icon(Icons.clear),
         iconSize: 18,
         tooltip: S.current.clear,
@@ -913,9 +913,10 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
           dense: true,
           leading: const FaIcon(FontAwesomeIcons.diamond, size: 16),
           title: Text(S.current.quest_fields),
-          subtitle: options.fieldTraits.isEmpty
-              ? null
-              : Text(options.fieldTraits.map((e) => Transl.trait(e, field: true).l).join(', ')),
+          subtitle:
+              options.fieldTraits.isEmpty
+                  ? null
+                  : Text(options.fieldTraits.map((e) => Transl.trait(e, field: true).l).join(', ')),
           // trailing: Text(options.fieldTraits.length.toString()),
           horizontalTitleGap: 8,
           contentPadding: const EdgeInsetsDirectional.only(start: 16),
@@ -951,20 +952,22 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
                 children: [
                   TextButton(
                     onPressed: () {
-                      router.pushPage(TraitListPage(
-                        initSearchString: 'field',
-                        onSelected: (value) {
-                          if (!options.fieldTraits.contains(value)) {
-                            options.fieldTraits.add(value);
-                          }
-                          if (mounted) setState(() {});
-                        },
-                      ));
+                      router.pushPage(
+                        TraitListPage(
+                          initSearchString: 'field',
+                          onSelected: (value) {
+                            if (!options.fieldTraits.contains(value)) {
+                              options.fieldTraits.add(value);
+                            }
+                            if (mounted) setState(() {});
+                          },
+                        ),
+                      );
                     },
                     child: Text(S.current.add),
                   ),
                 ],
-              )
+              ),
             ],
           ),
         );
@@ -976,12 +979,19 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
     final List<Servant> indivSumSvts = [], hpRatioSvts = [];
     for (final svt in db.gameData.servantsNoDup.values) {
       if (!const [153, 246].contains(svt.collectionNo) && // 剑武藏/威廉退尔
-          svt.noblePhantasms.any((td) => td.functions.any((func) =>
-              func.funcType == FuncType.damageNpIndividualSum || func.funcType == FuncType.damageNpBattlePointPhase))) {
+          svt.noblePhantasms.any(
+            (td) => td.functions.any(
+              (func) =>
+                  func.funcType == FuncType.damageNpIndividualSum || func.funcType == FuncType.damageNpBattlePointPhase,
+            ),
+          )) {
         indivSumSvts.add(svt);
       }
-      if (svt.noblePhantasms.any((td) => td.functions.any(
-          (func) => func.funcType == FuncType.damageNpHpratioLow || func.funcType == FuncType.damageNpHpratioHigh))) {
+      if (svt.noblePhantasms.any(
+        (td) => td.functions.any(
+          (func) => func.funcType == FuncType.damageNpHpratioLow || func.funcType == FuncType.damageNpHpratioHigh,
+        ),
+      )) {
         hpRatioSvts.add(svt);
       }
     }
@@ -1003,9 +1013,11 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
         dense: true,
         title: Text(S.current.damage_np_indiv_sum_count),
         subtitle: Text.rich(
-          TextSpan(children: [
-            for (final svt in indivSumSvts) CenterWidgetSpan(child: svt.iconBuilder(context: context, width: 24)),
-          ]),
+          TextSpan(
+            children: [
+              for (final svt in indivSumSvts) CenterWidgetSpan(child: svt.iconBuilder(context: context, width: 24)),
+            ],
+          ),
           maxLines: 1,
         ),
         trailing: DropdownButton<int?>(
@@ -1014,19 +1026,17 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
             for (final count in <int?>[null, ...List.generate(12, (index) => index + 1)])
               DropdownMenuItem(
                 value: count,
-                child: Text(
-                  count?.toString() ?? "MAX",
-                  textScaler: const TextScaler.linear(0.8),
-                ),
-              )
+                child: Text(count?.toString() ?? "MAX", textScaler: const TextScaler.linear(0.8)),
+              ),
           ],
-          onChanged: options.forceDamageNpSe
-              ? (v) {
-                  setState(() {
-                    options.damageNpIndivSumCount = v;
-                  });
-                }
-              : null,
+          onChanged:
+              options.forceDamageNpSe
+                  ? (v) {
+                    setState(() {
+                      options.damageNpIndivSumCount = v;
+                    });
+                  }
+                  : null,
         ),
       ),
       CheckboxListTile(
@@ -1034,9 +1044,11 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
         value: options.damageNpHpRatioMax,
         title: Text(S.current.damage_np_hp_ratio_max_rate),
         subtitle: Text.rich(
-          TextSpan(children: [
-            for (final svt in hpRatioSvts) CenterWidgetSpan(child: svt.iconBuilder(context: context, width: 24)),
-          ]),
+          TextSpan(
+            children: [
+              for (final svt in hpRatioSvts) CenterWidgetSpan(child: svt.iconBuilder(context: context, width: 24)),
+            ],
+          ),
           maxLines: 1,
         ),
         onChanged: (value) {

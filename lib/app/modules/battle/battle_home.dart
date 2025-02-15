@@ -26,12 +26,7 @@ class BattleHomePage extends StatelessWidget {
             hideCancel: true,
           ).showDialog(context);
         },
-        child: AbsorbPointer(
-          child: Opacity(
-            opacity: 0.5,
-            child: body,
-          ),
-        ),
+        child: AbsorbPointer(child: Opacity(opacity: 0.5, child: body)),
       );
     }
     return Scaffold(

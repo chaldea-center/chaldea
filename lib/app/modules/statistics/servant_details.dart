@@ -25,7 +25,7 @@ class _ServantDemandDetailStatState extends State<ServantDemandDetailStat> {
   Widget build(BuildContext context) {
     final data = {
       for (final svt in db.gameData.servantsWithDup.values)
-        svt: db.itemCenter.getSvtCostDetail(svt.collectionNo, typeFilter.radioValue ?? SvtMatCostDetailType.demands)
+        svt: db.itemCenter.getSvtCostDetail(svt.collectionNo, typeFilter.radioValue ?? SvtMatCostDetailType.demands),
     };
     data.removeWhere((key, value) => value.all.values.every((v) => v <= 0));
     final servants = data.keys.toList();
@@ -78,24 +78,17 @@ class _ServantDemandDetailStatState extends State<ServantDemandDetailStat> {
             const SizedBox(width: 8),
             Expanded(
               child: Text.rich(
-                TextSpan(children: [
-                  WidgetSpan(
-                    child: SharedBuilder.itemGrid(
-                      context: context,
-                      items: items,
-                      width: 42 * ratio,
-                    ),
-                  )
-                ]),
+                TextSpan(
+                  children: [
+                    WidgetSpan(child: SharedBuilder.itemGrid(context: context, items: items, width: 42 * ratio)),
+                  ],
+                ),
                 textScaler: const TextScaler.linear(0.8),
               ),
-            )
+            ),
           ],
         );
-        return Padding(
-          padding: const EdgeInsets.symmetric(vertical: 4),
-          child: child,
-        );
+        return Padding(padding: const EdgeInsets.symmetric(vertical: 4), child: child);
       },
       contentBuilder: (context) {
         List<Widget> children = [];
@@ -103,11 +96,13 @@ class _ServantDemandDetailStatState extends State<ServantDemandDetailStat> {
           items = Map.of(items)..removeWhere((key, value) => value <= 0);
           if (items.isEmpty) return;
           children.add(SHeader(title, padding: const EdgeInsetsDirectional.only(start: 0, top: 8.0, bottom: 4.0)));
-          children.add(SharedBuilder.itemGrid(
-            context: context,
-            items: Item.sortMapByPriority(items, reversed: true).entries,
-            width: 42 * .8 * ratio,
-          ));
+          children.add(
+            SharedBuilder.itemGrid(
+              context: context,
+              items: Item.sortMapByPriority(items, reversed: true).entries,
+              width: 42 * .8 * ratio,
+            ),
+          );
         }
 
         _addPart(detail.ascension, S.current.ascension_up);
@@ -135,11 +130,14 @@ class _ServantDemandDetailStatState extends State<ServantDemandDetailStat> {
           options: const [SvtMatCostDetailType.consumed, SvtMatCostDetailType.demands],
           values: typeFilter,
           combined: true,
-          optionBuilder: (v) => Text({
-                SvtMatCostDetailType.consumed: S.current.consumed,
-                SvtMatCostDetailType.demands: S.current.demands,
-              }[v] ??
-              v.name),
+          optionBuilder:
+              (v) => Text(
+                {
+                      SvtMatCostDetailType.consumed: S.current.consumed,
+                      SvtMatCostDetailType.demands: S.current.demands,
+                    }[v] ??
+                    v.name,
+              ),
           onFilterChanged: (v, _) {
             setState(() {});
           },
@@ -153,10 +151,7 @@ class _ServantDemandDetailStatState extends State<ServantDemandDetailStat> {
               value: sortOrder,
               items: [
                 for (final order in [SvtCompare.no, SvtCompare.className, SvtCompare.rarity, SvtCompare.priority])
-                  DropdownMenuItem(
-                    value: order,
-                    child: Text(order.showName),
-                  )
+                  DropdownMenuItem(value: order, child: Text(order.showName)),
               ],
               onChanged: (v) {
                 setState(() {
@@ -170,13 +165,11 @@ class _ServantDemandDetailStatState extends State<ServantDemandDetailStat> {
                   sortReversed = !sortReversed;
                 });
               },
-              icon: FaIcon(
-                sortReversed ? FontAwesomeIcons.arrowDownWideShort : FontAwesomeIcons.arrowUpWideShort,
-              ),
+              icon: FaIcon(sortReversed ? FontAwesomeIcons.arrowDownWideShort : FontAwesomeIcons.arrowUpWideShort),
               tooltip: S.current.sort_order,
-            )
+            ),
           ],
-        )
+        ),
       ],
     );
   }

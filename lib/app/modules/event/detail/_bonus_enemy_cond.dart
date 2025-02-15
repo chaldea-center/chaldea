@@ -111,7 +111,7 @@ class _BonusEnemyCondPageState extends State<BonusEnemyCondPage> {
             },
             icon: const Icon(Icons.refresh),
             tooltip: S.current.refresh,
-          )
+          ),
         ],
       ),
       body: ListView.separated(
@@ -139,13 +139,12 @@ class _BonusEnemyCondPageState extends State<BonusEnemyCondPage> {
     String hint = mstQuestHints[quest.id]?.values.firstOrNull?.message ?? "";
     hint = hint.trim().replaceAll('\n', ' ');
     if (hint.isNotEmpty) {
-      children.add(Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-        child: Text(
-          hint,
-          style: Theme.of(context).textTheme.bodySmall,
+      children.add(
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+          child: Text(hint, style: Theme.of(context).textTheme.bodySmall),
         ),
-      ));
+      );
     }
 
     for (final enemy in enemies) {
@@ -153,15 +152,17 @@ class _BonusEnemyCondPageState extends State<BonusEnemyCondPage> {
       assert(condId != null && condId != 0);
       if (condId == null) continue;
       children.add(const Divider(indent: 16, endIndent: 16));
-      children.add(ListTile(
-        dense: true,
-        leading: db.getIconImage(AssetURL.i.enemyId(enemy.iconId)),
-        title: Text('${S.current.enemy}: ${enemy.name}'),
-        subtitle: Text(Transl.svtClassId(enemy.classId).l),
-        onTap: () {
-          router.push(url: Routes.servantI(enemy.svtId));
-        },
-      ));
+      children.add(
+        ListTile(
+          dense: true,
+          leading: db.getIconImage(AssetURL.i.enemyId(enemy.iconId)),
+          title: Text('${S.current.enemy}: ${enemy.name}'),
+          subtitle: Text(Transl.svtClassId(enemy.classId).l),
+          onTap: () {
+            router.push(url: Routes.servantI(enemy.svtId));
+          },
+        ),
+      );
       final cond = userDeckFormationConds[enemy.entryByUserDeckFormationCondId];
       if (cond == null) {
         children.add(ListTile(title: Text("Unknown UserDeckFormationCondId $condId")));
@@ -170,11 +171,7 @@ class _BonusEnemyCondPageState extends State<BonusEnemyCondPage> {
       }
     }
 
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: children,
-    );
+    return Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: children);
   }
 
   Widget buildUnknownGroup(List<UserDeckFormationCond> conds) {
@@ -192,11 +189,7 @@ class _BonusEnemyCondPageState extends State<BonusEnemyCondPage> {
       children.add(buildTargetSvts(context, cond));
     }
 
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: children,
-    );
+    return Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: children);
   }
 
   static Widget buildTargetSvts(BuildContext context, UserDeckFormationCond cond) {
@@ -206,7 +199,7 @@ class _BonusEnemyCondPageState extends State<BonusEnemyCondPage> {
         // decoration: BoxDecoration(
         //     border: Border.all(color: Theme.of(context).colorScheme.primary), borderRadius: BorderRadius.circular(4)),
         child: Text("Cond ${cond.id}: ", style: const TextStyle(fontSize: 12)),
-      )
+      ),
     ];
 
     for (final trait in cond.targetVals) {
@@ -223,23 +216,34 @@ class _BonusEnemyCondPageState extends State<BonusEnemyCondPage> {
       final transl = Transl.trait(trait);
       // final names = {transl.jp, transl.cn, transl.na}.join('\n');
       final names = transl.l;
-      cards.add(InkWell(
-        onTap: () {
-          router.push(url: Routes.traitI(trait));
-        },
-        child: Container(
-          padding: const EdgeInsets.all(2),
-          decoration: BoxDecoration(
-              border: Border.all(color: Theme.of(context).colorScheme.primary), borderRadius: BorderRadius.circular(4)),
-          child: Text(trait == 505500 ? '$names\n有珠?' : names, style: const TextStyle(fontSize: 12)),
+      cards.add(
+        InkWell(
+          onTap: () {
+            router.push(url: Routes.traitI(trait));
+          },
+          child: Container(
+            padding: const EdgeInsets.all(2),
+            decoration: BoxDecoration(
+              border: Border.all(color: Theme.of(context).colorScheme.primary),
+              borderRadius: BorderRadius.circular(4),
+            ),
+            child: Text(trait == 505500 ? '$names\n有珠?' : names, style: const TextStyle(fontSize: 12)),
+          ),
         ),
-      ));
+      );
       if (trait == Trait.havingAnimalsCharacteristics.value) continue;
-      final svts = db.gameData.servantsById.values
-          .where((svt) => svt.traitAdd.expand((e) => e.trait).map((e) => e.id).contains(trait))
-          .toList();
-      svts.sort((a, b) => SvtFilterData.compare(a, b,
-          keys: [SvtCompare.className, SvtCompare.rarity, SvtCompare.no], reversed: [false, true, true]));
+      final svts =
+          db.gameData.servantsById.values
+              .where((svt) => svt.traitAdd.expand((e) => e.trait).map((e) => e.id).contains(trait))
+              .toList();
+      svts.sort(
+        (a, b) => SvtFilterData.compare(
+          a,
+          b,
+          keys: [SvtCompare.className, SvtCompare.rarity, SvtCompare.no],
+          reversed: [false, true, true],
+        ),
+      );
       for (final svt in svts) {
         cards.add(svt.iconBuilder(context: context, width: 32));
       }
@@ -281,10 +285,12 @@ class _UserDeckFormationCondDetailPageState extends State<UserDeckFormationCondD
     cond = widget.cond;
     final condId = widget.condId ?? 0;
     if (cond == null && condId > 0) {
-      final conds = await showEasyLoading(() => AtlasApi.mstData(
-            'mstUserDeckFormationCond',
-            (json) => (json as List).map((e) => UserDeckFormationCond.fromJson(e)).toList(),
-          ));
+      final conds = await showEasyLoading(
+        () => AtlasApi.mstData(
+          'mstUserDeckFormationCond',
+          (json) => (json as List).map((e) => UserDeckFormationCond.fromJson(e)).toList(),
+        ),
+      );
       cond = conds?.firstWhereOrNull((e) => e.id == condId);
     }
     if (mounted) setState(() {});
@@ -294,9 +300,7 @@ class _UserDeckFormationCondDetailPageState extends State<UserDeckFormationCondD
   Widget build(BuildContext context) {
     final enemy = widget.enemy;
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Cond ${widget.cond?.id ?? widget.condId}"),
-      ),
+      appBar: AppBar(title: Text("Cond ${widget.cond?.id ?? widget.condId}")),
       body: ListView(
         children: [
           if (enemy != null)

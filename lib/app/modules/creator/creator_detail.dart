@@ -12,12 +12,8 @@ class CreatorDetail extends StatelessWidget {
   final String _name;
   final bool _isCV;
 
-  const CreatorDetail.cv({super.key, required String name})
-      : _isCV = true,
-        _name = name;
-  const CreatorDetail.illust({super.key, required String name})
-      : _isCV = false,
-        _name = name;
+  const CreatorDetail.cv({super.key, required String name}) : _isCV = true, _name = name;
+  const CreatorDetail.illust({super.key, required String name}) : _isCV = false, _name = name;
 
   List<String> _split(String name) {
     return name.split(RegExp(r'[&＆]')).map((e) => e.trim()).where((e) => e.isNotEmpty).toList();
@@ -58,39 +54,41 @@ class CreatorDetail extends StatelessWidget {
     final table = CustomTable(
       selectable: true,
       children: <Widget>[
-        CustomTableRow(children: [
-          TableCellData(
-            child: Text(
-              lName().l,
-              style: const TextStyle(fontWeight: FontWeight.bold),
-              textAlign: TextAlign.center,
+        CustomTableRow(
+          children: [
+            TableCellData(
+              child: Text(lName().l, style: const TextStyle(fontWeight: FontWeight.bold), textAlign: TextAlign.center),
+              isHeader: true,
             ),
-            isHeader: true,
-          )
-        ]),
+          ],
+        ),
         if (!Transl.isJP) CustomTableRow(children: [TableCellData(text: _name, textAlign: TextAlign.center)]),
         if (!Transl.isEN) CustomTableRow(children: [TableCellData(text: lName().na, textAlign: TextAlign.center)]),
         if (subCreators.length > 1) ...[
           CustomTableRow.fromTexts(texts: const ['Related'], isHeader: true),
-          CustomTableRow.fromChildren(children: [
-            Wrap(
-              crossAxisAlignment: WrapCrossAlignment.center,
-              children: divideList([
-                for (final creator in subCreators)
-                  Text.rich(MultiDescriptor.inkWell(
-                    context: context,
-                    onTap: () {
-                      if (_isCV) {
-                        router.pushPage(CreatorDetail.cv(name: creator));
-                      } else {
-                        router.pushPage(CreatorDetail.illust(name: creator));
-                      }
-                    },
-                    text: _isCV ? Transl.cvNames(creator).l : Transl.illustratorNames(creator).l,
-                  ))
-              ], const Text(' / ')),
-            )
-          ])
+          CustomTableRow.fromChildren(
+            children: [
+              Wrap(
+                crossAxisAlignment: WrapCrossAlignment.center,
+                children: divideList([
+                  for (final creator in subCreators)
+                    Text.rich(
+                      MultiDescriptor.inkWell(
+                        context: context,
+                        onTap: () {
+                          if (_isCV) {
+                            router.pushPage(CreatorDetail.cv(name: creator));
+                          } else {
+                            router.pushPage(CreatorDetail.illust(name: creator));
+                          }
+                        },
+                        text: _isCV ? Transl.cvNames(creator).l : Transl.illustratorNames(creator).l,
+                      ),
+                    ),
+                ], const Text(' / ')),
+              ),
+            ],
+          ),
         ],
       ],
     );

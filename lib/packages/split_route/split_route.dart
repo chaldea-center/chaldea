@@ -49,7 +49,7 @@ enum SplitLayout {
   master,
 
   /// use detail layout in split mode: transparent route and only take right space
-  detail
+  detail,
 }
 
 /// Master-Detail Layout Route for large aspect ratio screen.
@@ -108,15 +108,15 @@ class SplitRoute<T> extends PageRoute<T> with CupertinoRouteTransitionMixin<T> {
     this.maintainState = true,
     this.title,
     super.fullscreenDialog = false,
-  })  : assert(builder != null),
-        assert(masterRatio == null || masterRatio > 0 && masterRatio < 100),
-        assert(maintainState != null),
-        assert(fullscreenDialog != null),
-        _detail = detail,
-        _masterRatio = masterRatio,
-        transitionDuration = transitionDuration ?? kSplitRouteDuration,
-        reverseTransitionDuration = reverseTransitionDuration ?? transitionDuration ?? kSplitRouteDuration,
-        opaque = opaque ?? detail != true;
+  }) : assert(builder != null),
+       assert(masterRatio == null || masterRatio > 0 && masterRatio < 100),
+       assert(maintainState != null),
+       assert(fullscreenDialog != null),
+       _detail = detail,
+       _masterRatio = masterRatio,
+       transitionDuration = transitionDuration ?? kSplitRouteDuration,
+       reverseTransitionDuration = reverseTransitionDuration ?? transitionDuration ?? kSplitRouteDuration,
+       opaque = opaque ?? detail != true;
 
   /// define your own builder for right space of master page
   static WidgetBuilder? defaultMasterFillPageBuilder;
@@ -177,11 +177,7 @@ class SplitRoute<T> extends PageRoute<T> with CupertinoRouteTransitionMixin<T> {
           scope = PositionedDirectional(
             start: start,
             top: 0,
-            child: SizedBox(
-              height: size.height,
-              width: size.width - start,
-              child: scope,
-            ),
+            child: SizedBox(height: size.height, width: size.width - start, child: scope),
           );
         }
         return scope;
@@ -227,7 +223,11 @@ class SplitRoute<T> extends PageRoute<T> with CupertinoRouteTransitionMixin<T> {
 
   @override
   Widget buildTransitions(
-      BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation, Widget child) {
+    BuildContext context,
+    Animation<double> animation,
+    Animation<double> secondaryAnimation,
+    Widget child,
+  ) {
     if (!shouldPopGestureEnabled) {
       const bool linearTransition = false;
       if (fullscreenDialog) {
@@ -246,12 +246,7 @@ class SplitRoute<T> extends PageRoute<T> with CupertinoRouteTransitionMixin<T> {
         );
       }
     } else {
-      child = super.buildTransitions(
-        context,
-        animation,
-        secondaryAnimation,
-        child,
-      );
+      child = super.buildTransitions(context, animation, secondaryAnimation, child);
     }
     return ClipRect(child: child);
   }
@@ -282,8 +277,11 @@ class SplitRoute<T> extends PageRoute<T> with CupertinoRouteTransitionMixin<T> {
           child: DecoratedBox(
             decoration: BoxDecoration(
               border: Border(
-                left: Divider.createBorderSide(context,
-                    width: _kSplitDividerWidth, color: Theme.of(context).dividerColor),
+                left: Divider.createBorderSide(
+                  context,
+                  width: _kSplitDividerWidth,
+                  color: Theme.of(context).dividerColor,
+                ),
               ),
             ),
             child: defaultMasterFillPageBuilder?.call(context) ?? const Scaffold(),
@@ -368,15 +366,17 @@ class SplitRoute<T> extends PageRoute<T> with CupertinoRouteTransitionMixin<T> {
       n = popDetailRoutes(context);
     }
 
-    return navigator.push(SplitRoute(
-      builder: builder,
-      detail: detail,
-      masterRatio: masterRatio,
-      transitionDuration: (detail == true && popDetail && n > 0) ? const Duration() : kSplitRouteDuration,
-      reverseTransitionDuration: kSplitRouteDuration,
-      settings: settings,
-      title: title,
-    ));
+    return navigator.push(
+      SplitRoute(
+        builder: builder,
+        detail: detail,
+        masterRatio: masterRatio,
+        transitionDuration: (detail == true && popDetail && n > 0) ? const Duration() : kSplitRouteDuration,
+        reverseTransitionDuration: kSplitRouteDuration,
+        settings: settings,
+        title: title,
+      ),
+    );
   }
 
   /// A simple form of [pushBuilder]

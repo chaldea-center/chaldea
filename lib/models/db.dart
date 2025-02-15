@@ -99,24 +99,14 @@ class _Database {
   }
 
   Widget onUserData(AsyncWidgetBuilder<UserData> builder) {
-    return StreamBuilder(
-      initialData: userData,
-      stream: _userNotifier.stream,
-      builder: builder,
-    );
+    return StreamBuilder(initialData: userData, stream: _userNotifier.stream, builder: builder);
   }
 
   Widget onSettings(AsyncWidgetBuilder<LocalSettings> builder) {
-    return StreamBuilder(
-      initialData: settings,
-      stream: _settingNotifier.stream,
-      builder: builder,
-    );
+    return StreamBuilder(initialData: settings, stream: _settingNotifier.stream, builder: builder);
   }
 
-  Future<void> initiateForTest({
-    required String testAppPath,
-  }) async {
+  Future<void> initiateForTest({required String testAppPath}) async {
     await paths.initRootPath(testAppPath: testAppPath);
     Hive.init(paths.hiveDir);
     await loadSettings();
@@ -175,11 +165,7 @@ class _Database {
 
   static const _backSuffix = '.bak';
 
-  Future<T> _loadWithBak<T>({
-    required String fp,
-    required T Function(dynamic) fromJson,
-    T Function()? onError,
-  }) async {
+  Future<T> _loadWithBak<T>({required String fp, required T Function(dynamic) fromJson, T Function()? onError}) async {
     Future<T> load(String _fp) async {
       final f = FilePlus(_fp);
       if (!f.existsSync()) {
@@ -341,12 +327,7 @@ class _Database {
   }) {
     Widget image;
     if (iconUrl == null || iconUrl.isEmpty) {
-      image = Image(
-        image: errorImage,
-        width: width,
-        height: height,
-        fit: fit,
-      );
+      image = Image(image: errorImage, width: width, height: height, fit: fit);
     } else {
       image = CachedImage(
         imageUrl: iconUrl,
@@ -356,18 +337,11 @@ class _Database {
         aspectRatio: aspectRatio,
         cachedOption: CachedImageOption(
           fit: fit,
-          errorWidget: errorWidget ??
-              (context, url, e) => SizedBox(
-                    width: width,
-                    height: height,
-                    child: placeholder?.call(context),
-                  ),
+          errorWidget:
+              errorWidget ??
+              (context, url, e) => SizedBox(width: width, height: height, child: placeholder?.call(context)),
         ),
-        placeholder: (context, __) => SizedBox(
-          width: width,
-          height: height,
-          child: placeholder?.call(context),
-        ),
+        placeholder: (context, __) => SizedBox(width: width, height: height, child: placeholder?.call(context)),
       );
     }
     if (padding != null) {
@@ -379,30 +353,34 @@ class _Database {
     return image;
   }
 
-  Dio get apiWorkerDio => DioE(BaseOptions(
-        baseUrl: HostsX.workerHost,
-        // baseUrl: kDebugMode ? 'http://localhost:8183' : ,
-        headers: {
-          'x-chaldea-ver': AppInfo.versionString,
-          'x-chaldea-build': AppInfo.buildNumber,
-          'x-chaldea-uuid': AppInfo.uuid,
-          'x-chaldea-lang': Language.current.code,
-          'x-chaldea-platform': PlatformU.operatingSystem
-        },
-      ));
+  Dio get apiWorkerDio => DioE(
+    BaseOptions(
+      baseUrl: HostsX.workerHost,
+      // baseUrl: kDebugMode ? 'http://localhost:8183' : ,
+      headers: {
+        'x-chaldea-ver': AppInfo.versionString,
+        'x-chaldea-build': AppInfo.buildNumber,
+        'x-chaldea-uuid': AppInfo.uuid,
+        'x-chaldea-lang': Language.current.code,
+        'x-chaldea-platform': PlatformU.operatingSystem,
+      },
+    ),
+  );
 
-  Dio get apiServerDio => DioE(BaseOptions(
-        baseUrl: HostsX.apiHost,
-        // baseUrl: kDebugMode ? 'http://localhost:8000/' : Hosts.apiHost,
-        queryParameters: {
-          'key': AppInfo.uuid,
-          'ver': AppInfo.versionString,
-          'build': AppInfo.buildNumber,
-          'lang': Language.current.code,
-          'os': PlatformU.operatingSystem,
-        },
-        // validateStatus: _defaultValidateStat,
-      ));
+  Dio get apiServerDio => DioE(
+    BaseOptions(
+      baseUrl: HostsX.apiHost,
+      // baseUrl: kDebugMode ? 'http://localhost:8000/' : Hosts.apiHost,
+      queryParameters: {
+        'key': AppInfo.uuid,
+        'ver': AppInfo.versionString,
+        'build': AppInfo.buildNumber,
+        'lang': Language.current.code,
+        'os': PlatformU.operatingSystem,
+      },
+      // validateStatus: _defaultValidateStat,
+    ),
+  );
 }
 
 final db = _Database();

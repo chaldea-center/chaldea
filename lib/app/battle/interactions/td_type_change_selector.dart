@@ -26,16 +26,22 @@ class TdTypeChangeSelector extends StatelessWidget {
   });
 
   static Future<int?> show(
-      BattleData battleData, List<int> tdTypeChangeIds, List<int> tdIndexes, SelectTreasureDeviceInfo? selectTdInfo) {
+    BattleData battleData,
+    List<int> tdTypeChangeIds,
+    List<int> tdIndexes,
+    SelectTreasureDeviceInfo? selectTdInfo,
+  ) {
     if (!battleData.mounted) return Future.value();
     return showUserConfirm<int>(
       context: battleData.context!,
-      builder: (context, completer) => TdTypeChangeSelector(
-          battleData: battleData,
-          tdTypeChangeIds: tdTypeChangeIds,
-          tdIndexes: tdIndexes,
-          selectTdInfo: selectTdInfo,
-          completer: completer),
+      builder:
+          (context, completer) => TdTypeChangeSelector(
+            battleData: battleData,
+            tdTypeChangeIds: tdTypeChangeIds,
+            tdIndexes: tdIndexes,
+            selectTdInfo: selectTdInfo,
+            completer: completer,
+          ),
     );
   }
 
@@ -61,24 +67,24 @@ class TdTypeChangeSelector extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             child,
-            Text(
-              transl(tdInfo.message).l,
-              textAlign: TextAlign.center,
-              style: const TextStyle(fontSize: 12),
-            ),
+            Text(transl(tdInfo.message).l, textAlign: TextAlign.center, style: const TextStyle(fontSize: 12)),
           ],
         );
       }
-      children.add(Flexible(
-        child: InkWell(
-          onTap: () {
-            Navigator.of(context).pop(tdIndex);
-            battleData.battleLogger.action('${S.current.battle_select_effect}: $tdIndex/${cardType.name.toTitle()}'
-                ' ${S.current.battle_np_card}');
-          },
-          child: child,
+      children.add(
+        Flexible(
+          child: InkWell(
+            onTap: () {
+              Navigator.of(context).pop(tdIndex);
+              battleData.battleLogger.action(
+                '${S.current.battle_select_effect}: $tdIndex/${cardType.name.toTitle()}'
+                ' ${S.current.battle_np_card}',
+              );
+            },
+            child: child,
+          ),
         ),
-      ));
+      );
     }
 
     // String? title;
@@ -88,10 +94,7 @@ class TdTypeChangeSelector extends StatelessWidget {
     // }
     return SimpleCancelOkDialog(
       title: Text(S.current.battle_select_effect),
-      content: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: children,
-      ),
+      content: Row(mainAxisAlignment: MainAxisAlignment.center, children: children),
       hideOk: true,
       hideCancel: true,
       actions: [
@@ -101,7 +104,7 @@ class TdTypeChangeSelector extends StatelessWidget {
             Navigator.pop(context);
           },
           child: Text(S.current.cancel),
-        )
+        ),
       ],
     );
   }

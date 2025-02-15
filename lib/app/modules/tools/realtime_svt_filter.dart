@@ -25,8 +25,12 @@ class _RealtimeSvtFilterPageState extends State<RealtimeSvtFilterPage>
 
   @override
   Future<List<MstSvtFilter>?> fetchData(Region? r, {Duration? expireAfter}) async {
-    return AtlasApi.mstData('mstSvtFilter', (json) => (json as List).map((e) => MstSvtFilter.fromJson(e)).toList(),
-        region: r ?? Region.jp, expireAfter: expireAfter);
+    return AtlasApi.mstData(
+      'mstSvtFilter',
+      (json) => (json as List).map((e) => MstSvtFilter.fromJson(e)).toList(),
+      region: r ?? Region.jp,
+      expireAfter: expireAfter,
+    );
   }
 
   @override
@@ -52,12 +56,14 @@ class _RealtimeSvtFilterPageState extends State<RealtimeSvtFilterPage>
       itemBuilder: (context, index) {
         final filter = filters[index];
         final svtIds = filter.svtIds.toList();
-        svtIds.sort((a, b) => SvtFilterData.compare(
-              db.gameData.servantsById[a],
-              db.gameData.servantsById[b],
-              keys: [SvtCompare.rarity, SvtCompare.className, SvtCompare.no],
-              reversed: [true, false, true],
-            ));
+        svtIds.sort(
+          (a, b) => SvtFilterData.compare(
+            db.gameData.servantsById[a],
+            db.gameData.servantsById[b],
+            keys: [SvtCompare.rarity, SvtCompare.className, SvtCompare.no],
+            reversed: [true, false, true],
+          ),
+        );
         return TileGroup(
           header: 'No.${filter.id}',
           children: [
@@ -76,7 +82,7 @@ class _RealtimeSvtFilterPageState extends State<RealtimeSvtFilterPage>
                       db.gameData.entities[svtId]?.iconBuilder(context: context) ??
                       Text(svtId.toString()),
               ],
-            )
+            ),
           ],
         );
       },

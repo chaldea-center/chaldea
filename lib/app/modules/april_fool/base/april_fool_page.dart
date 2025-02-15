@@ -56,11 +56,13 @@ mixin AprilFoolPageMixin<T extends StatefulWidget> on State<T> {
   }
 
   Future<void> loadManifest(String manifestUrl, bool refresh) async {
-    final files = await showEasyLoading(() => AtlasApi.cacheManager.getModel(
-          manifestUrl,
-          (data) => (data as List).map((e) => AAFileManifest.fromJson(e)).toList(),
-          expireAfter: refresh ? Duration.zero : const Duration(days: 30),
-        ));
+    final files = await showEasyLoading(
+      () => AtlasApi.cacheManager.getModel(
+        manifestUrl,
+        (data) => (data as List).map((e) => AAFileManifest.fromJson(e)).toList(),
+        expireAfter: refresh ? Duration.zero : const Duration(days: 30),
+      ),
+    );
     if (files == null || files.isEmpty) return;
     data.files = files;
     await parseManifest(files, data);
@@ -74,15 +76,16 @@ mixin AprilFoolPageMixin<T extends StatefulWidget> on State<T> {
       title: Text(title),
       actions: [
         PopupMenuButton(
-          itemBuilder: (context) => [
-            PopupMenuItem(
-              child: Text(S.current.refresh),
-              onTap: () {
-                loadManifest(manifestUrl, true);
-              },
-            )
-          ],
-        )
+          itemBuilder:
+              (context) => [
+                PopupMenuItem(
+                  child: Text(S.current.refresh),
+                  onTap: () {
+                    loadManifest(manifestUrl, true);
+                  },
+                ),
+              ],
+        ),
       ],
     );
   }
@@ -134,25 +137,31 @@ mixin AprilFoolPageMixin<T extends StatefulWidget> on State<T> {
           ),
           IconButton(
             onPressed: () {
-              router.pushPage(AprilFoolSvtListPage(
-                servants: data.servants,
-                onSelected: (svt) {
-                  data.curSvt = svt;
-                  if (mounted) {
-                    setState(() {});
-                    final index = data.servants.indexOf(svt);
-                    if (index >= 0 &&
-                        _svtScrollController.hasClients &&
-                        _svtScrollController.position.hasContentDimensions) {
-                      final position = _svtScrollController.position;
-                      final newPos = position.minScrollExtent +
-                          (position.maxScrollExtent - position.minScrollExtent) * index / data.servants.length;
-                      _svtScrollController.animateTo(newPos,
-                          duration: const Duration(milliseconds: 800), curve: Curves.easeInOut);
+              router.pushPage(
+                AprilFoolSvtListPage(
+                  servants: data.servants,
+                  onSelected: (svt) {
+                    data.curSvt = svt;
+                    if (mounted) {
+                      setState(() {});
+                      final index = data.servants.indexOf(svt);
+                      if (index >= 0 &&
+                          _svtScrollController.hasClients &&
+                          _svtScrollController.position.hasContentDimensions) {
+                        final position = _svtScrollController.position;
+                        final newPos =
+                            position.minScrollExtent +
+                            (position.maxScrollExtent - position.minScrollExtent) * index / data.servants.length;
+                        _svtScrollController.animateTo(
+                          newPos,
+                          duration: const Duration(milliseconds: 800),
+                          curve: Curves.easeInOut,
+                        );
+                      }
                     }
-                  }
-                },
-              ));
+                  },
+                ),
+              );
             },
             icon: const Icon(Icons.person_search),
           ),
@@ -254,22 +263,14 @@ mixin AprilFoolPageMixin<T extends StatefulWidget> on State<T> {
     final imageData = await ImageUtil.recordCanvas(
       width: data.size.width,
       height: data.size.height,
-      paint: AprilFoolGraphPainter(
-        loader: loader,
-        chara: chara,
-        bg: bg,
-      ).paint,
+      paint: AprilFoolGraphPainter(loader: loader, chara: chara, bg: bg).paint,
     );
     if (imageData == null) {
       EasyLoading.showError(S.current.error);
       return;
     }
     if (!mounted) return;
-    return ImageActions.showSaveShare(
-      context: context,
-      data: imageData,
-      defaultFilename: data.getFilename(data),
-    );
+    return ImageActions.showSaveShare(context: context, data: imageData, defaultFilename: data.getFilename(data));
   }
 }
 
@@ -282,19 +283,14 @@ class AprilFoolGraph extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ImageLoaderWidget(builder: (context, loader) {
-      return AspectRatio(
-        aspectRatio: size.aspectRatio,
-        child: CustomPaint(
-          painter: AprilFoolGraphPainter(
-            loader: loader,
-            chara: chara,
-            bg: bg,
-          ),
-          size: size,
-        ),
-      );
-    });
+    return ImageLoaderWidget(
+      builder: (context, loader) {
+        return AspectRatio(
+          aspectRatio: size.aspectRatio,
+          child: CustomPaint(painter: AprilFoolGraphPainter(loader: loader, chara: chara, bg: bg), size: size),
+        );
+      },
+    );
   }
 }
 
@@ -304,11 +300,7 @@ class AprilFoolGraphPainter extends CustomPainter {
   final ImageLoader loader;
   final int cacheKey;
 
-  AprilFoolGraphPainter({
-    required this.chara,
-    required this.bg,
-    required this.loader,
-  }) : cacheKey = loader.cacheKey;
+  AprilFoolGraphPainter({required this.chara, required this.bg, required this.loader}) : cacheKey = loader.cacheKey;
 
   Paint getPaint() => Paint()..filterQuality = FilterQuality.high;
 

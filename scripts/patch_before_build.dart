@@ -27,8 +27,9 @@ void _patchFlutter() {
 
 void replaceFlutterFile(String fp, String s1, String s2) {
   final dartFp = Uri.file(Platform.resolvedExecutable);
-  final targetFp = dartFp
-      .replace(pathSegments: [...dartFp.pathSegments.sublist(0, dartFp.pathSegments.length - 5), ...fp.split('/')]);
+  final targetFp = dartFp.replace(
+    pathSegments: [...dartFp.pathSegments.sublist(0, dartFp.pathSegments.length - 5), ...fp.split('/')],
+  );
   print(targetFp.toFilePath());
   final targetFile = File(targetFp.toFilePath());
   assert(targetFile.existsSync());

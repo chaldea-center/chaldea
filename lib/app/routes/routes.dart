@@ -289,24 +289,24 @@ class RouteConfiguration {
   Map<String, String> get query => uri?.queryParameters ?? {};
 
   RouteConfiguration.notFound([this.arguments])
-      : url = Routes.notFound,
-        uri = Uri.parse(Routes.notFound),
-        child = null,
-        detail = null;
+    : url = Routes.notFound,
+      uri = Uri.parse(Routes.notFound),
+      child = null,
+      detail = null;
 
   RouteConfiguration.home()
-      : url = Routes.home,
-        uri = Uri.parse(Routes.home),
-        child = null,
-        arguments = null,
-        detail = false;
+    : url = Routes.home,
+      uri = Uri.parse(Routes.home),
+      child = null,
+      arguments = null,
+      detail = false;
 
   RouteConfiguration.bootstrap([String? next])
-      : url = Routes.bootstrap,
-        uri = Uri.parse(Routes.bootstrap),
-        child = BootstrapPage(),
-        arguments = null,
-        detail = null;
+    : url = Routes.bootstrap,
+      uri = Uri.parse(Routes.bootstrap),
+      child = BootstrapPage(),
+      arguments = null,
+      detail = null;
 
   SplitPage<T> createPage<T>() {
     return SplitPage(
@@ -323,12 +323,7 @@ class RouteConfiguration {
     return 'RouteConfiguration(url=$url, detail=$detail, child=$child)';
   }
 
-  RouteConfiguration copyWith({
-    String? url,
-    Widget? child,
-    bool? detail,
-    dynamic arguments,
-  }) {
+  RouteConfiguration copyWith({String? url, Widget? child, bool? detail, dynamic arguments}) {
     return RouteConfiguration(
       url: url ?? this.url,
       child: child ?? this.child,

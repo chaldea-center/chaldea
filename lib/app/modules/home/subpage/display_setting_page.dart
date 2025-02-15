@@ -40,9 +40,7 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(S.current.display_setting),
-      ),
+      appBar: AppBar(title: Text(S.current.display_setting)),
       body: ListView(
         children: [
           TileGroup(
@@ -78,7 +76,8 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
           ),
           TileGroup(
             header: S.current.filter,
-            footer: '${S.current.servant}/${S.current.craft_essence}'
+            footer:
+                '${S.current.servant}/${S.current.craft_essence}'
                 '/${S.current.command_code}',
             children: [
               SwitchListTile.adaptive(
@@ -102,14 +101,8 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
                   underline: const SizedBox(),
                   items: [
                     for (int index = 1; index <= 4; index++)
-                      DropdownMenuItem(
-                        value: index,
-                        child: Text('${S.current.ascension} $index'),
-                      ),
-                    DropdownMenuItem(
-                      value: -1,
-                      child: Text(S.current.plan),
-                    ),
+                      DropdownMenuItem(value: index, child: Text('${S.current.ascension} $index')),
+                    DropdownMenuItem(value: -1, child: Text(S.current.plan)),
                   ],
                   onChanged: (v) {
                     if (v != null) {
@@ -134,18 +127,19 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
                 onTap: () {
                   showDialog(
                     context: context,
-                    builder: (context) => SimpleCancelOkDialog(
-                      title: Text(S.current.confirm),
-                      content: Text(S.current.reset_custom_ascension_icon),
-                      confirmText: S.current.reset.toUpperCase(),
-                      onTapOk: () {
-                        db.userData.customSvtIcon.clear();
-                        EasyLoading.showSuccess(S.current.success);
-                      },
-                    ),
+                    builder:
+                        (context) => SimpleCancelOkDialog(
+                          title: Text(S.current.confirm),
+                          content: Text(S.current.reset_custom_ascension_icon),
+                          confirmText: S.current.reset.toUpperCase(),
+                          onTapOk: () {
+                            db.userData.customSvtIcon.clear();
+                            EasyLoading.showSuccess(S.current.success);
+                          },
+                        ),
                   );
                 },
-              )
+              ),
             ],
           ),
           TileGroup(
@@ -210,10 +204,7 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
                   underline: const SizedBox(),
                   items: [
                     for (final mode in [SvtPlanInputMode.dropdown, SvtPlanInputMode.slider])
-                      DropdownMenuItem(
-                        value: mode,
-                        child: Text(mode.name),
-                      ),
+                      DropdownMenuItem(value: mode, child: Text(mode.name)),
                   ],
                   onChanged: (v) {
                     if (v != null) {
@@ -232,22 +223,13 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
               children: [
                 ListTile(
                   title: Text(S.current.quest_prefer_region),
-                  subtitle: Text(
-                    S.current.quest_prefer_region_hint,
-                    textScaler: const TextScaler.linear(0.9),
-                  ),
+                  subtitle: Text(S.current.quest_prefer_region_hint, textScaler: const TextScaler.linear(0.9)),
                   trailing: DropdownButton<Region?>(
                     value: db.settings.preferredQuestRegion,
                     items: [
-                      DropdownMenuItem(
-                        value: null,
-                        child: Text(S.current.general_default),
-                      ),
+                      DropdownMenuItem(value: null, child: Text(S.current.general_default)),
                       for (final region in Region.values)
-                        DropdownMenuItem(
-                          value: region,
-                          child: Text(region.localName),
-                        ),
+                        DropdownMenuItem(value: region, child: Text(region.localName)),
                     ],
                     onChanged: (v) {
                       setState(() {
@@ -260,9 +242,10 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
             ),
           TileGroup(
             header: 'App',
-            footer: PlatformU.isDesktop
-                ? 'If system tray crash, delete settings.json or change "showSystemTray" value from true to false.'
-                : null,
+            footer:
+                PlatformU.isDesktop
+                    ? 'If system tray crash, delete settings.json or change "showSystemTray" value from true to false.'
+                    : null,
             children: [
               if (PlatformU.isDesktop)
                 SwitchListTile.adaptive(

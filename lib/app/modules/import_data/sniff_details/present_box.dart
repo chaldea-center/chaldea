@@ -9,8 +9,13 @@ class SniffPresentBoxDetailPage extends StatelessWidget {
   final List<UserEventMissionEntity> missions;
   final List<UserItemEntity> items;
   final UserGameEntity? userGame;
-  const SniffPresentBoxDetailPage(
-      {super.key, required this.presents, required this.missions, required this.items, required this.userGame});
+  const SniffPresentBoxDetailPage({
+    super.key,
+    required this.presents,
+    required this.missions,
+    required this.items,
+    required this.userGame,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -40,10 +45,7 @@ class SniffPresentBoxDetailPage extends StatelessWidget {
 
     // own items
     for (final item in items) {
-      if (const [
-        Items.summonTicketId,
-        Items.quartzFragmentId,
-      ].contains(item.itemId)) {
+      if (const [Items.summonTicketId, Items.quartzFragmentId].contains(item.itemId)) {
         ownedItems[item.itemId] = item.num;
       }
     }
@@ -64,17 +66,15 @@ class SniffPresentBoxDetailPage extends StatelessWidget {
       oneGroup(context, '${S.current.master_mission}(Extra, cleared but not claimed)', missionItems),
       oneGroup(context, '${S.current.item_own}(Summon items only)', ownedItems),
       oneGroup(
-          context,
-          '${S.current.total}: ${stoneCount.toInt()} ${S.current.sq_short} = ${stoneCount ~/ 3}×1.1 = $summonCount ${S.current.summon_pull_unit}',
-          allItems),
+        context,
+        '${S.current.total}: ${stoneCount.toInt()} ${S.current.sq_short} = ${stoneCount ~/ 3}×1.1 = $summonCount ${S.current.summon_pull_unit}',
+        allItems,
+      ),
     ]);
     children.add(SHeader('${S.current.details}(${S.current.present_box})'));
     children.addAll(presents.map((e) => buildPresent(context, e)));
 
-    return Scaffold(
-      appBar: AppBar(title: Text(S.current.present_box)),
-      body: ListView(children: children),
-    );
+    return Scaffold(appBar: AppBar(title: Text(S.current.present_box)), body: ListView(children: children));
   }
 
   Widget oneGroup(BuildContext context, String header, Map<int, int> items) {
@@ -101,7 +101,7 @@ class SniffPresentBoxDetailPage extends StatelessWidget {
                 ),
             ],
           ),
-        )
+        ),
       ],
     );
   }
@@ -112,10 +112,7 @@ class SniffPresentBoxDetailPage extends StatelessWidget {
       dense: true,
       leading: gift.iconBuilder(context: context, width: 32),
       title: Text('${gift.shownName} ×${gift.num}'),
-      subtitle: Text([
-        present.message,
-        present.createdAt.sec2date().toStringShort(omitSec: true),
-      ].join('\n')),
+      subtitle: Text([present.message, present.createdAt.sec2date().toStringShort(omitSec: true)].join('\n')),
       tileColor: Theme.of(context).hoverColor,
       onTap: () {
         gift.routeTo();

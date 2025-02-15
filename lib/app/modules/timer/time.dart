@@ -42,11 +42,13 @@ class _RegionTimeTabState extends State<RegionTimeTab> {
     final isDesktop = Theme.of(context).platform.isDesktop;
     final divider = Divider(indent: 16 + 40 + 16 + (isDesktop ? -4 : 0));
     List<Widget> list = [
-      buildItem(_RegionData(
-        tzName: t.timeZoneName,
-        offset: t.timeZoneOffset,
-        icon: isDesktop ? Icons.computer : Icons.smartphone,
-      )),
+      buildItem(
+        _RegionData(
+          tzName: t.timeZoneName,
+          offset: t.timeZoneOffset,
+          icon: isDesktop ? Icons.computer : Icons.smartphone,
+        ),
+      ),
       divider,
     ];
     final regions = [widget.region, ...Region.values.where((e) => e != widget.region)];
@@ -77,7 +79,7 @@ class _RegionTimeTabState extends State<RegionTimeTab> {
             offset: const Duration(hours: 9),
             flagSvg: SvgStrings.jpFlag,
             region: region,
-          )
+          ),
         ];
       case Region.cn:
         return [
@@ -87,7 +89,7 @@ class _RegionTimeTabState extends State<RegionTimeTab> {
             offset: const Duration(hours: 8),
             flagSvg: SvgStrings.cnFlag,
             region: region,
-          )
+          ),
         ];
       case Region.tw:
         return [
@@ -97,7 +99,7 @@ class _RegionTimeTabState extends State<RegionTimeTab> {
             offset: const Duration(hours: 8),
             flagSvg: SvgStrings.twFlag,
             region: region,
-          )
+          ),
         ];
       case Region.na:
         return [
@@ -126,7 +128,7 @@ class _RegionTimeTabState extends State<RegionTimeTab> {
             offset: const Duration(hours: 9),
             flagSvg: SvgStrings.krFlag,
             region: region,
-          )
+          ),
         ];
     }
   }
@@ -147,9 +149,10 @@ class _RegionTimeTabState extends State<RegionTimeTab> {
         child: SizedBox(
           width: 40,
           child: Center(
-            child: data.flagSvg != null
-                ? SvgPicture.string(data.flagSvg!)
-                : data.icon != null
+            child:
+                data.flagSvg != null
+                    ? SvgPicture.string(data.flagSvg!)
+                    : data.icon != null
                     ? Icon(data.icon, size: 36)
                     : null,
           ),
@@ -157,10 +160,7 @@ class _RegionTimeTabState extends State<RegionTimeTab> {
       ),
       title: Text(
         [local.hour, local.minute, local.second].map(_pad).join(':'),
-        style: const TextStyle(
-          fontFamily: kMonoFont,
-          fontSize: 32,
-        ),
+        style: const TextStyle(fontFamily: kMonoFont, fontSize: 32),
       ),
       subtitle: Text.rich(TextSpan(children: subtitles)),
     );
@@ -177,14 +177,7 @@ class _RegionData {
   IconData? icon;
   Region? region;
 
-  _RegionData({
-    this.name,
-    required this.tzName,
-    required this.offset,
-    this.flagSvg,
-    this.icon,
-    this.region,
-  });
+  _RegionData({this.name, required this.tzName, required this.offset, this.flagSvg, this.icon, this.region});
 }
 
 bool _showPDT(DateTime t) {

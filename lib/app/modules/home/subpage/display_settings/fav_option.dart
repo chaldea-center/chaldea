@@ -64,7 +64,7 @@ class _FavOptionSettingState extends State<FavOptionSetting> {
               onPressed: db.gameData.isValid ? () => router.push(url: Routes.servants) : null,
               child: Text(S.current.preview),
             ),
-          )
+          ),
         ],
       ),
     );

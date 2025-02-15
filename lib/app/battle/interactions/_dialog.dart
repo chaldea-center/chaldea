@@ -11,27 +11,26 @@ Future<T> showUserConfirm<T>({
 }) async {
   final completer = Completer<T>();
   showDialog<T>(
-    context: context,
-    useRootNavigator: false,
-    barrierDismissible: barrierDismissible,
-    builder: (context) {
-      return PopScope(
-        canPop: barrierDismissible,
-        child: builder(context, completer),
-      );
-    },
-  ).then((result) {
-    if (completer.isCompleted) return;
-    if (result == null && !allowNull) {
-      completer.completeError(InvalidUserAction(action ?? 'showUserConfirm', 'Cannot be null. Required type:$T'));
-    } else {
-      completer.complete(result as T);
-    }
-  }).catchError((e, s) {
-    if (!completer.isCompleted) {
-      completer.completeError(e);
-    }
-  });
+        context: context,
+        useRootNavigator: false,
+        barrierDismissible: barrierDismissible,
+        builder: (context) {
+          return PopScope(canPop: barrierDismissible, child: builder(context, completer));
+        },
+      )
+      .then((result) {
+        if (completer.isCompleted) return;
+        if (result == null && !allowNull) {
+          completer.completeError(InvalidUserAction(action ?? 'showUserConfirm', 'Cannot be null. Required type:$T'));
+        } else {
+          completer.complete(result as T);
+        }
+      })
+      .catchError((e, s) {
+        if (!completer.isCompleted) {
+          completer.completeError(e);
+        }
+      });
   return completer.future;
 }
 

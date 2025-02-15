@@ -39,23 +39,27 @@ class _EventItemCalcPageState extends State<EventItemCalcPage> with SingleTicker
     return Scaffold(
       appBar: AppBar(
         title: Text(S.current.free_quest_calculator),
-        bottom: FixedHeight.tabBar(TabBar(
-          controller: _tabController,
-          isScrollable: true,
-          tabAlignment: TabAlignment.center,
-          tabs: [
-            Tab(text: S.current.demands),
-            Tab(text: S.current.plan),
-          ],
-        )),
+        bottom: FixedHeight.tabBar(
+          TabBar(
+            controller: _tabController,
+            isScrollable: true,
+            tabAlignment: TabAlignment.center,
+            tabs: [Tab(text: S.current.demands), Tab(text: S.current.plan)],
+          ),
+        ),
       ),
       body: InheritSelectionArea(
         child: TabBarView(
           controller: _tabController,
           children: [
             KeepAliveBuilder(
-                builder: (context) => EventItemInputTab(
-                    warId: widget.warId, objectiveCounts: widget.objectiveCounts, onSolved: onSolved)),
+              builder:
+                  (context) => EventItemInputTab(
+                    warId: widget.warId,
+                    objectiveCounts: widget.objectiveCounts,
+                    onSolved: onSolved,
+                  ),
+            ),
             KeepAliveBuilder(builder: (context) => QuestPlanTab(solution: solution)),
           ],
         ),

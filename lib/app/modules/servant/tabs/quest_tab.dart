@@ -7,10 +7,7 @@ import '../../../app.dart';
 class SvtQuestTab extends StatelessWidget {
   final Servant svt;
 
-  SvtQuestTab({
-    super.key,
-    required this.svt,
-  });
+  SvtQuestTab({super.key, required this.svt});
 
   @override
   Widget build(BuildContext context) {

@@ -17,9 +17,10 @@ class _TraitFieldTabState extends State<TraitFieldTab> {
 
   @override
   Widget build(BuildContext context) {
-    final quests = db.gameData.questPhases.values
-        .where((q) => q.questIndividuality.map((e) => e.id).toSet().intersection(widget.ids.toSet()).isNotEmpty)
-        .toList();
+    final quests =
+        db.gameData.questPhases.values
+            .where((q) => q.questIndividuality.map((e) => e.id).toSet().intersection(widget.ids.toSet()).isNotEmpty)
+            .toList();
     quests.sortByList((e) => [-e.warId, -e.id]);
     if (quests.isEmpty) return const Center(child: Text('No record'));
     return ListView.builder(
@@ -32,15 +33,14 @@ class _TraitFieldTabState extends State<TraitFieldTab> {
     return ListTile(
       leading: db.getIconImage(quest.spot?.shownImage),
       title: Text(quest.lDispName),
-      subtitle: Text([
-        quest.war?.lShortName ?? "Unknown War",
-        quest.questIndividuality.map((e) => Transl.trait(e.id).l).join(' / ')
-      ].join('\n')),
-      trailing: Text(
+      subtitle: Text(
         [
-          "Lv.${quest.recommendLv}",
-          "${S.current.bond} ${quest.bond}",
+          quest.war?.lShortName ?? "Unknown War",
+          quest.questIndividuality.map((e) => Transl.trait(e.id).l).join(' / '),
         ].join('\n'),
+      ),
+      trailing: Text(
+        ["Lv.${quest.recommendLv}", "${S.current.bond} ${quest.bond}"].join('\n'),
         style: Theme.of(context).textTheme.bodySmall,
         textAlign: TextAlign.end,
       ),

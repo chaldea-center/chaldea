@@ -102,18 +102,19 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
             }
             return FilterPage.show(
               context: context,
-              builder: (context) => TeamFilterPage(
-                filterData: filterData,
-                availableSvts: svtIds,
-                availableCEs: ceIds,
-                availableMCs: mcIds,
-                availableEventWarIds: eventWarIds,
-                onChanged: (_) {
-                  if (mounted) {
-                    setState(() {});
-                  }
-                },
-              ),
+              builder:
+                  (context) => TeamFilterPage(
+                    filterData: filterData,
+                    availableSvts: svtIds,
+                    availableCEs: ceIds,
+                    availableMCs: mcIds,
+                    availableEventWarIds: eventWarIds,
+                    onChanged: (_) {
+                      if (mounted) {
+                        setState(() {});
+                      }
+                    },
+                  ),
             );
           },
         ),
@@ -147,10 +148,7 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
         );
       }
       buttons = [
-        Text(
-          rangeHint,
-          style: Theme.of(context).textTheme.bodySmall,
-        ),
+        Text(rangeHint, style: Theme.of(context).textTheme.bodySmall),
         const SizedBox(width: 8),
         TextButton(
           onPressed: offset == 0 ? null : () => _queryTeams(offset - pageSize),
@@ -183,9 +181,7 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
           shrinkWrap: true,
           scrollDirection: Axis.horizontal,
           padding: const EdgeInsetsDirectional.fromSTEB(0, 8, 0, 12),
-          children: [
-            for (final child in buttons.reversed) Center(child: child),
-          ],
+          children: [for (final child in buttons.reversed) Center(child: child)],
         ),
       ),
     );
@@ -214,12 +210,7 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
     );
     return Material(
       color: shownList.indexOf(record).isOdd ? Theme.of(context).hoverColor : null,
-      child: Center(
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 80 * 8),
-          child: child,
-        ),
-      ),
+      child: Center(child: ConstrainedBox(constraints: const BoxConstraints(maxWidth: 80 * 8), child: child)),
     );
   }
 
@@ -235,20 +226,18 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
       record.tempVotes ??= record.votes.copy();
       record.tempVotes!.updateMyVote(isUpVote);
       if (mounted) setState(() {});
-      EasyDebounce.debounce(
-        'team_vote_${record.id}',
-        const Duration(seconds: 1),
-        () async {
-          final result =
-              await ChaldeaWorkerApi.teamVote(teamId: record.id, voteValue: (record.tempVotes ?? record.votes).mine);
-          record.tempVotes = null;
-          if (result != null) {
-            record.votes = result;
-            ChaldeaWorkerApi.clearTeamCache();
-          }
-          if (mounted) setState(() {});
-        },
-      );
+      EasyDebounce.debounce('team_vote_${record.id}', const Duration(seconds: 1), () async {
+        final result = await ChaldeaWorkerApi.teamVote(
+          teamId: record.id,
+          voteValue: (record.tempVotes ?? record.votes).mine,
+        );
+        record.tempVotes = null;
+        if (result != null) {
+          record.votes = result;
+          ChaldeaWorkerApi.clearTeamCache();
+        }
+        if (mounted) setState(() {});
+      });
     }
 
     final votes = record.tempVotes ?? record.votes;
@@ -259,25 +248,30 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
         const SizedBox(width: 16),
         Expanded(
           child: Text.rich(
-            TextSpan(children: [
-              TextSpan(text: '${S.current.team} $index - '),
-              mode == TeamQueryMode.user
-                  ? TextSpan(text: username)
-                  : SharedBuilder.textButtonSpan(
+            TextSpan(
+              children: [
+                TextSpan(text: '${S.current.team} $index - '),
+                mode == TeamQueryMode.user
+                    ? TextSpan(text: username)
+                    : SharedBuilder.textButtonSpan(
                       context: context,
                       text: username,
                       onTap: () {
                         router.push(
                           url: Routes.laplaceManageTeam,
                           child: TeamsQueryPage(
-                              mode: TeamQueryMode.user, userId: record.userId, username: record.username),
+                            mode: TeamQueryMode.user,
+                            userId: record.userId,
+                            username: record.username,
+                          ),
                         );
                       },
                     ),
-              TextSpan(text: ' [${record.id}]'),
-              // if (widget.phaseInfo?.enemyHash == null)
-              //   TextSpan(text: '\n${S.current.version} ${record.enemyHash.substring2(2)}'),
-            ]),
+                TextSpan(text: ' [${record.id}]'),
+                // if (widget.phaseInfo?.enemyHash == null)
+                //   TextSpan(text: '\n${S.current.version} ${record.enemyHash.substring2(2)}'),
+              ],
+            ),
             style: style,
           ),
         ),
@@ -359,7 +353,8 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
     final minThreshold = Maths.min(team.actions.map((e) => e.options.threshold));
     if (minThreshold < 1000) {
       spans.add(
-          TextSpan(text: '${S.current.battle_probability_threshold} ${minThreshold.format(percent: true, base: 10)}'));
+        TextSpan(text: '${S.current.battle_probability_threshold} ${minThreshold.format(percent: true, base: 10)}'),
+      );
     }
     final normalAttackCount = team.normalAttackCount;
     if (normalAttackCount > 0) {
@@ -370,16 +365,20 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
     final enemyRateUp = team.options.enemyRateUp?.toList() ?? [];
     if (enemyRateUp.isNotEmpty) {
       for (final indiv in enemyRateUp) {
-        spans.add(TextSpan(children: [
-          CenterWidgetSpan(
-            child: db.getIconImage(
-              AssetURL.i.buffIcon(Theme.of(context).isDarkMode ? 1014 : 1015),
-              width: 18,
-              height: 18,
-            ),
+        spans.add(
+          TextSpan(
+            children: [
+              CenterWidgetSpan(
+                child: db.getIconImage(
+                  AssetURL.i.buffIcon(Theme.of(context).isDarkMode ? 1014 : 1015),
+                  width: 18,
+                  height: 18,
+                ),
+              ),
+              TextSpan(text: Transl.trait(indiv).l),
+            ],
           ),
-          TextSpan(text: Transl.trait(indiv).l),
-        ]));
+        );
       }
     }
     //
@@ -406,10 +405,7 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
       alignment: Alignment.centerLeft,
       child: Text.rich(
         TextSpan(children: divideList(spans, const TextSpan(text: ', '))),
-        style: TextStyle(
-          color: Theme.of(context).textTheme.bodySmall?.color,
-          fontSize: 14,
-        ),
+        style: TextStyle(color: Theme.of(context).textTheme.bodySmall?.color, fontSize: 14),
       ),
     );
   }
@@ -423,10 +419,12 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
       questName.add(TextSpan(text: quest.lDispName.setMaxLines(1)));
       final eventName = quest.event?.shownName ?? quest.war?.lShortName;
       if (eventName != null) {
-        questName.add(TextSpan(
-          text: '\n${eventName.setMaxLines(1)}',
-          style: TextStyle(fontSize: 12, color: Theme.of(context).textTheme.bodySmall?.color),
-        ));
+        questName.add(
+          TextSpan(
+            text: '\n${eventName.setMaxLines(1)}',
+            style: TextStyle(fontSize: 12, color: Theme.of(context).textTheme.bodySmall?.color),
+          ),
+        );
       }
     }
     return ListTile(
@@ -444,68 +442,79 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
   Widget buildTeamActions(UserBattleData record) {
     List<Widget> actions = [];
     final teamData = record.decoded;
-    actions.add(IconButton(
-      onPressed: () {
-        setState(() {
-          db.curUser.battleSim.favoriteTeams.putIfAbsent(record.questId, () => {}).toggle(record.id);
-        });
-      },
-      icon: db.curUser.battleSim.isTeamFavorite(record.questId, record.id)
-          ? const Icon(Icons.star, color: Colors.amber)
-          : const Icon(Icons.star_border, color: Colors.grey),
-      tooltip: S.current.favorite_teams,
-    ));
+    actions.add(
+      IconButton(
+        onPressed: () {
+          setState(() {
+            db.curUser.battleSim.favoriteTeams.putIfAbsent(record.questId, () => {}).toggle(record.id);
+          });
+        },
+        icon:
+            db.curUser.battleSim.isTeamFavorite(record.questId, record.id)
+                ? const Icon(Icons.star, color: Colors.amber)
+                : const Icon(Icons.star_border, color: Colors.grey),
+        tooltip: S.current.favorite_teams,
+      ),
+    );
 
     if (mode == TeamQueryMode.user || record.userId == curUserId || secrets.user?.isTeamMod == true) {
-      actions.add(TextButton(
-        onPressed: () {
-          final isOthers = record.userId != curUserId;
-          SimpleCancelOkDialog(
-            title: Text(S.current.confirm),
-            content: Text([
-              '${S.current.delete} No.${record.id}',
-              if (isOthers) "Waring: ${record.userId}'s, not your team",
-            ].join('\n')),
-            onTapOk: () {
-              _deleteUserTeam(record);
-            },
-          ).showDialog(context);
-        },
-        style: TextButton.styleFrom(foregroundColor: Theme.of(context).colorScheme.error),
-        child: Text(S.current.delete),
-      ));
+      actions.add(
+        TextButton(
+          onPressed: () {
+            final isOthers = record.userId != curUserId;
+            SimpleCancelOkDialog(
+              title: Text(S.current.confirm),
+              content: Text(
+                [
+                  '${S.current.delete} No.${record.id}',
+                  if (isOthers) "Waring: ${record.userId}'s, not your team",
+                ].join('\n'),
+              ),
+              onTapOk: () {
+                _deleteUserTeam(record);
+              },
+            ).showDialog(context);
+          },
+          style: TextButton.styleFrom(foregroundColor: Theme.of(context).colorScheme.error),
+          child: Text(S.current.delete),
+        ),
+      );
     }
     if (teamData != null) {
-      actions.add(TextButton(
-        onPressed: () {
-          replaySimulation(detail: teamData, replayTeamId: record.id);
-        },
-        child: Text(S.current.details),
-      ));
+      actions.add(
+        TextButton(
+          onPressed: () {
+            replaySimulation(detail: teamData, replayTeamId: record.id);
+          },
+          child: Text(S.current.details),
+        ),
+      );
     }
     actions.add(const SizedBox(width: 8));
     actions.addAll([
       FilledButton(
-        onPressed: teamData == null
-            ? null
-            : () {
-                if (widget.onSelect != null) {
-                  Navigator.pop(context);
-                  widget.onSelect!(teamData);
-                } else {
-                  final data2 = teamData.copy();
-                  data2
-                    ..actions.clear()
-                    ..delegate = null;
-                  router.pushPage(SimulationPreview(shareUri: data2.toUriV2()));
-                }
-              },
+        onPressed:
+            teamData == null
+                ? null
+                : () {
+                  if (widget.onSelect != null) {
+                    Navigator.pop(context);
+                    widget.onSelect!(teamData);
+                  } else {
+                    final data2 = teamData.copy();
+                    data2
+                      ..actions.clear()
+                      ..delegate = null;
+                    router.pushPage(SimulationPreview(shareUri: data2.toUriV2()));
+                  }
+                },
         child: Text(S.current.select),
       ),
       IconButton(
-        onPressed: teamData == null
-            ? null
-            : () => showDialog(
+        onPressed:
+            teamData == null
+                ? null
+                : () => showDialog(
                   context: context,
                   useRootNavigator: false,
                   builder: (context) => buildShareDialog(context, record),
@@ -515,11 +524,7 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
       ),
     ]);
 
-    return Wrap(
-      alignment: WrapAlignment.center,
-      crossAxisAlignment: WrapCrossAlignment.center,
-      children: actions,
-    );
+    return Wrap(alignment: WrapAlignment.center, crossAxisAlignment: WrapCrossAlignment.center, children: actions);
   }
 
   @override
@@ -545,25 +550,29 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
     switch (mode) {
       case TeamQueryMode.user:
         final userId = widget.userId ?? (widget.username != null ? int.tryParse(widget.username!) : null);
-        task = showEasyLoading(() => ChaldeaWorkerApi.teamsByUser(
-              limit: pageSize,
-              offset: offset,
-              expireAfter: refresh ? Duration.zero : const Duration(days: 2),
-              userId: userId,
-              username: widget.username,
-            ));
+        task = showEasyLoading(
+          () => ChaldeaWorkerApi.teamsByUser(
+            limit: pageSize,
+            offset: offset,
+            expireAfter: refresh ? Duration.zero : const Duration(days: 2),
+            userId: userId,
+            username: widget.username,
+          ),
+        );
       case TeamQueryMode.quest:
         final quest = widget.quest;
         final phase = widget.phaseInfo?.phase ?? quest?.phases.lastOrNull;
         if (quest == null || !quest.isLaplaceSharable || phase == null) return;
-        task = showEasyLoading(() => ChaldeaWorkerApi.teamsByQuest(
-              questId: quest.id,
-              phase: phase,
-              enemyHash: widget.phaseInfo?.enemyHash,
-              limit: pageSize,
-              offset: offset,
-              expireAfter: refresh ? Duration.zero : null,
-            ));
+        task = showEasyLoading(
+          () => ChaldeaWorkerApi.teamsByQuest(
+            questId: quest.id,
+            phase: phase,
+            enemyHash: widget.phaseInfo?.enemyHash,
+            limit: pageSize,
+            offset: offset,
+            expireAfter: refresh ? Duration.zero : null,
+          ),
+        );
       case TeamQueryMode.id:
         task = showEasyLoading(() async {
           final teamIds = widget.teamIds ?? [];
@@ -578,11 +587,13 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
           }
         });
       case TeamQueryMode.ranking:
-        task = showEasyLoading(() => ChaldeaWorkerApi.teamsRanking(
-              limit: pageSize,
-              offset: offset,
-              expireAfter: refresh ? Duration.zero : null,
-            ));
+        task = showEasyLoading(
+          () => ChaldeaWorkerApi.teamsRanking(
+            limit: pageSize,
+            offset: offset,
+            expireAfter: refresh ? Duration.zero : null,
+          ),
+        );
     }
     TeamQueryResult? result = await task;
     if (result != null) {
@@ -590,12 +601,14 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
         pageSize = result.limit;
       }
       if (mode != TeamQueryMode.ranking) {
-        result.data.sortByList((e) => [
-              e.userId == curUserId ? 0 : 1,
-              db.curUser.battleSim.favoriteTeams[e.questId]?.contains(e.id) == true ? 0 : 1,
-              -e.votes.up + e.votes.down,
-              e.id,
-            ]);
+        result.data.sortByList(
+          (e) => [
+            e.userId == curUserId ? 0 : 1,
+            db.curUser.battleSim.favoriteTeams[e.questId]?.contains(e.id) == true ? 0 : 1,
+            -e.votes.up + e.votes.down,
+            e.id,
+          ],
+        );
       }
       for (final r in result.data) {
         r.parse();
@@ -617,10 +630,7 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
   }
 
   Widget buildShareDialog(BuildContext context, UserBattleData record) {
-    final urls = <String?>[
-      record.toShortUri().toString(),
-      record.toUriV2().toString(),
-    ].whereType<String>().toList();
+    final urls = <String?>[record.toShortUri().toString(), record.toUriV2().toString()].whereType<String>().toList();
 
     return SimpleDialog(
       title: Text(S.current.share),
@@ -632,11 +642,7 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
             minLeadingWidth: 16,
             contentPadding: const EdgeInsets.symmetric(horizontal: 24),
             leading: Text((index + 1).toString()),
-            title: Text(
-              urls[index],
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-            ),
+            title: Text(urls[index], maxLines: 2, overflow: TextOverflow.ellipsis),
             onTap: () {
               copyToClipboard(urls[index]);
               EasyLoading.showToast(S.current.copied);
@@ -649,11 +655,7 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
           minLeadingWidth: 16,
           contentPadding: const EdgeInsets.symmetric(horizontal: 24),
           leading: Text(3.toString()),
-          title: const Text(
-            "Copy Replay Steps",
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-          ),
+          title: const Text("Copy Replay Steps", maxLines: 2, overflow: TextOverflow.ellipsis),
           onTap: () {
             db.runtimeData.clipBoard.teamData = record;
             EasyLoading.showToast(S.current.copied);
@@ -718,13 +720,7 @@ class _ReportTeamDialogState extends State<ReportTeamDialog> {
         ],
       ),
       hideOk: true,
-      actions: [
-        if (!widget.isMyTeam)
-          TextButton(
-            onPressed: onSend,
-            child: Text(S.current.feedback_send),
-          ),
-      ],
+      actions: [if (!widget.isMyTeam) TextButton(onPressed: onSend, child: Text(S.current.feedback_send))],
     );
   }
 
@@ -738,10 +734,7 @@ class _ReportTeamDialogState extends State<ReportTeamDialog> {
     try {
       String subject = '[Team] ${reason.substring2(0, 20)}';
 
-      final handler = ServerFeedbackHandler(
-        emailTitle: subject,
-        senderName: 'Team Report',
-      );
+      final handler = ServerFeedbackHandler(emailTitle: subject, senderName: 'Team Report');
 
       final buffer = StringBuffer();
       final quest = db.gameData.quests[record.questId];
@@ -754,7 +747,7 @@ class _ReportTeamDialogState extends State<ReportTeamDialog> {
         "ID: ${record.id}",
         "Uploader: ${record.username}",
         "Reporter: ${db.settings.secrets.user?.name}",
-        "Reason:\n$reason"
+        "Reason:\n$reason",
       ], '\n');
 
       final result = await showEasyLoading(() => handler.handle(FeedbackReport(null, buffer.toString()), null));

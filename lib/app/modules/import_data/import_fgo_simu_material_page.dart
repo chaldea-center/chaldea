@@ -50,18 +50,22 @@ class _ImportFgoSimuMaterialPageState extends State<ImportFgoSimuMaterialPage> w
       appBar: AppBar(
         titleSpacing: 0,
         title: const AutoSizeText('FGO Simulator - Material', maxLines: 1),
-        bottom: FixedHeight.tabBar(TabBar(
-          controller: _tabController,
-          tabs: [const Tab(text: 'Input'), Tab(text: S.current.servant), Tab(text: S.current.item)],
-        )),
+        bottom: FixedHeight.tabBar(
+          TabBar(
+            controller: _tabController,
+            tabs: [const Tab(text: 'Input'), Tab(text: S.current.servant), Tab(text: S.current.item)],
+          ),
+        ),
         actions: [
           IconButton(
             onPressed: () {
               SimpleCancelOkDialog(
                 title: Text(S.current.help),
                 scrollable: true,
-                content: const Text('Import servant and item data from fgosimulator'
-                    '\n\n"https://fgosim.github.io/Material/" -> My Chaldea -> 引継ぎコード'),
+                content: const Text(
+                  'Import servant and item data from fgosimulator'
+                  '\n\n"https://fgosim.github.io/Material/" -> My Chaldea -> 引継ぎコード',
+                ),
               ).showDialog(context);
             },
             icon: const Icon(Icons.help),
@@ -69,10 +73,7 @@ class _ImportFgoSimuMaterialPageState extends State<ImportFgoSimuMaterialPage> w
           ),
         ],
       ),
-      body: TabBarView(
-        controller: _tabController,
-        children: [inputTab, servantTab, itemTab],
-      ),
+      body: TabBarView(controller: _tabController, children: [inputTab, servantTab, itemTab]),
     );
   }
 
@@ -87,8 +88,9 @@ class _ImportFgoSimuMaterialPageState extends State<ImportFgoSimuMaterialPage> w
               expands: true,
               maxLines: null,
               textAlignVertical: TextAlignVertical.top,
-              contextMenuBuilder: (context, editableTextState) =>
-                  AdaptiveTextSelectionToolbar.editableText(editableTextState: editableTextState),
+              contextMenuBuilder:
+                  (context, editableTextState) =>
+                      AdaptiveTextSelectionToolbar.editableText(editableTextState: editableTextState),
               decoration: const InputDecoration(
                 border: OutlineInputBorder(),
                 helperText: 'Copy servant or item data from fgosimulator(webcrow)',
@@ -101,14 +103,9 @@ class _ImportFgoSimuMaterialPageState extends State<ImportFgoSimuMaterialPage> w
         SafeArea(
           child: OverflowBar(
             alignment: MainAxisAlignment.center,
-            children: [
-              ElevatedButton(
-                onPressed: _parse,
-                child: const Text('Parse Data'),
-              ),
-            ],
+            children: [ElevatedButton(onPressed: _parse, child: const Text('Parse Data'))],
           ),
-        )
+        ),
       ],
     );
   }
@@ -119,13 +116,12 @@ class _ImportFgoSimuMaterialPageState extends State<ImportFgoSimuMaterialPage> w
       children.add(const Center(child: Text('Nothing yet')));
     }
     if (_ignoredSvtIds.isNotEmpty) {
-      children.add(ListTile(
-        title: Text('${S.current.ignore}: $_ignoredSvtIds'),
-      ));
+      children.add(ListTile(title: Text('${S.current.ignore}: $_ignoredSvtIds')));
     }
 
-    svtResult.sort((a, b) =>
-        SvtFilterData.compare(a.svt, b.svt, keys: [SvtCompare.rarity, SvtCompare.no], reversed: [true, false]));
+    svtResult.sort(
+      (a, b) => SvtFilterData.compare(a.svt, b.svt, keys: [SvtCompare.rarity, SvtCompare.no], reversed: [true, false]),
+    );
     Widget _getSummary(SvtPlan plan) {
       String text = '${plan.ascension}-';
       text += plan.skills.map((e) => e.toString().padLeft(2)).join('/');
@@ -144,19 +140,21 @@ class _ImportFgoSimuMaterialPageState extends State<ImportFgoSimuMaterialPage> w
     }
 
     for (final record in svtResult) {
-      children.add(ListTile(
-        leading: record.svt.iconBuilder(context: context),
-        horizontalTitleGap: 4,
-        title: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            _showId(realId: record.svt.collectionNo, webcrowId: record.webcrowId),
-            Expanded(child: _getSummary(record.cur)),
-            const Text(' → '),
-            Expanded(child: _getSummary(record.target)),
-          ],
+      children.add(
+        ListTile(
+          leading: record.svt.iconBuilder(context: context),
+          horizontalTitleGap: 4,
+          title: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              _showId(realId: record.svt.collectionNo, webcrowId: record.webcrowId),
+              Expanded(child: _getSummary(record.cur)),
+              const Text(' → '),
+              Expanded(child: _getSummary(record.target)),
+            ],
+          ),
         ),
-      ));
+      );
     }
     return Column(
       children: [
@@ -164,11 +162,7 @@ class _ImportFgoSimuMaterialPageState extends State<ImportFgoSimuMaterialPage> w
           child: ListView.separated(
             padding: const EdgeInsets.symmetric(vertical: 8),
             itemBuilder: (context, index) => children[index],
-            separatorBuilder: (_, __) => const Divider(
-              height: 2,
-              thickness: 0.5,
-              indent: 64,
-            ),
+            separatorBuilder: (_, __) => const Divider(height: 2, thickness: 0.5, indent: 64),
             itemCount: children.length,
           ),
         ),
@@ -191,7 +185,7 @@ class _ImportFgoSimuMaterialPageState extends State<ImportFgoSimuMaterialPage> w
               ),
             ],
           ),
-        )
+        ),
       ],
     );
   }
@@ -202,24 +196,24 @@ class _ImportFgoSimuMaterialPageState extends State<ImportFgoSimuMaterialPage> w
       children.add(const Center(child: Text('Nothing yet')));
     }
     if (_ignoredItemIds.isNotEmpty) {
-      children.add(ListTile(
-        title: Text('${S.current.ignore}: $_ignoredItemIds'),
-      ));
+      children.add(ListTile(title: Text('${S.current.ignore}: $_ignoredItemIds')));
     }
     final _itemMappingReverse = itemMapping.map((key, value) => MapEntry(value, key));
     itemResult.forEach((itemId, value) {
-      children.add(ListTile(
-        leading: Item.iconBuilder(context: context, item: null, itemId: itemId),
-        title: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            _showId(realId: itemId, webcrowId: _itemMappingReverse[itemId]),
-            const SizedBox(width: 8),
-            Text(Item.getName(itemId)),
-          ],
+      children.add(
+        ListTile(
+          leading: Item.iconBuilder(context: context, item: null, itemId: itemId),
+          title: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              _showId(realId: itemId, webcrowId: _itemMappingReverse[itemId]),
+              const SizedBox(width: 8),
+              Text(Item.getName(itemId)),
+            ],
+          ),
+          trailing: Text(value.toString()),
         ),
-        trailing: Text(value.toString()),
-      ));
+      );
     });
     return Column(
       children: [
@@ -227,11 +221,7 @@ class _ImportFgoSimuMaterialPageState extends State<ImportFgoSimuMaterialPage> w
           child: ListView.separated(
             padding: const EdgeInsets.symmetric(vertical: 8),
             itemBuilder: (context, index) => children[index],
-            separatorBuilder: (_, __) => const Divider(
-              height: 2,
-              thickness: 0.5,
-              indent: 64,
-            ),
+            separatorBuilder: (_, __) => const Divider(height: 2, thickness: 0.5, indent: 64),
             itemCount: children.length,
           ),
         ),
@@ -249,7 +239,7 @@ class _ImportFgoSimuMaterialPageState extends State<ImportFgoSimuMaterialPage> w
               ),
             ],
           ),
-        )
+        ),
       ],
     );
   }
@@ -260,12 +250,7 @@ class _ImportFgoSimuMaterialPageState extends State<ImportFgoSimuMaterialPage> w
       child: Text.rich(
         TextSpan(
           text: realId.toString(),
-          children: [
-            TextSpan(
-              text: '\n($webcrowId)',
-              style: const TextStyle(fontSize: 12),
-            )
-          ],
+          children: [TextSpan(text: '\n($webcrowId)', style: const TextStyle(fontSize: 12))],
         ),
         textAlign: TextAlign.center,
         textScaler: const TextScaler.linear(0.9),
@@ -308,22 +293,24 @@ class _ImportFgoSimuMaterialPageState extends State<ImportFgoSimuMaterialPage> w
             }
           }
 
-          svtResult.add(_OneServantData(
-            webcrowId: webcrowId,
-            svt: svt,
-            cur: SvtPlan(
-              favorite: true,
-              ascension: row[1],
-              skills: [row[3], row[5], row[7]],
-              appendSkills: [row[11], row[13], row[15]],
+          svtResult.add(
+            _OneServantData(
+              webcrowId: webcrowId,
+              svt: svt,
+              cur: SvtPlan(
+                favorite: true,
+                ascension: row[1],
+                skills: [row[3], row[5], row[7]],
+                appendSkills: [row[11], row[13], row[15]],
+              ),
+              target: SvtPlan(
+                favorite: true,
+                ascension: row[2],
+                skills: [row[4], row[6], row[8]],
+                appendSkills: [row[12], row[14], row[16]],
+              ),
             ),
-            target: SvtPlan(
-              favorite: true,
-              ascension: row[2],
-              skills: [row[4], row[6], row[8]],
-              appendSkills: [row[12], row[14], row[16]],
-            ),
-          ));
+          );
         }
 
         setState(() {});
@@ -355,11 +342,7 @@ class _ImportFgoSimuMaterialPageState extends State<ImportFgoSimuMaterialPage> w
   }
 
   void parseItemMapping() {
-    Map<ItemBGType, List<Item>> mItems = {
-      ItemBGType.bronze: [],
-      ItemBGType.silver: [],
-      ItemBGType.gold: [],
-    };
+    Map<ItemBGType, List<Item>> mItems = {ItemBGType.bronze: [], ItemBGType.silver: [], ItemBGType.gold: []};
     for (final item in db.gameData.items.values) {
       if (item.id >= 6500 && item.id < 6900) {
         mItems[item.background]!.add(item);
@@ -378,14 +361,10 @@ class _ImportFgoSimuMaterialPageState extends State<ImportFgoSimuMaterialPage> w
         220 + i: 6201 + i,
       },
       800: 6999,
-      900: Items.qpId
+      900: Items.qpId,
     };
     // 300-bronze, 400-silver, 500-gold
-    final rarityBaseMap = {
-      ItemBGType.bronze: 300,
-      ItemBGType.silver: 400,
-      ItemBGType.gold: 500,
-    };
+    final rarityBaseMap = {ItemBGType.bronze: 300, ItemBGType.silver: 400, ItemBGType.gold: 500};
     for (final bg in rarityBaseMap.keys) {
       final group = mItems[bg]!;
       group.sort2((e) => e.priority);

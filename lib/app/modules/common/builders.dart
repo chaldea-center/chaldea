@@ -24,27 +24,16 @@ class SharedBuilder {
   }) {
     return DropdownButton<Region>(
       value: region,
-      items: [
-        for (final region in Region.values)
-          DropdownMenuItem(
-            value: region,
-            child: Text(region.localName),
-          ),
-      ],
-      icon: Icon(
-        Icons.arrow_drop_down,
-        color: SharedBuilder.appBarForeground(context),
-      ),
-      selectedItemBuilder: (context) => [
-        for (final region in Region.values)
-          DropdownMenuItem(
-            value: region,
-            child: Text(
-              region.localName,
-              style: TextStyle(color: SharedBuilder.appBarForeground(context)),
-            ),
-          )
-      ],
+      items: [for (final region in Region.values) DropdownMenuItem(value: region, child: Text(region.localName))],
+      icon: Icon(Icons.arrow_drop_down, color: SharedBuilder.appBarForeground(context)),
+      selectedItemBuilder:
+          (context) => [
+            for (final region in Region.values)
+              DropdownMenuItem(
+                value: region,
+                child: Text(region.localName, style: TextStyle(color: SharedBuilder.appBarForeground(context))),
+              ),
+          ],
       onChanged: onChanged,
       underline: const SizedBox(),
     );
@@ -59,20 +48,18 @@ class SharedBuilder {
     return DropdownButton<T>(
       value: value,
       items: items,
-      icon: Icon(
-        Icons.arrow_drop_down,
-        color: SharedBuilder.appBarForeground(context),
-      ),
-      selectedItemBuilder: (context) => [
-        for (final item in items)
-          DropdownMenuItem(
-            value: item.value,
-            child: DefaultTextStyle.merge(
-              child: item.child,
-              style: TextStyle(color: SharedBuilder.appBarForeground(context)),
-            ),
-          )
-      ],
+      icon: Icon(Icons.arrow_drop_down, color: SharedBuilder.appBarForeground(context)),
+      selectedItemBuilder:
+          (context) => [
+            for (final item in items)
+              DropdownMenuItem(
+                value: item.value,
+                child: DefaultTextStyle.merge(
+                  child: item.child,
+                  style: TextStyle(color: SharedBuilder.appBarForeground(context)),
+                ),
+              ),
+          ],
       onChanged: onChanged,
       underline: const SizedBox(),
     );
@@ -111,22 +98,14 @@ class SharedBuilder {
     List<Widget> children = [];
     for (final group in Item.groupItems(items).entries) {
       if (group.value.isEmpty) continue;
-      children.add(Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
-        child: itemGrid(
-          context: context,
-          items: group.value.entries,
-          width: width,
-          height: height,
-          onTap: onTap,
+      children.add(
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
+          child: itemGrid(context: context, items: group.value.entries, width: width, height: height, onTap: onTap),
         ),
-      ));
+      );
     }
-    return TileGroup(
-      header: header,
-      footer: footer,
-      children: children,
-    );
+    return TileGroup(header: header, footer: footer, children: children);
   }
 
   static Widget grid<T>({
@@ -135,13 +114,7 @@ class SharedBuilder {
     required Widget Function(BuildContext context, T item) builder,
     EdgeInsetsGeometry? padding,
   }) {
-    Widget child = Wrap(
-      spacing: 1,
-      runSpacing: 1,
-      children: [
-        for (final item in items) builder(context, item),
-      ],
-    );
+    Widget child = Wrap(spacing: 1, runSpacing: 1, children: [for (final item in items) builder(context, item)]);
     if (padding != null) {
       child = Padding(padding: padding, child: child);
     }
@@ -190,22 +163,11 @@ class SharedBuilder {
     return Wrap(
       spacing: 1,
       runSpacing: 1,
-      children: [
-        for (final gift in gifts)
-          gift.iconBuilder(
-            context: context,
-            width: width ?? 36,
-            height: height,
-          ),
-      ],
+      children: [for (final gift in gifts) gift.iconBuilder(context: context, width: width ?? 36, height: height)],
     );
   }
 
-  static List<PopupMenuItem<T>> websitesPopupMenuItems<T>({
-    String? atlas,
-    String? mooncell,
-    String? fandom,
-  }) {
+  static List<PopupMenuItem<T>> websitesPopupMenuItems<T>({String? atlas, String? mooncell, String? fandom}) {
     return [
       if (atlas != null)
         PopupMenuItem<T>(
@@ -231,28 +193,29 @@ class SharedBuilder {
     ];
   }
 
-  static List<PopupMenuItem<T>> noticeLinkPopupMenuItems<T>({
-    required MappingBase<String> noticeLink,
-  }) {
+  static List<PopupMenuItem<T>> noticeLinkPopupMenuItems<T>({required MappingBase<String> noticeLink}) {
     List<PopupMenuItem<T>> items = [];
     for (final region in Region.values) {
       final v = noticeLink.ofRegion(region);
       if (v != null) {
-        items.add(PopupMenuItem<T>(
-          child: Text(S.current.region_notice(region.localName)),
-          onTap: () {
-            String url = v;
-            if (region == Region.cn) {
-              assert((int.tryParse(v) ?? 0) > 0);
-              if (int.tryParse(v) != null) {
-                url = PlatformU.isTargetMobile
-                    ? 'https://game.bilibili.com/fgo/h5/news.html#detailId=$v'
-                    : 'https://game.bilibili.com/fgo/news.html#!news/0/1/$v';
+        items.add(
+          PopupMenuItem<T>(
+            child: Text(S.current.region_notice(region.localName)),
+            onTap: () {
+              String url = v;
+              if (region == Region.cn) {
+                assert((int.tryParse(v) ?? 0) > 0);
+                if (int.tryParse(v) != null) {
+                  url =
+                      PlatformU.isTargetMobile
+                          ? 'https://game.bilibili.com/fgo/h5/news.html#detailId=$v'
+                          : 'https://game.bilibili.com/fgo/news.html#!news/0/1/$v';
+                }
               }
-            }
-            launch(url);
-          },
-        ));
+              launch(url);
+            },
+          ),
+        );
       }
     }
     return items;
@@ -286,7 +249,7 @@ class SharedBuilder {
                       onChange(index);
                     }
                   },
-                )
+                ),
             ],
           );
         });
@@ -310,7 +273,7 @@ class SharedBuilder {
               text: (db.curUser.curSvtPlanNo + 1).toString(),
               shadowSize: 5,
               shadowColor: appBarBackground(context),
-            )
+            ),
           ],
         ),
       ),
@@ -327,11 +290,7 @@ class SharedBuilder {
         ),
         tooltip: S.current.priority,
         onPressed: () {
-          showDialog(
-            context: context,
-            useRootNavigator: false,
-            builder: (context) => ItemFilterDialog(),
-          );
+          showDialog(context: context, useRootNavigator: false, builder: (context) => ItemFilterDialog());
         },
       ),
     );
@@ -401,14 +360,7 @@ class SharedBuilder {
     String Function(NiceTrait trait)? format,
   }) {
     return Text.rich(
-      TextSpan(
-        children: traitSpans(
-          context: context,
-          traits: traits,
-          useAndJoin: useAndJoin,
-          format: format,
-        ),
-      ),
+      TextSpan(children: traitSpans(context: context, traits: traits, useAndJoin: useAndJoin, format: format)),
       style: style,
       textScaler: textScaleFactor == null ? null : TextScaler.linear(textScaleFactor),
       textAlign: textAlign,
@@ -424,10 +376,7 @@ class SharedBuilder {
   }) {
     List<InlineSpan> children = divideList(
       traits.map((e) => traitSpan(context: context, trait: e, style: style, format: format)),
-      TextSpan(
-        text: useAndJoin ? ' & ' : ' / ',
-        style: TextStyle(color: Theme.of(context).hintColor),
-      ),
+      TextSpan(text: useAndJoin ? ' & ' : ' / ', style: TextStyle(color: Theme.of(context).hintColor)),
     );
     return children;
   }
@@ -441,35 +390,33 @@ class SharedBuilder {
     await showDialog(
       context: context,
       useRootNavigator: false,
-      builder: (context) => SimpleDialog(
-        title: Text(S.current.import_image),
-        contentPadding: const EdgeInsets.fromLTRB(8.0, 12.0, 0.0, 16.0),
-        children: [
-          ListTile(
-            minLeadingWidth: 24,
-            leading: const Icon(Icons.photo_library),
-            title: Text(S.current.attach_from_photos),
-            onTap: () {
-              fileType = FileType.image;
-              Navigator.pop(context);
-            },
+      builder:
+          (context) => SimpleDialog(
+            title: Text(S.current.import_image),
+            contentPadding: const EdgeInsets.fromLTRB(8.0, 12.0, 0.0, 16.0),
+            children: [
+              ListTile(
+                minLeadingWidth: 24,
+                leading: const Icon(Icons.photo_library),
+                title: Text(S.current.attach_from_photos),
+                onTap: () {
+                  fileType = FileType.image;
+                  Navigator.pop(context);
+                },
+              ),
+              ListTile(
+                minLeadingWidth: 24,
+                leading: const Icon(Icons.file_copy),
+                title: Text(S.current.attach_from_files),
+                onTap: () {
+                  fileType = FileType.any;
+                  Navigator.pop(context);
+                },
+              ),
+              SFooter(S.current.attach_help),
+              IconButton(onPressed: () => Navigator.pop(context), icon: const Icon(Icons.clear)),
+            ],
           ),
-          ListTile(
-            minLeadingWidth: 24,
-            leading: const Icon(Icons.file_copy),
-            title: Text(S.current.attach_from_files),
-            onTap: () {
-              fileType = FileType.any;
-              Navigator.pop(context);
-            },
-          ),
-          SFooter(S.current.attach_help),
-          IconButton(
-            onPressed: () => Navigator.pop(context),
-            icon: const Icon(Icons.clear),
-          ),
-        ],
-      ),
     );
     if (fileType == null) return null;
     return FilePickerU.pickFiles(type: fileType!, allowMultiple: allowMultiple, withData: withData);
@@ -483,10 +430,11 @@ class SharedBuilder {
     bool showUnknown = false,
   }) {
     Widget _oneClsBtn(SvtClass clsName) {
-      final extraClasses = {
+      final extraClasses =
+          {
             SvtClass.EXTRA: SvtClassX.extra,
             SvtClass.EXTRA1: SvtClassX.extraI,
-            SvtClass.EXTRA2: SvtClassX.extraII
+            SvtClass.EXTRA2: SvtClassX.extraII,
           }[clsName] ??
           [];
 
@@ -504,16 +452,9 @@ class SharedBuilder {
       } else {
         rarity = data.options.contains(clsName) ? 5 : 1;
       }
-      Widget icon = db.getIconImage(
-        clsName.icon(rarity),
-        aspectRatio: 1,
-        width: 32,
-      );
+      Widget icon = db.getIconImage(clsName.icon(rarity), aspectRatio: 1, width: 32);
       return InkWell(
-        child: Padding(
-          padding: const EdgeInsets.all(1),
-          child: icon,
-        ),
+        child: Padding(padding: const EdgeInsets.all(1), child: icon),
         onTap: () {
           if (clsName == SvtClass.ALL) {
             data.options = {};
@@ -527,13 +468,8 @@ class SharedBuilder {
       );
     }
 
-    final clsRegularBtns = [
-      _oneClsBtn(SvtClass.ALL),
-      for (var clsName in SvtClassX.regular) _oneClsBtn(clsName),
-    ];
-    final clsExtraBtns = [
-      for (var clsName in SvtClassX.extra) _oneClsBtn(clsName),
-    ];
+    final clsRegularBtns = [_oneClsBtn(SvtClass.ALL), for (var clsName in SvtClassX.regular) _oneClsBtn(clsName)];
+    final clsExtraBtns = [for (var clsName in SvtClassX.extra) _oneClsBtn(clsName)];
     final unknownBtn = _oneClsBtn(SvtClass.unknown);
     SvtListClassFilterStyle style = db.settings.display.classFilterStyle;
     // full window mode
@@ -570,13 +506,14 @@ class SharedBuilder {
           constraints: const BoxConstraints(maxHeight: 40),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              ...clsRegularBtns,
-              // _oneClsBtn(SvtClass.EXTRA),
-              _oneClsBtn(SvtClass.EXTRA1),
-              _oneClsBtn(SvtClass.EXTRA2),
-              if (showUnknown) unknownBtn,
-            ].map((e) => Expanded(child: e)).toList(),
+            children:
+                [
+                  ...clsRegularBtns,
+                  // _oneClsBtn(SvtClass.EXTRA),
+                  _oneClsBtn(SvtClass.EXTRA1),
+                  _oneClsBtn(SvtClass.EXTRA2),
+                  if (showUnknown) unknownBtn,
+                ].map((e) => Expanded(child: e)).toList(),
           ),
         );
       case SvtListClassFilterStyle.singleRowExpanded:
@@ -585,19 +522,11 @@ class SharedBuilder {
           height: 40,
           child: Row(
             children: [
-              Expanded(
-                child: ListView(
-                  scrollDirection: Axis.horizontal,
-                  children: allBtns,
-                ),
-              ),
+              Expanded(child: ListView(scrollDirection: Axis.horizontal, children: allBtns)),
               if (maxWidth < 36 * allBtns.length)
                 Padding(
                   padding: const EdgeInsetsDirectional.only(start: 6),
-                  child: Icon(
-                    DirectionalIcons.keyboard_arrow_forward(context),
-                    color: Theme.of(context).disabledColor,
-                  ),
+                  child: Icon(DirectionalIcons.keyboard_arrow_forward(context), color: Theme.of(context).disabledColor),
                 ),
             ],
           ),
@@ -625,8 +554,12 @@ class SharedBuilder {
     }
   }
 
-  static List<InlineSpan> replaceSpan(String text, Pattern pattern, List<InlineSpan> replace,
-      {bool appendIfAbsent = true}) {
+  static List<InlineSpan> replaceSpan(
+    String text,
+    Pattern pattern,
+    List<InlineSpan> replace, {
+    bool appendIfAbsent = true,
+  }) {
     final parts = text.split(pattern);
     if (parts.length == 1) {
       if (appendIfAbsent) {
@@ -647,13 +580,14 @@ class SharedBuilder {
   }
 
   static List<String> _split(List<String> texts, String sep) {
-    return [
-      for (final text in texts) ...text.split(sep).divided((_) => sep),
-    ];
+    return [for (final text in texts) ...text.split(sep).divided((_) => sep)];
   }
 
-  static List<InlineSpan> replaceSpanMaps(String text, Map<String, List<InlineSpan> Function(String match)> replaces,
-      {List<InlineSpan> Function(List<String> missing)? ifAbsent}) {
+  static List<InlineSpan> replaceSpanMaps(
+    String text,
+    Map<String, List<InlineSpan> Function(String match)> replaces, {
+    List<InlineSpan> Function(List<String> missing)? ifAbsent,
+  }) {
     List<String> texts = [text];
     for (final sep in replaces.keys) {
       texts = _split(texts, sep);
@@ -677,17 +611,23 @@ class SharedBuilder {
   }
 
   static List<InlineSpan> replaceSpanPattern(
-      String text, Pattern pattern, List<InlineSpan> Function(Match match) replace) {
+    String text,
+    Pattern pattern,
+    List<InlineSpan> Function(Match match) replace,
+  ) {
     List<InlineSpan> spans = [];
     List<String> textParts = text.split(pattern);
     bool mapped = false;
-    text.splitMapJoin(pattern, onMatch: (match) {
-      assert(textParts.isNotEmpty);
-      spans.add(TextSpan(text: textParts.removeAt(0)));
-      spans.addAll(replace(match));
-      mapped = true;
-      return match.group(0)!;
-    });
+    text.splitMapJoin(
+      pattern,
+      onMatch: (match) {
+        assert(textParts.isNotEmpty);
+        spans.add(TextSpan(text: textParts.removeAt(0)));
+        spans.addAll(replace(match));
+        mapped = true;
+        return match.group(0)!;
+      },
+    );
     assert(textParts.length == 1);
     spans.addAll(textParts.map((e) => TextSpan(text: e)));
     assert(mapped, [text, pattern]);

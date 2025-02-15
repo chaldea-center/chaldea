@@ -23,12 +23,14 @@ class _ScriptListPageState extends State<ScriptListPage> {
   Widget build(BuildContext context) {
     List<Widget> mainPart = [], eventPart = [];
     if (war.startScript != null) {
-      mainPart.add(ListTile(
-        dense: true,
-        title: Text('Start Script ${war.startScript?.scriptId}', textScaler: const TextScaler.linear(1.1)),
-        contentPadding: EdgeInsets.zero,
-        onTap: () => onTap(war.startScript!),
-      ));
+      mainPart.add(
+        ListTile(
+          dense: true,
+          title: Text('Start Script ${war.startScript?.scriptId}', textScaler: const TextScaler.linear(1.1)),
+          contentPadding: EdgeInsets.zero,
+          onTap: () => onTap(war.startScript!),
+        ),
+      );
     }
     final quests = war.quests.toList();
     quests.sort2((e) => -e.priority);
@@ -41,13 +43,12 @@ class _ScriptListPageState extends State<ScriptListPage> {
         spans.addAll([
           TextSpan(text: '${phase.phase}: '),
           ...divideList(
-            validScripts.map((script) => SharedBuilder.textButtonSpan(
-                  context: context,
-                  text: script.scriptId,
-                  onTap: () => onTap(script),
-                )),
+            validScripts.map(
+              (script) =>
+                  SharedBuilder.textButtonSpan(context: context, text: script.scriptId, onTap: () => onTap(script)),
+            ),
             const TextSpan(text: ' / '),
-          )
+          ),
         ]);
       }
       if (spans.isEmpty) continue;
@@ -69,28 +70,29 @@ class _ScriptListPageState extends State<ScriptListPage> {
         ),
         Padding(
           padding: const EdgeInsetsDirectional.fromSTEB(16, 0, 0, 8),
-          child: Text.rich(
-            TextSpan(children: spans),
-            textScaler: const TextScaler.linear(0.9),
-          ),
-        )
+          child: Text.rich(TextSpan(children: spans), textScaler: const TextScaler.linear(0.9)),
+        ),
       ]);
     }
     List<Tab> tabs = [];
     List<Widget> views = [];
     if (mainPart.isNotEmpty) {
       tabs.add(Tab(text: S.current.main_story));
-      views.add(ListView(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        children: mainPart..add(const SafeArea(child: SizedBox())),
-      ));
+      views.add(
+        ListView(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          children: mainPart..add(const SafeArea(child: SizedBox())),
+        ),
+      );
     }
     if (eventPart.isNotEmpty) {
       tabs.add(Tab(text: S.current.event_quest));
-      views.add(ListView(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        children: eventPart..add(const SafeArea(child: SizedBox())),
-      ));
+      views.add(
+        ListView(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          children: eventPart..add(const SafeArea(child: SizedBox())),
+        ),
+      );
     }
     if (tabs.isEmpty) {
       return Scaffold(

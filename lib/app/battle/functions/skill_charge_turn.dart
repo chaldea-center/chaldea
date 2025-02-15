@@ -28,11 +28,7 @@ class SkillChargeTurn {
     }
   }
 
-  static void extendSkill(
-    final BattleData battleData,
-    final DataVals dataVals,
-    final List<BattleServantData> targets,
-  ) {
+  static void extendSkill(final BattleData battleData, final DataVals dataVals, final List<BattleServantData> targets) {
     final functionRate = dataVals.Rate ?? 1000;
     if (functionRate < battleData.options.threshold) {
       return;
@@ -47,11 +43,7 @@ class SkillChargeTurn {
     }
   }
 
-  static void updateUserEquipSkillChargeTurn(
-    BattleData battleData,
-    DataVals dataVals,
-    bool isProgress,
-  ) {
+  static void updateUserEquipSkillChargeTurn(BattleData battleData, DataVals dataVals, bool isProgress) {
     final functionRate = dataVals.Rate ?? 1000;
     if (functionRate < battleData.options.threshold) {
       return;

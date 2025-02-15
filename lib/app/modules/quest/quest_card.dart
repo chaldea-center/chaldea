@@ -32,11 +32,9 @@ class QuestCard extends StatefulWidget {
     this.displayPhases,
     this.preferredPhases = const [],
     this.showFace,
-  })  : assert(quest != null || questId != null),
-        questId = (quest?.id ?? questId)!,
-        super(
-          key: key ?? Key('QuestCard_${region?.name}_${quest?.id ?? questId}'),
-        );
+  }) : assert(quest != null || questId != null),
+       questId = (quest?.id ?? questId)!,
+       super(key: key ?? Key('QuestCard_${region?.name}_${quest?.id ?? questId}'));
 
   @override
   _QuestCardState createState() => _QuestCardState();
@@ -104,11 +102,7 @@ class _QuestCardState extends State<QuestCard> {
                 onPressed: () {
                   router.push(
                     url: Routes.questI(widget.questId),
-                    child: QuestDetailPage(
-                      quest: _quest,
-                      id: widget.questId,
-                      region: _region,
-                    ),
+                    child: QuestDetailPage(quest: _quest, id: widget.questId, region: _region),
                     detail: true,
                   );
                 },
@@ -120,32 +114,37 @@ class _QuestCardState extends State<QuestCard> {
     }
 
     List<Widget> phaseWidgets = [];
-    final Map<int, String?> displayPhases = widget.displayPhases ??
+    final Map<int, String?> displayPhases =
+        widget.displayPhases ??
         {
-          for (var v in quest.isMainStoryFree ? [quest.phases.last] : quest.phases) v: null
+          for (var v in quest.isMainStoryFree ? [quest.phases.last] : quest.phases) v: null,
         };
     for (final (phase, enemyHash) in displayPhases.items) {
       final phaseData = widget.preferredPhases.firstWhereOrNull((qh) => qh.id == quest.id && qh.phase == phase);
       if (phaseData != null) {
-        phaseWidgets.add(QuestPhaseWidget.phase(
-          questPhase: phaseData,
-          region: widget.region,
-          offline: widget.offline,
-          showTrueName: showTrueName,
-          showFace: widget.showFace,
-          battleOnly: widget.battleOnly,
-        ));
+        phaseWidgets.add(
+          QuestPhaseWidget.phase(
+            questPhase: phaseData,
+            region: widget.region,
+            offline: widget.offline,
+            showTrueName: showTrueName,
+            showFace: widget.showFace,
+            battleOnly: widget.battleOnly,
+          ),
+        );
       } else {
-        phaseWidgets.add(QuestPhaseWidget(
-          quest: quest,
-          phase: phase,
-          enemyHash: enemyHash,
-          region: widget.region,
-          offline: widget.offline,
-          showTrueName: showTrueName,
-          showFace: widget.showFace,
-          battleOnly: widget.battleOnly,
-        ));
+        phaseWidgets.add(
+          QuestPhaseWidget(
+            quest: quest,
+            phase: phase,
+            enemyHash: enemyHash,
+            region: widget.region,
+            offline: widget.offline,
+            showTrueName: showTrueName,
+            showFace: widget.showFace,
+            battleOnly: widget.battleOnly,
+          ),
+        );
       }
     }
 
@@ -176,12 +175,7 @@ class _QuestCardState extends State<QuestCard> {
           children: [
             const SizedBox(height: 8),
             ...divideTiles(
-              children.map(
-                (e) => Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
-                  child: e,
-                ),
-              ),
+              children.map((e) => Padding(padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 2), child: e)),
               divider: const Divider(height: 8, thickness: 2),
             ),
             const SizedBox(height: 8),
@@ -192,18 +186,17 @@ class _QuestCardState extends State<QuestCard> {
   }
 
   Text _header(String text, [TextStyle? style]) {
-    return Text(
-      text,
-      style: const TextStyle(fontWeight: FontWeight.w600).merge(style),
-    );
+    return Text(text, style: const TextStyle(fontWeight: FontWeight.w600).merge(style));
   }
 
   Widget _cardHeader() {
     String questName = quest.lNameWithChapter;
 
-    List<String> names = [questName, if (!Transl.isJP && quest.name != quest.lName.l && !widget.battleOnly) quest.name]
-        .map((e) => e.replaceAll('\n', ' '))
-        .toList();
+    List<String> names =
+        [
+          questName,
+          if (!Transl.isJP && quest.name != quest.lName.l && !widget.battleOnly) quest.name,
+        ].map((e) => e.replaceAll('\n', ' ')).toList();
     String shownQuestName;
     if (names.any((s) => s.charWidth > 16)) {
       shownQuestName = names.join('\n');
@@ -237,11 +230,7 @@ class _QuestCardState extends State<QuestCard> {
           style: const TextStyle(fontWeight: FontWeight.bold),
         ),
       ),
-      Text(
-        shownQuestName,
-        textScaler: const TextScaler.linear(0.9),
-        textAlign: TextAlign.center,
-      ),
+      Text(shownQuestName, textScaler: const TextScaler.linear(0.9), textAlign: TextAlign.center),
     ];
 
     return Row(
@@ -261,15 +250,12 @@ class _QuestCardState extends State<QuestCard> {
           width: 36,
           child: IconButton(
             onPressed: () => setState(() => showTrueName = !showTrueName),
-            icon: Icon(
-              Icons.remove_red_eye_outlined,
-              color: showTrueName ? Theme.of(context).indicatorColor : null,
-            ),
+            icon: Icon(Icons.remove_red_eye_outlined, color: showTrueName ? Theme.of(context).indicatorColor : null),
             tooltip: showTrueName ? 'Show Display Name' : 'Show True Name',
             padding: EdgeInsets.zero,
             iconSize: 20,
           ),
-        )
+        ),
       ],
     );
   }
@@ -293,7 +279,7 @@ class _QuestCardState extends State<QuestCard> {
                 ],
               ),
             ),
-          )
+          ),
         ],
       ),
     );
@@ -335,18 +321,10 @@ class _QuestCardState extends State<QuestCard> {
           textScaler: const TextScaler.linear(0.9),
         ),
         for (final release in entry.value)
-          CondTargetValueDescriptor(
-            condType: release.condType,
-            target: release.condId,
-            value: release.condNum,
-          )
+          CondTargetValueDescriptor(condType: release.condType, target: release.condId, value: release.condNum),
       ]);
     }
 
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: children,
-    );
+    return Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: children);
   }
 }

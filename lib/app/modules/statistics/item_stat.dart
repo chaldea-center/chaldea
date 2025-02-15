@@ -68,7 +68,7 @@ class _ItemStatTabState extends State<ItemStatTab> {
                     child: ItemDetailPage(itemId: itemId, initialTabIndex: demandMode ? 0 : 1),
                   );
                 },
-              )
+              ),
             ],
           ),
         ),
@@ -92,13 +92,15 @@ class _ItemStatTabState extends State<ItemStatTab> {
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
               child: ConstrainedBox(
                 constraints: const BoxConstraints(minHeight: 24),
-                child: Text([
-                  S.current.ascension_short,
-                  S.current.active_skill_short,
-                  S.current.append_skill_short,
-                  S.current.costume,
-                  S.current.general_special,
-                ][index]),
+                child: Text(
+                  [
+                    S.current.ascension_short,
+                    S.current.active_skill_short,
+                    S.current.append_skill_short,
+                    S.current.costume,
+                    S.current.general_special,
+                  ][index],
+                ),
               ),
             );
           },
@@ -141,7 +143,7 @@ class _ItemStatTabState extends State<ItemStatTab> {
                   });
                 },
               ),
-            ]
+            ],
           ],
         ),
       ],
@@ -161,18 +163,15 @@ class _ItemStatTabState extends State<ItemStatTab> {
         continue;
       }
       final detail = db.itemCenter.calcOneSvt(svt, emptyPlan.cur, svtStat.cur);
-      Maths.sumDict(
-        [
-          shownItems,
-          if (svtParts.options.isEmpty) detail.all,
-          if (svtParts.options.isNotEmpty)
-            ...List.generate(
-              detail.parts.length,
-              (index) => svtParts.options.contains(index) ? detail.parts[index] : <int, int>{},
-            ),
-        ],
-        inPlace: true,
-      );
+      Maths.sumDict([
+        shownItems,
+        if (svtParts.options.isEmpty) detail.all,
+        if (svtParts.options.isNotEmpty)
+          ...List.generate(
+            detail.parts.length,
+            (index) => svtParts.options.contains(index) ? detail.parts[index] : <int, int>{},
+          ),
+      ], inPlace: true);
     }
     if (svtParts.contain(4)) {
       shownItems.addDict(db.itemCenter.calcClassBoardCostAll(SvtMatCostDetailType.consumed));
@@ -196,16 +195,13 @@ class _ItemStatTabState extends State<ItemStatTab> {
         }
         if (!db.settings.filters.svtFilterData.priority.matchOne(svtStat.priority)) continue;
         final detail = db.itemCenter.calcOneSvt(svt, svtStat.cur, db.curUser.svtPlanOf(collectionNo));
-        Maths.sumDict(
-          [
-            shownItems,
-            ...List.generate(
-              detail.parts.length,
-              (index) => svtParts.options.contains(index) ? detail.parts[index] : <int, int>{},
-            ),
-          ],
-          inPlace: true,
-        );
+        Maths.sumDict([
+          shownItems,
+          ...List.generate(
+            detail.parts.length,
+            (index) => svtParts.options.contains(index) ? detail.parts[index] : <int, int>{},
+          ),
+        ], inPlace: true);
       }
     }
     if (svtParts.contain(4)) {

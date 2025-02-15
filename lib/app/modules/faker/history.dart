@@ -45,7 +45,7 @@ class _FakerHistoryViewerState extends State<FakerHistoryViewer> {
             },
             icon: const Icon(Icons.clear_all),
             tooltip: S.current.clear,
-          )
+          ),
         ],
       ),
       body: DefaultTextStyle.merge(
@@ -54,8 +54,8 @@ class _FakerHistoryViewerState extends State<FakerHistoryViewer> {
           minTileHeight: 24,
           dense: true,
           child: ListView.separated(
-            itemBuilder: (context, index) =>
-                buildOne(context, history.length - 1 - index, history[history.length - 1 - index]),
+            itemBuilder:
+                (context, index) => buildOne(context, history.length - 1 - index, history[history.length - 1 - index]),
             separatorBuilder: (context, index) => const Divider(height: 1, color: Colors.transparent),
             itemCount: history.length,
           ),
@@ -72,17 +72,21 @@ class _FakerHistoryViewerState extends State<FakerHistoryViewer> {
       letterSpacing: -0.08,
     );
     return TileGroup(
-      headerWidget: SHeader.rich(TextSpan(text: 'No.${index + 1}  ', children: [
+      headerWidget: SHeader.rich(
         TextSpan(
-          text: record.request?.key.trimChar("/") ?? '???',
-          style: const TextStyle(color: Colors.amber),
-        )
-      ])),
+          text: 'No.${index + 1}  ',
+          children: [
+            TextSpan(text: record.request?.key.trimChar("/") ?? '???', style: const TextStyle(color: Colors.amber)),
+          ],
+        ),
+      ),
       footer: [record.sendedAt, record.receivedAt].map((e) => e?.toTimeString(milliseconds: true)).join(' ~ '),
       footerWidget: ListTile(
         minTileHeight: 8,
-        title: Text([record.sendedAt, record.receivedAt].map((e) => e?.toTimeString(milliseconds: true)).join(' ~ '),
-            style: footerStyle),
+        title: Text(
+          [record.sendedAt, record.receivedAt].map((e) => e?.toTimeString(milliseconds: true)).join(' ~ '),
+          style: footerStyle,
+        ),
         trailing: serverTime == null ? null : Text('${serverTime.toTimeString()} (server)', style: footerStyle),
       ),
       children: [
@@ -111,12 +115,12 @@ class _FakerHistoryViewerState extends State<FakerHistoryViewer> {
     if (data == null) return const ListTile(title: Text('no data'));
     return ListTile(
       title: Text.rich(
-        TextSpan(text: 'request: ', children: [
-          TextSpan(
-            text: data.toString(),
-            style: TextStyle(color: Theme.of(context).textTheme.bodySmall?.color),
-          )
-        ]),
+        TextSpan(
+          text: 'request: ',
+          children: [
+            TextSpan(text: data.toString(), style: TextStyle(color: Theme.of(context).textTheme.bodySmall?.color)),
+          ],
+        ),
         maxLines: 2,
         overflow: TextOverflow.ellipsis,
       ),
@@ -133,7 +137,7 @@ class _FakerHistoryViewerState extends State<FakerHistoryViewer> {
       if (detail.nid == 'gamedata' && data != null) {
         data = {
           for (final (k, v) in data.items)
-            k: const {'webview', 'assetbundle', 'master', 'assetbundleKey'}.contains(k) && v != '' ? '...' : v
+            k: const {'webview', 'assetbundle', 'master', 'assetbundleKey'}.contains(k) && v != '' ? '...' : v,
         };
       }
       if (data?.isNotEmpty != true && detail.fail?.isNotEmpty == true) {
@@ -148,24 +152,27 @@ class _FakerHistoryViewerState extends State<FakerHistoryViewer> {
     if (!detail.isSuccess()) label.write(' | ${detail.resCode}');
     return ListTile(
       title: Text.rich(
-        TextSpan(children: [
-          CenterWidgetSpan(
-            child: _buildBadge(
-              label: label.toString(),
-              color: detail.isSuccess() ? Colors.green.shade700 : Colors.red,
+        TextSpan(
+          children: [
+            CenterWidgetSpan(
+              child: _buildBadge(
+                label: label.toString(),
+                color: detail.isSuccess() ? Colors.green.shade700 : Colors.red,
+              ),
             ),
-          ),
-          const TextSpan(text: '  '),
-          TextSpan(text: data.toString()),
-        ]),
+            const TextSpan(text: '  '),
+            TextSpan(text: data.toString()),
+          ],
+        ),
         maxLines: 2,
         overflow: TextOverflow.ellipsis,
       ),
-      onTap: data?.isNotEmpty != true
-          ? null
-          : () {
-              router.pushPage(JsonViewerPage(data));
-            },
+      onTap:
+          data?.isNotEmpty != true
+              ? null
+              : () {
+                router.pushPage(JsonViewerPage(data));
+              },
     );
   }
 
@@ -178,10 +185,7 @@ class _FakerHistoryViewerState extends State<FakerHistoryViewer> {
       ),
       child: Padding(
         padding: const EdgeInsetsDirectional.fromSTEB(8, 2, 8, 4),
-        child: Text(
-          label,
-          style: const TextStyle(color: Colors.white, fontSize: 12),
-        ),
+        child: Text(label, style: const TextStyle(color: Colors.white, fontSize: 12)),
       ),
     );
   }
@@ -240,22 +244,24 @@ Future<void> _showDataFormatDialog(BuildContext context, dynamic data) {
             ),
             ListTile(
               enabled: formData != null,
-              onTap: formData == null
-                  ? null
-                  : () {
-                      Navigator.pop(context);
-                      router.pushPage(FormDataViewer(data: formData!));
-                    },
+              onTap:
+                  formData == null
+                      ? null
+                      : () {
+                        Navigator.pop(context);
+                        router.pushPage(FormDataViewer(data: formData!));
+                      },
               title: const Text("Form"),
             ),
             ListTile(
               enabled: jsonData != null,
-              onTap: jsonData == null
-                  ? null
-                  : () {
-                      Navigator.pop(context);
-                      router.pushPage(JsonViewerPage(jsonData));
-                    },
+              onTap:
+                  jsonData == null
+                      ? null
+                      : () {
+                        Navigator.pop(context);
+                        router.pushPage(JsonViewerPage(jsonData));
+                      },
               title: const Text("Json"),
             ),
             ListTile(
@@ -264,7 +270,7 @@ Future<void> _showDataFormatDialog(BuildContext context, dynamic data) {
                 copyToClipboard(data.toString(), toast: true);
               },
               title: Text(S.current.copy),
-            )
+            ),
           ],
         ),
       );
@@ -328,7 +334,7 @@ Future<void> _showDataDecryptDialog(BuildContext context, String text) {
                 copyToClipboard(text, toast: true);
               },
               title: Text(S.current.copy),
-            )
+            ),
           ],
         ),
       );
@@ -352,18 +358,13 @@ class _StringViewer extends StatelessWidget {
             },
             icon: const Icon(Icons.copy),
             tooltip: S.current.copy,
-          )
+          ),
         ],
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
         child: SafeArea(
-          child: InheritSelectionArea(
-            child: Text(
-              data,
-              style: const TextStyle(fontSize: 14, fontFamily: kMonoFont),
-            ),
-          ),
+          child: InheritSelectionArea(child: Text(data, style: const TextStyle(fontSize: 14, fontFamily: kMonoFont))),
         ),
       ),
     );
@@ -377,9 +378,7 @@ class FormDataViewer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Form Data'),
-      ),
+      appBar: AppBar(title: const Text('Form Data')),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(8),
         child: SafeArea(
@@ -388,19 +387,11 @@ class FormDataViewer extends StatelessWidget {
               horizontalInside: Divider.createBorderSide(context),
               verticalInside: Divider.createBorderSide(context),
             ),
-            columnWidths: const {
-              0: FlexColumnWidth(1),
-              1: FlexColumnWidth(2),
-            },
+            columnWidths: const {0: FlexColumnWidth(1), 1: FlexColumnWidth(2)},
             defaultVerticalAlignment: TableCellVerticalAlignment.top,
             children: [
               for (final entry in data)
-                TableRow(
-                  children: [
-                    buildCell(context, entry.key, false),
-                    buildCell(context, entry.value, true),
-                  ],
-                )
+                TableRow(children: [buildCell(context, entry.key, false), buildCell(context, entry.value, true)]),
             ],
           ),
         ),
@@ -428,10 +419,7 @@ class FormDataViewer extends StatelessWidget {
       },
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
-        child: Text(
-          text,
-          style: const TextStyle(fontFamily: kMonoFont),
-        ),
+        child: Text(text, style: const TextStyle(fontFamily: kMonoFont)),
       ),
     );
   }

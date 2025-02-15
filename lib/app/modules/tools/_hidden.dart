@@ -19,14 +19,7 @@ class HiddenToolsPage extends StatefulWidget {
 class _HiddenToolsPageState extends State<HiddenToolsPage> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Y(^o^)Y')),
-      body: ListView(
-        children: [
-          spaceTile,
-        ],
-      ),
-    );
+    return Scaffold(appBar: AppBar(title: const Text('Y(^o^)Y')), body: ListView(children: [spaceTile]));
   }
 
   Widget get spaceTile {
