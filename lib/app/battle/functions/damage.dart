@@ -344,6 +344,26 @@ class Damage {
           card: currentCard,
           skipDamage: skipDamage,
         )
+        ..criticalDamageDefBuff =
+            currentCard.critical
+                ? await target.getBuffValue(
+                  battleData,
+                  BuffAction.criticalDamageDef,
+                  opponent: activator,
+                  card: currentCard,
+                  skipDamage: skipDamage,
+                )
+                : 0
+        ..npDamageDefBuff =
+            currentCard.isTD
+                ? await target.getBuffValue(
+                  battleData,
+                  BuffAction.npdamageDef,
+                  opponent: activator,
+                  card: currentCard,
+                  skipDamage: skipDamage,
+                )
+                : 0
         ..percentDefenseBuff = await target.getBuffValue(
           battleData,
           BuffAction.specialdefence,

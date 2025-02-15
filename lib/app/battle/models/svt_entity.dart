@@ -709,6 +709,8 @@ class BattleServantData {
       case BuffAction.defencePierce:
       case BuffAction.defence:
       case BuffAction.damageDef:
+      case BuffAction.criticalDamageDef:
+      case BuffAction.npdamageDef:
       case BuffAction.specialdefence:
       case BuffAction.receiveDamagePierce:
       case BuffAction.receiveDamage:
@@ -881,6 +883,8 @@ class BattleServantData {
       case BuffAction.defencePierce:
       case BuffAction.defence:
       case BuffAction.damageDef:
+      case BuffAction.criticalDamageDef:
+      case BuffAction.npdamageDef:
       case BuffAction.specialdefence:
       case BuffAction.receiveDamagePierce:
       case BuffAction.receiveDamage:

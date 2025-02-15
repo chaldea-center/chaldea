@@ -74,7 +74,9 @@ int calculateDamage(final DamageParameters param) {
   final Float specificAttackBuff = toModifierFloat(param.specificAttackBuff);
   final Float specificDefenseBuff = toModifierFloat(param.specificDefenseBuff);
   final Float criticalDamageBuff = param.critical ? toModifierFloat(param.criticalDamageBuff) : 0.toFloat();
+  final Float criticalDamageDefBuff = param.critical ? toModifierFloat(param.criticalDamageDefBuff) : 0.toFloat();
   final Float npDamageBuff = param.isNp ? toModifierFloat(param.npDamageBuff) : 0.toFloat();
+  final Float npDamageDefBuff = param.isNp ? toModifierFloat(param.npDamageDefBuff) : 0.toFloat();
   final Float percentAttackBuff = toModifierFloat(param.percentAttackBuff);
   final Float percentDefenseBuff = toModifierFloat(param.percentDefenseBuff);
 
@@ -95,7 +97,14 @@ int calculateDamage(final DamageParameters param) {
           criticalModifier *
           extraModifier *
           (1.toFloat() - percentDefenseBuff).ofMax(0) *
-          (1.toFloat() + specificAttackBuff - specificDefenseBuff + criticalDamageBuff + npDamageBuff).ofMax(0.001) *
+          (1.toFloat() +
+                  specificAttackBuff -
+                  specificDefenseBuff +
+                  criticalDamageBuff -
+                  criticalDamageDefBuff +
+                  npDamageBuff -
+                  npDamageDefBuff)
+              .ofMax(0.001) *
           (1.toFloat() + percentAttackBuff).ofMax(0.001) *
           npSpecificAttackRate *
           hits +
@@ -238,7 +247,9 @@ class DamageParameters {
       0; // powerMod = actor.damage + actor.damageIndividuality + actor.damageIndividualityActiveonly + actor.damageEventPoint
   int specificDefenseBuff = 0; // selfDamageMod = target.selfDamage, can rename after I see an instance of this buff
   int criticalDamageBuff = 0; // critDamageMod = actor.criticalDamage
+  int criticalDamageDefBuff = 0; // BuffAction.criticalDmgDef
   int npDamageBuff = 0; // npDamageMod = actor.npdamage
+  int npDamageDefBuff = 0; // BuffAction.npDamageDef
   int percentAttackBuff = 0; // damageSpecialMod = actor.damageSpecial
   int percentDefenseBuff = 0; // specialDefMod = target.specialdefence
   int damageAdditionBuff = 0; // dmgPlusAdd = actor.givenDamage
@@ -275,7 +286,9 @@ class DamageParameters {
         'specificAttackBuff: $specificAttackBuff, '
         'specificDefenseBuff: $specificDefenseBuff, '
         'criticalDamageBuff: $criticalDamageBuff, '
+        'criticalDamageDefBuff: $criticalDamageDefBuff, '
         'npDamageBuff: $npDamageBuff, '
+        'npDamageDefBuff: $npDamageDefBuff, '
         'percentAttackBuff: $percentAttackBuff, '
         'percentDefenseBuff: $percentDefenseBuff, '
         'damageAdditionBuff: $damageAdditionBuff, '
@@ -309,7 +322,9 @@ class DamageParameters {
       ..specificAttackBuff = specificAttackBuff
       ..specificDefenseBuff = specificDefenseBuff
       ..criticalDamageBuff = criticalDamageBuff
+      ..criticalDamageDefBuff = criticalDamageDefBuff
       ..npDamageBuff = npDamageBuff
+      ..npDamageDefBuff = npDamageDefBuff
       ..percentAttackBuff = percentAttackBuff
       ..percentDefenseBuff = percentDefenseBuff
       ..damageAdditionBuff = damageAdditionBuff
