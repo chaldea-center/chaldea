@@ -502,7 +502,12 @@ class MasterDataManager {
     return List.generate(kAppendSkillNums.length, (index) => lvs[100 + index] ?? 0);
   }
 
-  int getItemOrSvtNum(int itemId, {int defaultValue = 0, bool sumEquipLimitCount = true}) {
+  int getItemOrSvtNum(
+    int itemId, {
+    int defaultValue = 0,
+    bool sumEquipLimitCount = true,
+    List<int> eventIds = const [],
+  }) {
     final user = this.user;
     if (itemId == Items.qpId) {
       return user?.qp ?? defaultValue;
@@ -519,7 +524,13 @@ class MasterDataManager {
     final item = db.gameData.items[itemId];
     if (item != null) {
       if (item.type == ItemType.eventPoint) {
-        // TODO: eventId may be 0
+        for (final eventId in [item.eventId, ...eventIds]) {
+          if (eventId == 0) continue;
+          for (final candidateEventId in eventIds) {
+            final point = userEventPoint[_createPK2(candidateEventId, item.eventGroupId)];
+            if (candidateEventId != 0 && point != null) return point.value;
+          }
+        }
         return userEventPoint[_createPK2(item.eventId, item.eventGroupId)]?.value ?? defaultValue;
       }
       if (item.type == ItemType.svtCoin) {

@@ -94,6 +94,10 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
     if (mounted) setState(() {});
   }
 
+  int getEventIdByQuest(int? questId) {
+    return db.gameData.quests[questId]?.logicEvent?.id ?? 0;
+  }
+
   String _describeQuest(int questId, int phase, String? enemyCounts) {
     final quest = db.gameData.quests[questId];
     if (quest == null) return '$questId/$phase';
@@ -479,7 +483,10 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
                       item: null,
                       itemId: itemId,
                       height: 36,
-                      text: ['+${dropItems[itemId]!.format()}', mstData.getItemOrSvtNum(itemId).format()].join('\n'),
+                      text: [
+                        '+${dropItems[itemId]!.format()}',
+                        mstData.getItemOrSvtNum(itemId, eventIds: [battleEntity.eventId]).format(),
+                      ].join('\n'),
                     ),
             ],
           ),
@@ -514,7 +521,15 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
                               width: 30,
                               text: [
                                 '+${runtime.totalRewards[itemId]?.format()}',
-                                mstData.getItemOrSvtNum(itemId).format(),
+                                mstData
+                                    .getItemOrSvtNum(
+                                      itemId,
+                                      eventIds: [
+                                        getEventIdByQuest(battleEntity?.eventId),
+                                        getEventIdByQuest(battleOption.questId),
+                                      ],
+                                    )
+                                    .format(),
                               ].join('\n'),
                             );
                           }).toList(),
@@ -571,7 +586,15 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
                               if (dropStats.totalCount > 0) prob > 1 ? prob.format() : prob.format(percent: true),
                               db.gameData.craftEssencesById.containsKey(itemId)
                                   ? (mstData.userSvt.where((e) => e.svtId == itemId).length.toString())
-                                  : mstData.getItemOrSvtNum(itemId).format(),
+                                  : mstData
+                                      .getItemOrSvtNum(
+                                        itemId,
+                                        eventIds: [
+                                          getEventIdByQuest(battleEntity?.eventId),
+                                          getEventIdByQuest(battleOption.questId),
+                                        ],
+                                      )
+                                      .format(),
                             ].join('\n'),
                           );
                         }).toList(),

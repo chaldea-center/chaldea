@@ -134,7 +134,7 @@ class CraftListPageState extends State<CraftListPage> with SearchableListState<C
       status = '${ce.status.limitCount} - Lv.${ce.status.lv}';
     }
     return CustomTile(
-      leading: db.getIconImage(ce.borderedIcon, width: 56, aspectRatio: 132 / 144),
+      leading: db.getIconImage(ce.borderedIcon, width: 60, aspectRatio: 132 / 144),
       title: AutoSizeText(ce.lName.l, maxLines: 1),
       subtitle: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

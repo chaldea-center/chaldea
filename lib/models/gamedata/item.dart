@@ -81,13 +81,14 @@ class Item {
       return ItemCategory.eventAscension;
     }
     if (isId94 &&
-        const [
+        const {
           ItemType.eventItem,
           ItemType.boostItem,
           ItemType.dice,
           ItemType.eventPoint,
           ItemType.reduceTradeTime,
-        ].contains(type)) {
+          ItemType.eventPassiveSkillGiven,
+        }.contains(type)) {
       return ItemCategory.event;
     }
     // if (eventId != 0) return ItemCategory.event;
