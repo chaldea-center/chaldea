@@ -34,10 +34,11 @@ enum _SEScope {
 class _GroupData {
   final List<int> traits;
   final bool useAnd;
+  final List<List<int>>? traitsList;
   final int? rarity;
   final Map<_SEScope, Set<GameCardMixin>> cards = {};
 
-  _GroupData({required this.traits, required this.useAnd, required this.rarity});
+  _GroupData({required this.traits, required this.useAnd, required this.traitsList, required this.rarity});
 }
 
 class SvtSpDmgTab extends StatefulWidget {
@@ -135,6 +136,7 @@ class SpDmgSelfTab extends StatelessWidget {
     List<Widget> parts = [];
     for (final func in skill.functions) {
       List<NiceTrait> traits = [];
+      List<List<NiceTrait>> traitsList = [];
       bool useAnd = false;
       final buff = func.buff;
       if (buff != null &&
@@ -155,42 +157,63 @@ class SpDmgSelfTab extends StatelessWidget {
         if (targetList != null && targetList.isNotEmpty) traits = NiceTrait.list(targetList);
         useAnd = false;
       } else if (func.funcType == FuncType.damageNpAndOrCheckIndividuality) {
+        final andOrCheckIndivs = func.svals.firstOrNull?.AndOrCheckIndividualityList;
+        if (andOrCheckIndivs != null && andOrCheckIndivs.isNotEmpty) {
+          traitsList = andOrCheckIndivs.map(NiceTrait.list).toList();
+        }
         final targetList = func.svals.firstOrNull?.AndCheckIndividualityList;
         if (targetList != null && targetList.isNotEmpty) traits = NiceTrait.list(targetList);
         useAnd = true;
       }
-      if (traits.isNotEmpty) {
+      if (traits.isNotEmpty || traitsList.isNotEmpty) {
         parts.addAll([
           const Divider(indent: 16, endIndent: 16, thickness: 0),
           FuncDescriptor(func: func),
           const Divider(indent: 16, endIndent: 16, thickness: 0.5),
         ]);
-        if (useAnd) {
-          parts.add(
-            ListTile(
-              dense: true,
-              selected: true,
-              selectedColor: AppTheme(context).tertiary,
-              title: Text(traits.map((e) => e.shownName()).join(" & ")),
-              trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
-              onTap: () {
-                router.pushPage(TraitDetailPage.ids(ids: traits.map((e) => e.signedId).toList()));
-              },
-            ),
-          );
-        } else {
-          for (final trait in traits) {
+        if (traits.isNotEmpty) {
+          if (useAnd) {
             parts.add(
               ListTile(
                 dense: true,
                 selected: true,
                 selectedColor: AppTheme(context).tertiary,
-                title: Text(trait.shownName()),
+                title: Text(traits.map((e) => e.shownName()).join(" & ")),
                 trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
-                onTap: trait.routeTo,
+                onTap: () {
+                  router.pushPage(TraitDetailPage.ids(ids: traits.map((e) => e.signedId).toList()));
+                },
               ),
             );
+          } else {
+            for (final trait in traits) {
+              parts.add(
+                ListTile(
+                  dense: true,
+                  selected: true,
+                  selectedColor: AppTheme(context).tertiary,
+                  title: Text(trait.shownName()),
+                  trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
+                  onTap: trait.routeTo,
+                ),
+              );
+            }
           }
+        }
+
+        for (final _traits in traitsList) {
+          parts.add(
+            ListTile(
+              dense: true,
+              selected: true,
+              selectedColor: AppTheme(context).tertiary,
+              title: Text(_traits.map((e) => e.shownName()).join(" & ")),
+              trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
+              onTap: () {
+                router.pushPage(TraitDetailPage.ids(ids: _traits.map((e) => e.signedId).toList()));
+              },
+            ),
+          );
         }
       }
     }
@@ -242,12 +265,24 @@ class _SpDmgIndivTabState extends State<SpDmgIndivTab> {
     type.options = {_SEScope.buff, _SEScope.td};
   }
 
-  Set<GameCardMixin> getGroup(Iterable<int> traits, bool useAnd, int? rarity, _SEScope scope) {
+  Set<GameCardMixin> getGroup(
+    Iterable<int> traits,
+    bool useAnd,
+    int? rarity,
+    _SEScope scope, {
+    List<List<int>>? traitsList,
+  }) {
     final ids = traits.toList();
     ids.toList();
-    String key = [ids.join(useAnd ? '&' : '|'), rarity].join('+');
+    String key =
+        traitsList != null && traitsList.isNotEmpty
+            ? [traitsList.map((e) => e.join("&")).join("|"), rarity].join('+')
+            : [ids.join(useAnd ? '&' : '|'), rarity].join('+');
     return data
-        .putIfAbsent(key, () => _GroupData(traits: ids, useAnd: useAnd, rarity: rarity))
+        .putIfAbsent(
+          key,
+          () => _GroupData(traits: ids, useAnd: useAnd, rarity: rarity, traitsList: traitsList?.map(List.of).toList()),
+        )
         .cards
         .putIfAbsent(scope, () => {});
   }
@@ -312,6 +347,12 @@ class _SpDmgIndivTabState extends State<SpDmgIndivTab> {
             }
             break;
           case FuncType.damageNpAndOrCheckIndividuality:
+            final andOrCheckIndivs = vals.AndOrCheckIndividualityList;
+            if (andOrCheckIndivs != null && andOrCheckIndivs.isNotEmpty) {
+              if (andOrCheckIndivs.any((e) => widget.svtIndivs.toSet().containSubset(e.toSet()))) {
+                getGroup([], true, null, scope, traitsList: andOrCheckIndivs).add(card);
+              }
+            }
             final targetList = vals.AndCheckIndividualityList;
             if (targetList != null && targetList.isNotEmpty) {
               if (widget.svtIndivs.toSet().containSubset(targetList.toSet())) {

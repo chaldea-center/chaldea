@@ -865,9 +865,30 @@ class FuncDescriptor extends StatelessWidget {
           }
           break;
         case FuncType.damageNpAndOrCheckIndividuality:
-          List<int> indivs = vals?.AndCheckIndividualityList ?? [];
-          if (indivs.isNotEmpty) {
-            spans.add(_replaceTraits(indivs, useAndJoin: true));
+          final andOrCheckIndivs = vals?.AndOrCheckIndividualityList;
+          List<int> andCheckIndivs = vals?.AndCheckIndividualityList ?? [];
+          if (andOrCheckIndivs != null && andOrCheckIndivs.isNotEmpty) {
+            spans.add(
+              TextSpan(
+                children: SharedBuilder.replaceSpan(
+                  text,
+                  '{0}',
+                  divideList([
+                    for (final traits in andOrCheckIndivs)
+                      TextSpan(
+                        children: SharedBuilder.traitSpans(
+                          context: context,
+                          traits: NiceTrait.list(traits),
+                          useAndJoin: true,
+                        ),
+                      ),
+                  ], const TextSpan(text: '  /  ')),
+                ),
+                style: style,
+              ),
+            );
+          } else if (andCheckIndivs.isNotEmpty) {
+            spans.add(_replaceTraits(andCheckIndivs, useAndJoin: true));
             return;
           }
           break;

@@ -165,7 +165,14 @@ class _TraitSPDMGTabState extends State<TraitSPDMGTab> {
             matched = vals.TargetList?.toSet().containSubset(widget.ids.toSet()) == true;
             break;
           case FuncType.damageNpAndOrCheckIndividuality:
-            matched = vals.AndCheckIndividualityList?.toSet().equalTo(widget.ids.toSet()) == true;
+            final andOrCheckIndivs = vals.AndOrCheckIndividualityList;
+            final andCheckIndivs = vals.AndCheckIndividualityList;
+            if (andOrCheckIndivs != null && andOrCheckIndivs.isNotEmpty) {
+              matched = vals.AndOrCheckIndividualityList!.any((e) => e.toSet().containSubset(widget.ids.toSet()));
+            }
+            if (andCheckIndivs != null && andCheckIndivs.isNotEmpty) {
+              matched = matched || andCheckIndivs.toSet().containSubset(widget.ids.toSet());
+            }
             break;
           case FuncType.damageNpStateIndividual:
             // not used
