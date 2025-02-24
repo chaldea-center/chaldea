@@ -1,4 +1,5 @@
 import 'package:chaldea/models/models.dart';
+import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../../../generated/l10n.dart';
 import '../quest/quest_card.dart';
@@ -30,7 +31,8 @@ class _QuestPlanTabState extends State<QuestPlanTab> {
   @override
   Widget build(BuildContext context) {
     List<Widget> children = [];
-    List<int> ignoredItems = widget.solution?.getIgnoredKeys() ?? [];
+    final solution = widget.solution;
+    List<int> ignoredItems = solution?.getIgnoredKeys() ?? [];
     if (ignoredItems.isNotEmpty) {
       children.add(
         Card(
@@ -51,7 +53,7 @@ class _QuestPlanTabState extends State<QuestPlanTab> {
         ),
       );
     }
-    final allBonus = widget.solution?.params?.validBonuses ?? {};
+    final allBonus = solution?.params?.validBonuses ?? {};
     allBonus.removeWhere((key, value) => ignoredItems.contains(key));
     if (allBonus.isNotEmpty) {
       children.add(
@@ -76,10 +78,13 @@ class _QuestPlanTabState extends State<QuestPlanTab> {
         ),
       );
     }
-    for (final v in widget.solution?.countVars ?? <LPVariable>[]) {
-      children.add(buildQuest(v));
-    }
-    if (widget.solution?.countVars.isNotEmpty == true) {
+    if (solution != null && solution.countVars.isNotEmpty) {
+      for (final v in solution.countVars) {
+        children.add(buildQuest(v));
+      }
+      Map<int, double> totalItems = Maths.sumDict(solution.countVars.map((e) => e.detail));
+      totalItems = Item.sortMapByPriority(totalItems, reversed: true);
+      children.add(ListTile(dense: true, title: Text(S.current.total), subtitle: buildRichDetails(totalItems.entries)));
       children.add(SFooter(S.current.fq_plan_decimal_hint));
     }
 

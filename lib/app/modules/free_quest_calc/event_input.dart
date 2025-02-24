@@ -160,19 +160,17 @@ class _EventItemInputTabState extends State<EventItemInputTab> {
   }
 
   Widget _buildItemDemand(int itemId) {
+    final isPoint = db.gameData.items[itemId]?.type == ItemType.eventPoint;
     final int demands = params.itemCounts[itemId] ?? 0,
         finalDemands = params.getItemDemand(itemId),
         ownCount = db.curUser.items[itemId] ?? 0;
-    return ListTile(
-      // dense: true,
-      leading: Item.iconBuilder(context: context, item: null, itemId: itemId, width: 36),
-      title: Text(Item.getName(itemId)),
-      // subtitle: Text('${S.current.demands}: ${params.getItemDemand(itemId)}'),
-      trailing: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          TextButton(
+    final formula = Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisSize: isPoint ? MainAxisSize.max : MainAxisSize.min,
+      children: [
+        Flexible(
+          child: TextButton(
             onPressed: () {
               InputCancelOkDialog(
                 keyboardType: const TextInputType.numberWithOptions(signed: true),
@@ -187,30 +185,38 @@ class _EventItemInputTabState extends State<EventItemInputTab> {
             },
             child: Text(demands.toString()),
           ),
-          const Text('-'),
-          TextButton(
-            onPressed: () {
-              InputCancelOkDialog(
-                keyboardType: const TextInputType.numberWithOptions(signed: true),
-                title: '${S.current.item_own}: ${Item.getName(itemId)}',
-                text: ownCount.toString(),
-                validate: (s) => s.trim().isEmpty || int.tryParse(s) != null,
-                onSubmit: (s) {
-                  db.curUser.items[itemId] = int.tryParse(s) ?? 0;
-                  if (mounted) setState(() {});
-                },
-              ).showDialog(context);
-            },
-            child: Text(ownCount.toString()),
-          ),
-          const Text('='),
-          Container(
-            constraints: const BoxConstraints(minWidth: 48),
-            alignment: AlignmentDirectional.centerEnd,
-            child: Text(finalDemands.toString()),
-          ),
-        ],
-      ),
+        ),
+        const Text('-'),
+        TextButton(
+          onPressed: () {
+            InputCancelOkDialog(
+              keyboardType: const TextInputType.numberWithOptions(signed: true),
+              title: '${S.current.item_own}: ${Item.getName(itemId)}',
+              text: ownCount.toString(),
+              validate: (s) => s.trim().isEmpty || int.tryParse(s) != null,
+              onSubmit: (s) {
+                db.curUser.items[itemId] = int.tryParse(s) ?? 0;
+                if (mounted) setState(() {});
+              },
+            ).showDialog(context);
+          },
+          child: Text(ownCount.toString()),
+        ),
+        const Text('='),
+        Container(
+          constraints: const BoxConstraints(minWidth: 48),
+          alignment: AlignmentDirectional.centerEnd,
+          child: Text(finalDemands.toString()),
+        ),
+      ],
+    );
+    return ListTile(
+      dense: true,
+      leading: Item.iconBuilder(context: context, item: null, itemId: itemId, width: 36),
+      title: Text(Item.getName(itemId), maxLines: 2),
+      // subtitle: Text('${S.current.demands}: ${params.getItemDemand(itemId)}'),
+      subtitle: isPoint ? formula : null,
+      trailing: isPoint ? null : formula,
     );
   }
 

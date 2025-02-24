@@ -285,8 +285,8 @@ class Item {
     return ListX.compareByList(id1, id2, (v) => _getType(v, false));
   }
 
-  static Map<int, int> sortMapByPriority(
-    Map<int, int> items, {
+  static Map<int, T> sortMapByPriority<T extends num>(
+    Map<int, T> items, {
     bool qpFirst = true,
     bool reversed = false,
     bool category = false,
