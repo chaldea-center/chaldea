@@ -49,11 +49,11 @@ dependencies:
   # dio_cookie_manager: ^3.0.0
   dots_indicator: ^4.0.0
   equatable: ^2.0.5
-  file_picker: ^8.1.6
+  file_picker: ^9.0.0
   fl_chart: ^0.70.2
   flutter_cache_manager: ^3.3.1
   flutter_easyloading: ^3.0.5
-  flutter_hooks: ^0.20.1
+  flutter_hooks: ^0.21.2
   flutter_local_notifications: ^18.0.0
   flutter_markdown: ^0.7.4
   # flutter_qjs: ^0.3.7
@@ -112,10 +112,7 @@ dependencies:
   # webview_flutter_web: ^0.2.2+1
   worker_manager: ^7.2.2
   window_manager: ^0.4.3
-  countly_flutter_np: #^25.1.0
-    git:
-      url: https://github.com/Countly/countly-sdk-flutter-bridge.git
-      ref: 87cd9552d9b20a4846471f1e8724291e08b3171f # v1-embedding-drop-np
+  countly_flutter_np: ^25.1.1
   google_mobile_ads: ^5.2.0
   admanager_web: ^0.0.4
 
@@ -126,11 +123,9 @@ dev_dependencies:
   flutter_lints: ^5.0.0
   json_serializable: ^6.9.0
   import_sorter: # ^4.6.0
-    git:
-      url: https://github.com/chaldea-center/import_sorter
+    git: https://github.com/chaldea-center/import_sorter.git
   intl_utils: # ^2.6.1
-    git:
-      url: https://github.com/chaldea-center/intl_utils.git
+    git: https://github.com/chaldea-center/intl_utils.git
   # flutter_launcher_icons: ^0.8.1
 
 #flutter_icons:
