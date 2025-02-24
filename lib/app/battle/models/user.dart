@@ -15,6 +15,7 @@ class PlayerSvtData {
   List<int> appendLvs = List.filled(kAppendSkillNums.length, 0);
   List<NiceSkill> extraPassives = [];
   Set<int> disabledExtraSkills = {};
+  Set<int> allowedExtraSkills = {};
   List<BaseSkill> customPassives = [];
   List<int> customPassiveLvs = [];
   int tdLv = 5;
@@ -96,6 +97,7 @@ class PlayerSvtData {
         ..tdLv = defaultTdLv
         ..skillLvs = List.generate(kActiveSkillNums.length, (index) => defaults.activeSkillLv)
         ..appendLvs = defaults.appendLvs.toList()
+        ..allowedExtraSkills.clear()
         ..atkFou = defaults.atkFou * 10
         ..hpFou = defaults.hpFou * 10
         ..cardStrengthens = [0, 0, 0, 0, 0]
@@ -115,6 +117,7 @@ class PlayerSvtData {
       ..tdLv = plan.npLv.clamp(1, 5)
       ..skillLvs = plan.skills.toList()
       ..appendLvs = plan.appendSkills.toList()
+      ..allowedExtraSkills.clear()
       ..atkFou = plan.fouAtk > 0 ? 1000 + plan.fouAtk * 20 : plan.fouAtk3 * 50
       ..hpFou = plan.fouHp > 0 ? 1000 + plan.fouHp * 20 : plan.fouHp3 * 50
       ..cardStrengthens = List.generate(svt.cards.length, (index) {
@@ -238,6 +241,7 @@ class PlayerSvtData {
       ..appendLvs = appendLvs.toList()
       ..extraPassives = extraPassives.toList()
       ..disabledExtraSkills = disabledExtraSkills.toSet()
+      ..allowedExtraSkills = allowedExtraSkills.toSet()
       ..customPassives = List<BaseSkill>.of(customPassives)
       ..customPassiveLvs = customPassiveLvs.toList()
       ..tdLv = tdLv
@@ -268,6 +272,7 @@ class PlayerSvtData {
           ..skillLvs = storedData.skillLvs.toList()
           ..appendLvs = storedData.appendLvs.toList()
           ..disabledExtraSkills = storedData.disabledExtraSkills.toSet()
+          ..allowedExtraSkills = storedData.allowedExtraSkills.toSet()
           ..customPassives = List<BaseSkill>.of(storedData.customPassives)
           ..customPassiveLvs = storedData.customPassiveLvs.toList()
           ..tdLv = storedData.tdLv
@@ -339,6 +344,7 @@ class PlayerSvtData {
       skillIds: skills.map((skill) => skill?.id).toList(),
       appendLvs: appendLvs.toList(),
       disabledExtraSkills: disabledExtraSkills.toSet(),
+      allowedExtraSkills: allowedExtraSkills.toSet(),
       customPassives: customPassives.toList(),
       customPassiveLvs: customPassiveLvs.toList(),
       tdLv: tdLv,

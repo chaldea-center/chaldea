@@ -3913,6 +3913,17 @@ class S {
     return Intl.message('Opening Time', name: 'opening_time', desc: '', locale: localeName, args: []);
   }
 
+  /// `Optional Event Passive`
+  String get optional_event_passive {
+    return Intl.message(
+      'Optional Event Passive',
+      name: 'optional_event_passive',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Options`
   String get options {
     return Intl.message('Options', name: 'options', desc: '', locale: localeName, args: []);

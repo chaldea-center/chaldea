@@ -418,6 +418,7 @@ class SvtSaveData {
   List<int> cardStrengthens;
   List<int?> commandCodeIds;
   Set<int> disabledExtraSkills;
+  Set<int> allowedExtraSkills;
   List<BaseSkill> customPassives;
   List<int> customPassiveLvs;
 
@@ -441,6 +442,7 @@ class SvtSaveData {
     List<int>? cardStrengthens,
     List<int?>? commandCodeIds,
     Set<int>? disabledExtraSkills,
+    Set<int>? allowedExtraSkills,
     List<BaseSkill>? customPassives,
     List<int>? customPassiveLvs,
   }) : skillLvs = skillLvs ?? [10, 10, 10],
@@ -449,6 +451,7 @@ class SvtSaveData {
        cardStrengthens = List.generate(5, (index) => cardStrengthens?.getOrNull(index) ?? 0),
        commandCodeIds = List.generate(5, (index) => commandCodeIds?.getOrNull(index)),
        disabledExtraSkills = disabledExtraSkills ?? {},
+       allowedExtraSkills = allowedExtraSkills ?? {},
        customPassives = List<BaseSkill>.from(customPassives ?? []),
        customPassiveLvs = customPassiveLvs ?? [];
 
@@ -459,7 +462,15 @@ class SvtSaveData {
     final data = _$SvtSaveDataToJson(this);
     _removeEmptyList(
       data,
-      ['appendLvs', 'cardStrengthens', 'commandCodeIds', 'disabledExtraSkills', 'customPassives', 'customPassiveLvs'],
+      [
+        'appendLvs',
+        'cardStrengthens',
+        'commandCodeIds',
+        'disabledExtraSkills',
+        'allowedExtraSkills',
+        'customPassives',
+        'customPassiveLvs',
+      ],
       removeAllNull: true,
       removeAllZero: true,
     );

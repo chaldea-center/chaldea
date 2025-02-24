@@ -93,6 +93,11 @@ ConstGameData _$ConstGameDataFromJson(Map json) => ConstGameData(
         ),
       ) ??
       const {},
+  svtAllowedExtraPassives:
+      (json['svtAllowedExtraPassives'] as List<dynamic>?)
+          ?.map((e) => SvtAllowedExtraPassive.fromJson(Map<String, dynamic>.from(e as Map)))
+          .toList() ??
+      const [],
   eventPointBuffGroupSkillNumMap:
       (json['eventPointBuffGroupSkillNumMap'] as Map?)?.map(
         (k, e) => MapEntry(
@@ -145,6 +150,7 @@ Map<String, dynamic> _$ConstGameDataToJson(ConstGameData instance) => <String, d
   'buffTypeDetail': instance.buffTypeDetail.map((k, e) => MapEntry(k.toString(), e.toJson())),
   'destinyOrderSummons': instance.destinyOrderSummons,
   'svtLimitHides': instance.svtLimitHides.map((k, e) => MapEntry(k.toString(), e.map((e) => e.toJson()).toList())),
+  'svtAllowedExtraPassives': instance.svtAllowedExtraPassives.map((e) => e.toJson()).toList(),
   'eventPointBuffGroupSkillNumMap': instance.eventPointBuffGroupSkillNumMap.map(
     (k, e) => MapEntry(k.toString(), e.map((k, e) => MapEntry(k.toString(), e))),
   ),
@@ -987,6 +993,22 @@ Map<String, dynamic> _$SvtLimitHideToJson(SvtLimitHide instance) => <String, dyn
   'activeSkills': instance.activeSkills.map((k, e) => MapEntry(k.toString(), e)),
   'classPassives': instance.classPassives,
   'addPassives': instance.addPassives,
+};
+
+SvtAllowedExtraPassive _$SvtAllowedExtraPassiveFromJson(Map json) => SvtAllowedExtraPassive(
+  eventId: (json['eventId'] as num).toInt(),
+  groupId: (json['groupId'] as num).toInt(),
+  skillId: (json['skillId'] as num).toInt(),
+  fromPassive: json['fromPassive'] as bool,
+  svtIds: (json['svtIds'] as List<dynamic>).map((e) => (e as num).toInt()).toList(),
+);
+
+Map<String, dynamic> _$SvtAllowedExtraPassiveToJson(SvtAllowedExtraPassive instance) => <String, dynamic>{
+  'eventId': instance.eventId,
+  'groupId': instance.groupId,
+  'skillId': instance.skillId,
+  'fromPassive': instance.fromPassive,
+  'svtIds': instance.svtIds,
 };
 
 const _$BuffActionEnumMap = {

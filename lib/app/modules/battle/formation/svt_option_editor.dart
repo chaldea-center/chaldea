@@ -241,6 +241,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
         header: S.current.active_skill,
         children: [for (final skillNum in kActiveSkillNums) _buildActiveSkill(context, skillNum)],
       ),
+      _buildAllowedExtraPassives(),
       TileGroup(
         header: '${S.current.custom_skill}/Buff ',
         headerWidget: SHeader.rich(
@@ -757,9 +758,17 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
             overflow: TextOverflow.ellipsis,
           ),
           trailing: IconButton(
-            onPressed: () {
-              playerSvtData.addCustomPassive(skill, skill.maxLv);
-              setState(() {});
+            onPressed: () async {
+              if (playerSvtData.allowedExtraSkills.contains(skill.id)) {
+                await SimpleCancelOkDialog(
+                  title: Text(S.current.custom_skill),
+                  content: Text("→ ${S.current.optional_event_passive}"),
+                  hideCancel: true,
+                ).showDialog(context);
+              } else {
+                playerSvtData.addCustomPassive(skill, skill.maxLv);
+              }
+              if (mounted) setState(() {});
             },
             icon: const Icon(Icons.add_circle),
             tooltip: S.current.enable,
@@ -957,6 +966,83 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
     skill.unmodifiedDetail = 'Levels: ${source.shownName}';
     playerSvtData.addCustomPassive(skill, skill.maxLv);
     if (mounted) setState(() {});
+  }
+
+  Widget _buildAllowedExtraPassives() {
+    int eventId = questPhase?.logicEvent?.id ?? 0;
+    final allowedPassives =
+        db.gameData.constData.svtAllowedExtraPassives.where((allowInfo) {
+          if (allowInfo.eventId != eventId) return false;
+          if (!allowInfo.svtIds.contains(svt.id) && !allowInfo.svtIds.contains(0)) return false;
+          if (allowInfo.fromPassive && svt.extraPassive.every((e) => e.id != allowInfo.skillId)) return false;
+          return true;
+        }).toList();
+    if (allowedPassives.isEmpty) return SizedBox.shrink();
+    allowedPassives.sortByList((e) => [e.groupId, e.skillId]);
+    List<Widget> children = [];
+    List<(int skillId, SvtAllowedExtraPassive? allowInfo)> allSkills = [
+      for (final allowInfo in allowedPassives) (allowInfo.skillId, allowInfo),
+      for (final skillId in playerSvtData.allowedExtraSkills)
+        if (allowedPassives.every((e) => e.skillId != skillId)) (skillId, null),
+    ];
+    for (final (skillId, allowInfo) in allSkills) {
+      BaseSkill? skill = db.gameData.baseSkills[skillId];
+      bool allowed = playerSvtData.allowedExtraSkills.contains(skillId);
+      children.add(
+        SimpleAccordion(
+          headerBuilder: (context, _) {
+            String title = skill?.lName.l ?? "Skill $skillId";
+            String subtitle = skill?.lDetail ?? '???';
+            return ListTile(
+              dense: true,
+              enabled: allowed,
+              minLeadingWidth: 28,
+              contentPadding: EdgeInsetsDirectional.only(start: 16),
+              leading: db.getIconImage(skill?.icon ?? Atlas.common.emptySkillIcon, width: 28),
+              title: Text(title),
+              subtitle: Text(
+                subtitle,
+                textScaler: const TextScaler.linear(0.85),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
+              trailing: Checkbox(
+                value: playerSvtData.allowedExtraSkills.contains(skillId),
+                onChanged: (v) {
+                  if (v!) {
+                    if (allowInfo != null) {
+                      playerSvtData.allowedExtraSkills.removeAll(
+                        allowedPassives.where((e) => e.groupId == allowInfo.groupId).map((e) => e.skillId),
+                      );
+                      playerSvtData.allowedExtraSkills.add(skillId);
+                    }
+                  } else {
+                    playerSvtData.allowedExtraSkills.remove(skillId);
+                  }
+                  setState(() {});
+                },
+              ),
+            );
+          },
+          contentBuilder: (context) {
+            return Material(
+              elevation: 4,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                child:
+                    skill == null
+                        ? TextButton(
+                          onPressed: () => router.push(url: Routes.skillI(skillId)),
+                          child: Text('Skill $skillId'),
+                        )
+                        : SkillDescriptor(skill: skill, showEnemy: !svt.isUserSvt),
+              ),
+            );
+          },
+        ),
+      );
+    }
+    return TileGroup(header: S.current.optional_event_passive, children: children);
   }
 
   Widget _buildCmdCodePlanner() {

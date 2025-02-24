@@ -245,6 +245,10 @@ SvtSaveData _$SvtSaveDataFromJson(Map json) => $checkedCreate('SvtSaveData', jso
       'disabledExtraSkills',
       (v) => (v as List<dynamic>?)?.map((e) => (e as num).toInt()).toSet(),
     ),
+    allowedExtraSkills: $checkedConvert(
+      'allowedExtraSkills',
+      (v) => (v as List<dynamic>?)?.map((e) => (e as num).toInt()).toSet(),
+    ),
     customPassives: $checkedConvert(
       'customPassives',
       (v) => (v as List<dynamic>?)?.map((e) => BaseSkill.fromJson(Map<String, dynamic>.from(e as Map))).toList(),
@@ -277,6 +281,7 @@ Map<String, dynamic> _$SvtSaveDataToJson(SvtSaveData instance) => <String, dynam
   'cardStrengthens': instance.cardStrengthens,
   'commandCodeIds': instance.commandCodeIds,
   'disabledExtraSkills': instance.disabledExtraSkills.toList(),
+  'allowedExtraSkills': instance.allowedExtraSkills.toList(),
   'customPassives': instance.customPassives.map((e) => e.toJson()).toList(),
   'customPassiveLvs': instance.customPassiveLvs,
 };

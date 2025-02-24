@@ -746,6 +746,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "open_in_browser": MessageLookupByLibrary.simpleMessage("在浏览器中打开"),
     "open_in_file_manager": MessageLookupByLibrary.simpleMessage("请用文件管理器打开"),
     "opening_time": MessageLookupByLibrary.simpleMessage("开放时间"),
+    "optional_event_passive": MessageLookupByLibrary.simpleMessage("可选活动技能"),
     "options": MessageLookupByLibrary.simpleMessage("选项"),
     "outdated": MessageLookupByLibrary.simpleMessage("已过期"),
     "override_": MessageLookupByLibrary.simpleMessage("覆盖"),

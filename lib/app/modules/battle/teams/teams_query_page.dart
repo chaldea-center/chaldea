@@ -381,6 +381,10 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
         );
       }
     }
+
+    if (team.formation.allSvts.any((e) => e != null && e.allowedExtraSkills.isNotEmpty)) {
+      spans.add(TextSpan(text: S.current.optional_event_passive));
+    }
     //
     final quest = db.gameData.quests[team.quest?.id];
     if (quest != null) {

@@ -806,6 +806,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "open_in_browser": MessageLookupByLibrary.simpleMessage("Open In Browser"),
     "open_in_file_manager": MessageLookupByLibrary.simpleMessage("Please open with file manager"),
     "opening_time": MessageLookupByLibrary.simpleMessage("Opening Time"),
+    "optional_event_passive": MessageLookupByLibrary.simpleMessage("Optional Event Passive"),
     "options": MessageLookupByLibrary.simpleMessage("Options"),
     "outdated": MessageLookupByLibrary.simpleMessage("Outdated"),
     "override_": MessageLookupByLibrary.simpleMessage("Override"),

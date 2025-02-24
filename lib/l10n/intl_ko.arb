@@ -637,6 +637,7 @@
   "open_in_browser": null,
   "open_in_file_manager": "파일 매니저로 열어주십시오",
   "opening_time": "개방 시간",
+  "optional_event_passive": null,
   "options": "옵션",
   "outdated": "기간종료",
   "override_": null,

@@ -439,6 +439,11 @@ class BattleServantData {
           await skillInfo.activate(battleData, activator: this);
         }
       }
+      for (final skillId in playerSvtData!.allowedExtraSkills) {
+        final skill = db.gameData.baseSkills[skillId] ?? await AtlasApi.skill(skillId);
+        final skillInfo = BattleSkillInfoData(skill, type: SkillInfoType.svtOtherPassive);
+        await skillInfo.activate(battleData, activator: this);
+      }
     }
   }
 

@@ -637,6 +637,7 @@
   "open_in_browser": "在瀏覽器中打開",
   "open_in_file_manager": "請用檔案管理器打開",
   "opening_time": "開放時間",
+  "optional_event_passive": null,
   "options": "選項",
   "outdated": "已過期",
   "override_": "覆蓋",

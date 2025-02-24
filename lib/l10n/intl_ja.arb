@@ -637,6 +637,7 @@
   "open_in_browser": null,
   "open_in_file_manager": "ファイルマネージャで開いてください",
   "opening_time": null,
+  "optional_event_passive": null,
   "options": null,
   "outdated": "期限切れ",
   "override_": "上書き",

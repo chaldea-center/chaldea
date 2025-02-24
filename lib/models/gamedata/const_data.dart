@@ -33,6 +33,7 @@ class ConstGameData {
 
   final Map<int, int> svtClassCardImageIdRemap = {285: 123, 351: 223};
   final Map<int, List<SvtLimitHide>> svtLimitHides;
+  final List<SvtAllowedExtraPassive> svtAllowedExtraPassives;
   // <eventId, <buffGroupId, skillNum>>
   //   // summer 2023
   //   80442: {
@@ -65,6 +66,7 @@ class ConstGameData {
     this.funcTypeDetail = const {},
     this.buffTypeDetail = const {},
     this.svtLimitHides = const {},
+    this.svtAllowedExtraPassives = const [],
     this.eventPointBuffGroupSkillNumMap = const {},
     this.laplaceUploadAllowAiQuests = const [],
     this.excludeRewardQuests = const [],
@@ -1067,6 +1069,27 @@ class SvtLimitHide {
   factory SvtLimitHide.fromJson(Map<String, dynamic> json) => _$SvtLimitHideFromJson(json);
 
   Map<String, dynamic> toJson() => _$SvtLimitHideToJson(this);
+}
+
+@JsonSerializable()
+class SvtAllowedExtraPassive {
+  int eventId;
+  int groupId;
+  int skillId;
+  bool fromPassive;
+  List<int> svtIds;
+
+  SvtAllowedExtraPassive({
+    required this.eventId,
+    required this.groupId,
+    required this.skillId,
+    required this.fromPassive,
+    required this.svtIds,
+  });
+
+  factory SvtAllowedExtraPassive.fromJson(Map<String, dynamic> json) => _$SvtAllowedExtraPassiveFromJson(json);
+
+  Map<String, dynamic> toJson() => _$SvtAllowedExtraPassiveToJson(this);
 }
 
 enum SvtFrameType { black, bronze, silver, gold, goldRed, goldRedGreat, goldBlack, goldBlackGreat }
