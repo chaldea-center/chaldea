@@ -1,8 +1,8 @@
 import 'package:chaldea/app/api/atlas.dart';
-import 'package:chaldea/app/battle/utils/battle_exception.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
 import 'package:chaldea/packages/float.dart';
+import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/utils/extension.dart';
 import '../../../utils/basic.dart';
 import 'battle_logger.dart';
@@ -24,7 +24,7 @@ Float toModifierFloat(int value) {
 /// DamageMod caps are applied when gathering the parameters.
 int calculateDamage(final DamageParameters param) {
   if (!ConstData.classInfo.containsKey(param.attackerClass)) {
-    throw BattleException('Invalid class: ${param.attackerClass}');
+    logger.w('Invalid class: ${param.attackerClass}');
   }
 
   final Float classAttackCorrection = toModifierFloat(ConstData.classInfo[param.attackerClass]?.attackRate ?? 1000);
@@ -37,11 +37,11 @@ int calculateDamage(final DamageParameters param) {
   );
 
   if (!ConstData.cardInfo.containsKey(param.currentCardType)) {
-    throw BattleException('Invalid current card type: ${param.currentCardType}');
+    logger.w('Invalid current card type: ${param.currentCardType}');
   }
 
   final int chainPos = param.isNp ? 1 : param.chainPos;
-  final Float cardCorrection = toModifierFloat(ConstData.cardInfo[param.currentCardType]![chainPos]!.adjustAtk);
+  final Float cardCorrection = toModifierFloat(ConstData.cardInfo[param.currentCardType]?[chainPos]?.adjustAtk ?? 1000);
 
   final Float firstCardBonus =
       shouldIgnoreFirstCardBonus(param.isNp, param.firstCardType)
@@ -65,7 +65,7 @@ int calculateDamage(final DamageParameters param) {
           ? toModifierFloat(ConstData.constants.chainbonusBusterRate) * param.attack.toFloat()
           : 0.toFloat();
 
-  final Float damageRate = toModifierFloat(param.damageRate);
+  final Float damageRate = toModifierFloat(param.damageRate) * toModifierFloat(param.damageRateModifier);
   final Float npSpecificAttackRate = toModifierFloat(param.npSpecificAttackRate);
   final Float cardBuff = toModifierFloat(param.cardBuff);
   final Float cardResist = toModifierFloat(param.cardResist);
@@ -220,6 +220,7 @@ bool shouldIgnoreFirstCardBonus(final bool isNP, final CardType firstCardType) {
 class DamageParameters {
   int attack = 0; // servantAtk
   int damageRate = 1000; // npDamageMultiplier
+  int damageRateModifier = 1000;
   int totalHits = 100;
   int npSpecificAttackRate = 1000; // superEffectiveModifier = function Correction value
   int attackerClass = 0;
@@ -260,6 +261,7 @@ class DamageParameters {
     return 'DamageParameters: {'
         'attack: $attack, '
         'damageRate: $damageRate, '
+        'damageRateModifier: $damageRateModifier, '
         'totalHits: $totalHits, '
         'npSpecificAttackRate: $npSpecificAttackRate, '
         'attackerClass: $attackerClass, '
@@ -296,6 +298,7 @@ class DamageParameters {
     return DamageParameters()
       ..attack = attack
       ..damageRate = damageRate
+      ..damageRateModifier = damageRateModifier
       ..totalHits = totalHits
       ..npSpecificAttackRate = npSpecificAttackRate
       ..attackerClass = attackerClass

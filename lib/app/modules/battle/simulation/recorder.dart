@@ -1441,8 +1441,11 @@ class DamageParamDialog extends StatelessWidget with _ParamDialogMixin {
         oneParam(S.current.battle_random, random.toStringAsFixed(3)),
         oneParam('ATK', params.attack.toString()),
         oneParam(S.current.class_attack_rate, classAttackCorrection.format()),
-        if (params.damageRate != 1000)
-          oneParam(S.current.battle_damage_rate, damageRate.format(percent: true, maxDigits: 4)),
+        if (params.damageRate != 1000 || params.damageRateModifier != 1000)
+          oneParam(
+            S.current.battle_damage_rate,
+            (damageRate * toModifier(params.damageRateModifier)).format(percent: true, maxDigits: 4),
+          ),
         if (isNpSpecificDamage)
           oneParam(S.current.np_sp_damage_rate, npSpecificAttackRate.format(percent: true, maxDigits: 4)),
         if (params.totalHits != 100) oneParam('Hits', hitsPercent.format(percent: true, maxDigits: 4)),

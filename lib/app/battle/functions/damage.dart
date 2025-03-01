@@ -180,6 +180,7 @@ class Damage {
                 currentCard.isTD
                     ? dataVals.Value! + hpRatioDamageLow + hpRatioDamageHigh
                     : currentCard.cardDetail.damageRate ?? 1000
+            ..damageRateModifier = getDamageRateModifier(battleData, currentCard, target)
             ..npSpecificAttackRate = specificAttackRate
             ..attackerClass = activator.logicalClassId
             ..defenderClass = target.logicalClassId
@@ -590,6 +591,27 @@ class Damage {
     powerMod += await activator.getBuffValue(battleData, BuffAction.damageEventPoint, opponent: target, card: card);
 
     return powerMod;
+  }
+
+  static int getDamageRateModifier(BattleData battleData, CommandCardData currentCard, BattleServantData target) {
+    int damageRateModifier = 1000;
+    final slideType = currentCard.cardDetail.positionDamageRatesSlideType;
+    List<int> positionDamageRates = currentCard.cardDetail.positionDamageRates?.toList() ?? [];
+    if (!currentCard.isTD &&
+        currentCard.cardDetail.attackType == CommandCardAttackType.all &&
+        (slideType != null && slideType != SvtCardPositionDamageRatesSlideType.none)) {
+      List<BattleServantData?> svtList = target.isPlayer ? battleData.onFieldAllyServants : battleData.onFieldEnemies;
+      if (slideType == SvtCardPositionDamageRatesSlideType.back) {
+        svtList = svtList.reversed.toList();
+        positionDamageRates = positionDamageRates.reversed.toList();
+      }
+      int position = svtList.indexOf(target);
+      int? positionDamageRate = positionDamageRates.getOrNull(position);
+      if (positionDamageRate != null) {
+        damageRateModifier = positionDamageRate;
+      }
+    }
+    return damageRateModifier;
   }
 
   static Future<DamageResult> _calc({
