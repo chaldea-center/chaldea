@@ -89,6 +89,7 @@ const _$ItemTypeEnumMap = {
   ItemType.revivalItem: 'revivalItem',
   ItemType.stormpod: 'stormpod',
   ItemType.battleItem: 'battleItem',
+  ItemType.privilege: 'privilege',
   ItemType.aniplexPlusChargeStone: 'aniplexPlusChargeStone',
   ItemType.purePriShopReset: 'purePriShopReset',
   ItemType.exchangeSvtCoin: 'exchangeSvtCoin',

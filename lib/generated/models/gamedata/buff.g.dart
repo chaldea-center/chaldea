@@ -411,6 +411,7 @@ const _$BuffTypeEnumMap = {
   BuffType.upDefenceCommandstar: 'upDefenceCommandstar',
   BuffType.downCommandstar: 'downCommandstar',
   BuffType.downDefenceCommandstar: 'downDefenceCommandstar',
+  BuffType.wavestartAnimationBeforeFunction: 'wavestartAnimationBeforeFunction',
   BuffType.toFieldChangeField: 'toFieldChangeField',
   BuffType.toFieldAvoidBuff: 'toFieldAvoidBuff',
   BuffType.toFieldSubIndividualityField: 'toFieldSubIndividualityField',

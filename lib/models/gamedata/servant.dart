@@ -972,6 +972,8 @@ class CardDetail {
   int? attackNpRate;
   int? defenseNpRate;
   int? dropStarRate;
+  List<int>? positionDamageRates;
+  SvtCardPositionDamageRatesSlideType? positionDamageRatesSlideType;
 
   CardDetail({
     this.hitsDistribution = const [],
@@ -981,6 +983,8 @@ class CardDetail {
     this.attackNpRate,
     this.defenseNpRate,
     this.dropStarRate,
+    this.positionDamageRates,
+    this.positionDamageRatesSlideType,
   });
 
   factory CardDetail.fromJson(Map<String, dynamic> json) => _$CardDetailFromJson(json);
@@ -1852,4 +1856,10 @@ enum BattlePointFlag {
   hideUiGaugeAllTime,
   hideUiGaugeWhenCantAddPoint,
   hideUiGaugeWhenCantAddPointAndFollowerSupport,
+}
+
+enum SvtCardPositionDamageRatesSlideType {
+  none,
+  front,
+  back,
 }

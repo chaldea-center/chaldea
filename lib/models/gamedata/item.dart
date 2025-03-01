@@ -530,6 +530,7 @@ enum ItemType {
   revivalItem,
   stormpod,
   battleItem,
+  privilege,
   aniplexPlusChargeStone,
   purePriShopReset,
   exchangeSvtCoin,

@@ -351,6 +351,7 @@ const _$NiceAiActTypeEnumMap = {
   NiceAiActType.loseEnd: 'loseEnd',
   NiceAiActType.battleEndNotRelatedSurvivalStatus: 'battleEndNotRelatedSurvivalStatus',
   NiceAiActType.battleEndNotRelatedSurvivalStatusInstantly: 'battleEndNotRelatedSurvivalStatusInstantly',
+  NiceAiActType.allBattleEnd: 'allBattleEnd',
   NiceAiActType.changeThinking: 'changeThinking',
 };
 

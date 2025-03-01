@@ -537,6 +537,11 @@ CardDetail _$CardDetailFromJson(Map json) => CardDetail(
   attackNpRate: (json['attackNpRate'] as num?)?.toInt(),
   defenseNpRate: (json['defenseNpRate'] as num?)?.toInt(),
   dropStarRate: (json['dropStarRate'] as num?)?.toInt(),
+  positionDamageRates: (json['positionDamageRates'] as List<dynamic>?)?.map((e) => (e as num).toInt()).toList(),
+  positionDamageRatesSlideType: $enumDecodeNullable(
+    _$SvtCardPositionDamageRatesSlideTypeEnumMap,
+    json['positionDamageRatesSlideType'],
+  ),
 );
 
 Map<String, dynamic> _$CardDetailToJson(CardDetail instance) => <String, dynamic>{
@@ -547,9 +552,17 @@ Map<String, dynamic> _$CardDetailToJson(CardDetail instance) => <String, dynamic
   'attackNpRate': instance.attackNpRate,
   'defenseNpRate': instance.defenseNpRate,
   'dropStarRate': instance.dropStarRate,
+  'positionDamageRates': instance.positionDamageRates,
+  'positionDamageRatesSlideType': _$SvtCardPositionDamageRatesSlideTypeEnumMap[instance.positionDamageRatesSlideType],
 };
 
 const _$CommandCardAttackTypeEnumMap = {CommandCardAttackType.one: 'one', CommandCardAttackType.all: 'all'};
+
+const _$SvtCardPositionDamageRatesSlideTypeEnumMap = {
+  SvtCardPositionDamageRatesSlideType.none: 'none',
+  SvtCardPositionDamageRatesSlideType.front: 'front',
+  SvtCardPositionDamageRatesSlideType.back: 'back',
+};
 
 SvtLimitEntity _$SvtLimitEntityFromJson(Map json) => SvtLimitEntity(
   limitCount: (json['limitCount'] as num).toInt(),

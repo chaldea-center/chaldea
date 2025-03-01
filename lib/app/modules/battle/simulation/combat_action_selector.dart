@@ -498,7 +498,7 @@ class _EnemyCombatActionSelectorState extends State<EnemyCombatActionSelector> {
           if (cardType.isExtra()) continue;
           final detail = svt.cardDetails[cardType]!;
           String name = cardType.name.toTitle();
-          if (cardType.matches(CardType.strength)) {
+          if (cardType.isStrength()) {
             name += ' (${S.current.critical_attack})';
           }
           children.add(
@@ -511,9 +511,9 @@ class _EnemyCombatActionSelectorState extends State<EnemyCombatActionSelector> {
                       ..traits = ConstData.cardInfo[cardType]?[1]?.individuality.toList() ?? [];
                 if (cardType.isQAB()) {
                   cardData.critical = critical;
-                } else if (cardType.matches(CardType.strength)) {
+                } else if (cardType.isStrength()) {
                   cardData.critical = true;
-                } else if (cardType.matches(CardType.weak)) {
+                } else if (cardType.isWeak()) {
                   cardData.critical = false;
                 }
                 await battleData.playEnemyCard(CombatAction(enemy, cardData));

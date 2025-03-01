@@ -334,4 +334,5 @@ const _$FuncTypeEnumMap = {
   FuncType.gainNpTargetSum: 'gainNpTargetSum',
   FuncType.enemyCountChange: 'enemyCountChange',
   FuncType.displayBattleMessage: 'displayBattleMessage',
+  FuncType.generateBattleSkillDrop: 'generateBattleSkillDrop',
 };

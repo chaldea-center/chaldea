@@ -139,6 +139,8 @@ const _$CardTypeEnumMap = {
   CardType.blank: 'blank',
   CardType.weak: 'weak',
   CardType.strength: 'strength',
+  CardType.weakalt1: 'weakalt1',
+  CardType.weakalt2: 'weakalt2',
   CardType.extra2: 'extra2',
 };
 
@@ -176,6 +178,7 @@ const _$SvtClassEnumMap = {
   SvtClass.uOlgaMarieFlare: 'uOlgaMarieFlare',
   SvtClass.uOlgaMarieAqua: 'uOlgaMarieAqua',
   SvtClass.beastEresh: 'beastEresh',
+  SvtClass.uOlgaMarieGround: 'uOlgaMarieGround',
   SvtClass.unknown: 'unknown',
   SvtClass.agarthaPenth: 'agarthaPenth',
   SvtClass.cccFinaleEmiyaAlter: 'cccFinaleEmiyaAlter',
@@ -188,6 +191,7 @@ const _$SvtClassEnumMap = {
   SvtClass.EXTRA2: 'EXTRA2',
   SvtClass.uOlgaMarieFlareCollection: 'uOlgaMarieFlareCollection',
   SvtClass.uOlgaMarieAquaCollection: 'uOlgaMarieAquaCollection',
+  SvtClass.uOlgaMarieGroundCollection: 'uOlgaMarieGroundCollection',
   SvtClass.beastAny: 'beastAny',
 };
 
@@ -431,4 +435,8 @@ const _$CondTypeEnumMap = {
   CondType.userLevelAbove: 'userLevelAbove',
   CondType.userLevelBelow: 'userLevelBelow',
   CondType.userLevelEqual: 'userLevelEqual',
+  CondType.highestWaveAbove: 'highestWaveAbove',
+  CondType.highestWaveBelow: 'highestWaveBelow',
+  CondType.privilegeValid: 'privilegeValid',
+  CondType.privilegeInvalid: 'privilegeInvalid',
 };

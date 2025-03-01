@@ -10,6 +10,7 @@ import '../db.dart';
 import '_helper.dart';
 import 'common.dart';
 import 'const_data.dart';
+import 'func.dart' show FuncType;
 import 'mappings.dart';
 import 'vals.dart';
 
@@ -477,6 +478,7 @@ enum BuffType {
   upDefenceCommandstar(223),
   downCommandstar(224), // replacing downCommanstar(67)
   downDefenceCommandstar(225),
+  wavestartAnimationBeforeFunction(226),
 
   toFieldChangeField(10001),
   toFieldAvoidBuff(10002),
@@ -502,9 +504,14 @@ enum BuffType {
 final Map<BuffType, BuffValueTriggerType Function(DataVals)> kBuffValueTriggerTypes = () {
   final types = <BuffType, BuffValueTriggerType Function(DataVals)>{
     BuffType.counterFunction:
-        (v) => BuffValueTriggerType(BuffType.counterFunction, skill: v.CounterId, level: v.CounterLv),
+        (v) => BuffValueTriggerType(buffType: BuffType.counterFunction, skill: v.CounterId, level: v.CounterLv),
     BuffType.npattackPrevBuff:
-        (v) => BuffValueTriggerType(BuffType.npattackPrevBuff, skill: v.SkillID, level: v.SkillLV, position: v.Value),
+        (v) => BuffValueTriggerType(
+          buffType: BuffType.npattackPrevBuff,
+          skill: v.SkillID,
+          level: v.SkillLV,
+          position: v.Value,
+        ),
   };
 
   for (final type in {
@@ -545,18 +552,38 @@ final Map<BuffType, BuffValueTriggerType Function(DataVals)> kBuffValueTriggerTy
     BuffType.functionedFunction,
     BuffType.comboStartFunction,
     BuffType.comboEndFunction,
+    BuffType.wavestartAnimationBeforeFunction,
   }) {
-    types[type] = (v) => BuffValueTriggerType(type, skill: v.Value, level: v.Value2, rate: v.UseRate);
+    types[type] = (v) => BuffValueTriggerType(buffType: type, skill: v.Value, level: v.Value2, rate: v.UseRate);
+  }
+
+  return types;
+}();
+
+final Map<FuncType, BuffValueTriggerType Function(DataVals)> kFuncValueTriggerTypes = () {
+  final types = <FuncType, BuffValueTriggerType Function(DataVals)>{};
+
+  for (final type in {FuncType.generateBattleSkillDrop}) {
+    types[type] =
+        (v) => BuffValueTriggerType(buffType: null, funcType: type, skill: v.Value, level: v.Value2, rate: v.UseRate);
   }
 
   return types;
 }();
 
 class BuffValueTriggerType {
-  final BuffType buffType;
+  final BuffType? buffType;
+  final FuncType? funcType;
   final int? skill;
   int? level;
   final int? rate;
   final int? position;
-  BuffValueTriggerType(this.buffType, {required this.skill, required this.level, this.rate, this.position});
+  BuffValueTriggerType({
+    required this.buffType,
+    this.funcType,
+    required this.skill,
+    required this.level,
+    this.rate,
+    this.position,
+  });
 }

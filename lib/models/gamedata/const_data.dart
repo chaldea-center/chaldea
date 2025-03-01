@@ -1276,6 +1276,7 @@ enum BuffAction {
   overwriteSvtCardType(150),
   criticalDamageDef(151),
   npdamageDef(152),
+  functionWavestartAnimationBefore(153),
   // custom
   functionClassboardCommandSpellAfter(301);
 

@@ -613,7 +613,8 @@ enum FuncType {
   hideOverGauge(145),
   gainNpTargetSum(146),
   enemyCountChange(147),
-  displayBattleMessage(148);
+  displayBattleMessage(148),
+  generateBattleSkillDrop(149);
 
   final int value;
   const FuncType(this.value);

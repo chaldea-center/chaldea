@@ -366,6 +366,7 @@ enum NiceAiActType {
   loseEnd,
   battleEndNotRelatedSurvivalStatus,
   battleEndNotRelatedSurvivalStatusInstantly,
+  allBattleEnd,
   changeThinking,
 }
 

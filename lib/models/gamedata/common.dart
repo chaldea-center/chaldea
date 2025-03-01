@@ -269,6 +269,8 @@ enum CardType {
   blank(5),
   weak(10),
   strength(11),
+  weakalt1(21),
+  weakalt2(22),
   extra2(104);
 
   final int value;
@@ -280,14 +282,28 @@ enum CardType {
   bool isArts() => this == arts;
   bool isBuster() => this == buster;
   bool isExtra() => this == extra || this == extra2;
+  bool isWeak() => this == weak || this == weakalt1 || this == weakalt2;
+  bool isStrength() => this == strength;
 
   bool matches(final CardType other) {
     if (other.isArts() && isArts()) return true;
     if (other.isBuster() && isBuster()) return true;
     if (other.isQuick() && isQuick()) return true;
     if (other.isExtra() && isExtra()) return true;
+    if (other.isWeak() && isWeak()) return true;
+    if (other.isStrength() && isStrength()) return true;
 
     return this == other;
+  }
+
+  Trait? get baseTrait {
+    if (isArts()) return Trait.cardArts;
+    if (isBuster()) return Trait.cardBuster;
+    if (isQuick()) return Trait.cardQuick;
+    if (isExtra()) return Trait.cardExtra;
+    if (isWeak()) return Trait.cardWeak;
+    if (isStrength()) return Trait.cardStrong;
+    return null;
   }
 }
 
@@ -350,6 +366,7 @@ enum SvtClass {
   uOlgaMarieFlare(36),
   uOlgaMarieAqua(37),
   beastEresh(38, '獸'),
+  uOlgaMarieGround(39),
   unknown(97),
   // 98
   // 99
@@ -365,6 +382,7 @@ enum SvtClass {
   EXTRA2(1005, 'EXTRA2'), // ignore: constant_identifier_names
   uOlgaMarieFlareCollection(9001),
   uOlgaMarieAquaCollection(9002),
+  uOlgaMarieGroundCollection(9003),
   beastAny(33, '獸');
 
   final int value;
@@ -451,11 +469,13 @@ extension SvtClassX on SvtClass {
     // SvtClass.uOlgaMarie,
     SvtClass.uOlgaMarieFlare,
     SvtClass.uOlgaMarieAqua,
+    SvtClass.uOlgaMarieGround,
     SvtClass.beastILost,
     SvtClass.beastVI,
     SvtClass.beastVIBoss,
     SvtClass.uOlgaMarieFlareCollection,
     SvtClass.uOlgaMarieAquaCollection,
+    SvtClass.uOlgaMarieGroundCollection,
   ];
 
   static bool match(SvtClass value, SvtClass option) {
@@ -550,6 +570,8 @@ enum Trait {
   classBeastVIBoss(126),
   classUOlgaMarieFlare(127),
   classUOlgaMarieAqua(128),
+  classBeastEresh(129),
+  classUOlgaMarieGround(130),
   attributeSky(200),
   attributeEarth(201),
   attributeHuman(202),
@@ -1076,7 +1098,11 @@ enum CondType {
   imagePartsGroup(241),
   userLevelAbove(242),
   userLevelBelow(243),
-  userLevelEqual(244);
+  userLevelEqual(244),
+  highestWaveAbove(245),
+  highestWaveBelow(246),
+  privilegeValid(247),
+  privilegeInvalid(248);
 
   const CondType(this.value);
   final int value;

@@ -451,6 +451,7 @@ class FunctionExecutor {
         case FuncType.lastUsePlayerSkillCopy:
         case FuncType.setNpExecutedState:
         case FuncType.hideOverGauge:
+        case FuncType.generateBattleSkillDrop:
           battleData.battleLogger.debug(
             '${S.current.not_implemented}: ${function.funcType}, '
             'Function ID: ${function.funcId}, '

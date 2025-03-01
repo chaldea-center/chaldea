@@ -366,13 +366,7 @@ class TdDescriptor extends StatelessWidget with FuncsDescriptor, _SkillDescripto
     this.isBaseTd = false,
   }) : showPlayer = isPlayer,
        showEnemy = !isPlayer;
-  final cardMap = const <CardType, Trait>{
-    CardType.quick: Trait.cardQuick,
-    CardType.arts: Trait.cardArts,
-    CardType.buster: Trait.cardBuster,
-    CardType.weak: Trait.cardWeak,
-    CardType.strength: Trait.cardStrong,
-  };
+
   @override
   Widget build(BuildContext context) {
     final ref = RefMemo();
@@ -382,8 +376,9 @@ class TdDescriptor extends StatelessWidget with FuncsDescriptor, _SkillDescripto
     if (td.individuality.every((e) => e.name != Trait.cardNP)) {
       ref.add('cardNP');
     }
-    if (cardMap.containsKey(td.svt.card) && td.individuality.every((e) => e.name != cardMap[td.svt.card])) {
-      ref.add('cardQAB');
+    final baseTrait = td.svt.card.baseTrait;
+    if (baseTrait != null && td.individuality.every((e) => e.name != baseTrait)) {
+      ref.add('cardTrait');
     }
     final tdType = Transl.tdTypes(overrideData?.tdTypeText ?? td.type);
     final tdRank = overrideData?.tdRank ?? td.rank;
@@ -507,8 +502,8 @@ class TdDescriptor extends StatelessWidget with FuncsDescriptor, _SkillDescripto
               if (ref.contain('base')) '[${ref.add("base")}] ${S.current.td_base_hits_hint}',
               if (ref.contain("cardNP"))
                 '[${ref.add("cardNP")}] ${S.current.td_cardnp_hint(Transl.trait(Trait.cardNP.value).l)}',
-              if (ref.contain("cardQAB"))
-                '[${ref.add("cardQAB")}] ${S.current.td_cardcolor_hint(td.svt.card.name.toTitle(), Transl.trait(cardMap[td.svt.card]!.value).l)}',
+              if (ref.contain("cardTrait"))
+                '[${ref.add("cardTrait")}] ${S.current.td_cardcolor_hint(td.svt.card.name.toTitle(), Transl.trait(baseTrait!.value).l)}',
             ].join('\n'),
           ),
       ],

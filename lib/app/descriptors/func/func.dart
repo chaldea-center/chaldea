@@ -128,8 +128,13 @@ mixin FuncsDescriptor {
                   borderRadius: BorderRadius.circular(6),
                 ),
                 child: _LazyTrigger(
-                  trigger: BuffValueTriggerType(BuffType.none, skill: additionalSkillId, level: additionalSkillLv),
+                  trigger: BuffValueTriggerType(
+                    buffType: BuffType.none,
+                    skill: additionalSkillId,
+                    level: additionalSkillLv,
+                  ),
                   buff: null,
+                  func: null,
                   isNp: false,
                   useRate: null,
                   showPlayer: showPlayer,
@@ -1391,7 +1396,9 @@ class FuncDescriptor extends StatelessWidget {
 
   Widget? _buildTrigger(BuildContext context) {
     DataVals? vals = func.svalsList.getOrNull((oc ?? 1) - 1)?.getOrNull((level ?? 1) - 1);
-    final trigger = kBuffValueTriggerTypes[func.buff?.type];
+    final isFuncTrigger = kFuncValueTriggerTypes.containsKey(func.funcType);
+    final trigger = kBuffValueTriggerTypes[func.buff?.type] ?? kFuncValueTriggerTypes[func.funcType];
+
     if (trigger == null) return null;
     final details = func.svals.map((e) => trigger(e)).toList();
     final ocDetails = func.ocVals(0).map((e) => trigger(e)).toList();
@@ -1417,7 +1424,8 @@ class FuncDescriptor extends StatelessWidget {
       padding: const EdgeInsetsDirectional.fromSTEB(0, 2, 0, 2),
       child: _LazyTrigger(
         trigger: detail,
-        buff: func.buff!,
+        buff: func.buff,
+        func: isFuncTrigger ? func : null,
         isNp: isNp,
         useRate: vals?.UseRate,
         showPlayer: func.funcTargetType.isEnemy ? showEnemy : showPlayer,
@@ -1497,6 +1505,7 @@ class FuncDescriptor extends StatelessWidget {
 class _LazyTrigger extends StatefulWidget {
   final BuffValueTriggerType trigger;
   final Buff? buff;
+  final BaseFunction? func; // non-buff func, e.g. generateBattleSkillDrop
   final bool isNp;
   final int? useRate;
   final bool showPlayer;
@@ -1507,13 +1516,14 @@ class _LazyTrigger extends StatefulWidget {
   const _LazyTrigger({
     required this.trigger,
     required this.buff,
+    required this.func,
     required this.isNp,
     required this.useRate,
     required this.showPlayer,
     required this.showEnemy,
     required this.loops,
     required this.region,
-  });
+  }) : assert(buff != null || func != null);
 
   @override
   State<_LazyTrigger> createState() => __LazyTriggerState();
@@ -1565,7 +1575,10 @@ class __LazyTriggerState extends State<_LazyTrigger> with FuncsDescriptor {
       title += ': ${skill!.lName.l}';
     }
     List<String> hints = [
-      if (widget.buff != null) Transl.funcPopuptextBase(widget.buff!.type.name).l,
+      if (widget.buff != null)
+        Transl.funcPopuptextBase(widget.buff!.type.name).l
+      else if (widget.func != null)
+        Transl.funcType(widget.func!.funcType).l,
       if (widget.useRate != null) Transl.special.funcValActChance(widget.useRate!.format(percent: true, base: 10)),
     ];
     final loops = LoopTargets.from(widget.loops)..addSkill(widget.trigger.skill);

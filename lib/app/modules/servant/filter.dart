@@ -633,8 +633,9 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData, ServantFilt
 
 const _traitsForFilter = <Trait>[
   // ce
-  Trait.havingAnimalsCharacteristics, // 兽科
+  Trait.hasCostume,
   Trait.livingHuman,
+  Trait.havingAnimalsCharacteristics, // 兽科
   //
   Trait.dragon,
   Trait.riding,

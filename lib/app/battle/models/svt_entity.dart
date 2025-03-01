@@ -524,9 +524,9 @@ class BattleServantData {
           ..cardStrengthen = playerSvtData!.cardStrengthens.getOrNull(index) ?? 0
           ..commandCode = playerSvtData!.commandCodes.getOrNull(index);
       }
-      if (cardType.matches(CardType.weak)) {
+      if (cardType.isWeak()) {
         card.critical = false;
-      } else if (cardType.matches(CardType.strength)) {
+      } else if (cardType.isStrength()) {
         card.critical = true;
       }
 

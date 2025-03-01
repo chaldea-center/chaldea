@@ -1166,5 +1166,6 @@ const _$BuffActionEnumMap = {
   BuffAction.overwriteSvtCardType: 'overwriteSvtCardType',
   BuffAction.criticalDamageDef: 'criticalDamageDef',
   BuffAction.npdamageDef: 'npdamageDef',
+  BuffAction.functionWavestartAnimationBefore: 'functionWavestartAnimationBefore',
   BuffAction.functionClassboardCommandSpellAfter: 'functionClassboardCommandSpellAfter',
 };

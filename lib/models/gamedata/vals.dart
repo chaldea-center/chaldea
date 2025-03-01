@@ -335,10 +335,14 @@ class DataVals {
   int? get EnemyCountChangeEffectId => _vals['EnemyCountChangeEffectId'];
   int? get EnemyCountWaitTimeAfterMessage => _vals['EnemyCountWaitTimeAfterMessage'];
   int? get WaitMessageEnd => _vals['WaitMessageEnd'];
+  int? get MessageStartDelayTime => _vals['MessageStartDelayTime'];
   int? get ContinueDisplayMessage => _vals['ContinueDisplayMessage'];
   int? get StartIntervalTurn => _vals['StartIntervalTurn'];
   int? get StartIntervalCount => _vals['StartIntervalCount'];
   int? get CommonReleaseId => _vals['CommonReleaseId'];
+  int? get ForceTurnProgressIfTimingIsOverInPartyTurn => _vals['ForceTurnProgressIfTimingIsOverInPartyTurn'];
+  int? get ForceTurnProgressIfTimingIsOverInOpponentTurn => _vals['ForceTurnProgressIfTimingIsOverInOpponentTurn'];
+  int? get OverwriteFuncInvalidType => _vals['OverwriteFuncInvalidType'];
 
   int? get ApplySupportSvt => _vals['ApplySupportSvt'];
   int? get Individuality => _vals['Individuality'];
