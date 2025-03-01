@@ -562,7 +562,6 @@ class BattleServantData {
       hitsDistribution: currentNP?.svt.damage ?? [100],
       attackType:
           currentNP?.damageType == TdEffectFlag.attackEnemyAll ? CommandCardAttackType.all : CommandCardAttackType.one,
-      attackNpRate: currentNP?.npGain.np[playerSvtData!.tdLv - 1] ?? 0,
     );
 
     return CommandCardData(this, currentNP?.svt.card ?? CardType.none, cardDetail, -1)
@@ -594,7 +593,6 @@ class BattleServantData {
       attackIndividuality: td.individuality,
       hitsDistribution: td.svt.damage,
       attackType: td.damageType == TdEffectFlag.attackEnemyAll ? CommandCardAttackType.all : CommandCardAttackType.one,
-      attackNpRate: td.npGain.np[tdLv - 1],
     );
 
     return CommandCardData(this, td.svt.card, cardDetail, -1)
