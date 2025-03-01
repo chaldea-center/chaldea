@@ -237,7 +237,7 @@ class Damage {
         atkNpParameters
           ..attackerNpCharge = currentCard.npGain
           ..defenderNpRate = target.enemyTdRate
-          ..cardAttackNpRate = currentCard.cardDetail.damageRate ?? 1000
+          ..cardAttackNpRate = currentCard.cardDetail.attackNpRate ?? 1000
           ..isNp = currentCard.isTD
           ..chainPos = chainPos
           ..currentCardType = currentCard.cardType
@@ -261,7 +261,7 @@ class Damage {
         starParameters
           ..attackerStarGen = activator.starGen
           ..defenderStarRate = target.enemyStarRate
-          ..cardDropStarRate = currentCard.cardDetail.damageRate ?? 1000
+          ..cardDropStarRate = currentCard.cardDetail.dropStarRate ?? 1000
           ..isNp = currentCard.isTD
           ..chainPos = chainPos
           ..currentCardType = currentCard.cardType
@@ -285,7 +285,7 @@ class Damage {
         defNpParameters
           ..defenderNpGainRate = target.defenceNpGain
           ..attackerNpRate = activator.enemyTdAttackRate
-          ..cardDefNpRate = currentCard.cardDetail.damageRate ?? 1000
+          ..cardDefNpRate = currentCard.cardDetail.defenseNpRate ?? 1000
           ..npGainBuff = await target.getBuffValue(
             battleData,
             BuffAction.dropNp,

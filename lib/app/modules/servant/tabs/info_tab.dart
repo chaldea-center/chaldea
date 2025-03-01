@@ -485,6 +485,17 @@ class SvtInfoTab extends StatelessWidget {
       S.current.defense_np_rate: detail.defenseNpRate?.format(percent: true, base: 10),
       S.current.info_star_rate: detail.dropStarRate?.format(percent: true, base: 10),
     };
+    final positionDamageRates = detail.positionDamageRates?.map((e) => e.format(percent: true, base: 10)).toList();
+    if (positionDamageRates != null) {
+      String text =
+          switch (detail.positionDamageRatesSlideType) {
+            SvtCardPositionDamageRatesSlideType.front => '(${S.current.team_starting_member})',
+            SvtCardPositionDamageRatesSlideType.back => '(${S.current.team_backup_member})',
+            SvtCardPositionDamageRatesSlideType.none || null => '',
+          } +
+          positionDamageRates.toString();
+      scripts['positionDamageRates'] = text;
+    }
     scripts.removeWhere(((key, value) => value == null));
     if (scripts.isNotEmpty) {
       spans.add(const TextSpan(text: '\n'));

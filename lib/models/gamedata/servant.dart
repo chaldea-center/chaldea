@@ -1858,8 +1858,4 @@ enum BattlePointFlag {
   hideUiGaugeWhenCantAddPointAndFollowerSupport,
 }
 
-enum SvtCardPositionDamageRatesSlideType {
-  none,
-  front,
-  back,
-}
+enum SvtCardPositionDamageRatesSlideType { none, front, back }
