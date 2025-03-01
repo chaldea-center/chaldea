@@ -119,6 +119,35 @@ class _EventItemInputTabState extends State<EventItemInputTab> {
   Widget build(BuildContext context) {
     List<Widget> children = [];
 
+    final event = db.gameData.wars[widget.warId]?.eventReal;
+    if (event != null) {
+      List<Widget> leftAps = [];
+      final now = DateTime.now().timestamp;
+      for (final region in Region.values) {
+        int? endTime = event.endTimeOf(region);
+        if (endTime == null) continue;
+        if (endTime - now > kSecsPerDay * 100) continue;
+        int leftAp = (endTime - now) ~/ 300;
+        leftAps.add(Text('[${region.upper}] ${S.current.item_left} $leftAp AP', style: TextStyle(fontSize: 14)));
+      }
+      children.add(
+        TileGroup(
+          children: [
+            ListTile(
+              dense: true,
+              title: Text(event.lName.l, maxLines: leftAps.length.clamp(1, 2), overflow: TextOverflow.ellipsis),
+              trailing: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: leftAps,
+              ),
+              onTap: event.routeTo,
+            ),
+          ],
+        ),
+      );
+    }
+
     final itemIds = eventItemIds.toList();
     itemIds.sort(Item.compare2);
 
