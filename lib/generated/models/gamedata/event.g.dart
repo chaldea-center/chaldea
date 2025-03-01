@@ -750,8 +750,7 @@ EventCommandAssist _$EventCommandAssistFromJson(Map json) => EventCommandAssist(
   priority: (json['priority'] as num?)?.toInt() ?? 0,
   lv: (json['lv'] as num).toInt(),
   name: json['name'] as String,
-  assistCard:
-      json['assistCard'] == null ? CardType.none : const CardTypeConverter().fromJson(json['assistCard'] as String),
+  assistCard: json['assistCard'] == null ? CardType.none : const CardTypeConverter().fromJson(json['assistCard']),
   image: json['image'] as String,
   skill: NiceSkill.fromJson(Map<String, dynamic>.from(json['skill'] as Map)),
   skillLv: (json['skillLv'] as num).toInt(),

@@ -117,15 +117,11 @@ Servant _$ServantFromJson(Map json) => Servant(
   criticalWeight: (json['starAbsorb'] as num?)?.toInt() ?? 0,
   starGen: (json['starGen'] as num?)?.toInt() ?? 0,
   instantDeathChance: (json['instantDeathChance'] as num?)?.toInt() ?? 0,
-  cards:
-      (json['cards'] as List<dynamic>?)?.map((e) => const CardTypeConverter().fromJson(e as String)).toList() ??
-      const [],
+  cards: (json['cards'] as List<dynamic>?)?.map(const CardTypeConverter().fromJson).toList() ?? const [],
   cardDetails:
       (json['cardDetails'] as Map?)?.map(
-        (k, e) => MapEntry(
-          const CardTypeConverter().fromJson(k as String),
-          CardDetail.fromJson(Map<String, dynamic>.from(e as Map)),
-        ),
+        (k, e) =>
+            MapEntry(const CardTypeConverter().fromJson(k), CardDetail.fromJson(Map<String, dynamic>.from(e as Map))),
       ) ??
       const {},
   relateQuestIds: (json['relateQuestIds'] as List<dynamic>?)?.map((e) => (e as num).toInt()).toList() ?? const [],

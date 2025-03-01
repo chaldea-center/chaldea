@@ -309,12 +309,20 @@ enum CardType {
 
 final kCardTypeMapping = {for (final card in CardType.values) card.value: card};
 
-class CardTypeConverter implements JsonConverter<CardType, String> {
+class CardTypeConverter implements JsonConverter<CardType, dynamic> {
   const CardTypeConverter();
 
   @override
-  CardType fromJson(String value) {
-    return deprecatedTypes[value] ?? decodeEnum(_$CardTypeEnumMap, value, CardType.none);
+  CardType fromJson(dynamic value) {
+    if (value == null) return CardType.none;
+    if (value is String) {
+      return deprecatedTypes[value] ?? decodeEnum(_$CardTypeEnumMap, value, CardType.none);
+    }
+    if (value is int) {
+      return kCardTypeMapping[value] ?? CardType.none;
+    }
+    assert(false, "CardType: unsupported type '${value.runtimeType}($value)'");
+    return CardType.none;
   }
 
   @override

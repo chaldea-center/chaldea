@@ -27,7 +27,7 @@ ConstGameData _$ConstGameDataFromJson(Map json) => ConstGameData(
   cardInfo:
       (json['cardInfo'] as Map?)?.map(
         (k, e) => MapEntry(
-          const CardTypeConverter().fromJson(k as String),
+          const CardTypeConverter().fromJson(k),
           (e as Map).map(
             (k, e) => MapEntry(int.parse(k as String), CardInfo.fromJson(Map<String, dynamic>.from(e as Map))),
           ),

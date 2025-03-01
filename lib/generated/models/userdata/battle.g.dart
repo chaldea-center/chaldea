@@ -639,10 +639,7 @@ BattleAttackRecordData _$BattleAttackRecordDataFromJson(Map json) =>
         card: $checkedConvert('card', (v) => (v as num?)?.toInt()),
         isTD: $checkedConvert('isTD', (v) => v as bool? ?? false),
         critical: $checkedConvert('critical', (v) => v as bool? ?? false),
-        cardType: $checkedConvert(
-          'cardType',
-          (v) => v == null ? CardType.none : const CardTypeConverter().fromJson(v as String),
-        ),
+        cardType: $checkedConvert('cardType', (v) => v == null ? CardType.none : const CardTypeConverter().fromJson(v)),
       );
       return val;
     });
