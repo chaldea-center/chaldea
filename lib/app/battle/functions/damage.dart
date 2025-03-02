@@ -600,7 +600,7 @@ class Damage {
     if (!currentCard.isTD &&
         currentCard.cardDetail.attackType == CommandCardAttackType.all &&
         (slideType != null && slideType != SvtCardPositionDamageRatesSlideType.none)) {
-      List<BattleServantData?> svtList = target.isPlayer ? battleData.onFieldAllyServants : battleData.onFieldEnemies;
+      List<BattleServantData?> svtList = target.isPlayer ? battleData.nonnullPlayers : battleData.nonnullEnemies;
       if (slideType == SvtCardPositionDamageRatesSlideType.back) {
         svtList = svtList.reversed.toList();
         positionDamageRates = positionDamageRates.reversed.toList();
