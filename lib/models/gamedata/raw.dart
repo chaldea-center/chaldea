@@ -198,3 +198,61 @@ class MstEventSvtFatigue {
   factory MstEventSvtFatigue.fromJson(Map<dynamic, dynamic> json) => _$MstEventSvtFatigueFromJson(json);
   Map<String, dynamic> toJson() => _$MstEventSvtFatigueToJson(this);
 }
+
+@JsonSerializable()
+class MstStaffPhoto {
+  int id;
+  String staffName;
+  String spriteName;
+  int dispOrder;
+  int condType;
+  int condId;
+  int condNum;
+  Map<String, dynamic> extendData;
+
+  MstStaffPhoto({
+    required this.id,
+    this.staffName = "",
+    this.spriteName = "",
+    this.dispOrder = 0,
+    this.condType = 0,
+    this.condId = 0,
+    this.condNum = 0,
+    this.extendData = const {},
+  });
+
+  factory MstStaffPhoto.fromJson(Map<dynamic, dynamic> json) => _$MstStaffPhotoFromJson(json);
+  Map<String, dynamic> toJson() => _$MstStaffPhotoToJson(this);
+}
+
+@JsonSerializable()
+class MstStaffPhotoCostume {
+  int staffPhotoId;
+  int idx;
+  int dispOrder;
+  String spriteName;
+  int imageId;
+  int faceId;
+  String costumeName;
+  int condType;
+  int condId;
+  int condNum;
+  Map<String, dynamic> extendData;
+
+  MstStaffPhotoCostume({
+    this.staffPhotoId = 0,
+    this.idx = 0,
+    this.dispOrder = 0,
+    this.spriteName = "",
+    this.imageId = 0,
+    this.faceId = 0,
+    this.costumeName = "",
+    this.condType = 0,
+    this.condId = 0,
+    this.condNum = 0,
+    this.extendData = const {},
+  });
+
+  factory MstStaffPhotoCostume.fromJson(Map<dynamic, dynamic> json) => _$MstStaffPhotoCostumeFromJson(json);
+  Map<String, dynamic> toJson() => _$MstStaffPhotoCostumeToJson(this);
+}

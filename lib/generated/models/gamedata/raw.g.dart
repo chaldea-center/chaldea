@@ -131,3 +131,53 @@ Map<String, dynamic> _$MstEventSvtFatigueToJson(MstEventSvtFatigue instance) => 
   'fatigueTime': instance.fatigueTime,
   'commonReleaseId': instance.commonReleaseId,
 };
+
+MstStaffPhoto _$MstStaffPhotoFromJson(Map json) => MstStaffPhoto(
+  id: (json['id'] as num).toInt(),
+  staffName: json['staffName'] as String? ?? "",
+  spriteName: json['spriteName'] as String? ?? "",
+  dispOrder: (json['dispOrder'] as num?)?.toInt() ?? 0,
+  condType: (json['condType'] as num?)?.toInt() ?? 0,
+  condId: (json['condId'] as num?)?.toInt() ?? 0,
+  condNum: (json['condNum'] as num?)?.toInt() ?? 0,
+  extendData: (json['extendData'] as Map?)?.map((k, e) => MapEntry(k as String, e)) ?? const {},
+);
+
+Map<String, dynamic> _$MstStaffPhotoToJson(MstStaffPhoto instance) => <String, dynamic>{
+  'id': instance.id,
+  'staffName': instance.staffName,
+  'spriteName': instance.spriteName,
+  'dispOrder': instance.dispOrder,
+  'condType': instance.condType,
+  'condId': instance.condId,
+  'condNum': instance.condNum,
+  'extendData': instance.extendData,
+};
+
+MstStaffPhotoCostume _$MstStaffPhotoCostumeFromJson(Map json) => MstStaffPhotoCostume(
+  staffPhotoId: (json['staffPhotoId'] as num?)?.toInt() ?? 0,
+  idx: (json['idx'] as num?)?.toInt() ?? 0,
+  dispOrder: (json['dispOrder'] as num?)?.toInt() ?? 0,
+  spriteName: json['spriteName'] as String? ?? "",
+  imageId: (json['imageId'] as num?)?.toInt() ?? 0,
+  faceId: (json['faceId'] as num?)?.toInt() ?? 0,
+  costumeName: json['costumeName'] as String? ?? "",
+  condType: (json['condType'] as num?)?.toInt() ?? 0,
+  condId: (json['condId'] as num?)?.toInt() ?? 0,
+  condNum: (json['condNum'] as num?)?.toInt() ?? 0,
+  extendData: (json['extendData'] as Map?)?.map((k, e) => MapEntry(k as String, e)) ?? const {},
+);
+
+Map<String, dynamic> _$MstStaffPhotoCostumeToJson(MstStaffPhotoCostume instance) => <String, dynamic>{
+  'staffPhotoId': instance.staffPhotoId,
+  'idx': instance.idx,
+  'dispOrder': instance.dispOrder,
+  'spriteName': instance.spriteName,
+  'imageId': instance.imageId,
+  'faceId': instance.faceId,
+  'costumeName': instance.costumeName,
+  'condType': instance.condType,
+  'condId': instance.condId,
+  'condNum': instance.condNum,
+  'extendData': instance.extendData,
+};

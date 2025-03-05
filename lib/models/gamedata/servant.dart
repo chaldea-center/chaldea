@@ -891,7 +891,7 @@ class ExtraAssetsUrl {
   final Map<int, String>? cc;
   final Map<String, String>? imagePartsGroup;
 
-  const ExtraAssetsUrl({this.ascension, this.story, this.costume, this.equip, this.cc,this.imagePartsGroup});
+  const ExtraAssetsUrl({this.ascension, this.story, this.costume, this.equip, this.cc, this.imagePartsGroup});
 
   Iterable<String> get allUrls sync* {
     if (ascension != null) yield* ascension!.values;
@@ -1527,7 +1527,7 @@ class ServantScript with DataScriptBase {
   Map<int, List<int>>? skillRankUp;
   bool? svtBuffTurnExtend;
   ExtraAssets? maleImage;
-  // List<ImagePartsGroup>? imagePartsGroup; 
+  // List<ImagePartsGroup>? imagePartsGroup;
 
   ServantScript({this.skillRankUp, this.svtBuffTurnExtend, this.maleImage});
 

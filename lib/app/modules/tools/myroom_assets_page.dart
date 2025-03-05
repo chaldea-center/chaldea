@@ -1,7 +1,9 @@
 import 'package:auto_size_text/auto_size_text.dart';
 
+import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/generated/l10n.dart';
+import 'package:chaldea/models/gamedata/raw.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/region_based.dart';
@@ -26,6 +28,12 @@ enum _MyRoomChangeType {
   final List<MyRoomAddOverwriteType> types;
 }
 
+class _MyRoomData {
+  List<MstMyRoomAdd> rooms = [];
+  List<MstStaffPhoto> staffPhotos = [];
+  List<MstStaffPhotoCostume> staffPhotoCostumes = [];
+}
+
 class MyRoomAssetsPage extends StatefulWidget {
   const MyRoomAssetsPage({super.key});
 
@@ -34,9 +42,9 @@ class MyRoomAssetsPage extends StatefulWidget {
 }
 
 class _MyRoomAssetsPageState extends State<MyRoomAssetsPage>
-    with RegionBasedState<List<MstMyRoomAdd>, MyRoomAssetsPage>, SingleTickerProviderStateMixin {
+    with RegionBasedState<_MyRoomData, MyRoomAssetsPage>, SingleTickerProviderStateMixin {
   bool useFullscreen = true;
-  late final tabController = TabController(length: _MyRoomChangeType.values.length, vsync: this);
+  late final tabController = TabController(length: _MyRoomChangeType.values.length + 1, vsync: this);
 
   @override
   void initState() {
@@ -52,15 +60,35 @@ class _MyRoomAssetsPageState extends State<MyRoomAssetsPage>
   }
 
   @override
-  Future<List<MstMyRoomAdd>?> fetchData(Region? r, {Duration? expireAfter}) {
-    CachedApi.cacheManager.clearFailed();
-    return CachedApi.cacheManager.getModel(
-      'https://git.atlasacademy.io/atlasacademy/fgo-game-data/raw/branch/${r ?? Region.jp}/master/mstMyroomAdd.json',
-      (list) {
-        return List<Map>.from(list).map((e) => MstMyRoomAdd.fromJson(Map.from(e))).toList();
-      },
-      expireAfter: expireAfter,
-    );
+  Future<_MyRoomData?> fetchData(Region? r, {Duration? expireAfter}) async {
+    r ??= Region.jp;
+    final cacheManager = CachedApi.cacheManager;
+    cacheManager.clearFailed();
+    final data = _MyRoomData();
+    final tasks = <Future>[
+      AtlasApi.mstData(
+        'mstMyroomAdd',
+        (list) => List<Map>.from(list).map((e) => MstMyRoomAdd.fromJson(Map.from(e))).toList(),
+        expireAfter: expireAfter,
+        region: r,
+      ).then((v) => data.rooms = v ?? data.rooms),
+      AtlasApi.mstData(
+        'mstStaffPhoto',
+        (list) => List<Map>.from(list).map((e) => MstStaffPhoto.fromJson(Map.from(e))).toList(),
+        expireAfter: expireAfter,
+        region: r,
+      ).then((v) => data.staffPhotos = v ?? data.staffPhotos),
+      AtlasApi.mstData(
+        'mstStaffPhotoCostume',
+        (list) => List<Map>.from(list).map((e) => MstStaffPhotoCostume.fromJson(Map.from(e))).toList(),
+        expireAfter: expireAfter,
+        region: r,
+      ).then((v) => data.staffPhotoCostumes = v ?? data.staffPhotoCostumes),
+    ];
+    await Future.wait(tasks);
+
+    if (data.rooms.isEmpty) return null;
+    return data;
   }
 
   int _t = DateTime.now().timestamp;
@@ -100,7 +128,14 @@ class _MyRoomAssetsPageState extends State<MyRoomAssetsPage>
         bottom: FixedHeight.tabBar(
           TabBar(
             controller: tabController,
-            tabs: [Tab(text: S.current.background), Tab(text: S.current.bgm), Tab(text: S.current.general_special)],
+            isScrollable: true,
+            tabAlignment: TabAlignment.center,
+            tabs: [
+              Tab(text: S.current.background),
+              Tab(text: S.current.bgm),
+              Tab(text: S.current.general_special),
+              Tab(text: 'Staffs'),
+            ],
           ),
         ),
       ),
@@ -109,11 +144,11 @@ class _MyRoomAssetsPageState extends State<MyRoomAssetsPage>
   }
 
   @override
-  Widget buildContent(BuildContext context, List<MstMyRoomAdd> data) {
+  Widget buildContent(BuildContext context, _MyRoomData data) {
     List<Widget> views = [];
     for (final changeType in _MyRoomChangeType.values) {
       Map<String, List<MstMyRoomAdd>> grouped = {};
-      for (final room in data) {
+      for (final room in data.rooms) {
         if (changeType.types.any((e) => e.value == room.type) && room.overwriteId > 0) {
           grouped.putIfAbsent('${room.id}.${room.startedAt}.${room.endedAt}', () => []).add(room);
         }
@@ -142,6 +177,8 @@ class _MyRoomAssetsPageState extends State<MyRoomAssetsPage>
       view = wrapButtonBar(context, changeType, view);
       views.add(view);
     }
+
+    views.add(_buildStaffPhotos(context, data));
 
     return TabBarView(controller: tabController, children: views);
   }
@@ -309,5 +346,82 @@ class _MyRoomAssetsPageState extends State<MyRoomAssetsPage>
       );
     }
     return child;
+  }
+
+  String getStaffImage(int imageId) {
+    return AssetURL(region ?? Region.jp).charaFigureId(imageId);
+  }
+
+  Widget _buildStaffPhotos(BuildContext context, _MyRoomData data) {
+    final staffs = data.staffPhotos.toList();
+    staffs.sortByList((e) => [e.dispOrder, e.id]);
+    final allCostumes = <int, List<MstStaffPhotoCostume>>{};
+    for (final costume in data.staffPhotoCostumes) {
+      (allCostumes[costume.staffPhotoId] ??= []).add(costume);
+    }
+    return ListView.builder(
+      itemBuilder: (context, index) {
+        final staff = staffs[index];
+        final costumes = allCostumes[staff.id] ?? [];
+        costumes.sort2((e) => e.dispOrder);
+        return SimpleAccordion(
+          headerBuilder: (context, _) {
+            return ListTile(
+              dense: true,
+              title: Text(Transl.svtNames(staff.staffName).l),
+              subtitle: Text(['No.${staff.id}', if (costumes.length > 1) ' (${costumes.length} costumes)'].join(' ')),
+            );
+          },
+          contentBuilder: (context) {
+            if (costumes.isEmpty) return SizedBox.shrink();
+            final placeholder = CachedImage.defaultProgressPlaceholder;
+            return SizedBox(
+              height: 300,
+              child: ListView.builder(
+                padding: EdgeInsets.symmetric(horizontal: 16),
+                scrollDirection: Axis.horizontal,
+                itemCount: costumes.length,
+                itemBuilder: (context, index) {
+                  final costume = costumes[index];
+                  final image = CachedImage(
+                    imageUrl: getStaffImage(costume.imageId),
+                    onTap: () {
+                      FullscreenImageViewer.show(
+                        context: context,
+                        urls: [for (final c in costumes) getStaffImage(c.imageId)],
+                        initialPage: index,
+                        placeholder: placeholder,
+                      );
+                    },
+                    showSaveOnLongPress: true,
+                    placeholder: placeholder,
+                    cachedOption: const CachedImageOption(
+                      fadeOutDuration: Duration(milliseconds: 1200),
+                      fadeInDuration: Duration(milliseconds: 800),
+                    ),
+                  );
+                  return Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 2),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      // spacing: 2,
+                      children: [
+                        Expanded(child: image),
+                        Container(
+                          padding: EdgeInsets.symmetric(vertical: 2, horizontal: 4),
+                          constraints: BoxConstraints(maxWidth: 150),
+                          child: Text(costume.costumeName, textAlign: TextAlign.center),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
+            );
+          },
+        );
+      },
+      itemCount: staffs.length,
+    );
   }
 }

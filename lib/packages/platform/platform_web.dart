@@ -10,10 +10,10 @@ class PlatformMethods extends PlatformMethodsInterface {
   String get href => web.window.location.href;
 
   @override
-  String? getLocalStorage(String key) => web.window.localStorage[key];
+  String? getLocalStorage(String key) => web.window.localStorage.getItem(key);
 
   @override
-  void setLocalStorage(String key, String value) => web.window.localStorage[key] = value;
+  void setLocalStorage(String key, String value) => web.window.localStorage.setItem(key, value);
 
   @override
   void downloadFile(List<int> bytes, String name) {
