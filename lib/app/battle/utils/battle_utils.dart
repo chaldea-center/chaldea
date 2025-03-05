@@ -1,8 +1,8 @@
 import 'package:chaldea/app/api/atlas.dart';
+import 'package:chaldea/app/battle/utils/battle_exception.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
 import 'package:chaldea/packages/float.dart';
-import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/utils/extension.dart';
 import '../../../utils/basic.dart';
 import 'battle_logger.dart';
@@ -24,7 +24,7 @@ Float toModifierFloat(int value) {
 /// DamageMod caps are applied when gathering the parameters.
 int calculateDamage(final DamageParameters param) {
   if (!ConstData.classInfo.containsKey(param.attackerClass)) {
-    logger.w('Invalid class: ${param.attackerClass}');
+    throw BattleException('Invalid class: ${param.attackerClass}');
   }
 
   final Float classAttackCorrection = toModifierFloat(ConstData.classInfo[param.attackerClass]?.attackRate ?? 1000);
@@ -37,7 +37,7 @@ int calculateDamage(final DamageParameters param) {
   );
 
   if (!ConstData.cardInfo.containsKey(param.currentCardType)) {
-    logger.w('Invalid current card type: ${param.currentCardType}');
+    throw BattleException('Invalid current card type: ${param.currentCardType}');
   }
 
   final int chainPos = param.isNp ? 1 : param.chainPos;

@@ -401,6 +401,7 @@ ExtraAssetsUrl _$ExtraAssetsUrlFromJson(Map json) => ExtraAssetsUrl(
   costume: (json['costume'] as Map?)?.map((k, e) => MapEntry(int.parse(k as String), e as String)),
   equip: (json['equip'] as Map?)?.map((k, e) => MapEntry(int.parse(k as String), e as String)),
   cc: (json['cc'] as Map?)?.map((k, e) => MapEntry(int.parse(k as String), e as String)),
+  imagePartsGroup: (json['imagePartsGroup'] as Map?)?.map((k, e) => MapEntry(k as String, e as String)),
 );
 
 Map<String, dynamic> _$ExtraAssetsUrlToJson(ExtraAssetsUrl instance) => <String, dynamic>{
@@ -409,6 +410,7 @@ Map<String, dynamic> _$ExtraAssetsUrlToJson(ExtraAssetsUrl instance) => <String,
   'costume': instance.costume?.map((k, e) => MapEntry(k.toString(), e)),
   'equip': instance.equip?.map((k, e) => MapEntry(k.toString(), e)),
   'cc': instance.cc?.map((k, e) => MapEntry(k.toString(), e)),
+  'imagePartsGroup': instance.imagePartsGroup,
 };
 
 ExtraCCAssets _$ExtraCCAssetsFromJson(Map json) => ExtraCCAssets(

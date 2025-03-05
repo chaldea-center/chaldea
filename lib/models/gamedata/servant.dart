@@ -889,8 +889,9 @@ class ExtraAssetsUrl {
   final Map<int, String>? costume;
   final Map<int, String>? equip;
   final Map<int, String>? cc;
+  final Map<String, String>? imagePartsGroup;
 
-  const ExtraAssetsUrl({this.ascension, this.story, this.costume, this.equip, this.cc});
+  const ExtraAssetsUrl({this.ascension, this.story, this.costume, this.equip, this.cc,this.imagePartsGroup});
 
   Iterable<String> get allUrls sync* {
     if (ascension != null) yield* ascension!.values;
@@ -898,6 +899,7 @@ class ExtraAssetsUrl {
     if (equip != null) yield* equip!.values;
     if (cc != null) yield* cc!.values;
     if (story != null) yield* story!.values;
+    if (imagePartsGroup != null) yield* imagePartsGroup!.values;
   }
 
   factory ExtraAssetsUrl.fromJson(Map<String, dynamic> json) => _$ExtraAssetsUrlFromJson(json);
@@ -1525,6 +1527,7 @@ class ServantScript with DataScriptBase {
   Map<int, List<int>>? skillRankUp;
   bool? svtBuffTurnExtend;
   ExtraAssets? maleImage;
+  // List<ImagePartsGroup>? imagePartsGroup; 
 
   ServantScript({this.skillRankUp, this.svtBuffTurnExtend, this.maleImage});
 
