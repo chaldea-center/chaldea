@@ -2126,8 +2126,8 @@ void main() async {
   test('Can clear wave using dot', () async {
     final List<PlayerSvtData> setting = [PlayerSvtData.id(1001000)];
     final battle = BattleData();
-    final quest = await AtlasApi.questPhase(94087110, 1);
-    await battle.init(quest!, setting, null);
+    final quest = db.gameData.questPhases[9303070203]!;
+    await battle.init(quest, setting, null);
 
     final enemy = battle.onFieldEnemies[1]!;
     enemy.hp = 2000;
@@ -2136,7 +2136,8 @@ void main() async {
 
     expect(enemy.hp, 0);
     expect(battle.waveCount, 2);
-    expect(battle.nonnullEnemies.length, 2);
+    expect(battle.nonnullEnemies.length, 1);
+    expect(battle.nonnullEnemies.first.hp, 100357);
   });
 
   test('Caster Cu', () async {
@@ -2146,8 +2147,8 @@ void main() async {
         ..setSkillStrengthenLvs([1, 1, 2]),
     ];
     final battle = BattleData();
-    final quest = await AtlasApi.questPhase(94087110, 1);
-    await battle.init(quest!, setting, null);
+    final quest = db.gameData.questPhases[9303070203]!;
+    await battle.init(quest, setting, null);
 
     final cu = battle.onFieldAllyServants[0]!;
     expect(cu.hp, 12880);
