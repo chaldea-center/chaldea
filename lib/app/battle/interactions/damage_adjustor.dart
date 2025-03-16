@@ -117,7 +117,7 @@ class _DamageAdjustorState extends State<DamageAdjustor> {
       remainingDamage -= hitDamage;
     }
 
-    return SimpleCancelOkDialog(
+    return SimpleConfirmDialog(
       title: Text(S.current.battle_select_effect),
       scrollable: true,
       content: Column(
@@ -149,8 +149,8 @@ class _DamageAdjustorState extends State<DamageAdjustor> {
           ),
         ],
       ),
-      hideOk: true,
-      hideCancel: true,
+      showOk: false,
+      showCancel: false,
       actions: [
         TextButton(
           onPressed: () {

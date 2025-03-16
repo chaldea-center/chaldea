@@ -72,7 +72,7 @@ class _QuestEditPageState extends State<QuestEditPage> {
                 context: context,
                 useRootNavigator: false,
                 builder:
-                    (context) => SimpleCancelOkDialog(
+                    (context) => SimpleConfirmDialog(
                       title: Text(S.current.save),
                       confirmText: "YES",
                       onTapOk: onConfirm,

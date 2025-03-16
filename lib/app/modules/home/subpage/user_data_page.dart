@@ -175,7 +175,7 @@ class _UserDataPageState extends State<UserDataPage> {
   }
 
   Future backupUserData() async {
-    return SimpleCancelOkDialog(
+    return SimpleConfirmDialog(
       title: Text(S.current.backup),
       content: Text(db.paths.convertIosPath(db.paths.backupDir)),
       onTapOk: () async {
@@ -191,10 +191,10 @@ class _UserDataPageState extends State<UserDataPage> {
           context: context,
           useRootNavigator: false,
           builder:
-              (context) => SimpleCancelOkDialog(
+              (context) => SimpleConfirmDialog(
                 title: Text(S.current.backup),
                 content: Text(hint),
-                hideCancel: true,
+                showCancel: false,
                 actions: [
                   if (fps.isNotEmpty)
                     PlatformU.isDesktop
@@ -244,10 +244,10 @@ class _UserDataPageState extends State<UserDataPage> {
                 onPressed: () async {
                   db.paths.androidUseExternalStorage = useExternal;
                   Navigator.of(context).pop();
-                  SimpleCancelOkDialog(
+                  SimpleConfirmDialog(
                     title: Text('⚠️ ${S.current.warning}'),
                     content: Text(S.current.migrate_external_storage_manual_warning),
-                    hideCancel: true,
+                    showCancel: false,
                   ).showDialog(context);
                   final sp = await SharedPreferences.getInstance();
                   sp.setBool('android_use_external', useExternal);
@@ -262,20 +262,20 @@ class _UserDataPageState extends State<UserDataPage> {
                     final sp = await SharedPreferences.getInstance();
                     sp.setBool('android_use_external', useExternal);
                     if (context.mounted) {
-                      SimpleCancelOkDialog(
+                      SimpleConfirmDialog(
                         title: const Text('⚠️ Warning'),
                         content: Text(S.current.restart_to_apply_changes),
-                        hideCancel: true,
+                        showCancel: false,
                       ).showDialog(context);
                     }
                     EasyLoading.dismiss();
                   } catch (e, s) {
                     logger.e('migrate android data to external failed', e, s);
                     if (context.mounted) {
-                      SimpleCancelOkDialog(
+                      SimpleConfirmDialog(
                         title: const Text('⚠️ ERROR'),
                         content: Text(e.toString()),
-                        hideCancel: true,
+                        showCancel: false,
                       ).showDialog(context);
                     }
                     EasyLoading.dismiss();
@@ -374,7 +374,7 @@ class __BackupHistoryPageState extends State<_BackupHistoryPage> {
                   icon: const Icon(Icons.restore),
                   tooltip: S.current.import_data,
                   onPressed: () {
-                    SimpleCancelOkDialog(
+                    SimpleConfirmDialog(
                       title: Text(S.current.import_data),
                       content: Text(db.paths.convertIosPath(entry.key)),
                       onTapOk: () async {

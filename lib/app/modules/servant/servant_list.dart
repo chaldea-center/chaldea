@@ -206,7 +206,7 @@ class ServantListPageState extends State<ServantListPage> with SearchableListSta
                 PopupMenuItem(
                   child: Text(S.current.reset_plan_shown(db.curUser.curSvtPlanNo + 1)),
                   onTap: () {
-                    SimpleCancelOkDialog(
+                    SimpleConfirmDialog(
                       title: Text(S.current.confirm),
                       content: Text(S.current.reset_plan_shown(db.curUser.curSvtPlanNo + 1)),
                       onTapOk: () {
@@ -222,7 +222,7 @@ class ServantListPageState extends State<ServantListPage> with SearchableListSta
                 PopupMenuItem(
                   child: Text(S.current.reset_plan_all(db.curUser.curSvtPlanNo + 1)),
                   onTap: () {
-                    SimpleCancelOkDialog(
+                    SimpleConfirmDialog(
                       title: Text(S.current.confirm),
                       content: Text(S.current.reset_plan_all(db.curUser.curSvtPlanNo + 1)),
                       onTapOk: () {
@@ -236,7 +236,7 @@ class ServantListPageState extends State<ServantListPage> with SearchableListSta
                 PopupMenuItem(
                   child: Text(S.current.favorite_all_shown_svt),
                   onTap: () {
-                    SimpleCancelOkDialog(
+                    SimpleConfirmDialog(
                       title: Text(S.current.confirm),
                       content: Text('${S.current.favorite_all_shown_svt}\n${S.current.total} ${shownList.length}'),
                       onTapOk: () {

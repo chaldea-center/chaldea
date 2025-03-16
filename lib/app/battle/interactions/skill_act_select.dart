@@ -49,7 +49,7 @@ class SkillActSelectDialog extends StatelessWidget {
     final buttons = selectAddInfo.btn;
     final transl = Transl.miscScope('SelectAddInfo');
 
-    return SimpleCancelOkDialog(
+    return SimpleConfirmDialog(
       title: Text(S.current.battle_select_effect),
       scrollable: true,
       content: Column(
@@ -102,8 +102,8 @@ class SkillActSelectDialog extends StatelessWidget {
           ),
         ]),
       ),
-      hideOk: true,
-      hideCancel: true,
+      showOk: false,
+      showCancel: false,
     );
   }
 }

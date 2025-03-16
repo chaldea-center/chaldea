@@ -161,8 +161,8 @@ class ImageActions {
                 final bytes = data ?? File(srcFp!).readAsBytesSync();
                 File(destFp).parent.createSync(recursive: true);
                 File(destFp).writeAsBytesSync(bytes);
-                SimpleCancelOkDialog(
-                  hideCancel: true,
+                SimpleConfirmDialog(
+                  showCancel: false,
                   title: Text(S.current.saved),
                   content: Text(db.paths.convertIosPath(destFp)),
                   actions: [

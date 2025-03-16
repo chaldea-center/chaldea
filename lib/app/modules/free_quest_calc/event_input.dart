@@ -447,8 +447,8 @@ class __QuestBonusEditDialogState extends State<_QuestBonusEditDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return SimpleCancelOkDialog(
-      hideCancel: true,
+    return SimpleConfirmDialog(
+      showCancel: false,
       scrollable: true,
       title: Text(
         S.current.event_bonus,

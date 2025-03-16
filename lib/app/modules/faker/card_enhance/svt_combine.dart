@@ -47,7 +47,7 @@ class _SvtCombinePageState extends State<SvtCombinePage> {
         leading: BackButton(
           onPressed: () async {
             if (runtime.runningTask.value) {
-              final confirm = await const SimpleCancelOkDialog(title: Text("Exit?")).showDialog(context);
+              final confirm = await const SimpleConfirmDialog(title: Text("Exit?")).showDialog(context);
               if (confirm == true && context.mounted) Navigator.pop(context);
             } else {
               Navigator.pop(context);
@@ -254,7 +254,7 @@ class _SvtCombinePageState extends State<SvtCombinePage> {
           Center(
             child: FilledButton(
               onPressed: () {
-                SimpleCancelOkDialog(
+                SimpleConfirmDialog(
                   title: Text('灵基再临'),
                   onTapOk: () {
                     runtime.runTask(() {
@@ -288,7 +288,7 @@ class _SvtCombinePageState extends State<SvtCombinePage> {
           Center(
             child: FilledButton(
               onPressed: () {
-                SimpleCancelOkDialog(
+                SimpleConfirmDialog(
                   title: Text('圣杯转临'),
                   onTapOk: () {
                     runtime.runTask(() {
@@ -336,7 +336,7 @@ class _SvtCombinePageState extends State<SvtCombinePage> {
         buildButton(
           enabled: options.loopCount > 0 && baseUserSvt != null,
           onPressed: () {
-            SimpleCancelOkDialog(
+            SimpleConfirmDialog(
               title: Text('Loop ×${options.loopCount}'),
               onTapOk: () {
                 runtime.runTask(() => runtime.svtCombine());

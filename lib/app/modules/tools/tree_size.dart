@@ -93,7 +93,7 @@ class _TreeSizePageState extends State<TreeSizePage> {
           onPressed: () {
             router.showDialog(
               builder: (context) {
-                return SimpleCancelOkDialog(
+                return SimpleConfirmDialog(
                   title: const Text('Exit'),
                   onTapOk: () {
                     Navigator.maybePop(context);
@@ -171,9 +171,9 @@ class _TreeSizePageState extends State<TreeSizePage> {
               }
               : null,
       onLongPress: () {
-        SimpleCancelOkDialog(
+        SimpleConfirmDialog(
           title: const Text('Stat'),
-          hideCancel: true,
+          showCancel: false,
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [

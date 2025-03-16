@@ -94,7 +94,7 @@ class _FavoriteTeamsPageState extends State<FavoriteTeamsPage> {
                 title: Text('No.$id'),
                 trailing: IconButton(
                   onPressed: () {
-                    SimpleCancelOkDialog(
+                    SimpleConfirmDialog(
                       title: Text(S.current.delete),
                       content: Text(id.toString()),
                       onTapOk: () {

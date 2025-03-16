@@ -810,7 +810,7 @@ class Gift extends BaseGift {
           children.add(
             InkWell(
               onTap: () {
-                SimpleCancelOkDialog(
+                SimpleConfirmDialog(
                   title: Text(S.current.condition),
                   content: CondTargetValueDescriptor(
                     condType: giftAdd.condType,
@@ -818,7 +818,7 @@ class Gift extends BaseGift {
                     value: giftAdd.targetNum,
                   ),
                   scrollable: true,
-                  hideCancel: true,
+                  showCancel: false,
                 ).showDialog(context);
               },
               child: Icon(Icons.info_outline, size: size * 0.5),

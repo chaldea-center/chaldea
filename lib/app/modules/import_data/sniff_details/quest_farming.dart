@@ -110,7 +110,7 @@ class _UserQuestFarmingStatPageState extends State<UserQuestFarmingStatPage> wit
         actions: [
           IconButton(
             onPressed: () {
-              SimpleCancelOkDialog(
+              SimpleConfirmDialog(
                 title: Text(S.current.help),
                 content: Text(hint, style: const TextStyle(fontSize: 14)),
               ).showDialog(context);
@@ -271,14 +271,14 @@ class _UserQuestFarmingStatPageState extends State<UserQuestFarmingStatPage> wit
         router.push(url: Routes.questI(info.userQuest.questId));
       },
       onLongPress: () {
-        SimpleCancelOkDialog(
+        SimpleConfirmDialog(
           title: Text(info.quest?.dispName ?? info.userQuest.questId.toString()),
           content: Text(
             'phase: ${info.userQuest.questPhase}/${info.quest?.phases.lastOrNull}\n'
             'clearNum: ${info.userQuest.clearNum}\n'
             'challengeNum: ${info.userQuest.challengeNum}',
           ),
-          hideCancel: true,
+          showCancel: false,
         ).showDialog(context);
       },
     );

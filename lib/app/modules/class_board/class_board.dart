@@ -639,7 +639,7 @@ class ClassBoardSquareDetail extends StatelessWidget {
           !enabled
               ? null
               : () {
-                SimpleCancelOkDialog(
+                SimpleConfirmDialog(
                   title: Text(title),
                   onTapOk: onEnhance,
                   content: ConstrainedBox(

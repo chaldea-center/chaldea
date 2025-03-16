@@ -403,7 +403,7 @@ class _UserPresentBoxManagePageState extends State<UserPresentBoxManagePage> {
     if (presentIds.isEmpty) return;
     final confirm = await router.showDialog(
       builder: (context) {
-        return SimpleCancelOkDialog(title: Text('Receive ${presentIds.length} presents'));
+        return SimpleConfirmDialog(title: Text('Receive ${presentIds.length} presents'));
       },
     );
     if (confirm != true) return;
@@ -416,7 +416,7 @@ class _UserPresentBoxManagePageState extends State<UserPresentBoxManagePage> {
       );
       final overflowType = resp.data.getResponse('present_receive').success?['overflowType'];
       if (overflowType is int && overflowType != 0 && mounted) {
-        SimpleCancelOkDialog(
+        SimpleConfirmDialog(
           title: Text('Overflow'),
           content: Text('$overflowType ${PresentOverflowType.values.firstWhereOrNull((e) => e.value == overflowType)}'),
           actions: [

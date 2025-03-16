@@ -42,11 +42,11 @@ class WorkerResponse {
   }
 
   Future<void> showDialog([BuildContext? context]) {
-    return SimpleCancelOkDialog(
+    return SimpleConfirmDialog(
       title: Text(error != null ? S.current.error : S.current.success),
       content: Text(fullMessage),
       scrollable: true,
-      hideCancel: true,
+      showCancel: false,
     ).showDialog(context);
   }
 

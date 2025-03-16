@@ -59,7 +59,7 @@ class _ImportFgoSimuMaterialPageState extends State<ImportFgoSimuMaterialPage> w
         actions: [
           IconButton(
             onPressed: () {
-              SimpleCancelOkDialog(
+              SimpleConfirmDialog(
                 title: Text(S.current.help),
                 scrollable: true,
                 content: const Text(

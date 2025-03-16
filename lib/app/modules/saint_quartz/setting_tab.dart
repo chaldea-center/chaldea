@@ -70,7 +70,7 @@ class _SQSettingTabState extends State<SQSettingTab> {
           subtitle: Text(dailyBonusData?.lastPresentTime?.sec2date().toStringShort(omitSec: true) ?? 'Not Found'),
           trailing: IconButton(
             onPressed: () {
-              SimpleCancelOkDialog(
+              SimpleConfirmDialog(
                 title: Text(S.current.update),
                 onTapOk: () async {
                   await showEasyLoading(() => db.runtimeData.loadDailyBonusData(refresh: true));

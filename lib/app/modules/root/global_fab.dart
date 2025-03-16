@@ -318,7 +318,7 @@ class __ScreenshotDialogState extends State<_ScreenshotDialog> {
     final dftRatio = MediaQuery.of(context).devicePixelRatio;
     final minRatio = (dftRatio * 2.5).toInt() / 10, maxRatio = (dftRatio * 50).toInt() / 10;
     ratio = ratio.clamp(minRatio, maxRatio);
-    return SimpleCancelOkDialog(
+    return SimpleConfirmDialog(
       title: Text(S.current.screenshots),
       content: Column(
         mainAxisSize: MainAxisSize.min,

@@ -55,12 +55,12 @@ class FuncActSetSelector extends StatelessWidget {
         ),
       ),
     );
-    return SimpleCancelOkDialog(
+    return SimpleConfirmDialog(
       title: Text(S.current.battle_select_effect),
       scrollable: true,
       content: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: children),
-      hideOk: true,
-      hideCancel: true,
+      showOk: false,
+      showCancel: false,
     );
   }
 }

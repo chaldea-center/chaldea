@@ -29,7 +29,7 @@ class RecoverSelectDialog extends StatelessWidget {
   Widget buildRecoverItem(BuildContext context, RecoverEntity recover) {
     final userGame = mstData?.user;
     if (mstData != null && userGame == null) {
-      return const SimpleCancelOkDialog(title: Text("No user data"));
+      return const SimpleConfirmDialog(title: Text("No user data"));
     }
     switch (recover.recoverType) {
       case RecoverType.commandSpell:

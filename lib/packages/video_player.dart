@@ -255,7 +255,7 @@ class _VideoPlayPageState extends State<VideoPlayPage> {
           if (!kIsWeb)
             IconButton(
               onPressed: () {
-                SimpleCancelOkDialog(
+                SimpleConfirmDialog(
                   title: Text(S.current.refresh),
                   onTapOk: () async {
                     await AtlasIconLoader.i.deleteFromDisk(widget.url);

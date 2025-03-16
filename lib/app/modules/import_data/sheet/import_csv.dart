@@ -113,7 +113,7 @@ class _ImportCSVPageState extends State<ImportCSVPage> {
                       context: context,
                       useRootNavigator: false,
                       builder: (context) {
-                        return SimpleCancelOkDialog(
+                        return SimpleConfirmDialog(
                           title: Text(S.current.confirm),
                           onTapOk: () {
                             for (final row in parsedRows) {
@@ -161,10 +161,10 @@ class _ImportCSVPageState extends State<ImportCSVPage> {
     showDialog(
       context: context,
       builder: (context) {
-        return SimpleCancelOkDialog(
+        return SimpleConfirmDialog(
           title: const Text('Filepath'),
           content: Text(db.paths.convertIosPath(fp)),
-          hideCancel: true,
+          showCancel: false,
           confirmText: PlatformU.isDesktop ? S.current.open : S.current.share,
           onTapOk: () {
             if (PlatformU.isDesktop) {

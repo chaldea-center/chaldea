@@ -94,12 +94,12 @@ class _ChooseTargetsDialogState extends State<ChooseTargetsDialog> {
       children.add(Wrap(spacing: 8, children: enemies.map((e) => buildSvt(e)).toList()));
     }
 
-    return SimpleCancelOkDialog(
+    return SimpleConfirmDialog(
       title: Text('${S.current.select}(${Transl.funcTargetType(widget.targetType).l})'),
       scrollable: true,
       content: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: children),
-      hideCancel: true,
-      hideOk: true,
+      showCancel: false,
+      showOk: false,
       actions: [
         TextButton(
           onPressed: () {

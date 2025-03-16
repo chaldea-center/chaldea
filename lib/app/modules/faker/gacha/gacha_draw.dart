@@ -66,7 +66,7 @@ class _GachaDrawPageState extends State<GachaDrawPage> {
         leading: BackButton(
           onPressed: () async {
             if (runtime.runningTask.value) {
-              final confirm = await const SimpleCancelOkDialog(title: Text("Exit?")).showDialog(context);
+              final confirm = await const SimpleConfirmDialog(title: Text("Exit?")).showDialog(context);
               if (confirm == true && context.mounted) Navigator.pop(context);
             } else {
               Navigator.pop(context);
@@ -711,7 +711,7 @@ class _GachaDrawPageState extends State<GachaDrawPage> {
               context: context,
               text: '  clear',
               onTap: () {
-                SimpleCancelOkDialog(
+                SimpleConfirmDialog(
                   title: Text(S.current.clear),
                   onTapOk: () {
                     stat.reset();
@@ -792,7 +792,7 @@ class _GachaDrawPageState extends State<GachaDrawPage> {
         ),
         buildButton(
           onPressed: () {
-            SimpleCancelOkDialog(
+            SimpleConfirmDialog(
               title: const Text('sell'),
               onTapOk: () {
                 runtime.runTask(() async {
@@ -846,7 +846,7 @@ class _GachaDrawPageState extends State<GachaDrawPage> {
         buildButton(
           enabled: agent.user.gacha.loopCount > 0,
           onPressed: () {
-            SimpleCancelOkDialog(
+            SimpleConfirmDialog(
               title: Text('Loop ×${agent.user.gacha.loopCount}'),
               onTapOk: () {
                 runtime.runTask(() => runtime.withWakeLock('loop-fp-$hashCode', runtime.loopFpGachaDraw));

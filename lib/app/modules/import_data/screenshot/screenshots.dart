@@ -45,7 +45,7 @@ class _ScreenshotsTabState extends State<ScreenshotsTab> with ScrollControllerMi
         return InkWell(
           child: Image.memory(image, fit: BoxFit.fitWidth),
           onTap: () {
-            SimpleCancelOkDialog(
+            SimpleConfirmDialog(
               title: Text(S.current.clear),
               onTapOk: () {
                 widget.images.remove(image);
@@ -64,7 +64,7 @@ class _ScreenshotsTabState extends State<ScreenshotsTab> with ScrollControllerMi
       children: [
         IconButton(
           onPressed: () {
-            SimpleCancelOkDialog(
+            SimpleConfirmDialog(
               title: Text(S.current.clear),
               onTapOk: () {
                 if (mounted) {

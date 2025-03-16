@@ -405,7 +405,7 @@ class _MissionInputTabState extends State<MissionInputTab> {
                 options.missions.isEmpty
                     ? null
                     : () {
-                      SimpleCancelOkDialog(
+                      SimpleConfirmDialog(
                         title: Text(S.current.clear),
                         onTapOk: () {
                           options.missions.clear();
@@ -545,7 +545,7 @@ class _MissionInputTabState extends State<MissionInputTab> {
         final _continue = await showDialog(
           context: context,
           builder:
-              (context) => SimpleCancelOkDialog(
+              (context) => SimpleConfirmDialog(
                 title: Text(S.current.warning),
                 content: Text(
                   'Resolved Quests: total ${phases.length + countNoEnemy},'
@@ -594,10 +594,10 @@ class __OptionsDialogState extends State<_OptionsDialog> {
   _MissionSolverOptions get options => widget.options;
   @override
   Widget build(BuildContext context) {
-    return SimpleCancelOkDialog(
+    return SimpleConfirmDialog(
       title: Text(S.current.options),
       scrollable: true,
-      hideCancel: true,
+      showCancel: false,
       contentPadding: const EdgeInsets.symmetric(vertical: 16),
       content: Column(
         mainAxisSize: MainAxisSize.min,

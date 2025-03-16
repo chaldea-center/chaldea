@@ -466,7 +466,7 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
         TextButton(
           onPressed: () {
             final isOthers = record.userId != curUserId;
-            SimpleCancelOkDialog(
+            SimpleConfirmDialog(
               title: Text(S.current.confirm),
               content: Text(
                 [
@@ -686,7 +686,7 @@ class _ReportTeamDialogState extends State<ReportTeamDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return SimpleCancelOkDialog(
+    return SimpleConfirmDialog(
       scrollable: true,
       title: Text(S.current.about_feedback),
       content: Column(
@@ -723,7 +723,7 @@ class _ReportTeamDialogState extends State<ReportTeamDialog> {
             ),
         ],
       ),
-      hideOk: true,
+      showOk: false,
       actions: [if (!widget.isMyTeam) TextButton(onPressed: onSend, child: Text(S.current.feedback_send))],
     );
   }

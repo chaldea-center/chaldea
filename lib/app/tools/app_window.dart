@@ -50,7 +50,7 @@ class AppWindowUtil {
 
   static Future<void> destroyWindow() async {
     if (kDebugMode) {
-      final confirm = await SimpleCancelOkDialog(
+      final confirm = await SimpleConfirmDialog(
         title: Text(S.current.general_close),
       ).showDialog(kAppKey.currentContext!);
       if (confirm != true) return;

@@ -57,7 +57,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
 
   Future<bool> _alertPopPage() async {
     if (subjectController.text.trim().isNotEmpty || bodyController.text.trim().isNotEmpty) {
-      final r = await SimpleCancelOkDialog(
+      final r = await SimpleConfirmDialog(
         title: Text(S.current.warning),
         content: Text(S.current.feedback_form_alert),
       ).showDialog(context);
@@ -154,7 +154,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
                     launch(uri.toString());
                   } else {
                     if (context.mounted) {
-                      SimpleCancelOkDialog(
+                      SimpleConfirmDialog(
                         title: Text(S.current.send_email_to),
                         content: const Text(kSupportTeamEmailAddress),
                       ).showDialog(context);

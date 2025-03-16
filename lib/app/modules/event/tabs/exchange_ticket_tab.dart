@@ -129,7 +129,7 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
       },
       onLongPress: () {
         if (plan.enabled) {
-          SimpleCancelOkDialog(
+          SimpleConfirmDialog(
             title: Text(S.current.clear),
             onTapOk: () {
               plan.clear();

@@ -65,10 +65,10 @@ class _BgmListPageState extends State<BgmListPage> with SearchableListState<BgmE
                 context: context,
                 useRootNavigator: false,
                 builder: (context) {
-                  return SimpleCancelOkDialog(
+                  return SimpleConfirmDialog(
                     title: Text(S.current.statistics_title),
                     content: SharedBuilder.itemGrid(context: context, items: cost.entries, width: 40, sort: true),
-                    hideCancel: true,
+                    showCancel: false,
                     scrollable: true,
                   );
                 },

@@ -29,9 +29,9 @@ class SvtSkillTab extends StatefulWidget {
     final quest = db.gameData.quests[skillSvt.condQuestId];
     final jpTime = quest?.openedAt,
         localTime = db.gameData.mappingData.questRelease[skillSvt.condQuestId]?.ofRegion(db.curUser.region);
-    return SimpleCancelOkDialog(
+    return SimpleConfirmDialog(
       title: Text(skill.lName.l),
-      hideCancel: true,
+      showCancel: false,
       content: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,

@@ -1348,11 +1348,11 @@ mixin _ParamDialogMixin {
     );
     if (!wrapDialog) return content;
 
-    return SimpleCancelOkDialog(
+    return SimpleConfirmDialog(
       title: Text(title),
       scrollable: true,
       contentPadding: const EdgeInsetsDirectional.fromSTEB(20.0, 8.0, 20.0, 24.0),
-      hideCancel: true,
+      showCancel: false,
       content: content,
     );
   }

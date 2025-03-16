@@ -166,7 +166,7 @@ class _ItemResultTabState extends State<ItemResultTab> with ScrollControllerMixi
   }
 
   void _doImportResult() {
-    SimpleCancelOkDialog(
+    SimpleConfirmDialog(
       title: Text(S.current.import_screenshot_update_items),
       content: Text(S.current.import_screenshot_hint),
       confirmText: S.current.update,

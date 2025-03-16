@@ -87,9 +87,9 @@ class _SkillResultTabState extends State<SkillResultTab> with ScrollControllerMi
             : InkWell(
               child: Image.memory(item.imgThumb!, width: 56, height: 56),
               onTap: () {
-                SimpleCancelOkDialog(
+                SimpleConfirmDialog(
                   content: Image.memory(item.imgThumb!, width: 200),
-                  hideCancel: true,
+                  showCancel: false,
                 ).showDialog(context);
               },
             ),
@@ -171,7 +171,7 @@ class _SkillResultTabState extends State<SkillResultTab> with ScrollControllerMi
   }
 
   void _doImportResult() {
-    SimpleCancelOkDialog(
+    SimpleConfirmDialog(
       title: Text(S.current.import_screenshot_update_items),
       content: Text(S.current.import_screenshot_hint),
       confirmText: S.current.update,

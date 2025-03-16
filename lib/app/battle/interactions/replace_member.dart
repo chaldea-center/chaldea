@@ -101,12 +101,12 @@ class _ReplaceMemberSelectionDialogState extends State<ReplaceMemberSelectionDia
       ),
     ]);
 
-    return SimpleCancelOkDialog(
+    return SimpleConfirmDialog(
       title: Text(S.current.battle_click_to_select_servants),
       scrollable: true,
       content: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: children),
-      hideCancel: true,
-      hideOk: true,
+      showCancel: false,
+      showOk: false,
       actions: [
         TextButton(
           onPressed: () {

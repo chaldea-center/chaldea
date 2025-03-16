@@ -207,7 +207,7 @@ class _ReadAuthPageState extends State<ReadAuthPage> {
                     context: context,
                     useRootNavigator: false,
                     builder: (context) {
-                      return SimpleCancelOkDialog(
+                      return SimpleConfirmDialog(
                         title: Text(S.current.warning),
                         content: Text([...hints, '\nStill continue?'].join('\n')),
                         onTapOk: () {

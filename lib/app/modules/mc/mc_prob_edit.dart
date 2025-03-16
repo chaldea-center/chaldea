@@ -48,11 +48,11 @@ class _MCGachaProbEditPageState extends State<MCGachaProbEditPage> {
       }
     } catch (e, s) {
       if (mounted) {
-        SimpleCancelOkDialog(
+        SimpleConfirmDialog(
           title: Text(S.current.error),
           content: Text(e.toString()),
           scrollable: true,
-          hideCancel: true,
+          showCancel: false,
         ).showDialog(context);
       }
       logger.e('parse prob failed', e, s);

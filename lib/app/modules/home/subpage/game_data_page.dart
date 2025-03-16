@@ -235,7 +235,7 @@ class _GameDataPageState extends State<GameDataPage> {
     try {
       throw UnimplementedError();
     } catch (e) {
-      SimpleCancelOkDialog(title: Text(S.current.failed), content: Text(e.toString())).showDialog(context);
+      SimpleConfirmDialog(title: Text(S.current.failed), content: Text(e.toString())).showDialog(context);
     }
   }
 
@@ -249,13 +249,13 @@ class _GameDataPageState extends State<GameDataPage> {
     }
     router.showDialog(
       builder: (context) {
-        return SimpleCancelOkDialog(
+        return SimpleConfirmDialog(
           title: Text(S.current.update_dataset),
           content: Text(
             'Current: ${db.gameData.version.text(false)}\n'
             'Latest : ${data.version.text(false)}',
           ),
-          hideOk: data.version.timestamp < db.gameData.version.timestamp,
+          showOk: data.version.timestamp >= db.gameData.version.timestamp,
           onTapOk: () {
             db.gameData = data;
             db.notifyAppUpdate();
@@ -281,7 +281,7 @@ class __ClearCacheDialogState extends State<_ClearCacheDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return SimpleCancelOkDialog(
+    return SimpleConfirmDialog(
       title: Text(S.current.clear_cache),
       confirmText: S.current.clear,
       scrollable: true,

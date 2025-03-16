@@ -69,8 +69,8 @@ class EventBulletinBoardPage extends HookWidget {
   }
 
   Widget showConditions(BuildContext context, EventBulletinBoard bulletin) {
-    return SimpleCancelOkDialog(
-      hideCancel: true,
+    return SimpleConfirmDialog(
+      showCancel: false,
       scrollable: true,
       title: Text('No.${bulletin.bulletinBoardId} ${S.current.open_condition}'),
       content: Column(

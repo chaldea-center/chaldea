@@ -836,11 +836,11 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
             pskill == null
                 ? null
                 : () {
-                  SimpleCancelOkDialog(
+                  SimpleConfirmDialog(
                     title: Text('${S.current.skill} Lv.${skillInfo.skillLv}'),
                     content: DisableLayoutBuilder(child: SkillDescriptor(skill: pskill, level: skillInfo.skillLv)),
                     scrollable: true,
-                    hideCancel: true,
+                    showCancel: false,
                     contentPadding: const EdgeInsets.symmetric(vertical: 20),
                   ).showDialog(context);
                 },
@@ -982,7 +982,7 @@ class _TeamUploadDialogState extends State<_TeamUploadDialog> {
     required bool canUpload,
     List<String> warnings = const [],
   }) {
-    return SimpleCancelOkDialog(
+    return SimpleConfirmDialog(
       scrollable: true,
       title: Text(S.current.upload),
       content: DefaultTextStyle.merge(
@@ -990,12 +990,12 @@ class _TeamUploadDialogState extends State<_TeamUploadDialog> {
         child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: children),
       ),
       contentPadding: const EdgeInsetsDirectional.fromSTEB(16, 10, 16, 12),
-      hideOk: true,
+      showOk: false,
       actions: [
         TextButton(
           onPressed: () async {
             if (!canSave) {
-              final confirm = await SimpleCancelOkDialog(
+              final confirm = await SimpleConfirmDialog(
                 title: Text(S.current.warning),
                 content: Text(S.current.local_team_save_no_replay_warning),
               ).showDialog(context);
@@ -1040,7 +1040,7 @@ class _TeamUploadDialogState extends State<_TeamUploadDialog> {
     if (warnings.isNotEmpty) {
       final confirm = await router.showDialog(
         builder: (context) {
-          return SimpleCancelOkDialog(
+          return SimpleConfirmDialog(
             scrollable: true,
             title: Text('${S.current.upload} - ${S.current.warning}'),
             content: Text(
@@ -1060,10 +1060,10 @@ class _TeamUploadDialogState extends State<_TeamUploadDialog> {
     ChaldeaWorkerApi.clearTeamCache();
     if (mounted) {
       Navigator.pop(context);
-      SimpleCancelOkDialog(
+      SimpleConfirmDialog(
         title: Text(S.current.success),
         content: Text("ID: $insertedId"),
-        hideCancel: true,
+        showCancel: false,
       ).showDialog(context);
     }
   }

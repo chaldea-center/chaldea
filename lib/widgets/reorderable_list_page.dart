@@ -90,7 +90,7 @@ class _ReorderableListPageState<T> extends State<ReorderableListPage<T>> {
           Expanded(child: child),
           IconButton(
             onPressed: () {
-              SimpleCancelOkDialog(
+              SimpleConfirmDialog(
                 title: Text(S.current.delete),
                 onTapOk: () {
                   if (mounted) {

@@ -520,10 +520,10 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
                 );
               }
 
-              return SimpleCancelOkDialog(
+              return SimpleConfirmDialog(
                 title: Text(S.current.battle_change_ascension),
                 content: SingleChildScrollView(child: Column(mainAxisSize: MainAxisSize.min, children: children)),
-                hideOk: true,
+                showOk: false,
               );
             },
           );
@@ -760,10 +760,10 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
           trailing: IconButton(
             onPressed: () async {
               if (playerSvtData.allowedExtraSkills.contains(skill.id)) {
-                await SimpleCancelOkDialog(
+                await SimpleConfirmDialog(
                   title: Text(S.current.custom_skill),
                   content: Text("→ ${S.current.optional_event_passive}"),
-                  hideCancel: true,
+                  showCancel: false,
                 ).showDialog(context);
               } else {
                 playerSvtData.addCustomPassive(skill, skill.maxLv);

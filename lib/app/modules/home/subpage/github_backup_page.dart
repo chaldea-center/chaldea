@@ -73,7 +73,7 @@ class _GithubBackupPageState extends State<GithubBackupPage> {
       await showDialog(
         context: context,
         builder: (context) {
-          return SimpleCancelOkDialog(
+          return SimpleConfirmDialog(
             title: const Text('Conflict'),
             content: Text('$e\n\nYou can clear local sha then upload again to overwrite remote content.'),
           );
@@ -83,10 +83,10 @@ class _GithubBackupPageState extends State<GithubBackupPage> {
       EasyLoading.dismiss();
       logger.e('github backup failed', e, s);
       if (!mounted) return;
-      SimpleCancelOkDialog(
+      SimpleConfirmDialog(
         title: const Text('Error'),
         content: Text(escapeDioException(e)),
-        hideCancel: true,
+        showCancel: false,
       ).showDialog(context);
     }
     if (mounted) setState(() {});
@@ -101,10 +101,10 @@ class _GithubBackupPageState extends State<GithubBackupPage> {
       EasyLoading.dismiss();
       logger.e('github restore failed', e, s);
       if (!mounted) return;
-      SimpleCancelOkDialog(
+      SimpleConfirmDialog(
         title: const Text('Error'),
         content: Text(escapeDioException(e)),
-        hideCancel: true,
+        showCancel: false,
       ).showDialog(context);
     }
     if (mounted) setState(() {});
@@ -251,7 +251,7 @@ class _GithubBackupPageState extends State<GithubBackupPage> {
             subtitle: Text(config.sha?.substring(0, min(8, config.sha?.length ?? 0)) ?? 'null'),
             trailing: IconButton(
               onPressed: () {
-                SimpleCancelOkDialog(
+                SimpleConfirmDialog(
                   title: const Text('Clear local sha'),
                   content: const Text("Will use the latest sha and make it possible to overwrite remote content"),
                   onTapOk: () {

@@ -568,7 +568,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
               ),
           ],
           onChanged: (v) {
-            SimpleCancelOkDialog(
+            SimpleConfirmDialog(
               title: Text(S.current.update),
               content: Text('${S.current.skill_rankup}/${S.current.td_rankup}?'),
               cancelText: "NO",
@@ -1003,7 +1003,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
 
     if (data.actions.isNotEmpty && mounted) {
       EasyLoading.dismiss();
-      SimpleCancelOkDialog(
+      SimpleConfirmDialog(
         title: Text(S.current.success),
         content: const Text("Replay Simulation/重现操作?"),
         onTapOk: () {
@@ -1098,7 +1098,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
         context: context,
         useRootNavigator: false,
         builder: (context) {
-          return SimpleCancelOkDialog(
+          return SimpleConfirmDialog(
             title: Text(S.current.simulate_simple_ai),
             content: const Text("This quest is suggested to enable Simulate Simple AI.\nContinue with it disabled?"),
           );
@@ -1162,7 +1162,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
         context: context,
         useRootNavigator: false,
         builder: (context) {
-          return SimpleCancelOkDialog(
+          return SimpleConfirmDialog(
             title: const Text("Replay Actions?"),
             cancelText: "NO",
             confirmText: "YES",

@@ -179,10 +179,10 @@ class _EventShopsPageState extends State<EventShopsPage> {
               context: context,
               useRootNavigator: false,
               builder: (context) {
-                return SimpleCancelOkDialog(
+                return SimpleConfirmDialog(
                   title: Text(S.current.cost),
                   scrollable: true,
-                  hideCancel: true,
+                  showCancel: false,
                   content: SharedBuilder.itemGrid(context: context, items: items.entries),
                 );
               },
@@ -196,7 +196,7 @@ class _EventShopsPageState extends State<EventShopsPage> {
               (context) => [
                 PopupMenuItem(
                   onTap: () {
-                    SimpleCancelOkDialog(
+                    SimpleConfirmDialog(
                       title: Text(S.current.reset),
                       onTapOk: () {
                         plan.shopBuyCount.clear();

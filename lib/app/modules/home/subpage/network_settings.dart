@@ -289,7 +289,7 @@ class _NetworkSettingsPageState extends State<NetworkSettingsPage> {
         showDialog(
           context: context,
           builder: (context) {
-            return SimpleCancelOkDialog(title: const Text('Error'), content: Text(text), hideCancel: true);
+            return SimpleConfirmDialog(title: const Text('Error'), content: Text(text), showCancel: false);
           },
         );
       },

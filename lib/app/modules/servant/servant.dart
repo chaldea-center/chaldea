@@ -435,7 +435,7 @@ class ServantDetailPageState extends State<ServantDetailPage> with SingleTickerP
             PopupMenuItem<String>(
               value: 'reset', // dialog
               onTap: () {
-                SimpleCancelOkDialog(
+                SimpleConfirmDialog(
                   title: Text(S.current.reset),
                   onTapOk: () {
                     if (mounted) {
@@ -497,10 +497,10 @@ class ServantDetailPageState extends State<ServantDetailPage> with SingleTickerP
                     if (svt.aprilFoolBorderedIcon != null) {
                       _addOne(S.current.april_fool, svt.aprilFoolBorderedIcon);
                     }
-                    return SimpleCancelOkDialog(
+                    return SimpleConfirmDialog(
                       title: Text(S.current.svt_ascension_icon),
                       content: SingleChildScrollView(child: Column(mainAxisSize: MainAxisSize.min, children: children)),
-                      hideOk: true,
+                      showOk: false,
                       actions: [
                         TextButton(
                           onPressed: () {

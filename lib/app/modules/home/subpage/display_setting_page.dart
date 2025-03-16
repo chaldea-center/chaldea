@@ -128,7 +128,7 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
                   showDialog(
                     context: context,
                     builder:
-                        (context) => SimpleCancelOkDialog(
+                        (context) => SimpleConfirmDialog(
                           title: Text(S.current.confirm),
                           content: Text(S.current.reset_custom_ascension_icon),
                           confirmText: S.current.reset.toUpperCase(),

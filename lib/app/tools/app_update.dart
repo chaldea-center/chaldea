@@ -117,7 +117,7 @@ class AppUpdater {
       context: kAppKey.currentContext!,
       useRootNavigator: false,
       builder: (context) {
-        return SimpleCancelOkDialog(
+        return SimpleConfirmDialog(
           title: Text('v${version.versionString}'),
           content: Text(body),
           confirmText: S.current.install,

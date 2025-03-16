@@ -16,7 +16,7 @@ import 'backend.dart';
 class ChaldeaServerBackup extends BackupBackend<UserData> {
   bool _check() {
     if (!db.settings.secrets.isLoggedIn) {
-      SimpleCancelOkDialog(
+      SimpleConfirmDialog(
         content: Text(S.current.login_first_hint),
         onTapOk: () {
           router.pushPage(LoginPage());

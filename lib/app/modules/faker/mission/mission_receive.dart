@@ -325,7 +325,7 @@ class _UserEventMissionReceivePageState extends State<UserEventMissionReceivePag
       }
     }
     if (runtime.runningTask.value) return;
-    SimpleCancelOkDialog(
+    SimpleConfirmDialog(
       title: Text('Receive ${selectedMissions.length} missions'),
       scrollable: true,
       content: SharedBuilder.itemGrid(context: context, items: gifts.entries.toList(), height: 36),

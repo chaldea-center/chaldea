@@ -72,7 +72,7 @@ class _WarAssetListPageState extends State<WarAssetListPage> with AfterLayoutMix
 
     total = scripts.length;
     if (showConfirmCount > 0 && total > showConfirmCount && mounted) {
-      final confirm = await SimpleCancelOkDialog(
+      final confirm = await SimpleConfirmDialog(
         title: Text(S.current.confirm),
         content: Text("$total ${S.current.script_story}, ${S.current.download}?"),
       ).showDialog(context);

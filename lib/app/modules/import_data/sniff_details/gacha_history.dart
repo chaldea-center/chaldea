@@ -60,10 +60,10 @@ class _SniffGachaHistoryState extends State<SniffGachaHistory> {
       (data) => (data as List).map((e) => MstGacha.fromJson(Map.from(e))).toList(),
     );
     if (mstGachas == null && mounted) {
-      SimpleCancelOkDialog(
+      SimpleConfirmDialog(
         title: Text(S.current.error),
         content: const Text('Download Gacha Data failed, click Refresh to retry'),
-        hideCancel: true,
+        showCancel: false,
       ).showDialog(context);
     }
     if (region == Region.cn) {

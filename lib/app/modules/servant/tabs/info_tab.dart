@@ -305,7 +305,7 @@ class SvtInfoTab extends StatelessWidget {
                           child: InkWell(
                             child: Icon(Icons.info_outline, size: 16, color: AppTheme(context).tertiary),
                             onTap: () {
-                              SimpleCancelOkDialog(
+                              SimpleConfirmDialog(
                                 title: Text(S.current.condition),
                                 content: CondTargetValueDescriptor(
                                   condType: traitAdd.condType,
@@ -431,14 +431,14 @@ class SvtInfoTab extends StatelessWidget {
                 context: context,
                 useRootNavigator: false,
                 builder: (context) {
-                  return SimpleCancelOkDialog(
+                  return SimpleConfirmDialog(
                     title: Text.rich(
                       TextSpan(
                         text: S.current.trait,
                         children: prefix == null ? null : [const TextSpan(text: ' '), prefix],
                       ),
                     ),
-                    hideCancel: true,
+                    showCancel: false,
                     content: SharedBuilder.traitList(context: context, traits: traits),
                   );
                 },

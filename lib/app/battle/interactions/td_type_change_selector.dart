@@ -92,11 +92,11 @@ class TdTypeChangeSelector extends StatelessWidget {
     //   title = transl(selectTdInfo!.title).l;
     //   title = title.replaceAll('\n', '');
     // }
-    return SimpleCancelOkDialog(
+    return SimpleConfirmDialog(
       title: Text(S.current.battle_select_effect),
       content: Row(mainAxisAlignment: MainAxisAlignment.center, children: children),
-      hideOk: true,
-      hideCancel: true,
+      showOk: false,
+      showCancel: false,
       actions: [
         TextButton(
           onPressed: () {

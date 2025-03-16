@@ -112,10 +112,10 @@ class FilePickerU {
       showDialog(
         context: dialogContext,
         builder: (context) {
-          return SimpleCancelOkDialog(
+          return SimpleConfirmDialog(
             title: Text(S.current.saved),
             content: Text(db.paths.convertIosPath(file.path).breakWord),
-            hideCancel: true,
+            showCancel: false,
             actions: [
               if (PlatformU.isDesktop)
                 TextButton(

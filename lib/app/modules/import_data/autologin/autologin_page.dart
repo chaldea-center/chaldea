@@ -346,7 +346,7 @@ class _AutoLoginPageState extends State<AutoLoginPage> {
           onPressed:
               allData.length > 1
                   ? () {
-                    SimpleCancelOkDialog(
+                    SimpleConfirmDialog(
                       title: Text(S.current.delete),
                       onTapOk: () {
                         final prevIndex = allData.indexOf(args);

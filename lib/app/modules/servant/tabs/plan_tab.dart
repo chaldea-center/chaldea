@@ -297,7 +297,7 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
             targetVal.npLv = _end;
             updateState();
           },
-          detailPageBuilder: (context) => const SimpleCancelOkDialog(title: Text('Not Used yet')),
+          detailPageBuilder: (context) => const SimpleConfirmDialog(title: Text('Not Used yet')),
         ),
     ];
     if (extraParts1.isNotEmpty) {
@@ -402,7 +402,7 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
           },
           detailPageBuilder:
               (context) =>
-                  SimpleCancelOkDialog(title: Text('${S.current.bond} (${S.current.current_})'), hideCancel: true),
+                  SimpleConfirmDialog(title: Text('${S.current.bond} (${S.current.current_})'), showCancel: false),
         ),
     ];
     if (extraParts2.isNotEmpty) {
@@ -710,7 +710,7 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
         TextButton(
           onPressed: () {
             final Map<int, int> items = Item.sortMapByPriority(db.itemCenter.calcOneSvt(svt, status.cur, plan).all);
-            _showItemsDialog(title: S.current.demands, items: items, hideCancel: true, showSubOwned: true);
+            _showItemsDialog(title: S.current.demands, items: items, showCancel: false, showSubOwned: true);
           },
           child: Text(S.current.demands),
         ),
@@ -832,7 +832,7 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
     _showItemsDialog(
       title: S.current.enhance_warning,
       items: enhanceItems,
-      hideCancel: false,
+      showCancel: true,
       showSubOwned: true,
       onConfirm: () {
         Maths.sumDict([db.curUser.items, Maths.multiplyDict(enhanceItems, -1)], inPlace: true);
@@ -846,7 +846,7 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
   void _showItemsDialog({
     required String title,
     required Map<int, int> items,
-    required bool hideCancel,
+    required bool showCancel,
     VoidCallback? onConfirm,
     bool showSubOwned = false,
   }) {
@@ -864,9 +864,9 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
                 }
                 shownItems.removeWhere((key, value) => value <= 0);
               }
-              return SimpleCancelOkDialog(
+              return SimpleConfirmDialog(
                 title: Text(title),
-                hideCancel: hideCancel,
+                showCancel: showCancel,
                 onTapOk: onConfirm,
                 content:
                     shownItems.isEmpty

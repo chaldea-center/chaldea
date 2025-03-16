@@ -635,7 +635,7 @@ class _AppNewsCarouselState extends State<AppNewsCarousel> {
         }
 
         final title = item.getTitle(), content = item.getContent();
-        return SimpleCancelOkDialog(
+        return SimpleConfirmDialog(
           title: Text(
             title ?? S.current.jump_to(''),
             maxLines: 2,
@@ -643,7 +643,7 @@ class _AppNewsCarouselState extends State<AppNewsCarousel> {
             overflow: TextOverflow.ellipsis,
           ),
           scrollable: true,
-          hideOk: link == null,
+          showOk: link != null,
           onTapOk: link == null ? null : () => openLink(link),
           content: Column(
             mainAxisSize: MainAxisSize.min,

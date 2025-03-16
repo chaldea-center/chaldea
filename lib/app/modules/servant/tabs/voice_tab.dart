@@ -450,7 +450,7 @@ class VoiceGroupAccordion extends StatelessWidget {
                           hint += '\n - ${pathlib.basename(fp ?? S.current.failed)}';
                         }
                       }
-                      SimpleCancelOkDialog(
+                      SimpleConfirmDialog(
                         title: Text(S.current.save),
                         content: Text(hint),
                         confirmText: S.current.open,
@@ -596,9 +596,9 @@ class __PlayButtonState<T> extends State<_PlayButton<T>> {
           showDialog(
             context: context,
             builder: (context) {
-              return SimpleCancelOkDialog(
+              return SimpleConfirmDialog(
                 title: const Text('Linux MPV'),
-                hideCancel: true,
+                showCancel: false,
                 content: Text.rich(
                   TextSpan(
                     text: 'MPV is required to play audio, see\n',

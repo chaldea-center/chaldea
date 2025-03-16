@@ -124,8 +124,8 @@ class EventFortificationPage extends HookWidget {
                         context: context,
                         useRootNavigator: false,
                         builder: (context) {
-                          return SimpleCancelOkDialog(
-                            hideCancel: true,
+                          return SimpleConfirmDialog(
+                            showCancel: false,
                             scrollable: true,
                             title: Text(
                               '${detail.position} - ${detail.name}',
@@ -174,8 +174,8 @@ class EventFortificationPage extends HookWidget {
                       context: context,
                       useRootNavigator: false,
                       builder: (context) {
-                        return SimpleCancelOkDialog(
-                          hideCancel: true,
+                        return SimpleConfirmDialog(
+                          showCancel: false,
                           scrollable: true,
                           title: Text('${svt.position} - ${svt.type.name}', textScaler: const TextScaler.linear(0.9)),
                           content: Column(

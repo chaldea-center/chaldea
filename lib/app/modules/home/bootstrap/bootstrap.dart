@@ -341,7 +341,7 @@ class _BootstrapPageState extends State<BootstrapPage> with SingleTickerProvider
                 context: context,
                 useRootNavigator: false,
                 builder:
-                    (context) => SimpleCancelOkDialog(
+                    (context) => SimpleConfirmDialog(
                       content: Text(S.current.database_not_downloaded),
                       onTapOk: () {
                         db.settings.tips.starter = false;

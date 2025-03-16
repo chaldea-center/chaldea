@@ -39,7 +39,7 @@ class _ShareAppDialogState extends State<ShareAppDialog> {
     final border = OutlineInputBorder(
       borderSide: BorderSide(color: themeData.dialogTheme.backgroundColor ?? const Color(0xFF000000)),
     );
-    return SimpleCancelOkDialog(
+    return SimpleConfirmDialog(
       title: Text(S.current.share),
       contentPadding: const EdgeInsetsDirectional.fromSTEB(24.0, 10.0, 24.0, 12.0),
       content: TextFormField(
@@ -54,7 +54,7 @@ class _ShareAppDialogState extends State<ShareAppDialog> {
           focusedBorder: border,
         ),
       ),
-      hideOk: true,
+      showOk: false,
       actions: [
         TextButton(
           onPressed: () {

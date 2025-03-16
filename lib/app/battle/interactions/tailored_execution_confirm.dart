@@ -16,7 +16,7 @@ class TailoredExecutionConfirm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SimpleCancelOkDialog(
+    return SimpleConfirmDialog(
       title: Text(S.current.battle_select_effect),
       scrollable: true,
       content: Column(
@@ -31,8 +31,8 @@ class TailoredExecutionConfirm extends StatelessWidget {
           Padding(padding: const EdgeInsets.all(4.0), child: Text('${S.current.battle_should_activate}?')),
         ]),
       ),
-      hideOk: true,
-      hideCancel: true,
+      showOk: false,
+      showCancel: false,
       actions: [
         TextButton(
           onPressed: () {

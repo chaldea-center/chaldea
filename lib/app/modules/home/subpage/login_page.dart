@@ -167,11 +167,11 @@ class _LoginPageState extends State<LoginPage> {
         context: context,
         useRootNavigator: false,
         builder:
-            (context) => SimpleCancelOkDialog(
+            (context) => SimpleConfirmDialog(
               title: Text(S.current.login_forget_pwd),
               content: Text(S.current.forgot_password_hint),
               scrollable: true,
-              hideOk: true,
+              showOk: false,
               actions: [
                 TextButton(
                   onPressed: () {
@@ -475,7 +475,7 @@ class _LoginPageState extends State<LoginPage> {
     if (!isLoginAvailable(name, pwd)) {
       return;
     }
-    final confirm = await SimpleCancelOkDialog(
+    final confirm = await SimpleConfirmDialog(
       title: const Text('Reset Password (Admin only)'),
       content: Text('user: $name\npassword: $pwd'),
     ).showDialog(context);

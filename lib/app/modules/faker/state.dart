@@ -136,10 +136,10 @@ class FakerRuntime {
   void lockTask(VoidCallback callback) {
     if (runningTask.value) {
       _showDialog(
-        SimpleCancelOkDialog(
+        SimpleConfirmDialog(
           title: Text(S.current.error),
           content: const Text("task is till running"),
-          hideCancel: true,
+          showCancel: false,
         ),
       );
       return;
@@ -151,10 +151,10 @@ class FakerRuntime {
   Future<void> runTask(Future Function() task, {bool check = true}) async {
     if (check && runningTask.value) {
       _showDialog(
-        SimpleCancelOkDialog(
+        SimpleConfirmDialog(
           title: Text(S.current.error),
           content: const Text("previous task is till running"),
-          hideCancel: true,
+          showCancel: false,
         ),
       );
       return;
@@ -171,11 +171,11 @@ class FakerRuntime {
       if (mounted) {
         dismissToast();
         _showDialog(
-          SimpleCancelOkDialog(
+          SimpleConfirmDialog(
             title: Text(S.current.error),
             scrollable: true,
             content: Text(e is SilentException ? e.message.toString() : e.toString()),
-            hideCancel: true,
+            showCancel: false,
           ),
           barrierDismissible: false,
         );
@@ -394,7 +394,7 @@ class FakerRuntime {
     }
     logger.t('finished all $finishedCount battles');
     _showDialog(
-      SimpleCancelOkDialog(title: const Text('Finished'), content: Text('$finishedCount battles'), hideCancel: true),
+      SimpleConfirmDialog(title: const Text('Finished'), content: Text('$finishedCount battles'), showCancel: false),
       barrierDismissible: false,
     );
   }

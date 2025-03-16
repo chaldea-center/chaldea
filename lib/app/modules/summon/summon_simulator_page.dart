@@ -555,9 +555,9 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
       }
     }
     if (!mounted) return;
-    SimpleCancelOkDialog(
+    SimpleConfirmDialog(
       scrollable: true,
-      hideCancel: true,
+      showCancel: false,
       title: const Text("Monte Carlo Test"),
       content: Text.rich(
         TextSpan(

@@ -55,7 +55,7 @@ class _AdminToolsPageState extends State<AdminToolsPage> {
   }
 
   Future<Response?> callRequest(String method, String url) async {
-    final confirm = await SimpleCancelOkDialog(title: Text(S.current.confirm)).showDialog(context);
+    final confirm = await SimpleConfirmDialog(title: Text(S.current.confirm)).showDialog(context);
     if (confirm != true) return null;
     final resp = await showEasyLoading(() async {
       return await ChaldeaWorkerApi.createDio().request(

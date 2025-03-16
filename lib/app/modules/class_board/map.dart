@@ -61,7 +61,7 @@ class _ClassBoardMapState extends State<ClassBoardMap> {
       }
     }
     if (target != null) {
-      await SimpleCancelOkDialog(
+      await SimpleConfirmDialog(
         title: Row(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -78,7 +78,7 @@ class _ClassBoardMapState extends State<ClassBoardMap> {
           child: ClassBoardSquareDetail(board: board, square: target),
         ),
         scrollable: true,
-        hideCancel: true,
+        showCancel: false,
         contentPadding: const EdgeInsetsDirectional.fromSTEB(8, 10, 8, 24),
       ).showDialog(context);
       if (mounted) setState(() {});

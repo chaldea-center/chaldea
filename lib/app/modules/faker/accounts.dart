@@ -133,7 +133,7 @@ class _FakerAccountsPageState extends State<FakerAccountsPage> {
           Expanded(child: child),
           IconButton(
             onPressed: () {
-              SimpleCancelOkDialog(
+              SimpleConfirmDialog(
                 title: Text(S.current.delete),
                 onTapOk: () {
                   if (mounted) {

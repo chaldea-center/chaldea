@@ -65,7 +65,7 @@ class AtlasExplorerManager {
       context: context,
       useRootNavigator: false,
       builder: (context) {
-        return SimpleCancelOkDialog(
+        return SimpleConfirmDialog(
           title: const Text('Authentication'),
           content: Column(
             mainAxisSize: MainAxisSize.min,

@@ -99,7 +99,7 @@ class _BoxGachaDrawPageState extends State<BoxGachaDrawPage> {
         leading: BackButton(
           onPressed: () async {
             if (runtime.runningTask.value) {
-              final confirm = await const SimpleCancelOkDialog(title: Text("Exit?")).showDialog(context);
+              final confirm = await const SimpleConfirmDialog(title: Text("Exit?")).showDialog(context);
               if (confirm == true && context.mounted) Navigator.pop(context);
             } else {
               Navigator.pop(context);
@@ -318,7 +318,7 @@ class _BoxGachaDrawPageState extends State<BoxGachaDrawPage> {
         buildButton(
           enabled: loopCount.value > 0 && lottery != null,
           onPressed: () {
-            SimpleCancelOkDialog(
+            SimpleConfirmDialog(
               title: Text('Loop ×${loopCount.value}'),
               onTapOk: () {
                 runtime.runTask(

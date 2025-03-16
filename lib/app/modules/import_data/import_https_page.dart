@@ -807,7 +807,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
   }
 
   void didImportData() async {
-    bool? confirmed = await SimpleCancelOkDialog(
+    bool? confirmed = await SimpleConfirmDialog(
       title: Text(S.current.import_data),
       content: Text('${S.current.cur_account}: ${db.curUser.name}'),
     ).showDialog(context);
@@ -965,7 +965,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
     } catch (e, s) {
       logger.e('fail to load http response', e, s);
       if (mounted) {
-        SimpleCancelOkDialog(
+        SimpleConfirmDialog(
           title: const Text('Error'),
           content: Text('$e\n\n${ChaldeaUrl.doc("import_https/")}'),
         ).showDialog(context);

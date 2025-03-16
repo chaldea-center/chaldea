@@ -136,7 +136,7 @@ class _InputCancelOkDialogState extends State<InputCancelOkDialog> {
   }
 }
 
-class SimpleCancelOkDialog extends StatelessWidget {
+class SimpleConfirmDialog extends StatelessWidget {
   final Widget? title;
   final Widget? content;
   final EdgeInsetsGeometry contentPadding;
@@ -146,14 +146,14 @@ class SimpleCancelOkDialog extends StatelessWidget {
   final VoidCallback? onTapCancel;
 
   /// ignore if onTapCancel is not null
-  final bool hideOk;
-  final bool hideCancel;
+  final bool showOk;
+  final bool showCancel;
   final List<Widget> actions;
   final bool scrollable;
   final bool wrapActionsInRow;
   final EdgeInsets insetPadding;
 
-  const SimpleCancelOkDialog({
+  const SimpleConfirmDialog({
     super.key,
     this.title,
     this.content,
@@ -162,8 +162,8 @@ class SimpleCancelOkDialog extends StatelessWidget {
     this.cancelText,
     this.onTapOk,
     this.onTapCancel,
-    this.hideOk = false,
-    this.hideCancel = false,
+    this.showOk = true,
+    this.showCancel = true,
     this.actions = const [],
     this.scrollable = false,
     this.wrapActionsInRow = false,
@@ -173,7 +173,7 @@ class SimpleCancelOkDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     List<Widget> children = <Widget>[
-      if (!hideCancel)
+      if (showCancel)
         TextButton(
           child: Text(cancelText ?? S.current.cancel),
           onPressed: () {
@@ -184,7 +184,7 @@ class SimpleCancelOkDialog extends StatelessWidget {
           },
         ),
       ...actions,
-      if (!hideOk)
+      if (showOk)
         TextButton(
           child: Text(confirmText ?? S.current.confirm),
           onPressed: () {
@@ -225,7 +225,7 @@ Future<void> jumpToExternalLinkAlert({required String url, String? name, String?
     context: kAppKey.currentContext!,
     useRootNavigator: false,
     builder:
-        (context) => SimpleCancelOkDialog(
+        (context) => SimpleConfirmDialog(
           title: Text(S.current.jump_to(name ?? S.current.link)),
           content: Text.rich(
             TextSpan(
@@ -235,7 +235,7 @@ Future<void> jumpToExternalLinkAlert({required String url, String? name, String?
               ],
             ),
           ),
-          hideOk: !valid,
+          showOk: valid,
           onTapOk: () async {
             String link = safeLink ?? url;
             if (await canLaunch(link)) {

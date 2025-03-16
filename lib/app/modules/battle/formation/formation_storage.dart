@@ -221,7 +221,7 @@ class _FormationEditorState extends State<FormationEditor>
         onPressed:
             userData.teams.length > 1
                 ? () {
-                  SimpleCancelOkDialog(
+                  SimpleConfirmDialog(
                     title: Text(S.current.delete),
                     content: Text('${S.current.team} ${index + 1}'),
                     onTapOk: () {
@@ -241,7 +241,7 @@ class _FormationEditorState extends State<FormationEditor>
       if (widget.teamToSave != null)
         TextButton(
           onPressed: () {
-            SimpleCancelOkDialog(
+            SimpleConfirmDialog(
               title: Text(S.current.override_),
               content: Text('${S.current.team} ${index + 1}'),
               onTapOk: () {

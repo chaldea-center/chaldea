@@ -82,11 +82,11 @@ class _HomePageState extends State<HomePage> with AfterLayoutMixin {
         Positioned.fill(
           child: Container(
             color: Colors.black38,
-            child: SimpleCancelOkDialog(
+            child: SimpleConfirmDialog(
               title: Text(S.current.gamedata),
               content: Text(S.current.game_data_not_found),
-              hideCancel: true,
-              hideOk: true,
+              showCancel: false,
+              showOk: false,
             ),
           ),
         ),
@@ -100,7 +100,7 @@ class _HomePageState extends State<HomePage> with AfterLayoutMixin {
             child: Container(
               color: Colors.black38,
               child: Center(
-                child: SimpleCancelOkDialog(
+                child: SimpleConfirmDialog(
                   scrollable: true,
                   title: Text(S.current.update),
                   content: Text(
@@ -113,8 +113,8 @@ class _HomePageState extends State<HomePage> with AfterLayoutMixin {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  hideCancel: true,
-                  hideOk: true,
+                  showCancel: false,
+                  showOk: false,
                   actions: [
                     TextButton(
                       onPressed: () {

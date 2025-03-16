@@ -204,7 +204,7 @@ class ItemListPageState extends State<ItemListPage> with SingleTickerProviderSta
       return objective;
     }
 
-    SimpleCancelOkDialog(
+    SimpleConfirmDialog(
       title: Text(S.current.item_exceed_hint, style: const TextStyle(fontSize: 16)),
       confirmText: S.current.plan,
       content: Wrap(
@@ -444,7 +444,7 @@ class _ItemListTabState extends State<ItemListTab> {
   }
 
   void setAll999() {
-    SimpleCancelOkDialog(
+    SimpleConfirmDialog(
       content: const Text('Set All 999'),
       onTapOk: () {
         for (final group in _shownGroups) {

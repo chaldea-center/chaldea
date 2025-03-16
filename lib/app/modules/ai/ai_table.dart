@@ -525,10 +525,10 @@ class _AiCondDialog extends StatelessWidget {
     }
     condText += '${cond.name}: ';
     condText += Transl.enums(cond, (enums) => enums.aiCond).l;
-    return SimpleCancelOkDialog(
+    return SimpleConfirmDialog(
       title: Text(S.current.condition),
       scrollable: true,
-      hideCancel: true,
+      showCancel: false,
       contentPadding: const EdgeInsets.fromLTRB(8.0, 20.0, 8.0, 24.0),
       content: Column(
         mainAxisSize: MainAxisSize.min,
@@ -573,10 +573,10 @@ class BattleMessageDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SimpleCancelOkDialog(
+    return SimpleConfirmDialog(
       title: Text('Message $msgId'),
       scrollable: true,
-      hideCancel: true,
+      showCancel: false,
       content: FutureBuilder2(
         id: msgId,
         loader: () => AtlasApi.battleMessage(msgId, region: region ?? Region.jp),
@@ -632,10 +632,10 @@ class _BattleMessageGroupDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SimpleCancelOkDialog(
+    return SimpleConfirmDialog(
       title: Text('Message Group $groupId'),
       scrollable: true,
-      hideCancel: true,
+      showCancel: false,
       contentPadding: const EdgeInsets.symmetric(vertical: 20, horizontal: 4),
       content: FutureBuilder2(
         id: groupId,

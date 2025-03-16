@@ -193,9 +193,9 @@ class SvtTdTab extends StatelessWidget {
     for (final key in keys) {
       key < 10 ? ascensions.add(key) : costumes.add(key);
     }
-    return SimpleCancelOkDialog(
+    return SimpleConfirmDialog(
       title: Text(td.lName.l),
-      hideCancel: true,
+      showCancel: false,
       content: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,

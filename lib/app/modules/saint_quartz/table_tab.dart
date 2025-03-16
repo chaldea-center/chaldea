@@ -215,10 +215,10 @@ class _PlanDataSource extends DataTableSource {
     router.showDialog(
       context: context,
       builder: (context) {
-        return SimpleCancelOkDialog(
+        return SimpleConfirmDialog(
           title: Text(detail.date.toDateString()),
           scrollable: true,
-          hideCancel: true,
+          showCancel: false,
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [

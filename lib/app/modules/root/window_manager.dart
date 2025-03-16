@@ -344,7 +344,7 @@ class _MultipleWindowState extends State<MultipleWindow> {
             title: Text(bookmark.name ?? bookmark.url),
             subtitle: bookmark.name == null ? null : Text(bookmark.url),
             onLongPress: () {
-              SimpleCancelOkDialog(
+              SimpleConfirmDialog(
                 title: Text(S.current.delete),
                 content: Text(bookmark.url),
                 onTapOk: () {

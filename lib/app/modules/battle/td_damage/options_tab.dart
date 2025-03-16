@@ -104,13 +104,13 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
         onPressed: () {
           final enemy2 = db.runtimeData.clipBoard.questEnemy;
           if (enemy2 == null) {
-            SimpleCancelOkDialog(
+            SimpleConfirmDialog(
               title: Text(S.current.paste),
               content: Text(S.current.paste_enemy_hint),
-              hideCancel: true,
+              showCancel: false,
             ).showDialog(context);
           } else {
-            SimpleCancelOkDialog(
+            SimpleConfirmDialog(
               title: Text(S.current.paste),
               content: Text("${enemy2.lShownName}(${enemy2.svt.lName.l})\n${Transl.svtClassId(enemy2.svt.classId).l}"),
               onTapOk: () {
@@ -188,10 +188,10 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
             useRootNavigator: false,
             builder: (context) {
               if (options.supports.length >= 5) {
-                return SimpleCancelOkDialog(
+                return SimpleConfirmDialog(
                   title: Text(S.current.support_servant),
                   content: const Text('Max 5 supports'),
-                  hideCancel: true,
+                  showCancel: false,
                 );
               }
               List<Widget> supports = [];
@@ -212,7 +212,7 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
                   );
                 }
               }
-              return SimpleCancelOkDialog(
+              return SimpleConfirmDialog(
                 title: Text(S.current.support_servant),
                 scrollable: true,
                 content: Wrap(children: supports),
@@ -542,7 +542,7 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
       kDefaultDivider,
       TextButton(
         onPressed: () {
-          SimpleCancelOkDialog(
+          SimpleConfirmDialog(
             title: Text(S.current.reset),
             onTapOk: () {
               db.settings.battleSim.tdDmgOptions = TdDamageOptions()..initBuffs();

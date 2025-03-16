@@ -112,7 +112,7 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
                 IconButton(
                   icon: const Icon(Icons.delete),
                   onPressed: () {
-                    SimpleCancelOkDialog(
+                    SimpleConfirmDialog(
                       title: Text(S.current.clear),
                       onTapOk: () {
                         setState(() {

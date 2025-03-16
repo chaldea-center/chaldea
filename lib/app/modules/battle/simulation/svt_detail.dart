@@ -418,11 +418,11 @@ class _BattleSvtDetailState extends State<BattleSvtDetail> with SingleTickerProv
             builder: (context) {
               return Theme(
                 data: ThemeData.light(useMaterial3: Theme.of(context).useMaterial3),
-                child: SimpleCancelOkDialog(
+                child: SimpleConfirmDialog(
                   title: const Text('Data Vals'),
                   content: JsonViewer(vals, defaultOpen: true),
                   scrollable: true,
-                  hideCancel: true,
+                  showCancel: false,
                   contentPadding: const EdgeInsetsDirectional.fromSTEB(10.0, 10.0, 12.0, 24.0),
                 ),
               );
@@ -445,7 +445,7 @@ class _BattleSvtDetailState extends State<BattleSvtDetail> with SingleTickerProv
         if (recorder == null) return;
         router.showDialog(
           builder:
-              (context) => SimpleCancelOkDialog(
+              (context) => SimpleConfirmDialog(
                 title: Text(S.current.remove),
                 content: Text(buffName),
                 onTapOk: () {

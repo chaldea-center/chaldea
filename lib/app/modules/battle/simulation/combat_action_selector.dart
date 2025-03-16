@@ -31,21 +31,21 @@ class _CombatActionSelectorState extends State<CombatActionSelector> {
   @override
   Widget build(BuildContext context) {
     if (battleData.targetedEnemy == null || battleData.targetedPlayer == null) {
-      return SimpleCancelOkDialog(
+      return SimpleConfirmDialog(
         title: Text(S.current.warning),
         content: Text(S.current.battle_targeted_required_hint),
-        hideCancel: true,
+        showCancel: false,
       );
     }
     final validActions = combatActions.whereType<CombatAction>().toList();
-    return SimpleCancelOkDialog(
+    return SimpleConfirmDialog(
       title: Text(S.current.battle_select_card),
       contentPadding: const EdgeInsets.all(8),
       scrollable: true,
       content: buildContent(),
       insetPadding: const EdgeInsets.symmetric(horizontal: 18.0, vertical: 24.0),
-      hideOk: true,
-      hideCancel: true,
+      showOk: false,
+      showCancel: false,
       actions: [
         IconButton(
           onPressed: () {
@@ -297,7 +297,7 @@ class _CombatActionSelectorState extends State<CombatActionSelector> {
             dispCount = svt.niceEnemy!.chargeTurn;
           }
           final msg = '${S.current.charge_np_to(dispCount)}: ${svt.fieldIndex + 1}-${svt.lBattleName}';
-          await SimpleCancelOkDialog(
+          await SimpleConfirmDialog(
             title: Text(S.current.np_not_enough),
             content: Text(msg),
             onTapOk: () async {
@@ -428,10 +428,10 @@ class _EnemyCombatActionSelectorState extends State<EnemyCombatActionSelector> {
   Widget build(BuildContext context) {
     if ((battleData.nonnullEnemies.isNotEmpty && battleData.targetedEnemy == null) ||
         (battleData.nonnullPlayers.isNotEmpty && battleData.targetedPlayer == null)) {
-      return SimpleCancelOkDialog(
+      return SimpleConfirmDialog(
         title: Text(S.current.warning),
         content: Text(S.current.battle_targeted_required_hint),
-        hideCancel: true,
+        showCancel: false,
       );
     }
 
@@ -560,7 +560,7 @@ class _EnemyCombatActionSelectorState extends State<EnemyCombatActionSelector> {
                   context: context,
                   useRootNavigator: false,
                   builder: (context) {
-                    return SimpleCancelOkDialog(
+                    return SimpleConfirmDialog(
                       title: Text(S.current.np_not_enough),
                       content: Text(S.current.charge_np_to(chargeTurn)),
                       onTapOk: () async {
@@ -591,7 +591,7 @@ class _EnemyCombatActionSelectorState extends State<EnemyCombatActionSelector> {
       }
     }
 
-    return SimpleCancelOkDialog(
+    return SimpleConfirmDialog(
       scrollable: true,
       title: Text(S.current.select),
       contentPadding: const EdgeInsetsDirectional.fromSTEB(0, 20.0, 0, 24.0),
@@ -599,7 +599,7 @@ class _EnemyCombatActionSelectorState extends State<EnemyCombatActionSelector> {
         minLeadingWidth: 24,
         child: Column(mainAxisSize: MainAxisSize.min, children: children),
       ),
-      hideOk: true,
+      showOk: false,
       actions: [
         TextButton(
           onPressed:

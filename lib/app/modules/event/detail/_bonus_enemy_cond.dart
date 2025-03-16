@@ -102,7 +102,7 @@ class _BonusEnemyCondPageState extends State<BonusEnemyCondPage> {
         actions: [
           IconButton(
             onPressed: () {
-              SimpleCancelOkDialog(
+              SimpleConfirmDialog(
                 title: Text(S.current.refresh),
                 onTapOk: () {
                   loadData(refresh: true);

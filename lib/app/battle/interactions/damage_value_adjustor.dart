@@ -72,7 +72,7 @@ class _DamageValueAdjustorState extends State<DamageValueAdjustor> {
 
   @override
   Widget build(BuildContext context) {
-    return SimpleCancelOkDialog(
+    return SimpleConfirmDialog(
       title: Text(S.current.battle_select_effect),
       scrollable: true,
       content: Column(
@@ -100,8 +100,8 @@ class _DamageValueAdjustorState extends State<DamageValueAdjustor> {
           ),
         ],
       ),
-      hideOk: true,
-      hideCancel: true,
+      showOk: false,
+      showCancel: false,
       actions: [
         TextButton(
           onPressed: () {

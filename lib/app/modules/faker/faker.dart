@@ -73,17 +73,17 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
       // ignore: use_build_context_synchronously
       final runtime = await FakerRuntime.init(widget.user, this);
       if (runtime.hasMultiRoots && mounted) {
-        SimpleCancelOkDialog(
+        SimpleConfirmDialog(
           title: Text(S.current.warning),
           content: Text('Another window is already open.'),
-          hideCancel: true,
+          showCancel: false,
         ).showDialog(context);
       }
       await runtime.loadInitData();
       _runtime = runtime;
     } catch (e, s) {
       if (mounted) {
-        SimpleCancelOkDialog(
+        SimpleConfirmDialog(
           title: Text(S.current.error),
           content: Text(e.toString()),
           scrollable: true,
@@ -125,14 +125,14 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
         leading: BackButton(
           onPressed: () async {
             if (runtime.runningTask.value) {
-              SimpleCancelOkDialog(
+              SimpleConfirmDialog(
                 title: Text(S.current.warning),
                 content: const Text("Task is still running! Cannot exit!"),
-                hideCancel: true,
+                showCancel: false,
               ).showDialog(context);
               return;
             }
-            final confirm = await const SimpleCancelOkDialog(title: Text("Exit?")).showDialog(context);
+            final confirm = await const SimpleConfirmDialog(title: Text("Exit?")).showDialog(context);
             if (confirm == true && context.mounted) Navigator.pop(context);
           },
         ),
@@ -670,7 +670,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
                           runtime.runningTask.value
                               ? null
                               : () async {
-                                final confirm = await SimpleCancelOkDialog(
+                                final confirm = await SimpleConfirmDialog(
                                   title: Text("Send"),
                                   content: Text('request:${saveData.key}\nSuccess: ${saveData.success}'),
                                 ).showDialog(context);
@@ -678,13 +678,13 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
                                 runtime.runTask(() async {
                                   final resp = await agent.network.requestStartDirect(saveData);
                                   if (context.mounted) {
-                                    SimpleCancelOkDialog(
+                                    SimpleConfirmDialog(
                                       title: Text("Request Result"),
                                       content: Text(
                                         "status: ${resp.rawResponse.statusCode}\n"
                                         "responses:\n${resp.data.responses.map((e) => ' - ${e.nid} ${e.resCode}').join('\n')}",
                                       ),
-                                      hideCancel: true,
+                                      showCancel: false,
                                       actions: [
                                         TextButton(
                                           onPressed: () {
@@ -1781,7 +1781,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
         Center(
           child: TextButton(
             onPressed: () {
-              SimpleCancelOkDialog(
+              SimpleConfirmDialog(
                 title: const Text('Clear Dumps'),
                 onTapOk: () async {
                   try {
@@ -1837,7 +1837,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
         buildButton(
           // enabled: !inBattle,
           onPressed: () {
-            SimpleCancelOkDialog(
+            SimpleConfirmDialog(
               title: const Text('Login'),
               onTapOk: () {
                 runtime.runTask(() async {
@@ -2063,10 +2063,10 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
               );
               return InkWell(
                 onTap: () {
-                  SimpleCancelOkDialog(
+                  SimpleConfirmDialog(
                     title: Text('Message'),
                     scrollable: true,
-                    hideCancel: true,
+                    showCancel: false,
                     content: Text(msg),
                   ).showDialog(context);
                 },

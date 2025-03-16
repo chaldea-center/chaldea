@@ -127,7 +127,7 @@ class _BattleOptionListPageState extends State<BattleOptionListPage> {
                           PopupMenuItem(
                             child: Text(S.current.delete),
                             onTap: () {
-                              SimpleCancelOkDialog(
+                              SimpleConfirmDialog(
                                 title: Text(S.current.delete),
                                 onTapOk: () {
                                   data.battleOptions.remove(option);

@@ -131,7 +131,7 @@ class _AccountPageState extends State<AccountPage> {
 
   void clearUser(int key) {
     final user = users[key];
-    SimpleCancelOkDialog(
+    SimpleConfirmDialog(
       title: Text(S.current.clear_data),
       content: Text('${S.current.account_title}: ${user.name}'),
       onTapOk: () {
@@ -149,7 +149,7 @@ class _AccountPageState extends State<AccountPage> {
   void deleteUser(int key) {
     print('delete user key $key...');
     final user = users[key];
-    SimpleCancelOkDialog(
+    SimpleConfirmDialog(
       title: Text('${S.current.delete} ${user.name}'),
       onTapOk: () {
         bool needCalc = key == db.userData.curUserKey;

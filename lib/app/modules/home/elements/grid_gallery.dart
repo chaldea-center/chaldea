@@ -53,10 +53,10 @@ class _GridGalleryState extends State<GridGallery> {
     if (!db.gameData.isValid) {
       grid = GestureDetector(
         onTap: () {
-          SimpleCancelOkDialog(
+          SimpleConfirmDialog(
             title: Text(S.current.warning),
             content: Text(S.current.game_data_not_found),
-            hideCancel: true,
+            showCancel: false,
           ).showDialog(context);
         },
         child: AbsorbPointer(child: Opacity(opacity: 0.5, child: grid)),

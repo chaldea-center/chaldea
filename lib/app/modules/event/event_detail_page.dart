@@ -449,7 +449,7 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
               trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
               onTap: () {
                 if (widget.region == Region.jp && event.endedAt < DateTime.now().timestamp) {
-                  SimpleCancelOkDialog(
+                  SimpleConfirmDialog(
                     title: Text(S.current.hint),
                     content: Text(
                       "${S.current.event}:\n- if ${S.current.ended}: "
@@ -489,7 +489,7 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
                   ? null
                   : IconButton(
                     onPressed: () {
-                      SimpleCancelOkDialog(
+                      SimpleConfirmDialog(
                         title: Text(S.current.condition),
                         scrollable: true,
                         content: Column(
@@ -1183,7 +1183,7 @@ class __ArchiveEventDialogState extends State<_ArchiveEventDialog> {
     }
     children.add(const SFooter('GrailToLore: not included'));
 
-    return SimpleCancelOkDialog(
+    return SimpleConfirmDialog(
       contentPadding: const EdgeInsetsDirectional.fromSTEB(0.0, 20.0, 0.0, 24.0),
       title: Text(S.current.event_collect_items),
       content: SingleChildScrollView(child: Column(children: children)),

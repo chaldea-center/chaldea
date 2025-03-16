@@ -199,10 +199,10 @@ class SkillDescriptor extends StatelessWidget with FuncsDescriptor, _SkillDescri
       }
     }
 
-    return SimpleCancelOkDialog(
+    return SimpleConfirmDialog(
       // title: Text(skill.lName.l),
       content: Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisSize: MainAxisSize.min, children: children),
-      hideCancel: true,
+      showCancel: false,
       scrollable: true,
     );
   }
@@ -273,14 +273,14 @@ class SkillDescriptor extends StatelessWidget with FuncsDescriptor, _SkillDescri
       );
     }
 
-    return SimpleCancelOkDialog(
+    return SimpleConfirmDialog(
       title: Text(skill.lName.l),
       content: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: divideTiles(children),
       ),
-      hideCancel: true,
+      showCancel: false,
       scrollable: true,
     );
   }

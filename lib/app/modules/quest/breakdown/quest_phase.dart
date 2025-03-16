@@ -777,10 +777,10 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
         header = InkWell(
           child: header,
           onTap: () {
-            SimpleCancelOkDialog(
+            SimpleConfirmDialog(
               title: Text(S.current.game_drop),
               content: Text(S.current.drop_from_all_hashes_hint),
-              hideCancel: true,
+              showCancel: false,
             ).showDialog(context);
           },
         );
