@@ -24,6 +24,7 @@ class FRequestRecord<TRequest extends FRequestBase> {
   DateTime? receivedAt;
 }
 
+// should be sealed
 abstract class FRequestBase {
   bool disposed = false;
 
@@ -31,6 +32,7 @@ abstract class FRequestBase {
   Response? rawResponse;
   String path;
   String key;
+  Duration sendDelay = Duration.zero;
   Map<String, dynamic> params = {};
 
   String get normKey => key.replaceAll(RegExp(r'[/_]'), '');
@@ -109,7 +111,7 @@ class NidCheckException implements Exception {
   }
 }
 
-abstract class NetworkManagerBase<TRequest extends FRequestBase, TUser extends AutoLoginData> {
+abstract class NetworkManagerBase<TRequest extends FRequestBase, TUser extends AutoLoginData> with ChangeNotifier {
   final GameTop gameTop;
   final TUser user;
   final CatMouseGame catMouseGame;
@@ -137,7 +139,10 @@ abstract class NetworkManagerBase<TRequest extends FRequestBase, TUser extends A
 
   void clearTask() {
     _runningTask = null;
+    notifyListeners();
   }
+
+  TRequest createRequest({required String path, String? key});
 
   late final String fakerDir = joinPaths(db.paths.tempFakerDir, gameTop.region.upper);
 
@@ -158,6 +163,7 @@ abstract class NetworkManagerBase<TRequest extends FRequestBase, TUser extends A
       throw Exception('Previous request is still running');
     }
     _runningTask = request;
+    notifyListeners();
     lastTaskStartedAt = DateTime.now().timestamp;
 
     if (_nowTime > 0) {
@@ -204,7 +210,12 @@ abstract class NetworkManagerBase<TRequest extends FRequestBase, TUser extends A
           }
 
           // data
-          final _jsonData = FateTopLogin.parseToMap(rawResp.data);
+          Map<String, dynamic> _jsonData;
+          try {
+            _jsonData = FateTopLogin.parseToMap(rawResp.data);
+          } catch (e) {
+            _jsonData = {"parseError": e.toString()};
+          }
           bool dumpResponse = db.settings.fakerSettings.dumpResponse;
           if (!kReleaseMode && request.normKey == 'followerlist') dumpResponse = false;
           if (dumpResponse) {
@@ -247,13 +258,11 @@ abstract class NetworkManagerBase<TRequest extends FRequestBase, TUser extends A
           tryCount++;
           _nowTime = getNowTimestamp();
           continue;
-        } catch (e) {
-          _runningTask = null;
-          rethrow;
         }
       }
     } finally {
       _runningTask = null;
+      notifyListeners();
       request.disposed = true;
       record.receivedAt = DateTime.now();
     }
@@ -261,6 +270,52 @@ abstract class NetworkManagerBase<TRequest extends FRequestBase, TUser extends A
   }
 
   Future<Response> requestStartImpl(TRequest request);
+
+  Future<FResponse> requestStartDirect(RequestOptionsSaveData saveData) async {
+    if (_runningTask != null) {
+      throw Exception('Previous request is still running');
+    }
+    final request = createRequest(path: saveData.path, key: saveData.key);
+    _runningTask = request;
+    notifyListeners();
+
+    final record =
+        FRequestRecord<TRequest>()
+          ..request = request
+          ..sendedAt = DateTime.now();
+    // In case memory used out
+    history.add(record);
+    try {
+      final dio = Dio(BaseOptions(connectTimeout: const Duration(seconds: 10)));
+      final Response rawResp = await dio.post(
+        saveData.url,
+        data: saveData.formData,
+        options: Options(
+          headers: saveData.headers.deepCopy(),
+          followRedirects: true,
+          sendTimeout: const Duration(seconds: 10),
+          receiveTimeout: const Duration(seconds: 30),
+        ),
+      );
+
+      request.rawRequest = rawResp.requestOptions;
+      request.rawResponse = rawResp;
+      request.receiveTime = getNowTimestamp();
+      final resp = FResponse(request, rawResp);
+      mstData.updateCache(resp.data.cache);
+      final newUserGame = resp.data.mstData.user;
+      if (newUserGame != null) {
+        user.userGame = UserGameEntity.fromJson(newUserGame.toJson());
+      }
+      record.response = resp;
+      return resp;
+    } finally {
+      _runningTask = null;
+      notifyListeners();
+      request.disposed = true;
+      record.receivedAt = DateTime.now();
+    }
+  }
 
   Future<void> setLocalNotification({List<int>? removedAps, UserGameEntity? oldUserGame, TRequest? request}) async {
     if (!LocalNotificationUtil.supported) return;

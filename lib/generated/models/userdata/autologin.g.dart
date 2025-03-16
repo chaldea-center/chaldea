@@ -92,6 +92,10 @@ AutoLoginDataJP _$AutoLoginDataJPFromJson(Map json) => $checkedCreate('AutoLogin
       'userItems',
       (v) => (v as Map?)?.map((k, e) => MapEntry(int.parse(k as String), (e as num).toInt())),
     ),
+    lastRequestOptions: $checkedConvert(
+      'lastRequestOptions',
+      (v) => v == null ? null : RequestOptionsSaveData.fromJson(Map<String, dynamic>.from(v as Map)),
+    ),
   );
   return val;
 });
@@ -109,6 +113,7 @@ Map<String, dynamic> _$AutoLoginDataJPToJson(AutoLoginDataJP instance) => <Strin
   'lastLogin': instance.lastLogin,
   'userGame': instance.userGame?.toJson(),
   'userItems': instance.userItems.map((k, e) => MapEntry(k.toString(), e)),
+  'lastRequestOptions': instance.lastRequestOptions?.toJson(),
   'auth': instance.auth?.toJson(),
   'deviceInfo': instance.deviceInfo,
   'country': _$NACountryEnumMap[instance.country]!,
@@ -188,6 +193,10 @@ AutoLoginDataCN _$AutoLoginDataCNFromJson(Map json) => $checkedCreate('AutoLogin
       'userItems',
       (v) => (v as Map?)?.map((k, e) => MapEntry(int.parse(k as String), (e as num).toInt())),
     ),
+    lastRequestOptions: $checkedConvert(
+      'lastRequestOptions',
+      (v) => v == null ? null : RequestOptionsSaveData.fromJson(Map<String, dynamic>.from(v as Map)),
+    ),
   );
   return val;
 });
@@ -204,6 +213,7 @@ Map<String, dynamic> _$AutoLoginDataCNToJson(AutoLoginDataCN instance) => <Strin
   'lastLogin': instance.lastLogin,
   'userGame': instance.userGame?.toJson(),
   'userItems': instance.userItems.map((k, e) => MapEntry(k.toString(), e)),
+  'lastRequestOptions': instance.lastRequestOptions?.toJson(),
   'region': const RegionConverter().toJson(instance.region),
   'gameServer': _$BiliGameServerEnumMap[instance.gameServer]!,
   'isAndroidDevice': instance.isAndroidDevice,
@@ -308,6 +318,30 @@ const _$BattleWinResultTypeEnumMap = {
   BattleWinResultType.normal: 'normal',
   BattleWinResultType.timeLimit: 'timeLimit',
   BattleWinResultType.lose: 'lose',
+};
+
+RequestOptionsSaveData _$RequestOptionsSaveDataFromJson(Map json) =>
+    $checkedCreate('RequestOptionsSaveData', json, ($checkedConvert) {
+      final val = RequestOptionsSaveData(
+        createdAt: $checkedConvert('createdAt', (v) => (v as num).toInt()),
+        path: $checkedConvert('path', (v) => v as String),
+        key: $checkedConvert('key', (v) => v as String),
+        url: $checkedConvert('url', (v) => v as String),
+        formData: $checkedConvert('formData', (v) => v as String),
+        headers: $checkedConvert('headers', (v) => Map<String, dynamic>.from(v as Map)),
+        success: $checkedConvert('success', (v) => v as bool? ?? false),
+      );
+      return val;
+    });
+
+Map<String, dynamic> _$RequestOptionsSaveDataToJson(RequestOptionsSaveData instance) => <String, dynamic>{
+  'createdAt': instance.createdAt,
+  'path': instance.path,
+  'key': instance.key,
+  'url': instance.url,
+  'formData': instance.formData,
+  'headers': instance.headers,
+  'success': instance.success,
 };
 
 GachaOption _$GachaOptionFromJson(Map json) => $checkedCreate('GachaOption', json, ($checkedConvert) {

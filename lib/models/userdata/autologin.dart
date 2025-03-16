@@ -115,6 +115,7 @@ sealed class AutoLoginData {
   int? lastLogin;
   UserGameEntity? userGame;
   Map<int, int> userItems = {};
+  RequestOptionsSaveData? lastRequestOptions;
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   FResponse? response;
@@ -132,6 +133,7 @@ sealed class AutoLoginData {
     this.lastLogin,
     this.userGame,
     Map<int, int>? userItems,
+    this.lastRequestOptions,
   }) : battleOptions = battleOptions ?? [AutoBattleOptions()],
        recoveredAps = recoveredAps ?? {},
        gacha = gacha ?? GachaOption(),
@@ -168,6 +170,7 @@ class AutoLoginDataJP extends AutoLoginData {
     super.lastLogin,
     super.userGame,
     super.userItems,
+    super.lastRequestOptions,
   });
 
   factory AutoLoginDataJP.fromJson(Map<String, dynamic> json) => _$AutoLoginDataJPFromJson(json);
@@ -249,6 +252,7 @@ class AutoLoginDataCN extends AutoLoginData {
     super.lastLogin,
     super.userGame,
     super.userItems,
+    super.lastRequestOptions,
   });
 
   factory AutoLoginDataCN.fromJson(Map<String, dynamic> json) => _$AutoLoginDataCNFromJson(json);
@@ -351,6 +355,31 @@ class AutoBattleOptions {
   factory AutoBattleOptions.fromJson(Map<String, dynamic> json) => _$AutoBattleOptionsFromJson(json);
 
   Map<String, dynamic> toJson() => _$AutoBattleOptionsToJson(this);
+}
+
+@JsonSerializable()
+class RequestOptionsSaveData {
+  int createdAt;
+  String path;
+  String key;
+  String url;
+  String formData;
+  Map<String, dynamic> headers;
+  bool success;
+
+  RequestOptionsSaveData({
+    required this.createdAt,
+    required this.path,
+    required this.key,
+    required this.url,
+    required this.formData,
+    required this.headers,
+    this.success = false,
+  });
+
+  factory RequestOptionsSaveData.fromJson(Map<String, dynamic> json) => _$RequestOptionsSaveDataFromJson(json);
+
+  Map<String, dynamic> toJson() => _$RequestOptionsSaveDataToJson(this);
 }
 
 enum NACountry {

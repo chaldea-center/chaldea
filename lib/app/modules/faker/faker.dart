@@ -291,20 +291,28 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
           child: ValueListenableBuilder(
             valueListenable: runtime.runningTask,
             builder:
-                (context, running, _) => Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    CircularProgressIndicator(value: running ? null : 1.0, color: running ? Colors.red : Colors.green),
-                    if (running)
-                      TimerUpdate(
-                        builder: (context, t) {
-                          final startedAt = agent.network.lastTaskStartedAt;
-                          final dt = min(99, t.timestamp - startedAt);
-                          if (startedAt <= 0 || dt < 0) return const SizedBox.shrink();
-                          return Text(dt.toString(), style: TextStyle(fontSize: 10), textAlign: TextAlign.center);
-                        },
+                (context, running, _) => GestureDetector(
+                  onTap: () {
+                    setState(() {});
+                  },
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      CircularProgressIndicator(
+                        value: running ? null : 1.0,
+                        color: running ? Colors.red : Colors.green,
                       ),
-                  ],
+                      if (running)
+                        TimerUpdate(
+                          builder: (context, t) {
+                            final startedAt = agent.network.lastTaskStartedAt;
+                            final dt = min(99, t.timestamp - startedAt);
+                            if (startedAt <= 0 || dt < 0) return const SizedBox.shrink();
+                            return Text(dt.toString(), style: TextStyle(fontSize: 10), textAlign: TextAlign.center);
+                          },
+                        ),
+                    ],
+                  ),
                 ),
           ),
         ),
@@ -317,10 +325,12 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
                   builder: (context, time) {
                     return Tooltip(
                       message: userGame.actRecoverAt.sec2date().toCustomString(year: false),
-                      child: Text(
-                        '${userGame.calCurAp()}/${userGame.actMax}\n${Duration(seconds: (userGame.actRecoverAt - DateTime.now().timestamp)).toString().split('.').first}',
-                        textAlign: TextAlign.end,
-                        style: const TextStyle(fontSize: 12),
+                      child: SelectionContainer.disabled(
+                        child: Text(
+                          '${userGame.calCurAp()}/${userGame.actMax}\n${Duration(seconds: (userGame.actRecoverAt - DateTime.now().timestamp)).toString().split('.').first}',
+                          textAlign: TextAlign.end,
+                          style: const TextStyle(fontSize: 12),
+                        ),
                       ),
                     );
                   },
@@ -612,6 +622,91 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
     }
 
     final resultType = BattleResultType.values.firstWhereOrNull((e) => e.value == lastResult?.battleResult);
+
+    // request options
+    final saveData = agent.user.lastRequestOptions;
+    if (saveData != null) {
+      children.add(Divider(indent: 16, endIndent: 16, height: 1));
+      children.add(
+        ListenableBuilder(
+          listenable: agent.network,
+          builder: (context, _) {
+            return SimpleAccordion(
+              headerBuilder: (context, _) {
+                return ListTile(
+                  dense: true,
+                  title: Text(saveData.key),
+                  subtitle: Text(saveData.createdAt.sec2date().toStringShort()),
+                  trailing: SizedBox.square(
+                    dimension: 12,
+                    child: CircularProgressIndicator(
+                      value: runtime.runningTask.value ? null : 1,
+                      color: runtime.runningTask.value ? Colors.grey : (saveData.success ? Colors.green : Colors.red),
+                    ),
+                  ),
+                );
+              },
+              contentBuilder: (context) {
+                return Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    ListTile(
+                      dense: true,
+                      title: Text(saveData.url),
+                      onLongPress: () {
+                        copyToClipboard(saveData.url, toast: true);
+                      },
+                    ),
+                    ListTile(
+                      dense: true,
+                      title: Text(saveData.formData, maxLines: 2, overflow: TextOverflow.ellipsis),
+                      onTap: () {
+                        showRequestDataFormatDialog(context, saveData.formData);
+                      },
+                    ),
+                    FilledButton(
+                      onPressed:
+                          runtime.runningTask.value
+                              ? null
+                              : () async {
+                                final confirm = await SimpleCancelOkDialog(
+                                  title: Text("Send"),
+                                  content: Text('request:${saveData.key}\nSuccess: ${saveData.success}'),
+                                ).showDialog(context);
+                                if (confirm != true) return;
+                                runtime.runTask(() async {
+                                  final resp = await agent.network.requestStartDirect(saveData);
+                                  if (context.mounted) {
+                                    SimpleCancelOkDialog(
+                                      title: Text("Request Result"),
+                                      content: Text(
+                                        "status: ${resp.rawResponse.statusCode}\n"
+                                        "responses:\n${resp.data.responses.map((e) => ' - ${e.nid} ${e.resCode}').join('\n')}",
+                                      ),
+                                      hideCancel: true,
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () {
+                                            router.pushPage(FakerHistoryViewer(agent: agent));
+                                          },
+                                          child: Text(S.current.history),
+                                        ),
+                                      ],
+                                    ).showDialog(context);
+                                  }
+                                });
+                              },
+                      child: Text('Re-send'),
+                    ),
+                  ],
+                );
+              },
+            );
+          },
+        ),
+      );
+    }
 
     return TileGroup(
       header:
@@ -1931,6 +2026,15 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
                       ).showDialog(context);
                     },
                   ),
+                PopupMenuItem(
+                  enabled: !runtime.runningTask.value && inBattle,
+                  onTap: () async {
+                    runtime.runTask(() async {
+                      runtime.agent.curBattle = null;
+                    });
+                  },
+                  child: const Text('Clear Battle'),
+                ),
                 if (kDebugMode)
                   PopupMenuItem(
                     child: const Text('Test'),

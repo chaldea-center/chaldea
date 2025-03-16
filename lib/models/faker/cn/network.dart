@@ -39,6 +39,11 @@ class NetworkManagerCN extends NetworkManagerBase<FRequestCN, AutoLoginDataCN> {
   NetworkManagerCN({required super.gameTop, required super.user});
 
   @override
+  FRequestCN createRequest({required String path, String? key}) {
+    return FRequestCN(network: this, path: path, key: key ?? path);
+  }
+
+  @override
   Future<Response> requestStartImpl(FRequestCN request) async {
     assert(request.path.startsWith('https://'));
     final form = request.form;
@@ -67,7 +72,27 @@ class NetworkManagerCN extends NetworkManagerBase<FRequestCN, AutoLoginDataCN> {
     buffer.writeln(form.data);
     print(buffer.toString());
     request.params = form.map;
-    final Response rawResp = await Dio(BaseOptions(connectTimeout: const Duration(seconds: 10))).post(
+    final lastRequestOptions =
+        user.lastRequestOptions = RequestOptionsSaveData(
+          createdAt: getNowTimestamp(),
+          path: request.path,
+          key: request.key,
+          url: uri.toString(),
+          formData: form.data,
+          headers: headers.deepCopy(),
+        );
+    notifyListeners();
+
+    if (request.sendDelay > Duration.zero) {
+      await Future.delayed(request.sendDelay);
+      if (stopFlag) {
+        stopFlag = false;
+        throw SilentException('Manual Stop Flag, current request: ${request.key}');
+      }
+      notifyListeners();
+    }
+    final dio = Dio(BaseOptions(connectTimeout: const Duration(seconds: 10)));
+    final Response rawResp = await dio.post(
       uri.toString(),
       data: form.data,
       options: Options(
@@ -77,6 +102,11 @@ class NetworkManagerCN extends NetworkManagerBase<FRequestCN, AutoLoginDataCN> {
         receiveTimeout: const Duration(seconds: 30),
       ),
     );
+
+    if (rawResp.statusCode == HttpStatus.ok) {
+      lastRequestOptions.success = true;
+      notifyListeners();
+    }
     // print('Request headers: ${rawResp.requestOptions.headers}');
     // print('Response headers: ${rawResp.headers.toString().trim()}');
     request.rawRequest = rawResp.requestOptions;

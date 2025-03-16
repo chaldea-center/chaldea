@@ -134,7 +134,7 @@ abstract class FakerAgent<
 
   Future<FResponse> battleResult({
     required int64_t battleId,
-    required BattleResultType battleResult, // 0-none,1-win,2-lose,3-retire
+    required BattleResultType resultType, // 0-none,1-win,2-lose,3-retire
     required BattleWinResultType winResult, // 1 or 1
     String scores = "",
     required BattleDataActionList action,
@@ -158,6 +158,7 @@ abstract class FakerAgent<
     List<int32_t> routeSelectIdArray = const [],
     List<int32_t> dataLostUniqueIdArray = const [],
     List waveInfos = const [],
+    Duration? sendDelay,
   });
 
   // raid
@@ -390,17 +391,19 @@ abstract class FakerAgent<
     required BattleResultType resultType,
     required String actionLogs,
     List<int> usedTurnArray = const [],
+    Duration? sendDelay,
   }) async {
     final battleInfo = battleEntity.battleInfo!;
     final stageCount = battleInfo.enemyDeck.length;
     if (resultType == BattleResultType.cancel) {
       return battleResult(
         battleId: battleEntity.id,
-        battleResult: BattleResultType.cancel,
+        resultType: BattleResultType.cancel,
         winResult: BattleWinResultType.none,
         action: BattleDataActionList(logs: "", dt: battleInfo.enemyDeck.first.svts.map((e) => e.uniqueId).toList()),
         usedTurnArray: List.generate(stageCount, (i) => i == 0 ? 1 : 0),
         aliveUniqueIds: battleInfo.enemyDeck.expand((e) => e.svts).map((e) => e.uniqueId).toList(),
+        sendDelay: sendDelay,
       );
     } else if (resultType == BattleResultType.win) {
       final quest = await AtlasApi.questPhase(
@@ -457,7 +460,7 @@ abstract class FakerAgent<
       }
       return battleResult(
         battleId: battleEntity.id,
-        battleResult: BattleResultType.win,
+        resultType: BattleResultType.win,
         winResult: BattleWinResultType.normal,
         action: BattleDataActionList(
           logs: actionLogs,
@@ -469,6 +472,7 @@ abstract class FakerAgent<
         calledEnemyUniqueIdArray: calledEnemyUniqueIdArray,
         // skillShiftUniqueIdArray: itemDroppedSkillShiftEnemies.map((e) => e.uniqueId).toList(),
         // skillShiftNpcSvtIdArray: itemDroppedSkillShiftEnemies.map((e) => e.npcId).toList(),
+        sendDelay: sendDelay,
       );
     } else {
       throw Exception('resultType=$resultType not supported');

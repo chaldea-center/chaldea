@@ -125,7 +125,7 @@ class _FakerHistoryViewerState extends State<FakerHistoryViewer> {
         overflow: TextOverflow.ellipsis,
       ),
       onTap: () {
-        _showDataFormatDialog(context, data);
+        showRequestDataFormatDialog(context, data);
       },
     );
   }
@@ -208,7 +208,7 @@ List<MapEntry<String, String>> _parseFormBody(String data) {
   return entries;
 }
 
-Future<void> _showDataFormatDialog(BuildContext context, dynamic data) {
+Future<void> showRequestDataFormatDialog(BuildContext context, dynamic data) {
   List<MapEntry<String, String>>? formData;
   Object? jsonData; // list or map
   if (data is String) {

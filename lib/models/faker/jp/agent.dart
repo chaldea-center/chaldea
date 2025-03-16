@@ -386,7 +386,7 @@ class FakerAgentJP extends FakerAgent<FRequestJP, AutoLoginDataJP, NetworkManage
   @override
   Future<FResponse> battleResult({
     required int64_t battleId,
-    required BattleResultType battleResult, // 0-none,1-win,2-lose,3-retire
+    required BattleResultType resultType, // 0-none,1-win,2-lose,3-retire
     required BattleWinResultType winResult, // 1 or 1
     String scores = "",
     required BattleDataActionList action,
@@ -410,9 +410,11 @@ class FakerAgentJP extends FakerAgent<FRequestJP, AutoLoginDataJP, NetworkManage
     List<int32_t> routeSelectIdArray = const [],
     List<int32_t> dataLostUniqueIdArray = const [],
     List waveInfos = const [],
+    Duration? sendDelay,
   }) async {
     final request = FRequestJP(network: network, path: '/battle/result');
-    final _battleResult = battleResult.value, _winResult = winResult.value;
+    if (sendDelay != null) request.sendDelay = sendDelay;
+    final _battleResult = resultType.value, _winResult = winResult.value;
 
     Map<String, Object> dictionary = {
       "battleId": battleId,

@@ -91,6 +91,11 @@ class NetworkManagerJP extends NetworkManagerBase<FRequestJP, AutoLoginDataJP> {
 
   // String? sessionId; // Set-Cookie: ASP.NET_SessionId=.*; path=/; HttpOnly
 
+  @override
+  FRequestJP createRequest({required String path, String? key}) {
+    return FRequestJP(network: this, path: path, key: key);
+  }
+
   void setBaseField(FRequestJP request) {
     final auth = user.auth;
     if (auth == null) throw Exception('No auth data');
@@ -146,9 +151,41 @@ class NetworkManagerJP extends NetworkManagerBase<FRequestJP, AutoLoginDataJP> {
     // buffer.writeln(headers);
     buffer.writeln(form.data);
     request.params = form.map;
-    final Response rawResp = await Dio(
-      BaseOptions(connectTimeout: const Duration(seconds: 10)),
-    ).post(uri.toString(), data: form.data, options: Options(headers: headers));
+    final lastRequestOptions =
+        user.lastRequestOptions = RequestOptionsSaveData(
+          createdAt: getNowTimestamp(),
+          path: request.path,
+          key: request.key,
+          url: uri.toString(),
+          formData: form.data,
+          headers: headers.deepCopy(),
+        );
+    notifyListeners();
+
+    if (request.sendDelay > Duration.zero) {
+      await Future.delayed(request.sendDelay);
+      if (stopFlag) {
+        stopFlag = false;
+        throw SilentException('Manual Stop Flag, current request: ${request.key}');
+      }
+      notifyListeners();
+    }
+    final dio = Dio(BaseOptions(connectTimeout: const Duration(seconds: 10)));
+    final Response rawResp = await dio.post(
+      uri.toString(),
+      data: form.data,
+      options: Options(
+        headers: headers,
+        followRedirects: true,
+        sendTimeout: const Duration(seconds: 10),
+        receiveTimeout: const Duration(seconds: 30),
+      ),
+    );
+
+    if (rawResp.statusCode == HttpStatus.ok) {
+      lastRequestOptions.success = true;
+      notifyListeners();
+    }
     request.rawRequest = rawResp.requestOptions;
     request.rawResponse = rawResp;
     // buffer.writeln(rawResp.headers);

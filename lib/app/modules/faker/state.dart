@@ -117,6 +117,7 @@ class FakerRuntime {
       };
       return FakerRuntime._(agent);
     });
+    runtime.agent.network.addListener(runtime.update);
     runtime._dependencies[state] = true;
     return runtime;
   }
@@ -310,19 +311,19 @@ class FakerRuntime {
         }
 
         if (shouldRetire) {
-          await Future.delayed(const Duration(seconds: 1));
           resultResp = await agent.battleResultWithOptions(
             battleEntity: battleEntity,
             resultType: BattleResultType.cancel,
             actionLogs: "",
+            sendDelay: const Duration(seconds: 1),
           );
         } else {
           final delay = battleOption.battleDuration ?? (agent.network.gameTop.region == Region.cn ? 40 : 20);
-          await Future.delayed(Duration(seconds: delay));
           resultResp = await agent.battleResultWithOptions(
             battleEntity: battleEntity,
             resultType: BattleResultType.win,
             actionLogs: battleOption.actionLogs,
+            sendDelay: Duration(seconds: delay),
           );
           // if win
           totalDropStat.totalCount += 1;

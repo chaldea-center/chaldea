@@ -167,6 +167,7 @@ class FakerAgentCN extends FakerAgent<FRequestCN, AutoLoginDataCN, NetworkManage
     Map<String, Object>? params2,
     Map<String, Object>? params3,
     Map<String, Object>? params4,
+    Duration? sendDelay,
   }) async {
     // has Set-Cookie
     final request = FRequestCN(
@@ -174,6 +175,7 @@ class FakerAgentCN extends FakerAgent<FRequestCN, AutoLoginDataCN, NetworkManage
       path: '$host/rongame_beta/rgfate/60_1001/ac.php?_userId=$sguid&_key=$key',
       key: key,
     );
+    if (sendDelay != null) request.sendDelay = sendDelay;
     Map<String, Object> params = <String, Object>{
       ...?params1,
       "ac": "action",
@@ -545,7 +547,7 @@ class FakerAgentCN extends FakerAgent<FRequestCN, AutoLoginDataCN, NetworkManage
   @override
   Future<FResponse> battleResult({
     required int64_t battleId,
-    required BattleResultType battleResult, // 0-none,1-win,2-lose,3-retire
+    required BattleResultType resultType, // 0-none,1-win,2-lose,3-retire
     required BattleWinResultType winResult, // 1 or 1
     String scores = "",
     required BattleDataActionList action,
@@ -569,8 +571,9 @@ class FakerAgentCN extends FakerAgent<FRequestCN, AutoLoginDataCN, NetworkManage
     List<int32_t> routeSelectIdArray = const [],
     List<int32_t> dataLostUniqueIdArray = const [],
     List waveInfos = const [],
+    Duration? sendDelay,
   }) async {
-    final _battleResult = battleResult.value, _winResult = winResult.value;
+    final _battleResult = resultType.value, _winResult = winResult.value;
 
     Map<String, dynamic> dictionary = {
       "battleId": battleId,
@@ -636,6 +639,7 @@ class FakerAgentCN extends FakerAgent<FRequestCN, AutoLoginDataCN, NetworkManage
         "superBossResult": jsonEncode(superBossResult),
         "result": jsonEncode(dictionary),
       },
+      sendDelay: sendDelay,
     );
     lastBattle = curBattle;
     curBattle = null;
