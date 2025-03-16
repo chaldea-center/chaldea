@@ -111,8 +111,7 @@ class _ApkListPageState extends State<ApkListPage> {
           final bool useXapk = switch (data.region) {
             Region.jp => AppVersion.compare(ver, '2.94.2') > 0,
             Region.na => AppVersion.compare(ver, '2.66.0') > 0,
-            // Region.tw => AppVersion.compare(ver, '2.67.0') > 0,
-            Region.tw => false,
+            Region.tw => AppVersion.compare(ver, '2.85.0') > 0,
             Region.kr => AppVersion.compare(ver, '6.0.0') > 0,
             _ => false,
           };

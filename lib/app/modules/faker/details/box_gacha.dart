@@ -135,7 +135,7 @@ class _BoxGachaDrawPageState extends State<BoxGachaDrawPage> {
         ],
       ),
       body: PopScope(
-        canPop: false,
+        canPop: !runtime.runningTask.value,
         child: ListTileTheme.merge(
           dense: true,
           visualDensity: VisualDensity.compact,

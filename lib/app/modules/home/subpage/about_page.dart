@@ -321,7 +321,7 @@ class _AboutProgram extends StatelessWidget {
           const SizedBox(height: 3),
           Text.rich(
             TextSpan(
-              text: "${AppInfo.commitHash} - ${AppInfo.commitDate}",
+              text: "${PlatformU.operatingSystem} - ${AppInfo.commitHash} - ${AppInfo.commitDate}",
               // recognizer: TapGestureRecognizer()
               //   ..onTap = () => launch(AppInfo.commitUrl),
               style: Theme.of(context).textTheme.bodySmall,

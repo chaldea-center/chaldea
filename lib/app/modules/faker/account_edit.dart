@@ -318,7 +318,7 @@ class _FakerAccountEditPageState extends State<FakerAccountEditPage> {
       if (PlatformU.isAndroid) {
         final gameTop = (await AtlasApi.gametops())?.of(user.region);
         final info = await DeviceInfoPlugin().androidInfo;
-        user.userAgent = "UnityPlayer/${gameTop?.unityVer ?? '2022.3.18f1'} (UnityWebRequest/1.0, libcurl/8.4.0-DEV)";
+        user.userAgent = "UnityPlayer/${gameTop?.unityVer ?? '2022.3.28f1'} (UnityWebRequest/1.0, libcurl/8.4.0-DEV)";
         user.os =
             "Android OS ${info.version.release} / API-${info.version.sdkInt} (${info.id}/${info.version.incremental})";
         user.ptype = "${info.manufacturer} ${info.model}";

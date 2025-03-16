@@ -64,7 +64,7 @@ class _SvtCombinePageState extends State<SvtCombinePage> {
         ],
       ),
       body: PopScope(
-        canPop: false,
+        canPop: !runtime.runningTask.value,
         child: ListTileTheme.merge(
           dense: true,
           visualDensity: VisualDensity.compact,
