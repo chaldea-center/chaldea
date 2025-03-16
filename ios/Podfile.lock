@@ -194,7 +194,7 @@ SPEC CHECKSUMS:
   file_picker: b159e0c068aef54932bb15dc9fd1571818edaf49
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
   flutter_js: 95929d4e146e8ceb1c8e1889d8c2065c5d840076
-  flutter_local_notifications: df98d66e515e1ca797af436137b4459b160ad8c9
+  flutter_local_notifications: ff50f8405aaa0ccdc7dcfb9022ca192e8ad9688f
   flutter_mailer: 2ef5a67087bc8c6c4cefd04a178bf1ae2c94cd83
   flutter_timezone: ac3da59ac941ff1c98a2e1f0293420e020120282
   fluttertoast: 21eecd6935e7064cc1fcb733a4c5a428f3f24f0f

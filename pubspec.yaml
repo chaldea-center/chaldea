@@ -19,7 +19,7 @@ version: 2.5.18+979
 
 environment:
   sdk: ">=3.7.0 <4.0.0"
-  flutter: 3.29.0
+  flutter: 3.29.2
 
 dependencies:
   flutter:
@@ -54,7 +54,7 @@ dependencies:
   flutter_cache_manager: ^3.3.1
   flutter_easyloading: ^3.0.5
   flutter_hooks: ^0.21.2
-  flutter_local_notifications: ^18.0.0
+  flutter_local_notifications: ^19.0.0
   flutter_markdown: ^0.7.4
   # flutter_qjs: ^0.3.7
   flutter_js: #^0.8.1

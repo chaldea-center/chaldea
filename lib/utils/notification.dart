@@ -116,7 +116,6 @@ abstract class LocalNotificationUtil {
       tz.TZDateTime.from(dateTime, _hasLocalTz ? tz.local : tz.UTC),
       const NotificationDetails(android: _defaultAndroidDetails),
       androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-      uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
     );
   }
 

@@ -125,7 +125,7 @@ SPEC CHECKSUMS:
   device_info_plus: 1b14eed9bf95428983aed283a8d51cce3d8c4215
   file_picker: e716a70a9fe5fd9e09ebc922d7541464289443af
   flutter_js: c664361655af1d8fc24e278c7d086e9cbe0d68bc
-  flutter_local_notifications: 7062189aabf7f50938a7b8b6614ffa97656eb0bf
+  flutter_local_notifications: 4ccab5b7a22835214a6672e3f9c5e8ae207dab36
   flutter_timezone: 62400baa441155f2a4144188648f2ff861649747
   FlutterMacOS: 8f6f14fa908a6fb3fba0cd85dbd81ec4b251fb24
   just_audio: a42c63806f16995daf5b219ae1d679deb76e6a79
