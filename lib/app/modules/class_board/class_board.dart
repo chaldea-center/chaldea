@@ -87,20 +87,20 @@ class _ClassBoardDetailPageState extends State<ClassBoardDetailPage> with Single
     int totalBond = 0;
 
     for (final square in board.squares) {
-      final unlocked = status.enhancedSquares.contains(square.id);
+      final enhanced = status.enhancedSquares.contains(square.id);
       if (square.targetCommandSpell != null) {
         spells.putIfAbsent(square.targetCommandSpell!.id, () => square.targetCommandSpell!);
-        if (unlocked) spellLvs.addNum(square.targetCommandSpell!.id, square.upSkillLv);
+        if (enhanced) spellLvs.addNum(square.targetCommandSpell!.id, square.upSkillLv);
         maxSpellLvs.addNum(square.targetCommandSpell!.id, square.upSkillLv);
       } else if (square.targetSkill != null) {
         skills.putIfAbsent(square.targetSkill!.id, () => square.targetSkill!);
-        if (unlocked) skillLvs.addNum(square.targetSkill!.id, square.upSkillLv);
+        if (enhanced) skillLvs.addNum(square.targetSkill!.id, square.upSkillLv);
         maxSkillLvs.addNum(square.targetSkill!.id, square.upSkillLv);
       }
       if (square.lock != null) {
         final lockItems = {for (final itemAmount in square.lock!.items) itemAmount.itemId: itemAmount.amount};
         unlockItems.addDict(lockItems);
-        if (!unlocked && plan_.unlockedSquares.contains(square.id)) {
+        if (!status.unlockedSquares.contains(square.id) && plan_.unlockedSquares.contains(square.id)) {
           planUnlockItems.addDict(lockItems);
         }
       }
