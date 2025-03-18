@@ -17,6 +17,7 @@ import 'combine_image_page.dart';
 import 'custom_chara_figure.dart';
 import 'event_fatigue.dart';
 import 'realtime_svt_filter.dart';
+import 'skipped_svt_id.dart';
 import 'tree_size.dart';
 
 class ToolListPage extends StatelessWidget {
@@ -59,6 +60,7 @@ class ToolListPage extends StatelessWidget {
               buildOne('Extra CharaImage Marker', CharaFigureMarker.image(), supportWeb: false),
               buildOne('AA Explorer', const AtlasExplorerPreview(), supportWeb: false),
               buildOne('Ciphers', const CipherTestPage()),
+              buildOne('Skipped Svt ID', const SkippedSvtIdPage()),
               if (db.settings.secrets.user?.isAdmin == true)
                 buildOne('Admin Tools', AdminToolsPage(), supportWeb: false),
               if (!kIsWeb) buildOne('TreeSize', const TreeSizePage()),
