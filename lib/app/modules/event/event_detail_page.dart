@@ -907,22 +907,55 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
                           )
                           ?.targetId;
                   final svt = db.gameData.servantsById[svtId];
+                  final status = svt?.status;
+                  final releaseOverwrites = quest.releaseOverwrites.where((e) => e.eventId == event.id).toList();
+                  releaseOverwrites.sortByList((e) => [e.startedAt, e.endedAt, e.priority]);
+                  final sameReleaseTime =
+                      releaseOverwrites.map((e) => '${e.startedAt}-${e.endedAt}').toSet().length <= 1;
+                  List<Widget> releaseChildren = [];
+                  Widget fmtDateRange(int start, int end) => Text(
+                    '${start.sec2date().toCustomString(second: false)} ~ ${start.sec2date().toCustomString(year: false, second: false)}',
+                    style: const TextStyle(fontSize: 12),
+                  );
+                  for (final (index, release) in releaseOverwrites.indexed) {
+                    releaseChildren.add(
+                      CondTargetValueDescriptor(
+                        condType: release.condType,
+                        target: release.condId,
+                        value: release.condNum,
+                        unknownMsg: release.closedMessage,
+                        style: Theme.of(context).textTheme.bodySmall,
+                      ),
+                    );
+                    if (!sameReleaseTime) {
+                      final nextRelease = releaseOverwrites.getOrNull(index + 1);
+                      if (nextRelease == null ||
+                          nextRelease.startedAt != release.startedAt ||
+                          nextRelease.endedAt != release.endedAt) {
+                        releaseChildren.add(fmtDateRange(release.startedAt, release.endedAt));
+                      }
+                    }
+                  }
+                  if (sameReleaseTime &&
+                      releaseOverwrites.isNotEmpty &&
+                      (releaseOverwrites.first.startedAt != event.startedAt ||
+                          releaseOverwrites.first.endedAt != event.endedAt)) {
+                    releaseChildren.add(
+                      fmtDateRange(releaseOverwrites.first.startedAt, releaseOverwrites.first.endedAt),
+                    );
+                  }
+
                   return ListTile(
-                    leading: svt == null ? const SizedBox.shrink() : svt.iconBuilder(context: context, width: 40),
-                    title: Text(quest.lName.l),
-                    subtitle: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        for (final release in quest.releaseOverwrites)
-                          if (release.eventId == event.id)
-                            CondTargetValueDescriptor(
-                              condType: release.condType,
-                              target: release.condId,
-                              value: release.condNum,
-                              style: Theme.of(context).textTheme.bodySmall,
+                    leading:
+                        svt == null
+                            ? const SizedBox.shrink()
+                            : svt.iconBuilder(
+                              context: context,
+                              width: 40,
+                              text: status != null && status.favorite ? 'NP${status.cur.npLv}' : '',
                             ),
-                      ],
-                    ),
+                    title: Text(quest.lName.l),
+                    subtitle: Column(crossAxisAlignment: CrossAxisAlignment.start, children: releaseChildren),
                     onTap: quest.routeTo,
                   );
                 }).toList(),

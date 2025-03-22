@@ -307,8 +307,9 @@ class _QuestCardState extends State<QuestCard> {
       final event = db.gameData.events[entry.key];
       String name = event?.lName.l ?? "Event ${entry.key}";
       name = name.replaceAll(RegExp(r"\[(FFFF00|\-)\]"), '');
-      final release = entry.value.first;
-      children.addAll([
+      final releases = entry.value;
+      releases.sortByList((e) => [e.startedAt, e.endedAt, e.priority]);
+      children.add(
         DividerWithTitle(
           titleWidget: Text.rich(
             SharedBuilder.textButtonSpan(context: context, text: name, onTap: event?.routeTo),
@@ -316,13 +317,23 @@ class _QuestCardState extends State<QuestCard> {
             textAlign: TextAlign.center,
           ),
         ),
-        Text(
-          [release.startedAt.sec2date().toDateString(), release.endedAt.sec2date().toDateString()].join(" ~ "),
-          textScaler: const TextScaler.linear(0.9),
-        ),
-        for (final release in entry.value)
+      );
+      for (final (index, release) in releases.indexed) {
+        final prevRelease = releases.getOrNull(index - 1);
+        if (prevRelease == null ||
+            release.startedAt != prevRelease.startedAt ||
+            release.endedAt != prevRelease.endedAt) {
+          children.add(
+            Text(
+              [release.startedAt.sec2date().toDateString(), release.endedAt.sec2date().toDateString()].join(" ~ "),
+              textScaler: const TextScaler.linear(0.9),
+            ),
+          );
+        }
+        children.add(
           CondTargetValueDescriptor(condType: release.condType, target: release.condId, value: release.condNum),
-      ]);
+        );
+      }
     }
 
     return Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: children);
