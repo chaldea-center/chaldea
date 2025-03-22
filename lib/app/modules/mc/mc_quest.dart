@@ -521,7 +521,7 @@ class _MCQuestConverter extends McConverter {
     }
 
     if (!allNoBattle) {
-      if (bonds.length == 1 && exps.length == 1 && qps.length == 1) {
+      if (recommendLvs.length == 1 && bonds.length == 1 && exps.length == 1 && qps.length == 1) {
         sameBond = true;
         buffer.writeln("""|推荐等级=${recommendLvs.single}
 |牵绊=${bonds.single}
