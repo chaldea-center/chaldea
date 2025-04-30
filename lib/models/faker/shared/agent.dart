@@ -49,6 +49,8 @@ abstract class FakerAgent<
 
   Future<FResponse> eventMissionClearReward({required List<int32_t> missionIds});
 
+  Future<FResponse> eventMissionRandomCancel({required int32_t missionId});
+
   Future<FResponse> userPresentReceive({
     required List<int64_t> presentIds,
     required int32_t itemSelectIdx,
@@ -123,6 +125,7 @@ abstract class FakerAgent<
     required int32_t followerSupportDeckId,
     int32_t campaignItemId = 0,
     int32_t restartWave = 0,
+    List<int32_t> useRewardAddItemIds = const [],
   });
 
   Future<FResponse> battleResume({
@@ -160,6 +163,7 @@ abstract class FakerAgent<
     List waveInfos = const [],
     Duration? sendDelay,
   });
+  // public void beginRequest(int[] dataLostUniqueIdArray, BattleWaveInfoData[] waveInfos, int waveNum) { }
 
   // raid
   Future<FResponse> battleTurn({required int64_t battleId});
@@ -187,6 +191,28 @@ abstract class FakerAgent<
     if (questPhaseEntity == null) {
       throw Exception('Quest ${options.questId}/${options.questPhase} not found');
     }
+
+    final notSuppportedFlags = const {
+      QuestFlag.notSingleSupportOnly,
+      QuestFlag.superBoss,
+      QuestFlag.branch,
+      QuestFlag.branchHaving,
+      QuestFlag.branchScenario,
+    }.intersection(questPhaseEntity.flags.toSet());
+    if (notSuppportedFlags.isNotEmpty) {
+      throw SilentException('Finding support but not supported flags: $notSuppportedFlags');
+    }
+
+    if (questPhaseEntity.extraDetail?.questSelect?.isNotEmpty == true) {
+      throw SilentException('questSelect not supported');
+    }
+
+    if (questPhaseEntity.restrictions.any(
+      (restriction) => restriction.restriction.type == RestrictionType.dataLostBattleUniqueSvt,
+    )) {
+      throw SilentException('DATA LOST battle not supported');
+    }
+
     final curAp = mstData.user!.calCurAp();
     if (questPhaseEntity.consumeType.useAp) {
       final consume = options.isApHalf ? quest.consume ~/ 2 : quest.consume;
@@ -287,19 +313,13 @@ abstract class FakerAgent<
       followerSupportDeckId = 0;
       final eventDeck = mstData.userEventDeck[UserEventDeckEntity.createPK(eventId, activeDeckId)]!;
       userEquipId = eventDeck.deckInfo!.userEquipId;
-    } else if (questPhaseEntity.flags.contains(QuestFlag.eventDeckNoSupport)) {
+    } else if (questPhaseEntity.flags.contains(QuestFlag.eventDeckNoSupport) ||
+        questPhaseEntity.flags.contains(QuestFlag.noSupportList)) {
       followerId = 0;
       followerClassId = 0;
       followerType = 0;
       followerSupportDeckId = 0;
     } else {
-      final notSuppportedFlags = const {
-        QuestFlag.noSupportList,
-        QuestFlag.notSingleSupportOnly,
-      }.intersection(questPhaseEntity.flags.toSet());
-      if (notSuppportedFlags.isNotEmpty) {
-        throw SilentException('Finding support but not supported flags: $notSuppportedFlags');
-      }
       final (follower, followerSvt) = await _getValidSupport(
         questId: options.questId,
         questPhase: options.questPhase,

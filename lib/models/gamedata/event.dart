@@ -901,6 +901,8 @@ class EventPointActivity {
 class EventMissionConditionDetail {
   int id;
   int missionTargetId;
+
+  /// enum [EventMissionCondDetailType]
   int missionCondType;
   int logicType;
   List<int> targetIds;
@@ -994,6 +996,11 @@ class EventMission {
   // int notfyPriority;
   // int presentMessageId;
   List<EventMissionCondition> conds;
+
+  List<EventMissionCondition> get clearConds => [
+    for (final cond in conds)
+      if (cond.missionProgressType == MissionProgressType.clear) cond,
+  ];
 
   EventMission({
     required this.id,
@@ -2009,6 +2016,8 @@ enum MissionProgressType {
     }
     return MissionProgressType.none;
   }
+
+  bool get isClearOrAchieve => this == clear || this == achieve;
 }
 
 enum MissionType { none, event, weekly, daily, extra, limited, complete, random, servant }

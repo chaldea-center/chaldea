@@ -110,6 +110,7 @@ sealed class AutoLoginData {
   GachaOption gacha;
   SvtCombineOption svtCombine;
   PresentBoxFilterData presentBox;
+  RandomMissionOption randomMission;
 
   //
   int? lastLogin;
@@ -130,6 +131,7 @@ sealed class AutoLoginData {
     GachaOption? gacha,
     SvtCombineOption? svtCombine,
     PresentBoxFilterData? presentBox,
+    RandomMissionOption? randomMission,
     this.lastLogin,
     this.userGame,
     Map<int, int>? userItems,
@@ -139,6 +141,7 @@ sealed class AutoLoginData {
        gacha = gacha ?? GachaOption(),
        svtCombine = svtCombine ?? SvtCombineOption(),
        presentBox = presentBox ?? PresentBoxFilterData(),
+       randomMission = randomMission ?? RandomMissionOption(),
        _curBattleOptionIndex = curBattleOptionIndex ?? 0,
        userItems = userItems ?? {};
 
@@ -167,6 +170,7 @@ class AutoLoginDataJP extends AutoLoginData {
     super.gacha,
     super.svtCombine,
     super.presentBox,
+    super.randomMission,
     super.lastLogin,
     super.userGame,
     super.userItems,
@@ -249,6 +253,7 @@ class AutoLoginDataCN extends AutoLoginData {
     super.gacha,
     super.svtCombine,
     super.presentBox,
+    super.randomMission,
     super.lastLogin,
     super.userGame,
     super.userItems,
@@ -520,6 +525,67 @@ class PresentBoxFilterData {
   Map<String, dynamic> toJson() => _$PresentBoxFilterDataToJson(this);
 }
 
+@JsonSerializable()
+class RandomMissionOption {
+  int cqTeamIndex;
+  int fqTeamIndex;
+  int maxFreeCount;
+  Map<int, double> itemWeights;
+  Set<int> enabledQuests;
+  int discardMissionMinLeftNum;
+  int discardLoopCount;
+
+  // stat data
+  Map<int, int> dropItems;
+  Map<int, int> giftItems;
+  Map<int, int> questCounts;
+  int cqCount;
+  int fqCount;
+  int totalAp;
+
+  RandomMissionOption({
+    this.cqTeamIndex = 0,
+    this.fqTeamIndex = 0,
+    this.maxFreeCount = 0,
+    Map<int, double>? itemWeights,
+    Set<int>? enabledQuests,
+    this.discardMissionMinLeftNum = -1,
+    this.discardLoopCount = 0,
+    Map<int, int>? dropItems,
+    Map<int, int>? giftItems,
+    Map<int, int>? questCounts,
+    this.cqCount = 0,
+    this.fqCount = 0,
+    this.totalAp = 0,
+  }) : itemWeights = itemWeights ?? {},
+       enabledQuests = enabledQuests ?? {},
+       dropItems = dropItems ?? {},
+       giftItems = giftItems ?? {},
+       questCounts = questCounts ?? {};
+
+  factory RandomMissionOption.fromJson(Map<String, dynamic> json) => _$RandomMissionOptionFromJson(json);
+
+  Map<String, dynamic> toJson() => _$RandomMissionOptionToJson(this);
+
+  double getItemWeight(int itemId) {
+    double? weight = itemWeights[itemId];
+    if (weight != null) return weight;
+    if (itemId < 1000) return 0;
+    return 1.0;
+  }
+
+  bool isImportant(int itemId) => getItemWeight(itemId) >= 2.0;
+
+  void resetStatData() {
+    dropItems = {};
+    giftItems = {};
+    questCounts = {};
+    cqCount = 0;
+    fqCount = 0;
+    totalAp = 0;
+  }
+}
+
 enum PresentType {
   servant,
   servantExp,
@@ -554,3 +620,70 @@ enum PresentType {
         name;
   }
 }
+
+@JsonSerializable()
+class AppWidgetConfig {
+  WidgetBackgroundConfig background;
+  WidgetLayoutType layoutType;
+
+  AppWidgetConfig({WidgetBackgroundConfig? background, this.layoutType = WidgetLayoutType.medium})
+    : background = background ?? WidgetBackgroundConfig();
+
+  factory AppWidgetConfig.fromJson(Map<String, dynamic> json) => _$AppWidgetConfigFromJson(json);
+
+  Map<String, dynamic> toJson() => _$AppWidgetConfigToJson(this);
+}
+
+@JsonSerializable()
+class WidgetBackgroundConfig {
+  WidgetBackgroundType type;
+  String? colorHex;
+  List<String>? gradientHex;
+  String? imagePath;
+  double blurRadius;
+
+  WidgetBackgroundConfig({
+    this.type = WidgetBackgroundType.color,
+    this.colorHex,
+    this.gradientHex,
+    this.imagePath,
+    this.blurRadius = 10.0,
+  });
+
+  factory WidgetBackgroundConfig.fromJson(Map<String, dynamic> json) => _$WidgetBackgroundConfigFromJson(json);
+
+  Map<String, dynamic> toJson() => _$WidgetBackgroundConfigToJson(this);
+}
+
+@JsonSerializable()
+class WidgetAccountInfo {
+  @RegionConverter()
+  Region region;
+  BiliGameServer biliGameServer;
+  String serverSvg;
+
+  String name;
+  String friendCode;
+  int actMax;
+  int actRecoverAt;
+  int carryOverActPoint;
+
+  WidgetAccountInfo({
+    this.region = Region.jp,
+    this.biliGameServer = BiliGameServer.ios,
+    this.serverSvg = "",
+    this.name = "",
+    this.friendCode = "",
+    this.actMax = 0,
+    this.actRecoverAt = 0,
+    this.carryOverActPoint = 0,
+  });
+
+  factory WidgetAccountInfo.fromJson(Map<String, dynamic> json) => _$WidgetAccountInfoFromJson(json);
+
+  Map<String, dynamic> toJson() => _$WidgetAccountInfoToJson(this);
+}
+
+enum WidgetBackgroundType { color, gradient, image }
+
+enum WidgetLayoutType { small, medium }

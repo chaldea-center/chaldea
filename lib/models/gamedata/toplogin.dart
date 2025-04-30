@@ -14,6 +14,8 @@ import 'gift.dart';
 import 'item.dart';
 import 'servant.dart';
 
+export 'mst_data_methods.dart';
+
 part '../../generated/models/gamedata/toplogin.g.dart';
 
 // ignore: unused_element
@@ -345,6 +347,10 @@ final _$mstMasterSchemes = <String, (Type, DataMaster Function(String mstName))>
     (mstName) =>
         DataMaster<_IntStr, UserEventMissionCondDetailEntity>(mstName, UserEventMissionCondDetailEntity.fromJson),
   ),
+  "userEventRandomMission": (
+    UserEventRandomMissionEntity,
+    (mstName) => DataMaster<_IntStr, UserEventRandomMissionEntity>(mstName, UserEventRandomMissionEntity.fromJson),
+  ),
   "userEventPoint": (
     UserEventPointEntity,
     (mstName) => DataMaster<String, UserEventPointEntity>(mstName, UserEventPointEntity.fromJson),
@@ -588,6 +594,13 @@ class MasterDataManager {
     );
   }
 
+  Map<int, int> get randomMissionProgress {
+    return {
+      for (final v in userEventRandomMission)
+        if (v.isInProgress) v.missionId: userEventMissionFix[v.missionId]?.num ?? 0,
+    };
+  }
+
   // mst schemes
 
   DataMaster<int, UserGameEntity> get userGame => get<int, UserGameEntity>();
@@ -625,6 +638,8 @@ class MasterDataManager {
   DataMaster<_IntStr, UserEventMissionFixEntity> get userEventMissionFix => get<_IntStr, UserEventMissionFixEntity>();
   DataMaster<_IntStr, UserEventMissionCondDetailEntity> get userEventMissionCondDetail =>
       get<_IntStr, UserEventMissionCondDetailEntity>();
+  DataMaster<_IntStr, UserEventRandomMissionEntity> get userEventRandomMission =>
+      get<_IntStr, UserEventRandomMissionEntity>();
   DataMaster<String, UserEventPointEntity> get userEventPoint => get<String, UserEventPointEntity>();
   DataMaster<_IntStr, UserEventTradeEntity> get userEventTrade => get<_IntStr, UserEventTradeEntity>();
   DataMaster<String, EventRaidEntity> get mstEventRaid => get<String, EventRaidEntity>();
@@ -1761,6 +1776,46 @@ class UserEventMissionCondDetailEntity extends DataEntityBase<_IntStr> {
        createdAt = _toInt(createdAt);
   factory UserEventMissionCondDetailEntity.fromJson(Map<String, dynamic> data) =>
       _$UserEventMissionCondDetailEntityFromJson(data);
+}
+
+@JsonSerializable(createToJson: false)
+class UserEventRandomMissionEntity extends DataEntityBase<_IntStr> {
+  int userId;
+  int missionId;
+  int missionTargetId;
+  int status; // 0-None, 1-Start UserEventRandomMissionEntity.Status
+  int clearNum;
+  int startedAt;
+  int updatedAt;
+  int createdAt;
+
+  @override
+  _IntStr get primaryKey => missionId;
+
+  static _IntStr createPK(int missionId) => missionId;
+
+  UserEventRandomMissionEntity({
+    dynamic userId,
+    dynamic missionId,
+    dynamic missionTargetId,
+    dynamic status,
+    dynamic clearNum,
+    dynamic startedAt,
+    dynamic updatedAt,
+    dynamic createdAt,
+  }) : userId = _toInt(userId),
+       missionId = _toInt(missionId),
+       missionTargetId = _toInt(missionTargetId),
+       status = _toInt(status),
+       clearNum = _toInt(clearNum),
+       startedAt = _toInt(startedAt),
+       updatedAt = _toInt(updatedAt),
+       createdAt = _toInt(createdAt);
+
+  factory UserEventRandomMissionEntity.fromJson(Map<String, dynamic> data) =>
+      _$UserEventRandomMissionEntityFromJson(data);
+
+  bool get isInProgress => status == 1;
 }
 
 @JsonSerializable(createToJson: false)

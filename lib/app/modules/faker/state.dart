@@ -5,6 +5,7 @@ import 'package:wakelock_plus/wakelock_plus.dart';
 
 import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/app.dart';
+import 'package:chaldea/app/modules/master_mission/solver/scheme.dart';
 import 'package:chaldea/app/routes/delegate.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/faker/cn/agent.dart';
@@ -16,6 +17,9 @@ import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
+import '../master_mission/solver/solver.dart';
+
+part 'runtime/random_mission.dart';
 
 class FakerRuntime {
   static final Map<AutoLoginData, FakerRuntime> _runtimes = {};
@@ -34,7 +38,7 @@ class FakerRuntime {
   final curLoopDropStat = _DropStatData();
   // stats - gacha
   final gachaResultStat = _GachaDrawStatData();
-
+  final randomMissionStat = RandomMissionLoopStat();
   // common
   late final mstData = agent.network.mstData;
   Region get region => agent.user.region;
@@ -80,7 +84,7 @@ class FakerRuntime {
     EasyLoading.dismiss();
   }
 
-  Future<T?> _showDialog<T>(Widget child, {bool barrierDismissible = true}) async {
+  Future<T?> showLocalDialog<T>(Widget child, {bool barrierDismissible = true}) async {
     BuildContext? ctx;
     for (final state in _dependencies.keys) {
       if (state.mounted && AppRouter.of(state.context) == router) {
@@ -135,7 +139,7 @@ class FakerRuntime {
 
   void lockTask(VoidCallback callback) {
     if (runningTask.value) {
-      _showDialog(
+      showLocalDialog(
         SimpleConfirmDialog(
           title: Text(S.current.error),
           content: const Text("task is till running"),
@@ -150,7 +154,7 @@ class FakerRuntime {
 
   Future<void> runTask(Future Function() task, {bool check = true}) async {
     if (check && runningTask.value) {
-      _showDialog(
+      showLocalDialog(
         SimpleConfirmDialog(
           title: Text(S.current.error),
           content: const Text("previous task is till running"),
@@ -170,7 +174,7 @@ class FakerRuntime {
       await Future.delayed(const Duration(milliseconds: 200));
       if (mounted) {
         dismissToast();
-        _showDialog(
+        showLocalDialog(
           SimpleConfirmDialog(
             title: Text(S.current.error),
             scrollable: true,
@@ -203,7 +207,7 @@ class FakerRuntime {
 
   // agents
 
-  Future<void> startLoop() async {
+  Future<void> startLoop({bool dialog = true}) async {
     if (agent.curBattle != null) {
       throw SilentException('last battle not finished');
     }
@@ -393,10 +397,12 @@ class FakerRuntime {
       }
     }
     logger.t('finished all $finishedCount battles');
-    _showDialog(
-      SimpleConfirmDialog(title: const Text('Finished'), content: Text('$finishedCount battles'), showCancel: false),
-      barrierDismissible: false,
-    );
+    if (dialog) {
+      showLocalDialog(
+        SimpleConfirmDialog(title: const Text('Finished'), content: Text('$finishedCount battles'), showCancel: false),
+        barrierDismissible: false,
+      );
+    }
   }
 
   Future<void> seedWait(final int maxBuyCount) async {
@@ -834,10 +840,12 @@ class _FakerGameData {
   final teapots = <int, Item>{};
   GameConstants constants = ConstData.constants;
   Map<int, MasterMission> masterMissions = {};
+  GameTimerData timerData = GameTimerData();
 
   Future<void> reset() async {
     teapots.clear();
     masterMissions.clear();
+    timerData = GameTimerData();
     AtlasApi.cacheManager.clearCache();
     await init();
     await loadConstants();
@@ -865,6 +873,7 @@ class _FakerGameData {
         }
       }
     }
+    timerData = (await AtlasApi.timerData(region)) ?? timerData;
   }
 
   Future<void> loadConstants() async {
@@ -912,5 +921,49 @@ class _GachaDrawStatData {
     lastEnhanceBaseCE = null;
     lastEnhanceMaterialCEs = [];
     lastSellServants = [];
+  }
+}
+
+class RandomMissionLoopStat {
+  //
+  List<int> randomMissionIds = [];
+  Map<int, EventMission> eventMissions = {};
+  List<int> itemIds = [];
+
+  List<Quest> cqs0 = [];
+  List<Quest> fqs0 = [];
+  List<QuestPhase> cqs = [];
+  List<QuestPhase> fqs = [];
+
+  BattleResultData? lastBattleResultData;
+  Set<int> lastAddedMissionIds = {};
+  RandomMissionOption curLoopData = RandomMissionOption();
+
+  Future<void> load(FakerRuntime runtime) async {
+    Event? event;
+    final eventMap = {for (final e in runtime.gameData.timerData.events) e.id: e};
+    final now = DateTime.now().timestamp;
+    for (final userRandomMission in runtime.mstData.userEventRandomMission) {
+      final _event = eventMap[userRandomMission.missionTargetId];
+      if (_event != null && _event.startedAt < now && _event.endedAt > now) {
+        event = _event;
+        break;
+      }
+    }
+    if (event == null) return;
+    final maxRank = Maths.max(event.randomMissions.map((e) => e.condNum), 0);
+    randomMissionIds = event.randomMissions.where((e) => e.condNum == maxRank).map((e) => e.missionId).toList();
+    randomMissionIds.sort();
+    final missionMap = {for (final m in event.missions) m.id: m};
+    eventMissions = {};
+    for (final id in randomMissionIds) {
+      final mission = eventMissions[id] = missionMap[id]!;
+      itemIds.addAll(mission.gifts.map((e) => e.objectId));
+    }
+    itemIds = itemIds.toSet().toList();
+    itemIds.sort2((e) => db.gameData.items[e]?.priority ?? 0, reversed: true);
+    final allQuests = db.gameData.wars[event.warIds.firstOrNull]?.quests ?? [];
+    cqs0 = allQuests.where((e) => e.consume == 5 && e.flags.contains(QuestFlag.dropFirstTimeOnly)).toList();
+    fqs0 = allQuests.where((e) => e.isAnyFree && e.consume > 0).toList();
   }
 }

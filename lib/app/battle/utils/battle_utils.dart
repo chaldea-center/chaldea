@@ -542,7 +542,11 @@ class BattleUtils {
   const BattleUtils._();
 
   static int limitCountToDisp(int dispLimitCount) {
-    return {0: 0, 1: 2, 2: 2, 3: 3, 4: 4}[dispLimitCount] ?? dispLimitCount;
+    return const {0: 0, 1: 2, 2: 2, 3: 3, 4: 4}[dispLimitCount] ?? dispLimitCount;
+  }
+
+  static int limitCountToStage(int limitCount) {
+    return const {0: 1, 1: 2, 2: 2, 3: 3, 4: 3}[limitCount] ?? limitCount;
   }
 
   static final List<int> costumeOrtinaxIds = [12, 800140, 13, 800150];

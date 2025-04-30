@@ -143,7 +143,14 @@ class FakerAgentJP extends FakerAgent<FRequestJP, AutoLoginDataJP, NetworkManage
     // success: {missionIds:[],overflowType:0,isOverPresentBox:false}
     final request = FRequestJP(network: network, path: '/eventMission/receive');
     request.addFieldStr('missionIds', jsonEncode(missionIds));
-    return request.beginRequest();
+    return request.beginRequestAndCheckError('event_mission_receive');
+  }
+
+  @override
+  Future<FResponse> eventMissionRandomCancel({required int32_t missionId}) {
+    final request = FRequestJP(network: network, path: '/eventMission/randomCancel');
+    request.addFieldInt32('missionId', missionId);
+    return request.beginRequestAndCheckError('event_mission_random_cancel');
   }
 
   @override
@@ -331,6 +338,7 @@ class FakerAgentJP extends FakerAgent<FRequestJP, AutoLoginDataJP, NetworkManage
     required int32_t followerSupportDeckId,
     int32_t campaignItemId = 0,
     int32_t restartWave = 0,
+    List<int32_t> useRewardAddItemIds = const [],
   }) async {
     final request = FRequestJP(network: network, path: '/battle/setup');
     request.addFieldInt32("questId", questId);
@@ -352,6 +360,7 @@ class FakerAgentJP extends FakerAgent<FRequestJP, AutoLoginDataJP, NetworkManage
     request.addFieldInt32("followerSupportDeckId", followerSupportDeckId);
     request.addFieldInt32("campaignItemId", campaignItemId);
     request.addFieldInt32("restartWave", restartWave);
+    request.addFieldStr("useRewardAddItemIds", jsonEncode(useRewardAddItemIds));
     final resp = await request.beginRequestAndCheckError('battle_setup');
     final battleEntity = resp.data.mstData.battles.firstOrNull;
     if (battleEntity != null) {

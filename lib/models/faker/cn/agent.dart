@@ -300,6 +300,15 @@ class FakerAgentCN extends FakerAgent<FRequestCN, AutoLoginDataCN, NetworkManage
   }
 
   @override
+  Future<FResponse> eventMissionRandomCancel({required int32_t missionId}) {
+    return _acPhp(
+      key: 'eventmissionrandomcancel',
+      nid: 'event_mission_random_cancel',
+      params1: {'missionId': missionId},
+    );
+  }
+
+  @override
   Future<FResponse> userPresentReceive({
     required List<int64_t> presentIds,
     required int32_t itemSelectIdx,
@@ -486,6 +495,7 @@ class FakerAgentCN extends FakerAgent<FRequestCN, AutoLoginDataCN, NetworkManage
     required int32_t followerSupportDeckId,
     int32_t campaignItemId = 0,
     int32_t restartWave = 0,
+    List<int32_t> useRewardAddItemIds = const [],
   }) async {
     final resp = await _acPhp(
       key: 'battlesetup',
@@ -512,6 +522,7 @@ class FakerAgentCN extends FakerAgent<FRequestCN, AutoLoginDataCN, NetworkManage
         // "recommendSupportIdx": 0,
         "campaignItemId": campaignItemId,
         // "restartWave": restartWave,
+        // "useRewardAddItemIds": jsonEncode(useRewardAddItemIds),
       },
     );
     final battleEntity = resp.data.mstData.battles.firstOrNull;

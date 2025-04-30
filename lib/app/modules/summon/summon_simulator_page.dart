@@ -337,18 +337,17 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
     );
     child = InkWell(
       onTap: () {
-        final validClasses = SvtClassX.resolveClasses(svtClass);
         router.pushPage(
           ServantListPage(
             filterData:
                 destinyOrderSvtFilter
-                  ..svtClass.options = validClasses.toSet()
+                  ..svtClass.options = SvtClassX.resolveClasses(svtClass, expandBeast: false).toSet()
                   ..rarity.options = {5},
             onSelected: (selectedSvt) {
               if (selectedSvt.type == SvtType.normal &&
                   selectedSvt.collectionNo > 0 &&
                   selectedSvt.rarity == 5 &&
-                  validClasses.contains(selectedSvt.className) &&
+                  SvtClassX.resolveClasses(svtClass, expandBeast: true).contains(selectedSvt.className) &&
                   data.svts.any((e) => e.ids.contains(selectedSvt.collectionNo))) {
                 if (mounted) {
                   setState(() {

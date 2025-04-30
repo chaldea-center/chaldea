@@ -1,5 +1,7 @@
 import 'dart:math';
 
+import 'package:flutter/foundation.dart';
+
 import 'package:auto_size_text/auto_size_text.dart';
 
 import 'package:chaldea/app/api/atlas.dart';
@@ -193,6 +195,7 @@ class _WarDetailPageState extends State<WarDetailPage> with RegionBasedState<Nic
       extraTiles.add(
         ListTile(
           title: Text(S.current.media_assets),
+          enabled: !kIsWeb,
           onTap: () {
             router.pushPage(WarAssetListPage(war: war));
           },

@@ -9,7 +9,8 @@ import 'package:chaldea/widgets/custom_dialogs.dart';
 
 class BattleOptionListPage extends StatefulWidget {
   final AutoLoginData data;
-  const BattleOptionListPage({super.key, required this.data});
+  final ValueChanged<({int index, AutoBattleOptions option})>? onSelected;
+  const BattleOptionListPage({super.key, required this.data, this.onSelected});
 
   @override
   State<BattleOptionListPage> createState() => _BattleOptionListPageState();
@@ -19,34 +20,39 @@ class _BattleOptionListPageState extends State<BattleOptionListPage> {
   late final data = widget.data;
   bool sorting = false;
 
+  bool get canEdit => widget.onSelected == null;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Configs'),
-        actions: [
-          IconButton(
-            onPressed: () {
-              data.battleOptions.add(AutoBattleOptions());
-              data.curBattleOptionIndex = data.battleOptions.length - 1;
-              setState(() {});
-            },
-            icon: const Icon(Icons.add),
-            tooltip: S.current.add,
-          ),
-          IconButton(
-            onPressed: () {
-              setState(() {
-                sorting = !sorting;
-              });
-            },
-            icon: Icon(sorting ? Icons.done : Icons.sort),
-            tooltip: S.current.sort_order,
-          ),
-        ],
+        actions:
+            canEdit
+                ? [
+                  IconButton(
+                    onPressed: () {
+                      data.battleOptions.add(AutoBattleOptions());
+                      data.curBattleOptionIndex = data.battleOptions.length - 1;
+                      setState(() {});
+                    },
+                    icon: const Icon(Icons.add),
+                    tooltip: S.current.add,
+                  ),
+                  IconButton(
+                    onPressed: () {
+                      setState(() {
+                        sorting = !sorting;
+                      });
+                    },
+                    icon: Icon(sorting ? Icons.done : Icons.sort),
+                    tooltip: S.current.sort_order,
+                  ),
+                ]
+                : [],
       ),
       body:
-          sorting
+          sorting && canEdit
               ? ReorderableListView(
                 children: [for (final (index, option) in data.battleOptions.indexed) buildOne(index, option)],
                 onReorder: (int oldIndex, int newIndex) {
@@ -82,22 +88,27 @@ class _BattleOptionListPageState extends State<BattleOptionListPage> {
       key: ObjectKey(option),
       value: index,
       dense: true,
-      groupValue: data.curBattleOptionIndex,
+      groupValue: canEdit ? data.curBattleOptionIndex : null,
       onChanged:
           sorting
               ? null
               : (v) {
-                setState(() {
-                  if (v != null) {
-                    data.curBattleOptionIndex = v;
-                  }
-                });
+                if (widget.onSelected != null) {
+                  widget.onSelected!((index: index, option: option));
+                  Navigator.pop(context, (index: index, option: option));
+                } else {
+                  setState(() {
+                    if (v != null) {
+                      data.curBattleOptionIndex = v;
+                    }
+                  });
+                }
               },
       controlAffinity: ListTileControlAffinity.leading,
       title: Text('No.${index + 1} ${option.name.isEmpty ? "<no name>" : option.name}'),
       subtitle: Text(_describeQuest(option.questId, option.questPhase)),
       secondary:
-          sorting
+          sorting || !canEdit
               ? null
               : Wrap(
                 children: [

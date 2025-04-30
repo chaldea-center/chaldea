@@ -57,7 +57,7 @@ class MissionSolver extends BaseLPSolver {
     CustomMission mission,
     QuestPhase quest, {
     bool includeAdditional = true,
-    required MissionSolverOptions? options,
+    MissionSolverOptions? options,
   }) {
     int count = 0;
     if (mission.conds.first.type.isQuestType) {

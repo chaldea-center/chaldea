@@ -430,9 +430,15 @@ class AtlasApi {
     Region region = Region.jp,
     Duration? expireAfter,
     bool? proxy,
+    String? ref,
   }) {
     proxy ??= HostsX.proxy.worker;
-    String url = "https://git.atlasacademy.io/atlasacademy/fgo-game-data/raw/branch/${region.upper}/master/$table.json";
+    String url;
+    if (ref != null) {
+      url = "https://git.atlasacademy.io/atlasacademy/fgo-game-data/raw/commit/$ref/master/$table.json";
+    } else {
+      url = "https://git.atlasacademy.io/atlasacademy/fgo-game-data/raw/branch/${region.upper}/master/$table.json";
+    }
     if (proxy) url = HostsX.proxyWorker(url);
     return cacheManager.getModel(
       url,

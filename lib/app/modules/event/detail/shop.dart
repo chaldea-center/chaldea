@@ -208,9 +208,9 @@ class _EventShopsPageState extends State<EventShopsPage> {
                   child: Text(S.current.reset),
                 ),
                 PopupMenuItem(
-                  enabled: db.runtimeData.clipBoard.userShops != null,
+                  enabled: db.runtimeData.clipBoard.mstData != null,
                   onTap: () {
-                    final userShops = db.runtimeData.clipBoard.userShops?.toList() ?? [];
+                    final userShops = db.runtimeData.clipBoard.mstData?.userShop.toList() ?? [];
                     final buyCounts = {for (final shop in userShops) shop.shopId: shop.num};
                     for (final shop in widget.shops) {
                       final buyCount = buyCounts[shop.id] ?? 0;

@@ -73,7 +73,7 @@ class UserFormationDecksPageState extends State<UserFormationDecksPage> {
       children: [
         DividerWithTitle(title: '[${deck.id}] No.${deck.deckNo} ${deck.name}'),
         FormationCard(
-          formation: UserDeckEntityX.toFormation(deckInfo: deck.deckInfo, mstData: mstData, userSvts: userSvts),
+          formation: BattleTeamFormationX.fromUserDeck(deckInfo: deck.deckInfo, mstData: mstData, userSvts: userSvts),
           userSvtCollections: mstData.userSvtCollection.dict,
           showBond: true,
         ),
@@ -110,7 +110,7 @@ class UserFormationDecksPageState extends State<UserFormationDecksPage> {
           ),
         ),
         FormationCard(
-          formation: UserDeckEntityX.toFormation(deckInfo: deck.deckInfo, mstData: mstData, userSvts: userSvts),
+          formation: BattleTeamFormationX.fromUserDeck(deckInfo: deck.deckInfo, mstData: mstData, userSvts: userSvts),
           userSvtCollections: mstData.userSvtCollection.dict,
           showBond: true,
         ),
@@ -134,11 +134,74 @@ class UserFormationDecksPageState extends State<UserFormationDecksPage> {
   late final userSvtCommandCards = {for (final card in mstData.userSvtCommandCard) card.svtId: card};
 }
 
-extension UserDeckEntityX on UserDeckEntity {
-  static BattleTeamFormation toFormation({
+extension BattleTeamFormationX on BattleTeamFormation {
+  static BattleTeamFormation fromBattleEntity({
+    required BattleEntity battleEntity,
+    required MasterDataManager mstData,
+  }) {
+    final userSvts = {for (final svt in battleEntity.battleInfo?.userSvt ?? <BattleUserServantData>[]) svt.id: svt};
+    final userEquip = mstData.userEquip[battleEntity.battleInfo?.userEquipId];
+    return BattleTeamFormation.fromList(
+      mysticCode: MysticCodeSaveData(mysticCodeId: userEquip?.equipId, level: userEquip?.lv ?? 0),
+      svts: List.generate(6, (i) {
+        final svt = battleEntity.battleInfo?.myDeck?.svts.getOrNull(i);
+        final userSvt = userSvts[svt?.userSvtId], userCE = userSvts[svt?.userSvtEquipIds?.firstOrNull];
+        final dbSvt = db.gameData.servantsById[userSvt?.svtId];
+        if (userSvt != null) {
+          final appendId2Num = {
+            for (final passive in dbSvt?.appendPassive ?? <ServantAppendPassiveSkill>[]) passive.skill.id: passive.num,
+          };
+          final appendPassive2Lvs = <int, int>{
+            for (final (index, skillId) in (userSvt.appendPassiveSkillIds ?? <int>[]).indexed)
+              if (appendId2Num.containsKey(skillId))
+                appendId2Num[skillId]!: userSvt.appendPassiveSkillLvs?.getOrNull(index) ?? 0,
+          };
+          bool ceMLB = false;
+          if (userCE != null) {
+            if (userCE.limitCount == 0) {
+              // may be zero even if MLB for support svt
+              final skill = db.gameData.craftEssencesById[userCE.svtId]?.skills.firstWhereOrNull(
+                (e) => e.id == userCE.skillId1,
+              );
+              if (skill != null && skill.condLimitCount == 4) {
+                ceMLB = true;
+              }
+            } else {
+              ceMLB = userCE.limitCount == 4;
+            }
+          }
+
+          return SvtSaveData(
+            svtId: userSvt.svtId,
+            limitCount: userSvt.dispLimitCount,
+            skillLvs: [userSvt.skillLv1, userSvt.skillLv2, userSvt.skillLv3],
+            skillIds: [userSvt.skillId1, userSvt.skillId2, userSvt.skillId3],
+            appendLvs: kAppendSkillNums.map((skillNum) => appendPassive2Lvs[skillNum + 99] ?? 0).toList(),
+            tdId: userSvt.treasureDeviceId,
+            tdLv: userSvt.treasureDeviceLv ?? 0,
+            lv: userSvt.lv,
+            // atkFou,
+            // hpFou,
+            // fixedAtk,
+            // fixedHp,
+            ceId: userCE?.svtId,
+            ceLimitBreak: ceMLB,
+            ceLv: userCE?.lv ?? 1,
+            supportType: SupportSvtType.fromFollowerType(svt?.followerType ?? 0),
+            cardStrengthens: null,
+            commandCodeIds: null,
+          );
+        }
+        return null;
+      }),
+    );
+  }
+
+  static BattleTeamFormation fromUserDeck({
     required DeckServantEntity? deckInfo,
     required MasterDataManager mstData,
     Map<int, UserServantEntity>? userSvts,
+    int posOffset = 0,
   }) {
     final userEquip = mstData.userEquip.firstWhereOrNull((e) => e.id == deckInfo?.userEquipId);
     final svts = deckInfo?.svts ?? [];
@@ -176,8 +239,8 @@ extension UserDeckEntityX on UserDeckEntity {
     }
 
     return BattleTeamFormation(
-      onFieldSvts: [1, 2, 3].map((idx) => cvtSvt(svtsMap[idx])).toList(),
-      backupSvts: [4, 5, 6].map((idx) => cvtSvt(svtsMap[idx])).toList(),
+      onFieldSvts: [1, 2, 3].map((idx) => cvtSvt(svtsMap[idx + posOffset])).toList(),
+      backupSvts: [4, 5, 6].map((idx) => cvtSvt(svtsMap[idx + posOffset])).toList(),
       mysticCode: MysticCodeSaveData(mysticCodeId: userEquip?.equipId, level: userEquip?.lv ?? 1),
     );
   }

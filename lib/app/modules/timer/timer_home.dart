@@ -36,7 +36,7 @@ class _TimerHomePageState extends State<TimerHomePage>
     super.initState();
     region = db.curUser.region;
     _tabController.addListener(() {
-      if (!_tabController.indexIsChanging) setState(() {});
+      if (!_tabController.indexIsChanging && mounted) setState(() {});
     });
   }
 

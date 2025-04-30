@@ -545,7 +545,7 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData, ServantFilt
           ),
           FilterGroup<Trait>(
             title: Text(S.current.trait, style: textStyle),
-            options: _traitsForFilter,
+            options: _traitsForFilter.toList(),
             values: filterData.trait,
             optionBuilder: (v) => Text(Transl.trait(v.value).l),
             showMatchAll: true,
@@ -631,7 +631,7 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData, ServantFilt
   }
 }
 
-const _traitsForFilter = <Trait>[
+const _traitsForFilter = <Trait>{
   // ce
   Trait.hasCostume,
   Trait.livingHuman,
@@ -665,7 +665,6 @@ const _traitsForFilter = <Trait>[
   Trait.knightsOfTheRound,
   Trait.fairyTaleServant,
   Trait.divineSpirit,
-  Trait.hasCostume,
   Trait.summerModeServant,
   Trait.immuneToPigify,
-];
+};

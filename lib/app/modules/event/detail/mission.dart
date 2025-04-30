@@ -1,6 +1,7 @@
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/modules/master_mission/solver/custom_mission.dart';
 import 'package:chaldea/generated/l10n.dart';
+import 'package:chaldea/models/gamedata/toplogin.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
@@ -20,6 +21,7 @@ class EventMissionsPage extends StatefulWidget {
 
 class _EventMissionsPageState extends State<EventMissionsPage> {
   Set<EventMission> selected = {};
+  MasterDataManager? mstData;
 
   @override
   Widget build(BuildContext context) {
@@ -66,8 +68,25 @@ class _EventMissionsPageState extends State<EventMissionsPage> {
   Widget buildHeader(BuildContext context) {
     return Column(
       children: [
-        if (widget.onSwitchRegion != null)
-          TextButton(onPressed: widget.onSwitchRegion, child: Text(S.current.switch_region)),
+        Wrap(
+          children: [
+            if (widget.onSwitchRegion != null)
+              TextButton(onPressed: widget.onSwitchRegion, child: Text(S.current.switch_region)),
+            if (db.runtimeData.clipBoard.mstData != null || mstData != null)
+              TextButton(
+                onPressed: () {
+                  setState(() {
+                    if (mstData != null && mstData == db.runtimeData.clipBoard.mstData) {
+                      mstData = null;
+                    } else {
+                      mstData = db.runtimeData.clipBoard.mstData;
+                    }
+                  });
+                },
+                child: Text('Read login data'),
+              ),
+          ],
+        ),
         SwitchListTile(
           dense: true,
           visualDensity: VisualDensity.compact,
@@ -89,6 +108,8 @@ class _EventMissionsPageState extends State<EventMissionsPage> {
 
     final clearConds = mission.conds.where((e) => e.missionProgressType == MissionProgressType.clear).toList();
     final clearCond = !db.settings.display.showOriginalMissionText && clearConds.length == 1 ? clearConds.single : null;
+
+    final userProgress = mstData?.resolveMissionProgress(mission);
 
     return SimpleAccordion(
       key: Key('event_mission_${mission.id}'),
@@ -120,6 +141,19 @@ class _EventMissionsPageState extends State<EventMissionsPage> {
                         selected.toggle(mission);
                         setState(() {});
                       },
+                    ),
+            subtitle:
+                userProgress == null
+                    ? null
+                    : Text(
+                      '${userProgress.progresses.map((e) => '${e.progress ?? "?"}/${e.targetNum}').join(' ')} ${userProgress.progressType.name}',
+                      style: TextStyle(
+                        color:
+                            userProgress.progressType.isClearOrAchieve ||
+                                    userProgress.progresses.any((e) => (e.progress ?? -1) > e.targetNum)
+                                ? null
+                                : Theme.of(context).colorScheme.primary,
+                      ),
                     ),
           ),
       contentBuilder: (context) {

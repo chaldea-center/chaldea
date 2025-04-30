@@ -107,7 +107,7 @@ class _WarAssetListPageState extends State<WarAssetListPage> with AfterLayoutMix
           final fp = await AtlasIconLoader.i.get(script, allowWeb: true);
           if (fp == null) return null;
           try {
-            return FilePlus(fp).readAsString();
+            return await FilePlus(fp).readAsString();
           } catch (e, s) {
             logger.e('read $fp failed', e, s);
             return null;

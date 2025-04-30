@@ -121,10 +121,10 @@ class ImportHttpPageState extends State<ImportHttpPage> {
                   PopupMenuItem(
                     enabled: mstData?.userShop.isNotEmpty == true,
                     onTap: () {
-                      db.runtimeData.clipBoard.userShops = mstData?.userShop.toList();
+                      db.runtimeData.clipBoard.mstData = mstData;
                       EasyLoading.showToast(S.current.copied);
                     },
-                    child: const Text('Copy Shop data'),
+                    child: const Text('Copy Data (In-app)'),
                   ),
                 ],
           ),

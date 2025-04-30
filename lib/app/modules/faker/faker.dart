@@ -38,6 +38,7 @@ import 'history.dart';
 import 'mission/mission_receive.dart';
 import 'option_list.dart';
 import 'present_box/present_box.dart';
+import 'random_mission/random_mission_loop.dart';
 import 'state.dart';
 
 class FakeGrandOrder extends StatefulWidget {
@@ -107,6 +108,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
       'Lv.${(phaseDetail?.recommendLv ?? quest.recommendLv)}',
       if (enemyCounts != null) enemyCounts,
       quest.lDispName.setMaxLines(1),
+      'P$phase',
       if (quest.war != null) '@${quest.war?.lShortName.setMaxLines(1)}',
     ].join(' ');
   }
@@ -204,6 +206,14 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
                         router.pushPage(BoxGachaDrawPage(runtime: runtime));
                       },
                       child: Text(S.current.event_lottery),
+                    ),
+                  if (mstData.userEventRandomMission.isNotEmpty)
+                    PopupMenuItem(
+                      enabled: isLoggedIn,
+                      onTap: () async {
+                        router.pushPage(RandomMissionLoopPage(runtime: runtime));
+                      },
+                      child: Text(S.current.random_mission),
                     ),
                   PopupMenuItem(
                     child: Text("Reload"),
@@ -507,7 +517,9 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
         ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          child: FormationCard(formation: cvtFormation(battleEntity)),
+          child: FormationCard(
+            formation: BattleTeamFormationX.fromBattleEntity(battleEntity: battleEntity, mstData: mstData),
+          ),
         ),
       ]);
     }
@@ -672,7 +684,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
                               : () async {
                                 final confirm = await SimpleConfirmDialog(
                                   title: Text("Send"),
-                                  content: Text('request:${saveData.key}\nSuccess: ${saveData.success}'),
+                                  content: Text('request:${saveData.key}\nsuccess: ${saveData.success}'),
                                 ).showDialog(context);
                                 if (confirm != true) return;
                                 runtime.runTask(() async {
@@ -767,65 +779,6 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
                 },
         icon: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
       ),
-    );
-  }
-
-  BattleTeamFormation cvtFormation(BattleEntity battleEntity) {
-    final userSvts = {for (final svt in battleEntity.battleInfo?.userSvt ?? <BattleUserServantData>[]) svt.id: svt};
-    final userEquip = mstData.userEquip[battleEntity.battleInfo?.userEquipId];
-    return BattleTeamFormation.fromList(
-      mysticCode: MysticCodeSaveData(mysticCodeId: userEquip?.equipId, level: userEquip?.lv ?? 0),
-      svts: List.generate(6, (i) {
-        final svt = battleEntity.battleInfo?.myDeck?.svts.getOrNull(i);
-        final userSvt = userSvts[svt?.userSvtId], userCE = userSvts[svt?.userSvtEquipIds?.firstOrNull];
-        final dbSvt = db.gameData.servantsById[userSvt?.svtId];
-        if (userSvt != null) {
-          final appendId2Num = {
-            for (final passive in dbSvt?.appendPassive ?? <ServantAppendPassiveSkill>[]) passive.skill.id: passive.num,
-          };
-          final appendPassive2Lvs = <int, int>{
-            for (final (index, skillId) in (userSvt.appendPassiveSkillIds ?? <int>[]).indexed)
-              if (appendId2Num.containsKey(skillId))
-                appendId2Num[skillId]!: userSvt.appendPassiveSkillLvs?.getOrNull(index) ?? 0,
-          };
-          bool ceMLB = false;
-          if (userCE != null) {
-            if (userCE.limitCount == 0) {
-              // may be zero even if MLB for support svt
-              final skill = db.gameData.craftEssencesById[userCE.svtId]?.skills.firstWhereOrNull(
-                (e) => e.id == userCE.skillId1,
-              );
-              if (skill != null && skill.condLimitCount == 4) {
-                ceMLB = true;
-              }
-            } else {
-              ceMLB = userCE.limitCount == 4;
-            }
-          }
-
-          return SvtSaveData(
-            svtId: userSvt.svtId,
-            limitCount: userSvt.dispLimitCount,
-            skillLvs: [userSvt.skillLv1, userSvt.skillLv2, userSvt.skillLv3],
-            skillIds: [userSvt.skillId1, userSvt.skillId2, userSvt.skillId3],
-            appendLvs: kAppendSkillNums.map((skillNum) => appendPassive2Lvs[skillNum + 99] ?? 0).toList(),
-            tdId: userSvt.treasureDeviceId,
-            tdLv: userSvt.treasureDeviceLv ?? 0,
-            lv: userSvt.lv,
-            // atkFou,
-            // hpFou,
-            // fixedAtk,
-            // fixedHp,
-            ceId: userCE?.svtId,
-            ceLimitBreak: ceMLB,
-            ceLv: userCE?.lv ?? 1,
-            supportType: SupportSvtType.fromFollowerType(svt?.followerType ?? 0),
-            cardStrengthens: null,
-            commandCodeIds: null,
-          );
-        }
-        return null;
-      }),
     );
   }
 
@@ -1836,16 +1789,25 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
         ),
         buildButton(
           // enabled: !inBattle,
-          onPressed: () {
-            SimpleConfirmDialog(
-              title: const Text('Login'),
-              onTapOk: () {
-                runtime.runTask(() async {
-                  await agent.loginTop();
-                  await agent.homeTop();
-                });
-              },
-            ).showDialog(context);
+          onPressed: () async {
+            if (agent.user.lastRequestOptions?.success == false) {
+              final confirm = await SimpleConfirmDialog(
+                title: Text(S.current.warning),
+                content: Text("Last request not sent, still login?"),
+              ).showDialog(context);
+              if (confirm != true) return;
+            }
+            if (mounted) {
+              await SimpleConfirmDialog(
+                title: const Text('Login'),
+                onTapOk: () {
+                  runtime.runTask(() async {
+                    await agent.loginTop();
+                    await agent.homeTop();
+                  });
+                },
+              ).showDialog(context);
+            }
           },
           text: 'login',
         ),
@@ -2097,75 +2059,87 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
   }
 
   List<Widget> _buildUserDeck(DeckServantEntity? deckInfo) {
-    return [
-      Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        child: FormationCard(
-          formation: UserDeckEntityX.toFormation(deckInfo: deckInfo, mstData: mstData),
-          userSvtCollections: mstData.userSvtCollection.dict,
-        ),
-      ),
-      Center(
-        child: Container(
-          margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 16),
-          constraints: const BoxConstraints(maxWidth: 80 * 6 + 64),
-          child: Builder(
-            builder: (context) {
-              final svts = deckInfo?.svts ?? [];
-              final svtsMap = {for (final svt in svts) svt.id: svt};
-              return Row(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  ...List.generate(6, (index) {
-                    final collection = mstData.userSvtCollection[mstData.userSvt[svtsMap[index + 1]?.userSvtId]?.svtId];
-                    final svt = db.gameData.servantsById[collection?.svtId];
-                    if (collection == null || svt == null || svt.bondGrowth.length < collection.friendshipRank + 1) {
-                      return const Expanded(flex: 10, child: SizedBox.shrink());
-                    }
-                    final (bondA, bondB) = svt.getPastNextBonds(collection.friendshipRank, collection.friendship);
-                    final bool reachBondLimit = bondB == 0;
+    const int kSvtNumPerRow = 6;
+    final userSvtCollections = mstData.userSvtCollection.dict;
+    final svts = deckInfo?.svts ?? [];
+    final svtsMap = {for (final svt in svts) svt.id: svt};
 
-                    String bondText =
-                        'Lv.${collection.friendshipRank}/${10 + collection.friendshipExceedCount}'
-                        // '\n${collection.friendship}'
-                        '\n${-bondB}';
-                    // battle result
-                    final oldCollection = agent.lastBattleResultData?.oldUserSvtCollection.firstWhereOrNull(
-                      (e) => e.svtId == collection.svtId,
-                    );
-                    if (oldCollection != null) {
-                      bondText += '\n+${collection.friendship - oldCollection.friendship}';
-                    }
-                    return Expanded(
-                      flex: 10,
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          AutoSizeText(
-                            bondText,
-                            textAlign: TextAlign.center,
-                            maxFontSize: 10,
-                            minFontSize: 6,
-                            maxLines: bondText.count('\n') + 1,
-                            style: reachBondLimit ? TextStyle(color: Theme.of(context).colorScheme.error) : null,
-                          ),
-                          BondProgress(
-                            value: bondA,
-                            total: bondA + bondB,
-                            padding: EdgeInsets.symmetric(horizontal: 4),
-                            minHeight: 4,
-                          ),
-                        ],
-                      ),
-                    );
-                  }),
-                  const Expanded(flex: 8, child: SizedBox.shrink()),
-                ],
-              );
-            },
+    List<Widget> children = [];
+    for (int row = 0; row * kSvtNumPerRow < svts.length; row++) {
+      children.add(
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: FormationCard(
+            formation: BattleTeamFormationX.fromUserDeck(
+              deckInfo: deckInfo,
+              mstData: mstData,
+              posOffset: row * kSvtNumPerRow,
+            ),
+            userSvtCollections: userSvtCollections,
           ),
         ),
-      ),
-    ];
+      );
+
+      Widget bondDetail = Row(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          ...List.generate(kSvtNumPerRow, (index) {
+            final int pos = index + 1 + kSvtNumPerRow * row;
+            final collection = mstData.userSvtCollection[mstData.userSvt[svtsMap[pos]?.userSvtId]?.svtId];
+            final svt = db.gameData.servantsById[collection?.svtId];
+            if (collection == null || svt == null || svt.bondGrowth.length < collection.friendshipRank + 1) {
+              return const Expanded(flex: 10, child: SizedBox.shrink());
+            }
+            final (bondA, bondB) = svt.getPastNextBonds(collection.friendshipRank, collection.friendship);
+            final bool reachBondLimit = bondB == 0;
+
+            String bondText =
+                'Lv.${collection.friendshipRank}/${10 + collection.friendshipExceedCount}'
+                // '\n${collection.friendship}'
+                '\n${-bondB}';
+            // battle result
+            final oldCollection = agent.lastBattleResultData?.oldUserSvtCollection.firstWhereOrNull(
+              (e) => e.svtId == collection.svtId,
+            );
+            if (oldCollection != null) {
+              bondText += '\n+${collection.friendship - oldCollection.friendship}';
+            }
+            return Expanded(
+              flex: 10,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  AutoSizeText(
+                    bondText,
+                    textAlign: TextAlign.center,
+                    maxFontSize: 10,
+                    minFontSize: 6,
+                    maxLines: bondText.count('\n') + 1,
+                    style: reachBondLimit ? TextStyle(color: Theme.of(context).colorScheme.error) : null,
+                  ),
+                  BondProgress(
+                    value: bondA,
+                    total: bondA + bondB,
+                    padding: EdgeInsets.symmetric(horizontal: 4),
+                    minHeight: 4,
+                  ),
+                ],
+              ),
+            );
+          }),
+          const Expanded(flex: 8, child: SizedBox.shrink()),
+        ],
+      );
+      children.add(
+        Center(
+          child: Container(
+            margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 16),
+            constraints: const BoxConstraints(maxWidth: 80 * kSvtNumPerRow + 64),
+            child: bondDetail,
+          ),
+        ),
+      );
+    }
+    return children;
   }
 }

@@ -82,6 +82,9 @@ class CustomMission {
             } else if (detail.missionCondType == EventMissionCondDetailType.allIndividualityInEnemyKillNum.value) {
               useAnd = true;
             } else {
+              assert(() {
+                throw FormatException('Should check and/or type for new missionCondType: ${detail.missionCondType}');
+              }());
               useAnd = true;
             }
             break;

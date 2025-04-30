@@ -92,7 +92,7 @@ class RuntimeData {
 
 class AppClipBoard {
   QuestEnemy? questEnemy;
-  List<UserShopEntity>? userShops;
+  MasterDataManager? mstData; //  don't change in-place
   UserBattleData? teamData;
 }
 

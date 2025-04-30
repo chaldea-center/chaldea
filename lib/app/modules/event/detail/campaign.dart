@@ -228,7 +228,13 @@ class EventCampaignDetail extends StatelessWidget {
 
   Widget getTarget(BuildContext context, EventCampaign campaign, int id) {
     final entity = db.gameData.servantsById[id];
-    if (entity != null) return entity.iconBuilder(context: context, width: 48);
+    if (entity != null) {
+      String? text;
+      if (CombineAdjustTarget.questFriendship == campaign.target) {
+        if (entity.status.favorite) text = 'Lv.${entity.status.bond}';
+      }
+      return entity.iconBuilder(context: context, width: 48, text: text, option: ImageWithTextOption(fontSize: 12));
+    }
     final item = db.gameData.items[id];
     if (item != null &&
         const [

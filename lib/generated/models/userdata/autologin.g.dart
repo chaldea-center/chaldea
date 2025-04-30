@@ -83,6 +83,10 @@ AutoLoginDataJP _$AutoLoginDataJPFromJson(Map json) => $checkedCreate('AutoLogin
       'presentBox',
       (v) => v == null ? null : PresentBoxFilterData.fromJson(Map<String, dynamic>.from(v as Map)),
     ),
+    randomMission: $checkedConvert(
+      'randomMission',
+      (v) => v == null ? null : RandomMissionOption.fromJson(Map<String, dynamic>.from(v as Map)),
+    ),
     lastLogin: $checkedConvert('lastLogin', (v) => (v as num?)?.toInt()),
     userGame: $checkedConvert(
       'userGame',
@@ -110,6 +114,7 @@ Map<String, dynamic> _$AutoLoginDataJPToJson(AutoLoginDataJP instance) => <Strin
   'gacha': instance.gacha.toJson(),
   'svtCombine': instance.svtCombine.toJson(),
   'presentBox': instance.presentBox.toJson(),
+  'randomMission': instance.randomMission.toJson(),
   'lastLogin': instance.lastLogin,
   'userGame': instance.userGame?.toJson(),
   'userItems': instance.userItems.map((k, e) => MapEntry(k.toString(), e)),
@@ -184,6 +189,10 @@ AutoLoginDataCN _$AutoLoginDataCNFromJson(Map json) => $checkedCreate('AutoLogin
       'presentBox',
       (v) => v == null ? null : PresentBoxFilterData.fromJson(Map<String, dynamic>.from(v as Map)),
     ),
+    randomMission: $checkedConvert(
+      'randomMission',
+      (v) => v == null ? null : RandomMissionOption.fromJson(Map<String, dynamic>.from(v as Map)),
+    ),
     lastLogin: $checkedConvert('lastLogin', (v) => (v as num?)?.toInt()),
     userGame: $checkedConvert(
       'userGame',
@@ -210,6 +219,7 @@ Map<String, dynamic> _$AutoLoginDataCNToJson(AutoLoginDataCN instance) => <Strin
   'gacha': instance.gacha.toJson(),
   'svtCombine': instance.svtCombine.toJson(),
   'presentBox': instance.presentBox.toJson(),
+  'randomMission': instance.randomMission.toJson(),
   'lastLogin': instance.lastLogin,
   'userGame': instance.userGame?.toJson(),
   'userItems': instance.userItems.map((k, e) => MapEntry(k.toString(), e)),
@@ -445,4 +455,133 @@ const _$PresentTypeEnumMap = {
   PresentType.manaPrism: 'manaPrism',
   PresentType.eventItem: 'eventItem',
   PresentType.others: 'others',
+};
+
+RandomMissionOption _$RandomMissionOptionFromJson(Map json) =>
+    $checkedCreate('RandomMissionOption', json, ($checkedConvert) {
+      final val = RandomMissionOption(
+        cqTeamIndex: $checkedConvert('cqTeamIndex', (v) => (v as num?)?.toInt() ?? 0),
+        fqTeamIndex: $checkedConvert('fqTeamIndex', (v) => (v as num?)?.toInt() ?? 0),
+        maxFreeCount: $checkedConvert('maxFreeCount', (v) => (v as num?)?.toInt() ?? 0),
+        itemWeights: $checkedConvert(
+          'itemWeights',
+          (v) => (v as Map?)?.map((k, e) => MapEntry(int.parse(k as String), (e as num).toDouble())),
+        ),
+        enabledQuests: $checkedConvert(
+          'enabledQuests',
+          (v) => (v as List<dynamic>?)?.map((e) => (e as num).toInt()).toSet(),
+        ),
+        discardMissionMinLeftNum: $checkedConvert('discardMissionMinLeftNum', (v) => (v as num?)?.toInt() ?? -1),
+        discardLoopCount: $checkedConvert('discardLoopCount', (v) => (v as num?)?.toInt() ?? 0),
+        dropItems: $checkedConvert(
+          'dropItems',
+          (v) => (v as Map?)?.map((k, e) => MapEntry(int.parse(k as String), (e as num).toInt())),
+        ),
+        giftItems: $checkedConvert(
+          'giftItems',
+          (v) => (v as Map?)?.map((k, e) => MapEntry(int.parse(k as String), (e as num).toInt())),
+        ),
+        questCounts: $checkedConvert(
+          'questCounts',
+          (v) => (v as Map?)?.map((k, e) => MapEntry(int.parse(k as String), (e as num).toInt())),
+        ),
+        cqCount: $checkedConvert('cqCount', (v) => (v as num?)?.toInt() ?? 0),
+        fqCount: $checkedConvert('fqCount', (v) => (v as num?)?.toInt() ?? 0),
+        totalAp: $checkedConvert('totalAp', (v) => (v as num?)?.toInt() ?? 0),
+      );
+      return val;
+    });
+
+Map<String, dynamic> _$RandomMissionOptionToJson(RandomMissionOption instance) => <String, dynamic>{
+  'cqTeamIndex': instance.cqTeamIndex,
+  'fqTeamIndex': instance.fqTeamIndex,
+  'maxFreeCount': instance.maxFreeCount,
+  'itemWeights': instance.itemWeights.map((k, e) => MapEntry(k.toString(), e)),
+  'enabledQuests': instance.enabledQuests.toList(),
+  'discardMissionMinLeftNum': instance.discardMissionMinLeftNum,
+  'discardLoopCount': instance.discardLoopCount,
+  'dropItems': instance.dropItems.map((k, e) => MapEntry(k.toString(), e)),
+  'giftItems': instance.giftItems.map((k, e) => MapEntry(k.toString(), e)),
+  'questCounts': instance.questCounts.map((k, e) => MapEntry(k.toString(), e)),
+  'cqCount': instance.cqCount,
+  'fqCount': instance.fqCount,
+  'totalAp': instance.totalAp,
+};
+
+AppWidgetConfig _$AppWidgetConfigFromJson(Map json) => $checkedCreate('AppWidgetConfig', json, ($checkedConvert) {
+  final val = AppWidgetConfig(
+    background: $checkedConvert(
+      'background',
+      (v) => v == null ? null : WidgetBackgroundConfig.fromJson(Map<String, dynamic>.from(v as Map)),
+    ),
+    layoutType: $checkedConvert(
+      'layoutType',
+      (v) => $enumDecodeNullable(_$WidgetLayoutTypeEnumMap, v) ?? WidgetLayoutType.medium,
+    ),
+  );
+  return val;
+});
+
+Map<String, dynamic> _$AppWidgetConfigToJson(AppWidgetConfig instance) => <String, dynamic>{
+  'background': instance.background.toJson(),
+  'layoutType': _$WidgetLayoutTypeEnumMap[instance.layoutType]!,
+};
+
+const _$WidgetLayoutTypeEnumMap = {WidgetLayoutType.small: 'small', WidgetLayoutType.medium: 'medium'};
+
+WidgetBackgroundConfig _$WidgetBackgroundConfigFromJson(Map json) =>
+    $checkedCreate('WidgetBackgroundConfig', json, ($checkedConvert) {
+      final val = WidgetBackgroundConfig(
+        type: $checkedConvert(
+          'type',
+          (v) => $enumDecodeNullable(_$WidgetBackgroundTypeEnumMap, v) ?? WidgetBackgroundType.color,
+        ),
+        colorHex: $checkedConvert('colorHex', (v) => v as String?),
+        gradientHex: $checkedConvert('gradientHex', (v) => (v as List<dynamic>?)?.map((e) => e as String).toList()),
+        imagePath: $checkedConvert('imagePath', (v) => v as String?),
+        blurRadius: $checkedConvert('blurRadius', (v) => (v as num?)?.toDouble() ?? 10.0),
+      );
+      return val;
+    });
+
+Map<String, dynamic> _$WidgetBackgroundConfigToJson(WidgetBackgroundConfig instance) => <String, dynamic>{
+  'type': _$WidgetBackgroundTypeEnumMap[instance.type]!,
+  'colorHex': instance.colorHex,
+  'gradientHex': instance.gradientHex,
+  'imagePath': instance.imagePath,
+  'blurRadius': instance.blurRadius,
+};
+
+const _$WidgetBackgroundTypeEnumMap = {
+  WidgetBackgroundType.color: 'color',
+  WidgetBackgroundType.gradient: 'gradient',
+  WidgetBackgroundType.image: 'image',
+};
+
+WidgetAccountInfo _$WidgetAccountInfoFromJson(Map json) => $checkedCreate('WidgetAccountInfo', json, ($checkedConvert) {
+  final val = WidgetAccountInfo(
+    region: $checkedConvert('region', (v) => v == null ? Region.jp : const RegionConverter().fromJson(v as String)),
+    biliGameServer: $checkedConvert(
+      'biliGameServer',
+      (v) => $enumDecodeNullable(_$BiliGameServerEnumMap, v) ?? BiliGameServer.ios,
+    ),
+    serverSvg: $checkedConvert('serverSvg', (v) => v as String? ?? ""),
+    name: $checkedConvert('name', (v) => v as String? ?? ""),
+    friendCode: $checkedConvert('friendCode', (v) => v as String? ?? ""),
+    actMax: $checkedConvert('actMax', (v) => (v as num?)?.toInt() ?? 0),
+    actRecoverAt: $checkedConvert('actRecoverAt', (v) => (v as num?)?.toInt() ?? 0),
+    carryOverActPoint: $checkedConvert('carryOverActPoint', (v) => (v as num?)?.toInt() ?? 0),
+  );
+  return val;
+});
+
+Map<String, dynamic> _$WidgetAccountInfoToJson(WidgetAccountInfo instance) => <String, dynamic>{
+  'region': const RegionConverter().toJson(instance.region),
+  'biliGameServer': _$BiliGameServerEnumMap[instance.biliGameServer]!,
+  'serverSvg': instance.serverSvg,
+  'name': instance.name,
+  'friendCode': instance.friendCode,
+  'actMax': instance.actMax,
+  'actRecoverAt': instance.actRecoverAt,
+  'carryOverActPoint': instance.carryOverActPoint,
 };

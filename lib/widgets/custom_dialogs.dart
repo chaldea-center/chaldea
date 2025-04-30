@@ -31,6 +31,26 @@ class InputCancelOkDialog extends StatefulWidget {
     this.autofocus = true,
   });
 
+  InputCancelOkDialog.number({
+    super.key,
+    this.title,
+    int? text,
+    this.maxLines,
+    this.hintText,
+    this.helperText,
+    this.errorText,
+    bool Function(int v)? validate,
+    ValueChanged<int>? onSubmit,
+    this.keyboardType = TextInputType.number,
+    this.autofocus = true,
+  }) : text = text?.toString(),
+       validate = ((String s) {
+         final v = int.parse(s);
+         if (validate != null) return validate(v);
+         return true;
+       }),
+       onSubmit = (onSubmit == null ? null : (String s) => onSubmit(int.parse(s)));
+
   @override
   State<StatefulWidget> createState() => _InputCancelOkDialogState();
 }

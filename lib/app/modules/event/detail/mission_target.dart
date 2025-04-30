@@ -41,7 +41,7 @@ class _EventMissionTargetPageState extends State<EventMissionTargetPage> {
   void initState() {
     super.initState();
     final missions = widget.event.missions.toList();
-    missions.sort2((e) => e.dispNo);
+    missions.sortByList((e) => [e.type == MissionType.random ? 0 : 1, e.dispNo]);
     for (final eventMission in missions) {
       final mission = CustomMission.fromEventMission(eventMission);
       if (mission == null) continue;

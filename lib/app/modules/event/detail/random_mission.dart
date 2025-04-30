@@ -1,4 +1,5 @@
 import 'package:chaldea/app/app.dart';
+import 'package:chaldea/app/modules/event/detail/random_mission_sim.dart';
 import 'package:chaldea/app/modules/master_mission/solver/custom_mission.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
@@ -31,7 +32,7 @@ class _EventRandomMissionsPageState extends State<EventRandomMissionsPage> {
     for (final mission in widget.event.randomMissions) {
       groups.putIfAbsent(mission.condNum, () => []).add(mission);
     }
-    final ranks = groups.keys.toList()..sort();
+    final ranks = groups.keys.toList()..sort2((e) => -e);
 
     return DefaultTabController(
       length: ranks.length,
@@ -41,7 +42,13 @@ class _EventRandomMissionsPageState extends State<EventRandomMissionsPage> {
             Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Text(' ${S.current.detective_rank}: '),
+                InkWell(
+                  onLongPress: () {
+                    router.pushPage(RandomMissionSimulationPage(event: event));
+                  },
+                  child: Text(' ${S.current.detective_rank}: '),
+                ),
+
                 Expanded(
                   child: TabBar(
                     isScrollable: true,
@@ -86,33 +93,40 @@ class _EventRandomMissionsPageState extends State<EventRandomMissionsPage> {
     final mission = allMissions[randomMission.missionId];
     final customMission = CustomMission.fromEventMission(mission);
     return SimpleAccordion(
-      headerBuilder:
-          (context, _) => ListTile(
-            leading: Text.rich(
-              TextSpan(
-                children: [
-                  CenterWidgetSpan(child: rankIcon(randomMission.missionRank, width: 24)),
-                  TextSpan(text: ' ${mission?.dispNo}'),
-                ],
-              ),
-              textAlign: TextAlign.center,
+      headerBuilder: (context, _) {
+        return ListTile(
+          leading: Text.rich(
+            TextSpan(
+              children: [
+                CenterWidgetSpan(child: rankIcon(randomMission.missionRank, width: 24)),
+                TextSpan(text: ' ${mission?.dispNo}'),
+              ],
             ),
-            title: Text(mission?.name ?? randomMission.missionId.toString(), textScaler: const TextScaler.linear(0.75)),
-            horizontalTitleGap: 8,
-            minLeadingWidth: 24,
-            contentPadding: const EdgeInsetsDirectional.only(start: 8),
-            trailing:
-                customMission == null
-                    ? null
-                    : Checkbox(
-                      visualDensity: VisualDensity.compact,
-                      value: selected.contains(randomMission),
-                      onChanged: (v) {
-                        selected.toggle(randomMission);
-                        setState(() {});
-                      },
-                    ),
+            textAlign: TextAlign.center,
           ),
+          title: Text(mission?.name ?? randomMission.missionId.toString(), textScaler: const TextScaler.linear(0.75)),
+          horizontalTitleGap: 8,
+          minLeadingWidth: 24,
+          contentPadding: const EdgeInsetsDirectional.only(start: 8),
+          trailing: Row(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              if (mission != null)
+                for (final gift in mission.gifts) gift.iconBuilder(context: context, width: 24),
+              if (customMission != null)
+                Checkbox(
+                  visualDensity: VisualDensity.compact,
+                  value: selected.contains(randomMission),
+                  onChanged: (v) {
+                    selected.toggle(randomMission);
+                    setState(() {});
+                  },
+                ),
+            ],
+          ),
+        );
+      },
       contentBuilder:
           (context) => Padding(
             padding: const EdgeInsetsDirectional.only(start: 24, end: 16),

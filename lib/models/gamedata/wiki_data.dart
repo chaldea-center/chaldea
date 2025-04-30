@@ -253,13 +253,15 @@ class EventExtra {
 }
 
 @JsonSerializable(createToJson: false, converters: [RegionConverter()])
-class EventExtraScript {
+class EventExtraScript with DataScriptBase {
   final int huntingId;
   final Map<Region, String> raidLink;
 
+  String? get commitRef => getScript('commitRef');
+
   EventExtraScript({this.huntingId = 0, this.raidLink = const {}});
 
-  factory EventExtraScript.fromJson(Map<String, dynamic> json) => _$EventExtraScriptFromJson(json);
+  factory EventExtraScript.fromJson(Map<String, dynamic> json) => _$EventExtraScriptFromJson(json)..setSource(json);
 }
 
 @JsonSerializable(createToJson: false)

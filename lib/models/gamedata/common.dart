@@ -163,6 +163,7 @@ mixin DataScriptBase {
   void setSource(Map<String, dynamic>? json) => json == null ? null : _source = Map.from(json);
   List<T>? toList<T>(String key) => (_source[key] as List<dynamic>?)?.cast();
   int? toInt(String key) => (_source[key] as int?);
+  T? getScript<T>(String key) => _source[key] as T?;
 }
 
 @JsonSerializable()
@@ -501,18 +502,16 @@ extension SvtClassX on SvtClass {
     return false;
   }
 
-  static List<SvtClass> resolveClasses(SvtClass svtClass) {
+  static List<SvtClass> resolveClasses(SvtClass svtClass, {required bool expandBeast}) {
     final List<SvtClass> svtClasses = switch (svtClass) {
       SvtClass.EXTRA1 => SvtClassX.extraI,
       SvtClass.EXTRA2 => SvtClassX.extraII,
       SvtClass.ALL => [...SvtClassX.regular, ...SvtClassX.extra],
-      SvtClass.beastAny => beasts,
+      SvtClass.beastAny => expandBeast ? beasts : [svtClass],
       SvtClass.none => [],
       _ => [svtClass],
     };
-    return <SvtClass>{
-      for (final svtClass in svtClasses) ...(svtClass == SvtClass.beastAny ? beasts : [svtClass]),
-    }.toList();
+    return svtClasses.toSet().toList();
   }
 }
 
@@ -523,7 +522,10 @@ Set<int> get kSvtClassIdsPlayableAll => {
   ...ConstData.constantStr.playableBeastClassIds,
 };
 const kSvtClassIdsPlayableAlways = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 23, 25, 28];
-final kSvtClassIds = {for (final v in SvtClass.values) v.value: v};
+final kSvtClassIds = {
+  for (final v in SvtClass.values)
+    if (v != SvtClass.beastAny) v.value: v,
+};
 
 enum SvtClassSupportGroupType {
   all(0),
