@@ -1206,6 +1206,7 @@ const _$RestrictionTypeEnumMap = {
   RestrictionType.uniqueIndividuality: 'uniqueIndividuality',
   RestrictionType.mySvtOrSupport: 'mySvtOrSupport',
   RestrictionType.dataLostBattleUniqueSvt: 'dataLostBattleUniqueSvt',
+  RestrictionType.fixedCostume: 'fixedCostume',
 };
 
 const _$RestrictionRangeTypeEnumMap = {

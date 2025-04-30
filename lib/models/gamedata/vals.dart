@@ -53,6 +53,12 @@ class DataVals {
 
   List<T>? _list<T>(String key) {
     final v = _vals[key];
+    if (v != null && v is! List) {
+      assert(() {
+        throw FormatException('[DataVals]: key "$key" requires List but ${v.runtimeType}');
+      }());
+      return null;
+    }
     return (v as List<dynamic>?)?.cast();
   }
 
@@ -134,7 +140,9 @@ class DataVals {
   int? get StatusEffectId => _vals['StatusEffectId'];
   int? get EndBattle => _vals['EndBattle'];
   int? get LoseBattle => _vals['LoseBattle'];
+  @Deprecated('use getAddIndividualty()')
   int? get AddIndividualty => _vals['AddIndividualty'];
+  List<int>? get AddIndividualtyList => _list('AddIndividualtyList'); // an array version of `AddIndividualty`
   int? get AddLinkageTargetIndividualty => _vals['AddLinkageTargetIndividualty'];
   int? get SameBuffLimitTargetIndividuality => _vals['SameBuffLimitTargetIndividuality'];
   int? get SameBuffLimitNum => _vals['SameBuffLimitNum'];
@@ -218,7 +226,7 @@ class DataVals {
   int? get RemoveFieldBuffActorDeath => _vals['RemoveFieldBuffActorDeath'];
   int? get FieldBuffGrantType => _vals['FieldBuffGrantType'];
   int? get Priority => _vals['Priority'];
-  int? get AddIndividualityEx => _vals['AddIndividualityEx'];
+  List<int>? get AddIndividualityEx => _list('AddIndividualityEx');
   int? get IgnoreResistance => _vals['IgnoreResistance'];
   int? get GainNpTargetPassiveIndividuality => _vals['GainNpTargetPassiveIndividuality'];
   int? get HpReduceToRegainIndiv => _vals['HpReduceToRegainIndiv'];
@@ -242,7 +250,7 @@ class DataVals {
   int? get IntervalCount => _vals['IntervalCount'];
   int? get TriggeredFieldCountTarget => _vals['TriggeredFieldCountTarget'];
 
-  List<int>? get TriggeredFieldCountRange => _list('TriggeredFieldCountRange');
+  String? get TriggeredFieldCountRange => _vals['TriggeredFieldCountRange'];
   List<int>? get TargetEnemyRange => _list('TargetEnemyRange'); // 1/2/3
 
   // TriggeredFuncPositionSameTarget > TriggeredFuncPositionAll > TriggeredFuncPosition
@@ -343,6 +351,13 @@ class DataVals {
   int? get ForceTurnProgressIfTimingIsOverInPartyTurn => _vals['ForceTurnProgressIfTimingIsOverInPartyTurn'];
   int? get ForceTurnProgressIfTimingIsOverInOpponentTurn => _vals['ForceTurnProgressIfTimingIsOverInOpponentTurn'];
   int? get OverwriteFuncInvalidType => _vals['OverwriteFuncInvalidType'];
+  int? get BgmFadeTime => _vals['BgmFadeTime'];
+  int? get KeepChangeModelAfterContinue => _vals['KeepChangeModelAfterContinue'];
+  int? get DefenceDamageHigher => _vals['DefenceDamageHigher'];
+  int? get SameIndivBuffActorOnField => _vals['SameIndivBuffActorOnField'];
+  int? get SyncUsedSameIndivBuffActorOnField => _vals['SyncUsedSameIndivBuffActorOnField'];
+  int? get OnlyMaxFuncGroupId => _vals['OnlyMaxFuncGroupId'];
+  int? get UseAttack => _vals['UseAttack'];
 
   int? get ApplySupportSvt => _vals['ApplySupportSvt'];
   int? get Individuality => _vals['Individuality'];
@@ -358,6 +373,13 @@ class DataVals {
     assert(v == null || v is List, '$key: $v');
     if (v == null || v is! List) return null;
     return v.map((e) => fromJson(Map<String, dynamic>.from(e))).toList();
+  }
+
+  List<int> getAddIndividuality() {
+    return [
+      if (AddIndividualtyList != null) ...?AddIndividualtyList else if (AddIndividualty != null) AddIndividualty!,
+      ...?AddIndividualityEx,
+    ];
   }
 
   /// [TriggeredTargetHpRange], [TriggeredTargetHpRateRange]

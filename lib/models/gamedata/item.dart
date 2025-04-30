@@ -536,6 +536,7 @@ enum ItemType {
   exchangeSvtCoin,
   reduceTradeTime,
   eventPassiveSkillGiven,
+  netmarbleChargeStone, // KR stone
 }
 
 enum ItemBGType { zero, bronze, silver, gold, questClearQPReward, aquaBlue }

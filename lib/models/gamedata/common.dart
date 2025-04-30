@@ -272,6 +272,7 @@ enum CardType {
   strength(11),
   weakalt1(21),
   weakalt2(22),
+  busteralt1(60),
   extra2(104);
 
   final int value;
@@ -281,7 +282,7 @@ enum CardType {
 
   bool isQuick() => this == quick;
   bool isArts() => this == arts;
-  bool isBuster() => this == buster;
+  bool isBuster() => this == buster || this == busteralt1;
   bool isExtra() => this == extra || this == extra2;
   bool isWeak() => this == weak || this == weakalt1 || this == weakalt2;
   bool isStrength() => this == strength;
@@ -1112,7 +1113,15 @@ enum CondType {
   highestWaveAbove(245),
   highestWaveBelow(246),
   privilegeValid(247),
-  privilegeInvalid(248);
+  privilegeInvalid(248),
+  battleActionOpponentIndividuality(249),
+  notBattleActionOpponentIndividuality(250),
+  treasureDeviceOfSelectedCard(251),
+  battleSvtFriendshipAbove(252),
+  battleSvtFriendshipBelow(253),
+  elapsedTimeAfterSvtGet(254),
+  notElapsedTimeAfterQuestClear(255),
+  notElapsedTimeAfterSvtGet(256);
 
   const CondType(this.value);
   final int value;

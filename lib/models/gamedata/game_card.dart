@@ -330,7 +330,7 @@ mixin GameCardMixin implements RouteInfo {
       onCE: (obj) => Routes.craftEssenceI(obj.id),
       onCC: (obj) => Routes.commandCodeI(obj.id),
       onBasicSvt: (obj) => Routes.servantI(obj.id),
-      onCostume: (svt, costume) => Routes.costumeI(costume.costumeCollectionNo),
+      onCostume: (svt, costume) => Routes.costumeI(costume.collectionPriorCharaId),
       onDefault: () => null,
     );
   }

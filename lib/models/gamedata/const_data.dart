@@ -1277,6 +1277,8 @@ enum BuffAction {
   criticalDamageDef(151),
   npdamageDef(152),
   functionWavestartAnimationBefore(153),
+  receiveFixedDamage(154),
+  overwriteDamageDef(155),
   // custom
   functionClassboardCommandSpellAfter(301);
 

@@ -84,6 +84,7 @@ class _WarDetailPageState extends State<WarDetailPage> with RegionBasedState<Nic
           war.banner,
           ...warBanners.take(war.id == WarId.chaldeaGate ? 4 : 6).toList().reversed,
         }.whereType<String>().toList();
+    print(warBanners.join('\n'));
 
     List<Widget> children = [
       if (banners.isNotEmpty) CarouselUtil.limitHeightWidget(context: context, imageUrls: banners),
@@ -253,6 +254,10 @@ class _WarDetailPageState extends State<WarDetailPage> with RegionBasedState<Nic
     }
 
     final subWars = db.gameData.wars.values.where((w) => w.parentWars.contains(war.id)).toList();
+    if (war.flags.contains(WarFlag.areaBoardShortcut)) {
+      final shortcutWar = db.gameData.wars[war.targetId];
+      if (shortcutWar != null) subWars.add(shortcutWar);
+    }
     if (subWars.isNotEmpty) {
       subWars.sort2((e) => -e.priority);
       List<Widget> warTiles = [];

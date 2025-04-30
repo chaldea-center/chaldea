@@ -29,6 +29,9 @@ class _WarsPageState extends State<WarsPage> with SingleTickerProviderStateMixin
     List<NiceWar> mainStories = [], chaldeaGates = [], eventWars = [];
     for (final war in db.gameData.wars.values) {
       if (war.isMainStory) {
+        if (war.flags.contains(WarFlag.areaBoardShortcut) && war.spots.isEmpty) {
+          continue;
+        }
         if (war.id >= 11000 && war.id <= 19000) {
           chaldeaGates.add(war);
         } else {

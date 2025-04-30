@@ -84,11 +84,12 @@ class NiceWar with RouteInfo {
        _longName = _fixName(longName, id, eventName),
        _eventId = eventId {
     if (banner != null) {
-      if (id == 404) {
-        banner = banner!.replaceAll('/questboard_cap_closed.png', '/questboard_cap405.png');
-      } else if (id == 405) {
-        banner = banner!.replaceAll(RegExp(r'/questboard.*.png'), '/questboard_cap_closed_406.png');
-      }
+      // fixed when released
+      // if (id == 404) {
+      //   banner = banner!.replaceAll('/questboard_cap_closed.png', '/questboard_cap405.png');
+      // } else if (id == 405) {
+      //   banner = banner!.replaceAll(RegExp(r'/questboard.*.png'), '/questboard_cap_closed_406.png');
+      // }
     }
   }
 
@@ -609,6 +610,7 @@ enum WarFlag {
   changeDispClosedMessage,
   chapterSubIdJapaneseNumeralsNormal,
   caldeagatePriorityDisplay,
+  areaBoardShortcut,
 }
 
 enum WarOverwriteType {

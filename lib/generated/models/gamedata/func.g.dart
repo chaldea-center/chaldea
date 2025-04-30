@@ -335,4 +335,12 @@ const _$FuncTypeEnumMap = {
   FuncType.enemyCountChange: 'enemyCountChange',
   FuncType.displayBattleMessage: 'displayBattleMessage',
   FuncType.generateBattleSkillDrop: 'generateBattleSkillDrop',
+  FuncType.changeMasterFace: 'changeMasterFace',
+  FuncType.enableMasterSkill: 'enableMasterSkill',
+  FuncType.enableMasterCommandSpell: 'enableMasterCommandSpell',
+  FuncType.battleModelChange: 'battleModelChange',
+  FuncType.gainNpCriticalstarSum: 'gainNpCriticalstarSum',
+  FuncType.addBattleMissionValue: 'addBattleMissionValue',
+  FuncType.setBattleMissionValue: 'setBattleMissionValue',
+  FuncType.changeEnemyStatusUiType: 'changeEnemyStatusUiType',
 };

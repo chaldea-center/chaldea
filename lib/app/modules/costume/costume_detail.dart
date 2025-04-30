@@ -16,10 +16,7 @@ class CostumeDetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final costume =
-        _costume ??
-        db.gameData.costumes[id] ??
-        db.gameData.costumes.values.firstWhereOrNull((e) => e.battleCharaId == id);
+    final costume = _costume ?? db.gameData.costumes[id] ?? db.gameData.costumesByCharaId[id];
     if (costume == null) {
       return NotFoundPage(url: Routes.costumeI(id ?? 0), title: S.current.costume);
     }

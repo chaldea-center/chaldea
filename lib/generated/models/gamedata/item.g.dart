@@ -95,6 +95,7 @@ const _$ItemTypeEnumMap = {
   ItemType.exchangeSvtCoin: 'exchangeSvtCoin',
   ItemType.reduceTradeTime: 'reduceTradeTime',
   ItemType.eventPassiveSkillGiven: 'eventPassiveSkillGiven',
+  ItemType.netmarbleChargeStone: 'netmarbleChargeStone',
 };
 
 const _$ItemUseEnumMap = {

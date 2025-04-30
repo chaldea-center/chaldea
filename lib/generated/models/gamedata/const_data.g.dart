@@ -1167,5 +1167,7 @@ const _$BuffActionEnumMap = {
   BuffAction.criticalDamageDef: 'criticalDamageDef',
   BuffAction.npdamageDef: 'npdamageDef',
   BuffAction.functionWavestartAnimationBefore: 'functionWavestartAnimationBefore',
+  BuffAction.receiveFixedDamage: 'receiveFixedDamage',
+  BuffAction.overwriteDamageDef: 'overwriteDamageDef',
   BuffAction.functionClassboardCommandSpellAfter: 'functionClassboardCommandSpellAfter',
 };

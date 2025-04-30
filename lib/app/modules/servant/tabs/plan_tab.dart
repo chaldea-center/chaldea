@@ -190,7 +190,7 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
                 placeholder: (ctx) => db.getIconImage(Atlas.assetItem(Items.costumeIconId)),
               ),
               onTap: () {
-                router.push(url: Routes.costumeI(costume.costumeCollectionNo));
+                router.push(url: Routes.costumeI(costume.collectionPriorCharaId));
               },
             ),
             title: costume.lName.l,

@@ -330,6 +330,7 @@ class MissionCondDetailDescriptor extends HookWidget with DescriptorBase {
       case EventMissionCondDetailType.questClearWithSvtInDeckNoneFollowerOnlyStartingMember:
       case EventMissionCondDetailType.purchaseShopNum:
       case EventMissionCondDetailType.itemUseQuestNum:
+      case EventMissionCondDetailType.battleMissionValue:
       case null:
         break;
     }

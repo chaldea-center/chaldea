@@ -123,6 +123,7 @@ const _$WarFlagEnumMap = {
   WarFlag.changeDispClosedMessage: 'changeDispClosedMessage',
   WarFlag.chapterSubIdJapaneseNumeralsNormal: 'chapterSubIdJapaneseNumeralsNormal',
   WarFlag.caldeagatePriorityDisplay: 'caldeagatePriorityDisplay',
+  WarFlag.areaBoardShortcut: 'areaBoardShortcut',
 };
 
 const _$WarStartTypeEnumMap = {WarStartType.none: 'none', WarStartType.script: 'script', WarStartType.quest: 'quest'};

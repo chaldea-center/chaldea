@@ -676,6 +676,38 @@ AscensionAdd _$AscensionAddFromJson(Map json) => AscensionAdd(
       json['overWriteTDTypeText'] == null
           ? const AscensionAddEntry()
           : AscensionAddEntry<String>.fromJson(Map<String, dynamic>.from(json['overWriteTDTypeText'] as Map)),
+  overwriteAtkBase:
+      json['overwriteAtkBase'] == null
+          ? const AscensionAddEntry()
+          : AscensionAddEntry<int>.fromJson(Map<String, dynamic>.from(json['overwriteAtkBase'] as Map)),
+  overwriteAtkMax:
+      json['overwriteAtkMax'] == null
+          ? const AscensionAddEntry()
+          : AscensionAddEntry<int>.fromJson(Map<String, dynamic>.from(json['overwriteAtkMax'] as Map)),
+  overwriteClassPassive:
+      json['overwriteClassPassive'] == null
+          ? const AscensionAddEntry()
+          : AscensionAddEntry<List<int>>.fromJson(Map<String, dynamic>.from(json['overwriteClassPassive'] as Map)),
+  overwriteCost:
+      json['overwriteCost'] == null
+          ? const AscensionAddEntry()
+          : AscensionAddEntry<int>.fromJson(Map<String, dynamic>.from(json['overwriteCost'] as Map)),
+  overwriteExpType:
+      json['overwriteExpType'] == null
+          ? const AscensionAddEntry()
+          : AscensionAddEntry<int>.fromJson(Map<String, dynamic>.from(json['overwriteExpType'] as Map)),
+  overwriteHpBase:
+      json['overwriteHpBase'] == null
+          ? const AscensionAddEntry()
+          : AscensionAddEntry<int>.fromJson(Map<String, dynamic>.from(json['overwriteHpBase'] as Map)),
+  overwriteHpMax:
+      json['overwriteHpMax'] == null
+          ? const AscensionAddEntry()
+          : AscensionAddEntry<int>.fromJson(Map<String, dynamic>.from(json['overwriteHpMax'] as Map)),
+  overwriteRarity:
+      json['overwriteRarity'] == null
+          ? const AscensionAddEntry()
+          : AscensionAddEntry<int>.fromJson(Map<String, dynamic>.from(json['overwriteRarity'] as Map)),
   lvMax:
       json['lvMax'] == null
           ? const AscensionAddEntry()
@@ -713,6 +745,14 @@ Map<String, dynamic> _$AscensionAddToJson(AscensionAdd instance) => <String, dyn
   'overWriteTDFileName': instance.overWriteTDFileName.toJson(),
   'overWriteTDRank': instance.overWriteTDRank.toJson(),
   'overWriteTDTypeText': instance.overWriteTDTypeText.toJson(),
+  'overwriteAtkBase': instance.overwriteAtkBase.toJson(),
+  'overwriteAtkMax': instance.overwriteAtkMax.toJson(),
+  'overwriteClassPassive': instance.overwriteClassPassive.toJson(),
+  'overwriteCost': instance.overwriteCost.toJson(),
+  'overwriteExpType': instance.overwriteExpType.toJson(),
+  'overwriteHpBase': instance.overwriteHpBase.toJson(),
+  'overwriteHpMax': instance.overwriteHpMax.toJson(),
+  'overwriteRarity': instance.overwriteRarity.toJson(),
   'lvMax': instance.lvMax.toJson(),
   'charaGraphChange': instance.charaGraphChange.toJson(),
   'faceChange': instance.faceChange.toJson(),

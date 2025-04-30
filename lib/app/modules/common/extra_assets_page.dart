@@ -355,7 +355,9 @@ class ExtraAssetsPage extends StatelessWidget {
       children.add(_tile('${S.current.ascension_short} ${ascensions.join("&")}', key));
     });
     costumeModels.forEach((key, costumeIds) {
-      children.add(_tile(costumeIds.map((e) => db.gameData.costumesById[e]?.lName.l ?? 'Costume $e').join('& '), key));
+      children.add(
+        _tile(costumeIds.map((e) => db.gameData.costumesByCharaId[e]?.lName.l ?? 'Costume $e').join('& '), key),
+      );
     });
 
     return SimpleAccordion(

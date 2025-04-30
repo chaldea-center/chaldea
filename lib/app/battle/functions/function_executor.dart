@@ -303,6 +303,7 @@ class FunctionExecutor {
         case FuncType.gainNpTargetSum:
           GainNpTargetSum.gainNpTargetSum(battleData, dataVals, targets, function.traitVals);
           break;
+        // case FuncType.gainNpCriticalstarSum: // similar with gainNpXXXSum
         case FuncType.hastenNpturn:
         case FuncType.delayNpturn:
           final isNegative = function.funcType == FuncType.delayNpturn;
@@ -431,6 +432,7 @@ class FunctionExecutor {
           AddBattlePoint.addBattlePoint(battleData, dataVals, targets, overchargeState, ignoreBattlePoints);
           break;
         case FuncType.updateEnemyEntryMaxCountEachTurn:
+        case FuncType.gainNpCriticalstarSum:
         // ↑↑↑ should be implemented ↑↑↑
         case FuncType.damageValueSafeOnce:
         case FuncType.subFieldBuff:
@@ -494,6 +496,13 @@ class FunctionExecutor {
             'Activator: ${activator?.lBattleName}',
           );
           break;
+        case FuncType.changeMasterFace:
+        case FuncType.enableMasterSkill:
+        case FuncType.enableMasterCommandSpell:
+        case FuncType.battleModelChange:
+        case FuncType.addBattleMissionValue:
+        case FuncType.setBattleMissionValue:
+        case FuncType.changeEnemyStatusUiType:
       }
 
       battleData.updateLastFuncResults(function.funcId, funcIndex);

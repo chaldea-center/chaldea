@@ -141,6 +141,7 @@ const _$CardTypeEnumMap = {
   CardType.strength: 'strength',
   CardType.weakalt1: 'weakalt1',
   CardType.weakalt2: 'weakalt2',
+  CardType.busteralt1: 'busteralt1',
   CardType.extra2: 'extra2',
 };
 
@@ -439,4 +440,12 @@ const _$CondTypeEnumMap = {
   CondType.highestWaveBelow: 'highestWaveBelow',
   CondType.privilegeValid: 'privilegeValid',
   CondType.privilegeInvalid: 'privilegeInvalid',
+  CondType.battleActionOpponentIndividuality: 'battleActionOpponentIndividuality',
+  CondType.notBattleActionOpponentIndividuality: 'notBattleActionOpponentIndividuality',
+  CondType.treasureDeviceOfSelectedCard: 'treasureDeviceOfSelectedCard',
+  CondType.battleSvtFriendshipAbove: 'battleSvtFriendshipAbove',
+  CondType.battleSvtFriendshipBelow: 'battleSvtFriendshipBelow',
+  CondType.elapsedTimeAfterSvtGet: 'elapsedTimeAfterSvtGet',
+  CondType.notElapsedTimeAfterQuestClear: 'notElapsedTimeAfterQuestClear',
+  CondType.notElapsedTimeAfterSvtGet: 'notElapsedTimeAfterSvtGet',
 };

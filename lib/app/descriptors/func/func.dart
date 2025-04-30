@@ -966,8 +966,7 @@ class FuncDescriptor extends StatelessWidget {
                     (v >= 2000 && v < 3000) || (v >= 3050 && v < 4000) || (v >= 6000 && v < 7000);
                 final guessTraits = buff.vals.where((e) => _isGuessTrait(e.signedId)).toList();
                 if (guessTraits.length == 1) guessTrait = guessTraits.first;
-                for (final v in [vals?.AddIndividualty, vals?.AddIndividualityEx]) {
-                  if (v == null) continue;
+                for (final v in vals?.getAddIndividuality() ?? <int>[]) {
                   if (guessTrait == null && _isGuessTrait(v)) {
                     guessTrait = NiceTrait(id: v);
                     break;

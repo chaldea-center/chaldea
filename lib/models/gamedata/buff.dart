@@ -479,6 +479,8 @@ enum BuffType {
   downCommandstar(224), // replacing downCommanstar(67)
   downDefenceCommandstar(225),
   wavestartAnimationBeforeFunction(226),
+  subFixedSelfdamage(227),
+  overwriteFixedDefenceDamage(228),
 
   toFieldChangeField(10001),
   toFieldAvoidBuff(10002),

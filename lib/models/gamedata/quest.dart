@@ -2200,6 +2200,7 @@ enum RestrictionType {
   uniqueIndividuality,
   mySvtOrSupport,
   dataLostBattleUniqueSvt,
+  fixedCostume,
 }
 
 enum RestrictionRangeType { none, equal, notEqual, above, below, between }
@@ -2279,5 +2280,13 @@ enum AiAllocationApplySvtFlag {
   unknown(-1);
 
   const AiAllocationApplySvtFlag(this.value);
+  final int value;
+}
+
+enum QuestExtensionSubType {
+  none(0),
+  svtCoin(1);
+
+  const QuestExtensionSubType(this.value);
   final int value;
 }

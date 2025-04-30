@@ -1056,6 +1056,8 @@ class AscensionAddEntry<T> {
   static T _fromJsonT<T>(Object? obj) {
     if (obj == null) {
       return null as T;
+    } else if (T == List<int>) {
+      return (obj as List<dynamic>).map((e) => (e as num).toInt()).toList() as T;
     } else if (T == List<NiceTrait>) {
       return (obj as List<dynamic>).map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map))).toList() as T;
     } else if (T == List<CommonRelease>) {
@@ -1099,6 +1101,15 @@ class AscensionAdd {
   AscensionAddEntry<String> overWriteTDFileName;
   AscensionAddEntry<String> overWriteTDRank;
   AscensionAddEntry<String> overWriteTDTypeText;
+  AscensionAddEntry<int> overwriteAtkBase;
+  AscensionAddEntry<int> overwriteAtkMax;
+  AscensionAddEntry<List<int>> overwriteClassPassive;
+  AscensionAddEntry<int> overwriteCost;
+  AscensionAddEntry<int> overwriteExpType;
+  AscensionAddEntry<int> overwriteHpBase;
+  AscensionAddEntry<int> overwriteHpMax;
+  AscensionAddEntry<int> overwriteRarity;
+
   AscensionAddEntry<int> lvMax;
   // AscensionAddEntry<int> rarity;
   AscensionAddEntry<String> charaGraphChange;
@@ -1117,6 +1128,14 @@ class AscensionAdd {
     this.overWriteTDFileName = const AscensionAddEntry(),
     this.overWriteTDRank = const AscensionAddEntry(),
     this.overWriteTDTypeText = const AscensionAddEntry(),
+    this.overwriteAtkBase = const AscensionAddEntry(),
+    this.overwriteAtkMax = const AscensionAddEntry(),
+    this.overwriteClassPassive = const AscensionAddEntry(),
+    this.overwriteCost = const AscensionAddEntry(),
+    this.overwriteExpType = const AscensionAddEntry(),
+    this.overwriteHpBase = const AscensionAddEntry(),
+    this.overwriteHpMax = const AscensionAddEntry(),
+    this.overwriteRarity = const AscensionAddEntry(),
     this.lvMax = const AscensionAddEntry(),
     // this.rarity = const AscensionAddEntry(),
     this.charaGraphChange = const AscensionAddEntry(),
@@ -1354,6 +1373,8 @@ class BasicCostume with RouteInfo {
   String name;
   String shortName;
 
+  int get collectionPriorCharaId => costumeCollectionNo == 0 ? battleCharaId : costumeCollectionNo;
+
   BasicCostume({
     required this.id,
     this.costumeCollectionNo = 0,
@@ -1367,7 +1388,8 @@ class BasicCostume with RouteInfo {
   Map<String, dynamic> toJson() => _$BasicCostumeToJson(this);
 
   Transl<String, String> get lName => Transl.costumeNames(name);
-  Transl<int, String> get lDetail => Transl.costumeDetail(costumeCollectionNo);
+  Transl<int, String> get lDetail =>
+      Transl.costumeDetail(costumeCollectionNo == 0 ? battleCharaId : costumeCollectionNo);
 
   String get face => 'https://static.atlasacademy.io/JP/Faces/f_${battleCharaId}0.png';
 
@@ -1377,10 +1399,10 @@ class BasicCostume with RouteInfo {
 
   String get charaGraph => 'https://static.atlasacademy.io/JP/CharaGraph/$battleCharaId/$battleCharaId.png';
 
-  Servant? get owner => db.gameData.others.costumeSvtMap[costumeCollectionNo];
+  Servant? get owner => db.gameData.others.costumeSvtMap[battleCharaId];
 
   @override
-  String get route => Routes.costumeI(costumeCollectionNo);
+  String get route => Routes.costumeI(collectionPriorCharaId);
 }
 
 @JsonSerializable()

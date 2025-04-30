@@ -2124,6 +2124,7 @@ enum EventMissionCondDetailType {
   mapGimmickCount(40), // FSR collaboration, touch dog or cat
   purchaseShopNum(41),
   itemUseQuestNum(42), // storm pod
+  battleMissionValue(43),
 
   /// custom, only used in app
   questClearIndividuality(999);

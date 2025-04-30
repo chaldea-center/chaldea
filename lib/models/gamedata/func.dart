@@ -614,7 +614,15 @@ enum FuncType {
   gainNpTargetSum(146),
   enemyCountChange(147),
   displayBattleMessage(148),
-  generateBattleSkillDrop(149);
+  generateBattleSkillDrop(149),
+  changeMasterFace(150),
+  enableMasterSkill(151),
+  enableMasterCommandSpell(152),
+  battleModelChange(153),
+  gainNpCriticalstarSum(154),
+  addBattleMissionValue(155),
+  setBattleMissionValue(156),
+  changeEnemyStatusUiType(157);
 
   final int value;
   const FuncType(this.value);

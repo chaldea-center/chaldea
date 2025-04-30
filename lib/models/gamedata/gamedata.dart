@@ -265,9 +265,13 @@ class GameData with _GameDataExtra {
     );
     costumes = {
       for (final svt in servants.values)
-        for (final costume in svt.profile.costume.values) costume.costumeCollectionNo: costume,
+        for (final costume in svt.profile.costume.values)
+          if (costume.costumeCollectionNo != 0) costume.costumeCollectionNo: costume,
     };
-    costumesById = {for (final costume in costumes.values) costume.battleCharaId: costume};
+    costumesByCharaId = {
+      for (final svt in servants.values)
+        for (final costume in svt.profile.costume.values) costume.battleCharaId: costume,
+    };
     mainStories = {
       for (final war in wars.values)
         if (war.isMainStory) war.id: war,
@@ -393,7 +397,7 @@ mixin _GameDataExtra {
   @JsonKey(includeFromJson: false, includeToJson: false)
   Map<int, NiceCostume> costumes = {};
   @JsonKey(includeFromJson: false, includeToJson: false)
-  Map<int, NiceCostume> costumesById = {};
+  Map<int, NiceCostume> costumesByCharaId = {};
   @JsonKey(includeFromJson: false, includeToJson: false)
   late Map<int, NiceWar> mainStories;
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -605,7 +609,7 @@ class _ProcessedData {
   _ProcessedData(this.gameData) {
     for (final svt in gameData.servants.values) {
       for (final costume in svt.profile.costume.values) {
-        costumeSvtMap[costume.costumeCollectionNo] = svt;
+        costumeSvtMap[costume.battleCharaId] = svt;
       }
     }
     enemyMasterBattles = {
