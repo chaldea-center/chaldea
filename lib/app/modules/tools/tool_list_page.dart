@@ -10,6 +10,7 @@ import '../exp/master_exp_page.dart';
 import '_hidden.dart';
 import 'aa_explorer_preview.dart';
 import 'admin_tools.dart';
+import 'bond_bonus.dart';
 import 'bond_table.dart';
 import 'chara_figure_marker.dart';
 import 'cipher_test.dart';
@@ -45,10 +46,10 @@ class ToolListPage extends StatelessWidget {
           TileGroup(
             header: 'Tools',
             children: [
-              buildOne(S.current.custom_chara_figure, const CustomCharaFigureIntro()),
-              buildOne('Combine Images', const CombineImagePage()),
               buildOne('Master Level', const MasterExpPage()),
               buildOne('${S.current.bond} (${S.current.total})', const BondTotalTable()),
+              buildOne('${S.current.craft_essence} - ${S.current.bond}', const BondBonusPage()),
+              buildOne(S.current.custom_chara_figure, const CustomCharaFigureIntro()),
               buildOne('Event Servant Filter', const RealtimeSvtFilterPage()),
               buildOne('Event Fatigues', const EventFatigueListPage()),
             ],
@@ -61,6 +62,7 @@ class ToolListPage extends StatelessWidget {
               buildOne('AA Explorer', const AtlasExplorerPreview(), supportWeb: false),
               buildOne('Ciphers', const CipherTestPage()),
               buildOne('Skipped Svt ID', const SkippedSvtIdPage()),
+              buildOne('Combine Images', const CombineImagePage()),
               if (db.settings.secrets.user?.isAdmin == true)
                 buildOne('Admin Tools', AdminToolsPage(), supportWeb: false),
               if (!kIsWeb) buildOne('TreeSize', const TreeSizePage()),
