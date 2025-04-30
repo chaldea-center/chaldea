@@ -549,10 +549,6 @@ class BattleUtils {
     return const {0: 1, 1: 2, 2: 2, 3: 3, 4: 3}[limitCount] ?? limitCount;
   }
 
-  static final List<int> costumeOrtinaxIds = [12, 800140, 13, 800150];
-  static final List<int> melusineDragonIds = [3, 4, 13, 304850];
-  static final List<int> ptolemaiosAsc3Ids = [3, 4, 205020];
-
   static List<NiceTd> getShownTds(final Servant svt, final int limitCount) {
     // only case where we different groups of noblePhantasms exist are for tdTypeChanges or enemy tds
     final List<NiceTd> shownTds = svt.groupedNoblePhantasms[1]?.toList() ?? <NiceTd>[];

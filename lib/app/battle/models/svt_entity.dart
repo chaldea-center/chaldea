@@ -1324,10 +1324,6 @@ class BattleServantData {
       return false;
     }
 
-    // also updates skillRankUp info
-    final skillInfo = skillInfoList[skillIndex];
-    final rankUp = countBuffWithTrait([NiceTrait(id: Trait.buffSkillRankUp.value)]);
-    skillInfo.setRankUp(rankUp);
     return hasBuffNoProbabilityCheck(BuffAction.donotSkill);
   }
 
@@ -1346,8 +1342,6 @@ class BattleServantData {
     }
 
     final skillInfo = skillInfoList[skillIndex];
-    final rankUp = countBuffWithTrait([NiceTrait(id: Trait.buffSkillRankUp.value)]);
-    skillInfo.setRankUp(rankUp);
     return !canAttack() ||
         skillInfo.skill == null ||
         !BattleSkillInfoData.checkSkillScript(battleData, this, skillInfo.skillScript, skillInfo.skillLv);
@@ -1357,10 +1351,6 @@ class BattleServantData {
     if (skillInfoList.length <= skillIndex || skillIndex < 0) {
       return false;
     }
-
-    final skillInfo = skillInfoList[skillIndex];
-    final rankUp = countBuffWithTrait([NiceTrait(id: Trait.buffSkillRankUp.value)]);
-    skillInfo.setRankUp(rankUp);
 
     return !isSkillSealed(skillIndex) && !isSkillCondFailed(battleData, skillIndex);
   }
@@ -1412,9 +1402,6 @@ class BattleServantData {
   Future<bool> activateSkill(final BattleData battleData, final int skillIndex) async {
     BattleSkillInfoData? skillInfo = skillInfoList.getOrNull(skillIndex);
     if (skillInfo == null || skillInfo.chargeTurn > 0) return false;
-
-    final rankUp = countBuffWithTrait([NiceTrait(id: Trait.buffSkillRankUp.value)]);
-    skillInfo.setRankUp(rankUp);
 
     // in case transform svt changed self or skill
     final _actor = copy(), _skill = skillInfo.copy();
@@ -2143,6 +2130,11 @@ class BattleServantData {
         .getAllBuffs()
         .where((buff) => BuffType.addIndividuality != buff.buff.type && BuffType.subIndividuality != buff.buff.type)
         .forEach((buff) => buff.updateActState(battleData, this));
+
+    final rankUp = battleBuff.validBuffs.where((buff) => buff.buff.type == BuffType.skillRankUp).length;
+    for (final skill in skillInfoList) {
+      skill.setRankUp(rankUp);
+    }
   }
 
   void useBuffOnce() {

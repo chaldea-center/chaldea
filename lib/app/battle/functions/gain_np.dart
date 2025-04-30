@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:chaldea/app/battle/models/battle.dart';
 import 'package:chaldea/app/battle/utils/battle_utils.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
@@ -134,5 +136,24 @@ class GainNp {
     }
 
     return countTargets;
+  }
+
+  static void gainNpCriticalStarSum(
+    final BattleData battleData,
+    final DataVals dataVals,
+    final Iterable<BattleServantData> targets, {
+    final bool isNegative = false,
+  }) {
+    final functionRate = dataVals.Rate ?? 1000;
+    if (functionRate < battleData.options.threshold) {
+      return;
+    }
+
+    for (final target in targets) {
+      final changePerStar = isNegative ? -dataVals.Value! : dataVals.Value!;
+      final maxStar = dataVals.Value2 ?? BattleData.kValidStarMax;
+      target.changeNP(changePerStar * min(battleData.criticalStars.floor(), maxStar));
+      battleData.setFuncResult(target.uniqueId, true);
+    }
   }
 }
