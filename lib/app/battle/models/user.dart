@@ -479,7 +479,9 @@ class BattleTeamSetup {
     int cost = 0;
     for (final svt in allSvts) {
       if (svt.svt == null || svt.supportType != SupportSvtType.none) continue;
-      cost += svt.svt!.cost;
+      cost +=
+          svt.svt!.ascensionAdd.getAscended(svt.limitCount, (attr) => attr.overwriteRarity, svt.svt!.costume) ??
+          svt.svt!.cost;
       if (svt.ce != null) cost += svt.ce!.cost;
     }
     return cost;

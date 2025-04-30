@@ -206,6 +206,7 @@ class BattleServantData {
       throw BattleException('Invalid PlayerSvtData: null svt');
     }
 
+    final growCurve = psvt.growCurveForLimit(settings.limitCount);
     final svt = BattleServantData._(isPlayer: true);
     svt
       ..playerSvtData = settings.copy()
@@ -214,8 +215,8 @@ class BattleServantData {
       ..svtId = psvt.id
       ..level = settings.lv
       ..startingPosition = startingPosition
-      .._maxHp = settings.fixedHp ?? ((psvt.hpGrowth.getOrNull(settings.lv - 1) ?? 0) + settings.hpFou)
-      ..baseAtk = settings.fixedAtk ?? ((psvt.atkGrowth.getOrNull(settings.lv - 1) ?? 0) + settings.atkFou);
+      .._maxHp = settings.fixedHp ?? ((growCurve.hp.getOrNull(settings.lv - 1) ?? 0) + settings.hpFou)
+      ..baseAtk = settings.fixedAtk ?? ((growCurve.atk.getOrNull(settings.lv - 1) ?? 0) + settings.atkFou);
     svt.hp = svt._maxHp;
     if (settings.ce != null) {
       svt.equip = BattleCEData(settings.ce!, settings.ceLimitBreak, settings.ceLv);
@@ -290,7 +291,11 @@ class BattleServantData {
 
   int get atk => isPlayer ? baseAtk + (equip?.atk ?? 0) : baseAtk;
 
-  int get rarity => isPlayer ? niceSvt!.rarity : niceEnemy!.svt.rarity;
+  int get rarity =>
+      isPlayer
+          ? niceSvt!.ascensionAdd.getAscended(limitCount, (attr) => attr.overwriteRarity, niceSvt!.costume) ??
+              niceSvt!.rarity
+          : niceEnemy!.svt.rarity;
 
   int get logicalClassId {
     final overwriteBattleClassBuff = collectBuffsPerAction(
@@ -389,7 +394,31 @@ class BattleServantData {
   }
 
   Future<void> activateClassPassive(final BattleData battleData) async {
-    final List<NiceSkill> passives = isPlayer ? [...niceSvt!.classPassive] : [...niceEnemy!.classPassive.classPassive];
+    final List<BaseSkill> passives = [];
+
+    if (isPlayer) {
+      final ascensionAdds = niceSvt!.ascensionAdd.getAscended(
+        limitCount,
+        (attr) => attr.overwriteClassPassive,
+        niceSvt!.costume,
+      );
+      if (ascensionAdds != null) {
+        for (final skillId in ascensionAdds) {
+          BaseSkill? skill = db.gameData.baseSkills[skillId];
+          skill ??= await showEasyLoading(() => AtlasApi.skill(skillId), mask: true);
+          if (skill == null) {
+            battleData.battleLogger.debug('Buff ID [$skillId}]: ${S.current.skill} [$skillId] ${S.current.not_found}');
+            continue;
+          }
+
+          passives.add(skill);
+        }
+      } else {
+        passives.addAll(niceSvt!.classPassive);
+      }
+    } else {
+      passives.addAll(niceEnemy!.classPassive.classPassive);
+    }
 
     for (final skill in passives) {
       final skillInfo = BattleSkillInfoData(skill, type: SkillInfoType.svtClassPassive);

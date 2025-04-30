@@ -223,6 +223,24 @@ class Servant extends BasicServant {
   List<int> get hpGrowth => curveData.hp; // [1:]
   List<int> get expGrowth => curveData.exp; // [0:]
 
+  SvtExpData growCurveForLimit(int limitCount) {
+    final ascAtkBase = ascensionAdd.getAscended(limitCount, (attr) => attr.overwriteAtkBase, costume);
+    final ascAtkMax = ascensionAdd.getAscended(limitCount, (attr) => attr.overwriteAtkMax, costume);
+    final ascHpBase = ascensionAdd.getAscended(limitCount, (attr) => attr.overwriteHpBase, costume);
+    final ascHpMax = ascensionAdd.getAscended(limitCount, (attr) => attr.overwriteHpMax, costume);
+    final ascGrowthType = ascensionAdd.getAscended(limitCount, (attr) => attr.overwriteExpType, costume);
+    if (ascHpMax != null || ascHpBase != null || ascAtkMax != null || ascAtkBase != null) {
+      return SvtExpData.from(
+        type: ascGrowthType ?? growthCurve,
+        atkBase: ascAtkBase ?? atkBase,
+        atkMax: ascAtkMax ?? atkMax,
+        hpBase: ascHpBase ?? hpBase,
+        hpMax: ascHpMax ?? hpMax,
+      );
+    }
+    return curveData;
+  }
+
   static Object? _readLimits(Map data, String key) {
     final value = data[key];
     if (value is Map) {
@@ -1156,7 +1174,7 @@ class AscensionAdd {
         entries.costume[ascOrCostumeId] ??
         (ascOrCostumeId < 100
             ? entries.costume[costumes.values.firstWhereOrNull((c) => c.id == ascOrCostumeId)?.battleCharaId]
-            : null);
+            : entries.costume[costumes.values.firstWhereOrNull((c) => c.battleCharaId == ascOrCostumeId)?.id]);
   }
 
   Map<String, dynamic> toJson() => _$AscensionAddToJson(this);

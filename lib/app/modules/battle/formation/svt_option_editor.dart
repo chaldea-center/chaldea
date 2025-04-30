@@ -425,11 +425,12 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
   }
 
   Widget _header(final BuildContext context) {
+    final growCurve = svt.growCurveForLimit(playerSvtData.limitCount);
     final ascensionText =
         svt.getCostume(playerSvtData.limitCount)?.lName.l ??
         '${S.current.ascension_stage_short} ${playerSvtData.limitCount}';
-    final atk = (svt.atkGrowth.getOrNull(playerSvtData.lv - 1) ?? 0) + playerSvtData.atkFou,
-        hp = (svt.hpGrowth.getOrNull(playerSvtData.lv - 1) ?? 0) + playerSvtData.hpFou;
+    final atk = (growCurve.atk.getOrNull(playerSvtData.lv - 1) ?? 0) + playerSvtData.atkFou,
+        hp = (growCurve.hp.getOrNull(playerSvtData.lv - 1) ?? 0) + playerSvtData.hpFou;
     return CustomTile(
       leading: svt.iconBuilder(
         context: context,
