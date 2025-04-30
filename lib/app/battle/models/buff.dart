@@ -57,7 +57,7 @@ class BattleBuff {
   ];
 
   bool get isSelectable =>
-      validBuffs.every((buff) => !buff.traits.map((trait) => trait.id).contains(Trait.cantBeSacrificed.value));
+      validBuffs.every((buff) => !buff.getTraits().map((trait) => trait.id).contains(Trait.cantBeSacrificed.value));
 
   void removeBuffWithTrait(final NiceTrait trait, {bool includeNoAct = false, bool includeNoField = false}) {
     _activeList.removeWhere(
@@ -65,7 +65,7 @@ class BattleBuff {
           (includeNoAct || !buff.checkState(BuffState.noAct)) &&
           (includeNoField || !buff.checkState(BuffState.noField)) &&
           checkSignedIndividualities2(
-            myTraits: buff.traits,
+            myTraits: buff.getTraits(),
             requiredTraits: [trait],
             positiveMatchFunc: partialMatch,
             negativeMatchFunc: partialMatch,
@@ -168,12 +168,14 @@ class BuffData {
 
   BuffData.makeCopy(this.buff, this.vals, this.addOrder);
 
-  List<NiceTrait> get traits => buff.vals;
-
   static final List<BuffType> activeOnlyTypes = [
     BuffType.upDamageIndividualityActiveonly,
     BuffType.downDamageIndividualityActiveonly,
   ];
+
+  List<NiceTrait> getTraits() {
+    return [...buff.vals, ...vals.getAddIndividuality().map((indiv) => NiceTrait(id: indiv))];
+  }
 
   int getValue(final BattleServantData self, [final BattleServantData? opponent, final BattleData? battleData]) {
     int addValue = 0;
@@ -397,7 +399,7 @@ class BuffData {
     if (vals.BehaveAsFamilyBuff == 1 && vals.AddLinkageTargetIndividualty != null && actorUniqueId != null) {
       final targetIndividuality = vals.AddLinkageTargetIndividualty;
       for (final buff in owner.battleBuff.getAllBuffs()) {
-        if (buff.vals.AddIndividualty == targetIndividuality && buff.vals.BehaveAsFamilyBuff == 1) {
+        if (buff.vals.getAddIndividuality().contains(targetIndividuality) && buff.vals.BehaveAsFamilyBuff == 1) {
           buff.isUsed = true;
         }
       }

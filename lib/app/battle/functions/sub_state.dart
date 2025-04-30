@@ -24,7 +24,7 @@ class SubState {
           removeFromStart
               ? target.battleBuff.originalActiveList.reversed.toList()
               : target.battleBuff.originalActiveList.toList();
-      final List<int> removedFamilyBuff = [];
+      final List<int> removedFamilyIndiv = [];
 
       for (int index = listToInspect.length - 1; index >= 0; index -= 1) {
         final buff = listToInspect[index];
@@ -33,7 +33,7 @@ class SubState {
           listToInspect.removeAt(index);
           removeCount += 1;
           if (buff.vals.BehaveAsFamilyBuff == 1 && buff.vals.AddLinkageTargetIndividualty != null) {
-            removedFamilyBuff.add(buff.vals.AddLinkageTargetIndividualty!);
+            removedFamilyIndiv.add(buff.vals.AddLinkageTargetIndividualty!);
           }
         }
 
@@ -43,7 +43,9 @@ class SubState {
       }
 
       listToInspect.removeWhere(
-        (buff) => buff.vals.BehaveAsFamilyBuff == 1 && removedFamilyBuff.contains(buff.vals.AddIndividualty),
+        (buff) =>
+            buff.vals.BehaveAsFamilyBuff == 1 &&
+            buff.vals.getAddIndividuality().any((indiv) => removedFamilyIndiv.contains(indiv)),
       );
 
       target.battleBuff.setActiveList(removeFromStart ? listToInspect.reversed.toList() : listToInspect.toList());
@@ -65,7 +67,7 @@ class SubState {
     final BattleServantData? activator,
     final BattleServantData target,
   ) async {
-    if (!checkSignedIndividualities2(myTraits: buff.traits, requiredTraits: affectTraits)) {
+    if (!checkSignedIndividualities2(myTraits: buff.getTraits(), requiredTraits: affectTraits)) {
       return false;
     }
 

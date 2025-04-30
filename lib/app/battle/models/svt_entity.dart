@@ -999,7 +999,7 @@ class BattleServantData {
       ignoreIndivUnreleaseable: ignoreIndivUnreleaseable,
       includeIgnoreIndiv: includeIgnoreIndiv,
     );
-    return [for (final buff in buffs) ...buff.traits];
+    return [for (final buff in buffs) ...buff.getTraits()];
   }
 
   int countBuffWithTrait(
@@ -1027,7 +1027,7 @@ class BattleServantData {
       if (buff.vals.IgnoreIndividuality == 1 && !includeIgnoreIndiv) return false;
       if (ignoreIndivUnreleaseable && buff.irremovable) return false;
       return checkSignedIndividualities2(
-        myTraits: buff.traits,
+        myTraits: buff.getTraits(),
         requiredTraits: traits,
         positiveMatchFunc: partialMatch,
         negativeMatchFunc: partialMatch,
@@ -1670,13 +1670,13 @@ class BattleServantData {
           final effectiveness = await getBuffValueFixedTraits(
             battleData,
             plusAction,
-            selfTraits: buff.traits,
+            selfTraits: buff.getTraits(),
             opponent: opponent,
           );
           value = (value * toModifier(effectiveness)).toInt();
         }
 
-        final buffRate = await getBuffRateValue(battleData, buff.traits, opponent: opponent);
+        final buffRate = await getBuffRateValue(battleData, buff.getTraits(), opponent: opponent);
         value = (value * (toModifier(buffRate))).toInt();
 
         if (actionDetails.plusTypes.contains(buff.buff.type)) {
@@ -1715,13 +1715,13 @@ class BattleServantData {
           final effectiveness = await getBuffValueFixedTraits(
             battleData,
             plusAction,
-            selfTraits: buff.traits,
+            selfTraits: buff.getTraits(),
             opponent: opponent,
           );
           value = (value * toModifier(effectiveness)).toInt();
         }
 
-        final buffRate = await getBuffRateValue(battleData, buff.traits, opponent: opponent);
+        final buffRate = await getBuffRateValue(battleData, buff.getTraits(), opponent: opponent);
         value = (value * (toModifier(buffRate))).toInt();
 
         if (actionDetails.plusTypes.contains(buff.buff.type)) {
@@ -1791,7 +1791,9 @@ class BattleServantData {
 
       // check turnendHpReduceToRegain
       final shouldConvertToHeal = turnEndHpReduceToRegainBuffs.any((turnEndHpReduceToRegain) {
-        final shouldActivate = turnEndHpReduceToRegain.shouldActivateBuffNoProbabilityCheck(turnEndHpReduce.traits);
+        final shouldActivate = turnEndHpReduceToRegain.shouldActivateBuffNoProbabilityCheck(
+          turnEndHpReduce.getTraits(),
+        );
         if (shouldActivate) {
           turnEndHpReduceToRegain.setUsed(this);
         }
@@ -1806,24 +1808,24 @@ class BattleServantData {
       final funcHpReduce = await getBuffValueFixedTraits(
         battleData,
         BuffAction.funcHpReduce,
-        selfTraits: turnEndHpReduce.traits,
+        selfTraits: turnEndHpReduce.getTraits(),
       );
       final funcHpReduceValue = await getBuffValueFixedTraits(
         battleData,
         BuffAction.funcHpReduceValue,
-        selfTraits: turnEndHpReduce.traits,
+        selfTraits: turnEndHpReduce.getTraits(),
       );
 
       int value = (toModifier(funcHpReduce) * turnEndHpReduce.getValue(this)).toInt();
       value = max(value + funcHpReduceValue, 0);
 
-      final buffRate = await getBuffRateValue(battleData, turnEndHpReduce.traits);
+      final buffRate = await getBuffRateValue(battleData, turnEndHpReduce.getTraits());
       value = (value * (toModifier(buffRate))).toInt();
 
       final shouldPreventDeath = preventDeaths.any((preventDeath) {
         final shouldActivate = preventDeath.shouldActivateBuffNoProbabilityCheck(
           [],
-          opponentTraits: turnEndHpReduce.traits,
+          opponentTraits: turnEndHpReduce.getTraits(),
         );
         if (shouldActivate) {
           activatedPreventDeaths.add(preventDeath);

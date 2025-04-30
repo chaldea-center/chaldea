@@ -162,7 +162,7 @@ class AddState {
         battleData,
         BuffAction.avoidState,
         opponent: activator,
-        addTraits: buffData.traits,
+        addTraits: buffData.getTraits(),
       );
       if (hasAvoidState) {
         battleData.battleLogger.debug(
@@ -176,14 +176,14 @@ class AddState {
       battleData,
       BuffAction.resistanceState,
       opponent: activator,
-      addTraits: buffData.traits,
+      addTraits: buffData.getTraits(),
     );
     final buffChance =
         await activator?.getBuffValue(
           battleData,
           BuffAction.grantState,
           opponent: target,
-          addTraits: buffData.traits,
+          addTraits: buffData.getTraits(),
         ) ??
         0;
 

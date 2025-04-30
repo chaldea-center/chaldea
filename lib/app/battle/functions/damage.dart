@@ -707,7 +707,7 @@ class Damage {
     // Currently assuming the first array is OR. Need more samples on this
     for (final requiredTraits in notPierceIndividuality) {
       final match = checkSignedIndividualities2(
-        myTraits: buff.traits,
+        myTraits: buff.getTraits(),
         requiredTraits: requiredTraits,
         positiveMatchFunc: allMatch,
         negativeMatchFunc: allMatch,
