@@ -54,6 +54,9 @@ class DataVals {
   List<T>? _list<T>(String key) {
     final v = _vals[key];
     if (v != null && v is! List) {
+      if (T == int && v is int) {
+        return <T>[v as T];
+      }
       assert(() {
         throw FormatException('[DataVals]: key "$key" requires List but ${v.runtimeType}');
       }());

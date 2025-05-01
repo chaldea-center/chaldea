@@ -423,6 +423,7 @@ class Damage {
         currentCard,
         multiAttack,
       );
+      totalDamage = overwriteFixedDefenceDamage(battleData, target, totalDamage);
       if (funcType == FuncType.damageNpSafe && target.hp > 0 && totalDamage >= target.hp) {
         totalDamage = target.hp - 1;
       }
@@ -922,5 +923,36 @@ class Damage {
     }
 
     return false;
+  }
+
+  static int overwriteFixedDefenceDamage(BattleData battleData, BattleServantData target, int totalDamage) {
+    final overwriteFixedDefDmg = target.battleBuff.validBuffs.firstWhereOrNull(
+      (buff) => buff.buff.type == BuffType.overwriteFixedDefenceDamage,
+    );
+    if (overwriteFixedDefDmg == null) return totalDamage;
+
+    int result = totalDamage;
+    final defenceDmgHigher = overwriteFixedDefDmg.vals.DefenceDamageHigher;
+    final damageCheck = defenceDmgHigher == null || defenceDmgHigher <= totalDamage;
+
+    final sameIndivBuffActorOnField = overwriteFixedDefDmg.vals.SameIndivBuffActorOnField;
+    final sameIndivBuffActor = battleData.nonnullActors.firstWhereOrNull(
+      (svt) =>
+          svt.isPlayer == target.isPlayer && svt.getBuffTraits().any((trait) => trait.id == sameIndivBuffActorOnField),
+    );
+
+    final indivCheck = sameIndivBuffActorOnField == null || sameIndivBuffActor != null;
+    if (damageCheck && indivCheck) {
+      result = overwriteFixedDefDmg.getValue(target);
+      overwriteFixedDefDmg.setUsed(target);
+      if (sameIndivBuffActor != null && overwriteFixedDefDmg.vals.SyncUsedSameIndivBuffActorOnField == 1) {
+        final sameIndivBuff = sameIndivBuffActor.battleBuff.validBuffs.firstWhere(
+          (buff) => buff.getTraits().any((trait) => trait.id == sameIndivBuffActorOnField),
+        );
+        sameIndivBuff.setUsed(sameIndivBuffActor);
+      }
+    }
+
+    return result;
   }
 }
