@@ -768,10 +768,10 @@ class Damage {
         );
         if (invincible != null && checkNotPierceIndividuality(notPierceIndividuality, invincible)) {
           // cannot pierce invincible, check pierceInvincible. Not having pierceInvincible => skipDamage => return true
-          invincible.setUsed(target);
+          invincible.setUsed(target, battleData);
           return !await activator.hasBuff(battleData, BuffAction.pierceInvincible, opponent: target, card: currentCard);
         } else if (specialInvincible == null) {
-          invincible?.setUsed(target);
+          invincible?.setUsed(target, battleData);
         }
 
         final avoidance = await target.getBuff(
@@ -783,7 +783,7 @@ class Damage {
         );
         if (avoidance != null && checkNotPierceIndividuality(notPierceIndividuality, avoidance)) {
           // cannot pierce avoidance, check pierceInvincible & breakAvoidance
-          avoidance.setUsed(target);
+          avoidance.setUsed(target, battleData);
           return !await activator.hasBuff(
                 battleData,
                 BuffAction.pierceInvincible,
@@ -792,7 +792,7 @@ class Damage {
               ) &&
               !await activator.hasBuff(battleData, BuffAction.breakAvoidance, opponent: target, card: currentCard);
         } else if (specialInvincible == null && invincible == null) {
-          avoidance?.setUsed(target);
+          avoidance?.setUsed(target, battleData);
         }
 
         // pierce successful
@@ -935,22 +935,10 @@ class Damage {
     final defenceDmgHigher = overwriteFixedDefDmg.vals.DefenceDamageHigher;
     final damageCheck = defenceDmgHigher == null || defenceDmgHigher <= totalDamage;
 
-    final sameIndivBuffActorOnField = overwriteFixedDefDmg.vals.SameIndivBuffActorOnField;
-    final sameIndivBuffActor = battleData.nonnullActors.firstWhereOrNull(
-      (svt) =>
-          svt.isPlayer == target.isPlayer && svt.getBuffTraits().any((trait) => trait.id == sameIndivBuffActorOnField),
-    );
-
-    final indivCheck = sameIndivBuffActorOnField == null || sameIndivBuffActor != null;
-    if (damageCheck && indivCheck) {
+    if (damageCheck &&
+        overwriteFixedDefDmg.shouldActivateBuffNoProbabilityCheck(target.getTraits(), battleData: battleData)) {
       result = overwriteFixedDefDmg.getValue(target);
-      overwriteFixedDefDmg.setUsed(target);
-      if (sameIndivBuffActor != null && overwriteFixedDefDmg.vals.SyncUsedSameIndivBuffActorOnField == 1) {
-        final sameIndivBuff = sameIndivBuffActor.battleBuff.validBuffs.firstWhere(
-          (buff) => buff.getTraits().any((trait) => trait.id == sameIndivBuffActorOnField),
-        );
-        sameIndivBuff.setUsed(sameIndivBuffActor);
-      }
+      overwriteFixedDefDmg.setUsed(target, battleData);
     }
 
     return result;

@@ -113,7 +113,7 @@ class AddState {
           }
           if (convertedBuff != null) {
             buffData.buff = convertedBuff;
-            convertBuff.setUsed(target);
+            convertBuff.setUsed(target, battleData);
           }
         }
       }

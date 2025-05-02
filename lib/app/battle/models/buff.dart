@@ -5,6 +5,7 @@ import 'package:chaldea/app/battle/utils/buff_utils.dart';
 import 'package:chaldea/app/descriptors/func/vals.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
+import 'package:chaldea/utils/extension.dart';
 
 class BattleBuff {
   List<BuffData> _passiveList = [];
@@ -234,7 +235,13 @@ class BuffData {
     final List<NiceFunction>? receivedFunctionsList,
   }) {
     if (!checkAct()) return false;
-    if (!checkBuffDataVals(selfTraits: selfTraits, receivedFunctionsList: receivedFunctionsList)) return false;
+    if (!checkBuffDataVals(
+      selfTraits: selfTraits,
+      receivedFunctionsList: receivedFunctionsList,
+      battleData: battleData,
+    )) {
+      return false;
+    }
     if (!checkBuffScript(
       isFirstSkillInTurn: battleData?.isFirstSkillInTurn,
       selfTraits: selfTraits,
@@ -322,8 +329,25 @@ class BuffData {
     return probabilityCheck;
   }
 
-  bool checkBuffDataVals({final List<NiceTrait>? selfTraits, final List<NiceFunction>? receivedFunctionsList}) {
-    return checkHpReduceToRegainIndiv(selfTraits) && checkTargetFunctionIndividuality(receivedFunctionsList);
+  bool checkBuffDataVals({
+    List<NiceTrait>? selfTraits,
+    List<NiceFunction>? receivedFunctionsList,
+    BattleData? battleData,
+  }) {
+    return checkHpReduceToRegainIndiv(selfTraits) &&
+        checkTargetFunctionIndividuality(receivedFunctionsList) &&
+        checkSameIndivBuffActorOnField(battleData);
+  }
+
+  bool checkSameIndivBuffActorOnField(BattleData? battleData) {
+    final sameIndivBuffActorOnField = vals.SameIndivBuffActorOnField;
+    if (sameIndivBuffActorOnField == null) return true;
+
+    return battleData != null &&
+        battleData.nonnullActors.firstWhereOrNull(
+              (svt) => svt.getBuffTraits().any((trait) => trait.id == sameIndivBuffActorOnField),
+            ) !=
+            null;
   }
 
   bool checkHpReduceToRegainIndiv(final List<NiceTrait>? selfTraits) {
@@ -393,7 +417,7 @@ class BuffData {
     return buffGroup == 0 || buffGroup != buff.buffGroup;
   }
 
-  void setUsed(final BattleServantData owner) {
+  void setUsed(final BattleServantData owner, [BattleData? battleData]) {
     isUsed = true;
 
     if (vals.BehaveAsFamilyBuff == 1 && vals.AddLinkageTargetIndividualty != null && actorUniqueId != null) {
@@ -407,6 +431,14 @@ class BuffData {
 
     if (vals.IntervalTurn != null) {
       intervalTurn = vals.IntervalTurn!;
+    }
+
+    if (vals.SyncUsedSameIndivBuffActorOnField == 1 && vals.SameIndivBuffActorOnField != null && battleData != null) {
+      final sameIndivBuffActorOnField = vals.SameIndivBuffActorOnField!;
+      final sameIndivBuff = battleData.nonnullActors
+          .expand((svt) => svt.battleBuff.validBuffs)
+          .firstWhere((buff) => buff.getTraits().any((trait) => trait.id == sameIndivBuffActorOnField));
+      sameIndivBuff.isUsed = true;
     }
   }
 
