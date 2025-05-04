@@ -1,4 +1,5 @@
 import 'package:chaldea/app/battle/utils/battle_utils.dart';
+import 'package:chaldea/generated/l10n.dart' show S;
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../../app/app.dart';
@@ -13,6 +14,7 @@ import 'const_data.dart';
 import 'game_card.dart';
 import 'item.dart';
 import 'mappings.dart';
+import 'quest.dart' show Gift;
 import 'script.dart';
 import 'skill.dart';
 import 'wiki_data.dart';
@@ -172,9 +174,10 @@ class Servant extends BasicServant {
   // int hpMax;
   List<int> relateQuestIds;
   List<int> trialQuestIds;
-  int growthCurve;
+  int growthCurve; // expType
   List<int> bondGrowth;
   List<int> expFeed;
+  Map<int, List<Gift>> bondGifts;
   int bondEquip;
   List<int> valentineEquip;
   List<ValentineScript> valentineScript;
@@ -280,6 +283,7 @@ class Servant extends BasicServant {
     this.growthCurve = 0,
     this.bondGrowth = const [],
     this.expFeed = const [],
+    this.bondGifts = const {},
     this.bondEquip = 0,
     this.valentineEquip = const [],
     this.valentineScript = const [],
@@ -613,6 +617,13 @@ class Servant extends BasicServant {
         profile.costume.values.firstWhereOrNull((c) => c.id == costumeIdOrCharaId);
   }
 
+  String getLimitName(int limit) {
+    if (limit < 10) return '${S.current.ascension_short} $limit';
+    final costume = getCostume(limit);
+    if (costume != null) return costume.lName.l.setMaxLines(1);
+    return '${S.current.costume} $limit';
+  }
+
   ServantExtra get extra {
     if (isServantType && collectionNo > 0) {
       return db.gameData.wiki.servants[originalCollectionNo] ??= ServantExtra(collectionNo: originalCollectionNo);
@@ -692,10 +703,10 @@ class Servant extends BasicServant {
   NiceSkill? getDefaultSkill(List<NiceSkill> skills, Region region) {
     skills = skills.where((e) => e.svt.num > 0).toList();
     final priorities = db.gameData.mappingData.skillPriority[id]?.ofRegion(region);
-    if (originalCollectionNo == 1) {
-      skills = skills.where((e) => priorities?[e.id] != null).toList();
-    }
-    if (skills.isEmpty) return null;
+    // if (originalCollectionNo == 1 && priorities != null) {
+    //   skills = skills.where((e) => priorities[e.id] != null).toList();
+    // }
+    if (skills.isEmpty) return skills.last;
     if (region == Region.jp) {
       return Maths.findMax<NiceSkill, int>(skills, (e) => e.svt.priority);
     } else {

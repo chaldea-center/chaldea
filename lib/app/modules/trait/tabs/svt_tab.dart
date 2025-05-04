@@ -125,7 +125,7 @@ class _TraitServantTabState extends State<TraitServantTab> {
           name += '(${event.lName.l.setMaxLines(1)})';
         }
         if (traitAdd.limitCount != -1) {
-          name += '(${S.current.ascension_stage_short} ${traitAdd.limitCount})';
+          name += '(${svt.getLimitName(traitAdd.limitCount)})';
         }
         details.addAll(_addComment(traitAdd.trait, _id, name));
       }

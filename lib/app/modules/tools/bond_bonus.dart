@@ -1,5 +1,4 @@
 import 'package:chaldea/app/battle/utils/battle_utils.dart' show BattleUtils;
-import 'package:chaldea/app/modules/common/filter_group.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/basic.dart';
@@ -28,7 +27,7 @@ class _BondBonusPageState extends State<BondBonusPage> {
     sortKeys: [SvtCompare.rarity, SvtCompare.className, SvtCompare.no],
     sortReversed: [true, false, true],
   );
-  final traitCeFilter = FilterGroupData<int>();
+  int? selectedCeId;
 
   @override
   void initState() {
@@ -117,8 +116,8 @@ class _BondBonusPageState extends State<BondBonusPage> {
   }
 
   List<_GroupItem> getGroupData() {
-    final List<int> mustHaveCeIds = traitCeFilter.options.toList();
-    final List<int> freeCeIds = allCeData.keys.toSet().difference(traitCeFilter.options).toList();
+    final List<int> mustHaveCeIds = [if (selectedCeId != null) selectedCeId!];
+    final List<int> freeCeIds = allCeData.keys.toSet().difference(mustHaveCeIds.toSet()).toList();
     final int n = freeCeIds.length;
     List<_GroupItem> resultData = [];
     for (int mask = 1; mask < (1 << n); mask++) {
@@ -182,14 +181,7 @@ class _BondBonusPageState extends State<BondBonusPage> {
           ),
         ],
       ),
-      body: mainBody,
-      // Column(
-      //   children: [
-      //     Expanded(child: mainBody),
-      //     kDefaultDivider,
-      //     SafeArea(child: Padding(padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8), child: buttonBar)),
-      //   ],
-      // ),
+      body: Column(children: [Expanded(child: mainBody), kDefaultDivider, buttonBar]),
     );
   }
 
@@ -234,11 +226,7 @@ class _BondBonusPageState extends State<BondBonusPage> {
         );
 
         children.add(
-          GridView.extent(
-            maxCrossAxisExtent: 48,
-            childAspectRatio: 132 / 144,
-            shrinkWrap: true,
-            physics: NeverScrollableScrollPhysics(),
+          Wrap(
             children:
                 svts.map((x) {
                   final (:svt, :limitCounts) = x;
@@ -259,6 +247,7 @@ class _BondBonusPageState extends State<BondBonusPage> {
                         svt.status.favorite ? 'Lv${svt.status.bond}' : '',
                       ].join('\n'),
                       option: ImageWithTextOption(fontSize: 12),
+                      width: 48,
                     ),
                   );
                   if (conditional) {
@@ -289,38 +278,37 @@ class _BondBonusPageState extends State<BondBonusPage> {
   }
 
   Widget get buttonBar {
-    List<Widget> children = [];
-    children.add(
-      FilterGroup(
-        options: allCeData.keys.toList(),
-        values: traitCeFilter,
-        optionBuilder: (ceId) {
-          final (:ce, :traits, :rateCount) = allCeData[ceId]!;
-          return Row(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            spacing: 1,
-            children: [
-              ce.iconBuilder(context: context, width: 24),
-              Text.rich(
-                TextSpan(
-                  text: _describeTraits(traits),
-                  children: [TextSpan(text: '+${rateCount.format(percent: true, base: 10)}')],
-                ),
-                style: TextStyle(fontSize: 12),
-              ),
-            ],
-          );
-        },
-        onFilterChanged: (v, _) {
-          setState(() {});
-        },
-      ),
-    );
     return SafeArea(
       child: Padding(
         padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        child: Wrap(spacing: 2, runSpacing: 2, children: children),
+        child: DropdownButton<int?>(
+          value: selectedCeId,
+          // hint: Text(S.current.craft_essence),
+          items: [
+            DropdownMenuItem(child: Text(S.current.craft_essence)),
+            for (final ce in allCeData.values)
+              DropdownMenuItem(
+                value: ce.ce.id,
+                child: Text.rich(
+                  TextSpan(
+                    children: [
+                      CenterWidgetSpan(child: ce.ce.iconBuilder(context: context, width: 32)),
+                      TextSpan(
+                        text: _describeTraits(ce.traits),
+                        children: [TextSpan(text: '+${ce.rateCount.format(percent: true, base: 10)}')],
+                        style: TextStyle(fontSize: 12),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+          ],
+          onChanged: (v) {
+            setState(() {
+              selectedCeId = v;
+            });
+          },
+        ),
       ),
     );
   }

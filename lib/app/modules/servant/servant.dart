@@ -337,20 +337,35 @@ class ServantDetailPageState extends State<ServantDetailPage> with SingleTickerP
         return _SubTabInfo(
           tab: tab,
           tabBuilder: () => S.current.skill,
-          viewBuilder: (ctx) => TransformSvtProfileTabber(svt: svt, builder: (context, svt) => SvtSkillTab(svt: svt)),
+          viewBuilder:
+              (ctx) => TransformSvtProfileTabber(
+                svt: svt,
+                builder: (context, svt, overwriteData) => SvtSkillTab(svt: svt, overwriteViewData: overwriteData),
+              ),
         );
       case SvtTab.np:
         if (svt.noblePhantasms.isEmpty) return null;
         return _SubTabInfo(
           tab: tab,
           tabBuilder: () => S.current.noble_phantasm,
-          viewBuilder: (ctx) => TransformSvtProfileTabber(svt: svt, builder: (context, svt) => SvtTdTab(svt: svt)),
+          viewBuilder:
+              (ctx) => TransformSvtProfileTabber(
+                svt: svt,
+                builder: (context, svt, overwriteData) => SvtTdTab(svt: svt, overwriteViewData: overwriteData),
+              ),
         );
       case SvtTab.info:
         return _SubTabInfo(
           tab: tab,
           tabBuilder: () => S.current.svt_basic_info,
-          viewBuilder: (ctx) => TransformSvtProfileTabber(svt: svt, builder: (context, svt) => SvtInfoTab(svt: svt)),
+          viewBuilder:
+              (ctx) =>
+                  svt.type == SvtType.heroine
+                      ? SvtInfoTab(svt: svt)
+                      : TransformSvtProfileTabber(
+                        svt: svt,
+                        builder: (context, svt, overwriteData) => SvtInfoTab(svt: svt),
+                      ),
         );
       case SvtTab.spDmg:
         if (const [SvtType.combineMaterial, SvtType.statusUp, SvtType.servantEquip].contains(svt.type)) {
@@ -359,7 +374,11 @@ class ServantDetailPageState extends State<ServantDetailPage> with SingleTickerP
         return _SubTabInfo(
           tab: tab,
           tabBuilder: () => S.current.super_effective_damage,
-          viewBuilder: (ctx) => TransformSvtProfileTabber(svt: svt, builder: (context, svt) => SvtSpDmgTab(svt: svt)),
+          viewBuilder:
+              (ctx) =>
+                  svt.type == SvtType.heroine
+                      ? SvtSpDmgTab(svt: svt)
+                      : TransformSvtProfileTabber(svt: svt, builder: (context, svt, _) => SvtSpDmgTab(svt: svt)),
         );
       case SvtTab.lore:
         if (svt.originalCollectionNo == 0 && svt.profile.comments.isEmpty) {

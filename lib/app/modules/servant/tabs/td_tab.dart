@@ -8,11 +8,13 @@ import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../../../descriptors/cond_target_value.dart';
+import '_transform_tabber.dart';
 
 class SvtTdTab extends StatelessWidget {
   final Servant svt;
+  final SvtOverwriteViewData? overwriteViewData;
 
-  const SvtTdTab({super.key, required this.svt});
+  const SvtTdTab({super.key, required this.svt, this.overwriteViewData});
 
   @override
   Widget build(BuildContext context) {
@@ -41,9 +43,13 @@ class SvtTdTab extends StatelessWidget {
       children.add(_buildTds(context, shownTds, status.favorite ? status.npLv : null, overrideTds));
     }
 
-    for (final tdNum in svt.groupedNoblePhantasms.keys) {
-      final tds = svt.groupedNoblePhantasms[tdNum]!;
-      if (svt.groupedNoblePhantasms.containsKey(1) &&
+    final groupedNoblePhantasms =
+        overwriteViewData != null && overwriteViewData!.tds.isNotEmpty
+            ? overwriteViewData!.tds
+            : svt.groupedNoblePhantasms;
+    for (final tdNum in groupedNoblePhantasms.keys) {
+      final tds = groupedNoblePhantasms[tdNum]!;
+      if (groupedNoblePhantasms.containsKey(1) &&
           tdNum != 1 &&
           tds.every(
             (e) => (e.script?.tdTypeChangeIDs?.isEmpty ?? true) && (e.script?.tdChangeByBattlePoint?.isEmpty ?? true),
@@ -52,7 +58,7 @@ class SvtTdTab extends StatelessWidget {
       }
       if (svt.collectionNo == 417) {
         // Space Ereshkigal
-        if (svt.groupedNoblePhantasms.containsKey(1) && tdNum == 98 && tds.length == 1 && tds.first.id == 3300298) {
+        if (groupedNoblePhantasms.containsKey(1) && tdNum == 98 && tds.length == 1 && tds.first.id == 3300298) {
           continue;
         }
       }
@@ -125,13 +131,15 @@ class SvtTdTab extends StatelessWidget {
                 combined: true,
                 options: List.generate(tds.length, (index) => index),
                 optionBuilder: (v) {
-                  String name = overrideTds.getOrNull(v)?.tdName ?? tds[v].name;
+                  final _td = tds[v];
+                  String name = overrideTds.getOrNull(v)?.tdName ?? _td.name;
                   name = Transl.tdNames(name).l;
-                  final rank = overrideTds.getOrNull(v)?.tdRank ?? tds[v].rank;
+                  final rank = overrideTds.getOrNull(v)?.tdRank ?? _td.rank;
                   if (!['なし', '无', 'None', '無', '없음'].contains(rank)) {
                     name = '$name $rank';
                   }
                   if (name.trim().isEmpty) name = '???';
+                  // name = '${_td.id}$name';
                   return Padding(padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6), child: Text(name));
                 },
                 values: FilterRadioData.nonnull(tdIndex),

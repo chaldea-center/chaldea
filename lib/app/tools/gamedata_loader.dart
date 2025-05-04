@@ -277,7 +277,7 @@ class GameDataLoader {
         removeOldDataRegion == null ? null : const RegionConverter().toJson(removeOldDataRegion);
     tmp.gameJson = _gameJson;
     GameData _gamedata = GameData.fromJson(_gameJson);
-    await _debugFixGameData(_gamedata);
+    await _fixGameData(_gamedata);
     if (!offline) {
       logger.t(
         '[${offline ? "offline" : "online"}]Updating dataset(${_gamedata.version.text(false)}): ${_dataToWrite.length} files updated',
@@ -376,7 +376,17 @@ class GameDataLoader {
     }
   }
 
-  Future<void> _debugFixGameData(GameData gamedata) async {
+  Future<void> _fixGameData(GameData gamedata) async {
+    const eventsToRemove = [71543];
+    for (final eventId in eventsToRemove) {
+      if (gamedata.events.containsKey(eventId)) {
+        gamedata.events.remove(eventId);
+      }
+      if (gamedata.campaigns.containsKey(eventId)) {
+        gamedata.campaigns.remove(eventId);
+      }
+    }
+
     if (!kDebugMode) return;
   }
 

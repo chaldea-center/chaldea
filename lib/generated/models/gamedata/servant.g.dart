@@ -129,6 +129,14 @@ Servant _$ServantFromJson(Map json) => Servant(
   growthCurve: (json['growthCurve'] as num?)?.toInt() ?? 0,
   bondGrowth: (json['bondGrowth'] as List<dynamic>?)?.map((e) => (e as num).toInt()).toList() ?? const [],
   expFeed: (json['expFeed'] as List<dynamic>?)?.map((e) => (e as num).toInt()).toList() ?? const [],
+  bondGifts:
+      (json['bondGifts'] as Map?)?.map(
+        (k, e) => MapEntry(
+          int.parse(k as String),
+          (e as List<dynamic>).map((e) => Gift.fromJson(Map<String, dynamic>.from(e as Map))).toList(),
+        ),
+      ) ??
+      const {},
   bondEquip: (json['bondEquip'] as num?)?.toInt() ?? 0,
   valentineEquip: (json['valentineEquip'] as List<dynamic>?)?.map((e) => (e as num).toInt()).toList() ?? const [],
   valentineScript:
@@ -264,6 +272,7 @@ Map<String, dynamic> _$ServantToJson(Servant instance) => <String, dynamic>{
   'growthCurve': instance.growthCurve,
   'bondGrowth': instance.bondGrowth,
   'expFeed': instance.expFeed,
+  'bondGifts': instance.bondGifts.map((k, e) => MapEntry(k.toString(), e.map((e) => e.toJson()).toList())),
   'bondEquip': instance.bondEquip,
   'valentineEquip': instance.valentineEquip,
   'valentineScript': instance.valentineScript.map((e) => e.toJson()).toList(),

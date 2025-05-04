@@ -6,11 +6,13 @@ import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
+import '_transform_tabber.dart';
 
 class SvtSkillTab extends StatefulWidget {
   final Servant svt;
+  final SvtOverwriteViewData? overwriteViewData;
 
-  const SvtSkillTab({super.key, required this.svt});
+  const SvtSkillTab({super.key, required this.svt, this.overwriteViewData});
 
   @override
   State<SvtSkillTab> createState() => _SvtSkillTabState();
@@ -83,7 +85,13 @@ class _SvtSkillTabState extends State<SvtSkillTab> {
     final status = db.curUser.svtStatusOf(svt.collectionNo).cur;
     List<Widget> children = [];
     children.add(SHeader(S.current.active_skill));
-    for (final skills in svt.groupedActiveSkills.values) {
+    final groupedActiveSkills =
+        widget.overwriteViewData?.activeSkills.isNotEmpty == true
+            ? widget.overwriteViewData!.activeSkills
+            : svt.groupedActiveSkills;
+
+    for (final skillNum in groupedActiveSkills.keys.toList()..sort()) {
+      final skills = groupedActiveSkills[skillNum]!;
       List<NiceSkill> shownSkills = [];
       for (final skill in skills) {
         if (shownSkills.every((e) => e.id != skill.id)) {
@@ -110,9 +118,31 @@ class _SvtSkillTabState extends State<SvtSkillTab> {
     }
 
     children.add(SHeader(S.current.passive_skill));
-    for (final skill in [...svt.classPassive, ...extraPassiveFixed]) {
+    for (final skill in [
+      ...(widget.overwriteViewData?.classPassives.isNotEmpty == true
+          ? widget.overwriteViewData!.classPassives
+          : svt.classPassive),
+      ...extraPassiveFixed,
+    ]) {
       children.add(SkillDescriptor(skill: skill, showEnemy: !svt.isUserSvt));
     }
+    final overwritePassiveIds = svt.ascensionAdd.overwriteClassPassive.all.values.expand((e) => e).toSet();
+    if (svt.type != SvtType.heroine && overwritePassiveIds.isNotEmpty) {
+      children.add(SHeader('Overwrite Passives'));
+      for (final skillId in overwritePassiveIds) {
+        children.add(
+          FutureBuilder2(
+            id: skillId,
+            loader: () async => db.gameData.baseSkills[skillId] ?? await AtlasApi.skill(skillId),
+            builder: (context, skill) {
+              if (skill == null) return ListTile(title: Text("${S.current.skill} $skillId"));
+              return SkillDescriptor(skill: skill, showEnemy: !svt.isUserSvt);
+            },
+          ),
+        );
+      }
+    }
+
     if (svt.appendPassive.isNotEmpty) children.add(SHeader(S.current.append_skill));
     for (final appendSkill in svt.appendPassive) {
       children.add(
@@ -165,6 +195,7 @@ class _SvtSkillTabState extends State<SvtSkillTab> {
                 optionBuilder: (v) {
                   String name = Transl.skillNames(v.name).l;
                   if (name.trim().isEmpty) name = '???';
+                  // name = '${v.id}$name';
                   return Padding(padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6), child: Text(name));
                 },
                 values: FilterRadioData.nonnull(skill),

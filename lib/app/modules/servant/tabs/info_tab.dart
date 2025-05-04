@@ -5,6 +5,7 @@ import 'package:chaldea/app/modules/common/misc.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
+import 'package:chaldea/widgets/charts/growth_curve_page.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../../creator/creator_detail.dart';
 
@@ -13,10 +14,11 @@ class SvtInfoTab extends StatelessWidget {
 
   const SvtInfoTab({super.key, required this.svt});
 
+  static final headerData = TableCellData(isHeader: true, maxLines: 1);
+  static final contentData = TableCellData(textAlign: TextAlign.center, maxLines: 1);
+
   @override
   Widget build(BuildContext context) {
-    final headerData = TableCellData(isHeader: true, maxLines: 1);
-    final contentData = TableCellData(textAlign: TextAlign.center, maxLines: 1);
     Set<String> names = {
       svt.name,
       ...svt.ascensionAdd.overWriteServantName.all.values,
@@ -61,7 +63,11 @@ class SvtInfoTab extends StatelessWidget {
                   alignment: WrapAlignment.center,
                   spacing: 4,
                   children: [
-                    for (final rarity in <int>{...svt.limits.values.map((e) => e.rarity ?? svt.rarity), svt.rarity})
+                    for (final rarity in <int>{
+                      ...svt.limits.values.map((e) => e.rarity ?? svt.rarity),
+                      svt.rarity,
+                      ...svt.ascensionAdd.overwriteRarity.all.values,
+                    })
                       if (rarity != 0)
                         CachedImage(
                           imageUrl:
@@ -182,31 +188,7 @@ class SvtInfoTab extends StatelessWidget {
                 TableCellData(text: Transl.enums(svt.type, (enums) => enums.svtType).l),
               ],
             ),
-            CustomTableRow.fromTexts(
-              texts: [S.current.info_value, 'Lv.1', 'Lv.Max', 'Lv.90', 'Lv.100', 'Lv.120'],
-              defaults: headerData,
-            ),
-            _addAtkHpRow(context, 'ATK', [
-              svt.atkBase,
-              svt.atkMax,
-              svt.atkGrowth.getOrNull(89),
-              svt.atkGrowth.getOrNull(99),
-              svt.atkGrowth.getOrNull(119),
-            ]),
-            _addAtkHpRow(context, 'ATK*', [
-              svt.atkBase,
-              svt.atkMax,
-              svt.atkGrowth.getOrNull(89),
-              svt.atkGrowth.getOrNull(99),
-              svt.atkGrowth.getOrNull(119),
-            ], db.gameData.constData.classInfo[svt.classId]?.attackRate),
-            _addAtkHpRow(context, 'HP', [
-              svt.hpBase,
-              svt.hpMax,
-              svt.hpGrowth.getOrNull(89),
-              svt.hpGrowth.getOrNull(99),
-              svt.hpGrowth.getOrNull(119),
-            ]),
+            ..._atkHpTable(context),
             CustomTableRow.fromTexts(texts: [S.current.info_cards], defaults: headerData),
             CustomTableRow(
               children: [
@@ -317,7 +299,7 @@ class SvtInfoTab extends StatelessWidget {
                           ),
                         ),
                       if (traitAdd.limitCount != -1)
-                        TextSpan(text: '(${S.current.ascension_stage_short}${traitAdd.limitCount})'),
+                        TextSpan(text: '(${svt.getLimitName(traitAdd.limitCount)})'),
                       if (traitAdd.eventId != 0) ...[
                         SharedBuilder.textButtonSpan(
                           context: context,
@@ -362,6 +344,20 @@ class SvtInfoTab extends StatelessWidget {
                   ],
                   defaults: TableCellData(maxLines: 1),
                 ),
+                if (svt.bondGifts.isNotEmpty)
+                  CustomTableRow.fromChildren(
+                    defaults: TableCellData(maxLines: 1),
+                    children: [
+                      Text('Gift'),
+                      for (int i = row * 5; i < row * 5 + 5; i++)
+                        Wrap(
+                          children: [
+                            for (final gift in svt.bondGifts[i + 1] ?? <Gift>[])
+                              gift.iconBuilder(context: context, width: 28),
+                          ],
+                        ),
+                    ],
+                  ),
               ],
             ],
             ...relateEvents(),
@@ -378,7 +374,7 @@ class SvtInfoTab extends StatelessWidget {
   }
 
   String _infoWithLimits<T>(T base, Iterable<T?> limits, [String Function(T v)? format]) {
-    return <T>{base, ...limits.whereType<T>()}.map((e) => format?.call(e) ?? e.toString()).join(' & ');
+    return <T>{base, ...limits.whereType<T>()}.map((e) => format?.call(e) ?? e.toString()).join(' / ');
   }
 
   List<Widget> relateEvents() {
@@ -514,21 +510,112 @@ class SvtInfoTab extends StatelessWidget {
     );
   }
 
-  Widget _addAtkHpRow(BuildContext context, String header, List<int?> vals, [int? multiplier]) {
-    final texts = vals.map(
-      (e) =>
-          e == null
-              ? '-'
-              : multiplier == null
-              ? e.toString()
-              : (e * multiplier ~/ 1000).toString(),
-    );
-    return CustomTableRow(
-      children: [
-        TableCellData(text: header, isHeader: true, maxLines: 1),
-        for (final text in texts) TableCellData(text: text, maxLines: 1),
-      ],
-    );
+  List<Widget> _atkHpTable(BuildContext context) {
+    final rows = <Widget>[
+      CustomTableRow.fromTexts(
+        texts: [S.current.info_value, 'Lv.1', 'Lv.${svt.lvMax}', 'Lv.90', 'Lv.100', 'Lv.120'],
+        defaults: headerData,
+      ),
+    ];
+
+    void _addGroup(int limit, int atkBase, int atkMax, int hpBase, int hpMax, SvtExpData curveData) {
+      Widget _addAtkHpRow(String header, List<int?> vals, [int? multiplier]) {
+        final texts = vals.map(
+          (e) => e == null ? '-' : (multiplier == null ? e.toString() : (e * multiplier ~/ 1000).toString()),
+        );
+        return CustomTableRow(
+          children: [
+            TableCellData(
+              child: InkWell(
+                onTap: () {
+                  if (db.gameData.constData.svtExp.containsKey(svt.growthCurve)) {
+                    router.pushPage(
+                      GrowthCurvePage.fromCard(
+                        title: '${S.current.growth_curve} - ${svt.lName.l}',
+                        lvs: curveData.lv,
+                        atks: curveData.atk,
+                        hps: curveData.hp,
+                        avatar: CachedImage(
+                          imageUrl:
+                              svt.extraAssets.status.ascension?[limit] ??
+                              svt.extraAssets.status.costume?[limit] ??
+                              svt.icon,
+                          height: 90,
+                          placeholder: (_, __) => Container(),
+                        ),
+                      ),
+                    );
+                  }
+                },
+                child: Text(header),
+              ),
+              isHeader: true,
+              maxLines: 1,
+            ),
+            for (final text in texts) TableCellData(text: text, maxLines: 1),
+          ],
+        );
+      }
+
+      rows.addAll([
+        _addAtkHpRow('ATK', [
+          atkBase,
+          atkMax,
+          curveData.atk.getOrNull(89),
+          curveData.atk.getOrNull(99),
+          curveData.atk.getOrNull(119),
+        ]),
+        _addAtkHpRow('ATK*', [
+          atkBase,
+          atkMax,
+          curveData.atk.getOrNull(89),
+          curveData.atk.getOrNull(99),
+          curveData.atk.getOrNull(119),
+        ], db.gameData.constData.classInfo[svt.classId]?.attackRate),
+        _addAtkHpRow('HP', [
+          hpBase,
+          hpMax,
+          curveData.hp.getOrNull(89),
+          curveData.hp.getOrNull(99),
+          curveData.hp.getOrNull(119),
+        ]),
+      ]);
+    }
+
+    _addGroup(1, svt.atkBase, svt.atkMax, svt.hpBase, svt.hpMax, svt.curveData);
+    final overwriteLimits = <int>{
+      ...svt.ascensionAdd.overwriteAtkBase.all.keys,
+      ...svt.ascensionAdd.overwriteAtkMax.all.keys,
+      ...svt.ascensionAdd.overwriteHpBase.all.keys,
+      ...svt.ascensionAdd.overwriteHpMax.all.keys,
+    };
+    Map<(int, int, int, int, int), List<int>> map = {};
+    for (final limit in overwriteLimits) {
+      final key = (
+        svt.ascensionAdd.overwriteAtkBase.all[limit] ?? svt.atkBase,
+        svt.ascensionAdd.overwriteAtkMax.all[limit] ?? svt.atkMax,
+        svt.ascensionAdd.overwriteHpBase.all[limit] ?? svt.hpBase,
+        svt.ascensionAdd.overwriteHpMax.all[limit] ?? svt.hpMax,
+        svt.ascensionAdd.overwriteExpType.all[limit] ?? svt.growthCurve,
+      );
+      (map[key] ??= []).add(limit);
+    }
+    for (final (key, limits) in map.items) {
+      rows.add(
+        CustomTableRow.fromTexts(texts: [limits.map((e) => svt.getLimitName(e)).join(" / ")], defaults: contentData),
+      );
+      final (atkBase, atkMax, hpBase, hpMax, expType) = key;
+      _addGroup(
+        limits.first,
+        atkBase,
+        atkMax,
+        hpBase,
+        hpMax,
+        SvtExpData.from(type: expType, atkBase: atkBase, atkMax: atkMax, hpBase: hpBase, hpMax: hpMax),
+      );
+    }
+
+    return rows;
   }
 
   List<Widget> _npRates() {

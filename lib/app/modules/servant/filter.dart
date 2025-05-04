@@ -91,7 +91,7 @@ class ServantFilterPage extends FilterPage<SvtFilterData> {
     if (!filterData.svtClass.matchOne(svt.className, compare: SvtClassX.match)) {
       return false;
     }
-    if (!filterData.rarity.matchOne(svt.rarity)) {
+    if (!filterData.rarity.matchAny({svt.rarity, ...svt.ascensionAdd.overwriteRarity.all.values})) {
       return false;
     }
     if (filterData.cardDeck.isNotEmpty) {

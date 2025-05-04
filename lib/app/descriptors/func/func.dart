@@ -1189,7 +1189,13 @@ class FuncDescriptor extends StatelessWidget {
           const TextSpan(text: ' '), // not let recognizer extends its width
         ]);
       } else if (func.traitVals.map((e) => e.id).join(',') != func.functvals.map((e) => e.id).join(',')) {
-        _addTraits(Transl.special.funcTargetVals, func.functvals);
+        final targetTypeInt = vals?.FuncCheckTargetIndividualityTargetType;
+        final targetType = FuncTargetType.values.firstWhereOrNull((e) => e.value == targetTypeInt);
+        String text = Transl.special.funcTargetVals;
+        if (targetType != null) {
+          text = "(${Transl.funcTargetType(targetType).l})$text";
+        }
+        _addTraits(text, func.functvals);
       }
     }
     // if (func.funcType != FuncType.subState ||
@@ -1329,6 +1335,22 @@ class FuncDescriptor extends StatelessWidget {
     if (vals?.CheckBattlePointPhaseRange?.isNotEmpty == true) {
       final ranges = DataVals.beautifyRangeTexts(vals!.CheckBattlePointPhaseRange!.first.range);
       _condSpans.add([TextSpan(text: '${Transl.miscFunction('CheckBattlePointPhaseRange')}: ${ranges.join(" & ")}')]);
+    }
+    if (vals?.TriggeredFieldCountTarget != null) {
+      final target =
+          {
+            0: FuncTargetType.ptAll,
+            1: FuncTargetType.enemyAll,
+            2: FuncTargetType.fieldAll, //
+          }[vals?.TriggeredFieldCountTarget];
+      final targetText =
+          target == null ? 'Unknown Target ${vals?.TriggeredFieldCountTarget}' : Transl.funcTargetType(target).l;
+      String range = vals?.TriggeredFieldCountRange ?? "";
+      range = range
+          .replaceAllMapped(RegExp(r'<(\d+)'), (m) => '≤${m.group(1)}')
+          .replaceAllMapped(RegExp(r'>(\d+)'), (m) => '≥${m.group(1)}')
+          .replaceAllMapped(RegExp(r'(\d+)<'), (m) => '≥${m.group(1)}');
+      _condSpans.add([TextSpan(text: '$targetText '), TextSpan(text: 'Count $range')]);
     }
 
     if (func.funcquestTvals.isNotEmpty) {

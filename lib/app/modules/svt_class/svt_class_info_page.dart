@@ -41,7 +41,7 @@ class _SvtClassInfoPageState extends State<SvtClassInfoPage> {
   @override
   Widget build(BuildContext context) {
     final info = db.gameData.constData.classInfo[clsId];
-    final rarities = info == null ? [5] : [if (cls == SvtClass.avenger) 0, 1, 3, 5];
+    final rarities = info == null ? [5] : [if (SvtClassX.regularAll.any((e) => e.value == cls?.value)) 0, 1, 3, 5];
     Set<String> cardImages = {};
     if (info != null) {
       cardImages.addAll(rarities.map((e) => Atlas.classCard(e, info.imageId)));
