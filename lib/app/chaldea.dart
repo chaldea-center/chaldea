@@ -14,7 +14,9 @@ import 'package:window_manager/window_manager.dart';
 import 'package:chaldea/app/api/chaldea.dart';
 import 'package:chaldea/app/tools/app_update.dart';
 import 'package:chaldea/generated/intl/messages_all.dart';
+import 'package:chaldea/models/faker/shared/network.dart';
 import 'package:chaldea/packages/app_info.dart';
+import 'package:chaldea/packages/home_widget.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../generated/l10n.dart';
@@ -135,6 +137,15 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin, WindowListener
         network.check();
       } else if (msg == AppLifecycleState.inactive.toString()) {
         db.saveAll();
+        if (NetworkManagerBase.hasCalled) {
+          try {
+            await HomeWidgetX.saveFakerStatus();
+            await HomeWidgetX.updateFakerStatus();
+          } catch (e, s) {
+            print(e);
+            print(s);
+          }
+        }
         // debugPrint('save userdata before being inactive');
       }
       return null;

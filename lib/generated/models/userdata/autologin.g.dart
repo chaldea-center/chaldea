@@ -560,14 +560,13 @@ const _$WidgetBackgroundTypeEnumMap = {
 
 WidgetAccountInfo _$WidgetAccountInfoFromJson(Map json) => $checkedCreate('WidgetAccountInfo', json, ($checkedConvert) {
   final val = WidgetAccountInfo(
-    region: $checkedConvert('region', (v) => v == null ? Region.jp : const RegionConverter().fromJson(v as String)),
-    biliGameServer: $checkedConvert(
-      'biliGameServer',
-      (v) => $enumDecodeNullable(_$BiliGameServerEnumMap, v) ?? BiliGameServer.ios,
-    ),
-    serverSvg: $checkedConvert('serverSvg', (v) => v as String? ?? ""),
+    id: $checkedConvert('id', (v) => v as String),
     name: $checkedConvert('name', (v) => v as String? ?? ""),
-    friendCode: $checkedConvert('friendCode', (v) => v as String? ?? ""),
+    gameServer: $checkedConvert(
+      'gameServer',
+      (v) => v == null ? Region.jp : const RegionConverter().fromJson(v as String),
+    ),
+    biliServer: $checkedConvert('biliServer', (v) => v as String? ?? ""),
     actMax: $checkedConvert('actMax', (v) => (v as num?)?.toInt() ?? 0),
     actRecoverAt: $checkedConvert('actRecoverAt', (v) => (v as num?)?.toInt() ?? 0),
     carryOverActPoint: $checkedConvert('carryOverActPoint', (v) => (v as num?)?.toInt() ?? 0),
@@ -576,11 +575,10 @@ WidgetAccountInfo _$WidgetAccountInfoFromJson(Map json) => $checkedCreate('Widge
 });
 
 Map<String, dynamic> _$WidgetAccountInfoToJson(WidgetAccountInfo instance) => <String, dynamic>{
-  'region': const RegionConverter().toJson(instance.region),
-  'biliGameServer': _$BiliGameServerEnumMap[instance.biliGameServer]!,
-  'serverSvg': instance.serverSvg,
+  'id': instance.id,
   'name': instance.name,
-  'friendCode': instance.friendCode,
+  'gameServer': const RegionConverter().toJson(instance.gameServer),
+  'biliServer': instance.biliServer,
   'actMax': instance.actMax,
   'actRecoverAt': instance.actRecoverAt,
   'carryOverActPoint': instance.carryOverActPoint,

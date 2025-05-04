@@ -120,7 +120,7 @@ class _BondBonusPageState extends State<BondBonusPage> {
     final List<int> freeCeIds = allCeData.keys.toSet().difference(mustHaveCeIds.toSet()).toList();
     final int n = freeCeIds.length;
     List<_GroupItem> resultData = [];
-    for (int mask = 1; mask < (1 << n); mask++) {
+    for (int mask = 0; mask < (1 << n); mask++) {
       final List<int> usedCeIds = List.of(mustHaveCeIds);
       usedCeIds.sort(); // for key sort
       for (int i = 0; i < n; i++) {
@@ -128,6 +128,7 @@ class _BondBonusPageState extends State<BondBonusPage> {
           usedCeIds.add(freeCeIds[i]);
         }
       }
+      if (usedCeIds.isEmpty) continue;
 
       final List<Set<int>> svtIdList = usedCeIds.map((ceId) => allCeMatchSvtData[ceId]!.keys.toSet()).toList();
       final sameSvtIds = _intersectionSetList(svtIdList);
@@ -278,6 +279,8 @@ class _BondBonusPageState extends State<BondBonusPage> {
   }
 
   Widget get buttonBar {
+    final ces = allCeData.values.toList();
+    ces.sortByList((e) => [-e.rateCount, -e.ce.collectionNo]);
     return SafeArea(
       child: Padding(
         padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -286,7 +289,7 @@ class _BondBonusPageState extends State<BondBonusPage> {
           // hint: Text(S.current.craft_essence),
           items: [
             DropdownMenuItem(child: Text(S.current.craft_essence)),
-            for (final ce in allCeData.values)
+            for (final ce in ces)
               DropdownMenuItem(
                 value: ce.ce.id,
                 child: Text.rich(
@@ -294,8 +297,8 @@ class _BondBonusPageState extends State<BondBonusPage> {
                     children: [
                       CenterWidgetSpan(child: ce.ce.iconBuilder(context: context, width: 32)),
                       TextSpan(
-                        text: _describeTraits(ce.traits),
-                        children: [TextSpan(text: '+${ce.rateCount.format(percent: true, base: 10)}')],
+                        text: ' ${_describeTraits(ce.traits)}',
+                        children: [TextSpan(text: ' +${ce.rateCount.format(percent: true, base: 10)}')],
                         style: TextStyle(fontSize: 12),
                       ),
                     ],

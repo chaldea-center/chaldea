@@ -10,8 +10,8 @@ import SwiftUI
 
 @main
 struct FakerStatusWidgetBundle: WidgetBundle {
-    var body: some Widget {
-        FakerStatusWidget()
-        FakerStatusWidgetControl()
-    }
+  var body: some Widget {
+    FakerStatusWidget()
+    FakerStatusWidgetControl()
+  }
 }

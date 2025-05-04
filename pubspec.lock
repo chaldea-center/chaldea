@@ -646,6 +646,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.2.3"
+  home_widget:
+    dependency: "direct main"
+    description:
+      name: home_widget
+      sha256: "7430f7549d42cef2e729bd3c779de748b93f1eb78b1abfe6bca8fffd1cfce3e9"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.7.0+1"
   html:
     dependency: "direct main"
     description:

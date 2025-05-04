@@ -298,8 +298,7 @@ class SvtInfoTab extends StatelessWidget {
                             },
                           ),
                         ),
-                      if (traitAdd.limitCount != -1)
-                        TextSpan(text: '(${svt.getLimitName(traitAdd.limitCount)})'),
+                      if (traitAdd.limitCount != -1) TextSpan(text: '(${svt.getLimitName(traitAdd.limitCount)})'),
                       if (traitAdd.eventId != 0) ...[
                         SharedBuilder.textButtonSpan(
                           context: context,

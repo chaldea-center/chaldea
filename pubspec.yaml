@@ -64,6 +64,7 @@ dependencies:
   font_awesome_flutter: ^10.6.0
   github: ^9.16.0
   hive: ^2.2.3
+  home_widget: ^0.7.0+1
   html: ^0.15.3
   http: ^1.2.0
   image: ^4.5.0

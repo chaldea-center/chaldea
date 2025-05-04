@@ -9,6 +9,7 @@ import 'package:catcher_2/catcher_2.dart';
 import 'package:worker_manager/worker_manager.dart';
 
 import 'package:chaldea/app/tools/app_window.dart';
+import 'package:chaldea/packages/home_widget.dart';
 import 'app/chaldea.dart';
 import 'app/modules/common/blank_page.dart';
 import 'app/modules/home/bootstrap/startup_failed_page.dart';
@@ -95,4 +96,6 @@ Future<void> _initiateCommon() async {
   }
   SplitRoute.defaultMasterFillPageBuilder = (context) => const BlankPage();
   await LocalNotificationUtil.init();
+
+  HomeWidgetX.init();
 }

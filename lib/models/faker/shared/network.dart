@@ -112,6 +112,7 @@ class NidCheckException implements Exception {
 }
 
 abstract class NetworkManagerBase<TRequest extends FRequestBase, TUser extends AutoLoginData> with ChangeNotifier {
+  static bool hasCalled = false;
   final GameTop gameTop;
   final TUser user;
   final CatMouseGame catMouseGame;
@@ -250,6 +251,7 @@ abstract class NetworkManagerBase<TRequest extends FRequestBase, TUser extends A
 
           record.response = resp;
           setLocalNotification(oldUserGame: oldUserGame);
+          hasCalled = true;
           return resp;
         } on DioException catch (e, s) {
           logger.e('fgo request failed, retry after 5 seconds', e, s);

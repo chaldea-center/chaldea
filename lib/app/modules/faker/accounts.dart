@@ -4,6 +4,8 @@ import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
+import 'package:chaldea/packages/home_widget.dart';
+import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import 'account_edit.dart';
@@ -97,26 +99,7 @@ class _FakerAccountsPageState extends State<FakerAccountsPage> {
                   if (index < users.length) {
                     return itemBuilder(context, users[index]);
                   }
-                  return Center(
-                    child: FilledButton.icon(
-                      onPressed:
-                          users.length <= 1
-                              ? null
-                              : () async {
-                                await showEasyLoading(AtlasApi.gametopsRaw);
-                                for (final (index, user) in users.indexed) {
-                                  if (index != 0) {
-                                    rootRouter.appState.addWindow();
-                                    await Future.delayed(const Duration(milliseconds: 100));
-                                  }
-                                  router.pushPage(FakeGrandOrder(user: user));
-                                  await Future.delayed(const Duration(milliseconds: 400));
-                                }
-                              },
-                      label: const Text('Open All'),
-                      icon: const Icon(Icons.select_all),
-                    ),
-                  );
+                  return buildButtons(users);
                 },
                 separatorBuilder: (context, index) => const Divider(indent: 16, endIndent: 16),
               ),
@@ -216,5 +199,46 @@ class _FakerAccountsPageState extends State<FakerAccountsPage> {
                 router.pushPage(FakeGrandOrder(user: user));
               },
     );
+  }
+
+  Widget buildButtons(List<AutoLoginData> users) {
+    List<Widget> buttons = [
+      FilledButton.icon(
+        onPressed:
+            users.length <= 1
+                ? null
+                : () async {
+                  await showEasyLoading(AtlasApi.gametopsRaw);
+                  for (final (index, user) in users.indexed) {
+                    if (index != 0) {
+                      rootRouter.appState.addWindow();
+                      await Future.delayed(const Duration(milliseconds: 100));
+                    }
+                    router.pushPage(FakeGrandOrder(user: user));
+                    await Future.delayed(const Duration(milliseconds: 400));
+                  }
+                },
+        label: const Text('Open All'),
+        icon: const Icon(Icons.select_all),
+      ),
+    ];
+    if (HomeWidgetX.isSupported) {
+      buttons.add(
+        FilledButton(
+          onPressed: () async {
+            try {
+              final result = await HomeWidgetX.saveFakerStatus();
+              final result2 = await HomeWidgetX.updateFakerStatus();
+              EasyLoading.showToast('save: $result\nupdate: $result2');
+            } catch (e, s) {
+              logger.e('save and update faker widgets failed', e, s);
+              EasyLoading.showError(e.toString());
+            }
+          },
+          child: Text("Update Widgets"),
+        ),
+      );
+    }
+    return Column(mainAxisSize: MainAxisSize.min, spacing: 4, children: buttons);
   }
 }

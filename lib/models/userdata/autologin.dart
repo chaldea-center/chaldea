@@ -31,6 +31,12 @@ class FakerSettings {
   factory FakerSettings.fromJson(Map<String, dynamic> json) => _$FakerSettingsFromJson(json);
 
   Map<String, dynamic> toJson() => _$FakerSettingsToJson(this);
+
+  List<AutoLoginData> get allAccounts {
+    List<AutoLoginData> accounts = [...jpAutoLogins, ...cnAutoLogins];
+    accounts.sort2((e) => e.priority);
+    return accounts;
+  }
 }
 
 @JsonSerializable()
@@ -655,25 +661,30 @@ class WidgetBackgroundConfig {
   Map<String, dynamic> toJson() => _$WidgetBackgroundConfigToJson(this);
 }
 
+// let id: String
+// let name: String
+// var gameServer: String
+// var biliServer: String = ""
+// var actMax: Int = 144
+// var actRecoverAt: Int
+// var carryOverActPoint: Int = 0
+
 @JsonSerializable()
 class WidgetAccountInfo {
-  @RegionConverter()
-  Region region;
-  BiliGameServer biliGameServer;
-  String serverSvg;
-
+  String id;
   String name;
-  String friendCode;
+  @RegionConverter()
+  Region gameServer;
+  String biliServer;
   int actMax;
   int actRecoverAt;
   int carryOverActPoint;
 
   WidgetAccountInfo({
-    this.region = Region.jp,
-    this.biliGameServer = BiliGameServer.ios,
-    this.serverSvg = "",
+    required this.id,
     this.name = "",
-    this.friendCode = "",
+    this.gameServer = Region.jp,
+    this.biliServer = "",
     this.actMax = 0,
     this.actRecoverAt = 0,
     this.carryOverActPoint = 0,
