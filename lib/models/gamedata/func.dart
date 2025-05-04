@@ -633,39 +633,42 @@ enum FuncType {
 }
 
 enum FuncTargetType {
-  self,
-  ptOne,
-  ptAnother,
-  ptAll,
-  enemy,
-  enemyAnother,
-  enemyAll,
-  ptFull,
-  enemyFull,
-  ptOther,
-  ptOneOther,
-  ptRandom,
-  enemyOther,
-  enemyRandom,
-  ptOtherFull,
-  enemyOtherFull,
-  ptselectOneSub, // 1+1
-  ptselectSub, // ?
-  ptOneAnotherRandom,
-  ptSelfAnotherRandom,
-  enemyOneAnotherRandom,
-  ptSelfAnotherFirst,
-  ptSelfBefore,
-  ptSelfAfter,
-  ptSelfAnotherLast,
-  commandTypeSelfTreasureDevice,
-  fieldOther,
-  enemyOneNoTargetNoAction,
-  ptOneHpLowestValue,
-  ptOneHpLowestRate,
-  enemyRange,
-  handCommandcardRandomOne,
-  fieldAll;
+  self(0),
+  ptOne(1),
+  ptAnother(2),
+  ptAll(3),
+  enemy(4),
+  enemyAnother(5),
+  enemyAll(6),
+  ptFull(7),
+  enemyFull(8),
+  ptOther(9),
+  ptOneOther(10),
+  ptRandom(11),
+  enemyOther(12),
+  enemyRandom(13),
+  ptOtherFull(14),
+  enemyOtherFull(15),
+  ptselectOneSub(16), // 1+1
+  ptselectSub(17), // ?
+  ptOneAnotherRandom(18),
+  ptSelfAnotherRandom(19),
+  enemyOneAnotherRandom(20),
+  ptSelfAnotherFirst(21),
+  ptSelfBefore(22),
+  ptSelfAfter(23),
+  ptSelfAnotherLast(24),
+  commandTypeSelfTreasureDevice(25),
+  fieldOther(26),
+  enemyOneNoTargetNoAction(27),
+  ptOneHpLowestValue(28),
+  ptOneHpLowestRate(29),
+  enemyRange(30),
+  handCommandcardRandomOne(31),
+  fieldAll(32);
+
+  const FuncTargetType(this.value);
+  final int value;
 
   bool get isEnemy => name.toLowerCase().startsWith('enemy') && this != FuncTargetType.enemyOneNoTargetNoAction;
   bool get isAlly =>
@@ -703,6 +706,15 @@ enum GainNpIndividualSumTarget {
   otherAll(4);
 
   const GainNpIndividualSumTarget(this.value);
+  final int value;
+}
+
+enum TriggeredFieldCountTarget {
+  ally(0),
+  enemy(1),
+  all(2);
+
+  const TriggeredFieldCountTarget(this.value);
   final int value;
 }
 

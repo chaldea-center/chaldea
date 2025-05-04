@@ -387,7 +387,8 @@ class DataVals {
 
   /// [TriggeredTargetHpRange], [TriggeredTargetHpRateRange]
   /// [CheckOverChargeStageRange], [CheckBattlePointPhaseRange]
-  static bool isSatisfyRangeText(int value, {String? rangeText, List<String>? ranges}) {
+  /// [TriggeredFieldCountRange] always force equal checks
+  static bool isSatisfyRangeText(int value, {String? rangeText, List<String>? ranges, bool forceEqual = false}) {
     if (ranges == null && rangeText != null) ranges = rangeText.split('/').map((e) => e.trim()).toList();
     if (ranges == null || ranges.isEmpty) return true;
 
@@ -400,13 +401,13 @@ class DataVals {
       }
 
       bool? result =
-          _check(RegExp(r'^<(\d+)$'), (target) => value < target) ??
+          _check(RegExp(r'^<(\d+)$'), (target) => value < target || (forceEqual && value <= target)) ??
           _check(RegExp(r'^<=(\d+)$'), (target) => value <= target) ??
-          _check(RegExp(r'^>(\d+)$'), (target) => value > target) ??
+          _check(RegExp(r'^>(\d+)$'), (target) => value > target || (forceEqual && value >= target)) ??
           _check(RegExp(r'^>=(\d+)$'), (target) => value >= target) ??
-          _check(RegExp(r'^(\d+)>$'), (target) => value < target) ??
+          _check(RegExp(r'^(\d+)>$'), (target) => value < target || (forceEqual && value <= target)) ??
           _check(RegExp(r'^(\d+)>=$'), (target) => value <= target) ??
-          _check(RegExp(r'^(\d+)<$'), (target) => value > target) ??
+          _check(RegExp(r'^(\d+)<$'), (target) => value > target || (forceEqual && value >= target)) ??
           _check(RegExp(r'^(\d+)<=$'), (target) => value >= target);
       _check(RegExp(r'^=*(\d+)$'), (target) => value == target);
       assert(result != null, 'Unknown compare type: $range');

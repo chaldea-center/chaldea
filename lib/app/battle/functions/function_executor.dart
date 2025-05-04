@@ -236,7 +236,23 @@ class FunctionExecutor {
       }
 
       // not in updateTargets because these end execution immediately
-      if (!triggeredPositionCheck(battleData, dataVals) || !triggeredPositionAllCheck(battleData, dataVals)) {
+      if (!triggeredPositionCheck(battleData, dataVals) ||
+          !triggeredPositionAllCheck(battleData, dataVals) ||
+          !triggeredFieldCountCheck(battleData, dataVals, activator?.isPlayer ?? defaultToPlayer)) {
+        battleData.updateLastFuncResults(function.funcId, funcIndex);
+        return true;
+      }
+
+      final specialFuncTargetCheck = await funcCheckTargetIndividualityTargetType(
+        battleData,
+        function,
+        dataVals,
+        activator,
+        targetedAlly,
+        targetedEnemy,
+        defaultToPlayer,
+      );
+      if (!specialFuncTargetCheck) {
         battleData.updateLastFuncResults(function.funcId, funcIndex);
         return true;
       }
@@ -828,6 +844,69 @@ class FunctionExecutor {
     return false;
   }
 
+  static bool triggeredFieldCountCheck(BattleData battleData, DataVals dataVals, bool isPlayer) {
+    final triggeredFieldCountTarget = dataVals.TriggeredFieldCountTarget;
+    final triggeredFieldCountRange = dataVals.TriggeredFieldCountRange;
+    if (triggeredFieldCountRange == null || triggeredFieldCountTarget == null) return true;
+
+    final allies = isPlayer ? battleData.nonnullPlayers : battleData.nonnullEnemies;
+    final enemies = isPlayer ? battleData.nonnullEnemies : battleData.nonnullPlayers;
+    final List<BattleServantData> targets = [];
+    if (triggeredFieldCountTarget == TriggeredFieldCountTarget.ally.value) {
+      targets.addAll(allies);
+    } else if (triggeredFieldCountTarget == TriggeredFieldCountTarget.enemy.value) {
+      targets.addAll(enemies);
+    } else if (triggeredFieldCountTarget == TriggeredFieldCountTarget.all.value) {
+      targets.addAll(allies);
+      targets.addAll(enemies);
+    }
+
+    return DataVals.isSatisfyRangeText(targets.length, rangeText: triggeredFieldCountRange, forceEqual: true);
+  }
+
+  static Future<bool> funcCheckTargetIndividualityTargetType(
+    BattleData battleData,
+    NiceFunction function,
+    DataVals dataVals,
+    BattleServantData? activator,
+    BattleServantData? targetedAlly,
+    BattleServantData? targetedEnemy,
+    bool defaultToPlayer,
+  ) async {
+    if (dataVals.FuncCheckTargetIndividualityTargetType == null) return true;
+    final traitTargets = await acquireFunctionTarget(
+      battleData,
+      FuncTargetType.values.firstWhere((type) => type.value == dataVals.FuncCheckTargetIndividualityTargetType!),
+      activator,
+      targetedAlly: targetedAlly,
+      targetedEnemy: targetedEnemy,
+      funcId: function.funcId,
+      defaultToPlayer: defaultToPlayer,
+      dataVals: dataVals,
+    );
+
+    final activeOnly = dataVals.IncludePassiveIndividuality != 1;
+    final includeIgnoreIndividuality = dataVals.IncludeIgnoreIndividuality == 1;
+    int matchCount = 0;
+    for (final svt in traitTargets) {
+      matchCount += countAnyTraits(
+        svt.getTraits(
+          addTraits: svt.getBuffTraits(activeOnly: activeOnly, includeIgnoreIndiv: includeIgnoreIndividuality),
+        ),
+        function.functvals,
+      );
+    }
+    if (dataVals.FuncCheckTargetIndividualityCountEqual != null) {
+      return matchCount == dataVals.FuncCheckTargetIndividualityCountEqual!;
+    } else if (dataVals.FuncCheckTargetIndividualityCountHigher != null) {
+      return matchCount > dataVals.FuncCheckTargetIndividualityCountHigher!;
+    } else if (dataVals.FuncCheckTargetIndividualityCountLower != null) {
+      return matchCount < dataVals.FuncCheckTargetIndividualityCountLower!;
+    } else {
+      return matchCount > 0;
+    }
+  }
+
   static void updateTargets(
     final BattleData battleData,
     final NiceFunction function,
@@ -862,7 +941,7 @@ class FunctionExecutor {
         }
         return false;
       });
-    } else {
+    } else if (dataVals.FuncCheckTargetIndividualityTargetType == null) {
       targets.retainWhere(
         (svt) => checkSignedIndividualities2(
           myTraits: svt.getTraits(
@@ -871,7 +950,7 @@ class FunctionExecutor {
           requiredTraits: function.functvals,
         ),
       );
-    }
+    } // else checked in funcCheckTargetIndividualityTargetType
 
     if (dataVals.TriggeredTargetHpRange != null || dataVals.TriggeredTargetHpRateRange != null) {
       targets.retainWhere((svt) {
