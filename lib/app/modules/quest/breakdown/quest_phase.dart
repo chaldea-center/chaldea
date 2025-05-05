@@ -122,7 +122,7 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
     if (quest.warId >= 1000 && quest.openedAt < DateTime.now().subtract(const Duration(days: 30)).timestamp) {
       expireAfter = const Duration(days: 7);
     }
-    if (quest.flags.contains(QuestFlag.noBattle)) {
+    if (quest.isNoBattle) {
       await Future.delayed(const Duration(milliseconds: 20));
     }
 

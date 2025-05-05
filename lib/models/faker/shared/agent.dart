@@ -263,9 +263,9 @@ abstract class FakerAgent<
       campaignItemId = campaignItems.first.$1.itemId;
     }
 
-    if (questPhaseEntity.flags.contains(QuestFlag.noBattle)) {
-      if (questPhaseEntity.stages.isNotEmpty) {
-        throw SilentException('Has noBattle flag, but does have ${questPhaseEntity.stages.length} stage(s).');
+    if (questPhaseEntity.isNoBattle) {
+      if (!questPhaseEntity.flags.contains(QuestFlag.noBattle)) {
+        throw SilentException('No stage, but don not have noBattle flag.');
       }
       return battleScenario(questId: questPhaseEntity.id, questPhase: questPhaseEntity.phase, routeSelect: []);
     }

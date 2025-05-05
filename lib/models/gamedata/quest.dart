@@ -505,6 +505,9 @@ class QuestPhase extends Quest {
 
   int get key => getPhaseKey(phase);
 
+  @override
+  bool get isNoBattle => stages.isEmpty;
+
   List<QuestEnemy> get allEnemies => [for (final stage in stages) ...stage.enemies];
 
   String? get enemyHashOrTotal {

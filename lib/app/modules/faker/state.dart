@@ -269,9 +269,6 @@ class FakerRuntime {
       await _ensureEnoughApItem(quest: questPhaseEntity, option: battleOption);
 
       update();
-      if (questPhaseEntity.flags.contains(QuestFlag.noBattle) && questPhaseEntity.stages.isNotEmpty) {
-        throw SilentException('noBattle flag but ${questPhaseEntity.stages.length} stages');
-      }
       FResponse setupResp;
       try {
         setupResp = await agent.battleSetupWithOptions(battleOption);
