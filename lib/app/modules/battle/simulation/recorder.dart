@@ -1417,8 +1417,8 @@ class DamageParamDialog extends StatelessWidget with _ParamDialogMixin {
       toModifier(
         params.damageBuff -
             params.damageDefBuff +
-            (params.critical ? params.criticalDamageBuff : 0) +
-            (params.isNp ? params.npDamageBuff : 0),
+            (params.critical ? params.criticalDamageBuff - params.criticalDamageDefBuff : 0) +
+            (params.isNp ? params.npDamageBuff - params.npDamageDefBuff : 0),
       ),
       0.001 - 1,
     );
