@@ -49,8 +49,8 @@ dependencies:
   # dio_cookie_manager: ^3.0.0
   dots_indicator: ^4.0.0
   equatable: ^2.0.5
-  file_picker: ^9.0.0
-  fl_chart: ^0.70.2
+  file_picker: ^10.1.7
+  fl_chart: ^1.0.0
   flutter_cache_manager: ^3.3.1
   flutter_easyloading: ^3.0.5
   flutter_hooks: ^0.21.2
@@ -72,7 +72,7 @@ dependencies:
     git: https://github.com/chaldea-center/image_gallery_saver.git
   intl: ">=0.19.0 <0.21.0"
   json_annotation: ^4.9.0
-  just_audio: ^0.9.33
+  just_audio: ^0.10.2
   just_audio_windows: ^0.2.0
   # just_audio_mpv: ^0.1.4  # manually install mpv on linux
   kana_kit: ^2.1.1
@@ -89,19 +89,19 @@ dependencies:
       path: packages/pasteboard
   path: ^1.8.2
   path_provider: ^2.1.3
-  permission_handler: ^11.0.0
+  permission_handler: ^12.0.0
   # pointycastle: ^3.9.1
   pool: ^1.5.0
   photo_view: ^0.15.0
   screenshot: ^3.0.0
-  share_plus: ^10.1.3
+  share_plus: ^11.0.0
   shared_preferences: ^2.2.0
   sliver_tools: ^0.2.12
   smooth_page_indicator: ^1.1.0
   string_validator: ^1.0.0
   table_sticky_headers: ^2.0.1
   timezone: ^0.10.0
-  tray_manager: ^0.3.1
+  tray_manager: ^0.5.0
   tuple: ^2.0.1
   url_launcher: ^6.3.1
   uuid: ^4.3.3
@@ -114,7 +114,7 @@ dependencies:
   worker_manager: ^7.2.2
   window_manager: ^0.4.3
   countly_flutter_np: ^25.1.1
-  google_mobile_ads: ^5.2.0
+  google_mobile_ads: ^6.0.0
   admanager_web: ^0.0.4
 
 dev_dependencies:

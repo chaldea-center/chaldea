@@ -80,7 +80,7 @@ class _MyMarkdownWidgetState extends State<MyMarkdownWidget> {
       return Markdown(
         data: data,
         selectable: widget.selectable,
-        imageBuilder: imageBuilder,
+        sizedImageBuilder: imageBuilder,
         onTapLink: onTapLink,
         extensionSet: widget.extensionSet,
       );
@@ -88,18 +88,18 @@ class _MyMarkdownWidgetState extends State<MyMarkdownWidget> {
       return MarkdownBody(
         data: data,
         selectable: widget.selectable,
-        imageBuilder: imageBuilder,
+        sizedImageBuilder: imageBuilder,
         onTapLink: onTapLink,
         extensionSet: widget.extensionSet,
       );
     }
   }
 
-  Widget imageBuilder(Uri uri, String? title, String? alt) {
+  Widget imageBuilder(MarkdownImageConfig config) {
     return CachedImage(
-      imageUrl: uri.toString(),
+      imageUrl: config.uri.toString(),
       placeholder: (_, __) => Container(),
-      cachedOption: CachedImageOption(errorWidget: (ctx, url, e) => Text("[${title ?? alt ?? ''}]")),
+      cachedOption: CachedImageOption(errorWidget: (ctx, url, e) => Text("[${config.title ?? config.alt ?? ''}]")),
     );
   }
 

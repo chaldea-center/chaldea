@@ -48,7 +48,7 @@ class FilePickerU {
     FileType type = FileType.any,
     List<String>? allowedExtensions,
     Function(FilePickerStatus)? onFileLoading,
-    bool allowCompression = true,
+    int compressionQuality = 0,
     bool allowMultiple = false,
     // web always have to [withData]
     bool withData = true,
@@ -70,7 +70,7 @@ class FilePickerU {
           type: type,
           allowedExtensions: allowedExtensions,
           onFileLoading: onFileLoading,
-          allowCompression: allowCompression,
+          compressionQuality: compressionQuality,
           allowMultiple: allowMultiple,
           withData: withData,
           withReadStream: withReadStream,

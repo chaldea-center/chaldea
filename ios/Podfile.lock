@@ -3,7 +3,7 @@ PODS:
     - Flutter
   - connectivity_plus (0.0.1):
     - Flutter
-  - countly_flutter_np (25.1.1):
+  - countly_flutter_np (25.4.0):
     - Flutter
   - device_info_plus (0.0.1):
     - Flutter
@@ -52,13 +52,13 @@ PODS:
     - Flutter
   - fluttertoast (0.0.2):
     - Flutter
-  - Google-Mobile-Ads-SDK (11.13.0):
+  - Google-Mobile-Ads-SDK (12.2.0):
     - GoogleUserMessagingPlatform (>= 1.1)
-  - google_mobile_ads (5.3.1):
+  - google_mobile_ads (6.0.0):
     - Flutter
-    - Google-Mobile-Ads-SDK (~> 11.13.0)
+    - Google-Mobile-Ads-SDK (~> 12.2.0)
     - webview_flutter_wkwebview
-  - GoogleUserMessagingPlatform (2.7.0)
+  - GoogleUserMessagingPlatform (3.0.0)
   - home_widget (0.0.1):
     - Flutter
   - image_gallery_saver (2.0.2):
@@ -192,7 +192,7 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   audio_session: 19e9480dbdd4e5f6c4543826b2e8b0e4ab6145fe
   connectivity_plus: 2a701ffec2c0ae28a48cf7540e279787e77c447d
-  countly_flutter_np: cbf332fc2f1f329c914df055edaa154b929b2497
+  countly_flutter_np: 77032181324b38775d8d9f7d8f4beb9258fbc6d1
   device_info_plus: bf2e3232933866d73fe290f2942f2156cdd10342
   DKImagePickerController: 946cec48c7873164274ecc4624d19e3da4c1ef3c
   DKPhotoGallery: b3834fecb755ee09a593d7c9e389d8b5d6deed60
@@ -203,9 +203,9 @@ SPEC CHECKSUMS:
   flutter_mailer: 2ef5a67087bc8c6c4cefd04a178bf1ae2c94cd83
   flutter_timezone: ac3da59ac941ff1c98a2e1f0293420e020120282
   fluttertoast: 21eecd6935e7064cc1fcb733a4c5a428f3f24f0f
-  Google-Mobile-Ads-SDK: 14f57f2dc33532a24db288897e26494640810407
-  google_mobile_ads: fe0e2c1764ad95323dd0e3081d0bb2d58411f957
-  GoogleUserMessagingPlatform: a8b56893477f67212fbc8411c139e61d463349f5
+  Google-Mobile-Ads-SDK: 1dfb0c3cb46c7e2b00b0f4de74a1e06d9ea25d67
+  google_mobile_ads: cab27248050510554aa646195eacc393ce7406ad
+  GoogleUserMessagingPlatform: f8d0cdad3ca835406755d0a69aa634f00e76d576
   home_widget: 0434835a4c9a75704264feff6be17ea40e0f0d57
   image_gallery_saver: cb43cc43141711190510e92c460eb1655cd343cb
   just_audio: a42c63806f16995daf5b219ae1d679deb76e6a79
@@ -220,7 +220,7 @@ SPEC CHECKSUMS:
   SwiftyGif: 706c60cf65fa2bc5ee0313beece843c8eb8194d4
   url_launcher_ios: 5334b05cef931de560670eeae103fd3e431ac3fe
   video_player_avfoundation: 7c6c11d8470e1675df7397027218274b6d2360b3
-  wakelock_plus: 373cfe59b235a6dd5837d0fb88791d2f13a90d56
+  wakelock_plus: 76957ab028e12bfa4e66813c99e46637f367fc7e
   webview_flutter_wkwebview: a4af96a051138e28e29f60101d094683b9f82188
 
 PODFILE CHECKSUM: 3205ce7e5c705a62947d5a00eeafa2ed4e39fea4

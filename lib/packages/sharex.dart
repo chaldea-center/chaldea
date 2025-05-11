@@ -36,7 +36,9 @@ class ShareX {
     if (sharePositionOrigin == null && PlatformU.isIOS) {
       sharePositionOrigin = getSharePosOrigin(context);
     }
-    return Share.share(text, subject: subject, sharePositionOrigin: sharePositionOrigin);
+    return SharePlus.instance.share(
+      ShareParams(text: text, subject: subject, sharePositionOrigin: sharePositionOrigin),
+    );
   }
 
   static Future<ShareResult> shareFile(
@@ -61,7 +63,9 @@ class ShareX {
     } else {
       file = XFile(fp);
     }
-    return Share.shareXFiles([file], subject: subject, text: text, sharePositionOrigin: sharePositionOrigin);
+    return SharePlus.instance.share(
+      ShareParams(files: [file], subject: subject, text: text, sharePositionOrigin: sharePositionOrigin),
+    );
   }
 
   static Future<ShareResult> shareFiles(
@@ -77,6 +81,8 @@ class ShareX {
     if (files.length == 1 && subject == null) {
       subject = files.first.name;
     }
-    return Share.shareXFiles(files, subject: subject, text: text, sharePositionOrigin: sharePositionOrigin);
+    return SharePlus.instance.share(
+      ShareParams(files: files, subject: subject, text: text, sharePositionOrigin: sharePositionOrigin),
+    );
   }
 }
