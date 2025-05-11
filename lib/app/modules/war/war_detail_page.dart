@@ -502,8 +502,8 @@ Widget addQuestCategoryTile({
         QuestFlag.forceToNoDrop,
       ].any((flag) => quest.flags.contains(flag))) {
         difficultQuests.add(quest);
-      // } else if (quest.flags.contains(QuestFlag.noBattle)) {
-      //   eventQuests.add(quest);
+        // } else if (quest.flags.contains(QuestFlag.noBattle)) {
+        //   eventQuests.add(quest);
       } else {
         if (quest.warId == WarId.daily) {
           if (quest.name.contains('種火集め')) {

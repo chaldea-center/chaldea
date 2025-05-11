@@ -184,6 +184,8 @@ class ValDsc extends StatelessWidget {
       _addInt(parts, vals.DependFuncVals?.Value, (s) => '$s×N');
     } else if (func.funcType == FuncType.gainNpTargetSum) {
       _addPercent(parts, vals.Value, 100, (s) => '$s×N');
+    } else if (func.funcType == FuncType.gainNpCriticalstarSum) {
+      _addPercent(parts, vals.Value, 100, (s) => '$s×N');
     } else if (func.funcType == FuncType.gainNpFromTargets) {
       // Absorb Value, charge Value2
       _addPercent(parts, vals.DependFuncVals?.Value2 ?? vals.DependFuncVals?.Value, 100, (s) => '$s×N');
@@ -371,7 +373,12 @@ class ValDsc extends StatelessWidget {
       if (triggerVal.level != null) {
         parts.add('Lv.${triggerVal.level}');
       } else if (triggerVal.skill != null) {
-        parts.add('${triggerVal.skill}');
+        if (buff.type == BuffType.counterFunction && vals.UseAttack == 1) {
+          final cardType = CardType.values.firstWhereOrNull((e) => e.value == vals.CounterId);
+          parts.add('${cardType?.name.toTitle() ?? triggerVal.skill}');
+        } else {
+          parts.add('${triggerVal.skill}');
+        }
       }
       if (buff.type == BuffType.counterFunction && vals.CounterOc != null) {
         parts.add('OC${vals.CounterOc}');

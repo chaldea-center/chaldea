@@ -7,6 +7,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/modules/common/builders.dart';
+import 'package:chaldea/app/modules/common/misc.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
@@ -605,6 +606,7 @@ class FuncDescriptor extends StatelessWidget {
       FuncType.gainNpIndividualSum,
       FuncType.gainNpBuffIndividualSum,
       FuncType.gainNpTargetSum,
+      FuncType.gainNpCriticalstarSum,
     ].contains(func.funcType)) {
       funcText.write(Transl.funcPopuptextBase(func.funcType.name).l);
     } else if (const [FuncType.enemyEncountRateUp, FuncType.enemyEncountCopyRateUp].contains(func.funcType)) {
@@ -1435,15 +1437,35 @@ class FuncDescriptor extends StatelessWidget {
     if (detail == null) return null;
 
     if (noLevel) detail.level = null;
-    final isNp = func.svals.first.UseTreasureDevice == 1;
-    return Container(
-      decoration: BoxDecoration(
-        border: Border.all(color: Theme.of(context).hintColor),
-        borderRadius: BorderRadius.circular(6),
-      ),
-      margin: const EdgeInsets.symmetric(vertical: 2),
-      padding: const EdgeInsetsDirectional.fromSTEB(0, 2, 0, 2),
-      child: _LazyTrigger(
+
+    final isNp = vals?.UseTreasureDevice == 1;
+    Widget triggerChild;
+    if (func.buff?.type == BuffType.counterFunction && vals?.UseAttack == 1) {
+      final cardId = vals?.CounterId;
+      final cardType = CardType.values.firstWhereOrNull((e) => e.value == cardId);
+      final textStyle = Theme.of(context).textTheme.bodySmall;
+      if (cardType == null) {
+        triggerChild = _DescriptorWrapper(
+          title: Text(' ${S.current.battle_command_card} Card $cardId', style: textStyle),
+          trailing: null,
+        );
+      } else {
+        triggerChild = _DescriptorWrapper(
+          title: Text.rich(
+            TextSpan(
+              text: ' ',
+              children: [
+                CenterWidgetSpan(child: CommandCardWidget(card: cardType, width: 24)),
+                TextSpan(text: ' ${S.current.battle_command_card} ${cardType.name.toTitle()}'),
+              ],
+            ),
+            style: textStyle,
+          ),
+          trailing: null,
+        );
+      }
+    } else {
+      triggerChild = _LazyTrigger(
         trigger: detail,
         buff: func.buff,
         func: isFuncTrigger ? func : null,
@@ -1453,7 +1475,16 @@ class FuncDescriptor extends StatelessWidget {
         showEnemy: func.funcTargetType.isEnemy ? showPlayer : showEnemy,
         loops: LoopTargets.from(loops)..addFunc(func.funcId),
         region: region,
+      );
+    }
+    return Container(
+      decoration: BoxDecoration(
+        border: Border.all(color: Theme.of(context).hintColor),
+        borderRadius: BorderRadius.circular(6),
       ),
+      margin: const EdgeInsets.symmetric(vertical: 2),
+      padding: const EdgeInsetsDirectional.fromSTEB(0, 2, 0, 2),
+      child: triggerChild,
     );
   }
 
@@ -1544,7 +1575,7 @@ class _LazyTrigger extends StatefulWidget {
     required this.showEnemy,
     required this.loops,
     required this.region,
-  }) : assert(buff != null || func != null);
+  });
 
   @override
   State<_LazyTrigger> createState() => __LazyTriggerState();

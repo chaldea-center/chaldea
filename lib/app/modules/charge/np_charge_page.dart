@@ -591,6 +591,12 @@ class _NpChargePageState extends State<NpChargePage> {
         value = '${_fmt(sortValue)}×N';
         type = NpChargeType.special;
       }
+    } else if (func.funcType == FuncType.gainNpCriticalstarSum) {
+      if (sval.Value != null) {
+        sortValue = sval.Value!;
+        value = '${_fmt(sortValue)}×N';
+        type = NpChargeType.special;
+      }
     } else if (func.funcType == FuncType.gainMultiplyNp) {
       if (sval.Value != null) {
         sortValue = 0;
