@@ -374,7 +374,7 @@ class ValDsc extends StatelessWidget {
         parts.add('Lv.${triggerVal.level}');
       } else if (triggerVal.skill != null) {
         if (buff.type == BuffType.counterFunction && vals.UseAttack == 1) {
-          final cardType = CardType.values.firstWhereOrNull((e) => e.value == vals.CounterId);
+          final cardType = CardType.fromId(vals.CounterId);
           parts.add('${cardType?.name.toTitle() ?? triggerVal.skill}');
         } else {
           parts.add('${triggerVal.skill}');

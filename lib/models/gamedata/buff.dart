@@ -506,7 +506,7 @@ enum BuffType {
 final Map<BuffType, BuffValueTriggerType Function(DataVals)> kBuffValueTriggerTypes = () {
   final types = <BuffType, BuffValueTriggerType Function(DataVals)>{
     BuffType.counterFunction:
-        (v) => BuffValueTriggerType(buffType: BuffType.counterFunction, skill: v.CounterId, level: v.CounterLv),
+        (v) => BuffValueTriggerType(buffType: BuffType.counterFunction, skill: v.CounterId, level: v.CounterLv ?? 0),
     BuffType.npattackPrevBuff:
         (v) => BuffValueTriggerType(
           buffType: BuffType.npattackPrevBuff,

@@ -520,10 +520,7 @@ class BattleServantData {
 
     // check for changeCardBuff
     final changeCardBuff = collectBuffsPerAction(battleBuff.validBuffs, BuffAction.changeCommandCardType).firstOrNull;
-    final changeCardType =
-        changeCardBuff == null
-            ? null
-            : CardType.values.firstWhere((cardType) => cardType.value == changeCardBuff.param);
+    final changeCardType = changeCardBuff == null ? null : CardType.fromId(changeCardBuff.param);
 
     // fill in for enemy units
     if (cards.isEmpty) {
@@ -600,36 +597,50 @@ class BattleServantData {
       ..traits = currentNP?.individuality ?? [];
   }
 
-  Future<CommandCardData?> getCounterNPCard(final BattleData battleData) async {
+  Future<CommandCardData?> getCounterCard(final BattleData battleData) async {
     // buff.vals.UseTreasureDevice: =0 means skill?
     final buff = battleBuff.validBuffs.lastWhereOrNull((buff) => buff.vals.CounterId != null);
     if (buff == null) return null;
+    if (buff.vals.UseTreasureDevice == 1) {
+      final tdId = buff.vals.CounterId ?? 0;
+      final tdLv = buff.vals.CounterLv ?? 1;
+      NiceTd? td = niceSvt?.noblePhantasms.firstWhereOrNull((e) => e.id == tdId);
+      td ??= await showEasyLoading(() => AtlasApi.td(tdId), mask: true);
+      if (td == null) {
+        battleData.battleLogger.error('CounterId=$tdId not found');
+        return null;
+      }
 
-    final tdId = buff.vals.CounterId ?? 0;
-    final tdLv = buff.vals.CounterLv ?? 1;
-    NiceTd? td = niceSvt?.noblePhantasms.firstWhereOrNull((e) => e.id == tdId);
-    td ??= await showEasyLoading(() => AtlasApi.td(tdId), mask: true);
-    if (td == null) {
-      battleData.battleLogger.error('CounterId=$tdId not found');
+      if (isEnemy) {
+        return null;
+      }
+
+      final cardDetail = CardDetail(
+        attackIndividuality: td.individuality,
+        hitsDistribution: td.svt.damage,
+        attackType:
+            td.damageType == TdEffectFlag.attackEnemyAll ? CommandCardAttackType.all : CommandCardAttackType.one,
+      );
+
+      return CommandCardData(this, td.svt.card, cardDetail, -1)
+        ..isTD = true
+        ..td = td
+        ..counterBuff = buff
+        ..npGain = td.npGain.np[tdLv - 1]
+        ..traits = td.individuality;
+    } else if (buff.vals.UseAttack == 1) {
+      final cardId = buff.vals.CounterId ?? 0;
+      final cardType = CardType.fromId(cardId);
+      final cardDetail = niceSvt?.cardDetails[cardType];
+      if (cardType == null || cardDetail == null) return null;
+      return CommandCardData(this, cardType, cardDetail, -1)
+        ..isTD = false
+        ..counterBuff = buff
+        ..npGain = getNPGain(cardType)
+        ..traits = ConstData.cardInfo[cardType]?.values.first.individuality.toList() ?? [];
+    } else {
       return null;
     }
-
-    if (isEnemy) {
-      return null;
-    }
-
-    final cardDetail = CardDetail(
-      attackIndividuality: td.individuality,
-      hitsDistribution: td.svt.damage,
-      attackType: td.damageType == TdEffectFlag.attackEnemyAll ? CommandCardAttackType.all : CommandCardAttackType.one,
-    );
-
-    return CommandCardData(this, td.svt.card, cardDetail, -1)
-      ..isTD = true
-      ..td = td
-      ..counterBuff = buff
-      ..npGain = td.npGain.np[tdLv - 1]
-      ..traits = td.individuality;
   }
 
   CommandCardData? getExtraCard() {

@@ -278,6 +278,10 @@ enum CardType {
   final int value;
   const CardType(this.value);
 
+  static CardType? fromId(int? cardId) {
+    return CardType.values.firstWhereOrNull((e) => e.value == cardId);
+  }
+
   bool isQAB() => isQuick() || isArts() || isBuster();
 
   bool isQuick() => this == quick;

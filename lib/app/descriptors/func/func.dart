@@ -1442,13 +1442,11 @@ class FuncDescriptor extends StatelessWidget {
     Widget triggerChild;
     if (func.buff?.type == BuffType.counterFunction && vals?.UseAttack == 1) {
       final cardId = vals?.CounterId;
-      final cardType = CardType.values.firstWhereOrNull((e) => e.value == cardId);
+      final cardType = CardType.fromId(cardId);
       final textStyle = Theme.of(context).textTheme.bodySmall;
+      String prefix = '[${Transl.buffType(func.buff!.type).l}] ${S.current.battle_command_card} ';
       if (cardType == null) {
-        triggerChild = _DescriptorWrapper(
-          title: Text(' ${S.current.battle_command_card} Card $cardId', style: textStyle),
-          trailing: null,
-        );
+        triggerChild = _DescriptorWrapper(title: Text(' $prefix Card $cardId', style: textStyle), trailing: null);
       } else {
         triggerChild = _DescriptorWrapper(
           title: Text.rich(
@@ -1456,7 +1454,7 @@ class FuncDescriptor extends StatelessWidget {
               text: ' ',
               children: [
                 CenterWidgetSpan(child: CommandCardWidget(card: cardType, width: 24)),
-                TextSpan(text: ' ${S.current.battle_command_card} ${cardType.name.toTitle()}'),
+                TextSpan(text: ' $prefix ${cardType.name.toTitle()}'),
               ],
             ),
             style: textStyle,

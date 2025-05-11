@@ -1063,32 +1063,46 @@ class BattleData {
   Future<void> activateCounter(BattleServantData svt) async {
     return recordError(
       save: true,
-      action: 'counter-td',
+      action: 'counter-function',
       task: () async {
         if (svt.isEnemy) {
-          battleLogger.error('Skip Enemy Counter NP');
+          battleLogger.error('Skip Enemy Counter Function');
           return;
         }
-        final tdCard = await svt.getCounterNPCard(this);
-        if (tdCard == null) return;
-        final action = CombatAction(svt, tdCard);
+        final counterCard = await svt.getCounterCard(this);
+        if (counterCard == null) return;
+        final action = CombatAction(svt, counterCard);
         if (nonnullEnemies.isEmpty) return;
         recorder.initiateAttacks(this, [action]);
         await withAction(() async {
-          if (!onFieldAllyServants.contains(action.actor) || action.isValid(this)) return;
+          if (!onFieldAllyServants.contains(action.actor) || !action.isValid(this)) return;
           recorder.startPlayerCard(action.actor, action.cardData);
-          final td = action.cardData.td!, buff = action.cardData.counterBuff!;
-          await FunctionExecutor.executeFunctions(
-            this,
-            td.functions,
-            buff.vals.CounterLv ?? 1,
-            script: td.script,
-            activator: svt,
-            targetedAlly: targetedPlayer,
-            targetedEnemy: targetedEnemy,
-            card: action.cardData,
-            overchargeLvl: buff.vals.CounterOc ?? 1,
-          );
+          if (action.cardData.isTD) {
+            final td = action.cardData.td!, buff = action.cardData.counterBuff!;
+            await FunctionExecutor.executeFunctions(
+              this,
+              td.functions,
+              buff.vals.CounterLv ?? 1,
+              script: td.script,
+              activator: svt,
+              targetedAlly: targetedPlayer,
+              targetedEnemy: targetedEnemy,
+              card: action.cardData,
+              overchargeLvl: buff.vals.CounterOc ?? 1,
+            );
+          } else {
+            await _executeCommandCard(
+              actor: action.actor,
+              card: action.cardData,
+              chainPos: 1,
+              isTypeChain: false,
+              isMightyChain: false,
+              firstCardType: CardType.blank,
+              isComboStart: false,
+              isComboEnd: false,
+              isPlayer: action.actor.isPlayer,
+            );
+          }
 
           for (final enemy in nonnullEnemies) {
             if (enemy.attacked) {

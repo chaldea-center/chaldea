@@ -59,7 +59,7 @@ class TdTypeChangeSelector extends StatelessWidget {
       if (selectTdInfo != null) {
         tdInfo = selectTdInfo!.treasureDevices.firstWhereOrNull((e) => e.id == tdId);
       }
-      CardType cardType = tdInfo?.type ?? CardType.values.firstWhere((e) => e.value == tdIndex);
+      CardType cardType = tdInfo?.type ?? CardType.fromId(tdIndex)!;
       Widget child = CommandCardWidget(card: cardType, width: 80);
       if (tdInfo != null && tdInfo.message.isNotEmpty) {
         child = Column(
