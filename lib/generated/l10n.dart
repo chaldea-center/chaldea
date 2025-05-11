@@ -751,6 +751,11 @@ class S {
     return Intl.message('Bond', name: 'bond', desc: '', locale: localeName, args: []);
   }
 
+  /// `Bond Bonus`
+  String get bond_bonus {
+    return Intl.message('Bond Bonus', name: 'bond_bonus', desc: '', locale: localeName, args: []);
+  }
+
   /// `Bond Craft`
   String get bond_craft {
     return Intl.message('Bond Craft', name: 'bond_craft', desc: '', locale: localeName, args: []);

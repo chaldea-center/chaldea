@@ -108,6 +108,7 @@
   "bgm": "BGM",
   "blacklist": "블랙리스트",
   "bond": "인연",
+  "bond_bonus": null,
   "bond_craft": "인연예장",
   "bond_eff": "인연 효율",
   "bond_limit": "인연 상한",

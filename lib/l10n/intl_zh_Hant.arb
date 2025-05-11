@@ -108,6 +108,7 @@
   "bgm": "BGM",
   "blacklist": "黑名單",
   "bond": "羈絆",
+  "bond_bonus": null,
   "bond_craft": "羈絆禮裝",
   "bond_eff": "羈絆效率",
   "bond_limit": "羈絆上限",

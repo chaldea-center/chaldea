@@ -108,6 +108,7 @@
   "bgm": "BGM",
   "blacklist": "Blacklist",
   "bond": "Bond",
+  "bond_bonus": "Bond Bonus",
   "bond_craft": "Bond Craft",
   "bond_eff": "Bond Eff",
   "bond_limit": "Bond Limit",

@@ -199,6 +199,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "bgm": MessageLookupByLibrary.simpleMessage("BGM"),
     "blacklist": MessageLookupByLibrary.simpleMessage("黑名单"),
     "bond": MessageLookupByLibrary.simpleMessage("羁绊"),
+    "bond_bonus": MessageLookupByLibrary.simpleMessage("羁绊加成"),
     "bond_craft": MessageLookupByLibrary.simpleMessage("羁绊礼装"),
     "bond_eff": MessageLookupByLibrary.simpleMessage("羁绊效率"),
     "bond_limit": MessageLookupByLibrary.simpleMessage("羁绊上限"),

@@ -10,6 +10,7 @@ import 'package:chaldea/app/modules/enemy_master/enemy_master_list.dart';
 import 'package:chaldea/app/modules/quest/svt_quest_timeline.dart';
 import 'package:chaldea/app/modules/script/reader_entry.dart';
 import 'package:chaldea/app/modules/svt_class/svt_class_list.dart';
+import 'package:chaldea/app/modules/tools/bond_bonus.dart';
 import 'package:chaldea/app/modules/tools/myroom_assets_page.dart';
 import 'package:chaldea/app/modules/tools/tool_list_page.dart';
 import 'package:chaldea/app/modules/trait/trait_list.dart';
@@ -131,6 +132,7 @@ class GalleryItem {
     enemyList,
     expCard,
     npCharge,
+    bondBonus,
     statistics,
     if (!kIsWeb && AppInfo.isDebugOn) fakeGrandOrder,
     importData,
@@ -299,6 +301,13 @@ class GalleryItem {
     titleBuilder: () => S.current.np_charge,
     icon: FontAwesomeIcons.batteryHalf,
     page: const NpChargePage(),
+    isDetail: false,
+  );
+  static GalleryItem bondBonus = GalleryItem(
+    name: 'bond_bonus',
+    titleBuilder: () => S.current.bond_bonus,
+    icon: FontAwesomeIcons.diamond,
+    page: const BondBonusPage(),
     isDetail: false,
   );
   static GalleryItem statistics = GalleryItem(

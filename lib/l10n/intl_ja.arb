@@ -108,6 +108,7 @@
   "bgm": "BGM",
   "blacklist": "ブラックリスト",
   "bond": "絆",
+  "bond_bonus": null,
   "bond_craft": "絆礼装",
   "bond_eff": "絆効率",
   "bond_limit": "絆上限",

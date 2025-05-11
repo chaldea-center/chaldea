@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:chaldea/app/modules/quest/quest.dart';
 import 'package:chaldea/generated/l10n.dart';
+import 'package:chaldea/models/gamedata/toplogin.dart' show MasterDataManager;
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/language.dart';
 import 'package:chaldea/utils/utils.dart';
@@ -43,6 +44,8 @@ class QuestListPage extends StatefulWidget {
 }
 
 class _QuestListPageState extends State<QuestListPage> {
+  MasterDataManager? mstData;
+
   @override
   Widget build(BuildContext context) {
     final allQuestsMap = Map.of(db.gameData.quests);
@@ -65,12 +68,18 @@ class _QuestListPageState extends State<QuestListPage> {
           spot == null || spot.shownImage == null
               ? (hasSpot ? const SizedBox(width: 56) : null)
               : db.getIconImage(spot.shownImage, width: 56);
+      String? userQuestInfo;
+      final userQuest = mstData?.userQuest[questId];
+      if (userQuest != null) {
+        userQuestInfo = 'phase ${userQuest.questPhase} clear ${userQuest.clearNum} challenge ${userQuest.challengeNum}';
+      }
 
       if (quest == null) {
         return ListTile(
           leading: leading,
           // minLeadingWidth: 16,
           title: Text('Quest $questId', textScaler: const TextScaler.linear(0.85)),
+          subtitle: userQuestInfo == null ? null : Text(userQuestInfo),
           contentPadding: leading == null ? null : const EdgeInsetsDirectional.fromSTEB(4, 0, 16, 0),
           horizontalTitleGap: 8,
           onTap: () {
@@ -163,6 +172,9 @@ class _QuestListPageState extends State<QuestListPage> {
         }
       } else {
         subtitle = quest.lSpot.l;
+      }
+      if (userQuestInfo != null) {
+        subtitle += '\n$userQuestInfo';
       }
 
       return ListTile(
@@ -258,6 +270,14 @@ class _QuestListPageState extends State<QuestListPage> {
               onTap: () {
                 final quests = questIds.map((e) => allQuestsMap[e]).whereType<Quest>().toList();
                 router.pushPage(MCQuestListConvertPage(title: widget.title, quests: quests, war: widget.war));
+              },
+            ),
+          if (db.runtimeData.clipBoard.mstData != null)
+            PopupMenuItem(
+              child: const Text('Read Login Data'),
+              onTap: () {
+                mstData = db.runtimeData.clipBoard.mstData;
+                if (mounted) setState(() {});
               },
             ),
         ];

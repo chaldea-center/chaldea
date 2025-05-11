@@ -215,6 +215,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "bgm": MessageLookupByLibrary.simpleMessage("BGM"),
     "blacklist": MessageLookupByLibrary.simpleMessage("Blacklist"),
     "bond": MessageLookupByLibrary.simpleMessage("Bond"),
+    "bond_bonus": MessageLookupByLibrary.simpleMessage("Bond Bonus"),
     "bond_craft": MessageLookupByLibrary.simpleMessage("Bond Craft"),
     "bond_eff": MessageLookupByLibrary.simpleMessage("Bond Eff"),
     "bond_limit": MessageLookupByLibrary.simpleMessage("Bond Limit"),
