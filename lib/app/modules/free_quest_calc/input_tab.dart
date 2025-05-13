@@ -115,9 +115,11 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
                     SimpleConfirmDialog(
                       title: Text(S.current.clear),
                       onTapOk: () {
-                        setState(() {
-                          params.rows.clear();
-                        });
+                        if (mounted) {
+                          setState(() {
+                            params.rows.clear();
+                          });
+                        }
                       },
                     ).showDialog(context);
                   },

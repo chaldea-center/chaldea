@@ -275,7 +275,7 @@ class _UserPresentBoxManagePageState extends State<UserPresentBoxManagePage> {
     final cardInfo = [
       '${S.current.servant} ${cardCounts.svtCount}/${userGame?.svtKeep}',
       '${S.current.craft_essence_short} ${cardCounts.svtEquipCount}/${userGame?.svtEquipKeep}',
-      '${S.current.command_code_short} ${cardCounts.ccCount}/${runtime.gameData.constants.maxUserCommandCode}',
+      '${S.current.command_code_short} ${cardCounts.ccCount}/${runtime.gameData.timerData.constants.maxUserCommandCode}',
       if (cardCounts.unknownCount != 0) '${S.current.unknown} ${cardCounts.unknownCount}',
     ].join(' ');
 

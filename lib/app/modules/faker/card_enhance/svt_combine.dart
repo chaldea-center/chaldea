@@ -80,12 +80,12 @@ class _SvtCombinePageState extends State<SvtCombinePage> {
     String subtitle = [
       '${S.current.servant} ${cardCounts.svtCount}/${userGame?.svtKeep}',
       '${S.current.craft_essence_short} ${cardCounts.svtEquipCount}/${userGame?.svtEquipKeep}',
-      '${S.current.command_code_short} ${cardCounts.ccCount}/${runtime.gameData.constants.maxUserCommandCode}',
+      '${S.current.command_code_short} ${cardCounts.ccCount}/${runtime.gameData.timerData.constants.maxUserCommandCode}',
       if (cardCounts.unknownCount != 0) '${S.current.unknown} ${cardCounts.unknownCount}',
     ].join(' ');
     subtitle +=
         '\nQP ${userGame?.qp.format(compact: false, groupSeparator: ",")}  ${S.current.present_box}  '
-        '${mstData.userPresentBox.length}/${runtime.gameData.constants.maxPresentBoxNum}';
+        '${mstData.userPresentBox.length}/${runtime.gameData.timerData.constants.maxPresentBoxNum}';
     return Container(
       color: Theme.of(context).secondaryHeaderColor,
       padding: const EdgeInsets.only(bottom: 4),

@@ -982,7 +982,9 @@ class GameConstants {
     final segments = key.split('_').map((e) => e.toLowerCase()).toList();
     for (int index = 1; index < segments.length; index++) {
       String s = segments[index];
-      segments[index] = s.substring(0, 1).toUpperCase() + s.substring(1);
+      if (s.isNotEmpty) {
+        segments[index] = s.substring(0, 1).toUpperCase() + s.substring(1);
+      }
     }
     String key2 = segments.join('');
     if (key2.startsWith(RegExp(r'\d'))) {

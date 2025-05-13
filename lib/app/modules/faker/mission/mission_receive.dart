@@ -42,10 +42,7 @@ class _UserEventMissionReceivePageState extends State<UserEventMissionReceivePag
   }
 
   Future<void> initData() async {
-    if (runtime.gameData.masterMissions.isEmpty) {
-      await runtime.runTask(runtime.gameData.loadMasterMissions, check: false);
-    }
-    mms = runtime.gameData.masterMissions.values.toList();
+    mms = runtime.gameData.timerData.masterMissions.toList();
     final now = DateTime.now().timestamp;
 
     mms.retainWhere((mm) {

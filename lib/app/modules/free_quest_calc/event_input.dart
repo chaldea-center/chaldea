@@ -127,6 +127,7 @@ class _EventItemInputTabState extends State<EventItemInputTab> {
         int? endTime = event.endTimeOf(region);
         if (endTime == null) continue;
         if (endTime - now > kSecsPerDay * 100) continue;
+        if (now - endTime > kSecsPerDay * 7) continue;
         int leftAp = (endTime - now) ~/ 300;
         leftAps.add(Text('[${region.upper}] ${S.current.item_left} $leftAp AP', style: TextStyle(fontSize: 14)));
       }

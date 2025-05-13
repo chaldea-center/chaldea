@@ -434,9 +434,9 @@ class FakerRuntime {
     if (counts.svtEquipCount >= userGame.svtEquipKeep + 100) {
       throw SilentException('${S.current.craft_essence}: ${counts.svtEquipCount}>=${userGame.svtEquipKeep}+100');
     }
-    if (counts.ccCount >= gameData.constants.maxUserCommandCode + 100) {
+    if (counts.ccCount >= gameData.timerData.constants.maxUserCommandCode + 100) {
       throw SilentException(
-        '${S.current.command_code}: ${counts.ccCount}>=${gameData.constants.maxUserCommandCode}+100',
+        '${S.current.command_code}: ${counts.ccCount}>=${gameData.timerData.constants.maxUserCommandCode}+100',
       );
     }
     final fp = mstData.tblUserGame[mstData.user?.userId]?.friendPoint ?? 0;
@@ -492,7 +492,8 @@ class FakerRuntime {
 
       final counts = mstData.countSvtKeep();
       final userGame = mstData.user!;
-      if (counts.svtCount >= userGame.svtKeep + 100 || counts.ccCount >= gameData.constants.maxUserCommandCode + 100) {
+      if (counts.svtCount >= userGame.svtKeep + 100 ||
+          counts.ccCount >= gameData.timerData.constants.maxUserCommandCode + 100) {
         await sellServant();
       }
       if (counts.svtEquipCount >= userGame.svtEquipKeep + 100) {
@@ -640,7 +641,7 @@ class FakerRuntime {
       if (num <= 0 || num > 100) {
         throw SilentException('Invalid draw num: $num');
       }
-      if (mstData.userPresentBox.length >= (gameData.constants.maxPresentBoxNum - 10)) {
+      if (mstData.userPresentBox.length >= (gameData.timerData.constants.maxPresentBoxNum - 10)) {
         throw SilentException('Present Box Full');
       }
       await agent.boxGachaDraw(gachaId: boxGachaId, num: num);
@@ -731,8 +732,10 @@ class FakerRuntime {
     if (counts.svtEquipCount >= user.svtEquipKeep) {
       throw SilentException('${S.current.craft_essence}: ${counts.svtEquipCount}>=${user.svtEquipKeep}');
     }
-    if (counts.ccCount >= gameData.constants.maxUserCommandCode) {
-      throw SilentException('${S.current.command_code}: ${counts.ccCount}>=${gameData.constants.maxUserCommandCode}');
+    if (counts.ccCount >= gameData.timerData.constants.maxUserCommandCode) {
+      throw SilentException(
+        '${S.current.command_code}: ${counts.ccCount}>=${gameData.timerData.constants.maxUserCommandCode}',
+      );
     }
   }
 
@@ -834,59 +837,24 @@ class _FakerGameData {
   final Region region;
   _FakerGameData(this.region);
 
-  final teapots = <int, Item>{};
-  GameConstants constants = ConstData.constants;
-  Map<int, MasterMission> masterMissions = {};
   GameTimerData timerData = GameTimerData();
 
+  Map<int, Item> get teapots {
+    final now = DateTime.now().timestamp;
+    return {
+      for (final item in timerData.items)
+        if (item.type == ItemType.friendshipUpItem && item.endedAt > now) item.id: item,
+    };
+  }
+
   Future<void> reset() async {
-    teapots.clear();
-    masterMissions.clear();
     timerData = GameTimerData();
     AtlasApi.cacheManager.clearCache();
     await init();
-    await loadConstants();
-    await loadMasterMissions();
   }
 
   Future<void> init() async {
-    // teapots
-    if (teapots.isEmpty) {
-      List<Item> items;
-      if (region == Region.jp) {
-        items = db.gameData.items.values.toList();
-      } else {
-        items =
-            (await AtlasApi.exportedData(
-              'nice_item',
-              (data) => (data as List).map((e) => Item.fromJson(e)).toList(),
-              region: region,
-            ))!;
-      }
-      final now = DateTime.now().timestamp;
-      for (final item in items) {
-        if (item.type == ItemType.friendshipUpItem && item.endedAt > now) {
-          teapots[item.id] = item;
-        }
-      }
-    }
     timerData = (await AtlasApi.timerData(region)) ?? timerData;
-  }
-
-  Future<void> loadConstants() async {
-    if (region == Region.jp) {
-      constants = ConstData.constants;
-    } else {
-      final v = await AtlasApi.exportedData('NiceConstant', (v) => GameConstants.fromJson(v), region: region);
-      constants = v!;
-    }
-  }
-
-  Future<void> loadMasterMissions() async {
-    final now = DateTime.now().timestamp;
-    final mms = (await AtlasApi.masterMissions(region: region))!;
-    mms.removeWhere((mm) => mm.startedAt > now + 7 * kSecsPerDay || mm.closedAt < now);
-    masterMissions = {for (final mm in mms) mm.id: mm};
   }
 }
 

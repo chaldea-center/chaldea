@@ -6,6 +6,7 @@ import 'package:archive/archive.dart';
 
 import 'package:chaldea/utils/constants.dart';
 import 'package:chaldea/utils/extension.dart';
+import '../db.dart' show ConstData;
 import '../userdata/version.dart';
 import '_helper.dart';
 import 'class_board.dart';
@@ -759,6 +760,7 @@ class GameTimerData {
   List<MasterMission> masterMissions;
   List<NiceShop> shops;
   List<Item> items;
+  GameConstants constants;
 
   GameTimerData({
     int? updatedAt,
@@ -767,7 +769,9 @@ class GameTimerData {
     this.masterMissions = const [],
     this.shops = const [],
     this.items = const [],
-  }) : updatedAt = updatedAt ?? DateTime.now().timestamp;
+    GameConstants? constants,
+  }) : updatedAt = updatedAt ?? DateTime.now().timestamp,
+       constants = constants ?? ConstData.constants;
 
   List<NiceShop> get shownShops => shops.where((e) => e.payType != PayType.anonymous).toList();
 

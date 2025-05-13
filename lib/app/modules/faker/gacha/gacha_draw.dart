@@ -53,7 +53,6 @@ class _GachaDrawPageState extends State<GachaDrawPage> {
     await runtime.runTask(() async {
       final _gacha = await AtlasApi.gacha(gachaOption.gachaId, region: runtime.region);
       if (_gacha != null) _cachedGachas[_gacha.id] = _gacha;
-      await runtime.gameData.loadConstants();
     }, check: false);
     if (mounted) setState(() {});
   }
@@ -131,7 +130,7 @@ class _GachaDrawPageState extends State<GachaDrawPage> {
           [
             '${S.current.servant} ${cardCounts.svtCount}/${userGame?.svtKeep}',
             '${S.current.craft_essence_short} ${cardCounts.svtEquipCount}/${userGame?.svtEquipKeep}',
-            '${S.current.command_code_short} ${cardCounts.ccCount}/${runtime.gameData.constants.maxUserCommandCode}',
+            '${S.current.command_code_short} ${cardCounts.ccCount}/${runtime.gameData.timerData.constants.maxUserCommandCode}',
             if (cardCounts.unknownCount != 0) '${S.current.unknown} ${cardCounts.unknownCount}',
           ].join(' '),
         ),

@@ -221,4 +221,6 @@ GameTimerData _$GameTimerDataFromJson(Map json) => GameTimerData(
   items:
       (json['items'] as List<dynamic>?)?.map((e) => Item.fromJson(Map<String, dynamic>.from(e as Map))).toList() ??
       const [],
+  constants:
+      json['constants'] == null ? null : GameConstants.fromJson(Map<String, dynamic>.from(json['constants'] as Map)),
 );

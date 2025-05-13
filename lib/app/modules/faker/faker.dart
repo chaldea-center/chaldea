@@ -281,9 +281,9 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
           ),
         ),
         TextSpan(
-          text: ' ${mstData.userPresentBox.length}/${runtime.gameData.constants.maxPresentBoxNum}',
+          text: ' ${mstData.userPresentBox.length}/${runtime.gameData.timerData.constants.maxPresentBoxNum}',
           style:
-              mstData.userPresentBox.length > runtime.gameData.constants.maxPresentBoxNum - 20
+              mstData.userPresentBox.length > runtime.gameData.timerData.constants.maxPresentBoxNum - 20
                   ? TextStyle(color: Colors.amber)
                   : null,
           recognizer: TapGestureRecognizer()..onTap = onTapPresentBox,
@@ -453,7 +453,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
             [
               '${S.current.servant} ${cardCounts.svtCount}/${userGame.svtKeep}',
               '${S.current.craft_essence_short} ${cardCounts.svtEquipCount}/${userGame.svtEquipKeep}',
-              '${S.current.command_code_short} ${cardCounts.ccCount}/${runtime.gameData.constants.maxUserCommandCode}',
+              '${S.current.command_code_short} ${cardCounts.ccCount}/${runtime.gameData.timerData.constants.maxUserCommandCode}',
               if (cardCounts.unknownCount != 0) '${S.current.unknown} ${cardCounts.unknownCount}',
             ].join('  '),
           ),
