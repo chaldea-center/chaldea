@@ -10,24 +10,17 @@ import WidgetKit
 
 struct Provider: AppIntentTimelineProvider {
   func placeholder(in context: Context) -> SimpleEntry {
-    let sharedDefaults = UserDefaults(
-      suiteName: "group.cc.narumi.chaldea.shared")
-    let accountsData =
-      sharedDefaults?.string(forKey: "accountsData") ?? AccountData.mockData
     return SimpleEntry(
       date: Date(), configuration: ConfigurationAppIntent(),
-      accountsData: accountsData)
+      accountsData: AccountData.mockData)
   }
 
   func snapshot(for configuration: ConfigurationAppIntent, in context: Context)
     async -> SimpleEntry
   {
-    let sharedDefaults = UserDefaults(
-      suiteName: "group.cc.narumi.chaldea.shared")
-    let accountsData =
-      sharedDefaults?.string(forKey: "accountsData") ?? AccountData.mockData
     return SimpleEntry(
-      date: Date(), configuration: configuration, accountsData: accountsData)
+      date: Date(), configuration: configuration,
+      accountsData: AccountData.mockData)
   }
 
   func timeline(for configuration: ConfigurationAppIntent, in context: Context)
@@ -42,7 +35,6 @@ struct Provider: AppIntentTimelineProvider {
       date: currentDate, configuration: configuration,
       accountsData: accountsData)
 
-    // Update timeline every minute to reflect AP changes
     let nextUpdateDate = Calendar.current.date(
       byAdding: .minute, value: 5, to: currentDate)!
 
@@ -75,25 +67,26 @@ struct AccountData: Codable {
   }
 
   static var mockData: String {
+    let now = Int(Date().timeIntervalSince1970)
     let data = [
       AccountData(
         id: "1", name: "藤丸", gameServer: "JP",
-        actRecoverAt: Int(Date().timeIntervalSince1970) + 360),
+        actRecoverAt: now - 1),
       AccountData(
         id: "2", name: "立香", gameServer: "CN",
-        actRecoverAt: Int(Date().timeIntervalSince1970) + 3600),
+        actRecoverAt: now + 360),
       AccountData(
-        id: "3", name: "Hujimaru", gameServer: "TW",
-        actRecoverAt: Int(Date().timeIntervalSince1970) + 7200),
+        id: "3", name: "Hujimaru", gameServer: "NA",
+        actRecoverAt: now + 3600),
       AccountData(
-        id: "4", name: "Hujimaru", gameServer: "NA",
-        actRecoverAt: Int(Date().timeIntervalSince1970) + 7200),
+        id: "4", name: "藤丸", gameServer: "TW",
+        actRecoverAt: now + 7200),
       AccountData(
         id: "5", name: "Hujimaru", gameServer: "KR",
-        actRecoverAt: Int(Date().timeIntervalSince1970) + 7200),
+        actRecoverAt: now + 7200),
       AccountData(
-        id: "6", name: "Hujimaru", gameServer: "JP",
-        actRecoverAt: Int(Date().timeIntervalSince1970) + 7200),
+        id: "6", name: "藤丸", gameServer: "JP",
+        actRecoverAt: now + 7200),
     ]
     do {
       let jsonData = try JSONEncoder().encode(data)
@@ -142,7 +135,7 @@ struct GameServerIcon: View {
 
   var body: some View {
     let size: CGFloat = 18
-    if let flag = GameServerIcon.serverIcons[server] {
+    if let flag = GameServerIcon.serverIcons[server.lowercased()] {
       Text(flag)
         .frame(width: size, height: size)
     } else {
@@ -289,7 +282,7 @@ struct FakerStatusWidget: Widget {
   FakerStatusWidget()
 } timeline: {
   SimpleEntry(
-    date: .now + 100, configuration: ConfigurationAppIntent(),
+    date: .now + 10, configuration: ConfigurationAppIntent(),
     accountsData: AccountData.mockData)
 }
 
@@ -297,6 +290,6 @@ struct FakerStatusWidget: Widget {
   FakerStatusWidget()
 } timeline: {
   SimpleEntry(
-    date: .now + 100, configuration: ConfigurationAppIntent(),
+    date: .now + 10, configuration: ConfigurationAppIntent(),
     accountsData: AccountData.mockData)
 }
