@@ -22,7 +22,7 @@ import '../master_mission/solver/solver.dart';
 part 'runtime/random_mission.dart';
 
 class FakerRuntime {
-  static final Map<AutoLoginData, FakerRuntime> _runtimes = {};
+  static final Map<AutoLoginData, FakerRuntime> runtimes = {};
   static final Set<Object> _awakeTasks = {};
 
   final FakerAgent agent;
@@ -114,7 +114,7 @@ class FakerRuntime {
       throw SilentException('Context already disposed');
     }
 
-    FakerRuntime runtime = _runtimes.putIfAbsent(user, () {
+    FakerRuntime runtime = runtimes.putIfAbsent(user, () {
       final FakerAgent agent = switch (user) {
         AutoLoginDataJP() => FakerAgentJP.s(gameTop: top, user: user),
         AutoLoginDataCN() => FakerAgentCN.s(gameTop: top, user: user),

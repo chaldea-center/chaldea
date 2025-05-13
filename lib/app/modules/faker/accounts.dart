@@ -10,6 +10,7 @@ import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import 'account_edit.dart';
 import 'faker.dart';
+import 'state.dart';
 
 class FakerAccountsPage extends StatefulWidget {
   const FakerAccountsPage({super.key});
@@ -74,6 +75,31 @@ class _FakerAccountsPageState extends State<FakerAccountsPage> {
             },
             icon: Icon(sorting ? Icons.done : Icons.sort),
             tooltip: S.current.sort_order,
+          ),
+          PopupMenuButton(
+            itemBuilder:
+                (context) => [
+                  if (HomeWidgetX.isSupported)
+                    PopupMenuItem(
+                      child: Text("Update Widgets"),
+                      onTap: () async {
+                        try {
+                          final result = await HomeWidgetX.saveFakerStatus();
+                          final result2 = await HomeWidgetX.updateFakerStatus();
+                          EasyLoading.showToast('save: $result\nupdate: $result2');
+                        } catch (e, s) {
+                          logger.e('save and update faker widgets failed', e, s);
+                          EasyLoading.showError(e.toString());
+                        }
+                      },
+                    ),
+                  PopupMenuItem(
+                    child: Text('Clear ${FakerRuntime.runtimes.length} Runtimes'),
+                    onTap: () {
+                      FakerRuntime.runtimes.clear();
+                    },
+                  ),
+                ],
           ),
         ],
       ),
@@ -222,23 +248,6 @@ class _FakerAccountsPageState extends State<FakerAccountsPage> {
         icon: const Icon(Icons.select_all),
       ),
     ];
-    if (HomeWidgetX.isSupported) {
-      buttons.add(
-        FilledButton(
-          onPressed: () async {
-            try {
-              final result = await HomeWidgetX.saveFakerStatus();
-              final result2 = await HomeWidgetX.updateFakerStatus();
-              EasyLoading.showToast('save: $result\nupdate: $result2');
-            } catch (e, s) {
-              logger.e('save and update faker widgets failed', e, s);
-              EasyLoading.showError(e.toString());
-            }
-          },
-          child: Text("Update Widgets"),
-        ),
-      );
-    }
     return Column(mainAxisSize: MainAxisSize.min, spacing: 4, children: buttons);
   }
 }

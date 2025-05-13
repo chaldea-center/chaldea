@@ -162,7 +162,7 @@ class _BondBonusPageState extends State<BondBonusPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('${S.current.craft_essence} - ${S.current.bond}'),
+        title: Text('${S.current.craft_essence} - ${S.current.bond_bonus}'),
         actions: [
           IconButton(
             icon: const Icon(Icons.filter_alt),
