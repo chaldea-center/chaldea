@@ -628,8 +628,10 @@ class _MiscSettings {
 class _SecretsData {
   ChaldeaUser? user;
   String? explorerAuth;
+  String atlasReloadKey;
+  String atlasExportKey;
 
-  _SecretsData({this.user, this.explorerAuth});
+  _SecretsData({this.user, this.explorerAuth, this.atlasReloadKey = "", this.atlasExportKey = ""});
 
   bool get isLoggedIn => user?.secret?.isNotEmpty == true;
 

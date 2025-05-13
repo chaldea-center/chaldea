@@ -576,6 +576,8 @@ _SecretsData _$SecretsDataFromJson(Map json) => $checkedCreate('_SecretsData', j
   final val = _SecretsData(
     user: $checkedConvert('user', (v) => v == null ? null : ChaldeaUser.fromJson(Map<String, dynamic>.from(v as Map))),
     explorerAuth: $checkedConvert('explorerAuth', (v) => v as String?),
+    atlasReloadKey: $checkedConvert('atlasReloadKey', (v) => v as String? ?? ""),
+    atlasExportKey: $checkedConvert('atlasExportKey', (v) => v as String? ?? ""),
   );
   return val;
 });
@@ -583,6 +585,8 @@ _SecretsData _$SecretsDataFromJson(Map json) => $checkedCreate('_SecretsData', j
 Map<String, dynamic> _$SecretsDataToJson(_SecretsData instance) => <String, dynamic>{
   'user': instance.user?.toJson(),
   'explorerAuth': instance.explorerAuth,
+  'atlasReloadKey': instance.atlasReloadKey,
+  'atlasExportKey': instance.atlasExportKey,
 };
 
 BookmarkHistory _$BookmarkHistoryFromJson(Map json) => $checkedCreate('BookmarkHistory', json, ($checkedConvert) {
