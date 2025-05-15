@@ -92,17 +92,19 @@ class _FreeCalcFilterDialogState extends State<FreeCalcFilterDialog> {
             onChanged: (v) => setState(() => params.useAP20 = v ?? params.useAP20),
           ),
         ),
-        SwitchListTile.adaptive(
+        ListTile(
           dense: true,
-          value: params.apHalfDailyQuest,
           title: Text(S.current.event_ap_cost_half),
           subtitle: Text(Transl.warNames('曜日クエスト').l),
-          controlAffinity: ListTileControlAffinity.trailing,
-          onChanged: (v) {
-            setState(() {
-              params.apHalfDailyQuest = v;
-            });
-          },
+          trailing: DropdownButton<QuestApReduceType>(
+            isDense: true,
+            value: params.apHalfDailyQuest,
+            items: [
+              for (final type in QuestApReduceType.values)
+                DropdownMenuItem(value: type, child: Text(type.numberText, textScaler: const TextScaler.linear(0.9))),
+            ],
+            onChanged: (v) => setState(() => params.apHalfDailyQuest = v ?? params.apHalfDailyQuest),
+          ),
         ),
         SwitchListTile.adaptive(
           dense: true,

@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.5.19
+
+- Support new skill effects
+- Support Daily Quest AP 1/3
+- Bug fix
+
 ## 2.5.18
 
 - bug fix

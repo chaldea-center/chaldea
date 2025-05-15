@@ -322,7 +322,7 @@ class _TeamFilterPageState extends FilterPageState<TeamFilterData, TeamFilterPag
             },
           ),
           getGroup(
-            header: S.current.battle_command_card,
+            header: '${S.current.battle_attack} ${S.current.counts}',
             children: [
               DropdownButton(
                 isDense: true,

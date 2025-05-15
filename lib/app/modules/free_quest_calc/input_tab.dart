@@ -272,7 +272,7 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
                   params.minCost > 0 ||
                           db.gameData.mainStories[params.progress] != null ||
                           params.blacklist.isNotEmpty ||
-                          params.apHalfDailyQuest ||
+                          !params.apHalfDailyQuest.isNone ||
                           params.apHalfOrdealCall
                       ? Theme.of(context).colorScheme.error
                       : Theme.of(context).colorScheme.primary,

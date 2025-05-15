@@ -318,11 +318,13 @@ DropRateSheet _preProcess({required DropRateSheet data, required FreeLPParams pa
 
   // no rows (glpk will raise error), need to check in caller
   if (objective.isEmpty) logger.d('no valid objRows');
-  if (params.apHalfDailyQuest || params.apHalfOrdealCall) {
+  if (!params.apHalfDailyQuest.isNone || params.apHalfOrdealCall) {
     for (int index = 0; index < data.questIds.length; index++) {
       final quest = db.gameData.quests[data.questIds[index]];
-      if ((params.apHalfDailyQuest && quest?.warId == WarId.daily) ||
-          (params.apHalfOrdealCall && quest?.warId == WarId.ordealCall)) {
+      if (!params.apHalfDailyQuest.isNone && quest?.warId == WarId.daily) {
+        data.apCosts[index] = params.apHalfDailyQuest.calcAp(data.apCosts[index]);
+      }
+      if (params.apHalfOrdealCall && quest?.warId == WarId.ordealCall) {
         data.apCosts[index] ~/= 2;
       }
     }

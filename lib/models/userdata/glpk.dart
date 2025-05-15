@@ -5,6 +5,28 @@ import '_helper.dart';
 
 part '../../generated/models/userdata/glpk.g.dart';
 
+enum QuestApReduceType {
+  none,
+  half,
+  third;
+
+  bool get isNone => this == none;
+
+  String get numberText => switch (this) {
+    none => 'none',
+    half => '1/2',
+    third => '1/3',
+  };
+
+  int calcAp(int ap) {
+    return switch (this) {
+      none => ap,
+      half => ap ~/ 2,
+      third => ap ~/ 3,
+    };
+  }
+}
+
 /// for solve_glpk(data_str and params_str)
 @JsonSerializable(checked: true)
 class FreeLPParams {
@@ -46,7 +68,7 @@ class FreeLPParams {
 
   bool useAP20;
 
-  bool apHalfDailyQuest;
+  QuestApReduceType apHalfDailyQuest;
   bool apHalfOrdealCall;
 
   /// bond efficiency, percent*5, count*50
@@ -78,7 +100,7 @@ class FreeLPParams {
     List<int>? extraCols,
     this.integerResult = false,
     this.useAP20 = true,
-    this.apHalfDailyQuest = false,
+    this.apHalfDailyQuest = QuestApReduceType.none,
     this.apHalfOrdealCall = false,
     this.bondBonusPercent = 0,
     this.bondBonusCount = 0,
