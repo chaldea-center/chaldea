@@ -459,6 +459,10 @@ class ShopHelper {
           TextSpan(text: 'Reset Kiara Punishers: ', children: MultiDescriptor.shops(context, [targetId])),
         );
         return;
+      case PurchaseType.shop18Item:
+        // TODO: implement
+        yield Tuple2(null, TextSpan(text: 'shop18 $targetId: ${shop.name}'));
+        return;
     }
   }
 }

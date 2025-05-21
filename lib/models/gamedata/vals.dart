@@ -361,6 +361,15 @@ class DataVals {
   int? get SyncUsedSameIndivBuffActorOnField => _vals['SyncUsedSameIndivBuffActorOnField'];
   int? get OnlyMaxFuncGroupId => _vals['OnlyMaxFuncGroupId'];
   int? get UseAttack => _vals['UseAttack'];
+  int? get CondParamAddType => _vals['CondParamAddType'];
+  int? get CondParamAddValue => _vals['CondParamAddValue'];
+  int? get CondParamAddMaxValue => _vals['CondParamAddMaxValue'];
+  int? get CondParamAddTargetId => _vals['CondParamAddTargetId'];
+  int? get CondParamRangeType => _vals['CondParamRangeType'];
+  int? get CondParamRangeMaxCount => _vals['CondParamRangeMaxCount'];
+  int? get CondParamRangeMaxValue => _vals['CondParamRangeMaxValue'];
+  int? get CondParamRangeTargetId => _vals['CondParamRangeTargetId'];
+  int? get ExecOnce => _vals['ExecOnce'];
 
   int? get ApplySupportSvt => _vals['ApplySupportSvt'];
   int? get Individuality => _vals['Individuality'];

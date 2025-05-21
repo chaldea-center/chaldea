@@ -1975,6 +1975,7 @@ enum PurchaseType {
   gift,
   eventSvtJoin,
   assist,
+  shop18Item,
   kiaraPunisherReset,
 }
 
@@ -1997,6 +1998,7 @@ enum ShopType {
   revivalItem, // 巡霊の葉
   eventSvtEquip,
   exchangeSvtCoin,
+  shop18,
 }
 
 enum MissionProgressType {

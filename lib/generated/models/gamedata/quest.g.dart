@@ -347,6 +347,8 @@ const _$GiftTypeEnumMap = {
   GiftType.eventCommandAssist: 'eventCommandAssist',
   GiftType.eventHeelPortrait: 'eventHeelPortrait',
   GiftType.battleItem: 'battleItem',
+  GiftType.privilege: 'privilege',
+  GiftType.classSkill: 'classSkill',
 };
 
 GiftAdd _$GiftAddFromJson(Map json) => GiftAdd(
@@ -1206,6 +1208,9 @@ const _$RestrictionTypeEnumMap = {
   RestrictionType.uniqueIndividuality: 'uniqueIndividuality',
   RestrictionType.mySvtOrSupport: 'mySvtOrSupport',
   RestrictionType.dataLostBattleUniqueSvt: 'dataLostBattleUniqueSvt',
+  RestrictionType.myGrandSvt: 'myGrandSvt',
+  RestrictionType.fixedMyGrandSvt: 'fixedMyGrandSvt',
+  RestrictionType.myGrandSvtPositionMain: 'myGrandSvtPositionMain',
   RestrictionType.fixedCostume: 'fixedCostume',
 };
 

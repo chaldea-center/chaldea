@@ -366,6 +366,7 @@ const _$PurchaseTypeEnumMap = {
   PurchaseType.gift: 'gift',
   PurchaseType.eventSvtJoin: 'eventSvtJoin',
   PurchaseType.assist: 'assist',
+  PurchaseType.shop18Item: 'shop18Item',
   PurchaseType.kiaraPunisherReset: 'kiaraPunisherReset',
 };
 
@@ -466,6 +467,7 @@ const _$ShopTypeEnumMap = {
   ShopType.revivalItem: 'revivalItem',
   ShopType.eventSvtEquip: 'eventSvtEquip',
   ShopType.exchangeSvtCoin: 'exchangeSvtCoin',
+  ShopType.shop18: 'shop18',
 };
 
 const _$PayTypeEnumMap = {

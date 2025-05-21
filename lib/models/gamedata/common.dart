@@ -1125,7 +1125,11 @@ enum CondType {
   battleSvtFriendshipBelow(253),
   elapsedTimeAfterSvtGet(254),
   notElapsedTimeAfterQuestClear(255),
-  notElapsedTimeAfterSvtGet(256);
+  notElapsedTimeAfterSvtGet(256),
+  // 257?
+  grandSvtSet(258),
+  playedMovie(259),
+  notPlayedMovie(260);
 
   const CondType(this.value);
   final int value;

@@ -448,4 +448,7 @@ const _$CondTypeEnumMap = {
   CondType.elapsedTimeAfterSvtGet: 'elapsedTimeAfterSvtGet',
   CondType.notElapsedTimeAfterQuestClear: 'notElapsedTimeAfterQuestClear',
   CondType.notElapsedTimeAfterSvtGet: 'notElapsedTimeAfterSvtGet',
+  CondType.grandSvtSet: 'grandSvtSet',
+  CondType.playedMovie: 'playedMovie',
+  CondType.notPlayedMovie: 'notPlayedMovie',
 };

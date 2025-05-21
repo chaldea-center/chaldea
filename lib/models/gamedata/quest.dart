@@ -648,6 +648,10 @@ class BaseGift {
       case GiftType.unknown:
         jumpToDetail = false;
         break;
+      case GiftType.privilege:
+      case GiftType.classSkill:
+        // TODO: implement
+        break;
     }
     return GameCardMixin.anyCardItemBuilder(
       context: context,
@@ -712,7 +716,11 @@ class BaseGift {
       case GiftType.eventHeelPortrait:
         // objectId=svtId
         break;
+      case GiftType.privilege:
       case GiftType.unknown:
+        break;
+      case GiftType.classSkill:
+        // TODO: implement
         break;
     }
     route ??= GameCardMixin.getRoute(objectId);
@@ -2156,7 +2164,9 @@ enum GiftType {
   eventBoardGameToken(13), // 80285047=eventId*1000+tokenId in mstEventBoardGameToken
   eventCommandAssist(14), // 80505
   eventHeelPortrait(15), // =svtId
-  battleItem(16);
+  battleItem(16),
+  privilege(17),
+  classSkill(18);
 
   const GiftType(this.value);
   final int value;
@@ -2203,6 +2213,9 @@ enum RestrictionType {
   uniqueIndividuality,
   mySvtOrSupport,
   dataLostBattleUniqueSvt,
+  myGrandSvt,
+  fixedMyGrandSvt,
+  myGrandSvtPositionMain,
   fixedCostume,
 }
 
