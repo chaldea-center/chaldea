@@ -2097,6 +2097,7 @@ class UserShopEntity extends DataEntityBase<_IntStr> {
   int shopId;
   int num;
   int flag;
+  int resetNum;
   int updatedAt;
   int createdAt; // jp no createdAt
 
@@ -2105,13 +2106,21 @@ class UserShopEntity extends DataEntityBase<_IntStr> {
 
   static _IntStr createPK(int shopId) => shopId;
 
-  UserShopEntity({dynamic userId, dynamic shopId, dynamic num, dynamic flag, dynamic updatedAt, dynamic createdAt})
-    : userId = _toInt(userId),
-      shopId = _toInt(shopId),
-      num = _toInt(num),
-      flag = _toInt(flag),
-      updatedAt = _toInt(updatedAt ?? createdAt, 0),
-      createdAt = _toInt(createdAt ?? updatedAt, 0);
+  UserShopEntity({
+    dynamic userId,
+    dynamic shopId,
+    dynamic num,
+    dynamic flag,
+    dynamic resetNum,
+    dynamic updatedAt,
+    dynamic createdAt,
+  }) : userId = _toInt(userId),
+       shopId = _toInt(shopId),
+       num = _toInt(num),
+       flag = _toInt(flag),
+       resetNum = _toInt(resetNum, 0),
+       updatedAt = _toInt(updatedAt ?? createdAt, 0),
+       createdAt = _toInt(createdAt ?? updatedAt, 0);
 
   factory UserShopEntity.fromJson(Map<String, dynamic> data) => _$UserShopEntityFromJson(data);
 }
@@ -2195,6 +2204,8 @@ class FollowerInfo {
   int type;
   List<ServantLeaderInfo> userSvtLeaderHash;
   List<ServantLeaderInfo> eventUserSvtLeaderHash;
+  // UserRecommendSupportInfo[] userRecommendSupportHash;
+  List<ServantLeaderInfo> userSvtGrandHash;
   int tutorial1;
   String message;
   int pushUserSvtId;
@@ -2207,6 +2218,7 @@ class FollowerInfo {
   List<int> mainSupportDeckIds;
   List<int> eventSupportDeckIds;
   // List<ClassBoardInfo> userClassBoardInfo;
+  // List<ClassStatisticsInfo> followerClassStatistics;
 
   FollowerInfo({
     required dynamic userId,
@@ -2215,6 +2227,7 @@ class FollowerInfo {
     required dynamic type,
     required List<ServantLeaderInfo>? userSvtLeaderHash,
     required List<ServantLeaderInfo>? eventUserSvtLeaderHash,
+    required List<ServantLeaderInfo>? userSvtGrandHash,
     required dynamic tutorial1,
     required dynamic message,
     required dynamic pushUserSvtId,
@@ -2230,6 +2243,7 @@ class FollowerInfo {
        pushUserSvtId = _toInt(pushUserSvtId),
        userSvtLeaderHash = userSvtLeaderHash ?? [],
        eventUserSvtLeaderHash = eventUserSvtLeaderHash ?? [],
+       userSvtGrandHash = userSvtGrandHash ?? [],
        mainSupportDeckIds = _toIntList(mainSupportDeckIds),
        eventSupportDeckIds = _toIntList(eventSupportDeckIds);
 
@@ -2261,6 +2275,8 @@ class ServantLeaderInfo {
   int treasureDeviceLv;
   int exceedCount;
   SvtLeaderEquipTargetInfo? equipTarget1;
+  SvtLeaderEquipTargetInfo? equipTarget2;
+  SvtLeaderEquipTargetInfo? equipTarget3;
   int updatedAt;
   int imageLimitCount;
   int dispLimitCount;
@@ -2274,6 +2290,8 @@ class ServantLeaderInfo {
   List<Map> appendPassiveSkill; //{int skillId; int skillLv;}
   int eventSvtPoint;
   // int battleVoice;
+  int grandSvt;
+  int grandGraphId;
 
   ServantLeaderInfo({
     required dynamic supportDeckId,
@@ -2299,6 +2317,8 @@ class ServantLeaderInfo {
     required dynamic treasureDeviceLv,
     required dynamic exceedCount,
     this.equipTarget1,
+    this.equipTarget2,
+    this.equipTarget3,
     required dynamic updatedAt,
     required dynamic imageLimitCount,
     required dynamic dispLimitCount,
@@ -2310,6 +2330,8 @@ class ServantLeaderInfo {
     required dynamic commandCardParam,
     List<Map>? appendPassiveSkill,
     required dynamic eventSvtPoint,
+    required dynamic grandSvt,
+    required dynamic grandGraphId,
   }) : supportDeckId = _toInt(supportDeckId),
        userId = _toInt(userId),
        classId = _toInt(classId),
@@ -2342,7 +2364,9 @@ class ServantLeaderInfo {
        commandCode = commandCode ?? [],
        commandCardParam = _toIntList(commandCardParam),
        appendPassiveSkill = appendPassiveSkill ?? [],
-       eventSvtPoint = _toInt(eventSvtPoint);
+       eventSvtPoint = _toInt(eventSvtPoint),
+       grandSvt = _toInt(grandSvt),
+       grandGraphId = _toInt(grandGraphId);
 
   factory ServantLeaderInfo.fromJson(Map<String, dynamic> data) => _$ServantLeaderInfoFromJson(data);
 }
@@ -2665,6 +2689,8 @@ class BattleUserServantData {
   // npcSvtType: int | None = None
   // passiveSkill: list[int] | None = None
   int? equipTargetId1;
+  int? equipTargetId2;
+  int? equipTargetId3;
   List<int>? equipTargetIds;
   // npcSvtClassId: int | None = None
   // overwriteSvtId: int | None = None
@@ -2676,7 +2702,12 @@ class BattleUserServantData {
   List<int>? appendPassiveSkillLvs;
   int limitCount; // for battle-setup ce, support ce's limitCounts may be zero
   // imageLimitCount: int | None = None
+  // List<int> classBoardSquareIds;
   int dispLimitCount;
+  int? grandSvt;
+  // List<int> grandClassBoardSquareIds;
+  // int adjustGrandHp;
+  // int adjustGrandAtk;
   // commandCardLimitCount: int
   // iconLimitCount: int
   // portraitLimitCount: int
@@ -2714,11 +2745,14 @@ class BattleUserServantData {
     dynamic treasureDeviceId,
     dynamic treasureDeviceLv,
     dynamic equipTargetId1,
+    dynamic equipTargetId2,
+    dynamic equipTargetId3,
     dynamic equipTargetIds,
     dynamic appendPassiveSkillIds,
     dynamic appendPassiveSkillLvs,
     dynamic limitCount,
     dynamic dispLimitCount,
+    dynamic grandSvt,
   }) : id = _toInt(id),
        userId = _toIntNull(userId),
        svtId = _toInt(svtId),
@@ -2737,11 +2771,14 @@ class BattleUserServantData {
        treasureDeviceId = _toIntNull(treasureDeviceId),
        treasureDeviceLv = _toIntNull(treasureDeviceLv),
        equipTargetId1 = _toIntNull(equipTargetId1),
+       equipTargetId2 = _toIntNull(equipTargetId2),
+       equipTargetId3 = _toIntNull(equipTargetId3),
        equipTargetIds = _toIntList(equipTargetIds),
        appendPassiveSkillIds = _toIntList(appendPassiveSkillIds),
        appendPassiveSkillLvs = _toIntList(appendPassiveSkillLvs),
        limitCount = _toInt(limitCount),
-       dispLimitCount = _toInt(dispLimitCount, 0);
+       dispLimitCount = _toInt(dispLimitCount, 0),
+       grandSvt = _toInt(grandSvt, 0);
 
   factory BattleUserServantData.fromJson(Map<String, dynamic> data) => _$BattleUserServantDataFromJson(data);
 }

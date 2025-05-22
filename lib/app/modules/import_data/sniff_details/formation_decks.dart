@@ -190,6 +190,7 @@ extension BattleTeamFormationX on BattleTeamFormation {
             supportType: SupportSvtType.fromFollowerType(svt?.followerType ?? 0),
             cardStrengthens: null,
             commandCodeIds: null,
+            grandSvt: userSvt.grandSvt == 1,
           );
         }
         return null;
@@ -235,6 +236,7 @@ extension BattleTeamFormationX on BattleTeamFormation {
         //  disabledExtraSkills,
         //  customPassives,
         //  customPassiveLvs,
+        // grandSvt: false,
       );
     }
 

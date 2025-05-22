@@ -480,6 +480,7 @@ UserShopEntity _$UserShopEntityFromJson(Map json) => UserShopEntity(
   shopId: json['shopId'],
   num: json['num'],
   flag: json['flag'],
+  resetNum: json['resetNum'],
   updatedAt: json['updatedAt'],
   createdAt: json['createdAt'],
 );
@@ -522,6 +523,10 @@ FollowerInfo _$FollowerInfoFromJson(Map json) => FollowerInfo(
       (json['eventUserSvtLeaderHash'] as List<dynamic>?)
           ?.map((e) => ServantLeaderInfo.fromJson(Map<String, dynamic>.from(e as Map)))
           .toList(),
+  userSvtGrandHash:
+      (json['userSvtGrandHash'] as List<dynamic>?)
+          ?.map((e) => ServantLeaderInfo.fromJson(Map<String, dynamic>.from(e as Map)))
+          .toList(),
   tutorial1: json['tutorial1'],
   message: json['message'],
   pushUserSvtId: json['pushUserSvtId'],
@@ -556,6 +561,14 @@ ServantLeaderInfo _$ServantLeaderInfoFromJson(Map json) => ServantLeaderInfo(
       json['equipTarget1'] == null
           ? null
           : SvtLeaderEquipTargetInfo.fromJson(Map<String, dynamic>.from(json['equipTarget1'] as Map)),
+  equipTarget2:
+      json['equipTarget2'] == null
+          ? null
+          : SvtLeaderEquipTargetInfo.fromJson(Map<String, dynamic>.from(json['equipTarget2'] as Map)),
+  equipTarget3:
+      json['equipTarget3'] == null
+          ? null
+          : SvtLeaderEquipTargetInfo.fromJson(Map<String, dynamic>.from(json['equipTarget3'] as Map)),
   updatedAt: json['updatedAt'],
   imageLimitCount: json['imageLimitCount'],
   dispLimitCount: json['dispLimitCount'],
@@ -567,6 +580,8 @@ ServantLeaderInfo _$ServantLeaderInfoFromJson(Map json) => ServantLeaderInfo(
   commandCardParam: json['commandCardParam'],
   appendPassiveSkill: (json['appendPassiveSkill'] as List<dynamic>?)?.map((e) => e as Map).toList(),
   eventSvtPoint: json['eventSvtPoint'],
+  grandSvt: json['grandSvt'],
+  grandGraphId: json['grandGraphId'],
 );
 
 UserAccountLinkageEntity _$UserAccountLinkageEntityFromJson(Map json) =>
@@ -743,11 +758,14 @@ BattleUserServantData _$BattleUserServantDataFromJson(Map json) => BattleUserSer
   treasureDeviceId: json['treasureDeviceId'],
   treasureDeviceLv: json['treasureDeviceLv'],
   equipTargetId1: json['equipTargetId1'],
+  equipTargetId2: json['equipTargetId2'],
+  equipTargetId3: json['equipTargetId3'],
   equipTargetIds: json['equipTargetIds'],
   appendPassiveSkillIds: json['appendPassiveSkillIds'],
   appendPassiveSkillLvs: json['appendPassiveSkillLvs'],
   limitCount: json['limitCount'],
   dispLimitCount: json['dispLimitCount'],
+  grandSvt: json['grandSvt'],
 );
 
 BattleRaidInfo _$BattleRaidInfoFromJson(Map json) => BattleRaidInfo(

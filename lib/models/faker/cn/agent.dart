@@ -482,6 +482,7 @@ class FakerAgentCN extends FakerAgent<FRequestCN, AutoLoginDataCN, NetworkManage
     required int64_t activeDeckId,
     required int64_t followerId,
     required int32_t followerClassId,
+    required int32_t followerGrandGraphId,
     int32_t itemId = 0,
     int32_t boostId = 0,
     int32_t enemySelect = 0,
@@ -492,6 +493,7 @@ class FakerAgentCN extends FakerAgent<FRequestCN, AutoLoginDataCN, NetworkManage
     int32_t followerRandomLimitCount = 0, //?
     String choiceRandomLimitCounts = "{}",
     int32_t followerSpoilerProtectionLimitCount = 4, //?
+    int32_t recommendSupportIdx = 0,
     required int32_t followerSupportDeckId,
     int32_t campaignItemId = 0,
     int32_t restartWave = 0,
@@ -511,6 +513,7 @@ class FakerAgentCN extends FakerAgent<FRequestCN, AutoLoginDataCN, NetworkManage
         "questId": questId,
         "questPhase": questPhase,
         "followerClassId": followerClassId,
+        // "followerGrandGraphId": followerGrandGraphId,
         "itemId": itemId,
         "boostId": boostId,
         "enemySelect": enemySelect,
@@ -582,6 +585,8 @@ class FakerAgentCN extends FakerAgent<FRequestCN, AutoLoginDataCN, NetworkManage
     List<int32_t> routeSelectIdArray = const [],
     List<int32_t> dataLostUniqueIdArray = const [],
     List waveInfos = const [],
+    required int32_t waveNum,
+    Map<int32_t, int32_t> battleMissionValueDict = const {},
     Duration? sendDelay,
   }) async {
     final _battleResult = resultType.value, _winResult = winResult.value;
@@ -639,6 +644,14 @@ class FakerAgentCN extends FakerAgent<FRequestCN, AutoLoginDataCN, NetworkManage
     dictionary['voicePlayedList'] = jsonEncode(voicePlayedArray);
     dictionary['usedTurnList'] = usedTurnArray;
     dictionary['waveInfo'] = "[]";
+
+    // dictionary['reachedWave'] = waveNum;
+
+    // List<int> battleMissionTargetIds = battleMissionValueDict.keys.toList();
+    // battleMissionTargetIds.sort();
+    // List<int> battleMissionTargetValues = [for (final x in battleMissionTargetIds) battleMissionValueDict[x]!];
+    // dictionary['battleMissionTargetIds'] = battleMissionTargetIds;
+    // dictionary['battleMissionTargetValues'] = battleMissionTargetValues;
 
     logger.t('battle_result.result=${jsonEncode(dictionary)}');
 

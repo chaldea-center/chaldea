@@ -1120,12 +1120,14 @@ QuestPhaseExtraDetail _$QuestPhaseExtraDetailFromJson(Map json) => QuestPhaseExt
           ? null
           : OverwriteEquipSkills.fromJson(Map<String, dynamic>.from(json['addEquipSkills'] as Map)),
   waveSetup: (json['waveSetup'] as num?)?.toInt(),
+  interruptibleQuest: (json['interruptibleQuest'] as num?)?.toInt(),
   masterImageId: (json['masterImageId'] as num?)?.toInt(),
   IgnoreBattlePointUp: (json['IgnoreBattlePointUp'] as List<dynamic>?)?.map((e) => (e as num).toInt()).toList(),
   useEventDeckNo: (json['useEventDeckNo'] as num?)?.toInt(),
   masterSkillDelay: (json['masterSkillDelay'] as num?)?.toInt(),
   masterSkillDelayInfo: json['masterSkillDelayInfo'] as String?,
-)..interruptibleQuest = (json['interruptibleQuest'] as num?)?.toInt();
+  isUseGrandBoard: (json['isUseGrandBoard'] as num?)?.toInt(),
+);
 
 Map<String, dynamic> _$QuestPhaseExtraDetailToJson(QuestPhaseExtraDetail instance) => <String, dynamic>{
   'questSelect': instance.questSelect,
@@ -1143,6 +1145,7 @@ Map<String, dynamic> _$QuestPhaseExtraDetailToJson(QuestPhaseExtraDetail instanc
   'useEventDeckNo': instance.useEventDeckNo,
   'masterSkillDelay': instance.masterSkillDelay,
   'masterSkillDelayInfo': instance.masterSkillDelayInfo,
+  'isUseGrandBoard': instance.isUseGrandBoard,
 };
 
 OverwriteEquipSkills _$OverwriteEquipSkillsFromJson(Map json) => OverwriteEquipSkills(

@@ -422,6 +422,8 @@ class SvtSaveData {
   List<BaseSkill> customPassives;
   List<int> customPassiveLvs;
 
+  bool grandSvt = false;
+
   SvtSaveData({
     this.svtId,
     this.limitCount = 4,
@@ -445,6 +447,7 @@ class SvtSaveData {
     Set<int>? allowedExtraSkills,
     List<BaseSkill>? customPassives,
     List<int>? customPassiveLvs,
+    this.grandSvt = false,
   }) : skillLvs = skillLvs ?? [10, 10, 10],
        skillIds = List.generate(kActiveSkillNums.length, (index) => skillIds?.getOrNull(index)),
        appendLvs = List.generate(kAppendSkillNums.length, (index) => appendLvs?.getOrNull(index) ?? 0),

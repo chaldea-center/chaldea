@@ -1769,6 +1769,7 @@ class QuestPhaseExtraDetail {
   int? useEventDeckNo;
   int? masterSkillDelay;
   String? masterSkillDelayInfo;
+  int? isUseGrandBoard;
 
   QuestPhaseExtraDetail({
     this.questSelect,
@@ -1780,11 +1781,13 @@ class QuestPhaseExtraDetail {
     this.overwriteEquipSkills,
     this.addEquipSkills,
     this.waveSetup,
+    this.interruptibleQuest,
     this.masterImageId,
     this.IgnoreBattlePointUp,
     this.useEventDeckNo,
     this.masterSkillDelay,
     this.masterSkillDelayInfo,
+    this.isUseGrandBoard,
   });
 
   factory QuestPhaseExtraDetail.fromJson(Map<String, dynamic> json) => _$QuestPhaseExtraDetailFromJson(json);

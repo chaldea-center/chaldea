@@ -97,21 +97,33 @@ class FormationCard extends StatelessWidget {
         ),
       if (storedData?.supportType.isSupport == true) db.getIconImage(AssetURL.i.items(12), width: 24, aspectRatio: 1),
     ];
-    if (extraInfoIcons.isNotEmpty) {
+    Widget? grandSvtIcon;
+    if (storedData != null && storedData.grandSvt && svt != null) {
+      // TODO: replace with grandGraph data
+      int? grandClassId;
+      if (svt.classId >= 1 && svt.classId <= 7) {
+        grandClassId = 10000 + svt.classId;
+      }
+      if (grandClassId != null) {
+        grandSvtIcon = db.getIconImage(SvtClassX.clsIcon(grandClassId, 5), width: 24, aspectRatio: 1);
+      }
+    }
+    if (extraInfoIcons.isNotEmpty || grandSvtIcon != null) {
       svtIcon = Stack(
         clipBehavior: Clip.none,
-        alignment: Alignment.topRight,
         children: [
           svtIcon,
-          Positioned.fill(
-            top: -5,
-            right: -5,
-            child: Wrap(
-              alignment: WrapAlignment.end,
-              crossAxisAlignment: WrapCrossAlignment.center,
-              children: extraInfoIcons,
+          if (grandSvtIcon != null) Positioned(top: -1, left: -1, child: grandSvtIcon),
+          if (extraInfoIcons.isNotEmpty)
+            Positioned.fill(
+              top: -5,
+              right: -5,
+              child: Wrap(
+                alignment: WrapAlignment.end,
+                crossAxisAlignment: WrapCrossAlignment.center,
+                children: extraInfoIcons,
+              ),
             ),
-          ),
         ],
       );
     }

@@ -624,6 +624,26 @@ class Servant extends BasicServant {
     return '${S.current.costume} $limit';
   }
 
+  T? getAscended<T>(
+    int ascOrCostumeId,
+    AscensionAddEntry<T> Function(AscensionAdd v) attri, {
+    bool ignoreEmptyList = true,
+  }) {
+    final entries = attri(ascensionAdd);
+    T? _checkList(T? x) {
+      if (x != null && x is List && x.isEmpty) return null;
+      return x;
+    }
+
+    return _checkList(entries.ascension[ascOrCostumeId]) ??
+        _checkList(entries.costume[ascOrCostumeId]) ??
+        _checkList(
+          ascOrCostumeId < 100
+              ? entries.costume[profile.costume.values.firstWhereOrNull((c) => c.id == ascOrCostumeId)?.battleCharaId]
+              : entries.costume[profile.costume.values.firstWhereOrNull((c) => c.battleCharaId == ascOrCostumeId)?.id],
+        );
+  }
+
   ServantExtra get extra {
     if (isServantType && collectionNo > 0) {
       return db.gameData.wiki.servants[originalCollectionNo] ??= ServantExtra(collectionNo: originalCollectionNo);

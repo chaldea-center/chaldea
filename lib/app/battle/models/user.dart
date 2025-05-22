@@ -38,6 +38,8 @@ class PlayerSvtData {
   List<int> cardStrengthens = [0, 0, 0, 0, 0];
   List<CommandCode?> commandCodes = [null, null, null, null, null];
 
+  bool grandSvt = false;
+
   PlayerSvtData.base();
 
   @visibleForTesting
@@ -64,6 +66,7 @@ class PlayerSvtData {
       supportType = SupportSvtType.none;
     }
     fixedAtk = fixedHp = null;
+    grandSvt = false;
     final status = db.curUser.svtStatusOf(selectedSvt.collectionNo);
     final plan =
         source == PreferPlayerSvtDataSource.target ? db.curUser.svtPlanOf(selectedSvt.collectionNo) : status.cur;
@@ -112,6 +115,7 @@ class PlayerSvtData {
 
   void fromUserSvt({required Servant svt, required SvtStatus status, required SvtPlan plan, int? limitCount}) {
     this
+      ..grandSvt = false
       ..limitCount = limitCount ?? plan.ascension
       ..lv = svt.grailedLv(plan.grail)
       ..tdLv = plan.npLv.clamp(1, 5)
@@ -256,7 +260,8 @@ class PlayerSvtData {
       ..ceLv = ceLv
       ..supportType = supportType
       ..cardStrengthens = cardStrengthens.toList()
-      ..commandCodes = commandCodes.toList();
+      ..commandCodes = commandCodes.toList()
+      ..grandSvt = grandSvt;
   }
 
   static Future<PlayerSvtData> fromStoredData(final SvtSaveData? storedData) async {
@@ -284,7 +289,8 @@ class PlayerSvtData {
           ..ceLimitBreak = storedData.ceLimitBreak
           ..ceLv = storedData.ceLv
           ..supportType = storedData.supportType
-          ..cardStrengthens = storedData.cardStrengthens.toList();
+          ..cardStrengthens = storedData.cardStrengthens.toList()
+          ..grandSvt = storedData.grandSvt;
 
     if (svt != null) {
       playerSvtData.skills = List.generate(kActiveSkillNums.length, (index) => null);

@@ -112,6 +112,7 @@ abstract class FakerAgent<
     required int64_t activeDeckId,
     required int64_t followerId,
     required int32_t followerClassId,
+    required int32_t followerGrandGraphId,
     int32_t itemId = 0,
     int32_t boostId = 0,
     int32_t enemySelect = 0,
@@ -122,6 +123,7 @@ abstract class FakerAgent<
     int32_t followerRandomLimitCount = 0, //?
     String choiceRandomLimitCounts = "{}",
     int32_t followerSpoilerProtectionLimitCount = 4, //?
+    int32_t recommendSupportIdx = 0,
     required int32_t followerSupportDeckId,
     int32_t campaignItemId = 0,
     int32_t restartWave = 0,
@@ -161,6 +163,9 @@ abstract class FakerAgent<
     List<int32_t> routeSelectIdArray = const [],
     List<int32_t> dataLostUniqueIdArray = const [],
     List waveInfos = const [],
+    required int32_t waveNum,
+    Map<int32_t, int32_t> battleMissionValueDict = const {},
+    // custom
     Duration? sendDelay,
   });
   // public void beginRequest(int[] dataLostUniqueIdArray, BattleWaveInfoData[] waveInfos, int waveNum) { }
@@ -275,7 +280,7 @@ abstract class FakerAgent<
             ?.key ??
         0;
 
-    int activeDeckId, followerId, followerClassId, followerType, followerSupportDeckId;
+    int activeDeckId, followerId, followerClassId, followerType, followerSupportDeckId, followerGrandGraphId = 0;
     int userEquipId = 0;
 
     if (questPhaseEntity.isUseUserEventDeck()) {
@@ -320,19 +325,21 @@ abstract class FakerAgent<
       followerType = 0;
       followerSupportDeckId = 0;
     } else {
+      final bool isUseGrandBoard = questPhaseEntity.extraDetail?.isUseGrandBoard == 1;
       final (follower, followerSvt) = await _getValidSupport(
-        questId: options.questId,
-        questPhase: options.questPhase,
+        questPhaseEntity: questPhaseEntity,
         useEventDeck: options.useEventDeck ?? db.gameData.others.shouldUseEventDeck(options.questId),
         enforceRefreshSupport: options.enfoceRefreshSupport,
         supportSvtIds: options.supportSvtIds.toList(),
         supportEquipIds: options.supportCeIds.toList(),
         supportEquipMaxLimitBreak: options.supportCeMaxLimitBreak,
+        isUseGrandBoard: isUseGrandBoard,
       );
       followerId = follower.userId;
       followerClassId = followerSvt.classId;
       followerType = follower.type;
       followerSupportDeckId = followerSvt.supportDeckId;
+      followerGrandGraphId = followerSvt.grandGraphId;
     }
 
     return battleSetup(
@@ -343,19 +350,20 @@ abstract class FakerAgent<
       followerClassId: followerClassId,
       followerType: followerType,
       followerSupportDeckId: followerSupportDeckId,
+      followerGrandGraphId: followerGrandGraphId,
       campaignItemId: campaignItemId,
       userEquipId: userEquipId,
     );
   }
 
   Future<(FollowerInfo follower, ServantLeaderInfo followerSvt)> _getValidSupport({
-    required int questId,
-    required int questPhase,
+    required QuestPhase questPhaseEntity,
     required bool useEventDeck,
     required bool enforceRefreshSupport,
     required List<int> supportSvtIds,
     required List<int> supportEquipIds,
     required bool supportEquipMaxLimitBreak,
+    required bool isUseGrandBoard,
   }) async {
     int refreshCount = 0;
     List<FollowerInfo> followers = [];
@@ -374,8 +382,8 @@ abstract class FakerAgent<
           throw Exception('After $refreshCount times refresh, no support svt is valid');
         }
         final resp = await followerList(
-          questId: questId,
-          questPhase: questPhase,
+          questId: questPhaseEntity.id,
+          questPhase: questPhaseEntity.phase,
           isEnfoceRefresh: enforceRefreshSupport || refreshCount > 0,
         );
         if (refreshCount > 0) {
@@ -396,10 +404,42 @@ abstract class FakerAgent<
           if (supportSvtIds.isNotEmpty && !supportSvtIds.contains(svt.svtId)) {
             continue;
           }
-          if (supportEquipIds.isNotEmpty && !supportEquipIds.contains(svt.equipTarget1?.svtId)) {
+          Set<int> followerEquipIds =
+              {
+                if (supportEquipMaxLimitBreak && svt.equipTarget1?.limitCount == 4) svt.equipTarget1?.svtId,
+                if (isUseGrandBoard) ...[
+                  if (supportEquipMaxLimitBreak && svt.equipTarget2?.limitCount == 4) svt.equipTarget2?.svtId,
+                  if (supportEquipMaxLimitBreak && svt.equipTarget3?.limitCount == 4) svt.equipTarget3?.svtId,
+                ],
+              }.whereType<int>().toSet();
+          if (followerEquipIds.isEmpty) continue;
+          if (followerEquipIds.isNotEmpty && supportEquipIds.toSet().intersection(followerEquipIds).isEmpty) {
             continue;
           }
-          if (supportEquipMaxLimitBreak && svt.equipTarget1?.limitCount != 4) continue;
+          // grand duel
+          final dbSvt = db.gameData.servantsById[svt.svtId];
+          final traits = dbSvt?.getAscended(svt.limitCount, (v) => v.individuality) ?? dbSvt?.traits;
+          final traitIds = traits?.map((e) => e.id).toList() ?? [];
+          if (!questPhaseEntity.restrictions.every((restriction) {
+            if (restriction.restriction.type == RestrictionType.individuality) {
+              final hasTrait = restriction.restriction.targetVals.any((e) => traitIds.contains(e));
+              switch (restriction.restriction.rangeType) {
+                case RestrictionRangeType.equal:
+                  return hasTrait;
+                case RestrictionRangeType.notEqual:
+                  return !hasTrait;
+                case RestrictionRangeType.none:
+                case RestrictionRangeType.above:
+                case RestrictionRangeType.below:
+                case RestrictionRangeType.between:
+                  break;
+              }
+            }
+            return true;
+          })) {
+            continue;
+          }
+
           return (follower, svt);
         }
       }
@@ -423,6 +463,7 @@ abstract class FakerAgent<
         action: BattleDataActionList(logs: "", dt: battleInfo.enemyDeck.first.svts.map((e) => e.uniqueId).toList()),
         usedTurnArray: List.generate(stageCount, (i) => i == 0 ? 1 : 0),
         aliveUniqueIds: battleInfo.enemyDeck.expand((e) => e.svts).map((e) => e.uniqueId).toList(),
+        waveNum: 1,
         sendDelay: sendDelay,
       );
     } else if (resultType == BattleResultType.win) {
@@ -490,6 +531,7 @@ abstract class FakerAgent<
         raidResult: raidResults,
         aliveUniqueIds: [],
         calledEnemyUniqueIdArray: calledEnemyUniqueIdArray,
+        waveNum: stageCount,
         // skillShiftUniqueIdArray: itemDroppedSkillShiftEnemies.map((e) => e.uniqueId).toList(),
         // skillShiftNpcSvtIdArray: itemDroppedSkillShiftEnemies.map((e) => e.npcId).toList(),
         sendDelay: sendDelay,

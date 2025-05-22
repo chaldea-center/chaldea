@@ -257,6 +257,7 @@ SvtSaveData _$SvtSaveDataFromJson(Map json) => $checkedCreate('SvtSaveData', jso
       'customPassiveLvs',
       (v) => (v as List<dynamic>?)?.map((e) => (e as num).toInt()).toList(),
     ),
+    grandSvt: $checkedConvert('grandSvt', (v) => v as bool? ?? false),
   );
   return val;
 });
@@ -284,6 +285,7 @@ Map<String, dynamic> _$SvtSaveDataToJson(SvtSaveData instance) => <String, dynam
   'allowedExtraSkills': instance.allowedExtraSkills.toList(),
   'customPassives': instance.customPassives.map((e) => e.toJson()).toList(),
   'customPassiveLvs': instance.customPassiveLvs,
+  'grandSvt': instance.grandSvt,
 };
 
 const _$SupportSvtTypeEnumMap = {
