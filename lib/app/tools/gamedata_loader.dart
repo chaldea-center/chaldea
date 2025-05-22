@@ -377,7 +377,7 @@ class GameDataLoader {
   }
 
   Future<void> _fixGameData(GameData gamedata) async {
-    const eventsToRemove = [71543];
+    const eventsToRemove = [71543, 71558];
     for (final eventId in eventsToRemove) {
       if (gamedata.events.containsKey(eventId)) {
         gamedata.events.remove(eventId);

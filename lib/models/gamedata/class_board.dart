@@ -23,6 +23,7 @@ class ClassBoard with RouteInfo {
   CondType condType;
   int condTargetId;
   int condNum;
+  int parentClassBoardBaseId;
   List<ClassBoardClass> classes;
   List<ClassBoardSquare> squares;
   List<ClassBoardLine> lines;
@@ -38,12 +39,20 @@ class ClassBoard with RouteInfo {
     this.classes = const [],
     this.squares = const [],
     this.lines = const [],
+    this.parentClassBoardBaseId = 0,
   });
 
-  String get uiIcon =>
-      "https://static.atlasacademy.io/file/aa-fgo-extract-jp/ClassBoard/UI/DownloadClassBoardUIAtlas/DownloadClassBoardUIAtlas1/img_class_$id.png";
+  bool get isGrand => parentClassBoardBaseId > 0 || id > 10000;
 
-  String get btnIcon => "https://static.atlasacademy.io/JP/ClassIcons/btn_tab_$id.png";
+  String get uiIcon =>
+      isGrand
+          ? "https://static.atlasacademy.io/file/aa-fgo-extract-jp/ClassBoard/Bg/GrandClassIcon$id.png"
+          : "https://static.atlasacademy.io/file/aa-fgo-extract-jp/ClassBoard/UI/DownloadClassBoardUIAtlas/DownloadClassBoardUIAtlas1/img_class_$id.png";
+
+  String get btnIcon =>
+      isGrand && classes.length == 1
+          ? SvtClassX.clsIcon(classes.first.classId, 5)
+          : "https://static.atlasacademy.io/JP/ClassIcons/btn_tab_$id.png";
 
   String get dispName {
     if (id >= 1 && id <= 7) {

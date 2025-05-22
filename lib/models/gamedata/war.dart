@@ -104,8 +104,10 @@ class NiceWar with RouteInfo {
 
   // if default banner is null, find overwriteBanner
   String? get shownBanner {
-    // TODO: check
-    if (parentWarId == ConstData.constants.grandBoardWarId) return null;
+    if (parentWarId == ConstData.constants.grandBoardWarId) {
+      // return "https://news.fate-go.jp/wp-content/uploads/2025/grand_saber_rbhun/top_banner02.png";
+      return extra.officialBanner.jp;
+    }
     String? banner;
     if (this.banner != null) {
       banner = this.banner;

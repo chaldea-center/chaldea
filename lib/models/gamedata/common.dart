@@ -502,6 +502,15 @@ extension SvtClassX on SvtClass {
     SvtClass.uOlgaMarieAquaCollection,
     SvtClass.uOlgaMarieGroundCollection,
   ];
+  static const grandClasses = <SvtClass>[
+    SvtClass.grandSaber,
+    SvtClass.grandArcher,
+    SvtClass.grandLancer,
+    SvtClass.grandRider,
+    SvtClass.grandCaster,
+    SvtClass.grandAssassin,
+    SvtClass.grandBerserker,
+  ];
 
   static bool match(SvtClass value, SvtClass option) {
     if (option == value) return true;

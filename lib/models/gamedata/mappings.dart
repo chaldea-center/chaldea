@@ -229,7 +229,7 @@ class Transl<K, V> {
   }
 
   static Transl<String, String> svtClassName(String jpName) {
-    for (final clsId in kSvtClassIdsPlayableAll) {
+    for (final clsId in kSvtClassIdsPlayableAll.followedBy(SvtClassX.grandClasses.map((e) => e.value))) {
       final clsInfo = ConstData.classInfo[clsId];
       if (clsInfo != null && clsInfo.name == jpName) {
         return Transl({jpName: md.enums.svtClass[clsId] ?? MappingBase()}, jpName, jpName);

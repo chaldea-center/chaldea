@@ -28,6 +28,7 @@ ClassBoard _$ClassBoardFromJson(Map json) => ClassBoard(
           ?.map((e) => ClassBoardLine.fromJson(Map<String, dynamic>.from(e as Map)))
           .toList() ??
       const [],
+  parentClassBoardBaseId: (json['parentClassBoardBaseId'] as num?)?.toInt() ?? 0,
 );
 
 Map<String, dynamic> _$ClassBoardToJson(ClassBoard instance) => <String, dynamic>{
@@ -37,6 +38,7 @@ Map<String, dynamic> _$ClassBoardToJson(ClassBoard instance) => <String, dynamic
   'condType': const CondTypeConverter().toJson(instance.condType),
   'condTargetId': instance.condTargetId,
   'condNum': instance.condNum,
+  'parentClassBoardBaseId': instance.parentClassBoardBaseId,
   'classes': instance.classes.map((e) => e.toJson()).toList(),
   'squares': instance.squares.map((e) => e.toJson()).toList(),
   'lines': instance.lines.map((e) => e.toJson()).toList(),
