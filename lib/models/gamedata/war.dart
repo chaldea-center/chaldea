@@ -104,6 +104,8 @@ class NiceWar with RouteInfo {
 
   // if default banner is null, find overwriteBanner
   String? get shownBanner {
+    // TODO: check
+    if (parentWarId == ConstData.constants.grandBoardWarId) return null;
     String? banner;
     if (this.banner != null) {
       banner = this.banner;
@@ -653,6 +655,7 @@ abstract class WarId {
   static const mainInterlude = 1004;
   static const advanced = 1006;
   static const ordealCall = 401;
+  static const grandBoardWar = 8395;
 }
 
 const Map<int, String> _warMCBanner = {

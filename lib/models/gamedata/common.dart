@@ -354,13 +354,15 @@ enum SvtClass {
   alterEgo(10, 'AE'),
   avenger(11, '讐'),
   demonGodPillar(12),
-  // 13
-  // 14
-  // 15
-  // 16
-  grandCaster(17, '術'),
-  // 18
-  // 19
+
+  loreGrandSaber(13, '剣', 1),
+  loreGrandArcher(14, '弓', 2),
+  loreGrandLancer(15, '槍', 3),
+  loreGrandRider(16, '騎', 4),
+  loreGrandCaster(17, '術', 5),
+  loreGrandAssassin(18, '殺', 6),
+  loreGrandBerserker(19, '狂', 7),
+
   beastII(20, '兽Ⅱ'),
   ushiChaosTide(21),
   beastI(22, '獸I'),
@@ -397,11 +399,20 @@ enum SvtClass {
   uOlgaMarieFlareCollection(9001),
   uOlgaMarieAquaCollection(9002),
   uOlgaMarieGroundCollection(9003),
+  grandSaber(10001, '剣', 1),
+  grandArcher(10002, '弓', 2),
+  grandLancer(10003, '槍', 3),
+  grandRider(10004, '騎', 4),
+  grandCaster(10005, '術', 5),
+  grandAssassin(10006, '殺', 6),
+  grandBerserker(10007, '狂', 7),
+
   beastAny(33, '獸');
 
   final int value;
   final String shortName;
-  const SvtClass(this.value, [this.shortName = '?']);
+  final int? baseClassId;
+  const SvtClass(this.value, [this.shortName = '?', this.baseClassId]);
 }
 
 class SvtClassConverter implements JsonConverter<SvtClass, String> {
@@ -494,13 +505,20 @@ extension SvtClassX on SvtClass {
 
   static bool match(SvtClass value, SvtClass option) {
     if (option == value) return true;
-    if (option == SvtClass.caster) return value == SvtClass.grandCaster;
+    if ((value.baseClassId ?? value.value) == (option.baseClassId ?? option.value)) return true;
     if (option == SvtClassX.beast) {
       return beasts.contains(value);
+    }
+    if (option == SvtClass.EXTRA1) {
+      return extraI.contains(value);
+    }
+    if (option == SvtClass.EXTRA2) {
+      return extraII.contains(value) || beasts.contains(value);
     }
     if (option == SvtClass.EXTRA) {
       return extra.contains(value) || beasts.contains(value);
     }
+    if (option == SvtClass.ALL) return true;
     if (option == SvtClass.unknown) {
       return !SvtClassX.regularAllWithBeasts.contains(value);
     }
@@ -839,6 +857,12 @@ enum Trait {
   aoeNP(4101),
   stNP(4102),
   // 4103, 迎撃宝具-斬り抉る戦神の剣
+  quickChain(4104),
+  artsChain(4105),
+  busterChain(4106),
+  mightyChain(4107),
+  braveChain(4108),
+  chainError(4109),
   canBeInBattle(5000),
   notBasedOnServant(5010),
   isSupport(7000), // constants.INDIVIDUALITY_IS_SUPPORT

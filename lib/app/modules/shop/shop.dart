@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:tuple/tuple.dart';
 
 import 'package:chaldea/app/api/atlas.dart';
+import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/descriptors/cond_target_num.dart';
 import 'package:chaldea/app/descriptors/cond_target_value.dart';
 import 'package:chaldea/app/modules/common/builders.dart';
@@ -460,8 +461,37 @@ class ShopHelper {
         );
         return;
       case PurchaseType.shop18Item:
-        // TODO: implement
-        yield Tuple2(null, TextSpan(text: 'shop18 $targetId: ${shop.name}'));
+        final classBoard = db.gameData.classBoards[targetId];
+        onTapClassBoard() => router.push(url: Routes.classBoardI(targetId));
+        if (classBoard == null) {
+          yield Tuple2(
+            null,
+            TextSpan(
+              children: [
+                SharedBuilder.textButtonSpan(
+                  context: context,
+                  text: '${S.current.class_board} $targetId',
+                  onTap: onTapClassBoard,
+                ),
+                TextSpan(text: ' ${S.current.reset}'),
+              ],
+            ),
+          );
+        } else {
+          yield Tuple2(
+            db.getIconImage(classBoard.btnIcon, onTap: onTapClassBoard),
+            TextSpan(
+              children: [
+                SharedBuilder.textButtonSpan(
+                  context: context,
+                  text: '${S.current.class_board} ${classBoard.dispName}',
+                  onTap: onTapClassBoard,
+                ),
+                TextSpan(text: ' ${S.current.reset}'),
+              ],
+            ),
+          );
+        }
         return;
     }
   }

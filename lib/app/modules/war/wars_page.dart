@@ -15,7 +15,7 @@ class WarsPage extends StatefulWidget {
 }
 
 class _WarsPageState extends State<WarsPage> with SingleTickerProviderStateMixin {
-  late final _tabController = TabController(length: 3, vsync: this);
+  late final _tabController = TabController(length: 4, vsync: this);
   bool reversed = true;
 
   @override
@@ -26,7 +26,7 @@ class _WarsPageState extends State<WarsPage> with SingleTickerProviderStateMixin
 
   @override
   Widget build(BuildContext context) {
-    List<NiceWar> mainStories = [], chaldeaGates = [], eventWars = [];
+    List<NiceWar> mainStories = [], eventWars = [], chaldeaGates = [], grandBoardWars = [];
     for (final war in db.gameData.wars.values) {
       if (war.isMainStory) {
         if (war.flags.contains(WarFlag.areaBoardShortcut) && war.spots.isEmpty) {
@@ -37,6 +37,13 @@ class _WarsPageState extends State<WarsPage> with SingleTickerProviderStateMixin
         } else {
           mainStories.add(war);
         }
+        continue;
+      }
+      if (war.id == ConstData.constants.grandBoardWarId) {
+        chaldeaGates.add(war);
+      }
+      if (war.id == ConstData.constants.grandBoardWarId || war.parentWarId == ConstData.constants.grandBoardWarId) {
+        grandBoardWars.add(war);
         continue;
       }
       if (war.eventId != 0) {
@@ -65,7 +72,12 @@ class _WarsPageState extends State<WarsPage> with SingleTickerProviderStateMixin
             isScrollable: true,
             tabAlignment: TabAlignment.center,
             controller: _tabController,
-            tabs: [Tab(text: S.current.main_story), Tab(text: S.current.event), Tab(text: S.current.chaldea_gate)],
+            tabs: [
+              Tab(text: S.current.main_story),
+              Tab(text: S.current.event),
+              Tab(text: S.current.chaldea_gate),
+              Tab(text: S.current.grand_board_war),
+            ],
           ),
         ),
       ),
@@ -75,6 +87,7 @@ class _WarsPageState extends State<WarsPage> with SingleTickerProviderStateMixin
           WarListPage(wars: mainStories, reversed: reversed),
           WarListPage(wars: eventWars, reversed: reversed, sortByEvent: true),
           WarListPage(wars: chaldeaGates, reversed: reversed),
+          WarListPage(wars: grandBoardWars, reversed: reversed),
         ],
       ),
     );

@@ -192,7 +192,8 @@ class ItemListPageState extends State<ItemListPage> with SingleTickerProviderSta
     Map<int, int> _getObjective() {
       Map<int, int> objective = {};
       final itemIds = db.gameData.dropData.domusAurea.itemIds;
-      db.itemCenter.itemLeft.forEach((itemId, value) {
+      for (final itemId in itemIds) {
+        int value = db.itemCenter.itemLeft[itemId] ?? 0;
         final rarity = db.gameData.items[itemId]?.rarity ?? -1;
         if (rarity > 0 && rarity <= 3) {
           value -= db.userData.itemAbundantValue[rarity - 1];
@@ -200,7 +201,7 @@ class ItemListPageState extends State<ItemListPage> with SingleTickerProviderSta
         if (itemIds.contains(itemId) && value < 0) {
           objective[itemId] = -value;
         }
-      });
+      }
       return objective;
     }
 

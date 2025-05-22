@@ -397,13 +397,15 @@ class Items {
     summonTicketId, goldAppleId, silverAppleId, bronzeAppleId, blueSaplingId,
     blueAppleId, grailFragId, grailId, grailToCrystalId, lanternId,
   ];
-  static const List<int> specialSvtMat = [hpFou3, atkFou3, hpFou4, atkFou4, ember5, ember4, ember3];
+  static const List<int> specialSvtMat = [...fous, ...embers];
   static const apples = [goldAppleId, silverAppleId, blueAppleId, bronzeAppleId];
-  static const fous = [hpFou3, hpFou4, atkFou3, atkFou4];
+  static const fous = [hpFou3, hpFou4, hpFou5, atkFou3, atkFou4, atkFou5];
   static const int hpFou3 = 9570300;
   static const int hpFou4 = 9570400;
+  static const int hpFou5 = 9570500;
   static const int atkFou3 = 9670300;
   static const int atkFou4 = 9670400;
+  static const int atkFou5 = 9670500;
 
   static const embers = [ember3, ember4, ember5];
   static const int ember3 = 9770300;

@@ -266,6 +266,28 @@ class MultiDescriptor {
     ];
   }
 
+  static List<InlineSpan> classBoards(BuildContext context, List<int> targetIds, {bool? useAnd}) {
+    if (targetIds.length <= 3) {
+      return list(context, targetIds, (context, id) {
+        return inkWell(
+          context: context,
+          onTap: () => router.push(url: Routes.classBoardI(id)),
+          text: db.gameData.classBoards[id]?.dispName ?? '$id',
+        );
+      }, useAnd);
+    }
+    return [
+      collapsed(context, targetIds, S.current.shop, (context, id) {
+        return ListTile(
+          dense: true,
+          leading: db.getIconImage(db.gameData.classBoards[id]?.btnIcon),
+          title: Text('${S.current.class_board} $id'),
+          onTap: () => router.push(url: Routes.classBoardI(id)),
+        );
+      }, useAnd),
+    ];
+  }
+
   static List<InlineSpan> commonRelease(BuildContext context, List<int> targetIds, {bool? useAnd}) {
     return list(context, targetIds, (context, id) {
       return inkWell(context: context, onTap: () => router.push(url: Routes.commonReleaseI(id)), text: '$id');

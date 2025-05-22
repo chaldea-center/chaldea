@@ -649,8 +649,11 @@ class BaseGift {
         jumpToDetail = false;
         break;
       case GiftType.privilege:
+        break;
       case GiftType.classSkill:
-        // TODO: implement
+        showOne = false;
+        icon ??= db.gameData.baseSkills[objectId]?.icon;
+        onTap ??= () => router.push(url: Routes.skillI(objectId));
         break;
     }
     return GameCardMixin.anyCardItemBuilder(
@@ -720,7 +723,7 @@ class BaseGift {
       case GiftType.unknown:
         break;
       case GiftType.classSkill:
-        // TODO: implement
+        route = Routes.skillI(objectId);
         break;
     }
     route ??= GameCardMixin.getRoute(objectId);

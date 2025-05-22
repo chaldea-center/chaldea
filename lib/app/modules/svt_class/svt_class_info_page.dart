@@ -172,7 +172,9 @@ class _SvtClassInfoPageState extends State<SvtClassInfoPage> {
             SvtClassX.clsIcon(clsId, 5, info?.iconImageId),
             height: 24,
             aspectRatio: 1,
-            errorWidget: (context, url, error) => Text(_clsId.toString()),
+            errorWidget:
+                (context, url, error) =>
+                    Text(_clsId.toString(), style: TextStyle(fontSize: 10), textAlign: TextAlign.center),
           ),
         ),
       ),

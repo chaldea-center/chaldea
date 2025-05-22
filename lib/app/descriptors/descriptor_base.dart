@@ -99,4 +99,5 @@ mixin DescriptorBase {
   List<InlineSpan> shops(BuildContext context) => emptyHint(MultiDescriptor.shops(context, targetIds));
   String classIds(List<int> clsIds) => clsIds.map((e) => Transl.svtClassId(e).l).join("/");
   String get targetClassIds => classIds(targetIds);
+  List<InlineSpan> classBoards(BuildContext context) => emptyHint(MultiDescriptor.classBoards(context, targetIds));
 }

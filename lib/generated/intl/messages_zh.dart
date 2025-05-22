@@ -515,6 +515,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "gold": MessageLookupByLibrary.simpleMessage("金"),
     "grail": MessageLookupByLibrary.simpleMessage("圣杯"),
     "grail_up": MessageLookupByLibrary.simpleMessage("圣杯转临"),
+    "grand_board_war": MessageLookupByLibrary.simpleMessage("冠位戴冠战"),
     "growth_curve": MessageLookupByLibrary.simpleMessage("成长曲线"),
     "guda_female": MessageLookupByLibrary.simpleMessage("咕哒子"),
     "guda_male": MessageLookupByLibrary.simpleMessage("咕哒夫"),

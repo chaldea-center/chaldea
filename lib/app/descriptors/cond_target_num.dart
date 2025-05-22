@@ -713,7 +713,13 @@ class CondTargetNumDescriptor extends HookWidget with DescriptorBase {
             kr: null,
           );
         } else {
-          break;
+          return localized(
+            jp: () => rich('クラススコアサインを$targetNum個解放せよ: ', classBoards(context)),
+            cn: () => rich('解放职阶星图的星宫$targetNum个: ', classBoards(context)),
+            tw: () => rich('解放任意職階星圖的星宮$targetNum個: ', classBoards(context)),
+            na: () => rich('Enhance $targetNum Class Score Signs: ', classBoards(context)),
+            kr: null,
+          );
         }
       // exchangeSvt related cond: targetIds=[eventId], but no need to show
       case CondType.svtFriendshipExchangeSvt:

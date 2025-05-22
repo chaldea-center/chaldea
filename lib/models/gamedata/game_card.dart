@@ -1,5 +1,3 @@
-import 'package:auto_size_text/auto_size_text.dart';
-
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
@@ -299,11 +297,16 @@ mixin GameCardMixin implements RouteInfo {
           );
         }
         final size = Maths.fitSize(width, height, aspectRatio);
-        return ImageWithText(
-          image: SizedBox(width: size?.key, height: size?.value, child: AutoSizeText('ID $id', minFontSize: 6)),
-          option: ImageWithTextOption(width: size?.key, height: size?.value, padding: padding).merge(option),
-          text: text,
+        String shownText = 'ID $id';
+        if (text != null && text.isNotEmpty) shownText += ' $text';
+        return InkWell(
           onTap: onTap,
+          child: Container(
+            padding: option?.padding ?? padding,
+            width: size?.key,
+            height: size?.value,
+            child: Text(shownText, style: TextStyle(fontSize: 12)),
+          ),
         );
       },
     );

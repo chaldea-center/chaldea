@@ -372,6 +372,8 @@ class GameConstants {
   final int k20220731BoostRate1; // 200
   final int accountingInitializeTimeout; // 60
   final int aftreChangeFreeDrawNum; // 10
+  final int appendPassiveSkillMaxExchangeNum; // -1
+  final int artsChainIndividuality; // 4105
   final int attackRate; // 230
   final int attackRateRandomMax; // 1100
   final int attackRateRandomMin; // 900
@@ -384,17 +386,21 @@ class GameConstants {
   final int battleEffectIdInvincible; // 6214
   final int battleEffectIdInvinciblePierce; // 6215
   final int battleEffectIdSpecialInvincible; // 2001003
+  final int battleEffectIdSpecialInvinciblePierce; // 2001006
   final int battleItemDispColumn; // 7
   final int battleMsgBaseTime; // 1000
   final int battleMsgInterval; // 250
   final int battleTimePerChara; // 50
   final int beforeChangeFreeDrawNum; // 1
   final int bpExpression; // 1
+  final int braveChainIndividuality; // 4108
+  final int busterChainIndividuality; // 4106
   final int campaignResetAt; // 4
-  final int canSelectSvtMaterialFlag; // 4
+  final int canSelectSvtMaterialFlag; // 12
   final int chainbonusArtsRate; // 200
   final int chainbonusBusterRate; // 200
   final int chainbonusQuick; // 20
+  final int chainErrorIndividuality; // 4109
   final int chapter1PrologueWarId; // 100
   final int chapter2EpilogueWarId; // 309
   final int chapter2PrologueWarId; // 300
@@ -408,12 +414,14 @@ class GameConstants {
   final int coinRoomMaxNum; // 2
   final int coinRoomReleaseQuestId; // 3001101
   final int combineLimitSpecialPrivilegeId; // 100
-  final int comebackTargetDay; // 1704027600
+  final int comebackTargetDay; // 1735648200
   final int commandArts; // 4001
   final int commandBuster; // 4002
   final int commandCardPrmUpMax; // 500
   final int commandCodeDetachingItemId; // 5003
   final int commandQuick; // 4003
+  final int commandSpellClassIconEffectId1; // 4001005
+  final int commandSpellClassIconEffectId2; // 4001018
   final int commandSpellRecoverAt; // 0
   final int convertDeckUserEquipAt; // 1481099400
   final int criticalAttackRate; // 2000
@@ -421,11 +429,13 @@ class GameConstants {
   final int criticalRatePerStar; // 100
   final int criticalStarRate; // 200
   final int criticalTdPointRate; // 2000
-  final int deckMax; // 10
+  final int deckMax; // 15
   final int defaultLockBoardGroupId; // 0
+  final int defaultQuestUseFriendshipUpItemGroupId; // 1
   final int disableFriendshipExceed; // 0
   final int disableServantEffectFilter; // 0
   final int enableApRecover; // 0
+  final int enableFixGetQuestPhaseDetail; // 1
   final int enablePresentHistory; // 1
   final int enableSerialCode; // 0
   final int enemyAttackRateArts; // 1000
@@ -465,6 +475,10 @@ class GameConstants {
   final int flag20220730; // 1
   final int flag20230402; // 1
   final int flag20230730; // 1
+  final int flag20240804; // 1
+  final int flag20241004; // 1
+  final int flag20250430; // 1
+  final int flag20250516; // 1
   final int flagCineraria4; // 0
   final int followerListExpireAt; // 3600
   final int followerRefreshResetTime; // 10
@@ -476,14 +490,19 @@ class GameConstants {
   final int friendpointBoostItemEffectId; // 3
   final int friendGachaAddLimit; // 100
   final int friendGachaCommandCodeAddLimit; // 100
-  final int friendNum; // 37
+  final int friendNum; // 43
   final int friendOfferedNum; // 20
   final int friendPoint; // 25
   final int fullTdPoint; // 10000
   final int gachaDailyMaxDrawNumResetAt; // 4
   final int gachaExtraRequiredCount; // 10
+  final int galleryDefaultZoomRateMax; // 2000
+  final int galleryReleaseQuestId; // 1000011
   final int gamedataResetAt; // 0
   final int gameOverCommandSpellId; // 2
+  final int grandBoardWarId; // 8395
+  final int grandFriendshipEquipSkillId; // 994725
+  final int grandSvtSupportFriendPoint; // 100
   final int heroineChangecardvoice; // 800104
   final int hydeSvtId; // 600710
   final int individualityIsSupport; // 7000
@@ -493,7 +512,7 @@ class GameConstants {
   final int jekyllSvtId; // 600700
   final int largeSuccessMultExp; // 2000
   final int largeSuccessRate; // 100
-  final int lastWarId; // 403
+  final int lastWarId; // 405
   final int limitedPeriodVoiceChangeType; // 0
   final int limitedShopRemainDays; // 1000
   final int loginDay; // 1459436400
@@ -530,16 +549,17 @@ class GameConstants {
   final int maxRarePri; // 999999999
   final int maxRp; // 8
   final int maxStone; // 999999999
-  final int maxUserCommandCode; // 450
+  final int maxUserCommandCode; // 900
   final int maxUserEquipExpUpRatio; // 3000
   final int maxUserItem; // 999999999
-  final int maxUserLv; // 170
-  final int maxUserSvt; // 800
-  final int maxUserSvtEquip; // 800
+  final int maxUserLv; // 180
+  final int maxUserSvt; // 900
+  final int maxUserSvtEquip; // 900
   final int maxUserSvtEquipStorage; // 100
   final int maxUserSvtStorage; // 100
   final int memoryDeckLimitByQuest; // 100
   final int menuChange; // 1
+  final int mightyChainIndividuality; // 4107
   final int minLogicCancerLvUpProb; // 100
   final int monthlyShopRemainDays; // 3
   final int mstBuffIndvAddBuffActive; // 1
@@ -553,6 +573,8 @@ class GameConstants {
   final int oneAct; // 300
   final int oneCommandSpell; // 86400
   final int oneRp; // 3600
+  final int openingMovieFadeInTime; // 200
+  final int openingMovieFadeOutTime; // 200
   final int otherImageLimitCount; // 10
   final int overKillNpRate; // 1500
   final int overKillStarAdd; // 300
@@ -564,12 +586,14 @@ class GameConstants {
   final int questInfoFlagCombineMaterial; // 0
   final int questInfoFlagItem; // 0
   final int questInfoFlagSvtEquip; // 0
+  final int quickChainIndividuality; // 4104
   final int raceAddPointBase; // 2
   final int raceRewardRankMax; // 3
   final int raceTargetGoalRank; // 3
   final int raidDefeatedEffectTime; // 0
   final int raidMarkdispStep; // 4
   final int raidTutorialQuestId; // 94004504
+  final int recommendSupportFriendPoint; // 100
   final int recoveryValue; // 2
   final int requestRaidUpdateEventMap; // 60
   final int requestTopHomeExpirationDateSecUpdateEventMap; // 900
@@ -579,6 +603,7 @@ class GameConstants {
   final int shop04ShopState; // 0
   final int shopSpecialItemEnable; // 1
   final int startingMemberFriendshipRate; // 1200
+  final int startDashSummonPrivilegeId; // 200
   final int starRateMax; // 3000
   final int statusUpAdjustAtk; // 10
   final int statusUpAdjustHp; // 10
@@ -588,6 +613,7 @@ class GameConstants {
   final int supportDeckMax; // 10
   final int svtBackQuestId; // 1000822
   final int svtBackQuestPhase; // 1
+  final int svtCoinQuestOpenQuestId; // 4000529
   final int svtLeaveQuestId; // 1000819
   final int svtLeaveQuestPhase; // 1
   final int svtRecoveryNum; // 5
@@ -661,6 +687,7 @@ class GameConstants {
   final int userStartId; // 1000001
   final int userSvt; // 50
   final int userSvtEquip; // 50
+  final int useNewLogicPreventInvisibleWhenInstantDeath; // 1
   final int valentineReleaseAt; // 1455080400
   final int warboardMaxServantCacheCount; // 0
   final int warboardMiddleMemoryServantCacheCount; // 0
@@ -671,6 +698,8 @@ class GameConstants {
     this.k20220731BoostRate1 = 200,
     this.accountingInitializeTimeout = 60,
     this.aftreChangeFreeDrawNum = 10,
+    this.appendPassiveSkillMaxExchangeNum = -1,
+    this.artsChainIndividuality = 4105,
     this.attackRate = 230,
     this.attackRateRandomMax = 1100,
     this.attackRateRandomMin = 900,
@@ -683,17 +712,21 @@ class GameConstants {
     this.battleEffectIdInvincible = 6214,
     this.battleEffectIdInvinciblePierce = 6215,
     this.battleEffectIdSpecialInvincible = 2001003,
+    this.battleEffectIdSpecialInvinciblePierce = 2001006,
     this.battleItemDispColumn = 7,
     this.battleMsgBaseTime = 1000,
     this.battleMsgInterval = 250,
     this.battleTimePerChara = 50,
     this.beforeChangeFreeDrawNum = 1,
     this.bpExpression = 1,
+    this.braveChainIndividuality = 4108,
+    this.busterChainIndividuality = 4106,
     this.campaignResetAt = 4,
-    this.canSelectSvtMaterialFlag = 4,
+    this.canSelectSvtMaterialFlag = 12,
     this.chainbonusArtsRate = 200,
     this.chainbonusBusterRate = 200,
     this.chainbonusQuick = 20,
+    this.chainErrorIndividuality = 4109,
     this.chapter1PrologueWarId = 100,
     this.chapter2EpilogueWarId = 309,
     this.chapter2PrologueWarId = 300,
@@ -707,12 +740,14 @@ class GameConstants {
     this.coinRoomMaxNum = 2,
     this.coinRoomReleaseQuestId = 3001101,
     this.combineLimitSpecialPrivilegeId = 100,
-    this.comebackTargetDay = 1704027600,
+    this.comebackTargetDay = 1735648200,
     this.commandArts = 4001,
     this.commandBuster = 4002,
     this.commandCardPrmUpMax = 500,
     this.commandCodeDetachingItemId = 5003,
     this.commandQuick = 4003,
+    this.commandSpellClassIconEffectId1 = 4001005,
+    this.commandSpellClassIconEffectId2 = 4001018,
     this.commandSpellRecoverAt = 0,
     this.convertDeckUserEquipAt = 1481099400,
     this.criticalAttackRate = 2000,
@@ -720,11 +755,13 @@ class GameConstants {
     this.criticalRatePerStar = 100,
     this.criticalStarRate = 200,
     this.criticalTdPointRate = 2000,
-    this.deckMax = 10,
+    this.deckMax = 15,
     this.defaultLockBoardGroupId = 0,
+    this.defaultQuestUseFriendshipUpItemGroupId = 1,
     this.disableFriendshipExceed = 0,
     this.disableServantEffectFilter = 0,
     this.enableApRecover = 0,
+    this.enableFixGetQuestPhaseDetail = 1,
     this.enablePresentHistory = 1,
     this.enableSerialCode = 0,
     this.enemyAttackRateArts = 1000,
@@ -764,6 +801,10 @@ class GameConstants {
     this.flag20220730 = 1,
     this.flag20230402 = 1,
     this.flag20230730 = 1,
+    this.flag20240804 = 1,
+    this.flag20241004 = 1,
+    this.flag20250430 = 1,
+    this.flag20250516 = 1,
     this.flagCineraria4 = 0,
     this.followerListExpireAt = 3600,
     this.followerRefreshResetTime = 10,
@@ -775,14 +816,19 @@ class GameConstants {
     this.friendpointBoostItemEffectId = 3,
     this.friendGachaAddLimit = 100,
     this.friendGachaCommandCodeAddLimit = 100,
-    this.friendNum = 37,
+    this.friendNum = 43,
     this.friendOfferedNum = 20,
     this.friendPoint = 25,
     this.fullTdPoint = 10000,
     this.gachaDailyMaxDrawNumResetAt = 4,
     this.gachaExtraRequiredCount = 10,
+    this.galleryDefaultZoomRateMax = 2000,
+    this.galleryReleaseQuestId = 1000011,
     this.gamedataResetAt = 0,
     this.gameOverCommandSpellId = 2,
+    this.grandBoardWarId = 8395,
+    this.grandFriendshipEquipSkillId = 994725,
+    this.grandSvtSupportFriendPoint = 100,
     this.heroineChangecardvoice = 800104,
     this.hydeSvtId = 600710,
     this.individualityIsSupport = 7000,
@@ -792,7 +838,7 @@ class GameConstants {
     this.jekyllSvtId = 600700,
     this.largeSuccessMultExp = 2000,
     this.largeSuccessRate = 100,
-    this.lastWarId = 403,
+    this.lastWarId = 405,
     this.limitedPeriodVoiceChangeType = 0,
     this.limitedShopRemainDays = 1000,
     this.loginDay = 1459436400,
@@ -829,16 +875,17 @@ class GameConstants {
     this.maxRarePri = 999999999,
     this.maxRp = 8,
     this.maxStone = 999999999,
-    this.maxUserCommandCode = 450,
+    this.maxUserCommandCode = 900,
     this.maxUserEquipExpUpRatio = 3000,
     this.maxUserItem = 999999999,
-    this.maxUserLv = 170,
-    this.maxUserSvt = 800,
-    this.maxUserSvtEquip = 800,
+    this.maxUserLv = 180,
+    this.maxUserSvt = 900,
+    this.maxUserSvtEquip = 900,
     this.maxUserSvtEquipStorage = 100,
     this.maxUserSvtStorage = 100,
     this.memoryDeckLimitByQuest = 100,
     this.menuChange = 1,
+    this.mightyChainIndividuality = 4107,
     this.minLogicCancerLvUpProb = 100,
     this.monthlyShopRemainDays = 3,
     this.mstBuffIndvAddBuffActive = 1,
@@ -852,6 +899,8 @@ class GameConstants {
     this.oneAct = 300,
     this.oneCommandSpell = 86400,
     this.oneRp = 3600,
+    this.openingMovieFadeInTime = 200,
+    this.openingMovieFadeOutTime = 200,
     this.otherImageLimitCount = 10,
     this.overKillNpRate = 1500,
     this.overKillStarAdd = 300,
@@ -863,12 +912,14 @@ class GameConstants {
     this.questInfoFlagCombineMaterial = 0,
     this.questInfoFlagItem = 0,
     this.questInfoFlagSvtEquip = 0,
+    this.quickChainIndividuality = 4104,
     this.raceAddPointBase = 2,
     this.raceRewardRankMax = 3,
     this.raceTargetGoalRank = 3,
     this.raidDefeatedEffectTime = 0,
     this.raidMarkdispStep = 4,
     this.raidTutorialQuestId = 94004504,
+    this.recommendSupportFriendPoint = 100,
     this.recoveryValue = 2,
     this.requestRaidUpdateEventMap = 60,
     this.requestTopHomeExpirationDateSecUpdateEventMap = 900,
@@ -878,6 +929,7 @@ class GameConstants {
     this.shop04ShopState = 0,
     this.shopSpecialItemEnable = 1,
     this.startingMemberFriendshipRate = 1200,
+    this.startDashSummonPrivilegeId = 200,
     this.starRateMax = 3000,
     this.statusUpAdjustAtk = 10,
     this.statusUpAdjustHp = 10,
@@ -887,6 +939,7 @@ class GameConstants {
     this.supportDeckMax = 10,
     this.svtBackQuestId = 1000822,
     this.svtBackQuestPhase = 1,
+    this.svtCoinQuestOpenQuestId = 4000529,
     this.svtLeaveQuestId = 1000819,
     this.svtLeaveQuestPhase = 1,
     this.svtRecoveryNum = 5,
@@ -960,6 +1013,7 @@ class GameConstants {
     this.userStartId = 1000001,
     this.userSvt = 50,
     this.userSvtEquip = 50,
+    this.useNewLogicPreventInvisibleWhenInstantDeath = 1,
     this.valentineReleaseAt = 1455080400,
     this.warboardMaxServantCacheCount = 0,
     this.warboardMiddleMemoryServantCacheCount = 0,

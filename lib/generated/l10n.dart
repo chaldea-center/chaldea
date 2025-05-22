@@ -2609,6 +2609,11 @@ class S {
     return Intl.message('Palingenesis', name: 'grail_up', desc: '', locale: localeName, args: []);
   }
 
+  /// `Grand Duel`
+  String get grand_board_war {
+    return Intl.message('Grand Duel', name: 'grand_board_war', desc: '', locale: localeName, args: []);
+  }
+
   /// `Growth Curve`
   String get growth_curve {
     return Intl.message('Growth Curve', name: 'growth_curve', desc: '', locale: localeName, args: []);

@@ -559,6 +559,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "gold": MessageLookupByLibrary.simpleMessage("Gold"),
     "grail": MessageLookupByLibrary.simpleMessage("Grail"),
     "grail_up": MessageLookupByLibrary.simpleMessage("Palingenesis"),
+    "grand_board_war": MessageLookupByLibrary.simpleMessage("Grand Duel"),
     "growth_curve": MessageLookupByLibrary.simpleMessage("Growth Curve"),
     "guda_female": MessageLookupByLibrary.simpleMessage("Gudako"),
     "guda_male": MessageLookupByLibrary.simpleMessage("Gudao"),
