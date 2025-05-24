@@ -327,6 +327,70 @@ class ClassBoardLine {
   Map<String, dynamic> toJson() => _$ClassBoardLineToJson(this);
 }
 
+@JsonSerializable()
+class GrandGraph {
+  int id;
+  String name;
+  String nameShort;
+  String nameShortEnglish;
+  int classBoardBaseId;
+  int nextSquareId;
+  int condSvtLv;
+  int condSkillLv;
+  @CondTypeConverter()
+  CondType condType;
+  int condTargetId;
+  int condNum;
+  List<ItemAmount> removeItems;
+  List<GrandGraphDetail> details;
+
+  GrandGraph({
+    required this.id,
+    this.name = "",
+    this.nameShort = "",
+    this.nameShortEnglish = "",
+    this.classBoardBaseId = 0,
+    this.nextSquareId = 0,
+    this.condSvtLv = 0,
+    this.condSkillLv = 0,
+    this.condType = CondType.none,
+    this.condTargetId = 0,
+    this.condNum = 0,
+    this.removeItems = const [],
+    this.details = const [],
+  });
+
+  factory GrandGraph.fromJson(Map<String, dynamic> json) => _$GrandGraphFromJson(json);
+
+  Map<String, dynamic> toJson() => _$GrandGraphToJson(this);
+}
+
+@JsonSerializable()
+class GrandGraphDetail {
+  int baseClassId;
+  int grandClassId;
+  int adjustHp;
+  int adjustAtk;
+  @CondTypeConverter()
+  CondType condType;
+  int condTargetId;
+  int condNum;
+
+  GrandGraphDetail({
+    this.baseClassId = 0,
+    this.grandClassId = 0,
+    this.adjustHp = 0,
+    this.adjustAtk = 0,
+    this.condType = CondType.none,
+    this.condTargetId = 0,
+    this.condNum = 0,
+  });
+
+  factory GrandGraphDetail.fromJson(Map<String, dynamic> json) => _$GrandGraphDetailFromJson(json);
+
+  Map<String, dynamic> toJson() => _$GrandGraphDetailToJson(this);
+}
+
 enum ClassBoardSkillType { none, passive, commandSpell }
 
 enum ClassBoardSquareFlag { none, start, blank }

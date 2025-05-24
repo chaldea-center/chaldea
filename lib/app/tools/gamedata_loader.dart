@@ -232,6 +232,7 @@ class GameDataLoader {
       'events': 'id',
       'campaigns': 'id',
       'classBoards': 'id',
+      'grandGraphs': 'id',
       'enemyMasters': 'id',
       'exchangeTickets': 'id',
       'fixedDrops': 'id',

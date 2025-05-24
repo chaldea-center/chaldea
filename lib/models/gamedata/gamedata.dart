@@ -70,6 +70,7 @@ class GameData with _GameDataExtra {
   Map<int, Event> events;
   Map<int, NiceWar> wars;
   Map<int, ClassBoard> classBoards;
+  Map<int, GrandGraph> grandGraphs;
   Map<int, Item> items;
   Map<int, QuestPhase> questPhases;
   Map<int, ExchangeTicket> exchangeTickets;
@@ -122,6 +123,7 @@ class GameData with _GameDataExtra {
     Map<int, Event>? events,
     Map<int, NiceWar>? wars,
     Map<int, ClassBoard>? classBoards,
+    Map<int, GrandGraph>? grandGraphs,
     Map<int, QuestPhase>? questPhases,
     Map<int, ExchangeTicket>? exchangeTickets,
     Map<int, EnemyMaster>? enemyMasters,
@@ -159,6 +161,7 @@ class GameData with _GameDataExtra {
        events = events ?? {},
        wars = wars ?? {},
        classBoards = classBoards ?? {},
+       grandGraphs = grandGraphs ?? {},
        items = items ?? {},
        questPhases = questPhases ?? {},
        exchangeTickets = exchangeTickets ?? {},
