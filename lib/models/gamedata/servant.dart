@@ -227,11 +227,11 @@ class Servant extends BasicServant {
   List<int> get expGrowth => curveData.exp; // [0:]
 
   SvtExpData growCurveForLimit(int limitCount) {
-    final ascAtkBase = ascensionAdd.getAscended(limitCount, (attr) => attr.overwriteAtkBase, costume);
-    final ascAtkMax = ascensionAdd.getAscended(limitCount, (attr) => attr.overwriteAtkMax, costume);
-    final ascHpBase = ascensionAdd.getAscended(limitCount, (attr) => attr.overwriteHpBase, costume);
-    final ascHpMax = ascensionAdd.getAscended(limitCount, (attr) => attr.overwriteHpMax, costume);
-    final ascGrowthType = ascensionAdd.getAscended(limitCount, (attr) => attr.overwriteExpType, costume);
+    final ascAtkBase = getAscended(limitCount, (attr) => attr.overwriteAtkBase);
+    final ascAtkMax = getAscended(limitCount, (attr) => attr.overwriteAtkMax);
+    final ascHpBase = getAscended(limitCount, (attr) => attr.overwriteHpBase);
+    final ascHpMax = getAscended(limitCount, (attr) => attr.overwriteHpMax);
+    final ascGrowthType = getAscended(limitCount, (attr) => attr.overwriteExpType);
     if (ascHpMax != null || ascHpBase != null || ascAtkMax != null || ascAtkBase != null) {
       return SvtExpData.from(
         type: ascGrowthType ?? growthCurve,
@@ -593,11 +593,7 @@ class Servant extends BasicServant {
   }
 
   Transl<String, String> lBattleName([int ascOrCostumeIdOrCharaId = 0]) {
-    final _battleName = ascensionAdd.getAscended(
-      ascOrCostumeIdOrCharaId,
-      (add) => add.overWriteServantBattleName,
-      profile.costume,
-    );
+    final _battleName = getAscended(ascOrCostumeIdOrCharaId, (add) => add.overWriteServantBattleName);
     return Transl.svtNames(_battleName ?? battleName);
   }
 
@@ -635,13 +631,16 @@ class Servant extends BasicServant {
       return x;
     }
 
-    return _checkList(entries.ascension[ascOrCostumeId]) ??
-        _checkList(entries.costume[ascOrCostumeId]) ??
-        _checkList(
-          ascOrCostumeId < 100
-              ? entries.costume[profile.costume.values.firstWhereOrNull((c) => c.id == ascOrCostumeId)?.battleCharaId]
-              : entries.costume[profile.costume.values.firstWhereOrNull((c) => c.battleCharaId == ascOrCostumeId)?.id],
-        );
+    T? result = _checkList(entries.ascension[ascOrCostumeId]) ?? _checkList(entries.costume[ascOrCostumeId]);
+    if (ascOrCostumeId > 0) {
+      result ??= _checkList(
+        ascOrCostumeId < 100
+            ? entries.costume[profile.costume.values.firstWhereOrNull((c) => c.id == ascOrCostumeId)?.battleCharaId]
+            : entries.costume[profile.costume.values.firstWhereOrNull((c) => c.battleCharaId == ascOrCostumeId)?.id],
+      );
+    }
+
+    return result;
   }
 
   ServantExtra get extra {
@@ -1195,19 +1194,6 @@ class AscensionAdd {
 
   factory AscensionAdd.fromJson(Map<String, dynamic> json) => _$AscensionAddFromJson(json);
 
-  T? getAscended<T>(
-    int ascOrCostumeId,
-    AscensionAddEntry<T> Function(AscensionAdd add) attri,
-    Map<int, NiceCostume> costumes,
-  ) {
-    final entries = attri(this);
-    return entries.ascension[ascOrCostumeId] ??
-        entries.costume[ascOrCostumeId] ??
-        (ascOrCostumeId < 100
-            ? entries.costume[costumes.values.firstWhereOrNull((c) => c.id == ascOrCostumeId)?.battleCharaId]
-            : entries.costume[costumes.values.firstWhereOrNull((c) => c.battleCharaId == ascOrCostumeId)?.id]);
-  }
-
   Map<String, dynamic> toJson() => _$AscensionAddToJson(this);
 }
 
@@ -1590,6 +1576,11 @@ class NiceLore {
   factory NiceLore.fromJson(Map<String, dynamic> json) => _$NiceLoreFromJson(json);
 
   Map<String, dynamic> toJson() => _$NiceLoreToJson(this);
+
+  Map<int, NiceCostume> get costumeCollections => {
+    for (final (k, v) in costume.items)
+      if (v.costumeCollectionNo > 0) k: v,
+  };
 }
 
 @JsonSerializable()

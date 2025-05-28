@@ -310,7 +310,7 @@ class ServantListPageState extends State<ServantListPage> with SearchableListSta
     if (!status.cur.favorite) {
       return Center(child: Text(S.current.svt_not_planned));
     }
-    final costumes = svt.profile.costume.values.toList();
+    final costumes = svt.profile.costumeCollections.values.toList();
     costumes.sort2((e) => e.id);
     Widget child = DefaultTextStyle.merge(
       style: TextStyle(fontSize: 12, color: Theme.of(context).textTheme.bodySmall?.color, fontFamily: kMonoFont),
@@ -706,7 +706,7 @@ class ServantListPageState extends State<ServantListPage> with SearchableListSta
             _batchChange((svt, cur, target) {
               final costumes = changeTarget ? target.costumes : cur.costumes;
               costumes.clear();
-              costumes.addAll(Map.fromIterable(svt.profile.costume.keys, value: (k) => _changedDress == true ? 1 : 0));
+              costumes.addAll(Map.fromIterable(svt.profile.costumeCollections.keys, value: (k) => _changedDress == true ? 1 : 0));
             });
           });
         },
@@ -879,12 +879,12 @@ class ServantListPageState extends State<ServantListPage> with SearchableListSta
           Text('${status.cur.ascension}-${status.cur.skills.join('/')}'),
           if (status.cur.appendSkills.any((e) => e > 0))
             Text(status.cur.appendSkills.map((e) => e == 0 ? '-' : e).join('/')),
-          if (svt.profile.costume.isNotEmpty)
+          if (svt.profile.costumeCollections.isNotEmpty)
             Row(
               mainAxisSize: MainAxisSize.min,
               children: [
                 db.getIconImage(Atlas.assetItem(Items.costumeIconId), width: 16, height: 16),
-                Text(svt.profile.costume.values.map((e) => status.cur.costumes[e.battleCharaId] ?? 0).join('/')),
+                Text(svt.profile.costumeCollections.values.map((e) => status.cur.costumes[e.battleCharaId] ?? 0).join('/')),
               ],
             ),
           Text('${S.current.np_short}${status.cur.npLv}'),

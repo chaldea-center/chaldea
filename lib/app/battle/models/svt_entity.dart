@@ -293,8 +293,7 @@ class BattleServantData {
 
   int get rarity =>
       isPlayer
-          ? niceSvt!.ascensionAdd.getAscended(limitCount, (attr) => attr.overwriteRarity, niceSvt!.costume) ??
-              niceSvt!.rarity
+          ? niceSvt!.getAscended(limitCount, (attr) => attr.overwriteRarity) ?? niceSvt!.rarity
           : niceEnemy!.svt.rarity;
 
   int get logicalClassId {
@@ -397,11 +396,7 @@ class BattleServantData {
     final List<BaseSkill> passives = [];
 
     if (isPlayer) {
-      final ascensionAdds = niceSvt!.ascensionAdd.getAscended(
-        limitCount,
-        (attr) => attr.overwriteClassPassive,
-        niceSvt!.costume,
-      );
+      final ascensionAdds = niceSvt!.getAscended(limitCount, (attr) => attr.overwriteClassPassive);
       if (ascensionAdds != null) {
         for (final skillId in ascensionAdds) {
           BaseSkill? skill = db.gameData.baseSkills[skillId];
