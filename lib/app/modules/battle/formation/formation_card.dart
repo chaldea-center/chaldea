@@ -99,11 +99,7 @@ class FormationCard extends StatelessWidget {
     ];
     Widget? grandSvtIcon;
     if (storedData != null && storedData.grandSvt && svt != null) {
-      // TODO: replace with grandGraph data
-      int? grandClassId;
-      if (svt.classId >= 1 && svt.classId <= 7) {
-        grandClassId = 10000 + svt.classId;
-      }
+      final grandClassId = db.gameData.grandGraphDetails[svt.classId]?.grandClassId;
       if (grandClassId != null) {
         grandSvtIcon = db.getIconImage(SvtClassX.clsIcon(grandClassId, 5), width: 24, aspectRatio: 1);
       }

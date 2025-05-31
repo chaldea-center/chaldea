@@ -55,7 +55,7 @@ class ClassBoard with RouteInfo {
           : "https://static.atlasacademy.io/JP/ClassIcons/btn_tab_$id.png";
 
   String get dispName {
-    if (id >= 1 && id <= 7) {
+    if ((id >= 1 && id <= 7) || (id >= 10001 && id <= 10007)) {
       if (classes.length == 1 && classes.single.classId == id) {
         return Transl.svtClassId(id).l;
       }
@@ -334,7 +334,6 @@ class GrandGraph {
   String nameShort;
   String nameShortEnglish;
   int classBoardBaseId;
-  int nextSquareId;
   int condSvtLv;
   int condSkillLv;
   @CondTypeConverter()
@@ -350,7 +349,6 @@ class GrandGraph {
     this.nameShort = "",
     this.nameShortEnglish = "",
     this.classBoardBaseId = 0,
-    this.nextSquareId = 0,
     this.condSvtLv = 0,
     this.condSkillLv = 0,
     this.condType = CondType.none,
@@ -367,6 +365,7 @@ class GrandGraph {
 
 @JsonSerializable()
 class GrandGraphDetail {
+  int grandGraphId;
   int baseClassId;
   int grandClassId;
   int adjustHp;
@@ -375,8 +374,10 @@ class GrandGraphDetail {
   CondType condType;
   int condTargetId;
   int condNum;
+  List<NiceTrait> adjustIndividuality;
 
   GrandGraphDetail({
+    this.grandGraphId = 0,
     this.baseClassId = 0,
     this.grandClassId = 0,
     this.adjustHp = 0,
@@ -384,6 +385,7 @@ class GrandGraphDetail {
     this.condType = CondType.none,
     this.condTargetId = 0,
     this.condNum = 0,
+    this.adjustIndividuality = const [],
   });
 
   factory GrandGraphDetail.fromJson(Map<String, dynamic> json) => _$GrandGraphDetailFromJson(json);

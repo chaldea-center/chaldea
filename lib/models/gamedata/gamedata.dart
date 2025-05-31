@@ -308,6 +308,10 @@ class GameData with _GameDataExtra {
         storyCharaFigures[charaId ~/ 10] = svt.id;
       });
     }
+    grandGraphDetails = {
+      for (final graph in grandGraphs.values)
+        for (final detail in graph.details) detail.baseClassId: detail,
+    };
     others = _ProcessedData(this);
 
     // drop data
@@ -416,6 +420,8 @@ mixin _GameDataExtra {
   Map<int, Servant> servantsWithDup = {};
   @JsonKey(includeFromJson: false, includeToJson: false)
   Map<int, int> storyCharaFigures = {};
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  late Map<int, GrandGraphDetail> grandGraphDetails;
 }
 
 @JsonSerializable(createToJson: true)

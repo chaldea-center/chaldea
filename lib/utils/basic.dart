@@ -192,8 +192,9 @@ class EnumUtil {
   EnumUtil._();
 
   static T next<T>(List<T> values, T e) {
-    assert(values.contains(e));
-    return values[(values.indexOf(e) + 1) % values.length];
+    final index = values.indexOf(e);
+    if (index == -1) return values.first;
+    return values[(index + 1) % values.length];
   }
 }
 

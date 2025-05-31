@@ -170,7 +170,6 @@ GrandGraph _$GrandGraphFromJson(Map json) => GrandGraph(
   nameShort: json['nameShort'] as String? ?? "",
   nameShortEnglish: json['nameShortEnglish'] as String? ?? "",
   classBoardBaseId: (json['classBoardBaseId'] as num?)?.toInt() ?? 0,
-  nextSquareId: (json['nextSquareId'] as num?)?.toInt() ?? 0,
   condSvtLv: (json['condSvtLv'] as num?)?.toInt() ?? 0,
   condSkillLv: (json['condSkillLv'] as num?)?.toInt() ?? 0,
   condType: json['condType'] == null ? CondType.none : const CondTypeConverter().fromJson(json['condType'] as String),
@@ -194,7 +193,6 @@ Map<String, dynamic> _$GrandGraphToJson(GrandGraph instance) => <String, dynamic
   'nameShort': instance.nameShort,
   'nameShortEnglish': instance.nameShortEnglish,
   'classBoardBaseId': instance.classBoardBaseId,
-  'nextSquareId': instance.nextSquareId,
   'condSvtLv': instance.condSvtLv,
   'condSkillLv': instance.condSkillLv,
   'condType': const CondTypeConverter().toJson(instance.condType),
@@ -205,6 +203,7 @@ Map<String, dynamic> _$GrandGraphToJson(GrandGraph instance) => <String, dynamic
 };
 
 GrandGraphDetail _$GrandGraphDetailFromJson(Map json) => GrandGraphDetail(
+  grandGraphId: (json['grandGraphId'] as num?)?.toInt() ?? 0,
   baseClassId: (json['baseClassId'] as num?)?.toInt() ?? 0,
   grandClassId: (json['grandClassId'] as num?)?.toInt() ?? 0,
   adjustHp: (json['adjustHp'] as num?)?.toInt() ?? 0,
@@ -212,9 +211,15 @@ GrandGraphDetail _$GrandGraphDetailFromJson(Map json) => GrandGraphDetail(
   condType: json['condType'] == null ? CondType.none : const CondTypeConverter().fromJson(json['condType'] as String),
   condTargetId: (json['condTargetId'] as num?)?.toInt() ?? 0,
   condNum: (json['condNum'] as num?)?.toInt() ?? 0,
+  adjustIndividuality:
+      (json['adjustIndividuality'] as List<dynamic>?)
+          ?.map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
+          .toList() ??
+      const [],
 );
 
 Map<String, dynamic> _$GrandGraphDetailToJson(GrandGraphDetail instance) => <String, dynamic>{
+  'grandGraphId': instance.grandGraphId,
   'baseClassId': instance.baseClassId,
   'grandClassId': instance.grandClassId,
   'adjustHp': instance.adjustHp,
@@ -222,4 +227,5 @@ Map<String, dynamic> _$GrandGraphDetailToJson(GrandGraphDetail instance) => <Str
   'condType': const CondTypeConverter().toJson(instance.condType),
   'condTargetId': instance.condTargetId,
   'condNum': instance.condNum,
+  'adjustIndividuality': instance.adjustIndividuality.map((e) => e.toJson()).toList(),
 };

@@ -29,7 +29,7 @@ class _ClassBoardDetailPageState extends State<ClassBoardDetailPage> with Single
   ClassBoardPlan get status => db.curUser.classBoardStatusOf(board.id);
   ClassBoardPlan get plan_ => db.curPlan_.classBoardPlan(board.id);
 
-  late final _tabController = TabController(length: 4, vsync: this);
+  late final _tabController = TabController(length: board.isGrand ? 3 : 4, vsync: this);
 
   @override
   void initState() {
@@ -43,7 +43,7 @@ class _ClassBoardDetailPageState extends State<ClassBoardDetailPage> with Single
   @override
   Widget build(BuildContext context) {
     if (_board == null) {
-      return NotFoundPage(title: S.current.class_board, url: Routes.commandCodeI(widget.id ?? 0));
+      return NotFoundPage(title: S.current.class_board, url: Routes.classBoardI(widget.id ?? 0));
     }
 
     return Scaffold(
@@ -56,7 +56,7 @@ class _ClassBoardDetailPageState extends State<ClassBoardDetailPage> with Single
               const Tab(text: 'Info'),
               Tab(text: S.current.class_board_square),
               const Tab(text: 'Map'),
-              Tab(text: S.current.mission),
+              if (!board.isGrand) Tab(text: S.current.mission),
             ],
           ),
         ),
@@ -64,7 +64,7 @@ class _ClassBoardDetailPageState extends State<ClassBoardDetailPage> with Single
       body: TabBarView(
         controller: _tabController,
         physics: _tabController.index == 2 ? const NeverScrollableScrollPhysics() : null,
-        children: [db.onUserData((context, snapshot) => infoTab), squareTab, mapTab, missionTab],
+        children: [db.onUserData((context, snapshot) => infoTab), squareTab, mapTab, if (!board.isGrand) missionTab],
       ),
     );
   }

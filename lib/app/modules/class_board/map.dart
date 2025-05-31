@@ -6,6 +6,8 @@ import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import 'class_board.dart';
 
+const Offset _grandOffset = Offset((14 + 198) / 2, -(76 - 108) / 2);
+
 class ClassBoardMap extends StatefulWidget {
   final ClassBoard board;
   final bool showPlanned;
@@ -15,15 +17,30 @@ class ClassBoardMap extends StatefulWidget {
   State<ClassBoardMap> createState() => _ClassBoardMapState();
 }
 
-class _ClassBoardMapState extends State<ClassBoardMap> {
+class _ClassBoardMapState extends State<ClassBoardMap> with AfterLayoutMixin {
   ClassBoard get board => widget.board;
   final _mapKey = GlobalKey();
   final imageLoader = ImageLoader();
+  final controller = TransformationController();
+
+  @override
+  void afterFirstLayout(BuildContext context) {
+    if (!board.isGrand) return;
+    final width = context.size?.width;
+    if (width == null) return;
+    final scale = 2.0;
+    final offset = Offset(2048 / 2 + _grandOffset.dx * scale, 2048 / 2 + _grandOffset.dy * scale) * width / 2048;
+    controller.value
+      ..translate(-offset.dx, -offset.dy)
+      ..scale(scale);
+    if (mounted) setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
     return InteractiveViewer(
       maxScale: 10,
+      transformationController: controller,
       child: GestureDetector(
         onTapUp: (details) => onTap(details.localPosition),
         child: CustomPaint(
@@ -105,12 +122,19 @@ class ClassBoardMapPainter extends CustomPainter {
     required this.enhancedSquares,
   });
 
-  Paint getPaint() => Paint()..filterQuality = FilterQuality.high;
+  Paint getPaint([BlendMode? blendMode]) {
+    final paint = Paint()..filterQuality = FilterQuality.high;
+    if (blendMode != null) paint.blendMode = blendMode;
+    return paint;
+  }
 
   @override
   void paint(Canvas canvas, Size size) {
+    final centerOffset = board.isGrand ? _grandOffset : Offset.zero;
+
     final width = min(size.width, size.height);
-    final scale = width / w0;
+    double scale = width / w0;
+
     final _paint = getPaint();
     canvas.save();
     canvas.translate(size.width / 2, size.height / 2);
@@ -135,23 +159,39 @@ class ClassBoardMapPainter extends CustomPainter {
     }
 
     drawImage(asset('Bg/bg.png'), getRect(Offset.zero, 2048, 2048));
-    drawImage(
-      asset2("Select/ClassScoreSelectionAtlas/circle_05.png"),
-      getRect(Offset.zero, 1040, 1040),
-      paint: getPaint()..color = const Color.fromRGBO(0, 0, 0, 0.7),
-    );
-    drawImage(asset2("Select/ClassScoreSelectionAtlas/circle_00.png"), getRect(Offset.zero, 920, 920));
-    drawImage(
-      asset2("Select/ClassScoreSelectionAtlas/circle_03.png"),
-      getRect(Offset.zero, 560, 560),
-      // paint: getPaint()..color = const Color.fromRGBO(0, 0, 0, 0.7),
-    );
-    drawImage(asset('Bg/coat_color.png'), getRect(Offset.zero, 512, 512));
-    drawImage(
-      asset2("UI/DownloadClassBoardUIAtlas/DownloadClassBoardUIAtlas1/btn_class.png"),
-      getRect(Offset.zero, 130, 130),
-    );
-    drawImage(board.uiIcon, getRect(Offset.zero, 128, 128));
+    if (!board.isGrand) {
+      drawImage(
+        asset2("Select/ClassScoreSelectionAtlas/circle_05.png"),
+        getRect(Offset.zero, 1040, 1040),
+        paint: getPaint()..color = const Color.fromRGBO(0, 0, 0, 0.7),
+      );
+      drawImage(asset2("Select/ClassScoreSelectionAtlas/circle_00.png"), getRect(Offset.zero, 920, 920));
+      drawImage(
+        asset2("Select/ClassScoreSelectionAtlas/circle_03.png"),
+        getRect(Offset.zero, 560, 560),
+        // paint: getPaint()..color = const Color.fromRGBO(0, 0, 0, 0.7),
+      );
+      drawImage(asset('Bg/coat_color.png'), getRect(Offset.zero, 512, 512));
+      drawImage(
+        asset2("UI/DownloadClassBoardUIAtlas/DownloadClassBoardUIAtlas1/btn_class.png"),
+        getRect(Offset.zero, 130, 130),
+      );
+      drawImage(board.uiIcon, getRect(Offset.zero, 128, 128));
+    } else {
+      // grand
+      const grandBgScale = 0.75;
+      final grand1024Rect = getRect(centerOffset, 1024 * grandBgScale, 1024 * grandBgScale);
+      drawImage(asset('Bg/GrandClassScore_base.png'), grand1024Rect);
+      drawImage(asset('Bg/GrandClassScore_add.png'), grand1024Rect, paint: getPaint(BlendMode.exclusion));
+      drawImage(asset('Bg/GrandClassScore_add02.png'), grand1024Rect, paint: getPaint(BlendMode.exclusion));
+      drawImage(asset('Bg/GrandClassScore_add_parts_01.png'), grand1024Rect, paint: getPaint(BlendMode.exclusion));
+      drawImage(asset('Bg/GrandClassScore_star_blur.png'), grand1024Rect, paint: getPaint(BlendMode.colorDodge));
+      drawImage(asset('Bg/GrandClassScore_star.png'), grand1024Rect, paint: getPaint(BlendMode.plus));
+      drawImage(
+        asset('Bg/GrandClassIcon${board.id}.png'),
+        getRect(centerOffset, 256 * grandBgScale, 256 * grandBgScale),
+      );
+    }
 
     final squaresMap = {for (final s in board.squares) s.id: s};
     const double sw = 56;
@@ -230,7 +270,7 @@ class ClassBoardMapPainter extends CustomPainter {
           Paint()
             ..color = Colors.white70
             ..style = PaintingStyle.stroke
-            ..strokeWidth = radius / 10,
+            ..strokeWidth = radius * 0.2,
         );
       }
 
