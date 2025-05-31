@@ -40,6 +40,9 @@ extension NumX on num {
       compact = false;
       number /= base;
     }
+    if (number.isNaN) {
+      return number.toString();
+    }
     if (compact && (minVal == null || abs() >= minVal)) {
       return NumberFormat.compact(locale: 'en').format(number);
     }

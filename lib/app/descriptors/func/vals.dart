@@ -2,7 +2,6 @@ import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/json_viewer/json_viewer.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
-import '../../../packages/logger.dart';
 
 class ValListDsc extends StatelessWidget {
   final BaseFunction func;
@@ -116,12 +115,10 @@ class ValDsc extends StatelessWidget {
     );
   }
 
-  static void _addInt(final List<String> parts, int? value, [String Function(String)? post]) {
-    if (value == null || value == 0) return;
-    if (value == 966756) {
-      logger.e(value.toString());
-    }
+  static void _addInt(final List<String> parts, int? value, {String Function(String)? post}) {
+    if (value == null) return;
     String text = value.toString();
+    // if (maxValue != null) text = '$text~$maxValue';
     if (post != null) text = post(text);
     parts.add(text);
   }
@@ -137,9 +134,11 @@ class ValDsc extends StatelessWidget {
     }
   }
 
-  static void _addPercent(final List<String> parts, int? value, int base, [String Function(String)? post]) {
-    if (value == null || value == 0) return;
-    String text = '${_toPercent(value, base)!}%';
+  static void _addPercent(final List<String> parts, int? value, int base, {String Function(String)? post}) {
+    if (value == null) return;
+    String text = '${_toPercent(value, base)}';
+    // if (maxValue != null) text = '$text~${_toPercent(maxValue, base)}';
+    text += '%';
     if (post != null) {
       text = post(text);
     }
@@ -149,6 +148,9 @@ class ValDsc extends StatelessWidget {
   // return null if not processed
   void describeFunc() {
     parts.clear();
+
+    int? valueMaxValue = vals.CondParamRangeMaxValue ?? vals.CondParamAddMaxValue;
+    if (valueMaxValue != null) valueMaxValue = (vals.Value ?? 0) + valueMaxValue;
 
     // conditions
     if (vals.StarHigher != null) {
@@ -178,17 +180,17 @@ class ValDsc extends StatelessWidget {
         describeBuff(parts, func.buffs.first, vals, inList: inList, ignoreCount: ignoreCount);
       }
       if (vals.UseRate != null) {
-        _addPercent(parts, vals.UseRate, 10, (v) => Transl.special.funcValActChance(v));
+        _addPercent(parts, vals.UseRate, 10, post: (v) => Transl.special.funcValActChance(v));
       }
     } else if (func.funcType == FuncType.gainHpFromTargets) {
-      _addInt(parts, vals.DependFuncVals?.Value, (s) => '$s×N');
+      _addInt(parts, vals.DependFuncVals?.Value, post: (s) => '$s×N');
     } else if (func.funcType == FuncType.gainNpTargetSum) {
-      _addPercent(parts, vals.Value, 100, (s) => '$s×N');
+      _addPercent(parts, vals.Value, 100, post: (s) => '$s×N');
     } else if (func.funcType == FuncType.gainNpCriticalstarSum) {
-      _addPercent(parts, vals.Value, 100, (s) => '$s×N');
+      _addPercent(parts, vals.Value, 100, post: (s) => '$s×N');
     } else if (func.funcType == FuncType.gainNpFromTargets) {
       // Absorb Value, charge Value2
-      _addPercent(parts, vals.DependFuncVals?.Value2 ?? vals.DependFuncVals?.Value, 100, (s) => '$s×N');
+      _addPercent(parts, vals.DependFuncVals?.Value2 ?? vals.DependFuncVals?.Value, 100, post: (s) => '$s×N');
     } else if (func.funcType == FuncType.absorbNpturn) {
       final v2 = vals.DependFuncVals?.Value2 ?? vals.DependFuncVals?.Value;
       if (v2 != null) {
@@ -221,7 +223,7 @@ class ValDsc extends StatelessWidget {
           case FuncType.gainNpIndividualSum:
           case FuncType.gainNpBuffIndividualSum:
           case FuncType.gainNpTargetSum:
-            _addPercent(parts, vals.Value, 100, (s) => '$s×N');
+            _addPercent(parts, vals.Value, 100, post: (s) => '$s×N');
             break;
           case FuncType.transformServant:
             // already added in func text
@@ -247,7 +249,7 @@ class ValDsc extends StatelessWidget {
           case FuncType.damageNpAndOrCheckIndividuality:
           case FuncType.damageNpRare:
           case FuncType.damageNpStateIndividualFix:
-            _addPercent(parts, vals.Correction, 10, (s) => '×$s');
+            _addPercent(parts, vals.Correction, 10, post: (s) => '×$s');
             break;
           case FuncType.damageNpIndividualSum:
             if (vals.Value2 != null) {
@@ -256,11 +258,8 @@ class ValDsc extends StatelessWidget {
               } else {
                 parts.add('${_toPercent(vals.Value2, 10)}%');
               }
-              if (vals.ParamAddMaxCount != null && vals.ParamAddMaxCount! > 0) {
-                parts.add('N≤${vals.ParamAddMaxCount}');
-              }
             } else {
-              _addPercent(parts, vals.Correction, 10, (s) => '×$s');
+              _addPercent(parts, vals.Correction, 10, post: (s) => '×$s');
             }
             break;
           case FuncType.damageNpBattlePointPhase:
@@ -290,10 +289,10 @@ class ValDsc extends StatelessWidget {
         }
       }
       if (vals.BattlePointValue != null) {
-        _addInt(parts, vals.BattlePointValue, (v) => '+$v');
+        _addInt(parts, vals.BattlePointValue, post: (v) => '+$v');
       }
       if (!ignoreCount && vals.Count != null && vals.Count! > 0) {
-        _addInt(parts, vals.Count, (v) => Transl.special.funcValCountTimes(vals.Count!));
+        _addInt(parts, vals.Count, post: (v) => Transl.special.funcValCountTimes(vals.Count!));
       }
       if (vals.AddCount != null) {
         if (func.funcType == FuncType.eventDropRateUp) {
@@ -303,7 +302,7 @@ class ValDsc extends StatelessWidget {
         }
       }
       if (vals.UseRate != null) {
-        _addPercent(parts, vals.UseRate, 10, (v) => Transl.special.funcValActChance(v));
+        _addPercent(parts, vals.UseRate, 10, post: (v) => Transl.special.funcValActChance(v));
       }
       if (vals.RateCount != null) {
         switch (func.funcType) {
@@ -346,27 +345,17 @@ class ValDsc extends StatelessWidget {
   }) {
     final base = buff.percentBase;
     final trigger = kBuffValueTriggerTypes[buff.type];
-    String _val(int? v) {
-      if (v == null) return '';
-      if (base == null) return '$v';
-      return '${_toPercent(v, base)!}%';
-    }
 
-    bool _valueUsed = false;
+    // b+kx
+    int? k = vals.ParamAdd ?? vals.ParamAddValue ?? vals.CondParamAddValue ?? vals.CondParamRangeMaxValue;
+    bool isPercentK = (vals.CondParamRangeMaxValue ?? 0) != 0;
 
-    if (vals.ParamAddValue != null) {
-      parts.add('${_val(vals.Value)}+${_val(vals.ParamAddValue)}×N');
-      _valueUsed = true;
-    }
-    if (vals.ParamAdd != null) {
-      parts.add('${_val(vals.Value)}+${_val(vals.ParamAdd)}×N');
-      _valueUsed = true;
-    }
-    if (vals.ParamAddMaxCount != null) {
-      parts.add('N≤${vals.ParamAddMaxCount}');
-    }
     if (base != null) {
-      if (!_valueUsed) _addPercent(parts, vals.Value, base);
+      if (k != null) {
+        parts.add("${_toPercent(vals.Value, base)}%+${_toPercent(k, base)}%×${isPercentK ? 'p' : 'N'}");
+      } else {
+        _addPercent(parts, vals.Value, base);
+      }
       // return;
     } else if (trigger != null) {
       final triggerVal = trigger(vals);
@@ -416,7 +405,11 @@ class ValDsc extends StatelessWidget {
       parts.add('');
       return;
     } else {
-      if (!_valueUsed) _addInt(parts, vals.Value);
+      if (k != null) {
+        parts.add("${vals.Value}+$k×${isPercentK ? 'p' : 'N'}");
+      } else {
+        _addInt(parts, vals.Value);
+      }
     }
     if (vals.RatioHPHigh != null || vals.RatioHPLow != null) {
       final ratios = [vals.RatioHPHigh ?? 0, vals.RatioHPLow ?? 0].toList();
@@ -434,7 +427,7 @@ class ValDsc extends StatelessWidget {
     }
 
     if (!ignoreCount && vals.Count != null && vals.Count! > 0) {
-      _addInt(parts, vals.Count, (v) => Transl.special.funcValCountTimes(vals.Count!));
+      _addInt(parts, vals.Count, post: (v) => Transl.special.funcValCountTimes(vals.Count!));
     }
   }
 
@@ -451,13 +444,18 @@ class ValDsc extends StatelessWidget {
     }
 
     if (vals.ActSetWeight != null) {
-      _addPercent(parts, vals.ActSetWeight, 1, (v) {
-        String s = Transl.special.funcValWeight(v);
-        if (vals.ActSet != null) {
-          s = '[${vals.ActSet}]$s';
-        }
-        return s;
-      });
+      _addPercent(
+        parts,
+        vals.ActSetWeight,
+        1,
+        post: (v) {
+          String s = Transl.special.funcValWeight(v);
+          if (vals.ActSet != null) {
+            s = '[${vals.ActSet}]$s';
+          }
+          return s;
+        },
+      );
     }
   }
 }

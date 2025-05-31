@@ -1157,6 +1157,50 @@ class FuncDescriptor extends StatelessWidget {
     );
 
     List<List<InlineSpan>> _condSpans = [];
+
+    int? paramAddMaxCount = vals?.ParamAddMaxCount;
+    int? paramAddValue = vals?.ParamAdd ?? vals?.ParamAddValue;
+    int? paramAddMaxValue = vals?.ParamMax ?? vals?.ParamAddMaxValue;
+    if (paramAddValue != null && paramAddMaxValue != null && paramAddMaxValue % paramAddValue == 0) {
+      paramAddMaxCount ??= paramAddMaxValue ~/ paramAddValue;
+    }
+    if (paramAddMaxCount != null) {
+      _condSpans.add(
+        SharedBuilder.replaceSpan(Transl.miscFunction('ParamAddMaxCount'), '{0}', [
+          TextSpan(text: '$paramAddMaxCount'),
+        ]),
+      );
+    }
+
+    // CondParamAdd
+    final condParamType = vals?.CondParamRangeType ?? vals?.CondParamAddType ?? 0;
+    int? condParamTargetId = vals?.CondParamRangeTargetId ?? vals?.CondParamAddTargetId ?? 0;
+    num? condParamMaxCount = vals?.CondParamRangeMaxCount;
+    if (vals?.CondParamAddMaxValue != null && vals?.CondParamAddValue != null) {
+      condParamMaxCount ??= vals!.CondParamAddMaxValue! / vals.CondParamAddValue!;
+    }
+    if (condParamType != 0) {
+      final targetText = SharedBuilder.textButtonSpan(
+        context: context,
+        text: Transl.svtClassId(condParamTargetId).l,
+        onTap: () => Routes.svtClassI(condParamTargetId),
+      );
+      final functionScope = Transl.md.misc['Function'];
+      String translKey = 'CondParamType$condParamType';
+      if (functionScope != null &&
+          !functionScope.containsKey(translKey) &&
+          functionScope.containsKey('CondParamType0')) {
+        translKey = 'CondParamType0';
+      }
+      _condSpans.add(
+        SharedBuilder.replaceSpanMaps(Transl.miscFunction(translKey), {
+          '{target}': (_) => [targetText],
+          '{maxCount}': (_) => [TextSpan(text: condParamMaxCount?.format())],
+          '{type}': (_) => [TextSpan(text: '$condParamType')],
+        }),
+      );
+    }
+
     void _addTraits(String? prefix, List<NiceTrait> traits, {bool useAnd = false}) {
       if ([BuffType.upCommandall, BuffType.downCommandall].contains(buff?.type)) {
         traits =
