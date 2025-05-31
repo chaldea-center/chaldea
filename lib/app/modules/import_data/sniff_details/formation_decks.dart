@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
 import 'package:chaldea/app/app.dart';
+import 'package:chaldea/app/battle/models/user.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/gamedata/toplogin.dart';
 import 'package:chaldea/models/models.dart';
@@ -145,55 +146,59 @@ extension BattleTeamFormationX on BattleTeamFormation {
       mysticCode: MysticCodeSaveData(mysticCodeId: userEquip?.equipId, level: userEquip?.lv ?? 0),
       svts: List.generate(6, (i) {
         final svt = battleEntity.battleInfo?.myDeck?.svts.getOrNull(i);
-        final userSvt = userSvts[svt?.userSvtId], userCE = userSvts[svt?.userSvtEquipIds?.firstOrNull];
+        final userSvt = userSvts[svt?.userSvtId];
         final dbSvt = db.gameData.servantsById[userSvt?.svtId];
-        if (userSvt != null) {
-          final appendId2Num = {
-            for (final passive in dbSvt?.appendPassive ?? <ServantAppendPassiveSkill>[]) passive.skill.id: passive.num,
-          };
-          final appendPassive2Lvs = <int, int>{
-            for (final (index, skillId) in (userSvt.appendPassiveSkillIds ?? <int>[]).indexed)
-              if (appendId2Num.containsKey(skillId))
-                appendId2Num[skillId]!: userSvt.appendPassiveSkillLvs?.getOrNull(index) ?? 0,
-          };
-          bool ceMLB = false;
-          if (userCE != null) {
-            if (userCE.limitCount == 0) {
-              // may be zero even if MLB for support svt
-              final skill = db.gameData.craftEssencesById[userCE.svtId]?.skills.firstWhereOrNull(
-                (e) => e.id == userCE.skillId1,
-              );
-              if (skill != null && skill.condLimitCount == 4) {
-                ceMLB = true;
-              }
-            } else {
-              ceMLB = userCE.limitCount == 4;
-            }
-          }
+        if (userSvt == null) return null;
 
-          return SvtSaveData(
-            svtId: userSvt.svtId,
-            limitCount: userSvt.dispLimitCount,
-            skillLvs: [userSvt.skillLv1, userSvt.skillLv2, userSvt.skillLv3],
-            skillIds: [userSvt.skillId1, userSvt.skillId2, userSvt.skillId3],
-            appendLvs: kAppendSkillNums.map((skillNum) => appendPassive2Lvs[skillNum + 99] ?? 0).toList(),
-            tdId: userSvt.treasureDeviceId,
-            tdLv: userSvt.treasureDeviceLv ?? 0,
-            lv: userSvt.lv,
-            // atkFou,
-            // hpFou,
-            // fixedAtk,
-            // fixedHp,
-            ceId: userCE?.svtId,
-            ceLimitBreak: ceMLB,
-            ceLv: userCE?.lv ?? 1,
-            supportType: SupportSvtType.fromFollowerType(svt?.followerType ?? 0),
-            cardStrengthens: null,
-            commandCodeIds: null,
-            grandSvt: userSvt.grandSvt == 1,
-          );
+        final appendId2Num = {
+          for (final passive in dbSvt?.appendPassive ?? <ServantAppendPassiveSkill>[]) passive.skill.id: passive.num,
+        };
+        final appendPassive2Lvs = <int, int>{
+          for (final (index, skillId) in (userSvt.appendPassiveSkillIds ?? <int>[]).indexed)
+            if (appendId2Num.containsKey(skillId))
+              appendId2Num[skillId]!: userSvt.appendPassiveSkillLvs?.getOrNull(index) ?? 0,
+        };
+
+        SvtEquipSaveData? getEquipData(SvtEquipTarget equipTarget) {
+          final userCE = userSvts[svt?.userSvtEquipIds?.getOrNull(equipTarget.value)];
+          if (userCE == null) return null;
+          bool limitBreak = false;
+
+          if (userCE.limitCount == 0) {
+            // may be zero even if MLB for support svt
+            final skill = db.gameData.craftEssencesById[userCE.svtId]?.skills.firstWhereOrNull(
+              (e) => e.id == userCE.skillId1,
+            );
+            if (skill != null && skill.condLimitCount == 4) {
+              limitBreak = true;
+            }
+          } else {
+            limitBreak = userCE.limitCount == 4;
+          }
+          return SvtEquipSaveData(id: userCE.svtId, lv: userCE.lv, limitBreak: limitBreak);
         }
-        return null;
+
+        return SvtSaveData(
+          svtId: userSvt.svtId,
+          limitCount: userSvt.dispLimitCount,
+          skillLvs: [userSvt.skillLv1, userSvt.skillLv2, userSvt.skillLv3],
+          skillIds: [userSvt.skillId1, userSvt.skillId2, userSvt.skillId3],
+          appendLvs: kAppendSkillNums.map((skillNum) => appendPassive2Lvs[skillNum + 99] ?? 0).toList(),
+          tdId: userSvt.treasureDeviceId,
+          tdLv: userSvt.treasureDeviceLv ?? 0,
+          lv: userSvt.lv,
+          // atkFou,
+          // hpFou,
+          // fixedAtk,
+          // fixedHp,
+          equip1: getEquipData(SvtEquipTarget.normal),
+          equip2: getEquipData(SvtEquipTarget.bond),
+          equip3: getEquipData(SvtEquipTarget.reward),
+          supportType: SupportSvtType.fromFollowerType(svt?.followerType ?? 0),
+          cardStrengthens: null,
+          commandCodeIds: null,
+          grandSvt: userSvt.grandSvt == 1,
+        );
       }),
     );
   }
@@ -212,7 +217,12 @@ extension BattleTeamFormationX on BattleTeamFormation {
     SvtSaveData? cvtSvt(DeckServantData? svtData) {
       final userSvt = userSvts![svtData?.userSvtId];
       if (svtData == null || userSvt == null || svtData.isFollowerSvt == true) return null;
-      final userCE = userSvts[svtData.userSvtEquipIds.firstOrNull];
+
+      SvtEquipSaveData? getEquipData(SvtEquipTarget equipTarget) {
+        final userCE = userSvts?[svtData.userSvtEquipIds.getOrNull(equipTarget.value)];
+        if (userCE == null) return null;
+        return SvtEquipSaveData(id: userCE.svtId, lv: userCE.lv, limitBreak: userCE.limitCount == 4);
+      }
 
       return SvtSaveData(
         svtId: userSvt.svtId,
@@ -227,16 +237,16 @@ extension BattleTeamFormationX on BattleTeamFormation {
         hpFou: userSvt.adjustHp * 10,
         // fixedAtk,
         // fixedHp,
-        ceId: userCE?.svtId,
-        ceLimitBreak: userCE?.limitCount == 4,
-        ceLv: userCE?.lv ?? 1,
+        equip1: getEquipData(SvtEquipTarget.normal),
+        equip2: getEquipData(SvtEquipTarget.bond),
+        equip3: getEquipData(SvtEquipTarget.reward),
         supportType: SupportSvtType.none,
         cardStrengthens: null,
         commandCodeIds: null,
         //  disabledExtraSkills,
         //  customPassives,
         //  customPassiveLvs,
-        // grandSvt: false,
+        grandSvt: mstData.userSvtGrand.any((e) => e.userSvtId == userSvt.id),
       );
     }
 

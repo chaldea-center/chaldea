@@ -148,6 +148,7 @@ SvtStatus _$SvtStatusFromJson(Map json) => $checkedCreate('SvtStatus', json, ($c
       'cmdCardStrengthen',
       (v) => (v as List<dynamic>?)?.map((e) => (e as num).toInt()).toList(),
     ),
+    grandSvt: $checkedConvert('grandSvt', (v) => v as bool? ?? false),
   );
   return val;
 });
@@ -158,6 +159,7 @@ Map<String, dynamic> _$SvtStatusToJson(SvtStatus instance) => <String, dynamic>{
   'bond': instance.bond,
   'equipCmdCodes': instance.equipCmdCodes,
   'cmdCardStrengthen': instance.cmdCardStrengthen,
+  'grandSvt': instance.grandSvt,
 };
 
 UserPlan _$UserPlanFromJson(Map json) => $checkedCreate('UserPlan', json, ($checkedConvert) {

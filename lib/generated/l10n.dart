@@ -2614,6 +2614,11 @@ class S {
     return Intl.message('Grand Duel', name: 'grand_board_war', desc: '', locale: localeName, args: []);
   }
 
+  /// `Grand Servant`
+  String get grand_servant {
+    return Intl.message('Grand Servant', name: 'grand_servant', desc: '', locale: localeName, args: []);
+  }
+
   /// `Growth Curve`
   String get growth_curve {
     return Intl.message('Growth Curve', name: 'growth_curve', desc: '', locale: localeName, args: []);

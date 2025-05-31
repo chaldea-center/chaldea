@@ -311,27 +311,27 @@ class _BattleSvtDetailState extends State<BattleSvtDetail> with SingleTickerProv
       );
     }
 
-    final ce = svt.playerSvtData?.ce;
-    if (ce != null) {
+    for (final equip in [svt.equip1, svt.equip2, svt.equip3]) {
+      if (equip == null) continue;
+      final ce = equip.craftEssence;
       children.add(DividerWithTitle(title: S.current.craft_essence, indent: 16));
       children.add(
         ListTile(
           leading: ce.iconBuilder(context: context, width: 40),
           title: Text(ce.lName.l),
           trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
-          subtitle: Text(
-            'Lv.${svt.playerSvtData!.ceLv}  ${svt.playerSvtData!.ceLimitBreak ? S.current.max_limit_break : ""}',
-          ),
+          subtitle: Text('Lv.${equip.level}  ${equip.isLimitBreak ? S.current.max_limit_break : ""}'),
           onTap: ce.routeTo,
         ),
       );
-      final allSkills = ce.getActivatedSkills(svt.playerSvtData!.ceLimitBreak);
+      final allSkills = ce.getActivatedSkills(equip.isLimitBreak);
       for (final skills in allSkills.values) {
         for (final skill in skills) {
           children.add(SkillDescriptor(skill: skill, showEnemy: svt.isEnemy));
         }
       }
     }
+
     return ListView(children: children);
   }
 

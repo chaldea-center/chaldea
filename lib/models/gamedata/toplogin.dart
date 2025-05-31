@@ -293,6 +293,10 @@ final _$mstMasterSchemes = <String, (Type, DataMaster Function(String mstName))>
     (mstName) =>
         DataMaster<int, UserServantAppendPassiveSkillLvEntity>(mstName, UserServantAppendPassiveSkillLvEntity.fromJson),
   ),
+  "userSvtGrand": (
+    UserServantGrandEntity,
+    (mstName) => DataMaster<int, UserServantGrandEntity>(mstName, UserServantGrandEntity.fromJson),
+  ),
   "userCommandCodeCollection": (
     UserCommandCodeCollectionEntity,
     (mstName) =>
@@ -610,6 +614,7 @@ class MasterDataManager {
   DataMaster<_IntStr, UserServantCollectionEntity> get userSvtCollection => get<_IntStr, UserServantCollectionEntity>();
   DataMaster<int, UserServantEntity> get userSvt => getByName('userSvt')!;
   DataMaster<int, UserServantEntity> get userSvtStorage => getByName('userSvtStorage')!;
+  DataMaster<int, UserServantGrandEntity> get userSvtGrand => getByName('userSvtGrand')!;
   DataMaster<_IntStr, UserServantAppendPassiveSkillEntity> get userSvtAppendPassiveSkill =>
       get<_IntStr, UserServantAppendPassiveSkillEntity>();
   DataMaster<int, UserServantAppendPassiveSkillLvEntity> get userSvtAppendPassiveSkillLv =>
@@ -938,6 +943,106 @@ class UserServantCollectionEntity extends DataEntityBase<_IntStr> {
 
   factory UserServantCollectionEntity.fromJson(Map<String, dynamic> data) =>
       _$UserServantCollectionEntityFromJson(data);
+}
+
+@JsonSerializable(createToJson: false)
+class UserServantGrandEntity extends DataEntityBase<int> {
+  int userId;
+  int grandGraphId;
+  int userSvtId;
+  int svtId;
+  int limitCount;
+  int dispLimitCount;
+  int lv;
+  int exp;
+  int hp;
+  int atk;
+  int adjustHp;
+  int adjustAtk;
+  int skillId1;
+  int skillId2;
+  int skillId3;
+  int skillLv1;
+  int skillLv2;
+  int skillLv3;
+  List<int> classPassive;
+  int treasureDeviceId;
+  int treasureDeviceLv;
+  int exceedCount;
+  EquipTargetInfo? equipTarget1;
+  EquipTargetInfo? equipTarget2;
+  EquipTargetInfo? equipTarget3;
+  List<AppendPassiveSkillInfo> appendPassiveSkill;
+  List<CommandCodeStatus> commandCode;
+  List<int> commandCardParam;
+  // Map<String, dynamic> script;
+  int updatedAt;
+  int grandSvt; // not shown in schema
+
+  @override
+  int get primaryKey => grandGraphId;
+
+  static int createPK(int grandGraphId) => grandGraphId;
+
+  UserServantGrandEntity({
+    dynamic userId,
+    dynamic grandGraphId,
+    dynamic userSvtId,
+    dynamic svtId,
+    dynamic limitCount,
+    dynamic dispLimitCount,
+    dynamic lv,
+    dynamic exp,
+    dynamic hp,
+    dynamic atk,
+    dynamic adjustHp,
+    dynamic adjustAtk,
+    dynamic skillId1,
+    dynamic skillId2,
+    dynamic skillId3,
+    dynamic skillLv1,
+    dynamic skillLv2,
+    dynamic skillLv3,
+    dynamic classPassive,
+    dynamic treasureDeviceId,
+    dynamic treasureDeviceLv,
+    dynamic exceedCount,
+    this.equipTarget1,
+    this.equipTarget2,
+    this.equipTarget3,
+    this.appendPassiveSkill = const [],
+    this.commandCode = const [],
+    dynamic commandCardParam,
+    // Map<String, dynamic> script,
+    dynamic updatedAt,
+    dynamic grandSvt,
+  }) : userId = _toInt(userId),
+       grandGraphId = _toInt(grandGraphId),
+       userSvtId = _toInt(userSvtId),
+       svtId = _toInt(svtId),
+       limitCount = _toInt(limitCount),
+       dispLimitCount = _toInt(dispLimitCount),
+       lv = _toInt(lv),
+       exp = _toInt(exp),
+       hp = _toInt(hp),
+       atk = _toInt(atk),
+       adjustHp = _toInt(adjustHp),
+       adjustAtk = _toInt(adjustAtk),
+       skillId1 = _toInt(skillId1),
+       skillId2 = _toInt(skillId2),
+       skillId3 = _toInt(skillId3),
+       skillLv1 = _toInt(skillLv1),
+       skillLv2 = _toInt(skillLv2),
+       skillLv3 = _toInt(skillLv3),
+       classPassive = _toIntList(classPassive),
+       treasureDeviceId = _toInt(treasureDeviceId),
+       treasureDeviceLv = _toInt(treasureDeviceLv),
+       exceedCount = _toInt(exceedCount),
+       commandCardParam = _toIntList(commandCardParam),
+       updatedAt = _toInt(updatedAt),
+       grandSvt = _toInt(grandSvt);
+
+  factory UserServantGrandEntity.fromJson(Map<String, dynamic> data) => _$UserServantGrandEntityFromJson(data);
 }
 
 @JsonSerializable(createToJson: true)
@@ -1356,9 +1461,9 @@ class UserServantLeaderEntity extends DataEntityBase<String> {
   int treasureDeviceId;
   int treasureDeviceLv;
   int exceedCount;
-  SvtLeaderEquipTargetInfo? equipTarget1;
+  EquipTargetInfo? equipTarget1;
   // Map displayInfo; cn json string
-  List<SvtLeaderCommandCodeStatus> commandCode;
+  List<CommandCodeStatus> commandCode;
   List<int> commandCardParam;
   // int updatedAt;
   // int createdAt; // not in jp
@@ -1369,7 +1474,7 @@ class UserServantLeaderEntity extends DataEntityBase<String> {
   int battleVoice;
   // int randomLimitCountSupport;  //cn
   // List<int?> randomLimitCountTargets; // jp
-  List<SvtLeaderAppendSkillStatus> appendPassiveSkill;
+  List<AppendPassiveSkillInfo> appendPassiveSkill;
   // int eventSvtPoint;
   // Map script;
   // int limitCountSupport;
@@ -1405,7 +1510,7 @@ class UserServantLeaderEntity extends DataEntityBase<String> {
     dynamic exceedCount,
     this.equipTarget1,
     // dynamic displayInfo,
-    List<SvtLeaderCommandCodeStatus>? commandCode,
+    List<CommandCodeStatus>? commandCode,
     dynamic commandCardParam,
     // dynamic updatedAt,
     // dynamic createdAt,
@@ -1416,7 +1521,7 @@ class UserServantLeaderEntity extends DataEntityBase<String> {
     dynamic battleVoice,
     dynamic randomLimitCountSupport,
     // dynamic limitCountSupport,
-    List<SvtLeaderAppendSkillStatus>? appendPassiveSkill,
+    List<AppendPassiveSkillInfo>? appendPassiveSkill,
   }) : userId = _toInt(userId),
        supportDeckId = _toInt(supportDeckId),
        classId = _toInt(classId),
@@ -1458,7 +1563,7 @@ class UserServantLeaderEntity extends DataEntityBase<String> {
 }
 
 @JsonSerializable(createToJson: false)
-class SvtLeaderEquipTargetInfo {
+class EquipTargetInfo {
   // int userId;
   int userSvtId;
   int svtId;
@@ -1475,7 +1580,7 @@ class SvtLeaderEquipTargetInfo {
   int skillLv3;
   List addSkills; // {int num; int skillId}
   // int updatedAt;
-  SvtLeaderEquipTargetInfo({
+  EquipTargetInfo({
     dynamic userSvtId,
     dynamic svtId,
     dynamic limitCount,
@@ -1506,30 +1611,30 @@ class SvtLeaderEquipTargetInfo {
        skillLv3 = _toInt(skillLv3, 0),
        addSkills = addSkills ?? [];
 
-  factory SvtLeaderEquipTargetInfo.fromJson(Map<String, dynamic> data) => _$SvtLeaderEquipTargetInfoFromJson(data);
+  factory EquipTargetInfo.fromJson(Map<String, dynamic> data) => _$EquipTargetInfoFromJson(data);
 }
 
 @JsonSerializable(createToJson: false)
-class SvtLeaderAppendSkillStatus {
+class AppendPassiveSkillInfo {
   int skillId;
   int skillLv;
-  SvtLeaderAppendSkillStatus({dynamic skillId, dynamic skillLv}) : skillId = _toInt(skillId), skillLv = _toInt(skillLv);
+  AppendPassiveSkillInfo({dynamic skillId, dynamic skillLv}) : skillId = _toInt(skillId), skillLv = _toInt(skillLv);
 
-  factory SvtLeaderAppendSkillStatus.fromJson(Map<String, dynamic> data) => _$SvtLeaderAppendSkillStatusFromJson(data);
+  factory AppendPassiveSkillInfo.fromJson(Map<String, dynamic> data) => _$AppendPassiveSkillInfoFromJson(data);
 }
 
 @JsonSerializable(createToJson: false)
-class SvtLeaderCommandCodeStatus {
+class CommandCodeStatus {
   int idx;
   int commandCodeId;
   int userCommandCodeId;
 
-  SvtLeaderCommandCodeStatus({dynamic idx, dynamic commandCodeId, dynamic userCommandCodeId})
+  CommandCodeStatus({dynamic idx, dynamic commandCodeId, dynamic userCommandCodeId})
     : idx = _toInt(idx),
       commandCodeId = _toInt(commandCodeId),
       userCommandCodeId = _toInt(userCommandCodeId);
 
-  factory SvtLeaderCommandCodeStatus.fromJson(Map<String, dynamic> data) => _$SvtLeaderCommandCodeStatusFromJson(data);
+  factory CommandCodeStatus.fromJson(Map<String, dynamic> data) => _$CommandCodeStatusFromJson(data);
 }
 
 @JsonSerializable(createToJson: false)
@@ -2274,9 +2379,9 @@ class ServantLeaderInfo {
   int treasureDeviceId;
   int treasureDeviceLv;
   int exceedCount;
-  SvtLeaderEquipTargetInfo? equipTarget1;
-  SvtLeaderEquipTargetInfo? equipTarget2;
-  SvtLeaderEquipTargetInfo? equipTarget3;
+  EquipTargetInfo? equipTarget1;
+  EquipTargetInfo? equipTarget2;
+  EquipTargetInfo? equipTarget3;
   int updatedAt;
   int imageLimitCount;
   int dispLimitCount;

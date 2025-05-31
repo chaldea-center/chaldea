@@ -504,17 +504,11 @@ void main() async {
         PlayerSvtData.id(2300500)
           ..tdLv = 3
           ..lv = 90
-          ..ce =
-              db.gameData.craftEssencesById[9400340] // Kaleidoscope
-          ..ceLv = 100
-          ..ceLimitBreak = true,
+          ..equip1 = getNP100Equip(),
         PlayerSvtData.id(2300500)
           ..tdLv = 3
           ..lv = 90
-          ..ce =
-              db.gameData.craftEssencesById[9400340] // Kaleidoscope
-          ..ceLv = 100
-          ..ceLimitBreak = true,
+          ..equip1 = getNP100Equip(),
       ];
       await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
 
@@ -604,10 +598,7 @@ void main() async {
       final playerSettings = [
         PlayerSvtData.id(701600)
           ..lv = 80
-          ..ce =
-              db.gameData.craftEssencesById[9400340] // Kaleidoscope
-          ..ceLv = 100
-          ..ceLimitBreak = true,
+          ..equip1 = getNP100Equip(),
         PlayerSvtData.id(2800100)..lv = 90,
       ];
       await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
@@ -662,10 +653,7 @@ void main() async {
           ..skillLvs = [9, 9, 9]
           ..tdLv = 3
           ..lv = 90
-          ..ce =
-              db.gameData.craftEssencesById[9400340] // Kaleidoscope
-          ..ceLv = 100
-          ..ceLimitBreak = true,
+          ..equip1 = getNP100Equip(),
       ];
       await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
 
@@ -714,16 +702,14 @@ void main() async {
         PlayerSvtData.id(1000100)..lv = 80,
         PlayerSvtData.id(2300200)
           ..lv = 90
-          ..ce =
-              db.gameData.craftEssencesById[9404120] // 20 star on entry
-          ..ceLv = 100
-          ..ceLimitBreak = true,
+          ..equip1 = SvtEquipData(
+            ce: db.gameData.craftEssencesById[9404120], // 20 star on entry
+            lv: 100,
+            limitBreak: true,
+          ),
         PlayerSvtData.id(504600)
           ..lv = 80
-          ..ce =
-              db.gameData.craftEssencesById[9400340] // Kaleidoscope
-          ..ceLv = 100
-          ..ceLimitBreak = true,
+          ..equip1 = getNP100Equip(),
         PlayerSvtData.id(504500)..lv = 80,
         PlayerSvtData.id(504900)..lv = 90,
         PlayerSvtData.id(503900)..lv = 80,
@@ -764,16 +750,10 @@ void main() async {
       final playerSettings = [
         PlayerSvtData.id(105200)
           ..lv = 90
-          ..ce =
-              db.gameData.craftEssencesById[9400340] // Kaleidoscope
-          ..ceLv = 100
-          ..ceLimitBreak = true,
+          ..equip1 = getNP100Equip(),
         PlayerSvtData.id(105200)
           ..lv = 90
-          ..ce =
-              db.gameData.craftEssencesById[9400340] // Kaleidoscope
-          ..ceLv = 100
-          ..ceLimitBreak = true,
+          ..equip1 = getNP100Equip(),
       ];
       await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
 
@@ -883,10 +863,7 @@ void main() async {
         PlayerSvtData.id(702500)
           ..lv = 90
           ..setNpStrengthenLv(2)
-          ..ce =
-              db.gameData.craftEssencesById[9400340] // Kaleidoscope
-          ..ceLv = 100
-          ..ceLimitBreak = true,
+          ..equip1 = getNP100Equip(),
       ];
       final battle = BattleData();
       await battle.init(db.gameData.questPhases[9300040603]!, setting, null);
@@ -923,10 +900,7 @@ void main() async {
       final List<PlayerSvtData> setting = [
         PlayerSvtData.id(2300400)
           ..lv = 90
-          ..ce =
-              db.gameData.craftEssencesById[9400340] // Kaleidoscope
-          ..ceLv = 100
-          ..ceLimitBreak = true,
+          ..equip1 = getNP100Equip(),
         PlayerSvtData.id(2500700)..lv = 90,
       ];
       final battle = BattleData();
@@ -954,10 +928,7 @@ void main() async {
       final List<PlayerSvtData> setting = [
         PlayerSvtData.id(1101600)
           ..lv = 80
-          ..ce =
-              db.gameData.craftEssencesById[9400340] // Kaleidoscope
-          ..ceLv = 100
-          ..ceLimitBreak = true,
+          ..equip1 = getNP100Equip(),
       ];
       final battle = BattleData();
       await battle.init(db.gameData.questPhases[9300040603]!, setting, null);
@@ -997,10 +968,7 @@ void main() async {
       final List<PlayerSvtData> setting = [
         PlayerSvtData.id(1001300)
           ..lv = 90
-          ..ce =
-              db.gameData.craftEssencesById[9400340] // Kaleidoscope
-          ..ceLv = 100
-          ..ceLimitBreak = true,
+          ..equip1 = getNP100Equip(),
       ];
       final battle = BattleData();
       await battle.init(db.gameData.questPhases[9300040603]!, setting, null);
@@ -1032,10 +1000,7 @@ void main() async {
       final List<PlayerSvtData> setting = [
         PlayerSvtData.id(403400)
           ..lv = 60
-          ..ce =
-              db.gameData.craftEssencesById[9400340] // Kaleidoscope
-          ..ceLv = 100
-          ..ceLimitBreak = true,
+          ..equip1 = getNP100Equip(),
       ];
       final battle = BattleData();
       await battle.init(db.gameData.questPhases[9300040603]!, setting, null);
@@ -1058,10 +1023,7 @@ void main() async {
       final List<PlayerSvtData> setting = [
         PlayerSvtData.id(2300400)
           ..lv = 1
-          ..ce =
-              db.gameData.craftEssencesById[9400340] // Kaleidoscope
-          ..ceLv = 100
-          ..ceLimitBreak = true,
+          ..equip1 = getNP100Equip(),
       ];
       final battle = BattleData();
       await battle.init(db.gameData.questPhases[9300040603]!, setting, null);
@@ -1089,10 +1051,7 @@ void main() async {
       final List<PlayerSvtData> setting = [
         PlayerSvtData.id(201300)
           ..lv = 60
-          ..ce =
-              db.gameData.craftEssencesById[9400340] // Kaleidoscope
-          ..ceLv = 100
-          ..ceLimitBreak = true,
+          ..equip1 = getNP100Equip(),
         PlayerSvtData.id(701400)
           ..lv = 90
           ..setSkillStrengthenLvs([2, 1, 1]),

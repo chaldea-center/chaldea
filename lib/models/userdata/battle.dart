@@ -382,12 +382,24 @@ class BattleTeamFormation {
       final svtId = svt?.svtId;
       if (svt != null && svtId != null && svtId > 0) {
         ids.add(svtId);
-        if (svt.ceId != null) {
-          ids.add(svt.ceId!);
+        if (svt.equip1.id != null) {
+          ids.add(svt.equip1.id!);
         }
       }
     }
     return ids.toList();
+  }
+
+  int getTotalCost() {
+    int totalCost = 0;
+    for (final svtData in allSvts) {
+      final svt = db.gameData.servantsById[svtData?.svtId];
+      if (svtData == null || svt == null || svtData.supportType.isSupport) continue;
+      totalCost += svt.getAscended(svtData.limitCount, (v) => v.overwriteCost) ?? svt.cost;
+      final ce = db.gameData.craftEssencesById[svtData.equip1.id];
+      if (ce != null) totalCost += ce.cost;
+    }
+    return totalCost;
   }
 }
 
@@ -409,9 +421,15 @@ class SvtSaveData {
   int? fixedAtk;
   int? fixedHp;
 
+  @protected
   int? ceId;
+  @protected
   bool ceLimitBreak;
+  @protected
   int ceLv;
+  SvtEquipSaveData equip1;
+  SvtEquipSaveData? equip2;
+  SvtEquipSaveData? equip3;
 
   SupportSvtType supportType;
 
@@ -440,6 +458,9 @@ class SvtSaveData {
     this.ceId,
     this.ceLimitBreak = false,
     this.ceLv = 0,
+    SvtEquipSaveData? equip1,
+    this.equip2,
+    this.equip3,
     this.supportType = SupportSvtType.none,
     List<int>? cardStrengthens,
     List<int?>? commandCodeIds,
@@ -451,6 +472,7 @@ class SvtSaveData {
   }) : skillLvs = skillLvs ?? [10, 10, 10],
        skillIds = List.generate(kActiveSkillNums.length, (index) => skillIds?.getOrNull(index)),
        appendLvs = List.generate(kAppendSkillNums.length, (index) => appendLvs?.getOrNull(index) ?? 0),
+       equip1 = equip1 ?? SvtEquipSaveData(id: ceId, limitBreak: ceLimitBreak, lv: ceLv),
        cardStrengthens = List.generate(5, (index) => cardStrengthens?.getOrNull(index) ?? 0),
        commandCodeIds = List.generate(5, (index) => commandCodeIds?.getOrNull(index)),
        disabledExtraSkills = disabledExtraSkills ?? {},
@@ -462,6 +484,10 @@ class SvtSaveData {
 
   Map<String, dynamic> toJson() {
     if (svtId == null || svtId == 0) return {};
+    this
+      ..ceId = equip1.id
+      ..ceLimitBreak = equip1.limitBreak
+      ..ceLv = equip1.lv;
     final data = _$SvtSaveDataToJson(this);
     _removeEmptyList(
       data,
@@ -478,6 +504,23 @@ class SvtSaveData {
       removeAllZero: true,
     );
     return data;
+  }
+}
+
+@JsonSerializable()
+class SvtEquipSaveData {
+  int? id;
+  bool limitBreak;
+  int lv;
+
+  SvtEquipSaveData({this.id, this.limitBreak = false, this.lv = 0});
+
+  factory SvtEquipSaveData.fromJson(Map<String, dynamic> json) => _$SvtEquipSaveDataFromJson(json);
+
+  Map<String, dynamic> toJson() => _$SvtEquipSaveDataToJson(this);
+
+  SvtEquipSaveData copy() {
+    return SvtEquipSaveData(id: id, limitBreak: limitBreak, lv: lv);
   }
 }
 

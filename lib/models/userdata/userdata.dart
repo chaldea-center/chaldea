@@ -332,12 +332,19 @@ class SvtStatus {
   List<int?> equipCmdCodes;
   // 0~25 -> 0~500
   List<int>? cmdCardStrengthen;
+  bool grandSvt;
 
-  SvtStatus({SvtPlan? cur, this.priority = 1, this.bond = 0, List<int?>? equipCmdCodes, List<int>? cmdCardStrengthen})
-    : cur = cur ?? SvtPlan(),
-      equipCmdCodes = List.generate(5, (index) => equipCmdCodes?.getOrNull(index)),
-      cmdCardStrengthen =
-          cmdCardStrengthen == null ? null : List.generate(5, (index) => cmdCardStrengthen.getOrNull(index) ?? 0);
+  SvtStatus({
+    SvtPlan? cur,
+    this.priority = 1,
+    this.bond = 0,
+    List<int?>? equipCmdCodes,
+    List<int>? cmdCardStrengthen,
+    this.grandSvt = false,
+  }) : cur = cur ?? SvtPlan(),
+       equipCmdCodes = List.generate(5, (index) => equipCmdCodes?.getOrNull(index)),
+       cmdCardStrengthen =
+           cmdCardStrengthen == null ? null : List.generate(5, (index) => cmdCardStrengthen.getOrNull(index) ?? 0);
 
   factory SvtStatus.fromJson(Map<String, dynamic> json) => _$SvtStatusFromJson(json);
 

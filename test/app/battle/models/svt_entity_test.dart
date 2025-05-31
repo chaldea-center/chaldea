@@ -153,10 +153,7 @@ void main() async {
       PlayerSvtData.id(101000)..lv = 80,
       PlayerSvtData.id(504600)
         ..lv = 90
-        ..ce =
-            db.gameData.craftEssencesById[9400340] // Kaleidoscope
-        ..ceLv = 100
-        ..ceLimitBreak = true,
+        ..equip1 = getNP100Equip(),
     ];
 
     final battle = BattleData();
@@ -191,8 +188,8 @@ void main() async {
 
   test('Test act rarity skill script', () async {
     final List<PlayerSvtData> playerSettings = [
-      PlayerSvtData.id(201300)..ce = db.gameData.craftEssencesById[9407100],
-      PlayerSvtData.id(102600)..ce = db.gameData.craftEssencesById[9407100],
+      PlayerSvtData.id(201300)..equip1 = SvtEquipData(ce: db.gameData.craftEssencesById[9407100]),
+      PlayerSvtData.id(102600)..equip1 = SvtEquipData(ce: db.gameData.craftEssencesById[9407100]),
     ];
 
     final quest = db.gameData.questPhases[9300040603]!;
@@ -212,10 +209,7 @@ void main() async {
     final List<PlayerSvtData> playerSettings = [
       PlayerSvtData.id(504400)
         ..lv = 80
-        ..ce =
-            db.gameData.craftEssencesById[9400340] // Kaleidoscope
-        ..ceLv = 100
-        ..ceLimitBreak = true,
+        ..equip1 = getNP100Equip(),
       PlayerSvtData.id(2800100)..lv = 90,
     ];
 

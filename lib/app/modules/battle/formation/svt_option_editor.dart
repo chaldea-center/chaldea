@@ -235,7 +235,48 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
           },
         ),
       ),
+      SwitchListTile.adaptive(
+        dense: true,
+        value: playerSvtData.grandSvt,
+        secondary: db.getIconImage(
+          SvtClassX.clsIcon(db.gameData.grandGraphDetails[svt.classId]?.grandClassId ?? svt.classId, 5),
+          width: 24,
+        ),
+        onChanged: (v) async {
+          playerSvtData.grandSvt = v;
+          setState(() {});
+        },
+        title: Text(S.current.grand_servant),
+      ),
       divider,
+      TileGroup(
+        header: S.current.craft_essence,
+        children:
+            SvtEquipTarget.values.where((e) => e.value == 0 || playerSvtData.grandSvt).map((equipTarget) {
+              final equip = playerSvtData.getEquip(equipTarget);
+              return ListTile(
+                dense: true,
+                leading: equip.ce?.iconBuilder(context: context, width: 32) ?? SizedBox(width: 32),
+                title: Text(equip.ce?.lName.l ?? 'None'),
+                subtitle: Text(
+                  '[${equipTarget.name}] Lv.${equip.lv} ${equip.limitBreak ? S.current.max_limit_break : ""}',
+                ),
+                trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
+                onTap: () async {
+                  await router.pushPage(
+                    CraftEssenceOptionEditPage(
+                      playerSvtData: enableEdit ? playerSvtData : playerSvtData.copy(),
+                      equipTarget: equipTarget,
+                      questPhase: questPhase,
+                      onChange: enableEdit ? () {} : null,
+                      craftFilterData: null,
+                    ),
+                  );
+                  if (mounted) setState(() {});
+                },
+              );
+            }).toList(),
+      ),
       TileGroup(header: S.current.noble_phantasm, children: [_buildTdDescriptor(context)]),
       TileGroup(
         header: S.current.active_skill,
@@ -406,6 +447,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
                       : () {
                         _updateState(() {
                           playerSvtData.svt = null;
+                          playerSvtData.equip1.ce = playerSvtData.equip2.ce = playerSvtData.equip3.ce = null;
                         });
                       },
               style: FilledButton.styleFrom(backgroundColor: Theme.of(context).colorScheme.error),
@@ -1280,11 +1322,11 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
     playerSvtData.customPassives = List<BaseSkill>.of(support.detail?.classPassive.addPassive ?? []);
     playerSvtData.customPassiveLvs = playerSvtData.customPassives.map((e) => e.maxLv).toList();
     // ce
-    final ce = support.equips.getOrNull(0);
+    final ce = support.equips.firstOrNull;
     playerSvtData
-      ..ce = ce?.equip
-      ..ceLimitBreak = ce?.limitCount == 4
-      ..ceLv = ce?.lv ?? 1;
+      ..equip1 = SvtEquipData(ce: ce?.equip, limitBreak: ce?.limitCount == 4, lv: ce?.lv ?? 1)
+      ..equip2.ce = null
+      ..equip3.ce = null;
 
     svt.preprocess();
     playerSvtData.svt = svt;
@@ -1296,6 +1338,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
 
 class CraftEssenceOptionEditPage extends StatefulWidget {
   final PlayerSvtData playerSvtData;
+  final SvtEquipTarget equipTarget;
   final QuestPhase? questPhase;
   final VoidCallback? onChange;
   final CraftFilterData? craftFilterData;
@@ -1303,6 +1346,7 @@ class CraftEssenceOptionEditPage extends StatefulWidget {
   CraftEssenceOptionEditPage({
     super.key,
     required this.playerSvtData,
+    required this.equipTarget,
     required this.questPhase,
     required this.onChange,
     required this.craftFilterData,
@@ -1315,7 +1359,7 @@ class CraftEssenceOptionEditPage extends StatefulWidget {
 class _CraftEssenceOptionEditPageState extends State<CraftEssenceOptionEditPage> {
   PlayerSvtData get playerSvtData => widget.playerSvtData;
 
-  CraftEssence get ce => playerSvtData.ce!;
+  SvtEquipData get curEquip => playerSvtData.getEquip(widget.equipTarget);
 
   CraftFilterData? get craftFilterData => widget.craftFilterData;
 
@@ -1324,11 +1368,11 @@ class _CraftEssenceOptionEditPageState extends State<CraftEssenceOptionEditPage>
   @override
   void initState() {
     super.initState();
-    if (playerSvtData.ce == null && enableEdit) {
+    if (widget.equipTarget == SvtEquipTarget.normal && playerSvtData.equip1.ce == null && enableEdit) {
       SchedulerBinding.instance.addPostFrameCallback((timeStamp) async {
         await selectCE();
         SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
-          if (playerSvtData.ce == null && mounted) {
+          if (playerSvtData.equip1.ce == null && mounted) {
             Navigator.of(context).pop();
           }
         });
@@ -1350,7 +1394,8 @@ class _CraftEssenceOptionEditPageState extends State<CraftEssenceOptionEditPage>
   }
 
   Widget get body {
-    if (playerSvtData.ce == null) {
+    final curCE = curEquip.ce;
+    if (curCE == null) {
       return const Center(child: Text("None"));
     }
     List<Widget> children = [];
@@ -1363,14 +1408,14 @@ class _CraftEssenceOptionEditPageState extends State<CraftEssenceOptionEditPage>
           leadingWidth: 36,
           label: 'Lv',
           min: 1,
-          max: ce.lvMax,
-          value: playerSvtData.ceLv,
+          max: curCE.lvMax,
+          value: curEquip.lv,
           onChange: (v) {
             _updateState(() {
-              playerSvtData.ceLv = v.round();
-              final mlbLv = ce.ascensionAdd.lvMax.ascension[3];
-              if (mlbLv != null && mlbLv > 0 && playerSvtData.ceLv > mlbLv) {
-                playerSvtData.ceLimitBreak = true;
+              curEquip.lv = v.round();
+              final mlbLv = curCE.ascensionAdd.lvMax.ascension[3];
+              if (mlbLv != null && mlbLv > 0 && curEquip.lv > mlbLv) {
+                curEquip.limitBreak = true;
               }
             });
           },
@@ -1380,25 +1425,23 @@ class _CraftEssenceOptionEditPageState extends State<CraftEssenceOptionEditPage>
     );
     children.add(
       SwitchListTile.adaptive(
-        value: playerSvtData.ceLimitBreak,
+        value: curEquip.limitBreak,
         title: Text(S.current.max_limit_break),
         onChanged:
             enableEdit
                 ? (v) {
-                  final ce = playerSvtData.ce;
                   if (v &&
-                      ce != null &&
                       const [
                         SvtFlag.svtEquipChocolate,
                         SvtFlag.svtEquipExp,
                         SvtFlag.svtEquipFriendShip,
-                      ].every((e) => !ce.flags.contains(e))) {
-                    int? lvMin = {1: 6, 2: 9, 3: 11, 4: 13, 5: 15}[ce.rarity];
-                    if (lvMin != null && lvMin <= ce.lvMax && playerSvtData.ceLv < lvMin) {
-                      playerSvtData.ceLv = lvMin;
+                      ].every((e) => !curCE.flags.contains(e))) {
+                    int? lvMin = {1: 6, 2: 9, 3: 11, 4: 13, 5: 15}[curCE.rarity];
+                    if (lvMin != null && lvMin <= curCE.lvMax && curEquip.lv < lvMin) {
+                      curEquip.lv = lvMin;
                     }
                   }
-                  playerSvtData.ceLimitBreak = v;
+                  curEquip.limitBreak = v;
                   _updateState(() {});
                 }
                 : null,
@@ -1407,7 +1450,7 @@ class _CraftEssenceOptionEditPageState extends State<CraftEssenceOptionEditPage>
 
     children = divideTiles(children, divider: const Divider(height: 8, thickness: 1), bottom: true);
 
-    final skills = ce.getActivatedSkills(playerSvtData.ceLimitBreak);
+    final skills = curCE.getActivatedSkills(curEquip.limitBreak);
     for (final skillNum in skills.keys) {
       final skillsForNum = skills[skillNum]!;
       if (skills.length > 1) {
@@ -1443,12 +1486,13 @@ class _CraftEssenceOptionEditPageState extends State<CraftEssenceOptionEditPage>
               },
               child: Text(S.current.craft_essence),
             ),
-            PopupMenuItem(
-              onTap: () {
-                selectStoryCE();
-              },
-              child: Text(S.current.story_ce),
-            ),
+            if (widget.equipTarget == SvtEquipTarget.normal)
+              PopupMenuItem(
+                onTap: () {
+                  selectStoryCE();
+                },
+                child: Text(S.current.story_ce),
+              ),
           ],
     );
   }
@@ -1464,10 +1508,10 @@ class _CraftEssenceOptionEditPageState extends State<CraftEssenceOptionEditPage>
           children: [
             FilledButton(
               onPressed:
-                  playerSvtData.ce == null
+                  curEquip.ce == null
                       ? null
                       : () {
-                        playerSvtData.ce = null;
+                        curEquip.ce = null;
                         _updateState(() {});
                       },
               style: FilledButton.styleFrom(backgroundColor: Theme.of(context).colorScheme.error),
@@ -1487,16 +1531,12 @@ class _CraftEssenceOptionEditPageState extends State<CraftEssenceOptionEditPage>
   }
 
   Widget _header(final BuildContext context) {
-    final atk = ce.atkGrowth.getOrNull(playerSvtData.ceLv - 1) ?? 0,
-        hp = ce.hpGrowth.getOrNull(playerSvtData.ceLv - 1) ?? 0;
+    final ce = curEquip.ce;
+    if (ce == null) return SizedBox.shrink();
+    final atk = ce.atkGrowth.getOrNull(curEquip.lv - 1) ?? 0, hp = ce.hpGrowth.getOrNull(curEquip.lv - 1) ?? 0;
 
     return CustomTile(
-      leading: playerSvtData.ce!.iconBuilder(
-        context: context,
-        height: 72,
-        jumpToDetail: true,
-        overrideIcon: ce.borderedIcon,
-      ),
+      leading: ce.iconBuilder(context: context, height: 72, jumpToDetail: true, overrideIcon: ce.borderedIcon),
       trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
       onTap: ce.routeTo,
       title: Column(
@@ -1526,7 +1566,7 @@ class _CraftEssenceOptionEditPageState extends State<CraftEssenceOptionEditPage>
     await router.pushPage(
       CraftListPage(
         onSelected: (ce) {
-          playerSvtData.onSelectCE(ce);
+          playerSvtData.onSelectCE(ce, widget.equipTarget);
           _updateState(() {});
         },
         filterData: craftFilterData,
@@ -1551,7 +1591,7 @@ class _CraftEssenceOptionEditPageState extends State<CraftEssenceOptionEditPage>
             EasyLoading.showError(S.current.not_found);
             return;
           }
-          playerSvtData.onSelectCE(ce);
+          playerSvtData.onSelectCE(ce, widget.equipTarget);
           _updateState(() {});
         },
         filterData: EnemyFilterData()..svtType.options.add(SvtType.servantEquip),

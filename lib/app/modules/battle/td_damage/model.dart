@@ -224,7 +224,11 @@ class TdDmgSolver {
       if (svt == null) continue;
       final sdata = PlayerSvtData.svt(svt);
       sdata.updateRankUps(region: options.region);
-      BattleServantData support = BattleServantData.fromPlayerSvtData(sdata, battleData.getNextUniqueId());
+      BattleServantData support = BattleServantData.fromPlayerSvtData(
+        sdata,
+        battleData.getNextUniqueId(),
+        isUseGrandBoard: battleData.isUseGrandBoard,
+      );
       battleData.onFieldAllyServants[1] = support;
       await battleData.initActorSkills([support]);
       // await support.enterField(battle);
@@ -357,9 +361,11 @@ class TdDmgSolver {
     // CE
     final ce = db.gameData.craftEssencesById[options.ceId];
     if (ce != null) {
-      data.ce = ce;
-      data.ceLv = options.ceLv.clamp(0, ce.lvMax); // allow lv0 for ignore CE ATK/HP
-      data.ceLimitBreak = options.ceMLB;
+      data.equip1 = SvtEquipData(
+        ce: ce,
+        lv: options.ceLv.clamp(0, ce.lvMax), // allow lv0 for ignore CE ATK/HP
+        limitBreak: options.ceMLB,
+      );
     }
     return data;
   }

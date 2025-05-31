@@ -100,9 +100,9 @@ class TeamFilterData with FilterDataMixin {
 
     bool _isCEMismatch(SvtSaveData? svt, int ceId) {
       if (svt == null || (svt.svtId ?? 0) <= 0) return false;
-      if (svt.ceId != ceId) return false;
+      if (svt.equip1.id != ceId) return false;
       final mlbOnly = filterData.blockCEMLBOnly[ceId] ?? false;
-      return mlbOnly ? svt.ceLimitBreak : true;
+      return mlbOnly ? svt.equip1.limitBreak : true;
     }
 
     for (final ceId in filterData.blockCEs.options) {

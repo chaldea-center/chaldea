@@ -299,6 +299,53 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
           },
           detailPageBuilder: (context) => const SimpleConfirmDialog(title: Text('Not Used yet')),
         ),
+      SwitchListTile.adaptive(
+        dense: true,
+        value: status.grandSvt,
+        secondary: db.getIconImage(
+          SvtClassX.clsIcon(db.gameData.grandGraphDetails[svt.classId]?.grandClassId ?? svt.classId, 5),
+        ),
+        onChanged: (v) async {
+          if (v) {
+            final prevGrandSvts =
+                db.gameData.servantsWithDup.values
+                    .where(
+                      (e) =>
+                          e.status.favorite &&
+                          e.status.grandSvt &&
+                          e.collectionNo != svt.collectionNo &&
+                          e.classId == svt.classId,
+                    )
+                    .toList();
+            if (prevGrandSvts.isNotEmpty) {
+              final confirm = await SimpleConfirmDialog(
+                title: Text(S.current.grand_servant),
+                content: Text.rich(
+                  TextSpan(
+                    children: [
+                      for (final psvt in prevGrandSvts) ...[
+                        CenterWidgetSpan(child: psvt.iconBuilder(context: context, width: 24)),
+                        TextSpan(text: psvt.lName.l),
+                      ],
+                      TextSpan(text: ' → '),
+                      CenterWidgetSpan(child: svt.iconBuilder(context: context, width: 24)),
+                      TextSpan(text: svt.lName.l),
+                    ],
+                  ),
+                ),
+              ).showDialog(context);
+              if (confirm != true) return;
+              for (final psvt in prevGrandSvts) {
+                psvt.status.grandSvt = false;
+              }
+            }
+            status.favorite = true;
+          }
+          status.grandSvt = v;
+          if (mounted) setState(() {});
+        },
+        title: Text(S.current.grand_servant),
+      ),
     ];
     if (extraParts1.isNotEmpty) {
       children.add(TileGroup(children: extraParts1));

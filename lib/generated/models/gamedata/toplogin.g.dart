@@ -76,6 +76,56 @@ UserServantCollectionEntity _$UserServantCollectionEntityFromJson(Map json) => U
   createdAt: json['createdAt'],
 );
 
+UserServantGrandEntity _$UserServantGrandEntityFromJson(Map json) => UserServantGrandEntity(
+  userId: json['userId'],
+  grandGraphId: json['grandGraphId'],
+  userSvtId: json['userSvtId'],
+  svtId: json['svtId'],
+  limitCount: json['limitCount'],
+  dispLimitCount: json['dispLimitCount'],
+  lv: json['lv'],
+  exp: json['exp'],
+  hp: json['hp'],
+  atk: json['atk'],
+  adjustHp: json['adjustHp'],
+  adjustAtk: json['adjustAtk'],
+  skillId1: json['skillId1'],
+  skillId2: json['skillId2'],
+  skillId3: json['skillId3'],
+  skillLv1: json['skillLv1'],
+  skillLv2: json['skillLv2'],
+  skillLv3: json['skillLv3'],
+  classPassive: json['classPassive'],
+  treasureDeviceId: json['treasureDeviceId'],
+  treasureDeviceLv: json['treasureDeviceLv'],
+  exceedCount: json['exceedCount'],
+  equipTarget1:
+      json['equipTarget1'] == null
+          ? null
+          : EquipTargetInfo.fromJson(Map<String, dynamic>.from(json['equipTarget1'] as Map)),
+  equipTarget2:
+      json['equipTarget2'] == null
+          ? null
+          : EquipTargetInfo.fromJson(Map<String, dynamic>.from(json['equipTarget2'] as Map)),
+  equipTarget3:
+      json['equipTarget3'] == null
+          ? null
+          : EquipTargetInfo.fromJson(Map<String, dynamic>.from(json['equipTarget3'] as Map)),
+  appendPassiveSkill:
+      (json['appendPassiveSkill'] as List<dynamic>?)
+          ?.map((e) => AppendPassiveSkillInfo.fromJson(Map<String, dynamic>.from(e as Map)))
+          .toList() ??
+      const [],
+  commandCode:
+      (json['commandCode'] as List<dynamic>?)
+          ?.map((e) => CommandCodeStatus.fromJson(Map<String, dynamic>.from(e as Map)))
+          .toList() ??
+      const [],
+  commandCardParam: json['commandCardParam'],
+  updatedAt: json['updatedAt'],
+  grandSvt: json['grandSvt'],
+);
+
 UserGameEntity _$UserGameEntityFromJson(Map json) => UserGameEntity(
   userId: json['userId'],
   name: json['name'] as String? ?? "",
@@ -258,10 +308,10 @@ UserServantLeaderEntity _$UserServantLeaderEntityFromJson(Map json) => UserServa
   equipTarget1:
       json['equipTarget1'] == null
           ? null
-          : SvtLeaderEquipTargetInfo.fromJson(Map<String, dynamic>.from(json['equipTarget1'] as Map)),
+          : EquipTargetInfo.fromJson(Map<String, dynamic>.from(json['equipTarget1'] as Map)),
   commandCode:
       (json['commandCode'] as List<dynamic>?)
-          ?.map((e) => SvtLeaderCommandCodeStatus.fromJson(Map<String, dynamic>.from(e as Map)))
+          ?.map((e) => CommandCodeStatus.fromJson(Map<String, dynamic>.from(e as Map)))
           .toList(),
   commandCardParam: json['commandCardParam'],
   imageLimitCount: json['imageLimitCount'],
@@ -271,11 +321,11 @@ UserServantLeaderEntity _$UserServantLeaderEntityFromJson(Map json) => UserServa
   battleVoice: json['battleVoice'],
   appendPassiveSkill:
       (json['appendPassiveSkill'] as List<dynamic>?)
-          ?.map((e) => SvtLeaderAppendSkillStatus.fromJson(Map<String, dynamic>.from(e as Map)))
+          ?.map((e) => AppendPassiveSkillInfo.fromJson(Map<String, dynamic>.from(e as Map)))
           .toList(),
 );
 
-SvtLeaderEquipTargetInfo _$SvtLeaderEquipTargetInfoFromJson(Map json) => SvtLeaderEquipTargetInfo(
+EquipTargetInfo _$EquipTargetInfoFromJson(Map json) => EquipTargetInfo(
   userSvtId: json['userSvtId'],
   svtId: json['svtId'],
   limitCount: json['limitCount'],
@@ -292,10 +342,10 @@ SvtLeaderEquipTargetInfo _$SvtLeaderEquipTargetInfoFromJson(Map json) => SvtLead
   addSkills: (json['addSkills'] as List<dynamic>?)?.map((e) => e as Map).toList(),
 );
 
-SvtLeaderAppendSkillStatus _$SvtLeaderAppendSkillStatusFromJson(Map json) =>
-    SvtLeaderAppendSkillStatus(skillId: json['skillId'], skillLv: json['skillLv']);
+AppendPassiveSkillInfo _$AppendPassiveSkillInfoFromJson(Map json) =>
+    AppendPassiveSkillInfo(skillId: json['skillId'], skillLv: json['skillLv']);
 
-SvtLeaderCommandCodeStatus _$SvtLeaderCommandCodeStatusFromJson(Map json) => SvtLeaderCommandCodeStatus(
+CommandCodeStatus _$CommandCodeStatusFromJson(Map json) => CommandCodeStatus(
   idx: json['idx'],
   commandCodeId: json['commandCodeId'],
   userCommandCodeId: json['userCommandCodeId'],
@@ -560,15 +610,15 @@ ServantLeaderInfo _$ServantLeaderInfoFromJson(Map json) => ServantLeaderInfo(
   equipTarget1:
       json['equipTarget1'] == null
           ? null
-          : SvtLeaderEquipTargetInfo.fromJson(Map<String, dynamic>.from(json['equipTarget1'] as Map)),
+          : EquipTargetInfo.fromJson(Map<String, dynamic>.from(json['equipTarget1'] as Map)),
   equipTarget2:
       json['equipTarget2'] == null
           ? null
-          : SvtLeaderEquipTargetInfo.fromJson(Map<String, dynamic>.from(json['equipTarget2'] as Map)),
+          : EquipTargetInfo.fromJson(Map<String, dynamic>.from(json['equipTarget2'] as Map)),
   equipTarget3:
       json['equipTarget3'] == null
           ? null
-          : SvtLeaderEquipTargetInfo.fromJson(Map<String, dynamic>.from(json['equipTarget3'] as Map)),
+          : EquipTargetInfo.fromJson(Map<String, dynamic>.from(json['equipTarget3'] as Map)),
   updatedAt: json['updatedAt'],
   imageLimitCount: json['imageLimitCount'],
   dispLimitCount: json['dispLimitCount'],

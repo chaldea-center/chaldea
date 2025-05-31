@@ -1597,6 +1597,7 @@ class EnemyScript with DataScriptBase {
   int? get dispBreakShift => toInt('dispBreakShift');
   int? get shiftPosition => toInt('shiftPosition'); // default value -1
   int? get entryByUserDeckFormationCondId => toInt('entryByUserDeckFormationCondId');
+  int? get isGrandSvt => toInt('isGrandSvt');
 
   factory EnemyScript.fromJson(Map<String, dynamic> json) => _$EnemyScriptFromJson(json);
 

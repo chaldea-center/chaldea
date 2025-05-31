@@ -35,7 +35,7 @@ class FormationCard extends StatelessWidget {
   }
 
   Widget _buildServantIcons(BuildContext context, final SvtSaveData? storedData) {
-    String svtInfo = '', ceInfo = "";
+    String svtInfo = '';
     final svtCollection = userSvtCollections?[storedData?.svtId];
     if (storedData != null) {
       if (storedData.svtId != null && storedData.svtId != 0) {
@@ -46,13 +46,6 @@ class FormationCard extends StatelessWidget {
           ' ${storedData.skillLvs.join("/")}',
           ' ${storedData.appendLvs.map((e) => e == 0 ? "-" : e).join("/")} ',
         ].join('\n');
-      }
-      if (storedData.ceId != null && storedData.ceId != 0) {
-        ceInfo = ' Lv.${storedData.ceLv}';
-        if (storedData.ceLimitBreak) {
-          ceInfo += ' $kStarChar2';
-        }
-        ceInfo = ceInfo.padRight(11);
       }
     }
 
@@ -124,13 +117,51 @@ class FormationCard extends StatelessWidget {
       );
     }
 
-    final ce = db.gameData.craftEssencesById[storedData?.ceId];
-    final basicCe = db.gameData.entities[storedData?.ceId];
+    final bonds =
+        svtCollection == null ? null : svt?.getPastNextBonds(svtCollection.friendshipRank, svtCollection.friendship);
 
-    final ceIcon = GameCardMixin.cardIconBuilder(
+    Widget child = Column(
+      children: [
+        svtIcon,
+        _buildCeIcon(context, storedData, SvtEquipTarget.normal),
+        if (storedData != null && storedData.grandSvt) ...[
+          if ((storedData.equip2?.id ?? 0) != 0) _buildCeIcon(context, storedData, SvtEquipTarget.bond),
+          if ((storedData.equip3?.id ?? 0) != 0) _buildCeIcon(context, storedData, SvtEquipTarget.reward),
+        ],
+        if (showBond && bonds != null)
+          BondProgress(value: bonds.$1, total: bonds.$1 + bonds.$2, padding: EdgeInsets.only(top: 1.5), minHeight: 3),
+      ],
+    );
+    child = Container(
+      padding: const EdgeInsets.symmetric(horizontal: 1),
+      constraints: const BoxConstraints(maxWidth: 80),
+      child: child,
+    );
+    return Flexible(flex: 10, child: child);
+  }
+
+  Widget _buildCeIcon(BuildContext context, SvtSaveData? storedData, SvtEquipTarget equipTarget) {
+    SvtEquipSaveData? equip = switch (equipTarget) {
+      SvtEquipTarget.normal => storedData?.equip1,
+      SvtEquipTarget.bond => storedData?.equip2,
+      SvtEquipTarget.reward => storedData?.equip3,
+    };
+    final ce = db.gameData.craftEssencesById[equip?.id];
+    final basicCe = db.gameData.entities[equip?.id];
+
+    String ceInfo = "";
+    if (equip != null && (equip.id ?? 0) != 0) {
+      ceInfo = ' Lv.${equip.lv}';
+      if (equip.limitBreak) {
+        ceInfo += ' $kStarChar2';
+      }
+      ceInfo = ceInfo.padRight(11);
+    }
+
+    return GameCardMixin.cardIconBuilder(
       context: context,
       icon:
-          ce?.extraAssets.equipFace.equip?[storedData!.ceId] ??
+          ce?.extraAssets.equipFace.equip?[equip?.id] ??
           basicCe?.icon?.replaceFirst('/Faces/', '/EquipFaces/') ??
           Atlas.common.emptyCeIcon,
       // width: 80,
@@ -145,29 +176,18 @@ class FormationCard extends StatelessWidget {
       ),
       onTap: () async {
         final data = await PlayerSvtData.fromStoredData(storedData);
-        if (data.ce == null) return;
+        if (data.getEquip(equipTarget).ce == null) return;
         router.pushPage(
-          CraftEssenceOptionEditPage(playerSvtData: data, questPhase: null, onChange: null, craftFilterData: null),
+          CraftEssenceOptionEditPage(
+            playerSvtData: data,
+            equipTarget: equipTarget,
+            questPhase: null,
+            onChange: null,
+            craftFilterData: null,
+          ),
         );
       },
     );
-    final bonds =
-        svtCollection == null ? null : svt?.getPastNextBonds(svtCollection.friendshipRank, svtCollection.friendship);
-
-    Widget child = Column(
-      children: [
-        svtIcon,
-        ceIcon,
-        if (showBond && bonds != null)
-          BondProgress(value: bonds.$1, total: bonds.$1 + bonds.$2, padding: EdgeInsets.only(top: 1.5), minHeight: 3),
-      ],
-    );
-    child = Container(
-      padding: const EdgeInsets.symmetric(horizontal: 1),
-      constraints: const BoxConstraints(maxWidth: 80),
-      child: child,
-    );
-    return Flexible(flex: 10, child: child);
   }
 
   Widget _buildMysticCode(BuildContext context) {
@@ -202,12 +222,16 @@ class FormationCard extends StatelessWidget {
               ),
           ],
         ),
-        if (enabled)
-          Text(
-            "Lv.${formation.mysticCode.level}",
-            style: fadeOutMysticCode ? const TextStyle(decoration: TextDecoration.lineThrough) : null,
-            textScaler: const TextScaler.linear(0.9),
-          ),
+        Text(
+          "Lv.${enabled ? formation.mysticCode.level : '-'}",
+          style: fadeOutMysticCode ? const TextStyle(decoration: TextDecoration.lineThrough) : null,
+          textScaler: const TextScaler.linear(0.9),
+        ),
+        Text(
+          formation.getTotalCost().toString(),
+          style: TextStyle(color: Theme.of(context).textTheme.bodySmall?.color),
+          textScaler: const TextScaler.linear(0.9),
+        ),
       ],
     );
     if (fadeOutMysticCode) {

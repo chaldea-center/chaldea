@@ -76,7 +76,7 @@ class _FormationEditorState extends State<FormationEditor>
                 if (eventWarId != null) eventWarIds.add(eventWarId);
                 final svts = record.formation.allSvts;
                 svtIds.addAll(svts.map((e) => e?.svtId ?? 0).where((e) => e > 0));
-                ceIds.addAll(svts.map((e) => e?.ceId ?? 0).where((e) => e > 0));
+                ceIds.addAll(svts.map((e) => e?.equip1.id ?? 0).where((e) => e > 0));
                 if (record.hasUsedMCSkills()) {
                   mcIds.add(record.formation.mysticCode.mysticCodeId ?? 0);
                 }

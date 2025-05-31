@@ -59,6 +59,7 @@ class _TeamSetupCardState extends State<TeamSetupCard> {
         children: [
           Text(title, style: Theme.of(context).textTheme.bodySmall),
           Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               for (final svt in svts)
                 Expanded(
@@ -88,15 +89,9 @@ class _TeamSetupCardState extends State<TeamSetupCard> {
     final fromIndex = allSvts.indexOf(from), toIndex = allSvts.indexOf(to);
     if (fromIndex < 0 || toIndex < 0 || fromIndex == toIndex) return;
     if (isCE) {
-      final ce = from.ce, ceLv = from.ceLv, ceLimitBreak = from.ceLimitBreak;
-      from
-        ..ce = to.ce
-        ..ceLv = to.ceLv
-        ..ceLimitBreak = to.ceLimitBreak;
-      to
-        ..ce = ce
-        ..ceLv = ceLv
-        ..ceLimitBreak = ceLimitBreak;
+      final tmp = from.equip1.copy();
+      from.equip1 = to.equip1.copy();
+      to.equip1 = tmp;
     } else {
       allSvts[fromIndex] = to;
       allSvts[toIndex] = from;

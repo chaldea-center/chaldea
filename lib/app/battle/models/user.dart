@@ -29,9 +29,15 @@ class PlayerSvtData {
   int? fixedAtk;
   int? fixedHp;
 
-  CraftEssence? ce;
-  bool ceLimitBreak = false;
-  int ceLv = 0;
+  SvtEquipData equip1 = SvtEquipData();
+  SvtEquipData equip2 = SvtEquipData();
+  SvtEquipData equip3 = SvtEquipData();
+
+  SvtEquipData getEquip(SvtEquipTarget equipTarget) => switch (equipTarget) {
+    SvtEquipTarget.normal => equip1,
+    SvtEquipTarget.bond => equip2,
+    SvtEquipTarget.reward => equip3,
+  };
 
   SupportSvtType supportType = SupportSvtType.none;
 
@@ -115,7 +121,7 @@ class PlayerSvtData {
 
   void fromUserSvt({required Servant svt, required SvtStatus status, required SvtPlan plan, int? limitCount}) {
     this
-      ..grandSvt = false
+      ..grandSvt = status.grandSvt
       ..limitCount = limitCount ?? plan.ascension
       ..lv = svt.grailedLv(plan.grail)
       ..tdLv = plan.npLv.clamp(1, 5)
@@ -198,27 +204,53 @@ class PlayerSvtData {
     }
   }
 
-  void onSelectCE(final CraftEssence selectedCE) {
-    ce = selectedCE;
+  void onSelectCE(final CraftEssence selectedCE, SvtEquipTarget equipTarget) {
+    final equip = getEquip(equipTarget);
+    switch (equipTarget) {
+      case SvtEquipTarget.normal:
+        break;
+      case SvtEquipTarget.bond:
+        if (!selectedCE.flags.contains(SvtFlag.svtEquipFriendShip)) {
+          return;
+        }
+        if (svt == null || selectedCE.bondEquipOwner == null || selectedCE.bondEquipOwner != svt!.id) {
+          return;
+        }
+      case SvtEquipTarget.reward:
+        final funcTypes = selectedCE.skills.expand((e) => e.functions).map((e) => e.funcType).toSet();
+        if (funcTypes.difference(const {
+          FuncType.servantFriendshipUp,
+          FuncType.expUp,
+          FuncType.qpUp,
+          FuncType.qpDropUp,
+          FuncType.userEquipExpUp,
+          FuncType.friendPointUp,
+          FuncType.friendPointUpDuplicate,
+          FuncType.eventDropRateUp,
+        }).isNotEmpty) {
+          return;
+        }
+    }
+    equip.ce = selectedCE;
     final status = db.curUser.ceStatusOf(selectedCE.collectionNo);
     if (!db.settings.battleSim.playerDataSource.isNone &&
         selectedCE.collectionNo > 0 &&
         status.status == CraftStatus.owned) {
-      ceLv = status.lv;
-      ceLimitBreak = status.limitCount == 4;
+      equip.lv = status.lv;
+      equip.limitBreak = status.limitCount == 4;
     } else {
-      ceLimitBreak = db.settings.battleSim.defaultLvs.ceMaxLimitBreak;
+      equip.limitBreak = db.settings.battleSim.defaultLvs.ceMaxLimitBreak;
       int? lvMin = {1: 6, 2: 9, 3: 11, 4: 13, 5: 15}[selectedCE.rarity];
-      ceLv =
+      equip.lv =
           db.settings.battleSim.defaultLvs.ceMaxLv
               ? selectedCE.lvMax
-              : ceLimitBreak && lvMin != null && lvMin <= selectedCE.lvMax && ceLv < lvMin
+              : equip.limitBreak && lvMin != null && lvMin <= selectedCE.lvMax && equip.lv < lvMin
               ? lvMin
               : 1;
     }
   }
 
-  bool get isEmpty => svt == null && ce == null;
+  bool get isEmpty => svt == null && equip1.ce == null;
 
   @visibleForTesting
   void setSkillStrengthenLvs(final List<int> skillStrengthenLvs) {
@@ -255,9 +287,9 @@ class PlayerSvtData {
       ..hpFou = hpFou
       ..fixedAtk = fixedAtk
       ..fixedHp = fixedHp
-      ..ce = ce
-      ..ceLimitBreak = ceLimitBreak
-      ..ceLv = ceLv
+      ..equip1 = equip1.copy()
+      ..equip2 = equip2.copy()
+      ..equip3 = equip3.copy()
       ..supportType = supportType
       ..cardStrengthens = cardStrengthens.toList()
       ..commandCodes = commandCodes.toList()
@@ -286,8 +318,9 @@ class PlayerSvtData {
           ..hpFou = storedData.hpFou
           ..fixedAtk = storedData.fixedAtk
           ..fixedHp = storedData.fixedHp
-          ..ceLimitBreak = storedData.ceLimitBreak
-          ..ceLv = storedData.ceLv
+          ..equip1 = await SvtEquipData.fromStoredData(storedData.equip1)
+          ..equip2 = await SvtEquipData.fromStoredData(storedData.equip2)
+          ..equip3 = await SvtEquipData.fromStoredData(storedData.equip3)
           ..supportType = storedData.supportType
           ..cardStrengthens = storedData.cardStrengthens.toList()
           ..grandSvt = storedData.grandSvt;
@@ -333,11 +366,6 @@ class PlayerSvtData {
       }
     }
 
-    if (storedData.ceId != null && storedData.ceId != 0) {
-      playerSvtData.ce = db.gameData.craftEssencesById[storedData.ceId];
-      playerSvtData.ce ??= await showEasyLoading(() => AtlasApi.ce(storedData.ceId!));
-    }
-
     return playerSvtData;
   }
 
@@ -360,13 +388,58 @@ class PlayerSvtData {
       hpFou: hpFou,
       fixedAtk: fixedAtk,
       fixedHp: fixedHp,
-      ceId: ce?.id,
-      ceLimitBreak: ceLimitBreak,
-      ceLv: ceLv,
+      grandSvt: grandSvt,
+      equip1: equip1.toStoredData(),
+      equip2: grandSvt ? equip2.toStoredDataNull() : null,
+      equip3: grandSvt ? equip3.toStoredDataNull() : null,
       supportType: supportType,
       cardStrengthens: cardStrengthens.toList(),
       commandCodeIds: commandCodes.map((commandCode) => commandCode?.id).toList(),
     );
+  }
+}
+
+enum SvtEquipTarget {
+  normal(0),
+  bond(1),
+  reward(2);
+
+  const SvtEquipTarget(this.value);
+  final int value;
+}
+
+class SvtEquipData {
+  CraftEssence? ce;
+  bool limitBreak;
+  int lv;
+
+  SvtEquipData({this.ce, this.limitBreak = false, this.lv = 0});
+
+  static Future<SvtEquipData> fromStoredData(SvtEquipSaveData? savedData) async {
+    if (savedData == null) return SvtEquipData();
+    CraftEssence? _ce = db.gameData.craftEssencesById[savedData.id];
+    if (_ce == null && (savedData.id ?? 0) != 0) {
+      _ce ??= await AtlasApi.ce(savedData.id!);
+    }
+    return SvtEquipData(ce: _ce, limitBreak: savedData.limitBreak, lv: savedData.lv);
+  }
+
+  static Future<SvtEquipData?> fromStoredDataNull(SvtEquipSaveData? savedData) async {
+    if (savedData == null || savedData.id == null) return null;
+    return fromStoredData(savedData);
+  }
+
+  SvtEquipSaveData toStoredData() {
+    return SvtEquipSaveData(id: ce?.id, limitBreak: limitBreak, lv: lv);
+  }
+
+  SvtEquipSaveData? toStoredDataNull() {
+    if (ce?.id == null) return null;
+    return SvtEquipSaveData(id: ce?.id, limitBreak: limitBreak, lv: lv);
+  }
+
+  SvtEquipData copy() {
+    return SvtEquipData(ce: ce, limitBreak: limitBreak, lv: lv);
   }
 }
 
@@ -485,8 +558,8 @@ class BattleTeamSetup {
     int cost = 0;
     for (final svt in allSvts) {
       if (svt.svt == null || svt.supportType != SupportSvtType.none) continue;
-      cost += svt.svt!.getAscended(svt.limitCount, (attr) => attr.overwriteRarity) ?? svt.svt!.cost;
-      if (svt.ce != null) cost += svt.ce!.cost;
+      cost += svt.svt!.getAscended(svt.limitCount, (attr) => attr.overwriteCost) ?? svt.svt!.cost;
+      if (svt.equip1.ce != null) cost += svt.equip1.ce!.cost;
     }
     return cost;
   }

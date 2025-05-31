@@ -229,6 +229,18 @@ SvtSaveData _$SvtSaveDataFromJson(Map json) => $checkedCreate('SvtSaveData', jso
     ceId: $checkedConvert('ceId', (v) => (v as num?)?.toInt()),
     ceLimitBreak: $checkedConvert('ceLimitBreak', (v) => v as bool? ?? false),
     ceLv: $checkedConvert('ceLv', (v) => (v as num?)?.toInt() ?? 0),
+    equip1: $checkedConvert(
+      'equip1',
+      (v) => v == null ? null : SvtEquipSaveData.fromJson(Map<String, dynamic>.from(v as Map)),
+    ),
+    equip2: $checkedConvert(
+      'equip2',
+      (v) => v == null ? null : SvtEquipSaveData.fromJson(Map<String, dynamic>.from(v as Map)),
+    ),
+    equip3: $checkedConvert(
+      'equip3',
+      (v) => v == null ? null : SvtEquipSaveData.fromJson(Map<String, dynamic>.from(v as Map)),
+    ),
     supportType: $checkedConvert(
       'supportType',
       (v) => $enumDecodeNullable(_$SupportSvtTypeEnumMap, v) ?? SupportSvtType.none,
@@ -278,6 +290,9 @@ Map<String, dynamic> _$SvtSaveDataToJson(SvtSaveData instance) => <String, dynam
   if (instance.ceId case final value?) 'ceId': value,
   'ceLimitBreak': instance.ceLimitBreak,
   'ceLv': instance.ceLv,
+  'equip1': instance.equip1.toJson(),
+  if (instance.equip2?.toJson() case final value?) 'equip2': value,
+  if (instance.equip3?.toJson() case final value?) 'equip3': value,
   'supportType': _$SupportSvtTypeEnumMap[instance.supportType]!,
   'cardStrengthens': instance.cardStrengthens,
   'commandCodeIds': instance.commandCodeIds,
@@ -292,6 +307,21 @@ const _$SupportSvtTypeEnumMap = {
   SupportSvtType.none: 'none',
   SupportSvtType.friend: 'friend',
   SupportSvtType.npc: 'npc',
+};
+
+SvtEquipSaveData _$SvtEquipSaveDataFromJson(Map json) => $checkedCreate('SvtEquipSaveData', json, ($checkedConvert) {
+  final val = SvtEquipSaveData(
+    id: $checkedConvert('id', (v) => (v as num?)?.toInt()),
+    limitBreak: $checkedConvert('limitBreak', (v) => v as bool? ?? false),
+    lv: $checkedConvert('lv', (v) => (v as num?)?.toInt() ?? 0),
+  );
+  return val;
+});
+
+Map<String, dynamic> _$SvtEquipSaveDataToJson(SvtEquipSaveData instance) => <String, dynamic>{
+  'id': instance.id,
+  'limitBreak': instance.limitBreak,
+  'lv': instance.lv,
 };
 
 MysticCodeSaveData _$MysticCodeSaveDataFromJson(Map json) =>

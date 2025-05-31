@@ -291,8 +291,11 @@ class BattleRecordManager {
         '${S.current.general_custom} ${S.current.noble_phantasm}: ID ${svtData.td!.id}, valid: $validTds',
       );
     }
-    if (svtData.ce != null && svtData.ce!.collectionNo <= 0) {
-      reasons.setUpload('${S.current.craft_essence}: ID ${svtData.ce!.id}, not player CE');
+    if (svtData.equip1.ce != null && svtData.equip1.ce!.collectionNo <= 0) {
+      reasons.setUpload('${S.current.craft_essence}: ID ${svtData.equip1.ce!.id}, not player CE');
+    }
+    if (svtData.grandSvt || svtData.equip2.ce != null || svtData.equip3.ce != null) {
+      reasons.setUpload('Grand Graph system not supported to upload yet');
     }
 
     // coin

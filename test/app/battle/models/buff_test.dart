@@ -11,8 +11,16 @@ void main() async {
 
   group('Test shouldApplyBuff', () {
     final battle = BattleData();
-    final okuni = BattleServantData.fromPlayerSvtData(PlayerSvtData.id(504900)..lv = 90, battle.getNextUniqueId());
-    final cba = BattleServantData.fromPlayerSvtData(PlayerSvtData.id(503900)..lv = 90, battle.getNextUniqueId());
+    final okuni = BattleServantData.fromPlayerSvtData(
+      PlayerSvtData.id(504900)..lv = 90,
+      battle.getNextUniqueId(),
+      isUseGrandBoard: false,
+    );
+    final cba = BattleServantData.fromPlayerSvtData(
+      PlayerSvtData.id(503900)..lv = 90,
+      battle.getNextUniqueId(),
+      isUseGrandBoard: false,
+    );
 
     test('target check', () {
       final buff = BuffData(
@@ -125,10 +133,7 @@ void main() async {
       final List<PlayerSvtData> setting = [
         PlayerSvtData.id(1001000)
           ..lv = 1
-          ..ce =
-              db.gameData.craftEssencesById[9400340] // Kaleidoscope
-          ..ceLv = 100
-          ..ceLimitBreak = true,
+          ..equip1 = getNP100Equip(),
       ];
       final mysticCodeData = MysticCodeData()..mysticCode = db.gameData.mysticCodes[240]!;
       final battle = BattleData();
@@ -220,10 +225,7 @@ void main() async {
         PlayerSvtData.id(703300)
           ..tdLv = 5
           ..lv = 90
-          ..ce =
-              db.gameData.craftEssencesById[9400340] // Kaleidoscope
-          ..ceLv = 100
-          ..ceLimitBreak = true,
+          ..equip1 = getNP100Equip(),
       ];
       await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
 
@@ -400,16 +402,10 @@ void main() async {
       final playerSettings = [
         PlayerSvtData.id(901000)
           ..lv = 90
-          ..ce =
-              db.gameData.craftEssencesById[9400340] // Kaleidoscope
-          ..ceLv = 100
-          ..ceLimitBreak = true,
+          ..equip1 = getNP100Equip(),
         PlayerSvtData.id(901000)
           ..lv = 90
-          ..ce =
-              db.gameData.craftEssencesById[9400340] // Kaleidoscope
-          ..ceLv = 100
-          ..ceLimitBreak = true,
+          ..equip1 = getNP100Equip(),
         PlayerSvtData.id(500300)..lv = 90,
       ];
       await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
@@ -451,10 +447,7 @@ void main() async {
         PlayerSvtData.id(603700)..lv = 90,
         PlayerSvtData.id(403200)
           ..lv = 80
-          ..ce =
-              db.gameData.craftEssencesById[9400340] // Kaleidoscope
-          ..ceLv = 100
-          ..ceLimitBreak = true,
+          ..equip1 = getNP100Equip(),
         PlayerSvtData.id(1001500)..lv = 80,
       ];
       await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
@@ -495,10 +488,7 @@ void main() async {
         PlayerSvtData.id(603700)..lv = 90,
         PlayerSvtData.id(403200)
           ..lv = 80
-          ..ce =
-              db.gameData.craftEssencesById[9400340] // Kaleidoscope
-          ..ceLv = 100
-          ..ceLimitBreak = true,
+          ..equip1 = getNP100Equip(),
         PlayerSvtData.id(1001500)..lv = 80,
       ];
       await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
@@ -553,10 +543,7 @@ void main() async {
       final List<PlayerSvtData> setting = [
         PlayerSvtData.id(2300400)
           ..lv = 90
-          ..ce =
-              db.gameData.craftEssencesById[9400340] // Kaleidoscope
-          ..ceLv = 100
-          ..ceLimitBreak = true,
+          ..equip1 = getNP100Equip(),
       ];
       final battle = BattleData();
       await battle.init(db.gameData.questPhases[9300040603]!, setting, null);
@@ -688,10 +675,7 @@ void main() async {
         PlayerSvtData.id(403700)..lv = 90,
         PlayerSvtData.id(504400)
           ..lv = 65
-          ..ce =
-              db.gameData.craftEssencesById[9400340] // Kaleidoscope
-          ..ceLv = 100
-          ..ceLimitBreak = true,
+          ..equip1 = getNP100Equip(),
       ];
       final battle = BattleData();
       await battle.init(db.gameData.questPhases[9300040603]!, setting, null);

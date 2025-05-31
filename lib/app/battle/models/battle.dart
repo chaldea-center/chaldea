@@ -142,6 +142,8 @@ class BattleData {
 
   bool get isWaveCleared => backupEnemies.isEmpty && nonnullEnemies.isEmpty;
 
+  bool get isUseGrandBoard => niceQuest?.extraDetail?.isUseGrandBoard == 1;
+
   List<BuffData> fieldBuffs = [];
   MysticCode? mysticCode;
   int mysticCodeLv = 10;
@@ -289,7 +291,12 @@ class BattleData {
       final svtSetting = playerSettings[idx];
       return svtSetting == null || svtSetting.svt == null
           ? null
-          : BattleServantData.fromPlayerSvtData(svtSetting, getNextUniqueId(), startingPosition: idx + 1);
+          : BattleServantData.fromPlayerSvtData(
+            svtSetting,
+            getNextUniqueId(),
+            startingPosition: idx + 1,
+            isUseGrandBoard: isUseGrandBoard,
+          );
     });
     await _fetchWaveEnemies();
 

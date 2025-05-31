@@ -18,6 +18,8 @@ class BattleServantData {
 
   final bool isPlayer;
   bool get isEnemy => !isPlayer;
+  final bool isGrandSvt;
+  final bool isUseGrandBoard; // should not be used
   int? eventId;
   QuestEnemy? niceEnemy;
   QuestEnemy? baseEnemy;
@@ -127,7 +129,9 @@ class BattleServantData {
   // NiceTd? td;
   // int ascensionPhase = 0;
   List<BattleSkillInfoData> skillInfoList = []; // BattleSkillInfoData, only active skills for now
-  BattleCEData? equip;
+  BattleCEData? equip1;
+  BattleCEData? equip2;
+  BattleCEData? equip3;
   BattleBuff battleBuff = BattleBuff();
   List<List<BattleSkillInfoData>> commandCodeSkills = [];
 
@@ -147,7 +151,7 @@ class BattleServantData {
   List<NiceFunction> receivedFunctionsList = [];
   List<BattleServantActionHistory> actionHistory = [];
 
-  BattleServantData._({required this.isPlayer});
+  BattleServantData._({required this.isPlayer, required this.isGrandSvt, required this.isUseGrandBoard});
 
   @override
   String toString() {
@@ -155,7 +159,11 @@ class BattleServantData {
   }
 
   factory BattleServantData.fromEnemy(final QuestEnemy enemy, final int uniqueId, int? eventId, {Servant? niceSvt}) {
-    final svt = BattleServantData._(isPlayer: false);
+    final svt = BattleServantData._(
+      isPlayer: false,
+      isGrandSvt: enemy.enemyScript.isGrandSvt == 1 && db.gameData.grandGraphDetails.containsKey(enemy.svt.classId),
+      isUseGrandBoard: false,
+    );
     svt
       ..eventId = eventId
       ..niceEnemy = enemy
@@ -166,9 +174,9 @@ class BattleServantData {
       ..startingPosition = enemy.deckId
       ..hp = enemy.hp
       .._maxHp = enemy.hp
+      ..baseAtk = enemy.atk
       ..svtId = enemy.svt.id
       ..level = enemy.lv
-      ..baseAtk = enemy.atk
       ..deckIndex = enemy.deckId
       ..shiftNpcIds = enemy.enemyScript.shift ?? []
       ..changeNpcIds = enemy.enemyScript.change ?? [];
@@ -200,6 +208,7 @@ class BattleServantData {
     final PlayerSvtData settings,
     final int uniqueId, {
     final int startingPosition = 0,
+    required bool isUseGrandBoard,
   }) {
     final psvt = settings.svt;
     if (psvt == null) {
@@ -207,7 +216,11 @@ class BattleServantData {
     }
 
     final growCurve = psvt.growCurveForLimit(settings.limitCount);
-    final svt = BattleServantData._(isPlayer: true);
+    final svt = BattleServantData._(
+      isPlayer: true,
+      isGrandSvt: settings.grandSvt && db.gameData.grandGraphDetails.containsKey(psvt.classId),
+      isUseGrandBoard: isUseGrandBoard,
+    );
     svt
       ..playerSvtData = settings.copy()
       ..uniqueId = uniqueId
@@ -217,12 +230,25 @@ class BattleServantData {
       ..startingPosition = startingPosition
       .._maxHp = settings.fixedHp ?? ((growCurve.hp.getOrNull(settings.lv - 1) ?? 0) + settings.hpFou)
       ..baseAtk = settings.fixedAtk ?? ((growCurve.atk.getOrNull(settings.lv - 1) ?? 0) + settings.atkFou);
-    svt.hp = svt._maxHp;
-    if (settings.ce != null) {
-      svt.equip = BattleCEData(settings.ce!, settings.ceLimitBreak, settings.ceLv);
-      svt.hp += svt.equip!.hp;
-      svt._maxHp += svt.equip!.hp;
+    if (svt.isGrandSvt) {
+      svt._maxHp += 1000;
+      svt.baseAtk += 1000;
     }
+    if (settings.equip1.ce != null) {
+      svt.equip1 = BattleCEData(settings.equip1.ce!, settings.equip1.limitBreak, settings.equip1.lv);
+      svt._maxHp += svt.equip1!.hp;
+    }
+    if (svt.isGrandSvt && isUseGrandBoard) {
+      if (settings.equip2.ce != null) {
+        svt.equip2 = BattleCEData(settings.equip2.ce!, settings.equip2.limitBreak, settings.equip2.lv);
+        svt._maxHp += svt.equip2!.hp;
+      }
+      if (settings.equip3.ce != null) {
+        svt.equip3 = BattleCEData(settings.equip3.ce!, settings.equip3.limitBreak, settings.equip3.lv);
+        svt._maxHp += svt.equip3!.hp;
+      }
+    }
+    svt.hp = svt._maxHp;
 
     final script = psvt.script;
     for (final skillNum in kActiveSkillNums) {
@@ -289,12 +315,32 @@ class BattleServantData {
 
   int get tdLv => (isPlayer ? playerSvtData!.tdLv : niceEnemy!.noblePhantasm.noblePhantasmLv).clamp(0, 5);
 
-  int get atk => isPlayer ? baseAtk + (equip?.atk ?? 0) : baseAtk;
+  int get atk {
+    int totalAtk = baseAtk;
+    if (isPlayer) {
+      totalAtk += equip1?.atk ?? 0;
+      if (isGrandSvt) {
+        totalAtk += equip2?.atk ?? 0;
+        totalAtk += equip3?.atk ?? 0;
+      }
+    }
+    return totalAtk;
+  }
 
   int get rarity =>
       isPlayer
           ? niceSvt!.getAscended(limitCount, (attr) => attr.overwriteRarity) ?? niceSvt!.rarity
           : niceEnemy!.svt.rarity;
+
+  int get originalClassId => isPlayer ? niceSvt!.classId : niceEnemy!.svt.classId;
+
+  int get baseClassId {
+    if (isGrandSvt) {
+      return db.gameData.grandGraphDetails[originalClassId]?.grandClassId ?? originalClassId;
+    } else {
+      return originalClassId;
+    }
+  }
 
   int get logicalClassId {
     final overwriteBattleClassBuff = collectBuffsPerAction(
@@ -305,10 +351,8 @@ class BattleServantData {
       return overwriteBattleClassBuff.param;
     }
 
-    return isPlayer ? niceSvt!.classId : niceEnemy!.svt.classId;
+    return baseClassId;
   }
-
-  int get originalClassId => isPlayer ? niceSvt!.classId : niceEnemy!.svt.classId;
 
   ServantSubAttribute get attribute {
     final overwriteSubattributeBuff =
@@ -446,7 +490,11 @@ class BattleServantData {
   }
 
   Future<void> activateEquip(final BattleData battleData) async {
-    await equip?.activateCE(battleData, this);
+    await equip1?.activateCE(battleData, this);
+    if (battleData.isUseGrandBoard && isPlayer && isGrandSvt) {
+      await equip2?.activateCE(battleData, this);
+      await equip3?.activateCE(battleData, this);
+    }
   }
 
   Future<void> activateExtraPassive(final BattleData battleData) async {
@@ -724,6 +772,12 @@ class BattleServantData {
         }
       }
     }
+    if (playerSvtData?.supportType.isSupport == true) {
+      traits.add(NiceTrait(id: ConstData.constants.individualityIsSupport));
+    }
+    if (isPlayer && isGrandSvt) {
+      traits.addAll(db.gameData.grandGraphDetails[originalClassId]?.adjustIndividuality ?? []);
+    }
     return traits.toList();
   }
 
@@ -995,13 +1049,13 @@ class BattleServantData {
       }
     }
 
-    if (logicalClassId != originalClassId) {
+    if (logicalClassId != baseClassId) {
       final isServant = allTraits.map((trait) => trait.id).contains(Trait.servant.value);
-      final originalClassInfo = ConstData.classInfo[originalClassId];
-      if (originalClassInfo != null) {
+      final baseClassInfo = ConstData.classInfo[baseClassId];
+      if (baseClassInfo != null) {
         final removeClassTraitIds = [
-          originalClassInfo.individuality,
-          if (isServant) ...originalClassInfo.relationSvtIndividuality,
+          baseClassInfo.individuality,
+          if (isServant) ...baseClassInfo.relationSvtIndividuality,
         ];
         allTraits.removeWhere((trait) => removeClassTraitIds.contains(trait.id));
       }
@@ -1283,7 +1337,12 @@ class BattleServantData {
     }
 
     baseAtk = (targetSvt.atkGrowth.getOrNull(playerSvtData!.lv - 1) ?? 0) + playerSvtData!.atkFou;
-    _maxHp = (targetSvt.hpGrowth.getOrNull(playerSvtData!.lv - 1) ?? 0) + playerSvtData!.hpFou + (equip?.hp ?? 0);
+    _maxHp =
+        (targetSvt.hpGrowth.getOrNull(playerSvtData!.lv - 1) ?? 0) +
+        playerSvtData!.hpFou +
+        (equip1?.hp ?? 0) +
+        (equip2?.hp ?? 0) +
+        (equip3?.hp ?? 0);
     hp = hp > maxHp ? maxHp : hp;
 
     for (final actor in battleData.nonnullAllActors) {
@@ -2392,7 +2451,7 @@ class BattleServantData {
   }
 
   BattleServantData copy() {
-    return BattleServantData._(isPlayer: isPlayer)
+    return BattleServantData._(isPlayer: isPlayer, isGrandSvt: isGrandSvt, isUseGrandBoard: isUseGrandBoard)
       ..eventId = eventId
       ..niceEnemy = niceEnemy
       ..baseEnemy = baseEnemy
@@ -2419,7 +2478,9 @@ class BattleServantData {
           skillInfoList
               .map((e) => e.copy())
               .toList() // copy
-      ..equip = equip
+      ..equip1 = equip1?.copy()
+      ..equip2 = equip2?.copy()
+      ..equip3 = equip3?.copy()
       ..battleBuff = battleBuff.copy()
       ..commandCodeSkills = commandCodeSkills.map((skills) => skills.map((skill) => skill.copy()).toList()).toList()
       ..shiftNpcIds = shiftNpcIds.toList()

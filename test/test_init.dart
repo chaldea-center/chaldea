@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:chaldea/app/battle/models/user.dart' show SvtEquipData;
 import 'package:chaldea/app/tools/gamedata_loader.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/db.dart';
@@ -30,3 +31,9 @@ class CustomTestBindings extends AutomatedTestWidgetsFlutterBinding {
   @override
   bool get overrideHttpClient => false;
 }
+
+SvtEquipData getNP100Equip() => SvtEquipData(
+  ce: db.gameData.craftEssencesById[9400340], // Kaleidoscope
+  lv: 100,
+  limitBreak: true,
+);
