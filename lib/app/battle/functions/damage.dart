@@ -25,8 +25,7 @@ class Damage {
     final Iterable<BattleServantData> targets,
     final CommandCardData currentCard, {
     final int chainPos = 1,
-    final bool isTypeChain = false,
-    final bool isMightyChain = false,
+    final BattleChainType chainType = BattleChainType.none,
     final CardType firstCardType = CardType.none,
     final bool isComboStart = false,
     final bool isComboEnd = false,
@@ -191,8 +190,7 @@ class Damage {
             ..chainPos = chainPos
             ..currentCardType = currentCard.cardType
             ..firstCardType = firstCardType
-            ..isTypeChain = isTypeChain
-            ..isMightyChain = isMightyChain
+            ..chainType = chainType
             ..critical = currentCard.critical
             ..cardBuff = await activator.getBuffValue(
               battleData,
@@ -243,7 +241,7 @@ class Damage {
           ..chainPos = chainPos
           ..currentCardType = currentCard.cardType
           ..firstCardType = firstCardType
-          ..isMightyChain = isMightyChain
+          ..chainType = chainType
           ..critical = currentCard.critical
           ..cardBuff = await activator.getBuffValue(
             battleData,
@@ -267,7 +265,7 @@ class Damage {
           ..chainPos = chainPos
           ..currentCardType = currentCard.cardType
           ..firstCardType = firstCardType
-          ..isMightyChain = isMightyChain
+          ..chainType = chainType
           ..critical = currentCard.critical
           ..cardBuff = await activator.getBuffValue(
             battleData,

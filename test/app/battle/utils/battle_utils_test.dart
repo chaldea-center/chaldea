@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:chaldea/app/battle/models/command_card.dart';
 import 'package:chaldea/app/battle/utils/battle_utils.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
@@ -64,7 +65,7 @@ void main() async {
         final damageParameters =
             oc1Np1BaseParam.copy()
               ..firstCardType = CardType.buster
-              ..isTypeChain = true;
+              ..chainType = BattleChainType.buster;
 
         expect(calculateDamage(damageParameters), equals(baseDamage));
       });
@@ -203,7 +204,7 @@ void main() async {
 
         damageParameters
           ..firstCardType = CardType.quick
-          ..isMightyChain = true;
+          ..chainType = BattleChainType.mighty;
 
         expect(calculateDamage(damageParameters), equals(damageWithBonus));
       });
@@ -261,7 +262,7 @@ void main() async {
 
         expect(calculateDamage(damageParameters), equals(4180));
 
-        damageParameters.isTypeChain = true;
+        damageParameters.chainType = BattleChainType.buster;
 
         expect(calculateDamage(damageParameters), equals(6425));
 
@@ -280,7 +281,7 @@ void main() async {
 
         expect(calculateDamage(damageParameters), equals(6271));
 
-        damageParameters.isTypeChain = true;
+        damageParameters.chainType = BattleChainType.buster;
 
         expect(calculateDamage(damageParameters), equals(10974));
       });
@@ -491,7 +492,7 @@ void main() async {
       final param =
           AttackNpGainParameters()
             ..firstCardType = CardType.quick
-            ..isMightyChain = true
+            ..chainType = BattleChainType.mighty
             ..currentCardType = CardType.arts
             ..chainPos = 3
             ..attackerNpCharge = 25
@@ -596,7 +597,7 @@ void main() async {
 
         params
           ..firstCardType = CardType.quick
-          ..isMightyChain = true;
+          ..chainType = BattleChainType.mighty;
 
         expect(calculateAttackNpGain(params), equals(hitNpGainWithBonus));
       });
@@ -910,7 +911,7 @@ void main() async {
 
         params
           ..firstCardType = CardType.arts
-          ..isMightyChain = true;
+          ..chainType = BattleChainType.mighty;
 
         expect(calculateStar(params).toDouble(), moreOrLessEquals(hitStarGenWithBonus, epsilon: 1));
       });

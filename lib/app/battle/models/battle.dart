@@ -953,26 +953,22 @@ class BattleData {
           }
         }
 
-        final validActions = actions.where((action) => action.isValid(this)).toList();
-        final cardTypesSet = validActions.map((action) => action.cardData.cardType).toSet();
-        final isTypeChain =
-            validActions.length == 3 &&
-            (cardTypesSet.every((card) => card.isArts()) ||
-                cardTypesSet.every((card) => card.isBuster()) ||
-                cardTypesSet.every((card) => card.isQuick()));
-
-        final isMightyChain =
-            options.mightyChain &&
-            cardTypesSet.any((card) => card.isArts()) &&
-            cardTypesSet.any((card) => card.isBuster()) &&
-            cardTypesSet.any((card) => card.isQuick());
-        final isBraveChain =
-            validActions.length == kMaxCommand && validActions.map((action) => action.actor).toSet().length == 1;
-        if (isBraveChain) {
+        final chainType = _decideChainType(actions, options.mightyChain);
+        if (chainType.isBraveChain()) {
           final actor = actions[0].actor;
           final extraCard = actor.getExtraCard();
           if (extraCard != null) actions.add(CombatAction(actor, extraCard));
         }
+        for (final action in actions) {
+          action.cardData.chainType = chainType;
+        }
+
+        final CardType firstCardType =
+            // mightyChain=after 7th Anni, invalid first card can provide bonus
+            actions.isNotEmpty && (options.mightyChain || actions.first.isValid(this))
+                ? actions.first.cardData.cardType
+                : CardType.blank;
+        await _applyColorChainFunction(chainType, actions);
 
         for (final action in actions) {
           if (action.isValid(this)) {
@@ -980,15 +976,6 @@ class BattleData {
           }
         }
 
-        final CardType firstCardType =
-            actions.isEmpty
-                ? CardType.blank
-                : options.mightyChain || actions[0].isValid(this)
-                ? actions[0].cardData.cardType
-                : CardType.blank;
-        if (isTypeChain) {
-          await _applyTypeChain(firstCardType, actions);
-        }
         int extraOvercharge = 0;
         for (int i = 0; i < actions.length; i += 1) {
           await withAction(() async {
@@ -998,7 +985,9 @@ class BattleData {
 
               // need to sync card data because the actor might have transformed
               final actualCard = getActualCard(action);
-              actualCard.critical = action.cardData.critical;
+              actualCard
+                ..critical = action.cardData.critical
+                ..chainType = action.cardData.chainType;
               if (onFieldAllyServants.contains(actor) && action.isValid(this)) {
                 recorder.startPlayerCard(actor, actualCard);
 
@@ -1012,8 +1001,7 @@ class BattleData {
                     actor: actor,
                     card: actualCard,
                     chainPos: i + 1,
-                    isTypeChain: isTypeChain,
-                    isMightyChain: isMightyChain,
+                    chainType: actualCard.chainType,
                     firstCardType: firstCardType,
                     isPlayer: true,
                     isComboStart: isComboStart(actions, i),
@@ -1056,15 +1044,43 @@ class BattleData {
     );
   }
 
+  BattleChainType _decideChainType(List<CombatAction> actions, bool enableMightyChain) {
+    BattleChainType _decideNoCheckValid(List<CombatAction> _actions) {
+      final cardTypesSet = _actions.map((action) => action.cardData.cardType).toSet();
+      if (_actions.length != kMaxCommand) return BattleChainType.none;
+
+      return BattleChainType.fromBasicChains(
+        artsChain: cardTypesSet.every((card) => card.isArts()),
+        busterChain: cardTypesSet.every((card) => card.isBuster()),
+        quickChain: cardTypesSet.every((card) => card.isQuick()),
+        mightyChain:
+            enableMightyChain &&
+            cardTypesSet.any((card) => card.isArts()) &&
+            cardTypesSet.any((card) => card.isBuster()) &&
+            cardTypesSet.any((card) => card.isQuick()),
+        braveChain: _actions.map((action) => action.actor).toSet().length == 1,
+      );
+    }
+
+    final validActions = actions.where((action) => action.isValid(this)).toList();
+    final originalChainType = _decideNoCheckValid(actions);
+    final realChainType = _decideNoCheckValid(validActions);
+    if (realChainType.isValidChain()) return realChainType;
+    if (originalChainType.isValidChain()) return BattleChainType.error;
+    return BattleChainType.none;
+  }
+
   static CommandCardData getActualCard(final CombatAction combatAction) {
     final cardData = combatAction.cardData;
     final actor = combatAction.actor;
-    return (cardData.isTD
+    CommandCardData outCardData =
+        (cardData.isTD
             ? actor.getNPCard()
             : cardData.cardType.isExtra()
             ? actor.getExtraCard()
             : actor.getCards().getOrNull(cardData.cardIndex)) ??
         cardData;
+    return outCardData;
   }
 
   Future<void> activateCounter(BattleServantData svt) async {
@@ -1102,8 +1118,7 @@ class BattleData {
               actor: action.actor,
               card: action.cardData,
               chainPos: 1,
-              isTypeChain: false,
-              isMightyChain: false,
+              chainType: BattleChainType.none,
               firstCardType: CardType.blank,
               isComboStart: false,
               isComboEnd: false,
@@ -1149,8 +1164,7 @@ class BattleData {
                   actor: action.actor,
                   card: action.cardData,
                   chainPos: 1,
-                  isTypeChain: false,
-                  isMightyChain: false,
+                  chainType: BattleChainType.none,
                   firstCardType: CardType.none,
                   isPlayer: false,
                   isComboStart: false,
@@ -1302,8 +1316,7 @@ class BattleData {
     required BattleServantData actor,
     required CommandCardData card,
     required int chainPos,
-    required bool isTypeChain,
-    required bool isMightyChain,
+    required BattleChainType chainType,
     required CardType firstCardType,
     required bool isComboStart,
     required bool isComboEnd,
@@ -1330,8 +1343,7 @@ class BattleData {
           targets,
           card,
           chainPos: chainPos,
-          isTypeChain: isTypeChain,
-          isMightyChain: isMightyChain,
+          chainType: chainType,
           firstCardType: firstCardType,
           isComboStart: isComboStart,
           isComboEnd: isComboEnd,
@@ -1342,14 +1354,15 @@ class BattleData {
     actor.clearCommandCodeBuffs();
   }
 
-  Future<void> _applyTypeChain(final CardType cardType, final List<CombatAction> actions) async {
-    battleLogger.action('${cardType.name} Chain');
+  Future<void> _applyColorChainFunction(BattleChainType chainType, List<CombatAction> actions) async {
+    if (!chainType.isSameColorChain()) return;
+    battleLogger.action('${chainType.name} Chain');
     await withFunctions(() async {
       await withFunction(() async {
-        if (cardType.isQuick()) {
+        if (chainType.isQuickChain()) {
           final dataValToUse = options.mightyChain ? quickChainAfter7thAnni : quickChainBefore7thAnni;
           GainStar.gainStar(this, dataValToUse, null);
-        } else if (cardType.isArts()) {
+        } else if (chainType.isArtsChain()) {
           final targets = actions.map((action) => action.actor).toSet();
           GainNp.gainNp(this, artsChain, targets);
         }

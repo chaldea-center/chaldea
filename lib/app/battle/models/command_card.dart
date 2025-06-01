@@ -1,5 +1,74 @@
 import 'package:chaldea/app/battle/models/battle.dart';
+import 'package:chaldea/models/db.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
+
+enum BattleChainType {
+  none(0),
+  arts(1),
+  buster(2),
+  quick(3),
+  brave(4),
+  braveAndArts(5),
+  braveAndBuster(6),
+  braveAndQuick(7),
+  treasureDvc(8),
+  mighty(9),
+  braveAndMighty(10),
+  error(99); // not in dw enum
+
+  const BattleChainType(this.value);
+  final int value;
+
+  bool isValidChain() => this != none && this != error;
+  bool isArtsChain() => this == arts || this == braveAndArts;
+  bool isBusterChain() => this == buster || this == braveAndBuster;
+  bool isQuickChain() => this == quick || this == braveAndQuick;
+  bool isSameColorChain() => isArtsChain() || isBusterChain() || isQuickChain();
+  bool isBraveChain() =>
+      this == brave ||
+      this == braveAndArts ||
+      this == braveAndBuster ||
+      this == braveAndQuick ||
+      this == braveAndMighty;
+  bool isMightyChain() => this == mighty || this == braveAndMighty;
+  bool isChainError() => this == error;
+
+  List<int> get individuality {
+    final constants = ConstData.constants;
+    return [
+      if (isArtsChain()) constants.artsChainIndividuality,
+      if (isBusterChain()) constants.busterChainIndividuality,
+      if (isQuickChain()) constants.quickChainIndividuality,
+      if (isBraveChain()) constants.braveChainIndividuality,
+      if (isMightyChain()) constants.mightyChainIndividuality,
+      if (isChainError()) constants.chainErrorIndividuality,
+    ];
+  }
+
+  static BattleChainType fromBasicChains({
+    required bool artsChain,
+    required bool busterChain,
+    required bool quickChain,
+    required bool mightyChain,
+    required bool braveChain,
+  }) {
+    assert(<bool>[artsChain, busterChain, quickChain, mightyChain].where((e) => e).length <= 1);
+    if (mightyChain) {
+      return braveChain ? braveAndMighty : mighty;
+    }
+    if (artsChain) {
+      return braveChain ? braveAndArts : arts;
+    }
+    if (busterChain) {
+      return braveChain ? braveAndBuster : buster;
+    }
+    if (quickChain) {
+      return braveChain ? braveAndQuick : quick;
+    }
+    if (braveChain) return brave;
+    return none;
+  }
+}
 
 class BattleCommandData {
   int type = 0; // player enemy
@@ -50,8 +119,13 @@ class CommandCardData {
   NiceTd? td;
   BuffData? counterBuff;
   int? oc;
+  BattleChainType chainType = BattleChainType.none;
 
-  List<NiceTrait> get traits => [..._traits, if (critical) NiceTrait(id: Trait.criticalHit.value)];
+  List<NiceTrait> get traits => [
+    ..._traits,
+    if (critical) NiceTrait(id: Trait.criticalHit.value),
+    for (final v in chainType.individuality) NiceTrait(id: v),
+  ];
   set traits(List<NiceTrait> traits) => _traits = traits;
 
   CommandCardData._(this.svtId, this.svtLimit, this.uniqueId, this.cardType, this.cardDetail, this.cardIndex);
@@ -72,7 +146,8 @@ class CommandCardData {
       ..commandCode = commandCode
       ..td = td
       ..counterBuff = counterBuff
-      ..oc = oc;
+      ..oc = oc
+      ..chainType = chainType;
   }
 }
 

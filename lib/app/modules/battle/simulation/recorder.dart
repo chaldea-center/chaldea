@@ -1400,16 +1400,18 @@ class DamageParamDialog extends StatelessWidget with _ParamDialogMixin {
     final firstCardBonus =
         shouldIgnoreFirstCardBonus(params.isNp, params.firstCardType)
             ? 0
-            : params.isMightyChain
+            : params.chainType.isMightyChain()
             ? toModifier(ConstData.cardInfo[CardType.buster]![1]!.addAtk)
             : toModifier(ConstData.cardInfo[params.firstCardType]![1]!.addAtk);
     final busterChainMod =
-        (!params.isNp && params.currentCardType.isBuster() && params.isTypeChain
+        (!params.isNp && params.currentCardType.isBuster() && params.chainType.isSameColorChain()
                 ? toModifier(ConstData.constants.chainbonusBusterRate) * params.attack
                 : 0)
             .toInt();
     final extraModifier = toModifier(
-      params.isTypeChain ? ConstData.constants.extraAttackRateGrand : ConstData.constants.extraAttackRateSingle,
+      params.chainType.isSameColorChain()
+          ? ConstData.constants.extraAttackRateGrand
+          : ConstData.constants.extraAttackRateSingle,
     );
     final atkSum = max(toModifier(params.attackBuff - params.defenseBuff), -1);
     final cardSum = max(toModifier(params.cardBuff - params.cardResist), -1);
