@@ -270,6 +270,10 @@ SvtSaveData _$SvtSaveDataFromJson(Map json) => $checkedCreate('SvtSaveData', jso
       (v) => (v as List<dynamic>?)?.map((e) => (e as num).toInt()).toList(),
     ),
     grandSvt: $checkedConvert('grandSvt', (v) => v as bool? ?? false),
+    classBoardData: $checkedConvert(
+      'classBoardData',
+      (v) => v == null ? null : ClassBoardStatisticsData.fromJson(Map<String, dynamic>.from(v as Map)),
+    ),
   );
   return val;
 });
@@ -301,6 +305,7 @@ Map<String, dynamic> _$SvtSaveDataToJson(SvtSaveData instance) => <String, dynam
   'customPassives': instance.customPassives.map((e) => e.toJson()).toList(),
   'customPassiveLvs': instance.customPassiveLvs,
   'grandSvt': instance.grandSvt,
+  if (instance.classBoardData?.toJson() case final value?) 'classBoardData': value,
 };
 
 const _$SupportSvtTypeEnumMap = {
@@ -336,6 +341,50 @@ MysticCodeSaveData _$MysticCodeSaveDataFromJson(Map json) =>
 Map<String, dynamic> _$MysticCodeSaveDataToJson(MysticCodeSaveData instance) => <String, dynamic>{
   'mysticCodeId': instance.mysticCodeId,
   'level': instance.level,
+};
+
+ClassBoardStatisticsData _$ClassBoardStatisticsDataFromJson(Map json) =>
+    $checkedCreate('ClassBoardStatisticsData', json, ($checkedConvert) {
+      final val = ClassBoardStatisticsData(
+        classBoardSquares: $checkedConvert(
+          'classBoardSquares',
+          (v) => (v as List<dynamic>?)?.map((e) => (e as num).toInt()).toList(),
+        ),
+        grandClassBoardSquares: $checkedConvert(
+          'grandClassBoardSquares',
+          (v) => (v as List<dynamic>?)?.map((e) => (e as num).toInt()).toList(),
+        ),
+        classStatistics: $checkedConvert(
+          'classStatistics',
+          (v) =>
+              (v as List<dynamic>?)
+                  ?.map((e) => ClassStatisticsInfo.fromJson(Map<String, dynamic>.from(e as Map)))
+                  .toList(),
+        ),
+      );
+      return val;
+    });
+
+Map<String, dynamic> _$ClassBoardStatisticsDataToJson(ClassBoardStatisticsData instance) => <String, dynamic>{
+  'classBoardSquares': instance.classBoardSquares,
+  'grandClassBoardSquares': instance.grandClassBoardSquares,
+  'classStatistics': instance.classStatistics.map((e) => e.toJson()).toList(),
+};
+
+ClassStatisticsInfo _$ClassStatisticsInfoFromJson(Map json) =>
+    $checkedCreate('ClassStatisticsInfo', json, ($checkedConvert) {
+      final val = ClassStatisticsInfo(
+        classId: $checkedConvert('classId', (v) => (v as num?)?.toInt() ?? 0),
+        type: $checkedConvert('type', (v) => (v as num?)?.toInt() ?? 0),
+        typeVal: $checkedConvert('typeVal', (v) => (v as num?)?.toInt() ?? 0),
+      );
+      return val;
+    });
+
+Map<String, dynamic> _$ClassStatisticsInfoToJson(ClassStatisticsInfo instance) => <String, dynamic>{
+  'classId': instance.classId,
+  'type': instance.type,
+  'typeVal': instance.typeVal,
 };
 
 PlayerSvtDefaultData _$PlayerSvtDefaultDataFromJson(Map json) =>

@@ -1,5 +1,6 @@
 // ignore_for_file: non_constant_identifier_names
 
+import 'package:chaldea/generated/l10n.dart';
 import '_helper.dart';
 
 part '../../generated/models/gamedata/vals.g.dart';
@@ -464,4 +465,20 @@ class ValDamageRateBattlePointPhase {
       _$ValDamageRateBattlePointPhaseFromJson(json);
 
   Map<String, dynamic> toJson() => _$ValDamageRateBattlePointPhaseToJson(this);
+}
+
+enum CondParamValType {
+  classSquareUnlockNum(1),
+  classServantTotalBond(2);
+
+  const CondParamValType(this.value);
+  final int value;
+
+  String get dispName {
+    return switch (this) {
+      CondParamValType.classSquareUnlockNum =>
+        '${S.current.class_board_square} ${S.current.unlock} ${S.current.counts}',
+      CondParamValType.classServantTotalBond => '${S.current.servant} ${S.current.bond} ${S.current.total}',
+    };
+  }
 }

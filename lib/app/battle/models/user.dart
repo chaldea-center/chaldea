@@ -33,18 +33,13 @@ class PlayerSvtData {
   SvtEquipData equip2 = SvtEquipData();
   SvtEquipData equip3 = SvtEquipData();
 
-  SvtEquipData getEquip(SvtEquipTarget equipTarget) => switch (equipTarget) {
-    SvtEquipTarget.normal => equip1,
-    SvtEquipTarget.bond => equip2,
-    SvtEquipTarget.reward => equip3,
-  };
-
   SupportSvtType supportType = SupportSvtType.none;
 
   List<int> cardStrengthens = [0, 0, 0, 0, 0];
   List<CommandCode?> commandCodes = [null, null, null, null, null];
 
   bool grandSvt = false;
+  ClassBoardStatisticsData classBoardData = ClassBoardStatisticsData();
 
   PlayerSvtData.base();
 
@@ -60,6 +55,12 @@ class PlayerSvtData {
     td = svt!.groupedNoblePhantasms[1]?.first;
   }
 
+  SvtEquipData getEquip(SvtEquipTarget equipTarget) => switch (equipTarget) {
+    SvtEquipTarget.normal => equip1,
+    SvtEquipTarget.bond => equip2,
+    SvtEquipTarget.reward => equip3,
+  };
+
   PreferPlayerSvtDataSource onSelectServant(
     Servant selectedSvt, {
     PreferPlayerSvtDataSource? source,
@@ -67,6 +68,9 @@ class PlayerSvtData {
     int? jpTime,
   }) {
     source ??= db.settings.battleSim.playerDataSource;
+    if (selectedSvt.classId != svt?.classId) {
+      classBoardData = ClassBoardStatisticsData();
+    }
     svt = selectedSvt;
     if (supportType == SupportSvtType.npc) {
       supportType = SupportSvtType.none;
@@ -293,7 +297,8 @@ class PlayerSvtData {
       ..supportType = supportType
       ..cardStrengthens = cardStrengthens.toList()
       ..commandCodes = commandCodes.toList()
-      ..grandSvt = grandSvt;
+      ..grandSvt = grandSvt
+      ..classBoardData = classBoardData.copy();
   }
 
   static Future<PlayerSvtData> fromStoredData(final SvtSaveData? storedData) async {
@@ -323,7 +328,8 @@ class PlayerSvtData {
           ..equip3 = await SvtEquipData.fromStoredData(storedData.equip3)
           ..supportType = storedData.supportType
           ..cardStrengthens = storedData.cardStrengthens.toList()
-          ..grandSvt = storedData.grandSvt;
+          ..grandSvt = storedData.grandSvt
+          ..classBoardData = storedData.classBoardData?.copy() ?? ClassBoardStatisticsData();
 
     if (svt != null) {
       playerSvtData.skills = List.generate(kActiveSkillNums.length, (index) => null);
@@ -395,6 +401,7 @@ class PlayerSvtData {
       supportType: supportType,
       cardStrengthens: cardStrengthens.toList(),
       commandCodeIds: commandCodes.map((commandCode) => commandCode?.id).toList(),
+      classBoardData: classBoardData.copy(),
     );
   }
 }

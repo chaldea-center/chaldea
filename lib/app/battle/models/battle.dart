@@ -410,6 +410,7 @@ class BattleData {
   Future<void> initActorSkills(final List<BattleServantData?> allActors) async {
     for (final actor in allActors) {
       await actor?.activateClassPassive(this);
+      await actor?.activateClassBoard(this);
     }
     for (final actor in allActors) {
       await actor?.activateEquip(this);
@@ -794,6 +795,9 @@ class BattleData {
           pushSnapshot();
           _saved = true;
         }
+        for (final actor in nonnullActors) {
+          actor.triggeredSkillIds.clear();
+        }
         return await task();
       } on BattleCancelException catch (e) {
         final msg = "Cancel Action($action): ${e.msg}";
@@ -810,6 +814,10 @@ class BattleData {
         if (mounted) EasyLoading.showError('${S.current.failed}\n\n$e');
         if (save) popSnapshot();
         rethrow;
+      } finally {
+        for (final actor in nonnullActors) {
+          actor.triggeredSkillIds.clear();
+        }
       }
     });
   }

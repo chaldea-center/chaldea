@@ -11,6 +11,7 @@ import 'package:chaldea/app/battle/models/battle.dart';
 import 'package:chaldea/app/battle/utils/battle_utils.dart';
 import 'package:chaldea/app/descriptors/skill_descriptor.dart';
 import 'package:chaldea/app/modules/command_code/cmd_code_list.dart';
+import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/app/modules/common/filter_group.dart';
 import 'package:chaldea/app/modules/common/misc.dart';
 import 'package:chaldea/app/modules/craft_essence/craft_list.dart';
@@ -277,6 +278,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
               );
             }).toList(),
       ),
+      _buildClassBoard(),
       TileGroup(header: S.current.noble_phantasm, children: [_buildTdDescriptor(context)]),
       TileGroup(
         header: S.current.active_skill,
@@ -311,12 +313,6 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
                       }
                       : null,
               child: Text(S.current.select_skill),
-            ),
-          ),
-          Center(
-            child: TextButton(
-              onPressed: enableEdit ? onAddClassBoard : null,
-              child: Text('${S.current.custom_skill}-${S.current.class_board}'),
             ),
           ),
         ],
@@ -572,6 +568,121 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
           );
         },
       ),
+    );
+  }
+
+  Widget _buildClassBoard() {
+    final baseClassBoard = ClassBoard.getClassBoard(svt.classId);
+    final grandClassBoard = ClassBoard.getGrandClassBoard(svt.classId);
+
+    Widget _buildBoard(ClassBoard board, final List<int> squares) {
+      final allSquares = [
+        for (final square in board.squares)
+          if (square.skillType != ClassBoardSkillType.none) square.id,
+      ];
+      squares.retainWhere(allSquares.contains);
+      return SimpleAccordion(
+        headerBuilder: (context, _) {
+          return ListTile(
+            dense: true,
+            leading: db.getIconImage(board.btnIcon, width: 32, onTap: board.routeTo),
+            title: Text(board.dispName),
+            subtitle: Text('${squares.length}/${allSquares.length}'),
+            trailing: IconButton(
+              onPressed: () async {
+                final source = await showDialog<PreferClassBoardDataSource>(
+                  context: context,
+                  useRootNavigator: false,
+                  builder: (context) {
+                    return SimpleDialog(
+                      title: Text(board.dispName),
+                      children: [
+                        for (final source in PreferClassBoardDataSource.values)
+                          SimpleDialogOption(
+                            child: Text(source.shownName),
+                            onPressed: () {
+                              Navigator.pop(context, source);
+                            },
+                          ),
+                      ],
+                    );
+                  },
+                );
+                if (source == null) return;
+
+                ClassBoardPlan? plan = switch (source) {
+                  PreferClassBoardDataSource.none => null,
+                  PreferClassBoardDataSource.current => db.curUser.classBoardStatusOf(board.id),
+                  PreferClassBoardDataSource.target => db.curPlan_.classBoardPlan(board.id),
+                  PreferClassBoardDataSource.full => ClassBoardPlan.full(board),
+                };
+                squares.clear();
+                squares.addAll(plan?.enhancedSquares ?? []);
+                if (mounted) setState(() {});
+              },
+              icon: Icon(Icons.edit),
+            ),
+          );
+        },
+        contentBuilder: (context) {
+          final skill = board.toSkill(squares);
+          if (skill == null) return SizedBox.shrink();
+          return SkillDescriptor(skill: skill);
+        },
+      );
+    }
+
+    Widget _buildTypeVal(CondParamValType type) {
+      final stat = playerSvtData.classBoardData.getClassStatistic(type.value, svt.classId);
+      return ListTile(
+        dense: true,
+        title: Text(type.dispName),
+        trailing: TextButton(
+          onPressed: () {
+            InputCancelOkDialog.number(
+              text: stat.typeVal,
+              title: type.dispName,
+              validate: (v) => v >= 0,
+              onSubmit: (v) {
+                stat.typeVal = v;
+                if (mounted) setState(() {});
+              },
+            ).showDialog(context);
+          },
+          child: Text(stat.typeVal.toString()),
+        ),
+      );
+    }
+
+    return TileGroup(
+      header: S.current.class_board,
+      children: [
+        if (baseClassBoard != null) _buildBoard(baseClassBoard, playerSvtData.classBoardData.classBoardSquares),
+        if (grandClassBoard != null && playerSvtData.grandSvt) ...[
+          _buildBoard(grandClassBoard, playerSvtData.classBoardData.grandClassBoardSquares),
+          DividerWithTitle(
+            indent: 16,
+            titleWidget: Text.rich(
+              TextSpan(
+                text: '${Transl.svtClassId(svt.classId).l} ${S.current.svt_class} ${S.current.statistics_title} ',
+                style: Theme.of(context).textTheme.bodySmall,
+                children: [
+                  SharedBuilder.textButtonSpan(
+                    context: context,
+                    text: S.current.clear,
+                    onTap: () {
+                      setState(() {
+                        playerSvtData.classBoardData.classStatistics.clear();
+                      });
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ),
+          for (final type in CondParamValType.values) _buildTypeVal(type),
+        ],
+      ],
     );
   }
 
@@ -959,56 +1070,6 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
         );
       },
     );
-  }
-
-  Future<void> onAddClassBoard() async {
-    final board = db.gameData.classBoards.values.firstWhereOrNull(
-      (e) => e.classes.any((cls) => cls.classId == svt.classId),
-    );
-    if (board == null) {
-      EasyLoading.showInfo('${S.current.not_found}: ${Transl.svtClassId(svt.classId).l}');
-      return;
-    }
-    if (!mounted) return;
-    final source = await showDialog<PreferClassBoardDataSource>(
-      context: context,
-      useRootNavigator: false,
-      builder: (context) {
-        return SimpleDialog(
-          title: Text('${S.current.plan} (${S.current.class_board})'),
-          children: [
-            for (final source in [
-              PreferClassBoardDataSource.current,
-              PreferClassBoardDataSource.target,
-              PreferClassBoardDataSource.full,
-            ])
-              SimpleDialogOption(
-                child: Text(source.shownName),
-                onPressed: () {
-                  Navigator.pop(context, source);
-                },
-              ),
-          ],
-        );
-      },
-    );
-    if (source == null) return;
-
-    ClassBoardPlan? plan = switch (source) {
-      PreferClassBoardDataSource.none => null,
-      PreferClassBoardDataSource.current => db.curUser.classBoardStatusOf(board.id),
-      PreferClassBoardDataSource.target => db.curPlan_.classBoardPlan(board.id),
-      PreferClassBoardDataSource.full => ClassBoardPlan.full(board),
-    };
-    if (plan == null) return;
-    final skill = board.toSkill(plan);
-    if (skill == null || skill.functions.isEmpty) {
-      EasyLoading.showInfo(S.current.empty_hint);
-      return;
-    }
-    skill.unmodifiedDetail = 'Levels: ${source.shownName}';
-    playerSvtData.addCustomPassive(skill, skill.maxLv);
-    if (mounted) setState(() {});
   }
 
   Widget _buildAllowedExtraPassives() {

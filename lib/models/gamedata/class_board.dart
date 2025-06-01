@@ -42,6 +42,21 @@ class ClassBoard with RouteInfo {
     this.parentClassBoardBaseId = 0,
   });
 
+  static ClassBoard? getClassBoard(int classId) {
+    for (final classBoard in db.gameData.classBoards.values) {
+      for (final cls in classBoard.classes) {
+        if (cls.classId == classId) return classBoard;
+      }
+    }
+    return null;
+  }
+
+  static ClassBoard? getGrandClassBoard(int baseClassId) {
+    final grandClassId = db.gameData.grandGraphDetails[baseClassId]?.grandClassId;
+    if (grandClassId != null) return getClassBoard(grandClassId);
+    return null;
+  }
+
   bool get isGrand => parentClassBoardBaseId > 0 || id > 10000;
 
   String get uiIcon =>
@@ -89,7 +104,7 @@ class ClassBoard with RouteInfo {
   @override
   String get route => Routes.classBoardI(id);
 
-  NiceSkill? toSkill(ClassBoardPlan v) {
+  NiceSkill? toSkill(Iterable<int> enhancedSquares) {
     Map<int, NiceSkill> skills = {};
     Map<int, int> skillLvs = {};
     Map<int, ClassBoardCommandSpell> spells = {};
@@ -98,12 +113,12 @@ class ClassBoard with RouteInfo {
       final targetSkill = square.targetSkill;
       final targetCommandSpell = square.targetCommandSpell;
       if (targetSkill != null) {
-        if (v.enhancedSquares.contains(square.id)) {
+        if (enhancedSquares.contains(square.id)) {
           skills.putIfAbsent(targetSkill.id, () => targetSkill);
           skillLvs.addNum(targetSkill.id, square.upSkillLv);
         }
       } else if (targetCommandSpell != null) {
-        if (v.enhancedSquares.contains(square.id)) {
+        if (enhancedSquares.contains(square.id)) {
           spells.putIfAbsent(targetCommandSpell.id, () => targetCommandSpell);
           spellLvs.addNum(targetCommandSpell.id, square.upSkillLv);
         }

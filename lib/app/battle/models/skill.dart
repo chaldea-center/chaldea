@@ -321,6 +321,7 @@ enum SkillInfoType {
   svtAi,
   custom,
   skillAdditional,
+  classBoardSkill,
 }
 
 class CommonCustomSkills {

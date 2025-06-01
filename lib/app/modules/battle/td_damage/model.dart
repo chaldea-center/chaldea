@@ -336,9 +336,9 @@ class TdDmgSolver {
     if (board != null) {
       NiceSkill? skill = switch (options.classBoard) {
         PreferClassBoardDataSource.none => null,
-        PreferClassBoardDataSource.current => board.toSkill(db.curUser.classBoardStatusOf(board.id)),
-        PreferClassBoardDataSource.target => board.toSkill(db.curPlan_.classBoardPlan(board.id)),
-        PreferClassBoardDataSource.full => board.toSkill(ClassBoardPlan.full(board)),
+        PreferClassBoardDataSource.current => board.toSkill(db.curUser.classBoardStatusOf(board.id).enhancedSquares),
+        PreferClassBoardDataSource.target => board.toSkill(db.curPlan_.classBoardPlan(board.id).enhancedSquares),
+        PreferClassBoardDataSource.full => board.toSkill(ClassBoardPlan.full(board).enhancedSquares),
       };
       if (skill != null) {
         data.addCustomPassive(skill, skill.maxLv);

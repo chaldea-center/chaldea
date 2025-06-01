@@ -149,6 +149,7 @@ class BattleServantData {
   CommandCardData? lastHitByCard;
   NiceFunction? lastHitByFunc;
   List<NiceFunction> receivedFunctionsList = [];
+  List<int> triggeredSkillIds = [];
   List<BattleServantActionHistory> actionHistory = [];
 
   BattleServantData._({required this.isPlayer, required this.isGrandSvt, required this.isUseGrandBoard});
@@ -485,6 +486,28 @@ class BattleServantData {
           );
           await skillInfo.activate(battleData, activator: this);
         }
+      }
+    }
+  }
+
+  Future<void> activateClassBoard(BattleData battleData) async {
+    if (!isPlayer) return;
+    final classBoardData = playerSvtData!.classBoardData;
+    final baseBoard = ClassBoard.getClassBoard(niceSvt!.classId);
+    if (baseBoard != null) {
+      final skill = baseBoard.toSkill(classBoardData.classBoardSquares);
+      if (skill != null) {
+        final skillInfo = BattleSkillInfoData(skill, type: SkillInfoType.classBoardSkill);
+        await skillInfo.activate(battleData, activator: this);
+      }
+    }
+
+    final grandBoard = ClassBoard.getGrandClassBoard(niceSvt!.classId);
+    if (battleData.isUseGrandBoard && grandBoard != null && isGrandSvt) {
+      final skill = grandBoard.toSkill(classBoardData.grandClassBoardSquares);
+      if (skill != null) {
+        final skillInfo = BattleSkillInfoData(skill, type: SkillInfoType.classBoardSkill);
+        await skillInfo.activate(battleData, activator: this);
       }
     }
   }
@@ -2061,55 +2084,57 @@ class BattleServantData {
           opponentTraits: opponentTraits,
           skillInfoType: skillInfo?.type,
           receivedFunctionsList: receivedFunctionsList,
+          triggeredSkillIds: triggeredSkillIds,
         );
 
-        if (shouldActivate) {
-          BaseSkill? skill;
-          if (buff.buff.type == BuffType.classboardCommandSpellAfterFunction) {
-            final spellId = buff.param;
-            final targetCommandSpell = db.gameData.classBoards.values
-                .expand((e) => e.squares)
-                .map((e) => e.targetCommandSpell)
-                .firstWhereOrNull((e) => e?.id == spellId);
-            if (targetCommandSpell != null) {
-              skill = targetCommandSpell.toSkill();
-            }
-            if (skill == null) {
-              battleData.battleLogger.debug(
-                'Buff ID [${buff.buff.id}]: ${S.current.command_spell}(classboard) [$spellId] ${S.current.not_found}',
-              );
-              continue;
-            }
-            battleData.battleLogger.function(
-              '$lBattleName - ${buff.buff.lName.l} ${S.current.command_spell}(classboard) [$spellId]',
-            );
-          } else {
-            final skillId = buff.param;
-            skill = db.gameData.baseSkills[skillId];
-            skill ??= await showEasyLoading(() => AtlasApi.skill(skillId), mask: true);
-            if (skill == null) {
-              battleData.battleLogger.debug(
-                'Buff ID [${buff.buff.id}]: ${S.current.skill} [$skillId] ${S.current.not_found}',
-              );
-              continue;
-            }
-            battleData.battleLogger.function('$lBattleName - ${buff.buff.lName.l} ${S.current.skill} [$skillId]');
+        if (!shouldActivate) continue;
+
+        BaseSkill? skill;
+        if (buff.buff.type == BuffType.classboardCommandSpellAfterFunction) {
+          final spellId = buff.param;
+          final targetCommandSpell = db.gameData.classBoards.values
+              .expand((e) => e.squares)
+              .map((e) => e.targetCommandSpell)
+              .firstWhereOrNull((e) => e?.id == spellId);
+          if (targetCommandSpell != null) {
+            skill = targetCommandSpell.toSkill();
           }
-          await FunctionExecutor.executeFunctions(
-            battleData,
-            skill.functions,
-            buff.additionalParam.clamp(1, skill.maxLv),
-            script: skill.script,
-            activator: this,
-            overchargeState: overchargeState,
-            ignoreBattlePoints: skillInfo?.skillScript?.IgnoreBattlePointUp,
-            targetedAlly: battleData.getTargetedAlly(this),
-            targetedEnemy: opponent,
-            skillType: skill.type,
+          if (skill == null) {
+            battleData.battleLogger.debug(
+              'Buff ID [${buff.buff.id}]: ${S.current.command_spell}(classboard) [$spellId] ${S.current.not_found}',
+            );
+            continue;
+          }
+          battleData.battleLogger.function(
+            '$lBattleName - ${buff.buff.lName.l} ${S.current.command_spell}(classboard) [$spellId]',
           );
-          buff.setUsed(this, battleData);
-          activated = true;
+        } else {
+          final skillId = buff.param;
+          skill = db.gameData.baseSkills[skillId];
+          skill ??= await showEasyLoading(() => AtlasApi.skill(skillId), mask: true);
+          if (skill == null) {
+            battleData.battleLogger.debug(
+              'Buff ID [${buff.buff.id}]: ${S.current.skill} [$skillId] ${S.current.not_found}',
+            );
+            continue;
+          }
+          battleData.battleLogger.function('$lBattleName - ${buff.buff.lName.l} ${S.current.skill} [$skillId]');
+          triggeredSkillIds.add(skillId);
         }
+        await FunctionExecutor.executeFunctions(
+          battleData,
+          skill.functions,
+          buff.additionalParam.clamp(1, skill.maxLv),
+          script: skill.script,
+          activator: this,
+          overchargeState: overchargeState,
+          ignoreBattlePoints: skillInfo?.skillScript?.IgnoreBattlePointUp,
+          targetedAlly: battleData.getTargetedAlly(this),
+          targetedEnemy: opponent,
+          skillType: skill.type,
+        );
+        buff.setUsed(this, battleData);
+        activated = true;
       }
 
       battleData.checkActorStatus();

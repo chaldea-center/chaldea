@@ -441,6 +441,7 @@ class SvtSaveData {
   List<int> customPassiveLvs;
 
   bool grandSvt = false;
+  ClassBoardStatisticsData? classBoardData;
 
   SvtSaveData({
     this.svtId,
@@ -469,6 +470,7 @@ class SvtSaveData {
     List<BaseSkill>? customPassives,
     List<int>? customPassiveLvs,
     this.grandSvt = false,
+    this.classBoardData,
   }) : skillLvs = skillLvs ?? [10, 10, 10],
        skillIds = List.generate(kActiveSkillNums.length, (index) => skillIds?.getOrNull(index)),
        appendLvs = List.generate(kAppendSkillNums.length, (index) => appendLvs?.getOrNull(index) ?? 0),
@@ -488,6 +490,9 @@ class SvtSaveData {
       ..ceId = equip1.id
       ..ceLimitBreak = equip1.limitBreak
       ..ceLv = equip1.lv;
+    if (classBoardData?.isEmpty == true) {
+      classBoardData = null;
+    }
     final data = _$SvtSaveDataToJson(this);
     _removeEmptyList(
       data,
@@ -534,6 +539,62 @@ class MysticCodeSaveData {
   factory MysticCodeSaveData.fromJson(Map<String, dynamic> json) => _$MysticCodeSaveDataFromJson(json);
 
   Map<String, dynamic> toJson() => _$MysticCodeSaveDataToJson(this);
+}
+
+@JsonSerializable()
+class ClassBoardStatisticsData {
+  List<int> classBoardSquares = [];
+  List<int> grandClassBoardSquares = [];
+  List<ClassStatisticsInfo> classStatistics = [];
+
+  ClassBoardStatisticsData({
+    List<int>? classBoardSquares,
+    List<int>? grandClassBoardSquares,
+    List<ClassStatisticsInfo>? classStatistics,
+  }) : classBoardSquares = classBoardSquares ?? [],
+       grandClassBoardSquares = grandClassBoardSquares ?? [],
+       classStatistics = classStatistics ?? [];
+
+  bool get isEmpty =>
+      classBoardSquares.isEmpty && grandClassBoardSquares.isEmpty && classStatistics.every((e) => e.typeVal == 0);
+
+  ClassStatisticsInfo getClassStatistic(int type, int targetId) {
+    ClassStatisticsInfo? result = classStatistics.firstWhereOrNull((e) => e.type == type && e.classId == targetId);
+    if (result != null) return result;
+    result = ClassStatisticsInfo(type: type, classId: targetId);
+    classStatistics.add(result);
+    return result;
+  }
+
+  int getClassStatVal(int type, int targetId) {
+    for (final info in classStatistics) {
+      if (info.type == type && info.classId == targetId) {
+        return info.typeVal;
+      }
+    }
+    return 0;
+  }
+
+  factory ClassBoardStatisticsData.fromJson(Map<String, dynamic> json) => _$ClassBoardStatisticsDataFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ClassBoardStatisticsDataToJson(this);
+
+  ClassBoardStatisticsData copy() {
+    return ClassBoardStatisticsData.fromJson(toJson());
+  }
+}
+
+@JsonSerializable()
+class ClassStatisticsInfo {
+  int classId;
+  int type;
+  int typeVal;
+
+  ClassStatisticsInfo({this.classId = 0, this.type = 0, this.typeVal = 0});
+
+  factory ClassStatisticsInfo.fromJson(Map<String, dynamic> json) => _$ClassStatisticsInfoFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ClassStatisticsInfoToJson(this);
 }
 
 @JsonSerializable()

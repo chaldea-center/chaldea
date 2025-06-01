@@ -1,3 +1,5 @@
+import 'dart:math' show min;
+
 import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/battle/models/battle.dart';
 import 'package:chaldea/app/battle/utils/buff_utils.dart';
@@ -82,6 +84,32 @@ class AddState {
           }
           buffData.param = targetEnemyClassId!;
         }
+      }
+
+      int condParamRangeType = dataVals.CondParamRangeType ?? 0;
+      if (condParamRangeType != 0 && target.isPlayer) {
+        final int condParamRangeTargetId = dataVals.CondParamRangeTargetId ?? 0,
+            maxCount = dataVals.CondParamRangeMaxCount ?? 0,
+            maxValue = dataVals.CondParamRangeMaxValue ?? 0;
+        if (maxCount > 0) {
+          int count =
+              target.playerSvtData?.classBoardData.getClassStatVal(condParamRangeType, condParamRangeTargetId) ?? 0;
+          count = min(count, maxCount);
+          buffData.param += (count / maxCount * maxValue).floor();
+        }
+      }
+
+      int condParamAddType = dataVals.CondParamAddType ?? 0;
+      if (condParamAddType != 0 && target.isPlayer) {
+        final int condParamAddTargetId = dataVals.CondParamAddTargetId ?? 0;
+        final int condParamAddValue = dataVals.CondParamAddValue ?? 0;
+        final int? maxValue = dataVals.CondParamAddMaxValue;
+        int count = target.playerSvtData?.classBoardData.getClassStatVal(condParamAddType, condParamAddTargetId) ?? 0;
+        int _value = condParamAddValue * count;
+        if (maxValue != null) {
+          _value = min(_value, maxValue);
+        }
+        buffData.param += _value;
       }
 
       buffData.shortenMaxCountEachSkill = dataVals.ShortenMaxCountEachSkill?.toList();

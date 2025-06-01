@@ -233,12 +233,14 @@ class BuffData {
     final BattleData? battleData,
     final SkillInfoType? skillInfoType,
     final List<NiceFunction>? receivedFunctionsList,
+    final List<int>? triggeredSkillIds,
   }) {
     if (!checkAct()) return false;
     if (!checkBuffDataVals(
+      battleData: battleData,
       selfTraits: selfTraits,
       receivedFunctionsList: receivedFunctionsList,
-      battleData: battleData,
+      triggeredSkillIds: triggeredSkillIds,
     )) {
       return false;
     }
@@ -305,6 +307,7 @@ class BuffData {
     final List<NiceTrait>? opponentTraits,
     final SkillInfoType? skillInfoType,
     final List<NiceFunction>? receivedFunctionsList,
+    final List<int>? triggeredSkillIds,
   }) async {
     return shouldActivateBuffNoProbabilityCheck(
           selfTraits,
@@ -312,6 +315,7 @@ class BuffData {
           opponentTraits: opponentTraits,
           skillInfoType: skillInfoType,
           receivedFunctionsList: receivedFunctionsList,
+          triggeredSkillIds: triggeredSkillIds,
         ) &&
         await probabilityCheck(battleData);
   }
@@ -330,13 +334,20 @@ class BuffData {
   }
 
   bool checkBuffDataVals({
+    BattleData? battleData,
     List<NiceTrait>? selfTraits,
     List<NiceFunction>? receivedFunctionsList,
-    BattleData? battleData,
+    final List<int>? triggeredSkillIds,
   }) {
-    return checkHpReduceToRegainIndiv(selfTraits) &&
+    if (!(checkHpReduceToRegainIndiv(selfTraits) &&
         checkTargetFunctionIndividuality(receivedFunctionsList) &&
-        checkSameIndivBuffActorOnField(battleData);
+        checkSameIndivBuffActorOnField(battleData))) {
+      return false;
+    }
+    if (vals.ExecOnce == 1 && triggeredSkillIds != null && param != 0 && triggeredSkillIds.contains(param)) {
+      return false;
+    }
+    return true;
   }
 
   bool checkSameIndivBuffActorOnField(BattleData? battleData) {

@@ -1405,6 +1405,13 @@ class QuestEnemy with GameCardMixin {
   EnemyLimit limit;
   EnemyMisc? misc;
 
+  int get dispClassId {
+    if (enemyScript.isGrandSvt == 1) {
+      return db.gameData.grandGraphDetails[svt.classId]?.grandClassId ?? svt.classId;
+    }
+    return svt.classId;
+  }
+
   // not unique if summoned from call deck
   int get deckNpcId => npcId * 10 + deck.index;
 
