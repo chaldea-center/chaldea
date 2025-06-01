@@ -559,7 +559,7 @@ class __PlayButtonState<T> extends State<_PlayButton<T>> {
         downloading = false;
         if (sources.isEmpty) return;
 
-        widget.player
+        await widget.player
             .play(sources, widget.tag)
             .catchError((e, s) {
               widget.player.resetTag();

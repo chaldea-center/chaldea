@@ -32,7 +32,7 @@ class MyAudioPlayer<T> {
       } else if (source is UriAudioSource) {
         if (invalid()) return;
         try {
-          await player.setAudioSource(source);
+          await player.setAudioSource(source, initialPosition: Duration.zero);
           if (invalid()) return;
           await player.play();
           await Future.delayed(const Duration(milliseconds: 10));
