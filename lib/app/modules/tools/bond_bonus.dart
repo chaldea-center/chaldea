@@ -1,4 +1,5 @@
 import 'package:chaldea/app/battle/utils/battle_utils.dart' show BattleUtils;
+import 'package:chaldea/app/modules/common/filter_group.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/basic.dart';
@@ -27,7 +28,7 @@ class _BondBonusPageState extends State<BondBonusPage> {
     sortKeys: [SvtCompare.rarity, SvtCompare.className, SvtCompare.no],
     sortReversed: [true, false, true],
   );
-  int? selectedCeId;
+  final mustHaveCeFilter = FilterGroupData<int>();
 
   @override
   void initState() {
@@ -126,9 +127,11 @@ class _BondBonusPageState extends State<BondBonusPage> {
   }
 
   List<_GroupItem> getGroupData() {
-    final List<int> mustHaveCeIds = [if (selectedCeId != null && isCeReleased(selectedCeId!)) selectedCeId!];
-    final List<int> freeCeIds = allCeData.keys.toSet().difference(mustHaveCeIds.toSet()).toList();
-    freeCeIds.retainWhere(isCeReleased);
+    final List<int> mustHaveCeIds = mustHaveCeFilter.options.toList();
+    final List<int> freeCeIds = [
+      for (final ceId in allCeData.keys)
+        if (!mustHaveCeIds.contains(ceId) && isCeReleased(ceId)) ceId,
+    ];
     final int n = freeCeIds.length;
     List<_GroupItem> resultData = [];
     for (int mask = 0; mask < (1 << n); mask++) {
@@ -171,9 +174,7 @@ class _BondBonusPageState extends State<BondBonusPage> {
 
   @override
   Widget build(BuildContext context) {
-    if (selectedCeId != null && !isCeReleased(selectedCeId!)) {
-      selectedCeId = null;
-    }
+    mustHaveCeFilter.options = mustHaveCeFilter.options.where(isCeReleased).toSet();
     return Scaffold(
       appBar: AppBar(
         title: Text('${S.current.craft_essence} - ${S.current.bond_bonus}'),
@@ -298,32 +299,18 @@ class _BondBonusPageState extends State<BondBonusPage> {
     return SafeArea(
       child: Padding(
         padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        child: DropdownButton<int?>(
-          value: selectedCeId,
-          // hint: Text(S.current.craft_essence),
-          items: [
-            DropdownMenuItem(child: Text(S.current.craft_essence)),
-            for (final ce in ces)
-              DropdownMenuItem(
-                value: ce.ce.id,
-                child: Text.rich(
-                  TextSpan(
-                    children: [
-                      CenterWidgetSpan(child: ce.ce.iconBuilder(context: context, width: 32)),
-                      TextSpan(
-                        text: ' ${_describeTraits(ce.traits)}',
-                        children: [TextSpan(text: ' +${ce.rateCount.format(percent: true, base: 10)}')],
-                        style: TextStyle(fontSize: 12),
-                      ),
-                    ],
-                  ),
-                ),
+        child: FilterGroup<int>(
+          options: ces.map((e) => e.ce.id).toList(),
+          values: mustHaveCeFilter,
+          shrinkWrap: true,
+          constraints: BoxConstraints(maxHeight: 40),
+          optionBuilder:
+              (ceId) => Padding(
+                padding: EdgeInsets.all(2),
+                child: allCeData[ceId]!.ce.iconBuilder(context: context, jumpToDetail: false),
               ),
-          ],
-          onChanged: (v) {
-            setState(() {
-              selectedCeId = v;
-            });
+          onFilterChanged: (v, _) {
+            if (mounted) setState(() {});
           },
         ),
       ),
