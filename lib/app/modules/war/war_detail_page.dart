@@ -81,7 +81,7 @@ class _WarDetailPageState extends State<WarDetailPage> with RegionBasedState<Nic
     warBanners =
         {
           war.shownBanner,
-          war.banner,
+          if (war.parentWarId != ConstData.constants.grandBoardWarId) war.banner,
           ...warBanners.take(war.id == WarId.chaldeaGate ? 4 : 6).toList().reversed,
         }.whereType<String>().toList();
 
@@ -169,6 +169,17 @@ class _WarDetailPageState extends State<WarDetailPage> with RegionBasedState<Nic
                 ),
               ],
             ),
+          if (kDebugMode && war.flags.isNotEmpty)
+            CustomTableRow(
+              children: [
+                TableCellData(isHeader: true, text: 'flags'),
+                TableCellData(
+                  flex: 3,
+                  child: Text(war.flags.map((e) => e.name).join(' / '), textAlign: TextAlign.center),
+                ),
+              ],
+            ),
+          if (kDebugMode) CustomTableRow.fromTextsWithHeader(texts: ['priority', war.priority.toString()]),
         ],
       ),
     );

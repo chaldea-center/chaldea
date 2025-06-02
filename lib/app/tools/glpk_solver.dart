@@ -215,12 +215,24 @@ DropRateSheet _preProcess({required DropRateSheet data, required FreeLPParams pa
   // free quests for different server
   final wars = Map.of(db.gameData.mainStories);
   wars.removeWhere((key, value) => !value.quests.any((q) => q.isMainStoryFree));
+  final progressWar = wars[params.progress];
+  final int progressWarOpenAt = Maths.min(progressWar?.quests.map((e) => e.openedAt).toList() ?? [], 0);
   List<int> cols =
       data.questIds.where((questId) {
-        if (!wars.containsKey(params.progress)) return true;
-        final warId = db.gameData.quests[questId]?.warId;
-        // some error that db not loaded || fit progress || chaldea gate quests
-        return warId == null || warId <= params.progress || warId >= 1000;
+        if (progressWar == null) return true;
+        final quest = db.gameData.quests[questId];
+        final warId = quest?.warId;
+        // some error that db not loaded || fit progress
+        if (warId == null || warId <= params.progress) return true;
+        if (db.gameData.wars[warId]?.isGrandBoardWar == true) {
+          return params.progress > 405 || params.progress <= 0;
+        }
+        // Ordeal Call free quests opened at diffferent time
+        if (warId == WarId.ordealCall && progressWarOpenAt > 0 && quest != null) {
+          // return quest.openedAt <= progressWarOpenAt;
+        }
+        // chaldea gate quests
+        return warId >= 1000;
       }).toList();
   // only append extra columns having drop data in gpk matrix
   for (final col in params.extraCols) {

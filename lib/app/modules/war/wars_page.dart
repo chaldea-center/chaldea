@@ -100,6 +100,8 @@ class WarListPage extends StatelessWidget {
   final bool sortByEvent;
   const WarListPage({super.key, required this.wars, this.reversed = true, this.sortByEvent = false});
 
+  static final Map<int, num> _fixedWarPriorities = {WarId.mainInterlude: 980, WarId.grandBoardWar: 405.5};
+
   @override
   Widget build(BuildContext context) {
     final wars = this.wars.toList();
@@ -107,7 +109,7 @@ class WarListPage extends StatelessWidget {
       wars.sort2((war) => war.eventReal?.startedAt ?? war.priority, reversed: reversed);
     } else {
       // Advanced 990, OC 300
-      wars.sort2((e) => e.id == WarId.mainInterlude ? 980 : e.priority, reversed: reversed);
+      wars.sort2((e) => _fixedWarPriorities[e.id] ?? e.priority, reversed: reversed);
     }
     return ListView.builder(
       itemBuilder: (context, index) {

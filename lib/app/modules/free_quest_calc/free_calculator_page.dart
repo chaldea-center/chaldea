@@ -75,13 +75,17 @@ class _FreeQuestCalcPageState extends State<FreeQuestCalcPage> with SingleTicker
               KeepAliveBuilder(builder: (context) => QuestPlanTab(solution: solution)),
               KeepAliveBuilder(builder: (context) => QuestEfficiencyTab(solution: solution)),
               KeepAliveBuilder(
-                builder:
-                    (context) => WarListPage(
-                      wars:
-                          db.gameData.wars.values.where((war) {
-                            return war.isMainStory && war.spots.isNotEmpty || war.id == WarId.chaldeaGate;
-                          }).toList(),
-                    ),
+                builder: (context) {
+                  return WarListPage(
+                    wars: [
+                      for (final war in db.gameData.wars.values)
+                        if (war.isMainStory && war.spots.isNotEmpty ||
+                            war.id == WarId.chaldeaGate ||
+                            war.id == WarId.grandBoardWar)
+                          war,
+                    ],
+                  );
+                },
               ),
             ],
           ),
