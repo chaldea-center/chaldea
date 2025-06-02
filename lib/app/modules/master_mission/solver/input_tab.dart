@@ -101,7 +101,7 @@ class _MissionInputTabState extends State<MissionInputTab> {
                   : ListView.separated(
                     controller: _scrollController,
                     itemBuilder: (context, index) => _oneMission(index, options.missions[index]),
-                    separatorBuilder: (_, __) => kDefaultDivider,
+                    separatorBuilder: (_, _) => kDefaultDivider,
                     itemCount: options.missions.length,
                   ),
         ),

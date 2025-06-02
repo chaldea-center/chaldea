@@ -254,7 +254,7 @@ class _UserQuestFarmingStatPageState extends State<UserQuestFarmingStatPage> wit
         imageUrl: info.quest?.spot?.shownImage,
         width: 32,
         height: 32,
-        placeholder: (_, __) => const SizedBox.shrink(),
+        placeholder: (_, _) => const SizedBox.shrink(),
       ),
       title: Text(info.quest?.lDispName ?? info.userQuest.questId.toString()),
       subtitle: Text(

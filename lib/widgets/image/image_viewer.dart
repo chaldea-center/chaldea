@@ -183,7 +183,7 @@ class _CachedImageState extends State<CachedImage> {
           PageRouteBuilder(
             opaque: false,
             pageBuilder:
-                (context, _, __) => FullscreenImageViewer(
+                (context, _, _) => FullscreenImageViewer(
                   children: [
                     CachedImage(
                       imageUrl: widget.imageUrl,

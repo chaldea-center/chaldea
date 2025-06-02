@@ -83,7 +83,7 @@ class _EventRandomMissionsPageState extends State<EventRandomMissionsPage> {
       floatingActionButton: getFAB(rank),
       body: ListView.separated(
         itemBuilder: (context, index) => missionBuilder(context, missions[index]),
-        separatorBuilder: (_, __) => const Divider(indent: 48, height: 1),
+        separatorBuilder: (_, _) => const Divider(indent: 48, height: 1),
         itemCount: missions.length,
       ),
     );

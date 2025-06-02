@@ -157,7 +157,7 @@ class _ItemObtainEventTabState extends State<ItemObtainEventTab> {
                 trailing: Text('$itemNum/${ticket.maxCount}', style: _textStyle(plan.enabled, ticket.isOutdated())),
               ),
           contentBuilder: (context) => ExchangeTicketTab(id: ticket.id),
-          expandIconBuilder: (_, __) => const SizedBox(),
+          expandIconBuilder: (_, _) => const SizedBox(),
           disableAnimation: true,
         ),
       );

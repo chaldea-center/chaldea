@@ -73,7 +73,7 @@ class SvtInfoTab extends StatelessWidget {
                           imageUrl:
                               "https://static.atlasacademy.io/JP/CharaGraphOption/CharaGraphOption/CharaGraphOptionAtlas/rarity${rarity}_0.png",
                           height: 24,
-                          placeholder: (_, __) => Text(kStarChar2 * rarity),
+                          placeholder: (_, _) => Text(kStarChar2 * rarity),
                         ),
                   ],
                 ),
@@ -540,7 +540,7 @@ class SvtInfoTab extends StatelessWidget {
                               svt.extraAssets.status.costume?[limit] ??
                               svt.icon,
                           height: 90,
-                          placeholder: (_, __) => Container(),
+                          placeholder: (_, _) => Container(),
                         ),
                       ),
                     );

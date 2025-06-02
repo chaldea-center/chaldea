@@ -570,7 +570,7 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
     return btnBar;
   }
 
-  void moveNext([reversed = false]) {
+  void moveNext([bool reversed = false]) {
     final list = widget.summonList ?? db.gameData.wiki.summons.values.toList();
     int index = list.indexOf(summon);
     if (index >= 0) {

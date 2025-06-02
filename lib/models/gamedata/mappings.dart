@@ -35,9 +35,9 @@ class Transl<K, V> {
 
   static bool get isJP => current == Region.jp;
 
-  static get isCN => current == Region.cn;
+  static bool get isCN => current == Region.cn;
 
-  static get isEN => current == Region.na;
+  static bool get isEN => current == Region.na;
 
   bool get matched => mappings.containsKey(key);
 

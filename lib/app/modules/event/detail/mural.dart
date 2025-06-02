@@ -25,7 +25,7 @@ class EventMuralPage extends HookWidget {
     return ListView.separated(
       controller: useScrollController(),
       itemBuilder: (context, index) => itemBuilder(context, murals[index]),
-      separatorBuilder: (_, __) => const Divider(height: 1),
+      separatorBuilder: (_, _) => const Divider(height: 1),
       itemCount: murals.length,
     );
   }
@@ -44,7 +44,7 @@ class EventMuralPage extends HookWidget {
                   imageUrl: img,
                   showSaveOnLongPress: true,
                   height: 48,
-                  placeholder: (_, __) => const SizedBox.shrink(),
+                  placeholder: (_, _) => const SizedBox.shrink(),
                 ),
             ],
           ),

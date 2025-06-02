@@ -56,7 +56,7 @@ class _EventLotteryTabState extends State<EventLotteryTab> {
         }
         return boxItemBuilder(context, boxes[index - 1]);
       },
-      separatorBuilder: (_, __) => const Divider(indent: 64, height: 1),
+      separatorBuilder: (_, _) => const Divider(indent: 64, height: 1),
       itemCount: boxes.length + 1,
     );
     final maxBoxIdx = Maths.max(boxIndices, 0);

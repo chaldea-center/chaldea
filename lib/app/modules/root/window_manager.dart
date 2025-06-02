@@ -93,7 +93,7 @@ class WrapSideBar extends StatelessWidget {
     Widget listView = ListView.separated(
       padding: const EdgeInsets.all(4),
       itemCount: root.appState.children.length,
-      separatorBuilder: (_, __) => const SizedBox(height: 4),
+      separatorBuilder: (_, _) => const SizedBox(height: 4),
       itemBuilder: (context, index) {
         final isActive = index == root.appState.activeIndex;
         return MaterialButton(

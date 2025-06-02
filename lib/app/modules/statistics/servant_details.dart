@@ -54,7 +54,7 @@ class _ServantDemandDetailStatState extends State<ServantDemandDetailStat> {
         Expanded(
           child: ListView.separated(
             itemBuilder: (context, index) => buildOne(servants[index], data[servants[index]]!),
-            separatorBuilder: (_, __) => kDefaultDivider,
+            separatorBuilder: (_, _) => kDefaultDivider,
             itemCount: servants.length,
           ),
         ),

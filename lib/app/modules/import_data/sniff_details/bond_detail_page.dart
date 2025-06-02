@@ -261,7 +261,7 @@ class _SvtBondDetailPageState extends State<SvtBondDetailPage> with SingleTicker
           onTap: ce.routeTo,
         );
       },
-      separatorBuilder: (_, __) => kDefaultDivider,
+      separatorBuilder: (_, _) => kDefaultDivider,
       itemCount: bondCEs.length,
     );
   }
@@ -355,7 +355,7 @@ class _SvtBondDetailPageState extends State<SvtBondDetailPage> with SingleTicker
                 ),
               );
             },
-            separatorBuilder: (_, __) => kDefaultDivider,
+            separatorBuilder: (_, _) => kDefaultDivider,
             itemCount: shownCollections.length,
           ),
         ),

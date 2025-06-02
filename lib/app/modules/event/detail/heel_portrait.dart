@@ -50,7 +50,7 @@ class _EventHeelPortraitPageState extends State<EventHeelPortraitPage> {
                 values: svtClass,
                 optionBuilder:
                     (v) => db.getIconImage(v.icon(3), width: 24, height: 24, padding: const EdgeInsets.all(2)),
-                onFilterChanged: (_, __) {
+                onFilterChanged: (_, _) {
                   setState(() {});
                 },
               ),
@@ -62,7 +62,7 @@ class _EventHeelPortraitPageState extends State<EventHeelPortraitPage> {
                 padding: EdgeInsets.zero,
                 options: const [5, 4, 3, 2, 1, 0],
                 values: rarity,
-                onFilterChanged: (_, __) {
+                onFilterChanged: (_, _) {
                   setState(() {});
                 },
               ),

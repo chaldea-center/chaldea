@@ -278,7 +278,7 @@ class _CustomSkillFormState extends State<CustomSkillForm> {
               options: SkillType.values,
               values: FilterRadioData.nonnull(skill.skillType),
               optionBuilder: (v) => Text(v.shortName),
-              onFilterChanged: (value, __) {
+              onFilterChanged: (value, _) {
                 skill.skillType = value.radioValue!;
                 setState(() {});
                 widget.onChanged?.call();

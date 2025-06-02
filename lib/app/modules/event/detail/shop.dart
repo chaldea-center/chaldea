@@ -101,7 +101,7 @@ class _EventShopsPageState extends State<EventShopsPage> {
   Widget shopList(BuildContext context, List<NiceShop> shops, LimitEventPlan plan) {
     return ListView.separated(
       itemBuilder: (context, index) => shopItemBuilder(context, shops[index], plan),
-      separatorBuilder: (_, __) => const Divider(indent: 64, height: 1),
+      separatorBuilder: (_, _) => const Divider(indent: 64, height: 1),
       itemCount: shops.length,
     );
   }

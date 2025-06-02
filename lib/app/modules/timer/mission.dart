@@ -21,7 +21,7 @@ class TimerMissionTab extends StatelessWidget {
         final group = groups[index];
         return group.buildItem(context, expanded: group.mm.missions.length <= 10);
       },
-      separatorBuilder: (_, __) => const SizedBox(height: 0),
+      separatorBuilder: (_, _) => const SizedBox(height: 0),
       itemCount: groups.length,
     );
   }

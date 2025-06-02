@@ -31,7 +31,7 @@ class SvtRelatedCardTab extends StatelessWidget {
           itemCount: valentineCEs.length,
           itemBuilder:
               (context, index) => SafeArea(child: CraftDetailBasePage(ce: valentineCEs[index], enableLink: true)),
-          separatorBuilder: (_, __) => const SizedBox(height: 16),
+          separatorBuilder: (_, _) => const SizedBox(height: 16),
         ),
       );
     }

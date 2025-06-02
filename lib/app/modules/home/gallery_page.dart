@@ -142,7 +142,7 @@ class _GalleryPageState extends State<GalleryPage> {
         SimpleAccordion(
           expanded: true,
           headerBuilder:
-              (_, __) => ListTile(title: Text(S.current.invalid_startup_path), subtitle: Text(db.paths.appPath)),
+              (_, _) => ListTile(title: Text(S.current.invalid_startup_path), subtitle: Text(db.paths.appPath)),
           contentBuilder:
               (context) => Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),

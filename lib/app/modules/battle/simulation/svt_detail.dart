@@ -546,7 +546,7 @@ class BattleSvtAvatar extends StatelessWidget {
           aspectRatio: aspectRatio,
           cachedOption: CachedImageOption(
             fit: BoxFit.contain,
-            errorWidget: (ctx, _, __) => CachedImage(imageUrl: Atlas.common.unknownEnemyIcon),
+            errorWidget: (ctx, _, _) => CachedImage(imageUrl: Atlas.common.unknownEnemyIcon),
           ),
         ),
       ),

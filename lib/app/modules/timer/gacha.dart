@@ -16,7 +16,7 @@ class TimerGachaTab extends StatelessWidget {
     final groups = filterData.getSorted(gachas.map((e) => TimerGachaItem(e, region)).toList());
     return ListView.separated(
       itemBuilder: (context, index) => groups[index].buildItem(context, expanded: true),
-      separatorBuilder: (_, __) => const SizedBox(height: 16),
+      separatorBuilder: (_, _) => const SizedBox(height: 16),
       itemCount: groups.length,
     );
   }

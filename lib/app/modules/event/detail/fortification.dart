@@ -63,7 +63,7 @@ class EventFortificationPage extends HookWidget {
     return ListView.separated(
       controller: controller,
       itemBuilder: (context, index) => children[index],
-      separatorBuilder: (_, __) => const Divider(height: 1),
+      separatorBuilder: (_, _) => const Divider(height: 1),
       itemCount: children.length,
     );
   }

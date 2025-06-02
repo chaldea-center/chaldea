@@ -98,7 +98,7 @@ class _MyMarkdownWidgetState extends State<MyMarkdownWidget> {
   Widget imageBuilder(MarkdownImageConfig config) {
     return CachedImage(
       imageUrl: config.uri.toString(),
-      placeholder: (_, __) => Container(),
+      placeholder: (_, _) => Container(),
       cachedOption: CachedImageOption(errorWidget: (ctx, url, e) => Text("[${config.title ?? config.alt ?? ''}]")),
     );
   }

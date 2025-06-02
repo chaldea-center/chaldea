@@ -13,7 +13,7 @@ class EventTreasureBoxTab extends HookWidget {
     return ListView.separated(
       controller: useScrollController(),
       itemBuilder: (context, index) => rewardBuilder(context, boxes[index], index),
-      separatorBuilder: (_, __) => const Divider(height: 16),
+      separatorBuilder: (_, _) => const Divider(height: 16),
       itemCount: boxes.length,
     );
   }

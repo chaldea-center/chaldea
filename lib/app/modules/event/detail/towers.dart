@@ -39,7 +39,7 @@ class EventTowerTab extends HookWidget {
     return ListView.separated(
       controller: useScrollController(),
       itemBuilder: (context, index) => rewardBuilder(context, rewards[index]),
-      separatorBuilder: (_, __) => const Divider(indent: 64, height: 1),
+      separatorBuilder: (_, _) => const Divider(indent: 64, height: 1),
       itemCount: rewards.length,
     );
   }

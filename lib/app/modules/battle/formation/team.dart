@@ -39,7 +39,7 @@ class _TeamSetupCardState extends State<TeamSetupCard> {
     return ValueListenableBuilder(
       valueListenable: hovered,
       builder:
-          (context, _, __) => ResponsiveLayout(
+          (context, _, _) => ResponsiveLayout(
             horizontalDivider: kIndentDivider,
             children: [
               partyOrganization(onFieldSvts, S.current.team_starting_member),

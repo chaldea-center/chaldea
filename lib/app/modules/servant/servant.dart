@@ -199,7 +199,7 @@ class ServantDetailPageState extends State<ServantDetailPage> with SingleTickerP
                     avatar: CachedImage(
                       imageUrl: svt.extraAssets.status.ascension?[1] ?? svt.icon,
                       height: 90,
-                      placeholder: (_, __) => Container(),
+                      placeholder: (_, _) => Container(),
                     ),
                   ),
                 );

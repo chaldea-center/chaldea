@@ -398,7 +398,7 @@ class __DragHoverState<T extends Object> extends State<_DragHover<T>> {
           dragging = false;
         });
       },
-      onDraggableCanceled: (_, __) {
+      onDraggableCanceled: (_, _) {
         if (mounted) {
           setState(() {
             dragging = false;

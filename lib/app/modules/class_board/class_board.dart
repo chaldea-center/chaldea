@@ -397,7 +397,7 @@ class _ClassBoardDetailPageState extends State<ClassBoardDetailPage> with Single
           ],
         );
       },
-      separatorBuilder: (_, __) => const Divider(),
+      separatorBuilder: (_, _) => const Divider(),
       itemCount: locks.length,
     );
   }

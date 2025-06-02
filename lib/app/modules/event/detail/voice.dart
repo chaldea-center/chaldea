@@ -28,7 +28,7 @@ class _EventVoicePageState extends State<EventVoicePage> {
     return ListView.separated(
       controller: scrollController,
       itemBuilder: (context, index) => itemBuilder(context, voiceGroups[index]),
-      separatorBuilder: (_, __) => const SizedBox(),
+      separatorBuilder: (_, _) => const SizedBox(),
       itemCount: voiceGroups.length,
     );
   }

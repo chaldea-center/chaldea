@@ -140,7 +140,7 @@ class _TreeSizePageState extends State<TreeSizePage> {
                 final child = stats[index];
                 return buildOne(child, null);
               },
-              separatorBuilder: (_, __) => const Divider(indent: 40),
+              separatorBuilder: (_, _) => const Divider(indent: 40),
             ),
           ),
         ],

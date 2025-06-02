@@ -413,7 +413,7 @@ class __BackupHistoryPageState extends State<_BackupHistoryPage> {
             ),
           );
         },
-        separatorBuilder: (_, __) => kDefaultDivider,
+        separatorBuilder: (_, _) => kDefaultDivider,
         itemCount: validFiles.length + 1,
       ),
     );

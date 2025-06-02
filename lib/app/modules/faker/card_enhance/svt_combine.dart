@@ -163,7 +163,7 @@ class _SvtCombinePageState extends State<SvtCombinePage> {
         title: Text('种火 Rarity'),
         options: const [1, 2, 3, 4, 5],
         values: FilterGroupData(options: options.svtMaterialRarities),
-        onFilterChanged: (v, __) async {
+        onFilterChanged: (v, _) async {
           runtime.lockTask(() => options.svtMaterialRarities = v.options);
           if (mounted) setState(() {});
         },

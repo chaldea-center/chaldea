@@ -32,7 +32,7 @@ class _EventRewardScenePageState extends State<EventRewardScenePage> {
     return ListView.separated(
       controller: scrollController,
       itemBuilder: (context, index) => itemBuilder(context, scenes[index]),
-      separatorBuilder: (_, __) => const SizedBox(),
+      separatorBuilder: (_, _) => const SizedBox(),
       itemCount: scenes.length,
     );
   }

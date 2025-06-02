@@ -129,7 +129,7 @@ class CostumeDetailPage extends StatelessWidget {
               final url = urls.costume?[costume.battleCharaId];
               return url == null ? [] : [url];
             },
-            charaGraphPlaceholder: (_, __) => db.getIconImage(svt.classCard),
+            charaGraphPlaceholder: (_, _) => db.getIconImage(svt.classCard),
           ),
       ],
     );

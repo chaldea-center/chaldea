@@ -59,7 +59,7 @@ class FullscreenImageViewer extends StatefulWidget {
         // fullscreenDialog: true,
         // add transition
         pageBuilder:
-            (context, _, __) => FullscreenImageViewer(
+            (context, _, _) => FullscreenImageViewer(
               galleryOption: PhotoViewGalleryOption(
                 pageController: initialPage == null ? null : PageController(initialPage: initialPage),
               ),
@@ -150,7 +150,7 @@ class _FullscreenImageViewerState extends State<FullscreenImageViewer> {
       pageOptions: [
         for (final child in widget.children)
           widget.photoViewOption
-              .copyWith(onTapUp: (context, _, __) => Navigator.pop(context))
+              .copyWith(onTapUp: (context, _, _) => Navigator.pop(context))
               .toOriginalWithChild(child),
       ],
       loadingBuilder: widget.galleryOption.loadingBuilder,

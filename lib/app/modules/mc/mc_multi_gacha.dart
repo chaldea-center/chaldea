@@ -206,7 +206,7 @@ class _MCSummonCreatePageState extends State<MCSummonCreatePage> {
               if (v == -1) return const Text('模拟器');
               return Text('data${v + 1}');
             },
-            onFilterChanged: (_, __) {
+            onFilterChanged: (_, _) {
               setState(() {});
             },
           ),

@@ -45,7 +45,7 @@ class _FavoriteTeamsPageState extends State<FavoriteTeamsPage> {
       ),
       body: ListView.separated(
         itemBuilder: (context, index) => listItemBuilder(context, quests[index]),
-        separatorBuilder: (_, __) => const SizedBox(),
+        separatorBuilder: (_, _) => const SizedBox(),
         itemCount: quests.length,
       ),
     );

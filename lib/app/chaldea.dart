@@ -253,7 +253,7 @@ class _ErrorWidget extends StatelessWidget {
           if (nav == null) return;
           nav.push(
             PageRouteBuilder(
-              pageBuilder: (context, _, __) {
+              pageBuilder: (context, _, _) {
                 return Scaffold(
                   appBar: AppBar(title: Text(S.current.error)),
                   body: ListView(

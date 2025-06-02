@@ -269,7 +269,7 @@ String calcMd5(String input) {
   return md5.convert(utf8.encode(input)).toString();
 }
 
-String escapeDioException(error) {
+String escapeDioException(dynamic error) {
   if (error is DioException) {
     return error.messageWithData();
   }

@@ -24,7 +24,7 @@ class _LostRoomPageState extends State<LostRoomPage> {
                   color: Theme.of(context).highlightColor.withAlpha(153),
                   child: CachedImage(
                     imageUrl: 'https://anime.fate-go.jp/mllr/assets/img/kv/logo.png',
-                    placeholder: (_, __) => Container(),
+                    placeholder: (_, _) => Container(),
                   ),
                 ),
                 kDefaultDivider,

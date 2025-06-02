@@ -341,7 +341,7 @@ class _Database {
               errorWidget ??
               (context, url, e) => SizedBox(width: width, height: height, child: placeholder?.call(context)),
         ),
-        placeholder: (context, __) => SizedBox(width: width, height: height, child: placeholder?.call(context)),
+        placeholder: (context, _) => SizedBox(width: width, height: height, child: placeholder?.call(context)),
       );
     }
     if (padding != null) {

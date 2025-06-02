@@ -162,7 +162,6 @@ class _PaletteForThemeState extends State<_PaletteForTheme> {
           oneColor('highlightColor', themeData.highlightColor),
           oneColor('hintColor', themeData.hintColor),
           oneColor('hoverColor', themeData.hoverColor),
-          oneColor('indicatorColor', themeData.indicatorColor),
           oneColor('primaryColor', themeData.primaryColor),
           oneColor('primaryColorDark', themeData.primaryColorDark),
           oneColor('primaryColorLight', themeData.primaryColorLight),

@@ -43,7 +43,7 @@ class _ClassBoardMissionDemandState extends State<ClassBoardMissionDemand> {
       appBar: AppBar(title: Text(S.current.class_board)),
       body: ListView.separated(
         itemBuilder: (context, index) => buildOne(context, boards[index]),
-        separatorBuilder: (_, __) => const Divider(),
+        separatorBuilder: (_, _) => const Divider(),
         itemCount: boards.length,
       ),
     );

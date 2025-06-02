@@ -326,7 +326,7 @@ class _WarAssetListPageState extends State<WarAssetListPage> with AfterLayoutMix
           constraints: const BoxConstraints(maxHeight: 300),
           child: CachedImage(
             imageUrl: bgImages[index],
-            placeholder: (_, __) => AspectRatio(aspectRatio: url.endsWith('_1344_626.png') ? 1344 / 626 : 1024 / 626),
+            placeholder: (_, _) => AspectRatio(aspectRatio: url.endsWith('_1344_626.png') ? 1344 / 626 : 1024 / 626),
             showSaveOnLongPress: true,
             viewFullOnTap: true,
             cachedOption: CachedImageOption(errorWidget: (context, url, error) => Center(child: Text(url.breakWord))),
@@ -350,7 +350,7 @@ class _WarAssetListPageState extends State<WarAssetListPage> with AfterLayoutMix
         final charaFigure = fig.contains('CharaFigure');
         return CachedImage(
           imageUrl: fig,
-          placeholder: (_, __) => const SizedBox(),
+          placeholder: (_, _) => const SizedBox(),
           showSaveOnLongPress: true,
           viewFullOnTap: true,
           cachedOption: CachedImageOption(

@@ -263,7 +263,7 @@ class _MyRoomAssetsPageState extends State<MyRoomAssetsPage>
       constraints: BoxConstraints(maxHeight: maxHeight),
       child: CachedImage(
         imageUrl: url,
-        placeholder: (_, __) => AspectRatio(aspectRatio: aspectRatio ?? 1344 / 626),
+        placeholder: (_, _) => AspectRatio(aspectRatio: aspectRatio ?? 1344 / 626),
         showSaveOnLongPress: true,
         viewFullOnTap: true,
         cachedOption: CachedImageOption(errorWidget: (context, url, error) => Center(child: Text(url.breakWord))),

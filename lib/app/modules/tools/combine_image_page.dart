@@ -424,7 +424,7 @@ class _CombineImagePageState extends State<CombineImagePage> {
           PageRouteBuilder(
             opaque: false,
             pageBuilder:
-                (context, _, __) => FullscreenImageViewer(
+                (context, _, _) => FullscreenImageViewer(
                   children: [
                     CachedImage.fromProvider(
                       imageProvider: MemoryImage(data),
@@ -469,7 +469,7 @@ class _CombineImagePageState extends State<CombineImagePage> {
         aprilFoolAssets: svt.extra.aprilFoolAssets,
         mcSprites: svt.extra.mcSprites,
         fandomSprites: svt.extra.fandomSprites,
-        charaGraphPlaceholder: (_, __) => db.getIconImage(svt.classCard),
+        charaGraphPlaceholder: (_, _) => db.getIconImage(svt.classCard),
         onTapImage: (url) {
           Navigator.of(context).pop();
           _onChangeUrl(Uri.tryParse(url));
@@ -483,7 +483,7 @@ class _CombineImagePageState extends State<CombineImagePage> {
       return ExtraAssetsPage(
         scrollable: false,
         assets: ce.extraAssets,
-        charaGraphPlaceholder: (_, __) => db.getIconImage(ce.cardBack),
+        charaGraphPlaceholder: (_, _) => db.getIconImage(ce.cardBack),
         onTapImage: (url) {
           Navigator.of(context).pop();
           _onChangeUrl(Uri.tryParse(url));

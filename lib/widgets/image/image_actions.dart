@@ -262,7 +262,7 @@ class ImageActions {
           shrinkWrap: true,
           controller: ModalScrollController.of(context),
           itemBuilder: (context, index) => children[index],
-          separatorBuilder: (_, __) => const Divider(height: 0.5, thickness: 0.5),
+          separatorBuilder: (_, _) => const Divider(height: 0.5, thickness: 0.5),
           itemCount: children.length,
         );
       },

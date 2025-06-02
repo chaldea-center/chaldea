@@ -252,7 +252,7 @@ class _AboutPageState extends State<AboutPage> {
                     context,
                     PageRouteBuilder(
                       pageBuilder:
-                          (context, _, __) => LicensePage(
+                          (context, _, _) => LicensePage(
                             applicationName: AppInfo.appName,
                             applicationVersion: AppInfo.fullVersion2,
                             applicationIcon: Image.asset('res/img/launcher_icon/app_icon_logo.png', height: 120),

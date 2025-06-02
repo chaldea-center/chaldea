@@ -22,7 +22,7 @@ class EventCooltimePage extends HookWidget {
     return ListView.separated(
       controller: useScrollController(),
       itemBuilder: (context, index) => itemBuilder(context, grouped[keys[index]]!),
-      separatorBuilder: (_, __) => const Divider(height: 1),
+      separatorBuilder: (_, _) => const Divider(height: 1),
       itemCount: keys.length,
     );
   }

@@ -271,7 +271,7 @@ class _UserEventMissionReceivePageState extends State<UserEventMissionReceivePag
                         jumpToDetail: false,
                       );
                     },
-                    onFilterChanged: (_, __) {
+                    onFilterChanged: (_, _) {
                       setState(() {});
                     },
                   ),

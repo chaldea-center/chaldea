@@ -87,7 +87,7 @@ class _FfoCardState extends State<FfoCard> {
                   PageRouteBuilder(
                     opaque: false,
                     pageBuilder:
-                        (context, _, __) => FullscreenImageViewer(
+                        (context, _, _) => FullscreenImageViewer(
                           children: [FfoCard(params: widget.params, showSave: true, enableZoom: true)],
                         ),
                   ),

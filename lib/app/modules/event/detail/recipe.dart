@@ -12,7 +12,7 @@ class EventRecipePage extends HookWidget {
     return db.onUserData(
       (context, snapshot) => ListView.separated(
         itemBuilder: (context, index) => itemBuilder(context, event.recipes[index]),
-        separatorBuilder: (_, __) => const Divider(height: 1),
+        separatorBuilder: (_, _) => const Divider(height: 1),
         itemCount: event.recipes.length,
       ),
     );

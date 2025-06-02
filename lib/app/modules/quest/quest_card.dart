@@ -250,7 +250,7 @@ class _QuestCardState extends State<QuestCard> {
           width: 36,
           child: IconButton(
             onPressed: () => setState(() => showTrueName = !showTrueName),
-            icon: Icon(Icons.remove_red_eye_outlined, color: showTrueName ? Theme.of(context).indicatorColor : null),
+            icon: Icon(Icons.remove_red_eye_outlined, color: showTrueName ? Theme.of(context).tabBarTheme.indicatorColor : null),
             tooltip: showTrueName ? 'Show Display Name' : 'Show True Name',
             padding: EdgeInsets.zero,
             iconSize: 20,

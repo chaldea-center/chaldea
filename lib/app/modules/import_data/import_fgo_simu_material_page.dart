@@ -162,7 +162,7 @@ class _ImportFgoSimuMaterialPageState extends State<ImportFgoSimuMaterialPage> w
           child: ListView.separated(
             padding: const EdgeInsets.symmetric(vertical: 8),
             itemBuilder: (context, index) => children[index],
-            separatorBuilder: (_, __) => const Divider(height: 2, thickness: 0.5, indent: 64),
+            separatorBuilder: (_, _) => const Divider(height: 2, thickness: 0.5, indent: 64),
             itemCount: children.length,
           ),
         ),
@@ -221,7 +221,7 @@ class _ImportFgoSimuMaterialPageState extends State<ImportFgoSimuMaterialPage> w
           child: ListView.separated(
             padding: const EdgeInsets.symmetric(vertical: 8),
             itemBuilder: (context, index) => children[index],
-            separatorBuilder: (_, __) => const Divider(height: 2, thickness: 0.5, indent: 64),
+            separatorBuilder: (_, _) => const Divider(height: 2, thickness: 0.5, indent: 64),
             itemCount: children.length,
           ),
         ),

@@ -112,7 +112,7 @@ class CarouselUtil {
                   imageBuilder: (context, image) => FittedBox(child: Image(image: image)),
                   errorWidget: (context, url, error) => const SizedBox(),
                 ),
-                placeholder: (_, __) => const SizedBox(),
+                placeholder: (_, _) => const SizedBox(),
               ),
             )
             .toList();

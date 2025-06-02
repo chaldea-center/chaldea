@@ -141,10 +141,10 @@ class SimpleLineChart<T extends num> extends StatelessWidget {
             ),
           ),
           rightTitles: AxisTitles(
-            sideTitles: SideTitles(showTitles: true, reservedSize: 16, getTitlesWidget: (_, __) => const Text('')),
+            sideTitles: SideTitles(showTitles: true, reservedSize: 16, getTitlesWidget: (_, _) => const Text('')),
           ),
           topTitles: AxisTitles(
-            sideTitles: SideTitles(showTitles: true, reservedSize: 16, getTitlesWidget: (_, __) => const Text('')),
+            sideTitles: SideTitles(showTitles: true, reservedSize: 16, getTitlesWidget: (_, _) => const Text('')),
           ),
         ),
         borderData: FlBorderData(show: true, border: Border.all(color: Theme.of(context).hintColor, width: 2)),
