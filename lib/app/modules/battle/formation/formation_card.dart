@@ -80,7 +80,9 @@ class FormationCard extends StatelessWidget {
     );
 
     List<Widget> extraInfoIcons = [
-      if (storedData?.customPassives.isNotEmpty == true)
+      if (storedData?.customPassives.isNotEmpty == true ||
+          storedData?.allowedExtraSkills.isNotEmpty == true ||
+          storedData?.classBoardData?.isNotEmpty == true)
         db.getIconImage(AssetURL.i.buffIcon(302), width: 18, aspectRatio: 1),
       if (userSvtCollections?[storedData?.svtId]?.isReachBondLimit == true)
         db.getIconImage(

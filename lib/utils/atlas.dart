@@ -157,7 +157,7 @@ class Atlas {
     if (match == null) {
       return const Tuple2(Region.jp, null);
     }
-    final id = int.parse(match.group(1)!);
+    final id = int.tryParse(match.group(1)!);
     final regionText = RegExp(r'(JP|NA|CN|TW|KR)/').firstMatch(path)?.group(1);
     Region region = const RegionConverter().fromJson(regionText ?? "");
     return Tuple2(region, id);

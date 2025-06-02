@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'package:chaldea/utils/extension.dart';
+
 class MovableFab extends StatefulWidget {
   final Widget icon;
   final double initialX;
@@ -93,6 +95,6 @@ class _MovableFabState extends State<MovableFab> {
 
   Offset limitOffset([Offset delta = Offset.zero]) {
     _offset = _offset + delta;
-    return _offset = Offset(_offset.dx.clamp(rect.left, rect.right), _offset.dy.clamp(rect.top, rect.bottom));
+    return _offset = Offset(_offset.dx.clamp2(rect.left, rect.right), _offset.dy.clamp2(rect.top, rect.bottom));
   }
 }

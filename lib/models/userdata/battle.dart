@@ -558,6 +558,8 @@ class ClassBoardStatisticsData {
   bool get isEmpty =>
       classBoardSquares.isEmpty && grandClassBoardSquares.isEmpty && classStatistics.every((e) => e.typeVal == 0);
 
+  bool get isNotEmpty => !isEmpty;
+
   ClassStatisticsInfo getClassStatistic(int type, int targetId) {
     ClassStatisticsInfo? result = classStatistics.firstWhereOrNull((e) => e.type == type && e.classId == targetId);
     if (result != null) return result;

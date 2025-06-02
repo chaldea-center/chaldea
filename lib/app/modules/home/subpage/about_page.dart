@@ -310,6 +310,10 @@ class _AboutProgram extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String info = PlatformU.operatingSystem;
+    final memory = AppInfo.totalRamInGB;
+    if (memory != null) info += "(${memory.format(precision: 1)}GB)";
+    info += " - ${AppInfo.commitHash} - ${AppInfo.commitDate}";
     Widget child = Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 24.0),
       child: Column(
@@ -321,11 +325,12 @@ class _AboutProgram extends StatelessWidget {
           const SizedBox(height: 3),
           Text.rich(
             TextSpan(
-              text: "${PlatformU.operatingSystem} - ${AppInfo.commitHash} - ${AppInfo.commitDate}",
+              text: info,
               // recognizer: TapGestureRecognizer()
               //   ..onTap = () => launch(AppInfo.commitUrl),
               style: Theme.of(context).textTheme.bodySmall,
             ),
+            textAlign: TextAlign.center,
           ),
           const SizedBox(height: 12),
           Text(legalese ?? '', style: Theme.of(context).textTheme.bodySmall, textAlign: TextAlign.center),

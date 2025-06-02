@@ -185,6 +185,8 @@ class ServerFeedbackHandler extends ReportHandler {
         "null function or function signature mismatch",
         "memory access out of bounds",
         "Cannot add event after closing",
+        'Unable to load asset: "res/js/glpk.min.js"',
+        'RuntimeError:',
         // "SecurityError: Failed to execute 'texImage2D'",
         // "TypeError: Cannot read property 'toString' of null",
         // "TypeError: Cannot read properties of undefined",

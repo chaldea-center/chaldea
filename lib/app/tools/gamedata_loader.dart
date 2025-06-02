@@ -10,6 +10,7 @@ import 'package:path/path.dart';
 import 'package:pool/pool.dart';
 
 import 'package:chaldea/app/api/atlas.dart';
+import 'package:chaldea/packages/language.dart' show Language;
 import 'package:chaldea/utils/utils.dart';
 import '../../generated/l10n.dart';
 import '../../models/models.dart';
@@ -65,6 +66,11 @@ class GameDataLoader {
   }) async {
     void _showError(Object? e) {
       error = escapeDioException(e);
+      if (error.toString().contains('Out of Memory')) {
+        final memory = AppInfo.totalRamInGB?.format(precision: 1);
+        String hint = Language.isZH ? '设备运行内存不足(总${memory}GB)' : 'Device memory/RAM low(Total ${memory}GB)';
+        error = '$hint\n$error';
+      }
       if (!silent) {
         EasyLoading.showInfo(error);
       }

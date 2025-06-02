@@ -256,8 +256,8 @@ class User {
       plans.add(UserPlan());
     }
     curSvtPlanNo = curSvtPlanNo.clamp2(0, plans.length - 1);
-    for (final status in servants.values) {
-      status.validate();
+    for (final (collectionNo, status) in servants.items) {
+      status.validate(db.gameData.servantsWithDup[collectionNo]);
     }
     for (final key in servants.keys) {
       servants[key]!.validate(db.gameData.servantsWithDup[key]);
@@ -511,6 +511,9 @@ class SvtPlan {
   }
 
   void validate([SvtPlan? lower, Servant? svt]) {
+    if (svt != null && svt.type == SvtType.enemyCollectionDetail) {
+      favorite = false;
+    }
     ascension = ascension.clamp2(lower?.ascension ?? 0, 4);
     for (int i = 0; i < skills.length; i++) {
       skills[i] = skills[i].clamp2(lower?.skills[i] ?? 1, 10);

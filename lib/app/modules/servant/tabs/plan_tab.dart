@@ -304,6 +304,7 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
         value: status.grandSvt,
         secondary: db.getIconImage(
           SvtClassX.clsIcon(db.gameData.grandGraphDetails[svt.classId]?.grandClassId ?? svt.classId, 5),
+          width: 32,
         ),
         onChanged: (v) async {
           if (v) {

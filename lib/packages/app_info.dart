@@ -22,8 +22,13 @@ class AppInfo {
   static String? _uuid;
   static bool _debugOn = false;
   static MacAppType _macAppType = MacAppType.unknown;
-  static bool _isIPad = false;
-  static int? _androidSdk;
+
+  static AndroidDeviceInfo? _androidInfo;
+  static IosDeviceInfo? _iosInfo;
+  static MacOsDeviceInfo? _macOsInfo;
+  static LinuxDeviceInfo? _linuxInfo;
+  static WindowsDeviceInfo? _windowsInfo;
+  static WebBrowserInfo? _webInfo;
 
   static final Map<String, dynamic> deviceParams = {};
   static final Map<String, dynamic> appParams = {};
@@ -31,27 +36,25 @@ class AppInfo {
   static Future<void> _loadDeviceInfo() async {
     try {
       if (PlatformU.isAndroid) {
-        final androidInfo = await DeviceInfoPlugin().androidInfo;
+        final androidInfo = _androidInfo = await DeviceInfoPlugin().androidInfo;
         deviceParams.addAll(Map.from(androidInfo.data)..remove('systemFeatures'));
-        _androidSdk = androidInfo.version.sdkInt;
         deviceParams['androidId'] = await const AndroidId().getId();
         deviceParams['userAgent'] = await MethodChannelChaldea.getUserAgent();
       } else if (PlatformU.isIOS) {
-        final iosInfo = await DeviceInfoPlugin().iosInfo;
-        _isIPad = iosInfo.model.toLowerCase().contains('ipad');
+        final iosInfo = _iosInfo = await DeviceInfoPlugin().iosInfo;
         deviceParams.addAll(Map.from(iosInfo.data)..remove('name'));
         deviceParams['CFNetworkVersion'] = await MethodChannelChaldea.getCFNetworkVersion();
       } else if (PlatformU.isMacOS) {
-        final macOsInfo = await DeviceInfoPlugin().macOsInfo;
+        final macOsInfo = _macOsInfo = await DeviceInfoPlugin().macOsInfo;
         deviceParams.addAll(Map.from(macOsInfo.data)..remove('computerName'));
       } else if (PlatformU.isLinux) {
-        final linuxInfo = await DeviceInfoPlugin().linuxInfo;
+        final linuxInfo = _linuxInfo = await DeviceInfoPlugin().linuxInfo;
         deviceParams.addAll(Map.from(linuxInfo.data));
       } else if (PlatformU.isWindows) {
-        final windowsInfo = await DeviceInfoPlugin().windowsInfo;
+        final windowsInfo = _windowsInfo = await DeviceInfoPlugin().windowsInfo;
         deviceParams.addAll(Map.from(windowsInfo.data)..remove('digitalProductId'));
       } else if (PlatformU.isWeb) {
-        final webInfo = await DeviceInfoPlugin().webBrowserInfo;
+        final webInfo = _webInfo = await DeviceInfoPlugin().webBrowserInfo;
         deviceParams.addAll({...webInfo.data, 'browserName': webInfo.browserName.name});
       } else {
         deviceParams['operatingSystem'] = PlatformU.operatingSystem;
@@ -224,7 +227,7 @@ class AppInfo {
 
   static String get packageName => info?.packageName ?? kPackageName;
 
-  static int? get androidSdk => _androidSdk;
+  static int? get androidSdk => _androidInfo?.version.sdkInt;
 
   /// e.g. "1.2.3+4"
   static String get fullVersion {
@@ -260,13 +263,23 @@ class AppInfo {
 
   static bool get isDebugOn => isDebugDevice || _debugOn;
 
-  static bool get isIPad => _isIPad;
+  static bool get isIPad => _iosInfo?.model.toLowerCase().contains('ipad') ?? false;
 
   static MacAppType get macAppType => _macAppType;
 
   static bool get isMacStoreApp => _macAppType == MacAppType.store;
 
   static bool get isFDroid => PlatformU.isAndroid && packageName == kPackageNameFDroid;
+
+  static double? get totalRamInGB {
+    if (_androidInfo != null) return _androidInfo!.physicalRamSize / 1024;
+    if (_iosInfo != null) return _iosInfo!.physicalRamSize / 1024;
+    if (_macOsInfo != null) return _macOsInfo!.memorySize / 1024 / 1024 / 1024;
+    if (_linuxInfo != null) return null;
+    if (_windowsInfo != null) return _windowsInfo!.systemMemoryInMegabytes / 1024;
+    if (_webInfo != null) return _webInfo!.deviceMemory;
+    return null;
+  }
 }
 
 enum MacAppType { unknown, store, notarized, debug, notMacApp }

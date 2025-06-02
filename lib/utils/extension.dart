@@ -90,6 +90,16 @@ extension IntX on int {
   String get padTwoDigit => toString().padLeft(2, '0');
 }
 
+extension DoubleX on double {
+  /// if [upperLimit]<[lowerLimit], then [lowerLimit] is used
+  double clamp2(double? lowerLimit, [double? upperLimit]) {
+    double result = this;
+    if (upperLimit != null && upperLimit < result) result = upperLimit;
+    if (lowerLimit != null && lowerLimit > result) result = lowerLimit;
+    return result;
+  }
+}
+
 extension ListX<T> on List<T> {
   // add another method to support -1 index
   T? getOrNull(int index) {

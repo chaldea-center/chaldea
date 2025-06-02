@@ -115,9 +115,20 @@ class _BondBonusPageState extends State<BondBonusPage> {
     return matchedLimitCounts;
   }
 
+  bool isCeReleased(int ceId) {
+    final region = svtFilterData.region.radioValue ?? Region.jp;
+    if (region == Region.jp) return true;
+    final releasedIds = db.gameData.mappingData.entityRelease.ofRegion(region);
+    if (releasedIds != null && releasedIds.isNotEmpty) {
+      return releasedIds.contains(ceId);
+    }
+    return true;
+  }
+
   List<_GroupItem> getGroupData() {
-    final List<int> mustHaveCeIds = [if (selectedCeId != null) selectedCeId!];
+    final List<int> mustHaveCeIds = [if (selectedCeId != null && isCeReleased(selectedCeId!)) selectedCeId!];
     final List<int> freeCeIds = allCeData.keys.toSet().difference(mustHaveCeIds.toSet()).toList();
+    freeCeIds.retainWhere(isCeReleased);
     final int n = freeCeIds.length;
     List<_GroupItem> resultData = [];
     for (int mask = 0; mask < (1 << n); mask++) {
@@ -160,6 +171,9 @@ class _BondBonusPageState extends State<BondBonusPage> {
 
   @override
   Widget build(BuildContext context) {
+    if (selectedCeId != null && !isCeReleased(selectedCeId!)) {
+      selectedCeId = null;
+    }
     return Scaffold(
       appBar: AppBar(
         title: Text('${S.current.craft_essence} - ${S.current.bond_bonus}'),
@@ -279,7 +293,7 @@ class _BondBonusPageState extends State<BondBonusPage> {
   }
 
   Widget get buttonBar {
-    final ces = allCeData.values.toList();
+    final ces = allCeData.values.where((e) => isCeReleased(e.ce.id)).toList();
     ces.sortByList((e) => [-e.rateCount, -e.ce.collectionNo]);
     return SafeArea(
       child: Padding(
