@@ -766,6 +766,17 @@ class S {
     return Intl.message('Bond Eff', name: 'bond_eff', desc: '', locale: localeName, args: []);
   }
 
+  /// `Change Bond CE effect`
+  String get bond_equi_change_skill {
+    return Intl.message(
+      'Change Bond CE effect',
+      name: 'bond_equi_change_skill',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Bond Limit`
   String get bond_limit {
     return Intl.message('Bond Limit', name: 'bond_limit', desc: '', locale: localeName, args: []);

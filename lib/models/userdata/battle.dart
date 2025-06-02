@@ -440,7 +440,7 @@ class SvtSaveData {
   List<BaseSkill> customPassives;
   List<int> customPassiveLvs;
 
-  bool grandSvt = false;
+  bool grandSvt;
   ClassBoardStatisticsData? classBoardData;
 
   SvtSaveData({
@@ -543,11 +543,13 @@ class MysticCodeSaveData {
 
 @JsonSerializable()
 class ClassBoardStatisticsData {
+  bool grandBondEquipSkillChange;
   List<int> classBoardSquares = [];
   List<int> grandClassBoardSquares = [];
   List<ClassStatisticsInfo> classStatistics = [];
 
   ClassBoardStatisticsData({
+    this.grandBondEquipSkillChange = false,
     List<int>? classBoardSquares,
     List<int>? grandClassBoardSquares,
     List<ClassStatisticsInfo>? classStatistics,

@@ -250,34 +250,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
         title: Text(S.current.grand_servant),
       ),
       divider,
-      TileGroup(
-        header: S.current.craft_essence,
-        children:
-            SvtEquipTarget.values.where((e) => e.value == 0 || playerSvtData.grandSvt).map((equipTarget) {
-              final equip = playerSvtData.getEquip(equipTarget);
-              return ListTile(
-                dense: true,
-                leading: equip.ce?.iconBuilder(context: context, width: 32) ?? SizedBox(width: 32),
-                title: Text(equip.ce?.lName.l ?? 'None'),
-                subtitle: Text(
-                  '[${equipTarget.name}] Lv.${equip.lv} ${equip.limitBreak ? S.current.max_limit_break : ""}',
-                ),
-                trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
-                onTap: () async {
-                  await router.pushPage(
-                    CraftEssenceOptionEditPage(
-                      playerSvtData: enableEdit ? playerSvtData : playerSvtData.copy(),
-                      equipTarget: equipTarget,
-                      questPhase: questPhase,
-                      onChange: enableEdit ? () {} : null,
-                      craftFilterData: null,
-                    ),
-                  );
-                  if (mounted) setState(() {});
-                },
-              );
-            }).toList(),
-      ),
+      _buildEquips(),
       _buildClassBoard(),
       TileGroup(header: S.current.noble_phantasm, children: [_buildTdDescriptor(context)]),
       TileGroup(
@@ -569,6 +542,64 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
         },
       ),
     );
+  }
+
+  Widget _buildEquips() {
+    List<Widget> children = [];
+    for (final equipTarget in SvtEquipTarget.values) {
+      if (equipTarget.value > 0 && !playerSvtData.grandSvt) continue;
+      if (equipTarget.value > 0) children.add(Divider());
+      final equip = playerSvtData.getEquip(equipTarget);
+      children.add(
+        ListTile(
+          dense: true,
+          leading: equip.ce?.iconBuilder(context: context, width: 32) ?? SizedBox(width: 32),
+          title: Text(equip.ce?.lName.l ?? 'None'),
+          subtitle: Text('[${equipTarget.name}] Lv.${equip.lv} ${equip.limitBreak ? S.current.max_limit_break : ""}'),
+          trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
+          onTap: () async {
+            await router.pushPage(
+              CraftEssenceOptionEditPage(
+                playerSvtData: enableEdit ? playerSvtData : playerSvtData.copy(),
+                equipTarget: equipTarget,
+                questPhase: questPhase,
+                onChange: enableEdit ? () {} : null,
+                craftFilterData: null,
+              ),
+            );
+            if (mounted) setState(() {});
+          },
+        ),
+      );
+      if (equipTarget == SvtEquipTarget.bond) {
+        final skillId = ConstData.constants.grandFriendshipEquipSkillId;
+        final changeSkill = db.gameData.baseSkills[skillId];
+        children.add(
+          SimpleAccordion(
+            headerBuilder: (context, _) {
+              return CheckboxListTile(
+                dense: true,
+                value: playerSvtData.classBoardData.grandBondEquipSkillChange,
+                onChanged: (v) {
+                  setState(() {
+                    playerSvtData.classBoardData.grandBondEquipSkillChange = v!;
+                  });
+                },
+                title: Text(S.current.bond_equi_change_skill),
+                subtitle: Text('${changeSkill?.lName.l ?? skillId}'),
+                contentPadding: EdgeInsetsDirectional.only(start: 18),
+                secondary: db.getIconImage(changeSkill?.icon ?? Atlas.common.emptySkillIcon, width: 28),
+              );
+            },
+            contentBuilder: (context) {
+              if (changeSkill == null) return Text('Skill $skillId');
+              return SkillDescriptor(skill: changeSkill);
+            },
+          ),
+        );
+      }
+    }
+    return TileGroup(header: S.current.craft_essence, children: children);
   }
 
   Widget _buildClassBoard() {

@@ -111,6 +111,7 @@
   "bond_bonus": null,
   "bond_craft": "絆礼装",
   "bond_eff": "絆効率",
+  "bond_equi_change_skill": null,
   "bond_limit": "絆上限",
   "bootstrap_page_title": "ガイドページ",
   "branch_quest": "ブランチクエスト",

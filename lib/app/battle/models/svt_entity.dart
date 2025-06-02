@@ -514,8 +514,17 @@ class BattleServantData {
 
   Future<void> activateEquip(final BattleData battleData) async {
     await equip1?.activateCE(battleData, this);
+
     if (battleData.isUseGrandBoard && isPlayer && isGrandSvt) {
-      await equip2?.activateCE(battleData, this);
+      if (playerSvtData!.classBoardData.grandBondEquipSkillChange) {
+        final skillId = ConstData.constants.grandFriendshipEquipSkillId;
+        final changeSkill = db.gameData.baseSkills[skillId] ?? await AtlasApi.skill(skillId);
+        final skillInfo = BattleSkillInfoData(changeSkill, type: SkillInfoType.svtEquip);
+        await skillInfo.activate(battleData, activator: this);
+      } else {
+        await equip2?.activateCE(battleData, this);
+      }
+
       await equip3?.activateCE(battleData, this);
     }
   }

@@ -202,6 +202,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "bond_bonus": MessageLookupByLibrary.simpleMessage("羁绊加成"),
     "bond_craft": MessageLookupByLibrary.simpleMessage("羈絆禮裝"),
     "bond_eff": MessageLookupByLibrary.simpleMessage("羈絆效率"),
+    "bond_equi_change_skill": MessageLookupByLibrary.simpleMessage("切换羁绊礼装效果"),
     "bond_limit": MessageLookupByLibrary.simpleMessage("羈絆上限"),
     "bootstrap_page_title": MessageLookupByLibrary.simpleMessage("引導頁"),
     "branch_quest": MessageLookupByLibrary.simpleMessage("分支關卡"),

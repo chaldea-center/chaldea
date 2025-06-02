@@ -346,6 +346,7 @@ Map<String, dynamic> _$MysticCodeSaveDataToJson(MysticCodeSaveData instance) => 
 ClassBoardStatisticsData _$ClassBoardStatisticsDataFromJson(Map json) =>
     $checkedCreate('ClassBoardStatisticsData', json, ($checkedConvert) {
       final val = ClassBoardStatisticsData(
+        grandBondEquipSkillChange: $checkedConvert('grandBondEquipSkillChange', (v) => v as bool? ?? false),
         classBoardSquares: $checkedConvert(
           'classBoardSquares',
           (v) => (v as List<dynamic>?)?.map((e) => (e as num).toInt()).toList(),
@@ -366,6 +367,7 @@ ClassBoardStatisticsData _$ClassBoardStatisticsDataFromJson(Map json) =>
     });
 
 Map<String, dynamic> _$ClassBoardStatisticsDataToJson(ClassBoardStatisticsData instance) => <String, dynamic>{
+  'grandBondEquipSkillChange': instance.grandBondEquipSkillChange,
   'classBoardSquares': instance.classBoardSquares,
   'grandClassBoardSquares': instance.grandClassBoardSquares,
   'classStatistics': instance.classStatistics.map((e) => e.toJson()).toList(),
