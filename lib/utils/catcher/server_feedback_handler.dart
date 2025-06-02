@@ -186,6 +186,7 @@ class ServerFeedbackHandler extends ReportHandler {
         "memory access out of bounds",
         "Cannot add event after closing",
         'Unable to load asset: "res/js/glpk.min.js"',
+        "UnknownError: Failed to execute 'transferToImageBitmap' on 'OffscreenCanvas'",
         'RuntimeError:',
         // "SecurityError: Failed to execute 'texImage2D'",
         // "TypeError: Cannot read property 'toString' of null",

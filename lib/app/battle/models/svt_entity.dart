@@ -516,7 +516,7 @@ class BattleServantData {
     await equip1?.activateCE(battleData, this);
 
     if (battleData.isUseGrandBoard && isPlayer && isGrandSvt) {
-      if (playerSvtData!.classBoardData.grandBondEquipSkillChange) {
+      if (playerSvtData!.classBoardData.grandBondEquipSkillChange && equip2 != null) {
         final skillId = ConstData.constants.grandFriendshipEquipSkillId;
         final changeSkill = db.gameData.baseSkills[skillId] ?? await AtlasApi.skill(skillId);
         final skillInfo = BattleSkillInfoData(changeSkill, type: SkillInfoType.svtEquip);

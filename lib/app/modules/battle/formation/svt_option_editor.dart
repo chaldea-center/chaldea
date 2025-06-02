@@ -571,7 +571,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
           },
         ),
       );
-      if (equipTarget == SvtEquipTarget.bond) {
+      if (equipTarget == SvtEquipTarget.bond && equip.ce != null) {
         final skillId = ConstData.constants.grandFriendshipEquipSkillId;
         final changeSkill = db.gameData.baseSkills[skillId];
         children.add(
