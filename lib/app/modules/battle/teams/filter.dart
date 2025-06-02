@@ -224,8 +224,11 @@ class TeamFilterPage extends FilterPage<TeamFilterData> {
 class _TeamFilterPageState extends FilterPageState<TeamFilterData, TeamFilterPage> {
   @override
   Widget build(BuildContext context) {
-    final availableSvts =
-        {...widget.availableSvts, ...filterData.useSvts.options, ...filterData.blockSvts.options}.toList();
+    final availableSvts = {
+      ...widget.availableSvts,
+      ...filterData.useSvts.options,
+      ...filterData.blockSvts.options,
+    }.toList();
     availableSvts.sort(
       (a, b) => SvtFilterData.compare(
         db.gameData.servantsById[a],
@@ -244,9 +247,8 @@ class _TeamFilterPageState extends FilterPageState<TeamFilterData, TeamFilterPag
       ),
     );
     final availableMCs = {0, ...widget.availableMCs, ...filterData.mysticCode.options}.toList()..sort();
-    final availableEventWarIds =
-        {...widget.availableEventWarIds, ...filterData.eventWarId.options}.toList()
-          ..sortByList((e) => [db.gameData.events.containsKey(e) ? 1 : 0, -(db.gameData.events[e]?.startedAt ?? -e)]);
+    final availableEventWarIds = {...widget.availableEventWarIds, ...filterData.eventWarId.options}.toList()
+      ..sortByList((e) => [db.gameData.events.containsKey(e) ? 1 : 0, -(db.gameData.events[e]?.startedAt ?? -e)]);
 
     return buildAdaptive(
       title: Text(S.current.filter, textScaler: const TextScaler.linear(0.8)),
@@ -430,12 +432,12 @@ class _TeamFilterPageState extends FilterPageState<TeamFilterData, TeamFilterPag
                 children: [
                   filterData.useSvts.options.length == 1
                       ? CenterWidgetSpan(
-                        child: GameCardMixin.anyCardItemBuilder(
-                          context: context,
-                          id: filterData.useSvts.options.single,
-                          width: 18,
-                        ),
-                      )
+                          child: GameCardMixin.anyCardItemBuilder(
+                            context: context,
+                            id: filterData.useSvts.options.single,
+                            width: 18,
+                          ),
+                        )
                       : const TextSpan(text: "Select 1 servant"),
                 ],
               ),
@@ -447,13 +449,12 @@ class _TeamFilterPageState extends FilterPageState<TeamFilterData, TeamFilterPag
                 for (final tdLv in range(5))
                   DropdownMenuItem(value: tdLv, child: Text(tdLv == 0 ? S.current.general_any : '≤Lv$tdLv')),
               ],
-              onChanged:
-                  filterData.useSvts.options.length == 1
-                      ? (v) {
-                        if (v != null) filterData.useSvtTdLv = v;
-                        update();
-                      }
-                      : null,
+              onChanged: filterData.useSvts.options.length == 1
+                  ? (v) {
+                      if (v != null) filterData.useSvtTdLv = v;
+                      update();
+                    }
+                  : null,
             ),
           ),
           FilterGroup<int>(
@@ -461,7 +462,10 @@ class _TeamFilterPageState extends FilterPageState<TeamFilterData, TeamFilterPag
               TextSpan(
                 text: '${S.current.team_block_ce}  ( ',
                 children: [
-                  TextSpan(text: S.current.disabled, style: TextStyle(color: Theme.of(context).colorScheme.error)),
+                  TextSpan(
+                    text: S.current.disabled,
+                    style: TextStyle(color: Theme.of(context).colorScheme.error),
+                  ),
                   const TextSpan(text: '  '),
                   TextSpan(
                     text: S.current.disallow_mlb,
@@ -474,17 +478,15 @@ class _TeamFilterPageState extends FilterPageState<TeamFilterData, TeamFilterPag
             options: availableCEs,
             values: filterData.blockCEs.copy(),
             constraints: const BoxConstraints(maxHeight: 50),
-            optionBuilder:
-                (v) => cardIcon(
-                  v,
-                  db.gameData.craftEssencesById[v],
-                  color:
-                      filterData.blockCEs.options.contains(v)
-                          ? (filterData.blockCEMLBOnly[v] ?? false)
-                              ? Theme.of(context).colorScheme.primary
-                              : Theme.of(context).colorScheme.error
-                          : null,
-                ),
+            optionBuilder: (v) => cardIcon(
+              v,
+              db.gameData.craftEssencesById[v],
+              color: filterData.blockCEs.options.contains(v)
+                  ? (filterData.blockCEMLBOnly[v] ?? false)
+                        ? Theme.of(context).colorScheme.primary
+                        : Theme.of(context).colorScheme.error
+                  : null,
+            ),
             shrinkWrap: true,
             onFilterChanged: (_, last) {
               if (last != null) {
@@ -511,15 +513,9 @@ class _TeamFilterPageState extends FilterPageState<TeamFilterData, TeamFilterPag
 
   Widget cardIcon(int id, GameCardMixin? card, {Color? color}) {
     // final card = db.gameData.servantsById[id] ?? db.gameData.craftEssencesById[id];
-    Widget child =
-        card == null
-            ? GameCardMixin.cardIconBuilder(
-              context: context,
-              icon: null,
-              text: id == 0 ? null : id.toString(),
-              height: 42,
-            )
-            : Opacity(opacity: 0.9, child: card.iconBuilder(context: context, height: 42, jumpToDetail: false));
+    Widget child = card == null
+        ? GameCardMixin.cardIconBuilder(context: context, icon: null, text: id == 0 ? null : id.toString(), height: 42)
+        : Opacity(opacity: 0.9, child: card.iconBuilder(context: context, height: 42, jumpToDetail: false));
     if (color != null) {
       child = Container(padding: const EdgeInsets.all(2), color: color, child: child);
     } else {

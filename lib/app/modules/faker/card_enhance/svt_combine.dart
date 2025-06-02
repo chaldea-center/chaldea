@@ -68,7 +68,14 @@ class _SvtCombinePageState extends State<SvtCombinePage> {
         child: ListTileTheme.merge(
           dense: true,
           visualDensity: VisualDensity.compact,
-          child: Column(children: [headerInfo, Expanded(child: body), const Divider(height: 1), buttonBar]),
+          child: Column(
+            children: [
+              headerInfo,
+              Expanded(child: body),
+              const Divider(height: 1),
+              buttonBar,
+            ],
+          ),
         ),
       ),
     );
@@ -98,9 +105,8 @@ class _SvtCombinePageState extends State<SvtCombinePage> {
           constraints: const BoxConstraints(maxWidth: 16, maxHeight: 16),
           child: ValueListenableBuilder(
             valueListenable: runtime.runningTask,
-            builder:
-                (context, running, _) =>
-                    CircularProgressIndicator(value: running ? null : 1.0, color: running ? Colors.red : Colors.green),
+            builder: (context, running, _) =>
+                CircularProgressIndicator(value: running ? null : 1.0, color: running ? Colors.red : Colors.green),
           ),
         ),
         title: Text('[${agent.user.serverName}] ${userGame?.name}'),
@@ -395,13 +401,12 @@ class _SvtCombinePageState extends State<SvtCombinePage> {
 
     router.showDialog(
       builder: (context) {
-        final notLvMaxSvts =
-            mstData.userSvt.where((userSvt) {
-              final svt = userSvt.dbSvt;
-              if (!userSvt.locked || svt == null || svt.type != SvtType.normal) return false;
-              if (userSvt.lv >= (userSvt.maxLv ?? 0)) return false;
-              return true;
-            }).toList();
+        final notLvMaxSvts = mstData.userSvt.where((userSvt) {
+          final svt = userSvt.dbSvt;
+          if (!userSvt.locked || svt == null || svt.type != SvtType.normal) return false;
+          if (userSvt.lv >= (userSvt.maxLv ?? 0)) return false;
+          return true;
+        }).toList();
         notLvMaxSvts.sort2((e) => -e.lv);
 
         return SimpleDialog(
@@ -415,16 +420,15 @@ class _SvtCombinePageState extends State<SvtCombinePage> {
                 router.pushPage(
                   ServantListPage(
                     onSelected: (selectedSvt) {
-                      final userSvts =
-                          mstData.userSvt.where((userSvt) {
-                            final svt = userSvt.dbSvt;
-                            if (svt == null || userSvt.svtId != selectedSvt.id || svt.type != SvtType.normal) {
-                              return false;
-                            }
-                            // if (userSvt.lv >= (userSvt.maxLv ?? 0)) return false;
-                            // if (userSvt.lv <= 1) return false;
-                            return true;
-                          }).toList();
+                      final userSvts = mstData.userSvt.where((userSvt) {
+                        final svt = userSvt.dbSvt;
+                        if (svt == null || userSvt.svtId != selectedSvt.id || svt.type != SvtType.normal) {
+                          return false;
+                        }
+                        // if (userSvt.lv >= (userSvt.maxLv ?? 0)) return false;
+                        // if (userSvt.lv <= 1) return false;
+                        return true;
+                      }).toList();
                       userSvts.sortByList((e) => <int>[-e.limitCount, -e.lv, -e.exp]);
                       router.showDialog(
                         builder: (context) {

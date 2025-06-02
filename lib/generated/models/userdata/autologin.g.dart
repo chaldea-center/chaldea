@@ -424,10 +424,9 @@ PresentBoxFilterData _$PresentBoxFilterDataFromJson(Map json) =>
         maxNum: $checkedConvert('maxNum', (v) => (v as num?)?.toInt() ?? 0),
         presentTypes: $checkedConvert(
           'presentTypes',
-          (v) =>
-              (v as List<dynamic>?)
-                  ?.map((e) => $enumDecode(_$PresentTypeEnumMap, e, unknownValue: PresentType.servantExp))
-                  .toSet(),
+          (v) => (v as List<dynamic>?)
+              ?.map((e) => $enumDecode(_$PresentTypeEnumMap, e, unknownValue: PresentType.servantExp))
+              .toSet(),
         ),
         rarities: $checkedConvert('rarities', (v) => (v as List<dynamic>?)?.map((e) => (e as num).toInt()).toSet()),
       );

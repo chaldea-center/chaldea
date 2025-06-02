@@ -18,15 +18,14 @@ abstract class FilterPage<T> extends StatefulWidget {
       showModalBottomSheet(
         context: context,
         isScrollControlled: true,
-        builder:
-            (context) => LayoutBuilder(
-              builder: (context, constraints) {
-                return ConstrainedBox(
-                  constraints: constraints.copyWith(maxHeight: constraints.maxHeight * 0.7),
-                  child: SafeArea(child: builder(context)),
-                );
-              },
-            ),
+        builder: (context) => LayoutBuilder(
+          builder: (context, constraints) {
+            return ConstrainedBox(
+              constraints: constraints.copyWith(maxHeight: constraints.maxHeight * 0.7),
+              child: SafeArea(child: builder(context)),
+            );
+          },
+        ),
       );
     }
   }
@@ -122,13 +121,12 @@ abstract class FilterPageState<T, St extends FilterPage<T>> extends State<St> {
       maxHeight: min(420, size.height * 0.65),
       child: ScrollRestoration(
         restorationId: restorationId,
-        builder:
-            (context, controller) => ListView(
-              controller: controller,
-              padding: const EdgeInsets.symmetric(vertical: 6),
-              shrinkWrap: true,
-              children: divideTiles(children, divider: const Divider(color: Colors.transparent, height: 5)),
-            ),
+        builder: (context, controller) => ListView(
+          controller: controller,
+          padding: const EdgeInsets.symmetric(vertical: 6),
+          shrinkWrap: true,
+          children: divideTiles(children, divider: const Divider(color: Colors.transparent, height: 5)),
+        ),
       ),
     );
   }
@@ -143,7 +141,11 @@ abstract class FilterPageState<T, St extends FilterPage<T>> extends State<St> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          if (header != null) CustomTile(title: Text(header, style: textStyle), contentPadding: EdgeInsets.zero),
+          if (header != null)
+            CustomTile(
+              title: Text(header, style: textStyle),
+              contentPadding: EdgeInsets.zero,
+            ),
           Wrap(spacing: 8, runSpacing: 3, crossAxisAlignment: WrapCrossAlignment.center, children: children),
         ],
       ),
@@ -157,7 +159,10 @@ abstract class FilterPageState<T, St extends FilterPage<T>> extends State<St> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          CustomTile(title: Text(header, style: textStyle), contentPadding: EdgeInsets.zero),
+          CustomTile(
+            title: Text(header, style: textStyle),
+            contentPadding: EdgeInsets.zero,
+          ),
           Wrap(spacing: 8, crossAxisAlignment: WrapCrossAlignment.center, children: children),
         ],
       ),
@@ -188,15 +193,14 @@ abstract class FilterPageState<T, St extends FilterPage<T>> extends State<St> {
         splashColor: Colors.transparent,
         highlightColor: Colors.transparent,
       ),
-      items:
-          items.entries
-              .map(
-                (e) => DropdownMenuItem(
-                  value: e.key,
-                  child: Text(e.value, style: textStyle, textScaler: const TextScaler.linear(0.9)),
-                ),
-              )
-              .toList(),
+      items: items.entries
+          .map(
+            (e) => DropdownMenuItem(
+              value: e.key,
+              child: Text(e.value, style: textStyle, textScaler: const TextScaler.linear(0.9)),
+            ),
+          )
+          .toList(),
       onChanged: onSortAttr,
     );
   }
@@ -244,19 +248,18 @@ abstract class FilterPageState<T, St extends FilterPage<T>> extends State<St> {
                     shrinkWrap: true,
                     childAspectRatio: 1.2,
                     physics: const NeverScrollableScrollPhysics(),
-                    children:
-                        shownClasses.map((className) {
-                          final selected = data.options.contains(className);
-                          return db.getIconImage(
-                            className.icon(selected ? 5 : 1),
-                            aspectRatio: 1,
-                            onTap: () {
-                              data.toggle(className);
-                              update();
-                              onChanged?.call();
-                            },
-                          );
-                        }).toList(),
+                    children: shownClasses.map((className) {
+                      final selected = data.options.contains(className);
+                      return db.getIconImage(
+                        className.icon(selected ? 5 : 1),
+                        aspectRatio: 1,
+                        onTap: () {
+                          data.toggle(className);
+                          update();
+                          onChanged?.call();
+                        },
+                      );
+                    }).toList(),
                   ),
                 ),
               ],

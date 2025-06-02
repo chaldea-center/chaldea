@@ -74,22 +74,22 @@ GameData _$GameDataFromJson(Map json) => GameData(
   extraMasterMission: (json['extraMasterMission'] as Map?)?.map(
     (k, e) => MapEntry(int.parse(k as String), MasterMission.fromJson(Map<String, dynamic>.from(e as Map))),
   ),
-  questGroups:
-      (json['questGroups'] as List<dynamic>?)
-          ?.map((e) => QuestGroup.fromJson(Map<String, dynamic>.from(e as Map)))
-          .toList(),
-  questPhaseDetails:
-      (json['questPhaseDetails'] as List<dynamic>?)
-          ?.map((e) => BasicQuestPhaseDetail.fromJson(Map<String, dynamic>.from(e as Map)))
-          .toList(),
+  questGroups: (json['questGroups'] as List<dynamic>?)
+      ?.map((e) => QuestGroup.fromJson(Map<String, dynamic>.from(e as Map)))
+      .toList(),
+  questPhaseDetails: (json['questPhaseDetails'] as List<dynamic>?)
+      ?.map((e) => BasicQuestPhaseDetail.fromJson(Map<String, dynamic>.from(e as Map)))
+      .toList(),
   gachas: (json['gachas'] as Map?)?.map(
     (k, e) => MapEntry(int.parse(k as String), NiceGacha.fromJson(Map<String, dynamic>.from(e as Map))),
   ),
   wiki: json['wiki'] == null ? null : WikiData.fromJson(Map<String, dynamic>.from(json['wiki'] as Map)),
-  mappingData:
-      json['mappingData'] == null ? null : MappingData.fromJson(Map<String, dynamic>.from(json['mappingData'] as Map)),
-  constData:
-      json['constData'] == null ? null : ConstGameData.fromJson(Map<String, dynamic>.from(json['constData'] as Map)),
+  mappingData: json['mappingData'] == null
+      ? null
+      : MappingData.fromJson(Map<String, dynamic>.from(json['mappingData'] as Map)),
+  constData: json['constData'] == null
+      ? null
+      : ConstGameData.fromJson(Map<String, dynamic>.from(json['constData'] as Map)),
   dropData: json['dropData'] == null ? null : DropData.fromJson(Map<String, dynamic>.from(json['dropData'] as Map)),
   addData: json['addData'] == null ? null : GameDataAdd.fromJson(Map<String, dynamic>.from(json['addData'] as Map)),
   spoilerRegion: _$JsonConverterFromJson<String, Region>(json['spoilerRegion'], const RegionConverter().fromJson),
@@ -224,6 +224,7 @@ GameTimerData _$GameTimerDataFromJson(Map json) => GameTimerData(
   items:
       (json['items'] as List<dynamic>?)?.map((e) => Item.fromJson(Map<String, dynamic>.from(e as Map))).toList() ??
       const [],
-  constants:
-      json['constants'] == null ? null : GameConstants.fromJson(Map<String, dynamic>.from(json['constants'] as Map)),
+  constants: json['constants'] == null
+      ? null
+      : GameConstants.fromJson(Map<String, dynamic>.from(json['constants'] as Map)),
 );

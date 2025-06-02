@@ -113,49 +113,45 @@ class _EventMissionsPageState extends State<EventMissionsPage> {
 
     return SimpleAccordion(
       key: Key('event_mission_${mission.id}'),
-      headerBuilder:
-          (context, _) => ListTile(
-            leading: Text(mission.dispNo.toString(), textAlign: TextAlign.center),
-            title:
-                clearCond != null
-                    ? CondTargetNumDescriptor(
-                      condType: clearCond.condType,
-                      targetNum: clearCond.targetNum,
-                      targetIds: clearCond.targetIds,
-                      details: clearCond.details,
-                      missions: missions,
-                      eventId: widget.event.id,
-                      textScaleFactor: 0.8,
-                      unknownMsg: mission.name,
-                    )
-                    : Text(mission.name, textScaler: const TextScaler.linear(0.8)),
-            contentPadding: const EdgeInsetsDirectional.only(start: 16),
-            minLeadingWidth: 32,
-            trailing:
-                customMission == null
-                    ? null
-                    : Checkbox(
-                      visualDensity: VisualDensity.compact,
-                      value: selected.contains(mission),
-                      onChanged: (v) {
-                        selected.toggle(mission);
-                        setState(() {});
-                      },
-                    ),
-            subtitle:
-                userProgress == null
-                    ? null
-                    : Text(
-                      '${userProgress.progresses.map((e) => '${e.progress ?? "?"}/${e.targetNum}').join(' ')} ${userProgress.progressType.name}',
-                      style: TextStyle(
-                        color:
-                            userProgress.progressType.isClearOrAchieve ||
-                                    userProgress.progresses.any((e) => (e.progress ?? -1) > e.targetNum)
-                                ? null
-                                : Theme.of(context).colorScheme.primary,
-                      ),
-                    ),
-          ),
+      headerBuilder: (context, _) => ListTile(
+        leading: Text(mission.dispNo.toString(), textAlign: TextAlign.center),
+        title: clearCond != null
+            ? CondTargetNumDescriptor(
+                condType: clearCond.condType,
+                targetNum: clearCond.targetNum,
+                targetIds: clearCond.targetIds,
+                details: clearCond.details,
+                missions: missions,
+                eventId: widget.event.id,
+                textScaleFactor: 0.8,
+                unknownMsg: mission.name,
+              )
+            : Text(mission.name, textScaler: const TextScaler.linear(0.8)),
+        contentPadding: const EdgeInsetsDirectional.only(start: 16),
+        minLeadingWidth: 32,
+        trailing: customMission == null
+            ? null
+            : Checkbox(
+                visualDensity: VisualDensity.compact,
+                value: selected.contains(mission),
+                onChanged: (v) {
+                  selected.toggle(mission);
+                  setState(() {});
+                },
+              ),
+        subtitle: userProgress == null
+            ? null
+            : Text(
+                '${userProgress.progresses.map((e) => '${e.progress ?? "?"}/${e.targetNum}').join(' ')} ${userProgress.progressType.name}',
+                style: TextStyle(
+                  color:
+                      userProgress.progressType.isClearOrAchieve ||
+                          userProgress.progresses.any((e) => (e.progress ?? -1) > e.targetNum)
+                      ? null
+                      : Theme.of(context).colorScheme.primary,
+                ),
+              ),
+      ),
       contentBuilder: (context) {
         Widget child = MissionCondsDescriptor(mission: mission, missions: missions, eventId: widget.event.id);
         if (clearCond != null) {

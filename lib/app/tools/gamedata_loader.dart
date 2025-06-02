@@ -280,8 +280,9 @@ class GameDataLoader {
     if (db.settings.spoilerRegion != Region.jp) {
       _gameJson['spoilerRegion'] = const RegionConverter().toJson(db.settings.spoilerRegion);
     }
-    _gameJson['removeOldDataRegion'] =
-        removeOldDataRegion == null ? null : const RegionConverter().toJson(removeOldDataRegion);
+    _gameJson['removeOldDataRegion'] = removeOldDataRegion == null
+        ? null
+        : const RegionConverter().toJson(removeOldDataRegion);
     tmp.gameJson = _gameJson;
     GameData _gamedata = GameData.fromJson(_gameJson);
     await _fixGameData(_gamedata);

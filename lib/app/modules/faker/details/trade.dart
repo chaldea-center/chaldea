@@ -81,7 +81,14 @@ class _UserEventTradePageState extends State<UserEventTradePage> with SingleTick
             ),
         ],
         bottom: FixedHeight.tabBar(
-          TabBar(controller: tabController, tabs: [Tab(text: 'Trades'), Tab(text: 'Results'), Tab(text: 'Pickups')]),
+          TabBar(
+            controller: tabController,
+            tabs: [
+              Tab(text: 'Trades'),
+              Tab(text: 'Results'),
+              Tab(text: 'Pickups'),
+            ],
+          ),
         ),
       ),
       body: TabBarView(

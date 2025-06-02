@@ -168,13 +168,12 @@ class _ScriptReaderPageState extends State<ScriptReaderPage> {
             onTap: () {
               FilterPage.show(
                 context: context,
-                builder:
-                    (context) => ScriptReaderFilterPage(
-                      filterData: db.settings.filters.scriptReaderFilterData,
-                      onChanged: (v) {
-                        if (mounted) setState(() {});
-                      },
-                    ),
+                builder: (context) => ScriptReaderFilterPage(
+                  filterData: db.settings.filters.scriptReaderFilterData,
+                  onChanged: (v) {
+                    if (mounted) setState(() {});
+                  },
+                ),
               );
             },
           ),
@@ -230,12 +229,17 @@ class _ScriptReaderPageState extends State<ScriptReaderPage> {
     return CustomTable(
       children: [
         CustomTableRow(
-          children: [TableCellData(text: 'ID', isHeader: true), TableCellData(text: widget.script.scriptId, flex: 3)],
+          children: [
+            TableCellData(text: 'ID', isHeader: true),
+            TableCellData(text: widget.script.scriptId, flex: 3),
+          ],
         ),
         CustomTableRow.fromTexts(texts: [S.current.quest], isHeader: true),
         if (questSpans.isEmpty) CustomTableRow.fromTexts(texts: const ['-']),
         if (questSpans.isNotEmpty)
-          CustomTableRow(children: [TableCellData(child: Text.rich(TextSpan(children: questSpans)))]),
+          CustomTableRow(
+            children: [TableCellData(child: Text.rich(TextSpan(children: questSpans)))],
+          ),
         CustomTableRow.fromChildren(children: [navButtons]),
       ],
     );
@@ -244,7 +248,11 @@ class _ScriptReaderPageState extends State<ScriptReaderPage> {
   Widget get navButtons {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
-      children: [Expanded(child: Center(child: prevButton)), homeButton, Expanded(child: Center(child: nextButton))],
+      children: [
+        Expanded(child: Center(child: prevButton)),
+        homeButton,
+        Expanded(child: Center(child: nextButton)),
+      ],
     );
   }
 
@@ -282,15 +290,15 @@ class _ScriptReaderPageState extends State<ScriptReaderPage> {
           prevScript == null
               ? const TextSpan(text: '     -     ', style: kMonoStyle)
               : SharedBuilder.textButtonSpan(
-                context: context,
-                text: prevScript!,
-                onTap: () {
-                  router.push(
-                    url: Routes.scriptI(prevScript!),
-                    child: ScriptIdLoadingPage(scriptId: prevScript!, region: data.state.region),
-                  );
-                },
-              ),
+                  context: context,
+                  text: prevScript!,
+                  onTap: () {
+                    router.push(
+                      url: Routes.scriptI(prevScript!),
+                      child: ScriptIdLoadingPage(scriptId: prevScript!, region: data.state.region),
+                    );
+                  },
+                ),
         ],
       ),
     );
@@ -303,15 +311,15 @@ class _ScriptReaderPageState extends State<ScriptReaderPage> {
           nextScript == null
               ? const TextSpan(text: '     -     ', style: kMonoStyle)
               : SharedBuilder.textButtonSpan(
-                context: context,
-                text: nextScript!,
-                onTap: () {
-                  router.push(
-                    url: Routes.scriptI(nextScript!),
-                    child: ScriptIdLoadingPage(scriptId: nextScript!, region: data.state.region),
-                  );
-                },
-              ),
+                  context: context,
+                  text: nextScript!,
+                  onTap: () {
+                    router.push(
+                      url: Routes.scriptI(nextScript!),
+                      child: ScriptIdLoadingPage(scriptId: nextScript!, region: data.state.region),
+                    );
+                  },
+                ),
           CenterWidgetSpan(child: Icon(DirectionalIcons.keyboard_arrow_forward(context), size: 20)),
         ],
       ),

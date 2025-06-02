@@ -21,13 +21,23 @@ class CharaDetail extends StatelessWidget {
         CustomTableRow(
           children: [
             TableCellData(
-              child: Text(lName.l, style: const TextStyle(fontWeight: FontWeight.bold), textAlign: TextAlign.center),
+              child: Text(
+                lName.l,
+                style: const TextStyle(fontWeight: FontWeight.bold),
+                textAlign: TextAlign.center,
+              ),
               isHeader: true,
             ),
           ],
         ),
-        if (!Transl.isJP) CustomTableRow(children: [TableCellData(text: lName.jp, textAlign: TextAlign.center)]),
-        if (!Transl.isEN) CustomTableRow(children: [TableCellData(text: lName.na, textAlign: TextAlign.center)]),
+        if (!Transl.isJP)
+          CustomTableRow(
+            children: [TableCellData(text: lName.jp, textAlign: TextAlign.center)],
+          ),
+        if (!Transl.isEN)
+          CustomTableRow(
+            children: [TableCellData(text: lName.na, textAlign: TextAlign.center)],
+          ),
       ],
     );
     children.add(table);

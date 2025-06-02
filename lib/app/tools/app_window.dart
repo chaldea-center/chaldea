@@ -171,36 +171,35 @@ class AppWindowUtil {
 
     final close = await showDialog(
       context: ctx,
-      builder:
-          (context) => AlertDialog(
-            content: Text(S.current.upload_and_close_app_alert),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context, false);
-                },
-                child: Text(S.current.cancel),
-              ),
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context, true);
-                },
-                child: Text(S.current.general_close),
-              ),
-              TextButton(
-                onPressed: () async {
-                  bool success;
-                  if (kDebugMode) {
-                    success = true;
-                  } else {
-                    success = await ChaldeaServerBackup().backup();
-                  }
-                  if (success && context.mounted) Navigator.pop(context, true);
-                },
-                child: Text(S.current.upload_and_close_app),
-              ),
-            ],
+      builder: (context) => AlertDialog(
+        content: Text(S.current.upload_and_close_app_alert),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context, false);
+            },
+            child: Text(S.current.cancel),
           ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context, true);
+            },
+            child: Text(S.current.general_close),
+          ),
+          TextButton(
+            onPressed: () async {
+              bool success;
+              if (kDebugMode) {
+                success = true;
+              } else {
+                success = await ChaldeaServerBackup().backup();
+              }
+              if (success && context.mounted) Navigator.pop(context, true);
+            },
+            child: Text(S.current.upload_and_close_app),
+          ),
+        ],
+      ),
     );
     return close == true;
   }

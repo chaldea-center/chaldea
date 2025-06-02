@@ -137,12 +137,11 @@ class _QuestEfficiencyTabState extends State<QuestEfficiencyTab> {
                           ),
                         ],
                       ),
-                      onTap:
-                          quest == null
-                              ? null
-                              : () {
-                                value.value = !value.value;
-                              },
+                      onTap: quest == null
+                          ? null
+                          : () {
+                              value.value = !value.value;
+                            },
                     ),
                     if (value.value && quest != null) QuestCard(quest: quest),
                   ],
@@ -167,7 +166,9 @@ class _QuestEfficiencyTabState extends State<QuestEfficiencyTab> {
           ),
         ),
         kDefaultDivider,
-        Expanded(child: ListView(controller: _scrollController, children: children)),
+        Expanded(
+          child: ListView(controller: _scrollController, children: children),
+        ),
         kDefaultDivider,
         SafeArea(child: _buildButtonBar()),
       ],

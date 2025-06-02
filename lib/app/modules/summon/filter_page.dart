@@ -47,23 +47,23 @@ class _CmdCodeFilterPageState extends FilterPageState<SummonFilterData, SummonFi
           ),
           widget.isRawGacha
               ? FilterGroup<GachaType>(
-                title: Text(S.current.filter_category),
-                options: const [GachaType.freeGacha, GachaType.payGacha, GachaType.chargeStone],
-                values: filterData.gachaType,
-                optionBuilder: (v) => Text(v.shownName),
-                onFilterChanged: (value, _) {
-                  update();
-                },
-              )
+                  title: Text(S.current.filter_category),
+                  options: const [GachaType.freeGacha, GachaType.payGacha, GachaType.chargeStone],
+                  values: filterData.gachaType,
+                  optionBuilder: (v) => Text(v.shownName),
+                  onFilterChanged: (value, _) {
+                    update();
+                  },
+                )
               : FilterGroup<SummonType>(
-                title: Text(S.current.filter_category),
-                options: List.of(SummonType.values),
-                values: filterData.category,
-                optionBuilder: (v) => Text(Transl.enums(v, (enums) => enums.summonType).l),
-                onFilterChanged: (value, _) {
-                  update();
-                },
-              ),
+                  title: Text(S.current.filter_category),
+                  options: List.of(SummonType.values),
+                  values: filterData.category,
+                  optionBuilder: (v) => Text(Transl.enums(v, (enums) => enums.summonType).l),
+                  onFilterChanged: (value, _) {
+                    update();
+                  },
+                ),
           FilterGroup<bool>(
             title: Text('${S.current.sort_order} (${S.current.time})'),
             options: const [false, true],

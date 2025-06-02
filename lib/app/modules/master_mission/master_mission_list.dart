@@ -64,23 +64,22 @@ class _MasterMissionListPageState extends State<MasterMissionListPage> {
     final curWeekly = allMissions.firstWhereOrNull(
       (mm) => mm.type == MissionType.weekly && mm.startedAt <= now && mm.endedAt > now,
     );
-    final missions =
-        allMissions.where((mission) {
-          if (selected.contains(mission.id)) return true;
-          if (!showOutdated) {
-            if (mission.endedAt < now) return false;
-            if (curWeekly != null &&
-                mission.type == MissionType.weekly &&
-                mission.startedAt > kNeverClosedTimestamp &&
-                mission.id < curWeekly.id) {
-              // skipped, won't use
-              return false;
-            }
-            // legacy daily mm didn't update end time
-            if (mission.type == MissionType.daily && mission is! MasterMission) return false;
-          }
-          return typeOptions.matchOne(_allMissionTypes.contains(mission.type) ? mission.type : null);
-        }).toList();
+    final missions = allMissions.where((mission) {
+      if (selected.contains(mission.id)) return true;
+      if (!showOutdated) {
+        if (mission.endedAt < now) return false;
+        if (curWeekly != null &&
+            mission.type == MissionType.weekly &&
+            mission.startedAt > kNeverClosedTimestamp &&
+            mission.id < curWeekly.id) {
+          // skipped, won't use
+          return false;
+        }
+        // legacy daily mm didn't update end time
+        if (mission.type == MissionType.daily && mission is! MasterMission) return false;
+      }
+      return typeOptions.matchOne(_allMissionTypes.contains(mission.type) ? mission.type : null);
+    }).toList();
     missions.sort((a, b) {
       if (a.startedAt == b.startedAt) return a.id.compareTo(b.id);
       return a.startedAt.compareTo(b.startedAt);
@@ -93,13 +92,12 @@ class _MasterMissionListPageState extends State<MasterMissionListPage> {
             value: _region,
             items: [for (final region in Region.values) DropdownMenuItem(value: region, child: Text(region.localName))],
             icon: Icon(Icons.arrow_drop_down, color: SharedBuilder.appBarForeground(context)),
-            selectedItemBuilder:
-                (context) => [
-                  for (final region in Region.values)
-                    DropdownMenuItem(
-                      child: Text(region.localName, style: TextStyle(color: SharedBuilder.appBarForeground(context))),
-                    ),
-                ],
+            selectedItemBuilder: (context) => [
+              for (final region in Region.values)
+                DropdownMenuItem(
+                  child: Text(region.localName, style: TextStyle(color: SharedBuilder.appBarForeground(context))),
+                ),
+            ],
             onChanged: (v) {
               setState(() {
                 if (v != null) {
@@ -130,25 +128,24 @@ class _MasterMissionListPageState extends State<MasterMissionListPage> {
       body: Column(
         children: [
           Expanded(
-            child:
-                errorMsg != null
-                    ? Center(
-                      child: RefreshButton(
-                        text: errorMsg,
-                        onPressed: () {
-                          _resolveMissions(_region, force: true);
-                        },
-                      ),
-                    )
-                    : allMissions.isEmpty
-                    ? const Center(child: CircularProgressIndicator())
-                    : RefreshIndicator(
-                      child: ListView.builder(
-                        itemBuilder: (context, index) => _oneMasterMission(missions[index]),
-                        itemCount: missions.length,
-                      ),
-                      onRefresh: () => _resolveMissions(_region, force: true),
+            child: errorMsg != null
+                ? Center(
+                    child: RefreshButton(
+                      text: errorMsg,
+                      onPressed: () {
+                        _resolveMissions(_region, force: true);
+                      },
                     ),
+                  )
+                : allMissions.isEmpty
+                ? const Center(child: CircularProgressIndicator())
+                : RefreshIndicator(
+                    child: ListView.builder(
+                      itemBuilder: (context, index) => _oneMasterMission(missions[index]),
+                      itemCount: missions.length,
+                    ),
+                    onRefresh: () => _resolveMissions(_region, force: true),
+                  ),
           ),
           SafeArea(child: buttonBar(missions)),
         ],

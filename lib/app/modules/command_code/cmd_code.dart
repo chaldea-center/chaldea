@@ -67,12 +67,11 @@ class _CmdCodeDetailPageState extends State<CmdCodeDetailPage> {
               db.notifyUserdata();
               EasyLoading.showToast(status.statusText);
             },
-            icon:
-                status.status == CmdCodeStatus.owned
-                    ? const Icon(Icons.favorite, color: Colors.redAccent)
-                    : status.status == CmdCodeStatus.met
-                    ? const Icon(Icons.favorite)
-                    : const Icon(Icons.favorite_outline),
+            icon: status.status == CmdCodeStatus.owned
+                ? const Icon(Icons.favorite, color: Colors.redAccent)
+                : status.status == CmdCodeStatus.met
+                ? const Icon(Icons.favorite)
+                : const Icon(Icons.favorite_outline),
             tooltip: status.statusText,
           ),
           _popupButton,
@@ -80,7 +79,9 @@ class _CmdCodeDetailPageState extends State<CmdCodeDetailPage> {
       ),
       body: Column(
         children: <Widget>[
-          Expanded(child: SingleChildScrollView(child: CmdCodeDetailBasePage(cc: cc, showExtra: true))),
+          Expanded(
+            child: SingleChildScrollView(child: CmdCodeDetailBasePage(cc: cc, showExtra: true)),
+          ),
           if (status.status == CmdCodeStatus.owned)
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -187,23 +188,28 @@ class CmdCodeDetailBasePage extends StatelessWidget {
         CustomTableRow(
           children: [
             TableCellData(
-              child:
-                  enableLink
-                      ? TextButton(
-                        onPressed: () {
-                          cc.routeTo();
-                        },
-                        style: kTextButtonDenseStyle,
-                        child: name,
-                      )
-                      : name,
+              child: enableLink
+                  ? TextButton(
+                      onPressed: () {
+                        cc.routeTo();
+                      },
+                      style: kTextButtonDenseStyle,
+                      child: name,
+                    )
+                  : name,
               isHeader: true,
               padding: enableLink ? EdgeInsets.zero : const EdgeInsets.all(4),
             ),
           ],
         ),
-        if (!Transl.isJP) CustomTableRow(children: [TableCellData(text: cc.lName.l, textAlign: TextAlign.center)]),
-        if (!Transl.isEN) CustomTableRow(children: [TableCellData(text: cc.lName.na, textAlign: TextAlign.center)]),
+        if (!Transl.isJP)
+          CustomTableRow(
+            children: [TableCellData(text: cc.lName.l, textAlign: TextAlign.center)],
+          ),
+        if (!Transl.isEN)
+          CustomTableRow(
+            children: [TableCellData(text: cc.lName.na, textAlign: TextAlign.center)],
+          ),
         CustomTableRow(
           children: [
             TableCellData(

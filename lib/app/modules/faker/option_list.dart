@@ -27,47 +27,45 @@ class _BattleOptionListPageState extends State<BattleOptionListPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Configs'),
-        actions:
-            canEdit
-                ? [
-                  IconButton(
-                    onPressed: () {
-                      data.battleOptions.add(AutoBattleOptions());
-                      data.curBattleOptionIndex = data.battleOptions.length - 1;
-                      setState(() {});
-                    },
-                    icon: const Icon(Icons.add),
-                    tooltip: S.current.add,
-                  ),
-                  IconButton(
-                    onPressed: () {
-                      setState(() {
-                        sorting = !sorting;
-                      });
-                    },
-                    icon: Icon(sorting ? Icons.done : Icons.sort),
-                    tooltip: S.current.sort_order,
-                  ),
-                ]
-                : [],
+        actions: canEdit
+            ? [
+                IconButton(
+                  onPressed: () {
+                    data.battleOptions.add(AutoBattleOptions());
+                    data.curBattleOptionIndex = data.battleOptions.length - 1;
+                    setState(() {});
+                  },
+                  icon: const Icon(Icons.add),
+                  tooltip: S.current.add,
+                ),
+                IconButton(
+                  onPressed: () {
+                    setState(() {
+                      sorting = !sorting;
+                    });
+                  },
+                  icon: Icon(sorting ? Icons.done : Icons.sort),
+                  tooltip: S.current.sort_order,
+                ),
+              ]
+            : [],
       ),
-      body:
-          sorting && canEdit
-              ? ReorderableListView(
-                children: [for (final (index, option) in data.battleOptions.indexed) buildOne(index, option)],
-                onReorder: (int oldIndex, int newIndex) {
-                  setState(() {
-                    final selectedItem = data.curBattleOption;
-                    if (oldIndex < newIndex) {
-                      newIndex -= 1;
-                    }
-                    final item = data.battleOptions.removeAt(oldIndex);
-                    data.battleOptions.insert(newIndex, item);
-                    data.curBattleOptionIndex = data.battleOptions.indexOf(selectedItem);
-                  });
-                },
-              )
-              : ListView(children: [for (final (index, option) in data.battleOptions.indexed) buildOne(index, option)]),
+      body: sorting && canEdit
+          ? ReorderableListView(
+              children: [for (final (index, option) in data.battleOptions.indexed) buildOne(index, option)],
+              onReorder: (int oldIndex, int newIndex) {
+                setState(() {
+                  final selectedItem = data.curBattleOption;
+                  if (oldIndex < newIndex) {
+                    newIndex -= 1;
+                  }
+                  final item = data.battleOptions.removeAt(oldIndex);
+                  data.battleOptions.insert(newIndex, item);
+                  data.curBattleOptionIndex = data.battleOptions.indexOf(selectedItem);
+                });
+              },
+            )
+          : ListView(children: [for (final (index, option) in data.battleOptions.indexed) buildOne(index, option)]),
     );
   }
 
@@ -89,69 +87,66 @@ class _BattleOptionListPageState extends State<BattleOptionListPage> {
       value: index,
       dense: true,
       groupValue: canEdit ? data.curBattleOptionIndex : null,
-      onChanged:
-          sorting
-              ? null
-              : (v) {
-                if (widget.onSelected != null) {
-                  widget.onSelected!((index: index, option: option));
-                  Navigator.pop(context, (index: index, option: option));
-                } else {
-                  setState(() {
-                    if (v != null) {
-                      data.curBattleOptionIndex = v;
-                    }
-                  });
-                }
-              },
+      onChanged: sorting
+          ? null
+          : (v) {
+              if (widget.onSelected != null) {
+                widget.onSelected!((index: index, option: option));
+                Navigator.pop(context, (index: index, option: option));
+              } else {
+                setState(() {
+                  if (v != null) {
+                    data.curBattleOptionIndex = v;
+                  }
+                });
+              }
+            },
       controlAffinity: ListTileControlAffinity.leading,
       title: Text('No.${index + 1} ${option.name.isEmpty ? "<no name>" : option.name}'),
       subtitle: Text(_describeQuest(option.questId, option.questPhase)),
-      secondary:
-          sorting || !canEdit
-              ? null
-              : Wrap(
-                children: [
-                  PopupMenuButton(
-                    itemBuilder:
-                        (context) => [
-                          PopupMenuItem(
-                            child: Text(S.current.rename),
-                            onTap: () {
-                              InputCancelOkDialog(
-                                title: S.current.rename,
-                                text: option.name,
-                                onSubmit: (s) {
-                                  option.name = s.trim();
-                                  if (mounted) setState(() {});
-                                },
-                              ).showDialog(this.context);
-                            },
-                          ),
-                          PopupMenuItem(
-                            child: Text(S.current.copy),
-                            onTap: () {
-                              data.battleOptions.add(AutoBattleOptions.fromJson(jsonDecode(jsonEncode(option))));
-                              if (mounted) setState(() {});
-                            },
-                          ),
-                          PopupMenuItem(
-                            child: Text(S.current.delete),
-                            onTap: () {
-                              SimpleConfirmDialog(
-                                title: Text(S.current.delete),
-                                onTapOk: () {
-                                  data.battleOptions.remove(option);
-                                  data.curBattleOptionIndex; // update index
-                                  if (mounted) setState(() {});
-                                },
-                              ).showDialog(this.context);
-                            },
-                          ),
-                        ],
-                  ),
-                ],
-              ),
+      secondary: sorting || !canEdit
+          ? null
+          : Wrap(
+              children: [
+                PopupMenuButton(
+                  itemBuilder: (context) => [
+                    PopupMenuItem(
+                      child: Text(S.current.rename),
+                      onTap: () {
+                        InputCancelOkDialog(
+                          title: S.current.rename,
+                          text: option.name,
+                          onSubmit: (s) {
+                            option.name = s.trim();
+                            if (mounted) setState(() {});
+                          },
+                        ).showDialog(this.context);
+                      },
+                    ),
+                    PopupMenuItem(
+                      child: Text(S.current.copy),
+                      onTap: () {
+                        data.battleOptions.add(AutoBattleOptions.fromJson(jsonDecode(jsonEncode(option))));
+                        if (mounted) setState(() {});
+                      },
+                    ),
+                    PopupMenuItem(
+                      child: Text(S.current.delete),
+                      onTap: () {
+                        SimpleConfirmDialog(
+                          title: Text(S.current.delete),
+                          onTapOk: () {
+                            data.battleOptions.remove(option);
+                            data.curBattleOptionIndex; // update index
+                            if (mounted) setState(() {});
+                          },
+                        ).showDialog(this.context);
+                      },
+                    ),
+                  ],
+                ),
+              ],
+            ),
     );
   }
 }

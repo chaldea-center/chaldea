@@ -347,12 +347,11 @@ class BattleRecordManager {
     //
     final records = runtime.battleData.recorder.records;
 
-    final multiDmgFuncSvts =
-        records
-            .whereType<BattleAttackRecord>()
-            .where((e) => e.card?.isTD == true && (e.card?.td?.dmgNpFuncCount ?? 0) > 1)
-            .map((e) => e.attacker.lBattleName)
-            .toSet();
+    final multiDmgFuncSvts = records
+        .whereType<BattleAttackRecord>()
+        .where((e) => e.card?.isTD == true && (e.card?.td?.dmgNpFuncCount ?? 0) > 1)
+        .map((e) => e.attacker.lBattleName)
+        .toSet();
     if (multiDmgFuncSvts.isNotEmpty) {
       reasons2.setWarning('${S.current.laplace_upload_td_multi_dmg_func_hint}: ${multiDmgFuncSvts.join(" / ")}');
     }

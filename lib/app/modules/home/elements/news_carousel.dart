@@ -134,15 +134,14 @@ class AppNewsCarousel extends StatefulWidget {
         return _dio.get(
           url,
           queryParameters: queryParameters,
-          options:
-              headers != null
-                  ? Options(
-                    headers: {
-                      if (proxy) ...{'x-cors-headers': jsonEncode(headers), 'x-cors-fresh': '1'},
-                      if (!proxy) ...headers,
-                    },
-                  )
-                  : null,
+          options: headers != null
+              ? Options(
+                  headers: {
+                    if (proxy) ...{'x-cors-headers': jsonEncode(headers), 'x-cors-fresh': '1'},
+                    if (!proxy) ...headers,
+                  },
+                )
+              : null,
         );
       }
 
@@ -215,42 +214,42 @@ class AppNewsCarousel extends StatefulWidget {
       }
 
       if (carouselSetting.enableCN) {
-        taskCN = _getUrl(
-              'https://api.biligame.com/news/list.action?gameExtensionId=45&positionId=2&pageNum=1&pageSize=6&typeId=1',
-            )
-            .then((response) async {
-              final notices = (response.data as Map)["data"] as List;
-              List<CarouselItem> items = [];
-              for (final Map notice in notices) {
-                final id = notice["id"] as int;
-                final title = notice["title"] as String;
-                if (id == 1509 || title.contains('维护')) continue;
-                final data = (await _getUrl('https://api.biligame.com/news/$id.action')).data["data"];
-                final content = data["content"] as String;
-                String? img = RegExp(r'^([\s\S]{0,16})<img src="([^"]*)"').firstMatch(content)?.group(2);
-                if (img == null) continue;
-                img = Uri.https('game.bilibili.com', '/fgo/news.html').resolve(img).toString();
-                items.add(
-                  CarouselItem(
-                    image: img,
-                    title: data['title'],
-                    link:
-                        PlatformU.isTargetMobile
+        taskCN =
+            _getUrl(
+                  'https://api.biligame.com/news/list.action?gameExtensionId=45&positionId=2&pageNum=1&pageSize=6&typeId=1',
+                )
+                .then((response) async {
+                  final notices = (response.data as Map)["data"] as List;
+                  List<CarouselItem> items = [];
+                  for (final Map notice in notices) {
+                    final id = notice["id"] as int;
+                    final title = notice["title"] as String;
+                    if (id == 1509 || title.contains('维护')) continue;
+                    final data = (await _getUrl('https://api.biligame.com/news/$id.action')).data["data"];
+                    final content = data["content"] as String;
+                    String? img = RegExp(r'^([\s\S]{0,16})<img src="([^"]*)"').firstMatch(content)?.group(2);
+                    if (img == null) continue;
+                    img = Uri.https('game.bilibili.com', '/fgo/news.html').resolve(img).toString();
+                    items.add(
+                      CarouselItem(
+                        image: img,
+                        title: data['title'],
+                        link: PlatformU.isTargetMobile
                             ? 'https://game.bilibili.com/fgo/h5/news.html#detailId=$id'
                             : 'https://game.bilibili.com/fgo/news.html#!news/1/1/$id',
-                    eventIds: _getEvents((event) => event.extra.noticeLink.cn == id.toString()),
-                    warIds: _getWars((war) => war.extra.noticeLink.cn == id.toString()),
-                    summonIds: _getSummons((summon) => summon.noticeLink.cn == id.toString()),
-                  ),
-                );
-              }
-              updated = true;
-              return items;
-            })
-            .catchError((e, s) async {
-              logger.d('parse CN notices failed', e, s);
-              return <CarouselItem>[];
-            });
+                        eventIds: _getEvents((event) => event.extra.noticeLink.cn == id.toString()),
+                        warIds: _getWars((war) => war.extra.noticeLink.cn == id.toString()),
+                        summonIds: _getSummons((summon) => summon.noticeLink.cn == id.toString()),
+                      ),
+                    );
+                  }
+                  updated = true;
+                  return items;
+                })
+                .catchError((e, s) async {
+                  logger.d('parse CN notices failed', e, s);
+                  return <CarouselItem>[];
+                });
       }
 
       if (carouselSetting.enableTW) {
@@ -275,10 +274,9 @@ class AppNewsCarousel extends StatefulWidget {
                   CarouselItem(
                     image: img,
                     title: data['title'],
-                    link:
-                        PlatformU.isTargetMobile
-                            ? 'https://www.fate-go.com.tw/h5/news-m.html#detailId=$id'
-                            : 'https://www.fate-go.com.tw/news.html#!news/1/1/$id',
+                    link: PlatformU.isTargetMobile
+                        ? 'https://www.fate-go.com.tw/h5/news-m.html#detailId=$id'
+                        : 'https://www.fate-go.com.tw/news.html#!news/1/1/$id',
                     eventIds: _getEvents((event) => event.extra.noticeLink.tw == id.toString()),
                     warIds: _getWars((war) => war.extra.noticeLink.tw == id.toString()),
                     summonIds: _getSummons((summon) => summon.noticeLink.tw == id.toString()),
@@ -525,11 +523,10 @@ class _AppNewsCarouselState extends State<AppNewsCarousel> {
                 constraints: const BoxConstraints(minWidth: 80, minHeight: 30, maxHeight: 300, maxWidth: 800),
                 child: BannerAdWidget(
                   options: AdOptions.homeCarousel,
-                  placeholder:
-                      (_) => const CachedImage(
-                        imageUrl: 'https://docs.chaldea.center/images/banner.jpg',
-                        cachedOption: CachedImageOption(fit: BoxFit.cover),
-                      ),
+                  placeholder: (_) => const CachedImage(
+                    imageUrl: 'https://docs.chaldea.center/images/banner.jpg',
+                    cachedOption: CachedImageOption(fit: BoxFit.cover),
+                  ),
                 ),
               ),
             ),
@@ -554,15 +551,17 @@ class _AppNewsCarouselState extends State<AppNewsCarousel> {
           imageUrl: img,
           aspectRatio: aspectRatio,
           cachedOption: CachedImageOption(
-            errorWidget:
-                (context, url, error) =>
-                    Container(child: kDebugMode ? Text(url) : const SizedBox(width: 80, height: 30)),
+            errorWidget: (context, url, error) =>
+                Container(child: kDebugMode ? Text(url) : const SizedBox(width: 80, height: 30)),
             fit: item.fit,
           ),
         );
       } else if (content != null && content.isNotEmpty) {
         if (item.md) {
-          child = FittedBox(fit: BoxFit.scaleDown, child: MarkdownBody(data: content));
+          child = FittedBox(
+            fit: BoxFit.scaleDown,
+            child: MarkdownBody(data: content),
+          );
         } else {
           child = AutoSizeText(
             content,
@@ -573,9 +572,15 @@ class _AppNewsCarouselState extends State<AppNewsCarousel> {
           );
         }
 
-        child = Center(child: Padding(padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 4), child: child));
+        child = Center(
+          child: Padding(padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 4), child: child),
+        );
         if (height != null && height > 0) {
-          child = SizedBox(height: height, width: height * aspectRatio, child: Card(child: child));
+          child = SizedBox(
+            height: height,
+            width: height * aspectRatio,
+            child: Card(child: child),
+          );
         }
       }
       if (child == null) continue;

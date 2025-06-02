@@ -85,10 +85,9 @@ class _SvtSkillTabState extends State<SvtSkillTab> {
     final status = db.curUser.svtStatusOf(svt.collectionNo).cur;
     List<Widget> children = [];
     children.add(SHeader(S.current.active_skill));
-    final groupedActiveSkills =
-        widget.overwriteViewData?.activeSkills.isNotEmpty == true
-            ? widget.overwriteViewData!.activeSkills
-            : svt.groupedActiveSkills;
+    final groupedActiveSkills = widget.overwriteViewData?.activeSkills.isNotEmpty == true
+        ? widget.overwriteViewData!.activeSkills
+        : svt.groupedActiveSkills;
 
     for (final skillNum in groupedActiveSkills.keys.toList()..sort()) {
       final skills = groupedActiveSkills[skillNum]!;
@@ -208,12 +207,11 @@ class _SvtSkillTabState extends State<SvtSkillTab> {
               IconButton(
                 padding: const EdgeInsets.all(2),
                 constraints: const BoxConstraints(minWidth: 48, minHeight: 24),
-                onPressed:
-                    () => showDialog(
-                      context: context,
-                      useRootNavigator: false,
-                      builder: (_) => SvtSkillTab.releaseCondition(skill),
-                    ),
+                onPressed: () => showDialog(
+                  context: context,
+                  useRootNavigator: false,
+                  builder: (_) => SvtSkillTab.releaseCondition(skill),
+                ),
                 icon: const Icon(Icons.info_outline),
                 color: Theme.of(context).hintColor,
                 tooltip: S.current.open_condition,
@@ -222,7 +220,10 @@ class _SvtSkillTabState extends State<SvtSkillTab> {
         );
         return Column(
           mainAxisSize: MainAxisSize.min,
-          children: [toggle, SkillDescriptor(skill: skill, showEnemy: !svt.isUserSvt, level: level)],
+          children: [
+            toggle,
+            SkillDescriptor(skill: skill, showEnemy: !svt.isUserSvt, level: level),
+          ],
         );
       },
     );

@@ -256,10 +256,9 @@ class _MarkdownHelpPageState extends State<MarkdownHelpPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(leading: widget.leading, title: widget.title ?? Text(S.current.help), actions: widget.actions),
-      body:
-          _resolvedData == null
-              ? const Center(child: CircularProgressIndicator())
-              : MyMarkdownWidget(data: _resolvedData, selectable: true),
+      body: _resolvedData == null
+          ? const Center(child: CircularProgressIndicator())
+          : MyMarkdownWidget(data: _resolvedData, selectable: true),
     );
   }
 }

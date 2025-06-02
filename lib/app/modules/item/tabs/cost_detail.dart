@@ -55,8 +55,9 @@ class _ItemCostSvtDetailTabState extends State<ItemCostSvtDetailTab> {
               child: Text(
                 '${S.current.item_own} ${num2str(db.curUser.items[itemId])} '
                 '${S.current.event} ${num2str(stat.statObtain[itemId])}',
-                style:
-                    matType != SvtMatCostDetailType.demands ? TextStyle(color: Theme.of(context).disabledColor) : null,
+                style: matType != SvtMatCostDetailType.demands
+                    ? TextStyle(color: Theme.of(context).disabledColor)
+                    : null,
               ),
             ),
             Expanded(child: Text('  ${S.current.demands} ${num2str(allDemand)}', textAlign: TextAlign.end)),
@@ -72,15 +73,15 @@ class _ItemCostSvtDetailTabState extends State<ItemCostSvtDetailTab> {
                   children: [
                     TextSpan(
                       text: num2str(stat.itemLeft[itemId]),
-                      style:
-                          matType == SvtMatCostDetailType.demands && (stat.itemLeft[itemId] ?? 0) < 0
-                              ? TextStyle(color: Theme.of(context).colorScheme.error)
-                              : null,
+                      style: matType == SvtMatCostDetailType.demands && (stat.itemLeft[itemId] ?? 0) < 0
+                          ? TextStyle(color: Theme.of(context).colorScheme.error)
+                          : null,
                     ),
                   ],
                 ),
-                style:
-                    matType != SvtMatCostDetailType.demands ? TextStyle(color: Theme.of(context).disabledColor) : null,
+                style: matType != SvtMatCostDetailType.demands
+                    ? TextStyle(color: Theme.of(context).disabledColor)
+                    : null,
               ),
             ),
             Expanded(
@@ -253,10 +254,9 @@ class _ItemCostSvtDetailTabState extends State<ItemCostSvtDetailTab> {
 
       final svt = db.gameData.servantsWithDup[svtNo];
       bool _planned = db.curUser.svtStatusOf(svtNo).cur.favorite;
-      final textStyle =
-          _planned && matType == SvtMatCostDetailType.full
-              ? TextStyle(color: AppTheme(context).tertiary)
-              : const TextStyle();
+      final textStyle = _planned && matType == SvtMatCostDetailType.full
+          ? TextStyle(color: AppTheme(context).tertiary)
+          : const TextStyle();
       String subtitle = '${detail.all.format()} (';
       subtitle += detail.parts.map((e) => e.format()).join('/');
       subtitle += ')';

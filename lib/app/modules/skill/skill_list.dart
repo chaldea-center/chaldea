@@ -48,17 +48,15 @@ class _SkillListPageState extends State<SkillListPage> with SearchableListState<
           IconButton(
             icon: const Icon(Icons.filter_alt),
             tooltip: S.current.filter,
-            onPressed:
-                () => FilterPage.show(
-                  context: context,
-                  builder:
-                      (context) => SkillFilter(
-                        filterData: filterData,
-                        onChanged: (_) {
-                          if (mounted) setState(() {});
-                        },
-                      ),
-                ),
+            onPressed: () => FilterPage.show(
+              context: context,
+              builder: (context) => SkillFilter(
+                filterData: filterData,
+                onChanged: (_) {
+                  if (mounted) setState(() {});
+                },
+              ),
+            ),
           ),
           searchIcon,
         ],

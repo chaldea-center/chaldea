@@ -82,8 +82,11 @@ class _UserEventMissionReceivePageState extends State<UserEventMissionReceivePag
     _mm = mm;
     giftObjectIds = mm.missions.expand((e) => e.gifts).map((e) => e.objectId).toSet().toList();
     if (mm.id == MasterMission.kExtraMasterMissionId) {
-      final clearGifts =
-          mm.missions.where((e) => isMissionClear(e.id)).expand((e) => e.gifts).map((e) => e.objectId).toSet();
+      final clearGifts = mm.missions
+          .where((e) => isMissionClear(e.id))
+          .expand((e) => e.gifts)
+          .map((e) => e.objectId)
+          .toSet();
       giftObjectIds.sortByList((e) => [clearGifts.contains(e) ? 0 : 1, e]);
       giftObjectIds.sort((a, b) {
         final r = (clearGifts.contains(a) ? 0 : 1).compareTo((clearGifts.contains(b) ? 0 : 1));
@@ -187,18 +190,17 @@ class _UserEventMissionReceivePageState extends State<UserEventMissionReceivePag
         title: title,
         subtitle: subtitle,
         value: selectedMissions.contains(mission.id),
-        onChanged:
-            isMissionClear(mission.id)
-                ? (v) {
-                  setState(() {
-                    if (v!) {
-                      selectedMissions.add(mission.id);
-                    } else {
-                      selectedMissions.remove(mission.id);
-                    }
-                  });
-                }
-                : null,
+        onChanged: isMissionClear(mission.id)
+            ? (v) {
+                setState(() {
+                  if (v!) {
+                    selectedMissions.add(mission.id);
+                  } else {
+                    selectedMissions.remove(mission.id);
+                  }
+                });
+              }
+            : null,
       );
     } else {
       int? progressNum, targetNum;
@@ -214,12 +216,10 @@ class _UserEventMissionReceivePageState extends State<UserEventMissionReceivePag
           progressNum ??= runtime.mstData.userEventMissionCondDetail[condDetailId]?.progressNum;
           targetNum = cond.targetNum;
         } else if (cond.condType == CondType.eventMissionClear) {
-          progressNum ??=
-              cond.targetIds.where((mid) {
-                final progressType = runtime.mstData.userEventMission[mid]?.missionProgressType;
-                return progressType == MissionProgressType.clear.value ||
-                    progressType == MissionProgressType.achieve.value;
-              }).length;
+          progressNum ??= cond.targetIds.where((mid) {
+            final progressType = runtime.mstData.userEventMission[mid]?.missionProgressType;
+            return progressType == MissionProgressType.clear.value || progressType == MissionProgressType.achieve.value;
+          }).length;
           targetNum = cond.targetNum;
         }
       }

@@ -43,12 +43,11 @@ class BattleSkillInfoData {
     skillScript = skill?.script;
   }
 
-  BaseSkill? get skill =>
-      rankUp == 0 || rankUps == null || rankUps!.isEmpty
-          ? _baseSkill
-          : rankUp > rankUps!.length
-          ? rankUps!.last
-          : rankUps![rankUp - 1];
+  BaseSkill? get skill => rankUp == 0 || rankUps == null || rankUps!.isEmpty
+      ? _baseSkill
+      : rankUp > rankUps!.length
+      ? rankUps!.last
+      : rankUps![rankUp - 1];
 
   set skillLv(int v) => _skillLv = v;
 

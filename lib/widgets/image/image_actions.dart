@@ -79,7 +79,9 @@ class ImageActions {
                 if (provider == null) return;
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => FullscreenImageViewer(children: [Image(image: provider!)])),
+                  MaterialPageRoute(
+                    builder: (context) => FullscreenImageViewer(children: [Image(image: provider!)]),
+                  ),
                 );
               },
             ),

@@ -189,17 +189,15 @@ BattleTeamFormation _$BattleTeamFormationFromJson(Map json) =>
         ),
         onFieldSvts: $checkedConvert(
           'onFieldSvts',
-          (v) =>
-              (v as List<dynamic>?)
-                  ?.map((e) => e == null ? null : SvtSaveData.fromJson(Map<String, dynamic>.from(e as Map)))
-                  .toList(),
+          (v) => (v as List<dynamic>?)
+              ?.map((e) => e == null ? null : SvtSaveData.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList(),
         ),
         backupSvts: $checkedConvert(
           'backupSvts',
-          (v) =>
-              (v as List<dynamic>?)
-                  ?.map((e) => e == null ? null : SvtSaveData.fromJson(Map<String, dynamic>.from(e as Map)))
-                  .toList(),
+          (v) => (v as List<dynamic>?)
+              ?.map((e) => e == null ? null : SvtSaveData.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList(),
         ),
       );
       return val;
@@ -357,10 +355,9 @@ ClassBoardStatisticsData _$ClassBoardStatisticsDataFromJson(Map json) =>
         ),
         classStatistics: $checkedConvert(
           'classStatistics',
-          (v) =>
-              (v as List<dynamic>?)
-                  ?.map((e) => ClassStatisticsInfo.fromJson(Map<String, dynamic>.from(e as Map)))
-                  .toList(),
+          (v) => (v as List<dynamic>?)
+              ?.map((e) => ClassStatisticsInfo.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList(),
         ),
       );
       return val;
@@ -613,44 +610,42 @@ const _$PreferClassBoardDataSourceEnumMap = {
 
 const _$SvtLvEnumMap = {SvtLv.maxLv: 'maxLv', SvtLv.lv90: 'lv90', SvtLv.lv100: 'lv100', SvtLv.lv120: 'lv120'};
 
-BattleReplayDelegateData _$BattleReplayDelegateDataFromJson(Map json) => $checkedCreate(
-  'BattleReplayDelegateData',
-  json,
-  ($checkedConvert) {
-    final val = BattleReplayDelegateData(
-      actWeightSelections: $checkedConvert(
-        'actWeightSelections',
-        (v) => (v as List<dynamic>?)?.map((e) => (e as num?)?.toInt()).toList(),
-      ),
-      skillActSelectSelections: $checkedConvert(
-        'skillActSelectSelections',
-        (v) => (v as List<dynamic>?)?.map((e) => (e as num?)?.toInt()).toList(),
-      ),
-      tdTypeChanges: $checkedConvert(
-        'tdTypeChanges',
-        (v) => (v as List<dynamic>?)?.map((e) => (e as num).toInt()).toList(),
-        readValue: BattleReplayDelegateData._readTdTypeChanges,
-      ),
-      ptRandomIndexes: $checkedConvert(
-        'ptRandomIndexes',
-        (v) => (v as List<dynamic>?)?.map((e) => (e as num?)?.toInt()).toList(),
-      ),
-      canActivateDecisions: $checkedConvert(
-        'canActivateDecisions',
-        (v) => (v as List<dynamic>?)?.map((e) => e as bool).toList(),
-      ),
-      damageSelections: $checkedConvert(
-        'damageSelections',
-        (v) => (v as List<dynamic>?)?.map((e) => (e as num).toInt()).toList(),
-      ),
-      replaceMemberIndexes: $checkedConvert(
-        'replaceMemberIndexes',
-        (v) => (v as List<dynamic>?)?.map((e) => (e as List<dynamic>).map((e) => (e as num).toInt()).toList()).toList(),
-      ),
-    );
-    return val;
-  },
-);
+BattleReplayDelegateData _$BattleReplayDelegateDataFromJson(Map json) =>
+    $checkedCreate('BattleReplayDelegateData', json, ($checkedConvert) {
+      final val = BattleReplayDelegateData(
+        actWeightSelections: $checkedConvert(
+          'actWeightSelections',
+          (v) => (v as List<dynamic>?)?.map((e) => (e as num?)?.toInt()).toList(),
+        ),
+        skillActSelectSelections: $checkedConvert(
+          'skillActSelectSelections',
+          (v) => (v as List<dynamic>?)?.map((e) => (e as num?)?.toInt()).toList(),
+        ),
+        tdTypeChanges: $checkedConvert(
+          'tdTypeChanges',
+          (v) => (v as List<dynamic>?)?.map((e) => (e as num).toInt()).toList(),
+          readValue: BattleReplayDelegateData._readTdTypeChanges,
+        ),
+        ptRandomIndexes: $checkedConvert(
+          'ptRandomIndexes',
+          (v) => (v as List<dynamic>?)?.map((e) => (e as num?)?.toInt()).toList(),
+        ),
+        canActivateDecisions: $checkedConvert(
+          'canActivateDecisions',
+          (v) => (v as List<dynamic>?)?.map((e) => e as bool).toList(),
+        ),
+        damageSelections: $checkedConvert(
+          'damageSelections',
+          (v) => (v as List<dynamic>?)?.map((e) => (e as num).toInt()).toList(),
+        ),
+        replaceMemberIndexes: $checkedConvert(
+          'replaceMemberIndexes',
+          (v) =>
+              (v as List<dynamic>?)?.map((e) => (e as List<dynamic>).map((e) => (e as num).toInt()).toList()).toList(),
+        ),
+      );
+      return val;
+    });
 
 Map<String, dynamic> _$BattleReplayDelegateDataToJson(BattleReplayDelegateData instance) => <String, dynamic>{
   'actWeightSelections': instance.actWeightSelections,
@@ -692,11 +687,9 @@ BattleRecordData _$BattleRecordDataFromJson(Map json) => $checkedCreate('BattleR
   $checkedConvert('skill', (v) => val.skill = (v as num?)?.toInt());
   $checkedConvert(
     'attacks',
-    (v) =>
-        val.attacks =
-            (v as List<dynamic>?)
-                ?.map((e) => BattleAttackRecordData.fromJson(Map<String, dynamic>.from(e as Map)))
-                .toList(),
+    (v) => val.attacks = (v as List<dynamic>?)
+        ?.map((e) => BattleAttackRecordData.fromJson(Map<String, dynamic>.from(e as Map)))
+        .toList(),
   );
   return val;
 });

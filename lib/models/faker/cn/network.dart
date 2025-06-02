@@ -55,12 +55,11 @@ class NetworkManagerCN extends NetworkManagerBase<FRequestCN, AutoLoginDataCN> {
     headers[HttpHeaders.acceptHeader] = '*/*';
     headers[HttpHeaders.acceptEncodingHeader] = 'gzip, deflate';
     // bili-sdk(etc): Mozilla/5.0 BSGameSDK
-    headers[HttpHeaders.userAgentHeader] =
-        user.userAgent.isEmpty
-            ? (user.isAndroidDevice
-                ? "UnityPlayer/$unityVersion (UnityWebRequest/1.0, libcurl/8.4.0-DEV)"
-                : "fatego/20 CFNetwork/1327.0.4 Darwin/21.2.0")
-            : user.userAgent;
+    headers[HttpHeaders.userAgentHeader] = user.userAgent.isEmpty
+        ? (user.isAndroidDevice
+              ? "UnityPlayer/$unityVersion (UnityWebRequest/1.0, libcurl/8.4.0-DEV)"
+              : "fatego/20 CFNetwork/1327.0.4 Darwin/21.2.0")
+        : user.userAgent;
     updateCookies(headers);
     headers['X-Unity-Version'] = unityVersion;
 
@@ -72,15 +71,14 @@ class NetworkManagerCN extends NetworkManagerBase<FRequestCN, AutoLoginDataCN> {
     buffer.writeln(form.data);
     print(buffer.toString());
     request.params = form.map;
-    final lastRequestOptions =
-        user.lastRequestOptions = RequestOptionsSaveData(
-          createdAt: getNowTimestamp(),
-          path: request.path,
-          key: request.key,
-          url: uri.toString(),
-          formData: form.data,
-          headers: headers.deepCopy(),
-        );
+    final lastRequestOptions = user.lastRequestOptions = RequestOptionsSaveData(
+      createdAt: getNowTimestamp(),
+      path: request.path,
+      key: request.key,
+      url: uri.toString(),
+      formData: form.data,
+      headers: headers.deepCopy(),
+    );
     notifyListeners();
 
     if (request.sendDelay > Duration.zero) {

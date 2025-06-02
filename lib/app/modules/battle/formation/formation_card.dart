@@ -119,8 +119,9 @@ class FormationCard extends StatelessWidget {
       );
     }
 
-    final bonds =
-        svtCollection == null ? null : svt?.getPastNextBonds(svtCollection.friendshipRank, svtCollection.friendship);
+    final bonds = svtCollection == null
+        ? null
+        : svt?.getPastNextBonds(svtCollection.friendshipRank, svtCollection.friendship);
 
     Widget child = Column(
       children: [
@@ -216,10 +217,9 @@ class FormationCard extends StatelessWidget {
                   enabled ? icon : null,
                   aspectRatio: 1,
                   width: 56,
-                  onTap:
-                      enabled
-                          ? () => router.push(url: Routes.mysticCodeI(formation.mysticCode.mysticCodeId ?? 0))
-                          : null,
+                  onTap: enabled
+                      ? () => router.push(url: Routes.mysticCodeI(formation.mysticCode.mysticCodeId ?? 0))
+                      : null,
                 ),
               ),
           ],

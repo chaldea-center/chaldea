@@ -27,7 +27,10 @@ class TailoredExecutionConfirm extends StatelessWidget {
             padding: const EdgeInsets.all(4.0),
             child: Text(description, textScaler: const TextScaler.linear(0.85)),
           ),
-          Padding(padding: const EdgeInsets.all(4.0), child: Text(details, textScaler: const TextScaler.linear(0.85))),
+          Padding(
+            padding: const EdgeInsets.all(4.0),
+            child: Text(details, textScaler: const TextScaler.linear(0.85)),
+          ),
           Padding(padding: const EdgeInsets.all(4.0), child: Text('${S.current.battle_should_activate}?')),
         ]),
       ),

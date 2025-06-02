@@ -194,7 +194,10 @@ class _SupportServantPageState extends State<SupportServantPage> {
           title: Text(ce.equip.lName.l),
           subtitle: Text('Lv.${ce.lv} ${ce.limitCount == 4 ? S.current.max_limit_break : ""}'),
           onTap: () {
-            router.push(url: ce.equip.route, child: CraftDetailPage(ce: ce.equip));
+            router.push(
+              url: ce.equip.route,
+              child: CraftDetailPage(ce: ce.equip),
+            );
           },
         ),
       );
@@ -253,7 +256,10 @@ class SupportServantTile extends StatelessWidget {
           for (final ce in svt.equips) ...[
             CenterWidgetSpan(child: ce.equip.iconBuilder(context: context, width: 32)),
             TextSpan(
-              children: [const TextSpan(text: ' Lv.'), _mono(ce.lv, 2)],
+              children: [
+                const TextSpan(text: ' Lv.'),
+                _mono(ce.lv, 2),
+              ],
               style: ce.limitCount == 4 ? TextStyle(color: Theme.of(context).colorScheme.error) : null,
             ),
           ],

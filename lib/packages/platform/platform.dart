@@ -23,8 +23,9 @@ class PlatformU {
 
   static final String operatingSystem = kIsWeb ? 'browser' : Platform.operatingSystem;
   static final String operatingSystemVersion = kIsWeb ? '' : Platform.operatingSystemVersion;
-  static final String resolvedExecutable =
-      kIsWeb ? throw UnimplementedError('Not for web') : Platform.resolvedExecutable;
+  static final String resolvedExecutable = kIsWeb
+      ? throw UnimplementedError('Not for web')
+      : Platform.resolvedExecutable;
 
   static bool get isTargetMobile => [TargetPlatform.android, TargetPlatform.iOS].contains(defaultTargetPlatform);
   static bool get isTargetDesktop => !isTargetMobile;

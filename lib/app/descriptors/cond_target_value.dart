@@ -102,13 +102,12 @@ class CondTargetValueDescriptor extends StatelessWidget with DescriptorBase {
           jp: null,
           cn: () => rich('在活动', MultiDescriptor.events(context, [value]), '开始前未通关', quests(context)),
           tw: () => rich('在活動', MultiDescriptor.events(context, [value]), '開始前未通關', quests(context)),
-          na:
-              () => rich(
-                'Have not cleared ',
-                quests(context),
-                ' before event start',
-                MultiDescriptor.events(context, [value]),
-              ),
+          na: () => rich(
+            'Have not cleared ',
+            quests(context),
+            ' before event start',
+            MultiDescriptor.events(context, [value]),
+          ),
           kr: null,
         );
       case CondType.questAvailable:
@@ -240,12 +239,11 @@ class CondTargetValueDescriptor extends StatelessWidget with DescriptorBase {
       case CondType.questChallengeNum:
       case CondType.questChallengeNumBelow:
       case CondType.questChallengeNumEqual:
-        final relation =
-            {
-              CondType.questChallengeNum: '≥',
-              CondType.questChallengeNumBelow: '<',
-              CondType.questChallengeNumEqual: '=',
-            }[condType]!;
+        final relation = {
+          CondType.questChallengeNum: '≥',
+          CondType.questChallengeNumBelow: '<',
+          CondType.questChallengeNumEqual: '=',
+        }[condType]!;
         return localized(
           jp: null,
           cn: () => rich('关卡挑战次数$relation$value', quests(context)),
@@ -293,12 +291,11 @@ class CondTargetValueDescriptor extends StatelessWidget with DescriptorBase {
           jp: () => rich(null, events(context), ' のイベントボイス、および少なくとも${value - 1}の他のボイスが再生されました'),
           cn: () => rich(null, events(context), ' 活动语音，且至少${value - 1}条其他语音已播放过'),
           tw: () => rich(null, events(context), ' 活動語音，且至少${value - 1}條其他語音已播放過'),
-          na:
-              () => rich(
-                'Event ',
-                events(context),
-                ' reward voice line and at least ${value - 1} other reward lines played before this one',
-              ),
+          na: () => rich(
+            'Event ',
+            events(context),
+            ' reward voice line and at least ${value - 1} other reward lines played before this one',
+          ),
           kr: null,
         );
       case CondType.playerGenderType:
@@ -338,12 +335,11 @@ class CondTargetValueDescriptor extends StatelessWidget with DescriptorBase {
       case CondType.limitCountMaxAbove:
       case CondType.limitCountMaxBelow:
       case CondType.limitCountMaxEqual:
-        final arrow =
-            {
-              CondType.limitCountMaxAbove: "≥",
-              CondType.limitCountMaxBelow: "≤",
-              CondType.limitCountMaxEqual: "=",
-            }[condType]!;
+        final arrow = {
+          CondType.limitCountMaxAbove: "≥",
+          CondType.limitCountMaxBelow: "≤",
+          CondType.limitCountMaxEqual: "=",
+        }[condType]!;
         return localized(
           jp: () => rich(null, servants(context), '最大の霊基再臨を $arrow $value段階目にする'),
           cn: () => rich(null, servants(context), '的最高灵基再临 $arrow $value'),
@@ -516,8 +512,11 @@ class CondTargetValueDescriptor extends StatelessWidget with DescriptorBase {
       case CondType.commonValueBelow:
       case CondType.commonValueEqual:
         // UserGameCommonEntity
-        final arrow =
-            {CondType.commonValueAbove: "≥", CondType.commonValueBelow: "≤", CondType.commonValueEqual: "="}[condType]!;
+        final arrow = {
+          CondType.commonValueAbove: "≥",
+          CondType.commonValueBelow: "≤",
+          CondType.commonValueEqual: "=",
+        }[condType]!;
         String? closedMessage = unknownMsg?.replaceAll("\n", "");
         return rich("CommonValue$target $arrow$value", [
           if (closedMessage != null && closedMessage.isNotEmpty)

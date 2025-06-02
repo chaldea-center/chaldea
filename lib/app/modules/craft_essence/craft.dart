@@ -69,12 +69,11 @@ class _CraftDetailPageState extends State<CraftDetailPage> {
               db.notifyUserdata();
               EasyLoading.showToast(status.statusText);
             },
-            icon:
-                status.status == CraftStatus.owned
-                    ? const Icon(Icons.favorite, color: Colors.redAccent)
-                    : status.status == CraftStatus.met
-                    ? const Icon(Icons.favorite)
-                    : const Icon(Icons.favorite_outline),
+            icon: status.status == CraftStatus.owned
+                ? const Icon(Icons.favorite, color: Colors.redAccent)
+                : status.status == CraftStatus.met
+                ? const Icon(Icons.favorite)
+                : const Icon(Icons.favorite_outline),
             tooltip: status.statusText,
           ),
           _popupButton,
@@ -82,7 +81,9 @@ class _CraftDetailPageState extends State<CraftDetailPage> {
       ),
       body: Column(
         children: <Widget>[
-          Expanded(child: SingleChildScrollView(child: CraftDetailBasePage(ce: ce, showExtra: true))),
+          Expanded(
+            child: SingleChildScrollView(child: CraftDetailBasePage(ce: ce, showExtra: true)),
+          ),
           if (status.status == CraftStatus.owned)
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -214,23 +215,28 @@ class CraftDetailBasePage extends StatelessWidget {
         CustomTableRow(
           children: [
             TableCellData(
-              child:
-                  enableLink
-                      ? TextButton(
-                        onPressed: () {
-                          ce.routeTo();
-                        },
-                        style: kTextButtonDenseStyle,
-                        child: name,
-                      )
-                      : name,
+              child: enableLink
+                  ? TextButton(
+                      onPressed: () {
+                        ce.routeTo();
+                      },
+                      style: kTextButtonDenseStyle,
+                      child: name,
+                    )
+                  : name,
               isHeader: true,
               padding: enableLink ? EdgeInsets.zero : const EdgeInsets.all(4),
             ),
           ],
         ),
-        if (!Transl.isJP) CustomTableRow(children: [TableCellData(text: ce.lName.l, textAlign: TextAlign.center)]),
-        if (!Transl.isEN) CustomTableRow(children: [TableCellData(text: ce.lName.na, textAlign: TextAlign.center)]),
+        if (!Transl.isJP)
+          CustomTableRow(
+            children: [TableCellData(text: ce.lName.l, textAlign: TextAlign.center)],
+          ),
+        if (!Transl.isEN)
+          CustomTableRow(
+            children: [TableCellData(text: ce.lName.na, textAlign: TextAlign.center)],
+          ),
         CustomTableRow(
           children: [
             TableCellData(
@@ -368,13 +374,12 @@ class CraftDetailBasePage extends StatelessWidget {
                       final released = region == Region.jp || ceRelease?.contains(ce.id) == true;
                       children.add(
                         SimpleDialogOption(
-                          onPressed:
-                              released
-                                  ? () {
-                                    Navigator.pop(context);
-                                    script.routeTo(region: region);
-                                  }
-                                  : null,
+                          onPressed: released
+                              ? () {
+                                  Navigator.pop(context);
+                                  script.routeTo(region: region);
+                                }
+                              : null,
                           child: Text(
                             region.localName,
                             style: released ? null : TextStyle(color: Theme.of(context).disabledColor),
@@ -431,13 +436,12 @@ class CraftDetailBasePage extends StatelessWidget {
                     for (var summon in summons)
                       ListTile(
                         title: Text(summon.lName.l, maxLines: 1),
-                        trailing:
-                            summon.startTime.jp == null
-                                ? null
-                                : Text(
-                                  'JP: ${summon.startTime.jp!.sec2date().toDateString()}',
-                                  style: const TextStyle(fontSize: 12),
-                                ),
+                        trailing: summon.startTime.jp == null
+                            ? null
+                            : Text(
+                                'JP: ${summon.startTime.jp!.sec2date().toDateString()}',
+                                style: const TextStyle(fontSize: 12),
+                              ),
                         dense: true,
                         visualDensity: VisualDensity.compact,
                         onTap: () {
@@ -506,8 +510,9 @@ class CraftDetailBasePage extends StatelessWidget {
   }
 
   List<LimitedSummon> getPickupSummons() {
-    List<LimitedSummon> summons =
-        db.gameData.wiki.summons.values.where((summon) => summon.hasPickupCE(ce.collectionNo)).toList();
+    List<LimitedSummon> summons = db.gameData.wiki.summons.values
+        .where((summon) => summon.hasPickupCE(ce.collectionNo))
+        .toList();
     summons.sort2((e) => e.startTime.jp ?? 0, reversed: true);
     return summons;
   }

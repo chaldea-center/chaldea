@@ -96,40 +96,32 @@ const _$ClassRelationOverwriteTypeEnumMap = {
 
 BuffScript _$BuffScriptFromJson(Map json) => BuffScript(
   checkIndvType: (json['checkIndvType'] as num?)?.toInt(),
-  CheckOpponentBuffTypes:
-      (json['CheckOpponentBuffTypes'] as List<dynamic>?)
-          ?.map((e) => const BuffTypeConverter().fromJson(e as String))
-          .toList(),
-  relationId:
-      json['relationId'] == null
-          ? null
-          : BuffRelationOverwrite.fromJson(Map<String, dynamic>.from(json['relationId'] as Map)),
-  INDIVIDUALITIE:
-      json['INDIVIDUALITIE'] == null
-          ? null
-          : NiceTrait.fromJson(Map<String, dynamic>.from(json['INDIVIDUALITIE'] as Map)),
+  CheckOpponentBuffTypes: (json['CheckOpponentBuffTypes'] as List<dynamic>?)
+      ?.map((e) => const BuffTypeConverter().fromJson(e as String))
+      .toList(),
+  relationId: json['relationId'] == null
+      ? null
+      : BuffRelationOverwrite.fromJson(Map<String, dynamic>.from(json['relationId'] as Map)),
+  INDIVIDUALITIE: json['INDIVIDUALITIE'] == null
+      ? null
+      : NiceTrait.fromJson(Map<String, dynamic>.from(json['INDIVIDUALITIE'] as Map)),
   INDIVIDUALITIE_COUNT_ABOVE: (json['INDIVIDUALITIE_COUNT_ABOVE'] as num?)?.toInt(),
-  INDIVIDUALITIE_AND:
-      (json['INDIVIDUALITIE_AND'] as List<dynamic>?)
-          ?.map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
-          .toList(),
-  INDIVIDUALITIE_OR:
-      (json['INDIVIDUALITIE_OR'] as List<dynamic>?)
-          ?.map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
-          .toList(),
-  UpBuffRateBuffIndiv:
-      (json['UpBuffRateBuffIndiv'] as List<dynamic>?)
-          ?.map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
-          .toList(),
-  TargetIndiv:
-      json['TargetIndiv'] == null ? null : NiceTrait.fromJson(Map<String, dynamic>.from(json['TargetIndiv'] as Map)),
+  INDIVIDUALITIE_AND: (json['INDIVIDUALITIE_AND'] as List<dynamic>?)
+      ?.map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
+      .toList(),
+  INDIVIDUALITIE_OR: (json['INDIVIDUALITIE_OR'] as List<dynamic>?)
+      ?.map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
+      .toList(),
+  UpBuffRateBuffIndiv: (json['UpBuffRateBuffIndiv'] as List<dynamic>?)
+      ?.map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
+      .toList(),
+  TargetIndiv: json['TargetIndiv'] == null
+      ? null
+      : NiceTrait.fromJson(Map<String, dynamic>.from(json['TargetIndiv'] as Map)),
   convert: json['convert'] == null ? null : BuffConvert.fromJson(Map<String, dynamic>.from(json['convert'] as Map)),
-  NotPierceIndividuality:
-      (json['NotPierceIndividuality'] as List<dynamic>?)
-          ?.map(
-            (e) => (e as List<dynamic>).map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map))).toList(),
-          )
-          .toList(),
+  NotPierceIndividuality: (json['NotPierceIndividuality'] as List<dynamic>?)
+      ?.map((e) => (e as List<dynamic>).map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map))).toList())
+      .toList(),
 );
 
 Map<String, dynamic> _$BuffScriptToJson(BuffScript instance) => <String, dynamic>{

@@ -38,17 +38,16 @@ class _GridGalleryState extends State<GridGallery> {
       crossCount = 4;
     }
 
-    Widget grid =
-        _editMode
-            ? Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                _getGrid(crossCount, true),
-                const Divider(indent: 16, endIndent: 16),
-                _getGrid(crossCount, false),
-              ],
-            )
-            : _getGrid(crossCount, true);
+    Widget grid = _editMode
+        ? Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _getGrid(crossCount, true),
+              const Divider(indent: 16, endIndent: 16),
+              _getGrid(crossCount, false),
+            ],
+          )
+        : _getGrid(crossCount, true);
 
     if (!db.gameData.isValid) {
       grid = GestureDetector(
@@ -67,11 +66,10 @@ class _GridGalleryState extends State<GridGallery> {
 
   Widget _getGrid(int crossCount, bool active) {
     final themeData = Theme.of(context);
-    List<GalleryItem> items =
-        GalleryItem.allItems.where((item) {
-          final v = galleries[item.name] ?? item.shownDefault;
-          return widget.isHome && active ? v : !v;
-        }).toList();
+    List<GalleryItem> items = GalleryItem.allItems.where((item) {
+      final v = galleries[item.name] ?? item.shownDefault;
+      return widget.isHome && active ? v : !v;
+    }).toList();
 
     if (widget.isHome && active) {
       items.addAll([GalleryItem.lostRoom, _editMode ? GalleryItem.done : GalleryItem.edit]);
@@ -86,7 +84,10 @@ class _GridGalleryState extends State<GridGallery> {
         child = Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            Expanded(flex: 6, child: Align(alignment: Alignment.bottomCenter, child: child)),
+            Expanded(
+              flex: 6,
+              child: Align(alignment: Alignment.bottomCenter, child: child),
+            ),
             Expanded(
               flex: 4,
               child: Align(
@@ -108,16 +109,14 @@ class _GridGalleryState extends State<GridGallery> {
       }
 
       if (_editMode && !item.persist) {
-        final editIcon =
-            active
-                ? Icon(Icons.remove_circle, color: themeData.disabledColor)
-                : Icon(
-                  Icons.add_circle,
-                  color:
-                      (Theme.of(context).useMaterial3
-                          ? Theme.of(context).colorScheme.primary
-                          : AppTheme(context).tertiary),
-                );
+        final editIcon = active
+            ? Icon(Icons.remove_circle, color: themeData.disabledColor)
+            : Icon(
+                Icons.add_circle,
+                color: (Theme.of(context).useMaterial3
+                    ? Theme.of(context).colorScheme.primary
+                    : AppTheme(context).tertiary),
+              );
         child = Stack(alignment: Alignment.topRight, children: [child, editIcon]);
       }
       return InkWell(

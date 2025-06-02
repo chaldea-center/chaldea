@@ -87,13 +87,12 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
                 targetVal.ascension = _end;
                 updateState();
               },
-              detailPageBuilder:
-                  (context) => LevelingCostPage(
-                    costList: svt.ascensionMaterials,
-                    title: S.current.ascension_up,
-                    curLv: curVal.ascension,
-                    targetLv: targetVal.ascension,
-                  ),
+              detailPageBuilder: (context) => LevelingCostPage(
+                costList: svt.ascensionMaterials,
+                title: S.current.ascension_up,
+                curLv: curVal.ascension,
+                targetLv: targetVal.ascension,
+              ),
             ),
           ],
         ),
@@ -123,13 +122,12 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
               targetVal.skills[index] = _end;
               updateState();
             },
-            detailPageBuilder:
-                (context) => LevelingCostPage(
-                  costList: svt.skillMaterials,
-                  title: '${S.current.skill} $skillNum - ${Transl.skillNames(skill.name).l}',
-                  curLv: curVal.skills[index],
-                  targetLv: targetVal.skills[index],
-                ),
+            detailPageBuilder: (context) => LevelingCostPage(
+              costList: svt.skillMaterials,
+              title: '${S.current.skill} $skillNum - ${Transl.skillNames(skill.name).l}',
+              curLv: curVal.skills[index],
+              targetLv: targetVal.skills[index],
+            ),
           ),
         );
       }
@@ -158,17 +156,15 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
               targetVal.appendSkills[index] = _end;
               updateState();
             },
-            detailPageBuilder:
-                (context) => LevelingCostPage(
-                  costList: {
-                    if (svt.icon != null)
-                      0: LvlUpMaterial(items: [ItemAmount(amount: 120, item: svt.coin!.item)], qp: 0),
-                    ...svt.appendSkillMaterials,
-                  },
-                  title: '${S.current.append_skill} ${index + 1} - ${Transl.skillNames(skill.name).l}',
-                  curLv: curVal.appendSkills[index],
-                  targetLv: targetVal.appendSkills[index],
-                ),
+            detailPageBuilder: (context) => LevelingCostPage(
+              costList: {
+                if (svt.icon != null) 0: LvlUpMaterial(items: [ItemAmount(amount: 120, item: svt.coin!.item)], qp: 0),
+                ...svt.appendSkillMaterials,
+              },
+              title: '${S.current.append_skill} ${index + 1} - ${Transl.skillNames(skill.name).l}',
+              curLv: curVal.appendSkills[index],
+              targetLv: targetVal.appendSkills[index],
+            ),
           ),
         );
       }
@@ -205,14 +201,12 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
               targetVal.costumes[costume.battleCharaId] = _end;
               updateState();
             },
-            detailPageBuilder:
-                (context) => LevelingCostPage(
-                  costList:
-                      svt.costumeMaterials[costume.battleCharaId] == null
-                          ? {}
-                          : {0: svt.costumeMaterials[costume.battleCharaId]!},
-                  title: '${S.current.costume_unlock} - ${costume.lName.l}',
-                ),
+            detailPageBuilder: (context) => LevelingCostPage(
+              costList: svt.costumeMaterials[costume.battleCharaId] == null
+                  ? {}
+                  : {0: svt.costumeMaterials[costume.battleCharaId]!},
+              title: '${S.current.costume_unlock} - ${costume.lName.l}',
+            ),
           ),
         );
       }
@@ -225,7 +219,9 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
         ListTile(
           dense: true,
           // horizontalTitleGap: 3,
-          leading: InkWell(child: Item.iconBuilder(context: context, item: svt.coin!.item, width: 33)),
+          leading: InkWell(
+            child: Item.iconBuilder(context: context, item: svt.coin!.item, width: 33),
+          ),
           title: Text(S.current.servant_coin),
           subtitle: Text('${S.current.coin_summon_num}: ${svt.coin?.summonNum}'),
           trailing: db.onUserData(
@@ -263,8 +259,8 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
           minVal: 0,
           maxVal: Maths.max(db.gameData.constData.svtGrailCost[svt.rarity]!.keys, 0),
           labelFormatter: (v) => svt.grailedLv(v).toString(),
-          trailingLabelFormatter:
-              (a, b) => '${svt.grailedLv(a)}→'
+          trailingLabelFormatter: (a, b) =>
+              '${svt.grailedLv(a)}→'
                       '${svt.grailedLv(b!)}'
                   .padLeft(7),
           onValueChanged: (_start, _end) {
@@ -273,14 +269,13 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
             targetVal.grail = _end;
             updateState();
           },
-          detailPageBuilder:
-              (context) => LevelingCostPage(
-                title: S.current.grail_up,
-                costList: svt.grailUpMaterials,
-                curLv: curVal.grail,
-                targetLv: targetVal.grail,
-                levelFormatter: (v) => svt.grailedLv(v).toString(),
-              ),
+          detailPageBuilder: (context) => LevelingCostPage(
+            title: S.current.grail_up,
+            costList: svt.grailUpMaterials,
+            curLv: curVal.grail,
+            targetLv: targetVal.grail,
+            levelFormatter: (v) => svt.grailedLv(v).toString(),
+          ),
         ),
       if (showDetail(SvtPlanDetail.noblePhantasm))
         buildPlanRow(
@@ -308,16 +303,15 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
         ),
         onChanged: (v) async {
           if (v) {
-            final prevGrandSvts =
-                db.gameData.servantsWithDup.values
-                    .where(
-                      (e) =>
-                          e.status.favorite &&
-                          e.status.grandSvt &&
-                          e.collectionNo != svt.collectionNo &&
-                          e.classId == svt.classId,
-                    )
-                    .toList();
+            final prevGrandSvts = db.gameData.servantsWithDup.values
+                .where(
+                  (e) =>
+                      e.status.favorite &&
+                      e.status.grandSvt &&
+                      e.collectionNo != svt.collectionNo &&
+                      e.classId == svt.classId,
+                )
+                .toList();
             if (prevGrandSvts.isNotEmpty) {
               final confirm = await SimpleConfirmDialog(
                 title: Text(S.current.grand_servant),
@@ -448,9 +442,8 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
             targetVal.bondLimit = targetVal.bondLimit.clamp(curVal.bondLimit, 15);
             updateState();
           },
-          detailPageBuilder:
-              (context) =>
-                  SimpleConfirmDialog(title: Text('${S.current.bond} (${S.current.current_})'), showCancel: false),
+          detailPageBuilder: (context) =>
+              SimpleConfirmDialog(title: Text('${S.current.bond} (${S.current.current_})'), showCancel: false),
         ),
     ];
     if (extraParts2.isNotEmpty) {
@@ -544,12 +537,11 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
           divisions: divisions ?? (maxVal - minVal).round(),
           value: start.toDouble(),
           label: labelFormatter(start),
-          onChanged:
-              enhanceMode
-                  ? null
-                  : (v) {
-                    onValueChanged(v.round(), -1);
-                  },
+          onChanged: enhanceMode
+              ? null
+              : (v) {
+                  onValueChanged(v.round(), -1);
+                },
         );
       } else {
         slider = RangeSlider(
@@ -570,10 +562,9 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
         contentPadding: const EdgeInsetsDirectional.only(start: 16),
         titlePadding: EdgeInsets.zero,
         leading: leading,
-        title:
-            titleWidget == null
-                ? null
-                : Padding(padding: const EdgeInsetsDirectional.only(start: 6, top: 4), child: titleWidget),
+        title: titleWidget == null
+            ? null
+            : Padding(padding: const EdgeInsetsDirectional.only(start: 6, top: 4), child: titleWidget),
         subtitle: SliderTheme(
           data: SliderThemeData(
             trackHeight: 2,
@@ -603,12 +594,11 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
             ),
           ),
           // disable at enhance mode
-          onChanged:
-              enhanceMode
-                  ? null
-                  : (v) {
-                    if (v != null) onValueChanged(v, -1);
-                  },
+          onChanged: enhanceMode
+              ? null
+              : (v) {
+                  if (v != null) onValueChanged(v, -1);
+                },
         );
       } else {
         final items = List.generate(
@@ -691,13 +681,12 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
                   InkWell(
                     onTap: () {
                       router.pushBuilder(
-                        builder:
-                            (context) => CmdCodeListPage(
-                              onSelected: (selectedCode) {
-                                status.setCmdCode(index, selectedCode.collectionNo);
-                                if (mounted) setState(() {});
-                              },
-                            ),
+                        builder: (context) => CmdCodeListPage(
+                          onSelected: (selectedCode) {
+                            status.setCmdCode(index, selectedCode.collectionNo);
+                            if (mounted) setState(() {});
+                          },
+                        ),
                         detail: false,
                       );
                     },
@@ -808,22 +797,21 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
             DropdownMenuItem(value: index, child: Text('Lv.$index')),
         ],
         hint: const Text('Lv.≠'),
-        onChanged:
-            enhanceMode
-                ? null
-                : (v) {
-                  if (v == -1) {
-                    for (int i = 0; i < skillsLeft.length; i++) {
-                      skillsLeft[i] += 1;
-                    }
-                  } else if (v != null) {
-                    skillsLeft.fillRange(0, skillsLeft.length, v);
+        onChanged: enhanceMode
+            ? null
+            : (v) {
+                if (v == -1) {
+                  for (int i = 0; i < skillsLeft.length; i++) {
+                    skillsLeft[i] += 1;
                   }
-                  curVal.favorite = true;
-                  curVal.validate(null, svt);
-                  _rightPlan.validate(curVal, svt);
-                  updateState();
-                },
+                } else if (v != null) {
+                  skillsLeft.fillRange(0, skillsLeft.length, v);
+                }
+                curVal.favorite = true;
+                curVal.validate(null, svt);
+                _rightPlan.validate(curVal, svt);
+                updateState();
+              },
       ),
     );
     buttons.add(const Text(' → '));
@@ -858,7 +846,10 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
       child: SafeArea(
         child: Align(
           alignment: Alignment.centerRight,
-          child: FittedBox(fit: BoxFit.scaleDown, child: OverflowBar(children: buttons)),
+          child: FittedBox(
+            fit: BoxFit.scaleDown,
+            child: OverflowBar(children: buttons),
+          ),
         ),
       ),
     );
@@ -901,59 +892,57 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
     showDialog(
       context: context,
       useRootNavigator: false,
-      builder:
-          (context) => ValueStatefulBuilder<bool>(
-            initValue: false,
-            builder: (context, value) {
-              Map<int, int> shownItems = Map.of(items);
-              if (value.value) {
-                for (final itemId in shownItems.keys.toList()) {
-                  shownItems.addNum(itemId, -max(0, db.curUser.items[itemId] ?? 0));
-                }
-                shownItems.removeWhere((key, value) => value <= 0);
-              }
-              return SimpleConfirmDialog(
-                title: Text(title),
-                showCancel: showCancel,
-                onTapOk: onConfirm,
-                content:
-                    shownItems.isEmpty
-                        ? const Text('Nothing')
-                        : ConstrainedBox(
-                          constraints: const BoxConstraints(maxWidth: 360),
-                          child: Wrap(
-                            spacing: 2,
-                            runSpacing: 2,
-                            children: [
-                              for (final entry in shownItems.entries)
-                                Item.iconBuilder(
-                                  context: context,
-                                  item: db.gameData.items[entry.key],
-                                  icon: Item.getIcon(entry.key),
-                                  text: entry.value.format(),
-                                  width: 48,
-                                  onTap: () {
-                                    router.pushPage(ItemDetailPage(itemId: entry.key));
-                                  },
-                                ),
-                            ],
+      builder: (context) => ValueStatefulBuilder<bool>(
+        initValue: false,
+        builder: (context, value) {
+          Map<int, int> shownItems = Map.of(items);
+          if (value.value) {
+            for (final itemId in shownItems.keys.toList()) {
+              shownItems.addNum(itemId, -max(0, db.curUser.items[itemId] ?? 0));
+            }
+            shownItems.removeWhere((key, value) => value <= 0);
+          }
+          return SimpleConfirmDialog(
+            title: Text(title),
+            showCancel: showCancel,
+            onTapOk: onConfirm,
+            content: shownItems.isEmpty
+                ? const Text('Nothing')
+                : ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 360),
+                    child: Wrap(
+                      spacing: 2,
+                      runSpacing: 2,
+                      children: [
+                        for (final entry in shownItems.entries)
+                          Item.iconBuilder(
+                            context: context,
+                            item: db.gameData.items[entry.key],
+                            icon: Item.getIcon(entry.key),
+                            text: entry.value.format(),
+                            width: 48,
+                            onTap: () {
+                              router.pushPage(ItemDetailPage(itemId: entry.key));
+                            },
                           ),
-                        ),
-                actions: [
-                  if (showSubOwned)
-                    TextButton(
-                      onPressed: () {
-                        value.value = !value.value;
-                      },
-                      child: Text(
-                        S.current.item_stat_sub_owned,
-                        style: TextStyle(color: value.value ? Theme.of(context).disabledColor : null),
-                      ),
+                      ],
                     ),
-                ],
-              );
-            },
-          ),
+                  ),
+            actions: [
+              if (showSubOwned)
+                TextButton(
+                  onPressed: () {
+                    value.value = !value.value;
+                  },
+                  child: Text(
+                    S.current.item_stat_sub_owned,
+                    style: TextStyle(color: value.value ? Theme.of(context).disabledColor : null),
+                  ),
+                ),
+            ],
+          );
+        },
+      ),
     );
   }
 }

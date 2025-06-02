@@ -76,14 +76,13 @@ class ImportItemScreenshotPageState extends State<ImportItemScreenshotPage> with
         controller: _tabController,
         children: [
           KeepAliveBuilder(
-            builder:
-                (ctx) => ScreenshotsTab(
-                  images: imageFiles,
-                  onUpload: () {
-                    EasyThrottle.throttle('item_recognizer_upload', const Duration(seconds: 5), _uploadScreenshots);
-                  },
-                  debugServerRoot: _dio.options.baseUrl,
-                ),
+            builder: (ctx) => ScreenshotsTab(
+              images: imageFiles,
+              onUpload: () {
+                EasyThrottle.throttle('item_recognizer_upload', const Duration(seconds: 5), _uploadScreenshots);
+              },
+              debugServerRoot: _dio.options.baseUrl,
+            ),
           ),
           KeepAliveBuilder(builder: (ctx) => ItemResultTab(result: result)),
           if (AppInfo.isDebugDevice) KeepAliveBuilder(builder: (ctx) => RecognizerViewerTab(type: RecognizerType.item)),

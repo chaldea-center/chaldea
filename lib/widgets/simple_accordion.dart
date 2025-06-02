@@ -62,7 +62,12 @@ class _SimpleAccordionState extends State<SimpleAccordion> {
       expandIcon = ExpandIcon(isExpanded: expanded, onPressed: widget.canTapOnHeader ? null : (_) => toggle());
     }
     Widget header = widget.headerBuilder(context, expanded);
-    header = Row(children: [Expanded(child: header), expandIcon]);
+    header = Row(
+      children: [
+        Expanded(child: header),
+        expandIcon,
+      ],
+    );
     if (widget.canTapOnHeader) {
       header = InkWell(onTap: toggle, child: header);
     }

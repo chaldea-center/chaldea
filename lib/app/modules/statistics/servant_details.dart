@@ -80,7 +80,9 @@ class _ServantDemandDetailStatState extends State<ServantDemandDetailStat> {
               child: Text.rich(
                 TextSpan(
                   children: [
-                    WidgetSpan(child: SharedBuilder.itemGrid(context: context, items: items, width: 42 * ratio)),
+                    WidgetSpan(
+                      child: SharedBuilder.itemGrid(context: context, items: items, width: 42 * ratio),
+                    ),
                   ],
                 ),
                 textScaler: const TextScaler.linear(0.8),
@@ -130,14 +132,10 @@ class _ServantDemandDetailStatState extends State<ServantDemandDetailStat> {
           options: const [SvtMatCostDetailType.consumed, SvtMatCostDetailType.demands],
           values: typeFilter,
           combined: true,
-          optionBuilder:
-              (v) => Text(
-                {
-                      SvtMatCostDetailType.consumed: S.current.consumed,
-                      SvtMatCostDetailType.demands: S.current.demands,
-                    }[v] ??
-                    v.name,
-              ),
+          optionBuilder: (v) => Text(
+            {SvtMatCostDetailType.consumed: S.current.consumed, SvtMatCostDetailType.demands: S.current.demands}[v] ??
+                v.name,
+          ),
           onFilterChanged: (v, _) {
             setState(() {});
           },

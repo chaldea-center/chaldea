@@ -63,23 +63,17 @@ class CustomTile extends StatelessWidget {
     }
 
     final TextStyle? titleStyle = _titleTextStyle(theme, tileTheme);
-    final Widget titleText =
-        titleStyle == null
-            ? title ?? const SizedBox()
-            : AnimatedDefaultTextStyle(
-              style: titleStyle,
-              duration: kThemeChangeDuration,
-              child: title ?? const SizedBox(),
-            );
+    final Widget titleText = titleStyle == null
+        ? title ?? const SizedBox()
+        : AnimatedDefaultTextStyle(style: titleStyle, duration: kThemeChangeDuration, child: title ?? const SizedBox());
 
     Widget? subtitleText;
     TextStyle? subtitleStyle;
     if (subtitle != null) {
       subtitleStyle = _subtitleTextStyle(theme, tileTheme);
-      subtitleText =
-          subtitleStyle == null
-              ? subtitle!
-              : AnimatedDefaultTextStyle(style: subtitleStyle, duration: kThemeChangeDuration, child: subtitle!);
+      subtitleText = subtitleStyle == null
+          ? subtitle!
+          : AnimatedDefaultTextStyle(style: subtitleStyle, duration: kThemeChangeDuration, child: subtitle!);
     }
 
     List<Widget> trailingIcons = [];

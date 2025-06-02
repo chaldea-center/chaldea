@@ -64,17 +64,15 @@ class EnemyListPageState extends State<EnemyListPage> with SearchableListState<B
           IconButton(
             icon: const Icon(Icons.filter_alt),
             tooltip: S.current.filter,
-            onPressed:
-                () => FilterPage.show(
-                  context: context,
-                  builder:
-                      (context) => EnemyFilterPage(
-                        filterData: filterData,
-                        onChanged: (_) {
-                          if (mounted) setState(() {});
-                        },
-                      ),
-                ),
+            onPressed: () => FilterPage.show(
+              context: context,
+              builder: (context) => EnemyFilterPage(
+                filterData: filterData,
+                onChanged: (_) {
+                  if (mounted) setState(() {});
+                },
+              ),
+            ),
           ),
           searchIcon,
         ],
@@ -92,16 +90,15 @@ class EnemyListPageState extends State<EnemyListPage> with SearchableListState<B
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
             child: LayoutBuilder(
-              builder:
-                  (context, constraints) => SharedBuilder.topSvtClassFilter(
-                    context: context,
-                    maxWidth: constraints.maxWidth,
-                    data: filterData.svtClass,
-                    showUnknown: true,
-                    onChanged: () {
-                      setState(() {});
-                    },
-                  ),
+              builder: (context, constraints) => SharedBuilder.topSvtClassFilter(
+                context: context,
+                maxWidth: constraints.maxWidth,
+                data: filterData.svtClass,
+                showUnknown: true,
+                onChanged: () {
+                  setState(() {});
+                },
+              ),
             ),
           ),
           Expanded(child: super.buildScrollable(useGrid: useGrid)),
@@ -185,7 +182,10 @@ class EnemyListPageState extends State<EnemyListPage> with SearchableListState<B
       if (enemies.isEmpty) {
         svt.routeTo(popDetails: popDetails);
       } else {
-        router.pushPage(QuestEnemySummaryPage(svt: enemies.first.svt, enemies: enemies), popDetail: popDetails);
+        router.pushPage(
+          QuestEnemySummaryPage(svt: enemies.first.svt, enemies: enemies),
+          popDetail: popDetails,
+        );
       }
       selected = svt;
     }

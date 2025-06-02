@@ -222,14 +222,13 @@ class _GithubBackupPageState extends State<GithubBackupPage> {
             title: const Text('Indent with 2 spaces'),
             subtitle: const Text('saved in json format'),
             controlAffinity: ListTileControlAffinity.trailing,
-            onChanged:
-                _enableEdit
-                    ? (v) {
-                      setState(() {
-                        config.indent = v;
-                      });
-                    }
-                    : null,
+            onChanged: _enableEdit
+                ? (v) {
+                    setState(() {
+                      config.indent = v;
+                    });
+                  }
+                : null,
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),

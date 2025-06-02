@@ -184,7 +184,10 @@ class NumberInputFormatter extends TextInputFormatter {
       return newValue;
     }
     String newText = value.format();
-    return newValue.copyWith(text: newText, selection: TextSelection.collapsed(offset: newText.length));
+    return newValue.copyWith(
+      text: newText,
+      selection: TextSelection.collapsed(offset: newText.length),
+    );
   }
 }
 

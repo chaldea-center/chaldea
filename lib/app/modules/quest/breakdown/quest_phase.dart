@@ -209,7 +209,10 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
         } else {
           rowChildren.add(
             const Expanded(
-              child: Padding(padding: EdgeInsets.all(4), child: Center(child: CircularProgressIndicator())),
+              child: Padding(
+                padding: EdgeInsets.all(4),
+                child: Center(child: CircularProgressIndicator()),
+              ),
             ),
           );
         }
@@ -232,7 +235,7 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
 
     bool noConsume =
         ((curPhase?.consumeType ?? phaseDetail?.consumeType2 ?? effPhase.consumeType) == ConsumeType.ap &&
-            (phaseDetail?.actConsume ?? effPhase.consume) == 0);
+        (phaseDetail?.actConsume ?? effPhase.consume) == 0);
     final questSelects = curPhase?.extraDetail?.questSelect;
     List<Widget> headerRows = [
       Row(
@@ -361,7 +364,10 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
         mainAxisSize: MainAxisSize.min,
         children: [
           header,
-          const Padding(padding: EdgeInsets.all(4), child: Center(child: CircularProgressIndicator())),
+          const Padding(
+            padding: EdgeInsets.all(4),
+            child: Center(child: CircularProgressIndicator()),
+          ),
         ],
       );
     }
@@ -410,16 +416,18 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
                   style ??= const TextStyle();
                   style = style.copyWith(fontWeight: FontWeight.bold);
                 }
-                return DropdownMenuItem(value: hash, child: Text(text, style: style));
+                return DropdownMenuItem(
+                  value: hash,
+                  child: Text(text, style: style),
+                );
               }),
-              onChanged:
-                  widget.battleOnly
-                      ? null
-                      : (v) {
-                        _enemyHash = v;
-                        _fetchData();
-                        setState(() {});
-                      },
+              onChanged: widget.battleOnly
+                  ? null
+                  : (v) {
+                      _enemyHash = v;
+                      _fetchData();
+                      setState(() {});
+                    },
             ),
           ),
         ),
@@ -523,8 +531,10 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
   }
 
   Widget? buildAiNpc(QuestPhase curPhase) {
-    final aiNpcs =
-        [curPhase.extraDetail?.aiNpc, ...?curPhase.extraDetail?.aiMultiNpc].whereType<QuestPhaseAiNpc>().toList();
+    final aiNpcs = [
+      curPhase.extraDetail?.aiNpc,
+      ...?curPhase.extraDetail?.aiMultiNpc,
+    ].whereType<QuestPhaseAiNpc>().toList();
     if (aiNpcs.isEmpty) return null;
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -599,11 +609,10 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
   }
 
   Widget? getOverwriteMysticCode(QuestPhase curPhase) {
-    final equips =
-        [
-          curPhase.extraDetail?.overwriteEquipSkills,
-          curPhase.extraDetail?.addEquipSkills,
-        ].whereType<OverwriteEquipSkills>().toList();
+    final equips = [
+      curPhase.extraDetail?.overwriteEquipSkills,
+      curPhase.extraDetail?.addEquipSkills,
+    ].whereType<OverwriteEquipSkills>().toList();
     if (equips.isEmpty) return null;
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 3),
@@ -1079,7 +1088,10 @@ class _QuestRestriction extends StatelessWidget {
         ),
       );
     }
-    return Scaffold(appBar: AppBar(title: Text(S.current.quest_restriction)), body: ListView(children: children));
+    return Scaffold(
+      appBar: AppBar(title: Text(S.current.quest_restriction)),
+      body: ListView(children: children),
+    );
   }
 
   List<InlineSpan> guessVal(BuildContext context, List<int> vals, RestrictionType type) {
@@ -1087,16 +1099,16 @@ class _QuestRestriction extends StatelessWidget {
       for (final val in vals)
         val > 99
             ? SharedBuilder.textButtonSpan(
-              context: context,
-              text: val.toString(),
-              onTap: () {
-                if (type == RestrictionType.alloutBattleUniqueSvt) {
-                  router.push(url: Routes.eventI(val));
-                } else {
-                  router.push(url: Routes.traitI(val));
-                }
-              },
-            )
+                context: context,
+                text: val.toString(),
+                onTap: () {
+                  if (type == RestrictionType.alloutBattleUniqueSvt) {
+                    router.push(url: Routes.eventI(val));
+                  } else {
+                    router.push(url: Routes.traitI(val));
+                  }
+                },
+              )
             : TextSpan(text: val.toString()),
     ], const TextSpan(text: ', '));
   }

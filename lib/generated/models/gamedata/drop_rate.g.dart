@@ -8,8 +8,9 @@ part of '../../../models/gamedata/drop_rate.dart';
 
 DropData _$DropDataFromJson(Map json) => DropData(
   domusVer: (json['domusVer'] as num?)?.toInt() ?? 0,
-  domusAurea:
-      json['domusAurea'] == null ? null : DropRateSheet.fromJson(Map<String, dynamic>.from(json['domusAurea'] as Map)),
+  domusAurea: json['domusAurea'] == null
+      ? null
+      : DropRateSheet.fromJson(Map<String, dynamic>.from(json['domusAurea'] as Map)),
   fixedDrops:
       (json['fixedDrops'] as Map?)?.map(
         (k, e) => MapEntry(int.parse(k as String), QuestDropData.fromJson(Map<String, dynamic>.from(e as Map))),

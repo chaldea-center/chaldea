@@ -281,33 +281,31 @@ class SkillEffect {
   static SkillEffect upTolerance = SkillEffect(
     'upTolerance',
     buffTypes: [BuffType.upTolerance],
-    validate:
-        (func) => func.buffs.first.ckOpIndv.every(
-          (trait) => ![Trait.buffPositiveEffect, Trait.buffIncreaseDamage].contains(trait.name),
-        ),
+    validate: (func) => func.buffs.first.ckOpIndv.every(
+      (trait) => ![Trait.buffPositiveEffect, Trait.buffIncreaseDamage].contains(trait.name),
+    ),
   );
   // 弱体无效
   static SkillEffect avoidStateNegative = SkillEffect(
     'avoidStateNegative',
     buffTypes: [BuffType.avoidState],
-    validate:
-        (func) => func.buffs.first.ckOpIndv.every(
-          (trait) => ![Trait.buffPositiveEffect, Trait.buffIncreaseDamage].contains(trait.name),
-        ),
+    validate: (func) => func.buffs.first.ckOpIndv.every(
+      (trait) => ![Trait.buffPositiveEffect, Trait.buffIncreaseDamage].contains(trait.name),
+    ),
   );
   // 状态付与成功率提升
   static SkillEffect upGrantstate = SkillEffect._buff('upGrantstate', BuffType.upGrantstate);
   static SkillEffect upGrantstatePositive = SkillEffect._buff(
     'upGrantstatePositive',
     BuffType.upGrantstate,
-    validate:
-        (func) => func.buffs.any((buff) => buff.ckSelfIndv.any((trait) => trait.name == Trait.buffPositiveEffect)),
+    validate: (func) =>
+        func.buffs.any((buff) => buff.ckSelfIndv.any((trait) => trait.name == Trait.buffPositiveEffect)),
   );
   static SkillEffect upGrantstateNegative = SkillEffect._buff(
     'upGrantstateNegative',
     BuffType.upGrantstate,
-    validate:
-        (func) => func.buffs.any((buff) => buff.ckSelfIndv.any((trait) => trait.name == Trait.buffNegativeEffect)),
+    validate: (func) =>
+        func.buffs.any((buff) => buff.ckSelfIndv.any((trait) => trait.name == Trait.buffNegativeEffect)),
   );
   // 被强化成功率提升
   static SkillEffect upReceivePositiveEffect = SkillEffect(

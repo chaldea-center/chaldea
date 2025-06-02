@@ -115,57 +115,43 @@ mixin SearchableListState<T, St extends StatefulWidget> on State<St> {
   Widget scrollListener({required bool useGrid, PreferredSizeWidget? appBar}) {
     return UserScrollListener(
       shouldAnimate: (userScroll) => userScroll.metrics.axis == Axis.vertical,
-      builder:
-          (context, animationController) => Scaffold(
-            appBar: appBar,
-            floatingActionButton: ScaleTransition(
-              scale: animationController,
-              child: Padding(
-                padding: EdgeInsets.only(bottom: buttonBar?.preferredSize.height ?? 0),
-                child: FloatingActionButton(
-                  child: const Icon(Icons.arrow_upward),
-                  onPressed:
-                      () =>
-                          scrollController.hasClients
-                              ? scrollController.animateTo(
-                                0,
-                                duration: const Duration(milliseconds: 600),
-                                curve: Curves.easeOut,
-                              )
-                              : null,
-                ),
-              ),
+      builder: (context, animationController) => Scaffold(
+        appBar: appBar,
+        floatingActionButton: ScaleTransition(
+          scale: animationController,
+          child: Padding(
+            padding: EdgeInsets.only(bottom: buttonBar?.preferredSize.height ?? 0),
+            child: FloatingActionButton(
+              child: const Icon(Icons.arrow_upward),
+              onPressed: () => scrollController.hasClients
+                  ? scrollController.animateTo(0, duration: const Duration(milliseconds: 600), curve: Curves.easeOut)
+                  : null,
             ),
-            body: buildScrollable(useGrid: useGrid),
           ),
+        ),
+        body: buildScrollable(useGrid: useGrid),
+      ),
     );
   }
 
   Widget scrollListener2(Widget Function(BuildContext context, Widget fab) builder) {
     return UserScrollListener(
       shouldAnimate: (userScroll) => userScroll.metrics.axis == Axis.vertical,
-      builder:
-          (context, animationController) => builder(
-            context,
-            ScaleTransition(
-              scale: animationController,
-              child: Padding(
-                padding: EdgeInsets.only(bottom: buttonBar?.preferredSize.height ?? 0),
-                child: FloatingActionButton(
-                  child: const Icon(Icons.arrow_upward),
-                  onPressed:
-                      () =>
-                          scrollController.hasClients
-                              ? scrollController.animateTo(
-                                0,
-                                duration: const Duration(milliseconds: 600),
-                                curve: Curves.easeOut,
-                              )
-                              : null,
-                ),
-              ),
+      builder: (context, animationController) => builder(
+        context,
+        ScaleTransition(
+          scale: animationController,
+          child: Padding(
+            padding: EdgeInsets.only(bottom: buttonBar?.preferredSize.height ?? 0),
+            child: FloatingActionButton(
+              child: const Icon(Icons.arrow_upward),
+              onPressed: () => scrollController.hasClients
+                  ? scrollController.animateTo(0, duration: const Duration(milliseconds: 600), curve: Curves.easeOut)
+                  : null,
             ),
           ),
+        ),
+      ),
     );
   }
 
@@ -174,10 +160,9 @@ mixin SearchableListState<T, St extends StatefulWidget> on State<St> {
     return Scrollbar(
       controller: scrollController,
       trackVisibility: PlatformU.isDesktopOrWeb,
-      child:
-          useGrid
-              ? buildGridView(topHint: hintText, bottomHint: hintText)
-              : buildListView(topHint: hintText, bottomHint: hintText),
+      child: useGrid
+          ? buildGridView(topHint: hintText, bottomHint: hintText)
+          : buildListView(topHint: hintText, bottomHint: hintText),
     );
   }
 
@@ -285,7 +270,12 @@ mixin SearchableListState<T, St extends StatefulWidget> on State<St> {
     if (buttonBar == null) {
       return child;
     } else {
-      return Column(children: [Expanded(child: child), SafeArea(child: buttonBar)]);
+      return Column(
+        children: [
+          Expanded(child: child),
+          SafeArea(child: buttonBar),
+        ],
+      );
     }
   }
 
@@ -311,7 +301,9 @@ mixin SearchableListState<T, St extends StatefulWidget> on State<St> {
   static Widget defaultHintBuilder(BuildContext context, String text) {
     return CustomTile(
       contentPadding: const EdgeInsets.symmetric(vertical: 2),
-      subtitle: Center(child: Text(text, style: const TextStyle(color: Colors.grey, fontSize: 14))),
+      subtitle: Center(
+        child: Text(text, style: const TextStyle(color: Colors.grey, fontSize: 14)),
+      ),
     );
   }
 }

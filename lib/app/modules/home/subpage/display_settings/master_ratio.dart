@@ -67,23 +67,21 @@ class _MasterRatioSettingState extends State<MasterRatioSetting> {
           max: 60,
           divisions: 60 - 30,
           activeColor: display.enableSplitView ? null : Theme.of(context).disabledColor,
-          onChanged:
-              display.enableSplitView
-                  ? (v) {
-                    setState(() {
-                      SplitRoute.defaultMasterRatio = v.toInt();
-                      display.splitMasterRatio = SplitRoute.defaultMasterRatio;
-                    });
-                  }
-                  : null,
-          onChangeEnd:
-              display.enableSplitView
-                  ? (v) {
-                    EasyDebounce.debounce('split_master_ratio_change', const Duration(seconds: 1), () {
-                      db.notifyAppUpdate();
-                    });
-                  }
-                  : null,
+          onChanged: display.enableSplitView
+              ? (v) {
+                  setState(() {
+                    SplitRoute.defaultMasterRatio = v.toInt();
+                    display.splitMasterRatio = SplitRoute.defaultMasterRatio;
+                  });
+                }
+              : null,
+          onChangeEnd: display.enableSplitView
+              ? (v) {
+                  EasyDebounce.debounce('split_master_ratio_change', const Duration(seconds: 1), () {
+                    db.notifyAppUpdate();
+                  });
+                }
+              : null,
         ),
       ],
     );

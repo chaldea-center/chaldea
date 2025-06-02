@@ -54,8 +54,8 @@ class _FakerHistoryViewerState extends State<FakerHistoryViewer> {
           minTileHeight: 24,
           dense: true,
           child: ListView.separated(
-            itemBuilder:
-                (context, index) => buildOne(context, history.length - 1 - index, history[history.length - 1 - index]),
+            itemBuilder: (context, index) =>
+                buildOne(context, history.length - 1 - index, history[history.length - 1 - index]),
             separatorBuilder: (context, index) => const Divider(height: 1, color: Colors.transparent),
             itemCount: history.length,
           ),
@@ -76,7 +76,10 @@ class _FakerHistoryViewerState extends State<FakerHistoryViewer> {
         TextSpan(
           text: 'No.${index + 1}  ',
           children: [
-            TextSpan(text: record.request?.key.trimChar("/") ?? '???', style: const TextStyle(color: Colors.amber)),
+            TextSpan(
+              text: record.request?.key.trimChar("/") ?? '???',
+              style: const TextStyle(color: Colors.amber),
+            ),
           ],
         ),
       ),
@@ -118,7 +121,10 @@ class _FakerHistoryViewerState extends State<FakerHistoryViewer> {
         TextSpan(
           text: 'request: ',
           children: [
-            TextSpan(text: data.toString(), style: TextStyle(color: Theme.of(context).textTheme.bodySmall?.color)),
+            TextSpan(
+              text: data.toString(),
+              style: TextStyle(color: Theme.of(context).textTheme.bodySmall?.color),
+            ),
           ],
         ),
         maxLines: 2,
@@ -167,12 +173,11 @@ class _FakerHistoryViewerState extends State<FakerHistoryViewer> {
         maxLines: 2,
         overflow: TextOverflow.ellipsis,
       ),
-      onTap:
-          data?.isNotEmpty != true
-              ? null
-              : () {
-                router.pushPage(JsonViewerPage(data));
-              },
+      onTap: data?.isNotEmpty != true
+          ? null
+          : () {
+              router.pushPage(JsonViewerPage(data));
+            },
     );
   }
 
@@ -244,24 +249,22 @@ Future<void> showRequestDataFormatDialog(BuildContext context, dynamic data) {
             ),
             ListTile(
               enabled: formData != null,
-              onTap:
-                  formData == null
-                      ? null
-                      : () {
-                        Navigator.pop(context);
-                        router.pushPage(FormDataViewer(data: formData!));
-                      },
+              onTap: formData == null
+                  ? null
+                  : () {
+                      Navigator.pop(context);
+                      router.pushPage(FormDataViewer(data: formData!));
+                    },
               title: const Text("Form"),
             ),
             ListTile(
               enabled: jsonData != null,
-              onTap:
-                  jsonData == null
-                      ? null
-                      : () {
-                        Navigator.pop(context);
-                        router.pushPage(JsonViewerPage(jsonData));
-                      },
+              onTap: jsonData == null
+                  ? null
+                  : () {
+                      Navigator.pop(context);
+                      router.pushPage(JsonViewerPage(jsonData));
+                    },
               title: const Text("Json"),
             ),
             ListTile(
@@ -364,7 +367,9 @@ class _StringViewer extends StatelessWidget {
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
         child: SafeArea(
-          child: InheritSelectionArea(child: Text(data, style: const TextStyle(fontSize: 14, fontFamily: kMonoFont))),
+          child: InheritSelectionArea(
+            child: Text(data, style: const TextStyle(fontSize: 14, fontFamily: kMonoFont)),
+          ),
         ),
       ),
     );

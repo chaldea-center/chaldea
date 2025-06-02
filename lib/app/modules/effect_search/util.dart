@@ -51,7 +51,10 @@ class EffectFilterUtil {
         TextSpan(
           text: S.current.related_traits,
           children: const [
-            TextSpan(text: '1*', style: TextStyle(fontFeatures: [FontFeature.enable('sups')])),
+            TextSpan(
+              text: '1*',
+              style: TextStyle(fontFeatures: [FontFeature.enable('sups')]),
+            ),
           ],
         ),
       ),

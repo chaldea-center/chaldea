@@ -92,17 +92,16 @@ class EventListPageState extends State<EventListPage>
             maxLines: 1,
           );
         }),
-        bottom:
-            showSearchBar && shouldEnableSearch
-                ? searchBar
-                : FixedHeight.tabBar(
-                  TabBar(
-                    controller: _tabController,
-                    isScrollable: true,
-                    tabAlignment: TabAlignment.center,
-                    tabs: tabNames.map((name) => Tab(text: name)).toList(),
-                  ),
+        bottom: showSearchBar && shouldEnableSearch
+            ? searchBar
+            : FixedHeight.tabBar(
+                TabBar(
+                  controller: _tabController,
+                  isScrollable: true,
+                  tabAlignment: TabAlignment.center,
+                  tabs: tabNames.map((name) => Tab(text: name)).toList(),
                 ),
+              ),
         actions: actions,
       ),
       body: InheritSelectionArea(
@@ -113,37 +112,34 @@ class EventListPageState extends State<EventListPage>
                 controller: _tabController,
                 children: <Widget>[
                   KeepAliveBuilder(
-                    builder:
-                        (_) => LimitEventTab(
-                          limitEvents: limitEvents,
-                          reversed: filterData.reversed,
-                          showOutdated: filterData.showOutdated,
-                          showSpecialRewards: filterData.showSpecialRewards,
-                          // showEmpty: filterData.showEmpty,
-                          showEmpty: true,
-                          showBanner: filterData.showBanner && constraints.maxWidth > 290,
-                        ),
+                    builder: (_) => LimitEventTab(
+                      limitEvents: limitEvents,
+                      reversed: filterData.reversed,
+                      showOutdated: filterData.showOutdated,
+                      showSpecialRewards: filterData.showSpecialRewards,
+                      // showEmpty: filterData.showEmpty,
+                      showEmpty: true,
+                      showBanner: filterData.showBanner && constraints.maxWidth > 290,
+                    ),
                   ),
                   KeepAliveBuilder(
-                    builder:
-                        (_) => MainStoryTab(
-                          reversed: filterData.reversed,
-                          showOutdated: filterData.showOutdated,
-                          showSpecialRewards: filterData.showSpecialRewards,
-                          showBanner: filterData.showBanner && constraints.maxWidth > 420,
-                        ),
+                    builder: (_) => MainStoryTab(
+                      reversed: filterData.reversed,
+                      showOutdated: filterData.showOutdated,
+                      showSpecialRewards: filterData.showSpecialRewards,
+                      showBanner: filterData.showBanner && constraints.maxWidth > 420,
+                    ),
                   ),
                   KeepAliveBuilder(
-                    builder:
-                        (_) => ExchangeTicketTab(reversed: filterData.reversed, showOutdated: filterData.showOutdated),
+                    builder: (_) =>
+                        ExchangeTicketTab(reversed: filterData.reversed, showOutdated: filterData.showOutdated),
                   ),
                   KeepAliveBuilder(
-                    builder:
-                        (_) => CampaignEventTab(
-                          campaignEvents: campaigns,
-                          reversed: filterData.reversed,
-                          showOutdated: filterData.showOutdated,
-                        ),
+                    builder: (_) => CampaignEventTab(
+                      campaignEvents: campaigns,
+                      reversed: filterData.reversed,
+                      showOutdated: filterData.showOutdated,
+                    ),
                   ),
                 ],
               ),
@@ -161,17 +157,15 @@ class EventListPageState extends State<EventListPage>
         IconButton(
           icon: const Icon(Icons.filter_alt),
           tooltip: S.current.filter,
-          onPressed:
-              () => FilterPage.show(
-                context: context,
-                builder:
-                    (context) => EventFilterPage(
-                      filterData: filterData,
-                      onChanged: (_) {
-                        if (mounted) setState(() {});
-                      },
-                    ),
-              ),
+          onPressed: () => FilterPage.show(
+            context: context,
+            builder: (context) => EventFilterPage(
+              filterData: filterData,
+              onChanged: (_) {
+                if (mounted) setState(() {});
+              },
+            ),
+          ),
         ),
       IconButton(
         icon: FaIcon(
@@ -185,38 +179,35 @@ class EventListPageState extends State<EventListPage>
         },
       ),
       PopupMenuButton(
-        itemBuilder:
-            (context) => [
-              PopupMenuItem(
-                child: Text(S.current.select_plan),
-                onTap: () {
-                  SharedBuilder.showSwitchPlanDialog(
-                    context: context,
-                    onChange: (index) {
-                      db.curUser.curSvtPlanNo = index;
-                      db.curUser.ensurePlanLarger();
-                      db.itemCenter.calculate();
-                    },
-                  );
+        itemBuilder: (context) => [
+          PopupMenuItem(
+            child: Text(S.current.select_plan),
+            onTap: () {
+              SharedBuilder.showSwitchPlanDialog(
+                context: context,
+                onChange: (index) {
+                  db.curUser.curSvtPlanNo = index;
+                  db.curUser.ensurePlanLarger();
+                  db.itemCenter.calculate();
                 },
-              ),
-              PopupMenuItem(
-                child: Text(S.current.copy_plan_menu),
-                onTap: () {
-                  copyPlan();
-                },
-              ),
-              PopupMenuItem(
-                child: Text(
-                  filterData.showSpecialRewards ? S.current.special_reward_hide : S.current.special_reward_show,
-                ),
-                onTap: () {
-                  setState(() {
-                    filterData.showSpecialRewards = !filterData.showSpecialRewards;
-                  });
-                },
-              ),
-            ],
+              );
+            },
+          ),
+          PopupMenuItem(
+            child: Text(S.current.copy_plan_menu),
+            onTap: () {
+              copyPlan();
+            },
+          ),
+          PopupMenuItem(
+            child: Text(filterData.showSpecialRewards ? S.current.special_reward_hide : S.current.special_reward_show),
+            onTap: () {
+              setState(() {
+                filterData.showSpecialRewards = !filterData.showSpecialRewards;
+              });
+            },
+          ),
+        ],
       ),
     ];
   }
@@ -311,30 +302,28 @@ class EventListPageState extends State<EventListPage>
     showDialog(
       context: context,
       useRootNavigator: false,
-      builder:
-          (context) => SimpleDialog(
-            title: Text(S.current.select_copy_plan_source),
-            children: List.generate(db.curUser.plans.length, (index) {
-              bool isCur = index == db.curUser.curSvtPlanNo;
-              String title = db.curUser.getFriendlyPlanName(index);
-              if (isCur) title += ' (${S.current.current_})';
-              return ListTile(
-                title: Text(title),
-                onTap:
-                    isCur
-                        ? null
-                        : () {
-                          final src = UserPlan.fromJson(jsonDecode(jsonEncode(db.curUser.plans[index])));
-                          db.curPlan_
-                            ..limitEvents = src.limitEvents
-                            ..mainStories = src.mainStories
-                            ..tickets = src.tickets;
-                          db.itemCenter.calculate();
-                          Navigator.of(context).pop();
-                        },
-              );
-            }),
-          ),
+      builder: (context) => SimpleDialog(
+        title: Text(S.current.select_copy_plan_source),
+        children: List.generate(db.curUser.plans.length, (index) {
+          bool isCur = index == db.curUser.curSvtPlanNo;
+          String title = db.curUser.getFriendlyPlanName(index);
+          if (isCur) title += ' (${S.current.current_})';
+          return ListTile(
+            title: Text(title),
+            onTap: isCur
+                ? null
+                : () {
+                    final src = UserPlan.fromJson(jsonDecode(jsonEncode(db.curUser.plans[index])));
+                    db.curPlan_
+                      ..limitEvents = src.limitEvents
+                      ..mainStories = src.mainStories
+                      ..tickets = src.tickets;
+                    db.itemCenter.calculate();
+                    Navigator.of(context).pop();
+                  },
+          );
+        }),
+      ),
     );
   }
 }

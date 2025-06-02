@@ -49,10 +49,9 @@ class AppRouterDelegate extends RouterDelegate<RouteConfiguration>
   int get index => _parent.appState.children.indexOf(this);
 
   @override
-  RouteConfiguration? get currentConfiguration =>
-      _history.isNotEmpty && _history.last.arguments is RouteConfiguration
-          ? _history.last.arguments as RouteConfiguration
-          : null;
+  RouteConfiguration? get currentConfiguration => _history.isNotEmpty && _history.last.arguments is RouteConfiguration
+      ? _history.last.arguments as RouteConfiguration
+      : null;
 
   @override
   final GlobalKey<NavigatorState> navigatorKey = GlobalKey();
@@ -138,8 +137,13 @@ class AppRouterDelegate extends RouterDelegate<RouteConfiguration>
   }) async {
     assert(url != null || child != null);
     // if (popDetail) popDetails();
-    final page =
-        RouteConfiguration(url: url, child: child, detail: detail, arguments: arguments, region: region).createPage();
+    final page = RouteConfiguration(
+      url: url,
+      child: child,
+      detail: detail,
+      arguments: arguments,
+      region: region,
+    ).createPage();
     _history.add(page);
     if (url != null && url.trim().trimChar('/').isNotEmpty) {
       urlHistory.add(url);
@@ -210,12 +214,11 @@ class AppRouterDelegate extends RouterDelegate<RouteConfiguration>
     Offset? anchorPoint,
     TraversalEdgeBehavior? traversalEdgeBehavior,
   }) {
-    BuildContext _context =
-        [
-          context,
-          navigatorKey.currentContext,
-          _parent.navigatorKey.currentContext,
-        ].firstWhere((e) => e != null && e.mounted)!;
+    BuildContext _context = [
+      context,
+      navigatorKey.currentContext,
+      _parent.navigatorKey.currentContext,
+    ].firstWhere((e) => e != null && e.mounted)!;
     return material.showDialog(
       context: _context,
       builder: builder,

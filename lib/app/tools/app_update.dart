@@ -191,8 +191,10 @@ class AppUpdater {
   static Future<String?> _downloadFileWithCheck(AppUpdateDetail detail) async {
     String? checksum;
     if (detail.checksums != null) {
-      String checksums =
-          (await DioE().get(detail.checksums!.downloadUrl, options: Options(responseType: ResponseType.plain))).data;
+      String checksums = (await DioE().get(
+        detail.checksums!.downloadUrl,
+        options: Options(responseType: ResponseType.plain),
+      )).data;
       for (final line in const LineSplitter().convert(checksums)) {
         final row = line.split(' ');
         if (row.length >= 2 && row[1] == detail.installer.name) {

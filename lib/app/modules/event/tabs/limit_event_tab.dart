@@ -25,11 +25,10 @@ class LimitEventTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<Event> events =
-        limitEvents.where((event) {
-          if (event.extra.shown != null) return event.extra.shown!;
-          return showEmpty || !event.isEmpty;
-        }).toList();
+    List<Event> events = limitEvents.where((event) {
+      if (event.extra.shown != null) return event.extra.shown!;
+      return showEmpty || !event.isEmpty;
+    }).toList();
 
     if (!showOutdated) {
       events.removeWhere((e) => e.isOutdated() && !db.curUser.limitEventPlanOf(e.id).enabled);
@@ -73,22 +72,24 @@ class LimitEventTab extends StatelessWidget {
       dense: true,
       selected: highlight,
       contentPadding: const EdgeInsetsDirectional.only(start: 16, end: 4),
-      leading:
-          showBanner
-              ? CachedImage(
-                imageUrl: event.extra.allBanners.firstOrNull ?? event.shopBanner,
-                aspectRatio: 8 / 3,
-                cachedOption: CachedImageOption(
-                  placeholder: (context, url) => const SizedBox.shrink(),
-                  errorWidget: (context, url, error) => const SizedBox.shrink(),
-                ),
-              )
-              : null,
+      leading: showBanner
+          ? CachedImage(
+              imageUrl: event.extra.allBanners.firstOrNull ?? event.shopBanner,
+              aspectRatio: 8 / 3,
+              cachedOption: CachedImageOption(
+                placeholder: (context, url) => const SizedBox.shrink(),
+                errorWidget: (context, url, error) => const SizedBox.shrink(),
+              ),
+            )
+          : null,
       title: AutoSizeText.rich(
         TextSpan(
           children: [
             if (<Region>{db.curUser.region, Region.jp}.any((e) => event.isOnGoing(e)))
-              const TextSpan(text: '● ', style: TextStyle(color: Colors.green)),
+              const TextSpan(
+                text: '● ',
+                style: TextStyle(color: Colors.green),
+              ),
             TextSpan(text: event.shownName),
           ],
         ),

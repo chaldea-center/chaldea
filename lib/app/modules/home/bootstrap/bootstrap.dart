@@ -89,10 +89,9 @@ class _BootstrapPageState extends State<BootstrapPage> with SingleTickerProvider
         ),
       );
     }
-    pages =
-        db.settings.tips.starter
-            ? [welcomePage, languagePage, if (kIsWeb) webDomainPage, darkModePage, createAccountPage, dataPage]
-            : [dataPage];
+    pages = db.settings.tips.starter
+        ? [welcomePage, languagePage, if (kIsWeb) webDomainPage, darkModePage, createAccountPage, dataPage]
+        : [dataPage];
 
     Widget child = PageView(
       controller: _pageController,
@@ -113,7 +112,9 @@ class _BootstrapPageState extends State<BootstrapPage> with SingleTickerProvider
     return Scaffold(
       appBar: AppBar(toolbarHeight: 0, elevation: 0, backgroundColor: Theme.of(context).scaffoldBackgroundColor),
       body: SafeArea(
-        child: Center(child: ConstrainedBox(constraints: const BoxConstraints(maxWidth: 768), child: child)),
+        child: Center(
+          child: ConstrainedBox(constraints: const BoxConstraints(maxWidth: 768), child: child),
+        ),
       ),
     );
   }
@@ -147,8 +148,9 @@ class _BootstrapPageState extends State<BootstrapPage> with SingleTickerProvider
         itemBuilder: (context, index) {
           final lang = Language.supportLanguages[index];
           return ListTile(
-            leading:
-                Language.getLanguage(db.settings.language) == lang ? const Icon(Icons.done_rounded) : const SizedBox(),
+            leading: Language.getLanguage(db.settings.language) == lang
+                ? const Icon(Icons.done_rounded)
+                : const SizedBox(),
             title: Text(lang.name),
             minLeadingWidth: 24,
             onTap: () {
@@ -175,12 +177,11 @@ class _BootstrapPageState extends State<BootstrapPage> with SingleTickerProvider
         subtitle: Text(domain.toString()),
         minLeadingWidth: 24,
         trailing: selected ? null : const Icon(Icons.open_in_new),
-        onTap:
-            selected
-                ? null
-                : () {
-                  launch(domain.toString());
-                },
+        onTap: selected
+            ? null
+            : () {
+                launch(domain.toString());
+              },
       );
     }
 
@@ -340,15 +341,14 @@ class _BootstrapPageState extends State<BootstrapPage> with SingleTickerProvider
               showDialog(
                 context: context,
                 useRootNavigator: false,
-                builder:
-                    (context) => SimpleConfirmDialog(
-                      content: Text(S.current.database_not_downloaded),
-                      onTapOk: () {
-                        db.settings.tips.starter = false;
-                        db.saveSettings();
-                        rootRouter.appState.dataReady = true;
-                      },
-                    ),
+                builder: (context) => SimpleConfirmDialog(
+                  content: Text(S.current.database_not_downloaded),
+                  onTapOk: () {
+                    db.settings.tips.starter = false;
+                    db.saveSettings();
+                    rootRouter.appState.dataReady = true;
+                  },
+                ),
               );
             }
           },
@@ -441,8 +441,8 @@ class _DatabaseIntroState extends State<_DatabaseIntro> {
           trailing: Text(
             db.gameData.version.timestamp > 0
                 ? DateTime.fromMillisecondsSinceEpoch(
-                  db.gameData.version.timestamp * 1000,
-                ).toStringShort().replaceFirst(' ', '\n')
+                    db.gameData.version.timestamp * 1000,
+                  ).toStringShort().replaceFirst(' ', '\n')
                 : S.current.not_found,
             textAlign: TextAlign.end,
             textScaler: const TextScaler.linear(0.9),
@@ -522,10 +522,9 @@ class _DatabaseIntroState extends State<_DatabaseIntro> {
                 Icon(
                   _loader.error != null ? Icons.clear_rounded : Icons.done,
                   size: 80,
-                  color:
-                      _loader.error != null
-                          ? Theme.of(context).colorScheme.error
-                          : Theme.of(context).colorScheme.primary,
+                  color: _loader.error != null
+                      ? Theme.of(context).colorScheme.error
+                      : Theme.of(context).colorScheme.primary,
                 ),
               if (progress != null && progress < 1.0)
                 Text('${(progress * 100).toInt()}%', style: const TextStyle(fontSize: 24)),

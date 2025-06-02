@@ -123,10 +123,9 @@ class FreeLPSolver {
         }
       }
       glpkParams.matA = matrix;
-      final _debugParams =
-          FreeLPParams.from(params)
-            ..planItemCounts.clear()
-            ..planItemWeights.clear();
+      final _debugParams = FreeLPParams.from(params)
+        ..planItemCounts.clear()
+        ..planItemWeights.clear();
       logger.i('glpk params: ${jsonEncode(_debugParams)}');
       await ensureEngine();
       final resultString = await engine.eval('''glpk_solver(`${jsonEncode(glpkParams)}`)''', name: 'solver_caller');
@@ -217,23 +216,22 @@ DropRateSheet _preProcess({required DropRateSheet data, required FreeLPParams pa
   wars.removeWhere((key, value) => !value.quests.any((q) => q.isMainStoryFree));
   final progressWar = wars[params.progress];
   final int progressWarOpenAt = Maths.min(progressWar?.quests.map((e) => e.openedAt).toList() ?? [], 0);
-  List<int> cols =
-      data.questIds.where((questId) {
-        if (progressWar == null) return true;
-        final quest = db.gameData.quests[questId];
-        final warId = quest?.warId;
-        // some error that db not loaded || fit progress
-        if (warId == null || warId <= params.progress) return true;
-        if (db.gameData.wars[warId]?.isGrandBoardWar == true) {
-          return params.progress > 405 || params.progress <= 0;
-        }
-        // Ordeal Call free quests opened at diffferent time
-        if (warId == WarId.ordealCall && progressWarOpenAt > 0 && quest != null) {
-          // return quest.openedAt <= progressWarOpenAt;
-        }
-        // chaldea gate quests
-        return warId >= 1000;
-      }).toList();
+  List<int> cols = data.questIds.where((questId) {
+    if (progressWar == null) return true;
+    final quest = db.gameData.quests[questId];
+    final warId = quest?.warId;
+    // some error that db not loaded || fit progress
+    if (warId == null || warId <= params.progress) return true;
+    if (db.gameData.wars[warId]?.isGrandBoardWar == true) {
+      return params.progress > 405 || params.progress <= 0;
+    }
+    // Ordeal Call free quests opened at diffferent time
+    if (warId == WarId.ordealCall && progressWarOpenAt > 0 && quest != null) {
+      // return quest.openedAt <= progressWarOpenAt;
+    }
+    // chaldea gate quests
+    return warId >= 1000;
+  }).toList();
   // only append extra columns having drop data in gpk matrix
   for (final col in params.extraCols) {
     if (data.questIds.contains(col)) cols.add(col);

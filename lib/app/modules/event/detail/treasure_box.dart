@@ -50,7 +50,9 @@ class EventTreasureBoxTab extends HookWidget {
               const TextSpan(text: '\n'),
               TextSpan(text: '${S.current.treasure_box_extra_gift}: '),
               for (final gift in box.extraGifts) ...[
-                CenterWidgetSpan(child: gift.iconBuilder(context: context, showName: true, width: 28, text: '')),
+                CenterWidgetSpan(
+                  child: gift.iconBuilder(context: context, showName: true, width: 28, text: ''),
+                ),
                 TextSpan(text: ' ×${gift.num}'),
               ],
               TextSpan(text: '\n${S.current.treasure_box_max_draw_once}: ${box.maxDrawNumOnce}'),

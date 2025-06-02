@@ -101,15 +101,14 @@ class _GameDataPageState extends State<GameDataPage> {
                       : S.current.update_data_at_start_off_hint,
                   textScaler: const TextScaler.linear(0.8),
                 ),
-                onChanged:
-                    !kIsWeb && db.settings.autoUpdateData
-                        ? (v) {
-                          setState(() {
-                            db.settings.updateDataBeforeStart = v;
-                            db.saveSettings();
-                          });
-                        }
-                        : null,
+                onChanged: !kIsWeb && db.settings.autoUpdateData
+                    ? (v) {
+                        setState(() {
+                          db.settings.updateDataBeforeStart = v;
+                          db.saveSettings();
+                        });
+                      }
+                    : null,
               ),
               // SwitchListTile.adaptive(
               //   value: db.settings.checkDataHash,
@@ -142,12 +141,11 @@ class _GameDataPageState extends State<GameDataPage> {
               ListTile(
                 title: Text(S.current.clear_cache),
                 // subtitle: Text(S.current.clear_cache_hint),
-                onTap:
-                    () => showDialog(
-                      context: context,
-                      useRootNavigator: false,
-                      builder: (context) => const _ClearCacheDialog(),
-                    ),
+                onTap: () => showDialog(
+                  context: context,
+                  useRootNavigator: false,
+                  builder: (context) => const _ClearCacheDialog(),
+                ),
               ),
             ],
           ),

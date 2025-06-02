@@ -161,8 +161,11 @@ class _RandomMissionSimulationPageState extends State<RandomMissionSimulationPag
                       spacing: 1,
                       runSpacing: 1,
                       children: [
-                        for (final (itemId, count)
-                            in Item.sortMapByPriority(data.giftItems, reversed: true, removeZero: false).items)
+                        for (final (itemId, count) in Item.sortMapByPriority(
+                          data.giftItems,
+                          reversed: true,
+                          removeZero: false,
+                        ).items)
                           Item.iconBuilder(
                             context: context,
                             item: null,
@@ -232,8 +235,10 @@ class _RandomMissionSimulationPageState extends State<RandomMissionSimulationPag
 
     // loop
     EasyLoading.showProgress(0, status: 'Running 0/$kMaxAppleCount...');
-    final importantMissionIds =
-        eventMissions.values.where((e) => (data.getScore(e.gifts.first.objectId)) >= 2).map((e) => e.id).toSet();
+    final importantMissionIds = eventMissions.values
+        .where((e) => (data.getScore(e.gifts.first.objectId)) >= 2)
+        .map((e) => e.id)
+        .toSet();
     while (data.ap < kMaxAppleCount * kAppleAp) {
       for (final i in range(data.discardLoop)) {
         if (i > 0) discardMission(data);
@@ -278,11 +283,10 @@ class _RandomMissionSimulationPageState extends State<RandomMissionSimulationPag
 
   int discardMission(_SimStatData data) {
     final removeItemIds = data.itemScores.keys.where((e) => data.itemScores[e]! <= 0).toList();
-    List<int> removeMissionIds =
-        data.missionProgresses.keys.where((e) {
-          final mission = eventMissions[e]!;
-          return mission.gifts.every((e) => removeItemIds.contains(e.objectId));
-        }).toList();
+    List<int> removeMissionIds = data.missionProgresses.keys.where((e) {
+      final mission = eventMissions[e]!;
+      return mission.gifts.every((e) => removeItemIds.contains(e.objectId));
+    }).toList();
     removeMissionIds.sortByList((e) {
       final mission = eventMissions[e]!;
       return <int>[
@@ -292,8 +296,10 @@ class _RandomMissionSimulationPageState extends State<RandomMissionSimulationPag
       ];
     });
     if (removeMissionIds.length > data.discardMissionMinLeftNum) {
-      removeMissionIds =
-          removeMissionIds.take(removeMissionIds.length - data.discardMissionMinLeftNum).take(2).toList();
+      removeMissionIds = removeMissionIds
+          .take(removeMissionIds.length - data.discardMissionMinLeftNum)
+          .take(2)
+          .toList();
     }
     data.missionProgresses.removeWhere((e, v) => removeMissionIds.contains(e));
     return removeItemIds.length;
@@ -354,35 +360,34 @@ class _RandomMissionSimulationPageState extends State<RandomMissionSimulationPag
   }
 
   QuestPhase findNextFreeQuest(List<QuestPhase> quests, _SimStatData data) {
-    final stats =
-        quests.where((e) => (e.recommendLv) == '90++').map((quest) {
-          int completeNum = 0;
-          double score = 0.0, score2 = 0.0;
-          for (final (missionId, progress) in data.missionProgresses.items) {
-            final mission = eventMissions[missionId]!;
-            final customMission = CustomMission.fromEventMission(mission);
-            if (data.getScore(mission.gifts.first.objectId) <= 0) continue;
-            if (customMission == null) continue;
-            final int addCount = MissionSolver.countMissionTarget(customMission, quest);
-            if (addCount <= 0) continue;
-            double addProgress;
-            if (progress + addCount >= customMission.count) {
-              completeNum += 1;
-              // addProgress = 1;
-              addProgress = (customMission.count - progress) / customMission.count;
-              // addProgress *= 0.5;
-            } else {
-              addProgress = progress / customMission.count;
-            }
-            score += Maths.sum(mission.gifts.map((e) => max(0, data.getScore(e.objectId)) * e.num * addProgress));
-            score2 += Maths.sum(
-              mission.gifts
-                  .where((e) => data.getScore(e.objectId) >= 2)
-                  .map((e) => max(0, data.getScore(e.objectId)) * e.num * addProgress),
-            );
-          }
-          return (quest: quest, completeNum: completeNum, score: score, score2: score2);
-        }).toList();
+    final stats = quests.where((e) => (e.recommendLv) == '90++').map((quest) {
+      int completeNum = 0;
+      double score = 0.0, score2 = 0.0;
+      for (final (missionId, progress) in data.missionProgresses.items) {
+        final mission = eventMissions[missionId]!;
+        final customMission = CustomMission.fromEventMission(mission);
+        if (data.getScore(mission.gifts.first.objectId) <= 0) continue;
+        if (customMission == null) continue;
+        final int addCount = MissionSolver.countMissionTarget(customMission, quest);
+        if (addCount <= 0) continue;
+        double addProgress;
+        if (progress + addCount >= customMission.count) {
+          completeNum += 1;
+          // addProgress = 1;
+          addProgress = (customMission.count - progress) / customMission.count;
+          // addProgress *= 0.5;
+        } else {
+          addProgress = progress / customMission.count;
+        }
+        score += Maths.sum(mission.gifts.map((e) => max(0, data.getScore(e.objectId)) * e.num * addProgress));
+        score2 += Maths.sum(
+          mission.gifts
+              .where((e) => data.getScore(e.objectId) >= 2)
+              .map((e) => max(0, data.getScore(e.objectId)) * e.num * addProgress),
+        );
+      }
+      return (quest: quest, completeNum: completeNum, score: score, score2: score2);
+    }).toList();
     stats.sortByList((e) => [-e.score2, -e.score, -e.completeNum, -e.quest.id]);
     if (stats.first.completeNum < 2) {
       stats.sortByList((e) => [-e.completeNum, -e.score, -e.quest.id]);

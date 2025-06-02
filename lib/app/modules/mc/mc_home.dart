@@ -90,7 +90,10 @@ class MooncellToolsPage extends StatelessWidget {
   Widget buildCard(Widget child) {
     return Card(
       margin: const EdgeInsets.all(8),
-      child: Padding(padding: const EdgeInsets.all(8), child: Center(child: child)),
+      child: Padding(
+        padding: const EdgeInsets.all(8),
+        child: Center(child: child),
+      ),
     );
   }
 

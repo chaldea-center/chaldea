@@ -35,33 +35,32 @@ class _FakerAccountsPageState extends State<FakerAccountsPage> {
             IconButton(
               onPressed: () {
                 router.showDialog(
-                  builder:
-                      (context) => SimpleDialog(
-                        title: Text(S.current.game_server),
-                        children: [
-                          for (final region in [Region.jp, Region.cn, Region.na])
-                            SimpleDialogOption(
-                              onPressed: () {
-                                switch (region) {
-                                  case Region.jp:
-                                  case Region.na:
-                                    fakerSettings.jpAutoLogins.add(AutoLoginDataJP(region: region));
-                                    break;
-                                  case Region.cn:
-                                    fakerSettings.cnAutoLogins.add(AutoLoginDataCN(region: region));
-                                    break;
-                                  case Region.tw:
-                                  case Region.kr:
-                                    EasyLoading.showError('Not supported');
-                                    return;
-                                }
-                                Navigator.pop(context);
-                                if (mounted) setState(() {});
-                              },
-                              child: Text(region.upper),
-                            ),
-                        ],
-                      ),
+                  builder: (context) => SimpleDialog(
+                    title: Text(S.current.game_server),
+                    children: [
+                      for (final region in [Region.jp, Region.cn, Region.na])
+                        SimpleDialogOption(
+                          onPressed: () {
+                            switch (region) {
+                              case Region.jp:
+                              case Region.na:
+                                fakerSettings.jpAutoLogins.add(AutoLoginDataJP(region: region));
+                                break;
+                              case Region.cn:
+                                fakerSettings.cnAutoLogins.add(AutoLoginDataCN(region: region));
+                                break;
+                              case Region.tw:
+                              case Region.kr:
+                                EasyLoading.showError('Not supported');
+                                return;
+                            }
+                            Navigator.pop(context);
+                            if (mounted) setState(() {});
+                          },
+                          child: Text(region.upper),
+                        ),
+                    ],
+                  ),
                 );
               },
               icon: const Icon(Icons.add),
@@ -77,58 +76,56 @@ class _FakerAccountsPageState extends State<FakerAccountsPage> {
             tooltip: S.current.sort_order,
           ),
           PopupMenuButton(
-            itemBuilder:
-                (context) => [
-                  if (HomeWidgetX.isSupported)
-                    PopupMenuItem(
-                      child: Text("Update Widgets"),
-                      onTap: () async {
-                        try {
-                          final result = await HomeWidgetX.saveFakerStatus();
-                          final result2 = await HomeWidgetX.updateFakerStatus();
-                          EasyLoading.showToast('save: $result\nupdate: $result2');
-                        } catch (e, s) {
-                          logger.e('save and update faker widgets failed', e, s);
-                          EasyLoading.showError(e.toString());
-                        }
-                      },
-                    ),
-                  PopupMenuItem(
-                    child: Text('Clear ${FakerRuntime.runtimes.length} Runtimes'),
-                    onTap: () {
-                      FakerRuntime.runtimes.clear();
-                    },
-                  ),
-                ],
+            itemBuilder: (context) => [
+              if (HomeWidgetX.isSupported)
+                PopupMenuItem(
+                  child: Text("Update Widgets"),
+                  onTap: () async {
+                    try {
+                      final result = await HomeWidgetX.saveFakerStatus();
+                      final result2 = await HomeWidgetX.updateFakerStatus();
+                      EasyLoading.showToast('save: $result\nupdate: $result2');
+                    } catch (e, s) {
+                      logger.e('save and update faker widgets failed', e, s);
+                      EasyLoading.showError(e.toString());
+                    }
+                  },
+                ),
+              PopupMenuItem(
+                child: Text('Clear ${FakerRuntime.runtimes.length} Runtimes'),
+                onTap: () {
+                  FakerRuntime.runtimes.clear();
+                },
+              ),
+            ],
           ),
         ],
       ),
-      body:
-          sorting
-              ? ReorderableListView(
-                onReorder: (oldIndex, newIndex) {
-                  if (oldIndex < newIndex) {
-                    newIndex -= 1;
-                  }
-                  final item = users.removeAt(oldIndex);
-                  users.insert(newIndex, item);
-                  for (final (index, user) in users.indexed) {
-                    user.priority = index + 1;
-                  }
-                  setState(() {});
-                },
-                children: [for (final user in users) itemBuilder(context, user)],
-              )
-              : ListView.separated(
-                itemCount: users.length + 1,
-                itemBuilder: (context, index) {
-                  if (index < users.length) {
-                    return itemBuilder(context, users[index]);
-                  }
-                  return buildButtons(users);
-                },
-                separatorBuilder: (context, index) => const Divider(indent: 16, endIndent: 16),
-              ),
+      body: sorting
+          ? ReorderableListView(
+              onReorder: (oldIndex, newIndex) {
+                if (oldIndex < newIndex) {
+                  newIndex -= 1;
+                }
+                final item = users.removeAt(oldIndex);
+                users.insert(newIndex, item);
+                for (final (index, user) in users.indexed) {
+                  user.priority = index + 1;
+                }
+                setState(() {});
+              },
+              children: [for (final user in users) itemBuilder(context, user)],
+            )
+          : ListView.separated(
+              itemCount: users.length + 1,
+              itemBuilder: (context, index) {
+                if (index < users.length) {
+                  return itemBuilder(context, users[index]);
+                }
+                return buildButtons(users);
+              },
+              separatorBuilder: (context, index) => const Divider(indent: 16, endIndent: 16),
+            ),
     );
   }
 
@@ -180,14 +177,12 @@ class _FakerAccountsPageState extends State<FakerAccountsPage> {
         children: [
           TimerUpdate(
             duration: Duration(seconds: 60),
-            builder:
-                (context, _) =>
-                    user.userGame == null
-                        ? SizedBox.shrink()
-                        : Text(
-                          '${user.userGame?.calCurAp()}/${user.userGame?.actMax}',
-                          style: Theme.of(context).textTheme.bodySmall,
-                        ),
+            builder: (context, _) => user.userGame == null
+                ? SizedBox.shrink()
+                : Text(
+                    '${user.userGame?.calCurAp()}/${user.userGame?.actMax}',
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
           ),
           if (!sorting)
             IconButton(
@@ -218,32 +213,30 @@ class _FakerAccountsPageState extends State<FakerAccountsPage> {
             ),
         ],
       ),
-      onTap:
-          sorting
-              ? null
-              : () async {
-                router.pushPage(FakeGrandOrder(user: user));
-              },
+      onTap: sorting
+          ? null
+          : () async {
+              router.pushPage(FakeGrandOrder(user: user));
+            },
     );
   }
 
   Widget buildButtons(List<AutoLoginData> users) {
     List<Widget> buttons = [
       FilledButton.icon(
-        onPressed:
-            users.length <= 1
-                ? null
-                : () async {
-                  await showEasyLoading(AtlasApi.gametopsRaw);
-                  for (final (index, user) in users.indexed) {
-                    if (index != 0) {
-                      rootRouter.appState.addWindow();
-                      await Future.delayed(const Duration(milliseconds: 100));
-                    }
-                    router.pushPage(FakeGrandOrder(user: user));
-                    await Future.delayed(const Duration(milliseconds: 400));
+        onPressed: users.length <= 1
+            ? null
+            : () async {
+                await showEasyLoading(AtlasApi.gametopsRaw);
+                for (final (index, user) in users.indexed) {
+                  if (index != 0) {
+                    rootRouter.appState.addWindow();
+                    await Future.delayed(const Duration(milliseconds: 100));
                   }
-                },
+                  router.pushPage(FakeGrandOrder(user: user));
+                  await Future.delayed(const Duration(milliseconds: 400));
+                }
+              },
         label: const Text('Open All'),
         icon: const Icon(Icons.select_all),
       ),

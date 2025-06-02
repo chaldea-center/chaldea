@@ -46,11 +46,10 @@ extension FakerRandomMission on FakerRuntime {
   Future<int> _discardMission(int maxCount) async {
     final randomMissionProgress = mstData.randomMissionProgress;
     final removeItemIds = _option.itemWeights.entries.where((e) => e.value <= 0).map((e) => e.key).toList();
-    List<int> removeMissionIds =
-        randomMissionProgress.keys.where((e) {
-          final mission = randomMissionStat.eventMissions[e];
-          return mission != null && mission.gifts.every((e) => removeItemIds.contains(e.objectId));
-        }).toList();
+    List<int> removeMissionIds = randomMissionProgress.keys.where((e) {
+      final mission = randomMissionStat.eventMissions[e];
+      return mission != null && mission.gifts.every((e) => removeItemIds.contains(e.objectId));
+    }).toList();
     removeMissionIds.sortByList((e) {
       final mission = randomMissionStat.eventMissions[e]!;
       return <int>[
@@ -60,8 +59,10 @@ extension FakerRandomMission on FakerRuntime {
       ];
     });
     if (removeMissionIds.length > _option.discardMissionMinLeftNum) {
-      removeMissionIds =
-          removeMissionIds.take(removeMissionIds.length - _option.discardMissionMinLeftNum).take(maxCount).toList();
+      removeMissionIds = removeMissionIds
+          .take(removeMissionIds.length - _option.discardMissionMinLeftNum)
+          .take(maxCount)
+          .toList();
     }
     for (final missionId in removeMissionIds) {
       await agent.eventMissionRandomCancel(missionId: missionId);
@@ -139,33 +140,32 @@ extension FakerRandomMission on FakerRuntime {
 
   QuestPhase _findNextFreeQuest(List<QuestPhase> quests) {
     final missionProgresses = mstData.randomMissionProgress;
-    final stats =
-        quests.where((e) => (e.recommendLv) == '90++').map((quest) {
-          int completeNum = 0;
-          double score = 0.0, score2 = 0.0;
-          for (final (missionId, progress) in missionProgresses.items) {
-            final mission = randomMissionStat.eventMissions[missionId]!;
-            final customMission = CustomMission.fromEventMission(mission);
-            if (customMission == null) continue;
-            final int addCount = MissionSolver.countMissionTarget(customMission, quest);
-            if (addCount <= 0) continue;
-            double addProgress;
-            if (progress + addCount >= customMission.count) {
-              completeNum += 1;
-              // addProgress = 1;
-              addProgress = (customMission.count - progress) / customMission.count;
-            } else {
-              addProgress = progress / customMission.count;
-            }
-            score += Maths.sum(mission.gifts.map((e) => _option.getItemWeight(e.objectId) * e.num * addProgress));
-            score2 += Maths.sum(
-              mission.gifts
-                  .where((e) => _option.getItemWeight(e.objectId) >= 2)
-                  .map((e) => _option.getItemWeight(e.objectId) * e.num * addProgress),
-            );
-          }
-          return (quest: quest, completeNum: completeNum, score: score, score2: score2);
-        }).toList();
+    final stats = quests.where((e) => (e.recommendLv) == '90++').map((quest) {
+      int completeNum = 0;
+      double score = 0.0, score2 = 0.0;
+      for (final (missionId, progress) in missionProgresses.items) {
+        final mission = randomMissionStat.eventMissions[missionId]!;
+        final customMission = CustomMission.fromEventMission(mission);
+        if (customMission == null) continue;
+        final int addCount = MissionSolver.countMissionTarget(customMission, quest);
+        if (addCount <= 0) continue;
+        double addProgress;
+        if (progress + addCount >= customMission.count) {
+          completeNum += 1;
+          // addProgress = 1;
+          addProgress = (customMission.count - progress) / customMission.count;
+        } else {
+          addProgress = progress / customMission.count;
+        }
+        score += Maths.sum(mission.gifts.map((e) => _option.getItemWeight(e.objectId) * e.num * addProgress));
+        score2 += Maths.sum(
+          mission.gifts
+              .where((e) => _option.getItemWeight(e.objectId) >= 2)
+              .map((e) => _option.getItemWeight(e.objectId) * e.num * addProgress),
+        );
+      }
+      return (quest: quest, completeNum: completeNum, score: score, score2: score2);
+    }).toList();
     stats.sortByList((e) => [-e.score2, -e.score, -e.completeNum, -e.quest.id]);
     if (stats.first.completeNum < 2) {
       stats.sortByList((e) => [-e.completeNum, -e.score, -e.quest.id]);

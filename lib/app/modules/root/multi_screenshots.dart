@@ -74,41 +74,40 @@ class _MultiScreenshotsState extends State<MultiScreenshots> {
         actions: [
           IconButton(onPressed: takeScreenshot, icon: const Icon(Icons.screenshot_monitor)),
           PopupMenuButton<dynamic>(
-            itemBuilder:
-                (context) => [
-                  PopupMenuItem(
-                    child: const Text("Show/Hide Title"),
-                    onTap: () {
-                      setState(() {
-                        showTitle = !showTitle;
-                      });
-                    },
+            itemBuilder: (context) => [
+              PopupMenuItem(
+                child: const Text("Show/Hide Title"),
+                onTap: () {
+                  setState(() {
+                    showTitle = !showTitle;
+                  });
+                },
+              ),
+              const PopupMenuDivider(),
+              for (final count in <int>[2, 3, 4, 5, 6, 8])
+                PopupMenuItem(
+                  height: 30,
+                  child: Text('Cross count $count'),
+                  onTap: () {
+                    setState(() {
+                      crossCount = count;
+                    });
+                  },
+                ),
+              const PopupMenuDivider(),
+              for (final spec in ScreenSpec.allDevices)
+                PopupMenuItem(
+                  child: Text(
+                    spec.name,
+                    style: spec == curSpec ? TextStyle(color: Theme.of(context).colorScheme.primary) : null,
                   ),
-                  const PopupMenuDivider(),
-                  for (final count in <int>[2, 3, 4, 5, 6, 8])
-                    PopupMenuItem(
-                      height: 30,
-                      child: Text('Cross count $count'),
-                      onTap: () {
-                        setState(() {
-                          crossCount = count;
-                        });
-                      },
-                    ),
-                  const PopupMenuDivider(),
-                  for (final spec in ScreenSpec.allDevices)
-                    PopupMenuItem(
-                      child: Text(
-                        spec.name,
-                        style: spec == curSpec ? TextStyle(color: Theme.of(context).colorScheme.primary) : null,
-                      ),
-                      onTap: () {
-                        setState(() {
-                          curSpec = spec;
-                        });
-                      },
-                    ),
-                ],
+                  onTap: () {
+                    setState(() {
+                      curSpec = spec;
+                    });
+                  },
+                ),
+            ],
           ),
         ],
       ),

@@ -307,7 +307,10 @@ Extra master mission rewards are not included.""",
           ),
         ),
         const Card(
-          child: Padding(padding: EdgeInsets.all(12), child: Text('Just for fun', textAlign: TextAlign.center)),
+          child: Padding(
+            padding: EdgeInsets.all(12),
+            child: Text('Just for fun', textAlign: TextAlign.center),
+          ),
         ),
       ],
     );

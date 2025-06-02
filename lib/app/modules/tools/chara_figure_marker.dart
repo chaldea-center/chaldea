@@ -59,16 +59,15 @@ class CharaFigureMarker<T> extends StatefulWidget {
         fromJson: (json) => ExtraCharaFigure.fromJson(Map.from(json)),
         markedCharaSvtIds: db.settings.misc.markedCharaFigureSvtIds,
         nonSvtImageIds: db.settings.misc.nonSvtCharaFigureIds,
-        getExistUrls:
-            (extraAssets) => [
-              ...extraAssets.charaFigure.allUrls,
-              for (final multi in [
-                extraAssets.charaFigureMulti,
-                extraAssets.charaFigureMultiCombine,
-                extraAssets.charaFigureMultiLimitUp,
-              ])
-                for (final x in multi.values) ...x.allUrls,
-            ],
+        getExistUrls: (extraAssets) => [
+          ...extraAssets.charaFigure.allUrls,
+          for (final multi in [
+            extraAssets.charaFigureMulti,
+            extraAssets.charaFigureMultiCombine,
+            extraAssets.charaFigureMultiLimitUp,
+          ])
+            for (final x in multi.values) ...x.allUrls,
+        ],
         toUrl: (imageId) => 'https://static.atlasacademy.io/JP/CharaFigure/$imageId/$imageId.png',
       ),
     );
@@ -150,48 +149,46 @@ class _CharaFigureMarkerState<T> extends State<CharaFigureMarker<T>> with Single
         title: Text('${data.title} Marker'),
         actions: [
           PopupMenuButton(
-            itemBuilder:
-                (context) => [
-                  PopupMenuItem(
-                    onTap: () async {
-                      await manager.showAuthInput(context);
-                      if (mounted) setState(() {});
-                    },
-                    child: const Text('Input Auth'),
-                  ),
-                  PopupMenuItem(
-                    onTap: () {
-                      loadImages(true);
-                    },
-                    child: const Text('Refresh List'),
-                  ),
-                  PopupMenuItem(
-                    onTap: () {
-                      router.showDialog(
-                        builder:
-                            (context) => SimpleDialog(
-                              title: const Text("Max Grid Width"),
-                              children: [
-                                for (final (text, size) in [('Large', 240), ('Medium', 180), ('Small', 120)])
-                                  ListTile(
-                                    title: Text(text),
-                                    subtitle: Text(size.toString()),
-                                    selected: gridMaxExtent == size,
-                                    onTap: () {
-                                      gridMaxExtent = size;
-                                      Navigator.pop(context);
-                                      if (mounted) setState(() {});
-                                    },
-                                    contentPadding: const EdgeInsets.symmetric(horizontal: 24.0),
-                                  ),
-                              ],
-                            ),
-                      );
-                    },
-                    child: const Text("Grid Size"),
-                  ),
-                  PopupMenuItem(onTap: exportData, child: const Text('Export Data')),
-                ],
+            itemBuilder: (context) => [
+              PopupMenuItem(
+                onTap: () async {
+                  await manager.showAuthInput(context);
+                  if (mounted) setState(() {});
+                },
+                child: const Text('Input Auth'),
+              ),
+              PopupMenuItem(
+                onTap: () {
+                  loadImages(true);
+                },
+                child: const Text('Refresh List'),
+              ),
+              PopupMenuItem(
+                onTap: () {
+                  router.showDialog(
+                    builder: (context) => SimpleDialog(
+                      title: const Text("Max Grid Width"),
+                      children: [
+                        for (final (text, size) in [('Large', 240), ('Medium', 180), ('Small', 120)])
+                          ListTile(
+                            title: Text(text),
+                            subtitle: Text(size.toString()),
+                            selected: gridMaxExtent == size,
+                            onTap: () {
+                              gridMaxExtent = size;
+                              Navigator.pop(context);
+                              if (mounted) setState(() {});
+                            },
+                            contentPadding: const EdgeInsets.symmetric(horizontal: 24.0),
+                          ),
+                      ],
+                    ),
+                  );
+                },
+                child: const Text("Grid Size"),
+              ),
+              PopupMenuItem(onTap: exportData, child: const Text('Export Data')),
+            ],
           ),
         ],
         bottom: FixedHeight.tabBar(

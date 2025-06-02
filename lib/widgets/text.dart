@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 
 class SpecialTextSpan extends WidgetSpan {
   SpecialTextSpan(String data, {required Offset offset, double? textScaleFactor, super.style})
-    : super(child: _TransformText(data: data, offset: offset, textScaleFactor: textScaleFactor, style: style));
+    : super(
+        child: _TransformText(data: data, offset: offset, textScaleFactor: textScaleFactor, style: style),
+      );
 
   SpecialTextSpan.superscript(
     String data, {

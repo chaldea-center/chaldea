@@ -72,7 +72,9 @@ class _ItemStatTabState extends State<ItemStatTab> {
             ],
           ),
         ),
-        SafeArea(child: Padding(padding: EdgeInsets.only(top: 4), child: buttonBar)),
+        SafeArea(
+          child: Padding(padding: EdgeInsets.only(top: 4), child: buttonBar),
+        ),
       ],
     );
   }

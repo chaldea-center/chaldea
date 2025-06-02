@@ -8,8 +8,9 @@ part of '../../../models/gamedata/func.dart';
 
 NiceFunction _$NiceFunctionFromJson(Map json) => NiceFunction(
   funcId: (json['funcId'] as num).toInt(),
-  funcType:
-      json['funcType'] == null ? FuncType.unknown : const FuncTypeConverter().fromJson(json['funcType'] as String),
+  funcType: json['funcType'] == null
+      ? FuncType.unknown
+      : const FuncTypeConverter().fromJson(json['funcType'] as String),
   funcTargetType: $enumDecode(_$FuncTargetTypeEnumMap, json['funcTargetType']),
   funcTargetTeam:
       $enumDecodeNullable(_$FuncApplyTargetEnumMap, json['funcTargetTeam']) ?? FuncApplyTarget.playerAndEnemy,
@@ -47,18 +48,21 @@ NiceFunction _$NiceFunctionFromJson(Map json) => NiceFunction(
       const [],
   script: json['script'] == null ? null : FuncScript.fromJson(Map<String, dynamic>.from(json['script'] as Map)),
   svals: (json['svals'] as List<dynamic>?)?.map((e) => DataVals.fromJson(Map<String, dynamic>.from(e as Map))).toList(),
-  svals2:
-      (json['svals2'] as List<dynamic>?)?.map((e) => DataVals.fromJson(Map<String, dynamic>.from(e as Map))).toList(),
-  svals3:
-      (json['svals3'] as List<dynamic>?)?.map((e) => DataVals.fromJson(Map<String, dynamic>.from(e as Map))).toList(),
-  svals4:
-      (json['svals4'] as List<dynamic>?)?.map((e) => DataVals.fromJson(Map<String, dynamic>.from(e as Map))).toList(),
-  svals5:
-      (json['svals5'] as List<dynamic>?)?.map((e) => DataVals.fromJson(Map<String, dynamic>.from(e as Map))).toList(),
-  followerVals:
-      (json['followerVals'] as List<dynamic>?)
-          ?.map((e) => DataVals.fromJson(Map<String, dynamic>.from(e as Map)))
-          .toList(),
+  svals2: (json['svals2'] as List<dynamic>?)
+      ?.map((e) => DataVals.fromJson(Map<String, dynamic>.from(e as Map)))
+      .toList(),
+  svals3: (json['svals3'] as List<dynamic>?)
+      ?.map((e) => DataVals.fromJson(Map<String, dynamic>.from(e as Map)))
+      .toList(),
+  svals4: (json['svals4'] as List<dynamic>?)
+      ?.map((e) => DataVals.fromJson(Map<String, dynamic>.from(e as Map)))
+      .toList(),
+  svals5: (json['svals5'] as List<dynamic>?)
+      ?.map((e) => DataVals.fromJson(Map<String, dynamic>.from(e as Map)))
+      .toList(),
+  followerVals: (json['followerVals'] as List<dynamic>?)
+      ?.map((e) => DataVals.fromJson(Map<String, dynamic>.from(e as Map)))
+      .toList(),
 );
 
 Map<String, dynamic> _$NiceFunctionToJson(NiceFunction instance) => <String, dynamic>{
@@ -127,8 +131,9 @@ const _$FuncApplyTargetEnumMap = {
 
 BaseFunction _$BaseFunctionFromJson(Map json) => BaseFunction(
   funcId: (json['funcId'] as num).toInt(),
-  funcType:
-      json['funcType'] == null ? FuncType.unknown : const FuncTypeConverter().fromJson(json['funcType'] as String),
+  funcType: json['funcType'] == null
+      ? FuncType.unknown
+      : const FuncTypeConverter().fromJson(json['funcType'] as String),
   funcTargetType: $enumDecode(_$FuncTargetTypeEnumMap, json['funcTargetType']),
   funcTargetTeam: $enumDecode(_$FuncApplyTargetEnumMap, json['funcTargetTeam']),
   funcPopupText: json['funcPopupText'] as String? ?? '',
@@ -203,16 +208,12 @@ Map<String, dynamic> _$FuncGroupToJson(FuncGroup instance) => <String, dynamic>{
 };
 
 FuncScript _$FuncScriptFromJson(Map json) => FuncScript(
-  overwriteTvals:
-      (json['overwriteTvals'] as List<dynamic>?)
-          ?.map(
-            (e) => (e as List<dynamic>).map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map))).toList(),
-          )
-          .toList(),
-  funcIndividuality:
-      (json['funcIndividuality'] as List<dynamic>?)
-          ?.map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
-          .toList(),
+  overwriteTvals: (json['overwriteTvals'] as List<dynamic>?)
+      ?.map((e) => (e as List<dynamic>).map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map))).toList())
+      .toList(),
+  funcIndividuality: (json['funcIndividuality'] as List<dynamic>?)
+      ?.map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
+      .toList(),
 );
 
 Map<String, dynamic> _$FuncScriptToJson(FuncScript instance) => <String, dynamic>{

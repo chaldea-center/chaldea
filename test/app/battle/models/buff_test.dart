@@ -48,7 +48,10 @@ void main() async {
           id: -1,
           name: '',
           detail: '',
-          ckOpIndv: [NiceTrait(id: Trait.attributeSky.value), NiceTrait(id: Trait.alignmentGood.value)],
+          ckOpIndv: [
+            NiceTrait(id: Trait.attributeSky.value),
+            NiceTrait(id: Trait.alignmentGood.value),
+          ],
           script: BuffScript(checkIndvType: 1),
         ),
         DataVals({'UseRate': 1000}),
@@ -65,7 +68,10 @@ void main() async {
           id: -1,
           name: '',
           detail: '',
-          ckOpIndv: [NiceTrait(id: Trait.king.value), NiceTrait(id: Trait.divine.value)],
+          ckOpIndv: [
+            NiceTrait(id: Trait.king.value),
+            NiceTrait(id: Trait.divine.value),
+          ],
         ),
         DataVals({'UseRate': 500}),
         1,

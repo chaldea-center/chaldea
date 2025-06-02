@@ -167,23 +167,22 @@ class _SettingsPageState extends State<SettingsPage> {
                     // need to check again
                     alignment: AlignmentDirectional.centerEnd,
                     value: Language.getLanguage(S.current.localeName),
-                    items:
-                        Language.supportLanguages
-                            .map(
-                              (lang) => DropdownMenuItem(
-                                value: lang,
-                                child: Text.rich(
-                                  TextSpan(
-                                    text: lang.name,
-                                    children: [
-                                      TextSpan(text: '\n${lang.nameEn}', style: Theme.of(context).textTheme.bodySmall),
-                                    ],
-                                  ),
-                                  textScaler: const TextScaler.linear(0.9),
-                                ),
+                    items: Language.supportLanguages
+                        .map(
+                          (lang) => DropdownMenuItem(
+                            value: lang,
+                            child: Text.rich(
+                              TextSpan(
+                                text: lang.name,
+                                children: [
+                                  TextSpan(text: '\n${lang.nameEn}', style: Theme.of(context).textTheme.bodySmall),
+                                ],
                               ),
-                            )
-                            .toList(),
+                              textScaler: const TextScaler.linear(0.9),
+                            ),
+                          ),
+                        )
+                        .toList(),
                     selectedItemBuilder: (context) {
                       return Language.supportLanguages
                           .map(
@@ -245,13 +244,12 @@ class _SettingsPageState extends State<SettingsPage> {
             children: <Widget>[
               ListTile(
                 title: Text(MaterialLocalizations.of(context).aboutListTileTitle(AppInfo.appName)),
-                trailing:
-                    db.runtimeData.upgradableVersion == null
-                        ? Icon(DirectionalIcons.keyboard_arrow_forward(context))
-                        : Text(
-                          '${db.runtimeData.upgradableVersion!.versionString} ↑',
-                          style: TextStyle(color: Theme.of(context).colorScheme.error.withAlpha(200)),
-                        ),
+                trailing: db.runtimeData.upgradableVersion == null
+                    ? Icon(DirectionalIcons.keyboard_arrow_forward(context))
+                    : Text(
+                        '${db.runtimeData.upgradableVersion!.versionString} ↑',
+                        style: TextStyle(color: Theme.of(context).colorScheme.error.withAlpha(200)),
+                      ),
                 onTap: () => router.popDetailAndPush(child: AboutPage()),
               ),
               ListTile(

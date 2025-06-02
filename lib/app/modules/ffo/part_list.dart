@@ -44,9 +44,8 @@ class FfoPartListPageState extends State<FfoPartListPage> with SearchableListSta
   @override
   Widget build(BuildContext context) {
     filterShownList(
-      compare:
-          (a, b) =>
-              FfoPartFilterData.compare(a.svt, b.svt, keys: filterData.sortKeys, reversed: filterData.sortReversed),
+      compare: (a, b) =>
+          FfoPartFilterData.compare(a.svt, b.svt, keys: filterData.sortKeys, reversed: filterData.sortReversed),
     );
     return scrollListener(
       useGrid: filterData.useGrid,
@@ -67,19 +66,17 @@ class FfoPartListPageState extends State<FfoPartListPage> with SearchableListSta
           IconButton(
             icon: const Icon(Icons.filter_alt),
             tooltip: S.current.filter,
-            onPressed:
-                () => FilterPage.show(
-                  context: context,
-                  builder:
-                      (context) => FfoPartFilterPage(
-                        filterData: filterData,
-                        onChanged: (_) {
-                          if (mounted) {
-                            setState(() {});
-                          }
-                        },
-                      ),
-                ),
+            onPressed: () => FilterPage.show(
+              context: context,
+              builder: (context) => FfoPartFilterPage(
+                filterData: filterData,
+                onChanged: (_) {
+                  if (mounted) {
+                    setState(() {});
+                  }
+                },
+              ),
+            ),
           ),
           searchIcon,
         ],

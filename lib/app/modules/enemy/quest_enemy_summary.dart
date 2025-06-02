@@ -36,26 +36,24 @@ class QuestEnemySummaryPage extends StatelessWidget {
         defNpGainMods = _getValues((e) => e.serverMod.tdAttackRate),
         critStarMods = _getValues((e) => e.serverMod.starRate);
     List<int> allTraits = {for (final enemy in enemies) ...enemy.traits.map((e) => e.signedId)}.toList()..sort(),
-        staticTraits =
-            allTraits.where((e) => enemies.every((enemy) => enemy.traits.any((trait) => trait.signedId == e))).toList(),
+        staticTraits = allTraits
+            .where((e) => enemies.every((enemy) => enemy.traits.any((trait) => trait.signedId == e)))
+            .toList(),
         mutatingTraits = allTraits.where((e) => !staticTraits.contains(e)).toList();
 
-    List<int> skillIds =
-            {
-              for (final enemy in enemies) ...[enemy.skills.skillId1, enemy.skills.skillId2, enemy.skills.skillId3],
-            }.where((e) => e > 0 && db.gameData.baseSkills[e] != null).toList(),
-        classPassiveIds =
-            {
-              for (final enemy in enemies) ...[
-                ...enemy.classPassive.classPassive.map((e) => e.id),
-                ...enemy.classPassive.addPassive.map((e) => e.id),
-                ...?enemy.classPassive.appendPassiveSkillIds,
-              ],
-            }.where((e) => e > 0 && db.gameData.baseSkills[e] != null).toList(),
-        tdIds =
-            {
-              for (final enemy in enemies) enemy.noblePhantasm.noblePhantasmId,
-            }.where((e) => e > 0 && db.gameData.baseTds[e] != null).toList();
+    List<int> skillIds = {
+          for (final enemy in enemies) ...[enemy.skills.skillId1, enemy.skills.skillId2, enemy.skills.skillId3],
+        }.where((e) => e > 0 && db.gameData.baseSkills[e] != null).toList(),
+        classPassiveIds = {
+          for (final enemy in enemies) ...[
+            ...enemy.classPassive.classPassive.map((e) => e.id),
+            ...enemy.classPassive.addPassive.map((e) => e.id),
+            ...?enemy.classPassive.appendPassiveSkillIds,
+          ],
+        }.where((e) => e > 0 && db.gameData.baseSkills[e] != null).toList(),
+        tdIds = {
+          for (final enemy in enemies) enemy.noblePhantasm.noblePhantasmId,
+        }.where((e) => e > 0 && db.gameData.baseTds[e] != null).toList();
 
     return Scaffold(
       appBar: AppBar(title: Text('[${S.current.enemy_summary}] ${svt.lName.l}')),
@@ -72,7 +70,9 @@ class QuestEnemySummaryPage extends StatelessWidget {
                 ],
               ),
               if (!Transl.isJP)
-                CustomTableRow(children: [TableCellData(text: svt.lName.jp, textAlign: TextAlign.center)]),
+                CustomTableRow(
+                  children: [TableCellData(text: svt.lName.jp, textAlign: TextAlign.center)],
+                ),
               TextButton(
                 onPressed: () {
                   svt.routeTo();

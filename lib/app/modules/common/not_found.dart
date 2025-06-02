@@ -15,14 +15,13 @@ class NotFoundPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: Text(title ?? '404'), centerTitle: true),
       body: Center(
-        child:
-            loading
-                ? const CircularProgressIndicator()
-                : Text(
-                  '${url ?? configuration?.url}\n\nWhy you got here?',
-                  style: Theme.of(context).textTheme.displaySmall,
-                  textAlign: TextAlign.center,
-                ),
+        child: loading
+            ? const CircularProgressIndicator()
+            : Text(
+                '${url ?? configuration?.url}\n\nWhy you got here?',
+                style: Theme.of(context).textTheme.displaySmall,
+                textAlign: TextAlign.center,
+              ),
       ),
     );
   }

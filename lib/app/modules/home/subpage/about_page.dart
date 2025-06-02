@@ -98,13 +98,12 @@ class _AboutPageState extends State<AboutPage> {
               if (!kIsWeb && !AppInfo.isMacStoreApp && (!PlatformU.isIOS || db.runtimeData.upgradableVersion != null))
                 ListTile(
                   title: Text(S.current.check_update),
-                  trailing:
-                      db.runtimeData.upgradableVersion != null
-                          ? Text(
-                            '${db.runtimeData.upgradableVersion!.versionString}↑',
-                            style: const TextStyle(color: Colors.redAccent),
-                          )
-                          : null,
+                  trailing: db.runtimeData.upgradableVersion != null
+                      ? Text(
+                          '${db.runtimeData.upgradableVersion!.versionString}↑',
+                          style: const TextStyle(color: Colors.redAccent),
+                        )
+                      : null,
                   onTap: () async {
                     if (PlatformU.isApple) {
                       launch(kAppStoreLink);
@@ -251,13 +250,12 @@ class _AboutPageState extends State<AboutPage> {
                   Navigator.push(
                     context,
                     PageRouteBuilder(
-                      pageBuilder:
-                          (context, _, _) => LicensePage(
-                            applicationName: AppInfo.appName,
-                            applicationVersion: AppInfo.fullVersion2,
-                            applicationIcon: Image.asset('res/img/launcher_icon/app_icon_logo.png', height: 120),
-                            applicationLegalese: 'Copyright © $kCopyrightYear cc.narumi.\nAll rights reserved.',
-                          ),
+                      pageBuilder: (context, _, _) => LicensePage(
+                        applicationName: AppInfo.appName,
+                        applicationVersion: AppInfo.fullVersion2,
+                        applicationIcon: Image.asset('res/img/launcher_icon/app_icon_logo.png', height: 120),
+                        applicationLegalese: 'Copyright © $kCopyrightYear cc.narumi.\nAll rights reserved.',
+                      ),
                     ),
                   );
                 },
@@ -346,7 +344,10 @@ class _AboutProgram extends StatelessWidget {
     if (onLongPress != null) {
       child = InkWell(onLongPress: onLongPress, onDoubleTap: onDoubleTap, child: child);
     }
-    return Card(shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(16))), child: child);
+    return Card(
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(16))),
+      child: child,
+    );
   }
 }
 

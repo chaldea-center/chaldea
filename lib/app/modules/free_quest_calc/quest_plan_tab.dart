@@ -97,7 +97,9 @@ class _QuestPlanTabState extends State<QuestPlanTab> {
             trailing: Text('${S.current.total_ap}: ${widget.solution?.totalCost ?? "-"}'),
           ),
         ),
-        Expanded(child: ListView(controller: _scrollController, children: children)),
+        Expanded(
+          child: ListView(controller: _scrollController, children: children),
+        ),
       ],
     );
   }
@@ -124,23 +126,23 @@ class _QuestPlanTabState extends State<QuestPlanTab> {
             if (value.value && widget.solution?.params != null)
               widget.solution!.params!.blacklist.contains(questId)
                   ? TextButton.icon(
-                    onPressed: () {
-                      setState(() {
-                        widget.solution!.params!.blacklist.remove(questId);
-                      });
-                    },
-                    icon: Icon(Icons.clear, color: AppTheme(context).tertiary),
-                    label: Text(S.current.remove_from_blacklist, style: TextStyle(color: AppTheme(context).tertiary)),
-                  )
+                      onPressed: () {
+                        setState(() {
+                          widget.solution!.params!.blacklist.remove(questId);
+                        });
+                      },
+                      icon: Icon(Icons.clear, color: AppTheme(context).tertiary),
+                      label: Text(S.current.remove_from_blacklist, style: TextStyle(color: AppTheme(context).tertiary)),
+                    )
                   : TextButton.icon(
-                    onPressed: () {
-                      setState(() {
-                        widget.solution!.params!.blacklist.add(questId);
-                      });
-                    },
-                    icon: const Icon(Icons.add, color: Colors.redAccent),
-                    label: Text(S.current.add_to_blacklist, style: const TextStyle(color: Colors.redAccent)),
-                  ),
+                      onPressed: () {
+                        setState(() {
+                          widget.solution!.params!.blacklist.add(questId);
+                        });
+                      },
+                      icon: const Icon(Icons.add, color: Colors.redAccent),
+                      label: Text(S.current.add_to_blacklist, style: const TextStyle(color: Colors.redAccent)),
+                    ),
             if (value.value) QuestCard(quest: quest, questId: questId),
           ],
         );

@@ -80,10 +80,9 @@ class _ExpCardCostPageState extends State<ExpCardCostPage> {
               ),
               CheckboxWithLabel(
                 value: sameClass,
-                onChanged:
-                    (v) => setState(() {
-                      sameClass = v ?? sameClass;
-                    }),
+                onChanged: (v) => setState(() {
+                  sameClass = v ?? sameClass;
+                }),
                 label: Text(S.current.exp_card_same_class),
               ),
             ],
@@ -149,10 +148,9 @@ class _ExpCardCostPageState extends State<ExpCardCostPage> {
               6,
               (index) => DropdownMenuItem(value: 5 - index, child: Text('${5 - index}$kStarChar')),
             ),
-            onChanged:
-                (v) => setState(() {
-                  data.rarity = v ?? data.rarity;
-                }),
+            onChanged: (v) => setState(() {
+              data.rarity = v ?? data.rarity;
+            }),
             itemHeight: null,
             isDense: true,
           ),

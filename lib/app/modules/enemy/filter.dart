@@ -86,14 +86,15 @@ class _EnemyFilterPageState extends FilterPageState<EnemyFilterData, EnemyFilter
           ),
           FilterGroup<SvtType>(
             title: Text(S.current.general_type, style: textStyle),
-            options: List.of(SvtType.values)..removeWhere(
-              (e) => [
-                SvtType.svtEquipMaterial,
-                // SvtType.enemyCollectionDetail,
-                SvtType.all,
-                SvtType.commandCode,
-              ].contains(e),
-            ),
+            options: List.of(SvtType.values)
+              ..removeWhere(
+                (e) => [
+                  SvtType.svtEquipMaterial,
+                  // SvtType.enemyCollectionDetail,
+                  SvtType.all,
+                  SvtType.commandCode,
+                ].contains(e),
+              ),
             values: filterData.svtType,
             optionBuilder: (v) => Text(Transl.enums(v, (enums) => enums.svtType).l),
             onFilterChanged: (value, _) {

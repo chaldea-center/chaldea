@@ -63,7 +63,11 @@ class _BondTotalStateTable extends State<BondTotalTable> {
             selectedItemBuilder: (context) {
               final style = TextStyle(color: SharedBuilder.appBarForeground(context));
               return [
-                for (final value in kBondLvs) DropdownMenuItem(value: value, child: Text('Lv.$value', style: style)),
+                for (final value in kBondLvs)
+                  DropdownMenuItem(
+                    value: value,
+                    child: Text('Lv.$value', style: style),
+                  ),
               ];
             },
             onChanged: (v) {
@@ -76,18 +80,16 @@ class _BondTotalStateTable extends State<BondTotalTable> {
           IconButton(
             icon: const Icon(Icons.filter_alt),
             tooltip: '${S.current.filter} (${S.current.servant})',
-            onPressed:
-                () => FilterPage.show(
-                  context: context,
-                  builder:
-                      (context) => ServantFilterPage(
-                        filterData: svtFilter,
-                        onChanged: (_) {
-                          if (mounted) setState(() {});
-                        },
-                        planMode: false,
-                      ),
-                ),
+            onPressed: () => FilterPage.show(
+              context: context,
+              builder: (context) => ServantFilterPage(
+                filterData: svtFilter,
+                onChanged: (_) {
+                  if (mounted) setState(() {});
+                },
+                planMode: false,
+              ),
+            ),
           ),
         ],
       ),

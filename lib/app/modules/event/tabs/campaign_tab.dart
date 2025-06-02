@@ -55,7 +55,11 @@ class CampaignEventTab extends StatelessWidget {
       title: AutoSizeText.rich(
         TextSpan(
           children: [
-            if (event.isOnGoing(null)) const TextSpan(text: '● ', style: TextStyle(color: Colors.green)),
+            if (event.isOnGoing(null))
+              const TextSpan(
+                text: '● ',
+                style: TextStyle(color: Colors.green),
+              ),
             TextSpan(text: event.shownName),
           ],
         ),

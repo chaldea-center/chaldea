@@ -17,13 +17,13 @@ class SubState {
   ) async {
     for (final target in targets) {
       final removeFromStart = dataVals.Value != null && dataVals.Value! > 0;
-      final removeTargetCount =
-          dataVals.Value != null && dataVals.Value2 != null ? max(dataVals.Value!, dataVals.Value2!) : null;
+      final removeTargetCount = dataVals.Value != null && dataVals.Value2 != null
+          ? max(dataVals.Value!, dataVals.Value2!)
+          : null;
       int removeCount = 0;
-      final List<BuffData> listToInspect =
-          removeFromStart
-              ? target.battleBuff.originalActiveList.reversed.toList()
-              : target.battleBuff.originalActiveList.toList();
+      final List<BuffData> listToInspect = removeFromStart
+          ? target.battleBuff.originalActiveList.reversed.toList()
+          : target.battleBuff.originalActiveList.toList();
       final List<int> removedFamilyIndiv = [];
 
       for (int index = listToInspect.length - 1; index >= 0; index -= 1) {
@@ -94,12 +94,11 @@ class SubState {
     final activationRate = functionRate + grantSubState;
     final resistRate = toleranceSubState;
     final success = await battleData.canActivateFunction(activationRate - resistRate);
-    final resultsString =
-        success
-            ? S.current.success
-            : resistRate > 0
-            ? 'GUARD'
-            : 'MISS';
+    final resultsString = success
+        ? S.current.success
+        : resistRate > 0
+        ? 'GUARD'
+        : 'MISS';
 
     battleData.battleLogger.debug(
       '${S.current.effect_target}: ${target.lBattleName} - ${buff.buff.lName.l}'

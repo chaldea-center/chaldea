@@ -86,7 +86,14 @@ class _GachaDrawPageState extends State<GachaDrawPage> {
         child: ListTileTheme.merge(
           dense: true,
           visualDensity: VisualDensity.compact,
-          child: Column(children: [headerInfo, Expanded(child: body), const Divider(height: 1), buttonBar]),
+          child: Column(
+            children: [
+              headerInfo,
+              Expanded(child: body),
+              const Divider(height: 1),
+              buttonBar,
+            ],
+          ),
         ),
       ),
     );
@@ -107,9 +114,8 @@ class _GachaDrawPageState extends State<GachaDrawPage> {
           constraints: const BoxConstraints(maxWidth: 16, maxHeight: 16),
           child: ValueListenableBuilder(
             valueListenable: runtime.runningTask,
-            builder:
-                (context, running, _) =>
-                    CircularProgressIndicator(value: running ? null : 1.0, color: running ? Colors.red : Colors.green),
+            builder: (context, running, _) =>
+                CircularProgressIndicator(value: running ? null : 1.0, color: running ? Colors.red : Colors.green),
           ),
         ),
         title: Row(
@@ -192,44 +198,42 @@ class _GachaDrawPageState extends State<GachaDrawPage> {
             mainAxisSize: MainAxisSize.min,
             children: [
               TextButton(
-                onPressed:
-                    gacha == null
-                        ? null
-                        : () {
-                          InputCancelOkDialog(
-                            title: 'Gacha Sub Id',
-                            text: gachaOption.gachaSubId.toString(),
-                            keyboardType: TextInputType.number,
-                            validate: (s) => (int.tryParse(s) ?? -1) >= 0,
-                            onSubmit: (s) async {
-                              final subId = int.parse(s);
-                              final subs = gacha.getValidGachaSubs();
-                              if ((subs.isEmpty && subId == 0) || subs.any((e) => e.id == subId)) {
-                                runtime.lockTask(() {
-                                  gachaOption.gachaSubId = subId;
-                                });
-                              }
-                            },
-                          ).showDialog(context);
-                        },
+                onPressed: gacha == null
+                    ? null
+                    : () {
+                        InputCancelOkDialog(
+                          title: 'Gacha Sub Id',
+                          text: gachaOption.gachaSubId.toString(),
+                          keyboardType: TextInputType.number,
+                          validate: (s) => (int.tryParse(s) ?? -1) >= 0,
+                          onSubmit: (s) async {
+                            final subId = int.parse(s);
+                            final subs = gacha.getValidGachaSubs();
+                            if ((subs.isEmpty && subId == 0) || subs.any((e) => e.id == subId)) {
+                              runtime.lockTask(() {
+                                gachaOption.gachaSubId = subId;
+                              });
+                            }
+                          },
+                        ).showDialog(context);
+                      },
                 child: Text(gachaOption.gachaSubId.toString()),
               ),
               IconButton(
-                onPressed:
-                    gacha == null
-                        ? null
-                        : () => router.pushPage(
-                          SelectGachaSubPage(
-                            region: runtime.region,
-                            mstData: mstData,
-                            gacha: gacha,
-                            onSelected: (sub) {
-                              runtime.lockTask(() {
-                                gachaOption.gachaSubId = sub?.id ?? 0;
-                              });
-                            },
-                          ),
+                onPressed: gacha == null
+                    ? null
+                    : () => router.pushPage(
+                        SelectGachaSubPage(
+                          region: runtime.region,
+                          mstData: mstData,
+                          gacha: gacha,
+                          onSelected: (sub) {
+                            runtime.lockTask(() {
+                              gachaOption.gachaSubId = sub?.id ?? 0;
+                            });
+                          },
                         ),
+                      ),
                 icon: Icon(Icons.change_circle),
               ),
             ],
@@ -384,14 +388,13 @@ class _GachaDrawPageState extends State<GachaDrawPage> {
       CraftListPage(
         filterData: ceFilterData,
         onSelected: (selectedCE) {
-          final userSvts =
-              mstData.userSvt.where((userSvt) {
-                final ce = userSvt.dbCE;
-                if (ce == null || userSvt.svtId != selectedCE.id) return false;
-                if (userSvt.lv >= (userSvt.maxLv ?? 0)) return false;
-                if (userSvt.lv <= 1) return false;
-                return true;
-              }).toList();
+          final userSvts = mstData.userSvt.where((userSvt) {
+            final ce = userSvt.dbCE;
+            if (ce == null || userSvt.svtId != selectedCE.id) return false;
+            if (userSvt.lv >= (userSvt.maxLv ?? 0)) return false;
+            if (userSvt.lv <= 1) return false;
+            return true;
+          }).toList();
           userSvts.sortByList((e) => <int>[-e.limitCount, -e.lv, -e.exp]);
           router.showDialog(
             builder: (context) {
@@ -399,25 +402,24 @@ class _GachaDrawPageState extends State<GachaDrawPage> {
                 builder: (context, update) {
                   return SimpleDialog(
                     title: Text('Choose User CE'),
-                    children:
-                        userSvts.map((userSvt) {
-                          final ce = userSvt.dbCE;
-                          return ListTile(
-                            dense: true,
-                            leading: ce?.iconBuilder(context: context),
-                            title: Text('Lv.${userSvt.lv}, ${userSvt.limitCount}/4, ${userSvt.lv}/${userSvt.maxLv}'),
-                            subtitle: Text('No.${userSvt.id} ${userSvt.locked ? "locked" : "unlocked"}'),
-                            enabled: userSvt.locked && !gachaOption.ceEnhanceBaseUserSvtIds.contains(userSvt.id),
-                            onTap: () {
-                              runtime.lockTask(() {
-                                gachaOption.ceEnhanceBaseUserSvtIds.add(userSvt.id);
-                                EasyLoading.showSuccess("Added ${userSvt.id}");
-                                if (mounted) setState(() {});
-                                update(() {});
-                              });
-                            },
-                          );
-                        }).toList(),
+                    children: userSvts.map((userSvt) {
+                      final ce = userSvt.dbCE;
+                      return ListTile(
+                        dense: true,
+                        leading: ce?.iconBuilder(context: context),
+                        title: Text('Lv.${userSvt.lv}, ${userSvt.limitCount}/4, ${userSvt.lv}/${userSvt.maxLv}'),
+                        subtitle: Text('No.${userSvt.id} ${userSvt.locked ? "locked" : "unlocked"}'),
+                        enabled: userSvt.locked && !gachaOption.ceEnhanceBaseUserSvtIds.contains(userSvt.id),
+                        onTap: () {
+                          runtime.lockTask(() {
+                            gachaOption.ceEnhanceBaseUserSvtIds.add(userSvt.id);
+                            EasyLoading.showSuccess("Added ${userSvt.id}");
+                            if (mounted) setState(() {});
+                            update(() {});
+                          });
+                        },
+                      );
+                    }).toList(),
                   );
                 },
               );
@@ -459,14 +461,13 @@ class _GachaDrawPageState extends State<GachaDrawPage> {
       CraftListPage(
         filterData: ceFilterData,
         onSelected: (selectedCE) {
-          final userSvts =
-              mstData.userSvt.where((userSvt) {
-                final ce = userSvt.dbCE;
-                if (ce == null || userSvt.svtId != selectedCE.id) return false;
-                if (userSvt.lv >= (userSvt.maxLv ?? 0)) return false;
-                if (userSvt.lv <= 1) return false;
-                return true;
-              }).toList();
+          final userSvts = mstData.userSvt.where((userSvt) {
+            final ce = userSvt.dbCE;
+            if (ce == null || userSvt.svtId != selectedCE.id) return false;
+            if (userSvt.lv >= (userSvt.maxLv ?? 0)) return false;
+            if (userSvt.lv <= 1) return false;
+            return true;
+          }).toList();
           if (userSvts.isEmpty) {
             EasyLoading.showError('No valid CE (locked & ${S.current.max_limit_break} & lv>1)');
             return;
@@ -482,90 +483,90 @@ class _GachaDrawPageState extends State<GachaDrawPage> {
 
   void addSellKeepSvts() {
     router.showDialog(
-      builder:
-          (context) => SimpleDialog(
-            title: Text('Sell Keep'),
-            children: [
-              ListTile(
-                title: Text(S.current.servant),
-                onTap: () {
-                  Navigator.pop(context);
-                  router.pushPage(
-                    ServantListPage(
-                      onSelected: (svt) {
-                        runtime.lockTask(() {
-                          gachaOption.sellKeepSvtIds.add(svt.id);
-                        });
-                        if (mounted) setState(() {});
-                      },
-                    ),
-                  );
-                },
-              ),
-              ListTile(
-                title: Text(S.current.craft_essence),
-                onTap: () {
-                  Navigator.pop(context);
-                  router.pushPage(
-                    CraftListPage(
-                      onSelected: (ce) {
-                        runtime.lockTask(() {
-                          gachaOption.sellKeepSvtIds.add(ce.id);
-                        });
-                        if (mounted) setState(() {});
-                      },
-                    ),
-                  );
-                },
-              ),
-              ListTile(
-                title: Text('種火/英霊結晶'),
-                onTap: () {
-                  Navigator.pop(context);
-                  router.pushPage(
-                    EnemyListPage(
-                      filterData: EnemyFilterData()..svtType.options = {SvtType.combineMaterial, SvtType.statusUp},
-                      onSelected: (svt) {
-                        if (svt.type == SvtType.combineMaterial || svt.type == SvtType.statusUp) {
-                          runtime.lockTask(() {
-                            gachaOption.sellKeepSvtIds.add(svt.id);
-                          });
-                        } else {
-                          EasyLoading.showToast('Invalid choice');
-                        }
-                        if (mounted) setState(() {});
-                      },
-                    ),
-                  );
-                },
-              ),
-            ],
+      builder: (context) => SimpleDialog(
+        title: Text('Sell Keep'),
+        children: [
+          ListTile(
+            title: Text(S.current.servant),
+            onTap: () {
+              Navigator.pop(context);
+              router.pushPage(
+                ServantListPage(
+                  onSelected: (svt) {
+                    runtime.lockTask(() {
+                      gachaOption.sellKeepSvtIds.add(svt.id);
+                    });
+                    if (mounted) setState(() {});
+                  },
+                ),
+              );
+            },
           ),
+          ListTile(
+            title: Text(S.current.craft_essence),
+            onTap: () {
+              Navigator.pop(context);
+              router.pushPage(
+                CraftListPage(
+                  onSelected: (ce) {
+                    runtime.lockTask(() {
+                      gachaOption.sellKeepSvtIds.add(ce.id);
+                    });
+                    if (mounted) setState(() {});
+                  },
+                ),
+              );
+            },
+          ),
+          ListTile(
+            title: Text('種火/英霊結晶'),
+            onTap: () {
+              Navigator.pop(context);
+              router.pushPage(
+                EnemyListPage(
+                  filterData: EnemyFilterData()..svtType.options = {SvtType.combineMaterial, SvtType.statusUp},
+                  onSelected: (svt) {
+                    if (svt.type == SvtType.combineMaterial || svt.type == SvtType.statusUp) {
+                      runtime.lockTask(() {
+                        gachaOption.sellKeepSvtIds.add(svt.id);
+                      });
+                    } else {
+                      EasyLoading.showToast('Invalid choice');
+                    }
+                    if (mounted) setState(() {});
+                  },
+                ),
+              );
+            },
+          ),
+        ],
+      ),
     );
   }
 
   Widget buildLastResult() {
     final cards = runtime.gachaResultStat.lastDrawResult;
-    final cardWidgets =
-        cards.map((card) {
-          Widget child = card.toGift().iconBuilder(
-            context: context,
-            width: 48,
-            text: card.userSvtId == 0 ? 'sold' : null,
-            showOne: false,
-          );
-          if (card.userSvtId == 0) {
-            child = Stack(
-              children: [
-                child,
-                Positioned.fill(
-                  child: IgnorePointer(child: Container(color: Colors.grey.withAlpha(153), margin: EdgeInsets.all(2))),
-                ),
-              ],
-            );
-          }
-          return child;
-        }).toList();
+    final cardWidgets = cards.map((card) {
+      Widget child = card.toGift().iconBuilder(
+        context: context,
+        width: 48,
+        text: card.userSvtId == 0 ? 'sold' : null,
+        showOne: false,
+      );
+      if (card.userSvtId == 0) {
+        child = Stack(
+          children: [
+            child,
+            Positioned.fill(
+              child: IgnorePointer(
+                child: Container(color: Colors.grey.withAlpha(153), margin: EdgeInsets.all(2)),
+              ),
+            ),
+          ],
+        );
+      }
+      return child;
+    }).toList();
     if (cardWidgets.length > 10) {
       return Wrap(alignment: WrapAlignment.center, children: cardWidgets);
     } else {
@@ -641,7 +642,10 @@ class _GachaDrawPageState extends State<GachaDrawPage> {
           ].join(', '),
         ),
       ),
-      ListTile(title: Text('Cards/Coins'), subtitle: Wrap(spacing: 2, runSpacing: 2, children: shownCards)),
+      ListTile(
+        title: Text('Cards/Coins'),
+        subtitle: Wrap(spacing: 2, runSpacing: 2, children: shownCards),
+      ),
       if (stat.lastEnhanceBaseCE != null)
         SizedBox(
           height: 36,

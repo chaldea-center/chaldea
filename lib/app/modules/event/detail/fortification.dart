@@ -117,44 +117,40 @@ class EventFortificationPage extends HookWidget {
             TextSpan(
               text: detail.name,
               style: TextStyle(color: Theme.of(context).colorScheme.primary),
-              recognizer:
-                  TapGestureRecognizer()
-                    ..onTap = () {
-                      showDialog(
-                        context: context,
-                        useRootNavigator: false,
-                        builder: (context) {
-                          return SimpleConfirmDialog(
-                            showCancel: false,
-                            scrollable: true,
-                            title: Text(
-                              '${detail.position} - ${detail.name}',
-                              textScaler: const TextScaler.linear(0.9),
+              recognizer: TapGestureRecognizer()
+                ..onTap = () {
+                  showDialog(
+                    context: context,
+                    useRootNavigator: false,
+                    builder: (context) {
+                      return SimpleConfirmDialog(
+                        showCancel: false,
+                        scrollable: true,
+                        title: Text('${detail.position} - ${detail.name}', textScaler: const TextScaler.linear(0.9)),
+                        content: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            ListTile(
+                              dense: true,
+                              contentPadding: EdgeInsets.zero,
+                              title: Text(S.current.svt_class),
+                              trailing: Text(detail.className.name.toTitle()),
                             ),
-                            content: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                ListTile(
-                                  dense: true,
-                                  contentPadding: EdgeInsets.zero,
-                                  title: Text(S.current.svt_class),
-                                  trailing: Text(detail.className.name.toTitle()),
-                                ),
-                                if (detail.releaseConditions.isNotEmpty)
-                                  SHeader(S.current.open_condition, padding: headerPadding),
-                                for (final release in detail.releaseConditions)
-                                  CondTargetValueDescriptor.commonRelease(
-                                    commonRelease: release,
-                                    textScaleFactor: 0.85,
-                                    leading: const TextSpan(text: kULLeading),
-                                  ),
-                              ],
-                            ),
-                          );
-                        },
+                            if (detail.releaseConditions.isNotEmpty)
+                              SHeader(S.current.open_condition, padding: headerPadding),
+                            for (final release in detail.releaseConditions)
+                              CondTargetValueDescriptor.commonRelease(
+                                commonRelease: release,
+                                textScaleFactor: 0.85,
+                                leading: const TextSpan(text: kULLeading),
+                              ),
+                          ],
+                        ),
                       );
                     },
+                  );
+                },
             ),
           );
           for (final svt in fortification.servants) {

@@ -48,17 +48,15 @@ class _TdListPageState extends State<TdListPage> with SearchableListState<BaseTd
           IconButton(
             icon: const Icon(Icons.filter_alt),
             tooltip: S.current.filter,
-            onPressed:
-                () => FilterPage.show(
-                  context: context,
-                  builder:
-                      (context) => TdFilter(
-                        filterData: filterData,
-                        onChanged: (_) {
-                          if (mounted) setState(() {});
-                        },
-                      ),
-                ),
+            onPressed: () => FilterPage.show(
+              context: context,
+              builder: (context) => TdFilter(
+                filterData: filterData,
+                onChanged: (_) {
+                  if (mounted) setState(() {});
+                },
+              ),
+            ),
           ),
           searchIcon,
         ],

@@ -176,22 +176,20 @@ class _ItemDetailPageState extends State<ItemDetailPage> with SingleTickerProvid
         centerTitle: false,
         titleSpacing: 0,
         actions: tabs.getOrNull(curTab)?.actions ?? [],
-        bottom:
-            tabs.length < 2
-                ? null
-                : FixedHeight.tabBar(
-                  TabBar(
-                    tabAlignment: TabAlignment.center,
-                    controller: _tabController,
-                    isScrollable: true,
-                    tabs: tabs.map((e) => e.header).toList(),
-                  ),
+        bottom: tabs.length < 2
+            ? null
+            : FixedHeight.tabBar(
+                TabBar(
+                  tabAlignment: TabAlignment.center,
+                  controller: _tabController,
+                  isScrollable: true,
+                  tabs: tabs.map((e) => e.header).toList(),
                 ),
+              ),
       ),
-      body:
-          tabs.length == 1
-              ? tabs.first.view
-              : TabBarView(controller: _tabController, children: tabs.map((e) => e.view).toList()),
+      body: tabs.length == 1
+          ? tabs.first.view
+          : TabBarView(controller: _tabController, children: tabs.map((e) => e.view).toList()),
     );
   }
 

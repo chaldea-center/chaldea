@@ -68,7 +68,13 @@ class _GrowthCurvePageState extends State<GrowthCurvePage> with SingleTickerProv
       appBar: AppBar(
         title: AutoSizeText(widget.title, maxLines: 1, minFontSize: 8),
         bottom: FixedHeight.tabBar(
-          TabBar(controller: _tabController, tabs: const [Tab(text: 'Chart'), Tab(text: 'Table')]),
+          TabBar(
+            controller: _tabController,
+            tabs: const [
+              Tab(text: 'Chart'),
+              Tab(text: 'Table'),
+            ],
+          ),
         ),
       ),
       body: TabBarView(
@@ -130,14 +136,16 @@ class _GrowthCurvePageState extends State<GrowthCurvePage> with SingleTickerProv
         DataColumn2(label: const Text("ATK"), numeric: true, onSort: _onSort, size: ColumnSize.L),
         DataColumn2(label: const Text("HP"), numeric: true, onSort: _onSort, size: ColumnSize.L),
       ],
-      rows:
-          indices.map((index) {
-            final lv = hps.xx[index], hp = hps.yy[index], atk = atks.yy.getOrNull(index);
-            final style = lv % 10 == 0 ? TextStyle(color: Theme.of(context).colorScheme.primaryContainer) : null;
-            Text _text(int? s) =>
-                Text(s?.format(compact: false, groupSeparator: ',') ?? "", style: style, textAlign: TextAlign.center);
-            return DataRow2(cells: [DataCell(_text(lv)), DataCell(_text(atk)), DataCell(_text(hp))]);
-          }).toList(),
+      rows: indices.map((index) {
+        final lv = hps.xx[index], hp = hps.yy[index], atk = atks.yy.getOrNull(index);
+        final style = lv % 10 == 0 ? TextStyle(color: Theme.of(context).colorScheme.primaryContainer) : null;
+        Text _text(int? s) => Text(
+          s?.format(compact: false, groupSeparator: ',') ?? "",
+          style: style,
+          textAlign: TextAlign.center,
+        );
+        return DataRow2(cells: [DataCell(_text(lv)), DataCell(_text(atk)), DataCell(_text(hp))]);
+      }).toList(),
     );
   }
 }

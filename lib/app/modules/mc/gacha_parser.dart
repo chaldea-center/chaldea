@@ -141,15 +141,14 @@ class JpGachaParser {
   static const String kStar = '★';
 
   Future<List<GachaProbData>> parseMultiple(List<NiceGacha> gachas) async {
-    final futures =
-        gachas.map((gacha) async {
-          try {
-            return await parseProb(gacha);
-          } catch (e, s) {
-            logger.e('parse gacha prob failed', e, s);
-            return GachaProbData(gacha, '', []);
-          }
-        }).toList();
+    final futures = gachas.map((gacha) async {
+      try {
+        return await parseProb(gacha);
+      } catch (e, s) {
+        logger.e('parse gacha prob failed', e, s);
+        return GachaProbData(gacha, '', []);
+      }
+    }).toList();
     final allData = await Future.wait(futures);
     allData.sort2((e) => e.gacha.openedAt);
     return allData;
@@ -208,15 +207,14 @@ class JpGachaParser {
         final String probStr = row[3];
         final svt = _findCard(name, rarity, classIds);
         final key = 'svt-$pickup-$rarity-$probStr';
-        final group =
-            groupMap[key] ??= GachaProbRow(
-              isSvt: true,
-              pickup: pickup,
-              rarity: rarity,
-              indivProb: probStr,
-              cards: [],
-              isLuckyBag: gacha.isLuckyBag,
-            );
+        final group = groupMap[key] ??= GachaProbRow(
+          isSvt: true,
+          pickup: pickup,
+          rarity: rarity,
+          indivProb: probStr,
+          cards: [],
+          isLuckyBag: gacha.isLuckyBag,
+        );
         group.cards.add(svt);
       }
     }
@@ -226,15 +224,14 @@ class JpGachaParser {
         final ce = _findCard(row[1], rarity, [1001]);
         final probStr = row[2];
         final key = 'ce-$pickup-$rarity-$probStr';
-        final group =
-            groupMap[key] ??= GachaProbRow(
-              isSvt: false,
-              pickup: pickup,
-              rarity: rarity,
-              indivProb: probStr,
-              cards: [],
-              isLuckyBag: gacha.isLuckyBag,
-            );
+        final group = groupMap[key] ??= GachaProbRow(
+          isSvt: false,
+          pickup: pickup,
+          rarity: rarity,
+          indivProb: probStr,
+          cards: [],
+          isLuckyBag: gacha.isLuckyBag,
+        );
         group.cards.add(ce);
       }
     }
@@ -264,12 +261,11 @@ class JpGachaParser {
       if (card.collectionNo <= 0 || card.rarity != rarity || !classIds.contains(card.classId)) continue;
 
       final svt = db.gameData.servantsById[card.id];
-      final names =
-          <String?>{
-            card.name,
-            svt?.ascensionAdd.overWriteServantName.ascension[0],
-            ...?svt?.svtChange.map((e) => e.name),
-          }.whereType<String>().toList();
+      final names = <String?>{
+        card.name,
+        svt?.ascensionAdd.overWriteServantName.ascension[0],
+        ...?svt?.svtChange.map((e) => e.name),
+      }.whereType<String>().toList();
 
       if (names.contains(name)) {
         targets[card.id] = card;

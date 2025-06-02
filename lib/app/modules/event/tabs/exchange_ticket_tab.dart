@@ -145,12 +145,11 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
               text: ticket.dateStr,
               children: [if (hasAnyReplaced) const CenterWidgetSpan(child: Icon(Icons.help_outline, size: 18))],
               style: TextStyle(
-                color:
-                    planned
-                        ? _plannedColor
-                        : outdated
-                        ? _outdatedColor
-                        : null,
+                color: planned
+                    ? _plannedColor
+                    : outdated
+                    ? _outdatedColor
+                    : null,
                 fontWeight: outdated ? null : FontWeight.w600,
               ),
             ),
@@ -159,11 +158,15 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
               text: db.curUser.region == Region.jp ? maxHint : 'JP ${ticket.year}-${ticket.month}\n$maxHint',
               children: [
                 if (ticket.multiplier != 1)
-                  TextSpan(text: ' ×${ticket.multiplier}', style: TextStyle(fontWeight: FontWeight.bold)),
+                  TextSpan(
+                    text: ' ×${ticket.multiplier}',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
               ],
               style: TextStyle(
-                color:
-                    isThisMonth ? Theme.of(context).colorScheme.primary : Theme.of(context).textTheme.bodySmall?.color,
+                color: isThisMonth
+                    ? Theme.of(context).colorScheme.primary
+                    : Theme.of(context).textTheme.bodySmall?.color,
                 fontSize: 12,
               ),
             ),
@@ -222,11 +225,10 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
                   SingleCupertinoPicker(
                     title: Text('${ticket.dateStr} ${item?.lName.l}'),
                     initialItem: values.indexOf(monthPlan[index]).clamp2(0),
-                    builder:
-                        (context) => [
-                          for (final v in values)
-                            Center(child: Text(ticket.multiplier == 1 ? v.toString() : '$v×${ticket.multiplier}')),
-                        ],
+                    builder: (context) => [
+                      for (final v in values)
+                        Center(child: Text(ticket.multiplier == 1 ? v.toString() : '$v×${ticket.multiplier}')),
+                    ],
                     itemExtent: 36,
                     onSelected: (idx) {
                       monthPlan[index] = values[idx];
@@ -249,7 +251,10 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
     if (items.length <= 3 && items.isNotEmpty) {
       child = FittedBox(fit: BoxFit.scaleDown, child: child);
     } else if (width < 72 * 5) {
-      child = ConstrainedBox(constraints: const BoxConstraints(maxWidth: 72 * 4 - 2), child: child);
+      child = ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 72 * 4 - 2),
+        child: child,
+      );
     }
     return child;
   }

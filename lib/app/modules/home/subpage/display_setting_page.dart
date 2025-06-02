@@ -127,16 +127,15 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
                 onTap: () {
                   showDialog(
                     context: context,
-                    builder:
-                        (context) => SimpleConfirmDialog(
-                          title: Text(S.current.confirm),
-                          content: Text(S.current.reset_custom_ascension_icon),
-                          confirmText: S.current.reset.toUpperCase(),
-                          onTapOk: () {
-                            db.userData.customSvtIcon.clear();
-                            EasyLoading.showSuccess(S.current.success);
-                          },
-                        ),
+                    builder: (context) => SimpleConfirmDialog(
+                      title: Text(S.current.confirm),
+                      content: Text(S.current.reset_custom_ascension_icon),
+                      confirmText: S.current.reset.toUpperCase(),
+                      onTapOk: () {
+                        db.userData.customSvtIcon.clear();
+                        EasyLoading.showSuccess(S.current.success);
+                      },
+                    ),
                   );
                 },
               ),
@@ -242,10 +241,9 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
             ),
           TileGroup(
             header: 'App',
-            footer:
-                PlatformU.isDesktop
-                    ? 'If system tray crash, delete settings.json or change "showSystemTray" value from true to false.'
-                    : null,
+            footer: PlatformU.isDesktop
+                ? 'If system tray crash, delete settings.json or change "showSystemTray" value from true to false.'
+                : null,
             children: [
               if (PlatformU.isDesktop)
                 SwitchListTile.adaptive(

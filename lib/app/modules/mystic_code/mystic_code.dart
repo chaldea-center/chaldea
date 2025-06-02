@@ -51,16 +51,15 @@ class _MysticCodePageState extends State<MysticCodePage> {
           ),
         ],
       ),
-      body:
-          mysticCode == null
-              ? Container()
-              : Column(
-                children: [
-                  buildScrollHeader(),
-                  Expanded(child: SingleChildScrollView(child: buildDetails(mysticCode))),
-                  SafeArea(child: levelSlider),
-                ],
-              ),
+      body: mysticCode == null
+          ? Container()
+          : Column(
+              children: [
+                buildScrollHeader(),
+                Expanded(child: SingleChildScrollView(child: buildDetails(mysticCode))),
+                SafeArea(child: levelSlider),
+              ],
+            ),
     );
   }
 
@@ -87,7 +86,10 @@ class _MysticCodePageState extends State<MysticCodePage> {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        IconButton(onPressed: () => _scrollTo(-1), icon: const Icon(Icons.keyboard_arrow_left, color: Colors.grey)),
+        IconButton(
+          onPressed: () => _scrollTo(-1),
+          icon: const Icon(Icons.keyboard_arrow_left, color: Colors.grey),
+        ),
         Expanded(
           child: Container(
             margin: const EdgeInsets.symmetric(vertical: 10),
@@ -95,28 +97,30 @@ class _MysticCodePageState extends State<MysticCodePage> {
             child: ListView(
               controller: _scrollController,
               scrollDirection: Axis.horizontal,
-              children:
-                  codes.entries.map((e) {
-                    final code = e.value;
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 2),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          border: Border.all(color: _selected == e.key ? Colors.blue : Colors.transparent),
-                        ),
-                        child: db.getIconImage(
-                          code.icon,
-                          width: 50,
-                          height: 50,
-                          onTap: () => setState(() => _selected = e.key),
-                        ),
-                      ),
-                    );
-                  }).toList(),
+              children: codes.entries.map((e) {
+                final code = e.value;
+                return Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 2),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(color: _selected == e.key ? Colors.blue : Colors.transparent),
+                    ),
+                    child: db.getIconImage(
+                      code.icon,
+                      width: 50,
+                      height: 50,
+                      onTap: () => setState(() => _selected = e.key),
+                    ),
+                  ),
+                );
+              }).toList(),
             ),
           ),
         ),
-        IconButton(onPressed: () => _scrollTo(1), icon: const Icon(Icons.keyboard_arrow_right, color: Colors.grey)),
+        IconButton(
+          onPressed: () => _scrollTo(1),
+          icon: const Icon(Icons.keyboard_arrow_right, color: Colors.grey),
+        ),
       ],
     );
   }
@@ -154,13 +158,17 @@ class _MysticCodePageState extends State<MysticCodePage> {
         if (!Transl.isJP)
           CustomTableRow(
             children: [
-              TableCellData(child: Text(mysticCode.name, style: const TextStyle(fontWeight: FontWeight.w500))),
+              TableCellData(
+                child: Text(mysticCode.name, style: const TextStyle(fontWeight: FontWeight.w500)),
+              ),
             ],
           ),
         if (!Transl.isEN)
           CustomTableRow(
             children: [
-              TableCellData(child: Text(mysticCode.lName.na, style: const TextStyle(fontWeight: FontWeight.w500))),
+              TableCellData(
+                child: Text(mysticCode.lName.na, style: const TextStyle(fontWeight: FontWeight.w500)),
+              ),
             ],
             // color: TableCellData.headerColor.withAlpha(120),
           ),
@@ -234,28 +242,26 @@ class _MysticCodePageState extends State<MysticCodePage> {
       expanded: expanded,
       headerBuilder: (context, _) => ListTile(title: Text(title)),
       expandElevation: 0,
-      contentBuilder:
-          (context) => SizedBox(
-            height: height,
-            child: Align(
-              alignment: AlignmentDirectional.centerStart,
-              child: ListView.separated(
-                scrollDirection: Axis.horizontal,
-                shrinkWrap: true,
-                itemCount: urls.length,
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                itemBuilder:
-                    (context, index) => CachedImage(
-                      imageUrl: urls[index],
-                      onTap: () {
-                        FullscreenImageViewer.show(context: context, urls: urls, initialPage: index);
-                      },
-                      showSaveOnLongPress: true,
-                    ),
-                separatorBuilder: (context, index) => const SizedBox(width: 8),
-              ),
+      contentBuilder: (context) => SizedBox(
+        height: height,
+        child: Align(
+          alignment: AlignmentDirectional.centerStart,
+          child: ListView.separated(
+            scrollDirection: Axis.horizontal,
+            shrinkWrap: true,
+            itemCount: urls.length,
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            itemBuilder: (context, index) => CachedImage(
+              imageUrl: urls[index],
+              onTap: () {
+                FullscreenImageViewer.show(context: context, urls: urls, initialPage: index);
+              },
+              showSaveOnLongPress: true,
             ),
+            separatorBuilder: (context, index) => const SizedBox(width: 8),
           ),
+        ),
+      ),
     );
   }
 

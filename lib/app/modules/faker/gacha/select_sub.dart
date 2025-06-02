@@ -96,12 +96,27 @@ class _SelectGachaSubPageState extends State<SelectGachaSubPage> {
         }
       }
       if (matchCond == null) {
-        leading.add(TextSpan(text: '? ', style: TextStyle(color: Colors.red)));
+        leading.add(
+          TextSpan(
+            text: '? ',
+            style: TextStyle(color: Colors.red),
+          ),
+        );
       } else if (matchCond) {
-        leading.add(TextSpan(text: '⎷ ', style: TextStyle(color: Colors.green)));
+        leading.add(
+          TextSpan(
+            text: '⎷ ',
+            style: TextStyle(color: Colors.green),
+          ),
+        );
       } else {
         hasFailed = true;
-        leading.add(TextSpan(text: '× ', style: TextStyle(color: Colors.red)));
+        leading.add(
+          TextSpan(
+            text: '× ',
+            style: TextStyle(color: Colors.red),
+          ),
+        );
       }
       releases.add(
         CondTargetValueDescriptor.commonRelease(
@@ -132,13 +147,12 @@ class _SelectGachaSubPageState extends State<SelectGachaSubPage> {
         ...releases,
         if (widget.onSelected != null)
           FilledButton(
-            onPressed:
-                hasFailed
-                    ? null
-                    : () {
-                      Navigator.pop(context, sub);
-                      widget.onSelected!(sub);
-                    },
+            onPressed: hasFailed
+                ? null
+                : () {
+                    Navigator.pop(context, sub);
+                    widget.onSelected!(sub);
+                  },
             child: Text(S.current.select),
           ),
         const SizedBox(height: 8),

@@ -167,16 +167,14 @@ class ItemListPageState extends State<ItemListPage> with SingleTickerProviderSta
                       onNavToCalculator: navToDropCalculator,
                       filtered: filtered,
                       showSet999: true,
-                      editable:
-                          !const [
-                            ItemCategory.event,
-                            ItemCategory.other,
-                            ItemCategory.itemSelectMonth,
-                          ].contains(category),
-                      sortType:
-                          const [ItemCategory.event, ItemCategory.other].contains(category)
-                              ? _ItemSortType.id
-                              : sortType,
+                      editable: !const [
+                        ItemCategory.event,
+                        ItemCategory.other,
+                        ItemCategory.itemSelectMonth,
+                      ].contains(category),
+                      sortType: const [ItemCategory.event, ItemCategory.other].contains(category)
+                          ? _ItemSortType.id
+                          : sortType,
                       useGrid: useGrid,
                     ),
                   ),
@@ -239,7 +237,10 @@ class ItemListPageState extends State<ItemListPage> with SingleTickerProviderSta
       ),
       onTapOk: () {
         Future.delayed(const Duration(milliseconds: 500), () {
-          router.push(url: Routes.freeCalc, child: FreeQuestCalcPage(objectiveCounts: _getObjective()));
+          router.push(
+            url: Routes.freeCalc,
+            child: FreeQuestCalcPage(objectiveCounts: _getObjective()),
+          );
         });
       },
       actions: [
@@ -480,7 +481,9 @@ class _ItemListTabState extends State<ItemListTab> {
     }
     if (widget.showSet999 && widget.editable && !widget.useGrid) {
       children.add(
-        (context) => Center(child: TextButton(onPressed: setAll999, child: const Text('  >>> SET ALL 999 <<<  '))),
+        (context) => Center(
+          child: TextButton(onPressed: setAll999, child: const Text('  >>> SET ALL 999 <<<  ')),
+        ),
       );
     }
     Widget listView;
@@ -500,7 +503,13 @@ class _ItemListTabState extends State<ItemListTab> {
       );
     }
 
-    return Column(children: [Expanded(child: listView), kDefaultDivider, SafeArea(child: buttonBar)]);
+    return Column(
+      children: [
+        Expanded(child: listView),
+        kDefaultDivider,
+        SafeArea(child: buttonBar),
+      ],
+    );
   }
 
   Widget get buttonBar {
@@ -659,7 +668,12 @@ class _ItemListTabState extends State<ItemListTab> {
     );
     Widget title, subtitle;
     if (isQp) {
-      title = Row(children: <Widget>[const Text('QP  '), Expanded(child: textField)]);
+      title = Row(
+        children: <Widget>[
+          const Text('QP  '),
+          Expanded(child: textField),
+        ],
+      );
       final demand = db.itemCenter.demandOf(itemId).format(compact: false, groupSeparator: ','),
           left = (db.itemCenter.itemLeft[itemId] ?? 0).format(compact: false, groupSeparator: ',');
       subtitle = Row(
@@ -732,7 +746,10 @@ class _ItemListTabState extends State<ItemListTab> {
       subtitle = Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: [subtitle, Text(itemId.toString(), textScaler: const TextScaler.linear(0.85))],
+        children: [
+          subtitle,
+          Text(itemId.toString(), textScaler: const TextScaler.linear(0.85)),
+        ],
       );
     }
 

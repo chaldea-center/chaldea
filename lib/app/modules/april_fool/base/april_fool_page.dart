@@ -76,15 +76,14 @@ mixin AprilFoolPageMixin<T extends StatefulWidget> on State<T> {
       title: Text(title),
       actions: [
         PopupMenuButton(
-          itemBuilder:
-              (context) => [
-                PopupMenuItem(
-                  child: Text(S.current.refresh),
-                  onTap: () {
-                    loadManifest(manifestUrl, true);
-                  },
-                ),
-              ],
+          itemBuilder: (context) => [
+            PopupMenuItem(
+              child: Text(S.current.refresh),
+              onTap: () {
+                loadManifest(manifestUrl, true);
+              },
+            ),
+          ],
         ),
       ],
     );
@@ -287,7 +286,10 @@ class AprilFoolGraph extends StatelessWidget {
       builder: (context, loader) {
         return AspectRatio(
           aspectRatio: size.aspectRatio,
-          child: CustomPaint(painter: AprilFoolGraphPainter(loader: loader, chara: chara, bg: bg), size: size),
+          child: CustomPaint(
+            painter: AprilFoolGraphPainter(loader: loader, chara: chara, bg: bg),
+            size: size,
+          ),
         );
       },
     );

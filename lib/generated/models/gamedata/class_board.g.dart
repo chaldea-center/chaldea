@@ -69,13 +69,13 @@ ClassBoardSquare _$ClassBoardSquareFromJson(Map json) => ClassBoardSquare(
   posX: (json['posX'] as num?)?.toInt() ?? 0,
   posY: (json['posY'] as num?)?.toInt() ?? 0,
   skillType: $enumDecodeNullable(_$ClassBoardSkillTypeEnumMap, json['skillType']) ?? ClassBoardSkillType.none,
-  targetSkill:
-      json['targetSkill'] == null ? null : NiceSkill.fromJson(Map<String, dynamic>.from(json['targetSkill'] as Map)),
+  targetSkill: json['targetSkill'] == null
+      ? null
+      : NiceSkill.fromJson(Map<String, dynamic>.from(json['targetSkill'] as Map)),
   upSkillLv: (json['upSkillLv'] as num?)?.toInt() ?? 0,
-  targetCommandSpell:
-      json['targetCommandSpell'] == null
-          ? null
-          : ClassBoardCommandSpell.fromJson(Map<String, dynamic>.from(json['targetCommandSpell'] as Map)),
+  targetCommandSpell: json['targetCommandSpell'] == null
+      ? null
+      : ClassBoardCommandSpell.fromJson(Map<String, dynamic>.from(json['targetCommandSpell'] as Map)),
   lock: json['lock'] == null ? null : ClassBoardLock.fromJson(Map<String, dynamic>.from(json['lock'] as Map)),
   flags:
       (json['flags'] as List<dynamic>?)

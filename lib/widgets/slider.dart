@@ -43,7 +43,13 @@ class SliderWithPrefix extends StatelessWidget {
       header = Text.rich(
         TextSpan(
           text: label,
-          children: [const TextSpan(text: ': '), TextSpan(text: valueText, style: TextStyle(color: lableColor))],
+          children: [
+            const TextSpan(text: ': '),
+            TextSpan(
+              text: valueText,
+              style: TextStyle(color: lableColor),
+            ),
+          ],
         ),
       );
     } else {
@@ -97,7 +103,12 @@ class SliderWithPrefix extends StatelessWidget {
         children: [header, slider],
       );
     } else {
-      child = Row(children: [if (!titled) SizedBox(width: leadingWidth, child: header), Flexible(child: slider)]);
+      child = Row(
+        children: [
+          if (!titled) SizedBox(width: leadingWidth, child: header),
+          Flexible(child: slider),
+        ],
+      );
     }
     if (padding != null) {
       child = Padding(padding: padding!, child: child);

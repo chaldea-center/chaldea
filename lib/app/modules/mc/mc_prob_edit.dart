@@ -127,34 +127,32 @@ class _MCGachaProbEditPageState extends State<MCGachaProbEditPage> {
                   child: Text(S.current.open_in_browser),
                 ),
               FilledButton(
-                onPressed:
-                    result.isInvalid
-                        ? null
-                        : () async {
-                          final summon = result.toSummon();
-                          if (gacha.isLuckyBag) {
-                            final type = await showDialog<SummonType>(
-                              context: context,
-                              useRootNavigator: false,
-                              builder:
-                                  (context) => SimpleDialog(
-                                    title: Text(S.current.lucky_bag),
-                                    children: [
-                                      for (final type in [SummonType.gssr, SummonType.gssrsr])
-                                        SimpleDialogOption(
-                                          child: Text(Transl.enums(type, (enums) => enums.summonType).l),
-                                          onPressed: () {
-                                            Navigator.pop(context, type);
-                                          },
-                                        ),
-                                    ],
+                onPressed: result.isInvalid
+                    ? null
+                    : () async {
+                        final summon = result.toSummon();
+                        if (gacha.isLuckyBag) {
+                          final type = await showDialog<SummonType>(
+                            context: context,
+                            useRootNavigator: false,
+                            builder: (context) => SimpleDialog(
+                              title: Text(S.current.lucky_bag),
+                              children: [
+                                for (final type in [SummonType.gssr, SummonType.gssrsr])
+                                  SimpleDialogOption(
+                                    child: Text(Transl.enums(type, (enums) => enums.summonType).l),
+                                    onPressed: () {
+                                      Navigator.pop(context, type);
+                                    },
                                   ),
-                            );
-                            if (type == null) return;
-                            summon.type = type;
-                          }
-                          router.push(child: SummonSimulatorPage(summon: summon));
-                        },
+                              ],
+                            ),
+                          );
+                          if (type == null) return;
+                          summon.type = type;
+                        }
+                        router.push(child: SummonSimulatorPage(summon: summon));
+                      },
                 child: Text(S.current.simulator),
               ),
             ],
@@ -171,14 +169,13 @@ class _MCGachaProbEditPageState extends State<MCGachaProbEditPage> {
               dense: true,
               value: showIcon,
               title: Text(S.current.icons),
-              onChanged:
-                  result.isInvalid
-                      ? null
-                      : (v) {
-                        setState(() {
-                          showIcon = v;
-                        });
-                      },
+              onChanged: result.isInvalid
+                  ? null
+                  : (v) {
+                      setState(() {
+                        showIcon = v;
+                      });
+                    },
             ),
             buildTable(),
             const Padding(
@@ -193,12 +190,11 @@ class _MCGachaProbEditPageState extends State<MCGachaProbEditPage> {
             ),
             Center(
               child: FilledButton(
-                onPressed:
-                    result.isInvalid
-                        ? null
-                        : () {
-                          copyToClipboard(result.toOutput(), toast: true);
-                        },
+                onPressed: result.isInvalid
+                    ? null
+                    : () {
+                        copyToClipboard(result.toOutput(), toast: true);
+                      },
                 child: Text('${S.current.copy} Mooncell wikitext'),
               ),
             ),
@@ -286,7 +282,9 @@ class _MCGachaProbEditPageState extends State<MCGachaProbEditPage> {
             // text: '(${group.cards.length}) ',
             children: [
               for (final card in group.cards)
-                CenterWidgetSpan(child: GameCardMixin.anyCardItemBuilder(context: context, width: 28, id: card.id)),
+                CenterWidgetSpan(
+                  child: GameCardMixin.anyCardItemBuilder(context: context, width: 28, id: card.id),
+                ),
             ],
           ),
         ),

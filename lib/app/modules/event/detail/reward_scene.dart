@@ -79,7 +79,10 @@ class _EventRewardScenePageState extends State<EventRewardScenePage> {
       subtitle: Text(bgm.tooltip),
       trailing: SoundPlayButton(url: bgm.audioAsset, player: player),
       onTap: () {
-        router.push(url: bgm.route, child: BgmDetailPage(bgm: bgm));
+        router.push(
+          url: bgm.route,
+          child: BgmDetailPage(bgm: bgm),
+        );
       },
     );
   }

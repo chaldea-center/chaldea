@@ -53,7 +53,11 @@ class _ImportFgoSimuMaterialPageState extends State<ImportFgoSimuMaterialPage> w
         bottom: FixedHeight.tabBar(
           TabBar(
             controller: _tabController,
-            tabs: [const Tab(text: 'Input'), Tab(text: S.current.servant), Tab(text: S.current.item)],
+            tabs: [
+              const Tab(text: 'Input'),
+              Tab(text: S.current.servant),
+              Tab(text: S.current.item),
+            ],
           ),
         ),
         actions: [
@@ -88,9 +92,8 @@ class _ImportFgoSimuMaterialPageState extends State<ImportFgoSimuMaterialPage> w
               expands: true,
               maxLines: null,
               textAlignVertical: TextAlignVertical.top,
-              contextMenuBuilder:
-                  (context, editableTextState) =>
-                      AdaptiveTextSelectionToolbar.editableText(editableTextState: editableTextState),
+              contextMenuBuilder: (context, editableTextState) =>
+                  AdaptiveTextSelectionToolbar.editableText(editableTextState: editableTextState),
               decoration: const InputDecoration(
                 border: OutlineInputBorder(),
                 helperText: 'Copy servant or item data from fgosimulator(webcrow)',

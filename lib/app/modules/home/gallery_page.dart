@@ -63,16 +63,15 @@ class _GalleryPageState extends State<GalleryPage> {
             ),
         ],
       ),
-      body:
-          db.settings.carousel.enabled
-              ? RefreshIndicator(
-                child: body,
-                onRefresh: () async {
-                  await AppNewsCarousel.resolveSliderImageUrls(true);
-                  if (mounted) setState(() {});
-                },
-              )
-              : body,
+      body: db.settings.carousel.enabled
+          ? RefreshIndicator(
+              child: body,
+              onRefresh: () async {
+                await AppNewsCarousel.resolveSliderImageUrls(true);
+                if (mounted) setState(() {});
+              },
+            )
+          : body,
     );
   }
 
@@ -124,7 +123,10 @@ class _GalleryPageState extends State<GalleryPage> {
             TextSpan(
               text: '${S.current.new_data_available}  ',
               children: [
-                TextSpan(text: S.current.update, style: TextStyle(color: Theme.of(context).colorScheme.primary)),
+                TextSpan(
+                  text: S.current.update,
+                  style: TextStyle(color: Theme.of(context).colorScheme.primary),
+                ),
               ],
             ),
             textScaler: const TextScaler.linear(0.8),
@@ -141,13 +143,12 @@ class _GalleryPageState extends State<GalleryPage> {
       children.add(
         SimpleAccordion(
           expanded: true,
-          headerBuilder:
-              (_, _) => ListTile(title: Text(S.current.invalid_startup_path), subtitle: Text(db.paths.appPath)),
-          contentBuilder:
-              (context) => Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                child: Text(S.current.invalid_startup_path_info),
-              ),
+          headerBuilder: (_, _) =>
+              ListTile(title: Text(S.current.invalid_startup_path), subtitle: Text(db.paths.appPath)),
+          contentBuilder: (context) => Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            child: Text(S.current.invalid_startup_path_info),
+          ),
         ),
       );
     }
@@ -165,7 +166,9 @@ class _GalleryPageState extends State<GalleryPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: divideTiles(<Widget>[
-          ListTile(title: Center(child: Text(S.current.test_info_pad, style: const TextStyle(fontSize: 18)))),
+          ListTile(
+            title: Center(child: Text(S.current.test_info_pad, style: const TextStyle(fontSize: 18))),
+          ),
           ListTile(title: const Text('UUID'), subtitle: Text(AppInfo.uuid)),
           ListTile(title: Text(S.current.screen_size), trailing: Text(MediaQuery.of(context).size.toString())),
           ListTile(

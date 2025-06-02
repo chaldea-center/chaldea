@@ -64,95 +64,94 @@ class ExtraAssetsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ExtraAssets? extraAssets = assets is ExtraAssets ? assets as ExtraAssets : null;
-    final children =
-        <Widget?>[
-          _oneGroup(
-            S.current.illustration,
-            [
-              ..._getUrls(assets.charaGraph),
-              ..._getUrls(extraAssets?.charaGraphEx),
-              ..._getUrls(extraAssets?.charaGraphChange),
-            ],
-            300,
-            expanded: true,
-            showMerge: true,
-            placeholder: charaGraphPlaceholder,
+    final children = <Widget?>[
+      _oneGroup(
+        S.current.illustration,
+        [
+          ..._getUrls(assets.charaGraph),
+          ..._getUrls(extraAssets?.charaGraphEx),
+          ..._getUrls(extraAssets?.charaGraphChange),
+        ],
+        300,
+        expanded: true,
+        showMerge: true,
+        placeholder: charaGraphPlaceholder,
+      ),
+      _oneGroup(
+        S.current.april_fool,
+        aprilFoolAssets,
+        300,
+        expanded: false,
+        showMerge: true,
+        placeholder: charaGraphPlaceholder,
+        actions: [
+          IconButton(
+            onPressed: () {
+              router.push(url: Routes.aprilFool);
+            },
+            icon: const FaIcon(FontAwesomeIcons.hatWizard),
+            iconSize: 20,
+            color: Theme.of(context).hintColor,
           ),
-          _oneGroup(
-            S.current.april_fool,
-            aprilFoolAssets,
-            300,
-            expanded: false,
-            showMerge: true,
-            placeholder: charaGraphPlaceholder,
-            actions: [
-              IconButton(
-                onPressed: () {
-                  router.push(url: Routes.aprilFool);
-                },
-                icon: const FaIcon(FontAwesomeIcons.hatWizard),
-                iconSize: 20,
-                color: Theme.of(context).hintColor,
-              ),
-            ],
+        ],
+      ),
+      _oneGroup(
+        S.current.card_asset_face,
+        bordered([..._getUrls(assets.faces), ..._getUrls(extraAssets?.facesChange)]),
+        80,
+        expanded: true,
+      ),
+      _oneGroup(S.current.card_asset_status, _getUrls(extraAssets?.status), 120),
+      _oneGroup(S.current.card_asset_command, _getUrls(extraAssets?.commands), 120),
+      _oneGroup(S.current.card_asset_narrow_figure, [
+        ..._getUrls(extraAssets?.narrowFigure),
+        ..._getUrls(extraAssets?.narrowFigureChange),
+      ], 300),
+      _oneGroup(
+        S.current.card_asset_chara_figure,
+        _getUrls(
+          ExtraAssetsUrl(
+            ascension: extraAssets?.charaFigure.ascension,
+            // story: extraAssets?.charaFigure.story,
+            costume: extraAssets?.charaFigure.costume,
+            equip: extraAssets?.charaFigure.equip,
+            cc: extraAssets?.charaFigure.cc,
           ),
-          _oneGroup(
-            S.current.card_asset_face,
-            bordered([..._getUrls(assets.faces), ..._getUrls(extraAssets?.facesChange)]),
-            80,
-            expanded: true,
-          ),
-          _oneGroup(S.current.card_asset_status, _getUrls(extraAssets?.status), 120),
-          _oneGroup(S.current.card_asset_command, _getUrls(extraAssets?.commands), 120),
-          _oneGroup(S.current.card_asset_narrow_figure, [
-            ..._getUrls(extraAssets?.narrowFigure),
-            ..._getUrls(extraAssets?.narrowFigureChange),
-          ], 300),
-          _oneGroup(
-            S.current.card_asset_chara_figure,
-            _getUrls(
-              ExtraAssetsUrl(
-                ascension: extraAssets?.charaFigure.ascension,
-                // story: extraAssets?.charaFigure.story,
-                costume: extraAssets?.charaFigure.costume,
-                equip: extraAssets?.charaFigure.equip,
-                cc: extraAssets?.charaFigure.cc,
-              ),
-            ),
-            300,
-          ),
-          _oneGroup('Forms', [
-            if (extraAssets != null)
-              for (final form in extraAssets.charaFigureForm.values) ..._getUrls(form),
-          ], 300),
-          _oneGroup('Characters', [
-            if (extraAssets != null)
-              for (final multi in [
-                extraAssets.charaFigureMulti,
-                extraAssets.charaFigureMultiCombine,
-                extraAssets.charaFigureMultiLimitUp,
-              ])
-                for (final form in multi.values) ..._getUrls(form),
-          ], 300),
-          _oneGroup(
-            '${S.current.card_asset_chara_figure}(${S.current.script_story})',
-            _getUrls(ExtraAssetsUrl(story: extraAssets?.charaFigure.story)),
-            300,
-            subtitle: S.current.story_figure_manual_add_hint,
-          ),
-          _oneGroup(
-            'Image(${S.current.script_story})',
-            _getUrls(extraAssets?.image),
-            300,
-            subtitle: S.current.story_figure_manual_add_hint,
-          ),
-          _oneGroup('equipFace', _getUrls(extraAssets?.equipFace), 50, expanded: true),
-          _oneGroup('${S.current.sprites} (Mooncell)', mcSprites.map(WikiTool.mcFileUrl), 300),
-          _oneGroup('${S.current.sprites} (Fandom)', fandomSprites.map(WikiTool.fandomFileUrl), 300),
-          spriteViewer(extraAssets),
-          _oneGroup('Texture', _getUrls(extraAssets?.spriteModel), 300, showMerge: false),
-          _oneGroup('8th Anniversary', anni8photos, 300),
-        ].whereType<Widget>().toList();
+        ),
+        300,
+      ),
+      _oneGroup('Forms', [
+        if (extraAssets != null)
+          for (final form in extraAssets.charaFigureForm.values) ..._getUrls(form),
+      ], 300),
+      _oneGroup('Characters', [
+        if (extraAssets != null)
+          for (final multi in [
+            extraAssets.charaFigureMulti,
+            extraAssets.charaFigureMultiCombine,
+            extraAssets.charaFigureMultiLimitUp,
+          ])
+            for (final form in multi.values) ..._getUrls(form),
+      ], 300),
+      _oneGroup(
+        '${S.current.card_asset_chara_figure}(${S.current.script_story})',
+        _getUrls(ExtraAssetsUrl(story: extraAssets?.charaFigure.story)),
+        300,
+        subtitle: S.current.story_figure_manual_add_hint,
+      ),
+      _oneGroup(
+        'Image(${S.current.script_story})',
+        _getUrls(extraAssets?.image),
+        300,
+        subtitle: S.current.story_figure_manual_add_hint,
+      ),
+      _oneGroup('equipFace', _getUrls(extraAssets?.equipFace), 50, expanded: true),
+      _oneGroup('${S.current.sprites} (Mooncell)', mcSprites.map(WikiTool.mcFileUrl), 300),
+      _oneGroup('${S.current.sprites} (Fandom)', fandomSprites.map(WikiTool.fandomFileUrl), 300),
+      spriteViewer(extraAssets),
+      _oneGroup('Texture', _getUrls(extraAssets?.spriteModel), 300, showMerge: false),
+      _oneGroup('8th Anniversary', anni8photos, 300),
+    ].whereType<Widget>().toList();
     if (scrollable) {
       return ListView(padding: const EdgeInsetsDirectional.fromSTEB(16, 8, 0, 48), children: children);
     } else {
@@ -201,126 +200,123 @@ class ExtraAssetsPage extends StatelessWidget {
     placeholder ??= CachedImage.defaultProgressPlaceholder;
     return SimpleAccordion(
       expanded: expanded,
-      headerBuilder:
-          (context, expanded) => Row(
-            children: [
-              Expanded(
-                child:
-                    expanded && subtitle != null
-                        ? Column(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(title),
-                            const SizedBox(height: 2),
-                            Text(subtitle, style: Theme.of(context).textTheme.bodySmall),
-                          ],
-                        )
-                        : Text(title),
-              ),
-              if (expanded) ...?actions,
-              if (showMerge && expanded && _urls.length > 1)
-                IconButton(
-                  onPressed: () {
-                    router.pushPage(MergeImagePage(imageUrls: _urls.toList()));
-                  },
-                  icon: Icon(Icons.ios_share, color: Theme.of(context).hintColor),
-                  tooltip: S.current.share,
-                  iconSize: 20,
-                ),
-            ],
+      headerBuilder: (context, expanded) => Row(
+        children: [
+          Expanded(
+            child: expanded && subtitle != null
+                ? Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(title),
+                      const SizedBox(height: 2),
+                      Text(subtitle, style: Theme.of(context).textTheme.bodySmall),
+                    ],
+                  )
+                : Text(title),
           ),
-      expandElevation: 0,
-      contentBuilder:
-          (context) => SizedBox(
-            height: height,
-            child: Align(
-              alignment: AlignmentDirectional.centerStart,
-              child: ListView.separated(
-                scrollDirection: Axis.horizontal,
-                shrinkWrap: true,
-                itemCount: _urls.length,
-                itemBuilder: (context, index) {
-                  String url = _urls[index];
-                  Widget child;
-                  if (url.endsWith('manifest.json')) {
-                    final svtId = RegExp(r'/Servants/(\d+)/manifest.json').firstMatch(url)?.group(1);
-                    child = FutureBuilder(
-                      future: AtlasApi.cacheManager.getJson(url, expireAfter: const Duration(days: 7)),
-                      builder: (context, snapshot) {
-                        final data = snapshot.data;
-                        if (data is List) {
-                          List<Map> parts = data.whereType<Map>().where((m) => m['type'] == 'Texture2D').toList();
-                          Map? part;
-                          if (svtId != null) {
-                            part ??= parts.firstWhereOrNull((m) => m['path'] == "textures/$svtId.png");
-                          }
-                          part ??= parts.firstWhereOrNull((m) {
-                            final p = m['path'].toString();
-                            return p.contains('textures/') && !p.contains('aura_') && !p.contains('fbmx.png');
-                          });
-                          if (parts.isNotEmpty) {
-                            part ??= parts.first;
-                          }
-                          String? path = part?['path'];
-                          if (path != null) {
-                            final texture = Uri.parse(url).resolve(path).toString();
-                            return CachedImage(
-                              imageUrl: texture,
-                              onTap: () {
-                                if (onTapImage != null) {
-                                  onTapImage(texture);
-                                  return;
-                                }
-                                FullscreenImageViewer.show(
-                                  context: context,
-                                  urls: [texture],
-                                  initialPage: index,
-                                  placeholder: placeholder,
-                                );
-                              },
-                              showSaveOnLongPress: true,
-                              placeholder: placeholder,
-                              cachedOption: const CachedImageOption(
-                                fadeOutDuration: Duration(milliseconds: 1200),
-                                fadeInDuration: Duration(milliseconds: 800),
-                              ),
-                            );
-                          }
-                        }
-                        return placeholder?.call(context, url) ?? const SizedBox();
-                      },
-                    );
-                  } else {
-                    child = CachedImage(
-                      imageUrl: url,
-                      onTap: () {
-                        if (onTapImage != null) {
-                          onTapImage(url);
-                          return;
-                        }
-                        FullscreenImageViewer.show(
-                          context: context,
-                          urls: _urls,
-                          initialPage: index,
-                          placeholder: placeholder,
-                        );
-                      },
-                      showSaveOnLongPress: true,
-                      placeholder: placeholder,
-                      cachedOption: const CachedImageOption(
-                        fadeOutDuration: Duration(milliseconds: 1200),
-                        fadeInDuration: Duration(milliseconds: 800),
-                      ),
-                    );
-                  }
-                  if (transform != null) child = transform(child, url);
-                  return child;
-                },
-                separatorBuilder: (context, index) => const SizedBox(width: 8),
-              ),
+          if (expanded) ...?actions,
+          if (showMerge && expanded && _urls.length > 1)
+            IconButton(
+              onPressed: () {
+                router.pushPage(MergeImagePage(imageUrls: _urls.toList()));
+              },
+              icon: Icon(Icons.ios_share, color: Theme.of(context).hintColor),
+              tooltip: S.current.share,
+              iconSize: 20,
             ),
+        ],
+      ),
+      expandElevation: 0,
+      contentBuilder: (context) => SizedBox(
+        height: height,
+        child: Align(
+          alignment: AlignmentDirectional.centerStart,
+          child: ListView.separated(
+            scrollDirection: Axis.horizontal,
+            shrinkWrap: true,
+            itemCount: _urls.length,
+            itemBuilder: (context, index) {
+              String url = _urls[index];
+              Widget child;
+              if (url.endsWith('manifest.json')) {
+                final svtId = RegExp(r'/Servants/(\d+)/manifest.json').firstMatch(url)?.group(1);
+                child = FutureBuilder(
+                  future: AtlasApi.cacheManager.getJson(url, expireAfter: const Duration(days: 7)),
+                  builder: (context, snapshot) {
+                    final data = snapshot.data;
+                    if (data is List) {
+                      List<Map> parts = data.whereType<Map>().where((m) => m['type'] == 'Texture2D').toList();
+                      Map? part;
+                      if (svtId != null) {
+                        part ??= parts.firstWhereOrNull((m) => m['path'] == "textures/$svtId.png");
+                      }
+                      part ??= parts.firstWhereOrNull((m) {
+                        final p = m['path'].toString();
+                        return p.contains('textures/') && !p.contains('aura_') && !p.contains('fbmx.png');
+                      });
+                      if (parts.isNotEmpty) {
+                        part ??= parts.first;
+                      }
+                      String? path = part?['path'];
+                      if (path != null) {
+                        final texture = Uri.parse(url).resolve(path).toString();
+                        return CachedImage(
+                          imageUrl: texture,
+                          onTap: () {
+                            if (onTapImage != null) {
+                              onTapImage(texture);
+                              return;
+                            }
+                            FullscreenImageViewer.show(
+                              context: context,
+                              urls: [texture],
+                              initialPage: index,
+                              placeholder: placeholder,
+                            );
+                          },
+                          showSaveOnLongPress: true,
+                          placeholder: placeholder,
+                          cachedOption: const CachedImageOption(
+                            fadeOutDuration: Duration(milliseconds: 1200),
+                            fadeInDuration: Duration(milliseconds: 800),
+                          ),
+                        );
+                      }
+                    }
+                    return placeholder?.call(context, url) ?? const SizedBox();
+                  },
+                );
+              } else {
+                child = CachedImage(
+                  imageUrl: url,
+                  onTap: () {
+                    if (onTapImage != null) {
+                      onTapImage(url);
+                      return;
+                    }
+                    FullscreenImageViewer.show(
+                      context: context,
+                      urls: _urls,
+                      initialPage: index,
+                      placeholder: placeholder,
+                    );
+                  },
+                  showSaveOnLongPress: true,
+                  placeholder: placeholder,
+                  cachedOption: const CachedImageOption(
+                    fadeOutDuration: Duration(milliseconds: 1200),
+                    fadeInDuration: Duration(milliseconds: 800),
+                  ),
+                );
+              }
+              if (transform != null) child = transform(child, url);
+              return child;
+            },
+            separatorBuilder: (context, index) => const SizedBox(width: 8),
           ),
+        ),
+      ),
     );
   }
 
@@ -470,18 +466,19 @@ class _MergeImagePageState extends State<MergeImagePage> {
       body: Column(
         children: [
           Expanded(
-            child:
-                imgBytes != null
-                    ? PhotoView(
-                      backgroundDecoration: const BoxDecoration(color: Colors.transparent),
-                      imageProvider: MemoryImage(imgBytes!),
-                      filterQuality: FilterQuality.high,
-                      minScale: PhotoViewComputedScale.contained * 0.4,
-                    )
-                    : Center(child: Text(status?.toString() ?? '...')),
+            child: imgBytes != null
+                ? PhotoView(
+                    backgroundDecoration: const BoxDecoration(color: Colors.transparent),
+                    imageProvider: MemoryImage(imgBytes!),
+                    filterQuality: FilterQuality.high,
+                    minScale: PhotoViewComputedScale.contained * 0.4,
+                  )
+                : Center(child: Text(status?.toString() ?? '...')),
           ),
           if (size != null) Text('${size!.width.toInt()}×${size!.height.toInt()}', textAlign: TextAlign.center),
-          SafeArea(child: Padding(padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8), child: buttonBar)),
+          SafeArea(
+            child: Padding(padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8), child: buttonBar),
+          ),
         ],
       ),
     );
@@ -493,16 +490,15 @@ class _MergeImagePageState extends State<MergeImagePage> {
       spacing: 4,
       children: [
         ElevatedButton(
-          onPressed:
-              imgBytes == null
-                  ? null
-                  : () {
-                    ImageActions.showSaveShare(
-                      context: context,
-                      data: imgBytes,
-                      destFp: joinPaths(db.paths.downloadDir, 'merged-${DateTime.now().toSafeFileName()}.png'),
-                    );
-                  },
+          onPressed: imgBytes == null
+              ? null
+              : () {
+                  ImageActions.showSaveShare(
+                    context: context,
+                    data: imgBytes,
+                    destFp: joinPaths(db.paths.downloadDir, 'merged-${DateTime.now().toSafeFileName()}.png'),
+                  );
+                },
           child: Text('${S.current.save}/${S.current.share}'),
         ),
       ],

@@ -24,7 +24,9 @@ class CustomCharaFigureIntro extends HookWidget {
       body: ListView(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         children: [
-          Card(child: Padding(padding: const EdgeInsets.all(16), child: Text(S.current.custom_chara_figure_intro))),
+          Card(
+            child: Padding(padding: const EdgeInsets.all(16), child: Text(S.current.custom_chara_figure_intro)),
+          ),
           const SizedBox(height: 16),
           Padding(
             padding: const EdgeInsets.all(4),
@@ -273,14 +275,13 @@ class _CharaFigureImageState extends State<CharaFigureImage> {
     return ImageUtil.recordCanvas(
       width: 1024,
       height: script!.isHeight1024 ? 1024 : 768,
-      paint:
-          CharaFigurePainter(
-            figure: image,
-            face: widget.face,
-            script: script,
-            faceOnly: widget.faceOnly,
-            applyOffset: false,
-          ).paint,
+      paint: CharaFigurePainter(
+        figure: image,
+        face: widget.face,
+        script: script,
+        faceOnly: widget.faceOnly,
+        applyOffset: false,
+      ).paint,
     );
   }
 }

@@ -22,7 +22,10 @@ class EventTowersPage extends StatelessWidget {
       length: towers.length,
       child: Column(
         mainAxisSize: MainAxisSize.min,
-        children: <Widget>[FixedHeight.tabBar(tabbar), Expanded(child: TabBarView(children: pages))],
+        children: <Widget>[
+          FixedHeight.tabBar(tabbar),
+          Expanded(child: TabBarView(children: pages)),
+        ],
       ),
     );
   }
@@ -48,7 +51,11 @@ class EventTowerTab extends HookWidget {
     List<InlineSpan> titles = [];
     for (final gift in reward.gifts) {
       if (titles.isNotEmpty) titles.add(const TextSpan(text: '\n'));
-      titles.add(CenterWidgetSpan(child: gift.iconBuilder(context: context, width: 36, text: '', showName: true)));
+      titles.add(
+        CenterWidgetSpan(
+          child: gift.iconBuilder(context: context, width: 36, text: '', showName: true),
+        ),
+      );
       titles.add(TextSpan(text: ' ×${gift.num.format(compact: false, groupSeparator: ',')}'));
     }
 

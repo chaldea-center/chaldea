@@ -170,7 +170,10 @@ class _AutoLoginPageState extends State<AutoLoginPage> {
                 hint: const Text('Country'),
                 items: [
                   for (final c in NACountry.values)
-                    DropdownMenuItem(value: c, child: Text(c.displayName, textScaler: const TextScaler.linear(0.8))),
+                    DropdownMenuItem(
+                      value: c,
+                      child: Text(c.displayName, textScaler: const TextScaler.linear(0.8)),
+                    ),
                 ],
                 onChanged: (v) {
                   setState(() {
@@ -217,7 +220,9 @@ class _AutoLoginPageState extends State<AutoLoginPage> {
               tooltip: S.current.edit,
             ),
           ),
-          Center(child: FilledButton.tonal(onPressed: updateDeviceInfo, child: Text(S.current.read_device_info))),
+          Center(
+            child: FilledButton.tonal(onPressed: updateDeviceInfo, child: Text(S.current.read_device_info)),
+          ),
           const Divider(height: 16, indent: 16, endIndent: 16),
           if (args.response != null)
             Card(
@@ -304,7 +309,11 @@ class _AutoLoginPageState extends State<AutoLoginPage> {
             spans.add(const TextSpan(text: '\n'));
             spans.add(TextSpan(text: recoverAt.sec2date().toCustomString(year: false, second: false)));
           }
-          return Text.rich(TextSpan(children: spans), style: const TextStyle(fontSize: 12), textAlign: TextAlign.end);
+          return Text.rich(
+            TextSpan(children: spans),
+            style: const TextStyle(fontSize: 12),
+            textAlign: TextAlign.end,
+          );
         },
       );
       Widget tile = RadioListTile<AutoLoginDataJP>(
@@ -343,20 +352,19 @@ class _AutoLoginPageState extends State<AutoLoginPage> {
           tooltip: S.current.add,
         ),
         IconButton(
-          onPressed:
-              allData.length > 1
-                  ? () {
-                    SimpleConfirmDialog(
-                      title: Text(S.current.delete),
-                      onTapOk: () {
-                        final prevIndex = allData.indexOf(args);
-                        allData.remove(args);
-                        args = allData[prevIndex.clamp(0, allData.length - 1)];
-                        if (mounted) setState(() {});
-                      },
-                    ).showDialog(context);
-                  }
-                  : null,
+          onPressed: allData.length > 1
+              ? () {
+                  SimpleConfirmDialog(
+                    title: Text(S.current.delete),
+                    onTapOk: () {
+                      final prevIndex = allData.indexOf(args);
+                      allData.remove(args);
+                      args = allData[prevIndex.clamp(0, allData.length - 1)];
+                      if (mounted) setState(() {});
+                    },
+                  ).showDialog(context);
+                }
+              : null,
           icon: const Icon(Icons.remove_circle_outline),
           color: Theme.of(context).colorScheme.error,
           tooltip: S.current.remove,
@@ -381,10 +389,9 @@ class _AutoLoginPageState extends State<AutoLoginPage> {
         ),
         const SizedBox(width: 8),
         ElevatedButton(
-          onPressed:
-              args.response?.data.isSuccess('login') == true && args.response?.data != null
-                  ? () => _doImport(jsonEncode(args.response!.data.rawMap))
-                  : null,
+          onPressed: args.response?.data.isSuccess('login') == true && args.response?.data != null
+              ? () => _doImport(jsonEncode(args.response!.data.rawMap))
+              : null,
           child: Text(S.current.import_data),
         ),
       ],

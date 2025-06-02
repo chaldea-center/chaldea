@@ -60,23 +60,28 @@ class _SummonListPageState extends State<SummonListPage>
         title: Text(S.current.summon_banner),
         leading: const MasterBackButton(),
         titleSpacing: 0,
-        bottom:
-            showSearchBar
-                ? searchBar
-                : FixedHeight.tabBar(
-                  TabBar(
-                    controller: _tabController,
-                    tabs: [const Tab(text: "Mooncell"), Tab(text: S.current.raw_gacha_data)],
-                    onTap: (index) {
-                      if (index == 1) {
-                        router.push(url: Routes.gachas, child: GachaListPage(region: db.curUser.region));
-                        SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
-                          if (mounted) _tabController.index = 0;
-                        });
-                      }
-                    },
-                  ),
+        bottom: showSearchBar
+            ? searchBar
+            : FixedHeight.tabBar(
+                TabBar(
+                  controller: _tabController,
+                  tabs: [
+                    const Tab(text: "Mooncell"),
+                    Tab(text: S.current.raw_gacha_data),
+                  ],
+                  onTap: (index) {
+                    if (index == 1) {
+                      router.push(
+                        url: Routes.gachas,
+                        child: GachaListPage(region: db.curUser.region),
+                      );
+                      SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+                        if (mounted) _tabController.index = 0;
+                      });
+                    }
+                  },
                 ),
+              ),
         actions: [
           IconButton(
             icon: FaIcon(
@@ -93,18 +98,16 @@ class _SummonListPageState extends State<SummonListPage>
           IconButton(
             icon: const Icon(Icons.filter_alt),
             tooltip: S.current.filter,
-            onPressed:
-                () => FilterPage.show(
-                  context: context,
-                  builder:
-                      (context) => SummonFilterPage(
-                        filterData: filterData,
-                        isRawGacha: false,
-                        onChanged: (_) {
-                          if (mounted) setState(() {});
-                        },
-                      ),
-                ),
+            onPressed: () => FilterPage.show(
+              context: context,
+              builder: (context) => SummonFilterPage(
+                filterData: filterData,
+                isRawGacha: false,
+                onChanged: (_) {
+                  if (mounted) setState(() {});
+                },
+              ),
+            ),
           ),
           IconButton(
             icon: Icon(filterData.favorite ? Icons.favorite : Icons.favorite_outline),
@@ -149,11 +152,10 @@ class _SummonListPageState extends State<SummonListPage>
         constraints: const BoxConstraints(maxHeight: 108),
         child: CachedImage(
           imageUrl: banner,
-          placeholder:
-              (ctx, url) => Padding(
-                padding: const EdgeInsetsDirectional.only(start: 16),
-                child: Text(summon.lName.l, textScaler: const TextScaler.linear(0.9)),
-              ),
+          placeholder: (ctx, url) => Padding(
+            padding: const EdgeInsetsDirectional.only(start: 16),
+            child: Text(summon.lName.l, textScaler: const TextScaler.linear(0.9)),
+          ),
           aspectRatio: 8 / 3,
           cachedOption: CachedImageOption(errorWidget: (ctx, url, error) => Text(summon.lName.l)),
         ),
@@ -207,7 +209,10 @@ class _SummonListPageState extends State<SummonListPage>
         );
       }),
       onTap: () {
-        summon.routeTo(child: SummonDetailPage(summon: summon, summonList: shownList.toList()), popDetails: true);
+        summon.routeTo(
+          child: SummonDetailPage(summon: summon, summonList: shownList.toList()),
+          popDetails: true,
+        );
       },
     );
   }

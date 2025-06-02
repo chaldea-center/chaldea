@@ -44,19 +44,17 @@ class AprilFoolSvtListPageState extends State<AprilFoolSvtListPage>
           IconButton(
             icon: const Icon(Icons.filter_alt),
             tooltip: S.current.filter,
-            onPressed:
-                () => FilterPage.show(
-                  context: context,
-                  builder:
-                      (context) => AprilFoolSvtFilterPage(
-                        filterData: filterData,
-                        onChanged: (_) {
-                          if (mounted) {
-                            setState(() {});
-                          }
-                        },
-                      ),
-                ),
+            onPressed: () => FilterPage.show(
+              context: context,
+              builder: (context) => AprilFoolSvtFilterPage(
+                filterData: filterData,
+                onChanged: (_) {
+                  if (mounted) {
+                    setState(() {});
+                  }
+                },
+              ),
+            ),
           ),
           searchIcon,
         ],

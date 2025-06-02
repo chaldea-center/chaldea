@@ -20,10 +20,11 @@ class DropData {
   @JsonKey(includeFromJson: false, includeToJson: false)
   final Map<int, QuestDropData> freeDrops2; // key=questId
   @JsonKey(includeFromJson: false, includeToJson: false)
-  late final Map<int, QuestDropData> eventFreeDrops = Map.of(freeDrops2)..removeWhere((questId, drop) {
-    final quest = db.gameData.quests[questId];
-    return quest != null && (quest.warId < 2000 || quest.warId == WarId.daily);
-  });
+  late final Map<int, QuestDropData> eventFreeDrops = Map.of(freeDrops2)
+    ..removeWhere((questId, drop) {
+      final quest = db.gameData.quests[questId];
+      return quest != null && (quest.warId < 2000 || quest.warId == WarId.daily);
+    });
 
   DropData({this.domusVer = 0, DropRateSheet? domusAurea, this.fixedDrops = const {}, this.freeDrops = const {}})
     : domusAurea = domusAurea ?? DropRateSheet(),

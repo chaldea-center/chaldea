@@ -44,7 +44,10 @@ class _MCSummonCreatePageState extends State<MCSummonCreatePage> {
   @override
   Widget build(BuildContext context) {
     return InheritSelectionArea(
-      child: Scaffold(appBar: AppBar(title: Text(S.current.create_mooncell_summon)), body: buildBody()),
+      child: Scaffold(
+        appBar: AppBar(title: Text(S.current.create_mooncell_summon)),
+        body: buildBody(),
+      ),
     );
   }
 
@@ -58,17 +61,18 @@ class _MCSummonCreatePageState extends State<MCSummonCreatePage> {
             minLeadingWidth: 24,
             horizontalTitleGap: 8,
             contentPadding: EdgeInsets.zero,
-            leading:
-                gacha.isInvalid
-                    ? const Icon(Icons.error, color: Colors.red, size: 18)
-                    : const Icon(Icons.check_circle, color: Colors.green, size: 18),
+            leading: gacha.isInvalid
+                ? const Icon(Icons.error, color: Colors.red, size: 18)
+                : const Icon(Icons.check_circle, color: Colors.green, size: 18),
             title: Text('${index + 1} - ${gacha.gacha.name.setMaxLines(1)}'),
             onTap: () {
               gacha.gacha.routeTo(region: Region.jp);
             },
             trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
           ),
-        Center(child: ElevatedButton(onPressed: parseProbs, child: const Text('解析所有卡池'))),
+        Center(
+          child: ElevatedButton(onPressed: parseProbs, child: const Text('解析所有卡池')),
+        ),
         const Divider(height: 16),
         Row(
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -114,21 +118,19 @@ class _MCSummonCreatePageState extends State<MCSummonCreatePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             TextButton(
-              onPressed:
-                  _selectedNotice?.link == null
-                      ? null
-                      : () {
-                        launch(_selectedNotice!.link!);
-                      },
+              onPressed: _selectedNotice?.link == null
+                  ? null
+                  : () {
+                      launch(_selectedNotice!.link!);
+                    },
               child: const Text('打开公告'),
             ),
             TextButton(
-              onPressed:
-                  _selectedNotice?.topBanner == null
-                      ? null
-                      : () {
-                        launch(_selectedNotice!.topBanner!, external: true);
-                      },
+              onPressed: _selectedNotice?.topBanner == null
+                  ? null
+                  : () {
+                      launch(_selectedNotice!.topBanner!, external: true);
+                    },
               child: const Text('下载标题图'),
             ),
             TextButton(
@@ -238,20 +240,20 @@ class _MCSummonCreatePageState extends State<MCSummonCreatePage> {
           spacing: 8,
           children: [
             FilledButton(
-              onPressed:
-                  wikitext == null || wikitext.trim().isEmpty ? null : () => copyToClipboard(wikitext, toast: true),
+              onPressed: wikitext == null || wikitext.trim().isEmpty
+                  ? null
+                  : () => copyToClipboard(wikitext, toast: true),
               child: Text(S.current.copy),
             ),
             FilledButton.tonal(
-              onPressed:
-                  page == null || page.isEmpty
-                      ? null
-                      : () {
-                        if (wikitext != null && wikitext.isNotEmpty) {
-                          copyToClipboard(wikitext, toast: true);
-                        }
-                        launch(Uri.parse('https://fgo.wiki/w/$page?action=edit').toString(), external: true);
-                      },
+              onPressed: page == null || page.isEmpty
+                  ? null
+                  : () {
+                      if (wikitext != null && wikitext.isNotEmpty) {
+                        copyToClipboard(wikitext, toast: true);
+                      }
+                      launch(Uri.parse('https://fgo.wiki/w/$page?action=edit').toString(), external: true);
+                    },
               child: const Text('创建页面'),
             ),
           ],
@@ -265,7 +267,9 @@ class _MCSummonCreatePageState extends State<MCSummonCreatePage> {
             ),
           ),
         InheritSelectionArea(
-          child: Card(child: Padding(padding: const EdgeInsets.all(8), child: Text(wikitext ?? "解析失败"))),
+          child: Card(
+            child: Padding(padding: const EdgeInsets.all(8), child: Text(wikitext ?? "解析失败")),
+          ),
         ),
       ],
     );
@@ -409,8 +413,9 @@ class _MCSummonCreatePageState extends State<MCSummonCreatePage> {
 
     String fmtProb(String? indivProb, List<int>? ids) {
       if (indivProb == null || ids == null || ids.isEmpty) return '';
-      String prob =
-          RegExp(r'^\d+\.\d00%$').hasMatch(indivProb) ? '${indivProb.substring(0, indivProb.length - 3)}%' : indivProb;
+      String prob = RegExp(r'^\d+\.\d00%$').hasMatch(indivProb)
+          ? '${indivProb.substring(0, indivProb.length - 3)}%'
+          : indivProb;
       if (ids.length == 1) return prob;
       return '各$prob';
     }

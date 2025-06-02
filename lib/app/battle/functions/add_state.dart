@@ -36,12 +36,11 @@ class AddState {
       isPassive = true;
     }
     for (final target in targets) {
-      final buffData =
-          BuffData(buff, dataVals, battleData.getNextAddOrder())
-            ..actorUniqueId = activator?.uniqueId
-            ..actorName = activator?.lBattleName
-            ..passive = isPassive
-            ..skillInfoType = skillInfoType;
+      final buffData = BuffData(buff, dataVals, battleData.getNextAddOrder())
+        ..actorUniqueId = activator?.uniqueId
+        ..actorName = activator?.lBattleName
+        ..passive = isPassive
+        ..skillInfoType = skillInfoType;
 
       // Processing logicTurn related logic
       if (isShortBuff) {
@@ -220,12 +219,11 @@ class AddState {
 
     final success = await battleData.canActivateFunction(activationRate - resistRate);
 
-    final resultsString =
-        success
-            ? S.current.success
-            : resistRate > 0
-            ? 'GUARD'
-            : 'MISS';
+    final resultsString = success
+        ? S.current.success
+        : resistRate > 0
+        ? 'GUARD'
+        : 'MISS';
 
     battleData.battleLogger.debug(
       '${S.current.effect_target}: ${target.lBattleName} - '
@@ -288,10 +286,9 @@ class AddState {
       final tdId = tdTypeChangeIDs.getOrNull(targetTdIndex - 1);
       if (tdId == null) return null;
 
-      final List<NiceTd?> tds =
-          svt.isPlayer
-              ? (svt.playerSvtData?.svt?.noblePhantasms ?? [])
-              : (svt.niceSvt?.noblePhantasms ?? [svt.niceEnemy?.noblePhantasm.noblePhantasm]);
+      final List<NiceTd?> tds = svt.isPlayer
+          ? (svt.playerSvtData?.svt?.noblePhantasms ?? [])
+          : (svt.niceSvt?.noblePhantasms ?? [svt.niceEnemy?.noblePhantasm.noblePhantasm]);
       targetTd = tds.lastWhereOrNull((e) => e?.id == tdId);
       targetTd ??= await showEasyLoading(() => AtlasApi.td(tdId, svtId: svt.svtId), mask: true);
     }

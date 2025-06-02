@@ -16,7 +16,9 @@ import 'network.dart';
 class FakerAgentCN extends FakerAgent<FRequestCN, AutoLoginDataCN, NetworkManagerCN> {
   FakerAgentCN({required super.network});
   FakerAgentCN.s({required GameTop gameTop, required AutoLoginDataCN user})
-    : super(network: NetworkManagerCN(gameTop: gameTop.copy(), user: user));
+    : super(
+        network: NetworkManagerCN(gameTop: gameTop.copy(), user: user),
+      );
 
   String get host => switch (network.user.gameServer) {
     BiliGameServer.android => 'https://le1-bili-fate.bilibiligame.net',

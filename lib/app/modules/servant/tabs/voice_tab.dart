@@ -99,17 +99,16 @@ class _SvtVoiceTabState extends State<SvtVoiceTab> {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 48),
           child: Center(
-            child:
-                _loading
-                    ? const CircularProgressIndicator()
-                    : _svt == null
-                    ? RefreshButton(
-                      text: '???',
-                      onPressed: () {
-                        fetchSvt(_region);
-                      },
-                    )
-                    : Text(S.current.empty_hint),
+            child: _loading
+                ? const CircularProgressIndicator()
+                : _svt == null
+                ? RefreshButton(
+                    text: '???',
+                    onPressed: () {
+                      fetchSvt(_region);
+                    },
+                  )
+                : Text(S.current.empty_hint),
           ),
         ),
       );
@@ -210,10 +209,9 @@ class VoiceGroupAccordion extends StatelessWidget {
           final svtId = db.gameData.storyCharaFigures[group.svtId] ?? group.svtId;
           var curSvt = db.gameData.servantsById[svtId] ?? db.gameData.entities[svtId];
           if (_svt?.id != curSvt?.id || curSvt == null) {
-            svtSpan =
-                curSvt == null
-                    ? TextSpan(text: '${group.svtId} ')
-                    : SharedBuilder.textButtonSpan(context: context, text: '${curSvt.lName.l} ', onTap: curSvt.routeTo);
+            svtSpan = curSvt == null
+                ? TextSpan(text: '${group.svtId} ')
+                : SharedBuilder.textButtonSpan(context: context, text: '${curSvt.lName.l} ', onTap: curSvt.routeTo);
           }
         }
         return ListTile(
@@ -226,19 +224,18 @@ class VoiceGroupAccordion extends StatelessWidget {
               ],
             ),
           ),
-          subtitle:
-              suffixes.isEmpty
-                  ? null
-                  : Text.rich(
-                    TextSpan(
-                      children: [
-                        ...divideList(suffixes, const TextSpan(text: ', ')),
-                        // avoid clickable space extends to entire width
-                        const TextSpan(text: ' '),
-                      ],
-                    ),
-                    textScaler: const TextScaler.linear(0.9),
+          subtitle: suffixes.isEmpty
+              ? null
+              : Text.rich(
+                  TextSpan(
+                    children: [
+                      ...divideList(suffixes, const TextSpan(text: ', ')),
+                      // avoid clickable space extends to entire width
+                      const TextSpan(text: ' '),
+                    ],
                   ),
+                  textScaler: const TextScaler.linear(0.9),
+                ),
         );
       },
       contentBuilder: (context) {
@@ -606,11 +603,10 @@ class __PlayButtonState<T> extends State<_PlayButton<T>> {
                       TextSpan(
                         text: 'https://github.com/bleonard252/just_audio_mpv',
                         style: TextStyle(color: Theme.of(context).colorScheme.primary),
-                        recognizer:
-                            TapGestureRecognizer()
-                              ..onTap = () {
-                                launch('https://github.com/bleonard252/just_audio_mpv');
-                              },
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () {
+                            launch('https://github.com/bleonard252/just_audio_mpv');
+                          },
                       ),
                     ],
                   ),

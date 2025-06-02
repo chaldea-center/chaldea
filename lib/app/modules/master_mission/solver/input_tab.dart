@@ -95,15 +95,14 @@ class _MissionInputTabState extends State<MissionInputTab> {
     return Column(
       children: [
         Expanded(
-          child:
-              options.missions.isEmpty
-                  ? Center(child: Text(S.current.custom_mission_nothing_hint))
-                  : ListView.separated(
-                    controller: _scrollController,
-                    itemBuilder: (context, index) => _oneMission(index, options.missions[index]),
-                    separatorBuilder: (_, _) => kDefaultDivider,
-                    itemCount: options.missions.length,
-                  ),
+          child: options.missions.isEmpty
+              ? Center(child: Text(S.current.custom_mission_nothing_hint))
+              : ListView.separated(
+                  controller: _scrollController,
+                  itemBuilder: (context, index) => _oneMission(index, options.missions[index]),
+                  separatorBuilder: (_, _) => kDefaultDivider,
+                  itemCount: options.missions.length,
+                ),
         ),
         kDefaultDivider,
         eventSelector,
@@ -116,208 +115,205 @@ class _MissionInputTabState extends State<MissionInputTab> {
   Widget _oneMission(int index, CustomMission mission) {
     return SimpleAccordion(
       key: Key('mission_input_${mission.hashCode}'),
-      headerBuilder:
-          (context, collapsed) => ListTile(
-            title: mission.buildDescriptor(context, textScaleFactor: 0.8, leading: TextSpan(text: '${index + 1}. ')),
-            minLeadingWidth: 32,
-            contentPadding: const EdgeInsetsDirectional.only(start: 16),
-            trailing: SizedBox(
-              width: 48,
-              child: TextFormField(
-                decoration: InputDecoration(
-                  border: const OutlineInputBorder(),
-                  isDense: true,
-                  hintText: mission.count.toString(),
-                  contentPadding: const EdgeInsets.fromLTRB(8, 8, 8, 8),
-                ),
-                textAlign: TextAlign.center,
-                keyboardType: TextInputType.number,
-                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                onChanged: (v) {
+      headerBuilder: (context, collapsed) => ListTile(
+        title: mission.buildDescriptor(context, textScaleFactor: 0.8, leading: TextSpan(text: '${index + 1}. ')),
+        minLeadingWidth: 32,
+        contentPadding: const EdgeInsetsDirectional.only(start: 16),
+        trailing: SizedBox(
+          width: 48,
+          child: TextFormField(
+            decoration: InputDecoration(
+              border: const OutlineInputBorder(),
+              isDense: true,
+              hintText: mission.count.toString(),
+              contentPadding: const EdgeInsets.fromLTRB(8, 8, 8, 8),
+            ),
+            textAlign: TextAlign.center,
+            keyboardType: TextInputType.number,
+            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+            onChanged: (v) {
+              setState(() {
+                final count = v.isEmpty ? 0 : int.tryParse(v);
+                if (count != null) mission.count = count;
+              });
+            },
+          ),
+        ),
+      ),
+      contentBuilder: (context) => Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          if (mission.originDetail?.isNotEmpty == true)
+            ListTile(
+              dense: true,
+              title: Text(S.current.custom_mission_source_mission),
+              subtitle: Text(mission.originDetail!),
+            ),
+          if (mission.conds.length > 1)
+            ListTile(
+              dense: true,
+              leading: Text(S.current.logic_type),
+              trailing: FilterGroup<bool>(
+                options: const [true, false],
+                values: FilterRadioData.nonnull(mission.condAnd),
+                optionBuilder: (v) => Text(v ? S.current.logic_type_and : S.current.logic_type_or),
+                combined: true,
+                padding: EdgeInsets.zero,
+                onFilterChanged: (v, _) {
                   setState(() {
-                    final count = v.isEmpty ? 0 : int.tryParse(v);
-                    if (count != null) mission.count = count;
+                    mission.condAnd = v.radioValue!;
                   });
                 },
               ),
             ),
-          ),
-      contentBuilder:
-          (context) => Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
+          Wrap(
+            alignment: WrapAlignment.spaceEvenly,
+            // spacing: 8,
             children: [
-              if (mission.originDetail?.isNotEmpty == true)
-                ListTile(
-                  dense: true,
-                  title: Text(S.current.custom_mission_source_mission),
-                  subtitle: Text(mission.originDetail!),
+              TextButton(
+                onPressed: () {
+                  setState(() {
+                    options.missions.remove(mission);
+                  });
+                },
+                child: Text(S.current.remove_mission, style: TextStyle(color: Theme.of(context).colorScheme.error)),
+              ),
+              // const SizedBox(width: 48),
+              TextButton(
+                onPressed: () {
+                  setState(() {
+                    final prev = mission.conds.getOrNull(0);
+                    mission.conds.add(
+                      CustomMissionCond(
+                        type: prev?.type ?? CustomMissionType.trait,
+                        targetIds: [],
+                        useAnd: prev?.useAnd ?? false,
+                      ),
+                    );
+                  });
+                },
+                child: Text(S.current.add_condition),
+              ),
+            ],
+          ),
+          for (final cond in mission.conds) ...[
+            DividerWithTitle(
+              indent: 12,
+              titleWidget: Text.rich(
+                TextSpan(
+                  text: '${S.current.condition} ${mission.conds.indexOf(cond) + 1}',
+                  children: [
+                    if (mission.conds.length > 1)
+                      TextSpan(
+                        text: '(${S.current.delete})',
+                        style: TextStyle(color: Theme.of(context).colorScheme.error),
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () {
+                            setState(() {
+                              mission.conds.remove(cond);
+                            });
+                          },
+                      ),
+                  ],
                 ),
-              if (mission.conds.length > 1)
-                ListTile(
-                  dense: true,
-                  leading: Text(S.current.logic_type),
-                  trailing: FilterGroup<bool>(
-                    options: const [true, false],
-                    values: FilterRadioData.nonnull(mission.condAnd),
-                    optionBuilder: (v) => Text(v ? S.current.logic_type_and : S.current.logic_type_or),
-                    combined: true,
-                    padding: EdgeInsets.zero,
-                    onFilterChanged: (v, _) {
-                      setState(() {
-                        mission.condAnd = v.radioValue!;
-                      });
-                    },
-                  ),
-                ),
-              Wrap(
-                alignment: WrapAlignment.spaceEvenly,
-                // spacing: 8,
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+            ),
+            ListTile(
+              dense: true,
+              leading: Text(S.current.general_type),
+              trailing: DropdownButton<CustomMissionType>(
+                value: cond.type,
+                items: [
+                  for (final type in CustomMissionType.values)
+                    DropdownMenuItem(
+                      value: type,
+                      child: Text(
+                        Transl.enums(type, (enums) => enums.customMissionType).l,
+                        textScaler: const TextScaler.linear(0.8),
+                      ),
+                    ),
+                ],
+                onChanged: (v) {
+                  setState(() {
+                    if (v == null) return;
+                    if (mission.conds.length > 1) {
+                      final types = <bool>{
+                        v.isEnemyType,
+                        ...mission.conds.where((e) => e != cond).map((e) => e.type.isEnemyType),
+                      };
+                      bool mixed = types.length > 1;
+                      if (mixed) {
+                        EasyLoading.showError(S.current.custom_mission_mixed_type_hint);
+                        return;
+                      }
+                    }
+                    cond.type = v;
+                  });
+                },
+              ),
+            ),
+            ListTile(
+              dense: true,
+              leading: Text(S.current.logic_type),
+              trailing: FilterGroup<bool>(
+                options: const [true, false],
+                values: FilterRadioData.nonnull(cond.useAnd),
+                enabled: cond.fixedLogicType == null,
+                optionBuilder: (v) => Text(v ? S.current.logic_type_and : S.current.logic_type_or),
+                combined: true,
+                padding: EdgeInsets.zero,
+                onFilterChanged: (v, _) {
+                  setState(() {
+                    cond.useAnd = v.radioValue!;
+                  });
+                },
+              ),
+            ),
+            ListTile(
+              title: Wrap(
+                spacing: 2,
+                runSpacing: 2,
+                crossAxisAlignment: WrapCrossAlignment.center,
                 children: [
-                  TextButton(
-                    onPressed: () {
-                      setState(() {
-                        options.missions.remove(mission);
-                      });
+                  const Text('IDs   '),
+                  for (final id in cond.targetIds)
+                    InkWell(
+                      onTap: () {
+                        setState(() {
+                          cond.targetIds.remove(id);
+                        });
+                      },
+                      child: AbsorbPointer(
+                        child: FilterOption(selected: false, value: id, child: Text(_idDescriptor(cond.type, id))),
+                      ),
+                    ),
+                  IconButton(
+                    onPressed: () async {
+                      await SplitRoute.push(
+                        context,
+                        _SearchView(
+                          targetType: cond.type,
+                          selected: cond.targetIds,
+                          onChanged: (v) {
+                            cond.targetIds = v.toList();
+                            if (mounted) setState(() {});
+                          },
+                        ),
+                      );
+                      if (mounted) setState(() {});
                     },
-                    child: Text(S.current.remove_mission, style: TextStyle(color: Theme.of(context).colorScheme.error)),
-                  ),
-                  // const SizedBox(width: 48),
-                  TextButton(
-                    onPressed: () {
-                      setState(() {
-                        final prev = mission.conds.getOrNull(0);
-                        mission.conds.add(
-                          CustomMissionCond(
-                            type: prev?.type ?? CustomMissionType.trait,
-                            targetIds: [],
-                            useAnd: prev?.useAnd ?? false,
-                          ),
-                        );
-                      });
-                    },
-                    child: Text(S.current.add_condition),
+                    icon: Icon(Icons.add, color: AppTheme(context).tertiary),
+                    padding: EdgeInsets.zero,
+                    constraints: const BoxConstraints(minHeight: 36),
                   ),
                 ],
               ),
-              for (final cond in mission.conds) ...[
-                DividerWithTitle(
-                  indent: 12,
-                  titleWidget: Text.rich(
-                    TextSpan(
-                      text: '${S.current.condition} ${mission.conds.indexOf(cond) + 1}',
-                      children: [
-                        if (mission.conds.length > 1)
-                          TextSpan(
-                            text: '(${S.current.delete})',
-                            style: TextStyle(color: Theme.of(context).colorScheme.error),
-                            recognizer:
-                                TapGestureRecognizer()
-                                  ..onTap = () {
-                                    setState(() {
-                                      mission.conds.remove(cond);
-                                    });
-                                  },
-                          ),
-                      ],
-                    ),
-                    style: Theme.of(context).textTheme.bodySmall,
-                  ),
-                ),
-                ListTile(
-                  dense: true,
-                  leading: Text(S.current.general_type),
-                  trailing: DropdownButton<CustomMissionType>(
-                    value: cond.type,
-                    items: [
-                      for (final type in CustomMissionType.values)
-                        DropdownMenuItem(
-                          value: type,
-                          child: Text(
-                            Transl.enums(type, (enums) => enums.customMissionType).l,
-                            textScaler: const TextScaler.linear(0.8),
-                          ),
-                        ),
-                    ],
-                    onChanged: (v) {
-                      setState(() {
-                        if (v == null) return;
-                        if (mission.conds.length > 1) {
-                          final types = <bool>{
-                            v.isEnemyType,
-                            ...mission.conds.where((e) => e != cond).map((e) => e.type.isEnemyType),
-                          };
-                          bool mixed = types.length > 1;
-                          if (mixed) {
-                            EasyLoading.showError(S.current.custom_mission_mixed_type_hint);
-                            return;
-                          }
-                        }
-                        cond.type = v;
-                      });
-                    },
-                  ),
-                ),
-                ListTile(
-                  dense: true,
-                  leading: Text(S.current.logic_type),
-                  trailing: FilterGroup<bool>(
-                    options: const [true, false],
-                    values: FilterRadioData.nonnull(cond.useAnd),
-                    enabled: cond.fixedLogicType == null,
-                    optionBuilder: (v) => Text(v ? S.current.logic_type_and : S.current.logic_type_or),
-                    combined: true,
-                    padding: EdgeInsets.zero,
-                    onFilterChanged: (v, _) {
-                      setState(() {
-                        cond.useAnd = v.radioValue!;
-                      });
-                    },
-                  ),
-                ),
-                ListTile(
-                  title: Wrap(
-                    spacing: 2,
-                    runSpacing: 2,
-                    crossAxisAlignment: WrapCrossAlignment.center,
-                    children: [
-                      const Text('IDs   '),
-                      for (final id in cond.targetIds)
-                        InkWell(
-                          onTap: () {
-                            setState(() {
-                              cond.targetIds.remove(id);
-                            });
-                          },
-                          child: AbsorbPointer(
-                            child: FilterOption(selected: false, value: id, child: Text(_idDescriptor(cond.type, id))),
-                          ),
-                        ),
-                      IconButton(
-                        onPressed: () async {
-                          await SplitRoute.push(
-                            context,
-                            _SearchView(
-                              targetType: cond.type,
-                              selected: cond.targetIds,
-                              onChanged: (v) {
-                                cond.targetIds = v.toList();
-                                if (mounted) setState(() {});
-                              },
-                            ),
-                          );
-                          if (mounted) setState(() {});
-                        },
-                        icon: Icon(Icons.add, color: AppTheme(context).tertiary),
-                        padding: EdgeInsets.zero,
-                        constraints: const BoxConstraints(minHeight: 36),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ],
-          ),
+            ),
+          ],
+        ],
+      ),
     );
   }
 
@@ -342,7 +338,11 @@ class _MissionInputTabState extends State<MissionInputTab> {
       if (mounted) setState(() {});
     }
 
-    return ListTile(leading: Text(leading), title: TextButton(onPressed: _onTap, child: Text(title)), dense: true);
+    return ListTile(
+      leading: Text(leading),
+      title: TextButton(onPressed: _onTap, child: Text(title)),
+      dense: true,
+    );
   }
 
   Widget get advancedQuestSelector {
@@ -391,28 +391,26 @@ class _MissionInputTabState extends State<MissionInputTab> {
             items: [
               for (final isNA in [false, true]) DropdownMenuItem(value: isNA, child: Text(isNA ? 'NA' : 'JP')),
             ],
-            onChanged:
-                (options.warId < 1000)
-                    ? null
-                    : (v) {
-                      setState(() {
-                        if (v != null) options.isRegionNA = v;
-                      });
-                    },
+            onChanged: (options.warId < 1000)
+                ? null
+                : (v) {
+                    setState(() {
+                      if (v != null) options.isRegionNA = v;
+                    });
+                  },
           ),
           IconButton(
-            onPressed:
-                options.missions.isEmpty
-                    ? null
-                    : () {
-                      SimpleConfirmDialog(
-                        title: Text(S.current.clear),
-                        onTapOk: () {
-                          options.missions.clear();
-                          if (mounted) setState(() {});
-                        },
-                      ).showDialog(context);
-                    },
+            onPressed: options.missions.isEmpty
+                ? null
+                : () {
+                    SimpleConfirmDialog(
+                      title: Text(S.current.clear),
+                      onTapOk: () {
+                        options.missions.clear();
+                        if (mounted) setState(() {});
+                      },
+                    ).showDialog(context);
+                  },
             icon: const Icon(Icons.delete_outline),
             tooltip: S.current.clear,
           ),
@@ -485,8 +483,9 @@ class _MissionInputTabState extends State<MissionInputTab> {
         //   phases[id] = 1;
         // }
       } else {
-        NiceWar? war =
-            options.isRegionNA ? await AtlasApi.war(options.warId, region: Region.na) : db.gameData.wars[options.warId];
+        NiceWar? war = options.isRegionNA
+            ? await AtlasApi.war(options.warId, region: Region.na)
+            : db.gameData.wars[options.warId];
         if (war == null) {
           EasyLoading.showError('War ${options.warId} not found');
           return;
@@ -544,15 +543,14 @@ class _MissionInputTabState extends State<MissionInputTab> {
       if (countError + countNoEnemy > 0) {
         final _continue = await showDialog(
           context: context,
-          builder:
-              (context) => SimpleConfirmDialog(
-                title: Text(S.current.warning),
-                content: Text(
-                  'Resolved Quests: total ${phases.length + countNoEnemy},'
-                  ' $countSuccess success, $countError error, $countNoEnemy no data\n'
-                  'Still Continue?',
-                ),
-              ),
+          builder: (context) => SimpleConfirmDialog(
+            title: Text(S.current.warning),
+            content: Text(
+              'Resolved Quests: total ${phases.length + countNoEnemy},'
+              ' $countSuccess success, $countError error, $countNoEnemy no data\n'
+              'Still Continue?',
+            ),
+          ),
         );
         if (_continue != true) {
           return;
@@ -640,33 +638,31 @@ class __OptionsDialogState extends State<_OptionsDialog> {
             },
           ),
           SimpleAccordion(
-            headerBuilder:
-                (context, _) => ListTile(
-                  dense: true,
-                  title: Text(S.current.blacklist),
-                  trailing: Text(options.preset.blacklist.length.toString()),
-                ),
-            contentBuilder:
-                (context) => Column(
-                  children: divideTiles(
-                    options.preset.blacklist.map((questId) {
-                      String shownName = db.gameData.quests[questId]?.lDispName ?? 'Quest $questId';
-                      return ListTile(
-                        title: Text(shownName),
-                        dense: true,
-                        trailing: IconButton(
-                          icon: const Icon(Icons.clear, size: 18),
-                          tooltip: S.current.remove_from_blacklist,
-                          onPressed: () {
-                            setState(() {
-                              options.preset.blacklist.remove(questId);
-                            });
-                          },
-                        ),
-                      );
-                    }),
-                  ),
-                ),
+            headerBuilder: (context, _) => ListTile(
+              dense: true,
+              title: Text(S.current.blacklist),
+              trailing: Text(options.preset.blacklist.length.toString()),
+            ),
+            contentBuilder: (context) => Column(
+              children: divideTiles(
+                options.preset.blacklist.map((questId) {
+                  String shownName = db.gameData.quests[questId]?.lDispName ?? 'Quest $questId';
+                  return ListTile(
+                    title: Text(shownName),
+                    dense: true,
+                    trailing: IconButton(
+                      icon: const Icon(Icons.clear, size: 18),
+                      tooltip: S.current.remove_from_blacklist,
+                      onPressed: () {
+                        setState(() {
+                          options.preset.blacklist.remove(questId);
+                        });
+                      },
+                    ),
+                  );
+                }),
+              ),
+            ),
           ),
           SFooter.rich(
             TextSpan(
@@ -744,8 +740,9 @@ class _SearchViewState extends State<_SearchView> {
         return _buildTile(id, id.toString(), null);
       };
     }
-    final searchTextStyle =
-        Theme.of(context).isDarkMode ? null : TextStyle(color: Theme.of(context).colorScheme.onPrimary);
+    final searchTextStyle = Theme.of(context).isDarkMode
+        ? null
+        : TextStyle(color: Theme.of(context).colorScheme.onPrimary);
     return Scaffold(
       appBar: AppBar(
         title: TextFormField(
@@ -800,12 +797,11 @@ class _SearchViewState extends State<_SearchView> {
   List<int> _searchTraits() {
     List<int> ids = [];
     int? queryId = int.tryParse(query);
-    final allIds =
-        <int>{
-          ...kTraitIdMapping.keys,
-          ...db.gameData.mappingData.eventTrait.keys,
-          ...db.gameData.mappingData.fieldTrait.keys,
-        }.toList();
+    final allIds = <int>{
+      ...kTraitIdMapping.keys,
+      ...db.gameData.mappingData.eventTrait.keys,
+      ...db.gameData.mappingData.fieldTrait.keys,
+    }.toList();
     if (queryId != null) {
       ids = allIds.where((e) => e.toString().contains(query)).toList();
       if (!ids.contains(queryId)) ids.insert(0, queryId);
@@ -843,8 +839,10 @@ class _SearchViewState extends State<_SearchView> {
     List<int> ids = [];
     int? queryId = int.tryParse(query);
     if (queryId != null) {
-      ids =
-          SvtClass.values.where((e) => e.value < 97 && e.value.toString().contains(query)).map((e) => e.value).toList();
+      ids = SvtClass.values
+          .where((e) => e.value < 97 && e.value.toString().contains(query))
+          .map((e) => e.value)
+          .toList();
       if (!ids.contains(queryId)) ids.insert(0, queryId);
       return ids;
     }
@@ -935,7 +933,14 @@ class EventChooser extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(
           title: const Text('Select War'),
-          bottom: FixedHeight.tabBar(TabBar(tabs: [Tab(text: S.current.main_story), Tab(text: S.current.event)])),
+          bottom: FixedHeight.tabBar(
+            TabBar(
+              tabs: [
+                Tab(text: S.current.main_story),
+                Tab(text: S.current.event),
+              ],
+            ),
+          ),
         ),
         body: TabBarView(
           children: [

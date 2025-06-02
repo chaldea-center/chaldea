@@ -169,11 +169,10 @@ class QuestWave extends StatelessWidget {
 
     // others
     final _unknownDeck = stageEnemies.where((e) => !_usedUniqueIds.contains(e.deckNpcId)).toList();
-    final _allShiftNpcIds =
-        stageEnemies
-            .where((e) => e.deck.isInShiftDeck && e.deck != DeckType.missionTargetSkillShift)
-            .map((e) => e.npcId)
-            .toSet();
+    final _allShiftNpcIds = stageEnemies
+        .where((e) => e.deck.isInShiftDeck && e.deck != DeckType.missionTargetSkillShift)
+        .map((e) => e.npcId)
+        .toSet();
     _unknownDeck.removeWhere((e) => e.deck == DeckType.missionTargetSkillShift && _allShiftNpcIds.contains(e.npcId));
     _unknownDeck.sortByList((e) => [e.deck == DeckType.shift ? 999 : e.deck.index, e.deckId, e.npcId]);
     if (_unknownDeck.isNotEmpty) {
@@ -207,7 +206,10 @@ class QuestWave extends StatelessWidget {
           );
         }
       }
-      yield Row(textDirection: TextDirection.rtl, children: [for (final c in children) Expanded(child: c)]);
+      yield Row(
+        textDirection: TextDirection.rtl,
+        children: [for (final c in children) Expanded(child: c)],
+      );
     }
   }
 }
@@ -328,19 +330,18 @@ class WaveInfoPage extends StatelessWidget {
   }
 
   Widget buildFieldAis(BuildContext context, List<FieldAi> ais) {
-    List<Widget> children =
-        ais.map((ai) {
-          return Text.rich(
-            SharedBuilder.textButtonSpan(
-              context: context,
-              text: ai.id.toString(),
-              onTap: () {
-                router.push(url: Routes.aiI(AiType.field, ai.id), region: region);
-              },
-            ),
-            style: const TextStyle(fontSize: 14),
-          );
-        }).toList();
+    List<Widget> children = ais.map((ai) {
+      return Text.rich(
+        SharedBuilder.textButtonSpan(
+          context: context,
+          text: ai.id.toString(),
+          onTap: () {
+            router.push(url: Routes.aiI(AiType.field, ai.id), region: region);
+          },
+        ),
+        style: const TextStyle(fontSize: 14),
+      );
+    }).toList();
     children = divideList(children, const Text(' / ', style: TextStyle(fontSize: 14)));
     return ListTile(
       title: Row(
@@ -348,7 +349,9 @@ class WaveInfoPage extends StatelessWidget {
         children: [
           Text(S.current.field_ai),
           const SizedBox(width: 16),
-          Expanded(child: Wrap(alignment: WrapAlignment.end, children: children)),
+          Expanded(
+            child: Wrap(alignment: WrapAlignment.end, children: children),
+          ),
         ],
       ),
     );
@@ -429,7 +432,9 @@ class QuestEnemyWidget extends StatelessWidget {
       deck: [if (showDeck) '[${enemy.deck.name}]', if (enemy.deck != DeckType.enemy) '*'].join(),
       textStyle: textStyle,
       onTap: () {
-        router.push(child: QuestEnemyDetail(enemy: enemy, region: region));
+        router.push(
+          child: QuestEnemyDetail(enemy: enemy, region: region),
+        );
       },
     );
   }
@@ -465,7 +470,9 @@ class QuestPhaseAiNpcWidget extends StatelessWidget {
       deck: [if (showDeck) '[${DeckType.aiNpc.name}]', '*'].join(),
       onTap: () {
         if (enemy != null) {
-          router.push(child: QuestEnemyDetail(enemy: enemy, npcAis: aiNpc.aiIds, region: region, overrideTitle: 'NPC'));
+          router.push(
+            child: QuestEnemyDetail(enemy: enemy, npcAis: aiNpc.aiIds, region: region, overrideTitle: 'NPC'),
+          );
         }
       },
     );

@@ -146,10 +146,9 @@ class LocalSettings {
     _SecretsData? secrets,
   }) : _language = language,
        _preferredFavorite = preferredFavorite ?? (launchTimes == 0 ? FavoriteState.all : null),
-       preferredRegions =
-           preferredRegions == null
-               ? null
-               : (List.of(Region.values)..sort2((e) => preferredRegions.indexOf(e) % Region.values.length)),
+       preferredRegions = preferredRegions == null
+           ? null
+           : (List.of(Region.values)..sort2((e) => preferredRegions.indexOf(e) % Region.values.length)),
        priorityTags = priorityTags ?? {},
        galleries = galleries ?? {},
        proxy = proxy ?? ProxySettings(proxy: proxyServer),

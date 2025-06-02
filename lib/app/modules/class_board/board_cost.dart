@@ -28,7 +28,11 @@ class _ClassBoardItemCostPageState extends State<ClassBoardItemCostPage> with Si
         bottom: FixedHeight.tabBar(
           TabBar(
             controller: _tabController,
-            tabs: [Tab(text: S.current.general_all), Tab(text: S.current.plan), Tab(text: S.current.consumed)],
+            tabs: [
+              Tab(text: S.current.general_all),
+              Tab(text: S.current.plan),
+              Tab(text: S.current.consumed),
+            ],
           ),
         ),
       ),

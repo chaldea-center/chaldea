@@ -34,14 +34,13 @@ class TdTypeChangeSelector extends StatelessWidget {
     if (!battleData.mounted) return Future.value();
     return showUserConfirm<int>(
       context: battleData.context!,
-      builder:
-          (context, completer) => TdTypeChangeSelector(
-            battleData: battleData,
-            tdTypeChangeIds: tdTypeChangeIds,
-            tdIndexes: tdIndexes,
-            selectTdInfo: selectTdInfo,
-            completer: completer,
-          ),
+      builder: (context, completer) => TdTypeChangeSelector(
+        battleData: battleData,
+        tdTypeChangeIds: tdTypeChangeIds,
+        tdIndexes: tdIndexes,
+        selectTdInfo: selectTdInfo,
+        completer: completer,
+      ),
     );
   }
 

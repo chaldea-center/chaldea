@@ -101,7 +101,10 @@ class _FreeCalcFilterDialogState extends State<FreeCalcFilterDialog> {
             value: params.apHalfDailyQuest,
             items: [
               for (final type in QuestApReduceType.values)
-                DropdownMenuItem(value: type, child: Text(type.numberText, textScaler: const TextScaler.linear(0.9))),
+                DropdownMenuItem(
+                  value: type,
+                  child: Text(type.numberText, textScaler: const TextScaler.linear(0.9)),
+                ),
             ],
             onChanged: (v) => setState(() => params.apHalfDailyQuest = v ?? params.apHalfDailyQuest),
           ),
@@ -119,35 +122,35 @@ class _FreeCalcFilterDialogState extends State<FreeCalcFilterDialog> {
           },
         ),
         SimpleAccordion(
-          headerBuilder:
-              (context, _) => ListTile(
-                dense: true,
-                title: Text(S.current.blacklist),
-                trailing: Text(params.blacklist.length.toString()),
-              ),
-          contentBuilder:
-              (context) => Column(
-                children: divideTiles(
-                  params.blacklist.map((key) {
-                    String shownName = db.gameData.quests[key]?.lDispName ?? 'Quest $key';
-                    return ListTile(
-                      title: Text(shownName),
-                      dense: true,
-                      trailing: IconButton(
-                        icon: const Icon(Icons.clear, size: 18),
-                        tooltip: S.current.remove_from_blacklist,
-                        onPressed: () {
-                          setState(() {
-                            params.blacklist.remove(key);
-                          });
-                        },
-                      ),
-                    );
-                  }),
-                ),
-              ),
+          headerBuilder: (context, _) => ListTile(
+            dense: true,
+            title: Text(S.current.blacklist),
+            trailing: Text(params.blacklist.length.toString()),
+          ),
+          contentBuilder: (context) => Column(
+            children: divideTiles(
+              params.blacklist.map((key) {
+                String shownName = db.gameData.quests[key]?.lDispName ?? 'Quest $key';
+                return ListTile(
+                  title: Text(shownName),
+                  dense: true,
+                  trailing: IconButton(
+                    icon: const Icon(Icons.clear, size: 18),
+                    tooltip: S.current.remove_from_blacklist,
+                    onPressed: () {
+                      setState(() {
+                        params.blacklist.remove(key);
+                      });
+                    },
+                  ),
+                );
+              }),
+            ),
+          ),
         ),
-        Center(child: IconButton(icon: const Icon(Icons.close), onPressed: () => Navigator.of(context).pop())),
+        Center(
+          child: IconButton(icon: const Icon(Icons.close), onPressed: () => Navigator.of(context).pop()),
+        ),
       ],
     );
   }

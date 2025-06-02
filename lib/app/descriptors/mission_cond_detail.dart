@@ -155,12 +155,11 @@ class MissionCondDetailDescriptor extends HookWidget with DescriptorBase {
           jp: () => rich(null, svtClasses(context), 'クラスの敵を$targetNum骑倒せ(サーヴァント及び一部ボスなどは除く)'),
           cn: () => rich('击败$targetNum骑', svtClasses(context), '职阶中任意一种敌人(从者及部分首领级敌方除外)'),
           tw: () => rich('擊敗$targetNum騎', svtClasses(context), '職階中任意一種敵人(從者及部分首領級敵方除外)'),
-          na:
-              () => rich(
-                'Defeat $targetNum enemies with class ',
-                svtClasses(context),
-                ' (excluding Servants and certain bosses)',
-              ),
+          na: () => rich(
+            'Defeat $targetNum enemies with class ',
+            svtClasses(context),
+            ' (excluding Servants and certain bosses)',
+          ),
           kr: () => rich(null, svtClasses(context), '클래스의 적을 $targetNum마리 처치 (서번트 및 일부 보스 등은 제외)'),
         );
       case EventMissionCondDetailType.battleSvtClassSpecificNum:
@@ -168,12 +167,11 @@ class MissionCondDetailDescriptor extends HookWidget with DescriptorBase {
           jp: () => rich(null, svtClasses(context), 'クラスのサーヴァントを1騎以上編成して、いずれかのクエストを$targetNum回クリアせよ'),
           cn: () => rich('在队伍中编入至少1骑以上', svtClasses(context), '职阶从者，并完成任意关卡$targetNum次'),
           tw: () => rich('在隊伍中編入至少1騎以上', svtClasses(context), '職階從者，並完成任意關卡$targetNum次'),
-          na:
-              () => rich(
-                'Put one or more servants with class',
-                svtClasses(context),
-                ' in your Party and complete any quest $targetNum times',
-              ),
+          na: () => rich(
+            'Put one or more servants with class',
+            svtClasses(context),
+            ' in your Party and complete any quest $targetNum times',
+          ),
           kr: () => rich(null, svtClasses(context), '클래스의 서번트를 1기 이상 편성해서 전투 진행을 $targetNum회 완료'),
         );
       case EventMissionCondDetailType.allQuestItemGetTotal:
@@ -191,12 +189,8 @@ class MissionCondDetailDescriptor extends HookWidget with DescriptorBase {
           jp: () => rich(null, traits(context), '属性を持つサーヴァントを1騎以上編成して、いずれかのクエストを$targetNum回クリアせよ'),
           cn: () => rich('在队伍内编入至少1骑以上持有', traits(context), '属性的从者，并完成任意关卡$targetNum次'),
           tw: () => rich('在隊伍內編入至少1騎以上持有', traits(context), '屬性的從者，並完成任意關卡$targetNum次'),
-          na:
-              () => rich(
-                'Put servants with traits',
-                traits(context),
-                ' in your Party and complete Quests $targetNum times',
-              ),
+          na: () =>
+              rich('Put servants with traits', traits(context), ' in your Party and complete Quests $targetNum times'),
           kr: () => rich(null, traits(context), '특성을 가진 서번트를 1기 이상 편성해서 전투 진행을 $targetNum회 완료'),
         );
       case EventMissionCondDetailType.questClearWithSvtInDec:
@@ -213,9 +207,8 @@ class MissionCondDetailDescriptor extends HookWidget with DescriptorBase {
           jp: () => rich(null, servants(context), 'をスタメンにして、いずれかのクエストを$targetNum回クリアせよ'),
           cn: () => rich('在队伍内编入', servants(context), '从者作为首发队员，并完成任意关卡$targetNum次'),
           tw: () => rich('在隊伍內編入', servants(context), '從者作為首發隊員，並完成任意關卡$targetNum次'),
-          na:
-              () =>
-                  rich('Put servants ', servants(context), ' in Starting Member and complete Quests $targetNum times'),
+          na: () =>
+              rich('Put servants ', servants(context), ' in Starting Member and complete Quests $targetNum times'),
           kr: null,
         );
       case EventMissionCondDetailType.allQuestSvtGetTotal:

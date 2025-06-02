@@ -61,20 +61,19 @@ class MissionSolver extends BaseLPSolver {
   }) {
     int count = 0;
     if (mission.conds.first.type.isQuestType) {
-      List<bool> results =
-          mission.conds.map((cond) {
-            switch (cond.type) {
-              case CustomMissionType.quest:
-                assert(!cond.useAnd);
-                return cond.targetIds.contains(quest.id);
-              case CustomMissionType.questTrait:
-                return mission.condAnd
-                    ? NiceTrait.hasAllTraits(quest.questIndividuality, cond.targetIds)
-                    : NiceTrait.hasAnyTrait(quest.questIndividuality, cond.targetIds);
-              default:
-                return false;
-            }
-          }).toList();
+      List<bool> results = mission.conds.map((cond) {
+        switch (cond.type) {
+          case CustomMissionType.quest:
+            assert(!cond.useAnd);
+            return cond.targetIds.contains(quest.id);
+          case CustomMissionType.questTrait:
+            return mission.condAnd
+                ? NiceTrait.hasAllTraits(quest.questIndividuality, cond.targetIds)
+                : NiceTrait.hasAnyTrait(quest.questIndividuality, cond.targetIds);
+          default:
+            return false;
+        }
+      }).toList();
       if (mission.condAnd) {
         if (!results.contains(false)) count += 1;
       } else {
@@ -87,38 +86,37 @@ class MissionSolver extends BaseLPSolver {
         if (!includeAdditional && enemy.isRareOrAddition) {
           continue;
         }
-        final results =
-            mission.conds.map((cond) {
-              final enemyTraits = enemy.traits.toList();
-              if (quest.warId == 310 &&
-                  options != null &&
-                  options.addNotBasedOnSvtForTraum & MissionSolverOptions.kTraumClassEnemyIds.contains(enemy.svt.id)) {
-                if (enemyTraits.every((e) => e.id != Trait.notBasedOnServant.value)) {
-                  enemyTraits.add(NiceTrait(id: Trait.notBasedOnServant.value));
-                }
-              }
-              switch (cond.type) {
-                case CustomMissionType.trait:
-                  return cond.useAnd
-                      ? NiceTrait.hasAllTraits(enemyTraits, cond.targetIds)
-                      : NiceTrait.hasAnyTrait(enemyTraits, cond.targetIds);
-                case CustomMissionType.enemy:
-                  assert(!cond.useAnd);
-                  return cond.targetIds.contains(enemy.svt.id);
-                case CustomMissionType.enemyClass:
-                  assert(!cond.useAnd);
-                  return cond.targetIds.contains(enemy.svt.classId);
-                case CustomMissionType.servantClass:
-                  assert(!cond.useAnd);
-                  return enemyTraits.any((t) => t.name == Trait.servant) && cond.targetIds.contains(enemy.svt.classId);
-                case CustomMissionType.enemyNotServantClass:
-                  assert(!cond.useAnd);
-                  return enemyTraits.any((t) => t.name == Trait.notBasedOnServant) &&
-                      cond.targetIds.contains(enemy.svt.classId);
-                default:
-                  return false;
-              }
-            }).toList();
+        final results = mission.conds.map((cond) {
+          final enemyTraits = enemy.traits.toList();
+          if (quest.warId == 310 &&
+              options != null &&
+              options.addNotBasedOnSvtForTraum & MissionSolverOptions.kTraumClassEnemyIds.contains(enemy.svt.id)) {
+            if (enemyTraits.every((e) => e.id != Trait.notBasedOnServant.value)) {
+              enemyTraits.add(NiceTrait(id: Trait.notBasedOnServant.value));
+            }
+          }
+          switch (cond.type) {
+            case CustomMissionType.trait:
+              return cond.useAnd
+                  ? NiceTrait.hasAllTraits(enemyTraits, cond.targetIds)
+                  : NiceTrait.hasAnyTrait(enemyTraits, cond.targetIds);
+            case CustomMissionType.enemy:
+              assert(!cond.useAnd);
+              return cond.targetIds.contains(enemy.svt.id);
+            case CustomMissionType.enemyClass:
+              assert(!cond.useAnd);
+              return cond.targetIds.contains(enemy.svt.classId);
+            case CustomMissionType.servantClass:
+              assert(!cond.useAnd);
+              return enemyTraits.any((t) => t.name == Trait.servant) && cond.targetIds.contains(enemy.svt.classId);
+            case CustomMissionType.enemyNotServantClass:
+              assert(!cond.useAnd);
+              return enemyTraits.any((t) => t.name == Trait.notBasedOnServant) &&
+                  cond.targetIds.contains(enemy.svt.classId);
+            default:
+              return false;
+          }
+        }).toList();
         if (mission.condAnd) {
           if (!results.contains(false)) count += 1;
         } else {

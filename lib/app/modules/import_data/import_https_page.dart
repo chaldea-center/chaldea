@@ -116,77 +116,75 @@ class ImportHttpPageState extends State<ImportHttpPage> {
             tooltip: S.current.import_source_file,
           ),
           PopupMenuButton(
-            itemBuilder:
-                (context) => [
-                  PopupMenuItem(
-                    enabled: mstData?.userShop.isNotEmpty == true,
-                    onTap: () {
-                      db.runtimeData.clipBoard.mstData = mstData;
-                      EasyLoading.showToast(S.current.copied);
-                    },
-                    child: const Text('Copy Data (In-app)'),
-                  ),
-                ],
+            itemBuilder: (context) => [
+              PopupMenuItem(
+                enabled: mstData?.userShop.isNotEmpty == true,
+                onTap: () {
+                  db.runtimeData.clipBoard.mstData = mstData;
+                  EasyLoading.showToast(S.current.copied);
+                },
+                child: const Text('Copy Data (In-app)'),
+              ),
+            ],
           ),
         ],
       ),
       body: Column(
         children: [
           Expanded(
-            child:
-                mstData == null
-                    ? Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: Column(
-                        children: [
-                          Text(S.current.usage, style: const TextStyle(fontWeight: FontWeight.bold)),
-                          const SizedBox(height: 10),
-                          Text("${S.current.import_source_file} ↗↗"),
-                          TextButton(
-                            onPressed: () {
-                              launch(url);
-                            },
-                            child: Text(url),
-                          ),
-                          Text.rich(
-                            TextSpan(
-                              text: "For JP/NA, login via ",
-                              children: [
-                                SharedBuilder.textButtonSpan(
-                                  context: context,
-                                  text: S.current.import_auth_file,
-                                  onTap:
-                                      kIsWeb
-                                          ? null
-                                          : () {
-                                            router.pushPage(const AutoLoginPage());
-                                          },
-                                ),
-                                const TextSpan(text: ' first'),
-                              ],
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                        ],
-                      ),
-                    )
-                    : LayoutBuilder(
-                      builder:
-                          (context, constraints) => CustomScrollView(
-                            slivers: [
-                              userInfoSliver,
-                              itemSliver(constraints),
-                              svtSliver(false),
-                              svtSliver(true),
-                              craftSliver,
-                              cmdCodeSliver,
-                              classBoardSlider,
+            child: mstData == null
+                ? Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      children: [
+                        Text(S.current.usage, style: const TextStyle(fontWeight: FontWeight.bold)),
+                        const SizedBox(height: 10),
+                        Text("${S.current.import_source_file} ↗↗"),
+                        TextButton(
+                          onPressed: () {
+                            launch(url);
+                          },
+                          child: Text(url),
+                        ),
+                        Text.rich(
+                          TextSpan(
+                            text: "For JP/NA, login via ",
+                            children: [
+                              SharedBuilder.textButtonSpan(
+                                context: context,
+                                text: S.current.import_auth_file,
+                                onTap: kIsWeb
+                                    ? null
+                                    : () {
+                                        router.pushPage(const AutoLoginPage());
+                                      },
+                              ),
+                              const TextSpan(text: ' first'),
                             ],
                           ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
                     ),
+                  )
+                : LayoutBuilder(
+                    builder: (context, constraints) => CustomScrollView(
+                      slivers: [
+                        userInfoSliver,
+                        itemSliver(constraints),
+                        svtSliver(false),
+                        svtSliver(true),
+                        craftSliver,
+                        cmdCodeSliver,
+                        classBoardSlider,
+                      ],
+                    ),
+                  ),
           ),
           kDefaultDivider,
-          SafeArea(child: Padding(padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 4), child: buttonBar)),
+          SafeArea(
+            child: Padding(padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 4), child: buttonBar),
+          ),
         ],
       ),
     );
@@ -236,13 +234,12 @@ class ImportHttpPageState extends State<ImportHttpPage> {
                   title: Wrap(
                     crossAxisAlignment: WrapCrossAlignment.center,
                     children: [
-                      for (final (itemId, text)
-                          in {
-                            Items.stoneId: '${user.stone}(${user.freeStone}+${user.chargeStone})',
-                            Items.rarePrismId: user.rarePri.format(compact: false, groupSeparator: ','),
-                            Items.manaPrismId: user.mana.format(compact: false, groupSeparator: ','),
-                            Items.qpId: user.qp.format(compact: false, groupSeparator: ','),
-                          }.items)
+                      for (final (itemId, text) in {
+                        Items.stoneId: '${user.stone}(${user.freeStone}+${user.chargeStone})',
+                        Items.rarePrismId: user.rarePri.format(compact: false, groupSeparator: ','),
+                        Items.manaPrismId: user.mana.format(compact: false, groupSeparator: ','),
+                        Items.qpId: user.qp.format(compact: false, groupSeparator: ','),
+                      }.items)
                         Row(
                           mainAxisSize: MainAxisSize.min,
                           crossAxisAlignment: CrossAxisAlignment.center,
@@ -262,20 +259,19 @@ class ImportHttpPageState extends State<ImportHttpPage> {
   }
 
   Widget itemSliver(BoxConstraints constraints) {
-    final shownItems =
-        items.where((item) {
-          final dbItem = db.gameData.items[item.itemId];
-          if (dbItem != null) {
-            final category = dbItem.category;
-            if (category == ItemCategory.event || category == ItemCategory.itemSelectMonth) return false;
-            if (category == ItemCategory.eventAscension && item.num == 0) return false;
-            if (category == ItemCategory.other) {
-              if (item.num == 0) return false;
-              if (dbItem.type == ItemType.continueItem) return false;
-            }
-          }
-          return true;
-        }).toList();
+    final shownItems = items.where((item) {
+      final dbItem = db.gameData.items[item.itemId];
+      if (dbItem != null) {
+        final category = dbItem.category;
+        if (category == ItemCategory.event || category == ItemCategory.itemSelectMonth) return false;
+        if (category == ItemCategory.eventAscension && item.num == 0) return false;
+        if (category == ItemCategory.other) {
+          if (item.num == 0) return false;
+          if (dbItem.type == ItemType.continueItem) return false;
+        }
+      }
+      return true;
+    }).toList();
     return MultiSliver(
       pushPinnedChildren: true,
       children: [
@@ -285,10 +281,9 @@ class ImportHttpPageState extends State<ImportHttpPage> {
             leading: Checkbox(
               value: _includeItem,
               materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              onChanged:
-                  (v) => setState(() {
-                    _includeItem = v ?? _includeItem;
-                  }),
+              onChanged: (v) => setState(() {
+                _includeItem = v ?? _includeItem;
+              }),
             ),
             title: Text(S.current.item),
             trailing: ExpandIcon(onPressed: null, isExpanded: _showItem),
@@ -442,14 +437,13 @@ class ImportHttpPageState extends State<ImportHttpPage> {
             leading: Checkbox(
               value: inStorage ? _includeSvtStorage : _includeSvt,
               materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              onChanged:
-                  (v) => setState(() {
-                    if (inStorage) {
-                      _includeSvtStorage = v ?? _includeSvtStorage;
-                    } else {
-                      _includeSvt = v ?? _includeSvt;
-                    }
-                  }),
+              onChanged: (v) => setState(() {
+                if (inStorage) {
+                  _includeSvtStorage = v ?? _includeSvtStorage;
+                } else {
+                  _includeSvt = v ?? _includeSvt;
+                }
+              }),
             ),
             trailing: Row(
               mainAxisSize: MainAxisSize.min,
@@ -491,10 +485,9 @@ class ImportHttpPageState extends State<ImportHttpPage> {
             leading: Checkbox(
               value: _includeCraft,
               materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              onChanged:
-                  (v) => setState(() {
-                    _includeCraft = v ?? _includeCraft;
-                  }),
+              onChanged: (v) => setState(() {
+                _includeCraft = v ?? _includeCraft;
+              }),
             ),
             title: Text(S.current.craft_essence),
             trailing: ExpandIcon(onPressed: null, isExpanded: _showCraft),
@@ -546,10 +539,9 @@ class ImportHttpPageState extends State<ImportHttpPage> {
             leading: Checkbox(
               value: _includeCmdCode,
               materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              onChanged:
-                  (v) => setState(() {
-                    _includeCmdCode = v ?? _includeCmdCode;
-                  }),
+              onChanged: (v) => setState(() {
+                _includeCmdCode = v ?? _includeCmdCode;
+              }),
             ),
             title: Text('${S.current.command_code} & ${S.current.beast_footprint}'),
             trailing: ExpandIcon(onPressed: null, isExpanded: _showCmdCode),
@@ -604,10 +596,9 @@ class ImportHttpPageState extends State<ImportHttpPage> {
             leading: Checkbox(
               value: _includeClassBoard,
               materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              onChanged:
-                  (v) => setState(() {
-                    _includeClassBoard = v ?? _includeClassBoard;
-                  }),
+              onChanged: (v) => setState(() {
+                _includeClassBoard = v ?? _includeClassBoard;
+              }),
             ),
             title: Text(S.current.class_board),
             trailing: ExpandIcon(onPressed: null, isExpanded: _showClassBoard),
@@ -621,18 +612,17 @@ class ImportHttpPageState extends State<ImportHttpPage> {
         if (_showClassBoard)
           SliverClip(
             child: MultiSliver(
-              children:
-                  boards.map((userBoard) {
-                    final board = db.gameData.classBoards[userBoard.classBoardBaseId];
-                    return ListTile(
-                      dense: true,
-                      leading: db.getIconImage(board?.uiIcon, width: 32),
-                      title: Text(board?.dispName ?? "${S.current.class_board} ${userBoard.classBoardBaseId}"),
-                      subtitle: Text(
-                        "${S.current.unlock}: ${userBoard.classBoardUnlockSquareIds.length}. ${S.current.enhance}: ${userBoard.classBoardSquareIds.length}",
-                      ),
-                    );
-                  }).toList(),
+              children: boards.map((userBoard) {
+                final board = db.gameData.classBoards[userBoard.classBoardBaseId];
+                return ListTile(
+                  dense: true,
+                  leading: db.getIconImage(board?.uiIcon, width: 32),
+                  title: Text(board?.dispName ?? "${S.current.class_board} ${userBoard.classBoardBaseId}"),
+                  subtitle: Text(
+                    "${S.current.unlock}: ${userBoard.classBoardUnlockSquareIds.length}. ${S.current.enhance}: ${userBoard.classBoardSquareIds.length}",
+                  ),
+                );
+              }).toList(),
             ),
           ),
       ],
@@ -680,16 +670,15 @@ class ImportHttpPageState extends State<ImportHttpPage> {
           crossAxisAlignment: WrapCrossAlignment.center,
           children: [
             FilledButton(
-              onPressed:
-                  mstData == null
-                      ? null
-                      : () {
-                        showDialog(
-                          context: context,
-                          useRootNavigator: false,
-                          builder: (context) => buildStatDialog(context, mstData!),
-                        );
-                      },
+              onPressed: mstData == null
+                  ? null
+                  : () {
+                      showDialog(
+                        context: context,
+                        useRootNavigator: false,
+                        builder: (context) => buildStatDialog(context, mstData!),
+                      );
+                    },
               child: Text(S.current.statistics_title),
             ),
             FilledButton.tonal(
@@ -917,32 +906,31 @@ class ImportHttpPageState extends State<ImportHttpPage> {
     var fromFile = await showDialog(
       context: context,
       useRootNavigator: false,
-      builder:
-          (context) => SimpleDialog(
-            title: Text(S.current.import_data),
-            children: [
-              ListTile(
-                leading: const Icon(Icons.paste),
-                title: Text(S.current.import_from_clipboard),
-                onTap: () {
-                  Navigator.of(context).pop(false);
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.file_present),
-                title: Text(S.current.import_from_file),
-                onTap: () {
-                  Navigator.of(context).pop(true);
-                },
-              ),
-              IconButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                icon: const Icon(Icons.clear),
-              ),
-            ],
+      builder: (context) => SimpleDialog(
+        title: Text(S.current.import_data),
+        children: [
+          ListTile(
+            leading: const Icon(Icons.paste),
+            title: Text(S.current.import_from_clipboard),
+            onTap: () {
+              Navigator.of(context).pop(false);
+            },
           ),
+          ListTile(
+            leading: const Icon(Icons.file_present),
+            title: Text(S.current.import_from_file),
+            onTap: () {
+              Navigator.of(context).pop(true);
+            },
+          ),
+          IconButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            icon: const Icon(Icons.clear),
+          ),
+        ],
+      ),
     );
     try {
       List<int>? bytes;

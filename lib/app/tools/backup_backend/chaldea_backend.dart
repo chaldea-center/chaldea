@@ -102,12 +102,11 @@ class _ChooseBackupDialog extends StatelessWidget {
             <String?>[backup.createdAt.sec2date().toStringShort(), backup.os].whereType<String>().join('\n'),
           ),
           enabled: decoded != null,
-          onTap:
-              decoded == null
-                  ? null
-                  : () {
-                    Navigator.pop(context, decoded);
-                  },
+          onTap: decoded == null
+              ? null
+              : () {
+                  Navigator.pop(context, decoded);
+                },
         ),
       );
     }

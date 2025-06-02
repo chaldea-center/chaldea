@@ -66,17 +66,15 @@ class MysticCodeListPageState extends State<MysticCodeListPage>
           IconButton(
             icon: const Icon(Icons.filter_alt),
             tooltip: S.current.filter,
-            onPressed:
-                () => FilterPage.show(
-                  context: context,
-                  builder:
-                      (context) => MysticCodeFilterPage(
-                        filterData: filterData,
-                        onChanged: (_) {
-                          if (mounted) setState(() {});
-                        },
-                      ),
-                ),
+            onPressed: () => FilterPage.show(
+              context: context,
+              builder: (context) => MysticCodeFilterPage(
+                filterData: filterData,
+                onChanged: (_) {
+                  if (mounted) setState(() {});
+                },
+              ),
+            ),
           ),
         ],
       ),
@@ -148,7 +146,12 @@ class MysticCodeListPageState extends State<MysticCodeListPage>
       Navigator.pop(context);
       widget.onSelected!(mc);
     } else {
-      router.popDetailAndPush(context: context, url: mc.route, child: MysticCodePage(id: mc.id), detail: true);
+      router.popDetailAndPush(
+        context: context,
+        url: mc.route,
+        child: MysticCodePage(id: mc.id),
+        detail: true,
+      );
       selected = mc;
     }
     setState(() {});

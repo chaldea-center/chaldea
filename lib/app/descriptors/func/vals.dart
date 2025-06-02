@@ -161,13 +161,9 @@ class ValDsc extends StatelessWidget {
     }
     if (vals.TriggeredTargetHpRateRange != null) {
       List<String> ranges = DataVals.beautifyRangeTexts(vals.TriggeredTargetHpRateRange!);
-      ranges =
-          ranges
-              .map(
-                (e) =>
-                    e.replaceAllMapped(RegExp(r'\d+'), (m) => int.parse(m.group(0)!).format(percent: true, base: 10)),
-              )
-              .toList();
+      ranges = ranges
+          .map((e) => e.replaceAllMapped(RegExp(r'\d+'), (m) => int.parse(m.group(0)!).format(percent: true, base: 10)))
+          .toList();
       parts.add('HP ${ranges.join(" & ")}');
     }
     // end conditions

@@ -115,10 +115,12 @@ class GainNp {
   ) {
     final List<BattleServantData> countTargets = [];
 
-    final List<BattleServantData> aliveAllies =
-        currentTarget.isPlayer ? battleData.nonnullPlayers : battleData.nonnullEnemies;
-    final List<BattleServantData> aliveEnemies =
-        currentTarget.isPlayer ? battleData.nonnullEnemies : battleData.nonnullPlayers;
+    final List<BattleServantData> aliveAllies = currentTarget.isPlayer
+        ? battleData.nonnullPlayers
+        : battleData.nonnullEnemies;
+    final List<BattleServantData> aliveEnemies = currentTarget.isPlayer
+        ? battleData.nonnullEnemies
+        : battleData.nonnullPlayers;
 
     if (countType == GainNpIndividualSumTarget.target.value) {
       countTargets.add(currentTarget);

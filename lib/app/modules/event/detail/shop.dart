@@ -192,37 +192,36 @@ class _EventShopsPageState extends State<EventShopsPage> {
         ),
         PopupMenuButton(
           position: PopupMenuPosition.under,
-          itemBuilder:
-              (context) => [
-                PopupMenuItem(
-                  onTap: () {
-                    SimpleConfirmDialog(
-                      title: Text(S.current.reset),
-                      onTapOk: () {
-                        plan.shopBuyCount.clear();
-                        event?.updateStat();
-                        if (mounted) setState(() {});
-                      },
-                    ).showDialog(context);
-                  },
-                  child: Text(S.current.reset),
-                ),
-                PopupMenuItem(
-                  enabled: db.runtimeData.clipBoard.mstData != null,
-                  onTap: () {
-                    final userShops = db.runtimeData.clipBoard.mstData?.userShop.toList() ?? [];
-                    final buyCounts = {for (final shop in userShops) shop.shopId: shop.num};
-                    for (final shop in widget.shops) {
-                      final buyCount = buyCounts[shop.id] ?? 0;
-                      if (buyCount > 0 && shop.limitNum > 0 && buyCount <= shop.limitNum) {
-                        plan.shopBuyCount[shop.id] = shop.limitNum - buyCount;
-                      }
-                    }
+          itemBuilder: (context) => [
+            PopupMenuItem(
+              onTap: () {
+                SimpleConfirmDialog(
+                  title: Text(S.current.reset),
+                  onTapOk: () {
+                    plan.shopBuyCount.clear();
+                    event?.updateStat();
                     if (mounted) setState(() {});
                   },
-                  child: const Text("Read Login Data"),
-                ),
-              ],
+                ).showDialog(context);
+              },
+              child: Text(S.current.reset),
+            ),
+            PopupMenuItem(
+              enabled: db.runtimeData.clipBoard.mstData != null,
+              onTap: () {
+                final userShops = db.runtimeData.clipBoard.mstData?.userShop.toList() ?? [];
+                final buyCounts = {for (final shop in userShops) shop.shopId: shop.num};
+                for (final shop in widget.shops) {
+                  final buyCount = buyCounts[shop.id] ?? 0;
+                  if (buyCount > 0 && shop.limitNum > 0 && buyCount <= shop.limitNum) {
+                    plan.shopBuyCount[shop.id] = shop.limitNum - buyCount;
+                  }
+                }
+                if (mounted) setState(() {});
+              },
+              child: const Text("Read Login Data"),
+            ),
+          ],
         ),
       ],
     );
@@ -432,13 +431,12 @@ class __EditShopNumDialogState extends State<_EditShopNumDialog> {
           child: Text(S.current.cancel.toUpperCase()),
         ),
         TextButton(
-          onPressed:
-              invalid
-                  ? null
-                  : () {
-                    Navigator.pop(context);
-                    widget.onChanged(buyCount);
-                  },
+          onPressed: invalid
+              ? null
+              : () {
+                  Navigator.pop(context);
+                  widget.onChanged(buyCount);
+                },
           child: Text(S.current.confirm.toUpperCase()),
         ),
       ],

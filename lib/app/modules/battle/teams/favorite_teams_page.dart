@@ -16,12 +16,11 @@ class _FavoriteTeamsPageState extends State<FavoriteTeamsPage> {
   final favoriteTeams = db.curUser.battleSim.favoriteTeams;
 
   List<Quest> getQuests() {
-    final quests =
-        favoriteTeams.entries
-            .where((e) => e.value.isNotEmpty)
-            .map((e) => db.gameData.quests[e.key])
-            .whereType<Quest>()
-            .toList();
+    final quests = favoriteTeams.entries
+        .where((e) => e.value.isNotEmpty)
+        .map((e) => db.gameData.quests[e.key])
+        .whereType<Quest>()
+        .toList();
     quests.sortByList(
       (e) => [e.warId < 1000 ? -e.warId : -(e.war?.event?.startedAt ?? e.event?.startedAt ?? e.openedAt), e.priority],
     );
@@ -37,7 +36,10 @@ class _FavoriteTeamsPageState extends State<FavoriteTeamsPage> {
         title: Text.rich(
           TextSpan(
             children: [
-              const TextSpan(text: '★ ', style: TextStyle(color: Colors.yellow)),
+              const TextSpan(
+                text: '★ ',
+                style: TextStyle(color: Colors.yellow),
+              ),
               TextSpan(text: S.current.favorite_teams),
             ],
           ),

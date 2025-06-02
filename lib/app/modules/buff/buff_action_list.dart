@@ -68,13 +68,9 @@ class _BuffActionListPageState extends State<BuffActionListPage>
     return ListTile(
       // dense: true,
       title: Text("${buffAction.value} - ${buffAction.name}"),
-      subtitle:
-          shownIcons.isEmpty
-              ? null
-              : Wrap(
-                spacing: 2,
-                children: [for (final icon in shownIcons) db.getIconImage(icon, width: 18, height: 18)],
-              ),
+      subtitle: shownIcons.isEmpty
+          ? null
+          : Wrap(spacing: 2, children: [for (final icon in shownIcons) db.getIconImage(icon, width: 18, height: 18)]),
       onTap: () {
         router.popDetailAndPush(context: context, url: Routes.buffActionI(buffAction));
       },

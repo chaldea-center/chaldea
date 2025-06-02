@@ -108,7 +108,10 @@ class DailyBonusTabState extends State<DailyBonusTab> {
                 children: [
                   ...divideList([
                     for (final flag in flags)
-                      TextSpan(text: flag.name, style: TextStyle(color: Theme.of(context).colorScheme.error)),
+                      TextSpan(
+                        text: flag.name,
+                        style: TextStyle(color: Theme.of(context).colorScheme.error),
+                      ),
                   ], const TextSpan(text: ' / ')),
                   const TextSpan(text: '\n'),
                 ],

@@ -55,7 +55,10 @@ class _TdDetailPageState extends State<TdDetailPage> with RegionBasedState<BaseT
       child: Scaffold(
         appBar: AppBar(
           title: Text(data?.lName.l ?? '${S.current.noble_phantasm} $id', overflow: TextOverflow.fade),
-          actions: [dropdownRegion(shownNone: widget.td != null), popupMenu],
+          actions: [
+            dropdownRegion(shownNone: widget.td != null),
+            popupMenu,
+          ],
         ),
         body: buildBody(context),
       ),
@@ -144,7 +147,10 @@ class _TdDetailPageState extends State<TdDetailPage> with RegionBasedState<BaseT
             CustomTableRow(
               children: [
                 TableCellData(text: S.current.trait, isHeader: true),
-                TableCellData(flex: 3, child: SharedBuilder.traitList(context: context, traits: td.individuality)),
+                TableCellData(
+                  flex: 3,
+                  child: SharedBuilder.traitList(context: context, traits: td.individuality),
+                ),
               ],
             ),
             CustomTableRow.fromTexts(

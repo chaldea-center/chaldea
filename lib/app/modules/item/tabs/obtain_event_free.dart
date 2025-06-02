@@ -57,7 +57,9 @@ class _ItemObtainEventFreeTabState extends State<ItemObtainEventFreeTab> {
           ),
         ),
         kDefaultDivider,
-        Expanded(child: InheritSelectionArea(child: ListView(children: buildEventFree(quests)))),
+        Expanded(
+          child: InheritSelectionArea(child: ListView(children: buildEventFree(quests))),
+        ),
       ],
     );
   }
@@ -110,8 +112,9 @@ class _ItemObtainEventFreeTabState extends State<ItemObtainEventFreeTab> {
       final dropCount = drops.items[widget.itemId] ?? 0;
       if (drops.runs <= 0) continue;
       final dropRate = dropCount / drops.runs;
-      final double? apRate =
-          quest.consumeType.useApOrBp && quest.consume > 0 ? quest.consume * drops.runs / dropCount : null;
+      final double? apRate = quest.consumeType.useApOrBp && quest.consume > 0
+          ? quest.consume * drops.runs / dropCount
+          : null;
       final dropRateString = (dropRate * 100).toStringAsFixed(2), apRateString = apRate?.toStringAsFixed(2) ?? '-';
       final child = SimpleAccordion(
         key: ValueKey('event_free_$questId'),
@@ -122,10 +125,9 @@ class _ItemObtainEventFreeTabState extends State<ItemObtainEventFreeTab> {
               style: quest.is90PlusFree ? TextStyle(color: Theme.of(context).colorScheme.primary) : null,
             ),
             TextSpan(
-              text:
-                  sortType == _SortType.dropRate
-                      ? '${S.current.ap_efficiency} $apRateString ${quest.consumeType.unit}.'
-                      : '${S.current.drop_rate} $dropRateString%.',
+              text: sortType == _SortType.dropRate
+                  ? '${S.current.ap_efficiency} $apRateString ${quest.consumeType.unit}.'
+                  : '${S.current.drop_rate} $dropRateString%.',
             ),
             TextSpan(
               text:

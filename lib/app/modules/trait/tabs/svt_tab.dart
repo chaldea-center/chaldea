@@ -21,8 +21,9 @@ class _TraitServantTabState extends State<TraitServantTab> {
 
   @override
   Widget build(BuildContext context) {
-    List<Servant> servants =
-        db.gameData.servantsNoDup.values.where((svt) => svt.traitsAll.containSubset(widget.ids.toSet())).toList();
+    List<Servant> servants = db.gameData.servantsNoDup.values
+        .where((svt) => svt.traitsAll.containSubset(widget.ids.toSet()))
+        .toList();
     servants.sort2((e) => e.collectionNo);
     BasicServant? entity;
     if (widget.ids.length == 1 && !servants.any((svt) => svt.id == _id)) {
@@ -50,20 +51,18 @@ class _TraitServantTabState extends State<TraitServantTab> {
                     IconButton(
                       icon: const Icon(Icons.filter_alt),
                       tooltip: '${S.current.filter} (${S.current.servant})',
-                      onPressed:
-                          () => FilterPage.show(
-                            context: context,
-                            builder:
-                                (context) => ServantFilterPage(
-                                  filterData: svtFilter,
-                                  onChanged: (_) {
-                                    if (mounted) {
-                                      setState(() {});
-                                    }
-                                  },
-                                  planMode: false,
-                                ),
-                          ),
+                      onPressed: () => FilterPage.show(
+                        context: context,
+                        builder: (context) => ServantFilterPage(
+                          filterData: svtFilter,
+                          onChanged: (_) {
+                            if (mounted) {
+                              setState(() {});
+                            }
+                          },
+                          planMode: false,
+                        ),
+                      ),
                     ),
                   ],
                 ),
@@ -79,14 +78,14 @@ class _TraitServantTabState extends State<TraitServantTab> {
         ),
         useGrid
             ? SliverGrid.extent(
-              maxCrossAxisExtent: 56,
-              childAspectRatio: 132 / 144,
-              children: [for (final svt in shownServants) gridItem(context, svt)],
-            )
+                maxCrossAxisExtent: 56,
+                childAspectRatio: 132 / 144,
+                children: [for (final svt in shownServants) gridItem(context, svt)],
+              )
             : SliverList.builder(
-              itemBuilder: (context, index) => listItem(context, shownServants[index]),
-              itemCount: shownServants.length,
-            ),
+                itemBuilder: (context, index) => listItem(context, shownServants[index]),
+                itemCount: shownServants.length,
+              ),
         if (useGrid) SliverList.list(children: const [SafeArea(child: SFooter("Highlight: conditional trait"))]),
       ],
     );

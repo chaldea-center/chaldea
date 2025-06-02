@@ -165,7 +165,10 @@ class _FakerAccountEditPageState extends State<FakerAccountEditPage> {
             hint: const Text('Country'),
             items: [
               for (final c in NACountry.values)
-                DropdownMenuItem(value: c, child: Text(c.displayName, textScaler: const TextScaler.linear(0.8))),
+                DropdownMenuItem(
+                  value: c,
+                  child: Text(c.displayName, textScaler: const TextScaler.linear(0.8)),
+                ),
             ],
             onChanged: (v) {
               setState(() {
@@ -188,15 +191,17 @@ class _FakerAccountEditPageState extends State<FakerAccountEditPage> {
       ListTile(
         dense: true,
         title: const Text('区服'),
-        subtitle:
-            user.gameServer == BiliGameServer.uo
-                ? Text('不支持渠道服!', style: TextStyle(color: Theme.of(context).colorScheme.error))
-                : null,
+        subtitle: user.gameServer == BiliGameServer.uo
+            ? Text('不支持渠道服!', style: TextStyle(color: Theme.of(context).colorScheme.error))
+            : null,
         trailing: DropdownButton<BiliGameServer>(
           value: user.gameServer,
           items: [
             for (final server in BiliGameServer.values)
-              DropdownMenuItem(value: server, child: Text(server.shownName, style: const TextStyle(fontSize: 14))),
+              DropdownMenuItem(
+                value: server,
+                child: Text(server.shownName, style: const TextStyle(fontSize: 14)),
+              ),
           ],
           onChanged: (v) {
             setState(() {

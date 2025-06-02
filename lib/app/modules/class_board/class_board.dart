@@ -245,7 +245,10 @@ class _ClassBoardDetailPageState extends State<ClassBoardDetailPage> with Single
       target: boardClass.condTargetId,
       value: boardClass.condNum,
       leading: TextSpan(
-        children: [SvtClassWidget.rich(context: context, classId: boardClass.classId), const TextSpan(text: ': ')],
+        children: [
+          SvtClassWidget.rich(context: context, classId: boardClass.classId),
+          const TextSpan(text: ': '),
+        ],
       ),
     );
   }
@@ -352,7 +355,9 @@ class _ClassBoardDetailPageState extends State<ClassBoardDetailPage> with Single
   Widget get mapTab {
     return Column(
       children: [
-        Expanded(child: ClassBoardMap(board: board, showPlanned: showPlannedMap)),
+        Expanded(
+          child: ClassBoardMap(board: board, showPlanned: showPlannedMap),
+        ),
         kDefaultDivider,
         SwitchListTile(
           dense: true,
@@ -417,8 +422,10 @@ class _ClassBoardDetailPageState extends State<ClassBoardDetailPage> with Single
                 Navigator.pop(context);
                 final target = isCur ? status : plan_;
                 if (value) {
-                  final lockSquareIds =
-                      board.squares.where((e) => e.lock != null && e.lock!.items.isNotEmpty).map((e) => e.id).toSet();
+                  final lockSquareIds = board.squares
+                      .where((e) => e.lock != null && e.lock!.items.isNotEmpty)
+                      .map((e) => e.id)
+                      .toSet();
                   final enhanceSquareIds = board.squares.where((e) => e.items.isNotEmpty).map((e) => e.id).toSet();
                   target.unlockedSquares = lockSquareIds.toSet();
                   target.enhancedSquares = enhanceSquareIds.toSet();
@@ -635,32 +642,31 @@ class ClassBoardSquareDetail extends StatelessWidget {
     required VoidCallback onEnhance,
   }) {
     return IconButton(
-      onPressed:
-          !enabled
-              ? null
-              : () {
-                SimpleConfirmDialog(
-                  title: Text(title),
-                  onTapOk: onEnhance,
-                  content: ConstrainedBox(
-                    constraints: const BoxConstraints(maxWidth: 360),
-                    child: Wrap(
-                      spacing: 2,
-                      runSpacing: 2,
-                      children: [
-                        for (final amount in items)
-                          Item.iconBuilder(
-                            context: context,
-                            item: null,
-                            itemId: amount.itemId,
-                            text: amount.amount.format(),
-                            width: 48,
-                          ),
-                      ],
-                    ),
+      onPressed: !enabled
+          ? null
+          : () {
+              SimpleConfirmDialog(
+                title: Text(title),
+                onTapOk: onEnhance,
+                content: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 360),
+                  child: Wrap(
+                    spacing: 2,
+                    runSpacing: 2,
+                    children: [
+                      for (final amount in items)
+                        Item.iconBuilder(
+                          context: context,
+                          item: null,
+                          itemId: amount.itemId,
+                          text: amount.amount.format(),
+                          width: 48,
+                        ),
+                    ],
                   ),
-                ).showDialog(context);
-              },
+                ),
+              ).showDialog(context);
+            },
       icon: const Icon(Icons.upgrade),
       tooltip: title,
     );

@@ -73,18 +73,17 @@ class _QuestEnemyEditPageState extends State<QuestEnemyEditPage> {
               tooltip: S.current.reset,
             ),
           PopupMenuButton(
-            itemBuilder:
-                (context) => [
-                  PopupMenuItem(
-                    child: Text(S.current.copy),
-                    onTap: () {
-                      setState(() {
-                        db.runtimeData.clipBoard.questEnemy = enemy;
-                      });
-                      EasyLoading.showSuccess(S.current.copied);
-                    },
-                  ),
-                ],
+            itemBuilder: (context) => [
+              PopupMenuItem(
+                child: Text(S.current.copy),
+                onTap: () {
+                  setState(() {
+                    db.runtimeData.clipBoard.questEnemy = enemy;
+                  });
+                  EasyLoading.showSuccess(S.current.copied);
+                },
+              ),
+            ],
           ),
         ],
       ),
@@ -125,14 +124,13 @@ class _QuestEnemyEditPageState extends State<QuestEnemyEditPage> {
           ),
           if (widget.onPaste != null)
             FilledButton(
-              onPressed:
-                  db.runtimeData.clipBoard.questEnemy == null
-                      ? null
-                      : () {
-                        final enemy2 = widget.onPaste!(db.runtimeData.clipBoard.questEnemy!);
-                        enemy = initEnemy(enemy2);
-                        setState(() {});
-                      },
+              onPressed: db.runtimeData.clipBoard.questEnemy == null
+                  ? null
+                  : () {
+                      final enemy2 = widget.onPaste!(db.runtimeData.clipBoard.questEnemy!);
+                      enemy = initEnemy(enemy2);
+                      setState(() {});
+                    },
               child: Text(S.current.paste),
             ),
           if (widget.onClear != null)
@@ -173,10 +171,9 @@ class _QuestEnemyEditPageState extends State<QuestEnemyEditPage> {
       ListTile(
         dense: true,
         title: Text(S.current.trait),
-        subtitle:
-            enemy.traits.isEmpty
-                ? const Text('NONE')
-                : SharedBuilder.traitList(context: context, traits: enemy.traits..sort2((e) => e.id)),
+        subtitle: enemy.traits.isEmpty
+            ? const Text('NONE')
+            : SharedBuilder.traitList(context: context, traits: enemy.traits..sort2((e) => e.id)),
         trailing: IconButton(
           onPressed: () {
             router.pushPage(
@@ -196,11 +193,10 @@ class _QuestEnemyEditPageState extends State<QuestEnemyEditPage> {
     ];
 
     if (niceSvt != null) {
-      final limits =
-          {
-            ...niceSvt!.ascensionAdd.lvMax.all.keys,
-            if (niceSvt!.isUserSvt) ...[0, 1, 2, 3, 4],
-          }.toList();
+      final limits = {
+        ...niceSvt!.ascensionAdd.lvMax.all.keys,
+        if (niceSvt!.isUserSvt) ...[0, 1, 2, 3, 4],
+      }.toList();
       if (limits.isEmpty) limits.add(0);
       limits.sort();
       final dftValue = limits.first;

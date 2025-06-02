@@ -83,15 +83,14 @@ class _SvtBondDetailPageState extends State<SvtBondDetailPage> with SingleTicker
   void update() {
     final bondValue = svtFilter.bondValue.radioValue;
     svtFilter.bondValue.reset();
-    shownCollections =
-        collections.where((e) {
-          if (bondValue != null && svtFilter.bondCompare.options.isNotEmpty) {
-            if (svtFilter.bondCompare.options.every((c) => !c.test(e.collection.friendshipRank, bondValue))) {
-              return false;
-            }
-          }
-          return ServantFilterPage.filter(svtFilter, e.svt);
-        }).toList();
+    shownCollections = collections.where((e) {
+      if (bondValue != null && svtFilter.bondCompare.options.isNotEmpty) {
+        if (svtFilter.bondCompare.options.every((c) => !c.test(e.collection.friendshipRank, bondValue))) {
+          return false;
+        }
+      }
+      return ServantFilterPage.filter(svtFilter, e.svt);
+    }).toList();
     if (bondValue != null) svtFilter.bondValue.set(bondValue);
 
     switch (ceSortType) {
@@ -198,12 +197,20 @@ class _SvtBondDetailPageState extends State<SvtBondDetailPage> with SingleTicker
           ),
         ],
         bottom: FixedHeight.tabBar(
-          TabBar(controller: _tabController, tabs: [Tab(text: S.current.bond), Tab(text: S.current.bond_craft)]),
+          TabBar(
+            controller: _tabController,
+            tabs: [
+              Tab(text: S.current.bond),
+              Tab(text: S.current.bond_craft),
+            ],
+          ),
         ),
       ),
       body: Column(
         children: [
-          Expanded(child: TabBarView(controller: _tabController, children: [bondTab, bondCETab])),
+          Expanded(
+            child: TabBarView(controller: _tabController, children: [bondTab, bondCETab]),
+          ),
           SafeArea(child: buttonBar),
         ],
       ),
@@ -215,23 +222,22 @@ class _SvtBondDetailPageState extends State<SvtBondDetailPage> with SingleTicker
       return GridView.extent(
         maxCrossAxisExtent: 60,
         childAspectRatio: 132 / 144,
-        children:
-            bondCEs.map((entry) {
-              final (:ce, :userCe, :collection) = entry;
-              final t = DateTime.fromMillisecondsSinceEpoch(
-                (userCe?.createdAt ?? collection.updatedAt) * 1000,
-              ).toDateString().substring(2);
-              String text;
-              if (userCe != null) {
-                text = ' $t ';
-              } else {
-                text = ' $t? ';
-              }
-              final svt = db.gameData.servantsById[ce.bondEquipOwner];
-              text += '\nLv.${userSvtCollections[ce.bondEquipOwner]?.friendshipRank} ';
-              return svt?.iconBuilder(context: context, onTap: ce.routeTo, text: text) ??
-                  ce.iconBuilder(context: context, text: text);
-            }).toList(),
+        children: bondCEs.map((entry) {
+          final (:ce, :userCe, :collection) = entry;
+          final t = DateTime.fromMillisecondsSinceEpoch(
+            (userCe?.createdAt ?? collection.updatedAt) * 1000,
+          ).toDateString().substring(2);
+          String text;
+          if (userCe != null) {
+            text = ' $t ';
+          } else {
+            text = ' $t? ';
+          }
+          final svt = db.gameData.servantsById[ce.bondEquipOwner];
+          text += '\nLv.${userSvtCollections[ce.bondEquipOwner]?.friendshipRank} ';
+          return svt?.iconBuilder(context: context, onTap: ce.routeTo, text: text) ??
+              ce.iconBuilder(context: context, text: text);
+        }).toList(),
       );
     }
     return ListView.separated(
@@ -381,41 +387,43 @@ class _SvtBondDetailPageState extends State<SvtBondDetailPage> with SingleTicker
             },
             icon: Icon(ceGrid ? Icons.grid_view : Icons.list),
           ),
-        Expanded(child: Text(ceSummary, textAlign: TextAlign.center, style: Theme.of(context).textTheme.bodySmall)),
+        Expanded(
+          child: Text(ceSummary, textAlign: TextAlign.center, style: Theme.of(context).textTheme.bodySmall),
+        ),
         Text(' ${S.current.filter_sort} '),
         _tabController.index == 0
             ? DropdownButton<_SvtSortType>(
-              value: svtSortType,
-              items: [
-                const DropdownMenuItem(value: _SvtSortType.no, child: Text('No.')),
-                DropdownMenuItem(value: _SvtSortType.cls, child: Text(S.current.svt_class)),
-                DropdownMenuItem(value: _SvtSortType.rarity, child: Text(S.current.filter_sort_rarity)),
-                const DropdownMenuItem(value: _SvtSortType.bondRank, child: Text('Rank')),
-                const DropdownMenuItem(value: _SvtSortType.bondTotal, child: Text('Total')),
-                const DropdownMenuItem(value: _SvtSortType.bondNext, child: Text('Next')),
-              ],
-              onChanged: (v) {
-                if (v != null) {
-                  svtSortType = v;
-                  update();
-                }
-              },
-            )
+                value: svtSortType,
+                items: [
+                  const DropdownMenuItem(value: _SvtSortType.no, child: Text('No.')),
+                  DropdownMenuItem(value: _SvtSortType.cls, child: Text(S.current.svt_class)),
+                  DropdownMenuItem(value: _SvtSortType.rarity, child: Text(S.current.filter_sort_rarity)),
+                  const DropdownMenuItem(value: _SvtSortType.bondRank, child: Text('Rank')),
+                  const DropdownMenuItem(value: _SvtSortType.bondTotal, child: Text('Total')),
+                  const DropdownMenuItem(value: _SvtSortType.bondNext, child: Text('Next')),
+                ],
+                onChanged: (v) {
+                  if (v != null) {
+                    svtSortType = v;
+                    update();
+                  }
+                },
+              )
             : DropdownButton<_CESortType>(
-              value: ceSortType,
-              items: [
-                DropdownMenuItem(value: _CESortType.time, child: Text(S.current.time)),
-                const DropdownMenuItem(value: _CESortType.no, child: Text('No.')),
-                DropdownMenuItem(value: _CESortType.cls, child: Text(S.current.svt_class)),
-                DropdownMenuItem(value: _CESortType.rarity, child: Text(S.current.filter_sort_rarity)),
-              ],
-              onChanged: (v) {
-                if (v != null) {
-                  ceSortType = v;
-                  update();
-                }
-              },
-            ),
+                value: ceSortType,
+                items: [
+                  DropdownMenuItem(value: _CESortType.time, child: Text(S.current.time)),
+                  const DropdownMenuItem(value: _CESortType.no, child: Text('No.')),
+                  DropdownMenuItem(value: _CESortType.cls, child: Text(S.current.svt_class)),
+                  DropdownMenuItem(value: _CESortType.rarity, child: Text(S.current.filter_sort_rarity)),
+                ],
+                onChanged: (v) {
+                  if (v != null) {
+                    ceSortType = v;
+                    update();
+                  }
+                },
+              ),
         IconButton(
           onPressed: () {
             reversed = !reversed;
@@ -427,23 +435,21 @@ class _SvtBondDetailPageState extends State<SvtBondDetailPage> with SingleTicker
         IconButton(
           icon: const Icon(Icons.filter_alt),
           tooltip: '${S.current.filter} (${S.current.servant})',
-          onPressed:
-              () => FilterPage.show(
-                context: context,
-                builder:
-                    (context) => ServantFilterPage(
-                      filterData: svtFilter,
-                      onChanged: (_) {
-                        svtFilter
-                          ..planCompletion.reset()
-                          ..curStatus.reset()
-                          ..svtDuplicated.reset()
-                          ..favorite = FavoriteState.all;
-                        update();
-                      },
-                      planMode: false,
-                    ),
-              ),
+          onPressed: () => FilterPage.show(
+            context: context,
+            builder: (context) => ServantFilterPage(
+              filterData: svtFilter,
+              onChanged: (_) {
+                svtFilter
+                  ..planCompletion.reset()
+                  ..curStatus.reset()
+                  ..svtDuplicated.reset()
+                  ..favorite = FavoriteState.all;
+                update();
+              },
+              planMode: false,
+            ),
+          ),
         ),
         const SizedBox(width: 8),
       ],

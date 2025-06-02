@@ -81,13 +81,13 @@ class Damage {
         decideHp = battleData.delegate!.hpRatio!(activator, battleData, damageFunction, dataVals);
       }
       decideHp ??= activator.hp;
-      final hpRatioDamageLow =
-          checkHpRatioLow && dataVals.Target != null
-              ? ((1 - decideHp / activator.maxHp) * dataVals.Target!).toInt()
-              : 0;
+      final hpRatioDamageLow = checkHpRatioLow && dataVals.Target != null
+          ? ((1 - decideHp / activator.maxHp) * dataVals.Target!).toInt()
+          : 0;
 
-      final hpRatioDamageHigh =
-          checkHpRatioHigh && dataVals.Target != null ? ((decideHp / activator.maxHp) * dataVals.Target!).toInt() : 0;
+      final hpRatioDamageHigh = checkHpRatioHigh && dataVals.Target != null
+          ? ((decideHp / activator.maxHp) * dataVals.Target!).toInt()
+          : 0;
 
       int specificAttackRate = 1000;
 
@@ -171,62 +171,53 @@ class Damage {
         }
       }
 
-      final damageParameters =
-          DamageParameters()
-            ..attack = activator.atk + currentCard.cardStrengthen
-            ..totalHits = Maths.sum(currentCard.cardDetail.hitsDistribution)
-            ..damageRate =
-                currentCard.isTD
-                    ? dataVals.Value! + hpRatioDamageLow + hpRatioDamageHigh
-                    : currentCard.cardDetail.damageRate ?? 1000
-            ..damageRateModifier = getDamageRateModifier(battleData, currentCard, target)
-            ..npSpecificAttackRate = specificAttackRate
-            ..attackerClass = activator.logicalClassId
-            ..defenderClass = target.logicalClassId
-            ..classAdvantage = classAdvantage
-            ..attackerAttribute = activator.attribute
-            ..defenderAttribute = target.attribute
-            ..isNp = currentCard.isTD
-            ..chainPos = chainPos
-            ..currentCardType = currentCard.cardType
-            ..firstCardType = firstCardType
-            ..chainType = chainType
-            ..critical = currentCard.critical
-            ..cardBuff = await activator.getBuffValue(
-              battleData,
-              BuffAction.commandAtk,
-              opponent: target,
-              card: currentCard,
-            )
-            ..attackBuff = await activator.getBuffValue(battleData, BuffAction.atk, opponent: target, card: currentCard)
-            ..damageBuff = await getSpecificDamage(battleData, activator, target, currentCard)
-            ..criticalDamageBuff =
-                currentCard.critical
-                    ? await activator.getBuffValue(
-                      battleData,
-                      BuffAction.criticalDamage,
-                      opponent: target,
-                      card: currentCard,
-                    )
-                    : 0
-            ..npDamageBuff =
-                currentCard.isTD
-                    ? await activator.getBuffValue(battleData, BuffAction.npdamage, opponent: target, card: currentCard)
-                    : 0
-            ..specialDamageBuff = await activator.getBuffValue(
-              battleData,
-              BuffAction.damageSpecial,
-              opponent: target,
-              card: currentCard,
-            )
-            ..damageAdditionBuff = await activator.getBuffValue(
-              battleData,
-              BuffAction.givenDamage,
-              opponent: target,
-              card: currentCard,
-            )
-            ..random = battleData.options.random
-            ..damageFunction = damageFunction;
+      final damageParameters = DamageParameters()
+        ..attack = activator.atk + currentCard.cardStrengthen
+        ..totalHits = Maths.sum(currentCard.cardDetail.hitsDistribution)
+        ..damageRate = currentCard.isTD
+            ? dataVals.Value! + hpRatioDamageLow + hpRatioDamageHigh
+            : currentCard.cardDetail.damageRate ?? 1000
+        ..damageRateModifier = getDamageRateModifier(battleData, currentCard, target)
+        ..npSpecificAttackRate = specificAttackRate
+        ..attackerClass = activator.logicalClassId
+        ..defenderClass = target.logicalClassId
+        ..classAdvantage = classAdvantage
+        ..attackerAttribute = activator.attribute
+        ..defenderAttribute = target.attribute
+        ..isNp = currentCard.isTD
+        ..chainPos = chainPos
+        ..currentCardType = currentCard.cardType
+        ..firstCardType = firstCardType
+        ..chainType = chainType
+        ..critical = currentCard.critical
+        ..cardBuff = await activator.getBuffValue(
+          battleData,
+          BuffAction.commandAtk,
+          opponent: target,
+          card: currentCard,
+        )
+        ..attackBuff = await activator.getBuffValue(battleData, BuffAction.atk, opponent: target, card: currentCard)
+        ..damageBuff = await getSpecificDamage(battleData, activator, target, currentCard)
+        ..criticalDamageBuff = currentCard.critical
+            ? await activator.getBuffValue(battleData, BuffAction.criticalDamage, opponent: target, card: currentCard)
+            : 0
+        ..npDamageBuff = currentCard.isTD
+            ? await activator.getBuffValue(battleData, BuffAction.npdamage, opponent: target, card: currentCard)
+            : 0
+        ..specialDamageBuff = await activator.getBuffValue(
+          battleData,
+          BuffAction.damageSpecial,
+          opponent: target,
+          card: currentCard,
+        )
+        ..damageAdditionBuff = await activator.getBuffValue(
+          battleData,
+          BuffAction.givenDamage,
+          opponent: target,
+          card: currentCard,
+        )
+        ..random = battleData.options.random
+        ..damageFunction = damageFunction;
 
       final atkNpParameters = AttackNpGainParameters();
       final defNpParameters = DefendNpGainParameters();
@@ -343,26 +334,24 @@ class Damage {
           card: currentCard,
           skipDamage: skipDamage,
         )
-        ..criticalDamageDefBuff =
-            currentCard.critical
-                ? await target.getBuffValue(
-                  battleData,
-                  BuffAction.criticalDamageDef,
-                  opponent: activator,
-                  card: currentCard,
-                  skipDamage: skipDamage,
-                )
-                : 0
-        ..npDamageDefBuff =
-            currentCard.isTD
-                ? await target.getBuffValue(
-                  battleData,
-                  BuffAction.npdamageDef,
-                  opponent: activator,
-                  card: currentCard,
-                  skipDamage: skipDamage,
-                )
-                : 0
+        ..criticalDamageDefBuff = currentCard.critical
+            ? await target.getBuffValue(
+                battleData,
+                BuffAction.criticalDamageDef,
+                opponent: activator,
+                card: currentCard,
+                skipDamage: skipDamage,
+              )
+            : 0
+        ..npDamageDefBuff = currentCard.isTD
+            ? await target.getBuffValue(
+                battleData,
+                BuffAction.npdamageDef,
+                opponent: activator,
+                card: currentCard,
+                skipDamage: skipDamage,
+              )
+            : 0
         ..specialDefenseBuff = await target.getBuffValue(
           battleData,
           BuffAction.specialdefence,
@@ -482,10 +471,9 @@ class Damage {
       } else {
         battleData.battleLogger.debug(defNpParameters.toString());
       }
-      final starString =
-          activator.isPlayer
-              ? '${S.current.critical_star}: ${(Maths.sum(result.stars) / 1000).toStringAsFixed(3)} - '
-              : '';
+      final starString = activator.isPlayer
+          ? '${S.current.critical_star}: ${(Maths.sum(result.stars) / 1000).toStringAsFixed(3)} - '
+          : '';
       battleData.battleLogger.action(
         '${activator.lBattleName} - ${currentCard.cardType.name.toUpperCase()} - '
         '${currentCard.isTD ? S.current.battle_np_card : S.current.battle_command_card} - '
@@ -661,8 +649,9 @@ class Damage {
 
       target.actionHistory.add(
         BattleServantActionHistory(
-          actType:
-              currentCard.isTD ? BattleServantActionHistoryType.damageTd : BattleServantActionHistoryType.damageCommand,
+          actType: currentCard.isTD
+              ? BattleServantActionHistoryType.damageTd
+              : BattleServantActionHistoryType.damageCommand,
           targetUniqueId: activator.uniqueId,
           isOpponent: activator.isPlayer != target.isPlayer,
         ),

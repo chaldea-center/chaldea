@@ -99,10 +99,9 @@ class _ShopFilterState extends FilterPageState<ShopFilterData, ShopFilter> {
           ),
           FilterGroup<PurchaseType>(
             title: Text(S.current.game_rewards),
-            options:
-                widget.purchaseTypes.isEmpty
-                    ? PurchaseType.values
-                    : (widget.purchaseTypes.toList()..sort2((e) => e.index)),
+            options: widget.purchaseTypes.isEmpty
+                ? PurchaseType.values
+                : (widget.purchaseTypes.toList()..sort2((e) => e.index)),
             values: filterData.purchaseType,
             optionBuilder: (v) => Text(Transl.enums(v, (enums) => enums.purchaseType).l),
             onFilterChanged: (value, _) {

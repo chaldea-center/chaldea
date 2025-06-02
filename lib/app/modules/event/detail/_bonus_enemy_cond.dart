@@ -235,10 +235,9 @@ class _BonusEnemyCondPageState extends State<BonusEnemyCondPage> {
         ),
       );
       if (trait == Trait.havingAnimalsCharacteristics.value) continue;
-      final svts =
-          db.gameData.servantsById.values
-              .where((svt) => svt.traitAdd.expand((e) => e.trait).map((e) => e.id).contains(trait))
-              .toList();
+      final svts = db.gameData.servantsById.values
+          .where((svt) => svt.traitAdd.expand((e) => e.trait).map((e) => e.id).contains(trait))
+          .toList();
       svts.sort(
         (a, b) => SvtFilterData.compare(
           a,

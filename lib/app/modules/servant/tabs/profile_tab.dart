@@ -211,10 +211,9 @@ class _SvtLoreTabState extends State<SvtLoreTab> {
       children.add(
         ProfileCommentCard(
           title: Text(title),
-          subtitle:
-              conds.any((e) => e != null)
-                  ? Column(crossAxisAlignment: CrossAxisAlignment.start, children: conds.whereType<Widget>().toList())
-                  : null,
+          subtitle: conds.any((e) => e != null)
+              ? Column(crossAxisAlignment: CrossAxisAlignment.start, children: conds.whereType<Widget>().toList())
+              : null,
           comment: lore.comment,
         ),
       );
@@ -224,17 +223,16 @@ class _SvtLoreTabState extends State<SvtLoreTab> {
         Center(
           child: Padding(
             padding: const EdgeInsets.all(48),
-            child:
-                _loading
-                    ? const CircularProgressIndicator()
-                    : RefreshButton(
-                      text: '???',
-                      onPressed: () {
-                        if (_region != null) {
-                          fetchSvt(_region!);
-                        }
-                      },
-                    ),
+            child: _loading
+                ? const CircularProgressIndicator()
+                : RefreshButton(
+                    text: '???',
+                    onPressed: () {
+                      if (_region != null) {
+                        fetchSvt(_region!);
+                      }
+                    },
+                  ),
           ),
         ),
       );

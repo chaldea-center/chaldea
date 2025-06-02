@@ -71,26 +71,31 @@ class _QuestEditPageState extends State<QuestEditPage> {
               showDialog(
                 context: context,
                 useRootNavigator: false,
-                builder:
-                    (context) => SimpleConfirmDialog(
-                      title: Text(S.current.save),
-                      confirmText: "YES",
-                      onTapOk: onConfirm,
-                      actions: [
-                        TextButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                            Navigator.pop(context);
-                          },
-                          child: const Text("NO"),
-                        ),
-                      ],
+                builder: (context) => SimpleConfirmDialog(
+                  title: Text(S.current.save),
+                  confirmText: "YES",
+                  onTapOk: onConfirm,
+                  actions: [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                        Navigator.pop(context);
+                      },
+                      child: const Text("NO"),
                     ),
+                  ],
+                ),
               );
             },
           ),
         ),
-        body: Column(children: [Expanded(child: body), kDefaultDivider, SafeArea(child: buttonBar)]),
+        body: Column(
+          children: [
+            Expanded(child: body),
+            kDefaultDivider,
+            SafeArea(child: buttonBar),
+          ],
+        ),
       ),
     );
   }
@@ -114,8 +119,11 @@ class _QuestEditPageState extends State<QuestEditPage> {
   }
 
   Widget get body {
-    final warIds =
-        <int>{0, quest.warId, ...db.gameData.wars.values.where((e) => e.quests.isNotEmpty).map((e) => e.id)}.toList();
+    final warIds = <int>{
+      0,
+      quest.warId,
+      ...db.gameData.wars.values.where((e) => e.quests.isNotEmpty).map((e) => e.id),
+    }.toList();
     warIds.sort2((e) {
       if (e == 0) return double.infinity;
       final event = db.gameData.wars[e]?.eventReal;
@@ -196,7 +204,9 @@ class _QuestEditPageState extends State<QuestEditPage> {
       ListTile(
         title: Text(S.current.quest_fields),
         subtitle: Text.rich(
-          TextSpan(children: SharedBuilder.traitSpans(context: context, traits: quest.questIndividuality)),
+          TextSpan(
+            children: SharedBuilder.traitSpans(context: context, traits: quest.questIndividuality),
+          ),
         ),
         trailing: IconButton(
           onPressed: () {

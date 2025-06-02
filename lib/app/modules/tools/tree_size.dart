@@ -115,14 +115,13 @@ class _TreeSizePageState extends State<TreeSizePage> {
           ),
           IconButton(onPressed: loadStat, icon: const Icon(Icons.replay)),
           IconButton(
-            onPressed:
-                rootStat == null
-                    ? null
-                    : () {
-                      setState(() {
-                        cur = rootStat;
-                      });
-                    },
+            onPressed: rootStat == null
+                ? null
+                : () {
+                    setState(() {
+                      cur = rootStat;
+                    });
+                  },
             icon: const Icon(Icons.home),
           ),
         ],
@@ -162,14 +161,13 @@ class _TreeSizePageState extends State<TreeSizePage> {
         isDirectory ? '${stat.getPrettySize()}, $dirCount folders, $fileCount files' : stat.getPrettySize(),
       ),
       trailing: isDirectory ? const Icon(Icons.keyboard_arrow_right) : null,
-      onTap:
-          isDirectory && stat != cur
-              ? () {
-                setState(() {
-                  cur = stat;
-                });
-              }
-              : null,
+      onTap: isDirectory && stat != cur
+          ? () {
+              setState(() {
+                cur = stat;
+              });
+            }
+          : null,
       onLongPress: () {
         SimpleConfirmDialog(
           title: const Text('Stat'),
@@ -177,15 +175,14 @@ class _TreeSizePageState extends State<TreeSizePage> {
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              for (final entry
-                  in {
-                    'rawSize': stat.size,
-                    'size': '${stat.getSize()} (${stat.getPrettySize()})',
-                    'type': stat.type,
-                    'path': stat.entity.path,
-                    'changed': stat.changed.toString(),
-                    'modified': stat.modified.toString(),
-                  }.entries)
+              for (final entry in {
+                'rawSize': stat.size,
+                'size': '${stat.getSize()} (${stat.getPrettySize()})',
+                'type': stat.type,
+                'path': stat.entity.path,
+                'changed': stat.changed.toString(),
+                'modified': stat.modified.toString(),
+              }.entries)
                 ListTile(dense: true, title: Text(entry.key), subtitle: Text(entry.value.toString())),
             ],
           ),

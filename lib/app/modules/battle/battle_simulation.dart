@@ -73,11 +73,10 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
     await battleData.recordError(
       save: false,
       action: 'battle_init',
-      task:
-          () => battleData.init(questPhase, [
-            ...runtime.originalOptions.formation.onFieldSvtDataList,
-            ...runtime.originalOptions.formation.backupSvtDataList,
-          ], runtime.originalOptions.formation.mysticCodeData),
+      task: () => battleData.init(questPhase, [
+        ...runtime.originalOptions.formation.onFieldSvtDataList,
+        ...runtime.originalOptions.formation.backupSvtDataList,
+      ], runtime.originalOptions.formation.mysticCodeData),
     );
 
     final replayActions = widget.replayActions;
@@ -88,10 +87,9 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
           BattleMessageRecord(
             'Team ${widget.replayTeamId}',
             alignment: Alignment.center,
-            style:
-                mounted
-                    ? const TextStyle(decoration: TextDecoration.underline).merge(Theme.of(context).textTheme.bodySmall)
-                    : null,
+            style: mounted
+                ? const TextStyle(decoration: TextDecoration.underline).merge(Theme.of(context).textTheme.bodySmall)
+                : null,
           ),
         );
       }
@@ -359,7 +357,10 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
           child: Text.rich(
             TextSpan(
               children: [
-                TextSpan(text: '${S.current.quest_fields}: ', style: const TextStyle(fontWeight: FontWeight.bold)),
+                TextSpan(
+                  text: '${S.current.quest_fields}: ',
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
                 TextSpan(
                   children: SharedBuilder.traitSpans(
                     context: context,
@@ -424,8 +425,8 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
           battleData.playerTargetIndex = index;
           db.settings.battleSim.manualAllySkillTarget = battleData.options.manualAllySkillTarget = false;
         } else {
-          db.settings.battleSim.manualAllySkillTarget =
-              battleData.options.manualAllySkillTarget = !battleData.options.manualAllySkillTarget;
+          db.settings.battleSim.manualAllySkillTarget = battleData.options.manualAllySkillTarget =
+              !battleData.options.manualAllySkillTarget;
         }
       } else {
         battleData.enemyTargetIndex = index;
@@ -444,29 +445,25 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
                 child: Radio<int>(
                   value: index,
                   toggleable: svt.isPlayer,
-                  groupValue:
-                      svt.isPlayer
-                          ? (options.manualAllySkillTarget && battleData.isPlayerTurn
-                              ? null
-                              : battleData.playerTargetIndex)
-                          : battleData.enemyTargetIndex,
+                  groupValue: svt.isPlayer
+                      ? (options.manualAllySkillTarget && battleData.isPlayerTurn ? null : battleData.playerTargetIndex)
+                      : battleData.enemyTargetIndex,
                   onChanged: _onChangeIndex,
                   materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                   visualDensity: VisualDensity.compact,
-                  fillColor:
-                      svt.isPlayer && options.manualAllySkillTarget && battleData.playerTargetIndex == index
-                          ? WidgetStateProperty.resolveWith((Set<WidgetState> states) {
-                            // M2 style
-                            final _theme = Theme.of(context);
-                            if (states.contains(WidgetState.disabled)) {
-                              return _theme.disabledColor;
-                            }
-                            if (states.contains(WidgetState.selected)) {
-                              return _theme.colorScheme.tertiary;
-                            }
+                  fillColor: svt.isPlayer && options.manualAllySkillTarget && battleData.playerTargetIndex == index
+                      ? WidgetStateProperty.resolveWith((Set<WidgetState> states) {
+                          // M2 style
+                          final _theme = Theme.of(context);
+                          if (states.contains(WidgetState.disabled)) {
+                            return _theme.disabledColor;
+                          }
+                          if (states.contains(WidgetState.selected)) {
                             return _theme.colorScheme.tertiary;
-                          })
-                          : null,
+                          }
+                          return _theme.colorScheme.tertiary;
+                        })
+                      : null,
                 ),
               ),
               TextSpan(text: svt.lBattleName.breakWord),
@@ -525,14 +522,15 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
                     ).join(),
                   svt.isPlayer
                       ? svt.playerSvtData!.td == null
-                          ? 'NP: -'
-                          : 'NP: ${(svt.np / 100).toStringAsFixed(2)}'
+                            ? 'NP: -'
+                            : 'NP: ${(svt.np / 100).toStringAsFixed(2)}'
                       : svt.niceEnemy!.chargeTurn != 0 &&
-                          (svt.niceEnemy?.noblePhantasm.noblePhantasm?.functions.length ?? 0) > 0
+                            (svt.niceEnemy?.noblePhantasm.noblePhantasm?.functions.length ?? 0) > 0
                       ? '${S.current.info_charge}: ${svt.npLineCount}/${svt.niceEnemy!.chargeTurn}'
                       : '${S.current.info_charge}: -',
-                  if (svt.curBattlePoints.isNotEmpty) '♡: ${svt.curBattlePoints.entries.map((entry) => '${svt.determineBattlePointPhase(entry.key)} '
-                    '(${entry.value})').join(",")}',
+                  if (svt.curBattlePoints.isNotEmpty)
+                    '♡: ${svt.curBattlePoints.entries.map((entry) => '${svt.determineBattlePointPhase(entry.key)} '
+                        '(${entry.value})').join(",")}',
                 ]
                 .map((e) => AutoSizeText(e, maxLines: 1, minFontSize: 6, style: Theme.of(context).textTheme.bodySmall))
                 .toList(),
@@ -655,10 +653,9 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
                 for (final isPlayer in [false, true])
                   TextSpan(
                     text: isPlayer ? 'Player Turn' : 'Enemy Turn',
-                    style:
-                        isPlayer == battleData.isPlayerTurn
-                            ? TextStyle(color: AppTheme(context).tertiary)
-                            : Theme.of(context).textTheme.bodySmall,
+                    style: isPlayer == battleData.isPlayerTurn
+                        ? TextStyle(color: AppTheme(context).tertiary)
+                        : Theme.of(context).textTheme.bodySmall,
                   ),
               ], const TextSpan(text: '\n')),
             ),
@@ -718,42 +715,39 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
           constraints: const BoxConstraints(),
         ),
         FilledButton(
-          onPressed:
-              battleData.isBattleWin
-                  ? null
-                  : () async {
-                    if (battleData.isRunning) {
-                      EasyLoading.showToast('Previous task is still running');
-                      return;
-                    }
-                    await showDialog(
-                      context: context,
-                      useRootNavigator: false,
-                      builder:
-                          battleData.isPlayerTurn
-                              ? (context) => CombatActionSelector(
-                                battleData: battleData,
-                                onSelected: (combatActions) async {
-                                  if (combatActions.isNotEmpty) {
-                                    await battleData.playerTurn(combatActions);
-                                  }
-                                  if (mounted) setState(() {});
-                                },
-                              )
-                              : (context) => EnemyCombatActionSelector(
-                                battleData: battleData,
-                                onConfirm: (task) async {
-                                  await task();
-                                  if (mounted) setState(() {});
-                                },
-                              ),
-                    );
-                    if (mounted) setState(() {});
-                  },
-          child:
-              battleData.isBattleWin
-                  ? Text('Win', style: TextStyle(color: AppTheme(context).tertiary))
-                  : Text(S.current.battle_attack),
+          onPressed: battleData.isBattleWin
+              ? null
+              : () async {
+                  if (battleData.isRunning) {
+                    EasyLoading.showToast('Previous task is still running');
+                    return;
+                  }
+                  await showDialog(
+                    context: context,
+                    useRootNavigator: false,
+                    builder: battleData.isPlayerTurn
+                        ? (context) => CombatActionSelector(
+                            battleData: battleData,
+                            onSelected: (combatActions) async {
+                              if (combatActions.isNotEmpty) {
+                                await battleData.playerTurn(combatActions);
+                              }
+                              if (mounted) setState(() {});
+                            },
+                          )
+                        : (context) => EnemyCombatActionSelector(
+                            battleData: battleData,
+                            onConfirm: (task) async {
+                              await task();
+                              if (mounted) setState(() {});
+                            },
+                          ),
+                  );
+                  if (mounted) setState(() {});
+                },
+          child: battleData.isBattleWin
+              ? Text('Win', style: TextStyle(color: AppTheme(context).tertiary))
+              : Text(S.current.battle_attack),
         ),
       ],
     );
@@ -762,12 +756,8 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
         mainAxisSize: MainAxisSize.min,
         children: [
           FilledButton(
-            onPressed:
-                () => showDialog(
-                  context: context,
-                  useRootNavigator: false,
-                  builder: (context) => _TeamUploadDialog(runtime),
-                ),
+            onPressed: () =>
+                showDialog(context: context, useRootNavigator: false, builder: (context) => _TeamUploadDialog(runtime)),
             child: Text(S.current.upload),
           ),
           const SizedBox(height: 4),
@@ -822,28 +812,28 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
       padding: const EdgeInsets.all(2),
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,
-        onTap:
-            isSealed || donotSkillSelect || isCondFailed || cd > 0
-                ? null
-                : () {
-                  if (battleData.isPlayerTurn) {
-                    onTap();
-                  } else {
-                    EasyLoading.showInfo("Enemy Turn");
-                  }
-                },
-        onLongPress:
-            pskill == null
-                ? null
-                : () {
-                  SimpleConfirmDialog(
-                    title: Text('${S.current.skill} Lv.${skillInfo.skillLv}'),
-                    content: DisableLayoutBuilder(child: SkillDescriptor(skill: pskill, level: skillInfo.skillLv)),
-                    scrollable: true,
-                    showCancel: false,
-                    contentPadding: const EdgeInsets.symmetric(vertical: 20),
-                  ).showDialog(context);
-                },
+        onTap: isSealed || donotSkillSelect || isCondFailed || cd > 0
+            ? null
+            : () {
+                if (battleData.isPlayerTurn) {
+                  onTap();
+                } else {
+                  EasyLoading.showInfo("Enemy Turn");
+                }
+              },
+        onLongPress: pskill == null
+            ? null
+            : () {
+                SimpleConfirmDialog(
+                  title: Text('${S.current.skill} Lv.${skillInfo.skillLv}'),
+                  content: DisableLayoutBuilder(
+                    child: SkillDescriptor(skill: pskill, level: skillInfo.skillLv),
+                  ),
+                  scrollable: true,
+                  showCancel: false,
+                  contentPadding: const EdgeInsets.symmetric(vertical: 20),
+                ).showDialog(context);
+              },
         child: ConstrainedBox(constraints: const BoxConstraints(maxHeight: 32), child: child),
       ),
     );
@@ -1008,12 +998,11 @@ class _TeamUploadDialogState extends State<_TeamUploadDialog> {
           child: Text(S.current.save),
         ),
         TextButton(
-          onPressed:
-              canUpload
-                  ? () async {
-                    EasyThrottle.throttleAsync('upload-team', () => doUpload(warnings));
-                  }
-                  : null,
+          onPressed: canUpload
+              ? () async {
+                  EasyThrottle.throttleAsync('upload-team', () => doUpload(warnings));
+                }
+              : null,
           child: Text(S.current.upload),
         ),
       ],

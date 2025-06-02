@@ -63,7 +63,10 @@ class _ScriptListPageState extends State<ScriptListPage> {
           contentPadding: EdgeInsets.zero,
           trailing: IconButton(
             onPressed: () {
-              router.push(url: quest.route, child: QuestDetailPage(quest: quest));
+              router.push(
+                url: quest.route,
+                child: QuestDetailPage(quest: quest),
+              );
             },
             icon: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
           ),

@@ -143,7 +143,10 @@ class Event with RouteInfo {
   @override
   void routeTo({Widget? child, bool popDetails = false, Region? region}) {
     // router.push(url: Routes.eventI(id))
-    super.routeTo(child: child ?? EventDetailPage(event: this, region: region), popDetails: popDetails);
+    super.routeTo(
+      child: child ?? EventDetailPage(event: this, region: region),
+      popDetails: popDetails,
+    );
   }
 
   String get shortName => lShortName.jp;
@@ -223,10 +226,9 @@ class Event with RouteInfo {
     final region = db.curUser.region;
     final now = DateTime.now();
     if (region == Region.jp) {
-      final t =
-          endedAt > kNeverClosedTimestamp || endedAt - startedAt > 30 * kSecsPerDay
-              ? startedAt + 7 * kSecsPerDay
-              : endedAt;
+      final t = endedAt > kNeverClosedTimestamp || endedAt - startedAt > 30 * kSecsPerDay
+          ? startedAt + 7 * kSecsPerDay
+          : endedAt;
       return now.difference(t.sec2date()) > const Duration(days: 365);
     }
     int? _start = region == Region.jp ? startedAt : extra.startTime.ofRegion(region);
@@ -584,7 +586,10 @@ class MstMasterMission with RouteInfo {
 
   @override
   void routeTo({Widget? child, bool popDetails = false, Region? region}) {
-    return super.routeTo(child: child ?? MasterMissionPage(id: id, region: region), popDetails: popDetails);
+    return super.routeTo(
+      child: child ?? MasterMissionPage(id: id, region: region),
+      popDetails: popDetails,
+    );
   }
 
   factory MstMasterMission.fromJson(Map<String, dynamic> json) => _$MstMasterMissionFromJson(json);
@@ -762,7 +767,10 @@ class NiceShop with RouteInfo {
 
   @override
   void routeTo({Widget? child, bool popDetails = false, Region? region}) {
-    return super.routeTo(child: child ?? ShopDetailPage(shop: this, region: region), popDetails: popDetails);
+    return super.routeTo(
+      child: child ?? ShopDetailPage(shop: this, region: region),
+      popDetails: popDetails,
+    );
   }
 
   Map<String, dynamic> toJson() => _$NiceShopToJson(this);

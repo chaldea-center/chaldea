@@ -93,12 +93,11 @@ class InstantDeath {
     final buffRate = grantInstantDeath - resistRate;
     final activationRate = (functionRate * toModifier(target.deathRate) * toModifier(1000 + buffRate)).toInt();
     final success = await battleData.canActivateFunction(activationRate);
-    final resultsString =
-        success
-            ? S.current.success
-            : resistRate > 0
-            ? kBattleFuncGUARD
-            : kBattleFuncMiss;
+    final resultsString = success
+        ? S.current.success
+        : resistRate > 0
+        ? kBattleFuncGUARD
+        : kBattleFuncMiss;
 
     params
       ..functionRate = functionRate

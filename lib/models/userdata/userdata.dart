@@ -343,8 +343,9 @@ class SvtStatus {
     this.grandSvt = false,
   }) : cur = cur ?? SvtPlan(),
        equipCmdCodes = List.generate(5, (index) => equipCmdCodes?.getOrNull(index)),
-       cmdCardStrengthen =
-           cmdCardStrengthen == null ? null : List.generate(5, (index) => cmdCardStrengthen.getOrNull(index) ?? 0);
+       cmdCardStrengthen = cmdCardStrengthen == null
+           ? null
+           : List.generate(5, (index) => cmdCardStrengthen.getOrNull(index) ?? 0);
 
   factory SvtStatus.fromJson(Map<String, dynamic> json) => _$SvtStatusFromJson(json);
 

@@ -44,7 +44,10 @@ class _EventItemCalcPageState extends State<EventItemCalcPage> with SingleTicker
             controller: _tabController,
             isScrollable: true,
             tabAlignment: TabAlignment.center,
-            tabs: [Tab(text: S.current.demands), Tab(text: S.current.plan)],
+            tabs: [
+              Tab(text: S.current.demands),
+              Tab(text: S.current.plan),
+            ],
           ),
         ),
       ),
@@ -53,12 +56,8 @@ class _EventItemCalcPageState extends State<EventItemCalcPage> with SingleTicker
           controller: _tabController,
           children: [
             KeepAliveBuilder(
-              builder:
-                  (context) => EventItemInputTab(
-                    warId: widget.warId,
-                    objectiveCounts: widget.objectiveCounts,
-                    onSolved: onSolved,
-                  ),
+              builder: (context) =>
+                  EventItemInputTab(warId: widget.warId, objectiveCounts: widget.objectiveCounts, onSolved: onSolved),
             ),
             KeepAliveBuilder(builder: (context) => QuestPlanTab(solution: solution)),
           ],

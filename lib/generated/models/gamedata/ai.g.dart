@@ -307,8 +307,9 @@ NiceAiAct _$NiceAiActFromJson(Map json) => NiceAiAct(
   noblePhantasmId: (json['noblePhantasmId'] as num?)?.toInt(),
   noblePhantasmLv: (json['noblePhantasmLv'] as num?)?.toInt(),
   noblePhantasmOc: (json['noblePhantasmOc'] as num?)?.toInt(),
-  noblePhantasm:
-      json['noblePhantasm'] == null ? null : NiceTd.fromJson(Map<String, dynamic>.from(json['noblePhantasm'] as Map)),
+  noblePhantasm: json['noblePhantasm'] == null
+      ? null
+      : NiceTd.fromJson(Map<String, dynamic>.from(json['noblePhantasm'] as Map)),
 );
 
 Map<String, dynamic> _$NiceAiActToJson(NiceAiAct instance) => <String, dynamic>{

@@ -81,31 +81,28 @@ class _FfoCardState extends State<FfoCard> {
     if (widget.showSave || widget.showFullScreen) {
       child = GestureDetector(
         behavior: HitTestBehavior.opaque,
-        onTap:
-            widget.showFullScreen && !widget.params.isEmpty && !images.isEmpty
-                ? () => Navigator.of(context).push(
-                  PageRouteBuilder(
-                    opaque: false,
-                    pageBuilder:
-                        (context, _, _) => FullscreenImageViewer(
-                          children: [FfoCard(params: widget.params, showSave: true, enableZoom: true)],
-                        ),
+        onTap: widget.showFullScreen && !widget.params.isEmpty && !images.isEmpty
+            ? () => Navigator.of(context).push(
+                PageRouteBuilder(
+                  opaque: false,
+                  pageBuilder: (context, _, _) => FullscreenImageViewer(
+                    children: [FfoCard(params: widget.params, showSave: true, enableZoom: true)],
                   ),
-                )
-                : null,
-        onLongPress:
-            widget.showSave
-                ? () async {
-                  final data = await FFOUtil.toBinary(widget.params);
-                  if (data == null) {
-                    EasyLoading.showError(S.current.failed);
-                    return;
-                  }
-                  if (context.mounted) {
-                    FFOUtil.showSaveShare(context: context, params: widget.params, data: data);
-                  }
+                ),
+              )
+            : null,
+        onLongPress: widget.showSave
+            ? () async {
+                final data = await FFOUtil.toBinary(widget.params);
+                if (data == null) {
+                  EasyLoading.showError(S.current.failed);
+                  return;
                 }
-                : null,
+                if (context.mounted) {
+                  FFOUtil.showSaveShare(context: context, params: widget.params, data: data);
+                }
+              }
+            : null,
         child: child,
       );
     }

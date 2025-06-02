@@ -95,15 +95,14 @@ class SoundPlayButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final playButton = StreamBuilder(
       stream: player.player.processingStateStream,
-      builder:
-          (context, processState) => StreamBuilder(
-            stream: player.player.playingStream,
-            builder: (context, isPlaying) {
-              bool playing =
-                  (isPlaying.data ?? false) && player.isPlaying(url) && processState.data != ProcessingState.completed;
-              return Icon(playing ? Icons.pause : Icons.play_arrow, size: 18);
-            },
-          ),
+      builder: (context, processState) => StreamBuilder(
+        stream: player.player.playingStream,
+        builder: (context, isPlaying) {
+          bool playing =
+              (isPlaying.data ?? false) && player.isPlaying(url) && processState.data != ProcessingState.completed;
+          return Icon(playing ? Icons.pause : Icons.play_arrow, size: 18);
+        },
+      ),
     );
     if (name == null || name!.isEmpty) {
       return ElevatedButton(

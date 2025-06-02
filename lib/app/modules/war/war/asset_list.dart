@@ -101,23 +101,22 @@ class _WarAssetListPageState extends State<WarAssetListPage> with AfterLayoutMix
     final reg = RegExp(r'\[([^\]]+)\]');
     bool anyFullscreen = false;
 
-    final futures =
-        scripts.map<Future<String?>>((script) async {
-          if (force) await AtlasIconLoader.i.deleteFromDisk(script);
-          final fp = await AtlasIconLoader.i.get(script, allowWeb: true);
-          if (fp == null) return null;
-          try {
-            return await FilePlus(fp).readAsString();
-          } catch (e, s) {
-            logger.e('read $fp failed', e, s);
-            return null;
-          } finally {
-            progress += 1;
-            if (mounted) {
-              setState(() {});
-            }
-          }
-        }).toList();
+    final futures = scripts.map<Future<String?>>((script) async {
+      if (force) await AtlasIconLoader.i.deleteFromDisk(script);
+      final fp = await AtlasIconLoader.i.get(script, allowWeb: true);
+      if (fp == null) return null;
+      try {
+        return await FilePlus(fp).readAsString();
+      } catch (e, s) {
+        logger.e('read $fp failed', e, s);
+        return null;
+      } finally {
+        progress += 1;
+        if (mounted) {
+          setState(() {});
+        }
+      }
+    }).toList();
     for (final _content in futures) {
       final content = await _content;
       if (content == null) continue;
@@ -286,33 +285,32 @@ class _WarAssetListPageState extends State<WarAssetListPage> with AfterLayoutMix
           title: Text(widget.war?.lName.l ?? widget.title ?? S.current.media_assets),
           actions: [
             PopupMenuButton(
-              itemBuilder:
-                  (context) => [PopupMenuItem(child: Text(S.current.refresh), onTap: () => fetchData(force: true))],
+              itemBuilder: (context) => [
+                PopupMenuItem(child: Text(S.current.refresh), onTap: () => fetchData(force: true)),
+              ],
             ),
           ],
-          bottom:
-              _loading
-                  ? null
-                  : FixedHeight.tabBar(
-                    TabBar(
-                      isScrollable: true,
-                      tabAlignment: TabAlignment.center,
-                      tabs: tabs.map((e) => e.item1).toList(),
-                    ),
+          bottom: _loading
+              ? null
+              : FixedHeight.tabBar(
+                  TabBar(
+                    isScrollable: true,
+                    tabAlignment: TabAlignment.center,
+                    tabs: tabs.map((e) => e.item1).toList(),
                   ),
+                ),
         ),
-        body:
-            _loading
-                ? Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Center(child: CircularProgressIndicator(value: total > 0 ? progress / total : null)),
-                    const SizedBox(height: 16),
-                    Text('${S.current.downloading}  $progress/$total'),
-                  ],
-                )
-                : TabBarView(children: tabs.map((e) => e.item2).toList()),
+        body: _loading
+            ? Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Center(child: CircularProgressIndicator(value: total > 0 ? progress / total : null)),
+                  const SizedBox(height: 16),
+                  Text('${S.current.downloading}  $progress/$total'),
+                ],
+              )
+            : TabBarView(children: tabs.map((e) => e.item2).toList()),
       ),
     );
   }
@@ -356,8 +354,8 @@ class _WarAssetListPageState extends State<WarAssetListPage> with AfterLayoutMix
           cachedOption: CachedImageOption(
             alignment: charaFigure ? Alignment.topCenter : Alignment.center,
             fit: charaFigure ? BoxFit.fitWidth : null,
-            errorWidget:
-                (context, url, error) => Center(child: Text((kReleaseMode ? url.split('/').last : url).breakWord)),
+            errorWidget: (context, url, error) =>
+                Center(child: Text((kReleaseMode ? url.split('/').last : url).breakWord)),
           ),
           onTap: () {
             FullscreenImageViewer.show(context: context, urls: figures, initialPage: index);

@@ -58,26 +58,24 @@ class _EnemyMasterListPageState extends State<EnemyMasterListPage>
         final battle = master.battles.getOrNull(0);
         // https://static.atlasacademy.io/file/aa-fgo-extract-jp/Battle/Common/BattleUIAtlas/frame_enemymaster_bg.png
         return ListTile(
-          leading:
-              battle == null
-                  ? const SizedBox.shrink()
-                  : Transform.rotate(angle: -pi / 4, child: db.getIconImage(battle.face, width: 36)),
+          leading: battle == null
+              ? const SizedBox.shrink()
+              : Transform.rotate(angle: -pi / 4, child: db.getIconImage(battle.face, width: 36)),
           title: Text(master.lName.l),
           subtitle: Text('No.${master.id}'),
-          trailing:
-              battle == null
-                  ? null
-                  : SizedBox(
-                    width: 36,
-                    height: 36,
-                    child: ClipRect(
-                      child: Transform.scale(
-                        scale: 2.0,
-                        alignment: Alignment.topLeft,
-                        child: db.getIconImage(battle.commandSpellIcon, width: 36, aspectRatio: 1),
-                      ),
+          trailing: battle == null
+              ? null
+              : SizedBox(
+                  width: 36,
+                  height: 36,
+                  child: ClipRect(
+                    child: Transform.scale(
+                      scale: 2.0,
+                      alignment: Alignment.topLeft,
+                      child: db.getIconImage(battle.commandSpellIcon, width: 36, aspectRatio: 1),
                     ),
                   ),
+                ),
           onTap: () {
             router.pushPage(EnemyMasterDetailPage(master: master));
           },

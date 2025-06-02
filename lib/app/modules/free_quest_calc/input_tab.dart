@@ -270,12 +270,12 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
               icon: const Icon(Icons.settings),
               color:
                   params.minCost > 0 ||
-                          db.gameData.mainStories[params.progress] != null ||
-                          params.blacklist.isNotEmpty ||
-                          !params.apHalfDailyQuest.isNone ||
-                          params.apHalfOrdealCall
-                      ? Theme.of(context).colorScheme.error
-                      : Theme.of(context).colorScheme.primary,
+                      db.gameData.mainStories[params.progress] != null ||
+                      params.blacklist.isNotEmpty ||
+                      !params.apHalfDailyQuest.isNone ||
+                      params.apHalfOrdealCall
+                  ? Theme.of(context).colorScheme.error
+                  : Theme.of(context).colorScheme.primary,
               tooltip: S.current.settings_tab_name,
               onPressed: () async {
                 await showDialog(

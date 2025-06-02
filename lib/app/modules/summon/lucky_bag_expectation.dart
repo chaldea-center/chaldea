@@ -82,13 +82,19 @@ class _LuckyBagExpectationState extends State<LuckyBagExpectation> with SingleTi
         bottom: FixedHeight.tabBar(
           TabBar(
             controller: _tabController,
-            tabs: [Tab(text: S.current.lucky_bag_rating), Tab(text: S.current.lucky_bag_expectation)],
+            tabs: [
+              Tab(text: S.current.lucky_bag_rating),
+              Tab(text: S.current.lucky_bag_expectation),
+            ],
           ),
         ),
       ),
       body: TabBarView(
         controller: _tabController,
-        children: [KeepAliveBuilder(builder: (context) => inputTab), KeepAliveBuilder(builder: (context) => resultTab)],
+        children: [
+          KeepAliveBuilder(builder: (context) => inputTab),
+          KeepAliveBuilder(builder: (context) => resultTab),
+        ],
       ),
     );
   }
@@ -152,7 +158,11 @@ class _LuckyBagExpectationState extends State<LuckyBagExpectation> with SingleTi
           title: Row(
             children: List.generate(
               _kScoreMax - _kScoreMin + 1,
-              (index) => Expanded(child: Center(child: Tooltip(message: _scoreTooltip(index), child: Text('$index')))),
+              (index) => Expanded(
+                child: Center(
+                  child: Tooltip(message: _scoreTooltip(index), child: Text('$index')),
+                ),
+              ),
             ),
           ),
         ),
@@ -266,41 +276,40 @@ class _LuckyBagExpectationState extends State<LuckyBagExpectation> with SingleTi
           child: Wrap(
             spacing: 2,
             runSpacing: 2,
-            children:
-                _result.block.ids.map((id) {
-                  final svt = db.gameData.servantsNoDup[id];
-                  if (svt == null) return Text('ID $id');
-                  return GestureDetector(
-                    onLongPress: () {
-                      router.showDialog(
-                        builder: (context) {
-                          return SimpleDialog(
-                            title: Text(S.current.lucky_bag_rating),
-                            children: [
-                              for (int score = _kScoreMin; score <= _kScoreMax; score++)
-                                SimpleDialogOption(
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                    _svtScores[svt.collectionNo] = score;
-                                    if (mounted) setState(() {});
-                                  },
-                                  child: Text(score.toString()),
-                                ),
-                            ],
-                          );
-                        },
+            children: _result.block.ids.map((id) {
+              final svt = db.gameData.servantsNoDup[id];
+              if (svt == null) return Text('ID $id');
+              return GestureDetector(
+                onLongPress: () {
+                  router.showDialog(
+                    builder: (context) {
+                      return SimpleDialog(
+                        title: Text(S.current.lucky_bag_rating),
+                        children: [
+                          for (int score = _kScoreMin; score <= _kScoreMax; score++)
+                            SimpleDialogOption(
+                              onPressed: () {
+                                Navigator.pop(context);
+                                _svtScores[svt.collectionNo] = score;
+                                if (mounted) setState(() {});
+                              },
+                              child: Text(score.toString()),
+                            ),
+                        ],
                       );
                     },
-                    child: SummonUtil.svtAvatar(
-                      context: context,
-                      card: svt,
-                      favorite: svt.status.favorite,
-                      npLv: true,
-                      width: 48,
-                      extraText: scoreOf(svt.collectionNo).toString(),
-                    ),
                   );
-                }).toList(),
+                },
+                child: SummonUtil.svtAvatar(
+                  context: context,
+                  card: svt,
+                  favorite: svt.status.favorite,
+                  npLv: true,
+                  width: 48,
+                  extraText: scoreOf(svt.collectionNo).toString(),
+                ),
+              );
+            }).toList(),
           ),
         ),
       );
@@ -328,10 +337,9 @@ class _LuckyBagExpectationState extends State<LuckyBagExpectation> with SingleTi
                   child: Text(
                     textCells[index],
                     style: TextStyle(
-                      color:
-                          _sortType.index == index
-                              ? Theme.of(context).colorScheme.primary
-                              : Theme.of(context).textTheme.bodyMedium?.color,
+                      color: _sortType.index == index
+                          ? Theme.of(context).colorScheme.primary
+                          : Theme.of(context).textTheme.bodyMedium?.color,
                     ),
                     textAlign: TextAlign.center,
                     overflow: TextOverflow.visible,
@@ -361,12 +369,11 @@ class _LuckyBagExpectationState extends State<LuckyBagExpectation> with SingleTi
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
           title: Row(
             children: [
-              for (final entry
-                  in {
-                    _ExpSort.exp: S.current.lucky_bag_expectation_short,
-                    _ExpSort.best5: '${S.current.lucky_bag_best}=$_kScoreMax',
-                    _ExpSort.worst0: '${S.current.lucky_bag_worst}=$_kScoreMin',
-                  }.entries)
+              for (final entry in {
+                _ExpSort.exp: S.current.lucky_bag_expectation_short,
+                _ExpSort.best5: '${S.current.lucky_bag_best}=$_kScoreMax',
+                _ExpSort.worst0: '${S.current.lucky_bag_worst}=$_kScoreMin',
+              }.entries)
                 Expanded(
                   child: _underline(
                     InkWell(

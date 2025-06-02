@@ -133,21 +133,20 @@ class _ItemResultTabState extends State<ItemResultTab> with ScrollControllerMixi
         ),
         Checkbox(
           value: item.checked,
-          onChanged:
-              item.valid
-                  ? (v) {
-                    if (v == true) {
-                      for (final itemDetail in result.details) {
-                        if (itemDetail.itemId == item.itemId && itemDetail.valid) {
-                          itemDetail.checked = itemDetail == item;
-                        }
+          onChanged: item.valid
+              ? (v) {
+                  if (v == true) {
+                    for (final itemDetail in result.details) {
+                      if (itemDetail.itemId == item.itemId && itemDetail.valid) {
+                        itemDetail.checked = itemDetail == item;
                       }
-                    } else if (v == false) {
-                      item.checked = false;
                     }
-                    setState(() {});
+                  } else if (v == false) {
+                    item.checked = false;
                   }
-                  : null,
+                  setState(() {});
+                }
+              : null,
         ),
       ],
     );

@@ -116,9 +116,8 @@ class _ReadAuthPageState extends State<ReadAuthPage> {
                 // errorText: _codeCtrl.text.isEmpty || AuthSaveData.isValidCode(_codeCtrl.text) ? null : "Invalid",
                 floatingLabelBehavior: FloatingLabelBehavior.always,
               ),
-              contextMenuBuilder:
-                  (context, editableTextState) =>
-                      AdaptiveTextSelectionToolbar.editableText(editableTextState: editableTextState),
+              contextMenuBuilder: (context, editableTextState) =>
+                  AdaptiveTextSelectionToolbar.editableText(editableTextState: editableTextState),
               maxLines: 4,
               onChanged: (v) {
                 EasyDebounce.debounce('_auth_code_', const Duration(milliseconds: 300), () {
@@ -231,7 +230,10 @@ class _ReadAuthPageState extends State<ReadAuthPage> {
 
     children.add(const SafeArea(child: SizedBox()));
 
-    return Scaffold(appBar: AppBar(title: Text(S.current.login_auth)), body: ListView(children: children));
+    return Scaffold(
+      appBar: AppBar(title: Text(S.current.login_auth)),
+      body: ListView(children: children),
+    );
   }
 
   Widget _buildTextField(TextEditingController controller, String label) {
@@ -244,9 +246,8 @@ class _ReadAuthPageState extends State<ReadAuthPage> {
           border: const OutlineInputBorder(),
           floatingLabelBehavior: FloatingLabelBehavior.always,
         ),
-        contextMenuBuilder:
-            (context, editableTextState) =>
-                AdaptiveTextSelectionToolbar.editableText(editableTextState: editableTextState),
+        contextMenuBuilder: (context, editableTextState) =>
+            AdaptiveTextSelectionToolbar.editableText(editableTextState: editableTextState),
       ),
     );
   }

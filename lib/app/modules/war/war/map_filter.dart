@@ -83,13 +83,12 @@ class _WarMapFilterPageState extends FilterPageState<WarMapFilterData, WarMapFil
           value: filterData.freeSpotsOnly,
           title: Text(S.current.map_show_fq_spots_only),
           dense: true,
-          onChanged:
-              filterData.showSpots
-                  ? (v) {
-                    filterData.freeSpotsOnly = v;
-                    update();
-                  }
-                  : null,
+          onChanged: filterData.showSpots
+              ? (v) {
+                  filterData.freeSpotsOnly = v;
+                  update();
+                }
+              : null,
         ),
         SwitchListTile.adaptive(
           controlAffinity: ListTileControlAffinity.trailing,

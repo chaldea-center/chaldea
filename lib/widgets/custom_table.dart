@@ -37,21 +37,20 @@ class CustomTable extends StatelessWidget {
         _all.add(horizontalDivider);
       }
     }
-    final outlineDecoration =
-        hideOutline
-            ? null
-            : BoxDecoration(
-              border: Border.symmetric(
-                horizontal: BorderSide(
-                  color: horizontalDivider.color ?? kHorizontalDivider.color!,
-                  width: horizontalDivider.thickness ?? kHorizontalDivider.thickness!,
-                ),
-                vertical: BorderSide(
-                  color: verticalDivider.color ?? kVerticalDivider.color!,
-                  width: verticalDivider.thickness ?? kVerticalDivider.thickness!,
-                ),
+    final outlineDecoration = hideOutline
+        ? null
+        : BoxDecoration(
+            border: Border.symmetric(
+              horizontal: BorderSide(
+                color: horizontalDivider.color ?? kHorizontalDivider.color!,
+                width: horizontalDivider.thickness ?? kHorizontalDivider.thickness!,
               ),
-            );
+              vertical: BorderSide(
+                color: verticalDivider.color ?? kVerticalDivider.color!,
+                width: verticalDivider.thickness ?? kVerticalDivider.thickness!,
+              ),
+            ),
+          );
     Widget child = Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -89,10 +88,9 @@ class CustomTableRow extends StatefulWidget {
     VerticalDivider? divider = kVerticalDivider,
   }) : this(
          key: key,
-         children:
-             texts
-                 .map((text) => (defaults ?? TableCellData(text: text)).copyWith(text: text, isHeader: isHeader))
-                 .toList(),
+         children: texts
+             .map((text) => (defaults ?? TableCellData(text: text)).copyWith(text: text, isHeader: isHeader))
+             .toList(),
          color: color,
          divider: divider,
        );
@@ -125,10 +123,9 @@ class CustomTableRow extends StatefulWidget {
     VerticalDivider? divider = kVerticalDivider,
   }) : this(
          key: key,
-         children:
-             children
-                 .map((child) => defaults == null ? TableCellData(child: child) : defaults.copyWith(child: child))
-                 .toList(),
+         children: children
+             .map((child) => defaults == null ? TableCellData(child: child) : defaults.copyWith(child: child))
+             .toList(),
          color: color,
          divider: divider,
        );
@@ -161,10 +158,14 @@ class _CustomTableRowState extends State<CustomTableRow> {
           _child = Text(text, textAlign: cell.textAlign, style: cell.style);
         } else if (cell.maxLines == 1) {
           // empty string->Text has no size->cannot place in FittedBox
-          _child = FittedBox(child: Text(text, maxLines: cell.maxLines, textAlign: cell.textAlign, style: cell.style));
+          _child = FittedBox(
+            child: Text(text, maxLines: cell.maxLines, textAlign: cell.textAlign, style: cell.style),
+          );
         } else {
           assert(false, 'CustomTable: maxLines=${cell.maxLines} > 1 not supported yet!!!');
-          _child = FittedBox(child: Text(text, maxLines: cell.maxLines, textAlign: cell.textAlign, style: cell.style));
+          _child = FittedBox(
+            child: Text(text, maxLines: cell.maxLines, textAlign: cell.textAlign, style: cell.style),
+          );
           // _child = AutoSizeText(
           //   cell.text,
           //   maxLines: cell.maxLines,

@@ -35,25 +35,26 @@ class _LoginPageState extends State<LoginPage> {
   @override
   void initState() {
     super.initState();
-    _nameController = TextEditingController(text: secrets.user?.name)..addListener(() {
-      setState(() {});
-    });
-    _pwdController =
-        TextEditingController()..addListener(() {
-          setState(() {});
-        });
-    _newPwdController =
-        TextEditingController()..addListener(() {
-          setState(() {});
-        });
-    _confirmPwdController =
-        TextEditingController()..addListener(() {
-          setState(() {});
-        });
-    _newNameController =
-        TextEditingController()..addListener(() {
-          setState(() {});
-        });
+    _nameController = TextEditingController(text: secrets.user?.name)
+      ..addListener(() {
+        setState(() {});
+      });
+    _pwdController = TextEditingController()
+      ..addListener(() {
+        setState(() {});
+      });
+    _newPwdController = TextEditingController()
+      ..addListener(() {
+        setState(() {});
+      });
+    _confirmPwdController = TextEditingController()
+      ..addListener(() {
+        setState(() {});
+      });
+    _newNameController = TextEditingController()
+      ..addListener(() {
+        setState(() {});
+      });
   }
 
   @override
@@ -166,28 +167,27 @@ class _LoginPageState extends State<LoginPage> {
       showDialog(
         context: context,
         useRootNavigator: false,
-        builder:
-            (context) => SimpleConfirmDialog(
-              title: Text(S.current.login_forget_pwd),
-              content: Text(S.current.forgot_password_hint),
-              scrollable: true,
-              showOk: false,
-              actions: [
-                TextButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                    router.push(child: FeedbackPage());
-                  },
-                  child: Text(S.current.about_feedback),
-                ),
-                TextButton(
-                  onPressed: () {
-                    launch(ChaldeaUrl.doc('faq'));
-                  },
-                  child: Text(S.current.faq),
-                ),
-              ],
+        builder: (context) => SimpleConfirmDialog(
+          title: Text(S.current.login_forget_pwd),
+          content: Text(S.current.forgot_password_hint),
+          scrollable: true,
+          showOk: false,
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+                router.push(child: FeedbackPage());
+              },
+              child: Text(S.current.about_feedback),
             ),
+            TextButton(
+              onPressed: () {
+                launch(ChaldeaUrl.doc('faq'));
+              },
+              child: Text(S.current.faq),
+            ),
+          ],
+        ),
       );
     },
     child: Text(S.current.login_forget_pwd),

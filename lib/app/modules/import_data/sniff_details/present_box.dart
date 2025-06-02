@@ -74,7 +74,10 @@ class SniffPresentBoxDetailPage extends StatelessWidget {
     children.add(SHeader('${S.current.details}(${S.current.present_box})'));
     children.addAll(presents.map((e) => buildPresent(context, e)));
 
-    return Scaffold(appBar: AppBar(title: Text(S.current.present_box)), body: ListView(children: children));
+    return Scaffold(
+      appBar: AppBar(title: Text(S.current.present_box)),
+      body: ListView(children: children),
+    );
   }
 
   Widget oneGroup(BuildContext context, String header, Map<int, int> items) {

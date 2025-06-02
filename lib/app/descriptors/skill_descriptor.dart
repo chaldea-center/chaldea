@@ -91,53 +91,48 @@ class SkillDescriptor extends StatelessWidget with FuncsDescriptor, _SkillDescri
             if (skill is NiceSkill && (skill as NiceSkill).extraPassive.isNotEmpty)
               CenterWidgetSpan(
                 child: InkWell(
-                  onTap:
-                      () => showDialog(
-                        context: context,
-                        useRootNavigator: false,
-                        builder: (context) => _extraPassiveDialog(context, skill as NiceSkill),
-                      ),
+                  onTap: () => showDialog(
+                    context: context,
+                    useRootNavigator: false,
+                    builder: (context) => _extraPassiveDialog(context, skill as NiceSkill),
+                  ),
                   child: Icon(Icons.info_outline, size: 16, color: Theme.of(context).hintColor),
                 ),
               ),
           ],
         ),
       ),
-      subtitle:
-          Transl.isJP || hideDetail || (skill.lName.l == skill.name && skill.lName.m?.ofRegion() == null)
-              ? null
-              : Text(skill.name),
-      trailing:
-          cds.isEmpty || (cds.length == 1 && cds.single <= 0)
-              ? null
-              : cds.length == 1
-              ? Text('   CD: ${cds.single}')
-              : Text.rich(
-                TextSpan(
-                  text: '   CD: ',
-                  children: divideList([
-                    for (final cd in cds)
-                      TextSpan(
-                        text: cd.toString(),
-                        style:
-                            skill.coolDown.getOrNull((level ?? 0) - 1) == cd
-                                ? TextStyle(color: AppTheme(context).tertiary)
-                                : null,
-                      ),
-                  ], const TextSpan(text: '→')),
-                ),
+      subtitle: Transl.isJP || hideDetail || (skill.lName.l == skill.name && skill.lName.m?.ofRegion() == null)
+          ? null
+          : Text(skill.name),
+      trailing: cds.isEmpty || (cds.length == 1 && cds.single <= 0)
+          ? null
+          : cds.length == 1
+          ? Text('   CD: ${cds.single}')
+          : Text.rich(
+              TextSpan(
+                text: '   CD: ',
+                children: divideList([
+                  for (final cd in cds)
+                    TextSpan(
+                      text: cd.toString(),
+                      style: skill.coolDown.getOrNull((level ?? 0) - 1) == cd
+                          ? TextStyle(color: AppTheme(context).tertiary)
+                          : null,
+                    ),
+                ], const TextSpan(text: '→')),
               ),
-      onTap:
-          jumpToDetail
-              ? () => skill.routeTo(
+            ),
+      onTap: jumpToDetail
+          ? () => skill.routeTo(
+              region: region,
+              child: SkillDetailPage(
+                skill: skill,
                 region: region,
-                child: SkillDetailPage(
-                  skill: skill,
-                  region: region,
-                  initView: FuncApplyTarget.fromBool(showPlayer: showPlayer, showEnemy: showEnemy),
-                ),
-              )
-              : null,
+                initView: FuncApplyTarget.fromBool(showPlayer: showPlayer, showEnemy: showEnemy),
+              ),
+            )
+          : null,
     );
     const divider = Divider(indent: 16, endIndent: 16, height: 2, thickness: 1);
     final detailText = skill.lDetail ?? '???';
@@ -414,17 +409,16 @@ class TdDescriptor extends StatelessWidget with FuncsDescriptor, _SkillDescripto
           ],
         ],
       ),
-      onTap:
-          jumpToDetail
-              ? () => td.routeTo(
+      onTap: jumpToDetail
+          ? () => td.routeTo(
+              region: region,
+              child: TdDetailPage(
+                td: td,
                 region: region,
-                child: TdDetailPage(
-                  td: td,
-                  region: region,
-                  initView: FuncApplyTarget.fromBool(showPlayer: showPlayer, showEnemy: showEnemy),
-                ),
-              )
-              : null,
+                initView: FuncApplyTarget.fromBool(showPlayer: showPlayer, showEnemy: showEnemy),
+              ),
+            )
+          : null,
     );
     final detailText = td.lDetail ?? '???';
 
@@ -458,15 +452,14 @@ class TdDescriptor extends StatelessWidget with FuncsDescriptor, _SkillDescripto
               defaults: TableCellData(isHeader: true, maxLines: 1),
             ),
             CustomTableRow.fromTexts(
-              texts:
-                  [
-                    td.npGain.buster,
-                    td.npGain.arts,
-                    td.npGain.quick,
-                    td.npGain.extra,
-                    td.npGain.np,
-                    td.npGain.defence,
-                  ].map((e) => '${e.first / 100}%').toList(),
+              texts: [
+                td.npGain.buster,
+                td.npGain.arts,
+                td.npGain.quick,
+                td.npGain.extra,
+                td.npGain.np,
+                td.npGain.defence,
+              ].map((e) => '${e.first / 100}%').toList(),
             ),
             CustomTableRow(
               children: [
@@ -480,11 +473,10 @@ class TdDescriptor extends StatelessWidget with FuncsDescriptor, _SkillDescripto
                   isHeader: true,
                 ),
                 TableCellData(
-                  text:
-                      td.svt.damage.isEmpty
-                          ? '   -  '
-                          : '   ${td.svt.damage.length} Hits '
-                              '(${td.svt.damage.join(', ')})  ',
+                  text: td.svt.damage.isEmpty
+                      ? '   -  '
+                      : '   ${td.svt.damage.length} Hits '
+                            '(${td.svt.damage.join(', ')})  ',
                   flex: 5,
                   alignment: Alignment.centerLeft,
                   style: TextStyle(
@@ -517,10 +509,9 @@ mixin _SkillDescriptorMixin {
     List<InlineSpan> spans = [];
 
     for (final skillSvt in skillSvts) {
-      final releaseConditions =
-          skillSvt.releaseConditions
-              .where((e) => e.condType == CondType.equipWithTargetCostume && e.condTargetId == skillSvt.svtId)
-              .toList();
+      final releaseConditions = skillSvt.releaseConditions
+          .where((e) => e.condType == CondType.equipWithTargetCostume && e.condTargetId == skillSvt.svtId)
+          .toList();
       if (releaseConditions.isEmpty) continue;
 
       for (final release in releaseConditions) {
@@ -543,7 +534,9 @@ mixin _SkillDescriptorMixin {
             overrideIcon = svt.ascendIcon(limitCount);
           }
           spans.addAll([
-            CenterWidgetSpan(child: svt.iconBuilder(context: context, width: 36, overrideIcon: overrideIcon)),
+            CenterWidgetSpan(
+              child: svt.iconBuilder(context: context, width: 36, overrideIcon: overrideIcon),
+            ),
             TextSpan(text: ' ${S.current.ascension_stage_short} $limitCount  '),
           ]);
         } else {
@@ -561,7 +554,10 @@ mixin _SkillDescriptorMixin {
       }
     }
     if (spans.isEmpty) return null;
-    return Padding(padding: const EdgeInsets.fromLTRB(16, 8, 16, 0), child: Text.rich(TextSpan(children: spans)));
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+      child: Text.rich(TextSpan(children: spans)),
+    );
   }
 }
 

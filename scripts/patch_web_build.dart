@@ -33,8 +33,8 @@ void main() {
   final mainJs = _FileInfo('main.dart.js'),
       indexHtml = _FileInfo('index.html'),
       bootstrapJs = _FileInfo('flutter_bootstrap.js'),
-      // jsMap = _FileInfo('main.dart.js.map'),
       sw = _FileInfo('flutter_service_worker.js');
+  // jsMap = _FileInfo('main.dart.js.map');
 
   // change google fonts url for cn
   print('[patch-web] patching "${mainJs.fn}"');

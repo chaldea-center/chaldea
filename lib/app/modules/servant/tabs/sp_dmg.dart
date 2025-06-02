@@ -54,28 +54,29 @@ class _SvtSpDmgTabState extends State<SvtSpDmgTab> with SingleTickerProviderStat
   @override
   void initState() {
     super.initState();
-    hasSpDmg = [
-      ...widget.svt.skills,
-      ...widget.svt.classPassive,
-      ...widget.svt.extraPassiveNonEvent,
-      ...widget.svt.noblePhantasms,
-    ].any(
-      (skill) => skill.functions.any(
-        (func) =>
-            (const [
-                  BuffType.upDamage,
-                  BuffType.upDamageIndividuality,
-                  BuffType.upDamageIndividualityActiveonly,
-                ].contains(func.buff?.type) &&
-                func.buff?.ckOpIndv.isNotEmpty == true) ||
-            const [
-              FuncType.damageNpIndividual,
-              FuncType.damageNpAndOrCheckIndividuality,
-              FuncType.damageNpIndividualSum,
-              FuncType.damageNpStateIndividualFix,
-            ].contains(func.funcType),
-      ),
-    );
+    hasSpDmg =
+        [
+          ...widget.svt.skills,
+          ...widget.svt.classPassive,
+          ...widget.svt.extraPassiveNonEvent,
+          ...widget.svt.noblePhantasms,
+        ].any(
+          (skill) => skill.functions.any(
+            (func) =>
+                (const [
+                      BuffType.upDamage,
+                      BuffType.upDamageIndividuality,
+                      BuffType.upDamageIndividualityActiveonly,
+                    ].contains(func.buff?.type) &&
+                    func.buff?.ckOpIndv.isNotEmpty == true) ||
+                const [
+                  FuncType.damageNpIndividual,
+                  FuncType.damageNpAndOrCheckIndividuality,
+                  FuncType.damageNpIndividualSum,
+                  FuncType.damageNpStateIndividualFix,
+                ].contains(func.funcType),
+          ),
+        );
   }
 
   @override
@@ -94,11 +95,10 @@ class _SvtSpDmgTabState extends State<SvtSpDmgTab> with SingleTickerProviderStat
                 child: SizedBox(
                   height: 36,
                   child: TabBar(
-                    tabs:
-                        [
-                          "vs. Others",
-                          "vs. this",
-                        ].map((e) => Tab(child: Text(e, style: Theme.of(context).textTheme.bodyMedium))).toList(),
+                    tabs: [
+                      "vs. Others",
+                      "vs. this",
+                    ].map((e) => Tab(child: Text(e, style: Theme.of(context).textTheme.bodyMedium))).toList(),
                   ),
                 ),
               ),
@@ -226,10 +226,9 @@ class SpDmgSelfTab extends StatelessWidget {
             children: [
               ListTile(
                 dense: true,
-                leading:
-                    skill is BaseTd
-                        ? CommandCardWidget(card: skill.svt.card, width: 32)
-                        : db.getIconImage(skill.icon, width: 28),
+                leading: skill is BaseTd
+                    ? CommandCardWidget(card: skill.svt.card, width: 32)
+                    : db.getIconImage(skill.icon, width: 28),
                 title: Text(skill.lName.l),
                 onTap: skill.routeTo,
               ),
@@ -274,10 +273,9 @@ class _SpDmgIndivTabState extends State<SpDmgIndivTab> {
   }) {
     final ids = traits.toList();
     ids.toList();
-    String key =
-        traitsList != null && traitsList.isNotEmpty
-            ? [traitsList.map((e) => e.join("&")).join("|"), rarity].join('+')
-            : [ids.join(useAnd ? '&' : '|'), rarity].join('+');
+    String key = traitsList != null && traitsList.isNotEmpty
+        ? [traitsList.map((e) => e.join("&")).join("|"), rarity].join('+')
+        : [ids.join(useAnd ? '&' : '|'), rarity].join('+');
     return data
         .putIfAbsent(
           key,
@@ -410,20 +408,18 @@ class _SpDmgIndivTabState extends State<SpDmgIndivTab> {
               IconButton(
                 icon: const Icon(Icons.filter_alt),
                 tooltip: '${S.current.filter} (${S.current.servant})',
-                onPressed:
-                    () => FilterPage.show(
-                      context: context,
-                      builder:
-                          (context) => ServantFilterPage(
-                            filterData: svtFilter,
-                            onChanged: (_) {
-                              if (mounted) {
-                                setState(() {});
-                              }
-                            },
-                            planMode: false,
-                          ),
-                    ),
+                onPressed: () => FilterPage.show(
+                  context: context,
+                  builder: (context) => ServantFilterPage(
+                    filterData: svtFilter,
+                    onChanged: (_) {
+                      if (mounted) {
+                        setState(() {});
+                      }
+                    },
+                    planMode: false,
+                  ),
+                ),
               ),
             ],
           ),

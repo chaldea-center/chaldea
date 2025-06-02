@@ -25,6 +25,9 @@ class SvtClassWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text.rich(rich(context: context, classId: classId, rarity: rarity), textAlign: TextAlign.center);
+    return Text.rich(
+      rich(context: context, classId: classId, rarity: rarity),
+      textAlign: TextAlign.center,
+    );
   }
 }

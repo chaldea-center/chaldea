@@ -155,11 +155,10 @@ class _EventMissionTargetPageState extends State<EventMissionTargetPage> {
           title: Text(S.current.filter),
           options: conds.toList(),
           values: filterData.cond,
-          optionBuilder:
-              (cond) => Padding(
-                padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 4),
-                child: Text(describeCond(cond), textScaler: const TextScaler.linear(0.95)),
-              ),
+          optionBuilder: (cond) => Padding(
+            padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 4),
+            child: Text(describeCond(cond), textScaler: const TextScaler.linear(0.95)),
+          ),
           onFilterChanged: (value, _) {
             setState(() {});
           },
@@ -260,7 +259,9 @@ class _EventMissionTargetPageState extends State<EventMissionTargetPage> {
       ];
 
       children.add(
-        TableRow(children: [for (final cell in rowCells) Padding(padding: const EdgeInsets.all(6), child: cell)]),
+        TableRow(
+          children: [for (final cell in rowCells) Padding(padding: const EdgeInsets.all(6), child: cell)],
+        ),
       );
     }
     return Table(

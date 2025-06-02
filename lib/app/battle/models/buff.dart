@@ -113,12 +113,11 @@ class BattleBuff {
   }
 
   BattleBuff copy() {
-    final copy =
-        BattleBuff()
-          .._passiveList = _passiveList.map((e) => e.copy()).toList()
-          .._activeList = _activeList.map((e) => e.copy()).toList()
-          ..commandCodeList = commandCodeList.map((e) => e.copy()).toList()
-          ..auraBuffList = auraBuffList.map((e) => e.copy()).toList();
+    final copy = BattleBuff()
+      .._passiveList = _passiveList.map((e) => e.copy()).toList()
+      .._activeList = _activeList.map((e) => e.copy()).toList()
+      ..commandCodeList = commandCodeList.map((e) => e.copy()).toList()
+      ..auraBuffList = auraBuffList.map((e) => e.copy()).toList();
     return copy;
   }
 }
@@ -364,7 +363,10 @@ class BuffData {
   bool checkHpReduceToRegainIndiv(final List<NiceTrait>? selfTraits) {
     final hpReduceToRegainIndiv = vals.HpReduceToRegainIndiv;
     return hpReduceToRegainIndiv == null ||
-        checkSignedIndividualities2(myTraits: selfTraits ?? [], requiredTraits: [NiceTrait(id: hpReduceToRegainIndiv)]);
+        checkSignedIndividualities2(
+          myTraits: selfTraits ?? [],
+          requiredTraits: [NiceTrait(id: hpReduceToRegainIndiv)],
+        );
   }
 
   bool checkTargetFunctionIndividuality(final List<NiceFunction>? functions) {
@@ -516,19 +518,16 @@ class BuffData {
     if (vals.OnFieldCount == -1 && buff.script.TargetIndiv != null) {
       final List<BattleServantData> allies = owner.isPlayer ? battleData.nonnullPlayers : battleData.nonnullEnemies;
       final includeIgnoreIndividuality = buff.script.IncludeIgnoreIndividuality == 1;
-      isAct &=
-          allies
-              .where(
-                (svt) =>
-                    svt != owner &&
-                    checkSignedIndividualities2(
-                      myTraits: svt.getTraits(
-                        addTraits: svt.getBuffTraits(includeIgnoreIndiv: includeIgnoreIndividuality),
-                      ),
-                      requiredTraits: [buff.script.TargetIndiv!],
-                    ),
-              )
-              .isEmpty;
+      isAct &= allies
+          .where(
+            (svt) =>
+                svt != owner &&
+                checkSignedIndividualities2(
+                  myTraits: svt.getTraits(addTraits: svt.getBuffTraits(includeIgnoreIndiv: includeIgnoreIndividuality)),
+                  requiredTraits: [buff.script.TargetIndiv!],
+                ),
+          )
+          .isEmpty;
     }
 
     if (buff.script.HP_HIGHER != null) {
@@ -561,9 +560,9 @@ class BuffData {
     return '${buffRate != 1000 ? '${(buffRate / 10).toStringAsFixed(1)} %' : ''} '
         '${buff.lName.l} '
         '${buff.ckSelfIndv.isNotEmpty ? '${S.current.battle_require_self_traits} '
-                '${buff.ckSelfIndv.map((trait) => trait.shownName())} ' : ''}'
+                  '${buff.ckSelfIndv.map((trait) => trait.shownName())} ' : ''}'
         '${buff.ckOpIndv.isNotEmpty ? '${S.current.battle_require_opponent_traits} '
-                '${buff.ckOpIndv.map((trait) => trait.shownName())} ' : ''}'
+                  '${buff.ckOpIndv.map((trait) => trait.shownName())} ' : ''}'
         '${getParamString()}'
         '${isOnField ? S.current.battle_require_actor_on_field((actorName ?? actorUniqueId).toString()) : ''}';
   }
@@ -590,22 +589,21 @@ class BuffData {
   }
 
   BuffData copy() {
-    final BuffData copy =
-        BuffData.makeCopy(buff, vals, addOrder)
-          ..buffRate = buffRate
-          ..count = count
-          ..logicTurn = logicTurn
-          ..param = param
-          ..additionalParam = additionalParam
-          ..tdTypeChange = tdTypeChange
-          ..shortenMaxCountEachSkill = shortenMaxCountEachSkill?.toList()
-          ..intervalTurn = intervalTurn
-          ..actorUniqueId = actorUniqueId
-          ..actorName = actorName
-          ..isUsed = isUsed
-          ..passive = passive
-          ..skillInfoType = skillInfoType
-          .._state = _state;
+    final BuffData copy = BuffData.makeCopy(buff, vals, addOrder)
+      ..buffRate = buffRate
+      ..count = count
+      ..logicTurn = logicTurn
+      ..param = param
+      ..additionalParam = additionalParam
+      ..tdTypeChange = tdTypeChange
+      ..shortenMaxCountEachSkill = shortenMaxCountEachSkill?.toList()
+      ..intervalTurn = intervalTurn
+      ..actorUniqueId = actorUniqueId
+      ..actorName = actorName
+      ..isUsed = isUsed
+      ..passive = passive
+      ..skillInfoType = skillInfoType
+      .._state = _state;
     return copy;
   }
 

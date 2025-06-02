@@ -130,12 +130,11 @@ class _MstGiftPageState extends State<MstGiftPage> with RegionBasedState<List<Gi
 
   Widget get popupMenu {
     return PopupMenuButton(
-      itemBuilder:
-          (context) => [
-            ...SharedBuilder.websitesPopupMenuItems(
-              atlas: '${AtlasApi.atlasApiHost}/nice/${region?.upper ?? "JP"}/gift/$id',
-            ),
-          ],
+      itemBuilder: (context) => [
+        ...SharedBuilder.websitesPopupMenuItems(
+          atlas: '${AtlasApi.atlasApiHost}/nice/${region?.upper ?? "JP"}/gift/$id',
+        ),
+      ],
     );
   }
 }

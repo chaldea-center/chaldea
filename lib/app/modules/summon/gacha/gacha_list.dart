@@ -107,18 +107,16 @@ class _GachaListPageState extends State<GachaListPage>
           IconButton(
             icon: const Icon(Icons.filter_alt),
             tooltip: S.current.filter,
-            onPressed:
-                () => FilterPage.show(
-                  context: context,
-                  builder:
-                      (context) => SummonFilterPage(
-                        filterData: filterData,
-                        isRawGacha: true,
-                        onChanged: (_) {
-                          if (mounted) setState(() {});
-                        },
-                      ),
-                ),
+            onPressed: () => FilterPage.show(
+              context: context,
+              builder: (context) => SummonFilterPage(
+                filterData: filterData,
+                isRawGacha: true,
+                onChanged: (_) {
+                  if (mounted) setState(() {});
+                },
+              ),
+            ),
           ),
           searchIcon,
         ],
@@ -201,7 +199,10 @@ class _GachaListPageState extends State<GachaListPage>
             TextSpan(
               children: [
                 if (gacha.type == GachaType.chargeStone)
-                  const TextSpan(text: '$kStarChar2 ', style: TextStyle(color: Colors.red)),
+                  const TextSpan(
+                    text: '$kStarChar2 ',
+                    style: TextStyle(color: Colors.red),
+                  ),
                 TextSpan(text: title),
               ],
             ),
@@ -228,7 +229,10 @@ class _GachaListPageState extends State<GachaListPage>
                     for (final v in dupGachas)
                       TextSpan(
                         children: [
-                          TextSpan(text: ' ${v.name} ', style: const TextStyle(fontWeight: FontWeight.bold)),
+                          TextSpan(
+                            text: ' ${v.name} ',
+                            style: const TextStyle(fontWeight: FontWeight.bold),
+                          ),
                           TextSpan(text: v.openedAt.sec2date().toDateString()),
                         ],
                       ),
@@ -239,7 +243,12 @@ class _GachaListPageState extends State<GachaListPage>
             ),
           );
         }
-        children.add(TextButton(onPressed: () => gacha.routeTo(region: region!), child: Text(S.current.details)));
+        children.add(
+          TextButton(
+            onPressed: () => gacha.routeTo(region: region!),
+            child: Text(S.current.details),
+          ),
+        );
         return Column(mainAxisSize: MainAxisSize.min, children: children);
       },
     );
@@ -255,12 +264,11 @@ class _GachaListPageState extends State<GachaListPage>
         children: [
           const SizedBox(width: kMinInteractiveDimension),
           ElevatedButton(
-            onPressed:
-                _selectedGachas.isEmpty
-                    ? null
-                    : () {
-                      router.pushPage(MCSummonCreatePage(gachas: _selectedGachas.toList()));
-                    },
+            onPressed: _selectedGachas.isEmpty
+                ? null
+                : () {
+                    router.pushPage(MCSummonCreatePage(gachas: _selectedGachas.toList()));
+                  },
             child: Text("${S.current.create_mooncell_summon}(${_selectedGachas.length})"),
           ),
           IconButton(

@@ -48,10 +48,9 @@ class _TraitFuncTabState extends State<TraitFuncTab> {
       children: [
         Padding(padding: const EdgeInsets.symmetric(vertical: 4), child: buttons),
         Expanded(
-          child:
-              children.isEmpty
-                  ? const Center(child: Text('No record'))
-                  : ListView.builder(itemBuilder: (context, index) => children[index], itemCount: children.length),
+          child: children.isEmpty
+              ? const Center(child: Text('No record'))
+              : ListView.builder(itemBuilder: (context, index) => children[index], itemCount: children.length),
         ),
       ],
     );

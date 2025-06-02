@@ -113,10 +113,9 @@ class _CommonReleasesPageState extends State<CommonReleasesPage>
 
   Widget get popupMenu {
     return PopupMenuButton(
-      itemBuilder:
-          (context) => SharedBuilder.websitesPopupMenuItems(
-            atlas: 'https://api.atlasacademy.io/nice/JP/common-release/${widget.id}',
-          ),
+      itemBuilder: (context) => SharedBuilder.websitesPopupMenuItems(
+        atlas: 'https://api.atlasacademy.io/nice/JP/common-release/${widget.id}',
+      ),
     );
   }
 }

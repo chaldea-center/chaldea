@@ -64,10 +64,9 @@ class _QuestListPageState extends State<QuestListPage> {
       final quest = allQuestsMap[questId];
 
       final spot = db.gameData.spots[quest?.spotId];
-      final leading =
-          spot == null || spot.shownImage == null
-              ? (hasSpot ? const SizedBox(width: 56) : null)
-              : db.getIconImage(spot.shownImage, width: 56);
+      final leading = spot == null || spot.shownImage == null
+          ? (hasSpot ? const SizedBox(width: 56) : null)
+          : db.getIconImage(spot.shownImage, width: 56);
       String? userQuestInfo;
       final userQuest = mstData?.userQuest[questId];
       if (userQuest != null) {
@@ -158,10 +157,9 @@ class _QuestListPageState extends State<QuestListPage> {
       }
       String chapter = quest.chapter;
       final title = chapter.isEmpty ? quest.lDispName : '$chapter ${quest.lDispName}';
-      Servant? owner =
-          quest.type == QuestType.friendship || quest.warId == WarId.rankup
-              ? db.gameData.servantsById.values.firstWhereOrNull((svt) => svt.relateQuestIds.contains(quest.id))
-              : null;
+      Servant? owner = quest.type == QuestType.friendship || quest.warId == WarId.rankup
+          ? db.gameData.servantsById.values.firstWhereOrNull((svt) => svt.relateQuestIds.contains(quest.id))
+          : null;
 
       String subtitle;
       if (isMainFree) {
@@ -181,18 +179,17 @@ class _QuestListPageState extends State<QuestListPage> {
         leading: leading,
         // minLeadingWidth: 16,
         title: Text(title, textScaler: const TextScaler.linear(0.85)),
-        subtitle:
-            subtitle.isEmpty && owner == null
-                ? null
-                : Text.rich(
-                  TextSpan(
-                    children: [
-                      if (owner != null) CenterWidgetSpan(child: owner.iconBuilder(context: context, height: 32)),
-                      TextSpan(text: subtitle),
-                    ],
-                  ),
-                  textScaler: const TextScaler.linear(0.85),
+        subtitle: subtitle.isEmpty && owner == null
+            ? null
+            : Text.rich(
+                TextSpan(
+                  children: [
+                    if (owner != null) CenterWidgetSpan(child: owner.iconBuilder(context: context, height: 32)),
+                    TextSpan(text: subtitle),
+                  ],
                 ),
+                textScaler: const TextScaler.linear(0.85),
+              ),
         trailing: trailing,
         contentPadding: leading == null ? null : const EdgeInsetsDirectional.fromSTEB(4, 0, 16, 0),
         horizontalTitleGap: 8,

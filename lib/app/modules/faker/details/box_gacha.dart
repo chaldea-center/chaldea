@@ -55,17 +55,16 @@ class _BoxGachaDrawPageState extends State<BoxGachaDrawPage> {
       return;
     } else if (mstData.userBoxGacha.length > 1 && mounted) {
       final gacha = await router.showDialog<UserBoxGachaEntity>(
-        builder:
-            (context) => SimpleDialog(
-              title: Text('Select Lottery'),
-              children: [
-                for (final gacha in mstData.userBoxGacha)
-                  SimpleDialogOption(
-                    child: Text('${gacha.boxGachaId}: ${gacha.resetNum} ${S.current.event_lottery_unit}'),
-                    onPressed: () => Navigator.pop(context, gacha),
-                  ),
-              ],
-            ),
+        builder: (context) => SimpleDialog(
+          title: Text('Select Lottery'),
+          children: [
+            for (final gacha in mstData.userBoxGacha)
+              SimpleDialogOption(
+                child: Text('${gacha.boxGachaId}: ${gacha.resetNum} ${S.current.event_lottery_unit}'),
+                onPressed: () => Navigator.pop(context, gacha),
+              ),
+          ],
+        ),
       );
       if (gacha != null) {
         boxGachaId = gacha.boxGachaId;
@@ -113,23 +112,22 @@ class _BoxGachaDrawPageState extends State<BoxGachaDrawPage> {
             icon: const Icon(Icons.history),
           ),
           PopupMenuButton(
-            itemBuilder:
-                (context) => [
-                  PopupMenuItem(
-                    // enabled: !runtime.runningTask.value,
-                    onTap: () {
-                      router.pushPage(UserPresentBoxManagePage(runtime: runtime));
-                    },
-                    child: Text(S.current.present_box),
-                  ),
-                  PopupMenuItem(
-                    // enabled: !runtime.runningTask.value,
-                    onTap: () {
-                      router.pushPage(SvtCombinePage(runtime: runtime));
-                    },
-                    child: Text('从者强化'),
-                  ),
-                ],
+            itemBuilder: (context) => [
+              PopupMenuItem(
+                // enabled: !runtime.runningTask.value,
+                onTap: () {
+                  router.pushPage(UserPresentBoxManagePage(runtime: runtime));
+                },
+                child: Text(S.current.present_box),
+              ),
+              PopupMenuItem(
+                // enabled: !runtime.runningTask.value,
+                onTap: () {
+                  router.pushPage(SvtCombinePage(runtime: runtime));
+                },
+                child: Text('从者强化'),
+              ),
+            ],
           ),
         ],
       ),
@@ -138,7 +136,14 @@ class _BoxGachaDrawPageState extends State<BoxGachaDrawPage> {
         child: ListTileTheme.merge(
           dense: true,
           visualDensity: VisualDensity.compact,
-          child: Column(children: [headerInfo, Expanded(child: body), const Divider(height: 1), buttonBar]),
+          child: Column(
+            children: [
+              headerInfo,
+              Expanded(child: body),
+              const Divider(height: 1),
+              buttonBar,
+            ],
+          ),
         ),
       ),
     );
@@ -168,9 +173,8 @@ class _BoxGachaDrawPageState extends State<BoxGachaDrawPage> {
           constraints: const BoxConstraints(maxWidth: 16, maxHeight: 16),
           child: ValueListenableBuilder(
             valueListenable: runtime.runningTask,
-            builder:
-                (context, running, _) =>
-                    CircularProgressIndicator(value: running ? null : 1.0, color: running ? Colors.red : Colors.green),
+            builder: (context, running, _) =>
+                CircularProgressIndicator(value: running ? null : 1.0, color: running ? Colors.red : Colors.green),
           ),
         ),
         title: Text('[${agent.user.serverName}] ${userGame?.name}'),
@@ -195,10 +199,9 @@ class _BoxGachaDrawPageState extends State<BoxGachaDrawPage> {
     final itemCounts = Item.sortMapByPriority(
       {
         for (final itemId in itemIds)
-          itemId:
-              db.gameData.items[itemId]?.type == ItemType.itemSelect
-                  ? Maths.sum(mstData.userPresentBox.where((e) => e.objectId == itemId).map((e) => e.num))
-                  : mstData.getItemOrSvtNum(itemId),
+          itemId: db.gameData.items[itemId]?.type == ItemType.itemSelect
+              ? Maths.sum(mstData.userPresentBox.where((e) => e.objectId == itemId).map((e) => e.num))
+              : mstData.getItemOrSvtNum(itemId),
       },
       reversed: true,
       removeZero: false,
@@ -283,7 +286,9 @@ class _BoxGachaDrawPageState extends State<BoxGachaDrawPage> {
           leading: Item.iconBuilder(context: context, item: Items.qp),
           title: Text(mstData.user?.qp.format(compact: false, groupSeparator: ',') ?? '0'),
         ),
-        ListTile(title: SharedBuilder.itemGrid(context: context, items: itemCounts.entries, width: 36, showZero: true)),
+        ListTile(
+          title: SharedBuilder.itemGrid(context: context, items: itemCounts.entries, width: 36, showZero: true),
+        ),
       ],
     );
   }

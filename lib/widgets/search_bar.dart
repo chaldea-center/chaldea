@@ -76,7 +76,10 @@ class _SearchBar2State extends State<SearchBar2> {
           if (widget.searchOptionsBuilder != null)
             InkWell(
               onTap: () {
-                showModalBottomSheet(context: context, builder: (context) => SafeArea(child: _optionBuilder(context)));
+                showModalBottomSheet(
+                  context: context,
+                  builder: (context) => SafeArea(child: _optionBuilder(context)),
+                );
               },
               child: Tooltip(
                 message: S.current.search_options,
@@ -93,23 +96,22 @@ class _SearchBar2State extends State<SearchBar2> {
 
   Widget _optionBuilder(BuildContext context) {
     return StatefulBuilder(
-      builder:
-          (context, setState) => Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ListTile(
-                leading: const Icon(Icons.keyboard_arrow_down),
-                title: Text(S.current.search_options),
-                onTap: () {
-                  Navigator.pop(context);
-                },
-              ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(16, 6, 16, 8),
-                child: widget.searchOptionsBuilder!(context, setState),
-              ),
-            ],
+      builder: (context, setState) => Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          ListTile(
+            leading: const Icon(Icons.keyboard_arrow_down),
+            title: Text(S.current.search_options),
+            onTap: () {
+              Navigator.pop(context);
+            },
           ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 6, 16, 8),
+            child: widget.searchOptionsBuilder!(context, setState),
+          ),
+        ],
+      ),
     );
   }
 }

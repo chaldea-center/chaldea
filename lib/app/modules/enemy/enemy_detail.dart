@@ -43,6 +43,9 @@ class _EnemyDetailPageState extends State<EnemyDetailPage> {
     }
     final _svt = db.gameData.servantsById[widget.id] ?? db.gameData.entities[widget.id];
     if (_svt == null) return ServantDetailPage(id: widget.id); // NotFound
-    return Scaffold(appBar: AppBar(title: Text(_svt.lName.l)), body: const Center(child: CircularProgressIndicator()));
+    return Scaffold(
+      appBar: AppBar(title: Text(_svt.lName.l)),
+      body: const Center(child: CircularProgressIndicator()),
+    );
   }
 }

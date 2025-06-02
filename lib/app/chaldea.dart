@@ -75,20 +75,19 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin, WindowListener
     );
     if (PlatformU.isAndroid) {
       child = AnnotatedRegion<SystemUiOverlayStyle>(
-        value:
-            db.settings.isResolvedDarkMode
-                ? SystemUiOverlayStyle.dark.copyWith(
-                  // statusBarColor: Colors.transparent,
-                  systemNavigationBarColor: darkTheme.scaffoldBackgroundColor,
-                  // statusBarIconBrightness: Brightness.light,
-                  systemNavigationBarIconBrightness: Brightness.light,
-                )
-                : SystemUiOverlayStyle.light.copyWith(
-                  // statusBarColor: Colors.transparent,
-                  systemNavigationBarColor: lightTheme.scaffoldBackgroundColor,
-                  // statusBarIconBrightness: Brightness.dark,
-                  systemNavigationBarIconBrightness: Brightness.dark,
-                ),
+        value: db.settings.isResolvedDarkMode
+            ? SystemUiOverlayStyle.dark.copyWith(
+                // statusBarColor: Colors.transparent,
+                systemNavigationBarColor: darkTheme.scaffoldBackgroundColor,
+                // statusBarIconBrightness: Brightness.light,
+                systemNavigationBarIconBrightness: Brightness.light,
+              )
+            : SystemUiOverlayStyle.light.copyWith(
+                // statusBarColor: Colors.transparent,
+                systemNavigationBarColor: lightTheme.scaffoldBackgroundColor,
+                // statusBarIconBrightness: Brightness.dark,
+                systemNavigationBarIconBrightness: Brightness.dark,
+              ),
         child: child,
       );
     }

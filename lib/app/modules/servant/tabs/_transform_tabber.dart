@@ -17,12 +17,11 @@ class TransformSvtProfileTabber extends StatelessWidget {
         // getOverwriteData([18], true),
         getOverwriteData([19], true),
       ];
-      final normalData =
-          SvtOverwriteViewData(svt)
-            ..name = svt.lName.l
-            ..icon = svt.borderedIcon
-            ..activeSkills = {for (final (k, v) in svt.groupedActiveSkills.items) k: List.of(v)}
-            ..tds = {for (final (k, v) in svt.groupedNoblePhantasms.items) k: List.of(v)};
+      final normalData = SvtOverwriteViewData(svt)
+        ..name = svt.lName.l
+        ..icon = svt.borderedIcon
+        ..activeSkills = {for (final (k, v) in svt.groupedActiveSkills.items) k: List.of(v)}
+        ..tds = {for (final (k, v) in svt.groupedNoblePhantasms.items) k: List.of(v)};
       for (final variant in costumeVariants) {
         for (final (skillNum, skills) in variant.activeSkills.items) {
           normalData.activeSkills[skillNum]?.removeWhere((e) => skills.contains(e));
@@ -64,14 +63,13 @@ class TransformSvtProfileTabber extends StatelessWidget {
     }
     data.icon = firstCostume?.borderedIcon;
 
-    final activeSkills =
-        svt.skills
-            .where(
-              (skill) => skill.skillSvts
-                  .expand((skillSvt) => skillSvt.releaseConditions)
-                  .any((cond) => cond.condType == CondType.equipWithTargetCostume && costumeIds.contains(cond.condNum)),
-            )
-            .toList();
+    final activeSkills = svt.skills
+        .where(
+          (skill) => skill.skillSvts
+              .expand((skillSvt) => skillSvt.releaseConditions)
+              .any((cond) => cond.condType == CondType.equipWithTargetCostume && costumeIds.contains(cond.condNum)),
+        )
+        .toList();
     for (final skill in activeSkills) {
       data.activeSkills.putIfAbsent(skill.svt.num, () => []).add(skill);
     }
@@ -87,14 +85,13 @@ class TransformSvtProfileTabber extends StatelessWidget {
       ];
     }
 
-    final tds =
-        svt.noblePhantasms
-            .where(
-              (td) => td.npSvts
-                  .expand((npSvt) => npSvt.releaseConditions)
-                  .any((cond) => cond.condType == CondType.equipWithTargetCostume && costumeIds.contains(cond.condNum)),
-            )
-            .toSet();
+    final tds = svt.noblePhantasms
+        .where(
+          (td) => td.npSvts
+              .expand((npSvt) => npSvt.releaseConditions)
+              .any((cond) => cond.condType == CondType.equipWithTargetCostume && costumeIds.contains(cond.condNum)),
+        )
+        .toSet();
     for (final td in tds.toSet()) {
       final tdTypeChangeIds = td.script?.tdTypeChangeIDs ?? [];
       tds.addAll(svt.noblePhantasms.where((e) => tdTypeChangeIds.contains(e.id)));
@@ -148,10 +145,9 @@ class TransformSvtProfileTabber extends StatelessWidget {
         TextSpan(
           children: [
             CenterWidgetSpan(
-              child:
-                  overwriteData?.icon != null
-                      ? db.getIconImage(overwriteData?.icon, width: 24)
-                      : svt.iconBuilder(context: context, width: 24),
+              child: overwriteData?.icon != null
+                  ? db.getIconImage(overwriteData?.icon, width: 24)
+                  : svt.iconBuilder(context: context, width: 24),
             ),
             TextSpan(text: ' $name'),
           ],

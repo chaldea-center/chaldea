@@ -88,7 +88,12 @@ class _SvtQuestTimelineFilterState extends FilterPageState<SvtQuestTimelineFilte
             combined: true,
             optionBuilder: (v) {
               return Text.rich(
-                TextSpan(children: [CenterWidgetSpan(child: Icon(v.icon, size: 16)), TextSpan(text: v.shownName)]),
+                TextSpan(
+                  children: [
+                    CenterWidgetSpan(child: Icon(v.icon, size: 16)),
+                    TextSpan(text: v.shownName),
+                  ],
+                ),
               );
             },
             onFilterChanged: (v, _) {

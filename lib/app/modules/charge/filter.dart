@@ -166,10 +166,9 @@ class _NpChargeFilterPageState extends FilterPageState<NpFilterData, NpChargeFil
           ),
           FilterGroup<NpChargeType>(
             title: Text(S.current.general_type, style: textStyle),
-            options:
-                filterData.isSvt
-                    ? NpChargeType.values
-                    : NpChargeType.values.where((e) => e != NpChargeType.instantSum).toList(),
+            options: filterData.isSvt
+                ? NpChargeType.values
+                : NpChargeType.values.where((e) => e != NpChargeType.instantSum).toList(),
             values: filterData.type,
             optionBuilder: (v) => Text(v.shownName),
             onFilterChanged: (v, _) {
@@ -204,15 +203,17 @@ class _NpChargeFilterPageState extends FilterPageState<NpFilterData, NpChargeFil
                   items: [
                     const DropdownMenuItem(value: 0, child: Text('CD', textScaler: TextScaler.linear(0.9))),
                     for (int cd = 3; cd <= 8; cd++)
-                      DropdownMenuItem(value: cd, child: Text('CD≤$cd', textScaler: const TextScaler.linear(0.9))),
+                      DropdownMenuItem(
+                        value: cd,
+                        child: Text('CD≤$cd', textScaler: const TextScaler.linear(0.9)),
+                      ),
                   ],
-                  onChanged:
-                      filterData.skillLv >= 1
-                          ? (v) {
-                            if (v != null) filterData.skillCD = v;
-                            update();
-                          }
-                          : null,
+                  onChanged: filterData.skillLv >= 1
+                      ? (v) {
+                          if (v != null) filterData.skillCD = v;
+                          update();
+                        }
+                      : null,
                 ),
                 DropdownButton<int>(
                   value: filterData.tdLv,
@@ -237,13 +238,12 @@ class _NpChargeFilterPageState extends FilterPageState<NpFilterData, NpChargeFil
                         child: Text(NpFilterData.textTdOC(lv), textScaler: const TextScaler.linear(0.9)),
                       ),
                   ],
-                  onChanged:
-                      filterData.tdLv == 0
-                          ? null
-                          : (v) {
-                            if (v != null) filterData.tdOC = v;
-                            update();
-                          },
+                  onChanged: filterData.tdLv == 0
+                      ? null
+                      : (v) {
+                          if (v != null) filterData.tdOC = v;
+                          update();
+                        },
                 ),
               ],
             ),
@@ -279,22 +279,22 @@ class _NpChargeFilterPageState extends FilterPageState<NpFilterData, NpChargeFil
           buildGroupDivider(text: 'General'),
           filterData.isSvt
               ? FilterGroup<FavoriteState>(
-                // title: Text(S.current.filter_sort_rarity, style: textStyle),
-                options: FavoriteState.values,
-                values: filterData.favorite,
-                optionBuilder: (v) => Icon(v.icon, size: 16),
-                onFilterChanged: (value, _) {
-                  update();
-                },
-              )
+                  // title: Text(S.current.filter_sort_rarity, style: textStyle),
+                  options: FavoriteState.values,
+                  values: filterData.favorite,
+                  optionBuilder: (v) => Icon(v.icon, size: 16),
+                  onFilterChanged: (value, _) {
+                    update();
+                  },
+                )
               : FilterGroup<int>(
-                options: CraftStatus.values,
-                values: filterData.ceStatus,
-                optionBuilder: (v) => Text(CraftStatus.shownText(v)),
-                onFilterChanged: (value, _) {
-                  update();
-                },
-              ),
+                  options: CraftStatus.values,
+                  values: filterData.ceStatus,
+                  optionBuilder: (v) => Text(CraftStatus.shownText(v)),
+                  onFilterChanged: (value, _) {
+                    update();
+                  },
+                ),
           if (filterData.isSvt) buildClassFilter(filterData.svtClass),
           FilterGroup<int>(
             title: Text(S.current.filter_sort_rarity, style: textStyle),

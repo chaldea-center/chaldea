@@ -59,7 +59,10 @@ class BlankPage extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
               children: [
-                ConstrainedBox(constraints: BoxConstraints(maxWidth: imgWidth, maxHeight: imgHeight), child: img),
+                ConstrainedBox(
+                  constraints: BoxConstraints(maxWidth: imgWidth, maxHeight: imgHeight),
+                  child: img,
+                ),
                 if (showIndicator) indicatorBuilder(context),
               ],
             ),

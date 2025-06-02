@@ -43,13 +43,12 @@ class AppAdImpl implements AppAdInterface {
     final viewID = options.name;
     ui.platformViewRegistry.registerViewFactory(
       viewID,
-      (int id) =>
-          web.HTMLIFrameElement()
-            ..style.width = '100%'
-            ..style.height = '100%'
-            ..style.border = 'none'
-            ..srcdoc =
-                '''
+      (int id) => web.HTMLIFrameElement()
+        ..style.width = '100%'
+        ..style.height = '100%'
+        ..style.border = 'none'
+        ..srcdoc =
+            '''
 <amp-ad width="100vw" height="320"
      type="adsense"
      data-ad-client="ca-pub-1170355046794925"
@@ -58,7 +57,8 @@ class AppAdImpl implements AppAdInterface {
      data-full-width="">
   <div overflow=""></div>
 </amp-ad>         
- '''.toJS,
+ '''
+                .toJS,
     );
 
     return SizedBox(

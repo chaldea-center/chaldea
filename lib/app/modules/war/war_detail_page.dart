@@ -73,17 +73,15 @@ class _WarDetailPageState extends State<WarDetailPage> with RegionBasedState<Nic
     final banners = war.extra.allBanners;
     final warAdds = war.warAdds.toList()..sort2((e) => -e.startedAt);
     final eventAdds = war.event?.eventAdds ?? [];
-    List<String> warBanners =
-        {
-          for (final warAdd in warAdds) warAdd.overwriteBanner,
-          for (final eventAdd in eventAdds) eventAdd.overwriteBanner,
-        }.whereType<String>().toList();
-    warBanners =
-        {
-          war.shownBanner,
-          if (war.parentWarId != ConstData.constants.grandBoardWarId) war.banner,
-          ...warBanners.take(war.id == WarId.chaldeaGate ? 4 : 6).toList().reversed,
-        }.whereType<String>().toList();
+    List<String> warBanners = {
+      for (final warAdd in warAdds) warAdd.overwriteBanner,
+      for (final eventAdd in eventAdds) eventAdd.overwriteBanner,
+    }.whereType<String>().toList();
+    warBanners = {
+      war.shownBanner,
+      if (war.parentWarId != ConstData.constants.grandBoardWarId) war.banner,
+      ...warBanners.take(war.id == WarId.chaldeaGate ? 4 : 6).toList().reversed,
+    }.whereType<String>().toList();
 
     List<Widget> children = [
       if (banners.isNotEmpty) CarouselUtil.limitHeightWidget(context: context, imageUrls: banners),
@@ -132,7 +130,10 @@ class _WarDetailPageState extends State<WarDetailPage> with RegionBasedState<Nic
           if (lShortName != lLongName) CustomTableRow.fromTexts(texts: [lShortName]),
           if (shortNameJp != longNameJp && !Transl.isJP) CustomTableRow.fromTexts(texts: [shortNameJp]),
           CustomTableRow(
-            children: [TableCellData(text: S.current.war_age, isHeader: true), TableCellData(text: war.age, flex: 3)],
+            children: [
+              TableCellData(text: S.current.war_age, isHeader: true),
+              TableCellData(text: war.age, flex: 3),
+            ],
           ),
           if (warBanners.isNotEmpty)
             CustomTableRow(
@@ -143,8 +144,9 @@ class _WarDetailPageState extends State<WarDetailPage> with RegionBasedState<Nic
                   child: Wrap(
                     spacing: 4,
                     alignment: WrapAlignment.center,
-                    children:
-                        warBanners.map((e) => CachedImage(imageUrl: e, height: 48, showSaveOnLongPress: true)).toList(),
+                    children: warBanners
+                        .map((e) => CachedImage(imageUrl: e, height: 48, showSaveOnLongPress: true))
+                        .toList(),
                   ),
                 ),
               ],
@@ -213,13 +215,12 @@ class _WarDetailPageState extends State<WarDetailPage> with RegionBasedState<Nic
         ),
       );
     }
-    Set<int> bgms =
-        {
-          if (war.bgm != null) war.bgm!.id,
-          ...war.warAdds.where((e) => e.type == WarOverwriteType.bgm).map((e) => e.overwriteId),
-          ...war.maps.map((e) => e.bgm.id),
-          ...eventAdds.where((e) => e.overwriteType == EventOverwriteType.bgm).map((e) => e.overwriteId),
-        }.where((e) => e != 0).toSet();
+    Set<int> bgms = {
+      if (war.bgm != null) war.bgm!.id,
+      ...war.warAdds.where((e) => e.type == WarOverwriteType.bgm).map((e) => e.overwriteId),
+      ...war.maps.map((e) => e.bgm.id),
+      ...eventAdds.where((e) => e.overwriteType == EventOverwriteType.bgm).map((e) => e.overwriteId),
+    }.where((e) => e != 0).toSet();
     if (bgms.isNotEmpty) {
       if (bgms.length == 1) {
         final bgm = db.gameData.bgms[bgms.first];
@@ -244,7 +245,9 @@ class _WarDetailPageState extends State<WarDetailPage> with RegionBasedState<Nic
           ListTile(
             title: Text('${S.current.war_map} ${map.id}'),
             onTap: () {
-              router.push(child: WarMapPage(war: war, map: map));
+              router.push(
+                child: WarMapPage(war: war, map: map),
+              );
             },
           ),
         );
@@ -277,14 +280,13 @@ class _WarDetailPageState extends State<WarDetailPage> with RegionBasedState<Nic
             builder: (context, constraints) {
               String title = _w.lLongName.l;
               return ListTile(
-                leading:
-                    _w.shownBanner == null
-                        ? null
-                        : db.getIconImage(
-                          _w.shownBanner,
-                          height: min(constraints.maxWidth / 2, 164.0),
-                          aspectRatio: 450 / 134,
-                        ),
+                leading: _w.shownBanner == null
+                    ? null
+                    : db.getIconImage(
+                        _w.shownBanner,
+                        height: min(constraints.maxWidth / 2, 164.0),
+                        aspectRatio: 450 / 134,
+                      ),
                 horizontalTitleGap: 8,
                 title: Text(
                   title,
@@ -307,18 +309,17 @@ class _WarDetailPageState extends State<WarDetailPage> with RegionBasedState<Nic
       children.add(
         ListTile(
           title: Text(S.current.game_rewards),
-          trailing:
-              war.isMainStory
-                  ? db.onUserData(
-                    (context, snapshot) => Switch.adaptive(
-                      value: plan.questReward,
-                      onChanged: (v) {
-                        plan.questReward = v;
-                        db.itemCenter.updateMainStory();
-                      },
-                    ),
-                  )
-                  : null,
+          trailing: war.isMainStory
+              ? db.onUserData(
+                  (context, snapshot) => Switch.adaptive(
+                    value: plan.questReward,
+                    onChanged: (v) {
+                      plan.questReward = v;
+                      db.itemCenter.updateMainStory();
+                    },
+                  ),
+                )
+              : null,
           onTap: () {
             plan.questReward = !plan.questReward;
             db.itemCenter.updateMainStory();
@@ -331,18 +332,17 @@ class _WarDetailPageState extends State<WarDetailPage> with RegionBasedState<Nic
       children.add(
         ListTile(
           title: Text(S.current.quest_fixed_drop),
-          trailing:
-              war.isMainStory
-                  ? db.onUserData(
-                    (context, snapshot) => Switch.adaptive(
-                      value: plan.fixedDrop,
-                      onChanged: (v) {
-                        plan.fixedDrop = v;
-                        db.itemCenter.updateMainStory();
-                      },
-                    ),
-                  )
-                  : null,
+          trailing: war.isMainStory
+              ? db.onUserData(
+                  (context, snapshot) => Switch.adaptive(
+                    value: plan.fixedDrop,
+                    onChanged: (v) {
+                      plan.fixedDrop = v;
+                      db.itemCenter.updateMainStory();
+                    },
+                  ),
+                )
+              : null,
           onTap: () {
             plan.fixedDrop = !plan.fixedDrop;
             db.itemCenter.updateMainStory();
@@ -358,36 +358,35 @@ class _WarDetailPageState extends State<WarDetailPage> with RegionBasedState<Nic
   Widget get popupMenu {
     final war = data;
     return PopupMenuButton<dynamic>(
-      itemBuilder:
-          (context) => [
-            PopupMenuItem(
-              enabled: false,
-              height: 32,
-              child: Text('No.${widget.war?.id ?? widget.warId}', textScaler: const TextScaler.linear(0.9)),
-            ),
-            const PopupMenuDivider(),
-            if (war != null)
-              ...SharedBuilder.websitesPopupMenuItems(
-                atlas: Atlas.dbWar(war.id),
-                mooncell: war.extra.mcLink ?? war.event?.extra.mcLink,
-                fandom: war.extra.fandomLink ?? war.event?.extra.fandomLink,
-              ),
-            if (war != null) ...SharedBuilder.noticeLinkPopupMenuItems(noticeLink: war.extra.noticeLink),
-            if (warId > 0) ...[
-              PopupMenuItem(
-                child: Text(S.current.switch_region),
-                onTap: () {
-                  _showSwitchRegion();
-                },
-              ),
-              PopupMenuItem(
-                child: Text(S.current.refresh),
-                onTap: () {
-                  doFetchData(expireAfter: Duration.zero);
-                },
-              ),
-            ],
-          ],
+      itemBuilder: (context) => [
+        PopupMenuItem(
+          enabled: false,
+          height: 32,
+          child: Text('No.${widget.war?.id ?? widget.warId}', textScaler: const TextScaler.linear(0.9)),
+        ),
+        const PopupMenuDivider(),
+        if (war != null)
+          ...SharedBuilder.websitesPopupMenuItems(
+            atlas: Atlas.dbWar(war.id),
+            mooncell: war.extra.mcLink ?? war.event?.extra.mcLink,
+            fandom: war.extra.fandomLink ?? war.event?.extra.fandomLink,
+          ),
+        if (war != null) ...SharedBuilder.noticeLinkPopupMenuItems(noticeLink: war.extra.noticeLink),
+        if (warId > 0) ...[
+          PopupMenuItem(
+            child: Text(S.current.switch_region),
+            onTap: () {
+              _showSwitchRegion();
+            },
+          ),
+          PopupMenuItem(
+            child: Text(S.current.refresh),
+            onTap: () {
+              doFetchData(expireAfter: Duration.zero);
+            },
+          ),
+        ],
+      ],
     );
   }
 
@@ -431,29 +430,28 @@ class _WarDetailPageState extends State<WarDetailPage> with RegionBasedState<Nic
     showDialog(
       context: context,
       useRootNavigator: false,
-      builder:
-          (context) => SimpleDialog(
-            children: [
-              ...Region.values.map((region) {
-                final released = db.gameData.mappingData.warRelease.ofRegion(region);
-                return ListTile(
-                  title: Text(region.localName),
-                  enabled: released == null || released.isEmpty || released.contains(warId),
-                  onTap: () async {
-                    Navigator.pop(context);
-                    this.region = region;
-                    doFetchData();
-                  },
-                );
-              }),
-              IconButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                icon: const Icon(Icons.clear),
-              ),
-            ],
+      builder: (context) => SimpleDialog(
+        children: [
+          ...Region.values.map((region) {
+            final released = db.gameData.mappingData.warRelease.ofRegion(region);
+            return ListTile(
+              title: Text(region.localName),
+              enabled: released == null || released.isEmpty || released.contains(warId),
+              onTap: () async {
+                Navigator.pop(context);
+                this.region = region;
+                doFetchData();
+              },
+            );
+          }),
+          IconButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            icon: const Icon(Icons.clear),
           ),
+        ],
+      ),
     );
   }
 }
@@ -547,7 +545,9 @@ Widget addQuestCategoryTile({
         title: Text(name),
         trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
         onTap: () {
-          router.push(child: QuestListPage(title: name, quests: quests, needSort: needSort, war: war));
+          router.push(
+            child: QuestListPage(title: name, quests: quests, needSort: needSort, war: war),
+          );
         },
       ),
     );
@@ -635,7 +635,9 @@ Widget addQuestCategoryTile({
             title: Text('${tower.lName}(${towerQuestIds.length})'),
             trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
             onTap: () {
-              router.push(child: QuestListPage.ids(title: tower.lName, ids: towerQuestIds.toList()));
+              router.push(
+                child: QuestListPage.ids(title: tower.lName, ids: towerQuestIds.toList()),
+              );
             },
           ),
         );

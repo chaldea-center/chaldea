@@ -96,10 +96,9 @@ class _SniffGachaHistoryState extends State<SniffGachaHistory> {
         records.sort2((e) => e.gachaId <= 100 ? -1000000000000 + e.gachaId : -(e.createdAt ?? e.gachaId));
       } else {
         records.sort2(
-          (e) =>
-              e.gachaId <= 100
-                  ? -1000000000000 + e.gachaId
-                  : -(gachas[e.gachaId]?.openedAt ?? e.createdAt ?? e.gachaId),
+          (e) => e.gachaId <= 100
+              ? -1000000000000 + e.gachaId
+              : -(gachas[e.gachaId]?.openedAt ?? e.createdAt ?? e.gachaId),
         );
       }
     }
@@ -115,13 +114,12 @@ class _SniffGachaHistoryState extends State<SniffGachaHistory> {
 
   @override
   Widget build(BuildContext context) {
-    final shownRecords =
-        records.where((record) {
-          if (!gachaType.matchOne(gachas[record.gachaId]?.gachaType ?? GachaType.unknown)) {
-            return false;
-          }
-          return true;
-        }).toList();
+    final shownRecords = records.where((record) {
+      if (!gachaType.matchOne(gachas[record.gachaId]?.gachaType ?? GachaType.unknown)) {
+        return false;
+      }
+      return true;
+    }).toList();
 
     final totalSummonCount = Maths.sum(records.where((e) => !shouldIgnore(e)).map((e) => e.num));
     final allUserSvts = [...widget.userSvt, ...widget.userSvtStorage];
@@ -137,14 +135,12 @@ class _SniffGachaHistoryState extends State<SniffGachaHistory> {
         actions: [
           ValueListenableBuilder(
             valueListenable: loading,
-            builder:
-                (context, v, _) =>
-                    v
-                        ? const Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 16),
-                          child: CupertinoActivityIndicator(radius: 8),
-                        )
-                        : const SizedBox.shrink(),
+            builder: (context, v, _) => v
+                ? const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16),
+                    child: CupertinoActivityIndicator(radius: 8),
+                  )
+                : const SizedBox.shrink(),
           ),
           IconButton(
             onPressed: gachas.isEmpty ? loadMstData : null,
@@ -254,12 +250,11 @@ class _SniffGachaHistoryState extends State<SniffGachaHistory> {
                         Icon(DirectionalIcons.keyboard_arrow_forward(context)),
                       ],
                     ),
-                    onTap:
-                        anonymousShops.isEmpty
-                            ? null
-                            : () {
-                              router.pushPage(_UserShopList(userShops: anonymousShops, region: widget.region));
-                            },
+                    onTap: anonymousShops.isEmpty
+                        ? null
+                        : () {
+                            router.pushPage(_UserShopList(userShops: anonymousShops, region: widget.region));
+                          },
                   ),
                 ],
               ),
@@ -313,7 +308,10 @@ class _SniffGachaHistoryState extends State<SniffGachaHistory> {
             TextSpan(
               children: [
                 if (gachas[record.gachaId]?.gachaType == GachaType.chargeStone)
-                  const TextSpan(text: '$kStarChar2 ', style: TextStyle(color: Colors.red)),
+                  const TextSpan(
+                    text: '$kStarChar2 ',
+                    style: TextStyle(color: Colors.red),
+                  ),
                 TextSpan(text: title),
               ],
             ),
@@ -351,7 +349,10 @@ class _SniffGachaHistoryState extends State<SniffGachaHistory> {
                     for (final v in dupGachas)
                       TextSpan(
                         children: [
-                          TextSpan(text: ' ${v.name} ', style: const TextStyle(fontWeight: FontWeight.bold)),
+                          TextSpan(
+                            text: ' ${v.name} ',
+                            style: const TextStyle(fontWeight: FontWeight.bold),
+                          ),
                           TextSpan(text: v.openedAt.sec2date().toDateString()),
                         ],
                       ),

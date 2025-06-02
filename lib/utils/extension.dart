@@ -46,14 +46,13 @@ extension NumX on num {
     if (compact && (minVal == null || abs() >= minVal)) {
       return NumberFormat.compact(locale: 'en').format(number);
     }
-    final pattern =
-        [
-          if (groupSeparator != null && groupSeparator.isNotEmpty && (minVal == null || abs() >= minVal))
-            '###$groupSeparator',
-          '###',
-          if (precision > 0) '.${(omit ? '#' : '0') * precision}',
-          // if (percent) '%'
-        ].join();
+    final pattern = [
+      if (groupSeparator != null && groupSeparator.isNotEmpty && (minVal == null || abs() >= minVal))
+        '###$groupSeparator',
+      '###',
+      if (precision > 0) '.${(omit ? '#' : '0') * precision}',
+      // if (percent) '%'
+    ].join();
     String s = NumberFormat(pattern, 'en').format(number);
     s = s.replaceFirstMapped(RegExp(r'^(\d+)\.(\d+)$'), (match) {
       String s1 = match.group(1)!, s2 = match.group(2)!;

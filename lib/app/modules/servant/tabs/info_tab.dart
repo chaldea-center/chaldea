@@ -41,7 +41,9 @@ class SvtInfoTab extends StatelessWidget {
         child: CustomTable(
           selectable: true,
           children: <Widget>[
-            CustomTableRow(children: [TableCellData(child: name, isHeader: true, padding: const EdgeInsets.all(4))]),
+            CustomTableRow(
+              children: [TableCellData(child: name, isHeader: true, padding: const EdgeInsets.all(4))],
+            ),
             if (names.length > 1)
               CustomTableRow.fromTexts(
                 texts: [names.join(' / ')],
@@ -197,29 +199,27 @@ class SvtInfoTab extends StatelessWidget {
                     child: FittedBox(
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children:
-                            svt.noblePhantasms
-                                .map((e) => e.svt.card)
-                                .toSet()
-                                .map((e) => CommandCardWidget(card: e, width: 55))
-                                .toList(),
+                        children: svt.noblePhantasms
+                            .map((e) => e.svt.card)
+                            .toSet()
+                            .map((e) => CommandCardWidget(card: e, width: 55))
+                            .toList(),
                       ),
                     ),
                     flex: 2,
                   ),
                 TableCellData(
-                  child:
-                      svt.cards.isEmpty
-                          ? const Text(' ')
-                          : Opacity(
-                            opacity: svt.cards.any((card) => !svt.cardDetails.containsKey(card)) ? 0.6 : 1,
-                            child: FittedBox(
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: svt.cards.map((e) => CommandCardWidget(card: e, width: 44)).toList(),
-                              ),
+                  child: svt.cards.isEmpty
+                      ? const Text(' ')
+                      : Opacity(
+                          opacity: svt.cards.any((card) => !svt.cardDetails.containsKey(card)) ? 0.6 : 1,
+                          child: FittedBox(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: svt.cards.map((e) => CommandCardWidget(card: e, width: 44)).toList(),
                             ),
                           ),
+                        ),
                   flex: 4,
                 ),
               ],
@@ -504,7 +504,11 @@ class SvtInfoTab extends StatelessWidget {
     return CustomTableRow(
       children: [
         TableCellData(text: card, isHeader: true),
-        TableCellData(child: Text.rich(TextSpan(children: spans)), flex: 5, alignment: Alignment.centerLeft),
+        TableCellData(
+          child: Text.rich(TextSpan(children: spans)),
+          flex: 5,
+          alignment: Alignment.centerLeft,
+        ),
       ],
     );
   }

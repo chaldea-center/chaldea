@@ -50,13 +50,12 @@ class DamageNpCounter {
           attackNpParams: AttackNpGainParameters(),
           defenseNpParams: DefendNpGainParameters(),
           starParams: StarParameters(),
-          result:
-              DamageResult()
-                ..damages = [damage]
-                ..cardHits = [100]
-                ..npGains = [0]
-                ..npMaxLimited = [false]
-                ..overkillStates = [false],
+          result: DamageResult()
+            ..damages = [damage]
+            ..cardHits = [100]
+            ..npGains = [0]
+            ..npMaxLimited = [false]
+            ..overkillStates = [false],
           minResult: null,
           maxResult: null,
         ),

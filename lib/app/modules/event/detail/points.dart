@@ -89,7 +89,11 @@ class EventPointTab extends HookWidget {
     for (final gifts in groups.values) {
       if (titles.isNotEmpty) titles.add(const TextSpan(text: '\n'));
       for (final gift in gifts) {
-        titles.add(CenterWidgetSpan(child: gift.iconBuilder(context: context, width: 28, text: '', showName: true)));
+        titles.add(
+          CenterWidgetSpan(
+            child: gift.iconBuilder(context: context, width: 28, text: '', showName: true),
+          ),
+        );
         titles.add(TextSpan(text: ' ×${gift.num.format(compact: false, groupSeparator: ',')}'));
         final buff = pointBuffs[reward.point];
         if (buff == null) continue;
@@ -103,7 +107,9 @@ class EventPointTab extends HookWidget {
           const TextSpan(text: '\n→'),
           CenterWidgetSpan(child: db.getIconImage(giftAdds.first.replacementGiftIcon, width: 28)),
           for (final gift in giftAdds.first.replacementGifts)
-            CenterWidgetSpan(child: gift.iconBuilder(context: context, width: 28, text: '', showName: true)),
+            CenterWidgetSpan(
+              child: gift.iconBuilder(context: context, width: 28, text: '', showName: true),
+            ),
         ]);
       }
     }

@@ -102,20 +102,19 @@ class CarouselUtil {
     double aspectRatio = _kAspectRatio,
     CarouselOptions? baseOption,
   }) {
-    final items =
-        imageUrls
-            .whereType<String>()
-            .map(
-              (e) => CachedImage(
-                imageUrl: e,
-                cachedOption: CachedImageOption(
-                  imageBuilder: (context, image) => FittedBox(child: Image(image: image)),
-                  errorWidget: (context, url, error) => const SizedBox(),
-                ),
-                placeholder: (_, _) => const SizedBox(),
-              ),
-            )
-            .toList();
+    final items = imageUrls
+        .whereType<String>()
+        .map(
+          (e) => CachedImage(
+            imageUrl: e,
+            cachedOption: CachedImageOption(
+              imageBuilder: (context, image) => FittedBox(child: Image(image: image)),
+              errorWidget: (context, url, error) => const SizedBox(),
+            ),
+            placeholder: (_, _) => const SizedBox(),
+          ),
+        )
+        .toList();
     if (items.isEmpty) return const SizedBox();
     baseOption ??= CarouselOptions(autoPlay: items.length > 1, autoPlayInterval: const Duration(seconds: 6));
     return LayoutTryBuilder(

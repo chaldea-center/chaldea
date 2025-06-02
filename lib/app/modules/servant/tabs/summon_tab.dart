@@ -67,7 +67,10 @@ class _SvtSummonTabState extends State<SvtSummonTab> {
         TextSpan(
           children: [
             if (summon.hasSinglePickupSvt(widget.svt.collectionNo))
-              TextSpan(text: kStarChar, style: TextStyle(color: Colors.yellow[800])),
+              TextSpan(
+                text: kStarChar,
+                style: TextStyle(color: Colors.yellow[800]),
+              ),
             if (summon.subSummons.isEmpty) const TextSpan(text: '(?)'),
             TextSpan(
               text: summon.lName.l,

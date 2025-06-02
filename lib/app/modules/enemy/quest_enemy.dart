@@ -43,7 +43,10 @@ class _QuestEnemyDetailState extends State<QuestEnemyDetail> {
                 PopupMenuItem(
                   child: Text(S.current.np_damage),
                   onTap: () {
-                    router.push(url: Routes.laplaceNpDmg, child: TdDamageRanking(enemy: enemy));
+                    router.push(
+                      url: Routes.laplaceNpDmg,
+                      child: TdDamageRanking(enemy: enemy),
+                    );
                   },
                 ),
               ];
@@ -85,7 +88,10 @@ class _QuestEnemyDetailState extends State<QuestEnemyDetail> {
                 child: Text.rich(
                   TextSpan(
                     children: [
-                      TextSpan(text: rareType, style: TextStyle(color: Colors.amber.shade800)),
+                      TextSpan(
+                        text: rareType,
+                        style: TextStyle(color: Colors.amber.shade800),
+                      ),
                       if ((enemy.enemyScript.entryByUserDeckFormationCondId ?? 0) > 0)
                         TextSpan(
                           children: [
@@ -304,14 +310,13 @@ class _QuestEnemyDetailState extends State<QuestEnemyDetail> {
           for (int index = 0; index < enemy.classPassive.appendPassiveSkillIds!.length; index++)
             SkillDescriptor.fromId(
               id: enemy.classPassive.appendPassiveSkillIds![index],
-              builder:
-                  (context, skill) => SkillDescriptor(
-                    skill: skill,
-                    level: enemy.classPassive.appendPassiveSkillLvs?.getOrNull(index),
-                    showEnemy: true,
-                    showPlayer: true,
-                    region: widget.region,
-                  ),
+              builder: (context, skill) => SkillDescriptor(
+                skill: skill,
+                level: enemy.classPassive.appendPassiveSkillLvs?.getOrNull(index),
+                showEnemy: true,
+                showPlayer: true,
+                region: widget.region,
+              ),
             ),
         ],
         CustomTableRow.fromTexts(texts: [S.current.noble_phantasm], isHeader: true),

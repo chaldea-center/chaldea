@@ -71,13 +71,12 @@ class _CombatActionSelectorState extends State<CombatActionSelector> {
           },
         ),
         TextButton(
-          onPressed:
-              validActions.isEmpty
-                  ? null
-                  : () {
-                    widget.onSelected(validActions);
-                    Navigator.pop(context, validActions);
-                  },
+          onPressed: validActions.isEmpty
+              ? null
+              : () {
+                  widget.onSelected(validActions);
+                  Navigator.pop(context, validActions);
+                },
           child: Text(S.current.confirm),
         ),
       ],
@@ -162,10 +161,9 @@ class _CombatActionSelectorState extends State<CombatActionSelector> {
         ),
       ),
     );
-    final multiDmgFuncSvts =
-        combatActions
-            .where((e) => e?.cardData.isTD == true && (e?.actor.playerSvtData?.td?.dmgNpFuncCount ?? 0) > 1)
-            .toList();
+    final multiDmgFuncSvts = combatActions
+        .where((e) => e?.cardData.isTD == true && (e?.actor.playerSvtData?.td?.dmgNpFuncCount ?? 0) > 1)
+        .toList();
     if (multiDmgFuncSvts.isNotEmpty) {
       children.add(
         ConstrainedBox(
@@ -187,7 +185,12 @@ class _CombatActionSelectorState extends State<CombatActionSelector> {
     Widget cardIcon = Stack(
       alignment: Alignment.center,
       children: [
-        AspectRatio(aspectRatio: 1, child: Center(child: CommandCardWidget(card: card.cardType, width: cardSize))),
+        AspectRatio(
+          aspectRatio: 1,
+          child: Center(
+            child: CommandCardWidget(card: card.cardType, width: cardSize),
+          ),
+        ),
         if (commandCode != null)
           Positioned(
             top: 0,
@@ -211,8 +214,14 @@ class _CombatActionSelectorState extends State<CombatActionSelector> {
             ),
           ),
         if (!svt.canCommandCard(card) || !cardInDeck) ...[
-          AspectRatio(aspectRatio: 1, child: Container(width: cardSize, height: cardSize, color: Colors.black54)),
-          Text(!cardInDeck ? '⊄' : '×', style: TextStyle(fontSize: cardSize * 0.8, color: Colors.white)),
+          AspectRatio(
+            aspectRatio: 1,
+            child: Container(width: cardSize, height: cardSize, color: Colors.black54),
+          ),
+          Text(
+            !cardInDeck ? '⊄' : '×',
+            style: TextStyle(fontSize: cardSize * 0.8, color: Colors.white),
+          ),
         ],
       ],
     );
@@ -280,11 +289,17 @@ class _CombatActionSelectorState extends State<CombatActionSelector> {
             aspectRatio: 132 / 144,
             child: Container(width: cardSize, height: cardSize * 144 / 132, color: Colors.black54),
           ),
-          Text('×', style: TextStyle(fontSize: cardSize * 0.8, color: Colors.white)),
+          Text(
+            '×',
+            style: TextStyle(fontSize: cardSize * 0.8, color: Colors.white),
+          ),
         ],
       ],
     );
-    tdIcon = ConstrainedBox(constraints: BoxConstraints(maxHeight: cardSize), child: tdIcon);
+    tdIcon = ConstrainedBox(
+      constraints: BoxConstraints(maxHeight: cardSize),
+      child: tdIcon,
+    );
     tdIcon = GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: () async {
@@ -370,7 +385,12 @@ class _CombatActionSelectorState extends State<CombatActionSelector> {
         ),
         SizedBox(
           height: 20,
-          child: Text(text, style: TextStyle(color: color), textScaler: const TextScaler.linear(0.8), maxLines: 1),
+          child: Text(
+            text,
+            style: TextStyle(color: color),
+            textScaler: const TextScaler.linear(0.8),
+            maxLines: 1,
+          ),
         ),
       ],
     );
@@ -386,10 +406,9 @@ class _CombatActionSelectorState extends State<CombatActionSelector> {
   int getCardIndex(final BattleServantData svt, final CommandCardData cardData) {
     return combatActions
         .map(
-          (action) =>
-              action != null && action.cardData.cardIndex == cardData.cardIndex && !action.cardData.isTD
-                  ? action.actor
-                  : null,
+          (action) => action != null && action.cardData.cardIndex == cardData.cardIndex && !action.cardData.isTD
+              ? action.actor
+              : null,
         )
         .toList()
         .indexOf(svt);
@@ -450,15 +469,14 @@ class _EnemyCombatActionSelectorState extends State<EnemyCombatActionSelector> {
         title: title,
         subtitle: subtitle,
         materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-        onChanged:
-            enabled
-                ? (v) {
-                  setState(() {
-                    actionIndex = v;
-                    onConfirm = onSelected;
-                  });
-                }
-                : null,
+        onChanged: enabled
+            ? (v) {
+                setState(() {
+                  actionIndex = v;
+                  onConfirm = onSelected;
+                });
+              }
+            : null,
       );
     }
 
@@ -505,10 +523,9 @@ class _EnemyCombatActionSelectorState extends State<EnemyCombatActionSelector> {
             buildRadio(
               title: Text(name),
               onSelected: () async {
-                final cardData =
-                    CommandCardData(enemy, cardType, detail, 1)
-                      ..isTD = false
-                      ..traits = ConstData.cardInfo[cardType]?[1]?.individuality.toList() ?? [];
+                final cardData = CommandCardData(enemy, cardType, detail, 1)
+                  ..isTD = false
+                  ..traits = ConstData.cardInfo[cardType]?[1]?.individuality.toList() ?? [];
                 if (cardType.isQAB()) {
                   cardData.critical = critical;
                 } else if (cardType.isStrength()) {
@@ -602,13 +619,12 @@ class _EnemyCombatActionSelectorState extends State<EnemyCombatActionSelector> {
       showOk: false,
       actions: [
         TextButton(
-          onPressed:
-              onConfirm == null
-                  ? null
-                  : () async {
-                    Navigator.pop(context);
-                    widget.onConfirm(onConfirm!);
-                  },
+          onPressed: onConfirm == null
+              ? null
+              : () async {
+                  Navigator.pop(context);
+                  widget.onConfirm(onConfirm!);
+                },
           child: Text(S.current.confirm),
         ),
       ],

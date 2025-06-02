@@ -49,14 +49,14 @@ class _TraitEnemyTabState extends State<TraitEnemyTab> {
         ),
         useGrid
             ? SliverGrid.extent(
-              maxCrossAxisExtent: 56,
-              childAspectRatio: 132 / 144,
-              children: [for (final svtId in svtIds) gridItem(context, grouped[svtId]!)],
-            )
+                maxCrossAxisExtent: 56,
+                childAspectRatio: 132 / 144,
+                children: [for (final svtId in svtIds) gridItem(context, grouped[svtId]!)],
+              )
             : SliverList.builder(
-              itemBuilder: (context, index) => listItem(context, grouped[svtIds[index]]!),
-              itemCount: svtIds.length,
-            ),
+                itemBuilder: (context, index) => listItem(context, grouped[svtIds[index]]!),
+                itemCount: svtIds.length,
+              ),
       ],
     );
   }

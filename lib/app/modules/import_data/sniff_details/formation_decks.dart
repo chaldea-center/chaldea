@@ -60,9 +60,8 @@ class UserFormationDecksPageState extends State<UserFormationDecksPage> {
       body: ListView.builder(
         controller: scrollController,
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-        itemBuilder:
-            (context, index) =>
-                widget.eventId == null ? buildUserDeck(decks[index]) : buildEventDeck(eventDecks[index]),
+        itemBuilder: (context, index) =>
+            widget.eventId == null ? buildUserDeck(decks[index]) : buildEventDeck(eventDecks[index]),
         itemCount: widget.eventId == null ? decks.length : eventDecks.length,
       ),
     );
@@ -100,12 +99,11 @@ class UserFormationDecksPageState extends State<UserFormationDecksPage> {
       mainAxisSize: MainAxisSize.min,
       children: [
         GestureDetector(
-          onTap:
-              deck.eventId == 0
-                  ? null
-                  : () {
-                    router.push(url: Routes.eventI(deck.eventId));
-                  },
+          onTap: deck.eventId == 0
+              ? null
+              : () {
+                  router.push(url: Routes.eventI(deck.eventId));
+                },
           child: DividerWithTitle(
             title: '${widget.eventId == deck.eventId ? "※ " : ""}[${deck.eventId}] No.${deck.deckNo}',
           ),

@@ -56,10 +56,9 @@ class _RaidsPageState extends State<RaidsPage> with SingleTickerProviderStateMix
           dense: true,
           title: Text('${S.current.progress} ${_fmt(record?.raidInfo.totalDamage)}/${_fmt(record?.raidInfo.maxHp)}'),
           trailing: record == null ? null : Text(record.raidInfo.rate.format(percent: true)),
-          subtitle:
-              record == null
-                  ? null
-                  : BondProgress(value: record.raidInfo.totalDamage, total: record.raidInfo.maxHp, minHeight: 4),
+          subtitle: record == null
+              ? null
+              : BondProgress(value: record.raidInfo.totalDamage, total: record.raidInfo.maxHp, minHeight: 4),
         ),
         if (mstRaid != null) ...[
           ListTile(

@@ -39,7 +39,10 @@ class AiTable extends StatelessWidget {
   Widget sized(Widget child) {
     return ConstrainedBox(
       constraints: const BoxConstraints(maxWidth: 200),
-      child: Padding(padding: const EdgeInsets.all(4), child: Center(child: child)),
+      child: Padding(
+        padding: const EdgeInsets.all(4),
+        child: Center(child: child),
+      ),
     );
   }
 
@@ -73,12 +76,11 @@ class AiTable extends StatelessWidget {
         for (int index = 0; index < rows.length; index++)
           TableRow(
             children: rows[index].map(sized).toList(),
-            decoration:
-                index == 0
-                    ? BoxDecoration(color: Theme.of(context).highlightColor)
-                    : index.isEven
-                    ? BoxDecoration(color: Theme.of(context).highlightColor.withAlpha(25))
-                    : null,
+            decoration: index == 0
+                ? BoxDecoration(color: Theme.of(context).highlightColor)
+                : index.isEven
+                ? BoxDecoration(color: Theme.of(context).highlightColor.withAlpha(25))
+                : null,
           ),
       ],
       defaultColumnWidth: const IntrinsicColumnWidth(),
@@ -122,10 +124,9 @@ class AiTable extends StatelessWidget {
     return Text.rich(
       TextSpan(
         text: Transl.enums(target, (enums) => enums.aiActTarget).l,
-        children:
-            traits.isEmpty
-                ? null
-                : [const TextSpan(text: ' - '), ...SharedBuilder.traitSpans(context: context, traits: traits)],
+        children: traits.isEmpty
+            ? null
+            : [const TextSpan(text: ' - '), ...SharedBuilder.traitSpans(context: context, traits: traits)],
       ),
     );
   }
@@ -184,7 +185,11 @@ class AiTable extends StatelessWidget {
       }
       if (_td != null) {
         spans.add(
-          SharedBuilder.textButtonSpan(context: context, text: _td.dispName, onTap: () => _td!.routeTo(region: region)),
+          SharedBuilder.textButtonSpan(
+            context: context,
+            text: _td.dispName,
+            onTap: () => _td!.routeTo(region: region),
+          ),
         );
       } else if (_tdId != null) {
         spans.add(
@@ -210,16 +215,15 @@ class AiTable extends StatelessWidget {
         SharedBuilder.textButtonSpan(
           context: context,
           text: 'message',
-          onTap:
-              msgId == 0
-                  ? null
-                  : () {
-                    showDialog(
-                      context: context,
-                      useRootNavigator: false,
-                      builder: (context) => BattleMessageDialog(msgId: msgId, region: region),
-                    );
-                  },
+          onTap: msgId == 0
+              ? null
+              : () {
+                  showDialog(
+                    context: context,
+                    useRootNavigator: false,
+                    builder: (context) => BattleMessageDialog(msgId: msgId, region: region),
+                  );
+                },
         ),
       );
     } else if (aiAct.type == NiceAiActType.messageGroup) {
@@ -228,16 +232,15 @@ class AiTable extends StatelessWidget {
         SharedBuilder.textButtonSpan(
           context: context,
           text: 'messageGroup',
-          onTap:
-              groupId == 0
-                  ? null
-                  : () {
-                    showDialog(
-                      context: context,
-                      useRootNavigator: false,
-                      builder: (context) => _BattleMessageGroupDialog(groupId: groupId, region: region),
-                    );
-                  },
+          onTap: groupId == 0
+              ? null
+              : () {
+                  showDialog(
+                    context: context,
+                    useRootNavigator: false,
+                    builder: (context) => _BattleMessageGroupDialog(groupId: groupId, region: region),
+                  );
+                },
         ),
       );
     }
@@ -358,7 +361,12 @@ class AiTable extends StatelessWidget {
       case NiceAiCond.existIndividualityOpponentFront:
       case NiceAiCond.existIndividualityOpponentCenter:
       case NiceAiCond.existIndividualityOpponentBack:
-        return _repl0(SharedBuilder.traitSpans(context: context, traits: vals.map((e) => NiceTrait(id: e)).toList()));
+        return _repl0(
+          SharedBuilder.traitSpans(
+            context: context,
+            traits: vals.map((e) => NiceTrait(id: e)).toList(),
+          ),
+        );
       // Buff
       case NiceAiCond.checkSelfBuff:
       case NiceAiCond.checkPtBuff:
@@ -428,7 +436,12 @@ class AiTable extends StatelessWidget {
         final count = vals.getOrNull(0) ?? 0, trait = vals.getOrNull(1) ?? 0;
         return {
           "{count}": (_) => [TextSpan(text: ' $count ')],
-          "{trait}": (_) => [SharedBuilder.traitSpan(context: context, trait: NiceTrait(id: trait))],
+          "{trait}": (_) => [
+            SharedBuilder.traitSpan(
+              context: context,
+              trait: NiceTrait(id: trait),
+            ),
+          ],
         };
       // [count, itemId]
       case NiceAiCond.countItemHigher:
@@ -436,16 +449,15 @@ class AiTable extends StatelessWidget {
         final count = vals.getOrNull(0) ?? 0, itemId = vals.getOrNull(1) ?? 0;
         return {
           "{count}": (_) => [TextSpan(text: ' $count ')],
-          "{trait}":
-              (_) => [
-                SharedBuilder.textButtonSpan(
-                  context: context,
-                  text: db.gameData.items[itemId]?.lName.l ?? 'Item $itemId',
-                  onTap: () {
-                    router.push(url: Routes.itemI(itemId));
-                  },
-                ),
-              ],
+          "{trait}": (_) => [
+            SharedBuilder.textButtonSpan(
+              context: context,
+              text: db.gameData.items[itemId]?.lName.l ?? 'Item $itemId',
+              onTap: () {
+                router.push(url: Routes.itemI(itemId));
+              },
+            ),
+          ],
         };
       // unknown
       case NiceAiCond.none:

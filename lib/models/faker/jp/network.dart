@@ -151,15 +151,14 @@ class NetworkManagerJP extends NetworkManagerBase<FRequestJP, AutoLoginDataJP> {
     // buffer.writeln(headers);
     buffer.writeln(form.data);
     request.params = form.map;
-    final lastRequestOptions =
-        user.lastRequestOptions = RequestOptionsSaveData(
-          createdAt: getNowTimestamp(),
-          path: request.path,
-          key: request.key,
-          url: uri.toString(),
-          formData: form.data,
-          headers: headers.deepCopy(),
-        );
+    final lastRequestOptions = user.lastRequestOptions = RequestOptionsSaveData(
+      createdAt: getNowTimestamp(),
+      path: request.path,
+      key: request.key,
+      url: uri.toString(),
+      formData: form.data,
+      headers: headers.deepCopy(),
+    );
     notifyListeners();
 
     if (request.sendDelay > Duration.zero) {

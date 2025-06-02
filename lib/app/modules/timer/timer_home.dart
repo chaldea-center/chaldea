@@ -80,15 +80,14 @@ class _TimerHomePageState extends State<TimerHomePage>
             },
           ),
           PopupMenuButton(
-            itemBuilder:
-                (context) => [
-                  PopupMenuItem(
-                    child: Text(S.current.refresh),
-                    onTap: () {
-                      doFetchData(expireAfter: Duration.zero);
-                    },
-                  ),
-                ],
+            itemBuilder: (context) => [
+              PopupMenuItem(
+                child: Text(S.current.refresh),
+                onTap: () {
+                  doFetchData(expireAfter: Duration.zero);
+                },
+              ),
+            ],
           ),
         ],
         bottom: FixedHeight.tabBar(
@@ -96,15 +95,14 @@ class _TimerHomePageState extends State<TimerHomePage>
             isScrollable: true,
             tabAlignment: TabAlignment.center,
             controller: _tabController,
-            tabs:
-                [
-                  S.current.general_all,
-                  S.current.event,
-                  S.current.summon_banner,
-                  S.current.master_mission,
-                  S.current.shop,
-                  "Time",
-                ].map((e) => Tab(text: e)).toList(),
+            tabs: [
+              S.current.general_all,
+              S.current.event,
+              S.current.summon_banner,
+              S.current.master_mission,
+              S.current.shop,
+              "Time",
+            ].map((e) => Tab(text: e)).toList(),
           ),
         ),
       ),
@@ -154,12 +152,11 @@ class _TimerHomePageState extends State<TimerHomePage>
           onFilterChanged: (v, _) {
             setState(() {});
           },
-          optionBuilder:
-              (value) => Text(switch (value) {
-                TimerSortType.auto => "${S.current.sort_order}:Auto",
-                TimerSortType.startTime => S.current.time_start,
-                TimerSortType.endTime => S.current.time_end,
-              }),
+          optionBuilder: (value) => Text(switch (value) {
+            TimerSortType.auto => "${S.current.sort_order}:Auto",
+            TimerSortType.startTime => S.current.time_start,
+            TimerSortType.endTime => S.current.time_end,
+          }),
           buttonStyle: buttonStyle,
         ),
         FilterGroup<OngoingStatus>(
@@ -170,12 +167,11 @@ class _TimerHomePageState extends State<TimerHomePage>
           onFilterChanged: (v, _) {
             setState(() {});
           },
-          optionBuilder:
-              (value) => Text(switch (value) {
-                OngoingStatus.ended => S.current.ended,
-                OngoingStatus.ongoing => S.current.ongoing,
-                OngoingStatus.notStarted => S.current.not_started,
-              }),
+          optionBuilder: (value) => Text(switch (value) {
+            OngoingStatus.ended => S.current.ended,
+            OngoingStatus.ongoing => S.current.ongoing,
+            OngoingStatus.notStarted => S.current.not_started,
+          }),
           buttonStyle: buttonStyle,
         ),
       ],

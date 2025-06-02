@@ -123,15 +123,14 @@ class _FreeQuestOverviewState extends State<FreeQuestOverview> {
         actions: [
           if (hasDifferentEnemyCount)
             IconButton(
-              onPressed:
-                  _loading
-                      ? null
-                      : () {
-                        setState(() {
-                          useMaxEnemyCountHash = !useMaxEnemyCountHash;
-                        });
-                        loadData();
-                      },
+              onPressed: _loading
+                  ? null
+                  : () {
+                      setState(() {
+                        useMaxEnemyCountHash = !useMaxEnemyCountHash;
+                      });
+                      loadData();
+                    },
               icon: Stack(
                 alignment: Alignment.center,
                 children: [
@@ -295,9 +294,9 @@ class _FreeQuestOverviewState extends State<FreeQuestOverview> {
             phase == null && _loading
                 ? const CenterWidgetSpan(child: CupertinoActivityIndicator(radius: 6))
                 : TextSpan(
-                  text: phase?.stages.map((e) => e.enemies.length).join('-') ?? '-',
-                  style: Theme.of(context).textTheme.bodySmall,
-                ),
+                    text: phase?.stages.map((e) => e.enemies.length).join('-') ?? '-',
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
           ],
         ),
       ),

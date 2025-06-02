@@ -41,10 +41,12 @@ class _WindowManagerState extends State<WindowManager> {
     Widget child;
     switch (root.appState.windowState) {
       case WindowStateEnum.single:
-        child =
-            root.appState.showSidebar && SplitRoute.isSplit(context)
-                ? WrapSideBar(root: root, child: OneWindow(root: root))
-                : OneWindow(root: root);
+        child = root.appState.showSidebar && SplitRoute.isSplit(context)
+            ? WrapSideBar(
+                root: root,
+                child: OneWindow(root: root),
+              )
+            : OneWindow(root: root);
         break;
       case WindowStateEnum.windowManager:
         child = MultipleWindow(root: root);
@@ -244,21 +246,20 @@ class _MultipleWindowState extends State<MultipleWindow> {
                   ),
               ],
               icon: Icon(Icons.arrow_drop_down, color: SharedBuilder.appBarForeground(context)),
-              selectedItemBuilder:
-                  (context) => [
-                    for (final (index, user) in db.userData.users.indexed)
-                      DropdownMenuItem(
-                        value: index,
-                        child: ConstrainedBox(
-                          constraints: const BoxConstraints(maxWidth: 180),
-                          child: Text(
-                            user.name,
-                            maxLines: 1,
-                            style: TextStyle(color: SharedBuilder.appBarForeground(context)),
-                          ),
-                        ),
+              selectedItemBuilder: (context) => [
+                for (final (index, user) in db.userData.users.indexed)
+                  DropdownMenuItem(
+                    value: index,
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 180),
+                      child: Text(
+                        user.name,
+                        maxLines: 1,
+                        style: TextStyle(color: SharedBuilder.appBarForeground(context)),
                       ),
-                  ],
+                    ),
+                  ),
+              ],
               onChanged: (index) {
                 if (index != null) {
                   db.userData.curUserKey = index;
@@ -273,7 +274,13 @@ class _MultipleWindowState extends State<MultipleWindow> {
             ),
           ],
           bottom: FixedHeight.tabBar(
-            TabBar(tabs: [const Tab(text: 'Tabs'), Tab(text: S.current.history), const Tab(text: "Bookmarks")]),
+            TabBar(
+              tabs: [
+                const Tab(text: 'Tabs'),
+                Tab(text: S.current.history),
+                const Tab(text: "Bookmarks"),
+              ],
+            ),
           ),
         ),
         body: TabBarView(
@@ -429,7 +436,12 @@ class WindowThumb extends StatelessWidget {
     //     ),
     //   ],
     // );
-    child = Column(children: [Expanded(child: child), buildTitleBar(context, url)]);
+    child = Column(
+      children: [
+        Expanded(child: child),
+        buildTitleBar(context, url),
+      ],
+    );
 
     if (gesture) {
       child = GestureDetector(
@@ -438,14 +450,13 @@ class WindowThumb extends StatelessWidget {
           root.appState.windowState = WindowStateEnum.single;
           WindowManagerFab.markNeedRebuild();
         },
-        onLongPress:
-            url == null || url.isEmpty
-                ? null
-                : () async {
-                  final fullUrl = ChaldeaUrl.deepLink(url);
-                  await copyToClipboard(fullUrl);
-                  EasyLoading.showToast('${S.current.copied}\n$fullUrl');
-                },
+        onLongPress: url == null || url.isEmpty
+            ? null
+            : () async {
+                final fullUrl = ChaldeaUrl.deepLink(url);
+                await copyToClipboard(fullUrl);
+                EasyLoading.showToast('${S.current.copied}\n$fullUrl');
+              },
         child: child,
       );
     }

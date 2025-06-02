@@ -275,16 +275,16 @@ class _EventItemInputTabState extends State<EventItemInputTab> {
             ),
             percent
                 ? TextSpan(
-                  text: '${_fmtNum(base)}×(1+',
-                  children: [
-                    TextSpan(text: bonus.toString(), style: bonus == 0 ? null : bonusStyle),
-                    const TextSpan(text: '%)'),
-                  ],
-                )
+                    text: '${_fmtNum(base)}×(1+',
+                    children: [
+                      TextSpan(text: bonus.toString(), style: bonus == 0 ? null : bonusStyle),
+                      const TextSpan(text: '%)'),
+                    ],
+                  )
                 : TextSpan(
-                  text: ' ${_fmtNum(base)}+${_fmtNum(group)}×',
-                  children: [TextSpan(text: bonus.toString(), style: bonus == 0 ? null : bonusStyle)],
-                ),
+                    text: ' ${_fmtNum(base)}+${_fmtNum(group)}×',
+                    children: [TextSpan(text: bonus.toString(), style: bonus == 0 ? null : bonusStyle)],
+                  ),
             const TextSpan(text: '  '),
           ],
         ),
@@ -333,17 +333,16 @@ class _EventItemInputTabState extends State<EventItemInputTab> {
           spacing: 10,
           children: <Widget>[
             FilledButton(
-              onPressed:
-                  running
-                      ? null
-                      : () async {
-                        setState(() {
-                          running = false;
-                        });
-                        await solve();
+              onPressed: running
+                  ? null
+                  : () async {
+                      setState(() {
                         running = false;
-                        if (mounted) setState(() {});
-                      },
+                      });
+                      await solve();
+                      running = false;
+                      if (mounted) setState(() {});
+                    },
               child: Text(S.current.drop_calc_solve),
             ),
           ],
@@ -359,10 +358,9 @@ class _EventItemInputTabState extends State<EventItemInputTab> {
     EasyLoading.show();
 
     final itemIds = params.itemCounts.keys.where((key) => params.getItemDemand(key) > 0).toList();
-    final plans =
-        params.bonusPlans
-            .where((plan) => plan.enabled && plan.drops.items.keys.any((itemId) => itemIds.contains(itemId)))
-            .toList();
+    final plans = params.bonusPlans
+        .where((plan) => plan.enabled && plan.drops.items.keys.any((itemId) => itemIds.contains(itemId)))
+        .toList();
     if (itemIds.isEmpty || plans.isEmpty) {
       EasyLoading.showInfo(S.current.input_invalid_hint);
       running = false;
@@ -373,10 +371,9 @@ class _EventItemInputTabState extends State<EventItemInputTab> {
       final percent = _isPercentTypeBonus(itemId);
       List<double> row = [];
       for (final detail in plans) {
-        final a =
-            percent
-                ? detail.drops.getBase(itemId) * (1 + detail.getBonus(itemId) / 100)
-                : detail.drops.getBase(itemId) + detail.drops.getGroup(itemId) * detail.getBonus(itemId);
+        final a = percent
+            ? detail.drops.getBase(itemId) * (1 + detail.getBonus(itemId) / 100)
+            : detail.drops.getBase(itemId) + detail.drops.getGroup(itemId) * detail.getBonus(itemId);
         row.add(a);
       }
       matA.add(row);

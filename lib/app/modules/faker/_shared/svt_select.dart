@@ -43,20 +43,18 @@ class _SelectUserSvtCollectionPageState extends State<SelectUserSvtCollectionPag
           IconButton(
             icon: const Icon(Icons.filter_alt),
             tooltip: S.current.filter,
-            onPressed:
-                () => FilterPage.show(
-                  context: context,
-                  builder:
-                      (context) => ServantFilterPage(
-                        filterData: filterData,
-                        onChanged: (_) {
-                          if (mounted) {
-                            setState(() {});
-                          }
-                        },
-                        planMode: false,
-                      ),
-                ),
+            onPressed: () => FilterPage.show(
+              context: context,
+              builder: (context) => ServantFilterPage(
+                filterData: filterData,
+                onChanged: (_) {
+                  if (mounted) {
+                    setState(() {});
+                  }
+                },
+                planMode: false,
+              ),
+            ),
           ),
         ],
       ),

@@ -143,12 +143,11 @@ class _ApSeedExchangeCountDialogState extends State<ApSeedExchangeCountDialog> {
           child: Text(S.current.cancel),
         ),
         TextButton(
-          onPressed:
-              maxBuyCount > 0 && buyCount <= maxBuyCount
-                  ? () {
-                    Navigator.pop(context, buyCount);
-                  }
-                  : null,
+          onPressed: maxBuyCount > 0 && buyCount <= maxBuyCount
+              ? () {
+                  Navigator.pop(context, buyCount);
+                }
+              : null,
           child: Text(S.current.confirm),
         ),
       ],

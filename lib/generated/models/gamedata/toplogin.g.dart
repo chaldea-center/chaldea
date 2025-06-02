@@ -99,18 +99,15 @@ UserServantGrandEntity _$UserServantGrandEntityFromJson(Map json) => UserServant
   treasureDeviceId: json['treasureDeviceId'],
   treasureDeviceLv: json['treasureDeviceLv'],
   exceedCount: json['exceedCount'],
-  equipTarget1:
-      json['equipTarget1'] == null
-          ? null
-          : EquipTargetInfo.fromJson(Map<String, dynamic>.from(json['equipTarget1'] as Map)),
-  equipTarget2:
-      json['equipTarget2'] == null
-          ? null
-          : EquipTargetInfo.fromJson(Map<String, dynamic>.from(json['equipTarget2'] as Map)),
-  equipTarget3:
-      json['equipTarget3'] == null
-          ? null
-          : EquipTargetInfo.fromJson(Map<String, dynamic>.from(json['equipTarget3'] as Map)),
+  equipTarget1: json['equipTarget1'] == null
+      ? null
+      : EquipTargetInfo.fromJson(Map<String, dynamic>.from(json['equipTarget1'] as Map)),
+  equipTarget2: json['equipTarget2'] == null
+      ? null
+      : EquipTargetInfo.fromJson(Map<String, dynamic>.from(json['equipTarget2'] as Map)),
+  equipTarget3: json['equipTarget3'] == null
+      ? null
+      : EquipTargetInfo.fromJson(Map<String, dynamic>.from(json['equipTarget3'] as Map)),
   appendPassiveSkill:
       (json['appendPassiveSkill'] as List<dynamic>?)
           ?.map((e) => AppendPassiveSkillInfo.fromJson(Map<String, dynamic>.from(e as Map)))
@@ -305,24 +302,21 @@ UserServantLeaderEntity _$UserServantLeaderEntityFromJson(Map json) => UserServa
   treasureDeviceId: json['treasureDeviceId'],
   treasureDeviceLv: json['treasureDeviceLv'],
   exceedCount: json['exceedCount'],
-  equipTarget1:
-      json['equipTarget1'] == null
-          ? null
-          : EquipTargetInfo.fromJson(Map<String, dynamic>.from(json['equipTarget1'] as Map)),
-  commandCode:
-      (json['commandCode'] as List<dynamic>?)
-          ?.map((e) => CommandCodeStatus.fromJson(Map<String, dynamic>.from(e as Map)))
-          .toList(),
+  equipTarget1: json['equipTarget1'] == null
+      ? null
+      : EquipTargetInfo.fromJson(Map<String, dynamic>.from(json['equipTarget1'] as Map)),
+  commandCode: (json['commandCode'] as List<dynamic>?)
+      ?.map((e) => CommandCodeStatus.fromJson(Map<String, dynamic>.from(e as Map)))
+      .toList(),
   commandCardParam: json['commandCardParam'],
   imageLimitCount: json['imageLimitCount'],
   commandCardLimitCount: json['commandCardLimitCount'],
   iconLimitCount: json['iconLimitCount'],
   portraitLimitCount: json['portraitLimitCount'],
   battleVoice: json['battleVoice'],
-  appendPassiveSkill:
-      (json['appendPassiveSkill'] as List<dynamic>?)
-          ?.map((e) => AppendPassiveSkillInfo.fromJson(Map<String, dynamic>.from(e as Map)))
-          .toList(),
+  appendPassiveSkill: (json['appendPassiveSkill'] as List<dynamic>?)
+      ?.map((e) => AppendPassiveSkillInfo.fromJson(Map<String, dynamic>.from(e as Map)))
+      .toList(),
 );
 
 EquipTargetInfo _$EquipTargetInfoFromJson(Map json) => EquipTargetInfo(
@@ -441,18 +435,15 @@ UserEventPointEntity _$UserEventPointEntityFromJson(Map json) => UserEventPointE
 UserEventTradeEntity _$UserEventTradeEntityFromJson(Map json) => UserEventTradeEntity(
   eventId: json['eventId'],
   updatedAt: json['updatedAt'],
-  tradeList:
-      (json['tradeList'] as List<dynamic>?)
-          ?.map((e) => EventTradeInfo.fromJson(Map<String, dynamic>.from(e as Map)))
-          .toList(),
-  resultList:
-      (json['resultList'] as List<dynamic>?)
-          ?.map((e) => EventTradeResultInfo.fromJson(Map<String, dynamic>.from(e as Map)))
-          .toList(),
-  pickupList:
-      (json['pickupList'] as List<dynamic>?)
-          ?.map((e) => EventCraftPickupInfo.fromJson(Map<String, dynamic>.from(e as Map)))
-          .toList(),
+  tradeList: (json['tradeList'] as List<dynamic>?)
+      ?.map((e) => EventTradeInfo.fromJson(Map<String, dynamic>.from(e as Map)))
+      .toList(),
+  resultList: (json['resultList'] as List<dynamic>?)
+      ?.map((e) => EventTradeResultInfo.fromJson(Map<String, dynamic>.from(e as Map)))
+      .toList(),
+  pickupList: (json['pickupList'] as List<dynamic>?)
+      ?.map((e) => EventCraftPickupInfo.fromJson(Map<String, dynamic>.from(e as Map)))
+      .toList(),
 );
 
 EventTradeInfo _$EventTradeInfoFromJson(Map json) => EventTradeInfo(
@@ -565,18 +556,15 @@ FollowerInfo _$FollowerInfoFromJson(Map json) => FollowerInfo(
   userName: json['userName'],
   userLv: json['userLv'],
   type: json['type'],
-  userSvtLeaderHash:
-      (json['userSvtLeaderHash'] as List<dynamic>?)
-          ?.map((e) => ServantLeaderInfo.fromJson(Map<String, dynamic>.from(e as Map)))
-          .toList(),
-  eventUserSvtLeaderHash:
-      (json['eventUserSvtLeaderHash'] as List<dynamic>?)
-          ?.map((e) => ServantLeaderInfo.fromJson(Map<String, dynamic>.from(e as Map)))
-          .toList(),
-  userSvtGrandHash:
-      (json['userSvtGrandHash'] as List<dynamic>?)
-          ?.map((e) => ServantLeaderInfo.fromJson(Map<String, dynamic>.from(e as Map)))
-          .toList(),
+  userSvtLeaderHash: (json['userSvtLeaderHash'] as List<dynamic>?)
+      ?.map((e) => ServantLeaderInfo.fromJson(Map<String, dynamic>.from(e as Map)))
+      .toList(),
+  eventUserSvtLeaderHash: (json['eventUserSvtLeaderHash'] as List<dynamic>?)
+      ?.map((e) => ServantLeaderInfo.fromJson(Map<String, dynamic>.from(e as Map)))
+      .toList(),
+  userSvtGrandHash: (json['userSvtGrandHash'] as List<dynamic>?)
+      ?.map((e) => ServantLeaderInfo.fromJson(Map<String, dynamic>.from(e as Map)))
+      .toList(),
   tutorial1: json['tutorial1'],
   message: json['message'],
   pushUserSvtId: json['pushUserSvtId'],
@@ -607,18 +595,15 @@ ServantLeaderInfo _$ServantLeaderInfoFromJson(Map json) => ServantLeaderInfo(
   treasureDeviceId: json['treasureDeviceId'],
   treasureDeviceLv: json['treasureDeviceLv'],
   exceedCount: json['exceedCount'],
-  equipTarget1:
-      json['equipTarget1'] == null
-          ? null
-          : EquipTargetInfo.fromJson(Map<String, dynamic>.from(json['equipTarget1'] as Map)),
-  equipTarget2:
-      json['equipTarget2'] == null
-          ? null
-          : EquipTargetInfo.fromJson(Map<String, dynamic>.from(json['equipTarget2'] as Map)),
-  equipTarget3:
-      json['equipTarget3'] == null
-          ? null
-          : EquipTargetInfo.fromJson(Map<String, dynamic>.from(json['equipTarget3'] as Map)),
+  equipTarget1: json['equipTarget1'] == null
+      ? null
+      : EquipTargetInfo.fromJson(Map<String, dynamic>.from(json['equipTarget1'] as Map)),
+  equipTarget2: json['equipTarget2'] == null
+      ? null
+      : EquipTargetInfo.fromJson(Map<String, dynamic>.from(json['equipTarget2'] as Map)),
+  equipTarget3: json['equipTarget3'] == null
+      ? null
+      : EquipTargetInfo.fromJson(Map<String, dynamic>.from(json['equipTarget3'] as Map)),
   updatedAt: json['updatedAt'],
   imageLimitCount: json['imageLimitCount'],
   dispLimitCount: json['dispLimitCount'],
@@ -642,8 +627,9 @@ UserDeckEntity _$UserDeckEntityFromJson(Map json) => UserDeckEntity(
   userId: json['userId'],
   deckNo: json['deckNo'],
   name: json['name'],
-  deckInfo:
-      json['deckInfo'] == null ? null : DeckServantEntity.fromJson(Map<String, dynamic>.from(json['deckInfo'] as Map)),
+  deckInfo: json['deckInfo'] == null
+      ? null
+      : DeckServantEntity.fromJson(Map<String, dynamic>.from(json['deckInfo'] as Map)),
   cost: json['cost'],
 );
 
@@ -660,15 +646,15 @@ UserEventDeckEntity _$UserEventDeckEntityFromJson(Map json) => UserEventDeckEnti
   userId: json['userId'],
   eventId: json['eventId'],
   deckNo: json['deckNo'],
-  deckInfo:
-      json['deckInfo'] == null ? null : DeckServantEntity.fromJson(Map<String, dynamic>.from(json['deckInfo'] as Map)),
+  deckInfo: json['deckInfo'] == null
+      ? null
+      : DeckServantEntity.fromJson(Map<String, dynamic>.from(json['deckInfo'] as Map)),
 );
 
 DeckServantEntity _$DeckServantEntityFromJson(Map json) => DeckServantEntity(
-  svts:
-      (json['svts'] as List<dynamic>?)
-          ?.map((e) => DeckServantData.fromJson(Map<String, dynamic>.from(e as Map)))
-          .toList(),
+  svts: (json['svts'] as List<dynamic>?)
+      ?.map((e) => DeckServantData.fromJson(Map<String, dynamic>.from(e as Map)))
+      .toList(),
   userEquipId: json['userEquipId'],
   waveSvts: json['waveSvts'] as List<dynamic>?,
 );
@@ -706,8 +692,9 @@ Map<String, dynamic> _$DeckServantDataToJson(DeckServantData instance) => <Strin
 };
 
 BattleEntity _$BattleEntityFromJson(Map json) => BattleEntity(
-  battleInfo:
-      json['battleInfo'] == null ? null : BattleInfoData.fromJson(Map<String, dynamic>.from(json['battleInfo'] as Map)),
+  battleInfo: json['battleInfo'] == null
+      ? null
+      : BattleInfoData.fromJson(Map<String, dynamic>.from(json['battleInfo'] as Map)),
   id: json['id'],
   battleType: json['battleType'],
   questId: json['questId'],
@@ -860,44 +847,36 @@ BattleResultData _$BattleResultDataFromJson(Map json) => BattleResultData(
   followerSupportDeckId: json['followerSupportDeckId'],
   followerType: json['followerType'],
   followerStatus: json['followerStatus'],
-  oldUserGame:
-      (json['oldUserGame'] as List<dynamic>?)
-          ?.map((e) => UserGameEntity.fromJson(Map<String, dynamic>.from(e as Map)))
-          .toList(),
-  oldUserQuest:
-      (json['oldUserQuest'] as List<dynamic>?)
-          ?.map((e) => UserQuestEntity.fromJson(Map<String, dynamic>.from(e as Map)))
-          .toList(),
-  oldUserEquip:
-      (json['oldUserEquip'] as List<dynamic>?)
-          ?.map((e) => UserEquipEntity.fromJson(Map<String, dynamic>.from(e as Map)))
-          .toList(),
-  oldUserSvtCollection:
-      (json['oldUserSvtCollection'] as List<dynamic>?)
-          ?.map((e) => UserServantCollectionEntity.fromJson(Map<String, dynamic>.from(e as Map)))
-          .toList(),
-  oldUserSvt:
-      (json['oldUserSvt'] as List<dynamic>?)
-          ?.map((e) => UserServantEntity.fromJson(Map<String, dynamic>.from(e as Map)))
-          .toList(),
+  oldUserGame: (json['oldUserGame'] as List<dynamic>?)
+      ?.map((e) => UserGameEntity.fromJson(Map<String, dynamic>.from(e as Map)))
+      .toList(),
+  oldUserQuest: (json['oldUserQuest'] as List<dynamic>?)
+      ?.map((e) => UserQuestEntity.fromJson(Map<String, dynamic>.from(e as Map)))
+      .toList(),
+  oldUserEquip: (json['oldUserEquip'] as List<dynamic>?)
+      ?.map((e) => UserEquipEntity.fromJson(Map<String, dynamic>.from(e as Map)))
+      .toList(),
+  oldUserSvtCollection: (json['oldUserSvtCollection'] as List<dynamic>?)
+      ?.map((e) => UserServantCollectionEntity.fromJson(Map<String, dynamic>.from(e as Map)))
+      .toList(),
+  oldUserSvt: (json['oldUserSvt'] as List<dynamic>?)
+      ?.map((e) => UserServantEntity.fromJson(Map<String, dynamic>.from(e as Map)))
+      .toList(),
   myDeck: json['myDeck'],
   firstClearRewardQp: json['firstClearRewardQp'],
   originalPhaseClearQp: json['originalPhaseClearQp'],
   phaseClearQp: json['phaseClearQp'],
   friendshipExpBase: json['friendshipExpBase'],
-  friendshipRewardInfos:
-      (json['friendshipRewardInfos'] as List<dynamic>?)
-          ?.map((e) => BattleFriendshipRewardInfo.fromJson(Map<String, dynamic>.from(e as Map)))
-          .toList(),
+  friendshipRewardInfos: (json['friendshipRewardInfos'] as List<dynamic>?)
+      ?.map((e) => BattleFriendshipRewardInfo.fromJson(Map<String, dynamic>.from(e as Map)))
+      .toList(),
   warClearReward: json['warClearReward'],
-  rewardInfos:
-      (json['rewardInfos'] as List<dynamic>?)
-          ?.map((e) => DropInfo.fromJson(Map<String, dynamic>.from(e as Map)))
-          .toList(),
-  resultDropInfos:
-      (json['resultDropInfos'] as List<dynamic>?)
-          ?.map((e) => DropInfo.fromJson(Map<String, dynamic>.from(e as Map)))
-          .toList(),
+  rewardInfos: (json['rewardInfos'] as List<dynamic>?)
+      ?.map((e) => DropInfo.fromJson(Map<String, dynamic>.from(e as Map)))
+      .toList(),
+  resultDropInfos: (json['resultDropInfos'] as List<dynamic>?)
+      ?.map((e) => DropInfo.fromJson(Map<String, dynamic>.from(e as Map)))
+      .toList(),
 );
 
 GachaInfos _$GachaInfosFromJson(Map json) => GachaInfos(

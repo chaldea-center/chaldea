@@ -109,7 +109,9 @@ class _EventDetailPageState extends State<EventDetailPage> {
 
     _addTab(
       S.current.overview,
-      KeepAliveBuilder(builder: (context) => EventItemsOverview(event: event, region: _region)),
+      KeepAliveBuilder(
+        builder: (context) => EventItemsOverview(event: event, region: _region),
+      ),
     );
     // special event mechanisms
     for (int index = 0; index < event.lotteries.length; index++) {
@@ -126,8 +128,9 @@ class _EventDetailPageState extends State<EventDetailPage> {
       _addTab(S.current.event_heel, EventHeelPortraitPage(event: event));
     }
     if (event.towers.isNotEmpty) {
-      final tabName =
-          event.towers.length == 1 ? Transl.misc2('TowerName', event.towers.first.name) : S.current.event_tower;
+      final tabName = event.towers.length == 1
+          ? Transl.misc2('TowerName', event.towers.first.name)
+          : S.current.event_tower;
       _addTab(tabName, EventTowersPage(towers: event.towers));
     }
     if (event.warBoards.isNotEmpty) {
@@ -222,10 +225,9 @@ class _EventDetailPageState extends State<EventDetailPage> {
           title: AutoSizeText(event.shownName.replaceAll('\n', ' '), maxLines: 1),
           centerTitle: false,
           actions: [popupMenu],
-          bottom:
-              tabs.length > 1
-                  ? FixedHeight.tabBar(TabBar(tabs: tabs, isScrollable: true, tabAlignment: TabAlignment.center))
-                  : null,
+          bottom: tabs.length > 1
+              ? FixedHeight.tabBar(TabBar(tabs: tabs, isScrollable: true, tabAlignment: TabAlignment.center))
+              : null,
         ),
         body: TabBarView(children: views),
       ),
@@ -235,35 +237,30 @@ class _EventDetailPageState extends State<EventDetailPage> {
   Widget get popupMenu {
     final eventId = widget.event?.id ?? widget.eventId;
     return PopupMenuButton<dynamic>(
-      itemBuilder:
-          (context) => [
-            PopupMenuItem(
-              enabled: false,
-              height: 32,
-              child: Text('No.$eventId', textScaler: const TextScaler.linear(0.9)),
-            ),
-            const PopupMenuDivider(),
-            ...SharedBuilder.websitesPopupMenuItems(
-              atlas: event.id < 0 ? null : Atlas.dbEvent(event.id, _region),
-              mooncell: event.extra.mcLink,
-              fandom: event.extra.fandomLink,
-            ),
-            ...SharedBuilder.noticeLinkPopupMenuItems(noticeLink: event.extra.noticeLink),
-            if (eventId != null && eventId > 0) ...[
-              PopupMenuItem(
-                child: Text(S.current.switch_region),
-                onTap: () {
-                  _showSwitchRegion();
-                },
-              ),
-              PopupMenuItem(
-                child: Text(S.current.refresh),
-                onTap: () {
-                  fetchData(_region, force: true);
-                },
-              ),
-            ],
-          ],
+      itemBuilder: (context) => [
+        PopupMenuItem(enabled: false, height: 32, child: Text('No.$eventId', textScaler: const TextScaler.linear(0.9))),
+        const PopupMenuDivider(),
+        ...SharedBuilder.websitesPopupMenuItems(
+          atlas: event.id < 0 ? null : Atlas.dbEvent(event.id, _region),
+          mooncell: event.extra.mcLink,
+          fandom: event.extra.fandomLink,
+        ),
+        ...SharedBuilder.noticeLinkPopupMenuItems(noticeLink: event.extra.noticeLink),
+        if (eventId != null && eventId > 0) ...[
+          PopupMenuItem(
+            child: Text(S.current.switch_region),
+            onTap: () {
+              _showSwitchRegion();
+            },
+          ),
+          PopupMenuItem(
+            child: Text(S.current.refresh),
+            onTap: () {
+              fetchData(_region, force: true);
+            },
+          ),
+        ],
+      ],
     );
   }
 
@@ -274,26 +271,25 @@ class _EventDetailPageState extends State<EventDetailPage> {
     showDialog(
       context: context,
       useRootNavigator: false,
-      builder:
-          (context) => SimpleDialog(
-            children: [
-              for (final region in Region.values)
-                ListTile(
-                  title: Text(region.localName),
-                  enabled: startTime?.ofRegion(region) != null,
-                  onTap: () async {
-                    Navigator.pop(context);
-                    fetchData(region);
-                  },
-                ),
-              IconButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                icon: const Icon(Icons.clear),
-              ),
-            ],
+      builder: (context) => SimpleDialog(
+        children: [
+          for (final region in Region.values)
+            ListTile(
+              title: Text(region.localName),
+              enabled: startTime?.ofRegion(region) != null,
+              onTap: () async {
+                Navigator.pop(context);
+                fetchData(region);
+              },
+            ),
+          IconButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            icon: const Icon(Icons.clear),
           ),
+        ],
+      ),
     );
   }
 }
@@ -484,26 +480,25 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
           onTap: () {
             router.push(url: Routes.servantI(eventSvt.svtId));
           },
-          trailing:
-              eventSvt.releaseConditions.isEmpty
-                  ? null
-                  : IconButton(
-                    onPressed: () {
-                      SimpleConfirmDialog(
-                        title: Text(S.current.condition),
-                        scrollable: true,
-                        content: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            for (final release in eventSvt.releaseConditions)
-                              CondTargetValueDescriptor.commonRelease(commonRelease: release, textScaleFactor: 0.8),
-                          ],
-                        ),
-                      ).showDialog(context);
-                    },
-                    icon: const Icon(Icons.info_outline),
-                  ),
+          trailing: eventSvt.releaseConditions.isEmpty
+              ? null
+              : IconButton(
+                  onPressed: () {
+                    SimpleConfirmDialog(
+                      title: Text(S.current.condition),
+                      scrollable: true,
+                      content: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          for (final release in eventSvt.releaseConditions)
+                            CondTargetValueDescriptor.commonRelease(commonRelease: release, textScaleFactor: 0.8),
+                        ],
+                      ),
+                    ).showDialog(context);
+                  },
+                  icon: const Icon(Icons.info_outline),
+                ),
         ),
       );
     }
@@ -553,7 +548,9 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
             contentBuilder: (context) {
               final plan2 = plan.copy()..enabled = true;
               final items = db.itemCenter.calcOneEvent(event, plan2);
-              return TileGroup(children: [SharedBuilder.groupItems(context: context, items: items, width: 48)]);
+              return TileGroup(
+                children: [SharedBuilder.groupItems(context: context, items: items, width: 48)],
+              );
             },
           ),
         ),
@@ -889,76 +886,67 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
     }
 
     if (event.type == EventType.interludeCampaign) {
-      List<Quest> quests =
-          db.gameData.quests.values
-              .where((quest) => quest.releaseOverwrites.any((e) => e.eventId == event.id))
-              .toList();
+      List<Quest> quests = db.gameData.quests.values
+          .where((quest) => quest.releaseOverwrites.any((e) => e.eventId == event.id))
+          .toList();
       quests.sort2((e) => -e.priority);
       if (quests.isNotEmpty) {
         children.add(
           TileGroup(
             header: S.current.interlude,
-            children:
-                quests.map((quest) {
-                  final svtId =
-                      quest.releaseConditions
-                          .firstWhereOrNull(
-                            (release) => [CondType.svtGet, CondType.svtFriendship].contains(release.type),
-                          )
-                          ?.targetId;
-                  final svt = db.gameData.servantsById[svtId];
-                  final status = svt?.status;
-                  final releaseOverwrites = quest.releaseOverwrites.where((e) => e.eventId == event.id).toList();
-                  releaseOverwrites.sortByList((e) => [e.startedAt, e.endedAt, e.priority]);
-                  final sameReleaseTime =
-                      releaseOverwrites.map((e) => '${e.startedAt}-${e.endedAt}').toSet().length <= 1;
-                  List<Widget> releaseChildren = [];
-                  Widget fmtDateRange(int start, int end) => Text(
-                    '${start.sec2date().toCustomString(second: false)} ~ ${start.sec2date().toCustomString(year: false, second: false)}',
-                    style: const TextStyle(fontSize: 12),
-                  );
-                  for (final (index, release) in releaseOverwrites.indexed) {
-                    releaseChildren.add(
-                      CondTargetValueDescriptor(
-                        condType: release.condType,
-                        target: release.condId,
-                        value: release.condNum,
-                        unknownMsg: release.closedMessage,
-                        style: Theme.of(context).textTheme.bodySmall,
-                      ),
-                    );
-                    if (!sameReleaseTime) {
-                      final nextRelease = releaseOverwrites.getOrNull(index + 1);
-                      if (nextRelease == null ||
-                          nextRelease.startedAt != release.startedAt ||
-                          nextRelease.endedAt != release.endedAt) {
-                        releaseChildren.add(fmtDateRange(release.startedAt, release.endedAt));
-                      }
-                    }
+            children: quests.map((quest) {
+              final svtId = quest.releaseConditions
+                  .firstWhereOrNull((release) => [CondType.svtGet, CondType.svtFriendship].contains(release.type))
+                  ?.targetId;
+              final svt = db.gameData.servantsById[svtId];
+              final status = svt?.status;
+              final releaseOverwrites = quest.releaseOverwrites.where((e) => e.eventId == event.id).toList();
+              releaseOverwrites.sortByList((e) => [e.startedAt, e.endedAt, e.priority]);
+              final sameReleaseTime = releaseOverwrites.map((e) => '${e.startedAt}-${e.endedAt}').toSet().length <= 1;
+              List<Widget> releaseChildren = [];
+              Widget fmtDateRange(int start, int end) => Text(
+                '${start.sec2date().toCustomString(second: false)} ~ ${start.sec2date().toCustomString(year: false, second: false)}',
+                style: const TextStyle(fontSize: 12),
+              );
+              for (final (index, release) in releaseOverwrites.indexed) {
+                releaseChildren.add(
+                  CondTargetValueDescriptor(
+                    condType: release.condType,
+                    target: release.condId,
+                    value: release.condNum,
+                    unknownMsg: release.closedMessage,
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                );
+                if (!sameReleaseTime) {
+                  final nextRelease = releaseOverwrites.getOrNull(index + 1);
+                  if (nextRelease == null ||
+                      nextRelease.startedAt != release.startedAt ||
+                      nextRelease.endedAt != release.endedAt) {
+                    releaseChildren.add(fmtDateRange(release.startedAt, release.endedAt));
                   }
-                  if (sameReleaseTime &&
-                      releaseOverwrites.isNotEmpty &&
-                      (releaseOverwrites.first.startedAt != event.startedAt ||
-                          releaseOverwrites.first.endedAt != event.endedAt)) {
-                    releaseChildren.add(
-                      fmtDateRange(releaseOverwrites.first.startedAt, releaseOverwrites.first.endedAt),
-                    );
-                  }
+                }
+              }
+              if (sameReleaseTime &&
+                  releaseOverwrites.isNotEmpty &&
+                  (releaseOverwrites.first.startedAt != event.startedAt ||
+                      releaseOverwrites.first.endedAt != event.endedAt)) {
+                releaseChildren.add(fmtDateRange(releaseOverwrites.first.startedAt, releaseOverwrites.first.endedAt));
+              }
 
-                  return ListTile(
-                    leading:
-                        svt == null
-                            ? const SizedBox.shrink()
-                            : svt.iconBuilder(
-                              context: context,
-                              width: 40,
-                              text: status != null && status.favorite ? 'NP${status.cur.npLv}' : '',
-                            ),
-                    title: Text(quest.lName.l),
-                    subtitle: Column(crossAxisAlignment: CrossAxisAlignment.start, children: releaseChildren),
-                    onTap: quest.routeTo,
-                  );
-                }).toList(),
+              return ListTile(
+                leading: svt == null
+                    ? const SizedBox.shrink()
+                    : svt.iconBuilder(
+                        context: context,
+                        width: 40,
+                        text: status != null && status.favorite ? 'NP${status.cur.npLv}' : '',
+                      ),
+                title: Text(quest.lName.l),
+                subtitle: Column(crossAxisAlignment: CrossAxisAlignment.start, children: releaseChildren),
+                onTap: quest.routeTo,
+              );
+            }).toList(),
           ),
         );
       }
@@ -981,30 +969,28 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
     return UserScrollListener(
       shouldAnimate: (userScroll) => userScroll.metrics.axis == Axis.vertical,
       initForward: true,
-      builder:
-          (context, animationController) => Scaffold(
-            floatingActionButton: ScaleTransition(
-              scale: animationController,
-              child: db.onUserData(
-                (context, snapshot) => FloatingActionButton(
-                  backgroundColor: plan.enabled ? null : Colors.grey,
-                  onPressed:
-                      plan.enabled
-                          ? () async {
-                            await _ArchiveEventDialog(event: event, initPlan: plan).showDialog(context);
-                            if (mounted) setState(() {});
-                          }
-                          : null,
-                  child: const Icon(Icons.archive_outlined),
-                ),
-              ),
-            ),
-            body: ListView.builder(
-              controller: _scrollController,
-              itemBuilder: (context, index) => children[index],
-              itemCount: children.length,
+      builder: (context, animationController) => Scaffold(
+        floatingActionButton: ScaleTransition(
+          scale: animationController,
+          child: db.onUserData(
+            (context, snapshot) => FloatingActionButton(
+              backgroundColor: plan.enabled ? null : Colors.grey,
+              onPressed: plan.enabled
+                  ? () async {
+                      await _ArchiveEventDialog(event: event, initPlan: plan).showDialog(context);
+                      if (mounted) setState(() {});
+                    }
+                  : null,
+              child: const Icon(Icons.archive_outlined),
             ),
           ),
+        ),
+        body: ListView.builder(
+          controller: _scrollController,
+          itemBuilder: (context, index) => children[index],
+          itemCount: children.length,
+        ),
+      ),
     );
   }
 
@@ -1020,12 +1006,11 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
       db.onUserData(
         (context, snapshot) => CheckboxListTile(
           value: value(),
-          onChanged:
-              enabled()
-                  ? (v) {
-                    if (v != null) onChanged(v);
-                  }
-                  : null,
+          onChanged: enabled()
+              ? (v) {
+                  if (v != null) onChanged(v);
+                }
+              : null,
           title: Text(title, textScaler: subtitle == null ? const TextScaler.linear(0.9) : null),
           subtitle: subtitle?.toText(),
           controlAffinity: ListTileControlAffinity.leading,
@@ -1302,7 +1287,10 @@ class __EventTimeState extends State<_EventTime> {
           Text.rich(
             TextSpan(
               children: [
-                TextSpan(text: '● ', style: TextStyle(color: ongoing ? Colors.green : Colors.transparent)),
+                TextSpan(
+                  text: '● ',
+                  style: TextStyle(color: ongoing ? Colors.green : Colors.transparent),
+                ),
                 TextSpan(text: timeStr),
               ],
             ),

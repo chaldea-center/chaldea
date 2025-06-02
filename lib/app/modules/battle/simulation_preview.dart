@@ -169,7 +169,10 @@ class _SimulationPreviewState extends State<SimulationPreview> {
         titleWidget: Text.rich(
           TextSpan(
             children: [
-              TextSpan(text: S.current.mystic_code, style: const TextStyle(fontWeight: FontWeight.bold)),
+              TextSpan(
+                text: S.current.mystic_code,
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              ),
               SharedBuilder.textButtonSpan(
                 context: context,
                 text: ' ${S.current.disable} ',
@@ -233,13 +236,12 @@ class _SimulationPreviewState extends State<SimulationPreview> {
           if (_questPhase != null && _questPhase!.id > 0) {
             questInfo = BattleQuestInfo.quest(_questPhase!, region: questRegion);
           }
-          final shareUri =
-              BattleShareData(
-                appBuild: AppInfo.buildNumber,
-                quest: questInfo,
-                options: options.toShareData(),
-                formation: settings.curTeam.formation,
-              ).toUriV2();
+          final shareUri = BattleShareData(
+            appBuild: AppInfo.buildNumber,
+            quest: questInfo,
+            options: options.toShareData(),
+            formation: settings.curTeam.formation,
+          ).toUriV2();
           String shareString = shareUri.toString();
           Clipboard.setData(ClipboardData(text: shareString));
           if (shareString.length > 200) {
@@ -376,7 +378,10 @@ class _SimulationPreviewState extends State<SimulationPreview> {
                     value: questRegion,
                     items: [
                       for (final r in _validQuestRegions)
-                        DropdownMenuItem(value: r, child: Text(r.localName, textScaler: const TextScaler.linear(0.9))),
+                        DropdownMenuItem(
+                          value: r,
+                          child: Text(r.localName, textScaler: const TextScaler.linear(0.9)),
+                        ),
                     ],
                     hint: Text(Region.jp.localName),
                     onChanged: (v) {
@@ -447,7 +452,12 @@ class _SimulationPreviewState extends State<SimulationPreview> {
       mainAxisSize: MainAxisSize.min,
       children: [
         if (questErrorMsg != null)
-          SFooter.rich(TextSpan(text: questErrorMsg, style: TextStyle(color: Theme.of(context).colorScheme.error))),
+          SFooter.rich(
+            TextSpan(
+              text: questErrorMsg,
+              style: TextStyle(color: Theme.of(context).colorScheme.error),
+            ),
+          ),
         // kDefaultDivider,
         Wrap(
           children: [
@@ -468,39 +478,37 @@ class _SimulationPreviewState extends State<SimulationPreview> {
               child: Text(S.current.general_custom),
             ),
             TextButton(
-              onPressed:
-                  questPhase == null
-                      ? null
-                      : () {
-                        QuestPhaseWidget.addPhaseSelectCallback(_questSelectCallback);
-                        router.push(
-                          url: Routes.questI(questPhase!.id),
-                          child: QuestDetailPage.phase(questPhase: questPhase!),
-                          detail: true,
-                        );
-                      },
+              onPressed: questPhase == null
+                  ? null
+                  : () {
+                      QuestPhaseWidget.addPhaseSelectCallback(_questSelectCallback);
+                      router.push(
+                        url: Routes.questI(questPhase!.id),
+                        child: QuestDetailPage.phase(questPhase: questPhase!),
+                        detail: true,
+                      );
+                    },
               style: kTextButtonDenseStyle,
               child: Text(S.current.details),
             ),
             TextButton(
-              onPressed:
-                  questPhase == null
-                      ? null
-                      : () async {
-                        try {
-                          final text = const JsonEncoder.withIndent('  ').convert(questPhase);
-                          await FilePickerU.saveFile(
-                            dialogContext: context,
-                            data: utf8.encode(text),
-                            filename:
-                                "quest-${questPhase!.id}-${questPhase!.phase}-${DateTime.now().toSafeFileName()}.json",
-                          );
-                        } catch (e, s) {
-                          EasyLoading.showError(e.toString());
-                          logger.e('dump quest phase json failed', e, s);
-                          return;
-                        }
-                      },
+              onPressed: questPhase == null
+                  ? null
+                  : () async {
+                      try {
+                        final text = const JsonEncoder.withIndent('  ').convert(questPhase);
+                        await FilePickerU.saveFile(
+                          dialogContext: context,
+                          data: utf8.encode(text),
+                          filename:
+                              "quest-${questPhase!.id}-${questPhase!.phase}-${DateTime.now().toSafeFileName()}.json",
+                        );
+                      } catch (e, s) {
+                        EasyLoading.showError(e.toString());
+                        logger.e('dump quest phase json failed', e, s);
+                        return;
+                      }
+                    },
               style: kTextButtonDenseStyle,
               child: Text('${S.current.general_export} JSON'),
             ),
@@ -508,24 +516,23 @@ class _SimulationPreviewState extends State<SimulationPreview> {
         ),
         ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 540),
-          child:
-              questPhase == null
-                  ? Card(
-                    child: SizedBox(
-                      width: double.infinity,
-                      height: 400,
-                      child: Center(child: Text(S.current.battle_no_quest_phase)),
-                    ),
-                  )
-                  : QuestCard(
-                    key: Key('quest_phase_${questPhase.hashCode}'),
-                    region: questRegion,
-                    offline: false,
-                    quest: questPhase,
-                    displayPhases: {questPhase!.phase: questPhase?.enemyHashOrTotal},
-                    battleOnly: true,
-                    preferredPhases: [questPhase!],
+          child: questPhase == null
+              ? Card(
+                  child: SizedBox(
+                    width: double.infinity,
+                    height: 400,
+                    child: Center(child: Text(S.current.battle_no_quest_phase)),
                   ),
+                )
+              : QuestCard(
+                  key: Key('quest_phase_${questPhase.hashCode}'),
+                  region: questRegion,
+                  offline: false,
+                  quest: questPhase,
+                  displayPhases: {questPhase!.phase: questPhase?.enemyHashOrTotal},
+                  battleOnly: true,
+                  preferredPhases: [questPhase!],
+                ),
         ),
         if (questPhase != null && questPhase!.enemyHashes.length > 1) SFooter(S.current.laplace_enemy_multi_ver_hint),
       ],
@@ -842,18 +849,17 @@ class _SimulationPreviewState extends State<SimulationPreview> {
                 );
               }),
             ],
-            onChanged:
-                options.disableEvent
-                    ? null
-                    : (v) {
-                      setState(() {
-                        if (v == null) {
-                          options.pointBuffs.remove(groupId);
-                        } else {
-                          options.pointBuffs[groupId] = v;
-                        }
-                      });
-                    },
+            onChanged: options.disableEvent
+                ? null
+                : (v) {
+                    setState(() {
+                      if (v == null) {
+                        options.pointBuffs.remove(groupId);
+                      } else {
+                        options.pointBuffs[groupId] = v;
+                      }
+                    });
+                  },
           ),
         ),
       );
@@ -890,14 +896,13 @@ class _SimulationPreviewState extends State<SimulationPreview> {
           title: Text(Transl.trait(indiv).l),
           subtitle: Text('${Transl.funcType(FuncType.enemyEncountCopyRateUp).l}: 100%'),
           value: options.enemyRateUp.contains(indiv),
-          onChanged:
-              options.disableEvent
-                  ? null
-                  : (v) {
-                    setState(() {
-                      options.enemyRateUp.toggle(indiv);
-                    });
-                  },
+          onChanged: options.disableEvent
+              ? null
+              : (v) {
+                  setState(() {
+                    options.enemyRateUp.toggle(indiv);
+                  });
+                },
         ),
       );
     }
@@ -916,13 +921,12 @@ class _SimulationPreviewState extends State<SimulationPreview> {
           child: Text(' COST: ${options.formation.totalCost} ', textAlign: TextAlign.center),
         ),
         FilledButton.icon(
-          onPressed:
-              errorMsg != null
-                  ? null
-                  : () {
-                    QuestPhaseWidget.removePhaseSelectCallback(_questSelectCallback);
-                    _startSimulation();
-                  },
+          onPressed: errorMsg != null
+              ? null
+              : () {
+                  QuestPhaseWidget.removePhaseSelectCallback(_questSelectCallback);
+                  _startSimulation();
+                },
           icon: const Icon(Icons.play_arrow_rounded),
           label: Text(S.current.start),
         ),

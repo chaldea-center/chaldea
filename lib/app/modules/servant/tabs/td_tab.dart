@@ -43,10 +43,9 @@ class SvtTdTab extends StatelessWidget {
       children.add(_buildTds(context, shownTds, status.favorite ? status.npLv : null, overrideTds));
     }
 
-    final groupedNoblePhantasms =
-        overwriteViewData != null && overwriteViewData!.tds.isNotEmpty
-            ? overwriteViewData!.tds
-            : svt.groupedNoblePhantasms;
+    final groupedNoblePhantasms = overwriteViewData != null && overwriteViewData!.tds.isNotEmpty
+        ? overwriteViewData!.tds
+        : svt.groupedNoblePhantasms;
     for (final tdNum in groupedNoblePhantasms.keys) {
       final tds = groupedNoblePhantasms[tdNum]!;
       if (groupedNoblePhantasms.containsKey(1) &&
@@ -152,12 +151,11 @@ class SvtTdTab extends StatelessWidget {
               IconButton(
                 padding: const EdgeInsets.all(2),
                 constraints: const BoxConstraints(minWidth: 48, minHeight: 24),
-                onPressed:
-                    () => showDialog(
-                      context: context,
-                      useRootNavigator: false,
-                      builder: (_) => releaseCondition(svt, td, oTdData),
-                    ),
+                onPressed: () => showDialog(
+                  context: context,
+                  useRootNavigator: false,
+                  builder: (_) => releaseCondition(svt, td, oTdData),
+                ),
                 icon: const Icon(Icons.info_outline),
                 color: Theme.of(context).hintColor,
                 tooltip: S.current.open_condition,

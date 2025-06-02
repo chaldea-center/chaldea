@@ -46,9 +46,18 @@ class _HomePageState extends State<HomePage> with AfterLayoutMixin {
         },
         currentIndex: _curIndex,
         items: [
-          const BottomNavigationBarItem(icon: SafeArea(child: Icon(Icons.blur_on_sharp)), label: 'Chaldeas'),
-          const BottomNavigationBarItem(icon: SafeArea(child: Icon(Icons.bubble_chart)), label: 'Laplace'),
-          const BottomNavigationBarItem(icon: SafeArea(child: Icon(Icons.timer_outlined)), label: 'Timer'),
+          const BottomNavigationBarItem(
+            icon: SafeArea(child: Icon(Icons.blur_on_sharp)),
+            label: 'Chaldeas',
+          ),
+          const BottomNavigationBarItem(
+            icon: SafeArea(child: Icon(Icons.bubble_chart)),
+            label: 'Laplace',
+          ),
+          const BottomNavigationBarItem(
+            icon: SafeArea(child: Icon(Icons.timer_outlined)),
+            label: 'Timer',
+          ),
           BottomNavigationBarItem(
             icon: const SafeArea(child: Icon(Icons.settings)),
             label: S.current.settings_tab_name,
@@ -131,7 +140,13 @@ class _HomePageState extends State<HomePage> with AfterLayoutMixin {
       }
     }
     if (errors.isNotEmpty) {
-      child = Stack(alignment: Alignment.center, children: [IgnorePointer(child: child), ...errors]);
+      child = Stack(
+        alignment: Alignment.center,
+        children: [
+          IgnorePointer(child: child),
+          ...errors,
+        ],
+      );
     }
     return child;
   }

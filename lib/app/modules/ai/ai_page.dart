@@ -73,7 +73,10 @@ class _AiPageState extends State<AiPage> with RegionBasedState<NiceAiCollection,
           maxLines: 1,
           minFontSize: 14,
         ),
-        actions: [dropdownRegion(shownNone: widget.aiCollection != null), popupMenu],
+        actions: [
+          dropdownRegion(shownNone: widget.aiCollection != null),
+          popupMenu,
+        ],
       ),
       body: buildBody(context),
     );
@@ -81,25 +84,24 @@ class _AiPageState extends State<AiPage> with RegionBasedState<NiceAiCollection,
 
   Widget get popupMenu {
     return PopupMenuButton(
-      itemBuilder:
-          (context) => [
-            ...SharedBuilder.websitesPopupMenuItems(
-              atlas: Atlas.ai(
-                id,
-                widget.aiType == AiType.svt,
-                region: region ?? Region.jp,
-                skillId1: widget.skills?.skillId1 ?? 0,
-                skillId2: widget.skills?.skillId2 ?? 0,
-                skillId3: widget.skills?.skillId3 ?? 0,
-              ),
-            ),
-            PopupMenuItem(
-              child: const Text("How to read AI?"),
-              onTap: () {
-                launch("https://apps.atlasacademy.io/db/JP/faq#svt-field-ai");
-              },
-            ),
-          ],
+      itemBuilder: (context) => [
+        ...SharedBuilder.websitesPopupMenuItems(
+          atlas: Atlas.ai(
+            id,
+            widget.aiType == AiType.svt,
+            region: region ?? Region.jp,
+            skillId1: widget.skills?.skillId1 ?? 0,
+            skillId2: widget.skills?.skillId2 ?? 0,
+            skillId3: widget.skills?.skillId3 ?? 0,
+          ),
+        ),
+        PopupMenuItem(
+          child: const Text("How to read AI?"),
+          onTap: () {
+            launch("https://apps.atlasacademy.io/db/JP/faq#svt-field-ai");
+          },
+        ),
+      ],
     );
   }
 
@@ -191,7 +193,10 @@ class _AiPageState extends State<AiPage> with RegionBasedState<NiceAiCollection,
         ),
       );
     }
-    return SingleChildScrollView(controller: scrollController, child: ListBody(children: children));
+    return SingleChildScrollView(
+      controller: scrollController,
+      child: ListBody(children: children),
+    );
   }
 
   void onClickNextAi(int nextAiId) {

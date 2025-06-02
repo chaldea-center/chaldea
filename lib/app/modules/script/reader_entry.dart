@@ -91,7 +91,10 @@ class _ScriptReaderEntryPageState extends State<ScriptReaderEntryPage> {
                 if (match != null) {
                   id = match.group(1)!;
                 }
-                router.push(url: Routes.scriptI(id), child: ScriptIdLoadingPage(scriptId: id, region: region));
+                router.push(
+                  url: Routes.scriptI(id),
+                  child: ScriptIdLoadingPage(scriptId: id, region: region),
+                );
               },
               icon: const Icon(Icons.menu_book_rounded),
               color: _textEditController.text.trim().isEmpty ? null : AppTheme(context).tertiary,
@@ -146,34 +149,33 @@ class _ScriptIdLoadingPageState extends State<ScriptIdLoadingPage> {
     return Scaffold(
       appBar: AppBar(title: Text('Script ${widget.scriptId}')),
       body: Center(
-        child:
-            _loading
-                ? const CircularProgressIndicator()
-                : Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(S.current.not_found),
-                    const SizedBox(height: 16),
-                    FilterGroup<Region>(
-                      options: Region.values,
-                      values: FilterRadioData.nonnull(region),
-                      onFilterChanged: (v, _) {
-                        setState(() {
-                          region = v.radioValue!;
-                        });
-                      },
-                      optionBuilder: (v) => Text(v.localName),
-                      combined: true,
-                    ),
-                    const SizedBox(height: 16),
-                    ElevatedButton(
-                      onPressed: () {
-                        fetch(force: true);
-                      },
-                      child: Text(S.current.refresh),
-                    ),
-                  ],
-                ),
+        child: _loading
+            ? const CircularProgressIndicator()
+            : Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(S.current.not_found),
+                  const SizedBox(height: 16),
+                  FilterGroup<Region>(
+                    options: Region.values,
+                    values: FilterRadioData.nonnull(region),
+                    onFilterChanged: (v, _) {
+                      setState(() {
+                        region = v.radioValue!;
+                      });
+                    },
+                    optionBuilder: (v) => Text(v.localName),
+                    combined: true,
+                  ),
+                  const SizedBox(height: 16),
+                  ElevatedButton(
+                    onPressed: () {
+                      fetch(force: true);
+                    },
+                    child: Text(S.current.refresh),
+                  ),
+                ],
+              ),
       ),
     );
   }

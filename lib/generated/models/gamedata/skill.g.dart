@@ -28,10 +28,9 @@ BaseSkill _$BaseSkillFromJson(Map json) => BaseSkill(
   aiIds: (json['aiIds'] as Map?)?.map(
     (k, e) => MapEntry($enumDecode(_$AiTypeEnumMap, k), (e as List<dynamic>).map((e) => (e as num).toInt()).toList()),
   ),
-  groupOverwrites:
-      (json['groupOverwrites'] as List<dynamic>?)
-          ?.map((e) => SkillGroupOverwrite.fromJson(Map<String, dynamic>.from(e as Map)))
-          .toList(),
+  groupOverwrites: (json['groupOverwrites'] as List<dynamic>?)
+      ?.map((e) => SkillGroupOverwrite.fromJson(Map<String, dynamic>.from(e as Map)))
+      .toList(),
   functions:
       (json['functions'] as List<dynamic>?)
           ?.map((e) => NiceFunction.fromJson(Map<String, dynamic>.from(e as Map)))
@@ -87,10 +86,9 @@ NiceSkill _$NiceSkillFromJson(Map json) => NiceSkill(
   aiIds: (json['aiIds'] as Map?)?.map(
     (k, e) => MapEntry($enumDecode(_$AiTypeEnumMap, k), (e as List<dynamic>).map((e) => (e as num).toInt()).toList()),
   ),
-  groupOverwrites:
-      (json['groupOverwrites'] as List<dynamic>?)
-          ?.map((e) => SkillGroupOverwrite.fromJson(Map<String, dynamic>.from(e as Map)))
-          .toList(),
+  groupOverwrites: (json['groupOverwrites'] as List<dynamic>?)
+      ?.map((e) => SkillGroupOverwrite.fromJson(Map<String, dynamic>.from(e as Map)))
+      .toList(),
   functions:
       (json['functions'] as List<dynamic>?)
           ?.map((e) => NiceFunction.fromJson(Map<String, dynamic>.from(e as Map)))
@@ -369,24 +367,20 @@ Map<String, dynamic> _$ExtraPassiveToJson(ExtraPassive instance) => <String, dyn
 };
 
 SkillScript _$SkillScriptFromJson(Map json) => SkillScript(
-  actRarity:
-      (json['actRarity'] as List<dynamic>?)
-          ?.map((e) => (e as List<dynamic>).map((e) => (e as num).toInt()).toList())
-          .toList(),
-  SelectAddInfo:
-      (json['SelectAddInfo'] as List<dynamic>?)
-          ?.map((e) => SkillSelectAddInfo.fromJson(Map<String, dynamic>.from(e as Map)))
-          .toList(),
-  selectTreasureDeviceInfo:
-      (json['selectTreasureDeviceInfo'] as List<dynamic>?)
-          ?.map((e) => SelectTreasureDeviceInfo.fromJson(Map<String, dynamic>.from(e as Map)))
-          .toList(),
+  actRarity: (json['actRarity'] as List<dynamic>?)
+      ?.map((e) => (e as List<dynamic>).map((e) => (e as num).toInt()).toList())
+      .toList(),
+  SelectAddInfo: (json['SelectAddInfo'] as List<dynamic>?)
+      ?.map((e) => SkillSelectAddInfo.fromJson(Map<String, dynamic>.from(e as Map)))
+      .toList(),
+  selectTreasureDeviceInfo: (json['selectTreasureDeviceInfo'] as List<dynamic>?)
+      ?.map((e) => SelectTreasureDeviceInfo.fromJson(Map<String, dynamic>.from(e as Map)))
+      .toList(),
   IgnoreValueUp: json['IgnoreValueUp'],
   IgnoreBattlePointUp: json['IgnoreBattlePointUp'] as List<dynamic>?,
-  tdChangeByBattlePoint:
-      (json['tdChangeByBattlePoint'] as List<dynamic>?)
-          ?.map((e) => TdChangeByBattlePoint.fromJson(Map<String, dynamic>.from(e as Map)))
-          .toList(),
+  tdChangeByBattlePoint: (json['tdChangeByBattlePoint'] as List<dynamic>?)
+      ?.map((e) => TdChangeByBattlePoint.fromJson(Map<String, dynamic>.from(e as Map)))
+      .toList(),
 );
 
 Map<String, dynamic> _$SkillScriptToJson(SkillScript instance) => <String, dynamic>{
@@ -493,10 +487,9 @@ Map<String, dynamic> _$TdChangeByBattlePointToJson(TdChangeByBattlePoint instanc
 
 SkillAdd _$SkillAddFromJson(Map json) => SkillAdd(
   priority: (json['priority'] as num).toInt(),
-  releaseConditions:
-      (json['releaseConditions'] as List<dynamic>)
-          .map((e) => CommonRelease.fromJson(Map<String, dynamic>.from(e as Map)))
-          .toList(),
+  releaseConditions: (json['releaseConditions'] as List<dynamic>)
+      .map((e) => CommonRelease.fromJson(Map<String, dynamic>.from(e as Map)))
+      .toList(),
   name: json['name'] as String,
   ruby: json['ruby'] as String,
 );

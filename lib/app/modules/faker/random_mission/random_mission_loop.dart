@@ -451,22 +451,21 @@ class _RandomMissionLoopPageState extends State<RandomMissionLoopPage> {
           selected: stat.lastAddedMissionIds.contains(mission.id),
           minLeadingWidth: 24,
           subtitle: Text('${progresses.map((e) => "${e.progress}/${e.targetNum}").join(",")} ×${userMission.clearNum}'),
-          trailing:
-              userMission.isInProgress
-                  ? IconButton(
-                    onPressed: () {
-                      SimpleConfirmDialog(
-                        title: Text(S.current.remove),
-                        onTapOk: () {
-                          runtime.runTask(() {
-                            return runtime.agent.eventMissionRandomCancel(missionId: userMission.missionId);
-                          });
-                        },
-                      ).showDialog(context);
-                    },
-                    icon: Icon(Icons.close),
-                  )
-                  : null,
+          trailing: userMission.isInProgress
+              ? IconButton(
+                  onPressed: () {
+                    SimpleConfirmDialog(
+                      title: Text(S.current.remove),
+                      onTapOk: () {
+                        runtime.runTask(() {
+                          return runtime.agent.eventMissionRandomCancel(missionId: userMission.missionId);
+                        });
+                      },
+                    ).showDialog(context);
+                  },
+                  icon: Icon(Icons.close),
+                )
+              : null,
         ),
       );
     }
@@ -610,25 +609,24 @@ class _RandomMissionLoopPageState extends State<RandomMissionLoopPage> {
         ListTile(
           dense: true,
           title: Text(db.gameData.quests[battleEntity.questId]?.lDispName ?? 'Quest ${battleEntity.questId}'),
-          subtitle:
-              dropItems.isEmpty
-                  ? null
-                  : Wrap(
-                    children: [
-                      for (final itemId in dropItems.keys.toList()..sort((a, b) => Item.compare2(a, b)))
-                        Item.iconBuilder(
-                          context: context,
-                          item: null,
-                          itemId: itemId,
-                          height: 36,
-                          text: [
-                            '+${dropItems[itemId]!.format()}',
-                            if (!db.gameData.entities.containsKey(itemId))
-                              mstData.getItemOrSvtNum(itemId, eventIds: [battleEntity.eventId]).format(),
-                          ].join('\n'),
-                        ),
-                    ],
-                  ),
+          subtitle: dropItems.isEmpty
+              ? null
+              : Wrap(
+                  children: [
+                    for (final itemId in dropItems.keys.toList()..sort((a, b) => Item.compare2(a, b)))
+                      Item.iconBuilder(
+                        context: context,
+                        item: null,
+                        itemId: itemId,
+                        height: 36,
+                        text: [
+                          '+${dropItems[itemId]!.format()}',
+                          if (!db.gameData.entities.containsKey(itemId))
+                            mstData.getItemOrSvtNum(itemId, eventIds: [battleEntity.eventId]).format(),
+                        ].join('\n'),
+                      ),
+                  ],
+                ),
           trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
           onTap: () {
             router.push(url: Routes.questI(battleEntity.questId, battleEntity.questPhase));
@@ -646,11 +644,10 @@ class _RandomMissionLoopPageState extends State<RandomMissionLoopPage> {
     final resultType = BattleResultType.values.firstWhereOrNull((e) => e.value == lastResult?.battleResult);
 
     return TileGroup(
-      header:
-          battleEntity == null
-              ? 'Battle Details'
-              : 'Battle ${battleEntity.id} - ${agent.curBattle == null ? "${resultType?.name}" : "ongoing"}'
-                  ' (${battleEntity.createdAt.sec2date().toCustomString(year: false)})',
+      header: battleEntity == null
+          ? 'Battle Details'
+          : 'Battle ${battleEntity.id} - ${agent.curBattle == null ? "${resultType?.name}" : "ongoing"}'
+                ' (${battleEntity.createdAt.sec2date().toCustomString(year: false)})',
       children: children,
     );
   }

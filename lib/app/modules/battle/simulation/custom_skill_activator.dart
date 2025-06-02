@@ -72,7 +72,10 @@ class _CustomSkillActivatorState extends State<CustomSkillActivator> {
                 ),
                 if (skillErrorMsg != null)
                   SFooter.rich(
-                    TextSpan(text: skillErrorMsg, style: TextStyle(color: Theme.of(context).colorScheme.error)),
+                    TextSpan(
+                      text: skillErrorMsg,
+                      style: TextStyle(color: Theme.of(context).colorScheme.error),
+                    ),
                   ),
                 const SizedBox(height: 8),
                 if (skill != null)
@@ -101,10 +104,8 @@ class _CustomSkillActivatorState extends State<CustomSkillActivator> {
                     combined: true,
                     options: SkillType.values,
                     values: FilterRadioData.nonnull(skillType),
-                    optionBuilder:
-                        (value) => Text(
-                          value == SkillType.active ? S.current.active_skill_short : S.current.passive_skill_short,
-                        ),
+                    optionBuilder: (value) =>
+                        Text(value == SkillType.active ? S.current.active_skill_short : S.current.passive_skill_short),
                     onFilterChanged: (v, _) {
                       skillType = v.radioValue!;
                       skill?.type = skillType;
@@ -167,13 +168,12 @@ class _CustomSkillActivatorState extends State<CustomSkillActivator> {
                     ),
                   ),
                   FilledButton.icon(
-                    onPressed:
-                        errorMsg != null
-                            ? null
-                            : () async {
-                              await widget.battleData.activateCustomSkill(activator, skill!, skillLv, isAlly);
-                              if (context.mounted) Navigator.of(context).pop(skill);
-                            },
+                    onPressed: errorMsg != null
+                        ? null
+                        : () async {
+                            await widget.battleData.activateCustomSkill(activator, skill!, skillLv, isAlly);
+                            if (context.mounted) Navigator.of(context).pop(skill);
+                          },
                     icon: const Icon(Icons.play_arrow_rounded),
                     label: Text(S.current.battle_activate_custom_skill),
                   ),

@@ -50,12 +50,11 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
 
     final startJp = summon.startTime.jp, endJp = summon.endTime.jp;
     if (startJp != null && endJp != null) {
-      gachaGroups =
-          db.gameData.others.gachaGroups.values.where((group) {
-            if (group.isEmpty) return false;
-            return (Maths.min(group.map((e) => e.openedAt)) - startJp).abs() < 3601 &&
-                (Maths.max(group.map((e) => e.closedAt)) - endJp).abs() < 3601;
-          }).toList();
+      gachaGroups = db.gameData.others.gachaGroups.values.where((group) {
+        if (group.isEmpty) return false;
+        return (Maths.min(group.map((e) => e.openedAt)) - startJp).abs() < 3601 &&
+            (Maths.max(group.map((e) => e.closedAt)) - endJp).abs() < 3601;
+      }).toList();
     }
   }
 
@@ -82,15 +81,20 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
             );
           }),
           PopupMenuButton(
-            itemBuilder:
-                (context) => [
-                  ...SharedBuilder.websitesPopupMenuItems(mooncell: summon.mcLink, fandom: summon.fandomLink),
-                  ...SharedBuilder.noticeLinkPopupMenuItems(noticeLink: summon.noticeLink),
-                ],
+            itemBuilder: (context) => [
+              ...SharedBuilder.websitesPopupMenuItems(mooncell: summon.mcLink, fandom: summon.fandomLink),
+              ...SharedBuilder.noticeLinkPopupMenuItems(noticeLink: summon.noticeLink),
+            ],
           ),
         ],
       ),
-      body: Column(children: [Expanded(child: listView), kDefaultDivider, SafeArea(child: buttonBar)]),
+      body: Column(
+        children: [
+          Expanded(child: listView),
+          kDefaultDivider,
+          SafeArea(child: buttonBar),
+        ],
+      ),
     );
   }
 
@@ -98,17 +102,15 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
     List<Event> relatedEvents = [];
     List<NiceWar> relatedWars = [];
     if (summon.relatedEvents.isNotEmpty) {
-      relatedEvents =
-          db.gameData.events.values
-              .where((event) => summon.relatedEvents.any((key) => McConverter.isSamePage(key, event.extra.mcLink)))
-              .toList();
-      relatedWars =
-          db.gameData.wars.values
-              .where(
-                (war) =>
-                    war.isMainStory && summon.relatedEvents.any((key) => McConverter.isSamePage(key, war.extra.mcLink)),
-              )
-              .toList();
+      relatedEvents = db.gameData.events.values
+          .where((event) => summon.relatedEvents.any((key) => McConverter.isSamePage(key, event.extra.mcLink)))
+          .toList();
+      relatedWars = db.gameData.wars.values
+          .where(
+            (war) =>
+                war.isMainStory && summon.relatedEvents.any((key) => McConverter.isSamePage(key, war.extra.mcLink)),
+          )
+          .toList();
     }
     List<Widget> children = [
       CarouselUtil.limitHeightWidget(context: context, imageUrls: summon.resolvedBanner.values.toList()),
@@ -408,17 +410,16 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
             child: Wrap(
               spacing: 4,
               runSpacing: 4,
-              children:
-                  pickups
-                      .map(
-                        (id) => SummonUtil.svtAvatar(
-                          context: context,
-                          card: db.gameData.servantsNoDup[id],
-                          star: summon.hasSinglePickupSvt(id),
-                          favorite: db.curUser.svtStatusOf(id).favorite,
-                        ),
-                      )
-                      .toList(),
+              children: pickups
+                  .map(
+                    (id) => SummonUtil.svtAvatar(
+                      context: context,
+                      card: db.gameData.servantsNoDup[id],
+                      star: summon.hasSinglePickupSvt(id),
+                      favorite: db.curUser.svtStatusOf(id).favorite,
+                    ),
+                  )
+                  .toList(),
             ),
           ),
         );
@@ -444,17 +445,16 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
           child: Wrap(
             spacing: 4,
             runSpacing: 4,
-            children:
-                svtIds.entries
-                    .map(
-                      (entry) => SummonUtil.svtAvatar(
-                        context: context,
-                        card: db.gameData.servantsNoDup[entry.key],
-                        star: entry.value,
-                        favorite: db.curUser.svtStatusOf(entry.key).favorite,
-                      ),
-                    )
-                    .toList(),
+            children: svtIds.entries
+                .map(
+                  (entry) => SummonUtil.svtAvatar(
+                    context: context,
+                    card: db.gameData.servantsNoDup[entry.key],
+                    star: entry.value,
+                    favorite: db.curUser.svtStatusOf(entry.key).favorite,
+                  ),
+                )
+                .toList(),
           ),
         ),
       );
@@ -510,29 +510,30 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
 
   Widget get buttonBar {
     Widget simulatorBtn = FilledButton(
-      onPressed:
-          summon.subSummons.isEmpty && gachaGroups.isEmpty
-              ? null
-              : () {
-                if (summon.subSummons.isNotEmpty) {
-                  router.push(child: SummonSimulatorPage(summon: summon, initIndex: curIndex));
-                } else {
-                  EasyLoading.showInfo("→ ${S.current.raw_gacha_data}");
-                  final obj = _rawGachaTileKey.currentContext?.findRenderObject();
-                  if (obj != null && _scrollController.hasClients && _scrollController.position.hasContentDimensions) {
-                    _scrollController.position.ensureVisible(obj);
-                  }
+      onPressed: summon.subSummons.isEmpty && gachaGroups.isEmpty
+          ? null
+          : () {
+              if (summon.subSummons.isNotEmpty) {
+                router.push(
+                  child: SummonSimulatorPage(summon: summon, initIndex: curIndex),
+                );
+              } else {
+                EasyLoading.showInfo("→ ${S.current.raw_gacha_data}");
+                final obj = _rawGachaTileKey.currentContext?.findRenderObject();
+                if (obj != null && _scrollController.hasClients && _scrollController.position.hasContentDimensions) {
+                  _scrollController.position.ensureVisible(obj);
                 }
-              },
+              }
+            },
       child: Text(
         S.current.simulator,
         style:
             (summon.subSummons.isNotEmpty || gachaGroups.isNotEmpty) &&
-                    (summon.subSummons.isEmpty ||
-                        gachaGroups.length > 1 ||
-                        summon.subSummons.length != gachaGroups.firstOrNull?.length)
-                ? const TextStyle(decoration: TextDecoration.underline)
-                : null,
+                (summon.subSummons.isEmpty ||
+                    gachaGroups.length > 1 ||
+                    summon.subSummons.length != gachaGroups.firstOrNull?.length)
+            ? const TextStyle(decoration: TextDecoration.underline)
+            : null,
       ),
     );
     Widget? expBtn;
@@ -564,7 +565,10 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
       btnBar = Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.center,
-        children: [Padding(padding: const EdgeInsets.only(top: 4), child: expBtn), btnBar],
+        children: [
+          Padding(padding: const EdgeInsets.only(top: 4), child: expBtn),
+          btnBar,
+        ],
       );
     }
     return btnBar;

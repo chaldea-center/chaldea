@@ -57,17 +57,15 @@ class _FuncListPageState extends State<FuncListPage> with SearchableListState<Ba
           IconButton(
             icon: const Icon(Icons.filter_alt),
             tooltip: S.current.filter,
-            onPressed:
-                () => FilterPage.show(
-                  context: context,
-                  builder:
-                      (context) => FuncFilter(
-                        filterData: filterData,
-                        onChanged: (_) {
-                          if (mounted) setState(() {});
-                        },
-                      ),
-                ),
+            onPressed: () => FilterPage.show(
+              context: context,
+              builder: (context) => FuncFilter(
+                filterData: filterData,
+                onChanged: (_) {
+                  if (mounted) setState(() {});
+                },
+              ),
+            ),
           ),
         ],
       ),
@@ -112,16 +110,14 @@ class _FuncListPageState extends State<FuncListPage> with SearchableListState<Ba
   Widget listItemBuilder(BaseFunction? func) {
     return ListTile(
       dense: true,
-      leading:
-          func?.funcPopupIcon == null
-              ? const SizedBox(height: 24, width: 24)
-              : db.getIconImage(func?.funcPopupIcon, height: 24),
+      leading: func?.funcPopupIcon == null
+          ? const SizedBox(height: 24, width: 24)
+          : db.getIconImage(func?.funcPopupIcon, height: 24),
       horizontalTitleGap: 8,
       title: Text(func?.lPopupText.l ?? "Func $_searchFuncId"),
-      subtitle:
-          func == null
-              ? null
-              : Text('${func.funcId} ${func.funcType.name} ${Transl.funcType(func.funcType).l}', maxLines: 1),
+      subtitle: func == null
+          ? null
+          : Text('${func.funcId} ${func.funcType.name} ${Transl.funcType(func.funcType).l}', maxLines: 1),
       onTap: () {
         final id = func?.funcId ?? _searchFuncId;
         if (id != null) {

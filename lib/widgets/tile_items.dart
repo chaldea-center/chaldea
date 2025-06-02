@@ -330,50 +330,46 @@ class _RangeSelectorState<T extends num> extends State<RangeSelector<T>> {
       children: <Widget>[
         DropdownButton<T>(
           value: widget.start,
-          items:
-              widget.startItems
-                  .map(
-                    (v) => DropdownMenuItem<T>(
-                      value: v,
-                      child: widget.itemBuilder == null ? Text(v.toString()) : widget.itemBuilder!(context, v),
-                    ),
-                  )
-                  .toList(),
-          onChanged:
-              widget.startEnabled
-                  ? (value) {
-                    if (value == null) return;
-                    final start = value;
-                    final end = widget.increasing ? max(start, widget.end) : min(start, widget.end);
-                    if (widget.onChanged != null) {
-                      widget.onChanged!(start, end);
-                    }
+          items: widget.startItems
+              .map(
+                (v) => DropdownMenuItem<T>(
+                  value: v,
+                  child: widget.itemBuilder == null ? Text(v.toString()) : widget.itemBuilder!(context, v),
+                ),
+              )
+              .toList(),
+          onChanged: widget.startEnabled
+              ? (value) {
+                  if (value == null) return;
+                  final start = value;
+                  final end = widget.increasing ? max(start, widget.end) : min(start, widget.end);
+                  if (widget.onChanged != null) {
+                    widget.onChanged!(start, end);
                   }
-                  : null,
+                }
+              : null,
         ),
         const Text('   →   '),
         DropdownButton<T>(
           value: widget.end,
-          items:
-              widget.endItems
-                  .map(
-                    (v) => DropdownMenuItem<T>(
-                      value: v,
-                      child: widget.itemBuilder == null ? Text(v.toString()) : widget.itemBuilder!(context, v),
-                    ),
-                  )
-                  .toList(),
-          onChanged:
-              widget.endEnabled
-                  ? (value) {
-                    if (value == null) return;
-                    final end = value;
-                    final start = widget.increasing ? min(widget.start, end) : max(widget.start, end);
-                    if (widget.onChanged != null) {
-                      widget.onChanged!(start, end);
-                    }
+          items: widget.endItems
+              .map(
+                (v) => DropdownMenuItem<T>(
+                  value: v,
+                  child: widget.itemBuilder == null ? Text(v.toString()) : widget.itemBuilder!(context, v),
+                ),
+              )
+              .toList(),
+          onChanged: widget.endEnabled
+              ? (value) {
+                  if (value == null) return;
+                  final end = value;
+                  final start = widget.increasing ? min(widget.start, end) : max(widget.start, end);
+                  if (widget.onChanged != null) {
+                    widget.onChanged!(start, end);
                   }
-                  : null,
+                }
+              : null,
         ),
       ],
     );

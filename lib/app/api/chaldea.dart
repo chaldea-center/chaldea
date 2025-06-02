@@ -25,10 +25,9 @@ class ChaldeaWorkerApi {
 
   static const apiV4 = '/api/v4';
 
-  static final cacheManager =
-      ApiCacheManager(null)
-        ..dispatchError = dispatchError
-        ..createDio = createDio;
+  static final cacheManager = ApiCacheManager(null)
+    ..dispatchError = dispatchError
+    ..createDio = createDio;
 
   static void dispatchError(RequestOptions options, Response? response, dynamic error, dynamic stackTrace) async {
     dynamic error2;
@@ -202,12 +201,11 @@ class ChaldeaWorkerApi {
       data: <String, String>{
         'content': content,
         'appVer': AppInfo.versionString,
-        'os':
-            <String?>[
-              PlatformU.operatingSystem,
-              if (kIsWeb) ...[AppInfo.deviceParams['browserName'], AppInfo.deviceParams['platform']],
-              if (!kIsWeb) PlatformU.operatingSystemVersion,
-            ].where((e) => e != null && e.isNotEmpty).join(' ').substring2(0, 60).trim(),
+        'os': <String?>[
+          PlatformU.operatingSystem,
+          if (kIsWeb) ...[AppInfo.deviceParams['browserName'], AppInfo.deviceParams['platform']],
+          if (!kIsWeb) PlatformU.operatingSystemVersion,
+        ].where((e) => e != null && e.isNotEmpty).join(' ').substring2(0, 60).trim(),
       },
     );
   }

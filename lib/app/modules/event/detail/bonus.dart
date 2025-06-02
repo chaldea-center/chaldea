@@ -163,20 +163,18 @@ class _EventBonusTabState extends State<EventBonusTab> {
         FilledButton.icon(
           icon: const Icon(Icons.filter_alt),
           label: Text(S.current.filter),
-          onPressed:
-              () => FilterPage.show(
-                context: context,
-                builder:
-                    (context) => ServantFilterPage(
-                      filterData: svtFilterData,
-                      onChanged: (_) {
-                        if (mounted) {
-                          setState(() {});
-                        }
-                      },
-                      planMode: false,
-                    ),
-              ),
+          onPressed: () => FilterPage.show(
+            context: context,
+            builder: (context) => ServantFilterPage(
+              filterData: svtFilterData,
+              onChanged: (_) {
+                if (mounted) {
+                  setState(() {});
+                }
+              },
+              planMode: false,
+            ),
+          ),
         ),
       ],
     );

@@ -140,7 +140,10 @@ class _SkillSelectPageState extends State<SkillSelectPage> {
                   },
                 ),
                 DividerWithTitle(title: '4 - ${S.current.general_custom}', height: 16),
-                Material(color: Theme.of(context).cardColor, child: CustomSkillForm(skillData: skillData)),
+                Material(
+                  color: Theme.of(context).cardColor,
+                  child: CustomSkillForm(skillData: skillData),
+                ),
               ],
             ),
           ),
@@ -334,39 +337,38 @@ class _CustomSkillFormState extends State<CustomSkillForm> {
       title: Text(effect.popupText),
       horizontalTitleGap: 8,
       subtitle: subtitles.isEmpty ? null : Text(subtitles.join(' ')),
-      trailing:
-          !effect.useValue
-              ? Checkbox(
-                visualDensity: VisualDensity.compact,
-                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                value: effect.enabled,
-                onChanged: (v) {
-                  setState(() {
-                    if (v != null) effect.enabled = v;
-                  });
+      trailing: !effect.useValue
+          ? Checkbox(
+              visualDensity: VisualDensity.compact,
+              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              value: effect.enabled,
+              onChanged: (v) {
+                setState(() {
+                  if (v != null) effect.enabled = v;
+                });
+                widget.onChanged?.call();
+              },
+            )
+          : SizedBox(
+              width: 80,
+              child: TextFormField(
+                controller: getController(effect),
+                decoration: InputDecoration(
+                  isDense: true,
+                  suffixIcon: percentBase == null ? null : Text('%', style: Theme.of(context).textTheme.bodySmall),
+                  suffixIconConstraints: const BoxConstraints(),
+                ),
+                keyboardType: const TextInputType.numberWithOptions(decimal: true, signed: true),
+                textAlign: TextAlign.end,
+                onChanged: (s) {
+                  final v = effect.parseValue(s);
+                  if (v == null) return;
+                  effect.value = v;
+                  setState(() {});
                   widget.onChanged?.call();
                 },
-              )
-              : SizedBox(
-                width: 80,
-                child: TextFormField(
-                  controller: getController(effect),
-                  decoration: InputDecoration(
-                    isDense: true,
-                    suffixIcon: percentBase == null ? null : Text('%', style: Theme.of(context).textTheme.bodySmall),
-                    suffixIconConstraints: const BoxConstraints(),
-                  ),
-                  keyboardType: const TextInputType.numberWithOptions(decimal: true, signed: true),
-                  textAlign: TextAlign.end,
-                  onChanged: (s) {
-                    final v = effect.parseValue(s);
-                    if (v == null) return;
-                    effect.value = v;
-                    setState(() {});
-                    widget.onChanged?.call();
-                  },
-                ),
               ),
+            ),
     );
     if (widget.valueOnly) return header;
     return SimpleAccordion(

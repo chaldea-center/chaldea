@@ -54,13 +54,25 @@ mixin GameCardMixin implements RouteInfo {
     if (onTap == null && jumpToDetail) {
       if (this is Servant) {
         final instance = this as Servant;
-        onTap = () => router.push(url: instance.route, child: ServantDetailPage(svt: instance), detail: true);
+        onTap = () => router.push(
+          url: instance.route,
+          child: ServantDetailPage(svt: instance),
+          detail: true,
+        );
       } else if (this is CraftEssence) {
         final instance = this as CraftEssence;
-        onTap = () => router.push(url: instance.route, child: CraftDetailPage(ce: instance), detail: true);
+        onTap = () => router.push(
+          url: instance.route,
+          child: CraftDetailPage(ce: instance),
+          detail: true,
+        );
       } else if (this is CommandCode) {
         final instance = this as CommandCode;
-        onTap = () => router.push(url: instance.route, child: CmdCodeDetailPage(cc: instance), detail: true);
+        onTap = () => router.push(
+          url: instance.route,
+          child: CmdCodeDetailPage(cc: instance),
+          detail: true,
+        );
       } else if (this is BasicServant) {
         final instance = this as BasicServant;
         onTap = () => router.push(url: instance.routeIfItem);
@@ -123,7 +135,14 @@ mixin GameCardMixin implements RouteInfo {
       option: option,
     );
     if (name != null) {
-      child = Text.rich(TextSpan(children: [CenterWidgetSpan(child: child), TextSpan(text: ' $name ')]));
+      child = Text.rich(
+        TextSpan(
+          children: [
+            CenterWidgetSpan(child: child),
+            TextSpan(text: ' $name '),
+          ],
+        ),
+      );
     }
     if (onTap != null) {
       child = InkWell(onTap: onTap, child: child);
@@ -162,103 +181,97 @@ mixin GameCardMixin implements RouteInfo {
   }) {
     return anyCardItem(
       id: id,
-      onItem:
-          (item) => Item.iconBuilder(
-            context: context,
-            item: item,
-            icon: icon,
-            width: width,
-            height: height,
-            aspectRatio: aspectRatio,
-            text: text,
-            padding: padding,
-            onTap: onTap,
-            option: option,
-            jumpToDetail: jumpToDetail,
-            popDetail: popDetail,
-            name: name,
-            showName: showName,
-          ),
-      onSvt:
-          (svt) => svt.iconBuilder(
-            context: context,
-            overrideIcon: icon,
-            width: width,
-            height: height,
-            aspectRatio: aspectRatio,
-            text: text,
-            padding: padding,
-            onTap: onTap,
-            option: option,
-            jumpToDetail: jumpToDetail,
-            popDetail: popDetail,
-            name: name,
-            showName: showName,
-          ),
-      onCE:
-          (ce) => ce.iconBuilder(
-            context: context,
-            overrideIcon: icon,
-            width: width,
-            height: height,
-            aspectRatio: aspectRatio,
-            text: text,
-            padding: padding,
-            onTap: onTap,
-            option: option,
-            jumpToDetail: jumpToDetail,
-            popDetail: popDetail,
-            name: name,
-            showName: showName,
-          ),
-      onCC:
-          (cc) => cc.iconBuilder(
-            context: context,
-            overrideIcon: icon,
-            width: width,
-            height: height,
-            aspectRatio: aspectRatio,
-            text: text,
-            padding: padding,
-            onTap: onTap,
-            option: option,
-            jumpToDetail: jumpToDetail,
-            popDetail: popDetail,
-            name: name,
-            showName: showName,
-          ),
-      onBasicSvt:
-          (svt) => svt.iconBuilder(
-            context: context,
-            overrideIcon: icon,
-            width: width,
-            height: height,
-            aspectRatio: aspectRatio,
-            text: text,
-            padding: padding,
-            onTap: onTap,
-            option: option,
-            jumpToDetail: jumpToDetail,
-            popDetail: popDetail,
-            name: name,
-            showName: showName,
-          ),
-      onCostume:
-          (svt, costume) => svt.iconBuilder(
-            context: context,
-            width: width,
-            height: height,
-            aspectRatio: aspectRatio,
-            text: text,
-            padding: padding,
-            onTap: onTap ?? () => router.push(url: costume.route),
-            option: option,
-            jumpToDetail: jumpToDetail,
-            popDetail: popDetail,
-            overrideIcon: icon ?? costume.icon,
-            name: name ?? costume.lName.l,
-            showName: showName,
-          ),
+      onItem: (item) => Item.iconBuilder(
+        context: context,
+        item: item,
+        icon: icon,
+        width: width,
+        height: height,
+        aspectRatio: aspectRatio,
+        text: text,
+        padding: padding,
+        onTap: onTap,
+        option: option,
+        jumpToDetail: jumpToDetail,
+        popDetail: popDetail,
+        name: name,
+        showName: showName,
+      ),
+      onSvt: (svt) => svt.iconBuilder(
+        context: context,
+        overrideIcon: icon,
+        width: width,
+        height: height,
+        aspectRatio: aspectRatio,
+        text: text,
+        padding: padding,
+        onTap: onTap,
+        option: option,
+        jumpToDetail: jumpToDetail,
+        popDetail: popDetail,
+        name: name,
+        showName: showName,
+      ),
+      onCE: (ce) => ce.iconBuilder(
+        context: context,
+        overrideIcon: icon,
+        width: width,
+        height: height,
+        aspectRatio: aspectRatio,
+        text: text,
+        padding: padding,
+        onTap: onTap,
+        option: option,
+        jumpToDetail: jumpToDetail,
+        popDetail: popDetail,
+        name: name,
+        showName: showName,
+      ),
+      onCC: (cc) => cc.iconBuilder(
+        context: context,
+        overrideIcon: icon,
+        width: width,
+        height: height,
+        aspectRatio: aspectRatio,
+        text: text,
+        padding: padding,
+        onTap: onTap,
+        option: option,
+        jumpToDetail: jumpToDetail,
+        popDetail: popDetail,
+        name: name,
+        showName: showName,
+      ),
+      onBasicSvt: (svt) => svt.iconBuilder(
+        context: context,
+        overrideIcon: icon,
+        width: width,
+        height: height,
+        aspectRatio: aspectRatio,
+        text: text,
+        padding: padding,
+        onTap: onTap,
+        option: option,
+        jumpToDetail: jumpToDetail,
+        popDetail: popDetail,
+        name: name,
+        showName: showName,
+      ),
+      onCostume: (svt, costume) => svt.iconBuilder(
+        context: context,
+        width: width,
+        height: height,
+        aspectRatio: aspectRatio,
+        text: text,
+        padding: padding,
+        onTap: onTap ?? () => router.push(url: costume.route),
+        option: option,
+        jumpToDetail: jumpToDetail,
+        popDetail: popDetail,
+        overrideIcon: icon ?? costume.icon,
+        name: name ?? costume.lName.l,
+        showName: showName,
+      ),
       onDefault: () {
         if (onDefault != null) {
           final child = onDefault();

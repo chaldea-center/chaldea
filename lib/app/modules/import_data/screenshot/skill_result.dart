@@ -85,14 +85,14 @@ class _SkillResultTabState extends State<SkillResultTab> with ScrollControllerMi
         item.imgThumb == null
             ? const SizedBox(width: 56, height: 56)
             : InkWell(
-              child: Image.memory(item.imgThumb!, width: 56, height: 56),
-              onTap: () {
-                SimpleConfirmDialog(
-                  content: Image.memory(item.imgThumb!, width: 200),
-                  showCancel: false,
-                ).showDialog(context);
-              },
-            ),
+                child: Image.memory(item.imgThumb!, width: 56, height: 56),
+                onTap: () {
+                  SimpleConfirmDialog(
+                    content: Image.memory(item.imgThumb!, width: 200),
+                    showCancel: false,
+                  ).showDialog(context);
+                },
+              ),
         const SizedBox(width: 8),
         svt?.iconBuilder(context: context, width: 48) ?? db.getIconImage(null, width: 48),
         Expanded(
@@ -129,33 +129,31 @@ class _SkillResultTabState extends State<SkillResultTab> with ScrollControllerMi
               items: List.generate(12, (lv) {
                 return DropdownMenuItem(value: lv - 1, child: Text((lv - 1).toString()));
               }),
-              onChanged:
-                  widget.viewMode
-                      ? null
-                      : (v) {
-                        setState(() {
-                          if (v != null && v >= 0) item.setSkill(index, v);
-                        });
-                      },
+              onChanged: widget.viewMode
+                  ? null
+                  : (v) {
+                      setState(() {
+                        if (v != null && v >= 0) item.setSkill(index, v);
+                      });
+                    },
             ),
         ], divider: const Text(' / ')),
         Checkbox(
           value: item.checked,
-          onChanged:
-              item.valid
-                  ? (v) {
-                    if (v == true) {
-                      for (final detail in result.details) {
-                        if (detail.svtId == item.svtId && detail.valid) {
-                          detail.checked = detail == item;
-                        }
+          onChanged: item.valid
+              ? (v) {
+                  if (v == true) {
+                    for (final detail in result.details) {
+                      if (detail.svtId == item.svtId && detail.valid) {
+                        detail.checked = detail == item;
                       }
-                    } else if (v == false) {
-                      item.checked = false;
                     }
-                    setState(() {});
+                  } else if (v == false) {
+                    item.checked = false;
                   }
-                  : null,
+                  setState(() {});
+                }
+              : null,
         ),
       ],
     );

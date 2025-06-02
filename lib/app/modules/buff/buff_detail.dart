@@ -62,13 +62,21 @@ class _BuffDetailPageState extends State<BuffDetailPage>
           minFontSize: 10,
           overflow: TextOverflow.fade,
         ),
-        actions: [dropdownRegion(shownNone: widget.buff != null), popupMenu],
-        bottom:
-            data == null
-                ? null
-                : FixedHeight.tabBar(
-                  TabBar(controller: controller, tabs: const [Tab(text: "Info"), Tab(text: 'Func')]),
+        actions: [
+          dropdownRegion(shownNone: widget.buff != null),
+          popupMenu,
+        ],
+        bottom: data == null
+            ? null
+            : FixedHeight.tabBar(
+                TabBar(
+                  controller: controller,
+                  tabs: const [
+                    Tab(text: "Info"),
+                    Tab(text: 'Func'),
+                  ],
                 ),
+              ),
       ),
       body: buildBody(context),
     );
@@ -99,18 +107,17 @@ class _BuffDetailPageState extends State<BuffDetailPage>
                     ),
                   );
                 },
-                contentBuilder:
-                    (context) => Padding(
-                      padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
-                      child: DecoratedBox(
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Theme.of(context).hintColor, width: 0.75),
-                          borderRadius: BorderRadius.circular(5),
-                        ),
-                        position: DecorationPosition.foreground,
-                        child: BuffActionInfoTable(action: buffAction),
-                      ),
+                contentBuilder: (context) => Padding(
+                  padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Theme.of(context).hintColor, width: 0.75),
+                      borderRadius: BorderRadius.circular(5),
                     ),
+                    position: DecorationPosition.foreground,
+                    child: BuffActionInfoTable(action: buffAction),
+                  ),
+                ),
               ),
             ],
           ],
@@ -165,7 +172,11 @@ class BuffInfoTable extends StatelessWidget {
                   context: context,
                   text: '${buff.type.name}\n${Transl.buffType(buff.type).l}',
                   onTap: () {
-                    router.push(url: Routes.buffs, child: BuffListPage(type: buff.type), detail: false);
+                    router.push(
+                      url: Routes.buffs,
+                      child: BuffListPage(type: buff.type),
+                      detail: false,
+                    );
                   },
                 ),
                 textAlign: TextAlign.center,
@@ -191,14 +202,13 @@ class BuffInfoTable extends StatelessWidget {
           children: [
             TableCellData(text: S.current.buff_check_self, isHeader: true),
             TableCellData(
-              child:
-                  buff.ckSelfIndv.isEmpty
-                      ? const Text('-')
-                      : SharedBuilder.traitList(
-                        context: context,
-                        traits: buff.ckSelfIndv,
-                        useAndJoin: buff.script.checkIndvTypeAnd == true,
-                      ),
+              child: buff.ckSelfIndv.isEmpty
+                  ? const Text('-')
+                  : SharedBuilder.traitList(
+                      context: context,
+                      traits: buff.ckSelfIndv,
+                      useAndJoin: buff.script.checkIndvTypeAnd == true,
+                    ),
               flex: 3,
             ),
           ],
@@ -207,14 +217,13 @@ class BuffInfoTable extends StatelessWidget {
           children: [
             TableCellData(text: S.current.buff_check_opponent, isHeader: true),
             TableCellData(
-              child:
-                  buff.ckOpIndv.isEmpty
-                      ? const Text('-')
-                      : SharedBuilder.traitList(
-                        context: context,
-                        traits: buff.ckOpIndv,
-                        useAndJoin: buff.script.checkIndvTypeAnd == true,
-                      ),
+              child: buff.ckOpIndv.isEmpty
+                  ? const Text('-')
+                  : SharedBuilder.traitList(
+                      context: context,
+                      traits: buff.ckOpIndv,
+                      useAndJoin: buff.script.checkIndvTypeAnd == true,
+                    ),
               flex: 3,
             ),
           ],
@@ -309,7 +318,10 @@ class BuffInfoTable extends StatelessWidget {
                           context: context,
                           text: Transl.buffType(e).l,
                           onTap: () {
-                            router.push(url: Routes.buffs, child: BuffListPage(type: e));
+                            router.push(
+                              url: Routes.buffs,
+                              child: BuffListPage(type: e),
+                            );
                           },
                         ),
                       ),
@@ -366,24 +378,25 @@ class BuffInfoTable extends StatelessWidget {
         spans.add(
           TextSpan(
             text: value,
-            style:
-                detail.damageRate > 1000
-                    ? const TextStyle(color: Colors.red)
-                    : detail.damageRate < 1000
-                    ? const TextStyle(color: Colors.blue)
-                    : null,
+            style: detail.damageRate > 1000
+                ? const TextStyle(color: Colors.red)
+                : detail.damageRate < 1000
+                ? const TextStyle(color: Colors.blue)
+                : null,
           ),
         );
         tooltip += ': $value';
-        final suffix =
-            {
-              // ClassRelationOverwriteType.overwriteForce: '',
-              ClassRelationOverwriteType.overwriteMoreThanTarget: '↑',
-              ClassRelationOverwriteType.overwriteLessThanTarget: '↓',
-            }[detail.type];
+        final suffix = {
+          // ClassRelationOverwriteType.overwriteForce: '',
+          ClassRelationOverwriteType.overwriteMoreThanTarget: '↑',
+          ClassRelationOverwriteType.overwriteLessThanTarget: '↓',
+        }[detail.type];
         if (suffix != null) {
           spans.add(
-            TextSpan(text: suffix, style: TextStyle(fontSize: 12, color: Theme.of(context).textTheme.bodySmall?.color)),
+            TextSpan(
+              text: suffix,
+              style: TextStyle(fontSize: 12, color: Theme.of(context).textTheme.bodySmall?.color),
+            ),
           );
           tooltip += suffix;
         }
@@ -468,7 +481,10 @@ class BuffInfoTable extends StatelessWidget {
     }
     return InkWell(
       onTap: buff?.routeTo,
-      child: Text.rich(TextSpan(children: spans), style: TextStyle(color: AppTheme(context).tertiaryContainer)),
+      child: Text.rich(
+        TextSpan(children: spans),
+        style: TextStyle(color: AppTheme(context).tertiaryContainer),
+      ),
     );
   }
 
@@ -657,7 +673,11 @@ class BuffActionInfoTable extends StatelessWidget {
               context: context,
               text: ' [${type.name}] ${Transl.buffType(type).l}',
               onTap: () {
-                router.push(url: Routes.buffs, child: BuffListPage(type: type), detail: false);
+                router.push(
+                  url: Routes.buffs,
+                  child: BuffListPage(type: type),
+                  detail: false,
+                );
               },
             ),
           ],
@@ -666,7 +686,10 @@ class BuffActionInfoTable extends StatelessWidget {
     }
     yield CustomTableRow.fromChildren(
       children: [
-        Text.rich(TextSpan(children: divideList(spans, const TextSpan(text: '\n'))), textAlign: TextAlign.center),
+        Text.rich(
+          TextSpan(children: divideList(spans, const TextSpan(text: '\n'))),
+          textAlign: TextAlign.center,
+        ),
       ],
     );
   }

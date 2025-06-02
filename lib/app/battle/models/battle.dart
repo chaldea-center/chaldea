@@ -107,10 +107,9 @@ class BattleData {
   BattleServantData? get targetedEnemy =>
       onFieldEnemies.length > enemyTargetIndex && enemyTargetIndex >= 0 ? onFieldEnemies[enemyTargetIndex] : null;
 
-  BattleServantData? get targetedPlayer =>
-      onFieldAllyServants.length > playerTargetIndex && playerTargetIndex >= 0
-          ? onFieldAllyServants[playerTargetIndex]
-          : null;
+  BattleServantData? get targetedPlayer => onFieldAllyServants.length > playerTargetIndex && playerTargetIndex >= 0
+      ? onFieldAllyServants[playerTargetIndex]
+      : null;
 
   BattleServantData? getTargetedAlly(final BattleServantData? svt, {bool defaultToPlayer = true}) {
     return svt?.isPlayer ?? defaultToPlayer ? targetedPlayer : targetedEnemy;
@@ -133,10 +132,9 @@ class BattleData {
   List<BattleServantData> get nonnullAllActors => [...nonnullActors, ...nonnullBackupEnemies, ...nonnullBackupPlayers];
 
   BattleServantData? getServantData(int uniqueId, {bool onFieldOnly = false}) {
-    final targets =
-        onFieldOnly
-            ? [...onFieldAllyServants, ...onFieldEnemies]
-            : [...onFieldAllyServants, ...onFieldEnemies, ...backupAllyServants, ...backupEnemies];
+    final targets = onFieldOnly
+        ? [...onFieldAllyServants, ...onFieldEnemies]
+        : [...onFieldAllyServants, ...onFieldEnemies, ...backupAllyServants, ...backupEnemies];
     return targets.firstWhereOrNull((e) => e?.uniqueId == uniqueId);
   }
 
@@ -292,11 +290,11 @@ class BattleData {
       return svtSetting == null || svtSetting.svt == null
           ? null
           : BattleServantData.fromPlayerSvtData(
-            svtSetting,
-            getNextUniqueId(),
-            startingPosition: idx + 1,
-            isUseGrandBoard: isUseGrandBoard,
-          );
+              svtSetting,
+              getNextUniqueId(),
+              startingPosition: idx + 1,
+              isUseGrandBoard: isUseGrandBoard,
+            );
     });
     await _fetchWaveEnemies();
 
@@ -623,12 +621,11 @@ class BattleData {
             backupEnemies.length = enemy.deckId;
           }
 
-          final actor =
-              backupEnemies[enemy.deckId - 1] = BattleServantData.fromEnemy(
-                enemy,
-                getNextUniqueId(),
-                niceQuest?.war?.eventId,
-              );
+          final actor = backupEnemies[enemy.deckId - 1] = BattleServantData.fromEnemy(
+            enemy,
+            getNextUniqueId(),
+            niceQuest?.war?.eventId,
+          );
           if (options.simulateEnemy) {
             await actor.loadEnemySvtData(this);
           }
@@ -824,10 +821,9 @@ class BattleData {
 
   Future<void> _acquireTarget(int? svtIndex, int skillIndex, BattleSkillInfoData? skillInfo) async {
     if (!options.manualAllySkillTarget) return;
-    skillInfo ??=
-        svtIndex == null
-            ? masterSkillInfo.getOrNull(skillIndex)
-            : onFieldAllyServants.getOrNull(svtIndex)?.skillInfoList.getOrNull(skillIndex);
+    skillInfo ??= svtIndex == null
+        ? masterSkillInfo.getOrNull(skillIndex)
+        : onFieldAllyServants.getOrNull(svtIndex)?.skillInfoList.getOrNull(skillIndex);
     if (skillInfo == null) return;
     final curSkill = skillInfo.skill;
     if (curSkill == null) return;
@@ -974,8 +970,8 @@ class BattleData {
         final CardType firstCardType =
             // mightyChain=after 7th Anni, invalid first card can provide bonus
             actions.isNotEmpty && (options.mightyChain || actions.first.isValid(this))
-                ? actions.first.cardData.cardType
-                : CardType.blank;
+            ? actions.first.cardData.cardType
+            : CardType.blank;
         await _applyColorChainFunction(chainType, actions);
 
         for (final action in actions) {
@@ -1614,14 +1610,12 @@ class BattleData {
     final String funcString;
     if (curFunc != null && mounted) {
       final function = curFunc!;
-      final fieldTraitString =
-          function.funcquestTvals.isNotEmpty
-              ? ' - ${S.current.battle_require_field_traits} ${function.funcquestTvals.map((e) => e.shownName()).toList()}'
-              : '';
-      final targetTraitString =
-          function.functvals.isNotEmpty
-              ? ' - ${S.current.battle_require_opponent_traits} ${function.functvals.map((e) => e.shownName()).toList()}'
-              : '';
+      final fieldTraitString = function.funcquestTvals.isNotEmpty
+          ? ' - ${S.current.battle_require_field_traits} ${function.funcquestTvals.map((e) => e.shownName()).toList()}'
+          : '';
+      final targetTraitString = function.functvals.isNotEmpty
+          ? ' - ${S.current.battle_require_opponent_traits} ${function.functvals.map((e) => e.shownName()).toList()}'
+          : '';
       funcString =
           '${function.lPopupText.l}'
           '$fieldTraitString'
@@ -1633,38 +1627,37 @@ class BattleData {
   }
 
   void pushSnapshot() {
-    final BattleData copy =
-        BattleData()
-          ..niceQuest = niceQuest
-          ..curStage = curStage
-          ..fieldAi = fieldAi
-          ..enemyOnFieldCount = enemyOnFieldCount
-          ..enemyValidAppear = enemyValidAppear.toList()
-          ..backupEnemies = backupEnemies.map((e) => e?.copy()).toList()
-          ..backupAllyServants = backupAllyServants.map((e) => e?.copy()).toList()
-          ..onFieldEnemies = onFieldEnemies.map((e) => e?.copy()).toList()
-          ..onFieldAllyServants = onFieldAllyServants.map((e) => e?.copy()).toList()
-          ..enemyDecks = enemyDecks
-          ..enemyTargetIndex = enemyTargetIndex
-          ..playerTargetIndex = playerTargetIndex
-          ..fieldBuffs = fieldBuffs.map((e) => e.copy()).toList()
-          ..mysticCode = mysticCode
-          ..mysticCodeLv = mysticCodeLv
-          ..masterSkillInfo = masterSkillInfo.map((e) => e.copy()).toList()
-          ..isFirstSkillInTurn = isFirstSkillInTurn
-          ..isPlayerTurn = isPlayerTurn
-          ..waveCount = waveCount
-          ..turnCount = turnCount
-          ..totalTurnCount = totalTurnCount
-          ..criticalStars = criticalStars
-          .._uniqueIndex = _uniqueIndex
-          ..cardDealt = cardDealt
-          ..currentCards = currentCards.toSet()
-          ..remainingCards = remainingCards.toSet()
-          ..options = options.copy()
-          ..recorder = recorder.copy()
-          ..replayDataRecord = replayDataRecord.copy()
-          ..deadAttackCommandDict = deadAttackCommandDict.map((key, value) => MapEntry(key, value.copy()));
+    final BattleData copy = BattleData()
+      ..niceQuest = niceQuest
+      ..curStage = curStage
+      ..fieldAi = fieldAi
+      ..enemyOnFieldCount = enemyOnFieldCount
+      ..enemyValidAppear = enemyValidAppear.toList()
+      ..backupEnemies = backupEnemies.map((e) => e?.copy()).toList()
+      ..backupAllyServants = backupAllyServants.map((e) => e?.copy()).toList()
+      ..onFieldEnemies = onFieldEnemies.map((e) => e?.copy()).toList()
+      ..onFieldAllyServants = onFieldAllyServants.map((e) => e?.copy()).toList()
+      ..enemyDecks = enemyDecks
+      ..enemyTargetIndex = enemyTargetIndex
+      ..playerTargetIndex = playerTargetIndex
+      ..fieldBuffs = fieldBuffs.map((e) => e.copy()).toList()
+      ..mysticCode = mysticCode
+      ..mysticCodeLv = mysticCodeLv
+      ..masterSkillInfo = masterSkillInfo.map((e) => e.copy()).toList()
+      ..isFirstSkillInTurn = isFirstSkillInTurn
+      ..isPlayerTurn = isPlayerTurn
+      ..waveCount = waveCount
+      ..turnCount = turnCount
+      ..totalTurnCount = totalTurnCount
+      ..criticalStars = criticalStars
+      .._uniqueIndex = _uniqueIndex
+      ..cardDealt = cardDealt
+      ..currentCards = currentCards.toSet()
+      ..remainingCards = remainingCards.toSet()
+      ..options = options.copy()
+      ..recorder = recorder.copy()
+      ..replayDataRecord = replayDataRecord.copy()
+      ..deadAttackCommandDict = deadAttackCommandDict.map((key, value) => MapEntry(key, value.copy()));
 
     snapshots.add(copy);
   }

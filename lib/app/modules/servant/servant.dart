@@ -98,8 +98,9 @@ class ServantDetailPageState extends State<ServantDetailPage> with SingleTickerP
 
   List<Widget> _sliverBuilder(BuildContext context, bool innerBoxIsScrolled) {
     final ascensions = svt.extraAssets.charaGraph.ascension;
-    final asc =
-        db.userData.svtAscensionIcon == -1 && svt.isUserSvt ? svt.status.cur.ascension : db.userData.svtAscensionIcon;
+    final asc = db.userData.svtAscensionIcon == -1 && svt.isUserSvt
+        ? svt.status.cur.ascension
+        : db.userData.svtAscensionIcon;
     final ascension = ascensions?[asc] ?? ascensions?.values.toList().getOrNull(0);
     return [
       SliverAppBar(
@@ -108,10 +109,9 @@ class ServantDetailPageState extends State<ServantDetailPage> with SingleTickerP
           if (svt.isUserSvt)
             db.onUserData(
               (context, _) => IconButton(
-                icon:
-                    status.favorite
-                        ? const Icon(Icons.favorite, color: Colors.redAccent)
-                        : const Icon(Icons.favorite_border),
+                icon: status.favorite
+                    ? const Icon(Icons.favorite, color: Colors.redAccent)
+                    : const Icon(Icons.favorite_border),
                 tooltip: S.current.favorite,
                 onPressed: () {
                   setState(() {
@@ -156,7 +156,10 @@ class ServantDetailPageState extends State<ServantDetailPage> with SingleTickerP
                     ),
                   ),
                 ),
-              Padding(padding: const EdgeInsets.only(top: kToolbarHeight - 8), child: SafeArea(child: header)),
+              Padding(
+                padding: const EdgeInsets.only(top: kToolbarHeight - 8),
+                child: SafeArea(child: header),
+              ),
             ],
           ),
         ),
@@ -244,58 +247,57 @@ class ServantDetailPageState extends State<ServantDetailPage> with SingleTickerP
           ],
         ),
       ),
-      trailing:
-          !svt.isUserSvt
-              ? null
-              : SizedBox(
-                height: 64,
-                child: db.onUserData(
-                  (context, _) => Tooltip(
-                    message: S.current.priority,
-                    child: DropdownButton<int>(
-                      value: status.priority,
-                      itemHeight: 64,
-                      items: List.generate(5, (index) {
-                        final icons = [
-                          Icons.looks_5_outlined,
-                          Icons.looks_4_outlined,
-                          Icons.looks_3_outlined,
-                          Icons.looks_two_outlined,
-                          Icons.looks_one_outlined,
-                        ];
-                        final int priority = 5 - index;
-                        return DropdownMenuItem(
-                          value: priority,
-                          child: SizedBox(
-                            width: 40,
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Icon(icons[index], color: AppTheme(context).tertiary),
-                                AutoSizeText(
-                                  db.settings.priorityTags[priority] ?? '',
-                                  overflow: TextOverflow.visible,
-                                  minFontSize: 6,
-                                  maxFontSize: 12,
-                                  textAlign: TextAlign.center,
-                                  maxLines: 2,
-                                ),
-                              ],
-                            ),
+      trailing: !svt.isUserSvt
+          ? null
+          : SizedBox(
+              height: 64,
+              child: db.onUserData(
+                (context, _) => Tooltip(
+                  message: S.current.priority,
+                  child: DropdownButton<int>(
+                    value: status.priority,
+                    itemHeight: 64,
+                    items: List.generate(5, (index) {
+                      final icons = [
+                        Icons.looks_5_outlined,
+                        Icons.looks_4_outlined,
+                        Icons.looks_3_outlined,
+                        Icons.looks_two_outlined,
+                        Icons.looks_one_outlined,
+                      ];
+                      final int priority = 5 - index;
+                      return DropdownMenuItem(
+                        value: priority,
+                        child: SizedBox(
+                          width: 40,
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(icons[index], color: AppTheme(context).tertiary),
+                              AutoSizeText(
+                                db.settings.priorityTags[priority] ?? '',
+                                overflow: TextOverflow.visible,
+                                minFontSize: 6,
+                                maxFontSize: 12,
+                                textAlign: TextAlign.center,
+                                maxLines: 2,
+                              ),
+                            ],
                           ),
-                        );
-                      }),
-                      onChanged: (v) {
-                        status.priority = v ?? status.priority;
-                        svt.updateStat();
-                        db.notifyUserdata();
-                      },
-                      underline: Container(),
-                      icon: Container(),
-                    ),
+                        ),
+                      );
+                    }),
+                    onChanged: (v) {
+                      status.priority = v ?? status.priority;
+                      svt.updateStat();
+                      db.notifyUserdata();
+                    },
+                    underline: Container(),
+                    icon: Container(),
                   ),
                 ),
               ),
+            ),
     );
   }
 
@@ -337,35 +339,31 @@ class ServantDetailPageState extends State<ServantDetailPage> with SingleTickerP
         return _SubTabInfo(
           tab: tab,
           tabBuilder: () => S.current.skill,
-          viewBuilder:
-              (ctx) => TransformSvtProfileTabber(
-                svt: svt,
-                builder: (context, svt, overwriteData) => SvtSkillTab(svt: svt, overwriteViewData: overwriteData),
-              ),
+          viewBuilder: (ctx) => TransformSvtProfileTabber(
+            svt: svt,
+            builder: (context, svt, overwriteData) => SvtSkillTab(svt: svt, overwriteViewData: overwriteData),
+          ),
         );
       case SvtTab.np:
         if (svt.noblePhantasms.isEmpty) return null;
         return _SubTabInfo(
           tab: tab,
           tabBuilder: () => S.current.noble_phantasm,
-          viewBuilder:
-              (ctx) => TransformSvtProfileTabber(
-                svt: svt,
-                builder: (context, svt, overwriteData) => SvtTdTab(svt: svt, overwriteViewData: overwriteData),
-              ),
+          viewBuilder: (ctx) => TransformSvtProfileTabber(
+            svt: svt,
+            builder: (context, svt, overwriteData) => SvtTdTab(svt: svt, overwriteViewData: overwriteData),
+          ),
         );
       case SvtTab.info:
         return _SubTabInfo(
           tab: tab,
           tabBuilder: () => S.current.svt_basic_info,
-          viewBuilder:
-              (ctx) =>
-                  svt.type == SvtType.heroine
-                      ? SvtInfoTab(svt: svt)
-                      : TransformSvtProfileTabber(
-                        svt: svt,
-                        builder: (context, svt, overwriteData) => SvtInfoTab(svt: svt),
-                      ),
+          viewBuilder: (ctx) => svt.type == SvtType.heroine
+              ? SvtInfoTab(svt: svt)
+              : TransformSvtProfileTabber(
+                  svt: svt,
+                  builder: (context, svt, overwriteData) => SvtInfoTab(svt: svt),
+                ),
         );
       case SvtTab.spDmg:
         if (const [SvtType.combineMaterial, SvtType.statusUp, SvtType.servantEquip].contains(svt.type)) {
@@ -374,11 +372,12 @@ class ServantDetailPageState extends State<ServantDetailPage> with SingleTickerP
         return _SubTabInfo(
           tab: tab,
           tabBuilder: () => S.current.super_effective_damage,
-          viewBuilder:
-              (ctx) =>
-                  svt.type == SvtType.heroine
-                      ? SvtSpDmgTab(svt: svt)
-                      : TransformSvtProfileTabber(svt: svt, builder: (context, svt, _) => SvtSpDmgTab(svt: svt)),
+          viewBuilder: (ctx) => svt.type == SvtType.heroine
+              ? SvtSpDmgTab(svt: svt)
+              : TransformSvtProfileTabber(
+                  svt: svt,
+                  builder: (context, svt, _) => SvtSpDmgTab(svt: svt),
+                ),
         );
       case SvtTab.lore:
         if (svt.originalCollectionNo == 0 && svt.profile.comments.isEmpty) {
@@ -422,12 +421,20 @@ class ServantDetailPageState extends State<ServantDetailPage> with SingleTickerP
         );
       case SvtTab.voice:
         if (svt.collectionNo == 0 && svt.profile.voices.isEmpty) return null;
-        return _SubTabInfo(tab: tab, tabBuilder: () => S.current.voice, viewBuilder: (ctx) => SvtVoiceTab(svt: svt));
+        return _SubTabInfo(
+          tab: tab,
+          tabBuilder: () => S.current.voice,
+          viewBuilder: (ctx) => SvtVoiceTab(svt: svt),
+        );
       case SvtTab.quest:
         if (svt.relateQuestIds.isEmpty && svt.trialQuestIds.isEmpty) {
           return null;
         }
-        return _SubTabInfo(tab: tab, tabBuilder: () => S.current.quest, viewBuilder: (ctx) => SvtQuestTab(svt: svt));
+        return _SubTabInfo(
+          tab: tab,
+          tabBuilder: () => S.current.quest,
+          viewBuilder: (ctx) => SvtQuestTab(svt: svt),
+        );
     }
     return null;
   }
@@ -518,7 +525,9 @@ class ServantDetailPageState extends State<ServantDetailPage> with SingleTickerP
                     }
                     return SimpleConfirmDialog(
                       title: Text(S.current.svt_ascension_icon),
-                      content: SingleChildScrollView(child: Column(mainAxisSize: MainAxisSize.min, children: children)),
+                      content: SingleChildScrollView(
+                        child: Column(mainAxisSize: MainAxisSize.min, children: children),
+                      ),
                       showOk: false,
                       actions: [
                         TextButton(

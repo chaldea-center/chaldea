@@ -53,7 +53,10 @@ class Buff with RouteInfo {
   String get route => Routes.buffI(id);
   @override
   void routeTo({Widget? child, bool popDetails = false, Region? region}) {
-    return super.routeTo(child: child ?? BuffDetailPage(buff: this, region: region), popDetails: popDetails);
+    return super.routeTo(
+      child: child ?? BuffDetailPage(buff: this, region: region),
+      popDetails: popDetails,
+    );
   }
 
   Transl<String, String> get lName => Transl.buffNames(name.isEmpty ? type.name : name);
@@ -505,15 +508,14 @@ enum BuffType {
 
 final Map<BuffType, BuffValueTriggerType Function(DataVals)> kBuffValueTriggerTypes = () {
   final types = <BuffType, BuffValueTriggerType Function(DataVals)>{
-    BuffType.counterFunction:
-        (v) => BuffValueTriggerType(buffType: BuffType.counterFunction, skill: v.CounterId, level: v.CounterLv ?? 0),
-    BuffType.npattackPrevBuff:
-        (v) => BuffValueTriggerType(
-          buffType: BuffType.npattackPrevBuff,
-          skill: v.SkillID,
-          level: v.SkillLV,
-          position: v.Value,
-        ),
+    BuffType.counterFunction: (v) =>
+        BuffValueTriggerType(buffType: BuffType.counterFunction, skill: v.CounterId, level: v.CounterLv ?? 0),
+    BuffType.npattackPrevBuff: (v) => BuffValueTriggerType(
+      buffType: BuffType.npattackPrevBuff,
+      skill: v.SkillID,
+      level: v.SkillLV,
+      position: v.Value,
+    ),
   };
 
   for (final type in {
@@ -566,8 +568,8 @@ final Map<FuncType, BuffValueTriggerType Function(DataVals)> kFuncValueTriggerTy
   final types = <FuncType, BuffValueTriggerType Function(DataVals)>{};
 
   for (final type in {FuncType.generateBattleSkillDrop}) {
-    types[type] =
-        (v) => BuffValueTriggerType(buffType: null, funcType: type, skill: v.Value, level: v.Value2, rate: v.UseRate);
+    types[type] = (v) =>
+        BuffValueTriggerType(buffType: null, funcType: type, skill: v.Value, level: v.Value2, rate: v.UseRate);
   }
 
   return types;

@@ -40,10 +40,9 @@ class _ExtraMissionTabState extends State<ExtraMissionTab> {
         }
         final cond = mission.conds.firstWhereOrNull((cond) => cond.missionProgressType == MissionProgressType.clear);
         Widget title;
-        final style =
-            hasNoDate || plan.isInRange(mission.startedAt)
-                ? null
-                : TextStyle(color: Theme.of(context).textTheme.bodySmall?.color, fontStyle: FontStyle.italic);
+        final style = hasNoDate || plan.isInRange(mission.startedAt)
+            ? null
+            : TextStyle(color: Theme.of(context).textTheme.bodySmall?.color, fontStyle: FontStyle.italic);
         if (cond == null) {
           title = Text('${mission.dispNo} - ${mission.name}', style: style, textScaler: const TextScaler.linear(0.8));
         } else {

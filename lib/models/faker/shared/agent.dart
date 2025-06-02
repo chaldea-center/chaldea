@@ -404,14 +404,13 @@ abstract class FakerAgent<
           if (supportSvtIds.isNotEmpty && !supportSvtIds.contains(svt.svtId)) {
             continue;
           }
-          Set<int> followerEquipIds =
-              {
-                if (supportEquipMaxLimitBreak && svt.equipTarget1?.limitCount == 4) svt.equipTarget1?.svtId,
-                if (isUseGrandBoard) ...[
-                  if (supportEquipMaxLimitBreak && svt.equipTarget2?.limitCount == 4) svt.equipTarget2?.svtId,
-                  if (supportEquipMaxLimitBreak && svt.equipTarget3?.limitCount == 4) svt.equipTarget3?.svtId,
-                ],
-              }.whereType<int>().toSet();
+          Set<int> followerEquipIds = {
+            if (supportEquipMaxLimitBreak && svt.equipTarget1?.limitCount == 4) svt.equipTarget1?.svtId,
+            if (isUseGrandBoard) ...[
+              if (supportEquipMaxLimitBreak && svt.equipTarget2?.limitCount == 4) svt.equipTarget2?.svtId,
+              if (supportEquipMaxLimitBreak && svt.equipTarget3?.limitCount == 4) svt.equipTarget3?.svtId,
+            ],
+          }.whereType<int>().toSet();
           if (followerEquipIds.isEmpty) continue;
           if (followerEquipIds.isNotEmpty && supportEquipIds.toSet().intersection(followerEquipIds).isEmpty) {
             continue;
@@ -505,17 +504,18 @@ abstract class FakerAgent<
         raidResults.add(BattleRaidResult(uniqueId: enemy.uniqueId, day: raidDay, addDamage: userSvt.hp));
       }
       final callDeckEnemies = battleInfo.callDeck.expand((e) => e.svts).toList();
-      List<int> calledEnemyUniqueIdArray =
-          callDeckEnemies.where((e) => e.dropInfos.isNotEmpty).map((e) => e.uniqueId).toList();
+      List<int> calledEnemyUniqueIdArray = callDeckEnemies
+          .where((e) => e.dropInfos.isNotEmpty)
+          .map((e) => e.uniqueId)
+          .toList();
       calledEnemyUniqueIdArray = callDeckEnemies.map((e) => e.uniqueId).toList();
       // final itemDroppedSkillShiftEnemies =
       //     battleInfo.shiftDeck.expand((e) => e.svts).where((e) => e.dropInfos.isNotEmpty).toList();
-      final skillShiftEnemies =
-          [
-            ...battleInfo.enemyDeck,
-            ...battleInfo.callDeck,
-            ...battleInfo.shiftDeck,
-          ].expand((e) => e.svts).where((e) => e.enemyScript?.containsKey('skillShift') == true).toList();
+      final skillShiftEnemies = [
+        ...battleInfo.enemyDeck,
+        ...battleInfo.callDeck,
+        ...battleInfo.shiftDeck,
+      ].expand((e) => e.svts).where((e) => e.enemyScript?.containsKey('skillShift') == true).toList();
       if (skillShiftEnemies.isNotEmpty) {
         throw SilentException('skillShift not supported');
       }

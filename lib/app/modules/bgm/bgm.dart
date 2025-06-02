@@ -52,7 +52,10 @@ class _BgmDetailPageState extends State<BgmDetailPage> {
             ),
           ],
         ),
-        if (!Transl.isJP) CustomTableRow(children: [TableCellData(text: bgm.name, textAlign: TextAlign.center)]),
+        if (!Transl.isJP)
+          CustomTableRow(
+            children: [TableCellData(text: bgm.name, textAlign: TextAlign.center)],
+          ),
         // if (!Transl.isEN)
         //   CustomTableRow(children: [
         //     TableCellData(text: bgm.lName.na, textAlign: TextAlign.center)
@@ -66,14 +69,13 @@ class _BgmDetailPageState extends State<BgmDetailPage> {
           CustomTableRow(
             children: [
               TableCellData(
-                child:
-                    bgmEntity.shop?.cost == null
-                        ? const Text('-')
-                        : Item.iconBuilder(
-                          context: context,
-                          item: bgmEntity.shop!.cost!.item,
-                          text: bgmEntity.shop!.cost!.amount.format(),
-                        ),
+                child: bgmEntity.shop?.cost == null
+                    ? const Text('-')
+                    : Item.iconBuilder(
+                        context: context,
+                        item: bgmEntity.shop!.cost!.item,
+                        text: bgmEntity.shop!.cost!.amount.format(),
+                      ),
               ),
             ],
           ),

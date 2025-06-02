@@ -120,12 +120,11 @@ class NiceFunction with RouteInfo implements BaseFunction {
 
   DataVals getStaticVal({bool levelOnly = false, bool ocOnly = false}) {
     assert(!levelOnly || !ocOnly);
-    final _vals =
-        levelOnly
-            ? svals
-            : ocOnly
-            ? ocVals(0)
-            : allDataVals;
+    final _vals = levelOnly
+        ? svals
+        : ocOnly
+        ? ocVals(0)
+        : allDataVals;
 
     List<Map<String, dynamic>> allVals = _vals.map((e) => e.toJson()).toList();
     if (allVals.isEmpty) return DataVals();
@@ -151,12 +150,11 @@ class NiceFunction with RouteInfo implements BaseFunction {
     staticVals ??= getStaticVal(levelOnly: levelOnly, ocOnly: ocOnly);
     final staticKeys = staticVals.toJson().keys.toSet();
     List<DataVals> valList = [];
-    final _svals =
-        levelOnly
-            ? svals
-            : ocOnly
-            ? ocVals(0)
-            : crossVals;
+    final _svals = levelOnly
+        ? svals
+        : ocOnly
+        ? ocVals(0)
+        : crossVals;
     for (int i = 0; i < svals.length; i++) {
       final val = _svals.getOrNull(i);
       if (val != null) {
@@ -259,22 +257,21 @@ class NiceFunction with RouteInfo implements BaseFunction {
     GameData? gameData,
   }) {
     gameData ??= db.gameData;
-    List<T> filteredFuncs =
-        funcs
-            .where((func) {
-              if (!showNone && func.funcType == FuncType.none) return false;
-              if (func.funcTargetTeam == FuncApplyTarget.playerAndEnemy) {
-                return true;
-              }
-              bool player = func.funcTargetTeam == FuncApplyTarget.player;
-              if (func.funcTargetType.isEnemy) {
-                player = !player;
-              }
-              return player ? showPlayer : showEnemy;
-            })
-            .toList()
-            .cast<T>()
-            .toList(); // avoid type cast error
+    List<T> filteredFuncs = funcs
+        .where((func) {
+          if (!showNone && func.funcType == FuncType.none) return false;
+          if (func.funcTargetTeam == FuncApplyTarget.playerAndEnemy) {
+            return true;
+          }
+          bool player = func.funcTargetTeam == FuncApplyTarget.player;
+          if (func.funcTargetType.isEnemy) {
+            player = !player;
+          }
+          return player ? showPlayer : showEnemy;
+        })
+        .toList()
+        .cast<T>()
+        .toList(); // avoid type cast error
     if (!includeTrigger) return filteredFuncs;
     for (final func in List.of(filteredFuncs)) {
       if (func is! NiceFunction) continue;
@@ -312,8 +309,9 @@ class NiceFunction with RouteInfo implements BaseFunction {
     if (func.buffs.isEmpty) return;
     final trigger = kBuffValueTriggerTypes[func.buffs.first.type]?.call(func.svals.first);
     if (trigger == null) return;
-    final SkillOrTd? skill =
-        func.svals.first.UseTreasureDevice == 1 ? gameData.baseTds[trigger.skill] : gameData.baseSkills[trigger.skill];
+    final SkillOrTd? skill = func.svals.first.UseTreasureDevice == 1
+        ? gameData.baseTds[trigger.skill]
+        : gameData.baseSkills[trigger.skill];
     if (skill == null) return;
     yield* filterFuncs<T>(
       funcs: skill.functions.cast(),
@@ -400,7 +398,10 @@ class BaseFunction with RouteInfo {
 
   @override
   void routeTo({Widget? child, bool popDetails = false, Region? region}) {
-    return super.routeTo(child: child ?? FuncDetailPage(func: this, region: region), popDetails: popDetails);
+    return super.routeTo(
+      child: child ?? FuncDetailPage(func: this, region: region),
+      popDetails: popDetails,
+    );
   }
 
   Map<String, dynamic> toJson() => _$BaseFunctionToJson(this);

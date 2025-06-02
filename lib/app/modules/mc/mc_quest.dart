@@ -73,7 +73,9 @@ class _MCQuestConvertPageState extends State<MCQuestConvertPage> {
                     ),
                   ),
                 colorPicker,
-                Card(child: Padding(padding: const EdgeInsets.all(8), child: Text(parser.result))),
+                Card(
+                  child: Padding(padding: const EdgeInsets.all(8), child: Text(parser.result)),
+                ),
               ],
             ),
           ),
@@ -82,12 +84,11 @@ class _MCQuestConvertPageState extends State<MCQuestConvertPage> {
               alignment: MainAxisAlignment.center,
               children: [
                 FilledButton(
-                  onPressed:
-                      parser.result.isEmpty
-                          ? null
-                          : () {
-                            copyToClipboard(parser.result, toast: true);
-                          },
+                  onPressed: parser.result.isEmpty
+                      ? null
+                      : () {
+                          copyToClipboard(parser.result, toast: true);
+                        },
                   child: Text(S.current.copy),
                 ),
                 FilledButton(onPressed: () => _jumpToMooncell(quest), child: const Text("跳转到Mooncell")),
@@ -119,14 +120,13 @@ class _MCQuestConvertPageState extends State<MCQuestConvertPage> {
           title: const Text('提取颜色'),
           subtitle: Text(parser.bannerColor == null ? '未加载' : parser.bannerColor!.toCSSHex()),
           tileColor: parser.bannerColor,
-          trailing:
-              parser.cropTitleBanner == null
-                  ? null
-                  : Container(
-                    decoration: BoxDecoration(border: Border.all(color: Colors.white)),
-                    constraints: const BoxConstraints(maxWidth: 180),
-                    child: Image.memory(parser.cropTitleBanner!),
-                  ),
+          trailing: parser.cropTitleBanner == null
+              ? null
+              : Container(
+                  decoration: BoxDecoration(border: Border.all(color: Colors.white)),
+                  constraints: const BoxConstraints(maxWidth: 180),
+                  child: Image.memory(parser.cropTitleBanner!),
+                ),
         ),
       ],
     );
@@ -166,13 +166,12 @@ class _MCQuestListConvertPageState extends State<MCQuestListConvertPage> {
     try {
       int finished = 0;
       EasyLoading.show(status: '$finished/${converters.length}...');
-      List<Future> futures =
-          converters.map((converter) async {
-            converter.useTitleBg = _useBgColor;
-            await converter.loadAndConvert(widget.quests);
-            finished += 1;
-            EasyLoading.show(status: '$finished/${converters.length}...');
-          }).toList();
+      List<Future> futures = converters.map((converter) async {
+        converter.useTitleBg = _useBgColor;
+        await converter.loadAndConvert(widget.quests);
+        finished += 1;
+        EasyLoading.show(status: '$finished/${converters.length}...');
+      }).toList();
       await Future.wait(futures);
       await Future.delayed(const Duration(milliseconds: 50));
       EasyLoading.dismiss();
@@ -257,7 +256,9 @@ class _MCQuestListConvertPageState extends State<MCQuestListConvertPage> {
                     loadData();
                   },
                 ),
-                Card(child: Padding(padding: const EdgeInsets.all(8), child: Text(result))),
+                Card(
+                  child: Padding(padding: const EdgeInsets.all(8), child: Text(result)),
+                ),
               ],
             ),
           ),
@@ -434,10 +435,9 @@ class _MCQuestConverter extends McConverter {
 
     String chapter = "";
     if (quest.type == QuestType.main) {
-      chapter =
-          quest.chapterSubStr.isEmpty && quest.chapterSubId != 0
-              ? S.current.quest_chapter_n(quest.chapterSubId)
-              : Transl.questNames(quest.chapterSubStr).l;
+      chapter = quest.chapterSubStr.isEmpty && quest.chapterSubId != 0
+          ? S.current.quest_chapter_n(quest.chapterSubId)
+          : Transl.questNames(quest.chapterSubStr).l;
       if (chapter.isEmpty) {
         chapter = nameCn ?? quest.name;
         final match = RegExp(r'^(第\S{1,2}[節节]) \S').firstMatch(chapter);
@@ -903,8 +903,10 @@ void _jumpToMooncell(Quest quest, {String? anchor}) {
   String? mcLink;
   bool subpage = true;
   if (quest.type == QuestType.friendship || quest.warId == WarId.rankup) {
-    mcLink =
-        db.gameData.servantsNoDup.values.firstWhereOrNull((e) => e.relateQuestIds.contains(quest.id))?.extra.mcLink;
+    mcLink = db.gameData.servantsNoDup.values
+        .firstWhereOrNull((e) => e.relateQuestIds.contains(quest.id))
+        ?.extra
+        .mcLink;
   } else if (quest.war?.isMainStory == true) {
     mcLink = quest.war?.extra.mcLink;
   } else if (quest.war?.eventReal != null) {

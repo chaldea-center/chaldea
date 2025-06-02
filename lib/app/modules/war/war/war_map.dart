@@ -89,34 +89,30 @@ class _WarMapPageState extends State<WarMapPage> {
         title: Text('${S.current.war_map} ${map.id}'),
         actions: [
           IconButton(
-            onPressed:
-                map.mapImageW == 0 || map.mapImageH == 0
-                    ? null
-                    : () async {
-                      EasyLoading.show(status: 'Rendering...');
-                      final bytes = await ImageUtil.recordCanvas(
-                        width: map.mapImageW,
-                        height: map.mapImageH,
-                        paint: (canvas, size) {
-                          final painter = getPainter(size);
-                          painter.paint(canvas, size);
-                        },
-                      );
-                      EasyLoading.dismiss();
-                      if (bytes == null) {
-                        EasyLoading.showError(S.current.error);
-                        return;
-                      }
-                      if (!context.mounted) return;
-                      ImageActions.showSaveShare(
-                        context: context,
-                        data: bytes,
-                        destFp: joinPaths(
-                          db.paths.downloadDir,
-                          'WarMap${map.id}-${DateTime.now().toSafeFileName()}.png',
-                        ),
-                      );
-                    },
+            onPressed: map.mapImageW == 0 || map.mapImageH == 0
+                ? null
+                : () async {
+                    EasyLoading.show(status: 'Rendering...');
+                    final bytes = await ImageUtil.recordCanvas(
+                      width: map.mapImageW,
+                      height: map.mapImageH,
+                      paint: (canvas, size) {
+                        final painter = getPainter(size);
+                        painter.paint(canvas, size);
+                      },
+                    );
+                    EasyLoading.dismiss();
+                    if (bytes == null) {
+                      EasyLoading.showError(S.current.error);
+                      return;
+                    }
+                    if (!context.mounted) return;
+                    ImageActions.showSaveShare(
+                      context: context,
+                      data: bytes,
+                      destFp: joinPaths(db.paths.downloadDir, 'WarMap${map.id}-${DateTime.now().toSafeFileName()}.png'),
+                    );
+                  },
             icon: const Icon(Icons.save_outlined),
             tooltip: S.current.save,
           ),
@@ -214,7 +210,9 @@ class _WarMapPageState extends State<WarMapPage> {
         if (!_showFilter) return mapWidget;
         return ListView(
           children: [
-            ClipRect(child: SizedBox(width: constraints.maxWidth, height: size.height, child: mapWidget)),
+            ClipRect(
+              child: SizedBox(width: constraints.maxWidth, height: size.height, child: mapWidget),
+            ),
             DividerWithTitle(title: S.current.filter, indent: 16, padding: const EdgeInsets.symmetric(vertical: 8)),
             WarMapFilter(
               filterData: filterData,
@@ -277,10 +275,9 @@ class _WarMapPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final painter =
-        Paint()
-          ..isAntiAlias = true
-          ..filterQuality = FilterQuality.high;
+    final painter = Paint()
+      ..isAntiAlias = true
+      ..filterQuality = FilterQuality.high;
     final bgScale = size.width / map.mapImageW;
     // resize to aspect ratio
     size = Size(size.width, size.width / map.mapImageW * map.mapImageH);

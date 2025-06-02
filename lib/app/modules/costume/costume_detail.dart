@@ -47,9 +47,13 @@ class CostumeDetailPage extends StatelessWidget {
                     ],
                   ),
                   if (!Transl.isJP)
-                    CustomTableRow(children: [TableCellData(text: costume.name, textAlign: TextAlign.center)]),
+                    CustomTableRow(
+                      children: [TableCellData(text: costume.name, textAlign: TextAlign.center)],
+                    ),
                   if (!Transl.isEN)
-                    CustomTableRow(children: [TableCellData(text: costume.lName.na, textAlign: TextAlign.center)]),
+                    CustomTableRow(
+                      children: [TableCellData(text: costume.lName.na, textAlign: TextAlign.center)],
+                    ),
                   CustomTableRow(
                     children: [
                       TableCellData(text: 'No. ${costume.costumeCollectionNo}'),
@@ -70,28 +74,26 @@ class CostumeDetailPage extends StatelessWidget {
         CustomTableRow(
           children: [
             TableCellData(
-              child:
-                  unlockMats == null
-                      ? const Text('-')
-                      : Wrap(
-                        spacing: 4,
-                        runSpacing: 2,
-                        alignment: WrapAlignment.center,
-                        children:
-                            unlockMats
-                                .toItemDict()
-                                .entries
-                                .map(
-                                  (e) => Item.iconBuilder(
-                                    context: context,
-                                    itemId: e.key,
-                                    text: e.value.format(),
-                                    width: 44,
-                                    item: null,
-                                  ),
-                                )
-                                .toList(),
-                      ),
+              child: unlockMats == null
+                  ? const Text('-')
+                  : Wrap(
+                      spacing: 4,
+                      runSpacing: 2,
+                      alignment: WrapAlignment.center,
+                      children: unlockMats
+                          .toItemDict()
+                          .entries
+                          .map(
+                            (e) => Item.iconBuilder(
+                              context: context,
+                              itemId: e.key,
+                              text: e.value.format(),
+                              width: 44,
+                              item: null,
+                            ),
+                          )
+                          .toList(),
+                    ),
             ),
           ],
         ),

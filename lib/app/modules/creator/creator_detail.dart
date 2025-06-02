@@ -57,13 +57,23 @@ class CreatorDetail extends StatelessWidget {
         CustomTableRow(
           children: [
             TableCellData(
-              child: Text(lName().l, style: const TextStyle(fontWeight: FontWeight.bold), textAlign: TextAlign.center),
+              child: Text(
+                lName().l,
+                style: const TextStyle(fontWeight: FontWeight.bold),
+                textAlign: TextAlign.center,
+              ),
               isHeader: true,
             ),
           ],
         ),
-        if (!Transl.isJP) CustomTableRow(children: [TableCellData(text: _name, textAlign: TextAlign.center)]),
-        if (!Transl.isEN) CustomTableRow(children: [TableCellData(text: lName().na, textAlign: TextAlign.center)]),
+        if (!Transl.isJP)
+          CustomTableRow(
+            children: [TableCellData(text: _name, textAlign: TextAlign.center)],
+          ),
+        if (!Transl.isEN)
+          CustomTableRow(
+            children: [TableCellData(text: lName().na, textAlign: TextAlign.center)],
+          ),
         if (subCreators.length > 1) ...[
           CustomTableRow.fromTexts(texts: const ['Related'], isHeader: true),
           CustomTableRow.fromChildren(

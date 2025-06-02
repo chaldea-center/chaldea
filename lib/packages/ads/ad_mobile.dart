@@ -57,12 +57,11 @@ class AppAdImpl implements AppAdInterface {
   int _appOpenAdLoadedCount = 0;
 
   void loadAppOpenAd() {
-    final adUnitId =
-        PlatformU.isAndroid
-            ? AdOptions.appOpen.androidId
-            : PlatformU.isIOS
-            ? AdOptions.appOpen.iosId
-            : null;
+    final adUnitId = PlatformU.isAndroid
+        ? AdOptions.appOpen.androidId
+        : PlatformU.isIOS
+        ? AdOptions.appOpen.iosId
+        : null;
     if (adUnitId == null) return;
     if (!db.settings.display.ad.shouldShowAppOpen) return;
     print("loading app open ad $adUnitId...");
@@ -157,12 +156,11 @@ class _BannerAdWidgetState extends State<_BannerAdWidget> {
   BannerAd? _bannerAd;
   bool _isLoaded = false;
 
-  String? get adUnitId =>
-      PlatformU.isAndroid
-          ? widget.options.androidId
-          : PlatformU.isIOS
-          ? widget.options.iosId
-          : null;
+  String? get adUnitId => PlatformU.isAndroid
+      ? widget.options.androidId
+      : PlatformU.isIOS
+      ? widget.options.iosId
+      : null;
 
   @override
   void initState() {
@@ -226,7 +224,11 @@ class _BannerAdWidgetState extends State<_BannerAdWidget> {
     }
     return AnimatedSwitcher(
       duration: const Duration(milliseconds: 800),
-      child: SizedBox(width: ad.size.width.toDouble(), height: ad.size.height.toDouble(), child: AdWidget(ad: ad)),
+      child: SizedBox(
+        width: ad.size.width.toDouble(),
+        height: ad.size.height.toDouble(),
+        child: AdWidget(ad: ad),
+      ),
     );
   }
 }

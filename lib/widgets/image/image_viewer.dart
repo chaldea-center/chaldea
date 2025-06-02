@@ -98,7 +98,11 @@ class CachedImage extends StatefulWidget {
         if (width.isFinite) width = min(width, 50);
         if (width.isFinite) {
           return Center(
-            child: SizedBox(width: width, height: width, child: const Center(child: CircularProgressIndicator())),
+            child: SizedBox(
+              width: width,
+              height: width,
+              child: const Center(child: CircularProgressIndicator()),
+            ),
           );
         } else {
           return const Center(child: CircularProgressIndicator());
@@ -108,7 +112,10 @@ class CachedImage extends StatefulWidget {
   }
 
   static Widget defaultErrorWidget(BuildContext context, String? url, dynamic error) {
-    return Padding(padding: const EdgeInsets.all(10), child: Image(image: db.errorImage));
+    return Padding(
+      padding: const EdgeInsets.all(10),
+      child: Image(image: db.errorImage),
+    );
   }
 
   static Widget sizeChild({required Widget child, double? width, double? height, double? aspectRatio}) {
@@ -182,22 +189,21 @@ class _CachedImageState extends State<CachedImage> {
         Navigator.of(context).push(
           PageRouteBuilder(
             opaque: false,
-            pageBuilder:
-                (context, _, _) => FullscreenImageViewer(
-                  children: [
-                    CachedImage(
-                      imageUrl: widget.imageUrl,
-                      cacheDir: widget.cacheDir,
-                      cacheName: widget.cacheName,
-                      showSaveOnLongPress: true,
-                      placeholder: widget.placeholder,
-                      // cachedOption: widget.cachedOption,
-                      // photoViewOption: widget.photoViewOption,
-                      viewFullOnTap: false,
-                      onTap: null,
-                    ),
-                  ],
+            pageBuilder: (context, _, _) => FullscreenImageViewer(
+              children: [
+                CachedImage(
+                  imageUrl: widget.imageUrl,
+                  cacheDir: widget.cacheDir,
+                  cacheName: widget.cacheName,
+                  showSaveOnLongPress: true,
+                  placeholder: widget.placeholder,
+                  // cachedOption: widget.cachedOption,
+                  // photoViewOption: widget.photoViewOption,
+                  viewFullOnTap: false,
+                  onTap: null,
                 ),
+              ],
+            ),
           ),
         );
       };
@@ -292,10 +298,9 @@ class _CachedImageState extends State<CachedImage> {
           if (uri != null && uri.pathSegments.isNotEmpty) {
             fn = UriX.tryDecodeComponent(uri.pathSegments.last) ?? uri.pathSegments.last;
           }
-          fn ??=
-              bytes == null
-                  ? '${const Uuid().v4()}.png'
-                  : '${const Uuid().v5(Namespace.url.value, sha1.convert(bytes).toString())}.png';
+          fn ??= bytes == null
+              ? '${const Uuid().v4()}.png'
+              : '${const Uuid().v5(Namespace.url.value, sha1.convert(bytes).toString())}.png';
           ImageActions.showSaveShare(
             context: context,
             data: bytes,
@@ -373,29 +378,30 @@ class _CachedImageState extends State<CachedImage> {
     return SizedBox(
       width: widget.width,
       height: widget.height,
-      child:
-          network.available && url.isNotEmpty ? CachedImage.defaultProgressPlaceholder(context, url) : const SizedBox(),
+      child: network.available && url.isNotEmpty
+          ? CachedImage.defaultProgressPlaceholder(context, url)
+          : const SizedBox(),
     );
   }
 
   Widget _withOcto(BuildContext context, ImageProvider image) {
     return OctoImage(
       image: image,
-      imageBuilder:
-          cachedOption.imageBuilder == null ? null : (context, _) => cachedOption.imageBuilder!(context, image),
+      imageBuilder: cachedOption.imageBuilder == null
+          ? null
+          : (context, _) => cachedOption.imageBuilder!(context, image),
       placeholderBuilder: (context) => _withPlaceholder(context, widget.imageUrl ?? ''),
-      progressIndicatorBuilder:
-          cachedOption.progressIndicatorBuilder == null
-              ? null
-              : (context, progress) => cachedOption.progressIndicatorBuilder!(
-                context,
+      progressIndicatorBuilder: cachedOption.progressIndicatorBuilder == null
+          ? null
+          : (context, progress) => cachedOption.progressIndicatorBuilder!(
+              context,
+              widget.imageUrl ?? "",
+              DownloadProgress(
                 widget.imageUrl ?? "",
-                DownloadProgress(
-                  widget.imageUrl ?? "",
-                  progress?.expectedTotalBytes,
-                  progress?.cumulativeBytesLoaded ?? 0,
-                ),
+                progress?.expectedTotalBytes,
+                progress?.cumulativeBytesLoaded ?? 0,
               ),
+            ),
       errorBuilder: (context, e, s) => _withError(context, widget.imageUrl ?? ""),
       fadeOutDuration: cachedOption.fadeOutDuration,
       fadeOutCurve: cachedOption.fadeOutCurve,

@@ -92,12 +92,11 @@ class FilePickerU {
     String? fp;
     fp = await _withPicking<String?>(
       showError: true,
-      task:
-          () => FilePicker.platform.saveFile(
-            fileName: filename,
-            initialDirectory: saveFolder,
-            bytes: Uint8List.fromList(data),
-          ),
+      task: () => FilePicker.platform.saveFile(
+        fileName: filename,
+        initialDirectory: saveFolder,
+        bytes: Uint8List.fromList(data),
+      ),
     );
     if (fp == null) return;
     final file = File(fp);

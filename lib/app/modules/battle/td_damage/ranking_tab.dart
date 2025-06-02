@@ -115,16 +115,17 @@ class _TdDmgRankingTabState extends State<TdDmgRankingTab> {
           final errors = widget.solver.errors;
           if (errors.isEmpty) return const SizedBox.shrink();
           return SimpleAccordion(
-            headerBuilder:
-                (context, _) => ListTile(
-                  dense: true,
-                  title: Text(
-                    '${errors.length} ${S.current.error}',
-                    style: TextStyle(color: Theme.of(context).colorScheme.error),
-                  ),
-                ),
+            headerBuilder: (context, _) => ListTile(
+              dense: true,
+              title: Text(
+                '${errors.length} ${S.current.error}',
+                style: TextStyle(color: Theme.of(context).colorScheme.error),
+              ),
+            ),
             contentBuilder: (context) {
-              return Card(child: Padding(padding: const EdgeInsets.all(8), child: Text(errors.join('\n\n'))));
+              return Card(
+                child: Padding(padding: const EdgeInsets.all(8), child: Text(errors.join('\n\n'))),
+              );
             },
           );
         }
@@ -133,17 +134,15 @@ class _TdDmgRankingTabState extends State<TdDmgRankingTab> {
         return SimpleAccordion(
           key: Key('Ranking_${index}_${result.svt.id}'),
           headerBuilder: (context, _) => headerBuilder(rank, result),
-          contentBuilder:
-              (context) => _ResultDetail(
-                key: Key('ResultDetail_${index}_${_sortType}_${result.svt.id}'),
-                result: result,
-                tab:
-                    result.hasInstantDeathSuccess
-                        ? _ParamType.instantDeath
-                        : _sortType.isNp
-                        ? _ParamType.refund
-                        : _ParamType.damage,
-              ),
+          contentBuilder: (context) => _ResultDetail(
+            key: Key('ResultDetail_${index}_${_sortType}_${result.svt.id}'),
+            result: result,
+            tab: result.hasInstantDeathSuccess
+                ? _ParamType.instantDeath
+                : _sortType.isNp
+                ? _ParamType.refund
+                : _ParamType.damage,
+          ),
         );
       },
     );
@@ -222,10 +221,9 @@ class _ResultDetailState extends State<_ResultDetail> {
     List<Widget> children = [
       FilterGroup<_ParamType>(
         combined: true,
-        options:
-            widget.result.hasInstantDeath
-                ? _ParamType.values
-                : (_ParamType.values.toList()..remove(_ParamType.instantDeath)),
+        options: widget.result.hasInstantDeath
+            ? _ParamType.values
+            : (_ParamType.values.toList()..remove(_ParamType.instantDeath)),
         values: FilterRadioData.nonnull(tab),
         optionBuilder: (v) => Text(v.shownName),
         onFilterChanged: (v, _) {

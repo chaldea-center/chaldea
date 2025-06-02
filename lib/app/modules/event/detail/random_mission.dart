@@ -127,14 +127,12 @@ class _EventRandomMissionsPageState extends State<EventRandomMissionsPage> {
           ),
         );
       },
-      contentBuilder:
-          (context) => Padding(
-            padding: const EdgeInsetsDirectional.only(start: 24, end: 16),
-            child:
-                mission == null
-                    ? Text('Mission ${randomMission.missionId} Not Found')
-                    : MissionCondsDescriptor(mission: mission, missions: widget.event.missions),
-          ),
+      contentBuilder: (context) => Padding(
+        padding: const EdgeInsetsDirectional.only(start: 24, end: 16),
+        child: mission == null
+            ? Text('Mission ${randomMission.missionId} Not Found')
+            : MissionCondsDescriptor(mission: mission, missions: widget.event.missions),
+      ),
     );
   }
 

@@ -239,7 +239,12 @@ void main() async {
 
       battle.onFieldAllyServants[0]!.addBuff(
         BuffData(
-          Buff(id: -1, name: '', detail: '', vals: [NiceTrait(id: Trait.cantBeSacrificed.value)]),
+          Buff(
+            id: -1,
+            name: '',
+            detail: '',
+            vals: [NiceTrait(id: Trait.cantBeSacrificed.value)],
+          ),
           DataVals(),
           1,
         ),
@@ -1189,10 +1194,9 @@ void main() async {
     });
 
     test('transformSvt 304800 asc 11', () async {
-      final playerSvtData =
-          PlayerSvtData.id(304800)
-            ..lv = 90
-            ..limitCount = 304830;
+      final playerSvtData = PlayerSvtData.id(304800)
+        ..lv = 90
+        ..limitCount = 304830;
       for (final skillNum in kActiveSkillNums) {
         final List<NiceSkill> shownSkills = BattleUtils.getShownSkills(
           playerSvtData.svt!,
@@ -1217,10 +1221,9 @@ void main() async {
     });
 
     test('transformSvt preserve CD & upgrades', () async {
-      final playerSvtData =
-          PlayerSvtData.id(600700)
-            ..lv = 70
-            ..setSkillStrengthenLvs([1, 1, 1]);
+      final playerSvtData = PlayerSvtData.id(600700)
+        ..lv = 70
+        ..setSkillStrengthenLvs([1, 1, 1]);
       final List<PlayerSvtData> setting = [playerSvtData];
       final battle = BattleData();
       await battle.init(db.gameData.questPhases[9300040603]!, setting, null);

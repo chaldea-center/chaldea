@@ -62,42 +62,43 @@ class _SvtClassInfoPageState extends State<SvtClassInfoPage> {
             padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
             child: Wrap(
               alignment: WrapAlignment.center,
-              children:
-                  rarities
-                      .map((e) => SvtClassX.clsIcon(clsId, e, info?.iconImageId))
-                      .toSet()
-                      .map(
-                        (e) => CachedImage(
-                          imageUrl: e,
-                          height: 48,
-                          showSaveOnLongPress: true,
-                          placeholder: (context, url) => const SizedBox.shrink(),
-                        ),
-                      )
-                      .toList(),
+              children: rarities
+                  .map((e) => SvtClassX.clsIcon(clsId, e, info?.iconImageId))
+                  .toSet()
+                  .map(
+                    (e) => CachedImage(
+                      imageUrl: e,
+                      height: 48,
+                      showSaveOnLongPress: true,
+                      placeholder: (context, url) => const SizedBox.shrink(),
+                    ),
+                  )
+                  .toList(),
             ),
           ),
           CustomTable(
             children: [
               CustomTableRow.fromTexts(texts: const ['ID', 'Class'], isHeader: true),
               CustomTableRow(
-                children: [TableCellData(text: clsId.toString()), TableCellData(text: Transl.svtClassId(clsId).l)],
+                children: [
+                  TableCellData(text: clsId.toString()),
+                  TableCellData(text: Transl.svtClassId(clsId).l),
+                ],
               ),
               CustomTableRow.fromTexts(texts: const ['Attack Rate', 'Trait'], isHeader: true),
               CustomTableRow(
                 children: [
                   TableCellData(text: _fmt(info?.attackRate)),
                   TableCellData(
-                    child:
-                        info == null || info.individuality == 0
-                            ? const Text('')
-                            : Text.rich(
-                              SharedBuilder.textButtonSpan(
-                                context: context,
-                                text: Transl.trait(info.individuality).l,
-                                onTap: () => router.push(url: Routes.traitI(info.individuality)),
-                              ),
+                    child: info == null || info.individuality == 0
+                        ? const Text('')
+                        : Text.rich(
+                            SharedBuilder.textButtonSpan(
+                              context: context,
+                              text: Transl.trait(info.individuality).l,
+                              onTap: () => router.push(url: Routes.traitI(info.individuality)),
                             ),
+                          ),
                   ),
                 ],
               ),
@@ -108,20 +109,22 @@ class _SvtClassInfoPageState extends State<SvtClassInfoPage> {
           if (cardImages.isNotEmpty)
             Padding(
               padding: const EdgeInsetsDirectional.only(start: 16),
-              child:
-                  ExtraAssetsPage.oneGroup(
-                    'Class Card',
-                    cardImages,
-                    300,
-                    expanded: true,
-                    showMerge: true,
-                    transform: (child, url) {
-                      if (url.contains('beyond.fate-go.jp')) {
-                        return Transform.rotate(angle: pi / 2, child: AspectRatio(aspectRatio: 1, child: child));
-                      }
-                      return child;
-                    },
-                  )!,
+              child: ExtraAssetsPage.oneGroup(
+                'Class Card',
+                cardImages,
+                300,
+                expanded: true,
+                showMerge: true,
+                transform: (child, url) {
+                  if (url.contains('beyond.fate-go.jp')) {
+                    return Transform.rotate(
+                      angle: pi / 2,
+                      child: AspectRatio(aspectRatio: 1, child: child),
+                    );
+                  }
+                  return child;
+                },
+              )!,
             ),
         ],
       ),
@@ -172,9 +175,8 @@ class _SvtClassInfoPageState extends State<SvtClassInfoPage> {
             SvtClassX.clsIcon(clsId, 5, info?.iconImageId),
             height: 24,
             aspectRatio: 1,
-            errorWidget:
-                (context, url, error) =>
-                    Text(_clsId.toString(), style: TextStyle(fontSize: 10), textAlign: TextAlign.center),
+            errorWidget: (context, url, error) =>
+                Text(_clsId.toString(), style: TextStyle(fontSize: 10), textAlign: TextAlign.center),
           ),
         ),
       ),
@@ -192,11 +194,10 @@ class _SvtClassInfoPageState extends State<SvtClassInfoPage> {
         if (relations[key]![relationId] != null) key: relations[key]![relationId]!,
     };
     final _allRelationIds = {...attackRates.keys, ...defenseRates.keys};
-    final allClasses =
-        <int>{
-          ...clsInfos.values.where((e) => _allRelationIds.contains(e.relationId)).map((e) => e.id),
-          ...SvtClassX.regularAll.map((e) => e.value),
-        }.toList();
+    final allClasses = <int>{
+      ...clsInfos.values.where((e) => _allRelationIds.contains(e.relationId)).map((e) => e.id),
+      ...SvtClassX.regularAll.map((e) => e.value),
+    }.toList();
     allClasses.sort2((e) => -(db.gameData.constData.classInfo[e]?.priority ?? -1));
     allClasses.sortByList((e) => [clsInfos[e]?.supportGroup ?? 999, -(clsInfos[e]?.priority ?? -1), e]);
     return LayoutBuilder(

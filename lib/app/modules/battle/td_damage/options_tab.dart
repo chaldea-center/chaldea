@@ -47,9 +47,8 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
             children: [
               ValueListenableBuilder(
                 valueListenable: widget.solver.running,
-                builder:
-                    (context, value, child) =>
-                        ElevatedButton(onPressed: value ? null : widget.onStart, child: Text(S.current.calculate)),
+                builder: (context, value, child) =>
+                    ElevatedButton(onPressed: value ? null : widget.onStart, child: Text(S.current.calculate)),
               ),
             ],
           ),
@@ -254,7 +253,10 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
           value: options.region,
           items: [
             for (final region in Region.values)
-              DropdownMenuItem(value: region, child: Text(region.localName, textScaler: const TextScaler.linear(0.9))),
+              DropdownMenuItem(
+                value: region,
+                child: Text(region.localName, textScaler: const TextScaler.linear(0.9)),
+              ),
           ],
           onChanged: (v) {
             setState(() {
@@ -272,7 +274,10 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
           value: options.usePlayerSvt,
           items: [
             for (final source in PreferPlayerSvtDataSource.values)
-              DropdownMenuItem(value: source, child: Text(source.shownName, textScaler: const TextScaler.linear(0.9))),
+              DropdownMenuItem(
+                value: source,
+                child: Text(source.shownName, textScaler: const TextScaler.linear(0.9)),
+              ),
           ],
           onChanged: (v) {
             setState(() {
@@ -294,14 +299,13 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
                 child: Text(lv == SvtLv.maxLv ? 'Lv.MAX' : 'Lv.${lv.lv}', textScaler: const TextScaler.linear(0.9)),
               ),
           ],
-          onChanged:
-              !options.usePlayerSvt.isNone
-                  ? null
-                  : (v) {
-                    setState(() {
-                      if (v != null) options.svtLv = v;
-                    });
-                  },
+          onChanged: !options.usePlayerSvt.isNone
+              ? null
+              : (v) {
+                  setState(() {
+                    if (v != null) options.svtLv = v;
+                  });
+                },
         ),
       ),
       SliderWithPrefix(
@@ -329,14 +333,13 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
           isDense: true,
           value: options.tdR5,
           items: List.generate(5, (index) => DropdownMenuItem(value: index + 1, child: Text('Lv.${index + 1}'))),
-          onChanged:
-              !options.usePlayerSvt.isNone
-                  ? null
-                  : (v) {
-                    setState(() {
-                      if (v != null) options.tdR5 = v;
-                    });
-                  },
+          onChanged: !options.usePlayerSvt.isNone
+              ? null
+              : (v) {
+                  setState(() {
+                    if (v != null) options.tdR5 = v;
+                  });
+                },
         ),
       ),
       ListTile(
@@ -347,14 +350,13 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
           value: options.tdR4,
           isDense: true,
           items: List.generate(5, (index) => DropdownMenuItem(value: index + 1, child: Text('Lv.${index + 1}'))),
-          onChanged:
-              !options.usePlayerSvt.isNone
-                  ? null
-                  : (v) {
-                    setState(() {
-                      if (v != null) options.tdR4 = v;
-                    });
-                  },
+          onChanged: !options.usePlayerSvt.isNone
+              ? null
+              : (v) {
+                  setState(() {
+                    if (v != null) options.tdR4 = v;
+                  });
+                },
         ),
       ),
       ListTile(
@@ -366,14 +368,13 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
           isDense: true,
           value: options.tdR3,
           items: List.generate(5, (index) => DropdownMenuItem(value: index + 1, child: Text('Lv.${index + 1}'))),
-          onChanged:
-              !options.usePlayerSvt.isNone
-                  ? null
-                  : (v) {
-                    setState(() {
-                      if (v != null) options.tdR3 = v;
-                    });
-                  },
+          onChanged: !options.usePlayerSvt.isNone
+              ? null
+              : (v) {
+                  setState(() {
+                    if (v != null) options.tdR3 = v;
+                  });
+                },
         ),
       ),
       kIndentDivider,
@@ -409,13 +410,12 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
         trailing: DropdownButton<PreferClassBoardDataSource>(
           isDense: true,
           value: options.classBoard,
-          items:
-              PreferClassBoardDataSource.values.map((source) {
-                return DropdownMenuItem(
-                  value: source,
-                  child: Text(source.shownName, textScaler: const TextScaler.linear(0.9)),
-                );
-              }).toList(),
+          items: PreferClassBoardDataSource.values.map((source) {
+            return DropdownMenuItem(
+              value: source,
+              child: Text(source.shownName, textScaler: const TextScaler.linear(0.9)),
+            );
+          }).toList(),
           onChanged: (v) {
             setState(() {
               if (v != null) options.classBoard = v;
@@ -573,7 +573,10 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
           trailing = Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
-            children: [ce.iconBuilder(context: context, width: 36), Text(' Lv.${options.ceLv}')],
+            children: [
+              ce.iconBuilder(context: context, width: 36),
+              Text(' Lv.${options.ceLv}'),
+            ],
           );
         }
         return ListTile(
@@ -677,7 +680,10 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
           trailing = Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
-            children: [mc.iconBuilder(context: context, width: 36), Text(' Lv.${options.mcLv}')],
+            children: [
+              mc.iconBuilder(context: context, width: 36),
+              Text(' Lv.${options.mcLv}'),
+            ],
           );
         }
         return ListTile(
@@ -833,7 +839,10 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
                       value: skillLv,
                       items: [
                         for (int lv = 1; lv <= maxLv; lv++)
-                          DropdownMenuItem(value: lv, child: Text('Lv.$lv', style: const TextStyle(fontSize: 14))),
+                          DropdownMenuItem(
+                            value: lv,
+                            child: Text('Lv.$lv', style: const TextStyle(fontSize: 14)),
+                          ),
                       ],
                       onChanged: (v) {
                         setState(() {
@@ -859,7 +868,9 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
           rows.add(SkillDescriptor(skill: skill));
         }
 
-        return Card(child: Column(mainAxisSize: MainAxisSize.min, children: rows));
+        return Card(
+          child: Column(mainAxisSize: MainAxisSize.min, children: rows),
+        );
       },
     );
   }
@@ -871,19 +882,17 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
       horizontalTitleGap: 8,
       contentPadding: const EdgeInsetsDirectional.only(start: 16),
       title: Text(S.current.event),
-      subtitle:
-          options.warId <= 0
-              ? null
-              : Text(db.gameData.wars[options.warId]?.lShortName.setMaxLines(1) ?? "War ${options.warId}"),
+      subtitle: options.warId <= 0
+          ? null
+          : Text(db.gameData.wars[options.warId]?.lShortName.setMaxLines(1) ?? "War ${options.warId}"),
       trailing: IconButton(
-        onPressed:
-            options.warId == 0
-                ? null
-                : () {
-                  setState(() {
-                    options.warId = 0;
-                  });
-                },
+        onPressed: options.warId == 0
+            ? null
+            : () {
+                setState(() {
+                  options.warId = 0;
+                });
+              },
         icon: const Icon(Icons.clear),
         iconSize: 18,
         tooltip: S.current.clear,
@@ -913,10 +922,9 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
           dense: true,
           leading: const FaIcon(FontAwesomeIcons.diamond, size: 16),
           title: Text(S.current.quest_fields),
-          subtitle:
-              options.fieldTraits.isEmpty
-                  ? null
-                  : Text(options.fieldTraits.map((e) => Transl.trait(e, field: true).l).join(', ')),
+          subtitle: options.fieldTraits.isEmpty
+              ? null
+              : Text(options.fieldTraits.map((e) => Transl.trait(e, field: true).l).join(', ')),
           // trailing: Text(options.fieldTraits.length.toString()),
           horizontalTitleGap: 8,
           contentPadding: const EdgeInsetsDirectional.only(start: 16),
@@ -1029,14 +1037,13 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
                 child: Text(count?.toString() ?? "MAX", textScaler: const TextScaler.linear(0.8)),
               ),
           ],
-          onChanged:
-              options.forceDamageNpSe
-                  ? (v) {
-                    setState(() {
-                      options.damageNpIndivSumCount = v;
-                    });
-                  }
-                  : null,
+          onChanged: options.forceDamageNpSe
+              ? (v) {
+                  setState(() {
+                    options.damageNpIndivSumCount = v;
+                  });
+                }
+              : null,
         ),
       ),
       CheckboxListTile(

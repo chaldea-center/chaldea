@@ -141,11 +141,10 @@ class ImageWithText extends StatelessWidget {
       return style;
     } else {
       return style.copyWith(
-        foreground:
-            style.foreground ?? Paint()
-              ..style = PaintingStyle.stroke
-              ..strokeWidth = shadowSize
-              ..color = shadowColor ?? Colors.white,
+        foreground: style.foreground ?? Paint()
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = shadowSize
+          ..color = shadowColor ?? Colors.white,
       );
     }
   }

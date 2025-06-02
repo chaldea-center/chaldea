@@ -107,8 +107,9 @@ Servant _$ServantFromJson(Map json) => Servant(
   atkMax: (json['atkMax'] as num?)?.toInt() ?? 0,
   hpBase: (json['hpBase'] as num?)?.toInt() ?? 0,
   hpMax: (json['hpMax'] as num?)?.toInt() ?? 0,
-  extraAssets:
-      json['extraAssets'] == null ? null : ExtraAssets.fromJson(Map<String, dynamic>.from(json['extraAssets'] as Map)),
+  extraAssets: json['extraAssets'] == null
+      ? null
+      : ExtraAssets.fromJson(Map<String, dynamic>.from(json['extraAssets'] as Map)),
   traits:
       (json['traits'] as List<dynamic>?)
           ?.map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
@@ -146,14 +147,12 @@ Servant _$ServantFromJson(Map json) => Servant(
       const [],
   bondEquipOwner: (json['bondEquipOwner'] as num?)?.toInt(),
   valentineEquipOwner: (json['valentineEquipOwner'] as num?)?.toInt(),
-  limits:
-      (Servant._readLimits(json, 'limits') as List<dynamic>?)
-          ?.map((e) => SvtLimitEntity.fromJson(Map<String, dynamic>.from(e as Map)))
-          .toList(),
-  ascensionAdd:
-      json['ascensionAdd'] == null
-          ? null
-          : AscensionAdd.fromJson(Map<String, dynamic>.from(json['ascensionAdd'] as Map)),
+  limits: (Servant._readLimits(json, 'limits') as List<dynamic>?)
+      ?.map((e) => SvtLimitEntity.fromJson(Map<String, dynamic>.from(e as Map)))
+      .toList(),
+  ascensionAdd: json['ascensionAdd'] == null
+      ? null
+      : AscensionAdd.fromJson(Map<String, dynamic>.from(json['ascensionAdd'] as Map)),
   traitAdd:
       (json['traitAdd'] as List<dynamic>?)
           ?.map((e) => ServantTrait.fromJson(Map<String, dynamic>.from(e as Map)))
@@ -347,8 +346,9 @@ CraftEssence _$CraftEssenceFromJson(Map json) => CraftEssence(
   rarity: (json['rarity'] as num?)?.toInt() ?? 0,
   cost: (json['cost'] as num?)?.toInt() ?? 0,
   lvMax: (json['lvMax'] as num?)?.toInt() ?? 0,
-  extraAssets:
-      json['extraAssets'] == null ? null : ExtraAssets.fromJson(Map<String, dynamic>.from(json['extraAssets'] as Map)),
+  extraAssets: json['extraAssets'] == null
+      ? null
+      : ExtraAssets.fromJson(Map<String, dynamic>.from(json['extraAssets'] as Map)),
   atkBase: (json['atkBase'] as num?)?.toInt() ?? 0,
   atkMax: (json['atkMax'] as num?)?.toInt() ?? 0,
   hpBase: (json['hpBase'] as num?)?.toInt() ?? 0,
@@ -362,10 +362,9 @@ CraftEssence _$CraftEssenceFromJson(Map json) => CraftEssence(
           ?.map((e) => ValentineScript.fromJson(Map<String, dynamic>.from(e as Map)))
           .toList() ??
       const [],
-  ascensionAdd:
-      json['ascensionAdd'] == null
-          ? null
-          : AscensionAdd.fromJson(Map<String, dynamic>.from(json['ascensionAdd'] as Map)),
+  ascensionAdd: json['ascensionAdd'] == null
+      ? null
+      : AscensionAdd.fromJson(Map<String, dynamic>.from(json['ascensionAdd'] as Map)),
   script: json['script'] == null ? null : ServantScript.fromJson(Map<String, dynamic>.from(json['script'] as Map)),
   skills:
       (json['skills'] as List<dynamic>?)
@@ -433,30 +432,24 @@ Map<String, dynamic> _$ExtraCCAssetsToJson(ExtraCCAssets instance) => <String, d
 };
 
 ExtraAssets _$ExtraAssetsFromJson(Map json) => ExtraAssets(
-  charaGraph:
-      json['charaGraph'] == null
-          ? const ExtraAssetsUrl()
-          : ExtraAssetsUrl.fromJson(Map<String, dynamic>.from(json['charaGraph'] as Map)),
-  faces:
-      json['faces'] == null
-          ? const ExtraAssetsUrl()
-          : ExtraAssetsUrl.fromJson(Map<String, dynamic>.from(json['faces'] as Map)),
-  charaGraphEx:
-      json['charaGraphEx'] == null
-          ? const ExtraAssetsUrl()
-          : ExtraAssetsUrl.fromJson(Map<String, dynamic>.from(json['charaGraphEx'] as Map)),
-  charaGraphName:
-      json['charaGraphName'] == null
-          ? const ExtraAssetsUrl()
-          : ExtraAssetsUrl.fromJson(Map<String, dynamic>.from(json['charaGraphName'] as Map)),
-  narrowFigure:
-      json['narrowFigure'] == null
-          ? const ExtraAssetsUrl()
-          : ExtraAssetsUrl.fromJson(Map<String, dynamic>.from(json['narrowFigure'] as Map)),
-  charaFigure:
-      json['charaFigure'] == null
-          ? const ExtraAssetsUrl()
-          : ExtraAssetsUrl.fromJson(Map<String, dynamic>.from(json['charaFigure'] as Map)),
+  charaGraph: json['charaGraph'] == null
+      ? const ExtraAssetsUrl()
+      : ExtraAssetsUrl.fromJson(Map<String, dynamic>.from(json['charaGraph'] as Map)),
+  faces: json['faces'] == null
+      ? const ExtraAssetsUrl()
+      : ExtraAssetsUrl.fromJson(Map<String, dynamic>.from(json['faces'] as Map)),
+  charaGraphEx: json['charaGraphEx'] == null
+      ? const ExtraAssetsUrl()
+      : ExtraAssetsUrl.fromJson(Map<String, dynamic>.from(json['charaGraphEx'] as Map)),
+  charaGraphName: json['charaGraphName'] == null
+      ? const ExtraAssetsUrl()
+      : ExtraAssetsUrl.fromJson(Map<String, dynamic>.from(json['charaGraphName'] as Map)),
+  narrowFigure: json['narrowFigure'] == null
+      ? const ExtraAssetsUrl()
+      : ExtraAssetsUrl.fromJson(Map<String, dynamic>.from(json['narrowFigure'] as Map)),
+  charaFigure: json['charaFigure'] == null
+      ? const ExtraAssetsUrl()
+      : ExtraAssetsUrl.fromJson(Map<String, dynamic>.from(json['charaFigure'] as Map)),
   charaFigureForm:
       (json['charaFigureForm'] as Map?)?.map(
         (k, e) => MapEntry(int.parse(k as String), ExtraAssetsUrl.fromJson(Map<String, dynamic>.from(e as Map))),
@@ -477,38 +470,30 @@ ExtraAssets _$ExtraAssetsFromJson(Map json) => ExtraAssets(
         (k, e) => MapEntry(int.parse(k as String), ExtraAssetsUrl.fromJson(Map<String, dynamic>.from(e as Map))),
       ) ??
       const {},
-  commands:
-      json['commands'] == null
-          ? const ExtraAssetsUrl()
-          : ExtraAssetsUrl.fromJson(Map<String, dynamic>.from(json['commands'] as Map)),
-  status:
-      json['status'] == null
-          ? const ExtraAssetsUrl()
-          : ExtraAssetsUrl.fromJson(Map<String, dynamic>.from(json['status'] as Map)),
-  equipFace:
-      json['equipFace'] == null
-          ? const ExtraAssetsUrl()
-          : ExtraAssetsUrl.fromJson(Map<String, dynamic>.from(json['equipFace'] as Map)),
-  image:
-      json['image'] == null
-          ? const ExtraAssetsUrl()
-          : ExtraAssetsUrl.fromJson(Map<String, dynamic>.from(json['image'] as Map)),
-  spriteModel:
-      json['spriteModel'] == null
-          ? const ExtraAssetsUrl()
-          : ExtraAssetsUrl.fromJson(Map<String, dynamic>.from(json['spriteModel'] as Map)),
-  charaGraphChange:
-      json['charaGraphChange'] == null
-          ? const ExtraAssetsUrl()
-          : ExtraAssetsUrl.fromJson(Map<String, dynamic>.from(json['charaGraphChange'] as Map)),
-  narrowFigureChange:
-      json['narrowFigureChange'] == null
-          ? const ExtraAssetsUrl()
-          : ExtraAssetsUrl.fromJson(Map<String, dynamic>.from(json['narrowFigureChange'] as Map)),
-  facesChange:
-      json['facesChange'] == null
-          ? const ExtraAssetsUrl()
-          : ExtraAssetsUrl.fromJson(Map<String, dynamic>.from(json['facesChange'] as Map)),
+  commands: json['commands'] == null
+      ? const ExtraAssetsUrl()
+      : ExtraAssetsUrl.fromJson(Map<String, dynamic>.from(json['commands'] as Map)),
+  status: json['status'] == null
+      ? const ExtraAssetsUrl()
+      : ExtraAssetsUrl.fromJson(Map<String, dynamic>.from(json['status'] as Map)),
+  equipFace: json['equipFace'] == null
+      ? const ExtraAssetsUrl()
+      : ExtraAssetsUrl.fromJson(Map<String, dynamic>.from(json['equipFace'] as Map)),
+  image: json['image'] == null
+      ? const ExtraAssetsUrl()
+      : ExtraAssetsUrl.fromJson(Map<String, dynamic>.from(json['image'] as Map)),
+  spriteModel: json['spriteModel'] == null
+      ? const ExtraAssetsUrl()
+      : ExtraAssetsUrl.fromJson(Map<String, dynamic>.from(json['spriteModel'] as Map)),
+  charaGraphChange: json['charaGraphChange'] == null
+      ? const ExtraAssetsUrl()
+      : ExtraAssetsUrl.fromJson(Map<String, dynamic>.from(json['charaGraphChange'] as Map)),
+  narrowFigureChange: json['narrowFigureChange'] == null
+      ? const ExtraAssetsUrl()
+      : ExtraAssetsUrl.fromJson(Map<String, dynamic>.from(json['narrowFigureChange'] as Map)),
+  facesChange: json['facesChange'] == null
+      ? const ExtraAssetsUrl()
+      : ExtraAssetsUrl.fromJson(Map<String, dynamic>.from(json['facesChange'] as Map)),
 );
 
 Map<String, dynamic> _$ExtraAssetsToJson(ExtraAssets instance) => <String, dynamic>{
@@ -645,102 +630,79 @@ Map<String, dynamic> _$AscensionAddEntryToJson<T>(AscensionAddEntry<T> instance,
     };
 
 AscensionAdd _$AscensionAddFromJson(Map json) => AscensionAdd(
-  attribute:
-      json['attribute'] == null
-          ? const AscensionAddEntry()
-          : AscensionAddEntry<ServantSubAttribute>.fromJson(Map<String, dynamic>.from(json['attribute'] as Map)),
-  individuality:
-      json['individuality'] == null
-          ? const AscensionAddEntry()
-          : AscensionAddEntry<List<NiceTrait>>.fromJson(Map<String, dynamic>.from(json['individuality'] as Map)),
-  voicePrefix:
-      json['voicePrefix'] == null
-          ? const AscensionAddEntry()
-          : AscensionAddEntry<int>.fromJson(Map<String, dynamic>.from(json['voicePrefix'] as Map)),
-  overWriteServantName:
-      json['overWriteServantName'] == null
-          ? const AscensionAddEntry()
-          : AscensionAddEntry<String>.fromJson(Map<String, dynamic>.from(json['overWriteServantName'] as Map)),
-  overWriteServantBattleName:
-      json['overWriteServantBattleName'] == null
-          ? const AscensionAddEntry()
-          : AscensionAddEntry<String>.fromJson(Map<String, dynamic>.from(json['overWriteServantBattleName'] as Map)),
-  overWriteTDName:
-      json['overWriteTDName'] == null
-          ? const AscensionAddEntry()
-          : AscensionAddEntry<String>.fromJson(Map<String, dynamic>.from(json['overWriteTDName'] as Map)),
-  overWriteTDRuby:
-      json['overWriteTDRuby'] == null
-          ? const AscensionAddEntry()
-          : AscensionAddEntry<String>.fromJson(Map<String, dynamic>.from(json['overWriteTDRuby'] as Map)),
-  overWriteTDFileName:
-      json['overWriteTDFileName'] == null
-          ? const AscensionAddEntry()
-          : AscensionAddEntry<String>.fromJson(Map<String, dynamic>.from(json['overWriteTDFileName'] as Map)),
-  overWriteTDRank:
-      json['overWriteTDRank'] == null
-          ? const AscensionAddEntry()
-          : AscensionAddEntry<String>.fromJson(Map<String, dynamic>.from(json['overWriteTDRank'] as Map)),
-  overWriteTDTypeText:
-      json['overWriteTDTypeText'] == null
-          ? const AscensionAddEntry()
-          : AscensionAddEntry<String>.fromJson(Map<String, dynamic>.from(json['overWriteTDTypeText'] as Map)),
-  overwriteAtkBase:
-      json['overwriteAtkBase'] == null
-          ? const AscensionAddEntry()
-          : AscensionAddEntry<int>.fromJson(Map<String, dynamic>.from(json['overwriteAtkBase'] as Map)),
-  overwriteAtkMax:
-      json['overwriteAtkMax'] == null
-          ? const AscensionAddEntry()
-          : AscensionAddEntry<int>.fromJson(Map<String, dynamic>.from(json['overwriteAtkMax'] as Map)),
-  overwriteClassPassive:
-      json['overwriteClassPassive'] == null
-          ? const AscensionAddEntry()
-          : AscensionAddEntry<List<int>>.fromJson(Map<String, dynamic>.from(json['overwriteClassPassive'] as Map)),
-  overwriteCost:
-      json['overwriteCost'] == null
-          ? const AscensionAddEntry()
-          : AscensionAddEntry<int>.fromJson(Map<String, dynamic>.from(json['overwriteCost'] as Map)),
-  overwriteExpType:
-      json['overwriteExpType'] == null
-          ? const AscensionAddEntry()
-          : AscensionAddEntry<int>.fromJson(Map<String, dynamic>.from(json['overwriteExpType'] as Map)),
-  overwriteHpBase:
-      json['overwriteHpBase'] == null
-          ? const AscensionAddEntry()
-          : AscensionAddEntry<int>.fromJson(Map<String, dynamic>.from(json['overwriteHpBase'] as Map)),
-  overwriteHpMax:
-      json['overwriteHpMax'] == null
-          ? const AscensionAddEntry()
-          : AscensionAddEntry<int>.fromJson(Map<String, dynamic>.from(json['overwriteHpMax'] as Map)),
-  overwriteRarity:
-      json['overwriteRarity'] == null
-          ? const AscensionAddEntry()
-          : AscensionAddEntry<int>.fromJson(Map<String, dynamic>.from(json['overwriteRarity'] as Map)),
-  lvMax:
-      json['lvMax'] == null
-          ? const AscensionAddEntry()
-          : AscensionAddEntry<int>.fromJson(Map<String, dynamic>.from(json['lvMax'] as Map)),
-  charaGraphChange:
-      json['charaGraphChange'] == null
-          ? const AscensionAddEntry()
-          : AscensionAddEntry<String>.fromJson(Map<String, dynamic>.from(json['charaGraphChange'] as Map)),
-  faceChange:
-      json['faceChange'] == null
-          ? const AscensionAddEntry()
-          : AscensionAddEntry<String>.fromJson(Map<String, dynamic>.from(json['faceChange'] as Map)),
-  charaGraphChangeCommonRelease:
-      json['charaGraphChangeCommonRelease'] == null
-          ? const AscensionAddEntry()
-          : AscensionAddEntry<List<CommonRelease>>.fromJson(
-            Map<String, dynamic>.from(json['charaGraphChangeCommonRelease'] as Map),
-          ),
-  faceChangeCommonRelease:
-      json['faceChangeCommonRelease'] == null
-          ? const AscensionAddEntry()
-          : AscensionAddEntry<List<CommonRelease>>.fromJson(
-            Map<String, dynamic>.from(json['faceChangeCommonRelease'] as Map),
-          ),
+  attribute: json['attribute'] == null
+      ? const AscensionAddEntry()
+      : AscensionAddEntry<ServantSubAttribute>.fromJson(Map<String, dynamic>.from(json['attribute'] as Map)),
+  individuality: json['individuality'] == null
+      ? const AscensionAddEntry()
+      : AscensionAddEntry<List<NiceTrait>>.fromJson(Map<String, dynamic>.from(json['individuality'] as Map)),
+  voicePrefix: json['voicePrefix'] == null
+      ? const AscensionAddEntry()
+      : AscensionAddEntry<int>.fromJson(Map<String, dynamic>.from(json['voicePrefix'] as Map)),
+  overWriteServantName: json['overWriteServantName'] == null
+      ? const AscensionAddEntry()
+      : AscensionAddEntry<String>.fromJson(Map<String, dynamic>.from(json['overWriteServantName'] as Map)),
+  overWriteServantBattleName: json['overWriteServantBattleName'] == null
+      ? const AscensionAddEntry()
+      : AscensionAddEntry<String>.fromJson(Map<String, dynamic>.from(json['overWriteServantBattleName'] as Map)),
+  overWriteTDName: json['overWriteTDName'] == null
+      ? const AscensionAddEntry()
+      : AscensionAddEntry<String>.fromJson(Map<String, dynamic>.from(json['overWriteTDName'] as Map)),
+  overWriteTDRuby: json['overWriteTDRuby'] == null
+      ? const AscensionAddEntry()
+      : AscensionAddEntry<String>.fromJson(Map<String, dynamic>.from(json['overWriteTDRuby'] as Map)),
+  overWriteTDFileName: json['overWriteTDFileName'] == null
+      ? const AscensionAddEntry()
+      : AscensionAddEntry<String>.fromJson(Map<String, dynamic>.from(json['overWriteTDFileName'] as Map)),
+  overWriteTDRank: json['overWriteTDRank'] == null
+      ? const AscensionAddEntry()
+      : AscensionAddEntry<String>.fromJson(Map<String, dynamic>.from(json['overWriteTDRank'] as Map)),
+  overWriteTDTypeText: json['overWriteTDTypeText'] == null
+      ? const AscensionAddEntry()
+      : AscensionAddEntry<String>.fromJson(Map<String, dynamic>.from(json['overWriteTDTypeText'] as Map)),
+  overwriteAtkBase: json['overwriteAtkBase'] == null
+      ? const AscensionAddEntry()
+      : AscensionAddEntry<int>.fromJson(Map<String, dynamic>.from(json['overwriteAtkBase'] as Map)),
+  overwriteAtkMax: json['overwriteAtkMax'] == null
+      ? const AscensionAddEntry()
+      : AscensionAddEntry<int>.fromJson(Map<String, dynamic>.from(json['overwriteAtkMax'] as Map)),
+  overwriteClassPassive: json['overwriteClassPassive'] == null
+      ? const AscensionAddEntry()
+      : AscensionAddEntry<List<int>>.fromJson(Map<String, dynamic>.from(json['overwriteClassPassive'] as Map)),
+  overwriteCost: json['overwriteCost'] == null
+      ? const AscensionAddEntry()
+      : AscensionAddEntry<int>.fromJson(Map<String, dynamic>.from(json['overwriteCost'] as Map)),
+  overwriteExpType: json['overwriteExpType'] == null
+      ? const AscensionAddEntry()
+      : AscensionAddEntry<int>.fromJson(Map<String, dynamic>.from(json['overwriteExpType'] as Map)),
+  overwriteHpBase: json['overwriteHpBase'] == null
+      ? const AscensionAddEntry()
+      : AscensionAddEntry<int>.fromJson(Map<String, dynamic>.from(json['overwriteHpBase'] as Map)),
+  overwriteHpMax: json['overwriteHpMax'] == null
+      ? const AscensionAddEntry()
+      : AscensionAddEntry<int>.fromJson(Map<String, dynamic>.from(json['overwriteHpMax'] as Map)),
+  overwriteRarity: json['overwriteRarity'] == null
+      ? const AscensionAddEntry()
+      : AscensionAddEntry<int>.fromJson(Map<String, dynamic>.from(json['overwriteRarity'] as Map)),
+  lvMax: json['lvMax'] == null
+      ? const AscensionAddEntry()
+      : AscensionAddEntry<int>.fromJson(Map<String, dynamic>.from(json['lvMax'] as Map)),
+  charaGraphChange: json['charaGraphChange'] == null
+      ? const AscensionAddEntry()
+      : AscensionAddEntry<String>.fromJson(Map<String, dynamic>.from(json['charaGraphChange'] as Map)),
+  faceChange: json['faceChange'] == null
+      ? const AscensionAddEntry()
+      : AscensionAddEntry<String>.fromJson(Map<String, dynamic>.from(json['faceChange'] as Map)),
+  charaGraphChangeCommonRelease: json['charaGraphChangeCommonRelease'] == null
+      ? const AscensionAddEntry()
+      : AscensionAddEntry<List<CommonRelease>>.fromJson(
+          Map<String, dynamic>.from(json['charaGraphChangeCommonRelease'] as Map),
+        ),
+  faceChangeCommonRelease: json['faceChangeCommonRelease'] == null
+      ? const AscensionAddEntry()
+      : AscensionAddEntry<List<CommonRelease>>.fromJson(
+          Map<String, dynamic>.from(json['faceChangeCommonRelease'] as Map),
+        ),
 );
 
 Map<String, dynamic> _$AscensionAddToJson(AscensionAdd instance) => <String, dynamic>{
@@ -825,10 +787,9 @@ ServantAppendPassiveSkill _$ServantAppendPassiveSkillFromJson(Map json) => Serva
   num: (json['num'] as num).toInt(),
   priority: (json['priority'] as num).toInt(),
   skill: NiceSkill.fromJson(Map<String, dynamic>.from(json['skill'] as Map)),
-  unlockMaterials:
-      (json['unlockMaterials'] as List<dynamic>)
-          .map((e) => ItemAmount.fromJson(Map<String, dynamic>.from(e as Map)))
-          .toList(),
+  unlockMaterials: (json['unlockMaterials'] as List<dynamic>)
+      .map((e) => ItemAmount.fromJson(Map<String, dynamic>.from(e as Map)))
+      .toList(),
 );
 
 Map<String, dynamic> _$ServantAppendPassiveSkillToJson(ServantAppendPassiveSkill instance) => <String, dynamic>{
@@ -1041,8 +1002,9 @@ VoiceLine _$VoiceLineFromJson(Map json) => VoiceLine(
   priority: (json['priority'] as num?)?.toInt(),
   svtVoiceType: $enumDecodeNullable(_$SvtVoiceTypeEnumMap, json['svtVoiceType']) ?? SvtVoiceType.unknown,
   overwriteName: json['overwriteName'] as String? ?? "",
-  summonScript:
-      json['summonScript'] == null ? null : ScriptLink.fromJson(Map<String, dynamic>.from(json['summonScript'] as Map)),
+  summonScript: json['summonScript'] == null
+      ? null
+      : ScriptLink.fromJson(Map<String, dynamic>.from(json['summonScript'] as Map)),
   id: (json['id'] as List<dynamic>?)?.map((e) => e as String).toList() ?? const [],
   audioAssets: (json['audioAssets'] as List<dynamic>?)?.map((e) => e as String).toList() ?? const [],
   delay: (json['delay'] as List<dynamic>?)?.map((e) => (e as num).toDouble()).toList() ?? const [],
@@ -1161,8 +1123,9 @@ ServantScript _$ServantScriptFromJson(Map json) => ServantScript(
     (k, e) => MapEntry(int.parse(k as String), (e as List<dynamic>).map((e) => (e as num).toInt()).toList()),
   ),
   svtBuffTurnExtend: json['svtBuffTurnExtend'] as bool?,
-  maleImage:
-      json['maleImage'] == null ? null : ExtraAssets.fromJson(Map<String, dynamic>.from(json['maleImage'] as Map)),
+  maleImage: json['maleImage'] == null
+      ? null
+      : ExtraAssets.fromJson(Map<String, dynamic>.from(json['maleImage'] as Map)),
 );
 
 Map<String, dynamic> _$ServantScriptToJson(ServantScript instance) => <String, dynamic>{
@@ -1172,10 +1135,9 @@ Map<String, dynamic> _$ServantScriptToJson(ServantScript instance) => <String, d
 };
 
 SvtScript _$SvtScriptFromJson(Map json) => SvtScript(
-  extendData:
-      json['extendData'] == null
-          ? null
-          : SvtScriptExtendData.fromJson(Map<String, dynamic>.from(json['extendData'] as Map)),
+  extendData: json['extendData'] == null
+      ? null
+      : SvtScriptExtendData.fromJson(Map<String, dynamic>.from(json['extendData'] as Map)),
   id: (json['id'] as num).toInt(),
   form: (json['form'] as num?)?.toInt() ?? 0,
   faceX: (json['faceX'] as num?)?.toInt() ?? 0,
@@ -1223,8 +1185,9 @@ Map<String, dynamic> _$SvtScriptExtendDataToJson(SvtScriptExtendData instance) =
 };
 
 SvtOverwriteValue _$SvtOverwriteValueFromJson(Map json) => SvtOverwriteValue(
-  noblePhantasm:
-      json['noblePhantasm'] == null ? null : NiceTd.fromJson(Map<String, dynamic>.from(json['noblePhantasm'] as Map)),
+  noblePhantasm: json['noblePhantasm'] == null
+      ? null
+      : NiceTd.fromJson(Map<String, dynamic>.from(json['noblePhantasm'] as Map)),
 );
 
 Map<String, dynamic> _$SvtOverwriteValueToJson(SvtOverwriteValue instance) => <String, dynamic>{
@@ -1237,10 +1200,9 @@ SvtOverwrite _$SvtOverwriteFromJson(Map json) => SvtOverwrite(
   condType: json['condType'] == null ? CondType.none : const CondTypeConverter().fromJson(json['condType'] as String),
   condTargetId: (json['condTargetId'] as num?)?.toInt() ?? 0,
   condValue: (json['condValue'] as num?)?.toInt() ?? 0,
-  overwriteValue:
-      json['overwriteValue'] == null
-          ? null
-          : SvtOverwriteValue.fromJson(Map<String, dynamic>.from(json['overwriteValue'] as Map)),
+  overwriteValue: json['overwriteValue'] == null
+      ? null
+      : SvtOverwriteValue.fromJson(Map<String, dynamic>.from(json['overwriteValue'] as Map)),
 );
 
 Map<String, dynamic> _$SvtOverwriteToJson(SvtOverwrite instance) => <String, dynamic>{

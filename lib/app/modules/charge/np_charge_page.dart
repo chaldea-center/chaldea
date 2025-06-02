@@ -36,14 +36,10 @@ class _NpChargePageState extends State<NpChargePage> {
         children: [
           Expanded(
             child: ListView.builder(
-              itemBuilder:
-                  (context, index) => DecoratedBox(
-                    decoration: BoxDecoration(color: index.isEven ? null : Theme.of(context).cardColor),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-                      child: children[index],
-                    ),
-                  ),
+              itemBuilder: (context, index) => DecoratedBox(
+                decoration: BoxDecoration(color: index.isEven ? null : Theme.of(context).cardColor),
+                child: Padding(padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8), child: children[index]),
+              ),
               itemCount: children.length,
             ),
           ),
@@ -53,16 +49,15 @@ class _NpChargePageState extends State<NpChargePage> {
             onTap: () {
               FilterPage.show(
                 context: context,
-                builder:
-                    (context) => NpChargeFilterPage(
-                      filterData: filterData,
-                      onChanged: (v) {
-                        if (mounted) {
-                          filter();
-                          setState(() {});
-                        }
-                      },
-                    ),
+                builder: (context) => NpChargeFilterPage(
+                  filterData: filterData,
+                  onChanged: (v) {
+                    if (mounted) {
+                      filter();
+                      setState(() {});
+                    }
+                  },
+                ),
               );
             },
           ),
@@ -262,12 +257,11 @@ class _NpChargePageState extends State<NpChargePage> {
               children: [
                 const TextSpan(text: '\n'),
                 TextSpan(
-                  text:
-                      detail.isPassive
-                          ? S.current.passive_skill
-                          : detail.isTd
-                          ? S.current.noble_phantasm
-                          : "${S.current.skill} ${detail.pos}",
+                  text: detail.isPassive
+                      ? S.current.passive_skill
+                      : detail.isTd
+                      ? S.current.noble_phantasm
+                      : "${S.current.skill} ${detail.pos}",
                   style: Theme.of(context).textTheme.bodySmall,
                 ),
               ],
@@ -284,10 +278,9 @@ class _NpChargePageState extends State<NpChargePage> {
           TextSpan(
             children: [
               CenterWidgetSpan(
-                child:
-                    skill is NiceTd
-                        ? CommandCardWidget(card: skill.svt.card, width: 42)
-                        : db.getIconImage(skill.icon, width: 24, aspectRatio: 1),
+                child: skill is NiceTd
+                    ? CommandCardWidget(card: skill.svt.card, width: 42)
+                    : db.getIconImage(skill.icon, width: 24, aspectRatio: 1),
               ),
               TextSpan(text: '  ${skill.lName.l}'),
               if (skill is BaseSkill && skill.type == SkillType.active && skill.coolDown.isNotEmpty)
@@ -376,11 +369,10 @@ class _NpChargePageState extends State<NpChargePage> {
             optionBuilder(text: '${S.current.np_short}:${filterData.tdColor.radioValue!.name.toTitle()}'),
           if (filterData.tdType.radioValue != null)
             optionBuilder(
-              text:
-                  [
-                    '${S.current.np_short}:',
-                    Transl.enums(filterData.tdType.radioValue!, (enums) => enums.tdEffectFlag).l,
-                  ].join(),
+              text: [
+                '${S.current.np_short}:',
+                Transl.enums(filterData.tdType.radioValue!, (enums) => enums.tdEffectFlag).l,
+              ].join(),
             ),
           if (filterData.bond.options.isNotEmpty)
             optionBuilder(text: '${S.current.bond}:${filterData.bond.options.map((e) => e.text).join("&")}'),
@@ -625,16 +617,15 @@ class _NpChargePageState extends State<NpChargePage> {
         return null;
       }
     }
-    String? pos =
-        skill is BaseTd
-            ? 'NP'
-            : skill is NiceSkill
-            ? skill.type == SkillType.active
-                ? skill.svt.num.toString()
-                : svt is CraftEssence && skill.svt.priority > 1
-                ? "✧"
-                : " " // passive
-            : null;
+    String? pos = skill is BaseTd
+        ? 'NP'
+        : skill is NiceSkill
+        ? skill.type == SkillType.active
+              ? skill.svt.num.toString()
+              : svt is CraftEssence && skill.svt.priority > 1
+              ? "✧"
+              : " " // passive
+        : null;
     if (pos == null && svt is Servant) {
       final rankups = svt.script?.skillRankUp ?? {};
       for (final srcSkillId in rankups.keys) {

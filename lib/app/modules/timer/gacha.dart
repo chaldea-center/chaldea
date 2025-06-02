@@ -36,23 +36,25 @@ class TimerGachaItem with TimerItem {
   Widget buildItem(BuildContext context, {bool expanded = false}) {
     return SimpleAccordion(
       expanded: expanded,
-      headerBuilder:
-          (context, _) => ListTile(
-            dense: true,
-            contentPadding: const EdgeInsetsDirectional.only(start: 16),
-            enabled: gacha.closedAt > DateTime.now().timestamp,
-            title: Text(gacha.lName.setMaxLines(2)),
-            subtitle: Text([fmtDate(gacha.openedAt), fmtDate(gacha.closedAt)].join(' ~ ')),
-            trailing: CountDown(
-              endedAt: gacha.closedAt.sec2date(),
-              startedAt: gacha.openedAt.sec2date(),
-              textAlign: TextAlign.end,
-            ),
-          ),
+      headerBuilder: (context, _) => ListTile(
+        dense: true,
+        contentPadding: const EdgeInsetsDirectional.only(start: 16),
+        enabled: gacha.closedAt > DateTime.now().timestamp,
+        title: Text(gacha.lName.setMaxLines(2)),
+        subtitle: Text([fmtDate(gacha.openedAt), fmtDate(gacha.closedAt)].join(' ~ ')),
+        trailing: CountDown(
+          endedAt: gacha.closedAt.sec2date(),
+          startedAt: gacha.openedAt.sec2date(),
+          textAlign: TextAlign.end,
+        ),
+      ),
       contentBuilder: (context) {
         List<Widget> children = [
           GachaBanner(region: region, imageId: gacha.imageId),
-          TextButton(onPressed: () => gacha.routeTo(region: region), child: Text(S.current.details)),
+          TextButton(
+            onPressed: () => gacha.routeTo(region: region),
+            child: Text(S.current.details),
+          ),
         ];
         return Column(mainAxisSize: MainAxisSize.min, children: children);
       },

@@ -203,16 +203,15 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
       return const Center(child: Text('None'));
     }
     const divider = Divider(height: 8, thickness: 1);
-    final extraPassives =
-        playerSvtData.extraPassives
-            .where(
-              (passive) => passive.shouldActiveSvtEventSkill(
-                eventId: questPhase?.war?.eventId ?? 0,
-                svtId: playerSvtData.svt?.id,
-                includeZero: true,
-              ),
-            )
-            .toList();
+    final extraPassives = playerSvtData.extraPassives
+        .where(
+          (passive) => passive.shouldActiveSvtEventSkill(
+            eventId: questPhase?.war?.eventId ?? 0,
+            svtId: playerSvtData.svt?.id,
+            includeZero: true,
+          ),
+        )
+        .toList();
     final List<Widget> children = [
       _header(context),
       divider,
@@ -271,20 +270,19 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
           ..._buildHiddenAddPassive(),
           Center(
             child: TextButton(
-              onPressed:
-                  enableEdit
-                      ? () async {
-                        await router.pushPage(
-                          SkillSelectPage(
-                            skillType: SkillType.passive,
-                            onSelected: (skill) {
-                              playerSvtData.addCustomPassive(skill, skill.maxLv);
-                            },
-                          ),
-                        );
-                        if (mounted) setState(() {});
-                      }
-                      : null,
+              onPressed: enableEdit
+                  ? () async {
+                      await router.pushPage(
+                        SkillSelectPage(
+                          skillType: SkillType.passive,
+                          onSelected: (skill) {
+                            playerSvtData.addCustomPassive(skill, skill.maxLv);
+                          },
+                        ),
+                      );
+                      if (mounted) setState(() {});
+                    }
+                  : null,
               child: Text(S.current.select_skill),
             ),
           ),
@@ -410,15 +408,14 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
           crossAxisAlignment: WrapCrossAlignment.center,
           children: [
             FilledButton(
-              onPressed:
-                  playerSvtData.svt == null
-                      ? null
-                      : () {
-                        _updateState(() {
-                          playerSvtData.svt = null;
-                          playerSvtData.equip1.ce = playerSvtData.equip2.ce = playerSvtData.equip3.ce = null;
-                        });
-                      },
+              onPressed: playerSvtData.svt == null
+                  ? null
+                  : () {
+                      _updateState(() {
+                        playerSvtData.svt = null;
+                        playerSvtData.equip1.ce = playerSvtData.equip2.ce = playerSvtData.equip3.ce = null;
+                      });
+                    },
               style: FilledButton.styleFrom(backgroundColor: Theme.of(context).colorScheme.error),
               child: Text(S.current.clear),
             ),
@@ -534,7 +531,9 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
 
               return SimpleConfirmDialog(
                 title: Text(S.current.battle_change_ascension),
-                content: SingleChildScrollView(child: Column(mainAxisSize: MainAxisSize.min, children: children)),
+                content: SingleChildScrollView(
+                  child: Column(mainAxisSize: MainAxisSize.min, children: children),
+                ),
                 showOk: false,
               );
             },
@@ -766,33 +765,32 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
                   ),
                 ),
                 TextButton(
-                  onPressed:
-                      enableEdit
-                          ? () {
-                            InputCancelOkDialog(
-                              title: '${S.current.noble_phantasm} ID',
-                              validate: (s) {
-                                final v = int.tryParse(s);
-                                return v != null && v > 0;
-                              },
-                              onSubmit: (s) async {
-                                final v = int.tryParse(s);
-                                NiceTd? td;
-                                if (v != null && v > 0) {
-                                  EasyLoading.show();
-                                  td = await AtlasApi.td(v);
-                                  EasyLoading.dismiss();
-                                }
-                                if (td == null) {
-                                  EasyLoading.showError(S.current.not_found);
-                                  return;
-                                }
-                                playerSvtData.td = td;
-                                _updateState(() {});
-                              },
-                            ).showDialog(context);
-                          }
-                          : null,
+                  onPressed: enableEdit
+                      ? () {
+                          InputCancelOkDialog(
+                            title: '${S.current.noble_phantasm} ID',
+                            validate: (s) {
+                              final v = int.tryParse(s);
+                              return v != null && v > 0;
+                            },
+                            onSubmit: (s) async {
+                              final v = int.tryParse(s);
+                              NiceTd? td;
+                              if (v != null && v > 0) {
+                                EasyLoading.show();
+                                td = await AtlasApi.td(v);
+                                EasyLoading.dismiss();
+                              }
+                              if (td == null) {
+                                EasyLoading.showError(S.current.not_found);
+                                return;
+                              }
+                              playerSvtData.td = td;
+                              _updateState(() {});
+                            },
+                          ).showDialog(context);
+                        }
+                      : null,
                   child: Text(S.current.general_custom),
                 ),
               ],
@@ -856,21 +854,20 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
                   ),
                 ),
                 TextButton(
-                  onPressed:
-                      enableEdit
-                          ? () {
-                            router.pushPage(
-                              SkillSelectPage(
-                                skillType: SkillType.active,
-                                onSelected: (skill) {
-                                  _updateState(() {
-                                    playerSvtData.skills[index] = skill.toNice();
-                                  });
-                                },
-                              ),
-                            );
-                          }
-                          : null,
+                  onPressed: enableEdit
+                      ? () {
+                          router.pushPage(
+                            SkillSelectPage(
+                              skillType: SkillType.active,
+                              onSelected: (skill) {
+                                _updateState(() {
+                                  playerSvtData.skills[index] = skill.toNice();
+                                });
+                              },
+                            ),
+                          );
+                        }
+                      : null,
                   child: Text(S.current.general_custom),
                 ),
               ],
@@ -916,9 +913,8 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
     List<Widget> children = [];
     int eventId = questPhase?.logicEvent?.id ?? 0;
     if (eventId == 0) return children;
-    for (final skillId in db.gameData.constData
-        .getSvtLimitHides(svt.id, playerSvtData.limitCount)
-        .expand((e) => e.addPassives)) {
+    for (final skillId
+        in db.gameData.constData.getSvtLimitHides(svt.id, playerSvtData.limitCount).expand((e) => e.addPassives)) {
       // 終局特異点
       if (skillId >= 960502 && skillId <= 960507) continue;
       final skill = playerSvtData.extraPassives.firstWhereOrNull((skill) => skill.id == skillId);
@@ -992,18 +988,16 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
               spacing: 8,
               children: [
                 TextButton(
-                  onPressed:
-                      enableEdit
-                          ? () {
-                            _updateState(() {
-                              playerSvtData.disabledExtraSkills.toggle(skill.id);
-                            });
-                          }
-                          : null,
-                  child:
-                      disabled
-                          ? Text(S.current.enable)
-                          : Text(S.current.disable, style: TextStyle(color: Theme.of(context).colorScheme.error)),
+                  onPressed: enableEdit
+                      ? () {
+                          _updateState(() {
+                            playerSvtData.disabledExtraSkills.toggle(skill.id);
+                          });
+                        }
+                      : null,
+                  child: disabled
+                      ? Text(S.current.enable)
+                      : Text(S.current.disable, style: TextStyle(color: Theme.of(context).colorScheme.error)),
                 ),
               ],
             ),
@@ -1053,17 +1047,16 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
               crossAxisAlignment: WrapCrossAlignment.center,
               children: [
                 TextButton(
-                  onPressed:
-                      enableEdit
-                          ? () {
-                            setState(() {
-                              if (index < playerSvtData.customPassives.length) {
-                                playerSvtData.customPassives.removeAt(index);
-                                playerSvtData.customPassiveLvs.removeAt(index);
-                              }
-                            });
-                          }
-                          : null,
+                  onPressed: enableEdit
+                      ? () {
+                          setState(() {
+                            if (index < playerSvtData.customPassives.length) {
+                              playerSvtData.customPassives.removeAt(index);
+                              playerSvtData.customPassiveLvs.removeAt(index);
+                            }
+                          });
+                        }
+                      : null,
                   child: Text(
                     S.current.remove,
                     // style: TextStyle(color: Theme.of(context).colorScheme.error),
@@ -1076,16 +1069,15 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
                     items: [
                       for (int lv2 = 1; lv2 <= maxLv; lv2++) DropdownMenuItem(value: lv2, child: Text('Lv.$lv2')),
                     ],
-                    onChanged:
-                        enableEdit
-                            ? (v) {
-                              setState(() {
-                                if (v != null) {
-                                  playerSvtData.customPassiveLvs[index] = v;
-                                }
-                              });
-                            }
-                            : null,
+                    onChanged: enableEdit
+                        ? (v) {
+                            setState(() {
+                              if (v != null) {
+                                playerSvtData.customPassiveLvs[index] = v;
+                              }
+                            });
+                          }
+                        : null,
                   ),
               ],
             ),
@@ -1105,13 +1097,12 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
 
   Widget _buildAllowedExtraPassives() {
     int eventId = questPhase?.logicEvent?.id ?? 0;
-    final allowedPassives =
-        db.gameData.constData.svtAllowedExtraPassives.where((allowInfo) {
-          if (allowInfo.eventId != eventId) return false;
-          if (!allowInfo.svtIds.contains(svt.id) && !allowInfo.svtIds.contains(0)) return false;
-          if (allowInfo.fromPassive && svt.extraPassive.every((e) => e.id != allowInfo.skillId)) return false;
-          return true;
-        }).toList();
+    final allowedPassives = db.gameData.constData.svtAllowedExtraPassives.where((allowInfo) {
+      if (allowInfo.eventId != eventId) return false;
+      if (!allowInfo.svtIds.contains(svt.id) && !allowInfo.svtIds.contains(0)) return false;
+      if (allowInfo.fromPassive && svt.extraPassive.every((e) => e.id != allowInfo.skillId)) return false;
+      return true;
+    }).toList();
     if (allowedPassives.isEmpty) return SizedBox.shrink();
     allowedPassives.sortByList((e) => [e.groupId, e.skillId]);
     List<Widget> children = [];
@@ -1164,13 +1155,12 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
               elevation: 4,
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                child:
-                    skill == null
-                        ? TextButton(
-                          onPressed: () => router.push(url: Routes.skillI(skillId)),
-                          child: Text('Skill $skillId'),
-                        )
-                        : SkillDescriptor(skill: skill, showEnemy: !svt.isUserSvt),
+                child: skill == null
+                    ? TextButton(
+                        onPressed: () => router.push(url: Routes.skillI(skillId)),
+                        child: Text('Skill $skillId'),
+                      )
+                    : SkillDescriptor(skill: skill, showEnemy: !svt.isUserSvt),
               ),
             );
           },
@@ -1210,14 +1200,13 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
                     onTap: () {
                       if (!enableEdit) return;
                       router.pushBuilder(
-                        builder:
-                            (context) => CmdCodeListPage(
-                              onSelected: (selectedCode) {
-                                playerSvtData.commandCodes[index] = db.gameData.commandCodes[selectedCode.collectionNo];
-                                _updateState(() {});
-                              },
-                              filterData: db.settings.filters.cmdCodeFilterData,
-                            ),
+                        builder: (context) => CmdCodeListPage(
+                          onSelected: (selectedCode) {
+                            playerSvtData.commandCodes[index] = db.gameData.commandCodes[selectedCode.collectionNo];
+                            _updateState(() {});
+                          },
+                          filterData: db.settings.filters.cmdCodeFilterData,
+                        ),
                         detail: false,
                       );
                     },
@@ -1230,14 +1219,13 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
                     ),
                   ),
                   IconButton(
-                    onPressed:
-                        enableEdit
-                            ? () {
-                              setState(() {
-                                playerSvtData.commandCodes[index] = null;
-                              });
-                            }
-                            : null,
+                    onPressed: enableEdit
+                        ? () {
+                            setState(() {
+                              playerSvtData.commandCodes[index] = null;
+                            });
+                          }
+                        : null,
                     icon: const Icon(Icons.remove_circle_outline, size: 18),
                     tooltip: S.current.remove,
                   ),
@@ -1519,24 +1507,23 @@ class _CraftEssenceOptionEditPageState extends State<CraftEssenceOptionEditPage>
       SwitchListTile.adaptive(
         value: curEquip.limitBreak,
         title: Text(S.current.max_limit_break),
-        onChanged:
-            enableEdit
-                ? (v) {
-                  if (v &&
-                      const [
-                        SvtFlag.svtEquipChocolate,
-                        SvtFlag.svtEquipExp,
-                        SvtFlag.svtEquipFriendShip,
-                      ].every((e) => !curCE.flags.contains(e))) {
-                    int? lvMin = {1: 6, 2: 9, 3: 11, 4: 13, 5: 15}[curCE.rarity];
-                    if (lvMin != null && lvMin <= curCE.lvMax && curEquip.lv < lvMin) {
-                      curEquip.lv = lvMin;
-                    }
+        onChanged: enableEdit
+            ? (v) {
+                if (v &&
+                    const [
+                      SvtFlag.svtEquipChocolate,
+                      SvtFlag.svtEquipExp,
+                      SvtFlag.svtEquipFriendShip,
+                    ].every((e) => !curCE.flags.contains(e))) {
+                  int? lvMin = {1: 6, 2: 9, 3: 11, 4: 13, 5: 15}[curCE.rarity];
+                  if (lvMin != null && lvMin <= curCE.lvMax && curEquip.lv < lvMin) {
+                    curEquip.lv = lvMin;
                   }
-                  curEquip.limitBreak = v;
-                  _updateState(() {});
                 }
-                : null,
+                curEquip.limitBreak = v;
+                _updateState(() {});
+              }
+            : null,
       ),
     );
 
@@ -1564,28 +1551,27 @@ class _CraftEssenceOptionEditPageState extends State<CraftEssenceOptionEditPage>
   Widget get popupMenu {
     return PopupMenuButton(
       enabled: enableEdit,
-      itemBuilder:
-          (context) => [
-            PopupMenuItem(
-              enabled: false,
-              height: 24,
-              child: Text(S.current.select, style: Theme.of(context).textTheme.bodySmall),
-            ),
-            const PopupMenuItem(enabled: false, height: 8, padding: EdgeInsets.zero, child: Divider()),
-            PopupMenuItem(
-              onTap: () {
-                selectCE();
-              },
-              child: Text(S.current.craft_essence),
-            ),
-            if (widget.equipTarget == SvtEquipTarget.normal)
-              PopupMenuItem(
-                onTap: () {
-                  selectStoryCE();
-                },
-                child: Text(S.current.story_ce),
-              ),
-          ],
+      itemBuilder: (context) => [
+        PopupMenuItem(
+          enabled: false,
+          height: 24,
+          child: Text(S.current.select, style: Theme.of(context).textTheme.bodySmall),
+        ),
+        const PopupMenuItem(enabled: false, height: 8, padding: EdgeInsets.zero, child: Divider()),
+        PopupMenuItem(
+          onTap: () {
+            selectCE();
+          },
+          child: Text(S.current.craft_essence),
+        ),
+        if (widget.equipTarget == SvtEquipTarget.normal)
+          PopupMenuItem(
+            onTap: () {
+              selectStoryCE();
+            },
+            child: Text(S.current.story_ce),
+          ),
+      ],
     );
   }
 
@@ -1599,13 +1585,12 @@ class _CraftEssenceOptionEditPageState extends State<CraftEssenceOptionEditPage>
           crossAxisAlignment: WrapCrossAlignment.center,
           children: [
             FilledButton(
-              onPressed:
-                  curEquip.ce == null
-                      ? null
-                      : () {
-                        curEquip.ce = null;
-                        _updateState(() {});
-                      },
+              onPressed: curEquip.ce == null
+                  ? null
+                  : () {
+                      curEquip.ce = null;
+                      _updateState(() {});
+                    },
               style: FilledButton.styleFrom(backgroundColor: Theme.of(context).colorScheme.error),
               child: Text(S.current.clear),
             ),

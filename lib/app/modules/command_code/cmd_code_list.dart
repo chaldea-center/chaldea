@@ -61,17 +61,15 @@ class CmdCodeListPageState extends State<CmdCodeListPage> with SearchableListSta
           IconButton(
             icon: const Icon(Icons.filter_alt),
             tooltip: S.current.filter,
-            onPressed:
-                () => FilterPage.show(
-                  context: context,
-                  builder:
-                      (context) => CmdCodeFilterPage(
-                        filterData: filterData,
-                        onChanged: (_) {
-                          if (mounted) setState(() {});
-                        },
-                      ),
-                ),
+            onPressed: () => FilterPage.show(
+              context: context,
+              builder: (context) => CmdCodeFilterPage(
+                filterData: filterData,
+                onChanged: (_) {
+                  if (mounted) setState(() {});
+                },
+              ),
+            ),
           ),
           searchIcon,
         ],
@@ -103,7 +101,12 @@ class CmdCodeListPageState extends State<CmdCodeListPage> with SearchableListSta
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           if (!Language.isJP) AutoSizeText(cc.name, maxLines: 1),
-          Row(children: [Expanded(child: Text('No.${cc.collectionNo}')), if (status != null) Text(status)]),
+          Row(
+            children: [
+              Expanded(child: Text('No.${cc.collectionNo}')),
+              if (status != null) Text(status),
+            ],
+          ),
         ],
       ),
       trailing: IconButton(

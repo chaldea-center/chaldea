@@ -70,7 +70,10 @@ class _ShopListHomeState extends State<ShopListHome> {
               title: Text(Transl.enums(type, (enums) => enums.shopType).l),
               trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
               onTap: () {
-                router.push(url: Routes.shops(type), child: ShopListPage(type: type, region: region));
+                router.push(
+                  url: Routes.shops(type),
+                  child: ShopListPage(type: type, region: region),
+                );
               },
             ),
         ],
@@ -168,25 +171,23 @@ class _ShopListPageState extends State<ShopListPage> with SearchableListState<Ni
               };
               FilterPage.show(
                 context: context,
-                builder:
-                    (context) => ShopFilter(
-                      filterData: filterData,
-                      onChanged: (_) {
-                        if (mounted) setState(() {});
-                      },
-                      purchaseTypes: purchaseTypes.toList(),
-                    ),
+                builder: (context) => ShopFilter(
+                  filterData: filterData,
+                  onChanged: (_) {
+                    if (mounted) setState(() {});
+                  },
+                  purchaseTypes: purchaseTypes.toList(),
+                ),
               );
             },
           ),
         ],
       ),
-      body:
-          _loading
-              ? const Center(child: CircularProgressIndicator())
-              : shops.isEmpty
-              ? Center(child: Text('Not Found (${(widget.region ?? Region.jp).localName})'))
-              : EventShopsPage(event: null, shops: shownList, showTime: true, region: widget.region),
+      body: _loading
+          ? const Center(child: CircularProgressIndicator())
+          : shops.isEmpty
+          ? Center(child: Text('Not Found (${(widget.region ?? Region.jp).localName})'))
+          : EventShopsPage(event: null, shops: shownList, showTime: true, region: widget.region),
     );
   }
 

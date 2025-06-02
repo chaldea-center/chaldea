@@ -206,28 +206,25 @@ class _MyRoomAssetsPageState extends State<MyRoomAssetsPage>
         candidateEvents.where(
           (event) =>
               (checkTime(event.startTimeOf(region), room.startedAt) &&
-                  checkTime(event.endTime2Of(region), room.endedAt)),
+              checkTime(event.endTime2Of(region), room.endedAt)),
         ),
       );
       if (events.isEmpty) {
-        final inRangeEvents =
-            candidateEvents
-                .where(
-                  (event) =>
-                      (event.startTimeOf(region) ?? 0) <= room.startedAt &&
-                      room.endedAt <= (event.endTime2Of(region) ?? 0),
-                )
-                .toList();
+        final inRangeEvents = candidateEvents
+            .where(
+              (event) =>
+                  (event.startTimeOf(region) ?? 0) <= room.startedAt && room.endedAt <= (event.endTime2Of(region) ?? 0),
+            )
+            .toList();
         if (inRangeEvents.length == 1) {
           events.add(inRangeEvents.single);
         } else {
-          final sameStartEvents =
-              candidateEvents
-                  .where(
-                    (event) =>
-                        (event.startTimeOf(region) == room.startedAt && room.endedAt <= (event.endTimeOf(region) ?? 0)),
-                  )
-                  .toList();
+          final sameStartEvents = candidateEvents
+              .where(
+                (event) =>
+                    (event.startTimeOf(region) == room.startedAt && room.endedAt <= (event.endTimeOf(region) ?? 0)),
+              )
+              .toList();
           if (sameStartEvents.isNotEmpty) {
             events.add(sameStartEvents.first);
           }

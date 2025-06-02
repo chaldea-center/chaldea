@@ -17,27 +17,26 @@ class SummonUtil {
     final grid = Wrap(
       spacing: 4,
       runSpacing: 4,
-      children:
-          block.ids.map((id) {
-            Widget child;
-            if (block.isSvt) {
-              final svt = db.gameData.servantsNoDup[id];
-              if (svt == null) return Text('No.$id');
-              child = svtAvatar(
-                context: context,
-                card: svt,
-                weight: showProb ? block.weight / block.ids.length : null,
-                star: showStar && block.ids.length == 1,
-                favorite: showFavorite && db.curUser.svtStatusOf(id).favorite,
-                npLv: showNpLv,
-              );
-            } else {
-              final ce = db.gameData.craftEssences[id];
-              if (ce == null) return Text('No.$id');
-              child = buildCard(context: context, card: ce, weight: showProb ? block.weight / block.ids.length : null);
-            }
-            return child;
-          }).toList(),
+      children: block.ids.map((id) {
+        Widget child;
+        if (block.isSvt) {
+          final svt = db.gameData.servantsNoDup[id];
+          if (svt == null) return Text('No.$id');
+          child = svtAvatar(
+            context: context,
+            card: svt,
+            weight: showProb ? block.weight / block.ids.length : null,
+            star: showStar && block.ids.length == 1,
+            favorite: showFavorite && db.curUser.svtStatusOf(id).favorite,
+            npLv: showNpLv,
+          );
+        } else {
+          final ce = db.gameData.craftEssences[id];
+          if (ce == null) return Text('No.$id');
+          child = buildCard(context: context, card: ce, weight: showProb ? block.weight / block.ids.length : null);
+        }
+        return child;
+      }).toList(),
     );
     if (!showRarity) {
       return grid;

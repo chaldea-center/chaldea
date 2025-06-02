@@ -102,19 +102,18 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
             }
             return FilterPage.show(
               context: context,
-              builder:
-                  (context) => TeamFilterPage(
-                    filterData: filterData,
-                    availableSvts: svtIds,
-                    availableCEs: ceIds,
-                    availableMCs: mcIds,
-                    availableEventWarIds: eventWarIds,
-                    onChanged: (_) {
-                      if (mounted) {
-                        setState(() {});
-                      }
-                    },
-                  ),
+              builder: (context) => TeamFilterPage(
+                filterData: filterData,
+                availableSvts: svtIds,
+                availableCEs: ceIds,
+                availableMCs: mcIds,
+                availableEventWarIds: eventWarIds,
+                onChanged: (_) {
+                  if (mounted) {
+                    setState(() {});
+                  }
+                },
+              ),
             );
           },
         ),
@@ -210,7 +209,12 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
     );
     return Material(
       color: shownList.indexOf(record).isOdd ? Theme.of(context).hoverColor : null,
-      child: Center(child: ConstrainedBox(constraints: const BoxConstraints(maxWidth: 80 * 8), child: child)),
+      child: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 80 * 8),
+          child: child,
+        ),
+      ),
     );
   }
 
@@ -254,19 +258,19 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
                 mode == TeamQueryMode.user
                     ? TextSpan(text: username)
                     : SharedBuilder.textButtonSpan(
-                      context: context,
-                      text: username,
-                      onTap: () {
-                        router.push(
-                          url: Routes.laplaceManageTeam,
-                          child: TeamsQueryPage(
-                            mode: TeamQueryMode.user,
-                            userId: record.userId,
-                            username: record.username,
-                          ),
-                        );
-                      },
-                    ),
+                        context: context,
+                        text: username,
+                        onTap: () {
+                          router.push(
+                            url: Routes.laplaceManageTeam,
+                            child: TeamsQueryPage(
+                              mode: TeamQueryMode.user,
+                              userId: record.userId,
+                              username: record.username,
+                            ),
+                          );
+                        },
+                      ),
                 TextSpan(text: ' [${record.id}]'),
                 // if (widget.phaseInfo?.enemyHash == null)
                 //   TextSpan(text: '\n${S.current.version} ${record.enemyHash.substring2(2)}'),
@@ -453,10 +457,9 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
             db.curUser.battleSim.favoriteTeams.putIfAbsent(record.questId, () => {}).toggle(record.id);
           });
         },
-        icon:
-            db.curUser.battleSim.isTeamFavorite(record.questId, record.id)
-                ? const Icon(Icons.star, color: Colors.amber)
-                : const Icon(Icons.star_border, color: Colors.grey),
+        icon: db.curUser.battleSim.isTeamFavorite(record.questId, record.id)
+            ? const Icon(Icons.star, color: Colors.amber)
+            : const Icon(Icons.star_border, color: Colors.grey),
         tooltip: S.current.favorite_teams,
       ),
     );
@@ -497,32 +500,30 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
     actions.add(const SizedBox(width: 8));
     actions.addAll([
       FilledButton(
-        onPressed:
-            teamData == null
-                ? null
-                : () {
-                  if (widget.onSelect != null) {
-                    Navigator.pop(context);
-                    widget.onSelect!(teamData);
-                  } else {
-                    final data2 = teamData.copy();
-                    data2
-                      ..actions.clear()
-                      ..delegate = null;
-                    router.pushPage(SimulationPreview(shareUri: data2.toUriV2()));
-                  }
-                },
+        onPressed: teamData == null
+            ? null
+            : () {
+                if (widget.onSelect != null) {
+                  Navigator.pop(context);
+                  widget.onSelect!(teamData);
+                } else {
+                  final data2 = teamData.copy();
+                  data2
+                    ..actions.clear()
+                    ..delegate = null;
+                  router.pushPage(SimulationPreview(shareUri: data2.toUriV2()));
+                }
+              },
         child: Text(S.current.select),
       ),
       IconButton(
-        onPressed:
-            teamData == null
-                ? null
-                : () => showDialog(
-                  context: context,
-                  useRootNavigator: false,
-                  builder: (context) => buildShareDialog(context, record),
-                ),
+        onPressed: teamData == null
+            ? null
+            : () => showDialog(
+                context: context,
+                useRootNavigator: false,
+                builder: (context) => buildShareDialog(context, record),
+              ),
         icon: const Icon(Icons.ios_share),
         tooltip: S.current.share,
       ),

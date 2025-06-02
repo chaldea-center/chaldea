@@ -103,8 +103,9 @@ Event _$EventFromJson(Map json) => Event(
           .toList() ??
       const [],
   digging: json['digging'] == null ? null : EventDigging.fromJson(Map<String, dynamic>.from(json['digging'] as Map)),
-  cooltime:
-      json['cooltime'] == null ? null : EventCooltime.fromJson(Map<String, dynamic>.from(json['cooltime'] as Map)),
+  cooltime: json['cooltime'] == null
+      ? null
+      : EventCooltime.fromJson(Map<String, dynamic>.from(json['cooltime'] as Map)),
   fortifications:
       (json['fortifications'] as List<dynamic>?)
           ?.map((e) => EventFortification.fromJson(Map<String, dynamic>.from(e as Map)))
@@ -286,14 +287,12 @@ MasterMission _$MasterMissionFromJson(Map json) => MasterMission(
   startedAt: (json['startedAt'] as num).toInt(),
   endedAt: (json['endedAt'] as num).toInt(),
   closedAt: (json['closedAt'] as num).toInt(),
-  missions:
-      (json['missions'] as List<dynamic>)
-          .map((e) => EventMission.fromJson(Map<String, dynamic>.from(e as Map)))
-          .toList(),
-  completeMission:
-      json['completeMission'] == null
-          ? null
-          : CompleteMission.fromJson(Map<String, dynamic>.from(json['completeMission'] as Map)),
+  missions: (json['missions'] as List<dynamic>)
+      .map((e) => EventMission.fromJson(Map<String, dynamic>.from(e as Map)))
+      .toList(),
+  completeMission: json['completeMission'] == null
+      ? null
+      : CompleteMission.fromJson(Map<String, dynamic>.from(json['completeMission'] as Map)),
   quests:
       (json['quests'] as List<dynamic>?)
           ?.map((e) => BasicQuest.fromJson(Map<String, dynamic>.from(e as Map)))
@@ -788,10 +787,9 @@ Map<String, dynamic> _$EventTowerRewardToJson(EventTowerReward instance) => <Str
 EventTower _$EventTowerFromJson(Map json) => EventTower(
   towerId: (json['towerId'] as num).toInt(),
   name: json['name'] as String,
-  rewards:
-      (json['rewards'] as List<dynamic>)
-          .map((e) => EventTowerReward.fromJson(Map<String, dynamic>.from(e as Map)))
-          .toList(),
+  rewards: (json['rewards'] as List<dynamic>)
+      .map((e) => EventTowerReward.fromJson(Map<String, dynamic>.from(e as Map)))
+      .toList(),
 );
 
 Map<String, dynamic> _$EventTowerToJson(EventTower instance) => <String, dynamic>{
@@ -827,10 +825,9 @@ EventLottery _$EventLotteryFromJson(Map json) => EventLottery(
   cost: ItemAmount.fromJson(Map<String, dynamic>.from(json['cost'] as Map)),
   priority: (json['priority'] as num).toInt(),
   limited: json['limited'] as bool,
-  boxes:
-      (json['boxes'] as List<dynamic>)
-          .map((e) => EventLotteryBox.fromJson(Map<String, dynamic>.from(e as Map)))
-          .toList(),
+  boxes: (json['boxes'] as List<dynamic>)
+      .map((e) => EventLotteryBox.fromJson(Map<String, dynamic>.from(e as Map)))
+      .toList(),
   talks:
       (json['talks'] as List<dynamic>?)
           ?.map((e) => EventLotteryTalk.fromJson(Map<String, dynamic>.from(e as Map)))
@@ -983,13 +980,13 @@ EventTreasureBox _$EventTreasureBoxFromJson(Map json) => EventTreasureBox(
   slot: (json['slot'] as num).toInt(),
   id: (json['id'] as num).toInt(),
   idx: (json['idx'] as num).toInt(),
-  treasureBoxGifts:
-      (json['treasureBoxGifts'] as List<dynamic>)
-          .map((e) => EventTreasureBoxGift.fromJson(Map<String, dynamic>.from(e as Map)))
-          .toList(),
+  treasureBoxGifts: (json['treasureBoxGifts'] as List<dynamic>)
+      .map((e) => EventTreasureBoxGift.fromJson(Map<String, dynamic>.from(e as Map)))
+      .toList(),
   maxDrawNumOnce: (json['maxDrawNumOnce'] as num).toInt(),
-  extraGifts:
-      (json['extraGifts'] as List<dynamic>).map((e) => Gift.fromJson(Map<String, dynamic>.from(e as Map))).toList(),
+  extraGifts: (json['extraGifts'] as List<dynamic>)
+      .map((e) => Gift.fromJson(Map<String, dynamic>.from(e as Map)))
+      .toList(),
   consumes:
       (json['consumes'] as List<dynamic>?)
           ?.map((e) => CommonConsume.fromJson(Map<String, dynamic>.from(e as Map)))
@@ -1372,8 +1369,9 @@ EventTradeGoods _$EventTradeGoodsFromJson(Map json) => EventTradeGoods(
           .toList() ??
       const [],
   eventPointNum: (json['eventPointNum'] as num?)?.toInt() ?? 0,
-  eventPointItem:
-      json['eventPointItem'] == null ? null : Item.fromJson(Map<String, dynamic>.from(json['eventPointItem'] as Map)),
+  eventPointItem: json['eventPointItem'] == null
+      ? null
+      : Item.fromJson(Map<String, dynamic>.from(json['eventPointItem'] as Map)),
   tradeTime: (json['tradeTime'] as num?)?.toInt() ?? 0,
   maxNum: (json['maxNum'] as num?)?.toInt() ?? 0,
   maxTradeTime: (json['maxTradeTime'] as num?)?.toInt() ?? 0,
@@ -1427,10 +1425,9 @@ EventBulletinBoard _$EventBulletinBoardFromJson(Map json) => EventBulletinBoard(
           ?.map((e) => EventBulletinBoardRelease.fromJson(Map<String, dynamic>.from(e as Map)))
           .toList() ??
       const [],
-  script:
-      (json['script'] as List<dynamic>?)
-          ?.map((e) => EventBulletinBoardScript.fromJson(Map<String, dynamic>.from(e as Map)))
-          .toList(),
+  script: (json['script'] as List<dynamic>?)
+      ?.map((e) => EventBulletinBoardScript.fromJson(Map<String, dynamic>.from(e as Map)))
+      .toList(),
 );
 
 Map<String, dynamic> _$EventBulletinBoardToJson(EventBulletinBoard instance) => <String, dynamic>{
@@ -1607,10 +1604,9 @@ const _$EventSvtTypeEnumMap = {
 
 EventSvtScript _$EventSvtScriptFromJson(Map json) => EventSvtScript(
   addGetMessage: json['addGetMessage'] as String?,
-  addMessageReleaseConditions:
-      (json['addMessageReleaseConditions'] as List<dynamic>?)
-          ?.map((e) => CommonRelease.fromJson(Map<String, dynamic>.from(e as Map)))
-          .toList(),
+  addMessageReleaseConditions: (json['addMessageReleaseConditions'] as List<dynamic>?)
+      ?.map((e) => CommonRelease.fromJson(Map<String, dynamic>.from(e as Map)))
+      .toList(),
   isProtectedDuringEvent: json['isProtectedDuringEvent'] as bool?,
   joinQuestId: (json['joinQuestId'] as num?)?.toInt(),
   joinShopId: (json['joinShopId'] as num?)?.toInt(),

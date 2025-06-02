@@ -28,13 +28,12 @@ class _TraitListPageState extends State<TraitListPage> with SearchableListState<
 
   @override
   Iterable<int> get wholeData {
-    List<int> sortedIds =
-        {
-          ...Trait.values.map((e) => e.value),
-          ...db.gameData.mappingData.trait.keys,
-          ...db.gameData.mappingData.eventTrait.keys,
-          ...db.gameData.mappingData.fieldTrait.keys,
-        }.toList();
+    List<int> sortedIds = {
+      ...Trait.values.map((e) => e.value),
+      ...db.gameData.mappingData.trait.keys,
+      ...db.gameData.mappingData.eventTrait.keys,
+      ...db.gameData.mappingData.fieldTrait.keys,
+    }.toList();
     sortedIds.sort();
     int? _searchInt = int.tryParse(searchEditingController.text);
     if (_searchInt != null) {
@@ -125,17 +124,16 @@ class _TraitListPageState extends State<TraitListPage> with SearchableListState<
           router.popDetailAndPush(context: context, url: Routes.traitI(id));
         }
       },
-      trailing:
-          widget.multipleMode
-              ? Checkbox(
-                value: selectedTraits.contains(id),
-                onChanged: (v) {
-                  setState(() {
-                    selectedTraits.toggle(id);
-                  });
-                },
-              )
-              : null,
+      trailing: widget.multipleMode
+          ? Checkbox(
+              value: selectedTraits.contains(id),
+              onChanged: (v) {
+                setState(() {
+                  selectedTraits.toggle(id);
+                });
+              },
+            )
+          : null,
     );
   }
 
@@ -148,15 +146,14 @@ class _TraitListPageState extends State<TraitListPage> with SearchableListState<
         alignment: MainAxisAlignment.center,
         children: [
           FilledButton(
-            onPressed:
-                selectedTraits.isEmpty
-                    ? null
-                    : () {
-                      router.popDetailAndPush(
-                        context: context,
-                        child: TraitDetailPage.ids(ids: selectedTraits.toList()),
-                      );
-                    },
+            onPressed: selectedTraits.isEmpty
+                ? null
+                : () {
+                    router.popDetailAndPush(
+                      context: context,
+                      child: TraitDetailPage.ids(ids: selectedTraits.toList()),
+                    );
+                  },
             child: Text(
               selectedTraits.isEmpty
                   ? '0 ${S.current.trait}'
@@ -165,14 +162,13 @@ class _TraitListPageState extends State<TraitListPage> with SearchableListState<
             ),
           ),
           IconButton(
-            onPressed:
-                selectedTraits.isEmpty
-                    ? null
-                    : () {
-                      setState(() {
-                        selectedTraits.clear();
-                      });
-                    },
+            onPressed: selectedTraits.isEmpty
+                ? null
+                : () {
+                    setState(() {
+                      selectedTraits.clear();
+                    });
+                  },
             icon: const Icon(Icons.replay),
             tooltip: S.current.clear,
           ),

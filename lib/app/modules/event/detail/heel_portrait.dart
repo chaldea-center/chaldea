@@ -48,8 +48,8 @@ class _EventHeelPortraitPageState extends State<EventHeelPortraitPage> {
                 shrinkWrap: true,
                 options: SvtClassX.regularAll,
                 values: svtClass,
-                optionBuilder:
-                    (v) => db.getIconImage(v.icon(3), width: 24, height: 24, padding: const EdgeInsets.all(2)),
+                optionBuilder: (v) =>
+                    db.getIconImage(v.icon(3), width: 24, height: 24, padding: const EdgeInsets.all(2)),
                 onFilterChanged: (_, _) {
                   setState(() {});
                 },
@@ -105,10 +105,9 @@ class _EventHeelPortraitPageState extends State<EventHeelPortraitPage> {
             imageUrl: heel.image,
             showSaveOnLongPress: true,
             cachedOption: CachedImageOption(
-              errorWidget:
-                  (context, url, error) => const CachedImage(
-                    imageUrl: "https://static.atlasacademy.io/JP/EventUI/Prefabs/80432/portrait_unknown.png",
-                  ),
+              errorWidget: (context, url, error) => const CachedImage(
+                imageUrl: "https://static.atlasacademy.io/JP/EventUI/Prefabs/80432/portrait_unknown.png",
+              ),
             ),
           ),
         ),

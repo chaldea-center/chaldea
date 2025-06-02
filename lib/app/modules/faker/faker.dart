@@ -147,81 +147,80 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
             icon: const Icon(Icons.history),
           ),
           PopupMenuButton(
-            itemBuilder:
-                (context) => [
-                  PopupMenuItem(
-                    enabled: isLoggedIn,
-                    onTap: () {
-                      router.pushPage(ImportHttpPage(mstData: mstData));
-                    },
-                    child: Text(S.current.general_import),
-                  ),
-                  PopupMenuItem(
-                    enabled: isLoggedIn,
-                    onTap: () {
-                      router.pushPage(UserPresentBoxManagePage(runtime: runtime));
-                    },
-                    child: Text(S.current.present_box),
-                  ),
-                  PopupMenuItem(
-                    enabled: isLoggedIn,
-                    onTap: () {
-                      router.pushPage(GachaDrawPage(runtime: runtime));
-                    },
-                    child: Text(S.current.gacha),
-                  ),
-                  PopupMenuItem(
-                    enabled: isLoggedIn,
-                    onTap: () {
-                      router.pushPage(UserEventMissionReceivePage(runtime: runtime));
-                    },
-                    child: Text(S.current.master_mission),
-                  ),
-                  PopupMenuItem(
-                    enabled: isLoggedIn,
-                    onTap: () {
-                      router.pushPage(SvtCombinePage(runtime: runtime));
-                    },
-                    child: Text('从者强化'),
-                  ),
-                  PopupMenuItem(
-                    enabled: isLoggedIn,
-                    onTap: () {
-                      router.pushPage(UserSvtCommandCodePage(runtime: runtime));
-                    },
-                    child: Text('指令卡/纹章'),
-                  ),
-                  if (mstData.userEventTrade.isNotEmpty)
-                    PopupMenuItem(
-                      enabled: isLoggedIn,
-                      onTap: () async {
-                        router.pushPage(UserEventTradePage(runtime: runtime));
-                      },
-                      child: Text(S.current.event_trade),
-                    ),
-                  if (mstData.userBoxGacha.isNotEmpty)
-                    PopupMenuItem(
-                      enabled: isLoggedIn,
-                      onTap: () async {
-                        router.pushPage(BoxGachaDrawPage(runtime: runtime));
-                      },
-                      child: Text(S.current.event_lottery),
-                    ),
-                  if (mstData.userEventRandomMission.isNotEmpty)
-                    PopupMenuItem(
-                      enabled: isLoggedIn,
-                      onTap: () async {
-                        router.pushPage(RandomMissionLoopPage(runtime: runtime));
-                      },
-                      child: Text(S.current.random_mission),
-                    ),
-                  PopupMenuItem(
-                    child: Text("Reload"),
-                    onTap: () {
-                      runtime.runTask(runtime.gameData.reset);
-                    },
-                  ),
-                ],
+            itemBuilder: (context) => [
+              PopupMenuItem(
+                enabled: isLoggedIn,
+                onTap: () {
+                  router.pushPage(ImportHttpPage(mstData: mstData));
+                },
+                child: Text(S.current.general_import),
+              ),
+              PopupMenuItem(
+                enabled: isLoggedIn,
+                onTap: () {
+                  router.pushPage(UserPresentBoxManagePage(runtime: runtime));
+                },
+                child: Text(S.current.present_box),
+              ),
+              PopupMenuItem(
+                enabled: isLoggedIn,
+                onTap: () {
+                  router.pushPage(GachaDrawPage(runtime: runtime));
+                },
+                child: Text(S.current.gacha),
+              ),
+              PopupMenuItem(
+                enabled: isLoggedIn,
+                onTap: () {
+                  router.pushPage(UserEventMissionReceivePage(runtime: runtime));
+                },
+                child: Text(S.current.master_mission),
+              ),
+              PopupMenuItem(
+                enabled: isLoggedIn,
+                onTap: () {
+                  router.pushPage(SvtCombinePage(runtime: runtime));
+                },
+                child: Text('从者强化'),
+              ),
+              PopupMenuItem(
+                enabled: isLoggedIn,
+                onTap: () {
+                  router.pushPage(UserSvtCommandCodePage(runtime: runtime));
+                },
+                child: Text('指令卡/纹章'),
+              ),
+              if (mstData.userEventTrade.isNotEmpty)
+                PopupMenuItem(
+                  enabled: isLoggedIn,
+                  onTap: () async {
+                    router.pushPage(UserEventTradePage(runtime: runtime));
+                  },
+                  child: Text(S.current.event_trade),
+                ),
+              if (mstData.userBoxGacha.isNotEmpty)
+                PopupMenuItem(
+                  enabled: isLoggedIn,
+                  onTap: () async {
+                    router.pushPage(BoxGachaDrawPage(runtime: runtime));
+                  },
+                  child: Text(S.current.event_lottery),
+                ),
+              if (mstData.userEventRandomMission.isNotEmpty)
+                PopupMenuItem(
+                  enabled: isLoggedIn,
+                  onTap: () async {
+                    router.pushPage(RandomMissionLoopPage(runtime: runtime));
+                  },
+                  child: Text(S.current.random_mission),
+                ),
+              PopupMenuItem(
+                child: Text("Reload"),
+                onTap: () {
+                  runtime.runTask(runtime.gameData.reset);
+                },
+              ),
+            ],
           ),
         ],
       ),
@@ -282,10 +281,9 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
         ),
         TextSpan(
           text: ' ${mstData.userPresentBox.length}/${runtime.gameData.timerData.constants.maxPresentBoxNum}',
-          style:
-              mstData.userPresentBox.length > runtime.gameData.timerData.constants.maxPresentBoxNum - 20
-                  ? TextStyle(color: Colors.amber)
-                  : null,
+          style: mstData.userPresentBox.length > runtime.gameData.timerData.constants.maxPresentBoxNum - 20
+              ? TextStyle(color: Colors.amber)
+              : null,
           recognizer: TapGestureRecognizer()..onTap = onTapPresentBox,
         ),
       ]);
@@ -300,51 +298,46 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
           constraints: const BoxConstraints(maxWidth: 20, maxHeight: 20),
           child: ValueListenableBuilder(
             valueListenable: runtime.runningTask,
-            builder:
-                (context, running, _) => GestureDetector(
-                  onTap: () {
-                    setState(() {});
-                  },
-                  child: Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      CircularProgressIndicator(
-                        value: running ? null : 1.0,
-                        color: running ? Colors.red : Colors.green,
-                      ),
-                      if (running)
-                        TimerUpdate(
-                          builder: (context, t) {
-                            final startedAt = agent.network.lastTaskStartedAt;
-                            final dt = min(99, t.timestamp - startedAt);
-                            if (startedAt <= 0 || dt < 0) return const SizedBox.shrink();
-                            return Text(dt.toString(), style: TextStyle(fontSize: 10), textAlign: TextAlign.center);
-                          },
-                        ),
-                    ],
-                  ),
-                ),
+            builder: (context, running, _) => GestureDetector(
+              onTap: () {
+                setState(() {});
+              },
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  CircularProgressIndicator(value: running ? null : 1.0, color: running ? Colors.red : Colors.green),
+                  if (running)
+                    TimerUpdate(
+                      builder: (context, t) {
+                        final startedAt = agent.network.lastTaskStartedAt;
+                        final dt = min(99, t.timestamp - startedAt);
+                        if (startedAt <= 0 || dt < 0) return const SizedBox.shrink();
+                        return Text(dt.toString(), style: TextStyle(fontSize: 10), textAlign: TextAlign.center);
+                      },
+                    ),
+                ],
+              ),
+            ),
           ),
         ),
         title: Text('[${agent.user.serverName}] ${userGame?.name ?? "not login"}'),
         subtitle: Text.rich(TextSpan(children: subtitle)),
-        trailing:
-            userGame == null
-                ? null
-                : TimerUpdate(
-                  builder: (context, time) {
-                    return Tooltip(
-                      message: userGame.actRecoverAt.sec2date().toCustomString(year: false),
-                      child: SelectionContainer.disabled(
-                        child: Text(
-                          '${userGame.calCurAp()}/${userGame.actMax}\n${Duration(seconds: (userGame.actRecoverAt - DateTime.now().timestamp)).toString().split('.').first}',
-                          textAlign: TextAlign.end,
-                          style: const TextStyle(fontSize: 12),
-                        ),
+        trailing: userGame == null
+            ? null
+            : TimerUpdate(
+                builder: (context, time) {
+                  return Tooltip(
+                    message: userGame.actRecoverAt.sec2date().toCustomString(year: false),
+                    child: SelectionContainer.disabled(
+                      child: Text(
+                        '${userGame.calCurAp()}/${userGame.actMax}\n${Duration(seconds: (userGame.actRecoverAt - DateTime.now().timestamp)).toString().split('.').first}',
+                        textAlign: TextAlign.end,
+                        style: const TextStyle(fontSize: 12),
                       ),
-                    );
-                  },
-                ),
+                    ),
+                  );
+                },
+              ),
       ),
     );
 
@@ -369,7 +362,9 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
               })
                 TextSpan(
                   children: [
-                    CenterWidgetSpan(child: Item.iconBuilder(context: context, item: null, itemId: itemId, width: 20)),
+                    CenterWidgetSpan(
+                      child: Item.iconBuilder(context: context, item: null, itemId: itemId, width: 20),
+                    ),
                     TextSpan(
                       text: '×${mstData.getItemOrSvtNum(itemId, defaultValue: agent.user.userItems[itemId] ?? 0)}  ',
                     ),
@@ -494,20 +489,20 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
               for (final itemId in dropItems.keys.toList()..sort((a, b) => Item.compare2(a, b)))
                 db.gameData.craftEssencesById.containsKey(itemId)
                     ? db.gameData.craftEssencesById[itemId]!.iconBuilder(
-                      context: context,
-                      height: 36,
-                      text: '+${dropItems[itemId]!.format()}',
-                    )
+                        context: context,
+                        height: 36,
+                        text: '+${dropItems[itemId]!.format()}',
+                      )
                     : Item.iconBuilder(
-                      context: context,
-                      item: null,
-                      itemId: itemId,
-                      height: 36,
-                      text: [
-                        '+${dropItems[itemId]!.format()}',
-                        mstData.getItemOrSvtNum(itemId, eventIds: [battleEntity.eventId]).format(),
-                      ].join('\n'),
-                    ),
+                        context: context,
+                        item: null,
+                        itemId: itemId,
+                        height: 36,
+                        text: [
+                          '+${dropItems[itemId]!.format()}',
+                          mstData.getItemOrSvtNum(itemId, eventIds: [battleEntity.eventId]).format(),
+                        ].join('\n'),
+                      ),
             ],
           ),
           trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
@@ -529,33 +524,31 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
           return ListTile(
             dense: true,
             title: Text('Drop Statistics (${runtime.totalDropStat.totalCount} runs)'),
-            subtitle:
-                runtime.totalRewards.isEmpty
-                    ? null
-                    : Wrap(
-                      spacing: 2,
-                      runSpacing: 2,
-                      children:
-                          (runtime.totalRewards.keys.toList()..sort(Item.compare)).map((itemId) {
-                            return GameCardMixin.anyCardItemBuilder(
-                              context: context,
-                              id: itemId,
-                              width: 30,
-                              text: [
-                                '+${runtime.totalRewards[itemId]?.format()}',
-                                mstData
-                                    .getItemOrSvtNum(
-                                      itemId,
-                                      eventIds: [
-                                        getEventIdByQuest(battleEntity?.eventId),
-                                        getEventIdByQuest(battleOption.questId),
-                                      ],
-                                    )
-                                    .format(),
-                              ].join('\n'),
-                            );
-                          }).toList(),
-                    ),
+            subtitle: runtime.totalRewards.isEmpty
+                ? null
+                : Wrap(
+                    spacing: 2,
+                    runSpacing: 2,
+                    children: (runtime.totalRewards.keys.toList()..sort(Item.compare)).map((itemId) {
+                      return GameCardMixin.anyCardItemBuilder(
+                        context: context,
+                        id: itemId,
+                        width: 30,
+                        text: [
+                          '+${runtime.totalRewards[itemId]?.format()}',
+                          mstData
+                              .getItemOrSvtNum(
+                                itemId,
+                                eventIds: [
+                                  getEventIdByQuest(battleEntity?.eventId),
+                                  getEventIdByQuest(battleOption.questId),
+                                ],
+                              )
+                              .format(),
+                        ].join('\n'),
+                      );
+                    }).toList(),
+                  ),
           );
         },
         contentBuilder: (context) {
@@ -593,33 +586,32 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
                   subtitle: Wrap(
                     spacing: 2,
                     runSpacing: 2,
-                    children:
-                        (dropStats.items.keys.toList()..sort(Item.compare)).map((itemId) {
-                          double prob = 0;
-                          if (dropStats.totalCount > 0) {
-                            prob = dropStats.items[itemId]! / dropStats.totalCount;
-                          }
-                          return GameCardMixin.anyCardItemBuilder(
-                            context: context,
-                            id: itemId,
-                            width: 42,
-                            text: [
-                              '+${dropStats.items[itemId]!.format()}',
-                              if (dropStats.totalCount > 0) prob > 1 ? prob.format() : prob.format(percent: true),
-                              db.gameData.craftEssencesById.containsKey(itemId)
-                                  ? (mstData.userSvt.where((e) => e.svtId == itemId).length.toString())
-                                  : mstData
-                                      .getItemOrSvtNum(
-                                        itemId,
-                                        eventIds: [
-                                          getEventIdByQuest(battleEntity?.eventId),
-                                          getEventIdByQuest(battleOption.questId),
-                                        ],
-                                      )
-                                      .format(),
-                            ].join('\n'),
-                          );
-                        }).toList(),
+                    children: (dropStats.items.keys.toList()..sort(Item.compare)).map((itemId) {
+                      double prob = 0;
+                      if (dropStats.totalCount > 0) {
+                        prob = dropStats.items[itemId]! / dropStats.totalCount;
+                      }
+                      return GameCardMixin.anyCardItemBuilder(
+                        context: context,
+                        id: itemId,
+                        width: 42,
+                        text: [
+                          '+${dropStats.items[itemId]!.format()}',
+                          if (dropStats.totalCount > 0) prob > 1 ? prob.format() : prob.format(percent: true),
+                          db.gameData.craftEssencesById.containsKey(itemId)
+                              ? (mstData.userSvt.where((e) => e.svtId == itemId).length.toString())
+                              : mstData
+                                    .getItemOrSvtNum(
+                                      itemId,
+                                      eventIds: [
+                                        getEventIdByQuest(battleEntity?.eventId),
+                                        getEventIdByQuest(battleOption.questId),
+                                      ],
+                                    )
+                                    .format(),
+                        ].join('\n'),
+                      );
+                    }).toList(),
                   ),
                 ),
             ],
@@ -678,37 +670,36 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
                       },
                     ),
                     FilledButton(
-                      onPressed:
-                          runtime.runningTask.value
-                              ? null
-                              : () async {
-                                final confirm = await SimpleConfirmDialog(
-                                  title: Text("Send"),
-                                  content: Text('request:${saveData.key}\nsuccess: ${saveData.success}'),
-                                ).showDialog(context);
-                                if (confirm != true) return;
-                                runtime.runTask(() async {
-                                  final resp = await agent.network.requestStartDirect(saveData);
-                                  if (context.mounted) {
-                                    SimpleConfirmDialog(
-                                      title: Text("Request Result"),
-                                      content: Text(
-                                        "status: ${resp.rawResponse.statusCode}\n"
-                                        "responses:\n${resp.data.responses.map((e) => ' - ${e.nid} ${e.resCode}').join('\n')}",
+                      onPressed: runtime.runningTask.value
+                          ? null
+                          : () async {
+                              final confirm = await SimpleConfirmDialog(
+                                title: Text("Send"),
+                                content: Text('request:${saveData.key}\nsuccess: ${saveData.success}'),
+                              ).showDialog(context);
+                              if (confirm != true) return;
+                              runtime.runTask(() async {
+                                final resp = await agent.network.requestStartDirect(saveData);
+                                if (context.mounted) {
+                                  SimpleConfirmDialog(
+                                    title: Text("Request Result"),
+                                    content: Text(
+                                      "status: ${resp.rawResponse.statusCode}\n"
+                                      "responses:\n${resp.data.responses.map((e) => ' - ${e.nid} ${e.resCode}').join('\n')}",
+                                    ),
+                                    showCancel: false,
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () {
+                                          router.pushPage(FakerHistoryViewer(agent: agent));
+                                        },
+                                        child: Text(S.current.history),
                                       ),
-                                      showCancel: false,
-                                      actions: [
-                                        TextButton(
-                                          onPressed: () {
-                                            router.pushPage(FakerHistoryViewer(agent: agent));
-                                          },
-                                          child: Text(S.current.history),
-                                        ),
-                                      ],
-                                    ).showDialog(context);
-                                  }
-                                });
-                              },
+                                    ],
+                                  ).showDialog(context);
+                                }
+                              });
+                            },
                       child: Text('Re-send'),
                     ),
                   ],
@@ -721,11 +712,10 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
     }
 
     return TileGroup(
-      header:
-          battleEntity == null
-              ? 'Battle Details'
-              : 'Battle ${battleEntity.id} - ${agent.curBattle == null ? "${resultType?.name}" : "ongoing"}'
-                  ' (${battleEntity.createdAt.sec2date().toCustomString(year: false)})',
+      header: battleEntity == null
+          ? 'Battle Details'
+          : 'Battle ${battleEntity.id} - ${agent.curBattle == null ? "${resultType?.name}" : "ongoing"}'
+                ' (${battleEntity.createdAt.sec2date().toCustomString(year: false)})',
       children: children,
     );
   }
@@ -771,12 +761,11 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
       title: title,
       subtitle: subtitle,
       trailing: IconButton(
-        onPressed:
-            eventId == 0
-                ? null
-                : () {
-                  router.pushPage(RaidsPage(runtime: runtime, eventId: eventId ?? 0));
-                },
+        onPressed: eventId == 0
+            ? null
+            : () {
+                router.pushPage(RaidsPage(runtime: runtime, eventId: eventId ?? 0));
+              },
         icon: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
       ),
     );
@@ -1118,32 +1107,31 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
           title: const Text("Quest Phase"),
           subtitle: Text('phases: ${quest?.phases.join('/') ?? '-'}'),
           trailing: TextButton(
-            onPressed:
-                quest == null
-                    ? null
-                    : () {
-                      runtime.lockTask(() {
-                        InputCancelOkDialog(
-                          title: 'Quest Phase',
-                          keyboardType: TextInputType.number,
-                          onSubmit: (s) async {
-                            final phase = int.tryParse(s);
-                            if (phase != null && quest.phases.contains(phase)) {
-                              battleOption.questPhase = phase;
-                            } else {
-                              EasyLoading.showError('Invalid Phase');
-                            }
-                            if (mounted) setState(() {});
-                            await AtlasApi.questPhase(
-                              battleOption.questId,
-                              battleOption.questPhase,
-                              region: runtime.region,
-                            );
-                            if (mounted) setState(() {});
-                          },
-                        ).showDialog(context);
-                      });
-                    },
+            onPressed: quest == null
+                ? null
+                : () {
+                    runtime.lockTask(() {
+                      InputCancelOkDialog(
+                        title: 'Quest Phase',
+                        keyboardType: TextInputType.number,
+                        onSubmit: (s) async {
+                          final phase = int.tryParse(s);
+                          if (phase != null && quest.phases.contains(phase)) {
+                            battleOption.questPhase = phase;
+                          } else {
+                            EasyLoading.showError('Invalid Phase');
+                          }
+                          if (mounted) setState(() {});
+                          await AtlasApi.questPhase(
+                            battleOption.questId,
+                            battleOption.questPhase,
+                            region: runtime.region,
+                          );
+                          if (mounted) setState(() {});
+                        },
+                      ).showDialog(context);
+                    });
+                  },
             child: Text(battleOption.questPhase.toString()),
           ),
         ),
@@ -1287,10 +1275,9 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
             subtitle: DropdownButton<int>(
               isDense: true,
               isExpanded: true,
-              value:
-                  questPhase.supportServants.any((e) => e.id == battleOption.npcSupportId)
-                      ? battleOption.npcSupportId
-                      : 0,
+              value: questPhase.supportServants.any((e) => e.id == battleOption.npcSupportId)
+                  ? battleOption.npcSupportId
+                  : 0,
               items: [
                 DropdownMenuItem(value: 0, child: Text("Do not use support")),
                 for (final support in questPhase.supportServants)
@@ -1319,21 +1306,20 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
           value: battleOption.useCampaignItem,
           secondary: Item.iconBuilder(context: context, item: null, itemId: 94065901, jumpToDetail: false),
           title: Text(Transl.itemNames('星見のティーポット').l),
-          subtitle:
-              teapots.isEmpty
-                  ? null
-                  : Text.rich(
-                    TextSpan(
-                      children: [
-                        for (final teapot in teapots)
-                          TextSpan(
-                            text:
-                                '×${teapot.$2.num}'
-                                '(${teapot.$1.endedAt.sec2date().toCustomString(year: false, second: false)})  ',
-                          ),
-                      ],
-                    ),
+          subtitle: teapots.isEmpty
+              ? null
+              : Text.rich(
+                  TextSpan(
+                    children: [
+                      for (final teapot in teapots)
+                        TextSpan(
+                          text:
+                              '×${teapot.$2.num}'
+                              '(${teapot.$1.endedAt.sec2date().toCustomString(year: false, second: false)})  ',
+                        ),
+                    ],
                   ),
+                ),
           onChanged: (v) {
             runtime.lockTask(() {
               setState(() {
@@ -1360,7 +1346,9 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
                     child: Text.rich(
                       TextSpan(
                         children: [
-                          CenterWidgetSpan(child: Item.iconBuilder(context: context, item: teapot, width: 28)),
+                          CenterWidgetSpan(
+                            child: Item.iconBuilder(context: context, item: teapot, width: 28),
+                          ),
                           TextSpan(text: ' ${teapot.lName.l} ×${userItem.num} '),
                           TextSpan(
                             text: ' (${teapot.endedAt.sec2date().toCustomString(year: false, second: false)}) ',
@@ -1371,14 +1359,13 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
                     ),
                   ),
               ],
-              onChanged:
-                  battleOption.useCampaignItem
-                      ? (v) {
-                        runtime.lockTask(() {
-                          if (v != null) battleOption.campaignItemId = v;
-                        });
-                      }
-                      : null,
+              onChanged: battleOption.useCampaignItem
+                  ? (v) {
+                      runtime.lockTask(() {
+                        if (v != null) battleOption.campaignItemId = v;
+                      });
+                    }
+                  : null,
             ),
           ),
         const Divider(),
@@ -1895,116 +1882,115 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
           text: 'Stop',
         ),
         PopupMenuButton(
-          itemBuilder:
-              (context) => [
-                // PopupMenuItem(
-                //   child: const Text('gamedata'),
-                //   onTap: () {
-                //     runtime.runTask(agent.gamedataTop);
-                //   },
-                // ),
-                PopupMenuItem(
-                  enabled: loggedIn && !inBattle,
-                  onTap: () {
-                    runtime.runTask(agent.homeTop);
+          itemBuilder: (context) => [
+            // PopupMenuItem(
+            //   child: const Text('gamedata'),
+            //   onTap: () {
+            //     runtime.runTask(agent.gamedataTop);
+            //   },
+            // ),
+            PopupMenuItem(
+              enabled: loggedIn && !inBattle,
+              onTap: () {
+                runtime.runTask(agent.homeTop);
+              },
+              child: const Text('home'),
+            ),
+            // PopupMenuItem(
+            //   enabled: loggedIn && !inBattle,
+            //   onTap: () {
+            //     runtime.runTask(() async {
+            //       final dir = Directory(agent.network.fakerDir);
+            //       final files = dir
+            //           .listSync(followLinks: false)
+            //           .whereType<File>()
+            //           .where((e) => e.path.endsWith('.json') && e.path.contains('battle') && e.path.contains('setup'))
+            //           .toList();
+            //       final modified = DateTime.now().subtract(const Duration(days: 2));
+            //       files.removeWhere((e) => e.statSync().modified.isBefore(modified));
+            //       files.sort2((e) => e.path, reversed: true);
+            //       if (files.isEmpty) {
+            //         EasyLoading.showError('not found');
+            //         return;
+            //       }
+            //       final data = FateTopLogin.parseAny(jsonDecode(files.first.readAsStringSync()));
+            //       agent.curBattle = data.mstData.battles.firstOrNull ?? agent.curBattle;
+            //     });
+            //   },
+            //   child: const Text('loadBattle'),
+            // ),
+            PopupMenuItem(
+              child: const Text('Break'),
+              onTap: () {
+                if (mounted) {
+                  runtime.runningTask.value = false;
+                  agent.network.clearTask();
+                }
+              },
+            ),
+            PopupMenuItem(
+              enabled: loggedIn,
+              onTap: () async {
+                InputCancelOkDialog(
+                  title: 'Seed Count (waiting)',
+                  keyboardType: TextInputType.number,
+                  validate: (s) => (int.tryParse(s) ?? -1) > 0,
+                  onSubmit: (s) {
+                    runtime.runTask(
+                      () => runtime.withWakeLock('seed-wait-$hashCode', () => runtime.seedWait(int.parse(s))),
+                    );
                   },
-                  child: const Text('home'),
-                ),
-                // PopupMenuItem(
-                //   enabled: loggedIn && !inBattle,
-                //   onTap: () {
-                //     runtime.runTask(() async {
-                //       final dir = Directory(agent.network.fakerDir);
-                //       final files = dir
-                //           .listSync(followLinks: false)
-                //           .whereType<File>()
-                //           .where((e) => e.path.endsWith('.json') && e.path.contains('battle') && e.path.contains('setup'))
-                //           .toList();
-                //       final modified = DateTime.now().subtract(const Duration(days: 2));
-                //       files.removeWhere((e) => e.statSync().modified.isBefore(modified));
-                //       files.sort2((e) => e.path, reversed: true);
-                //       if (files.isEmpty) {
-                //         EasyLoading.showError('not found');
-                //         return;
-                //       }
-                //       final data = FateTopLogin.parseAny(jsonDecode(files.first.readAsStringSync()));
-                //       agent.curBattle = data.mstData.battles.firstOrNull ?? agent.curBattle;
-                //     });
-                //   },
-                //   child: const Text('loadBattle'),
-                // ),
-                PopupMenuItem(
-                  child: const Text('Break'),
-                  onTap: () {
-                    if (mounted) {
-                      runtime.runningTask.value = false;
-                      agent.network.clearTask();
-                    }
-                  },
-                ),
-                PopupMenuItem(
-                  enabled: loggedIn,
-                  onTap: () async {
-                    InputCancelOkDialog(
-                      title: 'Seed Count (waiting)',
-                      keyboardType: TextInputType.number,
-                      validate: (s) => (int.tryParse(s) ?? -1) > 0,
-                      onSubmit: (s) {
-                        runtime.runTask(
-                          () => runtime.withWakeLock('seed-wait-$hashCode', () => runtime.seedWait(int.parse(s))),
-                        );
-                      },
-                    ).showDialog(context);
-                  },
-                  child: const Text('Seed-wait'),
-                ),
-                if (agent is FakerAgentJP)
-                  PopupMenuItem(
-                    child: const Text('SessionId'),
-                    onTap: () {
-                      InputCancelOkDialog(
-                        title: 'SessionId (${agent.network.gameTop.region.upper})',
-                        text: agent.network.cookies['SessionId'],
-                        onSubmit: (s) {
-                          if (s.trim().isEmpty) return;
-                          agent.network.cookies['SessionId'] = s;
-                          if (mounted) setState(() {});
-                        },
-                      ).showDialog(context);
+                ).showDialog(context);
+              },
+              child: const Text('Seed-wait'),
+            ),
+            if (agent is FakerAgentJP)
+              PopupMenuItem(
+                child: const Text('SessionId'),
+                onTap: () {
+                  InputCancelOkDialog(
+                    title: 'SessionId (${agent.network.gameTop.region.upper})',
+                    text: agent.network.cookies['SessionId'],
+                    onSubmit: (s) {
+                      if (s.trim().isEmpty) return;
+                      agent.network.cookies['SessionId'] = s;
+                      if (mounted) setState(() {});
                     },
-                  ),
-                if (agent is FakerAgentCN)
-                  PopupMenuItem(
-                    child: const Text('sgusk'),
-                    onTap: () {
-                      InputCancelOkDialog(
-                        title: 'sgusk (${agent.network.gameTop.region.upper})',
-                        text: (agent as FakerAgentCN).usk,
-                        onSubmit: (s) {
-                          if (s.trim().isEmpty) return;
-                          (agent as FakerAgentCN).usk = CryptData.encryptMD5Usk(s);
-                          if (mounted) setState(() {});
-                        },
-                      ).showDialog(context);
+                  ).showDialog(context);
+                },
+              ),
+            if (agent is FakerAgentCN)
+              PopupMenuItem(
+                child: const Text('sgusk'),
+                onTap: () {
+                  InputCancelOkDialog(
+                    title: 'sgusk (${agent.network.gameTop.region.upper})',
+                    text: (agent as FakerAgentCN).usk,
+                    onSubmit: (s) {
+                      if (s.trim().isEmpty) return;
+                      (agent as FakerAgentCN).usk = CryptData.encryptMD5Usk(s);
+                      if (mounted) setState(() {});
                     },
-                  ),
-                PopupMenuItem(
-                  enabled: !runtime.runningTask.value && inBattle,
-                  onTap: () async {
-                    runtime.runTask(() async {
-                      runtime.agent.curBattle = null;
-                    });
-                  },
-                  child: const Text('Clear Battle'),
-                ),
-                if (kDebugMode)
-                  PopupMenuItem(
-                    child: const Text('Test'),
-                    onTap: () async {
-                      runtime.runTask(() => Future.delayed(Duration(seconds: 15)));
-                    },
-                  ),
-              ],
+                  ).showDialog(context);
+                },
+              ),
+            PopupMenuItem(
+              enabled: !runtime.runningTask.value && inBattle,
+              onTap: () async {
+                runtime.runTask(() async {
+                  runtime.agent.curBattle = null;
+                });
+              },
+              child: const Text('Clear Battle'),
+            ),
+            if (kDebugMode)
+              PopupMenuItem(
+                child: const Text('Test'),
+                onTap: () async {
+                  runtime.runTask(() => Future.delayed(Duration(seconds: 15)));
+                },
+              ),
+          ],
         ),
       ],
     ];

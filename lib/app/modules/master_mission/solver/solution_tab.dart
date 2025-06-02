@@ -60,32 +60,30 @@ class _MissionSolutionTabState extends State<MissionSolutionTab> {
 
     Widget header = Padding(
       padding: const EdgeInsetsDirectional.only(end: 16),
-      child:
-          widget.showResult
-              ? ListTile(
-                title: Text(S.current.solution_total_battles_ap(battleCount, apCount)),
-                trailing: Text(S.current.solution_battle_count),
-              )
-              : ListTile(
-                title: Text(S.current.master_mission_related_quest),
-                trailing: Text(S.current.solution_target_count),
-              ),
+      child: widget.showResult
+          ? ListTile(
+              title: Text(S.current.solution_total_battles_ap(battleCount, apCount)),
+              trailing: Text(S.current.solution_battle_count),
+            )
+          : ListTile(
+              title: Text(S.current.master_mission_related_quest),
+              trailing: Text(S.current.solution_target_count),
+            ),
     );
     List<Widget> children = [];
     for (final questId in questIds) {
       children.add(_oneQuest(questId, widget.showResult ? solution.result[questId]! : targetCounts[questId] ?? 0));
     }
     if (widget.showResult) {
-      final invalidMissions =
-          solution.missions
-              .where(
-                (m) => solution.result.keys.every(
-                  (q) =>
-                      solution.quests[q] == null ||
-                      MissionSolver.countMissionTarget(m, solution.quests[q]!, options: solution.options) <= 0,
-                ),
-              )
-              .toList();
+      final invalidMissions = solution.missions
+          .where(
+            (m) => solution.result.keys.every(
+              (q) =>
+                  solution.quests[q] == null ||
+                  MissionSolver.countMissionTarget(m, solution.quests[q]!, options: solution.options) <= 0,
+            ),
+          )
+          .toList();
       if (invalidMissions.isNotEmpty) {
         children.add(
           TileGroup(
@@ -133,8 +131,9 @@ class _MissionSolutionTabState extends State<MissionSolutionTab> {
         }
         if (name != nameJp) subtitle += ' $nameJp';
         return ListTile(
-          leading:
-              quest.spot?.shownImage == null ? const SizedBox() : db.getIconImage(quest.spot?.shownImage, width: 48),
+          leading: quest.spot?.shownImage == null
+              ? const SizedBox()
+              : db.getIconImage(quest.spot?.shownImage, width: 48),
           contentPadding: const EdgeInsetsDirectional.only(start: 2),
           horizontalTitleGap: 2,
           title: Text(quest.lDispName, textScaler: const TextScaler.linear(0.9)),
@@ -163,23 +162,23 @@ class _MissionSolutionTabState extends State<MissionSolutionTab> {
         children.add(
           db.settings.masterMissionOptions.blacklist.contains(quest.id)
               ? TextButton.icon(
-                onPressed: () {
-                  setState(() {
-                    db.settings.masterMissionOptions.blacklist.remove(quest.id);
-                  });
-                },
-                icon: Icon(Icons.clear, color: AppTheme(context).tertiary),
-                label: Text(S.current.remove_from_blacklist, style: TextStyle(color: AppTheme(context).tertiary)),
-              )
+                  onPressed: () {
+                    setState(() {
+                      db.settings.masterMissionOptions.blacklist.remove(quest.id);
+                    });
+                  },
+                  icon: Icon(Icons.clear, color: AppTheme(context).tertiary),
+                  label: Text(S.current.remove_from_blacklist, style: TextStyle(color: AppTheme(context).tertiary)),
+                )
               : TextButton.icon(
-                onPressed: () {
-                  setState(() {
-                    db.settings.masterMissionOptions.blacklist.add(quest.id);
-                  });
-                },
-                icon: const Icon(Icons.add, color: Colors.redAccent),
-                label: Text(S.current.add_to_blacklist, style: const TextStyle(color: Colors.redAccent)),
-              ),
+                  onPressed: () {
+                    setState(() {
+                      db.settings.masterMissionOptions.blacklist.add(quest.id);
+                    });
+                  },
+                  icon: const Icon(Icons.add, color: Colors.redAccent),
+                  label: Text(S.current.add_to_blacklist, style: const TextStyle(color: Colors.redAccent)),
+                ),
         );
 
         return Column(mainAxisSize: MainAxisSize.min, children: children);

@@ -149,12 +149,11 @@ class _RegionTimeTabState extends State<RegionTimeTab> {
         child: SizedBox(
           width: 40,
           child: Center(
-            child:
-                data.flagSvg != null
-                    ? SvgPicture.string(data.flagSvg!)
-                    : data.icon != null
-                    ? Icon(data.icon, size: 36)
-                    : null,
+            child: data.flagSvg != null
+                ? SvgPicture.string(data.flagSvg!)
+                : data.icon != null
+                ? Icon(data.icon, size: 36)
+                : null,
           ),
         ),
       ),

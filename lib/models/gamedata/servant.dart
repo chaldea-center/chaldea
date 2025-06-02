@@ -894,8 +894,8 @@ class CraftEssence extends BasicCraftEssence {
   CraftATKType get atkType {
     return atkMax > 0
         ? hpMax > 0
-            ? CraftATKType.mix
-            : CraftATKType.atk
+              ? CraftATKType.mix
+              : CraftATKType.atk
         : hpMax > 0
         ? CraftATKType.hp
         : CraftATKType.none;

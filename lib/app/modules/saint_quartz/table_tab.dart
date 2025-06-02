@@ -78,14 +78,26 @@ class _SQTableTabState extends State<SQTableTab> {
       controller: _controller,
       // hidePaginator: true,
       columns: [
-        DataColumn2(label: Center(child: Text(S.current.date, textAlign: TextAlign.center)), fixedWidth: 120),
-        DataColumn2(label: Center(child: Text(S.current.sq_short, textAlign: TextAlign.center)), fixedWidth: 50),
+        DataColumn2(
+          label: Center(child: Text(S.current.date, textAlign: TextAlign.center)),
+          fixedWidth: 120,
+        ),
+        DataColumn2(
+          label: Center(child: Text(S.current.sq_short, textAlign: TextAlign.center)),
+          fixedWidth: 50,
+        ),
         DataColumn2(
           label: Center(child: Text(S.current.summon_ticket_short, textAlign: TextAlign.center)),
           fixedWidth: 50,
         ),
-        DataColumn2(label: Center(child: Text(S.current.item_apple, textAlign: TextAlign.center)), fixedWidth: 50),
-        DataColumn2(label: Center(child: Text(S.current.event_campaign, textAlign: TextAlign.center)), fixedWidth: 50),
+        DataColumn2(
+          label: Center(child: Text(S.current.item_apple, textAlign: TextAlign.center)),
+          fixedWidth: 50,
+        ),
+        DataColumn2(
+          label: Center(child: Text(S.current.event_campaign, textAlign: TextAlign.center)),
+          fixedWidth: 50,
+        ),
         DataColumn2(label: Text(' ${S.current.event}')),
       ],
       empty: const SizedBox.shrink(),
@@ -141,8 +153,9 @@ class _PlanDataSource extends DataTableSource {
     return DataRow2(
       specificRowHeight: height.toDouble(),
       cells: cells,
-      color:
-          index.isOdd ? WidgetStateColor.resolveWith((states) => Theme.of(context).highlightColor.withAlpha(32)) : null,
+      color: index.isOdd
+          ? WidgetStateColor.resolveWith((states) => Theme.of(context).highlightColor.withAlpha(32))
+          : null,
     );
   }
 
@@ -164,7 +177,10 @@ class _PlanDataSource extends DataTableSource {
     Widget _wrap({required Widget child, required VoidCallback? onTap, double height = _eventHeight}) {
       return InkWell(
         onTap: onTap,
-        child: SizedBox(height: height, child: Align(alignment: Alignment.centerLeft, child: child)),
+        child: SizedBox(
+          height: height,
+          child: Align(alignment: Alignment.centerLeft, child: child),
+        ),
       );
     }
 

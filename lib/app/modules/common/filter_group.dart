@@ -47,16 +47,15 @@ class FilterGroup<T> extends StatelessWidget {
       padding: EdgeInsets.zero,
       options: const [false, true],
       values: FilterRadioData.nonnull(useGrid),
-      optionBuilder:
-          (v) => Text.rich(
-            TextSpan(
-              children: [
-                CenterWidgetSpan(child: Icon(v ? Icons.grid_view_sharp : Icons.list, size: 16)),
-                const TextSpan(text: ' '),
-                TextSpan(text: v ? S.current.display_grid : S.current.display_list),
-              ],
-            ),
-          ),
+      optionBuilder: (v) => Text.rich(
+        TextSpan(
+          children: [
+            CenterWidgetSpan(child: Icon(v ? Icons.grid_view_sharp : Icons.list, size: 16)),
+            const TextSpan(text: ' '),
+            TextSpan(text: v ? S.current.display_grid : S.current.display_list),
+          ],
+        ),
+      ),
       combined: true,
       onFilterChanged: (v, _) {
         onChanged(v.radioValue);
@@ -89,13 +88,12 @@ class FilterGroup<T> extends StatelessWidget {
           constraints: constraints,
           minimumSize: minimumSize,
           buttonStyle: buttonStyle,
-          borderRadius:
-              combined
-                  ? BorderRadius.horizontal(
-                    left: Radius.circular(index == 0 ? 3 : 0),
-                    right: Radius.circular(index == options.length - 1 ? 3 : 0),
-                  )
-                  : BorderRadius.circular(3),
+          borderRadius: combined
+              ? BorderRadius.horizontal(
+                  left: Radius.circular(index == 0 ? 3 : 0),
+                  right: Radius.circular(index == options.length - 1 ? 3 : 0),
+                )
+              : BorderRadius.circular(3),
           onChanged: (v) {
             values.toggle(key);
             if (onFilterChanged != null) {
@@ -221,20 +219,18 @@ class FilterOption<T> extends StatelessWidget {
     return ConstrainedBox(
       constraints: constraints ?? const BoxConstraints(maxHeight: 30),
       child: OutlinedButton(
-        onPressed:
-            enabled
-                ? () {
-                  if (onChanged != null) {
-                    onChanged!(!selected);
-                  }
+        onPressed: enabled
+            ? () {
+                if (onChanged != null) {
+                  onChanged!(!selected);
                 }
-                : null,
+              }
+            : null,
         style: OutlinedButton.styleFrom(
           foregroundColor: selected || darkMode ? Colors.white : Colors.black,
-          backgroundColor:
-              selected
-                  ? (enabled ? selectedColor : selectedColor.withValues(alpha: selectedColor.a * 0.5))
-                  : unselectedColor,
+          backgroundColor: selected
+              ? (enabled ? selectedColor : selectedColor.withValues(alpha: selectedColor.a * 0.5))
+              : unselectedColor,
           minimumSize: minimumSize ?? (shrinkWrap ? const Size(2, 2) : const Size(48, 36)),
           padding: shrinkWrap ? const EdgeInsets.all(0) : null,
           textStyle: const TextStyle(fontWeight: FontWeight.normal),

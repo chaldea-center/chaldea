@@ -64,17 +64,15 @@ class CraftListPageState extends State<CraftListPage> with SearchableListState<C
           IconButton(
             icon: const Icon(Icons.filter_alt),
             tooltip: S.current.filter,
-            onPressed:
-                () => FilterPage.show(
-                  context: context,
-                  builder:
-                      (context) => CraftFilterPage(
-                        filterData: filterData,
-                        onChanged: (_) {
-                          if (mounted) setState(() {});
-                        },
-                      ),
-                ),
+            onPressed: () => FilterPage.show(
+              context: context,
+              builder: (context) => CraftFilterPage(
+                filterData: filterData,
+                onChanged: (_) {
+                  if (mounted) setState(() {});
+                },
+              ),
+            ),
           ),
           searchIcon,
         ],
@@ -141,7 +139,10 @@ class CraftListPageState extends State<CraftListPage> with SearchableListState<C
         children: [
           if (!Language.isJP) AutoSizeText(ce.name, maxLines: 1),
           Row(
-            children: [Expanded(child: Text('No.${ce.collectionNo}$additionalText')), if (status != null) Text(status)],
+            children: [
+              Expanded(child: Text('No.${ce.collectionNo}$additionalText')),
+              if (status != null) Text(status),
+            ],
           ),
         ],
       ),

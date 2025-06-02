@@ -817,15 +817,14 @@ class UserServantEntity extends DataEntityBase<int> {
     final baseLv = svt.ascensionAdd.lvMax.ascension[limitCount];
     if (baseLv == null) return null;
     if (exceedCount > 0) {
-      final exceedList =
-          <int, List<int>>{
-            1: [10, 5, 5, 5, 5],
-            0: [5, 5, 5, 5, 5],
-            2: [5, 5, 5, 5, 5],
-            3: [5, 5, 5, 5],
-            4: [5, 5],
-            5: [],
-          }[svt.rarity]!;
+      final exceedList = <int, List<int>>{
+        1: [10, 5, 5, 5, 5],
+        0: [5, 5, 5, 5, 5],
+        2: [5, 5, 5, 5, 5],
+        3: [5, 5, 5, 5],
+        4: [5, 5],
+        5: [],
+      }[svt.rarity]!;
       exceedList.addAll(List.generate(15, (_) => 2));
       if (exceedCount <= exceedList.length) {
         final addLv = Maths.sum(exceedList.sublist(0, exceedCount));

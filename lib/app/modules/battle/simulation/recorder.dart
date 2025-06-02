@@ -74,7 +74,10 @@ class _BattleRecorderPanelState extends State<BattleRecorderPanel> {
       ),
     );
     if (showTwoColumn) {
-      panel = FittedBox(fit: BoxFit.scaleDown, child: SizedBox(width: 1024, child: panel));
+      panel = FittedBox(
+        fit: BoxFit.scaleDown,
+        child: SizedBox(width: 1024, child: panel),
+      );
     } else {
       panel = ConstrainedBox(constraints: const BoxConstraints(maxWidth: 640), child: panel);
     }
@@ -88,11 +91,20 @@ class _BattleRecorderPanelState extends State<BattleRecorderPanel> {
           SFooter.rich(
             TextSpan(
               children: [
-                const TextSpan(text: 'DMG', style: TextStyle(color: Colors.red)),
+                const TextSpan(
+                  text: 'DMG',
+                  style: TextStyle(color: Colors.red),
+                ),
                 const TextSpan(text: '/'),
-                const TextSpan(text: 'NP', style: TextStyle(color: Colors.blue)),
+                const TextSpan(
+                  text: 'NP',
+                  style: TextStyle(color: Colors.blue),
+                ),
                 const TextSpan(text: '/'),
-                const TextSpan(text: 'Star', style: TextStyle(color: Colors.green)),
+                const TextSpan(
+                  text: 'Star',
+                  style: TextStyle(color: Colors.green),
+                ),
                 const TextSpan(text: ': '),
                 TextSpan(text: S.current.damage_recorder_param_hint),
               ],
@@ -422,7 +434,10 @@ class BattleRecorderPanelBase extends StatelessWidget {
             Text.rich(
               TextSpan(
                 children: [
-                  const TextSpan(text: 'Order Change', style: TextStyle(fontWeight: FontWeight.bold)),
+                  const TextSpan(
+                    text: 'Order Change',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
                   const TextSpan(text: ': '),
                   ...drawSvt(context, record.onField),
                   const TextSpan(text: '⇄ '),
@@ -458,7 +473,10 @@ class BattleRecorderPanelBase extends StatelessWidget {
             Text.rich(
               TextSpan(
                 children: [
-                  TextSpan(text: S.current.battle_attack, style: const TextStyle(fontWeight: FontWeight.bold)),
+                  TextSpan(
+                    text: S.current.battle_attack,
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
                   const TextSpan(text: ': '),
                   if (record.attacks.isEmpty) TextSpan(text: S.current.skip_current_turn),
                   for (final attack in record.attacks) ...drawSvt(context, attack.actor, attack.cardData),
@@ -600,13 +618,25 @@ class BattleRecorderPanelBase extends StatelessWidget {
     final TextStyle? style = svt.isEnemy ? const TextStyle(fontStyle: FontStyle.italic) : null;
 
     return <InlineSpan>[
-      TextSpan(text: '${svt.fieldIndex + 1}-', style: const TextStyle(fontFamily: kMonoFont).merge(style)),
-      CenterWidgetSpan(child: svt.iconBuilder(context: context, height: 32, battleData: battleData)),
+      TextSpan(
+        text: '${svt.fieldIndex + 1}-',
+        style: const TextStyle(fontFamily: kMonoFont).merge(style),
+      ),
+      CenterWidgetSpan(
+        child: svt.iconBuilder(context: context, height: 32, battleData: battleData),
+      ),
       if (card != null) ...[
         CenterWidgetSpan(child: CommandCardWidget(card: card.cardType, width: 32)),
         if (card.critical)
-          TextSpan(text: '${S.current.critical_attack} ', style: const TextStyle(fontWeight: FontWeight.bold)),
-        if (card.isTD) TextSpan(text: '${S.current.np_short} ', style: const TextStyle(fontWeight: FontWeight.bold)),
+          TextSpan(
+            text: '${S.current.critical_attack} ',
+            style: const TextStyle(fontWeight: FontWeight.bold),
+          ),
+        if (card.isTD)
+          TextSpan(
+            text: '${S.current.np_short} ',
+            style: const TextStyle(fontWeight: FontWeight.bold),
+          ),
       ],
       if (showDetail)
         TextSpan(
@@ -727,24 +757,23 @@ class BattleRecorderPanelBase extends StatelessWidget {
         Text.rich(
           TextSpan(
             text: '${S.current.event_point}: ',
-            children:
-                groupIds.map<InlineSpan>((groupId) {
-                  final pointBuff = options.pointBuffs[groupId]!;
-                  final group = db.gameData.others.eventPointBuffGroups[groupId];
-                  final icon = group?.icon ?? pointBuff.icon;
-                  return TextSpan(
-                    children: [
-                      CenterWidgetSpan(child: db.getIconImage(icon, width: 18)),
-                      TextSpan(text: group?.lName.l ?? "Group $groupId ", style: Theme.of(context).textTheme.bodySmall),
-                      if (pointBuff.skillIcon != null)
-                        CenterWidgetSpan(child: db.getIconImage(pointBuff.skillIcon, width: 18)),
-                      if (pointBuff.lv > 0)
-                        TextSpan(text: ' Lv${pointBuff.lv}; ')
-                      else
-                        TextSpan(text: ' ${pointBuff.eventPoint}; '),
-                    ],
-                  );
-                }).toList(),
+            children: groupIds.map<InlineSpan>((groupId) {
+              final pointBuff = options.pointBuffs[groupId]!;
+              final group = db.gameData.others.eventPointBuffGroups[groupId];
+              final icon = group?.icon ?? pointBuff.icon;
+              return TextSpan(
+                children: [
+                  CenterWidgetSpan(child: db.getIconImage(icon, width: 18)),
+                  TextSpan(text: group?.lName.l ?? "Group $groupId ", style: Theme.of(context).textTheme.bodySmall),
+                  if (pointBuff.skillIcon != null)
+                    CenterWidgetSpan(child: db.getIconImage(pointBuff.skillIcon, width: 18)),
+                  if (pointBuff.lv > 0)
+                    TextSpan(text: ' Lv${pointBuff.lv}; ')
+                  else
+                    TextSpan(text: ' ${pointBuff.eventPoint}; '),
+                ],
+              );
+            }).toList(),
           ),
         ),
       );
@@ -857,20 +886,22 @@ mixin MultiTargetsWrapper {
     required CommandCardData card,
   }) {
     if (actor == null) return _defaultPlaceholder(context);
-    final cardColor =
-        card.cardType.isQuick()
-            ? Colors.green
-            : card.cardType.isBuster()
-            ? Colors.red
-            : card.cardType.isArts()
-            ? Colors.blue
-            : null;
+    final cardColor = card.cardType.isQuick()
+        ? Colors.green
+        : card.cardType.isBuster()
+        ? Colors.red
+        : card.cardType.isArts()
+        ? Colors.blue
+        : null;
     return Text.rich(
       TextSpan(
         children: divideList([
           if (card.isTD) TextSpan(text: '${S.current.np_short} Lv.${actor.tdLv}'),
           if (actor.isPlayer && card.isTD) TextSpan(text: card.np.format(percent: true, base: 100)),
-          TextSpan(text: card.cardType.name.toTitle(), style: TextStyle(color: cardColor)),
+          TextSpan(
+            text: card.cardType.name.toTitle(),
+            style: TextStyle(color: cardColor),
+          ),
           if (card.critical) TextSpan(text: S.current.critical_attack),
         ], const TextSpan(text: ' ')),
       ),
@@ -1230,7 +1261,10 @@ mixin _ParamDialogMixin {
                 if (card.isTD) TextSpan(text: '${S.current.np_short} Lv${info.actor?.tdLv} OC${card.oc}'),
                 if (card.critical) TextSpan(text: S.current.critical_attack),
               ],
-              const TextSpan(text: ' vs. ', style: TextStyle(fontStyle: FontStyle.italic)),
+              const TextSpan(
+                text: ' vs. ',
+                style: TextStyle(fontStyle: FontStyle.italic),
+              ),
               CenterWidgetSpan(child: info.target.iconBuilder(context: context, width: 24)),
             ],
             style: const TextStyle(fontSize: 12),
@@ -1274,9 +1308,16 @@ mixin _ParamDialogMixin {
               assert(ok != null, [values, overskills]);
 
               List<InlineSpan> tooltips = [
-                if (ok == true) TextSpan(text: "Overkill", style: TextStyle(color: Colors.yellow.shade900)),
+                if (ok == true)
+                  TextSpan(
+                    text: "Overkill",
+                    style: TextStyle(color: Colors.yellow.shade900),
+                  ),
                 if (npLimited == true)
-                  const TextSpan(text: "Max NP Limited", style: TextStyle(decoration: TextDecoration.underline)),
+                  const TextSpan(
+                    text: "Max NP Limited",
+                    style: TextStyle(decoration: TextDecoration.underline),
+                  ),
               ];
 
               final text = format(value);
@@ -1397,12 +1438,11 @@ class DamageParamDialog extends StatelessWidget with _ParamDialogMixin {
     final attributeAdvantage = toModifier(
       ConstData.getAttributeRelation(params.attackerAttribute, params.defenderAttribute),
     );
-    final firstCardBonus =
-        shouldIgnoreFirstCardBonus(params.isNp, params.firstCardType)
-            ? 0
-            : params.chainType.isMightyChain()
-            ? toModifier(ConstData.cardInfo[CardType.buster]![1]!.addAtk)
-            : toModifier(ConstData.cardInfo[params.firstCardType]![1]!.addAtk);
+    final firstCardBonus = shouldIgnoreFirstCardBonus(params.isNp, params.firstCardType)
+        ? 0
+        : params.chainType.isMightyChain()
+        ? toModifier(ConstData.cardInfo[CardType.buster]![1]!.addAtk)
+        : toModifier(ConstData.cardInfo[params.firstCardType]![1]!.addAtk);
     final busterChainMod =
         (!params.isNp && params.currentCardType.isBuster() && params.chainType.isSameColorChain()
                 ? toModifier(ConstData.constants.chainbonusBusterRate) * params.attack
@@ -1667,7 +1707,10 @@ class _InstantDeathDetailWidget extends StatelessWidget with MultiTargetsWrapper
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          if (!isKillSelf) Center(child: actor.iconBuilder(context: context, width: 48, battleData: battleData)),
+          if (!isKillSelf)
+            Center(
+              child: actor.iconBuilder(context: context, width: 48, battleData: battleData),
+            ),
           InkWell(
             onTap: () => router.pushPage(BattleSvtDetail(svt: actor, battleData: battleData)),
             child: Text(
@@ -1693,11 +1736,10 @@ class _InstantDeathDetailWidget extends StatelessWidget with MultiTargetsWrapper
         showDialog(
           context: context,
           useRootNavigator: false,
-          builder:
-              (context) => InstantDeathParamDialog(
-                AttackBaseInfo(actor: record.activator, target: detail.target, card: record.card),
-                params,
-              ),
+          builder: (context) => InstantDeathParamDialog(
+            AttackBaseInfo(actor: record.activator, target: detail.target, card: record.card),
+            params,
+          ),
         );
       };
     }
@@ -1707,7 +1749,9 @@ class _InstantDeathDetailWidget extends StatelessWidget with MultiTargetsWrapper
         mainAxisSize: MainAxisSize.min,
         children: [
           if (!isKillSelf)
-            Center(child: detail.target.iconBuilder(context: context, width: 48, battleData: battleData)),
+            Center(
+              child: detail.target.iconBuilder(context: context, width: 48, battleData: battleData),
+            ),
           InkWell(
             onTap: () => router.pushPage(BattleSvtDetail(svt: detail.target, battleData: battleData)),
             child: Text(

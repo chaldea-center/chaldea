@@ -11,8 +11,9 @@ MysticCode _$MysticCodeFromJson(Map json) => MysticCode(
   name: json['name'] as String,
   detail: json['detail'] as String,
   extraAssets: ExtraMCAssets.fromJson(Map<String, dynamic>.from(json['extraAssets'] as Map)),
-  skills:
-      (json['skills'] as List<dynamic>).map((e) => NiceSkill.fromJson(Map<String, dynamic>.from(e as Map))).toList(),
+  skills: (json['skills'] as List<dynamic>)
+      .map((e) => NiceSkill.fromJson(Map<String, dynamic>.from(e as Map)))
+      .toList(),
   expRequired: (json['expRequired'] as List<dynamic>).map((e) => (e as num).toInt()).toList(),
   costumes:
       (json['costumes'] as List<dynamic>?)

@@ -44,7 +44,9 @@ class _FreedomOrderPageState extends State<FreedomOrderPage> {
     } else {
       body = Column(
         children: [
-          Expanded(child: Center(child: FfoCard(params: params, showSave: true, showFullScreen: true))),
+          Expanded(
+            child: Center(child: FfoCard(params: params, showSave: true, showFullScreen: true)),
+          ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
             child: Wrap(
@@ -70,16 +72,15 @@ class _FreedomOrderPageState extends State<FreedomOrderPage> {
         centerTitle: false,
         actions: [
           PopupMenuButton(
-            itemBuilder:
-                (context) => [
-                  PopupMenuItem(onTap: () => loadDB(true), child: Text(S.current.load_ffo_data)),
-                  PopupMenuItem(
-                    onTap: () {
-                      launch(ChaldeaUrl.doc('freedom_order'));
-                    },
-                    child: Text(S.current.help),
-                  ),
-                ],
+            itemBuilder: (context) => [
+              PopupMenuItem(onTap: () => loadDB(true), child: Text(S.current.load_ffo_data)),
+              PopupMenuItem(
+                onTap: () {
+                  launch(ChaldeaUrl.doc('freedom_order'));
+                },
+                child: Text(S.current.help),
+              ),
+            ],
           ),
         ],
       ),
@@ -135,19 +136,18 @@ class _FreedomOrderPageState extends State<FreedomOrderPage> {
             },
           ),
           ElevatedButton(
-            onPressed:
-                params.isEmpty
-                    ? null
-                    : () async {
-                      final data = await FFOUtil.toBinary(params);
-                      if (data == null) {
-                        EasyLoading.showError(S.current.failed);
-                        return;
-                      }
-                      if (mounted) {
-                        FFOUtil.showSaveShare(context: context, params: params, data: data);
-                      }
-                    },
+            onPressed: params.isEmpty
+                ? null
+                : () async {
+                    final data = await FFOUtil.toBinary(params);
+                    if (data == null) {
+                      EasyLoading.showError(S.current.failed);
+                      return;
+                    }
+                    if (mounted) {
+                      FFOUtil.showSaveShare(context: context, params: params, data: data);
+                    }
+                  },
             child: Text(S.current.save),
           ),
           ElevatedButton(

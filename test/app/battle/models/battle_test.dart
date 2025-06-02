@@ -429,8 +429,10 @@ void main() async {
 
     await battle.activateSvtSkill(0, 0);
 
-    final avoidStateBuff =
-        collectBuffsPerType(battle.onFieldAllyServants[0]!.battleBuff.validBuffs, BuffType.avoidState).first;
+    final avoidStateBuff = collectBuffsPerType(
+      battle.onFieldAllyServants[0]!.battleBuff.validBuffs,
+      BuffType.avoidState,
+    ).first;
 
     expect(avoidStateBuff.count, 3);
 
@@ -540,10 +542,9 @@ void main() async {
 
   test('Tezcatlipoca passive', () async {
     final List<PlayerSvtData> setting = [PlayerSvtData.id(604700)..lv = 90, PlayerSvtData.id(604700)..lv = 90];
-    final mysticCode =
-        MysticCodeData()
-          ..mysticCode = db.gameData.mysticCodes[130]!
-          ..level = 10;
+    final mysticCode = MysticCodeData()
+      ..mysticCode = db.gameData.mysticCodes[130]!
+      ..level = 10;
     final battle = BattleData();
     await battle.init(db.gameData.questPhases[9300040603]!, setting, mysticCode);
 
@@ -905,10 +906,9 @@ void main() async {
 
     final enemy3 = battle.onFieldEnemies[2]!;
     final previousHp3 = enemy3.hp;
-    enemy3.niceEnemy!.traits =
-        enemy3.niceEnemy!.traits.toList()
-          ..add(NiceTrait(id: 115))
-          ..add(NiceTrait(id: 109));
+    enemy3.niceEnemy!.traits = enemy3.niceEnemy!.traits.toList()
+      ..add(NiceTrait(id: 115))
+      ..add(NiceTrait(id: 109));
     musashi.np = 10000;
     await battle.playerTurn([CombatAction(musashi, musashi.getNPCard()!)]);
     expect(previousHp3 - enemy3.hp, 120179);
@@ -1364,10 +1364,9 @@ void main() async {
       PlayerSvtData.id(901400)..skillLvs = [10, 5, 10], // swimsuit Skadi
       PlayerSvtData.id(503900)..equip1 = SvtEquipData(ce: db.gameData.craftEssencesById[9302920]), // Skadi with bond CE
     ];
-    final mysticCode =
-        MysticCodeData()
-          ..mysticCode = db.gameData.mysticCodes[20]!
-          ..level = 10;
+    final mysticCode = MysticCodeData()
+      ..mysticCode = db.gameData.mysticCodes[20]!
+      ..level = 10;
     await battle.init(quest!, playerSettings, mysticCode);
 
     final sherlock = battle.onFieldAllyServants[0]!;
@@ -2035,14 +2034,12 @@ void main() async {
 
       int count = 0;
       battle.delegate = BattleDelegate();
-      battle.delegate?.tdTypeChange =
-          (_actor, _list) async =>
-              [
-                CardType.arts.value, // Emiya select arts
-                CardType.buster.value, // Emiya select buster
-                1, // summer bb select dmg type
-                2, // summer bb select support type
-              ][count++];
+      battle.delegate?.tdTypeChange = (_actor, _list) async => [
+        CardType.arts.value, // Emiya select arts
+        CardType.buster.value, // Emiya select buster
+        1, // summer bb select dmg type
+        2, // summer bb select support type
+      ][count++];
 
       expect(emiya.getNPCard()!.cardType, CardType.buster);
 
@@ -2200,7 +2197,10 @@ void main() async {
       final card = battle.onFieldAllyServants[0]!.getCards()[0];
       card.critical = true;
       expect(
-        checkSignedIndividualities2(myTraits: card.traits, requiredTraits: [NiceTrait(id: Trait.criticalHit.value)]),
+        checkSignedIndividualities2(
+          myTraits: card.traits,
+          requiredTraits: [NiceTrait(id: Trait.criticalHit.value)],
+        ),
         true,
       );
     });

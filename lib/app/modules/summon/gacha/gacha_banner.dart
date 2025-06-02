@@ -23,19 +23,18 @@ class GachaBanner extends StatelessWidget {
     final url = this.url ?? AssetURL(region ?? Region.jp).summonBanner(imageId ?? 0);
     return Container(
       constraints: const BoxConstraints(maxHeight: 200),
-      decoration:
-          background
-              ? const BoxDecoration(
-                image: DecorationImage(
-                  image: CachedNetworkImageProvider(
-                    "https://assets.chaldea.center/images/summon_bg.jpg",
-                    imageRenderMethodForWeb: ImageRenderMethodForWeb.HttpGet,
-                  ),
-                  fit: BoxFit.cover,
-                  alignment: Alignment(0.0, -0.6),
+      decoration: background
+          ? const BoxDecoration(
+              image: DecorationImage(
+                image: CachedNetworkImageProvider(
+                  "https://assets.chaldea.center/images/summon_bg.jpg",
+                  imageRenderMethodForWeb: ImageRenderMethodForWeb.HttpGet,
                 ),
-              )
-              : null,
+                fit: BoxFit.cover,
+                alignment: Alignment(0.0, -0.6),
+              ),
+            )
+          : null,
       child: CachedImage(
         imageUrl: url,
         showSaveOnLongPress: true,

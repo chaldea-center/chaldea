@@ -113,15 +113,14 @@ class _EventSvtFatigueDetailPage extends StatelessWidget {
             ListTile(
               dense: true,
               title: Text('Fatigue Time: ${getDuration(time)}'),
-              trailing:
-                  releaseId == 0
-                      ? null
-                      : TextButton(
-                        onPressed: () {
-                          router.push(url: Routes.commonReleaseI(releaseId));
-                        },
-                        child: Text('${S.current.condition} $releaseId'),
-                      ),
+              trailing: releaseId == 0
+                  ? null
+                  : TextButton(
+                      onPressed: () {
+                        router.push(url: Routes.commonReleaseI(releaseId));
+                      },
+                      child: Text('${S.current.condition} $releaseId'),
+                    ),
             ),
             const Divider(indent: 16, endIndent: 16),
             if (group.any((e) => e.svtId == 0)) ListTile(title: Text('${S.current.general_all} ${S.current.servant}')),
@@ -135,11 +134,10 @@ class _EventSvtFatigueDetailPage extends StatelessWidget {
                 maxCrossAxisExtent: 48,
                 childAspectRatio: 132 / 144,
                 padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
-                children:
-                    group.map((fatigue) {
-                      return db.gameData.servantsById[fatigue.svtId]?.iconBuilder(context: context) ??
-                          AutoSizeText('${fatigue.svtId}');
-                    }).toList(),
+                children: group.map((fatigue) {
+                  return db.gameData.servantsById[fatigue.svtId]?.iconBuilder(context: context) ??
+                      AutoSizeText('${fatigue.svtId}');
+                }).toList(),
               ),
             );
           }

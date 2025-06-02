@@ -55,12 +55,8 @@ class _CustomMissionPageState extends State<CustomMissionPage> with SingleTicker
           controller: _tabController,
           children: [
             KeepAliveBuilder(
-              builder:
-                  (context) => MissionInputTab(
-                    initMissions: widget.initMissions,
-                    initWarId: widget.initWarId,
-                    onSolved: _onSolved,
-                  ),
+              builder: (context) =>
+                  MissionInputTab(initMissions: widget.initMissions, initWarId: widget.initWarId, onSolved: _onSolved),
             ),
             KeepAliveBuilder(builder: (context) => MissionSolutionTab(solution: solution)),
             KeepAliveBuilder(builder: (context) => MissionSolutionTab(solution: solution, showResult: false)),

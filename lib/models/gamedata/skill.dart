@@ -149,7 +149,10 @@ class BaseSkill extends SkillOrTd {
   String get route => Routes.skillI(id);
   @override
   void routeTo({Widget? child, bool popDetails = false, Region? region}) {
-    return super.routeTo(child: child ?? SkillDetailPage(skill: this, region: region), popDetails: popDetails);
+    return super.routeTo(
+      child: child ?? SkillDetailPage(skill: this, region: region),
+      popDetails: popDetails,
+    );
   }
 
   Map<String, dynamic> toJson() => _$BaseSkillToJson(this);
@@ -356,8 +359,10 @@ class NiceSkill extends SkillOrTd implements BaseSkill {
   @override
   String get route => _base.route;
   @override
-  void routeTo({Widget? child, bool popDetails = false, Region? region}) =>
-      super.routeTo(child: child ?? SkillDetailPage(skill: this, region: region), popDetails: popDetails);
+  void routeTo({Widget? child, bool popDetails = false, Region? region}) => super.routeTo(
+    child: child ?? SkillDetailPage(skill: this, region: region),
+    popDetails: popDetails,
+  );
 }
 
 extension BaseSkillMethods on BaseSkill {
@@ -485,7 +490,10 @@ class BaseTd extends SkillOrTd {
   String get route => Routes.tdI(id);
   @override
   void routeTo({Widget? child, bool popDetails = false, Region? region}) {
-    return super.routeTo(child: child ?? TdDetailPage(td: this, region: region), popDetails: popDetails);
+    return super.routeTo(
+      child: child ?? TdDetailPage(td: this, region: region),
+      popDetails: popDetails,
+    );
   }
 
   Map<String, dynamic> toJson() => _$BaseTdToJson(this);
@@ -742,8 +750,10 @@ class NiceTd extends SkillOrTd implements BaseTd {
   @override
   String get route => _base.route;
   @override
-  void routeTo({Widget? child, bool popDetails = false, Region? region}) =>
-      super.routeTo(child: child ?? TdDetailPage(td: this, region: region), popDetails: popDetails);
+  void routeTo({Widget? child, bool popDetails = false, Region? region}) => super.routeTo(
+    child: child ?? TdDetailPage(td: this, region: region),
+    popDetails: popDetails,
+  );
 }
 
 extension TdMethods on BaseTd {
@@ -901,12 +911,11 @@ class SkillScript with DataScriptBase {
     List? IgnoreBattlePointUp,
     this.tdChangeByBattlePoint,
   }) : IgnoreValueUp = _parseBaseScript(IgnoreValueUp),
-       IgnoreBattlePointUp =
-           IgnoreBattlePointUp == null
-               ? null
-               : (IgnoreBattlePointUp.isNotEmpty && IgnoreBattlePointUp.first is List)
-               ? List<int>.from(IgnoreBattlePointUp.first)
-               : List<int>.from(IgnoreBattlePointUp);
+       IgnoreBattlePointUp = IgnoreBattlePointUp == null
+           ? null
+           : (IgnoreBattlePointUp.isNotEmpty && IgnoreBattlePointUp.first is List)
+           ? List<int>.from(IgnoreBattlePointUp.first)
+           : List<int>.from(IgnoreBattlePointUp);
 
   static T? _parseBaseScript<T>(dynamic value) {
     if (value == null) return null;

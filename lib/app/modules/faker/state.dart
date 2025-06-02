@@ -357,10 +357,9 @@ class FakerRuntime {
               if (dropNum == null || dropNum <= 0) continue;
               battleOption.targetDrops[itemId] = targetNum - dropNum;
             }
-            final reachedItems =
-                battleOption.targetDrops.keys
-                    .where((itemId) => resultBattleDrops.containsKey(itemId) && battleOption.targetDrops[itemId]! <= 0)
-                    .toList();
+            final reachedItems = battleOption.targetDrops.keys
+                .where((itemId) => resultBattleDrops.containsKey(itemId) && battleOption.targetDrops[itemId]! <= 0)
+                .toList();
             if (reachedItems.isNotEmpty) {
               throw SilentException(
                 'Target drop reaches: ${reachedItems.map((e) => GameCardMixin.anyCardItemName(e).l).join(', ')}',
@@ -560,42 +559,40 @@ class FakerRuntime {
     final gachaOption = agent.user.gacha;
     displayToast('Combine Craft Essence ...');
     while (count > 0) {
-      final targetCEs =
-          mstData.userSvt.where((userSvt) {
-            final ce = db.gameData.craftEssencesById[userSvt.svtId];
-            if (ce == null) return false;
-            if (!userSvt.locked) return false;
-            final maxLv = userSvt.maxLv;
-            if (maxLv == null || userSvt.lv >= maxLv - 1) return false;
-            if (gachaOption.ceEnhanceBaseUserSvtIds.contains(userSvt.id)) return true;
-            if (gachaOption.ceEnhanceBaseSvtIds.contains(userSvt.svtId)) {
-              return userSvt.limitCount == 4;
-            }
-            return false;
-          }).toList();
+      final targetCEs = mstData.userSvt.where((userSvt) {
+        final ce = db.gameData.craftEssencesById[userSvt.svtId];
+        if (ce == null) return false;
+        if (!userSvt.locked) return false;
+        final maxLv = userSvt.maxLv;
+        if (maxLv == null || userSvt.lv >= maxLv - 1) return false;
+        if (gachaOption.ceEnhanceBaseUserSvtIds.contains(userSvt.id)) return true;
+        if (gachaOption.ceEnhanceBaseSvtIds.contains(userSvt.svtId)) {
+          return userSvt.limitCount == 4;
+        }
+        return false;
+      }).toList();
       if (targetCEs.isEmpty) {
         throw SilentException('No valid Target Craft Essence');
       }
       targetCEs.sort2((e) => e.lv);
       final targetCE = targetCEs.first;
-      List<UserServantEntity> combineMaterialCEs =
-          mstData.userSvt.where((userSvt) {
-            final ce = db.gameData.craftEssencesById[userSvt.svtId];
-            if (ce == null || userSvt.locked || userSvt.lv != 1) return false;
-            final bool isExp = ce.flags.contains(SvtFlag.svtEquipExp);
-            if (ce.rarity > 4) {
-              return false;
-            } else if (ce.rarity == 4) {
-              return gachaOption.feedExp4 && isExp;
-            } else if (ce.rarity == 3) {
-              if (isExp) {
-                return gachaOption.feedExp3;
-              }
-              return ce.obtain == CEObtain.permanent;
-            } else {
-              return true;
-            }
-          }).toList();
+      List<UserServantEntity> combineMaterialCEs = mstData.userSvt.where((userSvt) {
+        final ce = db.gameData.craftEssencesById[userSvt.svtId];
+        if (ce == null || userSvt.locked || userSvt.lv != 1) return false;
+        final bool isExp = ce.flags.contains(SvtFlag.svtEquipExp);
+        if (ce.rarity > 4) {
+          return false;
+        } else if (ce.rarity == 4) {
+          return gachaOption.feedExp4 && isExp;
+        } else if (ce.rarity == 3) {
+          if (isExp) {
+            return gachaOption.feedExp3;
+          }
+          return ce.obtain == CEObtain.permanent;
+        } else {
+          return true;
+        }
+      }).toList();
       combineMaterialCEs.sort2((e) => -e.createdAt);
       if (combineMaterialCEs.isEmpty) {
         update();
@@ -665,14 +662,13 @@ class FakerRuntime {
       if (maxLv == null || baseUserSvt.lv >= maxLv) {
         throw SilentException('Lv.${baseUserSvt.lv}>=maxLv $maxLv');
       }
-      List<UserServantEntity> candidateMaterialSvts =
-          mstData.userSvt.where((userSvt) {
-            final svt = userSvt.dbEntity;
-            if (svt == null || svt.type != SvtType.combineMaterial) return false;
-            if (userSvt.locked || userSvt.lv != 1) return false;
-            if (!options.svtMaterialRarities.contains(svt.rarity)) return false;
-            return true;
-          }).toList();
+      List<UserServantEntity> candidateMaterialSvts = mstData.userSvt.where((userSvt) {
+        final svt = userSvt.dbEntity;
+        if (svt == null || svt.type != SvtType.combineMaterial) return false;
+        if (userSvt.locked || userSvt.lv != 1) return false;
+        if (!options.svtMaterialRarities.contains(svt.rarity)) return false;
+        return true;
+      }).toList();
       candidateMaterialSvts.sort2((e) => e.dbEntity?.rarity ?? 999);
 
       List<int> materialSvtIds = [];
@@ -805,8 +801,8 @@ class FakerRuntime {
               break;
             }
           } else if (item.type == ItemType.apRecover) {
-            final count =
-                ((apConsume - mstData.user!.calCurAp()) / (item.value / 1000 * mstData.user!.actMax).ceil()).ceil();
+            final count = ((apConsume - mstData.user!.calCurAp()) / (item.value / 1000 * mstData.user!.actMax).ceil())
+                .ceil();
             if (count > 0 && count <= mstData.getItemOrSvtNum(item.id)) {
               await agent.itemRecover(recoverId: recoverId, num: count);
               break;

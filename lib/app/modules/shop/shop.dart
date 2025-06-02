@@ -54,7 +54,10 @@ class _ShopDetailPageState extends State<ShopDetailPage> with RegionBasedState<N
       child: Scaffold(
         appBar: AppBar(
           title: Text(data?.name ?? '${S.current.shop} $id', overflow: TextOverflow.fade),
-          actions: [dropdownRegion(shownNone: widget.shop != null), if (kDebugMode) popupMenu],
+          actions: [
+            dropdownRegion(shownNone: widget.shop != null),
+            if (kDebugMode) popupMenu,
+          ],
         ),
         body: buildBody(context),
       ),
@@ -211,9 +214,8 @@ class _ShopDetailPageState extends State<ShopDetailPage> with RegionBasedState<N
 
   Widget get popupMenu {
     return PopupMenuButton(
-      itemBuilder:
-          (context) =>
-              SharedBuilder.websitesPopupMenuItems(atlas: 'https://api.atlasacademy.io/nice/JP/shop/${shop.id}'),
+      itemBuilder: (context) =>
+          SharedBuilder.websitesPopupMenuItems(atlas: 'https://api.atlasacademy.io/nice/JP/shop/${shop.id}'),
     );
   }
 }
@@ -228,7 +230,9 @@ class ShopHelper {
     final cost = shop.cost;
     if (cost != null) {
       children.add(
-        CenterWidgetSpan(child: Item.iconBuilder(context: context, item: null, itemId: cost.itemId, width: iconSize)),
+        CenterWidgetSpan(
+          child: Item.iconBuilder(context: context, item: null, itemId: cost.itemId, width: iconSize),
+        ),
       );
       children.add(TextSpan(text: '×${cost.amount.format()} '));
     }
@@ -291,7 +295,12 @@ class ShopHelper {
             for (final reward in rewards) {
               yield Tuple2(
                 reward.item1,
-                TextSpan(children: [reward.item2, TextSpan(text: '(×${shop.setNum.format()})')]),
+                TextSpan(
+                  children: [
+                    reward.item2,
+                    TextSpan(text: '(×${shop.setNum.format()})'),
+                  ],
+                ),
               );
             }
           }

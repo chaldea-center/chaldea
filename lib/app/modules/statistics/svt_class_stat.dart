@@ -132,7 +132,13 @@ class _StatisticServantTabState extends State<StatisticServantTab> {
         ),
       );
     }
-    children.add(const SafeArea(child: Center(child: Text('Red: skill >=999', style: TextStyle(color: Colors.grey)))));
+    children.add(
+      const SafeArea(
+        child: Center(
+          child: Text('Red: skill >=999', style: TextStyle(color: Colors.grey)),
+        ),
+      ),
+    );
     children = divideTiles(children);
     return ListView(
       controller: _scrollController,
@@ -157,14 +163,26 @@ class _StatisticServantTabState extends State<StatisticServantTab> {
           if (v != null) onChanged(v);
         },
         title: Row(
-          children: [Expanded(child: Text(title)), Text('($skillMax) ${'$own/$total'.padLeft(7)}', style: kMonoStyle)],
+          children: [
+            Expanded(child: Text(title)),
+            Text('($skillMax) ${'$own/$total'.padLeft(7)}', style: kMonoStyle),
+          ],
         ),
       ),
       Row(
         children: [
-          Expanded(flex: skillMax, child: Container(height: 8, color: Colors.red[400])),
-          Expanded(flex: own - skillMax, child: Container(height: 8, color: Colors.blue)),
-          Expanded(flex: total - own, child: Container(height: 8, color: Colors.grey[300])),
+          Expanded(
+            flex: skillMax,
+            child: Container(height: 8, color: Colors.red[400]),
+          ),
+          Expanded(
+            flex: own - skillMax,
+            child: Container(height: 8, color: Colors.blue),
+          ),
+          Expanded(
+            flex: total - own,
+            child: Container(height: 8, color: Colors.grey[300]),
+          ),
         ],
       ),
     ];
@@ -172,21 +190,20 @@ class _StatisticServantTabState extends State<StatisticServantTab> {
 
   SvtClass? selectedPie;
 
-  List<Color> get palette =>
-      const [
-        // Color(0xFFCC0000),
-        Color(0xFFCC6600),
-        Color(0xFFCCCC00),
-        Color(0xFF66CC00),
-        Color(0xFF00CC00),
-        Color(0xFF00CC66),
-        Color(0xFF00CCCC),
-        Color(0xFF0066CC),
-        Color(0xFF0000CC),
-        Color(0xFF6600CC),
-        // Color(0xFFCC00CC),
-        // Color(0xFFCC0066),
-      ].reversed.toList();
+  List<Color> get palette => const [
+    // Color(0xFFCC0000),
+    Color(0xFFCC6600),
+    Color(0xFFCCCC00),
+    Color(0xFF66CC00),
+    Color(0xFF00CC00),
+    Color(0xFF00CC66),
+    Color(0xFF00CCCC),
+    Color(0xFF0066CC),
+    Color(0xFF0000CC),
+    Color(0xFF6600CC),
+    // Color(0xFFCC00CC),
+    // Color(0xFFCC0066),
+  ].reversed.toList();
 
   Widget pieChart() {
     _calcServantClass();

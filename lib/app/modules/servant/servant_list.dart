@@ -163,20 +163,18 @@ class ServantListPageState extends State<ServantListPage> with SearchableListSta
         IconButton(
           icon: const Icon(Icons.filter_alt),
           tooltip: S.current.filter,
-          onPressed:
-              () => FilterPage.show(
-                context: context,
-                builder:
-                    (context) => ServantFilterPage(
-                      filterData: filterData,
-                      onChanged: (_) {
-                        if (mounted) {
-                          setState(() {});
-                        }
-                      },
-                      planMode: widget.planMode,
-                    ),
-              ),
+          onPressed: () => FilterPage.show(
+            context: context,
+            builder: (context) => ServantFilterPage(
+              filterData: filterData,
+              onChanged: (_) {
+                if (mounted) {
+                  setState(() {});
+                }
+              },
+              planMode: widget.planMode,
+            ),
+          ),
         ),
         searchIcon,
         PopupMenuButton(
@@ -363,7 +361,10 @@ class ServantListPageState extends State<ServantListPage> with SearchableListSta
     if (hiddenPlanServants.contains(svt)) {
       child = Stack(
         alignment: Alignment.center,
-        children: [Opacity(opacity: 0.2, child: child), Text(S.current.svt_plan_hidden)],
+        children: [
+          Opacity(opacity: 0.2, child: child),
+          Text(S.current.svt_plan_hidden),
+        ],
       );
     }
     return child;
@@ -422,14 +423,13 @@ class ServantListPageState extends State<ServantListPage> with SearchableListSta
     );
     Widget scrollable = Scrollbar(
       controller: scrollController,
-      child:
-          useGrid
-              ? buildGridView(topHint: hintText, bottomHint: hintText)
-              : buildListView(
-                topHint: hintText,
-                bottomHint: hintText,
-                separator: widget.planMode ? const Divider(height: 1, thickness: 0.5, indent: 72, endIndent: 16) : null,
-              ),
+      child: useGrid
+          ? buildGridView(topHint: hintText, bottomHint: hintText)
+          : buildListView(
+              topHint: hintText,
+              bottomHint: hintText,
+              separator: widget.planMode ? const Divider(height: 1, thickness: 0.5, indent: 72, endIndent: 16) : null,
+            ),
     );
     scrollable = RefreshIndicator(
       onRefresh: () async {
@@ -446,15 +446,14 @@ class ServantListPageState extends State<ServantListPage> with SearchableListSta
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
           child: LayoutBuilder(
-            builder:
-                (context, constraints) => SharedBuilder.topSvtClassFilter(
-                  context: context,
-                  maxWidth: constraints.maxWidth,
-                  data: filterData.svtClass,
-                  onChanged: () {
-                    setState(() {});
-                  },
-                ),
+            builder: (context, constraints) => SharedBuilder.topSvtClassFilter(
+              context: context,
+              maxWidth: constraints.maxWidth,
+              data: filterData.svtClass,
+              onChanged: () {
+                setState(() {});
+              },
+            ),
           ),
         ),
         if (widget.showSecondaryFilter) secondaryTopFilters,
@@ -764,11 +763,10 @@ class ServantListPageState extends State<ServantListPage> with SearchableListSta
             _changedTd = null;
           });
         },
-        optionBuilder:
-            (s) => Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
-              child: Text(s ? S.current.plan_list_set_all_target : S.current.plan_list_set_all_current),
-            ),
+        optionBuilder: (s) => Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+          child: Text(s ? S.current.plan_list_set_all_target : S.current.plan_list_set_all_current),
+        ),
       ),
       DropdownButton<int>(
         // isDense: true,
@@ -800,10 +798,9 @@ class ServantListPageState extends State<ServantListPage> with SearchableListSta
             _changedAppend = v;
             if (_changedAppend == null) return;
             _batchChange((svt, cur, target) {
-              final List<int> nums =
-                  _appendNum == null || _appendNum == -1
-                      ? List.generate(kAppendSkillNums.length, (i) => i)
-                      : [_appendNum!];
+              final List<int> nums = _appendNum == null || _appendNum == -1
+                  ? List.generate(kAppendSkillNums.length, (i) => i)
+                  : [_appendNum!];
               for (int i in nums) {
                 if (db.settings.display.onlyAppendUnlocked && cur.appendSkills[i] == 0) {
                   continue;
@@ -839,10 +836,9 @@ class ServantListPageState extends State<ServantListPage> with SearchableListSta
         icon: const Icon(Icons.lock_open),
         iconSize: 18,
         padding: const EdgeInsets.symmetric(horizontal: 4),
-        color:
-            db.settings.display.onlyAppendUnlocked
-                ? Theme.of(context).colorScheme.primary
-                : Theme.of(context).disabledColor,
+        color: db.settings.display.onlyAppendUnlocked
+            ? Theme.of(context).colorScheme.primary
+            : Theme.of(context).disabledColor,
         tooltip: S.current.plan_list_only_unlock_append,
       ),
     ];
@@ -952,8 +948,9 @@ class ServantListPageState extends State<ServantListPage> with SearchableListSta
       trailingButton = IconButton(
         icon: Icon(
           Icons.remove_red_eye,
-          color:
-              isSvtFavorite(svt) && !_hidden ? Theme.of(context).colorScheme.primary : Theme.of(context).highlightColor,
+          color: isSvtFavorite(svt) && !_hidden
+              ? Theme.of(context).colorScheme.primary
+              : Theme.of(context).highlightColor,
         ),
         onPressed: () {
           if (!isSvtFavorite(svt)) return;
@@ -994,28 +991,26 @@ class ServantListPageState extends State<ServantListPage> with SearchableListSta
     showDialog(
       context: context,
       useRootNavigator: false,
-      builder:
-          (context) => SimpleDialog(
-            title: Text(S.current.select_copy_plan_source),
-            children: List.generate(db.curUser.plans.length, (index) {
-              bool isCur = index == db.curUser.curSvtPlanNo;
-              String title = db.curUser.getFriendlyPlanName(index);
-              if (isCur) title += ' (${S.current.current_})';
-              return ListTile(
-                title: Text(title),
-                onTap:
-                    isCur
-                        ? null
-                        : () {
-                          final src = UserPlan.fromJson(jsonDecode(jsonEncode(db.curUser.plans[index])));
-                          db.curPlan_.servants = src.servants;
-                          db.curUser.ensurePlanLarger();
-                          db.itemCenter.calculate();
-                          Navigator.of(context).pop();
-                        },
-              );
-            }),
-          ),
+      builder: (context) => SimpleDialog(
+        title: Text(S.current.select_copy_plan_source),
+        children: List.generate(db.curUser.plans.length, (index) {
+          bool isCur = index == db.curUser.curSvtPlanNo;
+          String title = db.curUser.getFriendlyPlanName(index);
+          if (isCur) title += ' (${S.current.current_})';
+          return ListTile(
+            title: Text(title),
+            onTap: isCur
+                ? null
+                : () {
+                    final src = UserPlan.fromJson(jsonDecode(jsonEncode(db.curUser.plans[index])));
+                    db.curPlan_.servants = src.servants;
+                    db.curUser.ensurePlanLarger();
+                    db.itemCenter.calculate();
+                    Navigator.of(context).pop();
+                  },
+          );
+        }),
+      ),
     );
   }
 }

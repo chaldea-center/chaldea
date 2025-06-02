@@ -39,10 +39,9 @@ class _EventLotteryTabState extends State<EventLotteryTab> {
               TextSpan(
                 children: [
                   TextSpan(
-                    text:
-                        lottery.limited
-                            ? '${S.current.event_lottery_limited}: ${S.current.event_lottery_limit_hint(Maths.max(boxIndices, 0) + 1)}'
-                            : S.current.event_lottery_unlimited,
+                    text: lottery.limited
+                        ? '${S.current.event_lottery_limited}: ${S.current.event_lottery_limit_hint(Maths.max(boxIndices, 0) + 1)}'
+                        : S.current.event_lottery_unlimited,
                   ),
                   TextSpan(text: '\n${S.current.lottery_cost_per_roll}: '),
                   CenterWidgetSpan(
@@ -102,7 +101,9 @@ class _EventLotteryTabState extends State<EventLotteryTab> {
         TextSpan(
           children: [
             for (final gift in box.gifts) ...[
-              CenterWidgetSpan(child: gift.iconBuilder(context: context, width: 28, text: '')),
+              CenterWidgetSpan(
+                child: gift.iconBuilder(context: context, width: 28, text: ''),
+              ),
               TextSpan(text: '×${gift.num.format()} '),
             ],
           ],

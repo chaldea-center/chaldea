@@ -19,18 +19,24 @@ class SvtRelatedCardTab extends StatelessWidget {
     final bondCE = db.gameData.craftEssencesById[svt.bondEquip];
     if (bondCE != null) {
       tabs.add(S.current.bond_craft);
-      pages.add(SingleChildScrollView(child: SafeArea(child: CraftDetailBasePage(ce: bondCE, enableLink: true))));
+      pages.add(
+        SingleChildScrollView(
+          child: SafeArea(child: CraftDetailBasePage(ce: bondCE, enableLink: true)),
+        ),
+      );
     }
 
-    final valentineCEs =
-        svt.valentineEquip.map((e) => db.gameData.craftEssencesById[e]).whereType<CraftEssence>().toList();
+    final valentineCEs = svt.valentineEquip
+        .map((e) => db.gameData.craftEssencesById[e])
+        .whereType<CraftEssence>()
+        .toList();
     if (valentineCEs.isNotEmpty) {
       tabs.add(S.current.valentine_craft);
       pages.add(
         ListView.separated(
           itemCount: valentineCEs.length,
-          itemBuilder:
-              (context, index) => SafeArea(child: CraftDetailBasePage(ce: valentineCEs[index], enableLink: true)),
+          itemBuilder: (context, index) =>
+              SafeArea(child: CraftDetailBasePage(ce: valentineCEs[index], enableLink: true)),
           separatorBuilder: (_, _) => const SizedBox(height: 16),
         ),
       );
@@ -61,12 +67,8 @@ class SvtRelatedCardTab extends StatelessWidget {
                             url: ce.route,
                             child: CraftDetailPage(
                               ce: ce,
-                              onSwitch:
-                                  (cur, next) => Utility.findNextOrPrevious<CraftEssence>(
-                                    list: charaCEs,
-                                    cur: cur,
-                                    reversed: next,
-                                  ),
+                              onSwitch: (cur, next) =>
+                                  Utility.findNextOrPrevious<CraftEssence>(list: charaCEs, cur: cur, reversed: next),
                             ),
                             detail: true,
                           );
@@ -87,9 +89,8 @@ class SvtRelatedCardTab extends StatelessWidget {
                             url: cc.route,
                             child: CmdCodeDetailPage(
                               cc: cc,
-                              onSwitch:
-                                  (cur, next) =>
-                                      Utility.findNextOrPrevious<CommandCode>(list: charaCCs, cur: cur, reversed: next),
+                              onSwitch: (cur, next) =>
+                                  Utility.findNextOrPrevious<CommandCode>(list: charaCCs, cur: cur, reversed: next),
                             ),
                             detail: true,
                           );
@@ -113,7 +114,9 @@ class SvtRelatedCardTab extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          Row(children: <Widget>[Expanded(child: SizedBox(height: 36, child: tabbar))]),
+          Row(
+            children: <Widget>[Expanded(child: SizedBox(height: 36, child: tabbar))],
+          ),
           Expanded(child: TabBarView(children: pages)),
         ],
       ),

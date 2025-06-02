@@ -11,7 +11,8 @@ Future<void> main([List<String> args = const []]) async {
     final hash = gitInfo[0].substring(0, 6);
     final date = int.parse(gitInfo[1]);
 
-    final String content = '''
+    final String content =
+        '''
 // GENERATED CODE - DO NOT MODIFY BY HAND
 const String kCommitHash = "$hash";
 const int kCommitTimestamp = $date;

@@ -83,18 +83,17 @@ class _MasterExpPageState extends State<MasterExpPage>
             child: AutoSizeText.rich(
               TextSpan(
                 text: fmtExp(detail.requiredExp),
-                children:
-                    addExp == null
-                        ? null
-                        : [
-                          TextSpan(
-                            text: '\n+${fmtExp(addExp)}',
-                            style: TextStyle(
-                              // fontSize: 12,
-                              color: Theme.of(context).textTheme.bodySmall?.color,
-                            ),
+                children: addExp == null
+                    ? null
+                    : [
+                        TextSpan(
+                          text: '\n+${fmtExp(addExp)}',
+                          style: TextStyle(
+                            // fontSize: 12,
+                            color: Theme.of(context).textTheme.bodySmall?.color,
                           ),
-                        ],
+                        ),
+                      ],
               ),
               style: const TextStyle(fontSize: 12),
               maxLines: 2,
@@ -112,7 +111,9 @@ class _MasterExpPageState extends State<MasterExpPage>
   }
 
   Widget text(String v) {
-    return Center(child: Text(v, style: const TextStyle(fontSize: 14), textAlign: TextAlign.center));
+    return Center(
+      child: Text(v, style: const TextStyle(fontSize: 14), textAlign: TextAlign.center),
+    );
   }
 
   String fmtExp(int v) {

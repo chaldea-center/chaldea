@@ -365,9 +365,15 @@ class ScriptCommand extends ScriptComponent {
       final match = RegExp(r'^&(.*):(.*)$').firstMatch(src);
       if (match != null) {
         return [
-          state.textSpan(text: match.group(1), style: const TextStyle(decoration: TextDecoration.underline)),
+          state.textSpan(
+            text: match.group(1),
+            style: const TextStyle(decoration: TextDecoration.underline),
+          ),
           state.textSpan(text: '('),
-          state.textSpan(text: match.group(2), style: const TextStyle(decoration: TextDecoration.underline)),
+          state.textSpan(
+            text: match.group(2),
+            style: const TextStyle(decoration: TextDecoration.underline),
+          ),
           state.textSpan(text: ')'),
         ];
       }
@@ -417,11 +423,17 @@ class ScriptCommand extends ScriptComponent {
         int length = double.tryParse(args.getOrNull(0) ?? '1')?.toInt() ?? 1;
         if (length < 1) length = 1;
         return [
-          state.textSpan(text: '\u3000' * length, style: const TextStyle(decoration: TextDecoration.lineThrough)),
+          state.textSpan(
+            text: '\u3000' * length,
+            style: const TextStyle(decoration: TextDecoration.lineThrough),
+          ),
         ];
       case '%1':
         return [
-          state.textSpan(text: Transl.misc('Fujimaru').of(state.region), style: TextStyle(color: Colors.amber[800])),
+          state.textSpan(
+            text: Transl.misc('Fujimaru').of(state.region),
+            style: TextStyle(color: Colors.amber[800]),
+          ),
         ];
       case 'i':
       case 'image':
@@ -559,15 +571,14 @@ class ScriptCommand extends ScriptComponent {
         final url = state.assetUrl.movie(arg1);
         return [
           WidgetSpan(
-            child:
-                filterData.video
-                    ? GestureDetector(
-                      onLongPress: () {
-                        router.pushPage(VideoPlayPage(url: url, title: arg1));
-                      },
-                      child: MyVideoPlayer.url(url: url, autoPlay: filterData.autoPlayVideo),
-                    )
-                    : MyVideoPlayer.defaultFailedBuilder(context, url, null),
+            child: filterData.video
+                ? GestureDetector(
+                    onLongPress: () {
+                      router.pushPage(VideoPlayPage(url: url, title: arg1));
+                    },
+                    child: MyVideoPlayer.url(url: url, autoPlay: filterData.autoPlayVideo),
+                  )
+                : MyVideoPlayer.defaultFailedBuilder(context, url, null),
           ),
         ];
       case 'selectionUse':
@@ -620,12 +631,11 @@ class ScriptCommand extends ScriptComponent {
           SharedBuilder.textButtonSpan(
             context: context,
             text: quest == null || quest.lDispName.isEmpty ? 'Quest $questId' : quest.lDispName,
-            onTap:
-                questId == null
-                    ? null
-                    : () {
-                      router.push(url: Routes.questI(questId));
-                    },
+            onTap: questId == null
+                ? null
+                : () {
+                    router.push(url: Routes.questI(questId));
+                  },
           ),
           if (phase != null) state.textSpan(text: ' phase $phase'),
         ];

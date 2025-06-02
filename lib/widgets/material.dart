@@ -93,10 +93,9 @@ class DashedLinePainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final paint =
-        Paint()
-          ..color = Colors.grey
-          ..strokeWidth = strokeWidth;
+    final paint = Paint()
+      ..color = Colors.grey
+      ..strokeWidth = strokeWidth;
     double startX = indent;
     final maxX = max(startX, size.width - indent);
     final y = size.height / 2;

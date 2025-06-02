@@ -148,7 +148,10 @@ class EventCampaignDetail extends StatelessWidget {
         child: Text.rich(
           TextSpan(
             children: [
-              if (item != null) CenterWidgetSpan(child: Item.iconBuilder(context: context, item: item, width: 36)),
+              if (item != null)
+                CenterWidgetSpan(
+                  child: Item.iconBuilder(context: context, item: item, width: 36),
+                ),
               TextSpan(text: ' ${Item.getName(campaign.value)}'),
             ],
           ),

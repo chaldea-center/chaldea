@@ -93,7 +93,10 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
             CarouselUtil.limitHeightWidget(context: context, imageUrls: summon.resolvedBanner.values.toList()),
             if (summon.subSummons.length > 1) dropdownButton,
             data.probs.isEmpty
-                ? const Padding(padding: EdgeInsets.all(16), child: Center(child: Text('No data')))
+                ? const Padding(
+                    padding: EdgeInsets.all(16),
+                    child: Center(child: Text('No data')),
+                  )
                 : details,
             if (summon.isDestiny) destinyOrderSelects,
           ]),
@@ -186,17 +189,15 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
     });
     return SimpleAccordion(
       expanded: rarity > 3,
-      headerBuilder:
-          (context, _) => ListTile(
-            dense: true,
-            title: Text('$kStarChar$rarity ${isSvt ? S.current.servant : S.current.craft_essence}'),
-            trailing: Text(totalCount.toString()),
-          ),
-      contentBuilder:
-          (context) => Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
-            child: Center(child: Wrap(children: counts)),
-          ),
+      headerBuilder: (context, _) => ListTile(
+        dense: true,
+        title: Text('$kStarChar$rarity ${isSvt ? S.current.servant : S.current.craft_essence}'),
+        trailing: Text(totalCount.toString()),
+      ),
+      contentBuilder: (context) => Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
+        child: Center(child: Wrap(children: counts)),
+      ),
     );
   }
 
@@ -339,10 +340,9 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
       onTap: () {
         router.pushPage(
           ServantListPage(
-            filterData:
-                destinyOrderSvtFilter
-                  ..svtClass.options = SvtClassX.resolveClasses(svtClass, expandBeast: false).toSet()
-                  ..rarity.options = {5},
+            filterData: destinyOrderSvtFilter
+              ..svtClass.options = SvtClassX.resolveClasses(svtClass, expandBeast: false).toSet()
+              ..rarity.options = {5},
             onSelected: (selectedSvt) {
               if (selectedSvt.type == SvtType.normal &&
                   selectedSvt.collectionNo > 0 &&
@@ -401,14 +401,13 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
         Row(
           children: [
             IconButton(
-              onPressed:
-                  _curHistory == 0
-                      ? null
-                      : () {
-                        setState(() {
-                          _curHistory -= 1;
-                        });
-                      },
+              onPressed: _curHistory == 0
+                  ? null
+                  : () {
+                      setState(() {
+                        _curHistory -= 1;
+                      });
+                    },
               icon: const Icon(Icons.keyboard_arrow_left),
             ),
             Expanded(
@@ -418,14 +417,13 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
               ),
             ),
             IconButton(
-              onPressed:
-                  _curHistory == history.length - 1
-                      ? null
-                      : () {
-                        setState(() {
-                          _curHistory += 1;
-                        });
-                      },
+              onPressed: _curHistory == history.length - 1
+                  ? null
+                  : () {
+                      setState(() {
+                        _curHistory += 1;
+                      });
+                    },
               icon: const Icon(Icons.keyboard_arrow_right),
             ),
           ],
@@ -474,8 +472,8 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
         child: db.getIconImage(
           'https://assets.chaldea.center/images/$fn',
           height: 50,
-          placeholder:
-              (context) => ElevatedButton(onPressed: () => startGacha(times, quartz), child: Text('Gacha $times')),
+          placeholder: (context) =>
+              ElevatedButton(onPressed: () => startGacha(times, quartz), child: Text('Gacha $times')),
         ),
       ),
     );

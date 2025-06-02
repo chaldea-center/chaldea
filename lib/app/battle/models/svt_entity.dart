@@ -328,10 +328,9 @@ class BattleServantData {
     return totalAtk;
   }
 
-  int get rarity =>
-      isPlayer
-          ? niceSvt!.getAscended(limitCount, (attr) => attr.overwriteRarity) ?? niceSvt!.rarity
-          : niceEnemy!.svt.rarity;
+  int get rarity => isPlayer
+      ? niceSvt!.getAscended(limitCount, (attr) => attr.overwriteRarity) ?? niceSvt!.rarity
+      : niceEnemy!.svt.rarity;
 
   int get originalClassId => isPlayer ? niceSvt!.classId : niceEnemy!.svt.classId;
 
@@ -356,8 +355,10 @@ class BattleServantData {
   }
 
   ServantSubAttribute get attribute {
-    final overwriteSubattributeBuff =
-        collectBuffsPerAction(battleBuff.validBuffsActiveFirst, BuffAction.overwriteSubattribute).firstOrNull;
+    final overwriteSubattributeBuff = collectBuffsPerAction(
+      battleBuff.validBuffsActiveFirst,
+      BuffAction.overwriteSubattribute,
+    ).firstOrNull;
     final overwriteSubattribute = ServantSubAttribute.values.firstWhereOrNull(
       (attr) => attr.value == overwriteSubattributeBuff?.vals.Value,
     );
@@ -613,11 +614,10 @@ class BattleServantData {
       final cardType = checkOverwriteSvtCardType(changeCardType ?? cards[index]);
       final detail = niceSvt!.cardDetails[cardType];
       if (detail == null) continue;
-      final card =
-          CommandCardData(this, cardType, detail, index)
-            ..isTD = false
-            ..npGain = getNPGain(cardType)
-            ..traits = ConstData.cardInfo[cardType]!.values.first.individuality.toList();
+      final card = CommandCardData(this, cardType, detail, index)
+        ..isTD = false
+        ..npGain = getNPGain(cardType)
+        ..traits = ConstData.cardInfo[cardType]!.values.first.individuality.toList();
 
       if (isCardInDeck) {
         // enemy weak+strength 6 cards
@@ -646,8 +646,9 @@ class BattleServantData {
           CardDetail(
             attackIndividuality: _td.individuality.toList(),
             hitsDistribution: _td.damage,
-            attackType:
-                _td.damageType == TdEffectFlag.attackEnemyAll ? CommandCardAttackType.all : CommandCardAttackType.one,
+            attackType: _td.damageType == TdEffectFlag.attackEnemyAll
+                ? CommandCardAttackType.all
+                : CommandCardAttackType.one,
           ),
           -1,
         )
@@ -661,8 +662,9 @@ class BattleServantData {
     final cardDetail = CardDetail(
       attackIndividuality: currentNP?.individuality ?? [],
       hitsDistribution: currentNP?.svt.damage ?? [100],
-      attackType:
-          currentNP?.damageType == TdEffectFlag.attackEnemyAll ? CommandCardAttackType.all : CommandCardAttackType.one,
+      attackType: currentNP?.damageType == TdEffectFlag.attackEnemyAll
+          ? CommandCardAttackType.all
+          : CommandCardAttackType.one,
     );
 
     return CommandCardData(this, currentNP?.svt.card ?? CardType.none, cardDetail, -1)
@@ -693,8 +695,9 @@ class BattleServantData {
       final cardDetail = CardDetail(
         attackIndividuality: td.individuality,
         hitsDistribution: td.svt.damage,
-        attackType:
-            td.damageType == TdEffectFlag.attackEnemyAll ? CommandCardAttackType.all : CommandCardAttackType.one,
+        attackType: td.damageType == TdEffectFlag.attackEnemyAll
+            ? CommandCardAttackType.all
+            : CommandCardAttackType.one,
       );
 
       return CommandCardData(this, td.svt.card, cardDetail, -1)
@@ -734,8 +737,10 @@ class BattleServantData {
   }
 
   CardType checkOverwriteSvtCardType(final CardType baseCardType) {
-    final overwriteSvtCardTypeBuff =
-        collectBuffsPerAction(battleBuff.validBuffs, BuffAction.overwriteSvtCardType).lastOrNull;
+    final overwriteSvtCardTypeBuff = collectBuffsPerAction(
+      battleBuff.validBuffs,
+      BuffAction.overwriteSvtCardType,
+    ).lastOrNull;
     if (overwriteSvtCardTypeBuff == null) {
       return baseCardType;
     }
@@ -889,7 +894,12 @@ class BattleServantData {
       case BuffAction.grantInstantdeath:
       case BuffAction.multiattack:
         final activeOnly = buff.buff.script.IndvAddBuffPassive != 1;
-        return self.getTraits(addTraits: [...cardData?.traits ?? [], ...self.getBuffTraits(activeOnly: activeOnly)]);
+        return self.getTraits(
+          addTraits: [
+            ...cardData?.traits ?? [],
+            ...self.getBuffTraits(activeOnly: activeOnly),
+          ],
+        );
       case BuffAction.donotActCommandtype:
       case BuffAction.donotNobleCondMismatch:
         return self.getTraits(addTraits: cardData?.traits);
@@ -1020,7 +1030,10 @@ class BattleServantData {
       case BuffAction.overwriteDamageDef:
         final activeOnly = buff.buff.script.IndvAddBuffPassive != 1;
         return opponent?.getTraits(
-              addTraits: [...cardData?.traits ?? [], ...opponent.getBuffTraits(activeOnly: activeOnly)],
+              addTraits: [
+                ...cardData?.traits ?? [],
+                ...opponent.getBuffTraits(activeOnly: activeOnly),
+              ],
             ) ??
             cardData?.traits;
       case BuffAction.dropNp:
@@ -1183,12 +1196,11 @@ class BattleServantData {
   }
 
   static int getNPCap(final int npLevel) {
-    final capRate =
-        npLevel == 1
-            ? 1
-            : npLevel < 5
-            ? 2
-            : 3;
+    final capRate = npLevel == 1
+        ? 1
+        : npLevel < 5
+        ? 2
+        : 3;
     return ConstData.constants.fullTdPoint * capRate;
   }
 
@@ -1324,8 +1336,10 @@ class BattleServantData {
     final List<BattleSkillInfoData> newSkillInfos = [];
     for (final skillNum in kActiveSkillNums) {
       final newSkills = (targetSvt.groupedActiveSkills[skillNum] ?? []).toList();
-      final hideActives =
-          ConstData.getSvtLimitHides(targetSvtId, limitCount).expand((e) => e.activeSkills[skillNum] ?? []).toList();
+      final hideActives = ConstData.getSvtLimitHides(
+        targetSvtId,
+        limitCount,
+      ).expand((e) => e.activeSkills[skillNum] ?? []).toList();
       newSkills.removeWhere((niceSkill) => hideActives.contains(niceSkill.id));
 
       final oldInfoData = skillInfoList.firstWhereOrNull((infoData) => infoData.skillNum == skillNum);
@@ -2208,14 +2222,13 @@ class BattleServantData {
       if (shouldActivate) {
         buff.setUsed(this, battleData);
         final relationOverwrite = buff.buff.script.relationId!;
-        final overwrite =
-            isDef
-                ? relationOverwrite.defSide2.containsKey(opponent.logicalClassId)
-                    ? relationOverwrite.defSide2[opponent.logicalClassId]![logicalClassId]
-                    : null
-                : relationOverwrite.atkSide2.containsKey(logicalClassId)
-                ? relationOverwrite.atkSide2[logicalClassId]![opponent.logicalClassId]
-                : null;
+        final overwrite = isDef
+            ? relationOverwrite.defSide2.containsKey(opponent.logicalClassId)
+                  ? relationOverwrite.defSide2[opponent.logicalClassId]![logicalClassId]
+                  : null
+            : relationOverwrite.atkSide2.containsKey(logicalClassId)
+            ? relationOverwrite.atkSide2[logicalClassId]![opponent.logicalClassId]
+            : null;
         if (overwrite != null) {
           final overwriteValue = overwrite.damageRate;
           switch (overwrite.type) {
@@ -2508,10 +2521,9 @@ class BattleServantData {
       ..usedNpThisTurn = usedNpThisTurn
       ..reducedHp = reducedHp
       .._accumulationDamage = _accumulationDamage
-      ..skillInfoList =
-          skillInfoList
-              .map((e) => e.copy())
-              .toList() // copy
+      ..skillInfoList = skillInfoList
+          .map((e) => e.copy())
+          .toList() // copy
       ..equip1 = equip1?.copy()
       ..equip2 = equip2?.copy()
       ..equip3 = equip3?.copy()

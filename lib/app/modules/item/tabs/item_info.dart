@@ -192,7 +192,13 @@ class _ItemInfoTabState extends State<ItemInfoTab> {
         ),
       );
     }
-    return Column(children: [Expanded(child: child), kDefaultDivider, SafeArea(child: buttonBar)]);
+    return Column(
+      children: [
+        Expanded(child: child),
+        kDefaultDivider,
+        SafeArea(child: buttonBar),
+      ],
+    );
   }
 
   Widget get buttonBar {
@@ -249,25 +255,23 @@ class _ItemInfoTabState extends State<ItemInfoTab> {
                   TextSpan(
                     text: 'NEW',
                     style: _useNewBondCoinRewards ? TextStyle(color: Theme.of(context).colorScheme.primary) : null,
-                    recognizer:
-                        TapGestureRecognizer()
-                          ..onTap = () {
-                            setState(() {
-                              _useNewBondCoinRewards = true;
-                            });
-                          },
+                    recognizer: TapGestureRecognizer()
+                      ..onTap = () {
+                        setState(() {
+                          _useNewBondCoinRewards = true;
+                        });
+                      },
                   ),
                   const TextSpan(text: '/'),
                   TextSpan(
                     text: 'OLD',
                     style: !_useNewBondCoinRewards ? TextStyle(color: Theme.of(context).colorScheme.primary) : null,
-                    recognizer:
-                        TapGestureRecognizer()
-                          ..onTap = () {
-                            setState(() {
-                              _useNewBondCoinRewards = false;
-                            });
-                          },
+                    recognizer: TapGestureRecognizer()
+                      ..onTap = () {
+                        setState(() {
+                          _useNewBondCoinRewards = false;
+                        });
+                      },
                   ),
                 ],
               ),
@@ -295,8 +299,9 @@ class _ItemInfoTabState extends State<ItemInfoTab> {
                     style: TextStyle(
                       color: _summonCoin == validSummonCoins[index] ? Theme.of(context).colorScheme.error : null,
                       fontWeight: _summonCoin == validSummonCoins[index] ? FontWeight.bold : null,
-                      decoration:
-                          svtCoinOwner?.coin?.summonNum == validSummonCoins[index] ? TextDecoration.underline : null,
+                      decoration: svtCoinOwner?.coin?.summonNum == validSummonCoins[index]
+                          ? TextDecoration.underline
+                          : null,
                     ),
                     maxLines: 1,
                   ),
@@ -328,10 +333,9 @@ class _ItemInfoTabState extends State<ItemInfoTab> {
                       '$baseNp~${baseNp + 4}',
                       textAlign: TextAlign.center,
                       minFontSize: 6,
-                      style:
-                          baseNp == _baseNp
-                              ? TextStyle(color: Theme.of(context).colorScheme.error, fontWeight: FontWeight.bold)
-                              : null,
+                      style: baseNp == _baseNp
+                          ? TextStyle(color: Theme.of(context).colorScheme.error, fontWeight: FontWeight.bold)
+                          : null,
                       maxLines: 1,
                     ),
                   ),
@@ -354,12 +358,11 @@ class _ItemInfoTabState extends State<ItemInfoTab> {
             int coins = Maths.sum(bondCoins.sublist(0, index)) + (np + _baseNp - 1) * _summonCoin;
             return TableCellData(
               text: coins.toString(),
-              style:
-                  coins > 660
-                      ? TextStyle(color: Theme.of(context).hintColor, fontStyle: FontStyle.italic)
-                      : coins > 480
-                      ? const TextStyle(fontWeight: FontWeight.w300)
-                      : const TextStyle(fontWeight: FontWeight.bold),
+              style: coins > 660
+                  ? TextStyle(color: Theme.of(context).hintColor, fontStyle: FontStyle.italic)
+                  : coins > 480
+                  ? const TextStyle(fontWeight: FontWeight.w300)
+                  : const TextStyle(fontWeight: FontWeight.bold),
               maxLines: 1,
             );
           }),

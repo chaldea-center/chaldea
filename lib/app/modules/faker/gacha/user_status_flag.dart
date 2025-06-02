@@ -34,7 +34,9 @@ class _UserStatusFlagSetPageState extends State<UserStatusFlagSetPage> {
           buildGroup('种火', UserStatusFlagKind.kGachaSellCombineMaterials),
           buildGroup('芙芙', UserStatusFlagKind.kGachaSellStatusUps),
           buildGroup(S.current.craft_essence_short, UserStatusFlagKind.kGachaSellSvtEquips),
-          Center(child: Padding(padding: EdgeInsets.all(4), child: gachaSellFlagSetButton)),
+          Center(
+            child: Padding(padding: EdgeInsets.all(4), child: gachaSellFlagSetButton),
+          ),
         ],
       ),
     );
@@ -51,19 +53,18 @@ class _UserStatusFlagSetPageState extends State<UserStatusFlagSetPage> {
           child: FilterGroup<UserStatusFlagKind>(
             options: options,
             values: selectedFlags,
-            optionBuilder:
-                (v) => Text(switch (v) {
-                  UserStatusFlagKind.combineMaterialC => '${kStarChar2}1',
-                  UserStatusFlagKind.combineMaterialUc => '${kStarChar2}2',
-                  UserStatusFlagKind.combineMaterialR => '${kStarChar2}3',
-                  UserStatusFlagKind.statusUpC => '${kStarChar2}1',
-                  UserStatusFlagKind.statusUpUc => '${kStarChar2}2',
-                  UserStatusFlagKind.statusUpR => '${kStarChar2}3',
-                  UserStatusFlagKind.svtEquipC => '${kStarChar2}1',
-                  UserStatusFlagKind.svtEquipUc => '${kStarChar2}2',
-                  UserStatusFlagKind.svtEquipR => '${kStarChar2}3',
-                  _ => v.name,
-                }),
+            optionBuilder: (v) => Text(switch (v) {
+              UserStatusFlagKind.combineMaterialC => '${kStarChar2}1',
+              UserStatusFlagKind.combineMaterialUc => '${kStarChar2}2',
+              UserStatusFlagKind.combineMaterialR => '${kStarChar2}3',
+              UserStatusFlagKind.statusUpC => '${kStarChar2}1',
+              UserStatusFlagKind.statusUpUc => '${kStarChar2}2',
+              UserStatusFlagKind.statusUpR => '${kStarChar2}3',
+              UserStatusFlagKind.svtEquipC => '${kStarChar2}1',
+              UserStatusFlagKind.svtEquipUc => '${kStarChar2}2',
+              UserStatusFlagKind.svtEquipR => '${kStarChar2}3',
+              _ => v.name,
+            }),
             onFilterChanged: (v, _) {
               if (mounted) setState(() {});
             },
@@ -81,26 +82,25 @@ class _UserStatusFlagSetPageState extends State<UserStatusFlagSetPage> {
       return (userFlag & flag.mask != 0) != (selectedFlags.options.contains(flag));
     });
     return FilledButton(
-      onPressed:
-          changed
-              ? () async {
-                List<int> onFlagNumbers = [], offFlagNumbers = [];
-                for (final flag in UserStatusFlagKind.kGachaSells) {
-                  if (selectedFlags.options.contains(flag)) {
-                    onFlagNumbers.add(flag.value);
-                  } else {
-                    offFlagNumbers.add(flag.value);
-                  }
+      onPressed: changed
+          ? () async {
+              List<int> onFlagNumbers = [], offFlagNumbers = [];
+              for (final flag in UserStatusFlagKind.kGachaSells) {
+                if (selectedFlags.options.contains(flag)) {
+                  onFlagNumbers.add(flag.value);
+                } else {
+                  offFlagNumbers.add(flag.value);
                 }
-                await widget.runtime.runTask(
-                  () => widget.runtime.agent.userStatusFlagSet(
-                    onFlagNumbers: onFlagNumbers,
-                    offFlagNumbers: offFlagNumbers,
-                  ),
-                );
-                if (mounted) setState(() {});
               }
-              : null,
+              await widget.runtime.runTask(
+                () => widget.runtime.agent.userStatusFlagSet(
+                  onFlagNumbers: onFlagNumbers,
+                  offFlagNumbers: offFlagNumbers,
+                ),
+              );
+              if (mounted) setState(() {});
+            }
+          : null,
       child: Text('Set Auto Sell Flags'),
     );
   }

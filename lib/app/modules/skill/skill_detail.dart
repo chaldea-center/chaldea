@@ -65,7 +65,10 @@ class _SkillDetailPageState extends State<SkillDetailPage> with RegionBasedState
             maxLines: 1,
             minFontSize: 14,
           ),
-          actions: [dropdownRegion(shownNone: widget.skill != null), popupMenu],
+          actions: [
+            dropdownRegion(shownNone: widget.skill != null),
+            popupMenu,
+          ],
         ),
         body: buildBody(context),
       ),
@@ -208,29 +211,28 @@ class _SkillDetailPageState extends State<SkillDetailPage> with RegionBasedState
 
   Widget get popupMenu {
     return PopupMenuButton(
-      itemBuilder:
-          (context) => [
-            PopupMenuItem(
-              enabled: data != null,
-              onTap: () async {
-                try {
-                  final text = const JsonEncoder.withIndent('  ').convert(skill);
-                  // ignore: use_build_context_synchronously
-                  await FilePickerU.saveFile(
-                    dialogContext: context,
-                    data: utf8.encode(text),
-                    filename: "skill-${skill.id}-${DateTime.now().toSafeFileName()}.json",
-                  );
-                } catch (e, s) {
-                  EasyLoading.showError(e.toString());
-                  logger.e('dump skill json failed', e, s);
-                  return;
-                }
-              },
-              child: Text('${S.current.general_export} JSON'),
-            ),
-            ...SharedBuilder.websitesPopupMenuItems(atlas: Atlas.dbSkill(id, region ?? Region.jp)),
-          ],
+      itemBuilder: (context) => [
+        PopupMenuItem(
+          enabled: data != null,
+          onTap: () async {
+            try {
+              final text = const JsonEncoder.withIndent('  ').convert(skill);
+              // ignore: use_build_context_synchronously
+              await FilePickerU.saveFile(
+                dialogContext: context,
+                data: utf8.encode(text),
+                filename: "skill-${skill.id}-${DateTime.now().toSafeFileName()}.json",
+              );
+            } catch (e, s) {
+              EasyLoading.showError(e.toString());
+              logger.e('dump skill json failed', e, s);
+              return;
+            }
+          },
+          child: Text('${S.current.general_export} JSON'),
+        ),
+        ...SharedBuilder.websitesPopupMenuItems(atlas: Atlas.dbSkill(id, region ?? Region.jp)),
+      ],
     );
   }
 }

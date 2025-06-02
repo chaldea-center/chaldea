@@ -41,21 +41,19 @@ class _ItemObtainEventTabState extends State<ItemObtainEventTab> {
   TextStyle? _textStyle([bool highlight = false, bool outdated = false]) {
     if (!highlight && !outdated) return null;
     return TextStyle(
-      color:
-          highlight
-              ? Colors.blueAccent
-              : outdated
-              ? Colors.grey
-              : null,
+      color: highlight
+          ? Colors.blueAccent
+          : outdated
+          ? Colors.grey
+          : null,
     );
   }
 
   Widget get _limitEventAccordion {
     List<Widget> children = [];
-    final limitEvents =
-        db.gameData.events.values
-            .where((event) => _whetherToShow(db.curUser.limitEventPlanOf(event.id).enabled, event.isOutdated()))
-            .toList();
+    final limitEvents = db.gameData.events.values
+        .where((event) => _whetherToShow(db.curUser.limitEventPlanOf(event.id).enabled, event.isOutdated()))
+        .toList();
     limitEvents.sort2((e) => e.startedAt);
     int count = 0;
     for (final event in limitEvents) {
@@ -142,20 +140,19 @@ class _ItemObtainEventTabState extends State<ItemObtainEventTab> {
       children.add(
         SimpleAccordion(
           expanded: false,
-          headerBuilder:
-              (context, _) => ListTile(
-                title: Text(
-                  '${S.current.exchange_ticket_short} ${ticket.dateStr}',
-                  style: _textStyle(false, ticket.isOutdated()),
-                  textScaler: const TextScaler.linear(0.9),
-                ),
-                subtitle: AutoSizeText(
-                  ticket.of(db.curUser.region).map((e) => GameCardMixin.anyCardItemName(e).l).join('/'),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                trailing: Text('$itemNum/${ticket.maxCount}', style: _textStyle(plan.enabled, ticket.isOutdated())),
-              ),
+          headerBuilder: (context, _) => ListTile(
+            title: Text(
+              '${S.current.exchange_ticket_short} ${ticket.dateStr}',
+              style: _textStyle(false, ticket.isOutdated()),
+              textScaler: const TextScaler.linear(0.9),
+            ),
+            subtitle: AutoSizeText(
+              ticket.of(db.curUser.region).map((e) => GameCardMixin.anyCardItemName(e).l).join('/'),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+            trailing: Text('$itemNum/${ticket.maxCount}', style: _textStyle(plan.enabled, ticket.isOutdated())),
+          ),
           contentBuilder: (context) => ExchangeTicketTab(id: ticket.id),
           expandIconBuilder: (_, _) => const SizedBox(),
           disableAnimation: true,
@@ -167,10 +164,9 @@ class _ItemObtainEventTabState extends State<ItemObtainEventTab> {
 
   Widget get _limitedMissionAccordion {
     List<Widget> children = [];
-    final masterMissions =
-        db.gameData.masterMissions.values
-            .where((e) => const [MissionType.limited, MissionType.extra].contains(e.type))
-            .toList();
+    final masterMissions = db.gameData.masterMissions.values
+        .where((e) => const [MissionType.limited, MissionType.extra].contains(e.type))
+        .toList();
     masterMissions.sort2((a) => -a.endedAt);
     int count = 0;
     for (final mission in masterMissions) {
@@ -265,21 +261,19 @@ class _ItemObtainEventTabState extends State<ItemObtainEventTab> {
   Widget _getAccordion({required Widget title, Widget? trailing, required List<Widget> children}) {
     return SimpleAccordion(
       expanded: false,
-      headerBuilder:
-          (context, expanded) => ListTile(
-            leading: const Icon(Icons.event),
-            title: title,
-            trailing: trailing,
-            contentPadding: const EdgeInsetsDirectional.only(start: 16),
-          ),
-      contentBuilder:
-          (context) => ListView.separated(
-            shrinkWrap: true,
-            physics: const ClampingScrollPhysics(),
-            itemBuilder: (context, index) => children[index],
-            itemCount: children.length,
-            separatorBuilder: (context, index) => kDefaultDivider,
-          ),
+      headerBuilder: (context, expanded) => ListTile(
+        leading: const Icon(Icons.event),
+        title: title,
+        trailing: trailing,
+        contentPadding: const EdgeInsetsDirectional.only(start: 16),
+      ),
+      contentBuilder: (context) => ListView.separated(
+        shrinkWrap: true,
+        physics: const ClampingScrollPhysics(),
+        itemBuilder: (context, index) => children[index],
+        itemCount: children.length,
+        separatorBuilder: (context, index) => kDefaultDivider,
+      ),
     );
   }
 }

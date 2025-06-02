@@ -24,12 +24,11 @@ class AppAnalysisImpl implements AppAnalysis {
         ..setUserProperties({
           "language": Language.current.code,
           "region": db.settings.resolvedPreferredRegions.firstOrNull?.upper,
-          "channel":
-              PlatformU.isAndroid
-                  ? (AppInfo.isFDroid ? 'f-droid' : 'android')
-                  : PlatformU.isIOS
-                  ? 'ios'
-                  : "unknown",
+          "channel": PlatformU.isAndroid
+              ? (AppInfo.isFDroid ? 'f-droid' : 'android')
+              : PlatformU.isIOS
+              ? 'ios'
+              : "unknown",
         })
         ..setUpdateSessionTimerDelay(600)
         ..setEventQueueSizeToSend(50);

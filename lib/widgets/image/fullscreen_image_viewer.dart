@@ -30,19 +30,18 @@ class FullscreenImageViewer extends StatefulWidget {
     this.galleryOption = const PhotoViewGalleryOption(),
     CachedImageOption? cachedImageOption,
     bool showSaveOnLongPress = false,
-  }) : children =
-           urls
-               .map(
-                 (e) => CachedImage(
-                   imageUrl: e,
-                   cachedOption: cachedImageOption,
-                   photoViewOption: photoViewOption,
-                   showSaveOnLongPress: showSaveOnLongPress,
-                   viewFullOnTap: false,
-                   onTap: null,
-                 ),
-               )
-               .toList();
+  }) : children = urls
+           .map(
+             (e) => CachedImage(
+               imageUrl: e,
+               cachedOption: cachedImageOption,
+               photoViewOption: photoViewOption,
+               showSaveOnLongPress: showSaveOnLongPress,
+               viewFullOnTap: false,
+               onTap: null,
+             ),
+           )
+           .toList();
 
   /// mostly used
   static Future show({
@@ -58,27 +57,26 @@ class FullscreenImageViewer extends StatefulWidget {
         opaque: opaque, // to avoid create new state of lower routes
         // fullscreenDialog: true,
         // add transition
-        pageBuilder:
-            (context, _, _) => FullscreenImageViewer(
-              galleryOption: PhotoViewGalleryOption(
-                pageController: initialPage == null ? null : PageController(initialPage: initialPage),
-              ),
-              children: List.generate(
-                urls.length,
-                (index) => CachedImage(
-                  imageUrl: urls[index],
-                  placeholder: placeholder,
-                  showSaveOnLongPress: true,
-                  viewFullOnTap: false,
-                  onTap: null,
-                  photoViewOption: PhotoViewOption.limited(),
-                  cachedOption: const CachedImageOption(
-                    fadeOutDuration: Duration(milliseconds: 1200),
-                    fadeInDuration: Duration(milliseconds: 800),
-                  ),
-                ),
+        pageBuilder: (context, _, _) => FullscreenImageViewer(
+          galleryOption: PhotoViewGalleryOption(
+            pageController: initialPage == null ? null : PageController(initialPage: initialPage),
+          ),
+          children: List.generate(
+            urls.length,
+            (index) => CachedImage(
+              imageUrl: urls[index],
+              placeholder: placeholder,
+              showSaveOnLongPress: true,
+              viewFullOnTap: false,
+              onTap: null,
+              photoViewOption: PhotoViewOption.limited(),
+              cachedOption: const CachedImageOption(
+                fadeOutDuration: Duration(milliseconds: 1200),
+                fadeInDuration: Duration(milliseconds: 800),
               ),
             ),
+          ),
+        ),
       ),
     );
   }
@@ -93,8 +91,9 @@ class _FullscreenImageViewerState extends State<FullscreenImageViewer> {
 
   @override
   Widget build(BuildContext context) {
-    final bgColor =
-        Theme.of(context).isDarkMode ? Theme.of(context).colorScheme.surface : Theme.of(context).colorScheme.primary;
+    final bgColor = Theme.of(context).isDarkMode
+        ? Theme.of(context).colorScheme.surface
+        : Theme.of(context).colorScheme.primary;
     return Scaffold(
       appBar: showAppBar ? AppBar(title: const Text('Image'), backgroundColor: bgColor.withAlpha(102)) : null,
       extendBodyBehindAppBar: true,

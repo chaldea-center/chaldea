@@ -59,15 +59,13 @@ class ClassBoard with RouteInfo {
 
   bool get isGrand => parentClassBoardBaseId > 0 || id > 10000;
 
-  String get uiIcon =>
-      isGrand
-          ? "https://static.atlasacademy.io/file/aa-fgo-extract-jp/ClassBoard/Bg/GrandClassIcon$id.png"
-          : "https://static.atlasacademy.io/file/aa-fgo-extract-jp/ClassBoard/UI/DownloadClassBoardUIAtlas/DownloadClassBoardUIAtlas1/img_class_$id.png";
+  String get uiIcon => isGrand
+      ? "https://static.atlasacademy.io/file/aa-fgo-extract-jp/ClassBoard/Bg/GrandClassIcon$id.png"
+      : "https://static.atlasacademy.io/file/aa-fgo-extract-jp/ClassBoard/UI/DownloadClassBoardUIAtlas/DownloadClassBoardUIAtlas1/img_class_$id.png";
 
-  String get btnIcon =>
-      isGrand && classes.length == 1
-          ? SvtClassX.clsIcon(classes.first.classId, 5)
-          : "https://static.atlasacademy.io/JP/ClassIcons/btn_tab_$id.png";
+  String get btnIcon => isGrand && classes.length == 1
+      ? SvtClassX.clsIcon(classes.first.classId, 5)
+      : "https://static.atlasacademy.io/JP/ClassIcons/btn_tab_$id.png";
 
   String get dispName {
     if ((id >= 1 && id <= 7) || (id >= 10001 && id <= 10007)) {
@@ -178,12 +176,11 @@ class ClassBoard with RouteInfo {
       num: 0,
       coolDown: [0],
       functions: functions,
-      actIndividuality:
-          classes
-              .map((e) => ConstData.classInfo[e.classId]?.individuality ?? 0)
-              .where((e) => e > 0)
-              .map((e) => NiceTrait(id: e))
-              .toList(),
+      actIndividuality: classes
+          .map((e) => ConstData.classInfo[e.classId]?.individuality ?? 0)
+          .where((e) => e > 0)
+          .map((e) => NiceTrait(id: e))
+          .toList(),
     );
   }
 }

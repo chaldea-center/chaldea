@@ -74,14 +74,13 @@ class _ImportPageHomeState extends State<ImportPageHome> {
                   ['${Region.jp.localName}/${Region.na.localName}', if (kIsWeb) 'web is not supported'].join(', '),
                 ),
                 enabled: !kIsWeb,
-                onTap:
-                    kIsWeb
-                        ? null
-                        : () {
-                          if (checkDataRequiredVersion()) {
-                            router.pushPage(const AutoLoginPage());
-                          }
-                        },
+                onTap: kIsWeb
+                    ? null
+                    : () {
+                        if (checkDataRequiredVersion()) {
+                          router.pushPage(const AutoLoginPage());
+                        }
+                      },
               ),
             ],
           ),

@@ -157,32 +157,29 @@ class _UserPresentBoxManagePageState extends State<UserPresentBoxManagePage> {
           IconButton(
             icon: const Icon(Icons.filter_alt),
             tooltip: S.current.filter,
-            onPressed:
-                () => FilterPage.show(
-                  context: context,
-                  builder:
-                      (context) => UserPresentBoxFilterPage(
-                        filterData: filterData,
-                        onChanged: (_) {
-                          if (mounted) {
-                            setState(() {});
-                          }
-                        },
-                      ),
-                ),
+            onPressed: () => FilterPage.show(
+              context: context,
+              builder: (context) => UserPresentBoxFilterPage(
+                filterData: filterData,
+                onChanged: (_) {
+                  if (mounted) {
+                    setState(() {});
+                  }
+                },
+              ),
+            ),
           ),
         ],
       ),
       body: Column(
         children: [
           Expanded(
-            child:
-                items.isEmpty
-                    ? Center(child: CircularProgressIndicator())
-                    : ListView.builder(
-                      itemBuilder: (context, index) => buildPresent(shownPresents[index]),
-                      itemCount: shownPresents.length,
-                    ),
+            child: items.isEmpty
+                ? Center(child: CircularProgressIndicator())
+                : ListView.builder(
+                    itemBuilder: (context, index) => buildPresent(shownPresents[index]),
+                    itemCount: shownPresents.length,
+                  ),
           ),
           kDefaultDivider,
           SafeArea(child: buttonBar(shownPresents)),
@@ -237,17 +234,19 @@ class _UserPresentBoxManagePageState extends State<UserPresentBoxManagePage> {
                 children: [
                   ...divideList([
                     for (final flag in flags)
-                      TextSpan(text: flag.name, style: TextStyle(color: Theme.of(context).colorScheme.error)),
+                      TextSpan(
+                        text: flag.name,
+                        style: TextStyle(color: Theme.of(context).colorScheme.error),
+                      ),
                   ], const TextSpan(text: ' / ')),
                   const TextSpan(text: '\n'),
                 ],
               ),
             TextSpan(text: '${present.message}\n'),
             TextSpan(
-              text:
-                  present.flags.contains(UserPresentBoxFlag.indefinitePeriod)
-                      ? 'Forever'
-                      : '$leftDurStr (${expireAt.sec2date().toCustomString(second: false)})',
+              text: present.flags.contains(UserPresentBoxFlag.indefinitePeriod)
+                  ? 'Forever'
+                  : '$leftDurStr (${expireAt.sec2date().toCustomString(second: false)})',
               style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color),
             ),
             TextSpan(text: '\n${present.createdAt.sec2date().toCustomString(second: false)}'),
@@ -302,25 +301,24 @@ class _UserPresentBoxManagePageState extends State<UserPresentBoxManagePage> {
           tooltip: S.current.sort_order,
         ),
         IconButton(
-          onPressed:
-              showSelectedOnly
-                  ? null
-                  : () {
-                    if (allChecked) {
-                      selectedPresents.removeAll(shownPresents.map((e) => e.presentId));
-                    } else {
-                      if (shownPresents.every(
-                        (e) => e.giftType == GiftType.servant.value && Items.embers.contains(e.objectId),
-                      )) {
-                        shownPresents = shownPresents.toList();
-                        shownPresents.sortByList((e) => [e.objectId, e.num]);
-                      }
-                      final leftIds = shownPresents.map((e) => e.presentId).toSet().difference(selectedPresents);
-                      leftIds.removeWhere(isItemSelect);
-                      selectedPresents.addAll(leftIds.take(_kMaxPresentSelectCount - selectedPresents.length));
+          onPressed: showSelectedOnly
+              ? null
+              : () {
+                  if (allChecked) {
+                    selectedPresents.removeAll(shownPresents.map((e) => e.presentId));
+                  } else {
+                    if (shownPresents.every(
+                      (e) => e.giftType == GiftType.servant.value && Items.embers.contains(e.objectId),
+                    )) {
+                      shownPresents = shownPresents.toList();
+                      shownPresents.sortByList((e) => [e.objectId, e.num]);
                     }
-                    setState(() {});
-                  },
+                    final leftIds = shownPresents.map((e) => e.presentId).toSet().difference(selectedPresents);
+                    leftIds.removeWhere(isItemSelect);
+                    selectedPresents.addAll(leftIds.take(_kMaxPresentSelectCount - selectedPresents.length));
+                  }
+                  setState(() {});
+                },
           icon: Icon(allChecked ? Icons.check_box : Icons.square_outlined),
         ),
       ],
@@ -371,8 +369,9 @@ class _UserPresentBoxManagePageState extends State<UserPresentBoxManagePage> {
   }
 
   Future<void> receiveExchangeTicket(Item item) async {
-    List<UserPresentBoxEntity> presents =
-        userPresents.where((e) => e.giftType == GiftType.item.value && e.objectId == item.id).toList();
+    List<UserPresentBoxEntity> presents = userPresents
+        .where((e) => e.giftType == GiftType.item.value && e.objectId == item.id)
+        .toList();
     if (presents.isEmpty) return;
     if (!mounted) return;
     final itemSelect = await router.showDialog<ItemSelect>(
@@ -478,8 +477,9 @@ class _ItemSelectListDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final presents =
-        mstData.userPresentBox.where((e) => e.giftType == GiftType.item.value && e.objectId == item.id).toList();
+    final presents = mstData.userPresentBox
+        .where((e) => e.giftType == GiftType.item.value && e.objectId == item.id)
+        .toList();
 
     return SimpleDialog(
       title: Text('${item.lName.l}\n×${presents.length}'),
@@ -513,10 +513,9 @@ class __ItemSelectCountDialogState extends State<_ItemSelectCountDialog> {
 
   @override
   Widget build(BuildContext context) {
-    final presents =
-        widget.mstData.userPresentBox
-            .where((e) => e.giftType == GiftType.item.value && e.objectId == widget.item.id)
-            .toList();
+    final presents = widget.mstData.userPresentBox
+        .where((e) => e.giftType == GiftType.item.value && e.objectId == widget.item.id)
+        .toList();
     final int maxCount = min(Maths.sum(presents.map((e) => e.num)), _kMaxItemSelectExchangeCount);
     if (count > maxCount) count = maxCount;
     return AlertDialog(
@@ -602,13 +601,12 @@ class _SellCombineMaterialDialogState extends State<_SellCombineMaterialDialog> 
   }
 
   Widget buildRarity(int rarity, int maxCount) {
-    final cards =
-        runtime.mstData.userSvt.where((userSvt) {
-          final entity = userSvt.dbEntity;
-          if (entity == null || entity.type != SvtType.combineMaterial || userSvt.locked) return false;
-          if (entity.rarity != rarity) return false;
-          return true;
-        }).toList();
+    final cards = runtime.mstData.userSvt.where((userSvt) {
+      final entity = userSvt.dbEntity;
+      if (entity == null || entity.type != SvtType.combineMaterial || userSvt.locked) return false;
+      if (entity.rarity != rarity) return false;
+      return true;
+    }).toList();
     cards.sort2((e) => -e.createdAt);
     final svt = db.gameData.entities[(97700 + rarity) * 100];
     return ListTile(

@@ -14,7 +14,9 @@ import 'network.dart';
 class FakerAgentJP extends FakerAgent<FRequestJP, AutoLoginDataJP, NetworkManagerJP> {
   FakerAgentJP({required super.network});
   FakerAgentJP.s({required GameTop gameTop, required AutoLoginDataJP user})
-    : super(network: NetworkManagerJP(gameTop: gameTop.copy(), user: user));
+    : super(
+        network: NetworkManagerJP(gameTop: gameTop.copy(), user: user),
+      );
 
   @override
   Future<FResponse> gamedataTop({bool checkAppUpdate = true}) async {

@@ -33,7 +33,10 @@ class MultiDescriptor {
     return inkWell(
       context: context,
       onTap: () {
-        router.push(child: _MultiEntriesList(ids: ids, builder: builder, title: title), detail: true);
+        router.push(
+          child: _MultiEntriesList(ids: ids, builder: builder, title: title),
+          detail: true,
+        );
       },
       text: title,
     );
@@ -86,14 +89,15 @@ class MultiDescriptor {
             db.gameData.commandCodesById[id];
         return svt == null
             ? TextSpan(
-              text: 'SVT $id',
-              recognizer:
-                  TapGestureRecognizer()
-                    ..onTap = () {
-                      router.push(url: svt?.route ?? Routes.servantI(id));
-                    },
-            )
-            : CenterWidgetSpan(child: svt.iconBuilder(context: context, width: iconSize));
+                text: 'SVT $id',
+                recognizer: TapGestureRecognizer()
+                  ..onTap = () {
+                    router.push(url: svt?.route ?? Routes.servantI(id));
+                  },
+              )
+            : CenterWidgetSpan(
+                child: svt.iconBuilder(context: context, width: iconSize),
+              );
       }, useAnd);
     }
     return [
@@ -121,7 +125,11 @@ class MultiDescriptor {
         } else {
           questName = quest?.lNameWithChapter ?? 'Quest $id';
         }
-        return inkWell(context: context, onTap: () => router.push(url: Routes.questI(id)), text: questName);
+        return inkWell(
+          context: context,
+          onTap: () => router.push(url: Routes.questI(id)),
+          text: questName,
+        );
       }, useAnd);
     }
     return [
@@ -256,12 +264,20 @@ class MultiDescriptor {
   static List<InlineSpan> shops(BuildContext context, List<int> targetIds, {bool? useAnd}) {
     if (targetIds.length < 3) {
       return list(context, targetIds, (context, id) {
-        return inkWell(context: context, onTap: () => router.push(url: Routes.shopI(id)), text: '$id');
+        return inkWell(
+          context: context,
+          onTap: () => router.push(url: Routes.shopI(id)),
+          text: '$id',
+        );
       }, useAnd);
     }
     return [
       collapsed(context, targetIds, S.current.shop, (context, id) {
-        return ListTile(dense: true, title: Text('Shop $id'), onTap: () => router.push(url: Routes.shopI(id)));
+        return ListTile(
+          dense: true,
+          title: Text('Shop $id'),
+          onTap: () => router.push(url: Routes.shopI(id)),
+        );
       }, useAnd),
     ];
   }
@@ -290,7 +306,11 @@ class MultiDescriptor {
 
   static List<InlineSpan> commonRelease(BuildContext context, List<int> targetIds, {bool? useAnd}) {
     return list(context, targetIds, (context, id) {
-      return inkWell(context: context, onTap: () => router.push(url: Routes.commonReleaseI(id)), text: '$id');
+      return inkWell(
+        context: context,
+        onTap: () => router.push(url: Routes.commonReleaseI(id)),
+        text: '$id',
+      );
     }, useAnd);
   }
 }

@@ -148,55 +148,53 @@ class _NetworkSettingsPageState extends State<NetworkSettingsPage> {
                   ListTile(
                     title: const Text('Host'),
                     trailing: TextButton(
-                      onPressed:
-                          settings.enableHttpProxy
-                              ? () {
-                                InputCancelOkDialog(
-                                  title: 'Host',
-                                  text: settings.proxyHost,
-                                  validate: (s) {
-                                    if (s.isEmpty) return true;
-                                    final m = RegExp(r'^(\d+)\.(\d+)\.(\d+)\.(\d+)$').firstMatch(s);
-                                    if (m == null) return false;
-                                    for (final index in [1, 2, 3, 4]) {
-                                      final v = int.parse(m.group(index)!);
-                                      if (v < 0 || v > 255) return false;
-                                      if (index == 1 && v == 0) return false;
-                                    }
-                                    return true;
-                                  },
-                                  onSubmit: (s) {
-                                    settings.proxyHost = s.isEmpty ? null : s;
-                                    if (mounted) setState(() {});
-                                  },
-                                ).showDialog(context);
-                              }
-                              : null,
+                      onPressed: settings.enableHttpProxy
+                          ? () {
+                              InputCancelOkDialog(
+                                title: 'Host',
+                                text: settings.proxyHost,
+                                validate: (s) {
+                                  if (s.isEmpty) return true;
+                                  final m = RegExp(r'^(\d+)\.(\d+)\.(\d+)\.(\d+)$').firstMatch(s);
+                                  if (m == null) return false;
+                                  for (final index in [1, 2, 3, 4]) {
+                                    final v = int.parse(m.group(index)!);
+                                    if (v < 0 || v > 255) return false;
+                                    if (index == 1 && v == 0) return false;
+                                  }
+                                  return true;
+                                },
+                                onSubmit: (s) {
+                                  settings.proxyHost = s.isEmpty ? null : s;
+                                  if (mounted) setState(() {});
+                                },
+                              ).showDialog(context);
+                            }
+                          : null,
                       child: Text(settings.proxyHost ?? 'not set'),
                     ),
                   ),
                   ListTile(
                     title: const Text('Port'),
                     trailing: TextButton(
-                      onPressed:
-                          settings.enableHttpProxy
-                              ? () {
-                                InputCancelOkDialog(
-                                  title: 'Port',
-                                  text: settings.proxyPort?.toString(),
-                                  validate: (s) {
-                                    if (s.isEmpty) return true;
-                                    final v = int.tryParse(s);
-                                    if (v == null) return false;
-                                    return v >= 1 && v <= 65535;
-                                  },
-                                  onSubmit: (s) {
-                                    settings.proxyPort = s.isEmpty ? null : int.tryParse(s);
-                                    if (mounted) setState(() {});
-                                  },
-                                ).showDialog(context);
-                              }
-                              : null,
+                      onPressed: settings.enableHttpProxy
+                          ? () {
+                              InputCancelOkDialog(
+                                title: 'Port',
+                                text: settings.proxyPort?.toString(),
+                                validate: (s) {
+                                  if (s.isEmpty) return true;
+                                  final v = int.tryParse(s);
+                                  if (v == null) return false;
+                                  return v >= 1 && v <= 65535;
+                                },
+                                onSubmit: (s) {
+                                  settings.proxyPort = s.isEmpty ? null : int.tryParse(s);
+                                  if (mounted) setState(() {});
+                                },
+                              ).showDialog(context);
+                            }
+                          : null,
                       child: Text(settings.proxyPort?.toString() ?? 'not set'),
                     ),
                   ),
@@ -204,7 +202,9 @@ class _NetworkSettingsPageState extends State<NetworkSettingsPage> {
               ),
             // const Divider(height: 8),
             const SizedBox(height: 8),
-            Center(child: ElevatedButton(onPressed: _testNetwork, child: Text(S.current.test.toUpperCase()))),
+            Center(
+              child: ElevatedButton(onPressed: _testNetwork, child: Text(S.current.test.toUpperCase())),
+            ),
             if (Language.isCHS) serverHint,
             for (final group in testGroups) _buildGroup(group),
             SafeArea(child: Language.isCHS ? serverHint : const SizedBox()),
@@ -217,32 +217,31 @@ class _NetworkSettingsPageState extends State<NetworkSettingsPage> {
   Widget _buildGroup(_Group group) {
     return TileGroup(
       header: group.title,
-      children:
-          [false, true].map((v) {
-            final url = v ? group.cnUrl : group.globalUrl;
-            return RadioListTile(
-              dense: true,
-              value: v,
-              groupValue: group.getValue(),
-              title: Text.rich(
+      children: [false, true].map((v) {
+        final url = v ? group.cnUrl : group.globalUrl;
+        return RadioListTile(
+          dense: true,
+          value: v,
+          groupValue: group.getValue(),
+          title: Text.rich(
+            TextSpan(
+              children: [
                 TextSpan(
-                  children: [
-                    TextSpan(
-                      text: '${v ? S.current.chaldea_server_cn : S.current.chaldea_server_global}: ',
-                      style: Theme.of(context).textTheme.bodySmall,
-                    ),
-                    TextSpan(text: Uri.parse(url).origin),
-                  ],
+                  text: '${v ? S.current.chaldea_server_cn : S.current.chaldea_server_global}: ',
+                  style: Theme.of(context).textTheme.bodySmall,
                 ),
-              ),
-              secondary: _getStatus(url),
-              onChanged: (v) {
-                setState(() {
-                  if (v != null) group.onChanged(v);
-                });
-              },
-            );
-          }).toList(),
+                TextSpan(text: Uri.parse(url).origin),
+              ],
+            ),
+          ),
+          secondary: _getStatus(url),
+          onChanged: (v) {
+            setState(() {
+              if (v != null) group.onChanged(v);
+            });
+          },
+        );
+      }).toList(),
     );
   }
 
@@ -267,7 +266,10 @@ class _NetworkSettingsPageState extends State<NetworkSettingsPage> {
       TextSpan(
         text: text,
         children: [
-          TextSpan(text: ' ●', style: TextStyle(color: success ? Colors.green : Theme.of(context).colorScheme.error)),
+          TextSpan(
+            text: ' ●',
+            style: TextStyle(color: success ? Colors.green : Theme.of(context).colorScheme.error),
+          ),
         ],
       ),
     );

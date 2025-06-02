@@ -57,13 +57,12 @@ class _TraitEditPageState extends State<TraitEditPage> {
                   child: Text(S.current.add),
                 ),
                 FilledButton(
-                  onPressed:
-                      hasEdit
-                          ? () {
-                            widget.onChanged(traits);
-                            Navigator.pop(context);
-                          }
-                          : null,
+                  onPressed: hasEdit
+                      ? () {
+                          widget.onChanged(traits);
+                          Navigator.pop(context);
+                        }
+                      : null,
                   child: Text(S.current.confirm),
                 ),
               ],

@@ -57,27 +57,18 @@ class _AccountPageState extends State<AccountPage> {
             controlAffinity: ListTileControlAffinity.leading,
             title: Text(user.name),
             secondary: PopupMenuButton(
-              itemBuilder:
-                  (BuildContext context) => [
-                    PopupMenuItem(child: Text(S.current.rename), onTap: () => renameUser(user)),
-                    PopupMenuItem(
-                      enabled: index != 0,
-                      onTap: () => moveUser(index, -1),
-                      child: Text(S.current.move_up),
-                    ),
-                    PopupMenuItem(
-                      enabled: index != users.length - 1,
-                      onTap: () => moveUser(index, 1),
-                      child: Text(S.current.move_down),
-                    ),
-                    PopupMenuItem(child: Text(S.current.copy), onTap: () => copyUser(index)),
-                    PopupMenuItem(child: Text(S.current.clear), onTap: () => clearUser(index)),
-                    PopupMenuItem(
-                      enabled: users.length > 1,
-                      onTap: () => deleteUser(index),
-                      child: Text(S.current.delete),
-                    ),
-                  ],
+              itemBuilder: (BuildContext context) => [
+                PopupMenuItem(child: Text(S.current.rename), onTap: () => renameUser(user)),
+                PopupMenuItem(enabled: index != 0, onTap: () => moveUser(index, -1), child: Text(S.current.move_up)),
+                PopupMenuItem(
+                  enabled: index != users.length - 1,
+                  onTap: () => moveUser(index, 1),
+                  child: Text(S.current.move_down),
+                ),
+                PopupMenuItem(child: Text(S.current.copy), onTap: () => copyUser(index)),
+                PopupMenuItem(child: Text(S.current.clear), onTap: () => clearUser(index)),
+                PopupMenuItem(enabled: users.length > 1, onTap: () => deleteUser(index), child: Text(S.current.delete)),
+              ],
             ),
           );
         }),
@@ -97,19 +88,18 @@ class _AccountPageState extends State<AccountPage> {
     showDialog(
       context: context,
       useRootNavigator: false,
-      builder:
-          (context) => InputCancelOkDialog(
-            title: '${S.current.rename} - ${user.name}',
-            text: user.name,
-            errorText: S.current.input_invalid_hint,
-            validate: (v) {
-              return v == v.trim() && v.isNotEmpty && users.every((e) => e.name != v);
-            },
-            onSubmit: (v) {
-              user.name = v;
-              updateData();
-            },
-          ),
+      builder: (context) => InputCancelOkDialog(
+        title: '${S.current.rename} - ${user.name}',
+        text: user.name,
+        errorText: S.current.input_invalid_hint,
+        validate: (v) {
+          return v == v.trim() && v.isNotEmpty && users.every((e) => e.name != v);
+        },
+        onSubmit: (v) {
+          user.name = v;
+          updateData();
+        },
+      ),
     );
   }
 

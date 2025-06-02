@@ -102,10 +102,9 @@ class ApiCacheManager {
   }
 
   LazyBox<Uint8List>? _webBox;
-  late final FilePlus? _infoFile =
-      cacheKey == null
-          ? null
-          : FilePlus(kIsWeb ? 'api_cache/$cacheKey.json' : joinPaths(db.paths.tempDir, 'api_cache/$cacheKey.json'));
+  late final FilePlus? _infoFile = cacheKey == null
+      ? null
+      : FilePlus(kIsWeb ? 'api_cache/$cacheKey.json' : joinPaths(db.paths.tempDir, 'api_cache/$cacheKey.json'));
 
   ApiCacheManager(this.cacheKey);
 

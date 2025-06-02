@@ -15,22 +15,21 @@ class _LostRoomPageState extends State<LostRoomPage> {
     return Scaffold(
       appBar: AppBar(title: const Text('LOSTROOM')),
       body: LayoutBuilder(
-        builder:
-            (context, constrains) => ListView(
-              children: [
-                Container(
-                  constraints: const BoxConstraints(maxHeight: 120),
-                  padding: const EdgeInsets.symmetric(horizontal: 36, vertical: 18),
-                  color: Theme.of(context).highlightColor.withAlpha(153),
-                  child: CachedImage(
-                    imageUrl: 'https://anime.fate-go.jp/mllr/assets/img/kv/logo.png',
-                    placeholder: (_, _) => Container(),
-                  ),
-                ),
-                kDefaultDivider,
-                GridGallery(isHome: false, maxWidth: constrains.maxWidth),
-              ],
+        builder: (context, constrains) => ListView(
+          children: [
+            Container(
+              constraints: const BoxConstraints(maxHeight: 120),
+              padding: const EdgeInsets.symmetric(horizontal: 36, vertical: 18),
+              color: Theme.of(context).highlightColor.withAlpha(153),
+              child: CachedImage(
+                imageUrl: 'https://anime.fate-go.jp/mllr/assets/img/kv/logo.png',
+                placeholder: (_, _) => Container(),
+              ),
             ),
+            kDefaultDivider,
+            GridGallery(isHome: false, maxWidth: constrains.maxWidth),
+          ],
+        ),
       ),
     );
   }

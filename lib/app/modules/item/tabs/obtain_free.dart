@@ -38,7 +38,9 @@ class _ItemObtainFreeTabState extends State<ItemObtainFreeTab> {
             ),
           ),
         ),
-        Expanded(child: InheritSelectionArea(child: ListView(children: buildMainFreeQuests()))),
+        Expanded(
+          child: InheritSelectionArea(child: ListView(children: buildMainFreeQuests())),
+        ),
       ],
     );
   }

@@ -104,7 +104,9 @@ class EventRecipePage extends HookWidget {
                       TextSpan(text: '×${consume.num.format()} '),
                     ],
                     TextSpan(text: '\n${S.current.event_point}: '),
-                    CenterWidgetSpan(child: Item.iconBuilder(context: context, item: recipe.eventPointItem, width: 28)),
+                    CenterWidgetSpan(
+                      child: Item.iconBuilder(context: context, item: recipe.eventPointItem, width: 28),
+                    ),
                     TextSpan(text: '×${recipe.eventPointNum}'),
                     TextSpan(text: '\n${S.current.treasure_box_max_draw_once}: ${recipe.maxNum}'),
                   ],

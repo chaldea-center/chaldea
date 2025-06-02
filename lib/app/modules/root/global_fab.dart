@@ -66,8 +66,9 @@ class _WindowManagerFabState extends State<WindowManagerFab> {
       icon: Icon(rootRouter.appState.windowState.isSingle ? Icons.grid_view : Icons.reply, size: 20),
       onPressed: () {
         setState(() {
-          rootRouter.appState.windowState =
-              rootRouter.appState.windowState.isSingle ? WindowStateEnum.windowManager : WindowStateEnum.single;
+          rootRouter.appState.windowState = rootRouter.appState.windowState.isSingle
+              ? WindowStateEnum.windowManager
+              : WindowStateEnum.single;
         });
       },
     );
@@ -113,7 +114,10 @@ class _DebugFabState extends State<DebugFab> {
         });
         final context = rootRouter.navigatorKey.currentContext;
         if (context == null) return;
-        showDialog(context: context, builder: (context) => _DebugMenuDialog(state: this)).then((value) {
+        showDialog(
+          context: context,
+          builder: (context) => _DebugMenuDialog(state: this),
+        ).then((value) {
           isMenuShowing = false;
           if (mounted) setState(() {});
         });
@@ -165,8 +169,9 @@ class __DebugMenuDialogState extends State<_DebugMenuDialog> {
           trailing: DropdownButton<Language>(
             underline: const Divider(thickness: 0, color: Colors.transparent),
             value: Language.getLanguage(db.settings.language),
-            items:
-                Language.supportLanguages.map((lang) => DropdownMenuItem(value: lang, child: Text(lang.name))).toList(),
+            items: Language.supportLanguages
+                .map((lang) => DropdownMenuItem(value: lang, child: Text(lang.name)))
+                .toList(),
             onChanged: (lang) {
               if (lang == null) return;
               db.settings.setLanguage(lang);

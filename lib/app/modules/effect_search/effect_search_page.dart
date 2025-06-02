@@ -73,18 +73,16 @@ class _EffectSearchPageState extends State<EffectSearchPage>
           IconButton(
             icon: const Icon(Icons.filter_alt),
             tooltip: S.current.filter,
-            onPressed:
-                () => FilterPage.show(
-                  context: context,
-                  builder:
-                      (context) => BuffFuncFilter(
-                        filterData: filterData,
-                        type: (options as _BuffOptions).type,
-                        onChanged: (_) {
-                          if (mounted) setState(() {});
-                        },
-                      ),
-                ),
+            onPressed: () => FilterPage.show(
+              context: context,
+              builder: (context) => BuffFuncFilter(
+                filterData: filterData,
+                type: (options as _BuffOptions).type,
+                onChanged: (_) {
+                  if (mounted) setState(() {});
+                },
+              ),
+            ),
           ),
           searchIcon,
         ],

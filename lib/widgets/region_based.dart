@@ -33,7 +33,10 @@ mixin RegionBasedState<V, T extends StatefulWidget> on State<T> {
         return [
           if (shownNone) DropdownMenuItem(value: null, child: Text('Inherit', style: style)),
           for (final region in Region.values)
-            DropdownMenuItem(value: region, child: Text(region.localName, style: style)),
+            DropdownMenuItem(
+              value: region,
+              child: Text(region.localName, style: style),
+            ),
         ];
       },
       onChanged: onRegionChanged,

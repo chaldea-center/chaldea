@@ -55,8 +55,9 @@ class TimerShopItem with TimerItem {
           contentPadding: const EdgeInsetsDirectional.only(start: 16),
           minLeadingWidth: 24,
           horizontalTitleGap: 8,
-          leading:
-              payItem == null ? null : Item.iconBuilder(context: context, item: payItem, icon: payItem.icon, width: 20),
+          leading: payItem == null
+              ? null
+              : Item.iconBuilder(context: context, item: payItem, icon: payItem.icon, width: 20),
           title: Text.rich(
             TextSpan(
               children: [

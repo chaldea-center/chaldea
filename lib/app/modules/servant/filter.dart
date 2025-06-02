@@ -257,7 +257,12 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData, ServantFilt
                 padding: EdgeInsets.zero,
                 optionBuilder: (v) {
                   return Text.rich(
-                    TextSpan(children: [CenterWidgetSpan(child: Icon(v.icon, size: 16)), TextSpan(text: v.shownName)]),
+                    TextSpan(
+                      children: [
+                        CenterWidgetSpan(child: Icon(v.icon, size: 16)),
+                        TextSpan(text: v.shownName),
+                      ],
+                    ),
                   );
                 },
                 onFilterChanged: (v, _) {
@@ -418,8 +423,8 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData, ServantFilt
             title: Text(S.current.duplicated_servant),
             options: const [false, true],
             values: filterData.svtDuplicated,
-            optionBuilder:
-                (v) => Text(v ? S.current.duplicated_servant_duplicated : S.current.duplicated_servant_primary),
+            optionBuilder: (v) =>
+                Text(v ? S.current.duplicated_servant_duplicated : S.current.duplicated_servant_primary),
             onFilterChanged: (v, _) {
               setState(() {
                 update();
@@ -523,22 +528,23 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData, ServantFilt
             title: Text(S.current.info_cards, style: textStyle),
             options: CardDeckType.values,
             values: filterData.cardDeck,
-            optionBuilder:
-                (v) =>
-                    v == CardDeckType.others
-                        ? Text(S.current.general_others)
-                        : Text.rich(
+            optionBuilder: (v) => v == CardDeckType.others
+                ? Text(S.current.general_others)
+                : Text.rich(
+                    TextSpan(
+                      children: [
+                        for (final (card, count, color) in [
+                          ('Q', v.q, Colors.green.shade800),
+                          ('A', v.a, Colors.blue.shade800),
+                          ('B', v.b, Colors.red),
+                        ])
                           TextSpan(
-                            children: [
-                              for (final (card, count, color) in [
-                                ('Q', v.q, Colors.green.shade800),
-                                ('A', v.a, Colors.blue.shade800),
-                                ('B', v.b, Colors.red),
-                              ])
-                                TextSpan(text: card * count, style: TextStyle(color: color)),
-                            ],
+                            text: card * count,
+                            style: TextStyle(color: color),
                           ),
-                        ),
+                      ],
+                    ),
+                  ),
             onFilterChanged: (value, _) {
               update();
             },

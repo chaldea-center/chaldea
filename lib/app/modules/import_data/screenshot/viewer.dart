@@ -28,7 +28,13 @@ class _RecognizerViewerTabState extends State<RecognizerViewerTab> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(children: [topBar, kDefaultDivider, if (result != null) Expanded(child: details)]);
+    return Column(
+      children: [
+        topBar,
+        kDefaultDivider,
+        if (result != null) Expanded(child: details),
+      ],
+    );
   }
 
   Widget get details {

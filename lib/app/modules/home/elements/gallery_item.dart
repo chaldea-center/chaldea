@@ -85,7 +85,10 @@ class GalleryItem {
     var _iconColor =
         color ?? (Theme.of(context).useMaterial3 ? Theme.of(context).colorScheme.primary : AppTheme(context).tertiary);
     return fa
-        ? Padding(padding: EdgeInsets.all(size * 0.05), child: FaIcon(icon, size: size * 0.9, color: _iconColor))
+        ? Padding(
+            padding: EdgeInsets.all(size * 0.05),
+            child: FaIcon(icon, size: size * 0.9, color: _iconColor),
+          )
         : Icon(icon, size: size, color: _iconColor);
   }
 

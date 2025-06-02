@@ -46,10 +46,9 @@ class _AdminToolsPageState extends State<AdminToolsPage> {
                 title: Text('Reload api server'),
                 subtitle: Text.rich(
                   TextSpan(
-                    text:
-                        db.settings.secrets.atlasReloadKey.isEmpty
-                            ? "Reload key not set"
-                            : db.settings.secrets.atlasReloadKey,
+                    text: db.settings.secrets.atlasReloadKey.isEmpty
+                        ? "Reload key not set"
+                        : db.settings.secrets.atlasReloadKey,
                     children: [
                       CenterWidgetSpan(
                         child: IconButton(
@@ -84,10 +83,9 @@ class _AdminToolsPageState extends State<AdminToolsPage> {
                 title: Text('Update exports'),
                 subtitle: Text.rich(
                   TextSpan(
-                    text:
-                        db.settings.secrets.atlasExportKey.isEmpty
-                            ? "Export key not set"
-                            : db.settings.secrets.atlasExportKey,
+                    text: db.settings.secrets.atlasExportKey.isEmpty
+                        ? "Export key not set"
+                        : db.settings.secrets.atlasExportKey,
                     children: [
                       CenterWidgetSpan(
                         child: IconButton(
@@ -165,7 +163,9 @@ class _AdminToolsPageState extends State<AdminToolsPage> {
     ).showDialog(context);
     if (confirm != true) return null;
     final resp = await showEasyLoading(() async {
-      final options = ChaldeaWorkerApi.addAuthHeader(options: Options(validateStatus: (_) => true, method: method));
+      final options = ChaldeaWorkerApi.addAuthHeader(
+        options: Options(validateStatus: (_) => true, method: method),
+      );
       options.headers = {...?options.headers, ...?headers};
       return await ChaldeaWorkerApi.createDio().request(url, options: options, data: data);
     });

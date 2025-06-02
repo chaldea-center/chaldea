@@ -45,16 +45,15 @@ class ChooseTargetsDialog extends StatefulWidget {
     if (!battleData.mounted) return null;
     return showUserConfirm<List<BattleServantData>>(
       context: battleData.context!,
-      builder:
-          (context, completer) => ChooseTargetsDialog(
-            battleData: battleData,
-            completer: completer,
-            targetType: targetType,
-            targets: targets,
-            maxCount: maxCount,
-            minCount: minCount,
-            autoConfirmOneTarget: autoConfirmOneTarget,
-          ),
+      builder: (context, completer) => ChooseTargetsDialog(
+        battleData: battleData,
+        completer: completer,
+        targetType: targetType,
+        targets: targets,
+        maxCount: maxCount,
+        minCount: minCount,
+        autoConfirmOneTarget: autoConfirmOneTarget,
+      ),
     );
   }
 }
@@ -118,13 +117,12 @@ class _ChooseTargetsDialogState extends State<ChooseTargetsDialog> {
 
   Widget buildSvt(BattleServantData svt) {
     return DecoratedBox(
-      decoration:
-          selected.contains(svt)
-              ? BoxDecoration(
-                borderRadius: BorderRadius.circular(5),
-                border: Border.all(color: Colors.redAccent, width: 8),
-              )
-              : const BoxDecoration(),
+      decoration: selected.contains(svt)
+          ? BoxDecoration(
+              borderRadius: BorderRadius.circular(5),
+              border: Border.all(color: Colors.redAccent, width: 8),
+            )
+          : const BoxDecoration(),
       child: InkWell(
         child: svt.iconBuilder(
           context: context,

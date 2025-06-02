@@ -177,22 +177,18 @@ MappingData _$MappingDataFromJson(Map json) => MappingData(
         (k, e) => MapEntry(int.parse(k as String), MappingDict<int>.fromJson(Map<String, dynamic>.from(e as Map))),
       ) ??
       const {},
-  entityRelease:
-      json['entity_release'] == null
-          ? null
-          : MappingList<int>.fromJson(Map<String, dynamic>.from(json['entity_release'] as Map)),
-  ccRelease:
-      json['cc_release'] == null
-          ? null
-          : MappingList<int>.fromJson(Map<String, dynamic>.from(json['cc_release'] as Map)),
-  mcRelease:
-      json['mc_release'] == null
-          ? null
-          : MappingList<int>.fromJson(Map<String, dynamic>.from(json['mc_release'] as Map)),
-  warRelease:
-      json['war_release'] == null
-          ? null
-          : MappingList<int>.fromJson(Map<String, dynamic>.from(json['war_release'] as Map)),
+  entityRelease: json['entity_release'] == null
+      ? null
+      : MappingList<int>.fromJson(Map<String, dynamic>.from(json['entity_release'] as Map)),
+  ccRelease: json['cc_release'] == null
+      ? null
+      : MappingList<int>.fromJson(Map<String, dynamic>.from(json['cc_release'] as Map)),
+  mcRelease: json['mc_release'] == null
+      ? null
+      : MappingList<int>.fromJson(Map<String, dynamic>.from(json['mc_release'] as Map)),
+  warRelease: json['war_release'] == null
+      ? null
+      : MappingList<int>.fromJson(Map<String, dynamic>.from(json['war_release'] as Map)),
   questRelease:
       (json['quest_release'] as Map?)?.map(
         (k, e) => MapEntry(int.parse(k as String), MappingBase<int>.fromJson(Map<String, dynamic>.from(e as Map))),

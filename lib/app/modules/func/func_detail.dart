@@ -64,16 +64,22 @@ class _FuncDetailPageState extends State<FuncDetailPage>
           maxLines: 1,
           minFontSize: 14,
         ),
-        actions: [dropdownRegion(shownNone: widget.func != null), popupMenu],
-        bottom:
-            data == null
-                ? null
-                : FixedHeight.tabBar(
-                  TabBar(
-                    controller: _tabController,
-                    tabs: [const Tab(text: "Info"), Tab(text: S.current.skill), Tab(text: S.current.noble_phantasm)],
-                  ),
+        actions: [
+          dropdownRegion(shownNone: widget.func != null),
+          popupMenu,
+        ],
+        bottom: data == null
+            ? null
+            : FixedHeight.tabBar(
+                TabBar(
+                  controller: _tabController,
+                  tabs: [
+                    const Tab(text: "Info"),
+                    Tab(text: S.current.skill),
+                    Tab(text: S.current.noble_phantasm),
+                  ],
                 ),
+              ),
       ),
       body: buildBody(context),
     );
@@ -89,7 +95,11 @@ class _FuncDetailPageState extends State<FuncDetailPage>
   Widget buildContent(BuildContext context, BaseFunction func) {
     return TabBarView(
       controller: _tabController,
-      children: [SingleChildScrollView(child: info), _SkillTab(func), _TdTab(func)],
+      children: [
+        SingleChildScrollView(child: info),
+        _SkillTab(func),
+        _TdTab(func),
+      ],
     );
   }
 
@@ -115,7 +125,9 @@ class _FuncDetailPageState extends State<FuncDetailPage>
           ],
         ),
         if (!Transl.isJP)
-          CustomTableRow(children: [TableCellData(text: func.lPopupText.jp, textAlign: TextAlign.center)]),
+          CustomTableRow(
+            children: [TableCellData(text: func.lPopupText.jp, textAlign: TextAlign.center)],
+          ),
         CustomTableRow(
           children: [
             TableCellData(text: 'ID', isHeader: true),
@@ -131,7 +143,11 @@ class _FuncDetailPageState extends State<FuncDetailPage>
                   context: context,
                   text: '[${func.funcType.value}] ${func.funcType.name}\n${Transl.funcType(func.funcType).l}',
                   onTap: () {
-                    router.push(url: Routes.funcs, child: FuncListPage(type: func.funcType), detail: false);
+                    router.push(
+                      url: Routes.funcs,
+                      child: FuncListPage(type: func.funcType),
+                      detail: false,
+                    );
                   },
                 ),
                 textAlign: TextAlign.end,
@@ -220,18 +236,17 @@ class _FuncDetailPageState extends State<FuncDetailPage>
                 ),
               );
             },
-            contentBuilder:
-                (context) => Padding(
-                  padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
-                  child: DecoratedBox(
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Theme.of(context).hintColor, width: 0.75),
-                      borderRadius: BorderRadius.circular(5),
-                    ),
-                    position: DecorationPosition.foreground,
-                    child: BuffInfoTable(buff: func.buffs.first),
-                  ),
+            contentBuilder: (context) => Padding(
+              padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  border: Border.all(color: Theme.of(context).hintColor, width: 0.75),
+                  borderRadius: BorderRadius.circular(5),
                 ),
+                position: DecorationPosition.foreground,
+                child: BuffInfoTable(buff: func.buffs.first),
+              ),
+            ),
           ),
         ],
       ],
@@ -245,7 +260,9 @@ class _FuncDetailPageState extends State<FuncDetailPage>
         TextSpan(
           children: divideList([
             for (final traits in overwriteTvalsList)
-              TextSpan(children: SharedBuilder.traitSpans(context: context, traits: traits, useAndJoin: true)),
+              TextSpan(
+                children: SharedBuilder.traitSpans(context: context, traits: traits, useAndJoin: true),
+              ),
           ], const TextSpan(text: '  /  ')),
         ),
       );
@@ -269,9 +286,13 @@ class _FuncDetailPageState extends State<FuncDetailPage>
                 TextSpan(
                   children: divideList([
                     if (funcBaseIndivs.isNotEmpty)
-                      TextSpan(children: SharedBuilder.traitSpans(context: context, traits: funcBaseIndivs)),
+                      TextSpan(
+                        children: SharedBuilder.traitSpans(context: context, traits: funcBaseIndivs),
+                      ),
                     if (funcIndivs.isNotEmpty)
-                      TextSpan(children: SharedBuilder.traitSpans(context: context, traits: funcIndivs)),
+                      TextSpan(
+                        children: SharedBuilder.traitSpans(context: context, traits: funcIndivs),
+                      ),
                   ], const TextSpan(text: ' + ')),
                 ),
               ),
@@ -314,17 +335,16 @@ class _SkillTab extends StatelessWidget {
               dense: true,
               leading: skill.icon == null ? const SizedBox() : db.getIconImage(skill.icon, width: 28),
               title: Text('${skill.id} ${skill.lName.l}'),
-              trailing:
-                  cards.isEmpty
-                      ? null
-                      : Wrap(
-                        crossAxisAlignment: WrapCrossAlignment.center,
-                        children: [
-                          ...cards.take(3).map((e) => e.iconBuilder(context: context, width: 32)),
-                          if (cards.length > 3)
-                            Text('+${cards.length - 3}', style: Theme.of(context).textTheme.bodySmall),
-                        ],
-                      ),
+              trailing: cards.isEmpty
+                  ? null
+                  : Wrap(
+                      crossAxisAlignment: WrapCrossAlignment.center,
+                      children: [
+                        ...cards.take(3).map((e) => e.iconBuilder(context: context, width: 32)),
+                        if (cards.length > 3)
+                          Text('+${cards.length - 3}', style: Theme.of(context).textTheme.bodySmall),
+                      ],
+                    ),
               onTap: skill.routeTo,
             );
           },
@@ -361,17 +381,16 @@ class _TdTab extends StatelessWidget {
               horizontalTitleGap: 6,
               contentPadding: const EdgeInsetsDirectional.only(start: 10, end: 16),
               title: Text('${td.id} ${td.lName.l}'),
-              trailing:
-                  cards.isEmpty
-                      ? null
-                      : Wrap(
-                        crossAxisAlignment: WrapCrossAlignment.center,
-                        children: [
-                          ...cards.take(3).map((e) => e.iconBuilder(context: context, width: 32)),
-                          if (cards.length > 3)
-                            Text('+${cards.length - 3}', style: Theme.of(context).textTheme.bodySmall),
-                        ],
-                      ),
+              trailing: cards.isEmpty
+                  ? null
+                  : Wrap(
+                      crossAxisAlignment: WrapCrossAlignment.center,
+                      children: [
+                        ...cards.take(3).map((e) => e.iconBuilder(context: context, width: 32)),
+                        if (cards.length > 3)
+                          Text('+${cards.length - 3}', style: Theme.of(context).textTheme.bodySmall),
+                      ],
+                    ),
               onTap: td.routeTo,
             );
           },

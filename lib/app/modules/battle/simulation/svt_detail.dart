@@ -101,7 +101,10 @@ class _BattleSvtDetailState extends State<BattleSvtDetail> with SingleTickerProv
                   ),
                 ),
               ),
-            Padding(padding: const EdgeInsets.only(top: kToolbarHeight - 16), child: SafeArea(child: header)),
+            Padding(
+              padding: const EdgeInsets.only(top: kToolbarHeight - 16),
+              child: SafeArea(child: header),
+            ),
           ],
         ),
       ),
@@ -162,7 +165,11 @@ class _BattleSvtDetailState extends State<BattleSvtDetail> with SingleTickerProv
         indicatorSize: TabBarIndicatorSize.tab,
         labelPadding: const EdgeInsets.symmetric(horizontal: 8.0),
         // unselectedLabelColor: Colors.grey,
-        tabs: [const Tab(text: 'Buff'), Tab(text: S.current.card_info), if (showAiTab) const Tab(text: 'AI')],
+        tabs: [
+          const Tab(text: 'Buff'),
+          Tab(text: S.current.card_info),
+          if (showAiTab) const Tab(text: 'AI'),
+        ],
         indicatorColor: Theme.of(context).isDarkMode ? null : Colors.white.withAlpha(210),
       ),
     );
@@ -216,7 +223,9 @@ class _BattleSvtDetailState extends State<BattleSvtDetail> with SingleTickerProv
           ),
           if (shiftNpcs.isNotEmpty) ...[
             CustomTableRow.fromTexts(texts: const ['Shift'], isHeader: true),
-            CustomTableRow.fromChildren(children: [Wrap(alignment: WrapAlignment.center, children: shiftNpcs)]),
+            CustomTableRow.fromChildren(
+              children: [Wrap(alignment: WrapAlignment.center, children: shiftNpcs)],
+            ),
           ],
           CustomTableRow.fromTexts(
             texts: [
@@ -263,10 +272,9 @@ class _BattleSvtDetailState extends State<BattleSvtDetail> with SingleTickerProv
         headerBuilder: (context, _) {
           return ListTile(
             dense: true,
-            leading:
-                td == null
-                    ? db.getIconImage(Atlas.common.emptySkillIcon, width: 32, aspectRatio: 1)
-                    : CommandCardWidget(card: td.svt.card, width: 38),
+            leading: td == null
+                ? db.getIconImage(Atlas.common.emptySkillIcon, width: 32, aspectRatio: 1)
+                : CommandCardWidget(card: td.svt.card, width: 38),
             title: Text("${S.current.noble_phantasm} Lv.${td == null ? '-' : svt.tdLv}"),
             subtitle: Text(td?.nameWithRank ?? "NONE"),
           );
@@ -369,19 +377,18 @@ class _BattleSvtDetailState extends State<BattleSvtDetail> with SingleTickerProv
     ];
     if (valueSpans.isEmpty) valueSpans.add(const TextSpan(text: ' - '));
     final bool showActor = buff.vals.OnField == 1;
-    final buffName =
-        buff.buff.name.isEmpty
-            ? FuncDescriptor.buildBasicFuncText(
-              NiceFunction(
-                funcId: 0,
-                funcType: FuncType.addState,
-                funcTargetType: FuncTargetType.self,
-                funcTargetTeam: FuncApplyTarget.playerAndEnemy,
-                buffs: [buff.buff],
-                svals: [DataVals(buff.vals.toJson(sort: false)..['Value'] = buff.param)],
-              ),
-            ).toString()
-            : buff.buff.lName.l;
+    final buffName = buff.buff.name.isEmpty
+        ? FuncDescriptor.buildBasicFuncText(
+            NiceFunction(
+              funcId: 0,
+              funcType: FuncType.addState,
+              funcTargetType: FuncTargetType.self,
+              funcTargetTeam: FuncApplyTarget.playerAndEnemy,
+              buffs: [buff.buff],
+              svals: [DataVals(buff.vals.toJson(sort: false)..['Value'] = buff.param)],
+            ),
+          ).toString()
+        : buff.buff.lName.l;
     return ListTile(
       dense: true,
       minLeadingWidth: 24,
@@ -391,19 +398,18 @@ class _BattleSvtDetailState extends State<BattleSvtDetail> with SingleTickerProv
       subtitle: Text.rich(
         TextSpan(
           text: buff.buff.lDetail.l,
-          children:
-              showActor
-                  ? [
-                    const TextSpan(text: '\n'),
-                    TextSpan(
-                      text: Transl.special.actorOnField.replaceAll(
-                        '{0}',
-                        buff.actorName ?? buff.actorUniqueId?.toString() ?? '???',
-                      ),
-                      style: const TextStyle(fontStyle: FontStyle.italic),
+          children: showActor
+              ? [
+                  const TextSpan(text: '\n'),
+                  TextSpan(
+                    text: Transl.special.actorOnField.replaceAll(
+                      '{0}',
+                      buff.actorName ?? buff.actorUniqueId?.toString() ?? '???',
                     ),
-                  ]
-                  : null,
+                    style: const TextStyle(fontStyle: FontStyle.italic),
+                  ),
+                ]
+              : null,
         ),
       ),
       trailing: InkWell(
@@ -444,16 +450,15 @@ class _BattleSvtDetailState extends State<BattleSvtDetail> with SingleTickerProv
         final recorder = battleData?.recorder;
         if (recorder == null) return;
         router.showDialog(
-          builder:
-              (context) => SimpleConfirmDialog(
-                title: Text(S.current.remove),
-                content: Text(buffName),
-                onTapOk: () {
-                  recorder.reasons.setReplay("Manual Remove Buff: ${svt.lBattleName}-$buffName");
-                  buffList.remove(buff);
-                  if (mounted) setState(() {});
-                },
-              ),
+          builder: (context) => SimpleConfirmDialog(
+            title: Text(S.current.remove),
+            content: Text(buffName),
+            onTapOk: () {
+              recorder.reasons.setReplay("Manual Remove Buff: ${svt.lBattleName}-$buffName");
+              buffList.remove(buff);
+              if (mounted) setState(() {});
+            },
+          ),
         );
       },
     );
@@ -503,13 +508,12 @@ class BattleBuffIcon extends StatelessWidget {
     }
 
     child = Container(
-      decoration:
-          buff.irremovable || buff.vals.SetPassiveFrame == 1
-              ? BoxDecoration(
-                border: Border.all(color: Theme.of(context).hintColor),
-                borderRadius: BorderRadius.circular(size * 0.1),
-              )
-              : null,
+      decoration: buff.irremovable || buff.vals.SetPassiveFrame == 1
+          ? BoxDecoration(
+              border: Border.all(color: Theme.of(context).hintColor),
+              borderRadius: BorderRadius.circular(size * 0.1),
+            )
+          : null,
       // padding: EdgeInsets.all(size * 0.05),
       width: size,
       height: size,
@@ -604,7 +608,11 @@ class BattleSvtAvatar extends StatelessWidget {
         ),
       );
     }
-    Widget stack = SizedBox(height: size, width: size * aspectRatio, child: Stack(children: children));
+    Widget stack = SizedBox(
+      height: size,
+      width: size * aspectRatio,
+      child: Stack(children: children),
+    );
     if (onTap != null) {
       stack = InkWell(onTap: onTap, child: stack);
     }

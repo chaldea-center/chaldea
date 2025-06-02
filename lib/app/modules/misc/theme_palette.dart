@@ -214,7 +214,9 @@ class _PaletteForThemeState extends State<_PaletteForTheme> {
                 ),
               ),
             ),
-            Expanded(child: Container(color: color, child: const SizedBox.expand())),
+            Expanded(
+              child: Container(color: color, child: const SizedBox.expand()),
+            ),
           ],
         ),
       ),

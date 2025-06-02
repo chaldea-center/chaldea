@@ -93,14 +93,13 @@ class NiceWar with RouteInfo {
     }
   }
 
-  Set<int> get parentWars =>
-      {
-        parentWarId,
-        materialParentWarId,
-        for (final warAdd in warAdds)
-          if (warAdd.type == WarOverwriteType.parentWar || warAdd.type == WarOverwriteType.materialParentWar)
-            warAdd.overwriteId,
-      }.where((e) => e != 0).toSet();
+  Set<int> get parentWars => {
+    parentWarId,
+    materialParentWarId,
+    for (final warAdd in warAdds)
+      if (warAdd.type == WarOverwriteType.parentWar || warAdd.type == WarOverwriteType.materialParentWar)
+        warAdd.overwriteId,
+  }.where((e) => e != 0).toSet();
 
   // if default banner is null, find overwriteBanner
   String? get shownBanner {
@@ -211,8 +210,9 @@ class NiceWar with RouteInfo {
       firstMainQuest = mainQuests.getOrNull(0);
     }
     if (firstMainQuest != null) {
-      final targetId =
-          firstMainQuest.releaseConditions.firstWhereOrNull((cond) => cond.type == CondType.questClear)?.targetId;
+      final targetId = firstMainQuest.releaseConditions
+          .firstWhereOrNull((cond) => cond.type == CondType.questClear)
+          ?.targetId;
       final condQuest = db.gameData.quests[targetId];
       if (targetId == condQuest?.war?.lastQuestId) {
         // usually only main story use the lastQuestId

@@ -35,19 +35,18 @@ class _HideSvtPlanDetailSettingPageState extends State<HideSvtPlanDetailSettingP
     return CheckboxListTile(
       value: checked,
       title: Text(_getName(option)),
-      onChanged:
-          enabled
-              ? (v) {
-                if (v != null) {
-                  if (v) {
-                    settings.remove(option);
-                  } else {
-                    settings.add(option);
-                  }
+      onChanged: enabled
+          ? (v) {
+              if (v != null) {
+                if (v) {
+                  settings.remove(option);
+                } else {
+                  settings.add(option);
                 }
-                setState(() {});
               }
-              : null,
+              setState(() {});
+            }
+          : null,
     );
   }
 

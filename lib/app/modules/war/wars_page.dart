@@ -135,17 +135,16 @@ class WarListPage extends StatelessWidget {
             overflow: TextOverflow.ellipsis,
             textScaleFactor: 0.9,
           ),
-          subtitle:
-              subtitle == null
-                  ? null
-                  : AutoSizeText(
-                    subtitle,
-                    maxLines: 1,
-                    minFontSize: 10,
-                    maxFontSize: 14,
-                    overflow: TextOverflow.ellipsis,
-                    // textScaler: const TextScaler.linear(0.9),
-                  ),
+          subtitle: subtitle == null
+              ? null
+              : AutoSizeText(
+                  subtitle,
+                  maxLines: 1,
+                  minFontSize: 10,
+                  maxFontSize: 14,
+                  overflow: TextOverflow.ellipsis,
+                  // textScaler: const TextScaler.linear(0.9),
+                ),
           horizontalTitleGap: 8,
           onTap: () {
             war.routeTo(popDetails: SplitRoute.isMaster(context));

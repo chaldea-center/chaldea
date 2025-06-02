@@ -55,7 +55,14 @@ class _UserSvtCommandCodePageState extends State<UserSvtCommandCodePage> {
       body: ListTileTheme.merge(
         dense: true,
         visualDensity: VisualDensity.compact,
-        child: Column(children: [headerInfo, Expanded(child: body), const Divider(height: 1), buttonBar]),
+        child: Column(
+          children: [
+            headerInfo,
+            Expanded(child: body),
+            const Divider(height: 1),
+            buttonBar,
+          ],
+        ),
       ),
     );
   }
@@ -64,7 +71,9 @@ class _UserSvtCommandCodePageState extends State<UserSvtCommandCodePage> {
     final userGame = mstData.user ?? agent.user.userGame;
     List<InlineSpan> subtitleSpans = [
       for (final itemId in [_kQuickKey, _kArtsKey, _kBusterKey, _kBeastFoot]) ...[
-        CenterWidgetSpan(child: Item.iconBuilder(context: context, item: null, itemId: itemId, width: 20)),
+        CenterWidgetSpan(
+          child: Item.iconBuilder(context: context, item: null, itemId: itemId, width: 20),
+        ),
         TextSpan(text: '×${mstData.userItem[itemId]?.num ?? 0}  '),
       ],
       TextSpan(text: '\nQP ${userGame?.qp.format(compact: false, groupSeparator: ",")} '),
@@ -81,9 +90,8 @@ class _UserSvtCommandCodePageState extends State<UserSvtCommandCodePage> {
           constraints: const BoxConstraints(maxWidth: 16, maxHeight: 16),
           child: ValueListenableBuilder(
             valueListenable: runtime.runningTask,
-            builder:
-                (context, running, _) =>
-                    CircularProgressIndicator(value: running ? null : 1.0, color: running ? Colors.red : Colors.green),
+            builder: (context, running, _) =>
+                CircularProgressIndicator(value: running ? null : 1.0, color: running ? Colors.red : Colors.green),
           ),
         ),
         title: Text('[${agent.user.serverName}] ${userGame?.name}'),

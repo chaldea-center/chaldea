@@ -159,14 +159,14 @@ MapGimmick _$MapGimmickFromJson(Map json) => MapGimmick(
   y: (json['y'] as num).toInt(),
   depthOffset: (json['depthOffset'] as num?)?.toInt() ?? 0,
   scale: (json['scale'] as num?)?.toInt() ?? 0,
-  dispCondType:
-      json['dispCondType'] == null ? CondType.none : const CondTypeConverter().fromJson(json['dispCondType'] as String),
+  dispCondType: json['dispCondType'] == null
+      ? CondType.none
+      : const CondTypeConverter().fromJson(json['dispCondType'] as String),
   dispTargetId: (json['dispTargetId'] as num?)?.toInt() ?? 0,
   dispTargetValue: (json['dispTargetValue'] as num?)?.toInt() ?? 0,
-  dispCondType2:
-      json['dispCondType2'] == null
-          ? CondType.none
-          : const CondTypeConverter().fromJson(json['dispCondType2'] as String),
+  dispCondType2: json['dispCondType2'] == null
+      ? CondType.none
+      : const CondTypeConverter().fromJson(json['dispCondType2'] as String),
   dispTargetId2: (json['dispTargetId2'] as num?)?.toInt() ?? 0,
   dispTargetValue2: (json['dispTargetValue2'] as num?)?.toInt() ?? 0,
   startedAt: (json['startedAt'] as num?)?.toInt() ?? 0,
@@ -277,20 +277,19 @@ SpotRoad _$SpotRoadFromJson(Map json) => SpotRoad(
   image: json['image'] as String,
   srcSpotId: (json['srcSpotId'] as num).toInt(),
   dstSpotId: (json['dstSpotId'] as num).toInt(),
-  dispCondType:
-      json['dispCondType'] == null ? CondType.none : const CondTypeConverter().fromJson(json['dispCondType'] as String),
+  dispCondType: json['dispCondType'] == null
+      ? CondType.none
+      : const CondTypeConverter().fromJson(json['dispCondType'] as String),
   dispTargetId: (json['dispTargetId'] as num?)?.toInt() ?? 0,
   dispTargetValue: (json['dispTargetValue'] as num?)?.toInt() ?? 0,
-  dispCondType2:
-      json['dispCondType2'] == null
-          ? CondType.none
-          : const CondTypeConverter().fromJson(json['dispCondType2'] as String),
+  dispCondType2: json['dispCondType2'] == null
+      ? CondType.none
+      : const CondTypeConverter().fromJson(json['dispCondType2'] as String),
   dispTargetId2: (json['dispTargetId2'] as num?)?.toInt() ?? 0,
   dispTargetValue2: (json['dispTargetValue2'] as num?)?.toInt() ?? 0,
-  activeCondType:
-      json['activeCondType'] == null
-          ? CondType.none
-          : const CondTypeConverter().fromJson(json['activeCondType'] as String),
+  activeCondType: json['activeCondType'] == null
+      ? CondType.none
+      : const CondTypeConverter().fromJson(json['activeCondType'] as String),
   activeTargetId: (json['activeTargetId'] as num?)?.toInt() ?? 0,
   activeTargetValue: (json['activeTargetValue'] as num?)?.toInt() ?? 0,
 );

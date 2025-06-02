@@ -486,21 +486,21 @@ Map<String, dynamic> _$TipsSettingToJson(TipsSetting instance) => <String, dynam
   'servantDetail': instance.servantDetail,
 };
 
-EventItemCalcParams _$EventItemCalcParamsFromJson(Map json) => $checkedCreate('EventItemCalcParams', json, (
-  $checkedConvert,
-) {
-  final val = EventItemCalcParams(
-    itemCounts: $checkedConvert(
-      'itemCounts',
-      (v) => (v as Map?)?.map((k, e) => MapEntry(int.parse(k as String), (e as num).toInt())),
-    ),
-    bonusPlans: $checkedConvert(
-      'bonusPlans',
-      (v) => (v as List<dynamic>?)?.map((e) => QuestBonusPlan.fromJson(Map<String, dynamic>.from(e as Map))).toList(),
-    ),
-  );
-  return val;
-});
+EventItemCalcParams _$EventItemCalcParamsFromJson(Map json) =>
+    $checkedCreate('EventItemCalcParams', json, ($checkedConvert) {
+      final val = EventItemCalcParams(
+        itemCounts: $checkedConvert(
+          'itemCounts',
+          (v) => (v as Map?)?.map((k, e) => MapEntry(int.parse(k as String), (e as num).toInt())),
+        ),
+        bonusPlans: $checkedConvert(
+          'bonusPlans',
+          (v) =>
+              (v as List<dynamic>?)?.map((e) => QuestBonusPlan.fromJson(Map<String, dynamic>.from(e as Map))).toList(),
+        ),
+      );
+      return val;
+    });
 
 Map<String, dynamic> _$EventItemCalcParamsToJson(EventItemCalcParams instance) => <String, dynamic>{
   'itemCounts': instance.itemCounts.map((k, e) => MapEntry(k.toString(), e)),

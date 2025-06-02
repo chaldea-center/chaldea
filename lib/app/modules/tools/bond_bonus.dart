@@ -182,22 +182,26 @@ class _BondBonusPageState extends State<BondBonusPage> {
           IconButton(
             icon: const Icon(Icons.filter_alt),
             tooltip: S.current.filter,
-            onPressed:
-                () => FilterPage.show(
-                  context: context,
-                  builder:
-                      (context) => ServantFilterPage(
-                        filterData: svtFilterData,
-                        onChanged: (_) {
-                          if (mounted) setState(() {});
-                        },
-                        planMode: false,
-                      ),
-                ),
+            onPressed: () => FilterPage.show(
+              context: context,
+              builder: (context) => ServantFilterPage(
+                filterData: svtFilterData,
+                onChanged: (_) {
+                  if (mounted) setState(() {});
+                },
+                planMode: false,
+              ),
+            ),
           ),
         ],
       ),
-      body: Column(children: [Expanded(child: mainBody), kDefaultDivider, buttonBar]),
+      body: Column(
+        children: [
+          Expanded(child: mainBody),
+          kDefaultDivider,
+          buttonBar,
+        ],
+      ),
     );
   }
 
@@ -243,49 +247,47 @@ class _BondBonusPageState extends State<BondBonusPage> {
 
         children.add(
           Wrap(
-            children:
-                svts.map((x) {
-                  final (:svt, :limitCounts) = x;
-                  final allLimitCounts = _getSvtAllLimits(svt);
-                  final conditional = limitCounts.length != allLimitCounts.length;
-                  Widget child = Container(
-                    decoration: BoxDecoration(
-                      color: conditional ? Theme.of(context).colorScheme.errorContainer.withAlpha(191) : null,
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                    padding: const EdgeInsets.all(1),
-                    margin: const EdgeInsets.all(1),
-                    child: svt.iconBuilder(
-                      context: context,
-                      // width: 32,
-                      text: [
-                        if (conditional) '${limitCounts.length}/${allLimitCounts.length}',
-                        svt.status.favorite ? 'Lv${svt.status.bond}' : '',
-                      ].join('\n'),
-                      option: ImageWithTextOption(fontSize: 12),
-                      width: 48,
-                    ),
-                  );
-                  if (conditional) {
-                    String msg = limitCounts
-                        .map((limitCount) {
-                          String name;
-                          if (limitCount < 10) {
-                            int stage = BattleUtils.limitCountToStage(limitCount);
-                            name =
-                                '${S.current.ascension_short} $limitCount (${S.current.ascension_stage_short} $stage)';
-                          } else {
-                            final costume = svt.costume[limitCount];
-                            name = costume?.lName.l ?? '${S.current.costume} $limitCount';
-                          }
-                          return '- $name';
-                        })
-                        .join('\n');
-                    msg = '${svt.lName.l}\n$msg';
-                    child = Tooltip(message: msg, child: child);
-                  }
-                  return child;
-                }).toList(),
+            children: svts.map((x) {
+              final (:svt, :limitCounts) = x;
+              final allLimitCounts = _getSvtAllLimits(svt);
+              final conditional = limitCounts.length != allLimitCounts.length;
+              Widget child = Container(
+                decoration: BoxDecoration(
+                  color: conditional ? Theme.of(context).colorScheme.errorContainer.withAlpha(191) : null,
+                  borderRadius: BorderRadius.circular(4),
+                ),
+                padding: const EdgeInsets.all(1),
+                margin: const EdgeInsets.all(1),
+                child: svt.iconBuilder(
+                  context: context,
+                  // width: 32,
+                  text: [
+                    if (conditional) '${limitCounts.length}/${allLimitCounts.length}',
+                    svt.status.favorite ? 'Lv${svt.status.bond}' : '',
+                  ].join('\n'),
+                  option: ImageWithTextOption(fontSize: 12),
+                  width: 48,
+                ),
+              );
+              if (conditional) {
+                String msg = limitCounts
+                    .map((limitCount) {
+                      String name;
+                      if (limitCount < 10) {
+                        int stage = BattleUtils.limitCountToStage(limitCount);
+                        name = '${S.current.ascension_short} $limitCount (${S.current.ascension_stage_short} $stage)';
+                      } else {
+                        final costume = svt.costume[limitCount];
+                        name = costume?.lName.l ?? '${S.current.costume} $limitCount';
+                      }
+                      return '- $name';
+                    })
+                    .join('\n');
+                msg = '${svt.lName.l}\n$msg';
+                child = Tooltip(message: msg, child: child);
+              }
+              return child;
+            }).toList(),
           ),
         );
         return Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: children);
@@ -304,11 +306,10 @@ class _BondBonusPageState extends State<BondBonusPage> {
           values: mustHaveCeFilter,
           shrinkWrap: true,
           constraints: BoxConstraints(maxHeight: 40),
-          optionBuilder:
-              (ceId) => Padding(
-                padding: EdgeInsets.all(2),
-                child: allCeData[ceId]!.ce.iconBuilder(context: context, jumpToDetail: false),
-              ),
+          optionBuilder: (ceId) => Padding(
+            padding: EdgeInsets.all(2),
+            child: allCeData[ceId]!.ce.iconBuilder(context: context, jumpToDetail: false),
+          ),
           onFilterChanged: (v, _) {
             if (mounted) setState(() {});
           },

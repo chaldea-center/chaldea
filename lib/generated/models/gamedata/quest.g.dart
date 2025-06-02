@@ -210,14 +210,12 @@ QuestPhase _$QuestPhaseFromJson(Map json) => QuestPhase(
   className:
       (json['className'] as List<dynamic>?)?.map((e) => const SvtClassConverter().fromJson(e as String)).toList() ??
       const [],
-  individuality:
-      (json['individuality'] as List<dynamic>?)
-          ?.map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
-          .toList(),
-  phaseIndividuality:
-      (json['phaseIndividuality'] as List<dynamic>?)
-          ?.map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
-          .toList(),
+  individuality: (json['individuality'] as List<dynamic>?)
+      ?.map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
+      .toList(),
+  phaseIndividuality: (json['phaseIndividuality'] as List<dynamic>?)
+      ?.map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
+      .toList(),
   qp: (json['qp'] as num?)?.toInt() ?? 0,
   exp: (json['exp'] as num?)?.toInt() ?? 0,
   bond: (json['bond'] as num?)?.toInt() ?? 0,
@@ -229,10 +227,9 @@ QuestPhase _$QuestPhaseFromJson(Map json) => QuestPhase(
   enemyHashes: (json['availableEnemyHashes'] as List<dynamic>?)?.map((e) => e as String).toList() ?? const [],
   dropsFromAllHashes: json['dropsFromAllHashes'] as bool?,
   battleBg: json['battleBg'] == null ? null : BattleBg.fromJson(Map<String, dynamic>.from(json['battleBg'] as Map)),
-  extraDetail:
-      json['extraDetail'] == null
-          ? null
-          : QuestPhaseExtraDetail.fromJson(Map<String, dynamic>.from(json['extraDetail'] as Map)),
+  extraDetail: json['extraDetail'] == null
+      ? null
+      : QuestPhaseExtraDetail.fromJson(Map<String, dynamic>.from(json['extraDetail'] as Map)),
   scripts:
       (json['scripts'] as List<dynamic>?)
           ?.map((e) => ScriptLink.fromJson(Map<String, dynamic>.from(e as Map)))
@@ -357,10 +354,9 @@ GiftAdd _$GiftAddFromJson(Map json) => GiftAdd(
   condType: const CondTypeConverter().fromJson(json['condType'] as String),
   targetId: (json['targetId'] as num).toInt(),
   targetNum: (json['targetNum'] as num).toInt(),
-  replacementGifts:
-      (json['replacementGifts'] as List<dynamic>)
-          .map((e) => BaseGift.fromJson(Map<String, dynamic>.from(e as Map)))
-          .toList(),
+  replacementGifts: (json['replacementGifts'] as List<dynamic>)
+      .map((e) => BaseGift.fromJson(Map<String, dynamic>.from(e as Map)))
+      .toList(),
 );
 
 Map<String, dynamic> _$GiftAddToJson(GiftAdd instance) => <String, dynamic>{
@@ -396,8 +392,9 @@ Stage _$StageFromJson(Map json) => Stage(
   wave: (json['wave'] as num).toInt(),
   bgm: json['bgm'] == null ? null : Bgm.fromJson(Map<String, dynamic>.from(json['bgm'] as Map)),
   startEffectId: (json['startEffectId'] as num?)?.toInt() ?? 1,
-  fieldAis:
-      (json['fieldAis'] as List<dynamic>?)?.map((e) => FieldAi.fromJson(Map<String, dynamic>.from(e as Map))).toList(),
+  fieldAis: (json['fieldAis'] as List<dynamic>?)
+      ?.map((e) => FieldAi.fromJson(Map<String, dynamic>.from(e as Map)))
+      .toList(),
   call: (json['call'] as List<dynamic>?)?.map((e) => (e as num).toInt()).toList(),
   turn: (json['turn'] as num?)?.toInt(),
   limitAct: $enumDecodeNullable(_$StageLimitActTypeEnumMap, json['limitAct']),
@@ -412,14 +409,12 @@ Stage _$StageFromJson(Map json) => Stage(
       const [],
   originalScript: (json['originalScript'] as Map?)?.map((k, e) => MapEntry(k as String, e)),
   cutin: json['cutin'] == null ? null : StageCutin.fromJson(Map<String, dynamic>.from(json['cutin'] as Map)),
-  aiAllocations:
-      (json['aiAllocations'] as List<dynamic>?)
-          ?.map((e) => AiAllocationInfo.fromJson(Map<String, dynamic>.from(e as Map)))
-          .toList(),
-  enemies:
-      (json['enemies'] as List<dynamic>?)
-          ?.map((e) => QuestEnemy.fromJson(Map<String, dynamic>.from(e as Map)))
-          .toList(),
+  aiAllocations: (json['aiAllocations'] as List<dynamic>?)
+      ?.map((e) => AiAllocationInfo.fromJson(Map<String, dynamic>.from(e as Map)))
+      .toList(),
+  enemies: (json['enemies'] as List<dynamic>?)
+      ?.map((e) => QuestEnemy.fromJson(Map<String, dynamic>.from(e as Map)))
+      .toList(),
 );
 
 Map<String, dynamic> _$StageToJson(Stage instance) => <String, dynamic>{
@@ -452,10 +447,9 @@ AiAllocationInfo _$AiAllocationInfoFromJson(Map json) => AiAllocationInfo(
           )
           .toList() ??
       const [],
-  individuality:
-      json['individuality'] == null
-          ? null
-          : NiceTrait.fromJson(Map<String, dynamic>.from(json['individuality'] as Map)),
+  individuality: json['individuality'] == null
+      ? null
+      : NiceTrait.fromJson(Map<String, dynamic>.from(json['individuality'] as Map)),
 );
 
 Map<String, dynamic> _$AiAllocationInfoToJson(AiAllocationInfo instance) => <String, dynamic>{
@@ -547,8 +541,9 @@ Map<String, dynamic> _$QuestReleaseOverwriteToJson(QuestReleaseOverwrite instanc
 
 QuestPhaseScript _$QuestPhaseScriptFromJson(Map json) => QuestPhaseScript(
   phase: (json['phase'] as num).toInt(),
-  scripts:
-      (json['scripts'] as List<dynamic>).map((e) => ScriptLink.fromJson(Map<String, dynamic>.from(e as Map))).toList(),
+  scripts: (json['scripts'] as List<dynamic>)
+      .map((e) => ScriptLink.fromJson(Map<String, dynamic>.from(e as Map)))
+      .toList(),
 );
 
 Map<String, dynamic> _$QuestPhaseScriptToJson(QuestPhaseScript instance) => <String, dynamic>{
@@ -615,10 +610,9 @@ NpcServant _$NpcServantFromJson(Map json) => NpcServant(
           .toList() ??
       const [],
   skills: json['skills'] == null ? null : EnemySkill.fromJson(Map<String, dynamic>.from(json['skills'] as Map)),
-  noblePhantasm:
-      json['noblePhantasm'] == null
-          ? null
-          : SupportServantTd.fromJson(Map<String, dynamic>.from(json['noblePhantasm'] as Map)),
+  noblePhantasm: json['noblePhantasm'] == null
+      ? null
+      : SupportServantTd.fromJson(Map<String, dynamic>.from(json['noblePhantasm'] as Map)),
   limit: SupportServantLimit.fromJson(Map<String, dynamic>.from(json['limit'] as Map)),
   flags:
       (json['flags'] as List<dynamic>?)
@@ -687,8 +681,9 @@ SupportServant _$SupportServantFromJson(Map json) => SupportServant(
           ?.map((e) => SupportServantEquip.fromJson(Map<String, dynamic>.from(e as Map)))
           .toList() ??
       const [],
-  script:
-      json['script'] == null ? null : SupportServantScript.fromJson(Map<String, dynamic>.from(json['script'] as Map)),
+  script: json['script'] == null
+      ? null
+      : SupportServantScript.fromJson(Map<String, dynamic>.from(json['script'] as Map)),
   releaseConditions:
       (json['releaseConditions'] as List<dynamic>?)
           ?.map((e) => SupportServantRelease.fromJson(Map<String, dynamic>.from(e as Map)))
@@ -752,8 +747,9 @@ Map<String, dynamic> _$SupportServantPassiveSkillToJson(SupportServantPassiveSki
 
 SupportServantTd _$SupportServantTdFromJson(Map json) => SupportServantTd(
   noblePhantasmId: (json['noblePhantasmId'] as num).toInt(),
-  noblePhantasm:
-      json['noblePhantasm'] == null ? null : NiceTd.fromJson(Map<String, dynamic>.from(json['noblePhantasm'] as Map)),
+  noblePhantasm: json['noblePhantasm'] == null
+      ? null
+      : NiceTd.fromJson(Map<String, dynamic>.from(json['noblePhantasm'] as Map)),
   noblePhantasmLv: (json['noblePhantasmLv'] as num).toInt(),
 );
 
@@ -876,25 +872,27 @@ QuestEnemy _$QuestEnemyFromJson(Map json) => QuestEnemy(
   criticalRate: (json['criticalRate'] as num).toInt(),
   recover: (json['recover'] as num?)?.toInt() ?? 0,
   chargeTurn: (json['chargeTurn'] as num?)?.toInt() ?? 0,
-  traits:
-      (json['traits'] as List<dynamic>?)?.map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map))).toList(),
+  traits: (json['traits'] as List<dynamic>?)
+      ?.map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
+      .toList(),
   skills: json['skills'] == null ? null : EnemySkill.fromJson(Map<String, dynamic>.from(json['skills'] as Map)),
-  classPassive:
-      json['classPassive'] == null
-          ? null
-          : EnemyPassive.fromJson(Map<String, dynamic>.from(json['classPassive'] as Map)),
-  noblePhantasm:
-      json['noblePhantasm'] == null ? null : EnemyTd.fromJson(Map<String, dynamic>.from(json['noblePhantasm'] as Map)),
-  serverMod:
-      json['serverMod'] == null ? null : EnemyServerMod.fromJson(Map<String, dynamic>.from(json['serverMod'] as Map)),
+  classPassive: json['classPassive'] == null
+      ? null
+      : EnemyPassive.fromJson(Map<String, dynamic>.from(json['classPassive'] as Map)),
+  noblePhantasm: json['noblePhantasm'] == null
+      ? null
+      : EnemyTd.fromJson(Map<String, dynamic>.from(json['noblePhantasm'] as Map)),
+  serverMod: json['serverMod'] == null
+      ? null
+      : EnemyServerMod.fromJson(Map<String, dynamic>.from(json['serverMod'] as Map)),
   ai: json['ai'] == null ? null : EnemyAi.fromJson(Map<String, dynamic>.from(json['ai'] as Map)),
-  enemyScript:
-      json['enemyScript'] == null ? null : EnemyScript.fromJson(Map<String, dynamic>.from(json['enemyScript'] as Map)),
+  enemyScript: json['enemyScript'] == null
+      ? null
+      : EnemyScript.fromJson(Map<String, dynamic>.from(json['enemyScript'] as Map)),
   originalEnemyScript: (json['originalEnemyScript'] as Map?)?.map((k, e) => MapEntry(k as String, e)),
-  infoScript:
-      json['infoScript'] == null
-          ? null
-          : EnemyInfoScript.fromJson(Map<String, dynamic>.from(json['infoScript'] as Map)),
+  infoScript: json['infoScript'] == null
+      ? null
+      : EnemyInfoScript.fromJson(Map<String, dynamic>.from(json['infoScript'] as Map)),
   originalInfoScript: (json['originalInfoScript'] as Map?)?.map((k, e) => MapEntry(k as String, e)),
   limit: json['limit'] == null ? null : EnemyLimit.fromJson(Map<String, dynamic>.from(json['limit'] as Map)),
   misc: json['misc'] == null ? null : EnemyMisc.fromJson(Map<String, dynamic>.from(json['misc'] as Map)),
@@ -968,10 +966,9 @@ EnemyScript _$EnemyScriptFromJson(Map json) => EnemyScript(
   leader: json['leader'] as bool?,
   call: (json['call'] as List<dynamic>?)?.map((e) => (e as num).toInt()).toList(),
   shift: (json['shift'] as List<dynamic>?)?.map((e) => (e as num).toInt()).toList(),
-  shiftClear:
-      (json['shiftClear'] as List<dynamic>?)
-          ?.map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
-          .toList(),
+  shiftClear: (json['shiftClear'] as List<dynamic>?)
+      ?.map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
+      .toList(),
 );
 
 Map<String, dynamic> _$EnemyScriptToJson(EnemyScript instance) => <String, dynamic>{
@@ -1024,8 +1021,9 @@ Map<String, dynamic> _$EnemySkillToJson(EnemySkill instance) => <String, dynamic
 
 EnemyTd _$EnemyTdFromJson(Map json) => EnemyTd(
   noblePhantasmId: (json['noblePhantasmId'] as num?)?.toInt() ?? 0,
-  noblePhantasm:
-      json['noblePhantasm'] == null ? null : NiceTd.fromJson(Map<String, dynamic>.from(json['noblePhantasm'] as Map)),
+  noblePhantasm: json['noblePhantasm'] == null
+      ? null
+      : NiceTd.fromJson(Map<String, dynamic>.from(json['noblePhantasm'] as Map)),
   noblePhantasmLv: (json['noblePhantasmLv'] as num?)?.toInt() ?? 1,
   noblePhantasmLv1: (json['noblePhantasmLv1'] as num?)?.toInt() ?? 0,
   noblePhantasmLv2: (json['noblePhantasmLv2'] as num?)?.toInt(),
@@ -1042,14 +1040,12 @@ Map<String, dynamic> _$EnemyTdToJson(EnemyTd instance) => <String, dynamic>{
 };
 
 EnemyPassive _$EnemyPassiveFromJson(Map json) => EnemyPassive(
-  classPassive:
-      (json['classPassive'] as List<dynamic>?)
-          ?.map((e) => NiceSkill.fromJson(Map<String, dynamic>.from(e as Map)))
-          .toList(),
-  addPassive:
-      (json['addPassive'] as List<dynamic>?)
-          ?.map((e) => NiceSkill.fromJson(Map<String, dynamic>.from(e as Map)))
-          .toList(),
+  classPassive: (json['classPassive'] as List<dynamic>?)
+      ?.map((e) => NiceSkill.fromJson(Map<String, dynamic>.from(e as Map)))
+      .toList(),
+  addPassive: (json['addPassive'] as List<dynamic>?)
+      ?.map((e) => NiceSkill.fromJson(Map<String, dynamic>.from(e as Map)))
+      .toList(),
   addPassiveLvs: (json['addPassiveLvs'] as List<dynamic>?)?.map((e) => (e as num).toInt()).toList(),
   appendPassiveSkillIds: (json['appendPassiveSkillIds'] as List<dynamic>?)?.map((e) => (e as num).toInt()).toList(),
   appendPassiveSkillLvs: (json['appendPassiveSkillLvs'] as List<dynamic>?)?.map((e) => (e as num).toInt()).toList(),
@@ -1107,18 +1103,15 @@ QuestPhaseExtraDetail _$QuestPhaseExtraDetailFromJson(Map json) => QuestPhaseExt
   hintTitle: json['hintTitle'] as String?,
   hintMessage: json['hintMessage'] as String?,
   aiNpc: json['aiNpc'] == null ? null : QuestPhaseAiNpc.fromJson(Map<String, dynamic>.from(json['aiNpc'] as Map)),
-  aiMultiNpc:
-      (json['aiMultiNpc'] as List<dynamic>?)
-          ?.map((e) => QuestPhaseAiNpc.fromJson(Map<String, dynamic>.from(e as Map)))
-          .toList(),
-  overwriteEquipSkills:
-      json['overwriteEquipSkills'] == null
-          ? null
-          : OverwriteEquipSkills.fromJson(Map<String, dynamic>.from(json['overwriteEquipSkills'] as Map)),
-  addEquipSkills:
-      json['addEquipSkills'] == null
-          ? null
-          : OverwriteEquipSkills.fromJson(Map<String, dynamic>.from(json['addEquipSkills'] as Map)),
+  aiMultiNpc: (json['aiMultiNpc'] as List<dynamic>?)
+      ?.map((e) => QuestPhaseAiNpc.fromJson(Map<String, dynamic>.from(e as Map)))
+      .toList(),
+  overwriteEquipSkills: json['overwriteEquipSkills'] == null
+      ? null
+      : OverwriteEquipSkills.fromJson(Map<String, dynamic>.from(json['overwriteEquipSkills'] as Map)),
+  addEquipSkills: json['addEquipSkills'] == null
+      ? null
+      : OverwriteEquipSkills.fromJson(Map<String, dynamic>.from(json['addEquipSkills'] as Map)),
   waveSetup: (json['waveSetup'] as num?)?.toInt(),
   interruptibleQuest: (json['interruptibleQuest'] as num?)?.toInt(),
   masterImageId: (json['masterImageId'] as num?)?.toInt(),

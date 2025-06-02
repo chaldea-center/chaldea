@@ -192,11 +192,10 @@ class _QuestCardState extends State<QuestCard> {
   Widget _cardHeader() {
     String questName = quest.lNameWithChapter;
 
-    List<String> names =
-        [
-          questName,
-          if (!Transl.isJP && quest.name != quest.lName.l && !widget.battleOnly) quest.name,
-        ].map((e) => e.replaceAll('\n', ' ')).toList();
+    List<String> names = [
+      questName,
+      if (!Transl.isJP && quest.name != quest.lName.l && !widget.battleOnly) quest.name,
+    ].map((e) => e.replaceAll('\n', ' ')).toList();
     String shownQuestName;
     if (names.any((s) => s.charWidth > 16)) {
       shownQuestName = names.join('\n');
@@ -250,7 +249,10 @@ class _QuestCardState extends State<QuestCard> {
           width: 36,
           child: IconButton(
             onPressed: () => setState(() => showTrueName = !showTrueName),
-            icon: Icon(Icons.remove_red_eye_outlined, color: showTrueName ? Theme.of(context).tabBarTheme.indicatorColor : null),
+            icon: Icon(
+              Icons.remove_red_eye_outlined,
+              color: showTrueName ? Theme.of(context).tabBarTheme.indicatorColor : null,
+            ),
             tooltip: showTrueName ? 'Show Display Name' : 'Show True Name',
             padding: EdgeInsets.zero,
             iconSize: 20,

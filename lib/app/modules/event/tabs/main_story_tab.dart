@@ -75,10 +75,9 @@ class MainStoryTab extends StatelessWidget {
     String shortName = record.lName.l;
     String longName = record.lLongName.l;
     String titleText = shortName;
-    String subtitleText =
-        longName.startsWith(shortName)
-            ? longName.substring(shortName.length).trimChar(' -\n')
-            : longName.replaceAll('\n', ' ');
+    String subtitleText = longName.startsWith(shortName)
+        ? longName.substring(shortName.length).trimChar(' -\n')
+        : longName.replaceAll('\n', ' ');
     Widget? title, subtitle;
     title = AutoSizeText(
       titleText,
@@ -96,27 +95,26 @@ class MainStoryTab extends StatelessWidget {
       leading: showBanner ? db.getIconImage(record.shownBanner, width: 150) : null,
       title: title,
       subtitle: subtitle,
-      trailing:
-          titleOnly
-              ? null
-              : Wrap(
-                children: [
-                  Switch.adaptive(
-                    value: plan.fixedDrop,
-                    onChanged: (v) {
-                      plan.fixedDrop = v;
-                      db.itemCenter.updateMainStory();
-                    },
-                  ),
-                  Switch.adaptive(
-                    value: plan.questReward,
-                    onChanged: (v) {
-                      plan.questReward = v;
-                      db.itemCenter.updateMainStory();
-                    },
-                  ),
-                ],
-              ),
+      trailing: titleOnly
+          ? null
+          : Wrap(
+              children: [
+                Switch.adaptive(
+                  value: plan.fixedDrop,
+                  onChanged: (v) {
+                    plan.fixedDrop = v;
+                    db.itemCenter.updateMainStory();
+                  },
+                ),
+                Switch.adaptive(
+                  value: plan.questReward,
+                  onChanged: (v) {
+                    plan.questReward = v;
+                    db.itemCenter.updateMainStory();
+                  },
+                ),
+              ],
+            ),
       onTap: () {
         router.popDetailAndPush(context: context, url: Routes.warI(record.id), detail: true);
       },

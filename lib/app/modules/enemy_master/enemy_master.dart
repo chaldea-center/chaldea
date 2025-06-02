@@ -35,7 +35,10 @@ class _EnemyMasterDetailPageState extends State<EnemyMasterDetailPage> {
         url: Routes.enemyMasterI(widget.master?.id ?? widget.masterId ?? 0),
       );
     }
-    return Scaffold(appBar: AppBar(title: Text(master.lName.l)), body: ListView(children: [info]));
+    return Scaffold(
+      appBar: AppBar(title: Text(master.lName.l)),
+      body: ListView(children: [info]),
+    );
   }
 
   Widget get info {
@@ -44,18 +47,26 @@ class _EnemyMasterDetailPageState extends State<EnemyMasterDetailPage> {
       children: <Widget>[
         CustomTableRow.fromTexts(texts: ['No.${master.id}'], isHeader: true),
         CustomTableRow(
-          children: [TableCellData(child: Text(master.lName.l, style: const TextStyle(fontWeight: FontWeight.bold)))],
+          children: [
+            TableCellData(
+              child: Text(master.lName.l, style: const TextStyle(fontWeight: FontWeight.bold)),
+            ),
+          ],
         ),
         if (!Transl.isJP)
           CustomTableRow(
             children: [
-              TableCellData(child: Text(master.lName.jp, style: const TextStyle(fontWeight: FontWeight.w500))),
+              TableCellData(
+                child: Text(master.lName.jp, style: const TextStyle(fontWeight: FontWeight.w500)),
+              ),
             ],
           ),
         if (!Transl.isEN)
           CustomTableRow(
             children: [
-              TableCellData(child: Text(master.lName.na, style: const TextStyle(fontWeight: FontWeight.w500))),
+              TableCellData(
+                child: Text(master.lName.na, style: const TextStyle(fontWeight: FontWeight.w500)),
+              ),
             ],
           ),
         CustomTableRow.fromTexts(texts: [S.current.illustration], isHeader: true),

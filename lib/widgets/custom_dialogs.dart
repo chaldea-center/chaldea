@@ -83,10 +83,9 @@ class _InputCancelOkDialogState extends State<InputCancelOkDialog> {
     _controller = TextEditingController.fromValue(
       TextEditingValue(
         text: text,
-        selection:
-            text.isEmpty
-                ? const TextSelection.collapsed(offset: -1)
-                : TextSelection(baseOffset: 0, extentOffset: text.length),
+        selection: text.isEmpty
+            ? const TextSelection.collapsed(offset: -1)
+            : TextSelection(baseOffset: 0, extentOffset: text.length),
       ),
     );
   }
@@ -134,21 +133,20 @@ class _InputCancelOkDialogState extends State<InputCancelOkDialog> {
       actions: <Widget>[
         TextButton(child: Text(S.current.cancel), onPressed: () => Navigator.pop(context)),
         TextButton(
-          onPressed:
-              validation
-                  ? () {
-                    String _value = _controller.text;
-                    validation = _validate(_value);
-                    setState(() {
-                      if (validation) {
-                        if (widget.onSubmit != null) {
-                          widget.onSubmit!(_value);
-                        }
-                        Navigator.pop(context, _value);
+          onPressed: validation
+              ? () {
+                  String _value = _controller.text;
+                  validation = _validate(_value);
+                  setState(() {
+                    if (validation) {
+                      if (widget.onSubmit != null) {
+                        widget.onSubmit!(_value);
                       }
-                    });
-                  }
-                  : null,
+                      Navigator.pop(context, _value);
+                    }
+                  });
+                }
+              : null,
           child: Text(S.current.ok),
         ),
       ],
@@ -217,7 +215,10 @@ class SimpleConfirmDialog extends StatelessWidget {
     ];
     if (wrapActionsInRow) {
       children = [
-        FittedBox(fit: BoxFit.scaleDown, child: Row(mainAxisAlignment: MainAxisAlignment.end, children: children)),
+        FittedBox(
+          fit: BoxFit.scaleDown,
+          child: Row(mainAxisAlignment: MainAxisAlignment.end, children: children),
+        ),
       ];
     }
     return AlertDialog(
@@ -244,26 +245,28 @@ Future<void> jumpToExternalLinkAlert({required String url, String? name, String?
   return showDialog(
     context: kAppKey.currentContext!,
     useRootNavigator: false,
-    builder:
-        (context) => SimpleConfirmDialog(
-          title: Text(S.current.jump_to(name ?? S.current.link)),
-          content: Text.rich(
+    builder: (context) => SimpleConfirmDialog(
+      title: Text(S.current.jump_to(name ?? S.current.link)),
+      content: Text.rich(
+        TextSpan(
+          children: [
+            if (content != null) TextSpan(text: '$content\n\n'),
             TextSpan(
-              children: [
-                if (content != null) TextSpan(text: '$content\n\n'),
-                TextSpan(text: shownLink, style: const TextStyle(decoration: TextDecoration.underline)),
-              ],
+              text: shownLink,
+              style: const TextStyle(decoration: TextDecoration.underline),
             ),
-          ),
-          showOk: valid,
-          onTapOk: () async {
-            String link = safeLink ?? url;
-            if (await canLaunch(link)) {
-              launch(link);
-            } else {
-              EasyLoading.showToast('Could not launch url:\n$link');
-            }
-          },
+          ],
         ),
+      ),
+      showOk: valid,
+      onTapOk: () async {
+        String link = safeLink ?? url;
+        if (await canLaunch(link)) {
+          launch(link);
+        } else {
+          EasyLoading.showToast('Could not launch url:\n$link');
+        }
+      },
+    ),
   );
 }

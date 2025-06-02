@@ -47,14 +47,12 @@ ConstGameData _$ConstGameDataFromJson(Map json) => ConstGameData(
         ),
       ) ??
       const {},
-  constants:
-      json['constants'] == null
-          ? const GameConstants()
-          : GameConstants.fromJson(Map<String, dynamic>.from(json['constants'] as Map)),
-  constantStr:
-      json['constantStr'] == null
-          ? const GameConstantStr()
-          : GameConstantStr.fromJson(Map<String, dynamic>.from(json['constantStr'] as Map)),
+  constants: json['constants'] == null
+      ? const GameConstants()
+      : GameConstants.fromJson(Map<String, dynamic>.from(json['constants'] as Map)),
+  constantStr: json['constantStr'] == null
+      ? const GameConstantStr()
+      : GameConstantStr.fromJson(Map<String, dynamic>.from(json['constantStr'] as Map)),
   svtGrailCost:
       (json['svtGrailCost'] as Map?)?.map(
         (k, e) => MapEntry(
@@ -116,10 +114,9 @@ ConstGameData _$ConstGameDataFromJson(Map json) => ConstGameData(
         (k, e) => MapEntry(int.parse(k as String), (e as List<dynamic>).map((e) => (e as num).toInt()).toList()),
       ) ??
       const {},
-  config:
-      json['config'] == null
-          ? const ConstDataConfig()
-          : ConstDataConfig.fromJson(Map<String, dynamic>.from(json['config'] as Map)),
+  config: json['config'] == null
+      ? const ConstDataConfig()
+      : ConstDataConfig.fromJson(Map<String, dynamic>.from(json['config'] as Map)),
   destinyOrderSummons: (json['destinyOrderSummons'] as List<dynamic>?)?.map((e) => e as String).toList() ?? const [],
 );
 
@@ -174,8 +171,9 @@ Map<String, dynamic> _$ConstDataConfigToJson(ConstDataConfig instance) => <Strin
 BuffActionInfo _$BuffActionInfoFromJson(Map json) => BuffActionInfo(
   limit: $enumDecode(_$BuffLimitEnumMap, json['limit']),
   plusTypes: (json['plusTypes'] as List<dynamic>).map((e) => const BuffTypeConverter().fromJson(e as String)).toList(),
-  minusTypes:
-      (json['minusTypes'] as List<dynamic>).map((e) => const BuffTypeConverter().fromJson(e as String)).toList(),
+  minusTypes: (json['minusTypes'] as List<dynamic>)
+      .map((e) => const BuffTypeConverter().fromJson(e as String))
+      .toList(),
   baseParam: (json['baseParam'] as num).toInt(),
   baseValue: (json['baseValue'] as num).toInt(),
   isRec: json['isRec'] as bool,
@@ -237,10 +235,9 @@ Map<String, dynamic> _$SvtClassInfoToJson(SvtClassInfo instance) => <String, dyn
 };
 
 CardInfo _$CardInfoFromJson(Map json) => CardInfo(
-  individuality:
-      (json['individuality'] as List<dynamic>)
-          .map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
-          .toList(),
+  individuality: (json['individuality'] as List<dynamic>)
+      .map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
+      .toList(),
   adjustAtk: (json['adjustAtk'] as num).toInt(),
   adjustTdGauge: (json['adjustTdGauge'] as num).toInt(),
   adjustCritical: (json['adjustCritical'] as num).toInt(),
@@ -313,8 +310,9 @@ Map<String, dynamic> _$SvtExpCurveToJson(SvtExpCurve instance) => <String, dynam
 };
 
 FuncTypeDetail _$FuncTypeDetailFromJson(Map json) => FuncTypeDetail(
-  funcType:
-      json['funcType'] == null ? FuncType.unknown : const FuncTypeConverter().fromJson(json['funcType'] as String),
+  funcType: json['funcType'] == null
+      ? FuncType.unknown
+      : const FuncTypeConverter().fromJson(json['funcType'] as String),
   ignoreValueUp: json['ignoreValueUp'] as bool,
   individuality:
       (json['individuality'] as List<dynamic>?)
@@ -330,8 +328,9 @@ Map<String, dynamic> _$FuncTypeDetailToJson(FuncTypeDetail instance) => <String,
 };
 
 BuffTypeDetail _$BuffTypeDetailFromJson(Map json) => BuffTypeDetail(
-  buffType:
-      json['buffType'] == null ? BuffType.unknown : const BuffTypeConverter().fromJson(json['buffType'] as String),
+  buffType: json['buffType'] == null
+      ? BuffType.unknown
+      : const BuffTypeConverter().fromJson(json['buffType'] as String),
   ignoreValueUp: json['ignoreValueUp'] as bool,
 );
 

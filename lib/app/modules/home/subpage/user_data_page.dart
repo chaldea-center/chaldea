@@ -190,29 +190,28 @@ class _UserDataPageState extends State<UserDataPage> {
         showDialog(
           context: context,
           useRootNavigator: false,
-          builder:
-              (context) => SimpleConfirmDialog(
-                title: Text(S.current.backup),
-                content: Text(hint),
-                showCancel: false,
-                actions: [
-                  if (fps.isNotEmpty)
-                    PlatformU.isDesktop
-                        ? TextButton(
-                          child: Text(S.current.open),
-                          onPressed: () {
-                            openFile(db.paths.backupDir);
-                          },
-                        )
-                        : TextButton(
-                          child: Text(S.current.share),
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                            ShareX.shareFile(fps.first, context: context);
-                          },
-                        ),
-                ],
-              ),
+          builder: (context) => SimpleConfirmDialog(
+            title: Text(S.current.backup),
+            content: Text(hint),
+            showCancel: false,
+            actions: [
+              if (fps.isNotEmpty)
+                PlatformU.isDesktop
+                    ? TextButton(
+                        child: Text(S.current.open),
+                        onPressed: () {
+                          openFile(db.paths.backupDir);
+                        },
+                      )
+                    : TextButton(
+                        child: Text(S.current.share),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                          ShareX.shareFile(fps.first, context: context);
+                        },
+                      ),
+            ],
+          ),
         );
       },
     ).showDialog(context);
@@ -234,57 +233,56 @@ class _UserDataPageState extends State<UserDataPage> {
       context: context,
       useRootNavigator: false,
       barrierDismissible: false,
-      builder:
-          (context) => AlertDialog(
-            title: Text(S.current.migrate_external_storage_title),
-            content: Text('From:\n ${from.path}\nTo:\n${to.path}'),
-            actions: [
-              TextButton(onPressed: () => Navigator.of(context).pop(), child: Text(S.current.cancel)),
-              TextButton(
-                onPressed: () async {
-                  db.paths.androidUseExternalStorage = useExternal;
-                  Navigator.of(context).pop();
+      builder: (context) => AlertDialog(
+        title: Text(S.current.migrate_external_storage_title),
+        content: Text('From:\n ${from.path}\nTo:\n${to.path}'),
+        actions: [
+          TextButton(onPressed: () => Navigator.of(context).pop(), child: Text(S.current.cancel)),
+          TextButton(
+            onPressed: () async {
+              db.paths.androidUseExternalStorage = useExternal;
+              Navigator.of(context).pop();
+              SimpleConfirmDialog(
+                title: Text('⚠️ ${S.current.warning}'),
+                content: Text(S.current.migrate_external_storage_manual_warning),
+                showCancel: false,
+              ).showDialog(context);
+              final sp = await SharedPreferences.getInstance();
+              sp.setBool('android_use_external', useExternal);
+            },
+            child: Text(S.current.migrate_external_storage_btn_no),
+          ),
+          TextButton(
+            onPressed: () async {
+              try {
+                Navigator.of(context).pop();
+                await showEasyLoading(() => _copyDirectory(from, to));
+                final sp = await SharedPreferences.getInstance();
+                sp.setBool('android_use_external', useExternal);
+                if (context.mounted) {
                   SimpleConfirmDialog(
-                    title: Text('⚠️ ${S.current.warning}'),
-                    content: Text(S.current.migrate_external_storage_manual_warning),
+                    title: const Text('⚠️ Warning'),
+                    content: Text(S.current.restart_to_apply_changes),
                     showCancel: false,
                   ).showDialog(context);
-                  final sp = await SharedPreferences.getInstance();
-                  sp.setBool('android_use_external', useExternal);
-                },
-                child: Text(S.current.migrate_external_storage_btn_no),
-              ),
-              TextButton(
-                onPressed: () async {
-                  try {
-                    Navigator.of(context).pop();
-                    await showEasyLoading(() => _copyDirectory(from, to));
-                    final sp = await SharedPreferences.getInstance();
-                    sp.setBool('android_use_external', useExternal);
-                    if (context.mounted) {
-                      SimpleConfirmDialog(
-                        title: const Text('⚠️ Warning'),
-                        content: Text(S.current.restart_to_apply_changes),
-                        showCancel: false,
-                      ).showDialog(context);
-                    }
-                    EasyLoading.dismiss();
-                  } catch (e, s) {
-                    logger.e('migrate android data to external failed', e, s);
-                    if (context.mounted) {
-                      SimpleConfirmDialog(
-                        title: const Text('⚠️ ERROR'),
-                        content: Text(e.toString()),
-                        showCancel: false,
-                      ).showDialog(context);
-                    }
-                    EasyLoading.dismiss();
-                  }
-                },
-                child: Text(S.current.migrate_external_storage_btn_yes),
-              ),
-            ],
+                }
+                EasyLoading.dismiss();
+              } catch (e, s) {
+                logger.e('migrate android data to external failed', e, s);
+                if (context.mounted) {
+                  SimpleConfirmDialog(
+                    title: const Text('⚠️ ERROR'),
+                    content: Text(e.toString()),
+                    showCancel: false,
+                  ).showDialog(context);
+                }
+                EasyLoading.dismiss();
+              }
+            },
+            child: Text(S.current.migrate_external_storage_btn_yes),
           ),
+        ],
+      ),
     );
     if (mounted) {
       setState(() {});

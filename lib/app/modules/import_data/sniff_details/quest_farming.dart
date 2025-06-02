@@ -124,7 +124,12 @@ class _UserQuestFarmingStatPageState extends State<UserQuestFarmingStatPage> wit
           Expanded(
             child: TabBarView(
               controller: _tabController,
-              children: [buildAllTab(), buildFreeTab(), buildFailTab(), Builder(builder: buildOthers)],
+              children: [
+                buildAllTab(),
+                buildFreeTab(),
+                buildFailTab(),
+                Builder(builder: buildOthers),
+              ],
             ),
           ),
           kDefaultDivider,
@@ -224,12 +229,11 @@ class _UserQuestFarmingStatPageState extends State<UserQuestFarmingStatPage> wit
     final shownQuests = getShownQuests(freeQuests);
     return ListView.builder(
       itemCount: shownQuests.length,
-      itemBuilder:
-          (context, index) => buildQuest(
-            context,
-            shownQuests[index],
-            Text(Transl.special.funcValCountTimes(shownQuests[index].winNum), style: const TextStyle(fontSize: 12)),
-          ),
+      itemBuilder: (context, index) => buildQuest(
+        context,
+        shownQuests[index],
+        Text(Transl.special.funcValCountTimes(shownQuests[index].winNum), style: const TextStyle(fontSize: 12)),
+      ),
     );
   }
 
@@ -237,12 +241,11 @@ class _UserQuestFarmingStatPageState extends State<UserQuestFarmingStatPage> wit
     final shownQuests = getShownQuests(failedQuests);
     return ListView.builder(
       itemCount: shownQuests.length,
-      itemBuilder:
-          (context, index) => buildQuest(
-            context,
-            shownQuests[index],
-            Text(Transl.special.funcValCountTimes(shownQuests[index].loseNum), style: const TextStyle(fontSize: 12)),
-          ),
+      itemBuilder: (context, index) => buildQuest(
+        context,
+        shownQuests[index],
+        Text(Transl.special.funcValCountTimes(shownQuests[index].loseNum), style: const TextStyle(fontSize: 12)),
+      ),
     );
   }
 
@@ -261,10 +264,10 @@ class _UserQuestFarmingStatPageState extends State<UserQuestFarmingStatPage> wit
         info.quest == null
             ? S.current.unknown
             : (info.quest?.event?.shownName ??
-                    info.quest?.war?.eventReal?.shownName ??
-                    info.quest?.war?.lShortName ??
-                    "War ${info.quest?.warId}")
-                .setMaxLines(1),
+                      info.quest?.war?.eventReal?.shownName ??
+                      info.quest?.war?.lShortName ??
+                      "War ${info.quest?.warId}")
+                  .setMaxLines(1),
       ),
       trailing: trailing,
       onTap: () {

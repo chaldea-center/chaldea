@@ -17,10 +17,9 @@ class _TraitFieldTabState extends State<TraitFieldTab> {
 
   @override
   Widget build(BuildContext context) {
-    final quests =
-        db.gameData.questPhases.values
-            .where((q) => q.questIndividuality.map((e) => e.id).toSet().intersection(widget.ids.toSet()).isNotEmpty)
-            .toList();
+    final quests = db.gameData.questPhases.values
+        .where((q) => q.questIndividuality.map((e) => e.id).toSet().intersection(widget.ids.toSet()).isNotEmpty)
+        .toList();
     quests.sortByList((e) => [-e.warId, -e.id]);
     if (quests.isEmpty) return const Center(child: Text('No record'));
     return ListView.builder(

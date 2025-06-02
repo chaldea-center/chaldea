@@ -216,12 +216,11 @@ class Quest with RouteInfo {
 
   String get lNameWithChapter {
     String questName = lName.l;
-    String chapter =
-        type == QuestType.main
-            ? chapterSubStr.isEmpty && chapterSubId != 0
-                ? S.current.quest_chapter_n(chapterSubId)
-                : Transl.questNames(chapterSubStr).l
-            : '';
+    String chapter = type == QuestType.main
+        ? chapterSubStr.isEmpty && chapterSubId != 0
+              ? S.current.quest_chapter_n(chapterSubId)
+              : Transl.questNames(chapterSubStr).l
+        : '';
     if (chapter.isNotEmpty) {
       questName = '$chapter $questName';
     }
@@ -285,7 +284,10 @@ class Quest with RouteInfo {
 
   @override
   void routeTo({Widget? child, bool popDetails = false, Region? region}) {
-    super.routeTo(child: child ?? QuestDetailPage(quest: this, region: region), popDetails: popDetails);
+    super.routeTo(
+      child: child ?? QuestDetailPage(quest: this, region: region),
+      popDetails: popDetails,
+    );
   }
 
   Transl<String, String> get lSpot {
@@ -1520,7 +1522,10 @@ class QuestEnemy with GameCardMixin {
 
   @override
   void routeTo({Widget? child, bool popDetails = false, Quest? quest}) {
-    super.routeTo(child: QuestEnemyDetail(enemy: this, quest: quest), popDetails: popDetails);
+    super.routeTo(
+      child: QuestEnemyDetail(enemy: this, quest: quest),
+      popDetails: popDetails,
+    );
   }
 
   factory QuestEnemy.fromJson(Map<String, dynamic> json) => _$QuestEnemyFromJson(json);

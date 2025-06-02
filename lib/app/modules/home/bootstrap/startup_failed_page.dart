@@ -12,7 +12,11 @@ class StartupFailedPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (wrapApp) {
-      return MaterialApp(title: kAppName, themeMode: ThemeMode.light, home: Scaffold(body: buildContent(context)));
+      return MaterialApp(
+        title: kAppName,
+        themeMode: ThemeMode.light,
+        home: Scaffold(body: buildContent(context)),
+      );
     }
     return buildContent(context);
   }

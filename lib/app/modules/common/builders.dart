@@ -26,14 +26,13 @@ class SharedBuilder {
       value: region,
       items: [for (final region in Region.values) DropdownMenuItem(value: region, child: Text(region.localName))],
       icon: Icon(Icons.arrow_drop_down, color: SharedBuilder.appBarForeground(context)),
-      selectedItemBuilder:
-          (context) => [
-            for (final region in Region.values)
-              DropdownMenuItem(
-                value: region,
-                child: Text(region.localName, style: TextStyle(color: SharedBuilder.appBarForeground(context))),
-              ),
-          ],
+      selectedItemBuilder: (context) => [
+        for (final region in Region.values)
+          DropdownMenuItem(
+            value: region,
+            child: Text(region.localName, style: TextStyle(color: SharedBuilder.appBarForeground(context))),
+          ),
+      ],
       onChanged: onChanged,
       underline: const SizedBox(),
     );
@@ -49,17 +48,16 @@ class SharedBuilder {
       value: value,
       items: items,
       icon: Icon(Icons.arrow_drop_down, color: SharedBuilder.appBarForeground(context)),
-      selectedItemBuilder:
-          (context) => [
-            for (final item in items)
-              DropdownMenuItem(
-                value: item.value,
-                child: DefaultTextStyle.merge(
-                  child: item.child,
-                  style: TextStyle(color: SharedBuilder.appBarForeground(context)),
-                ),
-              ),
-          ],
+      selectedItemBuilder: (context) => [
+        for (final item in items)
+          DropdownMenuItem(
+            value: item.value,
+            child: DefaultTextStyle.merge(
+              child: item.child,
+              style: TextStyle(color: SharedBuilder.appBarForeground(context)),
+            ),
+          ),
+      ],
       onChanged: onChanged,
       underline: const SizedBox(),
     );
@@ -71,8 +69,8 @@ class SharedBuilder {
         (themeData.useMaterial3
             ? themeData.colorScheme.onSurface
             : (themeData.colorScheme.brightness == Brightness.dark
-                ? themeData.colorScheme.onSurface
-                : themeData.colorScheme.onPrimary));
+                  ? themeData.colorScheme.onSurface
+                  : themeData.colorScheme.onPrimary));
   }
 
   static Color? appBarBackground(BuildContext context) {
@@ -81,8 +79,8 @@ class SharedBuilder {
         (themeData.useMaterial3
             ? themeData.colorScheme.surface
             : (themeData.colorScheme.brightness == Brightness.dark
-                ? themeData.colorScheme.surface
-                : themeData.colorScheme.primary));
+                  ? themeData.colorScheme.surface
+                  : themeData.colorScheme.primary));
   }
 
   static Widget groupItems({
@@ -206,10 +204,9 @@ class SharedBuilder {
               if (region == Region.cn) {
                 assert((int.tryParse(v) ?? 0) > 0);
                 if (int.tryParse(v) != null) {
-                  url =
-                      PlatformU.isTargetMobile
-                          ? 'https://game.bilibili.com/fgo/h5/news.html#detailId=$v'
-                          : 'https://game.bilibili.com/fgo/news.html#!news/0/1/$v';
+                  url = PlatformU.isTargetMobile
+                      ? 'https://game.bilibili.com/fgo/h5/news.html#detailId=$v'
+                      : 'https://game.bilibili.com/fgo/news.html#!news/0/1/$v';
                 }
               }
               launch(url);
@@ -285,8 +282,9 @@ class SharedBuilder {
       (context, _) => IconButton(
         icon: Icon(
           Icons.low_priority,
-          color:
-              db.settings.filters.svtFilterData.priority.isEmptyOrContain([1, 2, 3, 4, 5]) ? null : Colors.yellowAccent,
+          color: db.settings.filters.svtFilterData.priority.isEmptyOrContain([1, 2, 3, 4, 5])
+              ? null
+              : Colors.yellowAccent,
         ),
         tooltip: S.current.priority,
         onPressed: () {
@@ -360,7 +358,9 @@ class SharedBuilder {
     String Function(NiceTrait trait)? format,
   }) {
     return Text.rich(
-      TextSpan(children: traitSpans(context: context, traits: traits, useAndJoin: useAndJoin, format: format)),
+      TextSpan(
+        children: traitSpans(context: context, traits: traits, useAndJoin: useAndJoin, format: format),
+      ),
       style: style,
       textScaler: textScaleFactor == null ? null : TextScaler.linear(textScaleFactor),
       textAlign: textAlign,
@@ -376,7 +376,10 @@ class SharedBuilder {
   }) {
     List<InlineSpan> children = divideList(
       traits.map((e) => traitSpan(context: context, trait: e, style: style, format: format)),
-      TextSpan(text: useAndJoin ? ' & ' : ' / ', style: TextStyle(color: Theme.of(context).hintColor)),
+      TextSpan(
+        text: useAndJoin ? ' & ' : ' / ',
+        style: TextStyle(color: Theme.of(context).hintColor),
+      ),
     );
     return children;
   }
@@ -390,33 +393,32 @@ class SharedBuilder {
     await showDialog(
       context: context,
       useRootNavigator: false,
-      builder:
-          (context) => SimpleDialog(
-            title: Text(S.current.import_image),
-            contentPadding: const EdgeInsets.fromLTRB(8.0, 12.0, 0.0, 16.0),
-            children: [
-              ListTile(
-                minLeadingWidth: 24,
-                leading: const Icon(Icons.photo_library),
-                title: Text(S.current.attach_from_photos),
-                onTap: () {
-                  fileType = FileType.image;
-                  Navigator.pop(context);
-                },
-              ),
-              ListTile(
-                minLeadingWidth: 24,
-                leading: const Icon(Icons.file_copy),
-                title: Text(S.current.attach_from_files),
-                onTap: () {
-                  fileType = FileType.any;
-                  Navigator.pop(context);
-                },
-              ),
-              SFooter(S.current.attach_help),
-              IconButton(onPressed: () => Navigator.pop(context), icon: const Icon(Icons.clear)),
-            ],
+      builder: (context) => SimpleDialog(
+        title: Text(S.current.import_image),
+        contentPadding: const EdgeInsets.fromLTRB(8.0, 12.0, 0.0, 16.0),
+        children: [
+          ListTile(
+            minLeadingWidth: 24,
+            leading: const Icon(Icons.photo_library),
+            title: Text(S.current.attach_from_photos),
+            onTap: () {
+              fileType = FileType.image;
+              Navigator.pop(context);
+            },
           ),
+          ListTile(
+            minLeadingWidth: 24,
+            leading: const Icon(Icons.file_copy),
+            title: Text(S.current.attach_from_files),
+            onTap: () {
+              fileType = FileType.any;
+              Navigator.pop(context);
+            },
+          ),
+          SFooter(S.current.attach_help),
+          IconButton(onPressed: () => Navigator.pop(context), icon: const Icon(Icons.clear)),
+        ],
+      ),
     );
     if (fileType == null) return null;
     return FilePickerU.pickFiles(type: fileType!, allowMultiple: allowMultiple, withData: withData);
@@ -506,14 +508,13 @@ class SharedBuilder {
           constraints: const BoxConstraints(maxHeight: 40),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
-            children:
-                [
-                  ...clsRegularBtns,
-                  // _oneClsBtn(SvtClass.EXTRA),
-                  _oneClsBtn(SvtClass.EXTRA1),
-                  _oneClsBtn(SvtClass.EXTRA2),
-                  if (showUnknown) unknownBtn,
-                ].map((e) => Expanded(child: e)).toList(),
+            children: [
+              ...clsRegularBtns,
+              // _oneClsBtn(SvtClass.EXTRA),
+              _oneClsBtn(SvtClass.EXTRA1),
+              _oneClsBtn(SvtClass.EXTRA2),
+              if (showUnknown) unknownBtn,
+            ].map((e) => Expanded(child: e)).toList(),
           ),
         );
       case SvtListClassFilterStyle.singleRowExpanded:
@@ -522,7 +523,9 @@ class SharedBuilder {
           height: 40,
           child: Row(
             children: [
-              Expanded(child: ListView(scrollDirection: Axis.horizontal, children: allBtns)),
+              Expanded(
+                child: ListView(scrollDirection: Axis.horizontal, children: allBtns),
+              ),
               if (maxWidth < 36 * allBtns.length)
                 Padding(
                   padding: const EdgeInsetsDirectional.only(start: 6),

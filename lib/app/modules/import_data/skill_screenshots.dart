@@ -89,16 +89,17 @@ class ImportSkillScreenshotPageState extends State<ImportSkillScreenshotPage> wi
         controller: _tabController,
         children: [
           KeepAliveBuilder(
-            builder:
-                (ctx) => ScreenshotsTab(
-                  images: imageFiles,
-                  onUpload: () {
-                    EasyThrottle.throttle('skill_recognizer_upload', const Duration(seconds: 5), _uploadScreenshots);
-                  },
-                  debugServerRoot: _dio.options.baseUrl,
-                ),
+            builder: (ctx) => ScreenshotsTab(
+              images: imageFiles,
+              onUpload: () {
+                EasyThrottle.throttle('skill_recognizer_upload', const Duration(seconds: 5), _uploadScreenshots);
+              },
+              debugServerRoot: _dio.options.baseUrl,
+            ),
           ),
-          KeepAliveBuilder(builder: (ctx) => SkillResultTab(isAppend: widget.isAppend, result: output)),
+          KeepAliveBuilder(
+            builder: (ctx) => SkillResultTab(isAppend: widget.isAppend, result: output),
+          ),
           if (AppInfo.isDebugDevice)
             KeepAliveBuilder(builder: (ctx) => RecognizerViewerTab(type: RecognizerType.skill)),
         ],

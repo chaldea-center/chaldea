@@ -36,14 +36,13 @@ class _SvtTabsSortingSettingState extends State<SvtTabsSortingSetting> {
                 child: Text(S.current.reset),
               ),
               FilledButton(
-                onPressed:
-                    db.gameData.isValid
-                        ? () {
-                          final servants = db.gameData.servantsNoDup.values.toList();
-                          final index = Random().nextInt(servants.length);
-                          servants[index].routeTo();
-                        }
-                        : null,
+                onPressed: db.gameData.isValid
+                    ? () {
+                        final servants = db.gameData.servantsNoDup.values.toList();
+                        final index = Random().nextInt(servants.length);
+                        servants[index].routeTo();
+                      }
+                    : null,
                 child: Text(S.current.preview),
               ),
             ],

@@ -212,10 +212,9 @@ class ClassBoardMapPainter extends CustomPainter {
     for (final line in board.lines) {
       final prev = squaresMap[line.prevSquareId], next = squaresMap[line.nextSquareId];
       if (prev == null || next == null) continue;
-      Paint p =
-          Paint()
-            ..color = Colors.white60
-            ..strokeWidth = sw * scale / 10;
+      Paint p = Paint()
+        ..color = Colors.white60
+        ..strokeWidth = sw * scale / 10;
       if (showPlanned && lightenSquares.contains(prev.id) && lightenSquares.contains(next.id)) {
         p
           ..color = Colors.white

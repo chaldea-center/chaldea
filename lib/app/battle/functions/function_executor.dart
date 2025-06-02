@@ -167,14 +167,12 @@ class FunctionExecutor {
       case FuncType.none:
         return false;
       default:
-        final fieldTraitString =
-            function.funcquestTvals.isNotEmpty
-                ? ' - ${S.current.battle_require_field_traits} ${function.funcquestTvals.map((e) => e.shownName())}'
-                : '';
-        final targetTraitString =
-            function.functvals.isNotEmpty
-                ? ' - ${S.current.battle_require_opponent_traits} ${function.functvals.map((e) => e.shownName())}'
-                : '';
+        final fieldTraitString = function.funcquestTvals.isNotEmpty
+            ? ' - ${S.current.battle_require_field_traits} ${function.funcquestTvals.map((e) => e.shownName())}'
+            : '';
+        final targetTraitString = function.functvals.isNotEmpty
+            ? ' - ${S.current.battle_require_opponent_traits} ${function.functvals.map((e) => e.shownName())}'
+            : '';
         battleData.battleLogger.function(
           '${activator?.lBattleName ?? S.current.battle_no_source} - '
           '${function.lPopupText.l}'
@@ -584,12 +582,14 @@ class FunctionExecutor {
     final List<BattleServantData> targets = [];
 
     final isAlly = activator?.isPlayer ?? defaultToPlayer;
-    final List<BattleServantData> backupAllies =
-        isAlly ? battleData.nonnullBackupPlayers : battleData.nonnullBackupEnemies;
+    final List<BattleServantData> backupAllies = isAlly
+        ? battleData.nonnullBackupPlayers
+        : battleData.nonnullBackupEnemies;
     final List<BattleServantData> aliveAllies = isAlly ? battleData.nonnullPlayers : battleData.nonnullEnemies;
 
-    final List<BattleServantData> backupEnemies =
-        isAlly ? battleData.nonnullBackupEnemies : battleData.nonnullBackupPlayers;
+    final List<BattleServantData> backupEnemies = isAlly
+        ? battleData.nonnullBackupEnemies
+        : battleData.nonnullBackupPlayers;
     final List<BattleServantData> aliveEnemies = isAlly ? battleData.nonnullEnemies : battleData.nonnullPlayers;
 
     switch (funcTargetType) {
