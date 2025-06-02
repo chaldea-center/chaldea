@@ -18,8 +18,8 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 version: 2.5.19+981
 
 environment:
-  sdk: ">=3.7.0 <4.0.0"
-  flutter: 3.29.3
+  sdk: ">=3.8.0 <4.0.0"
+  flutter: 3.32.0
 
 dependencies:
   flutter:
@@ -64,7 +64,7 @@ dependencies:
   font_awesome_flutter: ^10.6.0
   github: ^9.16.0
   hive: ^2.2.3
-  home_widget: ^0.7.0+1
+  home_widget: ^0.8.0
   html: ^0.15.3
   http: ^1.2.0
   image: ^4.5.0
@@ -112,7 +112,7 @@ dependencies:
   # webview_flutter: ^4.1.0
   # webview_flutter_web: ^0.2.2+1
   worker_manager: ^7.2.2
-  window_manager: ^0.4.3
+  window_manager: ^0.5.0
   countly_flutter_np: ^25.1.1
   google_mobile_ads: ^6.0.0
   admanager_web: ^0.0.4
@@ -121,7 +121,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   build_runner: ^2.3.3
-  flutter_lints: ^5.0.0
+  flutter_lints: ^6.0.0
   json_serializable: ^6.9.0
   import_sorter: # ^4.6.0
     git: https://github.com/chaldea-center/import_sorter.git

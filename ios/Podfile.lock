@@ -190,38 +190,38 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/webview_flutter_wkwebview/darwin"
 
 SPEC CHECKSUMS:
-  audio_session: 19e9480dbdd4e5f6c4543826b2e8b0e4ab6145fe
-  connectivity_plus: 2a701ffec2c0ae28a48cf7540e279787e77c447d
-  countly_flutter_np: 77032181324b38775d8d9f7d8f4beb9258fbc6d1
-  device_info_plus: bf2e3232933866d73fe290f2942f2156cdd10342
+  audio_session: 9bb7f6c970f21241b19f5a3658097ae459681ba0
+  connectivity_plus: cb623214f4e1f6ef8fe7403d580fdad517d2f7dd
+  countly_flutter_np: d9fa8b3095650662742010ae390a162a047cc4c6
+  device_info_plus: 21fcca2080fbcd348be798aa36c3e5ed849eefbe
   DKImagePickerController: 946cec48c7873164274ecc4624d19e3da4c1ef3c
   DKPhotoGallery: b3834fecb755ee09a593d7c9e389d8b5d6deed60
-  file_picker: b159e0c068aef54932bb15dc9fd1571818edaf49
+  file_picker: a0560bc09d61de87f12d246fc47d2119e6ef37be
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
-  flutter_js: 95929d4e146e8ceb1c8e1889d8c2065c5d840076
-  flutter_local_notifications: ff50f8405aaa0ccdc7dcfb9022ca192e8ad9688f
-  flutter_mailer: 2ef5a67087bc8c6c4cefd04a178bf1ae2c94cd83
-  flutter_timezone: ac3da59ac941ff1c98a2e1f0293420e020120282
-  fluttertoast: 21eecd6935e7064cc1fcb733a4c5a428f3f24f0f
+  flutter_js: 867813c1830e1d9b2c5d547cdb6f61801e2f2145
+  flutter_local_notifications: a5a732f069baa862e728d839dd2ebb904737effb
+  flutter_mailer: 3a8cd4f36c960fb04528d5471097270c19fec1c4
+  flutter_timezone: 7c838e17ffd4645d261e87037e5bebf6d38fe544
+  fluttertoast: 2c67e14dce98bbdb200df9e1acf610d7a6264ea1
   Google-Mobile-Ads-SDK: 1dfb0c3cb46c7e2b00b0f4de74a1e06d9ea25d67
-  google_mobile_ads: cab27248050510554aa646195eacc393ce7406ad
+  google_mobile_ads: 535223588a6791b7a3cc3513a1bc7b89d12f3e62
   GoogleUserMessagingPlatform: f8d0cdad3ca835406755d0a69aa634f00e76d576
-  home_widget: 0434835a4c9a75704264feff6be17ea40e0f0d57
-  image_gallery_saver: cb43cc43141711190510e92c460eb1655cd343cb
-  just_audio: a42c63806f16995daf5b219ae1d679deb76e6a79
-  package_info_plus: c0502532a26c7662a62a356cebe2692ec5fe4ec4
-  pasteboard: 982969ebaa7c78af3e6cc7761e8f5e77565d9ce0
-  path_provider_foundation: 2b6b4c569c0fb62ec74538f866245ac84301af46
-  permission_handler_apple: 9878588469a2b0d0fc1e048d9f43605f92e6cec2
+  home_widget: f169fc41fd807b4d46ab6615dc44d62adbf9f64f
+  image_gallery_saver: 14711d79da40581063e8842a11acf1969d781ed7
+  just_audio: 4e391f57b79cad2b0674030a00453ca5ce817eed
+  package_info_plus: af8e2ca6888548050f16fa2f1938db7b5a5df499
+  pasteboard: 49088aeb6119d51f976a421db60d8e1ab079b63c
+  path_provider_foundation: 080d55be775b7414fd5a5ef3ac137b97b097e564
+  permission_handler_apple: 4ed2196e43d0651e8ff7ca3483a069d469701f2d
   SDWebImage: f84b0feeb08d2d11e6a9b843cb06d75ebf5b8868
-  share_plus: 8b6f8b3447e494cca5317c8c3073de39b3600d1f
-  shared_preferences_foundation: fcdcbc04712aee1108ac7fda236f363274528f78
-  sqflite_darwin: 5a7236e3b501866c1c9befc6771dfd73ffb8702d
+  share_plus: 50da8cb520a8f0f65671c6c6a99b3617ed10a58a
+  shared_preferences_foundation: 9e1978ff2562383bd5676f64ec4e9aa8fa06a6f7
+  sqflite_darwin: 20b2a3a3b70e43edae938624ce550a3cbf66a3d0
   SwiftyGif: 706c60cf65fa2bc5ee0313beece843c8eb8194d4
-  url_launcher_ios: 5334b05cef931de560670eeae103fd3e431ac3fe
-  video_player_avfoundation: 7c6c11d8470e1675df7397027218274b6d2360b3
-  wakelock_plus: 76957ab028e12bfa4e66813c99e46637f367fc7e
-  webview_flutter_wkwebview: a4af96a051138e28e29f60101d094683b9f82188
+  url_launcher_ios: 694010445543906933d732453a59da0a173ae33d
+  video_player_avfoundation: 2cef49524dd1f16c5300b9cd6efd9611ce03639b
+  wakelock_plus: e29112ab3ef0b318e58cfa5c32326458be66b556
+  webview_flutter_wkwebview: 1821ceac936eba6f7984d89a9f3bcb4dea99ebb2
 
 PODFILE CHECKSUM: 3205ce7e5c705a62947d5a00eeafa2ed4e39fea4
 
