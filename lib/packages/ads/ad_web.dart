@@ -4,7 +4,7 @@ import 'dart:ui_web' as ui;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-import 'package:admanager_web/admanager_web.dart';
+// import 'package:admanager_web/admanager_web.dart';
 import 'package:web/web.dart' as web;
 
 import './interface.dart';
@@ -25,7 +25,7 @@ class AppAdImpl implements AppAdInterface {
   Future<void> init() async {
     if (initialized) return;
     if (supported) {
-      AdManagerWeb.init();
+      // AdManagerWeb.init();
       _initialized = true;
     }
     return;
@@ -36,7 +36,7 @@ class AppAdImpl implements AppAdInterface {
 
   @override
   Widget buildBanner(BuildContext context, AdOptions options, WidgetBuilder? placeholder) {
-    AdBlockSize adBlockSize = AdBlockSize(width: options.size.width, height: options.size.height);
+    // AdBlockSize adBlockSize = AdBlockSize(width: options.size.width, height: options.size.height);
     if (!_initialized) {
       return placeholder?.call(context) ?? const SizedBox.shrink();
     }
@@ -62,8 +62,8 @@ class AppAdImpl implements AppAdInterface {
     );
 
     return SizedBox(
-      width: adBlockSize.width.toDouble(),
-      height: adBlockSize.height.toDouble(),
+      // width: adBlockSize.width.toDouble(),
+      // height: adBlockSize.height.toDouble(),
       child: HtmlElementView(viewType: viewID),
     );
   }

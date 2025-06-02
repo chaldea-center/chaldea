@@ -115,7 +115,7 @@ dependencies:
   window_manager: ^0.5.0
   countly_flutter_np: ^25.1.1
   google_mobile_ads: ^6.0.0
-  admanager_web: ^0.0.4
+  # admanager_web: ^0.0.4
 
 dev_dependencies:
   flutter_test:
