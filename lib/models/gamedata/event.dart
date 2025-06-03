@@ -312,6 +312,17 @@ class Event with RouteInfo {
     return true;
   }
 
+  // ignore phase!=0
+  bool isCampaignQuest(int questId) {
+    bool hasZero = campaignQuests.any((e) => e.questId == 0);
+    for (final eventQuest in campaignQuests) {
+      if (eventQuest.questId == questId && eventQuest.phase == 0) {
+        return !eventQuest.isExcepted;
+      }
+    }
+    return hasZero;
+  }
+
   // statistics
   @JsonKey(includeFromJson: false, includeToJson: false)
   Map<int, Map<int, int>> itemShop = {};
@@ -1848,8 +1859,9 @@ class EventCampaign {
 class EventQuest {
   int questId; // =0 for all quests
   int phase; // =0 for all phases
+  bool isExcepted;
 
-  EventQuest({required this.questId, this.phase = 0});
+  EventQuest({required this.questId, this.phase = 0, this.isExcepted = false});
 
   factory EventQuest.fromJson(Map<String, dynamic> json) => _$EventQuestFromJson(json);
 

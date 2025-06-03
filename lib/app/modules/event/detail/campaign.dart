@@ -15,12 +15,23 @@ class EventCampaignDetail extends StatelessWidget {
   Widget build(BuildContext context) {
     List<Widget> children = [];
     if (event.campaignQuests.isNotEmpty) {
-      if (event.campaignQuests.any((q) => q.questId == 0)) {
+      final isAllQuest = event.campaignQuests.any((e) => e.questId == 0);
+      final List<int> includeQuestIds = [], excludeQuestIds = [];
+      for (final quest in event.campaignQuests) {
+        if (!quest.isExcepted && (quest.phase == 0 || isAllQuest) && quest.questId != 0) {
+          includeQuestIds.add(quest.questId);
+        } else if (quest.isExcepted && quest.phase == 0 && quest.questId != 0) {
+          excludeQuestIds.add(quest.questId);
+        }
+      }
+
+      if (isAllQuest) {
         children.add(const ListTile(title: Text('All Quests')));
-      } else {
+      }
+
+      if (includeQuestIds.isNotEmpty) {
         Map<QuestType?, int> counts = {};
-        final questIds = event.campaignQuests.map((e) => e.questId).toList();
-        for (final questId in questIds) {
+        for (final questId in includeQuestIds) {
           final quest = db.gameData.quests[questId];
           counts.addNum(quest?.type, 1);
         }
@@ -31,7 +42,21 @@ class EventCampaignDetail extends StatelessWidget {
             subtitle: Text(counts.entries.map((e) => '${e.value} ${getQuestTypeName(e.key)}').join(', ')),
             trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
             onTap: () {
-              router.pushPage(QuestListPage.ids(ids: questIds));
+              router.pushPage(QuestListPage.ids(ids: includeQuestIds));
+            },
+          ),
+        );
+      }
+
+      if (excludeQuestIds.isNotEmpty) {
+        children.add(
+          ListTile(
+            dense: true,
+            title: const Text('Exclude Quests'),
+            subtitle: Text("${excludeQuestIds.length} Quests"),
+            trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
+            onTap: () {
+              router.pushPage(QuestListPage.ids(ids: excludeQuestIds));
             },
           ),
         );

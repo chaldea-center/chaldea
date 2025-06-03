@@ -1526,12 +1526,16 @@ const _$EventCombineCalcEnumMap = {
   EventCombineCalc.fixedValue: 'fixedValue',
 };
 
-EventQuest _$EventQuestFromJson(Map json) =>
-    EventQuest(questId: (json['questId'] as num).toInt(), phase: (json['phase'] as num?)?.toInt() ?? 0);
+EventQuest _$EventQuestFromJson(Map json) => EventQuest(
+  questId: (json['questId'] as num).toInt(),
+  phase: (json['phase'] as num?)?.toInt() ?? 0,
+  isExcepted: json['isExcepted'] as bool? ?? false,
+);
 
 Map<String, dynamic> _$EventQuestToJson(EventQuest instance) => <String, dynamic>{
   'questId': instance.questId,
   'phase': instance.phase,
+  'isExcepted': instance.isExcepted,
 };
 
 HeelPortrait _$HeelPortraitFromJson(Map json) =>

@@ -387,11 +387,7 @@ class _QuestDetailPageState extends State<QuestDetailPage> {
   List<Widget> getCampaigns() {
     List<Widget> children = [];
     final events = db.gameData.events.values
-        .where(
-          (e) =>
-              e.campaignQuests.any((q) => q.questId == quest.id) ||
-              e.campaigns.any((c) => c.targetIds.contains(quest.id)),
-        )
+        .where((e) => e.isCampaignQuest(quest.id) || e.campaigns.any((c) => c.targetIds.contains(quest.id)))
         .toList();
     if (events.isEmpty) return const [];
     if (!_showAllCampaign) {
