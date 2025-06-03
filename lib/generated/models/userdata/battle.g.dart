@@ -530,6 +530,16 @@ TdDamageOptions _$TdDamageOptionsFromJson(Map json) => $checkedCreate('TdDamageO
       'classBoard',
       (v) => $enumDecodeNullable(_$PreferClassBoardDataSourceEnumMap, v) ?? PreferClassBoardDataSource.none,
     ),
+    grandSvt: $checkedConvert('grandSvt', (v) => v as bool? ?? false),
+    grandBoard: $checkedConvert(
+      'grandBoard',
+      (v) => $enumDecodeNullable(_$PreferClassBoardDataSourceEnumMap, v) ?? PreferClassBoardDataSource.none,
+    ),
+    equip2Type: $checkedConvert(
+      'equip2Type',
+      (v) => $enumDecodeNullable(_$BondEquipTypeEnumMap, v) ?? BondEquipType.none,
+    ),
+    equip3: $checkedConvert('equip3', (v) => (v as num?)?.toInt() ?? 0),
     addDebuffImmune: $checkedConvert('addDebuffImmune', (v) => v as bool? ?? true),
     addDebuffImmuneEnemy: $checkedConvert('addDebuffImmuneEnemy', (v) => v as bool? ?? false),
     upResistSubState: $checkedConvert('upResistSubState', (v) => v as bool? ?? true),
@@ -571,6 +581,10 @@ Map<String, dynamic> _$TdDamageOptionsToJson(TdDamageOptions instance) => <Strin
   'enemyCount': instance.enemyCount,
   'usePlayerSvt': _$PreferPlayerSvtDataSourceEnumMap[instance.usePlayerSvt]!,
   'classBoard': _$PreferClassBoardDataSourceEnumMap[instance.classBoard]!,
+  'grandSvt': instance.grandSvt,
+  'grandBoard': _$PreferClassBoardDataSourceEnumMap[instance.grandBoard]!,
+  'equip2Type': _$BondEquipTypeEnumMap[instance.equip2Type]!,
+  'equip3': instance.equip3,
   'addDebuffImmune': instance.addDebuffImmune,
   'addDebuffImmuneEnemy': instance.addDebuffImmuneEnemy,
   'upResistSubState': instance.upResistSubState,
@@ -606,6 +620,12 @@ const _$PreferClassBoardDataSourceEnumMap = {
   PreferClassBoardDataSource.current: 'current',
   PreferClassBoardDataSource.target: 'target',
   PreferClassBoardDataSource.full: 'full',
+};
+
+const _$BondEquipTypeEnumMap = {
+  BondEquipType.none: 'none',
+  BondEquipType.bond: 'bond',
+  BondEquipType.skillChange: 'skillChange',
 };
 
 const _$SvtLvEnumMap = {SvtLv.maxLv: 'maxLv', SvtLv.lv90: 'lv90', SvtLv.lv100: 'lv100', SvtLv.lv120: 'lv120'};

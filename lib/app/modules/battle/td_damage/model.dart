@@ -330,19 +330,31 @@ class TdDmgSolver {
         limitCount: limitCount,
       );
     }
-    final board = db.gameData.classBoards.values.firstWhereOrNull(
-      (e) => e.classes.any((cls) => cls.classId == svt.classId),
-    );
-    if (board != null) {
-      NiceSkill? skill = switch (options.classBoard) {
-        PreferClassBoardDataSource.none => null,
-        PreferClassBoardDataSource.current => board.toSkill(db.curUser.classBoardStatusOf(board.id).enhancedSquares),
-        PreferClassBoardDataSource.target => board.toSkill(db.curPlan_.classBoardPlan(board.id).enhancedSquares),
-        PreferClassBoardDataSource.full => board.toSkill(ClassBoardPlan.full(board).enhancedSquares),
-      };
-      if (skill != null) {
-        data.addCustomPassive(skill, skill.maxLv);
+    data.grandSvt = options.grandSvt;
+    if (data.grandSvt && !options.grandBoard.isNone) {
+      if (options.equip2Type != BondEquipType.none) {
+        final equip2 = db.gameData.craftEssencesById[svt.bondEquip];
+        if (equip2 != null) {
+          data.equip2 = SvtEquipData(ce: equip2, limitBreak: true, lv: equip2.lvMax);
+        }
       }
+      if (options.equip2Type == BondEquipType.skillChange) {
+        data.classBoardData.grandBondEquipSkillChange = true;
+      }
+      final equip3 = db.gameData.craftEssencesById[options.equip3];
+      data.equip3 = SvtEquipData(ce: equip3, lv: equip3?.lvMax ?? 1, limitBreak: true);
+    }
+    final baseBoard = ClassBoard.getClassBoard(svt.classId);
+    if (baseBoard != null) {
+      data.classBoardData.classBoardSquares = options.classBoard.getPlan(baseBoard).enhancedSquares.toList();
+    }
+    final grandBoard = options.isUseGrandBoard ? ClassBoard.getGrandClassBoard(svt.classId) : null;
+    if (grandBoard != null) {
+      data.classBoardData.grandClassBoardSquares = options.grandBoard.getPlan(grandBoard).enhancedSquares.toList();
+      data.classBoardData.classStatistics = [
+        for (final type in CondParamValType.values)
+          ClassStatisticsInfo(classId: svt.classId, type: type.value, typeVal: 10000),
+      ];
     }
 
     data.limitCount = limitCount;
@@ -396,6 +408,7 @@ class TdDmgSolver {
       warId: options.warId,
       individuality: options.fieldTraits.map((e) => NiceTrait(id: e)).toList(),
       stages: [Stage(wave: 1, enemyFieldPosCount: max(3, enemies.length), enemies: enemies)],
+      extraDetail: QuestPhaseExtraDetail(isUseGrandBoard: options.grandBoard.isNone ? null : 1),
     );
   }
 

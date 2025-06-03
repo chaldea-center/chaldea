@@ -82,6 +82,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
       }
       await runtime.loadInitData();
       _runtime = runtime;
+      _onChangeQuest();
     } catch (e, s) {
       if (mounted) {
         SimpleConfirmDialog(
@@ -93,6 +94,14 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
       logger.e('init FakerState failed', e, s);
     }
     if (mounted) setState(() {});
+  }
+
+  void _onChangeQuest() async {
+    final cache = AtlasApi.questPhaseCache(battleOption.questId, battleOption.questPhase, null, runtime.region);
+    if (cache == null) {
+      await AtlasApi.questPhase(battleOption.questId, battleOption.questPhase, region: runtime.region);
+      if (mounted) setState(() {});
+    }
   }
 
   int getEventIdByQuest(int? questId) {
@@ -1089,8 +1098,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
                         battleOption.questPhase = quest.phases.first;
                       }
                       if (mounted) setState(() {});
-                      await AtlasApi.questPhase(questId, battleOption.questPhase, region: runtime.region);
-                      if (mounted) setState(() {});
+                      _onChangeQuest();
                     } else {
                       EasyLoading.showError('Invalid Quest');
                     }

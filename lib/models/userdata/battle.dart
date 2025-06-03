@@ -12,6 +12,7 @@ import '../../utils/extension.dart';
 import '../db.dart';
 import '_helper.dart';
 import 'filter_data.dart';
+import 'userdata.dart' show ClassBoardPlan;
 
 part '../../generated/models/userdata/battle.g.dart';
 
@@ -544,9 +545,9 @@ class MysticCodeSaveData {
 @JsonSerializable()
 class ClassBoardStatisticsData {
   bool grandBondEquipSkillChange;
-  List<int> classBoardSquares = [];
-  List<int> grandClassBoardSquares = [];
-  List<ClassStatisticsInfo> classStatistics = [];
+  List<int> classBoardSquares;
+  List<int> grandClassBoardSquares;
+  List<ClassStatisticsInfo> classStatistics;
 
   ClassBoardStatisticsData({
     this.grandBondEquipSkillChange = false,
@@ -883,7 +884,15 @@ class TdDamageOptions {
   // DamageParameters params = DamageParameters();
   int enemyCount;
   PreferPlayerSvtDataSource usePlayerSvt;
+
+  // class board & grand graph
   PreferClassBoardDataSource classBoard;
+  bool grandSvt;
+  PreferClassBoardDataSource grandBoard;
+  bool get isUseGrandBoard => grandSvt && !grandBoard.isNone;
+  BondEquipType equip2Type;
+  int equip3;
+
   bool addDebuffImmune;
   bool addDebuffImmuneEnemy;
   bool upResistSubState; // 5000
@@ -925,6 +934,10 @@ class TdDamageOptions {
     this.enemyCount = 1,
     this.usePlayerSvt = PreferPlayerSvtDataSource.none,
     this.classBoard = PreferClassBoardDataSource.none,
+    this.grandSvt = false,
+    this.grandBoard = PreferClassBoardDataSource.none,
+    this.equip2Type = BondEquipType.none,
+    this.equip3 = 0,
     this.addDebuffImmune = true,
     this.addDebuffImmuneEnemy = false,
     this.upResistSubState = true,
@@ -1035,12 +1048,37 @@ enum PreferClassBoardDataSource {
   target,
   full;
 
+  bool get isNone => this == none;
+
   String get shownName {
     return switch (this) {
       PreferClassBoardDataSource.none => S.current.disabled,
       PreferClassBoardDataSource.current => S.current.current_,
       PreferClassBoardDataSource.target => S.current.target,
       PreferClassBoardDataSource.full => "Max",
+    };
+  }
+
+  ClassBoardPlan getPlan(ClassBoard board) {
+    return switch (this) {
+      none => ClassBoardPlan(),
+      current => board.status,
+      target => board.plan_,
+      full => ClassBoardPlan.full(board),
+    };
+  }
+}
+
+enum BondEquipType {
+  none,
+  bond,
+  skillChange;
+
+  String get shownName {
+    return switch (this) {
+      none => 'None',
+      bond => S.current.bond_craft,
+      skillChange => "50NP",
     };
   }
 }

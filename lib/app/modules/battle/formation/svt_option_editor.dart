@@ -640,14 +640,9 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
                 );
                 if (source == null) return;
 
-                ClassBoardPlan? plan = switch (source) {
-                  PreferClassBoardDataSource.none => null,
-                  PreferClassBoardDataSource.current => db.curUser.classBoardStatusOf(board.id),
-                  PreferClassBoardDataSource.target => db.curPlan_.classBoardPlan(board.id),
-                  PreferClassBoardDataSource.full => ClassBoardPlan.full(board),
-                };
+                ClassBoardPlan? plan = source.getPlan(board);
                 squares.clear();
-                squares.addAll(plan?.enhancedSquares ?? []);
+                squares.addAll(plan.enhancedSquares);
                 if (mounted) setState(() {});
               },
               icon: Icon(Icons.edit),
@@ -1647,7 +1642,15 @@ class _CraftEssenceOptionEditPageState extends State<CraftEssenceOptionEditPage>
           _updateState(() {});
         },
         filterData: craftFilterData,
-        pinged: db.curUser.battleSim.pingedCEsWithEventAndBond(widget.questPhase, playerSvtData.svt).toList(),
+        pinged: switch (widget.equipTarget) {
+          SvtEquipTarget.normal =>
+            db.curUser.battleSim.pingedCEsWithEventAndBond(widget.questPhase, playerSvtData.svt).toList(),
+          SvtEquipTarget.bond => [playerSvtData.svt?.bondEquip ?? -1],
+          SvtEquipTarget.reward => [
+            for (final ce in db.gameData.craftEssences.values)
+              if (ce.canBeGrandSvtRewardEquip && ce.rarity == 5) ce.id,
+          ],
+        },
       ),
       detail: true,
     );

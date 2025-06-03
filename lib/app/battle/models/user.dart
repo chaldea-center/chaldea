@@ -222,19 +222,7 @@ class PlayerSvtData {
           return;
         }
       case SvtEquipTarget.reward:
-        final funcTypes = selectedCE.skills.expand((e) => e.functions).map((e) => e.funcType).toSet();
-        if (funcTypes.difference(const {
-          FuncType.servantFriendshipUp,
-          FuncType.expUp,
-          FuncType.qpUp,
-          FuncType.qpDropUp,
-          FuncType.userEquipExpUp,
-          FuncType.friendPointUp,
-          FuncType.friendPointUpDuplicate,
-          FuncType.eventDropRateUp,
-        }).isNotEmpty) {
-          return;
-        }
+        if (!selectedCE.canBeGrandSvtRewardEquip) return;
     }
     equip.ce = selectedCE;
     final status = db.curUser.ceStatusOf(selectedCE.collectionNo);

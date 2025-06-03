@@ -928,6 +928,24 @@ class CraftEssence extends BasicCraftEssence {
     }
     return grouped;
   }
+
+  bool get canBeGrandSvtRewardEquip {
+    if (collectionNo <= 0) return false;
+    final funcTypes = skills.expand((e) => e.functions).map((e) => e.funcType).toSet();
+    if (funcTypes.difference(const {
+      FuncType.servantFriendshipUp,
+      FuncType.expUp,
+      FuncType.qpUp,
+      FuncType.qpDropUp,
+      FuncType.userEquipExpUp,
+      FuncType.friendPointUp,
+      FuncType.friendPointUpDuplicate,
+      FuncType.eventDropRateUp,
+    }).isNotEmpty) {
+      return false;
+    }
+    return true;
+  }
 }
 
 @JsonSerializable()

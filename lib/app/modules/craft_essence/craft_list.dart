@@ -83,7 +83,11 @@ class CraftListPageState extends State<CraftListPage> with SearchableListState<C
   @override
   List<Widget> handleSlivers(List<Widget> slivers, bool useGrid) {
     List<CraftEssence> pingedCEs =
-        widget.pinged?.map((e) => db.gameData.craftEssences[e]).whereType<CraftEssence>().toList() ?? [];
+        widget.pinged
+            ?.map((e) => db.gameData.craftEssences[e] ?? db.gameData.craftEssencesById[e])
+            .whereType<CraftEssence>()
+            .toList() ??
+        [];
     pingedCEs.sort2((e) => e.collectionNo);
     if (pingedCEs.isNotEmpty) {
       slivers = [

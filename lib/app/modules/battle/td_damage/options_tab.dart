@@ -1,3 +1,4 @@
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'package:chaldea/app/app.dart';
@@ -403,7 +404,7 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
           });
         },
       ),
-      kIndentDivider,
+      DividerWithTitle(title: '${S.current.class_board} & Grand Graph'),
       ListTile(
         dense: true,
         title: Text(S.current.class_board),
@@ -423,7 +424,113 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
           },
         ),
       ),
-      kIndentDivider,
+      CheckboxListTile(
+        dense: true,
+        title: Text(S.current.grand_servant),
+        value: options.grandSvt,
+        onChanged: (v) {
+          setState(() {
+            if (v != null) options.grandSvt = v;
+          });
+        },
+      ),
+      ListTile(
+        dense: true,
+        title: Text("Grand Board"),
+        enabled: options.grandSvt,
+        trailing: DropdownButton<PreferClassBoardDataSource>(
+          isDense: true,
+          value: options.grandBoard,
+          items: PreferClassBoardDataSource.values.map((source) {
+            return DropdownMenuItem(
+              value: source,
+              child: Text(source.shownName, textScaler: const TextScaler.linear(0.9)),
+            );
+          }).toList(),
+          onChanged: options.grandSvt
+              ? (v) {
+                  setState(() {
+                    if (v != null) options.grandBoard = v;
+                  });
+                }
+              : null,
+        ),
+      ),
+      ListTile(
+        dense: true,
+        enabled: options.isUseGrandBoard,
+        title: Text('${S.current.craft_essence} 2'),
+        trailing: DropdownButton<BondEquipType>(
+          isDense: true,
+          value: options.equip2Type,
+          items: [
+            for (final type in BondEquipType.values)
+              DropdownMenuItem(
+                value: type,
+                child: Text(type.shownName, textScaler: const TextScaler.linear(0.9)),
+              ),
+          ],
+          onChanged: options.isUseGrandBoard
+              ? (v) {
+                  setState(() {
+                    if (v != null) options.equip2Type = v;
+                  });
+                }
+              : null,
+        ),
+      ),
+      ListTile(
+        dense: true,
+        enabled: options.isUseGrandBoard,
+        title: Text('${S.current.craft_essence} 3'),
+        subtitle: () {
+          final ce = db.gameData.craftEssencesById[options.equip3];
+          if (ce != null) {
+            return Text('${ce.lName.l}\nLv.${ce.lvMax} ATK${ce.atkMax} HP${ce.hpMax}');
+          }
+          return null;
+        }(),
+        trailing: Wrap(
+          children: [
+            if (options.equip3 != 0)
+              IconButton(
+                onPressed: () {
+                  setState(() {
+                    options.equip3 = 0;
+                  });
+                },
+                icon: Icon(Icons.clear),
+              ),
+            IconButton(
+              onPressed: () {
+                if (!options.isUseGrandBoard) return;
+                router.pushPage(
+                  CraftListPage(
+                    onSelected: (ce) {
+                      if (!ce.canBeGrandSvtRewardEquip) {
+                        EasyLoading.showError(S.current.invalid_input);
+                        return;
+                      }
+                      if (mounted) {
+                        setState(() {
+                          options.equip3 = ce.id;
+                        });
+                      }
+                    },
+                    pinged: [
+                      for (final ce in db.gameData.craftEssences.values)
+                        if (ce.canBeGrandSvtRewardEquip && ce.rarity == 5) ce.id,
+                    ],
+                  ),
+                  detail: true,
+                );
+              },
+              icon: Icon(Icons.change_circle),
+            ),
+          ],
+        ),
+      ),
+      DividerWithTitle(title: S.current.skill),
       CheckboxListTile(
         dense: true,
         value: options.enableActiveSkills,
