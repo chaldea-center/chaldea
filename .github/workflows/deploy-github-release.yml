@@ -50,7 +50,7 @@ jobs:
       - name: Checkout chaldea code
         uses: actions/checkout@v4
 
-      - uses: subosito/flutter-action@v2.18.0
+      - uses: subosito/flutter-action@v2.19.0
         with:
           channel: "stable"
           flutter-version-file: "pubspec.yaml"
@@ -118,9 +118,9 @@ jobs:
       - run: flutter pub get
       - run: flutter build ${{ matrix.build_target }} -v --release ${{ matrix.build_options }}
 
-      - name: Build AAB
-        if: matrix.target == 'android'
-        run: flutter build appbundle -v --release --flavor=play
+      # - name: Build AAB
+      #   if: matrix.target == 'android'
+      #   run: flutter build appbundle -v --release --flavor=play
 
       # Package the build.
       - name: Copy VC redistributables to release directory for Windows
@@ -134,7 +134,7 @@ jobs:
         if: matrix.target == 'android'
         run: |
           mv flutter-apk/app-play-release.apk $GITHUB_WORKSPACE/chaldea-$VERSION-${{ matrix.target }}.apk
-          mv bundle/playRelease/app-play-release.aab $GITHUB_WORKSPACE/chaldea-$VERSION-appbundle.aab
+          # mv bundle/playRelease/app-play-release.aab $GITHUB_WORKSPACE/chaldea-$VERSION-appbundle.aab
         working-directory: ${{ matrix.build_path }}
       - name: Compress build for Linux
         if: matrix.target == 'linux'
@@ -185,7 +185,7 @@ jobs:
           mkdir dist
           mv chaldea-*/chaldea-* dist/
           pushd dist
-          shasum -a 1 chaldea-*.{apk,aab,zip,gz} >checksums.txt
+          shasum -a 1 chaldea-*.{apk,zip,gz} >checksums.txt
           cat checksums.txt
           ls -l
           popd
