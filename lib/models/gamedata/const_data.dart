@@ -49,6 +49,7 @@ class ConstGameData {
   final List<int> excludeRewardQuests; // when counting war fixed drop and rewards
   final List<int> randomEnemyQuests;
   final Map<int, List<int>> svtFaceLimits;
+  final Map<int, int> extraWarEventMapping;
   final ConstDataConfig config;
 
   ConstGameData({
@@ -74,6 +75,7 @@ class ConstGameData {
     this.svtFaceLimits = const {},
     this.config = const ConstDataConfig(),
     this.destinyOrderSummons = const [],
+    this.extraWarEventMapping = const {},
   }) : buffTypeActionMap = {} {
     if (buffActions.isNotEmpty) {
       void _addBuffTypes(BuffAction action, List<BuffType> plusTypes, List<BuffType> minusTypes) {

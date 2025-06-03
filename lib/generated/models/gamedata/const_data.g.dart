@@ -118,6 +118,9 @@ ConstGameData _$ConstGameDataFromJson(Map json) => ConstGameData(
       ? const ConstDataConfig()
       : ConstDataConfig.fromJson(Map<String, dynamic>.from(json['config'] as Map)),
   destinyOrderSummons: (json['destinyOrderSummons'] as List<dynamic>?)?.map((e) => e as String).toList() ?? const [],
+  extraWarEventMapping:
+      (json['extraWarEventMapping'] as Map?)?.map((k, e) => MapEntry(int.parse(k as String), (e as num).toInt())) ??
+      const {},
 );
 
 Map<String, dynamic> _$ConstGameDataToJson(ConstGameData instance) => <String, dynamic>{
@@ -155,6 +158,7 @@ Map<String, dynamic> _$ConstGameDataToJson(ConstGameData instance) => <String, d
   'excludeRewardQuests': instance.excludeRewardQuests,
   'randomEnemyQuests': instance.randomEnemyQuests,
   'svtFaceLimits': instance.svtFaceLimits.map((k, e) => MapEntry(k.toString(), e)),
+  'extraWarEventMapping': instance.extraWarEventMapping.map((k, e) => MapEntry(k.toString(), e)),
   'config': instance.config.toJson(),
 };
 

@@ -7,16 +7,6 @@ import 'gamedata.dart';
 
 part '../../generated/models/gamedata/war.g.dart';
 
-const kExtraWarEventMapping = <int, int>{
-  108: 80038,
-  201: 80044,
-  202: 80059,
-  203: 80072,
-  204: 80077,
-  311: 80421,
-  404: 80491,
-};
-
 @JsonSerializable()
 class NiceWar with RouteInfo {
   int id;
@@ -134,7 +124,7 @@ class NiceWar with RouteInfo {
   }
 
   int get eventId {
-    if (_eventId == 0) return kExtraWarEventMapping[id] ?? _eventId;
+    if (_eventId == 0) return ConstData.extraWarEventMapping[id] ?? _eventId;
     return _eventId;
   }
 
