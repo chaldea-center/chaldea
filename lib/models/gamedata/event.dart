@@ -1996,6 +1996,7 @@ enum PurchaseType {
   eventSvtJoin,
   assist,
   shop18Item,
+  partsSkill,
   kiaraPunisherReset,
 }
 

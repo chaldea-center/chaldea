@@ -502,6 +502,8 @@ class ShopHelper {
           );
         }
         return;
+      case PurchaseType.partsSkill:
+        yield Tuple2(null, TextSpan(text: 'partsSkill $targetId×$targetNum (${shop.name})'));
     }
   }
 }

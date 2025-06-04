@@ -1120,6 +1120,8 @@ QuestPhaseExtraDetail _$QuestPhaseExtraDetailFromJson(Map json) => QuestPhaseExt
   masterSkillDelay: (json['masterSkillDelay'] as num?)?.toInt(),
   masterSkillDelayInfo: json['masterSkillDelayInfo'] as String?,
   isUseGrandBoard: (json['isUseGrandBoard'] as num?)?.toInt(),
+  turn: (json['turn'] as num?)?.toInt(),
+  limitAct: $enumDecodeNullable(_$StageLimitActTypeEnumMap, json['limitAct']),
 );
 
 Map<String, dynamic> _$QuestPhaseExtraDetailToJson(QuestPhaseExtraDetail instance) => <String, dynamic>{
@@ -1139,6 +1141,8 @@ Map<String, dynamic> _$QuestPhaseExtraDetailToJson(QuestPhaseExtraDetail instanc
   'masterSkillDelay': instance.masterSkillDelay,
   'masterSkillDelayInfo': instance.masterSkillDelayInfo,
   'isUseGrandBoard': instance.isUseGrandBoard,
+  'turn': instance.turn,
+  'limitAct': _$StageLimitActTypeEnumMap[instance.limitAct],
 };
 
 OverwriteEquipSkills _$OverwriteEquipSkillsFromJson(Map json) => OverwriteEquipSkills(

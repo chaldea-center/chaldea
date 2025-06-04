@@ -215,7 +215,7 @@ class QuestWave extends StatelessWidget {
 }
 
 class WaveInfoPage extends StatelessWidget {
-  final QuestPhase? questPhase;
+  final QuestPhase questPhase;
   final Stage stage;
   final Region? region;
   const WaveInfoPage({super.key, required this.questPhase, required this.stage, this.region});
@@ -236,15 +236,14 @@ class WaveInfoPage extends StatelessWidget {
             ),
           if (stage.turn != null)
             ListTile(
-              title: Text(S.current.turn_remain_limit),
-              subtitle: Text(
-                {
-                      StageLimitActType.win: S.current.turn_remain_limit_win,
-                      StageLimitActType.lose: S.current.turn_remain_limit_lose,
-                    }[stage.limitAct] ??
-                    stage.limitAct?.toString() ??
-                    "?",
-              ),
+              title: Text('[${S.current.quest_wave}] ${S.current.turn_remain_limit}'),
+              subtitle: Text(stage.limitAct?.shownName ?? "?"),
+              trailing: Text(stage.turn.toString()),
+            ),
+          if (questPhase.extraDetail?.turn != null)
+            ListTile(
+              title: Text('[${S.current.quest}] ${S.current.turn_remain_limit}'),
+              subtitle: Text(stage.limitAct?.shownName ?? "?"),
               trailing: Text(stage.turn.toString()),
             ),
           if (stage.enemyFieldPosCount != null)
@@ -253,8 +252,8 @@ class WaveInfoPage extends StatelessWidget {
             ListTile(title: Text(S.current.max_enemy_act_count), trailing: Text(stage.enemyActCount.toString())),
           if (stage.fieldAis.isNotEmpty) buildFieldAis(context, stage.fieldAis),
           if (stage.aiAllocations?.isNotEmpty == true) buildAiAllocations(context, stage.aiAllocations!),
-          if ((questPhase?.extraDetail?.masterImageId ?? 0) > 0)
-            buildMasterImage(masterImageId: questPhase?.extraDetail?.masterImageId),
+          if ((questPhase.extraDetail?.masterImageId ?? 0) > 0)
+            buildMasterImage(masterImageId: questPhase.extraDetail?.masterImageId),
           if ((stage.battleMasterImageId ?? 0) > 0) buildMasterImage(battleMasterImageId: stage.battleMasterImageId),
           for (final masterId in [
             if (stage.enemyMasterBattleId != null) stage.enemyMasterBattleId!,
@@ -282,7 +281,7 @@ class WaveInfoPage extends StatelessWidget {
     Widget trailing;
     if (masterImageId != null && masterImageId > 0) {
       trailing = CachedImage(
-        imageUrl: AssetURL(region ?? Region.jp).masterFaceImage(questPhase?.extraDetail?.masterImageId ?? 231),
+        imageUrl: AssetURL(region ?? Region.jp).masterFaceImage(questPhase.extraDetail?.masterImageId ?? 231),
         showSaveOnLongPress: true,
         width: 36,
         height: 36,

@@ -1786,6 +1786,8 @@ class QuestPhaseExtraDetail {
   int? masterSkillDelay;
   String? masterSkillDelayInfo;
   int? isUseGrandBoard;
+  int? turn;
+  StageLimitActType? limitAct;
 
   QuestPhaseExtraDetail({
     this.questSelect,
@@ -1804,6 +1806,8 @@ class QuestPhaseExtraDetail {
     this.masterSkillDelay,
     this.masterSkillDelayInfo,
     this.isUseGrandBoard,
+    this.turn,
+    this.limitAct,
   });
 
   factory QuestPhaseExtraDetail.fromJson(Map<String, dynamic> json) => _$QuestPhaseExtraDetailFromJson(json);
@@ -2251,7 +2255,20 @@ enum FrequencyType {
   onceUntilRemind,
 }
 
-enum StageLimitActType { win, lose }
+enum StageLimitActType {
+  none(0),
+  win(1),
+  lose(2);
+
+  const StageLimitActType(this.value);
+  final int value;
+
+  String get shownName => switch (this) {
+    none => name,
+    win => S.current.turn_remain_limit_win,
+    lose => S.current.turn_remain_limit_lose,
+  };
+}
 
 enum NpcServantFollowerFlag {
   unknown,

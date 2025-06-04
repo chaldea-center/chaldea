@@ -464,4 +464,5 @@ const _$CondTypeEnumMap = {
   CondType.grandSvtSet: 'grandSvtSet',
   CondType.playedMovie: 'playedMovie',
   CondType.notPlayedMovie: 'notPlayedMovie',
+  CondType.notShopGroupLimitNum: 'notShopGroupLimitNum',
 };

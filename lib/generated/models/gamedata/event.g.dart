@@ -366,6 +366,7 @@ const _$PurchaseTypeEnumMap = {
   PurchaseType.eventSvtJoin: 'eventSvtJoin',
   PurchaseType.assist: 'assist',
   PurchaseType.shop18Item: 'shop18Item',
+  PurchaseType.partsSkill: 'partsSkill',
   PurchaseType.kiaraPunisherReset: 'kiaraPunisherReset',
 };
 
