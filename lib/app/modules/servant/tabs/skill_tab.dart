@@ -107,7 +107,10 @@ class _SvtSkillTabState extends State<SvtSkillTab> {
     for (final passive in extraPassives) {
       final svtExtraPassive = passive.extraPassive.firstOrNull;
       final eventId = svtExtraPassive?.eventId ?? 0;
-      if (eventId == 0 && (svtExtraPassive == null || !svtExtraPassive.isLimited)) {
+      if (passive.id == 970663) {
+        // 夢火の導き Bond 15 skill
+        extraPassiveMain.add(passive);
+      } else if (eventId == 0 && (svtExtraPassive == null || !svtExtraPassive.isLimited)) {
         extraPassiveFixed.add(passive);
       } else if (db.gameData.events[eventId]?.warIds.any((e) => e < 1000) == true) {
         extraPassiveMain.add(passive);

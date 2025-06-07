@@ -387,7 +387,21 @@ class _QuestDetailPageState extends State<QuestDetailPage> {
   List<Widget> getCampaigns() {
     List<Widget> children = [];
     final events = db.gameData.events.values
-        .where((e) => e.isCampaignQuest(quest.id) || e.campaigns.any((c) => c.targetIds.contains(quest.id)))
+        .where(
+          (e) =>
+              e.campaigns.any(
+                    (e) => const {
+                      CombineAdjustTarget.questAp,
+                      CombineAdjustTarget.questApFirstTime,
+                      CombineAdjustTarget.questUseContinueItem,
+                      // CombineAdjustTarget.questUseFriendshipUpItem,
+                      // CombineAdjustTarget.questFriendship,
+                      CombineAdjustTarget.questItemFirstTime,
+                    }.contains(e.target),
+                  ) &&
+                  e.isCampaignQuest(quest.id) ||
+              e.campaigns.any((c) => c.targetIds.contains(quest.id)),
+        )
         .toList();
     if (events.isEmpty) return const [];
     if (!_showAllCampaign) {

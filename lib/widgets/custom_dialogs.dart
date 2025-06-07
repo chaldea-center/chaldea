@@ -139,10 +139,10 @@ class _InputCancelOkDialogState extends State<InputCancelOkDialog> {
                   validation = _validate(_value);
                   setState(() {
                     if (validation) {
+                      Navigator.pop(context, _value);
                       if (widget.onSubmit != null) {
                         widget.onSubmit!(_value);
                       }
-                      Navigator.pop(context, _value);
                     }
                   });
                 }

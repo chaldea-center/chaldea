@@ -15,11 +15,11 @@ import '../servant/filter.dart';
 
 typedef _GroupItem = ({int rateCount, List<int> ceIds, List<({Servant svt, List<int> limitCounts})> svts});
 
-class EquipBondBonusPage extends StatefulWidget {
-  const EquipBondBonusPage({super.key});
+class EquipBondBonusTab extends StatefulWidget {
+  const EquipBondBonusTab({super.key});
 
   @override
-  State<EquipBondBonusPage> createState() => _EquipBondBonusPageState();
+  State<EquipBondBonusTab> createState() => _EquipBondBonusTabState();
 }
 
 enum _FilterType {
@@ -74,7 +74,7 @@ enum _FilterType {
 
 /// functvals: traits
 /// DataVals: [RateCount], [AddCount] (ignore)
-class _EquipBondBonusPageState extends State<EquipBondBonusPage> {
+class _EquipBondBonusTabState extends State<EquipBondBonusTab> {
   Map<int, ({CraftEssence ce, List<List<NiceTrait>> traits, int rateCount})> allCeData = {};
   Map<int, Map<int, List<int>>> allCeMatchSvtData = {}; //<ceId, <svtId, [limitCount]>>
 
@@ -250,33 +250,12 @@ class _EquipBondBonusPageState extends State<EquipBondBonusPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('${S.current.craft_essence} - ${S.current.bond_bonus}'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.filter_alt),
-            tooltip: S.current.filter,
-            onPressed: () => FilterPage.show(
-              context: context,
-              builder: (context) => ServantFilterPage(
-                filterData: svtFilterData,
-                onChanged: (_) {
-                  if (mounted) setState(() {});
-                },
-                planMode: false,
-              ),
-            ),
-          ),
-        ],
-      ),
-      body: Column(
-        children: [
-          Expanded(child: mainBody),
-          kDefaultDivider,
-          buttonBar,
-        ],
-      ),
+    return Column(
+      children: [
+        Expanded(child: mainBody),
+        kDefaultDivider,
+        buttonBar,
+      ],
     );
   }
 
@@ -373,84 +352,95 @@ class _EquipBondBonusPageState extends State<EquipBondBonusPage> {
   Widget get buttonBar {
     final ces = allCeData.values.toList();
     ces.sortByList((e) => [-e.rateCount, -e.ce.collectionNo]);
+    final filterBtn = IconButton(
+      icon: const Icon(Icons.filter_alt),
+      tooltip: S.current.filter,
+      onPressed: () => FilterPage.show(
+        context: context,
+        builder: (context) => ServantFilterPage(
+          filterData: svtFilterData,
+          onChanged: (_) {
+            if (mounted) setState(() {});
+          },
+          planMode: false,
+        ),
+      ),
+    );
+    final List<Widget> ceBtns = ces.map((ce) {
+      final curStatus = getCeState(ce.ce.id);
+      return InkWell(
+        onTap: () {
+          router.showDialog(
+            builder: (context) => SimpleDialog(
+              title: Text.rich(
+                TextSpan(
+                  children: [
+                    CenterWidgetSpan(
+                      child: ce.ce.iconBuilder(context: context, width: 32, padding: EdgeInsets.all(2)),
+                    ),
+                    TextSpan(text: ce.ce.lName.l),
+                  ],
+                ),
+              ),
+              children: [
+                for (final type in _FilterType.values)
+                  ListTile(
+                    dense: true,
+                    contentPadding: EdgeInsets.symmetric(horizontal: 24.0),
+                    title: Text(
+                      curStatus == type ? '${type.shownName} (${S.current.current_})' : type.shownName,
+                      style: TextStyle(color: type.color),
+                    ),
+                    subtitle: Text(type.hint),
+                    onTap: () {
+                      ceFilterStates[ce.ce.id] = type;
+                      Navigator.pop(context);
+                      if (mounted) setState(() {});
+                    },
+                  ),
+              ],
+            ),
+          );
+        },
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            IgnorePointer(
+              child: FilterOption(
+                selected: curStatus != _FilterType.none,
+                value: ce.ce.id,
+                shrinkWrap: true,
+                constraints: BoxConstraints(),
+                selectedColor: curStatus.color,
+                child: ce.ce.iconBuilder(context: context, jumpToDetail: false, width: 36, padding: EdgeInsets.all(3)),
+              ),
+            ),
+            SizedBox(
+              width: 36,
+              height: 20,
+              child: AutoSizeText(
+                curStatus == _FilterType.none ? '-' : curStatus.shownName,
+                maxLines: 1,
+                minFontSize: 2,
+                maxFontSize: 12,
+                style: TextStyle(color: curStatus.color),
+                textAlign: TextAlign.center,
+              ),
+            ),
+          ],
+        ),
+      );
+    }).toList();
     return SafeArea(
+      right: false,
       child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        padding: EdgeInsets.only(top: 4),
         child: Wrap(
           spacing: 2,
-          runSpacing: 2,
+          runSpacing: 1,
           crossAxisAlignment: WrapCrossAlignment.start,
-          children: ces.map((ce) {
-            final curStatus = getCeState(ce.ce.id);
-            return InkWell(
-              onTap: () {
-                router.showDialog(
-                  builder: (context) => SimpleDialog(
-                    title: Text.rich(
-                      TextSpan(
-                        children: [
-                          CenterWidgetSpan(
-                            child: ce.ce.iconBuilder(context: context, width: 32, padding: EdgeInsets.all(2)),
-                          ),
-                          TextSpan(text: ce.ce.lName.l),
-                        ],
-                      ),
-                    ),
-                    children: [
-                      for (final type in _FilterType.values)
-                        ListTile(
-                          dense: true,
-                          contentPadding: EdgeInsets.symmetric(horizontal: 24.0),
-                          title: Text(
-                            curStatus == type ? '${type.shownName} (${S.current.current_})' : type.shownName,
-                            style: TextStyle(color: type.color),
-                          ),
-                          subtitle: Text(type.hint),
-                          onTap: () {
-                            ceFilterStates[ce.ce.id] = type;
-                            Navigator.pop(context);
-                            if (mounted) setState(() {});
-                          },
-                        ),
-                    ],
-                  ),
-                );
-              },
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  IgnorePointer(
-                    child: FilterOption(
-                      selected: curStatus != _FilterType.none,
-                      value: ce.ce.id,
-                      shrinkWrap: true,
-                      constraints: BoxConstraints(),
-                      selectedColor: curStatus.color,
-                      child: ce.ce.iconBuilder(
-                        context: context,
-                        jumpToDetail: false,
-                        width: 36,
-                        padding: EdgeInsets.all(3),
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    width: 36,
-                    height: 20,
-                    child: AutoSizeText(
-                      curStatus == _FilterType.none ? '-' : curStatus.shownName,
-                      maxLines: 1,
-                      minFontSize: 2,
-                      maxFontSize: 12,
-                      style: TextStyle(color: curStatus.color),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                ],
-              ),
-            );
-          }).toList(),
+          children: [filterBtn, ...ceBtns],
         ),
       ),
     );

@@ -12,6 +12,8 @@ class DataVals {
 
   DataVals([Map<dynamic, dynamic>? sourceVals]) : _vals = Map.from(sourceVals ?? {});
 
+  Map<String, dynamic> getSourceVals() => _vals;
+
   static dynamic _deepCopy(dynamic value) {
     if (value is List) {
       return value.map((e) => _deepCopy(e)).toList();

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-import 'package:chaldea/app/modules/bond/equip_bond_bonus.dart';
+import 'package:chaldea/app/modules/bond/bond_bonus.dart';
 import 'package:chaldea/app/modules/creator/chara_list.dart';
 import 'package:chaldea/app/modules/creator/cv_list.dart';
 import 'package:chaldea/app/modules/creator/illustrator_list.dart';
@@ -310,7 +310,7 @@ class GalleryItem {
     name: 'bond_bonus',
     titleBuilder: () => S.current.bond_bonus,
     icon: FontAwesomeIcons.diamond,
-    page: const EquipBondBonusPage(),
+    page: const BondBonusHomePage(),
     isDetail: false,
   );
   static GalleryItem statistics = GalleryItem(

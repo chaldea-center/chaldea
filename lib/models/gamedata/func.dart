@@ -438,9 +438,13 @@ extension BaseFunctionX on BaseFunction {
   }
 
   List<List<NiceTrait>> getOverwriteTvalsList() {
-    List<List<NiceTrait>>? tvals = script?.overwriteTvals;
-    if (tvals != null && tvals.isNotEmpty) return tvals;
-    return overWriteTvalsList;
+    final valsList = [overWriteTvalsList, script?.overwriteTvals];
+    for (final tvals in valsList) {
+      if (tvals == null || tvals.isEmpty) continue;
+      final tvals2 = tvals.where((e) => e.isNotEmpty).toList();
+      if (tvals2.isNotEmpty) return tvals2;
+    }
+    return [];
   }
 
   bool get isEventOnlyEffect {

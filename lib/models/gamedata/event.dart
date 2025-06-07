@@ -2202,7 +2202,17 @@ enum CombineAdjustTarget {
   questUseRewardAddItem,
 }
 
-enum EventCombineCalc { addition, multiplication, fixedValue }
+enum EventCombineCalc {
+  addition,
+  multiplication,
+  fixedValue;
+
+  String get operatorText => switch (this) {
+    addition => '+',
+    multiplication => '×',
+    fixedValue => '=',
+  };
+}
 
 // FuncType.eventFortificationPointUp: DataVal.Individuality
 enum EventWorkType {

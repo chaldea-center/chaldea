@@ -674,6 +674,19 @@ class Servant extends BasicServant {
 
   Set<int>? _traitsAll;
 
+  List<NiceTrait> getIndividuality(int eventId, int limitCount) {
+    List<NiceTrait> indivs = getAscended(limitCount, (v) => v.individuality) ?? traits;
+    for (final add in traitAdd) {
+      if (add.eventId != 0 && eventId != add.eventId) continue;
+      if (add.limitCount != -1) {
+        if (battleCharaToLimitCount(limitCount) != add.limitCount) continue;
+      }
+      // add.condType; almost questClear
+      indivs.addAll(add.trait);
+    }
+    return indivs;
+  }
+
   int grailedLv(int grails) {
     final costs = db.gameData.constData.svtGrailCost[rarity]?[grails];
     if (costs == null) return lvMax;

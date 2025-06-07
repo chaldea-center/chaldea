@@ -14,6 +14,7 @@ import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/battle/models/battle.dart';
 import 'package:chaldea/app/modules/battle/battle_simulation.dart';
 import 'package:chaldea/app/modules/battle/teams/teams_query_page.dart';
+import 'package:chaldea/app/modules/bond/bond_bonus.dart';
 import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/app/modules/mystic_code/mystic_code_list.dart';
 import 'package:chaldea/app/modules/quest/quest_card.dart';
@@ -23,6 +24,7 @@ import 'package:chaldea/packages/app_info.dart';
 import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
+import '../bond/formation_bond.dart';
 import '../quest/breakdown/quest_phase.dart';
 import '../quest/quest.dart';
 import 'formation/default_lvs.dart';
@@ -150,6 +152,16 @@ class _SimulationPreviewState extends State<SimulationPreview> {
             onPressed: questPhase == null ? null : () => onTapSharedTeams(questPhase!),
             style: TextButton.styleFrom(foregroundColor: AppTheme(context).tertiary),
             child: Text(S.current.team_shared),
+          ),
+          TextButton(
+            onPressed: () {
+              router.pushPage(
+                BondBonusHomePage(
+                  option: FormationBondOption(formation: options.formation.copy(), quest: questPhase),
+                ),
+              );
+            },
+            child: Text(S.current.bond),
           ),
         ],
       ),
