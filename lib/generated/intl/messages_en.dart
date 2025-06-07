@@ -853,6 +853,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "quest": MessageLookupByLibrary.simpleMessage("Quest"),
     "quest_chapter_n": m7,
     "quest_condition": MessageLookupByLibrary.simpleMessage("Conditions"),
+    "quest_content_same_warning": MessageLookupByLibrary.simpleMessage(
+      "There are almost identical quests with this quest. Please be careful to distinguish them",
+    ),
     "quest_disallow_laplace_share_hint": MessageLookupByLibrary.simpleMessage(
       "Invalid quest, only Free and Raid Quests supports team sharing",
     ),

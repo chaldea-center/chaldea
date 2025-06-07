@@ -252,7 +252,7 @@ class BattleRecordManager {
       );
     }
 
-    if (questPhase.extraDetail?.isUseGrandBoard == 1) {
+    if (questPhase.isUseGrandBoard) {
       for (final restriction in questPhase.restrictions) {
         // myGrandSvt, fixedMyGrandSvt, myGrandSvtPositionMain
         if (restriction.restriction.type == RestrictionType.myGrandSvt) {
@@ -313,7 +313,7 @@ class BattleRecordManager {
       reasons.setUpload('${S.current.craft_essence}: ID ${svtData.equip1.ce!.id}, not player CE');
     }
 
-    if (questPhase.extraDetail?.isUseGrandBoard == 1) {
+    if (questPhase.isUseGrandBoard) {
       final svtIndivs = svt.getIndividuality(questPhase.logicEvent?.id, svtData.limitCount);
       for (final restriction in questPhase.restrictions) {
         if (restriction.restriction.type == RestrictionType.individuality) {
@@ -362,6 +362,11 @@ class BattleRecordManager {
     final region = runtime.region;
     if (region != null && region != Region.jp) {
       reasons2.setUpload('Only JP quest supports team sharing. (current: ${region.localName})');
+    }
+
+    final similarQuestIds = ConstData.getSimilarQuestIds(runtime.originalQuest.id);
+    if (similarQuestIds.isNotEmpty) {
+      reasons2.setWarning('${S.current.quest_content_same_warning}: ${similarQuestIds.join("/")}');
     }
 
     const kMaxRNG = 950, kMinProb = 80;

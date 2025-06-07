@@ -678,6 +678,7 @@
   "quest": "关卡",
   "quest_chapter_n": "第{n}节",
   "quest_condition": "开放条件",
+  "quest_content_same_warning": "本关卡存在几乎一致的关卡，请注意甄别",
   "quest_disallow_laplace_share_hint": "无效关卡，仅支持主线/活动Free本及团体战的队伍分享",
   "quest_edit_hint": "若需使用活动效果，对应的关卡配置以及场地特性(94000xxx)均需正确设置。\n仅支持基础关卡和敌人属性编辑，不支持多血条等复杂情形。复杂情况请自定义JSON。",
   "quest_enemy_summary_hint": "主线Free本中敌人信息的汇总，任何属性均可能被服务器所覆盖，仅供参考。\n*特殊*特性指仅部分敌人持有的特性。",

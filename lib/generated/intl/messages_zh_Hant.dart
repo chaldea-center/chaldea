@@ -789,6 +789,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "quest": MessageLookupByLibrary.simpleMessage("關卡"),
     "quest_chapter_n": m7,
     "quest_condition": MessageLookupByLibrary.simpleMessage("開放條件"),
+    "quest_content_same_warning": MessageLookupByLibrary.simpleMessage("本关卡存在几乎一致的关卡，请注意甄别"),
     "quest_disallow_laplace_share_hint": MessageLookupByLibrary.simpleMessage("無效關卡，僅支持主線/活動FQ及伐柱戰的隊伍分享"),
     "quest_edit_hint": MessageLookupByLibrary.simpleMessage(
       "若需使用活動效果，對應的關卡配置以及場地特性(94000xxx)均需正確設置。\n僅支持基礎關卡和敵人屬性編輯，不支持多血條等複雜情形。複雜情況請自訂JSON。",

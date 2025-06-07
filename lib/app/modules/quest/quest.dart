@@ -101,6 +101,7 @@ class _QuestDetailPageState extends State<QuestDetailPage> {
 
   @override
   Widget build(BuildContext context) {
+    final sameQuestIds = ConstData.getSimilarQuestIds(questId ?? 0);
     return Scaffold(
       appBar: AppBar(
         title: AutoSizeText(_quest?.lNameWithChapter ?? 'Quest $questId', maxLines: 1, minFontSize: 12),
@@ -223,6 +224,24 @@ class _QuestDetailPageState extends State<QuestDetailPage> {
                     displayPhases: quest.phases.contains(phase)
                         ? {phase: initHash?.$1 == phase ? widget.enemyHash : null}
                         : null,
+                  ),
+                if (sameQuestIds.isNotEmpty)
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                    child: Text.rich(
+                      TextSpan(
+                        text: '${S.current.quest_content_same_warning}: ',
+                        children: [
+                          for (final questId in sameQuestIds)
+                            SharedBuilder.textButtonSpan(
+                              context: context,
+                              text: '$questId ',
+                              onTap: () => router.push(url: Routes.questI(questId)),
+                            ),
+                        ],
+                      ),
+                      style: TextStyle(color: Colors.amber),
+                    ),
                   ),
                 if (quest.isLaplaceSharable) sharedTeamsButton,
                 if (db.gameData.dropData.domusAurea.questIds.contains(quest.id)) blacklistButton,

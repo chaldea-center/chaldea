@@ -325,7 +325,7 @@ abstract class FakerAgent<
       followerType = 0;
       followerSupportDeckId = 0;
     } else {
-      final bool isUseGrandBoard = questPhaseEntity.extraDetail?.isUseGrandBoard == 1;
+      final bool isUseGrandBoard = questPhaseEntity.isUseGrandBoard;
       final (follower, followerSvt) = await _getValidSupport(
         questPhaseEntity: questPhaseEntity,
         useEventDeck: options.useEventDeck ?? db.gameData.others.shouldUseEventDeck(options.questId),

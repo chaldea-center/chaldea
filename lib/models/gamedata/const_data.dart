@@ -50,6 +50,8 @@ class ConstGameData {
   final List<int> randomEnemyQuests;
   final Map<int, List<int>> svtFaceLimits;
   final Map<int, int> extraWarEventMapping;
+  final Map<int, int> sameQuestRemap;
+  late final Map<int, int> sameQuestRemapReverse = {for (final (k, v) in sameQuestRemap.items) v: k};
   final ConstDataConfig config;
 
   ConstGameData({
@@ -76,6 +78,7 @@ class ConstGameData {
     this.config = const ConstDataConfig(),
     this.destinyOrderSummons = const [],
     this.extraWarEventMapping = const {},
+    this.sameQuestRemap = const {},
   }) : buffTypeActionMap = {} {
     if (buffActions.isNotEmpty) {
       void _addBuffTypes(BuffAction action, List<BuffType> plusTypes, List<BuffType> minusTypes) {
@@ -155,6 +158,10 @@ class ConstGameData {
 
   bool isIgnoreValueUpBuffType(BuffType buffType) {
     return funcTypeDetail[buffType.value]?.ignoreValueUp ?? false;
+  }
+
+  List<int> getSimilarQuestIds(int questId) {
+    return [sameQuestRemap[questId], sameQuestRemapReverse[questId]].whereType<int>().toList();
   }
 
   factory ConstGameData.fromJson(Map<String, dynamic> json) {

@@ -4160,6 +4160,17 @@ class S {
     return Intl.message('Conditions', name: 'quest_condition', desc: '', locale: localeName, args: []);
   }
 
+  /// `There are almost identical quests with this quest. Please be careful to distinguish them`
+  String get quest_content_same_warning {
+    return Intl.message(
+      'There are almost identical quests with this quest. Please be careful to distinguish them',
+      name: 'quest_content_same_warning',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Invalid quest, only Free and Raid Quests supports team sharing`
   String get quest_disallow_laplace_share_hint {
     return Intl.message(

@@ -253,7 +253,7 @@ class _FormationBondTabState extends State<FormationBondTab> {
       final equips = [
         deckSvt.equip1,
         // equip2 is bond
-        if (quest?.extraDetail?.isUseGrandBoard == 1 && deckSvt.grandSvt) deckSvt.equip3,
+        if (quest?.isUseGrandBoard == true && deckSvt.grandSvt) deckSvt.equip3,
       ];
       for (final equip in equips) {
         final ce = equip.ce;

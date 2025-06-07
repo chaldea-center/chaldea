@@ -517,6 +517,8 @@ class QuestPhase extends Quest {
     return enemyHash;
   }
 
+  bool get isUseGrandBoard => extraDetail?.isUseGrandBoard == 1;
+
   @override
   Transl<String, String> get lSpot {
     final spot = this.spot;

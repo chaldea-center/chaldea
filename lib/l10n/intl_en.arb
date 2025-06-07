@@ -678,6 +678,7 @@
   "quest": "Quest",
   "quest_chapter_n": "Section {n}",
   "quest_condition": "Conditions",
+  "quest_content_same_warning": "There are almost identical quests with this quest. Please be careful to distinguish them",
   "quest_disallow_laplace_share_hint": "Invalid quest, only Free and Raid Quests supports team sharing",
   "quest_edit_hint": "For event effects, both war and field trait(94000xxx) are required to be correctly set.\nOnly basic quest/enemy edit supported, special functions (multiple hp bar/shiftServant) are not supported. Customize JSON data for complex quest.",
   "quest_enemy_summary_hint": "A summary for enemies in free quest from Main Story, any property may be overridden from server. Only for reference.\n*Special* Trait means only part of enemies have this trait.",

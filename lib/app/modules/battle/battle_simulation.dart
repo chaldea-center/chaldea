@@ -932,7 +932,8 @@ class _TeamUploadDialogState extends State<_TeamUploadDialog> {
         totalNormalCards += selectedCards.where((e) => !e.cardData.isTD).length;
       }
     }
-    final bool tooManyNormalCards = totalNormalCards > kMaxAttack;
+
+    final bool tooManyNormalCards = totalNormalCards > kMaxAttack && !questPhase.isUseGrandBoard;
 
     if (tooManyNormalCards) {
       children.add(

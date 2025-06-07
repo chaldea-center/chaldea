@@ -121,6 +121,8 @@ ConstGameData _$ConstGameDataFromJson(Map json) => ConstGameData(
   extraWarEventMapping:
       (json['extraWarEventMapping'] as Map?)?.map((k, e) => MapEntry(int.parse(k as String), (e as num).toInt())) ??
       const {},
+  sameQuestRemap:
+      (json['sameQuestRemap'] as Map?)?.map((k, e) => MapEntry(int.parse(k as String), (e as num).toInt())) ?? const {},
 );
 
 Map<String, dynamic> _$ConstGameDataToJson(ConstGameData instance) => <String, dynamic>{
@@ -159,6 +161,7 @@ Map<String, dynamic> _$ConstGameDataToJson(ConstGameData instance) => <String, d
   'randomEnemyQuests': instance.randomEnemyQuests,
   'svtFaceLimits': instance.svtFaceLimits.map((k, e) => MapEntry(k.toString(), e)),
   'extraWarEventMapping': instance.extraWarEventMapping.map((k, e) => MapEntry(k.toString(), e)),
+  'sameQuestRemap': instance.sameQuestRemap.map((k, e) => MapEntry(k.toString(), e)),
   'config': instance.config.toJson(),
 };
 

@@ -177,11 +177,14 @@ class _WarDetailPageState extends State<WarDetailPage> with RegionBasedState<Nic
                 TableCellData(isHeader: true, text: 'flags'),
                 TableCellData(
                   flex: 3,
-                  child: Text(war.flags.map((e) => e.name).join(' / '), textAlign: TextAlign.center),
+                  child: Text(
+                    war.flags.map((e) => e.name).join(' / '),
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 12),
+                  ),
                 ),
               ],
             ),
-          if (kDebugMode) CustomTableRow.fromTextsWithHeader(texts: ['priority', war.priority.toString()]),
         ],
       ),
     );
