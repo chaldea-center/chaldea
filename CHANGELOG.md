@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.5.20
+
+- Support Grand Graph system
+- Add team bond calculation
+
 ## 2.5.19
 
 - Support new skill effects
