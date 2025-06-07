@@ -1,7 +1,11 @@
+import 'package:auto_size_text/auto_size_text.dart';
+
+import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/battle/utils/battle_utils.dart' show BattleUtils;
 import 'package:chaldea/app/modules/common/filter_group.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
+import 'package:chaldea/packages/language.dart';
 import 'package:chaldea/utils/basic.dart';
 import 'package:chaldea/utils/constants.dart';
 import 'package:chaldea/utils/extension.dart';
@@ -11,16 +15,66 @@ import '../servant/filter.dart';
 
 typedef _GroupItem = ({int rateCount, List<int> ceIds, List<({Servant svt, List<int> limitCounts})> svts});
 
-class BondBonusPage extends StatefulWidget {
-  const BondBonusPage({super.key});
+class EquipBondBonusPage extends StatefulWidget {
+  const EquipBondBonusPage({super.key});
 
   @override
-  State<BondBonusPage> createState() => _BondBonusPageState();
+  State<EquipBondBonusPage> createState() => _EquipBondBonusPageState();
+}
+
+enum _FilterType {
+  none,
+  include,
+  exclude,
+  hide;
+
+  Color? get color {
+    return switch (this) {
+      none => null,
+      include => Colors.blue,
+      exclude => Colors.red,
+      hide => Colors.grey,
+    };
+  }
+
+  String get shownName {
+    if (Language.isZH) {
+      return switch (this) {
+        none => '默认',
+        include => '包含',
+        exclude => '排除',
+        hide => '隐藏',
+      };
+    } else {
+      return switch (this) {
+        none => 'default',
+        _ => name,
+      };
+    }
+  }
+
+  String get hint {
+    if (Language.isZH) {
+      return switch (this) {
+        none => '默认',
+        include => '必须享受到该礼装加成',
+        exclude => '必须不能被该礼装的加成',
+        hide => '不显示该礼装',
+      };
+    } else {
+      return switch (this) {
+        none => 'default',
+        include => 'MUST have bonus from this CE',
+        exclude => 'MUST NOT have bonus from this CE',
+        hide => 'Hide the CE',
+      };
+    }
+  }
 }
 
 /// functvals: traits
 /// DataVals: [RateCount], [AddCount] (ignore)
-class _BondBonusPageState extends State<BondBonusPage> {
+class _EquipBondBonusPageState extends State<EquipBondBonusPage> {
   Map<int, ({CraftEssence ce, List<List<NiceTrait>> traits, int rateCount})> allCeData = {};
   Map<int, Map<int, List<int>>> allCeMatchSvtData = {}; //<ceId, <svtId, [limitCount]>>
 
@@ -28,7 +82,9 @@ class _BondBonusPageState extends State<BondBonusPage> {
     sortKeys: [SvtCompare.rarity, SvtCompare.className, SvtCompare.no],
     sortReversed: [true, false, true],
   );
-  final mustHaveCeFilter = FilterGroupData<int>();
+  final ceFilterStates = <int, _FilterType>{};
+
+  _FilterType getCeState(int ceId) => ceFilterStates[ceId] ??= _FilterType.none;
 
   @override
   void initState() {
@@ -127,11 +183,12 @@ class _BondBonusPageState extends State<BondBonusPage> {
   }
 
   List<_GroupItem> getGroupData() {
-    final List<int> mustHaveCeIds = mustHaveCeFilter.options.toList();
-    final List<int> freeCeIds = [
-      for (final ceId in allCeData.keys)
-        if (!mustHaveCeIds.contains(ceId) && isCeReleased(ceId)) ceId,
-    ];
+    final List<int> allCeIds = allCeData.keys
+        .where((e) => ![_FilterType.exclude, _FilterType.hide].contains(ceFilterStates[e]))
+        .toList();
+    final List<int> excludeCeIds = ceFilterStates.keys.where((e) => ceFilterStates[e] == _FilterType.exclude).toList();
+    final List<int> mustHaveCeIds = ceFilterStates.keys.where((e) => ceFilterStates[e] == _FilterType.include).toList();
+    final List<int> freeCeIds = allCeIds.where((e) => !mustHaveCeIds.contains(e)).toList();
     final int n = freeCeIds.length;
     List<_GroupItem> resultData = [];
     for (int mask = 0; mask < (1 << n); mask++) {
@@ -155,17 +212,36 @@ class _BondBonusPageState extends State<BondBonusPage> {
         final sameLimitCounts = _intersectionSetList(
           usedCeIds.map((ceId) => allCeMatchSvtData[ceId]![svtId]?.toSet() ?? <int>{}).toList(),
         );
+        for (final ceId in excludeCeIds) {
+          final excludeLimitCounts = allCeMatchSvtData[ceId]![svt.id] ?? [];
+          sameLimitCounts.removeAll(excludeLimitCounts);
+        }
+
         if (sameLimitCounts.isNotEmpty) {
           svts.add((svt: svt, limitCounts: sameLimitCounts.toList()));
         }
       }
       if (svts.isEmpty) continue;
-      svts.sort(
+      final rateCount = Maths.sum(usedCeIds.map((e) => allCeData[e]!.rateCount));
+      resultData.add((ceIds: usedCeIds, rateCount: rateCount, svts: svts));
+    }
+
+    // show svts with no bonus for all ces
+    if (ceFilterStates.values.every((e) => e == _FilterType.none)) {
+      final bonusSvtIds = <int>{for (final v in allCeMatchSvtData.values) ...v.keys};
+      List<({Servant svt, List<int> limitCounts})> svts = [];
+      for (final svt in db.gameData.servantsById.values) {
+        if (svt.collectionNo > 0 && !bonusSvtIds.contains(svt.id)) {
+          svts.add((svt: svt, limitCounts: []));
+        }
+      }
+      resultData.add((ceIds: [], rateCount: 0, svts: svts));
+    }
+    for (final record in resultData) {
+      record.svts.sort(
         (a, b) =>
             SvtFilterData.compare(a.svt, b.svt, keys: svtFilterData.sortKeys, reversed: svtFilterData.sortReversed),
       );
-      final rateCount = Maths.sum(usedCeIds.map((e) => allCeData[e]!.rateCount));
-      resultData.add((ceIds: usedCeIds, rateCount: rateCount, svts: svts));
     }
     resultData.sortByList((e) => [-e.rateCount, e.ceIds.length, ...e.ceIds]);
 
@@ -174,7 +250,6 @@ class _BondBonusPageState extends State<BondBonusPage> {
 
   @override
   Widget build(BuildContext context) {
-    mustHaveCeFilter.options = mustHaveCeFilter.options.where(isCeReleased).toSet();
     return Scaffold(
       appBar: AppBar(
         title: Text('${S.current.craft_essence} - ${S.current.bond_bonus}'),
@@ -250,7 +325,7 @@ class _BondBonusPageState extends State<BondBonusPage> {
             children: svts.map((x) {
               final (:svt, :limitCounts) = x;
               final allLimitCounts = _getSvtAllLimits(svt);
-              final conditional = limitCounts.length != allLimitCounts.length;
+              final conditional = limitCounts.length != allLimitCounts.length && limitCounts.isNotEmpty;
               Widget child = Container(
                 decoration: BoxDecoration(
                   color: conditional ? Theme.of(context).colorScheme.errorContainer.withAlpha(191) : null,
@@ -296,23 +371,86 @@ class _BondBonusPageState extends State<BondBonusPage> {
   }
 
   Widget get buttonBar {
-    final ces = allCeData.values.where((e) => isCeReleased(e.ce.id)).toList();
+    final ces = allCeData.values.toList();
     ces.sortByList((e) => [-e.rateCount, -e.ce.collectionNo]);
     return SafeArea(
       child: Padding(
         padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        child: FilterGroup<int>(
-          options: ces.map((e) => e.ce.id).toList(),
-          values: mustHaveCeFilter,
-          shrinkWrap: true,
-          constraints: BoxConstraints(maxHeight: 40),
-          optionBuilder: (ceId) => Padding(
-            padding: EdgeInsets.all(2),
-            child: allCeData[ceId]!.ce.iconBuilder(context: context, jumpToDetail: false),
-          ),
-          onFilterChanged: (v, _) {
-            if (mounted) setState(() {});
-          },
+        child: Wrap(
+          spacing: 2,
+          runSpacing: 2,
+          crossAxisAlignment: WrapCrossAlignment.start,
+          children: ces.map((ce) {
+            final curStatus = getCeState(ce.ce.id);
+            return InkWell(
+              onTap: () {
+                router.showDialog(
+                  builder: (context) => SimpleDialog(
+                    title: Text.rich(
+                      TextSpan(
+                        children: [
+                          CenterWidgetSpan(
+                            child: ce.ce.iconBuilder(context: context, width: 32, padding: EdgeInsets.all(2)),
+                          ),
+                          TextSpan(text: ce.ce.lName.l),
+                        ],
+                      ),
+                    ),
+                    children: [
+                      for (final type in _FilterType.values)
+                        ListTile(
+                          dense: true,
+                          contentPadding: EdgeInsets.symmetric(horizontal: 24.0),
+                          title: Text(
+                            curStatus == type ? '${type.shownName} (${S.current.current_})' : type.shownName,
+                            style: TextStyle(color: type.color),
+                          ),
+                          subtitle: Text(type.hint),
+                          onTap: () {
+                            ceFilterStates[ce.ce.id] = type;
+                            Navigator.pop(context);
+                            if (mounted) setState(() {});
+                          },
+                        ),
+                    ],
+                  ),
+                );
+              },
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  IgnorePointer(
+                    child: FilterOption(
+                      selected: curStatus != _FilterType.none,
+                      value: ce.ce.id,
+                      shrinkWrap: true,
+                      constraints: BoxConstraints(),
+                      selectedColor: curStatus.color,
+                      child: ce.ce.iconBuilder(
+                        context: context,
+                        jumpToDetail: false,
+                        width: 36,
+                        padding: EdgeInsets.all(3),
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    width: 36,
+                    height: 20,
+                    child: AutoSizeText(
+                      curStatus == _FilterType.none ? '-' : curStatus.shownName,
+                      maxLines: 1,
+                      minFontSize: 2,
+                      maxFontSize: 12,
+                      style: TextStyle(color: curStatus.color),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }).toList(),
         ),
       ),
     );

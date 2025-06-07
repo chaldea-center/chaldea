@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import 'package:chaldea/app/modules/bond/equip_bond_bonus.dart';
 import 'package:chaldea/app/modules/creator/chara_list.dart';
 import 'package:chaldea/app/modules/creator/cv_list.dart';
 import 'package:chaldea/app/modules/creator/illustrator_list.dart';
@@ -10,7 +11,6 @@ import 'package:chaldea/app/modules/enemy_master/enemy_master_list.dart';
 import 'package:chaldea/app/modules/quest/svt_quest_timeline.dart';
 import 'package:chaldea/app/modules/script/reader_entry.dart';
 import 'package:chaldea/app/modules/svt_class/svt_class_list.dart';
-import 'package:chaldea/app/modules/tools/bond_bonus.dart';
 import 'package:chaldea/app/modules/tools/myroom_assets_page.dart';
 import 'package:chaldea/app/modules/tools/tool_list_page.dart';
 import 'package:chaldea/app/modules/trait/trait_list.dart';
@@ -310,7 +310,7 @@ class GalleryItem {
     name: 'bond_bonus',
     titleBuilder: () => S.current.bond_bonus,
     icon: FontAwesomeIcons.diamond,
-    page: const BondBonusPage(),
+    page: const EquipBondBonusPage(),
     isDetail: false,
   );
   static GalleryItem statistics = GalleryItem(
