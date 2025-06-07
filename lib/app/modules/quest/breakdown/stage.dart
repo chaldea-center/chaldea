@@ -243,8 +243,8 @@ class WaveInfoPage extends StatelessWidget {
           if (questPhase.extraDetail?.turn != null)
             ListTile(
               title: Text('[${S.current.quest}] ${S.current.turn_remain_limit}'),
-              subtitle: Text(stage.limitAct?.shownName ?? "?"),
-              trailing: Text(stage.turn.toString()),
+              subtitle: Text(questPhase.extraDetail?.LimitAct?.shownName ?? "?"),
+              trailing: Text((questPhase.extraDetail?.turn).toString()),
             ),
           if (stage.enemyFieldPosCount != null)
             ListTile(title: Text(S.current.max_enemy_on_stage), trailing: Text(stage.enemyFieldPosCount.toString())),

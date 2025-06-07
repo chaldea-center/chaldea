@@ -436,7 +436,11 @@ Map<String, dynamic> _$StageToJson(Stage instance) => <String, dynamic>{
   'enemies': instance.enemies.map((e) => e.toJson()).toList(),
 };
 
-const _$StageLimitActTypeEnumMap = {StageLimitActType.win: 'win', StageLimitActType.lose: 'lose'};
+const _$StageLimitActTypeEnumMap = {
+  StageLimitActType.none: 'none',
+  StageLimitActType.win: 'win',
+  StageLimitActType.lose: 'lose',
+};
 
 AiAllocationInfo _$AiAllocationInfoFromJson(Map json) => AiAllocationInfo(
   aiIds: (json['aiIds'] as List<dynamic>?)?.map((e) => (e as num).toInt()).toList() ?? const [],
@@ -1121,7 +1125,7 @@ QuestPhaseExtraDetail _$QuestPhaseExtraDetailFromJson(Map json) => QuestPhaseExt
   masterSkillDelayInfo: json['masterSkillDelayInfo'] as String?,
   isUseGrandBoard: (json['isUseGrandBoard'] as num?)?.toInt(),
   turn: (json['turn'] as num?)?.toInt(),
-  limitAct: $enumDecodeNullable(_$StageLimitActTypeEnumMap, json['limitAct']),
+  LimitAct: $enumDecodeNullable(_$StageLimitActTypeEnumMap, json['LimitAct']),
 );
 
 Map<String, dynamic> _$QuestPhaseExtraDetailToJson(QuestPhaseExtraDetail instance) => <String, dynamic>{
@@ -1142,7 +1146,7 @@ Map<String, dynamic> _$QuestPhaseExtraDetailToJson(QuestPhaseExtraDetail instanc
   'masterSkillDelayInfo': instance.masterSkillDelayInfo,
   'isUseGrandBoard': instance.isUseGrandBoard,
   'turn': instance.turn,
-  'limitAct': _$StageLimitActTypeEnumMap[instance.limitAct],
+  'LimitAct': _$StageLimitActTypeEnumMap[instance.LimitAct],
 };
 
 OverwriteEquipSkills _$OverwriteEquipSkillsFromJson(Map json) => OverwriteEquipSkills(

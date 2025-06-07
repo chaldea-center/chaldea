@@ -1787,7 +1787,7 @@ class QuestPhaseExtraDetail {
   String? masterSkillDelayInfo;
   int? isUseGrandBoard;
   int? turn;
-  StageLimitActType? limitAct;
+  StageLimitActType? LimitAct;
 
   QuestPhaseExtraDetail({
     this.questSelect,
@@ -1807,7 +1807,7 @@ class QuestPhaseExtraDetail {
     this.masterSkillDelayInfo,
     this.isUseGrandBoard,
     this.turn,
-    this.limitAct,
+    this.LimitAct,
   });
 
   factory QuestPhaseExtraDetail.fromJson(Map<String, dynamic> json) => _$QuestPhaseExtraDetailFromJson(json);
