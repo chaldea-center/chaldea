@@ -251,6 +251,24 @@ class BattleRecordManager {
         svtCounts.entries.map((e) => '${e.value} ${db.gameData.servantsById[e.key]?.lName.l ?? e.key}').join(', '),
       );
     }
+
+    if (questPhase.extraDetail?.isUseGrandBoard == 1) {
+      for (final restriction in questPhase.restrictions) {
+        // myGrandSvt, fixedMyGrandSvt, myGrandSvtPositionMain
+        if (restriction.restriction.type == RestrictionType.myGrandSvt) {
+          if (!options.formation.allSvts.any((svtData) {
+            final svtIndivs = svtData.svt?.getIndividuality(questPhase.logicEvent?.id, svtData.limitCount);
+            if (svtIndivs == null) return false;
+            return _checkGrandSvtIndiv(restriction.restriction, svtIndivs);
+          })) {
+            reasons.setUpload(
+              '${S.current.quest_restriction}(My ${S.current.grand_servant} ${restriction.restriction.targetVals.map((e) => Transl.trait(e).l).join("/")}):'
+              ' ${restriction.dialogMessage}',
+            );
+          }
+        }
+      }
+    }
   }
 
   void _checkSvtEligible(PlayerSvtData svtData, QuestPhase questPhase) {
@@ -294,8 +312,24 @@ class BattleRecordManager {
     if (svtData.equip1.ce != null && svtData.equip1.ce!.collectionNo <= 0) {
       reasons.setUpload('${S.current.craft_essence}: ID ${svtData.equip1.ce!.id}, not player CE');
     }
-    if (svtData.grandSvt || svtData.equip2.ce != null || svtData.equip3.ce != null) {
-      reasons.setUpload('Grand Graph system not supported to upload yet');
+
+    if (questPhase.extraDetail?.isUseGrandBoard == 1) {
+      final svtIndivs = svt.getIndividuality(questPhase.logicEvent?.id, svtData.limitCount);
+      for (final restriction in questPhase.restrictions) {
+        if (restriction.restriction.type == RestrictionType.individuality) {
+          if (!_checkGrandSvtIndiv(restriction.restriction, svtIndivs)) {
+            reasons.setUpload(
+              '${S.current.quest_restriction}(${restriction.restriction.targetVals.map((e) => Transl.trait(e).l).join("/")}): ${restriction.dialogMessage}',
+            );
+          }
+        }
+      }
+    } else {
+      if (svtData.grandSvt || svtData.equip2.ce != null || svtData.equip3.ce != null) {
+        reasons.setUpload('Only Grand battle supports Grand Servant or 3 CEs');
+      } else if (svtData.classBoardData.isNotEmpty) {
+        reasons.setUpload('${S.current.class_board}: Only Grand battle allowed');
+      }
     }
 
     // coin
@@ -313,6 +347,15 @@ class BattleRecordManager {
         );
       }
     }
+  }
+
+  static bool _checkGrandSvtIndiv(Restriction restriction, List<NiceTrait> svtIndivs) {
+    bool hasTrait = restriction.targetVals.toSet().intersection(svtIndivs.map((e) => e.id).toSet()).isNotEmpty;
+    return switch (restriction.rangeType) {
+      RestrictionRangeType.equal => hasTrait,
+      RestrictionRangeType.notEqual => !hasTrait,
+      _ => true,
+    };
   }
 
   void checkExtraIllegalReason(BattleIllegalReasons reasons2, BattleRuntime runtime) {

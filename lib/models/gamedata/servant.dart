@@ -674,7 +674,8 @@ class Servant extends BasicServant {
 
   Set<int>? _traitsAll;
 
-  List<NiceTrait> getIndividuality(int eventId, int limitCount) {
+  List<NiceTrait> getIndividuality(int? eventId, int limitCount) {
+    eventId ??= 0;
     List<NiceTrait> indivs = getAscended(limitCount, (v) => v.individuality) ?? traits;
     for (final add in traitAdd) {
       if (add.eventId != 0 && eventId != add.eventId) continue;

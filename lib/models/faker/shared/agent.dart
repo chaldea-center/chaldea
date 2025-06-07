@@ -417,22 +417,19 @@ abstract class FakerAgent<
           }
           // grand duel
           final dbSvt = db.gameData.servantsById[svt.svtId];
-          final traits = dbSvt?.getAscended(svt.limitCount, (v) => v.individuality) ?? dbSvt?.traits;
-          final traitIds = traits?.map((e) => e.id).toList() ?? [];
+          if (dbSvt == null) continue;
+          final traits = dbSvt
+              .getIndividuality(questPhaseEntity.logicEvent?.id, svt.dispLimitCount)
+              .map((e) => e.id)
+              .toSet();
           if (!questPhaseEntity.restrictions.every((restriction) {
             if (restriction.restriction.type == RestrictionType.individuality) {
-              final hasTrait = restriction.restriction.targetVals.any((e) => traitIds.contains(e));
-              switch (restriction.restriction.rangeType) {
-                case RestrictionRangeType.equal:
-                  return hasTrait;
-                case RestrictionRangeType.notEqual:
-                  return !hasTrait;
-                case RestrictionRangeType.none:
-                case RestrictionRangeType.above:
-                case RestrictionRangeType.below:
-                case RestrictionRangeType.between:
-                  break;
-              }
+              final hasTrait = restriction.restriction.targetVals.toSet().intersection(traits).isNotEmpty;
+              return switch (restriction.restriction.rangeType) {
+                RestrictionRangeType.equal => hasTrait,
+                RestrictionRangeType.notEqual => !hasTrait,
+                _ => true,
+              };
             }
             return true;
           })) {
