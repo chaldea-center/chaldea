@@ -3886,6 +3886,17 @@ class S {
     return Intl.message('Ongoing', name: 'ongoing', desc: '', locale: localeName, args: []);
   }
 
+  /// `Only for Grand Battle`
+  String get only_grand_battle_hint {
+    return Intl.message(
+      'Only for Grand Battle',
+      name: 'only_grand_battle_hint',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Only show enemies from main story's free quest`
   String get only_show_main_story_enemy {
     return Intl.message(

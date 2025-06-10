@@ -325,10 +325,10 @@ class BattleRecordManager {
         }
       }
     } else {
-      if (svtData.grandSvt || svtData.equip2.ce != null || svtData.equip3.ce != null) {
-        reasons.setUpload('Only Grand battle supports Grand Servant or 3 CEs');
+      if (svtData.grandSvt) {
+        reasons.setUpload('${S.current.grand_servant}: ${S.current.only_grand_battle_hint}');
       } else if (svtData.classBoardData.isNotEmpty) {
-        reasons.setUpload('${S.current.class_board}: Only Grand battle allowed');
+        reasons.setUpload('${S.current.class_board}: ${S.current.only_grand_battle_hint}');
       }
     }
 

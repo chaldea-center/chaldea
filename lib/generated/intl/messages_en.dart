@@ -801,6 +801,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "ok": MessageLookupByLibrary.simpleMessage("OK"),
     "one_off_quest": MessageLookupByLibrary.simpleMessage("One-off Quest"),
     "ongoing": MessageLookupByLibrary.simpleMessage("Ongoing"),
+    "only_grand_battle_hint": MessageLookupByLibrary.simpleMessage("Only for Grand Battle"),
     "only_show_main_story_enemy": MessageLookupByLibrary.simpleMessage(
       "Only show enemies from main story\'s free quest",
     ),

@@ -546,7 +546,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
   Widget _buildEquips() {
     List<Widget> children = [];
     for (final equipTarget in SvtEquipTarget.values) {
-      if (equipTarget.value > 0 && !playerSvtData.grandSvt) continue;
+      if (equipTarget.value > 0 && (!playerSvtData.grandSvt || questPhase?.isUseGrandBoard != true)) continue;
       if (equipTarget.value > 0) children.add(Divider());
       final equip = playerSvtData.getEquip(equipTarget);
       children.add(
