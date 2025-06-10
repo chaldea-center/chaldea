@@ -76,6 +76,7 @@ class Quest with RouteInfo {
   List<ItemAmount> consumeItem;
   QuestAfterClearType afterClear;
   String recommendLv;
+  late final recommendLevel = QuestLevel.fromString(recommendLv);
   int spotId;
   String? _spotName;
   int warId;
@@ -133,8 +134,6 @@ class Quest with RouteInfo {
        _warLongName = warLongName,
        giftIcon = _isSQGiftIcon(giftIcon, gifts) ? null : giftIcon,
        consume = consumeType.useApOrBp ? consume : 0;
-
-  int? get recommendLvInt => int.tryParse(recommendLv);
 
   List<Gift> get giftsWithPhasePresents => [...gifts, ...presents.expand((e) => e.gifts)];
 
@@ -2017,6 +2016,72 @@ class BasicQuestPhaseDetail {
 }
 
 ///
+
+class QuestLevel implements Comparable<QuestLevel> {
+  final int level;
+  final String suffix;
+  final int suffixCount;
+  const QuestLevel(this.level, [this.suffix = "", this.suffixCount = 0]);
+
+  static QuestLevel fromString(String s) {
+    int? v = int.tryParse(s);
+    if (v != null) return QuestLevel(v);
+    // ^\d+([^\d])\1*$
+    final m = RegExp(r"^(\d+)(([\D])\3*)$").firstMatch(s);
+    if (m != null) return QuestLevel(int.parse(m.group(1)!), m.group(3)!, m.group(2)!.length);
+    return QuestLevel.unknown;
+  }
+
+  static const k90 = QuestLevel(90);
+  static const k90p = QuestLevel(90, '+', 1);
+  static const k90pp = QuestLevel(90, '+', 2);
+  static const unknown = QuestLevel(9999, '', 0);
+
+  static const kSuffixValues = <String, int>{'': -3, '+': -2, '★': -1};
+
+  static int compareSuffix(String a, String b) {
+    int? aa = kSuffixValues[a], bb = kSuffixValues[b];
+    if (aa != null) {
+      if (bb != null) {
+        return aa.compareTo(bb);
+      } else {
+        return -1;
+      }
+    } else {
+      if (bb != null) {
+        return 1;
+      } else {
+        return a.compareTo(b);
+      }
+    }
+  }
+
+  @override
+  int compareTo(QuestLevel other) {
+    if (level != other.level) return level.compareTo(other.level);
+    if (suffix != other.suffix) return compareSuffix(suffix, other.suffix);
+    return suffixCount.compareTo(other.suffixCount);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is QuestLevel && compareTo(other) == 0;
+  }
+
+  bool operator <(QuestLevel other) => compareTo(other) < 0;
+
+  bool operator <=(QuestLevel other) => compareTo(other) <= 0;
+
+  bool operator >(QuestLevel other) => compareTo(other) > 0;
+
+  bool operator >=(QuestLevel other) => compareTo(other) >= 0;
+
+  @override
+  int get hashCode => Object.hashAll(['QuestLevel', level, suffix, suffixCount]);
+
+  @override
+  String toString() => '$level${suffix * suffixCount}';
+}
 
 class GiftsConverter extends JsonConverter<List<Gift>, List<dynamic>> {
   const GiftsConverter();

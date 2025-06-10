@@ -140,7 +140,7 @@ extension FakerRandomMission on FakerRuntime {
 
   QuestPhase _findNextFreeQuest(List<QuestPhase> quests) {
     final missionProgresses = mstData.randomMissionProgress;
-    final stats = quests.where((e) => (e.recommendLv) == '90++').map((quest) {
+    final stats = quests.where((e) => e.recommendLevel >= QuestLevel.k90pp).map((quest) {
       int completeNum = 0;
       double score = 0.0, score2 = 0.0;
       for (final (missionId, progress) in missionProgresses.items) {

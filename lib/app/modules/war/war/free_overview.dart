@@ -12,20 +12,6 @@ import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../../common/builders.dart';
 
-enum _QuestLv {
-  all,
-  lv90,
-  lv90p,
-  lv90pp;
-
-  String get shownName => switch (this) {
-    all => S.current.general_all,
-    lv90 => "Lv.90",
-    lv90p => "Lv.90+",
-    lv90pp => "Lv.90++",
-  };
-}
-
 class FreeQuestOverview extends StatefulWidget {
   final List<Quest> quests;
   final bool isMainStory;
@@ -43,8 +29,8 @@ class _FreeQuestOverviewState extends State<FreeQuestOverview> {
   Map<int, List<Quest>> spots = {};
   bool _loading = false;
   bool _fixFirstCol = true;
-  _QuestLv minLv = _QuestLv.all;
-  List<_QuestLv> validLvs = [_QuestLv.all];
+  QuestLevel? minLv;
+  List<QuestLevel> shownFilterLvs = [];
   bool hasDifferentEnemyCount = false;
   bool useMaxEnemyCountHash = false;
   bool showOwnCount = false;
@@ -52,13 +38,17 @@ class _FreeQuestOverviewState extends State<FreeQuestOverview> {
   @override
   void initState() {
     super.initState();
-    if (widget.quests.where((q) => q.recommendLv != '90+' && (q.recommendLvInt ?? 999) > 90).length > 3) {
-      minLv = _QuestLv.lv90pp;
-    } else if (widget.quests.where((q) => (q.recommendLvInt ?? 999) > 90).length > 3) {
-      minLv = _QuestLv.lv90p;
-    } else if (widget.quests.where((q) => (q.recommendLvInt ?? 999) >= 90).length > 5) {
-      minLv = _QuestLv.lv90;
+    Map<QuestLevel, int> levelCounts = {};
+    for (final quest in widget.quests) {
+      if (quest.recommendLevel > QuestLevel.k90) {
+        levelCounts[quest.recommendLevel] = (levelCounts[quest.recommendLevel] ?? 0) + 1;
+      }
     }
+    shownFilterLvs = levelCounts.keys.toList()..sort();
+    minLv = shownFilterLvs.lastWhereOrNull(
+      (e) => Maths.sum(shownFilterLvs.where((lv) => lv >= e).map((lv) => levelCounts[lv] ?? 0)) >= 3,
+    );
+
     loadData();
   }
 
@@ -73,19 +63,7 @@ class _FreeQuestOverviewState extends State<FreeQuestOverview> {
       spots.putIfAbsent(quest.spotId, () => []).add(quest);
     }
 
-    bool has90 = quests.any((q) => q.recommendLv == '90');
-    bool has90p = quests.any((q) => q.is90PlusFree);
-    bool has90pp = quests.any((q) => q.is90PlusFree && q.recommendLv != '90+');
-    validLvs = [_QuestLv.all, if (has90) _QuestLv.lv90, if (has90p) _QuestLv.lv90p, if (has90pp) _QuestLv.lv90pp];
-    if (!validLvs.contains(minLv)) minLv = validLvs.first;
-
-    if (minLv == _QuestLv.lv90) {
-      quests.removeWhere((quest) => (quest.recommendLvInt ?? 999) < 90);
-    } else if (minLv == _QuestLv.lv90p) {
-      quests.removeWhere((quest) => (quest.recommendLvInt ?? 999) <= 90);
-    } else if (minLv == _QuestLv.lv90pp) {
-      quests.removeWhere((quest) => (quest.recommendLvInt ?? 999) <= 90 || quest.recommendLv == '90+');
-    }
+    if (minLv != null) quests.retainWhere((quest) => quest.recommendLevel >= minLv!);
 
     if (mounted) setState(() {});
     await Future.wait(
@@ -143,14 +121,21 @@ class _FreeQuestOverviewState extends State<FreeQuestOverview> {
                 ],
               ),
             ),
-          if (validLvs.length > 1)
-            SharedBuilder.appBarDropdown<_QuestLv>(
+          if (shownFilterLvs.length > 1)
+            SharedBuilder.appBarDropdown<QuestLevel?>(
               context: context,
-              items: [for (final lv in validLvs) DropdownMenuItem(value: lv, child: Text(lv.shownName))],
+              items: [
+                DropdownMenuItem(child: Text(S.current.general_all, style: TextStyle(fontSize: 12))),
+                for (final lv in shownFilterLvs)
+                  DropdownMenuItem(
+                    value: lv,
+                    child: Text('Lv.$lv', style: TextStyle(fontSize: 12)),
+                  ),
+              ],
               value: minLv,
               onChanged: (v) {
                 setState(() {
-                  minLv = v ?? minLv;
+                  minLv = v;
                 });
                 loadData();
               },
