@@ -709,7 +709,7 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: "3074b198fdf167f82686b9e9192e737a1531bffa"
+      resolved-ref: dc372d79c162046017d765d7519660a87aac72b4
       url: "https://github.com/chaldea-center/intl_utils.git"
     source: git
     version: "2.8.10"
