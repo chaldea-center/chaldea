@@ -5378,9 +5378,15 @@ class S {
     return Intl.message('Second Archive', name: 'svt_second_archive', desc: '', locale: localeName, args: []);
   }
 
-  /// `(SkillMax) Owned/Total`
+  /// `(SkillMax) NPs/Owned/Total`
   String get svt_stat_own_total {
-    return Intl.message('(SkillMax) Owned/Total', name: 'svt_stat_own_total', desc: '', locale: localeName, args: []);
+    return Intl.message(
+      '(SkillMax) NPs/Owned/Total',
+      name: 'svt_stat_own_total',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
   }
 
   /// `Sub Attribute`

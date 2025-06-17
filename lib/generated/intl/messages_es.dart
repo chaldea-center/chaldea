@@ -582,7 +582,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "svt_related_ce": MessageLookupByLibrary.simpleMessage("CE Relacionadas"),
     "svt_reset_plan": MessageLookupByLibrary.simpleMessage("Restablecer plan"),
     "svt_second_archive": MessageLookupByLibrary.simpleMessage("Second Archive"),
-    "svt_stat_own_total": MessageLookupByLibrary.simpleMessage("(SkillMax) Poseídas/Total"),
     "svt_switch_slider_dropdown": MessageLookupByLibrary.simpleMessage("Cambiar control deslizante/desplegable"),
     "switch_region": MessageLookupByLibrary.simpleMessage("Cambiar Región"),
     "test": MessageLookupByLibrary.simpleMessage("Probar"),

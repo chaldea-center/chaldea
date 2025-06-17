@@ -78,6 +78,13 @@ class ClassBoard with RouteInfo {
     return name;
   }
 
+  List<ClassBoardSquare> getSkillSquares() {
+    return [
+      for (final square in squares)
+        if (square.skillType != ClassBoardSkillType.none) square,
+    ];
+  }
+
   int getSkillLv(int id, ClassBoardSkillType type) {
     int lv = 0;
     for (final square in squares) {
@@ -168,10 +175,14 @@ class ClassBoard with RouteInfo {
       );
     }
     if (functions.isEmpty) return null;
+
+    final allSquareIds = getSkillSquares().map((e) => e.id).toSet();
+
     return NiceSkill(
       id: -(1000000 + DateTime.now().timestamp % 1000000),
       type: SkillType.passive,
       name: "${S.current.class_board} $dispName",
+      unmodifiedDetail: "${enhancedSquares.toSet().intersection(allSquareIds).length}/${allSquareIds.length}",
       icon: btnIcon,
       num: 0,
       coolDown: [0],

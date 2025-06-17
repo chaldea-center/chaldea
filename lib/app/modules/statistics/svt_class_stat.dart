@@ -6,6 +6,7 @@ import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
+import '../common/builders.dart';
 
 class StatisticServantTab extends StatefulWidget {
   StatisticServantTab({super.key});
@@ -19,6 +20,7 @@ class _StatisticServantTabState extends State<StatisticServantTab> {
 
   List<int> rarityTotal = List.filled(6, 0);
   List<int> rarityOwn = List.filled(6, 0);
+  List<int> rarityOwnTdTotal = List.filled(6, 0);
   List<int> rarity999 = List.filled(6, 0);
   List<bool> raritySelected = List.filled(6, true);
 
@@ -29,6 +31,7 @@ class _StatisticServantTabState extends State<StatisticServantTab> {
   void _calcRarityCounts() {
     rarityTotal = List.filled(6, 0);
     rarityOwn = List.filled(6, 0);
+    rarityOwnTdTotal = List.filled(6, 0);
     rarity999 = List.filled(6, 0);
 
     for (final svt in db.gameData.servantsNoDup.values) {
@@ -40,6 +43,7 @@ class _StatisticServantTabState extends State<StatisticServantTab> {
       final stat = svt.status;
       if (stat.favorite) {
         rarityOwn[svt.rarity] += 1;
+        rarityOwnTdTotal[svt.rarity] += stat.cur.npLv;
       }
       if (stat.cur.skills.every((e) => e >= 9)) {
         rarity999[svt.rarity] += 1;
@@ -58,10 +62,12 @@ class _StatisticServantTabState extends State<StatisticServantTab> {
       if (!priorityFilter.matchOne(status.priority)) continue;
       if (svtClassCount.containsKey(svt.className)) {
         svtClassCount[svt.className] = (svtClassCount[svt.className] ?? 0) + 1;
-      } else if (SvtClassX.extraI.contains(svt.className)) {
-        svtClassCount.addNum(SvtClass.EXTRA1, 1);
-      } else if (SvtClassX.extraII.contains(svt.className)) {
-        svtClassCount.addNum(SvtClass.EXTRA2, 1);
+      } else {
+        for (final option in kAllClasses) {
+          if (SvtClassX.match(svt.className, option)) {
+            svtClassCount.addNum(option, 1);
+          }
+        }
       }
     }
     svtClassCount.removeWhere((key, value) => value <= 0);
@@ -89,8 +95,11 @@ class _StatisticServantTabState extends State<StatisticServantTab> {
     List<Widget> children = [
       ListTile(
         title: Text(S.current.priority, style: Theme.of(context).textTheme.bodySmall),
-        trailing: Text(
-          priority.options.isEmpty ? S.current.general_all : (priority.options.toList()..sort()).join(', '),
+        trailing: Wrap(
+          children: [
+            Text(priority.options.isEmpty ? S.current.general_all : (priority.options.toList()..sort()).join(', ')),
+            SharedBuilder.priorityIcon(context: context),
+          ],
         ),
       ),
     ];
@@ -98,7 +107,7 @@ class _StatisticServantTabState extends State<StatisticServantTab> {
     children.add(
       ListTile(
         title: Text(S.current.rarity),
-        trailing: Text(S.current.svt_stat_own_total),
+        trailing: Text(S.current.svt_stat_own_total, style: const TextStyle(fontSize: 14)),
         // dense: true,
       ),
     );
@@ -108,6 +117,7 @@ class _StatisticServantTabState extends State<StatisticServantTab> {
         title: 'ALL',
         skillMax: Maths.sum(rarity999),
         own: Maths.sum(rarityOwn),
+        ownTd: Maths.sum(rarityOwnTdTotal),
         total: Maths.sum(rarityTotal),
         onChanged: (v) {
           setState(() {
@@ -123,6 +133,7 @@ class _StatisticServantTabState extends State<StatisticServantTab> {
           title: '$kStarChar$i ${S.current.servant}',
           skillMax: rarity999[i],
           own: rarityOwn[i],
+          ownTd: rarityOwnTdTotal[i],
           total: rarityTotal[i],
           onChanged: (v) {
             setState(() {
@@ -152,6 +163,7 @@ class _StatisticServantTabState extends State<StatisticServantTab> {
     required String title,
     required int skillMax,
     required int own,
+    required int ownTd,
     required int total,
     required ValueChanged<bool> onChanged,
   }) {
@@ -165,7 +177,10 @@ class _StatisticServantTabState extends State<StatisticServantTab> {
         title: Row(
           children: [
             Expanded(child: Text(title)),
-            Text('($skillMax) ${'$own/$total'.padLeft(7)}', style: kMonoStyle),
+            Text(
+              '($skillMax)$ownTd/${'$own/$total'.padLeft(7)}',
+              style: TextStyle(fontFamily: kMonoFont, fontSize: 12),
+            ),
           ],
         ),
       ),

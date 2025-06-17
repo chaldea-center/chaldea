@@ -56,8 +56,8 @@ class _GalleryPageState extends State<GalleryPage> {
               icon: const Icon(Icons.refresh),
               tooltip: S.current.tooltip_refresh_sliders,
               onPressed: () async {
-                EasyLoading.showToast('${S.current.tooltip_refresh_sliders} ...');
-                await AppNewsCarousel.resolveSliderImageUrls(true);
+                EasyLoading.showToast('${S.current.update_dataset} ...');
+                await GameDataLoader.instance.reload();
                 if (mounted) setState(() {});
               },
             ),

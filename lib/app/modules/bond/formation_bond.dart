@@ -87,7 +87,7 @@ class FormationBondTab extends StatefulWidget {
 }
 
 class _FormationBondTabState extends State<FormationBondTab> {
-  late final option = widget.option ?? FormationBondOption();
+  late final option = widget.option ?? FormationBondOption(quest: db.gameData.getQuestPhase(94137202));
 
   void validate() {
     option.teapotTimes = option.teapotTimes.clamp(1, 3);
@@ -122,10 +122,12 @@ class _FormationBondTabState extends State<FormationBondTab> {
         }
 
         if (campaign.target == CombineAdjustTarget.questFriendship && event.isCampaignQuest(quest.id)) {
-          (option.campaigns[event] ??= {})[campaign] ??= prevData[event]?[campaign] ?? true;
+          (option.campaigns[event] ??= {})[campaign] ??=
+              prevData[event]?[campaign] ?? (quest.closedAt < kNeverClosedTimestamp);
         }
       }
     }
+    option.campaigns = sortDict(option.campaigns, compare: (a, b) => b.key.startedAt - a.key.startedAt);
   }
 
   ///  ======= svals =====
@@ -357,6 +359,7 @@ class _FormationBondTabState extends State<FormationBondTab> {
                   text: Maths.sum(results.map((e) => e.totalBond)).toString(),
                   style: TextStyle(color: Theme.of(context).colorScheme.secondary),
                 ),
+                TextSpan(text: '  COST ${option.formation.totalCost}'),
               ],
             ),
             textAlign: TextAlign.center,
@@ -443,31 +446,6 @@ class _FormationBondTabState extends State<FormationBondTab> {
               ],
             ),
           ),
-        if (option.campaigns.isNotEmpty) DividerWithTitle(title: S.current.event_campaign, indent: 16),
-        for (final (event, campaigns) in option.campaigns.items)
-          for (final campaign in campaigns.keys)
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Expanded(
-                  child: SwitchListTile.adaptive(
-                    dense: true,
-                    title: Text(event.lShortName.l),
-                    subtitle: Text(
-                      '${S.current.bond} ${campaign.calcType.operatorText}${campaign.value.format(percent: true, base: 10)}'
-                      '\n${strTime(event.startedAt)}~${strTime(event.endedAt)}',
-                    ),
-                    value: campaigns[campaign] ?? true,
-                    onChanged: (v) {
-                      setState(() {
-                        campaigns[campaign] = v;
-                      });
-                    },
-                  ),
-                ),
-                IconButton(onPressed: event.routeTo, icon: Icon(DirectionalIcons.keyboard_arrow_forward(context))),
-              ],
-            ),
         DividerWithTitle(title: 'misc', indent: 16),
         ListTile(
           dense: true,
@@ -498,6 +476,31 @@ class _FormationBondTabState extends State<FormationBondTab> {
             });
           },
         ),
+        if (option.campaigns.isNotEmpty) DividerWithTitle(title: S.current.event_campaign, indent: 16),
+        for (final (event, campaigns) in option.campaigns.items)
+          for (final campaign in campaigns.keys)
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Expanded(
+                  child: SwitchListTile.adaptive(
+                    dense: true,
+                    title: Text(event.lShortName.l),
+                    subtitle: Text(
+                      '${S.current.bond} ${campaign.calcType.operatorText}${campaign.value.format(percent: true, base: 10)}'
+                      '\n${strTime(event.startedAt)}~${strTime(event.endedAt)}',
+                    ),
+                    value: campaigns[campaign] ?? true,
+                    onChanged: (v) {
+                      setState(() {
+                        campaigns[campaign] = v;
+                      });
+                    },
+                  ),
+                ),
+                IconButton(onPressed: event.routeTo, icon: Icon(DirectionalIcons.keyboard_arrow_forward(context))),
+              ],
+            ),
       ],
     );
   }

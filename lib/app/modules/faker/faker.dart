@@ -1788,7 +1788,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
             if (agent.user.lastRequestOptions?.success == false) {
               final confirm = await SimpleConfirmDialog(
                 title: Text(S.current.warning),
-                content: Text("Last request not sent, still login?"),
+                content: Text("Last request not sent, still login?", style: TextStyle(color: Colors.red)),
               ).showDialog(context);
               if (confirm != true) return;
             }

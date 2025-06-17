@@ -350,7 +350,8 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
           ('Extra II', SvtClassX.extraII),
         ];
         for (final (title, svtClasses) in groups) {
-          final ids = svtIds.where((e) => svtClasses.contains(db.gameData.servantsNoDup[e]?.className)).toList();
+          final _svtClasses = {for (final x in svtClasses) ...SvtClassX.resolveClasses(x, expandBeast: true)};
+          final ids = svtIds.where((e) => _svtClasses.contains(db.gameData.servantsNoDup[e]?.className)).toList();
           final favoriteIds = ids.where((e) => db.curUser.svtStatusOf(e).favorite).toList();
           children.add(
             Padding(

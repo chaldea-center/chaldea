@@ -820,7 +820,7 @@
   "svt_related_ce": "بطاقات كرافت ذات صلة",
   "svt_reset_plan": "إعادة ضبط الخطة",
   "svt_second_archive": "الارشيف الثاني",
-  "svt_stat_own_total": "(999) مملوك / الكلي",
+  "svt_stat_own_total": null,
   "svt_sub_attribute": null,
   "svt_switch_slider_dropdown": "تبديل الشرائح /المهابط",
   "switch_region": "تغيير المنطقة",

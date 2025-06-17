@@ -2,6 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/battle/utils/battle_utils.dart' show BattleUtils;
+import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/app/modules/common/filter_group.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
@@ -92,6 +93,7 @@ class _EquipBondBonusTabState extends State<EquipBondBonusTab> {
     // ce data
     for (final ce in db.gameData.craftEssencesById.values) {
       if (ce.collectionNo <= 0 || ce.isRegionSpecific) continue;
+      if (ce.rarity == 5) continue;
       final skills = ce.getActivatedSkills(true)[1] ?? <NiceSkill>[];
       if (skills.isEmpty) continue;
       if (skills.length > 1) {
@@ -114,8 +116,8 @@ class _EquipBondBonusTabState extends State<EquipBondBonusTab> {
       final func = funcs.single;
       final rateCount = func.svals.firstOrNull?.RateCount ?? 0;
       if (rateCount <= 0) continue;
-      // 英霊逢魔: 1973-1979
-      if (ce.collectionNo >= 1974 && ce.collectionNo <= 1979) continue;
+      // 英霊逢魔: 1973-1979, FSN servant +10%
+      if (ce.collectionNo >= 1973 && ce.collectionNo <= 1979) continue;
       allCeData[ce.id] = (
         ce: ce,
         traits: func.overWriteTvalsList.isEmpty ? func.functvals.map((e) => [e]).toList() : func.overWriteTvalsList,
@@ -243,7 +245,7 @@ class _EquipBondBonusTabState extends State<EquipBondBonusTab> {
             SvtFilterData.compare(a.svt, b.svt, keys: svtFilterData.sortKeys, reversed: svtFilterData.sortReversed),
       );
     }
-    resultData.sortByList((e) => [-e.rateCount, e.ceIds.length, ...e.ceIds]);
+    resultData.sortByList((e) => [-e.rateCount, e.ceIds.length, -e.svts.length, ...e.ceIds]);
 
     return resultData;
   }
@@ -383,6 +385,16 @@ class _EquipBondBonusTabState extends State<EquipBondBonusTab> {
                 ),
               ),
               children: [
+                SimpleDialogOption(
+                  onPressed: ce.ce.routeTo,
+                  child: Text.rich(
+                    TextSpan(
+                      text: '[+${ce.rateCount.format(percent: true, base: 10)}] ',
+                      children: SharedBuilder.traitsListSpans(context: context, traitsList: ce.traits),
+                    ),
+                  ),
+                ),
+                kDefaultDivider,
                 for (final type in _FilterType.values)
                   ListTile(
                     dense: true,

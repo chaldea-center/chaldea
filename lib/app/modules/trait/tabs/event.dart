@@ -35,7 +35,7 @@ class TraitEventTab extends StatelessWidget {
       children: [
         const SizedBox(height: 8),
         Text('${S.current.trait} $id', textAlign: TextAlign.center),
-        Text(Transl.trait(id).l, textAlign: TextAlign.center),
+        Text(Transl.trait(id, field: true).l, textAlign: TextAlign.center),
         Card(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),

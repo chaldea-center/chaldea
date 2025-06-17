@@ -531,7 +531,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "svt_related_ce": MessageLookupByLibrary.simpleMessage("بطاقات كرافت ذات صلة"),
     "svt_reset_plan": MessageLookupByLibrary.simpleMessage("إعادة ضبط الخطة"),
     "svt_second_archive": MessageLookupByLibrary.simpleMessage("الارشيف الثاني"),
-    "svt_stat_own_total": MessageLookupByLibrary.simpleMessage("(999) مملوك / الكلي"),
     "svt_switch_slider_dropdown": MessageLookupByLibrary.simpleMessage("تبديل الشرائح /المهابط"),
     "switch_region": MessageLookupByLibrary.simpleMessage("تغيير المنطقة"),
     "test": MessageLookupByLibrary.simpleMessage("يختبر"),

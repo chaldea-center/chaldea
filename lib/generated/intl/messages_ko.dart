@@ -827,7 +827,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "svt_related_ce": MessageLookupByLibrary.simpleMessage("관련 예장"),
     "svt_reset_plan": MessageLookupByLibrary.simpleMessage("계획 초기화"),
     "svt_second_archive": MessageLookupByLibrary.simpleMessage("영기 보관실"),
-    "svt_stat_own_total": MessageLookupByLibrary.simpleMessage("(999)소유/합계"),
     "svt_switch_slider_dropdown": MessageLookupByLibrary.simpleMessage("Slider/Dropdown 전환"),
     "switch_region": MessageLookupByLibrary.simpleMessage("서버 전환"),
     "team_block_ce": MessageLookupByLibrary.simpleMessage("제외 예장"),

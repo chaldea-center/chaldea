@@ -89,7 +89,10 @@ class TdDmgSolver {
         final baseSvt = getSvtData(svt, 4);
         final variants = <PlayerSvtData?>[baseSvt];
 
-        if (svt.id == 304800) {
+        if (svt.id == 800100) {
+          // Mash
+          variants.add(getSvtData(svt, 17));
+        } else if (svt.id == 304800) {
           // Melusine
           variants.add(getSvtData(svt, 1));
           variants.add(getSvtData(svt, 1)?..skills[2] = null);

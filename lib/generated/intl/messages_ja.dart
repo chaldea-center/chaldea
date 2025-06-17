@@ -689,7 +689,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "svt_related_ce": MessageLookupByLibrary.simpleMessage("関連礼装"),
     "svt_reset_plan": MessageLookupByLibrary.simpleMessage("プランをリセット"),
     "svt_second_archive": MessageLookupByLibrary.simpleMessage("保管室"),
-    "svt_stat_own_total": MessageLookupByLibrary.simpleMessage("（999）所持/合計"),
+    "svt_stat_own_total": MessageLookupByLibrary.simpleMessage("（999）宝具/所持/合計"),
     "svt_sub_attribute": MessageLookupByLibrary.simpleMessage("副属性"),
     "svt_switch_slider_dropdown": MessageLookupByLibrary.simpleMessage("Slider/Dropdownを切り替え"),
     "switch_region": MessageLookupByLibrary.simpleMessage("サーバーを切り替え"),

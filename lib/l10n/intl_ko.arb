@@ -876,7 +876,7 @@
   "svt_related_ce": "관련 예장",
   "svt_reset_plan": "계획 초기화",
   "svt_second_archive": "영기 보관실",
-  "svt_stat_own_total": "(999)소유/합계",
+  "svt_stat_own_total": null,
   "svt_sub_attribute": null,
   "svt_switch_slider_dropdown": "Slider/Dropdown 전환",
   "switch_region": "서버 전환",

@@ -994,7 +994,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "svt_related_ce": MessageLookupByLibrary.simpleMessage("关联礼装"),
     "svt_reset_plan": MessageLookupByLibrary.simpleMessage("重置规划"),
     "svt_second_archive": MessageLookupByLibrary.simpleMessage("保管室"),
-    "svt_stat_own_total": MessageLookupByLibrary.simpleMessage("(999)持有/总计"),
+    "svt_stat_own_total": MessageLookupByLibrary.simpleMessage("(999)　宝具/持有/总计"),
     "svt_sub_attribute": MessageLookupByLibrary.simpleMessage("副属性"),
     "svt_switch_slider_dropdown": MessageLookupByLibrary.simpleMessage("切换滑动条/下拉框"),
     "switch_region": MessageLookupByLibrary.simpleMessage("切换区服"),

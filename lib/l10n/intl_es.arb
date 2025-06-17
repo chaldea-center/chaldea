@@ -820,7 +820,7 @@
   "svt_related_ce": "CE Relacionadas",
   "svt_reset_plan": "Restablecer plan",
   "svt_second_archive": "Second Archive",
-  "svt_stat_own_total": "(SkillMax) Poseídas/Total",
+  "svt_stat_own_total": null,
   "svt_sub_attribute": null,
   "svt_switch_slider_dropdown": "Cambiar control deslizante/desplegable",
   "switch_region": "Cambiar Región",

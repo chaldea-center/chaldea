@@ -1078,7 +1078,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "svt_related_ce": MessageLookupByLibrary.simpleMessage("Related CEs"),
     "svt_reset_plan": MessageLookupByLibrary.simpleMessage("Reset Plan"),
     "svt_second_archive": MessageLookupByLibrary.simpleMessage("Second Archive"),
-    "svt_stat_own_total": MessageLookupByLibrary.simpleMessage("(SkillMax) Owned/Total"),
+    "svt_stat_own_total": MessageLookupByLibrary.simpleMessage("(SkillMax) NPs/Owned/Total"),
     "svt_sub_attribute": MessageLookupByLibrary.simpleMessage("Sub Attribute"),
     "svt_switch_slider_dropdown": MessageLookupByLibrary.simpleMessage("Switch Slider/Dropdown"),
     "switch_region": MessageLookupByLibrary.simpleMessage("Switch Region"),

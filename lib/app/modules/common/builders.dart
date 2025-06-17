@@ -367,6 +367,26 @@ class SharedBuilder {
     );
   }
 
+  static List<InlineSpan> traitsListSpans({
+    required BuildContext context,
+    required List<List<NiceTrait>> traitsList,
+    TextStyle? style,
+    String Function(NiceTrait trait)? format,
+  }) {
+    List<InlineSpan> children = divideList(
+      traitsList.map(
+        (traits) => TextSpan(
+          children: traitSpans(context: context, traits: traits, useAndJoin: true, style: style, format: format),
+        ),
+      ),
+      TextSpan(
+        text: ' / ',
+        style: TextStyle(color: Theme.of(context).hintColor),
+      ),
+    );
+    return children;
+  }
+
   static List<InlineSpan> traitSpans({
     required BuildContext context,
     required List<NiceTrait> traits,
