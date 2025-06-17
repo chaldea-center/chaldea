@@ -89,6 +89,23 @@ class TeamFilterData with FilterDataMixin {
         !filterData.useSvts.options.every((svtId) => data.formation.allSvts.any((e) => e?.svtId == svtId))) {
       return false;
     }
+    if (filterData.useSvtTdLv > 0) {
+      if (filterData.useSvts.options.isEmpty) {
+        if (data.formation.allSvts.any(
+          (e) => e != null && (e.svtId ?? 0) != 0 && (e.tdId ?? 0) != 0 && e.tdLv > filterData.useSvtTdLv,
+        )) {
+          return false;
+        }
+      } else {
+        for (final svtId in filterData.useSvts.options) {
+          if (!data.formation.allSvts.any(
+            (e) => e != null && e.svtId == svtId && (e.tdId ?? 0) != 0 && e.tdLv <= filterData.useSvtTdLv,
+          )) {
+            return false;
+          }
+        }
+      }
+    }
     if (filterData.useSvts.options.length == 1 && filterData.useSvtTdLv > 0) {
       final svtId = filterData.useSvts.options.single;
       if (!data.formation.allSvts.any(
@@ -424,21 +441,16 @@ class _TeamFilterPageState extends FilterPageState<TeamFilterData, TeamFilterPag
           ),
           ListTile(
             dense: true,
-            enabled: filterData.useSvts.options.length == 1,
             title: Text(S.current.noble_phantasm_level),
             subtitle: Text.rich(
               TextSpan(
                 text: '${S.current.team_use_servant}: ',
                 children: [
-                  filterData.useSvts.options.length == 1
-                      ? CenterWidgetSpan(
-                          child: GameCardMixin.anyCardItemBuilder(
-                            context: context,
-                            id: filterData.useSvts.options.single,
-                            width: 18,
-                          ),
-                        )
-                      : const TextSpan(text: "Select 1 servant"),
+                  if (filterData.useSvts.options.isEmpty) TextSpan(text: S.current.general_all),
+                  for (final svtId in filterData.useSvts.options)
+                    CenterWidgetSpan(
+                      child: GameCardMixin.anyCardItemBuilder(context: context, id: svtId, width: 18),
+                    ),
                 ],
               ),
             ),
@@ -449,12 +461,10 @@ class _TeamFilterPageState extends FilterPageState<TeamFilterData, TeamFilterPag
                 for (final tdLv in range(5))
                   DropdownMenuItem(value: tdLv, child: Text(tdLv == 0 ? S.current.general_any : '≤Lv$tdLv')),
               ],
-              onChanged: filterData.useSvts.options.length == 1
-                  ? (v) {
-                      if (v != null) filterData.useSvtTdLv = v;
-                      update();
-                    }
-                  : null,
+              onChanged: (v) {
+                if (v != null) filterData.useSvtTdLv = v;
+                update();
+              },
             ),
           ),
           FilterGroup<int>(
