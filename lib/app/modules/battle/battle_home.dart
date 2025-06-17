@@ -94,13 +94,11 @@ class BattleHomePage extends StatelessWidget {
               leading: const Icon(Icons.numbers),
               title: Text("${S.current.team} ID"),
               onTap: () {
-                InputCancelOkDialog(
+                InputCancelOkDialog.number(
                   title: '${S.current.team} ID',
-                  validate: (s) => (int.tryParse(s) ?? 0) > 0,
-                  keyboardType: TextInputType.number,
-                  onSubmit: (s) {
-                    final id = int.tryParse(s);
-                    if (id == null || id <= 0) return;
+                  validate: (v) => v > 0,
+                  onSubmit: (id) {
+                    if (id <= 0) return;
                     router.push(
                       url: Routes.laplaceManageTeam,
                       child: TeamsQueryPage(mode: TeamQueryMode.id, teamIds: [id]),

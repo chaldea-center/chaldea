@@ -665,7 +665,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
         trailing: TextButton(
           onPressed: () {
             InputCancelOkDialog.number(
-              text: stat.typeVal,
+              initValue: stat.typeVal,
               title: type.dispName,
               validate: (v) => v >= 0,
               onSubmit: (v) {
@@ -762,16 +762,12 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
                 TextButton(
                   onPressed: enableEdit
                       ? () {
-                          InputCancelOkDialog(
+                          InputCancelOkDialog.number(
                             title: '${S.current.noble_phantasm} ID',
-                            validate: (s) {
-                              final v = int.tryParse(s);
-                              return v != null && v > 0;
-                            },
-                            onSubmit: (s) async {
-                              final v = int.tryParse(s);
+                            validate: (v) => v > 0,
+                            onSubmit: (v) async {
                               NiceTd? td;
-                              if (v != null && v > 0) {
+                              if (v > 0) {
                                 EasyLoading.show();
                                 td = await AtlasApi.td(v);
                                 EasyLoading.dismiss();

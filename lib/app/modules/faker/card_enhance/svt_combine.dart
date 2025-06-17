@@ -183,16 +183,12 @@ class _SvtCombinePageState extends State<SvtCombinePage> {
         title: Text('Max Material Count'),
         trailing: TextButton(
           onPressed: () {
-            InputCancelOkDialog(
+            InputCancelOkDialog.number(
               title: 'Max Material Count',
-              text: options.maxMaterialCount.toString(),
-              keyboardType: TextInputType.number,
-              validate: (s) {
-                final v = int.parse(s);
-                return v > 0 && v <= 20;
-              },
-              onSubmit: (s) {
-                runtime.lockTask(() => options.maxMaterialCount = int.parse(s));
+              initValue: options.maxMaterialCount,
+              validate: (v) => v > 0 && v <= 20,
+              onSubmit: (v) {
+                runtime.lockTask(() => options.maxMaterialCount = v);
               },
             ).showDialog(context);
           },
@@ -212,15 +208,12 @@ class _SvtCombinePageState extends State<SvtCombinePage> {
         title: Text('Loop Count'),
         trailing: TextButton(
           onPressed: () {
-            InputCancelOkDialog(
+            InputCancelOkDialog.number(
               title: 'Loop Count',
-              text: options.loopCount.toString(),
-              keyboardType: TextInputType.number,
-              validate: (s) => (int.tryParse(s) ?? -1) >= 0,
-              onSubmit: (s) {
-                runtime.lockTask(() {
-                  options.loopCount = int.parse(s);
-                });
+              initValue: options.loopCount,
+              validate: (v) => v >= 0,
+              onSubmit: (v) {
+                runtime.lockTask(() => options.loopCount = v);
               },
             ).showDialog(context);
           },

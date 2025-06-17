@@ -142,7 +142,7 @@ class _QuestEditPageState extends State<QuestEditPage> {
               text: quest.name.isEmpty ? '???' : quest.name,
               onTap: () {
                 InputCancelOkDialog(
-                  text: quest.name,
+                  initValue: quest.name,
                   title: S.current.name,
                   onSubmit: (s) {
                     s = s.trim();

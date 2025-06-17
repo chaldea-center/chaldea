@@ -207,13 +207,12 @@ class _ItemDetailPageState extends State<ItemDetailPage> with SingleTickerProvid
           PopupMenuItem(
             child: Text(S.current.item_edit_owned_amount),
             onTap: () {
-              InputCancelOkDialog(
+              InputCancelOkDialog.number(
                 title: S.current.item_edit_owned_amount,
-                text: db.curUser.items[widget.itemId]?.toString(),
-                validate: (s) => int.tryParse(s) != null,
+                initValue: db.curUser.items[widget.itemId],
                 keyboardType: const TextInputType.numberWithOptions(signed: true),
-                onSubmit: (s) {
-                  db.curUser.items[widget.itemId] = int.parse(s);
+                onSubmit: (v) {
+                  db.curUser.items[widget.itemId] = v;
                   db.itemCenter.updateLeftItems();
                 },
               ).showDialog(context);

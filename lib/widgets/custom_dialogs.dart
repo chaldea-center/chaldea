@@ -7,7 +7,7 @@ import 'package:chaldea/utils/utils.dart';
 
 class InputCancelOkDialog extends StatefulWidget {
   final String? title;
-  final String? text;
+  final String? initValue;
   final int? maxLines;
   final String? hintText;
   final String? helperText;
@@ -16,11 +16,12 @@ class InputCancelOkDialog extends StatefulWidget {
   final ValueChanged<String>? onSubmit;
   final TextInputType? keyboardType;
   final bool autofocus;
+  final bool showNumButton;
 
   const InputCancelOkDialog({
     super.key,
     this.title,
-    this.text,
+    this.initValue,
     this.maxLines,
     this.hintText,
     this.helperText,
@@ -29,12 +30,12 @@ class InputCancelOkDialog extends StatefulWidget {
     this.onSubmit,
     this.keyboardType,
     this.autofocus = true,
-  });
+  }) : showNumButton = false;
 
   InputCancelOkDialog.number({
     super.key,
     this.title,
-    int? text,
+    int? initValue,
     this.maxLines,
     this.hintText,
     this.helperText,
@@ -43,7 +44,8 @@ class InputCancelOkDialog extends StatefulWidget {
     ValueChanged<int>? onSubmit,
     this.keyboardType = TextInputType.number,
     this.autofocus = true,
-  }) : text = text?.toString(),
+    this.showNumButton = true,
+  }) : initValue = initValue?.toString(),
        validate = ((String s) {
          final v = int.parse(s);
          if (validate != null) return validate(v);
@@ -79,7 +81,7 @@ class _InputCancelOkDialogState extends State<InputCancelOkDialog> {
   @override
   void initState() {
     super.initState();
-    final text = widget.text ?? '';
+    final text = widget.initValue ?? '';
     _controller = TextEditingController.fromValue(
       TextEditingValue(
         text: text,
@@ -99,37 +101,75 @@ class _InputCancelOkDialogState extends State<InputCancelOkDialog> {
   @override
   Widget build(BuildContext context) {
     validation = _validate(_controller.text);
+    Widget field = TextFormField(
+      controller: _controller,
+      autofocus: widget.autofocus,
+      autocorrect: false,
+      keyboardType: widget.keyboardType,
+      maxLines: widget.maxLines ?? 1,
+      decoration: InputDecoration(
+        hintText: widget.hintText,
+        helperText: widget.helperText,
+        errorText: validation || _controller.text.isEmpty ? null : S.current.invalid_input,
+      ),
+      onChanged: (v) {
+        if (widget.validate != null) {
+          setState(() {
+            validation = _validate(v);
+          });
+        }
+      },
+      onFieldSubmitted: (v) {
+        if (!_validate(v)) {
+          return;
+        }
+        FocusScope.of(context).unfocus();
+        Navigator.pop(context, v);
+        if (widget.onSubmit != null) {
+          widget.onSubmit!(v);
+        }
+      },
+    );
+    if (widget.showNumButton) {
+      field = Row(
+        spacing: 8,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Expanded(child: field),
+          Column(
+            spacing: 8,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              InkWell(
+                onTap: () {
+                  try {
+                    _controller.text = (double.parse(_controller.text).floor() + 1).toString();
+                  } catch (e) {
+                    //do nothing
+                  }
+                  setState(() {});
+                },
+                child: Icon(Icons.add_circle_outline, size: 16),
+              ),
+              InkWell(
+                onTap: () {
+                  try {
+                    _controller.text = (double.parse(_controller.text).ceil() - 1).toString();
+                  } catch (e) {
+                    //do nothing
+                  }
+                  setState(() {});
+                },
+                child: Icon(Icons.remove_circle_outline, size: 16),
+              ),
+            ],
+          ),
+        ],
+      );
+    }
     return AlertDialog(
       title: widget.title == null ? null : Text(widget.title!),
-      content: TextFormField(
-        controller: _controller,
-        autofocus: widget.autofocus,
-        autocorrect: false,
-        keyboardType: widget.keyboardType,
-        maxLines: widget.maxLines ?? 1,
-        decoration: InputDecoration(
-          hintText: widget.hintText,
-          helperText: widget.helperText,
-          errorText: validation || _controller.text.isEmpty ? null : S.current.invalid_input,
-        ),
-        onChanged: (v) {
-          if (widget.validate != null) {
-            setState(() {
-              validation = _validate(v);
-            });
-          }
-        },
-        onFieldSubmitted: (v) {
-          if (!_validate(v)) {
-            return;
-          }
-          FocusScope.of(context).unfocus();
-          Navigator.pop(context, v);
-          if (widget.onSubmit != null) {
-            widget.onSubmit!(v);
-          }
-        },
-      ),
+      content: field,
       actions: <Widget>[
         TextButton(child: Text(S.current.cancel), onPressed: () => Navigator.pop(context)),
         TextButton(

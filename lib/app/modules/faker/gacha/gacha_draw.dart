@@ -160,16 +160,14 @@ class _GachaDrawPageState extends State<GachaDrawPage> {
           ),
           trailing: TextButton(
             onPressed: () {
-              InputCancelOkDialog(
+              InputCancelOkDialog.number(
                 title: 'Gacha ID',
-                text: gachaOption.gachaId.toString(),
-                keyboardType: TextInputType.number,
-                validate: (s) => (int.tryParse(s) ?? -1) > 0,
-                onSubmit: (s) async {
-                  final id = int.parse(s);
+                initValue: gachaOption.gachaId,
+                validate: (v) => v > 0,
+                onSubmit: (id) async {
                   final _gacha = await showEasyLoading(() => AtlasApi.gacha(id, region: runtime.region));
                   if (_gacha == null) {
-                    EasyLoading.showError('Gacha ID $s not found');
+                    EasyLoading.showError('Gacha ID $id not found');
                     return;
                   }
                   _cachedGachas[_gacha.id] = _gacha;
@@ -201,13 +199,11 @@ class _GachaDrawPageState extends State<GachaDrawPage> {
                 onPressed: gacha == null
                     ? null
                     : () {
-                        InputCancelOkDialog(
+                        InputCancelOkDialog.number(
                           title: 'Gacha Sub Id',
-                          text: gachaOption.gachaSubId.toString(),
-                          keyboardType: TextInputType.number,
-                          validate: (s) => (int.tryParse(s) ?? -1) >= 0,
-                          onSubmit: (s) async {
-                            final subId = int.parse(s);
+                          initValue: gachaOption.gachaSubId,
+                          validate: (v) => v >= 0,
+                          onSubmit: (subId) async {
                             final subs = gacha.getValidGachaSubs();
                             if ((subs.isEmpty && subId == 0) || subs.any((e) => e.id == subId)) {
                               runtime.lockTask(() {
@@ -253,14 +249,13 @@ class _GachaDrawPageState extends State<GachaDrawPage> {
           title: Text('Loop Count'),
           trailing: TextButton(
             onPressed: () {
-              InputCancelOkDialog(
+              InputCancelOkDialog.number(
                 title: 'Loop Count',
-                text: gachaOption.loopCount.toString(),
-                keyboardType: TextInputType.number,
-                validate: (s) => (int.tryParse(s) ?? -1) >= 0,
-                onSubmit: (s) {
+                initValue: gachaOption.loopCount,
+                validate: (v) => v >= 0,
+                onSubmit: (v) {
                   runtime.lockTask(() {
-                    gachaOption.loopCount = int.parse(s);
+                    gachaOption.loopCount = v;
                   });
                 },
               ).showDialog(context);

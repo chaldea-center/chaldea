@@ -790,13 +790,12 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
           trailing: TextButton(
             onPressed: () {
               runtime.lockTask(() {
-                InputCancelOkDialog(
+                InputCancelOkDialog.number(
                   title: 'Battle Count',
-                  text: battleOption.loopCount.toString(),
-                  keyboardType: TextInputType.number,
-                  validate: (s) => (int.tryParse(s) ?? -1) > 0,
-                  onSubmit: (s) {
-                    battleOption.loopCount = int.parse(s);
+                  initValue: battleOption.loopCount,
+                  validate: (v) => v > 0,
+                  onSubmit: (v) {
+                    battleOption.loopCount = v;
                     if (mounted) setState(() {});
                   },
                 ).showDialog(context);
@@ -883,16 +882,15 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
                     width: 42,
                     text: battleOption.targetDrops[itemId]!.toString(),
                     onTap: () {
-                      InputCancelOkDialog(
+                      InputCancelOkDialog.number(
                         title: 'Target Num of "${GameCardMixin.anyCardItemName(itemId).l}"',
-                        text: battleOption.targetDrops[itemId]?.toString(),
-                        validate: (s) => (int.tryParse(s) ?? -1) >= 0,
-                        keyboardType: TextInputType.number,
-                        onSubmit: (s) {
+                        initValue: battleOption.targetDrops[itemId],
+                        validate: (v) => v >= 0,
+                        onSubmit: (v) {
                           runtime.lockTask(() {
                             if (mounted) {
                               setState(() {
-                                battleOption.targetDrops[itemId] = int.parse(s);
+                                battleOption.targetDrops[itemId] = v;
                               });
                             }
                           });
@@ -906,10 +904,9 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
           trailing: IconButton(
             onPressed: () async {
               runtime.lockTask(() async {
-                final itemIdStr = await InputCancelOkDialog(
+                final itemIdStr = await InputCancelOkDialog.number(
                   title: 'Item id or CE id',
-                  keyboardType: TextInputType.number,
-                  validate: (s) => (int.tryParse(s) ?? -1) > 0,
+                  validate: (v) => v > 0,
                 ).showDialog<String>(context);
                 if (itemIdStr == null) return;
                 final itemId = int.parse(itemIdStr);
@@ -919,10 +916,9 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
                   return;
                 }
                 if (!mounted) return;
-                final itemNumStr = await InputCancelOkDialog(
+                final itemNumStr = await InputCancelOkDialog.number(
                   title: 'Stop if "$itemName" total drop num ≥',
-                  keyboardType: TextInputType.number,
-                  validate: (s) => (int.tryParse(s) ?? -1) >= 0,
+                  validate: (v) => v >= 0,
                 ).showDialog<String>(context);
                 if (itemNumStr == null) return;
                 final itemNum = int.parse(itemNumStr);
@@ -957,16 +953,15 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
                     width: 42,
                     text: battleOption.winTargetItemNum[itemId]?.toString(),
                     onTap: () {
-                      InputCancelOkDialog(
+                      InputCancelOkDialog.number(
                         title: 'Win Target Num of "${GameCardMixin.anyCardItemName(itemId).l}"',
-                        text: battleOption.winTargetItemNum[itemId]?.toString(),
-                        validate: (s) => (int.tryParse(s) ?? -1) > 0,
-                        keyboardType: TextInputType.number,
-                        onSubmit: (s) {
+                        initValue: battleOption.winTargetItemNum[itemId],
+                        validate: (v) => v > 0,
+                        onSubmit: (v) {
                           runtime.lockTask(() {
                             if (mounted) {
                               setState(() {
-                                battleOption.winTargetItemNum[itemId] = int.parse(s);
+                                battleOption.winTargetItemNum[itemId] = v;
                               });
                             }
                           });
@@ -993,10 +988,9 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
                   return;
                 }
                 if (!mounted) return;
-                final itemNumStr = await InputCancelOkDialog(
+                final itemNumStr = await InputCancelOkDialog.number(
                   title: 'Win if "$itemName" drop num ≥',
-                  keyboardType: TextInputType.number,
-                  validate: (s) => (int.tryParse(s) ?? -1) > 0,
+                  validate: (v) => v > 0,
                 ).showDialog<String>(context);
                 if (itemNumStr == null) return;
                 final itemNum = int.parse(itemNumStr);
@@ -1072,17 +1066,15 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
           trailing: TextButton(
             onPressed: () {
               runtime.lockTask(() {
-                InputCancelOkDialog(
+                InputCancelOkDialog.number(
                   title: 'Quest ID',
-                  text: battleOption.questId.toString(),
-                  keyboardType: TextInputType.number,
-                  onSubmit: (s) async {
-                    final questId = int.tryParse(s);
+                  initValue: battleOption.questId,
+                  onSubmit: (questId) async {
                     Quest? quest = db.gameData.quests[questId];
-                    if (questId != null && questId > 0) {
+                    if (questId > 0) {
                       quest ??= await showEasyLoading(() => AtlasApi.quest(questId, region: agent.user.region));
                     }
-                    if (questId != null && quest != null && !quest.flags.contains(QuestFlag.superBoss)) {
+                    if (quest != null && !quest.flags.contains(QuestFlag.superBoss)) {
                       battleOption.questId = questId;
                       final userQuest = mstData.userQuest[questId];
                       if (mstData.user != null) {
@@ -1119,12 +1111,10 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
                 ? null
                 : () {
                     runtime.lockTask(() {
-                      InputCancelOkDialog(
+                      InputCancelOkDialog.number(
                         title: 'Quest Phase',
-                        keyboardType: TextInputType.number,
-                        onSubmit: (s) async {
-                          final phase = int.tryParse(s);
-                          if (phase != null && quest.phases.contains(phase)) {
+                        onSubmit: (phase) async {
+                          if (quest.phases.contains(phase)) {
                             battleOption.questPhase = phase;
                           } else {
                             EasyLoading.showError('Invalid Phase');
@@ -1444,7 +1434,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
               runtime.lockTask(() {
                 InputCancelOkDialog(
                   title: 'Each wave turns',
-                  text: battleOption.usedTurnArray.join(','),
+                  initValue: battleOption.usedTurnArray.join(','),
                   onSubmit: (s) {
                     try {
                       if (s.isEmpty) {
@@ -1476,7 +1466,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
               runtime.lockTask(() {
                 InputCancelOkDialog(
                   title: 'Action Logs',
-                  text: battleOption.actionLogs,
+                  initValue: battleOption.actionLogs,
                   onSubmit: (s) {
                     battleOption.actionLogs = s;
                     if (mounted) setState(() {});
@@ -1560,7 +1550,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
               runtime.lockTask(() {
                 InputCancelOkDialog(
                   title: 'Battle Duration',
-                  text: battleOption.battleDuration?.toString(),
+                  initValue: battleOption.battleDuration?.toString(),
                   keyboardType: TextInputType.number,
                   validate: (s) => s.isEmpty || (int.tryParse(s) ?? -1) > (agent.user.region == Region.jp ? 20 : 40),
                   onSubmit: (s) {
@@ -1626,16 +1616,14 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
           ),
           trailing: IconButton(
             onPressed: () {
-              InputCancelOkDialog(
+              InputCancelOkDialog.number(
                 title: 'AP',
-                keyboardType: TextInputType.number,
                 helperText: '0 = Max AP (${(mstData.user ?? agent.user.userGame)?.actMax})',
-                validate: (s) {
-                  int v = int.tryParse(s) ?? -1;
+                validate: (v) {
                   return v >= 0 && v < 200 && v < Maths.max(ConstData.userLevel.values.map((e) => e.maxAp));
                 },
-                onSubmit: (s) {
-                  agent.user.recoveredAps.add(int.parse(s));
+                onSubmit: (v) {
+                  agent.user.recoveredAps.add(v);
                   agent.network.setLocalNotification();
                   if (mounted) setState(() {});
                 },
@@ -1687,13 +1675,13 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
           title: const Text('Max refresh count of Support list'),
           trailing: TextButton(
             onPressed: () {
-              InputCancelOkDialog(
+              InputCancelOkDialog.number(
                 title: 'Max refresh count of Support list',
-                text: fakerSettings.maxFollowerListRetryCount.toString(),
+                initValue: fakerSettings.maxFollowerListRetryCount,
                 keyboardType: TextInputType.number,
-                validate: (s) => (int.tryParse(s) ?? -1) > 0,
-                onSubmit: (s) {
-                  fakerSettings.maxFollowerListRetryCount = int.parse(s);
+                validate: (v) => v > 0,
+                onSubmit: (v) {
+                  fakerSettings.maxFollowerListRetryCount = v;
                   if (mounted) setState(() {});
                 },
               ).showDialog(context);
@@ -1869,14 +1857,13 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
         buildButton(
           enabled: loggedIn && !inBattle,
           onPressed: () {
-            InputCancelOkDialog(
+            InputCancelOkDialog.number(
               title: 'Start Looping Battle',
-              keyboardType: TextInputType.number,
               autofocus: battleOption.loopCount <= 0,
-              text: (battleOption.loopCount == 0 ? 1 : battleOption.loopCount).toString(),
-              validate: (s) => (int.tryParse(s) ?? -1) > 0,
-              onSubmit: (s) {
-                battleOption.loopCount = int.parse(s);
+              initValue: battleOption.loopCount == 0 ? 1 : battleOption.loopCount,
+              validate: (v) => v > 0,
+              onSubmit: (v) {
+                battleOption.loopCount = v;
                 runtime.runTask(() => runtime.withWakeLock('loop-$hashCode', runtime.startLoop));
               },
             ).showDialog(context);
@@ -1939,14 +1926,11 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
             PopupMenuItem(
               enabled: loggedIn,
               onTap: () async {
-                InputCancelOkDialog(
+                InputCancelOkDialog.number(
                   title: 'Seed Count (waiting)',
-                  keyboardType: TextInputType.number,
-                  validate: (s) => (int.tryParse(s) ?? -1) > 0,
-                  onSubmit: (s) {
-                    runtime.runTask(
-                      () => runtime.withWakeLock('seed-wait-$hashCode', () => runtime.seedWait(int.parse(s))),
-                    );
+                  validate: (v) => v > 0,
+                  onSubmit: (v) {
+                    runtime.runTask(() => runtime.withWakeLock('seed-wait-$hashCode', () => runtime.seedWait(v)));
                   },
                 ).showDialog(context);
               },
@@ -1958,7 +1942,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
                 onTap: () {
                   InputCancelOkDialog(
                     title: 'SessionId (${agent.network.gameTop.region.upper})',
-                    text: agent.network.cookies['SessionId'],
+                    initValue: agent.network.cookies['SessionId'],
                     onSubmit: (s) {
                       if (s.trim().isEmpty) return;
                       agent.network.cookies['SessionId'] = s;
@@ -1973,7 +1957,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
                 onTap: () {
                   InputCancelOkDialog(
                     title: 'sgusk (${agent.network.gameTop.region.upper})',
-                    text: (agent as FakerAgentCN).usk,
+                    initValue: (agent as FakerAgentCN).usk,
                     onSubmit: (s) {
                       if (s.trim().isEmpty) return;
                       (agent as FakerAgentCN).usk = CryptData.encryptMD5Usk(s);

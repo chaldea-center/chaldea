@@ -401,12 +401,11 @@ class _CustomSkillFormState extends State<CustomSkillForm> {
               if (func.buffs.isNotEmpty)
                 TextButton(
                   onPressed: () {
-                    InputCancelOkDialog(
+                    InputCancelOkDialog.number(
                       title: S.current.counts,
-                      text: effect.count.toString(),
-                      validate: (s) => int.tryParse(s) != null,
-                      onSubmit: (s) {
-                        effect.count = int.parse(s);
+                      initValue: effect.count,
+                      onSubmit: (v) {
+                        effect.count = v;
                         if (effect.count <= 0) effect.count = -1;
                         if (mounted) setState(() {});
                       },
@@ -417,12 +416,11 @@ class _CustomSkillFormState extends State<CustomSkillForm> {
               if (func.buffs.isNotEmpty)
                 TextButton(
                   onPressed: () {
-                    InputCancelOkDialog(
+                    InputCancelOkDialog.number(
                       title: S.current.battle_turn,
-                      text: effect.turn.toString(),
-                      validate: (s) => int.tryParse(s) != null,
-                      onSubmit: (s) {
-                        effect.turn = int.parse(s);
+                      initValue: effect.turn,
+                      onSubmit: (v) {
+                        effect.turn = v;
                         if (effect.turn <= 0) effect.turn = -1;
                         if (mounted) setState(() {});
                       },
@@ -434,7 +432,7 @@ class _CustomSkillFormState extends State<CustomSkillForm> {
                 onPressed: () {
                   InputCancelOkDialog(
                     title: 'Rate',
-                    text: (effect.rate / 10).toString(),
+                    initValue: (effect.rate / 10).toString(),
                     validate: (s) {
                       final v = double.tryParse(s);
                       return v != null && v > 0;

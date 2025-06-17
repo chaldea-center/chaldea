@@ -202,13 +202,12 @@ class _EventItemInputTabState extends State<EventItemInputTab> {
         Flexible(
           child: TextButton(
             onPressed: () {
-              InputCancelOkDialog(
+              InputCancelOkDialog.number(
                 keyboardType: const TextInputType.numberWithOptions(signed: true),
                 title: '${S.current.demands}: ${Item.getName(itemId)}',
-                text: demands.toString(),
-                validate: (s) => int.tryParse(s) != null,
-                onSubmit: (s) {
-                  params.itemCounts[itemId] = int.parse(s);
+                initValue: demands,
+                onSubmit: (v) {
+                  params.itemCounts[itemId] = v;
                   if (mounted) setState(() {});
                 },
               ).showDialog(context);
@@ -219,13 +218,12 @@ class _EventItemInputTabState extends State<EventItemInputTab> {
         const Text('-'),
         TextButton(
           onPressed: () {
-            InputCancelOkDialog(
+            InputCancelOkDialog.number(
               keyboardType: const TextInputType.numberWithOptions(signed: true),
               title: '${S.current.item_own}: ${Item.getName(itemId)}',
-              text: ownCount.toString(),
-              validate: (s) => s.trim().isEmpty || int.tryParse(s) != null,
-              onSubmit: (s) {
-                db.curUser.items[itemId] = int.tryParse(s) ?? 0;
+              initValue: ownCount,
+              onSubmit: (v) {
+                db.curUser.items[itemId] = v;
                 if (mounted) setState(() {});
               },
             ).showDialog(context);

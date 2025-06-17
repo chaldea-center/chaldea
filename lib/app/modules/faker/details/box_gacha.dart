@@ -266,15 +266,12 @@ class _BoxGachaDrawPageState extends State<BoxGachaDrawPage> {
           title: Text('Loop Count'),
           trailing: TextButton(
             onPressed: () {
-              InputCancelOkDialog(
+              InputCancelOkDialog.number(
                 title: 'Loop Count',
-                text: loopCount.value.toString(),
-                keyboardType: TextInputType.number,
-                validate: (s) => (int.tryParse(s) ?? -1) >= 0,
-                onSubmit: (s) {
-                  runtime.lockTask(() {
-                    loopCount.value = int.parse(s);
-                  });
+                initValue: loopCount.value,
+                validate: (v) => v >= 0,
+                onSubmit: (v) {
+                  runtime.lockTask(() => loopCount.value = v);
                 },
               ).showDialog(context);
             },

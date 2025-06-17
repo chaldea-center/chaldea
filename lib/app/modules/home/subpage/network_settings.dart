@@ -152,7 +152,7 @@ class _NetworkSettingsPageState extends State<NetworkSettingsPage> {
                           ? () {
                               InputCancelOkDialog(
                                 title: 'Host',
-                                text: settings.proxyHost,
+                                initValue: settings.proxyHost,
                                 validate: (s) {
                                   if (s.isEmpty) return true;
                                   final m = RegExp(r'^(\d+)\.(\d+)\.(\d+)\.(\d+)$').firstMatch(s);
@@ -181,7 +181,7 @@ class _NetworkSettingsPageState extends State<NetworkSettingsPage> {
                           ? () {
                               InputCancelOkDialog(
                                 title: 'Port',
-                                text: settings.proxyPort?.toString(),
+                                initValue: settings.proxyPort?.toString(),
                                 validate: (s) {
                                   if (s.isEmpty) return true;
                                   final v = int.tryParse(s);

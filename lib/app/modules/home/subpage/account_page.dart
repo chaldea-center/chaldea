@@ -90,7 +90,7 @@ class _AccountPageState extends State<AccountPage> {
       useRootNavigator: false,
       builder: (context) => InputCancelOkDialog(
         title: '${S.current.rename} - ${user.name}',
-        text: user.name,
+        initValue: user.name,
         errorText: S.current.input_invalid_hint,
         validate: (v) {
           return v == v.trim() && v.isNotEmpty && users.every((e) => e.name != v);

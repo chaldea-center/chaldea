@@ -278,17 +278,15 @@ class _CombineImagePageState extends State<CombineImagePage> {
                 children: [Text(option.imgHeight.toString()), const Icon(Icons.edit)],
               ),
               onTap: () {
-                InputCancelOkDialog(
+                InputCancelOkDialog.number(
                   title: 'Image Height',
-                  text: option.imgHeight?.toString(),
-                  validate: (s) {
-                    final v = int.tryParse(s);
-                    return v != null && v > 100 && v < 2000;
+                  initValue: option.imgHeight,
+                  validate: (v) {
+                    return v > 100 && v < 2000;
                   },
-                  onSubmit: (s) {
-                    final v = int.tryParse(s);
+                  onSubmit: (v) {
                     setState(() {
-                      if (v != null && v > 0) option.imgHeight = v;
+                      if (v > 0) option.imgHeight = v;
                     });
                   },
                 ).showDialog(context);
@@ -307,7 +305,7 @@ class _CombineImagePageState extends State<CombineImagePage> {
               onTap: () {
                 InputCancelOkDialog(
                   title: 'Title',
-                  text: option.title,
+                  initValue: option.title,
                   onSubmit: (s) {
                     option.title = s.isEmpty ? null : s;
                     if (mounted) setState(() {});

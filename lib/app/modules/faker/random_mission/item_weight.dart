@@ -61,7 +61,7 @@ QP/友情点/魔力棱镜: 0
           widget.option.itemWeights[itemId];
           InputCancelOkDialog(
             title: Item.getName(itemId),
-            text: widget.option.getItemWeight(itemId).format(),
+            initValue: widget.option.getItemWeight(itemId).format(),
             keyboardType: TextInputType.numberWithOptions(signed: true, decimal: true),
             validate: (s) => double.parse(s).isFinite,
             onSubmit: (s) {

@@ -521,7 +521,7 @@ class _QuestEnemyEditPageState extends State<QuestEnemyEditPage> {
               return InputCancelOkDialog(
                 keyboardType: const TextInputType.numberWithOptions(decimal: true),
                 title: title,
-                text: dispValue.trimChar('%'),
+                initValue: dispValue.trimChar('%'),
                 validate: (s) => double.tryParse(s) != null,
                 onSubmit: (s) {
                   final v = double.tryParse(s);

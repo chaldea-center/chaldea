@@ -52,16 +52,11 @@ class _ShopFilterState extends FilterPageState<PresentBoxFilterData, UserPresent
             title: Text('Max num'),
             trailing: TextButton(
               onPressed: () {
-                InputCancelOkDialog(
+                InputCancelOkDialog.number(
                   title: 'Max num',
-                  keyboardType: TextInputType.number,
-                  validate: (s) => s.isEmpty || (int.tryParse(s) ?? -1) >= 0,
-                  onSubmit: (s) {
-                    if (s.trim().isEmpty) {
-                      filterData.maxNum = 0;
-                    } else {
-                      filterData.maxNum = int.parse(s);
-                    }
+                  validate: (v) => v >= 0,
+                  onSubmit: (v) {
+                    filterData.maxNum = v;
                     update();
                   },
                 ).showDialog(context);

@@ -517,11 +517,10 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
     // 2. start from 2024.05.14
     //    100(1100000)  =  1.03155 +  2.97573 + 41.12909 +  4.00864 + 18.14609 + 32.70891
 
-    final String? _inputTenCount = await InputCancelOkDialog(
+    final String? _inputTenCount = await InputCancelOkDialog.number(
       title: "Monte Carlo Test: N×${summon.rollCount}",
-      text: '100000',
-      validate: (s) => (int.tryParse(s) ?? -1) > 0,
-      keyboardType: TextInputType.number,
+      initValue: 100000,
+      validate: (v) => v > 0,
     ).showDialog(context);
     if (_inputTenCount == null) return;
 

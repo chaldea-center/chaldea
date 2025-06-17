@@ -380,15 +380,14 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
                     }
                   },
                   onLongPress: () {
-                    InputCancelOkDialog(
+                    InputCancelOkDialog.number(
                       title: 'Notify after seconds',
-                      keyboardType: TextInputType.number,
-                      validate: (s) => (int.tryParse(s) ?? -1) > 0,
-                      onSubmit: (s) {
+                      validate: (v) => v > 0,
+                      onSubmit: (v) {
                         LocalNotificationUtil.scheduleNotification(
                           title: 'Chaldea',
                           body: 'LINK START!\n${DateTime.now().toCustomString(year: false)}',
-                          dateTime: DateTime.now().add(Duration(seconds: int.parse(s))),
+                          dateTime: DateTime.now().add(Duration(seconds: v)),
                         );
                       },
                     ).showDialog(context);

@@ -281,13 +281,11 @@ class _SimulationPreviewState extends State<SimulationPreview> {
       ),
       PopupMenuItem(
         onTap: () {
-          InputCancelOkDialog(
+          InputCancelOkDialog.number(
             title: 'Laplace Team ID',
-            keyboardType: TextInputType.number,
-            validate: (s) => (int.tryParse(s) ?? -1) > 0,
-            onSubmit: (s) async {
-              final id = int.tryParse(s);
-              if (id == null || id <= 0) {
+            validate: (v) => v > 0,
+            onSubmit: (id) async {
+              if (id <= 0) {
                 EasyLoading.showError("Invalid ID");
                 return;
               }

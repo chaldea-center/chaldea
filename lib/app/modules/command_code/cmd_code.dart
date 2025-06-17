@@ -93,15 +93,12 @@ class _CmdCodeDetailPageState extends State<CmdCodeDetailPage> {
                     showDialog(
                       context: context,
                       builder: (context) {
-                        return InputCancelOkDialog(
+                        return InputCancelOkDialog.number(
                           title: S.current.total_counts,
-                          text: status.count.toString(),
-                          validate: (s) {
-                            final v = int.tryParse(s);
-                            return v != null && v >= 0;
-                          },
+                          initValue: status.count,
+                          validate: (v) => v >= 0,
                           onSubmit: (v) {
-                            status.count = int.tryParse(v) ?? status.count;
+                            status.count = v;
                             if (mounted) setState(() {});
                           },
                         );

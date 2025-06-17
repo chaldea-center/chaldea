@@ -337,7 +337,7 @@ class _RandomMissionLoopPageState extends State<RandomMissionLoopPage> {
               onPressed: () {
                 InputCancelOkDialog.number(
                   title: 'Max Free Quest Count',
-                  text: option.maxFreeCount,
+                  initValue: option.maxFreeCount,
                   keyboardType: TextInputType.number,
                   validate: (v) => v >= 0,
                   onSubmit: (v) {
@@ -355,7 +355,7 @@ class _RandomMissionLoopPageState extends State<RandomMissionLoopPage> {
               onPressed: () {
                 InputCancelOkDialog.number(
                   title: 'discardMissionMinLeftNum',
-                  text: option.discardMissionMinLeftNum,
+                  initValue: option.discardMissionMinLeftNum,
                   keyboardType: TextInputType.number,
                   validate: (v) => v >= 0,
                   onSubmit: (v) {
@@ -373,7 +373,7 @@ class _RandomMissionLoopPageState extends State<RandomMissionLoopPage> {
               onPressed: () {
                 InputCancelOkDialog.number(
                   title: 'discardLoopCount',
-                  text: option.discardLoopCount,
+                  initValue: option.discardLoopCount,
                   keyboardType: TextInputType.number,
                   validate: (v) => v >= 0,
                   onSubmit: (v) {

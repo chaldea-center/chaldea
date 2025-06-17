@@ -115,7 +115,7 @@ class _BattleOptionListPageState extends State<BattleOptionListPage> {
                       onTap: () {
                         InputCancelOkDialog(
                           title: S.current.rename,
-                          text: option.name,
+                          initValue: option.name,
                           onSubmit: (s) {
                             option.name = s.trim();
                             if (mounted) setState(() {});

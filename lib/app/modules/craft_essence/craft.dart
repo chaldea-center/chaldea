@@ -108,16 +108,12 @@ class _CraftDetailPageState extends State<CraftDetailPage> {
                     showDialog(
                       context: context,
                       builder: (context) {
-                        return InputCancelOkDialog(
+                        return InputCancelOkDialog.number(
                           title: 'Lv (1~${ce.lvMax})',
-                          text: status.lv.toString(),
-                          validate: (s) {
-                            final v = int.tryParse(s);
-                            if (v == null) return false;
-                            return v > 0 && v <= ce.lvMax;
-                          },
+                          initValue: status.lv,
+                          validate: (v) => v > 0 && v <= ce.lvMax,
                           onSubmit: (v) {
-                            status.lv = int.tryParse(v) ?? status.lv;
+                            status.lv = v;
                             if (mounted) setState(() {});
                           },
                         );

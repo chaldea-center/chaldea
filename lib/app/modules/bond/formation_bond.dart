@@ -379,7 +379,7 @@ class _FormationBondTabState extends State<FormationBondTab> {
             onPressed: () {
               InputCancelOkDialog.number(
                 title: 'Quest ID',
-                text: quest?.id,
+                initValue: quest?.id,
                 validate: (v) => db.gameData.quests.containsKey(v),
                 onSubmit: (v) {
                   final _quest = db.gameData.quests[v];
@@ -534,7 +534,7 @@ class _FormationBondTabState extends State<FormationBondTab> {
         _textButton('+${detail.addValue}', () {
           InputCancelOkDialog.number(
             title: 'Bond Add Value',
-            text: detail.addValue,
+            initValue: detail.addValue,
             validate: (v) => v >= 0,
             onSubmit: (value) {
               detail.addValue = value;
@@ -545,7 +545,7 @@ class _FormationBondTabState extends State<FormationBondTab> {
         _textButton('+${detail.addRate.format(percent: true, base: 10)}', () {
           InputCancelOkDialog(
             title: 'Bond Add Percent(%)',
-            text: (detail.addValue / 10).format(),
+            initValue: (detail.addValue / 10).format(),
             validate: (s) => (double.parse(s) * 10).toInt() >= 0,
             onSubmit: (s) {
               detail.addRate = (double.parse(s) * 10).toInt();

@@ -227,16 +227,14 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
           trailing: db.onUserData(
             (context, snapshot) => TextButton(
               onPressed: () {
-                InputCancelOkDialog(
+                InputCancelOkDialog.number(
                   title: S.current.servant_coin,
-                  text: db.curUser.items[svt.coin?.item.id]?.toString(),
+                  initValue: db.curUser.items[svt.coin?.item.id],
                   keyboardType: const TextInputType.numberWithOptions(signed: true),
-                  validate: (s) => int.tryParse(s) != null,
-                  onSubmit: (s) {
-                    int? coin = int.tryParse(s);
+                  onSubmit: (v) {
                     final coinId = svt.coin?.item.id;
-                    if (coin != null && coinId != null) {
-                      db.curUser.items[coinId] = coin;
+                    if (coinId != null) {
+                      db.curUser.items[coinId] = v;
                       updateState();
                     }
                   },

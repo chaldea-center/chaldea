@@ -132,7 +132,7 @@ class ServantListPageState extends State<ServantListPage> with SearchableListSta
         onTap: () {
           InputCancelOkDialog(
             title: S.current.set_plan_name,
-            text: db.curUser.curPlan_.title,
+            initValue: db.curUser.curPlan_.title,
             onSubmit: (s) {
               if (mounted) {
                 setState(() {

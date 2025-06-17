@@ -118,19 +118,13 @@ class SliderWithPrefix extends StatelessWidget {
 
   Widget getInputDialog(BuildContext context) {
     String helperText = '$min~$max';
-    return InputCancelOkDialog(
+    return InputCancelOkDialog.number(
       title: label,
-      text: value.toString(),
+      initValue: value,
       helperText: helperText,
-      keyboardType: const TextInputType.numberWithOptions(signed: true, decimal: true),
-      validate: (s) {
-        final v = int.tryParse(s);
-        if (v == null) return false;
-        return v >= min && v <= max;
-      },
-      onSubmit: (s) {
-        final v = int.tryParse(s);
-        if (v == null) return;
+      keyboardType: const TextInputType.numberWithOptions(signed: true),
+      validate: (v) => v >= min && v <= max,
+      onSubmit: (v) {
         if (v >= min && v <= max) {
           if (onEdit != null) {
             onEdit!(v.toDouble());

@@ -441,7 +441,7 @@ class _AutoLoginPageState extends State<AutoLoginPage> {
       builder: (context) {
         return InputCancelOkDialog(
           title: title,
-          text: value,
+          initValue: value,
           validate: validate,
           maxLines: 2,
           onSubmit: (s) {
