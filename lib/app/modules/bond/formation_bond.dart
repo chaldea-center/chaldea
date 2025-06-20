@@ -286,8 +286,8 @@ class _FormationBondTabState extends State<FormationBondTab> {
 
       // extra: custom bond
       final extraBonus = option.svtBonus[deckPos];
-      selfResult.customAddRate = extraBonus.addRate;
-      selfResult.customAddValue = extraBonus.addValue;
+      selfResult.customAddRate += extraBonus.addRate;
+      selfResult.customAddValue += extraBonus.addValue;
       // check bond 15
       if (extraBonus.isBond15 && !deckSvt.supportType.isSupport) {
         for (final result in results) {

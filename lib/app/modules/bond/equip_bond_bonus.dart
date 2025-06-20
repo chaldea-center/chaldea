@@ -93,7 +93,7 @@ class _EquipBondBonusTabState extends State<EquipBondBonusTab> {
     // ce data
     for (final ce in db.gameData.craftEssencesById.values) {
       if (ce.collectionNo <= 0 || ce.isRegionSpecific) continue;
-      if (ce.rarity == 5) continue;
+      if (ce.rarity < 5) continue;
       final skills = ce.getActivatedSkills(true)[1] ?? <NiceSkill>[];
       if (skills.isEmpty) continue;
       if (skills.length > 1) {
@@ -190,7 +190,7 @@ class _EquipBondBonusTabState extends State<EquipBondBonusTab> {
         .toList();
     final List<int> excludeCeIds = ceFilterStates.keys.where((e) => ceFilterStates[e] == _FilterType.exclude).toList();
     final List<int> mustHaveCeIds = ceFilterStates.keys.where((e) => ceFilterStates[e] == _FilterType.include).toList();
-    final List<int> freeCeIds = allCeIds.where((e) => !mustHaveCeIds.contains(e)).toList();
+    final List<int> freeCeIds = allCeIds.where((e) => !mustHaveCeIds.contains(e) && !excludeCeIds.contains(e)).toList();
     final int n = freeCeIds.length;
     List<_GroupItem> resultData = [];
     for (int mask = 0; mask < (1 << n); mask++) {
