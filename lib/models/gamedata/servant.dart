@@ -1796,6 +1796,7 @@ enum SvtFlag {
   svtEquipCampaign,
   svtEquipEvent,
   svtEquipEventReward,
+  svtEquipRarityLevelNumMission,
 }
 
 @JsonEnum(alwaysCreate: true)

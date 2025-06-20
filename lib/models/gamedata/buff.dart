@@ -484,6 +484,11 @@ enum BuffType {
   wavestartAnimationBeforeFunction(226),
   subFixedSelfdamage(227),
   overwriteFixedDefenceDamage(228),
+  extendActionCount(229),
+  gutsBeforeFunction(230),
+  overwriteBuffUseRate(231),
+  upBuffUseRate(232),
+  downBuffUseRate(233),
 
   toFieldChangeField(10001),
   toFieldAvoidBuff(10002),

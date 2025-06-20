@@ -670,7 +670,8 @@ enum FuncTargetType {
   ptOneHpLowestRate(29),
   enemyRange(30),
   handCommandcardRandomOne(31),
-  fieldAll(32);
+  fieldAll(32),
+  noTarget(33);
 
   const FuncTargetType(this.value);
   final int value;
@@ -682,8 +683,8 @@ enum FuncTargetType {
   bool get isField => this == FuncTargetType.fieldOther;
   bool get isDynamic => this == FuncTargetType.enemyOneNoTargetNoAction;
 
-  bool get canTargetAlly => isAlly || isField || isDynamic;
-  bool get canTargetEnemy => isEnemy || isField || isDynamic;
+  bool get canTargetAlly => isAlly || isField || isDynamic || this == noTarget;
+  bool get canTargetEnemy => isEnemy || isField || isDynamic || this == noTarget;
 
   bool get needNormalOneTarget => const [ptOne, ptAnother, ptOneOther].contains(this);
 

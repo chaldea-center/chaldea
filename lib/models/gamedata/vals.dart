@@ -373,6 +373,11 @@ class DataVals {
   int? get CondParamRangeMaxValue => _vals['CondParamRangeMaxValue'];
   int? get CondParamRangeTargetId => _vals['CondParamRangeTargetId'];
   int? get ExecOnce => _vals['ExecOnce'];
+  List<List<int>>? get ApplyBuffIndividuality => _2dList('ApplyBuffIndividuality');
+  int? get ExecWhenCanNotAttack => _vals['ExecWhenCanNotAttack'];
+  int? get ExecEvenCardSelectState => _vals['ExecEvenCardSelectState'];
+  int? get OverwriteShift => _vals['OverwriteShift'];
+  int? get IgnoreShiftWhiteFade => _vals['IgnoreShiftWhiteFade'];
 
   int? get ApplySupportSvt => _vals['ApplySupportSvt'];
   int? get Individuality => _vals['Individuality'];

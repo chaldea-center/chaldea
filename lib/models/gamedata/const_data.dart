@@ -1344,6 +1344,10 @@ enum BuffAction {
   functionWavestartAnimationBefore(153),
   receiveFixedDamage(154),
   overwriteDamageDef(155),
+  changeActInAddCount(156),
+  functionGutsBefore(157),
+  overwriteBuffUseRate(158),
+  changeBuffUseRate(159),
   // custom
   functionClassboardCommandSpellAfter(301);
 
