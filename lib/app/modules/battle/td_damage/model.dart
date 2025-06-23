@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:chaldea/app/api/atlas.dart';
 import 'package:flutter/foundation.dart';
 
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -25,7 +26,7 @@ import 'package:chaldea/utils/utils.dart';
 class TdDmgResult {
   final PlayerSvtData originalSvtData;
   final Servant svt;
-  BattleServantData? actor;
+  late BattleServantData actor;
   List<BattleRecord> attacks = [];
   BattleData battleData;
   int totalDamage = 0;
@@ -86,44 +87,75 @@ class TdDmgSolver {
     for (final svt in servants) {
       if (!svt.isUserSvt) continue;
       try {
-        final baseSvt = getSvtData(svt, 4);
-        final variants = <PlayerSvtData?>[baseSvt];
-
-        if (svt.id == 800100) {
-          // Mash
-          variants.add(getSvtData(svt, 17));
-        } else if (svt.id == 304800) {
-          // Melusine
-          variants.add(getSvtData(svt, 1));
-          variants.add(getSvtData(svt, 1)?..skills[2] = null);
-        } else if (svt.id == 205000) {
-          // Ptolemaios
-          variants.add(getSvtData(svt, 4)?..skills[2] = null);
-          variants.add(getSvtData(svt, 1));
-          variants.add(getSvtData(svt, 1)?..skills[2] = null);
-        } else {
-          //
+        final List<int> limitsToAdd = [];
+        final limits = [...svt.limits.keys.toList().sortReturn((a, b) => b.compareTo(a)), ...svt.costume.keys];
+        final List<Set<int>> recordedTraits = [];
+        for (final limit in limits) {
+          final Set<int> traitIdSet = svt.getIndividuality(null, limit).map((trait) => trait.signedId).toSet();
+          if (recordedTraits.every((recorded) => !setEquals(recorded, traitIdSet))) {
+            limitsToAdd.add(limit);
+          } else {
+            recordedTraits.add(traitIdSet);
+          }
         }
 
-        // tdTypeChanges
-        final baseTd = baseSvt?.td;
-        if (baseSvt != null && baseTd != null) {
-          final tdTypeChangeIds = baseTd.script?.tdTypeChangeIDs ?? const [];
-          // tdChangeByBattlePoint_{}_{}
-          for (final tdId in tdTypeChangeIds) {
-            if (tdId == baseTd.id) continue;
-            final tdChange = baseSvt.svt?.noblePhantasms.firstWhereOrNull((e) => e.id == tdId);
-            if (tdChange != null) {
-              variants.add(baseSvt.copy()..td = tdChange);
+        final variants = <PlayerSvtData?>[];
+
+        for (final limitToAdd in limitsToAdd) {
+          final baseSvt = getSvtData(svt, limitToAdd);
+          variants.add(getSvtData(svt, limitToAdd));
+          if (svt.id == 304800 && [0, 1, 2, 304830, 304840].contains(limitToAdd)) {
+            // Melusine
+            variants.add(getSvtData(svt, limitToAdd)?..skills[2] = null);
+          } else if (svt.id == 205000) {
+            // Ptolemaios
+            if ([0, 1, 2].contains(limitToAdd)) {
+              variants.add(getSvtData(svt, limitToAdd)?..skills[2] = null);
+            } else if ([3, 4].contains(limitToAdd)) {
+              variants.add(getSvtData(svt, limitToAdd)?..skills[2] = null);
+            }
+          } else {
+            //
+          }
+
+          // tdTypeChanges
+          final baseTd = baseSvt?.td;
+          if (baseSvt != null && baseTd != null) {
+            final tdTypeChangeIds = baseTd.script?.tdTypeChangeIDs ?? const [];
+            // tdChangeByBattlePoint_{}_{}
+            for (final tdId in tdTypeChangeIds) {
+              if (tdId == baseTd.id) continue;
+              final tdChange = baseSvt.svt?.noblePhantasms.firstWhereOrNull((e) => e.id == tdId);
+              if (tdChange != null) {
+                final tdChangeSvt = baseSvt.copy()..td = tdChange;
+                if (tdChange.id == 800108) {
+                  // Mash
+                  variants.add(tdChangeSvt..skills[1] = await AtlasApi.skill(2477450));
+                } else {
+                  variants.add(tdChangeSvt);
+                }
+              }
             }
           }
         }
+
+        final Map<int, TdDmgResult> resultRecord = {};
         for (final svtData in variants) {
           if (svtData == null) continue;
           final result = await calcOneSvt(svtData, quest, mcData, delegate);
           if (result == null) continue;
-          results.add(result);
+
+          if (resultRecord.containsKey(result.totalDamage)) {
+            final currentLimitCount = result.actor.limitCount;
+            final recordedLimitCount = resultRecord[result.totalDamage]!.actor.limitCount;
+            if ((currentLimitCount < recordedLimitCount && recordedLimitCount != 4) || currentLimitCount == 4) {
+              resultRecord[result.totalDamage] = result;
+            }
+          } else {
+            resultRecord[result.totalDamage] = result;
+          }
         }
+        results.addAll(resultRecord.values);
         // if (svt.collectionNo % 100 == 0) await Future.delayed(const Duration(milliseconds: 1));
         // t.log('${svt.collectionNo}');
       } catch (e, s) {
