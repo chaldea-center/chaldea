@@ -925,6 +925,8 @@ class UserServantCollectionEntity extends DataEntityBase<_IntStr> {
 
   bool get isOwned => status == 2;
 
+  int get maxFriendshipRank => (svtId == 800100 ? 5 : 10) + friendshipExceedCount;
+
   Map<int, int> costumeIdsTo01() {
     Map<int, int> result = {};
     for (final costumeId in costumeIds) {

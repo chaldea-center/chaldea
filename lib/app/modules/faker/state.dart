@@ -752,9 +752,10 @@ class FakerRuntime {
           throw SilentException('UserServantCollection ${userSvt.svtId} not found');
         }
         if (dbSvt.type == SvtType.heroine) continue;
-        final maxBondLv = 10 + svtCollection.friendshipExceedCount;
-        if (svtCollection.friendshipRank >= maxBondLv) {
-          throw SilentException('Svt No.${dbSvt.collectionNo} ${dbSvt.lName.l} reaches max bond Lv.$maxBondLv');
+        if (svtCollection.friendshipRank >= svtCollection.maxFriendshipRank) {
+          throw SilentException(
+            'Svt No.${dbSvt.collectionNo} ${dbSvt.lName.l} reaches max bond Lv.${svtCollection.maxFriendshipRank}',
+          );
         }
       }
     }

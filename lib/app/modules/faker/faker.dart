@@ -407,6 +407,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
         if (runtime.runningTask.value) return;
         await router.pushPage(BattleOptionListPage(data: agent.user));
         if (mounted) setState(() {});
+        _onChangeQuest();
       },
     );
   }
@@ -1158,7 +1159,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
           ListTile(
             dense: true,
             title: Text("Event Deck ${eventFormation?.deckNo ?? eventDeckNo}"),
-            subtitle: eventFormation?.eventId == 0 ? null : Text('Event $eventId'),
+            subtitle: Text('Event ${eventFormation?.eventId ?? eventId}'),
             trailing: const Icon(Icons.change_circle),
             onTap: () {
               router.pushPage(UserFormationDecksPage(mstData: mstData, eventId: eventId));
@@ -2072,7 +2073,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
             final bool reachBondLimit = bondB == 0;
 
             String bondText =
-                'Lv.${collection.friendshipRank}/${10 + collection.friendshipExceedCount}'
+                'Lv.${collection.friendshipRank}/${collection.maxFriendshipRank}'
                 // '\n${collection.friendship}'
                 '\n${-bondB}';
             // battle result

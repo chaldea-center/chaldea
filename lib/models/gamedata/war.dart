@@ -185,7 +185,7 @@ class NiceWar with RouteInfo {
 
   Event? get event => db.gameData.events[eventId];
   // exclude 1.7/1.5.1-1.5.4/2.7
-  Event? get eventReal => isMainStory ? null : db.gameData.events[eventId];
+  Event? get eventReal => isMainStory ? null : db.gameData.events[_eventId];
 
   NiceWar? get releaseCondWar {
     Quest? firstMainQuest;

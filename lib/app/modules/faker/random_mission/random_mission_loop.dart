@@ -538,7 +538,7 @@ class _RandomMissionLoopPageState extends State<RandomMissionLoopPage> {
               final bool reachBondLimit = bondB == 0;
 
               String bondText =
-                  'Lv.${collection.friendshipRank}/${10 + collection.friendshipExceedCount}'
+                  'Lv.${collection.friendshipRank}/${collection.maxFriendshipRank}'
                   // '\n${collection.friendship}'
                   '\n${-bondB}';
               // battle result

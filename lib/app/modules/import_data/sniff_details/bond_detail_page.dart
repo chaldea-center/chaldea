@@ -149,7 +149,7 @@ class _SvtBondDetailPageState extends State<SvtBondDetailPage> with SingleTicker
         shownCollections.sortByList(
           (e) => <int>[
             -e.collection.friendshipRank,
-            -e.collection.friendshipExceedCount,
+            -e.collection.maxFriendshipRank,
             _getBondNext(e.svt, e.collection),
             e.svt.collectionNo,
           ],
@@ -319,7 +319,7 @@ class _SvtBondDetailPageState extends State<SvtBondDetailPage> with SingleTicker
                         alignment: Alignment.center,
                         child: AutoSizeText(
                           'Lv.${collection.friendshipRank}/'
-                          '${(svt.collectionNo == 1 ? 8 : 10) + collection.friendshipExceedCount}',
+                          '${collection.maxFriendshipRank}',
                           maxLines: 1,
                           maxFontSize: 14,
                           minFontSize: 6,
@@ -486,7 +486,7 @@ class _SvtBondDetailPageState extends State<SvtBondDetailPage> with SingleTicker
         svt.lName.l,
         svt.rarity,
         collection.friendshipRank,
-        (svt.collectionNo == 1 ? 5 : 10) + collection.friendshipExceedCount,
+        collection.maxFriendshipRank,
         collection.friendship,
         _getBondNext(svt, collection),
         for (int bond = 4; bond < 15; bond++) svt.bondGrowth.getOrNull(bond) ?? "",
