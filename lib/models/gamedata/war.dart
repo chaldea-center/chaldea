@@ -258,6 +258,11 @@ class NiceWar with RouteInfo {
           continue;
         }
 
+        // Grand Board War
+        if (parentWarId == WarId.grandBoardWar && quest.consumeItem.firstOrNull?.itemId == Items.stormPodId) {
+          continue;
+        }
+
         Gift.checkAddGifts(itemReward, quest.giftsWithPhasePresents);
         if (quest.type != QuestType.warBoard) {
           for (final phase in quest.phases) {

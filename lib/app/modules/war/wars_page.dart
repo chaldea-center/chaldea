@@ -40,6 +40,7 @@ class _WarsPageState extends State<WarsPage> with SingleTickerProviderStateMixin
         continue;
       }
       if (war.id == ConstData.constants.grandBoardWarId) {
+        mainStories.add(war);
         chaldeaGates.add(war);
       }
       if (war.id == ConstData.constants.grandBoardWarId || war.parentWarId == ConstData.constants.grandBoardWarId) {

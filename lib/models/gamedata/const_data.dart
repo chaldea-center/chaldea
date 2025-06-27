@@ -4,9 +4,10 @@ import 'package:chaldea/utils/extension.dart';
 import '../db.dart';
 import '_helper.dart';
 import 'common.dart';
-import 'quest.dart' show Gift;
+import 'quest.dart' show Gift, QuestAfterClearType;
 import 'servant.dart';
 import 'skill.dart';
+import 'war.dart' show WarId;
 
 part '../../generated/models/gamedata/const_data.g.dart';
 
@@ -161,7 +162,24 @@ class ConstGameData {
   }
 
   List<int> getSimilarQuestIds(int questId) {
-    return [sameQuestRemap[questId], sameQuestRemapReverse[questId]].whereType<int>().toList();
+    final ids = [sameQuestRemap[questId], sameQuestRemapReverse[questId]].whereType<int>().toList();
+    if (ids.isNotEmpty) return ids;
+    final quest = db.gameData.quests[questId];
+    final war = quest?.war;
+    if (quest != null &&
+        war != null &&
+        war.parentWarId == WarId.grandBoardWar &&
+        quest.afterClear == QuestAfterClearType.repeatLast) {
+      final similarQuest = war.quests.firstWhereOrNull(
+        (e) =>
+            e.id != questId &&
+            e.afterClear == quest.afterClear &&
+            e.name == quest.name &&
+            e.recommendLv == quest.recommendLv,
+      );
+      if (similarQuest != null) ids.add(similarQuest.id);
+    }
+    return ids;
   }
 
   factory ConstGameData.fromJson(Map<String, dynamic> json) {
