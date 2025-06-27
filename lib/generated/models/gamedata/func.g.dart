@@ -121,6 +121,7 @@ const _$FuncTargetTypeEnumMap = {
   FuncTargetType.enemyRange: 'enemyRange',
   FuncTargetType.handCommandcardRandomOne: 'handCommandcardRandomOne',
   FuncTargetType.fieldAll: 'fieldAll',
+  FuncTargetType.noTarget: 'noTarget',
 };
 
 const _$FuncApplyTargetEnumMap = {

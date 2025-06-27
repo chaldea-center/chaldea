@@ -72,6 +72,7 @@ const _$SvtFlagEnumMap = {
   SvtFlag.svtEquipCampaign: 'svtEquipCampaign',
   SvtFlag.svtEquipEvent: 'svtEquipEvent',
   SvtFlag.svtEquipEventReward: 'svtEquipEventReward',
+  SvtFlag.svtEquipRarityLevelNumMission: 'svtEquipRarityLevelNumMission',
 };
 
 const _$ServantSubAttributeEnumMap = {

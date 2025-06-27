@@ -521,6 +521,7 @@ class GameConstants {
   final int jekyllSvtId; // 600700
   final int largeSuccessMultExp; // 2000
   final int largeSuccessRate; // 100
+  final int lastAttackToSelfIndividuality; // 6045
   final int lastWarId; // 405
   final int limitedPeriodVoiceChangeType; // 0
   final int limitedShopRemainDays; // 1000
@@ -847,6 +848,7 @@ class GameConstants {
     this.jekyllSvtId = 600700,
     this.largeSuccessMultExp = 2000,
     this.largeSuccessRate = 100,
+    this.lastAttackToSelfIndividuality = 6045,
     this.lastWarId = 405,
     this.limitedPeriodVoiceChangeType = 0,
     this.limitedShopRemainDays = 1000,

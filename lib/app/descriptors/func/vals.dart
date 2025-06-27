@@ -149,6 +149,8 @@ class ValDsc extends StatelessWidget {
   void describeFunc() {
     parts.clear();
 
+    int? k = vals.CondParamAddValue ?? vals.CondParamRangeMaxValue;
+    bool isPercentK = (vals.CondParamRangeMaxValue ?? 0) != 0;
     int? valueMaxValue = vals.CondParamRangeMaxValue ?? vals.CondParamAddMaxValue;
     if (valueMaxValue != null) valueMaxValue = (vals.Value ?? 0) + valueMaxValue;
 
@@ -227,10 +229,19 @@ class ValDsc extends StatelessWidget {
           default:
             final base = kFuncValPercentType[func.funcType];
             if (base != null) {
-              _addPercent(parts, vals.Value, base);
+              if (k != null) {
+                parts.add("${_toPercent(vals.Value, base)}%+${_toPercent(k, base)}%×${isPercentK ? 'p' : 'N'}");
+              } else {
+                _addPercent(parts, vals.Value, base);
+              }
             } else {
-              parts.add(vals.Value.toString());
+              if (k != null) {
+                parts.add("${vals.Value}+$k×${isPercentK ? 'p' : 'N'}");
+              } else {
+                parts.add(vals.Value.toString());
+              }
             }
+
             break;
         }
       }
@@ -409,7 +420,7 @@ class ValDsc extends StatelessWidget {
     }
     if (vals.RatioHPHigh != null || vals.RatioHPLow != null) {
       final ratios = [vals.RatioHPHigh ?? 0, vals.RatioHPLow ?? 0].toList();
-      final ratioStrings = ratios.map((e) => _toPercent(e, base ?? 1)).toList();
+      final ratioStrings = ratios.map((e) => _toPercent((vals.Value ?? 0) + e, base ?? 1)).toList();
       parts.add('${ratioStrings.join('-')}%');
     }
     if (!inList &&

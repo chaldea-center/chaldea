@@ -948,11 +948,13 @@ class BattleServantData {
     final BuffAction buffAction,
     final BuffData buff,
     final BattleServantData? opponent, {
+    final BattleServantData? self,
     final CommandCardData? cardData,
     final bool isAttack = true,
     final DataVals? dataVals,
     final List<NiceTrait>? addTraits,
   }) {
+    List<NiceTrait>? results;
     switch (buffAction) {
       case BuffAction.functionCommandcodeattackBefore:
       case BuffAction.functionCommandcodeattackBeforeMainOnly:
@@ -993,21 +995,21 @@ class BattleServantData {
       case BuffAction.multiattack:
       case BuffAction.functionGuts:
         final activeOnly = buff.buff.script.IndvAddBuffPassive != 1;
-        return opponent?.getTraits(addTraits: opponent.getBuffTraits(activeOnly: activeOnly));
+        results = opponent?.getTraits(addTraits: opponent.getBuffTraits(activeOnly: activeOnly));
       case BuffAction.damageIndividuality:
-        return opponent?.getBuffTraits(activeOnly: false);
+        results = opponent?.getBuffTraits(activeOnly: false);
       case BuffAction.damageIndividualityActiveonly:
-        return opponent?.getBuffTraits(
+        results = opponent?.getBuffTraits(
           activeOnly: true,
           ignoreIndivUnreleaseable: buff.vals.IgnoreIndivUnreleaseable == 1,
         );
       case BuffAction.damageEventPoint:
-        return opponent?.getBuffTraits(activeOnly: true);
+        results = opponent?.getBuffTraits(activeOnly: true);
       case BuffAction.avoidState:
       case BuffAction.resistanceState:
       case BuffAction.toleranceSubstate:
       case BuffAction.guts:
-        return opponent?.getTraits(addTraits: addTraits) ?? addTraits;
+        results = opponent?.getTraits(addTraits: addTraits) ?? addTraits;
       case BuffAction.functionDamage:
       case BuffAction.avoidanceIndividuality:
       case BuffAction.specialInvincible:
@@ -1029,7 +1031,8 @@ class BattleServantData {
       case BuffAction.criticalStarDamageTaken:
       case BuffAction.overwriteDamageDef:
         final activeOnly = buff.buff.script.IndvAddBuffPassive != 1;
-        return opponent?.getTraits(
+        results =
+            opponent?.getTraits(
               addTraits: [
                 ...cardData?.traits ?? [],
                 ...opponent.getBuffTraits(activeOnly: activeOnly),
@@ -1038,7 +1041,7 @@ class BattleServantData {
             cardData?.traits;
       case BuffAction.dropNp:
       case BuffAction.criticalPoint:
-        return isAttack ? opponent?.getTraits(addTraits: cardData?.traits) : opponent?.getTraits();
+        results = isAttack ? opponent?.getTraits(addTraits: cardData?.traits) : opponent?.getTraits();
       case BuffAction.functionReflection:
       case BuffAction.functionDead:
       case BuffAction.functionEntry:
@@ -1070,10 +1073,15 @@ class BattleServantData {
       case BuffAction.functionTreasureDeviceAfter:
       case BuffAction.functionSkillTargetedBefore:
       case BuffAction.functionedFunction:
-        return [];
+        results = [];
       default:
-        return opponent?.getTraits(addTraits: opponent.getBuffTraits(activeOnly: false)) ?? [];
+        results = opponent?.getTraits(addTraits: opponent.getBuffTraits(activeOnly: false)) ?? [];
     }
+
+    if (self != null && self.lastHitBy != null && opponent != null && self.lastHitBy!.uniqueId == opponent.uniqueId) {
+      results = [...?results, NiceTrait(id: ConstData.constants.lastAttackToSelfIndividuality)];
+    }
+    return results;
   }
 
   List<NiceTrait> getTraits({final List<NiceTrait>? addTraits}) {
@@ -1791,6 +1799,7 @@ class BattleServantData {
         buffAction,
         buff,
         opponent,
+        self: this,
         cardData: card,
         isAttack: !isAttack,
         addTraits: addTraits,
@@ -2011,6 +2020,7 @@ class BattleServantData {
         buffAction,
         buff,
         opponent,
+        self: this,
         cardData: card,
         addTraits: addTraits,
       );
@@ -2047,6 +2057,7 @@ class BattleServantData {
         buffAction,
         buff,
         opponent,
+        self: this,
         cardData: card,
         addTraits: addTraits,
       );
@@ -2099,7 +2110,7 @@ class BattleServantData {
     for (final buffAction in buffActions) {
       for (final buff in collectBuffsPerAction(battleBuff.validBuffsActiveFirst, buffAction)) {
         final List<NiceTrait> selfTraits = fetchSelfTraits(buffAction, buff, this, cardData: card);
-        final List<NiceTrait>? opponentTraits = fetchOpponentTraits(buffAction, buff, opponent, cardData: card);
+        List<NiceTrait>? opponentTraits = fetchOpponentTraits(buffAction, buff, opponent, cardData: card);
 
         final shouldActivate = await buff.shouldActivateBuff(
           battleData,
@@ -2449,6 +2460,7 @@ class BattleServantData {
     }
 
     if (gutsToApply != null) {
+      await activateBuff(battleData, BuffAction.functionGutsBefore, opponent: lastHitBy);
       gutsToApply.setUsed(this, battleData);
       final value = gutsToApply.getValue(this);
       final isRatio = gutsToApply.buff.type == BuffType.gutsRatio || gutsToApply.buff.type == BuffType.shiftGutsRatio;
