@@ -156,6 +156,38 @@ class FakerAgentJP extends FakerAgent<FRequestJP, AutoLoginDataJP, NetworkManage
   }
 
   @override
+  Future<FResponse> eventTradeStart({
+    required int32_t eventId,
+    required int32_t tradeStoreIdx,
+    required int32_t tradeGoodsId,
+    required int32_t tradeGoodsNum,
+    required int32_t itemId,
+  }) {
+    final request = FRequestJP(network: network, path: '/event/tradeStart');
+    request.addFieldInt32('eventId', eventId);
+    request.addFieldInt32('tradeStoreIdx', tradeStoreIdx);
+    request.addFieldInt32('tradeGoodsId', tradeGoodsId);
+    request.addFieldInt32('tradeGoodsNum', tradeGoodsNum);
+    request.addFieldInt32('reduceTimeItemId', itemId);
+    return request.beginRequestAndCheckError('event_trade_start');
+  }
+
+  @override
+  Future<FResponse> eventTradeReceive({
+    required int32_t eventId,
+    required List<int32_t> tradeStoreIdxs,
+    required int32_t receiveNum,
+    required int32_t cancelTradeFlag,
+  }) {
+    final request = FRequestJP(network: network, path: '/event/tradeReceive');
+    request.addFieldInt32('eventId', eventId);
+    request.addFieldStr('tradeStoreIdxs', jsonEncode(tradeStoreIdxs));
+    request.addFieldInt32('receiveNum', receiveNum);
+    request.addFieldInt32('cancelTradeFlag', cancelTradeFlag);
+    return request.beginRequestAndCheckError('event_trade_receive');
+  }
+
+  @override
   Future<FResponse> userPresentReceive({
     required List<int64_t> presentIds,
     required int32_t itemSelectIdx,

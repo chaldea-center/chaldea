@@ -311,6 +311,42 @@ class FakerAgentCN extends FakerAgent<FRequestCN, AutoLoginDataCN, NetworkManage
   }
 
   @override
+  Future<FResponse> eventTradeStart({
+    required int32_t eventId,
+    required int32_t tradeStoreIdx,
+    required int32_t tradeGoodsId,
+    required int32_t tradeGoodsNum,
+    int32_t itemId = 0,
+  }) {
+    return _acPhp(
+      key: 'eventtradestart',
+      nid: 'event_trade_start',
+      params4: {
+        'eventId': eventId,
+        'tradeStoreIdx': tradeStoreIdx,
+        'tradeGoodsId': tradeGoodsId,
+        'tradeGoodsNum': tradeGoodsNum,
+        // 'reduceTimeItemId': itemId,
+      },
+    );
+  }
+
+  @override
+  Future<FResponse> eventTradeReceive({
+    required int32_t eventId,
+    required List<int32_t> tradeStoreIdxs,
+    required int32_t receiveNum,
+    required int32_t cancelTradeFlag,
+  }) {
+    return _acPhp(
+      key: 'eventtradereceive',
+      nid: 'event_trade_receive',
+      params2: {'tradeStoreIdxs': jsonEncode(tradeStoreIdxs)},
+      params4: {'eventId': eventId, 'receiveNum': receiveNum, 'cancelTradeFlag': cancelTradeFlag},
+    );
+  }
+
+  @override
   Future<FResponse> userPresentReceive({
     required List<int64_t> presentIds,
     required int32_t itemSelectIdx,

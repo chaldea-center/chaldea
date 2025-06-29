@@ -51,6 +51,21 @@ abstract class FakerAgent<
 
   Future<FResponse> eventMissionRandomCancel({required int32_t missionId});
 
+  Future<FResponse> eventTradeStart({
+    required int32_t eventId,
+    required int32_t tradeStoreIdx,
+    required int32_t tradeGoodsId,
+    required int32_t tradeGoodsNum,
+    required int32_t itemId,
+  });
+
+  Future<FResponse> eventTradeReceive({
+    required int32_t eventId,
+    required List<int32_t> tradeStoreIdxs,
+    required int32_t receiveNum,
+    required int32_t cancelTradeFlag,
+  });
+
   Future<FResponse> userPresentReceive({
     required List<int64_t> presentIds,
     required int32_t itemSelectIdx,
