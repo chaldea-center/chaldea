@@ -104,8 +104,12 @@ class _FakerHistoryViewerState extends State<FakerHistoryViewer> {
           ),
           // trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
           onTap: () {
-            final cache = record.response?.data.cache;
-            if (cache != null && cache.isNotEmpty) {
+            final cache = Map.from(record.response?.data.cache ?? {});
+            if (cache.isNotEmpty) {
+              for (final key in ['deleted', 'replaced', 'updated']) {
+                if (!cache.containsKey(key)) continue;
+                cache[key] = sortDict(cache[key]);
+              }
               router.pushPage(JsonViewerPage(cache));
             }
           },
@@ -143,7 +147,9 @@ class _FakerHistoryViewerState extends State<FakerHistoryViewer> {
       if (detail.nid == 'gamedata' && data != null) {
         data = {
           for (final (k, v) in data.items)
-            k: const {'webview', 'assetbundle', 'master', 'assetbundleKey'}.contains(k) && v != '' ? '...' : v,
+            k: const {'webview', 'assetbundle', 'master', 'assetbundleKey'}.contains(k) && v != ''
+                ? '(${v.toString().length})${v.toString().substring2(10)}...'
+                : v,
         };
       }
       if (data?.isNotEmpty != true && detail.fail?.isNotEmpty == true) {

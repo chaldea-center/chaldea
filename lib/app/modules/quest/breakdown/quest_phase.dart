@@ -620,32 +620,41 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
         mainAxisSize: MainAxisSize.min,
         children: [
           _header(S.current.mystic_code),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
+          Wrap(
+            alignment: WrapAlignment.center,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            spacing: 4,
             children: [
-              for (final equip in equips) ...[
-                if ((equip.iconId ?? 0) > 0) db.getIconImage(equip.icon, width: 36, aspectRatio: 1),
-                const SizedBox(width: 8),
-                for (final equipSkill in equip.skills)
-                  FutureBuilder2<int, NiceSkill?>(
-                    id: equipSkill.id,
-                    loader: () => AtlasApi.skill(equipSkill.id),
-                    builder: (context, skill) {
-                      if (skill == null) {
-                        return Text(equipSkill.id.toString(), style: const TextStyle(fontStyle: FontStyle.italic));
-                      }
-                      return db.getIconImage(
-                        skill.icon ?? Atlas.common.unknownSkillIcon,
-                        width: 24,
-                        aspectRatio: 1,
-                        onTap: skill.routeTo,
-                        padding: const EdgeInsets.symmetric(horizontal: 2),
-                      );
-                    },
-                  ),
-                Text('  Lv.${equip.skillLv}   '),
-              ],
+              for (final equip in equips)
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    (equip.iconId ?? 0) > 0
+                        ? db.getIconImage(equip.icon, width: 36, aspectRatio: 1)
+                        : const SizedBox(width: 36),
+                    const SizedBox(width: 8),
+                    for (final equipSkill in equip.skills)
+                      FutureBuilder2<int, NiceSkill?>(
+                        id: equipSkill.id,
+                        loader: () => AtlasApi.skill(equipSkill.id),
+                        builder: (context, skill) {
+                          if (skill == null) {
+                            return Text(equipSkill.id.toString(), style: const TextStyle(fontStyle: FontStyle.italic));
+                          }
+                          return db.getIconImage(
+                            skill.icon ?? Atlas.common.unknownSkillIcon,
+                            width: 24,
+                            aspectRatio: 1,
+                            onTap: skill.routeTo,
+                            padding: const EdgeInsets.symmetric(horizontal: 2),
+                          );
+                        },
+                      ),
+                    Text('  Lv.${equip.skillLv}   '),
+                  ],
+                ),
             ],
           ),
         ],

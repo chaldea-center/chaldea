@@ -432,5 +432,5 @@ String _getTypeName(dynamic content) {
 
 String _limitStrLength(String v, [int length = 500]) {
   if (v.length < length) return v;
-  return '${v.substring(0, length)}...';
+  return '${v.substring(0, length)}...(len=${v.length})';
 }

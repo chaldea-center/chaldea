@@ -233,6 +233,7 @@ class _EquipBondBonusTabState extends State<EquipBondBonusTab> {
       final bonusSvtIds = <int>{for (final v in allCeMatchSvtData.values) ...v.keys};
       List<({Servant svt, List<int> limitCounts})> svts = [];
       for (final svt in db.gameData.servantsById.values) {
+        if (!ServantFilterPage.filter(svtFilterData, svt)) continue;
         if (svt.collectionNo > 0 && !bonusSvtIds.contains(svt.id)) {
           svts.add((svt: svt, limitCounts: []));
         }

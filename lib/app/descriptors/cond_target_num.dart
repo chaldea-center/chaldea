@@ -742,6 +742,14 @@ class CondTargetNumDescriptor extends HookWidget with DescriptorBase {
           na: () => rich('Raise the exchanged servant to Lv.$targetNum or higher', events(context)),
           kr: null,
         );
+      case CondType.grandSvtSet:
+        return localized(
+          jp: () => rich('サーヴァント$targetNum騎をグランドに選定せよ: ${classIds(targetIds)}'),
+          cn: () => rich('选定$targetNum骑冠位从者：${classIds(targetIds)}'),
+          tw: null,
+          na: () => rich('Select $targetNum Servant for the Grand Class: ${classIds(targetIds)}'),
+          kr: null,
+        );
       case CondType.commonRelease:
         return localized(
           jp: null,

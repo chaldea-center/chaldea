@@ -292,7 +292,7 @@ class _WarDetailPageState extends State<WarDetailPage> with RegionBasedState<Nic
                       ),
                 horizontalTitleGap: 8,
                 title: Text(
-                  title,
+                  title.setMaxLines(1),
                   maxLines: 1,
                   textScaler: const TextScaler.linear(0.8),
                   overflow: TextOverflow.ellipsis,

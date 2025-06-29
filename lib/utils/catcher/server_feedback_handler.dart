@@ -188,6 +188,7 @@ class ServerFeedbackHandler extends ReportHandler {
         'Unable to load asset: "res/js/glpk.min.js"',
         "UnknownError: Failed to execute 'transferToImageBitmap' on 'OffscreenCanvas'",
         'RuntimeError:',
+        'Cannot transfer to ImageBitmap',
         // "SecurityError: Failed to execute 'texImage2D'",
         // "TypeError: Cannot read property 'toString' of null",
         // "TypeError: Cannot read properties of undefined",

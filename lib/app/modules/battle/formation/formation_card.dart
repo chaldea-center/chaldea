@@ -26,6 +26,7 @@ class FormationCard extends StatelessWidget {
   Widget build(final BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         for (final onFieldSvt in formation.onFieldSvts) _buildServantIcons(context, onFieldSvt),
         for (final backupSvt in formation.backupSvts) _buildServantIcons(context, backupSvt),
