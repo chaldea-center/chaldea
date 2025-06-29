@@ -2496,13 +2496,20 @@ class UserAccountLinkageEntity extends DataEntityBase<int> {
   factory UserAccountLinkageEntity.fromJson(Map<String, dynamic> data) => _$UserAccountLinkageEntityFromJson(data);
 }
 
+mixin UserDeckEntityBase {
+  int get deckNo;
+  DeckServantEntity? get deckInfo;
+}
+
 @JsonSerializable(createToJson: true)
-class UserDeckEntity extends DataEntityBase<int> {
+class UserDeckEntity extends DataEntityBase<int> with UserDeckEntityBase {
   int id;
   int userId;
+  @override
   int deckNo;
   String name;
   // String deskInfoJson; // CN
+  @override
   DeckServantEntity? deckInfo;
   int cost;
 
@@ -2523,10 +2530,12 @@ class UserDeckEntity extends DataEntityBase<int> {
 }
 
 @JsonSerializable(createToJson: false)
-class UserEventDeckEntity extends DataEntityBase<String> {
+class UserEventDeckEntity extends DataEntityBase<String> with UserDeckEntityBase {
   int userId;
   int eventId;
+  @override
   int deckNo;
+  @override
   DeckServantEntity? deckInfo;
 
   @override

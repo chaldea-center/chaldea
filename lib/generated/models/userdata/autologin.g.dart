@@ -251,7 +251,14 @@ AutoBattleOptions _$AutoBattleOptionsFromJson(Map json) => $checkedCreate('AutoB
       'supportSvtIds',
       (v) => (v as List<dynamic>?)?.map((e) => (e as num).toInt()).toSet(),
     ),
-    supportCeIds: $checkedConvert('supportCeIds', (v) => (v as List<dynamic>?)?.map((e) => (e as num).toInt()).toSet()),
+    supportEquipIds: $checkedConvert(
+      'supportEquipIds',
+      (v) => (v as List<dynamic>?)?.map((e) => (e as num).toInt()).toSet(),
+    ),
+    grandSupportEquipIds: $checkedConvert(
+      'grandSupportEquipIds',
+      (v) => (v as List<dynamic>?)?.map((e) => (e as num).toInt()).toSet(),
+    ),
     supportCeMaxLimitBreak: $checkedConvert('supportCeMaxLimitBreak', (v) => v as bool? ?? true),
     npcSupportId: $checkedConvert('npcSupportId', (v) => (v as num?)?.toInt() ?? 0),
     useCampaignItem: $checkedConvert('useCampaignItem', (v) => v as bool? ?? false),
@@ -270,6 +277,7 @@ AutoBattleOptions _$AutoBattleOptionsFromJson(Map json) => $checkedCreate('AutoB
       'usedTurnArray',
       (v) => (v as List<dynamic>?)?.map((e) => (e as num).toInt()).toList(),
     ),
+    checkSkillShift: $checkedConvert('checkSkillShift', (v) => v as bool? ?? true),
     recoverIds: $checkedConvert('recoverIds', (v) => (v as List<dynamic>?)?.map((e) => (e as num).toInt()).toList()),
     loopCount: $checkedConvert('loopCount', (v) => (v as num?)?.toInt() ?? 0),
     targetDrops: $checkedConvert(
@@ -280,10 +288,10 @@ AutoBattleOptions _$AutoBattleOptionsFromJson(Map json) => $checkedCreate('AutoB
       'winTargetItemNum',
       (v) => (v as Map?)?.map((k, e) => MapEntry(int.parse(k as String), (e as num).toInt())),
     ),
+    battleDuration: $checkedConvert('battleDuration', (v) => (v as num?)?.toInt()),
     waitApRecover: $checkedConvert('waitApRecover', (v) => v as bool? ?? false),
     waitApRecoverGold: $checkedConvert('waitApRecoverGold', (v) => v as bool? ?? false),
   );
-  $checkedConvert('battleDuration', (v) => val.battleDuration = (v as num?)?.toInt());
   return val;
 });
 
@@ -296,7 +304,8 @@ Map<String, dynamic> _$AutoBattleOptionsToJson(AutoBattleOptions instance) => <S
   'deckId': instance.deckId,
   'enfoceRefreshSupport': instance.enfoceRefreshSupport,
   'supportSvtIds': instance.supportSvtIds.toList(),
-  'supportCeIds': instance.supportCeIds.toList(),
+  'supportEquipIds': instance.supportEquipIds.toList(),
+  'grandSupportEquipIds': instance.grandSupportEquipIds.toList(),
   'supportCeMaxLimitBreak': instance.supportCeMaxLimitBreak,
   'npcSupportId': instance.npcSupportId,
   'useCampaignItem': instance.useCampaignItem,
@@ -306,6 +315,7 @@ Map<String, dynamic> _$AutoBattleOptionsToJson(AutoBattleOptions instance) => <S
   'winType': _$BattleWinResultTypeEnumMap[instance.winType]!,
   'actionLogs': instance.actionLogs,
   'usedTurnArray': instance.usedTurnArray,
+  'checkSkillShift': instance.checkSkillShift,
   'recoverIds': instance.recoverIds,
   'loopCount': instance.loopCount,
   'targetDrops': instance.targetDrops.map((k, e) => MapEntry(k.toString(), e)),

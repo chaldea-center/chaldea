@@ -257,7 +257,7 @@ class FakerRuntime {
       _checkStop();
       checkSvtKeep();
       if (battleOption.stopIfBondLimit) {
-        _checkFriendship(battleOption);
+        _checkFriendship(battleOption, questPhaseEntity);
       }
 
       final int startTime = DateTime.now().timestamp;
@@ -389,7 +389,7 @@ class FakerRuntime {
       update();
       await Future.delayed(const Duration(milliseconds: 100));
       if (battleOption.stopIfBondLimit) {
-        _checkFriendship(battleOption);
+        _checkFriendship(battleOption, questPhaseEntity);
       }
     }
     logger.t('finished all $finishedCount battles');
@@ -735,8 +735,14 @@ class FakerRuntime {
     }
   }
 
-  void _checkFriendship(AutoBattleOptions option) {
-    final svts = mstData.userDeck[battleOption.deckId]!.deckInfo?.svts ?? [];
+  void _checkFriendship(AutoBattleOptions option, QuestPhase questPhase) {
+    final deck = questPhase.isUseUserEventDeck()
+        ? mstData.userEventDeck[UserEventDeckEntity.createPK(
+            questPhase.logicEvent?.id ?? 0,
+            questPhase.extraDetail?.useEventDeckNo ?? 1,
+          )]
+        : mstData.userDeck[battleOption.deckId];
+    final svts = deck?.deckInfo?.svts ?? [];
     for (final svt in svts) {
       if (svt.userSvtId > 0) {
         final userSvt = mstData.userSvt[svt.userSvtId];

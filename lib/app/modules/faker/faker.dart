@@ -1224,8 +1224,8 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
             spacing: 4,
             runSpacing: 4,
             children: [
-              if (battleOption.supportCeIds.isEmpty) Text(S.current.general_any),
-              for (final ceId in battleOption.supportCeIds)
+              if (battleOption.supportEquipIds.isEmpty) Text(S.current.general_any),
+              for (final ceId in battleOption.supportEquipIds)
                 GestureDetector(
                   onLongPress: () {
                     db.gameData.craftEssencesById[ceId]?.routeTo();
@@ -1236,7 +1236,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
                     width: 36,
                     onTap: () {
                       runtime.lockTask(() {
-                        battleOption.supportCeIds.remove(ceId);
+                        battleOption.supportEquipIds.remove(ceId);
                         if (mounted) setState(() {});
                       });
                     },
@@ -1255,7 +1255,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
                         EasyLoading.showError('Not playable');
                         return;
                       }
-                      battleOption.supportCeIds.add(ce.id);
+                      battleOption.supportEquipIds.add(ce.id);
                       if (mounted) setState(() {});
                     },
                   ),
@@ -1265,6 +1265,55 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
             icon: const Icon(Icons.add_circle),
           ),
         ),
+        if (questPhase?.isUseGrandBoard == true || quest?.war?.parentWarId == WarId.grandBoardWar)
+          ListTile(
+            dense: true,
+            title: Text('$kStarChar2 ${S.current.grand_servant} - ${S.current.craft_essence_short}'),
+            subtitle: Wrap(
+              spacing: 4,
+              runSpacing: 4,
+              children: [
+                if (battleOption.grandSupportEquipIds.isEmpty) Text(S.current.general_any),
+                for (final ceId in battleOption.grandSupportEquipIds)
+                  GestureDetector(
+                    onLongPress: () {
+                      db.gameData.craftEssencesById[ceId]?.routeTo();
+                    },
+                    child: GameCardMixin.cardIconBuilder(
+                      context: context,
+                      icon: db.gameData.craftEssencesById[ceId]?.borderedIcon ?? Atlas.common.emptyCeIcon,
+                      width: 36,
+                      onTap: () {
+                        runtime.lockTask(() {
+                          battleOption.grandSupportEquipIds.remove(ceId);
+                          if (mounted) setState(() {});
+                        });
+                      },
+                    ),
+                  ),
+              ],
+            ),
+            trailing: IconButton(
+              onPressed: () {
+                runtime.lockTask(() {
+                  router.pushPage(
+                    CraftListPage(
+                      pinged: db.curUser.battleSim.pingedCEsWithEventAndBond(quest, null).toList(),
+                      onSelected: (ce) {
+                        if (ce.collectionNo <= 0) {
+                          EasyLoading.showError('Not playable');
+                          return;
+                        }
+                        battleOption.grandSupportEquipIds.add(ce.id);
+                        if (mounted) setState(() {});
+                      },
+                    ),
+                  );
+                });
+              },
+              icon: const Icon(Icons.add_circle),
+            ),
+          ),
         if (questPhase != null && questPhase.supportServants.isNotEmpty)
           ListTile(
             dense: true,
@@ -1538,6 +1587,19 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
             runtime.lockTask(() {
               setState(() {
                 battleOption.enfoceRefreshSupport = v!;
+              });
+            });
+          },
+          controlAffinity: ListTileControlAffinity.trailing,
+        ),
+        CheckboxListTile.adaptive(
+          dense: true,
+          value: battleOption.checkSkillShift,
+          title: const Text("Check skillShift"),
+          onChanged: (v) {
+            runtime.lockTask(() {
+              setState(() {
+                battleOption.checkSkillShift = v!;
               });
             });
           },

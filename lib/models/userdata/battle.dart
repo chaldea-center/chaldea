@@ -1208,9 +1208,13 @@ class BattleRecordData {
   List<BattleAttackRecordData>? attacks;
   BattleActionOptions options;
 
-  BattleRecordData({BattleActionOptions? options})
-    : type = BattleRecordDataType.base,
-      options = options ?? BattleActionOptions();
+  BattleRecordData({
+    this.type = BattleRecordDataType.base,
+    this.svt,
+    this.skill,
+    this.attacks,
+    BattleActionOptions? options,
+  }) : options = options ?? BattleActionOptions();
 
   BattleRecordData.skill({this.svt, this.skill, BattleActionOptions? options})
     : type = BattleRecordDataType.skill,

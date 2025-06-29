@@ -331,7 +331,8 @@ abstract class FakerAgent<
         useEventDeck: options.useEventDeck ?? db.gameData.others.shouldUseEventDeck(options.questId),
         enforceRefreshSupport: options.enfoceRefreshSupport,
         supportSvtIds: options.supportSvtIds.toList(),
-        supportEquipIds: options.supportCeIds.toList(),
+        supportEquipIds: options.supportEquipIds.toList(),
+        grandSupportEquipIds: options.grandSupportEquipIds.toList(),
         supportEquipMaxLimitBreak: options.supportCeMaxLimitBreak,
         isUseGrandBoard: isUseGrandBoard,
       );
@@ -362,6 +363,7 @@ abstract class FakerAgent<
     required bool enforceRefreshSupport,
     required List<int> supportSvtIds,
     required List<int> supportEquipIds,
+    required List<int> grandSupportEquipIds,
     required bool supportEquipMaxLimitBreak,
     required bool isUseGrandBoard,
   }) async {
@@ -400,26 +402,36 @@ abstract class FakerAgent<
         if (follower.type != FollowerType.friend.value && follower.type != FollowerType.notFriend.value) {
           continue;
         }
-        for (final svt in useEventDeck ? follower.eventUserSvtLeaderHash : follower.userSvtLeaderHash) {
-          if (supportSvtIds.isNotEmpty && !supportSvtIds.contains(svt.svtId)) {
+        for (var svtInfo in useEventDeck ? follower.eventUserSvtLeaderHash : follower.userSvtLeaderHash) {
+          if (supportSvtIds.isNotEmpty && !supportSvtIds.contains(svtInfo.svtId)) {
             continue;
           }
+
+          if (isUseGrandBoard && svtInfo.grandSvt == 1) {
+            svtInfo = follower.userSvtGrandHash.firstWhereOrNull((e) => e.userSvtId == svtInfo.userSvtId) ?? svtInfo;
+          }
           Set<int> followerEquipIds = {
-            if (supportEquipMaxLimitBreak && svt.equipTarget1?.limitCount == 4) svt.equipTarget1?.svtId,
+            if (!supportEquipMaxLimitBreak || svtInfo.equipTarget1?.limitCount == 4) svtInfo.equipTarget1?.svtId,
             if (isUseGrandBoard) ...[
-              if (supportEquipMaxLimitBreak && svt.equipTarget2?.limitCount == 4) svt.equipTarget2?.svtId,
-              if (supportEquipMaxLimitBreak && svt.equipTarget3?.limitCount == 4) svt.equipTarget3?.svtId,
+              if (!supportEquipMaxLimitBreak || svtInfo.equipTarget2?.limitCount == 4) svtInfo.equipTarget2?.svtId,
+              if (!supportEquipMaxLimitBreak || svtInfo.equipTarget3?.limitCount == 4) svtInfo.equipTarget3?.svtId,
             ],
           }.whereType<int>().toSet();
           if (followerEquipIds.isEmpty) continue;
-          if (followerEquipIds.isNotEmpty && supportEquipIds.toSet().intersection(followerEquipIds).isEmpty) {
-            continue;
+          if (followerEquipIds.isNotEmpty) {
+            if (supportEquipIds.toSet().intersection(followerEquipIds).isEmpty) continue;
+            if (grandSupportEquipIds.isNotEmpty) {
+              if (grandSupportEquipIds.toSet().intersection(supportEquipIds.toSet()).isNotEmpty) {
+                throw SilentException("Grand Servant's CE option should not be the same as normal CE");
+              }
+              if (grandSupportEquipIds.toSet().intersection(followerEquipIds).isEmpty) continue;
+            }
           }
           // grand duel
-          final dbSvt = db.gameData.servantsById[svt.svtId];
+          final dbSvt = db.gameData.servantsById[svtInfo.svtId];
           if (dbSvt == null) continue;
           final traits = dbSvt
-              .getIndividuality(questPhaseEntity.logicEvent?.id, svt.dispLimitCount)
+              .getIndividuality(questPhaseEntity.logicEvent?.id, svtInfo.dispLimitCount)
               .map((e) => e.id)
               .toSet();
           if (!questPhaseEntity.restrictions.every((restriction) {
@@ -436,7 +448,7 @@ abstract class FakerAgent<
             continue;
           }
 
-          return (follower, svt);
+          return (follower, svtInfo);
         }
       }
     }
@@ -447,6 +459,7 @@ abstract class FakerAgent<
     required BattleResultType resultType,
     required String actionLogs,
     List<int> usedTurnArray = const [],
+    bool checkSkillShift = true,
     Duration? sendDelay,
   }) async {
     final battleInfo = battleEntity.battleInfo!;
@@ -513,7 +526,7 @@ abstract class FakerAgent<
         ...battleInfo.callDeck,
         ...battleInfo.shiftDeck,
       ].expand((e) => e.svts).where((e) => e.enemyScript?.containsKey('skillShift') == true).toList();
-      if (skillShiftEnemies.isNotEmpty) {
+      if (skillShiftEnemies.isNotEmpty && checkSkillShift) {
         throw SilentException('skillShift not supported');
       }
       return battleResult(

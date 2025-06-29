@@ -38,12 +38,12 @@ class SaintQuartzPlan {
     this.weeklyMission = true,
     this.limitedMission = true,
     this.campaignLoginBonus = true,
-    Map<int, bool>? missions,
+    Map<int, bool>? extraMissions,
     bool? minusPlannedBanner,
     this.favoriteSummonOnly = false,
   }) : startDate = startDate ?? DateUtils.dateOnly(DateTime.now()),
        endDate = endDate ?? DateUtils.dateOnly(DateTime.now()),
-       extraMissions = missions ?? {},
+       extraMissions = extraMissions ?? {},
        minusPlannedBanner = minusPlannedBanner ?? true {
     validate();
   }

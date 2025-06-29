@@ -371,14 +371,14 @@ Map<String, dynamic> _$CmdCodeStatusToJson(CmdCodeStatus instance) => <String, d
 
 ClassBoardPlan _$ClassBoardPlanFromJson(Map json) => $checkedCreate('ClassBoardPlan', json, ($checkedConvert) {
   final val = ClassBoardPlan(
+    unlockedSquares: $checkedConvert(
+      'unlockedSquares',
+      (v) => (v as List<dynamic>?)?.map((e) => (e as num).toInt()).toSet(),
+    ),
     enhancedSquares: $checkedConvert(
       'enhancedSquares',
       (v) => (v as List<dynamic>?)?.map((e) => (e as num).toInt()).toSet(),
     ),
-  );
-  $checkedConvert(
-    'unlockedSquares',
-    (v) => val.unlockedSquares = (v as List<dynamic>).map((e) => (e as num).toInt()).toSet(),
   );
   return val;
 });
@@ -400,12 +400,12 @@ SaintQuartzPlan _$SaintQuartzPlanFromJson(Map json) => $checkedCreate('SaintQuar
     weeklyMission: $checkedConvert('weeklyMission', (v) => v as bool? ?? true),
     limitedMission: $checkedConvert('limitedMission', (v) => v as bool? ?? true),
     campaignLoginBonus: $checkedConvert('campaignLoginBonus', (v) => v as bool? ?? true),
+    extraMissions: $checkedConvert(
+      'extraMissions',
+      (v) => (v as Map?)?.map((k, e) => MapEntry(int.parse(k as String), e as bool)),
+    ),
     minusPlannedBanner: $checkedConvert('minusPlannedBanner', (v) => v as bool?),
     favoriteSummonOnly: $checkedConvert('favoriteSummonOnly', (v) => v as bool? ?? false),
-  );
-  $checkedConvert(
-    'extraMissions',
-    (v) => val.extraMissions = (v as Map).map((k, e) => MapEntry(int.parse(k as String), e as bool)),
   );
   return val;
 });

@@ -787,8 +787,8 @@ class ClassBoardPlan {
   Set<int> unlockedSquares;
   Set<int> enhancedSquares;
 
-  ClassBoardPlan({Set<int>? unlockSquares, Set<int>? enhancedSquares})
-    : unlockedSquares = unlockSquares ?? {},
+  ClassBoardPlan({Set<int>? unlockedSquares, Set<int>? enhancedSquares})
+    : unlockedSquares = unlockedSquares ?? {},
       enhancedSquares = enhancedSquares ?? {};
 
   ClassBoardPlan.full(ClassBoard board)

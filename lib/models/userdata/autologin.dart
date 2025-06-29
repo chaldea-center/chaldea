@@ -311,7 +311,8 @@ class AutoBattleOptions {
   int deckId;
   bool enfoceRefreshSupport;
   Set<int> supportSvtIds;
-  Set<int> supportCeIds;
+  Set<int> supportEquipIds;
+  Set<int> grandSupportEquipIds;
   bool supportCeMaxLimitBreak;
   int npcSupportId = 0;
   bool useCampaignItem;
@@ -322,6 +323,7 @@ class AutoBattleOptions {
   BattleWinResultType winType;
   String actionLogs;
   List<int> usedTurnArray;
+  bool checkSkillShift;
   // loop
   List<int> recoverIds;
   int loopCount;
@@ -340,7 +342,8 @@ class AutoBattleOptions {
     this.deckId = 0,
     this.enfoceRefreshSupport = false,
     Set<int>? supportSvtIds,
-    Set<int>? supportCeIds,
+    Set<int>? supportEquipIds,
+    Set<int>? grandSupportEquipIds,
     this.supportCeMaxLimitBreak = true,
     this.npcSupportId = 0,
     this.useCampaignItem = false,
@@ -350,14 +353,17 @@ class AutoBattleOptions {
     this.winType = BattleWinResultType.normal,
     this.actionLogs = '',
     List<int>? usedTurnArray,
+    this.checkSkillShift = true,
     List<int>? recoverIds,
     this.loopCount = 0,
     Map<int, int>? targetDrops,
     Map<int, int>? winTargetItemNum,
+    this.battleDuration,
     this.waitApRecover = false,
     this.waitApRecoverGold = false,
   }) : supportSvtIds = supportSvtIds ?? {},
-       supportCeIds = supportCeIds ?? {},
+       supportEquipIds = supportEquipIds ?? {},
+       grandSupportEquipIds = grandSupportEquipIds ?? {},
        usedTurnArray = usedTurnArray ?? [],
        recoverIds = recoverIds ?? [],
        targetDrops = targetDrops ?? {},

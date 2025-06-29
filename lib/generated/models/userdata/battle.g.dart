@@ -698,19 +698,22 @@ Map<String, dynamic> _$BattleActionOptionsToJson(BattleActionOptions instance) =
 
 BattleRecordData _$BattleRecordDataFromJson(Map json) => $checkedCreate('BattleRecordData', json, ($checkedConvert) {
   final val = BattleRecordData(
+    type: $checkedConvert(
+      'type',
+      (v) => $enumDecodeNullable(_$BattleRecordDataTypeEnumMap, v) ?? BattleRecordDataType.base,
+    ),
+    svt: $checkedConvert('svt', (v) => (v as num?)?.toInt()),
+    skill: $checkedConvert('skill', (v) => (v as num?)?.toInt()),
+    attacks: $checkedConvert(
+      'attacks',
+      (v) => (v as List<dynamic>?)
+          ?.map((e) => BattleAttackRecordData.fromJson(Map<String, dynamic>.from(e as Map)))
+          .toList(),
+    ),
     options: $checkedConvert(
       'options',
       (v) => v == null ? null : BattleActionOptions.fromJson(Map<String, dynamic>.from(v as Map)),
     ),
-  );
-  $checkedConvert('type', (v) => val.type = $enumDecode(_$BattleRecordDataTypeEnumMap, v));
-  $checkedConvert('svt', (v) => val.svt = (v as num?)?.toInt());
-  $checkedConvert('skill', (v) => val.skill = (v as num?)?.toInt());
-  $checkedConvert(
-    'attacks',
-    (v) => val.attacks = (v as List<dynamic>?)
-        ?.map((e) => BattleAttackRecordData.fromJson(Map<String, dynamic>.from(e as Map)))
-        .toList(),
   );
   return val;
 });
