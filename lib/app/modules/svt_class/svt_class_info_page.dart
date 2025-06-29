@@ -54,6 +54,12 @@ class _SvtClassInfoPageState extends State<SvtClassInfoPage> {
       final index = (beyondTheTaleClasses.indexOf(cls!) + 1).toString().padLeft(2, '0');
       cardImages.add("https://beyond.fate-go.jp/assets/img/teaser/card/${index}_${cls!.name.toLowerCase()}.jpg");
     }
+
+    final grandGraphDetail = db.gameData.grandGraphDetails.values.firstWhereOrNull((e) => e.grandClassId == clsId);
+    final indivs = <int>[
+      if (info != null) info.individuality,
+      ...?grandGraphDetail?.adjustIndividuality.map((e) => e.signedId),
+    ].where((e) => e != 0).toList();
     return Scaffold(
       appBar: AppBar(title: Text('${S.current.svt_class}: ${Transl.svtClassId(clsId).l}')),
       body: ListView(
@@ -90,15 +96,8 @@ class _SvtClassInfoPageState extends State<SvtClassInfoPage> {
                 children: [
                   TableCellData(text: _fmt(info?.attackRate)),
                   TableCellData(
-                    child: info == null || info.individuality == 0
-                        ? const Text('')
-                        : Text.rich(
-                            SharedBuilder.textButtonSpan(
-                              context: context,
-                              text: Transl.trait(info.individuality).l,
-                              onTap: () => router.push(url: Routes.traitI(info.individuality)),
-                            ),
-                          ),
+                    // flex: 2,
+                    child: SharedBuilder.traitList(context: context, traits: NiceTrait.list(indivs)),
                   ),
                 ],
               ),
@@ -172,7 +171,7 @@ class _SvtClassInfoPageState extends State<SvtClassInfoPage> {
         child: Tooltip(
           message: clsName,
           child: db.getIconImage(
-            SvtClassX.clsIcon(clsId, 5, info?.iconImageId),
+            SvtClassX.clsIcon(_clsId, 5, info?.iconImageId),
             height: 24,
             aspectRatio: 1,
             errorWidget: (context, url, error) =>

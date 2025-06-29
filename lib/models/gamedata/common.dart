@@ -451,9 +451,21 @@ extension SvtClassX on SvtClass {
   String icon(int svtRarity) => clsIcon(value, svtRarity, iconId);
 
   static String clsIcon(int clsId, int svtRarity, [int? iconId]) {
+    if (clsId >= SvtClass.grandSaber.value && clsId <= SvtClass.grandBerserker.value) {
+      if (!db.gameData.grandGraphDetails.values.any((e) => e.grandClassId == clsId)) {
+        return 'https://static.atlasacademy.io/file/aa-fgo-extract-jp/GrandServantList/DownloadGrandServantListAtlas1/'
+            'icon_class_off${(clsId - 10000).toString().padLeft(3, "0")}.png';
+      }
+    }
     iconId ??= ConstData.classInfo[clsId]?.iconImageId;
     int rarity = _kSvtClassRarityMap[svtRarity] ?? svtRarity;
     rarity = const <int, int>{1003: 2, 17: 3}[iconId] ?? rarity;
+
+    // unused lore grand class
+    if (const [13, 14, 15, 16, 18, 19].contains(clsId)) {
+      iconId = 12;
+      rarity = 2;
+    }
     return Atlas.asset('ClassIcons/class${rarity}_${iconId ?? 12}.png');
   }
 
