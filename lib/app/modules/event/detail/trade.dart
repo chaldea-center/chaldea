@@ -4,19 +4,63 @@ import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 
-class EventTradePage extends HookWidget {
+class EventTradePage extends StatefulWidget {
   final Event event;
   const EventTradePage({super.key, required this.event});
 
   @override
+  State<EventTradePage> createState() => _EventTradePageState();
+}
+
+class _EventTradePageState extends State<EventTradePage> {
+  final controller = ScrollController();
+
+  Set<int> selectedGoodIds = {};
+
+  @override
+  void dispose() {
+    super.dispose();
+    controller.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final trades = event.tradeGoods.toList();
+    final trades = widget.event.tradeGoods.toList();
     trades.sort2((e) => e.id);
-    return ListView.separated(
-      controller: useScrollController(),
-      itemBuilder: (context, index) => itemBuilder(context, trades[index]),
-      separatorBuilder: (_, _) => const Divider(height: 1),
-      itemCount: trades.length,
+    Map<int, int> oneDayCost = {};
+    for (final goodId in selectedGoodIds) {
+      final goods = widget.event.tradeGoods.firstWhereOrNull((e) => e.id == goodId);
+      if (goods != null) {
+        for (final consume in goods.consumes) {
+          oneDayCost.addNum(consume.objectId, (kSecsPerDay / goods.tradeTime * consume.num).round());
+        }
+      }
+    }
+    oneDayCost = sortDict(oneDayCost, reversed: true);
+    return Column(
+      children: [
+        Expanded(
+          child: ListView.separated(
+            controller: controller,
+            itemBuilder: (context, index) => itemBuilder(context, trades[index]),
+            separatorBuilder: (_, _) => const Divider(height: 1),
+            itemCount: trades.length,
+          ),
+        ),
+        if (oneDayCost.isNotEmpty)
+          SafeArea(
+            child: Wrap(
+              crossAxisAlignment: WrapCrossAlignment.center,
+              spacing: 1,
+              runSpacing: 1,
+              children: [
+                Text('${selectedGoodIds.length}${S.current.event_trade} 24h: '),
+                for (final (itemId, count) in oneDayCost.items)
+                  Item.iconBuilder(context: context, item: null, itemId: itemId, width: 32, text: count.format()),
+              ],
+            ),
+          ),
+      ],
     );
   }
 
@@ -24,6 +68,7 @@ class EventTradePage extends HookWidget {
     return SimpleAccordion(
       headerBuilder: (context, _) {
         return ListTile(
+          selected: selectedGoodIds.contains(trade.id),
           contentPadding: const EdgeInsetsDirectional.only(start: 16),
           horizontalTitleGap: 8,
           leading: trade.goodsIcon == null ? null : db.getIconImage(trade.goodsIcon, width: 32),
@@ -69,6 +114,17 @@ class EventTradePage extends HookWidget {
       },
       contentBuilder: (context) {
         List<Widget> children = [
+          CheckboxListTile(
+            dense: true,
+            value: selectedGoodIds.contains(trade.id),
+            title: Text(S.current.select),
+            onChanged: (v) {
+              setState(() {
+                selectedGoodIds.toggle(trade.id);
+              });
+            },
+            controlAffinity: ListTileControlAffinity.trailing,
+          ),
           if (trade.releaseConditions.isNotEmpty || trade.closedMessage.isNotEmpty)
             TileGroup(
               header: S.current.condition,
