@@ -26,7 +26,7 @@ class FreeQuestOverview extends StatefulWidget {
 class _FreeQuestOverviewState extends State<FreeQuestOverview> {
   late List<Quest> quests = widget.quests.toList();
   Map<int, QuestPhase> phases = {};
-  Map<int, List<Quest>> spots = {};
+  Map<String, List<Quest>> spots = {};
   bool _loading = false;
   bool _fixFirstCol = true;
   QuestLevel? minLv;
@@ -60,7 +60,7 @@ class _FreeQuestOverviewState extends State<FreeQuestOverview> {
     quests = widget.quests.toList();
 
     for (final quest in quests) {
-      spots.putIfAbsent(quest.spotId, () => []).add(quest);
+      spots.putIfAbsent(quest.lSpot.l, () => []).add(quest);
     }
 
     if (minLv != null) quests.retainWhere((quest) => quest.recommendLevel >= minLv!);
@@ -228,7 +228,9 @@ class _FreeQuestOverviewState extends State<FreeQuestOverview> {
     String name;
     if (spots.length > 1) {
       name = quest.lSpot.l;
-      if ((spots[quest.spotId]?.length ?? 0) > 1) {
+      if (name.trim().isEmpty) {
+        name = quest.lName.l;
+      } else if ((spots[quest.lSpot.l]?.length ?? 0) > 1) {
         name += ' (${quest.lName.l})';
       }
     } else {

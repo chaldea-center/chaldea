@@ -189,8 +189,22 @@ class _WarDetailPageState extends State<WarDetailPage> with RegionBasedState<Nic
       ),
     );
 
-    if (war.spots.isNotEmpty || war.questSelections.isNotEmpty) {
-      children.add(addQuestCategoryTile(context: context, war: war));
+    if (war.spots.isNotEmpty || war.questSelections.isNotEmpty || war.id == WarId.grandBoardWar) {
+      final grandBoardWarQuests = <Quest>[];
+      String? header;
+      if (war.id == WarId.grandBoardWar) {
+        for (final _w in db.gameData.wars.values) {
+          if (_w.parentWarId != WarId.grandBoardWar) continue;
+          final candidateQuests = _w.quests.where((e) => e.isAnyFree).toList();
+          candidateQuests.sortByList((e) => <Comparable>[e.recommendLevel, e.id]);
+          if (candidateQuests.isNotEmpty) {
+            grandBoardWarQuests.add(candidateQuests.last);
+          }
+        }
+        header = '${S.current.quest} (Lv.100${kStarChar2 * 3})';
+      }
+
+      children.add(addQuestCategoryTile(context: context, war: war, extraQuests: grandBoardWarQuests, header: header));
     }
 
     final raidLink = war.event?.extra.script.raidLink;
@@ -464,6 +478,7 @@ Widget addQuestCategoryTile({
   NiceWar? war,
   Event? event,
   List<Quest> extraQuests = const [],
+  String? header,
 }) {
   final allQuests = [...extraQuests];
   if (war != null) {
@@ -642,5 +657,5 @@ Widget addQuestCategoryTile({
     }
   }
 
-  return TileGroup(header: S.current.quest, children: children);
+  return TileGroup(header: header ?? S.current.quest, children: children);
 }
