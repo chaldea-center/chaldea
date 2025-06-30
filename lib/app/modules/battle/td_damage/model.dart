@@ -56,7 +56,8 @@ class TdDmgSolver {
       running.value = true;
       // let button update
       // await Future.delayed(const Duration(milliseconds: 200));
-      await _calculate();
+      await EasyThrottle.throttleAsync('td_dmg_calculate', _calculate);
+      await EasyLoading.dismiss();
     } catch (e, s) {
       tryEasyLoading(() => EasyLoading.showError(e.toString()));
       logger.e('calc NP dmg ranking failed', e, s);
@@ -83,8 +84,13 @@ class TdDmgSolver {
       ..level = options.mcLv;
     final delegate = getDelegate();
     // final t = StopwatchX('calc');
-
-    for (final svt in servants) {
+    for (final (idx, svt) in servants.indexed) {
+      EasyLoading.showProgress(
+        idx / servants.length,
+        status: '$idx / ${servants.length}',
+        maskType: EasyLoadingMaskType.clear,
+      );
+      await Future.delayed(const Duration(milliseconds: 5));
       if (!svt.isUserSvt) continue;
       try {
         final List<int> limitsToAdd = [];

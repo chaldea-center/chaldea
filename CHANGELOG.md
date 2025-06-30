@@ -4,6 +4,7 @@
 
 - Support Grand Graph system
 - Add team bond calculation
+- TD Damage Ranking now checks all ascensions for each servant
 
 ## 2.5.19
 
