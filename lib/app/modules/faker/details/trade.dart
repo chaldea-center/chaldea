@@ -82,6 +82,9 @@ class _UserEventTradePageState extends State<UserEventTradePage> with SingleTick
 
     final tradeGoodsList = tradeGoodsMap.values.toList();
     tradeGoodsList.sortByList((e) => [tradeInfoMap[e.id]?.storeIdx ?? 999, e.id]);
+
+    final consumeItemIds = tradeGoodsList.expand((e) => e.consumes).map((e) => e.objectId).toSet().toList();
+    consumeItemIds.sort();
     return Scaffold(
       appBar: AppBar(
         title: Text(S.current.event_trade),
@@ -122,7 +125,7 @@ class _UserEventTradePageState extends State<UserEventTradePage> with SingleTick
                 title: Wrap(
                   spacing: 2,
                   children: [
-                    for (final itemId in tradeGoodsList.expand((e) => e.consumes).map((e) => e.objectId).toSet())
+                    for (final itemId in consumeItemIds.reversed)
                       Item.iconBuilder(
                         context: context,
                         item: null,
@@ -138,7 +141,7 @@ class _UserEventTradePageState extends State<UserEventTradePage> with SingleTick
                   itemBuilder: (context, index) =>
                       buildTrade(tradeGoodsList[index], tradeInfoMap, resultMap, pickupMap),
                   itemCount: tradeGoodsList.length,
-                  separatorBuilder: (context, index) => const Divider(height: 16, indent: 16, endIndent: 16),
+                  separatorBuilder: (context, index) => const Divider(height: 4, indent: 16, endIndent: 16),
                 ),
               ),
             ],
@@ -166,6 +169,11 @@ class _UserEventTradePageState extends State<UserEventTradePage> with SingleTick
     final pickup = pickups[tradeGood.id];
     final now = DateTime.now().timestamp;
     final isCraftPickup = pickup != null && pickup.startedAt <= now && pickup.endedAt >= now;
+
+    double getLeastReceiveNum() {
+      if (tradeInfo == null) return 0;
+      return ((DateTime.now().timestamp - tradeInfo.startedAt) / tradeGood.tradeTime);
+    }
 
     Widget tile = ListTile(
       dense: true,
@@ -226,7 +234,7 @@ class _UserEventTradePageState extends State<UserEventTradePage> with SingleTick
             children: [
               if (tradeInfo != null)
                 Text(
-                  '${tradeInfo.getNum}(${min(tradeInfo.tradeNum, (DateTime.now().timestamp - tradeInfo.startedAt) / tradeGood.tradeTime).format(precision: 2)})'
+                  '${tradeInfo.getNum}(${min(tradeInfo.tradeNum, getLeastReceiveNum()).format(precision: 2)})'
                   '/${tradeInfo.tradeNum}/${tradeInfo.maxTradeNum}',
                 ),
               if (tradeInfo != null) CountDown(endedAt: tradeInfo.endedAt.sec2date()),
@@ -277,7 +285,7 @@ class _UserEventTradePageState extends State<UserEventTradePage> with SingleTick
                           EasyLoading.showError('Already max trade num ${tradeInfo.tradeNum}/${tradeInfo.maxTradeNum}');
                           return;
                         }
-                        if (tradeInfo.getNum > 0) {
+                        if (tradeInfo.getNum > 0 || getLeastReceiveNum().floor() > 0) {
                           EasyLoading.showInfo('Do Receive first');
                           return;
                         }
@@ -298,33 +306,25 @@ class _UserEventTradePageState extends State<UserEventTradePage> with SingleTick
                         return;
                       }
 
-                      if (tradeGoodsNum > 1) {
-                        final chosenCount = await router.showDialog<int>(
-                          builder: (context) {
-                            return SimpleDialog(
-                              title: Text('Trade Num'),
-                              children: [
-                                for (int count = 1; count <= tradeGoodsNum; count++)
-                                  SimpleDialogOption(
-                                    child: Text(count.toString()),
-                                    onPressed: () {
-                                      Navigator.pop(context, count);
-                                    },
-                                  ),
-                              ],
-                            );
-                          },
-                        );
-                        if (chosenCount == null) return;
-                        tradeGoodsNum = chosenCount;
-                      } else {
-                        if (!mounted) return;
-                        final confirm = await SimpleConfirmDialog(
-                          title: Text('Trade More'),
-                          content: Text('+$tradeGoodsNum'),
-                        ).showDialog(context);
-                        if (confirm != true) return;
-                      }
+                      final chosenCount = await router.showDialog<int>(
+                        builder: (context) {
+                          return SimpleDialog(
+                            title: Text('Trade Num'),
+                            children: [
+                              for (int count = 1; count <= tradeGoodsNum; count++)
+                                SimpleDialogOption(
+                                  padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+                                  onPressed: () {
+                                    Navigator.pop(context, count);
+                                  },
+                                  child: Text(count.toString()),
+                                ),
+                            ],
+                          );
+                        },
+                      );
+                      if (chosenCount == null) return;
+                      tradeGoodsNum = chosenCount;
 
                       runTask(
                         () => runtime.agent.eventTradeStart(
@@ -340,15 +340,14 @@ class _UserEventTradePageState extends State<UserEventTradePage> with SingleTick
             ),
             if (tradeInfo != null) ...[
               _buildButton(
-                color: tradeInfo.getNum > 0 ? Colors.green : null,
+                color: tradeInfo.getNum > 0 || getLeastReceiveNum().floor() > 0 ? Colors.green : null,
                 onPressed: () async {
-                  if (tradeInfo.getNum == 0) {
-                    final confirm = await SimpleConfirmDialog(
-                      title: Text('Receive?'),
-                      content: Text('Now getNum=0'),
-                    ).showDialog(context);
-                    if (confirm != true) return;
-                  }
+                  int receiveNum = Maths.max([tradeInfo.getNum, getLeastReceiveNum().floor()]);
+                  final confirm = await SimpleConfirmDialog(
+                    title: Text('Receive ×$receiveNum'),
+                    content: Text('getNum=${tradeInfo.getNum}, least=${getLeastReceiveNum().format(precision: 2)}'),
+                  ).showDialog(context);
+                  if (confirm != true) return;
                   runTask(
                     () => runtime.agent.eventTradeReceive(
                       eventId: eventId,
@@ -447,10 +446,13 @@ class _UserEventTradePageState extends State<UserEventTradePage> with SingleTick
   Widget _buildButton({VoidCallback? onPressed, required String text, Color? color}) {
     return TextButton(
       onPressed: onPressed,
-      style: TextButton.styleFrom(foregroundColor: color),
+      style: TextButton.styleFrom(
+        foregroundColor: color,
+        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+        visualDensity: VisualDensity.compact,
+      ),
       child: Text(text, textScaler: TextScaler.linear(0.8)),
     );
-    // return OutlinedButton(onPressed: onPressed, child: child);
   }
 
   Future<void> runTask(Future Function() cb) async {

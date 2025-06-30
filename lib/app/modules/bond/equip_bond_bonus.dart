@@ -136,6 +136,13 @@ class _EquipBondBonusTabState extends State<EquipBondBonusTab> {
         allCeMatchSvtData.putIfAbsent(ce.id, () => {})[svt.id] = limitCounts;
       }
     }
+
+    // hide unreleased ces
+    for (final ceId in allCeData.keys) {
+      if (!isCeReleased(ceId)) {
+        ceFilterStates[ceId] = _FilterType.hide;
+      }
+    }
   }
 
   List<int> getMatchedLimitCounts(Servant svt, List<List<NiceTrait>> bonusTraitsList) {
@@ -175,7 +182,7 @@ class _EquipBondBonusTabState extends State<EquipBondBonusTab> {
   }
 
   bool isCeReleased(int ceId) {
-    final region = svtFilterData.region.radioValue ?? Region.jp;
+    final region = db.curUser.region;
     if (region == Region.jp) return true;
     final releasedIds = db.gameData.mappingData.entityRelease.ofRegion(region);
     if (releasedIds != null && releasedIds.isNotEmpty) {
