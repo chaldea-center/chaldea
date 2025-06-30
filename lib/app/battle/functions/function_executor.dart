@@ -1,3 +1,5 @@
+import 'dart:math' show min;
+
 import 'package:chaldea/app/battle/functions/add_battle_point.dart';
 import 'package:chaldea/app/battle/functions/add_field_change_to_field.dart';
 import 'package:chaldea/app/battle/functions/add_state.dart';
@@ -192,6 +194,9 @@ class FunctionExecutor {
       return false;
     }
 
+    if (activator != null) {
+      dataVals = updateDataValsForActivatorConds(dataVals, activator);
+    }
     if (effectiveness != null && effectiveness != 1000) {
       dataVals = updateDataValsWithEffectiveness(function, script, dataVals, effectiveness);
     }
@@ -566,6 +571,40 @@ class FunctionExecutor {
 
     final dataJson = dataVals.toJson();
     dataJson['Value'] = (dataVals.Value! * toModifier(effectiveness)).toInt();
+    return DataVals.fromJson(dataJson);
+  }
+
+  static DataVals updateDataValsForActivatorConds(final DataVals dataVals, final BattleServantData activator) {
+    if (dataVals.Value == null) {
+      return dataVals;
+    }
+
+    final dataJson = dataVals.toJson();
+    int condParamRangeType = dataVals.CondParamRangeType ?? 0;
+    if (condParamRangeType != 0 && activator.isPlayer) {
+      final int condParamRangeTargetId = dataVals.CondParamRangeTargetId ?? 0,
+          maxCount = dataVals.CondParamRangeMaxCount ?? 0,
+          maxValue = dataVals.CondParamRangeMaxValue ?? 0;
+      if (maxCount > 0) {
+        int count =
+            activator.playerSvtData?.classBoardData.getClassStatVal(condParamRangeType, condParamRangeTargetId) ?? 0;
+        count = min(count, maxCount);
+        dataJson['Value'] += (count / maxCount * maxValue).floor();
+      }
+    }
+
+    int condParamAddType = dataVals.CondParamAddType ?? 0;
+    if (condParamAddType != 0 && activator.isPlayer) {
+      final int condParamAddTargetId = dataVals.CondParamAddTargetId ?? 0;
+      final int condParamAddValue = dataVals.CondParamAddValue ?? 0;
+      final int? maxValue = dataVals.CondParamAddMaxValue;
+      int count = activator.playerSvtData?.classBoardData.getClassStatVal(condParamAddType, condParamAddTargetId) ?? 0;
+      int _value = condParamAddValue * count;
+      if (maxValue != null) {
+        _value = min(_value, maxValue);
+      }
+      dataJson['Value'] += _value;
+    }
     return DataVals.fromJson(dataJson);
   }
 

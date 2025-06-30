@@ -4,10 +4,11 @@ import 'dart:ui_web' as ui;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-// import 'package:admanager_web/admanager_web.dart';
 import 'package:web/web.dart' as web;
 
 import './interface.dart';
+
+// import 'package:admanager_web/admanager_web.dart';
 
 class AppAdImpl implements AppAdInterface {
   @override
