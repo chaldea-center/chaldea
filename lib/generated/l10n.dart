@@ -5469,6 +5469,22 @@ class S {
     return Intl.message('NP Upgrade', name: 'td_rankup', desc: '', locale: localeName, args: []);
   }
 
+  /// `Simple Mode`
+  String get td_solver_simple_mode {
+    return Intl.message('Simple Mode', name: 'td_solver_simple_mode', desc: '', locale: localeName, args: []);
+  }
+
+  /// `Only calculates final ascension`
+  String get td_solver_simple_mode_desc {
+    return Intl.message(
+      'Only calculates final ascension',
+      name: 'td_solver_simple_mode_desc',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Team`
   String get team {
     return Intl.message('Team', name: 'team', desc: '', locale: localeName, args: []);

@@ -1007,6 +1007,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "td_cardcolor_hint": m29,
     "td_cardnp_hint": m30,
     "td_rankup": MessageLookupByLibrary.simpleMessage("寶具強化"),
+    "td_solver_simple_mode": MessageLookupByLibrary.simpleMessage("快速计算"),
+    "td_solver_simple_mode_desc": MessageLookupByLibrary.simpleMessage("只计算最终再临"),
     "team": MessageLookupByLibrary.simpleMessage("隊伍"),
     "team_backup_member": MessageLookupByLibrary.simpleMessage("後排"),
     "team_block_ce": MessageLookupByLibrary.simpleMessage("禁用禮裝"),

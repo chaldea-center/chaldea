@@ -1,5 +1,9 @@
 # Changelog
 
+## Beta
+
+- Add simple mode to Td Damage Ranking as a faster option
+
 ## 2.5.20
 
 - Support Grand Graph system

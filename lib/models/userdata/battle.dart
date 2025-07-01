@@ -927,6 +927,7 @@ class TdDamageOptions {
   bool forceDamageNpSe;
   int? damageNpIndivSumCount;
   bool damageNpHpRatioMax;
+  bool simpleMode;
 
   TdDamageOptions({
     QuestEnemy? enemy,
@@ -966,6 +967,7 @@ class TdDamageOptions {
     this.forceDamageNpSe = false,
     this.damageNpIndivSumCount,
     this.damageNpHpRatioMax = false,
+    this.simpleMode = false,
   }) : enemy = enemy ?? QuestEnemy.blankEnemy(),
        supports = supports ?? [],
        appendSkills = List.generate(kAppendSkillNums.length, (i) => appendSkills?.getOrNull(i) ?? false),

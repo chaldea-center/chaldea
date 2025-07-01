@@ -1091,6 +1091,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "td_cardcolor_hint": m29,
     "td_cardnp_hint": m30,
     "td_rankup": MessageLookupByLibrary.simpleMessage("NP Upgrade"),
+    "td_solver_simple_mode": MessageLookupByLibrary.simpleMessage("Simple Mode"),
+    "td_solver_simple_mode_desc": MessageLookupByLibrary.simpleMessage("Only calculates final ascension"),
     "team": MessageLookupByLibrary.simpleMessage("Team"),
     "team_backup_member": MessageLookupByLibrary.simpleMessage("Backup"),
     "team_block_ce": MessageLookupByLibrary.simpleMessage("Block CE"),

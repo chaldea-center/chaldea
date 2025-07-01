@@ -887,6 +887,8 @@
   "td_cardcolor_hint": "此宝具显示为{color}卡，但不持有[{trait}]特性",
   "td_cardnp_hint": "这是一个宝具，但不持有[{trait}]特性",
   "td_rankup": "宝具强化",
+  "td_solver_simple_mode": "快速计算",
+  "td_solver_simple_mode_desc": "只计算最终再临",
   "team": "队伍",
   "team_backup_member": "后排",
   "team_block_ce": "禁用礼装",

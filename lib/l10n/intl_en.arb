@@ -887,6 +887,8 @@
   "td_cardcolor_hint": "This Noble Phantasm is displayed as {color} card, but doesn't have [{trait}] trait.",
   "td_cardnp_hint": "This is a Noble Phantasm, but doesn't have [{trait}] trait.",
   "td_rankup": "NP Upgrade",
+  "td_solver_simple_mode": "Simple Mode",
+  "td_solver_simple_mode_desc": "Only calculates final ascension",
   "team": "Team",
   "team_backup_member": "Backup",
   "team_block_ce": "Block CE",

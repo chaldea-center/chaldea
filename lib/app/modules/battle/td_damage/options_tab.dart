@@ -647,6 +647,18 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
         padding: const EdgeInsets.symmetric(horizontal: 16),
       ),
       kDefaultDivider,
+      CheckboxListTile(
+        dense: true,
+        value: options.simpleMode,
+        title: Text(S.current.td_solver_simple_mode),
+        subtitle: Text(S.current.td_solver_simple_mode_desc),
+        onChanged: (value) {
+          setState(() {
+            options.simpleMode = !options.simpleMode;
+          });
+        },
+      ),
+      kDefaultDivider,
       TextButton(
         onPressed: () {
           SimpleConfirmDialog(

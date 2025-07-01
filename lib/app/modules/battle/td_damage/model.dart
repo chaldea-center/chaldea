@@ -85,23 +85,30 @@ class TdDmgSolver {
     final delegate = getDelegate();
     // final t = StopwatchX('calc');
     for (final (idx, svt) in servants.indexed) {
-      EasyLoading.showProgress(
-        idx / servants.length,
-        status: '$idx / ${servants.length}',
-        maskType: EasyLoadingMaskType.clear,
-      );
-      await Future.delayed(const Duration(milliseconds: 5));
       if (!svt.isUserSvt) continue;
       try {
         final List<int> limitsToAdd = [];
-        final limits = [...svt.limits.keys.toList().sortReturn((a, b) => b.compareTo(a)), ...svt.costume.keys];
-        final List<Set<int>> recordedTraits = [];
-        for (final limit in limits) {
-          final Set<int> traitIdSet = svt.getIndividuality(null, limit).map((trait) => trait.signedId).toSet();
-          if (recordedTraits.every((recorded) => !setEquals(recorded, traitIdSet))) {
-            limitsToAdd.add(limit);
-          } else {
-            recordedTraits.add(traitIdSet);
+        if (options.simpleMode) {
+          limitsToAdd.add(4);
+          if (svt.id == 304800 || svt.id == 205000) {
+            limitsToAdd.add(1);
+          }
+        } else {
+          EasyLoading.showProgress(
+            idx / servants.length,
+            status: '$idx / ${servants.length}',
+            maskType: EasyLoadingMaskType.clear,
+          );
+          await Future.delayed(const Duration(milliseconds: 5));
+          final limits = [...svt.limits.keys.toList().sortReturn((a, b) => b.compareTo(a)), ...svt.costume.keys];
+          final List<Set<int>> recordedTraits = [];
+          for (final limit in limits) {
+            final Set<int> traitIdSet = svt.getIndividuality(null, limit).map((trait) => trait.signedId).toSet();
+            if (recordedTraits.every((recorded) => !setEquals(recorded, traitIdSet))) {
+              limitsToAdd.add(limit);
+            } else {
+              recordedTraits.add(traitIdSet);
+            }
           }
         }
 
@@ -152,10 +159,14 @@ class TdDmgSolver {
           if (result == null) continue;
 
           if (resultRecord.containsKey(result.totalDamage)) {
+            final recorded = resultRecord[result.totalDamage]!;
             final currentLimitCount = result.actor.limitCount;
-            final recordedLimitCount = resultRecord[result.totalDamage]!.actor.limitCount;
+            final recordedLimitCount = recorded.actor.limitCount;
             if ((currentLimitCount < recordedLimitCount && recordedLimitCount != 4) || currentLimitCount == 4) {
               resultRecord[result.totalDamage] = result;
+              if (recorded.actor.getNPCard()?.cardType != result.actor.getNPCard()?.cardType) {
+                results.add(recorded);
+              }
             }
           } else {
             resultRecord[result.totalDamage] = result;
