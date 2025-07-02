@@ -1219,7 +1219,9 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
         ),
         ListTile(
           dense: true,
-          title: Text('${S.current.support_servant} - ${S.current.craft_essence_short}'),
+          title: Text(
+            '${S.current.craft_essence_short} (${S.current.max_limit_break} ${battleOption.supportEquipMaxLimitBreak})',
+          ),
           subtitle: Wrap(
             spacing: 4,
             runSpacing: 4,
@@ -1553,12 +1555,12 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
         ),
         CheckboxListTile.adaptive(
           dense: true,
-          value: battleOption.supportCeMaxLimitBreak,
+          value: battleOption.supportEquipMaxLimitBreak,
           title: Text('${S.current.support_servant} - ${S.current.craft_essence_short} ${S.current.max_limit_break}'),
           onChanged: (v) {
             runtime.lockTask(() {
               setState(() {
-                battleOption.supportCeMaxLimitBreak = v!;
+                battleOption.supportEquipMaxLimitBreak = v!;
               });
             });
           },

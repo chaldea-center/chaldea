@@ -819,11 +819,11 @@ class FakerRuntime {
           continue;
         }
       }
-      if (mstData.user!.calCurAp() >= quest.consume) {
+      if (mstData.user!.calCurAp() >= apConsume) {
         return;
       }
       if (option.waitApRecover) {
-        while (mstData.user!.calCurAp() < quest.consume) {
+        while (mstData.user!.calCurAp() < apConsume) {
           update();
           displayToast('Battle - waiting AP recover...');
           await Future.delayed(const Duration(minutes: 1));
@@ -831,7 +831,7 @@ class FakerRuntime {
         }
         return;
       }
-      throw SilentException('AP not enough: ${mstData.user!.calCurAp()}<${quest.consume}');
+      throw SilentException('AP not enough: ${mstData.user!.calCurAp()}<$apConsume');
     }
   }
 }

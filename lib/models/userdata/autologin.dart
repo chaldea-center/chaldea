@@ -313,7 +313,7 @@ class AutoBattleOptions {
   Set<int> supportSvtIds;
   Set<int> supportEquipIds;
   Set<int> grandSupportEquipIds;
-  bool supportCeMaxLimitBreak;
+  bool supportEquipMaxLimitBreak;
   int npcSupportId = 0;
   bool useCampaignItem;
   int campaignItemId = 0;
@@ -344,7 +344,7 @@ class AutoBattleOptions {
     Set<int>? supportSvtIds,
     Set<int>? supportEquipIds,
     Set<int>? grandSupportEquipIds,
-    this.supportCeMaxLimitBreak = true,
+    this.supportEquipMaxLimitBreak = true,
     this.npcSupportId = 0,
     this.useCampaignItem = false,
     this.campaignItemId = 0,

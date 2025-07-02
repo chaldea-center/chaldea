@@ -82,11 +82,11 @@ class _EventFilterPageState extends FilterPageState<EventFilterData, EventFilter
           ),
           SwitchListTile.adaptive(
             dense: true,
-            value: filterData.showCampaign,
+            value: filterData.showMcCampaign,
             title: Text(S.current.show_mc_campaign),
             subtitle: const Text("From Mooncell wiki"),
             onChanged: (v) {
-              filterData.showCampaign = v;
+              filterData.showMcCampaign = v;
               update();
             },
             controlAffinity: ListTileControlAffinity.trailing,

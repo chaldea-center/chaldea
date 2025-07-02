@@ -85,6 +85,16 @@ class _UserEventTradePageState extends State<UserEventTradePage> with SingleTick
 
     final consumeItemIds = tradeGoodsList.expand((e) => e.consumes).map((e) => e.objectId).toSet().toList();
     consumeItemIds.sort();
+
+    final demandItems = <int, int>{};
+    for (final tradeInfo in tradeInfoList) {
+      final tradeGoods = tradeGoodsMap[tradeInfo.tradeGoodsId];
+      if (tradeGoods == null) continue;
+      for (final consume in tradeGoods.consumes) {
+        demandItems.addNum(consume.objectId, consume.num * (kSecsPerDay / tradeGoods.tradeTime).round());
+      }
+    }
+    sortDict(demandItems, inPlace: true, compare: (a, b) => b.key.compareTo(a.key));
     return Scaffold(
       appBar: AppBar(
         title: Text(S.current.event_trade),
@@ -121,17 +131,22 @@ class _UserEventTradePageState extends State<UserEventTradePage> with SingleTick
             children: [
               ListTile(
                 dense: true,
-                leading: const SizedBox.shrink(),
+                // leading: const SizedBox.shrink(),
                 title: Wrap(
                   spacing: 2,
+                  crossAxisAlignment: WrapCrossAlignment.center,
                   children: [
+                    Text('${S.current.item_own}: '),
                     for (final itemId in consumeItemIds.reversed)
                       Item.iconBuilder(
                         context: context,
                         item: null,
                         itemId: itemId,
-                        text: (runtime.mstData.getItemOrSvtNum(itemId).format()),
+                        text: runtime.mstData.getItemOrSvtNum(itemId).format(),
                       ),
+                    Text('  24h: '),
+                    for (final (itemId, count) in demandItems.items)
+                      Item.iconBuilder(context: context, item: null, itemId: itemId, text: count.format()),
                   ],
                 ),
               ),
@@ -172,7 +187,9 @@ class _UserEventTradePageState extends State<UserEventTradePage> with SingleTick
 
     double getLeastReceiveNum() {
       if (tradeInfo == null) return 0;
-      return ((DateTime.now().timestamp - tradeInfo.startedAt) / tradeGood.tradeTime);
+      final now = DateTime.now().timestamp;
+      if (tradeInfo.tradeNum == 0) return 0;
+      return (now - tradeInfo.startedAt) / tradeGood.tradeTime;
     }
 
     Widget tile = ListTile(
@@ -237,7 +254,10 @@ class _UserEventTradePageState extends State<UserEventTradePage> with SingleTick
                   '${tradeInfo.getNum}(${min(tradeInfo.tradeNum, getLeastReceiveNum()).format(precision: 2)})'
                   '/${tradeInfo.tradeNum}/${tradeInfo.maxTradeNum}',
                 ),
-              if (tradeInfo != null) CountDown(endedAt: tradeInfo.endedAt.sec2date()),
+              if (tradeInfo != null)
+                tradeInfo.endedAt == 0
+                    ? const Text('-:-:-', style: TextStyle(color: Colors.red))
+                    : CountDown(endedAt: tradeInfo.endedAt.sec2date()),
               Text('${(tradeGood.tradeTime / 3600).format()}h'),
             ],
           ),
@@ -285,10 +305,6 @@ class _UserEventTradePageState extends State<UserEventTradePage> with SingleTick
                           EasyLoading.showError('Already max trade num ${tradeInfo.tradeNum}/${tradeInfo.maxTradeNum}');
                           return;
                         }
-                        if (tradeInfo.getNum > 0 || getLeastReceiveNum().floor() > 0) {
-                          EasyLoading.showInfo('Do Receive first');
-                          return;
-                        }
                         tradeGoodsNum = Maths.min([
                           tradeInfo.maxTradeNum - tradeInfo.tradeNum,
                           for (final consume in tradeGood.consumes)
@@ -311,13 +327,18 @@ class _UserEventTradePageState extends State<UserEventTradePage> with SingleTick
                           return SimpleDialog(
                             title: Text('Trade Num'),
                             children: [
+                              if ((tradeInfo?.getNum ?? 0) > 0 || getLeastReceiveNum().floor() >= 1)
+                                SimpleDialogOption(
+                                  padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
+                                  child: Text('Do Receive first', style: Theme.of(context).textTheme.bodySmall),
+                                ),
                               for (int count = 1; count <= tradeGoodsNum; count++)
                                 SimpleDialogOption(
                                   padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
                                   onPressed: () {
                                     Navigator.pop(context, count);
                                   },
-                                  child: Text(count.toString()),
+                                  child: Text('×$count'),
                                 ),
                             ],
                           );
@@ -341,22 +362,48 @@ class _UserEventTradePageState extends State<UserEventTradePage> with SingleTick
             if (tradeInfo != null) ...[
               _buildButton(
                 color: tradeInfo.getNum > 0 || getLeastReceiveNum().floor() > 0 ? Colors.green : null,
-                onPressed: () async {
-                  int receiveNum = Maths.max([tradeInfo.getNum, getLeastReceiveNum().floor()]);
-                  final confirm = await SimpleConfirmDialog(
-                    title: Text('Receive ×$receiveNum'),
-                    content: Text('getNum=${tradeInfo.getNum}, least=${getLeastReceiveNum().format(precision: 2)}'),
-                  ).showDialog(context);
-                  if (confirm != true) return;
-                  runTask(
-                    () => runtime.agent.eventTradeReceive(
-                      eventId: eventId,
-                      tradeStoreIdxs: [tradeInfo.storeIdx],
-                      receiveNum: max(1, tradeInfo.getNum),
-                      cancelTradeFlag: 0,
-                    ),
-                  );
-                },
+                onPressed: tradeInfo.tradeNum == 0
+                    ? null
+                    : () async {
+                        int receiveNum = Maths.max([tradeInfo.getNum, getLeastReceiveNum().floor()]);
+                        await router.showDialog<int>(
+                          builder: (context) {
+                            return SimpleDialog(
+                              title: Text('Receive Num ×$receiveNum'),
+                              children: [
+                                SimpleDialogOption(
+                                  child: Text(
+                                    'getNum=${tradeInfo.getNum}, least=${getLeastReceiveNum().format(precision: 2)}',
+                                    style: Theme.of(context).textTheme.bodySmall,
+                                  ),
+                                ),
+                                for (int count = 0; count <= max(1, receiveNum); count++)
+                                  if (count > 0 || receiveNum == 0)
+                                    SimpleDialogOption(
+                                      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                        runTask(
+                                          () => runtime.agent.eventTradeReceive(
+                                            eventId: eventId,
+                                            tradeStoreIdxs: [tradeInfo.storeIdx],
+                                            receiveNum: max(1, tradeInfo.getNum),
+                                            cancelTradeFlag: 0,
+                                          ),
+                                        );
+                                      },
+                                      child: Text(
+                                        '×$count',
+                                        style: count == receiveNum
+                                            ? TextStyle(color: Theme.of(context).listTileTheme.selectedColor)
+                                            : null,
+                                      ),
+                                    ),
+                              ],
+                            );
+                          },
+                        );
+                      },
                 text: 'Receive',
               ),
               _buildButton(

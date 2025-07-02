@@ -348,7 +348,7 @@ abstract class FakerAgent<
         supportSvtIds: options.supportSvtIds.toList(),
         supportEquipIds: options.supportEquipIds.toList(),
         grandSupportEquipIds: options.grandSupportEquipIds.toList(),
-        supportEquipMaxLimitBreak: options.supportCeMaxLimitBreak,
+        supportEquipMaxLimitBreak: options.supportEquipMaxLimitBreak,
         isUseGrandBoard: isUseGrandBoard,
       );
       followerId = follower.userId;

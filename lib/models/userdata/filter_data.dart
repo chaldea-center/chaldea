@@ -662,7 +662,7 @@ class EventFilterData with FilterDataMixin {
   bool showOutdated;
   bool showSpecialRewards;
   bool showEmpty;
-  bool showCampaign;
+  bool showMcCampaign;
   bool showBanner;
 
   // filter
@@ -679,7 +679,7 @@ class EventFilterData with FilterDataMixin {
     this.reversed = false,
     this.showOutdated = false,
     this.showSpecialRewards = false,
-    this.showCampaign = true,
+    this.showMcCampaign = false,
     this.showEmpty = false,
     this.showBanner = true,
   });

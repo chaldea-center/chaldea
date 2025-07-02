@@ -71,7 +71,7 @@ class EventListPageState extends State<EventListPage>
       if (const [EventType.eventQuest, EventType.warBoard].contains(event.type)) {
         limitEvents.add(event);
       } else if (event.type == EventType.mcCampaign) {
-        if (filterData.showCampaign) limitEvents.add(event);
+        if (filterData.showMcCampaign) limitEvents.add(event);
       } else {
         campaigns.add(event);
       }
