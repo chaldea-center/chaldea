@@ -453,6 +453,7 @@ class FunctionExecutor {
           AddBattlePoint.addBattlePoint(battleData, dataVals, targets, overchargeState, ignoreBattlePoints);
           break;
         case FuncType.updateEnemyEntryMaxCountEachTurn:
+        case FuncType.swapFieldPosition:
         // ↑↑↑ should be implemented ↑↑↑
         case FuncType.damageValueSafeOnce:
         case FuncType.subFieldBuff:
@@ -533,7 +534,7 @@ class FunctionExecutor {
   }
 
   static bool validateFunctionTargetTeam(final BaseFunction function, final bool isPlayer) {
-    return function.funcTargetTeam == FuncApplyTarget.playerAndEnemy ||
+    return function.funcTargetTeam == FuncApplyTarget.all ||
         (function.canBePlayerFunc && isPlayer) ||
         (function.canBeEnemyFunc && !isPlayer);
   }

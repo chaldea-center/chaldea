@@ -34,7 +34,7 @@ class _SkillDetailPageState extends State<SkillDetailPage> with RegionBasedState
   BaseSkill get skill => data!;
 
   int? _lv;
-  late FuncApplyTarget _view = widget.initView ?? FuncApplyTarget.playerAndEnemy;
+  late FuncApplyTarget _view = widget.initView ?? FuncApplyTarget.all;
 
   @override
   void initState() {
@@ -122,7 +122,7 @@ class _SkillDetailPageState extends State<SkillDetailPage> with RegionBasedState
                     FilterGroup(
                       padding: EdgeInsets.zero,
                       combined: true,
-                      options: const [FuncApplyTarget.playerAndEnemy, FuncApplyTarget.player, FuncApplyTarget.enemy],
+                      options: const [FuncApplyTarget.all, FuncApplyTarget.player, FuncApplyTarget.enemy],
                       values: FilterRadioData.nonnull(_view),
                       optionBuilder: (v) {
                         switch (v) {
@@ -130,7 +130,7 @@ class _SkillDetailPageState extends State<SkillDetailPage> with RegionBasedState
                             return Text(S.current.player);
                           case FuncApplyTarget.enemy:
                             return Text(S.current.enemy);
-                          case FuncApplyTarget.playerAndEnemy:
+                          case FuncApplyTarget.all:
                             return Text(S.current.general_all);
                         }
                       },
@@ -146,8 +146,8 @@ class _SkillDetailPageState extends State<SkillDetailPage> with RegionBasedState
             ),
             SkillDescriptor(
               skill: skill,
-              showPlayer: _view == FuncApplyTarget.playerAndEnemy || _view == FuncApplyTarget.player,
-              showEnemy: _view == FuncApplyTarget.playerAndEnemy || _view == FuncApplyTarget.enemy,
+              showPlayer: _view == FuncApplyTarget.all || _view == FuncApplyTarget.player,
+              showEnemy: _view == FuncApplyTarget.all || _view == FuncApplyTarget.enemy,
               showNone: true,
               jumpToDetail: false,
               level: _lv,

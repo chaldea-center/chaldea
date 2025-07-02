@@ -12,8 +12,9 @@ NiceFunction _$NiceFunctionFromJson(Map json) => NiceFunction(
       ? FuncType.unknown
       : const FuncTypeConverter().fromJson(json['funcType'] as String),
   funcTargetType: $enumDecode(_$FuncTargetTypeEnumMap, json['funcTargetType']),
-  funcTargetTeam:
-      $enumDecodeNullable(_$FuncApplyTargetEnumMap, json['funcTargetTeam']) ?? FuncApplyTarget.playerAndEnemy,
+  funcTargetTeam: json['funcTargetTeam'] == null
+      ? FuncApplyTarget.all
+      : const FuncApplyTargetConverter().fromJson(json['funcTargetTeam'] as String),
   funcPopupText: json['funcPopupText'] as String? ?? '',
   funcPopupIcon: json['funcPopupIcon'] as String?,
   functvals:
@@ -69,7 +70,7 @@ Map<String, dynamic> _$NiceFunctionToJson(NiceFunction instance) => <String, dyn
   'funcId': instance.funcId,
   'funcType': const FuncTypeConverter().toJson(instance.funcType),
   'funcTargetType': _$FuncTargetTypeEnumMap[instance.funcTargetType]!,
-  'funcTargetTeam': _$FuncApplyTargetEnumMap[instance.funcTargetTeam]!,
+  'funcTargetTeam': const FuncApplyTargetConverter().toJson(instance.funcTargetTeam),
   'funcPopupText': instance.funcPopupText,
   'funcPopupIcon': instance.funcPopupIcon,
   'functvals': instance.functvals.map((e) => e.toJson()).toList(),
@@ -124,19 +125,13 @@ const _$FuncTargetTypeEnumMap = {
   FuncTargetType.noTarget: 'noTarget',
 };
 
-const _$FuncApplyTargetEnumMap = {
-  FuncApplyTarget.player: 'player',
-  FuncApplyTarget.enemy: 'enemy',
-  FuncApplyTarget.playerAndEnemy: 'playerAndEnemy',
-};
-
 BaseFunction _$BaseFunctionFromJson(Map json) => BaseFunction(
   funcId: (json['funcId'] as num).toInt(),
   funcType: json['funcType'] == null
       ? FuncType.unknown
       : const FuncTypeConverter().fromJson(json['funcType'] as String),
   funcTargetType: $enumDecode(_$FuncTargetTypeEnumMap, json['funcTargetType']),
-  funcTargetTeam: $enumDecode(_$FuncApplyTargetEnumMap, json['funcTargetTeam']),
+  funcTargetTeam: const FuncApplyTargetConverter().fromJson(json['funcTargetTeam'] as String),
   funcPopupText: json['funcPopupText'] as String? ?? '',
   funcPopupIcon: json['funcPopupIcon'] as String?,
   functvals:
@@ -176,7 +171,7 @@ Map<String, dynamic> _$BaseFunctionToJson(BaseFunction instance) => <String, dyn
   'funcId': instance.funcId,
   'funcType': const FuncTypeConverter().toJson(instance.funcType),
   'funcTargetType': _$FuncTargetTypeEnumMap[instance.funcTargetType]!,
-  'funcTargetTeam': _$FuncApplyTargetEnumMap[instance.funcTargetTeam]!,
+  'funcTargetTeam': const FuncApplyTargetConverter().toJson(instance.funcTargetTeam),
   'funcPopupText': instance.funcPopupText,
   'funcPopupIcon': instance.funcPopupIcon,
   'functvals': instance.functvals.map((e) => e.toJson()).toList(),
@@ -345,4 +340,11 @@ const _$FuncTypeEnumMap = {
   FuncType.addBattleMissionValue: 'addBattleMissionValue',
   FuncType.setBattleMissionValue: 'setBattleMissionValue',
   FuncType.changeEnemyStatusUiType: 'changeEnemyStatusUiType',
+  FuncType.swapFieldPosition: 'swapFieldPosition',
+};
+
+const _$FuncApplyTargetEnumMap = {
+  FuncApplyTarget.player: 'player',
+  FuncApplyTarget.enemy: 'enemy',
+  FuncApplyTarget.all: 'all',
 };

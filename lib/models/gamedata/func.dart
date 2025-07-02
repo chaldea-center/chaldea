@@ -15,7 +15,7 @@ export 'buff.dart';
 
 part '../../generated/models/gamedata/func.g.dart';
 
-@JsonSerializable(converters: [FuncTypeConverter()])
+@JsonSerializable(converters: [FuncTypeConverter(), FuncApplyTargetConverter()])
 class NiceFunction with RouteInfo implements BaseFunction {
   BaseFunction _baseFunc;
 
@@ -57,7 +57,7 @@ class NiceFunction with RouteInfo implements BaseFunction {
     required int funcId,
     FuncType funcType = FuncType.unknown,
     required FuncTargetType funcTargetType,
-    FuncApplyTarget funcTargetTeam = FuncApplyTarget.playerAndEnemy,
+    FuncApplyTarget funcTargetTeam = FuncApplyTarget.all,
     String funcPopupText = '',
     String? funcPopupIcon,
     List<NiceTrait> functvals = const [],
@@ -203,8 +203,7 @@ class NiceFunction with RouteInfo implements BaseFunction {
       funcId: json['funcId'] as int,
       funcType: $enumDecodeNullable(_$FuncTypeEnumMap, json['funcType']) ?? FuncType.unknown,
       funcTargetType: $enumDecode(_$FuncTargetTypeEnumMap, json['funcTargetType']),
-      funcTargetTeam:
-          $enumDecodeNullable(_$FuncApplyTargetEnumMap, json['funcTargetTeam']) ?? FuncApplyTarget.playerAndEnemy,
+      funcTargetTeam: const FuncApplyTargetConverter().fromJson(json['funcTargetTeam'] ?? FuncApplyTarget.all.name),
       funcPopupText: json['funcPopupText'] as String? ?? '',
       funcPopupIcon: json['funcPopupIcon'] as String?,
       functvals:
@@ -260,7 +259,7 @@ class NiceFunction with RouteInfo implements BaseFunction {
     List<T> filteredFuncs = funcs
         .where((func) {
           if (!showNone && func.funcType == FuncType.none) return false;
-          if (func.funcTargetTeam == FuncApplyTarget.playerAndEnemy) {
+          if (func.funcTargetTeam == FuncApplyTarget.all) {
             return true;
           }
           bool player = func.funcTargetTeam == FuncApplyTarget.player;
@@ -326,7 +325,7 @@ class NiceFunction with RouteInfo implements BaseFunction {
   Map<String, dynamic> toJson() => _$NiceFunctionToJson(this);
 }
 
-@JsonSerializable(converters: [FuncTypeConverter()])
+@JsonSerializable(converters: [FuncTypeConverter(), FuncApplyTargetConverter()])
 class BaseFunction with RouteInfo {
   final int funcId;
   final FuncType funcType;
@@ -346,7 +345,7 @@ class BaseFunction with RouteInfo {
     required this.funcId,
     this.funcType = FuncType.unknown,
     required this.funcTargetType,
-    this.funcTargetTeam = FuncApplyTarget.playerAndEnemy,
+    this.funcTargetTeam = FuncApplyTarget.all,
     this.funcPopupText = "",
     this.funcPopupIcon,
     this.functvals = const [],
@@ -413,11 +412,11 @@ extension BaseFunctionX on BaseFunction {
   Transl<String, String> get lPopupText => Transl.funcPopuptextBase(funcPopupText, funcType);
 
   bool get canBePlayerFunc =>
-      funcTargetTeam == FuncApplyTarget.playerAndEnemy ||
+      funcTargetTeam == FuncApplyTarget.all ||
       (funcTargetTeam == FuncApplyTarget.enemy && funcTargetType.canTargetEnemy) ||
       (funcTargetTeam == FuncApplyTarget.player && funcTargetType.canTargetAlly);
   bool get canBeEnemyFunc =>
-      funcTargetTeam == FuncApplyTarget.playerAndEnemy ||
+      funcTargetTeam == FuncApplyTarget.all ||
       (funcTargetTeam == FuncApplyTarget.enemy && funcTargetType.canTargetAlly) ||
       (funcTargetTeam == FuncApplyTarget.player && funcTargetType.canTargetEnemy);
 
@@ -627,7 +626,8 @@ enum FuncType {
   gainNpCriticalstarSum(154),
   addBattleMissionValue(155),
   setBattleMissionValue(156),
-  changeEnemyStatusUiType(157);
+  changeEnemyStatusUiType(157),
+  swapFieldPosition(158);
 
   final int value;
   const FuncType(this.value);
@@ -692,15 +692,16 @@ enum FuncTargetType {
       const [ptRandom, enemyRandom, ptOneAnotherRandom, ptSelfAnotherRandom, enemyOneAnotherRandom].contains(this);
 }
 
+@JsonEnum(alwaysCreate: true)
 enum FuncApplyTarget {
   player,
   enemy,
-  playerAndEnemy;
+  all;
 
   static FuncApplyTarget fromBool({required bool showPlayer, required bool showEnemy}) {
     if (showPlayer && !showEnemy) return player;
     if (!showPlayer && showEnemy) return enemy;
-    return playerAndEnemy;
+    return all;
   }
 }
 
@@ -740,4 +741,18 @@ class FuncTypeConverter extends JsonConverter<FuncType, String> {
   static Map<String, FuncType> deprecatedTypes = {
     "damageNpAndCheckIndividuality": FuncType.damageNpAndOrCheckIndividuality,
   };
+}
+
+class FuncApplyTargetConverter extends JsonConverter<FuncApplyTarget, String> {
+  const FuncApplyTargetConverter();
+
+  @override
+  FuncApplyTarget fromJson(String value) {
+    return decodeEnumNullable(_$FuncApplyTargetEnumMap, value) ?? deprecatedTypes[value] ?? FuncApplyTarget.all;
+  }
+
+  @override
+  String toJson(FuncApplyTarget obj) => _$FuncApplyTargetEnumMap[obj] ?? obj.name;
+
+  static Map<String, FuncApplyTarget> deprecatedTypes = {"playerAndEnemy": FuncApplyTarget.all};
 }

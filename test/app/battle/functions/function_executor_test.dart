@@ -61,7 +61,7 @@ void main() async {
       final BaseFunction playerAndEnemyFunction = BaseFunction(
         funcId: -1,
         funcTargetType: FuncTargetType.self,
-        funcTargetTeam: FuncApplyTarget.playerAndEnemy,
+        funcTargetTeam: FuncApplyTarget.all,
       );
       expect(FunctionExecutor.validateFunctionTargetTeam(playerAndEnemyFunction, ally.isPlayer), isTrue);
       expect(FunctionExecutor.validateFunctionTargetTeam(playerAndEnemyFunction, enemy.isPlayer), isTrue);

@@ -378,6 +378,8 @@ class DataVals {
   int? get ExecEvenCardSelectState => _vals['ExecEvenCardSelectState'];
   int? get OverwriteShift => _vals['OverwriteShift'];
   int? get IgnoreShiftWhiteFade => _vals['IgnoreShiftWhiteFade'];
+  List<int>? get BackStepTargets => _list('BackStepTargets');
+  List<int>? get ReplacePositionTargets => _list('ReplacePositionTargets');
 
   int? get ApplySupportSvt => _vals['ApplySupportSvt'];
   int? get Individuality => _vals['Individuality'];

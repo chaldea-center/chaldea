@@ -339,7 +339,7 @@ class CommonCustomSkills {
         funcId: 452,
         funcType: FuncType.gainHpPer,
         funcTargetType: FuncTargetType.ptOne,
-        funcTargetTeam: FuncApplyTarget.playerAndEnemy,
+        funcTargetTeam: FuncApplyTarget.all,
         svals: [
           DataVals({'Rate': 1000, 'Value': 1000, 'Unaffected': 1, "CommandSpellId": 1}),
         ],
@@ -378,7 +378,7 @@ class CommonCustomSkills {
         funcId: 1,
         funcType: FuncType.gainNp,
         funcTargetType: FuncTargetType.ptAll,
-        funcTargetTeam: FuncApplyTarget.playerAndEnemy,
+        funcTargetTeam: FuncApplyTarget.all,
         svals: [
           DataVals({'Rate': 5000, 'Value': 10000, 'Unaffected': 1, "CommandSpellId": 1001}),
         ],
@@ -397,7 +397,7 @@ class CommonCustomSkills {
         funcId: 7196,
         funcType: FuncType.forceInstantDeath,
         funcTargetType: FuncTargetType.self,
-        funcTargetTeam: FuncApplyTarget.playerAndEnemy,
+        funcTargetTeam: FuncApplyTarget.all,
         funcPopupText: '即死',
         svals: [
           DataVals({'Rate': 5000}),
@@ -417,7 +417,7 @@ class CommonCustomSkills {
         funcId: -7195,
         funcType: FuncType.addStateShort,
         funcTargetType: FuncTargetType.self,
-        funcTargetTeam: FuncApplyTarget.playerAndEnemy,
+        funcTargetTeam: FuncApplyTarget.all,
         funcPopupText: '遅延発動(即死)',
         buffs: [
           Buff(

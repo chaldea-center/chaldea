@@ -29,7 +29,7 @@ class _TdDetailPageState extends State<TdDetailPage> with RegionBasedState<BaseT
 
   int? _lv;
   int? _oc;
-  late FuncApplyTarget _view = widget.initView ?? FuncApplyTarget.playerAndEnemy;
+  late FuncApplyTarget _view = widget.initView ?? FuncApplyTarget.all;
 
   @override
   void initState() {
@@ -111,7 +111,7 @@ class _TdDetailPageState extends State<TdDetailPage> with RegionBasedState<BaseT
                     FilterGroup(
                       padding: EdgeInsets.zero,
                       combined: true,
-                      options: const [FuncApplyTarget.playerAndEnemy, FuncApplyTarget.player, FuncApplyTarget.enemy],
+                      options: const [FuncApplyTarget.all, FuncApplyTarget.player, FuncApplyTarget.enemy],
                       values: FilterRadioData.nonnull(_view),
                       optionBuilder: (v) {
                         switch (v) {
@@ -119,7 +119,7 @@ class _TdDetailPageState extends State<TdDetailPage> with RegionBasedState<BaseT
                             return Text(S.current.player);
                           case FuncApplyTarget.enemy:
                             return Text(S.current.enemy);
-                          case FuncApplyTarget.playerAndEnemy:
+                          case FuncApplyTarget.all:
                             return Text(S.current.general_all);
                         }
                       },
@@ -137,8 +137,8 @@ class _TdDetailPageState extends State<TdDetailPage> with RegionBasedState<BaseT
               td: td,
               level: _lv,
               oc: _oc,
-              showPlayer: _view == FuncApplyTarget.playerAndEnemy || _view == FuncApplyTarget.player,
-              showEnemy: _view == FuncApplyTarget.playerAndEnemy || _view == FuncApplyTarget.enemy,
+              showPlayer: _view == FuncApplyTarget.all || _view == FuncApplyTarget.player,
+              showEnemy: _view == FuncApplyTarget.all || _view == FuncApplyTarget.enemy,
               showNone: true,
               jumpToDetail: false,
               region: region,

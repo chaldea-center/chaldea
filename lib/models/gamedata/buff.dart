@@ -562,6 +562,7 @@ final Map<BuffType, BuffValueTriggerType Function(DataVals)> kBuffValueTriggerTy
     BuffType.comboStartFunction,
     BuffType.comboEndFunction,
     BuffType.wavestartAnimationBeforeFunction,
+    BuffType.gutsBeforeFunction,
   }) {
     types[type] = (v) => BuffValueTriggerType(buffType: type, skill: v.Value, level: v.Value2, rate: v.UseRate);
   }

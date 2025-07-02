@@ -572,6 +572,7 @@ TdDamageOptions _$TdDamageOptionsFromJson(Map json) => $checkedCreate('TdDamageO
     forceDamageNpSe: $checkedConvert('forceDamageNpSe', (v) => v as bool? ?? false),
     damageNpIndivSumCount: $checkedConvert('damageNpIndivSumCount', (v) => (v as num?)?.toInt()),
     damageNpHpRatioMax: $checkedConvert('damageNpHpRatioMax', (v) => v as bool? ?? false),
+    simpleMode: $checkedConvert('simpleMode', (v) => v as bool? ?? true),
   );
   return val;
 });
@@ -614,6 +615,7 @@ Map<String, dynamic> _$TdDamageOptionsToJson(TdDamageOptions instance) => <Strin
   'forceDamageNpSe': instance.forceDamageNpSe,
   'damageNpIndivSumCount': instance.damageNpIndivSumCount,
   'damageNpHpRatioMax': instance.damageNpHpRatioMax,
+  'simpleMode': instance.simpleMode,
 };
 
 const _$PreferClassBoardDataSourceEnumMap = {

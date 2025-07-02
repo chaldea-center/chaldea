@@ -66,7 +66,7 @@ mixin FuncsDescriptor {
   }) {
     final funcs2 = funcs.where((func) {
       if (!showNone && func.funcType == FuncType.none) return false;
-      if (func.funcTargetTeam == FuncApplyTarget.playerAndEnemy) {
+      if (func.funcTargetTeam == FuncApplyTarget.all) {
         return true;
       }
       if (func.isPlayerOnlyFunc) return showPlayer;

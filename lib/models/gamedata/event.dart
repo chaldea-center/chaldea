@@ -2232,7 +2232,7 @@ enum EventWorkType {
 
 enum EventFortificationSvtType { userSvt, npc, none }
 
-enum EventPointActivityObjectType { none, questId, skillId, shopId }
+enum EventPointActivityObjectType { none, questId, skillId, shopId, boxGachaId }
 
 enum WarBoardStageSquareType { normal, item, effect, treasure, wall }
 

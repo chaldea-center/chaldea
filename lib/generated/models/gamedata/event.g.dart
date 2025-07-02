@@ -589,6 +589,7 @@ const _$EventPointActivityObjectTypeEnumMap = {
   EventPointActivityObjectType.questId: 'questId',
   EventPointActivityObjectType.skillId: 'skillId',
   EventPointActivityObjectType.shopId: 'shopId',
+  EventPointActivityObjectType.boxGachaId: 'boxGachaId',
 };
 
 EventMissionConditionDetail _$EventMissionConditionDetailFromJson(Map json) => EventMissionConditionDetail(

@@ -383,7 +383,7 @@ class _BattleSvtDetailState extends State<BattleSvtDetail> with SingleTickerProv
               funcId: 0,
               funcType: FuncType.addState,
               funcTargetType: FuncTargetType.self,
-              funcTargetTeam: FuncApplyTarget.playerAndEnemy,
+              funcTargetTeam: FuncApplyTarget.all,
               buffs: [buff.buff],
               svals: [DataVals(buff.vals.toJson(sort: false)..['Value'] = buff.param)],
             ),
