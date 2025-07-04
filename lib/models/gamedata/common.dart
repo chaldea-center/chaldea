@@ -539,7 +539,7 @@ extension SvtClassX on SvtClass {
     if (option == SvtClass.EXTRA) {
       return extra.contains(value) || beasts.contains(value);
     }
-    if (option == SvtClass.ALL) return true;
+    if (option == SvtClass.ALL) return value != SvtClass.none;
     if (option == SvtClass.unknown) {
       return !SvtClassX.regularAllWithBeasts.contains(value);
     }
@@ -547,15 +547,22 @@ extension SvtClassX on SvtClass {
   }
 
   static List<SvtClass> resolveClasses(SvtClass svtClass, {required bool expandBeast}) {
-    final List<SvtClass> svtClasses = switch (svtClass) {
+    List<SvtClass> svtClasses = switch (svtClass) {
       SvtClass.EXTRA1 => SvtClassX.extraI,
       SvtClass.EXTRA2 => SvtClassX.extraII,
       SvtClass.ALL => [...SvtClassX.regular, ...SvtClassX.extra],
-      SvtClass.beastAny => expandBeast ? beasts : [svtClass],
+      SvtClass.beastAny => [svtClass],
       SvtClass.none => [],
       _ => [svtClass],
     };
-    return svtClasses.toSet().toList();
+    if (expandBeast) {
+      return <SvtClass>{
+        for (final x in svtClasses)
+          if (x == SvtClass.beastAny) ...beasts else x,
+      }.toList();
+    } else {
+      return svtClasses.toSet().toList();
+    }
   }
 }
 

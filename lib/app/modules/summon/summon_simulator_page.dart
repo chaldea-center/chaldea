@@ -347,7 +347,7 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
               if (selectedSvt.type == SvtType.normal &&
                   selectedSvt.collectionNo > 0 &&
                   selectedSvt.rarity == 5 &&
-                  SvtClassX.resolveClasses(svtClass, expandBeast: true).contains(selectedSvt.className) &&
+                  SvtClassX.match(selectedSvt.className, svtClass) &&
                   data.svts.any((e) => e.ids.contains(selectedSvt.collectionNo))) {
                 if (mounted) {
                   setState(() {
