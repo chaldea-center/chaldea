@@ -249,7 +249,7 @@ abstract class NetworkManagerBase<TRequest extends FRequestBase, TUser extends A
           }
 
           record.response = resp;
-          setLocalNotification(oldUserGame: oldUserGame);
+          setLocalNotification(oldUserGame: oldUserGame, request: request);
           hasCalled = true;
           return resp;
         } on DioException catch (e, s) {

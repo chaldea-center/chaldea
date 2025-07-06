@@ -149,7 +149,7 @@ class _InputCancelOkDialogState extends State<InputCancelOkDialog> {
                   }
                   setState(() {});
                 },
-                child: Icon(Icons.add_circle_outline, size: 16),
+                child: Icon(Icons.add_circle_outline, size: 20),
               ),
               InkWell(
                 onTap: () {
@@ -160,7 +160,7 @@ class _InputCancelOkDialogState extends State<InputCancelOkDialog> {
                   }
                   setState(() {});
                 },
-                child: Icon(Icons.remove_circle_outline, size: 16),
+                child: Icon(Icons.remove_circle_outline, size: 20),
               ),
             ],
           ),

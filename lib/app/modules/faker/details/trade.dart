@@ -23,9 +23,9 @@ class UserEventTradePage extends StatefulWidget {
 class _UserEventTradePageState extends State<UserEventTradePage> with SingleTickerProviderStateMixin {
   late final runtime = widget.runtime;
   late final userEventTrades = runtime.mstData.userEventTrade;
-  int eventId = 0;
-  Map<int, EventTradeGoods> tradeGoodsMap = {};
+  _UserTradeData data = _UserTradeData(null);
   late final tabController = TabController(length: 3, vsync: this);
+  bool sortByEndTime = true;
 
   @override
   void initState() {
@@ -43,20 +43,13 @@ class _UserEventTradePageState extends State<UserEventTradePage> with SingleTick
   }
 
   void selectTrade(UserEventTradeEntity trade) {
-    eventId = trade.eventId;
-    final event = db.gameData.events[trade.eventId];
-    if (event != null) {
-      tradeGoodsMap = {for (final goods in event.tradeGoods) goods.id: goods};
-    } else {
-      tradeGoodsMap.clear();
-    }
+    data = _UserTradeData(trade);
     if (mounted) setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
-    final eventTrade = userEventTrades[eventId];
-    if (eventTrade == null) {
+    if (data.userEventTrade == null) {
       return Scaffold(
         appBar: AppBar(title: Text(S.current.event_trade)),
         body: ListView(
@@ -72,23 +65,21 @@ class _UserEventTradePageState extends State<UserEventTradePage> with SingleTick
         ),
       );
     }
+    data = _UserTradeData(userEventTrades[data.eventId]);
 
-    final tradeInfoList = eventTrade.tradeList.toList();
-    final resultList = eventTrade.resultList.toList();
-    final pickupList = eventTrade.pickupList.toList();
-    final tradeInfoMap = {for (final trade in tradeInfoList) trade.tradeGoodsId: trade};
-    final resultMap = {for (final result in resultList) result.tradeGoodsId: result};
-    final pickupMap = {for (final pickup in pickupList) pickup.tradeGoodsId: pickup};
-
-    final tradeGoodsList = tradeGoodsMap.values.toList();
-    tradeGoodsList.sortByList((e) => [tradeInfoMap[e.id]?.storeIdx ?? 999, e.id]);
+    final tradeGoodsList = data.tradeGoodsMap.values.toList();
+    if (sortByEndTime) {
+      tradeGoodsList.sortByList((e) => [data.tradeInfos[e.id]?.endedAt ?? kNeverClosedTimestamp, e.id]);
+    } else {
+      tradeGoodsList.sortByList((e) => [data.tradeInfos[e.id]?.storeIdx ?? 999, e.id]);
+    }
 
     final consumeItemIds = tradeGoodsList.expand((e) => e.consumes).map((e) => e.objectId).toSet().toList();
     consumeItemIds.sort();
 
     final demandItems = <int, int>{};
-    for (final tradeInfo in tradeInfoList) {
-      final tradeGoods = tradeGoodsMap[tradeInfo.tradeGoodsId];
+    for (final tradeInfo in data.tradeInfos.values) {
+      final tradeGoods = data.tradeGoodsMap[tradeInfo.tradeGoodsId];
       if (tradeGoods == null) continue;
       for (final consume in tradeGoods.consumes) {
         demandItems.addNum(consume.objectId, consume.num * (kSecsPerDay / tradeGoods.tradeTime).round());
@@ -100,9 +91,11 @@ class _UserEventTradePageState extends State<UserEventTradePage> with SingleTick
         title: Text(S.current.event_trade),
         actions: [
           IconButton(
-            onPressed: () {
-              router.push(url: Routes.eventI(eventTrade.eventId));
-            },
+            onPressed: data.eventId == 0
+                ? null
+                : () {
+                    router.push(url: Routes.eventI(data.eventId));
+                  },
             icon: Icon(Icons.flag),
             tooltip: S.current.event,
           ),
@@ -131,30 +124,66 @@ class _UserEventTradePageState extends State<UserEventTradePage> with SingleTick
             children: [
               ListTile(
                 dense: true,
-                // leading: const SizedBox.shrink(),
+                leading: IconButton(
+                  onPressed: () {
+                    setState(() {
+                      sortByEndTime = !sortByEndTime;
+                    });
+                  },
+                  icon: Icon(Icons.sort_by_alpha),
+                ),
+                contentPadding: EdgeInsets.zero,
                 title: Wrap(
                   spacing: 2,
                   crossAxisAlignment: WrapCrossAlignment.center,
                   children: [
-                    Text('${S.current.item_own}: '),
+                    Text('${S.current.item_own}:\n24h:', style: TextStyle(fontSize: 10)),
                     for (final itemId in consumeItemIds.reversed)
                       Item.iconBuilder(
                         context: context,
                         item: null,
                         itemId: itemId,
-                        text: runtime.mstData.getItemOrSvtNum(itemId).format(),
+                        text: [
+                          runtime.mstData.getItemOrSvtNum(itemId).format(),
+                          (demandItems[itemId] ?? 0).format(),
+                        ].join('\n'),
                       ),
-                    Text('  24h: '),
-                    for (final (itemId, count) in demandItems.items)
-                      Item.iconBuilder(context: context, item: null, itemId: itemId, text: count.format()),
                   ],
+                ),
+                trailing: TextButton(
+                  onPressed: data.tradeInfos.keys.any((e) => data.getLeastReceiveNum(e).floor() > 0)
+                      ? () {
+                          final storeIdxs = data.tradeInfos.keys
+                              .where((e) => data.getLeastReceiveNum(e).floor() > 0)
+                              .map((e) => data.tradeInfos[e]!.storeIdx)
+                              .toList();
+                          if (storeIdxs.isEmpty) {
+                            EasyLoading.showError('No available store');
+                            return;
+                          }
+                          SimpleConfirmDialog(
+                            title: Text('Receive All'),
+                            content: Text(storeIdxs.join(' / ')),
+                            onTapOk: () {
+                              runTask(
+                                () => runtime.agent.eventTradeReceive(
+                                  eventId: data.eventId,
+                                  tradeStoreIdxs: [],
+                                  receiveNum: 0,
+                                  cancelTradeFlag: 0,
+                                ),
+                              );
+                            },
+                          ).showDialog(context);
+                        }
+                      : null,
+                  child: Text('Receive All'),
                 ),
               ),
               kDefaultDivider,
               Expanded(
                 child: ListView.separated(
-                  itemBuilder: (context, index) =>
-                      buildTrade(tradeGoodsList[index], tradeInfoMap, resultMap, pickupMap),
+                  itemBuilder: (context, index) => buildTrade(tradeGoodsList[index]),
                   itemCount: tradeGoodsList.length,
                   separatorBuilder: (context, index) => const Divider(height: 4, indent: 16, endIndent: 16),
                 ),
@@ -162,34 +191,26 @@ class _UserEventTradePageState extends State<UserEventTradePage> with SingleTick
             ],
           ),
           ListView.builder(
-            itemBuilder: (context, index) => buildResult(resultList[index]),
-            itemCount: resultList.length,
+            itemBuilder: (context, index) => buildResult(data.userEventTrade!.resultList[index]),
+            itemCount: data.userEventTrade?.resultList.length ?? 0,
           ),
           ListView.builder(
-            itemBuilder: (context, index) => buildPickup(pickupList[index]),
-            itemCount: pickupList.length,
+            itemBuilder: (context, index) => buildPickup(data.userEventTrade!.pickupList[index]),
+            itemCount: data.userEventTrade?.pickupList.length ?? 0,
           ),
         ],
       ),
     );
   }
 
-  Widget buildTrade(
-    EventTradeGoods tradeGood,
-    Map<int, EventTradeInfo> tradeInfoMap,
-    Map<int, EventTradeResultInfo> results,
-    Map<int, EventCraftPickupInfo> pickups,
-  ) {
-    final tradeInfo = tradeInfoMap[tradeGood.id];
-    final pickup = pickups[tradeGood.id];
+  Widget buildTrade(EventTradeGoods tradeGood) {
+    final tradeInfo = data.tradeInfos[tradeGood.id];
+    final pickup = data.pickups[tradeGood.id];
     final now = DateTime.now().timestamp;
     final isCraftPickup = pickup != null && pickup.startedAt <= now && pickup.endedAt >= now;
 
     double getLeastReceiveNum() {
-      if (tradeInfo == null) return 0;
-      final now = DateTime.now().timestamp;
-      if (tradeInfo.tradeNum == 0) return 0;
-      return (now - tradeInfo.startedAt) / tradeGood.tradeTime;
+      return data.getLeastReceiveNum(tradeGood.id);
     }
 
     Widget tile = ListTile(
@@ -294,7 +315,7 @@ class _UserEventTradePageState extends State<UserEventTradePage> with SingleTick
                   ? null
                   : () async {
                       int tradeGoodsNum = 1;
-                      final curIdxs = tradeInfoMap.values.map((e) => e.storeIdx).toSet();
+                      final curIdxs = data.tradeInfos.values.map((e) => e.storeIdx).toSet();
                       final idx = tradeInfo?.storeIdx ?? range(1, 8).firstWhereOrNull((e) => !curIdxs.contains(e));
                       if (idx == null) {
                         EasyLoading.showToast('No valid idx');
@@ -313,7 +334,7 @@ class _UserEventTradePageState extends State<UserEventTradePage> with SingleTick
                       } else {
                         final confirm = await SimpleConfirmDialog(
                           title: Text('Start Trade'),
-                          content: Text('Current in trade: ${tradeInfoMap.length}'),
+                          content: Text('Current in trade: ${data.tradeInfos.length}'),
                         ).showDialog(context);
                         if (confirm != true) return;
                       }
@@ -349,7 +370,7 @@ class _UserEventTradePageState extends State<UserEventTradePage> with SingleTick
 
                       runTask(
                         () => runtime.agent.eventTradeStart(
-                          eventId: eventId,
+                          eventId: data.eventId,
                           tradeStoreIdx: idx,
                           tradeGoodsId: tradeGood.id,
                           tradeGoodsNum: tradeGoodsNum,
@@ -385,7 +406,7 @@ class _UserEventTradePageState extends State<UserEventTradePage> with SingleTick
                                         Navigator.pop(context);
                                         runTask(
                                           () => runtime.agent.eventTradeReceive(
-                                            eventId: eventId,
+                                            eventId: data.eventId,
                                             tradeStoreIdxs: [tradeInfo.storeIdx],
                                             receiveNum: max(1, tradeInfo.getNum),
                                             cancelTradeFlag: 0,
@@ -415,7 +436,7 @@ class _UserEventTradePageState extends State<UserEventTradePage> with SingleTick
                     onTapOk: () {
                       runTask(
                         () => runtime.agent.eventTradeReceive(
-                          eventId: eventId,
+                          eventId: data.eventId,
                           tradeStoreIdxs: [tradeInfo.storeIdx],
                           receiveNum: 0,
                           cancelTradeFlag: 1,
@@ -434,7 +455,7 @@ class _UserEventTradePageState extends State<UserEventTradePage> with SingleTick
   }
 
   Widget buildResult(EventTradeResultInfo result) {
-    final goods = tradeGoodsMap[result.tradeGoodsId];
+    final goods = data.tradeGoodsMap[result.tradeGoodsId];
     return ListTile(
       dense: true,
       title: Text(goods == null ? '${result.tradeGoodsId}' : goods.lName),
@@ -444,7 +465,7 @@ class _UserEventTradePageState extends State<UserEventTradePage> with SingleTick
   }
 
   Widget buildPickup(EventCraftPickupInfo pickup) {
-    final goods = tradeGoodsMap[pickup.tradeGoodsId];
+    final goods = data.tradeGoodsMap[pickup.tradeGoodsId];
     return ListTile(
       dense: true,
       title: Text(goods == null ? '${pickup.tradeGoodsId}' : goods.lName),
@@ -505,5 +526,36 @@ class _UserEventTradePageState extends State<UserEventTradePage> with SingleTick
   Future<void> runTask(Future Function() cb) async {
     await showEasyLoading(() => runtime.runTask(cb));
     if (mounted) setState(() {});
+  }
+}
+
+class _UserTradeData {
+  final UserEventTradeEntity? userEventTrade;
+  int eventId = 0;
+  Map<int, EventTradeGoods> tradeGoodsMap = {};
+  Map<int, EventTradeInfo> tradeInfos = {};
+  Map<int, EventTradeResultInfo> results = {};
+  Map<int, EventCraftPickupInfo> pickups = {};
+
+  _UserTradeData(this.userEventTrade) {
+    final entity = userEventTrade;
+    if (entity != null) {
+      eventId = entity.eventId;
+      tradeGoodsMap = {
+        for (final goods in db.gameData.events[entity.eventId]?.tradeGoods ?? <EventTradeGoods>[]) goods.id: goods,
+      };
+      tradeInfos = {for (final v in entity.tradeList) v.tradeGoodsId: v};
+      results = {for (final v in entity.resultList) v.tradeGoodsId: v};
+      pickups = {for (final v in entity.pickupList) v.tradeGoodsId: v};
+    }
+  }
+
+  double getLeastReceiveNum(int goodsId) {
+    final tradeInfo = tradeInfos[goodsId];
+    if (tradeInfo == null || tradeInfo.tradeNum == 0) return 0;
+    final goods = tradeGoodsMap[goodsId];
+    if (goods == null) return 0;
+    final now = DateTime.now().timestamp;
+    return (now - tradeInfo.startedAt) / goods.tradeTime;
   }
 }

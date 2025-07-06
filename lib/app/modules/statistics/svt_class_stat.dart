@@ -96,6 +96,7 @@ class _StatisticServantTabState extends State<StatisticServantTab> {
       ListTile(
         title: Text(S.current.priority, style: Theme.of(context).textTheme.bodySmall),
         trailing: Wrap(
+          crossAxisAlignment: WrapCrossAlignment.center,
           children: [
             Text(priority.options.isEmpty ? S.current.general_all : (priority.options.toList()..sort()).join(', ')),
             SharedBuilder.priorityIcon(context: context),

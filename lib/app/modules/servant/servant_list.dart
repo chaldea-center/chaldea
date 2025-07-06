@@ -350,7 +350,7 @@ class ServantListPageState extends State<ServantListPage> with SearchableListSta
                   if (costumeId == null) {
                     return Container();
                   }
-                  return _getRange(cur.costumes[costumeId] ?? 0, target.costumes[costumeId] ?? 0, null);
+                  return _getRange(cur.costumes[costumeId] ?? 0, target.costumes[costumeId] ?? 0, 1);
                 }),
               ],
             ),
