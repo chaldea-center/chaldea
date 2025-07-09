@@ -1102,7 +1102,7 @@ class BattleData {
         if (nonnullEnemies.isEmpty) return;
         recorder.initiateAttacks(this, [action]);
         await withAction(() async {
-          if (!onFieldAllyServants.contains(action.actor) || !action.isValid(this)) return;
+          if (!onFieldAllyServants.contains(action.actor) || !action.isValidCounter(this)) return;
           recorder.startPlayerCard(action.actor, action.cardData);
           if (action.cardData.isTD) {
             final td = action.cardData.td!, buff = action.cardData.counterBuff!;

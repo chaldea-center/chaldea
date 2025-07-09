@@ -165,6 +165,18 @@ class CombatAction {
     }
   }
 
+  bool isValidCounter(final BattleData battleData) {
+    if (cardData.isTD) {
+      final delegateResult = battleData.delegate?.whetherTd?.call(actor);
+      if (delegateResult != null) {
+        return delegateResult;
+      }
+      return actor.canCommandCard(cardData) && !actor.isNPSealed();
+    } else {
+      return actor.canCommandCard(cardData);
+    }
+  }
+
   CombatAction copy() {
     return CombatAction(actor.copy(), cardData.copy());
   }
