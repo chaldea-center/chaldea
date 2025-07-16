@@ -148,7 +148,7 @@ class _FakerHistoryViewerState extends State<FakerHistoryViewer> {
         data = {
           for (final (k, v) in data.items)
             k: const {'webview', 'assetbundle', 'master', 'assetbundleKey'}.contains(k) && v != ''
-                ? '(${v.toString().length})${v.toString().substring2(10)}...'
+                ? '(${v.toString().length})${v.toString().substring2(0, 100)}...'
                 : v,
         };
       }

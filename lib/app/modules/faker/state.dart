@@ -68,6 +68,8 @@ class FakerRuntime {
     }
   }
 
+  // builders
+
   void displayToast(String? msg, {double? progress}) {
     activeToast.value = msg;
     if (db.settings.fakerSettings.showProgressToast) {
@@ -100,6 +102,57 @@ class FakerRuntime {
     }
     if (ctx == null) return null;
     return child.showDialog(ctx, barrierDismissible: barrierDismissible);
+  }
+
+  Widget buildCircularProgress({
+    required BuildContext context,
+    double size = 16,
+    bool showElapsed = false,
+    Color? activeColor,
+    Color? inactiveColor,
+  }) {
+    return ValueListenableBuilder(
+      valueListenable: runningTask,
+      builder: (context, running, _) {
+        double? value;
+        if (running) {
+          final offstageParent = context.findAncestorWidgetOfExactType<Offstage>();
+          if (offstageParent != null && offstageParent.offstage) {
+            value = 0.5;
+          }
+        } else {
+          value = 1.0;
+        }
+        Widget child = ConstrainedBox(
+          constraints: BoxConstraints(maxWidth: size, maxHeight: size),
+          child: CircularProgressIndicator(
+            value: value,
+            color: running ? (activeColor ?? Colors.red) : (inactiveColor ?? Colors.green),
+          ),
+        );
+        if (showElapsed) {
+          child = Stack(
+            alignment: Alignment.center,
+            children: [
+              child,
+              if (running)
+                ConstrainedBox(
+                  constraints: BoxConstraints(maxWidth: size, maxHeight: size),
+                  child: TimerUpdate(
+                    builder: (context, t) {
+                      final startedAt = agent.network.lastTaskStartedAt;
+                      final dt = min(99, t.timestamp - startedAt);
+                      if (startedAt <= 0 || dt < 0) return const SizedBox.shrink();
+                      return Text(dt.toString(), style: TextStyle(fontSize: 10), textAlign: TextAlign.center);
+                    },
+                  ),
+                ),
+            ],
+          );
+        }
+        return child;
+      },
+    );
   }
 
   // init

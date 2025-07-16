@@ -305,28 +305,11 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
         minLeadingWidth: 20,
         leading: Container(
           constraints: const BoxConstraints(maxWidth: 20, maxHeight: 20),
-          child: ValueListenableBuilder(
-            valueListenable: runtime.runningTask,
-            builder: (context, running, _) => GestureDetector(
-              onTap: () {
-                setState(() {});
-              },
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  CircularProgressIndicator(value: running ? null : 1.0, color: running ? Colors.red : Colors.green),
-                  if (running)
-                    TimerUpdate(
-                      builder: (context, t) {
-                        final startedAt = agent.network.lastTaskStartedAt;
-                        final dt = min(99, t.timestamp - startedAt);
-                        if (startedAt <= 0 || dt < 0) return const SizedBox.shrink();
-                        return Text(dt.toString(), style: TextStyle(fontSize: 10), textAlign: TextAlign.center);
-                      },
-                    ),
-                ],
-              ),
-            ),
+          child: GestureDetector(
+            onTap: () {
+              setState(() {});
+            },
+            child: runtime.buildCircularProgress(context: context, showElapsed: true, size: 20),
           ),
         ),
         title: Text('[${agent.user.serverName}] ${userGame?.name ?? "not login"}'),
@@ -653,9 +636,10 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
                   subtitle: Text(saveData.createdAt.sec2date().toStringShort()),
                   trailing: SizedBox.square(
                     dimension: 12,
-                    child: CircularProgressIndicator(
-                      value: runtime.runningTask.value ? null : 1,
-                      color: runtime.runningTask.value ? Colors.grey : (saveData.success ? Colors.green : Colors.red),
+                    child: runtime.buildCircularProgress(
+                      context: context,
+                      activeColor: Colors.grey,
+                      inactiveColor: saveData.success ? Colors.green : Colors.red,
                     ),
                   ),
                 );

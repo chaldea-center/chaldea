@@ -2166,6 +2166,7 @@ class BattleServantData {
           targetedAlly: battleData.getTargetedAlly(this),
           targetedEnemy: opponent,
           skillType: skill.type,
+          skillInfoType: null,
         );
         buff.setUsed(this, battleData);
         activated = true;

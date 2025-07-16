@@ -110,14 +110,7 @@ class _GachaDrawPageState extends State<GachaDrawPage> {
         minTileHeight: 48,
         visualDensity: VisualDensity.compact,
         minLeadingWidth: 20,
-        leading: Container(
-          constraints: const BoxConstraints(maxWidth: 16, maxHeight: 16),
-          child: ValueListenableBuilder(
-            valueListenable: runtime.runningTask,
-            builder: (context, running, _) =>
-                CircularProgressIndicator(value: running ? null : 1.0, color: running ? Colors.red : Colors.green),
-          ),
-        ),
+        leading: runtime.buildCircularProgress(context: context, size: 16),
         title: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [

@@ -41,15 +41,14 @@ class _UserPresentBoxManagePageState extends State<UserPresentBoxManagePage> {
     super.initState();
     runtime.addDependency(this);
     showSelectedOnly = false;
+    items = Map.of(db.gameData.items);
     Future.microtask(() async {
-      if (runtime.region == Region.jp) {
-        items = Map.of(db.gameData.items);
-      } else {
+      if (runtime.region != Region.jp) {
         final itemList = await AtlasApi.exportedData<List<Item>>(
           'nice_item',
           (data) => (data as List).map((e) => Item.fromJson(Map.from(e))).toList(),
         );
-        if (itemList != null) {
+        if (itemList != null && itemList.isNotEmpty) {
           items = {for (final item in itemList) item.id: item};
         }
       }
@@ -285,6 +284,7 @@ class _UserPresentBoxManagePageState extends State<UserPresentBoxManagePage> {
 
     final buttonGroups = [
       [
+        runtime.buildCircularProgress(context: context),
         FilledButton(
           onPressed: () {
             receivePresents(selectedPresents.toSet());

@@ -86,14 +86,7 @@ class _UserSvtCommandCodePageState extends State<UserSvtCommandCodePage> {
         minTileHeight: 48,
         visualDensity: VisualDensity.compact,
         minLeadingWidth: 20,
-        leading: Container(
-          constraints: const BoxConstraints(maxWidth: 16, maxHeight: 16),
-          child: ValueListenableBuilder(
-            valueListenable: runtime.runningTask,
-            builder: (context, running, _) =>
-                CircularProgressIndicator(value: running ? null : 1.0, color: running ? Colors.red : Colors.green),
-          ),
-        ),
+        leading: runtime.buildCircularProgress(context: context),
         title: Text('[${agent.user.serverName}] ${userGame?.name}'),
         subtitle: Text.rich(TextSpan(children: subtitleSpans)),
       ),
