@@ -246,6 +246,7 @@ class BuffData {
     if (!checkBuffScript(
       isFirstSkillInTurn: battleData?.isFirstSkillInTurn,
       selfTraits: selfTraits,
+      opponentTraits: opponentTraits,
       skillInfoType: skillInfoType,
     )) {
       return false;
@@ -396,6 +397,7 @@ class BuffData {
   bool checkBuffScript({
     final bool? isFirstSkillInTurn,
     final List<NiceTrait>? selfTraits,
+    final List<NiceTrait>? opponentTraits,
     final SkillInfoType? skillInfoType,
   }) {
     if (buff.script.source.isEmpty) {
@@ -404,26 +406,48 @@ class BuffData {
 
     final script = buff.script;
 
+    bool scriptCheck = true;
     if (script.UpBuffRateBuffIndiv != null) {
-      if (selfTraits == null ||
-          !checkSignedIndividualities2(myTraits: selfTraits, requiredTraits: script.UpBuffRateBuffIndiv!)) {
-        return false;
-      }
+      scriptCheck &=
+          selfTraits != null &&
+          checkSignedIndividualities2(myTraits: selfTraits, requiredTraits: script.UpBuffRateBuffIndiv!);
     }
 
     if (script.useFirstTimeInTurn == 1) {
-      return isFirstSkillInTurn ?? false;
+      scriptCheck &= isFirstSkillInTurn ?? false;
     }
 
     if (script.fromCommandSpell == 1) {
-      return skillInfoType == SkillInfoType.commandSpell;
+      scriptCheck &= skillInfoType == SkillInfoType.commandSpell;
     }
 
     if (script.fromMasterEquip == 1) {
-      return skillInfoType == SkillInfoType.masterEquip;
+      scriptCheck &= skillInfoType == SkillInfoType.masterEquip;
     }
 
-    return true;
+    final ckSelfCountTraits = buff.script.ckSelfCountIndividuality?.map((traitId) => NiceTrait(id: traitId));
+    if (ckSelfCountTraits != null) {
+      final count = countAnyTraits(selfTraits ?? [], ckSelfCountTraits);
+      final ckAbove = script.ckIndvCountAbove;
+      final ckBelow = script.ckIndvCountBelow;
+
+      scriptCheck &=
+          (ckAbove == null || ckAbove == 0 || count >= ckAbove) &&
+          (ckBelow == null || ckBelow == 0 || count <= ckBelow);
+    }
+
+    final ckOpCountTraits = buff.script.ckOpCountIndividuality?.map((traitId) => NiceTrait(id: traitId));
+    if (ckOpCountTraits != null) {
+      final count = countAnyTraits(opponentTraits ?? [], ckOpCountTraits);
+      final ckAbove = script.ckIndvCountAbove;
+      final ckBelow = script.ckIndvCountBelow;
+
+      scriptCheck &=
+          (ckAbove == null || ckAbove == 0 || count >= ckAbove) &&
+          (ckBelow == null || ckBelow == 0 || count <= ckBelow);
+    }
+
+    return scriptCheck;
   }
 
   bool canStack(final int buffGroup) {
