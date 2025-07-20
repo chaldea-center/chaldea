@@ -574,18 +574,27 @@ class BattleData {
     }
 
     if (replenishEnemy) {
-      for (int index = 0; index < onFieldEnemies.length; index += 1) {
-        if (!enemyValidAppear[index]) {
+      final List<int> indices;
+      if (curStage?.enemyEntryOrder != null) {
+        final indexed = curStage!.enemyEntryOrder!.indexed.toList().sortReturn((a, b) => a.$2.compareTo(b.$2));
+        indices = indexed.map((item) => item.$1).toList();
+      } else {
+        indices = List.generate(onFieldEnemies.length, (idx) => idx);
+      }
+
+      for (int index = 0; index < indices.length; index += 1) {
+        final fieldIndex = indices[index];
+        if (!enemyValidAppear[fieldIndex]) {
           continue;
         }
 
-        if (onFieldEnemies[index] == null && backupEnemies.isNotEmpty) {
+        if (onFieldEnemies[fieldIndex] == null && backupEnemies.isNotEmpty) {
           BattleServantData? nextSvt;
           while (backupEnemies.isNotEmpty && nextSvt == null) {
             nextSvt = backupEnemies.removeAt(0);
           }
           if (nextSvt != null) {
-            onFieldEnemies[index] = nextSvt;
+            onFieldEnemies[fieldIndex] = nextSvt;
             newActors.add(nextSvt);
           }
         }
@@ -1505,6 +1514,19 @@ class BattleData {
         if (actor?.uniqueId == minUniqueId) {
           return index;
         }
+      }
+    } else if (isEnemy && curStage?.enemyAutoTargetOrder != null) {
+      final targetOrder = curStage!.enemyAutoTargetOrder!;
+      final BattleServantData? actor = actorList.fold(null, (prevActor, actor) {
+        if (prevActor == null) return actor;
+        if (actor == null) return prevActor;
+
+        final prevActorOrder = targetOrder[prevActor.fieldIndex];
+        final curActorOrder = targetOrder[actor.fieldIndex];
+        return prevActorOrder < curActorOrder ? prevActor : actor;
+      });
+      if (actor != null) {
+        return actor.fieldIndex;
       }
     } else {
       for (final (index, actor) in actorList.indexed) {

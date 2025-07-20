@@ -925,6 +925,8 @@ class Stage with DataScriptBase {
   List<int>? get enemyMasterBattleIdByPlayerGender => toList('enemyMasterBattleIdByPlayerGender');
   // mstBattleMasterImage.id
   int? get battleMasterImageId => toInt('battleMasterImageId');
+  List<int>? get enemyAutoTargetOrder => toList('enemyAutoTargetOrder');
+  List<int>? get enemyEntryOrder => toList('enemyEntryOrder');
 
   Map<String, dynamic> toJson() => _$StageToJson(this)..['originalScript'] = originalScript;
 }
