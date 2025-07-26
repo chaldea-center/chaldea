@@ -125,19 +125,17 @@ BuffScript _$BuffScriptFromJson(Map json) => BuffScript(
 );
 
 Map<String, dynamic> _$BuffScriptToJson(BuffScript instance) => <String, dynamic>{
-  if (instance.checkIndvType case final value?) 'checkIndvType': value,
-  if (instance.CheckOpponentBuffTypes?.map(const BuffTypeConverter().toJson).toList() case final value?)
-    'CheckOpponentBuffTypes': value,
-  if (instance.relationId?.toJson() case final value?) 'relationId': value,
-  if (instance.INDIVIDUALITIE?.toJson() case final value?) 'INDIVIDUALITIE': value,
-  if (instance.INDIVIDUALITIE_COUNT_ABOVE case final value?) 'INDIVIDUALITIE_COUNT_ABOVE': value,
-  if (instance.INDIVIDUALITIE_AND?.map((e) => e.toJson()).toList() case final value?) 'INDIVIDUALITIE_AND': value,
-  if (instance.INDIVIDUALITIE_OR?.map((e) => e.toJson()).toList() case final value?) 'INDIVIDUALITIE_OR': value,
-  if (instance.UpBuffRateBuffIndiv?.map((e) => e.toJson()).toList() case final value?) 'UpBuffRateBuffIndiv': value,
-  if (instance.TargetIndiv?.toJson() case final value?) 'TargetIndiv': value,
-  if (instance.convert?.toJson() case final value?) 'convert': value,
-  if (instance.NotPierceIndividuality?.map((e) => e.map((e) => e.toJson()).toList()).toList() case final value?)
-    'NotPierceIndividuality': value,
+  'checkIndvType': ?instance.checkIndvType,
+  'CheckOpponentBuffTypes': ?instance.CheckOpponentBuffTypes?.map(const BuffTypeConverter().toJson).toList(),
+  'relationId': ?instance.relationId?.toJson(),
+  'INDIVIDUALITIE': ?instance.INDIVIDUALITIE?.toJson(),
+  'INDIVIDUALITIE_COUNT_ABOVE': ?instance.INDIVIDUALITIE_COUNT_ABOVE,
+  'INDIVIDUALITIE_AND': ?instance.INDIVIDUALITIE_AND?.map((e) => e.toJson()).toList(),
+  'INDIVIDUALITIE_OR': ?instance.INDIVIDUALITIE_OR?.map((e) => e.toJson()).toList(),
+  'UpBuffRateBuffIndiv': ?instance.UpBuffRateBuffIndiv?.map((e) => e.toJson()).toList(),
+  'TargetIndiv': ?instance.TargetIndiv?.toJson(),
+  'convert': ?instance.convert?.toJson(),
+  'NotPierceIndividuality': ?instance.NotPierceIndividuality?.map((e) => e.map((e) => e.toJson()).toList()).toList(),
 };
 
 BuffConvert _$BuffConvertFromJson(Map json) => BuffConvert(
@@ -169,7 +167,7 @@ Map<String, dynamic> _$BuffConvertToJson(BuffConvert instance) => <String, dynam
   'targets': instance.targets,
   'targetBuffs': instance.targetBuffs.map((e) => e.toJson()).toList(),
   'convertBuffs': instance.convertBuffs.map((e) => e.toJson()).toList(),
-  if (instance.script?.toJson() case final value?) 'script': value,
+  'script': ?instance.script?.toJson(),
   'effectId': instance.effectId,
   'targetIndividualities': instance.targetIndividualities.map((e) => e.toJson()).toList(),
 };

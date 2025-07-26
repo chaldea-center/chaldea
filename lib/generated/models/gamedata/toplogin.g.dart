@@ -681,14 +681,14 @@ DeckServantData _$DeckServantDataFromJson(Map json) => DeckServantData(
 Map<String, dynamic> _$DeckServantDataToJson(DeckServantData instance) => <String, dynamic>{
   'id': instance.id,
   'userSvtId': instance.userSvtId,
-  if (instance.userId case final value?) 'userId': value,
-  if (instance.svtId case final value?) 'svtId': value,
+  'userId': ?instance.userId,
+  'svtId': ?instance.svtId,
   'userSvtEquipIds': instance.userSvtEquipIds,
-  if (instance.svtEquipIds case final value?) 'svtEquipIds': value,
+  'svtEquipIds': ?instance.svtEquipIds,
   'isFollowerSvt': instance.isFollowerSvt,
   'npcFollowerSvtId': instance.npcFollowerSvtId,
-  if (instance.followerType case final value?) 'followerType': value,
-  if (instance.initPos case final value?) 'initPos': value,
+  'followerType': ?instance.followerType,
+  'initPos': ?instance.initPos,
 };
 
 BattleEntity _$BattleEntityFromJson(Map json) => BattleEntity(

@@ -124,12 +124,12 @@ BattleShareData _$BattleShareDataFromJson(Map json) => $checkedCreate('BattleSha
 }, fieldKeyMap: const {'formation': 'team'});
 
 Map<String, dynamic> _$BattleShareDataToJson(BattleShareData instance) => <String, dynamic>{
-  if (instance.minBuild case final value?) 'minBuild': value,
-  if (instance.appBuild case final value?) 'appBuild': value,
-  if (instance.quest?.toJson() case final value?) 'quest': value,
+  'minBuild': ?instance.minBuild,
+  'appBuild': ?instance.appBuild,
+  'quest': ?instance.quest?.toJson(),
   'options': instance.options.toJson(),
   'team': instance.formation.toJson(),
-  if (instance.delegate?.toJson() case final value?) 'delegate': value,
+  'delegate': ?instance.delegate?.toJson(),
   'actions': instance.actions.map((e) => e.toJson()).toList(),
   'isCritTeam': instance.isCritTeam,
 };
@@ -174,9 +174,8 @@ BattleQuestInfo _$BattleQuestInfoFromJson(Map json) => $checkedCreate('BattleQue
 Map<String, dynamic> _$BattleQuestInfoToJson(BattleQuestInfo instance) => <String, dynamic>{
   'id': instance.id,
   'phase': instance.phase,
-  if (instance.enemyHash case final value?) 'enemyHash': value,
-  if (_$JsonConverterToJson<String, Region>(instance.region, const RegionConverter().toJson) case final value?)
-    'region': value,
+  'enemyHash': ?instance.enemyHash,
+  'region': ?_$JsonConverterToJson<String, Region>(instance.region, const RegionConverter().toJson),
 };
 
 BattleTeamFormation _$BattleTeamFormationFromJson(Map json) =>
@@ -277,24 +276,24 @@ SvtSaveData _$SvtSaveDataFromJson(Map json) => $checkedCreate('SvtSaveData', jso
 });
 
 Map<String, dynamic> _$SvtSaveDataToJson(SvtSaveData instance) => <String, dynamic>{
-  if (instance.svtId case final value?) 'svtId': value,
+  'svtId': ?instance.svtId,
   'limitCount': instance.limitCount,
   'skillIds': instance.skillIds,
   'skillLvs': instance.skillLvs,
   'appendLvs': instance.appendLvs,
-  if (instance.tdId case final value?) 'tdId': value,
+  'tdId': ?instance.tdId,
   'tdLv': instance.tdLv,
   'lv': instance.lv,
   'atkFou': instance.atkFou,
   'hpFou': instance.hpFou,
-  if (instance.fixedAtk case final value?) 'fixedAtk': value,
-  if (instance.fixedHp case final value?) 'fixedHp': value,
-  if (instance.ceId case final value?) 'ceId': value,
+  'fixedAtk': ?instance.fixedAtk,
+  'fixedHp': ?instance.fixedHp,
+  'ceId': ?instance.ceId,
   'ceLimitBreak': instance.ceLimitBreak,
   'ceLv': instance.ceLv,
   'equip1': instance.equip1.toJson(),
-  if (instance.equip2?.toJson() case final value?) 'equip2': value,
-  if (instance.equip3?.toJson() case final value?) 'equip3': value,
+  'equip2': ?instance.equip2?.toJson(),
+  'equip3': ?instance.equip3?.toJson(),
   'supportType': _$SupportSvtTypeEnumMap[instance.supportType]!,
   'cardStrengthens': instance.cardStrengthens,
   'commandCodeIds': instance.commandCodeIds,
@@ -303,7 +302,7 @@ Map<String, dynamic> _$SvtSaveDataToJson(SvtSaveData instance) => <String, dynam
   'customPassives': instance.customPassives.map((e) => e.toJson()).toList(),
   'customPassiveLvs': instance.customPassiveLvs,
   'grandSvt': instance.grandSvt,
-  if (instance.classBoardData?.toJson() case final value?) 'classBoardData': value,
+  'classBoardData': ?instance.classBoardData?.toJson(),
 };
 
 const _$SupportSvtTypeEnumMap = {
@@ -723,9 +722,9 @@ BattleRecordData _$BattleRecordDataFromJson(Map json) => $checkedCreate('BattleR
 
 Map<String, dynamic> _$BattleRecordDataToJson(BattleRecordData instance) => <String, dynamic>{
   'type': _$BattleRecordDataTypeEnumMap[instance.type]!,
-  if (instance.svt case final value?) 'svt': value,
-  if (instance.skill case final value?) 'skill': value,
-  if (instance.attacks?.map((e) => e.toJson()).toList() case final value?) 'attacks': value,
+  'svt': ?instance.svt,
+  'skill': ?instance.skill,
+  'attacks': ?instance.attacks?.map((e) => e.toJson()).toList(),
   'options': instance.options.toJson(),
 };
 

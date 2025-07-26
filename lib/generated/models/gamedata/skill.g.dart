@@ -384,13 +384,12 @@ SkillScript _$SkillScriptFromJson(Map json) => SkillScript(
 );
 
 Map<String, dynamic> _$SkillScriptToJson(SkillScript instance) => <String, dynamic>{
-  if (instance.actRarity case final value?) 'actRarity': value,
-  if (instance.SelectAddInfo?.map((e) => e.toJson()).toList() case final value?) 'SelectAddInfo': value,
-  if (instance.selectTreasureDeviceInfo?.map((e) => e.toJson()).toList() case final value?)
-    'selectTreasureDeviceInfo': value,
-  if (instance.IgnoreValueUp case final value?) 'IgnoreValueUp': value,
-  if (instance.IgnoreBattlePointUp case final value?) 'IgnoreBattlePointUp': value,
-  if (instance.tdChangeByBattlePoint?.map((e) => e.toJson()).toList() case final value?) 'tdChangeByBattlePoint': value,
+  'actRarity': ?instance.actRarity,
+  'SelectAddInfo': ?instance.SelectAddInfo?.map((e) => e.toJson()).toList(),
+  'selectTreasureDeviceInfo': ?instance.selectTreasureDeviceInfo?.map((e) => e.toJson()).toList(),
+  'IgnoreValueUp': ?instance.IgnoreValueUp,
+  'IgnoreBattlePointUp': ?instance.IgnoreBattlePointUp,
+  'tdChangeByBattlePoint': ?instance.tdChangeByBattlePoint?.map((e) => e.toJson()).toList(),
 };
 
 SkillSelectAddInfo _$SkillSelectAddInfoFromJson(Map json) => SkillSelectAddInfo(

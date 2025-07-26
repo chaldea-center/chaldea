@@ -261,11 +261,11 @@ MappingBase<T> _$MappingBaseFromJson<T>(Map json, T Function(Object? json) fromJ
 
 Map<String, dynamic> _$MappingBaseToJson<T>(MappingBase<T> instance, Object? Function(T value) toJsonT) =>
     <String, dynamic>{
-      if (_$nullableGenericToJson(instance.jp, toJsonT) case final value?) 'JP': value,
-      if (_$nullableGenericToJson(instance.cn, toJsonT) case final value?) 'CN': value,
-      if (_$nullableGenericToJson(instance.tw, toJsonT) case final value?) 'TW': value,
-      if (_$nullableGenericToJson(instance.na, toJsonT) case final value?) 'NA': value,
-      if (_$nullableGenericToJson(instance.kr, toJsonT) case final value?) 'KR': value,
+      'JP': ?_$nullableGenericToJson(instance.jp, toJsonT),
+      'CN': ?_$nullableGenericToJson(instance.cn, toJsonT),
+      'TW': ?_$nullableGenericToJson(instance.tw, toJsonT),
+      'NA': ?_$nullableGenericToJson(instance.na, toJsonT),
+      'KR': ?_$nullableGenericToJson(instance.kr, toJsonT),
     };
 
 T? _$nullableGenericFromJson<T>(Object? input, T Function(Object? json) fromJson) =>

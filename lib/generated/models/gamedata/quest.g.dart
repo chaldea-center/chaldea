@@ -976,12 +976,12 @@ EnemyScript _$EnemyScriptFromJson(Map json) => EnemyScript(
 );
 
 Map<String, dynamic> _$EnemyScriptToJson(EnemyScript instance) => <String, dynamic>{
-  if (_$SvtDeathTypeEnumMap[instance.deathType] case final value?) 'deathType': value,
-  if (instance.hpBarType case final value?) 'hpBarType': value,
-  if (instance.leader case final value?) 'leader': value,
-  if (instance.call case final value?) 'call': value,
-  if (instance.shift case final value?) 'shift': value,
-  if (instance.shiftClear?.map((e) => e.toJson()).toList() case final value?) 'shiftClear': value,
+  'deathType': ?_$SvtDeathTypeEnumMap[instance.deathType],
+  'hpBarType': ?instance.hpBarType,
+  'leader': ?instance.leader,
+  'call': ?instance.call,
+  'shift': ?instance.shift,
+  'shiftClear': ?instance.shiftClear?.map((e) => e.toJson()).toList(),
 };
 
 const _$SvtDeathTypeEnumMap = {
