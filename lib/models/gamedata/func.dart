@@ -671,7 +671,8 @@ enum FuncTargetType {
   enemyRange(30),
   handCommandcardRandomOne(31),
   fieldAll(32),
-  noTarget(33);
+  noTarget(33),
+  fieldRandom(34);
 
   const FuncTargetType(this.value);
   final int value;
@@ -680,7 +681,7 @@ enum FuncTargetType {
   bool get isAlly =>
       name.toLowerCase().startsWith('pt') ||
       const [FuncTargetType.self, FuncTargetType.commandTypeSelfTreasureDevice].contains(this);
-  bool get isField => this == FuncTargetType.fieldOther;
+  bool get isField => this == FuncTargetType.fieldOther || this == fieldAll || this == fieldRandom;
   bool get isDynamic => this == FuncTargetType.enemyOneNoTargetNoAction;
 
   bool get canTargetAlly => isAlly || isField || isDynamic || this == noTarget;
@@ -688,8 +689,14 @@ enum FuncTargetType {
 
   bool get needNormalOneTarget => const [ptOne, ptAnother, ptOneOther].contains(this);
 
-  bool get needRadomTarget =>
-      const [ptRandom, enemyRandom, ptOneAnotherRandom, ptSelfAnotherRandom, enemyOneAnotherRandom].contains(this);
+  bool get needRadomTarget => const [
+    ptRandom,
+    enemyRandom,
+    ptOneAnotherRandom,
+    ptSelfAnotherRandom,
+    enemyOneAnotherRandom,
+    fieldRandom,
+  ].contains(this);
 }
 
 @JsonEnum(alwaysCreate: true)

@@ -199,6 +199,7 @@ const _$SvtClassEnumMap = {
   SvtClass.uOlgaMarieFlareCollection: 'uOlgaMarieFlareCollection',
   SvtClass.uOlgaMarieAquaCollection: 'uOlgaMarieAquaCollection',
   SvtClass.uOlgaMarieGroundCollection: 'uOlgaMarieGroundCollection',
+  SvtClass.uOlgaMarieStellarCollection: 'uOlgaMarieStellarCollection',
   SvtClass.grandSaber: 'grandSaber',
   SvtClass.grandArcher: 'grandArcher',
   SvtClass.grandLancer: 'grandLancer',

@@ -808,7 +808,8 @@ class FunctionExecutor {
       case FuncTargetType.enemyRange:
       case FuncTargetType.handCommandcardRandomOne:
       case FuncTargetType.noTarget:
-        battleData.battleLogger.debug(
+      case FuncTargetType.fieldRandom:
+        battleData.battleLogger.error(
           '${S.current.not_implemented}: $funcTargetType, '
           'Function ID: $funcId, '
           'Activator: ${activator?.lBattleName}',

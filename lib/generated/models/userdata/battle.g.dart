@@ -513,6 +513,7 @@ const _$FuncTargetTypeEnumMap = {
   FuncTargetType.handCommandcardRandomOne: 'handCommandcardRandomOne',
   FuncTargetType.fieldAll: 'fieldAll',
   FuncTargetType.noTarget: 'noTarget',
+  FuncTargetType.fieldRandom: 'fieldRandom',
 };
 
 TdDamageOptions _$TdDamageOptionsFromJson(Map json) => $checkedCreate('TdDamageOptions', json, ($checkedConvert) {

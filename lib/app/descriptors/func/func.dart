@@ -1325,6 +1325,22 @@ class FuncDescriptor extends StatelessWidget {
           _condSpans.add(ownerIndivSpans);
         }
       }
+
+      for (final (target, ckCountIndiv) in [
+        (Transl.special.buffCheckSelf, buff.script.ckSelfCountIndividuality),
+        (Transl.special.buffCheckOpposite, buff.script.ckOpCountIndividuality),
+      ]) {
+        if (ckCountIndiv == null || ckCountIndiv.isEmpty) continue;
+        _condSpans.add([
+          TextSpan(text: target),
+          ...SharedBuilder.replaceSpan(Transl.special.buffOwnerIndiv, '{0}', [
+            ...SharedBuilder.traitSpans(context: context, traits: NiceTrait.list(ckCountIndiv), useAndJoin: false),
+            if (buff.script.ckIndvCountBelow != null) TextSpan(text: '≤${buff.script.ckIndvCountBelow}'),
+            if (buff.script.ckIndvCountAbove != null) TextSpan(text: '≥${buff.script.ckIndvCountAbove}'),
+          ]),
+        ]);
+      }
+
       if (script.HP_HIGHER != null) {
         final v = script.HP_HIGHER!.format(percent: true, base: 10);
         _condSpans.add([TextSpan(text: 'HP≥$v')]);

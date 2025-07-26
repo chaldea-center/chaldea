@@ -49,7 +49,7 @@ class TimerMissionItem with TimerItem {
       }
     }
     return SimpleAccordion(
-      expanded: expanded,
+      expanded: type == MissionType.extra ? false : expanded,
       headerBuilder: (context, _) => ListTile(
         dense: true,
         contentPadding: const EdgeInsetsDirectional.only(start: 16),

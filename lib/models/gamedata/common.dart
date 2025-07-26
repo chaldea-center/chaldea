@@ -413,6 +413,7 @@ enum SvtClass {
   uOlgaMarieFlareCollection(9001),
   uOlgaMarieAquaCollection(9002),
   uOlgaMarieGroundCollection(9003),
+  uOlgaMarieStellarCollection(9004),
   grandSaber(10001, '剣', 1),
   grandArcher(10002, '弓', 2),
   grandLancer(10003, '槍', 3),
@@ -527,6 +528,7 @@ extension SvtClassX on SvtClass {
     SvtClass.uOlgaMarieFlareCollection,
     SvtClass.uOlgaMarieAquaCollection,
     SvtClass.uOlgaMarieGroundCollection,
+    SvtClass.uOlgaMarieStellarCollection,
   ];
   static const grandClasses = <SvtClass>[
     SvtClass.grandSaber,

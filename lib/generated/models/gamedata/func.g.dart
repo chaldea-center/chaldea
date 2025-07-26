@@ -123,6 +123,7 @@ const _$FuncTargetTypeEnumMap = {
   FuncTargetType.handCommandcardRandomOne: 'handCommandcardRandomOne',
   FuncTargetType.fieldAll: 'fieldAll',
   FuncTargetType.noTarget: 'noTarget',
+  FuncTargetType.fieldRandom: 'fieldRandom',
 };
 
 BaseFunction _$BaseFunctionFromJson(Map json) => BaseFunction(
