@@ -4,6 +4,7 @@ import 'package:chaldea/app/battle/models/battle.dart';
 import 'package:chaldea/app/battle/utils/buff_utils.dart';
 import 'package:chaldea/app/descriptors/func/vals.dart';
 import 'package:chaldea/generated/l10n.dart';
+import 'package:chaldea/models/gamedata/individuality.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/extension.dart';
 
@@ -425,26 +426,26 @@ class BuffData {
       scriptCheck &= skillInfoType == SkillInfoType.masterEquip;
     }
 
-    final ckSelfCountTraits = buff.script.ckSelfCountIndividuality?.map((traitId) => NiceTrait(id: traitId));
-    if (ckSelfCountTraits != null) {
-      final count = countAnyTraits(selfTraits ?? [], ckSelfCountTraits);
-      final ckAbove = script.ckIndvCountAbove;
-      final ckBelow = script.ckIndvCountBelow;
-
-      scriptCheck &=
-          (ckAbove == null || ckAbove == 0 || count >= ckAbove) &&
-          (ckBelow == null || ckBelow == 0 || count <= ckBelow);
+    if (buff.script.ckSelfCountIndividuality != null) {
+      scriptCheck &= Individuality.checkSignedIndividualitiesCount(
+        selfs: selfTraits?.toIntList(),
+        targets: buff.script.ckSelfCountIndividuality!,
+        matchedFunc: Individuality.isPartialMatchArrayCount,
+        mismatchFunc: Individuality.isPartialMatchArrayCount,
+        countAbove: script.ckIndvCountAbove ?? 0,
+        countBelow: script.ckIndvCountBelow ?? 0,
+      );
     }
 
-    final ckOpCountTraits = buff.script.ckOpCountIndividuality?.map((traitId) => NiceTrait(id: traitId));
-    if (ckOpCountTraits != null) {
-      final count = countAnyTraits(opponentTraits ?? [], ckOpCountTraits);
-      final ckAbove = script.ckIndvCountAbove;
-      final ckBelow = script.ckIndvCountBelow;
-
-      scriptCheck &=
-          (ckAbove == null || ckAbove == 0 || count >= ckAbove) &&
-          (ckBelow == null || ckBelow == 0 || count <= ckBelow);
+    if (buff.script.ckOpCountIndividuality != null) {
+      scriptCheck &= Individuality.checkSignedIndividualitiesCount(
+        selfs: opponentTraits?.toIntList(),
+        targets: buff.script.ckOpCountIndividuality!,
+        matchedFunc: Individuality.isPartialMatchArrayCount,
+        mismatchFunc: Individuality.isPartialMatchArrayCount,
+        countAbove: script.ckIndvCountAbove ?? 0,
+        countBelow: script.ckIndvCountBelow ?? 0,
+      );
     }
 
     return scriptCheck;
@@ -506,34 +507,46 @@ class BuffData {
   void updateActState(final BattleData battleData, final BattleServantData owner) {
     bool isAct = true;
 
-    List<NiceTrait>? requiredTraits;
-    int? requireAtLeast;
-    bool Function(Iterable<NiceTrait>, Iterable<NiceTrait>) matchFunc = partialMatch;
+    final List<int> selfTraits = [
+      ...owner.getTraits(addTraits: owner.getBuffTraits()),
+      ...battleData.getQuestIndividuality(),
+    ].toIntList();
 
-    if (buff.script.INDIVIDUALITIE != null) {
-      requiredTraits = [buff.script.INDIVIDUALITIE!];
-      requireAtLeast = buff.script.INDIVIDUALITIE_COUNT_ABOVE;
-    } else if (buff.script.INDIVIDUALITIE_AND != null) {
-      requiredTraits = buff.script.INDIVIDUALITIE_AND!;
-      matchFunc = allMatch;
-    } else if (buff.script.INDIVIDUALITIE_OR != null) {
-      requiredTraits = buff.script.INDIVIDUALITIE_OR!;
+    if (buff.script.INDIVIDUALITIE_OR != null) {
+      isAct &= Individuality.checkSignedIndividualitiesPartialMatch(
+        selfs: selfTraits,
+        signedTargets: buff.script.INDIVIDUALITIE_OR?.toIntList(),
+        matchedFunc: Individuality.isPartialMatchArray,
+        mismatchFunc: Individuality.isPartialMatchArray,
+      );
     }
-
-    if (requiredTraits != null) {
-      final List<NiceTrait> currentTraits = [
-        ...owner.getTraits(addTraits: owner.getBuffTraits()),
-        ...battleData.getQuestIndividuality(),
-      ];
-
-      if (requireAtLeast != null) {
-        isAct &= countAnyTraits(currentTraits, requiredTraits) >= requireAtLeast;
+    if (buff.script.INDIVIDUALITIE_AND != null) {
+      isAct &= Individuality.checkSignedIndividualities2(
+        self: selfTraits,
+        signedTarget: buff.script.INDIVIDUALITIE_AND?.toIntList(),
+        matchedFunc: Individuality.isMatchArray,
+        mismatchFunc: Individuality.isMatchArray,
+      );
+    }
+    if (buff.script.INDIVIDUALITIE != null) {
+      int countAbove = buff.script.INDIVIDUALITIE_COUNT_ABOVE ?? 0;
+      int countBelow = buff.script.INDIVIDUALITIE_COUNT_BELOW ?? 0;
+      List<int> signedTarget = [buff.script.INDIVIDUALITIE!.signedId];
+      if (countAbove <= 0 && countBelow <= 0) {
+        isAct &= Individuality.checkSignedIndividualities2(
+          self: selfTraits,
+          signedTarget: signedTarget,
+          matchedFunc: Individuality.isPartialMatchArray,
+          mismatchFunc: Individuality.isPartialMatchArray,
+        );
       } else {
-        isAct &= checkSignedIndividualities2(
-          myTraits: currentTraits,
-          requiredTraits: requiredTraits,
-          positiveMatchFunc: matchFunc,
-          negativeMatchFunc: matchFunc,
+        isAct &= Individuality.checkSignedIndividualitiesCount(
+          selfs: selfTraits,
+          targets: signedTarget,
+          matchedFunc: Individuality.isPartialMatchArrayCount,
+          mismatchFunc: Individuality.isPartialMatchArrayCount,
+          countAbove: countAbove,
+          countBelow: countBelow,
         );
       }
     }

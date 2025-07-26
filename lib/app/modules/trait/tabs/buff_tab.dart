@@ -31,15 +31,14 @@ class _TraitBuffTabState extends State<TraitBuffTab> {
         if (Individuality.containsAllAB(buff.vals, widget.ids)) _BuffCheckPos.vals,
         if (Individuality.containsAllAB(buff.ckSelfIndv, widget.ids)) _BuffCheckPos.ckSelf,
         if (Individuality.containsAllAB(buff.ckOpIndv, widget.ids)) _BuffCheckPos.ckOpp,
-        if (Individuality.containsAllAB(
-          <NiceTrait?>[
-            buff.script.INDIVIDUALITIE,
-            ...?buff.script.INDIVIDUALITIE_AND,
-            ...?buff.script.INDIVIDUALITIE_OR,
-            ...buff.script.UpBuffRateBuffIndiv ?? [],
-          ].whereType<NiceTrait>().toList(),
-          widget.ids,
-        ))
+        if (Individuality.containsAllAB(<NiceTrait>[
+          ?buff.script.INDIVIDUALITIE,
+          ...?buff.script.INDIVIDUALITIE_AND,
+          ...?buff.script.INDIVIDUALITIE_OR,
+          ...buff.script.UpBuffRateBuffIndiv ?? [],
+          ?buff.script.TargetIndiv,
+          ...NiceTrait.list([...?buff.script.ckSelfCountIndividuality, ...?buff.script.ckOpCountIndividuality]),
+        ], widget.ids))
           _BuffCheckPos.script,
       ];
       if (positions.isNotEmpty && filter.matchAny(positions)) {

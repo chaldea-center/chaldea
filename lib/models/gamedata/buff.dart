@@ -144,8 +144,8 @@ class BuffScript with DataScriptBase {
   List<BuffType>? CheckOpponentBuffTypes;
   BuffRelationOverwrite? relationId;
   NiceTrait? INDIVIDUALITIE; // self indiv?
-  int? INDIVIDUALITIE_COUNT_ABOVE; // "≥"
-  int? get INDIVIDUALITIE_COUNT_BELOW => toInt('INDIVIDUALITIE_COUNT_BELOW'); // "≤"
+  int? get INDIVIDUALITIE_COUNT_ABOVE => toInt('INDIVIDUALITIE_COUNT_ABOVE'); // "≥", only for `INDIVIDUALITIE`
+  int? get INDIVIDUALITIE_COUNT_BELOW => toInt('INDIVIDUALITIE_COUNT_BELOW'); // "≤", only for `INDIVIDUALITIE`
   List<NiceTrait>? INDIVIDUALITIE_AND;
   List<NiceTrait>? INDIVIDUALITIE_OR;
   List<NiceTrait>? UpBuffRateBuffIndiv; // Oberon
@@ -181,7 +181,6 @@ class BuffScript with DataScriptBase {
     this.CheckOpponentBuffTypes,
     this.relationId,
     this.INDIVIDUALITIE,
-    this.INDIVIDUALITIE_COUNT_ABOVE,
     this.INDIVIDUALITIE_AND,
     this.INDIVIDUALITIE_OR,
     this.UpBuffRateBuffIndiv,

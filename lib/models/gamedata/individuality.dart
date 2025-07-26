@@ -35,8 +35,8 @@ abstract class Individuality {
   static bool checkSignedIndividualities2({
     required List<int>? self,
     required List<int>? signedTarget,
-    required bool Function({List<int>? selfs, List<int>? targets}) matchedFunc,
-    required bool Function({List<int>? selfs, List<int>? targets}) mismatchFunc,
+    required bool Function(List<int>? selfs, List<int>? targets) matchedFunc,
+    required bool Function(List<int>? selfs, List<int>? targets) mismatchFunc,
   }) {
     bool result = true;
     if (signedTarget != null && self != null && signedTarget.isNotEmpty) {
@@ -45,7 +45,7 @@ abstract class Individuality {
 
       bool v12;
       if (unsignedArray.isNotEmpty) {
-        v12 = matchedFunc(selfs: self, targets: unsignedArray);
+        v12 = matchedFunc(self, unsignedArray);
       } else {
         v12 = true;
       }
@@ -54,7 +54,7 @@ abstract class Individuality {
       if (signedArray.isEmpty) {
         v13 = true;
       } else {
-        v13 = !mismatchFunc(selfs: self, targets: signedArray);
+        v13 = !mismatchFunc(self, signedArray);
       }
       return v13 && v12;
     }
@@ -126,7 +126,7 @@ abstract class Individuality {
     return result;
   }
 
-  static bool isMatchArray({List<int>? selfs, List<int>? targets}) {
+  static bool isMatchArray(List<int>? selfs, List<int>? targets) {
     bool result = false;
     if (selfs != null && targets != null) {
       if (targets.isEmpty) {
@@ -143,7 +143,8 @@ abstract class Individuality {
     return result;
   }
 
-  static bool isPreIndividualitiesCount_({
+  @protected
+  static bool isPreIndividualitiesCount({
     required List<int>? selfs,
     required List<int>? targets,
     required int countAbove,
@@ -211,12 +212,7 @@ abstract class Individuality {
     return result;
   }
 
-  static bool isMatchArrayCount({
-    required List<int>? selfs,
-    required List<int>? targets,
-    required int countAbove,
-    required int countBelow,
-  }) {
+  static bool isMatchArrayCount(List<int>? selfs, List<int>? targets, int countAbove, int countBelow) {
     if (countAbove <= 0 && countBelow <= 0) return true;
     if (targets == null || targets.isEmpty) return true;
     if (selfs == null || selfs.isEmpty) return false;
@@ -242,14 +238,14 @@ abstract class Individuality {
     return true;
   }
 
-  static bool checkSignedIndividualitiesCount(
-    List<int>? selfs,
-    List<int>? targets,
-    bool Function({List<int>? selfs, List<int>? targets, int countAbove, int countBelow}) matchedFunc,
-    bool Function({List<int>? selfs, List<int>? targets, int countAbove, int countBelow}) mismatchFunc,
-    int countAbove,
-    int countBelow,
-  ) {
+  static bool checkSignedIndividualitiesCount({
+    required List<int>? selfs,
+    required List<int>? targets,
+    required bool Function(List<int>? selfs, List<int>? targets, int countAbove, int countBelow) matchedFunc,
+    required bool Function(List<int>? selfs, List<int>? targets, int countAbove, int countBelow) mismatchFunc,
+    required int countAbove,
+    required int countBelow,
+  }) {
     bool result = true;
     if (targets != null && (countAbove > 0 || countBelow > 0)) {
       result = true;
@@ -259,7 +255,7 @@ abstract class Individuality {
           final (:unsignedArray, :signedArray) = Individuality.divideUnsignedAndSignedArray(targets);
           bool v16;
           if (unsignedArray.isNotEmpty) {
-            v16 = matchedFunc(selfs: selfs, targets: unsignedArray, countAbove: countAbove, countBelow: countBelow);
+            v16 = matchedFunc(selfs, unsignedArray, countAbove, countBelow);
           } else {
             v16 = true;
           }
@@ -269,7 +265,7 @@ abstract class Individuality {
             v17 = true;
             return v17 && v16;
           }
-          v17 = mismatchFunc(selfs: selfs, targets: signedArray, countAbove: countAbove, countBelow: countBelow);
+          v17 = mismatchFunc(selfs, signedArray, countAbove, countBelow);
           return v17 && v16;
         }
       }
@@ -280,8 +276,8 @@ abstract class Individuality {
   static bool checkSignedIndividualitiesPartialCount({
     required List<int>? selfs,
     required List<int>? targets,
-    required bool Function({List<int>? selfs, List<int>? targets, int countAbove, int countBelow}) matchedFunc,
-    required bool Function({List<int>? selfs, List<int>? targets, int countAbove, int countBelow}) mismatchFunc,
+    required bool Function(List<int>? selfs, List<int>? targets, int countAbove, int countBelow) matchedFunc,
+    required bool Function(List<int>? selfs, List<int>? targets, int countAbove, int countBelow) mismatchFunc,
     required int countAbove,
     required int countBelow,
   }) {
@@ -292,10 +288,10 @@ abstract class Individuality {
         if (targets.isNotEmpty) {
           final (:unsignedArray, :signedArray) = Individuality.divideUnsignedAndSignedArray(targets);
           if (unsignedArray.isNotEmpty) {
-            return matchedFunc(selfs: selfs, targets: unsignedArray, countAbove: countAbove, countBelow: countBelow);
+            return matchedFunc(selfs, unsignedArray, countAbove, countBelow);
           }
           if (signedArray.isEmpty) return false;
-          return !mismatchFunc(selfs: selfs, targets: signedArray, countAbove: countAbove, countBelow: countBelow);
+          return !mismatchFunc(selfs, signedArray, countAbove, countBelow);
         }
       }
     }
@@ -325,8 +321,8 @@ abstract class Individuality {
   static bool checkSignedIndividualitiesPartialMatch({
     required List<int>? selfs,
     required List<int>? signedTargets,
-    required bool Function({List<int> selfs, List<int> targets}) matchedFunc,
-    required bool Function({List<int> selfs, List<int> targets}) mismatchFunc,
+    required bool Function(List<int> selfs, List<int> targets) matchedFunc,
+    required bool Function(List<int> selfs, List<int> targets) mismatchFunc,
     bool isSkipPreCheckSelfsEmpty = false,
   }) {
     bool v12 = selfs == null || (signedTargets == null || signedTargets.isEmpty);
@@ -337,12 +333,12 @@ abstract class Individuality {
     }
     final (:unsignedArray, :signedArray) = Individuality.divideUnsignedAndSignedArray(signedTargets);
     if (unsignedArray.isNotEmpty) {
-      if (matchedFunc(selfs: selfs, targets: unsignedArray)) {
+      if (matchedFunc(selfs, unsignedArray)) {
         return true;
       }
     }
     if (signedArray.isEmpty) return false;
-    return !mismatchFunc(selfs: selfs, targets: signedArray);
+    return !mismatchFunc(selfs, signedArray);
   }
 
   static bool checkSignedMultiIndividuality({
@@ -378,7 +374,7 @@ abstract class Individuality {
     if (targetMultiIndividualityArray.isEmpty) return 0;
     int count = 0;
     for (final v8 in targetMultiIndividualityArray) {
-      bool _matched = Individuality.isMatchArray(selfs: selfIndividualityArray, targets: v8);
+      bool _matched = Individuality.isMatchArray(selfIndividualityArray, v8);
       if (_matched) count++;
     }
     return count;

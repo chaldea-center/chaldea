@@ -105,7 +105,6 @@ BuffScript _$BuffScriptFromJson(Map json) => BuffScript(
   INDIVIDUALITIE: json['INDIVIDUALITIE'] == null
       ? null
       : NiceTrait.fromJson(Map<String, dynamic>.from(json['INDIVIDUALITIE'] as Map)),
-  INDIVIDUALITIE_COUNT_ABOVE: (json['INDIVIDUALITIE_COUNT_ABOVE'] as num?)?.toInt(),
   INDIVIDUALITIE_AND: (json['INDIVIDUALITIE_AND'] as List<dynamic>?)
       ?.map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
       .toList(),
@@ -129,7 +128,6 @@ Map<String, dynamic> _$BuffScriptToJson(BuffScript instance) => <String, dynamic
   'CheckOpponentBuffTypes': ?instance.CheckOpponentBuffTypes?.map(const BuffTypeConverter().toJson).toList(),
   'relationId': ?instance.relationId?.toJson(),
   'INDIVIDUALITIE': ?instance.INDIVIDUALITIE?.toJson(),
-  'INDIVIDUALITIE_COUNT_ABOVE': ?instance.INDIVIDUALITIE_COUNT_ABOVE,
   'INDIVIDUALITIE_AND': ?instance.INDIVIDUALITIE_AND?.map((e) => e.toJson()).toList(),
   'INDIVIDUALITIE_OR': ?instance.INDIVIDUALITIE_OR?.map((e) => e.toJson()).toList(),
   'UpBuffRateBuffIndiv': ?instance.UpBuffRateBuffIndiv?.map((e) => e.toJson()).toList(),

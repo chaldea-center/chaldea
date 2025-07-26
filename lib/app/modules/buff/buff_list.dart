@@ -86,13 +86,19 @@ class _BuffListPageState extends State<BuffListPage> with SearchableListState<Bu
       return false;
     }
     if (!filterData.trait.matchAny(
-      [
-        ...buff.vals,
-        ...buff.ckSelfIndv,
-        ...buff.ckOpIndv,
-        if (buff.script.INDIVIDUALITIE != null) buff.script.INDIVIDUALITIE!,
-        if (buff.script.UpBuffRateBuffIndiv != null) ...buff.script.UpBuffRateBuffIndiv!,
-      ].map((e) => e.id),
+      <int>[
+        ...buff.vals.toIntList(),
+        ...buff.ckSelfIndv.toIntList(),
+        ...buff.ckOpIndv.toIntList(),
+        ?buff.script.INDIVIDUALITIE?.id,
+        ...?buff.script.INDIVIDUALITIE_AND?.toIntList(),
+        ...?buff.script.INDIVIDUALITIE_OR?.toIntList(),
+        ...?buff.script.ckSelfCountIndividuality,
+        ...?buff.script.ckOpCountIndividuality,
+        ...?buff.script.UpBuffRateBuffIndiv?.toIntList(),
+        ?buff.script.TargetIndiv?.id,
+        ...?buff.script.UpBuffRateBuffIndiv?.toIntList(),
+      ].map((e) => e.abs()),
     )) {
       return false;
     }
