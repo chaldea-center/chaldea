@@ -94,10 +94,11 @@ class _ApkListPageState extends State<ApkListPage> {
       if (data.region == Region.cn) {
         final resp = await Dio().get('https://static.biligame.com/config/fgo.config.js');
         // "android_link": "https://pkg.biligame.com/games/my-gwzdFateGO_2.57.0_1_20221227_023526_aeba0.apk",
+        // "android_link": "https://pkg.biligame.com/games/my-gwzd_2.106.0_1_20250715_022157_3b14f.apk",
         url = RegExp(r"""android_link["']?:\s*["']([^"']+)["']""").firstMatch(resp.data.toString())?.group(1);
         if (url != null) {
           data.url = url;
-          data.version = RegExp(r'FateGO[_\-](\d+\.\d+\.\d+)[_\-]').firstMatch(url)?.group(1);
+          data.version = RegExp(r'[_\-]([1-3]\.\d+\.\d+)[_\-][^"]*\.apk').firstMatch(url)?.group(1);
         }
       } else if (data.region != null) {
         final workerHost = HostsX.worker.of(proxy || Language.isCHS);

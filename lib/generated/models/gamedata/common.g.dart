@@ -466,4 +466,6 @@ const _$CondTypeEnumMap = {
   CondType.playedMovie: 'playedMovie',
   CondType.notPlayedMovie: 'notPlayedMovie',
   CondType.notShopGroupLimitNum: 'notShopGroupLimitNum',
+  CondType.equipGet: 'equipGet',
+  CondType.notEquipGet: 'notEquipGet',
 };

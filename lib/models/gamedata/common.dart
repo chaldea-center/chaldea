@@ -1198,7 +1198,9 @@ enum CondType {
   grandSvtSet(258),
   playedMovie(259),
   notPlayedMovie(260),
-  notShopGroupLimitNum(263);
+  notShopGroupLimitNum(263),
+  equipGet(264),
+  notEquipGet(265);
 
   const CondType(this.value);
   final int value;

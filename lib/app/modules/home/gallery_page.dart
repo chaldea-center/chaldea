@@ -57,7 +57,12 @@ class _GalleryPageState extends State<GalleryPage> {
               tooltip: S.current.tooltip_refresh_sliders,
               onPressed: () async {
                 EasyLoading.showToast('${S.current.update_dataset} ...');
-                await GameDataLoader.instance.reload();
+                final data = await GameDataLoader.instance.reload();
+                if (data == null || !data.isValid) {
+                  return;
+                }
+                EasyLoading.showSuccess('${S.current.success}\n${data.version.text()}');
+                db.gameData = data;
                 if (mounted) setState(() {});
               },
             ),
