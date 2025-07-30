@@ -110,6 +110,7 @@ class FakerRuntime {
     bool showElapsed = false,
     Color? activeColor,
     Color? inactiveColor,
+    EdgeInsetsGeometry? padding,
   }) {
     return ValueListenableBuilder(
       valueListenable: runningTask,
@@ -150,6 +151,7 @@ class FakerRuntime {
             ],
           );
         }
+        if (padding != null) child = Padding(padding: padding, child: child);
         return child;
       },
     );

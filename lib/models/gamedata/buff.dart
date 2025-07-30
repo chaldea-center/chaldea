@@ -194,6 +194,18 @@ class BuffScript with DataScriptBase {
   Map<String, dynamic> toJson() => Map.from(source)..addAll(_$BuffScriptToJson(this));
 }
 
+// Conditional Battle Buff, need to update act state
+enum BuffConditionType {
+  HP_HIGHER(0), // ignore: constant_identifier_names
+  HP_LOWER(1), // ignore: constant_identifier_names
+  INDIVIDUALITIE(2), // ignore: constant_identifier_names
+  INDIVIDUALITIE_OR(3), // ignore: constant_identifier_names
+  INDIVIDUALITIE_AND(4); // ignore: constant_identifier_names
+
+  const BuffConditionType(this.value);
+  final int value;
+}
+
 /// Convert [targets] to [convertBuffs]
 @JsonSerializable(includeIfNull: false)
 class BuffConvert {

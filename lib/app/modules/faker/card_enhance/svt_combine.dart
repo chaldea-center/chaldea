@@ -225,11 +225,11 @@ class _SvtCombinePageState extends State<SvtCombinePage> {
         );
       }
 
-      final mats = svt.ascensionMaterials[baseUserSvt.limitCount];
+      final ascensionMats = svt.ascensionMaterials[baseUserSvt.limitCount];
       final Map<int, int> limitCombineItems = {
-        if (mats != null)
-          for (final item in mats.items) item.itemId: item.amount,
-        if (mats != null) Items.qpId: mats.qp,
+        if (ascensionMats != null)
+          for (final item in ascensionMats.items) item.itemId: item.amount,
+        if (ascensionMats != null) Items.qpId: ascensionMats.qp,
       };
       String combineTitle = '灵基再临 ';
       combineTitle += [baseUserSvt.limitCount, if (limitCombineItems.isNotEmpty) baseUserSvt.limitCount + 1].join('→');
@@ -296,8 +296,101 @@ class _SvtCombinePageState extends State<SvtCombinePage> {
             ),
           ),
       ]);
+      // skill
+      children.addAll([
+        DividerWithTitle(title: S.current.append_skill),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const SizedBox(width: 16),
+            ...kAppendSkillNums.map((skillNum) {
+              final skillNum2 = skillNum + 100 - 1;
+              final skill = svt.appendPassive.firstWhereOrNull((e) => e.num == skillNum2);
+              if (skill == null) {
+                return Expanded(child: Text('${S.current.append_skill_short} $skillNum'));
+              }
+              final curLv = mstData.getSvtAppendSkillLv(baseUserSvt).getOrNull(skillNum - 1);
+              final appendMats = <int, int>{};
+              if (curLv == 0) {
+                for (final amount in skill.unlockMaterials) {
+                  appendMats[amount.itemId] = amount.amount;
+                }
+              } else if (svt.appendSkillMaterials.containsKey(curLv)) {
+                final lvMats = svt.appendSkillMaterials[curLv]!;
+                appendMats[Items.qpId] = lvMats.qp;
+                for (final amount in lvMats.items) {
+                  appendMats[amount.itemId] = amount.amount;
+                }
+              }
+              final bool isLacking = appendMats.entries.any((e) => mstData.getItemOrSvtNum(e.key) < e.value);
+              return Expanded(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    InkWell(
+                      onTap: isLacking || curLv == null || curLv == 10
+                          ? null
+                          : () async {
+                              if (curLv == 0 || curLv == 9) {
+                                final confirm = await SimpleConfirmDialog(
+                                  title: Text('${S.current.warning}: ${S.current.append_skill_short} $skillNum'),
+                                  content: Text(
+                                    [
+                                      if (curLv == 0) S.current.unlock,
+                                      if (curLv == 9) Items.crystal?.lName.l,
+                                      '\n\n\n',
+                                      'Sure?',
+                                    ].join('\n'),
+                                    style: TextStyle(color: Theme.of(context).colorScheme.error),
+                                  ),
+                                ).showDialog(context);
+                                if (!mounted || confirm != true) return;
+                              }
+                              final confirm = await SimpleConfirmDialog(
+                                title: Text('${S.current.append_skill_short} $skillNum'),
+                                content: Text('Lv.$curLv → Lv.${curLv + 1}'),
+                              ).showDialog(context);
+                              if (!mounted || confirm != true) return;
+
+                              await runtime.runTask(
+                                () => runtime.agent.appendSkillCombine(
+                                  baseUsrSvtId: baseUserSvt.id,
+                                  skillNum: skillNum2,
+                                  currentSkillLv: curLv,
+                                ),
+                              );
+                            },
+                      onLongPress: skill.skill.routeTo,
+                      child: ImageWithText(
+                        image: db.getIconImage(skill.skill.icon, width: 32, height: 32),
+                        text: 'Lv.$curLv',
+                      ),
+                    ),
+                    Wrap(
+                      alignment: WrapAlignment.center,
+                      children: [
+                        for (final (itemId, itemNum) in appendMats.items)
+                          Item.iconBuilder(
+                            context: context,
+                            item: null,
+                            itemId: itemId,
+                            width: 28,
+                            text: [itemNum, mstData.getItemOrSvtNum(itemId)].map((e) => e.format()).join('\n'),
+                          ),
+                      ],
+                    ),
+                  ],
+                ),
+              );
+            }),
+
+            const SizedBox(width: 16),
+          ],
+        ),
+      ]);
     }
-    return ListView(children: children);
+    return ListView(padding: EdgeInsets.only(bottom: 32), children: children);
   }
 
   Widget get buttonBar {
@@ -315,6 +408,7 @@ class _SvtCombinePageState extends State<SvtCombinePage> {
 
     List<List<Widget>> btnGroups = [
       [
+        runtime.buildCircularProgress(context: context, padding: EdgeInsets.symmetric(horizontal: 8)),
         buildButton(
           enabled: baseUserSvt != null,
           onPressed: () {

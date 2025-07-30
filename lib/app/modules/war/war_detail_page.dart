@@ -572,15 +572,18 @@ Widget addQuestCategoryTile({
   }
 
   _addTile(S.current.main_quest, mainQuests);
+
+  bool needSortFree = false;
   if (war?.id == 311) {
     freeQuests.sort((a, b) => Quest.compare(a, b, spotLayer: true));
-    _addTile(S.current.free_quest, freeQuests, needSort: false);
   } else if (war?.id == WarId.ordealCall) {
     freeQuests.sort((a, b) => a.id - b.id);
-    _addTile(S.current.free_quest, freeQuests, needSort: false);
+  } else if (war?.id == WarId.grandBoardWar) {
+    freeQuests.sortByList((e) => [e.war?.priority ?? 0, e.id], reversed: true);
   } else {
-    _addTile(S.current.free_quest, freeQuests);
+    needSortFree = true;
   }
+  _addTile(S.current.free_quest, freeQuests, needSort: needSortFree);
 
   _addTile(S.current.daily_ember_quest, dailyEmber);
   _addTile(S.current.daily_training_quest, dailyTraining);
@@ -596,11 +599,7 @@ Widget addQuestCategoryTile({
           trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
           onTap: () {
             router.pushPage(
-              FreeQuestOverview(
-                quests: fqs,
-                isMainStory: war?.isMainStory ?? false,
-                needSort: ![311, WarId.ordealCall].contains(war?.id),
-              ),
+              FreeQuestOverview(quests: fqs, isMainStory: war?.isMainStory ?? false, needSort: needSortFree),
             );
           },
         ),

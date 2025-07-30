@@ -286,6 +286,19 @@ class FakerAgentJP extends FakerAgent<FRequestJP, AutoLoginDataJP, NetworkManage
   }
 
   @override
+  Future<FResponse> appendSkillCombine({
+    required int64_t baseUsrSvtId,
+    required int32_t skillNum,
+    required int32_t currentSkillLv,
+  }) {
+    final request = FRequestJP(network: network, path: '/card/combineAppendPassiveSkill');
+    request.addFieldInt64("baseUserSvtId", baseUsrSvtId);
+    request.addFieldInt32("skillNum", skillNum);
+    request.addFieldInt32("currentSkillLv", currentSkillLv);
+    return request.beginRequestAndCheckError('card_combine_append_passive_skill');
+  }
+
+  @override
   Future<FResponse> servantEquipCombine({required int64_t baseUserSvtId, required List<int64_t> materialSvtIds}) {
     // success: { "addTotalExp": 0, "successResult": 1, "normalExp": 30000 }
     final request = FRequestJP(network: network, path: '/svtEquip/combine');

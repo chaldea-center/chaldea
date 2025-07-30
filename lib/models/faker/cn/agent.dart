@@ -441,6 +441,20 @@ class FakerAgentCN extends FakerAgent<FRequestCN, AutoLoginDataCN, NetworkManage
   }
 
   @override
+  Future<FResponse> appendSkillCombine({
+    required int64_t baseUsrSvtId,
+    required int32_t skillNum,
+    required int32_t currentSkillLv,
+  }) {
+    return _acPhp(
+      key: 'cardcombineappendpassiveskill',
+      nid: 'card_combine_append_passive_skill',
+      params2: {"baseUserSvtId": baseUsrSvtId},
+      params4: {"skillNum": skillNum, "currentSkillLv": currentSkillLv},
+    );
+  }
+
+  @override
   Future<FResponse> servantEquipCombine({required int64_t baseUserSvtId, required List<int64_t> materialSvtIds}) {
     return _acPhp(
       key: 'svtequipcombine',
