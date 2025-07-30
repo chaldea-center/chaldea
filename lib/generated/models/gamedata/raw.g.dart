@@ -181,3 +181,35 @@ Map<String, dynamic> _$MstStaffPhotoCostumeToJson(MstStaffPhotoCostume instance)
   'condNum': instance.condNum,
   'extendData': instance.extendData,
 };
+
+RegionInfo _$RegionInfoFromJson(Map json) => RegionInfo(
+  hash: json['hash'] as String,
+  timestamp: (json['timestamp'] as num).toInt(),
+  serverHash: json['serverHash'] as String,
+  serverTimestamp: (json['serverTimestamp'] as num).toInt(),
+  dataVer: (json['dataVer'] as num?)?.toInt(),
+  dateVer: (json['dateVer'] as num?)?.toInt(),
+  assetbundle: json['assetbundle'] == null ? null : RegionAssetBundle.fromJson(json['assetbundle'] as Map),
+);
+
+Map<String, dynamic> _$RegionInfoToJson(RegionInfo instance) => <String, dynamic>{
+  'hash': instance.hash,
+  'timestamp': instance.timestamp,
+  'serverHash': instance.serverHash,
+  'serverTimestamp': instance.serverTimestamp,
+  'dataVer': instance.dataVer,
+  'dateVer': instance.dateVer,
+  'assetbundle': instance.assetbundle?.toJson(),
+};
+
+RegionAssetBundle _$RegionAssetBundleFromJson(Map json) => RegionAssetBundle(
+  folderName: json['folderName'] as String,
+  animalName: json['animalName'] as String,
+  zooName: json['zooName'] as String,
+);
+
+Map<String, dynamic> _$RegionAssetBundleToJson(RegionAssetBundle instance) => <String, dynamic>{
+  'folderName': instance.folderName,
+  'animalName': instance.animalName,
+  'zooName': instance.zooName,
+};

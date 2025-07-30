@@ -24,6 +24,10 @@ class FakerAgentJP extends FakerAgent<FRequestJP, AutoLoginDataJP, NetworkManage
     if (tops != null) {
       network.gameTop.updateFrom(tops.jp);
     }
+    final regionInfo = await AtlasApi.regionInfo(region: user.region);
+    if (regionInfo != null) {
+      network.gameTop.updateFromRegionInfo(regionInfo);
+    }
     final request = FRequestJP(network: network, path: '/gamedata/top');
     final fresp = await request.beginRequest();
     if (fresp.data.responses.any((e) => e.fail?['action'] == 'app_version_up')) {

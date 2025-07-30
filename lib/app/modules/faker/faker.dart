@@ -21,6 +21,7 @@ import 'package:chaldea/models/faker/quiz/crypt_data.dart';
 import 'package:chaldea/models/faker/shared/agent.dart';
 import 'package:chaldea/models/gamedata/toplogin.dart';
 import 'package:chaldea/models/models.dart';
+import 'package:chaldea/models/userdata/version.dart';
 import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/utils/notification.dart';
 import 'package:chaldea/utils/utils.dart';
@@ -401,9 +402,36 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
     List<Widget> children = [
       ListTile(
         dense: true,
-        title: Text(
-          'AppVer=${gameTop.appVer}  DataVer=${gameTop.dataVer}'
-          '\nDateVer=${gameTop.dateVer.sec2date().toStringShort(omitSec: true)}',
+        title: Text.rich(
+          TextSpan(
+            children: [
+              TextSpan(text: 'AppVer='),
+              SharedBuilder.textButtonSpan(
+                context: context,
+                text: gameTop.appVer,
+                onTap: () {
+                  InputCancelOkDialog(
+                    title: 'App Version',
+                    validate: (s) => AppVersion.tryParse(s) != null,
+                    initValue: gameTop.appVer,
+                    onSubmit: (s) {
+                      final v = AppVersion.tryParse(s);
+                      if (v != null && mounted) {
+                        setState(() {
+                          gameTop.appVer = s;
+                        });
+                      }
+                    },
+                  ).showDialog(context);
+                },
+              ),
+              TextSpan(
+                text:
+                    '  DataVer=${gameTop.dataVer}'
+                    '\nDateVer=${gameTop.dateVer.sec2date().toStringShort(omitSec: true)}',
+              ),
+            ],
+          ),
         ),
       ),
     ];

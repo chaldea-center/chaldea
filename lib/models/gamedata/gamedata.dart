@@ -22,6 +22,7 @@ import 'item.dart';
 import 'mappings.dart';
 import 'mystic_code.dart';
 import 'quest.dart';
+import 'raw.dart';
 import 'servant.dart';
 import 'skill.dart';
 import 'war.dart';
@@ -525,6 +526,10 @@ class GameTop extends GameAppVerCode {
   String gameServer;
   // String appVer;
   // String verCode;
+  String hash;
+  int timestamp;
+  String serverHash;
+  int serverTimestamp;
   int dataVer; // int32
   int dateVer; // int64
   // String assetbundle;
@@ -536,6 +541,10 @@ class GameTop extends GameAppVerCode {
     required this.gameServer,
     required super.appVer,
     super.verCode,
+    required this.hash,
+    required this.timestamp,
+    required this.serverHash,
+    required this.serverTimestamp,
     required this.dataVer,
     this.dateVer = 0, // CN has no dateVer
     // required this.assetbundle,
@@ -570,6 +579,15 @@ class GameTop extends GameAppVerCode {
       assetbundleFolder = other.assetbundleFolder;
     }
     unityVer = other.unityVer;
+  }
+
+  void updateFromRegionInfo(RegionInfo info) {
+    final dataVer = info.dataVer, dateVer = info.dateVer, folder = info.assetbundle?.folderName;
+    if (dataVer != null && dataVer > this.dataVer) this.dataVer = dataVer;
+    if (dateVer != null && dateVer > this.dateVer) this.dateVer = dateVer;
+    if (info.timestamp > timestamp && folder != null) {
+      assetbundleFolder = folder;
+    }
   }
 }
 

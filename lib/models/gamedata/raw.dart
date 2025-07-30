@@ -256,3 +256,39 @@ class MstStaffPhotoCostume {
   factory MstStaffPhotoCostume.fromJson(Map<dynamic, dynamic> json) => _$MstStaffPhotoCostumeFromJson(json);
   Map<String, dynamic> toJson() => _$MstStaffPhotoCostumeToJson(this);
 }
+
+@JsonSerializable()
+class RegionInfo {
+  String hash;
+  int timestamp;
+  String serverHash;
+  int serverTimestamp;
+  int? dataVer;
+  int? dateVer;
+  RegionAssetBundle? assetbundle;
+
+  RegionInfo({
+    required this.hash,
+    required this.timestamp,
+    required this.serverHash,
+    required this.serverTimestamp,
+    this.dataVer,
+    this.dateVer,
+    this.assetbundle,
+  });
+
+  factory RegionInfo.fromJson(Map<dynamic, dynamic> json) => _$RegionInfoFromJson(json);
+  Map<String, dynamic> toJson() => _$RegionInfoToJson(this);
+}
+
+@JsonSerializable()
+class RegionAssetBundle {
+  String folderName;
+  String animalName;
+  String zooName;
+
+  RegionAssetBundle({required this.folderName, required this.animalName, required this.zooName});
+
+  factory RegionAssetBundle.fromJson(Map<dynamic, dynamic> json) => _$RegionAssetBundleFromJson(json);
+  Map<String, dynamic> toJson() => _$RegionAssetBundleToJson(this);
+}

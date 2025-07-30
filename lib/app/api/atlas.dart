@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 
+import 'package:chaldea/models/gamedata/raw.dart';
 import 'package:chaldea/packages/rate_limiter.dart';
 import 'package:chaldea/utils/utils.dart';
 import '../../models/models.dart';
@@ -31,8 +32,12 @@ class AtlasApi {
     return urlNoQuery;
   }
 
-  static Future<Map<String, dynamic>?> regionInfo({Region region = Region.jp, Duration? expireAfter = Duration.zero}) {
-    return cacheManager.getModel('$atlasApiHost/info', (data) => data[region.upper], expireAfter: expireAfter);
+  static Future<RegionInfo?> regionInfo({Region region = Region.jp, Duration? expireAfter = Duration.zero}) {
+    return cacheManager.getModel(
+      '$atlasApiHost/raw/${region.upper}/info',
+      (data) => RegionInfo.fromJson(data),
+      expireAfter: expireAfter,
+    );
   }
 
   static Future<Quest?> quest(int questId, {Region region = Region.jp, Duration? expireAfter}) {
