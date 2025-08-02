@@ -168,8 +168,11 @@ class _CachedImageState extends State<CachedImage> {
   CachedImageOption get cachedOption => widget.cachedOption ?? const CachedImageOption();
 
   Future<void> _resolve(String? url) async {
-    if (url != null && _loader.shouldCacheImage(url)) {
-      await _loader.get(url);
+    if (url != null) {
+      bool shouldCache = _loader.shouldCacheImage(url, cacheCheck: widget.cachedOption?.cacheCheck);
+      if (shouldCache) {
+        await _loader.get(url);
+      }
     }
     if (mounted) setState(() {});
   }
@@ -226,7 +229,7 @@ class _CachedImageState extends State<CachedImage> {
     }
     String? url = widget.imageUrl;
     if (url == null) return _withPlaceholder(context, '');
-    if (_loader.shouldCacheImage(url)) {
+    if (_loader.shouldCacheImage(url, cacheCheck: widget.cachedOption?.cacheCheck)) {
       return _localCache(context, url);
     }
     return _withCached(url);

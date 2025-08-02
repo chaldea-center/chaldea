@@ -67,6 +67,7 @@ class ImageUtil {
       image: const AssetImage("res/img/chaldea.png"),
       filterQuality: FilterQuality.high,
       height: height,
+      width: height,
     );
     if (Utility.isDarkMode(context)) {
       // assume r=g=b

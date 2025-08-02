@@ -22,6 +22,7 @@ class CachedImageOption {
   final ImageRepeat repeat;
   final bool matchTextDirection;
   final BaseCacheManager? cacheManager;
+  final bool Function(String url)? cacheCheck;
   final bool useOldImageOnUrlChange;
   final Color? color;
   final FilterQuality filterQuality;
@@ -52,6 +53,7 @@ class CachedImageOption {
     this.repeat = ImageRepeat.noRepeat,
     this.matchTextDirection = false,
     this.cacheManager,
+    this.cacheCheck,
     this.useOldImageOnUrlChange = false,
     this.color,
     this.filterQuality = FilterQuality.low,
@@ -82,6 +84,7 @@ class CachedImageOption {
     ImageRepeat? repeat,
     bool? matchTextDirection,
     BaseCacheManager? cacheManager,
+    bool Function(String url)? cacheCheck,
     bool? useOldImageOnUrlChange,
     Color? color,
     FilterQuality? filterQuality,
@@ -110,6 +113,7 @@ class CachedImageOption {
       repeat: repeat ?? this.repeat,
       matchTextDirection: matchTextDirection ?? this.matchTextDirection,
       cacheManager: cacheManager ?? this.cacheManager,
+      cacheCheck: cacheCheck,
       useOldImageOnUrlChange: useOldImageOnUrlChange ?? this.useOldImageOnUrlChange,
       color: color ?? this.color,
       filterQuality: filterQuality ?? this.filterQuality,

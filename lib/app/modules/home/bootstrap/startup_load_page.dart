@@ -1,3 +1,5 @@
+import 'dart:math' show Random;
+
 import 'package:flutter/foundation.dart';
 
 import 'package:chaldea/app/tools/gamedata_loader.dart';
@@ -103,15 +105,104 @@ class _StartupLoadingPageState extends State<StartupLoadingPage> {
         ValueListenableBuilder<double?>(
           valueListenable: _loader.progress,
           builder: (context, value, child) {
-            return LinearProgressIndicator(
-              value: value ?? 0,
-              color: Theme.of(context).primaryColorLight,
-              backgroundColor: Colors.transparent,
-            );
+            return _AnimatedProgressIndicator(value: value ?? 0, imageSize: 48);
           },
         ),
         const SizedBox(height: 48),
       ],
     );
   }
+}
+
+class _AnimatedProgressIndicator extends StatefulWidget {
+  final double value;
+  final double imageSize;
+
+  const _AnimatedProgressIndicator({required this.value, this.imageSize = 32.0});
+
+  @override
+  State<_AnimatedProgressIndicator> createState() => _AnimatedProgressIndicatorState();
+}
+
+class _AnimatedProgressIndicatorState extends State<_AnimatedProgressIndicator> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _animation;
+  final charaId = Random().nextInt(12) + 1;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _controller = AnimationController(duration: const Duration(milliseconds: 1000), vsync: this)..repeat(reverse: true);
+
+    _animation = Tween<double>(
+      begin: -0.2,
+      end: 0.2,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: double.infinity,
+      height: widget.imageSize + 4,
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          return Stack(
+            alignment: Alignment.bottomCenter,
+            clipBehavior: Clip.none,
+            children: [
+              Positioned(
+                bottom: 0,
+                left: 0,
+                right: 0,
+                child: LinearProgressIndicator(
+                  value: widget.value,
+                  color: Theme.of(context).primaryColorLight,
+                  backgroundColor: Colors.transparent,
+                ),
+              ),
+              Positioned(
+                left: (constraints.maxWidth * widget.value - widget.imageSize / 2).clamp(
+                  0,
+                  constraints.maxWidth - widget.imageSize,
+                ),
+                bottom: -widget.imageSize * 0.3,
+                child: AnimatedBuilder(
+                  animation: _animation,
+                  builder: (context, child) {
+                    return Transform.rotate(angle: _animation.value, alignment: Alignment(0, 0.67), child: child);
+                  },
+                  child: _buildCacheImage(
+                    url: "https://fes.fate-go.jp/2025/assets/img/chara/chara_$charaId.png",
+                    width: widget.imageSize,
+                    height: widget.imageSize,
+                  ),
+                ),
+              ),
+            ],
+          );
+        },
+      ),
+    );
+  }
+}
+
+Widget _buildCacheImage({required String url, double? width, double? height}) {
+  return CachedImage(
+    imageUrl: url,
+    cachedOption: CachedImageOption(
+      cacheCheck: (_) => true,
+      placeholder: (context, url) => const SizedBox.shrink(),
+      errorWidget: (context, url, error) => const SizedBox.shrink(),
+    ),
+    width: width,
+    height: height,
+  );
 }

@@ -128,15 +128,21 @@ class AtlasIconLoader extends _CachedLoader<String, String> {
   final _rateLimiter = RateLimiter(maxCalls: 20, period: const Duration(seconds: 1));
   final _fsLimiter = RateLimiter(maxCalls: 10, period: const Duration(milliseconds: 100));
 
-  bool shouldCacheImage(String url) {
+  bool shouldCacheImage(String url, {bool Function(String url)? cacheCheck}) {
     if (kIsWeb) return false;
-    if (!Atlas.isAtlasAsset(url)) return false;
-    if (!url.endsWith('.png') ||
-        // url.contains('merged') ||
-        url.endsWith('questboard_cap_closed.png')) {
+    if (Atlas.isAtlasAsset(url)) {
+      if (!url.endsWith('.png') ||
+          // url.contains('merged') ||
+          url.endsWith('questboard_cap_closed.png')) {
+        return false;
+      }
+      return true;
+    } else {
+      if (cacheCheck != null) {
+        return cacheCheck(url);
+      }
       return false;
     }
-    return true;
   }
 
   String proxyAssetUrl(String url) {
@@ -267,25 +273,23 @@ class AtlasIconLoader extends _CachedLoader<String, String> {
 
   String? atlasUrlToFp(String url, {bool allowWeb = false}) {
     if (kIsWeb && !allowWeb) return null;
-    final uri = Uri.tryParse(url);
+    Uri? uri = Uri.tryParse(url);
     if (uri == null) return null;
     // in case non-ascii in path
-    String? urlPath;
+    String baseFolder = joinPaths(db.paths.assetsDir, uri.host);
     for (final host in [
       HostsX.atlasAsset.kGlobal,
       HostsX.atlasAsset.kCN,
       HostsX.atlasAsset.global,
       HostsX.atlasAsset.cn,
     ]) {
-      if (url.startsWith(host)) {
-        urlPath = url.replaceFirst(host, '');
+      if (uri.host == Uri.tryParse(host)?.host) {
+        baseFolder = db.paths.atlasAssetsDir;
+        break;
       }
     }
-    if (urlPath == null) {
-      return null;
-    }
-    urlPath = urlPath.split('?').first.trim();
-    return pathlib.joinAll([db.paths.atlasAssetsDir, ...urlPath.split('/').where((e) => e.isNotEmpty)]);
+
+    return pathlib.joinAll([baseFolder, ...uri.pathSegments.where((e) => e.isNotEmpty)]);
   }
 }
 
