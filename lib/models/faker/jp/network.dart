@@ -152,7 +152,7 @@ class NetworkManagerJP extends NetworkManagerBase<FRequestJP, AutoLoginDataJP> {
     buffer.writeln(form.data);
     request.params = form.map;
     final lastRequestOptions = user.lastRequestOptions = RequestOptionsSaveData(
-      createdAt: getNowTimestamp(),
+      createdAt: getNowTimestamp() + request.sendDelay.inSeconds,
       path: request.path,
       key: request.key,
       url: uri.toString(),

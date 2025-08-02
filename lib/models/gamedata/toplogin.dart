@@ -500,12 +500,12 @@ class MasterDataManager {
 
   UserGameEntity? get user => userGame.firstOrNull;
 
-  List<int> getSvtAppendSkillLv(UserServantEntity svt) {
+  List<int> getSvtAppendSkillLv(UserServantEntity userSvt) {
     final Map<int, int> lvs = Map.fromIterable(
-      userSvtAppendPassiveSkill[svt.svtId]?.unlockNums ?? <int>[],
+      userSvtAppendPassiveSkill[userSvt.svtId]?.unlockNums ?? <int>[],
       value: (_) => 1,
     );
-    final appendLv = userSvtAppendPassiveSkillLv[svt.id];
+    final appendLv = userSvtAppendPassiveSkillLv[userSvt.id];
     if (appendLv != null) {
       lvs.addAll(Map.fromIterables(appendLv.appendPassiveSkillNums, appendLv.appendPassiveSkillLvs));
     }
@@ -833,6 +833,8 @@ class UserServantEntity extends DataEntityBase<int> {
     }
     return baseLv;
   }
+
+  List<int> get skillLvs => [skillLv1, skillLv2, skillLv3];
 }
 
 @JsonSerializable(createToJson: false)

@@ -12,6 +12,7 @@ import '../effect_search/util.dart';
 class ServantFilterPage extends FilterPage<SvtFilterData> {
   final bool planMode;
   final bool showSort;
+  final List<Widget> Function(BuildContext context, VoidCallback update)? customFilters;
 
   const ServantFilterPage({
     super.key,
@@ -19,6 +20,7 @@ class ServantFilterPage extends FilterPage<SvtFilterData> {
     super.onChanged,
     required this.planMode,
     this.showSort = true,
+    this.customFilters,
   });
 
   @override
@@ -297,6 +299,7 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData, ServantFilt
                   ),
               ],
             ),
+          ...?widget.customFilters?.call(context, update),
           buildClassFilter(filterData.svtClass),
           FilterGroup<int>(
             title: Text(S.current.filter_sort_rarity, style: textStyle),

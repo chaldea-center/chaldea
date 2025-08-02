@@ -440,7 +440,7 @@ abstract class FakerAgent<
           if (followerEquipIds.isEmpty) continue;
           if (followerEquipIds.isNotEmpty) {
             if (supportEquipIds.toSet().intersection(followerEquipIds).isEmpty) continue;
-            if (grandSupportEquipIds.isNotEmpty) {
+            if (isUseGrandBoard && grandSupportEquipIds.isNotEmpty) {
               if (grandSupportEquipIds.toSet().intersection(supportEquipIds.toSet()).isNotEmpty) {
                 throw SilentException("Grand Servant's CE option should not be the same as normal CE");
               }

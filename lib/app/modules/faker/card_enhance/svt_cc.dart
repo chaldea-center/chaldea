@@ -103,12 +103,12 @@ class _UserSvtCommandCodePageState extends State<UserSvtCommandCodePage> {
         trailing: IconButton(
           onPressed: () {
             router.pushPage(
-              SelectUserSvtCollectionPage(
+              SelectUserSvtPage(
                 runtime: runtime,
-                getStatus: (collection) {
-                  final svtCC = mstData.userSvtCommandCode[collection.svtId];
+                getStatus: (userSvt) {
+                  final svtCC = mstData.userSvtCommandCode[userSvt.svtId];
                   return [
-                    'Lv.${collection.maxLv}',
+                    'Lv.${userSvt.maxLv}',
                     svtCC?.userCommandCodeIds
                             .map((e) => e == -1 ? '-' : (e == 0 ? '0' : (e > 0 ? '1' : '$e')))
                             .join('/') ??

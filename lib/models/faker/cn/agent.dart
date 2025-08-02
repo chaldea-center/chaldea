@@ -195,7 +195,7 @@ class FakerAgentCN extends FakerAgent<FRequestCN, AutoLoginDataCN, NetworkManage
       "userId": sguid,
       "appVer": network.gameTop.appVer,
       "dateVer": network.gameTop.dateVer,
-      "lastAccessTime": getNowTimestamp(),
+      "lastAccessTime": getNowTimestamp() + request.sendDelay.inSeconds,
       "developmentAuthCode": developmentAuthCode,
       "idempotencyKey": const Uuid().v4(),
       ...?params3,
