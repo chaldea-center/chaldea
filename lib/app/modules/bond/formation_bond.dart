@@ -162,7 +162,6 @@ class _FormationBondTabState extends State<FormationBondTab> {
         }
         for (final func in skill.functions) {
           if (func.funcType != FuncType.servantFriendshipUp) continue;
-
           if (quest != null &&
               func.funcquestTvals.isNotEmpty &&
               !checkSignedIndividualities2(myTraits: quest.questIndividuality, requiredTraits: func.funcquestTvals)) {
@@ -224,14 +223,23 @@ class _FormationBondTabState extends State<FormationBondTab> {
       }
 
       // check event bonus
-      if (option.enableEvent && eventId != 0) {
-        // Mash has eventId=0
-        Set<int> usedEventSkillIds = {};
+      if (option.enableEvent && quest != null) {
+        Map<int, Map<int, NiceSkill>> groupedEventSkills = {};
         for (final skill in svt.extraPassive) {
-          if (usedEventSkillIds.contains(skill.id)) continue;
-          if (!skill.extraPassive.any((extraPassive) => extraPassive.eventId == eventId)) continue;
-          usedEventSkillIds.add(skill.id);
+          if (skill.id == 970663) continue; // 夢火の導き Bond 15
+          final eventPassives = skill.extraPassive.where((eventPassive) {
+            if (eventPassive.startedAt > quest.closedAt || eventPassive.endedAt < quest.openedAt) return false;
+            if (eventPassive.eventId != 0 && eventPassive.eventId != eventId) return false;
+            return true;
+          }).toList();
+          if (eventPassives.isEmpty) continue;
 
+          for (final eventPassive in eventPassives) {
+            groupedEventSkills.putIfAbsent(eventPassive.num, () => {})[eventPassive.priority] = skill;
+          }
+        }
+        for (final skills in groupedEventSkills.values) {
+          final skill = skills[Maths.max<int>(skills.keys)]!;
           checkAddFunctions(skill, false);
         }
       }
@@ -419,13 +427,11 @@ class _FormationBondTabState extends State<FormationBondTab> {
           title: Text(S.current.event_skill),
           subtitle: eventSkillIds.isEmpty ? null : Text('${event?.lShortName.l}'),
           value: option.enableEvent,
-          onChanged: event == null
-              ? null
-              : (v) {
-                  setState(() {
-                    option.enableEvent = v;
-                  });
-                },
+          onChanged: (v) {
+            setState(() {
+              option.enableEvent = v;
+            });
+          },
         ),
         if (eventSkillIds.isNotEmpty)
           Padding(
