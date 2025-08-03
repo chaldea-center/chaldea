@@ -2453,7 +2453,13 @@ class BattleServantData {
     final BuffAction gutsActionToCheck = hasNextShift(battleData) ? BuffAction.shiftGuts : BuffAction.guts;
     for (final buff in collectBuffsPerAction(battleBuff.validBuffs, gutsActionToCheck)) {
       // no code found on whether ckSelf actually checks anything
-      if (await buff.shouldActivateBuff(battleData, [], opponentTraits: lastHitByFunc?.getFuncIndividuality())) {
+      final oppoTraits = fetchOpponentTraits(
+        BuffAction.guts,
+        buff,
+        lastHitBy,
+        addTraits: lastHitByFunc?.getFuncIndividuality(),
+      );
+      if (await buff.shouldActivateBuff(battleData, [], opponentTraits: oppoTraits)) {
         if (gutsToApply == null || (gutsToApply.irremovable && !buff.irremovable)) {
           gutsToApply = buff;
         }
