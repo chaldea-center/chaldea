@@ -535,6 +535,9 @@ CardDetail _$CardDetailFromJson(Map json) => CardDetail(
     _$SvtCardPositionDamageRatesSlideTypeEnumMap,
     json['positionDamageRatesSlideType'],
   ),
+  overwriteRates: (json['overwriteRates'] as List<dynamic>?)
+      ?.map((e) => SvtCardAddOverwriteRateData.fromJson(Map<String, dynamic>.from(e as Map)))
+      .toList(),
 );
 
 Map<String, dynamic> _$CardDetailToJson(CardDetail instance) => <String, dynamic>{
@@ -547,6 +550,7 @@ Map<String, dynamic> _$CardDetailToJson(CardDetail instance) => <String, dynamic
   'dropStarRate': instance.dropStarRate,
   'positionDamageRates': instance.positionDamageRates,
   'positionDamageRatesSlideType': _$SvtCardPositionDamageRatesSlideTypeEnumMap[instance.positionDamageRatesSlideType],
+  'overwriteRates': instance.overwriteRates?.map((e) => e.toJson()).toList(),
 };
 
 const _$CommandCardAttackTypeEnumMap = {CommandCardAttackType.one: 'one', CommandCardAttackType.all: 'all'};
@@ -555,6 +559,26 @@ const _$SvtCardPositionDamageRatesSlideTypeEnumMap = {
   SvtCardPositionDamageRatesSlideType.none: 'none',
   SvtCardPositionDamageRatesSlideType.front: 'front',
   SvtCardPositionDamageRatesSlideType.back: 'back',
+};
+
+SvtCardAddOverwriteRateData _$SvtCardAddOverwriteRateDataFromJson(Map json) => SvtCardAddOverwriteRateData(
+  condType: json['condType'] as String? ?? '',
+  condValue: (json['condValue'] as num?)?.toInt() ?? 0,
+  damageRate: (json['damageRate'] as num?)?.toInt(),
+  attackNpRate: (json['attackNpRate'] as num?)?.toInt(),
+  defenseNpRate: (json['defenseNpRate'] as num?)?.toInt(),
+  dropStarRate: (json['dropStarRate'] as num?)?.toInt(),
+  iconBuffId: (json['iconBuffId'] as num?)?.toInt(),
+);
+
+Map<String, dynamic> _$SvtCardAddOverwriteRateDataToJson(SvtCardAddOverwriteRateData instance) => <String, dynamic>{
+  'condType': instance.condType,
+  'condValue': instance.condValue,
+  'damageRate': instance.damageRate,
+  'attackNpRate': instance.attackNpRate,
+  'defenseNpRate': instance.defenseNpRate,
+  'dropStarRate': instance.dropStarRate,
+  'iconBuffId': instance.iconBuffId,
 };
 
 SvtLimitEntity _$SvtLimitEntityFromJson(Map json) => SvtLimitEntity(

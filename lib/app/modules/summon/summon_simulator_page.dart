@@ -311,12 +311,12 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          for (final svtClass in ConstData.destinyOrderClasses)
+          for (final classId in summon.destinyClasses)
             Flexible(
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 2),
                 constraints: const BoxConstraints(maxWidth: 56),
-                child: buildDestinyClassSelect(svtClass),
+                child: buildDestinyClassSelect(classId),
               ),
             ),
         ],
@@ -324,15 +324,16 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
     );
   }
 
-  Map<SvtClass, Servant> selectedDestinyOrderServants = {};
+  Map<int, Servant> selectedDestinyOrderServants = {};
   SvtFilterData destinyOrderSvtFilter = SvtFilterData();
 
-  Widget buildDestinyClassSelect(SvtClass svtClass) {
-    final svt = selectedDestinyOrderServants[svtClass];
+  Widget buildDestinyClassSelect(int clsId) {
+    final svtClass2 = SvtClass.fromInt(clsId) ?? SvtClass.unknown;
+    final svt = selectedDestinyOrderServants[clsId];
     Widget child = Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        db.getIconImage(svtClass.icon(5), width: 32, height: 32, padding: const EdgeInsets.all(4)),
+        db.getIconImage(SvtClassX.clsIcon(clsId, 5), width: 32, height: 32, padding: const EdgeInsets.all(4)),
         CachedImage(imageUrl: svt?.customIcon ?? Atlas.common.emptySvtIcon, aspectRatio: 132 / 144),
       ],
     );
@@ -341,17 +342,17 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
         router.pushPage(
           ServantListPage(
             filterData: destinyOrderSvtFilter
-              ..svtClass.options = SvtClassX.resolveClasses(svtClass, expandBeast: false).toSet()
+              ..svtClass.options = SvtClassX.resolveClasses(svtClass2, expandBeast: false).toSet()
               ..rarity.options = {5},
             onSelected: (selectedSvt) {
               if (selectedSvt.type == SvtType.normal &&
                   selectedSvt.collectionNo > 0 &&
                   selectedSvt.rarity == 5 &&
-                  SvtClassX.match(selectedSvt.className, svtClass) &&
+                  SvtClassX.match(selectedSvt.className, svtClass2) &&
                   data.svts.any((e) => e.ids.contains(selectedSvt.collectionNo))) {
                 if (mounted) {
                   setState(() {
-                    selectedDestinyOrderServants[svtClass] = selectedSvt;
+                    selectedDestinyOrderServants[clsId] = selectedSvt;
                   });
                 }
               } else {
@@ -362,7 +363,7 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
         );
       },
       onLongPress: () {
-        selectedDestinyOrderServants.remove(svtClass);
+        selectedDestinyOrderServants.remove(clsId);
         setState(() {});
       },
       child: child,
@@ -490,10 +491,9 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
   }
 
   void startGacha(int times, int quartz) {
-    if (summon.isDestiny && !selectedDestinyOrderServants.keys.toSet().equalTo(ConstData.destinyOrderClasses.toSet())) {
-      EasyLoading.showInfo(
-        "Only ${selectedDestinyOrderServants.length}/${ConstData.destinyOrderClasses.length} selected!",
-      );
+    final destinyClasses = summon.destinyClasses;
+    if (summon.isDestiny && !selectedDestinyOrderServants.keys.toSet().equalTo(destinyClasses.toSet())) {
+      EasyLoading.showInfo("Only ${selectedDestinyOrderServants.length}/${destinyClasses.length} selected!");
       return;
     }
     List<GameCardMixin> newAdded = summonWithGuarantee(times);

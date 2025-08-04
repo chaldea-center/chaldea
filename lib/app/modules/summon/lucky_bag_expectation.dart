@@ -278,36 +278,48 @@ class _LuckyBagExpectationState extends State<LuckyBagExpectation> with SingleTi
             runSpacing: 2,
             children: _result.block.ids.map((id) {
               final svt = db.gameData.servantsNoDup[id];
-              if (svt == null) return Text('ID $id');
-              return GestureDetector(
-                onLongPress: () {
+              Widget _getIcon(BuildContext context, [double width = 48]) => svt == null
+                  ? Text('ID $id')
+                  : SummonUtil.svtAvatar(
+                      context: context,
+                      card: svt,
+                      favorite: svt.status.favorite,
+                      npLv: true,
+                      width: width,
+                      extraText: scoreOf(svt.collectionNo).toString(),
+                    );
+
+              return InkWell(
+                onTap: () {
                   router.showDialog(
                     builder: (context) {
                       return SimpleDialog(
                         title: Text(S.current.lucky_bag_rating),
                         children: [
+                          ListTile(
+                            dense: true,
+                            leading: _getIcon(context, 36),
+                            title: Text(svt?.lName.l ?? 'Svt $id'),
+                            trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
+                            onTap: svt?.routeTo,
+                            contentPadding: EdgeInsets.symmetric(horizontal: 24),
+                          ),
+                          Divider(),
                           for (int score = _kScoreMin; score <= _kScoreMax; score++)
                             SimpleDialogOption(
                               onPressed: () {
                                 Navigator.pop(context);
-                                _svtScores[svt.collectionNo] = score;
+                                _svtScores[id] = score;
                                 if (mounted) setState(() {});
                               },
-                              child: Text(score.toString()),
+                              child: Text('Score $score'),
                             ),
                         ],
                       );
                     },
                   );
                 },
-                child: SummonUtil.svtAvatar(
-                  context: context,
-                  card: svt,
-                  favorite: svt.status.favorite,
-                  npLv: true,
-                  width: 48,
-                  extraText: scoreOf(svt.collectionNo).toString(),
-                ),
+                child: IgnorePointer(child: _getIcon(context)),
               );
             }).toList(),
           ),

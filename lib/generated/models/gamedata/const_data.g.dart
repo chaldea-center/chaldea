@@ -117,7 +117,11 @@ ConstGameData _$ConstGameDataFromJson(Map json) => ConstGameData(
   config: json['config'] == null
       ? const ConstDataConfig()
       : ConstDataConfig.fromJson(Map<String, dynamic>.from(json['config'] as Map)),
-  destinyOrderSummons: (json['destinyOrderSummons'] as List<dynamic>?)?.map((e) => e as String).toList() ?? const [],
+  destinyOrderClasses:
+      (json['destinyOrderClasses'] as Map?)?.map(
+        (k, e) => MapEntry(k as String, (e as List<dynamic>).map((e) => (e as num).toInt()).toList()),
+      ) ??
+      const {},
   extraWarEventMapping:
       (json['extraWarEventMapping'] as Map?)?.map((k, e) => MapEntry(int.parse(k as String), (e as num).toInt())) ??
       const {},
@@ -150,7 +154,7 @@ Map<String, dynamic> _$ConstGameDataToJson(ConstGameData instance) => <String, d
   'svtExp': instance.svtExp.map((k, e) => MapEntry(k.toString(), e.toJson())),
   'funcTypeDetail': instance.funcTypeDetail.map((k, e) => MapEntry(k.toString(), e.toJson())),
   'buffTypeDetail': instance.buffTypeDetail.map((k, e) => MapEntry(k.toString(), e.toJson())),
-  'destinyOrderSummons': instance.destinyOrderSummons,
+  'destinyOrderClasses': instance.destinyOrderClasses,
   'svtLimitHides': instance.svtLimitHides.map((k, e) => MapEntry(k.toString(), e.map((e) => e.toJson()).toList())),
   'svtAllowedExtraPassives': instance.svtAllowedExtraPassives.map((e) => e.toJson()).toList(),
   'eventPointBuffGroupSkillNumMap': instance.eventPointBuffGroupSkillNumMap.map(

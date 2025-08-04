@@ -397,6 +397,7 @@ enum SvtClass {
   uOlgaMarieAqua(37),
   beastEresh(38, '獸'),
   uOlgaMarieGround(39),
+  unBeast(40, 'UnBeast'),
   unknown(97),
   // 98
   // 99
@@ -428,6 +429,8 @@ enum SvtClass {
   final String shortName;
   final int? baseClassId;
   const SvtClass(this.value, [this.shortName = '?', this.baseClassId]);
+
+  static SvtClass? fromInt(int clsId) => SvtClass.values.firstWhereOrNull((e) => e.value == clsId);
 }
 
 class SvtClassConverter implements JsonConverter<SvtClass, String> {
@@ -435,7 +438,12 @@ class SvtClassConverter implements JsonConverter<SvtClass, String> {
 
   @override
   SvtClass fromJson(String value) {
-    return deprecatedTypes[value] ?? decodeEnum(_$SvtClassEnumMap, value, SvtClass.none);
+    SvtClass? result = deprecatedTypes[value] ?? decodeEnumNullable(_$SvtClassEnumMap, value);
+    if (result == null) {
+      final intResult = int.tryParse(value);
+      if (intResult != null) result = SvtClass.fromInt(intResult);
+    }
+    return result ?? SvtClass.none;
   }
 
   @override
@@ -452,7 +460,7 @@ class SvtClassConverter implements JsonConverter<SvtClass, String> {
     return mapping.entries.firstWhereOrNull((entry) => entry.value.name == value)?.key;
   }
 
-  static final Map<String, SvtClass> deprecatedTypes = {"beast": SvtClass.beastDoraco};
+  static final Map<String, SvtClass> deprecatedTypes = {};
 }
 
 const _kSvtClassRarityMap = {0: 0, 1: 1, 2: 1, 3: 2, 4: 3, 5: 3};
@@ -474,7 +482,7 @@ extension SvtClassX on SvtClass {
     }
     iconId ??= ConstData.classInfo[clsId]?.iconImageId;
     int rarity = _kSvtClassRarityMap[svtRarity] ?? svtRarity;
-    rarity = const <int, int>{1003: 2, 17: 3}[iconId] ?? rarity;
+    rarity = const <int, int>{1003: 2, 17: 3, 1006: 2}[iconId] ?? rarity;
 
     // unused lore grand class
     if (const [13, 14, 15, 16, 18, 19].contains(clsId)) {
@@ -529,6 +537,7 @@ extension SvtClassX on SvtClass {
     SvtClass.uOlgaMarieAquaCollection,
     SvtClass.uOlgaMarieGroundCollection,
     SvtClass.uOlgaMarieStellarCollection,
+    SvtClass.unBeast,
   ];
   static const grandClasses = <SvtClass>[
     SvtClass.grandSaber,
@@ -543,7 +552,7 @@ extension SvtClassX on SvtClass {
   static bool match(SvtClass value, SvtClass option) {
     if (option == value) return true;
     if ((value.baseClassId ?? value.value) == (option.baseClassId ?? option.value)) return true;
-    if (option == SvtClassX.beast) {
+    if (option.value == SvtClassX.beast.value) {
       return beasts.contains(value);
     }
     if (option == SvtClass.EXTRA1) {
@@ -642,13 +651,15 @@ enum Trait {
   classBeastIV(121),
   classBeastILost(122),
   classUOlgaMarie(123),
-  classBeast(124),
+  classBeastDoraco(124),
   classBeastVI(125),
   classBeastVIBoss(126),
   classUOlgaMarieFlare(127),
   classUOlgaMarieAqua(128),
   classBeastEresh(129),
   classUOlgaMarieGround(130),
+  classUnBeast(132),
+  classBeast(135),
   attributeSky(200),
   attributeEarth(201),
   attributeHuman(202),

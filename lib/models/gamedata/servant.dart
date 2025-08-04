@@ -1056,6 +1056,7 @@ class CardDetail {
   int? dropStarRate;
   List<int>? positionDamageRates;
   SvtCardPositionDamageRatesSlideType? positionDamageRatesSlideType;
+  List<SvtCardAddOverwriteRateData>? overwriteRates;
 
   CardDetail({
     this.hitsDistribution = const [],
@@ -1067,11 +1068,38 @@ class CardDetail {
     this.dropStarRate,
     this.positionDamageRates,
     this.positionDamageRatesSlideType,
+    this.overwriteRates,
   });
 
   factory CardDetail.fromJson(Map<String, dynamic> json) => _$CardDetailFromJson(json);
 
   Map<String, dynamic> toJson() => _$CardDetailToJson(this);
+}
+
+@JsonSerializable()
+class SvtCardAddOverwriteRateData {
+  String condType; // TargetNumEqual/TargetNumBelow/TargetNumAbove
+  int condValue;
+  int? damageRate;
+  int? attackNpRate;
+  int? defenseNpRate;
+  int? dropStarRate;
+  int? iconBuffId;
+
+  SvtCardAddOverwriteRateData({
+    this.condType = '',
+    this.condValue = 0,
+    this.damageRate,
+    this.attackNpRate,
+    this.defenseNpRate,
+    this.dropStarRate,
+    this.iconBuffId,
+  });
+
+  factory SvtCardAddOverwriteRateData.fromJson(Map<String, dynamic> json) =>
+      _$SvtCardAddOverwriteRateDataFromJson(json);
+
+  Map<String, dynamic> toJson() => _$SvtCardAddOverwriteRateDataToJson(this);
 }
 
 @JsonSerializable()

@@ -419,7 +419,9 @@ class LimitedSummon with RouteInfo {
 
   bool get isLuckyBag => type.isLuckyBag;
 
-  bool get isDestiny => ConstData.destinyOrderSummons.contains(id);
+  bool get isDestiny => ConstData.destinyOrderClasses.containsKey(id);
+
+  List<int> get destinyClasses => ConstData.destinyOrderClasses[id]?.toList() ?? [];
 
   Transl<String, String> get lName => Transl.summonNames(name);
 
@@ -525,7 +527,7 @@ class ProbGroup {
     this.ids = const [],
   }) : assert(ids.isNotEmpty);
 
-  double get singleWeight => weight / ids.length;
+  double get singleWeight => ids.isEmpty ? 0.0 : weight / ids.length;
 
   factory ProbGroup.fromJson(Map<String, dynamic> json) => _$ProbGroupFromJson(json);
   Map<String, dynamic> toJson() => _$ProbGroupToJson(this);

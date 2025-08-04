@@ -344,22 +344,24 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
     if (summon.isDestiny) {
       final svtIds = data.probs.where((e) => e.isSvt && e.rarity == 5).expand((e) => e.ids).toList();
       if (svtIds.isNotEmpty) {
-        final groups = <(String, List<SvtClass>)>[
-          ...SvtClassX.regular.map((e) => (Transl.svtClassId(e.value).l, [e])),
-          ('Extra I', SvtClassX.extraI),
-          ('Extra II', SvtClassX.extraII),
-        ];
-        for (final (title, svtClasses) in groups) {
-          final _svtClasses = {for (final x in svtClasses) ...SvtClassX.resolveClasses(x, expandBeast: true)};
-          final ids = svtIds.where((e) => _svtClasses.contains(db.gameData.servantsNoDup[e]?.className)).toList();
+        for (final clsId in summon.destinyClasses) {
+          final svtClass = SvtClass.fromInt(clsId) ?? SvtClass.unknown;
+          final ids = svtIds.where((e) {
+            final svt = db.gameData.servantsNoDup[e];
+            if (svt != null && (svt.classId == clsId || SvtClassX.match(svt.className, svtClass))) return true;
+            return false;
+          }).toList();
           final favoriteIds = ids.where((e) => db.curUser.svtStatusOf(e).favorite).toList();
+          if (ids.isEmpty) {
+            print('class $clsId: $ids');
+          }
           children.add(
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: SummonUtil.buildBlock(
                 context: context,
                 block: ProbGroup(isSvt: true, rarity: 5, weight: 0, display: true, ids: ids),
-                title: '$title (${favoriteIds.length}/${ids.length})',
+                title: '${Transl.svtClassId(clsId).l} (${favoriteIds.length}/${ids.length})',
                 showProb: false,
                 showStar: false,
               ),

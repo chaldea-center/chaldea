@@ -229,7 +229,7 @@ class _MCSummonCreatePageState extends State<MCSummonCreatePage> {
     return '${jst.year}-${pad(jst.month)}-${pad(jst.day)} ${pad(jst.hour)}:${pad(jst.minute)}';
   }
 
-  Widget _buildWikitext(String? wikitext, String? page, {String? warning}) {
+  Widget _buildWikitext(String? wikitext, String? page, {String? warning, Color? warningColor}) {
     page = page?.trim();
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -260,7 +260,7 @@ class _MCSummonCreatePageState extends State<MCSummonCreatePage> {
         ),
         if (warning != null)
           Card(
-            color: Theme.of(context).colorScheme.errorContainer,
+            color: warningColor,
             child: Padding(
               padding: const EdgeInsets.all(8),
               child: Text(warning, style: TextStyle(color: Theme.of(context).colorScheme.onErrorContainer)),
@@ -544,14 +544,18 @@ class _MCSummonCreatePageState extends State<MCSummonCreatePage> {
       page = '$page/模拟器/data${index + 1}';
     }
     String? warning;
+    Color? warningColor = Theme.of(context).colorScheme.error;
     if (gacha.isInvalid) {
       warning = '该卡池解析失败';
     } else {
+      if ((100 - gacha.guessTotalProb()).abs() < 0.05 && (100 - gacha.getTotalProb()).abs() < 0.06) {
+        warningColor = Theme.of(context).colorScheme.primary;
+      }
       warning =
           '检查概率: ${gacha.guessTotalProb().toStringAsPrecision(5)}% (${gacha.getTotalProb().toStringAsPrecision(5)}%)';
     }
 
-    return _buildWikitext(table, page, warning: warning);
+    return _buildWikitext(table, page, warning: warning, warningColor: warningColor);
   }
 
   Future<void> parseProbs() async {
