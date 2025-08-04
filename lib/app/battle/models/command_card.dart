@@ -120,6 +120,8 @@ class CommandCardData {
   BuffData? counterBuff;
   int? oc;
   BattleChainType chainType = BattleChainType.none;
+  int? targetNum;
+  int overwriteRatesIndex = -1;
 
   List<NiceTrait> get traits => [
     ..._traits,
@@ -128,26 +130,50 @@ class CommandCardData {
   ];
   set traits(List<NiceTrait> traits) => _traits = traits;
 
-  CommandCardData._(this.svtId, this.svtLimit, this.uniqueId, this.cardType, this.cardDetail, this.cardIndex);
-
-  CommandCardData(BattleServantData svt, this.cardType, this.cardDetail, this.cardIndex)
-    : svtId = svt.svtId,
-      svtLimit = svt.limitCount,
-      uniqueId = svt.uniqueId;
+  CommandCardData({
+    required this.svtId,
+    required this.svtLimit,
+    required this.uniqueId,
+    required this.cardType,
+    required this.cardDetail,
+    required this.cardIndex,
+    this.cardStrengthen = 0,
+    this.npGain = 0,
+    List<NiceTrait> traits = const [],
+    this.isTD = false,
+    this.np = 0,
+    this.critical = false,
+    this.commandCode,
+    this.td,
+    this.counterBuff,
+    this.oc,
+    this.chainType = BattleChainType.none,
+    this.targetNum,
+    this.overwriteRatesIndex = -1,
+  }) : _traits = traits.toList();
 
   CommandCardData copy() {
-    return CommandCardData._(svtId, svtLimit, uniqueId, cardType, cardDetail, cardIndex)
-      ..cardStrengthen = cardStrengthen
-      ..npGain = npGain
-      .._traits = _traits.toList()
-      ..isTD = isTD
-      ..np = np
-      ..critical = critical
-      ..commandCode = commandCode
-      ..td = td
-      ..counterBuff = counterBuff
-      ..oc = oc
-      ..chainType = chainType;
+    return CommandCardData(
+      svtId: svtId,
+      svtLimit: svtLimit,
+      uniqueId: uniqueId,
+      cardType: cardType,
+      cardDetail: cardDetail,
+      cardIndex: cardIndex,
+      cardStrengthen: cardStrengthen,
+      npGain: npGain,
+      traits: _traits,
+      isTD: isTD,
+      np: np,
+      critical: critical,
+      commandCode: commandCode,
+      td: td,
+      counterBuff: counterBuff,
+      oc: oc,
+      chainType: chainType,
+      targetNum: targetNum,
+      overwriteRatesIndex: overwriteRatesIndex,
+    );
   }
 }
 
@@ -175,6 +201,32 @@ class CombatAction {
     } else {
       return actor.canCommandCard(cardData);
     }
+  }
+
+  Future<void> confirmCardSelection(BattleData battleData) async {
+    cardData.targetNum = actor.isPlayer ? battleData.nonnullEnemies.length : battleData.nonnullPlayers.length;
+    final overwriteRatesList = cardData.cardDetail.overwriteRates;
+    if (overwriteRatesList != null && overwriteRatesList.isNotEmpty) {
+      cardData.overwriteRatesIndex = getOverwriteRatesIndex(overwriteRatesList, cardData.targetNum!);
+    }
+
+    if (actor.isPlayer && isValid(battleData)) {
+      await actor.activateBuff(battleData, BuffAction.functionConfirmCommand, card: cardData);
+    }
+  }
+
+  int getOverwriteRatesIndex(List<SvtCardAddOverwriteRateData> overwriteRatesList, int targetNum) {
+    for (final (idx, data) in overwriteRatesList.indexed) {
+      final match =
+          (data.condType == 'TargetNumEqual' && targetNum == data.condValue) ||
+          (data.condType == 'TargetNumBelow' && targetNum <= data.condValue) ||
+          (data.condType == 'TargetNumAbove' && targetNum >= data.condValue);
+      if (match) {
+        return idx;
+      }
+    }
+
+    return -1;
   }
 
   CombatAction copy() {

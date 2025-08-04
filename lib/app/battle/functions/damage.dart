@@ -171,12 +171,13 @@ class Damage {
         }
       }
 
+      final overwriteRates = currentCard.cardDetail.overwriteRates?.getOrNull(currentCard.overwriteRatesIndex);
       final damageParameters = DamageParameters()
         ..attack = activator.atk + currentCard.cardStrengthen
         ..totalHits = Maths.sum(currentCard.cardDetail.hitsDistribution)
         ..damageRate = currentCard.isTD
             ? dataVals.Value! + hpRatioDamageLow + hpRatioDamageHigh
-            : currentCard.cardDetail.damageRate ?? 1000
+            : overwriteRates?.damageRate ?? currentCard.cardDetail.damageRate ?? 1000
         ..damageRateModifier = getDamageRateModifier(battleData, currentCard, target)
         ..npSpecificAttackRate = specificAttackRate
         ..attackerClass = activator.logicalClassId
@@ -227,7 +228,7 @@ class Damage {
         atkNpParameters
           ..attackerNpCharge = currentCard.npGain
           ..defenderNpRate = target.enemyTdRate
-          ..cardAttackNpRate = currentCard.cardDetail.attackNpRate ?? 1000
+          ..cardAttackNpRate = overwriteRates?.attackNpRate ?? currentCard.cardDetail.attackNpRate ?? 1000
           ..isNp = currentCard.isTD
           ..chainPos = chainPos
           ..currentCardType = currentCard.cardType
@@ -251,7 +252,7 @@ class Damage {
         starParameters
           ..attackerStarGen = activator.starGen
           ..defenderStarRate = target.enemyStarRate
-          ..cardDropStarRate = currentCard.cardDetail.dropStarRate ?? 1000
+          ..cardDropStarRate = overwriteRates?.dropStarRate ?? currentCard.cardDetail.dropStarRate ?? 1000
           ..isNp = currentCard.isTD
           ..chainPos = chainPos
           ..currentCardType = currentCard.cardType
@@ -275,7 +276,7 @@ class Damage {
         defNpParameters
           ..defenderNpGainRate = target.defenceNpGain
           ..attackerNpRate = activator.enemyTdAttackRate
-          ..cardDefNpRate = currentCard.cardDetail.defenseNpRate ?? 1000
+          ..cardDefNpRate = overwriteRates?.defenseNpRate ?? currentCard.cardDetail.defenseNpRate ?? 1000
           ..npGainBuff = await target.getBuffValue(
             battleData,
             BuffAction.dropNp,

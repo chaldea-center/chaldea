@@ -983,10 +983,9 @@ class BattleData {
             : CardType.blank;
         await _applyColorChainFunction(chainType, actions);
 
+        // confirm card selection & set targetNum
         for (final action in actions) {
-          if (action.isValid(this)) {
-            await action.actor.activateBuff(this, BuffAction.functionConfirmCommand, card: action.cardData);
-          }
+          await action.confirmCardSelection(this);
         }
 
         int extraOvercharge = 0;
@@ -998,9 +997,6 @@ class BattleData {
 
               // need to sync card data because the actor might have transformed
               final actualCard = getActualCard(action);
-              actualCard
-                ..critical = action.cardData.critical
-                ..chainType = action.cardData.chainType;
               if (onFieldAllyServants.contains(actor) && action.isValid(this)) {
                 recorder.startPlayerCard(actor, actualCard);
 
@@ -1093,6 +1089,11 @@ class BattleData {
             ? actor.getExtraCard()
             : actor.getCards().getOrNull(cardData.cardIndex)) ??
         cardData;
+    outCardData
+      ..critical = cardData.critical
+      ..chainType = cardData.chainType
+      ..targetNum = cardData.targetNum
+      ..overwriteRatesIndex = cardData.overwriteRatesIndex;
     return outCardData;
   }
 
@@ -1109,6 +1110,7 @@ class BattleData {
         if (counterCard == null) return;
         final action = CombatAction(svt, counterCard);
         if (nonnullEnemies.isEmpty) return;
+        await action.confirmCardSelection(this);
         recorder.initiateAttacks(this, [action]);
         await withAction(() async {
           if (!onFieldAllyServants.contains(action.actor) || !action.isValidCounter(this)) return;
@@ -1164,6 +1166,7 @@ class BattleData {
       save: true,
       action: 'enemy_card-${action.cardData.cardType.name}',
       task: () async {
+        await action.confirmCardSelection(this);
         // recorder.initiateAttacks(this, [action]);
         await withAction(() async {
           if (nonnullPlayers.isNotEmpty) {
