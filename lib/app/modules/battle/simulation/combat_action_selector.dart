@@ -523,9 +523,16 @@ class _EnemyCombatActionSelectorState extends State<EnemyCombatActionSelector> {
             buildRadio(
               title: Text(name),
               onSelected: () async {
-                final cardData = CommandCardData(enemy, cardType, detail, 1)
-                  ..isTD = false
-                  ..traits = ConstData.cardInfo[cardType]?[1]?.individuality.toList() ?? [];
+                final cardData = CommandCardData(
+                  svtId: enemy.svtId,
+                  svtLimit: enemy.limitCount,
+                  uniqueId: enemy.uniqueId,
+                  cardType: cardType,
+                  cardDetail: detail,
+                  cardIndex: 1,
+                  isTD: false,
+                  traits: ConstData.cardInfo[cardType]?[1]?.individuality.toList() ?? [],
+                );
                 if (cardType.isQAB()) {
                   cardData.critical = critical;
                 } else if (cardType.isStrength()) {

@@ -614,22 +614,21 @@ class BattleServantData {
       final cardType = checkOverwriteSvtCardType(changeCardType ?? cards[index]);
       final detail = niceSvt!.cardDetails[cardType];
       if (detail == null) continue;
-      final card = CommandCardData(this, cardType, detail, index)
-        ..isTD = false
-        ..npGain = getNPGain(cardType)
-        ..traits = ConstData.cardInfo[cardType]!.values.first.individuality.toList();
 
-      if (isCardInDeck) {
-        // enemy weak+strength 6 cards
-        card
-          ..cardStrengthen = playerSvtData!.cardStrengthens.getOrNull(index) ?? 0
-          ..commandCode = playerSvtData!.commandCodes.getOrNull(index);
-      }
-      if (cardType.isWeak()) {
-        card.critical = false;
-      } else if (cardType.isStrength()) {
-        card.critical = true;
-      }
+      final card = CommandCardData(
+        svtId: svtId,
+        svtLimit: limitCount,
+        uniqueId: uniqueId,
+        cardType: cardType,
+        cardDetail: detail,
+        cardIndex: index,
+        isTD: false,
+        npGain: getNPGain(cardType),
+        traits: ConstData.cardInfo[cardType]!.values.first.individuality.toList(),
+        commandCode: isCardInDeck ? playerSvtData!.commandCodes.getOrNull(index) : null,
+        cardStrengthen: isCardInDeck ? playerSvtData!.cardStrengthens.getOrNull(index) ?? 0 : 0,
+        critical: cardType.isStrength(),
+      );
 
       builtCards.add(card);
     }
@@ -641,21 +640,23 @@ class BattleServantData {
       final _td = niceEnemy!.noblePhantasm.noblePhantasm;
       if (_td == null) return null;
       return CommandCardData(
-          this,
-          _td.card,
-          CardDetail(
-            attackIndividuality: _td.individuality.toList(),
-            hitsDistribution: _td.damage,
-            attackType: _td.damageType == TdEffectFlag.attackEnemyAll
-                ? CommandCardAttackType.all
-                : CommandCardAttackType.one,
-          ),
-          -1,
-        )
-        ..td = _td
-        ..isTD = true
-        ..npGain = 0
-        ..traits = _td.individuality.toList();
+        svtId: svtId,
+        svtLimit: limitCount,
+        uniqueId: uniqueId,
+        cardType: _td.card,
+        cardDetail: CardDetail(
+          attackIndividuality: _td.individuality.toList(),
+          hitsDistribution: _td.damage,
+          attackType: _td.damageType == TdEffectFlag.attackEnemyAll
+              ? CommandCardAttackType.all
+              : CommandCardAttackType.one,
+        ),
+        cardIndex: -1,
+        td: _td,
+        isTD: true,
+        npGain: 0,
+        traits: _td.individuality.toList(),
+      );
     }
 
     final currentNP = getCurrentNP();
@@ -667,11 +668,18 @@ class BattleServantData {
           : CommandCardAttackType.one,
     );
 
-    return CommandCardData(this, currentNP?.svt.card ?? CardType.none, cardDetail, -1)
-      ..isTD = true
-      ..td = currentNP
-      ..npGain = currentNP?.npGain.np[playerSvtData!.tdLv - 1] ?? 0
-      ..traits = currentNP?.individuality ?? [];
+    return CommandCardData(
+      svtId: svtId,
+      svtLimit: limitCount,
+      uniqueId: uniqueId,
+      cardType: currentNP?.svt.card ?? CardType.none,
+      cardDetail: cardDetail,
+      cardIndex: -1,
+      isTD: true,
+      td: currentNP,
+      npGain: currentNP?.npGain.np[playerSvtData!.tdLv - 1] ?? 0,
+      traits: currentNP?.individuality ?? [],
+    );
   }
 
   Future<CommandCardData?> getCounterCard(final BattleData battleData) async {
@@ -700,22 +708,36 @@ class BattleServantData {
             : CommandCardAttackType.one,
       );
 
-      return CommandCardData(this, td.svt.card, cardDetail, -1)
-        ..isTD = true
-        ..td = td
-        ..counterBuff = buff
-        ..npGain = td.npGain.np[tdLv - 1]
-        ..traits = td.individuality;
+      return CommandCardData(
+        svtId: svtId,
+        svtLimit: limitCount,
+        uniqueId: uniqueId,
+        cardType: td.svt.card,
+        cardDetail: cardDetail,
+        cardIndex: -1,
+        isTD: true,
+        td: td,
+        counterBuff: buff,
+        npGain: td.npGain.np[tdLv - 1],
+        traits: td.individuality,
+      );
     } else if (buff.vals.UseAttack == 1) {
       final cardId = buff.vals.CounterId ?? 0;
       final cardType = CardType.fromId(cardId);
       final cardDetail = niceSvt?.cardDetails[cardType];
       if (cardType == null || cardDetail == null) return null;
-      return CommandCardData(this, cardType, cardDetail, -1)
-        ..isTD = false
-        ..counterBuff = buff
-        ..npGain = getNPGain(cardType)
-        ..traits = ConstData.cardInfo[cardType]?.values.first.individuality.toList() ?? [];
+      return CommandCardData(
+        svtId: svtId,
+        svtLimit: limitCount,
+        uniqueId: uniqueId,
+        cardType: cardType,
+        cardDetail: cardDetail,
+        cardIndex: -1,
+        isTD: false,
+        counterBuff: buff,
+        npGain: getNPGain(cardType),
+        traits: ConstData.cardInfo[cardType]?.values.first.individuality.toList() ?? [],
+      );
     } else {
       return null;
     }
@@ -730,10 +752,17 @@ class BattleServantData {
     final detail = niceSvt!.cardDetails[cardType];
     if (detail == null) return null;
 
-    return CommandCardData(this, cardType, detail, -1)
-      ..isTD = false
-      ..npGain = getNPGain(cardType)
-      ..traits = ConstData.cardInfo[cardType]!.values.first.individuality.toList();
+    return CommandCardData(
+      svtId: svtId,
+      svtLimit: limitCount,
+      uniqueId: uniqueId,
+      cardType: cardType,
+      cardDetail: detail,
+      cardIndex: -1,
+      isTD: false,
+      npGain: getNPGain(cardType),
+      traits: ConstData.cardInfo[cardType]!.values.first.individuality.toList(),
+    );
   }
 
   CardType checkOverwriteSvtCardType(final CardType baseCardType) {
