@@ -17,7 +17,15 @@ import '../servant/filter.dart';
 typedef _GroupItem = ({int rateCount, List<int> ceIds, List<({Servant svt, List<int> limitCounts})> svts});
 
 class EquipBondBonusTab extends StatefulWidget {
-  const EquipBondBonusTab({super.key});
+  final Servant? targetSvt;
+  const EquipBondBonusTab({super.key, this.targetSvt});
+
+  static Widget scaffold({Servant? targetSvt}) {
+    return Scaffold(
+      appBar: AppBar(title: Text(S.current.bond_bonus)),
+      body: EquipBondBonusTab(targetSvt: targetSvt),
+    );
+  }
 
   @override
   State<EquipBondBonusTab> createState() => _EquipBondBonusTabState();
@@ -128,12 +136,15 @@ class _EquipBondBonusTabState extends State<EquipBondBonusTab> {
     sortDict(allCeData, inPlace: true, compare: (a, b) => a.value.ce.collectionNo.compareTo(b.value.ce.collectionNo));
 
     // ce mapping svt
+    final svts = widget.targetSvt != null
+        ? [widget.targetSvt!]
+        : db.gameData.servantsById.values.where((e) => e.collectionNo > 0);
     for (final (:ce, :traits, rateCount: _) in allCeData.values) {
-      for (final svt in db.gameData.servantsById.values) {
-        if (svt.collectionNo <= 0) continue;
+      final svtLimitsData = allCeMatchSvtData[ce.id] ??= {};
+      for (final svt in svts) {
         final limitCounts = getMatchedLimitCounts(svt, traits);
         if (limitCounts.isEmpty) continue;
-        allCeMatchSvtData.putIfAbsent(ce.id, () => {})[svt.id] = limitCounts;
+        svtLimitsData[svt.id] = limitCounts;
       }
     }
 
@@ -236,7 +247,7 @@ class _EquipBondBonusTabState extends State<EquipBondBonusTab> {
     }
 
     // show svts with no bonus for all ces
-    if (ceFilterStates.values.every((e) => e == _FilterType.none)) {
+    if (ceFilterStates.values.every((e) => e == _FilterType.none) && widget.targetSvt == null) {
       final bonusSvtIds = <int>{for (final v in allCeMatchSvtData.values) ...v.keys};
       List<({Servant svt, List<int> limitCounts})> svts = [];
       for (final svt in db.gameData.servantsById.values) {

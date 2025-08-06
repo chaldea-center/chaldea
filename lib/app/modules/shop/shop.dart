@@ -1,7 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/foundation.dart';
-
 import 'package:tuple/tuple.dart';
 
 import 'package:chaldea/app/api/atlas.dart';
@@ -56,7 +54,7 @@ class _ShopDetailPageState extends State<ShopDetailPage> with RegionBasedState<N
           title: Text(data?.name ?? '${S.current.shop} $id', overflow: TextOverflow.fade),
           actions: [
             dropdownRegion(shownNone: widget.shop != null),
-            if (kDebugMode) popupMenu,
+            popupMenu,
           ],
         ),
         body: buildBody(context),

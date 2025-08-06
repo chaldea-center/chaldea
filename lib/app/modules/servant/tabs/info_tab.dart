@@ -1,5 +1,6 @@
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/descriptors/cond_target_value.dart';
+import 'package:chaldea/app/modules/bond/equip_bond_bonus.dart';
 import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/app/modules/common/misc.dart';
 import 'package:chaldea/generated/l10n.dart';
@@ -318,6 +319,13 @@ class SvtInfoTab extends StatelessWidget {
                 [],
                 0.9,
               ),
+            TextButton(
+              onPressed: () {
+                router.pushPage(EquipBondBonusTab.scaffold(targetSvt: svt));
+              },
+              style: kTextButtonDenseStyle,
+              child: Text('${S.current.craft_essence} - ${S.current.bond_bonus}'),
+            ),
             if (svt.bondGrowth.isNotEmpty) ...[
               CustomTableRow.fromTexts(texts: [S.current.info_bond_points], defaults: headerData),
               for (int row = 0; row < svt.bondGrowth.length / 5; row++) ...[
