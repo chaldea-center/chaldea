@@ -1279,6 +1279,16 @@ class FuncDescriptor extends StatelessWidget {
     if (vals?.TargetBuffIndividuality?.isNotEmpty == true) {
       _addTraits('(buff)${Transl.special.funcTargetVals}', NiceTrait.list(vals!.TargetBuffIndividuality!));
     }
+    if (vals?.ApplyBuffIndividuality?.isNotEmpty == true) {
+      _condSpans.add([
+        TextSpan(text: '(Buff)${Transl.special.funcTargetVals}'),
+        ...SharedBuilder.traitsListSpans(
+          context: context,
+          traitsList: vals!.ApplyBuffIndividuality!.map(NiceTrait.list).toList(),
+        ),
+        const TextSpan(text: ' '),
+      ]);
+    }
 
     if (buff != null) {
       _addTraits(Transl.special.buffCheckSelf, buff.ckSelfIndv, useAnd: buff.script.checkIndvTypeAnd == true);

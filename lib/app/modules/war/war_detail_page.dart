@@ -196,9 +196,22 @@ class _WarDetailPageState extends State<WarDetailPage> with RegionBasedState<Nic
         for (final _w in db.gameData.wars.values) {
           if (_w.parentWarId != WarId.grandBoardWar) continue;
           final candidateQuests = _w.quests.where((e) => e.isAnyFree).toList();
+          if (candidateQuests.isEmpty) continue;
+
+          final maxLv = candidateQuests.map((e) => e.recommendLevel).fold(QuestLevel(-1), (p, e) => e > p ? e : p);
+          candidateQuests.retainWhere((e) => e.recommendLevel == maxLv);
+
+          final questIds = candidateQuests.map((e) => e.id).toSet();
+          for (final (k, v) in ConstData.sameQuestRemap.items) {
+            if (k != v && questIds.contains(k) && questIds.contains(v)) {
+              questIds.remove(min(k, v));
+            }
+          }
+          candidateQuests.retainWhere((e) => questIds.contains(e.id));
+
           candidateQuests.sortByList((e) => <Comparable>[e.recommendLevel, e.id]);
           if (candidateQuests.isNotEmpty) {
-            grandBoardWarQuests.add(candidateQuests.last);
+            grandBoardWarQuests.addAll(candidateQuests);
           }
         }
         header = '${S.current.quest} (Lv.100${kStarChar2 * 3})';

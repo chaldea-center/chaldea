@@ -63,9 +63,17 @@ class ClassBoard with RouteInfo {
       ? "https://static.atlasacademy.io/file/aa-fgo-extract-jp/ClassBoard/Bg/GrandClassIcon$id.png"
       : "https://static.atlasacademy.io/file/aa-fgo-extract-jp/ClassBoard/UI/DownloadClassBoardUIAtlas/DownloadClassBoardUIAtlas1/img_class_$id.png";
 
-  String get btnIcon => isGrand && classes.length == 1
-      ? SvtClassX.clsIcon(classes.first.classId, 5)
-      : "https://static.atlasacademy.io/JP/ClassIcons/btn_tab_$id.png";
+  String get btnIcon {
+    if (isGrand) {
+      if (classes.length == 1) return SvtClassX.clsIcon(classes.first.classId, 5);
+      const prefix =
+          'https://static.atlasacademy.io/file/aa-fgo-extract-jp/ClassIcons/DownloadClassIcons/DownloadClassIconsAtlas';
+      if (id == 10008) return '$prefix/dialog_icon_10004.png';
+      if (id == 10009) return '$prefix/dialog_icon_10005.png';
+    }
+
+    return "https://static.atlasacademy.io/JP/ClassIcons/btn_tab_$id.png";
+  }
 
   String get dispName {
     if ((id >= 1 && id <= 7) || (id >= 10001 && id <= 10007)) {
@@ -75,6 +83,8 @@ class ClassBoard with RouteInfo {
     }
     if (id == 8) return 'EXTRA Ⅰ';
     if (id == 9) return 'EXTRA Ⅱ';
+    if (id == 10008) return 'Grand EXTRA Ⅰ';
+    if (id == 10009) return 'Grand EXTRA Ⅱ';
     return name;
   }
 

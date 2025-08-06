@@ -82,6 +82,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
       body: ListView(
         padding: const EdgeInsets.symmetric(vertical: 8),
         children: [
+          Text(Language.isZH ? '目前无人管理反馈' : 'Nobody maintain the feedback now.', textAlign: TextAlign.center),
           Card(
             elevation: 4,
             margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
