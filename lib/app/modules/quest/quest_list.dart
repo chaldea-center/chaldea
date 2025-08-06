@@ -117,10 +117,7 @@ class _QuestListPageState extends State<QuestListPage> {
       if (quest.phases.isNotEmpty &&
           (quest.afterClear.isRepeat || (quest.type == QuestType.event && quest.phases.length == 1))) {
         final key = quest.id * 100 + quest.phases.last;
-        clsIconIds =
-            db.gameData.questPhases[key]?.className.map((e) => e.value).toList() ??
-            db.gameData.questPhaseDetails[key]?.classIds ??
-            [];
+        clsIconIds = db.gameData.questPhases[key]?.classIds ?? db.gameData.questPhaseDetails[key]?.classIds ?? [];
       }
       if (clsIconIds.isNotEmpty) {
         // consumes.add(TextSpan(text: '\n${S.current.bond} ${phase.bond}'));

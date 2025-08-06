@@ -423,8 +423,7 @@ class RouteConfiguration {
       case Routes.svtClasses:
         return const SvtClassListPage();
       case Routes.svtClass:
-        int? clsId = _secondInt ?? SvtClass.values.firstWhereOrNull((e) => e.name == second)?.value;
-        if (clsId == null) break;
+        int? clsId = _secondInt ?? SvtClassConverter.parseClassId(second);
         return SvtClassInfoPage(clsId: clsId);
       case Routes.freeCalc:
         return FreeQuestCalcPage();

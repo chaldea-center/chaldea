@@ -1185,16 +1185,21 @@ class FuncDescriptor extends StatelessWidget {
 
     // CondParamAdd
     final condParamType = vals?.CondParamRangeType ?? vals?.CondParamAddType ?? 0;
-    int? condParamTargetId = vals?.CondParamRangeTargetId ?? vals?.CondParamAddTargetId ?? 0;
+    List<int>? condParamTargetId = vals?.CondParamRangeTargetId ?? vals?.CondParamAddTargetId ?? [];
     num? condParamMaxCount = vals?.CondParamRangeMaxCount;
     if (vals?.CondParamAddMaxValue != null && vals?.CondParamAddValue != null) {
       condParamMaxCount ??= vals!.CondParamAddMaxValue! / vals.CondParamAddValue!;
     }
     if (condParamType != 0) {
-      final targetText = SharedBuilder.textButtonSpan(
-        context: context,
-        text: Transl.svtClassId(condParamTargetId).l,
-        onTap: () => Routes.svtClassI(condParamTargetId),
+      final targetText = TextSpan(
+        children: divideList([
+          for (final clsId in condParamTargetId)
+            SharedBuilder.textButtonSpan(
+              context: context,
+              text: Transl.svtClassId(clsId).l,
+              onTap: () => Routes.svtClassI(clsId),
+            ),
+        ], const TextSpan(text: ' / ')),
       );
       final functionScope = Transl.md.misc['Function'];
       String translKey = 'CondParamType$condParamType';

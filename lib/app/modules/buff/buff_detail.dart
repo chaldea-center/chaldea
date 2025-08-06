@@ -335,13 +335,13 @@ class BuffInfoTable extends StatelessWidget {
           ),
         if (buff.script.relationId != null) ...[
           CustomTableRow.fromTexts(texts: const ['Class Affinity Change'], isHeader: true),
-          if (buff.script.relationId!.atkSide2.isNotEmpty) ...[
+          if (buff.script.relationId!.atkSide.isNotEmpty) ...[
             CustomTableRow.fromTexts(texts: const ['Attacking']),
-            relationId(context, buff.script.relationId!.atkSide2),
+            relationId(context, buff.script.relationId!.atkSide),
           ],
-          if (buff.script.relationId!.defSide2.isNotEmpty) ...[
+          if (buff.script.relationId!.defSide.isNotEmpty) ...[
             CustomTableRow.fromTexts(texts: const ['Defending']),
-            relationId(context, buff.script.relationId!.defSide2),
+            relationId(context, buff.script.relationId!.defSide),
           ],
         ],
         if (buff.script.convert != null) ...buildBuffConvert(context, buff.script.convert!),

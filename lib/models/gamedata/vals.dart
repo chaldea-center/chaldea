@@ -54,6 +54,18 @@ class DataVals {
     return toJson().toString().hashCode;
   }
 
+  T? _get<T>(String key) {
+    final v = _vals[key];
+    try {
+      return v as T?;
+    } catch (e) {
+      assert(() {
+        throw FormatException('[DataVals]: decode "$key"($T) failed, received "$v"(${v.runtimeType})');
+      }());
+      return null;
+    }
+  }
+
   List<T>? _list<T>(String key) {
     final v = _vals[key];
     if (v != null && v is! List) {
@@ -61,7 +73,7 @@ class DataVals {
         return <T>[v as T];
       }
       assert(() {
-        throw FormatException('[DataVals]: key "$key" requires List but ${v.runtimeType}');
+        throw FormatException('[DataVals]: decode list "$key"($T) failed, received "$v"(${v.runtimeType})');
       }());
       return null;
     }
@@ -87,15 +99,24 @@ class DataVals {
     return (v as List<dynamic>).map((e) => (e as List<dynamic>).cast<T>()).toList();
   }
 
+  List<T>? _parseObjList<T>(String key, T Function(Map<String, dynamic> json) fromJson) {
+    final v = _vals[key];
+    assert(v == null || v is List, '$key: $v');
+    if (v == null || v is! List) return null;
+    return v.map((e) => fromJson(Map<String, dynamic>.from(e))).toList();
+  }
+
+  // start fields
+
   /// probability, 1000 -> 100%
-  int? get Rate => _vals['Rate'];
+  int? get Rate => _get('Rate');
 
   /// 3 Turns/3ターン/3回合
-  int? get Turn => _vals['Turn'];
+  int? get Turn => _get('Turn');
 
   /// 3 Times/3回/3次
-  int? get Count => _vals['Count'];
-  int? get Value => _vals['Value'];
+  int? get Count => _get('Count');
+  int? get Value => _get('Value');
   int? get Value2 {
     final v = _vals['Value2'];
     if (v is int) return v;
@@ -109,159 +130,151 @@ class DataVals {
   }
 
   /// probability, 1000 -> 100%
-  int? get UseRate => _vals['UseRate'];
-  int? get Target => _vals['Target'];
-  int? get Correction => _vals['Correction'];
-  int? get ParamAdd => _vals['ParamAdd'];
-  int? get ParamMax => _vals['ParamMax'];
-  int? get HideMiss => _vals['HideMiss'];
-  int? get OnField => _vals['OnField'];
-  int? get HideNoEffect => _vals['HideNoEffect'];
-  int? get Unaffected => _vals['Unaffected'];
+  int? get UseRate => _get('UseRate');
+  int? get Target => _get('Target');
+  int? get Correction => _get('Correction');
+  int? get ParamAdd => _get('ParamAdd');
+  int? get ParamMax => _get('ParamMax');
+  int? get HideMiss => _get('HideMiss');
+  int? get OnField => _get('OnField');
+  int? get HideNoEffect => _get('HideNoEffect');
+  int? get Unaffected => _get('Unaffected');
   // SHOW_STATE = 1;
   // HIDE_STATE = -1;
   // SHOW_DEFF_STATE = -2;
   // SHOW_STATE_STATUS_BUFF_ONLY = 2;
   // SHOW_STATE_DAMAGE_AND_COMMANDCARD_BUFF = 3;
-  int? get ShowState => _vals['ShowState'];
-  int? get AuraEffectId => _vals['AuraEffectId'];
-  int? get ActSet => _vals['ActSet'];
-  int? get ActSetWeight => _vals['ActSetWeight'];
-  int? get ShowQuestNoEffect => _vals['ShowQuestNoEffect'];
-  int? get CheckDead => _vals['CheckDead'];
-  int? get RatioHPHigh => _vals['RatioHPHigh'];
-  int? get RatioHPLow => _vals['RatioHPLow'];
-  int? get SetPassiveFrame => _vals['SetPassiveFrame'];
-  int? get ProcPassive => _vals['ProcPassive'];
-  int? get ProcActive => _vals['ProcActive'];
-  int? get HideParam => _vals['HideParam'];
-  int? get SkillID => _vals['SkillID'];
-  int? get SkillLV => _vals['SkillLV'];
-  int? get ShowCardOnly => _vals['ShowCardOnly'];
-  int? get EffectSummon => _vals['EffectSummon'];
-  int? get RatioHPRangeHigh => _vals['RatioHPRangeHigh'];
-  int? get RatioHPRangeLow => _vals['RatioHPRangeLow'];
+  int? get ShowState => _get('ShowState');
+  int? get AuraEffectId => _get('AuraEffectId');
+  int? get ActSet => _get('ActSet');
+  int? get ActSetWeight => _get('ActSetWeight');
+  int? get ShowQuestNoEffect => _get('ShowQuestNoEffect');
+  int? get CheckDead => _get('CheckDead');
+  int? get RatioHPHigh => _get('RatioHPHigh');
+  int? get RatioHPLow => _get('RatioHPLow');
+  int? get SetPassiveFrame => _get('SetPassiveFrame');
+  int? get ProcPassive => _get('ProcPassive');
+  int? get ProcActive => _get('ProcActive');
+  int? get HideParam => _get('HideParam');
+  int? get SkillID => _get('SkillID');
+  int? get SkillLV => _get('SkillLV');
+  int? get ShowCardOnly => _get('ShowCardOnly');
+  int? get EffectSummon => _get('EffectSummon');
+  int? get RatioHPRangeHigh => _get('RatioHPRangeHigh');
+  int? get RatioHPRangeLow => _get('RatioHPRangeLow');
   List<int>? get TargetList => _list('TargetList');
-  int? get OpponentOnly => _vals['OpponentOnly'];
-  int? get StatusEffectId => _vals['StatusEffectId'];
-  int? get EndBattle => _vals['EndBattle'];
-  int? get LoseBattle => _vals['LoseBattle'];
+  int? get OpponentOnly => _get('OpponentOnly');
+  int? get StatusEffectId => _get('StatusEffectId');
+  int? get EndBattle => _get('EndBattle');
+  int? get LoseBattle => _get('LoseBattle');
   @Deprecated('use getAddIndividualty()')
-  int? get AddIndividualty => _vals['AddIndividualty'];
+  int? get AddIndividualty => _get('AddIndividualty');
   List<int>? get AddIndividualtyList => _list('AddIndividualtyList'); // an array version of `AddIndividualty`
-  int? get AddLinkageTargetIndividualty => _vals['AddLinkageTargetIndividualty'];
-  int? get SameBuffLimitTargetIndividuality => _vals['SameBuffLimitTargetIndividuality'];
-  int? get SameBuffLimitNum => _vals['SameBuffLimitNum'];
-  int? get CheckDuplicate => _vals['CheckDuplicate'];
-  int? get OnFieldCount => _vals['OnFieldCount'];
+  int? get AddLinkageTargetIndividualty => _get('AddLinkageTargetIndividualty');
+  int? get SameBuffLimitTargetIndividuality => _get('SameBuffLimitTargetIndividuality');
+  int? get SameBuffLimitNum => _get('SameBuffLimitNum');
+  int? get CheckDuplicate => _get('CheckDuplicate');
+  int? get OnFieldCount => _get('OnFieldCount');
   List<int>? get TargetRarityList => _list('TargetRarityList');
-  int? get DependFuncId => _vals['DependFuncId'];
-  int? get InvalidHide => _vals['InvalidHide'];
-  int? get OutEnemyNpcId => _vals['OutEnemyNpcId'];
-  int? get InEnemyNpcId => _vals['InEnemyNpcId'];
-  int? get OutEnemyPosition => _vals['OutEnemyPosition'];
-  int? get IgnoreIndividuality => _vals['IgnoreIndividuality'];
-  int? get StarHigher => _vals['StarHigher'];
-  int? get ChangeTDCommandType => _vals['ChangeTDCommandType'];
-  int? get ShiftNpcId => _vals['ShiftNpcId'];
-  int? get DisplayLastFuncInvalidType => _vals['DisplayLastFuncInvalidType'];
+  int? get DependFuncId => _get('DependFuncId');
+  int? get InvalidHide => _get('InvalidHide');
+  int? get OutEnemyNpcId => _get('OutEnemyNpcId');
+  int? get InEnemyNpcId => _get('InEnemyNpcId');
+  int? get OutEnemyPosition => _get('OutEnemyPosition');
+  int? get IgnoreIndividuality => _get('IgnoreIndividuality');
+  int? get StarHigher => _get('StarHigher');
+  int? get ChangeTDCommandType => _get('ChangeTDCommandType');
+  int? get ShiftNpcId => _get('ShiftNpcId');
+  int? get DisplayLastFuncInvalidType => _get('DisplayLastFuncInvalidType');
   List<int>? get AndCheckIndividualityList => _list('AndCheckIndividualityList');
   List<List<int>>? get AndOrCheckIndividualityList => _2dList('AndOrCheckIndividualityList');
-  int? get WinBattleNotRelatedSurvivalStatus => _vals['WinBattleNotRelatedSurvivalStatus'];
-  int? get ForceSelfInstantDeath => _vals['ForceSelfInstantDeath'];
-  int? get ChangeMaxBreakGauge => _vals['ChangeMaxBreakGauge'];
-  int? get ParamAddMaxValue => _vals['ParamAddMaxValue'];
-  int? get ParamAddMaxCount => _vals['ParamAddMaxCount'];
-  int? get LossHpChangeDamage => _vals['LossHpChangeDamage'];
-  int? get IncludePassiveIndividuality => _vals['IncludePassiveIndividuality'];
-  int? get MotionChange => _vals['MotionChange'];
-  int? get PopLabelDelay => _vals['PopLabelDelay'];
-  int? get NoTargetNoAct => _vals['NoTargetNoAct'];
-  int? get CardIndex => _vals['CardIndex'];
-  int? get CardIndividuality => _vals['CardIndividuality'];
-  int? get WarBoardTakeOverBuff => _vals['WarBoardTakeOverBuff'];
+  int? get WinBattleNotRelatedSurvivalStatus => _get('WinBattleNotRelatedSurvivalStatus');
+  int? get ForceSelfInstantDeath => _get('ForceSelfInstantDeath');
+  int? get ChangeMaxBreakGauge => _get('ChangeMaxBreakGauge');
+  int? get ParamAddMaxValue => _get('ParamAddMaxValue');
+  int? get ParamAddMaxCount => _get('ParamAddMaxCount');
+  int? get LossHpChangeDamage => _get('LossHpChangeDamage');
+  int? get IncludePassiveIndividuality => _get('IncludePassiveIndividuality');
+  int? get MotionChange => _get('MotionChange');
+  int? get PopLabelDelay => _get('PopLabelDelay');
+  int? get NoTargetNoAct => _get('NoTargetNoAct');
+  int? get CardIndex => _get('CardIndex');
+  int? get CardIndividuality => _get('CardIndividuality');
+  int? get WarBoardTakeOverBuff => _get('WarBoardTakeOverBuff');
   List<int>? get ParamAddSelfIndividuality => _list('ParamAddSelfIndividuality');
   List<int>? get ParamAddOpIndividuality => _list('ParamAddOpIndividuality');
   List<int>? get ParamAddFieldIndividuality => _list('ParamAddFieldIndividuality');
-  int? get ParamAddValue => _vals['ParamAddValue'];
-  int? get MultipleGainStar => _vals['MultipleGainStar'];
-  int? get NoCheckIndividualityIfNotUnit => _vals['NoCheckIndividualityIfNotUnit'];
-  int? get ForcedEffectSpeedOne => _vals['ForcedEffectSpeedOne'];
-  int? get SetLimitCount => _vals['SetLimitCount'];
-  int? get CheckEnemyFieldSpace => _vals['CheckEnemyFieldSpace'];
-  int? get TriggeredFuncPosition => _vals['TriggeredFuncPosition'];
-  int? get TriggeredFuncPositionDisp => _vals['TriggeredFuncPositionDisp']; // custom, for display
-  int? get DamageCount => _vals['DamageCount'];
+  int? get ParamAddValue => _get('ParamAddValue');
+  int? get MultipleGainStar => _get('MultipleGainStar');
+  int? get NoCheckIndividualityIfNotUnit => _get('NoCheckIndividualityIfNotUnit');
+  int? get ForcedEffectSpeedOne => _get('ForcedEffectSpeedOne');
+  int? get SetLimitCount => _get('SetLimitCount');
+  int? get CheckEnemyFieldSpace => _get('CheckEnemyFieldSpace');
+  int? get TriggeredFuncPosition => _get('TriggeredFuncPosition');
+  int? get TriggeredFuncPositionDisp => _get('TriggeredFuncPositionDisp'); // custom, for display
+  int? get DamageCount => _get('DamageCount');
   List<int>? get DamageRates => _list('DamageRates');
   List<int>? get OnPositions => _list('OnPositions');
   List<int>? get OffPositions => _list('OffPositions');
-  int? get TargetIndiv => _vals['TargetIndiv'];
-  int? get IncludeIgnoreIndividuality => _vals['IncludeIgnoreIndividuality'];
-  int? get EvenIfWinDie => _vals['EvenIfWinDie'];
-  int? get CallSvtEffectId => _vals['CallSvtEffectId'];
-  int? get ForceAddState => _vals['ForceAddState'];
-  int? get UnSubState => _vals['UnSubState'];
-  int? get ForceSubState => _vals['ForceSubState'];
-  int? get IgnoreIndivUnreleaseable => _vals['IgnoreIndivUnreleaseable'];
-  int? get OnParty => _vals['OnParty'];
-  int? get CounterId => _vals['CounterId'];
-  int? get CounterLv => _vals['CounterLv'];
-  int? get CounterOc => _vals['CounterOc'];
-  int? get UseTreasureDevice => _vals['UseTreasureDevice'];
-  int? get SkillReaction => _vals['SkillReaction'];
-  int? get BehaveAsFamilyBuff => _vals['BehaveAsFamilyBuff'];
-  int? get UnSubStateWhileLinkedToOthers => _vals['UnSubStateWhileLinkedToOthers'];
-  // int? get AllowSubBgmPlaying => _vals['AllowSubBgmPlaying'];
-  int? get NotAccompanyWhenLinkedTargetMoveState => _vals['NotAccompanyWhenLinkedTargetMoveState'];
+  int? get TargetIndiv => _get('TargetIndiv');
+  int? get IncludeIgnoreIndividuality => _get('IncludeIgnoreIndividuality');
+  int? get EvenIfWinDie => _get('EvenIfWinDie');
+  int? get CallSvtEffectId => _get('CallSvtEffectId');
+  int? get ForceAddState => _get('ForceAddState');
+  int? get UnSubState => _get('UnSubState');
+  int? get ForceSubState => _get('ForceSubState');
+  int? get IgnoreIndivUnreleaseable => _get('IgnoreIndivUnreleaseable');
+  int? get OnParty => _get('OnParty');
+  int? get CounterId => _get('CounterId');
+  int? get CounterLv => _get('CounterLv');
+  int? get CounterOc => _get('CounterOc');
+  int? get UseTreasureDevice => _get('UseTreasureDevice');
+  int? get SkillReaction => _get('SkillReaction');
+  int? get BehaveAsFamilyBuff => _get('BehaveAsFamilyBuff');
+  int? get UnSubStateWhileLinkedToOthers => _get('UnSubStateWhileLinkedToOthers');
+  // int? get AllowSubBgmPlaying => _get('AllowSubBgmPlaying');
+  int? get NotAccompanyWhenLinkedTargetMoveState => _get('NotAccompanyWhenLinkedTargetMoveState');
   List<int>? get NotTargetSkillIdArray => _list('NotTargetSkillIdArray');
-
-  int? get ShortTurn => _vals['ShortTurn'];
-
-  List<int>? get FieldIndividuality {
-    final v = _vals['FieldIndividuality'];
-    if (v is List) return List<int>.from(v);
-    if (v is int) return [v];
-    return null;
-  }
-
-  int? get BGId => _vals['BGId'];
-  int? get BGType => _vals['BGType'];
-  int? get BgmId => _vals['BgmId'];
-  int? get TakeOverFieldState => _vals['TakeOverFieldState'];
-  int? get TakeOverNextWaveBGAndBGM => _vals['TakeOverNextWaveBGAndBGM'];
-  int? get RemoveFieldBuffActorDeath => _vals['RemoveFieldBuffActorDeath'];
-  int? get FieldBuffGrantType => _vals['FieldBuffGrantType'];
-  int? get Priority => _vals['Priority'];
+  int? get ShortTurn => _get('ShortTurn');
+  List<int>? get FieldIndividuality => _list('FieldIndividuality');
+  int? get BGId => _get('BGId');
+  int? get BGType => _get('BGType');
+  int? get BgmId => _get('BgmId');
+  int? get TakeOverFieldState => _get('TakeOverFieldState');
+  int? get TakeOverNextWaveBGAndBGM => _get('TakeOverNextWaveBGAndBGM');
+  int? get RemoveFieldBuffActorDeath => _get('RemoveFieldBuffActorDeath');
+  int? get FieldBuffGrantType => _get('FieldBuffGrantType');
+  int? get Priority => _get('Priority');
   List<int>? get AddIndividualityEx => _list('AddIndividualityEx');
-  int? get IgnoreResistance => _vals['IgnoreResistance'];
-  int? get GainNpTargetPassiveIndividuality => _vals['GainNpTargetPassiveIndividuality'];
-  int? get HpReduceToRegainIndiv => _vals['HpReduceToRegainIndiv'];
-  int? get DisplayActualRecoveryHpFlag => _vals['DisplayActualRecoveryHpFlag'];
-  int? get ShiftDeckIndex => _vals['ShiftDeckIndex'];
-  String? get PopValueText => _vals['PopValueText'];
-  int? get IsLossHpPerNow => _vals['IsLossHpPerNow'];
+  int? get IgnoreResistance => _get('IgnoreResistance');
+  int? get GainNpTargetPassiveIndividuality => _get('GainNpTargetPassiveIndividuality');
+  int? get HpReduceToRegainIndiv => _get('HpReduceToRegainIndiv');
+  int? get DisplayActualRecoveryHpFlag => _get('DisplayActualRecoveryHpFlag');
+  int? get ShiftDeckIndex => _get('ShiftDeckIndex');
+  String? get PopValueText => _get('PopValueText');
+  int? get IsLossHpPerNow => _get('IsLossHpPerNow');
   List<int>? get CopyTargetFunctionType => _list('CopyTargetFunctionType');
-  int? get CopyFunctionTargetPTOnly => _vals['CopyFunctionTargetPTOnly'];
-  int? get IgnoreValueUp => _vals['IgnoreValueUp'];
+  int? get CopyFunctionTargetPTOnly => _get('CopyFunctionTargetPTOnly');
+  int? get IgnoreValueUp => _get('IgnoreValueUp');
   // skill 964295 ["Value", "Value2"]
   List<String>? get ApplyValueUp => _list('ApplyValueUp');
-  int? get ActNoDamageBuff => _vals['ActNoDamageBuff'];
-  int? get ActSelectIndex => _vals['ActSelectIndex'];
+  int? get ActNoDamageBuff => _get('ActNoDamageBuff');
+  int? get ActSelectIndex => _get('ActSelectIndex');
   List<int>? get CopyTargetBuffType => _list('CopyTargetBuffType');
   List<int>? get NotSkillCopyTargetFuncIds => _list('NotSkillCopyTargetFuncIds');
   List<int>? get NotSkillCopyTargetIndividualities => _list('NotSkillCopyTargetIndividualities');
-  int? get ClassIconAuraEffectId => _vals['ClassIconAuraEffectId'];
-  int? get ActMasterGenderType => _vals['ActMasterGenderType'];
-  int? get IntervalTurn => _vals['IntervalTurn'];
-  int? get IntervalCount => _vals['IntervalCount'];
-  int? get TriggeredFieldCountTarget => _vals['TriggeredFieldCountTarget'];
+  int? get ClassIconAuraEffectId => _get('ClassIconAuraEffectId');
+  int? get ActMasterGenderType => _get('ActMasterGenderType');
+  int? get IntervalTurn => _get('IntervalTurn');
+  int? get IntervalCount => _get('IntervalCount');
+  int? get TriggeredFieldCountTarget => _get('TriggeredFieldCountTarget');
 
-  String? get TriggeredFieldCountRange => _vals['TriggeredFieldCountRange'];
+  String? get TriggeredFieldCountRange => _get('TriggeredFieldCountRange');
   List<int>? get TargetEnemyRange => _list('TargetEnemyRange'); // 1/2/3
 
   // TriggeredFuncPositionSameTarget > TriggeredFuncPositionAll > TriggeredFuncPosition
-  int? get TriggeredFuncPositionSameTarget => _vals['TriggeredFuncPositionSameTarget'];
-  int? get TriggeredFuncPositionAll => _vals['TriggeredFuncPositionAll'];
+  int? get TriggeredFuncPositionSameTarget => _get('TriggeredFuncPositionSameTarget');
+  int? get TriggeredFuncPositionAll => _get('TriggeredFuncPositionAll');
   List<String>? get TriggeredTargetHpRange {
     final v = _vals['TriggeredTargetHpRange'];
     if (v is String) {
@@ -278,65 +291,65 @@ class DataVals {
     return v;
   }
 
-  int? get ExcludeUnSubStateIndiv => _vals['ExcludeUnSubStateIndiv'];
-  int? get ProgressTurnOnBoard => _vals['ProgressTurnOnBoard'];
-  int? get CheckTargetResurrectable => _vals['CheckTargetResurrectable'];
-  int? get CancelTransform => _vals['CancelTransform'];
-  int? get UnSubStateWhenContinue => _vals['UnSubStateWhenContinue'];
-  int? get CheckTargetHaveDefeatPoint => _vals['CheckTargetHaveDefeatPoint'];
-  int? get NPFixedDamageValue => _vals['NPFixedDamageValue'];
-  int? get IgnoreShiftSafeDamage => _vals['IgnoreShiftSafeDamage'];
-  int? get ActAttackFunction => _vals['ActAttackFunction'];
-  int? get DelayRemoveBuffExpiredOnPlayerTurn => _vals['DelayRemoveBuffExpiredOnPlayerTurn'];
-  int? get AllowRemoveBuff => _vals['AllowRemoveBuff'];
-  int? get NotExecFunctionIfKeepAliveOnWarBoard => _vals['NotExecFunctionIfKeepAliveOnWarBoard'];
+  int? get ExcludeUnSubStateIndiv => _get('ExcludeUnSubStateIndiv');
+  int? get ProgressTurnOnBoard => _get('ProgressTurnOnBoard');
+  int? get CheckTargetResurrectable => _get('CheckTargetResurrectable');
+  int? get CancelTransform => _get('CancelTransform');
+  int? get UnSubStateWhenContinue => _get('UnSubStateWhenContinue');
+  int? get CheckTargetHaveDefeatPoint => _get('CheckTargetHaveDefeatPoint');
+  int? get NPFixedDamageValue => _get('NPFixedDamageValue');
+  int? get IgnoreShiftSafeDamage => _get('IgnoreShiftSafeDamage');
+  int? get ActAttackFunction => _get('ActAttackFunction');
+  int? get DelayRemoveBuffExpiredOnPlayerTurn => _get('DelayRemoveBuffExpiredOnPlayerTurn');
+  int? get AllowRemoveBuff => _get('AllowRemoveBuff');
+  int? get NotExecFunctionIfKeepAliveOnWarBoard => _get('NotExecFunctionIfKeepAliveOnWarBoard');
   List<int>? get SnapShotParamAddSelfIndv => _list('SnapShotParamAddSelfIndv');
   List<int>? get SnapShotParamAddOpIndv => _list('SnapShotParamAddOpIndv');
   List<int>? get SnapShotParamAddFieldIndv => _list('SnapShotParamAddFieldIndv');
-  int? get SnapShotParamAddValue => _vals['SnapShotParamAddValue'];
-  int? get SnapShotParamAddMaxValue => _vals['SnapShotParamAddMaxValue'];
-  int? get SnapShotParamAddMaxCount => _vals['SnapShotParamAddMaxCount'];
-  int? get NotExecOnTransform => _vals['NotExecOnTransform'];
-  int? get NotRemoveOnTransform => _vals['NotRemoveOnTransform'];
-  int? get PriorityBgm => _vals['PriorityBgm'];
-  int? get BgmAllowSubPlaying => _vals['BgmAllowSubPlaying'];
-  int? get BgPriority => _vals['BgPriority'];
-  int? get PriorityBg => _vals['PriorityBg'];
-  int? get ResetPriorityBgmAtWaveStart => _vals['ResetPriorityBgmAtWaveStart'];
-  int? get ControlOtherBgmAtOverStageBgm_Priority => _vals['ControlOtherBgmAtOverStageBgm_Priority'];
-  int? get ControlOtherBgmAtOverStageBgm_Target => _vals['ControlOtherBgmAtOverStageBgm_Target'];
-  int? get ExtendBuffHalfTurnInOpponentTurn => _vals['ExtendBuffHalfTurnInOpponentTurn'];
-  int? get ShortenBuffHalfTurnInOpponentTurn => _vals['ShortenBuffHalfTurnInOpponentTurn'];
-  int? get ExtendBuffHalfTurnInPartyTurn => _vals['ExtendBuffHalfTurnInPartyTurn'];
-  int? get ShortenBuffHalfTurnInPartyTurn => _vals['ShortenBuffHalfTurnInPartyTurn'];
-  int? get LinkageBuffGrantSuccessEvenIfOtherFailed => _vals['LinkageBuffGrantSuccessEvenIfOtherFailed'];
-  String? get DisplayNoEffectCauses => _vals['DisplayNoEffectCauses'];
-  int? get BattlePointId => _vals['BattlePointId'];
-  int? get BattlePointValue => _vals['BattlePointValue'];
-  int? get BattlePointUiUpdateType => _vals['BattlePointUiUpdateType'];
-  int? get BattlePointOverwrite => _vals['BattlePointOverwrite'];
+  int? get SnapShotParamAddValue => _get('SnapShotParamAddValue');
+  int? get SnapShotParamAddMaxValue => _get('SnapShotParamAddMaxValue');
+  int? get SnapShotParamAddMaxCount => _get('SnapShotParamAddMaxCount');
+  int? get NotExecOnTransform => _get('NotExecOnTransform');
+  int? get NotRemoveOnTransform => _get('NotRemoveOnTransform');
+  int? get PriorityBgm => _get('PriorityBgm');
+  int? get BgmAllowSubPlaying => _get('BgmAllowSubPlaying');
+  int? get BgPriority => _get('BgPriority');
+  int? get PriorityBg => _get('PriorityBg');
+  int? get ResetPriorityBgmAtWaveStart => _get('ResetPriorityBgmAtWaveStart');
+  int? get ControlOtherBgmAtOverStageBgm_Priority => _get('ControlOtherBgmAtOverStageBgm_Priority');
+  int? get ControlOtherBgmAtOverStageBgm_Target => _get('ControlOtherBgmAtOverStageBgm_Target');
+  int? get ExtendBuffHalfTurnInOpponentTurn => _get('ExtendBuffHalfTurnInOpponentTurn');
+  int? get ShortenBuffHalfTurnInOpponentTurn => _get('ShortenBuffHalfTurnInOpponentTurn');
+  int? get ExtendBuffHalfTurnInPartyTurn => _get('ExtendBuffHalfTurnInPartyTurn');
+  int? get ShortenBuffHalfTurnInPartyTurn => _get('ShortenBuffHalfTurnInPartyTurn');
+  int? get LinkageBuffGrantSuccessEvenIfOtherFailed => _get('LinkageBuffGrantSuccessEvenIfOtherFailed');
+  String? get DisplayNoEffectCauses => _get('DisplayNoEffectCauses');
+  int? get BattlePointId => _get('BattlePointId');
+  int? get BattlePointValue => _get('BattlePointValue');
+  int? get BattlePointUiUpdateType => _get('BattlePointUiUpdateType');
+  int? get BattlePointOverwrite => _get('BattlePointOverwrite');
   // [CheckOverChargeStageRange]: 0~4 => OC1~5
   List<String>? get CheckOverChargeStageRange => _list('CheckOverChargeStageRange');
   List<ValCheckBattlePointPhaseRange>? get CheckBattlePointPhaseRange =>
       _parseObjList('CheckBattlePointPhaseRange', ValCheckBattlePointPhaseRange.fromJson);
   List<int>? get StartingPosition => _list('StartingPosition');
-  int? get FriendShipAbove => _vals['FriendShipAbove'];
+  int? get FriendShipAbove => _get('FriendShipAbove');
   List<ValDamageRateBattlePointPhase>? get DamageRateBattlePointPhase =>
       _parseObjList('DamageRateBattlePointPhase', ValDamageRateBattlePointPhase.fromJson);
-  int? get ParamAddBattlePointPhaseId => _vals['ParamAddBattlePointPhaseId'];
-  int? get ParamAddBattlePointPhaseValue => _vals['ParamAddBattlePointPhaseValue'];
+  int? get ParamAddBattlePointPhaseId => _get('ParamAddBattlePointPhaseId');
+  int? get ParamAddBattlePointPhaseValue => _get('ParamAddBattlePointPhaseValue');
   List<int>? get ShortenMaxCountEachSkill => _list('ShortenMaxCountEachSkill');
-  int? get ChargeHpMaxBeforeBreakGaugeUp => _vals['ChargeHpMaxBeforeBreakGaugeUp'];
+  int? get ChargeHpMaxBeforeBreakGaugeUp => _get('ChargeHpMaxBeforeBreakGaugeUp');
   List<int>? get TargetFunctionIndividuality => _list('TargetFunctionIndividuality');
   List<int>? get TargetBuffIndividuality => _list('TargetBuffIndividuality');
 
-  int? get TargetEnemyClass => _vals['TargetEnemyClass'];
-  int? get ParamAddIndividualityTargetType => _vals['ParamAddIndividualityTargetType'];
-  List<int>? get TriggeredFuncIndexAndCheckList => _vals['TriggeredFuncIndexAndCheckList'];
-  int? get FuncCheckTargetIndividualityTargetType => _vals['FuncCheckTargetIndividualityTargetType'];
-  int? get FuncCheckTargetIndividualityCountHigher => _vals['FuncCheckTargetIndividualityCountHigher'];
-  int? get FuncCheckTargetIndividualityCountLower => _vals['FuncCheckTargetIndividualityCountLower'];
-  int? get FuncCheckTargetIndividualityCountEqual => _vals['FuncCheckTargetIndividualityCountEqual'];
+  int? get TargetEnemyClass => _get('TargetEnemyClass');
+  int? get ParamAddIndividualityTargetType => _get('ParamAddIndividualityTargetType');
+  List<int>? get TriggeredFuncIndexAndCheckList => _list('TriggeredFuncIndexAndCheckList');
+  int? get FuncCheckTargetIndividualityTargetType => _get('FuncCheckTargetIndividualityTargetType');
+  int? get FuncCheckTargetIndividualityCountHigher => _get('FuncCheckTargetIndividualityCountHigher');
+  int? get FuncCheckTargetIndividualityCountLower => _get('FuncCheckTargetIndividualityCountLower');
+  int? get FuncCheckTargetIndividualityCountEqual => _get('FuncCheckTargetIndividualityCountEqual');
   List<List<int>>? get ParamAddSelfIndividualityAndCheck => _2dList('ParamAddSelfIndividualityAndCheck');
   List<List<int>>? get ParamAddOpIndividualityAndCheck => _2dList('ParamAddOpIndividualityAndCheck');
   List<List<int>>? get ParamAddFieldIndividualityAndCheck => _2dList('ParamAddFieldIndividualityAndCheck');
@@ -345,60 +358,56 @@ class DataVals {
   List<List<int>>? get SnapShotParamAddOpIndividualityAndCheck => _2dList('SnapShotParamAddOpIndividualityAndCheck');
   List<List<int>>? get SnapShotParamAddFieldIndividualityAndCheck =>
       _2dList('SnapShotParamAddFieldIndividualityAndCheck');
-  int? get EnemyCountChangeTime => _vals['EnemyCountChangeTime'];
-  int? get EnemyCountChangeEffectId => _vals['EnemyCountChangeEffectId'];
-  int? get EnemyCountWaitTimeAfterMessage => _vals['EnemyCountWaitTimeAfterMessage'];
-  int? get WaitMessageEnd => _vals['WaitMessageEnd'];
-  int? get MessageStartDelayTime => _vals['MessageStartDelayTime'];
-  int? get ContinueDisplayMessage => _vals['ContinueDisplayMessage'];
-  int? get StartIntervalTurn => _vals['StartIntervalTurn'];
-  int? get StartIntervalCount => _vals['StartIntervalCount'];
-  int? get CommonReleaseId => _vals['CommonReleaseId'];
-  int? get ForceTurnProgressIfTimingIsOverInPartyTurn => _vals['ForceTurnProgressIfTimingIsOverInPartyTurn'];
-  int? get ForceTurnProgressIfTimingIsOverInOpponentTurn => _vals['ForceTurnProgressIfTimingIsOverInOpponentTurn'];
-  int? get OverwriteFuncInvalidType => _vals['OverwriteFuncInvalidType'];
-  int? get BgmFadeTime => _vals['BgmFadeTime'];
-  int? get KeepChangeModelAfterContinue => _vals['KeepChangeModelAfterContinue'];
-  int? get DefenceDamageHigher => _vals['DefenceDamageHigher'];
-  int? get SameIndivBuffActorOnField => _vals['SameIndivBuffActorOnField'];
-  int? get SyncUsedSameIndivBuffActorOnField => _vals['SyncUsedSameIndivBuffActorOnField'];
-  int? get OnlyMaxFuncGroupId => _vals['OnlyMaxFuncGroupId'];
-  int? get UseAttack => _vals['UseAttack'];
-  int? get CondParamAddType => _vals['CondParamAddType'];
-  int? get CondParamAddValue => _vals['CondParamAddValue'];
-  int? get CondParamAddMaxValue => _vals['CondParamAddMaxValue'];
-  int? get CondParamAddTargetId => _vals['CondParamAddTargetId'];
-  int? get CondParamRangeType => _vals['CondParamRangeType'];
-  int? get CondParamRangeMaxCount => _vals['CondParamRangeMaxCount'];
-  int? get CondParamRangeMaxValue => _vals['CondParamRangeMaxValue'];
-  int? get CondParamRangeTargetId => _vals['CondParamRangeTargetId'];
-  int? get ExecOnce => _vals['ExecOnce'];
+  int? get EnemyCountChangeTime => _get('EnemyCountChangeTime');
+  int? get EnemyCountChangeEffectId => _get('EnemyCountChangeEffectId');
+  int? get EnemyCountWaitTimeAfterMessage => _get('EnemyCountWaitTimeAfterMessage');
+  int? get WaitMessageEnd => _get('WaitMessageEnd');
+  int? get MessageStartDelayTime => _get('MessageStartDelayTime');
+  int? get ContinueDisplayMessage => _get('ContinueDisplayMessage');
+  int? get StartIntervalTurn => _get('StartIntervalTurn');
+  int? get StartIntervalCount => _get('StartIntervalCount');
+  int? get CommonReleaseId => _get('CommonReleaseId');
+  int? get ForceTurnProgressIfTimingIsOverInPartyTurn => _get('ForceTurnProgressIfTimingIsOverInPartyTurn');
+  int? get ForceTurnProgressIfTimingIsOverInOpponentTurn => _get('ForceTurnProgressIfTimingIsOverInOpponentTurn');
+  int? get OverwriteFuncInvalidType => _get('OverwriteFuncInvalidType');
+  int? get BgmFadeTime => _get('BgmFadeTime');
+  int? get KeepChangeModelAfterContinue => _get('KeepChangeModelAfterContinue');
+  int? get DefenceDamageHigher => _get('DefenceDamageHigher');
+  int? get SameIndivBuffActorOnField => _get('SameIndivBuffActorOnField');
+  int? get SyncUsedSameIndivBuffActorOnField => _get('SyncUsedSameIndivBuffActorOnField');
+  int? get OnlyMaxFuncGroupId => _get('OnlyMaxFuncGroupId');
+  int? get UseAttack => _get('UseAttack');
+  int? get CondParamAddType => _get('CondParamAddType');
+  int? get CondParamAddValue => _get('CondParamAddValue');
+  int? get CondParamAddMaxValue => _get('CondParamAddMaxValue');
+  List<int>? get CondParamAddTargetId => _list('CondParamAddTargetId');
+  int? get CondParamRangeType => _get('CondParamRangeType');
+  int? get CondParamRangeMaxCount => _get('CondParamRangeMaxCount');
+  int? get CondParamRangeMaxValue => _get('CondParamRangeMaxValue');
+  List<int>? get CondParamRangeTargetId => _list('CondParamRangeTargetId');
+  int? get ExecOnce => _get('ExecOnce');
   List<List<int>>? get ApplyBuffIndividuality => _2dList('ApplyBuffIndividuality');
-  int? get ExecWhenCanNotAttack => _vals['ExecWhenCanNotAttack'];
-  int? get ExecEvenCardSelectState => _vals['ExecEvenCardSelectState'];
-  int? get OverwriteShift => _vals['OverwriteShift'];
-  int? get IgnoreShiftWhiteFade => _vals['IgnoreShiftWhiteFade'];
+  int? get ExecWhenCanNotAttack => _get('ExecWhenCanNotAttack');
+  int? get ExecEvenCardSelectState => _get('ExecEvenCardSelectState');
+  int? get OverwriteShift => _get('OverwriteShift');
+  int? get IgnoreShiftWhiteFade => _get('IgnoreShiftWhiteFade');
   List<int>? get BackStepTargets => _list('BackStepTargets');
   List<int>? get ReplacePositionTargets => _list('ReplacePositionTargets');
-  int? get ApplySupportSvt => _vals['ApplySupportSvt'];
-  int? get ApplyHighestValueInFieldGroup => _vals['ApplyHighestValueInFieldGroup'];
-  int? get IsClassIconChangeSaveGrand => _vals['IsClassIconChangeSaveGrand'];
-  int? get PriorityUpHate => _vals['PriorityUpHate'];
+  int? get ApplySupportSvt => _get('ApplySupportSvt');
+  int? get ApplyHighestValueInFieldGroup => _get('ApplyHighestValueInFieldGroup');
+  int? get IsClassIconChangeSaveGrand => _get('IsClassIconChangeSaveGrand');
+  int? get PriorityUpHate => _get('PriorityUpHate');
 
-  int? get Individuality => _vals['Individuality'];
-  int? get EventId => _vals['EventId'];
-  int? get AddCount => _vals['AddCount'];
-  int? get RateCount => _vals['RateCount'];
-  int? get DropRateCount => _vals['DropRateCount'];
+  int? get Individuality => _get('Individuality');
+  int? get EventId => _get('EventId');
+  int? get AddCount => _get('AddCount');
+  int? get RateCount => _get('RateCount');
+  int? get DropRateCount => _get('DropRateCount');
   // custom fields
-  int? get CommandSpellId => _vals['CommandSpellId'];
+  int? get CommandSpellId => _get('CommandSpellId');
+  // end fields
 
-  List<T>? _parseObjList<T>(String key, T Function(Map<String, dynamic> json) fromJson) {
-    final v = _vals[key];
-    assert(v == null || v is List, '$key: $v');
-    if (v == null || v is! List) return null;
-    return v.map((e) => fromJson(Map<String, dynamic>.from(e))).toList();
-  }
+  // methods
 
   List<int> getAddIndividuality() {
     return [

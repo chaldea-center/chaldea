@@ -267,7 +267,7 @@ class _FreeQuestOverviewState extends State<FreeQuestOverview> {
 
     DataCell clsIcons;
     List<int> clsIconIds =
-        phase?.className.map((e) => e.value).toList() ??
+        phase?.classIds ??
         db.gameData.questPhaseDetails[quest.id * 100 + (quest.phases.lastOrNull ?? 0)]?.classIds ??
         [];
 

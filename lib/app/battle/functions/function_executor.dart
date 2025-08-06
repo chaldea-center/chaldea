@@ -583,9 +583,8 @@ class FunctionExecutor {
     final dataJson = dataVals.toJson();
     int condParamRangeType = dataVals.CondParamRangeType ?? 0;
     if (condParamRangeType != 0 && activator.isPlayer) {
-      final int condParamRangeTargetId = dataVals.CondParamRangeTargetId ?? 0,
-          maxCount = dataVals.CondParamRangeMaxCount ?? 0,
-          maxValue = dataVals.CondParamRangeMaxValue ?? 0;
+      final List<int> condParamRangeTargetId = dataVals.CondParamRangeTargetId ?? [];
+      final int maxCount = dataVals.CondParamRangeMaxCount ?? 0, maxValue = dataVals.CondParamRangeMaxValue ?? 0;
       if (maxCount > 0) {
         int count =
             activator.playerSvtData?.classBoardData.getClassStatVal(condParamRangeType, condParamRangeTargetId) ?? 0;
@@ -596,7 +595,7 @@ class FunctionExecutor {
 
     int condParamAddType = dataVals.CondParamAddType ?? 0;
     if (condParamAddType != 0 && activator.isPlayer) {
-      final int condParamAddTargetId = dataVals.CondParamAddTargetId ?? 0;
+      final List<int> condParamAddTargetId = dataVals.CondParamAddTargetId ?? [];
       final int condParamAddValue = dataVals.CondParamAddValue ?? 0;
       final int? maxValue = dataVals.CondParamAddMaxValue;
       int count = activator.playerSvtData?.classBoardData.getClassStatVal(condParamAddType, condParamAddTargetId) ?? 0;

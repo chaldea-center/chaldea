@@ -571,13 +571,14 @@ class ClassBoardStatisticsData {
     return result;
   }
 
-  int getClassStatVal(int type, int targetId) {
+  int getClassStatVal(int type, List<int> targetIds) {
+    int result = 0;
     for (final info in classStatistics) {
-      if (info.type == type && info.classId == targetId) {
-        return info.typeVal;
+      if (info.type == type && targetIds.contains(info.classId)) {
+        result += info.typeVal;
       }
     }
-    return 0;
+    return result;
   }
 
   factory ClassBoardStatisticsData.fromJson(Map<String, dynamic> json) => _$ClassBoardStatisticsDataFromJson(json);

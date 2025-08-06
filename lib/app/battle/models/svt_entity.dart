@@ -2264,11 +2264,11 @@ class BattleServantData {
         buff.setUsed(this, battleData);
         final relationOverwrite = buff.buff.script.relationId!;
         final overwrite = isDef
-            ? relationOverwrite.defSide2.containsKey(opponent.logicalClassId)
-                  ? relationOverwrite.defSide2[opponent.logicalClassId]![logicalClassId]
+            ? relationOverwrite.defSide.containsKey(opponent.logicalClassId)
+                  ? relationOverwrite.defSide[opponent.logicalClassId]![logicalClassId]
                   : null
-            : relationOverwrite.atkSide2.containsKey(logicalClassId)
-            ? relationOverwrite.atkSide2[logicalClassId]![opponent.logicalClassId]
+            : relationOverwrite.atkSide.containsKey(logicalClassId)
+            ? relationOverwrite.atkSide[logicalClassId]![opponent.logicalClassId]
             : null;
         if (overwrite != null) {
           final overwriteValue = overwrite.damageRate;

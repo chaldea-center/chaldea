@@ -82,13 +82,15 @@ class _SvtClassInfoPageState extends State<SvtClassInfoPage> {
                   .toList(),
             ),
           ),
+          CustomTableRow.fromTexts(texts: [S.current.svt_class], isHeader: true),
+          CustomTableRow.fromTexts(texts: [Transl.svtClassId(clsId).l]),
           CustomTable(
             children: [
               CustomTableRow.fromTexts(texts: const ['ID', 'Class'], isHeader: true),
               CustomTableRow(
                 children: [
                   TableCellData(text: clsId.toString()),
-                  TableCellData(text: Transl.svtClassId(clsId).l),
+                  TableCellData(text: SvtClassConverter.fromJsonNull(clsId)?.name ?? clsId.toString()),
                 ],
               ),
               CustomTableRow.fromTexts(texts: const ['Attack Rate', 'Trait'], isHeader: true),

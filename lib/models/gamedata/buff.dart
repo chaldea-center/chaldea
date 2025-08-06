@@ -81,30 +81,28 @@ class Buff with RouteInfo {
 
 @JsonSerializable()
 class BuffRelationOverwrite {
-  @protected
-  final Map<String, Map<String, RelationOverwriteDetail>> atkSide;
-  @protected
-  final Map<String, Map<String, RelationOverwriteDetail>> defSide;
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  late final Map<int, Map<int, RelationOverwriteDetail>> atkSide2 = _resolve(atkSide);
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  late final Map<int, Map<int, RelationOverwriteDetail>> defSide2 = _resolve(defSide);
+  final Map<int, Map<int, RelationOverwriteDetail>> atkSide;
+  final Map<int, Map<int, RelationOverwriteDetail>> defSide;
 
-  BuffRelationOverwrite({this.atkSide = const {}, this.defSide = const {}});
+  BuffRelationOverwrite({
+    Map<dynamic, Map<dynamic, RelationOverwriteDetail>> atkSide = const {},
+    Map<dynamic, Map<dynamic, RelationOverwriteDetail>> defSide = const {},
+  }) : atkSide = _resolve(atkSide),
+       defSide = _resolve(defSide);
 
-  static Map<int, Map<int, RelationOverwriteDetail>> _resolve(Map<String, Map<String, RelationOverwriteDetail>> src) {
-    final Map<int, Map<int, RelationOverwriteDetail>> dest = {};
+  static Map<int, Map<int, RelationOverwriteDetail>> _resolve(Map<dynamic, Map<dynamic, RelationOverwriteDetail>> src) {
+    final Map<int, Map<int, RelationOverwriteDetail>> result = {};
     for (final (cls1, details) in src.items) {
-      final clsId1 = SvtClassConverter.fromString(cls1, db.gameData.mappingData.enums.svtClass);
-      if (clsId1 == null) continue;
-      final v = dest[clsId1] = {};
+      final clsId1 = SvtClassConverter.parseClassId(cls1);
+      if (clsId1 == 0) continue;
+      final v = result[clsId1] = {};
       for (final (cls2, detail) in details.items) {
-        final clsId2 = SvtClassConverter.fromString(cls2, db.gameData.mappingData.enums.svtClass);
-        if (clsId2 == null) continue;
+        final clsId2 = SvtClassConverter.parseClassId(cls2);
+        if (clsId2 == 0) continue;
         v[clsId2] = detail;
       }
     }
-    return dest;
+    return result;
   }
 
   factory BuffRelationOverwrite.fromJson(Map<String, dynamic> json) => _$BuffRelationOverwriteFromJson(json);

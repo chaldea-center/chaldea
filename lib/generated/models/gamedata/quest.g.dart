@@ -207,9 +207,7 @@ QuestPhase _$QuestPhaseFromJson(Map json) => QuestPhase(
   openedAt: (json['openedAt'] as num?)?.toInt() ?? 0,
   closedAt: (json['closedAt'] as num?)?.toInt() ?? 0,
   phase: (json['phase'] as num?)?.toInt() ?? 1,
-  className:
-      (json['className'] as List<dynamic>?)?.map((e) => const SvtClassConverter().fromJson(e as String)).toList() ??
-      const [],
+  classIds: json['className'] == null ? const [] : SvtClassConverter.parseClassIdList(json['className']),
   individuality: (json['individuality'] as List<dynamic>?)
       ?.map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
       .toList(),
@@ -290,7 +288,7 @@ Map<String, dynamic> _$QuestPhaseToJson(QuestPhase instance) => <String, dynamic
   'spotName': instance.spotName,
   'warLongName': instance.warLongName,
   'phase': instance.phase,
-  'className': instance.className.map(const SvtClassConverter().toJson).toList(),
+  'className': instance.classIds,
   'individuality': instance.individuality.map((e) => e.toJson()).toList(),
   'phaseIndividuality': instance.phaseIndividuality?.map((e) => e.toJson()).toList(),
   'qp': instance.qp,

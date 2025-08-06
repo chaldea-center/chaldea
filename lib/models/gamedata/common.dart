@@ -396,7 +396,7 @@ enum SvtClass {
   uOlgaMarieFlare(36),
   uOlgaMarieAqua(37),
   beastEresh(38, '獸'),
-  uOlgaMarieGround(39),
+  uOlgaMarieGrand(39),
   unBeastOlgaMarie(40, 'UnBeast'),
   uOlgaMarieStellar(41),
   aquaFragment(96), // Aqua Marie Grand Duel
@@ -415,7 +415,7 @@ enum SvtClass {
   EXTRA2(1005, 'EXTRA2'), // ignore: constant_identifier_names
   uOlgaMarieFlareCollection(9001),
   uOlgaMarieAquaCollection(9002),
-  uOlgaMarieGroundCollection(9003),
+  uOlgaMarieGrandCollection(9003),
   uOlgaMarieStellarCollection(9004),
   grandSaber(10001, '剣', 1),
   grandArcher(10002, '弓', 2),
@@ -446,37 +446,55 @@ enum SvtClass {
   static SvtClass? fromInt(int clsId) => SvtClass.values.firstWhereOrNull((e) => e.value == clsId);
 }
 
-class SvtClassConverter implements JsonConverter<SvtClass, String> {
+class SvtClassConverter implements JsonConverter<SvtClass, dynamic> {
   const SvtClassConverter();
 
-  @override
-  SvtClass fromJson(String value) {
-    SvtClass? result = deprecatedTypes[value] ?? decodeEnumNullable(_$SvtClassEnumMap, value);
-    if (result == null) {
-      final intResult = int.tryParse(value);
-      if (intResult != null) result = SvtClass.fromInt(intResult);
+  static SvtClass? fromJsonNull(dynamic value) {
+    SvtClass? result;
+    if (value is String) {
+      result = deprecatedTypes[value] ?? decodeEnumNullable(_$SvtClassEnumMap, value);
+      if (result != null) return result;
     }
-    return result ?? SvtClass.none;
+    int? intValue;
+    if (value is int) {
+      intValue = value;
+    } else if (value is String) {
+      intValue = int.tryParse(value);
+    }
+    if (intValue != null) {
+      result = SvtClass.fromInt(intValue);
+    }
+    return result;
   }
 
   @override
-  String toJson(SvtClass cls) {
-    return _$SvtClassEnumMap[cls] ?? cls.name;
+  SvtClass fromJson(dynamic value) {
+    return fromJsonNull(value) ?? SvtClass.none;
   }
 
-  static int? fromString(String value, Map<int, SvtClassMapping> mapping) {
-    for (final cls in SvtClass.values) {
-      if (cls.name == value) return cls.value;
-    }
-    int? pureInt = int.tryParse(value);
-    if (pureInt != null && pureInt > 0) return pureInt;
-    return mapping.entries.firstWhereOrNull((entry) => entry.value.name == value)?.key;
+  @override
+  int toJson(SvtClass cls) {
+    return cls.value;
   }
 
   static final Map<String, SvtClass> deprecatedTypes = {
     "alterEgo": SvtClass.alterego,
     //
   };
+
+  static int parseClassId(dynamic value) {
+    if (value is int) return value;
+    if (value is String) {
+      int? intValue = int.tryParse(value);
+      if (intValue != null) return intValue;
+    }
+    return const SvtClassConverter().fromJson(value).value;
+  }
+
+  static List<int> parseClassIdList(dynamic values) {
+    if (values is! List) return [];
+    return [for (final v in values) parseClassId(v)];
+  }
 }
 
 const _kSvtClassRarityMap = {0: 0, 1: 1, 2: 1, 3: 2, 4: 3, 5: 3};
@@ -545,16 +563,21 @@ extension SvtClassX on SvtClass {
     // SvtClass.uOlgaMarie,
     SvtClass.uOlgaMarieFlare,
     SvtClass.uOlgaMarieAqua,
-    SvtClass.uOlgaMarieGround,
+    SvtClass.uOlgaMarieGrand,
     SvtClass.uOlgaMarieStellar,
     SvtClass.beastILost,
     SvtClass.beastVI,
     SvtClass.beastVIBoss,
     SvtClass.uOlgaMarieFlareCollection,
     SvtClass.uOlgaMarieAquaCollection,
-    SvtClass.uOlgaMarieGroundCollection,
+    SvtClass.uOlgaMarieGrandCollection,
     SvtClass.uOlgaMarieStellarCollection,
     SvtClass.unBeastOlgaMarie,
+    // Grand UnBeast for enemy
+    SvtClass.grandUnBeastDraco,
+    SvtClass.grandUnBeastEresh,
+    SvtClass.grandUnBeastUOlgaMarie,
+    SvtClass.grandUnBeastUOlgaMarieAlienGod,
   ];
   static const grandClasses = <SvtClass>[
     SvtClass.grandSaber,

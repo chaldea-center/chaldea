@@ -54,28 +54,28 @@ BuffRelationOverwrite _$BuffRelationOverwriteFromJson(Map json) => BuffRelationO
   atkSide:
       (json['atkSide'] as Map?)?.map(
         (k, e) => MapEntry(
-          k as String,
-          (e as Map).map(
-            (k, e) => MapEntry(k as String, RelationOverwriteDetail.fromJson(Map<String, dynamic>.from(e as Map))),
-          ),
+          k,
+          (e as Map).map((k, e) => MapEntry(k, RelationOverwriteDetail.fromJson(Map<String, dynamic>.from(e as Map)))),
         ),
       ) ??
       const {},
   defSide:
       (json['defSide'] as Map?)?.map(
         (k, e) => MapEntry(
-          k as String,
-          (e as Map).map(
-            (k, e) => MapEntry(k as String, RelationOverwriteDetail.fromJson(Map<String, dynamic>.from(e as Map))),
-          ),
+          k,
+          (e as Map).map((k, e) => MapEntry(k, RelationOverwriteDetail.fromJson(Map<String, dynamic>.from(e as Map)))),
         ),
       ) ??
       const {},
 );
 
 Map<String, dynamic> _$BuffRelationOverwriteToJson(BuffRelationOverwrite instance) => <String, dynamic>{
-  'atkSide': instance.atkSide.map((k, e) => MapEntry(k, e.map((k, e) => MapEntry(k, e.toJson())))),
-  'defSide': instance.defSide.map((k, e) => MapEntry(k, e.map((k, e) => MapEntry(k, e.toJson())))),
+  'atkSide': instance.atkSide.map(
+    (k, e) => MapEntry(k.toString(), e.map((k, e) => MapEntry(k.toString(), e.toJson()))),
+  ),
+  'defSide': instance.defSide.map(
+    (k, e) => MapEntry(k.toString(), e.map((k, e) => MapEntry(k.toString(), e.toJson()))),
+  ),
 };
 
 RelationOverwriteDetail _$RelationOverwriteDetailFromJson(Map json) => RelationOverwriteDetail(

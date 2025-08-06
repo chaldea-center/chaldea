@@ -389,10 +389,11 @@ class Quest with RouteInfo {
   Map<String, dynamic> toJson() => _$QuestToJson(this);
 }
 
-@JsonSerializable(converters: [SvtClassConverter()])
+@JsonSerializable()
 class QuestPhase extends Quest {
   int phase;
-  List<SvtClass> className;
+  @JsonKey(name: 'className', fromJson: SvtClassConverter.parseClassIdList)
+  List<int> classIds;
   List<NiceTrait> individuality;
   List<NiceTrait>? phaseIndividuality;
   int qp;
@@ -461,7 +462,7 @@ class QuestPhase extends Quest {
     super.openedAt,
     super.closedAt,
     this.phase = 1,
-    this.className = const [],
+    this.classIds = const [],
     List<NiceTrait>? individuality,
     this.phaseIndividuality,
     this.qp = 0,
