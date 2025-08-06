@@ -395,7 +395,7 @@ class _QuestEnemyEditPageState extends State<QuestEnemyEditPage> {
     switch (enemy.svt.className) {
       case SvtClass.archer:
       case SvtClass.assassin:
-      case SvtClass.alterEgo:
+      case SvtClass.alterego:
       case SvtClass.moonCancer:
         enemy.chargeTurn = 3;
         return;

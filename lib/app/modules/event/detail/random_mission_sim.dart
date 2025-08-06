@@ -431,8 +431,8 @@ class _SimStatData {
     6517: 0.1, // 蛮神心脏
     6548: 2.5, // 鬼炎鬼灯x
   };
-  final cqTeam = [SvtClass.alterEgo, SvtClass.avenger];
-  final fqTeam = [SvtClass.berserker, SvtClass.alterEgo, SvtClass.lancer, SvtClass.alterEgo, SvtClass.berserker];
+  final cqTeam = [SvtClass.alterego, SvtClass.avenger];
+  final fqTeam = [SvtClass.berserker, SvtClass.alterego, SvtClass.lancer, SvtClass.alterego, SvtClass.berserker];
   // final int kCircleCount = 100000;
   final int kMaxAppleCount = 1000;
   int discardMissionMinLeftNum = 2;

@@ -1054,6 +1054,7 @@ class CardDetail {
   int? attackNpRate;
   int? defenseNpRate;
   int? dropStarRate;
+  int? forceAttackFunctionTargetAll; // bool
   List<int>? positionDamageRates;
   SvtCardPositionDamageRatesSlideType? positionDamageRatesSlideType;
   List<SvtCardAddOverwriteRateData>? overwriteRates;
@@ -1066,6 +1067,7 @@ class CardDetail {
     this.attackNpRate,
     this.defenseNpRate,
     this.dropStarRate,
+    this.forceAttackFunctionTargetAll,
     this.positionDamageRates,
     this.positionDamageRatesSlideType,
     this.overwriteRates,

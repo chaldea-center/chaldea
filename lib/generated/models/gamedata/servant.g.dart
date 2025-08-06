@@ -530,6 +530,7 @@ CardDetail _$CardDetailFromJson(Map json) => CardDetail(
   attackNpRate: (json['attackNpRate'] as num?)?.toInt(),
   defenseNpRate: (json['defenseNpRate'] as num?)?.toInt(),
   dropStarRate: (json['dropStarRate'] as num?)?.toInt(),
+  forceAttackFunctionTargetAll: (json['forceAttackFunctionTargetAll'] as num?)?.toInt(),
   positionDamageRates: (json['positionDamageRates'] as List<dynamic>?)?.map((e) => (e as num).toInt()).toList(),
   positionDamageRatesSlideType: $enumDecodeNullable(
     _$SvtCardPositionDamageRatesSlideTypeEnumMap,
@@ -548,6 +549,7 @@ Map<String, dynamic> _$CardDetailToJson(CardDetail instance) => <String, dynamic
   'attackNpRate': instance.attackNpRate,
   'defenseNpRate': instance.defenseNpRate,
   'dropStarRate': instance.dropStarRate,
+  'forceAttackFunctionTargetAll': instance.forceAttackFunctionTargetAll,
   'positionDamageRates': instance.positionDamageRates,
   'positionDamageRatesSlideType': _$SvtCardPositionDamageRatesSlideTypeEnumMap[instance.positionDamageRatesSlideType],
   'overwriteRates': instance.overwriteRates?.map((e) => e.toJson()).toList(),

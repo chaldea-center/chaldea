@@ -1240,5 +1240,6 @@ const _$BuffActionEnumMap = {
   BuffAction.functionGutsBefore: 'functionGutsBefore',
   BuffAction.overwriteBuffUseRate: 'overwriteBuffUseRate',
   BuffAction.changeBuffUseRate: 'changeBuffUseRate',
+  BuffAction.hateToGrantedOpponent: 'hateToGrantedOpponent',
   BuffAction.functionClassboardCommandSpellAfter: 'functionClassboardCommandSpellAfter',
 };

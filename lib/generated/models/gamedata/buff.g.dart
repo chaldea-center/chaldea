@@ -407,6 +407,7 @@ const _$BuffTypeEnumMap = {
   BuffType.overwriteBuffUseRate: 'overwriteBuffUseRate',
   BuffType.upBuffUseRate: 'upBuffUseRate',
   BuffType.downBuffUseRate: 'downBuffUseRate',
+  BuffType.upHateToGrantedOpponent: 'upHateToGrantedOpponent',
   BuffType.toFieldChangeField: 'toFieldChangeField',
   BuffType.toFieldAvoidBuff: 'toFieldAvoidBuff',
   BuffType.toFieldSubIndividualityField: 'toFieldSubIndividualityField',

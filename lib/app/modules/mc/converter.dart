@@ -131,7 +131,7 @@ class McConverter {
     SvtClass.shielder: "盾",
     SvtClass.ruler: "裁",
     SvtClass.avenger: "仇",
-    SvtClass.alterEgo: "他",
+    SvtClass.alterego: "他",
     SvtClass.moonCancer: "月",
     SvtClass.foreigner: "降",
     SvtClass.pretender: "披",

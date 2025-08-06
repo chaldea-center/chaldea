@@ -365,7 +365,7 @@ enum SvtClass {
   berserker(7, '狂'),
   shielder(8, '盾'),
   ruler(9, '裁'),
-  alterEgo(10, 'AE'),
+  alterego(10, 'AE'),
   avenger(11, '讐'),
   demonGodPillar(12),
 
@@ -397,7 +397,9 @@ enum SvtClass {
   uOlgaMarieAqua(37),
   beastEresh(38, '獸'),
   uOlgaMarieGround(39),
-  unBeast(40, 'UnBeast'),
+  unBeastOlgaMarie(40, 'UnBeast'),
+  uOlgaMarieStellar(41),
+  aquaFragment(96), // Aqua Marie Grand Duel
   unknown(97),
   // 98
   // 99
@@ -422,6 +424,17 @@ enum SvtClass {
   grandCaster(10005, '術', 5),
   grandAssassin(10006, '殺', 6),
   grandBerserker(10007, '狂', 7),
+  grandShielder(10008, '盾', 8),
+  grandRuler(10009, '裁', 9),
+  grandAlterego(10010, 'AE', 10),
+  grandAvenger(10011, '讐', 11),
+  grandMoonCancer(10023, '月', 23),
+  grandForeigner(10025, '降', 25),
+  grandPretender(10028, '偽', 28),
+  grandUnBeastUOlgaMarieAlienGod(10031, 'UnBeast', 31),
+  grandUnBeastDraco(10033, 'UnBeast', 33),
+  grandUnBeastEresh(10038, 'UnBeast', 38),
+  grandUnBeastUOlgaMarie(10040, 'UnBeast', 40),
 
   beastAny(33, '獸');
 
@@ -460,7 +473,10 @@ class SvtClassConverter implements JsonConverter<SvtClass, String> {
     return mapping.entries.firstWhereOrNull((entry) => entry.value.name == value)?.key;
   }
 
-  static final Map<String, SvtClass> deprecatedTypes = {};
+  static final Map<String, SvtClass> deprecatedTypes = {
+    "alterEgo": SvtClass.alterego,
+    //
+  };
 }
 
 const _kSvtClassRarityMap = {0: 0, 1: 1, 2: 1, 3: 2, 4: 3, 5: 3};
@@ -514,7 +530,7 @@ extension SvtClassX on SvtClass {
 
   static const extraI = <SvtClass>[SvtClass.ruler, SvtClass.avenger, SvtClass.moonCancer, SvtClass.shielder];
 
-  static const extraII = <SvtClass>[SvtClass.alterEgo, SvtClass.foreigner, SvtClass.pretender, SvtClass.beastAny];
+  static const extraII = <SvtClass>[SvtClass.alterego, SvtClass.foreigner, SvtClass.pretender, SvtClass.beastAny];
   static const extra = <SvtClass>[...extraI, ...extraII];
   static const beasts = <SvtClass>[
     SvtClass.beastDoraco,
@@ -530,6 +546,7 @@ extension SvtClassX on SvtClass {
     SvtClass.uOlgaMarieFlare,
     SvtClass.uOlgaMarieAqua,
     SvtClass.uOlgaMarieGround,
+    SvtClass.uOlgaMarieStellar,
     SvtClass.beastILost,
     SvtClass.beastVI,
     SvtClass.beastVIBoss,
@@ -537,7 +554,7 @@ extension SvtClassX on SvtClass {
     SvtClass.uOlgaMarieAquaCollection,
     SvtClass.uOlgaMarieGroundCollection,
     SvtClass.uOlgaMarieStellarCollection,
-    SvtClass.unBeast,
+    SvtClass.unBeastOlgaMarie,
   ];
   static const grandClasses = <SvtClass>[
     SvtClass.grandSaber,
@@ -547,6 +564,17 @@ extension SvtClassX on SvtClass {
     SvtClass.grandCaster,
     SvtClass.grandAssassin,
     SvtClass.grandBerserker,
+    SvtClass.grandShielder,
+    SvtClass.grandRuler,
+    SvtClass.grandAlterego,
+    SvtClass.grandAvenger,
+    SvtClass.grandMoonCancer,
+    SvtClass.grandForeigner,
+    SvtClass.grandPretender,
+    SvtClass.grandUnBeastUOlgaMarieAlienGod,
+    SvtClass.grandUnBeastDraco,
+    SvtClass.grandUnBeastEresh,
+    SvtClass.grandUnBeastUOlgaMarie,
   ];
 
   static bool match(SvtClass value, SvtClass option) {
@@ -639,7 +667,7 @@ enum Trait {
   classAlterEgo(109),
   classAvenger(110),
   classDemonGodPillar(111),
-  classGrandCaster(112),
+  classLoreGrandCaster(112),
   classBeastI(113),
   classBeastII(114),
   classMoonCancer(115),
@@ -658,8 +686,26 @@ enum Trait {
   classUOlgaMarieAqua(128),
   classBeastEresh(129),
   classUOlgaMarieGround(130),
-  classUnBeast(132),
+  classUOlgaMarieStellar(131),
+  classUnBeastOlgaMarie(132),
+  classGrandUnBeastUOlgaMarieAlienGod(133),
+  classAquaFragment(134),
   classBeast(135),
+  classGrandSaber(180),
+  classGrandLancer(181),
+  classGrandArcher(182),
+  classGrandRider(183),
+  classGrandCaster(184),
+  classGrandAssassin(185),
+  classGrandBerserker(186),
+  classGrandShielder(187),
+  classGrandRuler(188),
+  classGrandAlterego(189),
+  classGrandAvenger(190),
+  classGrandMoonCancer(191),
+  classGrandForeigner(192),
+  classGrandPretender(193),
+  classGrandUnBeast(194),
   attributeSky(200),
   attributeEarth(201),
   attributeHuman(202),

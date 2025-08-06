@@ -393,11 +393,13 @@ class GrandGraphDetail {
   int grandClassId;
   int adjustHp;
   int adjustAtk;
+  String closedMessage;
   @CondTypeConverter()
   CondType condType;
   int condTargetId;
   int condNum;
   List<NiceTrait> adjustIndividuality;
+  String nameFull;
 
   GrandGraphDetail({
     this.grandGraphId = 0,
@@ -405,10 +407,12 @@ class GrandGraphDetail {
     this.grandClassId = 0,
     this.adjustHp = 0,
     this.adjustAtk = 0,
+    this.closedMessage = '',
     this.condType = CondType.none,
     this.condTargetId = 0,
     this.condNum = 0,
     this.adjustIndividuality = const [],
+    this.nameFull = '',
   });
 
   factory GrandGraphDetail.fromJson(Map<String, dynamic> json) => _$GrandGraphDetailFromJson(json);

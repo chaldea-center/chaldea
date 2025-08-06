@@ -312,6 +312,6 @@ const _kSvtClassMapping = {
   8: SvtClass.ruler,
   9: SvtClass.avenger,
   10: SvtClass.moonCancer,
-  11: SvtClass.alterEgo,
+  11: SvtClass.alterego,
   12: SvtClass.foreigner,
 };

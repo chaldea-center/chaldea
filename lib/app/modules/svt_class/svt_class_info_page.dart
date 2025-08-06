@@ -31,7 +31,7 @@ class _SvtClassInfoPageState extends State<SvtClassInfoPage> {
     SvtClass.assassin,
     SvtClass.berserker,
     SvtClass.avenger,
-    SvtClass.alterEgo,
+    SvtClass.alterego,
     SvtClass.moonCancer,
     SvtClass.foreigner,
     SvtClass.ruler,

@@ -380,8 +380,11 @@ class DataVals {
   int? get IgnoreShiftWhiteFade => _vals['IgnoreShiftWhiteFade'];
   List<int>? get BackStepTargets => _list('BackStepTargets');
   List<int>? get ReplacePositionTargets => _list('ReplacePositionTargets');
-
   int? get ApplySupportSvt => _vals['ApplySupportSvt'];
+  int? get ApplyHighestValueInFieldGroup => _vals['ApplyHighestValueInFieldGroup'];
+  int? get IsClassIconChangeSaveGrand => _vals['IsClassIconChangeSaveGrand'];
+  int? get PriorityUpHate => _vals['PriorityUpHate'];
+
   int? get Individuality => _vals['Individuality'];
   int? get EventId => _vals['EventId'];
   int? get AddCount => _vals['AddCount'];

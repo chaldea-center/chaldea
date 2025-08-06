@@ -500,6 +500,7 @@ enum BuffType {
   overwriteBuffUseRate(231),
   upBuffUseRate(232),
   downBuffUseRate(233),
+  upHateToGrantedOpponent(235),
 
   toFieldChangeField(10001),
   toFieldAvoidBuff(10002),

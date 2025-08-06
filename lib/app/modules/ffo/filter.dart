@@ -69,7 +69,7 @@ class _FfoPartFilterPageState extends FilterPageState<FfoPartFilterData, FfoPart
               SvtClass.ruler,
               SvtClass.avenger,
               SvtClass.moonCancer,
-              SvtClass.alterEgo,
+              SvtClass.alterego,
               SvtClass.foreigner,
             ],
             values: filterData.classType,
