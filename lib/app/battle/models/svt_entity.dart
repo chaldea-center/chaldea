@@ -2263,13 +2263,27 @@ class BattleServantData {
       if (shouldActivate) {
         buff.setUsed(this, battleData);
         final relationOverwrite = buff.buff.script.relationId!;
-        final overwrite = isDef
-            ? relationOverwrite.defSide.containsKey(opponent.logicalClassId)
-                  ? relationOverwrite.defSide[opponent.logicalClassId]![logicalClassId]
-                  : null
-            : relationOverwrite.atkSide.containsKey(logicalClassId)
-            ? relationOverwrite.atkSide[logicalClassId]![opponent.logicalClassId]
-            : null;
+        // relation overwrite don't include grand class, but still take effect
+        final int oppCurClassId = opponent.logicalClassId;
+        final int oppBaseClassId = opponent.isGrandSvt && oppCurClassId == opponent.baseClassId
+            ? opponent.originalClassId
+            : oppCurClassId;
+        final int selfCurClassId = logicalClassId;
+        final int selfBaseClassId = isGrandSvt && selfCurClassId == baseClassId ? originalClassId : selfCurClassId;
+
+        RelationOverwriteDetail? overwrite;
+        if (isDef) {
+          final details = relationOverwrite.defSide[oppCurClassId] ?? relationOverwrite.defSide[oppBaseClassId];
+          if (details != null) {
+            overwrite = details[selfCurClassId] ?? details[selfBaseClassId];
+          }
+        } else {
+          final details = relationOverwrite.atkSide[selfCurClassId] ?? relationOverwrite.atkSide[selfBaseClassId];
+          if (details != null) {
+            overwrite = details[oppCurClassId] ?? details[oppBaseClassId];
+          }
+        }
+
         if (overwrite != null) {
           final overwriteValue = overwrite.damageRate;
           switch (overwrite.type) {
