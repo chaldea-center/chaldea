@@ -765,6 +765,14 @@ class FakerRuntime {
     }
   }
 
+  bool checkSvtLvExceed(int userSvtId) {
+    final baseUserSvt = mstData.userSvt[userSvtId];
+    final svt = baseUserSvt?.dbSvt;
+    if (baseUserSvt == null || svt == null) return false;
+    if (baseUserSvt.lv < svt.lvMax || baseUserSvt.lv >= 120 || baseUserSvt.lv != baseUserSvt.maxLv) return false;
+    return true;
+  }
+
   // helpers
 
   void _checkStop() {

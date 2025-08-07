@@ -1166,7 +1166,6 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
             );
           },
         ),
-        if (formation != null) ..._buildUserDeck(formation.deckInfo),
         if ((questPhase ?? quest)?.isUseUserEventDeck() == true) ...[
           ListTile(
             dense: true,
@@ -1179,6 +1178,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
           ),
           if (eventFormation != null) ..._buildUserDeck(eventFormation.deckInfo),
         ],
+        if (formation != null) ..._buildUserDeck(formation.deckInfo),
         DividerWithTitle(title: S.current.support_servant_short, indent: 16),
         ListTile(
           dense: true,

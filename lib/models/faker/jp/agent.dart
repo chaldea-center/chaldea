@@ -290,6 +290,13 @@ class FakerAgentJP extends FakerAgent<FRequestJP, AutoLoginDataJP, NetworkManage
   }
 
   @override
+  Future<FResponse> servantFriendshipExceed({required int64_t baseUserSvtId}) {
+    final request = FRequestJP(network: network, path: '/card/friendshipExceed');
+    request.addFieldInt64("baseUserSvtId", baseUserSvtId);
+    return request.beginRequestAndCheckError('card_friendship_exceed');
+  }
+
+  @override
   Future<FResponse> appendSkillCombine({
     required int64_t baseUsrSvtId,
     required int32_t skillNum,

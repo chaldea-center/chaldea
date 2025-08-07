@@ -98,6 +98,7 @@ abstract class FakerAgent<
   });
   Future<FResponse> servantLimitCombine({required int64_t baseUserSvtId});
   Future<FResponse> servantLevelExceed({required int64_t baseUserSvtId});
+  Future<FResponse> servantFriendshipExceed({required int64_t baseUserSvtId});
   Future<FResponse> appendSkillCombine({
     required int64_t baseUsrSvtId,
     required int32_t skillNum,

@@ -274,66 +274,90 @@ class _SvtCombinePageState extends State<SvtCombinePage> {
         DividerWithTitle(title: '突破'),
         ListTile(
           title: Text(combineTitle),
-          trailing: Wrap(
+          subtitle: Wrap(
             spacing: 2,
             children: [for (final (itemId, amount) in limitCombineItems.items) _item(itemId, amount)],
           ),
-        ),
-        if (baseUserSvt.exceedCount == 0 && baseUserSvt.lv == baseUserSvt.maxLv && baseUserSvt.limitCount < 4)
-          Center(
-            child: FilledButton(
-              onPressed: () {
-                SimpleConfirmDialog(
-                  title: Text('灵基再临'),
-                  onTapOk: () {
-                    runtime.runTask(() {
-                      for (final (itemId, amount) in limitCombineItems.items) {
-                        if (mstData.getItemOrSvtNum(itemId) < amount) {
-                          throw SilentException('Item not enough: ${Item.getName(itemId)}');
-                        }
-                      }
-                      return runtime.agent.servantLimitCombine(baseUserSvtId: baseUserSvt.id);
-                    });
-                  },
-                ).showDialog(context);
-              },
-              child: Text('灵基再临'),
-            ),
+          trailing: FilledButton(
+            onPressed: baseUserSvt.exceedCount == 0 && baseUserSvt.lv == baseUserSvt.maxLv && baseUserSvt.limitCount < 4
+                ? () {
+                    SimpleConfirmDialog(
+                      title: Text(S.current.ascension_up),
+                      onTapOk: () {
+                        runtime.runTask(() {
+                          for (final (itemId, amount) in limitCombineItems.items) {
+                            if (mstData.getItemOrSvtNum(itemId) < amount) {
+                              throw SilentException('Item not enough: ${Item.getName(itemId)}');
+                            }
+                          }
+                          return runtime.agent.servantLimitCombine(baseUserSvtId: baseUserSvt.id);
+                        });
+                      },
+                    ).showDialog(context);
+                  }
+                : null,
+            child: Text('灵基再临'),
           ),
+        ),
         ListTile(
           title: Text('圣杯转临'),
-          trailing: Wrap(
+          subtitle: Wrap(
             spacing: 2,
             children: [
               _item(Items.grailId, 1),
               if (baseUserSvt.lv >= 100 && svt.coin != null) _item(svt.coin!.item.id, 30),
             ],
           ),
-        ),
-        Center(
-          child: FilledButton(
-            onPressed: () {
-              SimpleConfirmDialog(
-                title: Text('圣杯转临'),
-                onTapOk:
-                    (baseUserSvt.exceedCount > 0 || baseUserSvt.lv >= svt.lvMax) &&
-                        baseUserSvt.lv == baseUserSvt.maxLv &&
-                        baseUserSvt.lv < 120
-                    ? () {
+          trailing: FilledButton(
+            onPressed: runtime.checkSvtLvExceed(baseUserSvt.id)
+                ? () {
+                    final grailNum = mstData.getItemOrSvtNum(Items.grailId),
+                        coinNum = mstData.userSvtCoin[baseUserSvt.svtId]?.num ?? 0;
+                    SimpleConfirmDialog(
+                      title: Text('圣杯转临'),
+                      content: Text('Grail $grailNum-1, coin $coinNum-30'),
+                      onTapOk: () {
                         runtime.runTask(() {
-                          if (mstData.getItemOrSvtNum(Items.grailId) < 1) {
+                          if (grailNum < 1) {
                             throw SilentException('Grail not enough');
                           }
-                          if (baseUserSvt.lv >= 100 && (mstData.userSvtCoin[svt.coin?.item.id ?? 0]?.num ?? 0) < 30) {
-                            throw SilentException('Svt Coin noy enough');
+                          if (baseUserSvt.lv >= 100 && coinNum < 30) {
+                            throw SilentException('Svt Coin not enough');
                           }
                           return runtime.agent.servantLevelExceed(baseUserSvtId: baseUserSvt.id);
                         });
-                      }
-                    : null,
-              ).showDialog(context);
-            },
+                      },
+                    ).showDialog(context);
+                  }
+                : null,
             child: Text('圣杯转临'),
+          ),
+        ),
+        ListTile(
+          title: Text('羁绊等级上限提升'),
+          subtitle: Wrap(children: [_item(Items.lanternId, 1)]),
+          trailing: FilledButton(
+            onPressed:
+                collection != null &&
+                    collection.friendshipRank < 15 &&
+                    collection.friendshipRank == collection.maxFriendshipRank
+                ? () {
+                    final lanternNum = mstData.getItemOrSvtNum(Items.lanternId);
+                    SimpleConfirmDialog(
+                      title: Text('羁绊等级上限提升'),
+                      content: Text('${Items.lantern?.lName.l} $lanternNum-1'),
+                      onTapOk: () {
+                        runtime.runTask(() {
+                          if (lanternNum < 1) {
+                            throw SilentException('${Items.lantern?.lName.l} not enough');
+                          }
+                          return runtime.agent.servantFriendshipExceed(baseUserSvtId: baseUserSvt.id);
+                        });
+                      },
+                    ).showDialog(context);
+                  }
+                : null,
+            child: Text('解放'),
           ),
         ),
       ]);
