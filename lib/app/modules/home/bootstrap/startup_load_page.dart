@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:chaldea/app/tools/gamedata_loader.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/network.dart';
+import 'package:chaldea/utils/extension.dart';
 import 'package:chaldea/utils/img_util.dart';
 import 'package:chaldea/widgets/widgets.dart';
 
@@ -169,7 +170,7 @@ class _AnimatedProgressIndicatorState extends State<_AnimatedProgressIndicator> 
                 ),
               ),
               Positioned(
-                left: (constraints.maxWidth * widget.value - widget.imageSize / 2).clamp(
+                left: (constraints.maxWidth * widget.value - widget.imageSize / 2).clamp2(
                   0,
                   constraints.maxWidth - widget.imageSize,
                 ),

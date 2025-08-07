@@ -1206,6 +1206,7 @@ extension BattleSvtDataUI on BattleServantData {
     BattleData? battleData,
     bool showClsIcon = false,
     ImageWithTextOption? option,
+    bool showGrandSvt = true,
   }) {
     final icon = niceEnemy?.icon ?? niceSvt?.ascendIcon(limitCount, true) ?? Atlas.common.unknownEnemyIcon;
     onTap ??= () => router.pushPage(BattleSvtDetail(svt: this, battleData: battleData));
@@ -1222,18 +1223,31 @@ extension BattleSvtDataUI on BattleServantData {
       text: text,
       option: option,
     );
+
+    List<Widget> stackChildren = [];
     final dim = width ?? height;
-    if (showClsIcon && (dim != null) && !icon.contains('_bordered.png')) {
-      child = Stack(
-        children: [
-          child,
+    if (dim != null) {
+      if (showGrandSvt && isGrandSvt) {
+        stackChildren.add(
+          Positioned(
+            top: -1,
+            left: -1,
+            child: db.getIconImage(SvtClassX.clsIcon(baseClassId, 5), width: dim / 2.3, aspectRatio: 1),
+          ),
+        );
+      } else if (showClsIcon && !icon.contains('_bordered.png')) {
+        stackChildren.add(
           Positioned(
             left: 0,
             top: 0,
             child: db.getIconImage(SvtClassX.clsIcon(logicalClassId, rarity), width: dim / 3.2),
           ),
-        ],
-      );
+        );
+      }
+    }
+
+    if (stackChildren.isNotEmpty) {
+      child = Stack(children: [child, ...stackChildren]);
     }
     return child;
   }
