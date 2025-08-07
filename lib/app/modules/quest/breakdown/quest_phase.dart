@@ -161,6 +161,7 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
         getOverwriteMysticCode(curPhase),
         getSupportServants(curPhase),
         buildRestriction(curPhase.restrictions),
+        buildHints(curPhase.hints),
         ...buildDrops(curPhase),
       ]);
     }
@@ -708,6 +709,45 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
             const SizedBox(width: double.infinity),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget? buildHints(List<QuestHint> hints) {
+    if (hints.isEmpty) return null;
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 3),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          _header(S.current.hint),
+          for (final hint in hints)
+            InkWell(
+              onTap: () {
+                SimpleConfirmDialog(
+                  title: Text(hint.title),
+                  content: Text(hint.message, style: TextStyle(fontSize: 12)),
+                  showCancel: false,
+                  scrollable: true,
+                ).showDialog(context);
+              },
+              child: Text.rich(
+                TextSpan(
+                  children: [
+                    TextSpan(
+                      text: '[${hint.title}] ',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    TextSpan(text: hint.message.setMaxLines(1)),
+                  ],
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(fontSize: 14),
+              ),
+            ),
+          const SizedBox(width: double.infinity),
+        ],
       ),
     );
   }

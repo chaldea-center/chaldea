@@ -551,6 +551,14 @@ class CondTargetValueDescriptor extends StatelessWidget with DescriptorBase {
           na: () => rich('Shop flag $value($flagName) $status ', shops(context)),
           kr: null,
         );
+      case CondType.classBoardSquareReleased:
+        return localized(
+          jp: () => rich('〔', classBoards(context), '〕のグランドサイン解放数$value個以上で開放'),
+          cn: () => rich('〔', classBoards(context), '〕的职阶星图分值星座解放数$value个以上开放'),
+          tw: null,
+          na: () => rich('Unlocked $value Class Score Signs'),
+          kr: null,
+        );
       default:
         break;
     }

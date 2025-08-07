@@ -313,6 +313,14 @@ class MissionCondDetailDescriptor extends HookWidget with DescriptorBase {
           na: () => text('Touch map gimmick $targetNum times'),
           kr: null,
         );
+      case EventMissionCondDetailType.itemUseQuestNum:
+        return localized(
+          jp: () => rich('', items(context), 'を使用して、いずれかのクエストを$targetNum回クリアせよ'),
+          cn: () => rich('使用道具', items(context), '通关任意关卡$targetNum次'),
+          tw: null,
+          na: () => rich('Use event item ', items(context), ' to clear any quest $targetNum times'),
+          kr: null,
+        );
       // unused
       case EventMissionCondDetailType.battleSvtInDeck:
       case EventMissionCondDetailType.battleSvtEquipInDeck:
@@ -322,7 +330,6 @@ class MissionCondDetailDescriptor extends HookWidget with DescriptorBase {
       case EventMissionCondDetailType.questPhaseClearNumWarId:
       case EventMissionCondDetailType.questClearWithSvtInDeckNoneFollowerOnlyStartingMember:
       case EventMissionCondDetailType.purchaseShopNum:
-      case EventMissionCondDetailType.itemUseQuestNum:
       case EventMissionCondDetailType.battleMissionValue:
       case null:
         break;
