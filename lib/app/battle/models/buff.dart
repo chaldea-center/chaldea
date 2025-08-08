@@ -309,6 +309,7 @@ class BuffData {
     final SkillInfoType? skillInfoType,
     final List<NiceFunction>? receivedFunctionsList,
     final List<int>? triggeredSkillIds,
+    int? overwriteBuffUseRate,
   }) async {
     return shouldActivateBuffNoProbabilityCheck(
           selfTraits,
@@ -318,16 +319,17 @@ class BuffData {
           receivedFunctionsList: receivedFunctionsList,
           triggeredSkillIds: triggeredSkillIds,
         ) &&
-        await probabilityCheck(battleData);
+        await probabilityCheck(battleData, overwriteBuffUseRate);
   }
 
-  Future<bool> probabilityCheck(final BattleData battleData) async {
-    final probabilityCheck = await battleData.canActivate(buffRate, buff.lName.l);
+  Future<bool> probabilityCheck(final BattleData battleData, int? overwriteBuffUseRate) async {
+    final finalUseRate = overwriteBuffUseRate ?? buffRate;
+    final probabilityCheck = await battleData.canActivate(finalUseRate, buff.lName.l);
 
-    if (buffRate < 1000) {
+    if (finalUseRate < 1000) {
       battleData.battleLogger.debug(
         '${buff.lName.l}: ${probabilityCheck ? S.current.success : S.current.failed}'
-        '${battleData.options.tailoredExecution ? '' : ' [$buffRate vs ${battleData.options.threshold}]'}',
+        '${battleData.options.tailoredExecution ? '' : ' [$finalUseRate vs ${battleData.options.threshold}]'}',
       );
     }
 

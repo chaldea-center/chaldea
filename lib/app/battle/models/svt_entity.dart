@@ -8,6 +8,7 @@ import 'package:chaldea/app/battle/utils/battle_logger.dart';
 import 'package:chaldea/app/battle/utils/battle_utils.dart';
 import 'package:chaldea/app/battle/utils/buff_utils.dart';
 import 'package:chaldea/generated/l10n.dart';
+import 'package:chaldea/models/gamedata/individuality.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'ai.dart';
@@ -2126,6 +2127,26 @@ class BattleServantData {
     );
   }
 
+  int? getOverwriteBuffUseRate(BuffData buff) {
+    final overwriteBuffRates = collectBuffsPerAction(battleBuff.validBuffs, BuffAction.overwriteBuffUseRate);
+    for (final overwriteBuffRate in overwriteBuffRates) {
+      final applyIndiv = overwriteBuffRate.vals.ApplyBuffIndividuality;
+      if (applyIndiv == null) return overwriteBuffRate.getValue(this);
+
+      for (final andList in applyIndiv) {
+        if (Individuality.checkSignedIndividualities2(
+          self: buff.getTraits().map((trait) => trait.signedId).toList(),
+          signedTarget: andList,
+          matchedFunc: Individuality.isMatchArray,
+          mismatchFunc: Individuality.isMatchArray,
+        )) {
+          return overwriteBuffRate.param;
+        }
+      }
+    }
+    return null;
+  }
+
   Future<bool> activateBuffs(
     final BattleData battleData,
     final Iterable<BuffAction> buffActions, {
@@ -2148,6 +2169,7 @@ class BattleServantData {
           skillInfoType: skillInfo?.type,
           receivedFunctionsList: receivedFunctionsList,
           triggeredSkillIds: triggeredSkillIds,
+          overwriteBuffUseRate: getOverwriteBuffUseRate(buff),
         );
 
         if (!shouldActivate) continue;
@@ -2212,7 +2234,7 @@ class BattleServantData {
     bool activated = false;
     final List<NiceTrait> selfTraits = getTraits();
     for (final buff in buffs.toList()) {
-      if (await buff.shouldActivateBuff(battleData, selfTraits)) {
+      if (await buff.shouldActivateBuff(battleData, selfTraits, overwriteBuffUseRate: getOverwriteBuffUseRate(buff))) {
         final skillId = buff.param;
         BaseSkill? skill = db.gameData.baseSkills[skillId];
         skill ??= await showEasyLoading(() => AtlasApi.skill(skillId), mask: true);
