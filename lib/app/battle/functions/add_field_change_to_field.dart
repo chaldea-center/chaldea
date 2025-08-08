@@ -16,9 +16,13 @@ class AddFieldChangeToField {
       return;
     }
 
-    final buffData = BuffData(buff, dataVals, battleData.getNextAddOrder())
-      ..actorUniqueId = activator?.uniqueId
-      ..actorName = activator?.lBattleName;
+    final buffData = BuffData(
+      buff: buff,
+      vals: dataVals,
+      addOrder: battleData.getNextAddOrder(),
+      activatorUniqueId: activator?.uniqueId,
+      activatorName: activator?.lBattleName,
+    );
     battleData.fieldBuffs.add(buffData);
 
     for (final target in targets) {

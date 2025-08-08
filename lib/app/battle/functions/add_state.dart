@@ -34,11 +34,15 @@ class AddState {
       isPassive = true;
     }
     for (final target in targets) {
-      final buffData = BuffData(buff, dataVals, battleData.getNextAddOrder())
-        ..actorUniqueId = activator?.uniqueId
-        ..actorName = activator?.lBattleName
-        ..passive = isPassive
-        ..skillInfoType = skillInfoType;
+      final buffData = BuffData(
+        buff: buff,
+        vals: dataVals,
+        addOrder: battleData.getNextAddOrder(),
+        activatorUniqueId: activator?.uniqueId,
+        activatorName: activator?.lBattleName,
+        passive: isPassive,
+        skillInfoType: skillInfoType,
+      );
 
       // Processing logicTurn related logic
       if (isShortBuff) {

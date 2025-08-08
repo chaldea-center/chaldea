@@ -2128,7 +2128,10 @@ class BattleServantData {
   }
 
   int? getOverwriteBuffUseRate(BuffData buff) {
-    final overwriteBuffRates = collectBuffsPerAction(battleBuff.validBuffs, BuffAction.overwriteBuffUseRate);
+    final overwriteBuffRates = collectBuffsPerActions(battleBuff.validBuffs, [
+      BuffAction.overwriteBuffUseRate,
+      BuffAction.changeBuffUseRate,
+    ]);
     for (final overwriteBuffRate in overwriteBuffRates) {
       final applyIndiv = overwriteBuffRate.vals.ApplyBuffIndividuality;
       if (applyIndiv == null) return overwriteBuffRate.getValue(this);
@@ -2169,7 +2172,6 @@ class BattleServantData {
           skillInfoType: skillInfo?.type,
           receivedFunctionsList: receivedFunctionsList,
           triggeredSkillIds: triggeredSkillIds,
-          overwriteBuffUseRate: getOverwriteBuffUseRate(buff),
         );
 
         if (!shouldActivate) continue;
@@ -2234,7 +2236,7 @@ class BattleServantData {
     bool activated = false;
     final List<NiceTrait> selfTraits = getTraits();
     for (final buff in buffs.toList()) {
-      if (await buff.shouldActivateBuff(battleData, selfTraits, overwriteBuffUseRate: getOverwriteBuffUseRate(buff))) {
+      if (await buff.shouldActivateBuff(battleData, selfTraits)) {
         final skillId = buff.param;
         BaseSkill? skill = db.gameData.baseSkills[skillId];
         skill ??= await showEasyLoading(() => AtlasApi.skill(skillId), mask: true);
@@ -2383,7 +2385,7 @@ class BattleServantData {
     }
 
     battleData.fieldBuffs.removeWhere(
-      (buff) => buff.vals.RemoveFieldBuffActorDeath == 1 && buff.actorUniqueId == uniqueId,
+      (buff) => buff.vals.RemoveFieldBuffActorDeath == 1 && buff.activatorUniqueId == uniqueId,
     );
     battleData.battleLogger.action('$lBattleName ${S.current.battle_death}');
     if (isPlayer) {
