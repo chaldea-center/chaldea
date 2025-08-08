@@ -40,6 +40,7 @@ class AddState {
         addOrder: battleData.getNextAddOrder(),
         activatorUniqueId: activator?.uniqueId,
         activatorName: activator?.lBattleName,
+        ownerUniqueId: target.uniqueId,
         passive: isPassive,
         skillInfoType: skillInfoType,
       );
