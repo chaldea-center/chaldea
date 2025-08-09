@@ -128,7 +128,6 @@ class BuffData {
   DataVals vals;
   int addOrder;
 
-  int buffRate = 1000;
   int count = -1;
   int logicTurn = -1;
   int get dispTurn => logicTurn >= 0 ? (logicTurn + 1) ~/ 2 : logicTurn;
@@ -174,7 +173,6 @@ class BuffData {
     logicTurn = vals.Turn == null ? -1 : vals.Turn! * 2;
     param = vals.Value ?? 0;
     additionalParam = vals.Value2 ?? 0;
-    buffRate = vals.UseRate ?? 1000;
   }
 
   static final List<BuffType> activeOnlyTypes = [
@@ -333,17 +331,11 @@ class BuffData {
         await probabilityCheck(battleData, opponentTraits);
   }
 
-  static List<BuffType> useRateBuffTypes = [
-    BuffType.overwriteBuffUseRate,
-    BuffType.upBuffUseRate,
-    BuffType.downBuffUseRate,
-  ];
-
   Future<bool> probabilityCheck(BattleData battleData, List<NiceTrait>? opponentTraits) async {
+    if (vals.UseRate == null) return true;
+
     final owner = ownerUniqueId != null ? battleData.getServantData(ownerUniqueId!) : null;
-    final finalUseRate = useRateBuffTypes.contains(buff.type)
-        ? buffRate
-        : await owner?.applyChangeBuffUseRate(battleData, this, opponentTraits) ?? buffRate;
+    final finalUseRate = await owner?.applyChangeBuffUseRate(battleData, this, opponentTraits) ?? vals.UseRate!;
     final probabilityCheck = await battleData.canActivate(finalUseRate, buff.lName.l);
 
     if (finalUseRate < 1000) {
@@ -647,17 +639,6 @@ class BuffData {
     setState(BuffState.noField, !isField);
   }
 
-  String effectString() {
-    return '${buffRate != 1000 ? '${(buffRate / 10).toStringAsFixed(1)} %' : ''} '
-        '${buff.lName.l} '
-        '${buff.ckSelfIndv.isNotEmpty ? '${S.current.battle_require_self_traits} '
-                  '${buff.ckSelfIndv.map((trait) => trait.shownName())} ' : ''}'
-        '${buff.ckOpIndv.isNotEmpty ? '${S.current.battle_require_opponent_traits} '
-                  '${buff.ckOpIndv.map((trait) => trait.shownName())} ' : ''}'
-        '${getParamString()}'
-        '${isOnField ? S.current.battle_require_actor_on_field((activatorName ?? activatorUniqueId).toString()) : ''}';
-  }
-
   String getParamString() {
     final List<String> effectString = [];
     ValDsc.describeBuff(effectString, buff, vals, inList: false, ignoreCount: true);
@@ -691,7 +672,6 @@ class BuffData {
             passive: passive,
             skillInfoType: skillInfoType,
           )
-          ..buffRate = buffRate
           ..count = count
           ..logicTurn = logicTurn
           ..param = param

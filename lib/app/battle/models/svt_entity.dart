@@ -2138,7 +2138,7 @@ class BattleServantData {
     List<NiceTrait>? opponentTraits,
   ) async {
     final overwriteBuffRates = collectBuffsPerAction(battleBuff.validBuffs, BuffAction.overwriteBuffUseRate);
-    int baseRate = buffToApply.buffRate;
+    int baseRate = buffToApply.vals.UseRate!;
     for (final overwriteBuffRate in overwriteBuffRates) {
       final shouldApply = await overwriteBuffRate.shouldActivateBuff(
         battleData,
