@@ -326,12 +326,12 @@ class BuffData {
           receivedFunctionsList: receivedFunctionsList,
           triggeredSkillIds: triggeredSkillIds,
         ) &&
-        await probabilityCheck(battleData);
+        await probabilityCheck(battleData, opponentTraits);
   }
 
-  Future<bool> probabilityCheck(final BattleData battleData) async {
+  Future<bool> probabilityCheck(BattleData battleData, List<NiceTrait>? opponentTraits) async {
     final owner = ownerUniqueId != null ? battleData.getServantData(ownerUniqueId!) : null;
-    final finalUseRate = owner?.applyChangeBuffUseRate(this) ?? buffRate;
+    final finalUseRate = await owner?.applyChangeBuffUseRate(battleData, this, opponentTraits) ?? buffRate;
     final probabilityCheck = await battleData.canActivate(finalUseRate, buff.lName.l);
 
     if (finalUseRate < 1000) {
@@ -355,6 +355,15 @@ class BuffData {
         checkSameIndivBuffActorOnField(battleData))) {
       return false;
     }
+
+    if (vals.ApplyBuffIndividuality != null &&
+        !Individuality.checkSignedMultiIndividuality(
+          selfArray: selfTraits?.toIntList(),
+          signedTargetsArray: vals.ApplyBuffIndividuality,
+        )) {
+      return false;
+    }
+
     if (vals.ExecOnce == 1 && triggeredSkillIds != null && param != 0 && triggeredSkillIds.contains(param)) {
       return false;
     }

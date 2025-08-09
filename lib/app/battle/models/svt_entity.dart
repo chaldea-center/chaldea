@@ -939,6 +939,8 @@ class BattleServantData {
       case BuffAction.grantState:
       case BuffAction.grantSubstate:
       case BuffAction.avoidFunctionExecuteSelf:
+      case BuffAction.overwriteBuffUseRate:
+      case BuffAction.changeBuffUseRate:
         return self.getTraits(addTraits: addTraits);
       case BuffAction.functionDamage:
       case BuffAction.functionReflection:
@@ -1800,13 +1802,14 @@ class BattleServantData {
   }
 
   Future<int> getBuffValue(
-    final BattleData battleData,
-    final BuffAction buffAction, {
-    final BattleServantData? opponent,
-    final CommandCardData? card,
-    final bool isAttack = true,
-    final List<NiceTrait>? addTraits,
-    final bool skipDamage = false, // special logic for defender in damage calculation
+    BattleData battleData,
+    BuffAction buffAction, {
+    BattleServantData? opponent,
+    List<NiceTrait>? opponentTraitsOverride,
+    CommandCardData? card,
+    bool isAttack = true,
+    List<NiceTrait>? addTraits,
+    bool skipDamage = false, // special logic for defender in damage calculation
   }) async {
     final actionDetails = ConstData.buffActions[buffAction];
     // not actionable if no actionDetails present
@@ -1825,15 +1828,17 @@ class BattleServantData {
         isAttack: isAttack,
         addTraits: addTraits,
       );
-      final List<NiceTrait>? opponentTraits = fetchOpponentTraits(
-        buffAction,
-        buff,
-        opponent,
-        self: this,
-        cardData: card,
-        isAttack: !isAttack,
-        addTraits: addTraits,
-      );
+      final List<NiceTrait>? opponentTraits =
+          opponentTraitsOverride ??
+          fetchOpponentTraits(
+            buffAction,
+            buff,
+            opponent,
+            self: this,
+            cardData: card,
+            isAttack: !isAttack,
+            addTraits: addTraits,
+          );
       if (await buff.shouldActivateBuff(battleData, selfTraits, opponentTraits: opponentTraits)) {
         // here is a special logic we found that says plusTypes for defender buffs are ignored when damage is skipped.
         // It behaves like how pierceDefence acts on defence related buffs, but we did not find actual code for it.
@@ -2127,18 +2132,19 @@ class BattleServantData {
     );
   }
 
-  int? applyChangeBuffUseRate(BuffData buff) {
+  Future<int> applyChangeBuffUseRate(
+    BattleData battleData,
+    BuffData buffToApply,
+    List<NiceTrait>? opponentTraits,
+  ) async {
     final overwriteBuffRates = collectBuffsPerAction(battleBuff.validBuffs, BuffAction.overwriteBuffUseRate);
-    final changeBuffRates = collectBuffsPerAction(battleBuff.validBuffs, BuffAction.changeBuffUseRate);
-    int baseRate = buff.buffRate;
+    int baseRate = buffToApply.buffRate;
     for (final overwriteBuffRate in overwriteBuffRates) {
-      final applyIndiv = overwriteBuffRate.vals.ApplyBuffIndividuality;
-      final shouldApply =
-          applyIndiv == null ||
-          Individuality.checkSignedMultiIndividuality(
-            selfArray: buff.getTraits().toIntList(),
-            signedTargetsArray: applyIndiv,
-          );
+      final shouldApply = await buffToApply.shouldActivateBuff(
+        battleData,
+        fetchSelfTraits(BuffAction.overwriteBuffUseRate, overwriteBuffRate, this, addTraits: buffToApply.getTraits()),
+        opponentTraits: opponentTraits,
+      );
       if (shouldApply) {
         overwriteBuffRate.setUsed(this);
         baseRate = overwriteBuffRate.getValue(this);
@@ -2146,29 +2152,13 @@ class BattleServantData {
       }
     }
 
-    int totalVal = 0;
-    int? maxRate;
-    final actionDetails = ConstData.buffActions[BuffAction.changeBuffUseRate];
-    for (final changeBuffRate in changeBuffRates) {
-      final applyIndiv = changeBuffRate.vals.ApplyBuffIndividuality;
-      final shouldApply =
-          applyIndiv == null ||
-          Individuality.checkSignedMultiIndividuality(
-            selfArray: buff.getTraits().toIntList(),
-            signedTargetsArray: applyIndiv,
-          );
-      if (shouldApply) {
-        changeBuffRate.setUsed(this);
-        int value = changeBuffRate.getValue(this);
-        if (actionDetails?.plusTypes.contains(changeBuffRate.buff.type) ?? false) {
-          totalVal += value;
-        } else if (actionDetails?.minusTypes.contains(changeBuffRate.buff.type) ?? false) {
-          totalVal -= value;
-        }
-        maxRate = maxRate == null ? changeBuffRate.buff.maxRate : max(maxRate, changeBuffRate.buff.maxRate);
-      }
-    }
-    return baseRate + (actionDetails == null ? totalVal : capBuffValue(actionDetails, totalVal, maxRate));
+    final changeBuffRate = await getBuffValue(
+      battleData,
+      BuffAction.changeBuffUseRate,
+      opponentTraitsOverride: opponentTraits,
+      addTraits: buffToApply.getTraits(),
+    );
+    return baseRate + changeBuffRate;
   }
 
   Future<bool> activateBuffs(
