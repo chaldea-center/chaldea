@@ -1972,15 +1972,14 @@ class BattleServantData {
       // making assumption that turnendHpReduce should always apply, not checking indivs
 
       // check turnendHpReduceToRegain
-      final shouldConvertToHeal = turnEndHpReduceToRegainBuffs.any((turnEndHpReduceToRegain) {
-        final shouldActivate = turnEndHpReduceToRegain.shouldActivateBuffNoProbabilityCheck(
-          turnEndHpReduce.getTraits(),
-        );
-        if (shouldActivate) {
+      bool shouldConvertToHeal = false;
+      for (final turnEndHpReduceToRegain in turnEndHpReduceToRegainBuffs) {
+        if (await turnEndHpReduceToRegain.shouldActivateBuff(battleData, turnEndHpReduce.getTraits())) {
+          shouldConvertToHeal = true;
           turnEndHpReduceToRegain.setUsed(this, battleData);
+          break;
         }
-        return shouldActivate;
-      });
+      }
 
       if (isValueForHeal != shouldConvertToHeal) {
         continue;
