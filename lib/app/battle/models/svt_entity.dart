@@ -886,6 +886,7 @@ class BattleServantData {
       case BuffAction.guts:
       case BuffAction.functionGuts:
       case BuffAction.overwriteDamageDef:
+      case BuffAction.buffConvert:
         final activeOnly = buff.buff.script.IndvAddBuffPassive != 1;
         return self.getTraits(addTraits: self.getBuffTraits(activeOnly: activeOnly));
       case BuffAction.functionCommandcodeattackBefore:
@@ -1023,6 +1024,7 @@ class BattleServantData {
       case BuffAction.grantSubstate:
       case BuffAction.multiattack:
       case BuffAction.functionGuts:
+      case BuffAction.buffConvert:
         final activeOnly = buff.buff.script.IndvAddBuffPassive != 1;
         results = opponent?.getTraits(addTraits: opponent.getBuffTraits(activeOnly: activeOnly));
       case BuffAction.damageIndividuality:

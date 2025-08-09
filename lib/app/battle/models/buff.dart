@@ -228,12 +228,13 @@ class BuffData {
   }
 
   bool shouldActivateBuffNoProbabilityCheck(
-    final List<NiceTrait> selfTraits, {
-    final List<NiceTrait>? opponentTraits,
-    final BattleData? battleData,
-    final SkillInfoType? skillInfoType,
-    final List<NiceFunction>? receivedFunctionsList,
-    final List<int>? triggeredSkillIds,
+    List<NiceTrait> selfTraits, {
+    List<NiceTrait>? opponentTraits,
+    BattleData? battleData,
+    SkillInfoType? skillInfoType,
+    List<NiceFunction>? receivedFunctionsList,
+    List<int>? triggeredSkillIds,
+    Buff? buffToCheck,
   }) {
     if (!checkAct()) return false;
     if (!checkBuffDataVals(
@@ -249,6 +250,7 @@ class BuffData {
       selfTraits: selfTraits,
       opponentTraits: opponentTraits,
       skillInfoType: skillInfoType,
+      buffToCheck: buffToCheck,
     )) {
       return false;
     }
@@ -303,12 +305,13 @@ class BuffData {
   }
 
   Future<bool> shouldActivateBuff(
-    final BattleData battleData,
-    final List<NiceTrait> selfTraits, {
-    final List<NiceTrait>? opponentTraits,
-    final SkillInfoType? skillInfoType,
-    final List<NiceFunction>? receivedFunctionsList,
-    final List<int>? triggeredSkillIds,
+    BattleData battleData,
+    List<NiceTrait> selfTraits, {
+    List<NiceTrait>? opponentTraits,
+    SkillInfoType? skillInfoType,
+    List<NiceFunction>? receivedFunctionsList,
+    List<int>? triggeredSkillIds,
+    Buff? buffToCheck,
   }) async {
     return shouldActivateBuffNoProbabilityCheck(
           selfTraits,
@@ -317,6 +320,7 @@ class BuffData {
           skillInfoType: skillInfoType,
           receivedFunctionsList: receivedFunctionsList,
           triggeredSkillIds: triggeredSkillIds,
+          buffToCheck: buffToCheck,
         ) &&
         await probabilityCheck(battleData);
   }
@@ -396,10 +400,11 @@ class BuffData {
   }
 
   bool checkBuffScript({
-    final bool? isFirstSkillInTurn,
-    final List<NiceTrait>? selfTraits,
-    final List<NiceTrait>? opponentTraits,
-    final SkillInfoType? skillInfoType,
+    bool? isFirstSkillInTurn,
+    List<NiceTrait>? selfTraits,
+    List<NiceTrait>? opponentTraits,
+    SkillInfoType? skillInfoType,
+    Buff? buffToCheck,
   }) {
     if (buff.script.source.isEmpty) {
       return true;
@@ -426,10 +431,10 @@ class BuffData {
       scriptCheck &= skillInfoType == SkillInfoType.masterEquip;
     }
 
-    if (buff.script.ckSelfCountIndividuality != null) {
+    if (script.ckSelfCountIndividuality != null) {
       scriptCheck &= Individuality.checkSignedIndividualitiesCount(
         selfs: selfTraits?.toIntList(),
-        targets: buff.script.ckSelfCountIndividuality!,
+        targets: script.ckSelfCountIndividuality!,
         matchedFunc: Individuality.isPartialMatchArrayCount,
         mismatchFunc: Individuality.isPartialMatchArrayCount,
         countAbove: script.ckIndvCountAbove ?? 0,
@@ -437,15 +442,37 @@ class BuffData {
       );
     }
 
-    if (buff.script.ckOpCountIndividuality != null) {
+    if (script.ckOpCountIndividuality != null) {
       scriptCheck &= Individuality.checkSignedIndividualitiesCount(
         selfs: opponentTraits?.toIntList(),
-        targets: buff.script.ckOpCountIndividuality!,
+        targets: script.ckOpCountIndividuality!,
         matchedFunc: Individuality.isPartialMatchArrayCount,
         mismatchFunc: Individuality.isPartialMatchArrayCount,
         countAbove: script.ckIndvCountAbove ?? 0,
         countBelow: script.ckIndvCountBelow ?? 0,
       );
+    }
+
+    if (script.convert != null && buffToCheck != null) {
+      final convert = script.convert!;
+      bool shouldConvert = false;
+      switch (convert.convertType) {
+        case BuffConvertType.none:
+          break;
+        case BuffConvertType.buff:
+          for (final targetBuff in convert.targetBuffs) {
+            shouldConvert = targetBuff.id == buffToCheck.id;
+            break;
+          }
+          break;
+        case BuffConvertType.individuality:
+          for (final targetIndiv in convert.targetIndividualities) {
+            shouldConvert = buff.vals.any((e) => e.signedId == targetIndiv.signedId);
+            break;
+          }
+          break;
+      }
+      scriptCheck &= shouldConvert;
     }
 
     return scriptCheck;
