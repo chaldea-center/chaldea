@@ -404,7 +404,7 @@ class _BattleSvtDetailState extends State<BattleSvtDetail> with SingleTickerProv
                   TextSpan(
                     text: Transl.special.actorOnField.replaceAll(
                       '{0}',
-                      buff.actorName ?? buff.actorUniqueId?.toString() ?? '???',
+                      buff.activatorName ?? buff.activatorUniqueId?.toString() ?? '???',
                     ),
                     style: const TextStyle(fontStyle: FontStyle.italic),
                   ),

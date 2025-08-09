@@ -939,6 +939,8 @@ class BattleServantData {
       case BuffAction.grantState:
       case BuffAction.grantSubstate:
       case BuffAction.avoidFunctionExecuteSelf:
+      case BuffAction.overwriteBuffUseRate:
+      case BuffAction.changeBuffUseRate:
         return self.getTraits(addTraits: addTraits);
       case BuffAction.functionDamage:
       case BuffAction.functionReflection:
@@ -1801,13 +1803,14 @@ class BattleServantData {
   }
 
   Future<int> getBuffValue(
-    final BattleData battleData,
-    final BuffAction buffAction, {
-    final BattleServantData? opponent,
-    final CommandCardData? card,
-    final bool isAttack = true,
-    final List<NiceTrait>? addTraits,
-    final bool skipDamage = false, // special logic for defender in damage calculation
+    BattleData battleData,
+    BuffAction buffAction, {
+    BattleServantData? opponent,
+    List<NiceTrait>? opponentTraitsOverride,
+    CommandCardData? card,
+    bool isAttack = true,
+    List<NiceTrait>? addTraits,
+    bool skipDamage = false, // special logic for defender in damage calculation
   }) async {
     final actionDetails = ConstData.buffActions[buffAction];
     // not actionable if no actionDetails present
@@ -1826,15 +1829,17 @@ class BattleServantData {
         isAttack: isAttack,
         addTraits: addTraits,
       );
-      final List<NiceTrait>? opponentTraits = fetchOpponentTraits(
-        buffAction,
-        buff,
-        opponent,
-        self: this,
-        cardData: card,
-        isAttack: !isAttack,
-        addTraits: addTraits,
-      );
+      final List<NiceTrait>? opponentTraits =
+          opponentTraitsOverride ??
+          fetchOpponentTraits(
+            buffAction,
+            buff,
+            opponent,
+            self: this,
+            cardData: card,
+            isAttack: !isAttack,
+            addTraits: addTraits,
+          );
       if (await buff.shouldActivateBuff(battleData, selfTraits, opponentTraits: opponentTraits)) {
         // here is a special logic we found that says plusTypes for defender buffs are ignored when damage is skipped.
         // It behaves like how pierceDefence acts on defence related buffs, but we did not find actual code for it.
@@ -2127,6 +2132,35 @@ class BattleServantData {
     );
   }
 
+  Future<int> applyChangeBuffUseRate(
+    BattleData battleData,
+    BuffData buffToApply,
+    List<NiceTrait>? opponentTraits,
+  ) async {
+    final overwriteBuffRates = collectBuffsPerAction(battleBuff.validBuffs, BuffAction.overwriteBuffUseRate);
+    int baseRate = buffToApply.buffRate;
+    for (final overwriteBuffRate in overwriteBuffRates) {
+      final shouldApply = await overwriteBuffRate.shouldActivateBuff(
+        battleData,
+        fetchSelfTraits(BuffAction.overwriteBuffUseRate, overwriteBuffRate, this, addTraits: buffToApply.getTraits()),
+        opponentTraits: opponentTraits,
+      );
+      if (shouldApply) {
+        overwriteBuffRate.setUsed(this);
+        baseRate = overwriteBuffRate.getValue(this);
+        break;
+      }
+    }
+
+    final changeBuffRate = await getBuffValue(
+      battleData,
+      BuffAction.changeBuffUseRate,
+      opponentTraitsOverride: opponentTraits,
+      addTraits: buffToApply.getTraits(),
+    );
+    return baseRate + changeBuffRate;
+  }
+
   Future<bool> activateBuffs(
     final BattleData battleData,
     final Iterable<BuffAction> buffActions, {
@@ -2362,7 +2396,7 @@ class BattleServantData {
     }
 
     battleData.fieldBuffs.removeWhere(
-      (buff) => buff.vals.RemoveFieldBuffActorDeath == 1 && buff.actorUniqueId == uniqueId,
+      (buff) => buff.vals.RemoveFieldBuffActorDeath == 1 && buff.activatorUniqueId == uniqueId,
     );
     battleData.battleLogger.action('$lBattleName ${S.current.battle_death}');
     if (isPlayer) {

@@ -24,7 +24,7 @@ void main() async {
 
     test('target check', () {
       final buff = BuffData(
-        Buff(
+        buff: Buff(
           id: -1,
           name: '',
           detail: '',
@@ -34,8 +34,8 @@ void main() async {
             NiceTrait(id: Trait.demon.value),
           ],
         ),
-        DataVals({'UseRate': 1000}),
-        1,
+        vals: DataVals({'UseRate': 1000}),
+        addOrder: 1,
       );
 
       expect(buff.shouldActivateBuffNoProbabilityCheck(okuni.getTraits(), opponentTraits: cba.getTraits()), true);
@@ -44,7 +44,7 @@ void main() async {
 
     test('checkIndivType 1', () {
       final buff = BuffData(
-        Buff(
+        buff: Buff(
           id: -1,
           name: '',
           detail: '',
@@ -54,8 +54,8 @@ void main() async {
           ],
           script: BuffScript(checkIndvType: 1),
         ),
-        DataVals({'UseRate': 1000}),
-        1,
+        vals: DataVals({'UseRate': 1000}),
+        addOrder: 1,
       );
 
       expect(buff.shouldActivateBuffNoProbabilityCheck(okuni.getTraits(), opponentTraits: cba.getTraits()), true);
@@ -64,7 +64,7 @@ void main() async {
 
     test('probability check', () async {
       final buff = BuffData(
-        Buff(
+        buff: Buff(
           id: -1,
           name: '',
           detail: '',
@@ -73,8 +73,8 @@ void main() async {
             NiceTrait(id: Trait.divine.value),
           ],
         ),
-        DataVals({'UseRate': 500}),
-        1,
+        vals: DataVals({'UseRate': 500}),
+        addOrder: 1,
       );
 
       expect(await buff.shouldActivateBuff(battle, okuni.getTraits(), opponentTraits: cba.getTraits()), isFalse);
@@ -86,12 +86,20 @@ void main() async {
   });
 
   test('can stack', () {
-    final buff = BuffData(Buff(id: -1, name: '', detail: '', buffGroup: 500), DataVals(), 1);
+    final buff = BuffData(
+      buff: Buff(id: -1, name: '', detail: '', buffGroup: 500),
+      vals: DataVals({'UseRate': 1000}),
+      addOrder: 1,
+    );
     expect(buff.canStack(500), isFalse);
     expect(buff.canStack(300), isTrue);
     expect(buff.canStack(0), isTrue);
 
-    final stackable = BuffData(Buff(id: -1, name: '', detail: '', buffGroup: 0), DataVals(), 1);
+    final stackable = BuffData(
+      buff: Buff(id: -1, name: '', detail: '', buffGroup: 0),
+      vals: DataVals({'UseRate': 1000}),
+      addOrder: 1,
+    );
     expect(stackable.canStack(500), isTrue);
     expect(stackable.canStack(300), isTrue);
     expect(stackable.canStack(0), isTrue);

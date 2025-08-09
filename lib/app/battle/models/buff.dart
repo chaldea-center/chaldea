@@ -104,12 +104,12 @@ class BattleBuff {
   }
 
   void clearPassive(final int uniqueId) {
-    _passiveList.removeWhere((buff) => buff.actorUniqueId == uniqueId);
+    _passiveList.removeWhere((buff) => buff.activatorUniqueId == uniqueId);
   }
 
   void clearClassPassive(final int uniqueId) {
     _passiveList.removeWhere(
-      (buff) => buff.skillInfoType == SkillInfoType.svtClassPassive && buff.actorUniqueId == uniqueId,
+      (buff) => buff.skillInfoType == SkillInfoType.svtClassPassive && buff.activatorUniqueId == uniqueId,
     );
   }
 
@@ -140,8 +140,9 @@ class BuffData {
 
   bool checkBuffClear() => count == 0 || logicTurn == 0;
 
-  int? actorUniqueId;
-  String? actorName;
+  int? ownerUniqueId;
+  int? activatorUniqueId;
+  String? activatorName;
   bool isUsed = false;
 
   bool passive = false;
@@ -159,15 +160,22 @@ class BuffData {
 
   bool get isOnField => vals.OnField == 1;
 
-  BuffData(this.buff, this.vals, this.addOrder) {
+  BuffData({
+    required this.buff,
+    required this.vals,
+    required this.addOrder,
+    this.ownerUniqueId,
+    this.activatorUniqueId,
+    this.activatorName,
+    this.passive = false,
+    this.skillInfoType,
+  }) {
     count = vals.Count ?? -1;
     logicTurn = vals.Turn == null ? -1 : vals.Turn! * 2;
     param = vals.Value ?? 0;
     additionalParam = vals.Value2 ?? 0;
     buffRate = vals.UseRate ?? 1000;
   }
-
-  BuffData.makeCopy(this.buff, this.vals, this.addOrder);
 
   static final List<BuffType> activeOnlyTypes = [
     BuffType.upDamageIndividualityActiveonly,
@@ -322,16 +330,26 @@ class BuffData {
           triggeredSkillIds: triggeredSkillIds,
           buffToCheck: buffToCheck,
         ) &&
-        await probabilityCheck(battleData);
+        await probabilityCheck(battleData, opponentTraits);
   }
 
-  Future<bool> probabilityCheck(final BattleData battleData) async {
-    final probabilityCheck = await battleData.canActivate(buffRate, buff.lName.l);
+  static List<BuffType> useRateBuffTypes = [
+    BuffType.overwriteBuffUseRate,
+    BuffType.upBuffUseRate,
+    BuffType.downBuffUseRate,
+  ];
 
-    if (buffRate < 1000) {
+  Future<bool> probabilityCheck(BattleData battleData, List<NiceTrait>? opponentTraits) async {
+    final owner = ownerUniqueId != null ? battleData.getServantData(ownerUniqueId!) : null;
+    final finalUseRate = useRateBuffTypes.contains(buff.type)
+        ? buffRate
+        : await owner?.applyChangeBuffUseRate(battleData, this, opponentTraits) ?? buffRate;
+    final probabilityCheck = await battleData.canActivate(finalUseRate, buff.lName.l);
+
+    if (finalUseRate < 1000) {
       battleData.battleLogger.debug(
         '${buff.lName.l}: ${probabilityCheck ? S.current.success : S.current.failed}'
-        '${battleData.options.tailoredExecution ? '' : ' [$buffRate vs ${battleData.options.threshold}]'}',
+        '${battleData.options.tailoredExecution ? '' : ' [$finalUseRate vs ${battleData.options.threshold}]'}',
       );
     }
 
@@ -349,6 +367,15 @@ class BuffData {
         checkSameIndivBuffActorOnField(battleData))) {
       return false;
     }
+
+    if (vals.ApplyBuffIndividuality != null &&
+        !Individuality.checkSignedMultiIndividuality(
+          selfArray: selfTraits?.toIntList(),
+          signedTargetsArray: vals.ApplyBuffIndividuality,
+        )) {
+      return false;
+    }
+
     if (vals.ExecOnce == 1 && triggeredSkillIds != null && param != 0 && triggeredSkillIds.contains(param)) {
       return false;
     }
@@ -485,7 +512,7 @@ class BuffData {
   void setUsed(final BattleServantData owner, [BattleData? battleData]) {
     isUsed = true;
 
-    if (vals.BehaveAsFamilyBuff == 1 && vals.AddLinkageTargetIndividualty != null && actorUniqueId != null) {
+    if (vals.BehaveAsFamilyBuff == 1 && vals.AddLinkageTargetIndividualty != null) {
       final targetIndividuality = vals.AddLinkageTargetIndividualty;
       for (final buff in owner.battleBuff.getAllBuffs()) {
         if (buff.vals.getAddIndividuality().contains(targetIndividuality) && buff.vals.BehaveAsFamilyBuff == 1) {
@@ -614,8 +641,8 @@ class BuffData {
     setState(BuffState.noAct, !isAct);
 
     bool isField = true;
-    if (isOnField && actorUniqueId != null) {
-      isField &= battleData.isActorOnField(actorUniqueId!);
+    if (isOnField && activatorUniqueId != null) {
+      isField &= battleData.isActorOnField(activatorUniqueId!);
     }
     setState(BuffState.noField, !isField);
   }
@@ -628,7 +655,7 @@ class BuffData {
         '${buff.ckOpIndv.isNotEmpty ? '${S.current.battle_require_opponent_traits} '
                   '${buff.ckOpIndv.map((trait) => trait.shownName())} ' : ''}'
         '${getParamString()}'
-        '${isOnField ? S.current.battle_require_actor_on_field((actorName ?? actorUniqueId).toString()) : ''}';
+        '${isOnField ? S.current.battle_require_actor_on_field((activatorName ?? activatorUniqueId).toString()) : ''}';
   }
 
   String getParamString() {
@@ -653,21 +680,27 @@ class BuffData {
   }
 
   BuffData copy() {
-    final BuffData copy = BuffData.makeCopy(buff, vals, addOrder)
-      ..buffRate = buffRate
-      ..count = count
-      ..logicTurn = logicTurn
-      ..param = param
-      ..additionalParam = additionalParam
-      ..tdTypeChange = tdTypeChange
-      ..shortenMaxCountEachSkill = shortenMaxCountEachSkill?.toList()
-      ..intervalTurn = intervalTurn
-      ..actorUniqueId = actorUniqueId
-      ..actorName = actorName
-      ..isUsed = isUsed
-      ..passive = passive
-      ..skillInfoType = skillInfoType
-      .._state = _state;
+    final BuffData copy =
+        BuffData(
+            buff: buff,
+            vals: vals,
+            addOrder: addOrder,
+            activatorUniqueId: activatorUniqueId,
+            activatorName: activatorName,
+            ownerUniqueId: ownerUniqueId,
+            passive: passive,
+            skillInfoType: skillInfoType,
+          )
+          ..buffRate = buffRate
+          ..count = count
+          ..logicTurn = logicTurn
+          ..param = param
+          ..additionalParam = additionalParam
+          ..tdTypeChange = tdTypeChange
+          ..shortenMaxCountEachSkill = shortenMaxCountEachSkill?.toList()
+          ..intervalTurn = intervalTurn
+          ..isUsed = isUsed
+          .._state = _state;
     return copy;
   }
 

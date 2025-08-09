@@ -239,14 +239,14 @@ void main() async {
 
       battle.onFieldAllyServants[0]!.addBuff(
         BuffData(
-          Buff(
+          buff: Buff(
             id: -1,
             name: '',
             detail: '',
             vals: [NiceTrait(id: Trait.cantBeSacrificed.value)],
           ),
-          DataVals(),
-          1,
+          vals: DataVals(),
+          addOrder: 1,
         ),
       );
 

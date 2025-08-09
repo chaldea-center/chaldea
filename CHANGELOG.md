@@ -5,6 +5,8 @@
 - Add simple mode to Td Damage Ranking as a faster option
 - Fix NP Counter not working
 - Grand Lancer mechanisms
+- Grand Extra mechanisms
+- 10th anni servant mechanisms
 
 ## 2.5.20
 
