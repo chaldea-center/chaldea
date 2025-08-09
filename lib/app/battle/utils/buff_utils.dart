@@ -3,6 +3,7 @@ import 'dart:collection';
 import 'package:chaldea/app/battle/models/buff.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
+import 'package:chaldea/models/gamedata/individuality.dart';
 import '../models/svt_entity.dart';
 
 int capBuffValue(final BuffActionInfo buffAction, final int totalVal, final int? maxRate) {
@@ -61,13 +62,12 @@ bool checkSignedIndividualities2({
   final bool Function(Iterable<NiceTrait>, Iterable<NiceTrait>) positiveMatchFunc = partialMatch,
   final bool Function(Iterable<NiceTrait>, Iterable<NiceTrait>) negativeMatchFunc = partialMatch,
 }) {
-  if (requiredTraits.isEmpty) return true;
-  final positiveTargets = requiredTraits.where((trait) => trait.signedId > 0).toList();
-  final negativeTargets = requiredTraits.where((trait) => trait.signedId < 0).toList();
-
-  final positiveMatch = positiveTargets.isEmpty ? true : positiveMatchFunc(myTraits, positiveTargets);
-  final negativeMatch = negativeTargets.isEmpty ? true : !negativeMatchFunc(myTraits, negativeTargets);
-  return positiveMatch && negativeMatch;
+  return Individuality.checkSignedIndividualities2(
+    self: myTraits.toIntList(),
+    signedTarget: requiredTraits.toIntList(),
+    matchedFunc: positiveMatchFunc == partialMatch ? Individuality.isPartialMatchArray : Individuality.isMatchArray,
+    mismatchFunc: positiveMatchFunc == partialMatch ? Individuality.isPartialMatchArray : Individuality.isMatchArray,
+  );
 }
 
 bool partialMatch(final Iterable<NiceTrait> myTraits, final Iterable<NiceTrait> unsignedRequiredTraits) {

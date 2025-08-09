@@ -331,7 +331,7 @@ class BuffData {
 
   Future<bool> probabilityCheck(final BattleData battleData) async {
     final owner = ownerUniqueId != null ? battleData.getServantData(ownerUniqueId!) : null;
-    final finalUseRate = owner?.getOverwriteBuffUseRate(this) ?? buffRate;
+    final finalUseRate = owner?.applyChangeBuffUseRate(this) ?? buffRate;
     final probabilityCheck = await battleData.canActivate(finalUseRate, buff.lName.l);
 
     if (finalUseRate < 1000) {

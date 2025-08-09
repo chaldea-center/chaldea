@@ -2127,27 +2127,48 @@ class BattleServantData {
     );
   }
 
-  int? getOverwriteBuffUseRate(BuffData buff) {
-    final overwriteBuffRates = collectBuffsPerActions(battleBuff.validBuffs, [
-      BuffAction.overwriteBuffUseRate,
-      BuffAction.changeBuffUseRate,
-    ]);
+  int? applyChangeBuffUseRate(BuffData buff) {
+    final overwriteBuffRates = collectBuffsPerAction(battleBuff.validBuffs, BuffAction.overwriteBuffUseRate);
+    final changeBuffRates = collectBuffsPerAction(battleBuff.validBuffs, BuffAction.changeBuffUseRate);
+    int baseRate = buff.buffRate;
     for (final overwriteBuffRate in overwriteBuffRates) {
       final applyIndiv = overwriteBuffRate.vals.ApplyBuffIndividuality;
-      if (applyIndiv == null) return overwriteBuffRate.getValue(this);
-
-      for (final andList in applyIndiv) {
-        if (Individuality.checkSignedIndividualities2(
-          self: buff.getTraits().map((trait) => trait.signedId).toList(),
-          signedTarget: andList,
-          matchedFunc: Individuality.isMatchArray,
-          mismatchFunc: Individuality.isMatchArray,
-        )) {
-          return overwriteBuffRate.param;
-        }
+      final shouldApply =
+          applyIndiv == null ||
+          Individuality.checkSignedMultiIndividuality(
+            selfArray: buff.getTraits().toIntList(),
+            signedTargetsArray: applyIndiv,
+          );
+      if (shouldApply) {
+        overwriteBuffRate.setUsed(this);
+        baseRate = overwriteBuffRate.getValue(this);
+        break;
       }
     }
-    return null;
+
+    int totalVal = 0;
+    int? maxRate;
+    final actionDetails = ConstData.buffActions[BuffAction.changeBuffUseRate];
+    for (final changeBuffRate in changeBuffRates) {
+      final applyIndiv = changeBuffRate.vals.ApplyBuffIndividuality;
+      final shouldApply =
+          applyIndiv == null ||
+          Individuality.checkSignedMultiIndividuality(
+            selfArray: buff.getTraits().toIntList(),
+            signedTargetsArray: applyIndiv,
+          );
+      if (shouldApply) {
+        changeBuffRate.setUsed(this);
+        int value = changeBuffRate.getValue(this);
+        if (actionDetails?.plusTypes.contains(changeBuffRate.buff.type) ?? false) {
+          totalVal += value;
+        } else if (actionDetails?.minusTypes.contains(changeBuffRate.buff.type) ?? false) {
+          totalVal -= value;
+        }
+        maxRate = maxRate == null ? changeBuffRate.buff.maxRate : max(maxRate, changeBuffRate.buff.maxRate);
+      }
+    }
+    return baseRate + (actionDetails == null ? totalVal : capBuffValue(actionDetails, totalVal, maxRate));
   }
 
   Future<bool> activateBuffs(
