@@ -333,9 +333,17 @@ class BuffData {
         await probabilityCheck(battleData, opponentTraits);
   }
 
+  static List<BuffType> useRateBuffTypes = [
+    BuffType.overwriteBuffUseRate,
+    BuffType.upBuffUseRate,
+    BuffType.downBuffUseRate,
+  ];
+
   Future<bool> probabilityCheck(BattleData battleData, List<NiceTrait>? opponentTraits) async {
     final owner = ownerUniqueId != null ? battleData.getServantData(ownerUniqueId!) : null;
-    final finalUseRate = await owner?.applyChangeBuffUseRate(battleData, this, opponentTraits) ?? buffRate;
+    final finalUseRate = useRateBuffTypes.contains(buff.type)
+        ? buffRate
+        : await owner?.applyChangeBuffUseRate(battleData, this, opponentTraits) ?? buffRate;
     final probabilityCheck = await battleData.canActivate(finalUseRate, buff.lName.l);
 
     if (finalUseRate < 1000) {

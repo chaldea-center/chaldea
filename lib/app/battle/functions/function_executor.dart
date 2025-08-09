@@ -27,6 +27,7 @@ import 'package:chaldea/app/battle/utils/buff_utils.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
+import 'package:chaldea/models/gamedata/individuality.dart';
 import 'package:chaldea/utils/extension.dart';
 import '../../api/atlas.dart';
 import '../interactions/act_set_select.dart';
@@ -928,24 +929,40 @@ class FunctionExecutor {
 
     final activeOnly = dataVals.IncludePassiveIndividuality != 1;
     final includeIgnoreIndividuality = dataVals.IncludeIgnoreIndividuality == 1;
-    int matchCount = 0;
+    final List<int> selfTraits = [];
     for (final svt in traitTargets) {
-      matchCount += countAnyTraits(
-        svt.getTraits(
-          addTraits: svt.getBuffTraits(activeOnly: activeOnly, includeIgnoreIndiv: includeIgnoreIndividuality),
-        ),
-        function.functvals,
+      selfTraits.addAll(
+        svt
+            .getTraits(
+              addTraits: svt.getBuffTraits(activeOnly: activeOnly, includeIgnoreIndiv: includeIgnoreIndividuality),
+            )
+            .toIntList(),
       );
     }
+    int countAbove = 0, countBelow = 0;
     if (dataVals.FuncCheckTargetIndividualityCountEqual != null) {
-      return matchCount == dataVals.FuncCheckTargetIndividualityCountEqual!;
+      countAbove = countBelow = dataVals.FuncCheckTargetIndividualityCountEqual!;
     } else if (dataVals.FuncCheckTargetIndividualityCountHigher != null) {
-      return matchCount > dataVals.FuncCheckTargetIndividualityCountHigher!;
+      countAbove = dataVals.FuncCheckTargetIndividualityCountHigher!;
     } else if (dataVals.FuncCheckTargetIndividualityCountLower != null) {
-      return matchCount < dataVals.FuncCheckTargetIndividualityCountLower!;
+      countBelow = dataVals.FuncCheckTargetIndividualityCountLower!;
     } else {
-      return matchCount > 0;
+      return Individuality.checkSignedIndividualities2(
+        self: selfTraits,
+        signedTarget: function.functvals.toIntList(),
+        matchedFunc: Individuality.isMatchArray,
+        mismatchFunc: Individuality.isMatchArray,
+      );
     }
+
+    return Individuality.checkSignedIndividualitiesCount(
+      selfs: selfTraits,
+      targets: function.functvals.toIntList(),
+      matchedFunc: Individuality.isMatchArrayCount,
+      mismatchFunc: Individuality.isMatchArrayCount,
+      countAbove: countAbove,
+      countBelow: countBelow,
+    );
   }
 
   static void updateTargets(

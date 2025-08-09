@@ -8,7 +8,6 @@ import 'package:chaldea/app/battle/utils/battle_logger.dart';
 import 'package:chaldea/app/battle/utils/battle_utils.dart';
 import 'package:chaldea/app/battle/utils/buff_utils.dart';
 import 'package:chaldea/generated/l10n.dart';
-import 'package:chaldea/models/gamedata/individuality.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'ai.dart';
@@ -2141,7 +2140,7 @@ class BattleServantData {
     final overwriteBuffRates = collectBuffsPerAction(battleBuff.validBuffs, BuffAction.overwriteBuffUseRate);
     int baseRate = buffToApply.buffRate;
     for (final overwriteBuffRate in overwriteBuffRates) {
-      final shouldApply = await buffToApply.shouldActivateBuff(
+      final shouldApply = await overwriteBuffRate.shouldActivateBuff(
         battleData,
         fetchSelfTraits(BuffAction.overwriteBuffUseRate, overwriteBuffRate, this, addTraits: buffToApply.getTraits()),
         opponentTraits: opponentTraits,
