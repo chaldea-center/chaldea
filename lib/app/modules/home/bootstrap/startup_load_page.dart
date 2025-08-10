@@ -169,12 +169,13 @@ class _AnimatedProgressIndicatorState extends State<_AnimatedProgressIndicator> 
                   backgroundColor: Colors.transparent,
                 ),
               ),
-              Positioned(
+              AnimatedPositioned(
                 left: (constraints.maxWidth * widget.value - widget.imageSize / 2).clamp2(
                   0,
                   constraints.maxWidth - widget.imageSize,
                 ),
                 bottom: -widget.imageSize * 0.3,
+                duration: const Duration(milliseconds: 50),
                 child: AnimatedBuilder(
                   animation: _animation,
                   builder: (context, child) {

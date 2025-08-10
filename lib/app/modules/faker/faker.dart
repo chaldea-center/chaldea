@@ -1146,6 +1146,18 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
             child: Text(battleOption.questPhase.toString()),
           ),
         ),
+        if ((questPhase ?? quest)?.isUseUserEventDeck() == true) ...[
+          ListTile(
+            dense: true,
+            title: Text("Event Deck ${eventFormation?.deckNo ?? eventDeckNo}"),
+            subtitle: Text('Event ${eventFormation?.eventId ?? eventId}'),
+            trailing: const Icon(Icons.change_circle),
+            onTap: () {
+              router.pushPage(UserFormationDecksPage(mstData: mstData, eventId: eventId));
+            },
+          ),
+          if (eventFormation != null) ..._buildUserDeck(eventFormation.deckInfo),
+        ],
         ListTile(
           dense: true,
           title: Text("Deck ${battleOption.deckId}"),
@@ -1166,18 +1178,6 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
             );
           },
         ),
-        if ((questPhase ?? quest)?.isUseUserEventDeck() == true) ...[
-          ListTile(
-            dense: true,
-            title: Text("Event Deck ${eventFormation?.deckNo ?? eventDeckNo}"),
-            subtitle: Text('Event ${eventFormation?.eventId ?? eventId}'),
-            trailing: const Icon(Icons.change_circle),
-            onTap: () {
-              router.pushPage(UserFormationDecksPage(mstData: mstData, eventId: eventId));
-            },
-          ),
-          if (eventFormation != null) ..._buildUserDeck(eventFormation.deckInfo),
-        ],
         if (formation != null) ..._buildUserDeck(formation.deckInfo),
         DividerWithTitle(title: S.current.support_servant_short, indent: 16),
         ListTile(

@@ -1,12 +1,11 @@
 # Changelog
 
-## Beta
+## 2.5.21
 
-- Add simple mode to Td Damage Ranking as a faster option
+Happy 10th Anniversary! 
+- Grand Class Score mechanisms
+- 10th anniversary servant mechanisms
 - Fix NP Counter not working
-- Grand Lancer mechanisms
-- Grand Extra mechanisms
-- 10th anni servant mechanisms
 
 ## 2.5.20
 
