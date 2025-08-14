@@ -1241,5 +1241,6 @@ const _$BuffActionEnumMap = {
   BuffAction.overwriteBuffUseRate: 'overwriteBuffUseRate',
   BuffAction.changeBuffUseRate: 'changeBuffUseRate',
   BuffAction.hateToGrantedOpponent: 'hateToGrantedOpponent',
+  BuffAction.reactiveDamageGainHp: 'reactiveDamageGainHp',
   BuffAction.functionClassboardCommandSpellAfter: 'functionClassboardCommandSpellAfter',
 };

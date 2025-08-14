@@ -859,6 +859,7 @@ class SkillScript with DataScriptBase {
   List<int>? get tdTypeChangeIDs => toList('tdTypeChangeIDs');
   List<int>? get excludeTdChangeTypes => toList('excludeTdChangeTypes');
   final List<SelectTreasureDeviceInfo>? selectTreasureDeviceInfo;
+  final List<CondBranchSkillInfo>? condBranchSkillInfo;
 
   // skill.script, not in skillLv.script
   final bool? IgnoreValueUp;
@@ -883,6 +884,7 @@ class SkillScript with DataScriptBase {
       additionalSkillActorType?.isNotEmpty == true ||
       SelectAddInfo?.isNotEmpty == true ||
       selectTreasureDeviceInfo?.isNotEmpty == true ||
+      condBranchSkillInfo?.isNotEmpty == true ||
       tdTypeChangeIDs?.isNotEmpty == true ||
       excludeTdChangeTypes?.isNotEmpty == true ||
       IgnoreValueUp != null ||
@@ -907,6 +909,7 @@ class SkillScript with DataScriptBase {
     // this.tdTypeChangeIDs,
     // this.excludeTdChangeTypes,
     this.selectTreasureDeviceInfo,
+    this.condBranchSkillInfo,
     dynamic IgnoreValueUp,
     List? IgnoreBattlePointUp,
     this.tdChangeByBattlePoint,
@@ -1018,6 +1021,31 @@ class TdChangeByBattlePoint {
 
   Map<String, dynamic> toJson() => _$TdChangeByBattlePointToJson(this);
 }
+
+@JsonSerializable()
+class CondBranchSkillInfo {
+  BattleBranchSkillCondBranchType condType;
+  List<int> condValue;
+  int skillId;
+  String detailText;
+  int iconBuffId;
+
+  CondBranchSkillInfo({
+    this.condType = BattleBranchSkillCondBranchType.none,
+    this.condValue = const [],
+    this.skillId = 0,
+    this.detailText = '',
+    this.iconBuffId = 0,
+  });
+
+  String? get icon => db.gameData.baseBuffs[iconBuffId]?.icon;
+
+  factory CondBranchSkillInfo.fromJson(Map<String, dynamic> json) => _$CondBranchSkillInfoFromJson(json);
+
+  Map<String, dynamic> toJson() => _$CondBranchSkillInfoToJson(this);
+}
+
+enum BattleBranchSkillCondBranchType { none, isSelfTarget, individuality }
 
 @JsonSerializable()
 class SkillAdd {

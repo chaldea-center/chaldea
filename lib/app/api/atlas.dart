@@ -181,6 +181,14 @@ class AtlasApi {
     );
   }
 
+  static Future<BaseSkill?> baseSkill(int skillId, {Region region = Region.jp, Duration? expireAfter}) async {
+    if (skillId <= 0) return null;
+    BaseSkill? _skill;
+    if (region.isJP) _skill = db.gameData.baseSkills[skillId];
+    if (_skill != null) return _skill;
+    return skill(skillId, region: region, expireAfter: expireAfter);
+  }
+
   static Future<BaseFunction?> func(int funcId, {Region region = Region.jp, Duration? expireAfter}) {
     return cacheManager.getModel(
       '$atlasApiHost/nice/${region.upper}/function/$funcId',

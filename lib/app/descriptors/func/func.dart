@@ -6,6 +6,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/app.dart';
+import 'package:chaldea/app/descriptors/skill_descriptor.dart';
 import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/app/modules/common/misc.dart';
 import 'package:chaldea/generated/l10n.dart';
@@ -76,7 +77,7 @@ mixin FuncsDescriptor {
     List<Widget> children = [];
     final actIndiv = (showActIndiv && owner is BaseSkill) ? owner.actIndividuality : <NiceTrait>[];
     if (script?.isNotEmpty == true || actIndiv.isNotEmpty) {
-      children.add(SkillScriptDescriptor(script: script, actIndividuality: actIndiv));
+      children.add(SkillScriptDescriptor(script: script, actIndividuality: actIndiv, region: region));
     }
 
     for (int index = 0; index < funcs2.length; index++) {
@@ -239,8 +240,14 @@ class _DescriptorWrapper extends StatelessWidget {
 class SkillScriptDescriptor extends StatelessWidget {
   final SkillScript? script;
   final List<NiceTrait> actIndividuality;
+  final Region? region;
 
-  const SkillScriptDescriptor({super.key, required this.script, this.actIndividuality = const []});
+  const SkillScriptDescriptor({
+    super.key,
+    required this.script,
+    this.actIndividuality = const [],
+    required this.region,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -479,6 +486,77 @@ class SkillScriptDescriptor extends StatelessWidget {
           ),
         ),
       );
+    }
+    if (script?.condBranchSkillInfo?.isNotEmpty == true) {
+      final branches = script?.condBranchSkillInfo ?? [];
+      final transl = Transl.miscScope('condBranchSkillInfo');
+      for (final (index, branch) in branches.indexed) {
+        String title = transl("Branch").l.replaceFirst('{0}', '${index + 1}');
+        title = '[$title] ';
+        if (Transl.md.skillNames.containsKey(branch.detailText)) {
+          title += Transl.skillNames(branch.detailText).l;
+        } else {
+          title += transl(branch.detailText).l;
+        }
+        InlineSpan condSpan = switch (branch.condType) {
+          BattleBranchSkillCondBranchType.none => TextSpan(text: branch.condType.name),
+          BattleBranchSkillCondBranchType.isSelfTarget => TextSpan(
+            text: transl("${branch.condType.name}.${branch.condValue.firstOrNull ?? 0}").l,
+          ),
+          BattleBranchSkillCondBranchType.individuality => TextSpan(
+            text: '${transl(branch.condType.name).l}: ',
+            children: SharedBuilder.traitSpans(context: context, traits: NiceTrait.list(branch.condValue)),
+          ),
+        };
+        children.add(
+          Container(
+            decoration: BoxDecoration(
+              border: Border.all(color: Theme.of(context).colorScheme.secondaryContainer, width: 1),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            padding: const EdgeInsets.all(4),
+            margin: const EdgeInsets.only(bottom: 8),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                ListTile(
+                  dense: true,
+                  leading: FutureBuilder2<int, String?>(
+                    id: branch.iconBuffId,
+                    loader: () async {
+                      return branch.icon ?? (await AtlasApi.buff(branch.iconBuffId, region: region ?? Region.jp))?.icon;
+                    },
+                    builder: (context, icon) {
+                      return db.getIconImage(icon, width: 24, height: 24);
+                    },
+                  ),
+                  title: Text(title),
+                  subtitle: Text.rich(
+                    TextSpan(
+                      text: '【',
+                      children: [
+                        condSpan,
+                        const TextSpan(text: '】'),
+                      ],
+                    ),
+                  ),
+                ),
+                FutureBuilder2<int, BaseSkill?>(
+                  id: branch.skillId,
+                  loader: () => AtlasApi.baseSkill(branch.skillId, region: region ?? Region.jp),
+                  builder: (context, skill) {
+                    if (skill == null) {
+                      return Text(branch.skillId.toString(), style: const TextStyle(fontStyle: FontStyle.italic));
+                    }
+                    return SkillDescriptor(skill: skill, region: region);
+                  },
+                ),
+              ],
+            ),
+          ),
+        );
+      }
     }
     if (children.isEmpty) return const SizedBox();
     return Container(

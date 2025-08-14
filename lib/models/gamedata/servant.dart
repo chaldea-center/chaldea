@@ -1932,6 +1932,9 @@ enum VoiceCondType {
   levelUpLimitCount,
   levelUpLimitCountAbove,
   levelUpLimitCountBelow,
+  svtExceedCount,
+  svtExceedCountAbove,
+  svtExceedCountBelow,
   unknown,
 }
 

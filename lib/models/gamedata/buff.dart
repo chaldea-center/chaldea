@@ -498,6 +498,7 @@ enum BuffType {
   overwriteBuffUseRate(231),
   upBuffUseRate(232),
   downBuffUseRate(233),
+  reactiveDamageGainHp(234),
   upHateToGrantedOpponent(235),
 
   toFieldChangeField(10001),

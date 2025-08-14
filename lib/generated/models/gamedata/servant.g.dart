@@ -1003,6 +1003,9 @@ const _$VoiceCondTypeEnumMap = {
   VoiceCondType.levelUpLimitCount: 'levelUpLimitCount',
   VoiceCondType.levelUpLimitCountAbove: 'levelUpLimitCountAbove',
   VoiceCondType.levelUpLimitCountBelow: 'levelUpLimitCountBelow',
+  VoiceCondType.svtExceedCount: 'svtExceedCount',
+  VoiceCondType.svtExceedCountAbove: 'svtExceedCountAbove',
+  VoiceCondType.svtExceedCountBelow: 'svtExceedCountBelow',
   VoiceCondType.unknown: 'unknown',
 };
 

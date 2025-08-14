@@ -396,6 +396,7 @@ class DataVals {
   int? get ApplySupportSvt => _get('ApplySupportSvt');
   int? get ApplyHighestValueInFieldGroup => _get('ApplyHighestValueInFieldGroup');
   int? get IsClassIconChangeSaveGrand => _get('IsClassIconChangeSaveGrand');
+  int? get ExecuteEffectId => _get('ExecuteEffectId');
   int? get PriorityUpHate => _get('PriorityUpHate');
 
   int? get Individuality => _get('Individuality');

@@ -1364,6 +1364,7 @@ enum BuffAction {
   overwriteBuffUseRate(158),
   changeBuffUseRate(159),
   hateToGrantedOpponent(160),
+  reactiveDamageGainHp(161),
   // custom
   functionClassboardCommandSpellAfter(301);
 
@@ -1422,6 +1423,7 @@ const kBuffActionPercentTypes = {
   BuffAction.resistanceDelayNpturn: 10,
   BuffAction.changeBuffUseRate: 10,
   BuffAction.overwriteBuffUseRate: 10,
+  BuffAction.reactiveDamageGainHp: 10,
 };
 
 const kBuffTypePercentType = <BuffType, int>{

@@ -376,6 +376,9 @@ SkillScript _$SkillScriptFromJson(Map json) => SkillScript(
   selectTreasureDeviceInfo: (json['selectTreasureDeviceInfo'] as List<dynamic>?)
       ?.map((e) => SelectTreasureDeviceInfo.fromJson(Map<String, dynamic>.from(e as Map)))
       .toList(),
+  condBranchSkillInfo: (json['condBranchSkillInfo'] as List<dynamic>?)
+      ?.map((e) => CondBranchSkillInfo.fromJson(Map<String, dynamic>.from(e as Map)))
+      .toList(),
   IgnoreValueUp: json['IgnoreValueUp'],
   IgnoreBattlePointUp: json['IgnoreBattlePointUp'] as List<dynamic>?,
   tdChangeByBattlePoint: (json['tdChangeByBattlePoint'] as List<dynamic>?)
@@ -387,6 +390,7 @@ Map<String, dynamic> _$SkillScriptToJson(SkillScript instance) => <String, dynam
   'actRarity': ?instance.actRarity,
   'SelectAddInfo': ?instance.SelectAddInfo?.map((e) => e.toJson()).toList(),
   'selectTreasureDeviceInfo': ?instance.selectTreasureDeviceInfo?.map((e) => e.toJson()).toList(),
+  'condBranchSkillInfo': ?instance.condBranchSkillInfo?.map((e) => e.toJson()).toList(),
   'IgnoreValueUp': ?instance.IgnoreValueUp,
   'IgnoreBattlePointUp': ?instance.IgnoreBattlePointUp,
   'tdChangeByBattlePoint': ?instance.tdChangeByBattlePoint?.map((e) => e.toJson()).toList(),
@@ -482,6 +486,30 @@ Map<String, dynamic> _$TdChangeByBattlePointToJson(TdChangeByBattlePoint instanc
   'battlePointId': instance.battlePointId,
   'phase': instance.phase,
   'noblePhantasmId': instance.noblePhantasmId,
+};
+
+CondBranchSkillInfo _$CondBranchSkillInfoFromJson(Map json) => CondBranchSkillInfo(
+  condType:
+      $enumDecodeNullable(_$BattleBranchSkillCondBranchTypeEnumMap, json['condType']) ??
+      BattleBranchSkillCondBranchType.none,
+  condValue: (json['condValue'] as List<dynamic>?)?.map((e) => (e as num).toInt()).toList() ?? const [],
+  skillId: (json['skillId'] as num?)?.toInt() ?? 0,
+  detailText: json['detailText'] as String? ?? '',
+  iconBuffId: (json['iconBuffId'] as num?)?.toInt() ?? 0,
+);
+
+Map<String, dynamic> _$CondBranchSkillInfoToJson(CondBranchSkillInfo instance) => <String, dynamic>{
+  'condType': _$BattleBranchSkillCondBranchTypeEnumMap[instance.condType]!,
+  'condValue': instance.condValue,
+  'skillId': instance.skillId,
+  'detailText': instance.detailText,
+  'iconBuffId': instance.iconBuffId,
+};
+
+const _$BattleBranchSkillCondBranchTypeEnumMap = {
+  BattleBranchSkillCondBranchType.none: 'none',
+  BattleBranchSkillCondBranchType.isSelfTarget: 'isSelfTarget',
+  BattleBranchSkillCondBranchType.individuality: 'individuality',
 };
 
 SkillAdd _$SkillAddFromJson(Map json) => SkillAdd(
