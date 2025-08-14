@@ -61,6 +61,24 @@ abstract class Individuality {
     return result;
   }
 
+  static bool checkSignedIndivPartialMatch({required List<int>? self, required List<int>? signedTarget}) {
+    return checkSignedIndividualities2(
+      self: self,
+      signedTarget: signedTarget,
+      matchedFunc: Individuality.isPartialMatchArray,
+      mismatchFunc: Individuality.isPartialMatchArray,
+    );
+  }
+
+  static bool checkSignedIndivAllMatch({required List<int>? self, required List<int>? signedTarget}) {
+    return checkSignedIndividualities2(
+      self: self,
+      signedTarget: signedTarget,
+      matchedFunc: Individuality.isMatchArray,
+      mismatchFunc: Individuality.isMatchArray,
+    );
+  }
+
   static ({List<int> unsignedArray, List<int> signedArray}) divideUnsignedAndSignedArray(List<int> baseArray) {
     List<int> unsignedArray = [], signedArray = [];
     for (final x in baseArray) {

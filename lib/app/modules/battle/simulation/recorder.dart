@@ -654,7 +654,12 @@ class BattleRecorderPanelBase extends StatelessWidget {
     BattleServantData? playerSvt,
     BattleServantData? enemySvt,
   ) {
-    for (final func in skill.functions) {
+    List<NiceFunction> functions = skill.functions;
+    if (skill.script?.condBranchSkillInfo?.isNotEmpty == true) {
+      // assume always ally
+      return isPlayer ? playerSvt : enemySvt;
+    }
+    for (final func in functions) {
       if (func.funcTargetTeam == FuncApplyTarget.enemy && isPlayer) continue;
       if (func.funcTargetTeam == FuncApplyTarget.player && !isPlayer) continue;
       final ally = isPlayer ? playerSvt : enemySvt;

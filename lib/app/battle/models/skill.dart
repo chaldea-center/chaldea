@@ -1,9 +1,11 @@
 import 'dart:async';
 import 'dart:math';
 
+import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/battle/functions/function_executor.dart';
 import 'package:chaldea/app/battle/utils/buff_utils.dart';
 import 'package:chaldea/generated/l10n.dart';
+import 'package:chaldea/models/gamedata/individuality.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import '../interactions/skill_act_select.dart';
@@ -176,7 +178,45 @@ class BattleSkillInfoData {
     final targetedAlly = battleData.getTargetedAlly(activator, defaultToPlayer: defaultToPlayer);
     final targetedEnemy = battleData.getTargetedEnemy(activator, defaultToPlayer: defaultToPlayer);
     final Set<BattleServantData> wouldAffectTargets = {};
-    for (final func in curSkill.functions) {
+    List<NiceFunction> resultFunctions = curSkill.functions;
+
+    // not check branch skill's script
+    final branchSkills = skillScript?.condBranchSkillInfo ?? [];
+    if (branchSkills.isNotEmpty) {
+      for (final branch in branchSkills) {
+        if (branch.skillId <= 0) continue;
+        switch (branch.condType) {
+          case BattleBranchSkillCondBranchType.none:
+            break;
+          case BattleBranchSkillCondBranchType.isSelfTarget:
+            if (activator == null) continue;
+            assert(targetedAlly != null);
+            if (((branch.condValue.firstOrNull ?? 0) != 0) != (activator.uniqueId == targetedAlly?.uniqueId)) {
+              continue;
+            }
+            break;
+          case BattleBranchSkillCondBranchType.individuality:
+            if (!Individuality.checkSignedIndivPartialMatch(
+              self: activator?.getTraits().toIntList(),
+              signedTarget: branch.condValue,
+            )) {
+              continue;
+            }
+            break;
+        }
+        final branchSkill = await AtlasApi.baseSkill(branch.skillId);
+        if (branchSkill == null) {
+          battleData.battleLogger.error(
+            'Skill ${skill?.id} condBranchSkillInfo: branch skill ${branch.skillId} not found',
+          );
+        } else {
+          resultFunctions = branchSkill.functions;
+        }
+        break;
+      }
+    }
+
+    for (final func in resultFunctions) {
       if (!FunctionExecutor.validateFunctionTargetTeam(func, activator?.isPlayer ?? defaultToPlayer)) continue;
 
       wouldAffectTargets.addAll(
@@ -213,7 +253,7 @@ class BattleSkillInfoData {
 
     await FunctionExecutor.executeFunctions(
       battleData,
-      curSkill.functions,
+      resultFunctions,
       skillLv,
       activator: activator,
       targetedAlly: targetedAlly,
@@ -233,7 +273,7 @@ class BattleSkillInfoData {
     }
     for (final svt in wouldAffectTargets) {
       if (type == SkillInfoType.commandSpell) {
-        final csId = curSkill.functions.firstOrNull?.svals.firstOrNull?.CommandSpellId;
+        final csId = resultFunctions.firstOrNull?.svals.firstOrNull?.CommandSpellId;
         if (csId == 1 || csId == 9) {
           await svt.activateBuff(battleData, BuffAction.functionClassboardCommandSpellAfter, skillInfo: this);
         }
