@@ -52,6 +52,9 @@ class ConstGameData {
   final Map<int, int> extraWarEventMapping;
   final Map<int, int> sameQuestRemap;
   late final Map<int, int> sameQuestRemapReverse = {for (final (k, v) in sameQuestRemap.items) v: k};
+  final Map<int, List<int>> subEvents = {
+    80557: [80569, 80560, 80561, 80562, 80563, 80564, 80565, 80566, 80567, 80568],
+  };
   final ConstDataConfig config;
 
   ConstGameData({

@@ -432,6 +432,37 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
       children.add(addQuestCategoryTile(context: context, event: event, extraQuests: extraQuests));
     }
 
+    final subEvents = ConstData.subEvents[event.id] ?? [];
+    if (subEvents.isNotEmpty) {
+      List<Widget> subEventTiles = [];
+      for (final subEventId in subEvents) {
+        subEventTiles.add(
+          LayoutBuilder(
+            builder: (context, constraints) {
+              final subEvent = db.gameData.events[subEventId];
+              String title = subEvent == null ? '${S.current.event} $subEventId' : subEvent.lName.l;
+              final height = min(constraints.maxWidth / 2, 164.0) / 142 * 354;
+              final banner = subEvent?.extra.allBanners.firstOrNull ?? event.shopBanner;
+              return ListTile(
+                leading: banner == null ? null : db.getIconImage(banner, height: height),
+                horizontalTitleGap: 8,
+                title: Text(
+                  title,
+                  maxLines: 2,
+                  textScaler: const TextScaler.linear(0.8),
+                  overflow: TextOverflow.ellipsis,
+                ),
+                onTap: () {
+                  router.push(url: Routes.eventI(subEventId));
+                },
+              );
+            },
+          ),
+        );
+      }
+      children.add(TileGroup(header: S.current.event, children: subEventTiles));
+    }
+
     // Mahoyo bonus enemy
     if (event.id == 80472) {
       children.add(

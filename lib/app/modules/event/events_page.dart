@@ -67,8 +67,10 @@ class EventListPageState extends State<EventListPage>
     filterShownList();
     List<Event> limitEvents = [], campaigns = [];
 
+    final subEvents = {for (final v in ConstData.subEvents.values) ...v};
     for (final event in shownList) {
       if (const [EventType.eventQuest, EventType.warBoard].contains(event.type)) {
+        if (subEvents.contains(event.id)) continue;
         limitEvents.add(event);
       } else if (event.type == EventType.mcCampaign) {
         if (filterData.showMcCampaign) limitEvents.add(event);
