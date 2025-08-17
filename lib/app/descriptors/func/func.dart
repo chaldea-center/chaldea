@@ -475,12 +475,13 @@ class SkillScriptDescriptor extends StatelessWidget {
       final transl = Transl.miscScope('SelectAddInfo');
       children.add(
         _pad(
-          Text(
-            [
-              '* ${transl('Optional').l}: ${transl(info.title).l}',
-              for (int index = 0; index < info.btn.length; index++)
-                '${transl('Option').l} ${index + 1}: ${transl(info.btn[index].name).l}',
-            ].join('\n'),
+          Text.rich(
+            TextSpan(
+              children: [
+                TextSpan(text: '* ${transl('Optional').l}: ${transl(info.title).l}'),
+                for (final (index, btn) in info.btn.indexed) btn.buildSpan(index),
+              ].divided((_) => const TextSpan(text: '\n')),
+            ),
             style: Theme.of(context).textTheme.bodySmall,
             textScaler: const TextScaler.linear(0.9),
           ),

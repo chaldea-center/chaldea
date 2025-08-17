@@ -6,6 +6,7 @@ import 'package:chaldea/app/modules/skill/skill_detail.dart';
 import 'package:chaldea/app/modules/skill/td_detail.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/utils/utils.dart';
+import 'package:chaldea/widgets/widget_builders.dart' show CenterWidgetSpan;
 import '../../app/app.dart';
 import '../../app/tools/gamedata_loader.dart';
 import '../db.dart';
@@ -956,12 +957,42 @@ class SkillSelectAddInfo {
 class SkillSelectAddInfoBtn {
   final String name;
   final List<SkillSelectAddInfoBtnCond> conds;
+  @protected
+  final String? image;
+  final String? imageUrl;
 
-  SkillSelectAddInfoBtn({this.name = '', this.conds = const []});
+  String? get imageLink {
+    if (imageUrl != null) return imageUrl;
+    final image = this.image;
+    if (image == null) return null;
+    if (image.toLowerCase().contains('http')) return image;
+    return 'https://static.atlasacademy.io/JP/Battle/Common/BattleAssetUIAtlas/$image.png';
+  }
+
+  SkillSelectAddInfoBtn({String name = '', this.conds = const [], this.image, this.imageUrl})
+    : name = checkName(name, image);
 
   factory SkillSelectAddInfoBtn.fromJson(Map<String, dynamic> json) => _$SkillSelectAddInfoBtnFromJson(json);
 
   Map<String, dynamic> toJson() => _$SkillSelectAddInfoBtnToJson(this);
+
+  static String checkName(String title, String? image) {
+    if (title.trim().isNotEmpty || image == null) return title;
+    return fallbackNames[image] ?? title;
+  }
+
+  static Map<String, String> fallbackNames = {"btn_select_003": "月下(全体タイプ)", "btn_select_004": "日輪(単体タイプ)"};
+
+  TextSpan buildSpan(int index) {
+    final transl = Transl.miscScope('SelectAddInfo');
+    return TextSpan(
+      children: [
+        TextSpan(text: '${transl('Option').l} ${index + 1}: '),
+        if (imageLink != null) CenterWidgetSpan(child: db.getIconImage(imageLink, height: 24)),
+        TextSpan(text: transl(name).l),
+      ],
+    );
+  }
 }
 
 @JsonSerializable()

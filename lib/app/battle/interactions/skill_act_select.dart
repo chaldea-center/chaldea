@@ -64,13 +64,7 @@ class SkillActSelectDialog extends StatelessWidget {
           ),
           ...List.generate(buttons.length, (index) {
             final button = buttons[index];
-            final textWidget = Padding(
-              padding: const EdgeInsets.all(4.0),
-              child: Text(
-                '${transl('Option').l} ${index + 1}: ${transl(button.name).l}',
-                // style: const TextStyle(fontSize: 18),
-              ),
-            );
+            final textWidget = Padding(padding: const EdgeInsets.all(4.0), child: Text.rich(button.buildSpan(index)));
             return TextButton(
               onPressed:
                   button.conds.every(
