@@ -1841,11 +1841,7 @@ class BattleServantData {
             addTraits: addTraits,
           );
       if (await buff.shouldActivateBuff(battleData, selfTraits, opponentTraits: opponentTraits)) {
-        // here is a special logic we found that says plusTypes for defender buffs are ignored when damage is skipped.
-        // It behaves like how pierceDefence acts on defence related buffs, but we did not find actual code for it.
-        // This fix is still necessary so that defenceDown buffs get used correctly
-        // ref: https://discord.com/channels/839788731108032532/1078568994170228736/1274409425586753647
-        if (skipDamage && actionDetails.plusTypes.contains(buff.buff.type)) {
+        if (skipDamage && ConstData.constantStr.notReduceCountWithNoDamageBuff.contains(buff.buff.type.value)) {
           continue;
         }
 

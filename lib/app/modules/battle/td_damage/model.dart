@@ -95,7 +95,7 @@ class TdDmgSolver {
         );
         await Future.delayed(const Duration(milliseconds: 5));
 
-        if (options.simpleMode || 2 > 1) {
+        if (options.simpleMode) {
           limitsToAdd.add(4);
           if (svt.id == 304800 || svt.id == 205000) {
             limitsToAdd.add(1);
