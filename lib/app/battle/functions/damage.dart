@@ -415,6 +415,7 @@ class Damage {
       if (funcType == FuncType.damageNpSafe && target.hp > 0 && totalDamage >= target.hp) {
         totalDamage = target.hp - 1;
       }
+      final absorbDamage = await target.hasBuff(battleData, BuffAction.reactiveDamageGainHp);
 
       // calc min/max first, since it doesn't change original target/activator
       final minResult = await _calc(
@@ -429,6 +430,7 @@ class Damage {
             currentCard: currentCard.copy(),
             multiAttack: multiAttack,
             skipDamage: skipDamage,
+            absorbDamage: absorbDamage,
           ),
           maxResult = await _calc(
             totalDamage: calculateDamageNoError(
@@ -442,6 +444,7 @@ class Damage {
             currentCard: currentCard.copy(),
             multiAttack: multiAttack,
             skipDamage: skipDamage,
+            absorbDamage: absorbDamage,
           );
 
       final previousHp = target.hp;
@@ -455,6 +458,7 @@ class Damage {
         currentCard: currentCard,
         multiAttack: multiAttack,
         skipDamage: skipDamage,
+        absorbDamage: absorbDamage,
       );
 
       target.lastHitBy = activator;
@@ -612,6 +616,7 @@ class Damage {
     required CommandCardData currentCard,
     required int? multiAttack,
     required bool skipDamage,
+    required bool absorbDamage,
   }) async {
     final result = DamageResult();
     int remainingDamage = totalDamage;
@@ -638,11 +643,16 @@ class Damage {
           hitDamage = remainingDamage;
         }
 
-        result.damages.add(hitDamage);
         remainingDamage -= hitDamage;
-
         final previousHp = target.hp;
-        target.receiveDamage(hitDamage);
+        if (absorbDamage) {
+          result.damages.add(-hitDamage);
+          target.heal(hitDamage);
+        } else {
+          result.damages.add(hitDamage);
+          target.receiveDamage(hitDamage);
+        }
+
         if (target != activator) {
           target.procAccumulationDamage(previousHp);
         }
