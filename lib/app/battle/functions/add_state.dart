@@ -33,6 +33,14 @@ class AddState {
     } else if (dataVals.ProcPassive == 1) {
       isPassive = true;
     }
+
+    // based on video
+    if (buff.type == BuffType.donotSelectCommandcard) {
+      for (final actor in battleData.nonnullActors) {
+        actor.battleBuff.removeBuffOfType(BuffType.donotSelectCommandcard);
+      }
+    }
+
     for (final target in targets) {
       final buffData = BuffData(
         buff: buff,

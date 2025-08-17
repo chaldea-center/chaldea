@@ -485,19 +485,27 @@ class BattleData {
       for (final svt in nonnullPlayers) {
         await svt.startOfMyTurn(this);
       }
-    });
-    for (final svt in nonnullActors) {
-      await svt.svtAi.reactionTurnStart(this, svt);
-    }
 
-    if (!fixCommandCard()) {
-      cardDealt += 5;
-      currentCards.clear();
-      currentCards.addAll(remainingCards);
-      if (remainingCards.isEmpty || cardDealt > nonnullPlayers.length * 5) {
-        refillCardDeck();
+      for (final svt in nonnullActors) {
+        await svt.svtAi.reactionTurnStart(this, svt);
       }
-    }
+
+      if (!fixCommandCard()) {
+        cardDealt += 5;
+        currentCards.clear();
+        currentCards.addAll(remainingCards);
+        if (remainingCards.isEmpty || cardDealt > nonnullPlayers.length * 5) {
+          refillCardDeck();
+        }
+
+        for (final svt in nonnullPlayers) {
+          if (svt.hasBuffNoProbabilityCheck(BuffAction.donotSelectCommandcard)) {
+            refillCardDeck();
+            break;
+          }
+        }
+      }
+    });
   }
 
   Future<bool> _nextWave() async {
@@ -1279,6 +1287,13 @@ class BattleData {
         skill.turnEnd();
       }
 
+      for (final svt in nonnullPlayers) {
+        if (svt.hasBuffNoProbabilityCheck(BuffAction.donotSelectCommandcard)) {
+          refillCardDeck();
+          break;
+        }
+      }
+
       await _removeDeadActors();
 
       for (final buff in fieldBuffs) {
@@ -1315,6 +1330,13 @@ class BattleData {
 
       for (final svt in nonnullPlayers) {
         await svt.endOfYourTurn(this);
+      }
+
+      for (final svt in nonnullPlayers) {
+        if (svt.hasBuffNoProbabilityCheck(BuffAction.donotSelectCommandcard)) {
+          refillCardDeck();
+          break;
+        }
       }
 
       await _removeDeadActors();

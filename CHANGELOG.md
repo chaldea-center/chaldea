@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.5.22
+- Summer Lip skills
+- Ishtar S3 buff upgrade
+
 ## 2.5.21
 
 Happy 10th Anniversary! 
