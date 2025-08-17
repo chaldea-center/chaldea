@@ -17,13 +17,13 @@ import '../servant/filter.dart';
 typedef _GroupItem = ({int rateCount, List<int> ceIds, List<({Servant svt, List<int> limitCounts})> svts});
 
 class EquipBondBonusTab extends StatefulWidget {
-  final Servant? targetSvt;
-  const EquipBondBonusTab({super.key, this.targetSvt});
+  final List<Servant> targetSvts;
+  const EquipBondBonusTab({super.key, this.targetSvts = const []});
 
-  static Widget scaffold({Servant? targetSvt}) {
+  static Widget scaffold({List<Servant>? targetSvts}) {
     return Scaffold(
       appBar: AppBar(title: Text(S.current.bond_bonus)),
-      body: EquipBondBonusTab(targetSvt: targetSvt),
+      body: EquipBondBonusTab(targetSvts: targetSvts ?? const []),
     );
   }
 
@@ -84,6 +84,7 @@ enum _FilterType {
 /// functvals: traits
 /// DataVals: [RateCount], [AddCount] (ignore)
 class _EquipBondBonusTabState extends State<EquipBondBonusTab> {
+  late final _targetSvts = {for (final svt in widget.targetSvts) svt.id: svt};
   Map<int, ({CraftEssence ce, List<List<NiceTrait>> traits, int rateCount})> allCeData = {};
   Map<int, Map<int, List<int>>> allCeMatchSvtData = {}; //<ceId, <svtId, [limitCount]>>
 
@@ -136,8 +137,8 @@ class _EquipBondBonusTabState extends State<EquipBondBonusTab> {
     sortDict(allCeData, inPlace: true, compare: (a, b) => a.value.ce.collectionNo.compareTo(b.value.ce.collectionNo));
 
     // ce mapping svt
-    final svts = widget.targetSvt != null
-        ? [widget.targetSvt!]
+    final svts = _targetSvts.isNotEmpty
+        ? _targetSvts.values.toList()
         : db.gameData.servantsById.values.where((e) => e.collectionNo > 0);
     for (final (:ce, :traits, rateCount: _) in allCeData.values) {
       final svtLimitsData = allCeMatchSvtData[ce.id] ??= {};
@@ -227,7 +228,7 @@ class _EquipBondBonusTabState extends State<EquipBondBonusTab> {
 
       List<({Servant svt, List<int> limitCounts})> svts = [];
       for (final svtId in sameSvtIds) {
-        final svt = widget.targetSvt?.id == svtId ? widget.targetSvt : db.gameData.servantsById[svtId];
+        final svt = _targetSvts[svtId] ?? db.gameData.servantsById[svtId];
         if (svt == null) continue;
         if (!ServantFilterPage.filter(svtFilterData, svt)) continue;
         final sameLimitCounts = _intersectionSetList(
@@ -248,7 +249,7 @@ class _EquipBondBonusTabState extends State<EquipBondBonusTab> {
     }
 
     // show svts with no bonus for all ces
-    if (ceFilterStates.values.every((e) => e == _FilterType.none) && widget.targetSvt == null) {
+    if (ceFilterStates.values.every((e) => e == _FilterType.none) && _targetSvts.isEmpty) {
       final bonusSvtIds = <int>{for (final v in allCeMatchSvtData.values) ...v.keys};
       List<({Servant svt, List<int> limitCounts})> svts = [];
       for (final svt in db.gameData.servantsById.values) {

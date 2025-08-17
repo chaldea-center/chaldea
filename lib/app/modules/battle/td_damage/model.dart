@@ -88,18 +88,19 @@ class TdDmgSolver {
       if (!svt.isUserSvt) continue;
       try {
         final List<int> limitsToAdd = [];
-        if (options.simpleMode) {
+        EasyLoading.showProgress(
+          idx / servants.length,
+          status: '$idx / ${servants.length}',
+          maskType: EasyLoadingMaskType.clear,
+        );
+        await Future.delayed(const Duration(milliseconds: 5));
+
+        if (options.simpleMode || 2 > 1) {
           limitsToAdd.add(4);
           if (svt.id == 304800 || svt.id == 205000) {
             limitsToAdd.add(1);
           }
         } else {
-          EasyLoading.showProgress(
-            idx / servants.length,
-            status: '$idx / ${servants.length}',
-            maskType: EasyLoadingMaskType.clear,
-          );
-          await Future.delayed(const Duration(milliseconds: 5));
           final limits = [...svt.limits.keys.toList().sortReturn((a, b) => b.compareTo(a)), ...svt.costume.keys];
           final List<Set<int>> recordedTraits = [];
           for (final limit in limits) {

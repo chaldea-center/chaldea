@@ -1,3 +1,6 @@
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
+import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/descriptors/func/func.dart';
 import 'package:chaldea/app/descriptors/skill_descriptor.dart';
 import 'package:chaldea/app/modules/common/filter_page_base.dart';
@@ -6,6 +9,7 @@ import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
+import '../../bond/equip_bond_bonus.dart';
 
 class EventBonusTab extends StatefulWidget {
   final Event event;
@@ -55,7 +59,7 @@ class _EventBonusTabState extends State<EventBonusTab> {
             Expanded(
               child: ListView.builder(itemBuilder: (context, index) => svtWidgets[index], itemCount: svtWidgets.length),
             ),
-            SafeArea(child: buttonBar),
+            SafeArea(child: buildButtonBar([for (final v in svts.values) ...v])),
           ],
         ),
       if (ceWidgets.isNotEmpty)
@@ -156,9 +160,10 @@ class _EventBonusTabState extends State<EventBonusTab> {
     return TileGroup(children: children);
   }
 
-  Widget get buttonBar {
+  Widget buildButtonBar(List<Servant> svts) {
     return OverflowBar(
       alignment: MainAxisAlignment.center,
+      spacing: 8,
       children: [
         FilledButton.icon(
           icon: const Icon(Icons.filter_alt),
@@ -176,6 +181,14 @@ class _EventBonusTabState extends State<EventBonusTab> {
             ),
           ),
         ),
+        if (svts.isNotEmpty)
+          FilledButton.icon(
+            onPressed: () {
+              router.pushPage(EquipBondBonusTab.scaffold(targetSvts: svts));
+            },
+            icon: FaIcon(FontAwesomeIcons.diamond),
+            label: Text(S.current.bond_bonus),
+          ),
       ],
     );
   }

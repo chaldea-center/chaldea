@@ -227,16 +227,12 @@ class AddState {
     final NiceTd? baseTd = svt.getBaseTD();
     if (baseTd == null) return null;
     if (!buff.type.isTdTypeChange) return null;
-    final excludeTypes = baseTd.script?.excludeTdChangeTypes;
     final tdTypeChangeIDs = baseTd.script?.tdTypeChangeIDs;
     if (tdTypeChangeIDs == null || tdTypeChangeIDs.isEmpty) return null;
 
     // hardcoding since there's no NP with extra card type
     final validCardIndex = <int>[CardType.arts.value, CardType.buster.value, CardType.quick.value];
 
-    if (excludeTypes != null && excludeTypes.isNotEmpty) {
-      validCardIndex.removeWhere((e) => excludeTypes.contains(e));
-    }
     validCardIndex.retainWhere((e) => e <= tdTypeChangeIDs.length);
     if (validCardIndex.isEmpty) return null;
 
@@ -249,6 +245,10 @@ class AddState {
     } else if (buff.type == BuffType.tdTypeChangeQuick) {
       targetTdIndex = CardType.quick.value;
     } else if (buff.type == BuffType.tdTypeChange) {
+      final excludeTypes = baseTd.script?.excludeTdChangeTypes;
+      if (excludeTypes != null && excludeTypes.isNotEmpty) {
+        validCardIndex.removeWhere((e) => excludeTypes.contains(e));
+      }
       if (battleData.delegate?.tdTypeChange != null) {
         targetTdIndex = await battleData.delegate!.tdTypeChange!(svt, validCardIndex);
       } else if (battleData.mounted) {

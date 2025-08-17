@@ -321,7 +321,7 @@ class SvtInfoTab extends StatelessWidget {
               ),
             TextButton(
               onPressed: () {
-                router.pushPage(EquipBondBonusTab.scaffold(targetSvt: svt));
+                router.pushPage(EquipBondBonusTab.scaffold(targetSvts: [svt]));
               },
               style: kTextButtonDenseStyle,
               child: Text('${S.current.craft_essence} - ${S.current.bond_bonus}'),

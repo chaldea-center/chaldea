@@ -514,13 +514,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
                 ? () {
                     if (runtime.runningTask.value) return;
                     if (gacha.type == GachaType.freeGacha) {
-                      SimpleConfirmDialog(
-                        title: Text('Free Draw'),
-                        content: Text(gacha.lName),
-                        onTapOk: () {
-                          runtime.runTask(runtime.fpGachaDraw);
-                        },
-                      ).showDialog(context);
+                      router.pushPage(GachaDrawPage(runtime: runtime));
                     } else {
                       EasyLoading.showInfo('Draw inside game!');
                     }
