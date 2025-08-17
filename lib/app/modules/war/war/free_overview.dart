@@ -336,7 +336,7 @@ class _FreeQuestOverviewState extends State<FreeQuestOverview> {
     List<_DropInfo> data = [];
     final quests = this.quests.toList();
     if (widget.needSort) {
-      quests.sort2((e) => -e.priority);
+      quests.sort(Quest.compare);
     }
     Widget _withOwnValue(int itemId, String text) {
       if (showOwnCount && db.itemCenter.isStatItem(itemId)) {

@@ -52,6 +52,7 @@ NiceGacha _$NiceGachaFromJson(Map json) => NiceGacha(
   pickupId: (json['pickupId'] as num?)?.toInt() ?? 0,
   drawNum1: (json['drawNum1'] as num?)?.toInt() ?? 0,
   drawNum2: (json['drawNum2'] as num?)?.toInt() ?? 0,
+  freeDrawFlag: (json['freeDrawFlag'] as num?)?.toInt() ?? 0,
   maxDrawNum: (json['maxDrawNum'] as num?)?.toInt() ?? 0,
   openedAt: (json['openedAt'] as num?)?.toInt() ?? 0,
   closedAt: (json['closedAt'] as num?)?.toInt() ?? 0,

@@ -128,6 +128,7 @@ class NiceGacha with RouteInfo {
   int pickupId;
   int drawNum1;
   int drawNum2;
+  int freeDrawFlag;
   int maxDrawNum;
   int openedAt;
   int closedAt;
@@ -149,6 +150,7 @@ class NiceGacha with RouteInfo {
     this.pickupId = 0,
     this.drawNum1 = 0,
     this.drawNum2 = 0,
+    this.freeDrawFlag = 0,
     this.maxDrawNum = 0,
     this.openedAt = 0,
     this.closedAt = 0,
@@ -180,7 +182,7 @@ class NiceGacha with RouteInfo {
 
   String get lName {
     const pujp = 'ピックアップ召喚';
-    if (!name.endsWith(pujp) || Transl.current == Region.jp) return name;
+    if (!name.endsWith(pujp) || Transl.current == Region.jp) return Transl.summonNames(name).l;
     if (Transl.summonNames(name).matched) return Transl.summonNames(name).l;
     String name1 = name.substring(0, name.length - pujp.length).trim();
     final spaceIndex = name1.lastIndexOf(RegExp(r'[\s\n]'));

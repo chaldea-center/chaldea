@@ -40,7 +40,7 @@ extension NumX on num {
       compact = false;
       number /= base;
     }
-    if (number.isNaN) {
+    if (number.isNaN || number.isInfinite) {
       return number.toString();
     }
     if (compact && (minVal == null || abs() >= minVal)) {
@@ -69,6 +69,11 @@ extension NumX on num {
     });
     if (percent) s += '%';
     return s;
+  }
+
+  String formatSep({String? groupSeparator, num? minVal = 10000}) {
+    if (isInfinite || isNaN) return toString();
+    return format(compact: false, groupSeparator: ',');
   }
 }
 
@@ -432,6 +437,15 @@ extension DateTimeX on DateTime {
   }
 
   int get timestamp => millisecondsSinceEpoch ~/ 1000;
+
+  static int findNextHourAt(int t, int utcHour, [int utcMinute = 0, int utcSecond = 0]) {
+    final dt = t.sec2date().toUtc();
+    DateTime next = DateTime.utc(dt.year, dt.month, dt.day, utcHour, utcMinute, utcSecond);
+    next = next.copyWith(year: dt.year, month: dt.month, day: dt.day);
+    if (!next.isAfter(dt)) next = next.add(const Duration(days: 1));
+    assert(next.isAfter(dt), [dt, next]);
+    return next.timestamp;
+  }
 }
 
 extension DurationX on Duration {

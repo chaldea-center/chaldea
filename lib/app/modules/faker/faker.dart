@@ -257,6 +257,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
             children: [
               optionSelector,
               const Divider(height: 8),
+              warningDetails,
               battleDetailSection,
               battleSetupOptionSection,
               battleResultOptionSection,
@@ -477,6 +478,61 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
       );
     }
     return TileGroup(header: 'Misc Info', children: children);
+  }
+
+  Widget get warningDetails {
+    final now = DateTime.now().timestamp;
+    List<Widget> children = [];
+    for (final gacha in runtime.gameData.timerData.gachas) {
+      if (gacha.freeDrawFlag == 0 || gacha.openedAt > now || gacha.closedAt <= now) continue;
+      int resetHourUTC;
+      switch (gacha.type) {
+        case GachaType.freeGacha:
+          resetHourUTC = runtime.region.fpFreeGachaResetUTC;
+        case GachaType.payGacha:
+          resetHourUTC = runtime.region.storyFreeGachaResetUTC;
+        default:
+          continue;
+      }
+      int? nextFreeDrawAt;
+      final userGacha = mstData.userGacha[gacha.id];
+      if (userGacha != null) {
+        nextFreeDrawAt = DateTimeX.findNextHourAt(userGacha.freeDrawAt, resetHourUTC);
+      }
+      bool hasFreeDraw = nextFreeDrawAt != null && nextFreeDrawAt < now;
+      if (!hasFreeDraw) continue;
+      children.add(
+        ListTile(
+          dense: true,
+          title: Text('[${gacha.id}] ${gacha.lName}'),
+          subtitle: Text(
+            'Free ${userGacha?.freeDrawAt.sec2date().toCustomString(year: false)}'
+            ' → ${nextFreeDrawAt.sec2date().toCustomString(year: false)}',
+          ),
+          trailing: TextButton(
+            onPressed: hasFreeDraw
+                ? () {
+                    if (runtime.runningTask.value) return;
+                    if (gacha.type == GachaType.freeGacha) {
+                      SimpleConfirmDialog(
+                        title: Text('Free Draw'),
+                        content: Text(gacha.lName),
+                        onTapOk: () {
+                          runtime.runTask(runtime.fpGachaDraw);
+                        },
+                      ).showDialog(context);
+                    } else {
+                      EasyLoading.showInfo('Draw inside game!');
+                    }
+                  }
+                : null,
+            child: Text(S.current.summon),
+          ),
+        ),
+      );
+    }
+    if (children.isEmpty) return const SizedBox.shrink();
+    return TileGroup(header: S.current.hint, children: children);
   }
 
   Widget get battleDetailSection {
@@ -2145,13 +2201,13 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
             if (collection == null || svt == null || svt.bondGrowth.length < collection.friendshipRank + 1) {
               return const Expanded(flex: 10, child: SizedBox.shrink());
             }
-            final (bondA, bondB) = svt.getPastNextBonds(collection.friendshipRank, collection.friendship);
-            final bool reachBondLimit = bondB == 0;
+            final bondData = svt.getCurLvBondData(collection.friendshipRank, collection.friendship);
+            final bool reachBondLimit = bondData.next == 0;
 
             String bondText =
                 'Lv.${collection.friendshipRank}/${collection.maxFriendshipRank}'
                 // '\n${collection.friendship}'
-                '\n${-bondB}';
+                '\n${-bondData.next}';
             // battle result
             final oldCollection = agent.lastBattleResultData?.oldUserSvtCollection.firstWhereOrNull(
               (e) => e.svtId == collection.svtId,
@@ -2173,8 +2229,8 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
                     style: reachBondLimit ? TextStyle(color: Theme.of(context).colorScheme.error) : null,
                   ),
                   BondProgress(
-                    value: bondA,
-                    total: bondA + bondB,
+                    value: bondData.elapsed,
+                    total: bondData.total,
                     padding: EdgeInsets.symmetric(horizontal: 4),
                     minHeight: 4,
                   ),

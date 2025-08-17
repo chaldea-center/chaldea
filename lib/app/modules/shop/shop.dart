@@ -213,7 +213,7 @@ class _ShopDetailPageState extends State<ShopDetailPage> with RegionBasedState<N
   Widget get popupMenu {
     return PopupMenuButton(
       itemBuilder: (context) =>
-          SharedBuilder.websitesPopupMenuItems(atlas: 'https://api.atlasacademy.io/nice/JP/shop/${shop.id}'),
+          SharedBuilder.websitesPopupMenuItems(atlas: id <= 0 ? null : 'https://api.atlasacademy.io/nice/JP/shop/$id'),
     );
   }
 }

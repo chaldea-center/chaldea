@@ -417,11 +417,15 @@ SkillSelectAddInfoBtn _$SkillSelectAddInfoBtnFromJson(Map json) => SkillSelectAd
           ?.map((e) => SkillSelectAddInfoBtnCond.fromJson(Map<String, dynamic>.from(e as Map)))
           .toList() ??
       const [],
+  image: json['image'] as String?,
+  imageUrl: json['imageUrl'] as String?,
 );
 
 Map<String, dynamic> _$SkillSelectAddInfoBtnToJson(SkillSelectAddInfoBtn instance) => <String, dynamic>{
   'name': instance.name,
   'conds': instance.conds.map((e) => e.toJson()).toList(),
+  'image': instance.image,
+  'imageUrl': instance.imageUrl,
 };
 
 SkillSelectAddInfoBtnCond _$SkillSelectAddInfoBtnCondFromJson(Map json) => SkillSelectAddInfoBtnCond(

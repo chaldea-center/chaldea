@@ -87,17 +87,13 @@ class _SvtCombinePageState extends State<SvtCombinePage> {
   }
 
   Widget get headerInfo {
+    final baseUserSvt = mstData.userSvt[options.baseUserSvtId];
+    final collection = mstData.userSvtCollection[baseUserSvt?.svtId];
+    final svt = baseUserSvt?.dbSvt;
+    final expData = svt?.getCurLvExpData(baseUserSvt?.lv ?? 0, baseUserSvt?.exp ?? 0);
+    final bondData = svt?.getCurLvBondData(collection?.friendshipRank ?? 0, collection?.friendship ?? 0);
+
     final userGame = mstData.user ?? agent.user.userGame;
-    final cardCounts = mstData.countSvtKeep();
-    String subtitle = [
-      '${S.current.servant} ${cardCounts.svtCount}/${userGame?.svtKeep}',
-      '${S.current.craft_essence_short} ${cardCounts.svtEquipCount}/${userGame?.svtEquipKeep}',
-      '${S.current.command_code_short} ${cardCounts.ccCount}/${runtime.gameData.timerData.constants.maxUserCommandCode}',
-      if (cardCounts.unknownCount != 0) '${S.current.unknown} ${cardCounts.unknownCount}',
-    ].join(' ');
-    subtitle +=
-        '\nQP ${userGame?.qp.format(compact: false, groupSeparator: ",")}  ${S.current.present_box}  '
-        '${mstData.userPresentBox.length}/${runtime.gameData.timerData.constants.maxPresentBoxNum}';
     return Container(
       color: Theme.of(context).secondaryHeaderColor,
       padding: const EdgeInsets.only(bottom: 4),
@@ -106,9 +102,32 @@ class _SvtCombinePageState extends State<SvtCombinePage> {
         minTileHeight: 48,
         visualDensity: VisualDensity.compact,
         minLeadingWidth: 20,
-        leading: runtime.buildCircularProgress(context: context),
-        title: Text('[${agent.user.serverName}] ${userGame?.name}'),
-        subtitle: Text(subtitle),
+        leading: svt?.iconBuilder(context: context) ?? db.getIconImage(Atlas.common.emptySvtIcon),
+        subtitle: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              '[${agent.user.serverName}] ${userGame?.name}   QP ${userGame?.qp.format(compact: false, groupSeparator: ",")}',
+            ),
+            if (baseUserSvt != null) ...[
+              Text(
+                '${baseUserSvt.locked ? "🔐 " : ""}Lv.${baseUserSvt.lv}/${baseUserSvt.maxLv}'
+                ' limit ${baseUserSvt.limitCount}+${baseUserSvt.exceedCount} exp next ${expData?.next.formatSep()}',
+              ),
+              if (expData != null) BondProgress(value: expData.elapsed, total: expData.total),
+              Text(
+                'bond ${collection?.friendshipRank}/${collection?.maxFriendshipRank}  next ${bondData?.next.formatSep()}',
+              ),
+              if (bondData != null) BondProgress(value: bondData.elapsed, total: bondData.total),
+              Text(
+                'skill ${baseUserSvt.skillLv1}/${baseUserSvt.skillLv2}/${baseUserSvt.skillLv3} '
+                ' append ${mstData.getSvtAppendSkillLv(baseUserSvt).join("/")}',
+              ),
+            ],
+            //
+          ],
+        ),
       ),
     );
   }
@@ -116,19 +135,7 @@ class _SvtCombinePageState extends State<SvtCombinePage> {
   Widget get body {
     final baseUserSvt = mstData.userSvt[options.baseUserSvtId];
     final collection = mstData.userSvtCollection[baseUserSvt?.svtId];
-    String? svtTitle, svtSubtitle;
     final svt = baseUserSvt?.dbSvt;
-    final curLvExp = svt?.expGrowth.getOrNull((baseUserSvt?.lv ?? 0) - 1),
-        nextLvExp = svt?.expGrowth.getOrNull(baseUserSvt?.lv ?? -1);
-    if (baseUserSvt != null) {
-      svtTitle = 'No.${svt?.collectionNo} ${svt?.lName.l}';
-      svtSubtitle =
-          '${baseUserSvt.locked ? "🔐 " : ""}Lv.${baseUserSvt.lv}/${baseUserSvt.maxLv}'
-          ' limit ${baseUserSvt.limitCount} exceed ${baseUserSvt.exceedCount} bond ${collection?.friendshipRank}/${collection?.maxFriendshipRank}\n'
-          ' skill ${baseUserSvt.skillLv1}/${baseUserSvt.skillLv2}/${baseUserSvt.skillLv3} '
-          ' append ${mstData.getSvtAppendSkillLv(baseUserSvt).join("/")}\n'
-          ' exp ${nextLvExp == null ? "?" : (baseUserSvt.exp - nextLvExp).format(compact: false, groupSeparator: ",")}';
-    }
     Map<int, int> materialCounts = {};
     for (final userSvt in mstData.userSvt) {
       final svt = userSvt.dbEntity;
@@ -139,32 +146,7 @@ class _SvtCombinePageState extends State<SvtCombinePage> {
     }
     materialCounts = Item.sortMapByPriority(materialCounts, removeZero: false, reversed: false);
     List<Widget> children = [
-      TileGroup(
-        header: 'Base Servant',
-        children: [
-          ListTile(
-            dense: true,
-            title: Text('Change Base Servant'),
-            onTap: selectBaseUserSvt,
-            trailing: Icon(Icons.change_circle),
-          ),
-          ListTile(
-            leading: baseUserSvt?.dbSvt?.iconBuilder(context: context) ?? db.getIconImage(Atlas.common.emptySvtIcon),
-            title: Text(svtTitle ?? 'id ${options.baseUserSvtId}'),
-            subtitle: svtSubtitle == null ? null : Text(svtSubtitle),
-          ),
-          if (curLvExp != null &&
-              nextLvExp != null &&
-              baseUserSvt != null &&
-              baseUserSvt.exp >= curLvExp &&
-              baseUserSvt.exp <= nextLvExp)
-            BondProgress(
-              value: baseUserSvt.exp - curLvExp,
-              total: nextLvExp - curLvExp,
-              padding: EdgeInsets.symmetric(horizontal: 16),
-            ),
-        ],
-      ),
+      DividerWithTitle(title: S.current.enhance),
       FilterGroup<int>(
         title: Text('种火 Rarity'),
         options: const [1, 2, 3, 4, 5],
@@ -361,7 +343,8 @@ class _SvtCombinePageState extends State<SvtCombinePage> {
           ),
         ),
       ]);
-      // skill
+
+      //append skill
       children.addAll([
         DividerWithTitle(title: S.current.append_skill),
         Row(
@@ -454,8 +437,105 @@ class _SvtCombinePageState extends State<SvtCombinePage> {
                 ),
               );
             }),
+          ],
+        ),
+      ]);
 
+      //append skill
+      children.addAll([
+        DividerWithTitle(title: S.current.active_skill),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
             const SizedBox(width: 16),
+            ...kActiveSkillNums.map((skillNum) {
+              final skills = svt.groupedActiveSkills[skillNum]?.toList() ?? [];
+              skills.retainWhere((skill) {
+                if (collection == null) return false;
+                if (baseUserSvt.lv < skill.condLv) return false;
+                if (baseUserSvt.limitCount < skill.condLimitCount) return false;
+                if (skill.condQuestId > 0) {
+                  final clearNum = mstData.userQuest[skill.condQuestId]?.clearNum ?? 0;
+                  if (clearNum <= 0) return false;
+                }
+                return true;
+              });
+              skills.sort2((e) => e.svt.priority);
+              final skill = skills.lastOrNull;
+              if (skill == null || svt.type == SvtType.heroine) {
+                return Expanded(child: Text('${S.current.active_skill_short} $skillNum'));
+              }
+              final curLv = baseUserSvt.skillLvs[skillNum - 1];
+              final activeMats = <int, int>{};
+              if (svt.skillMaterials.containsKey(curLv)) {
+                final lvMats = svt.skillMaterials[curLv]!;
+                activeMats[Items.qpId] = lvMats.qp;
+                for (final amount in lvMats.items) {
+                  activeMats[amount.itemId] = amount.amount;
+                }
+              }
+              final bool isLacking = activeMats.entries.any((e) => mstData.getItemOrSvtNum(e.key) < e.value);
+              final combineDisabled = isLacking || curLv == 10;
+              return Expanded(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    InkWell(
+                      onTap: combineDisabled
+                          ? null
+                          : () async {
+                              if (runtime.runningTask.value) return;
+                              if (curLv == 9) {
+                                final confirm = await SimpleConfirmDialog(
+                                  title: Text('${S.current.warning}: ${S.current.active_skill_short} $skillNum'),
+                                  content: Text(
+                                    [Items.crystal?.lName.l, '\n\n\n', 'Sure?'].join('\n'),
+                                    style: TextStyle(color: Theme.of(context).colorScheme.error),
+                                  ),
+                                ).showDialog(context);
+                                if (!mounted || confirm != true) return;
+                              }
+                              final confirm = await SimpleConfirmDialog(
+                                title: Text('${S.current.active_skill_short} $skillNum'),
+                                content: Text('Lv.$curLv → Lv.${curLv + 1}'),
+                              ).showDialog(context);
+                              if (!mounted || confirm != true) return;
+
+                              await runtime.runTask(
+                                () => runtime.agent.servantSkillCombine(
+                                  baseUsrSvtId: baseUserSvt.id,
+                                  selectSkillIndex: skillNum,
+                                  selectSkillId: skill.id,
+                                ),
+                              );
+                            },
+                      onLongPress: skill.routeTo,
+                      child: Opacity(
+                        opacity: combineDisabled ? 0.3 : 1,
+                        child: ImageWithText(
+                          image: db.getIconImage(skill.icon, width: 48, height: 48),
+                          text: 'Lv.$curLv',
+                        ),
+                      ),
+                    ),
+                    Wrap(
+                      alignment: WrapAlignment.center,
+                      children: [
+                        for (final (itemId, itemNum) in activeMats.items)
+                          Item.iconBuilder(
+                            context: context,
+                            item: null,
+                            itemId: itemId,
+                            width: 28,
+                            text: [itemNum, mstData.getItemOrSvtNum(itemId)].map((e) => e.format()).join('\n'),
+                          ),
+                      ],
+                    ),
+                  ],
+                ),
+              );
+            }),
           ],
         ),
       ]);

@@ -120,9 +120,9 @@ class FormationCard extends StatelessWidget {
       );
     }
 
-    final bonds = svtCollection == null
+    final bondData = svtCollection == null
         ? null
-        : svt?.getPastNextBonds(svtCollection.friendshipRank, svtCollection.friendship);
+        : svt?.getCurLvBondData(svtCollection.friendshipRank, svtCollection.friendship);
 
     Widget child = Column(
       children: [
@@ -132,8 +132,13 @@ class FormationCard extends StatelessWidget {
           if ((storedData.equip2?.id ?? 0) != 0) _buildCeIcon(context, storedData, SvtEquipTarget.bond),
           if ((storedData.equip3?.id ?? 0) != 0) _buildCeIcon(context, storedData, SvtEquipTarget.reward),
         ],
-        if (showBond && bonds != null)
-          BondProgress(value: bonds.$1, total: bonds.$1 + bonds.$2, padding: EdgeInsets.only(top: 1.5), minHeight: 3),
+        if (showBond && bondData != null)
+          BondProgress(
+            value: bondData.elapsed,
+            total: bondData.total,
+            padding: EdgeInsets.only(top: 1.5),
+            minHeight: 3,
+          ),
       ],
     );
     child = Container(
@@ -254,10 +259,10 @@ class BondProgress extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final highlight = value == 0 || value == total;
+    final highlight = value == 0 || value == total || total == 0;
     Widget child = LinearProgressIndicator(
       minHeight: minHeight,
-      value: value / total,
+      value: total == 0 ? 1 : value / total,
       color: highlight ? Colors.green : Colors.blue,
       backgroundColor: highlight ? Colors.amber.shade800 : Colors.red,
     );

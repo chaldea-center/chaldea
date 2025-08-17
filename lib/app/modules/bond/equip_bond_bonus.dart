@@ -227,7 +227,8 @@ class _EquipBondBonusTabState extends State<EquipBondBonusTab> {
 
       List<({Servant svt, List<int> limitCounts})> svts = [];
       for (final svtId in sameSvtIds) {
-        final svt = db.gameData.servantsById[svtId]!;
+        final svt = widget.targetSvt?.id == svtId ? widget.targetSvt : db.gameData.servantsById[svtId];
+        if (svt == null) continue;
         if (!ServantFilterPage.filter(svtFilterData, svt)) continue;
         final sameLimitCounts = _intersectionSetList(
           usedCeIds.map((ceId) => allCeMatchSvtData[ceId]![svtId]?.toSet() ?? <int>{}).toList(),

@@ -381,6 +381,9 @@ class Servant extends BasicServant {
 
   factory Servant.fromJson(Map<String, dynamic> json) => _$ServantFromJson(json);
 
+  @override
+  Map<String, dynamic> toJson() => _$ServantToJson(this);
+
   @JsonKey(includeFromJson: false, includeToJson: false)
   Map<int, List<NiceSkill>> groupedActiveSkills = {};
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -712,17 +715,6 @@ class Servant extends BasicServant {
     return materials;
   }
 
-  (int past, int next) getPastNextBonds(int friendshipRank, int friendship) {
-    if (bondGrowth.isEmpty || bondGrowth.length < friendshipRank) return (1, 0);
-    if (friendshipRank == bondGrowth.length) {
-      return (bondGrowth[friendshipRank - 1] - bondGrowth[friendshipRank - 2], 0);
-    }
-    final friendshipPreviousRankTotal = friendshipRank > 0 ? bondGrowth[friendshipRank - 1] : 0;
-    final friendshipNextRankTotal = bondGrowth[friendshipRank];
-
-    return (friendship - friendshipPreviousRankTotal, friendshipNextRankTotal - friendship);
-  }
-
   void updateStat() {
     db.itemCenter.updateSvts(svts: [this]);
   }
@@ -750,8 +742,30 @@ class Servant extends BasicServant {
   SvtStatus get status => db.curUser.svtStatusOf(collectionNo);
   SvtPlan get curPlan => db.curUser.svtPlanOf(collectionNo);
 
-  @override
-  Map<String, dynamic> toJson() => _$ServantToJson(this);
+  ({int total, int elapsed, int next, int curTotal, int nextTotal}) getCurLvExpData(int lv, int exp) {
+    final curTotal = expGrowth.getOrNull(lv - 1) ?? 0, nextTotal = expGrowth.getOrNull(lv) ?? curTotal;
+    exp = exp.clamp(curTotal, nextTotal);
+    return (
+      total: nextTotal - curTotal,
+      elapsed: exp - curTotal,
+      next: nextTotal - exp,
+      curTotal: curTotal,
+      nextTotal: nextTotal,
+    );
+  }
+
+  ({int total, int elapsed, int next, int curTotal, int nextTotal}) getCurLvBondData(int lv, int bond) {
+    final curTotal = bondGrowth.getOrNull(lv - 1) ?? 0, nextTotal = bondGrowth.getOrNull(lv) ?? curTotal;
+
+    bond = bond.clamp(curTotal, nextTotal);
+    return (
+      total: nextTotal - curTotal,
+      elapsed: bond - curTotal,
+      next: nextTotal - bond,
+      curTotal: curTotal,
+      nextTotal: nextTotal,
+    );
+  }
 }
 
 @JsonSerializable()

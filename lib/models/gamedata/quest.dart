@@ -164,6 +164,9 @@ class Quest with RouteInfo {
       (v) => [v.warId < 1000 ? 0 : 1, v.warId < 1000 ? v.warId : (v.war?.event?.startedAt ?? v.openedAt)],
     );
     if (v1 != 0) return v1;
+    if (a.isAnyFree && b.isAnyFree && a.recommendLevel != b.recommendLevel) {
+      return a.recommendLevel.compareTo(b.recommendLevel);
+    }
     if (a.priority == b.priority) return a.id - b.id;
     return b.priority - a.priority;
   }

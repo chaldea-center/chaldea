@@ -26,35 +26,25 @@ enum Region {
 
   bool get isJP => this == jp;
 
-  int get eventDelayMonth {
-    switch (this) {
-      case Region.jp:
-        return 12;
-      case Region.cn:
-        return 12;
-      case Region.tw:
-        return 22;
-      case Region.na:
-        return 24;
-      // 24 months before JP 2021/07 event
-      case Region.kr:
-        return 22;
-    }
-  }
+  int get eventDelayMonth => switch (this) {
+    Region.jp => 12,
+    Region.cn => 12,
+    Region.tw => 22,
+    Region.na => 24,
+    // 24 months before JP 2021/07 event
+    Region.kr => 22,
+  };
 
-  int get timezone {
-    switch (this) {
-      case Region.jp:
-        return 9;
-      case Region.cn:
-      case Region.tw:
-        return 8;
-      case Region.na:
-        return -8;
-      case Region.kr:
-        return 9;
-    }
-  }
+  int get timezone => switch (this) {
+    Region.jp => 9,
+    Region.cn => 8,
+    Region.tw => 8,
+    Region.na => -8,
+    Region.kr => 9,
+  };
+
+  int get fpFreeGachaResetUTC => 0 - timezone;
+  int get storyFreeGachaResetUTC => 4 - timezone;
 
   @override
   String toString() {

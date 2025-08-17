@@ -534,13 +534,13 @@ class _RandomMissionLoopPageState extends State<RandomMissionLoopPage> {
               if (collection == null || svt == null || svt.bondGrowth.length < collection.friendshipRank + 1) {
                 return const Expanded(flex: 10, child: SizedBox.shrink());
               }
-              final (bondA, bondB) = svt.getPastNextBonds(collection.friendshipRank, collection.friendship);
-              final bool reachBondLimit = bondB == 0;
+              final bondData = svt.getCurLvBondData(collection.friendshipRank, collection.friendship);
+              final bool reachBondLimit = bondData.next == 0;
 
               String bondText =
                   'Lv.${collection.friendshipRank}/${collection.maxFriendshipRank}'
                   // '\n${collection.friendship}'
-                  '\n${-bondB}';
+                  '\n${-bondData.next}';
               // battle result
               final oldCollection = stat.lastBattleResultData?.oldUserSvtCollection.firstWhereOrNull(
                 (e) => e.svtId == collection.svtId,
@@ -562,8 +562,8 @@ class _RandomMissionLoopPageState extends State<RandomMissionLoopPage> {
                       style: reachBondLimit ? TextStyle(color: Theme.of(context).colorScheme.error) : null,
                     ),
                     BondProgress(
-                      value: bondA,
-                      total: bondA + bondB,
+                      value: bondData.next,
+                      total: bondData.total,
                       padding: EdgeInsets.symmetric(horizontal: 4),
                       minHeight: 4,
                     ),
