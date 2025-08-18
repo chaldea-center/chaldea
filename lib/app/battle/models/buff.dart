@@ -553,14 +553,14 @@ class BuffData {
   void updateActState(final BattleData battleData, final BattleServantData owner) {
     bool isAct = true;
 
-    final List<int> selfTraits = [
+    List<int> selfTraits() => [
       ...owner.getTraits(addTraits: owner.getBuffTraits()),
       ...battleData.getQuestIndividuality(),
     ].toIntList();
 
     if (buff.script.INDIVIDUALITIE_OR != null) {
       isAct &= Individuality.checkSignedIndividualitiesPartialMatch(
-        selfs: selfTraits,
+        selfs: selfTraits(),
         signedTargets: buff.script.INDIVIDUALITIE_OR?.toIntList(),
         matchedFunc: Individuality.isPartialMatchArray,
         mismatchFunc: Individuality.isPartialMatchArray,
@@ -568,7 +568,7 @@ class BuffData {
     }
     if (buff.script.INDIVIDUALITIE_AND != null) {
       isAct &= Individuality.checkSignedIndividualities2(
-        self: selfTraits,
+        self: selfTraits(),
         signedTarget: buff.script.INDIVIDUALITIE_AND?.toIntList(),
         matchedFunc: Individuality.isMatchArray,
         mismatchFunc: Individuality.isMatchArray,
@@ -580,14 +580,14 @@ class BuffData {
       List<int> signedTarget = [buff.script.INDIVIDUALITIE!.signedId];
       if (countAbove <= 0 && countBelow <= 0) {
         isAct &= Individuality.checkSignedIndividualities2(
-          self: selfTraits,
+          self: selfTraits(),
           signedTarget: signedTarget,
           matchedFunc: Individuality.isPartialMatchArray,
           mismatchFunc: Individuality.isPartialMatchArray,
         );
       } else {
         isAct &= Individuality.checkSignedIndividualitiesCount(
-          selfs: selfTraits,
+          selfs: selfTraits(),
           targets: signedTarget,
           matchedFunc: Individuality.isPartialMatchArrayCount,
           mismatchFunc: Individuality.isPartialMatchArrayCount,

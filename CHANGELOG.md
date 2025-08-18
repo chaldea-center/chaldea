@@ -1,8 +1,10 @@
 # Changelog
 
 ## 2.5.22
+
 - Summer Lip skills
 - Ishtar S3 buff upgrade
+- Fix TD Damage Ranking slow calculation
 
 ## 2.5.21
 

@@ -88,12 +88,14 @@ class TdDmgSolver {
       if (!svt.isUserSvt) continue;
       try {
         final List<int> limitsToAdd = [];
-        EasyLoading.showProgress(
-          idx / servants.length,
-          status: '$idx / ${servants.length}',
-          maskType: EasyLoadingMaskType.clear,
-        );
-        await Future.delayed(const Duration(milliseconds: 5));
+        if (!options.simpleMode || idx % 17 == 0) {
+          EasyLoading.showProgress(
+            idx / servants.length,
+            status: '$idx / ${servants.length}',
+            maskType: EasyLoadingMaskType.clear,
+          );
+          await Future.delayed(const Duration(milliseconds: 5));
+        }
 
         if (options.simpleMode) {
           limitsToAdd.add(4);
