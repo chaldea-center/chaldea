@@ -1276,7 +1276,7 @@ void main() async {
     expect(enemy2.hp, 2603);
     expect(enemy3.hp, 4363);
 
-    expect(aoko.np, 3901); // test AoE card with Mage of Flowers does not stack, also test transformSvt adds new passive
+    expect(aoko.np, 3885); // test AoE card with Mage of Flowers does not stack, also test transformSvt adds new passive
     expect(aoko.hp, 14230); // transformSvt change hp & maxHp & atk
     expect(aoko.maxHp, 14230);
     expect(aoko.atk, 13584);

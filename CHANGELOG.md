@@ -6,6 +6,7 @@
 - Ishtar S3 buff upgrade
 - Fix TD Damage Ranking slow calculation
 - Fix calculation timing of Summer Marie EX card damage rate
+- Overkill bug now reset before NP instead of after NP
 
 ## 2.5.21
 

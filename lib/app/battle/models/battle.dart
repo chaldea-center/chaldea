@@ -1005,6 +1005,12 @@ class BattleData {
 
               // need to sync card data because the actor might have transformed
               final actualCard = getActualCard(action);
+              if (actualCard.isTD || actualCard.cardDetail.attackType == CommandCardAttackType.all) {
+                for (final enemy in nonnullEnemies) {
+                  enemy.clearReducedHp();
+                }
+              }
+
               if (onFieldAllyServants.contains(actor) && action.isValid(this)) {
                 recorder.startPlayerCard(actor, actualCard);
 
@@ -1029,10 +1035,6 @@ class BattleData {
                   if (enemy.attacked) {
                     await enemy.activateBuff(this, BuffAction.functionDamage, opponent: actor, card: actualCard);
                     enemy.attacked = false;
-                  }
-
-                  if (actualCard.isTD || actualCard.cardDetail.attackType == CommandCardAttackType.all) {
-                    enemy.clearReducedHp();
                   }
                 }
                 recorder.endPlayerCard(actor, actualCard);
@@ -1178,6 +1180,11 @@ class BattleData {
           if (nonnullPlayers.isNotEmpty) {
             if (onFieldEnemies.contains(action.actor) && action.isValid(this)) {
               recorder.startPlayerCard(action.actor, action.cardData);
+              if (action.cardData.isTD || action.cardData.cardDetail.attackType == CommandCardAttackType.all) {
+                for (final svt in nonnullPlayers) {
+                  svt.clearReducedHp();
+                }
+              }
 
               if (action.cardData.isTD) {
                 await action.actor.activateNP(this, action.cardData, 0);
