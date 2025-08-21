@@ -71,6 +71,7 @@ class Damage {
       }
     }
 
+    final overwriteRate = getOverwriteRate(currentCard.cardDetail.overwriteRates, targets.length);
     for (final target in targets) {
       final targetBefore = target.copy();
 
@@ -171,13 +172,12 @@ class Damage {
         }
       }
 
-      final overwriteRates = currentCard.cardDetail.overwriteRates?.getOrNull(currentCard.overwriteRatesIndex);
       final damageParameters = DamageParameters()
         ..attack = activator.atk + currentCard.cardStrengthen
         ..totalHits = Maths.sum(currentCard.cardDetail.hitsDistribution)
         ..damageRate = currentCard.isTD
             ? dataVals.Value! + hpRatioDamageLow + hpRatioDamageHigh
-            : overwriteRates?.damageRate ?? currentCard.cardDetail.damageRate ?? 1000
+            : overwriteRate?.damageRate ?? currentCard.cardDetail.damageRate ?? 1000
         ..damageRateModifier = getDamageRateModifier(battleData, currentCard, target)
         ..npSpecificAttackRate = specificAttackRate
         ..attackerClass = activator.logicalClassId
@@ -228,7 +228,7 @@ class Damage {
         atkNpParameters
           ..attackerNpCharge = currentCard.npGain
           ..defenderNpRate = target.enemyTdRate
-          ..cardAttackNpRate = overwriteRates?.attackNpRate ?? currentCard.cardDetail.attackNpRate ?? 1000
+          ..cardAttackNpRate = overwriteRate?.attackNpRate ?? currentCard.cardDetail.attackNpRate ?? 1000
           ..isNp = currentCard.isTD
           ..chainPos = chainPos
           ..currentCardType = currentCard.cardType
@@ -252,7 +252,7 @@ class Damage {
         starParameters
           ..attackerStarGen = activator.starGen
           ..defenderStarRate = target.enemyStarRate
-          ..cardDropStarRate = overwriteRates?.dropStarRate ?? currentCard.cardDetail.dropStarRate ?? 1000
+          ..cardDropStarRate = overwriteRate?.dropStarRate ?? currentCard.cardDetail.dropStarRate ?? 1000
           ..isNp = currentCard.isTD
           ..chainPos = chainPos
           ..currentCardType = currentCard.cardType
@@ -276,7 +276,7 @@ class Damage {
         defNpParameters
           ..defenderNpGainRate = target.defenceNpGain
           ..attackerNpRate = activator.enemyTdAttackRate
-          ..cardDefNpRate = overwriteRates?.defenseNpRate ?? currentCard.cardDetail.defenseNpRate ?? 1000
+          ..cardDefNpRate = overwriteRate?.defenseNpRate ?? currentCard.cardDetail.defenseNpRate ?? 1000
           ..npGainBuff = await target.getBuffValue(
             battleData,
             BuffAction.dropNp,
@@ -940,5 +940,26 @@ class Damage {
     }
 
     return result;
+  }
+
+  static SvtCardAddOverwriteRateData? getOverwriteRate(
+    List<SvtCardAddOverwriteRateData>? overwriteRatesList,
+    int targetNum,
+  ) {
+    if (overwriteRatesList == null || overwriteRatesList.isEmpty) {
+      return null;
+    }
+
+    for (final data in overwriteRatesList) {
+      final match =
+          (data.condType == 'TargetNumEqual' && targetNum == data.condValue) ||
+          (data.condType == 'TargetNumBelow' && targetNum <= data.condValue) ||
+          (data.condType == 'TargetNumAbove' && targetNum >= data.condValue);
+      if (match) {
+        return data;
+      }
+    }
+
+    return null;
   }
 }

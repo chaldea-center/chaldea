@@ -553,10 +553,8 @@ class BuffData {
   void updateActState(final BattleData battleData, final BattleServantData owner) {
     bool isAct = true;
 
-    List<int> selfTraits() => [
-      ...owner.getTraits(addTraits: owner.getBuffTraits()),
-      ...battleData.getQuestIndividuality(),
-    ].toIntList();
+    List<int> selfTraits() =>
+        [...owner.getTraits(addTraits: owner.getBuffTraits()), ...battleData.getQuestIndividuality()].toIntList();
 
     if (buff.script.INDIVIDUALITIE_OR != null) {
       isAct &= Individuality.checkSignedIndividualitiesPartialMatch(

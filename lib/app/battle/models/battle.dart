@@ -1099,9 +1099,7 @@ class BattleData {
         cardData;
     outCardData
       ..critical = cardData.critical
-      ..chainType = cardData.chainType
-      ..targetNum = cardData.targetNum
-      ..overwriteRatesIndex = cardData.overwriteRatesIndex;
+      ..chainType = cardData.chainType;
     return outCardData;
   }
 

@@ -120,8 +120,6 @@ class CommandCardData {
   BuffData? counterBuff;
   int? oc;
   BattleChainType chainType = BattleChainType.none;
-  int? targetNum;
-  int overwriteRatesIndex = -1;
 
   List<NiceTrait> get traits => [
     ..._traits,
@@ -148,8 +146,6 @@ class CommandCardData {
     this.counterBuff,
     this.oc,
     this.chainType = BattleChainType.none,
-    this.targetNum,
-    this.overwriteRatesIndex = -1,
   }) : _traits = traits.toList();
 
   CommandCardData copy() {
@@ -171,8 +167,6 @@ class CommandCardData {
       counterBuff: counterBuff,
       oc: oc,
       chainType: chainType,
-      targetNum: targetNum,
-      overwriteRatesIndex: overwriteRatesIndex,
     );
   }
 }
@@ -204,12 +198,6 @@ class CombatAction {
   }
 
   Future<void> confirmCardSelection(BattleData battleData) async {
-    cardData.targetNum = actor.isPlayer ? battleData.nonnullEnemies.length : battleData.nonnullPlayers.length;
-    final overwriteRatesList = cardData.cardDetail.overwriteRates;
-    if (overwriteRatesList != null && overwriteRatesList.isNotEmpty) {
-      cardData.overwriteRatesIndex = getOverwriteRatesIndex(overwriteRatesList, cardData.targetNum!);
-    }
-
     if (actor.isPlayer && isValid(battleData)) {
       await actor.activateBuff(battleData, BuffAction.functionConfirmCommand, card: cardData);
     }
