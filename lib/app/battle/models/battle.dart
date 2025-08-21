@@ -1005,7 +1005,7 @@ class BattleData {
 
               // need to sync card data because the actor might have transformed
               final actualCard = getActualCard(action);
-              if (actualCard.isTD || actualCard.cardDetail.attackType == CommandCardAttackType.all) {
+              if (actualCard.isTD) {
                 for (final enemy in nonnullEnemies) {
                   enemy.clearReducedHp();
                 }
@@ -1180,7 +1180,7 @@ class BattleData {
           if (nonnullPlayers.isNotEmpty) {
             if (onFieldEnemies.contains(action.actor) && action.isValid(this)) {
               recorder.startPlayerCard(action.actor, action.cardData);
-              if (action.cardData.isTD || action.cardData.cardDetail.attackType == CommandCardAttackType.all) {
+              if (action.cardData.isTD) {
                 for (final svt in nonnullPlayers) {
                   svt.clearReducedHp();
                 }
@@ -1210,10 +1210,6 @@ class BattleData {
                     card: action.cardData,
                   );
                   svt.attacked = false;
-                }
-
-                if (action.cardData.isTD || action.cardData.cardDetail.attackType == CommandCardAttackType.all) {
-                  svt.clearReducedHp();
                 }
               }
               recorder.endPlayerCard(action.actor, action.cardData);
