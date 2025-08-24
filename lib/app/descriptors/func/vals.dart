@@ -137,8 +137,8 @@ class ValDsc extends StatelessWidget {
   static void _addPercent(final List<String> parts, int? value, int base, {String Function(String)? post}) {
     if (value == null) return;
     String text = '${_toPercent(value, base)}';
-    // if (maxValue != null) text = '$text~${_toPercent(maxValue, base)}';
-    text += '%';
+      // if (maxValue != null) text = '$text~${_toPercent(maxValue, base)}';
+      text += '%';
     if (post != null) {
       text = post(text);
     }
@@ -204,6 +204,16 @@ class ValDsc extends StatelessWidget {
       }
     } else {
       if (vals.Value != null) {
+        String? _fmtValue(int? v) {
+          if (v == null) return null;
+          final base = kFuncValPercentType[func.funcType];
+          if (base != null) {
+            return '${_toPercent(v, base)}%';
+          } else {
+            return v.toString();
+          }
+        }
+
         switch (func.funcType) {
           case FuncType.lossHp:
           case FuncType.lossHpSafe:
@@ -213,9 +223,9 @@ class ValDsc extends StatelessWidget {
           case FuncType.damageValueSafe:
           case FuncType.damageValueSafeOnce:
             if (vals.Value2 != null) {
-              parts.add('${vals.Value}~${vals.Value2}');
+              parts.add('${_fmtValue(vals.Value)}~${_fmtValue(vals.Value2)}');
             } else {
-              parts.add(vals.Value.toString());
+              parts.add(_fmtValue(vals.Value)!);
             }
             break;
           case FuncType.gainNpIndividualSum:

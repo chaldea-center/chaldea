@@ -1099,7 +1099,7 @@ class GameConstantStr {
   final List<int> extendTurnBuffType; // 1,9,11,13,15,18,25,50,51,52,70,72,89,90,110,112,116,121,137,144,148,160,162
   final List<int> invalidSacrificeIndiv; // 3076
   // final int materialMainInterludeWarId; // 307
-  final List<int> notReduceCountWithNoDamageBuff; // 42, 21, 23, 91, 105, 196
+  final List<int> notReduceCountWithNoDamageBuff; // 42,21,23,91,105,196,227,228
   final List<int> starRefreshBuffType; // 2,61
   final List<int> subPtBuffIndivi; // 3055
   final List<int> svtExitPtBuffIndivi; // 3069
@@ -1113,7 +1113,7 @@ class GameConstantStr {
     ],
     this.invalidSacrificeIndiv = const [3076],
     // this.materialMainInterludeWarId = 307,
-    this.notReduceCountWithNoDamageBuff = const [42, 21, 23, 91, 105, 196],
+    this.notReduceCountWithNoDamageBuff = const [42, 21, 23, 91, 105, 196, 227, 228],
     this.starRefreshBuffType = const [2, 61],
     this.subPtBuffIndivi = const [3055],
     this.svtExitPtBuffIndivi = const [3069],
@@ -1436,6 +1436,7 @@ const kBuffTypePercentType = <BuffType, int>{
 };
 
 const kFuncValPercentType = <FuncType, int>{
+// Map<FuncType, int> get kFuncValPercentType => <FuncType, int>{
   FuncType.gainNpFromTargets: 100,
   FuncType.gainNp: 100,
   FuncType.gainNpBuffIndividualSum: 100,
@@ -1443,6 +1444,8 @@ const kFuncValPercentType = <FuncType, int>{
   FuncType.gainNpTargetSum: 100,
   FuncType.gainMultiplyNp: 10,
   FuncType.lossNp: 100,
+  FuncType.lossHpPer: 10,
+  FuncType.lossHpPerSafe: 10,
   FuncType.damageNp: 10,
   FuncType.damageNpSafe: 10,
   FuncType.damageNpHpratioLow: 10,
