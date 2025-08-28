@@ -343,6 +343,7 @@ class BattleData {
       }
     }
 
+    updateFieldIndex();
     updateTargetedIndex();
 
     final List<BattleServantData?> allActors = [
@@ -537,6 +538,7 @@ class BattleData {
       }
     }
 
+    updateFieldIndex();
     updateTargetedIndex();
 
     final List<BattleServantData?> newEnemies = [...onFieldEnemies, ...backupEnemies];
@@ -723,6 +725,10 @@ class BattleData {
       svt.updateActState(this);
     }
 
+    updateFieldIndex();
+  }
+
+  void updateFieldIndex() {
     for (int index = 0; index < onFieldAllyServants.length; index += 1) {
       onFieldAllyServants[index]?.fieldIndex = index;
     }
