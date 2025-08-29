@@ -191,13 +191,27 @@ class BuffData {
       final selfIndiv = vals.ParamAddSelfIndividuality;
       final oppIndiv = vals.ParamAddOpIndividuality;
       final fieldIndiv = vals.ParamAddFieldIndividuality;
+      final ignoreIndivUnreleaseable = vals.IgnoreIndivUnreleaseable == 1;
+      final includeIgnoreIndividuality = vals.IncludeIgnoreIndividuality == 1;
       if (selfIndiv != null) {
         final targetTraits = NiceTrait.list(selfIndiv);
-        addCount += self.countTrait(targetTraits) + self.countBuffWithTrait(targetTraits);
+        addCount +=
+            self.countTrait(targetTraits) +
+            self.countBuffWithTrait(
+              targetTraits,
+              includeIgnoreIndiv: includeIgnoreIndividuality,
+              ignoreIndivUnreleaseable: ignoreIndivUnreleaseable,
+            );
       }
       if (oppIndiv != null && opponent != null) {
         final targetTraits = NiceTrait.list(oppIndiv);
-        addCount += opponent.countTrait(targetTraits) + opponent.countBuffWithTrait(targetTraits);
+        addCount +=
+            opponent.countTrait(targetTraits) +
+            opponent.countBuffWithTrait(
+              targetTraits,
+              includeIgnoreIndiv: includeIgnoreIndividuality,
+              ignoreIndivUnreleaseable: ignoreIndivUnreleaseable,
+            );
       }
       if (fieldIndiv != null && battleData != null) {
         final targetTraits = NiceTrait.list(fieldIndiv);
