@@ -141,6 +141,7 @@ class AddState {
       if (isStackable &&
           await shouldAddState(battleData, dataVals, activator, target, buffData, isCommandCode, isClassPassive)) {
         target.addBuff(buffData, isPassive: isPassive, isCommandCode: isCommandCode);
+        buffData.updateActState(battleData, target);
         battleData.setFuncResult(target.uniqueId, true);
 
         target.postAddStateProcessing(buff, dataVals);

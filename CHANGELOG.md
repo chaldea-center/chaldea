@@ -7,6 +7,9 @@
 - Fix TD Damage Ranking slow calculation
 - Fix calculation timing of Summer Marie EX card damage rate
 - Overkill bug now reset before NP instead of after NP
+- Fix Oberon's passives & Merlin's passives interacted before entering battle
+- Fix crashes for some quests with custom enemy entry order
+- Fix some situations not ignoring irremovable buffs
 
 ## 2.5.21
 

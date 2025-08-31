@@ -2171,6 +2171,22 @@ void main() async {
     expect(updatedExtraCard.cardDetail.damageRate, 500);
   });
 
+  test('merlin & oberon passives', () async {
+    final List<PlayerSvtData> setting = [
+      PlayerSvtData.id(2800100),
+      PlayerSvtData.id(500800)
+        ..equip1 = SvtEquipData(
+          ce: db.gameData.craftEssencesById[9401470], // Golden Captures the Carp (20 stars on entry)
+          limitBreak: true,
+        ),
+    ];
+    final battle = BattleData();
+    final quest = db.gameData.questPhases[9300040603]!;
+    await battle.init(quest, setting, null);
+
+    expect(battle.criticalStars, 20);
+  });
+
   group('Method tests', () {
     final List<PlayerSvtData> okuniWithDoubleCba = [
       PlayerSvtData.id(504900)..lv = 90,
