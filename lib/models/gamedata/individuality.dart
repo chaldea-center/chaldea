@@ -398,6 +398,24 @@ abstract class Individuality {
     return count;
   }
 
+  static int getSignedMatchedTotalCountMultiIndividuality(
+    List<int> selfIndividualityArray,
+    List<List<int>> targetMultiIndividualityArray,
+  ) {
+    if (targetMultiIndividualityArray.isEmpty) return 0;
+    int count = 0;
+    for (final signedTargets in targetMultiIndividualityArray) {
+      bool _matched = Individuality.checkSignedIndividualities2(
+        self: selfIndividualityArray,
+        signedTarget: signedTargets,
+        matchedFunc: Individuality.isMatchArray,
+        mismatchFunc: Individuality.isPartialMatchArray,
+      );
+      if (_matched) count++;
+    }
+    return count;
+  }
+
   @protected
   static bool isMatchAboveBelow(int count, int above, int below) {
     if (above < 1) {

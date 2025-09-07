@@ -188,13 +188,65 @@ class BuffData {
     int addValue = 0;
     if (vals.ParamAddValue != null) {
       int addCount = 0;
+      final includeIgnoreIndividuality = vals.IncludeIgnoreIndividuality == 1;
       // 1. support AndCheck
       // 2. use ParamAddIndividualityTargetType(FuncTargetType, default -1) instead of self/op
+      final selfAndCheck = vals.ParamAddSelfIndividualityAndCheck;
+      final oppAndCheck = vals.ParamAddOpIndividualityAndCheck;
+      final fieldAndCheck = vals.ParamAddFieldIndividualityAndCheck;
+      final targetOverride = FuncTargetType.values.firstWhereOrNull(
+        (type) => type.value == vals.ParamAddIndividualityTargetType,
+      );
+      if (selfAndCheck != null) {
+        if (targetOverride != null && battleData != null) {
+          final targetTraitsList = battleData.getTraitsForFuncTargets(targetOverride, self);
+          for (final targetTraits in targetTraitsList) {
+            addCount += Individuality.getSignedMatchedTotalCountMultiIndividuality(targetTraits, selfAndCheck);
+          }
+        } else {
+          addCount += Individuality.getSignedMatchedTotalCountMultiIndividuality(
+            self
+                .getTraits(
+                  addTraits: self.getBuffTraits(
+                    ignoreIndivUnreleaseable: true,
+                    includeIgnoreIndiv: includeIgnoreIndividuality,
+                  ),
+                )
+                .toIntList(),
+            selfAndCheck,
+          );
+        }
+      }
+      if (oppAndCheck != null && opponent != null) {
+        if (targetOverride != null && battleData != null) {
+          final targetTraitsList = battleData.getTraitsForFuncTargets(targetOverride, self);
+          for (final targetTraits in targetTraitsList) {
+            addCount += Individuality.getSignedMatchedTotalCountMultiIndividuality(targetTraits, oppAndCheck);
+          }
+        } else {
+          addCount += Individuality.getSignedMatchedTotalCountMultiIndividuality(
+            opponent
+                .getTraits(
+                  addTraits: opponent.getBuffTraits(
+                    ignoreIndivUnreleaseable: true,
+                    includeIgnoreIndiv: includeIgnoreIndividuality,
+                  ),
+                )
+                .toIntList(),
+            oppAndCheck,
+          );
+        }
+      }
+      if (fieldAndCheck != null && battleData != null) {
+        addCount += Individuality.getSignedMatchedTotalCountMultiIndividuality(
+          battleData.getQuestIndividuality().toIntList(),
+          fieldAndCheck,
+        );
+      }
+
       final selfIndiv = vals.ParamAddSelfIndividuality;
       final oppIndiv = vals.ParamAddOpIndividuality;
       final fieldIndiv = vals.ParamAddFieldIndividuality;
-      final ignoreIndivUnreleaseable = vals.IgnoreIndivUnreleaseable == 1;
-      final includeIgnoreIndividuality = vals.IncludeIgnoreIndividuality == 1;
       if (selfIndiv != null) {
         final targetTraits = NiceTrait.list(selfIndiv);
         addCount +=
@@ -202,7 +254,7 @@ class BuffData {
             self.countBuffWithTrait(
               targetTraits,
               includeIgnoreIndiv: includeIgnoreIndividuality,
-              ignoreIndivUnreleaseable: ignoreIndivUnreleaseable,
+              ignoreIndivUnreleaseable: true,
             );
       }
       if (oppIndiv != null && opponent != null) {
@@ -212,7 +264,7 @@ class BuffData {
             opponent.countBuffWithTrait(
               targetTraits,
               includeIgnoreIndiv: includeIgnoreIndividuality,
-              ignoreIndivUnreleaseable: ignoreIndivUnreleaseable,
+              ignoreIndivUnreleaseable: true,
             );
       }
       if (fieldIndiv != null && battleData != null) {
