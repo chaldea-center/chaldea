@@ -603,7 +603,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
 
   Widget _buildClassBoard() {
     final baseClassBoard = ClassBoard.getClassBoard(svt.classId);
-    final grandClassBoard = ClassBoard.getGrandClassBoard(svt.classId);
+    final grandBoard = ClassBoard.getGrandClassBoard(svt.classId);
 
     Widget _buildBoard(ClassBoard board, final List<int> squares) {
       final allSquares = [
@@ -657,16 +657,41 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
       );
     }
 
-    Widget _buildTypeVal(CondParamValType type) {
-      final stat = playerSvtData.classBoardData.getClassStatistic(type.value, svt.classId);
+    List<DataVals> valsList = [];
+    if (grandBoard != null) {
+      valsList = [
+        for (final square in grandBoard.squares)
+          for (final func in square.targetSkill?.functions ?? square.targetCommandSpell?.functions ?? <NiceFunction>[])
+            if (func.svals.isNotEmpty) func.svals.first,
+      ];
+    }
+
+    Widget _buildTypeVal(int type) {
+      final stat = playerSvtData.classBoardData.getClassStatistic(type, svt.classId);
+      Set<num> maxCounts = {};
+      if (grandBoard != null) {
+        for (final vals in valsList) {
+          if (vals.CondParamRangeType == type) {
+            maxCounts.add(vals.CondParamRangeMaxCount ?? 0);
+          } else if (vals.CondParamAddType == type) {
+            if (vals.CondParamAddMaxValue != null && vals.CondParamAddValue != null && vals.CondParamAddValue! > 0) {
+              maxCounts.add(vals.CondParamAddMaxValue! / vals.CondParamAddValue!);
+            }
+          }
+        }
+      }
+      maxCounts.remove(0);
+
+      final dispName = ClassStatisticsType.fromId(type)?.dispName ?? 'Type $type';
       return ListTile(
         dense: true,
-        title: Text(type.dispName),
+        title: Text(dispName),
+        subtitle: maxCounts.isEmpty ? null : Text("MAX ${maxCounts.join(' / ')}"),
         trailing: TextButton(
           onPressed: () {
             InputCancelOkDialog.number(
               initValue: stat.typeVal,
-              title: type.dispName,
+              title: dispName,
               validate: (v) => v >= 0,
               onSubmit: (v) {
                 stat.typeVal = v;
@@ -679,12 +704,16 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
       );
     }
 
+    List<int> classStatTypes = valsList.map((e) => e.CondParamRangeType ?? e.CondParamAddType ?? 0).toSet().toList();
+    classStatTypes.remove(0);
+    classStatTypes.sort();
+
     return TileGroup(
       header: S.current.class_board,
       children: [
         if (baseClassBoard != null) _buildBoard(baseClassBoard, playerSvtData.classBoardData.classBoardSquares),
-        if (grandClassBoard != null && playerSvtData.grandSvt) ...[
-          _buildBoard(grandClassBoard, playerSvtData.classBoardData.grandClassBoardSquares),
+        if (grandBoard != null && playerSvtData.grandSvt) ...[
+          _buildBoard(grandBoard, playerSvtData.classBoardData.grandClassBoardSquares),
           DividerWithTitle(
             indent: 16,
             titleWidget: Text.rich(
@@ -705,7 +734,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
               ),
             ),
           ),
-          for (final type in CondParamValType.values) _buildTypeVal(type),
+          for (final type in classStatTypes) _buildTypeVal(type),
         ],
       ],
     );

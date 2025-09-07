@@ -407,7 +407,7 @@ class TdDmgSolver {
     if (grandBoard != null) {
       data.classBoardData.grandClassBoardSquares = options.grandBoard.getPlan(grandBoard).enhancedSquares.toList();
       data.classBoardData.classStatistics = [
-        for (final type in CondParamValType.values)
+        for (final type in ClassStatisticsType.values)
           ClassStatisticsInfo(classId: svt.classId, type: type.value, typeVal: 10000),
       ];
     }

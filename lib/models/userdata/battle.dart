@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math' show max;
 
 import 'package:archive/archive.dart';
 
@@ -573,9 +574,26 @@ class ClassBoardStatisticsData {
 
   int getClassStatVal(int type, List<int> targetIds) {
     int result = 0;
-    for (final info in classStatistics) {
-      if (info.type == type && targetIds.contains(info.classId)) {
-        result += info.typeVal;
+    if (type == ClassStatisticsType.enhancedSquareNum.value) {
+      // for EX1/2, all classes have same value for type 1
+      for (final targetId in targetIds) {
+        int targetVal = 0;
+        final board = db.gameData.classBoards.values.firstWhereOrNull(
+          (e) => e.classes.map((c) => c.classId).contains(targetId),
+        );
+        List<int> updatedTargetIds = board == null ? [targetId] : board.classes.map((e) => e.classId).toList();
+        for (final info in classStatistics) {
+          if (info.type == type && updatedTargetIds.contains(info.classId)) {
+            targetVal = max(targetVal, info.typeVal);
+          }
+        }
+        result += targetVal;
+      }
+    } else {
+      for (final info in classStatistics) {
+        if (info.type == type && targetIds.contains(info.classId)) {
+          result += info.typeVal;
+        }
       }
     }
     return result;
@@ -601,6 +619,35 @@ class ClassStatisticsInfo {
   factory ClassStatisticsInfo.fromJson(Map<String, dynamic> json) => _$ClassStatisticsInfoFromJson(json);
 
   Map<String, dynamic> toJson() => _$ClassStatisticsInfoToJson(this);
+}
+
+enum ClassStatisticsType {
+  enhancedSquareNum(1),
+  totalSvtBondLevel(2),
+  svtCount(3), // dup?
+  totalSvtLevel(4), // 90 per ssr
+  totalSvtActiveSkillLevel(5); // 30 per svt
+
+  const ClassStatisticsType(this.value);
+  final int value;
+
+  String get dispName {
+    return switch (this) {
+      enhancedSquareNum => '${S.current.class_board_square} ${S.current.unlock} ${S.current.counts}',
+      totalSvtBondLevel => '${S.current.servant} ${S.current.bond} ${S.current.total}',
+      svtCount => '${S.current.total} ${S.current.servant} ${S.current.counts}',
+      totalSvtLevel => '${S.current.total} ${S.current.servant} ${S.current.level}',
+      totalSvtActiveSkillLevel =>
+        '${S.current.total} ${S.current.servant} ${S.current.active_skill} ${S.current.level}',
+    };
+  }
+
+  static ClassStatisticsType? fromId(int value) {
+    for (final v in values) {
+      if (v.value == value) return v;
+    }
+    return null;
+  }
 }
 
 @JsonSerializable()
