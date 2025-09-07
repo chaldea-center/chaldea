@@ -137,8 +137,8 @@ class ValDsc extends StatelessWidget {
   static void _addPercent(final List<String> parts, int? value, int base, {String Function(String)? post}) {
     if (value == null) return;
     String text = '${_toPercent(value, base)}';
-      // if (maxValue != null) text = '$text~${_toPercent(maxValue, base)}';
-      text += '%';
+    // if (maxValue != null) text = '$text~${_toPercent(maxValue, base)}';
+    text += '%';
     if (post != null) {
       text = post(text);
     }

@@ -721,10 +721,10 @@ class _SpecialTransl {
   String get funcTraitRemoval => M.of(jp: '解除: ', cn: '解除: ', tw: '解除: ', na: 'Remove: ', kr: '해제: ');
   String funcTraitPerBuff({String? target}) {
     return M.of(
-      jp: '【${target ?? ""}〔{0}〕状態の数によって】',
-      cn: '【根据${target ?? ""}〔{0}〕状态的数量】',
-      tw: "【根據${target ?? ""}〔{0}〕狀態的數量】",
-      na: ' (Based on the amount of [{0}]${target == null ? "" : " on $target"})',
+      jp: '${target ?? ""}〔{0}〕状態の数によって',
+      cn: '根据${target ?? ""}〔{0}〕状态的数量',
+      tw: "根據${target ?? ""}〔{0}〕狀態的數量",
+      na: 'Based on the amount of [{0}]${target == null ? "" : " on $target"}',
       kr: null,
     );
   }

@@ -64,9 +64,10 @@ class Event with RouteInfo {
 
   List<int> get warIds {
     if (_warIds.isEmpty) {
-      for (final entry in ConstData.extraWarEventMapping.entries) {
-        if (entry.value == id) return [entry.key];
-      }
+      return [
+        for (final (k, v) in ConstData.extraWarEventMapping.items)
+          if (v == id) k,
+      ];
     }
     return _warIds;
   }

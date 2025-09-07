@@ -83,7 +83,7 @@ class _TraitFuncTabState extends State<TraitFuncTab> {
   Widget buildFunc(BaseFunction func, List<_FuncCheckPos> positions) {
     Widget _traits(String prefix, List<NiceTrait> traits) {
       return Text(
-        '$prefix: ${traits.map((e) => Transl.trait(e.id).l).join("/")}',
+        '$prefix: ${traits.map((e) => Transl.trait(e.signedId).l).join("/")}',
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
       );

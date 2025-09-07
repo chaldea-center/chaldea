@@ -374,11 +374,16 @@ class SharedBuilder {
     String Function(NiceTrait trait)? format,
   }) {
     List<InlineSpan> children = divideList(
-      traitsList.map(
-        (traits) => TextSpan(
-          children: traitSpans(context: context, traits: traits, useAndJoin: true, style: style, format: format),
-        ),
-      ),
+      traitsList.map((traits) {
+        final addBracket = traitsList.length > 1 && traits.length > 1;
+        return TextSpan(
+          children: [
+            if (addBracket) const TextSpan(text: '('),
+            ...traitSpans(context: context, traits: traits, useAndJoin: true, style: style, format: format),
+            if (addBracket) const TextSpan(text: ')'),
+          ],
+        );
+      }),
       TextSpan(
         text: ' / ',
         style: TextStyle(color: Theme.of(context).hintColor),
@@ -394,14 +399,55 @@ class SharedBuilder {
     TextStyle? style,
     String Function(NiceTrait trait)? format,
   }) {
-    List<InlineSpan> children = divideList(
+    List<InlineSpan> _list(List<NiceTrait> values, bool _useAndJoin) {
+      return divideList(
+        values.map((e) => traitSpan(context: context, trait: e, style: style, format: format)),
+        TextSpan(
+          text: _useAndJoin ? ' & ' : ' / ',
+          style: TextStyle(color: Theme.of(context).hintColor),
+        ),
+      );
+    }
+
+    if (!useAndJoin) {
+      final unsignedArray = traits.where((e) => !e.negative).map((e) => NiceTrait(id: e.id)).toList(),
+          signedArray = traits.where((e) => e.negative).map((e) => NiceTrait(id: e.id)).toList();
+      if (signedArray.isEmpty && unsignedArray.isEmpty) return [];
+      if (unsignedArray.isEmpty) {
+        if (signedArray.isEmpty) {
+          return [];
+        } else {
+          return [
+            TextSpan(text: Transl.special.not()),
+            if (signedArray.length > 1) const TextSpan(text: '('),
+            ..._list(signedArray, false),
+            if (signedArray.length > 1) const TextSpan(text: ')'),
+          ];
+        }
+      } else {
+        if (signedArray.isEmpty) {
+          return _list(unsignedArray, false);
+        } else {
+          return [
+            if (unsignedArray.length > 1) const TextSpan(text: '('),
+            ..._list(unsignedArray, false),
+            if (unsignedArray.length > 1) const TextSpan(text: ')'),
+
+            TextSpan(text: ' & ${Transl.special.not()}'),
+            if (signedArray.length > 1) const TextSpan(text: '('),
+            ..._list(signedArray, false),
+            if (signedArray.length > 1) const TextSpan(text: ')'),
+          ];
+        }
+      }
+    }
+    return divideList(
       traits.map((e) => traitSpan(context: context, trait: e, style: style, format: format)),
       TextSpan(
         text: useAndJoin ? ' & ' : ' / ',
         style: TextStyle(color: Theme.of(context).hintColor),
       ),
     );
-    return children;
   }
 
   static Future<FilePickerResult?> pickImageOrFiles({

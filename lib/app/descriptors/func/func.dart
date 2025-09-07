@@ -1221,30 +1221,6 @@ class FuncDescriptor extends StatelessWidget {
       spans.add(const TextSpan(text: ')'));
     }
     //
-    void _addParamAddTrait(String Function() template, List<int>? traitIds) {
-      if (traitIds != null && traitIds.isNotEmpty) {
-        spans.addAll(
-          SharedBuilder.replaceSpan(
-            template(),
-            '{0}',
-            SharedBuilder.traitSpans(context: context, traits: NiceTrait.list(traitIds)),
-          ),
-        );
-      }
-    }
-
-    _addParamAddTrait(
-      () => Transl.special.funcTraitPerBuff(target: Transl.special.self),
-      vals?.ParamAddSelfIndividuality,
-    );
-    _addParamAddTrait(
-      () => Transl.special.funcTraitPerBuff(target: Transl.special.opposite),
-      vals?.ParamAddOpIndividuality,
-    );
-    _addParamAddTrait(
-      () => Transl.special.funcTraitPerBuff(target: Transl.special.field),
-      vals?.ParamAddFieldIndividuality,
-    );
 
     List<List<InlineSpan>> _condSpans = [];
 
@@ -1261,6 +1237,48 @@ class FuncDescriptor extends StatelessWidget {
         ]),
       );
     }
+
+    // ParamAddIndiv
+    void _addParamAddIndiv(String targetText, {List<int>? traitIds, List<List<int>>? andCheckTraitIds}) {
+      final targetType = vals?.ParamAddIndividualityTargetType;
+      if (targetType != null) {
+        final funcTargetType = FuncTargetType.values.firstWhereOrNull((e) => e.value == targetType);
+        targetText = funcTargetType == null ? 'TargetType$targetType' : Transl.funcTargetType(funcTargetType).l;
+      }
+
+      // Noah's skill3 crit buff
+      if (func.funcId == 201 &&
+          andCheckTraitIds != null &&
+          andCheckTraitIds.expand((e) => e).map((e) => e.abs()).toSet().equalTo({2005, 2632, 2821, 10000})) {
+        andCheckTraitIds = null;
+        traitIds = [2005, 2632, 2821, -10000];
+      }
+
+      if (traitIds != null && traitIds.isNotEmpty) {
+        _condSpans.add(
+          SharedBuilder.replaceSpan(
+            Transl.special.funcTraitPerBuff(target: targetText),
+            '{0}',
+            SharedBuilder.traitSpans(context: context, traits: NiceTrait.list(traitIds)),
+          ),
+        );
+      } else if (andCheckTraitIds != null && andCheckTraitIds.isNotEmpty) {
+        _condSpans.add(
+          SharedBuilder.replaceSpan(
+            Transl.special.funcTraitPerBuff(target: targetText),
+            '{0}',
+            SharedBuilder.traitsListSpans(context: context, traitsList: andCheckTraitIds.map(NiceTrait.list).toList()),
+          ),
+        );
+      }
+    }
+
+    _addParamAddIndiv(Transl.special.self, traitIds: vals?.ParamAddSelfIndividuality);
+    _addParamAddIndiv(Transl.special.opposite, traitIds: vals?.ParamAddOpIndividuality);
+    _addParamAddIndiv(Transl.special.field, traitIds: vals?.ParamAddFieldIndividuality);
+    _addParamAddIndiv(Transl.special.self, andCheckTraitIds: vals?.ParamAddSelfIndividualityAndCheck);
+    _addParamAddIndiv(Transl.special.opposite, andCheckTraitIds: vals?.ParamAddOpIndividualityAndCheck);
+    _addParamAddIndiv(Transl.special.field, andCheckTraitIds: vals?.ParamAddFieldIndividualityAndCheck);
 
     // CondParamAdd
     final condParamType = vals?.CondParamRangeType ?? vals?.CondParamAddType ?? 0;
@@ -1416,6 +1434,11 @@ class FuncDescriptor extends StatelessWidget {
             ...SharedBuilder.traitSpans(context: context, traits: ownerIndivs, useAndJoin: ownerIndivAnd),
             if (countCond != null) TextSpan(text: countCond),
           ]);
+          final targetTypeId = buff.script.individualityCondTargetType;
+          if (targetTypeId != null) {
+            final targetType = BuffConditionTargetType.fromId(targetTypeId);
+            ownerIndivSpans.insert(0, TextSpan(text: "(${targetType?.dispName ?? 'TargetType $targetTypeId'})"));
+          }
           _condSpans.add(ownerIndivSpans);
         }
       }

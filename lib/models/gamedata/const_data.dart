@@ -1368,6 +1368,8 @@ enum BuffAction {
   changeBuffUseRate(159),
   hateToGrantedOpponent(160),
   reactiveDamageGainHp(161),
+  baseHpRate(162),
+  baseHpValue(163),
   // custom
   functionClassboardCommandSpellAfter(301);
 
@@ -1427,6 +1429,7 @@ const kBuffActionPercentTypes = {
   BuffAction.changeBuffUseRate: 10,
   BuffAction.overwriteBuffUseRate: 10,
   BuffAction.reactiveDamageGainHp: 10,
+  BuffAction.baseHpRate: 10,
 };
 
 const kBuffTypePercentType = <BuffType, int>{
@@ -1436,7 +1439,6 @@ const kBuffTypePercentType = <BuffType, int>{
 };
 
 const kFuncValPercentType = <FuncType, int>{
-// Map<FuncType, int> get kFuncValPercentType => <FuncType, int>{
   FuncType.gainNpFromTargets: 100,
   FuncType.gainNp: 100,
   FuncType.gainNpBuffIndividualSum: 100,

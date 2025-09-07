@@ -12,6 +12,7 @@ import 'common.dart';
 import 'const_data.dart';
 import 'func.dart' show FuncType;
 import 'mappings.dart';
+import 'skill.dart' show FuncTargetType;
 import 'vals.dart';
 
 part '../../generated/models/gamedata/buff.g.dart';
@@ -146,6 +147,7 @@ class BuffScript with DataScriptBase {
   int? get INDIVIDUALITIE_COUNT_BELOW => toInt('INDIVIDUALITIE_COUNT_BELOW'); // "≤", only for `INDIVIDUALITIE`
   List<NiceTrait>? INDIVIDUALITIE_AND;
   List<NiceTrait>? INDIVIDUALITIE_OR;
+  int? get individualityCondTargetType => toInt('individualityCondTargetType');
   List<NiceTrait>? UpBuffRateBuffIndiv; // Oberon
   NiceTrait? TargetIndiv;
   BuffConvert? convert;
@@ -500,6 +502,8 @@ enum BuffType {
   downBuffUseRate(233),
   reactiveDamageGainHp(234),
   upHateToGrantedOpponent(235),
+  upBaseHp(236),
+  addBaseHp(237),
 
   toFieldChangeField(10001),
   toFieldAvoidBuff(10002),
@@ -607,4 +611,46 @@ class BuffValueTriggerType {
     this.rate,
     this.position,
   });
+}
+
+enum BuffConditionTargetType {
+  none(0),
+  ptAll(1),
+  enemyAll(2),
+  fieldAll(3),
+  ptFull(4),
+  enemyFull(5),
+  ptOtherAll(6),
+  ptOtherFull(7),
+  fieldOtherAll(8);
+
+  const BuffConditionTargetType(this.value);
+  final int value;
+
+  static BuffConditionTargetType? fromId(int value) {
+    for (final v in values) {
+      if (v.value == value) return v;
+    }
+    return null;
+  }
+
+  FuncTargetType? toFuncTarget() {
+    return switch (this) {
+      none => null,
+      ptAll => FuncTargetType.ptAll,
+      enemyAll => FuncTargetType.enemyAll,
+      fieldAll => FuncTargetType.fieldAll,
+      ptFull => FuncTargetType.ptFull,
+      enemyFull => FuncTargetType.enemyFull,
+      ptOtherAll => null,
+      ptOtherFull => FuncTargetType.ptOtherFull,
+      fieldOtherAll => null,
+    };
+  }
+
+  String get dispName {
+    final funcTargetType = toFuncTarget();
+    if (funcTargetType != null) return Transl.funcTargetType(funcTargetType).l;
+    return name;
+  }
 }

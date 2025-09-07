@@ -274,6 +274,21 @@ class BuffInfoTable extends StatelessWidget {
               ),
             ],
           ),
+        if (buff.script.individualityCondTargetType != null)
+          CustomTableRow(
+            children: [
+              TableCellData(text: "indivCondTarget", isHeader: true),
+              TableCellData(
+                text: () {
+                  final targetType = BuffConditionTargetType.fromId(buff.script.individualityCondTargetType!);
+                  String text = targetType?.name ?? buff.script.individualityCondTargetType.toString();
+                  if (targetType != null) text += ' (${targetType.dispName})';
+                  return text;
+                }(),
+                flex: 3,
+              ),
+            ],
+          ),
         if (buff.script.UpBuffRateBuffIndiv?.isNotEmpty == true)
           CustomTableRow(
             children: [
