@@ -1564,6 +1564,55 @@ class BattleData {
     return -1;
   }
 
+  List<BattleServantData> getBuffConditionTargets(BuffConditionTargetType targetType, BattleServantData self) {
+    final List<BattleServantData> targets = [];
+
+    final isAlly = self.isPlayer;
+    final List<BattleServantData> backupAllies = isAlly ? nonnullBackupPlayers : nonnullBackupEnemies;
+    final List<BattleServantData> aliveAllies = isAlly ? nonnullPlayers : nonnullEnemies;
+
+    final List<BattleServantData> backupEnemies = isAlly ? nonnullBackupEnemies : nonnullBackupPlayers;
+    final List<BattleServantData> aliveEnemies = isAlly ? nonnullEnemies : nonnullPlayers;
+    switch (targetType) {
+      case BuffConditionTargetType.none:
+        break;
+      case BuffConditionTargetType.ptAll:
+        targets.addAll(aliveAllies);
+        break;
+      case BuffConditionTargetType.enemyAll:
+        targets.addAll(aliveEnemies);
+        break;
+      case BuffConditionTargetType.fieldAll:
+        targets.addAll(aliveAllies);
+        targets.addAll(aliveEnemies);
+        break;
+      case BuffConditionTargetType.ptFull:
+        targets.addAll(aliveAllies);
+        targets.addAll(backupAllies);
+        break;
+      case BuffConditionTargetType.enemyFull:
+        targets.addAll(aliveEnemies);
+        targets.addAll(backupEnemies);
+        break;
+      case BuffConditionTargetType.ptOtherAll:
+        targets.addAll(aliveAllies);
+        targets.remove(self);
+        break;
+      case BuffConditionTargetType.ptOtherFull:
+        targets.addAll(aliveAllies);
+        targets.addAll(backupAllies);
+        targets.remove(self);
+        break;
+      case BuffConditionTargetType.fieldOtherAll:
+        targets.addAll(aliveAllies);
+        targets.addAll(aliveEnemies);
+        targets.remove(self);
+        break;
+    }
+
+    return targets;
+  }
+
   static bool shouldRemoveDeadActors(final List<CombatAction> actions, final int index) {
     final currentAction = actions[index];
     final currentActualCard = getActualCard(currentAction);

@@ -660,42 +660,118 @@ class BuffData {
     List<int> selfTraits() =>
         [...owner.getTraits(addTraits: owner.getBuffTraits()), ...battleData.getQuestIndividuality()].toIntList();
 
+    final condTargetOverride = BuffConditionTargetType.values.firstWhereOrNull(
+      (type) => type.value == buff.script.individualityCondTargetType,
+    );
+
     if (buff.script.INDIVIDUALITIE_OR != null) {
-      isAct &= Individuality.checkSignedIndividualitiesPartialMatch(
-        selfs: selfTraits(),
-        signedTargets: buff.script.INDIVIDUALITIE_OR?.toIntList(),
-        matchedFunc: Individuality.isPartialMatchArray,
-        mismatchFunc: Individuality.isPartialMatchArray,
-      );
+      if (condTargetOverride != null) {
+        final List<BattleServantData> targetList = battleData.getBuffConditionTargets(condTargetOverride, owner);
+        bool anyMatch = false;
+        for (final target in targetList) {
+          final traits = target
+              .getTraits(
+                addTraits: target.getBuffTraits(includeIgnoreIndiv: buff.script.IncludeIgnoreIndividuality == 1),
+              )
+              .toIntList();
+          anyMatch |= Individuality.checkSignedIndividualitiesPartialMatch(
+            selfs: traits,
+            signedTargets: buff.script.INDIVIDUALITIE_OR?.toIntList(),
+            matchedFunc: Individuality.isPartialMatchArray,
+            mismatchFunc: Individuality.isPartialMatchArray,
+          );
+          if (anyMatch) break;
+        }
+        isAct &= anyMatch;
+      } else {
+        isAct &= Individuality.checkSignedIndividualitiesPartialMatch(
+          selfs: selfTraits(),
+          signedTargets: buff.script.INDIVIDUALITIE_OR?.toIntList(),
+          matchedFunc: Individuality.isPartialMatchArray,
+          mismatchFunc: Individuality.isPartialMatchArray,
+        );
+      }
     }
     if (buff.script.INDIVIDUALITIE_AND != null) {
-      isAct &= Individuality.checkSignedIndividualities2(
-        self: selfTraits(),
-        signedTarget: buff.script.INDIVIDUALITIE_AND?.toIntList(),
-        matchedFunc: Individuality.isMatchArray,
-        mismatchFunc: Individuality.isMatchArray,
-      );
+      if (condTargetOverride != null) {
+        final List<BattleServantData> targetList = battleData.getBuffConditionTargets(condTargetOverride, owner);
+        bool anyMatch = false;
+        for (final target in targetList) {
+          final traits = target
+              .getTraits(
+                addTraits: target.getBuffTraits(includeIgnoreIndiv: buff.script.IncludeIgnoreIndividuality == 1),
+              )
+              .toIntList();
+          anyMatch |= Individuality.checkSignedIndividualities2(
+            self: traits,
+            signedTarget: buff.script.INDIVIDUALITIE_AND?.toIntList(),
+            matchedFunc: Individuality.isMatchArray,
+            mismatchFunc: Individuality.isMatchArray,
+          );
+          if (anyMatch) break;
+        }
+        isAct &= anyMatch;
+      } else {
+        isAct &= Individuality.checkSignedIndividualities2(
+          self: selfTraits(),
+          signedTarget: buff.script.INDIVIDUALITIE_AND?.toIntList(),
+          matchedFunc: Individuality.isMatchArray,
+          mismatchFunc: Individuality.isMatchArray,
+        );
+      }
     }
     if (buff.script.INDIVIDUALITIE != null) {
       int countAbove = buff.script.INDIVIDUALITIE_COUNT_ABOVE ?? 0;
       int countBelow = buff.script.INDIVIDUALITIE_COUNT_BELOW ?? 0;
       List<int> signedTarget = [buff.script.INDIVIDUALITIE!.signedId];
-      if (countAbove <= 0 && countBelow <= 0) {
-        isAct &= Individuality.checkSignedIndividualities2(
-          self: selfTraits(),
-          signedTarget: signedTarget,
-          matchedFunc: Individuality.isPartialMatchArray,
-          mismatchFunc: Individuality.isPartialMatchArray,
-        );
+
+      if (condTargetOverride != null) {
+        final List<BattleServantData> targetList = battleData.getBuffConditionTargets(condTargetOverride, owner);
+        bool anyMatch = false;
+        for (final target in targetList) {
+          final traits = target
+              .getTraits(
+                addTraits: target.getBuffTraits(includeIgnoreIndiv: buff.script.IncludeIgnoreIndividuality == 1),
+              )
+              .toIntList();
+          if (countAbove <= 0 && countBelow <= 0) {
+            anyMatch |= Individuality.checkSignedIndividualities2(
+              self: traits,
+              signedTarget: signedTarget,
+              matchedFunc: Individuality.isPartialMatchArray,
+              mismatchFunc: Individuality.isPartialMatchArray,
+            );
+          } else {
+            anyMatch |= Individuality.checkSignedIndividualitiesCount(
+              selfs: traits,
+              targets: signedTarget,
+              matchedFunc: Individuality.isPartialMatchArrayCount,
+              mismatchFunc: Individuality.isPartialMatchArrayCount,
+              countAbove: countAbove,
+              countBelow: countBelow,
+            );
+          }
+          if (anyMatch) break;
+        }
+        isAct &= anyMatch;
       } else {
-        isAct &= Individuality.checkSignedIndividualitiesCount(
-          selfs: selfTraits(),
-          targets: signedTarget,
-          matchedFunc: Individuality.isPartialMatchArrayCount,
-          mismatchFunc: Individuality.isPartialMatchArrayCount,
-          countAbove: countAbove,
-          countBelow: countBelow,
-        );
+        if (countAbove <= 0 && countBelow <= 0) {
+          isAct &= Individuality.checkSignedIndividualities2(
+            self: selfTraits(),
+            signedTarget: signedTarget,
+            matchedFunc: Individuality.isPartialMatchArray,
+            mismatchFunc: Individuality.isPartialMatchArray,
+          );
+        } else {
+          isAct &= Individuality.checkSignedIndividualitiesCount(
+            selfs: selfTraits(),
+            targets: signedTarget,
+            matchedFunc: Individuality.isPartialMatchArrayCount,
+            mismatchFunc: Individuality.isPartialMatchArrayCount,
+            countAbove: countAbove,
+            countBelow: countBelow,
+          );
+        }
       }
     }
 
