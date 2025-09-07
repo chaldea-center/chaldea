@@ -398,6 +398,8 @@ abstract class Individuality {
     return count;
   }
 
+  /// added for ParamAddSelfIndividualityAndCheck / ParamAddOpIndividualityAndCheck etc.
+  /// Can reference BattleBuffData__GetParamAddCountSignedIndividualityAndCheck
   static int getSignedMatchedTotalCountMultiIndividuality(
     List<int> selfIndividualityArray,
     List<List<int>> targetMultiIndividualityArray,

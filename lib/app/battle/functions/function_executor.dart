@@ -619,6 +619,58 @@ class FunctionExecutor {
     final DataVals? dataVals,
     final bool defaultToPlayer = true,
   }) async {
+    final isAlly = activator?.isPlayer ?? defaultToPlayer;
+    final List<BattleServantData> aliveAllies = isAlly ? battleData.nonnullPlayers : battleData.nonnullEnemies;
+    final List<BattleServantData> targets = acquireSimpleFunctionTarget(
+      battleData,
+      funcTargetType,
+      activator,
+      funcId: funcId,
+      dataVals: dataVals,
+      targetedAlly: targetedAlly,
+      targetedEnemy: targetedEnemy,
+      defaultToPlayer: defaultToPlayer,
+    ).toList();
+    if (funcTargetType == FuncTargetType.ptRandom) {
+      if (battleData.delegate?.ptRandom != null) {
+        final selected = await battleData.delegate!.ptRandom!.call(aliveAllies);
+        if (selected != null) {
+          targets.add(selected);
+        }
+      } else if (aliveAllies.isNotEmpty && battleData.mounted) {
+        final selectedSvts = await ChooseTargetsDialog.show(
+          battleData,
+          targetType: funcTargetType,
+          targets: aliveAllies,
+          maxCount: 1,
+          minCount: 0,
+        );
+        if (selectedSvts != null) {
+          final selectedSvt = selectedSvts.firstOrNull;
+          if (selectedSvt != null) {
+            targets.add(selectedSvt);
+            battleData.replayDataRecord.ptRandomIndexes.add(aliveAllies.indexOf(selectedSvt));
+          } else {
+            battleData.replayDataRecord.ptRandomIndexes.add(null);
+          }
+        }
+        return targets;
+      }
+    }
+
+    return targets;
+  }
+
+  static List<BattleServantData> acquireSimpleFunctionTarget(
+    final BattleData battleData,
+    final FuncTargetType funcTargetType,
+    final BattleServantData? activator, {
+    final int? funcId,
+    final BattleServantData? targetedAlly,
+    final BattleServantData? targetedEnemy,
+    final DataVals? dataVals,
+    final bool defaultToPlayer = true,
+  }) {
     final List<BattleServantData> targets = [];
 
     final isAlly = activator?.isPlayer ?? defaultToPlayer;
@@ -758,38 +810,13 @@ class FunctionExecutor {
         }
         break;
       case FuncTargetType.ptselectOneSub: //  used by replace member
+      case FuncTargetType.ptRandom: // not handled in simple
         break;
       case FuncTargetType.enemyOneNoTargetNoAction:
         if (activator != null) {
           final target = battleData.getServantData(activator.getRevengeTargetUniqueId(), onFieldOnly: true);
           if (target != null) {
             targets.add(target);
-          }
-        }
-        break;
-      // random target: set minCount=0 to enable skip
-      case FuncTargetType.ptRandom:
-        if (battleData.delegate?.ptRandom != null) {
-          final selected = await battleData.delegate!.ptRandom!.call(aliveAllies);
-          if (selected != null) {
-            targets.add(selected);
-          }
-        } else if (aliveAllies.isNotEmpty && battleData.mounted) {
-          final selectedSvts = await ChooseTargetsDialog.show(
-            battleData,
-            targetType: funcTargetType,
-            targets: aliveAllies,
-            maxCount: 1,
-            minCount: 0,
-          );
-          if (selectedSvts != null) {
-            final selectedSvt = selectedSvts.firstOrNull;
-            if (selectedSvt != null) {
-              targets.add(selectedSvt);
-              battleData.replayDataRecord.ptRandomIndexes.add(aliveAllies.indexOf(selectedSvt));
-            } else {
-              battleData.replayDataRecord.ptRandomIndexes.add(null);
-            }
           }
         }
         break;

@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:chaldea/app/battle/functions/function_executor.dart';
 import 'package:chaldea/app/battle/models/battle.dart';
 import 'package:chaldea/app/battle/utils/buff_utils.dart';
 import 'package:chaldea/app/descriptors/func/vals.dart';
@@ -189,8 +190,8 @@ class BuffData {
     if (vals.ParamAddValue != null) {
       int addCount = 0;
       final includeIgnoreIndividuality = vals.IncludeIgnoreIndividuality == 1;
-      // 1. support AndCheck
-      // 2. use ParamAddIndividualityTargetType(FuncTargetType, default -1) instead of self/op
+      final ignoreUnreleaseable = vals.IgnoreIndivUnreleaseable == 1;
+
       final selfAndCheck = vals.ParamAddSelfIndividualityAndCheck;
       final oppAndCheck = vals.ParamAddOpIndividualityAndCheck;
       final fieldAndCheck = vals.ParamAddFieldIndividualityAndCheck;
@@ -198,43 +199,49 @@ class BuffData {
         (type) => type.value == vals.ParamAddIndividualityTargetType,
       );
       if (selfAndCheck != null) {
-        if (targetOverride != null && battleData != null) {
-          final targetTraitsList = battleData.getTraitsForFuncTargets(targetOverride, self);
-          for (final targetTraits in targetTraitsList) {
-            addCount += Individuality.getSignedMatchedTotalCountMultiIndividuality(targetTraits, selfAndCheck);
-          }
-        } else {
-          addCount += Individuality.getSignedMatchedTotalCountMultiIndividuality(
-            self
-                .getTraits(
-                  addTraits: self.getBuffTraits(
-                    ignoreIndivUnreleaseable: true,
-                    includeIgnoreIndiv: includeIgnoreIndividuality,
-                  ),
-                )
-                .toIntList(),
-            selfAndCheck,
-          );
+        final List<BattleServantData> targetList = targetOverride != null && battleData != null
+            ? FunctionExecutor.acquireSimpleFunctionTarget(
+                battleData,
+                targetOverride,
+                self,
+                targetedAlly: battleData.getTargetedAlly(self),
+                targetedEnemy: battleData.getTargetedEnemy(self),
+              )
+            : [self];
+        for (final target in targetList) {
+          final traits = target
+              .getTraits(
+                addTraits: target.getBuffTraits(
+                  ignoreIndivUnreleaseable: ignoreUnreleaseable,
+                  includeIgnoreIndiv: includeIgnoreIndividuality,
+                ),
+              )
+              .toIntList();
+          addCount += Individuality.getSignedMatchedTotalCountMultiIndividuality(traits, selfAndCheck);
         }
       }
-      if (oppAndCheck != null && opponent != null) {
-        if (targetOverride != null && battleData != null) {
-          final targetTraitsList = battleData.getTraitsForFuncTargets(targetOverride, self);
-          for (final targetTraits in targetTraitsList) {
-            addCount += Individuality.getSignedMatchedTotalCountMultiIndividuality(targetTraits, oppAndCheck);
-          }
-        } else {
-          addCount += Individuality.getSignedMatchedTotalCountMultiIndividuality(
-            opponent
-                .getTraits(
-                  addTraits: opponent.getBuffTraits(
-                    ignoreIndivUnreleaseable: true,
-                    includeIgnoreIndiv: includeIgnoreIndividuality,
-                  ),
-                )
-                .toIntList(),
-            oppAndCheck,
-          );
+      if (oppAndCheck != null) {
+        final List<BattleServantData> targetList = targetOverride != null && battleData != null
+            ? FunctionExecutor.acquireSimpleFunctionTarget(
+                battleData,
+                targetOverride,
+                self,
+                targetedAlly: battleData.getTargetedAlly(self),
+                targetedEnemy: battleData.getTargetedEnemy(self),
+              )
+            : opponent != null
+            ? [opponent]
+            : [];
+        for (final target in targetList) {
+          final traits = target
+              .getTraits(
+                addTraits: target.getBuffTraits(
+                  ignoreIndivUnreleaseable: ignoreUnreleaseable,
+                  includeIgnoreIndiv: includeIgnoreIndividuality,
+                ),
+              )
+              .toIntList();
+          addCount += Individuality.getSignedMatchedTotalCountMultiIndividuality(traits, oppAndCheck);
         }
       }
       if (fieldAndCheck != null && battleData != null) {
@@ -244,28 +251,54 @@ class BuffData {
         );
       }
 
-      final selfIndiv = vals.ParamAddSelfIndividuality;
-      final oppIndiv = vals.ParamAddOpIndividuality;
+      final selfChecks = vals.ParamAddSelfIndividuality;
+      final oppoChecks = vals.ParamAddOpIndividuality;
       final fieldIndiv = vals.ParamAddFieldIndividuality;
-      if (selfIndiv != null) {
-        final targetTraits = NiceTrait.list(selfIndiv);
-        addCount +=
-            self.countTrait(targetTraits) +
-            self.countBuffWithTrait(
-              targetTraits,
-              includeIgnoreIndiv: includeIgnoreIndividuality,
-              ignoreIndivUnreleaseable: true,
-            );
+      if (selfChecks != null) {
+        final List<BattleServantData> targetList = targetOverride != null && battleData != null
+            ? FunctionExecutor.acquireSimpleFunctionTarget(
+                battleData,
+                targetOverride,
+                self,
+                targetedAlly: battleData.getTargetedAlly(self),
+                targetedEnemy: battleData.getTargetedEnemy(self),
+              )
+            : [self];
+        for (final target in targetList) {
+          final traits = target
+              .getTraits(
+                addTraits: target.getBuffTraits(
+                  ignoreIndivUnreleaseable: ignoreUnreleaseable,
+                  includeIgnoreIndiv: includeIgnoreIndividuality,
+                ),
+              )
+              .toIntList();
+          addCount += Individuality.getMatchedTotalCount(selfs: traits, targets: selfChecks);
+        }
       }
-      if (oppIndiv != null && opponent != null) {
-        final targetTraits = NiceTrait.list(oppIndiv);
-        addCount +=
-            opponent.countTrait(targetTraits) +
-            opponent.countBuffWithTrait(
-              targetTraits,
-              includeIgnoreIndiv: includeIgnoreIndividuality,
-              ignoreIndivUnreleaseable: true,
-            );
+      if (oppoChecks != null) {
+        final List<BattleServantData> targetList = targetOverride != null && battleData != null
+            ? FunctionExecutor.acquireSimpleFunctionTarget(
+                battleData,
+                targetOverride,
+                self,
+                targetedAlly: battleData.getTargetedAlly(self),
+                targetedEnemy: battleData.getTargetedEnemy(self),
+              )
+            : opponent != null
+            ? [opponent]
+            : [];
+        for (final target in targetList) {
+          final traits = target
+              .getTraits(
+                addTraits: target.getBuffTraits(
+                  ignoreIndivUnreleaseable: ignoreUnreleaseable,
+                  includeIgnoreIndiv: includeIgnoreIndividuality,
+                ),
+              )
+              .toIntList();
+          addCount += Individuality.getMatchedTotalCount(selfs: traits, targets: oppoChecks);
+        }
       }
       if (fieldIndiv != null && battleData != null) {
         final targetTraits = NiceTrait.list(fieldIndiv);
