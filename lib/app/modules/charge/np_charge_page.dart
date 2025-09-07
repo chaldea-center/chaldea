@@ -112,6 +112,7 @@ class _NpChargePageState extends State<NpChargePage> {
                     ),
                   ],
                 ),
+                textStyle: Theme.of(context).textTheme.bodyMedium,
                 margin: const EdgeInsets.all(16),
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 waitDuration: const Duration(seconds: 1),

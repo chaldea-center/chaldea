@@ -1843,32 +1843,40 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
         ),
         Center(
           child: TextButton(
-            onPressed: () {
-              SimpleConfirmDialog(
-                title: const Text('Clear Dumps'),
-                onTapOk: () async {
-                  try {
-                    EasyLoading.show(status: 'clearing');
-                    int deleted = 0;
-                    final folder = Directory(db.paths.tempFakerDir);
-                    final t = DateTime.now().subtract(const Duration(hours: 1));
-                    await for (final file in folder.list(recursive: true)) {
-                      if (file is File) {
-                        final stat = await file.stat();
-                        if (stat.modified.isBefore(t)) {
-                          await file.delete();
-                          deleted += 1;
+            onPressed: runtime.runningTask.value
+                ? null
+                : () {
+                    InputCancelOkDialog.number(
+                      title: 'Clear dumps (from oldest)',
+                      initValue: 100,
+                      onSubmit: (deleteCount) async {
+                        if (deleteCount <= 0) return;
+                        try {
+                          EasyLoading.show(status: 'clearing');
+                          int deleted = 0;
+                          final folder = Directory(agent.network.fakerDir);
+                          if (!folder.existsSync()) {
+                            EasyLoading.showError('Directory not exist');
+                            return;
+                          }
+                          final fileStats = [
+                            for (final file in folder.listSync()) (file: file, stat: await file.stat()),
+                          ];
+                          fileStats.sort2((e) => e.stat.modified);
+                          final t = DateTime.now().subtract(const Duration(hours: 1));
+                          fileStats.retainWhere((e) => e.file is File && e.stat.modified.isBefore(t));
+                          for (final file in fileStats.take(deleteCount)) {
+                            await file.file.delete();
+                            deleted += 1;
+                          }
+                          EasyLoading.showInfo('$deleted deleted');
+                        } catch (e, s) {
+                          logger.e('clear dumps failed', e, s);
+                          EasyLoading.showError(e.toString());
                         }
-                      }
-                    }
-                    EasyLoading.showInfo('$deleted deleted');
-                  } catch (e, s) {
-                    logger.e('clear dumps failed', e, s);
-                    EasyLoading.showError(e.toString());
-                  }
-                },
-              ).showDialog(context);
-            },
+                      },
+                    ).showDialog(context);
+                  },
             child: const Text('Clear dumps'),
           ),
         ),

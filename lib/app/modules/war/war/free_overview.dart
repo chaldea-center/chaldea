@@ -14,10 +14,10 @@ import '../../common/builders.dart';
 
 class FreeQuestOverview extends StatefulWidget {
   final List<Quest> quests;
-  final bool isMainStory;
+  final NiceWar? war;
   final bool needSort;
 
-  const FreeQuestOverview({super.key, required this.quests, required this.isMainStory, required this.needSort});
+  const FreeQuestOverview({super.key, required this.quests, required this.war, required this.needSort});
 
   @override
   State<FreeQuestOverview> createState() => _FreeQuestOverviewState();
@@ -48,6 +48,7 @@ class _FreeQuestOverviewState extends State<FreeQuestOverview> {
     minLv = shownFilterLvs.lastWhereOrNull(
       (e) => Maths.sum(shownFilterLvs.where((lv) => lv >= e).map((lv) => levelCounts[lv] ?? 0)) >= 3,
     );
+    if (widget.war?.id == WarId.ordealCall) minLv = null;
 
     loadData();
   }
@@ -182,7 +183,7 @@ class _FreeQuestOverviewState extends State<FreeQuestOverview> {
                     ),
                     const DataColumn2(label: Text('Lv/AP', textScaler: TextScaler.linear(0.9)), fixedWidth: 56),
                     DataColumn2(label: Text(S.current.svt_class), fixedWidth: 90),
-                    if (widget.isMainStory) ...[
+                    if (widget.war?.isMainStory == true) ...[
                       DataColumn2(
                         label: Text(S.current.quest_runs("").trim(), textScaler: const TextScaler.linear(0.9)),
                         fixedWidth: 48,
@@ -313,7 +314,7 @@ class _FreeQuestOverviewState extends State<FreeQuestOverview> {
     }
 
     int lines;
-    if (widget.isMainStory) {
+    if (widget.war?.isMainStory == true) {
       _addRuns(info.domusRuns);
       _addItems(info.domusItems);
       _addRuns(info.rayshiftRuns);

@@ -611,9 +611,7 @@ Widget addQuestCategoryTile({
           title: Text("${S.current.game_drop} ($title)"),
           trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
           onTap: () {
-            router.pushPage(
-              FreeQuestOverview(quests: fqs, isMainStory: war?.isMainStory ?? false, needSort: needSortFree),
-            );
+            router.pushPage(FreeQuestOverview(quests: fqs, war: war, needSort: needSortFree));
           },
         ),
       );

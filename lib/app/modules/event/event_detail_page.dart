@@ -389,14 +389,14 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
         LayoutBuilder(
           builder: (context, constraints) {
             final war = db.gameData.wars[warId];
-            String title = war == null ? 'War $warId' : war.lLongName.l;
+            String title = war == null ? 'War $warId' : war.lLongName.l.setMaxLines(1);
             final height = min(constraints.maxWidth / 2, 164.0) / 142 * 354;
             return ListTile(
               leading: war?.shownBanner == null ? null : db.getIconImage(war?.shownBanner, height: height),
               horizontalTitleGap: 8,
               title: Text(
                 title,
-                maxLines: 1,
+                maxLines: 2,
                 textScaler: const TextScaler.linear(0.8),
                 overflow: TextOverflow.ellipsis,
               ),

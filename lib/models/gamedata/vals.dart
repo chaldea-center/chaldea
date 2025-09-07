@@ -202,7 +202,7 @@ class DataVals {
   int? get WarBoardTakeOverBuff => _get('WarBoardTakeOverBuff');
   List<int>? get ParamAddSelfIndividuality => _list('ParamAddSelfIndividuality');
   List<int>? get ParamAddOpIndividuality => _list('ParamAddOpIndividuality');
-  List<int>? get ParamAddFieldIndividuality => _list('ParamAddFieldIndividuality');
+  List<int>? get ParamAddFieldIndividuality => _list('ParamAddFieldIndividuality'); // quest field indiv
   int? get ParamAddValue => _get('ParamAddValue');
   int? get MultipleGainStar => _get('MultipleGainStar');
   int? get NoCheckIndividualityIfNotUnit => _get('NoCheckIndividualityIfNotUnit');
@@ -343,7 +343,7 @@ class DataVals {
   List<int>? get TargetBuffIndividuality => _list('TargetBuffIndividuality');
 
   int? get TargetEnemyClass => _get('TargetEnemyClass');
-  int? get ParamAddIndividualityTargetType => _get('ParamAddIndividualityTargetType');
+  int? get ParamAddIndividualityTargetType => _get('ParamAddIndividualityTargetType'); // default -1
   List<int>? get TriggeredFuncIndexAndCheckList => _list('TriggeredFuncIndexAndCheckList');
   int? get FuncCheckTargetIndividualityTargetType => _get('FuncCheckTargetIndividualityTargetType');
   int? get FuncCheckTargetIndividualityCountHigher => _get('FuncCheckTargetIndividualityCountHigher');

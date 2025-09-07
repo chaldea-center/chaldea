@@ -188,6 +188,8 @@ class BuffData {
     int addValue = 0;
     if (vals.ParamAddValue != null) {
       int addCount = 0;
+      // 1. support AndCheck
+      // 2. use ParamAddIndividualityTargetType(FuncTargetType, default -1) instead of self/op
       final selfIndiv = vals.ParamAddSelfIndividuality;
       final oppIndiv = vals.ParamAddOpIndividuality;
       final fieldIndiv = vals.ParamAddFieldIndividuality;
@@ -551,7 +553,10 @@ class BuffData {
     if (vals.ParamAdd != null) {
       if (vals.ParamAddSelfIndividuality == null &&
           vals.ParamAddOpIndividuality == null &&
-          vals.ParamAddFieldIndividuality == null) {
+          vals.ParamAddFieldIndividuality == null &&
+          vals.ParamAddSelfIndividualityAndCheck == null &&
+          vals.ParamAddOpIndividualityAndCheck == null &&
+          vals.ParamAddFieldIndividualityAndCheck == null) {
         param += vals.ParamAdd!;
         param = param.clamp(0, vals.ParamMax!);
       }

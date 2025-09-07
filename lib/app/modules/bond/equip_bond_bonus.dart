@@ -81,6 +81,10 @@ enum _FilterType {
   }
 }
 
+class _ExtraFilterData {
+  final ceStates = <int, _FilterType>{};
+}
+
 /// functvals: traits
 /// DataVals: [RateCount], [AddCount] (ignore)
 class _EquipBondBonusTabState extends State<EquipBondBonusTab> {
@@ -92,9 +96,9 @@ class _EquipBondBonusTabState extends State<EquipBondBonusTab> {
     sortKeys: [SvtCompare.rarity, SvtCompare.className, SvtCompare.no],
     sortReversed: [true, false, true],
   );
-  final ceFilterStates = <int, _FilterType>{};
+  final extraFilterData = _ExtraFilterData();
 
-  _FilterType getCeState(int ceId) => ceFilterStates[ceId] ??= _FilterType.none;
+  _FilterType getCeState(int ceId) => extraFilterData.ceStates[ceId] ??= _FilterType.none;
 
   @override
   void initState() {
@@ -152,7 +156,7 @@ class _EquipBondBonusTabState extends State<EquipBondBonusTab> {
     // hide unreleased ces
     for (final ceId in allCeData.keys) {
       if (!isCeReleased(ceId)) {
-        ceFilterStates[ceId] = _FilterType.hide;
+        extraFilterData.ceStates[ceId] = _FilterType.hide;
       }
     }
   }
@@ -205,10 +209,14 @@ class _EquipBondBonusTabState extends State<EquipBondBonusTab> {
 
   List<_GroupItem> getGroupData() {
     final List<int> allCeIds = allCeData.keys
-        .where((e) => ![_FilterType.exclude, _FilterType.hide].contains(ceFilterStates[e]))
+        .where((e) => ![_FilterType.exclude, _FilterType.hide].contains(extraFilterData.ceStates[e]))
         .toList();
-    final List<int> excludeCeIds = ceFilterStates.keys.where((e) => ceFilterStates[e] == _FilterType.exclude).toList();
-    final List<int> mustHaveCeIds = ceFilterStates.keys.where((e) => ceFilterStates[e] == _FilterType.include).toList();
+    final List<int> excludeCeIds = extraFilterData.ceStates.keys
+        .where((e) => extraFilterData.ceStates[e] == _FilterType.exclude)
+        .toList();
+    final List<int> mustHaveCeIds = extraFilterData.ceStates.keys
+        .where((e) => extraFilterData.ceStates[e] == _FilterType.include)
+        .toList();
     final List<int> freeCeIds = allCeIds.where((e) => !mustHaveCeIds.contains(e) && !excludeCeIds.contains(e)).toList();
     final int n = freeCeIds.length;
     List<_GroupItem> resultData = [];
@@ -249,7 +257,7 @@ class _EquipBondBonusTabState extends State<EquipBondBonusTab> {
     }
 
     // show svts with no bonus for all ces
-    if (ceFilterStates.values.every((e) => e == _FilterType.none) && _targetSvts.isEmpty) {
+    if (extraFilterData.ceStates.values.every((e) => e == _FilterType.none) && _targetSvts.isEmpty) {
       final bonusSvtIds = <int>{for (final v in allCeMatchSvtData.values) ...v.keys};
       List<({Servant svt, List<int> limitCounts})> svts = [];
       for (final svt in db.gameData.servantsById.values) {
@@ -375,20 +383,64 @@ class _EquipBondBonusTabState extends State<EquipBondBonusTab> {
   Widget get buttonBar {
     final ces = allCeData.values.toList();
     ces.sortByList((e) => [-e.rateCount, -e.ce.collectionNo]);
-    final filterBtn = IconButton(
-      icon: const Icon(Icons.filter_alt),
-      tooltip: S.current.filter,
-      onPressed: () => FilterPage.show(
-        context: context,
-        builder: (context) => ServantFilterPage(
-          filterData: svtFilterData,
-          onChanged: (_) {
-            if (mounted) setState(() {});
-          },
-          planMode: false,
+    final extraBtns = [
+      IconButton(
+        icon: const Icon(Icons.filter_alt),
+        tooltip: S.current.filter,
+        onPressed: () => FilterPage.show(
+          context: context,
+          builder: (context) => ServantFilterPage(
+            filterData: svtFilterData,
+            onChanged: (_) {
+              if (mounted) setState(() {});
+            },
+            planMode: false,
+          ),
         ),
       ),
-    );
+      FilterOption(
+        selected: svtFilterData.favorite == FavoriteState.owned,
+        value: svtFilterData.favorite,
+        child: Text(FavoriteState.owned.shownName),
+        onChanged: (value) {
+          setState(() {
+            svtFilterData.favorite = value ? FavoriteState.owned : FavoriteState.all;
+          });
+        },
+      ),
+      FilterOption(
+        selected:
+            svtFilterData.bondCompare.options.equalTo(const {CompareOperator.lessThan}) &&
+            svtFilterData.bondValue.radioValue == 10,
+        value: 0,
+        child: Text('${S.current.bond}＜10'),
+        onChanged: (value) {
+          setState(() {
+            if (value) {
+              svtFilterData.bondCompare.options = {CompareOperator.lessThan};
+              svtFilterData.bondValue.set(10);
+            } else {
+              svtFilterData.bondValue.reset();
+            }
+          });
+        },
+      ),
+      if (!db.curUser.region.isJP)
+        FilterOption(
+          selected: svtFilterData.region.radioValue == db.curUser.region,
+          value: svtFilterData.region.radioValue,
+          child: Text(db.curUser.region.localName),
+          onChanged: (value) {
+            setState(() {
+              if (value) {
+                svtFilterData.region.set(db.curUser.region);
+              } else {
+                svtFilterData.region.reset();
+              }
+            });
+          },
+        ),
+    ];
     final List<Widget> ceBtns = ces.map((ce) {
       final curStatus = getCeState(ce.ce.id);
       return InkWell(
@@ -426,7 +478,7 @@ class _EquipBondBonusTabState extends State<EquipBondBonusTab> {
                     ),
                     subtitle: Text(type.hint),
                     onTap: () {
-                      ceFilterStates[ce.ce.id] = type;
+                      extraFilterData.ceStates[ce.ce.id] = type;
                       Navigator.pop(context);
                       if (mounted) setState(() {});
                     },
@@ -469,11 +521,13 @@ class _EquipBondBonusTabState extends State<EquipBondBonusTab> {
       right: false,
       child: Padding(
         padding: EdgeInsets.only(top: 4),
-        child: Wrap(
-          spacing: 2,
-          runSpacing: 1,
-          crossAxisAlignment: WrapCrossAlignment.start,
-          children: [filterBtn, ...ceBtns],
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Wrap(spacing: 2, runSpacing: 1, crossAxisAlignment: WrapCrossAlignment.center, children: extraBtns),
+            Wrap(spacing: 2, runSpacing: 1, crossAxisAlignment: WrapCrossAlignment.start, children: ceBtns),
+          ],
         ),
       ),
     );

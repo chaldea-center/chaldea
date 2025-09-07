@@ -56,14 +56,40 @@ class _GalleryPageState extends State<GalleryPage> {
               icon: const Icon(Icons.refresh),
               tooltip: S.current.tooltip_refresh_sliders,
               onPressed: () async {
-                EasyLoading.showToast('${S.current.update_dataset} ...');
-                final data = await GameDataLoader.instance.reload();
-                if (data == null || !data.isValid) {
-                  return;
-                }
-                EasyLoading.showSuccess('${S.current.success}\n${data.version.text()}');
-                db.gameData = data;
-                if (mounted) setState(() {});
+                router.showDialog(
+                  builder: (context) {
+                    return SimpleDialog(
+                      title: Text(S.current.update),
+                      children: [
+                        SimpleDialogOption(
+                          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                          child: Text(S.current.carousel),
+                          onPressed: () async {
+                            Navigator.pop(context);
+                            EasyLoading.showToast('${S.current.tooltip_refresh_sliders} ...');
+                            await AppNewsCarousel.resolveSliderImageUrls(true);
+                            if (mounted) setState(() {});
+                          },
+                        ),
+                        SimpleDialogOption(
+                          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                          child: Text(S.current.gamedata),
+                          onPressed: () async {
+                            Navigator.pop(context);
+                            EasyLoading.showToast('${S.current.update_dataset} ...');
+                            final data = await GameDataLoader.instance.reload();
+                            if (data == null || !data.isValid) {
+                              return;
+                            }
+                            EasyLoading.showSuccess('${S.current.success}\n${data.version.text()}');
+                            db.gameData = data;
+                            if (mounted) setState(() {});
+                          },
+                        ),
+                      ],
+                    );
+                  },
+                );
               },
             ),
         ],
