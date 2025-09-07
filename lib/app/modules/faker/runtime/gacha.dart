@@ -79,12 +79,19 @@ extension FakerRuntimeGacha on FakerRuntime {
       if (gachaSub == null || gachaSub.openedAt > now || gachaSub.closedAt <= now) {
         throw SilentException('subId=$gachaSubId is not open');
       }
-      for (final release in gachaSub.releaseConditions) {
-        if (release.condType == CondType.questClear && (mstData.userQuest[release.condId]?.clearNum ?? 0) <= 0) {
-          throw SilentException(
-            '[subId=$gachaSubId] quest not cleared: ${db.gameData.quests[release.condId]?.lDispName ?? release.condId}',
-          );
+      final condMatched = CommonRelease.check(gachaSub.releaseConditions, (release) {
+        if (release.condType == CondType.questClear) {
+          return (mstData.userQuest[release.condId]?.clearNum ?? 0) > 0;
+        } else if (release.condType == CondType.questNotClear) {
+          return (mstData.userQuest[release.condId]?.clearNum ?? 0) <= 0;
+        } else if (release.condType == CondType.eventScriptPlay) {
+          final userEvent = mstData.userEvent[release.condId];
+          return userEvent != null && (userEvent.scriptFlag & (1 << release.condNum) != 0);
         }
+        return null;
+      });
+      if (condMatched == false) {
+        throw SilentException('GachaSub $gachaSubId not match conditions');
       }
       resp = await agent.gachaDraw(gachaId: option.gachaId, num: drawNum, gachaSubId: gachaSubId);
     } else {

@@ -79,6 +79,7 @@ class _SelectGachaSubPageState extends State<SelectGachaSubPage> {
 
     List<Widget> releases = [];
     final showCondGroup = sub.releaseConditions.map((e) => e.condGroup).toSet().length != 1;
+    Map<int, Set<bool?>> condMatches = {};
     for (final release in sub.releaseConditions) {
       List<InlineSpan> leading = [];
       if (showCondGroup) {
@@ -87,13 +88,11 @@ class _SelectGachaSubPageState extends State<SelectGachaSubPage> {
       bool? matchCond;
       if (release.condType == CondType.questClear) {
         matchCond = (widget.mstData.userQuest[release.condId]?.clearNum ?? 0) > 0;
+      } else if (release.condType == CondType.questNotClear) {
+        matchCond = (widget.mstData.userQuest[release.condId]?.clearNum ?? 0) <= 0;
       } else if (release.condType == CondType.eventScriptPlay) {
         final scriptFlag = widget.mstData.userEvent[release.condId]?.scriptFlag;
-        if (scriptFlag == null) {
-          matchCond = false;
-        } else {
-          matchCond = scriptFlag & (1 << release.condNum) != 0;
-        }
+        matchCond = scriptFlag != null && (scriptFlag & (1 << release.condNum) != 0);
       }
       if (matchCond == null) {
         leading.add(
@@ -110,7 +109,6 @@ class _SelectGachaSubPageState extends State<SelectGachaSubPage> {
           ),
         );
       } else {
-        hasFailed = true;
         leading.add(
           TextSpan(
             text: '× ',
@@ -118,6 +116,7 @@ class _SelectGachaSubPageState extends State<SelectGachaSubPage> {
           ),
         );
       }
+      condMatches.putIfAbsent(release.condGroup, () => {}).add(matchCond);
       releases.add(
         CondTargetValueDescriptor.commonRelease(
           padding: EdgeInsets.symmetric(horizontal: 16),
@@ -125,6 +124,9 @@ class _SelectGachaSubPageState extends State<SelectGachaSubPage> {
           leading: TextSpan(children: leading),
         ),
       );
+    }
+    if (condMatches.values.every((e) => e.contains(false))) {
+      hasFailed = true;
     }
     return Column(
       mainAxisSize: MainAxisSize.min,

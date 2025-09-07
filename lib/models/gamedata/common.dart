@@ -1329,4 +1329,19 @@ class CommonRelease with RouteInfo {
   String get route => Routes.commonReleaseI(id);
 
   Map<String, dynamic> toJson() => _$CommonReleaseToJson(this);
+
+  static bool? check(List<CommonRelease> releases, bool? Function(CommonRelease release) test) {
+    Map<int, Set<bool?>> results = {};
+    for (final release in releases) {
+      final v = test(release);
+      results.putIfAbsent(release.condGroup, () => {}).add(v);
+    }
+    if (results.values.any((e) => e.length == 1 && e.single == true)) {
+      return true;
+    }
+    if (results.values.every((e) => e.contains(false))) {
+      return false;
+    }
+    return null;
+  }
 }

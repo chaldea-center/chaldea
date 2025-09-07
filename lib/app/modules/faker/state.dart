@@ -4,6 +4,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 
 import 'package:chaldea/app/api/atlas.dart';
+import 'package:chaldea/app/api/cache.dart' show kExpireCacheOnly;
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/modules/master_mission/solver/scheme.dart';
 import 'package:chaldea/app/routes/delegate.dart';
@@ -183,7 +184,7 @@ class FakerRuntime {
   }
 
   Future<void> loadInitData() async {
-    await gameData.init();
+    await gameData.init(agent.network.gameTop);
     update();
   }
 
@@ -786,10 +787,19 @@ class _FakerGameData {
   Future<void> reset() async {
     timerData = GameTimerData();
     AtlasApi.cacheManager.clearCache();
-    await init();
+    await init(null);
   }
 
-  Future<void> init() async {
+  Future<void> init(GameTop? gameTop) async {
+    if (gameTop != null) {
+      final localTimerData = await AtlasApi.timerData(region, expireAfter: kExpireCacheOnly);
+      if (localTimerData != null && localTimerData.updatedAt > DateTime.now().timestamp - 3 * kSecsPerDay) {
+        if (localTimerData.hash != null && localTimerData.hash == gameTop.hash) {
+          timerData = localTimerData;
+          return;
+        }
+      }
+    }
     timerData = (await AtlasApi.timerData(region)) ?? timerData;
   }
 }

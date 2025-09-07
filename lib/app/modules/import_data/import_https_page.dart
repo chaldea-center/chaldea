@@ -236,6 +236,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
                     children: [
                       for (final (itemId, text) in {
                         Items.stoneId: '${user.stone}(${user.freeStone}+${user.chargeStone})',
+                        Items.summonTicketId: mstData?.userItem[Items.summonTicketId]?.num.toString() ?? '0',
                         Items.rarePrismId: user.rarePri.format(compact: false, groupSeparator: ','),
                         Items.manaPrismId: user.mana.format(compact: false, groupSeparator: ','),
                         Items.qpId: user.qp.format(compact: false, groupSeparator: ','),

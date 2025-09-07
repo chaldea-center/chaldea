@@ -212,7 +212,9 @@ Map<String, dynamic> _$AssetBundleDecryptToJson(AssetBundleDecrypt instance) => 
 };
 
 GameTimerData _$GameTimerDataFromJson(Map json) => GameTimerData(
-  updatedAt: (json['updatedAt'] as num?)?.toInt(),
+  updatedAt: (json['updatedAt'] as num?)?.toInt() ?? 0,
+  hash: json['hash'] as String?,
+  timestamp: (json['timestamp'] as num?)?.toInt(),
   events:
       (json['events'] as List<dynamic>?)?.map((e) => Event.fromJson(Map<String, dynamic>.from(e as Map))).toList() ??
       const [],

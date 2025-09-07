@@ -50,12 +50,14 @@ class _GachaDrawPageState extends State<GachaDrawPage> {
 
   Future<void> initData() async {
     if (gachaOption.gachaId <= 0) return;
-    await runtime.runTask(() async {
-      final _gacha =
-          runtime.gameData.timerData.gachas.firstWhereOrNull((e) => e.id == gachaOption.gachaId) ??
-          await AtlasApi.gacha(gachaOption.gachaId, region: runtime.region);
-      if (_gacha != null) _cachedGachas[_gacha.id] = _gacha;
-    }, check: false);
+    await runtime.runTask(_onChangeGacha, check: false);
+  }
+
+  Future<void> _onChangeGacha() async {
+    final _gacha =
+        runtime.gameData.timerData.gachas.firstWhereOrNull((e) => e.id == gachaOption.gachaId) ??
+        await AtlasApi.gacha(gachaOption.gachaId, region: runtime.region);
+    if (_gacha != null) _cachedGachas[_gacha.id] = _gacha;
     if (mounted) setState(() {});
   }
 
@@ -163,21 +165,9 @@ class _GachaDrawPageState extends State<GachaDrawPage> {
                     initValue: gachaOption.gachaId,
                     validate: (v) => v > 0,
                     onSubmit: (gachaId) async {
-                      final _gacha = await showEasyLoading(() => AtlasApi.gacha(gachaId, region: runtime.region));
-                      if (_gacha == null) {
-                        EasyLoading.showError('Gacha ID $gachaId not found');
-                        return;
-                      }
-                      _cachedGachas[_gacha.id] = _gacha;
-                      runtime.lockTask(() {
+                      runtime.lockTask(() async {
                         gachaOption.gachaId = gachaId;
-                        final subs = _gacha.getValidGachaSubs();
-                        subs.sort2((e) => -e.priority);
-                        if (subs.isEmpty) {
-                          gachaOption.gachaSubs[gachaId] = 0;
-                        } else if (subs.every((e) => e.id != gachaOption.gachaSubs[gachaId])) {
-                          gachaOption.gachaSubs[gachaId] = subs.first.id;
-                        }
+                        return _onChangeGacha();
                       });
                     },
                   ).showDialog(context);
@@ -198,9 +188,11 @@ class _GachaDrawPageState extends State<GachaDrawPage> {
                             SimpleDialogOption(
                               child: Text(gacha.lName),
                               onPressed: () {
-                                setState(() {
+                                runtime.lockTask(() async {
                                   gachaOption.gachaId = gacha.id;
+                                  return _onChangeGacha();
                                 });
+                                setState(() {});
                                 Navigator.pop(context);
                               },
                             ),

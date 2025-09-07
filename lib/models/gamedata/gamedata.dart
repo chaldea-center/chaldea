@@ -782,6 +782,8 @@ class _ProcessedData {
 @JsonSerializable(createToJson: false)
 class GameTimerData {
   int updatedAt;
+  String? hash;
+  int? timestamp;
   List<Event> events;
   List<NiceGacha> gachas;
   List<MasterMission> masterMissions;
@@ -790,15 +792,16 @@ class GameTimerData {
   GameConstants constants;
 
   GameTimerData({
-    int? updatedAt,
+    this.updatedAt = 0,
+    this.hash,
+    this.timestamp,
     this.events = const [],
     this.gachas = const [],
     this.masterMissions = const [],
     this.shops = const [],
     this.items = const [],
     GameConstants? constants,
-  }) : updatedAt = updatedAt ?? DateTime.now().timestamp,
-       constants = constants ?? ConstData.constants;
+  }) : constants = constants ?? ConstData.constants;
 
   List<NiceShop> get shownShops => shops.where((e) => e.payType != PayType.anonymous).toList();
 
