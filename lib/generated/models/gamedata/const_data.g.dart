@@ -1018,7 +1018,7 @@ GameConstantStr _$GameConstantStrFromJson(Map json) => GameConstantStr(
       (json['invalidSacrificeIndiv'] as List<dynamic>?)?.map((e) => (e as num).toInt()).toList() ?? const [3076],
   notReduceCountWithNoDamageBuff:
       (json['notReduceCountWithNoDamageBuff'] as List<dynamic>?)?.map((e) => (e as num).toInt()).toList() ??
-      const [42, 21, 23, 91, 105, 196],
+      const [42, 21, 23, 91, 105, 196, 227, 228],
   starRefreshBuffType:
       (json['starRefreshBuffType'] as List<dynamic>?)?.map((e) => (e as num).toInt()).toList() ?? const [2, 61],
   subPtBuffIndivi: (json['subPtBuffIndivi'] as List<dynamic>?)?.map((e) => (e as num).toInt()).toList() ?? const [3055],
@@ -1242,5 +1242,7 @@ const _$BuffActionEnumMap = {
   BuffAction.changeBuffUseRate: 'changeBuffUseRate',
   BuffAction.hateToGrantedOpponent: 'hateToGrantedOpponent',
   BuffAction.reactiveDamageGainHp: 'reactiveDamageGainHp',
+  BuffAction.baseHpRate: 'baseHpRate',
+  BuffAction.baseHpValue: 'baseHpValue',
   BuffAction.functionClassboardCommandSpellAfter: 'functionClassboardCommandSpellAfter',
 };

@@ -138,6 +138,7 @@ class NiceGacha with RouteInfo {
   List<GachaStoryAdjust> storyAdjusts;
   List<GachaSub> gachaSubs;
   // List<int> featuredSvtIds; // only GSSR gacha has data during open and with displayFeaturedSvt flag
+  // int extraGroupId; // 330 保底
 
   bool userAdded;
 
@@ -257,7 +258,7 @@ class NiceGacha with RouteInfo {
 @JsonSerializable(createToJson: false)
 class GachaStoryAdjust {
   int adjustId;
-  int idx;
+  int idx; // max idx
   @CondTypeConverter()
   CondType condType;
   int targetId;

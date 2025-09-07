@@ -51,7 +51,9 @@ class _GachaDrawPageState extends State<GachaDrawPage> {
   Future<void> initData() async {
     if (gachaOption.gachaId <= 0) return;
     await runtime.runTask(() async {
-      final _gacha = await AtlasApi.gacha(gachaOption.gachaId, region: runtime.region);
+      final _gacha =
+          runtime.gameData.timerData.gachas.firstWhereOrNull((e) => e.id == gachaOption.gachaId) ??
+          await AtlasApi.gacha(gachaOption.gachaId, region: runtime.region);
       if (_gacha != null) _cachedGachas[_gacha.id] = _gacha;
     }, check: false);
     if (mounted) setState(() {});
@@ -151,33 +153,65 @@ class _GachaDrawPageState extends State<GachaDrawPage> {
                 [gacha.openedAt, gacha.closedAt].map((e) => e.sec2date().toStringShort(omitSec: true)).join(' ~ '),
             ].join('\n'),
           ),
-          trailing: TextButton(
-            onPressed: () {
-              InputCancelOkDialog.number(
-                title: 'Gacha ID',
-                initValue: gachaOption.gachaId,
-                validate: (v) => v > 0,
-                onSubmit: (id) async {
-                  final _gacha = await showEasyLoading(() => AtlasApi.gacha(id, region: runtime.region));
-                  if (_gacha == null) {
-                    EasyLoading.showError('Gacha ID $id not found');
-                    return;
-                  }
-                  _cachedGachas[_gacha.id] = _gacha;
-                  runtime.lockTask(() {
-                    gachaOption.gachaId = id;
-                    final subs = _gacha.getValidGachaSubs();
-                    subs.sort2((e) => -e.priority);
-                    if (subs.isEmpty) {
-                      gachaOption.gachaSubId = 0;
-                    } else if (subs.every((e) => e.id != gachaOption.gachaSubId)) {
-                      gachaOption.gachaSubId = subs.first.id;
-                    }
-                  });
+          trailing: Wrap(
+            crossAxisAlignment: WrapCrossAlignment.center,
+            children: [
+              TextButton(
+                onPressed: () {
+                  InputCancelOkDialog.number(
+                    title: 'Gacha ID',
+                    initValue: gachaOption.gachaId,
+                    validate: (v) => v > 0,
+                    onSubmit: (gachaId) async {
+                      final _gacha = await showEasyLoading(() => AtlasApi.gacha(gachaId, region: runtime.region));
+                      if (_gacha == null) {
+                        EasyLoading.showError('Gacha ID $gachaId not found');
+                        return;
+                      }
+                      _cachedGachas[_gacha.id] = _gacha;
+                      runtime.lockTask(() {
+                        gachaOption.gachaId = gachaId;
+                        final subs = _gacha.getValidGachaSubs();
+                        subs.sort2((e) => -e.priority);
+                        if (subs.isEmpty) {
+                          gachaOption.gachaSubs[gachaId] = 0;
+                        } else if (subs.every((e) => e.id != gachaOption.gachaSubs[gachaId])) {
+                          gachaOption.gachaSubs[gachaId] = subs.first.id;
+                        }
+                      });
+                    },
+                  ).showDialog(context);
                 },
-              ).showDialog(context);
-            },
-            child: Text(gachaOption.gachaId.toString()),
+                child: Text(gachaOption.gachaId.toString()),
+              ),
+              IconButton(
+                onPressed: () {
+                  final gachas = runtime.gameData.timerData.gachas
+                      .where((e) => e.type == GachaType.freeGacha || e.freeDrawFlag > 0)
+                      .toList();
+                  router.showDialog(
+                    builder: (context) {
+                      return SimpleDialog(
+                        title: Text('Select Gacha'),
+                        children: [
+                          for (final gacha in gachas)
+                            SimpleDialogOption(
+                              child: Text(gacha.lName),
+                              onPressed: () {
+                                setState(() {
+                                  gachaOption.gachaId = gacha.id;
+                                });
+                                Navigator.pop(context);
+                              },
+                            ),
+                        ],
+                      );
+                    },
+                  );
+                },
+                icon: Icon(Icons.change_circle),
+              ),
+            ],
           ),
         ),
         ListTile(
@@ -188,26 +222,7 @@ class _GachaDrawPageState extends State<GachaDrawPage> {
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
             children: [
-              TextButton(
-                onPressed: gacha == null
-                    ? null
-                    : () {
-                        InputCancelOkDialog.number(
-                          title: 'Gacha Sub Id',
-                          initValue: gachaOption.gachaSubId,
-                          validate: (v) => v >= 0,
-                          onSubmit: (subId) async {
-                            final subs = gacha.getValidGachaSubs();
-                            if ((subs.isEmpty && subId == 0) || subs.any((e) => e.id == subId)) {
-                              runtime.lockTask(() {
-                                gachaOption.gachaSubId = subId;
-                              });
-                            }
-                          },
-                        ).showDialog(context);
-                      },
-                child: Text(gachaOption.gachaSubId.toString()),
-              ),
+              Text(gachaOption.gachaSubId.toString()),
               IconButton(
                 onPressed: gacha == null
                     ? null
@@ -218,7 +233,7 @@ class _GachaDrawPageState extends State<GachaDrawPage> {
                           gacha: gacha,
                           onSelected: (sub) {
                             runtime.lockTask(() {
-                              gachaOption.gachaSubId = sub?.id ?? 0;
+                              gachaOption.gachaSubs[gachaOption.gachaId] = sub?.id ?? 0;
                             });
                           },
                         ),
@@ -719,6 +734,8 @@ class _GachaDrawPageState extends State<GachaDrawPage> {
   }
 
   Widget get buttonBar {
+    final gacha = _cachedGachas[gachaOption.gachaId];
+
     final buttonStyle = FilledButton.styleFrom(
       minimumSize: const Size(64, 32),
       tapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -729,58 +746,73 @@ class _GachaDrawPageState extends State<GachaDrawPage> {
       return FilledButton.tonal(onPressed: enabled ? onPressed : null, style: buttonStyle, child: Text(text));
     }
 
+    final hasFreeDraw = gacha != null && runtime.checkHasFreeGachaDraw(gacha);
     List<List<Widget>> btnGroups = [
       [
-        buildButton(
-          onPressed: () {
-            router.showDialog(
-              builder: (context) {
-                return AlertDialog(
-                  title: Text('Draw'),
-                  actions: [
-                    TextButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      child: Text(S.current.cancel),
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                        runtime.runTask(() async {
-                          return runtime.fpGachaDraw(hundredDraw: false);
-                        });
-                      },
-                      child: Text('10'),
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                        runtime.runTask(() async {
-                          for (final _ in range(10)) {
-                            await runtime.fpGachaDraw(hundredDraw: false);
-                            if (mounted) setState(() {});
-                          }
-                        });
-                      },
-                      child: Text('10×10'),
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                        runtime.runTask(() async {
-                          return runtime.fpGachaDraw(hundredDraw: true);
-                        });
-                      },
-                      child: Text('100'),
-                    ),
-                  ],
-                );
-              },
-            );
-          },
-          text: 'draw',
-        ),
+        gacha != null && gacha.type == GachaType.payGacha
+            ? buildButton(
+                onPressed: () async {
+                  final confirm = await SimpleConfirmDialog(
+                    title: Text('Confirm Free Draw'),
+                    content: Text(gacha.lName),
+                  ).showDialog(context);
+                  if (confirm != true) return;
+                  runtime.runTask(() async {
+                    return runtime.gachaDraw(hundredDraw: false);
+                  });
+                },
+                text: 'Free Draw',
+              )
+            : buildButton(
+                onPressed: () {
+                  router.showDialog(
+                    builder: (context) {
+                      return AlertDialog(
+                        title: Text('Draw'),
+                        actions: [
+                          TextButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            child: Text(S.current.cancel),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                              runtime.runTask(() async {
+                                return runtime.gachaDraw(hundredDraw: false);
+                              });
+                            },
+                            child: Text('10'),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                              runtime.runTask(() async {
+                                for (final _ in range(10)) {
+                                  await runtime.gachaDraw(hundredDraw: false);
+                                  if (mounted) setState(() {});
+                                }
+                              });
+                            },
+                            child: Text('10×10'),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                              runtime.runTask(() async {
+                                return runtime.gachaDraw(hundredDraw: true);
+                              });
+                            },
+                            child: Text('100'),
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                },
+                text: hasFreeDraw ? 'Free Draw' : 'draw',
+              ),
         buildButton(
           onPressed: () {
             SimpleConfirmDialog(
@@ -859,16 +891,17 @@ class _GachaDrawPageState extends State<GachaDrawPage> {
         mainAxisSize: MainAxisSize.min,
         children: [
           for (final btns in btnGroups)
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-              child: Wrap(
-                alignment: WrapAlignment.center,
-                crossAxisAlignment: WrapCrossAlignment.center,
-                spacing: 4,
-                runSpacing: 2,
-                children: btns,
+            if (btns.isNotEmpty)
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                child: Wrap(
+                  alignment: WrapAlignment.center,
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  spacing: 4,
+                  runSpacing: 2,
+                  children: btns,
+                ),
               ),
-            ),
           const SizedBox(height: 8),
         ],
       ),

@@ -367,7 +367,10 @@ Map<String, dynamic> _$RequestOptionsSaveDataToJson(RequestOptionsSaveData insta
 GachaOption _$GachaOptionFromJson(Map json) => $checkedCreate('GachaOption', json, ($checkedConvert) {
   final val = GachaOption(
     gachaId: $checkedConvert('gachaId', (v) => (v as num?)?.toInt() ?? 0),
-    gachaSubId: $checkedConvert('gachaSubId', (v) => (v as num?)?.toInt() ?? 0),
+    gachaSubs: $checkedConvert(
+      'gachaSubs',
+      (v) => (v as Map?)?.map((k, e) => MapEntry(int.parse(k as String), (e as num).toInt())),
+    ),
     loopCount: $checkedConvert('loopCount', (v) => (v as num?)?.toInt() ?? 0),
     hundredDraw: $checkedConvert('hundredDraw', (v) => v as bool? ?? false),
     ceEnhanceBaseUserSvtIds: $checkedConvert(
@@ -394,7 +397,7 @@ GachaOption _$GachaOptionFromJson(Map json) => $checkedCreate('GachaOption', jso
 
 Map<String, dynamic> _$GachaOptionToJson(GachaOption instance) => <String, dynamic>{
   'gachaId': instance.gachaId,
-  'gachaSubId': instance.gachaSubId,
+  'gachaSubs': instance.gachaSubs.map((k, e) => MapEntry(k.toString(), e)),
   'loopCount': instance.loopCount,
   'hundredDraw': instance.hundredDraw,
   'ceEnhanceBaseUserSvtIds': instance.ceEnhanceBaseUserSvtIds.toList(),

@@ -6,7 +6,7 @@ extension FakerRuntimeGacha on FakerRuntime {
     while (agent.user.gacha.loopCount > 0) {
       _checkStop();
       displayToast('Draw FP gacha ${initCount - agent.user.gacha.loopCount + 1}/$initCount...');
-      await fpGachaDraw(hundredDraw: agent.user.gacha.hundredDraw);
+      await gachaDraw(hundredDraw: agent.user.gacha.hundredDraw);
       agent.user.gacha.loopCount -= 1;
       update();
 
@@ -22,7 +22,14 @@ extension FakerRuntimeGacha on FakerRuntime {
     }
   }
 
-  Future<void> fpGachaDraw({bool hundredDraw = false}) async {
+  bool checkHasFreeGachaDraw(NiceGacha gacha) {
+    final now = DateTime.now().timestamp;
+    final userGacha = mstData.userGacha[gacha.id];
+    return userGacha != null &&
+        DateTimeX.findNextHourAt(userGacha.freeDrawAt, region.getGachaResetUTC(gacha.type)) < now;
+  }
+
+  Future<void> gachaDraw({bool hundredDraw = false}) async {
     final counts = mstData.countSvtKeep();
     final userGame = mstData.user!;
     if (counts.svtCount >= userGame.svtKeep + 100) {
@@ -36,31 +43,74 @@ extension FakerRuntimeGacha on FakerRuntime {
         '${S.current.command_code}: ${counts.ccCount}>=${gameData.timerData.constants.maxUserCommandCode}+100',
       );
     }
-    final fp = mstData.tblUserGame[mstData.user?.userId]?.friendPoint ?? 0;
-    if (fp < 2000) {
-      throw SilentException('${Items.friendPoint?.lName.l ?? "Friend Point"} <2000');
-    }
     final option = agent.user.gacha;
-    final gacha = await AtlasApi.gacha(option.gachaId, region: region);
+    final gacha =
+        gameData.timerData.gachas.firstWhereOrNull((e) => e.id == option.gachaId) ??
+        await AtlasApi.gacha(option.gachaId, region: region);
     if (gacha == null) {
       throw SilentException('Gacha ${option.gachaId} not found');
     }
-    if (gacha.type != GachaType.freeGacha) {
-      throw SilentException('Only FP Gacha supported: ${gacha.type}');
-    }
-    int drawNum = 10;
-    final userGacha = mstData.userGacha[option.gachaId];
-    if (hundredDraw && userGacha != null && userGacha.freeDrawAt > 0) {
-      final freeDrawAt = DateTime.fromMillisecondsSinceEpoch(
-        userGacha.freeDrawAt * 1000,
-        isUtc: true,
-      ).add(Duration(hours: region.timezone));
-      final now = DateTime.now().toUtc().add(Duration(hours: region.timezone));
-      if (now.isAfter(freeDrawAt) && now.timestamp < freeDrawAt.timestamp + kSecsPerDay && now.day == freeDrawAt.day) {
-        drawNum = 100;
+    final now = DateTime.now().timestamp;
+    final bool hasFreeDraw = checkHasFreeGachaDraw(gacha);
+
+    int drawNum;
+
+    if (gacha.type == GachaType.freeGacha) {
+      final fp = mstData.tblUserGame[mstData.user?.userId]?.friendPoint ?? 0;
+      if (fp < 2000) {
+        throw SilentException('${Items.friendPoint?.lName.l ?? "Friend Point"} <2000');
       }
+      drawNum = hundredDraw && !hasFreeDraw ? 100 : 10;
+    } else {
+      if (gacha.freeDrawFlag <= 0) {
+        throw SilentException('This gacha is not freeDraw gacha');
+      }
+      if (!hasFreeDraw) {
+        throw SilentException('Story gacha has no free draw today!');
+      }
+      drawNum = 1;
     }
-    final resp = await agent.gachaDraw(gachaId: option.gachaId, num: drawNum, gachaSubId: option.gachaSubId);
+
+    final FResponse resp;
+
+    if (gacha.type == GachaType.freeGacha) {
+      final gachaSubId = option.gachaSubs[option.gachaId] ?? 0;
+      final gachaSub = gacha.gachaSubs.firstWhereOrNull((e) => e.id == gachaSubId);
+      if (gachaSub == null || gachaSub.openedAt > now || gachaSub.closedAt <= now) {
+        throw SilentException('subId=$gachaSubId is not open');
+      }
+      for (final release in gachaSub.releaseConditions) {
+        if (release.condType == CondType.questClear && (mstData.userQuest[release.condId]?.clearNum ?? 0) <= 0) {
+          throw SilentException(
+            '[subId=$gachaSubId] quest not cleared: ${db.gameData.quests[release.condId]?.lDispName ?? release.condId}',
+          );
+        }
+      }
+      resp = await agent.gachaDraw(gachaId: option.gachaId, num: drawNum, gachaSubId: gachaSubId);
+    } else {
+      final storyAdjustIds = gacha.storyAdjusts
+          .where((adjust) {
+            if (adjust.condType == CondType.questClear) {
+              if ((mstData.userQuest[adjust.targetId]?.clearNum ?? 0) <= 0) return false;
+            } else {
+              throw SilentException(
+                'Story Adjust cond not supported: ${adjust.condType}-${adjust.targetId}-${adjust.value}',
+              );
+            }
+            return true;
+          })
+          .map((e) => e.adjustId)
+          .toList();
+      resp = await agent.gachaDraw(
+        gachaId: option.gachaId,
+        num: drawNum,
+        gachaSubId: 0,
+        storyAdjustIds: storyAdjustIds,
+        shopIdIdx: 1,
+        ticketItemId: 0,
+      );
+    }
+
     try {
       final infos = resp.data.getResponseNull('gacha_draw')?.success?['gachaInfos'];
       if (infos != null) {
@@ -76,42 +126,6 @@ extension FakerRuntimeGacha on FakerRuntime {
     } catch (e, s) {
       logger.e('parse gacha_infos failed', e, s);
     }
-  }
-
-  Future<void> storyFreeDraw(int gachaId) async {
-    final gacha = gameData.timerData.gachas.firstWhereOrNull((e) => e.id == gachaId);
-    if (gacha == null) {
-      throw SilentException('Gacha $gachaId not found');
-    }
-    final gachaName = '$gachaId-${gacha.lName}';
-    final userGacha = mstData.userGacha[gachaId];
-    if (userGacha == null) {
-      throw SilentException('User Gacha not found: $gachaName');
-    }
-    if (gacha.freeDrawFlag <= 0) {
-      throw SilentException('Not free gacha: $gachaName');
-    }
-    final now = DateTime.now().timestamp;
-    if (gacha.openedAt > now || gacha.closedAt <= now) {
-      throw SilentException('Gacha not open: $gachaName');
-    }
-
-    int resetHourUTC;
-    switch (gacha.type) {
-      case GachaType.freeGacha:
-        resetHourUTC = region.fpFreeGachaResetUTC;
-      case GachaType.payGacha:
-        resetHourUTC = region.storyFreeGachaResetUTC;
-      default:
-        throw SilentException('Not free story gacha: ${gacha.type}');
-    }
-
-    final nextFreeDraw = DateTimeX.findNextHourAt(userGacha.freeDrawAt, resetHourUTC);
-    if (nextFreeDraw >= now) {
-      throw SilentException('Already free draw today, next free draw at ${nextFreeDraw.sec2date().toStringShort()}');
-    }
-    // agent.gachaDraw;
-    throw UnimplementedError('Paid gacha not supported');
   }
 
   Future<void> sellServant() async {

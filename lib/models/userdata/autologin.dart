@@ -459,7 +459,8 @@ enum BattleWinResultType {
 class GachaOption {
   // gacha
   int gachaId;
-  int gachaSubId;
+  Map<int, int> gachaSubs; // <gachaId, subId>
+  int get gachaSubId => gachaSubs[gachaId] ?? 0;
   int loopCount;
   bool hundredDraw;
   // enhance
@@ -473,7 +474,7 @@ class GachaOption {
 
   GachaOption({
     this.gachaId = 0,
-    this.gachaSubId = 0,
+    Map<int, int>? gachaSubs,
     this.loopCount = 0,
     this.hundredDraw = false,
     Set<int>? ceEnhanceBaseUserSvtIds,
@@ -482,7 +483,8 @@ class GachaOption {
     this.feedExp4 = false,
     Set<int>? sellKeepSvtIds,
     Set<int>? sellKeepCommandCodeIds,
-  }) : ceEnhanceBaseUserSvtIds = ceEnhanceBaseUserSvtIds ?? {},
+  }) : gachaSubs = gachaSubs ?? {},
+       ceEnhanceBaseUserSvtIds = ceEnhanceBaseUserSvtIds ?? {},
        ceEnhanceBaseSvtIds = ceEnhanceBaseSvtIds ?? {},
        sellKeepSvtIds = sellKeepSvtIds ?? {},
        sellKeepCommandCodeIds = sellKeepCommandCodeIds ?? {};

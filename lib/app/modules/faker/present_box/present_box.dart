@@ -607,7 +607,10 @@ class _SellCombineMaterialDialogState extends State<_SellCombineMaterialDialog> 
       if (entity.rarity != rarity) return false;
       return true;
     }).toList();
-    cards.sort2((e) => -e.createdAt);
+    cards.sortByList((e) {
+      final entity = e.dbEntity;
+      return <int>[entity?.rarity ?? 999, entity == null || entity.classId == SvtClass.ALL.value ? 1 : 0, -e.createdAt];
+    });
     final svt = db.gameData.entities[(97700 + rarity) * 100];
     return ListTile(
       leading: svt?.iconBuilder(context: context, width: 28),

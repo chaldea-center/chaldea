@@ -8,6 +8,7 @@ import '../db.dart';
 import '_helper.dart';
 import 'const_data.dart';
 import 'event.dart';
+import 'gacha.dart' show GachaType;
 import 'mappings.dart';
 
 part '../../generated/models/gamedata/common.g.dart';
@@ -45,6 +46,14 @@ enum Region {
 
   int get fpFreeGachaResetUTC => 0 - timezone;
   int get storyFreeGachaResetUTC => 4 - timezone;
+
+  int getGachaResetUTC(GachaType gachaType) {
+    return switch (gachaType) {
+      GachaType.payGacha => storyFreeGachaResetUTC,
+      GachaType.freeGacha => fpFreeGachaResetUTC,
+      _ => throw UnimplementedError('$gachaType'),
+    };
+  }
 
   @override
   String toString() {

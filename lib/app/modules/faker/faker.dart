@@ -513,11 +513,8 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
             onPressed: hasFreeDraw
                 ? () {
                     if (runtime.runningTask.value) return;
-                    if (gacha.type == GachaType.freeGacha) {
-                      router.pushPage(GachaDrawPage(runtime: runtime));
-                    } else {
-                      EasyLoading.showInfo('Draw inside game!');
-                    }
+                    agent.user.gacha.gachaId = gacha.id;
+                    router.pushPage(GachaDrawPage(runtime: runtime));
                   }
                 : null,
             child: Text(S.current.summon),
