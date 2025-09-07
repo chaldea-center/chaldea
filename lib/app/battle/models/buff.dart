@@ -665,32 +665,27 @@ class BuffData {
     );
 
     if (buff.script.INDIVIDUALITIE_OR != null) {
+      final List<int> traitsToCheck;
       if (condTargetOverride != null) {
+        traitsToCheck = [];
         final List<BattleServantData> targetList = battleData.getBuffConditionTargets(condTargetOverride, owner);
-        bool anyMatch = false;
         for (final target in targetList) {
           final traits = target
               .getTraits(
                 addTraits: target.getBuffTraits(includeIgnoreIndiv: buff.script.IncludeIgnoreIndividuality == 1),
               )
               .toIntList();
-          anyMatch |= Individuality.checkSignedIndividualitiesPartialMatch(
-            selfs: traits,
-            signedTargets: buff.script.INDIVIDUALITIE_OR?.toIntList(),
-            matchedFunc: Individuality.isPartialMatchArray,
-            mismatchFunc: Individuality.isPartialMatchArray,
-          );
-          if (anyMatch) break;
+          traitsToCheck.addAll(traits);
         }
-        isAct &= anyMatch;
       } else {
-        isAct &= Individuality.checkSignedIndividualitiesPartialMatch(
-          selfs: selfTraits(),
-          signedTargets: buff.script.INDIVIDUALITIE_OR?.toIntList(),
-          matchedFunc: Individuality.isPartialMatchArray,
-          mismatchFunc: Individuality.isPartialMatchArray,
-        );
+        traitsToCheck = selfTraits();
       }
+      isAct &= Individuality.checkSignedIndividualitiesPartialMatch(
+        selfs: traitsToCheck,
+        signedTargets: buff.script.INDIVIDUALITIE_OR?.toIntList(),
+        matchedFunc: Individuality.isPartialMatchArray,
+        mismatchFunc: Individuality.isPartialMatchArray,
+      );
     }
     if (buff.script.INDIVIDUALITIE_AND != null) {
       if (condTargetOverride != null) {
