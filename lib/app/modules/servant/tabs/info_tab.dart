@@ -25,11 +25,11 @@ class SvtInfoTab extends StatelessWidget {
       ...svt.ascensionAdd.overWriteServantName.all.values,
       ...svt.svtChange.map((e) => e.name),
     };
-    final baseTraits = [
-      ...svt.traits,
-      // for (final traitAdd in svt.traitAdd)
-      //   if (traitAdd.isAlwaysValid) ...traitAdd.trait,
-    ];
+    Set<int> baseTraitIds = svt.traits.map((e) => e.id).toSet();
+    for (final indivAdd in svt.ascensionAdd.individuality2.all.values) {
+      if (indivAdd.isNotEmpty) baseTraitIds = baseTraitIds.intersection(indivAdd.map((e) => e.id).toSet());
+    }
+    final baseTraits = NiceTrait.list(baseTraitIds.toList());
     final name = RubyText(
       [RubyTextData(svt.name, ruby: svt.ruby)],
       style: const TextStyle(fontWeight: FontWeight.bold),
@@ -262,14 +262,14 @@ class SvtInfoTab extends StatelessWidget {
             ),
             CustomTableRow.fromTexts(texts: [S.current.trait], defaults: headerData),
             ..._addTraits(context, null, baseTraits, []),
-            for (final entry in svt.ascensionAdd.individuality.ascension.entries)
+            for (final entry in svt.ascensionAdd.individuality2.ascension.entries)
               ..._addTraits(
                 context,
                 TextSpan(text: '${S.current.ascension_short} ${entry.key}: '),
                 entry.value,
                 baseTraits,
               ),
-            for (final entry in svt.ascensionAdd.individuality.costume.entries)
+            for (final entry in svt.ascensionAdd.individuality2.costume.entries)
               ..._addTraits(
                 context,
                 TextSpan(text: '${svt.profile.costume[entry.key]?.lName.l ?? entry.key}: '),

@@ -444,7 +444,7 @@ class _QuestEnemyEditPageState extends State<QuestEnemyEditPage> {
 
   void updateTrait(Servant? svt, int? limitCount) {
     if (svt != null && limitCount != null) {
-      final indivAdd = svt.ascensionAdd.individuality.all[limitCount];
+      final indivAdd = svt.ascensionAdd.individuality2.all[limitCount];
       if (indivAdd != null && indivAdd.isNotEmpty) {
         enemy.traits = indivAdd.toList();
       } else {

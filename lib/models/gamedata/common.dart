@@ -1009,6 +1009,10 @@ enum Trait {
     // return v == 94000 || v == 95000;
     return v == 94000;
   }
+
+  static bool isSvtClass(int id) => id >= 100 && id < 200;
+  static bool isSvtSubAttribute(int id) => id >= 200 && id < 210;
+  static bool isSvtAlignment(int id) => id >= 300 && id < 320;
 }
 
 @JsonEnum(alwaysCreate: true)

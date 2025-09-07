@@ -107,14 +107,14 @@ class _TraitServantTabState extends State<TraitServantTab> {
   Widget listItem(BuildContext context, Servant svt) {
     List<String> details = [];
     if (widget.ids.length == 1 && !isCommonTrait(svt)) {
-      for (final asc in svt.ascensionAdd.individuality.ascension.keys) {
+      for (final asc in svt.ascensionAdd.individuality2.ascension.keys) {
         details.addAll(
-          _addComment(svt.ascensionAdd.individuality.ascension[asc]!, _id, '${S.current.ascension_short} $asc'),
+          _addComment(svt.ascensionAdd.individuality2.ascension[asc]!, _id, '${S.current.ascension_short} $asc'),
         );
       }
-      for (final costumeId in svt.ascensionAdd.individuality.costume.keys) {
+      for (final costumeId in svt.ascensionAdd.individuality2.costume.keys) {
         final costumeName = svt.profile.costume[costumeId]?.lName.l ?? costumeId.toString();
-        details.addAll(_addComment(svt.ascensionAdd.individuality.costume[costumeId]!, _id, costumeName));
+        details.addAll(_addComment(svt.ascensionAdd.individuality2.costume[costumeId]!, _id, costumeName));
       }
       for (final traitAdd in svt.traitAdd) {
         if (traitAdd.isAlwaysValid) continue;

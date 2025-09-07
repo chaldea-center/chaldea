@@ -162,7 +162,7 @@ class _EquipBondBonusTabState extends State<EquipBondBonusTab> {
     List<int> matchedLimitCounts = [];
     final allLimitCounts = _getSvtAllLimits(svt);
     for (final limitCount in allLimitCounts) {
-      List<NiceTrait> resultTraits = svt.ascensionAdd.individuality.all[limitCount] ?? [];
+      List<NiceTrait> resultTraits = svt.ascensionAdd.individuality2.all[limitCount] ?? [];
       if (resultTraits.isEmpty) resultTraits = baseTraits;
       resultTraits = List.of(resultTraits);
       final limitCount2 = limitCount < 100 ? limitCount : svt.costume[limitCount]?.id ?? limitCount;
@@ -484,7 +484,7 @@ class _EquipBondBonusTabState extends State<EquipBondBonusTab> {
   }
 
   Set<int> _getSvtAllLimits(Servant svt) {
-    return {...range(5), ...svt.costume.keys, ...svt.ascensionAdd.individuality.all.keys};
+    return {...range(5), ...svt.costume.keys, ...svt.ascensionAdd.individuality2.all.keys};
   }
 }
 

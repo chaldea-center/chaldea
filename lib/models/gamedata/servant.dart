@@ -393,6 +393,25 @@ class Servant extends BasicServant {
     if (id == kSuperAokoSvtId && name == '蒼崎青子') {
       name = 'スーパー青子';
     }
+
+    List<NiceTrait> _applyAttributeChange(List<NiceTrait> indivs, ServantSubAttribute? attribute) {
+      List<NiceTrait> resolvedTraits = indivs.isEmpty ? traits : indivs;
+      final targetTrait = attribute?.trait?.value;
+      if (targetTrait == null || resolvedTraits.any((e) => e.id == targetTrait)) return indivs;
+      return resolvedTraits.where((e) => !Trait.isSvtSubAttribute(e.id)).toList()..add(NiceTrait(id: targetTrait));
+    }
+
+    ascensionAdd.individuality2 = AscensionAddEntry(
+      ascension: {
+        for (final (k, v) in ascensionAdd.individuality.ascension.items)
+          k: _applyAttributeChange(v, ascensionAdd.attribute.ascension[k]),
+      },
+      costume: {
+        for (final (k, v) in ascensionAdd.individuality.costume.items)
+          k: _applyAttributeChange(v, ascensionAdd.attribute.costume[k]),
+      },
+    );
+
     appendPassive.sort2((e) => e.num * 100 + e.priority);
     // groupedActiveSkills
     groupedActiveSkills.clear();
@@ -666,7 +685,7 @@ class Servant extends BasicServant {
     if (_traitsAll != null) return _traitsAll!;
     List<NiceTrait> _traits = [];
     _traits.addAll(traits);
-    for (var v in ascensionAdd.individuality.all.values) {
+    for (var v in ascensionAdd.individuality2.all.values) {
       _traits.addAll(v);
     }
     for (final t in traitAdd) {
@@ -679,7 +698,7 @@ class Servant extends BasicServant {
 
   List<NiceTrait> getIndividuality(int? eventId, int limitCount) {
     eventId ??= 0;
-    List<NiceTrait> indivs = getAscended(limitCount, (v) => v.individuality) ?? traits;
+    List<NiceTrait> indivs = getAscended(limitCount, (v) => v.individuality2) ?? traits;
     for (final add in traitAdd) {
       if (add.eventId != 0 && eventId != add.eventId) continue;
       if (add.limitCount != -1) {
@@ -1216,7 +1235,11 @@ class AscensionAddEntry<T> {
 @JsonSerializable()
 class AscensionAdd {
   AscensionAddEntry<ServantSubAttribute> attribute;
+  @protected
   AscensionAddEntry<List<NiceTrait>> individuality;
+  // apply attribute change
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  AscensionAddEntry<List<NiceTrait>> individuality2;
   AscensionAddEntry<int> voicePrefix;
   AscensionAddEntry<String> overWriteServantName;
   AscensionAddEntry<String> overWriteServantBattleName;
@@ -1266,7 +1289,7 @@ class AscensionAdd {
     this.faceChange = const AscensionAddEntry(),
     this.charaGraphChangeCommonRelease = const AscensionAddEntry(),
     this.faceChangeCommonRelease = const AscensionAddEntry(),
-  });
+  }) : individuality2 = individuality;
 
   factory AscensionAdd.fromJson(Map<String, dynamic> json) => _$AscensionAddFromJson(json);
 

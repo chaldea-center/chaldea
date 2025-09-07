@@ -811,7 +811,7 @@ class BattleServantData {
     if (niceEnemy != null) {
       traits.addAll(niceEnemy!.traits);
     } else if (niceSvt != null) {
-      final traitsAdd = niceSvt!.ascensionAdd.individuality.all[limitCount];
+      final traitsAdd = niceSvt!.ascensionAdd.individuality2.all[limitCount];
       if (traitsAdd != null && traitsAdd.isNotEmpty) {
         traits.addAll(traitsAdd);
       } else {
