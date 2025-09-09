@@ -195,9 +195,10 @@ class BuffData {
       final selfAndCheck = vals.ParamAddSelfIndividualityAndCheck;
       final oppAndCheck = vals.ParamAddOpIndividualityAndCheck;
       final fieldAndCheck = vals.ParamAddFieldIndividualityAndCheck;
-      final targetOverride = FuncTargetType.values.firstWhereOrNull(
-        (type) => type.value == vals.ParamAddIndividualityTargetType,
-      );
+      final addIndividualityTargetType = vals.ParamAddIndividualityTargetType;
+      final targetOverride = addIndividualityTargetType != null
+          ? FuncTargetType.values.firstWhereOrNull((type) => type.value == addIndividualityTargetType)
+          : null;
       if (selfAndCheck != null) {
         final List<BattleServantData> targetList = targetOverride != null && battleData != null
             ? FunctionExecutor.acquireSimpleFunctionTarget(
@@ -660,9 +661,10 @@ class BuffData {
     List<int> selfTraits() =>
         [...owner.getTraits(addTraits: owner.getBuffTraits()), ...battleData.getQuestIndividuality()].toIntList();
 
-    final condTargetOverride = BuffConditionTargetType.values.firstWhereOrNull(
-      (type) => type.value == buff.script.individualityCondTargetType,
-    );
+    final individualityCondTargetType = buff.script.individualityCondTargetType;
+    final condTargetOverride = individualityCondTargetType != null && individualityCondTargetType > 0
+        ? BuffConditionTargetType.values.firstWhereOrNull((type) => type.value == individualityCondTargetType)
+        : null;
 
     if (buff.script.INDIVIDUALITIE_OR != null) {
       final List<int> traitsToCheck;
