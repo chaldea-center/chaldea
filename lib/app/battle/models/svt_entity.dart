@@ -564,16 +564,38 @@ class BattleServantData {
   }
 
   void postAddStateProcessing(final Buff buff, final DataVals dataVals) {
-    if (buff.type == BuffType.addMaxhp && hp > 0) {
+    if ([BuffType.addMaxhp, BuffType.addBaseHp].contains(buff.type) && hp > 0) {
       gainHp(dataVals.Value!);
     } else if (buff.type == BuffType.subMaxhp && hp > 0) {
-      lossHp(dataVals.Value!);
-    } else if (buff.type == BuffType.upMaxhp && hp > 0) {
+      lossHp(dataVals.Value!, lethal: false);
+    } else if ([BuffType.upMaxhp, BuffType.upBaseHp].contains(buff.type) && hp > 0) {
       gainHp(toModifier(_maxHp * dataVals.Value!).toInt());
     } else if (buff.type == BuffType.downMaxhp && hp > 0) {
-      lossHp(toModifier(_maxHp * dataVals.Value!).toInt());
+      lossHp(toModifier(_maxHp * dataVals.Value!).toInt(), lethal: false);
     } else if (buff.type == BuffType.reflectionFunction) {
       resetAccumulationDamage();
+    }
+  }
+
+  void postSubStateProcessing(final List<BuffData> buffs) {
+    final changedHp = hp - maxHp;
+
+    for (final buff in buffs) {
+      if (buff.buff.type == BuffType.addBaseHp && hp > 0) {
+        final remainingHpToLose = (buff.vals.Value ?? 0) - changedHp;
+        if (remainingHpToLose > 0) {
+          lossHp(remainingHpToLose, lethal: false);
+        }
+      } else if (buff.buff.type == BuffType.upBaseHp && hp > 0) {
+        final remainingHpToLose = toModifier(_maxHp * (buff.vals.Value ?? 0)).toInt() - changedHp;
+        if (remainingHpToLose > 0) {
+          lossHp(remainingHpToLose, lethal: false);
+        }
+      }
+    }
+
+    if (hp > 0) {
+      hp = hp.clamp(1, maxHp);
     }
   }
 
@@ -966,11 +988,23 @@ class BattleServantData {
       case BuffAction.shortenSkillAfterUseSkill:
       case BuffAction.functionSkillBefore:
       case BuffAction.functionSkillAfter:
-      case BuffAction.functionTreasureDeviceBefore:
-      case BuffAction.functionTreasureDeviceAfter:
       case BuffAction.functionSkillTargetedBefore:
       case BuffAction.functionedFunction:
         return self.getTraits();
+      case BuffAction.functionTreasureDeviceBefore:
+      case BuffAction.functionTreasureDeviceAfter:
+      case BuffAction.functionTreasureDeviceAfterMainOnly:
+        // move these to constants
+        final tdFlag = self.getCurrentNP()?.damageType;
+        final List<NiceTrait> npTraits = [];
+        if (tdFlag == TdEffectFlag.attackEnemyAll) {
+          npTraits.addAll([NiceTrait(id: 7022), NiceTrait(id: 7023)]);
+        } else if (tdFlag == TdEffectFlag.attackEnemyOne) {
+          npTraits.addAll([NiceTrait(id: 7021), NiceTrait(id: 7023)]);
+        } else if (tdFlag == TdEffectFlag.support) {
+          npTraits.add(NiceTrait(id: 7020));
+        }
+        return self.getTraits(addTraits: npTraits);
       default:
         return self.getTraits(addTraits: self.getBuffTraits(activeOnly: false));
     }
@@ -1104,6 +1138,7 @@ class BattleServantData {
       case BuffAction.functionSkillAfter:
       case BuffAction.functionTreasureDeviceBefore:
       case BuffAction.functionTreasureDeviceAfter:
+      case BuffAction.functionTreasureDeviceAfterMainOnly:
       case BuffAction.functionSkillTargetedBefore:
       case BuffAction.functionedFunction:
         results = [];
@@ -1267,8 +1302,9 @@ class BattleServantData {
   }
 
   void lossHp(final int loss, {final bool lethal = false}) {
+    final prevHp = hp;
     hp -= loss;
-    if (hp <= 0 && !lethal) {
+    if (prevHp > 0 && hp <= 0 && !lethal) {
       hp = 1;
     }
   }
@@ -1694,6 +1730,11 @@ class BattleServantData {
       );
 
       await activateBuff(battleData, BuffAction.functionTreasureDeviceAfter, overchargeState: overchargeLvl - 1);
+      await activateBuff(
+        battleData,
+        BuffAction.functionTreasureDeviceAfterMainOnly,
+        overchargeState: overchargeLvl - 1,
+      );
 
       for (final svt in battleData.nonnullActors) {
         await svt.activateBuff(
@@ -1749,28 +1790,35 @@ class BattleServantData {
   // difference is this is not async
   // not checking anything for maxHpBuffs for now
   int getMaxHpBuffValue({final bool percent = false}) {
-    final BuffAction buffAction = percent ? BuffAction.maxhpRate : BuffAction.maxhpValue;
-    final actionDetails = ConstData.buffActions[buffAction];
-    if (actionDetails == null) {
-      return 0;
-    }
-
-    int totalVal = 0;
-    int? maxRate;
-
-    for (final buff in collectBuffsPerAction(battleBuff.validBuffs, buffAction)) {
-      if (buff.shouldActivateBuffNoProbabilityCheck(getTraits())) {
-        buff.setUsed(this);
-        final value = buff.getValue(this);
-        if (actionDetails.plusTypes.contains(buff.buff.type)) {
-          totalVal += value;
-        } else {
-          totalVal -= value;
-        }
-        maxRate = maxRate == null ? buff.buff.maxRate : max(maxRate, buff.buff.maxRate);
+    final List<BuffAction> buffActions = percent
+        ? [BuffAction.maxhpRate, BuffAction.baseHpRate]
+        : [BuffAction.maxhpValue, BuffAction.baseHpValue];
+    int result = 0;
+    for (final buffAction in buffActions) {
+      final actionDetails = ConstData.buffActions[buffAction];
+      if (actionDetails == null) {
+        continue;
       }
+
+      int totalVal = 0;
+      int? maxRate;
+
+      for (final buff in collectBuffsPerAction(battleBuff.validBuffs, buffAction)) {
+        if (buff.shouldActivateBuffNoProbabilityCheck(getTraits())) {
+          buff.setUsed(this);
+          final value = buff.getValue(this);
+          if (actionDetails.plusTypes.contains(buff.buff.type)) {
+            totalVal += value;
+          } else {
+            totalVal -= value;
+          }
+          maxRate = maxRate == null ? buff.buff.maxRate : max(maxRate, buff.buff.maxRate);
+        }
+      }
+      result += capBuffValue(actionDetails, totalVal, maxRate);
     }
-    return capBuffValue(actionDetails, totalVal, maxRate);
+
+    return result;
   }
 
   // difference is this immediately returns the first buff value instead of summing over all buffs
