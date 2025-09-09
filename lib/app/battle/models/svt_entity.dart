@@ -578,24 +578,22 @@ class BattleServantData {
   }
 
   void postSubStateProcessing(final List<BuffData> buffs) {
-    final changedHp = hp - maxHp;
-
+    int hpToLose = 0;
     for (final buff in buffs) {
       if (buff.buff.type == BuffType.addBaseHp && hp > 0) {
-        final remainingHpToLose = (buff.vals.Value ?? 0) - changedHp;
-        if (remainingHpToLose > 0) {
-          lossHp(remainingHpToLose, lethal: false);
-        }
+        hpToLose += buff.vals.Value ?? 0;
       } else if (buff.buff.type == BuffType.upBaseHp && hp > 0) {
-        final remainingHpToLose = toModifier(_maxHp * (buff.vals.Value ?? 0)).toInt() - changedHp;
-        if (remainingHpToLose > 0) {
-          lossHp(remainingHpToLose, lethal: false);
-        }
+        hpToLose += toModifier(_maxHp * (buff.vals.Value ?? 0)).toInt();
       }
     }
 
+    final changedHp = hp - maxHp;
     if (hp > 0) {
       hp = hp.clamp(1, maxHp);
+    }
+
+    if (hpToLose - changedHp > 0) {
+      lossHp(hpToLose - changedHp, lethal: false);
     }
   }
 
