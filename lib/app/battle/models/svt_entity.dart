@@ -564,36 +564,49 @@ class BattleServantData {
   }
 
   void postAddStateProcessing(final Buff buff, final DataVals dataVals) {
-    if ([BuffType.addMaxhp, BuffType.addBaseHp].contains(buff.type) && hp > 0) {
-      gainHp(dataVals.Value!);
-    } else if (buff.type == BuffType.subMaxhp && hp > 0) {
-      lossHp(dataVals.Value!, lethal: false);
-    } else if ([BuffType.upMaxhp, BuffType.upBaseHp].contains(buff.type) && hp > 0) {
-      gainHp(toModifier(_maxHp * dataVals.Value!).toInt());
-    } else if (buff.type == BuffType.downMaxhp && hp > 0) {
-      lossHp(toModifier(_maxHp * dataVals.Value!).toInt(), lethal: false);
-    } else if (buff.type == BuffType.reflectionFunction) {
+    bool checkPlusActionType(List<BuffAction> actions) {
+      return actions.any((action) => ConstData.buffActions[action]?.plusTypes.contains(buff.type) ?? false);
+    }
+
+    bool checkMinusActionType(List<BuffAction> actions) {
+      return actions.any((action) => ConstData.buffActions[action]?.minusTypes.contains(buff.type) ?? false);
+    }
+
+    if (hp > 0) {
+      final hpValueActions = [BuffAction.maxhpValue, BuffAction.baseHpValue];
+      final hpRateActions = [BuffAction.maxhpRate, BuffAction.baseHpRate];
+      if (checkPlusActionType(hpValueActions)) {
+        gainHp(dataVals.Value!);
+      } else if (checkMinusActionType(hpValueActions)) {
+        lossHp(dataVals.Value!, lethal: false);
+      } else if (checkPlusActionType(hpRateActions)) {
+        gainHp(toModifier(_maxHp * dataVals.Value!).toInt());
+      } else if (checkMinusActionType(hpRateActions)) {
+        lossHp(toModifier(_maxHp * dataVals.Value!).toInt(), lethal: false);
+      }
+    } else if (checkPlusActionType([BuffAction.functionReflection])) {
       resetAccumulationDamage();
     }
   }
 
   void postSubStateProcessing(final List<BuffData> buffs) {
-    int hpToLose = 0;
-    for (final buff in buffs) {
-      if (buff.buff.type == BuffType.addBaseHp && hp > 0) {
-        hpToLose += buff.vals.Value ?? 0;
-      } else if (buff.buff.type == BuffType.upBaseHp && hp > 0) {
-        hpToLose += toModifier(_maxHp * (buff.vals.Value ?? 0)).toInt();
-      }
-    }
-
-    final changedHp = hp - maxHp;
     if (hp > 0) {
-      hp = hp.clamp(1, maxHp);
-    }
+      final changedHp = hp - maxHp;
 
-    if (hpToLose - changedHp > 0) {
-      lossHp(hpToLose - changedHp, lethal: false);
+      int hpToLose = 0;
+      for (final buff in buffs) {
+        if (ConstData.buffActions[BuffAction.baseHpValue]?.plusTypes.contains(buff.buff.type) ?? false) {
+          hpToLose += buff.vals.Value ?? 0;
+        } else if (ConstData.buffActions[BuffAction.baseHpRate]?.plusTypes.contains(buff.buff.type) ?? false) {
+          hpToLose += toModifier(_maxHp * (buff.vals.Value ?? 0)).toInt();
+        }
+      }
+
+      hp = hp.clamp(1, maxHp);
+
+      if (hpToLose - changedHp > 0 && hpToLose > 0) {
+        lossHp(hpToLose - changedHp, lethal: false);
+      }
     }
   }
 
@@ -992,17 +1005,7 @@ class BattleServantData {
       case BuffAction.functionTreasureDeviceBefore:
       case BuffAction.functionTreasureDeviceAfter:
       case BuffAction.functionTreasureDeviceAfterMainOnly:
-        // move these to constants
-        final tdFlag = self.getCurrentNP()?.damageType;
-        final List<NiceTrait> npTraits = [];
-        if (tdFlag == TdEffectFlag.attackEnemyAll) {
-          npTraits.addAll([NiceTrait(id: 7022), NiceTrait(id: 7023)]);
-        } else if (tdFlag == TdEffectFlag.attackEnemyOne) {
-          npTraits.addAll([NiceTrait(id: 7021), NiceTrait(id: 7023)]);
-        } else if (tdFlag == TdEffectFlag.support) {
-          npTraits.add(NiceTrait(id: 7020));
-        }
-        return self.getTraits(addTraits: npTraits);
+        return self.getTraits(addTraits: self.getCurrentNP()?.getIndividuality() ?? []);
       default:
         return self.getTraits(addTraits: self.getBuffTraits(activeOnly: false));
     }
