@@ -563,13 +563,15 @@ class BattleServantData {
     }
   }
 
-  void postAddStateProcessing(final Buff buff, final DataVals dataVals) {
+  void postAddStateProcessing(final BuffData buff, final DataVals dataVals) {
+    if (!buff.checkAct()) return;
+
     bool checkPlusActionType(List<BuffAction> actions) {
-      return actions.any((action) => ConstData.buffActions[action]?.plusTypes.contains(buff.type) ?? false);
+      return actions.any((action) => ConstData.buffActions[action]?.plusTypes.contains(buff.buff.type) ?? false);
     }
 
     bool checkMinusActionType(List<BuffAction> actions) {
-      return actions.any((action) => ConstData.buffActions[action]?.minusTypes.contains(buff.type) ?? false);
+      return actions.any((action) => ConstData.buffActions[action]?.minusTypes.contains(buff.buff.type) ?? false);
     }
 
     if (hp > 0) {
@@ -595,6 +597,8 @@ class BattleServantData {
 
       int hpToLose = 0;
       for (final buff in buffs) {
+        if (!buff.checkAct()) continue;
+
         if (ConstData.buffActions[BuffAction.baseHpValue]?.plusTypes.contains(buff.buff.type) ?? false) {
           hpToLose += buff.vals.Value ?? 0;
         } else if (ConstData.buffActions[BuffAction.baseHpRate]?.plusTypes.contains(buff.buff.type) ?? false) {
