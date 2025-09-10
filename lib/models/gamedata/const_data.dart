@@ -180,6 +180,22 @@ class ConstGameData {
     return ids;
   }
 
+  bool checkPlusTypes(List<BuffAction> actions, BuffType type) {
+    return actions.any((action) => checkPlusType(action, type));
+  }
+
+  bool checkMinusTypes(List<BuffAction> actions, BuffType type) {
+    return actions.any((action) => checkMinusType(action, type));
+  }
+
+  bool checkPlusType(BuffAction action, BuffType type) {
+    return buffActions[action]?.plusTypes.contains(type) ?? false;
+  }
+
+  bool checkMinusType(BuffAction action, BuffType type) {
+    return buffActions[action]?.minusTypes.contains(type) ?? false;
+  }
+
   factory ConstGameData.fromJson(Map<String, dynamic> json) {
     return _$ConstGameDataFromJson(json);
   }

@@ -563,54 +563,69 @@ class BattleServantData {
     }
   }
 
+  void updateActProcessing(final List<BuffData> buffs) {
+    if (hp > 0) {
+      int hpToLose = 0;
+      for (final buff in buffs) {
+        if (buff.checkAct()) {
+          // no example
+          continue;
+        } else {
+          if (ConstData.checkPlusType(BuffAction.baseHpValue, buff.buff.type)) {
+            hpToLose += buff.vals.Value ?? 0;
+          } else if (ConstData.checkPlusType(BuffAction.baseHpRate, buff.buff.type)) {
+            hpToLose += toModifier(_maxHp * (buff.vals.Value ?? 0)).toInt();
+          }
+        }
+      }
+
+
+      if (hpToLose > 0) {
+        lossHp(hpToLose, lethal: false);
+      }
+
+      hp = hp.clamp(1, maxHp);
+    }
+  }
+
   void postAddStateProcessing(final BuffData buff, final DataVals dataVals) {
     if (!buff.checkAct()) return;
-
-    bool checkPlusActionType(List<BuffAction> actions) {
-      return actions.any((action) => ConstData.buffActions[action]?.plusTypes.contains(buff.buff.type) ?? false);
-    }
-
-    bool checkMinusActionType(List<BuffAction> actions) {
-      return actions.any((action) => ConstData.buffActions[action]?.minusTypes.contains(buff.buff.type) ?? false);
-    }
 
     if (hp > 0) {
       final hpValueActions = [BuffAction.maxhpValue, BuffAction.baseHpValue];
       final hpRateActions = [BuffAction.maxhpRate, BuffAction.baseHpRate];
-      if (checkPlusActionType(hpValueActions)) {
+      if (ConstData.checkPlusTypes(hpValueActions, buff.buff.type)) {
         gainHp(dataVals.Value!);
-      } else if (checkMinusActionType(hpValueActions)) {
+      } else if (ConstData.checkMinusTypes(hpValueActions, buff.buff.type)) {
         lossHp(dataVals.Value!, lethal: false);
-      } else if (checkPlusActionType(hpRateActions)) {
+      } else if (ConstData.checkPlusTypes(hpRateActions, buff.buff.type)) {
         gainHp(toModifier(_maxHp * dataVals.Value!).toInt());
-      } else if (checkMinusActionType(hpRateActions)) {
+      } else if (ConstData.checkMinusTypes(hpRateActions, buff.buff.type)) {
         lossHp(toModifier(_maxHp * dataVals.Value!).toInt(), lethal: false);
       }
-    } else if (checkPlusActionType([BuffAction.functionReflection])) {
+    } else if (ConstData.checkPlusType(BuffAction.functionReflection, buff.buff.type)) {
       resetAccumulationDamage();
     }
   }
 
   void postSubStateProcessing(final List<BuffData> buffs) {
     if (hp > 0) {
-      final changedHp = hp - maxHp;
-
       int hpToLose = 0;
       for (final buff in buffs) {
         if (!buff.checkAct()) continue;
 
-        if (ConstData.buffActions[BuffAction.baseHpValue]?.plusTypes.contains(buff.buff.type) ?? false) {
+        if (ConstData.checkPlusType(BuffAction.baseHpValue, buff.buff.type)) {
           hpToLose += buff.vals.Value ?? 0;
-        } else if (ConstData.buffActions[BuffAction.baseHpRate]?.plusTypes.contains(buff.buff.type) ?? false) {
+        } else if (ConstData.checkPlusType(BuffAction.baseHpRate, buff.buff.type)) {
           hpToLose += toModifier(_maxHp * (buff.vals.Value ?? 0)).toInt();
         }
       }
 
-      hp = hp.clamp(1, maxHp);
-
-      if (hpToLose - changedHp > 0 && hpToLose > 0) {
-        lossHp(hpToLose - changedHp, lethal: false);
+      if (hpToLose > 0) {
+        lossHp(hpToLose, lethal: false);
       }
+
+      hp = hp.clamp(1, maxHp);
     }
   }
 
@@ -682,7 +697,7 @@ class BattleServantData {
         uniqueId: uniqueId,
         cardType: _td.card,
         cardDetail: CardDetail(
-          attackIndividuality: _td.individuality.toList(),
+          attackIndividuality: _td.getIndividuality(),
           hitsDistribution: _td.damage,
           attackType: _td.damageType == TdEffectFlag.attackEnemyAll
               ? CommandCardAttackType.all
@@ -692,13 +707,13 @@ class BattleServantData {
         td: _td,
         isTD: true,
         npGain: 0,
-        traits: _td.individuality.toList(),
+        traits: _td.getIndividuality(),
       );
     }
 
     final currentNP = getCurrentNP();
     final cardDetail = CardDetail(
-      attackIndividuality: currentNP?.individuality ?? [],
+      attackIndividuality: currentNP?.getIndividuality() ?? [],
       hitsDistribution: currentNP?.svt.damage ?? [100],
       attackType: currentNP?.damageType == TdEffectFlag.attackEnemyAll
           ? CommandCardAttackType.all
@@ -715,7 +730,7 @@ class BattleServantData {
       isTD: true,
       td: currentNP,
       npGain: currentNP?.npGain.np[playerSvtData!.tdLv - 1] ?? 0,
-      traits: currentNP?.individuality ?? [],
+      traits: currentNP?.getIndividuality() ?? [],
     );
   }
 
@@ -738,7 +753,7 @@ class BattleServantData {
       }
 
       final cardDetail = CardDetail(
-        attackIndividuality: td.individuality,
+        attackIndividuality: td.getIndividuality(),
         hitsDistribution: td.svt.damage,
         attackType: td.damageType == TdEffectFlag.attackEnemyAll
             ? CommandCardAttackType.all
@@ -756,7 +771,7 @@ class BattleServantData {
         td: td,
         counterBuff: buff,
         npGain: td.npGain.np[tdLv - 1],
-        traits: td.individuality,
+        traits: td.getIndividuality(),
       );
     } else if (buff.vals.UseAttack == 1) {
       final cardId = buff.vals.CounterId ?? 0;
@@ -1005,7 +1020,6 @@ class BattleServantData {
       case BuffAction.functionSkillAfter:
       case BuffAction.functionSkillTargetedBefore:
       case BuffAction.functionedFunction:
-        return self.getTraits();
       case BuffAction.functionTreasureDeviceBefore:
       case BuffAction.functionTreasureDeviceAfter:
       case BuffAction.functionTreasureDeviceAfterMainOnly:
@@ -1764,7 +1778,7 @@ class BattleServantData {
       final skillLv = buff.vals.SkillLV;
       if (skillId != null &&
           skillLv != null &&
-          await buff.shouldActivateBuff(battleData, getTraits(addTraits: niceTd.individuality))) {
+          await buff.shouldActivateBuff(battleData, getTraits(addTraits: niceTd.getIndividuality()))) {
         BaseSkill? skill = db.gameData.baseSkills[skillId];
         skill ??= await showEasyLoading(() => AtlasApi.skill(skillId), mask: true);
         final replacementFunction = skill?.functions.firstOrNull;
@@ -2404,20 +2418,41 @@ class BattleServantData {
   }
 
   void updateActState(final BattleData battleData) {
-    // always update indiv related buff first
-    battleBuff
-        .getAllBuffs()
-        .where((buff) => BuffType.addIndividuality == buff.buff.type || BuffType.subIndividuality == buff.buff.type)
-        .forEach((buff) => buff.updateActState(battleData, this));
+    final Map<int, bool> curBuffActState = {};
+    final List<BuffData> indivBuffs = [];
+    final List<BuffData> otherBuffs = [];
+    final List<BuffData> changedActBuffs = [];
+    int rankUps = 0;
 
-    battleBuff
-        .getAllBuffs()
-        .where((buff) => BuffType.addIndividuality != buff.buff.type && BuffType.subIndividuality != buff.buff.type)
-        .forEach((buff) => buff.updateActState(battleData, this));
+    for (final buff in battleBuff.getAllBuffs()) {
+      if (ConstData.checkPlusTypes([BuffAction.individualityAdd, BuffAction.individualitySub], buff.buff.type)) {
+        indivBuffs.add(buff);
+      } else {
+        curBuffActState[buff.addOrder] = buff.checkAct();
+        otherBuffs.add(buff);
+      }
+    }
 
-    final rankUp = battleBuff.validBuffs.where((buff) => buff.buff.type == BuffType.skillRankUp).length;
+    for (final buff in indivBuffs) {
+      buff.updateActState(battleData, this);
+    }
+
+    for (final buff in otherBuffs) {
+      buff.updateActState(battleData, this);
+      final newAct = buff.checkAct();
+      if (newAct != curBuffActState[buff.addOrder]) {
+        changedActBuffs.add(buff);
+      }
+
+      if (newAct && ConstData.checkPlusType(BuffAction.skillRankChange, buff.buff.type)) {
+        rankUps += 1;
+      }
+    }
+
+    updateActProcessing(changedActBuffs);
+
     for (final skill in skillInfoList) {
-      skill.setRankUp(rankUp);
+      skill.setRankUp(rankUps);
     }
   }
 

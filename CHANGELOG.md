@@ -5,11 +5,14 @@
 - Summer Lip skills
 - Ishtar S3 buff upgrade
 - Fix TD Damage Ranking slow calculation
+  - Due to more and more niche mechanisms, it will still be slower than before
+  - You can turn on simple mode (which only calculates final ascensions) to speed it up
 - Fix calculation timing of Summer Marie EX card damage rate
 - Overkill bug now reset before NP instead of after NP
 - Fix Oberon's passives & Merlin's passives interacted before entering battle
 - Fix crashes for some quests with custom enemy entry order
 - Fix some situations not ignoring irremovable buffs
+- Grand Rider related mechanics
 
 ## 2.5.21
 
