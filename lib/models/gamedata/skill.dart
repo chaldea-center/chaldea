@@ -796,6 +796,15 @@ extension TdMethods on BaseTd {
   }
 
   int get dmgNpFuncCount => functions.where((func) => func.funcType.isDamageNp).length;
+
+  List<NiceTrait> getIndividuality() {
+    return [
+      ...individuality,
+      if (damageType == TdEffectFlag.support) NiceTrait(id: 7020),
+      if (damageType == TdEffectFlag.attackEnemyAll) ...[NiceTrait(id: 7022), NiceTrait(id: 7023)],
+      if (damageType == TdEffectFlag.attackEnemyOne) ...[NiceTrait(id: 7021), NiceTrait(id: 7023)],
+    ];
+  }
 }
 
 @JsonSerializable()

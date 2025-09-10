@@ -319,12 +319,10 @@ class BattleData {
       ];
     }
 
-    final List<BattleServantData?> allActors = [...backupEnemies, ...backupAllyServants];
-
-    for (final actor in allActors) {
+    for (final actor in backupAllyServants) {
       await actor?.initScript(this);
     }
-    await initActorSkills(allActors);
+    await initActorSkills(backupAllyServants);
 
     onFieldAllyServants = List.filled(playerOnFieldCount, null);
     while (backupAllyServants.isNotEmpty && onFieldAllyServants.contains(null)) {
@@ -353,12 +351,19 @@ class BattleData {
     updateFieldIndex();
     updateTargetedIndex();
 
+    final enemies = [...onFieldEnemies, ...backupEnemies];
+    for (final actor in enemies) {
+      await actor?.initScript(this);
+    }
+    await initActorSkills(enemies);
+
     // start wave
     await fieldAi.actWaveStart(this);
 
     for (final svt in nonnullActors) {
       await svt.enterField(this);
     }
+    await fieldAi.actWaveStartAnimation(this);
 
     for (final svt in nonnullActors) {
       await svt.activateBuff(this, BuffAction.functionWavestart);
@@ -517,12 +522,6 @@ class BattleData {
 
     await _fetchWaveEnemies();
 
-    final List<BattleServantData?> newEnemies = [...onFieldEnemies, ...backupEnemies];
-    for (final actor in newEnemies) {
-      await actor?.initScript(this);
-    }
-    await initActorSkills(newEnemies);
-
     onFieldEnemies = List.filled(enemyOnFieldCount, null);
     for (int index = 0; index < backupEnemies.length; index += 1) {
       final enemy = backupEnemies[index];
@@ -541,6 +540,12 @@ class BattleData {
 
     updateFieldIndex();
     updateTargetedIndex();
+
+    final List<BattleServantData?> newEnemies = [...onFieldEnemies, ...backupEnemies];
+    for (final actor in newEnemies) {
+      await actor?.initScript(this);
+    }
+    await initActorSkills(newEnemies);
 
     await fieldAi.actWaveStart(this);
 

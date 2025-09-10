@@ -144,7 +144,7 @@ class AddState {
         buffData.updateActState(battleData, target);
         battleData.setFuncResult(target.uniqueId, true);
 
-        target.postAddStateProcessing(buff, dataVals);
+        target.postAddStateProcessing(buffData, dataVals);
       }
     }
   }

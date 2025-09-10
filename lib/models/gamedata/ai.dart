@@ -331,10 +331,10 @@ enum AiTiming {
   turnPlayerStart(3),
   turnPlayerEnd(4),
   turnEnemyStart(5),
-  turnEnemyEnd(6)
+  turnEnemyEnd(6),
   // 7
   // 8
-  ;
+  beforeWaveStartAnimation(9);
 
   const AiTiming(this.value);
   final int value;

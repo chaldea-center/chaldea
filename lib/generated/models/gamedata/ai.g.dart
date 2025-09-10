@@ -290,6 +290,7 @@ const _$AiTimingEnumMap = {
   AiTiming.turnPlayerEnd: 'turnPlayerEnd',
   AiTiming.turnEnemyStart: 'turnEnemyStart',
   AiTiming.turnEnemyEnd: 'turnEnemyEnd',
+  AiTiming.beforeWaveStartAnimation: 'beforeWaveStartAnimation',
 };
 
 NiceAiAct _$NiceAiActFromJson(Map json) => NiceAiAct(

@@ -25,12 +25,13 @@ class SubState {
           ? target.battleBuff.originalActiveList.reversed.toList()
           : target.battleBuff.originalActiveList.toList();
       final List<int> removedFamilyIndiv = [];
+      final List<BuffData> removedBuffs = [];
 
       for (int index = listToInspect.length - 1; index >= 0; index -= 1) {
         final buff = listToInspect[index];
 
         if (buff.checkField() && await shouldSubState(battleData, buff, affectTraits, dataVals, activator, target)) {
-          listToInspect.removeAt(index);
+          removedBuffs.add(listToInspect.removeAt(index));
           removeCount += 1;
           if (buff.vals.BehaveAsFamilyBuff == 1 && buff.vals.AddLinkageTargetIndividualty != null) {
             removedFamilyIndiv.add(buff.vals.AddLinkageTargetIndividualty!);
@@ -42,16 +43,18 @@ class SubState {
         }
       }
 
-      listToInspect.removeWhere(
-        (buff) =>
+      listToInspect.removeWhere((buff) {
+        final shouldRemove =
             buff.vals.BehaveAsFamilyBuff == 1 &&
-            buff.vals.getAddIndividuality().any((indiv) => removedFamilyIndiv.contains(indiv)),
-      );
+            buff.vals.getAddIndividuality().any((indiv) => removedFamilyIndiv.contains(indiv));
+        if (shouldRemove) {
+          removedBuffs.add(buff);
+        }
+        return shouldRemove;
+      });
 
       target.battleBuff.setActiveList(removeFromStart ? listToInspect.reversed.toList() : listToInspect.toList());
-      if (target.hp > 0) {
-        target.hp = target.hp.clamp(1, target.maxHp);
-      }
+      target.postSubStateProcessing(removedBuffs);
 
       if (removeCount > 0) {
         battleData.setFuncResult(target.uniqueId, true);

@@ -656,6 +656,7 @@ class BuffData {
   }
 
   void updateActState(final BattleData battleData, final BattleServantData owner) {
+    final previousAct = checkAct();
     bool isAct = true;
 
     List<int> selfTraits() =>
@@ -812,6 +813,15 @@ class BuffData {
       isField &= battleData.isActorOnField(activatorUniqueId!);
     }
     setState(BuffState.noField, !isField);
+
+    final curAct = checkAct();
+    if (curAct != previousAct) {
+      if (curAct) {
+        owner.postAddStateProcessing(this, vals);
+      } else {
+        owner.postSubStateProcessing([this]);
+      }
+    }
   }
 
   String getParamString() {

@@ -563,17 +563,54 @@ class BattleServantData {
     }
   }
 
-  void postAddStateProcessing(final Buff buff, final DataVals dataVals) {
-    if (buff.type == BuffType.addMaxhp && hp > 0) {
-      gainHp(dataVals.Value!);
-    } else if (buff.type == BuffType.subMaxhp && hp > 0) {
-      lossHp(dataVals.Value!);
-    } else if (buff.type == BuffType.upMaxhp && hp > 0) {
-      gainHp(toModifier(_maxHp * dataVals.Value!).toInt());
-    } else if (buff.type == BuffType.downMaxhp && hp > 0) {
-      lossHp(toModifier(_maxHp * dataVals.Value!).toInt());
-    } else if (buff.type == BuffType.reflectionFunction) {
+  void postAddStateProcessing(final BuffData buff, final DataVals dataVals) {
+    if (!buff.checkAct()) return;
+
+    bool checkPlusActionType(List<BuffAction> actions) {
+      return actions.any((action) => ConstData.buffActions[action]?.plusTypes.contains(buff.buff.type) ?? false);
+    }
+
+    bool checkMinusActionType(List<BuffAction> actions) {
+      return actions.any((action) => ConstData.buffActions[action]?.minusTypes.contains(buff.buff.type) ?? false);
+    }
+
+    if (hp > 0) {
+      final hpValueActions = [BuffAction.maxhpValue, BuffAction.baseHpValue];
+      final hpRateActions = [BuffAction.maxhpRate, BuffAction.baseHpRate];
+      if (checkPlusActionType(hpValueActions)) {
+        gainHp(dataVals.Value!);
+      } else if (checkMinusActionType(hpValueActions)) {
+        lossHp(dataVals.Value!, lethal: false);
+      } else if (checkPlusActionType(hpRateActions)) {
+        gainHp(toModifier(_maxHp * dataVals.Value!).toInt());
+      } else if (checkMinusActionType(hpRateActions)) {
+        lossHp(toModifier(_maxHp * dataVals.Value!).toInt(), lethal: false);
+      }
+    } else if (checkPlusActionType([BuffAction.functionReflection])) {
       resetAccumulationDamage();
+    }
+  }
+
+  void postSubStateProcessing(final List<BuffData> buffs) {
+    if (hp > 0) {
+      final changedHp = hp - maxHp;
+
+      int hpToLose = 0;
+      for (final buff in buffs) {
+        if (!buff.checkAct()) continue;
+
+        if (ConstData.buffActions[BuffAction.baseHpValue]?.plusTypes.contains(buff.buff.type) ?? false) {
+          hpToLose += buff.vals.Value ?? 0;
+        } else if (ConstData.buffActions[BuffAction.baseHpRate]?.plusTypes.contains(buff.buff.type) ?? false) {
+          hpToLose += toModifier(_maxHp * (buff.vals.Value ?? 0)).toInt();
+        }
+      }
+
+      hp = hp.clamp(1, maxHp);
+
+      if (hpToLose - changedHp > 0 && hpToLose > 0) {
+        lossHp(hpToLose - changedHp, lethal: false);
+      }
     }
   }
 
@@ -966,11 +1003,13 @@ class BattleServantData {
       case BuffAction.shortenSkillAfterUseSkill:
       case BuffAction.functionSkillBefore:
       case BuffAction.functionSkillAfter:
-      case BuffAction.functionTreasureDeviceBefore:
-      case BuffAction.functionTreasureDeviceAfter:
       case BuffAction.functionSkillTargetedBefore:
       case BuffAction.functionedFunction:
         return self.getTraits();
+      case BuffAction.functionTreasureDeviceBefore:
+      case BuffAction.functionTreasureDeviceAfter:
+      case BuffAction.functionTreasureDeviceAfterMainOnly:
+        return self.getTraits(addTraits: self.getCurrentNP()?.getIndividuality() ?? []);
       default:
         return self.getTraits(addTraits: self.getBuffTraits(activeOnly: false));
     }
@@ -1104,6 +1143,7 @@ class BattleServantData {
       case BuffAction.functionSkillAfter:
       case BuffAction.functionTreasureDeviceBefore:
       case BuffAction.functionTreasureDeviceAfter:
+      case BuffAction.functionTreasureDeviceAfterMainOnly:
       case BuffAction.functionSkillTargetedBefore:
       case BuffAction.functionedFunction:
         results = [];
@@ -1267,8 +1307,9 @@ class BattleServantData {
   }
 
   void lossHp(final int loss, {final bool lethal = false}) {
+    final prevHp = hp;
     hp -= loss;
-    if (hp <= 0 && !lethal) {
+    if (prevHp > 0 && hp <= 0 && !lethal) {
       hp = 1;
     }
   }
@@ -1694,6 +1735,11 @@ class BattleServantData {
       );
 
       await activateBuff(battleData, BuffAction.functionTreasureDeviceAfter, overchargeState: overchargeLvl - 1);
+      await activateBuff(
+        battleData,
+        BuffAction.functionTreasureDeviceAfterMainOnly,
+        overchargeState: overchargeLvl - 1,
+      );
 
       for (final svt in battleData.nonnullActors) {
         await svt.activateBuff(
@@ -1749,28 +1795,35 @@ class BattleServantData {
   // difference is this is not async
   // not checking anything for maxHpBuffs for now
   int getMaxHpBuffValue({final bool percent = false}) {
-    final BuffAction buffAction = percent ? BuffAction.maxhpRate : BuffAction.maxhpValue;
-    final actionDetails = ConstData.buffActions[buffAction];
-    if (actionDetails == null) {
-      return 0;
-    }
-
-    int totalVal = 0;
-    int? maxRate;
-
-    for (final buff in collectBuffsPerAction(battleBuff.validBuffs, buffAction)) {
-      if (buff.shouldActivateBuffNoProbabilityCheck(getTraits())) {
-        buff.setUsed(this);
-        final value = buff.getValue(this);
-        if (actionDetails.plusTypes.contains(buff.buff.type)) {
-          totalVal += value;
-        } else {
-          totalVal -= value;
-        }
-        maxRate = maxRate == null ? buff.buff.maxRate : max(maxRate, buff.buff.maxRate);
+    final List<BuffAction> buffActions = percent
+        ? [BuffAction.maxhpRate, BuffAction.baseHpRate]
+        : [BuffAction.maxhpValue, BuffAction.baseHpValue];
+    int result = 0;
+    for (final buffAction in buffActions) {
+      final actionDetails = ConstData.buffActions[buffAction];
+      if (actionDetails == null) {
+        continue;
       }
+
+      int totalVal = 0;
+      int? maxRate;
+
+      for (final buff in collectBuffsPerAction(battleBuff.validBuffs, buffAction)) {
+        if (buff.shouldActivateBuffNoProbabilityCheck(getTraits())) {
+          buff.setUsed(this);
+          final value = buff.getValue(this);
+          if (actionDetails.plusTypes.contains(buff.buff.type)) {
+            totalVal += value;
+          } else {
+            totalVal -= value;
+          }
+          maxRate = maxRate == null ? buff.buff.maxRate : max(maxRate, buff.buff.maxRate);
+        }
+      }
+      result += capBuffValue(actionDetails, totalVal, maxRate);
     }
-    return capBuffValue(actionDetails, totalVal, maxRate);
+
+    return result;
   }
 
   // difference is this immediately returns the first buff value instead of summing over all buffs

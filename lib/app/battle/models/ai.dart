@@ -55,6 +55,33 @@ class FieldAiManager with _AiManagerBase {
       }
     }
   }
+
+  Future<void> actWaveStartAnimation(BattleData battleData) async {
+    for (final aiCollection in fieldAis) {
+      final mainAis = NiceAiCollection.sortedAis(aiCollection.mainAis);
+      if (!hasOnlyOneSkill(mainAis)) continue;
+      for (final ai in mainAis) {
+        if (ai.timing != AiTiming.beforeWaveStartAnimation.value) continue;
+        if (ai.cond == NiceAiCond.none || (ai.cond == NiceAiCond.turn && ai.vals.firstOrNull == 1)) {
+          if (ai.aiAct.type == NiceAiActType.skillId && ai.aiAct.target == NiceAiActTarget.random) {
+            final skill = ai.aiAct.skill;
+            if (skill == null) continue;
+            final skillInfo = BattleSkillInfoData(skill, type: SkillInfoType.fieldAi, skillLv: ai.aiAct.skillLv ?? 1);
+            await skillInfo.activate(battleData, defaultToPlayer: true);
+            battleData.recorder.skill(
+              prefix: 'FieldAI: ',
+              battleData: battleData,
+              activator: null,
+              skill: skillInfo,
+              fromPlayer: true,
+              uploadEligible: battleData.niceQuest?.isLaplaceNeedAi == true,
+            );
+            break;
+          }
+        }
+      }
+    }
+  }
 }
 
 class SvtAiManager with _AiManagerBase {
