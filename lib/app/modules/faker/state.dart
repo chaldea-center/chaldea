@@ -642,6 +642,8 @@ class FakerRuntime {
     final svt = baseUserSvt?.dbSvt;
     if (baseUserSvt == null || svt == null) return false;
     if (baseUserSvt.lv < svt.lvMax || baseUserSvt.lv >= 120 || baseUserSvt.lv != baseUserSvt.maxLv) return false;
+    if (mstData.getItemOrSvtNum(Items.grailId) < 1) return false;
+    if (baseUserSvt.lv >= 100 && (mstData.userSvtCoin[baseUserSvt.svtId]?.num ?? 0) < 30) return false;
     return true;
   }
 

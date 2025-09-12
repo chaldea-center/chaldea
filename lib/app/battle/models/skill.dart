@@ -270,6 +270,7 @@ class BattleSkillInfoData {
 
     if (curSkill.type == SkillType.active) {
       await activator?.activateBuff(battleData, BuffAction.functionSkillAfter);
+      await activator?.activateBuff(battleData, BuffAction.functionSkillAfterMainOnly);
     }
     for (final svt in wouldAffectTargets) {
       if (type == SkillInfoType.commandSpell) {

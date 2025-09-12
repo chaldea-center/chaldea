@@ -1815,7 +1815,14 @@ class __LazyTriggerState extends State<_LazyTrigger> with FuncsDescriptor {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         InkWell(
-          onTap: () => skill?.routeTo(region: widget.region),
+          onTap: () {
+            if (skill != null) {
+              skill?.routeTo(region: widget.region);
+            } else if (widget.trigger.skill != null) {
+              final id = widget.trigger.skill!;
+              router.push(url: widget.isNp ? Routes.tdI(id) : Routes.skillI(id), region: widget.region);
+            }
+          },
           child: Text.rich(
             TextSpan(
               style: Theme.of(context).textTheme.bodySmall,
@@ -1921,9 +1928,9 @@ class ___LazyFuncState extends State<_LazyFunc> with FuncsDescriptor {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (!loop)
-          ...describeFunctions(
-            funcs: [
-              if (_func != null)
+          if (_func != null)
+            ...describeFunctions(
+              funcs: [
                 NiceFunction(
                   funcId: _func.funcId,
                   funcType: _func.funcType,
@@ -1942,15 +1949,29 @@ class ___LazyFuncState extends State<_LazyFunc> with FuncsDescriptor {
                   svals4: _getDependVals(widget.trigger.svals4),
                   svals5: _getDependVals(widget.trigger.svals5),
                 ),
-            ],
-            script: null,
-            level: widget.level,
-            showPlayer: true,
-            showEnemy: true,
-            padding: const EdgeInsetsDirectional.fromSTEB(8, 4, 2, 4),
-            loops: widget.loops.copy()..addFunc(widget.dependFuncId),
-            region: widget.region,
-          ),
+              ],
+              script: null,
+              level: widget.level,
+              showPlayer: true,
+              showEnemy: true,
+              padding: const EdgeInsetsDirectional.fromSTEB(8, 4, 2, 4),
+              loops: widget.loops.copy()..addFunc(widget.dependFuncId),
+              region: widget.region,
+            )
+          else
+            InkWell(
+              onTap: () {
+                if (_func != null) {
+                  _func.routeTo(region: widget.region);
+                } else {
+                  router.push(url: Routes.funcI(widget.dependFuncId), region: widget.region);
+                }
+              },
+              child: Text(
+                '  Function ${widget.dependFuncId}  ',
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(decoration: TextDecoration.underline),
+              ),
+            ),
         if (loop)
           Center(
             child: Text.rich(
