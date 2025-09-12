@@ -65,10 +65,12 @@ doc/api/
 # Flutter/Dart/Pub related
 **/doc/api/
 **/ios/Flutter/.last_build_id
-.fvm/flutter_sdk
+.dart_tool/
+.flutter-plugins-dependencies
 .pub-cache/
 .pub/
-coverage/
+/build/
+/coverage/
 # For library packages, don’t commit the pubspec.lock file.
 # Regenerating the pubspec.lock file lets you test your package against the latest compatible versions of its dependencies.
 # See https://dart.dev/guides/libraries/private-files#pubspeclock
