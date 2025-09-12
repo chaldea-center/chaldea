@@ -200,7 +200,6 @@ class ClassBoard with RouteInfo {
       actIndividuality: classes
           .map((e) => ConstData.classInfo[e.classId]?.individuality ?? 0)
           .where((e) => e > 0)
-          .map((e) => NiceTrait(id: e))
           .toList(),
     );
   }
@@ -408,7 +407,8 @@ class GrandGraphDetail {
   CondType condType;
   int condTargetId;
   int condNum;
-  List<NiceTrait> adjustIndividuality;
+  @TraitListConverter()
+  List<int> adjustIndividuality;
   String nameFull;
 
   GrandGraphDetail({

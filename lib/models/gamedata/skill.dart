@@ -81,7 +81,8 @@ class BaseSkill extends SkillOrTd {
   @override
   String? icon;
   List<int> coolDown;
-  List<NiceTrait> actIndividuality;
+  @TraitListConverter()
+  List<int> actIndividuality;
   @override
   SkillScript? script;
   List<SkillAdd> skillAdd;
@@ -195,7 +196,7 @@ class NiceSkill extends SkillOrTd implements BaseSkill {
     SkillType type = SkillType.active,
     String? icon,
     List<int> coolDown = const [0],
-    List<NiceTrait> actIndividuality = const [],
+    List<int> actIndividuality = const [],
     SkillScript? script,
     List<SkillAdd> skillAdd = const [],
     Map<AiType, List<int>>? aiIds,
@@ -324,9 +325,10 @@ class NiceSkill extends SkillOrTd implements BaseSkill {
   @override
   set coolDown(List<int> v) => _base.coolDown = v;
   @override
-  List<NiceTrait> get actIndividuality => _base.actIndividuality;
+  @TraitListConverter()
+  List<int> get actIndividuality => _base.actIndividuality;
   @override
-  set actIndividuality(List<NiceTrait> v) => _base.actIndividuality = v;
+  set actIndividuality(List<int> v) => _base.actIndividuality = v;
   @override
   SkillScript? get script => _base.script;
   @override
@@ -445,7 +447,8 @@ class BaseTd extends SkillOrTd {
   @override
   String? unmodifiedDetail;
   NpGain npGain;
-  List<NiceTrait> individuality;
+  @TraitListConverter()
+  List<int> individuality;
   @override
   SkillScript? script;
   @override
@@ -601,7 +604,7 @@ class NiceTd extends SkillOrTd implements BaseTd {
     // this.detail,
     String? unmodifiedDetail,
     NpGain? npGain,
-    List<NiceTrait> individuality = const [],
+    List<int> individuality = const [],
     SkillScript? script,
     List<NiceFunction> functions = const [],
     List<TdSvt>? npSvts,
@@ -727,9 +730,10 @@ class NiceTd extends SkillOrTd implements BaseTd {
   @override
   set npGain(NpGain v) => _base.npGain = v;
   @override
-  List<NiceTrait> get individuality => _base.individuality;
+  @TraitListConverter()
+  List<int> get individuality => _base.individuality;
   @override
-  set individuality(List<NiceTrait> v) => _base.individuality = v;
+  set individuality(List<int> v) => _base.individuality = v;
   @override
   SkillScript? get script => _base.script;
   @override
@@ -802,14 +806,14 @@ extension TdMethods on BaseTd {
 
   int get dmgNpFuncCount => functions.where((func) => func.funcType.isDamageNp).length;
 
-  List<NiceTrait> getIndividuality() {
+  List<int> getIndividuality() {
     return [
       ...individuality,
-      ...NiceTrait.list(switch (damageType) {
+      ...switch (damageType) {
         TdEffectFlag.support => ConstData.constantStr.npIndividualityNotDamage,
         TdEffectFlag.attackEnemyAll => ConstData.constantStr.npIndividualityDamageAll,
         TdEffectFlag.attackEnemyOne => ConstData.constantStr.npIndividualityDamageOne,
-      }),
+      },
     ];
   }
 }

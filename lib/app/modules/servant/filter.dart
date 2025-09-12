@@ -556,7 +556,7 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData, ServantFilt
             title: Text(S.current.trait, style: textStyle),
             options: _traitsForFilter.toList(),
             values: filterData.trait,
-            optionBuilder: (v) => Text(Transl.trait(v.value).l),
+            optionBuilder: (v) => Text(Transl.traitName(v.value)),
             showMatchAll: true,
             showInvert: true,
             onFilterChanged: (value, _) {

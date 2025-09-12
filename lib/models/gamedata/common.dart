@@ -88,6 +88,7 @@ class NiceTrait with RouteInfo {
 
   factory NiceTrait.signed(int sid) => _instances.putIfAbsent(sid, () => NiceTrait._(id: sid.abs(), negative: sid < 0));
 
+  @Deprecated('')
   static List<NiceTrait> list(List<int> ids) {
     return ids.map((e) => NiceTrait(id: e)).toList();
   }
@@ -100,23 +101,19 @@ class NiceTrait with RouteInfo {
   }
 
   String shownName({bool addSvtId = true, bool field = false}) {
-    final s = Transl.trait(id, addSvtId: addSvtId, field: field).l;
-    if (negative) {
-      return '${Transl.special.not()} $s';
-    }
-    return s;
+    return Transl.traitName(id, addSvtId: addSvtId, field: field);
   }
 
-  static bool hasAllTraits(List<NiceTrait> traits, List<int> targets) {
+  static bool hasAllTraits(List<int> traits, List<int> targets) {
     assert(targets.isNotEmpty);
     if (targets.isEmpty) return true;
-    return targets.every((traitId) => traits.any((trait) => trait.id == traitId));
+    return targets.every((traitId) => traits.any((trait) => trait == traitId));
   }
 
-  static bool hasAnyTrait(List<NiceTrait> traits, List<int> targets) {
+  static bool hasAnyTrait(List<int> traits, List<int> targets) {
     assert(targets.isNotEmpty);
     if (targets.isEmpty) return true;
-    return targets.any((traitId) => traits.any((trait) => trait.id == traitId));
+    return targets.any((traitId) => traits.any((trait) => trait == traitId));
   }
 
   @override
@@ -135,21 +132,65 @@ class NiceTrait with RouteInfo {
   Map<String, dynamic> toJson() => _$NiceTraitToJson(this);
 
   bool get isEventField => id >= 94000000 && id <= 96000000;
+}
 
-  static Set<Trait> upToleranceSubstateBuffTraits = {
-    Trait.buffPositiveEffect,
-    Trait.buffIncreaseDamage,
-    Trait.buffIncreaseDefence,
-    Trait.buffAtkUp,
-    Trait.buffDefUp,
-    Trait.buffCritDamageUp,
-    Trait.buffEvade,
-    Trait.buffEvadeAndInvincible,
-    Trait.buffGuts,
-    Trait.buffNpDamageUp,
-    Trait.buffCritRateUp,
-    Trait.buffSureHit,
-  };
+class TraitConverter extends JsonConverter<int, Object> with NullableJsonConverter<int, Object> {
+  const TraitConverter();
+  @override
+  int fromJson(Object value) {
+    if (value is int) return value;
+    if (value is String) {
+      for (final v in Trait.values) {
+        if (v.name == value) return v.value;
+      }
+      final intValue = int.tryParse(value);
+      if (intValue != null) return intValue;
+    }
+    if (value is Map) {
+      return NiceTrait.fromJson(Map.from(value)).signedId;
+    }
+    assert(() {
+      throw FormatException("Unknown trait value format: ${value.runtimeType} $value");
+    }());
+    return 0;
+  }
+
+  @override
+  int toJson(int obj) => obj;
+}
+
+class TraitListConverter extends JsonConverter<List<int>, Object> with NullableJsonConverter<List<int>, Object> {
+  const TraitListConverter();
+  @override
+  List<int> fromJson(Object value) {
+    List<dynamic> values;
+    if (value is List) {
+      values = value;
+      // } else if (value == null) {
+      //   return [];
+    } else if (value is String) {
+      values = value.split(RegExp(r"[/,]"));
+    } else {
+      throw UnimplementedError("TraitList not support ${value.runtimeType}: $value");
+    }
+    return [for (final v in values) const TraitConverter().fromJson(v)];
+  }
+
+  @override
+  List<int> toJson(List<int> obj) => obj.toList();
+}
+
+class Trait2dListConverter extends JsonConverter<List<List<int>>, List<dynamic>> with NullableJsonConverter {
+  const Trait2dListConverter();
+  @override
+  List<List<int>> fromJson(List<dynamic> value) {
+    return [
+      for (final v in value) [for (final vv in (v as List)) const TraitConverter().fromJson(vv)],
+    ];
+  }
+
+  @override
+  List<List<int>> toJson(List<List<int>> obj) => obj.toList();
 }
 
 extension IterableTrait on Iterable<NiceTrait> {
@@ -1015,13 +1056,28 @@ enum Trait {
 
   static bool isEventField(int id) {
     final v = id ~/ 1000;
-    // return v == 94000 || v == 95000;
-    return v == 94000;
+    return v == 94000 || v == 95000;
+    // return v == 94000;
   }
 
   static bool isSvtClass(int id) => id >= 100 && id < 200;
   static bool isSvtSubAttribute(int id) => id >= 200 && id < 210;
   static bool isSvtAlignment(int id) => id >= 300 && id < 320;
+
+  static Set<Trait> upToleranceSubstateBuffTraits = {
+    Trait.buffPositiveEffect,
+    Trait.buffIncreaseDamage,
+    Trait.buffIncreaseDefence,
+    Trait.buffAtkUp,
+    Trait.buffDefUp,
+    Trait.buffCritDamageUp,
+    Trait.buffEvade,
+    Trait.buffEvadeAndInvincible,
+    Trait.buffGuts,
+    Trait.buffNpDamageUp,
+    Trait.buffCritRateUp,
+    Trait.buffSureHit,
+  };
 }
 
 @JsonEnum(alwaysCreate: true)

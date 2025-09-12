@@ -59,10 +59,9 @@ class BattleBuff {
     }),
   ];
 
-  bool get isSelectable =>
-      validBuffs.every((buff) => !buff.getTraits().map((trait) => trait.id).contains(Trait.cantBeSacrificed.value));
+  bool get isSelectable => validBuffs.every((buff) => !buff.getTraits().contains(Trait.cantBeSacrificed.value));
 
-  void removeBuffWithTrait(final NiceTrait trait, {bool includeNoAct = false, bool includeNoField = false}) {
+  void removeBuffWithTrait(final int trait, {bool includeNoAct = false, bool includeNoField = false}) {
     _activeList.removeWhere(
       (buff) =>
           (includeNoAct || !buff.checkState(BuffState.noAct)) &&
@@ -181,8 +180,8 @@ class BuffData {
     BuffType.downDamageIndividualityActiveonly,
   ];
 
-  List<NiceTrait> getTraits() {
-    return [...buff.vals, ...vals.getAddIndividuality().map((indiv) => NiceTrait(id: indiv))];
+  List<int> getTraits() {
+    return [...buff.vals, ...vals.getAddIndividuality()];
   }
 
   int getValue(final BattleServantData self, [final BattleServantData? opponent, final BattleData? battleData]) {
@@ -210,14 +209,12 @@ class BuffData {
               )
             : [self];
         for (final target in targetList) {
-          final traits = target
-              .getTraits(
-                addTraits: target.getBuffTraits(
-                  ignoreIndivUnreleaseable: ignoreUnreleaseable,
-                  includeIgnoreIndiv: includeIgnoreIndividuality,
-                ),
-              )
-              .toIntList();
+          final traits = target.getTraits(
+            addTraits: target.getBuffTraits(
+              ignoreIndivUnreleaseable: ignoreUnreleaseable,
+              includeIgnoreIndiv: includeIgnoreIndividuality,
+            ),
+          );
           addCount += Individuality.getSignedMatchedTotalCountMultiIndividuality(traits, selfAndCheck);
         }
       }
@@ -234,20 +231,18 @@ class BuffData {
             ? [opponent]
             : [];
         for (final target in targetList) {
-          final traits = target
-              .getTraits(
-                addTraits: target.getBuffTraits(
-                  ignoreIndivUnreleaseable: ignoreUnreleaseable,
-                  includeIgnoreIndiv: includeIgnoreIndividuality,
-                ),
-              )
-              .toIntList();
+          final traits = target.getTraits(
+            addTraits: target.getBuffTraits(
+              ignoreIndivUnreleaseable: ignoreUnreleaseable,
+              includeIgnoreIndiv: includeIgnoreIndividuality,
+            ),
+          );
           addCount += Individuality.getSignedMatchedTotalCountMultiIndividuality(traits, oppAndCheck);
         }
       }
       if (fieldAndCheck != null && battleData != null) {
         addCount += Individuality.getSignedMatchedTotalCountMultiIndividuality(
-          battleData.getQuestIndividuality().toIntList(),
+          battleData.getQuestIndividuality(),
           fieldAndCheck,
         );
       }
@@ -266,14 +261,12 @@ class BuffData {
               )
             : [self];
         for (final target in targetList) {
-          final traits = target
-              .getTraits(
-                addTraits: target.getBuffTraits(
-                  ignoreIndivUnreleaseable: ignoreUnreleaseable,
-                  includeIgnoreIndiv: includeIgnoreIndividuality,
-                ),
-              )
-              .toIntList();
+          final traits = target.getTraits(
+            addTraits: target.getBuffTraits(
+              ignoreIndivUnreleaseable: ignoreUnreleaseable,
+              includeIgnoreIndiv: includeIgnoreIndividuality,
+            ),
+          );
           addCount += Individuality.getMatchedTotalCount(selfs: traits, targets: selfChecks);
         }
       }
@@ -290,20 +283,17 @@ class BuffData {
             ? [opponent]
             : [];
         for (final target in targetList) {
-          final traits = target
-              .getTraits(
-                addTraits: target.getBuffTraits(
-                  ignoreIndivUnreleaseable: ignoreUnreleaseable,
-                  includeIgnoreIndiv: includeIgnoreIndividuality,
-                ),
-              )
-              .toIntList();
+          final traits = target.getTraits(
+            addTraits: target.getBuffTraits(
+              ignoreIndivUnreleaseable: ignoreUnreleaseable,
+              includeIgnoreIndiv: includeIgnoreIndividuality,
+            ),
+          );
           addCount += Individuality.getMatchedTotalCount(selfs: traits, targets: oppoChecks);
         }
       }
       if (fieldIndiv != null && battleData != null) {
-        final targetTraits = NiceTrait.list(fieldIndiv);
-        addCount += countAnyTraits(battleData.getQuestIndividuality(), targetTraits);
+        addCount += countAnyTraits(battleData.getQuestIndividuality(), fieldIndiv);
       }
 
       if (vals.ParamAddMaxCount != null) {
@@ -336,8 +326,8 @@ class BuffData {
   }
 
   bool shouldActivateBuffNoProbabilityCheck(
-    List<NiceTrait> selfTraits, {
-    List<NiceTrait>? opponentTraits,
+    List<int> selfTraits, {
+    List<int>? opponentTraits,
     BattleData? battleData,
     SkillInfoType? skillInfoType,
     List<NiceFunction>? receivedFunctionsList,
@@ -414,8 +404,8 @@ class BuffData {
 
   Future<bool> shouldActivateBuff(
     BattleData battleData,
-    List<NiceTrait> selfTraits, {
-    List<NiceTrait>? opponentTraits,
+    List<int> selfTraits, {
+    List<int>? opponentTraits,
     SkillInfoType? skillInfoType,
     List<NiceFunction>? receivedFunctionsList,
     List<int>? triggeredSkillIds,
@@ -433,7 +423,7 @@ class BuffData {
         await probabilityCheck(battleData, opponentTraits);
   }
 
-  Future<bool> probabilityCheck(BattleData battleData, List<NiceTrait>? opponentTraits) async {
+  Future<bool> probabilityCheck(BattleData battleData, List<int>? opponentTraits) async {
     if (vals.UseRate == null) return true;
 
     final owner = ownerUniqueId != null ? battleData.getServantData(ownerUniqueId!) : null;
@@ -452,7 +442,7 @@ class BuffData {
 
   bool checkBuffDataVals({
     BattleData? battleData,
-    List<NiceTrait>? selfTraits,
+    List<int>? selfTraits,
     List<NiceFunction>? receivedFunctionsList,
     final List<int>? triggeredSkillIds,
   }) {
@@ -464,7 +454,7 @@ class BuffData {
 
     if (vals.ApplyBuffIndividuality != null &&
         !Individuality.checkSignedMultiIndividuality(
-          selfArray: selfTraits?.toIntList(),
+          selfArray: selfTraits,
           signedTargetsArray: vals.ApplyBuffIndividuality,
         )) {
       return false;
@@ -482,18 +472,15 @@ class BuffData {
 
     return battleData != null &&
         battleData.nonnullActors.firstWhereOrNull(
-              (svt) => svt.getBuffTraits().any((trait) => trait.id == sameIndivBuffActorOnField),
+              (svt) => svt.getBuffTraits().any((trait) => trait == sameIndivBuffActorOnField),
             ) !=
             null;
   }
 
-  bool checkHpReduceToRegainIndiv(final List<NiceTrait>? selfTraits) {
+  bool checkHpReduceToRegainIndiv(final List<int>? selfTraits) {
     final hpReduceToRegainIndiv = vals.HpReduceToRegainIndiv;
     return hpReduceToRegainIndiv == null ||
-        checkSignedIndividualities2(
-          myTraits: selfTraits ?? [],
-          requiredTraits: [NiceTrait(id: hpReduceToRegainIndiv)],
-        );
+        checkSignedIndividualities2(myTraits: selfTraits ?? [], requiredTraits: [hpReduceToRegainIndiv]);
   }
 
   bool checkTargetFunctionIndividuality(final List<NiceFunction>? functions) {
@@ -503,15 +490,13 @@ class BuffData {
       return true;
     }
 
-    final requiredFuncTraits = targetFuncIndiv.map((traitId) => NiceTrait(id: traitId)).toList();
-    final requiredBuffTraits = targetBuffIndiv?.map((traitId) => NiceTrait(id: traitId)).toList();
     for (final NiceFunction function in functions ?? []) {
-      if (checkSignedIndividualities2(myTraits: function.getFuncIndividuality(), requiredTraits: requiredFuncTraits)) {
-        if (requiredBuffTraits == null || !function.funcType.isAddState) {
+      if (checkSignedIndividualities2(myTraits: function.getFuncIndividuality(), requiredTraits: targetFuncIndiv)) {
+        if (targetBuffIndiv == null || !function.funcType.isAddState) {
           return true;
         }
 
-        if (checkSignedIndividualities2(myTraits: function.buff?.vals ?? [], requiredTraits: requiredBuffTraits)) {
+        if (checkSignedIndividualities2(myTraits: function.buff?.vals ?? [], requiredTraits: targetBuffIndiv)) {
           return true;
         }
       }
@@ -522,8 +507,8 @@ class BuffData {
 
   bool checkBuffScript({
     bool? isFirstSkillInTurn,
-    List<NiceTrait>? selfTraits,
-    List<NiceTrait>? opponentTraits,
+    List<int>? selfTraits,
+    List<int>? opponentTraits,
     SkillInfoType? skillInfoType,
     Buff? buffToCheck,
   }) {
@@ -554,7 +539,7 @@ class BuffData {
 
     if (script.ckSelfCountIndividuality != null) {
       scriptCheck &= Individuality.checkSignedIndividualitiesCount(
-        selfs: selfTraits?.toIntList(),
+        selfs: selfTraits,
         targets: script.ckSelfCountIndividuality!,
         matchedFunc: Individuality.isPartialMatchArrayCount,
         mismatchFunc: Individuality.isPartialMatchArrayCount,
@@ -565,7 +550,7 @@ class BuffData {
 
     if (script.ckOpCountIndividuality != null) {
       scriptCheck &= Individuality.checkSignedIndividualitiesCount(
-        selfs: opponentTraits?.toIntList(),
+        selfs: opponentTraits,
         targets: script.ckOpCountIndividuality!,
         matchedFunc: Individuality.isPartialMatchArrayCount,
         mismatchFunc: Individuality.isPartialMatchArrayCount,
@@ -588,7 +573,7 @@ class BuffData {
           break;
         case BuffConvertType.individuality:
           for (final targetIndiv in convert.targetIndividualities) {
-            shouldConvert = buff.vals.any((e) => e.signedId == targetIndiv.signedId);
+            shouldConvert = buff.vals.contains(targetIndiv);
             break;
           }
           break;
@@ -623,7 +608,7 @@ class BuffData {
       final sameIndivBuffActorOnField = vals.SameIndivBuffActorOnField!;
       final sameIndivBuff = battleData.nonnullActors
           .expand((svt) => svt.battleBuff.validBuffs)
-          .firstWhere((buff) => buff.getTraits().any((trait) => trait.id == sameIndivBuffActorOnField));
+          .firstWhere((buff) => buff.getTraits().any((trait) => trait == sameIndivBuffActorOnField));
       sameIndivBuff.isUsed = true;
     }
   }
@@ -658,8 +643,10 @@ class BuffData {
   void updateActState(final BattleData battleData, final BattleServantData owner) {
     bool isAct = true;
 
-    List<int> selfTraits() =>
-        [...owner.getTraits(addTraits: owner.getBuffTraits()), ...battleData.getQuestIndividuality()].toIntList();
+    List<int> selfTraits() => [
+      ...owner.getTraits(addTraits: owner.getBuffTraits()),
+      ...battleData.getQuestIndividuality(),
+    ];
 
     final individualityCondTargetType = buff.script.individualityCondTargetType;
     final condTargetOverride = individualityCondTargetType != null && individualityCondTargetType > 0
@@ -672,11 +659,9 @@ class BuffData {
         traitsToCheck = [];
         final List<BattleServantData> targetList = battleData.getBuffConditionTargets(condTargetOverride, owner);
         for (final target in targetList) {
-          final traits = target
-              .getTraits(
-                addTraits: target.getBuffTraits(includeIgnoreIndiv: buff.script.IncludeIgnoreIndividuality == 1),
-              )
-              .toIntList();
+          final traits = target.getTraits(
+            addTraits: target.getBuffTraits(includeIgnoreIndiv: buff.script.IncludeIgnoreIndividuality == 1),
+          );
           traitsToCheck.addAll(traits);
         }
       } else {
@@ -684,7 +669,7 @@ class BuffData {
       }
       isAct &= Individuality.checkSignedIndividualitiesPartialMatch(
         selfs: traitsToCheck,
-        signedTargets: buff.script.INDIVIDUALITIE_OR?.toIntList(),
+        signedTargets: buff.script.INDIVIDUALITIE_OR,
         matchedFunc: Individuality.isPartialMatchArray,
         mismatchFunc: Individuality.isPartialMatchArray,
       );
@@ -694,14 +679,12 @@ class BuffData {
         final List<BattleServantData> targetList = battleData.getBuffConditionTargets(condTargetOverride, owner);
         bool anyMatch = false;
         for (final target in targetList) {
-          final traits = target
-              .getTraits(
-                addTraits: target.getBuffTraits(includeIgnoreIndiv: buff.script.IncludeIgnoreIndividuality == 1),
-              )
-              .toIntList();
+          final traits = target.getTraits(
+            addTraits: target.getBuffTraits(includeIgnoreIndiv: buff.script.IncludeIgnoreIndividuality == 1),
+          );
           anyMatch |= Individuality.checkSignedIndividualities2(
             self: traits,
-            signedTarget: buff.script.INDIVIDUALITIE_AND?.toIntList(),
+            signedTarget: buff.script.INDIVIDUALITIE_AND,
             matchedFunc: Individuality.isMatchArray,
             mismatchFunc: Individuality.isMatchArray,
           );
@@ -711,7 +694,7 @@ class BuffData {
       } else {
         isAct &= Individuality.checkSignedIndividualities2(
           self: selfTraits(),
-          signedTarget: buff.script.INDIVIDUALITIE_AND?.toIntList(),
+          signedTarget: buff.script.INDIVIDUALITIE_AND,
           matchedFunc: Individuality.isMatchArray,
           mismatchFunc: Individuality.isMatchArray,
         );
@@ -720,17 +703,15 @@ class BuffData {
     if (buff.script.INDIVIDUALITIE != null) {
       int countAbove = buff.script.INDIVIDUALITIE_COUNT_ABOVE ?? 0;
       int countBelow = buff.script.INDIVIDUALITIE_COUNT_BELOW ?? 0;
-      List<int> signedTarget = [buff.script.INDIVIDUALITIE!.signedId];
+      List<int> signedTarget = [buff.script.INDIVIDUALITIE!];
 
       if (condTargetOverride != null) {
         final List<BattleServantData> targetList = battleData.getBuffConditionTargets(condTargetOverride, owner);
         bool anyMatch = false;
         for (final target in targetList) {
-          final traits = target
-              .getTraits(
-                addTraits: target.getBuffTraits(includeIgnoreIndiv: buff.script.IncludeIgnoreIndividuality == 1),
-              )
-              .toIntList();
+          final traits = target.getTraits(
+            addTraits: target.getBuffTraits(includeIgnoreIndiv: buff.script.IncludeIgnoreIndividuality == 1),
+          );
           if (countAbove <= 0 && countBelow <= 0) {
             anyMatch |= Individuality.checkSignedIndividualities2(
               self: traits,

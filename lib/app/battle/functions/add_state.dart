@@ -122,7 +122,7 @@ class AddState {
                 break;
               case BuffConvertType.individuality:
                 for (final (index, targetIndiv) in convert.targetIndividualities.indexed) {
-                  if (buff.vals.any((e) => e.signedId == targetIndiv.signedId)) {
+                  if (buff.vals.contains(targetIndiv)) {
                     convertedBuff = convert.convertBuffs[index];
                     break;
                   }
@@ -151,8 +151,7 @@ class AddState {
 
   static bool checkSameBuffLimitNum(final BattleServantData target, final DataVals dataVals) {
     return dataVals.SameBuffLimitNum == null ||
-        dataVals.SameBuffLimitNum! >
-            target.countBuffWithTrait([NiceTrait(id: dataVals.SameBuffLimitTargetIndividuality!)]);
+        dataVals.SameBuffLimitNum! > target.countBuffWithTrait([dataVals.SameBuffLimitTargetIndividuality!]);
   }
 
   static Future<bool> shouldAddState(

@@ -208,12 +208,11 @@ QuestPhase _$QuestPhaseFromJson(Map json) => QuestPhase(
   closedAt: (json['closedAt'] as num?)?.toInt() ?? 0,
   phase: (json['phase'] as num?)?.toInt() ?? 1,
   classIds: json['className'] == null ? const [] : SvtClassConverter.parseClassIdList(json['className']),
-  individuality: (json['individuality'] as List<dynamic>?)
-      ?.map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
-      .toList(),
-  phaseIndividuality: (json['phaseIndividuality'] as List<dynamic>?)
-      ?.map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
-      .toList(),
+  individuality: _$JsonConverterFromJson<Object, List<int>>(json['individuality'], const TraitListConverter().fromJson),
+  phaseIndividuality: _$JsonConverterFromJson<Object, List<int>>(
+    json['phaseIndividuality'],
+    const TraitListConverter().fromJson,
+  ),
   qp: (json['qp'] as num?)?.toInt() ?? 0,
   exp: (json['exp'] as num?)?.toInt() ?? 0,
   bond: (json['bond'] as num?)?.toInt() ?? 0,
@@ -289,8 +288,11 @@ Map<String, dynamic> _$QuestPhaseToJson(QuestPhase instance) => <String, dynamic
   'warLongName': instance.warLongName,
   'phase': instance.phase,
   'className': instance.classIds,
-  'individuality': instance.individuality.map((e) => e.toJson()).toList(),
-  'phaseIndividuality': instance.phaseIndividuality?.map((e) => e.toJson()).toList(),
+  'individuality': const TraitListConverter().toJson(instance.individuality),
+  'phaseIndividuality': _$JsonConverterToJson<Object, List<int>>(
+    instance.phaseIndividuality,
+    const TraitListConverter().toJson,
+  ),
   'qp': instance.qp,
   'exp': instance.exp,
   'bond': instance.bond,
@@ -309,6 +311,12 @@ Map<String, dynamic> _$QuestPhaseToJson(QuestPhase instance) => <String, dynamic
   'stages': instance.stages.map((e) => e.toJson()).toList(),
   'drops': instance.drops.map((e) => e.toJson()).toList(),
 };
+
+Value? _$JsonConverterFromJson<Json, Value>(Object? json, Value? Function(Json json) fromJson) =>
+    json == null ? null : fromJson(json as Json);
+
+Json? _$JsonConverterToJson<Json, Value>(Value? value, Json? Function(Value value) toJson) =>
+    value == null ? null : toJson(value);
 
 BaseGift _$BaseGiftFromJson(Map json) => BaseGift(
   id: (json['id'] as num).toInt(),
@@ -449,15 +457,13 @@ AiAllocationInfo _$AiAllocationInfoFromJson(Map json) => AiAllocationInfo(
           )
           .toList() ??
       const [],
-  individuality: json['individuality'] == null
-      ? null
-      : NiceTrait.fromJson(Map<String, dynamic>.from(json['individuality'] as Map)),
+  individuality: _$JsonConverterFromJson<Object, int>(json['individuality'], const TraitConverter().fromJson),
 );
 
 Map<String, dynamic> _$AiAllocationInfoToJson(AiAllocationInfo instance) => <String, dynamic>{
   'aiIds': instance.aiIds,
   'applySvtType': instance.applySvtType.map((e) => _$AiAllocationApplySvtFlagEnumMap[e]!).toList(),
-  'individuality': instance.individuality?.toJson(),
+  'individuality': _$JsonConverterToJson<Object, int>(instance.individuality, const TraitConverter().toJson),
 };
 
 const _$AiAllocationApplySvtFlagEnumMap = {
@@ -606,11 +612,7 @@ NpcServant _$NpcServantFromJson(Map json) => NpcServant(
   lv: (json['lv'] as num).toInt(),
   atk: (json['atk'] as num).toInt(),
   hp: (json['hp'] as num).toInt(),
-  traits:
-      (json['traits'] as List<dynamic>?)
-          ?.map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
-          .toList() ??
-      const [],
+  traits: json['traits'] == null ? const [] : const TraitListConverter().fromJson(json['traits'] as Object),
   skills: json['skills'] == null ? null : EnemySkill.fromJson(Map<String, dynamic>.from(json['skills'] as Map)),
   noblePhantasm: json['noblePhantasm'] == null
       ? null
@@ -630,7 +632,7 @@ Map<String, dynamic> _$NpcServantToJson(NpcServant instance) => <String, dynamic
   'lv': instance.lv,
   'atk': instance.atk,
   'hp': instance.hp,
-  'traits': instance.traits.map((e) => e.toJson()).toList(),
+  'traits': const TraitListConverter().toJson(instance.traits),
   'skills': instance.skills?.toJson(),
   'noblePhantasm': instance.noblePhantasm?.toJson(),
   'limit': instance.limit.toJson(),
@@ -661,11 +663,7 @@ SupportServant _$SupportServantFromJson(Map json) => SupportServant(
   lv: (json['lv'] as num).toInt(),
   atk: (json['atk'] as num).toInt(),
   hp: (json['hp'] as num).toInt(),
-  traits:
-      (json['traits'] as List<dynamic>?)
-          ?.map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
-          .toList() ??
-      const [],
+  traits: json['traits'] == null ? const [] : const TraitListConverter().fromJson(json['traits'] as Object),
   skills: EnemySkill.fromJson(Map<String, dynamic>.from(json['skills'] as Map)),
   passiveSkills:
       (json['passiveSkills'] as List<dynamic>?)
@@ -704,7 +702,7 @@ Map<String, dynamic> _$SupportServantToJson(SupportServant instance) => <String,
   'lv': instance.lv,
   'atk': instance.atk,
   'hp': instance.hp,
-  'traits': instance.traits.map((e) => e.toJson()).toList(),
+  'traits': const TraitListConverter().toJson(instance.traits),
   'skills': instance.skills.toJson(),
   'passiveSkills': instance.passiveSkills.map((e) => e.toJson()).toList(),
   'noblePhantasm': instance.noblePhantasm.toJson(),
@@ -874,9 +872,7 @@ QuestEnemy _$QuestEnemyFromJson(Map json) => QuestEnemy(
   criticalRate: (json['criticalRate'] as num).toInt(),
   recover: (json['recover'] as num?)?.toInt() ?? 0,
   chargeTurn: (json['chargeTurn'] as num?)?.toInt() ?? 0,
-  traits: (json['traits'] as List<dynamic>?)
-      ?.map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
-      .toList(),
+  traits: _$JsonConverterFromJson<Object, List<int>>(json['traits'], const TraitListConverter().fromJson),
   skills: json['skills'] == null ? null : EnemySkill.fromJson(Map<String, dynamic>.from(json['skills'] as Map)),
   classPassive: json['classPassive'] == null
       ? null
@@ -918,7 +914,7 @@ Map<String, dynamic> _$QuestEnemyToJson(QuestEnemy instance) => <String, dynamic
   'criticalRate': instance.criticalRate,
   'recover': instance.recover,
   'chargeTurn': instance.chargeTurn,
-  'traits': instance.traits.map((e) => e.toJson()).toList(),
+  'traits': const TraitListConverter().toJson(instance.traits),
   'skills': instance.skills.toJson(),
   'classPassive': instance.classPassive.toJson(),
   'noblePhantasm': instance.noblePhantasm.toJson(),
@@ -968,9 +964,6 @@ EnemyScript _$EnemyScriptFromJson(Map json) => EnemyScript(
   leader: json['leader'] as bool?,
   call: (json['call'] as List<dynamic>?)?.map((e) => (e as num).toInt()).toList(),
   shift: (json['shift'] as List<dynamic>?)?.map((e) => (e as num).toInt()).toList(),
-  shiftClear: (json['shiftClear'] as List<dynamic>?)
-      ?.map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
-      .toList(),
 );
 
 Map<String, dynamic> _$EnemyScriptToJson(EnemyScript instance) => <String, dynamic>{
@@ -979,7 +972,6 @@ Map<String, dynamic> _$EnemyScriptToJson(EnemyScript instance) => <String, dynam
   'leader': ?instance.leader,
   'call': ?instance.call,
   'shift': ?instance.shift,
-  'shiftClear': ?instance.shiftClear?.map((e) => e.toJson()).toList(),
 };
 
 const _$SvtDeathTypeEnumMap = {
@@ -1270,11 +1262,9 @@ BattleBg _$BattleBgFromJson(Map json) => BattleBg(
       $enumDecodeNullable(_$BattleFieldEnvironmentGrantTypeEnumMap, json['type']) ??
       BattleFieldEnvironmentGrantType.none,
   priority: (json['priority'] as num?)?.toInt() ?? 0,
-  individuality:
-      (json['individuality'] as List<dynamic>?)
-          ?.map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
-          .toList() ??
-      const [],
+  individuality: json['individuality'] == null
+      ? const []
+      : const TraitListConverter().fromJson(json['individuality'] as Object),
   imageId: (json['imageId'] as num?)?.toInt() ?? 0,
 );
 
@@ -1282,7 +1272,7 @@ Map<String, dynamic> _$BattleBgToJson(BattleBg instance) => <String, dynamic>{
   'id': instance.id,
   'type': _$BattleFieldEnvironmentGrantTypeEnumMap[instance.type]!,
   'priority': instance.priority,
-  'individuality': instance.individuality.map((e) => e.toJson()).toList(),
+  'individuality': const TraitListConverter().toJson(instance.individuality),
   'imageId': instance.imageId,
 };
 
@@ -1321,9 +1311,6 @@ Map<String, dynamic> _$BasicQuestPhaseDetailToJson(BasicQuestPhaseDetail instanc
   'actConsume': instance.actConsume,
   'recommendLv': instance.recommendLv,
 };
-
-Value? _$JsonConverterFromJson<Json, Value>(Object? json, Value? Function(Json json) fromJson) =>
-    json == null ? null : fromJson(json as Json);
 
 const _$QuestFlagEnumMap = {
   QuestFlag.none: 'none',

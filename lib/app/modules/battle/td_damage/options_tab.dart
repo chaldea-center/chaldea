@@ -1043,7 +1043,7 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
           title: Text(S.current.quest_fields),
           subtitle: options.fieldTraits.isEmpty
               ? null
-              : Text(options.fieldTraits.map((e) => Transl.trait(e, field: true).l).join(', ')),
+              : Text(options.fieldTraits.map((e) => Transl.traitName(e, field: true)).join(', ')),
           // trailing: Text(options.fieldTraits.length.toString()),
           horizontalTitleGap: 8,
           contentPadding: const EdgeInsetsDirectional.only(start: 16),
@@ -1069,7 +1069,7 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
                             options.fieldTraits.remove(indiv);
                           });
                         },
-                        child: Text(Transl.trait(indiv, field: true).l),
+                        child: Text(Transl.traitName(indiv, field: true)),
                       ),
                     ),
                 ],

@@ -202,7 +202,7 @@ class _QuestEnemyDetailState extends State<QuestEnemyDetail> {
         ),
         CustomTableRow.fromTexts(texts: [S.current.trait], isHeader: true),
         CustomTableRow.fromChildren(
-          children: [SharedBuilder.traitList(context: context, traits: enemy.traits.toList()..sort2((e) => e.id))],
+          children: [SharedBuilder.traitList(context: context, traits: enemy.traits.toList()..sort2((e) => e.abs()))],
         ),
         if (enemy.traits.isNotEmpty)
           TextButton(
@@ -210,7 +210,7 @@ class _QuestEnemyDetailState extends State<QuestEnemyDetail> {
               router.pushPage(
                 SpDmgIndivPage(
                   title: Text('${S.current.super_effective_damage} - ${enemy.lShownName}'),
-                  svtIndivs: enemy.traits.map((e) => e.signedId).toList(),
+                  svtIndivs: enemy.traits,
                 ),
               );
             },

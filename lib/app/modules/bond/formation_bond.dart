@@ -177,7 +177,7 @@ class _FormationBondTabState extends State<FormationBondTab> {
           if (vals.EventId != null && vals.EventId != 0 && vals.EventId != eventId) continue;
           final requipredIndiv = vals.Individuality ?? 0;
           if (requipredIndiv != 0 &&
-              !checkSignedIndividualities2(myTraits: svtIndivs, requiredTraits: NiceTrait.list([requipredIndiv]))) {
+              !checkSignedIndividualities2(myTraits: svtIndivs, requiredTraits: [requipredIndiv])) {
             continue;
           }
           List<SvtBondBonusResult> targets = switch (func.funcTargetType) {

@@ -30,13 +30,13 @@ class _TraitDetailPageState extends State<TraitDetailPage> {
     String title;
     if (ids.length == 1) {
       final id = ids.first;
-      String name = Transl.trait(id).l;
+      String name = Transl.traitName(id);
       title = '${S.current.trait} $id';
       if (name != id.toString()) {
         title += ' - $name';
       }
     } else {
-      title = '${S.current.trait} ${ids.map((e) => Transl.trait(e).l).join(" & ")}';
+      title = '${S.current.trait} ${ids.map((e) => Transl.traitName(e)).join(" & ")}';
     }
     bool isEventTrait =
         ids.length == 1 && (Transl.md.eventTrait.containsKey(_id) || Transl.md.fieldTrait.containsKey(_id));

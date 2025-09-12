@@ -173,7 +173,7 @@ class _QuestEnemyEditPageState extends State<QuestEnemyEditPage> {
         title: Text(S.current.trait),
         subtitle: enemy.traits.isEmpty
             ? const Text('NONE')
-            : SharedBuilder.traitList(context: context, traits: enemy.traits..sort2((e) => e.id)),
+            : SharedBuilder.traitList(context: context, traits: enemy.traits..sort2((e) => e.abs())),
         trailing: IconButton(
           onPressed: () {
             router.pushPage(
@@ -455,15 +455,15 @@ class _QuestEnemyEditPageState extends State<QuestEnemyEditPage> {
       ...ConstData.classInfo.values.map((e) => e.individuality),
       ...ServantSubAttribute.values.map((e) => e.trait?.value),
     };
-    enemy.traits.removeWhere((e) => removeTraits.any((t) => t == e.id));
+    enemy.traits.removeWhere(removeTraits.contains);
     final traitId = ConstData.classInfo[enemy.svt.classId]?.individuality;
     if (traitId != null && traitId > 0) {
-      enemy.traits.add(NiceTrait(id: traitId));
+      enemy.traits.add(traitId);
     }
 
     final attriTrait = enemy.svt.attribute.trait;
     if (attriTrait != null) {
-      enemy.traits.add(NiceTrait(id: attriTrait.value));
+      enemy.traits.add(attriTrait.value);
     }
   }
 

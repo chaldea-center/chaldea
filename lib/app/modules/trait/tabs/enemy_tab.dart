@@ -20,7 +20,7 @@ class _TraitEnemyTabState extends State<TraitEnemyTab> {
   @override
   Widget build(BuildContext context) {
     Map<int, List<QuestEnemy>> grouped = ReverseGameData.questEnemies(
-      (e) => widget.ids.every((id) => e.traits.any((t) => t.id == id)),
+      (e) => widget.ids.every((id) => e.traits.contains(id)),
     );
     final svtIds = grouped.keys.toList()..sort();
     if (svtIds.isEmpty) return const Center(child: Text('No record'));

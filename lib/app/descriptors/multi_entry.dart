@@ -154,14 +154,14 @@ class MultiDescriptor {
         return inkWell(
           context: context,
           onTap: () => router.push(url: Routes.traitI(id)),
-          text: '[${Transl.trait(id).l}]',
+          text: '[${Transl.traitName(id)}]',
         );
       }, useAnd);
     }
     return [
       collapsed(context, targetIds, S.current.trait, (context, id) {
         return ListTile(
-          title: Text('Trait $id - ${Transl.trait(id).l}'),
+          title: Text('Trait $id - ${Transl.traitName(id)}'),
           subtitle: Text(id.toString()),
           onTap: () => router.push(url: Routes.traitI(id)),
         );

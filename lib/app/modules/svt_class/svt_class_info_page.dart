@@ -58,7 +58,7 @@ class _SvtClassInfoPageState extends State<SvtClassInfoPage> {
     final grandGraphDetail = db.gameData.grandGraphDetails.values.firstWhereOrNull((e) => e.grandClassId == clsId);
     final indivs = <int>[
       if (info != null) info.individuality,
-      ...?grandGraphDetail?.adjustIndividuality.map((e) => e.signedId),
+      ...?grandGraphDetail?.adjustIndividuality,
     ].where((e) => e != 0).toList();
     return Scaffold(
       appBar: AppBar(title: Text('${S.current.svt_class}: ${Transl.svtClassId(clsId).l}')),
@@ -99,7 +99,7 @@ class _SvtClassInfoPageState extends State<SvtClassInfoPage> {
                   TableCellData(text: _fmt(info?.attackRate)),
                   TableCellData(
                     // flex: 2,
-                    child: SharedBuilder.traitList(context: context, traits: NiceTrait.list(indivs)),
+                    child: SharedBuilder.traitList(context: context, traits: indivs),
                   ),
                 ],
               ),

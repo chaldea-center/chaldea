@@ -262,7 +262,7 @@ class BattleRecordManager {
             return _checkGrandSvtIndiv(restriction.restriction, svtIndivs);
           })) {
             reasons.setUpload(
-              '${S.current.quest_restriction}(My ${S.current.grand_servant} ${restriction.restriction.targetVals.map((e) => Transl.trait(e).l).join("/")}):'
+              '${S.current.quest_restriction}(My ${S.current.grand_servant} ${restriction.restriction.targetVals.map((e) => Transl.traitName(e)).join("/")}):'
               ' ${restriction.dialogMessage}',
             );
           }
@@ -319,7 +319,7 @@ class BattleRecordManager {
         if (restriction.restriction.type == RestrictionType.individuality) {
           if (!_checkGrandSvtIndiv(restriction.restriction, svtIndivs)) {
             reasons.setUpload(
-              '${S.current.quest_restriction}(${restriction.restriction.targetVals.map((e) => Transl.trait(e).l).join("/")}): ${restriction.dialogMessage}',
+              '${S.current.quest_restriction}(${restriction.restriction.targetVals.map((e) => Transl.traitName(e)).join("/")}): ${restriction.dialogMessage}',
             );
           }
         }
@@ -349,8 +349,8 @@ class BattleRecordManager {
     }
   }
 
-  static bool _checkGrandSvtIndiv(Restriction restriction, List<NiceTrait> svtIndivs) {
-    bool hasTrait = restriction.targetVals.toSet().intersection(svtIndivs.map((e) => e.id).toSet()).isNotEmpty;
+  static bool _checkGrandSvtIndiv(Restriction restriction, List<int> svtIndivs) {
+    bool hasTrait = restriction.targetVals.toSet().intersection(svtIndivs.toSet()).isNotEmpty;
     return switch (restriction.rangeType) {
       RestrictionRangeType.equal => hasTrait,
       RestrictionRangeType.notEqual => !hasTrait,

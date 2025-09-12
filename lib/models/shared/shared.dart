@@ -49,3 +49,9 @@ K? decodeEnumNullable<K, V>(Map<K, V> map, V value, {K? unknown}) {
 void jsonMigrated(Map<String, dynamic> json, String key, String keyTemp) {
   json[key] = json[keyTemp] ?? json[key];
 }
+
+mixin NullableJsonConverter<T, S> on json_annotation.JsonConverter<T, S> {
+  T? fromJsonNull(S? json) {
+    return json == null ? null : fromJson(json);
+  }
+}

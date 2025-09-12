@@ -284,7 +284,8 @@ class SvtClassInfo {
 
 @JsonSerializable()
 class CardInfo {
-  List<NiceTrait> individuality;
+  @TraitListConverter()
+  List<int> individuality;
   int adjustAtk;
   int adjustTdGauge;
   int adjustCritical;
@@ -359,7 +360,8 @@ class SvtExpCurve {
 class FuncTypeDetail {
   final FuncType funcType;
   final bool ignoreValueUp;
-  final List<NiceTrait> individuality;
+  @TraitListConverter()
+  final List<int> individuality;
 
   FuncTypeDetail({this.funcType = FuncType.unknown, required this.ignoreValueUp, this.individuality = const []});
 

@@ -32,15 +32,19 @@ class NiceFunction with RouteInfo implements BaseFunction {
   @override
   String? get funcPopupIcon => _baseFunc.funcPopupIcon;
   @override
-  List<NiceTrait> get functvals => _baseFunc.functvals;
+  @TraitListConverter()
+  List<int> get functvals => _baseFunc.functvals;
   @override
-  List<List<NiceTrait>> get overWriteTvalsList => _baseFunc.overWriteTvalsList;
+  @Trait2dListConverter()
+  List<List<int>> get overWriteTvalsList => _baseFunc.overWriteTvalsList;
   @override
-  List<NiceTrait> get funcquestTvals => _baseFunc.funcquestTvals;
+  @TraitListConverter()
+  List<int> get funcquestTvals => _baseFunc.funcquestTvals;
   @override
   List<FuncGroup> get funcGroup => _baseFunc.funcGroup;
   @override
-  List<NiceTrait> get traitVals => _baseFunc.traitVals;
+  @TraitListConverter()
+  List<int> get traitVals => _baseFunc.traitVals;
   @override
   List<Buff> get buffs => _baseFunc.buffs;
   @override
@@ -60,11 +64,11 @@ class NiceFunction with RouteInfo implements BaseFunction {
     FuncApplyTarget funcTargetTeam = FuncApplyTarget.all,
     String funcPopupText = '',
     String? funcPopupIcon,
-    List<NiceTrait> functvals = const [],
-    List<List<NiceTrait>> overWriteTvalsList = const [],
-    List<NiceTrait> funcquestTvals = const [],
+    List<int> functvals = const [],
+    List<List<int>> overWriteTvalsList = const [],
+    List<int> funcquestTvals = const [],
     List<FuncGroup> funcGroup = const [],
-    List<NiceTrait> traitVals = const [],
+    List<int> traitVals = const [],
     List<Buff> buffs = const [],
     FuncScript? script,
     List<DataVals>? svals,
@@ -206,34 +210,19 @@ class NiceFunction with RouteInfo implements BaseFunction {
       funcTargetTeam: const FuncApplyTargetConverter().fromJson(json['funcTargetTeam'] ?? FuncApplyTarget.all.name),
       funcPopupText: json['funcPopupText'] as String? ?? '',
       funcPopupIcon: json['funcPopupIcon'] as String?,
-      functvals:
-          (json['functvals'] as List<dynamic>?)
-              ?.map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
-              .toList() ??
-          const [],
+      functvals: const TraitListConverter().fromJsonNull(json['functvals'] as List<dynamic>?) ?? const [],
       overWriteTvalsList:
-          (json['overWriteTvalsList'] as List<dynamic>?)
-              ?.map(
-                (e) =>
-                    (e as List<dynamic>).map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map))).toList(),
-              )
-              .toList() ??
+          const Trait2dListConverter().fromJsonNull(
+            (json['overWriteTvalsList'] as List<dynamic>?)?.map((e) => e as List).toList(),
+          ) ??
           const [],
-      funcquestTvals:
-          (json['funcquestTvals'] as List<dynamic>?)
-              ?.map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
-              .toList() ??
-          const [],
+      funcquestTvals: const TraitListConverter().fromJsonNull(json['funcquestTvals'] as List<dynamic>?) ?? const [],
       funcGroup:
           (json['funcGroup'] as List<dynamic>?)
               ?.map((e) => FuncGroup.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
-      traitVals:
-          (json['traitVals'] as List<dynamic>?)
-              ?.map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
-              .toList() ??
-          const [],
+      traitVals: const TraitListConverter().fromJsonNull(json['traitVals'] as List<dynamic>?) ?? const [],
       buffs:
           (json['buffs'] as List<dynamic>?)?.map((e) => Buff.fromJson(Map<String, dynamic>.from(e as Map))).toList() ??
           const [],
@@ -333,11 +322,15 @@ class BaseFunction with RouteInfo {
   final FuncApplyTarget funcTargetTeam;
   final String funcPopupText;
   final String? funcPopupIcon;
-  final List<NiceTrait> functvals;
-  final List<List<NiceTrait>> overWriteTvalsList;
-  final List<NiceTrait> funcquestTvals;
+  @TraitListConverter()
+  final List<int> functvals;
+  @Trait2dListConverter()
+  final List<List<int>> overWriteTvalsList;
+  @TraitListConverter()
+  final List<int> funcquestTvals;
   final List<FuncGroup> funcGroup;
-  final List<NiceTrait> traitVals;
+  @TraitListConverter()
+  final List<int> traitVals;
   final List<Buff> buffs;
   final FuncScript? script;
 
@@ -364,11 +357,11 @@ class BaseFunction with RouteInfo {
     required FuncApplyTarget funcTargetTeam,
     String funcPopupText = '',
     String? funcPopupIcon,
-    List<NiceTrait> functvals = const [],
-    List<List<NiceTrait>> overWriteTvalsList = const [],
-    List<NiceTrait> funcquestTvals = const [],
+    List<int> functvals = const [],
+    List<List<int>> overWriteTvalsList = const [],
+    List<int> funcquestTvals = const [],
     List<FuncGroup> funcGroup = const [],
-    List<NiceTrait> traitVals = const [],
+    List<int> traitVals = const [],
     List<Buff> buffs = const [],
     FuncScript? script,
   }) => GameDataLoader.instance.tmp.getFunc(
@@ -428,15 +421,15 @@ extension BaseFunctionX on BaseFunction {
       (funcTargetTeam == FuncApplyTarget.player && funcTargetType.isEnemy);
   EffectTarget get effectTarget => EffectTarget.fromFunc(funcTargetType);
 
-  List<NiceTrait> getCommonFuncIndividuality() {
+  List<int> getCommonFuncIndividuality() {
     return ConstData.funcTypeDetail[funcType.value]?.individuality ?? [];
   }
 
-  List<NiceTrait> getFuncIndividuality() {
+  List<int> getFuncIndividuality() {
     return [...getCommonFuncIndividuality(), ...?script?.funcIndividuality];
   }
 
-  List<List<NiceTrait>> getOverwriteTvalsList() {
+  List<List<int>> getOverwriteTvalsList() {
     final valsList = [overWriteTvalsList, script?.overwriteTvals];
     for (final tvals in valsList) {
       if (tvals == null || tvals.isEmpty) continue;
@@ -451,7 +444,7 @@ extension BaseFunctionX on BaseFunction {
       final vals = (this as NiceFunction).svals.firstOrNull;
       if ((vals?.EventId ?? 0) != 0) return true;
     }
-    if (funcquestTvals.any((e) => e.isEventField)) return true;
+    if (funcquestTvals.any(Trait.isEventField)) return true;
     return false;
   }
 }
@@ -483,8 +476,10 @@ class FuncGroup {
 
 @JsonSerializable()
 class FuncScript {
-  List<List<NiceTrait>>? overwriteTvals;
-  List<NiceTrait>? funcIndividuality;
+  @Trait2dListConverter()
+  List<List<int>>? overwriteTvals;
+  @TraitListConverter()
+  List<int>? funcIndividuality;
 
   FuncScript({this.overwriteTvals, this.funcIndividuality});
 

@@ -936,7 +936,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
       rows.add(
         SwitchListTile(
           dense: true,
-          title: Text(Transl.trait(indiv).l),
+          title: Text(Transl.traitName(indiv)),
           subtitle: Text('${Transl.funcType(FuncType.enemyEncountCopyRateUp).l}: 100%'),
           value: options.enemyRateUp.contains(indiv),
           onChanged: options.disableEvent
@@ -1342,16 +1342,16 @@ class _SimulationPreviewState extends State<SimulationPreview> {
 }
 
 bool isEnemy7Knights(QuestEnemy enemy) {
-  if (!enemy.traits.any((e) => e.signedId == Trait.servant.value)) return false;
-  return enemy.traits.any((e) => _k7KnigntsTraits.contains(e.name));
+  if (!enemy.traits.any((e) => e == Trait.servant.value)) return false;
+  return enemy.traits.any((e) => _k7KnigntsTraits.contains(e));
 }
 
-const _k7KnigntsTraits = [
-  Trait.classSaber,
-  Trait.classArcher,
-  Trait.classLancer,
-  Trait.classRider,
-  Trait.classCaster,
-  Trait.classAssassin,
-  Trait.classBerserker,
+final _k7KnigntsTraits = [
+  Trait.classSaber.value,
+  Trait.classArcher.value,
+  Trait.classLancer.value,
+  Trait.classRider.value,
+  Trait.classCaster.value,
+  Trait.classAssassin.value,
+  Trait.classBerserker.value,
 ];

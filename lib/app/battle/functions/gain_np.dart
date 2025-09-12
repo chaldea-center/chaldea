@@ -48,7 +48,7 @@ class GainNp {
     final DataVals dataVals,
     final BattleServantData? actor,
     final Iterable<BattleServantData> targets,
-    final List<NiceTrait>? targetTraits,
+    final List<int>? targetTraits,
   ) {
     final functionRate = dataVals.Rate ?? 1000;
     if (functionRate < battleData.options.threshold) {
@@ -85,7 +85,7 @@ class GainNp {
     final BattleData battleData,
     final DataVals dataVals,
     final Iterable<BattleServantData> targets,
-    final List<NiceTrait> targetTraits,
+    final List<int> targetTraits,
   ) {
     final functionRate = dataVals.Rate ?? 1000;
     if (functionRate < battleData.options.threshold) {

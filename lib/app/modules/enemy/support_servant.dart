@@ -117,7 +117,7 @@ class _SupportServantPageState extends State<SupportServantPage> {
           ),
         CustomTableRow.fromTexts(texts: [S.current.trait], isHeader: true),
         CustomTableRow.fromChildren(
-          children: [SharedBuilder.traitList(context: context, traits: svt.traits2.toList()..sort2((e) => e.id))],
+          children: [SharedBuilder.traitList(context: context, traits: svt.traits2.toList()..sort2((e) => e.abs()))],
         ),
         if (svt.passiveSkills.isNotEmpty) CustomTableRow.fromTexts(texts: [S.current.extra_passive], isHeader: true),
         for (final passive in svt.passiveSkills)

@@ -70,7 +70,17 @@ class Transl<K, V> {
 
   Transl.fromMapping(this.key, MappingBase<V> m, this._default) : _m = m, mappings = {key: m};
 
+  static String traitName(int id, {bool addSvtId = true, bool field = false, Region? region}) {
+    final v = Transl.trait(id.abs(), addSvtId: addSvtId, field: field);
+    final s = region == null ? v.l : v.of(region);
+    if (id < 0) {
+      return '${Transl.special.not()} $s';
+    }
+    return s;
+  }
+
   static Transl<int, String> trait(int id, {bool addSvtId = true, bool field = false}) {
+    assert(id >= 0, id);
     final eventTrait = md.eventTrait[id];
     String cvt(String v) => v.replaceAll('/', '\u2060/\u2060');
     if (eventTrait != null) {

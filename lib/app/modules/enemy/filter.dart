@@ -101,11 +101,11 @@ class _EnemyFilterPageState extends FilterPageState<EnemyFilterData, EnemyFilter
               update();
             },
           ),
-          FilterGroup<Trait>(
+          FilterGroup<int>(
             title: Text('${S.current.trait}*', style: textStyle),
-            options: _traitsForFilter,
+            options: _traitsForFilter.map((e) => e.value).toList(),
             values: filterData.trait,
-            optionBuilder: (v) => Text(Transl.trait(v.value).l),
+            optionBuilder: (v) => Text(Transl.traitName(v)),
             showMatchAll: true,
             showInvert: true,
             onFilterChanged: (value, _) {

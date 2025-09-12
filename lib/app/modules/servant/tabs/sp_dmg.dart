@@ -135,8 +135,8 @@ class SpDmgSelfTab extends StatelessWidget {
   List<Widget> checkSkills(BuildContext context, SkillOrTd skill) {
     List<Widget> parts = [];
     for (final func in skill.functions) {
-      List<NiceTrait> traits = [];
-      List<List<NiceTrait>> traitsList = [];
+      List<int> traits = [];
+      List<List<int>> traitsList = [];
       bool useAnd = false;
       final buff = func.buff;
       if (buff != null &&
@@ -150,19 +150,19 @@ class SpDmgSelfTab extends StatelessWidget {
         useAnd = buff.script.checkIndvTypeAnd == true;
       } else if (const [FuncType.damageNpIndividual, FuncType.damageNpStateIndividualFix].contains(func.funcType)) {
         final target = func.svals.firstOrNull?.Target;
-        if (target != null) traits = [NiceTrait(id: target)];
+        if (target != null) traits = [target];
         useAnd = false;
       } else if (const [FuncType.damageNpIndividualSum].contains(func.funcType)) {
         final targetList = func.svals.firstOrNull?.TargetList;
-        if (targetList != null && targetList.isNotEmpty) traits = NiceTrait.list(targetList);
+        if (targetList != null && targetList.isNotEmpty) traits = targetList;
         useAnd = false;
       } else if (func.funcType == FuncType.damageNpAndOrCheckIndividuality) {
         final andOrCheckIndivs = func.svals.firstOrNull?.AndOrCheckIndividualityList;
         if (andOrCheckIndivs != null && andOrCheckIndivs.isNotEmpty) {
-          traitsList = andOrCheckIndivs.map(NiceTrait.list).toList();
+          traitsList = andOrCheckIndivs;
         }
         final targetList = func.svals.firstOrNull?.AndCheckIndividualityList;
-        if (targetList != null && targetList.isNotEmpty) traits = NiceTrait.list(targetList);
+        if (targetList != null && targetList.isNotEmpty) traits = targetList;
         useAnd = true;
       }
       if (traits.isNotEmpty || traitsList.isNotEmpty) {
@@ -178,10 +178,10 @@ class SpDmgSelfTab extends StatelessWidget {
                 dense: true,
                 selected: true,
                 selectedColor: AppTheme(context).tertiary,
-                title: Text(traits.map((e) => e.shownName()).join(" & ")),
+                title: Text(traits.map((e) => Transl.traitName(e)).join(" & ")),
                 trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
                 onTap: () {
-                  router.pushPage(TraitDetailPage.ids(ids: traits.map((e) => e.signedId).toList()));
+                  router.pushPage(TraitDetailPage.ids(ids: traits));
                 },
               ),
             );
@@ -192,9 +192,9 @@ class SpDmgSelfTab extends StatelessWidget {
                   dense: true,
                   selected: true,
                   selectedColor: AppTheme(context).tertiary,
-                  title: Text(trait.shownName()),
+                  title: Text(Transl.traitName(trait)),
                   trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
-                  onTap: trait.routeTo,
+                  onTap: () => router.push(url: Routes.traitI(trait)),
                 ),
               );
             }
@@ -207,10 +207,10 @@ class SpDmgSelfTab extends StatelessWidget {
               dense: true,
               selected: true,
               selectedColor: AppTheme(context).tertiary,
-              title: Text(_traits.map((e) => e.shownName()).join(" & ")),
+              title: Text(_traits.map((e) => Transl.traitName(e)).join(" & ")),
               trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
               onTap: () {
-                router.pushPage(TraitDetailPage.ids(ids: _traits.map((e) => e.signedId).toList()));
+                router.pushPage(TraitDetailPage.ids(ids: _traits));
               },
             ),
           );
@@ -318,13 +318,13 @@ class _SpDmgIndivTabState extends State<SpDmgIndivTab> {
         }
         if (buff.ckOpIndv.isEmpty) continue;
         if (buff.script.checkIndvTypeAnd) {
-          if (buff.ckOpIndv.every((e) => widget.svtIndivs.contains(e.signedId))) {
-            getGroup(buff.ckOpIndv.map((e) => e.signedId), true, null, scope).add(card);
+          if (buff.ckOpIndv.every((e) => widget.svtIndivs.contains(e))) {
+            getGroup(buff.ckOpIndv, true, null, scope).add(card);
           }
         } else {
           for (final trait in buff.ckOpIndv) {
-            if (widget.svtIndivs.contains(trait.signedId)) {
-              getGroup([trait.signedId], false, null, scope).add(card);
+            if (widget.svtIndivs.contains(trait)) {
+              getGroup([trait], false, null, scope).add(card);
             }
           }
         }
@@ -448,11 +448,7 @@ class _SpDmgIndivTabState extends State<SpDmgIndivTab> {
                 Text.rich(
                   TextSpan(
                     children: [
-                      ...SharedBuilder.traitSpans(
-                        context: context,
-                        traits: group.traits.map((e) => NiceTrait(id: e)).toList(),
-                        useAndJoin: group.useAnd,
-                      ),
+                      ...SharedBuilder.traitSpans(context: context, traits: group.traits, useAndJoin: group.useAnd),
                       if (group.rarity != null) TextSpan(text: '${S.current.rarity} $kStarChar2${group.rarity}'),
                     ],
                   ),

@@ -22,7 +22,8 @@ class Item {
   ItemType type;
   List<ItemUse> uses;
   String detail;
-  List<NiceTrait> individuality;
+  @TraitListConverter()
+  List<int> individuality;
   String icon;
   ItemBGType background;
   int value;

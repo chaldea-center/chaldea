@@ -134,7 +134,7 @@ class Routes {
   static const String enemyMaster = '/enemy-master';
   static const String enemyMasters = '/enemy-masters';
 
-  static String traitI(int id) => '/trait/$id';
+  static String traitI(int id) => '/trait/${id.abs()}';
   static const String trait = '/trait';
   static const String traits = '/traits';
 

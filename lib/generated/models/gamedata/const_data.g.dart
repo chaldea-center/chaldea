@@ -246,9 +246,7 @@ Map<String, dynamic> _$SvtClassInfoToJson(SvtClassInfo instance) => <String, dyn
 };
 
 CardInfo _$CardInfoFromJson(Map json) => CardInfo(
-  individuality: (json['individuality'] as List<dynamic>)
-      .map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
-      .toList(),
+  individuality: const TraitListConverter().fromJson(json['individuality'] as Object),
   adjustAtk: (json['adjustAtk'] as num).toInt(),
   adjustTdGauge: (json['adjustTdGauge'] as num).toInt(),
   adjustCritical: (json['adjustCritical'] as num).toInt(),
@@ -258,7 +256,7 @@ CardInfo _$CardInfoFromJson(Map json) => CardInfo(
 );
 
 Map<String, dynamic> _$CardInfoToJson(CardInfo instance) => <String, dynamic>{
-  'individuality': instance.individuality.map((e) => e.toJson()).toList(),
+  'individuality': const TraitListConverter().toJson(instance.individuality),
   'adjustAtk': instance.adjustAtk,
   'adjustTdGauge': instance.adjustTdGauge,
   'adjustCritical': instance.adjustCritical,
@@ -325,17 +323,15 @@ FuncTypeDetail _$FuncTypeDetailFromJson(Map json) => FuncTypeDetail(
       ? FuncType.unknown
       : const FuncTypeConverter().fromJson(json['funcType'] as String),
   ignoreValueUp: json['ignoreValueUp'] as bool,
-  individuality:
-      (json['individuality'] as List<dynamic>?)
-          ?.map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
-          .toList() ??
-      const [],
+  individuality: json['individuality'] == null
+      ? const []
+      : const TraitListConverter().fromJson(json['individuality'] as Object),
 );
 
 Map<String, dynamic> _$FuncTypeDetailToJson(FuncTypeDetail instance) => <String, dynamic>{
   'funcType': const FuncTypeConverter().toJson(instance.funcType),
   'ignoreValueUp': instance.ignoreValueUp,
-  'individuality': instance.individuality.map((e) => e.toJson()).toList(),
+  'individuality': const TraitListConverter().toJson(instance.individuality),
 };
 
 BuffTypeDetail _$BuffTypeDetailFromJson(Map json) => BuffTypeDetail(

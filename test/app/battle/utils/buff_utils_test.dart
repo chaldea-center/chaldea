@@ -1,7 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:chaldea/app/battle/utils/buff_utils.dart';
-import 'package:chaldea/models/gamedata/common.dart';
 import 'package:chaldea/models/gamedata/const_data.dart';
 
 void main() {
@@ -50,9 +49,9 @@ void main() {
 
   group('checkSignedIndividualities2', () {
     test('partialMatch positive only', () {
-      final requiredTraits = [NiceTrait(id: 300), NiceTrait(id: 100)];
+      final requiredTraits = [300, 100];
 
-      final myTraits1 = [NiceTrait(id: 300), NiceTrait(id: 100)];
+      final myTraits1 = [300, 100];
       final result1 = checkSignedIndividualities2(
         myTraits: myTraits1,
         requiredTraits: requiredTraits,
@@ -61,7 +60,7 @@ void main() {
       );
       expect(result1, true);
 
-      final myTraits2 = [NiceTrait(id: 100), NiceTrait(id: 200)];
+      final myTraits2 = [100, 200];
       final result2 = checkSignedIndividualities2(
         myTraits: myTraits2,
         requiredTraits: requiredTraits,
@@ -70,7 +69,7 @@ void main() {
       );
       expect(result2, true);
 
-      final myTraits3 = [NiceTrait(id: 300), NiceTrait(id: 200)];
+      final myTraits3 = [300, 200];
       final result3 = checkSignedIndividualities2(
         myTraits: myTraits3,
         requiredTraits: requiredTraits,
@@ -79,7 +78,7 @@ void main() {
       );
       expect(result3, true);
 
-      final myTraits4 = [NiceTrait(id: 400), NiceTrait(id: 200)];
+      final myTraits4 = [400, 200];
       final result4 = checkSignedIndividualities2(
         myTraits: myTraits4,
         requiredTraits: requiredTraits,
@@ -91,14 +90,9 @@ void main() {
 
     test('partialMatch mix', () {
       // OR on positive, AND on negative
-      final requiredTraits = [
-        NiceTrait(id: 300),
-        NiceTrait(id: 100),
-        NiceTrait(id: 200, negative: true),
-        NiceTrait(id: 400, negative: true),
-      ];
+      final requiredTraits = [300, 100, -200, -400];
 
-      final myTraits1 = [NiceTrait(id: 300), NiceTrait(id: 100)];
+      final myTraits1 = [300, 100];
       final result1 = checkSignedIndividualities2(
         myTraits: myTraits1,
         requiredTraits: requiredTraits,
@@ -107,7 +101,7 @@ void main() {
       );
       expect(result1, true);
 
-      final myTraits2 = [NiceTrait(id: 100), NiceTrait(id: 200)];
+      final myTraits2 = [100, 200];
       final result2 = checkSignedIndividualities2(
         myTraits: myTraits2,
         requiredTraits: requiredTraits,
@@ -116,7 +110,7 @@ void main() {
       );
       expect(result2, false);
 
-      final myTraits3 = [NiceTrait(id: 300), NiceTrait(id: 400)];
+      final myTraits3 = [300, 400];
       final result3 = checkSignedIndividualities2(
         myTraits: myTraits3,
         requiredTraits: requiredTraits,
@@ -125,7 +119,7 @@ void main() {
       );
       expect(result3, false);
 
-      final myTraits4 = [NiceTrait(id: 500), NiceTrait(id: 600)];
+      final myTraits4 = [500, 600];
       final result4 = checkSignedIndividualities2(
         myTraits: myTraits4,
         requiredTraits: requiredTraits,
@@ -136,9 +130,9 @@ void main() {
     });
 
     test('allMatch positive only', () {
-      final requiredTraits = [NiceTrait(id: 300), NiceTrait(id: 100)];
+      final requiredTraits = [300, 100];
 
-      final myTraits1 = [NiceTrait(id: 300), NiceTrait(id: 100), NiceTrait(id: 200)];
+      final myTraits1 = [300, 100, 200];
       final result1 = checkSignedIndividualities2(
         myTraits: myTraits1,
         requiredTraits: requiredTraits,
@@ -147,7 +141,7 @@ void main() {
       );
       expect(result1, true);
 
-      final myTraits2 = [NiceTrait(id: 100), NiceTrait(id: 200)];
+      final myTraits2 = [100, 200];
       final result2 = checkSignedIndividualities2(
         myTraits: myTraits2,
         requiredTraits: requiredTraits,
@@ -156,7 +150,7 @@ void main() {
       );
       expect(result2, false);
 
-      final myTraits3 = [NiceTrait(id: 300), NiceTrait(id: 200)];
+      final myTraits3 = [300, 200];
       final result3 = checkSignedIndividualities2(
         myTraits: myTraits3,
         requiredTraits: requiredTraits,
@@ -165,7 +159,7 @@ void main() {
       );
       expect(result3, false);
 
-      final myTraits4 = [NiceTrait(id: 400), NiceTrait(id: 200)];
+      final myTraits4 = [400, 200];
       final result4 = checkSignedIndividualities2(
         myTraits: myTraits4,
         requiredTraits: requiredTraits,
@@ -177,14 +171,9 @@ void main() {
 
     test('allMatch mix', () {
       // AND on positive, OR on negative
-      final requiredTraits = [
-        NiceTrait(id: 300),
-        NiceTrait(id: 100),
-        NiceTrait(id: 200, negative: true),
-        NiceTrait(id: 400, negative: true),
-      ];
+      final requiredTraits = [300, 100, -200, -400];
 
-      final myTraits1 = [NiceTrait(id: 300), NiceTrait(id: 100), NiceTrait(id: 600)];
+      final myTraits1 = [300, 100, 600];
       final result1 = checkSignedIndividualities2(
         myTraits: myTraits1,
         requiredTraits: requiredTraits,
@@ -193,7 +182,7 @@ void main() {
       );
       expect(result1, true);
 
-      final myTraits2 = [NiceTrait(id: 100), NiceTrait(id: 200)];
+      final myTraits2 = [100, 200];
       final result2 = checkSignedIndividualities2(
         myTraits: myTraits2,
         requiredTraits: requiredTraits,
@@ -202,7 +191,7 @@ void main() {
       );
       expect(result2, false);
 
-      final myTraits3 = [NiceTrait(id: 100), NiceTrait(id: 300), NiceTrait(id: 400)];
+      final myTraits3 = [100, 300, 400];
       final result3 = checkSignedIndividualities2(
         myTraits: myTraits3,
         requiredTraits: requiredTraits,
@@ -211,7 +200,7 @@ void main() {
       );
       expect(result3, true);
 
-      final myTraits4 = [NiceTrait(id: 500), NiceTrait(id: 600)];
+      final myTraits4 = [500, 600];
       final result4 = checkSignedIndividualities2(
         myTraits: myTraits4,
         requiredTraits: requiredTraits,
@@ -225,14 +214,9 @@ void main() {
   group('checkSignedIndividualitiesPartialMatch', () {
     test('partialMatch', () {
       // AND on positive, OR on negative
-      final requiredTraits = [
-        NiceTrait(id: 300),
-        NiceTrait(id: 100),
-        NiceTrait(id: 200, negative: true),
-        NiceTrait(id: 400, negative: true),
-      ];
+      final requiredTraits = [300, 100, -200, -400];
 
-      final myTraits1 = [NiceTrait(id: 300), NiceTrait(id: 100), NiceTrait(id: 600)];
+      final myTraits1 = [300, 100, 600];
       final result1 = checkSignedIndividualitiesPartialMatch(
         myTraits: myTraits1,
         requiredTraits: requiredTraits,
@@ -241,7 +225,7 @@ void main() {
       );
       expect(result1, true);
 
-      final myTraits2 = [NiceTrait(id: 100), NiceTrait(id: 200)];
+      final myTraits2 = [100, 200];
       final result2 = checkSignedIndividualitiesPartialMatch(
         myTraits: myTraits2,
         requiredTraits: requiredTraits,
@@ -250,7 +234,7 @@ void main() {
       );
       expect(result2, true);
 
-      final myTraits4 = [NiceTrait(id: 500), NiceTrait(id: 600)];
+      final myTraits4 = [500, 600];
       final result4 = checkSignedIndividualitiesPartialMatch(
         myTraits: myTraits4,
         requiredTraits: requiredTraits,

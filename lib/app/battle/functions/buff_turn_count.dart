@@ -43,14 +43,13 @@ class BuffTurnCount {
     final DataVals dataVals,
     final bool isTurn,
   ) {
-    final List<int> targetIndivi = dataVals.TargetList ?? [];
-    if (targetIndivi.isEmpty) return false;
+    final List<int> targetIndiv = dataVals.TargetList ?? [];
+    if (targetIndiv.isEmpty) return false;
 
-    final List<NiceTrait> targetTraits = targetIndivi.map((targetIndiv) => NiceTrait(id: targetIndiv)).toList();
     bool changed = false;
 
     final ignoreIndivUnreleaseable = dataVals.IgnoreIndivUnreleaseable == 1;
-    final buffs = svt.getBuffsWithTraits(targetTraits, ignoreIndivUnreleaseable: ignoreIndivUnreleaseable);
+    final buffs = svt.getBuffsWithTraits(targetIndiv, ignoreIndivUnreleaseable: ignoreIndivUnreleaseable);
     for (final buff in buffs) {
       final minValue = dataVals.AllowRemoveBuff == 1 ? 0 : 1;
       if (isTurn && buff.logicTurn > 0) {

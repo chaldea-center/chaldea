@@ -72,7 +72,7 @@ class _TraitListPageState extends State<TraitListPage> with SearchableListState<
   Iterable<String?> getSummary(int id) sync* {
     yield id.toString();
     yield getTrait(id)?.name;
-    yield* SearchUtil.getAllKeys(Transl.trait(id));
+    yield* SearchUtil.getAllKeys(Transl.trait(id.abs()));
     final warIds = db.gameData.mappingData.fieldTrait[id]?.warIds;
     if (warIds != null) {
       for (final warId in warIds) {
@@ -104,7 +104,7 @@ class _TraitListPageState extends State<TraitListPage> with SearchableListState<
             .join(" / ");
       }
     } else {
-      title = Transl.trait(id).l;
+      title = Transl.traitName(id);
       subtitle = 'ID $id';
       if (trait != null) {
         subtitle += '  ${trait.name}';
@@ -157,7 +157,7 @@ class _TraitListPageState extends State<TraitListPage> with SearchableListState<
             child: Text(
               selectedTraits.isEmpty
                   ? '0 ${S.current.trait}'
-                  : selectedTraits.map((e) => Transl.trait(e).l).join(' & '),
+                  : selectedTraits.map((e) => Transl.traitName(e)).join(' & '),
               textAlign: TextAlign.center,
             ),
           ),

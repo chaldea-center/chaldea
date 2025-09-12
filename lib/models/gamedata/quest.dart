@@ -397,8 +397,10 @@ class QuestPhase extends Quest {
   int phase;
   @JsonKey(name: 'className', fromJson: SvtClassConverter.parseClassIdList)
   List<int> classIds;
-  List<NiceTrait> individuality;
-  List<NiceTrait>? phaseIndividuality;
+  @TraitListConverter()
+  List<int> individuality;
+  @TraitListConverter()
+  List<int>? phaseIndividuality;
   int qp;
   int exp;
   int bond;
@@ -421,13 +423,13 @@ class QuestPhase extends Quest {
   List<Stage> stages;
   List<EnemyDrop> drops;
 
-  List<NiceTrait> get questIndividuality {
+  List<int> get questIndividuality {
     if (phaseIndividuality != null) {
       final baseTraits = battleBg?.individuality.toList() ?? [];
-      baseTraits.addAll(phaseIndividuality!.where((trait) => !trait.negative));
+      baseTraits.addAll(phaseIndividuality!.where((trait) => trait >= 0));
 
-      final traitIdsToRemove = phaseIndividuality!.where((trait) => trait.negative).map((trait) => trait.id).toList();
-      baseTraits.removeWhere((trait) => traitIdsToRemove.contains(trait.id));
+      final traitIdsToRemove = phaseIndividuality!.where((trait) => trait < 0).map((trait) => trait.abs()).toList();
+      baseTraits.removeWhere((trait) => traitIdsToRemove.contains(trait.abs()));
       return baseTraits;
     }
 
@@ -466,7 +468,7 @@ class QuestPhase extends Quest {
     super.closedAt,
     this.phase = 1,
     this.classIds = const [],
-    List<NiceTrait>? individuality,
+    List<int>? individuality,
     this.phaseIndividuality,
     this.qp = 0,
     this.exp = 0,
@@ -549,7 +551,7 @@ class QuestPhase extends Quest {
 
   void removeEventQuestIndividuality() {
     // battleBg.indiv is const, so just clear phaseIndiv and set indiv
-    individuality = questIndividuality.where((trait) => trait.isEventField).toList();
+    individuality = questIndividuality.where(Trait.isEventField).toList();
     phaseIndividuality?.clear();
   }
 }
@@ -940,7 +942,8 @@ class AiAllocationInfo {
   List<int> aiIds;
   @JsonKey(unknownEnumValue: AiAllocationApplySvtFlag.unknown)
   List<AiAllocationApplySvtFlag> applySvtType;
-  NiceTrait? individuality;
+  @TraitConverter()
+  int? individuality;
 
   AiAllocationInfo({this.aiIds = const [], this.applySvtType = const [], this.individuality});
 
@@ -1115,7 +1118,8 @@ class NpcServant {
   int lv;
   int atk;
   int hp;
-  List<NiceTrait> traits;
+  @TraitListConverter()
+  List<int> traits;
   EnemySkill? skills;
   SupportServantTd? noblePhantasm;
   SupportServantLimit limit;
@@ -1151,7 +1155,8 @@ class SupportServant {
   int lv;
   int atk;
   int hp;
-  List<NiceTrait> traits;
+  @TraitListConverter()
+  List<int> traits;
   EnemySkill skills;
   List<SupportServantPassiveSkill> passiveSkills; // Only CN has it
   SupportServantTd noblePhantasm;
@@ -1196,7 +1201,7 @@ class SupportServant {
 
   Transl<String, String> get lName => Transl.svtNames(shownName);
 
-  List<NiceTrait> get traits2 => detail?.traits ?? traits;
+  List<int> get traits2 => detail?.traits ?? traits;
   EnemySkill get skills2 => detail?.skills ?? skills;
   NiceTd? get td2 => detail?.noblePhantasm.noblePhantasm ?? noblePhantasm.noblePhantasm;
   int? get td2Lv => detail?.noblePhantasm.noblePhantasmLv ?? noblePhantasm.lv;
@@ -1397,7 +1402,8 @@ class QuestEnemy with GameCardMixin {
   int criticalRate;
   int recover;
   int chargeTurn;
-  List<NiceTrait> traits;
+  @TraitListConverter()
+  List<int> traits;
 
   EnemySkill skills;
   EnemyPassive classPassive;
@@ -1446,7 +1452,7 @@ class QuestEnemy with GameCardMixin {
     required this.criticalRate,
     this.recover = 0,
     this.chargeTurn = 0,
-    List<NiceTrait>? traits,
+    List<int>? traits,
     EnemySkill? skills,
     EnemyPassive? classPassive,
     EnemyTd? noblePhantasm,
@@ -1605,10 +1611,10 @@ class EnemyScript with DataScriptBase {
   bool? leader;
   List<int>? call; // npcId
   List<int>? shift; // npcId
-  List<NiceTrait>? shiftClear;
+  List<int>? get shiftClear => const TraitListConverter().fromJsonNull(source["shiftClear"]);
   List<int>? get change => toList('change');
 
-  EnemyScript({this.deathType, this.hpBarType, this.leader, this.call, this.shift, this.shiftClear});
+  EnemyScript({this.deathType, this.hpBarType, this.leader, this.call, this.shift});
 
   // the enemy is one of possible versions or not appear
   bool get isRare => (toInt('probability_type') ?? 0) != 0;
@@ -1962,7 +1968,8 @@ class BattleBg {
   final int id;
   final BattleFieldEnvironmentGrantType type;
   final int priority;
-  final List<NiceTrait> individuality;
+  @TraitListConverter()
+  final List<int> individuality;
   final int imageId;
 
   BattleBg({

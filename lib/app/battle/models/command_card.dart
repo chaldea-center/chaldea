@@ -111,7 +111,7 @@ class CommandCardData {
   final int cardIndex;
   int cardStrengthen = 0;
   int npGain = 0;
-  List<NiceTrait> _traits = [];
+  List<int> _traits = [];
   bool isTD = false;
   int np = 0;
   bool critical = false;
@@ -121,12 +121,12 @@ class CommandCardData {
   int? oc;
   BattleChainType chainType = BattleChainType.none;
 
-  List<NiceTrait> get traits => [
+  List<int> get traits => [
     ..._traits,
-    if (critical) NiceTrait(id: Trait.criticalHit.value),
-    for (final v in chainType.individuality) NiceTrait(id: v),
+    if (critical) Trait.criticalHit.value,
+    for (final v in chainType.individuality) v,
   ];
-  set traits(List<NiceTrait> traits) => _traits = traits;
+  set traits(List<int> traits) => _traits = traits;
 
   CommandCardData({
     required this.svtId,
@@ -137,7 +137,7 @@ class CommandCardData {
     required this.cardIndex,
     this.cardStrengthen = 0,
     this.npGain = 0,
-    List<NiceTrait> traits = const [],
+    List<int> traits = const [],
     this.isTD = false,
     this.np = 0,
     this.critical = false,

@@ -202,17 +202,17 @@ class SkillEffect {
   static SkillEffect upQuick = SkillEffect(
     'upQuick',
     buffTypes: [BuffType.upCommandall, BuffType.upCommandatk, BuffType.upCommandstar, BuffType.upCommandnp],
-    validate: (func) => func.buffs.any((buff) => buff.ckSelfIndv.any((trait) => trait.name == Trait.cardQuick)),
+    validate: (func) => func.buffs.any((buff) => buff.ckSelfIndv.contains(Trait.cardQuick.value)),
   );
   static SkillEffect upArts = SkillEffect(
     'upArts',
     buffTypes: [BuffType.upCommandall, BuffType.upCommandatk, BuffType.upCommandstar, BuffType.upCommandnp],
-    validate: (func) => func.buffs.any((buff) => buff.ckSelfIndv.any((trait) => trait.name == Trait.cardArts)),
+    validate: (func) => func.buffs.any((buff) => buff.ckSelfIndv.contains(Trait.cardArts.value)),
   );
   static SkillEffect upBuster = SkillEffect(
     'upBuster',
     buffTypes: [BuffType.upCommandall, BuffType.upCommandatk, BuffType.upCommandstar, BuffType.upCommandnp],
-    validate: (func) => func.buffs.any((buff) => buff.ckSelfIndv.any((trait) => trait.name == Trait.cardBuster)),
+    validate: (func) => func.buffs.any((buff) => buff.ckSelfIndv.contains(Trait.cardBuster.value)),
   );
   // static SkillEffect upExtraAttack=SkillEffect(
   //   'upExtraAttack',
@@ -282,7 +282,7 @@ class SkillEffect {
     'upTolerance',
     buffTypes: [BuffType.upTolerance],
     validate: (func) => func.buffs.first.ckOpIndv.every(
-      (trait) => ![Trait.buffPositiveEffect, Trait.buffIncreaseDamage].contains(trait.name),
+      (trait) => ![Trait.buffPositiveEffect.value, Trait.buffIncreaseDamage.value].contains(trait),
     ),
   );
   // 弱体无效
@@ -290,7 +290,7 @@ class SkillEffect {
     'avoidStateNegative',
     buffTypes: [BuffType.avoidState],
     validate: (func) => func.buffs.first.ckOpIndv.every(
-      (trait) => ![Trait.buffPositiveEffect, Trait.buffIncreaseDamage].contains(trait.name),
+      (trait) => ![Trait.buffPositiveEffect.value, Trait.buffIncreaseDamage.value].contains(trait),
     ),
   );
   // 状态付与成功率提升
@@ -298,32 +298,30 @@ class SkillEffect {
   static SkillEffect upGrantstatePositive = SkillEffect._buff(
     'upGrantstatePositive',
     BuffType.upGrantstate,
-    validate: (func) =>
-        func.buffs.any((buff) => buff.ckSelfIndv.any((trait) => trait.name == Trait.buffPositiveEffect)),
+    validate: (func) => func.buffs.any((buff) => buff.ckSelfIndv.contains(Trait.buffPositiveEffect.value)),
   );
   static SkillEffect upGrantstateNegative = SkillEffect._buff(
     'upGrantstateNegative',
     BuffType.upGrantstate,
-    validate: (func) =>
-        func.buffs.any((buff) => buff.ckSelfIndv.any((trait) => trait.name == Trait.buffNegativeEffect)),
+    validate: (func) => func.buffs.any((buff) => buff.ckSelfIndv.contains(Trait.buffNegativeEffect.value)),
   );
   // 被强化成功率提升
   static SkillEffect upReceivePositiveEffect = SkillEffect(
     'upReceivePositiveEffect',
     buffTypes: [BuffType.downTolerance],
-    validate: (func) => func.buffs.first.ckOpIndv.any((trait) => trait.name == Trait.buffPositiveEffect),
+    validate: (func) => func.buffs.first.ckOpIndv.contains(Trait.buffPositiveEffect.value),
   );
   // 解除Buff
   static SkillEffect subState = SkillEffect._func('subState', FuncType.subState);
   static SkillEffect subStatePositive = SkillEffect._func(
     'subStatePositive',
     FuncType.subState,
-    validate: (func) => func.traitVals.any((e) => e.name == Trait.buffPositiveEffect),
+    validate: (func) => func.traitVals.contains(Trait.buffPositiveEffect.value),
   );
   static SkillEffect subStateNegative = SkillEffect._func(
     'subStateNegative',
     FuncType.subState,
-    validate: (func) => func.traitVals.any((e) => e.name == Trait.buffNegativeEffect),
+    validate: (func) => func.traitVals.contains(Trait.buffNegativeEffect.value),
   );
   // 强化解除耐性提升
   static SkillEffect upToleranceSubstate = SkillEffect._buff('upToleranceSubstate', BuffType.upToleranceSubstate);

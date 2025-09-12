@@ -187,7 +187,7 @@ class _EventMissionTargetPageState extends State<EventMissionTargetPage> {
   }
 
   String _describeTraits(CustomMissionCond cond) {
-    return cond.targetIds.map((e) => Transl.trait(e).l.trimChar('"')).join(cond.useAnd ? '&' : '/');
+    return cond.targetIds.map((e) => Transl.traitName(e).trimChar('"')).join(cond.useAnd ? '&' : '/');
   }
 
   String _describeClasses(CustomMissionCond cond) {

@@ -106,7 +106,7 @@ class TdDmgSolver {
           final limits = [...svt.limits.keys.toList().sortReturn((a, b) => b.compareTo(a)), ...svt.costume.keys];
           final List<Set<int>> recordedTraits = [];
           for (final limit in limits) {
-            final Set<int> traitIdSet = svt.getIndividuality(null, limit).map((trait) => trait.signedId).toSet();
+            final Set<int> traitIdSet = svt.getIndividuality(null, limit).toSet();
             if (recordedTraits.every((recorded) => !setEquals(recorded, traitIdSet))) {
               limitsToAdd.add(limit);
             } else {
@@ -196,13 +196,7 @@ class TdDmgSolver {
         funcType: FuncType.addState,
         funcTargetType: FuncTargetType.self,
         buffs: [
-          Buff(
-            id: 1,
-            name: 'Debuff Immune',
-            detail: 'Manually added',
-            type: BuffType.avoidState,
-            ckOpIndv: [NiceTrait(id: 3005)],
-          ),
+          Buff(id: 1, name: 'Debuff Immune', detail: 'Manually added', type: BuffType.avoidState, ckOpIndv: [3005]),
         ],
         svals: [
           DataVals({"Rate": 5000, "Turn": -1, "Count": -1, "ForceAddState": 1, "UnSubState": 1}),
@@ -463,7 +457,7 @@ class TdDmgSolver {
       phase: 1,
       phases: [1],
       warId: options.warId,
-      individuality: options.fieldTraits.map((e) => NiceTrait(id: e)).toList(),
+      individuality: options.fieldTraits.toList(),
       stages: [Stage(wave: 1, enemyFieldPosCount: max(3, enemies.length), enemies: enemies)],
       extraDetail: QuestPhaseExtraDetail(isUseGrandBoard: options.grandBoard.isNone ? null : 1),
     );

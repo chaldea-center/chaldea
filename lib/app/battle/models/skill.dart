@@ -197,7 +197,7 @@ class BattleSkillInfoData {
             break;
           case BattleBranchSkillCondBranchType.individuality:
             if (!Individuality.checkSignedIndivPartialMatch(
-              self: activator?.getTraits().toIntList(),
+              self: activator?.getTraits(),
               signedTarget: branch.condValue,
             )) {
               continue;

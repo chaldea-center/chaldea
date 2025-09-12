@@ -9,21 +9,21 @@ class EffectFilterUtil {
   static bool checkFuncTraits(BaseFunction func, FilterGroupData<int> data, {bool checkReduceHpVals = true}) {
     final traits = data.options;
     if (traits.isEmpty) return true;
-    if (func.functvals.any((e) => traits.contains(e.id)) || func.traitVals.any((e) => traits.contains(e.id))) {
+    if (func.functvals.any((e) => traits.contains(e.abs())) || func.traitVals.any((e) => traits.contains(e.abs()))) {
       return true;
     }
     for (final buff in func.buffs) {
-      if (buff.ckSelfIndv.any((e) => traits.contains(e.id)) || buff.ckOpIndv.any((e) => traits.contains(e.id))) {
+      if (buff.ckSelfIndv.any((e) => traits.contains(e.abs())) || buff.ckOpIndv.any((e) => traits.contains(e.abs()))) {
         return true;
       }
-      if (checkReduceHpVals && buff.vals.any((e) => reduceHpTraits.contains(e.name) && traits.contains(e.id))) {
+      if (checkReduceHpVals && buff.vals.any((e) => reduceHpTraits.contains(e.abs()) && traits.contains(e.abs()))) {
         return true;
       }
     }
     return false;
   }
 
-  static const reduceHpTraits = [Trait.buffPoison, Trait.buffCurse, Trait.buffBurn];
+  static final reduceHpTraits = [Trait.buffPoison.value, Trait.buffCurse.value, Trait.buffBurn.value];
   static FilterGroup buildTraitFilter(
     BuildContext context,
     FilterGroupData<int> data,
@@ -70,7 +70,7 @@ class EffectFilterUtil {
               Trait.cardBuster.value: 'Buster',
               Trait.cardExtra.value: 'Extra',
             }[v] ??
-            Transl.trait(v).l;
+            Transl.traitName(v);
         if (text.startsWith('buff') && text.length > 4) {
           text = text.substring(4).trim();
         }

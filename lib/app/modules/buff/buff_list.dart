@@ -87,17 +87,17 @@ class _BuffListPageState extends State<BuffListPage> with SearchableListState<Bu
     }
     if (!filterData.trait.matchAny(
       <int>[
-        ...buff.vals.toIntList(),
-        ...buff.ckSelfIndv.toIntList(),
-        ...buff.ckOpIndv.toIntList(),
-        ?buff.script.INDIVIDUALITIE?.id,
-        ...?buff.script.INDIVIDUALITIE_AND?.toIntList(),
-        ...?buff.script.INDIVIDUALITIE_OR?.toIntList(),
+        ...buff.vals,
+        ...buff.ckSelfIndv,
+        ...buff.ckOpIndv,
+        ?buff.script.INDIVIDUALITIE,
+        ...?buff.script.INDIVIDUALITIE_AND,
+        ...?buff.script.INDIVIDUALITIE_OR,
         ...?buff.script.ckSelfCountIndividuality,
         ...?buff.script.ckOpCountIndividuality,
-        ...?buff.script.UpBuffRateBuffIndiv?.toIntList(),
-        ?buff.script.TargetIndiv?.id,
-        ...?buff.script.UpBuffRateBuffIndiv?.toIntList(),
+        ...?buff.script.UpBuffRateBuffIndiv,
+        ?buff.script.TargetIndiv,
+        ...?buff.script.UpBuffRateBuffIndiv,
       ].map((e) => e.abs()),
     )) {
       return false;
@@ -107,8 +107,8 @@ class _BuffListPageState extends State<BuffListPage> with SearchableListState<Bu
       if ([
         ...buff.ckSelfIndv,
         ...buff.ckOpIndv,
-        ...buff.vals.where((e) => EffectFilterUtil.reduceHpTraits.contains(e.name)),
-      ].map((e) => e.id).toSet().intersection(traits).isEmpty) {
+        ...buff.vals.where((e) => EffectFilterUtil.reduceHpTraits.contains(e.abs())),
+      ].map((e) => e.abs()).toSet().intersection(traits).isEmpty) {
         return false;
       }
     }

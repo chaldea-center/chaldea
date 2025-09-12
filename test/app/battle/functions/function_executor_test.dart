@@ -239,12 +239,7 @@ void main() async {
 
       battle.onFieldAllyServants[0]!.addBuff(
         BuffData(
-          buff: Buff(
-            id: -1,
-            name: '',
-            detail: '',
-            vals: [NiceTrait(id: Trait.cantBeSacrificed.value)],
-          ),
+          buff: Buff(id: -1, name: '', detail: '', vals: [Trait.cantBeSacrificed.value]),
           vals: DataVals(),
           addOrder: 1,
         ),
@@ -520,20 +515,20 @@ void main() async {
       final archType1 = battle.onFieldAllyServants[0]!;
       final archType2 = battle.onFieldAllyServants[1]!;
 
-      expect(battle.getQuestIndividuality().map((e) => e.id).contains(Trait.milleniumCastle.value), isFalse);
+      expect(battle.getQuestIndividuality().contains(Trait.milleniumCastle.value), isFalse);
 
       await battle.playerTurn([CombatAction(archType1, archType1.getNPCard()!)]);
 
-      expect(battle.getQuestIndividuality().map((e) => e.id).where((e) => e == Trait.milleniumCastle.value).length, 1);
+      expect(battle.getQuestIndividuality().where((e) => e == Trait.milleniumCastle.value).length, 1);
 
       await battle.playerTurn([CombatAction(archType2, archType1.getNPCard()!)]);
 
-      expect(battle.getQuestIndividuality().map((e) => e.id).where((e) => e == Trait.milleniumCastle.value).length, 2);
+      expect(battle.getQuestIndividuality().where((e) => e == Trait.milleniumCastle.value).length, 2);
 
       await battle.activateSvtSkill(0, 1);
       await battle.playerTurn([CombatAction(archType1, archType1.getNPCard()!)]);
 
-      expect(battle.getQuestIndividuality().map((e) => e.id).where((e) => e == Trait.milleniumCastle.value).length, 2);
+      expect(battle.getQuestIndividuality().where((e) => e == Trait.milleniumCastle.value).length, 2);
 
       // kill one to remove buff
       await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
@@ -541,17 +536,17 @@ void main() async {
       final archType3 = battle.onFieldAllyServants[0]!;
       final archType4 = battle.onFieldAllyServants[1]!;
 
-      expect(battle.getQuestIndividuality().map((e) => e.id).contains(Trait.milleniumCastle.value), isFalse);
+      expect(battle.getQuestIndividuality().contains(Trait.milleniumCastle.value), isFalse);
 
       await battle.playerTurn([CombatAction(archType3, archType3.getNPCard()!)]);
 
-      expect(battle.getQuestIndividuality().map((e) => e.id).where((e) => e == Trait.milleniumCastle.value).length, 1);
+      expect(battle.getQuestIndividuality().where((e) => e == Trait.milleniumCastle.value).length, 1);
 
       archType3.hp = 0;
 
       await battle.playerTurn([CombatAction(archType4, archType4.getNPCard()!)]);
 
-      expect(battle.getQuestIndividuality().map((e) => e.id).where((e) => e == Trait.milleniumCastle.value).length, 1);
+      expect(battle.getQuestIndividuality().where((e) => e == Trait.milleniumCastle.value).length, 1);
     });
 
     test('gainStar', () async {

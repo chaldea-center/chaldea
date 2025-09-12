@@ -355,7 +355,7 @@ class MissionCondDetailDescriptor extends HookWidget with DescriptorBase {
     required List<InlineSpan> Function()? kr,
   }) {
     final spans = super.localized(jp: jp, cn: cn, tw: tw, na: na, kr: kr);
-    final questTraits = detail.targetQuestIndividualities.map((e) => e.signedId).toList();
+    final questTraits = detail.targetQuestIndividualities;
     final eventIds = List<int>.of(detail.targetEventIds ?? []);
     final context = useContext();
     List<InlineSpan> extraSpans = [];

@@ -28,10 +28,14 @@ class Buff with RouteInfo {
   final int buffGroup;
   final BuffScript script;
   Map<String, dynamic> get originalScript => script.source;
-  final List<NiceTrait> vals;
-  final List<NiceTrait> tvals; // not for game play
-  final List<NiceTrait> ckSelfIndv;
-  final List<NiceTrait> ckOpIndv;
+  @TraitListConverter()
+  final List<int> vals;
+  @TraitListConverter()
+  final List<int> tvals; // not for game play
+  @TraitListConverter()
+  final List<int> ckSelfIndv;
+  @TraitListConverter()
+  final List<int> ckOpIndv;
   final int maxRate; // don't set default value in api-c
 
   Buff({
@@ -142,14 +146,15 @@ class BuffScript with DataScriptBase {
   @BuffTypeConverter()
   List<BuffType>? CheckOpponentBuffTypes;
   BuffRelationOverwrite? relationId;
-  NiceTrait? INDIVIDUALITIE; // self indiv?
+  int? get INDIVIDUALITIE => const TraitConverter().fromJsonNull(source["INDIVIDUALITIE"]); // self indiv?
   int? get INDIVIDUALITIE_COUNT_ABOVE => toInt('INDIVIDUALITIE_COUNT_ABOVE'); // "≥", only for `INDIVIDUALITIE`
   int? get INDIVIDUALITIE_COUNT_BELOW => toInt('INDIVIDUALITIE_COUNT_BELOW'); // "≤", only for `INDIVIDUALITIE`
-  List<NiceTrait>? INDIVIDUALITIE_AND;
-  List<NiceTrait>? INDIVIDUALITIE_OR;
+  List<int>? get INDIVIDUALITIE_AND => const TraitListConverter().fromJsonNull(source["INDIVIDUALITIE_AND"]);
+  List<int>? get INDIVIDUALITIE_OR => const TraitListConverter().fromJsonNull(source["INDIVIDUALITIE_OR"]);
   int? get individualityCondTargetType => toInt('individualityCondTargetType');
-  List<NiceTrait>? UpBuffRateBuffIndiv; // Oberon
-  NiceTrait? TargetIndiv;
+  List<int>? get UpBuffRateBuffIndiv =>
+      const TraitListConverter().fromJsonNull(source["UpBuffRateBuffIndiv"]); // Oberon
+  int? get TargetIndiv => const TraitConverter().fromJsonNull(source["TargetIndiv"]);
   BuffConvert? convert;
 
   String? get ReleaseText => source['ReleaseText'];
@@ -174,20 +179,10 @@ class BuffScript with DataScriptBase {
   int? get ckIndvCountAbove => toInt('ckIndvCountAbove');
   int? get ckIndvCountBelow => toInt('ckIndvCountBelow');
 
-  List<List<NiceTrait>>? NotPierceIndividuality;
+  List<List<int>>? get NotPierceIndividuality =>
+      const Trait2dListConverter().fromJsonNull(source["NotPierceIndividuality"]);
 
-  BuffScript({
-    this.checkIndvType,
-    this.CheckOpponentBuffTypes,
-    this.relationId,
-    this.INDIVIDUALITIE,
-    this.INDIVIDUALITIE_AND,
-    this.INDIVIDUALITIE_OR,
-    this.UpBuffRateBuffIndiv,
-    this.TargetIndiv,
-    this.convert,
-    this.NotPierceIndividuality,
-  });
+  BuffScript({this.checkIndvType, this.CheckOpponentBuffTypes, this.relationId, this.convert});
 
   factory BuffScript.fromJson(Map<String, dynamic> json) => _$BuffScriptFromJson(json);
 
@@ -218,7 +213,8 @@ class BuffConvert {
   List<Buff> convertBuffs;
   BuffConvertScript? script;
   int effectId;
-  List<NiceTrait> targetIndividualities = [];
+  @TraitListConverter()
+  List<int> targetIndividualities;
 
   BuffConvert({
     this.targetLimit = BuffConvertLimitType.all,

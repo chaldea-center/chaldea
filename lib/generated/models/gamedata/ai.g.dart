@@ -297,11 +297,9 @@ NiceAiAct _$NiceAiActFromJson(Map json) => NiceAiAct(
   id: (json['id'] as num).toInt(),
   type: $enumDecodeNullable(_$NiceAiActTypeEnumMap, json['type']) ?? NiceAiActType.none,
   target: $enumDecodeNullable(_$NiceAiActTargetEnumMap, json['target']) ?? NiceAiActTarget.none,
-  targetIndividuality:
-      (json['targetIndividuality'] as List<dynamic>?)
-          ?.map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
-          .toList() ??
-      const [],
+  targetIndividuality: json['targetIndividuality'] == null
+      ? const []
+      : const TraitListConverter().fromJson(json['targetIndividuality'] as Object),
   skillId: (json['skillId'] as num?)?.toInt(),
   skillLv: (json['skillLv'] as num?)?.toInt(),
   skill: json['skill'] == null ? null : NiceSkill.fromJson(Map<String, dynamic>.from(json['skill'] as Map)),
@@ -317,7 +315,7 @@ Map<String, dynamic> _$NiceAiActToJson(NiceAiAct instance) => <String, dynamic>{
   'id': instance.id,
   'type': _$NiceAiActTypeEnumMap[instance.type]!,
   'target': _$NiceAiActTargetEnumMap[instance.target]!,
-  'targetIndividuality': instance.targetIndividuality.map((e) => e.toJson()).toList(),
+  'targetIndividuality': const TraitListConverter().toJson(instance.targetIndividuality),
   'skillId': instance.skillId,
   'skillLv': instance.skillLv,
   'skill': instance.skill?.toJson(),

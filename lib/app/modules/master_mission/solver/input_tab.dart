@@ -720,7 +720,7 @@ class _SearchViewState extends State<_SearchView> {
     if ([CustomMissionType.trait, CustomMissionType.questTrait].contains(widget.targetType)) {
       ids = _searchTraits();
       tileBuilder = (id) {
-        final names = {Transl.trait(id, field: true).l, Transl.trait(id, field: true).jp};
+        final names = {Transl.traitName(id, field: true), Transl.traitName(id, field: true, region: Region.jp)};
         return _buildTile(id, '$id - ${names.join("/")}', kTraitIdMapping[id]?.name ?? S.current.unknown);
       };
     } else if ([
@@ -826,7 +826,7 @@ class _SearchViewState extends State<_SearchView> {
   Iterable<String> _getTraitStrings(int id) sync* {
     final trait = kTraitIdMapping[id];
     if (trait != null) yield trait.name.toLowerCase();
-    yield* SearchUtil.getAllKeys(Transl.trait(id)).whereType();
+    yield* SearchUtil.getAllKeys(Transl.trait(id.abs())).whereType();
     final warIds = db.gameData.mappingData.fieldTrait[id]?.warIds;
     if (warIds != null) {
       for (final warId in warIds) {
@@ -982,7 +982,7 @@ String _idDescriptor(CustomMissionType type, int id, {bool prefixId = false}) {
   switch (type) {
     case CustomMissionType.trait:
     case CustomMissionType.questTrait:
-      text = Transl.trait(id).l;
+      text = Transl.traitName(id);
       break;
     case CustomMissionType.quest:
       text = db.gameData.quests[id]?.lName.l ?? id.toString();

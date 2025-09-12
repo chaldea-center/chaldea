@@ -569,7 +569,7 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
               traits: curPhase.questIndividuality,
               textAlign: TextAlign.center,
               format: (trait) {
-                return trait.shownName().replaceFirst(RegExp('^[^:]+:'), '').trim();
+                return Transl.traitName(trait).replaceFirst(RegExp('^[^:]+:'), '').trim();
               },
             ),
           ),

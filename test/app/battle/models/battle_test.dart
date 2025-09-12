@@ -790,7 +790,7 @@ void main() async {
     final battle = BattleData();
     final quest = db.gameData.questPhases[9300040603]!;
     final questIndivs = quest.questIndividuality;
-    questIndivs.add(NiceTrait(id: 94000119));
+    questIndivs.add(94000119);
     quest.phaseIndividuality = null;
     quest.individuality = questIndivs;
 
@@ -899,7 +899,7 @@ void main() async {
 
     final enemy2 = battle.onFieldEnemies[1]!;
     final previousHp2 = enemy2.hp;
-    enemy2.niceEnemy!.traits = enemy2.niceEnemy!.traits.toList()..add(NiceTrait(id: 109));
+    enemy2.niceEnemy!.traits = enemy2.niceEnemy!.traits.toList()..add(109);
     musashi.np = 10000;
     await battle.playerTurn([CombatAction(musashi, musashi.getNPCard()!)]);
     expect(previousHp2 - enemy2.hp, 120179);
@@ -907,8 +907,8 @@ void main() async {
     final enemy3 = battle.onFieldEnemies[2]!;
     final previousHp3 = enemy3.hp;
     enemy3.niceEnemy!.traits = enemy3.niceEnemy!.traits.toList()
-      ..add(NiceTrait(id: 115))
-      ..add(NiceTrait(id: 109));
+      ..add(115)
+      ..add(109);
     musashi.np = 10000;
     await battle.playerTurn([CombatAction(musashi, musashi.getNPCard()!)]);
     expect(previousHp3 - enemy3.hp, 120179);
@@ -1281,7 +1281,7 @@ void main() async {
     expect(aoko.maxHp, 14230);
     expect(aoko.atk, 13584);
 
-    final magicBulletTrait = [NiceTrait(id: 2885)];
+    final magicBulletTrait = [2885];
     expect(aoko.getBuffsWithTraits(magicBulletTrait).length, 2);
 
     await battle.skipWave();
@@ -1554,7 +1554,7 @@ void main() async {
     expect(kazura2.np, 15000);
 
     expect(kazura1.logicalClassId, SvtClass.alterego.value);
-    final traitIdsBefore1 = kazura1.getTraits().map((niceTrait) => niceTrait.id).toList();
+    final traitIdsBefore1 = kazura1.getTraits();
     expect(traitIdsBefore1.contains(ConstData.classInfo[SvtClass.alterego.value]!.individuality), true);
     expect(traitIdsBefore1.contains(ConstData.classInfo[SvtClass.saber.value]!.individuality), false);
     for (final relationTraitId in ConstData.classInfo[SvtClass.saber.value]!.relationSvtIndividuality) {
@@ -1562,7 +1562,7 @@ void main() async {
     }
     await battle.activateSvtSkill(0, 2);
     expect(kazura1.logicalClassId, SvtClass.saber.value);
-    final traitIdsAfter1 = kazura1.getTraits().map((niceTrait) => niceTrait.id).toList();
+    final traitIdsAfter1 = kazura1.getTraits();
     expect(traitIdsAfter1.contains(ConstData.classInfo[SvtClass.alterego.value]!.individuality), false);
     expect(traitIdsAfter1.contains(ConstData.classInfo[SvtClass.saber.value]!.individuality), true);
     for (final relationTraitId in ConstData.classInfo[SvtClass.saber.value]!.relationSvtIndividuality) {
@@ -1571,7 +1571,7 @@ void main() async {
 
     battle.enemyTargetIndex = 1;
     expect(kazura2.logicalClassId, SvtClass.alterego.value);
-    final traitIdsBefore2 = kazura2.getTraits().map((niceTrait) => niceTrait.id).toList();
+    final traitIdsBefore2 = kazura2.getTraits();
     expect(traitIdsBefore2.contains(ConstData.classInfo[SvtClass.alterego.value]!.individuality), true);
     expect(traitIdsBefore2.contains(ConstData.classInfo[SvtClass.caster.value]!.individuality), false);
     for (final relationTraitId in ConstData.classInfo[SvtClass.caster.value]!.relationSvtIndividuality) {
@@ -1579,7 +1579,7 @@ void main() async {
     }
     await battle.activateSvtSkill(1, 2);
     expect(kazura2.logicalClassId, SvtClass.caster.value);
-    final traitIdsAfter2 = kazura2.getTraits().map((niceTrait) => niceTrait.id).toList();
+    final traitIdsAfter2 = kazura2.getTraits();
     expect(traitIdsAfter2.contains(ConstData.classInfo[SvtClass.alterego.value]!.individuality), false);
     expect(traitIdsAfter2.contains(ConstData.classInfo[SvtClass.caster.value]!.individuality), true);
     for (final relationTraitId in ConstData.classInfo[SvtClass.caster.value]!.relationSvtIndividuality) {
@@ -2078,15 +2078,15 @@ void main() async {
     final quest1 = await AtlasApi.questPhase(94087109, 1);
     await battle1.init(quest1!, setting, null);
 
-    expect(battle1.getQuestIndividuality().map((trait) => trait.id).contains(94000146), true);
-    expect(battle1.getQuestIndividuality().map((trait) => trait.id).contains(2038), true);
+    expect(battle1.getQuestIndividuality().contains(94000146), true);
+    expect(battle1.getQuestIndividuality().contains(2038), true);
 
     final battle2 = BattleData();
     final quest2 = await AtlasApi.questPhase(94101308, 1);
     await battle2.init(quest2!, setting, null);
 
-    expect(battle2.getQuestIndividuality().map((trait) => trait.id).contains(94000159), true);
-    expect(battle2.getQuestIndividuality().map((trait) => trait.id).contains(2038), true);
+    expect(battle2.getQuestIndividuality().contains(94000159), true);
+    expect(battle2.getQuestIndividuality().contains(2038), true);
   });
 
   test('Can clear wave using dot', () async {
@@ -2212,13 +2212,7 @@ void main() async {
 
       final card = battle.onFieldAllyServants[0]!.getCards()[0];
       card.critical = true;
-      expect(
-        checkSignedIndividualities2(
-          myTraits: card.traits,
-          requiredTraits: [NiceTrait(id: Trait.criticalHit.value)],
-        ),
-        true,
-      );
+      expect(checkSignedIndividualities2(myTraits: card.traits, requiredTraits: [Trait.criticalHit.value]), true);
     });
 
     // test('Combo related', () async {

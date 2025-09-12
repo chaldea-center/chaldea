@@ -134,18 +134,18 @@ void main() async {
     final melusine = battle.onFieldAllyServants[0]!;
     final melusine2 = battle.onFieldAllyServants[1]!;
     final feihu = battle.onFieldAllyServants[2]!;
-    expect(melusine.getTraits().map((e) => e.signedId).contains(Trait.fae.value), true);
-    expect(melusine2.getTraits().map((e) => e.signedId).contains(Trait.fae.value), true);
-    expect(melusine.getTraits().map((e) => e.signedId).contains(Trait.havingAnimalsCharacteristics.value), true);
-    expect(melusine2.getTraits().map((e) => e.signedId).contains(Trait.havingAnimalsCharacteristics.value), true);
-    expect(melusine.getTraits().map((e) => e.signedId).contains(Trait.knightsOfTheRound.value), true);
-    expect(melusine2.getTraits().map((e) => e.signedId).contains(Trait.knightsOfTheRound.value), false);
-    expect(feihu.getTraits().map((e) => e.signedId).contains(301), true);
-    expect(feihu.getTraits().map((e) => e.signedId).contains(300), false);
+    expect(melusine.getTraits().contains(Trait.fae.value), true);
+    expect(melusine2.getTraits().contains(Trait.fae.value), true);
+    expect(melusine.getTraits().contains(Trait.havingAnimalsCharacteristics.value), true);
+    expect(melusine2.getTraits().contains(Trait.havingAnimalsCharacteristics.value), true);
+    expect(melusine.getTraits().contains(Trait.knightsOfTheRound.value), true);
+    expect(melusine2.getTraits().contains(Trait.knightsOfTheRound.value), false);
+    expect(feihu.getTraits().contains(301), true);
+    expect(feihu.getTraits().contains(300), false);
 
     await battle.activateSvtSkill(2, 0);
-    expect(feihu.getTraits().map((e) => e.signedId).contains(301), false);
-    expect(feihu.getTraits().map((e) => e.signedId).contains(300), true);
+    expect(feihu.getTraits().contains(301), false);
+    expect(feihu.getTraits().contains(300), true);
   });
 
   test('Test skill scripts', () async {
@@ -193,7 +193,7 @@ void main() async {
     ];
 
     final quest = db.gameData.questPhases[9300040603]!;
-    quest.individuality = [...quest.questIndividuality, NiceTrait(id: 94000144)];
+    quest.individuality = [...quest.questIndividuality, 94000144];
     quest.phaseIndividuality = null;
     final battle = BattleData();
     await battle.init(quest, playerSettings, null);

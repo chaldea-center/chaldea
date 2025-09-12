@@ -368,11 +368,11 @@ class TdDescriptor extends StatelessWidget with FuncsDescriptor, _SkillDescripto
     if (isBaseTd) {
       ref.add('base');
     }
-    if (td.individuality.every((e) => e.name != Trait.cardNP)) {
+    if (td.individuality.every((e) => e != Trait.cardNP.value)) {
       ref.add('cardNP');
     }
     final baseTrait = td.svt.card.baseTrait;
-    if (baseTrait != null && td.individuality.every((e) => e.name != baseTrait)) {
+    if (baseTrait != null && td.individuality.every((e) => e != baseTrait.value)) {
       ref.add('cardTrait');
     }
     final tdType = Transl.tdTypes(overrideData?.tdTypeText ?? td.type);
@@ -493,9 +493,9 @@ class TdDescriptor extends StatelessWidget with FuncsDescriptor, _SkillDescripto
             [
               if (ref.contain('base')) '[${ref.add("base")}] ${S.current.td_base_hits_hint}',
               if (ref.contain("cardNP"))
-                '[${ref.add("cardNP")}] ${S.current.td_cardnp_hint(Transl.trait(Trait.cardNP.value).l)}',
+                '[${ref.add("cardNP")}] ${S.current.td_cardnp_hint(Transl.traitName(Trait.cardNP.value))}',
               if (ref.contain("cardTrait"))
-                '[${ref.add("cardTrait")}] ${S.current.td_cardcolor_hint(td.svt.card.name.toTitle(), Transl.trait(baseTrait!.value).l)}',
+                '[${ref.add("cardTrait")}] ${S.current.td_cardcolor_hint(td.svt.card.name.toTitle(), Transl.traitName(baseTrait!.value))}',
             ].join('\n'),
           ),
       ],

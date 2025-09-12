@@ -73,7 +73,8 @@ class NiceAiAct {
   int id;
   NiceAiActType type;
   NiceAiActTarget target;
-  List<NiceTrait> targetIndividuality;
+  @TraitListConverter()
+  List<int> targetIndividuality;
   int? skillId;
   int? skillLv;
   NiceSkill? skill;

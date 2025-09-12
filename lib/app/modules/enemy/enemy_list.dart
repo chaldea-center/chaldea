@@ -155,7 +155,7 @@ class EnemyListPageState extends State<EnemyListPage> with SearchableListState<B
       return false;
     }
     if (filterData.trait.options.isNotEmpty) {
-      if (enemies.every((enemy) => !filterData.trait.matchAny(enemy.traits.map((e) => e.name)))) {
+      if (enemies.every((enemy) => !filterData.trait.matchAny(enemy.traits.map((e) => e)))) {
         return false;
       }
     }

@@ -70,7 +70,7 @@ class BattleServantData {
   // int overkillTargetId = 0;
   // int resultHp = 0;
   // List<int> userCommandCodeIds = [];
-  // List<NiceTrait> svtIndividuality = [];
+  // List<int> svtIndividuality = [];
   // int tdId = 0;
   // int tdLv = 0;
 
@@ -579,7 +579,6 @@ class BattleServantData {
         }
       }
 
-
       if (hpToLose > 0) {
         lossHp(hpToLose, lethal: false);
       }
@@ -857,8 +856,8 @@ class BattleServantData {
     return 0;
   }
 
-  List<NiceTrait> getBasicSvtTraits() {
-    Set<NiceTrait> traits = {};
+  List<int> getBasicSvtTraits() {
+    Set<int> traits = {};
 
     if (niceEnemy != null) {
       traits.addAll(niceEnemy!.traits);
@@ -884,14 +883,14 @@ class BattleServantData {
     if (niceSvt != null) {
       final attriAdd = niceSvt!.ascensionAdd.attribute.all[limitCount];
       if (attriAdd != null && attriAdd != ServantSubAttribute.default_) {
-        traits.removeWhere((e) => e.id == niceSvt!.attribute.trait?.value);
+        traits.removeWhere((e) => e == niceSvt!.attribute.trait?.value);
         if (attriAdd.trait != null) {
-          traits.add(NiceTrait(id: attriAdd.trait!.value));
+          traits.add(attriAdd.trait!.value);
         }
       }
     }
     if (playerSvtData?.supportType.isSupport == true) {
-      traits.add(NiceTrait(id: ConstData.constants.individualityIsSupport));
+      traits.add(ConstData.constants.individualityIsSupport);
     }
     if (isPlayer && isGrandSvt) {
       traits.addAll(db.gameData.grandGraphDetails[originalClassId]?.adjustIndividuality ?? []);
@@ -899,14 +898,14 @@ class BattleServantData {
     return traits.toList();
   }
 
-  static List<NiceTrait> fetchSelfTraits(
+  static List<int> fetchSelfTraits(
     final BuffAction buffAction,
     final BuffData buff,
     final BattleServantData self, {
     final CommandCardData? cardData,
     final bool isAttack = true,
     final DataVals? dataVals,
-    final List<NiceTrait>? addTraits,
+    final List<int>? addTraits,
   }) {
     switch (buffAction) {
       case BuffAction.avoidanceIndividuality:
@@ -1029,7 +1028,7 @@ class BattleServantData {
     }
   }
 
-  static List<NiceTrait>? fetchOpponentTraits(
+  static List<int>? fetchOpponentTraits(
     final BuffAction buffAction,
     final BuffData buff,
     final BattleServantData? opponent, {
@@ -1037,9 +1036,9 @@ class BattleServantData {
     final CommandCardData? cardData,
     final bool isAttack = true,
     final DataVals? dataVals,
-    final List<NiceTrait>? addTraits,
+    final List<int>? addTraits,
   }) {
-    List<NiceTrait>? results;
+    List<int>? results;
     switch (buffAction) {
       case BuffAction.functionCommandcodeattackBefore:
       case BuffAction.functionCommandcodeattackBeforeMainOnly:
@@ -1166,13 +1165,13 @@ class BattleServantData {
     }
 
     if (self != null && self.lastHitBy != null && opponent != null && self.lastHitBy!.uniqueId == opponent.uniqueId) {
-      results = [...?results, NiceTrait(id: ConstData.constants.lastAttackToSelfIndividuality)];
+      results = [...?results, ConstData.constants.lastAttackToSelfIndividuality];
     }
     return results;
   }
 
-  List<NiceTrait> getTraits({final List<NiceTrait>? addTraits}) {
-    final List<NiceTrait> allTraits = [];
+  List<int> getTraits({final List<int>? addTraits}) {
+    final List<int> allTraits = [];
     allTraits.addAll(getBasicSvtTraits());
 
     if (addTraits != null) {
@@ -1183,21 +1182,21 @@ class BattleServantData {
     for (final buff in battleBuff.validBuffs) {
       // indiv buffs do not require checks
       if (buff.buff.type == BuffType.addIndividuality) {
-        allTraits.add(NiceTrait(id: buff.param));
+        allTraits.add(buff.param);
       } else if (buff.buff.type == BuffType.subIndividuality) {
         removeTraitIds.add(buff.param);
       }
     }
 
     if (logicalClassId != baseClassId) {
-      final isServant = allTraits.map((trait) => trait.id).contains(Trait.servant.value);
+      final isServant = allTraits.contains(Trait.servant.value);
       final baseClassInfo = ConstData.classInfo[baseClassId];
       if (baseClassInfo != null) {
         final removeClassTraitIds = [
           baseClassInfo.individuality,
           if (isServant) ...baseClassInfo.relationSvtIndividuality,
         ];
-        allTraits.removeWhere((trait) => removeClassTraitIds.contains(trait.id));
+        allTraits.removeWhere((trait) => removeClassTraitIds.contains(trait));
       }
 
       final logicalClassInfo = ConstData.classInfo[logicalClassId];
@@ -1206,20 +1205,20 @@ class BattleServantData {
           logicalClassInfo.individuality,
           if (isServant) ...logicalClassInfo.relationSvtIndividuality,
         ];
-        allTraits.addAll(addClassTraitIds.map((id) => NiceTrait(id: id)));
+        allTraits.addAll(addClassTraitIds);
       }
     }
 
-    allTraits.removeWhere((trait) => removeTraitIds.contains(trait.id));
+    allTraits.removeWhere((trait) => removeTraitIds.contains(trait));
 
     return allTraits;
   }
 
-  int countTrait(final List<NiceTrait> traits) {
+  int countTrait(final List<int> traits) {
     return countAnyTraits(getTraits(), traits);
   }
 
-  List<NiceTrait> getBuffTraits({
+  List<int> getBuffTraits({
     final bool activeOnly = false,
     final bool ignoreIndivUnreleaseable = false,
     final bool includeIgnoreIndiv = false,
@@ -1234,7 +1233,7 @@ class BattleServantData {
   }
 
   int countBuffWithTrait(
-    final List<NiceTrait> traits, {
+    final List<int> traits, {
     final bool activeOnly = false,
     final bool ignoreIndivUnreleaseable = false,
     final bool includeIgnoreIndiv = false,
@@ -1248,7 +1247,7 @@ class BattleServantData {
   }
 
   List<BuffData> getBuffsWithTraits(
-    final List<NiceTrait> traits, {
+    final List<int> traits, {
     final bool activeOnly = false,
     final bool ignoreIndivUnreleaseable = false,
     final bool includeIgnoreIndiv = false,
@@ -1873,10 +1872,10 @@ class BattleServantData {
     BattleData battleData,
     BuffAction buffAction, {
     BattleServantData? opponent,
-    List<NiceTrait>? opponentTraitsOverride,
+    List<int>? opponentTraitsOverride,
     CommandCardData? card,
     bool isAttack = true,
-    List<NiceTrait>? addTraits,
+    List<int>? addTraits,
     bool skipDamage = false, // special logic for defender in damage calculation
   }) async {
     final actionDetails = ConstData.buffActions[buffAction];
@@ -1888,7 +1887,7 @@ class BattleServantData {
 
     final List<BuffData> allBuffs = collectBuffsPerAction(battleBuff.validBuffs, buffAction);
     for (final buff in allBuffs) {
-      final List<NiceTrait> selfTraits = fetchSelfTraits(
+      final List<int> selfTraits = fetchSelfTraits(
         buffAction,
         buff,
         this,
@@ -1896,7 +1895,7 @@ class BattleServantData {
         isAttack: isAttack,
         addTraits: addTraits,
       );
-      final List<NiceTrait>? opponentTraits =
+      final List<int>? opponentTraits =
           opponentTraitsOverride ??
           fetchOpponentTraits(
             buffAction,
@@ -1944,8 +1943,8 @@ class BattleServantData {
   Future<int> getBuffValueFixedTraits(
     final BattleData battleData,
     final BuffAction buffAction, {
-    required final List<NiceTrait> selfTraits,
-    final List<NiceTrait>? opponentTraits,
+    required final List<int> selfTraits,
+    final List<int>? opponentTraits,
     final BattleServantData? opponent,
   }) async {
     final actionDetails = ConstData.buffActions[buffAction];
@@ -1988,7 +1987,7 @@ class BattleServantData {
   // separate method for buffRate to avoid stackOverflow
   Future<int> getBuffRateValue(
     final BattleData battleData,
-    final List<NiceTrait> buffTraits, {
+    final List<int> buffTraits, {
     final BattleServantData? opponent,
   }) async {
     final actionDetails = ConstData.buffActions[BuffAction.buffRate];
@@ -2110,11 +2109,11 @@ class BattleServantData {
     final BuffAction buffAction, {
     final BattleServantData? opponent,
     final CommandCardData? card,
-    final List<NiceTrait>? addTraits,
+    final List<int>? addTraits,
   }) {
     for (final buff in collectBuffsPerAction(battleBuff.validBuffs, buffAction)) {
-      final List<NiceTrait> selfTraits = fetchSelfTraits(buffAction, buff, this, cardData: card, addTraits: addTraits);
-      final List<NiceTrait>? opponentTraits = fetchOpponentTraits(
+      final List<int> selfTraits = fetchSelfTraits(buffAction, buff, this, cardData: card, addTraits: addTraits);
+      final List<int>? opponentTraits = fetchOpponentTraits(
         buffAction,
         buff,
         opponent,
@@ -2135,7 +2134,7 @@ class BattleServantData {
     final BuffAction buffAction, {
     final BattleServantData? opponent,
     final CommandCardData? card,
-    final List<NiceTrait>? addTraits,
+    final List<int>? addTraits,
   }) async {
     return await getBuff(battleData, buffAction, opponent: opponent, card: card, addTraits: addTraits, useBuff: true) !=
         null;
@@ -2146,12 +2145,12 @@ class BattleServantData {
     final BuffAction buffAction, {
     final BattleServantData? opponent,
     final CommandCardData? card,
-    final List<NiceTrait>? addTraits,
+    final List<int>? addTraits,
     final bool useBuff = true,
   }) async {
     for (final buff in collectBuffsPerAction(battleBuff.validBuffs, buffAction)) {
-      final List<NiceTrait> selfTraits = fetchSelfTraits(buffAction, buff, this, cardData: card, addTraits: addTraits);
-      final List<NiceTrait>? opponentTraits = fetchOpponentTraits(
+      final List<int> selfTraits = fetchSelfTraits(buffAction, buff, this, cardData: card, addTraits: addTraits);
+      final List<int>? opponentTraits = fetchOpponentTraits(
         buffAction,
         buff,
         opponent,
@@ -2195,11 +2194,7 @@ class BattleServantData {
     );
   }
 
-  Future<int> applyChangeBuffUseRate(
-    BattleData battleData,
-    BuffData buffToApply,
-    List<NiceTrait>? opponentTraits,
-  ) async {
+  Future<int> applyChangeBuffUseRate(BattleData battleData, BuffData buffToApply, List<int>? opponentTraits) async {
     final overwriteBuffRates = collectBuffsPerAction(battleBuff.validBuffs, BuffAction.overwriteBuffUseRate);
     int baseRate = buffToApply.vals.UseRate!;
     for (final overwriteBuffRate in overwriteBuffRates) {
@@ -2236,8 +2231,8 @@ class BattleServantData {
     bool activated = false;
     for (final buffAction in buffActions) {
       for (final buff in collectBuffsPerAction(battleBuff.validBuffsActiveFirst, buffAction)) {
-        final List<NiceTrait> selfTraits = fetchSelfTraits(buffAction, buff, this, cardData: card);
-        List<NiceTrait>? opponentTraits = fetchOpponentTraits(buffAction, buff, opponent, cardData: card);
+        final List<int> selfTraits = fetchSelfTraits(buffAction, buff, this, cardData: card);
+        List<int>? opponentTraits = fetchOpponentTraits(buffAction, buff, opponent, cardData: card);
 
         final shouldActivate = await buff.shouldActivateBuff(
           battleData,
@@ -2308,7 +2303,7 @@ class BattleServantData {
   // does not have a corresponding BuffAction
   Future<bool> activateDelayFunction(final BattleData battleData, final Iterable<BuffData> buffs) async {
     bool activated = false;
-    final List<NiceTrait> selfTraits = getTraits();
+    final List<int> selfTraits = getTraits();
     for (final buff in buffs.toList()) {
       if (await buff.shouldActivateBuff(battleData, selfTraits)) {
         final skillId = buff.param;

@@ -17,33 +17,19 @@ NiceFunction _$NiceFunctionFromJson(Map json) => NiceFunction(
       : const FuncApplyTargetConverter().fromJson(json['funcTargetTeam'] as String),
   funcPopupText: json['funcPopupText'] as String? ?? '',
   funcPopupIcon: json['funcPopupIcon'] as String?,
-  functvals:
-      (json['functvals'] as List<dynamic>?)
-          ?.map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
-          .toList() ??
-      const [],
-  overWriteTvalsList:
-      (json['overWriteTvalsList'] as List<dynamic>?)
-          ?.map(
-            (e) => (e as List<dynamic>).map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map))).toList(),
-          )
-          .toList() ??
-      const [],
-  funcquestTvals:
-      (json['funcquestTvals'] as List<dynamic>?)
-          ?.map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
-          .toList() ??
-      const [],
+  functvals: json['functvals'] == null ? const [] : const TraitListConverter().fromJson(json['functvals'] as Object),
+  overWriteTvalsList: json['overWriteTvalsList'] == null
+      ? const []
+      : const Trait2dListConverter().fromJson(json['overWriteTvalsList'] as List),
+  funcquestTvals: json['funcquestTvals'] == null
+      ? const []
+      : const TraitListConverter().fromJson(json['funcquestTvals'] as Object),
   funcGroup:
       (json['funcGroup'] as List<dynamic>?)
           ?.map((e) => FuncGroup.fromJson(Map<String, dynamic>.from(e as Map)))
           .toList() ??
       const [],
-  traitVals:
-      (json['traitVals'] as List<dynamic>?)
-          ?.map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
-          .toList() ??
-      const [],
+  traitVals: json['traitVals'] == null ? const [] : const TraitListConverter().fromJson(json['traitVals'] as Object),
   buffs:
       (json['buffs'] as List<dynamic>?)?.map((e) => Buff.fromJson(Map<String, dynamic>.from(e as Map))).toList() ??
       const [],
@@ -73,11 +59,11 @@ Map<String, dynamic> _$NiceFunctionToJson(NiceFunction instance) => <String, dyn
   'funcTargetTeam': const FuncApplyTargetConverter().toJson(instance.funcTargetTeam),
   'funcPopupText': instance.funcPopupText,
   'funcPopupIcon': instance.funcPopupIcon,
-  'functvals': instance.functvals.map((e) => e.toJson()).toList(),
-  'overWriteTvalsList': instance.overWriteTvalsList.map((e) => e.map((e) => e.toJson()).toList()).toList(),
-  'funcquestTvals': instance.funcquestTvals.map((e) => e.toJson()).toList(),
+  'functvals': const TraitListConverter().toJson(instance.functvals),
+  'overWriteTvalsList': const Trait2dListConverter().toJson(instance.overWriteTvalsList),
+  'funcquestTvals': const TraitListConverter().toJson(instance.funcquestTvals),
   'funcGroup': instance.funcGroup.map((e) => e.toJson()).toList(),
-  'traitVals': instance.traitVals.map((e) => e.toJson()).toList(),
+  'traitVals': const TraitListConverter().toJson(instance.traitVals),
   'buffs': instance.buffs.map((e) => e.toJson()).toList(),
   'script': instance.script?.toJson(),
   'svals': instance.svals.map((e) => e.toJson()).toList(),
@@ -135,33 +121,19 @@ BaseFunction _$BaseFunctionFromJson(Map json) => BaseFunction(
   funcTargetTeam: const FuncApplyTargetConverter().fromJson(json['funcTargetTeam'] as String),
   funcPopupText: json['funcPopupText'] as String? ?? '',
   funcPopupIcon: json['funcPopupIcon'] as String?,
-  functvals:
-      (json['functvals'] as List<dynamic>?)
-          ?.map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
-          .toList() ??
-      const [],
-  overWriteTvalsList:
-      (json['overWriteTvalsList'] as List<dynamic>?)
-          ?.map(
-            (e) => (e as List<dynamic>).map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map))).toList(),
-          )
-          .toList() ??
-      const [],
-  funcquestTvals:
-      (json['funcquestTvals'] as List<dynamic>?)
-          ?.map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
-          .toList() ??
-      const [],
+  functvals: json['functvals'] == null ? const [] : const TraitListConverter().fromJson(json['functvals'] as Object),
+  overWriteTvalsList: json['overWriteTvalsList'] == null
+      ? const []
+      : const Trait2dListConverter().fromJson(json['overWriteTvalsList'] as List),
+  funcquestTvals: json['funcquestTvals'] == null
+      ? const []
+      : const TraitListConverter().fromJson(json['funcquestTvals'] as Object),
   funcGroup:
       (json['funcGroup'] as List<dynamic>?)
           ?.map((e) => FuncGroup.fromJson(Map<String, dynamic>.from(e as Map)))
           .toList() ??
       const [],
-  traitVals:
-      (json['traitVals'] as List<dynamic>?)
-          ?.map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
-          .toList() ??
-      const [],
+  traitVals: json['traitVals'] == null ? const [] : const TraitListConverter().fromJson(json['traitVals'] as Object),
   buffs:
       (json['buffs'] as List<dynamic>?)?.map((e) => Buff.fromJson(Map<String, dynamic>.from(e as Map))).toList() ??
       const [],
@@ -175,11 +147,11 @@ Map<String, dynamic> _$BaseFunctionToJson(BaseFunction instance) => <String, dyn
   'funcTargetTeam': const FuncApplyTargetConverter().toJson(instance.funcTargetTeam),
   'funcPopupText': instance.funcPopupText,
   'funcPopupIcon': instance.funcPopupIcon,
-  'functvals': instance.functvals.map((e) => e.toJson()).toList(),
-  'overWriteTvalsList': instance.overWriteTvalsList.map((e) => e.map((e) => e.toJson()).toList()).toList(),
-  'funcquestTvals': instance.funcquestTvals.map((e) => e.toJson()).toList(),
+  'functvals': const TraitListConverter().toJson(instance.functvals),
+  'overWriteTvalsList': const Trait2dListConverter().toJson(instance.overWriteTvalsList),
+  'funcquestTvals': const TraitListConverter().toJson(instance.funcquestTvals),
   'funcGroup': instance.funcGroup.map((e) => e.toJson()).toList(),
-  'traitVals': instance.traitVals.map((e) => e.toJson()).toList(),
+  'traitVals': const TraitListConverter().toJson(instance.traitVals),
   'buffs': instance.buffs.map((e) => e.toJson()).toList(),
   'script': instance.script?.toJson(),
 };
@@ -205,18 +177,32 @@ Map<String, dynamic> _$FuncGroupToJson(FuncGroup instance) => <String, dynamic>{
 };
 
 FuncScript _$FuncScriptFromJson(Map json) => FuncScript(
-  overwriteTvals: (json['overwriteTvals'] as List<dynamic>?)
-      ?.map((e) => (e as List<dynamic>).map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map))).toList())
-      .toList(),
-  funcIndividuality: (json['funcIndividuality'] as List<dynamic>?)
-      ?.map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
-      .toList(),
+  overwriteTvals: _$JsonConverterFromJson<List<dynamic>, List<List<int>>>(
+    json['overwriteTvals'],
+    const Trait2dListConverter().fromJson,
+  ),
+  funcIndividuality: _$JsonConverterFromJson<Object, List<int>>(
+    json['funcIndividuality'],
+    const TraitListConverter().fromJson,
+  ),
 );
 
 Map<String, dynamic> _$FuncScriptToJson(FuncScript instance) => <String, dynamic>{
-  'overwriteTvals': instance.overwriteTvals?.map((e) => e.map((e) => e.toJson()).toList()).toList(),
-  'funcIndividuality': instance.funcIndividuality?.map((e) => e.toJson()).toList(),
+  'overwriteTvals': _$JsonConverterToJson<List<dynamic>, List<List<int>>>(
+    instance.overwriteTvals,
+    const Trait2dListConverter().toJson,
+  ),
+  'funcIndividuality': _$JsonConverterToJson<Object, List<int>>(
+    instance.funcIndividuality,
+    const TraitListConverter().toJson,
+  ),
 };
+
+Value? _$JsonConverterFromJson<Json, Value>(Object? json, Value? Function(Json json) fromJson) =>
+    json == null ? null : fromJson(json as Json);
+
+Json? _$JsonConverterToJson<Json, Value>(Value? value, Json? Function(Value value) toJson) =>
+    value == null ? null : toJson(value);
 
 const _$FuncTypeEnumMap = {
   FuncType.unknown: 'unknown',

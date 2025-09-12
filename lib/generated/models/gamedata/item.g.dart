@@ -12,11 +12,9 @@ Item _$ItemFromJson(Map json) => Item(
   type: $enumDecodeNullable(_$ItemTypeEnumMap, json['type']) ?? ItemType.none,
   uses: (json['uses'] as List<dynamic>?)?.map((e) => $enumDecode(_$ItemUseEnumMap, e)).toList() ?? const [],
   detail: json['detail'] as String? ?? "",
-  individuality:
-      (json['individuality'] as List<dynamic>?)
-          ?.map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
-          .toList() ??
-      const [],
+  individuality: json['individuality'] == null
+      ? const []
+      : const TraitListConverter().fromJson(json['individuality'] as Object),
   icon: json['icon'] as String,
   background: $enumDecodeNullable(_$ItemBGTypeEnumMap, json['background']) ?? ItemBGType.zero,
   value: (json['value'] as num?)?.toInt() ?? 0,
@@ -39,7 +37,7 @@ Map<String, dynamic> _$ItemToJson(Item instance) => <String, dynamic>{
   'type': _$ItemTypeEnumMap[instance.type]!,
   'uses': instance.uses.map((e) => _$ItemUseEnumMap[e]!).toList(),
   'detail': instance.detail,
-  'individuality': instance.individuality.map((e) => e.toJson()).toList(),
+  'individuality': const TraitListConverter().toJson(instance.individuality),
   'icon': instance.icon,
   'background': _$ItemBGTypeEnumMap[instance.background]!,
   'value': instance.value,

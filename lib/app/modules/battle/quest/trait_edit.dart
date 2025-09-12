@@ -7,8 +7,8 @@ import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 
 class TraitEditPage extends StatefulWidget {
-  final List<NiceTrait> traits;
-  final ValueChanged<List<NiceTrait>> onChanged;
+  final List<int> traits;
+  final ValueChanged<List<int>> onChanged;
 
   const TraitEditPage({super.key, required this.traits, required this.onChanged});
 
@@ -17,7 +17,7 @@ class TraitEditPage extends StatefulWidget {
 }
 
 class _TraitEditPageState extends State<TraitEditPage> {
-  late final traits = widget.traits.toList()..sort2((e) => e.id);
+  late final traits = widget.traits.toList()..sort2((e) => e.abs());
   bool hasEdit = false;
 
   @override
@@ -45,9 +45,9 @@ class _TraitEditPageState extends State<TraitEditPage> {
                         onSelected: (value) {
                           if (value != 0) {
                             hasEdit = true;
-                            traits.removeWhere((e) => e.id == value);
-                            traits.add(NiceTrait(id: value));
-                            traits.sort2((e) => e.id);
+                            traits.removeWhere((e) => e.abs() == value);
+                            traits.add(value);
+                            traits.sort2((e) => e.abs());
                           }
                           if (mounted) setState(() {});
                         },
@@ -77,8 +77,8 @@ class _TraitEditPageState extends State<TraitEditPage> {
     final trait = traits[index];
     return ListTile(
       dense: true,
-      title: Text(Transl.trait(trait.id).l),
-      subtitle: Text(trait.signedId.toString()),
+      title: Text(Transl.traitName(trait)),
+      subtitle: Text(trait.toString()),
       trailing: IconButton(
         onPressed: () {
           setState(() {

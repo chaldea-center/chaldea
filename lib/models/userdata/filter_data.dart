@@ -803,7 +803,7 @@ class EnemyFilterData with FilterDataMixin {
   final svtClass = FilterGroupData<SvtClass>();
   final attribute = FilterGroupData<ServantSubAttribute>();
   final svtType = FilterGroupData<SvtType>();
-  final trait = FilterGroupData<Trait>();
+  final trait = FilterGroupData<int>();
 
   EnemyFilterData({
     this.useGrid = false,

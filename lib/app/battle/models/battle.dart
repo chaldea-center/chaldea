@@ -385,7 +385,7 @@ class BattleData {
       final initEnemies = stage.enemies.where((e) => e.deck == DeckType.enemy).toList();
       for (final indiv in options.enemyRateUp.toList()..sort()) {
         for (final enemy in initEnemies) {
-          if (enemy.traits.any((e) => e.id == indiv)) {
+          if (enemy.traits.contains(indiv)) {
             final enemy2 = QuestEnemy.fromJson(enemy.toJson());
             enemy2.infoScript.source['isAddition'] = 1;
             enemy2.npcId = Maths.max(stage.enemies.map((e) => e.npcId)) + 1;
@@ -679,8 +679,8 @@ class BattleData {
     criticalStars = criticalStars.clamp(0, kValidTotalStarMax).toDouble();
   }
 
-  List<NiceTrait> getQuestIndividuality() {
-    final List<NiceTrait> allTraits = [];
+  List<int> getQuestIndividuality() {
+    final List<int> allTraits = [];
     allTraits.addAll(niceQuest!.questIndividuality);
 
     final List<int> removeTraitIds = [];
@@ -688,20 +688,20 @@ class BattleData {
       for (final buff in svt.battleBuff.validBuffs) {
         if (buff.buff.type == BuffType.fieldIndividuality &&
             buff.shouldActivateBuffNoProbabilityCheck(svt.getTraits())) {
-          allTraits.add(NiceTrait(id: buff.vals.Value ?? 0));
+          if ((buff.vals.Value ?? 0) != 0) allTraits.add(buff.vals.Value!);
         } else if (buff.buff.type == BuffType.subFieldIndividuality &&
             buff.shouldActivateBuffNoProbabilityCheck(svt.getTraits())) {
           removeTraitIds.addAll(buff.vals.TargetList!.map((traitId) => traitId));
         }
       }
     }
-    allTraits.removeWhere((trait) => removeTraitIds.contains(trait.id));
+    allTraits.removeWhere((trait) => removeTraitIds.contains(trait.abs()));
 
-    final List<NiceTrait> traitsOnField = [];
+    final List<int> traitsOnField = [];
     // final List<int> removeTraitIdsOnField = [];
     for (final buff in fieldBuffs) {
       if (buff.buff.type == BuffType.toFieldChangeField) {
-        traitsOnField.addAll((buff.vals.FieldIndividuality ?? []).map((e) => NiceTrait(id: e)));
+        traitsOnField.addAll(buff.vals.FieldIndividuality ?? []);
       } else if (buff.buff.type == BuffType.toFieldSubIndividualityField) {
         // TODO: ???
       }
@@ -1714,10 +1714,10 @@ class BattleData {
     if (curFunc != null && mounted) {
       final function = curFunc!;
       final fieldTraitString = function.funcquestTvals.isNotEmpty
-          ? ' - ${S.current.battle_require_field_traits} ${function.funcquestTvals.map((e) => e.shownName()).toList()}'
+          ? ' - ${S.current.battle_require_field_traits} ${function.funcquestTvals.map(Transl.traitName).toList()}'
           : '';
       final targetTraitString = function.functvals.isNotEmpty
-          ? ' - ${S.current.battle_require_opponent_traits} ${function.functvals.map((e) => e.shownName()).toList()}'
+          ? ' - ${S.current.battle_require_opponent_traits} ${function.functvals.map(Transl.traitName).toList()}'
           : '';
       funcString =
           '${function.lPopupText.l}'

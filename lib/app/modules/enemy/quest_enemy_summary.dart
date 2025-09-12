@@ -35,9 +35,9 @@ class QuestEnemySummaryPage extends StatelessWidget {
         npGainMods = _getValues((e) => e.serverMod.tdRate),
         defNpGainMods = _getValues((e) => e.serverMod.tdAttackRate),
         critStarMods = _getValues((e) => e.serverMod.starRate);
-    List<int> allTraits = {for (final enemy in enemies) ...enemy.traits.map((e) => e.signedId)}.toList()..sort(),
+    List<int> allTraits = {for (final enemy in enemies) ...enemy.traits}.toList()..sort(),
         staticTraits = allTraits
-            .where((e) => enemies.every((enemy) => enemy.traits.any((trait) => trait.signedId == e)))
+            .where((e) => enemies.every((enemy) => enemy.traits.any((trait) => trait == e)))
             .toList(),
         mutatingTraits = allTraits.where((e) => !staticTraits.contains(e)).toList();
 
@@ -142,16 +142,10 @@ class QuestEnemySummaryPage extends StatelessWidget {
                   Text.rich(
                     TextSpan(
                       children: [
-                        ...SharedBuilder.traitSpans(
-                          context: context,
-                          traits: staticTraits.map((e) => NiceTrait.signed(e)).toList(),
-                        ),
+                        ...SharedBuilder.traitSpans(context: context, traits: staticTraits),
                         if (mutatingTraits.isNotEmpty) ...[
                           TextSpan(text: '\n${S.current.general_special}*: '),
-                          ...SharedBuilder.traitSpans(
-                            context: context,
-                            traits: mutatingTraits.map((e) => NiceTrait.signed(e)).toList(),
-                          ),
+                          ...SharedBuilder.traitSpans(context: context, traits: mutatingTraits),
                         ],
                       ],
                     ),

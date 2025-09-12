@@ -111,11 +111,7 @@ Servant _$ServantFromJson(Map json) => Servant(
   extraAssets: json['extraAssets'] == null
       ? null
       : ExtraAssets.fromJson(Map<String, dynamic>.from(json['extraAssets'] as Map)),
-  traits:
-      (json['traits'] as List<dynamic>?)
-          ?.map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
-          .toList() ??
-      const [],
+  traits: json['traits'] == null ? const [] : const TraitListConverter().fromJson(json['traits'] as Object),
   criticalWeight: (json['starAbsorb'] as num?)?.toInt() ?? 0,
   starGen: (json['starGen'] as num?)?.toInt() ?? 0,
   instantDeathChance: (json['instantDeathChance'] as num?)?.toInt() ?? 0,
@@ -259,7 +255,7 @@ Map<String, dynamic> _$ServantToJson(Servant instance) => <String, dynamic>{
   'lvMax': instance.lvMax,
   'extraAssets': instance.extraAssets.toJson(),
   'gender': _$GenderEnumMap[instance.gender]!,
-  'traits': instance.traits.map((e) => e.toJson()).toList(),
+  'traits': const TraitListConverter().toJson(instance.traits),
   'starAbsorb': instance.criticalWeight,
   'starGen': instance.starGen,
   'instantDeathChance': instance.instantDeathChance,
@@ -520,11 +516,9 @@ Map<String, dynamic> _$ExtraAssetsToJson(ExtraAssets instance) => <String, dynam
 
 CardDetail _$CardDetailFromJson(Map json) => CardDetail(
   hitsDistribution: (json['hitsDistribution'] as List<dynamic>?)?.map((e) => (e as num).toInt()).toList() ?? const [],
-  attackIndividuality:
-      (json['attackIndividuality'] as List<dynamic>?)
-          ?.map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
-          .toList() ??
-      const [],
+  attackIndividuality: json['attackIndividuality'] == null
+      ? const []
+      : const TraitListConverter().fromJson(json['attackIndividuality'] as Object),
   attackType: $enumDecodeNullable(_$CommandCardAttackTypeEnumMap, json['attackType']) ?? CommandCardAttackType.one,
   damageRate: (json['damageRate'] as num?)?.toInt(),
   attackNpRate: (json['attackNpRate'] as num?)?.toInt(),
@@ -543,7 +537,7 @@ CardDetail _$CardDetailFromJson(Map json) => CardDetail(
 
 Map<String, dynamic> _$CardDetailToJson(CardDetail instance) => <String, dynamic>{
   'hitsDistribution': instance.hitsDistribution,
-  'attackIndividuality': instance.attackIndividuality.map((e) => e.toJson()).toList(),
+  'attackIndividuality': const TraitListConverter().toJson(instance.attackIndividuality),
   'attackType': _$CommandCardAttackTypeEnumMap[instance.attackType]!,
   'damageRate': instance.damageRate,
   'attackNpRate': instance.attackNpRate,
@@ -838,9 +832,7 @@ Map<String, dynamic> _$ServantCoinToJson(ServantCoin instance) => <String, dynam
 
 ServantTrait _$ServantTraitFromJson(Map json) => ServantTrait(
   idx: (json['idx'] as num).toInt(),
-  trait:
-      (json['trait'] as List<dynamic>?)?.map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map))).toList() ??
-      const [],
+  trait: json['trait'] == null ? const [] : const TraitListConverter().fromJson(json['trait'] as Object),
   limitCount: (json['limitCount'] as num?)?.toInt() ?? -1,
   condType: json['condType'] == null ? CondType.none : const CondTypeConverter().fromJson(json['condType'] as String),
   condId: (json['condId'] as num?)?.toInt() ?? 0,
@@ -852,7 +844,7 @@ ServantTrait _$ServantTraitFromJson(Map json) => ServantTrait(
 
 Map<String, dynamic> _$ServantTraitToJson(ServantTrait instance) => <String, dynamic>{
   'idx': instance.idx,
-  'trait': instance.trait.map((e) => e.toJson()).toList(),
+  'trait': const TraitListConverter().toJson(instance.trait),
   'limitCount': instance.limitCount,
   'condType': const CondTypeConverter().toJson(instance.condType),
   'condId': instance.condId,

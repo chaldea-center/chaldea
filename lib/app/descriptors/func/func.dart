@@ -75,7 +75,7 @@ mixin FuncsDescriptor {
       return true;
     }).toList();
     List<Widget> children = [];
-    final actIndiv = (showActIndiv && owner is BaseSkill) ? owner.actIndividuality : <NiceTrait>[];
+    final actIndiv = (showActIndiv && owner is BaseSkill) ? owner.actIndividuality : <int>[];
     if (script?.isNotEmpty == true || actIndiv.isNotEmpty) {
       children.add(SkillScriptDescriptor(script: script, actIndividuality: actIndiv, region: region));
     }
@@ -239,7 +239,7 @@ class _DescriptorWrapper extends StatelessWidget {
 
 class SkillScriptDescriptor extends StatelessWidget {
   final SkillScript? script;
-  final List<NiceTrait> actIndividuality;
+  final List<int> actIndividuality;
   final Region? region;
 
   const SkillScriptDescriptor({
@@ -254,7 +254,7 @@ class SkillScriptDescriptor extends StatelessWidget {
     List<Widget> children = [];
 
     if (actIndividuality.isNotEmpty) {
-      final isSvt = actIndividuality.any((indiv) => db.gameData.servantsById.containsKey(indiv.id));
+      final isSvt = actIndividuality.any((indiv) => db.gameData.servantsById.containsKey(indiv.abs()));
       children.add(
         _pad(
           _DescriptorWrapper(
@@ -266,15 +266,15 @@ class SkillScriptDescriptor extends StatelessWidget {
                     '{0}',
                     divideList(
                       actIndividuality.map((indiv) {
-                        final svt = db.gameData.servantsById[indiv.id];
-                        String name = indiv.shownName(addSvtId: false);
+                        final svt = db.gameData.servantsById[indiv.abs()];
+                        String name = Transl.traitName(indiv, addSvtId: false);
                         if (svt != null) {
                           name += '(${Transl.svtClassId(svt.classId).l})';
                         }
                         return SharedBuilder.textButtonSpan(
                           context: context,
                           text: name,
-                          onTap: svt?.routeTo ?? indiv.routeTo,
+                          onTap: svt?.routeTo ?? () => router.push(url: Routes.traitI(indiv)),
                         );
                       }).toList(),
                       const TextSpan(text: '/'),
@@ -506,7 +506,7 @@ class SkillScriptDescriptor extends StatelessWidget {
           ),
           BattleBranchSkillCondBranchType.individuality => TextSpan(
             text: '${transl(branch.condType.name).l}: ',
-            children: SharedBuilder.traitSpans(context: context, traits: NiceTrait.list(branch.condValue)),
+            children: SharedBuilder.traitSpans(context: context, traits: branch.condValue),
           ),
         };
         children.add(
@@ -828,9 +828,7 @@ class FuncDescriptor extends StatelessWidget {
       FuncType.eventPointRateUp,
     ].contains(func.funcType)) {
       int? indiv = func.svals.getOrNull(0)?.Individuality;
-      final items = db.gameData.items.values
-          .where((item) => item.individuality.any((trait) => trait.id == indiv))
-          .toList();
+      final items = db.gameData.items.values.where((item) => item.individuality.contains(indiv)).toList();
       if (items.isEmpty) {
         spans.add(TextSpan(text: '$indiv  '));
       }
@@ -914,12 +912,12 @@ class FuncDescriptor extends StatelessWidget {
       final text = funcText.toString();
       final style = func.isEnemyOnlyFunc ? const TextStyle(fontStyle: FontStyle.italic) : null;
 
-      InlineSpan _replaceTrait(int trait, {NiceTrait? guessTrait}) {
+      InlineSpan _replaceTrait(int trait, {int? guessTrait}) {
         return TextSpan(
           children: SharedBuilder.replaceSpan(text, '{0}', [
             SharedBuilder.traitSpan(
               context: context,
-              trait: NiceTrait(id: trait),
+              trait: trait,
               style: guessTrait == null ? null : const TextStyle(decoration: TextDecoration.lineThrough),
             ),
             if (guessTrait != null) ...[
@@ -937,11 +935,7 @@ class FuncDescriptor extends StatelessWidget {
           children: SharedBuilder.replaceSpan(
             text,
             '{0}',
-            SharedBuilder.traitSpans(
-              context: context,
-              traits: traits.map((e) => NiceTrait(id: e)).toList(),
-              useAndJoin: useAndJoin,
-            ),
+            SharedBuilder.traitSpans(context: context, traits: traits, useAndJoin: useAndJoin),
           ),
           style: style,
         );
@@ -968,11 +962,7 @@ class FuncDescriptor extends StatelessWidget {
                   divideList([
                     for (final traits in andOrCheckIndivs)
                       TextSpan(
-                        children: SharedBuilder.traitSpans(
-                          context: context,
-                          traits: NiceTrait.list(traits),
-                          useAndJoin: true,
-                        ),
+                        children: SharedBuilder.traitSpans(context: context, traits: traits, useAndJoin: true),
                       ),
                   ], const TextSpan(text: '  /  ')),
                 ),
@@ -992,7 +982,7 @@ class FuncDescriptor extends StatelessWidget {
                   TextSpan(
                     children: SharedBuilder.traitSpans(
                       context: context,
-                      traits: [for (int indiv in vals?.TargetList ?? []) NiceTrait(id: indiv)],
+                      traits: [for (int indiv in vals?.TargetList ?? []) indiv],
                     ),
                     style: style,
                   ),
@@ -1046,21 +1036,21 @@ class FuncDescriptor extends StatelessWidget {
           case BuffType.fieldIndividuality:
             int? indiv = vals?.Value;
             if (indiv != null) {
-              NiceTrait? guessTrait;
+              int? guessTrait;
               if (indiv == 0 || indiv == 9999) {
                 bool _isGuessTrait(int v) =>
                     (v >= 2000 && v < 3000) || (v >= 3050 && v < 4000) || (v >= 6000 && v < 7000);
-                final guessTraits = buff.vals.where((e) => _isGuessTrait(e.signedId)).toList();
+                final guessTraits = buff.vals.where((e) => _isGuessTrait(e)).toList();
                 if (guessTraits.length == 1) guessTrait = guessTraits.first;
                 for (final v in vals?.getAddIndividuality() ?? <int>[]) {
                   if (guessTrait == null && _isGuessTrait(v)) {
-                    guessTrait = NiceTrait(id: v);
+                    guessTrait = v;
                     break;
                   }
                 }
                 // directly show guessTrait for known ones
                 if (guessTrait != null && (const [5359, 5546, 5512, 5586, 5561].contains(buff.id))) {
-                  indiv = guessTrait.signedId;
+                  indiv = guessTrait;
                   guessTrait = null;
                 }
               }
@@ -1078,11 +1068,7 @@ class FuncDescriptor extends StatelessWidget {
                     text,
                     '{0}',
                     divideList([
-                      for (final indiv in indivs)
-                        SharedBuilder.traitSpan(
-                          context: context,
-                          trait: NiceTrait(id: indiv),
-                        ),
+                      for (final indiv in indivs) SharedBuilder.traitSpan(context: context, trait: indiv),
                     ], const TextSpan(text: ' / ')),
                   ),
                   style: style,
@@ -1259,7 +1245,7 @@ class FuncDescriptor extends StatelessWidget {
           SharedBuilder.replaceSpan(
             Transl.special.funcTraitPerBuff(target: targetText),
             '{0}',
-            SharedBuilder.traitSpans(context: context, traits: NiceTrait.list(traitIds)),
+            SharedBuilder.traitSpans(context: context, traits: traitIds),
           ),
         );
       } else if (andCheckTraitIds != null && andCheckTraitIds.isNotEmpty) {
@@ -1267,7 +1253,7 @@ class FuncDescriptor extends StatelessWidget {
           SharedBuilder.replaceSpan(
             Transl.special.funcTraitPerBuff(target: targetText),
             '{0}',
-            SharedBuilder.traitsListSpans(context: context, traitsList: andCheckTraitIds.map(NiceTrait.list).toList()),
+            SharedBuilder.traitsListSpans(context: context, traitsList: andCheckTraitIds),
           ),
         );
       }
@@ -1314,10 +1300,17 @@ class FuncDescriptor extends StatelessWidget {
       );
     }
 
-    void _addTraits(String? prefix, List<NiceTrait> traits, {bool useAnd = false}) {
+    void _addTraits(String? prefix, List<int> traits, {bool useAnd = false}) {
       if ([BuffType.upCommandall, BuffType.downCommandall].contains(buff?.type)) {
         traits = traits
-            .where((e) => ![Trait.cardQuick, Trait.cardArts, Trait.cardBuster, Trait.cardExtra].contains(e.name))
+            .where(
+              (e) => ![
+                Trait.cardQuick.value,
+                Trait.cardArts.value,
+                Trait.cardBuster.value,
+                Trait.cardExtra.value,
+              ].contains(e),
+            )
             .toList();
       }
       if (traits.isEmpty) return;
@@ -1348,7 +1341,7 @@ class FuncDescriptor extends StatelessWidget {
           ], const TextSpan(text: '  /  ')),
           const TextSpan(text: ' '), // not let recognizer extends its width
         ]);
-      } else if (func.traitVals.map((e) => e.id).join(',') != func.functvals.map((e) => e.id).join(',')) {
+      } else if (func.traitVals.join(',') != func.functvals.join(',')) {
         final targetTypeInt = vals?.FuncCheckTargetIndividualityTargetType;
         final targetType = FuncTargetType.values.firstWhereOrNull((e) => e.value == targetTypeInt);
         String text = Transl.special.funcTargetVals;
@@ -1368,21 +1361,18 @@ class FuncDescriptor extends StatelessWidget {
       FuncType.shortenBuffcount,
       FuncType.shortenBuffturn,
     ].contains(func.funcType)) {
-      _addTraits(Transl.special.funcTargetVals, vals?.TargetList?.map((e) => NiceTrait(id: e)).toList() ?? []);
+      _addTraits(Transl.special.funcTargetVals, vals?.TargetList ?? []);
     }
     if (vals?.TargetFunctionIndividuality?.isNotEmpty == true) {
-      _addTraits('(func)${Transl.special.funcTargetVals}', NiceTrait.list(vals!.TargetFunctionIndividuality!));
+      _addTraits('(func)${Transl.special.funcTargetVals}', vals!.TargetFunctionIndividuality!);
     }
     if (vals?.TargetBuffIndividuality?.isNotEmpty == true) {
-      _addTraits('(buff)${Transl.special.funcTargetVals}', NiceTrait.list(vals!.TargetBuffIndividuality!));
+      _addTraits('(buff)${Transl.special.funcTargetVals}', vals!.TargetBuffIndividuality!);
     }
     if (vals?.ApplyBuffIndividuality?.isNotEmpty == true) {
       _condSpans.add([
         TextSpan(text: '(Buff)${Transl.special.funcTargetVals}'),
-        ...SharedBuilder.traitsListSpans(
-          context: context,
-          traitsList: vals!.ApplyBuffIndividuality!.map(NiceTrait.list).toList(),
-        ),
+        ...SharedBuilder.traitsListSpans(context: context, traitsList: vals!.ApplyBuffIndividuality!),
         const TextSpan(text: ' '),
       ]);
     }
@@ -1390,10 +1380,7 @@ class FuncDescriptor extends StatelessWidget {
     if (buff != null) {
       _addTraits(Transl.special.buffCheckSelf, buff.ckSelfIndv, useAnd: buff.script.checkIndvTypeAnd == true);
       if (buff.type == BuffType.upToleranceSubstate &&
-          buff.ckOpIndv
-              .map((e) => e.signedId)
-              .toSet()
-              .equalTo(NiceTrait.upToleranceSubstateBuffTraits.map((e) => e.value).toSet())) {
+          buff.ckOpIndv.toSet().equalTo(Trait.upToleranceSubstateBuffTraits.map((e) => e.value).toSet())) {
         _condSpans.add([
           TextSpan(text: Transl.special.buffCheckOpposite),
           SharedBuilder.textButtonSpan(context: context, text: Transl.special.variousPositiveBuffs),
@@ -1407,7 +1394,7 @@ class FuncDescriptor extends StatelessWidget {
         _addTraits('Target Indiv: ', [script.TargetIndiv!]);
       }
 
-      List<NiceTrait> ownerIndivs = [];
+      List<int> ownerIndivs = [];
       bool ownerIndivAnd = false;
       if (buff.script.INDIVIDUALITIE != null) {
         ownerIndivs.add(buff.script.INDIVIDUALITIE!);
@@ -1426,7 +1413,7 @@ class FuncDescriptor extends StatelessWidget {
         }
         if ((buff.type == BuffType.guts || buff.type == BuffType.gutsRatio) &&
             ownerIndivs.length == 1 &&
-            ownerIndivs.first.signedId == -3086 &&
+            ownerIndivs.first == -3086 &&
             countCond == null) {
           // don't show gutsBlock
         } else {
@@ -1451,7 +1438,7 @@ class FuncDescriptor extends StatelessWidget {
         _condSpans.add([
           TextSpan(text: target),
           ...SharedBuilder.replaceSpan(Transl.special.buffOwnerIndiv, '{0}', [
-            ...SharedBuilder.traitSpans(context: context, traits: NiceTrait.list(ckCountIndiv), useAndJoin: false),
+            ...SharedBuilder.traitSpans(context: context, traits: ckCountIndiv, useAndJoin: false),
             if (buff.script.ckIndvCountBelow != null) TextSpan(text: '≤${buff.script.ckIndvCountBelow}'),
             if (buff.script.ckIndvCountAbove != null) TextSpan(text: '≥${buff.script.ckIndvCountAbove}'),
           ]),
@@ -1544,7 +1531,7 @@ class FuncDescriptor extends StatelessWidget {
     }
 
     if (func.funcquestTvals.isNotEmpty) {
-      if (showEvent || func.funcquestTvals.any((e) => !db.gameData.mappingData.fieldTrait.containsKey(e.id))) {
+      if (showEvent || func.funcquestTvals.any((e) => !db.gameData.mappingData.fieldTrait.containsKey(e.abs()))) {
         _condSpans.add(
           SharedBuilder.replaceSpan(
             Transl.special.funcTraitOnField,
@@ -1552,7 +1539,7 @@ class FuncDescriptor extends StatelessWidget {
             SharedBuilder.traitSpans(
               context: context,
               traits: func.funcquestTvals,
-              format: (v) => v.shownName(field: true),
+              format: (v) => Transl.traitName(v, field: true),
             ),
           ),
         );
@@ -1699,8 +1686,8 @@ class FuncDescriptor extends StatelessWidget {
 
   // ignore: unused_element
   Map<String, dynamic> _getFuncJson() {
-    List<String> _traitList(List<NiceTrait> traits) {
-      return traits.map((e) => e.shownName()).toList();
+    List<String> _traitList(List<int> traits) {
+      return traits.map(Transl.traitName).toList();
     }
 
     final buff = func.buff;
@@ -1734,7 +1721,7 @@ class FuncDescriptor extends StatelessWidget {
           if (script.relationId != null) "relationId": "!BuffRelationOverwrite!",
           if (script.ReleaseText != null) "ReleaseText": script.ReleaseText,
           if (script.DamageRelease != null) "DamageRelease": script.DamageRelease,
-          if (script.INDIVIDUALITIE != null) "INDIVIDUALITIE": script.INDIVIDUALITIE?.shownName(),
+          if (script.INDIVIDUALITIE != null) "INDIVIDUALITIE": Transl.traitName(script.INDIVIDUALITIE!),
           if (script.UpBuffRateBuffIndiv != null) "UpBuffRateBuffIndiv": _traitList(script.UpBuffRateBuffIndiv!),
           if (script.HP_LOWER != null) "HP_LOWER": script.HP_LOWER,
         },

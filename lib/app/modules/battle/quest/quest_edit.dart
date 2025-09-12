@@ -183,14 +183,14 @@ class _QuestEditPageState extends State<QuestEditPage> {
           onChanged: (v) {
             setState(() {
               quest.warId = v ?? 0;
-              quest.individuality.removeWhere((e) => e.isEventField);
-              quest.phaseIndividuality?.removeWhere((e) => e.isEventField);
+              quest.individuality.removeWhere(Trait.isEventField);
+              quest.phaseIndividuality?.removeWhere(Trait.isEventField);
               if (quest.warId < 1000) return; // main story only have bond related bonus?
 
-              final addFieldTraits = <NiceTrait>[];
+              final addFieldTraits = <int>[];
               for (final entry in db.gameData.mappingData.fieldTrait.entries) {
                 if (entry.value.warIds.contains(quest.warId)) {
-                  addFieldTraits.add(NiceTrait(id: entry.key));
+                  addFieldTraits.add(entry.key);
                 }
               }
               quest.individuality = {...quest.individuality, ...addFieldTraits}.toList();

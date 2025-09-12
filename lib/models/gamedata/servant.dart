@@ -161,7 +161,8 @@ class Servant extends BasicServant {
   int lvMax; // Mash is at Lv70
   ExtraAssets extraAssets;
   Gender gender;
-  List<NiceTrait> traits;
+  @TraitListConverter()
+  List<int> traits;
   @JsonKey(name: 'starAbsorb')
   int criticalWeight; // mstSvtLimit.criticalWeight
   int starGen; // mstSvt.starRate
@@ -394,11 +395,13 @@ class Servant extends BasicServant {
       name = 'スーパー青子';
     }
 
-    List<NiceTrait> _applyAttributeChange(List<NiceTrait> indivs, ServantSubAttribute? attribute) {
-      List<NiceTrait> resolvedTraits = indivs.isEmpty ? traits : indivs;
+    List<int> _applyAttributeChange(List<NiceTrait> indivs, ServantSubAttribute? attribute) {
+      List<int> resolvedTraits = indivs.isEmpty ? traits : indivs.map((e) => e.signedId).toList();
       final targetTrait = attribute?.trait?.value;
-      if (targetTrait == null || resolvedTraits.any((e) => e.id == targetTrait)) return indivs;
-      return resolvedTraits.where((e) => !Trait.isSvtSubAttribute(e.id)).toList()..add(NiceTrait(id: targetTrait));
+      if (targetTrait == null || resolvedTraits.any((e) => e == targetTrait)) {
+        return indivs.map((e) => e.signedId).toList();
+      }
+      return resolvedTraits.where((e) => !Trait.isSvtSubAttribute(e)).toList()..add(targetTrait);
     }
 
     ascensionAdd.individuality2 = AscensionAddEntry(
@@ -683,7 +686,7 @@ class Servant extends BasicServant {
 
   Set<int> get traitsAll {
     if (_traitsAll != null) return _traitsAll!;
-    List<NiceTrait> _traits = [];
+    List<int> _traits = [];
     _traits.addAll(traits);
     for (var v in ascensionAdd.individuality2.all.values) {
       _traits.addAll(v);
@@ -691,14 +694,14 @@ class Servant extends BasicServant {
     for (final t in traitAdd) {
       _traits.addAll(t.trait);
     }
-    return _traitsAll = _traits.map((e) => e.id).toSet();
+    return _traitsAll = _traits.toSet();
   }
 
   Set<int>? _traitsAll;
 
-  List<NiceTrait> getIndividuality(int? eventId, int limitCount) {
+  List<int> getIndividuality(int? eventId, int limitCount) {
     eventId ??= 0;
-    List<NiceTrait> indivs = getAscended(limitCount, (v) => v.individuality2) ?? traits;
+    List<int> indivs = getAscended(limitCount, (v) => v.individuality2) ?? traits;
     for (final add in traitAdd) {
       if (add.eventId != 0 && eventId != add.eventId) continue;
       if (add.limitCount != -1) {
@@ -1081,7 +1084,8 @@ class ExtraAssets extends ExtraCCAssets {
 @JsonSerializable()
 class CardDetail {
   List<int> hitsDistribution;
-  List<NiceTrait> attackIndividuality;
+  @TraitListConverter()
+  List<int> attackIndividuality;
   CommandCardAttackType attackType;
   int? damageRate;
   int? attackNpRate;
@@ -1239,7 +1243,7 @@ class AscensionAdd {
   AscensionAddEntry<List<NiceTrait>> individuality;
   // apply attribute change
   @JsonKey(includeFromJson: false, includeToJson: false)
-  AscensionAddEntry<List<NiceTrait>> individuality2;
+  AscensionAddEntry<List<int>> individuality2;
   AscensionAddEntry<int> voicePrefix;
   AscensionAddEntry<String> overWriteServantName;
   AscensionAddEntry<String> overWriteServantBattleName;
@@ -1289,7 +1293,10 @@ class AscensionAdd {
     this.faceChange = const AscensionAddEntry(),
     this.charaGraphChangeCommonRelease = const AscensionAddEntry(),
     this.faceChangeCommonRelease = const AscensionAddEntry(),
-  }) : individuality2 = individuality;
+  }) : individuality2 = AscensionAddEntry(
+         ascension: individuality.ascension.map((k, v) => MapEntry(k, v.toIntList())),
+         costume: individuality.costume.map((k, v) => MapEntry(k, v.toIntList())),
+       );
 
   factory AscensionAdd.fromJson(Map<String, dynamic> json) => _$AscensionAddFromJson(json);
 
@@ -1394,7 +1401,8 @@ class ServantCoin {
 @JsonSerializable()
 class ServantTrait {
   int idx;
-  List<NiceTrait> trait;
+  @TraitListConverter()
+  List<int> trait;
   int limitCount; // -1: all, 0-4, Murasama event skill 940296
   @CondTypeConverter()
   CondType condType;

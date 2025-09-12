@@ -171,10 +171,10 @@ class FunctionExecutor {
         return false;
       default:
         final fieldTraitString = function.funcquestTvals.isNotEmpty
-            ? ' - ${S.current.battle_require_field_traits} ${function.funcquestTvals.map((e) => e.shownName())}'
+            ? ' - ${S.current.battle_require_field_traits} ${function.funcquestTvals.map(Transl.traitName)}'
             : '';
         final targetTraitString = function.functvals.isNotEmpty
-            ? ' - ${S.current.battle_require_opponent_traits} ${function.functvals.map((e) => e.shownName())}'
+            ? ' - ${S.current.battle_require_opponent_traits} ${function.functvals.map(Transl.traitName)}'
             : '';
         battleData.battleLogger.function(
           '${activator?.lBattleName ?? S.current.battle_no_source} - '
@@ -752,7 +752,7 @@ class FunctionExecutor {
               targetIndiv == null ||
               checkSignedIndividualities2(
                 myTraits: svt.getTraits(addTraits: svt.getBuffTraits(includeIgnoreIndiv: includeIgnoredIndiv)),
-                requiredTraits: [NiceTrait(id: targetIndiv)],
+                requiredTraits: [targetIndiv],
               );
           return svt != activator && targetIndivCheck;
         });
@@ -768,7 +768,7 @@ class FunctionExecutor {
               targetIndiv == null ||
               checkSignedIndividualities2(
                 myTraits: svt.getTraits(addTraits: svt.getBuffTraits(includeIgnoreIndiv: includeIgnoredIndiv)),
-                requiredTraits: [NiceTrait(id: targetIndiv)],
+                requiredTraits: [targetIndiv],
               );
           return svt != activator && targetIndivCheck;
         });
@@ -959,11 +959,9 @@ class FunctionExecutor {
     final List<int> selfTraits = [];
     for (final svt in traitTargets) {
       selfTraits.addAll(
-        svt
-            .getTraits(
-              addTraits: svt.getBuffTraits(activeOnly: activeOnly, includeIgnoreIndiv: includeIgnoreIndividuality),
-            )
-            .toIntList(),
+        svt.getTraits(
+          addTraits: svt.getBuffTraits(activeOnly: activeOnly, includeIgnoreIndiv: includeIgnoreIndividuality),
+        ),
       );
     }
     int countAbove = 0, countBelow = 0;
@@ -976,7 +974,7 @@ class FunctionExecutor {
     } else {
       return Individuality.checkSignedIndividualities2(
         self: selfTraits,
-        signedTarget: function.functvals.toIntList(),
+        signedTarget: function.functvals,
         matchedFunc: Individuality.isMatchArray,
         mismatchFunc: Individuality.isMatchArray,
       );
@@ -984,7 +982,7 @@ class FunctionExecutor {
 
     return Individuality.checkSignedIndividualitiesCount(
       selfs: selfTraits,
-      targets: function.functvals.toIntList(),
+      targets: function.functvals,
       matchedFunc: Individuality.isMatchArrayCount,
       mismatchFunc: Individuality.isMatchArrayCount,
       countAbove: countAbove,
@@ -1002,17 +1000,17 @@ class FunctionExecutor {
     final checkDead = dataVals.CheckDead != null && dataVals.CheckDead! > 0;
     targets.retainWhere((svt) => svt.isAlive(battleData, function: function) || checkDead);
 
-    final List<List<NiceTrait>> overwriteTvals = function.getOverwriteTvalsList();
+    final List<List<int>> overwriteTvals = function.getOverwriteTvalsList();
     final activeOnly = dataVals.IncludePassiveIndividuality != 1;
     final includeIgnoreIndividuality = dataVals.IncludeIgnoreIndividuality == 1;
 
     // update base on traits
     if (overwriteTvals.isNotEmpty) {
       targets.retainWhere((svt) {
-        final List<NiceTrait> selfTraits = svt.getTraits(
+        final List<int> selfTraits = svt.getTraits(
           addTraits: svt.getBuffTraits(activeOnly: activeOnly, includeIgnoreIndiv: includeIgnoreIndividuality),
         );
-        for (final List<NiceTrait> requiredTraits in overwriteTvals) {
+        for (final List<int> requiredTraits in overwriteTvals) {
           // Currently assuming the first array is OR. Need more samples on this
           final checkTrait = checkSignedIndividualities2(
             myTraits: selfTraits,

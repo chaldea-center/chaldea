@@ -599,11 +599,9 @@ EventMissionConditionDetail _$EventMissionConditionDetailFromJson(Map json) => E
   logicType: (json['logicType'] as num?)?.toInt() ?? 1,
   targetIds: (json['targetIds'] as List<dynamic>?)?.map((e) => (e as num).toInt()).toList() ?? const [],
   addTargetIds: (json['addTargetIds'] as List<dynamic>?)?.map((e) => (e as num).toInt()).toList() ?? const [],
-  targetQuestIndividualities:
-      (json['targetQuestIndividualities'] as List<dynamic>?)
-          ?.map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
-          .toList() ??
-      const [],
+  targetQuestIndividualities: json['targetQuestIndividualities'] == null
+      ? const []
+      : const TraitListConverter().fromJson(json['targetQuestIndividualities'] as Object),
   conditionLinkType:
       $enumDecodeNullable(_$DetailMissionCondLinkTypeEnumMap, json['conditionLinkType']) ??
       DetailMissionCondLinkType.missionStart,
@@ -617,7 +615,7 @@ Map<String, dynamic> _$EventMissionConditionDetailToJson(EventMissionConditionDe
   'logicType': instance.logicType,
   'targetIds': instance.targetIds,
   'addTargetIds': instance.addTargetIds,
-  'targetQuestIndividualities': instance.targetQuestIndividualities.map((e) => e.toJson()).toList(),
+  'targetQuestIndividualities': const TraitListConverter().toJson(instance.targetQuestIndividualities),
   'conditionLinkType': _$DetailMissionCondLinkTypeEnumMap[instance.conditionLinkType]!,
   'targetEventIds': instance.targetEventIds,
 };

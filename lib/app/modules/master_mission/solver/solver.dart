@@ -91,8 +91,8 @@ class MissionSolver extends BaseLPSolver {
           if (quest.warId == 310 &&
               options != null &&
               options.addNotBasedOnSvtForTraum & MissionSolverOptions.kTraumClassEnemyIds.contains(enemy.svt.id)) {
-            if (enemyTraits.every((e) => e.id != Trait.notBasedOnServant.value)) {
-              enemyTraits.add(NiceTrait(id: Trait.notBasedOnServant.value));
+            if (enemyTraits.every((e) => e != Trait.notBasedOnServant.value)) {
+              enemyTraits.add(Trait.notBasedOnServant.value);
             }
           }
           switch (cond.type) {
@@ -108,11 +108,10 @@ class MissionSolver extends BaseLPSolver {
               return cond.targetIds.contains(enemy.svt.classId);
             case CustomMissionType.servantClass:
               assert(!cond.useAnd);
-              return enemyTraits.any((t) => t.name == Trait.servant) && cond.targetIds.contains(enemy.svt.classId);
+              return enemyTraits.contains(Trait.servant.value) && cond.targetIds.contains(enemy.svt.classId);
             case CustomMissionType.enemyNotServantClass:
               assert(!cond.useAnd);
-              return enemyTraits.any((t) => t.name == Trait.notBasedOnServant) &&
-                  cond.targetIds.contains(enemy.svt.classId);
+              return enemyTraits.contains(Trait.notBasedOnServant.value) && cond.targetIds.contains(enemy.svt.classId);
             default:
               return false;
           }

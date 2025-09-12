@@ -312,19 +312,19 @@ class SharedBuilder {
 
   static Widget trait({
     required BuildContext context,
-    required NiceTrait trait,
+    required int trait,
     TextStyle? style,
     double? textScaleFactor,
-    String Function(NiceTrait trait)? format,
+    String Function(int trait)? format,
   }) {
     return InkWell(
       onTap: () {
-        router.push(url: Routes.traitI(trait.id));
+        router.push(url: Routes.traitI(trait));
       },
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 3, vertical: 2),
         child: Text(
-          format?.call(trait) ?? trait.shownName(),
+          format?.call(trait) ?? Transl.traitName(trait),
           style: style ?? TextStyle(color: AppTheme(context).tertiary),
           textScaler: textScaleFactor == null ? null : TextScaler.linear(textScaleFactor),
         ),
@@ -334,28 +334,28 @@ class SharedBuilder {
 
   static InlineSpan traitSpan({
     required BuildContext context,
-    required NiceTrait trait,
+    required int trait,
     TextStyle? style,
-    String Function(NiceTrait trait)? format,
+    String Function(int trait)? format,
   }) {
     return textButtonSpan(
       context: context,
-      text: format?.call(trait) ?? trait.shownName(),
+      text: format?.call(trait) ?? Transl.traitName(trait),
       style: style ?? TextStyle(color: AppTheme(context).tertiary),
       onTap: () {
-        router.push(url: Routes.traitI(trait.id));
+        router.push(url: Routes.traitI(trait.abs()));
       },
     );
   }
 
   static Widget traitList({
     required BuildContext context,
-    required List<NiceTrait> traits,
+    required List<int> traits,
     bool useAndJoin = false,
     TextStyle? style,
     double? textScaleFactor,
     TextAlign? textAlign,
-    String Function(NiceTrait trait)? format,
+    String Function(int trait)? format,
   }) {
     return Text.rich(
       TextSpan(
@@ -369,9 +369,9 @@ class SharedBuilder {
 
   static List<InlineSpan> traitsListSpans({
     required BuildContext context,
-    required List<List<NiceTrait>> traitsList,
+    required List<List<int>> traitsList,
     TextStyle? style,
-    String Function(NiceTrait trait)? format,
+    String Function(int trait)? format,
   }) {
     List<InlineSpan> children = divideList(
       traitsList.map((traits) {
@@ -394,12 +394,12 @@ class SharedBuilder {
 
   static List<InlineSpan> traitSpans({
     required BuildContext context,
-    required List<NiceTrait> traits,
+    required List<int> traits,
     bool useAndJoin = false,
     TextStyle? style,
-    String Function(NiceTrait trait)? format,
+    String Function(int trait)? format,
   }) {
-    List<InlineSpan> _list(List<NiceTrait> values, bool _useAndJoin) {
+    List<InlineSpan> _list(List<int> values, bool _useAndJoin) {
       return divideList(
         values.map((e) => traitSpan(context: context, trait: e, style: style, format: format)),
         TextSpan(
@@ -410,8 +410,7 @@ class SharedBuilder {
     }
 
     if (!useAndJoin) {
-      final unsignedArray = traits.where((e) => !e.negative).map((e) => NiceTrait(id: e.id)).toList(),
-          signedArray = traits.where((e) => e.negative).map((e) => NiceTrait(id: e.id)).toList();
+      final unsignedArray = traits.where((e) => e >= 0).toList(), signedArray = traits.where((e) => e < 0).toList();
       if (signedArray.isEmpty && unsignedArray.isEmpty) return [];
       if (unsignedArray.isEmpty) {
         if (signedArray.isEmpty) {

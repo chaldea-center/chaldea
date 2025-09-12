@@ -10,7 +10,7 @@ class SubState {
 
   static Future<void> subState(
     final BattleData battleData,
-    final List<NiceTrait> affectTraits,
+    final List<int> affectTraits,
     final DataVals dataVals,
     final BattleServantData? activator,
     final List<BattleServantData> targets,
@@ -65,7 +65,7 @@ class SubState {
   static Future<bool> shouldSubState(
     final BattleData battleData,
     final BuffData buff,
-    final List<NiceTrait> affectTraits,
+    final List<int> affectTraits,
     final DataVals dataVals,
     final BattleServantData? activator,
     final BattleServantData target,

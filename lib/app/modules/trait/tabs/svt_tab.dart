@@ -140,14 +140,14 @@ class _TraitServantTabState extends State<TraitServantTab> {
     );
   }
 
-  List<String> _addComment(List<NiceTrait> traits, int id, String comment) {
+  List<String> _addComment(List<int> traits, int id, String comment) {
     List<String> comments = [];
-    traits = traits.where((e) => e.id == id).toList();
+    traits = traits.where((e) => e.abs() == id).toList();
     if (traits.isEmpty) return [];
-    if (traits.any((e) => e.negative)) {
+    if (traits.any((e) => e < 0)) {
       comments.add('$comment(NOT)');
     }
-    if (traits.any((e) => !e.negative)) {
+    if (traits.any((e) => e >= 0)) {
       comments.add(comment);
     }
     return comments;

@@ -1,11 +1,11 @@
 import 'package:flutter/foundation.dart' show protected;
 
+import 'package:chaldea/utils/basic.dart' show Maths;
 import 'package:chaldea/utils/extension.dart';
-import 'common.dart';
 
 abstract class Individuality {
-  static bool containsAllAB(List<NiceTrait> selfs, List<int> targets, {bool signed = true}) {
-    return selfs.map((e) => signed ? e.signedId : e.id).toSet().containSubset(targets.toSet());
+  static bool containsAllAB(List<int> selfs, List<int> targets, {bool signed = true}) {
+    return selfs.toSet().containSubset(targets.toSet());
   }
 
   static bool checkSignedIndividualities({required List<int>? self, required List<int>? signedTarget}) {
@@ -359,6 +359,7 @@ abstract class Individuality {
     return !mismatchFunc(selfs, signedArray);
   }
 
+  // be careful, use isMatchArray
   static bool checkSignedMultiIndividuality({
     required List<int>? selfArray,
     required List<List<int>>? signedTargetsArray,
@@ -441,6 +442,11 @@ abstract class Individuality {
     }
     if (count <= below) return true;
     return count == equal;
+  }
+
+  int getMatchedCombiCount(List<int> selfIndivArray, List<int> targetIndivArray) {
+    final array = Individuality._getMatchedCountArray(selfs: selfIndivArray, targets: targetIndivArray);
+    return Maths.min<int>(array, 0);
   }
 
   static bool isServantClassIndividuality(int v) {

@@ -216,9 +216,6 @@ class _BonusEnemyCondPageState extends State<BonusEnemyCondPage> {
         cards.add(svt1.iconBuilder(context: context, width: 36));
         continue;
       }
-      final transl = Transl.trait(trait);
-      // final names = {transl.jp, transl.cn, transl.na}.join('\n');
-      final names = transl.l;
       cards.add(
         InkWell(
           onTap: () {
@@ -230,13 +227,13 @@ class _BonusEnemyCondPageState extends State<BonusEnemyCondPage> {
               border: Border.all(color: Theme.of(context).colorScheme.primary),
               borderRadius: BorderRadius.circular(4),
             ),
-            child: Text(trait == 505500 ? '$names\n有珠?' : names, style: const TextStyle(fontSize: 12)),
+            child: Text(Transl.traitName(trait), style: const TextStyle(fontSize: 12)),
           ),
         ),
       );
       if (trait == Trait.havingAnimalsCharacteristics.value) continue;
       final svts = db.gameData.servantsById.values
-          .where((svt) => svt.traitAdd.expand((e) => e.trait).map((e) => e.id).contains(trait))
+          .where((svt) => svt.traitAdd.expand((e) => e.trait).contains(trait))
           .toList();
       svts.sort(
         (a, b) => SvtFilterData.compare(

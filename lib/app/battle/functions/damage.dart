@@ -103,7 +103,7 @@ class Damage {
           }
         } else if (funcType == FuncType.damageNpIndividualSum) {
           final countTarget = dataVals.Target! == 1 ? target : activator;
-          final requiredTraits = dataVals.TargetList!.map((traitId) => NiceTrait(id: traitId)).toList();
+          final requiredTraits = dataVals.TargetList!;
           final damageNpSEDecision = battleData.delegate?.damageNpSE?.call(activator, damageFunction, dataVals);
           final ignoreIndivUnreleaseable = dataVals.IgnoreIndivUnreleaseable == 1;
 
@@ -123,10 +123,7 @@ class Damage {
 
           final useCorrection =
               damageNpSEDecision?.useCorrection ??
-              checkSignedIndividualities2(
-                myTraits: target.getTraits(),
-                requiredTraits: [NiceTrait(id: dataVals.Target!)],
-              );
+              checkSignedIndividualities2(myTraits: target.getTraits(), requiredTraits: [dataVals.Target!]);
 
           if (useCorrection) {
             specificAttackRate = dataVals.Correction!;
@@ -148,7 +145,7 @@ class Damage {
               damageNpSEDecision?.useCorrection ??
               checkSignedIndividualities2(
                 myTraits: target.getBuffTraits(includeIgnoreIndiv: includeIgnoreIndividuality),
-                requiredTraits: [NiceTrait(id: dataVals.Target!)],
+                requiredTraits: [dataVals.Target!],
               );
 
           if (useCorrection) {
@@ -702,7 +699,7 @@ class Damage {
     return result;
   }
 
-  static bool checkNotPierceIndividuality(final List<List<NiceTrait>> notPierceIndividuality, final BuffData buff) {
+  static bool checkNotPierceIndividuality(final List<List<int>> notPierceIndividuality, final BuffData buff) {
     // Currently assuming the first array is OR. Need more samples on this
     for (final requiredTraits in notPierceIndividuality) {
       final match = checkSignedIndividualities2(
@@ -910,7 +907,7 @@ class Damage {
 
       final andMatch = checkSignedIndividualities2(
         myTraits: target.getTraits(),
-        requiredTraits: NiceTrait.list(traitAndList),
+        requiredTraits: traitAndList,
         positiveMatchFunc: allMatch,
         negativeMatchFunc: allMatch,
       );

@@ -927,7 +927,8 @@ class EventMissionConditionDetail {
   int logicType;
   List<int> targetIds;
   List<int> addTargetIds;
-  List<NiceTrait> targetQuestIndividualities;
+  @TraitListConverter()
+  List<int> targetQuestIndividualities;
   DetailMissionCondLinkType conditionLinkType;
   List<int>? targetEventIds;
   // used for custom mission

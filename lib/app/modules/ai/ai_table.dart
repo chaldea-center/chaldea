@@ -120,7 +120,7 @@ class AiTable extends StatelessWidget {
     return Transl.enums(aiAct.type, (enums) => enums.aiActType).l;
   }
 
-  Widget _desActTarget(BuildContext context, NiceAiActTarget target, List<NiceTrait> traits) {
+  Widget _desActTarget(BuildContext context, NiceAiActTarget target, List<int> traits) {
     return Text.rich(
       TextSpan(
         text: Transl.enums(target, (enums) => enums.aiActTarget).l,
@@ -361,12 +361,7 @@ class AiTable extends StatelessWidget {
       case NiceAiCond.existIndividualityOpponentFront:
       case NiceAiCond.existIndividualityOpponentCenter:
       case NiceAiCond.existIndividualityOpponentBack:
-        return _repl0(
-          SharedBuilder.traitSpans(
-            context: context,
-            traits: vals.map((e) => NiceTrait(id: e)).toList(),
-          ),
-        );
+        return _repl0(SharedBuilder.traitSpans(context: context, traits: vals));
       // Buff
       case NiceAiCond.checkSelfBuff:
       case NiceAiCond.checkPtBuff:
@@ -436,12 +431,7 @@ class AiTable extends StatelessWidget {
         final count = vals.getOrNull(0) ?? 0, trait = vals.getOrNull(1) ?? 0;
         return {
           "{count}": (_) => [TextSpan(text: ' $count ')],
-          "{trait}": (_) => [
-            SharedBuilder.traitSpan(
-              context: context,
-              trait: NiceTrait(id: trait),
-            ),
-          ],
+          "{trait}": (_) => [SharedBuilder.traitSpan(context: context, trait: trait)],
         };
       // [count, itemId]
       case NiceAiCond.countItemHigher:
@@ -548,7 +538,7 @@ class _AiCondDialog extends StatelessWidget {
           ListTile(dense: true, title: Text(condText), contentPadding: const EdgeInsets.symmetric(horizontal: 16)),
           ListTile(dense: true, title: Text('vals: $vals')),
           const Divider(indent: 16, endIndent: 16),
-          guessType(context, "Trait?", (v) => Transl.trait(v).l, (v) => router.push(url: Routes.traitI(v))),
+          guessType(context, "Trait?", (v) => Transl.traitName(v), (v) => router.push(url: Routes.traitI(v))),
           guessType(
             context,
             "Buff?",

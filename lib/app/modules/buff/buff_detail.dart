@@ -503,9 +503,9 @@ class BuffInfoTable extends StatelessWidget {
     );
   }
 
-  Widget _describeTrait(BuildContext context, NiceTrait? trait) {
+  Widget _describeTrait(BuildContext context, int? trait) {
     return InkWell(
-      onTap: trait?.routeTo,
+      onTap: trait == null ? null : () => router.push(url: Routes.traitI(trait)),
       child: Text.rich(
         TextSpan(
           text: 'Buff with ',

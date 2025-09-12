@@ -89,7 +89,7 @@ class _ExtraFilterData {
 /// DataVals: [RateCount], [AddCount] (ignore)
 class _EquipBondBonusTabState extends State<EquipBondBonusTab> {
   late final _targetSvts = {for (final svt in widget.targetSvts) svt.id: svt};
-  Map<int, ({CraftEssence ce, List<List<NiceTrait>> traits, int rateCount})> allCeData = {};
+  Map<int, ({CraftEssence ce, List<List<int>> traits, int rateCount})> allCeData = {};
   Map<int, Map<int, List<int>>> allCeMatchSvtData = {}; //<ceId, <svtId, [limitCount]>>
 
   final svtFilterData = SvtFilterData(
@@ -161,12 +161,12 @@ class _EquipBondBonusTabState extends State<EquipBondBonusTab> {
     }
   }
 
-  List<int> getMatchedLimitCounts(Servant svt, List<List<NiceTrait>> bonusTraitsList) {
+  List<int> getMatchedLimitCounts(Servant svt, List<List<int>> bonusTraitsList) {
     final baseTraits = svt.traits;
     List<int> matchedLimitCounts = [];
     final allLimitCounts = _getSvtAllLimits(svt);
     for (final limitCount in allLimitCounts) {
-      List<NiceTrait> resultTraits = svt.ascensionAdd.individuality2.all[limitCount] ?? [];
+      List<int> resultTraits = svt.ascensionAdd.individuality2.all[limitCount] ?? [];
       if (resultTraits.isEmpty) resultTraits = baseTraits;
       resultTraits = List.of(resultTraits);
       final limitCount2 = limitCount < 100 ? limitCount : svt.costume[limitCount]?.id ?? limitCount;
@@ -533,8 +533,8 @@ class _EquipBondBonusTabState extends State<EquipBondBonusTab> {
     );
   }
 
-  String _describeTraits(List<List<NiceTrait>> traitsList) {
-    return traitsList.map((ee) => ee.map((e) => Transl.trait(e.signedId).l).join('&')).join('/');
+  String _describeTraits(List<List<int>> traitsList) {
+    return traitsList.map((ee) => ee.map((e) => Transl.traitName(e)).join('&')).join('/');
   }
 
   Set<int> _getSvtAllLimits(Servant svt) {

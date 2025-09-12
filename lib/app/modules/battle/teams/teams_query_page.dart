@@ -379,7 +379,7 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
                   height: 18,
                 ),
               ),
-              TextSpan(text: Transl.trait(indiv).l),
+              TextSpan(text: Transl.traitName(indiv)),
             ],
           ),
         );

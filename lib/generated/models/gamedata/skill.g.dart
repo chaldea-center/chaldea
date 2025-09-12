@@ -14,11 +14,9 @@ BaseSkill _$BaseSkillFromJson(Map json) => BaseSkill(
   type: $enumDecodeNullable(_$SkillTypeEnumMap, json['type']) ?? SkillType.active,
   icon: json['icon'] as String?,
   coolDown: (json['coolDown'] as List<dynamic>?)?.map((e) => (e as num).toInt()).toList() ?? const [0],
-  actIndividuality:
-      (json['actIndividuality'] as List<dynamic>?)
-          ?.map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
-          .toList() ??
-      const [],
+  actIndividuality: json['actIndividuality'] == null
+      ? const []
+      : const TraitListConverter().fromJson(json['actIndividuality'] as Object),
   script: json['script'] == null ? null : SkillScript.fromJson(Map<String, dynamic>.from(json['script'] as Map)),
   skillAdd:
       (json['skillAdd'] as List<dynamic>?)
@@ -51,7 +49,7 @@ Map<String, dynamic> _$BaseSkillToJson(BaseSkill instance) => <String, dynamic>{
   'type': _$SkillTypeEnumMap[instance.type]!,
   'icon': instance.icon,
   'coolDown': instance.coolDown,
-  'actIndividuality': instance.actIndividuality.map((e) => e.toJson()).toList(),
+  'actIndividuality': const TraitListConverter().toJson(instance.actIndividuality),
   'script': instance.script?.toJson(),
   'skillAdd': instance.skillAdd.map((e) => e.toJson()).toList(),
   'aiIds': instance.aiIds?.map((k, e) => MapEntry(_$AiTypeEnumMap[k]!, e)),
@@ -72,11 +70,9 @@ NiceSkill _$NiceSkillFromJson(Map json) => NiceSkill(
   type: $enumDecodeNullable(_$SkillTypeEnumMap, json['type']) ?? SkillType.active,
   icon: json['icon'] as String?,
   coolDown: (json['coolDown'] as List<dynamic>?)?.map((e) => (e as num).toInt()).toList() ?? const [0],
-  actIndividuality:
-      (json['actIndividuality'] as List<dynamic>?)
-          ?.map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
-          .toList() ??
-      const [],
+  actIndividuality: json['actIndividuality'] == null
+      ? const []
+      : const TraitListConverter().fromJson(json['actIndividuality'] as Object),
   script: json['script'] == null ? null : SkillScript.fromJson(Map<String, dynamic>.from(json['script'] as Map)),
   skillAdd:
       (json['skillAdd'] as List<dynamic>?)
@@ -131,7 +127,7 @@ Map<String, dynamic> _$NiceSkillToJson(NiceSkill instance) => <String, dynamic>{
   'type': _$SkillTypeEnumMap[instance.type]!,
   'icon': instance.icon,
   'coolDown': instance.coolDown,
-  'actIndividuality': instance.actIndividuality.map((e) => e.toJson()).toList(),
+  'actIndividuality': const TraitListConverter().toJson(instance.actIndividuality),
   'script': instance.script?.toJson(),
   'skillAdd': instance.skillAdd.map((e) => e.toJson()).toList(),
   'aiIds': instance.aiIds?.map((k, e) => MapEntry(_$AiTypeEnumMap[k]!, e)),
@@ -185,11 +181,9 @@ BaseTd _$BaseTdFromJson(Map json) => BaseTd(
       (json['effectFlags'] as List<dynamic>?)?.map((e) => $enumDecode(_$TdEffectFlagEnumMap, e)).toList() ?? const [],
   unmodifiedDetail: json['unmodifiedDetail'] as String?,
   npGain: json['npGain'] == null ? null : NpGain.fromJson(Map<String, dynamic>.from(json['npGain'] as Map)),
-  individuality:
-      (json['individuality'] as List<dynamic>?)
-          ?.map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
-          .toList() ??
-      const [],
+  individuality: json['individuality'] == null
+      ? const []
+      : const TraitListConverter().fromJson(json['individuality'] as Object),
   script: json['script'] == null ? null : SkillScript.fromJson(Map<String, dynamic>.from(json['script'] as Map)),
   functions:
       (json['functions'] as List<dynamic>?)
@@ -209,7 +203,7 @@ Map<String, dynamic> _$BaseTdToJson(BaseTd instance) => <String, dynamic>{
   'effectFlags': instance.effectFlags.map((e) => _$TdEffectFlagEnumMap[e]!).toList(),
   'unmodifiedDetail': instance.unmodifiedDetail,
   'npGain': instance.npGain.toJson(),
-  'individuality': instance.individuality.map((e) => e.toJson()).toList(),
+  'individuality': const TraitListConverter().toJson(instance.individuality),
   'script': instance.script?.toJson(),
   'functions': instance.functions.map((e) => e.toJson()).toList(),
   'npSvts': instance.npSvts.map((e) => e.toJson()).toList(),
@@ -270,11 +264,9 @@ NiceTd _$NiceTdFromJson(Map json) => NiceTd(
       (json['effectFlags'] as List<dynamic>?)?.map((e) => $enumDecode(_$TdEffectFlagEnumMap, e)).toList() ?? const [],
   unmodifiedDetail: json['unmodifiedDetail'] as String?,
   npGain: json['npGain'] == null ? null : NpGain.fromJson(Map<String, dynamic>.from(json['npGain'] as Map)),
-  individuality:
-      (json['individuality'] as List<dynamic>?)
-          ?.map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
-          .toList() ??
-      const [],
+  individuality: json['individuality'] == null
+      ? const []
+      : const TraitListConverter().fromJson(json['individuality'] as Object),
   script: json['script'] == null ? null : SkillScript.fromJson(Map<String, dynamic>.from(json['script'] as Map)),
   functions:
       (json['functions'] as List<dynamic>?)
@@ -326,7 +318,7 @@ Map<String, dynamic> _$NiceTdToJson(NiceTd instance) => <String, dynamic>{
   'effectFlags': instance.effectFlags.map((e) => _$TdEffectFlagEnumMap[e]!).toList(),
   'unmodifiedDetail': instance.unmodifiedDetail,
   'npGain': instance.npGain.toJson(),
-  'individuality': instance.individuality.map((e) => e.toJson()).toList(),
+  'individuality': const TraitListConverter().toJson(instance.individuality),
   'script': instance.script?.toJson(),
   'functions': instance.functions.map((e) => e.toJson()).toList(),
   'npSvts': instance.npSvts.map((e) => e.toJson()).toList(),

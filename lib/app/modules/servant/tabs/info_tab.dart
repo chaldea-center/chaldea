@@ -25,11 +25,11 @@ class SvtInfoTab extends StatelessWidget {
       ...svt.ascensionAdd.overWriteServantName.all.values,
       ...svt.svtChange.map((e) => e.name),
     };
-    Set<int> baseTraitIds = svt.traits.map((e) => e.id).toSet();
+    Set<int> baseTraitIds = svt.traits.toSet();
     for (final indivAdd in svt.ascensionAdd.individuality2.all.values) {
-      if (indivAdd.isNotEmpty) baseTraitIds = baseTraitIds.intersection(indivAdd.map((e) => e.id).toSet());
+      if (indivAdd.isNotEmpty) baseTraitIds = baseTraitIds.intersection(indivAdd.toSet());
     }
-    final baseTraits = NiceTrait.list(baseTraitIds.toList());
+    final baseTraits = baseTraitIds.toList();
     final name = RubyText(
       [RubyTextData(svt.name, ruby: svt.ruby)],
       style: const TextStyle(fontWeight: FontWeight.bold),
@@ -403,18 +403,17 @@ class SvtInfoTab extends StatelessWidget {
   List<Widget> _addTraits(
     BuildContext context,
     InlineSpan? prefix,
-    List<NiceTrait> traits, [
-    List<NiceTrait> baseTraits = const [],
+    List<int> traits, [
+    List<int> baseTraits = const [],
     double? textScaleFactor,
   ]) {
     if (traits.isEmpty) return [];
-    traits = traits.toList()..sort2((e) => e.id);
-    List<NiceTrait> shownTraits = [];
+    traits = traits.toList()..sort2((e) => e.abs());
+    List<int> shownTraits = [];
     bool showMore = false;
-    final baseTraitIds = baseTraits.map((e) => e.signedId).toSet();
     for (final trait in traits) {
-      if (trait.id == Trait.canBeInBattle.value) continue;
-      if (baseTraitIds.contains(trait.signedId)) {
+      if (trait.abs() == Trait.canBeInBattle.value) continue;
+      if (baseTraits.contains(trait)) {
         showMore = true;
         continue;
       }

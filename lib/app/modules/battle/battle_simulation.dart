@@ -366,7 +366,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
                     context: context,
                     traits: battleData.getQuestIndividuality(),
                     format: (trait) {
-                      final name = trait.shownName();
+                      final name = Transl.traitName(trait);
                       if (name.contains(':')) {
                         return name.split(':').skip(1).join(':');
                       }
