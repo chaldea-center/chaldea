@@ -767,6 +767,11 @@ extension TdMethods on BaseTd {
   }
 
   TdEffectFlag get damageType {
+    if (ConstData.constantStr.overwriteToNpIndividualityDamageOneByTreasureDeviceIds.contains(id)) {
+      return TdEffectFlag.attackEnemyOne;
+    } else if (ConstData.constantStr.overwriteToNpIndividualityDamageAllByTreasureDeviceIds.contains(id)) {
+      return TdEffectFlag.attackEnemyAll;
+    }
     for (var func in functions) {
       // if (func.funcTargetTeam == FuncApplyTarget.enemy) continue;
       if (func.funcType.isDamageNp) {
@@ -800,9 +805,11 @@ extension TdMethods on BaseTd {
   List<NiceTrait> getIndividuality() {
     return [
       ...individuality,
-      if (damageType == TdEffectFlag.support) NiceTrait(id: 7020),
-      if (damageType == TdEffectFlag.attackEnemyAll) ...[NiceTrait(id: 7022), NiceTrait(id: 7023)],
-      if (damageType == TdEffectFlag.attackEnemyOne) ...[NiceTrait(id: 7021), NiceTrait(id: 7023)],
+      ...NiceTrait.list(switch (damageType) {
+        TdEffectFlag.support => ConstData.constantStr.npIndividualityNotDamage,
+        TdEffectFlag.attackEnemyAll => ConstData.constantStr.npIndividualityDamageAll,
+        TdEffectFlag.attackEnemyOne => ConstData.constantStr.npIndividualityDamageOne,
+      }),
     ];
   }
 }

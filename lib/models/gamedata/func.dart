@@ -632,7 +632,7 @@ enum FuncType {
   final int value;
   const FuncType(this.value);
 
-  bool get isDamageNp => name.startsWith('damageNp');
+  bool get isDamageNp => name.startsWith('damageNp') && !ConstData.constantStr.functionTypeNotNpDamage.contains(value);
 
   bool get isAddState => kAddStateFuncTypes.contains(this);
 }
