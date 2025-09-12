@@ -396,7 +396,7 @@ GameConstants _$GameConstantsFromJson(Map json) => GameConstants(
   coinRoomMaxNum: (json['coinRoomMaxNum'] as num?)?.toInt() ?? 2,
   coinRoomReleaseQuestId: (json['coinRoomReleaseQuestId'] as num?)?.toInt() ?? 3001101,
   combineLimitSpecialPrivilegeId: (json['combineLimitSpecialPrivilegeId'] as num?)?.toInt() ?? 100,
-  comebackTargetDay: (json['comebackTargetDay'] as num?)?.toInt() ?? 1735648200,
+  comebackTargetDay: (json['comebackTargetDay'] as num?)?.toInt() ?? 1743238800,
   commandArts: (json['commandArts'] as num?)?.toInt() ?? 4001,
   commandBuster: (json['commandBuster'] as num?)?.toInt() ?? 4002,
   commandCardPrmUpMax: (json['commandCardPrmUpMax'] as num?)?.toInt() ?? 500,
@@ -520,7 +520,7 @@ GameConstants _$GameConstantsFromJson(Map json) => GameConstants(
   maxFriendshipRank: (json['maxFriendshipRank'] as num?)?.toInt() ?? 5,
   maxFriendCode: (json['maxFriendCode'] as num?)?.toInt() ?? 999999999,
   maxFriendHistoryNum: (json['maxFriendHistoryNum'] as num?)?.toInt() ?? 100,
-  maxFriendShipUpRatio: (json['maxFriendShipUpRatio'] as num?)?.toInt() ?? 3000,
+  maxFriendShipUpRatio: (json['maxFriendShipUpRatio'] as num?)?.toInt() ?? 5000,
   maxMana: (json['maxMana'] as num?)?.toInt() ?? 999999999,
   maxNearPresentOffsetNum: (json['maxNearPresentOffsetNum'] as num?)?.toInt() ?? 50,
   maxPresentBoxHistoryNum: (json['maxPresentBoxHistoryNum'] as num?)?.toInt() ?? 0,
@@ -532,12 +532,12 @@ GameConstants _$GameConstantsFromJson(Map json) => GameConstants(
   maxRarePri: (json['maxRarePri'] as num?)?.toInt() ?? 999999999,
   maxRp: (json['maxRp'] as num?)?.toInt() ?? 8,
   maxStone: (json['maxStone'] as num?)?.toInt() ?? 999999999,
-  maxUserCommandCode: (json['maxUserCommandCode'] as num?)?.toInt() ?? 900,
+  maxUserCommandCode: (json['maxUserCommandCode'] as num?)?.toInt() ?? 1000,
   maxUserEquipExpUpRatio: (json['maxUserEquipExpUpRatio'] as num?)?.toInt() ?? 3000,
   maxUserItem: (json['maxUserItem'] as num?)?.toInt() ?? 999999999,
-  maxUserLv: (json['maxUserLv'] as num?)?.toInt() ?? 180,
-  maxUserSvt: (json['maxUserSvt'] as num?)?.toInt() ?? 900,
-  maxUserSvtEquip: (json['maxUserSvtEquip'] as num?)?.toInt() ?? 900,
+  maxUserLv: (json['maxUserLv'] as num?)?.toInt() ?? 190,
+  maxUserSvt: (json['maxUserSvt'] as num?)?.toInt() ?? 1000,
+  maxUserSvtEquip: (json['maxUserSvtEquip'] as num?)?.toInt() ?? 1000,
   maxUserSvtEquipStorage: (json['maxUserSvtEquipStorage'] as num?)?.toInt() ?? 100,
   maxUserSvtStorage: (json['maxUserSvtStorage'] as num?)?.toInt() ?? 100,
   memoryDeckLimitByQuest: (json['memoryDeckLimitByQuest'] as num?)?.toInt() ?? 100,
@@ -576,7 +576,7 @@ GameConstants _$GameConstantsFromJson(Map json) => GameConstants(
   raidDefeatedEffectTime: (json['raidDefeatedEffectTime'] as num?)?.toInt() ?? 0,
   raidMarkdispStep: (json['raidMarkdispStep'] as num?)?.toInt() ?? 4,
   raidTutorialQuestId: (json['raidTutorialQuestId'] as num?)?.toInt() ?? 94004504,
-  recommendSupportFriendPoint: (json['recommendSupportFriendPoint'] as num?)?.toInt() ?? 100,
+  recommendSupportFriendPoint: (json['recommendSupportFriendPoint'] as num?)?.toInt() ?? 200,
   recoveryValue: (json['recoveryValue'] as num?)?.toInt() ?? 2,
   requestRaidUpdateEventMap: (json['requestRaidUpdateEventMap'] as num?)?.toInt() ?? 60,
   requestTopHomeExpirationDateSecUpdateEventMap:
@@ -587,6 +587,7 @@ GameConstants _$GameConstantsFromJson(Map json) => GameConstants(
   shop04ShopState: (json['shop04ShopState'] as num?)?.toInt() ?? 0,
   shopSpecialItemEnable: (json['shopSpecialItemEnable'] as num?)?.toInt() ?? 1,
   startingMemberFriendshipRate: (json['startingMemberFriendshipRate'] as num?)?.toInt() ?? 1200,
+  startDashSummon2PrivilegeId: (json['startDashSummon2PrivilegeId'] as num?)?.toInt() ?? 300,
   startDashSummonPrivilegeId: (json['startDashSummonPrivilegeId'] as num?)?.toInt() ?? 200,
   starRateMax: (json['starRateMax'] as num?)?.toInt() ?? 3000,
   statusUpAdjustAtk: (json['statusUpAdjustAtk'] as num?)?.toInt() ?? 10,
@@ -615,7 +616,7 @@ GameConstants _$GameConstantsFromJson(Map json) => GameConstants(
   treasureDeviceDispStatusEffectFlag: (json['treasureDeviceDispStatusEffectFlag'] as num?)?.toInt() ?? 0,
   tutorialFavoriteQuestId: (json['tutorialFavoriteQuestId'] as num?)?.toInt() ?? 1000011,
   tutorialGachaId: (json['tutorialGachaId'] as num?)?.toInt() ?? 101,
-  tutorialLabel1StAnniversarySvtKeepAdjust: (json['tutorialLabel1StAnniversarySvtKeepAdjust'] as num?)?.toInt() ?? 125,
+  tutorialLabel1stAnniversarySvtKeepAdjust: (json['tutorialLabel1stAnniversarySvtKeepAdjust'] as num?)?.toInt() ?? 125,
   tutorialLabelBattleResultWinLose: (json['tutorialLabelBattleResultWinLose'] as num?)?.toInt() ?? 123,
   tutorialLabelCaldeaGate: (json['tutorialLabelCaldeaGate'] as num?)?.toInt() ?? 129,
   tutorialLabelChapter2Prologue: (json['tutorialLabelChapter2Prologue'] as num?)?.toInt() ?? 204,
@@ -918,6 +919,7 @@ Map<String, dynamic> _$GameConstantsToJson(GameConstants instance) => <String, d
   'shop04ShopState': instance.shop04ShopState,
   'shopSpecialItemEnable': instance.shopSpecialItemEnable,
   'startingMemberFriendshipRate': instance.startingMemberFriendshipRate,
+  'startDashSummon2PrivilegeId': instance.startDashSummon2PrivilegeId,
   'startDashSummonPrivilegeId': instance.startDashSummonPrivilegeId,
   'starRateMax': instance.starRateMax,
   'statusUpAdjustAtk': instance.statusUpAdjustAtk,
@@ -944,7 +946,7 @@ Map<String, dynamic> _$GameConstantsToJson(GameConstants instance) => <String, d
   'treasureDeviceDispStatusEffectFlag': instance.treasureDeviceDispStatusEffectFlag,
   'tutorialFavoriteQuestId': instance.tutorialFavoriteQuestId,
   'tutorialGachaId': instance.tutorialGachaId,
-  'tutorialLabel1StAnniversarySvtKeepAdjust': instance.tutorialLabel1StAnniversarySvtKeepAdjust,
+  'tutorialLabel1stAnniversarySvtKeepAdjust': instance.tutorialLabel1stAnniversarySvtKeepAdjust,
   'tutorialLabelBattleResultWinLose': instance.tutorialLabelBattleResultWinLose,
   'tutorialLabelCaldeaGate': instance.tutorialLabelCaldeaGate,
   'tutorialLabelChapter2Prologue': instance.tutorialLabelChapter2Prologue,
@@ -1011,35 +1013,68 @@ Map<String, dynamic> _$GameConstantsToJson(GameConstants instance) => <String, d
 };
 
 GameConstantStr _$GameConstantStrFromJson(Map json) => GameConstantStr(
+  enableOverwriteClassIds:
+      (json['enableOverwriteClassIds'] as List<dynamic>?)?.map((e) => (e as num).toInt()).toList() ??
+      const [1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 23, 25, 28],
   extendTurnBuffType:
       (json['extendTurnBuffType'] as List<dynamic>?)?.map((e) => (e as num).toInt()).toList() ??
       const [1, 9, 11, 13, 15, 18, 25, 50, 51, 52, 70, 72, 89, 90, 110, 112, 116, 121, 137, 144, 148, 160, 162],
+  functionTypeNotNpDamage:
+      (json['functionTypeNotNpDamage'] as List<dynamic>?)?.map((e) => (e as num).toInt()).toList() ??
+      const [3, 34, 122, 137],
+  ignoreResistFuncIndividuality:
+      (json['ignoreResistFuncIndividuality'] as List<dynamic>?)?.map((e) => (e as num).toInt()).toList() ??
+      const [3098],
   invalidSacrificeIndiv:
       (json['invalidSacrificeIndiv'] as List<dynamic>?)?.map((e) => (e as num).toInt()).toList() ?? const [3076],
   notReduceCountWithNoDamageBuff:
       (json['notReduceCountWithNoDamageBuff'] as List<dynamic>?)?.map((e) => (e as num).toInt()).toList() ??
       const [42, 21, 23, 91, 105, 196, 227, 228],
+  npIndividualityDamageAll:
+      (json['npIndividualityDamageAll'] as List<dynamic>?)?.map((e) => (e as num).toInt()).toList() ??
+      const [7022, 7023],
+  npIndividualityDamageOne:
+      (json['npIndividualityDamageOne'] as List<dynamic>?)?.map((e) => (e as num).toInt()).toList() ??
+      const [7021, 7023],
+  npIndividualityNotDamage:
+      (json['npIndividualityNotDamage'] as List<dynamic>?)?.map((e) => (e as num).toInt()).toList() ?? const [7020],
+  overwriteToNpIndividualityDamageAllByTreasureDeviceIds:
+      (json['overwriteToNpIndividualityDamageAllByTreasureDeviceIds'] as List<dynamic>?)
+          ?.map((e) => (e as num).toInt())
+          .toList() ??
+      const [1100101],
+  overwriteToNpIndividualityDamageOneByTreasureDeviceIds:
+      (json['overwriteToNpIndividualityDamageOneByTreasureDeviceIds'] as List<dynamic>?)
+          ?.map((e) => (e as num).toInt())
+          .toList() ??
+      const [1001101],
+  playableBeastClassIds:
+      (json['playableBeastClassIds'] as List<dynamic>?)?.map((e) => (e as num).toInt()).toList() ?? const [33, 38, 40],
   starRefreshBuffType:
       (json['starRefreshBuffType'] as List<dynamic>?)?.map((e) => (e as num).toInt()).toList() ?? const [2, 61],
   subPtBuffIndivi: (json['subPtBuffIndivi'] as List<dynamic>?)?.map((e) => (e as num).toInt()).toList() ?? const [3055],
   svtExitPtBuffIndivi:
       (json['svtExitPtBuffIndivi'] as List<dynamic>?)?.map((e) => (e as num).toInt()).toList() ?? const [3069],
-  playableBeastClassIds:
-      (json['playableBeastClassIds'] as List<dynamic>?)?.map((e) => (e as num).toInt()).toList() ?? const [33, 38],
-  enableOverwriteClassIds:
-      (json['enableOverwriteClassIds'] as List<dynamic>?)?.map((e) => (e as num).toInt()).toList() ??
-      const [1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 23, 25, 28],
 );
 
 Map<String, dynamic> _$GameConstantStrToJson(GameConstantStr instance) => <String, dynamic>{
+  'enableOverwriteClassIds': instance.enableOverwriteClassIds,
   'extendTurnBuffType': instance.extendTurnBuffType,
+  'functionTypeNotNpDamage': instance.functionTypeNotNpDamage,
+  'ignoreResistFuncIndividuality': instance.ignoreResistFuncIndividuality,
   'invalidSacrificeIndiv': instance.invalidSacrificeIndiv,
   'notReduceCountWithNoDamageBuff': instance.notReduceCountWithNoDamageBuff,
+  'npIndividualityDamageAll': instance.npIndividualityDamageAll,
+  'npIndividualityDamageOne': instance.npIndividualityDamageOne,
+  'npIndividualityNotDamage': instance.npIndividualityNotDamage,
+  'overwriteToNpIndividualityDamageAllByTreasureDeviceIds':
+      instance.overwriteToNpIndividualityDamageAllByTreasureDeviceIds,
+  'overwriteToNpIndividualityDamageOneByTreasureDeviceIds':
+      instance.overwriteToNpIndividualityDamageOneByTreasureDeviceIds,
+  'playableBeastClassIds': instance.playableBeastClassIds,
   'starRefreshBuffType': instance.starRefreshBuffType,
   'subPtBuffIndivi': instance.subPtBuffIndivi,
   'svtExitPtBuffIndivi': instance.svtExitPtBuffIndivi,
-  'playableBeastClassIds': instance.playableBeastClassIds,
-  'enableOverwriteClassIds': instance.enableOverwriteClassIds,
 };
 
 SvtLimitHide _$SvtLimitHideFromJson(Map json) => SvtLimitHide(

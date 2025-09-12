@@ -408,6 +408,7 @@ class SvtExpData {
   }
 }
 
+// GameConstants start
 @JsonSerializable()
 class GameConstants {
   final int k20220731BoostRate1; // 200
@@ -455,7 +456,7 @@ class GameConstants {
   final int coinRoomMaxNum; // 2
   final int coinRoomReleaseQuestId; // 3001101
   final int combineLimitSpecialPrivilegeId; // 100
-  final int comebackTargetDay; // 1735648200
+  final int comebackTargetDay; // 1743238800
   final int commandArts; // 4001
   final int commandBuster; // 4002
   final int commandCardPrmUpMax; // 500
@@ -579,7 +580,7 @@ class GameConstants {
   final int maxFriendshipRank; // 5
   final int maxFriendCode; // 999999999
   final int maxFriendHistoryNum; // 100
-  final int maxFriendShipUpRatio; // 3000
+  final int maxFriendShipUpRatio; // 5000
   final int maxMana; // 999999999
   final int maxNearPresentOffsetNum; // 50
   final int maxPresentBoxHistoryNum; // 0
@@ -591,12 +592,12 @@ class GameConstants {
   final int maxRarePri; // 999999999
   final int maxRp; // 8
   final int maxStone; // 999999999
-  final int maxUserCommandCode; // 900
+  final int maxUserCommandCode; // 1000
   final int maxUserEquipExpUpRatio; // 3000
   final int maxUserItem; // 999999999
-  final int maxUserLv; // 180
-  final int maxUserSvt; // 900
-  final int maxUserSvtEquip; // 900
+  final int maxUserLv; // 190
+  final int maxUserSvt; // 1000
+  final int maxUserSvtEquip; // 1000
   final int maxUserSvtEquipStorage; // 100
   final int maxUserSvtStorage; // 100
   final int memoryDeckLimitByQuest; // 100
@@ -635,7 +636,7 @@ class GameConstants {
   final int raidDefeatedEffectTime; // 0
   final int raidMarkdispStep; // 4
   final int raidTutorialQuestId; // 94004504
-  final int recommendSupportFriendPoint; // 100
+  final int recommendSupportFriendPoint; // 200
   final int recoveryValue; // 2
   final int requestRaidUpdateEventMap; // 60
   final int requestTopHomeExpirationDateSecUpdateEventMap; // 900
@@ -645,6 +646,7 @@ class GameConstants {
   final int shop04ShopState; // 0
   final int shopSpecialItemEnable; // 1
   final int startingMemberFriendshipRate; // 1200
+  final int startDashSummon2PrivilegeId; // 300
   final int startDashSummonPrivilegeId; // 200
   final int starRateMax; // 3000
   final int statusUpAdjustAtk; // 10
@@ -671,7 +673,7 @@ class GameConstants {
   final int treasureDeviceDispStatusEffectFlag; // 0
   final int tutorialFavoriteQuestId; // 1000011
   final int tutorialGachaId; // 101
-  final int tutorialLabel1StAnniversarySvtKeepAdjust; // 125
+  final int tutorialLabel1stAnniversarySvtKeepAdjust; // 125
   final int tutorialLabelBattleResultWinLose; // 123
   final int tutorialLabelCaldeaGate; // 129
   final int tutorialLabelChapter2Prologue; // 204
@@ -782,7 +784,7 @@ class GameConstants {
     this.coinRoomMaxNum = 2,
     this.coinRoomReleaseQuestId = 3001101,
     this.combineLimitSpecialPrivilegeId = 100,
-    this.comebackTargetDay = 1735648200,
+    this.comebackTargetDay = 1743238800,
     this.commandArts = 4001,
     this.commandBuster = 4002,
     this.commandCardPrmUpMax = 500,
@@ -906,7 +908,7 @@ class GameConstants {
     this.maxFriendshipRank = 5,
     this.maxFriendCode = 999999999,
     this.maxFriendHistoryNum = 100,
-    this.maxFriendShipUpRatio = 3000,
+    this.maxFriendShipUpRatio = 5000,
     this.maxMana = 999999999,
     this.maxNearPresentOffsetNum = 50,
     this.maxPresentBoxHistoryNum = 0,
@@ -918,12 +920,12 @@ class GameConstants {
     this.maxRarePri = 999999999,
     this.maxRp = 8,
     this.maxStone = 999999999,
-    this.maxUserCommandCode = 900,
+    this.maxUserCommandCode = 1000,
     this.maxUserEquipExpUpRatio = 3000,
     this.maxUserItem = 999999999,
-    this.maxUserLv = 180,
-    this.maxUserSvt = 900,
-    this.maxUserSvtEquip = 900,
+    this.maxUserLv = 190,
+    this.maxUserSvt = 1000,
+    this.maxUserSvtEquip = 1000,
     this.maxUserSvtEquipStorage = 100,
     this.maxUserSvtStorage = 100,
     this.memoryDeckLimitByQuest = 100,
@@ -962,7 +964,7 @@ class GameConstants {
     this.raidDefeatedEffectTime = 0,
     this.raidMarkdispStep = 4,
     this.raidTutorialQuestId = 94004504,
-    this.recommendSupportFriendPoint = 100,
+    this.recommendSupportFriendPoint = 200,
     this.recoveryValue = 2,
     this.requestRaidUpdateEventMap = 60,
     this.requestTopHomeExpirationDateSecUpdateEventMap = 900,
@@ -972,6 +974,7 @@ class GameConstants {
     this.shop04ShopState = 0,
     this.shopSpecialItemEnable = 1,
     this.startingMemberFriendshipRate = 1200,
+    this.startDashSummon2PrivilegeId = 300,
     this.startDashSummonPrivilegeId = 200,
     this.starRateMax = 3000,
     this.statusUpAdjustAtk = 10,
@@ -998,7 +1001,7 @@ class GameConstants {
     this.treasureDeviceDispStatusEffectFlag = 0,
     this.tutorialFavoriteQuestId = 1000011,
     this.tutorialGachaId = 101,
-    this.tutorialLabel1StAnniversarySvtKeepAdjust = 125,
+    this.tutorialLabel1stAnniversarySvtKeepAdjust = 125,
     this.tutorialLabelBattleResultWinLose = 123,
     this.tutorialLabelCaldeaGate = 129,
     this.tutorialLabelChapter2Prologue = 204,
@@ -1063,6 +1066,7 @@ class GameConstants {
     this.warBoardBattleEndReduceBuffTurnFlag = 1,
     this.warBoardBattleLoseBgm = 0,
   });
+  // GameConstants end
 
   factory GameConstants.fromJson(Map<String, dynamic> json) {
     Map<String, dynamic> json2 = {};
@@ -1110,32 +1114,47 @@ class GameConstants {
   }
 }
 
+// GameConstantStr start
 @JsonSerializable()
 class GameConstantStr {
-  final List<int> extendTurnBuffType; // 1,9,11,13,15,18,25,50,51,52,70,72,89,90,110,112,116,121,137,144,148,160,162
-  final List<int> invalidSacrificeIndiv; // 3076
-  // final int materialMainInterludeWarId; // 307
-  final List<int> notReduceCountWithNoDamageBuff; // 42,21,23,91,105,196,227,228
-  final List<int> starRefreshBuffType; // 2,61
-  final List<int> subPtBuffIndivi; // 3055
-  final List<int> svtExitPtBuffIndivi; // 3069
-  final List<int> playableBeastClassIds;
-  final List<int> enableOverwriteClassIds;
+  // dart format off
+  final List<int> enableOverwriteClassIds; // [1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 23, 25, 28]
+  final List<int> extendTurnBuffType; // [1, 9, 11, 13, 15, 18, 25, 50, 51, 52, 70, 72, 89, 90, 110, 112, 116, 121, 137, 144, 148, 160, 162]
+  final List<int> functionTypeNotNpDamage; // [3, 34, 122, 137]
+  final List<int> ignoreResistFuncIndividuality; // [3098]
+  final List<int> invalidSacrificeIndiv; // [3076]
+  final List<int> notReduceCountWithNoDamageBuff; // [42, 21, 23, 91, 105, 196, 227, 228]
+  final List<int> npIndividualityDamageAll; // [7022, 7023]
+  final List<int> npIndividualityDamageOne; // [7021, 7023]
+  final List<int> npIndividualityNotDamage; // [7020]
+  final List<int> overwriteToNpIndividualityDamageAllByTreasureDeviceIds; // [1100101]
+  final List<int> overwriteToNpIndividualityDamageOneByTreasureDeviceIds; // [1001101]
+  final List<int> playableBeastClassIds; // [33, 38, 40]
+  final List<int> starRefreshBuffType; // [2, 61]
+  final List<int> subPtBuffIndivi; // [3055]
+  final List<int> svtExitPtBuffIndivi; // [3069]
+  // dart format on
 
   const GameConstantStr({
-    this.extendTurnBuffType = const [
-      //
-      1, 9, 11, 13, 15, 18, 25, 50, 51, 52, 70, 72, 89, 90, 110, 112, 116, 121, 137, 144, 148, 160, 162,
-    ],
+    // dart format off
+    this.enableOverwriteClassIds = const [1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 23, 25, 28],
+    this.extendTurnBuffType = const [1, 9, 11, 13, 15, 18, 25, 50, 51, 52, 70, 72, 89, 90, 110, 112, 116, 121, 137, 144, 148, 160, 162],
+    this.functionTypeNotNpDamage = const [3, 34, 122, 137],
+    this.ignoreResistFuncIndividuality = const [3098],
     this.invalidSacrificeIndiv = const [3076],
-    // this.materialMainInterludeWarId = 307,
     this.notReduceCountWithNoDamageBuff = const [42, 21, 23, 91, 105, 196, 227, 228],
+    this.npIndividualityDamageAll = const [7022, 7023],
+    this.npIndividualityDamageOne = const [7021, 7023],
+    this.npIndividualityNotDamage = const [7020],
+    this.overwriteToNpIndividualityDamageAllByTreasureDeviceIds = const [1100101],
+    this.overwriteToNpIndividualityDamageOneByTreasureDeviceIds = const [1001101],
+    this.playableBeastClassIds = const [33, 38, 40],
     this.starRefreshBuffType = const [2, 61],
     this.subPtBuffIndivi = const [3055],
     this.svtExitPtBuffIndivi = const [3069],
-    this.playableBeastClassIds = const [33, 38],
-    this.enableOverwriteClassIds = const [1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 23, 25, 28],
+    // dart format on
   });
+  // GameConstantStr end
 
   factory GameConstantStr.fromJson(Map<String, dynamic> json) {
     Map<String, dynamic> json2 = {};
