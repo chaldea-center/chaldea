@@ -18,23 +18,22 @@ class _ItemObtainInterludeTabState extends State<ItemObtainInterludeTab> {
   @override
   Widget build(BuildContext context) {
     List<Widget> children = [
-      Wrap(
-        alignment: WrapAlignment.center,
-        spacing: 4,
-        children: [
-          for (final fav in [true, false])
-            RadioWithLabel<bool>(
-              value: fav,
-              groupValue: _favorite,
-              label: Text(fav ? S.current.favorite : S.current.general_all),
-              onChanged: (v) {
-                if (v != null) {
-                  _favorite = v;
-                }
-                setState(() {});
-              },
-            ),
-        ],
+      RadioGroup<bool>(
+        groupValue: _favorite,
+        onChanged: (v) {
+          if (v != null) {
+            _favorite = v;
+          }
+          setState(() {});
+        },
+        child: Wrap(
+          alignment: WrapAlignment.center,
+          spacing: 4,
+          children: [
+            for (final fav in [true, false])
+              RadioWithLabel<bool>(value: fav, label: Text(fav ? S.current.favorite : S.current.general_all)),
+          ],
+        ),
       ),
     ];
     final sortedServants = sortSvts(db.gameData.servantsNoDup.values.toList());

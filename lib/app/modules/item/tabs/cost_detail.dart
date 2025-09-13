@@ -99,23 +99,25 @@ class _ItemCostSvtDetailTabState extends State<ItemCostSvtDetailTab> {
     /////////////////////////////////////////////////////////
     List<Widget> children = [
       if (widget.matType == null)
-        Wrap(
-          alignment: WrapAlignment.center,
-          spacing: 4,
-          children: [
-            for (final fav in [true, false])
-              RadioWithLabel<bool>(
-                value: fav,
-                groupValue: _favorite,
-                label: Text(fav ? S.current.favorite : S.current.general_all),
-                onChanged: (v) {
-                  if (v != null) {
-                    _favorite = v;
-                  }
-                  setState(() {});
-                },
-              ),
-          ],
+        RadioGroup<bool>(
+          groupValue: _favorite,
+          onChanged: (v) {
+            if (v != null) {
+              _favorite = v;
+            }
+            setState(() {});
+          },
+          child: Wrap(
+            alignment: WrapAlignment.center,
+            spacing: 4,
+            children: [
+              for (final fav in [true, false])
+                RadioWithLabel<bool>(
+                  value: fav,
+                  label: Text(fav ? S.current.favorite : S.current.general_all),
+                ),
+            ],
+          ),
         ),
       InheritSelectionArea(
         child: Padding(padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8), child: header),

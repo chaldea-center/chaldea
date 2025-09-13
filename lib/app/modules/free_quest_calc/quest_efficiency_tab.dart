@@ -238,31 +238,27 @@ class _QuestEfficiencyTabState extends State<QuestEfficiencyTab> {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Wrap(
-          crossAxisAlignment: WrapCrossAlignment.center,
-          children: [
-            Padding(padding: const EdgeInsets.symmetric(horizontal: 8), child: Text(S.current.filter_sort)),
-            RadioWithLabel<_EfficiencySort>(
-              value: _EfficiencySort.item,
-              groupValue: sortType,
-              label: Text(S.current.item_eff),
-              onChanged: (v) {
-                setState(() {
-                  sortType = v ?? sortType;
-                });
-              },
-            ),
-            RadioWithLabel<_EfficiencySort>(
-              value: _EfficiencySort.bond,
-              groupValue: sortType,
-              label: Text(S.current.bond_eff),
-              onChanged: (v) {
-                setState(() {
-                  sortType = v ?? sortType;
-                });
-              },
-            ),
-          ],
+        RadioGroup<_EfficiencySort>(
+          groupValue: sortType,
+          onChanged: (v) {
+            setState(() {
+              sortType = v ?? sortType;
+            });
+          },
+          child: Wrap(
+            crossAxisAlignment: WrapCrossAlignment.center,
+            children: [
+              Padding(padding: const EdgeInsets.symmetric(horizontal: 8), child: Text(S.current.filter_sort)),
+              for (final v in _EfficiencySort.values)
+                RadioWithLabel<_EfficiencySort>(
+                  value: v,
+                  label: Text(switch (v) {
+                    _EfficiencySort.item => S.current.item_eff,
+                    _EfficiencySort.bond => S.current.bond_eff,
+                  }),
+                ),
+            ],
+          ),
         ),
         Row(
           crossAxisAlignment: CrossAxisAlignment.center,

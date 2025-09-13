@@ -169,11 +169,11 @@ abstract class FilterPageState<T, St extends FilterPage<T>> extends State<St> {
     );
   }
 
-  Widget getSortButton<S>({
+  Widget getSortButton<V>({
     String? prefix,
-    required S value,
-    required Map<S, String> items,
-    ValueChanged<S?>? onSortAttr,
+    required V value,
+    required Map<V, String> items,
+    ValueChanged<V?>? onSortAttr,
     bool reversed = true,
     ValueChanged<bool>? onSortDirectional,
   }) {

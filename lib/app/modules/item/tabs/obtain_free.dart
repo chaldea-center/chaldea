@@ -31,10 +31,14 @@ class _ItemObtainFreeTabState extends State<ItemObtainFreeTab> {
           elevation: 1,
           child: ListTile(
             title: Text(S.current.quest),
-            trailing: Row(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[buildSortRadio(true), buildSortRadio(false)],
+            trailing: RadioGroup<bool>(
+              groupValue: sortByAP,
+              onChanged: (v) => setState(() => sortByAP = v ?? sortByAP),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[buildSortRadio(true), buildSortRadio(false)],
+              ),
             ),
           ),
         ),
@@ -48,12 +52,10 @@ class _ItemObtainFreeTabState extends State<ItemObtainFreeTab> {
   Widget buildSortRadio(bool value) {
     return RadioWithLabel<bool>(
       value: value,
-      groupValue: sortByAP,
       label: Text(
         value ? S.current.ap_efficiency : S.current.drop_rate,
         style: value == sortByAP ? null : TextStyle(color: Theme.of(context).textTheme.bodySmall?.color),
       ),
-      onChanged: (v) => setState(() => sortByAP = v ?? sortByAP),
     );
   }
 

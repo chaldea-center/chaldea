@@ -668,7 +668,15 @@ enum SvtListClassFilterStyle {
   singleRow,
   singleRowExpanded, // scrollable
   twoRow,
-  doNotShow,
+  doNotShow;
+
+  String get shownName => switch (this) {
+    auto => S.current.svt_class_filter_auto,
+    singleRow => S.current.svt_class_filter_single_row,
+    singleRowExpanded => S.current.svt_class_filter_single_row_expanded,
+    twoRow => S.current.svt_class_filter_two_row,
+    doNotShow => S.current.svt_class_filter_hide,
+  };
 }
 
 enum SvtTab { plan, skill, np, info, spDmg, lore, illustration, relatedCards, summon, voice, quest }

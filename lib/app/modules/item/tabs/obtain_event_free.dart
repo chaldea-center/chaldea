@@ -50,9 +50,13 @@ class _ItemObtainEventFreeTabState extends State<ItemObtainEventFreeTab> {
         Material(
           elevation: 1,
           child: ListTile(
-            title: Wrap(
-              alignment: WrapAlignment.center,
-              children: <Widget>[for (final type in _SortType.values) buildSortRadio(type)],
+            title: RadioGroup<_SortType>(
+              groupValue: sortType,
+              onChanged: (v) => setState(() => sortType = v ?? sortType),
+              child: Wrap(
+                alignment: WrapAlignment.center,
+                children: <Widget>[for (final type in _SortType.values) buildSortRadio(type)],
+              ),
             ),
           ),
         ),
@@ -79,12 +83,10 @@ class _ItemObtainEventFreeTabState extends State<ItemObtainEventFreeTab> {
     }
     return RadioWithLabel<_SortType>(
       value: value,
-      groupValue: sortType,
       label: Text(
         name,
         style: value == sortType ? null : TextStyle(color: Theme.of(context).textTheme.bodySmall?.color),
       ),
-      onChanged: (v) => setState(() => sortType = v ?? sortType),
     );
   }
 

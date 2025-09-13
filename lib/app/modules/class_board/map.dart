@@ -31,8 +31,8 @@ class _ClassBoardMapState extends State<ClassBoardMap> with AfterLayoutMixin {
     final scale = 2.0;
     final offset = Offset(2048 / 2 + _grandOffset.dx * scale, 2048 / 2 + _grandOffset.dy * scale) * width / 2048;
     controller.value
-      ..translate(-offset.dx, -offset.dy)
-      ..scale(scale);
+      ..translateByDouble(-offset.dx, -offset.dy, 0, 1)
+      ..scaleByDouble(scale, scale, scale, 1.0);
     if (mounted) setState(() {});
   }
 

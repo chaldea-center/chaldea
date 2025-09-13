@@ -101,7 +101,7 @@ class Maths {
     return math.sqrt(dx * dx + dy * dy);
   }
 
-  static T findMax<T, S extends num>(Iterable<T> iterable, S Function(T e) key) {
+  static T findMax<T, V extends num>(Iterable<T> iterable, V Function(T e) key) {
     assert(iterable.isNotEmpty);
     return iterable.reduce((v, e) => key(e) > key(v) ? e : v);
   }

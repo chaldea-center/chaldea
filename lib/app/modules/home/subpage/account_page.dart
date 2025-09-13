@@ -42,36 +42,42 @@ class _AccountPageState extends State<AccountPage> {
           ),
         ],
       ),
-      body: TileGroup(
-        children: List.generate(users.length, (index) {
-          final user = users[index];
-          return RadioListTile<int>(
-            value: index,
-            groupValue: db.userData.curUserKey,
-            onChanged: (v) {
-              if (v != null) {
-                db.userData.curUserKey = v;
-                updateData(true);
-              }
-            },
-            controlAffinity: ListTileControlAffinity.leading,
-            title: Text(user.name),
-            secondary: PopupMenuButton(
-              itemBuilder: (BuildContext context) => [
-                PopupMenuItem(child: Text(S.current.rename), onTap: () => renameUser(user)),
-                PopupMenuItem(enabled: index != 0, onTap: () => moveUser(index, -1), child: Text(S.current.move_up)),
-                PopupMenuItem(
-                  enabled: index != users.length - 1,
-                  onTap: () => moveUser(index, 1),
-                  child: Text(S.current.move_down),
-                ),
-                PopupMenuItem(child: Text(S.current.copy), onTap: () => copyUser(index)),
-                PopupMenuItem(child: Text(S.current.clear), onTap: () => clearUser(index)),
-                PopupMenuItem(enabled: users.length > 1, onTap: () => deleteUser(index), child: Text(S.current.delete)),
-              ],
-            ),
-          );
-        }),
+      body: RadioGroup<int>(
+        groupValue: db.userData.curUserKey,
+        onChanged: (v) {
+          if (v != null) {
+            db.userData.curUserKey = v;
+            updateData(true);
+          }
+        },
+        child: TileGroup(
+          children: List.generate(users.length, (index) {
+            final user = users[index];
+            return RadioListTile<int>(
+              value: index,
+              controlAffinity: ListTileControlAffinity.leading,
+              title: Text(user.name),
+              secondary: PopupMenuButton(
+                itemBuilder: (BuildContext context) => [
+                  PopupMenuItem(child: Text(S.current.rename), onTap: () => renameUser(user)),
+                  PopupMenuItem(enabled: index != 0, onTap: () => moveUser(index, -1), child: Text(S.current.move_up)),
+                  PopupMenuItem(
+                    enabled: index != users.length - 1,
+                    onTap: () => moveUser(index, 1),
+                    child: Text(S.current.move_down),
+                  ),
+                  PopupMenuItem(child: Text(S.current.copy), onTap: () => copyUser(index)),
+                  PopupMenuItem(child: Text(S.current.clear), onTap: () => clearUser(index)),
+                  PopupMenuItem(
+                    enabled: users.length > 1,
+                    onTap: () => deleteUser(index),
+                    child: Text(S.current.delete),
+                  ),
+                ],
+              ),
+            );
+          }),
+        ),
       ),
     );
   }

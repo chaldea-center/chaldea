@@ -19,39 +19,15 @@ class _ClassFilterStyleSettingState extends State<ClassFilterStyleSetting> {
       appBar: AppBar(title: Text(S.current.setting_servant_class_filter_style)),
       body: ListView(
         children: [
-          TileGroup(
-            children: [
-              RadioListTile<SvtListClassFilterStyle>(
-                value: SvtListClassFilterStyle.auto,
-                groupValue: db.settings.display.classFilterStyle,
-                title: Text(S.current.svt_class_filter_auto),
-                onChanged: onChanged,
-              ),
-              RadioListTile<SvtListClassFilterStyle>(
-                value: SvtListClassFilterStyle.singleRow,
-                groupValue: db.settings.display.classFilterStyle,
-                title: Text(S.current.svt_class_filter_single_row),
-                onChanged: onChanged,
-              ),
-              RadioListTile<SvtListClassFilterStyle>(
-                value: SvtListClassFilterStyle.singleRowExpanded,
-                groupValue: db.settings.display.classFilterStyle,
-                title: Text(S.current.svt_class_filter_single_row_expanded),
-                onChanged: onChanged,
-              ),
-              RadioListTile<SvtListClassFilterStyle>(
-                value: SvtListClassFilterStyle.twoRow,
-                groupValue: db.settings.display.classFilterStyle,
-                title: Text(S.current.svt_class_filter_two_row),
-                onChanged: onChanged,
-              ),
-              RadioListTile<SvtListClassFilterStyle>(
-                value: SvtListClassFilterStyle.doNotShow,
-                groupValue: db.settings.display.classFilterStyle,
-                title: Text(S.current.svt_class_filter_hide),
-                onChanged: onChanged,
-              ),
-            ],
+          RadioGroup<SvtListClassFilterStyle>(
+            groupValue: db.settings.display.classFilterStyle,
+            onChanged: onChanged,
+            child: TileGroup(
+              children: [
+                for (final style in SvtListClassFilterStyle.values)
+                  RadioListTile<SvtListClassFilterStyle>(value: style, title: Text(style.shownName)),
+              ],
+            ),
           ),
           Center(
             child: ElevatedButton(

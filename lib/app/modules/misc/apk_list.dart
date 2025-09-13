@@ -167,21 +167,23 @@ class _ApkListPageState extends State<ApkListPage> {
           ? const Center(child: Icon(Icons.nearby_error_rounded))
           : ListView(
               children: [
-                Wrap(
-                  alignment: WrapAlignment.center,
-                  children: [
-                    for (bool v in [false, true])
-                      RadioWithLabel<bool>(
-                        value: v,
-                        groupValue: proxy,
-                        label: Text(v ? S.current.chaldea_server_cn : S.current.chaldea_server_global),
-                        onChanged: (v) {
-                          setState(() {
-                            if (v != null) proxy = v;
-                          });
-                        },
-                      ),
-                  ],
+                RadioGroup(
+                  groupValue: proxy,
+                  onChanged: (v) {
+                    setState(() {
+                      if (v != null) proxy = v;
+                    });
+                  },
+                  child: Wrap(
+                    alignment: WrapAlignment.center,
+                    children: [
+                      for (bool v in [false, true])
+                        RadioWithLabel<bool>(
+                          value: v,
+                          label: Text(v ? S.current.chaldea_server_cn : S.current.chaldea_server_global),
+                        ),
+                    ],
+                  ),
                 ),
                 for (final data in _dataList) buildOne(data),
                 TileGroup(

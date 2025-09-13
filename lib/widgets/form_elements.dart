@@ -42,17 +42,13 @@ class CheckboxWithLabel extends StatelessWidget {
 
 class RadioWithLabel<T> extends StatelessWidget {
   final T value;
-  final T? groupValue;
-  final ValueChanged<T?>? onChanged;
   final Widget label;
   final EdgeInsetsGeometry? padding;
 
   const RadioWithLabel({
     super.key,
     required this.value,
-    required this.groupValue,
     required this.label,
-    required this.onChanged,
     this.padding = const EdgeInsets.only(right: 8),
   });
 
@@ -61,10 +57,8 @@ class RadioWithLabel<T> extends StatelessWidget {
     Widget child = Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Radio(
+        Radio<T>(
           value: value,
-          groupValue: groupValue,
-          onChanged: onChanged,
           materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
           visualDensity: VisualDensity.compact,
         ),
@@ -74,6 +68,7 @@ class RadioWithLabel<T> extends StatelessWidget {
     if (padding != null) {
       child = Padding(padding: padding!, child: child);
     }
-    return InkWell(onTap: onChanged == null ? null : () => onChanged!(value), child: child);
+    final groupRegistry = RadioGroup.maybeOf<T>(context);
+    return InkWell(onTap: groupRegistry == null ? null : () => groupRegistry.onChanged(value), child: child);
   }
 }

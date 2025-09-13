@@ -215,33 +215,35 @@ class _NetworkSettingsPageState extends State<NetworkSettingsPage> {
   }
 
   Widget _buildGroup(_Group group) {
-    return TileGroup(
-      header: group.title,
-      children: [false, true].map((v) {
-        final url = v ? group.cnUrl : group.globalUrl;
-        return RadioListTile(
-          dense: true,
-          value: v,
-          groupValue: group.getValue(),
-          title: Text.rich(
-            TextSpan(
-              children: [
-                TextSpan(
-                  text: '${v ? S.current.chaldea_server_cn : S.current.chaldea_server_global}: ',
-                  style: Theme.of(context).textTheme.bodySmall,
-                ),
-                TextSpan(text: Uri.parse(url).origin),
-              ],
+    return RadioGroup<bool>(
+      groupValue: group.getValue(),
+      onChanged: (v) {
+        setState(() {
+          if (v != null) group.onChanged(v);
+        });
+      },
+      child: TileGroup(
+        header: group.title,
+        children: [false, true].map((v) {
+          final url = v ? group.cnUrl : group.globalUrl;
+          return RadioListTile<bool>(
+            dense: true,
+            value: v,
+            title: Text.rich(
+              TextSpan(
+                children: [
+                  TextSpan(
+                    text: '${v ? S.current.chaldea_server_cn : S.current.chaldea_server_global}: ',
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                  TextSpan(text: Uri.parse(url).origin),
+                ],
+              ),
             ),
-          ),
-          secondary: _getStatus(url),
-          onChanged: (v) {
-            setState(() {
-              if (v != null) group.onChanged(v);
-            });
-          },
-        );
-      }).toList(),
+            secondary: _getStatus(url),
+          );
+        }).toList(),
+      ),
     );
   }
 

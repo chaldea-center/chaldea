@@ -16,23 +16,27 @@ class _GameServerPageState extends State<GameServerPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text(S.current.game_server)),
-      body: SingleChildScrollView(child: TileGroup(children: [for (var server in Region.values) radioOf(server)])),
+      body: SingleChildScrollView(
+        child: RadioGroup<Region>(
+          groupValue: db.curUser.region,
+          onChanged: (v) {
+            setState(() {
+              if (v != null) db.curUser.region = v;
+            });
+            db.notifyUserdata();
+          },
+          child: TileGroup(children: [for (var server in Region.values) radioOf(server)]),
+        ),
+      ),
     );
   }
 
   Widget radioOf(Region region) {
     return RadioListTile<Region>(
       value: region,
-      groupValue: db.curUser.region,
       title: Text(region.localName),
       subtitle: Text(region.language.name),
       controlAffinity: ListTileControlAffinity.leading,
-      onChanged: (v) {
-        setState(() {
-          if (v != null) db.curUser.region = v;
-        });
-        db.notifyUserdata();
-      },
     );
   }
 }

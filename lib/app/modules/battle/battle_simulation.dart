@@ -347,8 +347,30 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
           verticalDivider: const SizedBox(height: 120, child: VerticalDivider()),
           horizontalDivider: const DividerWithTitle(thickness: 1, height: 8, title: '楚河  漢界'),
           children: [
-            Responsive(small: 12, middle: 6, child: enemyParty),
-            Responsive(small: 12, middle: 6, child: allyParty),
+            Responsive(
+              small: 12,
+              middle: 6,
+              child: RadioGroup<int>(
+                groupValue: battleData.enemyTargetIndex,
+                onChanged: (index) {
+                  if (index != null) _onChangeTargetIndex(index: index, isPlayer: false);
+                },
+                child: enemyParty,
+              ),
+            ),
+            Responsive(
+              small: 12,
+              middle: 6,
+              child: RadioGroup<int>(
+                groupValue: (options.manualAllySkillTarget && battleData.isPlayerTurn
+                    ? null
+                    : battleData.playerTargetIndex),
+                onChanged: (index) {
+                  if (index != null) _onChangeTargetIndex(index: index, isPlayer: true);
+                },
+                child: allyParty,
+              ),
+            ),
           ],
         ),
         const Divider(thickness: 1, height: 8),
@@ -419,25 +441,10 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
     }
 
     final List<Widget> children = [];
-    void _onChangeIndex(int? _) {
-      if (svt.isPlayer) {
-        if (battleData.playerTargetIndex != index) {
-          battleData.playerTargetIndex = index;
-          db.settings.battleSim.manualAllySkillTarget = battleData.options.manualAllySkillTarget = false;
-        } else {
-          db.settings.battleSim.manualAllySkillTarget = battleData.options.manualAllySkillTarget =
-              !battleData.options.manualAllySkillTarget;
-        }
-      } else {
-        battleData.enemyTargetIndex = index;
-      }
-
-      if (mounted) setState(() {});
-    }
 
     children.add(
       InkWell(
-        onTap: () => _onChangeIndex(index),
+        onTap: () => _onChangeTargetIndex(index: index, isPlayer: svt.isPlayer),
         child: Text.rich(
           TextSpan(
             children: [
@@ -445,10 +452,6 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
                 child: Radio<int>(
                   value: index,
                   toggleable: svt.isPlayer,
-                  groupValue: svt.isPlayer
-                      ? (options.manualAllySkillTarget && battleData.isPlayerTurn ? null : battleData.playerTargetIndex)
-                      : battleData.enemyTargetIndex,
-                  onChanged: _onChangeIndex,
                   materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                   visualDensity: VisualDensity.compact,
                   fillColor: svt.isPlayer && options.manualAllySkillTarget && battleData.playerTargetIndex == index
@@ -553,6 +556,22 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
       padding: const EdgeInsets.all(4),
       child: Column(mainAxisAlignment: MainAxisAlignment.center, children: children),
     );
+  }
+
+  void _onChangeTargetIndex({required int index, required bool isPlayer}) {
+    if (isPlayer) {
+      if (battleData.playerTargetIndex != index) {
+        battleData.playerTargetIndex = index;
+        db.settings.battleSim.manualAllySkillTarget = battleData.options.manualAllySkillTarget = false;
+      } else {
+        db.settings.battleSim.manualAllySkillTarget = battleData.options.manualAllySkillTarget =
+            !battleData.options.manualAllySkillTarget;
+      }
+    } else {
+      battleData.enemyTargetIndex = index;
+    }
+
+    if (mounted) setState(() {});
   }
 
   Widget buildMiscRow() {

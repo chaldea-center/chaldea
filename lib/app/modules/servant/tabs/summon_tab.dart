@@ -26,23 +26,25 @@ class _SvtSummonTabState extends State<SvtSummonTab> {
     }
     summons.sort2((e) => e.startTime.jp!, reversed: true);
     final children = [
-      Wrap(
-        alignment: WrapAlignment.center,
-        spacing: 4,
-        children: [
-          for (final include in [true, false])
-            RadioWithLabel<bool>(
-              value: include,
-              groupValue: includeGSSR,
-              label: Text(include ? '${S.current.lucky_bag} ✓' : '${S.current.lucky_bag} ×'),
-              onChanged: (v) {
-                if (v != null) {
-                  includeGSSR = v;
-                }
-                setState(() {});
-              },
-            ),
-        ],
+      RadioGroup(
+        groupValue: includeGSSR,
+        onChanged: (v) {
+          if (v != null) {
+            includeGSSR = v;
+          }
+          setState(() {});
+        },
+        child: Wrap(
+          alignment: WrapAlignment.center,
+          spacing: 4,
+          children: [
+            for (final include in [true, false])
+              RadioWithLabel<bool>(
+                value: include,
+                label: Text(include ? '${S.current.lucky_bag} ✓' : '${S.current.lucky_bag} ×'),
+              ),
+          ],
+        ),
       ),
       if (summons.isEmpty) const ListTile(title: Text('No related summons')),
       for (final summon in summons) summonTile(context, summon),

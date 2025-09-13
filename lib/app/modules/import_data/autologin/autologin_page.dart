@@ -68,7 +68,7 @@ class _AutoLoginPageState extends State<AutoLoginPage> {
       body: ListView(
         children: [
           warning,
-          ...buildAccounts(),
+          buildAccounts(),
           buildActions(),
           if (args.region == Region.jp)
             Card(
@@ -277,7 +277,7 @@ class _AutoLoginPageState extends State<AutoLoginPage> {
     );
   }
 
-  List<Widget> buildAccounts() {
+  Widget buildAccounts() {
     List<Widget> children = [];
     for (final user in allData) {
       Widget title = Text(
@@ -319,22 +319,25 @@ class _AutoLoginPageState extends State<AutoLoginPage> {
       Widget tile = RadioListTile<AutoLoginDataJP>(
         visualDensity: VisualDensity.compact,
         value: user,
-        groupValue: args,
         title: title,
         subtitle: subtitle,
         secondary: trailing,
-        onChanged: (v) {
-          if (v != null) {
-            args = v;
-          }
-          setState(() {});
-        },
       );
       tile = ListTileTheme.merge(horizontalTitleGap: 8, minVerticalPadding: 0, child: tile);
       children.add(tile);
     }
     children.add(const Divider(indent: 16, endIndent: 16));
-    return children;
+    return RadioGroup<AutoLoginDataJP>(
+      groupValue: args,
+      onChanged: (v) {
+        setState(() {
+          if (v != null) {
+            args = v;
+          }
+        });
+      },
+      child: Column(mainAxisSize: MainAxisSize.min, children: children),
+    );
   }
 
   Widget buildActions() {

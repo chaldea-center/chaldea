@@ -20,44 +20,29 @@ class _FavOptionSettingState extends State<FavOptionSetting> {
       appBar: AppBar(title: Text(S.current.setting_setting_favorite_button_default)),
       body: ListView(
         children: [
-          TileGroup(
-            children: [
-              RadioListTile<FavoriteState?>(
-                value: null,
-                groupValue: db.settings.preferredFavorite,
-                title: Text(S.current.svt_fav_btn_remember),
-                onChanged: (v) {
-                  setState(() {
-                    db.settings.preferredFavorite = null;
-                    db.saveSettings();
-                  });
-                },
-              ),
-              RadioListTile<FavoriteState?>(
-                value: FavoriteState.owned,
-                groupValue: db.settings.preferredFavorite,
-                title: Text(S.current.svt_fav_btn_show_favorite),
-                secondary: const Icon(Icons.favorite),
-                onChanged: (v) {
-                  setState(() {
-                    db.settings.preferredFavorite = FavoriteState.owned;
-                    db.saveSettings();
-                  });
-                },
-              ),
-              RadioListTile<FavoriteState?>(
-                value: FavoriteState.all,
-                groupValue: db.settings.preferredFavorite,
-                title: Text(S.current.svt_fav_btn_show_all),
-                secondary: const Icon(Icons.remove_circle_outline),
-                onChanged: (v) {
-                  setState(() {
-                    db.settings.preferredFavorite = FavoriteState.all;
-                    db.saveSettings();
-                  });
-                },
-              ),
-            ],
+          RadioGroup<FavoriteState?>(
+            groupValue: db.settings.preferredFavorite,
+            onChanged: (v) {
+              setState(() {
+                db.settings.preferredFavorite = null;
+                db.saveSettings();
+              });
+            },
+            child: TileGroup(
+              children: [
+                RadioListTile<FavoriteState?>(value: null, title: Text(S.current.svt_fav_btn_remember)),
+                RadioListTile<FavoriteState?>(
+                  value: FavoriteState.owned,
+                  title: Text(S.current.svt_fav_btn_show_favorite),
+                  secondary: const Icon(Icons.favorite),
+                ),
+                RadioListTile<FavoriteState?>(
+                  value: FavoriteState.all,
+                  title: Text(S.current.svt_fav_btn_show_all),
+                  secondary: const Icon(Icons.remove_circle_outline),
+                ),
+              ],
+            ),
           ),
           Center(
             child: ElevatedButton(

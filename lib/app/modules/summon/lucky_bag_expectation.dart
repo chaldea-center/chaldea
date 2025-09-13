@@ -127,19 +127,17 @@ class _LuckyBagExpectationState extends State<LuckyBagExpectation> with SingleTi
                   ),
                 ),
                 minLeadingWidth: 24,
-                title: Row(
-                  children: List.generate(
-                    _kScoreMax - _kScoreMin + 1,
-                    (index) => Expanded(
-                      child: Radio<int>(
-                        value: index,
-                        groupValue: scoreOf(svtId),
-                        onChanged: (v) {
-                          setState(() {
-                            if (v != null) _svtScores[svtId] = v;
-                          });
-                        },
-                      ),
+                title: RadioGroup<int>(
+                  groupValue: scoreOf(svtId),
+                  onChanged: (v) {
+                    setState(() {
+                      if (v != null) _svtScores[svtId] = v;
+                    });
+                  },
+                  child: Row(
+                    children: List.generate(
+                      _kScoreMax - _kScoreMin + 1,
+                      (index) => Expanded(child: Radio<int>(value: index)),
                     ),
                   ),
                 ),

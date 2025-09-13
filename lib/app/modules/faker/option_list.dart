@@ -50,22 +50,38 @@ class _BattleOptionListPageState extends State<BattleOptionListPage> {
               ]
             : [],
       ),
-      body: sorting && canEdit
-          ? ReorderableListView(
-              children: [for (final (index, option) in data.battleOptions.indexed) buildOne(index, option)],
-              onReorder: (int oldIndex, int newIndex) {
-                setState(() {
-                  final selectedItem = data.curBattleOption;
-                  if (oldIndex < newIndex) {
-                    newIndex -= 1;
-                  }
-                  final item = data.battleOptions.removeAt(oldIndex);
-                  data.battleOptions.insert(newIndex, item);
-                  data.curBattleOptionIndex = data.battleOptions.indexOf(selectedItem);
-                });
-              },
-            )
-          : ListView(children: [for (final (index, option) in data.battleOptions.indexed) buildOne(index, option)]),
+      body: RadioGroup<int>(
+        groupValue: canEdit ? data.curBattleOptionIndex : null,
+        onChanged: (index) {
+          if (sorting) return;
+          if (index == null) return;
+          final option = data.battleOptions[index];
+          if (widget.onSelected != null) {
+            widget.onSelected!((index: index, option: option));
+            Navigator.pop(context, (index: index, option: option));
+          } else {
+            setState(() {
+              data.curBattleOptionIndex = index;
+            });
+          }
+        },
+        child: sorting && canEdit
+            ? ReorderableListView(
+                children: [for (final (index, option) in data.battleOptions.indexed) buildOne(index, option)],
+                onReorder: (int oldIndex, int newIndex) {
+                  setState(() {
+                    final selectedItem = data.curBattleOption;
+                    if (oldIndex < newIndex) {
+                      newIndex -= 1;
+                    }
+                    final item = data.battleOptions.removeAt(oldIndex);
+                    data.battleOptions.insert(newIndex, item);
+                    data.curBattleOptionIndex = data.battleOptions.indexOf(selectedItem);
+                  });
+                },
+              )
+            : ListView(children: [for (final (index, option) in data.battleOptions.indexed) buildOne(index, option)]),
+      ),
     );
   }
 
@@ -86,21 +102,7 @@ class _BattleOptionListPageState extends State<BattleOptionListPage> {
       key: ObjectKey(option),
       value: index,
       dense: true,
-      groupValue: canEdit ? data.curBattleOptionIndex : null,
-      onChanged: sorting
-          ? null
-          : (v) {
-              if (widget.onSelected != null) {
-                widget.onSelected!((index: index, option: option));
-                Navigator.pop(context, (index: index, option: option));
-              } else {
-                setState(() {
-                  if (v != null) {
-                    data.curBattleOptionIndex = v;
-                  }
-                });
-              }
-            },
+      enabled: !sorting,
       controlAffinity: ListTileControlAffinity.leading,
       title: Text('No.${index + 1} ${option.name.isEmpty ? "<no name>" : option.name}'),
       subtitle: Text(_describeQuest(option.questId, option.questPhase)),

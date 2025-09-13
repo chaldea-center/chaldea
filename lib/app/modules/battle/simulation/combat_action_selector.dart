@@ -415,6 +415,8 @@ class _CombatActionSelectorState extends State<CombatActionSelector> {
   }
 }
 
+typedef _VoidFutureCallback = Future<void> Function();
+
 class EnemyCombatActionSelector extends StatefulWidget {
   final BattleData battleData;
   final Function(Future Function() task) onConfirm;
@@ -432,7 +434,7 @@ class _EnemyCombatActionSelectorState extends State<EnemyCombatActionSelector> {
   BattleServantData? selectedCounter;
   int? actionIndex;
   bool critical = false;
-  Future<void> Function()? onConfirm;
+  _VoidFutureCallback? onConfirm;
 
   @override
   void initState() {
@@ -455,28 +457,22 @@ class _EnemyCombatActionSelectorState extends State<EnemyCombatActionSelector> {
     }
 
     int optionIndex = -1;
+    Map<int, _VoidFutureCallback> callbacks = {};
     Widget buildRadio({
       required Widget title,
       Widget? subtitle,
-      required Future<void> Function() onSelected,
+      required _VoidFutureCallback onSelected,
       bool enabled = true,
     }) {
       optionIndex += 1;
+      callbacks[optionIndex] = onSelected;
       return RadioListTile<int>(
         dense: true,
         value: optionIndex,
-        groupValue: actionIndex,
         title: title,
         subtitle: subtitle,
         materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-        onChanged: enabled
-            ? (v) {
-                setState(() {
-                  actionIndex = v;
-                  onConfirm = onSelected;
-                });
-              }
-            : null,
+        enabled: enabled,
       );
     }
 
@@ -621,7 +617,16 @@ class _EnemyCombatActionSelectorState extends State<EnemyCombatActionSelector> {
       contentPadding: const EdgeInsetsDirectional.fromSTEB(0, 20.0, 0, 24.0),
       content: ListTileTheme.merge(
         minLeadingWidth: 24,
-        child: Column(mainAxisSize: MainAxisSize.min, children: children),
+        child: RadioGroup<int>(
+          groupValue: actionIndex,
+          onChanged: (index) {
+            setState(() {
+              actionIndex = index;
+              onConfirm = callbacks[index];
+            });
+          },
+          child: Column(mainAxisSize: MainAxisSize.min, children: children),
+        ),
       ),
       showOk: false,
       actions: [
@@ -688,23 +693,30 @@ class _EnemyCombatActionSelectorState extends State<EnemyCombatActionSelector> {
         RadioListTile<BattleServantData>(
           dense: true,
           value: svt,
-          groupValue: selectedCounter,
           title: Text(counterBuff.buff.lName.l),
           subtitle: Text(svt.lBattleName),
           secondary: svt.iconBuilder(context: context),
           materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-          onChanged: (v) {
-            setState(() {
-              selectedCounter = svt;
-              selectedEnemy = null;
-              onConfirm = () => battleData.activateCounter(svt);
-            });
-          },
         ),
       );
     }
     if (counterActors.isNotEmpty && battleData.nonnullEnemies.isNotEmpty) {
-      children.insertAll(0, [...counterActors, kDefaultDivider]);
+      children.insert(
+        0,
+        RadioGroup<BattleServantData>(
+          groupValue: selectedCounter,
+          onChanged: (svt) {
+            setState(() {
+              if (svt != null) {
+                selectedCounter = svt;
+                selectedEnemy = null;
+                onConfirm = () => battleData.activateCounter(svt);
+              }
+            });
+          },
+          child: Column(mainAxisSize: MainAxisSize.min, children: [...counterActors, kDefaultDivider]),
+        ),
+      );
     }
 
     return children;
