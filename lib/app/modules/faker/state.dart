@@ -19,6 +19,8 @@ import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../master_mission/solver/solver.dart';
+import '_shared/menu_button.dart';
+import 'history.dart';
 
 part 'runtime/random_mission.dart';
 part 'runtime/gacha.dart';
@@ -104,6 +106,24 @@ class FakerRuntime {
     }
     if (ctx == null) return null;
     return child.showDialog(ctx, barrierDismissible: barrierDismissible);
+  }
+
+  Widget buildHistoryButton(BuildContext context) {
+    return IconButton(
+      onPressed: () {
+        router.pushPage(FakerHistoryViewer(agent: agent));
+      },
+      icon: const Icon(Icons.history),
+    );
+  }
+
+  Widget buildMenuButton(BuildContext context) {
+    return IconButton(
+      onPressed: () {
+        router.showDialog(builder: (context) => FakerMenuButton(runtime: this));
+      },
+      icon: Icon(Icons.grid_view_rounded),
+    );
   }
 
   Widget buildCircularProgress({

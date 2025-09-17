@@ -539,6 +539,10 @@ extension ColorX on Color {
   }
 }
 
+extension IconDataX on IconData {
+  bool get isFontAwesome => fontFamily?.startsWith('FontAwesome') == true;
+}
+
 extension ResponseX<T> on Response<T> {
   dynamic json() {
     if (data is Map) {

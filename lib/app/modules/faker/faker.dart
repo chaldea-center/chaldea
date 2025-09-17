@@ -26,20 +26,13 @@ import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/utils/notification.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
-import '../import_data/import_https_page.dart';
 import '../import_data/sniff_details/formation_decks.dart';
-import 'card_enhance/svt_cc.dart';
-import 'card_enhance/svt_combine.dart';
-import 'details/box_gacha.dart';
 import 'details/dialogs.dart';
 import 'details/raids.dart';
-import 'details/trade.dart';
 import 'gacha/gacha_draw.dart';
 import 'history.dart';
-import 'mission/mission_receive.dart';
 import 'option_list.dart';
 import 'present_box/present_box.dart';
-import 'random_mission/random_mission_loop.dart';
 import 'state.dart';
 
 class FakeGrandOrder extends StatefulWidget {
@@ -131,7 +124,6 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
         body: kIsWeb ? const Center(child: Text('Not supported')) : const Center(child: CircularProgressIndicator()),
       );
     }
-    final bool isLoggedIn = mstData.user != null;
     return Scaffold(
       appBar: AppBar(
         leading: BackButton(
@@ -149,90 +141,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
           },
         ),
         title: const Text("Fake/Grand Order"),
-        actions: [
-          IconButton(
-            onPressed: () {
-              router.pushPage(FakerHistoryViewer(agent: agent));
-            },
-            icon: const Icon(Icons.history),
-          ),
-          PopupMenuButton(
-            itemBuilder: (context) => [
-              PopupMenuItem(
-                enabled: isLoggedIn,
-                onTap: () {
-                  router.pushPage(ImportHttpPage(mstData: mstData));
-                },
-                child: Text(S.current.general_import),
-              ),
-              PopupMenuItem(
-                enabled: isLoggedIn,
-                onTap: () {
-                  router.pushPage(UserPresentBoxManagePage(runtime: runtime));
-                },
-                child: Text(S.current.present_box),
-              ),
-              PopupMenuItem(
-                enabled: isLoggedIn,
-                onTap: () {
-                  router.pushPage(GachaDrawPage(runtime: runtime));
-                },
-                child: Text(S.current.gacha),
-              ),
-              PopupMenuItem(
-                enabled: isLoggedIn,
-                onTap: () {
-                  router.pushPage(UserEventMissionReceivePage(runtime: runtime));
-                },
-                child: Text(S.current.master_mission),
-              ),
-              PopupMenuItem(
-                enabled: isLoggedIn,
-                onTap: () {
-                  router.pushPage(SvtCombinePage(runtime: runtime));
-                },
-                child: Text('从者强化'),
-              ),
-              PopupMenuItem(
-                enabled: isLoggedIn,
-                onTap: () {
-                  router.pushPage(UserSvtCommandCodePage(runtime: runtime));
-                },
-                child: Text('指令卡/纹章'),
-              ),
-              if (mstData.userEventTrade.isNotEmpty)
-                PopupMenuItem(
-                  enabled: isLoggedIn,
-                  onTap: () async {
-                    router.pushPage(UserEventTradePage(runtime: runtime));
-                  },
-                  child: Text(S.current.event_trade),
-                ),
-              if (mstData.userBoxGacha.isNotEmpty)
-                PopupMenuItem(
-                  enabled: isLoggedIn,
-                  onTap: () async {
-                    router.pushPage(BoxGachaDrawPage(runtime: runtime));
-                  },
-                  child: Text(S.current.event_lottery),
-                ),
-              if (mstData.userEventRandomMission.isNotEmpty)
-                PopupMenuItem(
-                  enabled: isLoggedIn,
-                  onTap: () async {
-                    router.pushPage(RandomMissionLoopPage(runtime: runtime));
-                  },
-                  child: Text(S.current.random_mission),
-                ),
-              PopupMenuItem(
-                child: Text("Reload"),
-                onTap: () {
-                  runtime.runTask(runtime.gameData.reset);
-                },
-              ),
-            ],
-          ),
-        ],
+        actions: [runtime.buildHistoryButton(context), runtime.buildMenuButton(context)],
       ),
       body: PopScope(
         canPop: false,

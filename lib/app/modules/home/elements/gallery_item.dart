@@ -20,6 +20,7 @@ import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/packages/app_info.dart';
 import 'package:chaldea/packages/platform/platform.dart';
+import 'package:chaldea/utils/extension.dart';
 import 'package:chaldea/widgets/theme.dart';
 import '../../april_fool/april_fool_home.dart';
 import '../../bgm/bgm_list.dart';
@@ -81,10 +82,9 @@ class GalleryItem {
 
   Widget buildIcon(BuildContext context, {double size = 40, Color? color}) {
     if (child != null) return child!;
-    bool fa = icon!.fontFamily?.toLowerCase().startsWith('fontawesome') == true;
     var _iconColor =
         color ?? (Theme.of(context).useMaterial3 ? Theme.of(context).colorScheme.primary : AppTheme(context).tertiary);
-    return fa
+    return icon!.isFontAwesome
         ? Padding(
             padding: EdgeInsets.all(size * 0.05),
             child: FaIcon(icon, size: size * 0.9, color: _iconColor),
