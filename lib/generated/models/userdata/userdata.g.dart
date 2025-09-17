@@ -106,6 +106,7 @@ User _$UserFromJson(Map json) => $checkedCreate('User', json, ($checkedConvert) 
       'battleSim',
       (v) => v == null ? null : BattleSimUserData.fromJson(Map<String, dynamic>.from(v as Map)),
     ),
+    lastImportId: $checkedConvert('lastImportId', (v) => v as String?),
   );
   return val;
 });
@@ -133,6 +134,7 @@ Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
   ),
   'saintQuartzPlan': instance.saintQuartzPlan.toJson(),
   'battleSim': instance.battleSim.toJson(),
+  'lastImportId': instance.lastImportId,
 };
 
 SvtStatus _$SvtStatusFromJson(Map json) => $checkedCreate('SvtStatus', json, ($checkedConvert) {

@@ -152,9 +152,8 @@ class User {
   bool sameEventPlan;
 
   int get curSvtPlanNo => _curSvtPlanNo.clamp(0, plans.length - 1);
-  int _curSvtPlanNo;
-
   set curSvtPlanNo(int v) => _curSvtPlanNo = v.clamp(0, plans.length - 1);
+  int _curSvtPlanNo;
 
   Map<int, int> items;
 
@@ -170,6 +169,8 @@ class User {
   SaintQuartzPlan saintQuartzPlan;
 
   BattleSimUserData battleSim;
+
+  String? lastImportId;
 
   User({
     String? id,
@@ -192,6 +193,7 @@ class User {
     Map<String, Map<int, int>>? luckyBagSvtScores,
     SaintQuartzPlan? saintQuartzPlan,
     BattleSimUserData? battleSim,
+    this.lastImportId,
   }) : id = id ?? const Uuid().v4(),
        servants = servants ?? {},
        dupServantMapping = dupServantMapping ?? {},

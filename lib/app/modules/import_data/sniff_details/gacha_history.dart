@@ -62,7 +62,7 @@ class _SniffGachaHistoryState extends State<SniffGachaHistory> {
     if (mstGachas == null && mounted) {
       SimpleConfirmDialog(
         title: Text(S.current.error),
-        content: const Text('Download Gacha Data failed, click Refresh to retry'),
+        content: Text('Download Gacha Data failed, click Refresh to retry\n卡池数据下载失败，请检查网络连接或代理设置'),
         showCancel: false,
       ).showDialog(context);
     }

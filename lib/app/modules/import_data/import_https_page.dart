@@ -797,14 +797,38 @@ class ImportHttpPageState extends State<ImportHttpPage> {
   }
 
   void didImportData() async {
-    bool? confirmed = await SimpleConfirmDialog(
-      title: Text(S.current.import_data),
-      content: Text('${S.current.cur_account}: ${db.curUser.name}'),
-    ).showDialog(context);
-    if (confirmed != true) return;
     final user = db.curUser;
     final userGame = mstData?.user;
-    user.isGirl = userGame?.genderType == 2;
+    if (mstData == null || userGame == null) {
+      EasyLoading.showError('No user data found.\nIs it valid?');
+      return;
+    }
+    final lastImportDifferent = user.lastImportId != null && user.lastImportId != userGame.friendCode;
+    bool? confirm = await SimpleConfirmDialog(
+      title: Text(S.current.import_data),
+      content: Text(
+        [
+          '${S.current.cur_account}: ${db.curUser.name}',
+          'To import: ${userGame.friendCode}',
+          if (lastImportDifferent) 'Last imported: ${user.lastImportId}!!!',
+        ].join('\n'),
+      ),
+    ).showDialog(context);
+    if (confirm != true || !mounted) return;
+
+    if (lastImportDifferent) {
+      final diffConfirm = await SimpleConfirmDialog(
+        title: Text(S.current.warning),
+        content: Text(
+          'Last imported:\n${user.lastImportId}\n\n'
+          'Current import:\n${userGame.friendCode}\n\n\n${S.current.confirm}?',
+          style: TextStyle(color: Theme.of(context).colorScheme.error),
+        ),
+      ).showDialog(context);
+      if (diffConfirm != true || !mounted) return;
+    }
+
+    user.isGirl = userGame.genderType == 2;
     if (_includeItem) {
       // user.items.clear();
       for (final svtCoin in mstData!.userSvtCoin) {
@@ -815,12 +839,10 @@ class ImportHttpPageState extends State<ImportHttpPage> {
       for (final item in items) {
         user.items[item.itemId] = item.num;
       }
-      if (userGame != null) {
-        user.items[Items.stoneId] = userGame.stone;
-        user.items[Items.qpId] = userGame.qp;
-        user.items[Items.manaPrismId] = userGame.mana;
-        user.items[Items.rarePrismId] = userGame.rarePri;
-      }
+      user.items[Items.stoneId] = userGame.stone;
+      user.items[Items.qpId] = userGame.qp;
+      user.items[Items.manaPrismId] = userGame.mana;
+      user.items[Items.rarePrismId] = userGame.rarePri;
     }
     if (_includeCraft) {
       user.craftEssences.addAll(crafts.map((key, value) => MapEntry(key, CraftStatus.fromJson(value.toJson()))));
@@ -897,6 +919,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
     for (final equip in mstData!.userEquip) {
       user.mysticCodes[equip.equipId] = equip.lv;
     }
+    user.lastImportId = userGame.friendCode;
 
     EasyLoading.showSuccess(S.current.success);
     db.itemCenter.init();
