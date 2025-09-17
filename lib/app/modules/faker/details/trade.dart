@@ -20,7 +20,9 @@ class UserEventTradePage extends StatefulWidget {
   State<UserEventTradePage> createState() => _UserEventTradePageState();
 }
 
-class _UserEventTradePageState extends State<UserEventTradePage> with SingleTickerProviderStateMixin {
+class _UserEventTradePageState extends State<UserEventTradePage>
+    with SingleTickerProviderStateMixin, FakerRuntimeStateMixin {
+  @override
   late final runtime = widget.runtime;
   late final userEventTrades = runtime.mstData.userEventTrade;
   _UserTradeData data = _UserTradeData(null);
@@ -30,16 +32,9 @@ class _UserEventTradePageState extends State<UserEventTradePage> with SingleTick
   @override
   void initState() {
     super.initState();
-    runtime.addDependency(this);
     if (userEventTrades.length == 1) {
       selectTrade(userEventTrades.single);
     }
-  }
-
-  @override
-  void dispose() {
-    runtime.removeDependency(this);
-    super.dispose();
   }
 
   void selectTrade(UserEventTradeEntity trade) {

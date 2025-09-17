@@ -26,11 +26,10 @@ class RandomMissionLoopPage extends StatefulWidget {
   State<RandomMissionLoopPage> createState() => _RandomMissionLoopPageState();
 }
 
-class _RandomMissionLoopPageState extends State<RandomMissionLoopPage> {
+class _RandomMissionLoopPageState extends State<RandomMissionLoopPage> with FakerRuntimeStateMixin {
+  @override
   late final runtime = widget.runtime;
-  late final agent = runtime.agent;
   late final user = runtime.agent.user;
-  late final mstData = runtime.mstData;
   late final option = user.randomMission;
 
   //
@@ -39,16 +38,9 @@ class _RandomMissionLoopPageState extends State<RandomMissionLoopPage> {
   @override
   void initState() {
     super.initState();
-    runtime.addDependency(this);
     stat.load(runtime).then((_) {
       if (mounted) setState(() {});
     });
-  }
-
-  @override
-  void dispose() {
-    runtime.removeDependency(this);
-    super.dispose();
   }
 
   @override

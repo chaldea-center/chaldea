@@ -18,25 +18,12 @@ class UserSvtCommandCodePage extends StatefulWidget {
   State<UserSvtCommandCodePage> createState() => _UserSvtCommandCodePageState();
 }
 
-class _UserSvtCommandCodePageState extends State<UserSvtCommandCodePage> {
+class _UserSvtCommandCodePageState extends State<UserSvtCommandCodePage> with FakerRuntimeStateMixin {
+  @override
   late final runtime = widget.runtime;
-  late final agent = runtime.agent;
-  late final mstData = runtime.mstData;
   late final user = agent.user;
 
   int curSvtId = 0;
-
-  @override
-  void initState() {
-    super.initState();
-    runtime.addDependency(this);
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    runtime.removeDependency(this);
-  }
 
   @override
   Widget build(BuildContext context) {

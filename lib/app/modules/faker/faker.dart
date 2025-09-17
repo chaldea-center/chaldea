@@ -66,7 +66,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
 
   @override
   void dispose() {
-    _runtime?.dispose(this);
+    _runtime?.removeDependency(this);
     super.dispose();
   }
 

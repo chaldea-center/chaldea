@@ -188,10 +188,6 @@ class FakerRuntime {
     update();
   }
 
-  void dispose(State state) {
-    _dependencies.remove(state);
-  }
-
   // task
 
   void lockTask(VoidCallback callback) {
@@ -878,5 +874,23 @@ class RandomMissionLoopStat {
     final allQuests = db.gameData.wars[event.warIds.firstOrNull]?.quests ?? [];
     cqs0 = allQuests.where((e) => e.consume == 5 && e.flags.contains(QuestFlag.dropFirstTimeOnly)).toList();
     fqs0 = allQuests.where((e) => e.isAnyFree && e.consume > 0).toList();
+  }
+}
+
+mixin FakerRuntimeStateMixin<T extends StatefulWidget> on State<T> {
+  FakerRuntime get runtime;
+  FakerAgent get agent => runtime.agent;
+  MasterDataManager get mstData => runtime.mstData;
+
+  @override
+  void initState() {
+    super.initState();
+    runtime.addDependency(this);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    runtime.removeDependency(this);
   }
 }

@@ -19,10 +19,9 @@ class BoxGachaDrawPage extends StatefulWidget {
   State<BoxGachaDrawPage> createState() => _BoxGachaDrawPageState();
 }
 
-class _BoxGachaDrawPageState extends State<BoxGachaDrawPage> {
+class _BoxGachaDrawPageState extends State<BoxGachaDrawPage> with FakerRuntimeStateMixin {
+  @override
   late final runtime = widget.runtime;
-  late final agent = runtime.agent;
-  late final mstData = runtime.mstData;
   late final user = agent.user;
   late final jpBoxGachaEvents = <int, ({Event event, EventLottery lottery})>{
     for (final e in db.gameData.events.values)
@@ -38,16 +37,9 @@ class _BoxGachaDrawPageState extends State<BoxGachaDrawPage> {
   @override
   void initState() {
     super.initState();
-    runtime.addDependency(this);
     initData().then((_) {
       if (mounted) setState(() {});
     });
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    runtime.removeDependency(this);
   }
 
   Future<void> initData() async {

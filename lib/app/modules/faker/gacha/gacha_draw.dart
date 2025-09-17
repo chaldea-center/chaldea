@@ -24,10 +24,9 @@ class GachaDrawPage extends StatefulWidget {
   State<GachaDrawPage> createState() => _GachaDrawPageState();
 }
 
-class _GachaDrawPageState extends State<GachaDrawPage> {
+class _GachaDrawPageState extends State<GachaDrawPage> with FakerRuntimeStateMixin {
+  @override
   late final runtime = widget.runtime;
-  late final agent = runtime.agent;
-  late final mstData = runtime.mstData;
   late final user = agent.user;
   late final gachaOption = user.gacha;
 
@@ -38,14 +37,7 @@ class _GachaDrawPageState extends State<GachaDrawPage> {
   @override
   void initState() {
     super.initState();
-    runtime.addDependency(this);
     initData();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    runtime.removeDependency(this);
   }
 
   Future<void> initData() async {

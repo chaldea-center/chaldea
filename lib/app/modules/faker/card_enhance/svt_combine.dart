@@ -19,24 +19,11 @@ class SvtCombinePage extends StatefulWidget {
   State<SvtCombinePage> createState() => _SvtCombinePageState();
 }
 
-class _SvtCombinePageState extends State<SvtCombinePage> {
+class _SvtCombinePageState extends State<SvtCombinePage> with FakerRuntimeStateMixin {
+  @override
   late final runtime = widget.runtime;
-  late final agent = runtime.agent;
-  late final mstData = runtime.mstData;
   late final user = agent.user;
   late final options = user.svtCombine;
-
-  @override
-  void initState() {
-    super.initState();
-    runtime.addDependency(this);
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    runtime.removeDependency(this);
-  }
 
   @override
   Widget build(BuildContext context) {

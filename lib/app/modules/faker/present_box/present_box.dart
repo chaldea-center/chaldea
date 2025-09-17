@@ -26,7 +26,8 @@ class UserPresentBoxManagePage extends StatefulWidget {
   State<UserPresentBoxManagePage> createState() => _UserPresentBoxManagePageState();
 }
 
-class _UserPresentBoxManagePageState extends State<UserPresentBoxManagePage> {
+class _UserPresentBoxManagePageState extends State<UserPresentBoxManagePage> with FakerRuntimeStateMixin {
+  @override
   late final runtime = widget.runtime;
   late final userPresents = runtime.mstData.userPresentBox;
 
@@ -39,7 +40,6 @@ class _UserPresentBoxManagePageState extends State<UserPresentBoxManagePage> {
   @override
   void initState() {
     super.initState();
-    runtime.addDependency(this);
     showSelectedOnly = false;
     items = Map.of(db.gameData.items);
     Future.microtask(() async {
@@ -54,12 +54,6 @@ class _UserPresentBoxManagePageState extends State<UserPresentBoxManagePage> {
       }
       if (mounted) setState(() {});
     });
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    runtime.removeDependency(this);
   }
 
   List<UserPresentBoxEntity> filterPresents() {
