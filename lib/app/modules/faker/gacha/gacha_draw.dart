@@ -104,6 +104,7 @@ class _GachaDrawPageState extends State<GachaDrawPage> {
   }
 
   Widget get headerInfo {
+    final gacha = _cachedGachas[gachaOption.gachaId];
     final userGame = mstData.user ?? agent.user.userGame;
     final cardCounts = mstData.countSvtKeep();
     return Container(
@@ -119,13 +120,21 @@ class _GachaDrawPageState extends State<GachaDrawPage> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Expanded(child: Text('[${agent.user.serverName}] ${userGame?.name}')),
-            Row(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                db.getIconImage(Items.friendPoint?.icon, width: 20),
-                Text(' ${curFriendPoint.format(compact: false, groupSeparator: ",")}'),
-              ],
+            Text.rich(
+              TextSpan(
+                children: [
+                  CenterWidgetSpan(child: db.getIconImage(Items.friendPoint?.icon, width: 20)),
+                  TextSpan(text: ' ${curFriendPoint.format(compact: false, groupSeparator: ",")}'),
+                  if (gacha != null && gacha.type != GachaType.freeGacha) ...[
+                    const TextSpan(text: '\n'),
+                    CenterWidgetSpan(child: db.getIconImage(Items.stone?.icon, width: 20)),
+                    TextSpan(text: ' ${userGame?.freeStone}+${userGame?.chargeStone} '),
+                    CenterWidgetSpan(child: db.getIconImage(Items.summonTicket?.icon, width: 20)),
+                    TextSpan(text: ' ${mstData.userItem[Items.summonTicketId]?.num}'),
+                  ],
+                ],
+              ),
+              textAlign: TextAlign.end,
             ),
           ],
         ),
@@ -186,7 +195,7 @@ class _GachaDrawPageState extends State<GachaDrawPage> {
                         children: [
                           for (final gacha in gachas)
                             SimpleDialogOption(
-                              child: Text(gacha.lName),
+                              child: Text('[${gacha.id}]${gacha.lName}'),
                               onPressed: () {
                                 runtime.lockTask(() async {
                                   gachaOption.gachaId = gacha.id;

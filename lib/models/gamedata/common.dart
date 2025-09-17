@@ -1387,6 +1387,7 @@ class CommonRelease with RouteInfo {
   Map<String, dynamic> toJson() => _$CommonReleaseToJson(this);
 
   static bool? check(List<CommonRelease> releases, bool? Function(CommonRelease release) test) {
+    if (releases.isEmpty) return true;
     Map<int, Set<bool?>> results = {};
     for (final release in releases) {
       final v = test(release);

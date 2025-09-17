@@ -125,7 +125,7 @@ class _SelectGachaSubPageState extends State<SelectGachaSubPage> {
         ),
       );
     }
-    if (condMatches.values.every((e) => e.contains(false))) {
+    if (condMatches.isNotEmpty && condMatches.values.every((e) => e.contains(false))) {
       hasFailed = true;
     }
     return Column(
