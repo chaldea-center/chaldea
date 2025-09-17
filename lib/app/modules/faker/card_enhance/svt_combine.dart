@@ -1,6 +1,7 @@
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/app/modules/common/filter_group.dart';
+import 'package:chaldea/app/modules/common/misc.dart';
 import 'package:chaldea/app/modules/faker/state.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
@@ -428,7 +429,7 @@ class _SvtCombinePageState extends State<SvtCombinePage> with FakerRuntimeStateM
         ),
       ]);
 
-      //append skill
+      // active skill
       children.addAll([
         DividerWithTitle(title: S.current.active_skill),
         Row(
@@ -526,6 +527,47 @@ class _SvtCombinePageState extends State<SvtCombinePage> with FakerRuntimeStateM
           ],
         ),
       ]);
+
+      // command code
+      final userSvtCmdCode = mstData.userSvtCommandCode[baseUserSvt.svtId];
+      children.addAll([
+        DividerWithTitle(title: '${S.current.command_code} ${S.current.unlock}'),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ...List.generate(5, (index) {
+              final cardType = svt.cards.getOrNull(index);
+              final status = userSvtCmdCode?.userCommandCodeIds.getOrNull(index) ?? -1;
+              Widget child;
+              if (cardType == null) {
+                child = Text('$index:UnknownCard');
+              } else {
+                child = CommandCardWidget(card: cardType, width: 42);
+                child = ImageWithText(
+                  image: child,
+                  text: (mstData.userItem[_getCommandCodeUnlockKey(cardType)]?.num ?? 0).toString(),
+                  option: ImageWithTextOption(fontSize: 12),
+                );
+                if (status == -1) {
+                  child = InkWell(
+                    onTap: () async {
+                      await runtime.runTask(() => unlockIndex(svt.id, [index]));
+                    },
+                    child: Opacity(opacity: 0.5, child: child),
+                  );
+                }
+              }
+              return Flexible(child: child);
+            }),
+            IconButton(
+              onPressed: () {
+                runtime.runTask(() => unlockIndex(svt.id, List.generate(5, (i) => i)));
+              },
+              icon: Icon(Icons.done_all),
+            ),
+          ],
+        ),
+      ]);
     }
     return ListView(padding: EdgeInsets.only(bottom: 72), children: children);
   }
@@ -592,4 +634,29 @@ class _SvtCombinePageState extends State<SvtCombinePage> with FakerRuntimeStateM
       ),
     );
   }
+
+  Future<void> unlockIndex(int svtId, List<int> indexes) async {
+    for (final index in indexes) {
+      final svt = db.gameData.servantsById[svtId];
+      final status = mstData.userSvtCommandCode[svtId]?.userCommandCodeIds.getOrNull(index) ?? -1;
+      final cardType = svt?.cards.getOrNull(index);
+      if (cardType == null) {
+        throw SilentException('Unknown Svt or index');
+      }
+      if (status >= 0) continue;
+      final itemNum = mstData.userItem[_getCommandCodeUnlockKey(cardType)]?.num ?? 0;
+      if (itemNum <= 0) continue;
+      await runtime.agent.commandCodeUnlock(servantId: svtId, idx: index);
+      if (mounted) setState(() {});
+    }
+  }
+}
+
+int _getCommandCodeUnlockKey(CardType cardType) {
+  return switch (cardType) {
+    CardType.quick => 5000,
+    CardType.arts => 5001,
+    CardType.buster => 5002,
+    _ => throw UnimplementedError('Unknown CardType $cardType'),
+  };
 }

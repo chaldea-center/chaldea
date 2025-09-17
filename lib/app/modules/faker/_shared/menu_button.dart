@@ -6,7 +6,6 @@ import 'package:chaldea/utils/constants.dart';
 import 'package:chaldea/utils/extension.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../../import_data/import_https_page.dart';
-import '../card_enhance/svt_cc.dart';
 import '../card_enhance/svt_combine.dart';
 import '../details/box_gacha.dart';
 import '../details/trade.dart';
@@ -119,14 +118,6 @@ class _FakerMenuButtonState extends State<FakerMenuButton> with FakerRuntimeStat
                 enabled: isLoggedIn,
                 onTap: () {
                   router.pushPage(SvtCombinePage(runtime: runtime));
-                },
-              ),
-              _ButtonData(
-                icon: Icons.people,
-                name: '指令卡/纹章',
-                enabled: isLoggedIn,
-                onTap: () {
-                  router.pushPage(UserSvtCommandCodePage(runtime: runtime));
                 },
               ),
             ],
