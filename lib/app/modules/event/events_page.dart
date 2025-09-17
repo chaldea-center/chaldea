@@ -319,7 +319,8 @@ class EventListPageState extends State<EventListPage>
                     db.curPlan_
                       ..limitEvents = src.limitEvents
                       ..mainStories = src.mainStories
-                      ..tickets = src.tickets;
+                      ..tickets = src.tickets
+                      ..recipes = src.recipes;
                     db.itemCenter.calculate();
                     Navigator.of(context).pop();
                   },

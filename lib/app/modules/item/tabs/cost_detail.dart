@@ -112,10 +112,7 @@ class _ItemCostSvtDetailTabState extends State<ItemCostSvtDetailTab> {
             spacing: 4,
             children: [
               for (final fav in [true, false])
-                RadioWithLabel<bool>(
-                  value: fav,
-                  label: Text(fav ? S.current.favorite : S.current.general_all),
-                ),
+                RadioWithLabel<bool>(value: fav, label: Text(fav ? S.current.favorite : S.current.general_all)),
             ],
           ),
         ),

@@ -497,11 +497,18 @@ class QuestPhase extends Quest {
         }
       }
     }
-    // ort
     if (id == 3001325 && phase == 7) {
+      // ORT
       if (Maths.min(drops.map((e) => e.dropCount ~/ e.runs), 0) == 8) {
         for (final drop in drops) {
           drop.dropCount = drop.dropCount ~/ 8;
+        }
+      }
+    } else if (id == 4000420 && phase == 6) {
+      // Ordeal Call III: Kiara
+      if (Maths.min(drops.map((e) => e.dropCount ~/ e.runs), 0) == 2) {
+        for (final drop in drops) {
+          drop.dropCount = drop.dropCount ~/ 2;
         }
       }
     }

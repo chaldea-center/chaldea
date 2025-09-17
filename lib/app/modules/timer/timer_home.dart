@@ -197,13 +197,12 @@ class _AllItemTab extends StatelessWidget {
     return ListView.separated(
       itemBuilder: (context, index) {
         if (index == 0) {
-          return ListTile(
-            dense: true,
-            title: Text(
-              '${S.current.update_time}: ${timerData.updatedAt.sec2date().toCustomString(second: false)}',
-              textAlign: TextAlign.center,
-            ),
-          );
+          String header = '${S.current.update_time}: ';
+          header += [
+            timerData.timestamp,
+            if (timerData.updatedAt - timerData.timestamp > 30 * 60) timerData.updatedAt,
+          ].map((e) => e.sec2date().toCustomString(second: false)).join(' / ');
+          return ListTile(dense: true, title: Text(header, textAlign: TextAlign.center));
         }
         return items[index - 1].buildItem(context, expanded: false);
       },

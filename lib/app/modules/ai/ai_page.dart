@@ -179,6 +179,7 @@ class _AiPageState extends State<AiPage> with RegionBasedState<NiceAiCollection,
     for (final ai in [...aiCollection.mainAis, ...aiCollection.relatedAis]) {
       allAis.putIfAbsent(ai.id, () => {}).putIfAbsent(ai.primaryKey, () => ai);
     }
+    final expanded = aiCollection.mainAis.length + aiCollection.relatedAis.length <= 20;
     for (final entry in allAis.entries) {
       final ais = NiceAiCollection.sortedAis(entry.value.values.toList());
       children.add(
@@ -190,6 +191,7 @@ class _AiPageState extends State<AiPage> with RegionBasedState<NiceAiCollection,
           skills: widget.skills,
           td: widget.td,
           onClickNextAi: onClickNextAi,
+          expanded: expanded,
         ),
       );
     }

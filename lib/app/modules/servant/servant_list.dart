@@ -1003,7 +1003,9 @@ class ServantListPageState extends State<ServantListPage> with SearchableListSta
                 ? null
                 : () {
                     final src = UserPlan.fromJson(jsonDecode(jsonEncode(db.curUser.plans[index])));
-                    db.curPlan_.servants = src.servants;
+                    db.curPlan_
+                      ..servants = src.servants
+                      ..classBoards = src.classBoards;
                     db.curUser.ensurePlanLarger();
                     db.itemCenter.calculate();
                     Navigator.of(context).pop();

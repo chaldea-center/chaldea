@@ -783,7 +783,7 @@ class _ProcessedData {
 class GameTimerData {
   int updatedAt;
   String? hash;
-  int? timestamp;
+  int timestamp;
   List<Event> events;
   List<NiceGacha> gachas;
   List<MasterMission> masterMissions;
@@ -794,14 +794,15 @@ class GameTimerData {
   GameTimerData({
     this.updatedAt = 0,
     this.hash,
-    this.timestamp,
+    int? timestamp,
     this.events = const [],
     this.gachas = const [],
     this.masterMissions = const [],
     this.shops = const [],
     this.items = const [],
     GameConstants? constants,
-  }) : constants = constants ?? ConstData.constants;
+  }) : timestamp = timestamp ?? updatedAt,
+       constants = constants ?? ConstData.constants;
 
   List<NiceShop> get shownShops => shops.where((e) => e.payType != PayType.anonymous).toList();
 

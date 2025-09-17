@@ -14,6 +14,7 @@ class AiTable extends StatelessWidget {
   final EnemySkill? skills;
   final EnemyTd? td;
   final void Function(int nextAiId) onClickNextAi;
+  final bool expanded;
 
   const AiTable({
     super.key,
@@ -23,12 +24,13 @@ class AiTable extends StatelessWidget {
     this.region,
     this.skills,
     this.td,
+    this.expanded = true,
   });
 
   @override
   Widget build(BuildContext context) {
     return SimpleAccordion(
-      expanded: true,
+      expanded: expanded,
       headerBuilder: (context, _) {
         return ListTile(title: Text("${type.name.toUpperCase()} AI ${ais.first.id}"));
       },
