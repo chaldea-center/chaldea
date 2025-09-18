@@ -455,7 +455,13 @@ class _FormationBondTabState extends State<FormationBondTab> {
         DividerWithTitle(title: 'misc', indent: 16),
         ListTile(
           dense: true,
-          leading: Item.iconBuilder(context: context, item: null, itemId: 94065901, width: 28, jumpToDetail: false),
+          leading: Item.iconBuilder(
+            context: context,
+            item: null,
+            itemId: Items.teapotId,
+            width: 28,
+            jumpToDetail: false,
+          ),
           title: Text(Transl.itemNames('星見のティーポット').l),
           trailing: DropdownButton<int>(
             value: option.teapotTimes,

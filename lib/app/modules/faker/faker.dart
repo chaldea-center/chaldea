@@ -980,11 +980,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
     final questPhase =
         AtlasApi.questPhaseCache(battleOption.questId, battleOption.questPhase, null, runtime.region) ??
         AtlasApi.questPhaseCache(battleOption.questId, battleOption.questPhase);
-    final formation = mstData.userDeck[battleOption.deckId];
 
-    final eventId = quest?.logicEvent?.id ?? 0;
-    final eventDeckNo = questPhase?.extraDetail?.useEventDeckNo ?? 1;
-    final eventFormation = mstData.userEventDeck[UserEventDeckEntity.createPK(eventId, eventDeckNo)];
     final userQuest = mstData.userQuest[battleOption.questId];
     final now = DateTime.now().timestamp;
     List<(Item, UserItemEntity)> teapots = [
@@ -1025,7 +1021,15 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
     }
 
     return TileGroup(
-      header: 'Battle Setup',
+      headerWidget: SHeader.rich(
+        TextSpan(
+          text: 'Battle Setup  ',
+          children: [
+            if (battleOption.useCampaignItem)
+              CenterWidgetSpan(child: db.getIconImage(AssetURL.i.items(Items.teapotId), width: 24, height: 24)),
+          ],
+        ),
+      ),
       children: [
         ListTile(
           dense: true,
@@ -1102,39 +1106,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
             child: Text(battleOption.questPhase.toString()),
           ),
         ),
-        if ((questPhase ?? quest)?.isUseUserEventDeck() == true) ...[
-          ListTile(
-            dense: true,
-            title: Text("Event Deck ${eventFormation?.deckNo ?? eventDeckNo}"),
-            subtitle: Text('Event ${eventFormation?.eventId ?? eventId}'),
-            trailing: const Icon(Icons.change_circle),
-            onTap: () {
-              router.pushPage(UserFormationDecksPage(mstData: mstData, eventId: eventId));
-            },
-          ),
-          if (eventFormation != null) ..._buildUserDeck(eventFormation.deckInfo),
-        ],
-        ListTile(
-          dense: true,
-          title: Text("Deck ${battleOption.deckId}"),
-          subtitle: formation == null ? const Text("Unknown deck") : Text('${formation.deckNo} - ${formation.name}'),
-          trailing: const Icon(Icons.change_circle),
-          onTap: () {
-            router.pushPage(
-              UserFormationDecksPage(
-                mstData: mstData,
-                selectedDeckId: battleOption.deckId,
-                onSelected: (v) {
-                  runtime.lockTask(() {
-                    battleOption.deckId = v.id;
-                  });
-                  if (mounted) setState(() {});
-                },
-              ),
-            );
-          },
-        ),
-        if (formation != null) ..._buildUserDeck(formation.deckInfo),
+        ...getUserDeckSection(quest, questPhase),
         DividerWithTitle(title: S.current.support_servant_short, indent: 16),
         ListTile(
           dense: true,
@@ -1322,7 +1294,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
         CheckboxListTile.adaptive(
           dense: true,
           value: battleOption.useCampaignItem,
-          secondary: Item.iconBuilder(context: context, item: null, itemId: 94065901, jumpToDetail: false),
+          secondary: Item.iconBuilder(context: context, item: null, itemId: Items.teapotId, jumpToDetail: false),
           title: Text(Transl.itemNames('星見のティーポット').l),
           subtitle: teapots.isEmpty
               ? null
@@ -2077,6 +2049,82 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
     );
   }
 
+  String? _hideEventDeck;
+  List<Widget> getUserDeckSection(Quest? quest, QuestPhase? questPhase) {
+    final formation = mstData.userDeck[battleOption.deckId];
+    final normalDeckTile = ListTile(
+      dense: true,
+      title: Text("Deck ${battleOption.deckId}"),
+      subtitle: formation == null ? const Text("Unknown deck") : Text('${formation.deckNo} - ${formation.name}'),
+      trailing: const Icon(Icons.change_circle),
+      onTap: mstData.userDeck.isEmpty
+          ? null
+          : () {
+              router.pushPage(
+                UserFormationDecksPage(
+                  mstData: mstData,
+                  selectedDeckId: battleOption.deckId,
+                  onSelected: (v) {
+                    runtime.lockTask(() {
+                      battleOption.deckId = v.id;
+                    });
+                    if (mounted) setState(() {});
+                  },
+                ),
+              );
+            },
+    );
+
+    if ((questPhase ?? quest)?.isUseUserEventDeck() != true) {
+      return [kIndentDivider, normalDeckTile, ..._buildUserDeck(formation?.deckInfo)];
+    }
+
+    final eventId = quest?.logicEvent?.id ?? 0;
+    final eventDeckNo = questPhase?.extraDetail?.useEventDeckNo ?? 1;
+    final eventFormation = mstData.userEventDeck[UserEventDeckEntity.createPK(eventId, eventDeckNo)];
+    final eventDeckTile = ListTile(
+      dense: true,
+      title: Text("Event Deck ${eventFormation?.deckNo ?? eventDeckNo}"),
+      subtitle: Text('Event ${eventFormation?.eventId ?? eventId}'),
+      trailing: const Icon(Icons.change_circle),
+      onTap: mstData.userEventDeck.isEmpty
+          ? null
+          : () {
+              router.pushPage(UserFormationDecksPage(mstData: mstData, eventId: eventId));
+            },
+    );
+    final eventDeckKey = '$eventId-$eventDeckNo';
+    final showNormalDeck = _hideEventDeck == eventDeckKey;
+    final highlightStyle = TextStyle(color: AppTheme(context).tertiary);
+    return [
+      DividerWithTitle(
+        titleWidget: InkWell(
+          onTap: () {
+            setState(() {
+              if (showNormalDeck) {
+                _hideEventDeck = null;
+              } else {
+                _hideEventDeck = eventDeckKey;
+              }
+            });
+          },
+          child: Text.rich(
+            TextSpan(
+              children: [
+                TextSpan(text: 'Event Deck', style: showNormalDeck ? null : highlightStyle),
+                TextSpan(text: ' / '),
+                TextSpan(text: 'Normal Deck', style: showNormalDeck ? highlightStyle : null),
+              ],
+            ),
+            style: Theme.of(context).textTheme.bodySmall,
+          ),
+        ),
+      ),
+      showNormalDeck ? normalDeckTile : eventDeckTile,
+      ..._buildUserDeck((showNormalDeck ? formation : eventFormation)?.deckInfo),
+    ];
+  }
+
   List<Widget> _buildUserDeck(DeckServantEntity? deckInfo) {
     const int kSvtNumPerRow = 6;
     final userSvtCollections = mstData.userSvtCollection.dict;
@@ -2084,7 +2132,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
     final svtsMap = {for (final svt in svts) svt.id: svt};
 
     List<Widget> children = [];
-    for (int row = 0; row * kSvtNumPerRow < svts.length; row++) {
+    for (int row = 0; row < max(1, (svts.length / kSvtNumPerRow).ceil()); row++) {
       children.add(
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),

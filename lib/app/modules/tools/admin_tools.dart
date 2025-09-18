@@ -40,6 +40,7 @@ class _AdminToolsPageState extends State<AdminToolsPage> {
           ),
           TileGroup(
             header: "Atlas Academy",
+            footer: 'Update all regions to reload all pg tables (including new table)',
             children: [
               ListTile(
                 dense: true,

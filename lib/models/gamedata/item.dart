@@ -360,6 +360,7 @@ class Items {
   static const int lanternId = 1000;
 
   // not item, icon only
+  static const int teapotId = 94065901;
   static const int costumeIconId = 23;
   static const int npRankUpIconId = 8;
 
