@@ -93,7 +93,7 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
               if (eventWarId != null) eventWarIds.add(eventWarId);
               if (team == null) continue;
 
-              final svts = team.formation.allSvts;
+              final svts = team.formation.svts;
               svtIds.addAll(svts.map((e) => e?.svtId ?? 0).where((e) => e > 0));
               ceIds.addAll(svts.map((e) => e?.equip1.id ?? 0).where((e) => e > 0));
               if (team.hasUsedMCSkills()) {
@@ -386,14 +386,14 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
       }
     }
 
-    if (team.formation.allSvts.any((e) => e != null && e.allowedExtraSkills.isNotEmpty)) {
+    if (team.formation.svts.any((e) => e != null && e.allowedExtraSkills.isNotEmpty)) {
       spans.add(TextSpan(text: S.current.optional_event_passive));
     }
     //
     final quest = db.gameData.quests[team.quest?.id];
     if (quest != null) {
       Set<String> unreleasedSvts = {};
-      for (final svtData in team.formation.allSvts) {
+      for (final svtData in team.formation.svts) {
         final svt = db.gameData.servantsById[svtData?.svtId];
         if (svt == null) continue;
         final releasedAt = svt.extra.getReleasedAt();

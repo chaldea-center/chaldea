@@ -55,29 +55,69 @@ class UserFormationDecksPageState extends State<UserFormationDecksPage> {
     final decks = mstData.userDeck.list;
     final eventDecks = mstData.userEventDeck.list;
     eventDecks.sortByList((e) => [widget.eventId == e.eventId ? 0 : 1, -e.eventId, e.deckNo]);
+    UserDeckEntity? grandDeck;
+    if (widget.eventId == null && mstData.userSvtGrand.isNotEmpty) {
+      grandDeck = UserDeckEntity(
+        id: 0,
+        userId: mstData.user?.userId,
+        deckNo: 0,
+        name: 'Grand Servant',
+        deckInfo: DeckServantEntity(
+          svts: [
+            for (final svt in mstData.userSvtGrand.list..sort2((e) => e.grandGraphId))
+              DeckServantData(
+                id: svt.grandGraphId % 100,
+                userSvtId: svt.userSvtId,
+                userId: svt.userId,
+                svtId: svt.svtId,
+                userSvtEquipIds: [
+                  svt.equipTarget1?.userSvtId,
+                  svt.equipTarget2?.userSvtId,
+                  svt.equipTarget3?.userSvtId,
+                ],
+                isFollowerSvt: false,
+                npcFollowerSvtId: 0,
+                followerType: null,
+                initPos: null,
+              ),
+          ],
+          userEquipId: 0,
+          waveSvts: [],
+        ),
+        cost: 0,
+      );
+    }
+    if (grandDeck != null) decks.insert(0, grandDeck);
     return Scaffold(
       appBar: AppBar(title: Text(widget.eventId == null ? "User Decks" : "Event ${widget.eventId} Decks")),
       body: ListView.builder(
         controller: scrollController,
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-        itemBuilder: (context, index) =>
-            widget.eventId == null ? buildUserDeck(decks[index]) : buildEventDeck(eventDecks[index]),
+        itemBuilder: (context, index) => widget.eventId == null
+            ? buildUserDeck(decks[index], decks[index] == grandDeck)
+            : buildEventDeck(eventDecks[index]),
         itemCount: widget.eventId == null ? decks.length : eventDecks.length,
       ),
     );
   }
 
-  Widget buildUserDeck(UserDeckEntity deck) {
+  Widget buildUserDeck(UserDeckEntity deck, bool isGrand) {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         DividerWithTitle(title: '[${deck.id}] No.${deck.deckNo} ${deck.name}'),
         FormationCard(
-          formation: BattleTeamFormationX.fromUserDeck(deckInfo: deck.deckInfo, mstData: mstData, userSvts: userSvts),
+          formation: BattleTeamFormationX.fromUserDeck(
+            deckInfo: deck.deckInfo,
+            mstData: mstData,
+            userSvts: userSvts,
+            maxSvtCount: isGrand ? 8 : null,
+          ),
           userSvtCollections: mstData.userSvtCollection.dict,
           showBond: true,
+          maxSvtCount: isGrand?8:null,
         ),
-        if (widget.onSelected != null)
+        if (widget.onSelected != null && deck.id > 0)
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 4),
             child: Center(
@@ -206,6 +246,7 @@ extension BattleTeamFormationX on BattleTeamFormation {
     required MasterDataManager mstData,
     Map<int, UserServantEntity>? userSvts,
     int posOffset = 0,
+    int? maxSvtCount,
   }) {
     final userEquip = mstData.userEquip.firstWhereOrNull((e) => e.id == deckInfo?.userEquipId);
     final svts = deckInfo?.svts ?? [];
@@ -249,8 +290,7 @@ extension BattleTeamFormationX on BattleTeamFormation {
     }
 
     return BattleTeamFormation(
-      onFieldSvts: [1, 2, 3].map((idx) => cvtSvt(svtsMap[idx + posOffset])).toList(),
-      backupSvts: [4, 5, 6].map((idx) => cvtSvt(svtsMap[idx + posOffset])).toList(),
+      svts: List.generate(maxSvtCount ?? deckInfo?.svts.length ?? 6, (index) => cvtSvt(svtsMap[index + 1 + posOffset])),
       mysticCode: MysticCodeSaveData(mysticCodeId: userEquip?.equipId, level: userEquip?.lv ?? 1),
     );
   }

@@ -231,7 +231,7 @@ class BattleRecordManager {
       }
     }
 
-    if (options.formation.allSvts.where((e) => e.supportType != SupportSvtType.none).length > 1) {
+    if (options.formation.svts.where((e) => e.supportType != SupportSvtType.none).length > 1) {
       reasons.setUpload('${S.current.support_servant}: ＞1');
     }
     final maxCost = Maths.max(ConstData.userLevel.values.map((e) => e.maxCost), 115);
@@ -240,7 +240,7 @@ class BattleRecordManager {
     }
 
     Map<int, int> svtCounts = {};
-    for (final svtData in options.formation.allSvts) {
+    for (final svtData in options.formation.svts) {
       final svtId = svtData.svt?.id ?? 0;
       if (svtId != 0) svtCounts.addNum(svtId, 1);
       _checkSvtEligible(svtData, questPhase);
@@ -256,7 +256,7 @@ class BattleRecordManager {
       for (final restriction in questPhase.restrictions) {
         // myGrandSvt, fixedMyGrandSvt, myGrandSvtPositionMain
         if (restriction.restriction.type == RestrictionType.myGrandSvt) {
-          if (!options.formation.allSvts.any((svtData) {
+          if (!options.formation.svts.any((svtData) {
             final svtIndivs = svtData.svt?.getIndividuality(questPhase.logicEvent?.id, svtData.limitCount);
             if (svtIndivs == null) return false;
             return _checkGrandSvtIndiv(restriction.restriction, svtIndivs);
@@ -406,7 +406,7 @@ class BattleRecordManager {
 
     List<String> unreleasedSvts = [];
     int r5td5 = 0;
-    for (final svtData in runtime.originalOptions.formation.allSvts) {
+    for (final svtData in runtime.originalOptions.formation.svts) {
       final svt = svtData.svt;
       if (svt == null) continue;
       final releasedAt = svt.extra.getReleasedAt();

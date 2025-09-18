@@ -69,9 +69,6 @@ class _SimulationPreviewState extends State<SimulationPreview> {
   final BattleOptions options = BattleOptions();
   BattleSimSetting get settings => db.settings.battleSim;
 
-  List<PlayerSvtData> get onFieldSvts => options.formation.onFieldSvtDataList;
-  List<PlayerSvtData> get backupSvts => options.formation.backupSvtDataList;
-
   @override
   void initState() {
     super.initState();
@@ -629,7 +626,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
               },
               onTapOk: () {
                 settings.playerRegion = v;
-                for (final svt in options.formation.allSvts) {
+                for (final svt in options.formation.svts) {
                   svt.updateRankUps(region: v, jpTime: questPhase?.jpOpenAt);
                 }
                 if (mounted) setState(() {});
@@ -1129,7 +1126,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
       errorMsg = S.current.battle_no_quest_phase;
       return false;
     }
-    if (onFieldSvts.every((setting) => setting.svt == null) && backupSvts.every((setting) => setting.svt == null)) {
+    if (options.formation.svts.every((setting) => setting.svt == null)) {
       errorMsg = S.current.battle_no_servant;
       return false;
     }
@@ -1265,10 +1262,13 @@ class _SimulationPreviewState extends State<SimulationPreview> {
 
   Future<void> restoreFormation(BattleShareData team) async {
     final formation = team.formation;
-    for (int index = 0; index < 3; index++) {
-      onFieldSvts[index] = await PlayerSvtData.fromStoredData(formation.onFieldSvts.getOrNull(index));
-      backupSvts[index] = await PlayerSvtData.fromStoredData(formation.backupSvts.getOrNull(index));
+    List<PlayerSvtData> svts = [];
+    for (int index = 0; index < max(6, team.formation.svts.length); index++) {
+      svts.add(await PlayerSvtData.fromStoredData(formation.svts.getOrNull(index)));
     }
+    options.formation.svts
+      ..clear()
+      ..addAll(svts);
     options.fromShareData(team.options);
     options.formation.mysticCodeData.loadStoredData(formation.mysticCode);
   }
@@ -1276,8 +1276,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
   BattleShareData saveFormation() {
     final team = settings.curTeam;
     final curFormation = team.formation;
-    curFormation.onFieldSvts = onFieldSvts.map((e) => e.isEmpty ? null : e.toStoredData()).toList();
-    curFormation.backupSvts = backupSvts.map((e) => e.isEmpty ? null : e.toStoredData()).toList();
+    curFormation.svts = options.formation.svts.map((e) => e.isEmpty ? null : e.toStoredData()).toList();
     curFormation.mysticCode = options.formation.mysticCodeData.toStoredData();
     final questInfo = questPhase == null ? null : BattleQuestInfo.quest(questPhase!);
     team.quest = questInfo;

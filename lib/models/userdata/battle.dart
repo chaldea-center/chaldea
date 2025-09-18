@@ -347,17 +347,27 @@ class BattleQuestInfo {
 class BattleTeamFormation {
   String? name;
   MysticCodeSaveData mysticCode;
-  List<SvtSaveData?> onFieldSvts;
-  List<SvtSaveData?> backupSvts;
+  @JsonKey(includeToJson: false)
+  List<SvtSaveData?> svts;
+  // Deprecated
+  @protected
+  List<SvtSaveData?> get onFieldSvts => List.generate(3, (index) => svts.getOrNull(index));
+  @protected
+  List<SvtSaveData?> get backupSvts => List.generate(3, (index) => svts.getOrNull(index + 3));
 
   BattleTeamFormation({
     this.name,
     MysticCodeSaveData? mysticCode,
-    List<SvtSaveData?>? onFieldSvts,
-    List<SvtSaveData?>? backupSvts,
+    List<SvtSaveData?>? svts,
+    @protected List<SvtSaveData?>? onFieldSvts,
+    @protected List<SvtSaveData?>? backupSvts,
   }) : mysticCode = mysticCode ?? MysticCodeSaveData(),
-       onFieldSvts = List.generate(3, (index) => onFieldSvts?.getOrNull(index)),
-       backupSvts = List.generate(3, (index) => backupSvts?.getOrNull(index));
+       svts = svts != null && svts.isNotEmpty
+           ? List.generate(max(6, svts.length), (index) => svts.getOrNull(index))
+           : [
+               ...List.generate(3, (index) => onFieldSvts?.getOrNull(index)),
+               ...List.generate(3, (index) => backupSvts?.getOrNull(index)),
+             ];
 
   BattleTeamFormation.fromList({String? name, MysticCodeSaveData? mysticCode, List<SvtSaveData?>? svts})
     : this(name: name, mysticCode: mysticCode, onFieldSvts: svts?.take(3).toList(), backupSvts: svts?.skip(3).toList());
@@ -367,8 +377,6 @@ class BattleTeamFormation {
   Map<String, dynamic> toJson() => _$BattleTeamFormationToJson(this);
 
   BattleTeamFormation copy() => BattleTeamFormation.fromJson(toJson());
-
-  List<SvtSaveData?> get allSvts => [...onFieldSvts, ...backupSvts];
 
   String shownName(int index) {
     String text = '${S.current.team} ${index + 1}';
@@ -380,7 +388,7 @@ class BattleTeamFormation {
 
   List<int> get allCardIds {
     Set<int> ids = {};
-    for (final svt in allSvts) {
+    for (final svt in svts) {
       final svtId = svt?.svtId;
       if (svt != null && svtId != null && svtId > 0) {
         ids.add(svtId);
@@ -394,7 +402,7 @@ class BattleTeamFormation {
 
   int getTotalCost() {
     int totalCost = 0;
-    for (final svtData in allSvts) {
+    for (final svtData in svts) {
       final svt = db.gameData.servantsById[svtData?.svtId];
       if (svtData == null || svt == null || svtData.supportType.isSupport) continue;
       totalCost += svt.getAscended(svtData.limitCount, (v) => v.overwriteCost) ?? svt.cost;

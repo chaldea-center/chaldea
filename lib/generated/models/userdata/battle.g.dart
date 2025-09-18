@@ -186,6 +186,12 @@ BattleTeamFormation _$BattleTeamFormationFromJson(Map json) =>
           'mysticCode',
           (v) => v == null ? null : MysticCodeSaveData.fromJson(Map<String, dynamic>.from(v as Map)),
         ),
+        svts: $checkedConvert(
+          'svts',
+          (v) => (v as List<dynamic>?)
+              ?.map((e) => e == null ? null : SvtSaveData.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList(),
+        ),
         onFieldSvts: $checkedConvert(
           'onFieldSvts',
           (v) => (v as List<dynamic>?)

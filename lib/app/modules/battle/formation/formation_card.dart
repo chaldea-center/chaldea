@@ -12,6 +12,7 @@ class FormationCard extends StatelessWidget {
   final bool fadeOutMysticCode;
   final Map<int, UserServantCollectionEntity>? userSvtCollections;
   final bool showBond;
+  final int? maxSvtCount;
 
   const FormationCard({
     super.key,
@@ -20,6 +21,7 @@ class FormationCard extends StatelessWidget {
     this.fadeOutMysticCode = false,
     this.userSvtCollections,
     this.showBond = false,
+    this.maxSvtCount,
   });
 
   @override
@@ -28,8 +30,7 @@ class FormationCard extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        for (final onFieldSvt in formation.onFieldSvts) _buildServantIcons(context, onFieldSvt),
-        for (final backupSvt in formation.backupSvts) _buildServantIcons(context, backupSvt),
+        for (final svt in formation.svts.take(maxSvtCount ?? 6)) _buildServantIcons(context, svt),
         _buildMysticCode(context),
       ],
     );

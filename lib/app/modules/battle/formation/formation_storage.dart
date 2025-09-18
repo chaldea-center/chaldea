@@ -74,7 +74,7 @@ class _FormationEditorState extends State<FormationEditor>
               for (final record in userData.teams) {
                 final eventWarId = db.gameData.quests[record.quest?.id]?.eventIdPriorWarId;
                 if (eventWarId != null) eventWarIds.add(eventWarId);
-                final svts = record.formation.allSvts;
+                final svts = record.formation.svts;
                 svtIds.addAll(svts.map((e) => e?.svtId ?? 0).where((e) => e > 0));
                 ceIds.addAll(svts.map((e) => e?.equip1.id ?? 0).where((e) => e > 0));
                 if (record.hasUsedMCSkills()) {

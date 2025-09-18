@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'package:chaldea/app/api/atlas.dart';
@@ -36,13 +38,8 @@ void replaySimulation({required BattleShareData detail, int? replayTeamId}) asyn
   final options = BattleOptions();
   options.fromShareData(detail.options);
   final formation = detail.formation;
-  for (int index = 0; index < 3; index++) {
-    options.formation.onFieldSvtDataList[index] = await PlayerSvtData.fromStoredData(
-      formation.onFieldSvts.getOrNull(index),
-    );
-    options.formation.backupSvtDataList[index] = await PlayerSvtData.fromStoredData(
-      formation.backupSvts.getOrNull(index),
-    );
+  for (int index = 0; index < max(6, formation.svts.length); index++) {
+    options.formation.svts[index] = await PlayerSvtData.fromStoredData(formation.svts.getOrNull(index));
   }
 
   options.formation.mysticCodeData.loadStoredData(formation.mysticCode);

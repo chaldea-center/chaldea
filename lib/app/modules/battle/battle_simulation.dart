@@ -73,10 +73,11 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
     await battleData.recordError(
       save: false,
       action: 'battle_init',
-      task: () => battleData.init(questPhase, [
-        ...runtime.originalOptions.formation.onFieldSvtDataList,
-        ...runtime.originalOptions.formation.backupSvtDataList,
-      ], runtime.originalOptions.formation.mysticCodeData),
+      task: () => battleData.init(
+        questPhase,
+        runtime.originalOptions.formation.svts,
+        runtime.originalOptions.formation.mysticCodeData,
+      ),
     );
 
     final replayActions = widget.replayActions;

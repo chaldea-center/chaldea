@@ -28,20 +28,19 @@ class TeamSetupCard extends StatefulWidget {
 }
 
 class _TeamSetupCardState extends State<TeamSetupCard> {
-  List<PlayerSvtData> get onFieldSvts => formation.onFieldSvtDataList;
-  List<PlayerSvtData> get backupSvts => formation.backupSvtDataList;
   BattleTeamSetup get formation => widget.formation;
 
   final hovered = ValueNotifier<String?>(null);
 
   @override
   Widget build(BuildContext context) {
+    final frontlineSvts = formation.getOnFieldSvtDataList(), backupSvts = formation.getBackupSvtDataList();
     return ValueListenableBuilder(
       valueListenable: hovered,
       builder: (context, _, _) => ResponsiveLayout(
         horizontalDivider: kIndentDivider,
         children: [
-          partyOrganization(onFieldSvts, S.current.team_starting_member),
+          partyOrganization(frontlineSvts, S.current.team_starting_member),
           if (widget.showEmptyBackup || backupSvts.any((e) => e.svt != null))
             partyOrganization(backupSvts, S.current.team_backup_member),
         ],
@@ -84,7 +83,7 @@ class _TeamSetupCardState extends State<TeamSetupCard> {
   }
 
   void onDrag(PlayerSvtData from, PlayerSvtData to, bool isCE) {
-    final allSvts = formation.allSvts.toList();
+    final allSvts = formation.svts.toList();
     final fromIndex = allSvts.indexOf(from), toIndex = allSvts.indexOf(to);
     if (fromIndex < 0 || toIndex < 0 || fromIndex == toIndex) return;
     if (isCE) {
@@ -94,8 +93,7 @@ class _TeamSetupCardState extends State<TeamSetupCard> {
     } else {
       allSvts[fromIndex] = to;
       allSvts[toIndex] = from;
-      onFieldSvts.setAll(0, allSvts.sublist(0, onFieldSvts.length));
-      backupSvts.setAll(0, allSvts.sublist(onFieldSvts.length));
+      formation.svts.setAll(0, allSvts);
     }
 
     if (mounted) setState(() {});

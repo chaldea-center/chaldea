@@ -148,7 +148,7 @@ class _FormationBondTabState extends State<FormationBondTab> {
 
     final eventId = quest?.logicEvent?.id ?? 0;
 
-    for (final (deckPos, deckSvt) in option.formation.allSvts.take(_kMaxSvtNum).indexed) {
+    for (final (deckPos, deckSvt) in option.formation.svts.take(_kMaxSvtNum).indexed) {
       final svt = deckSvt.svt;
       if (svt == null) continue;
       final selfResult = results[deckPos];
@@ -189,7 +189,7 @@ class _FormationBondTabState extends State<FormationBondTab> {
             final funcOverwriteTvalsList = func.getOverwriteTvalsList();
             if (funcOverwriteTvalsList.isEmpty && func.functvals.isEmpty) return true;
             final int targetIndex = results.indexOf(target);
-            final targetDeckSvt = option.formation.allSvts.getOrNull(targetIndex);
+            final targetDeckSvt = option.formation.svts.getOrNull(targetIndex);
             final targetIndivs = targetDeckSvt?.svt?.getIndividuality(eventId, targetDeckSvt.limitCount) ?? [];
             if (funcOverwriteTvalsList.isNotEmpty) {
               if (funcOverwriteTvalsList.every((andVals) {
@@ -310,7 +310,7 @@ class _FormationBondTabState extends State<FormationBondTab> {
     }
 
     for (final index in range(results.length)) {
-      final deckSvt = option.formation.allSvts.getOrNull(index);
+      final deckSvt = option.formation.svts.getOrNull(index);
       if (deckSvt == null || deckSvt.svt == null || deckSvt.supportType.isSupport || option.svtBonus[index].isBond15) {
         results[index] = SvtBondBonusResult();
       }
@@ -518,7 +518,7 @@ class _FormationBondTabState extends State<FormationBondTab> {
   }
 
   Widget buildExtraBonus(int index) {
-    final deckSvt = option.formation.allSvts.getOrNull(index);
+    final deckSvt = option.formation.svts.getOrNull(index);
     if (deckSvt == null || deckSvt.svt == null || deckSvt.supportType.isSupport) return const SizedBox.shrink();
     final detail = option.svtBonus[index];
 
@@ -579,7 +579,7 @@ class _FormationBondTabState extends State<FormationBondTab> {
   }
 
   Widget buildResult(int index, SvtBondBonusResult result) {
-    final deckSvt = option.formation.allSvts.getOrNull(index);
+    final deckSvt = option.formation.svts.getOrNull(index);
     if (deckSvt == null || deckSvt.svt == null) return const SizedBox.shrink();
     final detail = option.svtBonus[index];
     if (deckSvt.supportType.isSupport || detail.isBond15) {

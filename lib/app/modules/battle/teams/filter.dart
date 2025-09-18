@@ -81,24 +81,24 @@ class TeamFilterData with FilterDataMixin {
     }
 
     for (final svtId in filterData.blockSvts.options) {
-      if (data.formation.allSvts.any((svt) => svt?.svtId == svtId)) {
+      if (data.formation.svts.any((svt) => svt?.svtId == svtId)) {
         return false;
       }
     }
     if (filterData.useSvts.options.isNotEmpty &&
-        !filterData.useSvts.options.every((svtId) => data.formation.allSvts.any((e) => e?.svtId == svtId))) {
+        !filterData.useSvts.options.every((svtId) => data.formation.svts.any((e) => e?.svtId == svtId))) {
       return false;
     }
     if (filterData.useSvtTdLv > 0) {
       if (filterData.useSvts.options.isEmpty) {
-        if (data.formation.allSvts.any(
+        if (data.formation.svts.any(
           (e) => e != null && (e.svtId ?? 0) != 0 && (e.tdId ?? 0) != 0 && e.tdLv > filterData.useSvtTdLv,
         )) {
           return false;
         }
       } else {
         for (final svtId in filterData.useSvts.options) {
-          if (!data.formation.allSvts.any(
+          if (!data.formation.svts.any(
             (e) => e != null && e.svtId == svtId && (e.tdId ?? 0) != 0 && e.tdLv <= filterData.useSvtTdLv,
           )) {
             return false;
@@ -108,7 +108,7 @@ class TeamFilterData with FilterDataMixin {
     }
     if (filterData.useSvts.options.length == 1 && filterData.useSvtTdLv > 0) {
       final svtId = filterData.useSvts.options.single;
-      if (!data.formation.allSvts.any(
+      if (!data.formation.svts.any(
         (e) => e != null && e.svtId == svtId && (e.tdId ?? 0) != 0 && e.tdLv <= filterData.useSvtTdLv,
       )) {
         return false;
@@ -123,7 +123,7 @@ class TeamFilterData with FilterDataMixin {
     }
 
     for (final ceId in filterData.blockCEs.options) {
-      if (data.formation.allSvts.any((svt) => _isCEMismatch(svt, ceId))) {
+      if (data.formation.svts.any((svt) => _isCEMismatch(svt, ceId))) {
         return false;
       }
     }
@@ -164,12 +164,12 @@ class TeamFilterData with FilterDataMixin {
             return false;
           }
         case TeamFilterMiscType.noSameSvt:
-          final svtIds = data.formation.allSvts.map((e) => e?.svtId ?? 0).where((e) => e > 0).toList();
+          final svtIds = data.formation.svts.map((e) => e?.svtId ?? 0).where((e) => e > 0).toList();
           if (svtIds.length != svtIds.toSet().length) {
             return false;
           }
         case TeamFilterMiscType.noAppendSkill:
-          for (final svt in data.formation.allSvts) {
+          for (final svt in data.formation.svts) {
             final dbSvt = db.gameData.servantsById[svt?.svtId];
             if (svt == null || dbSvt == null) continue;
             if (svt.appendLvs.any((lv) => lv > 0)) {
@@ -177,7 +177,7 @@ class TeamFilterData with FilterDataMixin {
             }
           }
         case TeamFilterMiscType.noGrailFou:
-          for (final svt in data.formation.allSvts) {
+          for (final svt in data.formation.svts) {
             final dbSvt = db.gameData.servantsById[svt?.svtId];
             if (svt == null || dbSvt == null) continue;
             if (dbSvt.type != SvtType.heroine && svt.lv > dbSvt.lvMax) {
@@ -188,7 +188,7 @@ class TeamFilterData with FilterDataMixin {
             }
           }
         case TeamFilterMiscType.noLv100:
-          for (final svt in data.formation.allSvts) {
+          for (final svt in data.formation.svts) {
             final dbSvt = db.gameData.servantsById[svt?.svtId];
             if (svt == null || dbSvt == null) continue;
             if (svt.lv > 100) {
@@ -197,17 +197,17 @@ class TeamFilterData with FilterDataMixin {
           }
           break;
         case TeamFilterMiscType.noDoubleCastoria:
-          if (data.formation.allSvts.where((e) => e?.svtId == 504500).length >= 2) {
+          if (data.formation.svts.where((e) => e?.svtId == 504500).length >= 2) {
             return false;
           }
           break;
         case TeamFilterMiscType.noDoubleKoyan:
-          if (data.formation.allSvts.where((e) => e?.svtId == 604200).length >= 2) {
+          if (data.formation.svts.where((e) => e?.svtId == 604200).length >= 2) {
             return false;
           }
           break;
         case TeamFilterMiscType.noDoubleOberon:
-          if (data.formation.allSvts.where((e) => e?.svtId == 2800100).length >= 2) {
+          if (data.formation.svts.where((e) => e?.svtId == 2800100).length >= 2) {
             return false;
           }
           break;

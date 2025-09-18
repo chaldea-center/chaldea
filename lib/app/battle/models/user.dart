@@ -534,24 +534,22 @@ class BattleOptionsRuntime extends BattleOptionsEnv {
 
 // only used before simulation started and initiation
 class BattleTeamSetup {
-  final List<PlayerSvtData> onFieldSvtDataList;
-  final List<PlayerSvtData> backupSvtDataList;
+  final List<PlayerSvtData> svts;
+
+  List<PlayerSvtData> getOnFieldSvtDataList() => List.generate(3, (index) => svts[index]);
+  List<PlayerSvtData> getBackupSvtDataList() => List.generate(3, (index) => svts[index + 3]);
 
   final MysticCodeData mysticCodeData;
 
   BattleTeamSetup({
-    List<PlayerSvtData?>? onFieldSvtDataList,
-    List<PlayerSvtData?>? backupSvtDataList,
+    List<PlayerSvtData?>? svts,
     MysticCodeData? mysticCodeData,
-  }) : onFieldSvtDataList = List.generate(3, (index) => onFieldSvtDataList?.getOrNull(index) ?? PlayerSvtData.base()),
-       backupSvtDataList = List.generate(3, (index) => backupSvtDataList?.getOrNull(index) ?? PlayerSvtData.base()),
+  }) : svts = List.generate(max(6, svts?.length ?? 0), (index) => svts?.getOrNull(index) ?? PlayerSvtData.base()),
        mysticCodeData = mysticCodeData ?? MysticCodeData();
-
-  List<PlayerSvtData> get allSvts => [...onFieldSvtDataList, ...backupSvtDataList];
 
   int get totalCost {
     int cost = 0;
-    for (final svt in allSvts) {
+    for (final svt in svts) {
       if (svt.svt == null || svt.supportType != SupportSvtType.none) continue;
       cost += svt.svt!.getAscended(svt.limitCount, (attr) => attr.overwriteCost) ?? svt.svt!.cost;
       if (svt.equip1.ce != null) cost += svt.equip1.ce!.cost;
@@ -560,22 +558,16 @@ class BattleTeamSetup {
   }
 
   BattleTeamSetup copy() {
-    return BattleTeamSetup(
-      onFieldSvtDataList: onFieldSvtDataList.map((e) => e.copy()).toList(),
-      backupSvtDataList: backupSvtDataList.map((e) => e.copy()).toList(),
-      mysticCodeData: mysticCodeData.copy(),
-    );
+    return BattleTeamSetup(svts: svts.map((e) => e.copy()).toList(), mysticCodeData: mysticCodeData.copy());
   }
 
   void clear() {
-    onFieldSvtDataList.setRange(0, onFieldSvtDataList.length, List.generate(3, (index) => PlayerSvtData.base()));
-    backupSvtDataList.setRange(0, backupSvtDataList.length, List.generate(3, (index) => PlayerSvtData.base()));
+    svts.setRange(0, svts.length, List.generate(3, (index) => PlayerSvtData.base()));
   }
 
   BattleTeamFormation toFormationData() {
     return BattleTeamFormation(
-      onFieldSvts: onFieldSvtDataList.map((e) => e.isEmpty ? null : e.toStoredData()).toList(),
-      backupSvts: backupSvtDataList.map((e) => e.isEmpty ? null : e.toStoredData()).toList(),
+      svts: svts.map((e) => e.isEmpty ? null : e.toStoredData()).toList(),
       mysticCode: mysticCodeData.toStoredData(),
     );
   }
