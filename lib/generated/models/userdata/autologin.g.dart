@@ -441,6 +441,10 @@ PresentBoxFilterData _$PresentBoxFilterDataFromJson(Map json) =>
               ?.map((e) => $enumDecode(_$PresentTypeEnumMap, e, unknownValue: PresentType.servantExp))
               .toSet(),
         ),
+        presentFromType: $checkedConvert(
+          'presentFromType',
+          (v) => (v as List<dynamic>?)?.map((e) => (e as num).toInt()).toSet(),
+        ),
         rarities: $checkedConvert('rarities', (v) => (v as List<dynamic>?)?.map((e) => (e as num).toInt()).toSet()),
       );
       return val;
@@ -450,6 +454,7 @@ Map<String, dynamic> _$PresentBoxFilterDataToJson(PresentBoxFilterData instance)
   'reversed': instance.reversed,
   'maxNum': instance.maxNum,
   'presentTypes': instance.presentTypes.map((e) => _$PresentTypeEnumMap[e]!).toList(),
+  'presentFromType': instance.presentFromType.toList(),
   'rarities': instance.rarities.toList(),
 };
 

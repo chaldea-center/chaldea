@@ -3,12 +3,19 @@ import 'package:flutter/material.dart';
 import 'package:chaldea/app/modules/common/filter_group.dart';
 import 'package:chaldea/app/modules/common/filter_page_base.dart';
 import 'package:chaldea/generated/l10n.dart';
+import 'package:chaldea/models/gamedata/toplogin.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/extension.dart';
 import 'package:chaldea/widgets/custom_dialogs.dart';
 
 class UserPresentBoxFilterPage extends FilterPage<PresentBoxFilterData> {
-  const UserPresentBoxFilterPage({super.key, required super.filterData, super.onChanged});
+  final Set<int> presentFromTypes;
+  const UserPresentBoxFilterPage({
+    super.key,
+    required super.filterData,
+    super.onChanged,
+    this.presentFromTypes = const {},
+  });
 
   @override
   _ShopFilterState createState() => _ShopFilterState();
@@ -28,6 +35,19 @@ class _ShopFilterState extends FilterPageState<PresentBoxFilterData, UserPresent
       content: getListViewBody(
         restorationId: 'present_box_filter',
         children: [
+          FilterGroup<int>(
+            title: Text(S.current.general_type),
+            options: {for (final v in PresentFromType.values) v.value, ...widget.presentFromTypes}.toList(),
+            values: FilterGroupData(options: filterData.presentFromType.toSet()),
+            optionBuilder: (v) => Text(
+              Transl.enumsInt(v, (e) => e.presentFromType).l,
+              style: widget.presentFromTypes.contains(v) ? null : TextStyle(color: Theme.of(context).disabledColor),
+            ),
+            onFilterChanged: (value, _) {
+              filterData.presentFromType = value.options.toSet();
+              update();
+            },
+          ),
           FilterGroup<PresentType>(
             title: Text(S.current.general_type),
             options: PresentType.values,

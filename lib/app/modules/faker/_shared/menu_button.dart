@@ -58,7 +58,7 @@ class _FakerMenuButtonState extends State<FakerMenuButton> with FakerRuntimeStat
             padding: const EdgeInsets.symmetric(vertical: 8),
             child: Text(
               (gameTop.hash, gameTop.timestamp) == (timerData.hash, timerData.timestamp)
-                  ? fmtVer('', gameTop.hash, gameTop.timestamp)
+                  ? fmtVer('data: ', gameTop.hash, gameTop.timestamp)
                   : [
                       fmtVer('top = ', gameTop.hash, gameTop.timestamp),
                       fmtVer('timer=', timerData.hash ?? "", timerData.timestamp),
@@ -197,7 +197,13 @@ class _FakerMenuButtonState extends State<FakerMenuButton> with FakerRuntimeStat
         ),
       );
       if (button.onTap != null && button.enabled) {
-        child = InkWell(onTap: button.onTap, child: child);
+        child = InkWell(
+          onTap: () {
+            Navigator.pop(context);
+            button.onTap!();
+          },
+          child: child,
+        );
       }
       children.add(child);
     }

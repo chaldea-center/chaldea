@@ -117,6 +117,9 @@ class _UserPresentBoxManagePageState extends State<UserPresentBoxManagePage> wit
         return true;
       });
     }
+    if (filterData.presentFromType.isNotEmpty) {
+      presents.retainWhere((e) => filterData.presentFromType.contains(e.fromType));
+    }
     presents.sortByList((e) {
       Item? item;
       if (e.giftType == GiftType.item.value) {
@@ -154,6 +157,7 @@ class _UserPresentBoxManagePageState extends State<UserPresentBoxManagePage> wit
               context: context,
               builder: (context) => UserPresentBoxFilterPage(
                 filterData: filterData,
+                presentFromTypes: mstData.userPresentBox.map((e) => e.fromType).toSet(),
                 onChanged: (_) {
                   if (mounted) {
                     setState(() {});

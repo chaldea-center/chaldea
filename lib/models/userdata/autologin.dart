@@ -522,14 +522,22 @@ class PresentBoxFilterData {
   int maxNum = 0;
   @JsonKey(unknownEnumValue: PresentType.servantExp)
   Set<PresentType> presentTypes;
+  Set<int> presentFromType = {};
   Set<int> rarities;
 
-  PresentBoxFilterData({this.reversed = false, this.maxNum = 0, Set<PresentType>? presentTypes, Set<int>? rarities})
-    : presentTypes = presentTypes ?? {},
-      rarities = rarities ?? {};
+  PresentBoxFilterData({
+    this.reversed = false,
+    this.maxNum = 0,
+    Set<PresentType>? presentTypes,
+    Set<int>? presentFromType,
+    Set<int>? rarities,
+  }) : presentTypes = presentTypes ?? {},
+       presentFromType = presentFromType ?? {},
+       rarities = rarities ?? {};
 
   void reset() {
     presentTypes.clear();
+    presentFromType.clear();
     rarities.clear();
     maxNum = 0;
   }

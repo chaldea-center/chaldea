@@ -1730,7 +1730,19 @@ class UserPresentBoxEntity extends DataEntityBase<_IntStr> {
 
 enum PresentFromType {
   totalLogin(1),
-  seqLogin(2);
+  seqLogin(2),
+  campaign(3),
+  // 4
+  gacha(5),
+  maintenance(6),
+  // 7
+  eventPoint(8),
+  // 9
+  shop(10),
+  bxoGacha(11),
+  mission(12),
+  // 13-15
+  questClear(16);
 
   const PresentFromType(this.value);
   final int value;
