@@ -9,7 +9,6 @@ import 'package:chaldea/models/gamedata/toplogin.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
-import '../history.dart';
 import '../state.dart';
 
 class UserEventTradePage extends StatefulWidget {
@@ -94,12 +93,7 @@ class _UserEventTradePageState extends State<UserEventTradePage>
             icon: Icon(Icons.flag),
             tooltip: S.current.event,
           ),
-          IconButton(
-            onPressed: () {
-              router.pushPage(FakerHistoryViewer(agent: runtime.agent));
-            },
-            icon: const Icon(Icons.history),
-          ),
+          runtime.buildHistoryButton(context),
         ],
         bottom: FixedHeight.tabBar(
           TabBar(

@@ -10,7 +10,6 @@ import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../../battle/formation/formation_card.dart';
 import '../_shared/svt_select.dart';
-import '../history.dart';
 
 class SvtCombinePage extends StatefulWidget {
   final FakerRuntime runtime;
@@ -48,12 +47,8 @@ class _SvtCombinePageState extends State<SvtCombinePage> with FakerRuntimeStateM
                 mstData.userSvt[options.baseUserSvtId]?.dbSvt?.iconBuilder(context: context, jumpToDetail: false) ??
                 Icon(Icons.change_circle),
           ),
-          IconButton(
-            onPressed: () {
-              router.pushPage(FakerHistoryViewer(agent: agent));
-            },
-            icon: const Icon(Icons.history),
-          ),
+          runtime.buildHistoryButton(context),
+          runtime.buildMenuButton(context),
         ],
       ),
       body: PopScope(

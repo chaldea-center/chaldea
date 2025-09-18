@@ -13,7 +13,6 @@ import 'package:chaldea/models/gamedata/toplogin.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
-import '../history.dart';
 import 'item_weight.dart';
 import 'quest_edit.dart';
 
@@ -46,17 +45,7 @@ class _RandomMissionLoopPageState extends State<RandomMissionLoopPage> with Fake
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('${S.current.random_mission} - Loop'),
-        actions: [
-          IconButton(
-            onPressed: () {
-              router.pushPage(FakerHistoryViewer(agent: agent));
-            },
-            icon: const Icon(Icons.history),
-          ),
-        ],
-      ),
+      appBar: AppBar(title: Text('${S.current.random_mission} - Loop'), actions: [runtime.buildHistoryButton(context)]),
       body: Column(
         children: [
           battleDetailSection,

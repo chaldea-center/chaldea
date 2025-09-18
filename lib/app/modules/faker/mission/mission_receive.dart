@@ -114,7 +114,10 @@ class _UserEventMissionReceivePageState extends State<UserEventMissionReceivePag
     });
     missions.sort2((e) => e.dispNo);
     return Scaffold(
-      appBar: AppBar(title: Text(S.current.master_mission)),
+      appBar: AppBar(
+        title: Text(S.current.master_mission),
+        actions: [runtime.buildHistoryButton(context), runtime.buildMenuButton(context)],
+      ),
       body: Column(
         children: [
           buildHeader(),

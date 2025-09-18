@@ -8,7 +8,6 @@ import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../card_enhance/svt_combine.dart';
-import '../history.dart';
 import '../present_box/present_box.dart';
 
 class BoxGachaDrawPage extends StatefulWidget {
@@ -97,12 +96,7 @@ class _BoxGachaDrawPageState extends State<BoxGachaDrawPage> with FakerRuntimeSt
           },
         ),
         actions: [
-          IconButton(
-            onPressed: () {
-              router.pushPage(FakerHistoryViewer(agent: agent));
-            },
-            icon: const Icon(Icons.history),
-          ),
+          runtime.buildHistoryButton(context),
           PopupMenuButton(
             itemBuilder: (context) => [
               PopupMenuItem(

@@ -12,7 +12,6 @@ import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../../common/builders.dart';
 import '../../craft_essence/craft_list.dart';
-import '../history.dart';
 import 'select_sub.dart';
 import 'user_status_flag.dart';
 
@@ -68,14 +67,7 @@ class _GachaDrawPageState extends State<GachaDrawPage> with FakerRuntimeStateMix
             }
           },
         ),
-        actions: [
-          IconButton(
-            onPressed: () {
-              router.pushPage(FakerHistoryViewer(agent: agent));
-            },
-            icon: const Icon(Icons.history),
-          ),
-        ],
+        actions: [runtime.buildHistoryButton(context), runtime.buildMenuButton(context)],
       ),
       body: PopScope(
         canPop: !runtime.runningTask.value,
@@ -735,7 +727,7 @@ class _GachaDrawPageState extends State<GachaDrawPage> with FakerRuntimeStateMix
       padding: const EdgeInsets.symmetric(horizontal: 12),
     );
 
-    FilledButton buildButton({bool enabled = true, required VoidCallback onPressed, required String text}) {
+    FilledButton buildButton({bool enabled = true, required VoidCallback? onPressed, required String text}) {
       return FilledButton.tonal(onPressed: enabled ? onPressed : null, style: buttonStyle, child: Text(text));
     }
 
@@ -744,16 +736,18 @@ class _GachaDrawPageState extends State<GachaDrawPage> with FakerRuntimeStateMix
       [
         gacha != null && gacha.type == GachaType.payGacha
             ? buildButton(
-                onPressed: () async {
-                  final confirm = await SimpleConfirmDialog(
-                    title: Text('Confirm Free Draw'),
-                    content: Text(gacha.lName),
-                  ).showDialog(context);
-                  if (confirm != true) return;
-                  runtime.runTask(() async {
-                    return runtime.gachaDraw(hundredDraw: false);
-                  });
-                },
+                onPressed: hasFreeDraw
+                    ? () async {
+                        final confirm = await SimpleConfirmDialog(
+                          title: Text('Confirm Free Draw'),
+                          content: Text(gacha.lName),
+                        ).showDialog(context);
+                        if (confirm != true) return;
+                        runtime.runTask(() async {
+                          return runtime.gachaDraw(hundredDraw: false);
+                        });
+                      }
+                    : null,
                 text: 'Free Draw',
               )
             : buildButton(
@@ -777,18 +771,6 @@ class _GachaDrawPageState extends State<GachaDrawPage> with FakerRuntimeStateMix
                               });
                             },
                             child: Text('10'),
-                          ),
-                          TextButton(
-                            onPressed: () {
-                              Navigator.pop(context);
-                              runtime.runTask(() async {
-                                for (final _ in range(10)) {
-                                  await runtime.gachaDraw(hundredDraw: false);
-                                  if (mounted) setState(() {});
-                                }
-                              });
-                            },
-                            child: Text('10×10'),
                           ),
                           TextButton(
                             onPressed: () {
