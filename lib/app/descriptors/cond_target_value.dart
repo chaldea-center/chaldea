@@ -347,6 +347,16 @@ class CondTargetValueDescriptor extends StatelessWidget with DescriptorBase {
           na: () => rich(null, servants(context), ' at max ascension $arrow $value'),
           kr: null,
         );
+      case CondType.multipleDate:
+        final targetSpan = MultiDescriptor.questDateRange(context, targetIds);
+        return localized(
+          jp: () => rich('複数の開放時間 ', targetSpan),
+          cn: () => rich('多个开放时间段 ', targetSpan),
+          tw: null,
+          na: () => rich('Multiple date ranges ', targetSpan),
+          kr: null,
+        );
+
       case CondType.date:
         // if (value == 0) return [];
         final time = DateTime.fromMillisecondsSinceEpoch(value * 1000).toStringShort(omitSec: true);

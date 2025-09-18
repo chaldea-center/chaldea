@@ -59,6 +59,7 @@ import '../modules/misc/app_route_entrance.dart';
 import '../modules/misc/common_release.dart';
 import '../modules/misc/discord_page.dart';
 import '../modules/misc/gift_page.dart';
+import '../modules/misc/quest_date_range.dart';
 import '../modules/script/reader_entry.dart';
 import '../modules/servant/servant_list.dart';
 import '../modules/shop/shop.dart';
@@ -190,6 +191,9 @@ class Routes {
 
   static String giftI(int id) => '/gift/$id';
   static const gift = '/gift';
+
+  static String questDateRangeI(int id) => '/quest-date-range/$id';
+  static const questDateRange = '/quest-date-range';
 
   static const String cvs = '/cvs';
   static const String illustrators = '/illustrators';
@@ -418,6 +422,8 @@ class RouteConfiguration {
         return type == null ? const ShopListHome() : ShopListPage(type: type, region: region);
       case Routes.commonRelease:
         return CommonReleasesPage.id(id: _secondInt ?? 0, region: region);
+      case Routes.questDateRange:
+        return QuestDateRangePage.id(id: _secondInt ?? 0, region: region);
       case Routes.gift:
         return MstGiftPage(id: _secondInt ?? 0, region: region);
       case Routes.svtClasses:

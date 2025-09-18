@@ -313,6 +313,16 @@ class MultiDescriptor {
       );
     }, useAnd);
   }
+
+  static List<InlineSpan> questDateRange(BuildContext context, List<int> targetIds) {
+    return list(context, targetIds, (context, id) {
+      return inkWell(
+        context: context,
+        onTap: () => router.push(url: Routes.questDateRangeI(id)),
+        text: '$id',
+      );
+    }, null);
+  }
 }
 
 class _MultiEntriesList extends StatelessWidget {

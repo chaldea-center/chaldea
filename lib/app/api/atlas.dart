@@ -276,6 +276,14 @@ class AtlasApi {
     );
   }
 
+  static Future<List<QuestDateRange>?> questDateRange(int rangeId, {Region region = Region.jp, Duration? expireAfter}) {
+    return cacheManager.getModel(
+      '$atlasApiHost/raw/${region.upper}/quest-date-range/$rangeId',
+      (data) => (data as List).map((e) => QuestDateRange.fromJson(e)).toList(),
+      expireAfter: expireAfter,
+    );
+  }
+
   // export
   static Future<List<BasicServant>?> basicServants({Region region = Region.jp, Duration? expireAfter = Duration.zero}) {
     return cacheManager.getModel(

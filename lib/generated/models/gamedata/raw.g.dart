@@ -213,3 +213,10 @@ Map<String, dynamic> _$RegionAssetBundleToJson(RegionAssetBundle instance) => <S
   'animalName': instance.animalName,
   'zooName': instance.zooName,
 };
+
+QuestDateRange _$QuestDateRangeFromJson(Map json) => QuestDateRange(
+  id: (json['id'] as num).toInt(),
+  idx: (json['idx'] as num).toInt(),
+  openedAt: (json['openedAt'] as num).toInt(),
+  closedAt: (json['closedAt'] as num).toInt(),
+);

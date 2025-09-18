@@ -54,7 +54,7 @@ class _CommonReleasesPageState extends State<CommonReleasesPage>
             maxLines: 1,
             minFontSize: 6,
           ),
-          actions: [if (useId) dropdownRegion(), if (useId) popupMenu],
+          actions: [if (useId) dropdownRegion(), popupMenu],
         ),
         body: buildBody(context),
       ),
@@ -112,10 +112,14 @@ class _CommonReleasesPageState extends State<CommonReleasesPage>
   }
 
   Widget get popupMenu {
+    final ids = <int>{if (widget.id != null) widget.id!, ...?data?.map((e) => e.id)};
     return PopupMenuButton(
-      itemBuilder: (context) => SharedBuilder.websitesPopupMenuItems(
-        atlas: 'https://api.atlasacademy.io/nice/JP/common-release/${widget.id}',
-      ),
+      itemBuilder: (context) => [
+        for (final id in ids)
+          ...SharedBuilder.websitesPopupMenuItems(
+            atlas: 'https://api.atlasacademy.io/nice/${(region ?? Region.jp).upper}/common-release/$id',
+          ),
+      ],
     );
   }
 }

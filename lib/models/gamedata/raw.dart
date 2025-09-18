@@ -292,3 +292,14 @@ class RegionAssetBundle {
   factory RegionAssetBundle.fromJson(Map<dynamic, dynamic> json) => _$RegionAssetBundleFromJson(json);
   Map<String, dynamic> toJson() => _$RegionAssetBundleToJson(this);
 }
+
+@JsonSerializable(createToJson: false)
+class QuestDateRange {
+  int id;
+  int idx;
+  int openedAt;
+  int closedAt;
+
+  QuestDateRange({required this.id, required this.idx, required this.openedAt, required this.closedAt});
+  factory QuestDateRange.fromJson(Map<String, dynamic> json) => _$QuestDateRangeFromJson(json);
+}
