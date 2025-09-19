@@ -126,7 +126,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
         children: [
           TextButton(
             onPressed: () async {
-              options.formation.clear();
+              options.formation.updateSvts([]);
               saveFormation();
               if (mounted) setState(() {});
             },

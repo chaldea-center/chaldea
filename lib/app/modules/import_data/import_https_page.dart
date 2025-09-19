@@ -808,8 +808,8 @@ class ImportHttpPageState extends State<ImportHttpPage> {
       title: Text(S.current.import_data),
       content: Text(
         [
-          '${S.current.cur_account}: ${db.curUser.name}',
-          'To import: ${userGame.friendCode}',
+          'Import ${userGame.name} (${userGame.friendCode})',
+          'to [${db.curUser.name}]',
           if (lastImportDifferent) 'Last imported: ${user.lastImportId}!!!',
         ].join('\n'),
       ),

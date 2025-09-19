@@ -115,7 +115,7 @@ class UserFormationDecksPageState extends State<UserFormationDecksPage> {
           ),
           userSvtCollections: mstData.userSvtCollection.dict,
           showBond: true,
-          maxSvtCount: isGrand?8:null,
+          maxSvtCount: isGrand ? 8 : null,
         ),
         if (widget.onSelected != null && deck.id > 0)
           Padding(

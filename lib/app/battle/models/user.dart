@@ -541,11 +541,9 @@ class BattleTeamSetup {
 
   final MysticCodeData mysticCodeData;
 
-  BattleTeamSetup({
-    List<PlayerSvtData?>? svts,
-    MysticCodeData? mysticCodeData,
-  }) : svts = List.generate(max(6, svts?.length ?? 0), (index) => svts?.getOrNull(index) ?? PlayerSvtData.base()),
-       mysticCodeData = mysticCodeData ?? MysticCodeData();
+  BattleTeamSetup({List<PlayerSvtData?>? svts, MysticCodeData? mysticCodeData})
+    : svts = List.generate(max(6, svts?.length ?? 0), (index) => svts?.getOrNull(index) ?? PlayerSvtData.base()),
+      mysticCodeData = mysticCodeData ?? MysticCodeData();
 
   int get totalCost {
     int cost = 0;
@@ -561,8 +559,9 @@ class BattleTeamSetup {
     return BattleTeamSetup(svts: svts.map((e) => e.copy()).toList(), mysticCodeData: mysticCodeData.copy());
   }
 
-  void clear() {
-    svts.setRange(0, svts.length, List.generate(3, (index) => PlayerSvtData.base()));
+  void updateSvts(List<PlayerSvtData> _svts) {
+    svts.clear();
+    svts.addAll(List.generate(max(6, _svts.length), (index) => _svts.getOrNull(index) ?? PlayerSvtData.base()));
   }
 
   BattleTeamFormation toFormationData() {
