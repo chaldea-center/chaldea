@@ -111,6 +111,7 @@ sealed class AutoLoginData {
 
   //
   Set<int> recoveredAps;
+  Set<int> shopTargetIds;
 
   // gacha
   GachaOption gacha;
@@ -134,6 +135,7 @@ sealed class AutoLoginData {
     int? curBattleOptionIndex,
     List<AutoBattleOptions>? battleOptions,
     Set<int>? recoveredAps,
+    Set<int>? shopTargetIds,
     GachaOption? gacha,
     SvtCombineOption? svtCombine,
     PresentBoxFilterData? presentBox,
@@ -144,6 +146,7 @@ sealed class AutoLoginData {
     this.lastRequestOptions,
   }) : battleOptions = battleOptions ?? [AutoBattleOptions()],
        recoveredAps = recoveredAps ?? {},
+       shopTargetIds = shopTargetIds ?? {Items.summonTicketId, Items.lanternId},
        gacha = gacha ?? GachaOption(),
        svtCombine = svtCombine ?? SvtCombineOption(),
        presentBox = presentBox ?? PresentBoxFilterData(),
@@ -173,6 +176,7 @@ class AutoLoginDataJP extends AutoLoginData {
     super.curBattleOptionIndex,
     super.battleOptions,
     super.recoveredAps,
+    super.shopTargetIds,
     super.gacha,
     super.svtCombine,
     super.presentBox,
@@ -256,6 +260,7 @@ class AutoLoginDataCN extends AutoLoginData {
     super.curBattleOptionIndex,
     super.battleOptions,
     super.recoveredAps,
+    super.shopTargetIds,
     super.gacha,
     super.svtCombine,
     super.presentBox,

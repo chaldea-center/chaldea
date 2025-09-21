@@ -615,7 +615,7 @@ class MasterMission extends MstMasterMission {
 
   List<EventMission> missions;
   CompleteMission? completeMission;
-  List<BasicQuest> quests;
+  // List<BasicQuest> quests;
 
   @override
   @JsonKey(includeFromJson: false)
@@ -634,7 +634,7 @@ class MasterMission extends MstMasterMission {
     required super.closedAt,
     required this.missions,
     this.completeMission,
-    this.quests = const [],
+    // this.quests = const [],
     super.script = const {},
   });
 
@@ -793,6 +793,49 @@ class NiceShop with RouteInfo {
       if (svt != null) return true;
     }
     return false;
+  }
+
+  List<int> getItemAndCardIds() {
+    const kPurchaseTypeUseTargetId = [
+      PurchaseType.item,
+      PurchaseType.equip,
+      PurchaseType.servant,
+      PurchaseType.eventSvtGet,
+      PurchaseType.commandCode,
+      PurchaseType.eventSvtJoin,
+    ];
+    if (kPurchaseTypeUseTargetId.contains(purchaseType)) {
+      return targetIds.toList();
+    }
+    const kValidGiftTypes = [
+      GiftType.item,
+      GiftType.servant,
+      GiftType.eventSvtJoin,
+      GiftType.eventSvtGet,
+      GiftType.commandCode,
+    ];
+    if (purchaseType == PurchaseType.setItem) {
+      List<int> result = [];
+      for (final _itemSet in itemSet) {
+        if (kPurchaseTypeUseTargetId.contains(_itemSet.purchaseType)) {
+          result.add(_itemSet.targetId);
+        } else if (_itemSet.purchaseType == PurchaseType.gift) {
+          for (final gift in _itemSet.gifts) {
+            if (kValidGiftTypes.contains(gift.type)) {
+              result.add(gift.objectId);
+            }
+          }
+        }
+      }
+      return result;
+    }
+    if (purchaseType == PurchaseType.gift) {
+      return [
+        for (final gift in gifts)
+          if (kValidGiftTypes.contains(gift.type)) gift.objectId,
+      ];
+    }
+    return [];
   }
 }
 

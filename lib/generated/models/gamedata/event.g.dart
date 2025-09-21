@@ -293,11 +293,6 @@ MasterMission _$MasterMissionFromJson(Map json) => MasterMission(
   completeMission: json['completeMission'] == null
       ? null
       : CompleteMission.fromJson(Map<String, dynamic>.from(json['completeMission'] as Map)),
-  quests:
-      (json['quests'] as List<dynamic>?)
-          ?.map((e) => BasicQuest.fromJson(Map<String, dynamic>.from(e as Map)))
-          .toList() ??
-      const [],
   script: (json['script'] as Map?)?.map((k, e) => MapEntry(k as String, e)) ?? const {},
 );
 
@@ -309,7 +304,6 @@ Map<String, dynamic> _$MasterMissionToJson(MasterMission instance) => <String, d
   'script': instance.script,
   'missions': instance.missions.map((e) => e.toJson()).toList(),
   'completeMission': instance.completeMission?.toJson(),
-  'quests': instance.quests.map((e) => e.toJson()).toList(),
 };
 
 CompleteMission _$CompleteMissionFromJson(Map json) => CompleteMission(

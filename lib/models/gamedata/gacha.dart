@@ -165,6 +165,8 @@ class NiceGacha with RouteInfo {
 
   factory NiceGacha.fromJson(Map<String, dynamic> json) => _$NiceGachaFromJson(json);
 
+  bool get isFpGacha => type == GachaType.freeGacha;
+
   List<GachaSub> getValidGachaSubs() {
     final now = DateTime.now().timestamp;
     final subs = gachaSubs.where((e) => e.openedAt <= now && e.closedAt > now).toList();

@@ -170,7 +170,7 @@ class _GachaDrawPageState extends State<GachaDrawPage> with FakerRuntimeStateMix
               IconButton(
                 onPressed: () {
                   final gachas = runtime.gameData.timerData.gachas
-                      .where((e) => e.type == GachaType.freeGacha || e.freeDrawFlag > 0)
+                      .where((e) => e.isFpGacha || e.freeDrawFlag > 0)
                       .toList();
                   router.showDialog(
                     builder: (context) {

@@ -38,7 +38,7 @@ class MooncellConverter {
       shops.sort2((e) => e.priority);
 
       for (final shop in shops) {
-        final target = shop.targetIds.single;
+        final target = shop.targetIds.firstOrNull ?? 0;
         if (shop.purchaseType == PurchaseType.servant) {
           final svt = db.gameData.entities[target]!;
           if (svt.type == SvtType.servantEquip) {

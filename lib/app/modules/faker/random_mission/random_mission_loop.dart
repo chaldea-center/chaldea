@@ -485,7 +485,6 @@ class _RandomMissionLoopPageState extends State<RandomMissionLoopPage> with Fake
 
   List<Widget> _buildUserDeck(DeckServantEntity? deckInfo, bool showBond) {
     const int kSvtNumPerRow = 6;
-    final userSvtCollections = mstData.userSvtCollection.dict;
     final svts = deckInfo?.svts ?? [];
     final svtsMap = {for (final svt in svts) svt.id: svt};
 
@@ -501,7 +500,7 @@ class _RandomMissionLoopPageState extends State<RandomMissionLoopPage> with Fake
                 mstData: mstData,
                 posOffset: row * kSvtNumPerRow,
               ),
-              userSvtCollections: userSvtCollections,
+              userSvtCollections: mstData.userSvtCollection.lookup,
             ),
           ),
         );

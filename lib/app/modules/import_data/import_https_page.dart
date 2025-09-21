@@ -742,11 +742,11 @@ class ImportHttpPageState extends State<ImportHttpPage> {
                           router.pushPage(
                             SniffGachaHistory(
                               records: gachas.toList(),
-                              userSvt: _mstData.userSvt.list,
-                              userSvtStorage: _mstData.userSvtStorage.list,
-                              userSvtCollection: _mstData.userSvtCollection.list,
-                              userShops: _mstData.userShop.list,
-                              userItems: _mstData.userItem.list,
+                              userSvt: _mstData.userSvt.toList(),
+                              userSvtStorage: _mstData.userSvtStorage.toList(),
+                              userSvtCollection: _mstData.userSvtCollection.toList(),
+                              userShops: _mstData.userShop.toList(),
+                              userItems: _mstData.userItem.toList(),
                               region: region,
                             ),
                           );
@@ -762,14 +762,14 @@ class ImportHttpPageState extends State<ImportHttpPage> {
         SimpleDialogOption(
           onPressed: () {
             Navigator.pop(context);
-            router.pushPage(ClassBoardMissionDemand(userSvtCollection: _mstData.userSvtCollection.list));
+            router.pushPage(ClassBoardMissionDemand(userSvtCollection: _mstData.userSvtCollection.toList()));
           },
           child: Text(S.current.class_board),
         ),
         SimpleDialogOption(
           onPressed: () {
             Navigator.pop(context);
-            router.pushPage(UserQuestFarmingStatPage(userQuests: _mstData.userQuest.list));
+            router.pushPage(UserQuestFarmingStatPage(userQuests: _mstData.userQuest.toList()));
           },
           child: Text(S.current.quest),
         ),

@@ -27,6 +27,7 @@ import 'package:chaldea/utils/notification.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../import_data/sniff_details/formation_decks.dart';
+import '../shop/shop.dart';
 import 'details/dialogs.dart';
 import 'details/raids.dart';
 import 'gacha/gacha_draw.dart';
@@ -173,7 +174,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
               battleLoopOptionSection,
               uncommonSettingSection,
               miscInfoSection,
-              notificationSettingSection,
+              accountSettingSection,
               globalSettingSection,
             ],
           ),
@@ -390,6 +391,9 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
   }
 
   Widget get warningDetails {
+    if (mstData.user == null || mstData.userSvt.isEmpty) {
+      return const SizedBox.shrink();
+    }
     final now = DateTime.now().timestamp;
     List<Widget> children = [];
     for (final gacha in runtime.gameData.timerData.gachas) {
@@ -405,10 +409,8 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
       }
       int? nextFreeDrawAt;
       final userGacha = mstData.userGacha[gacha.id];
-      if (userGacha != null) {
-        nextFreeDrawAt = DateTimeX.findNextHourAt(userGacha.freeDrawAt, resetHourUTC);
-      }
-      bool hasFreeDraw = nextFreeDrawAt != null && nextFreeDrawAt < now;
+      nextFreeDrawAt = DateTimeX.findNextHourAt(userGacha?.freeDrawAt ?? gacha.openedAt, resetHourUTC);
+      bool hasFreeDraw = nextFreeDrawAt < now;
       if (!hasFreeDraw) continue;
       children.add(
         ListTile(
@@ -428,6 +430,65 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
                 : null,
             child: Text(S.current.summon),
           ),
+        ),
+      );
+    }
+    for (final shop in runtime.gameData.timerData.shops) {
+      if (shop.openedAt > now || now >= shop.closedAt) continue;
+      final userShop = mstData.userShop[shop.id];
+      if (userShop != null && userShop.num >= shop.limitNum) continue;
+      final targetIds = shop.getItemAndCardIds().where((targetId) {
+        if (agent.user.shopTargetIds.contains(targetId)) return true;
+        final item = runtime.gameData.teapots[targetId] ?? db.gameData.items[targetId];
+        if (item != null) {
+          if (item.type == ItemType.friendshipUpItem) return true;
+          if (shop.shopType == ShopType.mana && item.type == ItemType.commandCardPrmUp) return true;
+        }
+        final entity = db.gameData.entities[targetId];
+        if (entity != null) {
+          if (entity.flags.contains(SvtFlag.svtEquipManaExchange)) return true;
+          if (shop.shopType == ShopType.mana && entity.type == SvtType.statusUp && entity.rarity >= 4) return true;
+        }
+        return false;
+      }).toSet();
+      if (targetIds.isNotEmpty) {
+        children.add(
+          ListTile(
+            dense: true,
+            leading: GameCardMixin.anyCardItemBuilder(context: context, id: targetIds.first),
+            title: Text(shop.name),
+            subtitle: Text.rich(
+              TextSpan(
+                children: [
+                  CenterWidgetSpan(
+                    child: Item.iconBuilder(
+                      context: context,
+                      item: shop.cost?.item,
+                      width: 16,
+                      text: shop.setNum > 1 ? '×${shop.setNum}' : null,
+                    ),
+                  ),
+                  TextSpan(text: ' ${shop.cost?.amount}'),
+                  if (shop.limitNum > 1) TextSpan(text: '×${shop.limitNum}'),
+                ],
+              ),
+            ),
+            trailing: Text('${userShop?.num ?? 0}/${shop.limitNum}'),
+            onTap: () {
+              router.pushPage(ShopDetailPage(shop: shop, region: runtime.region));
+            },
+          ),
+        );
+      }
+    }
+    final userCoinRoom = mstData.userCoinRoom.firstOrNull;
+    const int maxCoinRoomNum = 2;
+    if (userCoinRoom != null && userCoinRoom.num < maxCoinRoomNum) {
+      children.add(
+        ListTile(
+          leading: Item.iconBuilder(context: context, item: Items.grail),
+          title: Text('聖杯鋳造'),
+          trailing: Text('(${userCoinRoom.cnt}) ${userCoinRoom.num}/$maxCoinRoomNum/${userCoinRoom.totalNum}'),
         ),
       );
     }
@@ -1576,10 +1637,10 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
     );
   }
 
-  Widget get notificationSettingSection {
+  Widget get accountSettingSection {
     final fakerSettings = db.settings.fakerSettings;
     return TileGroup(
-      header: 'Notifications',
+      header: 'Settings',
       children: [
         SwitchListTile.adaptive(
           dense: true,
@@ -1664,6 +1725,50 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
               );
             },
             child: const Text('Pending Notifications'),
+          ),
+        ),
+        ListTile(
+          dense: true,
+          title: Text('Limited-Time Shop hints'),
+          subtitle: Wrap(
+            spacing: 4,
+            runSpacing: 4,
+            children: [
+              for (final targetId in agent.user.shopTargetIds)
+                GameCardMixin.anyCardItemBuilder(
+                  context: context,
+                  id: targetId,
+                  width: 36,
+                  onTap: () {
+                    runtime.lockTask(() {
+                      agent.user.shopTargetIds.remove(targetId);
+                      if (mounted) setState(() {});
+                    });
+                  },
+                ),
+            ],
+          ),
+          trailing: IconButton(
+            onPressed: () {
+              if (runtime.runningTask.value) return;
+              InputCancelOkDialog.number(
+                title: 'Item id or Card id',
+                onSubmit: (targetId) {
+                  if (!db.gameData.entities.containsKey(targetId) &&
+                      !db.gameData.commandCodesById.containsKey(targetId) &&
+                      !db.gameData.items.containsKey(targetId) &&
+                      !runtime.gameData.teapots.containsKey(targetId)) {
+                    EasyLoading.showError("Invalid item id or card id");
+                    return;
+                  }
+                  runtime.lockTask(() {
+                    agent.user.shopTargetIds.add(targetId);
+                    if (mounted) setState(() {});
+                  });
+                },
+              ).showDialog(context);
+            },
+            icon: const Icon(Icons.add_circle),
           ),
         ),
       ],
@@ -2127,7 +2232,6 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
 
   List<Widget> _buildUserDeck(DeckServantEntity? deckInfo) {
     const int kSvtNumPerRow = 6;
-    final userSvtCollections = mstData.userSvtCollection.dict;
     final svts = deckInfo?.svts ?? [];
     final svtsMap = {for (final svt in svts) svt.id: svt};
 
@@ -2142,7 +2246,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
               mstData: mstData,
               posOffset: row * kSvtNumPerRow,
             ),
-            userSvtCollections: userSvtCollections,
+            userSvtCollections: mstData.userSvtCollection.lookup,
           ),
         ),
       );

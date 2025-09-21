@@ -77,18 +77,18 @@ class _FakerMenuButtonState extends State<FakerMenuButton> with FakerRuntimeStat
                 },
               ),
               _ButtonData(
+                icon: Icons.refresh,
+                name: S.current.refresh,
+                onTap: () {
+                  runtime.runTask(runtime.gameData.reset);
+                },
+              ),
+              _ButtonData(
                 icon: Icons.cloud_download,
                 name: S.current.import_data,
                 enabled: isLoggedIn,
                 onTap: () {
                   router.pushPage(ImportHttpPage(mstData: runtime.mstData));
-                },
-              ),
-              _ButtonData(
-                icon: Icons.refresh,
-                name: 'Reload',
-                onTap: () {
-                  runtime.runTask(runtime.gameData.reset);
                 },
               ),
             ],
@@ -159,41 +159,44 @@ class _FakerMenuButtonState extends State<FakerMenuButton> with FakerRuntimeStat
 
   Widget buildGroup({required String title, required List<_ButtonData> buttons}) {
     if (buttons.isEmpty) return const SizedBox.shrink();
-    const int x = 48, y1 = 36, y2 = 28;
+    const int x = 56, y1 = 42, y2 = 32;
     List<Widget> children = [];
     final disabledColor = Theme.of(context).disabledColor;
     for (final button in buttons) {
       final color = button.enabled ? null : disabledColor;
-      Widget child = Padding(
-        padding: EdgeInsets.all(2),
-        child: SizedBox(
-          width: x.toDouble(),
-          height: (y1 + y2).toDouble(),
-          child: Column(
-            children: [
-              Expanded(
-                flex: x,
-                child: Center(
+      Widget child = SizedBox(
+        width: x.toDouble(),
+        height: (y1 + y2).toDouble(),
+        child: Column(
+          children: [
+            Expanded(
+              flex: x,
+              child: Center(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 2),
                   child: button.icon.isFontAwesome
-                      ? FaIcon(button.icon, size: (y1 - 8) * 0.8, color: color)
-                      : Icon(button.icon, size: y1 - 8, color: color),
+                      ? FaIcon(button.icon, size: (y1 - 4) * 0.8, color: color)
+                      : Icon(button.icon, size: y1 - 4, color: color),
                 ),
               ),
-              Expanded(
-                flex: y2,
-                child: Align(
-                  alignment: Alignment.topCenter,
+            ),
+            Expanded(
+              flex: y2,
+              child: Align(
+                alignment: Alignment.topCenter,
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(2, 0, 2, 2),
                   child: Text(
                     button.name,
                     maxLines: 2,
-                    style: TextStyle(fontSize: 10),
+                    style: TextStyle(fontSize: 11),
                     overflow: TextOverflow.visible,
                     textAlign: TextAlign.center,
                   ),
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       );
       if (button.onTap != null && button.enabled) {
@@ -207,7 +210,6 @@ class _FakerMenuButtonState extends State<FakerMenuButton> with FakerRuntimeStat
       }
       children.add(child);
     }
-    Theme.of(context).disabledColor;
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -215,6 +217,7 @@ class _FakerMenuButtonState extends State<FakerMenuButton> with FakerRuntimeStat
         kDefaultDivider,
         SHeader(title, padding: const EdgeInsetsDirectional.only(top: 8.0, bottom: 4.0)),
         Wrap(spacing: 2, runSpacing: 2, children: children),
+        const SizedBox(height: 8),
       ],
     );
   }

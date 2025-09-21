@@ -319,6 +319,10 @@ final _$mstMasterSchemes = <String, (Type, DataMaster Function(String mstName))>
     UserSvtCoinEntity,
     (mstName) => DataMaster<_IntStr, UserSvtCoinEntity>(mstName, UserSvtCoinEntity.fromJson),
   ),
+  "userCoinRoom": (
+    UserCoinRoomEntity,
+    (mstName) => DataMaster<_IntStr, UserCoinRoomEntity>(mstName, UserCoinRoomEntity.fromJson),
+  ),
   "userEquip": (UserEquipEntity, (mstName) => DataMaster<int, UserEquipEntity>(mstName, UserEquipEntity.fromJson)),
   "userSupportDeck": (
     UserSupportDeckEntity,
@@ -410,10 +414,12 @@ class DataMaster<K, V extends DataEntityBase<K>> with Iterable<V> {
   @override
   Iterator<V> get iterator => lookup.values.iterator;
 
+  @override
+  int get length => lookup.length;
+
   V? operator [](Object? key) => lookup[key];
 
-  List<V> get list => lookup.values.toList();
-  Map<K, V> get dict => Map.of(lookup);
+  Map<K, V> toMap() => Map.of(lookup);
 
   DataMaster(this.mstName, this.entityFromJson);
 
@@ -630,6 +636,7 @@ class MasterDataManager {
   // items
   DataMaster<_IntStr, UserItemEntity> get userItem => get<_IntStr, UserItemEntity>();
   DataMaster<_IntStr, UserSvtCoinEntity> get userSvtCoin => get<_IntStr, UserSvtCoinEntity>();
+  DataMaster<_IntStr, UserCoinRoomEntity> get userCoinRoom => get<_IntStr, UserCoinRoomEntity>();
   DataMaster<int, UserEquipEntity> get userEquip => get<int, UserEquipEntity>();
   // support deck
   DataMaster<_IntStr, UserSupportDeckEntity> get userSupportDeck => get<_IntStr, UserSupportDeckEntity>();
@@ -1284,6 +1291,31 @@ class UserSvtCoinEntity extends DataEntityBase<_IntStr> {
       num = _toInt(num);
 
   factory UserSvtCoinEntity.fromJson(Map<String, dynamic> data) => _$UserSvtCoinEntityFromJson(data);
+}
+
+@JsonSerializable(createToJson: false)
+class UserCoinRoomEntity extends DataEntityBase<_IntStr> {
+  int userId;
+  int cnt;
+  int num;
+  int totalNum;
+  int updatedAt;
+  int createdAt;
+
+  @override
+  _IntStr get primaryKey => userId;
+
+  static _IntStr createPK(int userId) => userId;
+
+  UserCoinRoomEntity({dynamic userId, dynamic cnt, dynamic num, dynamic totalNum, dynamic updatedAt, dynamic createdAt})
+    : userId = _toInt(userId),
+      cnt = _toInt(cnt),
+      num = _toInt(num),
+      totalNum = _toInt(totalNum),
+      updatedAt = _toInt(updatedAt),
+      createdAt = _toInt(createdAt);
+
+  factory UserCoinRoomEntity.fromJson(Map<String, dynamic> data) => _$UserCoinRoomEntityFromJson(data);
 }
 
 @JsonSerializable(createToJson: false)
@@ -2211,6 +2243,13 @@ class UserBoxGachaEntity extends DataEntityBase<_IntStr> {
   factory UserBoxGachaEntity.fromJson(Map<String, dynamic> data) => _$UserBoxGachaEntityFromJson(data);
 }
 
+// enum UserShopFlag.Flag
+// {
+// 	RECEIVED_SHOP_ITEM = 2;
+// 	USED_ADD_BUFF_ITEM = 4;
+// 	RETURN_EXCHANGE_ITEM = 8;
+// 	RETURN_RARE_PRI_SHOP = 16;
+// }
 @JsonSerializable(createToJson: false)
 class UserShopEntity extends DataEntityBase<_IntStr> {
   int userId;

@@ -38,7 +38,7 @@ class UserFormationDecksPageState extends State<UserFormationDecksPage> {
   void initState() {
     super.initState();
     if (widget.selectedDeckId != null && widget.eventId == null) {
-      final index = mstData.userDeck.list.indexWhere((e) => e.id == widget.selectedDeckId);
+      final index = mstData.userDeck.toList().indexWhere((e) => e.id == widget.selectedDeckId);
       if (index > 0) {
         SchedulerBinding.instance.addPostFrameCallback((_) async {
           double pos = scrollController.position.extentAfter * (index + 1) / mstData.userDeck.length - 16;
@@ -52,8 +52,8 @@ class UserFormationDecksPageState extends State<UserFormationDecksPage> {
 
   @override
   Widget build(BuildContext context) {
-    final decks = mstData.userDeck.list;
-    final eventDecks = mstData.userEventDeck.list;
+    final decks = mstData.userDeck.toList();
+    final eventDecks = mstData.userEventDeck.toList();
     eventDecks.sortByList((e) => [widget.eventId == e.eventId ? 0 : 1, -e.eventId, e.deckNo]);
     UserDeckEntity? grandDeck;
     if (widget.eventId == null && mstData.userSvtGrand.isNotEmpty) {
@@ -64,7 +64,7 @@ class UserFormationDecksPageState extends State<UserFormationDecksPage> {
         name: 'Grand Servant',
         deckInfo: DeckServantEntity(
           svts: [
-            for (final svt in mstData.userSvtGrand.list..sort2((e) => e.grandGraphId))
+            for (final svt in mstData.userSvtGrand.toList()..sort2((e) => e.grandGraphId))
               DeckServantData(
                 id: svt.grandGraphId % 100,
                 userSvtId: svt.userSvtId,
@@ -113,7 +113,7 @@ class UserFormationDecksPageState extends State<UserFormationDecksPage> {
             userSvts: userSvts,
             maxSvtCount: isGrand ? 8 : null,
           ),
-          userSvtCollections: mstData.userSvtCollection.dict,
+          userSvtCollections: mstData.userSvtCollection.lookup,
           showBond: true,
           maxSvtCount: isGrand ? 8 : null,
         ),
@@ -150,7 +150,7 @@ class UserFormationDecksPageState extends State<UserFormationDecksPage> {
         ),
         FormationCard(
           formation: BattleTeamFormationX.fromUserDeck(deckInfo: deck.deckInfo, mstData: mstData, userSvts: userSvts),
-          userSvtCollections: mstData.userSvtCollection.dict,
+          userSvtCollections: mstData.userSvtCollection.lookup,
           showBond: true,
         ),
         if (widget.onSelected != null)

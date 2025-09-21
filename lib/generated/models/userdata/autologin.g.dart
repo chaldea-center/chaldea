@@ -71,6 +71,10 @@ AutoLoginDataJP _$AutoLoginDataJPFromJson(Map json) => $checkedCreate('AutoLogin
           (v as List<dynamic>?)?.map((e) => AutoBattleOptions.fromJson(Map<String, dynamic>.from(e as Map))).toList(),
     ),
     recoveredAps: $checkedConvert('recoveredAps', (v) => (v as List<dynamic>?)?.map((e) => (e as num).toInt()).toSet()),
+    shopTargetIds: $checkedConvert(
+      'shopTargetIds',
+      (v) => (v as List<dynamic>?)?.map((e) => (e as num).toInt()).toSet(),
+    ),
     gacha: $checkedConvert(
       'gacha',
       (v) => v == null ? null : GachaOption.fromJson(Map<String, dynamic>.from(v as Map)),
@@ -111,6 +115,7 @@ Map<String, dynamic> _$AutoLoginDataJPToJson(AutoLoginDataJP instance) => <Strin
   'curBattleOptionIndex': instance.curBattleOptionIndex,
   'battleOptions': instance.battleOptions.map((e) => e.toJson()).toList(),
   'recoveredAps': instance.recoveredAps.toList(),
+  'shopTargetIds': instance.shopTargetIds.toList(),
   'gacha': instance.gacha.toJson(),
   'svtCombine': instance.svtCombine.toJson(),
   'presentBox': instance.presentBox.toJson(),
@@ -177,6 +182,10 @@ AutoLoginDataCN _$AutoLoginDataCNFromJson(Map json) => $checkedCreate('AutoLogin
           (v as List<dynamic>?)?.map((e) => AutoBattleOptions.fromJson(Map<String, dynamic>.from(e as Map))).toList(),
     ),
     recoveredAps: $checkedConvert('recoveredAps', (v) => (v as List<dynamic>?)?.map((e) => (e as num).toInt()).toSet()),
+    shopTargetIds: $checkedConvert(
+      'shopTargetIds',
+      (v) => (v as List<dynamic>?)?.map((e) => (e as num).toInt()).toSet(),
+    ),
     gacha: $checkedConvert(
       'gacha',
       (v) => v == null ? null : GachaOption.fromJson(Map<String, dynamic>.from(v as Map)),
@@ -216,6 +225,7 @@ Map<String, dynamic> _$AutoLoginDataCNToJson(AutoLoginDataCN instance) => <Strin
   'curBattleOptionIndex': instance.curBattleOptionIndex,
   'battleOptions': instance.battleOptions.map((e) => e.toJson()).toList(),
   'recoveredAps': instance.recoveredAps.toList(),
+  'shopTargetIds': instance.shopTargetIds.toList(),
   'gacha': instance.gacha.toJson(),
   'svtCombine': instance.svtCombine.toJson(),
   'presentBox': instance.presentBox.toJson(),

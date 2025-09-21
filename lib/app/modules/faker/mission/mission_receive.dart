@@ -1,7 +1,10 @@
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
+import 'package:chaldea/app/app.dart';
+import 'package:chaldea/app/descriptors/mission_conds.dart';
 import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/app/modules/common/filter_group.dart';
+import 'package:chaldea/app/modules/master_mission/master_mission.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/platform/platform.dart';
@@ -104,19 +107,31 @@ class _UserEventMissionReceivePageState extends State<UserEventMissionReceivePag
   @override
   Widget build(BuildContext context) {
     selectedMissions.retainWhere(isMissionClear);
-    final missions = _mm?.missions.toList() ?? [];
-    missions.retainWhere((mission) {
+    final missions = (_mm?.missions ?? const []).where((mission) {
       final gifts = mission.gifts.map((e) => e.objectId).toSet();
       if (havingGifts.isNotEmpty && !havingGifts.matchAny(gifts)) return false;
       if (notHavingGifts.isNotEmpty && notHavingGifts.matchAny(gifts)) return false;
       if (!progressFilter.matchOne(getMissionProgress(mission.id))) return false;
       return true;
-    });
+    }).toList();
     missions.sort2((e) => e.dispNo);
     return Scaffold(
       appBar: AppBar(
         title: Text(S.current.master_mission),
-        actions: [runtime.buildHistoryButton(context), runtime.buildMenuButton(context)],
+        actions: [
+          if (_mm != null)
+            IconButton(
+              onPressed: () {
+                router.push(
+                  url: Routes.masterMissionI(_mm!.id),
+                  child: MasterMissionPage(masterMission: _mm, region: runtime.region),
+                );
+              },
+              icon: Icon(Icons.info_outline),
+            ),
+          runtime.buildHistoryButton(context),
+          runtime.buildMenuButton(context),
+        ],
       ),
       body: Column(
         children: [
@@ -129,7 +144,7 @@ class _UserEventMissionReceivePageState extends State<UserEventMissionReceivePag
                 controller: scrollController,
                 itemCount: missions.length,
                 itemBuilder: (context, index) {
-                  return buildEventMission(missions[index]);
+                  return buildEventMission(missions[index], missions);
                 },
               ),
             ),
@@ -184,26 +199,31 @@ class _UserEventMissionReceivePageState extends State<UserEventMissionReceivePag
     );
   }
 
-  Widget buildEventMission(EventMission mission) {
+  Widget buildEventMission(EventMission mission, List<EventMission> missions) {
     Widget title = Text('${mission.dispNo}. ${mission.name}', maxLines: 2, overflow: TextOverflow.ellipsis);
-    Widget subtitle = SharedBuilder.giftGrid(context: context, gifts: mission.gifts, width: 32);
-    Widget child;
-    if (isMissionClear(mission.id)) {
-      child = CheckboxListTile(
-        title: title,
-        subtitle: subtitle,
+    Widget subtitle = Wrap(
+      spacing: 1,
+      runSpacing: 1,
+      crossAxisAlignment: WrapCrossAlignment.center,
+      children: [for (final gift in mission.gifts) gift.iconBuilder(context: context, width: 32)],
+    );
+    final progressType = getMissionProgress(mission.id);
+
+    Widget trailing;
+    if (progressType == MissionProgressType.clear) {
+      trailing = Checkbox(
+        visualDensity: VisualDensity.compact,
+        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
         value: selectedMissions.contains(mission.id),
-        onChanged: isMissionClear(mission.id)
-            ? (v) {
-                setState(() {
-                  if (v!) {
-                    selectedMissions.add(mission.id);
-                  } else {
-                    selectedMissions.remove(mission.id);
-                  }
-                });
-              }
-            : null,
+        onChanged: (v) {
+          setState(() {
+            if (v!) {
+              selectedMissions.add(mission.id);
+            } else {
+              selectedMissions.remove(mission.id);
+            }
+          });
+        },
       );
     } else {
       int? progressNum, targetNum;
@@ -227,26 +247,44 @@ class _UserEventMissionReceivePageState extends State<UserEventMissionReceivePag
         }
       }
 
-      final progressType = getMissionProgress(mission.id);
-      child = ListTile(
-        title: title,
-        subtitle: subtitle,
-        enabled: progressType == MissionProgressType.achieve,
-        trailing: Text(
-          [
-            progressType.name,
-            if (progressNum != null || targetNum != null) '${progressNum ?? "?"}/${targetNum ?? "?"}',
-          ].join('\n'),
-          textAlign: TextAlign.end,
-        ),
+      trailing = Text(
+        [
+          progressType.name,
+          if (progressNum != null || targetNum != null) '${progressNum ?? "?"}/${targetNum ?? "?"}',
+        ].join('\n'),
+        textAlign: TextAlign.end,
       );
     }
-    return ListTileTheme.merge(dense: true, minLeadingWidth: 16, child: child);
+    return ListTileTheme.merge(
+      key: ObjectKey(mission),
+      dense: true,
+      minLeadingWidth: 16,
+      child: ListTile(
+        title: title,
+        subtitle: subtitle,
+        enabled: progressType == MissionProgressType.clear || progressType == MissionProgressType.achieve,
+        trailing: trailing,
+        onTap: () {
+          SimpleConfirmDialog(
+            title: Text('${S.current.mission} No.${mission.dispNo}'),
+            scrollable: true,
+            showCancel: false,
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(mission.name),
+                const Divider(),
+                MissionCondsDescriptor(mission: mission, missions: missions),
+              ],
+            ),
+          ).showDialog(context);
+        },
+      ),
+    );
   }
 
   Widget buildButtonBar() {
-    final progresses = _mm?.missions.map((e) => getMissionProgress(e.id)).toSet().toList() ?? [];
-    progresses.sort2((e) => e.index);
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -283,17 +321,16 @@ class _UserEventMissionReceivePageState extends State<UserEventMissionReceivePag
             ],
           ),
         const SizedBox(height: 4),
-        if (progresses.isNotEmpty)
-          FilterGroup<MissionProgressType>(
-            options: progresses,
-            values: progressFilter,
-            padding: EdgeInsets.only(bottom: 4),
-            combined: true,
-            optionBuilder: (v) => Text(v.name),
-            onFilterChanged: (v, _) {
-              setState(() {});
-            },
-          ),
+        FilterGroup<MissionProgressType>(
+          options: const [MissionProgressType.none, MissionProgressType.clear, MissionProgressType.achieve],
+          values: progressFilter,
+          padding: EdgeInsets.only(bottom: 4),
+          combined: true,
+          optionBuilder: (v) => Text(v.name),
+          onFilterChanged: (v, _) {
+            setState(() {});
+          },
+        ),
         Center(
           child: FilledButton(
             onPressed: selectedMissions.isEmpty ? null : receiveMissions,

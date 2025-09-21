@@ -239,6 +239,15 @@ UserServantAppendPassiveSkillEntity _$UserServantAppendPassiveSkillEntityFromJso
 UserSvtCoinEntity _$UserSvtCoinEntityFromJson(Map json) =>
     UserSvtCoinEntity(userId: json['userId'], svtId: json['svtId'], num: json['num']);
 
+UserCoinRoomEntity _$UserCoinRoomEntityFromJson(Map json) => UserCoinRoomEntity(
+  userId: json['userId'],
+  cnt: json['cnt'],
+  num: json['num'],
+  totalNum: json['totalNum'],
+  updatedAt: json['updatedAt'],
+  createdAt: json['createdAt'],
+);
+
 UserServantAppendPassiveSkillLvEntity _$UserServantAppendPassiveSkillLvEntityFromJson(Map json) =>
     UserServantAppendPassiveSkillLvEntity(
       userSvtId: json['userSvtId'],

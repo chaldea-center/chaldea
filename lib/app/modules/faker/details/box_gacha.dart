@@ -25,7 +25,7 @@ class _BoxGachaDrawPageState extends State<BoxGachaDrawPage> with FakerRuntimeSt
   late final jpBoxGachaEvents = <int, ({Event event, EventLottery lottery})>{
     for (final e in db.gameData.events.values)
       for (final lottery in e.lotteries)
-        if (mstData.userBoxGacha.dict.containsKey(lottery.id)) lottery.id: (event: e, lottery: lottery),
+        if (mstData.userBoxGacha.lookup.containsKey(lottery.id)) lottery.id: (event: e, lottery: lottery),
   };
   ({Event event, EventLottery lottery})? curEvent;
   int boxGachaId = 0;

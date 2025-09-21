@@ -55,7 +55,7 @@ extension FakerRuntimeGacha on FakerRuntime {
 
     int drawNum;
 
-    if (gacha.type == GachaType.freeGacha) {
+    if (gacha.isFpGacha) {
       final fp = mstData.tblUserGame[mstData.user?.userId]?.friendPoint ?? 0;
       if (fp < 2000) {
         throw SilentException('${Items.friendPoint?.lName.l ?? "Friend Point"} <2000');
@@ -73,7 +73,7 @@ extension FakerRuntimeGacha on FakerRuntime {
 
     final FResponse resp;
 
-    if (gacha.type == GachaType.freeGacha) {
+    if (gacha.isFpGacha) {
       final gachaSubId = option.gachaSubs[option.gachaId] ?? 0;
       final gachaSub = gacha.gachaSubs.firstWhereOrNull((e) => e.id == gachaSubId);
       if (gachaSub == null || gachaSub.openedAt > now || gachaSub.closedAt <= now) {
@@ -122,11 +122,13 @@ extension FakerRuntimeGacha on FakerRuntime {
       final infos = resp.data.getResponseNull('gacha_draw')?.success?['gachaInfos'];
       if (infos != null) {
         gachaResultStat.lastDrawResult = (infos as List).map((e) => GachaInfos.fromJson(e)).toList();
-        gachaResultStat.totalCount += gachaResultStat.lastDrawResult.length;
-        for (final info in gachaResultStat.lastDrawResult) {
-          gachaResultStat.servants.addNum(info.objectId, info.num);
-          if (info.svtCoinNum > 0 && info.type == GiftType.servant.value) {
-            gachaResultStat.coins.addNum(info.objectId, info.svtCoinNum);
+        if (gacha.isFpGacha) {
+          gachaResultStat.totalCount += gachaResultStat.lastDrawResult.length;
+          for (final info in gachaResultStat.lastDrawResult) {
+            gachaResultStat.servants.addNum(info.objectId, info.num);
+            if (info.svtCoinNum > 0 && info.type == GiftType.servant.value) {
+              gachaResultStat.coins.addNum(info.objectId, info.svtCoinNum);
+            }
           }
         }
       }
