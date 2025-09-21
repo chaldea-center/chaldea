@@ -126,7 +126,7 @@ abstract class LocalNotificationUtil {
     }
     tz.initializeTimeZones();
     try {
-      final String timeZoneName = await FlutterTimezone.getLocalTimezone();
+      final String timeZoneName = (await FlutterTimezone.getLocalTimezone()).identifier;
       tz.setLocalLocation(tz.getLocation(timeZoneName));
       _hasLocalTz = true;
     } catch (e, s) {

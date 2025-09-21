@@ -59,7 +59,7 @@ dependencies:
   # flutter_qjs: ^0.3.7
   flutter_js: ^0.8.5
   flutter_svg: ^2.0.7
-  flutter_timezone: ^4.0.0
+  flutter_timezone: ^5.0.0
   font_awesome_flutter: ^10.6.0
   github: ^9.16.0
   hive: ^2.2.3
@@ -116,7 +116,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  build_runner: ^2.6.0
+  build_runner: ^2.8.0
   flutter_lints: ^6.0.0
   json_serializable: ^6.9.0
   import_sorter: # ^4.6.0
