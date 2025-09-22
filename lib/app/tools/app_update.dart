@@ -180,37 +180,28 @@ class AppUpdater {
     if (os == null) return null;
     final release = await _githubLatestRelease('chaldea-center', 'chaldea');
     final installer = release?.assets.firstWhereOrNull((e) => e.name.contains(os!) && !e.name.contains('sha1'));
-    final checksum = release?.assets.firstWhereOrNull((e) => e.name == 'checksums.txt');
     if (release == null || installer == null) return null;
     if (release.version != null && release.version! <= AppInfo.version) return null;
-    AppUpdateDetail? _latest = AppUpdateDetail(release: release, installer: installer, checksums: checksum);
+    AppUpdateDetail? _latest = AppUpdateDetail(release: release, installer: installer);
     db.runtimeData.releaseDetail = _latest;
     return _latest;
   }
 
   static Future<String?> _downloadFileWithCheck(AppUpdateDetail detail) async {
     String? checksum;
-    if (detail.checksums != null) {
-      String checksums = (await DioE().get(
-        detail.checksums!.downloadUrl,
-        options: Options(responseType: ResponseType.plain),
-      )).data;
-      for (final line in const LineSplitter().convert(checksums)) {
-        final row = line.split(' ');
-        if (row.length >= 2 && row[1] == detail.installer.name) {
-          checksum = row[0].toLowerCase();
-        }
-      }
+    const prefix = "sha256:";
+    if (detail.installer.digest.startsWith(prefix)) {
+      checksum = detail.installer.digest.substring(prefix.length);
     }
     String savePath = joinPaths(db.paths.tempDir, 'installer', detail.installer.name);
     final file = File(savePath);
     if (await file.exists() && checksum != null) {
-      final localChecksum = sha1.convert(await file.readAsBytes()).toString().toLowerCase();
+      final localChecksum = sha256.convert(await file.readAsBytes()).toString().toLowerCase();
       if (localChecksum == checksum) return savePath;
     }
     final resp = await DioE().get(detail.installer.downloadUrl, options: Options(responseType: ResponseType.bytes));
     final data = List<int>.from(resp.data);
-    if (sha1.convert(data).toString().toLowerCase() == checksum || checksum == null) {
+    if (sha256.convert(data).toString().toLowerCase() == checksum || checksum == null) {
       file.parent.createSync(recursive: true);
       await file.writeAsBytes(data);
       return savePath;
@@ -224,9 +215,8 @@ class AppUpdater {
 class AppUpdateDetail {
   final _Release release;
   final _Asset installer;
-  final _Asset? checksums;
 
-  AppUpdateDetail({required this.release, required this.installer, required this.checksums});
+  AppUpdateDetail({required this.release, required this.installer});
 }
 
 Future<_Release?> _githubLatestRelease(String org, String repo) async {
@@ -269,10 +259,11 @@ class _Release {
 class _Asset {
   final String name;
   final int size;
+  final String digest; // sha256:xxx
   final String browserDownloadUrl;
 
   late final _Release release;
-  _Asset({required this.name, required this.size, required this.browserDownloadUrl});
+  _Asset({required this.name, required this.size, required this.digest, required this.browserDownloadUrl});
 
   String get downloadUrl {
     return db.settings.proxy.worker ? proxyUrl : browserDownloadUrl;
@@ -283,6 +274,11 @@ class _Asset {
   }
 
   factory _Asset.fromJson(Map data) {
-    return _Asset(name: data['name'], size: data['size'], browserDownloadUrl: data['browser_download_url']);
+    return _Asset(
+      name: data['name'],
+      size: data['size'],
+      digest: data['digest'],
+      browserDownloadUrl: data['browser_download_url'],
+    );
   }
 }
