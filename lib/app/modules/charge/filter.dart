@@ -41,7 +41,7 @@ class NpFilterData with FilterDataMixin {
   final rarity = FilterGroupData<int>();
   final effectTarget = FilterGroupData<EffectTarget>();
   final region = FilterRadioData<Region>();
-  final tdColor = FilterRadioData<CardType>();
+  final tdCardType = FilterRadioData<int>();
   final tdType = FilterRadioData<TdEffectFlag>();
   final bond = FilterGroupData<SvtBondStage>();
   final changeable = FilterGroupData<bool>();
@@ -61,7 +61,7 @@ class NpFilterData with FilterDataMixin {
     rarity,
     effectTarget,
     region,
-    tdColor,
+    tdCardType,
     tdType,
     bond,
     changeable,
@@ -315,11 +315,11 @@ class _NpChargeFilterPageState extends FilterPageState<NpFilterData, NpChargeFil
             },
           ),
           if (filterData.isSvt)
-            FilterGroup<CardType>(
+            FilterGroup<int>(
               title: Text(S.current.noble_phantasm, style: textStyle),
-              options: const [CardType.arts, CardType.buster, CardType.quick],
-              values: filterData.tdColor,
-              optionBuilder: (v) => Text(v.name.toTitle()),
+              options: [CardType.arts.value, CardType.buster.value, CardType.quick.value],
+              values: filterData.tdCardType,
+              optionBuilder: (v) => Text(CardType.getName(v).toTitle()),
               onFilterChanged: (value, _) {
                 update();
               },

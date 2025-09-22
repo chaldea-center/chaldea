@@ -990,11 +990,11 @@ class BattleData {
           action.cardData.chainType = chainType;
         }
 
-        final CardType firstCardType =
+        final int firstCardType =
             // mightyChain=after 7th Anni, invalid first card can provide bonus
             actions.isNotEmpty && (options.mightyChain || actions.first.isValid(this))
             ? actions.first.cardData.cardType
-            : CardType.blank;
+            : CardType.blank.value;
         await _applyColorChainFunction(chainType, actions);
 
         // confirm card selection & set targetNum
@@ -1075,14 +1075,14 @@ class BattleData {
       if (_actions.length != kMaxCommand) return BattleChainType.none;
 
       return BattleChainType.fromBasicChains(
-        artsChain: cardTypesSet.every((card) => card.isArts()),
-        busterChain: cardTypesSet.every((card) => card.isBuster()),
-        quickChain: cardTypesSet.every((card) => card.isQuick()),
+        artsChain: cardTypesSet.every(CardType.isArts),
+        busterChain: cardTypesSet.every(CardType.isBuster),
+        quickChain: cardTypesSet.every(CardType.isQuick),
         mightyChain:
             enableMightyChain &&
-            cardTypesSet.any((card) => card.isArts()) &&
-            cardTypesSet.any((card) => card.isBuster()) &&
-            cardTypesSet.any((card) => card.isQuick()),
+            cardTypesSet.any(CardType.isArts) &&
+            cardTypesSet.any(CardType.isBuster) &&
+            cardTypesSet.any(CardType.isQuick),
         braveChain: _actions.map((action) => action.actor).toSet().length == 1,
       );
     }
@@ -1101,7 +1101,7 @@ class BattleData {
     CommandCardData outCardData =
         (cardData.isTD
             ? actor.getNPCard()
-            : cardData.cardType.isExtra()
+            : CardType.isExtra(cardData.cardType)
             ? actor.getExtraCard()
             : actor.getCards().getOrNull(cardData.cardIndex)) ??
         cardData;
@@ -1148,7 +1148,7 @@ class BattleData {
               card: action.cardData,
               chainPos: 1,
               chainType: BattleChainType.none,
-              firstCardType: CardType.blank,
+              firstCardType: CardType.blank.value,
               isComboStart: false,
               isComboEnd: false,
               isPlayer: action.actor.isPlayer,
@@ -1178,7 +1178,7 @@ class BattleData {
 
     return recordError(
       save: true,
-      action: 'enemy_card-${action.cardData.cardType.name}',
+      action: 'enemy_card-${CardType.getName(action.cardData.cardType)}',
       task: () async {
         await action.confirmCardSelection(this);
         // recorder.initiateAttacks(this, [action]);
@@ -1200,7 +1200,7 @@ class BattleData {
                   card: action.cardData,
                   chainPos: 1,
                   chainType: BattleChainType.none,
-                  firstCardType: CardType.none,
+                  firstCardType: CardType.none.value,
                   isPlayer: false,
                   isComboStart: false,
                   isComboEnd: false,
@@ -1362,7 +1362,7 @@ class BattleData {
     required CommandCardData card,
     required int chainPos,
     required BattleChainType chainType,
-    required CardType firstCardType,
+    required int firstCardType,
     required bool isComboStart,
     required bool isComboEnd,
     required bool isPlayer,

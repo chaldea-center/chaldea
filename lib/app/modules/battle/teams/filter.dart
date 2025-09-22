@@ -37,7 +37,7 @@ class TeamFilterData with FilterDataMixin {
   TeamFilterData(this.hasFavorite);
 
   bool favorite = false;
-  final attackerTdCardType = FilterRadioData<CardType>(); // attacker only
+  final attackerTdCardType = FilterRadioData<int>(); // attacker only
   final blockSvts = FilterGroupData<int>();
   final useSvts = FilterGroupData<int>();
   int useSvtTdLv = 0;
@@ -322,11 +322,11 @@ class _TeamFilterPageState extends FilterPageState<TeamFilterData, TeamFilterPag
                 },
               ),
             ),
-          FilterGroup<CardType>(
+          FilterGroup<int>(
             title: Text(S.current.noble_phantasm, style: textStyle),
-            options: const [CardType.arts, CardType.buster, CardType.quick],
+            options: [CardType.arts.value, CardType.buster.value, CardType.quick.value],
             values: filterData.attackerTdCardType,
-            optionBuilder: (v) => Text(v.name.toTitle()),
+            optionBuilder: (v) => Text(CardType.getName(v).toTitle()),
             onFilterChanged: (value, _) {
               update();
             },

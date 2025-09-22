@@ -58,7 +58,7 @@ class TdTypeChangeSelector extends StatelessWidget {
       if (selectTdInfo != null) {
         tdInfo = selectTdInfo!.treasureDevices.firstWhereOrNull((e) => e.id == tdId);
       }
-      CardType cardType = tdInfo?.type ?? CardType.fromId(tdIndex)!;
+      int cardType = tdInfo?.type ?? tdIndex;
       Widget child = CommandCardWidget(card: cardType, width: 80);
       if (tdInfo != null && tdInfo.message.isNotEmpty) {
         child = Column(
@@ -76,7 +76,7 @@ class TdTypeChangeSelector extends StatelessWidget {
             onTap: () {
               Navigator.of(context).pop(tdIndex);
               battleData.battleLogger.action(
-                '${S.current.battle_select_effect}: $tdIndex/${cardType.name.toTitle()}'
+                '${S.current.battle_select_effect}: $tdIndex/${CardType.getName(cardType).toTitle()}'
                 ' ${S.current.battle_np_card}',
               );
             },

@@ -126,7 +126,7 @@ class _DamageAdjustorState extends State<DamageAdjustor> {
         children: [
           Text(
             '${widget.activator.lBattleName} - '
-            '${widget.damageParameters.currentCardType.name.toTitle()} - '
+            '${CardType.getName(widget.damageParameters.currentCardType).toTitle()} - '
             '${widget.damageParameters.isNp ? S.current.battle_np_card : S.current.battle_command_card}'
             '\nvs ${widget.target.lBattleName} (HP: ${widget.target.hp})',
             style: Theme.of(context).textTheme.bodyMedium,

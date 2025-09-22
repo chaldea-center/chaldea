@@ -47,19 +47,20 @@ int calculateDamage(final DamageParameters param) {
   final Float firstCardBonus = shouldIgnoreFirstCardBonus(param.isNp, param.firstCardType)
       ? 0.toFloat()
       : param.chainType.isMightyChain()
-      ? toModifierFloat(ConstData.cardInfo[CardType.buster]![1]!.addAtk)
+      ? toModifierFloat(ConstData.cardInfo[CardType.buster.value]![1]!.addAtk)
       : toModifierFloat(ConstData.cardInfo[param.firstCardType]![1]!.addAtk);
 
   final Float criticalModifier = param.critical ? toModifierFloat(ConstData.constants.criticalAttackRate) : 1.toFloat();
 
-  final int extraRate = param.currentCardType.isExtra()
+  final int extraRate = CardType.isExtra(param.currentCardType)
       ? param.chainType.isSameColorChain()
             ? ConstData.constants.extraAttackRateGrand
             : ConstData.constants.extraAttackRateSingle
       : 1000;
   final extraModifier = toModifierFloat(extraRate);
 
-  final Float busterChainMod = !param.isNp && param.currentCardType.isBuster() && param.chainType.isSameColorChain()
+  final Float busterChainMod =
+      !param.isNp && CardType.isBuster(param.currentCardType) && param.chainType.isSameColorChain()
       ? toModifierFloat(ConstData.constants.chainbonusBusterRate) * param.attack.toFloat()
       : 0.toFloat();
 
@@ -133,7 +134,7 @@ int calculateAttackNpGain(final AttackNpGainParameters param) {
   final firstCardBonus = shouldIgnoreFirstCardBonus(param.isNp, param.firstCardType)
       ? 0.toFloat()
       : param.chainType.isMightyChain()
-      ? toModifierFloat(ConstData.cardInfo[CardType.arts]![1]!.addTdGauge)
+      ? toModifierFloat(ConstData.cardInfo[CardType.arts.value]![1]!.addTdGauge)
       : toModifierFloat(ConstData.cardInfo[param.firstCardType]![1]!.addTdGauge);
   final criticalModifier = param.critical ? toModifierFloat(ConstData.constants.criticalTdPointRate) : 1.toFloat();
   final cardBuff = toModifierFloat(param.cardBuff);
@@ -181,7 +182,7 @@ int calculateStar(final StarParameters param) {
   final int firstCardBonus = shouldIgnoreFirstCardBonus(param.isNp, param.firstCardType)
       ? 0
       : param.chainType.isMightyChain()
-      ? ConstData.cardInfo[CardType.quick]![1]!.addCritical
+      ? ConstData.cardInfo[CardType.quick.value]![1]!.addCritical
       : ConstData.cardInfo[param.firstCardType]![1]!.addCritical;
   final int criticalModifier = param.critical ? ConstData.constants.criticalStarRate : 0;
 
@@ -209,8 +210,10 @@ int calculateStar(final StarParameters param) {
   return dropRate.toInt().clamp(0, ConstData.constants.starRateMax);
 }
 
-bool shouldIgnoreFirstCardBonus(final bool isNP, final CardType firstCardType) {
-  return isNP || !ConstData.cardInfo.containsKey(firstCardType) || firstCardType.matches(CardType.blank);
+bool shouldIgnoreFirstCardBonus(final bool isNP, final int firstCardType) {
+  return isNP ||
+      !ConstData.cardInfo.containsKey(firstCardType) ||
+      CardType.matches(firstCardType, CardType.blank.value);
 }
 
 class DamageParameters {
@@ -226,8 +229,8 @@ class DamageParameters {
   ServantSubAttribute defenderAttribute = ServantSubAttribute.none;
   bool isNp = false;
   int chainPos = 1;
-  CardType currentCardType = CardType.none;
-  CardType firstCardType = CardType.none;
+  int currentCardType = 0;
+  int firstCardType = 0;
   BattleChainType chainType = BattleChainType.none;
   bool critical = false;
   int cardBuff = 1000; // cardMod = actor.commandAtk
@@ -331,8 +334,8 @@ class AttackNpGainParameters {
   int cardAttackNpRate = 1000;
   bool isNp = false;
   int chainPos = 1;
-  CardType currentCardType = CardType.none;
-  CardType firstCardType = CardType.none;
+  int currentCardType = 0;
+  int firstCardType = 0;
   BattleChainType chainType = BattleChainType.none;
   bool critical = false;
   int cardBuff = 1000; // cardMod = atkSvt.commandNpAtk
@@ -414,8 +417,8 @@ class StarParameters {
   int cardDropStarRate = 1000;
   bool isNp = false;
   int chainPos = 1;
-  CardType currentCardType = CardType.none;
-  CardType firstCardType = CardType.none;
+  int currentCardType = 0;
+  int firstCardType = 0;
   BattleChainType chainType = BattleChainType.none;
   bool critical = false;
   int cardBuff = 1000; // cardMod = atkSvt.commandStarAtk

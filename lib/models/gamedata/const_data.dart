@@ -11,12 +11,13 @@ import 'war.dart' show WarId;
 
 part '../../generated/models/gamedata/const_data.g.dart';
 
-@JsonSerializable(converters: [BuffActionConverter(), ServantSubAttributeConverter(), CardTypeConverter()])
+@JsonSerializable(converters: [BuffActionConverter(), ServantSubAttributeConverter()])
 class ConstGameData {
   final Map<String, String> cnReplace;
   final Map<ServantSubAttribute, Map<ServantSubAttribute, int>> attributeRelation;
   final Map<BuffAction, BuffActionInfo> buffActions;
-  final Map<CardType, Map<int, CardInfo>> cardInfo;
+  @JsonKey(readValue: ConstGameData._readCardInfo)
+  final Map<int, Map<int, CardInfo>> cardInfo;
   final Map<int, SvtClassInfo> classInfo;
   final Map<int, Map<int, int>> classRelation;
   final GameConstants constants;
@@ -120,6 +121,16 @@ class ConstGameData {
         buffTypeActionMap.putIfAbsent(type, () => []).add(entry.key);
       }
     }
+  }
+
+  // TODO: deprecate next version
+  static Object? _readCardInfo(Map data, String key) {
+    final value = data[key];
+    if (value == null) return value;
+    if (value is Map) {
+      return {for (final (k, v) in value.items) const CardTypeConverter().fromJson(k).toString(): v};
+    }
+    return value;
   }
 
   List<SvtLimitHide> getSvtLimitHides(int svtId, int? limitCount) {

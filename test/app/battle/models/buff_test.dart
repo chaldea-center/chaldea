@@ -363,7 +363,7 @@ void main() async {
 
       await battle.activateSvtSkill(0, 1);
       final cardsAfter = altria.getCards();
-      expect(cardsAfter.where((card) => card.cardType == CardType.buster).length, 5);
+      expect(cardsAfter.where((card) => card.cardType == CardType.buster.value).length, 5);
       expect(cardsAfter[0].cardStrengthen, 500);
       expect(cardsAfter[2].cardStrengthen, 300);
       expect(cardsAfter[4].cardStrengthen, 100);

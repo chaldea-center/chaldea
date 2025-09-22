@@ -336,61 +336,61 @@ enum CardType {
     return CardType.values.firstWhereOrNull((e) => e.value == cardId);
   }
 
-  bool isQAB() => isQuick() || isArts() || isBuster();
+  static bool isQAB(int card) => isQuick(card) || isArts(card) || isBuster(card);
 
-  bool isQuick() => this == quick;
-  bool isArts() => this == arts;
-  bool isBuster() => this == buster || this == busteralt1;
-  bool isExtra() => this == extra || this == extra2;
-  bool isWeak() => this == weak || this == weakalt1 || this == weakalt2;
-  bool isStrength() => this == strength;
+  static bool isQuick(int card) => card == quick.value;
+  static bool isArts(int card) => card == arts.value;
+  static bool isBuster(int card) => card == buster.value || card == busteralt1.value;
+  static bool isExtra(int card) => card == extra.value || card == extra2.value;
+  static bool isWeak(int card) => card == weak.value || card == weakalt1.value || card == weakalt2.value;
+  static bool isStrength(int card) => card == strength.value;
 
-  bool matches(final CardType other) {
-    if (other.isArts() && isArts()) return true;
-    if (other.isBuster() && isBuster()) return true;
-    if (other.isQuick() && isQuick()) return true;
-    if (other.isExtra() && isExtra()) return true;
-    if (other.isWeak() && isWeak()) return true;
-    if (other.isStrength() && isStrength()) return true;
-
-    return this == other;
+  static bool matches(int a, int b) {
+    if (isArts(a) && isArts(b)) return true;
+    if (isBuster(a) && isBuster(b)) return true;
+    if (isQuick(a) && isQuick(b)) return true;
+    if (isExtra(a) && isExtra(b)) return true;
+    if (isWeak(a) && isWeak(b)) return true;
+    if (isStrength(a) && isStrength(b)) return true;
+    return a == b;
   }
 
-  Trait? get baseTrait {
-    if (isArts()) return Trait.cardArts;
-    if (isBuster()) return Trait.cardBuster;
-    if (isQuick()) return Trait.cardQuick;
-    if (isExtra()) return Trait.cardExtra;
-    if (isWeak()) return Trait.cardWeak;
-    if (isStrength()) return Trait.cardStrong;
+  static Trait? getBaseTrait(int card) {
+    if (isArts(card)) return Trait.cardArts;
+    if (isBuster(card)) return Trait.cardBuster;
+    if (isQuick(card)) return Trait.cardQuick;
+    if (isExtra(card)) return Trait.cardExtra;
+    if (isWeak(card)) return Trait.cardWeak;
+    if (isStrength(card)) return Trait.cardStrong;
     return null;
+  }
+
+  static String getName(int card) {
+    return fromId(card)?.name ?? card.toString();
   }
 }
 
-final kCardTypeMapping = {for (final card in CardType.values) card.value: card};
-
-class CardTypeConverter implements JsonConverter<CardType, dynamic> {
+class CardTypeConverter implements JsonConverter<int, dynamic> {
   const CardTypeConverter();
 
   @override
-  CardType fromJson(dynamic value) {
-    if (value == null) return CardType.none;
+  int fromJson(dynamic value) {
+    if (value == null) return CardType.none.value;
+    if (value is int) return value;
     if (value is String) {
-      return deprecatedTypes[value] ?? decodeEnum(_$CardTypeEnumMap, value, CardType.none);
-    }
-    if (value is int) {
-      return kCardTypeMapping[value] ?? CardType.none;
+      int? intValue = int.tryParse(value);
+      if (intValue != null && intValue >= 0) return intValue;
+      CardType? type = deprecatedTypes[value] ?? decodeEnumNullable(_$CardTypeEnumMap, value);
+      if (type != null) return type.value;
     }
     assert(false, "CardType: unsupported type '${value.runtimeType}($value)'");
-    return CardType.none;
+    return CardType.none.value;
   }
 
   @override
-  String toJson(CardType card) {
-    return _$CardTypeEnumMap[card] ?? card.name;
-  }
+  int toJson(int card) => card;
 
-  static final Map<String, CardType> deprecatedTypes = {"addattack2": CardType.extra2};
+  static final Map<String, CardType> deprecatedTypes = {"addattack": CardType.extra, "addattack2": CardType.extra2};
 }
 
 @JsonEnum(alwaysCreate: true)

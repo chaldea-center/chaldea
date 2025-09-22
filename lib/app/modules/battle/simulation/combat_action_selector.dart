@@ -234,7 +234,7 @@ class _CombatActionSelectorState extends State<CombatActionSelector> {
         final cardIndex = getCardIndex(svt, card);
         if (cardIndex != -1) {
           final combatAction = combatActions[cardIndex]!;
-          if (combatAction.cardData.cardType.isQAB()) {
+          if (CardType.isQAB(combatAction.cardData.cardType)) {
             if (combatAction.cardData.critical) {
               combatActions[cardIndex] = null;
             } else {
@@ -274,14 +274,20 @@ class _CombatActionSelectorState extends State<CombatActionSelector> {
       alignment: Alignment.center,
       children: [
         tdIcon,
-        if (curTd != null && curTd.svt.card.isQAB()) ...[
+        if (curTd != null && CardType.isQAB(curTd.svt.card)) ...[
           Positioned(
             bottom: 0,
-            child: db.getIconImage(AssetURL.i.commandAtlas('card_icon_${curTd.svt.card.name}'), width: cardSize * 0.8),
+            child: db.getIconImage(
+              AssetURL.i.commandAtlas('card_icon_${CardType.getName(curTd.svt.card)}'),
+              width: cardSize * 0.8,
+            ),
           ),
           Positioned(
             bottom: cardSize * 0.5 * 0.2,
-            child: db.getIconImage(AssetURL.i.commandAtlas('card_txt_${curTd.svt.card.name}'), width: cardSize * 0.8),
+            child: db.getIconImage(
+              AssetURL.i.commandAtlas('card_txt_${CardType.getName(curTd.svt.card)}'),
+              width: cardSize * 0.8,
+            ),
           ),
         ],
         if (!tdValid) ...[
@@ -509,10 +515,10 @@ class _EnemyCombatActionSelectorState extends State<EnemyCombatActionSelector> {
       if (svt != null) {
         children.add(DividerWithTitle(title: S.current.battle_command_card));
         for (final cardType in svt.cardDetails.keys) {
-          if (cardType.isExtra()) continue;
+          if (CardType.isExtra(cardType)) continue;
           final detail = svt.cardDetails[cardType]!;
-          String name = cardType.name.toTitle();
-          if (cardType.isStrength()) {
+          String name = CardType.getName(cardType).toTitle();
+          if (CardType.isStrength(cardType)) {
             name += ' (${S.current.critical_attack})';
           }
           children.add(
@@ -529,11 +535,11 @@ class _EnemyCombatActionSelectorState extends State<EnemyCombatActionSelector> {
                   isTD: false,
                   traits: ConstData.cardInfo[cardType]?[1]?.individuality.toList() ?? [],
                 );
-                if (cardType.isQAB()) {
+                if (CardType.isQAB(cardType)) {
                   cardData.critical = critical;
-                } else if (cardType.isStrength()) {
+                } else if (CardType.isStrength(cardType)) {
                   cardData.critical = true;
-                } else if (cardType.isWeak()) {
+                } else if (CardType.isWeak(cardType)) {
                   cardData.critical = false;
                 }
                 await battleData.playEnemyCard(CombatAction(enemy, cardData));
@@ -541,7 +547,7 @@ class _EnemyCombatActionSelectorState extends State<EnemyCombatActionSelector> {
             ),
           );
         }
-        if (svt.cardDetails.keys.any((e) => e.isQAB())) {
+        if (svt.cardDetails.keys.any(CardType.isQAB)) {
           children.add(
             CheckboxListTile(
               dense: true,

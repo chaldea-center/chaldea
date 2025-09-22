@@ -228,7 +228,7 @@ TdSvt _$TdSvtFromJson(Map json) => TdSvt(
   condQuestPhase: (json['condQuestPhase'] as num?)?.toInt() ?? 0,
   condLv: (json['condLv'] as num?)?.toInt() ?? 0,
   condFriendshipRank: (json['condFriendshipRank'] as num?)?.toInt() ?? 0,
-  card: json['card'] == null ? CardType.none : const CardTypeConverter().fromJson(json['card']),
+  card: json['card'] == null ? 0 : const CardTypeConverter().fromJson(json['card']),
   releaseConditions:
       (json['releaseConditions'] as List<dynamic>?)
           ?.map((e) => SvtSkillRelease.fromJson(Map<String, dynamic>.from(e as Map)))
@@ -286,7 +286,7 @@ NiceTd _$NiceTdFromJson(Map json) => NiceTd(
   condQuestPhase: (json['condQuestPhase'] as num?)?.toInt() ?? 0,
   condLv: (json['condLv'] as num?)?.toInt() ?? 0,
   condFriendshipRank: (json['condFriendshipRank'] as num?)?.toInt() ?? 0,
-  card: json['card'] == null ? CardType.none : const CardTypeConverter().fromJson(json['card']),
+  card: json['card'] == null ? 0 : const CardTypeConverter().fromJson(json['card']),
   releaseConditions:
       (json['releaseConditions'] as List<dynamic>?)
           ?.map((e) => SvtSkillRelease.fromJson(Map<String, dynamic>.from(e as Map)))
@@ -462,7 +462,7 @@ Map<String, dynamic> _$SelectTreasureDeviceInfoToJson(SelectTreasureDeviceInfo i
 
 SelectTdInfoTdChangeParam _$SelectTdInfoTdChangeParamFromJson(Map json) => SelectTdInfoTdChangeParam(
   id: (json['id'] as num?)?.toInt() ?? 0,
-  type: json['type'] == null ? CardType.none : const CardTypeConverter().fromJson(json['type']),
+  type: json['type'] == null ? 0 : const CardTypeConverter().fromJson(json['type']),
   message: json['message'] as String? ?? "",
 );
 

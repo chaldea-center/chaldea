@@ -1135,7 +1135,7 @@ class EventCommandAssist {
   int lv;
   String name;
   @CardTypeConverter()
-  CardType assistCard;
+  int assistCard;
   String image;
   NiceSkill skill;
   int skillLv;
@@ -1146,7 +1146,7 @@ class EventCommandAssist {
     this.priority = 0,
     required this.lv,
     required this.name,
-    this.assistCard = CardType.none,
+    this.assistCard = 0,
     required this.image,
     required this.skill,
     required this.skillLv,

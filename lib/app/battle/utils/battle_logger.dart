@@ -430,11 +430,11 @@ class BattleRecordManager {
     int totalCards = 0, attackedCards = 0;
     for (final record in records) {
       if (record is BattleAttacksInitiationRecord) {
-        final selectedCards = record.attacks.where((e) => !e.cardData.cardType.isExtra()).toList();
+        final selectedCards = record.attacks.where((e) => !CardType.isExtra(e.cardData.cardType)).toList();
         totalCards += selectedCards.length;
         // totalNormalCards += selectedCards.where((e) => !e.cardData.isTD).length;
       } else if (record is BattleAttackRecord) {
-        if (record.card?.cardType.isQAB() ?? true) {
+        if (record.card == null || CardType.isQAB(record.card!.cardType)) {
           attackedCards += 1;
         }
       } else if (record is BattleInstantDeathRecord) {
@@ -793,7 +793,7 @@ class BattleAttackRecord extends BattleRecord {
        card = card?.copy();
   @override
   String toString() {
-    return '${attacker.lBattleName} Play ${card?.cardType.name.toTitle()} Card.'
+    return '${attacker.lBattleName} Play ${CardType.getName(card?.cardType ?? 0).toTitle()} Card.'
         ' damage=$damage, NP=$attackNp, defNp=$defenseNp, star=$star';
   }
 

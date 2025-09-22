@@ -8,7 +8,7 @@ import '../../../models/models.dart';
 import '../func/filter.dart';
 
 class TdFilterData with FilterDataMixin {
-  final card = FilterGroupData<CardType>();
+  final card = FilterGroupData<int>();
   final type = FilterGroupData<TdEffectFlag>();
   final funcTargetType = FilterGroupData<FuncTargetType>();
   final funcType = FilterGroupData<FuncType>();
@@ -39,11 +39,11 @@ class _TdFilterState extends FilterPageState<TdFilterData, TdFilter> with FuncFi
       content: getListViewBody(
         restorationId: 'td_list_filter',
         children: [
-          FilterGroup<CardType>(
+          FilterGroup<int>(
             title: Text(S.current.general_type),
-            options: const [CardType.arts, CardType.buster, CardType.quick],
+            options: [CardType.arts.value, CardType.buster.value, CardType.quick.value],
             values: filterData.card,
-            optionBuilder: (v) => Text(v.name.toTitle()),
+            optionBuilder: (v) => Text(CardType.getName(v).toTitle()),
             onFilterChanged: (value, _) {
               update();
             },

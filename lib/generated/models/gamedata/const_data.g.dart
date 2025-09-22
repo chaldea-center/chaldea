@@ -25,9 +25,9 @@ ConstGameData _$ConstGameDataFromJson(Map json) => ConstGameData(
       ) ??
       const {},
   cardInfo:
-      (json['cardInfo'] as Map?)?.map(
+      (ConstGameData._readCardInfo(json, 'cardInfo') as Map?)?.map(
         (k, e) => MapEntry(
-          const CardTypeConverter().fromJson(k),
+          int.parse(k as String),
           (e as Map).map(
             (k, e) => MapEntry(int.parse(k as String), CardInfo.fromJson(Map<String, dynamic>.from(e as Map))),
           ),
@@ -139,7 +139,7 @@ Map<String, dynamic> _$ConstGameDataToJson(ConstGameData instance) => <String, d
   ),
   'buffActions': instance.buffActions.map((k, e) => MapEntry(const BuffActionConverter().toJson(k), e.toJson())),
   'cardInfo': instance.cardInfo.map(
-    (k, e) => MapEntry(const CardTypeConverter().toJson(k), e.map((k, e) => MapEntry(k.toString(), e.toJson()))),
+    (k, e) => MapEntry(k.toString(), e.map((k, e) => MapEntry(k.toString(), e.toJson()))),
   ),
   'classInfo': instance.classInfo.map((k, e) => MapEntry(k.toString(), e.toJson())),
   'classRelation': instance.classRelation.map(

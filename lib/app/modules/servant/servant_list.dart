@@ -479,12 +479,12 @@ class ServantListPageState extends State<ServantListPage> with SearchableListSta
         scrollDirection: Axis.horizontal,
         shrinkWrap: true,
         children: [
-          FilterGroup<CardType>(
+          FilterGroup<int>(
             combined: true,
             padding: const EdgeInsets.symmetric(horizontal: 2),
             shrinkWrap: true,
-            options: const [CardType.arts, CardType.buster, CardType.quick],
-            values: filterData.npColor,
+            options: [CardType.arts.value, CardType.buster.value, CardType.quick.value],
+            values: filterData.tdCardType,
             optionBuilder: (v) => CommandCardWidget(card: v, width: 30),
             onFilterChanged: (v, lastChanged) {
               if (lastChanged != null) {
@@ -501,7 +501,7 @@ class ServantListPageState extends State<ServantListPage> with SearchableListSta
             combined: true,
             padding: const EdgeInsets.symmetric(horizontal: 4),
             shrinkWrap: true,
-            values: filterData.npType,
+            values: filterData.tdType,
             options: TdEffectFlag.values,
             optionBuilder: (v) => _getBtn(Transl.enums(v, (enums) => enums.tdEffectFlag).l),
             onFilterChanged: (v, lastChanged) {

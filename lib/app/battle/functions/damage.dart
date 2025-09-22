@@ -26,7 +26,7 @@ class Damage {
     final CommandCardData currentCard, {
     final int chainPos = 1,
     final BattleChainType chainType = BattleChainType.none,
-    final CardType firstCardType = CardType.none,
+    final int firstCardType = 0,
     final bool isComboStart = false,
     final bool isComboEnd = false,
     final bool shouldTrigger = true,
@@ -477,7 +477,7 @@ class Damage {
           ? '${S.current.critical_star}: ${(Maths.sum(result.stars) / 1000).toStringAsFixed(3)} - '
           : '';
       battleData.battleLogger.action(
-        '${activator.lBattleName} - ${currentCard.cardType.name.toUpperCase()} - '
+        '${activator.lBattleName} - ${CardType.getName(currentCard.cardType)} - '
         '${currentCard.isTD ? S.current.battle_np_card : S.current.battle_command_card} - '
         '${S.current.effect_target}: ${target.lBattleName} - '
         '${S.current.battle_damage}: $totalDamage - '

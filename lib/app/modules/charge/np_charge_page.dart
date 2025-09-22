@@ -366,8 +366,10 @@ class _NpChargePageState extends State<NpChargePage> {
           ),
         if (filterData.region.radioValue != null) optionBuilder(text: (filterData.region.radioValue!).localName),
         if (filterData.isSvt) ...[
-          if (filterData.tdColor.radioValue != null)
-            optionBuilder(text: '${S.current.np_short}:${filterData.tdColor.radioValue!.name.toTitle()}'),
+          if (filterData.tdCardType.radioValue != null)
+            optionBuilder(
+              text: '${S.current.np_short}:${CardType.getName(filterData.tdCardType.radioValue!).toTitle()}',
+            ),
           if (filterData.tdType.radioValue != null)
             optionBuilder(
               text: [
@@ -438,7 +440,7 @@ class _NpChargePageState extends State<NpChargePage> {
       if (!filterData.favorite.radioValue!.check(db.curUser.svtStatusOf(svt.collectionNo).favorite)) {
         continue;
       }
-      if (!filterData.tdColor.matchAny(svt.noblePhantasms.map((e) => e.svt.card))) {
+      if (!filterData.tdCardType.matchAny(svt.noblePhantasms.map((e) => e.svt.card))) {
         continue;
       }
       if (!filterData.tdType.matchAny(svt.noblePhantasms.map((e) => e.damageType))) {

@@ -103,17 +103,17 @@ class ServantFilterPage extends FilterPage<SvtFilterData> {
       }
     }
 
-    if (filterData.npColor.options.isNotEmpty && filterData.npType.options.isNotEmpty) {
+    if (filterData.tdCardType.options.isNotEmpty && filterData.tdType.options.isNotEmpty) {
       if (!svt.noblePhantasms.any(
-        (np) => filterData.npColor.contain(np.svt.card) && filterData.npType.contain(np.damageType),
+        (np) => filterData.tdCardType.contain(np.svt.card) && filterData.tdType.contain(np.damageType),
       )) {
         return false;
       }
     } else {
-      if (!filterData.npColor.matchAny(svt.noblePhantasms.map((e) => e.svt.card).toList())) {
+      if (!filterData.tdCardType.matchAny(svt.noblePhantasms.map((e) => e.svt.card).toList())) {
         return false;
       }
-      if (!filterData.npType.matchAny(svt.noblePhantasms.map((e) => e.damageType))) {
+      if (!filterData.tdType.matchAny(svt.noblePhantasms.map((e) => e.damageType))) {
         return false;
       }
     }
@@ -310,17 +310,17 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData, ServantFilt
               update();
             },
           ),
-          FilterGroup<CardType>(
+          FilterGroup<int>(
             title: Text(S.current.noble_phantasm, style: textStyle),
-            options: const [CardType.arts, CardType.buster, CardType.quick],
-            values: filterData.npColor,
-            optionBuilder: (v) => Text(v.name.toTitle()),
+            options: [CardType.arts.value, CardType.buster.value, CardType.quick.value],
+            values: filterData.tdCardType,
+            optionBuilder: (v) => Text(CardType.getName(v).toTitle()),
             onFilterChanged: (value, _) {
               update();
             },
           ),
           FilterGroup<TdEffectFlag>(
-            values: filterData.npType,
+            values: filterData.tdType,
             options: TdEffectFlag.values,
             optionBuilder: (v) => Text(Transl.enums(v, (enums) => enums.tdEffectFlag).l),
             onFilterChanged: (value, _) {

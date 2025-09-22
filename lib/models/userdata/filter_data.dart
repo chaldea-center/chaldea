@@ -229,8 +229,8 @@ class SvtFilterData with FilterDataMixin {
   late final obtain = FilterGroupData<SvtObtain>(
     options: SvtObtain.values.where((e) => e != SvtObtain.unavailable).toSet(),
   );
-  final npColor = FilterGroupData<CardType>();
-  final npType = FilterGroupData<TdEffectFlag>();
+  final tdCardType = FilterGroupData<int>();
+  final tdType = FilterGroupData<TdEffectFlag>();
   final policy = FilterGroupData<ServantPolicy>(); //秩序 混沌 中庸
   final personality = FilterGroupData<ServantPersonality>(); //善 恶 中立 夏 狂...
   final gender = FilterGroupData<Gender>();
@@ -274,8 +274,8 @@ class SvtFilterData with FilterDataMixin {
     // priority,
     region,
     obtain,
-    npColor,
-    npType,
+    tdCardType,
+    tdType,
     policy,
     personality,
     gender,
@@ -1099,10 +1099,10 @@ enum CardDeckType {
   final int a;
   final int b;
 
-  static CardDeckType resolve(List<CardType> cards) {
-    int q = cards.where((e) => e.isQuick()).length;
-    int a = cards.where((e) => e.isArts()).length;
-    int b = cards.where((e) => e.isBuster()).length;
+  static CardDeckType resolve(List<int> cards) {
+    int q = cards.where(CardType.isQuick).length;
+    int a = cards.where(CardType.isArts).length;
+    int b = cards.where(CardType.isBuster).length;
     return CardDeckType.values.firstWhere((e) => e.q == q && e.a == a && e.b == b, orElse: () => CardDeckType.others);
   }
 }

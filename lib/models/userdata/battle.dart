@@ -271,7 +271,7 @@ class BattleShareData {
     return actions.any((action) => action.usedMysticCode(checkIndex));
   }
 
-  bool containsTdCardType(final CardType cardType) {
+  bool containsTdCardType(final int cardType) {
     return actions.any((action) => action.containsTdCardType(cardType));
   }
 
@@ -1291,8 +1291,8 @@ class BattleRecordData {
     return type == BattleRecordDataType.skill && svt == null && skill == checkIndex;
   }
 
-  bool containsTdCardType(final CardType cardType) {
-    return attacks?.any((cardAction) => cardAction.isTD && cardAction.cardType.matches(cardType)) ?? false;
+  bool containsTdCardType(final int cardType) {
+    return attacks?.any((cardAction) => cardAction.isTD && CardType.matches(cardAction.cardType, cardType)) ?? false;
   }
 
   int countCrits() {
@@ -1300,7 +1300,7 @@ class BattleRecordData {
   }
 
   int countNormalAttacks() {
-    return attacks?.where((e) => !e.isTD && !e.cardType.isExtra()).length ?? 0;
+    return attacks?.where((e) => !e.isTD && !CardType.isExtra(e.cardType)).length ?? 0;
   }
 
   int countTdAttacks() {
@@ -1315,15 +1315,9 @@ class BattleAttackRecordData {
   bool isTD;
   bool critical;
   @CardTypeConverter()
-  CardType cardType;
+  int cardType;
 
-  BattleAttackRecordData({
-    this.svt = 0,
-    this.card,
-    this.isTD = false,
-    this.critical = false,
-    this.cardType = CardType.none,
-  });
+  BattleAttackRecordData({this.svt = 0, this.card, this.isTD = false, this.critical = false, this.cardType = 0});
 
   factory BattleAttackRecordData.fromJson(Map<String, dynamic> json) => _$BattleAttackRecordDataFromJson(json);
 

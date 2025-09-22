@@ -153,7 +153,7 @@ class BasicServant with GameCardMixin {
       costume = Map.of(svt.profile.costume);
 }
 
-@JsonSerializable(converters: [CardTypeConverter()])
+@JsonSerializable()
 class Servant extends BasicServant {
   String ruby;
   String battleName;
@@ -167,8 +167,8 @@ class Servant extends BasicServant {
   int criticalWeight; // mstSvtLimit.criticalWeight
   int starGen; // mstSvt.starRate
   int instantDeathChance; // mstSvt.deathRate
-  List<CardType> cards;
-  Map<CardType, CardDetail> cardDetails;
+  List<int> cards;
+  Map<int, CardDetail> cardDetails;
   int atkBase;
   // int atkMax;
   int hpBase;
@@ -277,8 +277,8 @@ class Servant extends BasicServant {
     this.criticalWeight = 0,
     this.starGen = 0,
     this.instantDeathChance = 0,
-    this.cards = const [],
-    this.cardDetails = const {},
+    List<dynamic> cards = const [],
+    Map<dynamic, CardDetail> cardDetails = const {},
     this.relateQuestIds = const [],
     this.trialQuestIds = const [],
     this.growthCurve = 0,
@@ -316,6 +316,8 @@ class Servant extends BasicServant {
     super.costume = const {},
   }) : originalCollectionNo = originalCollectionNo ?? collectionNo,
        extraAssets = extraAssets ?? ExtraAssets(),
+       cards = [for (final card in cards) const CardTypeConverter().fromJson(card)],
+       cardDetails = cardDetails.map((k, v) => MapEntry(const CardTypeConverter().fromJson(k), v)),
        ascensionAdd = ascensionAdd ?? AscensionAdd(),
        limits = {for (final limit in limits ?? <SvtLimitEntity>[]) limit.limitCount: limit},
        profile = profile ?? NiceLore() {

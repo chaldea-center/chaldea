@@ -448,7 +448,7 @@ class BaseTd extends SkillOrTd {
   String? unmodifiedDetail;
   NpGain npGain;
   @TraitListConverter()
-  List<int> individuality;
+  List<int> individuality; // use getIndividuality()
   @override
   SkillScript? script;
   @override
@@ -531,7 +531,7 @@ class TdSvt implements SkillSvtBase {
   int condFriendshipRank;
   // int motion;
   @CardTypeConverter()
-  CardType card;
+  int card;
   @override
   List<SvtSkillRelease> releaseConditions;
 
@@ -549,7 +549,7 @@ class TdSvt implements SkillSvtBase {
     this.condLv = 0,
     this.condFriendshipRank = 0,
     // this.motion = 0,
-    this.card = CardType.none,
+    this.card = 0,
     this.releaseConditions = const [],
   });
 
@@ -567,7 +567,7 @@ class TdSvt implements SkillSvtBase {
   TdSvt copy() => TdSvt.fromJson(toJson());
 }
 
-@JsonSerializable(converters: [CardTypeConverter()])
+@JsonSerializable()
 class NiceTd extends SkillOrTd implements BaseTd {
   BaseTd _base;
   BaseTd get base => _base;
@@ -590,7 +590,8 @@ class NiceTd extends SkillOrTd implements BaseTd {
   int get condLv => svt.condLv;
   int get condFriendshipRank => svt.condFriendshipRank;
   // int motion;
-  CardType get card => svt.card;
+  @CardTypeConverter()
+  int get card => svt.card;
   List<SvtSkillRelease> get releaseConditions => svt.releaseConditions;
 
   NiceTd({
@@ -621,7 +622,7 @@ class NiceTd extends SkillOrTd implements BaseTd {
     int condLv = 0,
     int condFriendshipRank = 0,
     // this.motion = 0,
-    CardType card = CardType.none,
+    int card = 0,
     List<SvtSkillRelease> releaseConditions = const [],
   }) : _base = GameDataLoader.instance.tmp.getBaseTd(
          id,
@@ -1050,10 +1051,10 @@ class SelectTreasureDeviceInfo {
 class SelectTdInfoTdChangeParam {
   final int id;
   @CardTypeConverter()
-  final CardType type;
+  final int type;
   final String message;
 
-  SelectTdInfoTdChangeParam({this.id = 0, this.type = CardType.none, this.message = ""});
+  SelectTdInfoTdChangeParam({this.id = 0, this.type = 0, this.message = ""});
 
   factory SelectTdInfoTdChangeParam.fromJson(Map<String, dynamic> json) => _$SelectTdInfoTdChangeParamFromJson(json);
 

@@ -371,7 +371,7 @@ class TdDescriptor extends StatelessWidget with FuncsDescriptor, _SkillDescripto
     if (td.individuality.every((e) => e != Trait.cardNP.value)) {
       ref.add('cardNP');
     }
-    final baseTrait = td.svt.card.baseTrait;
+    final baseTrait = CardType.getBaseTrait(td.svt.card);
     if (baseTrait != null && td.individuality.every((e) => e != baseTrait.value)) {
       ref.add('cardTrait');
     }
@@ -495,7 +495,7 @@ class TdDescriptor extends StatelessWidget with FuncsDescriptor, _SkillDescripto
               if (ref.contain("cardNP"))
                 '[${ref.add("cardNP")}] ${S.current.td_cardnp_hint(Transl.traitName(Trait.cardNP.value))}',
               if (ref.contain("cardTrait"))
-                '[${ref.add("cardTrait")}] ${S.current.td_cardcolor_hint(td.svt.card.name.toTitle(), Transl.traitName(baseTrait!.value))}',
+                '[${ref.add("cardTrait")}] ${S.current.td_cardcolor_hint(CardType.getName(td.svt.card).toTitle(), Transl.traitName(baseTrait!.value))}',
             ].join('\n'),
           ),
       ],

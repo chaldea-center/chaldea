@@ -891,11 +891,11 @@ mixin MultiTargetsWrapper {
     required CommandCardData card,
   }) {
     if (actor == null) return _defaultPlaceholder(context);
-    final cardColor = card.cardType.isQuick()
+    final cardColor = CardType.isQuick(card.cardType)
         ? Colors.green
-        : card.cardType.isBuster()
+        : CardType.isBuster(card.cardType)
         ? Colors.red
-        : card.cardType.isArts()
+        : CardType.isArts(card.cardType)
         ? Colors.blue
         : null;
     return Text.rich(
@@ -904,7 +904,7 @@ mixin MultiTargetsWrapper {
           if (card.isTD) TextSpan(text: '${S.current.np_short} Lv.${actor.tdLv}'),
           if (actor.isPlayer && card.isTD) TextSpan(text: card.np.format(percent: true, base: 100)),
           TextSpan(
-            text: card.cardType.name.toTitle(),
+            text: CardType.getName(card.cardType).toTitle(),
             style: TextStyle(color: cardColor),
           ),
           if (card.critical) TextSpan(text: S.current.critical_attack),
@@ -1013,13 +1013,14 @@ class _AttackDetailWidget extends StatelessWidget with MultiTargetsWrapper {
         child: record.attacker.iconBuilder(context: context, width: 48, battleData: battleData, showClsIcon: true),
       ),
     ];
-    if (card.cardType.isQAB()) {
+    final String cardName = CardType.getName(card.cardType);
+    if (CardType.isQAB(card.cardType)) {
       stackChildren.add(
         Positioned(
           left: -2,
           right: -2,
           bottom: -6,
-          child: db.getIconImage(AssetURL.i.commandAtlas('card_icon_${card.cardType.name}'), fit: BoxFit.fitWidth),
+          child: db.getIconImage(AssetURL.i.commandAtlas('card_icon_$cardName'), fit: BoxFit.fitWidth),
         ),
       );
       if (card.isTD) {
@@ -1054,17 +1055,17 @@ class _AttackDetailWidget extends StatelessWidget with MultiTargetsWrapper {
             left: 2,
             right: 2,
             bottom: 0,
-            child: db.getIconImage(AssetURL.i.commandAtlas('card_txt_${card.cardType.name}'), fit: BoxFit.fitWidth),
+            child: db.getIconImage(AssetURL.i.commandAtlas('card_txt_$cardName'), fit: BoxFit.fitWidth),
           ),
         );
       }
-    } else if (card.cardType.isExtra()) {
+    } else if (CardType.isExtra(card.cardType)) {
       stackChildren.add(
         Positioned(
           left: 2,
           right: -4,
           bottom: 0,
-          child: db.getIconImage(AssetURL.i.commandAtlas('card_txt_${card.cardType.name}'), fit: BoxFit.fitWidth),
+          child: db.getIconImage(AssetURL.i.commandAtlas('card_txt_$cardName'), fit: BoxFit.fitWidth),
         ),
       );
     }
@@ -1370,14 +1371,14 @@ mixin _ParamDialogMixin {
     );
   }
 
-  String cardBuffIcon(final CardType cardType) {
-    if (cardType.isArts()) {
+  String cardBuffIcon(final int cardType) {
+    if (CardType.isArts(cardType)) {
       return buffIcon(313);
-    } else if (cardType.isBuster()) {
+    } else if (CardType.isBuster(cardType)) {
       return buffIcon(314);
-    } else if (cardType.isQuick()) {
+    } else if (CardType.isQuick(cardType)) {
       return buffIcon(312);
-    } else if (cardType.isExtra()) {
+    } else if (CardType.isExtra(cardType)) {
       return buffIcon(388);
     }
 
@@ -1460,10 +1461,10 @@ class DamageParamDialog extends StatelessWidget with _ParamDialogMixin {
     final firstCardBonus = shouldIgnoreFirstCardBonus(params.isNp, params.firstCardType)
         ? 0
         : params.chainType.isMightyChain()
-        ? toModifier(ConstData.cardInfo[CardType.buster]![1]!.addAtk)
+        ? toModifier(ConstData.cardInfo[CardType.buster.value]![1]!.addAtk)
         : toModifier(ConstData.cardInfo[params.firstCardType]![1]!.addAtk);
     final busterChainMod =
-        (!params.isNp && params.currentCardType.isBuster() && params.chainType.isSameColorChain()
+        (!params.isNp && CardType.isBuster(params.currentCardType) && params.chainType.isSameColorChain()
                 ? toModifier(ConstData.constants.chainbonusBusterRate) * params.attack
                 : 0)
             .toInt();
@@ -1514,7 +1515,7 @@ class DamageParamDialog extends StatelessWidget with _ParamDialogMixin {
         oneParam(S.current.sub_attribute_advantage, attributeAdvantage.format()),
         if (firstCardBonus != 0) oneParam(S.current.battle_first_card_bonus, firstCardBonus.format()),
         if (busterChainMod != 0) oneParam(S.current.battle_buster_chain, busterChainMod.toString()),
-        if (params.currentCardType.isExtra()) oneParam(S.current.battle_extra_rate, extraModifier.format()),
+        if (CardType.isExtra(params.currentCardType)) oneParam(S.current.battle_extra_rate, extraModifier.format()),
         oneParam(Transl.buffNames('攻撃力アップ').l, atkSum.format(percent: true, maxDigits: 4), buffIcon(300)),
         oneParam(
           Transl.buffNames('カード性能アップ').l,

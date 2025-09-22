@@ -232,7 +232,8 @@ class SvtInfoTab extends StatelessWidget {
                 ],
               ),
             if (svt.cardDetails.isNotEmpty) CustomTableRow.fromTexts(texts: const ['Hits'], defaults: headerData),
-            for (final entry in svt.cardDetails.entries) _addCardDetail(context, entry.key.name.toTitle(), entry.value),
+            for (final entry in svt.cardDetails.entries)
+              _addCardDetail(context, CardType.getName(entry.key).toTitle(), entry.value),
             for (final td in tdHits.values)
               if (td.damageType != TdEffectFlag.support)
                 _addCardDetail(

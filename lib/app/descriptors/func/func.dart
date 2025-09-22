@@ -1618,27 +1618,22 @@ class FuncDescriptor extends StatelessWidget {
     final isNp = vals?.UseTreasureDevice == 1;
     Widget triggerChild;
     if (func.buff?.type == BuffType.counterFunction && vals?.UseAttack == 1) {
-      final cardId = vals?.CounterId;
-      final cardType = CardType.fromId(cardId);
+      final cardId = vals?.CounterId ?? 0;
       final textStyle = Theme.of(context).textTheme.bodySmall;
       String prefix = '[${Transl.buffType(func.buff!.type).l}] ${S.current.battle_command_card} ';
-      if (cardType == null) {
-        triggerChild = _DescriptorWrapper(title: Text(' $prefix Card $cardId', style: textStyle), trailing: null);
-      } else {
-        triggerChild = _DescriptorWrapper(
-          title: Text.rich(
-            TextSpan(
-              text: ' ',
-              children: [
-                CenterWidgetSpan(child: CommandCardWidget(card: cardType, width: 24)),
-                TextSpan(text: ' $prefix ${cardType.name.toTitle()}'),
-              ],
-            ),
-            style: textStyle,
+      triggerChild = _DescriptorWrapper(
+        title: Text.rich(
+          TextSpan(
+            text: ' ',
+            children: [
+              CenterWidgetSpan(child: CommandCardWidget(card: cardId, width: 24)),
+              TextSpan(text: ' $prefix ${CardType.getName(cardId).toTitle()}'),
+            ],
           ),
-          trailing: null,
-        );
-      }
+          style: textStyle,
+        ),
+        trailing: null,
+      );
     } else {
       triggerChild = _LazyTrigger(
         trigger: detail,

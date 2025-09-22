@@ -115,11 +115,10 @@ Servant _$ServantFromJson(Map json) => Servant(
   criticalWeight: (json['starAbsorb'] as num?)?.toInt() ?? 0,
   starGen: (json['starGen'] as num?)?.toInt() ?? 0,
   instantDeathChance: (json['instantDeathChance'] as num?)?.toInt() ?? 0,
-  cards: (json['cards'] as List<dynamic>?)?.map(const CardTypeConverter().fromJson).toList() ?? const [],
+  cards: json['cards'] as List<dynamic>? ?? const [],
   cardDetails:
       (json['cardDetails'] as Map?)?.map(
-        (k, e) =>
-            MapEntry(const CardTypeConverter().fromJson(k), CardDetail.fromJson(Map<String, dynamic>.from(e as Map))),
+        (k, e) => MapEntry(k, CardDetail.fromJson(Map<String, dynamic>.from(e as Map))),
       ) ??
       const {},
   relateQuestIds: (json['relateQuestIds'] as List<dynamic>?)?.map((e) => (e as num).toInt()).toList() ?? const [],
@@ -259,8 +258,8 @@ Map<String, dynamic> _$ServantToJson(Servant instance) => <String, dynamic>{
   'starAbsorb': instance.criticalWeight,
   'starGen': instance.starGen,
   'instantDeathChance': instance.instantDeathChance,
-  'cards': instance.cards.map(const CardTypeConverter().toJson).toList(),
-  'cardDetails': instance.cardDetails.map((k, e) => MapEntry(const CardTypeConverter().toJson(k), e.toJson())),
+  'cards': instance.cards,
+  'cardDetails': instance.cardDetails.map((k, e) => MapEntry(k.toString(), e.toJson())),
   'atkBase': instance.atkBase,
   'hpBase': instance.hpBase,
   'relateQuestIds': instance.relateQuestIds,

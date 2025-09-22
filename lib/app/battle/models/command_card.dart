@@ -106,7 +106,7 @@ class CommandCardData {
   final int svtId;
   final int svtLimit;
   final int uniqueId;
-  final CardType cardType;
+  final int cardType;
   final CardDetail cardDetail;
   final int cardIndex;
   int cardStrengthen = 0;

@@ -4,32 +4,32 @@ import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 
 class CommandCardWidget extends StatelessWidget {
-  final CardType card;
+  final int card;
   final double width;
 
   const CommandCardWidget({super.key, required this.card, required this.width});
 
   @override
   Widget build(BuildContext context) {
-    if (!card.isQAB() && !card.isExtra()) {
+    if (!CardType.isQAB(card) && !CardType.isExtra(card)) {
       return Text(
-        card.name.toTitle().breakWord,
+        CardType.getName(card).toTitle().breakWord,
         maxLines: 2,
         style: const TextStyle(fontSize: 14),
         textAlign: TextAlign.center,
       );
     }
     String cardName;
-    if (card.isQuick()) {
+    if (CardType.isQuick(card)) {
       cardName = CardType.quick.name;
-    } else if (card.isArts()) {
+    } else if (CardType.isArts(card)) {
       cardName = CardType.arts.name;
-    } else if (card.isBuster()) {
+    } else if (CardType.isBuster(card)) {
       cardName = CardType.buster.name;
-    } else if (card.isExtra()) {
+    } else if (CardType.isExtra(card)) {
       cardName = CardType.extra.name;
     } else {
-      cardName = card.name;
+      cardName = CardType.getName(card);
     }
     final width2 = width * 0.8;
     final dx = (width - width2) / 2;

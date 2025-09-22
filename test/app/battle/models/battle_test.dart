@@ -2041,33 +2041,33 @@ void main() async {
         2, // summer bb select support type
       ][count++];
 
-      expect(emiya.getNPCard()!.cardType, CardType.buster);
+      expect(emiya.getNPCard()!.cardType, CardType.buster.value);
 
       await battle.activateSvtSkill(0, 2);
-      expect(emiya.getNPCard()!.cardType, CardType.arts);
+      expect(emiya.getNPCard()!.cardType, CardType.arts.value);
 
       await battle.skipTurn(); // skip so tdTypeChangeBuff expires
       await battle.resetPlayerSkillCD(isMysticCode: false, svt: emiya);
-      expect(emiya.getNPCard()!.cardType, CardType.buster);
+      expect(emiya.getNPCard()!.cardType, CardType.buster.value);
       await battle.activateSvtSkill(0, 2);
-      expect(emiya.getNPCard()!.cardType, CardType.buster);
+      expect(emiya.getNPCard()!.cardType, CardType.buster.value);
 
       final bb = battle.onFieldAllyServants[1]!;
-      expect(bb.getNPCard()!.cardType, CardType.arts);
+      expect(bb.getNPCard()!.cardType, CardType.arts.value);
       expect(bb.getNPCard()!.td?.damageType, TdEffectFlag.attackEnemyAll);
 
       await battle.activateSvtSkill(1, 2);
-      expect(bb.getNPCard()!.cardType, CardType.arts);
+      expect(bb.getNPCard()!.cardType, CardType.arts.value);
       expect(bb.getNPCard()!.td?.damageType, TdEffectFlag.attackEnemyAll);
 
       for (int idx = 0; idx < 3; idx += 1) {
         await battle.skipTurn(); // skip so tdTypeChangeBuff expires
       }
       await battle.resetPlayerSkillCD(isMysticCode: false, svt: bb);
-      expect(bb.getNPCard()!.cardType, CardType.arts);
+      expect(bb.getNPCard()!.cardType, CardType.arts.value);
       expect(bb.getNPCard()!.td?.damageType, TdEffectFlag.attackEnemyAll);
       await battle.activateSvtSkill(1, 2);
-      expect(bb.getNPCard()!.cardType, CardType.arts);
+      expect(bb.getNPCard()!.cardType, CardType.arts.value);
       expect(bb.getNPCard()!.td?.damageType, TdEffectFlag.support);
     });
   });
@@ -2161,13 +2161,13 @@ void main() async {
 
     final phantasMoon = battle.onFieldAllyServants[0]!;
     final baseExtraCard = phantasMoon.getExtraCard()!;
-    expect(baseExtraCard.cardType, CardType.extra);
+    expect(baseExtraCard.cardType, CardType.extra.value);
     expect(baseExtraCard.cardDetail.damageRate, null);
 
     await battle.activateSvtSkill(0, 1);
 
     final updatedExtraCard = phantasMoon.getExtraCard()!;
-    expect(updatedExtraCard.cardType, CardType.extra2);
+    expect(updatedExtraCard.cardType, CardType.extra2.value);
     expect(updatedExtraCard.cardDetail.damageRate, 500);
   });
 

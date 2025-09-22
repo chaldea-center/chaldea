@@ -392,8 +392,7 @@ class ValDsc extends StatelessWidget {
       return;
     } else if ((buff.type == BuffType.changeCommandCardType || buff.type == BuffType.overwriteSvtCardType) &&
         vals.Value != null) {
-      final cardName = kCardTypeMapping[vals.Value]?.name.toTitle() ?? vals.Value.toString();
-      parts.add(cardName);
+      parts.add(CardType.getName(vals.Value ?? 0));
       return;
     } else if ([
           BuffType.addIndividuality,

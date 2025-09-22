@@ -77,12 +77,12 @@ class _TdDmgRankingTabState extends State<TdDmgRankingTab> {
     }
 
     final td = result.actor.playerSvtData?.td;
-    if (filterData.npColor.isNotEmpty || filterData.npType.isNotEmpty) {
+    if (filterData.tdCardType.isNotEmpty || filterData.tdType.isNotEmpty) {
       if (td == null) return false;
-      if (!filterData.npColor.matchOne(td.svt.card)) {
+      if (!filterData.tdCardType.matchOne(td.svt.card)) {
         return false;
       }
-      if (!filterData.npType.matchOne(td.damageType)) {
+      if (!filterData.tdType.matchOne(td.damageType)) {
         return false;
       }
     }

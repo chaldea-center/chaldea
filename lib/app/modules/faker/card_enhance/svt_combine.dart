@@ -647,11 +647,8 @@ class _SvtCombinePageState extends State<SvtCombinePage> with FakerRuntimeStateM
   }
 }
 
-int _getCommandCodeUnlockKey(CardType cardType) {
-  return switch (cardType) {
-    CardType.quick => 5000,
-    CardType.arts => 5001,
-    CardType.buster => 5002,
-    _ => throw UnimplementedError('Unknown CardType $cardType'),
-  };
+int _getCommandCodeUnlockKey(int cardType) {
+  int? keyId = {CardType.quick.value: 5000, CardType.arts.value: 5001, CardType.buster.value: 5002}[cardType];
+  if (keyId != null) return keyId;
+  throw UnimplementedError('Unknown CardType $cardType');
 }

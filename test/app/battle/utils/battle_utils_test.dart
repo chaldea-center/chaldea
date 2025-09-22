@@ -52,16 +52,16 @@ void main() async {
       });
 
       test('NP does not benefit from firstCardBonus', () {
-        final damageParameters = oc1Np1BaseParam.copy()..firstCardType = CardType.buster;
+        final damageParameters = oc1Np1BaseParam.copy()..firstCardType = CardType.buster.value;
 
         expect(calculateDamage(damageParameters), equals(baseDamage));
       });
 
       test('NP does not benefit from busterChainMod', () {
-        expect(upgradedNp.svt.card, equals(CardType.buster));
+        expect(upgradedNp.svt.card, equals(CardType.buster.value));
 
         final damageParameters = oc1Np1BaseParam.copy()
-          ..firstCardType = CardType.buster
+          ..firstCardType = CardType.buster.value
           ..chainType = BattleChainType.buster;
 
         expect(calculateDamage(damageParameters), equals(baseDamage));
@@ -172,32 +172,32 @@ void main() async {
         expect(calculateDamage(damageParameters), equals(52388));
       });
 
-      final quickCard = altria.cardDetails[CardType.quick]!;
-      final artsCard = altria.cardDetails[CardType.arts]!;
-      final busterCard = altria.cardDetails[CardType.buster]!;
-      final extraCard = altria.cardDetails[CardType.extra]!;
+      final quickCard = altria.cardDetails[CardType.quick.value]!;
+      final artsCard = altria.cardDetails[CardType.arts.value]!;
+      final busterCard = altria.cardDetails[CardType.buster.value]!;
+      final extraCard = altria.cardDetails[CardType.extra.value]!;
 
       test('firstCardBonus', () {
         final damageParameters = baseParam.copy()
           ..totalHits = Maths.sum(artsCard.hitsDistribution)
           ..chainPos = 2
-          ..currentCardType = CardType.arts
-          ..firstCardType = CardType.arts;
+          ..currentCardType = CardType.arts.value
+          ..firstCardType = CardType.arts.value;
 
         final damageWithoutBonus = calculateDamage(damageParameters);
         expect(damageWithoutBonus, equals(2508));
 
-        damageParameters.firstCardType = CardType.quick;
+        damageParameters.firstCardType = CardType.quick.value;
 
         expect(calculateDamage(damageParameters), equals(damageWithoutBonus));
 
-        damageParameters.firstCardType = CardType.buster;
+        damageParameters.firstCardType = CardType.buster.value;
 
         final damageWithBonus = calculateDamage(damageParameters);
         expect(damageWithBonus, equals(3553));
 
         damageParameters
-          ..firstCardType = CardType.quick
+          ..firstCardType = CardType.quick.value
           ..chainType = BattleChainType.mighty;
 
         expect(calculateDamage(damageParameters), equals(damageWithBonus));
@@ -209,8 +209,8 @@ void main() async {
           ..cardBuff =
               1080 // passive
           ..chainPos = 1
-          ..currentCardType = CardType.quick
-          ..firstCardType = CardType.quick;
+          ..currentCardType = CardType.quick.value
+          ..firstCardType = CardType.quick.value;
 
         expect(calculateDamage(damageParameters), equals(1806));
 
@@ -228,8 +228,8 @@ void main() async {
           ..totalHits = Maths.sum(busterCard.hitsDistribution)
           ..chainPos = 2
           ..critical = true
-          ..currentCardType = CardType.buster
-          ..firstCardType = CardType.arts;
+          ..currentCardType = CardType.buster.value
+          ..firstCardType = CardType.arts.value;
 
         expect(calculateDamage(damageParameters), equals(7525));
 
@@ -248,8 +248,8 @@ void main() async {
         final damageParameters = baseParam.copy()
           ..totalHits = Maths.sum(busterCard.hitsDistribution)
           ..chainPos = 1
-          ..currentCardType = CardType.buster
-          ..firstCardType = CardType.buster;
+          ..currentCardType = CardType.buster.value
+          ..firstCardType = CardType.buster.value;
 
         expect(calculateDamage(damageParameters), equals(4180));
 
@@ -266,8 +266,8 @@ void main() async {
         final damageParameters = baseParam.copy()
           ..totalHits = Maths.sum(extraCard.hitsDistribution)
           ..chainPos = 4
-          ..currentCardType = CardType.extra
-          ..firstCardType = CardType.buster;
+          ..currentCardType = CardType.extra.value
+          ..firstCardType = CardType.buster.value;
 
         expect(calculateDamage(damageParameters), equals(6271));
 
@@ -280,7 +280,7 @@ void main() async {
     group('Altria (Alter) (Lancer) (301900)', () {
       final altria = db.gameData.servantsById[301900]!;
       const level = 80;
-      final busterCard = altria.cardDetails[CardType.buster]!;
+      final busterCard = altria.cardDetails[CardType.buster.value]!;
 
       final baseParam = DamageParameters()
         ..attack = altria.atkGrowth[level - 1] + 1000
@@ -288,8 +288,8 @@ void main() async {
         ..attackerAttribute = altria.attribute
         ..totalHits = Maths.sum(busterCard.hitsDistribution)
         ..chainPos = 1
-        ..currentCardType = CardType.buster
-        ..firstCardType = CardType.buster
+        ..currentCardType = CardType.buster.value
+        ..firstCardType = CardType.buster.value
         ..random = 900;
 
       test('vs Sky Lancer', () {
@@ -331,7 +331,7 @@ void main() async {
         expect(calculateDamage(damageParameters), equals(8582));
       });
 
-      final extra = altria.cardDetails[CardType.extra]!;
+      final extra = altria.cardDetails[CardType.extra.value]!;
       test('totalHits', () {
         const defenderClass = SvtClass.lancer;
         const defenderAttribute = ServantSubAttribute.sky;
@@ -340,8 +340,8 @@ void main() async {
         final damageParameters = baseParam.copy()
           ..totalHits = Maths.sum(extra.hitsDistribution)
           ..chainPos = 4
-          ..currentCardType = CardType.extra
-          ..firstCardType = CardType.buster
+          ..currentCardType = CardType.extra.value
+          ..firstCardType = CardType.buster.value
           ..defenderClass = defenderClass.value
           ..classAdvantage = classAdvantage
           ..defenderAttribute = defenderAttribute;
@@ -467,9 +467,9 @@ void main() async {
   group('calculateAttackNpGain', () {
     test('float32 test in Atlas', () {
       final param = AttackNpGainParameters()
-        ..firstCardType = CardType.quick
+        ..firstCardType = CardType.quick.value
         ..chainType = BattleChainType.mighty
-        ..currentCardType = CardType.arts
+        ..currentCardType = CardType.arts.value
         ..chainPos = 3
         ..attackerNpCharge = 25
         ..defenderNpRate = 1000
@@ -507,7 +507,7 @@ void main() async {
       });
 
       test('NP does not benefit from firstCardBonus', () {
-        final param = npBaseParam.copy()..firstCardType = CardType.quick;
+        final param = npBaseParam.copy()..firstCardType = CardType.quick.value;
 
         expect(calculateAttackNpGain(param), equals(baseHitNpGain));
       });
@@ -553,23 +553,23 @@ void main() async {
         final params = baseParam.copy()
           ..attackerNpCharge = np.npGain.arts.last
           ..chainPos = 2
-          ..currentCardType = CardType.arts
-          ..firstCardType = CardType.quick;
+          ..currentCardType = CardType.arts.value
+          ..firstCardType = CardType.quick.value;
 
         final hitNpGainWithoutBonus = calculateAttackNpGain(params);
         expect(hitNpGainWithoutBonus, equals(275));
 
-        params.firstCardType = CardType.buster;
+        params.firstCardType = CardType.buster.value;
 
         expect(calculateAttackNpGain(params), equals(hitNpGainWithoutBonus));
 
-        params.firstCardType = CardType.arts;
+        params.firstCardType = CardType.arts.value;
 
         final hitNpGainWithBonus = calculateAttackNpGain(params);
         expect(hitNpGainWithBonus, equals(336));
 
         params
-          ..firstCardType = CardType.quick
+          ..firstCardType = CardType.quick.value
           ..chainType = BattleChainType.mighty;
 
         expect(calculateAttackNpGain(params), equals(hitNpGainWithBonus));
@@ -579,8 +579,8 @@ void main() async {
         final params = baseParam.copy()
           ..attackerNpCharge = np.npGain.quick.last
           ..chainPos = 1
-          ..currentCardType = CardType.quick
-          ..firstCardType = CardType.quick;
+          ..currentCardType = CardType.quick.value
+          ..firstCardType = CardType.quick.value;
 
         expect(calculateAttackNpGain(params), equals(61));
 
@@ -595,12 +595,12 @@ void main() async {
         params
           ..attackerNpCharge = np.npGain.buster.last
           ..chainPos = 2
-          ..currentCardType = CardType.buster
-          ..firstCardType = CardType.quick;
+          ..currentCardType = CardType.buster.value
+          ..firstCardType = CardType.quick.value;
 
         expect(calculateAttackNpGain(params), equals(0));
 
-        params.firstCardType = CardType.arts;
+        params.firstCardType = CardType.arts.value;
 
         expect(calculateAttackNpGain(params), equals(61));
       });
@@ -610,8 +610,8 @@ void main() async {
           ..attackerNpCharge = np.npGain.arts.last
           ..chainPos = 2
           ..critical = true
-          ..currentCardType = CardType.arts
-          ..firstCardType = CardType.arts;
+          ..currentCardType = CardType.arts.value
+          ..firstCardType = CardType.arts.value;
 
         expect(calculateAttackNpGain(params), equals(673));
       });
@@ -643,7 +643,7 @@ void main() async {
       final param = AttackNpGainParameters()
         ..defenderNpRate = defenderNpRate
         ..attackerNpCharge = np.npGain.arts.last
-        ..currentCardType = CardType.arts
+        ..currentCardType = CardType.arts.value
         ..firstCardType = np.svt.card
         ..critical = true
         ..npGainBuff = 1450
@@ -657,7 +657,7 @@ void main() async {
 
       param
         ..chainPos = 4
-        ..currentCardType = CardType.extra
+        ..currentCardType = CardType.extra.value
         ..critical = false;
       expect(calculateAttackNpGain(param), equals(99));
     });
@@ -671,8 +671,8 @@ void main() async {
       final param = AttackNpGainParameters()
         ..defenderNpRate = defenderNpRate
         ..attackerNpCharge = np.npGain.arts.last
-        ..currentCardType = CardType.arts
-        ..firstCardType = CardType.arts
+        ..currentCardType = CardType.arts.value
+        ..firstCardType = CardType.arts.value
         ..critical = true
         ..cardBuff = 1800
         ..npGainBuff = 1300
@@ -691,8 +691,8 @@ void main() async {
       final param = AttackNpGainParameters()
         ..defenderNpRate = defenderNpRate
         ..attackerNpCharge = np.npGain.arts.last
-        ..currentCardType = CardType.arts
-        ..firstCardType = CardType.arts
+        ..currentCardType = CardType.arts.value
+        ..firstCardType = CardType.arts.value
         ..critical = true
         ..cardBuff = 1800
         ..npGainBuff = 1300
@@ -799,7 +799,7 @@ void main() async {
       });
 
       test('NP does not benefit from firstCardBonus', () {
-        final param = npBaseParam.copy()..firstCardType = CardType.arts;
+        final param = npBaseParam.copy()..firstCardType = CardType.arts.value;
 
         expect(calculateStar(param).toDouble(), moreOrLessEquals(baseHitStarGen.toDouble(), epsilon: 1));
       });
@@ -854,23 +854,23 @@ void main() async {
       test('firstCardBonus', () {
         final params = baseParam.copy()
           ..chainPos = 2
-          ..currentCardType = CardType.buster
-          ..firstCardType = CardType.buster;
+          ..currentCardType = CardType.buster.value
+          ..firstCardType = CardType.buster.value;
 
         final hitStarGenWithoutBonus = calculateStar(params).toDouble();
         expect(hitStarGenWithoutBonus, moreOrLessEquals(359, epsilon: 1));
 
-        params.firstCardType = CardType.arts;
+        params.firstCardType = CardType.arts.value;
 
         expect(calculateStar(params).toDouble(), moreOrLessEquals(hitStarGenWithoutBonus, epsilon: 1));
 
-        params.firstCardType = CardType.quick;
+        params.firstCardType = CardType.quick.value;
 
         final hitStarGenWithBonus = calculateStar(params).toDouble();
         expect(hitStarGenWithBonus, moreOrLessEquals(559, epsilon: 1));
 
         params
-          ..firstCardType = CardType.arts
+          ..firstCardType = CardType.arts.value
           ..chainType = BattleChainType.mighty;
 
         expect(calculateStar(params).toDouble(), moreOrLessEquals(hitStarGenWithBonus, epsilon: 1));
@@ -879,8 +879,8 @@ void main() async {
       test('cardCorrection', () {
         final params = baseParam.copy()
           ..chainPos = 1
-          ..currentCardType = CardType.buster
-          ..firstCardType = CardType.buster;
+          ..currentCardType = CardType.buster.value
+          ..firstCardType = CardType.buster.value;
 
         expect(calculateStar(params).toDouble(), moreOrLessEquals(309, epsilon: 1));
 
@@ -894,12 +894,12 @@ void main() async {
 
         params
           ..chainPos = 2
-          ..currentCardType = CardType.arts
-          ..firstCardType = CardType.buster;
+          ..currentCardType = CardType.arts.value
+          ..firstCardType = CardType.buster.value;
 
         expect(calculateStar(params).toDouble(), moreOrLessEquals(209, epsilon: 1));
 
-        params.firstCardType = CardType.quick;
+        params.firstCardType = CardType.quick.value;
 
         expect(calculateStar(params).toDouble(), moreOrLessEquals(409, epsilon: 1));
       });
@@ -908,8 +908,8 @@ void main() async {
         final params = baseParam.copy()
           ..chainPos = 2
           ..critical = true
-          ..currentCardType = CardType.quick
-          ..firstCardType = CardType.quick;
+          ..currentCardType = CardType.quick.value
+          ..firstCardType = CardType.quick.value;
 
         expect(calculateStar(params).toDouble(), moreOrLessEquals(1909, epsilon: 1));
       });
