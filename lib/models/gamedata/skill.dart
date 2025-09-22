@@ -447,6 +447,7 @@ class BaseTd extends SkillOrTd {
   @override
   String? unmodifiedDetail;
   NpGain npGain;
+  @protected
   @TraitListConverter()
   List<int> individuality; // use getIndividuality()
   @override
@@ -733,6 +734,7 @@ class NiceTd extends SkillOrTd implements BaseTd {
   @override
   @TraitListConverter()
   List<int> get individuality => _base.individuality;
+  @protected
   @override
   set individuality(List<int> v) => _base.individuality = v;
   @override
@@ -808,14 +810,14 @@ extension TdMethods on BaseTd {
   int get dmgNpFuncCount => functions.where((func) => func.funcType.isDamageNp).length;
 
   List<int> getIndividuality() {
-    return [
+    return {
       ...individuality,
       ...switch (damageType) {
         TdEffectFlag.support => ConstData.constantStr.npIndividualityNotDamage,
         TdEffectFlag.attackEnemyAll => ConstData.constantStr.npIndividualityDamageAll,
         TdEffectFlag.attackEnemyOne => ConstData.constantStr.npIndividualityDamageOne,
       },
-    ];
+    }.toList();
   }
 }
 

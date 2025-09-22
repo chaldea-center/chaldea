@@ -149,7 +149,7 @@ class _TdDetailPageState extends State<TdDetailPage> with RegionBasedState<BaseT
                 TableCellData(text: S.current.trait, isHeader: true),
                 TableCellData(
                   flex: 3,
-                  child: SharedBuilder.traitList(context: context, traits: td.individuality),
+                  child: SharedBuilder.traitList(context: context, traits: td.getIndividuality()),
                 ),
               ],
             ),
