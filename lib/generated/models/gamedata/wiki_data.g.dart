@@ -25,8 +25,6 @@ WikiData _$WikiDataFromJson(Map json) => WikiData(
   summons: (json['summons'] as Map?)?.map(
     (k, e) => MapEntry(k as String, LimitedSummon.fromJson(Map<String, dynamic>.from(e as Map))),
   ),
-  webcrowMapping:
-      (json['webcrowMapping'] as Map?)?.map((k, e) => MapEntry(int.parse(k as String), (e as num).toInt())) ?? const {},
 );
 
 ServantExtra _$ServantExtraFromJson(Map json) => ServantExtra(

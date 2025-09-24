@@ -11,7 +11,6 @@ import 'package:chaldea/widgets/widgets.dart';
 import '../../app.dart';
 import '../home/subpage/account_page.dart';
 import '../home/subpage/user_data_page.dart';
-import 'import_fgo_simu_material_page.dart';
 import 'import_https_page.dart';
 import 'item_screenshots.dart';
 import 'sheet/import_csv.dart';
@@ -99,7 +98,7 @@ class _ImportPageHomeState extends State<ImportPageHome> {
               ListTile(
                 leading: const Icon(Icons.screenshot),
                 title: Text(S.current.import_active_skill_screenshots),
-                subtitle: Text(S.current.import_active_skill_hint),
+                subtitle: Text("[${S.current.outdated}] ${S.current.import_active_skill_hint}"),
                 trailing: const Icon(Icons.keyboard_arrow_right),
                 onTap: () {
                   if (checkDataRequiredVersion()) {
@@ -110,7 +109,7 @@ class _ImportPageHomeState extends State<ImportPageHome> {
               ListTile(
                 leading: const Icon(Icons.screenshot),
                 title: Text(S.current.import_append_skill_screenshots),
-                subtitle: Text('[NO JP] ${S.current.import_append_skill_hint}'),
+                subtitle: Text('[${S.current.outdated}] ${S.current.import_append_skill_hint}'),
                 trailing: const Icon(Icons.keyboard_arrow_right),
                 onTap: () {
                   if (checkDataRequiredVersion()) {
@@ -118,16 +117,6 @@ class _ImportPageHomeState extends State<ImportPageHome> {
                   }
                 },
               ),
-              if (1 > 2)
-                ListTile(
-                  leading: const Icon(Icons.compare_arrows),
-                  title: const Text('FGO Simulator-Material'),
-                  subtitle: const Text('https://fgosim.github.io/Material/'),
-                  trailing: const Icon(Icons.keyboard_arrow_right),
-                  onTap: () {
-                    router.popDetailAndPush(child: ImportFgoSimuMaterialPage());
-                  },
-                ),
               ListTile(
                 leading: const Icon(Icons.table_view),
                 title: Text(S.current.import_csv_title),

@@ -18,7 +18,6 @@ class WikiData {
   final Map<int, EventExtra> events;
   final Map<int, WarExtra> wars;
   final Map<String, LimitedSummon> summons;
-  final Map<int, int> webcrowMapping;
 
   WikiData({
     Map<int, ServantExtra>? servants,
@@ -27,7 +26,6 @@ class WikiData {
     Map<int, EventExtra>? events,
     Map<int, WarExtra>? wars,
     Map<String, LimitedSummon>? summons,
-    this.webcrowMapping = const {},
   }) : servants = servants ?? {},
        craftEssences = craftEssences ?? {},
        commandCodes = commandCodes ?? {},

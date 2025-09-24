@@ -257,7 +257,6 @@ class GameDataLoader {
       'wiki.servants': 'collectionNo',
       'wiki.summons': 'id',
       'wiki.wars': 'id',
-      // 'wiki.webcrowMapping'
     };
 
     for (final fv in newVersion.files.values) {
