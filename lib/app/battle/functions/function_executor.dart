@@ -512,6 +512,7 @@ class FunctionExecutor {
         case FuncType.setBattleValue:
         case FuncType.enemyCountChange:
         case FuncType.displayBattleMessage:
+        case FuncType.setDisplayDirectBattleMessageInFsm:
           battleData.battleLogger.debug(
             '${S.current.skip}: ${function.funcType}, '
             'Function ID: ${function.funcId}, '

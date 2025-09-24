@@ -540,7 +540,7 @@ enum ItemType {
   exchangeSvtCoin,
   reduceTradeTime,
   eventPassiveSkillGiven,
-  shop18Item,
+  classBoardResetItem,
   netmarbleChargeStone, // KR stone
 }
 

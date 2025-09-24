@@ -467,7 +467,7 @@ class ShopHelper {
           TextSpan(text: 'Reset Kiara Punishers: ', children: MultiDescriptor.shops(context, [targetId])),
         );
         return;
-      case PurchaseType.shop18Item:
+      case PurchaseType.classBoardResetItem:
         final classBoard = db.gameData.classBoards[targetId];
         onTapClassBoard() => router.push(url: Routes.classBoardI(targetId));
         if (classBoard == null) {

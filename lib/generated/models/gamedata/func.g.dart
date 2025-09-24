@@ -328,6 +328,7 @@ const _$FuncTypeEnumMap = {
   FuncType.setBattleMissionValue: 'setBattleMissionValue',
   FuncType.changeEnemyStatusUiType: 'changeEnemyStatusUiType',
   FuncType.swapFieldPosition: 'swapFieldPosition',
+  FuncType.setDisplayDirectBattleMessageInFsm: 'setDisplayDirectBattleMessageInFsm',
 };
 
 const _$FuncApplyTargetEnumMap = {

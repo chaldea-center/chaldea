@@ -379,6 +379,8 @@ class AtlasApi {
     ShopType? type,
     int? eventId,
     PayType? payType,
+    PurchaseType? purchaseType,
+    int? limit,
     Region region = Region.jp,
     Duration? expireAfter,
   }) async {
@@ -390,6 +392,8 @@ class AtlasApi {
               if (type != null) 'type': type.name,
               if (eventId != null) 'eventId': eventId.toString(),
               if (payType != null) 'payType': payType.name,
+              if (purchaseType != null) 'purchaseType': purchaseType.name,
+              if (limit != null) 'limit': limit,
             },
           )
           .toString(),

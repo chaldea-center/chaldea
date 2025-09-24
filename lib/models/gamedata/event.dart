@@ -2040,7 +2040,7 @@ enum PurchaseType {
   gift,
   eventSvtJoin,
   assist,
-  shop18Item,
+  classBoardResetItem,
   partsSkill,
   kiaraPunisherReset,
 }
@@ -2064,7 +2064,7 @@ enum ShopType {
   revivalItem, // 巡霊の葉
   eventSvtEquip,
   exchangeSvtCoin,
-  shop18,
+  classBoardReset,
 }
 
 enum MissionProgressType {

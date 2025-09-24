@@ -113,6 +113,7 @@ enum AiType {
 enum NiceAiActNum {
   nomal(0),
   anytime(-1),
+  reactionPlayerComboEnd(-2),
   reactionPlyaerSkill(-3),
   reactionEnemyturnStart(-4),
   reactionEnemyturnEnd(-5),
@@ -124,14 +125,16 @@ enum NiceAiActNum {
   usenpTarget(-11),
   reactionTurnstart(-12),
   reactionPlayeractionstart(-13),
-  reactionEntryUnit(-14),
+  reactionEntryAnyUnit(-14),
   reactionBeforeResurrection(-15),
   reactionBeforeDead(-16),
   shiftServantAfter(-17),
   reactionBeforeMoveWave(-18),
   shiftServantBefore(-19),
+  reactionPlayerComboEndPriority(-201),
   reactionEnemyTurnStartPriority(-401),
   reactionEnemyTurnEndPriority(-501),
+  reactionEntryAnyUnitPriority(-1401),
   shiftServantBeforePriority(-1901),
   unknown(-9999);
 
@@ -359,6 +362,7 @@ enum NiceAiActType {
   skillId,
   skillIdCheckbuff,
   resurrection,
+  battleScript,
   playMotion,
   message,
   messageGroup,
