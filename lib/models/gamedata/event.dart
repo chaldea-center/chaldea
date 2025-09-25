@@ -2245,6 +2245,7 @@ enum CombineAdjustTarget {
   exchangeSvt,
   questItemFirstTime,
   questUseRewardAddItem,
+  equipExp,
 }
 
 enum EventCombineCalc {

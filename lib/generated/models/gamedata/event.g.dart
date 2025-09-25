@@ -1512,6 +1512,7 @@ const _$CombineAdjustTargetEnumMap = {
   CombineAdjustTarget.exchangeSvt: 'exchangeSvt',
   CombineAdjustTarget.questItemFirstTime: 'questItemFirstTime',
   CombineAdjustTarget.questUseRewardAddItem: 'questUseRewardAddItem',
+  CombineAdjustTarget.equipExp: 'equipExp',
 };
 
 const _$EventCombineCalcEnumMap = {

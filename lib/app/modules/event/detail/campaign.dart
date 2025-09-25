@@ -213,6 +213,7 @@ class EventCampaignDetail extends StatelessWidget {
       case CombineAdjustTarget.exchangeSvtCombineExp:
       case CombineAdjustTarget.questUseFriendshipUpItem:
       case CombineAdjustTarget.questFriendship:
+      case CombineAdjustTarget.equipExp:
         percentBase = 10;
         break;
       case CombineAdjustTarget.activeSkill:
@@ -296,6 +297,12 @@ class EventCampaignDetail extends StatelessWidget {
         return svt.iconBuilder(context: context, width: 48, onTap: _onTap);
       }
       return Text.rich(SharedBuilder.textButtonSpan(context: context, text: id.toString(), onTap: _onTap));
+    }
+    if (campaign.target == CombineAdjustTarget.equipExp) {
+      final equip = db.gameData.mysticCodes[id];
+      if (equip != null) {
+        return equip.iconBuilder(context: context, width: 48, onTap: equip.routeTo);
+      }
     }
     return Text(id.toString());
   }
