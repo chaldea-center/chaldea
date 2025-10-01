@@ -163,6 +163,9 @@ class TraitListConverter extends JsonConverter<List<int>, Object> with NullableJ
   const TraitListConverter();
   @override
   List<int> fromJson(Object value) {
+    if (value is int) {
+      return [value];
+    }
     List<dynamic> values;
     if (value is List) {
       values = value;

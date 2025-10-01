@@ -410,7 +410,8 @@ class SharedBuilder {
     }
 
     if (!useAndJoin) {
-      final unsignedArray = traits.where((e) => e >= 0).toList(), signedArray = traits.where((e) => e < 0).toList();
+      final unsignedArray = traits.where((e) => e >= 0).toList(),
+          signedArray = traits.where((e) => e < 0).map((e) => e.abs()).toList();
       if (signedArray.isEmpty && unsignedArray.isEmpty) return [];
       if (unsignedArray.isEmpty) {
         if (signedArray.isEmpty) {

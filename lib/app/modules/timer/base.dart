@@ -75,6 +75,7 @@ class CountDown extends StatelessWidget {
   final TextAlign? textAlign;
   final bool fitted;
   final bool showFutureStartedAt;
+  final int? maxDays;
 
   const CountDown({
     super.key,
@@ -87,6 +88,7 @@ class CountDown extends StatelessWidget {
     this.textAlign,
     this.fitted = true,
     this.showFutureStartedAt = true,
+    this.maxDays = 99,
   });
 
   @override
@@ -136,12 +138,16 @@ class CountDown extends StatelessWidget {
         hours = delta.inHours % Duration.hoursPerDay,
         minutes = delta.inMinutes % Duration.minutesPerHour,
         seconds = delta.inSeconds % Duration.secondsPerMinute;
-    if (days > 0) {
-      text += "${days}d ";
-    }
-    text += "${padInt(hours)}:${padInt(minutes)}";
-    if (showSeconds) {
-      text += ":${padInt(seconds)}";
+    if (maxDays != null && days > maxDays!) {
+      text += "$maxDays+d";
+    } else {
+      if (days > 0) {
+        text += "${days}d ";
+      }
+      text += "${padInt(hours)}:${padInt(minutes)}";
+      if (showSeconds) {
+        text += ":${padInt(seconds)}";
+      }
     }
     if (color == null) {
       final themeData = Theme.of(context);
