@@ -1121,15 +1121,16 @@ class FuncDescriptor extends StatelessWidget {
 
     _addFuncText();
 
-    if (buff != null && buff.type == BuffType.changeBgm) {
-      final bgm = db.gameData.bgms[vals?.BgmId];
-      if (bgm != null) {
-        spans.add(
-          TextSpan(
-            children: [SharedBuilder.textButtonSpan(context: context, text: '  ${bgm.tooltip}', onTap: bgm.routeTo)],
-          ),
-        );
-      }
+    BgmEntity? _changeBgm;
+    if (func.funcType == FuncType.changeBgm) {
+      _changeBgm = db.gameData.bgms[vals?.Value];
+    } else if (buff != null && buff.type == BuffType.changeBgm) {
+      _changeBgm = db.gameData.bgms[vals?.BgmId];
+    }
+    if (_changeBgm != null) {
+      spans.add(
+        SharedBuilder.textButtonSpan(context: context, text: '  ${_changeBgm.tooltip}', onTap: _changeBgm.routeTo),
+      );
     }
 
     if (func.funcType == FuncType.transformServant) {

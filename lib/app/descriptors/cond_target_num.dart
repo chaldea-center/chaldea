@@ -591,6 +591,14 @@ class CondTargetNumDescriptor extends HookWidget with DescriptorBase {
           na: () => rich('Have not purchased event shop', events(context)),
           kr: null,
         );
+      case CondType.purchaseShopNum:
+        return localized(
+          jp: null,
+          cn: () => rich('已兑换$targetNum次商店', shops(context)),
+          tw: () => rich('已兌換$targetNum次商店', shops(context)),
+          na: () => rich('Have purchased $targetNum times of shop', shops(context)),
+          kr: null,
+        );
       case CondType.shopGroupLimitNum:
         return localized(
           jp: null,
