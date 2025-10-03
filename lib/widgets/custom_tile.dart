@@ -89,7 +89,7 @@ class CustomTile extends StatelessWidget {
     final EdgeInsetsGeometry resolvedTitlePadding =
         titlePadding ?? (leading == null ? EdgeInsets.zero : const EdgeInsets.symmetric(horizontal: 6.0));
     List<Widget> allElements = [
-      if (leadingIcon != null) leadingIcon,
+      ?leadingIcon,
       Expanded(
         flex: 1,
         child: Padding(

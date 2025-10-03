@@ -621,7 +621,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         const SizedBox(width: 8),
-        if (mysticCodeWidget != null) mysticCodeWidget,
+        ?mysticCodeWidget,
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,

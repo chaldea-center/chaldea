@@ -69,7 +69,7 @@ class CondTargetNumDescriptor extends HookWidget with DescriptorBase {
       }
 
       List<InlineSpan> spans = [
-        if (leading != null) leading!,
+        ?leading,
         TextSpan(
           text: M.of(jp: null, cn: '总计$targetNum: ', tw: '總計$targetNum: ', na: 'Total $targetNum: ', kr: null),
         ),

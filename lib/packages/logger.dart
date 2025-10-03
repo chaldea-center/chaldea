@@ -206,7 +206,7 @@ class _CustomPrettyPrinter extends PrettyPrinter {
     final lines = <String>[
       if (stackTraceStr != null)
         ...stackTraceStr.split('\n').where((line) => line != '<asynchronous suspension>').take(20),
-      if (errorStr != null) errorStr,
+      ?errorStr,
       fullMessageStr,
     ];
     if (lines.length > 1) {

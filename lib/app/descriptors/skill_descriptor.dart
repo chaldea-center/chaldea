@@ -142,7 +142,7 @@ class SkillDescriptor extends StatelessWidget with FuncsDescriptor, _SkillDescri
 
     Widget child = TileGroup(
       children: [
-        if (costumeReleaseWidget != null) costumeReleaseWidget,
+        ?costumeReleaseWidget,
         header,
         if (!hideDetail) ...[
           Padding(
@@ -426,7 +426,7 @@ class TdDescriptor extends StatelessWidget with FuncsDescriptor, _SkillDescripto
 
     Widget child = TileGroup(
       children: [
-        if (costumeReleaseWidget != null) costumeReleaseWidget,
+        ?costumeReleaseWidget,
         header,
         Padding(
           padding: const EdgeInsetsDirectional.fromSTEB(16, 0, 16, 4),

@@ -389,11 +389,11 @@ class AtlasApi {
       Uri.parse('$atlasApiHost/nice/${region.upper}/shop/search')
           .replace(
             queryParameters: {
-              if (type != null) 'type': type.name,
-              if (eventId != null) 'eventId': eventId.toString(),
-              if (payType != null) 'payType': payType.name,
-              if (purchaseType != null) 'purchaseType': purchaseType.name,
-              if (limit != null) 'limit': limit,
+              'type': ?type?.name,
+              'eventId': ?eventId?.toString(),
+              'payType': ?payType?.name,
+              'purchaseType': ?purchaseType?.name,
+              'limit': ?limit,
             },
           )
           .toString(),

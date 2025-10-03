@@ -99,10 +99,10 @@ class ChaldeaWorkerApi {
     Map<String, Uint8List> files = const {},
   }) {
     var formData = FormData.fromMap({
-      if (html != null) 'html': html,
-      if (text != null) 'text': text,
-      if (subject != null) 'subject': subject,
-      if (senderName != null) 'sender': senderName,
+      'html': ?html,
+      'text': ?text,
+      'subject': ?subject,
+      'sender': ?senderName,
       'files': [for (final file in files.entries) MultipartFile.fromBytes(file.value, filename: file.key)],
     });
     return postCommon("${HostsX.apiHost}/feedback", formData);

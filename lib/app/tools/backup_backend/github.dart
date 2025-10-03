@@ -111,7 +111,7 @@ class GithubBackup<T> extends BackupBackend<T> {
           'message': message,
           'content': content,
           if (config.branch.trim().isNotEmpty) 'branch': config.branch,
-          if (sha != null) 'sha': sha,
+          'sha': ?sha,
         },
       );
       return ContentCreation.fromJson(response.data as Map<String, dynamic>);

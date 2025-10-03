@@ -59,7 +59,7 @@ class TimerMissionItem with TimerItem {
         enabled: mm.endedAt > DateTime.now().timestamp,
         title: Text(
           [
-            if (mm.lMissionIconDetailText != null) mm.lMissionIconDetailText,
+            ?mm.lMissionIconDetailText,
             [fmtDate(mm.startedAt), fmtDate(mm.endedAt)].join(' ~ '),
           ].join('\n'),
         ),

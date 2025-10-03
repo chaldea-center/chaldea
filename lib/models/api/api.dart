@@ -246,7 +246,7 @@ class UserBattleData {
     Uri shareUri = Uri.parse(ChaldeaUrl.deepLink('/laplace/share'));
     shareUri = shareUri.replace(
       queryParameters: {
-        if (data != null) "data": data,
+        "data": ?data,
         "questId": (detail?.quest?.id ?? questId).toString(),
         "phase": (detail?.quest?.phase ?? phase).toString(),
         "enemyHash": detail?.quest?.enemyHash ?? enemyHash,

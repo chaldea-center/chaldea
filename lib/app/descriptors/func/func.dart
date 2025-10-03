@@ -1709,17 +1709,16 @@ class FuncDescriptor extends StatelessWidget {
         "maxRate": buff.maxRate,
         if (script != null) ...{
           "----script----": "↓",
-          if (script.checkIndvType != null) "checkIndvType": script.checkIndvType,
-          if (script.CheckOpponentBuffTypes != null)
-            "CheckOpponentBuffTypes": script.CheckOpponentBuffTypes!
-                .map((e) => '${e.name}(${Transl.buffType(e).l})')
-                .toList(),
+          "checkIndvType": ?script.checkIndvType,
+          "CheckOpponentBuffTypes": ?script.CheckOpponentBuffTypes?.map(
+            (e) => '${e.name}(${Transl.buffType(e).l})',
+          ).toList(),
           if (script.relationId != null) "relationId": "!BuffRelationOverwrite!",
-          if (script.ReleaseText != null) "ReleaseText": script.ReleaseText,
-          if (script.DamageRelease != null) "DamageRelease": script.DamageRelease,
+          "ReleaseText": ?script.ReleaseText,
+          "DamageRelease": ?script.DamageRelease,
           if (script.INDIVIDUALITIE != null) "INDIVIDUALITIE": Transl.traitName(script.INDIVIDUALITIE!),
           if (script.UpBuffRateBuffIndiv != null) "UpBuffRateBuffIndiv": _traitList(script.UpBuffRateBuffIndiv!),
-          if (script.HP_LOWER != null) "HP_LOWER": script.HP_LOWER,
+          "HP_LOWER": ?script.HP_LOWER,
         },
       },
     };

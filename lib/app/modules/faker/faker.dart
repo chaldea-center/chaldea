@@ -110,7 +110,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
     return [
       // if (quest.warId == WarId.ordealCall || (quest.warId > 1000 && (quest.isAnyFree || quest.isAnyRaid)))
       'Lv.${(phaseDetail?.recommendLv ?? quest.recommendLv)}',
-      if (enemyCounts != null) enemyCounts,
+      ?enemyCounts,
       quest.lDispName.setMaxLines(1),
       'P$phase',
       if (quest.war != null) '@${quest.war?.lShortName.setMaxLines(1)}',

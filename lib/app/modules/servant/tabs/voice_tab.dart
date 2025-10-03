@@ -219,7 +219,7 @@ class VoiceGroupAccordion extends StatelessWidget {
           title: Text.rich(
             TextSpan(
               children: [
-                if (svtSpan != null) svtSpan,
+                ?svtSpan,
                 TextSpan(text: Transl.enums(group.type, (enums) => enums.svtVoiceType).l),
               ],
             ),

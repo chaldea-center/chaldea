@@ -132,7 +132,7 @@ class FilterGroup<T> extends StatelessWidget {
                   onFilterChanged!(values, null);
                 }
               }),
-            if (expandIcon != null) expandIcon,
+            ?expandIcon,
           ],
         ),
       );

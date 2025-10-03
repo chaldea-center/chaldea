@@ -21,7 +21,7 @@ typedef DispatchErrorCallback =
 
 extension _RequestOptionsX on RequestOptions {
   static String getHashKey(String method, String url, dynamic data) {
-    final key = <String>[method, url, if (data != null) data.toString()].join(" ");
+    final key = <String>[method, url, ?data?.toString()].join(" ");
     return md5.convert(utf8.encode(key)).toString();
   }
 

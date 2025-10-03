@@ -29,7 +29,7 @@ mixin DescriptorBase {
     Widget child = Text.rich(
       TextSpan(
         children: [
-          if (leading != null) leading!,
+          ?leading,
           ...buildContent(context),
           // in case the last [GestureRecognizer] use the remaining space
           const TextSpan(text: ' '),
@@ -57,9 +57,9 @@ mixin DescriptorBase {
   ]) {
     return [
       if (text1 != null) TextSpan(text: text1),
-      if (children2 != null) ...children2,
+      ...?children2,
       if (text3 != null) TextSpan(text: text3),
-      if (children4 != null) ...children4,
+      ...?children4,
       if (text5 != null) TextSpan(text: text5),
     ];
   }

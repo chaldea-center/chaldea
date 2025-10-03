@@ -204,14 +204,14 @@ class TileGroup extends StatelessWidget {
       footerWidget ??= SFooter(footer!);
     }
     final _children = <Widget>[
-      if (headerWidget != null) headerWidget,
+      ?headerWidget,
       Card(
         color: tileColor,
         shape: const RoundedRectangleBorder(),
         margin: const EdgeInsets.all(0),
         child: Column(crossAxisAlignment: crossAxisAlignment, mainAxisSize: MainAxisSize.min, children: group),
       ),
-      if (footerWidget != null) footerWidget,
+      ?footerWidget,
     ];
     if (scrollable) {
       return ListView(

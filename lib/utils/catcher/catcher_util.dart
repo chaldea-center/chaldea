@@ -20,7 +20,7 @@ class CatcherUtil {
         if (!kIsWeb && logPath != null) _StacktraceHandler(FileHandler(File(logPath)), 50),
         _StacktraceHandler(ConsoleHandler(), 50),
         // ToastHandler(),
-        if (feedbackHandler != null) feedbackHandler,
+        ?feedbackHandler,
       ],
       handleSilentError: false,
       filterFunction: CatcherUtil.reportFilter,

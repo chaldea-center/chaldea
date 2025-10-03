@@ -218,7 +218,7 @@ class BattleShareData {
         if (quest != null) ...{
           "questId": quest!.id.toString(),
           "phase": quest!.phase.toString(),
-          if (quest!.enemyHash != null) "enemyHash": quest!.enemyHash,
+          "enemyHash": ?quest!.enemyHash,
         },
       },
     );
