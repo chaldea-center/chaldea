@@ -204,7 +204,7 @@ class FakerRuntime {
   }
 
   Future<void> loadInitData() async {
-    await gameData.init(agent.network.gameTop);
+    await gameData.init(gameTop: agent.network.gameTop);
     update();
   }
 
@@ -802,23 +802,18 @@ class _FakerGameData {
     };
   }
 
-  Future<void> reset() async {
-    timerData = GameTimerData();
-    AtlasApi.cacheManager.clearCache();
-    await init(null);
-  }
-
-  Future<void> init(GameTop? gameTop) async {
-    if (gameTop != null) {
+  Future<void> init({GameTop? gameTop, bool refresh = false}) async {
+    GameTimerData? _timerData;
+    if (gameTop != null && !refresh) {
       final localTimerData = await AtlasApi.timerData(region, expireAfter: kExpireCacheOnly);
       if (localTimerData != null && localTimerData.updatedAt > DateTime.now().timestamp - 3 * kSecsPerDay) {
         if (localTimerData.hash != null && localTimerData.hash == gameTop.hash) {
-          timerData = localTimerData;
-          return;
+          _timerData = localTimerData;
         }
       }
     }
-    timerData = (await AtlasApi.timerData(region)) ?? timerData;
+    _timerData ??= await AtlasApi.timerData(region, expireAfter: refresh ? Duration.zero : null);
+    timerData = _timerData ?? timerData;
   }
 }
 

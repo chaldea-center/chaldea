@@ -80,7 +80,10 @@ class _FakerMenuButtonState extends State<FakerMenuButton> with FakerRuntimeStat
                 icon: Icons.refresh,
                 name: S.current.refresh,
                 onTap: () {
-                  runtime.runTask(runtime.gameData.reset);
+                  runtime.runTask(() async {
+                    await runtime.agent.network.updateGameTop();
+                    await runtime.gameData.init(refresh: true);
+                  });
                 },
               ),
               _ButtonData(

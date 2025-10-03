@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
+import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
@@ -113,7 +114,7 @@ class NidCheckException implements Exception {
 
 abstract class NetworkManagerBase<TRequest extends FRequestBase, TUser extends AutoLoginData> with ChangeNotifier {
   static bool hasCalled = false;
-  final GameTop gameTop;
+  GameTop gameTop;
   final TUser user;
   final CatMouseGame catMouseGame;
   final mstData = MasterDataManager();
@@ -126,6 +127,11 @@ abstract class NetworkManagerBase<TRequest extends FRequestBase, TUser extends A
   bool stopFlag = false;
 
   NetworkManagerBase({required this.gameTop, required this.user}) : catMouseGame = CatMouseGame(gameTop.region);
+
+  Future<void> updateGameTop() async {
+    final top = (await AtlasApi.gametopsRaw(expireAfter: Duration.zero))?.of(gameTop.region);
+    if (top != null) gameTop = top;
+  }
 
   int lastTaskStartedAt = 0;
 
