@@ -533,7 +533,27 @@ class _GachaDrawPageState extends State<GachaDrawPage> with FakerRuntimeStateMix
   }
 
   Widget buildLastResult() {
-    final cards = runtime.gachaResultStat.lastDrawResult;
+    final cards = runtime.gachaResultStat.lastDrawResult.toList();
+    if (cards.length == 100) {
+      cards.sortByList((info) {
+        final entity = db.gameData.entities[info.objectId];
+        bool highlight = gachaOption.sellKeepSvtIds.contains(info.objectId);
+        if (entity != null) {
+          highlight =
+              highlight ||
+              (db.gameData.servantsById[info.objectId]?.obtains.contains(SvtObtain.limited) ?? false) ||
+              (db.gameData.craftEssencesById[info.objectId]?.obtain == CEObtain.limited);
+        }
+        return <int>[
+          info.userSvtId > 0 ? 0 : 1,
+          highlight ? 0 : 1,
+          info.type == GiftType.commandCode.value ? 99 : (entity?.type.index ?? -1),
+          -(entity?.rarity ?? 0),
+          entity?.classId ?? 0,
+          info.objectId,
+        ];
+      });
+    }
     final cardWidgets = cards.map((card) {
       Widget child = card.toGift().iconBuilder(
         context: context,
@@ -772,15 +792,16 @@ class _GachaDrawPageState extends State<GachaDrawPage> with FakerRuntimeStateMix
                             },
                             child: Text('10'),
                           ),
-                          TextButton(
-                            onPressed: () {
-                              Navigator.pop(context);
-                              runtime.runTask(() async {
-                                return runtime.gachaDraw(hundredDraw: true);
-                              });
-                            },
-                            child: Text('100'),
-                          ),
+                          if (!hasFreeDraw)
+                            TextButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                                runtime.runTask(() async {
+                                  return runtime.gachaDraw(hundredDraw: true);
+                                });
+                              },
+                              child: Text('100'),
+                            ),
                         ],
                       );
                     },

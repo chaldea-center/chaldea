@@ -309,14 +309,19 @@ abstract class FakerAgent<
     int activeDeckId, followerId, followerClassId, followerType, followerSupportDeckId, followerGrandGraphId = 0;
     int userEquipId = 0;
 
+    UserDeckEntityBase? myDeck;
     if (questPhaseEntity.isUseUserEventDeck()) {
       activeDeckId = questPhaseEntity.extraDetail?.useEventDeckNo ?? 1;
-      final eventDeck = mstData.userEventDeck[UserEventDeckEntity.createPK(eventId, activeDeckId)];
-      if (eventDeck == null) {
+      myDeck = mstData.userEventDeck[UserEventDeckEntity.createPK(eventId, activeDeckId)];
+      if (myDeck == null) {
         throw SilentException('UserEventDeck(eventId=$eventId,deckNo=$activeDeckId) not found');
       }
     } else {
       activeDeckId = options.deckId;
+      myDeck = mstData.userDeck[activeDeckId];
+      if (myDeck == null) {
+        throw SilentException('UserDeck($activeDeckId) not found');
+      }
     }
 
     if (questPhaseEntity.isNpcOnly) {
@@ -355,6 +360,7 @@ abstract class FakerAgent<
       final (follower, followerSvt) = await _getValidSupport(
         questPhaseEntity: questPhaseEntity,
         useEventDeck: options.useEventDeck ?? db.gameData.others.shouldUseEventDeck(options.questId),
+        myDeck: myDeck,
         enforceRefreshSupport: options.enfoceRefreshSupport,
         supportSvtIds: options.supportSvtIds.toList(),
         supportEquipIds: options.supportEquipIds.toList(),
@@ -386,6 +392,7 @@ abstract class FakerAgent<
   Future<(FollowerInfo follower, ServantLeaderInfo followerSvt)> _getValidSupport({
     required QuestPhase questPhaseEntity,
     required bool useEventDeck,
+    required UserDeckEntityBase myDeck,
     required bool enforceRefreshSupport,
     required List<int> supportSvtIds,
     required List<int> supportEquipIds,
@@ -465,6 +472,8 @@ abstract class FakerAgent<
                 RestrictionRangeType.notEqual => !hasTrait,
                 _ => true,
               };
+            } else if (restriction.restriction.type == RestrictionType.uniqueSvtOnly) {
+              if (myDeck.deckInfo?.svts.any((e) => e.svtId == svtInfo.svtId) ?? true) return false;
             }
             return true;
           })) {

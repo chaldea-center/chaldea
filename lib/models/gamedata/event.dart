@@ -552,7 +552,9 @@ class MstMasterMission with RouteInfo {
   Map<int, int> gifts; // manually added
   Map<String, dynamic> script;
 
-  String? get missionIconDetailText => script['missionIconDetailText'];
+  static const String kMissionIconDetailText = "missionIconDetailText";
+
+  String? get missionIconDetailText => script[kMissionIconDetailText];
 
   String? get lMissionIconDetailText {
     final text = missionIconDetailText;

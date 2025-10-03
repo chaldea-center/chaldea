@@ -398,9 +398,29 @@ class _UserPresentBoxManagePageState extends State<UserPresentBoxManagePage> wit
   Future<void> receivePresents(Set<int> presentIds) async {
     _ensureSelected(presentIds);
     if (presentIds.isEmpty) return;
+    Map<int, Map<int, int>> total = {};
+    for (final presentId in presentIds) {
+      final present = mstData.userPresentBox[presentId];
+      if (present == null) continue;
+      total.putIfAbsent(present.giftType, () => {}).addNum(present.objectId, present.num);
+    }
     final confirm = await router.showDialog(
       builder: (context) {
-        return SimpleConfirmDialog(title: Text('Receive ${presentIds.length} presents'));
+        return SimpleConfirmDialog(
+          title: Text('Receive ${presentIds.length} presents'),
+          content: Wrap(
+            children: [
+              for (final (giftType, gifts) in total.items)
+                for (final (objectId, count) in gifts.items)
+                  Gift(
+                    id: 0,
+                    objectId: objectId,
+                    num: count,
+                    type: GiftType.fromId(giftType),
+                  ).iconBuilder(context: context, width: 32, showOne: true),
+            ],
+          ),
+        );
       },
     );
     if (confirm != true) return;

@@ -455,7 +455,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
         children.add(
           ListTile(
             dense: true,
-            leading: GameCardMixin.anyCardItemBuilder(context: context, id: targetIds.first),
+            leading: GameCardMixin.anyCardItemBuilder(context: context, id: targetIds.first, width: 32),
             title: Text(shop.name),
             subtitle: Text.rich(
               TextSpan(
@@ -486,11 +486,47 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
     if (userCoinRoom != null && userCoinRoom.num < maxCoinRoomNum) {
       children.add(
         ListTile(
-          leading: Item.iconBuilder(context: context, item: Items.grail),
+          leading: Item.iconBuilder(context: context, item: Items.grail, width: 32),
           title: Text('聖杯鋳造'),
-          trailing: Text('(${userCoinRoom.cnt}) ${userCoinRoom.num}/$maxCoinRoomNum/${userCoinRoom.totalNum}'),
+          trailing: Text(
+            [
+              '${userCoinRoom.num}/$maxCoinRoomNum/${userCoinRoom.totalNum}',
+              if (userCoinRoom.cnt != 0) '${S.current.servant_coin_short} ${userCoinRoom.cnt}',
+            ].join('\n'),
+            textAlign: TextAlign.end,
+          ),
         ),
       );
+    }
+    final interludeCampaignIds = {
+      for (final event in runtime.gameData.timerData.events)
+        if (event.type == EventType.interludeCampaign && event.startedAt <= now && event.endedAt > now) event.id,
+    };
+    if (interludeCampaignIds.isNotEmpty) {
+      for (final quest in db.gameData.quests.values) {
+        if (!quest.releaseOverwrites.any(interludeCampaignIds.contains)) continue;
+        final userQuest = mstData.userQuest[quest.id];
+        if (userQuest != null && userQuest.clearNum > 0) continue;
+        final interludeSvt =
+            db.gameData.servantsById[quest.releaseConditions
+                .firstWhereOrNull((release) => const [CondType.svtGet, CondType.svtFriendship].contains(release.type))
+                ?.targetId];
+        children.add(
+          ListTile(
+            dense: true,
+            leading: interludeSvt?.iconBuilder(context: context),
+            title: Text('[${S.current.interlude}] ${quest.lName.l}', maxLines: 1),
+            subtitle: Text('${quest.id}: phase ${userQuest?.questPhase} clear ${userQuest?.clearNum}'),
+            trailing: IconButton(
+              onPressed: () {
+                copyToClipboard(quest.id.toString(), toast: true);
+              },
+              icon: Icon(Icons.copy),
+            ),
+            onTap: quest.routeTo,
+          ),
+        );
+      }
     }
     if (children.isEmpty) return const SizedBox.shrink();
     return TileGroup(header: S.current.hint, children: children);

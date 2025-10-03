@@ -1,7 +1,9 @@
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/generated/l10n.dart';
+import 'package:chaldea/models/db.dart';
 import 'package:chaldea/utils/constants.dart';
 import 'package:chaldea/utils/extension.dart';
 import 'package:chaldea/widgets/widgets.dart';
@@ -92,6 +94,15 @@ class _FakerMenuButtonState extends State<FakerMenuButton> with FakerRuntimeStat
                 enabled: isLoggedIn,
                 onTap: () {
                   router.pushPage(ImportHttpPage(mstData: runtime.mstData));
+                },
+              ),
+              _ButtonData(
+                icon: Icons.content_copy,
+                name: S.current.copy,
+                enabled: isLoggedIn,
+                onTap: () {
+                  db.runtimeData.clipBoard.mstData = mstData;
+                  EasyLoading.showToast(S.current.copied);
                 },
               ),
             ],

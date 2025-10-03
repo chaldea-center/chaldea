@@ -1,3 +1,5 @@
+import 'package:flutter/gestures.dart';
+
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'package:chaldea/app/app.dart';
@@ -56,6 +58,47 @@ class _UserEventMissionReceivePageState extends State<UserEventMissionReceivePag
       }
       return true;
     });
+
+    for (final event in runtime.gameData.timerData.events) {
+      if (!(event.startedAt <= now && event.endedAt > now && event.missions.isNotEmpty)) continue;
+      List<EventMission> eventMissions = [], randomMissions = [];
+      for (final mission in event.missions) {
+        if (mission.type == MissionType.random) {
+          if (runtime.mstData.userEventRandomMission[mission.id]?.isInProgress == true) {
+            randomMissions.add(mission);
+          }
+        } else {
+          eventMissions.add(mission);
+        }
+      }
+      if (eventMissions.isNotEmpty) {
+        mms.add(
+          MasterMission(
+            id: event.id,
+            startedAt: event.startedAt,
+            endedAt: event.endedAt,
+            closedAt: event.endedAt,
+            missions: eventMissions,
+            script: {MstMasterMission.kMissionIconDetailText: event.lShortName.l.setMaxLines(1)},
+          ),
+        );
+      }
+      if (randomMissions.isNotEmpty) {
+        mms.add(
+          MasterMission(
+            id: event.id * 100 + 1,
+            startedAt: event.startedAt,
+            endedAt: event.endedAt,
+            closedAt: event.endedAt,
+            missions: randomMissions,
+            script: {
+              MstMasterMission.kMissionIconDetailText:
+                  '[${S.current.random_mission}] ${event.lShortName.l.setMaxLines(1)}',
+            },
+          ),
+        );
+      }
+    }
 
     // mms.removeWhere((mm) => mm.type == MissionType.daily && mm.endedAt - mm.startedAt > kSecsPerDay * 40);
     mms.sortByList((e) => [e.endedAt, e.closedAt, e.id]);
@@ -184,6 +227,9 @@ class _UserEventMissionReceivePageState extends State<UserEventMissionReceivePag
       enabled: !(notClearNum == 0 && clearNum == 0),
       title: Text(
         '[${mm.missions.length} ${Transl.enums(mm.type, (v) => v.missionType).l}] ID ${mm.id} ${mm.lMissionIconDetailText ?? ""}',
+        maxLines: 2,
+        overflow: TextOverflow.ellipsis,
+        textScaler: const TextScaler.linear(0.9),
       ),
       subtitle: Text(
         [mm.startedAt, mm.endedAt, if (mm.closedAt != mm.endedAt) mm.closedAt]
@@ -200,13 +246,37 @@ class _UserEventMissionReceivePageState extends State<UserEventMissionReceivePag
   }
 
   Widget buildEventMission(EventMission mission, List<EventMission> missions) {
-    Widget title = Text('${mission.dispNo}. ${mission.name}', maxLines: 2, overflow: TextOverflow.ellipsis);
+    Widget title = Text.rich(
+      TextSpan(
+        text: '${mission.dispNo}. ${mission.name}',
+        recognizer: TapGestureRecognizer()
+          ..onTap = () {
+            SimpleConfirmDialog(
+              title: Text('No.${mission.dispNo} (${mission.id})'),
+              scrollable: true,
+              showCancel: false,
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(mission.name, style: Theme.of(context).textTheme.bodySmall),
+                  const Divider(),
+                  MissionCondsDescriptor(mission: mission, missions: missions),
+                ],
+              ),
+            ).showDialog(context);
+          },
+      ),
+      maxLines: 2,
+      overflow: TextOverflow.ellipsis,
+    );
     Widget subtitle = Wrap(
       spacing: 1,
       runSpacing: 1,
       crossAxisAlignment: WrapCrossAlignment.center,
       children: [for (final gift in mission.gifts) gift.iconBuilder(context: context, width: 32)],
     );
+    // random mission not checked
     final progressType = getMissionProgress(mission.id);
 
     Widget trailing;
@@ -232,19 +302,31 @@ class _UserEventMissionReceivePageState extends State<UserEventMissionReceivePag
         // progressType=eventMissionFix.progressType;
         progressNum = eventMissionFix.num;
       }
-      for (final cond in mission.conds.where((e) => e.missionProgressType == MissionProgressType.clear)) {
+      for (final cond in mission.conds) {
+        if (cond.missionProgressType != MissionProgressType.clear) continue;
         if (cond.condType == CondType.missionConditionDetail) {
           final condDetailId = cond.targetIds.firstOrNull;
           if (condDetailId == null) continue;
           progressNum ??= runtime.mstData.userEventMissionCondDetail[condDetailId]?.progressNum;
-          targetNum = cond.targetNum;
         } else if (cond.condType == CondType.eventMissionClear) {
           progressNum ??= cond.targetIds.where((mid) {
             final progressType = runtime.mstData.userEventMission[mid]?.missionProgressType;
             return progressType == MissionProgressType.clear.value || progressType == MissionProgressType.achieve.value;
           }).length;
-          targetNum = cond.targetNum;
+        } else if (cond.condType == CondType.eventMissionAchieve) {
+          progressNum ??= cond.targetIds.where((mid) {
+            final progressType = runtime.mstData.userEventMission[mid]?.missionProgressType;
+            return progressType == MissionProgressType.achieve.value;
+          }).length;
+        } else if (cond.condType == CondType.questClear) {
+          progressNum ??= cond.targetIds.where((questId) {
+            return (runtime.mstData.userQuest[questId]?.clearNum ?? 0) > 0;
+          }).length;
+        } else {
+          // don't set targetNum
+          continue;
         }
+        targetNum = cond.targetNum;
       }
 
       trailing = Text(
@@ -265,20 +347,9 @@ class _UserEventMissionReceivePageState extends State<UserEventMissionReceivePag
         enabled: progressType == MissionProgressType.clear || progressType == MissionProgressType.achieve,
         trailing: trailing,
         onTap: () {
-          SimpleConfirmDialog(
-            title: Text('${S.current.mission} No.${mission.dispNo}'),
-            scrollable: true,
-            showCancel: false,
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(mission.name),
-                const Divider(),
-                MissionCondsDescriptor(mission: mission, missions: missions),
-              ],
-            ),
-          ).showDialog(context);
+          setState(() {
+            selectedMissions.toggle(mission.id);
+          });
         },
       ),
     );
