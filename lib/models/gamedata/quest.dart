@@ -1808,6 +1808,7 @@ class QuestPhaseExtraDetail {
   int? isUseGrandBoard;
   int? turn;
   StageLimitActType? LimitAct;
+  FixedMasterEquip? fixedMasterEquip;
 
   QuestPhaseExtraDetail({
     this.questSelect,
@@ -1828,6 +1829,7 @@ class QuestPhaseExtraDetail {
     this.isUseGrandBoard,
     this.turn,
     this.LimitAct,
+    this.fixedMasterEquip,
   });
 
   factory QuestPhaseExtraDetail.fromJson(Map<String, dynamic> json) => _$QuestPhaseExtraDetailFromJson(json);
@@ -1909,6 +1911,18 @@ class OverwriteEquipSkill {
   factory OverwriteEquipSkill.fromJson(Map<String, dynamic> json) => _$OverwriteEquipSkillFromJson(json);
 
   Map<String, dynamic> toJson() => _$OverwriteEquipSkillToJson(this);
+}
+
+@JsonSerializable()
+class FixedMasterEquip {
+  int equipId;
+  int? defaultLv; // default 1
+
+  FixedMasterEquip({this.equipId = 0, this.defaultLv});
+
+  factory FixedMasterEquip.fromJson(Map<String, dynamic> json) => _$FixedMasterEquipFromJson(json);
+
+  Map<String, dynamic> toJson() => _$FixedMasterEquipToJson(this);
 }
 
 @JsonSerializable()
@@ -2427,5 +2441,83 @@ enum QuestExtensionSubType {
   svtCoin(1);
 
   const QuestExtensionSubType(this.value);
+  final int value;
+}
+
+enum QuestAfterActionCommand {
+  none(0),
+  spotHide(100),
+  spotGray(101),
+  spotDisp(102),
+  spotChange(103),
+  spotAnim(104),
+  spotHideQuick(110),
+  spotGrayQuick(111),
+  spotDispQuick(112),
+  spotChangeQuick(113),
+  spotAnimQuick(114),
+  roadHide(200),
+  roadGray(201),
+  roadDisp(202),
+  roadHideQuick(203),
+  roadGrayQuick(204),
+  roadDispQuick(205),
+  camMvSpot(300),
+  camMvRoad(301),
+  camMvGimmick(302),
+  camMvCoord(303),
+  camZoom(304),
+  camMvZoomSpot(305),
+  camMvZoomRoad(306),
+  camMvZoomGimmick(307),
+  camMvZoomCoord(308),
+  cam3DMvLayer(350),
+  cam3DMvCoord(351),
+  cam3DMvZoomCoord(352),
+  gimmickHide(400),
+  gimmickDisp(401),
+  gimmickHideQuick(402),
+  gimmickDispQuick(403),
+  gimmickMvCoord(404),
+  gimmickDispWithFade(405),
+  gimmickTweenColor(406),
+  gimmickSetColor(407),
+  gimmickDispUpdate(408),
+  gimmickDispPileUp(409),
+  gimmickMvSpot(410),
+  gimmickMvGimmick(411),
+  gimmickMvRoad(412),
+  questFocus(500),
+  questUnfocus(501),
+  playerFocus(510),
+  afterFadeIn(520),
+  questStart(530),
+  mapChange(540),
+  startMapChange(550),
+  titleInfoControl(560),
+  messageWindow(600),
+  messageWindowMst(601),
+  messageOtherWindow(602),
+  messageOtherWindowMst(603),
+  messageOtherWindowBoostSupport(604),
+  eventReward(700),
+  whiteEarthTrans(701),
+  transitionToFolder(702),
+  classScore(703),
+  playVoice(800),
+  playSe(801),
+  bgmStop(850),
+  bgmPlay(851),
+  wait(900),
+  blankEarthObjectHide(1000),
+  blankEarthObjectDisp(1001),
+  blankEarthObjectAnim(1002),
+  blankEarthObjectHideQuick(1010),
+  blankEarthObjectDispQuick(1011),
+  blankEarthObjectAnimQuick(1012),
+  eventEffectPlay(1100),
+  changeDispStateQuestBoard(1200);
+
+  const QuestAfterActionCommand(this.value);
   final int value;
 }

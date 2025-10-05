@@ -610,11 +610,78 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
   }
 
   Widget? getOverwriteMysticCode(QuestPhase curPhase) {
-    final equips = [
+    List<Widget> children = [];
+    final overwriteEquips = [
       curPhase.extraDetail?.overwriteEquipSkills,
       curPhase.extraDetail?.addEquipSkills,
     ].whereType<OverwriteEquipSkills>().toList();
-    if (equips.isEmpty) return null;
+    for (final equip in overwriteEquips) {
+      children.add(
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            (equip.iconId ?? 0) > 0
+                ? db.getIconImage(equip.icon, width: 36, aspectRatio: 1)
+                : const SizedBox(width: 36),
+            const SizedBox(width: 8),
+            for (final equipSkill in equip.skills)
+              FutureBuilder2<int, NiceSkill?>(
+                id: equipSkill.id,
+                loader: () => AtlasApi.skill(equipSkill.id),
+                builder: (context, skill) {
+                  if (skill == null) {
+                    return Text(equipSkill.id.toString(), style: const TextStyle(fontStyle: FontStyle.italic));
+                  }
+                  return db.getIconImage(
+                    skill.icon ?? Atlas.common.unknownSkillIcon,
+                    width: 24,
+                    aspectRatio: 1,
+                    onTap: skill.routeTo,
+                    padding: const EdgeInsets.symmetric(horizontal: 2),
+                  );
+                },
+              ),
+            Text('  Lv.${equip.skillLv}   '),
+          ],
+        ),
+      );
+    }
+
+    final fixedEquip = curPhase.extraDetail?.fixedMasterEquip;
+    if (fixedEquip != null || curPhase.id == 94149650) {
+      final equip = db.gameData.mysticCodes[fixedEquip?.equipId ?? 430];
+      if (equip == null) {
+        children.add(Text('${S.current.mystic_code} ${fixedEquip?.equipId}'));
+      } else {
+        children.add(
+          InkWell(
+            onTap: equip.routeTo,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                equip.iconBuilder(context: context, width: 36, aspectRatio: 1),
+                const SizedBox(width: 8),
+                Text(equip.lName.l),
+                // for (final equipSkill in equip.skills)
+                //   db.getIconImage(
+                //     equipSkill.icon ?? Atlas.common.unknownSkillIcon,
+                //     width: 24,
+                //     aspectRatio: 1,
+                //     onTap: equipSkill.routeTo,
+                //     padding: const EdgeInsets.symmetric(horizontal: 2),
+                //   ),
+              ],
+            ),
+          ),
+        );
+      }
+    }
+
+    if (children.isEmpty) return null;
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 3),
       child: Column(
@@ -625,38 +692,7 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
             alignment: WrapAlignment.center,
             crossAxisAlignment: WrapCrossAlignment.center,
             spacing: 4,
-            children: [
-              for (final equip in equips)
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    (equip.iconId ?? 0) > 0
-                        ? db.getIconImage(equip.icon, width: 36, aspectRatio: 1)
-                        : const SizedBox(width: 36),
-                    const SizedBox(width: 8),
-                    for (final equipSkill in equip.skills)
-                      FutureBuilder2<int, NiceSkill?>(
-                        id: equipSkill.id,
-                        loader: () => AtlasApi.skill(equipSkill.id),
-                        builder: (context, skill) {
-                          if (skill == null) {
-                            return Text(equipSkill.id.toString(), style: const TextStyle(fontStyle: FontStyle.italic));
-                          }
-                          return db.getIconImage(
-                            skill.icon ?? Atlas.common.unknownSkillIcon,
-                            width: 24,
-                            aspectRatio: 1,
-                            onTap: skill.routeTo,
-                            padding: const EdgeInsets.symmetric(horizontal: 2),
-                          );
-                        },
-                      ),
-                    Text('  Lv.${equip.skillLv}   '),
-                  ],
-                ),
-            ],
+            children: children,
           ),
         ],
       ),

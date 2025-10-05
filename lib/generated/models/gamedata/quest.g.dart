@@ -1116,6 +1116,9 @@ QuestPhaseExtraDetail _$QuestPhaseExtraDetailFromJson(Map json) => QuestPhaseExt
   isUseGrandBoard: (json['isUseGrandBoard'] as num?)?.toInt(),
   turn: (json['turn'] as num?)?.toInt(),
   LimitAct: $enumDecodeNullable(_$StageLimitActTypeEnumMap, json['LimitAct']),
+  fixedMasterEquip: json['fixedMasterEquip'] == null
+      ? null
+      : FixedMasterEquip.fromJson(Map<String, dynamic>.from(json['fixedMasterEquip'] as Map)),
 );
 
 Map<String, dynamic> _$QuestPhaseExtraDetailToJson(QuestPhaseExtraDetail instance) => <String, dynamic>{
@@ -1137,6 +1140,7 @@ Map<String, dynamic> _$QuestPhaseExtraDetailToJson(QuestPhaseExtraDetail instanc
   'isUseGrandBoard': instance.isUseGrandBoard,
   'turn': instance.turn,
   'LimitAct': _$StageLimitActTypeEnumMap[instance.LimitAct],
+  'fixedMasterEquip': instance.fixedMasterEquip?.toJson(),
 };
 
 OverwriteEquipSkills _$OverwriteEquipSkillsFromJson(Map json) => OverwriteEquipSkills(
@@ -1163,6 +1167,14 @@ Map<String, dynamic> _$OverwriteEquipSkillToJson(OverwriteEquipSkill instance) =
   'id': instance.id,
   'lv': instance.lv,
   'condId': instance.condId,
+};
+
+FixedMasterEquip _$FixedMasterEquipFromJson(Map json) =>
+    FixedMasterEquip(equipId: (json['equipId'] as num?)?.toInt() ?? 0, defaultLv: (json['defaultLv'] as num?)?.toInt());
+
+Map<String, dynamic> _$FixedMasterEquipToJson(FixedMasterEquip instance) => <String, dynamic>{
+  'equipId': instance.equipId,
+  'defaultLv': instance.defaultLv,
 };
 
 Restriction _$RestrictionFromJson(Map json) => Restriction(

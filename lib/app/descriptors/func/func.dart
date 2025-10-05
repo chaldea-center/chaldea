@@ -1172,7 +1172,8 @@ class FuncDescriptor extends StatelessWidget {
       if (targetNum > 0) {
         spans.insert(0, TextSpan(text: '(${S.current.skill} $targetNum)'));
       }
-    } else if (func.funcType == FuncType.displayBattleMessage) {
+    } else if (func.funcType == FuncType.displayBattleMessage ||
+        func.funcType == FuncType.setDisplayDirectBattleMessageInFsm) {
       final msgId = vals?.Value ?? 0;
       spans.add(
         SharedBuilder.textButtonSpan(
