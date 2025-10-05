@@ -96,7 +96,8 @@ class _SvtCombinePageState extends State<SvtCombinePage> with FakerRuntimeStateM
             if (baseUserSvt != null) ...[
               Text(
                 '${baseUserSvt.locked ? "🔐 " : ""}Lv.${baseUserSvt.lv}/${baseUserSvt.maxLv}'
-                ' limit ${baseUserSvt.limitCount}+${baseUserSvt.exceedCount} exp next ${expData?.next.formatSep()}',
+                ' limit ${[baseUserSvt.limitCount, if (baseUserSvt.exceedCount > 0) baseUserSvt.exceedCount].join("+")}'
+                ' NP${baseUserSvt.treasureDeviceLv1} exp next ${expData?.next.formatSep()}',
               ),
               if (expData != null) BondProgress(value: expData.elapsed, total: expData.total),
               Text(

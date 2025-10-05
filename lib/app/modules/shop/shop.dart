@@ -1,7 +1,5 @@
 import 'dart:async';
 
-import 'package:tuple/tuple.dart';
-
 import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/descriptors/cond_target_num.dart';
@@ -185,8 +183,8 @@ class _ShopDetailPageState extends State<ShopDetailPage> with RegionBasedState<N
           TextSpan(
             text: kULLeading,
             children: [
-              if (reward.item1 != null) CenterWidgetSpan(child: SizedBox(height: 42, child: reward.item1!)),
-              reward.item2,
+              if (reward.$1 != null) CenterWidgetSpan(child: SizedBox(height: 42, child: reward.$1!)),
+              reward.$2,
             ],
           ),
         ),
@@ -252,7 +250,7 @@ class ShopHelper {
     return children;
   }
 
-  static Iterable<Tuple2<Widget?, InlineSpan>> purchases(
+  static Iterable<(Widget?, InlineSpan)> purchases(
     BuildContext context,
     NiceShop shop, {
     bool showSpecialName = false,
@@ -261,7 +259,7 @@ class ShopHelper {
     final shopName = TextSpan(text: '\n(${shop.name})', style: Theme.of(context).textTheme.bodySmall);
     switch (shop.purchaseType) {
       case PurchaseType.quest:
-        yield Tuple2(
+        yield (
           null,
           TextSpan(
             text: '${S.current.unlock_quest}:',
@@ -270,7 +268,7 @@ class ShopHelper {
         );
         return;
       case PurchaseType.kiaraPunisherReset:
-        yield Tuple2(
+        yield (
           null,
           TextSpan(text: 'Reset Kiara Punishers: ', children: MultiDescriptor.shops(context, shop.targetIds)),
         );
@@ -291,11 +289,11 @@ class ShopHelper {
             yield* rewards;
           } else {
             for (final reward in rewards) {
-              yield Tuple2(
-                reward.item1,
+              yield (
+                reward.$1,
                 TextSpan(
                   children: [
-                    reward.item2,
+                    reward.$2,
                     TextSpan(text: '(×${shop.setNum.format()})'),
                   ],
                 ),
@@ -318,7 +316,7 @@ class ShopHelper {
     }
   }
 
-  static Iterable<Tuple2<Widget?, InlineSpan>> onePurchase(
+  static Iterable<(Widget?, InlineSpan)> onePurchase(
     BuildContext context,
     NiceShop shop,
     PurchaseType purchaseType,
@@ -332,7 +330,7 @@ class ShopHelper {
 
     switch (purchaseType) {
       case PurchaseType.none:
-        yield Tuple2(null, TextSpan(text: 'NONE $targetId'));
+        yield (null, TextSpan(text: 'NONE $targetId'));
         return;
       case PurchaseType.item:
       case PurchaseType.itemAsPresent:
@@ -348,8 +346,10 @@ class ShopHelper {
               text = 'NP${status.cur.npLv}';
             }
           }
+        } else if (targetNum != 1) {
+          text = '×${targetNum.format()}';
         }
-        yield Tuple2(
+        yield (
           GameCardMixin.anyCardItemBuilder(context: context, id: targetId, text: text),
           TextSpan(
             text: [
@@ -365,34 +365,34 @@ class ShopHelper {
         return;
       case PurchaseType.equip:
         final equip = db.gameData.mysticCodes[targetId];
-        yield Tuple2(
+        yield (
           equip?.iconBuilder(context: context),
           TextSpan(text: equip?.lName.l ?? '${S.current.mystic_code} $targetId'),
         );
         return;
       case PurchaseType.friendGacha:
-        yield Tuple2(
+        yield (
           Item.iconBuilder(context: context, item: Items.friendPoint),
           TextSpan(text: Transl.itemNames('フレンドポイント').l),
         );
         return;
       case PurchaseType.setItem:
         assert(false, 'Should not reach here');
-        yield Tuple2(null, TextSpan(text: 'Error: $purchaseType $targetId'));
+        yield (null, TextSpan(text: 'Error: $purchaseType $targetId'));
         return;
       case PurchaseType.quest:
-        yield Tuple2(
+        yield (
           null,
           TextSpan(text: '${S.current.unlock_quest}: ', children: MultiDescriptor.quests(context, [targetId])),
         );
         return;
       case PurchaseType.eventShop:
-        yield Tuple2(null, TextSpan(text: S.current.event_shop, children: MultiDescriptor.events(context, [targetId])));
+        yield (null, TextSpan(text: S.current.event_shop, children: MultiDescriptor.events(context, [targetId])));
         return;
       case PurchaseType.eventSvtGet:
       case PurchaseType.eventSvtJoin:
         final svt = db.gameData.servantsById[targetId];
-        yield Tuple2(
+        yield (
           svt?.iconBuilder(context: context),
           TextSpan(
             text: (svt?.lName.l ?? 'Svt $targetId') + (purchaseType == PurchaseType.eventSvtJoin ? ' Join' : ' Get'),
@@ -406,7 +406,7 @@ class ShopHelper {
             manaShops.addAll(cond.condValues);
           }
         }
-        yield Tuple2(
+        yield (
           null,
           TextSpan(
             text: Transl.enums(PurchaseType.manaShop, (enums) => enums.purchaseType).l,
@@ -416,7 +416,7 @@ class ShopHelper {
         return;
       case PurchaseType.storageSvt:
       case PurchaseType.storageSvtequip:
-        yield Tuple2(
+        yield (
           null,
           TextSpan(
             text:
@@ -428,7 +428,7 @@ class ShopHelper {
       case PurchaseType.bgm:
       case PurchaseType.bgmRelease:
         final bgm = db.gameData.bgms.values.firstWhereOrNull((e) => e.shop?.id == shop.id);
-        yield Tuple2(
+        yield (
           bgm?.logo == null ? null : db.getIconImage(bgm?.logo),
           SharedBuilder.textButtonSpan(
             context: context,
@@ -438,14 +438,14 @@ class ShopHelper {
         );
         return;
       case PurchaseType.lotteryShop:
-        yield Tuple2(null, TextSpan(text: 'A random shop ${shop.name}'));
+        yield (null, TextSpan(text: 'A random shop ${shop.name}'));
         return;
       case PurchaseType.eventFactory:
-        yield Tuple2(null, TextSpan(text: 'Event Factory $targetId: ${shop.name}'));
+        yield (null, TextSpan(text: 'Event Factory $targetId: ${shop.name}'));
         return;
       case PurchaseType.gift:
         for (final gift in gifts) {
-          yield Tuple2(
+          yield (
             gift.iconBuilder(context: context, showOne: false),
             TextSpan(
               text: [
@@ -458,20 +458,17 @@ class ShopHelper {
         }
         return;
       case PurchaseType.assist:
-        yield Tuple2(null, TextSpan(text: 'Assist $targetId: ${shop.name}'));
+        yield (null, TextSpan(text: 'Assist $targetId: ${shop.name}'));
         return;
       case PurchaseType.kiaraPunisherReset:
         assert(false, 'Should not reach here');
-        yield Tuple2(
-          null,
-          TextSpan(text: 'Reset Kiara Punishers: ', children: MultiDescriptor.shops(context, [targetId])),
-        );
+        yield (null, TextSpan(text: 'Reset Kiara Punishers: ', children: MultiDescriptor.shops(context, [targetId])));
         return;
       case PurchaseType.classBoardResetItem:
         final classBoard = db.gameData.classBoards[targetId];
         onTapClassBoard() => router.push(url: Routes.classBoardI(targetId));
         if (classBoard == null) {
-          yield Tuple2(
+          yield (
             null,
             TextSpan(
               children: [
@@ -485,7 +482,7 @@ class ShopHelper {
             ),
           );
         } else {
-          yield Tuple2(
+          yield (
             db.getIconImage(classBoard.btnIcon, onTap: onTapClassBoard),
             TextSpan(
               children: [
@@ -502,7 +499,7 @@ class ShopHelper {
         return;
       case PurchaseType.partsSkill:
         // targetId=mstAssist.id
-        yield Tuple2(
+        yield (
           null,
           TextSpan(
             text: 'PartsSkill ',

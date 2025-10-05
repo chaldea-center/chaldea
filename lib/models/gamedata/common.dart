@@ -1346,6 +1346,10 @@ enum CondType {
 
   const CondType(this.value);
   final int value;
+
+  static CondType? fromId(int v) {
+    return CondType.values.firstWhereOrNull((e) => e.value == v);
+  }
 }
 
 @JsonSerializable()

@@ -15,6 +15,7 @@ import '../gacha/gacha_draw.dart';
 import '../history.dart';
 import '../mission/mission_receive.dart';
 import '../random_mission/random_mission_loop.dart';
+import '../shop/shop_event_list.dart';
 import '../state.dart';
 
 class _ButtonData {
@@ -23,7 +24,7 @@ class _ButtonData {
   final bool enabled;
   final VoidCallback? onTap;
 
-  const _ButtonData({required this.icon, required this.name, this.enabled = true, this.onTap});
+  const _ButtonData({required this.icon, required this.name, this.enabled = true, required this.onTap});
 }
 
 class FakerMenuButton extends StatefulWidget {
@@ -132,6 +133,14 @@ class _FakerMenuButtonState extends State<FakerMenuButton> with FakerRuntimeStat
                 enabled: isLoggedIn,
                 onTap: () {
                   router.pushPage(SvtCombinePage(runtime: runtime));
+                },
+              ),
+              _ButtonData(
+                icon: Icons.shop,
+                name: S.current.shop,
+                enabled: isLoggedIn,
+                onTap: () {
+                  router.pushPage(ShopEventListPage(runtime: runtime));
                 },
               ),
             ],

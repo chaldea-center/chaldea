@@ -120,7 +120,7 @@ class _EventShopsPageState extends State<EventShopsPage> {
           plan.shopBuyCount[shop.id] = v;
         }
         event?.updateStat();
-        setState(() {});
+        if (mounted) setState(() {});
       },
     );
   }
@@ -250,16 +250,16 @@ class ShopDescriptor extends StatelessWidget {
     Widget? leading;
     Widget title;
     if (rewards.length == 1) {
-      leading = rewards.first.item1;
-      title = Text.rich(rewards.first.item2, textScaler: const TextScaler.linear(0.8));
+      leading = rewards.first.$1;
+      title = Text.rich(rewards.first.$2, textScaler: const TextScaler.linear(0.8));
     } else {
       List<InlineSpan> spans = [];
       for (int index = 0; index < rewards.length; index++) {
         final reward = rewards[index];
-        if (reward.item1 != null) {
-          spans.add(CenterWidgetSpan(child: SizedBox(height: 28, child: reward.item1)));
+        if (reward.$1 != null) {
+          spans.add(CenterWidgetSpan(child: SizedBox(height: 28, child: reward.$1)));
         }
-        spans.add(reward.item2);
+        spans.add(reward.$2);
         if (index != rewards.length - 1) spans.add(const TextSpan(text: ' / '));
       }
       title = Text.rich(TextSpan(children: spans), textScaler: const TextScaler.linear(0.8));

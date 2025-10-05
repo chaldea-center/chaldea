@@ -282,7 +282,7 @@ class _UserPresentBoxManagePageState extends State<UserPresentBoxManagePage> wit
 
     final buttonGroups = [
       [
-        runtime.buildCircularProgress(context: context),
+        runtime.buildCircularProgress(context: context, padding: const EdgeInsets.symmetric(horizontal: 8)),
         FilledButton(
           onPressed: () {
             receivePresents(selectedPresents.toSet());

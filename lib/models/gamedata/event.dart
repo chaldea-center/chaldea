@@ -839,6 +839,14 @@ class NiceShop with RouteInfo {
     }
     return [];
   }
+
+  Map<int, int> getConsumeItems() {
+    return {
+      if (cost != null) cost!.itemId: cost!.amount,
+      for (final consume in consumes)
+        if (consume.type == CommonConsumeType.item) consume.objectId: consume.num,
+    };
+  }
 }
 
 @JsonSerializable()
@@ -2048,25 +2056,28 @@ enum PurchaseType {
 }
 
 enum ShopType {
-  none,
-  eventItem,
-  mana,
-  rarePri,
-  svtStorage,
-  svtEquipStorage,
-  stoneFragments,
-  svtAnonymous,
-  bgm,
-  limitMaterial,
-  grailFragments,
-  svtCostume,
-  startUpSummon,
-  purePri,
-  tradeAp,
-  revivalItem, // 巡霊の葉
-  eventSvtEquip,
-  exchangeSvtCoin,
-  classBoardReset,
+  none(0),
+  eventItem(1),
+  mana(2),
+  rarePri(3),
+  svtStorage(4),
+  svtEquipStorage(5),
+  stoneFragments(6),
+  svtAnonymous(7),
+  bgm(8),
+  limitMaterial(9),
+  grailFragments(10),
+  svtCostume(11),
+  startUpSummon(12),
+  purePri(13),
+  tradeAp(14),
+  revivalItem(15),
+  eventSvtEquip(16),
+  exchangeSvtCoin(17),
+  classBoardReset(18);
+
+  const ShopType(this.value);
+  final int value;
 }
 
 enum MissionProgressType {
