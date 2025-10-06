@@ -74,24 +74,33 @@ extension FakerRuntimeGacha on FakerRuntime {
     final FResponse resp;
 
     if (gacha.isFpGacha) {
+      final validSubs = gacha.gachaSubs.where((sub) {
+        if (sub.openedAt > now || sub.closedAt <= now) return false;
+        bool? condMatch = CommonRelease.check(sub.releaseConditions, (release) {
+          if (release.condType == CondType.questClear) {
+            return (mstData.userQuest[release.condId]?.clearNum ?? 0) > 0;
+          } else if (release.condType == CondType.questNotClear) {
+            return (mstData.userQuest[release.condId]?.clearNum ?? 0) <= 0;
+          } else if (release.condType == CondType.eventScriptPlay) {
+            final userEvent = mstData.userEvent[release.condId];
+            return userEvent != null && (userEvent.scriptFlag & (1 << release.condNum) != 0);
+          }
+          return null;
+        });
+        if (condMatch == false) return false;
+        return true;
+      }).toList();
       final gachaSubId = option.gachaSubs[option.gachaId] ?? 0;
-      final gachaSub = gacha.gachaSubs.firstWhereOrNull((e) => e.id == gachaSubId);
-      if (gachaSub == null || gachaSub.openedAt > now || gachaSub.closedAt <= now) {
-        throw SilentException('subId=$gachaSubId is not open');
-      }
-      final condMatched = CommonRelease.check(gachaSub.releaseConditions, (release) {
-        if (release.condType == CondType.questClear) {
-          return (mstData.userQuest[release.condId]?.clearNum ?? 0) > 0;
-        } else if (release.condType == CondType.questNotClear) {
-          return (mstData.userQuest[release.condId]?.clearNum ?? 0) <= 0;
-        } else if (release.condType == CondType.eventScriptPlay) {
-          final userEvent = mstData.userEvent[release.condId];
-          return userEvent != null && (userEvent.scriptFlag & (1 << release.condNum) != 0);
+      if (validSubs.isEmpty) {
+        if (gachaSubId != 0) {
+          throw SilentException('No valid gacha sub, gachaSubId should be 0');
         }
-        return null;
-      });
-      if (condMatched == false) {
-        throw SilentException('GachaSub $gachaSubId not match conditions');
+      } else {
+        int maxPriority = Maths.max(validSubs.map((e) => e.priority));
+        final validSub = validSubs.firstWhere((e) => e.priority == maxPriority);
+        if (gachaSubId != validSub.id) {
+          throw SilentException('Valid gacha sub id should be ${validSub.id}');
+        }
       }
       resp = await agent.gachaDraw(gachaId: option.gachaId, num: drawNum, gachaSubId: gachaSubId);
     } else {
