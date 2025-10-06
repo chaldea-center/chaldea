@@ -72,6 +72,7 @@ abstract class FakerAgent<
     required int32_t itemSelectNum,
   });
   Future<FResponse> userPresentList();
+  Future<FResponse> userPresentHistory();
 
   Future<FResponse> gachaDraw({
     required int32_t gachaId,

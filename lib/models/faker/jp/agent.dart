@@ -212,6 +212,12 @@ class FakerAgentJP extends FakerAgent<FRequestJP, AutoLoginDataJP, NetworkManage
   }
 
   @override
+  Future<FResponse> userPresentHistory() {
+    final request = FRequestJP(network: network, path: '/present/history');
+    return request.beginRequestAndCheckError('present_receive_history');
+  }
+
+  @override
   Future<FResponse> gachaDraw({
     required int32_t gachaId,
     required int32_t num,

@@ -378,6 +378,18 @@ UserPresentBoxEntity _$UserPresentBoxEntityFromJson(Map json) => UserPresentBoxE
   createdAt: json['createdAt'],
 );
 
+UserPresentHistoryEntity _$UserPresentHistoryEntityFromJson(Map json) => UserPresentHistoryEntity(
+  id: json['id'],
+  userId: json['userId'],
+  giftType: json['giftType'],
+  objectId: json['objectId'],
+  num: json['num'],
+  createdAt: json['createdAt'],
+  message: json['message'],
+  args: json['args'],
+  fromType: json['fromType'],
+);
+
 UserGachaEntity _$UserGachaEntityFromJson(Map json) => UserGachaEntity(
   userId: json['userId'],
   gachaId: json['gachaId'],

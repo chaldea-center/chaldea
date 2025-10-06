@@ -14,6 +14,7 @@ import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../card_enhance/svt_combine.dart';
 import 'filter.dart';
+import 'history.dart';
 
 const int _kMaxPresentSelectCount = 99;
 const int _kMaxItemSelectExchangeCount = 99;
@@ -166,6 +167,7 @@ class _UserPresentBoxManagePageState extends State<UserPresentBoxManagePage> wit
               ),
             ),
           ),
+          runtime.buildMenuButton(context),
         ],
       ),
       body: Column(
@@ -290,15 +292,6 @@ class _UserPresentBoxManagePageState extends State<UserPresentBoxManagePage> wit
           child: Text('Receive ×${selectedPresents.length}!'),
         ),
         IconButton(
-          onPressed: () {
-            setState(() {
-              filterData.reversed = !filterData.reversed;
-            });
-          },
-          icon: FaIcon(filterData.reversed ? FontAwesomeIcons.arrowDown19 : FontAwesomeIcons.arrowUp91),
-          tooltip: S.current.sort_order,
-        ),
-        IconButton(
           onPressed: showSelectedOnly
               ? null
               : () {
@@ -321,17 +314,11 @@ class _UserPresentBoxManagePageState extends State<UserPresentBoxManagePage> wit
         ),
       ],
       [
-        FilledButton(
+        FilledButton.tonal(
           onPressed: () {
             _SellCombineMaterialDialog(runtime: runtime).showDialog(context);
           },
           child: Text('Sell'),
-        ),
-        FilledButton(
-          onPressed: () {
-            router.pushPage(SvtCombinePage(runtime: runtime));
-          },
-          child: Text('从者强化'),
         ),
         IconButton(
           onPressed: () {
@@ -339,6 +326,22 @@ class _UserPresentBoxManagePageState extends State<UserPresentBoxManagePage> wit
           },
           icon: Icon(Icons.replay),
           tooltip: S.current.refresh,
+        ),
+        IconButton(
+          onPressed: () {
+            setState(() {
+              filterData.reversed = !filterData.reversed;
+            });
+          },
+          icon: FaIcon(filterData.reversed ? FontAwesomeIcons.arrowDown19 : FontAwesomeIcons.arrowUp91),
+          tooltip: S.current.sort_order,
+        ),
+        IconButton(
+          onPressed: () {
+            router.pushPage(UserPresentHistoryPage(runtime: runtime));
+          },
+          icon: Icon(Icons.history),
+          tooltip: S.current.history,
         ),
       ],
     ];

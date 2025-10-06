@@ -366,6 +366,11 @@ class FakerAgentCN extends FakerAgent<FRequestCN, AutoLoginDataCN, NetworkManage
   }
 
   @override
+  Future<FResponse> userPresentHistory() {
+    return _acPhp(key: 'presenthistory', nid: 'present_receive_history');
+  }
+
+  @override
   Future<FResponse> gachaDraw({
     required int32_t gachaId,
     required int32_t num,

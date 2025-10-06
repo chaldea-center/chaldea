@@ -340,6 +340,10 @@ final _$mstMasterSchemes = <String, (Type, DataMaster Function(String mstName))>
     UserPresentBoxEntity,
     (mstName) => DataMaster<_IntStr, UserPresentBoxEntity>(mstName, UserPresentBoxEntity.fromJson),
   ),
+  "userPresentHistory": (
+    UserPresentHistoryEntity,
+    (mstName) => DataMaster<_IntStr, UserPresentHistoryEntity>(mstName, UserPresentHistoryEntity.fromJson),
+  ),
   "userGacha": (UserGachaEntity, (mstName) => DataMaster<_IntStr, UserGachaEntity>(mstName, UserGachaEntity.fromJson)),
   "userEvent": (UserEventEntity, (mstName) => DataMaster<_IntStr, UserEventEntity>(mstName, UserEventEntity.fromJson)),
   "userEventMission": (
@@ -644,6 +648,7 @@ class MasterDataManager {
   DataMaster<_IntStr, UserClassBoardSquareEntity> get userClassBoardSquare =>
       get<_IntStr, UserClassBoardSquareEntity>();
   DataMaster<_IntStr, UserPresentBoxEntity> get userPresentBox => get<_IntStr, UserPresentBoxEntity>();
+  DataMaster<_IntStr, UserPresentHistoryEntity> get userPresentHistory => get<_IntStr, UserPresentHistoryEntity>();
   DataMaster<_IntStr, UserGachaEntity> get userGacha => get<_IntStr, UserGachaEntity>();
   DataMaster<_IntStr, UserEventEntity> get userEvent => get<_IntStr, UserEventEntity>();
   DataMaster<_IntStr, UserEventMissionEntity> get userEventMission => get<_IntStr, UserEventMissionEntity>();
@@ -1778,6 +1783,51 @@ enum PresentFromType {
 
   const PresentFromType(this.value);
   final int value;
+}
+
+@JsonSerializable(createToJson: false)
+class UserPresentHistoryEntity extends DataEntityBase<_IntStr> {
+  int id;
+  int userId;
+  int giftType;
+  int objectId;
+  int num;
+  int createdAt;
+  // ↓ CN
+  // int? presentId;
+  // int? messageRefType;
+  // int? messageId;
+  String? message;
+  String? args;
+  int? fromType;
+  // int? originalCreatedAt;
+
+  @override
+  _IntStr get primaryKey => id;
+
+  static _IntStr createPK(int id) => id;
+
+  UserPresentHistoryEntity({
+    dynamic id,
+    dynamic userId,
+    dynamic giftType,
+    dynamic objectId,
+    dynamic num,
+    dynamic createdAt,
+    dynamic message,
+    dynamic args,
+    dynamic fromType,
+  }) : id = _toInt(id),
+       userId = _toInt(userId),
+       giftType = _toInt(giftType),
+       objectId = _toInt(objectId),
+       num = _toInt(num),
+       createdAt = _toInt(createdAt),
+       args = args?.toString(),
+       fromType = _toInt(fromType),
+       message = message?.toString();
+
+  factory UserPresentHistoryEntity.fromJson(Map<String, dynamic> data) => _$UserPresentHistoryEntityFromJson(data);
 }
 
 @JsonSerializable(createToJson: false)
