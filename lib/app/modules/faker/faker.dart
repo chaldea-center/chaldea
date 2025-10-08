@@ -26,7 +26,6 @@ import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/utils/notification.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
-import '../import_data/sniff_details/formation_decks.dart';
 import '../shop/shop.dart';
 import 'details/dialogs.dart';
 import 'details/raids.dart';
@@ -35,6 +34,7 @@ import 'history.dart';
 import 'option_list.dart';
 import 'present_box/present_box.dart';
 import 'state.dart';
+import 'user_deck/deck_list.dart';
 
 class FakeGrandOrder extends StatefulWidget {
   final AutoLoginData user;
@@ -441,7 +441,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
         if (agent.user.shopTargetIds.contains(targetId)) return true;
         final item = runtime.gameData.teapots[targetId] ?? db.gameData.items[targetId];
         if (item != null) {
-          if (item.type == ItemType.friendshipUpItem) return true;
+          if (item.type == ItemType.friendshipUpItem || item.type == ItemType.stormpod) return true;
           if (shop.shopType == ShopType.mana && item.type == ItemType.commandCardPrmUp) return true;
         }
         final entity = db.gameData.entities[targetId];
@@ -2202,7 +2202,8 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
           ? null
           : () {
               router.pushPage(
-                UserFormationDecksPage(
+                UserDeckListPage(
+                  runtime: runtime,
                   mstData: mstData,
                   selectedDeckId: battleOption.deckId,
                   onSelected: (v) {
@@ -2211,6 +2212,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
                     });
                     if (mounted) setState(() {});
                   },
+                  enableEdit: true,
                 ),
               );
             },
@@ -2231,7 +2233,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
       onTap: mstData.userEventDeck.isEmpty
           ? null
           : () {
-              router.pushPage(UserFormationDecksPage(mstData: mstData, eventId: eventId));
+              router.pushPage(UserDeckListPage(runtime: runtime, mstData: mstData, eventId: eventId));
             },
     );
     final eventDeckKey = '$eventId-$eventDeckNo';

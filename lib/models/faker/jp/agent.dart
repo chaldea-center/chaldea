@@ -361,8 +361,16 @@ class FakerAgentJP extends FakerAgent<FRequestJP, AutoLoginDataJP, NetworkManage
   Future<FResponse> deckSetup({required int64_t activeDeckId, required UserDeckEntity userDeck}) {
     final request = FRequestJP(network: network, path: '/deck/setup');
     request.addFieldInt32("activeDeckId", activeDeckId);
-    request.addFieldStr("userDeck", network.catMouseGame.encodeMsgpackBase64([userDeck]));
-    return request.beginRequestAndCheckError('battle_scenario');
+    request.addFieldStr("userDeck", network.catMouseGame.encodeMsgpackBase64([jsonDecode(jsonEncode(userDeck))]));
+    return request.beginRequestAndCheckError('deck_setup');
+  }
+
+  @override
+  Future<FResponse> userFormationSetup({required int32_t deckNo, required int64_t userEquipId}) {
+    final request = FRequestJP(network: network, path: '/userformation/Setup');
+    request.addFieldInt32("deckNo", deckNo);
+    request.addFieldInt64("userEquipId", userEquipId);
+    return request.beginRequestAndCheckError('user_formation');
   }
 
   @override

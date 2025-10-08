@@ -9,7 +9,6 @@ import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../../tools/gamedata_loader.dart';
 import '../common/filter_page_base.dart';
-import '../effect_search/util.dart';
 import 'craft.dart';
 import 'filter.dart';
 
@@ -185,55 +184,7 @@ class CraftListPageState extends State<CraftListPage> with SearchableListState<C
 
   @override
   bool filter(CraftEssence ce) {
-    if (!filterData.rarity.matchOne(ce.rarity)) {
-      return false;
-    }
-    final region = filterData.region.radioValue;
-    if (region != null && region != Region.jp) {
-      final released = db.gameData.mappingData.entityRelease.ofRegion(region);
-      if (released?.contains(ce.id) == false) {
-        return false;
-      }
-    }
-    if (!filterData.obtain.matchAny([ce.obtain, if (ce.isRegionSpecific) CEObtain.regionSpecific])) {
-      return false;
-    }
-    if (!filterData.atkType.matchOne(ce.atkType)) {
-      return false;
-    }
-    if (!filterData.limitCount.matchOne(ce.status.limitCount)) {
-      return false;
-    }
-    if (!filterData.status.matchOne(ce.status.status)) {
-      return false;
-    }
-
-    if (filterData.effectType.isNotEmpty || filterData.targetTrait.isNotEmpty || filterData.effectTarget.isNotEmpty) {
-      List<BaseFunction> funcs = [for (final skill in ce.skills) ...skill.filteredFunction(includeTrigger: true)];
-      if (filterData.isEventEffect.isNotEmpty) {
-        funcs.retainWhere((e) => filterData.isEventEffect.matchOne(e.isEventOnlyEffect));
-      }
-      if (filterData.effectTarget.options.isNotEmpty) {
-        funcs.retainWhere((func) {
-          return filterData.effectTarget.matchOne(EffectTarget.fromFunc(func.funcTargetType));
-        });
-      }
-      if (filterData.targetTrait.isNotEmpty) {
-        funcs.retainWhere((func) => EffectFilterUtil.checkFuncTraits(func, filterData.targetTrait));
-      }
-      if (funcs.isEmpty) return false;
-      if (filterData.effectType.options.isEmpty) return true;
-      if (filterData.effectType.matchAll) {
-        if (!filterData.effectType.options.every((effect) => funcs.any((func) => effect.match(func)))) {
-          return false;
-        }
-      } else {
-        if (!filterData.effectType.options.any((effect) => funcs.any((func) => effect.match(func)))) {
-          return false;
-        }
-      }
-    }
-    return true;
+    return CraftFilterPage.filter(filterData, ce);
   }
 
   void _onTapCard(CraftEssence ce, [bool forcePush = false]) {

@@ -2681,6 +2681,7 @@ class DeckServantData {
   int npcFollowerSvtId;
   int? followerType;
   int? initPos;
+  int? equipTarget2SkillChange;
 
   DeckServantData({
     dynamic id,
@@ -2693,6 +2694,7 @@ class DeckServantData {
     dynamic npcFollowerSvtId,
     dynamic followerType,
     dynamic initPos,
+    dynamic equipTarget2SkillChange,
   }) : id = _toInt(id),
        userSvtId = _toInt(userSvtId),
        userId = _toIntNull(userId),
@@ -2702,7 +2704,8 @@ class DeckServantData {
        isFollowerSvt = _toBool(isFollowerSvt),
        npcFollowerSvtId = _toInt(npcFollowerSvtId),
        followerType = _toIntNull(followerType),
-       initPos = _toIntNull(initPos);
+       initPos = _toIntNull(initPos),
+       equipTarget2SkillChange = _toIntNull(equipTarget2SkillChange);
   factory DeckServantData.fromJson(Map<String, dynamic> data) => _$DeckServantDataFromJson(data);
   Map<String, dynamic> toJson() => _$DeckServantDataToJson(this);
 }

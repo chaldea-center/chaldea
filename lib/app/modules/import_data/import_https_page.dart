@@ -19,10 +19,10 @@ import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../../app.dart';
 import '../common/builders.dart';
+import '../faker/user_deck/deck_list.dart';
 import 'autologin/autologin_page.dart';
 import 'sniff_details/bond_detail_page.dart';
 import 'sniff_details/class_board_mission_demand.dart';
-import 'sniff_details/formation_decks.dart';
 import 'sniff_details/gacha_history.dart';
 import 'sniff_details/present_box.dart';
 import 'sniff_details/quest_farming.dart';
@@ -776,7 +776,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
         SimpleDialogOption(
           onPressed: () {
             Navigator.pop(context);
-            router.pushPage(UserFormationDecksPage(mstData: _mstData));
+            router.pushPage(UserDeckListPage(mstData: _mstData));
           },
           child: const Text("Formation Decks"),
         ),

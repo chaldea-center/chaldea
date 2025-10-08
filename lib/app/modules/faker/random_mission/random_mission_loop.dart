@@ -7,12 +7,12 @@ import 'package:chaldea/app/modules/battle/formation/formation_card.dart';
 import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/app/modules/faker/option_list.dart';
 import 'package:chaldea/app/modules/faker/state.dart';
-import 'package:chaldea/app/modules/import_data/sniff_details/formation_decks.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/gamedata/toplogin.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
+import '../user_deck/deck_list.dart';
 import 'item_weight.dart';
 import 'quest_edit.dart';
 

@@ -697,6 +697,7 @@ DeckServantData _$DeckServantDataFromJson(Map json) => DeckServantData(
   npcFollowerSvtId: json['npcFollowerSvtId'],
   followerType: json['followerType'],
   initPos: json['initPos'],
+  equipTarget2SkillChange: json['equipTarget2SkillChange'],
 );
 
 Map<String, dynamic> _$DeckServantDataToJson(DeckServantData instance) => <String, dynamic>{
@@ -710,6 +711,7 @@ Map<String, dynamic> _$DeckServantDataToJson(DeckServantData instance) => <Strin
   'npcFollowerSvtId': instance.npcFollowerSvtId,
   'followerType': ?instance.followerType,
   'initPos': ?instance.initPos,
+  'equipTarget2SkillChange': ?instance.equipTarget2SkillChange,
 };
 
 BattleEntity _$BattleEntityFromJson(Map json) => BattleEntity(

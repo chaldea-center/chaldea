@@ -397,6 +397,7 @@ class DataVals {
   int? get IsClassIconChangeSaveGrand => _get('IsClassIconChangeSaveGrand');
   int? get ExecuteEffectId => _get('ExecuteEffectId');
   int? get PriorityUpHate => _get('PriorityUpHate');
+  int? get JudgeUseEveryTime => _get('JudgeUseEveryTime');
 
   int? get Individuality => _get('Individuality');
   int? get EventId => _get('EventId');

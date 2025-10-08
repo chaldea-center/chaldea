@@ -1131,6 +1131,7 @@ class GameConstants {
 @JsonSerializable()
 class GameConstantStr {
   // dart format off
+  final List<int> allowBuffTypesOfJudgeUseEveryTime; // [167, 175]
   final List<int> enableOverwriteClassIds; // [1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 23, 25, 28]
   final List<int> extendTurnBuffType; // [1, 9, 11, 13, 15, 18, 25, 50, 51, 52, 70, 72, 89, 90, 110, 112, 116, 121, 137, 144, 148, 160, 162]
   final List<int> functionTypeNotNpDamage; // [3, 34, 122, 137]
@@ -1150,6 +1151,7 @@ class GameConstantStr {
 
   const GameConstantStr({
     // dart format off
+    this.allowBuffTypesOfJudgeUseEveryTime = const [167, 175],
     this.enableOverwriteClassIds = const [1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 23, 25, 28],
     this.extendTurnBuffType = const [1, 9, 11, 13, 15, 18, 25, 50, 51, 52, 70, 72, 89, 90, 110, 112, 116, 121, 137, 144, 148, 160, 162],
     this.functionTypeNotNpDamage = const [3, 34, 122, 137],

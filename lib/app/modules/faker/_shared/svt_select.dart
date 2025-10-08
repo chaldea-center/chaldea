@@ -11,10 +11,16 @@ import '../../servant/filter.dart';
 
 class SelectUserSvtPage extends StatefulWidget {
   final FakerRuntime runtime;
-  final String? Function(UserServantEntity userSvt)? getStatus;
+  final String? Function(UserServantEntity userSvt, MasterDataManager mstData)? getStatus;
   final ValueChanged<UserServantEntity>? onSelected;
 
-  const SelectUserSvtPage({super.key, required this.runtime, this.getStatus, this.onSelected});
+  const SelectUserSvtPage({super.key, required this.runtime, this.getStatus = defaultGetStatus, this.onSelected});
+
+  static String? defaultGetStatus(UserServantEntity userSvt, MasterDataManager mstData) {
+    return 'Lv${userSvt.lv}/${userSvt.maxLv} B${mstData.userSvtCollection[userSvt.svtId]?.friendshipRank} \n'
+        ' ${userSvt.skillLv1}/${userSvt.skillLv2}/${userSvt.skillLv3} \n'
+        ' ${mstData.getSvtAppendSkillLv(userSvt).join("/")} ';
+  }
 
   @override
   State<SelectUserSvtPage> createState() => _SelectUserSvtPageState();
@@ -113,7 +119,7 @@ class _SelectUserSvtPageState extends State<SelectUserSvtPage> {
         itemBuilder: (context, index) {
           final userSvt = userSvts[index];
           final svt = db.gameData.servantsById[userSvt.svtId];
-          final status = widget.getStatus?.call(userSvt);
+          final status = widget.getStatus?.call(userSvt, mstData);
           Widget child;
           if (svt == null) {
             child = Text(['${userSvt.svtId}', if (status != null) status].join('\n'));

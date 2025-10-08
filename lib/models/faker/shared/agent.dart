@@ -118,6 +118,7 @@ abstract class FakerAgent<
   Future<FResponse> userStatusFlagSet({required List<int32_t> onFlagNumbers, required List<int32_t> offFlagNumbers});
 
   Future<FResponse> deckSetup({required int64_t activeDeckId, required UserDeckEntity userDeck});
+  Future<FResponse> userFormationSetup({required int32_t deckNo, required int64_t userEquipId});
 
   Future<FResponse> eventDeckSetup({
     required UserEventDeckEntity userEventDeck,

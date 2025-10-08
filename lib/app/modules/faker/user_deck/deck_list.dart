@@ -9,29 +9,35 @@ import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/extension.dart';
 import 'package:chaldea/widgets/material.dart';
 import '../../battle/formation/formation_card.dart';
+import '../state.dart';
+import 'deck_setup.dart';
 
-class UserFormationDecksPage extends StatefulWidget {
+class UserDeckListPage extends StatefulWidget {
+  final FakerRuntime? runtime;
   final MasterDataManager mstData;
   final int? selectedDeckId;
   final int? eventId;
   final ValueChanged<UserDeckEntity>? onSelected;
   final ValueChanged<UserEventDeckEntity>? onEventDeckSelected;
-  const UserFormationDecksPage({
+  final bool enableEdit;
+
+  const UserDeckListPage({
     super.key,
+    this.runtime,
     required this.mstData,
     this.selectedDeckId,
     this.eventId,
     this.onSelected,
     this.onEventDeckSelected,
+    this.enableEdit = false,
   });
 
   @override
-  State<UserFormationDecksPage> createState() => UserFormationDecksPageState();
+  State<UserDeckListPage> createState() => UserDeckListPageState();
 }
 
-class UserFormationDecksPageState extends State<UserFormationDecksPage> {
+class UserDeckListPageState extends State<UserDeckListPage> {
   late final mstData = widget.mstData;
-  late final userSvts = {for (final svt in mstData.userSvt.followedBy(mstData.userSvtStorage)) svt.id: svt};
   final scrollController = ScrollController();
 
   @override
@@ -41,6 +47,7 @@ class UserFormationDecksPageState extends State<UserFormationDecksPage> {
       final index = mstData.userDeck.toList().indexWhere((e) => e.id == widget.selectedDeckId);
       if (index > 0) {
         SchedulerBinding.instance.addPostFrameCallback((_) async {
+          if (!scrollController.hasClients) return;
           double pos = scrollController.position.extentAfter * (index + 1) / mstData.userDeck.length - 16;
           if (pos > 0) {
             await scrollController.animateTo(pos, duration: kTabScrollDuration, curve: Curves.easeInOutSine);
@@ -55,6 +62,7 @@ class UserFormationDecksPageState extends State<UserFormationDecksPage> {
     final decks = mstData.userDeck.toList();
     final eventDecks = mstData.userEventDeck.toList();
     eventDecks.sortByList((e) => [widget.eventId == e.eventId ? 0 : 1, -e.eventId, e.deckNo]);
+
     UserDeckEntity? grandDeck;
     if (widget.eventId == null && mstData.userSvtGrand.isNotEmpty) {
       grandDeck = UserDeckEntity(
@@ -110,24 +118,35 @@ class UserFormationDecksPageState extends State<UserFormationDecksPage> {
           formation: BattleTeamFormationX.fromUserDeck(
             deckInfo: deck.deckInfo,
             mstData: mstData,
-            userSvts: userSvts,
             maxSvtCount: isGrand ? 8 : null,
           ),
           userSvtCollections: mstData.userSvtCollection.lookup,
           showBond: true,
           maxSvtCount: isGrand ? 8 : null,
         ),
-        if (widget.onSelected != null && deck.id > 0)
+        if (widget.onSelected != null && deck.id > 0 && !isGrand)
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 4),
-            child: Center(
-              child: FilledButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                  widget.onSelected!(deck);
-                },
-                child: Text(S.current.select),
-              ),
+            child: Wrap(
+              spacing: 8,
+              alignment: WrapAlignment.center,
+              children: [
+                FilledButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                    widget.onSelected!(deck);
+                  },
+                  child: Text(S.current.select),
+                ),
+                if (widget.enableEdit && widget.runtime != null)
+                  FilledButton.tonal(
+                    onPressed: () async {
+                      await router.pushPage(UserDeckSetupPage(runtime: widget.runtime!, activeDeckId: deck.id));
+                      if (mounted) setState(() {});
+                    },
+                    child: Text(S.current.edit),
+                  ),
+              ],
             ),
           ),
       ],
@@ -149,7 +168,7 @@ class UserFormationDecksPageState extends State<UserFormationDecksPage> {
           ),
         ),
         FormationCard(
-          formation: BattleTeamFormationX.fromUserDeck(deckInfo: deck.deckInfo, mstData: mstData, userSvts: userSvts),
+          formation: BattleTeamFormationX.fromUserDeck(deckInfo: deck.deckInfo, mstData: mstData),
           userSvtCollections: mstData.userSvtCollection.lookup,
           showBond: true,
         ),
@@ -244,21 +263,19 @@ extension BattleTeamFormationX on BattleTeamFormation {
   static BattleTeamFormation fromUserDeck({
     required DeckServantEntity? deckInfo,
     required MasterDataManager mstData,
-    Map<int, UserServantEntity>? userSvts,
     int posOffset = 0,
     int? maxSvtCount,
   }) {
     final userEquip = mstData.userEquip.firstWhereOrNull((e) => e.id == deckInfo?.userEquipId);
     final svts = deckInfo?.svts ?? [];
     final svtsMap = {for (final svt in svts) svt.id: svt};
-    userSvts ??= {for (final svt in mstData.userSvt.followedBy(mstData.userSvtStorage)) svt.id: svt};
 
     SvtSaveData? cvtSvt(DeckServantData? svtData) {
-      final userSvt = userSvts![svtData?.userSvtId];
+      final userSvt = mstData.userSvt[svtData?.userSvtId];
       if (svtData == null || userSvt == null || svtData.isFollowerSvt == true) return null;
 
       SvtEquipSaveData? getEquipData(SvtEquipTarget equipTarget) {
-        final userCE = userSvts?[svtData.userSvtEquipIds.getOrNull(equipTarget.value)];
+        final userCE = mstData.userSvt[svtData.userSvtEquipIds.getOrNull(equipTarget.value)];
         if (userCE == null) return null;
         return SvtEquipSaveData(id: userCE.svtId, lv: userCE.lv, limitBreak: userCE.limitCount == 4);
       }

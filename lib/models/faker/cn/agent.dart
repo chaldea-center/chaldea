@@ -520,6 +520,16 @@ class FakerAgentCN extends FakerAgent<FRequestCN, AutoLoginDataCN, NetworkManage
   }
 
   @override
+  Future<FResponse> userFormationSetup({required int32_t deckNo, required int64_t userEquipId}) {
+    return _acPhp(
+      key: 'userformationset',
+      nid: 'user_formation',
+      params2: {"deckNo": deckNo},
+      params4: {"userEquipId": userEquipId},
+    );
+  }
+
+  @override
   Future<FResponse> eventDeckSetup({
     required UserEventDeckEntity userEventDeck,
     required int32_t eventId,

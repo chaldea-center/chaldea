@@ -616,11 +616,6 @@ class _SvtCombinePageState extends State<SvtCombinePage> with FakerRuntimeStateM
     router.pushBuilder(
       builder: (context) => SelectUserSvtPage(
         runtime: runtime,
-        getStatus: (userSvt) {
-          return 'Lv${userSvt.lv}/${userSvt.maxLv} B${mstData.userSvtCollection[userSvt.svtId]?.friendshipRank} \n'
-              ' ${userSvt.skillLv1}/${userSvt.skillLv2}/${userSvt.skillLv3} \n'
-              ' ${mstData.getSvtAppendSkillLv(userSvt).join("/")} ';
-        },
         onSelected: (userSvt) {
           runtime.lockTask(() {
             options.baseUserSvtId = userSvt.id;
