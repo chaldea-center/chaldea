@@ -175,14 +175,25 @@ class AtlasIconLoader extends _CachedLoader<String, String> {
 
   final _rnd = Random();
 
+  static final Map<String, DateTime> _outdatedFiles = {
+    "class_b_7@2.png": DateTime.utc(2025, 10, 9),
+    "class_s_7@2.png": DateTime.utc(2025, 10, 9),
+    "class_g_7@2.png": DateTime.utc(2025, 10, 9),
+  };
+
   Future<String?> _ioDownload(String url, String path, RateLimiter limiter) async {
     final file = File(path).absolute;
     if (await _fsLimiter.limited(() async {
       await Future.delayed(Duration(milliseconds: _rnd.nextInt(100)));
-      if (!await file.exists()) {
+      final stat = await file.stat();
+      if (stat.type == FileSystemEntityType.notFound || stat.size == 0) {
         return false;
       }
-      return file.statSync().size > 0;
+      final outdateTime = _outdatedFiles[pathlib.basename(file.path)];
+      if (outdateTime != null && stat.modified.isBefore(outdateTime)) {
+        return false;
+      }
+      return true;
     })) {
       return path;
     }

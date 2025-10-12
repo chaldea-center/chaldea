@@ -40,7 +40,6 @@ class _AdminToolsPageState extends State<AdminToolsPage> {
           ),
           TileGroup(
             header: "Atlas Academy",
-            footer: 'Update all regions to reload all pg tables (including new table)',
             children: [
               ListTile(
                 dense: true,
@@ -112,6 +111,8 @@ class _AdminToolsPageState extends State<AdminToolsPage> {
                     final exportKey = db.settings.secrets.atlasExportKey;
                     if (exportKey.isEmpty) return;
                     _RegionSelectDialog(
+                      title: Text('Update exports'),
+                      footer: SFooter('Update all regions to reload all pg tables (including new table)'),
                       onSelected: (regions) {
                         if (regions.isEmpty) return;
                         callRequest(
@@ -177,8 +178,10 @@ class _AdminToolsPageState extends State<AdminToolsPage> {
 }
 
 class _RegionSelectDialog extends StatefulWidget {
+  final Widget? title;
+  final Widget? footer;
   final ValueChanged<List<Region>> onSelected;
-  const _RegionSelectDialog({required this.onSelected});
+  const _RegionSelectDialog({required this.onSelected, this.title, this.footer});
 
   @override
   State<_RegionSelectDialog> createState() => __RegionSelectDialogState();
@@ -189,6 +192,7 @@ class __RegionSelectDialogState extends State<_RegionSelectDialog> {
   @override
   Widget build(BuildContext context) {
     return SimpleConfirmDialog(
+      title: widget.title,
       scrollable: true,
       content: Column(
         mainAxisSize: MainAxisSize.min,
@@ -206,6 +210,7 @@ class __RegionSelectDialogState extends State<_RegionSelectDialog> {
                 setState(() {});
               },
             ),
+          ?widget.footer,
         ],
       ),
       onTapOk: () {

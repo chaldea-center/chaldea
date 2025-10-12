@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'package:chaldea/app/app.dart';
+import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/file_plus/file_plus.dart';
 import 'package:chaldea/packages/logger.dart';
@@ -186,9 +187,68 @@ class _TreeSizePageState extends State<TreeSizePage> {
                 ListTile(dense: true, title: Text(entry.key), subtitle: Text(entry.value.toString())),
             ],
           ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                deleteOne(stat);
+              },
+              child: Text(S.current.delete, style: TextStyle(color: Theme.of(context).colorScheme.error)),
+            ),
+          ],
         ).showDialog(context);
       },
     );
+  }
+
+  Future<void> deleteOne(MyFileStat stat) async {
+    final confirm = await SimpleConfirmDialog(
+      title: Text(S.current.delete),
+      content: Text(
+        'Continue delete only if you know what the file/folder is.\n'
+        '仅在知晓文件(夹)的用途情况下继续执行删除',
+      ),
+    ).showDialog(context);
+    if (confirm != true || !mounted) return;
+
+    int deletedCount = 0;
+    try {
+      EasyLoading.show();
+      final entity = stat.entity;
+      if (entity is File) {
+        await entity.delete();
+        deletedCount += 1;
+      } else if (entity is Directory) {
+        await for (final file in entity.list()) {
+          if (file is File) {
+            try {
+              await file.delete();
+              deletedCount += 1;
+            } catch (e) {
+              // ignore
+            }
+          }
+        }
+      }
+      if (mounted) {
+        SimpleConfirmDialog(
+          title: Text(S.current.done),
+          content: Text('$deletedCount files deleted. click refresh to show new disk usage'),
+          scrollable: true,
+          showCancel: false,
+        ).showDialog(context);
+      }
+    } catch (e) {
+      if (mounted) {
+        SimpleConfirmDialog(
+          title: Text(S.current.error),
+          content: Text('$e'),
+          scrollable: true,
+          showCancel: false,
+        ).showDialog(context);
+      }
+    } finally {
+      EasyLoading.dismiss();
+    }
   }
 }
 

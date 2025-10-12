@@ -87,6 +87,7 @@ Future<String> genConstStrCode() async {
     "EXTEND_TURN_BUFF_TYPE",
     "NOT_REDUCE_COUNT_WITH_NO_DAMAGE_BUFF",
     "STAR_REFRESH_BUFF_TYPE",
+    "ALLOW_BUFF_TYPES_OF_JUDGE_USE_EVERY_TIME",
     // FUNC
     "FUNCTION_TYPE_NOT_NP_DAMAGE",
     // OTHERS
@@ -158,6 +159,7 @@ Future<void> main() async {
   String content = file.readAsStringSync();
   content = replaceFlagContent(content, 'GameConstants', await genConstIntCode());
   content = replaceFlagContent(content, 'GameConstantStr', await genConstStrCode());
+  if (!content.endsWith('\n')) content += '\n';
   file.writeAsStringSync(content);
   print('done');
 }

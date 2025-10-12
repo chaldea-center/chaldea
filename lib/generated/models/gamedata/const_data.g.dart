@@ -1009,6 +1009,9 @@ Map<String, dynamic> _$GameConstantsToJson(GameConstants instance) => <String, d
 };
 
 GameConstantStr _$GameConstantStrFromJson(Map json) => GameConstantStr(
+  allowBuffTypesOfJudgeUseEveryTime:
+      (json['allowBuffTypesOfJudgeUseEveryTime'] as List<dynamic>?)?.map((e) => (e as num).toInt()).toList() ??
+      const [167, 175],
   enableOverwriteClassIds:
       (json['enableOverwriteClassIds'] as List<dynamic>?)?.map((e) => (e as num).toInt()).toList() ??
       const [1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 23, 25, 28],
@@ -1054,6 +1057,7 @@ GameConstantStr _$GameConstantStrFromJson(Map json) => GameConstantStr(
 );
 
 Map<String, dynamic> _$GameConstantStrToJson(GameConstantStr instance) => <String, dynamic>{
+  'allowBuffTypesOfJudgeUseEveryTime': instance.allowBuffTypesOfJudgeUseEveryTime,
   'enableOverwriteClassIds': instance.enableOverwriteClassIds,
   'extendTurnBuffType': instance.extendTurnBuffType,
   'functionTypeNotNpDamage': instance.functionTypeNotNpDamage,

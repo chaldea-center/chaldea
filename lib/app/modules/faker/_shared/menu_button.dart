@@ -103,7 +103,7 @@ class _FakerMenuButtonState extends State<FakerMenuButton> with FakerRuntimeStat
                 enabled: isLoggedIn,
                 onTap: () {
                   db.runtimeData.clipBoard.mstData = mstData;
-                  EasyLoading.showToast(S.current.copied);
+                  EasyLoading.showToast('${S.current.copied} (In-app)');
                 },
               ),
             ],

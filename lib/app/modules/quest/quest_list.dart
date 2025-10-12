@@ -55,7 +55,14 @@ class _QuestListPageState extends State<QuestListPage> {
     }
     final questIds = widget.quests.isEmpty ? widget.ids.toList() : widget.quests.map((e) => e.id).toList();
     if (widget.needSort) {
-      questIds.sort(Quest.compareId);
+      if (const [WarId.rankup, WarId.interlude].contains(widget.war?.id)) {
+        questIds.sortByList((questId) {
+          final quest = db.gameData.quests[questId];
+          return <int>[quest?.openedAt ?? 0, questId];
+        }, reversed: true);
+      } else {
+        questIds.sort(Quest.compareId);
+      }
     }
 
     final hasSpot = questIds.any((q) => allQuestsMap[q]?.spot?.shownImage != null);
@@ -64,11 +71,25 @@ class _QuestListPageState extends State<QuestListPage> {
       final quest = allQuestsMap[questId];
 
       final spot = db.gameData.spots[quest?.spotId];
+
+      Servant? owner = quest != null && (quest.type == QuestType.friendship || quest.warId == WarId.rankup)
+          ? db.gameData.servantsById.values.firstWhereOrNull((svt) => svt.relateQuestIds.contains(quest.id))
+          : null;
+
       final leading = spot == null || spot.shownImage == null
           ? (hasSpot ? const SizedBox(width: 56) : null)
           : db.getIconImage(spot.shownImage, width: 56);
       String? userQuestInfo;
       final userQuest = mstData?.userQuest[questId];
+      if (mstData != null) {
+        bool hasSvt = mstData!.userSvtCollection[owner?.id]?.isOwned == true;
+        if (userQuest != null) {
+          userQuestInfo =
+              'phase ${userQuest.questPhase} clear ${userQuest.clearNum} challenge ${userQuest.challengeNum}';
+        } else if (hasSvt) {
+          userQuestInfo = '❤';
+        }
+      }
       if (userQuest != null) {
         userQuestInfo = 'phase ${userQuest.questPhase} clear ${userQuest.clearNum} challenge ${userQuest.challengeNum}';
       }
@@ -154,9 +175,6 @@ class _QuestListPageState extends State<QuestListPage> {
       }
       String chapter = quest.chapter;
       final title = chapter.isEmpty ? quest.lDispName : '$chapter ${quest.lDispName}';
-      Servant? owner = quest.type == QuestType.friendship || quest.warId == WarId.rankup
-          ? db.gameData.servantsById.values.firstWhereOrNull((svt) => svt.relateQuestIds.contains(quest.id))
-          : null;
 
       String subtitle;
       if (isMainFree) {

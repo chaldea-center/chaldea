@@ -535,7 +535,9 @@ class Servant extends BasicServant {
     final ascs = extraAssets.faces.ascension ?? {};
     final costumes = extraAssets.faces.costume ?? {};
     String? _icon;
-    if (idx < 10) {
+    if (idx < 0) {
+      return null;
+    } else if (idx < 10) {
       if (ascs.containsKey(0)) {
         // enemy faces may contain limitCount 0-4
         _icon = ascs[idx];

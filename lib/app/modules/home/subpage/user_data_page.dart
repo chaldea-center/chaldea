@@ -312,7 +312,7 @@ class _BackupHistoryPage extends StatefulWidget {
 }
 
 class __BackupHistoryPageState extends State<_BackupHistoryPage> {
-  List<MapEntry<String, DateTime?>> validFiles = [];
+  List<MapEntry<String, FileStat?>> validFiles = [];
 
   @override
   void initState() {
@@ -334,11 +334,11 @@ class __BackupHistoryPageState extends State<_BackupHistoryPage> {
       if (await dir.exists()) {
         await for (var entry in dir.list()) {
           if (await FileSystemEntity.isFile(entry.path) && entry.path.toLowerCase().contains('.json')) {
-            validFiles.add(MapEntry(entry.path, (await entry.stat()).modified));
+            validFiles.add(MapEntry(entry.path, await entry.stat()));
           }
         }
       }
-      validFiles.sort((a, b) => b.value!.compareTo(a.value!));
+      validFiles.sort((a, b) => b.value!.modified.compareTo(a.value!.modified));
     }
 
     validFiles = validFiles.take(50).toList();
@@ -365,7 +365,9 @@ class __BackupHistoryPageState extends State<_BackupHistoryPage> {
           final entry = validFiles[index - 1];
           return ListTile(
             title: Text(p.basenameWithoutExtension(entry.key)),
-            subtitle: Text('Modified: ${entry.value}'),
+            subtitle: Text(
+              '${entry.value?.modified.toStringShort()}, ${((entry.value?.size ?? 0) ~/ 1000).format()}KB',
+            ),
             trailing: Wrap(
               children: [
                 IconButton(
