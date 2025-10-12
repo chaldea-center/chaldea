@@ -691,7 +691,7 @@ class FakerRuntime {
   void _checkFriendship(AutoBattleOptions option, QuestPhase questPhase) {
     final deck = questPhase.isUseUserEventDeck()
         ? mstData.userEventDeck[UserEventDeckEntity.createPK(
-            questPhase.logicEvent?.id ?? 0,
+            questPhase.logicEventId ?? 0,
             questPhase.extraDetail?.useEventDeckNo ?? 1,
           )]
         : mstData.userDeck[battleOption.deckId];

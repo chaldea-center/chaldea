@@ -465,7 +465,7 @@ abstract class FakerAgent<
           // grand duel
           final dbSvt = db.gameData.servantsById[svtInfo.svtId];
           if (dbSvt == null) continue;
-          final traits = dbSvt.getIndividuality(questPhaseEntity.logicEvent?.id, svtInfo.dispLimitCount).toSet();
+          final traits = dbSvt.getIndividuality(questPhaseEntity.logicEventId, svtInfo.dispLimitCount).toSet();
           if (!questPhaseEntity.restrictions.every((restriction) {
             if (restriction.restriction.type == RestrictionType.individuality) {
               final hasTrait = restriction.restriction.targetVals.toSet().intersection(traits).isNotEmpty;

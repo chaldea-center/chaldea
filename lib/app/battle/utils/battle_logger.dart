@@ -257,7 +257,7 @@ class BattleRecordManager {
         // myGrandSvt, fixedMyGrandSvt, myGrandSvtPositionMain
         if (restriction.restriction.type == RestrictionType.myGrandSvt) {
           if (!options.formation.svts.any((svtData) {
-            final svtIndivs = svtData.svt?.getIndividuality(questPhase.logicEvent?.id, svtData.limitCount);
+            final svtIndivs = svtData.svt?.getIndividuality(questPhase.logicEventId, svtData.limitCount);
             if (svtIndivs == null) return false;
             return _checkGrandSvtIndiv(restriction.restriction, svtIndivs);
           })) {
@@ -314,7 +314,7 @@ class BattleRecordManager {
     }
 
     if (questPhase.isUseGrandBoard) {
-      final svtIndivs = svt.getIndividuality(questPhase.logicEvent?.id, svtData.limitCount);
+      final svtIndivs = svt.getIndividuality(questPhase.logicEventId, svtData.limitCount);
       for (final restriction in questPhase.restrictions) {
         if (restriction.restriction.type == RestrictionType.individuality) {
           if (!_checkGrandSvtIndiv(restriction.restriction, svtIndivs)) {

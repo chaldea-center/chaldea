@@ -146,7 +146,7 @@ class _FormationBondTabState extends State<FormationBondTab> {
     final quest = option.quest;
     final results = List.generate(option.svtBonus.length, (_) => SvtBondBonusResult()..baseValue = quest?.bond ?? 0);
 
-    final eventId = quest?.logicEvent?.id ?? 0;
+    final eventId = quest?.logicEventId ?? 0;
 
     for (final (deckPos, deckSvt) in option.formation.svts.take(_kMaxSvtNum).indexed) {
       final svt = deckSvt.svt;
@@ -323,14 +323,14 @@ class _FormationBondTabState extends State<FormationBondTab> {
   @override
   Widget build(BuildContext context) {
     final quest = option.quest;
-    final event = quest?.logicEvent;
+    final eventId = quest?.logicEventId;
     final eventSkillIds = {
-      if (event != null)
+      if (eventId != null)
         for (final svt in db.gameData.servantsNoDup.values)
           for (final skill in svt.extraPassive)
             if (skill.functions.any((e) => e.funcType == FuncType.servantFriendshipUp))
               for (final extraPassive in skill.extraPassive)
-                if (extraPassive.eventId == event.id) skill.id,
+                if (extraPassive.eventId == eventId) skill.id,
     }.toList()..sort();
     validate();
     final results = calcResults();
@@ -425,7 +425,7 @@ class _FormationBondTabState extends State<FormationBondTab> {
         SwitchListTile.adaptive(
           dense: true,
           title: Text(S.current.event_skill),
-          subtitle: eventSkillIds.isEmpty ? null : Text('${event?.lShortName.l}'),
+          subtitle: eventSkillIds.isEmpty ? null : Text('${db.gameData.events[eventId]?.lShortName.l ?? eventId}'),
           value: option.enableEvent,
           onChanged: (v) {
             setState(() {

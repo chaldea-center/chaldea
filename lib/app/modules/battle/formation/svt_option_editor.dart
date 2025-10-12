@@ -931,7 +931,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
 
   List<Widget> _buildHiddenAddPassive() {
     List<Widget> children = [];
-    int eventId = questPhase?.logicEvent?.id ?? 0;
+    int eventId = questPhase?.logicEventId ?? 0;
     if (eventId == 0) return children;
     for (final skillId
         in db.gameData.constData.getSvtLimitHides(svt.id, playerSvtData.limitCount).expand((e) => e.addPassives)) {
@@ -1116,7 +1116,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
   }
 
   Widget _buildAllowedExtraPassives() {
-    int eventId = questPhase?.logicEvent?.id ?? 0;
+    int eventId = questPhase?.logicEventId ?? 0;
     final allowedPassives = db.gameData.constData.svtAllowedExtraPassives.where((allowInfo) {
       if (allowInfo.eventId != eventId) return false;
       if (!allowInfo.svtIds.contains(svt.id) && !allowInfo.svtIds.contains(0)) return false;
@@ -1300,7 +1300,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
         filterData: svtFilterData,
         pinged: db.curUser.battleSim.pingedSvts.toList(),
         showSecondaryFilter: true,
-        eventId: questPhase?.logicEvent?.id,
+        eventId: questPhase?.logicEventId,
       ),
       detail: true,
     );

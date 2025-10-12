@@ -198,7 +198,7 @@ class GameData with _GameDataExtra {
       final warIdsToRemove = <int>{};
       this.events.removeWhere((eventId, event) {
         final eventAdd = this.wiki.events[eventId];
-        final remove = _shouldRemove(event.startedAt, eventAdd?.startTime, latest, inferLatest);
+        final remove = _shouldRemove(event.startedAt, eventAdd?.startTime, latest, null);
         if (remove) warIdsToRemove.addAll(event.warIds);
         return remove;
       });

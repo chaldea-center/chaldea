@@ -250,16 +250,21 @@ class Quest with RouteInfo {
   }
 
   // used for in-game quest-event binding
-  Event? get logicEvent {
+  int? get logicEventId {
     final _event = war?.eventReal;
-    if (_event != null) return _event;
+    if (_event != null) return _event.id;
     for (final (eventId, questIds) in db.gameData.others.eventQuestGroups.items) {
-      if (questIds.contains(id) && db.gameData.events.containsKey(eventId)) {
-        final _event = db.gameData.events[eventId]!;
-        return _event;
+      if (questIds.contains(id) && eventId != 0) {
+        return eventId;
       }
     }
     return null;
+  }
+
+  Event? get logicEvent {
+    final _event = war?.eventReal;
+    if (_event != null) return _event;
+    return db.gameData.events[logicEventId];
   }
 
   int get eventIdPriorWarId => event?.id ?? warId;
