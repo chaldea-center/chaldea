@@ -2710,6 +2710,23 @@ class DeckServantData {
   Map<String, dynamic> toJson() => _$DeckServantDataToJson(this);
 }
 
+@JsonSerializable(createToJson: true, includeIfNull: false)
+class GrandSvtInfo {
+  int grandGraphId;
+  int userSvtId;
+  List<int> userSvtEquipIds;
+  int equipTarget2SkillChange;
+
+  GrandSvtInfo({dynamic grandGraphId, dynamic userSvtId, dynamic userSvtEquipIds, dynamic equipTarget2SkillChange})
+    : grandGraphId = _toInt(grandGraphId),
+      userSvtId = _toInt(userSvtId),
+      userSvtEquipIds = _toIntList(userSvtEquipIds),
+      equipTarget2SkillChange = _toInt(equipTarget2SkillChange);
+
+  factory GrandSvtInfo.fromJson(Map<String, dynamic> data) => _$GrandSvtInfoFromJson(data);
+  Map<String, dynamic> toJson() => _$GrandSvtInfoToJson(this);
+}
+
 @JsonSerializable(createToJson: false)
 class BattleEntity extends DataEntityBase<int> {
   BattleInfoData? battleInfo;

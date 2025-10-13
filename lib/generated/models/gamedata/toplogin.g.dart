@@ -714,6 +714,20 @@ Map<String, dynamic> _$DeckServantDataToJson(DeckServantData instance) => <Strin
   'equipTarget2SkillChange': ?instance.equipTarget2SkillChange,
 };
 
+GrandSvtInfo _$GrandSvtInfoFromJson(Map json) => GrandSvtInfo(
+  grandGraphId: json['grandGraphId'],
+  userSvtId: json['userSvtId'],
+  userSvtEquipIds: json['userSvtEquipIds'],
+  equipTarget2SkillChange: json['equipTarget2SkillChange'],
+);
+
+Map<String, dynamic> _$GrandSvtInfoToJson(GrandSvtInfo instance) => <String, dynamic>{
+  'grandGraphId': instance.grandGraphId,
+  'userSvtId': instance.userSvtId,
+  'userSvtEquipIds': instance.userSvtEquipIds,
+  'equipTarget2SkillChange': instance.equipTarget2SkillChange,
+};
+
 BattleEntity _$BattleEntityFromJson(Map json) => BattleEntity(
   battleInfo: json['battleInfo'] == null
       ? null

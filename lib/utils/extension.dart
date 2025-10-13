@@ -24,6 +24,10 @@ class Ref<T> {
   Ref(this.value);
 }
 
+extension BoolX on bool {
+  int toInt() => this ? 1 : 0;
+}
+
 extension NumX on num {
   String format({
     bool compact = true,

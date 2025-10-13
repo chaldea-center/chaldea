@@ -84,13 +84,38 @@ abstract class FakerAgent<
     List<int32_t> storyAdjustIds = const [],
     String selectBonusListData = "",
   });
+  Future<FResponse> gachaHistory({required int32_t gachaId}); // userGachaDrawHistory
 
   Future<FResponse> boxGachaDraw({required int32_t gachaId, required int32_t num});
   Future<FResponse> boxGachaReset({required int32_t gachaId});
 
   Future<FResponse> sellServant({required List<int64_t> servantUserIds, required List<int64_t> commandCodeUserIds});
 
-  // cardCombine
+  // card
+  Future<FResponse> cardFavorite({
+    required int64_t targetUsrSVtId,
+    required int32_t imageLimitCount,
+    required int32_t dispLimitCount,
+    required int32_t commandCardLimitCount,
+    required int32_t iconLimitCount,
+    required int32_t portraitLimitCount,
+    required bool isFavorite,
+    required bool isLock,
+    required bool isChoice,
+    required int32_t commonFlag,
+    required int32_t battleVoice,
+    required int32_t randomSettingOwn,
+    required int32_t randomSettingSupport,
+    required int32_t limitCountSupport,
+    required bool isPush,
+  });
+  Future<FResponse> cardStatusSync({
+    required List<int64_t> changeUserSvtIds,
+    required List<int64_t> revokeUserSvtIds,
+    bool isStorage = false,
+    bool isLock = false,
+    bool isChoice = false,
+  });
   Future<FResponse> servantCombine({
     required int64_t baseUserSvtId,
     required List<int64_t> materialSvtIds,
@@ -110,12 +135,17 @@ abstract class FakerAgent<
     required int32_t skillNum,
     required int32_t currentSkillLv,
   });
+  Future<FResponse> storageTakein({required List<int64_t> userSvtIds});
+  Future<FResponse> storageTakeout({required List<int64_t> userSvtIds});
 
   Future<FResponse> servantEquipCombine({required int64_t baseUserSvtId, required List<int64_t> materialSvtIds});
 
   Future<FResponse> commandCodeUnlock({required int32_t servantId, required int32_t idx});
 
   Future<FResponse> userStatusFlagSet({required List<int32_t> onFlagNumbers, required List<int32_t> offFlagNumbers});
+
+  Future<FResponse> classBoardReleaseSquare({required int32_t classBoardBaseId, required int32_t squareId});
+  Future<FResponse> classBoardReleaseLock({required int32_t classBoardBaseId, required int32_t squareId});
 
   Future<FResponse> deckSetup({required int64_t activeDeckId, required UserDeckEntity userDeck});
   Future<FResponse> userFormationSetup({required int32_t deckNo, required int64_t userEquipId});
@@ -126,6 +156,7 @@ abstract class FakerAgent<
     required int32_t questId,
     required int32_t phase,
     int32_t restartWave = 0,
+    List<GrandSvtInfo> grandSvtInfos = const [],
   });
 
   Future<FResponse> battleScenario({

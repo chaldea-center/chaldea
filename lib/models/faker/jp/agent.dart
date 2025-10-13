@@ -199,7 +199,7 @@ class FakerAgentJP extends FakerAgent<FRequestJP, AutoLoginDataJP, NetworkManage
   }) {
     // success: {overflowType:0,getSvts:[],getCommandCodes:[]}
     final request = FRequestJP(network: network, path: '/present/receive');
-    request.addFieldStr('presentIds', network.catMouseGame.encodeMsgpackBase64(presentIds));
+    request.addFieldStr('presentIds', network.catMouseGame.encodeJsonMsgpackBase64(presentIds));
     request.addFieldInt32('itemSelectIdx', itemSelectIdx);
     request.addFieldInt32('itemSelectNum', itemSelectNum);
     return request.beginRequest();
@@ -240,6 +240,13 @@ class FakerAgentJP extends FakerAgent<FRequestJP, AutoLoginDataJP, NetworkManage
   }
 
   @override
+  Future<FResponse> gachaHistory({required int32_t gachaId}) async {
+    final request = FRequestJP(network: network, path: '/gacha/drawHistory');
+    request.addFieldInt32("gachaId", gachaId);
+    return request.beginRequestAndCheckError('gacha_draw_history');
+  }
+
+  @override
   Future<FResponse> boxGachaDraw({required int32_t gachaId, required int32_t num}) {
     final request = FRequestJP(network: network, path: '/boxGacha/draw');
     request.addFieldInt32("boxGachaId", gachaId);
@@ -261,9 +268,76 @@ class FakerAgentJP extends FakerAgent<FRequestJP, AutoLoginDataJP, NetworkManage
       for (final id in ids) {"id": id, "num": 1},
     ];
     final request = FRequestJP(network: network, path: '/shop/sellSvt');
-    request.addFieldStr("sellData", network.catMouseGame.encodeMsgpackBase64(_useSvtHash(servantUserIds)));
-    request.addFieldStr("sellCommandCode", network.catMouseGame.encodeMsgpackBase64(_useSvtHash(commandCodeUserIds)));
+    request.addFieldStr("sellData", network.catMouseGame.encodeJsonMsgpackBase64(_useSvtHash(servantUserIds)));
+    request.addFieldStr(
+      "sellCommandCode",
+      network.catMouseGame.encodeJsonMsgpackBase64(_useSvtHash(commandCodeUserIds)),
+    );
     return request.beginRequestAndCheckError('sell_svt');
+  }
+
+  @override
+  Future<FResponse> cardFavorite({
+    required int64_t targetUsrSVtId,
+    required int32_t imageLimitCount,
+    required int32_t dispLimitCount,
+    required int32_t commandCardLimitCount,
+    required int32_t iconLimitCount,
+    required int32_t portraitLimitCount,
+    required bool isFavorite,
+    required bool isLock,
+    required bool isChoice,
+    required int32_t commonFlag,
+    required int32_t battleVoice,
+    required int32_t randomSettingOwn,
+    required int32_t randomSettingSupport,
+    required int32_t limitCountSupport,
+    required bool isPush,
+  }) {
+    final request = FRequestJP(network: network, path: '/card/favorite');
+    request.addFieldInt64("userSvtId", targetUsrSVtId);
+    request.addFieldInt32("imageLimitCount", imageLimitCount);
+    request.addFieldInt32("dispLimitCount", imageLimitCount);
+    request.addFieldInt32("commandCardLimitCount", imageLimitCount);
+    request.addFieldInt32("iconLimitCount", imageLimitCount);
+    request.addFieldInt32("portraitLimitCount", imageLimitCount);
+    request.addFieldInt32("isFavorite", isFavorite.toInt()); // -1 if not TutorialFlag.Id.TUTORIAL_LABEL_FAVORITE2
+    request.addFieldInt32("isLock", isLock.toInt());
+    request.addFieldInt32("isChoice", isChoice.toInt());
+    request.addFieldInt32("svtCommonFlag", commonFlag);
+    request.addFieldInt32("battleVoice", battleVoice);
+    request.addFieldInt32("randomLimitCount", randomSettingOwn);
+    request.addFieldInt32("randomLimitCountSupport", randomSettingSupport);
+    request.addFieldInt32("limitCountSupport", limitCountSupport);
+    request.addFieldInt32("isPush", isPush.toInt());
+    return request.beginRequestAndCheckError('card_favorite');
+  }
+
+  @override
+  Future<FResponse> cardStatusSync({
+    required List<int64_t> changeUserSvtIds,
+    required List<int64_t> revokeUserSvtIds,
+    bool isStorage = false,
+    bool isLock = false,
+    bool isChoice = false,
+  }) {
+    final request = FRequestJP(network: network, path: '/card/statusSync');
+    if (changeUserSvtIds.isNotEmpty) {
+      request.addFieldStr("changeUserSvtIds", jsonEncode(changeUserSvtIds));
+    }
+    if (revokeUserSvtIds.isNotEmpty) {
+      request.addFieldStr("revokeUserSvtIds", jsonEncode(revokeUserSvtIds));
+    }
+    if (isStorage) {
+      request.addFieldInt32("isStorage", 1);
+    }
+    if (isLock) {
+      request.addFieldInt32("isLock", 1);
+    }
+    if (isChoice) {
+      request.addFieldInt32("isChoice", 1);
+    }
+    return request.beginRequestAndCheckError('card_statussync');
   }
 
   @override
@@ -329,6 +403,20 @@ class FakerAgentJP extends FakerAgent<FRequestJP, AutoLoginDataJP, NetworkManage
   }
 
   @override
+  Future<FResponse> storageTakein({required List<int64_t> userSvtIds}) {
+    final request = FRequestJP(network: network, path: '/storage/takein');
+    request.addFieldStr("userSvtIds", network.catMouseGame.encodeJsonMsgpackBase64(userSvtIds));
+    return request.beginRequestAndCheckError('storage_takein');
+  }
+
+  @override
+  Future<FResponse> storageTakeout({required List<int64_t> userSvtIds}) {
+    final request = FRequestJP(network: network, path: '/storage/takeout');
+    request.addFieldStr("userSvtIds", network.catMouseGame.encodeJsonMsgpackBase64(userSvtIds));
+    return request.beginRequestAndCheckError('storage_takeout');
+  }
+
+  @override
   Future<FResponse> servantEquipCombine({required int64_t baseUserSvtId, required List<int64_t> materialSvtIds}) {
     // success: { "addTotalExp": 0, "successResult": 1, "normalExp": 30000 }
     final request = FRequestJP(network: network, path: '/svtEquip/combine');
@@ -358,10 +446,26 @@ class FakerAgentJP extends FakerAgent<FRequestJP, AutoLoginDataJP, NetworkManage
   }
 
   @override
+  Future<FResponse> classBoardReleaseSquare({required int32_t classBoardBaseId, required int32_t squareId}) {
+    final request = FRequestJP(network: network, path: '/classBoard/releaseSquare');
+    request.addFieldInt32("classBoardBaseId", classBoardBaseId);
+    request.addFieldInt32("squareId", squareId);
+    return request.beginRequestAndCheckError('class_board_release_square');
+  }
+
+  @override
+  Future<FResponse> classBoardReleaseLock({required int32_t classBoardBaseId, required int32_t squareId}) {
+    final request = FRequestJP(network: network, path: '/classBoard/releaseLock');
+    request.addFieldInt32("classBoardBaseId", classBoardBaseId);
+    request.addFieldInt32("squareId", squareId);
+    return request.beginRequestAndCheckError('class_board_release_lock');
+  }
+
+  @override
   Future<FResponse> deckSetup({required int64_t activeDeckId, required UserDeckEntity userDeck}) {
     final request = FRequestJP(network: network, path: '/deck/setup');
     request.addFieldInt32("activeDeckId", activeDeckId);
-    request.addFieldStr("userDeck", network.catMouseGame.encodeMsgpackBase64([jsonDecode(jsonEncode(userDeck))]));
+    request.addFieldStr("userDeck", network.catMouseGame.encodeObjMsgpackBase64([userDeck]));
     return request.beginRequestAndCheckError('deck_setup');
   }
 
@@ -380,13 +484,19 @@ class FakerAgentJP extends FakerAgent<FRequestJP, AutoLoginDataJP, NetworkManage
     required int32_t questId,
     required int32_t phase,
     int32_t restartWave = 0,
+    List<GrandSvtInfo> grandSvtInfos = const [],
   }) {
     final request = FRequestJP(network: network, path: '/eventDeck/setup');
     request.addFieldInt32("restartWave", restartWave);
     request.addFieldInt32("eventId", eventId);
     request.addFieldInt32("questId", questId);
     request.addFieldInt32("phase", phase);
-    request.addFieldStr("deckInfo", jsonEncode(userEventDeck.deckInfo!));
+    final deckInfo = userEventDeck.deckInfo;
+    if (deckInfo == null) {
+      throw SilentException('event deckInfo must not be null');
+    }
+    request.addFieldStr("deckInfo", network.catMouseGame.encodeObjMsgpackBase64(deckInfo));
+    request.addFieldStr("grandSvtInfo", network.catMouseGame.encodeObjMsgpackBase64(grandSvtInfos));
     return request.beginRequestAndCheckError('event_deck_setup');
   }
 

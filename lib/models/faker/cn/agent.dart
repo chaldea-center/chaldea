@@ -396,6 +396,11 @@ class FakerAgentCN extends FakerAgent<FRequestCN, AutoLoginDataCN, NetworkManage
   }
 
   @override
+  Future<FResponse> gachaHistory({required int32_t gachaId}) {
+    return _acPhp(key: 'gachadrawhistory', nid: 'gacha_draw_history', params4: {"gachaId": gachaId});
+  }
+
+  @override
   Future<FResponse> boxGachaDraw({required int32_t gachaId, required int32_t num}) {
     return _acPhp(key: 'boxgachadraw', nid: 'box_gacha_draw', params4: {"boxGachaId": gachaId, "num": num});
   }
@@ -417,6 +422,66 @@ class FakerAgentCN extends FakerAgent<FRequestCN, AutoLoginDataCN, NetworkManage
         "sellData": jsonEncode(_useSvtHash(servantUserIds)),
         "sellCommandCode": jsonEncode(_useSvtHash(commandCodeUserIds)),
       },
+    );
+  }
+
+  @override
+  Future<FResponse> cardFavorite({
+    required int64_t targetUsrSVtId,
+    required int32_t imageLimitCount,
+    required int32_t dispLimitCount,
+    required int32_t commandCardLimitCount,
+    required int32_t iconLimitCount,
+    required int32_t portraitLimitCount,
+    required bool isFavorite,
+    required bool isLock,
+    required bool isChoice,
+    required int32_t commonFlag,
+    required int32_t battleVoice,
+    required int32_t randomSettingOwn,
+    required int32_t randomSettingSupport,
+    required int32_t limitCountSupport,
+    required bool isPush,
+  }) {
+    return _acPhp(
+      key: 'cardfavorite',
+      nid: 'card_favorite',
+      params2: {"userSvtId": targetUsrSVtId},
+      params4: {
+        "imageLimitCount": imageLimitCount,
+        "dispLimitCount": imageLimitCount,
+        "commandCardLimitCount": imageLimitCount,
+        "iconLimitCount": imageLimitCount,
+        "portraitLimitCount": imageLimitCount,
+        "isFavorite": isFavorite.toInt(), // -1 if not TutorialFlag.Id.TUTORIAL_LABEL_FAVORITE2
+        "isLock": isLock.toInt(),
+        "isChoice": isChoice.toInt(),
+        "svtCommonFlag": commonFlag,
+        "battleVoice": battleVoice,
+        "randomLimitCount": randomSettingOwn,
+        "randomLimitCountSupport": randomSettingSupport,
+        "limitCountSupport": limitCountSupport,
+        "isPush": isPush.toInt(),
+      },
+    );
+  }
+
+  @override
+  Future<FResponse> cardStatusSync({
+    required List<int64_t> changeUserSvtIds,
+    required List<int64_t> revokeUserSvtIds,
+    bool isStorage = false,
+    bool isLock = false,
+    bool isChoice = false,
+  }) {
+    return _acPhp(
+      key: 'cardstatussync',
+      nid: 'card_statussync',
+      params1: {
+        if (changeUserSvtIds.isNotEmpty) "changeUserSvtIds": jsonEncode(changeUserSvtIds),
+        if (revokeUserSvtIds.isNotEmpty) "revokeUserSvtIds": jsonEncode(revokeUserSvtIds),
+      },
+      params3: {if (isStorage) "isStorage": 1, if (isLock) "isLock": 1, if (isChoice) "isChoice": 1},
     );
   }
 
@@ -482,6 +547,16 @@ class FakerAgentCN extends FakerAgent<FRequestCN, AutoLoginDataCN, NetworkManage
   }
 
   @override
+  Future<FResponse> storageTakein({required List<int64_t> userSvtIds}) {
+    return _acPhp(key: 'storagetakein', nid: 'storage_takein', params1: {"userSvtIds": jsonEncode(userSvtIds)});
+  }
+
+  @override
+  Future<FResponse> storageTakeout({required List<int64_t> userSvtIds}) {
+    return _acPhp(key: 'storagetakeout', nid: 'storage_takeout', params1: {"userSvtIds": jsonEncode(userSvtIds)});
+  }
+
+  @override
   Future<FResponse> servantEquipCombine({required int64_t baseUserSvtId, required List<int64_t> materialSvtIds}) {
     return _acPhp(
       key: 'svtequipcombine',
@@ -504,6 +579,24 @@ class FakerAgentCN extends FakerAgent<FRequestCN, AutoLoginDataCN, NetworkManage
         if (onFlagNumbers.isNotEmpty) "onFlagNumbers": onFlagNumbers,
         if (offFlagNumbers.isNotEmpty) "offFlagNumbers": offFlagNumbers,
       },
+    );
+  }
+
+  @override
+  Future<FResponse> classBoardReleaseSquare({required int32_t classBoardBaseId, required int32_t squareId}) {
+    return _acPhp(
+      key: 'classboardreleasesquare',
+      nid: 'class_board_release_square',
+      params4: {"classBoardBaseId": classBoardBaseId, "squareId": squareId},
+    );
+  }
+
+  @override
+  Future<FResponse> classBoardReleaseLock({required int32_t classBoardBaseId, required int32_t squareId}) {
+    return _acPhp(
+      key: 'classboardreleaselock',
+      nid: 'class_board_release_lock',
+      params4: {"classBoardBaseId": classBoardBaseId, "squareId": squareId},
     );
   }
 
@@ -536,16 +629,18 @@ class FakerAgentCN extends FakerAgent<FRequestCN, AutoLoginDataCN, NetworkManage
     required int32_t questId,
     required int32_t phase,
     int32_t restartWave = 0,
+    List<GrandSvtInfo> grandSvtInfos = const [],
   }) {
     return _acPhp(
       key: 'eventdecksetup',
       nid: 'event_deck_setup',
       params1: {"deckInfo": jsonEncode(userEventDeck.deckInfo)},
       params3: {
+        "restartWave": restartWave,
         "eventId": eventId,
         "questId": questId,
         "phase": phase,
-        // "restartWave":restartWave,
+        "grandSvtInfo": jsonEncode(grandSvtInfos),
       },
     );
   }
