@@ -11,15 +11,25 @@ import '../../servant/filter.dart';
 
 class SelectUserSvtPage extends StatefulWidget {
   final FakerRuntime runtime;
-  final String? Function(UserServantEntity userSvt, MasterDataManager mstData)? getStatus;
+  final String? Function(UserServantEntity userSvt, MasterDataManager mstData, List<int>? inUseUserSvtIds)? getStatus;
+  final List<int>? inUseUserSvtIds;
   final ValueChanged<UserServantEntity>? onSelected;
 
-  const SelectUserSvtPage({super.key, required this.runtime, this.getStatus = defaultGetStatus, this.onSelected});
+  const SelectUserSvtPage({
+    super.key,
+    required this.runtime,
+    this.getStatus = defaultGetStatus,
+    this.inUseUserSvtIds,
+    this.onSelected,
+  });
 
-  static String? defaultGetStatus(UserServantEntity userSvt, MasterDataManager mstData) {
-    return 'Lv${userSvt.lv}/${userSvt.maxLv} B${mstData.userSvtCollection[userSvt.svtId]?.friendshipRank} \n'
-        ' ${userSvt.skillLv1}/${userSvt.skillLv2}/${userSvt.skillLv3} \n'
-        ' ${mstData.getSvtAppendSkillLv(userSvt).join("/")} ';
+  static String defaultGetStatus(UserServantEntity userSvt, MasterDataManager mstData, List<int>? inUseUserSvtIds) {
+    return [
+      if (inUseUserSvtIds != null && inUseUserSvtIds.contains(userSvt.id)) '⚠️ ',
+      'Lv${userSvt.lv}/${userSvt.maxLv} B${mstData.userSvtCollection[userSvt.svtId]?.friendshipRank} ',
+      ' ${userSvt.skillLv1}/${userSvt.skillLv2}/${userSvt.skillLv3} ',
+      ' ${mstData.getSvtAppendSkillLv(userSvt).join("/")} ',
+    ].join('\n');
   }
 
   @override
@@ -36,7 +46,7 @@ class _SelectUserSvtPageState extends State<SelectUserSvtPage> {
   bool filter(UserServantEntity userSvt) {
     final svt = db.gameData.servantsById[userSvt.svtId];
     if (svt == null || svt.collectionNo <= 0) return false;
-    if (!userSvt.locked) return false;
+    if (!userSvt.isLocked()) return false;
     if (!ServantFilterPage.filter(filterData, svt)) return false;
     final coinNum = mstData.userSvtCoin[userSvt.svtId]?.num ?? 0;
     final combineTypes = userSvtFilterData.availableCombines.options.where((combineType) {
@@ -119,7 +129,7 @@ class _SelectUserSvtPageState extends State<SelectUserSvtPage> {
         itemBuilder: (context, index) {
           final userSvt = userSvts[index];
           final svt = db.gameData.servantsById[userSvt.svtId];
-          final status = widget.getStatus?.call(userSvt, mstData);
+          final status = widget.getStatus?.call(userSvt, mstData, widget.inUseUserSvtIds);
           Widget child;
           if (svt == null) {
             child = Text(['${userSvt.svtId}', if (status != null) status].join('\n'));

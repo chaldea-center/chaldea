@@ -95,7 +95,7 @@ class _SvtCombinePageState extends State<SvtCombinePage> with FakerRuntimeStateM
             ),
             if (baseUserSvt != null) ...[
               Text(
-                '${baseUserSvt.locked ? "🔐 " : ""}Lv.${baseUserSvt.lv}/${baseUserSvt.maxLv}'
+                '${baseUserSvt.isLocked() ? "🔐 " : ""}Lv.${baseUserSvt.lv}/${baseUserSvt.maxLv}'
                 ' limit ${[baseUserSvt.limitCount, if (baseUserSvt.exceedCount > 0) baseUserSvt.exceedCount].join("+")}'
                 ' NP${baseUserSvt.treasureDeviceLv1} exp next ${expData?.next.formatSep()}',
               ),
@@ -123,7 +123,7 @@ class _SvtCombinePageState extends State<SvtCombinePage> with FakerRuntimeStateM
     Map<int, int> materialCounts = {};
     for (final userSvt in mstData.userSvt) {
       final svt = userSvt.dbEntity;
-      if (userSvt.locked || svt == null) continue;
+      if (userSvt.isLocked() || svt == null) continue;
       if (svt.type == SvtType.combineMaterial) {
         materialCounts.addNum(svt.id, 1);
       }
@@ -562,6 +562,64 @@ class _SvtCombinePageState extends State<SvtCombinePage> with FakerRuntimeStateM
               icon: Icon(Icons.done_all),
             ),
           ],
+        ),
+      ]);
+
+      // dispLimitCount
+      final validDispLimitCounts = <int>{
+        for (int limit = 0; limit <= baseUserSvt.limitCount; limit++) Servant.limitCountToDispLimitCount(limit),
+        ...?collection?.costumeIds.where((id) {
+          if (id <= 0) return false;
+          final collectionNo = svt.costume.values.firstWhereOrNull((e) => e.id == id)?.costumeCollectionNo;
+          return collectionNo != null && collectionNo > 0;
+        }),
+        baseUserSvt.dispLimitCount,
+      }.toList()..sort();
+      children.addAll([
+        DividerWithTitle(title: '${S.current.ascension_stage} (battle model)'),
+        ListTile(
+          dense: true,
+          leading: db.getIconImage(svt.ascendIcon(Servant.dispLimitCountToLimitCount(baseUserSvt.dispLimitCount))),
+          title: Text('${S.current.current_}: ${S.current.ascension_stage} ${baseUserSvt.dispLimitCount}'),
+          subtitle: Text(validDispLimitCounts.join(' / ')),
+        ),
+        DropdownButton<int>(
+          isExpanded: true,
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          value: baseUserSvt.dispLimitCount,
+          items: [
+            for (final dispLimitCount in validDispLimitCounts)
+              DropdownMenuItem(
+                value: dispLimitCount,
+                child: Text.rich(
+                  TextSpan(
+                    children: [
+                      CenterWidgetSpan(
+                        child: db.getIconImage(
+                          svt.ascendIcon(Servant.dispLimitCountToLimitCount(dispLimitCount)),
+                          width: 32,
+                        ),
+                      ),
+                      TextSpan(
+                        text: dispLimitCount < 10
+                            ? '${S.current.ascension_stage} $dispLimitCount'
+                            : svt.getLimitName(dispLimitCount),
+                      ),
+                    ],
+                  ),
+                  textScaler: const TextScaler.linear(0.8),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+          ],
+          onChanged: (dispLimit) async {
+            if (dispLimit == null) return;
+            print('chose dispLimit $dispLimit');
+            await runtime.runTask(() {
+              return runtime.agent.cardFavoriteWith(targetUsrSvtId: baseUserSvt.id, dispLimitCount: dispLimit);
+            });
+          },
         ),
       ]);
     }

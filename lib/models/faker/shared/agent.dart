@@ -93,7 +93,7 @@ abstract class FakerAgent<
 
   // card
   Future<FResponse> cardFavorite({
-    required int64_t targetUsrSVtId,
+    required int64_t targetUsrSvtId,
     required int32_t imageLimitCount,
     required int32_t dispLimitCount,
     required int32_t commandCardLimitCount,
@@ -109,6 +109,53 @@ abstract class FakerAgent<
     required int32_t limitCountSupport,
     required bool isPush,
   });
+
+  Future<FResponse> cardFavoriteWith({
+    required int64_t targetUsrSvtId,
+    int32_t? imageLimitCount,
+    int32_t? dispLimitCount,
+    int32_t? commandCardLimitCount,
+    int32_t? iconLimitCount,
+    int32_t? portraitLimitCount,
+    bool? isFavorite,
+    bool? isLock,
+    bool? isChoice,
+    int32_t? commonFlag,
+    int32_t? battleVoice,
+    int32_t? randomSettingOwn,
+    int32_t? randomSettingSupport,
+    int32_t? limitCountSupport,
+    bool? isPush,
+  }) {
+    final userSvt = network.mstData.userSvt[targetUsrSvtId] ?? network.mstData.userSvtStorage[targetUsrSvtId];
+    if (userSvt == null) {
+      throw SilentException('User svt $targetUsrSvtId not found');
+    }
+    final collection = network.mstData.userSvtCollection[userSvt.svtId];
+    if (collection == null) {
+      throw SilentException('Svt collection ${userSvt.svtId} not found');
+    }
+    final userGame = network.mstData.user!;
+
+    return cardFavorite(
+      targetUsrSvtId: targetUsrSvtId,
+      imageLimitCount: imageLimitCount ?? userSvt.imageLimitCount,
+      dispLimitCount: dispLimitCount ?? userSvt.dispLimitCount,
+      commandCardLimitCount: commandCardLimitCount ?? userSvt.commandCardLimitCount,
+      iconLimitCount: iconLimitCount ?? userSvt.iconLimitCount,
+      portraitLimitCount: portraitLimitCount ?? userSvt.portraitLimitCount,
+      isFavorite: isFavorite ?? targetUsrSvtId == userGame.favoriteUserSvtId,
+      isLock: isLock ?? userSvt.isLocked(),
+      isChoice: isChoice ?? userSvt.isChoice(),
+      commonFlag: commonFlag ?? collection.svtCommonFlag,
+      battleVoice: battleVoice ?? userSvt.battleVoice,
+      randomSettingOwn: randomSettingOwn ?? userSvt.randomLimitCount,
+      randomSettingSupport: randomSettingSupport ?? userSvt.randomLimitCountSupport,
+      limitCountSupport: limitCountSupport ?? userSvt.limitCountSupport,
+      isPush: isPush ?? targetUsrSvtId == userGame.pushUserSvtId,
+    );
+  }
+
   Future<FResponse> cardStatusSync({
     required List<int64_t> changeUserSvtIds,
     required List<int64_t> revokeUserSvtIds,
@@ -151,7 +198,8 @@ abstract class FakerAgent<
   Future<FResponse> userFormationSetup({required int32_t deckNo, required int64_t userEquipId});
 
   Future<FResponse> eventDeckSetup({
-    required UserEventDeckEntity userEventDeck,
+    required UserEventDeckEntity? userEventDeck, // original, but only userEventDeck.deckInfo used
+    required DeckServantEntity? deckInfo,
     required int32_t eventId,
     required int32_t questId,
     required int32_t phase,

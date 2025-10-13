@@ -427,7 +427,7 @@ class FakerAgentCN extends FakerAgent<FRequestCN, AutoLoginDataCN, NetworkManage
 
   @override
   Future<FResponse> cardFavorite({
-    required int64_t targetUsrSVtId,
+    required int64_t targetUsrSvtId,
     required int32_t imageLimitCount,
     required int32_t dispLimitCount,
     required int32_t commandCardLimitCount,
@@ -446,13 +446,13 @@ class FakerAgentCN extends FakerAgent<FRequestCN, AutoLoginDataCN, NetworkManage
     return _acPhp(
       key: 'cardfavorite',
       nid: 'card_favorite',
-      params2: {"userSvtId": targetUsrSVtId},
+      params2: {"userSvtId": targetUsrSvtId},
       params4: {
         "imageLimitCount": imageLimitCount,
-        "dispLimitCount": imageLimitCount,
-        "commandCardLimitCount": imageLimitCount,
-        "iconLimitCount": imageLimitCount,
-        "portraitLimitCount": imageLimitCount,
+        "dispLimitCount": dispLimitCount,
+        "commandCardLimitCount": commandCardLimitCount,
+        "iconLimitCount": iconLimitCount,
+        "portraitLimitCount": portraitLimitCount,
         "isFavorite": isFavorite.toInt(), // -1 if not TutorialFlag.Id.TUTORIAL_LABEL_FAVORITE2
         "isLock": isLock.toInt(),
         "isChoice": isChoice.toInt(),
@@ -624,17 +624,22 @@ class FakerAgentCN extends FakerAgent<FRequestCN, AutoLoginDataCN, NetworkManage
 
   @override
   Future<FResponse> eventDeckSetup({
-    required UserEventDeckEntity userEventDeck,
+    required UserEventDeckEntity? userEventDeck,
+    required DeckServantEntity? deckInfo,
     required int32_t eventId,
     required int32_t questId,
     required int32_t phase,
     int32_t restartWave = 0,
     List<GrandSvtInfo> grandSvtInfos = const [],
   }) {
+    final _deckInfo = userEventDeck?.deckInfo ?? deckInfo;
+    if (_deckInfo == null) {
+      throw SilentException('event deckInfo must not be null');
+    }
     return _acPhp(
       key: 'eventdecksetup',
       nid: 'event_deck_setup',
-      params1: {"deckInfo": jsonEncode(userEventDeck.deckInfo)},
+      params1: {"deckInfo": jsonEncode(_deckInfo)},
       params3: {
         "restartWave": restartWave,
         "eventId": eventId,

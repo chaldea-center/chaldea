@@ -278,7 +278,7 @@ class FakerAgentJP extends FakerAgent<FRequestJP, AutoLoginDataJP, NetworkManage
 
   @override
   Future<FResponse> cardFavorite({
-    required int64_t targetUsrSVtId,
+    required int64_t targetUsrSvtId,
     required int32_t imageLimitCount,
     required int32_t dispLimitCount,
     required int32_t commandCardLimitCount,
@@ -295,12 +295,12 @@ class FakerAgentJP extends FakerAgent<FRequestJP, AutoLoginDataJP, NetworkManage
     required bool isPush,
   }) {
     final request = FRequestJP(network: network, path: '/card/favorite');
-    request.addFieldInt64("userSvtId", targetUsrSVtId);
+    request.addFieldInt64("userSvtId", targetUsrSvtId);
     request.addFieldInt32("imageLimitCount", imageLimitCount);
-    request.addFieldInt32("dispLimitCount", imageLimitCount);
-    request.addFieldInt32("commandCardLimitCount", imageLimitCount);
-    request.addFieldInt32("iconLimitCount", imageLimitCount);
-    request.addFieldInt32("portraitLimitCount", imageLimitCount);
+    request.addFieldInt32("dispLimitCount", dispLimitCount);
+    request.addFieldInt32("commandCardLimitCount", commandCardLimitCount);
+    request.addFieldInt32("iconLimitCount", iconLimitCount);
+    request.addFieldInt32("portraitLimitCount", portraitLimitCount);
     request.addFieldInt32("isFavorite", isFavorite.toInt()); // -1 if not TutorialFlag.Id.TUTORIAL_LABEL_FAVORITE2
     request.addFieldInt32("isLock", isLock.toInt());
     request.addFieldInt32("isChoice", isChoice.toInt());
@@ -479,7 +479,8 @@ class FakerAgentJP extends FakerAgent<FRequestJP, AutoLoginDataJP, NetworkManage
 
   @override
   Future<FResponse> eventDeckSetup({
-    required UserEventDeckEntity userEventDeck,
+    required UserEventDeckEntity? userEventDeck,
+    required DeckServantEntity? deckInfo,
     required int32_t eventId,
     required int32_t questId,
     required int32_t phase,
@@ -491,11 +492,11 @@ class FakerAgentJP extends FakerAgent<FRequestJP, AutoLoginDataJP, NetworkManage
     request.addFieldInt32("eventId", eventId);
     request.addFieldInt32("questId", questId);
     request.addFieldInt32("phase", phase);
-    final deckInfo = userEventDeck.deckInfo;
-    if (deckInfo == null) {
+    final _deckInfo = userEventDeck?.deckInfo ?? deckInfo;
+    if (_deckInfo == null) {
       throw SilentException('event deckInfo must not be null');
     }
-    request.addFieldStr("deckInfo", network.catMouseGame.encodeObjMsgpackBase64(deckInfo));
+    request.addFieldStr("deckInfo", network.catMouseGame.encodeObjMsgpackBase64(_deckInfo));
     request.addFieldStr("grandSvtInfo", network.catMouseGame.encodeObjMsgpackBase64(grandSvtInfos));
     return request.beginRequestAndCheckError('event_deck_setup');
   }

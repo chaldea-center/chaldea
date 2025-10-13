@@ -624,7 +624,7 @@ class _SellCombineMaterialDialogState extends State<_SellCombineMaterialDialog> 
   Widget buildRarity(int rarity, int maxCount) {
     final cards = runtime.mstData.userSvt.where((userSvt) {
       final entity = userSvt.dbEntity;
-      if (entity == null || entity.type != SvtType.combineMaterial || userSvt.locked) return false;
+      if (entity == null || entity.type != SvtType.combineMaterial || userSvt.isLocked()) return false;
       if (entity.rarity != rarity) return false;
       return true;
     }).toList();

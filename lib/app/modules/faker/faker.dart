@@ -100,7 +100,15 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
   }
 
   int getEventIdByQuest(int? questId) {
-    return db.gameData.quests[questId]?.logicEvent?.id ?? 0;
+    if (questId == null) return 0;
+    final event = db.gameData.quests[questId]?.war?.eventReal;
+    if (event != null) return event.id;
+    for (final (eventId, questIds) in db.gameData.others.eventQuestGroups.items) {
+      if (questIds.contains(questId) && eventId != 0) {
+        return eventId;
+      }
+    }
+    return 0;
   }
 
   String _describeQuest(int questId, int phase, String? enemyCounts) {
@@ -396,6 +404,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
     }
     final now = DateTime.now().timestamp;
     List<Widget> children = [];
+
     for (final gacha in runtime.gameData.timerData.gachas) {
       if (gacha.freeDrawFlag == 0 || gacha.openedAt > now || gacha.closedAt <= now) continue;
       int resetHourUTC;
@@ -433,6 +442,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
         ),
       );
     }
+
     for (final shop in runtime.gameData.timerData.shops) {
       if (shop.openedAt > now || now >= shop.closedAt) continue;
       final userShop = mstData.userShop[shop.id];
@@ -470,6 +480,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
                   ),
                   TextSpan(text: ' ${shop.cost?.amount}'),
                   if (shop.limitNum > 1) TextSpan(text: '×${shop.limitNum}'),
+                  TextSpan(text: ',  ${shop.closedAt.sec2date().toCustomString(year: false, second: false)}'),
                 ],
               ),
             ),
@@ -481,6 +492,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
         );
       }
     }
+
     final userCoinRoom = mstData.userCoinRoom.firstOrNull;
     const int maxCoinRoomNum = 2;
     if (userCoinRoom != null && userCoinRoom.num < maxCoinRoomNum) {
@@ -498,25 +510,30 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
         ),
       );
     }
+
     final interludeCampaignIds = {
       for (final event in runtime.gameData.timerData.events)
         if (event.type == EventType.interludeCampaign && event.startedAt <= now && event.endedAt > now) event.id,
     };
     if (interludeCampaignIds.isNotEmpty) {
       for (final quest in db.gameData.quests.values) {
-        if (!quest.releaseOverwrites.any(interludeCampaignIds.contains)) continue;
+        if (quest.releaseOverwrites.every((e) => !interludeCampaignIds.contains(e.eventId))) continue;
         final userQuest = mstData.userQuest[quest.id];
         if (userQuest != null && userQuest.clearNum > 0) continue;
         final interludeSvt =
             db.gameData.servantsById[quest.releaseConditions
                 .firstWhereOrNull((release) => const [CondType.svtGet, CondType.svtFriendship].contains(release.type))
                 ?.targetId];
+        // 谜之女主角X: 遭難者Ｘの帰還
+        if (quest.id == 91601804 && const [94054830, 94041930].any((e) => (mstData.userQuest[e]?.clearNum ?? 0) > 0)) {
+          continue;
+        }
         children.add(
           ListTile(
             dense: true,
             leading: interludeSvt?.iconBuilder(context: context),
-            title: Text('[${S.current.interlude}] ${quest.lName.l}', maxLines: 1),
-            subtitle: Text('${quest.id}: phase ${userQuest?.questPhase} clear ${userQuest?.clearNum}'),
+            title: Text('[${S.current.interlude}] ${quest.lName.l}', maxLines: 1, overflow: TextOverflow.ellipsis),
+            subtitle: Text('${quest.id}: phase ${userQuest?.questPhase ?? "-"} clear ${userQuest?.clearNum ?? "-"}'),
             trailing: IconButton(
               onPressed: () {
                 copyToClipboard(quest.id.toString(), toast: true);
@@ -613,10 +630,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
                           mstData
                               .getItemOrSvtNum(
                                 itemId,
-                                eventIds: [
-                                  getEventIdByQuest(battleEntity?.eventId),
-                                  getEventIdByQuest(battleOption.questId),
-                                ],
+                                eventIds: [battleEntity?.eventId ?? 0, getEventIdByQuest(battleOption.questId)],
                               )
                               .format(),
                         ].join('\n'),
@@ -677,10 +691,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
                               : mstData
                                     .getItemOrSvtNum(
                                       itemId,
-                                      eventIds: [
-                                        getEventIdByQuest(battleEntity?.eventId),
-                                        getEventIdByQuest(battleOption.questId),
-                                      ],
+                                      eventIds: [battleEntity?.eventId ?? 0, getEventIdByQuest(battleOption.questId)],
                                     )
                                     .format(),
                         ].join('\n'),
@@ -803,7 +814,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
     } else {
       final quest = db.gameData.quests[battleOption.questId];
       if (quest != null && quest.flags.contains(QuestFlag.raid)) {
-        eventId = quest.logicEvent?.id;
+        eventId = quest.logicEventId;
       }
     }
 
@@ -1608,7 +1619,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
           value: battleOption.useEventDeck,
           tristate: true,
           title: Text("${S.current.support_servant_short} - Use Event Deck"),
-          subtitle: Text("Supposed: ${db.gameData.quests[battleOption.questId]?.logicEvent != null ? 'Yes' : 'No'}"),
+          subtitle: Text("Supposed: ${db.gameData.quests[battleOption.questId]?.logicEventId != null ? 'Yes' : 'No'}"),
           onChanged: (v) {
             runtime.lockTask(() {
               setState(() {
@@ -2205,7 +2216,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
                 UserDeckListPage(
                   runtime: runtime,
                   mstData: mstData,
-                  selectedDeckId: battleOption.deckId,
+                  activeDeckId: battleOption.deckId,
                   onSelected: (v) {
                     runtime.lockTask(() {
                       battleOption.deckId = v.id;
@@ -2222,7 +2233,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
       return [kIndentDivider, normalDeckTile, ..._buildUserDeck(formation?.deckInfo)];
     }
 
-    final eventId = quest?.logicEvent?.id ?? 0;
+    final eventId = quest?.logicEventId ?? 0;
     final eventDeckNo = questPhase?.extraDetail?.useEventDeckNo ?? 1;
     final eventFormation = mstData.userEventDeck[UserEventDeckEntity.createPK(eventId, eventDeckNo)];
     final eventDeckTile = ListTile(
@@ -2233,7 +2244,19 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
       onTap: mstData.userEventDeck.isEmpty
           ? null
           : () {
-              router.pushPage(UserDeckListPage(runtime: runtime, mstData: mstData, eventId: eventId));
+              router.pushPage(
+                UserDeckListPage(
+                  runtime: runtime,
+                  mstData: mstData,
+                  eventDeckParam: (
+                    eventId: eventId,
+                    deckNo: eventDeckNo,
+                    questId: battleOption.questId,
+                    questPhase: battleOption.questPhase,
+                  ),
+                  enableEdit: true,
+                ),
+              );
             },
     );
     final eventDeckKey = '$eventId-$eventDeckNo';

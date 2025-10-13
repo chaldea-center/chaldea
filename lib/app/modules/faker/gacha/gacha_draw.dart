@@ -352,7 +352,7 @@ class _GachaDrawPageState extends State<GachaDrawPage> with FakerRuntimeStateMix
         child = svt.iconBuilder(
           context: context,
           width: 36,
-          text: '${userSvt.locked ? "🔐" : ""} ${userSvt.limitCount}/4\n${userSvt.lv}/${userSvt.maxLv}',
+          text: '${userSvt.isLocked() ? "🔐" : ""} ${userSvt.limitCount}/4\n${userSvt.lv}/${userSvt.maxLv}',
         );
       }
     }
@@ -396,8 +396,8 @@ class _GachaDrawPageState extends State<GachaDrawPage> with FakerRuntimeStateMix
                         dense: true,
                         leading: ce?.iconBuilder(context: context),
                         title: Text('Lv.${userSvt.lv}, ${userSvt.limitCount}/4, ${userSvt.lv}/${userSvt.maxLv}'),
-                        subtitle: Text('No.${userSvt.id} ${userSvt.locked ? "locked" : "unlocked"}'),
-                        enabled: userSvt.locked && !gachaOption.ceEnhanceBaseUserSvtIds.contains(userSvt.id),
+                        subtitle: Text('No.${userSvt.id} ${userSvt.isLocked() ? "locked" : "unlocked"}'),
+                        enabled: userSvt.isLocked() && !gachaOption.ceEnhanceBaseUserSvtIds.contains(userSvt.id),
                         onTap: () {
                           runtime.lockTask(() {
                             gachaOption.ceEnhanceBaseUserSvtIds.add(userSvt.id);

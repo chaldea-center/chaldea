@@ -1,3 +1,5 @@
+import 'dart:math' show min;
+
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'package:chaldea/app/app.dart';
@@ -119,10 +121,14 @@ class _UserShopsPageState extends State<UserShopsPage> with SingleTickerProvider
     final userShop = mstData.userShop[shop.id];
     final bool soldOut = shop.limitNum != 0 && userShop != null && userShop.num >= shop.limitNum;
     final TextStyle? textStyle = soldOut ? TextStyle(color: Theme.of(context).disabledColor) : null;
+    Widget? leading = reward?.$1;
+    if (leading != null && soldOut) {
+      leading = Opacity(opacity: 0.5, child: leading);
+    }
     return ListTile(
       key: Key('shop-${shop.id}'),
       dense: true,
-      leading: reward?.$1,
+      leading: leading,
       title: Text(shop.name),
       subtitle: Text.rich(
         TextSpan(
@@ -145,7 +151,19 @@ class _UserShopsPageState extends State<UserShopsPage> with SingleTickerProvider
         crossAxisAlignment: WrapCrossAlignment.center,
         spacing: 4,
         children: [
-          Text([userShop?.num ?? 0, shop.limitNum == 0 ? '∞' : shop.limitNum].join('/')),
+          Text.rich(
+            TextSpan(
+              text: [userShop?.num ?? 0, shop.limitNum == 0 ? '∞' : shop.limitNum].join('/'),
+              children: [
+                if (shop.purchaseType == PurchaseType.item && shop.targetIds.length == 1)
+                  TextSpan(
+                    text: '\n${S.current.item_own} ${mstData.getItemOrSvtNum(shop.targetIds.single).format()}',
+                    style: soldOut ? null : Theme.of(context).textTheme.bodySmall,
+                  ),
+              ],
+            ),
+            textAlign: TextAlign.end,
+          ),
           OutlinedButton(
             onPressed: soldOut
                 ? null
@@ -202,6 +220,18 @@ class _UserShopsPageState extends State<UserShopsPage> with SingleTickerProvider
       EasyLoading.showError('Not enough item');
       return;
     }
+    if (shop.purchaseType == PurchaseType.item &&
+        shop.targetIds.isNotEmpty &&
+        shop.targetIds.first == Items.stormPodId) {
+      const int kStormPodMaxOwnCount = 9;
+      int maxStormPodBuyCount = kStormPodMaxOwnCount - mstData.getItemOrSvtNum(Items.stormPodId);
+      if (maxStormPodBuyCount <= 0) {
+        EasyLoading.showError('StormPod full');
+        return;
+      }
+      maxBuyCount = min(maxBuyCount, maxStormPodBuyCount);
+    }
+
     if (!mounted) return;
     final int? buyCount = await _BuyCountDialog(
       runtime: runtime,

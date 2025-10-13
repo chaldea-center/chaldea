@@ -526,6 +526,14 @@ class Servant extends BasicServant {
     return profile.costume[battleCharaId]?.id ?? battleCharaId;
   }
 
+  static int limitCountToDispLimitCount(int limitCount) {
+    return const <int, int>{0: 1, 1: 2, 2: 2, 3: 3, 4: 3}[limitCount] ?? limitCount;
+  }
+
+  static int dispLimitCountToLimitCount(int dispLimitCount) {
+    return const <int, int>{0: 0, 1: 2, 2: 2, 3: 3, 4: 4}[dispLimitCount] ?? dispLimitCount;
+  }
+
   // not limitCount=0-4
   String? ascendIcon(int ascOrCostumeIdOrCharaId, [bool bordered = true]) {
     if (id == kSuperAokoSvtId) {

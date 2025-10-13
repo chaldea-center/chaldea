@@ -9,13 +9,12 @@ import 'package:chaldea/models/db.dart';
 import 'package:chaldea/models/gamedata/toplogin.dart';
 import 'package:chaldea/models/models.dart' show GameCardMixin;
 import 'package:chaldea/packages/packages.dart';
-import 'package:chaldea/utils/atlas.dart';
-import 'package:chaldea/utils/constants.dart';
-import 'package:chaldea/utils/extension.dart';
+import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../../battle/formation/formation_card.dart';
 import '../_shared/svt_equip_select.dart';
 import '../_shared/svt_select.dart';
+import '../card_enhance/svt_combine.dart';
 import 'deck_list.dart';
 
 class _DragSvtData {
@@ -30,12 +29,18 @@ class _DragCEData {
   _DragCEData(this.svt);
 }
 
+typedef EventDeckRequestParam = ({int eventId, int questId, int questPhase, int deckNo});
+
 // TODO: check grand board battle
 // TODO: change svt dispLimitCount
 class UserDeckSetupPage extends StatefulWidget {
   final FakerRuntime runtime;
   final int activeDeckId;
-  const UserDeckSetupPage({super.key, required this.runtime, required this.activeDeckId});
+  final EventDeckRequestParam? eventDeckParam;
+
+  const UserDeckSetupPage({super.key, required this.runtime, required this.activeDeckId}) : eventDeckParam = null;
+  const UserDeckSetupPage.event({super.key, required this.runtime, required EventDeckRequestParam this.eventDeckParam})
+    : activeDeckId = 0;
 
   @override
   State<UserDeckSetupPage> createState() => _UserDeckSetupPageState();
@@ -45,7 +50,24 @@ class _UserDeckSetupPageState extends State<UserDeckSetupPage> with FakerRuntime
   @override
   late final FakerRuntime runtime = widget.runtime;
 
-  late UserDeckEntity userDeckEntity;
+  late DeckServantEntity deckInfo;
+  // in mstData
+  DeckServantEntity? _originalDeckInfo;
+  UserDeckEntity? _userDeckEntity;
+  UserEventDeckEntity? _userEventDeckEntity;
+
+  late final bool isEventDeck = widget.activeDeckId == 0 && (widget.eventDeckParam?.deckNo ?? 0) != 0;
+
+  void refreshDeckInfo() {
+    if (isEventDeck) {
+      final param = widget.eventDeckParam!;
+      _userEventDeckEntity = mstData.userEventDeck[UserEventDeckEntity.createPK(param.eventId, param.deckNo)];
+      _originalDeckInfo = _userEventDeckEntity?.deckInfo;
+    } else {
+      _userDeckEntity = mstData.userDeck[widget.activeDeckId];
+      _originalDeckInfo = _userDeckEntity?.deckInfo;
+    }
+  }
 
   @override
   void initState() {
@@ -54,20 +76,24 @@ class _UserDeckSetupPageState extends State<UserDeckSetupPage> with FakerRuntime
   }
 
   void initData() {
-    final entity = mstData.userDeck[widget.activeDeckId];
-    if (entity != null) {
-      userDeckEntity = makeCopy(entity);
+    refreshDeckInfo();
+    if (_originalDeckInfo != null) {
+      deckInfo = DeckServantEntity.fromJson(Map.from(jsonDecode(jsonEncode(_originalDeckInfo!))));
     } else {
-      userDeckEntity = UserDeckEntity(id: 0);
+      deckInfo = DeckServantEntity();
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final svts = userDeckEntity.deckInfo?.svts ?? [];
+    refreshDeckInfo();
     return Scaffold(
       appBar: AppBar(
-        title: Text('Deck ${userDeckEntity.deckNo} ${userDeckEntity.name}'),
+        title: Text(
+          isEventDeck
+              ? 'Event Deck ${widget.eventDeckParam?.eventId}-${widget.eventDeckParam?.deckNo}'
+              : 'Deck ${_userDeckEntity?.deckNo ?? widget.activeDeckId} ${_userDeckEntity?.name ?? ""}',
+        ),
         actions: [runtime.buildMenuButton(context)],
       ),
       body: Column(
@@ -79,10 +105,7 @@ class _UserDeckSetupPageState extends State<UserDeckSetupPage> with FakerRuntime
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   child: FormationCard(
-                    formation: BattleTeamFormationX.fromUserDeck(
-                      deckInfo: mstData.userDeck[widget.activeDeckId]?.deckInfo,
-                      mstData: mstData,
-                    ),
+                    formation: BattleTeamFormationX.fromUserDeck(deckInfo: _originalDeckInfo, mstData: mstData),
                     userSvtCollections: mstData.userSvtCollection.lookup,
                     showBond: true,
                   ),
@@ -91,7 +114,7 @@ class _UserDeckSetupPageState extends State<UserDeckSetupPage> with FakerRuntime
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   child: FormationCard(
-                    formation: BattleTeamFormationX.fromUserDeck(deckInfo: userDeckEntity.deckInfo, mstData: mstData),
+                    formation: BattleTeamFormationX.fromUserDeck(deckInfo: deckInfo, mstData: mstData),
                     userSvtCollections: mstData.userSvtCollection.lookup,
                     showBond: true,
                   ),
@@ -103,7 +126,7 @@ class _UserDeckSetupPageState extends State<UserDeckSetupPage> with FakerRuntime
                     spacing: 4,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      for (final svt in svts) Flexible(flex: 10, child: buildSvt(svt)),
+                      for (final svt in deckInfo.svts) Flexible(flex: 10, child: buildSvt(svt)),
                       Flexible(flex: 8, child: buildMasterEquip()),
                     ],
                   ),
@@ -120,29 +143,28 @@ class _UserDeckSetupPageState extends State<UserDeckSetupPage> with FakerRuntime
                       },
                       child: Text(S.current.reset),
                     ),
-                    TextButton(
-                      onPressed: () {
-                        router.pushPage(
-                          UserDeckListPage(
-                            runtime: runtime,
-                            mstData: mstData,
-                            onSelected: (selectedDeck) {
-                              if (selectedDeck.id == userDeckEntity.id) {
-                                EasyLoading.showToast('Do not select same deck');
-                                return;
-                              }
-                              final deckCopy = makeCopy(selectedDeck);
-                              userDeckEntity
-                                ..deckInfo = deckCopy.deckInfo
-                                ..cost = deckCopy.cost;
-                              if (mounted) setState(() {});
-                            },
-                            enableEdit: false,
-                          ),
-                        );
-                      },
-                      child: Text('Copy from'),
-                    ),
+                    if (!isEventDeck && _userDeckEntity != null)
+                      TextButton(
+                        onPressed: () {
+                          router.pushPage(
+                            UserDeckListPage(
+                              runtime: runtime,
+                              mstData: mstData,
+                              onSelected: (selectedDeck) {
+                                if (selectedDeck.id == _userDeckEntity?.id) {
+                                  EasyLoading.showToast('Do not select same deck');
+                                  return;
+                                }
+                                final _deckInfo = makeUserDeckCopy(selectedDeck).deckInfo;
+                                if (_deckInfo != null) deckInfo = _deckInfo;
+                                if (mounted) setState(() {});
+                              },
+                              enableEdit: false,
+                            ),
+                          );
+                        },
+                        child: Text('Copy from'),
+                      ),
                   ],
                 ),
               ],
@@ -154,17 +176,31 @@ class _UserDeckSetupPageState extends State<UserDeckSetupPage> with FakerRuntime
               alignment: MainAxisAlignment.center,
               children: [
                 runtime.buildCircularProgress(context: context, padding: EdgeInsets.symmetric(horizontal: 8)),
-                FilledButton.tonal(
-                  onPressed: () {
-                    SimpleConfirmDialog(
-                      title: Text('Setup deck ${userDeckEntity.deckNo}'),
-                      onTapOk: () {
-                        runtime.runTask(doDeckSetup);
-                      },
-                    ).showDialog(context);
-                  },
-                  child: Text('Setup'),
-                ),
+                isEventDeck
+                    ? FilledButton.tonal(
+                        onPressed: () {
+                          SimpleConfirmDialog(
+                            title: Text(
+                              'Setup event deck ${widget.eventDeckParam?.eventId}-${widget.eventDeckParam?.deckNo}',
+                            ),
+                            onTapOk: () {
+                              runtime.runTask(doUserEventDeckSetup);
+                            },
+                          ).showDialog(context);
+                        },
+                        child: Text('Setup'),
+                      )
+                    : FilledButton.tonal(
+                        onPressed: () {
+                          SimpleConfirmDialog(
+                            title: Text('Setup deck ${_userDeckEntity?.deckNo ?? widget.activeDeckId}'),
+                            onTapOk: () {
+                              runtime.runTask(doUserDeckSetup);
+                            },
+                          ).showDialog(context);
+                        },
+                        child: Text('Setup'),
+                      ),
               ],
             ),
           ),
@@ -198,10 +234,10 @@ class _UserDeckSetupPageState extends State<UserDeckSetupPage> with FakerRuntime
               router.pushBuilder(
                 builder: (context) => SelectUserSvtPage(
                   runtime: runtime,
+                  inUseUserSvtIds: deckInfo.svts.map((e) => e.userSvtId).toList(),
                   onSelected: (selectedUserSvt) {
                     deckSvt.userSvtId = selectedUserSvt.id;
-                    final svts = userDeckEntity.deckInfo?.svts ?? [];
-                    for (final _deckSvt in svts) {
+                    for (final _deckSvt in deckInfo.svts) {
                       if (_deckSvt != deckSvt && _deckSvt.userSvtId == deckSvt.userSvtId) {
                         _deckSvt.userSvtId = 0;
                         _deckSvt.userSvtEquipIds = [0];
@@ -216,23 +252,39 @@ class _UserDeckSetupPageState extends State<UserDeckSetupPage> with FakerRuntime
     if (!deckSvt.isFollowerSvt && userSvt != null) {
       baseSvtWidget = GestureDetector(
         onLongPress: () {
-          SimpleConfirmDialog(
-            title: Text('Clear Svt'),
-            content: Text.rich(
-              TextSpan(
-                text: 'pos ${deckSvt.id} ',
-                children: [
-                  if (svt != null) CenterWidgetSpan(child: svt.iconBuilder(context: context, width: 24)),
-                  TextSpan(text: svt?.lName.l ?? 'No.${userSvt.svtId}. '),
-                  TextSpan(text: 'Lv.${userSvt.lv}'),
-                ],
+          SimpleDialog(
+            title: Text(svt?.lName.l ?? 'svt ${userSvt.svtId}'),
+            children: [
+              SimpleDialogOption(
+                child: Text.rich(
+                  TextSpan(
+                    children: [
+                      if (svt != null) CenterWidgetSpan(child: svt.iconBuilder(context: context, width: 24)),
+                      TextSpan(text: ' pos ${deckSvt.id}  Lv.${userSvt.lv}'),
+                    ],
+                  ),
+                ),
               ),
-            ),
-            onTapOk: () {
-              deckSvt.userSvtId = 0;
-              deckSvt.userSvtEquipIds.fillRange(0, deckSvt.userSvtEquipIds.length, 0);
-              if (mounted) setState(() {});
-            },
+              kDefaultDivider,
+              ListTile(
+                contentPadding: const EdgeInsets.symmetric(horizontal: 24),
+                title: Text('从者强化'),
+                trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
+                onTap: () {
+                  runtime.agent.user.svtCombine.baseUserSvtId = userSvt.id;
+                  router.pushPage(SvtCombinePage(runtime: runtime));
+                },
+              ),
+              ListTile(
+                contentPadding: const EdgeInsets.symmetric(horizontal: 24),
+                title: Text('Clear Servant'),
+                onTap: () {
+                  deckSvt.userSvtId = 0;
+                  deckSvt.userSvtEquipIds.fillRange(0, deckSvt.userSvtEquipIds.length, 0);
+                  if (mounted) setState(() {});
+                },
+              ),
+            ],
           ).showDialog(context);
         },
         child: baseSvtWidget,
@@ -269,11 +321,11 @@ class _UserDeckSetupPageState extends State<UserDeckSetupPage> with FakerRuntime
               router.pushBuilder(
                 builder: (context) => SelectUserSvtEquipPage(
                   runtime: runtime,
+                  inUseUserSvtIds: deckInfo.svts.expand((e) => e.userSvtEquipIds).toList(),
                   onSelected: (selectedSvtEquip) {
                     if (deckSvt.userSvtEquipIds.isEmpty) deckSvt.userSvtEquipIds = [0];
                     deckSvt.userSvtEquipIds[0] = selectedSvtEquip.id;
-                    final svts = userDeckEntity.deckInfo?.svts ?? [];
-                    for (final _deckSvt in svts) {
+                    for (final _deckSvt in deckInfo.svts) {
                       if (_deckSvt != deckSvt && _deckSvt.userSvtEquipIds.firstOrNull == selectedSvtEquip.id) {
                         _deckSvt.userSvtEquipIds[0] = 0;
                       }
@@ -287,6 +339,7 @@ class _UserDeckSetupPageState extends State<UserDeckSetupPage> with FakerRuntime
     if (!deckSvt.isFollowerSvt && userSvtEquip != null) {
       baseSvtEquipWidget = GestureDetector(
         onLongPress: () {
+          if (deckSvt.userSvtEquipIds.firstOrNull == 0) return;
           SimpleConfirmDialog(
             title: Text('Clear CE'),
             content: Text.rich(
@@ -325,13 +378,14 @@ class _UserDeckSetupPageState extends State<UserDeckSetupPage> with FakerRuntime
   }
 
   void onDrag(DeckServantData from, DeckServantData to, bool isCE) {
-    final allSvts = userDeckEntity.deckInfo!.svts;
+    final allSvts = deckInfo.svts;
 
     final fromIndex = allSvts.indexOf(from), toIndex = allSvts.indexOf(to);
 
     if (fromIndex < 0 || toIndex < 0 || fromIndex == toIndex) return;
     if (isCE) {
       if (from.isFollowerSvt || to.isFollowerSvt) return;
+      if (from.userSvtId == 0 || to.userSvtId == 0) return;
       if (from.userSvtEquipIds.isEmpty) from.userSvtEquipIds.add(0);
       if (to.userSvtEquipIds.isEmpty) to.userSvtEquipIds.add(0);
       int fromId = from.userSvtEquipIds[0];
@@ -348,7 +402,7 @@ class _UserDeckSetupPageState extends State<UserDeckSetupPage> with FakerRuntime
   }
 
   Widget buildMasterEquip() {
-    final userEquip = mstData.userEquip[userDeckEntity.deckInfo?.userEquipId];
+    final userEquip = mstData.userEquip[deckInfo.userEquipId];
     final equip = db.gameData.mysticCodes[userEquip?.equipId];
     final cost = getTotalCost(), maxCost = mstData.user?.costMax ?? 0;
     return Column(
@@ -368,30 +422,30 @@ class _UserDeckSetupPageState extends State<UserDeckSetupPage> with FakerRuntime
     );
   }
 
-  UserDeckEntity makeCopy(UserDeckEntity entity) {
+  UserDeckEntity makeUserDeckCopy(UserDeckEntity entity) {
     final entity2 = UserDeckEntity.fromJson(Map.from(jsonDecode(jsonEncode(entity))));
     entity2.userId = 0;
     return entity2;
   }
 
-  Future<void> doDeckSetup() async {
-    final userDeckEntity = this.userDeckEntity;
-    if (widget.activeDeckId == 0 || userDeckEntity.id == 0) {
+  Future<void> doUserDeckSetup() async {
+    refreshDeckInfo();
+    final userDeckEntity = _userDeckEntity == null ? null : makeUserDeckCopy(_userDeckEntity!);
+    if (widget.activeDeckId == 0 || userDeckEntity == null || userDeckEntity.id == 0 || deckInfo.svts.isEmpty) {
       throw SilentException('No user deck');
     }
-    if (userDeckEntity.deckInfo!.waveSvts.isNotEmpty) {
+    if (deckInfo.waveSvts.isNotEmpty) {
       throw SilentException('waveSvts not supported');
     }
-    final svts = userDeckEntity.deckInfo!.svts;
-    for (final (index, svt) in svts.sublist(0, 3).indexed) {
+    for (final (index, svt) in deckInfo.svts.sublist(0, 3).indexed) {
       if (!svt.isFollowerSvt && svt.userSvtId == 0) {
         throw SilentException('Frontline svt must exist: pos ${index + 1}');
       }
     }
-    if (svts.where((e) => e.isFollowerSvt).length != 1) {
+    if (deckInfo.svts.where((e) => e.isFollowerSvt).length != 1) {
       throw SilentException('Should be only 1 support svt');
     }
-    for (final (index, svt) in svts.indexed) {
+    for (final (index, svt) in deckInfo.svts.indexed) {
       if (svt.id != index + 1) {
         throw SilentException('pos=${index + 1} id=${svt.id} not equal');
       }
@@ -399,15 +453,49 @@ class _UserDeckSetupPageState extends State<UserDeckSetupPage> with FakerRuntime
     if (getTotalCost() > (mstData.user?.costMax ?? 0)) {
       throw SilentException('COST ${getTotalCost()}>${mstData.user?.costMax}');
     }
-    await runtime.agent.deckSetup(activeDeckId: widget.activeDeckId, userDeck: userDeckEntity);
+    final newUserDeck = userDeckEntity..deckInfo = deckInfo;
+    await runtime.agent.deckSetup(activeDeckId: widget.activeDeckId, userDeck: newUserDeck);
+    initData();
+    if (mounted) setState(() {});
+  }
+
+  Future<void> doUserEventDeckSetup() async {
+    refreshDeckInfo();
+    final param = widget.eventDeckParam;
+    if (param == null || param.deckNo == 0) {
+      throw SilentException('Invalid event deck id');
+    }
+    if (_userEventDeckEntity == null) {
+      throw SilentException('No event deck found, init event inside game first');
+    }
+    if (deckInfo.svts.isEmpty) {
+      throw SilentException('Empty deck svts');
+    }
+    if (deckInfo.waveSvts.isNotEmpty) {
+      throw SilentException('waveSvts not supported');
+    }
+    for (final (index, svt) in deckInfo.svts.indexed) {
+      if (svt.id != index + 1) {
+        throw SilentException('pos=${index + 1} id=${svt.id} not equal');
+      }
+    }
+    if (getTotalCost() > (mstData.user?.costMax ?? 0)) {
+      throw SilentException('COST ${getTotalCost()}>${mstData.user?.costMax}');
+    }
+    await runtime.agent.eventDeckSetup(
+      userEventDeck: null,
+      deckInfo: deckInfo,
+      eventId: param.eventId,
+      questId: param.questId,
+      phase: param.questPhase,
+    );
     initData();
     if (mounted) setState(() {});
   }
 
   int getTotalCost() {
-    final svts = userDeckEntity.deckInfo?.svts ?? const [];
     int cost = 0;
-    for (final deckSvt in svts) {
+    for (final deckSvt in deckInfo.svts) {
       if (deckSvt.isFollowerSvt) continue;
       final userSvt = mstData.userSvt[deckSvt.userSvtId];
       final svt = db.gameData.servantsById[userSvt?.svtId];

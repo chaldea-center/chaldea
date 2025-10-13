@@ -505,7 +505,7 @@ class FakerRuntime {
       final targetCEs = mstData.userSvt.where((userSvt) {
         final ce = db.gameData.craftEssencesById[userSvt.svtId];
         if (ce == null) return false;
-        if (!userSvt.locked) return false;
+        if (!userSvt.isLocked()) return false;
         final maxLv = userSvt.maxLv;
         if (maxLv == null || userSvt.lv >= maxLv - 1) return false;
         if (gachaOption.ceEnhanceBaseUserSvtIds.contains(userSvt.id)) return true;
@@ -521,7 +521,7 @@ class FakerRuntime {
       final targetCE = targetCEs.first;
       List<UserServantEntity> combineMaterialCEs = mstData.userSvt.where((userSvt) {
         final ce = db.gameData.craftEssencesById[userSvt.svtId];
-        if (ce == null || userSvt.locked || userSvt.lv != 1) return false;
+        if (ce == null || userSvt.isLocked() || userSvt.lv != 1) return false;
         final bool isExp = ce.flags.contains(SvtFlag.svtEquipExp);
         if (ce.rarity > 4) {
           return false;
@@ -608,7 +608,7 @@ class FakerRuntime {
       List<UserServantEntity> candidateMaterialSvts = mstData.userSvt.where((userSvt) {
         final svt = userSvt.dbEntity;
         if (svt == null || svt.type != SvtType.combineMaterial) return false;
-        if (userSvt.locked || userSvt.lv != 1) return false;
+        if (userSvt.isLocked() || userSvt.lv != 1) return false;
         if (!options.svtMaterialRarities.contains(svt.rarity)) return false;
         return true;
       }).toList();

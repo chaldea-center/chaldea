@@ -730,6 +730,13 @@ class UserServantEntity extends DataEntityBase<int> {
   int dispLimitCount;
   int imageLimitCount;
   int commandCardLimitCount;
+  int iconLimitCount;
+  int portraitLimitCount;
+  int battleVoice;
+  int randomLimitCount;
+  int randomLimitCountSupport;
+  int limitCountSupport;
+
   int lv;
   int exp;
   int adjustHp; // adjustHp*10=FUFU
@@ -756,16 +763,24 @@ class UserServantEntity extends DataEntityBase<int> {
   @JsonKey(includeFromJson: false, includeToJson: false)
   List<int>? appendLvs;
 
-  bool get locked {
+  bool checkStatusFlag(UserSvtStatusFlag flag) {
+    return status != null && status! & flag.value != 0;
+  }
+
+  bool isLocked() {
     if (isLock != null) {
       return isLock == 1;
     } else {
-      return status != null && status! & 1 != 0;
+      return checkStatusFlag(UserSvtStatusFlag.lock);
     }
   }
 
-  bool get isWithdraw {
-    return status != null && status! & 4 != 0;
+  bool isWithdraw() {
+    return checkStatusFlag(UserSvtStatusFlag.withdrawal);
+  }
+
+  bool isChoice() {
+    return checkStatusFlag(UserSvtStatusFlag.choice);
   }
 
   @override
@@ -781,6 +796,12 @@ class UserServantEntity extends DataEntityBase<int> {
     dynamic dispLimitCount,
     dynamic imageLimitCount,
     dynamic commandCardLimitCount,
+    dynamic iconLimitCount,
+    dynamic portraitLimitCount,
+    dynamic battleVoice,
+    dynamic randomLimitCount,
+    dynamic randomLimitCountSupport,
+    dynamic limitCountSupport,
     dynamic lv,
     dynamic exp,
     dynamic adjustHp,
@@ -802,6 +823,12 @@ class UserServantEntity extends DataEntityBase<int> {
        dispLimitCount = _toInt(dispLimitCount),
        imageLimitCount = _toInt(imageLimitCount),
        commandCardLimitCount = _toInt(commandCardLimitCount),
+       iconLimitCount = _toInt(iconLimitCount),
+       portraitLimitCount = _toInt(portraitLimitCount),
+       battleVoice = _toInt(battleVoice),
+       randomLimitCount = _toInt(randomLimitCount),
+       randomLimitCountSupport = _toInt(randomLimitCountSupport),
+       limitCountSupport = _toInt(limitCountSupport),
        lv = _toInt(lv),
        exp = _toInt(exp),
        adjustHp = _toInt(adjustHp),
@@ -3281,4 +3308,20 @@ enum UserStatusFlagKind {
     ...kGachaSellStatusUps,
     ...kGachaSellSvtEquips,
   ];
+}
+
+enum UserSvtStatusFlag {
+  lock(1),
+  eventJoin(2),
+  withdrawal(4),
+  aprilFoolCancel(8),
+  choice(16),
+  noPeriod(32),
+  condJoin(64),
+  statusMax(128),
+  useLevelExceedItemHeroine(256),
+  useFriendshipExceedItemHeroine(512);
+
+  const UserSvtStatusFlag(this.value);
+  final int value;
 }

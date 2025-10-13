@@ -11,14 +11,24 @@ import 'package:chaldea/widgets/widgets.dart';
 
 class SelectUserSvtEquipPage extends StatefulWidget {
   final FakerRuntime runtime;
-  final String? Function(UserServantEntity userSvt, MasterDataManager mstData)? getStatus;
+  final String? Function(UserServantEntity userSvt, MasterDataManager mstData, List<int>? inUseUserSvtIds)? getStatus;
+  final List<int>? inUseUserSvtIds;
   final ValueChanged<UserServantEntity>? onSelected;
 
-  const SelectUserSvtEquipPage({super.key, required this.runtime, this.getStatus = defaultGetStatus, this.onSelected});
+  const SelectUserSvtEquipPage({
+    super.key,
+    required this.runtime,
+    this.getStatus = defaultGetStatus,
+    this.inUseUserSvtIds,
+    this.onSelected,
+  });
 
-  static String? defaultGetStatus(UserServantEntity userSvt, MasterDataManager mstData) {
-    return 'Lv${userSvt.lv}/${userSvt.maxLv} \n'
-        ' ${userSvt.limitCount}/4 ${userSvt.limitCount == 4 ? kStarChar2 : ""} ';
+  static String defaultGetStatus(UserServantEntity userSvt, MasterDataManager mstData, List<int>? inUseUserSvtIds) {
+    return [
+      if (inUseUserSvtIds != null && inUseUserSvtIds.contains(userSvt.id)) '⚠️ ',
+      'Lv${userSvt.lv}/${userSvt.maxLv} ',
+      ' ${userSvt.limitCount}/4 ${userSvt.limitCount == 4 ? kStarChar2 : ""} ',
+    ].join('\n');
   }
 
   @override
@@ -35,7 +45,7 @@ class _SelectUserSvtEquipPageState extends State<SelectUserSvtEquipPage> {
   bool filter(UserServantEntity userSvt) {
     final equip = db.gameData.craftEssencesById[userSvt.svtId];
     if (equip == null || equip.collectionNo <= 0) return false;
-    if (!userSvtFilterData.locked.matchOne(userSvt.locked)) return false;
+    if (!userSvtFilterData.locked.matchOne(userSvt.isLocked())) return false;
     if (!userSvtFilterData.maxLimitBreak.matchOne(userSvt.limitCount == 4)) return false;
     if (!CraftFilterPage.filter(filterData, equip)) return false;
     return true;
@@ -108,7 +118,7 @@ class _SelectUserSvtEquipPageState extends State<SelectUserSvtEquipPage> {
         itemBuilder: (context, index) {
           final userSvt = userSvts[index];
           final ce = db.gameData.craftEssencesById[userSvt.svtId];
-          final status = widget.getStatus?.call(userSvt, mstData);
+          final status = widget.getStatus?.call(userSvt, mstData, widget.inUseUserSvtIds);
           Widget child;
           if (ce == null) {
             child = Text(['${userSvt.svtId}', if (status != null) status].join('\n'));

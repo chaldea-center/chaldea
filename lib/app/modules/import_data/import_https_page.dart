@@ -361,7 +361,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
           ]),
           if (db.gameData.servantsById[svt.svtId]!.profile.costume.isNotEmpty)
             _wrapCellStyle(['${S.current.costume} ${cardCollections[svt.svtId]!.costumeIdsTo01()}']),
-          if (group.length > 1 || svt.isWithdraw)
+          if (group.length > 1 || svt.isWithdraw())
             CustomTableRow.fromChildren(
               defaults: TableCellData(padding: EdgeInsets.zero),
               divider: null,
@@ -369,7 +369,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
                 Text(
                   [
                     '[${group.indexOf(svt) + 1}] ${DateFormat('yyyy-MM-dd').format(svt.createdAt.sec2date())}',
-                    if (svt.isWithdraw) S.current.event_svt_withdraw,
+                    if (svt.isWithdraw()) S.current.event_svt_withdraw,
                   ].join(' '),
                   style: TextStyle(color: Theme.of(context).colorScheme.error),
                 ),
@@ -395,8 +395,8 @@ class ImportHttpPageState extends State<ImportHttpPage> {
                 padding: const EdgeInsets.only(left: 6, top: 2),
                 child: db.gameData.servantsById[svt.svtId]?.iconBuilder(context: context, height: 56),
               ),
-              if (svt.locked) const Icon(Icons.lock, size: 13, color: Colors.white),
-              if (svt.locked) Icon(Icons.lock, size: 12, color: Colors.yellow[900]),
+              if (svt.isLocked()) const Icon(Icons.lock, size: 13, color: Colors.white),
+              if (svt.isLocked()) Icon(Icons.lock, size: 12, color: Colors.yellow[900]),
             ],
           ),
           title: DefaultTextStyle(
@@ -788,8 +788,8 @@ class ImportHttpPageState extends State<ImportHttpPage> {
     _validSvts.clear();
     for (final group in servants) {
       for (final svt in group) {
-        if (svt.isWithdraw) continue;
-        if (_onlyLocked && !svt.locked) continue;
+        if (svt.isWithdraw()) continue;
+        if (_onlyLocked && !svt.isLocked()) continue;
         if (!_allowDuplicated && group.indexOf(svt) > 0) continue;
         _validSvts.add(svt);
       }

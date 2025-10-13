@@ -153,7 +153,7 @@ extension FakerRuntimeGacha on FakerRuntime {
     sellUserSvts.addAll(
       mstData.userSvt.where((userSvt) {
         final entity = db.gameData.entities[userSvt.svtId];
-        if (userSvt.locked ||
+        if (userSvt.isLocked() ||
             userSvt.lv != 1 ||
             entity == null ||
             userSvt.createdAt < timeLimit ||

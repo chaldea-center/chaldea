@@ -15,8 +15,8 @@ import 'deck_setup.dart';
 class UserDeckListPage extends StatefulWidget {
   final FakerRuntime? runtime;
   final MasterDataManager mstData;
-  final int? selectedDeckId;
-  final int? eventId;
+  final int? activeDeckId;
+  final EventDeckRequestParam? eventDeckParam;
   final ValueChanged<UserDeckEntity>? onSelected;
   final ValueChanged<UserEventDeckEntity>? onEventDeckSelected;
   final bool enableEdit;
@@ -25,8 +25,8 @@ class UserDeckListPage extends StatefulWidget {
     super.key,
     this.runtime,
     required this.mstData,
-    this.selectedDeckId,
-    this.eventId,
+    this.activeDeckId,
+    this.eventDeckParam,
     this.onSelected,
     this.onEventDeckSelected,
     this.enableEdit = false,
@@ -40,20 +40,34 @@ class UserDeckListPageState extends State<UserDeckListPage> {
   late final mstData = widget.mstData;
   final scrollController = ScrollController();
 
+  List<UserEventDeckEntity> getEventDecks() {
+    final eventDecks = mstData.userEventDeck.toList();
+    eventDecks.sortByList((e) => [widget.eventDeckParam?.eventId == e.eventId ? 0 : 1, -e.eventId, e.deckNo]);
+    return eventDecks;
+  }
+
   @override
   void initState() {
     super.initState();
-    if (widget.selectedDeckId != null && widget.eventId == null) {
-      final index = mstData.userDeck.toList().indexWhere((e) => e.id == widget.selectedDeckId);
-      if (index > 0) {
-        SchedulerBinding.instance.addPostFrameCallback((_) async {
-          if (!scrollController.hasClients) return;
-          double pos = scrollController.position.extentAfter * (index + 1) / mstData.userDeck.length - 16;
-          if (pos > 0) {
-            await scrollController.animateTo(pos, duration: kTabScrollDuration, curve: Curves.easeInOutSine);
-          }
-        });
-      }
+    double jumpRatio = -1;
+    if (widget.activeDeckId != null && widget.eventDeckParam == null) {
+      final index = mstData.userDeck.toList().indexWhere((e) => e.id == widget.activeDeckId);
+      jumpRatio = (index + 1) / mstData.userDeck.length;
+    } else if (widget.eventDeckParam != null) {
+      final eventDecks = getEventDecks();
+      final index = eventDecks.indexWhere(
+        (e) => e.eventId == widget.eventDeckParam!.eventId && e.deckNo == widget.eventDeckParam!.deckNo,
+      );
+      jumpRatio = (index + 1) / eventDecks.length;
+    }
+    if (jumpRatio > 0 && jumpRatio.isFinite) {
+      SchedulerBinding.instance.addPostFrameCallback((_) async {
+        if (!scrollController.hasClients) return;
+        double pos = scrollController.position.extentAfter * jumpRatio - 16;
+        if (pos > 0) {
+          await scrollController.animateTo(pos, duration: kTabScrollDuration, curve: Curves.easeInOutSine);
+        }
+      });
     }
   }
 
@@ -61,10 +75,10 @@ class UserDeckListPageState extends State<UserDeckListPage> {
   Widget build(BuildContext context) {
     final decks = mstData.userDeck.toList();
     final eventDecks = mstData.userEventDeck.toList();
-    eventDecks.sortByList((e) => [widget.eventId == e.eventId ? 0 : 1, -e.eventId, e.deckNo]);
+    eventDecks.sortByList((e) => [widget.eventDeckParam?.eventId == e.eventId ? 0 : 1, -e.eventId, e.deckNo]);
 
     UserDeckEntity? grandDeck;
-    if (widget.eventId == null && mstData.userSvtGrand.isNotEmpty) {
+    if (widget.eventDeckParam?.eventId == null && mstData.userSvtGrand.isNotEmpty) {
       grandDeck = UserDeckEntity(
         id: 0,
         userId: mstData.user?.userId,
@@ -97,19 +111,39 @@ class UserDeckListPageState extends State<UserDeckListPage> {
     }
     if (grandDeck != null) decks.insert(0, grandDeck);
     return Scaffold(
-      appBar: AppBar(title: Text(widget.eventId == null ? "User Decks" : "Event ${widget.eventId} Decks")),
+      appBar: AppBar(
+        title: Text(widget.eventDeckParam == null ? "User Decks" : "Event ${widget.eventDeckParam!.eventId} Decks"),
+      ),
       body: ListView.builder(
         controller: scrollController,
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-        itemBuilder: (context, index) => widget.eventId == null
+        itemBuilder: (context, index) => widget.eventDeckParam == null
             ? buildUserDeck(decks[index], decks[index] == grandDeck)
             : buildEventDeck(eventDecks[index]),
-        itemCount: widget.eventId == null ? decks.length : eventDecks.length,
+        itemCount: widget.eventDeckParam == null ? decks.length : eventDecks.length,
       ),
     );
   }
 
   Widget buildUserDeck(UserDeckEntity deck, bool isGrand) {
+    List<Widget> buttons = [
+      if (widget.onSelected != null && deck.id > 0 && !isGrand)
+        FilledButton(
+          onPressed: () {
+            Navigator.pop(context);
+            widget.onSelected!(deck);
+          },
+          child: Text(S.current.select),
+        ),
+      if (widget.enableEdit && widget.runtime != null && deck.id > 0 && !isGrand)
+        FilledButton.tonal(
+          onPressed: () async {
+            await router.pushPage(UserDeckSetupPage(runtime: widget.runtime!, activeDeckId: deck.id));
+            if (mounted) setState(() {});
+          },
+          child: Text(S.current.edit),
+        ),
+    ];
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -124,36 +158,50 @@ class UserDeckListPageState extends State<UserDeckListPage> {
           showBond: true,
           maxSvtCount: isGrand ? 8 : null,
         ),
-        if (widget.onSelected != null && deck.id > 0 && !isGrand)
+        if (buttons.isNotEmpty)
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 4),
-            child: Wrap(
-              spacing: 8,
-              alignment: WrapAlignment.center,
-              children: [
-                FilledButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                    widget.onSelected!(deck);
-                  },
-                  child: Text(S.current.select),
-                ),
-                if (widget.enableEdit && widget.runtime != null)
-                  FilledButton.tonal(
-                    onPressed: () async {
-                      await router.pushPage(UserDeckSetupPage(runtime: widget.runtime!, activeDeckId: deck.id));
-                      if (mounted) setState(() {});
-                    },
-                    child: Text(S.current.edit),
-                  ),
-              ],
-            ),
+            child: Wrap(spacing: 8, alignment: WrapAlignment.center, children: buttons),
           ),
       ],
     );
   }
 
   Widget buildEventDeck(UserEventDeckEntity deck) {
+    final param = widget.eventDeckParam;
+    List<Widget> buttons = [
+      if (widget.onSelected != null)
+        FilledButton(
+          onPressed: () {
+            Navigator.pop(context);
+            widget.onEventDeckSelected!(deck);
+          },
+          child: Text(S.current.select),
+        ),
+      if (widget.enableEdit &&
+          widget.runtime != null &&
+          param != null &&
+          deck.eventId == param.eventId &&
+          deck.deckNo == param.deckNo)
+        FilledButton.tonal(
+          onPressed: () async {
+            await router.pushPage(
+              UserDeckSetupPage.event(
+                runtime: widget.runtime!,
+                eventDeckParam: (
+                  eventId: deck.eventId,
+                  questId: param.questId,
+                  questPhase: param.questPhase,
+                  deckNo: deck.deckNo,
+                ),
+              ),
+            );
+            if (mounted) setState(() {});
+          },
+          child: Text(S.current.edit),
+        ),
+    ];
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -164,7 +212,7 @@ class UserDeckListPageState extends State<UserDeckListPage> {
                   router.push(url: Routes.eventI(deck.eventId));
                 },
           child: DividerWithTitle(
-            title: '${widget.eventId == deck.eventId ? "※ " : ""}[${deck.eventId}] No.${deck.deckNo}',
+            title: '${param?.eventId == deck.eventId ? "※ " : ""}[${deck.eventId}] No.${deck.deckNo}',
           ),
         ),
         FormationCard(
@@ -172,24 +220,14 @@ class UserDeckListPageState extends State<UserDeckListPage> {
           userSvtCollections: mstData.userSvtCollection.lookup,
           showBond: true,
         ),
-        if (widget.onSelected != null)
+        if (buttons.isNotEmpty)
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 4),
-            child: Center(
-              child: FilledButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                  widget.onEventDeckSelected!(deck);
-                },
-                child: Text(S.current.select),
-              ),
-            ),
+            child: Wrap(spacing: 8, alignment: WrapAlignment.center, children: buttons),
           ),
       ],
     );
   }
-
-  late final userSvtCommandCards = {for (final card in mstData.userSvtCommandCard) card.svtId: card};
 }
 
 extension BattleTeamFormationX on BattleTeamFormation {
