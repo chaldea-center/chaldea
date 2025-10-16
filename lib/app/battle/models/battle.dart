@@ -1580,6 +1580,7 @@ class BattleData {
     final List<BattleServantData> aliveEnemies = isAlly ? nonnullEnemies : nonnullPlayers;
     switch (targetType) {
       case BuffConditionTargetType.none:
+        targets.add(self);
         break;
       case BuffConditionTargetType.ptAll:
         targets.addAll(aliveAllies);

@@ -100,6 +100,26 @@ Map<String, dynamic> _$BuffScriptToJson(BuffScript instance) => <String, dynamic
   'convert': ?instance.convert?.toJson(),
 };
 
+CondBuffValueData _$CondBuffValueDataFromJson(Map json) => CondBuffValueData(
+  buffType: (json['buffType'] as num?)?.toInt(),
+  condValue: json['condValue'] as String?,
+  buffIndividualitie: (json['buffIndividualitie'] as List<dynamic>?)?.map((e) => (e as num).toInt()).toList(),
+  buffCheckIndvType: (json['buffCheckIndvType'] as num?)?.toInt(),
+  valueCondTargetType: (json['valueCondTargetType'] as num?)?.toInt(),
+  filterActivePassive: (json['filterActivePassive'] as num?)?.toInt(),
+  filterSubStateEnable: (json['filterSubStateEnable'] as num?)?.toInt(),
+);
+
+Map<String, dynamic> _$CondBuffValueDataToJson(CondBuffValueData instance) => <String, dynamic>{
+  'buffType': ?instance.buffType,
+  'condValue': ?instance.condValue,
+  'buffIndividualitie': ?instance.buffIndividualitie,
+  'buffCheckIndvType': ?instance.buffCheckIndvType,
+  'valueCondTargetType': ?instance.valueCondTargetType,
+  'filterActivePassive': ?instance.filterActivePassive,
+  'filterSubStateEnable': ?instance.filterSubStateEnable,
+};
+
 BuffConvert _$BuffConvertFromJson(Map json) => BuffConvert(
   targetLimit: $enumDecodeNullable(_$BuffConvertLimitTypeEnumMap, json['targetLimit']) ?? BuffConvertLimitType.all,
   convertType: $enumDecodeNullable(_$BuffConvertTypeEnumMap, json['convertType']) ?? BuffConvertType.none,
@@ -373,6 +393,8 @@ const _$BuffTypeEnumMap = {
   BuffType.upHateToGrantedOpponent: 'upHateToGrantedOpponent',
   BuffType.upBaseHp: 'upBaseHp',
   BuffType.addBaseHp: 'addBaseHp',
+  BuffType.substituteInstantDeath: 'substituteInstantDeath',
+  BuffType.substituteAddState: 'substituteAddState',
   BuffType.toFieldChangeField: 'toFieldChangeField',
   BuffType.toFieldAvoidBuff: 'toFieldAvoidBuff',
   BuffType.toFieldSubIndividualityField: 'toFieldSubIndividualityField',

@@ -1279,5 +1279,7 @@ const _$BuffActionEnumMap = {
   BuffAction.reactiveDamageGainHp: 'reactiveDamageGainHp',
   BuffAction.baseHpRate: 'baseHpRate',
   BuffAction.baseHpValue: 'baseHpValue',
+  BuffAction.substituteInstantDeath: 'substituteInstantDeath',
+  BuffAction.substituteAddState: 'substituteAddState',
   BuffAction.functionClassboardCommandSpellAfter: 'functionClassboardCommandSpellAfter',
 };

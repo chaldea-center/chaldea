@@ -1467,6 +1467,47 @@ class FuncDescriptor extends StatelessWidget {
       if (buff.type == BuffType.npattackPrevBuff) {
         _condSpans.add([TextSpan(text: '替换宝具效果中的第${(vals?.Value ?? 0) + 1}个效果(包含敌方效果)')]);
       }
+
+      final condBuffValues = buff.script.condBuffValue ?? [];
+      for (final condBuffValue in condBuffValues) {
+        final buffType = BuffType.fromId(condBuffValue.buffType ?? -1);
+        final buffIndivs = condBuffValue.buffIndividualitie ?? [];
+        final targetType = condBuffValue.valueCondTargetTypeEnum;
+        String? condValue = condBuffValue.condValue;
+        if (condValue != null) {
+          final percentBase = buffType?.percentBase;
+          if (percentBase != null) {
+            condValue = condValue.replaceAllMapped(RegExp(r'\d+'), (m) {
+              return int.parse(m.group(0)!).format(percent: true, base: percentBase);
+            });
+          }
+        }
+
+        _condSpans.add([
+          TextSpan(
+            children: [
+              if (targetType != null) TextSpan(text: '${targetType.dispName}: '),
+              const TextSpan(text: '('),
+              if (condBuffValue.buffType != null) ...[
+                SharedBuilder.textButtonSpan(
+                  context: context,
+                  text: buffType == null ? 'BuffType ${condBuffValue.buffType}' : Transl.buffType(buffType).l,
+                ),
+              ],
+              if (condBuffValue.buffType != null && buffIndivs.isNotEmpty) const TextSpan(text: ' - '),
+              if (buffIndivs.isNotEmpty) ...[
+                ...SharedBuilder.traitSpans(
+                  context: context,
+                  traits: buffIndivs,
+                  useAndJoin: condBuffValue.checkIndvTypeAnd,
+                ),
+              ],
+              const TextSpan(text: ') '),
+              TextSpan(text: condValue),
+            ],
+          ),
+        ]);
+      }
     }
 
     if (func.funcType == FuncType.lastUsePlayerSkillCopy) {
@@ -1584,80 +1625,86 @@ class FuncDescriptor extends StatelessWidget {
       oc: oc,
     );
 
-    final triggerSkill = _buildTrigger(context);
+    final triggerSkills = _buildTrigger(context);
     final dependFunc = _buildDependFunc(context);
-    if (triggerSkill != null || dependFunc != null) {
+    if (triggerSkills.isNotEmpty || dependFunc != null) {
       last = Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [last, triggerSkill, dependFunc].whereType<Widget>().toList(),
+        children: <Widget?>[last, ...triggerSkills, dependFunc].whereType<Widget>().toList(),
       );
     }
     last = Padding(padding: padding ?? const EdgeInsets.symmetric(horizontal: 16, vertical: 4), child: last);
     return last;
   }
 
-  Widget? _buildTrigger(BuildContext context) {
+  List<Widget> _buildTrigger(BuildContext context) {
     DataVals? vals = func.svalsList.getOrNull((oc ?? 1) - 1)?.getOrNull((level ?? 1) - 1);
     final isFuncTrigger = kFuncValueTriggerTypes.containsKey(func.funcType);
-    final trigger = kBuffValueTriggerTypes[func.buff?.type] ?? kFuncValueTriggerTypes[func.funcType];
+    final triggers = kBuffValueTriggerTypes[func.buff?.type] ?? kFuncValueTriggerTypes[func.funcType];
 
-    if (trigger == null) return null;
-    final details = func.svals.map((e) => trigger(e)).toList();
-    final ocDetails = func.ocVals(0).map((e) => trigger(e)).toList();
-    func.svalsList.getOrNull((oc ?? 1) - 1)?.getOrNull((level ?? 1) - 1);
-    final detail = vals != null ? trigger(vals) : details.getOrNull((level ?? -1) - 1) ?? details.firstOrNull;
-    bool noLevel =
-        details.isEmpty ||
-        ((level == null || level == -1) && details.map((e) => e.level).toSet().length > 1) ||
-        ((oc == null || oc == -1) && ocDetails.map((e) => e.level).toSet().length > 1);
+    if (triggers == null || triggers.isEmpty) return [];
+    List<Widget> children = [];
+    for (final trigger in triggers) {
+      final details = func.svals.map((e) => trigger(e)).toList();
+      final ocDetails = func.ocVals(0).map((e) => trigger(e)).toList();
+      func.svalsList.getOrNull((oc ?? 1) - 1)?.getOrNull((level ?? 1) - 1);
+      final detail = vals != null ? trigger(vals) : details.getOrNull((level ?? -1) - 1) ?? details.firstOrNull;
+      bool noLevel =
+          details.isEmpty ||
+          ((level == null || level == -1) && details.map((e) => e.level).toSet().length > 1) ||
+          ((oc == null || oc == -1) && ocDetails.map((e) => e.level).toSet().length > 1);
 
-    vals ??= func.svals.getOrNull((level ?? 1) - 1);
-    vals ??= func.svals.getOrNull(0);
-    if (detail == null) return null;
+      vals ??= func.svals.getOrNull((level ?? 1) - 1);
+      vals ??= func.svals.getOrNull(0);
+      if (detail == null || detail.skill == null) continue;
 
-    if (noLevel) detail.level = null;
+      if (noLevel) detail.level = null;
 
-    final isNp = vals?.UseTreasureDevice == 1;
-    Widget triggerChild;
-    if (func.buff?.type == BuffType.counterFunction && vals?.UseAttack == 1) {
-      final cardId = vals?.CounterId ?? 0;
-      final textStyle = Theme.of(context).textTheme.bodySmall;
-      String prefix = '[${Transl.buffType(func.buff!.type).l}] ${S.current.battle_command_card} ';
-      triggerChild = _DescriptorWrapper(
-        title: Text.rich(
-          TextSpan(
-            text: ' ',
-            children: [
-              CenterWidgetSpan(child: CommandCardWidget(card: cardId, width: 24)),
-              TextSpan(text: ' $prefix ${CardType.getName(cardId).toTitle()}'),
-            ],
+      final isNp = vals?.UseTreasureDevice == 1;
+      Widget triggerChild;
+      if (func.buff?.type == BuffType.counterFunction && vals?.UseAttack == 1) {
+        final cardId = vals?.CounterId ?? 0;
+        final textStyle = Theme.of(context).textTheme.bodySmall;
+        String prefix = '[${Transl.buffType(func.buff!.type).l}] ${S.current.battle_command_card} ';
+        triggerChild = _DescriptorWrapper(
+          title: Text.rich(
+            TextSpan(
+              text: ' ',
+              children: [
+                CenterWidgetSpan(child: CommandCardWidget(card: cardId, width: 24)),
+                TextSpan(text: ' $prefix ${CardType.getName(cardId).toTitle()}'),
+              ],
+            ),
+            style: textStyle,
           ),
-          style: textStyle,
+          trailing: null,
+        );
+      } else {
+        triggerChild = _LazyTrigger(
+          trigger: detail,
+          buff: func.buff,
+          func: isFuncTrigger ? func : null,
+          isNp: isNp,
+          useRate: vals?.UseRate,
+          showPlayer: func.funcTargetType.isEnemy ? showEnemy : showPlayer,
+          showEnemy: func.funcTargetType.isEnemy ? showPlayer : showEnemy,
+          loops: LoopTargets.from(loops)..addFunc(func.funcId),
+          region: region,
+        );
+      }
+      children.add(
+        Container(
+          decoration: BoxDecoration(
+            border: Border.all(color: Theme.of(context).hintColor),
+            borderRadius: BorderRadius.circular(6),
+          ),
+          margin: const EdgeInsets.symmetric(vertical: 2),
+          padding: const EdgeInsetsDirectional.fromSTEB(0, 2, 0, 2),
+          child: triggerChild,
         ),
-        trailing: null,
-      );
-    } else {
-      triggerChild = _LazyTrigger(
-        trigger: detail,
-        buff: func.buff,
-        func: isFuncTrigger ? func : null,
-        isNp: isNp,
-        useRate: vals?.UseRate,
-        showPlayer: func.funcTargetType.isEnemy ? showEnemy : showPlayer,
-        showEnemy: func.funcTargetType.isEnemy ? showPlayer : showEnemy,
-        loops: LoopTargets.from(loops)..addFunc(func.funcId),
-        region: region,
       );
     }
-    return Container(
-      decoration: BoxDecoration(
-        border: Border.all(color: Theme.of(context).hintColor),
-        borderRadius: BorderRadius.circular(6),
-      ),
-      margin: const EdgeInsets.symmetric(vertical: 2),
-      padding: const EdgeInsetsDirectional.fromSTEB(0, 2, 0, 2),
-      child: triggerChild,
-    );
+    return children;
   }
 
   Widget? _buildDependFunc(BuildContext context) {

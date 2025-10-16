@@ -295,19 +295,22 @@ class NiceFunction with RouteInfo implements BaseFunction {
       }
     }
     if (func.buffs.isEmpty) return;
-    final trigger = kBuffValueTriggerTypes[func.buffs.first.type]?.call(func.svals.first);
-    if (trigger == null) return;
-    final SkillOrTd? skill = func.svals.first.UseTreasureDevice == 1
-        ? gameData.baseTds[trigger.skill]
-        : gameData.baseSkills[trigger.skill];
-    if (skill == null) return;
-    yield* filterFuncs<T>(
-      funcs: skill.functions.cast(),
-      showPlayer: func.funcTargetType.isEnemy ? showEnemy : showPlayer,
-      showEnemy: func.funcTargetType.isEnemy ? showPlayer : showEnemy,
-      showNone: showNone,
-      includeTrigger: false, // avoid regression
-    );
+    final triggers = kBuffValueTriggerTypes[func.buffs.first.type];
+    if (triggers == null) return;
+    for (final trigger in triggers) {
+      final detail = trigger(func.svals.first);
+      final SkillOrTd? skill = func.svals.first.UseTreasureDevice == 1
+          ? gameData.baseTds[detail.skill]
+          : gameData.baseSkills[detail.skill];
+      if (skill == null) continue;
+      yield* filterFuncs<T>(
+        funcs: skill.functions.cast(),
+        showPlayer: func.funcTargetType.isEnemy ? showEnemy : showPlayer,
+        showEnemy: func.funcTargetType.isEnemy ? showPlayer : showEnemy,
+        showNone: showNone,
+        includeTrigger: false, // avoid regression
+      );
+    }
   }
 
   @override

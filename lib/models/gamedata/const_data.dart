@@ -1420,6 +1420,8 @@ enum BuffAction {
   reactiveDamageGainHp(161),
   baseHpRate(162),
   baseHpValue(163),
+  substituteInstantDeath(164),
+  substituteAddState(165),
   // custom
   functionClassboardCommandSpellAfter(301);
 

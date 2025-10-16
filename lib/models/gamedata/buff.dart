@@ -182,11 +182,45 @@ class BuffScript with DataScriptBase {
   List<List<int>>? get NotPierceIndividuality =>
       const Trait2dListConverter().fromJsonNull(source["NotPierceIndividuality"]);
 
+  List<CondBuffValueData>? get condBuffValue {
+    final v = source['condBuffValue'];
+    if (v == null || v.isEmpty) return null;
+    return [for (final x in v) CondBuffValueData.fromJson(Map.from(x))];
+  }
+
   BuffScript({this.checkIndvType, this.CheckOpponentBuffTypes, this.relationId, this.convert});
 
   factory BuffScript.fromJson(Map<String, dynamic> json) => _$BuffScriptFromJson(json);
 
   Map<String, dynamic> toJson() => Map.from(source)..addAll(_$BuffScriptToJson(this));
+}
+
+@JsonSerializable(includeIfNull: false)
+class CondBuffValueData {
+  int? buffType;
+  String? condValue;
+  List<int>? buffIndividualitie;
+  int? buffCheckIndvType;
+  int? valueCondTargetType;
+  int? filterActivePassive;
+  int? filterSubStateEnable;
+
+  bool get checkIndvTypeAnd => buffCheckIndvType == 1 || buffCheckIndvType == 3;
+  BuffConditionTargetType? get valueCondTargetTypeEnum => BuffConditionTargetType.fromId(valueCondTargetType ?? -1);
+
+  CondBuffValueData({
+    this.buffType,
+    this.condValue,
+    this.buffIndividualitie,
+    this.buffCheckIndvType,
+    this.valueCondTargetType,
+    this.filterActivePassive,
+    this.filterSubStateEnable,
+  });
+
+  factory CondBuffValueData.fromJson(Map<String, dynamic> json) => _$CondBuffValueDataFromJson(json);
+
+  Map<String, dynamic> toJson() => _$CondBuffValueDataToJson(this);
 }
 
 // Conditional Battle Buff, need to update act state
@@ -500,6 +534,8 @@ enum BuffType {
   upHateToGrantedOpponent(235),
   upBaseHp(236),
   addBaseHp(237),
+  substituteInstantDeath(238),
+  substituteAddState(239),
 
   toFieldChangeField(10001),
   toFieldAvoidBuff(10002),
@@ -508,6 +544,10 @@ enum BuffType {
 
   final int value;
   const BuffType(this.value);
+
+  static BuffType? fromId(int v) {
+    return BuffType.values.firstWhereOrNull((e) => e.value == v);
+  }
 
   List<BuffAction> get buffActions => db.gameData.constData.buffTypeActionMap[this] ?? [];
   int? get percentBase {
@@ -522,7 +562,7 @@ enum BuffType {
       const [tdTypeChange, tdTypeChangeArts, tdTypeChangeBuster, tdTypeChangeQuick].contains(this);
 }
 
-final Map<BuffType, BuffValueTriggerType Function(DataVals)> kBuffValueTriggerTypes = () {
+final Map<BuffType, List<BuffValueTriggerType Function(DataVals)>> kBuffValueTriggerTypes = () {
   final types = <BuffType, BuffValueTriggerType Function(DataVals)>{
     BuffType.counterFunction: (v) =>
         BuffValueTriggerType(buffType: BuffType.counterFunction, skill: v.CounterId, level: v.CounterLv ?? 0),
@@ -578,15 +618,32 @@ final Map<BuffType, BuffValueTriggerType Function(DataVals)> kBuffValueTriggerTy
     types[type] = (v) => BuffValueTriggerType(buffType: type, skill: v.Value, level: v.Value2, rate: v.UseRate);
   }
 
-  return types;
+  return <BuffType, List<BuffValueTriggerType Function(DataVals)>>{
+    for (final (k, v) in types.items) k: [v],
+    BuffType.substituteInstantDeath: [
+      (v) => BuffValueTriggerType(
+        buffType: BuffType.substituteInstantDeath,
+        skill: v.SubstituteSkillId,
+        level: v.SubstituteSkillId,
+        rate: v.SubstituteRate,
+      ),
+      (v) => BuffValueTriggerType(
+        buffType: BuffType.substituteInstantDeath,
+        skill: v.ResistSkillId,
+        level: v.ResistSkillId,
+        // rate: v.UseBuffResistRate,
+      ),
+    ],
+  };
 }();
 
-final Map<FuncType, BuffValueTriggerType Function(DataVals)> kFuncValueTriggerTypes = () {
-  final types = <FuncType, BuffValueTriggerType Function(DataVals)>{};
+final Map<FuncType, List<BuffValueTriggerType Function(DataVals)>> kFuncValueTriggerTypes = () {
+  final types = <FuncType, List<BuffValueTriggerType Function(DataVals)>>{};
 
   for (final type in {FuncType.generateBattleSkillDrop}) {
-    types[type] = (v) =>
-        BuffValueTriggerType(buffType: null, funcType: type, skill: v.Value, level: v.Value2, rate: v.UseRate);
+    types[type] = [
+      (v) => BuffValueTriggerType(buffType: null, funcType: type, skill: v.Value, level: v.Value2, rate: v.UseRate),
+    ];
   }
 
   return types;
@@ -632,7 +689,7 @@ enum BuffConditionTargetType {
 
   FuncTargetType? toFuncTarget() {
     return switch (this) {
-      none => null,
+      none => FuncTargetType.self,
       ptAll => FuncTargetType.ptAll,
       enemyAll => FuncTargetType.enemyAll,
       fieldAll => FuncTargetType.fieldAll,

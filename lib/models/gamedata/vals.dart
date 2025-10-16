@@ -398,6 +398,22 @@ class DataVals {
   int? get ExecuteEffectId => _get('ExecuteEffectId');
   int? get PriorityUpHate => _get('PriorityUpHate');
   int? get JudgeUseEveryTime => _get('JudgeUseEveryTime');
+  int? get IgnoreDeathRate => _get('IgnoreDeathRate');
+  int? get SubstituteRate => _get('SubstituteRate');
+  int? get SubstituteResist => _get('SubstituteResist');
+  int? get UseSvtResistRate => _get('UseSvtResistRate');
+  int? get UseBuffResistRate => _get('UseBuffResistRate');
+  int? get SubstituteSkillId => _get('SubstituteSkillId');
+  int? get SubstituteSkillLv => _get('SubstituteSkillLv');
+  int? get ResistSkillId => _get('ResistSkillId');
+  int? get ResistSkillLv => _get('ResistSkillLv');
+  String? get SubstitutePopupText => _get('SubstitutePopupText');
+  int? get SubstitutePopupIconId => _get('SubstitutePopupIconId');
+  String? get ResistPopupText => _get('ResistPopupText');
+  int? get ResistPopupIconId => _get('ResistPopupIconId');
+  List<int>? get SubstituteEffectList => _list('SubstituteEffectList');
+  List<int>? get ResistEffectList => _list('ResistEffectList');
+  int? get EnablePassiveBuffConvert => _get('EnablePassiveBuffConvert');
 
   int? get Individuality => _get('Individuality');
   int? get EventId => _get('EventId');

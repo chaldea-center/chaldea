@@ -361,7 +361,7 @@ class ValDsc extends StatelessWidget {
     final bool ignoreCount = false,
   }) {
     final base = buff.percentBase;
-    final trigger = kBuffValueTriggerTypes[buff.type];
+    final triggers = kBuffValueTriggerTypes[buff.type];
 
     // b+kx
     int? k = vals.ParamAdd ?? vals.ParamAddValue ?? vals.CondParamAddValue ?? vals.CondParamRangeMaxValue;
@@ -374,20 +374,23 @@ class ValDsc extends StatelessWidget {
         _addPercent(parts, vals.Value, base);
       }
       // return;
-    } else if (trigger != null) {
-      final triggerVal = trigger(vals);
-      if (triggerVal.level != null) {
-        parts.add('Lv.${triggerVal.level}');
-      } else if (triggerVal.skill != null) {
-        if (buff.type == BuffType.counterFunction && vals.UseAttack == 1) {
-          final cardType = CardType.fromId(vals.CounterId);
-          parts.add('${cardType?.name.toTitle() ?? triggerVal.skill}');
-        } else {
-          parts.add('${triggerVal.skill}');
+    } else if (triggers != null) {
+      for (final trigger in triggers) {
+        final triggerVal = trigger(vals);
+        if (triggerVal.skill == null) continue;
+        if (triggerVal.level != null) {
+          parts.add('Lv.${triggerVal.level}');
+        } else if (triggerVal.skill != null) {
+          if (buff.type == BuffType.counterFunction && vals.UseAttack == 1) {
+            final cardType = CardType.fromId(vals.CounterId);
+            parts.add('${cardType?.name.toTitle() ?? triggerVal.skill}');
+          } else {
+            parts.add('${triggerVal.skill}');
+          }
         }
-      }
-      if (buff.type == BuffType.counterFunction && vals.CounterOc != null) {
-        parts.add('OC${vals.CounterOc}');
+        if (buff.type == BuffType.counterFunction && vals.CounterOc != null) {
+          parts.add('OC${vals.CounterOc}');
+        }
       }
       return;
     } else if ((buff.type == BuffType.changeCommandCardType || buff.type == BuffType.overwriteSvtCardType) &&
