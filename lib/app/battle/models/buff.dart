@@ -779,6 +779,55 @@ class BuffData {
       isAct &= hpRatio <= buff.script.HP_LOWER!;
     }
 
+    if (buff.script.condBuffValue != null && buff.script.condBuffValue!.isNotEmpty) {
+      final condBuffValue = buff.script.condBuffValue!;
+      bool match = false;
+      for (final cond in condBuffValue) {
+        final condType = cond.valueCondTargetTypeEnum;
+        final targetBuffType = cond.buffType;
+        final targetBuffList = cond.buffIndividualitie;
+        final condValue = cond.condValue;
+        if (condType == null ||
+            (targetBuffType == null && (targetBuffList == null || targetBuffList.isEmpty)) ||
+            condValue == null) {
+          continue;
+        }
+
+        final List<BattleServantData> targetList = battleData.getBuffConditionTargets(condType, owner);
+        int sumValue = 0;
+        for (final target in targetList) {
+          // not sure what cond.filterActivePassive && cond.filterSubStateEnable do exactly
+          final buffs = target.battleBuff.validBuffs;
+          for (final buff in buffs) {
+            if (buff.buff.type.value == targetBuffType) {
+              final buffIndivCheck = cond.checkIndvTypeAnd
+                  ? Individuality.checkSignedIndividualities2(
+                      self: buff.getTraits(),
+                      signedTarget: targetBuffList,
+                      matchedFunc: Individuality.isMatchArray,
+                      mismatchFunc: Individuality.isMatchArray,
+                    )
+                  : Individuality.checkSignedIndividualitiesPartialMatch(
+                      selfs: buff.getTraits(),
+                      signedTargets: targetBuffList,
+                      matchedFunc: Individuality.isPartialMatchArray,
+                      mismatchFunc: Individuality.isPartialMatchArray,
+                    );
+              if (buffIndivCheck) {
+                sumValue += buff.getValue(owner, null, battleData);
+              }
+            }
+          }
+        }
+
+        if (DataVals.isSatisfyRangeText(sumValue, rangeText: condValue)) {
+          match = true;
+          break;
+        }
+      }
+      isAct &= match;
+    }
+
     isAct &= intervalTurn <= 0;
 
     if (isAct) {
