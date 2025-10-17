@@ -40,6 +40,37 @@ import 'shift_servant.dart';
 class FunctionExecutor {
   FunctionExecutor._();
 
+  static Future<void> executeCustomSkill({
+    required BattleData battleData,
+    required int skillId,
+    required String description,
+    BattleServantData? activator,
+    BattleServantData? target,
+    int? skillLv,
+    int? rate,
+    int? resist,
+  }) async {
+    final applyRate = (rate ?? 1000) - (resist ?? 0);
+    if (await battleData.canActivate(applyRate, description)) {
+      BaseSkill? skill = db.gameData.baseSkills[skillId];
+      skill ??= await showEasyLoading(() => AtlasApi.skill(skillId), mask: true);
+      final actSkillLv = skillLv ?? 1;
+      if (skill != null) {
+        await FunctionExecutor.executeFunctions(
+          battleData,
+          skill.functions,
+          actSkillLv.clamp(1, skill.maxLv),
+          script: skill.script,
+          activator: activator,
+          targetedAlly: battleData.getTargetedAlly(activator),
+          targetedEnemy: target,
+          skillType: skill.type,
+          skillInfoType: null,
+        );
+      }
+    }
+  }
+
   static Future<void> executeFunctions(
     final BattleData battleData,
     final List<NiceFunction> functions,

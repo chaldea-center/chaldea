@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:chaldea/app/battle/functions/function_executor.dart';
 import 'package:chaldea/app/battle/models/battle.dart';
 import 'package:chaldea/app/battle/utils/buff_utils.dart';
 import 'package:chaldea/generated/l10n.dart';
@@ -30,12 +31,36 @@ class SubState {
       for (int index = listToInspect.length - 1; index >= 0; index -= 1) {
         final buff = listToInspect[index];
 
+        // TODO: change to buffAction once plusAction etc. is available
+        final substituteAddState = await target.getBuffOfType(battleData, BuffType.substituteAddState);
         if (buff.checkField() && await shouldSubState(battleData, buff, affectTraits, dataVals, activator, target)) {
-          removedBuffs.add(listToInspect.removeAt(index));
-          removeCount += 1;
-          if (buff.vals.BehaveAsFamilyBuff == 1 && buff.vals.AddLinkageTargetIndividualty != null) {
-            removedFamilyIndiv.add(buff.vals.AddLinkageTargetIndividualty!);
+          if (substituteAddState != null && substituteAddState.vals.SubstituteSkillId != null) {
+            await FunctionExecutor.executeCustomSkill(
+              battleData: battleData,
+              skillId: substituteAddState.vals.SubstituteSkillId!,
+              description: substituteAddState.buff.lName.l,
+              activator: target,
+              target: activator,
+              skillLv: substituteAddState.vals.SubstituteSkillLv,
+              rate: substituteAddState.vals.SubstituteRate,
+              resist: substituteAddState.vals.SubstituteResist,
+            );
+          } else {
+            removedBuffs.add(listToInspect.removeAt(index));
+            removeCount += 1;
+            if (buff.vals.BehaveAsFamilyBuff == 1 && buff.vals.AddLinkageTargetIndividualty != null) {
+              removedFamilyIndiv.add(buff.vals.AddLinkageTargetIndividualty!);
+            }
           }
+        } else if (substituteAddState != null && substituteAddState.vals.ResistSkillId != null) {
+          await FunctionExecutor.executeCustomSkill(
+            battleData: battleData,
+            skillId: substituteAddState.vals.ResistSkillId!,
+            description: substituteAddState.buff.lName.l,
+            activator: target,
+            target: activator,
+            skillLv: substituteAddState.vals.ResistSkillLv,
+          );
         }
 
         if (removeTargetCount != null && removeCount == removeTargetCount) {

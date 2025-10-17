@@ -1,3 +1,4 @@
+import 'package:chaldea/app/battle/functions/function_executor.dart';
 import 'package:chaldea/app/battle/models/battle.dart';
 import 'package:chaldea/app/battle/utils/battle_logger.dart';
 import 'package:chaldea/app/battle/utils/battle_utils.dart';
@@ -23,8 +24,27 @@ class InstantDeath {
       final previousHp = target.hp;
       final isForceInstantDeath = force || (activator == target && dataVals.ForceSelfInstantDeath == 1);
 
+      // TODO: change to buffAction once plusAction etc. is available
+      final substituteInstantDeath = await target.getBuffOfType(battleData, BuffType.substituteInstantDeath);
       if (await shouldInstantDeath(battleData, dataVals, activator, target, isForceInstantDeath, params, card: card)) {
-        target.hp = 0;
+        if (substituteInstantDeath != null && substituteInstantDeath.vals.SubstituteSkillId != null) {
+          await FunctionExecutor.executeCustomSkill(
+            battleData: battleData,
+            skillId: substituteInstantDeath.vals.SubstituteSkillId!,
+            description: substituteInstantDeath.buff.lName.l,
+            activator: target,
+            target: activator,
+            skillLv: substituteInstantDeath.vals.SubstituteSkillLv,
+            rate: substituteInstantDeath.vals.SubstituteRate,
+            resist: substituteInstantDeath.vals.SubstituteResist,
+          );
+        } else {
+          target.hp = 0;
+          if (!isForceInstantDeath && target != activator) {
+            target.procAccumulationDamage(previousHp);
+          }
+        }
+
         target.lastHitBy = activator;
         target.lastHitByFunc = func;
         target.actionHistory.add(
@@ -34,12 +54,19 @@ class InstantDeath {
             isOpponent: (activator?.isPlayer ?? defaultToPlayer) != target.isPlayer,
           ),
         );
-
-        if (!isForceInstantDeath && target != activator) {
-          target.procAccumulationDamage(previousHp);
-        }
         battleData.setFuncResult(target.uniqueId, true);
+      } else if (substituteInstantDeath != null && substituteInstantDeath.vals.ResistSkillId != null) {
+        await FunctionExecutor.executeCustomSkill(
+          battleData: battleData,
+          skillId: substituteInstantDeath.vals.ResistSkillId!,
+          description: substituteInstantDeath.buff.lName.l,
+          activator: target,
+          target: activator,
+          skillLv: substituteInstantDeath.vals.ResistSkillLv,
+        );
       }
+
+
       record.targets.add(InstantDeathResultDetail(target: target, params: params));
     }
     if (targets.isNotEmpty) {

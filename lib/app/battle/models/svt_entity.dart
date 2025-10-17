@@ -2138,6 +2138,36 @@ class BattleServantData {
         null;
   }
 
+  // TODO: remove when substituteSubState & substituteInstantDeath have plusAction populated
+  Future<BuffData?> getBuffOfType(
+    final BattleData battleData,
+    final BuffType buffType, {
+    final BattleServantData? opponent,
+    final CommandCardData? card,
+    final List<int>? addTraits,
+    final bool useBuff = true,
+  }) async {
+    for (final buff in collectBuffsPerType(battleBuff.validBuffs, buffType)) {
+      final List<int> selfTraits = fetchSelfTraits(BuffAction.unknown, buff, this, cardData: card, addTraits: addTraits);
+      final List<int>? opponentTraits = fetchOpponentTraits(
+        BuffAction.unknown,
+        buff,
+        opponent,
+        self: this,
+        cardData: card,
+        addTraits: addTraits,
+      );
+
+      if (await buff.shouldActivateBuff(battleData, selfTraits, opponentTraits: opponentTraits)) {
+        if (useBuff) {
+          buff.setUsed(this, battleData);
+        }
+        return buff;
+      }
+    }
+    return null;
+  }
+
   Future<BuffData?> getBuff(
     final BattleData battleData,
     final BuffAction buffAction, {
