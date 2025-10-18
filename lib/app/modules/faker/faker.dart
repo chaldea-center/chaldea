@@ -1644,12 +1644,13 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
         ),
         CheckboxListTile.adaptive(
           dense: true,
-          value: battleOption.checkSkillShift,
-          title: const Text("Check skillShift"),
+          value: battleOption.enableSkillShift,
+          title: const Text("Enable skillShift"),
+          subtitle: Text('uniqueIds: ${battleOption.skillShiftEnemyUniqueIds}'),
           onChanged: (v) {
             runtime.lockTask(() {
               setState(() {
-                battleOption.checkSkillShift = v!;
+                battleOption.enableSkillShift = v!;
               });
             });
           },
@@ -2007,13 +2008,15 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
         buildButton(
           enabled: loggedIn && inBattle,
           onPressed: () async {
-            runtime.runTask(
-              () => agent.battleResultWithOptions(
-                battleEntity: agent.curBattle!,
+            runtime.runTask(() async {
+              final battleEntity = agent.curBattle!;
+              await runtime.checkSkillShift(battleEntity);
+              await agent.battleResultWithOptions(
+                battleEntity: battleEntity,
                 resultType: battleOption.resultType,
-                actionLogs: battleOption.actionLogs,
-              ),
-            );
+                options: battleOption,
+              );
+            });
           },
           text: 'b.result',
         ),

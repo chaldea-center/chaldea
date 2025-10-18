@@ -22,6 +22,7 @@ import '../master_mission/solver/solver.dart';
 import '_shared/menu_button.dart';
 import 'history.dart';
 
+part 'runtime/battle.dart';
 part 'runtime/random_mission.dart';
 part 'runtime/gacha.dart';
 
@@ -391,15 +392,16 @@ class FakerRuntime {
           resultResp = await agent.battleResultWithOptions(
             battleEntity: battleEntity,
             resultType: BattleResultType.cancel,
-            actionLogs: "",
+            options: battleOption,
             sendDelay: const Duration(seconds: 1),
           );
         } else {
           final delay = battleOption.battleDuration ?? (agent.network.gameTop.region == Region.cn ? 40 : 20);
+          await checkSkillShift(battleEntity);
           resultResp = await agent.battleResultWithOptions(
             battleEntity: battleEntity,
             resultType: BattleResultType.win,
-            actionLogs: battleOption.actionLogs,
+            options: battleOption,
             sendDelay: Duration(seconds: delay),
           );
           // if win

@@ -328,7 +328,9 @@ class AutoBattleOptions {
   BattleWinResultType winType;
   String actionLogs;
   List<int> usedTurnArray;
-  bool checkSkillShift;
+  bool enableSkillShift;
+  List<int> skillShiftEnemyUniqueIds;
+
   // loop
   List<int> recoverIds;
   int loopCount;
@@ -358,7 +360,8 @@ class AutoBattleOptions {
     this.winType = BattleWinResultType.normal,
     this.actionLogs = '',
     List<int>? usedTurnArray,
-    this.checkSkillShift = true,
+    this.enableSkillShift = true,
+    List<int>? skillShiftEnemyUniqueIds,
     List<int>? recoverIds,
     this.loopCount = 0,
     Map<int, int>? targetDrops,
@@ -370,6 +373,7 @@ class AutoBattleOptions {
        supportEquipIds = supportEquipIds ?? {},
        grandSupportEquipIds = grandSupportEquipIds ?? {},
        usedTurnArray = usedTurnArray ?? [],
+       skillShiftEnemyUniqueIds = skillShiftEnemyUniqueIds ?? [],
        recoverIds = recoverIds ?? [],
        targetDrops = targetDrops ?? {},
        winTargetItemNum = winTargetItemNum ?? {};

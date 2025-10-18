@@ -570,9 +570,7 @@ abstract class FakerAgent<
   Future<FResponse> battleResultWithOptions({
     required BattleEntity battleEntity,
     required BattleResultType resultType,
-    required String actionLogs,
-    List<int> usedTurnArray = const [],
-    bool checkSkillShift = true,
+    required AutoBattleOptions options,
     Duration? sendDelay,
   }) async {
     final battleInfo = battleEntity.battleInfo!;
@@ -603,19 +601,21 @@ abstract class FakerAgent<
         }
         return baseTurn;
       });
-      usedTurnArray = [
-        for (final (index, v) in _usedTurnArray.indexed) (usedTurnArray.getOrNull(index) ?? 0).clamp(v, 999),
+      final usedTurnArray = [
+        for (final (index, v) in _usedTurnArray.indexed) (options.usedTurnArray.getOrNull(index) ?? 0).clamp(v, 999),
       ];
       final totalTurns = Maths.sum(usedTurnArray.map((e) => max(1, e)));
+      String actionLogs = options.actionLogs;
       if (actionLogs.isEmpty) {
         actionLogs = List<String>.generate(totalTurns, (i) => const ['1B2B3B', '1B1D2C', '1B1C2B'][i % 3]).join('');
       }
       if (!RegExp(r'^' + (r'[123][BCD]' * totalTurns * 3) + r'$').hasMatch(actionLogs)) {
         throw Exception('Invalid action logs or not match turn length: $usedTurnArray, $actionLogs');
       }
-      List<BattleRaidResult> raidResults = [];
+      final userSvtIdMap = battleInfo.userSvtMap;
       final enemies = battleInfo.enemyDeck.expand((e) => e.svts).toList();
-      final userSvtIdMap = {for (final userSvt in battleInfo.userSvt) userSvt.id: userSvt};
+
+      List<BattleRaidResult> raidResults = [];
       for (final enemy in enemies) {
         final raidDay1 = enemy.enemyScript?['raid'] as int?;
         if (raidDay1 == null) continue;
@@ -626,22 +626,32 @@ abstract class FakerAgent<
         }
         raidResults.add(BattleRaidResult(uniqueId: enemy.uniqueId, day: raidDay, addDamage: userSvt.hp));
       }
+
       final callDeckEnemies = battleInfo.callDeck.expand((e) => e.svts).toList();
       List<int> calledEnemyUniqueIdArray = callDeckEnemies
           .where((e) => e.dropInfos.isNotEmpty)
           .map((e) => e.uniqueId)
           .toList();
       calledEnemyUniqueIdArray = callDeckEnemies.map((e) => e.uniqueId).toList();
-      // final itemDroppedSkillShiftEnemies =
-      //     battleInfo.shiftDeck.expand((e) => e.svts).where((e) => e.dropInfos.isNotEmpty).toList();
+
       final skillShiftEnemies = [
         ...battleInfo.enemyDeck,
         ...battleInfo.callDeck,
         ...battleInfo.shiftDeck,
-      ].expand((e) => e.svts).where((e) => e.enemyScript?.containsKey('skillShift') == true).toList();
-      if (skillShiftEnemies.isNotEmpty && checkSkillShift) {
-        throw SilentException('skillShift not supported');
+      ].expand((e) => e.svts).where((e) => e.isSkillShift()).toList();
+      if (skillShiftEnemies.isNotEmpty && !options.enableSkillShift) {
+        throw SilentException('skillShift not enabled');
       }
+      final itemDroppedSkillShiftEnemies = skillShiftEnemies
+          .where((e) => options.skillShiftEnemyUniqueIds.contains(e.uniqueId))
+          .toList();
+      if (itemDroppedSkillShiftEnemies.length != options.skillShiftEnemyUniqueIds.length) {
+        throw SilentException(
+          'valid skillShift uniqueIds: ${skillShiftEnemies.map((e) => e.uniqueId).toSet()}, '
+          'but received ${options.skillShiftEnemyUniqueIds}',
+        );
+      }
+
       return battleResult(
         battleId: battleEntity.id,
         resultType: BattleResultType.win,
@@ -655,8 +665,8 @@ abstract class FakerAgent<
         aliveUniqueIds: [],
         calledEnemyUniqueIdArray: calledEnemyUniqueIdArray,
         waveNum: stageCount,
-        // skillShiftUniqueIdArray: itemDroppedSkillShiftEnemies.map((e) => e.uniqueId).toList(),
-        // skillShiftNpcSvtIdArray: itemDroppedSkillShiftEnemies.map((e) => e.npcId).toList(),
+        skillShiftUniqueIdArray: itemDroppedSkillShiftEnemies.map((e) => e.uniqueId).toList(),
+        skillShiftNpcSvtIdArray: itemDroppedSkillShiftEnemies.map((e) => e.npcId).toList(),
         sendDelay: sendDelay,
       );
     } else {

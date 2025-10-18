@@ -287,7 +287,11 @@ AutoBattleOptions _$AutoBattleOptionsFromJson(Map json) => $checkedCreate('AutoB
       'usedTurnArray',
       (v) => (v as List<dynamic>?)?.map((e) => (e as num).toInt()).toList(),
     ),
-    checkSkillShift: $checkedConvert('checkSkillShift', (v) => v as bool? ?? true),
+    enableSkillShift: $checkedConvert('enableSkillShift', (v) => v as bool? ?? true),
+    skillShiftEnemyUniqueIds: $checkedConvert(
+      'skillShiftEnemyUniqueIds',
+      (v) => (v as List<dynamic>?)?.map((e) => (e as num).toInt()).toList(),
+    ),
     recoverIds: $checkedConvert('recoverIds', (v) => (v as List<dynamic>?)?.map((e) => (e as num).toInt()).toList()),
     loopCount: $checkedConvert('loopCount', (v) => (v as num?)?.toInt() ?? 0),
     targetDrops: $checkedConvert(
@@ -325,7 +329,8 @@ Map<String, dynamic> _$AutoBattleOptionsToJson(AutoBattleOptions instance) => <S
   'winType': _$BattleWinResultTypeEnumMap[instance.winType]!,
   'actionLogs': instance.actionLogs,
   'usedTurnArray': instance.usedTurnArray,
-  'checkSkillShift': instance.checkSkillShift,
+  'enableSkillShift': instance.enableSkillShift,
+  'skillShiftEnemyUniqueIds': instance.skillShiftEnemyUniqueIds,
   'recoverIds': instance.recoverIds,
   'loopCount': instance.loopCount,
   'targetDrops': instance.targetDrops.map((k, e) => MapEntry(k.toString(), e)),

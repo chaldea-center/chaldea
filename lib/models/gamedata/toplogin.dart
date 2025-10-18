@@ -2845,6 +2845,8 @@ class BattleInfoData {
 
   factory BattleInfoData.fromJson(Map<String, dynamic> data) => _$BattleInfoDataFromJson(data);
 
+  Map<int, BattleUserServantData> get userSvtMap => {for (final svt in userSvt) svt.id: svt};
+
   Map<int, int> getTotalDrops() {
     final drops = enemyDeck.expand((e) => e.svts).expand((e) => e.dropInfos).toList();
     Map<int, int> dropItems = {};
