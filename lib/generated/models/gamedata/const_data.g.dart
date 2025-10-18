@@ -25,7 +25,7 @@ ConstGameData _$ConstGameDataFromJson(Map json) => ConstGameData(
       ) ??
       const {},
   cardInfo:
-      (ConstGameData._readCardInfo(json, 'cardInfo') as Map?)?.map(
+      (json['cardInfo'] as Map?)?.map(
         (k, e) => MapEntry(
           int.parse(k as String),
           (e as Map).map(
@@ -180,16 +180,19 @@ Map<String, dynamic> _$ConstDataConfigToJson(ConstDataConfig instance) => <Strin
 };
 
 BuffActionInfo _$BuffActionInfoFromJson(Map json) => BuffActionInfo(
-  limit: $enumDecode(_$BuffLimitEnumMap, json['limit']),
-  plusTypes: (json['plusTypes'] as List<dynamic>).map((e) => const BuffTypeConverter().fromJson(e as String)).toList(),
-  minusTypes: (json['minusTypes'] as List<dynamic>)
-      .map((e) => const BuffTypeConverter().fromJson(e as String))
-      .toList(),
-  baseParam: (json['baseParam'] as num).toInt(),
-  baseValue: (json['baseValue'] as num).toInt(),
-  isRec: json['isRec'] as bool,
-  plusAction: const BuffActionConverter().fromJson(json['plusAction']),
-  maxRate: (json['maxRate'] as List<dynamic>).map((e) => (e as num).toInt()).toList(),
+  limit: $enumDecodeNullable(_$BuffLimitEnumMap, json['limit']) ?? BuffLimit.none,
+  plusTypes:
+      (json['plusTypes'] as List<dynamic>?)?.map((e) => const BuffTypeConverter().fromJson(e as String)).toList() ??
+      const [],
+  minusTypes:
+      (json['minusTypes'] as List<dynamic>?)?.map((e) => const BuffTypeConverter().fromJson(e as String)).toList() ??
+      const [],
+  baseParam: (json['baseParam'] as num?)?.toInt() ?? 1000,
+  baseValue: (json['baseValue'] as num?)?.toInt() ?? 0,
+  isRec: json['isRec'] as bool? ?? true,
+  plusAction: json['plusAction'] == null ? BuffAction.none : const BuffActionConverter().fromJson(json['plusAction']),
+  isChangeMaxHp: json['isChangeMaxHp'] as bool? ?? false,
+  maxRate: (json['maxRate'] as List<dynamic>?)?.map((e) => (e as num).toInt()).toList() ?? const [],
 );
 
 Map<String, dynamic> _$BuffActionInfoToJson(BuffActionInfo instance) => <String, dynamic>{
@@ -200,6 +203,7 @@ Map<String, dynamic> _$BuffActionInfoToJson(BuffActionInfo instance) => <String,
   'baseValue': instance.baseValue,
   'isRec': instance.isRec,
   'plusAction': const BuffActionConverter().toJson(instance.plusAction),
+  'isChangeMaxHp': instance.isChangeMaxHp,
   'maxRate': instance.maxRate,
 };
 

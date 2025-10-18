@@ -184,7 +184,7 @@ class BuffScript with DataScriptBase {
 
   List<CondBuffValueData>? get condBuffValue {
     final v = source['condBuffValue'];
-    if (v == null || v.isEmpty) return null;
+    if (v == null || v is! List || v.isEmpty) return null;
     return [for (final x in v) CondBuffValueData.fromJson(Map.from(x))];
   }
 

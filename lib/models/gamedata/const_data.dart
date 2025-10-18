@@ -16,7 +16,6 @@ class ConstGameData {
   final Map<String, String> cnReplace;
   final Map<ServantSubAttribute, Map<ServantSubAttribute, int>> attributeRelation;
   final Map<BuffAction, BuffActionInfo> buffActions;
-  @JsonKey(readValue: ConstGameData._readCardInfo)
   final Map<int, Map<int, CardInfo>> cardInfo;
   final Map<int, SvtClassInfo> classInfo;
   final Map<int, Map<int, int>> classRelation;
@@ -84,53 +83,45 @@ class ConstGameData {
     this.extraWarEventMapping = const {},
     this.sameQuestRemap = const {},
   }) : buffTypeActionMap = {} {
-    if (buffActions.isNotEmpty) {
-      void _addBuffTypes(BuffAction action, List<BuffType> plusTypes, List<BuffType> minusTypes) {
-        final actionInfo = buffActions[action];
-        if (actionInfo == null) return;
-        for (final buffType in plusTypes) {
-          if (!actionInfo.plusTypes.contains(buffType)) actionInfo.plusTypes.add(buffType);
-        }
-        for (final buffType in minusTypes) {
-          if (!actionInfo.minusTypes.contains(buffType)) actionInfo.minusTypes.add(buffType);
-        }
-      }
+    _fixBuffActions();
+  }
 
-      // renamed and migrated in JP 2.107.0
-      _addBuffTypes(
-        BuffAction.damageDef,
-        [BuffType.upSelfdamage, BuffType.upDefenceDamage],
-        [BuffType.downSelfdamage, BuffType.downDefenceDamage],
-      );
-      _addBuffTypes(BuffAction.commandStarAtk, [], [BuffType.downCommanstar, BuffType.downCommandstar]);
-      _addBuffTypes(BuffAction.commandNpAtk, [], [BuffType.downCommandnpLegacy, BuffType.downCommandnp]);
+  void _fixBuffActions() {
+    if (buffActions.isEmpty) return;
 
-      buffActions[BuffAction.functionClassboardCommandSpellAfter] = BuffActionInfo(
-        limit: BuffLimit.none,
-        plusTypes: [BuffType.classboardCommandSpellAfterFunction],
-        minusTypes: [],
-        baseParam: 0,
-        baseValue: 0,
-        isRec: true,
-        plusAction: BuffAction.none,
-        maxRate: [0],
-      );
+    void _addExtraBuffTypes(BuffAction action, List<BuffType> plusTypes, List<BuffType> minusTypes) {
+      final actionInfo = buffActions[action];
+      if (actionInfo == null) return;
+      if (plusTypes.isNotEmpty) actionInfo.plusTypes = {...actionInfo.plusTypes, ...plusTypes}.toList();
+      if (minusTypes.isNotEmpty) actionInfo.minusTypes = {...actionInfo.minusTypes, ...minusTypes}.toList();
     }
+
+    // renamed and migrated in JP 2.107.0
+    _addExtraBuffTypes(
+      BuffAction.damageDef,
+      [BuffType.upSelfdamage, BuffType.upDefenceDamage],
+      [BuffType.downSelfdamage, BuffType.downDefenceDamage],
+    );
+    _addExtraBuffTypes(BuffAction.commandStarAtk, [], [BuffType.downCommanstar, BuffType.downCommandstar]);
+    _addExtraBuffTypes(BuffAction.commandNpAtk, [], [BuffType.downCommandnpLegacy, BuffType.downCommandnp]);
+
+    // custom
+    buffActions[BuffAction.functionClassboardCommandSpellAfter] = BuffActionInfo(
+      limit: BuffLimit.none,
+      plusTypes: [BuffType.classboardCommandSpellAfterFunction],
+      minusTypes: [],
+      isRec: true,
+      maxRate: [0],
+    );
+
+    // if BuffList.ActionList not updated for new enums
+    // buffActions.putIfAbsent(BuffAction.newActionType, () => BuffActionInfo());
+
     for (final entry in buffActions.entries) {
       for (final type in [...entry.value.plusTypes, ...entry.value.minusTypes]) {
         buffTypeActionMap.putIfAbsent(type, () => []).add(entry.key);
       }
     }
-  }
-
-  // TODO: deprecate next version
-  static Object? _readCardInfo(Map data, String key) {
-    final value = data[key];
-    if (value == null) return value;
-    if (value is Map) {
-      return {for (final (k, v) in value.items) const CardTypeConverter().fromJson(k).toString(): v};
-    }
-    return value;
   }
 
   List<SvtLimitHide> getSvtLimitHides(int svtId, int? limitCount) {
@@ -235,17 +226,19 @@ class BuffActionInfo {
   int baseValue;
   bool isRec;
   BuffAction plusAction; // check .isNotNone (not none or unknown) before using this field
-  List<int> maxRate;
+  bool isChangeMaxHp;
+  List<int> maxRate; // all maxRate examples in mstBuff
 
   BuffActionInfo({
-    required this.limit,
-    required this.plusTypes,
-    required this.minusTypes,
-    required this.baseParam,
-    required this.baseValue,
-    required this.isRec,
-    required this.plusAction,
-    required this.maxRate,
+    this.limit = BuffLimit.none,
+    this.plusTypes = const [],
+    this.minusTypes = const [],
+    this.baseParam = 1000,
+    this.baseValue = 0,
+    this.isRec = true,
+    this.plusAction = BuffAction.none,
+    this.isChangeMaxHp = false,
+    this.maxRate = const [],
   });
 
   factory BuffActionInfo.fromJson(Map<String, dynamic> json) => _$BuffActionInfoFromJson(json);
