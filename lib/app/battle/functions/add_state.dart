@@ -167,6 +167,10 @@ class AddState {
       return true;
     }
 
+    if (dataVals.ApplySupportSvt == 0 && activator?.playerSvtData?.supportType.isSupport == true) {
+      return false;
+    }
+
     int functionRate = dataVals.Rate ?? 1000;
     if (functionRate < 0 && battleData.functionResults.lastOrNull?[target.uniqueId] != true) {
       return false;
