@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/modules/mc/mc_prob_edit.dart';
 import 'package:chaldea/generated/l10n.dart';
+import 'package:chaldea/models/gamedata/event.dart';
 import 'package:chaldea/utils/extension.dart';
 import '_helper.dart';
 import 'common.dart';
@@ -11,177 +12,89 @@ import 'mappings.dart';
 
 part '../../generated/models/gamedata/gacha.g.dart';
 
-@JsonSerializable(createToJson: false)
-class MstGacha {
+@JsonSerializable()
+class MstGacha with RouteInfo {
   int id; //  50001251,
   String name; //  "【ニューイヤー1延長】【課金】第1部 0章 クリア前ベース",
   int imageId; //  80126,
-  int priority; //  20122,
-  int warId; //  100,
-  int gachaSlot; //  3,
+  // int priority; //  20122,
+  // int warId; //  100,
+  // int gachaSlot; //  3,
+  @GachaTypeConverter()
   int type; //  1,
-  int shopId1; //  4,
-  int shopId2; //  5,
-  int rarityId; //  3,
-  int baseId; //  3,
-  int adjustId; //  50000731,
-  int pickupId; //  50000772,
-  int ticketItemId; //  4001,
-  int gachaGroupId; //  0,
-  int drawNum1; //  1,
-  int drawNum2; //  10,
-  int extraGroupId1; //  0,
-  int extraGroupId2; //  0,
-  int extraAddCount1; //  0,
-  int extraAddCount2; //  0,
+  // int shopId1; //  4,
+  // int shopId2; //  5,
+  // int rarityId; //  3,
+  // int baseId; //  3,
+  // int adjustId; //  50000731,
+  // int pickupId; //  50000772,
+  // int ticketItemId; //  4001,
+  // int gachaGroupId; //  0,
+  // int drawNum1; //  1,
+  // int drawNum2; //  10,
+  // int extraGroupId1; //  0,
+  // int extraGroupId2; //  0,
+  // int extraAddCount1; //  0,
+  // int extraAddCount2; //  0,
   int freeDrawFlag; //  0,
-  int maxDrawNum; //  0,
-  int beforeGachaId; //  101,
-  int beforeDrawNum; //  1,
+  // int maxDrawNum; //  0,
+  // int beforeGachaId; //  101,
+  // int beforeDrawNum; //  1,
   int openedAt; //  1484114400,
   int closedAt; //  1484233199,
-  int condQuestId; //  1000002,
-  int condQuestPhase; //  1,
+  // int condQuestId; //  1000002,
+  // int condQuestPhase; //  1,
   String detailUrl; //  "/summon/gacha-description_newyear2017_12_tbyx2kua6c33y.html",
-  int bannerQuestId; //  1000002,
-  int bannerQuestPhase; //  1,
-  int flag; //  0
+  // int bannerQuestId; //  1000002,
+  // int bannerQuestPhase; //  1,
+  // int flag; //  0
   bool userAdded;
 
   MstGacha({
     this.id = 0,
     this.name = "",
     this.imageId = 0,
-    this.priority = 0,
-    this.warId = 0,
-    this.gachaSlot = 0,
+    // this.priority = 0,
+    // this.warId = 0,
+    // this.gachaSlot = 0,
     this.type = 1,
-    this.shopId1 = 0,
-    this.shopId2 = 0,
-    this.rarityId = 0,
-    this.baseId = 0,
-    this.adjustId = 0,
-    this.pickupId = 0,
-    this.ticketItemId = 0,
-    this.gachaGroupId = 0,
-    this.drawNum1 = 0,
-    this.drawNum2 = 0,
-    this.extraGroupId1 = 0,
-    this.extraGroupId2 = 0,
-    this.extraAddCount1 = 0,
-    this.extraAddCount2 = 0,
+    // this.shopId1 = 0,
+    // this.shopId2 = 0,
+    // this.rarityId = 0,
+    // this.baseId = 0,
+    // this.adjustId = 0,
+    // this.pickupId = 0,
+    // this.ticketItemId = 0,
+    // this.gachaGroupId = 0,
+    // this.drawNum1 = 0,
+    // this.drawNum2 = 0,
+    // this.extraGroupId1 = 0,
+    // this.extraGroupId2 = 0,
+    // this.extraAddCount1 = 0,
+    // this.extraAddCount2 = 0,
     this.freeDrawFlag = 0,
-    this.maxDrawNum = 0,
-    this.beforeGachaId = 0,
-    this.beforeDrawNum = 0,
+    // this.maxDrawNum = 0,
+    // this.beforeGachaId = 0,
+    // this.beforeDrawNum = 0,
     this.openedAt = 0,
     this.closedAt = 0,
-    this.condQuestId = 0,
-    this.condQuestPhase = 0,
+    // this.condQuestId = 0,
+    // this.condQuestPhase = 0,
     this.detailUrl = "",
-    this.bannerQuestId = 0,
-    this.bannerQuestPhase = 0,
-    this.flag = 0,
+    // this.bannerQuestId = 0,
+    // this.bannerQuestPhase = 0,
+    // this.flag = 0,
     this.userAdded = false,
   });
 
   factory MstGacha.fromJson(Map<String, dynamic> json) => _$MstGachaFromJson(json);
 
+  Map<String, dynamic> toJson() => _$MstGachaToJson(this);
+
   GachaType get gachaType => GachaType.values.firstWhereOrNull((e) => e.value == type) ?? GachaType.unknown;
 
   bool get isLuckyBag => type == GachaType.chargeStone.value;
-
-  String? getHtmlUrl(Region region) {
-    // final page = gacha?.detailUrl;
-    // if (page == null || page.trim().isEmpty) return null;
-    if (const [1, 101].contains(id)) return null;
-    switch (region) {
-      case Region.jp:
-        // return 'https://webview.fate-go.jp/webview$page';
-        if (openedAt < 1640790000) {
-          // ID50017991 2021-12-29 23:00+08
-          return null;
-        }
-        return "https://static.atlasacademy.io/file/aa-fgo/GameData-uTvNN4iBTNInrYDa/JP/Banners/$id/index.html";
-      case Region.na:
-        if (openedAt < 1641268800) {
-          // 50010611: 2022-01-04 12:00+08
-          return null;
-        }
-        return "https://static.atlasacademy.io/file/aa-fgo/GameData-uTvNN4iBTNInrYDa/NA/Banners/$id/index.html";
-      case Region.cn:
-      case Region.tw:
-      case Region.kr:
-        return null;
-    }
-  }
-}
-
-@JsonSerializable(createToJson: false)
-class NiceGacha with RouteInfo {
-  int id;
-  String name;
-  int imageId;
-  @GachaTypeConverter()
-  GachaType type;
-  int adjustId;
-  int pickupId;
-  int drawNum1;
-  int drawNum2;
-  int freeDrawFlag;
-  int maxDrawNum;
-  int openedAt;
-  int closedAt;
-  String detailUrl;
-  @JsonKey(unknownEnumValue: GachaFlag.none)
-  List<GachaFlag> flags;
-  List<GachaStoryAdjust> storyAdjusts;
-  List<GachaSub> gachaSubs;
-  // List<int> featuredSvtIds; // only GSSR gacha has data during open and with displayFeaturedSvt flag
-  // int extraGroupId; // 330 保底
-
-  bool userAdded;
-
-  NiceGacha({
-    this.id = 0,
-    this.name = '',
-    this.imageId = 0,
-    this.type = GachaType.payGacha,
-    this.adjustId = 0,
-    this.pickupId = 0,
-    this.drawNum1 = 0,
-    this.drawNum2 = 0,
-    this.freeDrawFlag = 0,
-    this.maxDrawNum = 0,
-    this.openedAt = 0,
-    this.closedAt = 0,
-    this.detailUrl = '',
-    this.flags = const [],
-    this.storyAdjusts = const [],
-    this.gachaSubs = const [],
-    // this.featuredSvtIds = const [],
-    this.userAdded = false,
-  });
-
-  factory NiceGacha.fromJson(Map<String, dynamic> json) => _$NiceGachaFromJson(json);
-
-  bool get isFpGacha => type == GachaType.freeGacha;
-
-  List<GachaSub> getValidGachaSubs() {
-    final now = DateTime.now().timestamp;
-    final subs = gachaSubs.where((e) => e.openedAt <= now && e.closedAt > now).toList();
-    subs.sort2((e) => e.priority);
-    return subs;
-  }
-
-  int getImageId(int subId) {
-    for (final sub in gachaSubs) {
-      if (sub.id == subId && sub.imageId != 0) {
-        return sub.imageId;
-      }
-    }
-    return imageId;
-  }
+  bool get isFpGacha => type == GachaType.freeGacha.value;
 
   String get lName {
     const pujp = 'ピックアップ召喚';
@@ -212,8 +125,6 @@ class NiceGacha with RouteInfo {
     }
     return name;
   }
-
-  bool get isLuckyBag => type == GachaType.chargeStone;
 
   String get detailUrlPrefix {
     final match = RegExp(r'^(/.+/.+_)(([a-z]\d)|(\d+)|([a-z]))$').firstMatch(detailUrl);
@@ -251,13 +162,62 @@ class NiceGacha with RouteInfo {
   @override
   void routeTo({Widget? child, bool popDetails = false, Region? region}) {
     return super.routeTo(
-      child: child ?? MCGachaProbEditPage(gacha: this, region: region ?? Region.jp),
+      child: child ?? MCGachaProbEditPage(gacha: NiceGacha.fromJson(toJson()), region: region ?? Region.jp),
       popDetails: popDetails,
     );
   }
 }
 
-@JsonSerializable(createToJson: false)
+@JsonSerializable()
+class NiceGacha extends MstGacha {
+  // @JsonKey(unknownEnumValue: GachaFlag.none)
+  // List<GachaFlag> flags;
+  List<GachaStoryAdjust> storyAdjusts;
+  List<GachaSub> gachaSubs;
+  List<int> featuredSvtIds; // only GSSR gacha has data during open and with displayFeaturedSvt flag
+  List<GachaRelease> releaseConditions;
+  // int extraGroupId; // 330 保底
+
+  NiceGacha({
+    super.id,
+    super.name = '',
+    super.imageId = 0,
+    super.type,
+    super.freeDrawFlag,
+    super.openedAt,
+    super.closedAt,
+    super.detailUrl,
+    super.userAdded,
+    // this.flags = const [],
+    this.storyAdjusts = const [],
+    this.gachaSubs = const [],
+    this.featuredSvtIds = const [],
+    this.releaseConditions = const [],
+  });
+
+  factory NiceGacha.fromJson(Map<String, dynamic> json) => _$NiceGachaFromJson(json);
+
+  @override
+  Map<String, dynamic> toJson() => _$NiceGachaToJson(this);
+
+  List<GachaSub> getValidGachaSubs() {
+    final now = DateTime.now().timestamp;
+    final subs = gachaSubs.where((e) => e.openedAt <= now && e.closedAt > now).toList();
+    subs.sort2((e) => e.priority);
+    return subs;
+  }
+
+  int getImageId(int subId) {
+    for (final sub in gachaSubs) {
+      if (sub.id == subId && sub.imageId != 0) {
+        return sub.imageId;
+      }
+    }
+    return imageId;
+  }
+}
+
+@JsonSerializable()
 class GachaStoryAdjust {
   int adjustId;
   int idx; // max idx
@@ -277,6 +237,8 @@ class GachaStoryAdjust {
   });
 
   factory GachaStoryAdjust.fromJson(Map<String, dynamic> json) => _$GachaStoryAdjustFromJson(json);
+
+  Map<String, dynamic> toJson() => _$GachaStoryAdjustToJson(this);
 }
 
 // class NiceGachaSub(BaseModelORJson):
@@ -289,7 +251,7 @@ class GachaStoryAdjust {
 //     releaseConditions: list[NiceCommonRelease]
 //     script: dict[str, Any] | None = None
 
-@JsonSerializable(createToJson: false)
+@JsonSerializable()
 class GachaSub {
   int id;
   int priority;
@@ -312,27 +274,47 @@ class GachaSub {
   });
 
   factory GachaSub.fromJson(Map<String, dynamic> json) => _$GachaSubFromJson(json);
+  Map<String, dynamic> toJson() => _$GachaSubToJson(this);
 }
 
-class GachaTypeConverter extends JsonConverter<GachaType, dynamic> {
+@JsonSerializable()
+class GachaRelease {
+  @CondTypeConverter()
+  CondType type;
+  int targetId;
+  int value;
+
+  GachaRelease({this.type = CondType.none, this.targetId = 0, this.value = 0});
+
+  factory GachaRelease.fromJson(Map<String, dynamic> json) => _$GachaReleaseFromJson(json);
+  Map<String, dynamic> toJson() => _$GachaReleaseToJson(this);
+}
+
+class GachaTypeConverter extends JsonConverter<int, dynamic> {
   const GachaTypeConverter();
 
-  static const payTypeToGachaType = <String, GachaType>{
-    "stone": GachaType.payGacha,
-    "friendPoint": GachaType.freeGacha,
-    "ticket": GachaType.ticketGacha,
-    "chargeStone": GachaType.chargeStone,
+  static const payTypeToGachaType = <PayType, GachaType>{
+    PayType.stone: GachaType.payGacha,
+    PayType.friendPoint: GachaType.freeGacha,
+    PayType.ticket: GachaType.ticketGacha,
+    PayType.chargeStone: GachaType.chargeStone,
   };
 
   @override
-  GachaType fromJson(dynamic value) {
-    if (value == null) return GachaType.payGacha;
-    if (value is int) return GachaType.values.firstWhere((e) => e.value == value, orElse: () => GachaType.unknown);
-    return payTypeToGachaType[value] ?? decodeEnum(_$GachaTypeEnumMap, value, GachaType.unknown);
+  int fromJson(dynamic value) {
+    if (value == null) return GachaType.payGacha.value;
+    if (value is int) return value;
+    if (value is String) {
+      for (final (k, v) in payTypeToGachaType.items) {
+        if (k.name == value) return v.value;
+      }
+      return decodeEnum(_$GachaTypeEnumMap, value, GachaType.unknown).value;
+    }
+    return GachaType.unknown.value;
   }
 
   @override
-  String toJson(GachaType obj) => _$GachaTypeEnumMap[obj] ?? obj.name;
+  int toJson(int obj) => obj;
 }
 
 // public enum SummonControl.GACHATYPE or PayType

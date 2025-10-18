@@ -71,7 +71,7 @@ class _GachaListPageState extends State<GachaListPage>
     if (region == Region.cn) {
       if (gacha.openedAt == gacha.closedAt && gacha.openedAt == 1911657599) return false;
     }
-    if (!filterData.gachaType.matchOne(gacha.type)) {
+    if (!filterData.gachaType.matchOne(gacha.gachaType)) {
       return false;
     }
     if (!filterData.showOutdated &&
@@ -160,7 +160,7 @@ class _GachaListPageState extends State<GachaListPage>
   @override
   Widget listItemBuilder(NiceGacha gacha) {
     final String title = gacha.lName;
-    String subtitle = '[${gacha.type.value}]${gacha.id}   ';
+    String subtitle = '[${gacha.type}]${gacha.id}   ';
     subtitle += [gacha.openedAt, gacha.closedAt].map((e) => e.sec2date().toStringShort(omitSec: true)).join(' ~ ');
     final now = DateTime.now().timestamp;
     return SimpleAccordion(
@@ -198,7 +198,7 @@ class _GachaListPageState extends State<GachaListPage>
           title: Text.rich(
             TextSpan(
               children: [
-                if (gacha.type == GachaType.chargeStone)
+                if (gacha.type == GachaType.chargeStone.value)
                   const TextSpan(
                     text: '$kStarChar2 ',
                     style: TextStyle(color: Colors.red),

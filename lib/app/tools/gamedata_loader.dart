@@ -250,7 +250,7 @@ class GameDataLoader {
       'extraMasterMission': 'id',
       'masterMissions': 'id',
       'mstGacha': 'id',
-      'gacha': 'id',
+      'gachas': 'id',
       'wiki.commandCodes': 'collectionNo',
       'wiki.craftEssences': 'collectionNo',
       'wiki.events': 'id',

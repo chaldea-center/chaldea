@@ -419,7 +419,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
         continue;
       }
       int resetHourUTC;
-      switch (gacha.type) {
+      switch (gacha.gachaType) {
         case GachaType.freeGacha:
           resetHourUTC = runtime.region.fpFreeGachaResetUTC;
         case GachaType.payGacha:

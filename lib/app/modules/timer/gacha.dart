@@ -41,7 +41,17 @@ class TimerGachaItem with TimerItem {
         contentPadding: const EdgeInsetsDirectional.only(start: 16),
         enabled: gacha.closedAt > DateTime.now().timestamp,
         title: Text(gacha.lName.setMaxLines(2)),
-        subtitle: Text([fmtDate(gacha.openedAt), fmtDate(gacha.closedAt)].join(' ~ ')),
+        subtitle: Text.rich(
+          TextSpan(
+            text: '${fmtDate(gacha.openedAt)} ~ ${fmtDate(gacha.closedAt)} ',
+            children: [
+              for (final svtId in gacha.featuredSvtIds..sort(SvtFilterData.compareId))
+                CenterWidgetSpan(
+                  child: db.gameData.servantsById[svtId]?.iconBuilder(context: context, width: 28) ?? Text('$svtId'),
+                ),
+            ],
+          ),
+        ),
         trailing: CountDown(
           endedAt: gacha.closedAt.sec2date(),
           startedAt: gacha.openedAt.sec2date(),

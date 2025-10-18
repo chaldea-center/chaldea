@@ -83,23 +83,26 @@ class _MCGachaProbEditPageState extends State<MCGachaProbEditPage> {
                     color: TableCellData.resolveHeaderColor(context),
                   ),
                 ),
-              CustomTableRow.fromTexts(texts: ['No.${gacha.id}', gacha.type.shownName]),
+              CustomTableRow.fromTexts(texts: ['No.${gacha.id}', gacha.gachaType.shownName]),
               CustomTableRow.fromTexts(
                 texts: [
                   [gacha.openedAt, gacha.closedAt].map((e) => e.sec2date().toStringShort(omitSec: true)).join(' ~ '),
                 ],
               ),
-              // if (gacha.featuredSvtIds.isNotEmpty)
-              //   CustomTableRow.fromChildren(children: [
-              //     Wrap(
-              //       spacing: 4,
-              //       runSpacing: 4,
-              //       children: [
-              //         for (final svtId in gacha.featuredSvtIds)
-              //           db.gameData.servantsById[svtId]?.iconBuilder(context: context, width: 48) ?? Text('No.$svtId'),
-              //       ],
-              //     )
-              //   ]),
+              if (gacha.featuredSvtIds.isNotEmpty)
+                CustomTableRow.fromChildren(
+                  children: [
+                    Wrap(
+                      spacing: 4,
+                      runSpacing: 4,
+                      children: [
+                        for (final svtId in gacha.featuredSvtIds)
+                          db.gameData.servantsById[svtId]?.iconBuilder(context: context, width: 48) ??
+                              Text('No.$svtId'),
+                      ],
+                    ),
+                  ],
+                ),
             ],
           ),
           for (final adjust in gacha.storyAdjusts) ...[
@@ -116,7 +119,7 @@ class _MCGachaProbEditPageState extends State<MCGachaProbEditPage> {
                 child: GachaBanner(imageId: adjust.imageId, region: widget.region),
               ),
           ],
-          const Divider(height: 16),
+          const SizedBox(height: 16),
           Wrap(
             spacing: 6,
             alignment: WrapAlignment.center,

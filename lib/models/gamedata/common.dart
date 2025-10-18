@@ -47,12 +47,10 @@ enum Region {
   int get fpFreeGachaResetUTC => 0 - timezone;
   int get storyFreeGachaResetUTC => 4 - timezone;
 
-  int getGachaResetUTC(GachaType gachaType) {
-    return switch (gachaType) {
-      GachaType.payGacha => storyFreeGachaResetUTC,
-      GachaType.freeGacha => fpFreeGachaResetUTC,
-      _ => throw UnimplementedError('$gachaType'),
-    };
+  int getGachaResetUTC(int gachaType) {
+    if (gachaType == GachaType.payGacha.value) return storyFreeGachaResetUTC;
+    if (gachaType == GachaType.freeGacha.value) return fpFreeGachaResetUTC;
+    throw UnimplementedError('GachaType=$gachaType');
   }
 
   @override

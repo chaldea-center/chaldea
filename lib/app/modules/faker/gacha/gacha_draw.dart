@@ -109,7 +109,7 @@ class _GachaDrawPageState extends State<GachaDrawPage> with FakerRuntimeStateMix
                 children: [
                   CenterWidgetSpan(child: db.getIconImage(Items.friendPoint?.icon, width: 20)),
                   TextSpan(text: ' ${curFriendPoint.format(compact: false, groupSeparator: ",")}'),
-                  if (gacha != null && gacha.type != GachaType.freeGacha) ...[
+                  if (gacha != null && gacha.type != GachaType.freeGacha.value) ...[
                     const TextSpan(text: '\n'),
                     CenterWidgetSpan(child: db.getIconImage(Items.stone?.icon, width: 20)),
                     TextSpan(text: ' ${userGame?.freeStone}+${userGame?.chargeStone} '),
@@ -754,7 +754,7 @@ class _GachaDrawPageState extends State<GachaDrawPage> with FakerRuntimeStateMix
     final hasFreeDraw = gacha != null && runtime.checkHasFreeGachaDraw(gacha);
     List<List<Widget>> btnGroups = [
       [
-        gacha != null && gacha.type == GachaType.payGacha
+        gacha != null && gacha.type == GachaType.payGacha.value
             ? buildButton(
                 onPressed: hasFreeDraw
                     ? () async {

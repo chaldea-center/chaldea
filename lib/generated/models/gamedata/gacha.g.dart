@@ -10,58 +10,36 @@ MstGacha _$MstGachaFromJson(Map json) => MstGacha(
   id: (json['id'] as num?)?.toInt() ?? 0,
   name: json['name'] as String? ?? "",
   imageId: (json['imageId'] as num?)?.toInt() ?? 0,
-  priority: (json['priority'] as num?)?.toInt() ?? 0,
-  warId: (json['warId'] as num?)?.toInt() ?? 0,
-  gachaSlot: (json['gachaSlot'] as num?)?.toInt() ?? 0,
-  type: (json['type'] as num?)?.toInt() ?? 1,
-  shopId1: (json['shopId1'] as num?)?.toInt() ?? 0,
-  shopId2: (json['shopId2'] as num?)?.toInt() ?? 0,
-  rarityId: (json['rarityId'] as num?)?.toInt() ?? 0,
-  baseId: (json['baseId'] as num?)?.toInt() ?? 0,
-  adjustId: (json['adjustId'] as num?)?.toInt() ?? 0,
-  pickupId: (json['pickupId'] as num?)?.toInt() ?? 0,
-  ticketItemId: (json['ticketItemId'] as num?)?.toInt() ?? 0,
-  gachaGroupId: (json['gachaGroupId'] as num?)?.toInt() ?? 0,
-  drawNum1: (json['drawNum1'] as num?)?.toInt() ?? 0,
-  drawNum2: (json['drawNum2'] as num?)?.toInt() ?? 0,
-  extraGroupId1: (json['extraGroupId1'] as num?)?.toInt() ?? 0,
-  extraGroupId2: (json['extraGroupId2'] as num?)?.toInt() ?? 0,
-  extraAddCount1: (json['extraAddCount1'] as num?)?.toInt() ?? 0,
-  extraAddCount2: (json['extraAddCount2'] as num?)?.toInt() ?? 0,
+  type: json['type'] == null ? 1 : const GachaTypeConverter().fromJson(json['type']),
   freeDrawFlag: (json['freeDrawFlag'] as num?)?.toInt() ?? 0,
-  maxDrawNum: (json['maxDrawNum'] as num?)?.toInt() ?? 0,
-  beforeGachaId: (json['beforeGachaId'] as num?)?.toInt() ?? 0,
-  beforeDrawNum: (json['beforeDrawNum'] as num?)?.toInt() ?? 0,
   openedAt: (json['openedAt'] as num?)?.toInt() ?? 0,
   closedAt: (json['closedAt'] as num?)?.toInt() ?? 0,
-  condQuestId: (json['condQuestId'] as num?)?.toInt() ?? 0,
-  condQuestPhase: (json['condQuestPhase'] as num?)?.toInt() ?? 0,
   detailUrl: json['detailUrl'] as String? ?? "",
-  bannerQuestId: (json['bannerQuestId'] as num?)?.toInt() ?? 0,
-  bannerQuestPhase: (json['bannerQuestPhase'] as num?)?.toInt() ?? 0,
-  flag: (json['flag'] as num?)?.toInt() ?? 0,
   userAdded: json['userAdded'] as bool? ?? false,
 );
+
+Map<String, dynamic> _$MstGachaToJson(MstGacha instance) => <String, dynamic>{
+  'id': instance.id,
+  'name': instance.name,
+  'imageId': instance.imageId,
+  'type': const GachaTypeConverter().toJson(instance.type),
+  'freeDrawFlag': instance.freeDrawFlag,
+  'openedAt': instance.openedAt,
+  'closedAt': instance.closedAt,
+  'detailUrl': instance.detailUrl,
+  'userAdded': instance.userAdded,
+};
 
 NiceGacha _$NiceGachaFromJson(Map json) => NiceGacha(
   id: (json['id'] as num?)?.toInt() ?? 0,
   name: json['name'] as String? ?? '',
   imageId: (json['imageId'] as num?)?.toInt() ?? 0,
-  type: json['type'] == null ? GachaType.payGacha : const GachaTypeConverter().fromJson(json['type']),
-  adjustId: (json['adjustId'] as num?)?.toInt() ?? 0,
-  pickupId: (json['pickupId'] as num?)?.toInt() ?? 0,
-  drawNum1: (json['drawNum1'] as num?)?.toInt() ?? 0,
-  drawNum2: (json['drawNum2'] as num?)?.toInt() ?? 0,
+  type: json['type'] == null ? 1 : const GachaTypeConverter().fromJson(json['type']),
   freeDrawFlag: (json['freeDrawFlag'] as num?)?.toInt() ?? 0,
-  maxDrawNum: (json['maxDrawNum'] as num?)?.toInt() ?? 0,
   openedAt: (json['openedAt'] as num?)?.toInt() ?? 0,
   closedAt: (json['closedAt'] as num?)?.toInt() ?? 0,
-  detailUrl: json['detailUrl'] as String? ?? '',
-  flags:
-      (json['flags'] as List<dynamic>?)
-          ?.map((e) => $enumDecode(_$GachaFlagEnumMap, e, unknownValue: GachaFlag.none))
-          .toList() ??
-      const [],
+  detailUrl: json['detailUrl'] as String? ?? "",
+  userAdded: json['userAdded'] as bool? ?? false,
   storyAdjusts:
       (json['storyAdjusts'] as List<dynamic>?)
           ?.map((e) => GachaStoryAdjust.fromJson(Map<String, dynamic>.from(e as Map)))
@@ -72,14 +50,28 @@ NiceGacha _$NiceGachaFromJson(Map json) => NiceGacha(
           ?.map((e) => GachaSub.fromJson(Map<String, dynamic>.from(e as Map)))
           .toList() ??
       const [],
-  userAdded: json['userAdded'] as bool? ?? false,
+  featuredSvtIds: (json['featuredSvtIds'] as List<dynamic>?)?.map((e) => (e as num).toInt()).toList() ?? const [],
+  releaseConditions:
+      (json['releaseConditions'] as List<dynamic>?)
+          ?.map((e) => GachaRelease.fromJson(Map<String, dynamic>.from(e as Map)))
+          .toList() ??
+      const [],
 );
 
-const _$GachaFlagEnumMap = {
-  GachaFlag.none: 'none',
-  GachaFlag.pcMessage: 'pcMessage',
-  GachaFlag.bonusSelect: 'bonusSelect',
-  GachaFlag.displayFeaturedSvt: 'displayFeaturedSvt',
+Map<String, dynamic> _$NiceGachaToJson(NiceGacha instance) => <String, dynamic>{
+  'id': instance.id,
+  'name': instance.name,
+  'imageId': instance.imageId,
+  'type': const GachaTypeConverter().toJson(instance.type),
+  'freeDrawFlag': instance.freeDrawFlag,
+  'openedAt': instance.openedAt,
+  'closedAt': instance.closedAt,
+  'detailUrl': instance.detailUrl,
+  'userAdded': instance.userAdded,
+  'storyAdjusts': instance.storyAdjusts.map((e) => e.toJson()).toList(),
+  'gachaSubs': instance.gachaSubs.map((e) => e.toJson()).toList(),
+  'featuredSvtIds': instance.featuredSvtIds,
+  'releaseConditions': instance.releaseConditions.map((e) => e.toJson()).toList(),
 };
 
 GachaStoryAdjust _$GachaStoryAdjustFromJson(Map json) => GachaStoryAdjust(
@@ -90,6 +82,15 @@ GachaStoryAdjust _$GachaStoryAdjustFromJson(Map json) => GachaStoryAdjust(
   value: (json['value'] as num?)?.toInt() ?? 0,
   imageId: (json['imageId'] as num?)?.toInt() ?? 0,
 );
+
+Map<String, dynamic> _$GachaStoryAdjustToJson(GachaStoryAdjust instance) => <String, dynamic>{
+  'adjustId': instance.adjustId,
+  'idx': instance.idx,
+  'condType': const CondTypeConverter().toJson(instance.condType),
+  'targetId': instance.targetId,
+  'value': instance.value,
+  'imageId': instance.imageId,
+};
 
 GachaSub _$GachaSubFromJson(Map json) => GachaSub(
   id: (json['id'] as num).toInt(),
@@ -105,6 +106,29 @@ GachaSub _$GachaSubFromJson(Map json) => GachaSub(
       const [],
   script: (json['script'] as Map?)?.map((k, e) => MapEntry(k as String, e)),
 );
+
+Map<String, dynamic> _$GachaSubToJson(GachaSub instance) => <String, dynamic>{
+  'id': instance.id,
+  'priority': instance.priority,
+  'imageId': instance.imageId,
+  'adjustAddId': instance.adjustAddId,
+  'openedAt': instance.openedAt,
+  'closedAt': instance.closedAt,
+  'releaseConditions': instance.releaseConditions.map((e) => e.toJson()).toList(),
+  'script': instance.script,
+};
+
+GachaRelease _$GachaReleaseFromJson(Map json) => GachaRelease(
+  type: json['type'] == null ? CondType.none : const CondTypeConverter().fromJson(json['type'] as String),
+  targetId: (json['targetId'] as num?)?.toInt() ?? 0,
+  value: (json['value'] as num?)?.toInt() ?? 0,
+);
+
+Map<String, dynamic> _$GachaReleaseToJson(GachaRelease instance) => <String, dynamic>{
+  'type': const CondTypeConverter().toJson(instance.type),
+  'targetId': instance.targetId,
+  'value': instance.value,
+};
 
 const _$GachaTypeEnumMap = {
   GachaType.unknown: 'unknown',
