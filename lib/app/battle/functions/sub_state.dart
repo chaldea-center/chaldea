@@ -33,17 +33,23 @@ class SubState {
 
         // TODO: change to buffAction once plusAction etc. is available
         final substituteAddState = await target.getBuffOfType(battleData, BuffType.substituteAddState);
-        if (buff.checkField() && await shouldSubState(battleData, buff, affectTraits, dataVals, activator, target)) {
+        if (buff.checkField() &&
+            await shouldSubState(
+              battleData,
+              buff,
+              affectTraits,
+              dataVals,
+              activator,
+              target,
+              substituteAddState: substituteAddState,
+            )) {
           if (substituteAddState != null && substituteAddState.vals.SubstituteSkillId != null) {
             await FunctionExecutor.executeCustomSkill(
               battleData: battleData,
               skillId: substituteAddState.vals.SubstituteSkillId!,
-              description: substituteAddState.buff.lName.l,
               activator: target,
               target: activator,
               skillLv: substituteAddState.vals.SubstituteSkillLv,
-              rate: substituteAddState.vals.SubstituteRate,
-              resist: substituteAddState.vals.SubstituteResist,
             );
           } else {
             removedBuffs.add(listToInspect.removeAt(index));
@@ -56,7 +62,6 @@ class SubState {
           await FunctionExecutor.executeCustomSkill(
             battleData: battleData,
             skillId: substituteAddState.vals.ResistSkillId!,
-            description: substituteAddState.buff.lName.l,
             activator: target,
             target: activator,
             skillLv: substituteAddState.vals.ResistSkillLv,
@@ -93,8 +98,9 @@ class SubState {
     final List<int> affectTraits,
     final DataVals dataVals,
     final BattleServantData? activator,
-    final BattleServantData target,
-  ) async {
+    final BattleServantData target, {
+    final BuffData? substituteAddState,
+  }) async {
     if (!checkSignedIndividualities2(myTraits: buff.getTraits(), requiredTraits: affectTraits)) {
       return false;
     }
@@ -118,9 +124,12 @@ class SubState {
         ) ??
         0;
 
+    // TODO: double check substitute formula
+    final substituteRate = substituteAddState?.vals.SubstituteRate ?? 0;
+    final substituteResist = substituteAddState?.vals.SubstituteResist ?? 0;
     final functionRate = dataVals.Rate ?? 1000;
-    final activationRate = functionRate + grantSubState;
-    final resistRate = toleranceSubState;
+    final activationRate = functionRate + grantSubState - substituteRate;
+    final resistRate = toleranceSubState + substituteResist;
     final success = await battleData.canActivateFunction(activationRate - resistRate);
     final resultsString = success
         ? S.current.success

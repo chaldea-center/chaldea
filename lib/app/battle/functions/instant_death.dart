@@ -26,17 +26,23 @@ class InstantDeath {
 
       // TODO: change to buffAction once plusAction etc. is available
       final substituteInstantDeath = await target.getBuffOfType(battleData, BuffType.substituteInstantDeath);
-      if (await shouldInstantDeath(battleData, dataVals, activator, target, isForceInstantDeath, params, card: card)) {
+      if (await shouldInstantDeath(
+        battleData,
+        dataVals,
+        activator,
+        target,
+        isForceInstantDeath,
+        params,
+        card: card,
+        substituteInstantDeath: substituteInstantDeath,
+      )) {
         if (substituteInstantDeath != null && substituteInstantDeath.vals.SubstituteSkillId != null) {
           await FunctionExecutor.executeCustomSkill(
             battleData: battleData,
             skillId: substituteInstantDeath.vals.SubstituteSkillId!,
-            description: substituteInstantDeath.buff.lName.l,
             activator: target,
             target: activator,
             skillLv: substituteInstantDeath.vals.SubstituteSkillLv,
-            rate: substituteInstantDeath.vals.SubstituteRate,
-            resist: substituteInstantDeath.vals.SubstituteResist,
           );
         } else {
           target.hp = 0;
@@ -59,13 +65,11 @@ class InstantDeath {
         await FunctionExecutor.executeCustomSkill(
           battleData: battleData,
           skillId: substituteInstantDeath.vals.ResistSkillId!,
-          description: substituteInstantDeath.buff.lName.l,
           activator: target,
           target: activator,
           skillLv: substituteInstantDeath.vals.ResistSkillLv,
         );
       }
-
 
       record.targets.add(InstantDeathResultDetail(target: target, params: params));
     }
@@ -82,6 +86,7 @@ class InstantDeath {
     final bool isForceInstantDeath,
     InstantDeathParameters? params, {
     final CommandCardData? card,
+    final BuffData? substituteInstantDeath,
   }) async {
     params ??= InstantDeathParameters();
     params.isForce = isForceInstantDeath;
@@ -102,6 +107,8 @@ class InstantDeath {
       return false;
     }
 
+    final substituteRate = substituteInstantDeath?.vals.SubstituteRate;
+    final substituteResist = substituteInstantDeath?.vals.SubstituteResist ?? 0;
     final resistInstantDeath = await target.getBuffValue(
       battleData,
       BuffAction.resistInstantdeath,
@@ -115,10 +122,11 @@ class InstantDeath {
     final grantInstantDeath =
         await activator?.getBuffValue(battleData, BuffAction.grantInstantdeath, opponent: target, card: card) ?? 0;
 
+    final deathRate = substituteRate ?? target.deathRate;
     final functionRate = dataVals.Rate ?? 1000;
     final resistRate = resistInstantDeath - nonResistInstantDeath;
-    final buffRate = grantInstantDeath - resistRate;
-    final activationRate = (functionRate * toModifier(target.deathRate) * toModifier(1000 + buffRate)).toInt();
+    final buffRate = grantInstantDeath - resistRate - substituteResist;
+    final activationRate = (functionRate * toModifier(deathRate) * toModifier(1000 + buffRate)).toInt();
     final success = await battleData.canActivateFunction(activationRate);
     final resultsString = success
         ? S.current.success
@@ -128,7 +136,7 @@ class InstantDeath {
 
     params
       ..functionRate = functionRate
-      ..deathRate = target.deathRate
+      ..deathRate = deathRate
       ..buffRate = buffRate
       ..activateRate = activationRate
       ..success = success

@@ -2148,7 +2148,13 @@ class BattleServantData {
     final bool useBuff = true,
   }) async {
     for (final buff in collectBuffsPerType(battleBuff.validBuffs, buffType)) {
-      final List<int> selfTraits = fetchSelfTraits(BuffAction.unknown, buff, this, cardData: card, addTraits: addTraits);
+      final List<int> selfTraits = fetchSelfTraits(
+        BuffAction.unknown,
+        buff,
+        this,
+        cardData: card,
+        addTraits: addTraits,
+      );
       final List<int>? opponentTraits = fetchOpponentTraits(
         BuffAction.unknown,
         buff,
