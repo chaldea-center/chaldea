@@ -383,11 +383,12 @@ class CondTargetNumDescriptor extends HookWidget with DescriptorBase {
               kr: null,
             );
           } else {
+            final clsIdSpans = svtClasses(context, targetIds: clsIds);
             return localized(
-              jp: () => text('『${classIds(clsIds)}』クラスのサーヴァント$targetNum騎の霊基再臨を$limit段階目にする'),
-              cn: () => text('让$targetNum骑${classIds(clsIds)}从者达到灵基再临第$limit阶段'),
-              tw: () => text('讓$targetNum騎${classIds(clsIds)}從者達到靈基再臨第$limit階段'),
-              na: () => text('Raise $targetNum ${classIds(clsIds)} to ascension $limit'),
+              jp: () => rich('『', clsIdSpans, '』クラスのサーヴァント$targetNum騎の霊基再臨を$limit段階目にする'),
+              cn: () => rich('让$targetNum骑', clsIdSpans, '从者达到灵基再临第$limit阶段'),
+              tw: () => rich('讓$targetNum騎', clsIdSpans, '從者達到靈基再臨第$limit階段'),
+              na: () => rich('Raise $targetNum ', clsIdSpans, ' to ascension $limit'),
               kr: null,
             );
           }
@@ -493,37 +494,46 @@ class CondTargetNumDescriptor extends HookWidget with DescriptorBase {
         );
       case CondType.svtClassFriendshipCount:
         return localized(
-          jp: () => text('『$targetClassIds』クラスのサーヴァントの絆レベルを合計$targetNum以上にせよ'),
-          cn: () => text('『$targetClassIds』职阶从者牵绊等级合计达到$targetNum以上'),
-          tw: () => text('『$targetClassIds』職階從者羈絆等級合計達到$targetNum以上'),
-          na: () => text('Reach bond level $targetNum on [$targetClassIds] class servants'),
+          jp: () => rich('『', svtClasses(context), '』クラスのサーヴァントの絆レベルを合計$targetNum以上にせよ'),
+          cn: () => rich('『', svtClasses(context), '』职阶从者牵绊等级合计达到$targetNum以上'),
+          tw: () => rich('『', svtClasses(context), '』職階從者羈絆等級合計達到$targetNum以上'),
+          na: () => rich('Reach bond level $targetNum on [', svtClasses(context), '] class servants'),
           kr: null,
         );
       case CondType.svtClassSkillLvUpCount:
         return localized(
-          jp: () => text('『$targetClassIds』クラスのサーヴァントのスキルを合計$targetNum回強化せよ(同一霊基不可) '),
-          cn: () => text('『$targetClassIds』职阶从者技能强化累计$targetNum次（不计算相同灵基）'),
-          tw: () => text('『$targetClassIds』職階從者技能強化累計$targetNum次（不計算相同靈基）'),
-          na: () => text(
-            'Leveled up skills of [$targetClassIds] class servants $targetNum times (not include duplicate servants)',
+          jp: () => rich('『', svtClasses(context), '』クラスのサーヴァントのスキルを合計$targetNum回強化せよ(同一霊基不可) '),
+          cn: () => rich('『', svtClasses(context), '』职阶从者技能强化累计$targetNum次（不计算相同灵基）'),
+          tw: () => rich('『', svtClasses(context), '』職階從者技能強化累計$targetNum次（不計算相同靈基）'),
+          na: () => rich(
+            'Leveled up skills of [',
+            svtClasses(context),
+            '] class servants $targetNum times (not include duplicate servants)',
           ),
           kr: null,
         );
       case CondType.svtClassLvUpCount:
         return localized(
-          jp: () => text('『$targetClassIds』クラスのサーヴァントのLvを合計$targetNum回強化せよ(同一霊基不可) '),
-          cn: () => text('『$targetClassIds』职阶从者等级强化累计$targetNum次（不计算相同灵基）'),
-          tw: () => text('『$targetClassIds』職階從者等級強化累計$targetNum次（不計算相同靈基）'),
-          na: () =>
-              text('Leveled up [$targetClassIds] class servants $targetNum times (not include duplicate servants)'),
+          jp: () => rich('『', svtClasses(context), '』クラスのサーヴァントのLvを合計$targetNum回強化せよ(同一霊基不可) '),
+          cn: () => rich('『', svtClasses(context), '』职阶从者等级强化累计$targetNum次（不计算相同灵基）'),
+          tw: () => rich('『', svtClasses(context), '』職階從者等級強化累計$targetNum次（不計算相同靈基）'),
+          na: () => rich(
+            'Leveled up [',
+            svtClasses(context),
+            '] class servants $targetNum times (not include duplicate servants)',
+          ),
           kr: null,
         );
       case CondType.svtClassLimitUpCount:
         return localized(
-          jp: () => text('『$targetClassIds』クラスのサーヴァントを合計$targetNum回霊基再臨せよ(同一霊基不可) '),
-          cn: () => text('『$targetClassIds』职阶从者灵基再临累计$targetNum次（不计算相同灵基）'),
-          tw: () => text('『$targetClassIds』職階從者靈基再臨累計$targetNum次（不計算相同靈基）'),
-          na: () => text('Ascend [$targetClassIds] class servants $targetNum times (not include duplicate servants)'),
+          jp: () => rich('『', svtClasses(context), '』クラスのサーヴァントを合計$targetNum回霊基再臨せよ(同一霊基不可) '),
+          cn: () => rich('『', svtClasses(context), '』职阶从者灵基再临累计$targetNum次（不计算相同灵基）'),
+          tw: () => rich('『', svtClasses(context), '』職階從者靈基再臨累計$targetNum次（不計算相同靈基）'),
+          na: () => rich(
+            'Ascend [',
+            svtClasses(context),
+            '] class servants $targetNum times (not include duplicate servants)',
+          ),
           kr: null,
         );
       case CondType.svtFriendshipClassNumAbove:
@@ -541,11 +551,12 @@ class CondTargetNumDescriptor extends HookWidget with DescriptorBase {
               kr: null,
             );
           } else {
+            final clsIdSpans = svtClasses(context, targetIds: clsIds);
             return localized(
-              jp: () => text('『${classIds(clsIds)}』クラスのサーヴァント$targetNum騎の絆レベルをLv.$level以上にせよ'),
-              cn: () => text('让$targetNum骑${classIds(clsIds)}骑从者的牵绊等级达到Lv.$level以上'),
-              tw: () => text('讓$targetNum騎${classIds(clsIds)}騎從者的羈絆等級達到Lv.$level以上'),
-              na: () => text('Reach Bond Level $level or above on $targetNum [${classIds(clsIds)}] Servants'),
+              jp: () => rich('『', clsIdSpans, '』クラスのサーヴァント$targetNum騎の絆レベルをLv.$level以上にせよ'),
+              cn: () => rich('让$targetNum骑', clsIdSpans, '骑从者的牵绊等级达到Lv.$level以上'),
+              tw: () => rich('讓$targetNum騎', clsIdSpans, '騎從者的羈絆等級達到Lv.$level以上'),
+              na: () => rich('Reach Bond Level $level or above on $targetNum [', clsIdSpans, '] Servants'),
               kr: null,
             );
           }
@@ -562,6 +573,22 @@ class CondTargetNumDescriptor extends HookWidget with DescriptorBase {
           cn: () => rich('总宝具等级≤$targetNum', servants(context)),
           tw: null,
           na: () => rich('Total NP levels ≤$targetNum', servants(context)),
+          kr: null,
+        );
+      case CondType.equipGet:
+        return localized(
+          jp: null,
+          cn: () => rich('已获得魔术礼装', masterEquips(context)),
+          tw: null,
+          na: () => rich('Have got Mystic Code', masterEquips(context)),
+          kr: null,
+        );
+      case CondType.notEquipGet:
+        return localized(
+          jp: null,
+          cn: () => rich('未获得魔术礼装', masterEquips(context)),
+          tw: null,
+          na: () => rich('Have not got Mystic Code', masterEquips(context)),
           kr: null,
         );
       case CondType.notShopPurchase:
@@ -752,10 +779,10 @@ class CondTargetNumDescriptor extends HookWidget with DescriptorBase {
         );
       case CondType.grandSvtSet:
         return localized(
-          jp: () => rich('サーヴァント$targetNum騎をグランドに選定せよ: ${classIds(targetIds)}'),
-          cn: () => rich('选定$targetNum骑冠位从者：${classIds(targetIds)}'),
+          jp: () => rich('サーヴァント$targetNum騎をグランドに選定せよ: ', svtClasses(context)),
+          cn: () => rich('选定$targetNum骑冠位从者：', svtClasses(context)),
           tw: null,
-          na: () => rich('Select $targetNum Servant for the Grand Class: ${classIds(targetIds)}'),
+          na: () => rich('Select $targetNum Servant for the Grand Class: ', svtClasses(context)),
           kr: null,
         );
       case CondType.commonRelease:

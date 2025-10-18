@@ -86,8 +86,8 @@ mixin DescriptorBase {
       emptyHint(MultiDescriptor.quests(context, targetIds, useAnd: useAnd));
   List<InlineSpan> traits(BuildContext context) =>
       emptyHint(MultiDescriptor.traits(context, targetIds, useAnd: useAnd));
-  List<InlineSpan> svtClasses(BuildContext context) =>
-      emptyHint(MultiDescriptor.svtClass(context, targetIds, useAnd: useAnd));
+  List<InlineSpan> svtClasses(BuildContext context, {List<int>? targetIds, bool? useAnd}) =>
+      emptyHint(MultiDescriptor.svtClass(context, targetIds ?? this.targetIds, useAnd: useAnd ?? false));
   List<InlineSpan> servants(BuildContext context) =>
       emptyHint(MultiDescriptor.servants(context, targetIds, useAnd: useAnd));
   List<InlineSpan> items(BuildContext context) => emptyHint(MultiDescriptor.items(context, targetIds, useAnd: useAnd));
@@ -97,7 +97,7 @@ mixin DescriptorBase {
       emptyHint([TextSpan(children: MultiDescriptor.events(context, targetIds), style: const TextStyle(fontSize: 14))]);
   List<InlineSpan> wars(BuildContext context) => emptyHint(MultiDescriptor.wars(context, targetIds));
   List<InlineSpan> shops(BuildContext context) => emptyHint(MultiDescriptor.shops(context, targetIds));
-  String classIds(List<int> clsIds) => clsIds.map((e) => Transl.svtClassId(e).l).join("/");
-  String get targetClassIds => classIds(targetIds);
   List<InlineSpan> classBoards(BuildContext context) => emptyHint(MultiDescriptor.classBoards(context, targetIds));
+  List<InlineSpan> masterEquips(BuildContext context) =>
+      emptyHint(MultiDescriptor.masterEquips(context, targetIds, useAnd: useAnd));
 }

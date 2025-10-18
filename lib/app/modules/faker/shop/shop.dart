@@ -31,13 +31,7 @@ class _UserShopsPageState extends State<UserShopsPage> with SingleTickerProvider
 
   @override
   Widget build(BuildContext context) {
-    shops.sortByList(
-      (shop) => <int>[
-        shop.limitNum != 0 && (mstData.userShop[shop.id]?.num ?? 0) >= shop.limitNum ? 1 : 0,
-        shop.priority,
-        shop.id,
-      ],
-    );
+    shops.sortByList((shop) => <int>[isShopReleased(shop) ? 0 : 1, isSoldOut(shop) ? 1 : 0, shop.priority, shop.id]);
     Set<int> consumeItemIds = {};
     for (final shop in shops) {
       if (shop.cost != null) {
@@ -119,14 +113,14 @@ class _UserShopsPageState extends State<UserShopsPage> with SingleTickerProvider
   Widget buildShop(NiceShop shop) {
     final reward = ShopHelper.purchases(context, shop, showSpecialName: true).firstOrNull;
     final userShop = mstData.userShop[shop.id];
-    final bool soldOut = shop.limitNum != 0 && userShop != null && userShop.num >= shop.limitNum;
-    final TextStyle? textStyle = soldOut ? TextStyle(color: Theme.of(context).disabledColor) : null;
+    final bool canBuy = !isSoldOut(shop) && shop.releaseConditions.every(isReleaseOpen);
+    final TextStyle? textStyle = canBuy ? null : TextStyle(color: Theme.of(context).disabledColor);
     Widget? leading = reward?.$1;
-    if (leading != null && soldOut) {
+    if (leading != null && !canBuy) {
       leading = Opacity(opacity: 0.5, child: leading);
     }
     return ListTile(
-      key: Key('shop-${shop.id}'),
+      key: Key('userShop-${shop.id}'),
       dense: true,
       leading: leading,
       title: Text(shop.name),
@@ -149,7 +143,7 @@ class _UserShopsPageState extends State<UserShopsPage> with SingleTickerProvider
       statesController: WidgetStatesController(),
       trailing: Wrap(
         crossAxisAlignment: WrapCrossAlignment.center,
-        spacing: 4,
+        spacing: 8,
         children: [
           Text.rich(
             TextSpan(
@@ -158,18 +152,14 @@ class _UserShopsPageState extends State<UserShopsPage> with SingleTickerProvider
                 if (shop.purchaseType == PurchaseType.item && shop.targetIds.length == 1)
                   TextSpan(
                     text: '\n${S.current.item_own} ${mstData.getItemOrSvtNum(shop.targetIds.single).format()}',
-                    style: soldOut ? null : Theme.of(context).textTheme.bodySmall,
+                    style: canBuy ? Theme.of(context).textTheme.bodySmall : null,
                   ),
               ],
             ),
             textAlign: TextAlign.end,
           ),
           OutlinedButton(
-            onPressed: soldOut
-                ? null
-                : () {
-                    buyShop(shop);
-                  },
+            onPressed: canBuy ? () => buyShop(shop) : null,
             style: OutlinedButton.styleFrom(
               tapTargetSize: MaterialTapTargetSize.shrinkWrap,
               visualDensity: VisualDensity.compact,
@@ -189,7 +179,7 @@ class _UserShopsPageState extends State<UserShopsPage> with SingleTickerProvider
       return;
     }
     for (final release in shop.releaseConditions) {
-      if (!isOpen(release)) {
+      if (!isReleaseOpen(release)) {
         EasyLoading.showError('Release condition failed: ${release.condType.name} ${release.closedMessage}');
         return;
       }
@@ -242,7 +232,15 @@ class _UserShopsPageState extends State<UserShopsPage> with SingleTickerProvider
     await runtime.runTask(() => runtime.agent.shopPurchase(id: shop.id, num: buyCount));
   }
 
-  bool isOpen(ShopRelease release) {
+  bool isSoldOut(NiceShop shop) {
+    return shop.limitNum != 0 && (mstData.userShop[shop.id]?.num ?? 0) >= shop.limitNum;
+  }
+
+  bool isShopReleased(NiceShop shop) {
+    return shop.releaseConditions.every(isReleaseOpen);
+  }
+
+  bool isReleaseOpen(ShopRelease release) {
     final List<int> condValues = release.condValues;
     final int condValue = release.condValues.firstOrNull ?? 0;
     final int condNum = release.condNum;
@@ -283,6 +281,10 @@ class _UserShopsPageState extends State<UserShopsPage> with SingleTickerProvider
         return DateTime.now().timestamp > condNum;
       case CondType.eventMissionAchieve:
         return mstData.userEventMission[condValue]?.missionProgressType == MissionProgressType.achieve.value;
+      case CondType.notEquipGet:
+        return mstData.userEquip.every((e) => e.equipId != condValue);
+      case CondType.equipGet:
+        return mstData.userEquip.any((e) => e.equipId == condValue);
       // case CondType.questGroupClear:
       // case CondType.eventPoint:
       // case CondType.itemGet:

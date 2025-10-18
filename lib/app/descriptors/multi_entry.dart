@@ -176,7 +176,7 @@ class MultiDescriptor {
         onTap: () => router.push(url: Routes.svtClassI(id)),
         text: '[${Transl.svtClassId(id).l}]',
       );
-    }, useAnd);
+    }, useAnd ?? false);
   }
 
   static List<InlineSpan> missions(
@@ -303,6 +303,21 @@ class MultiDescriptor {
         );
       }, useAnd),
     ];
+  }
+
+  static List<InlineSpan> masterEquips(BuildContext context, List<int> targetIds, {bool? useAnd}) {
+    return list(context, targetIds, (context, id) {
+      final equip = db.gameData.mysticCodes[id];
+      return equip == null
+          ? inkWell(
+              context: context,
+              text: '${S.current.mystic_code} $id',
+              onTap: () => router.push(url: Routes.mysticCodeI(id)),
+            )
+          : CenterWidgetSpan(
+              child: equip.iconBuilder(context: context, width: iconSize),
+            );
+    }, useAnd);
   }
 
   static List<InlineSpan> commonRelease(BuildContext context, List<int> targetIds, {bool? useAnd}) {
