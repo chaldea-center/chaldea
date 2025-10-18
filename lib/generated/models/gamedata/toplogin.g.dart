@@ -747,6 +747,7 @@ BattleEntity _$BattleEntityFromJson(Map json) => BattleEntity(
   followerId: json['followerId'],
   followerType: json['followerType'],
   eventId: json['eventId'],
+  questSelect: json['questSelect'],
   createdAt: json['createdAt'],
 );
 

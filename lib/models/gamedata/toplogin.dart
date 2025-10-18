@@ -2775,7 +2775,7 @@ class BattleEntity extends DataEntityBase<int> {
   int eventId = 0;
   // int rankingEventId;
   // int verifyMode;
-  // int questSelect;
+  int questSelect;
   //  List<CommandCodeInfo> userCommandCode;
   int64_t createdAt;
 
@@ -2795,6 +2795,7 @@ class BattleEntity extends DataEntityBase<int> {
     dynamic followerId,
     dynamic followerType,
     dynamic eventId,
+    dynamic questSelect,
     dynamic createdAt,
   }) : id = _toInt(id),
        battleType = _toInt(battleType),
@@ -2805,6 +2806,7 @@ class BattleEntity extends DataEntityBase<int> {
        followerId = _toIntNull(followerId),
        followerType = _toIntNull(followerType),
        eventId = _toInt(eventId),
+       questSelect = _toInt(questSelect),
        createdAt = _toInt(createdAt, 0);
 
   factory BattleEntity.fromJson(Map<String, dynamic> data) => _$BattleEntityFromJson(data);
@@ -2915,6 +2917,8 @@ class BattleDeckServantData {
        followerType = _toIntNull(followerType);
 
   factory BattleDeckServantData.fromJson(Map<String, dynamic> data) => _$BattleDeckServantDataFromJson(data);
+
+  bool isSkillShift() => enemyScript?['skillShift'] != null;
 }
 
 @JsonSerializable(createToJson: false)

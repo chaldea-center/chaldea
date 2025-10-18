@@ -102,8 +102,8 @@ class _HomePageState extends State<HomePage> with AfterLayoutMixin {
       );
     }
     if (!kIsWeb && forceUpgradeVersion != null) {
-      final version = const AppVersionConverter().fromJson(forceUpgradeVersion);
-      if (AppInfo.version < version) {
+      final version = AppVersion.tryParse(forceUpgradeVersion);
+      if (version != null && AppInfo.version < version) {
         errors.add(
           Positioned.fill(
             child: Container(
@@ -113,7 +113,7 @@ class _HomePageState extends State<HomePage> with AfterLayoutMixin {
                   scrollable: true,
                   title: Text(S.current.update),
                   content: Text(
-                    "${S.current.forced_update}: $forceUpgradeVersion+\n"
+                    "${S.current.forced_update}: ≥$forceUpgradeVersion\n"
                     "${S.current.current_version}: ${AppInfo.versionString}",
                     // textAlign: TextAlign.center,
                     style: TextStyle(

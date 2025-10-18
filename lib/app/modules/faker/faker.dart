@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 
@@ -405,8 +406,18 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
     final now = DateTime.now().timestamp;
     List<Widget> children = [];
 
+    const conflictGachaGroups = [
+      [2, 3],
+      [4, 5],
+    ];
     for (final gacha in runtime.gameData.timerData.gachas) {
       if (gacha.freeDrawFlag == 0 || gacha.openedAt > now || gacha.closedAt <= now) continue;
+      if (conflictGachaGroups.any((group) {
+        return group.contains(gacha.id) &&
+            group.any((gachaId) => gachaId != gacha.id && mstData.userGacha[gachaId] != null);
+      })) {
+        continue;
+      }
       int resetHourUTC;
       switch (gacha.type) {
         case GachaType.freeGacha:
@@ -1951,8 +1962,19 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
                 title: const Text('Login'),
                 onTapOk: () {
                   runtime.runTask(() async {
-                    await agent.loginTop();
+                    final loginResp = await agent.loginTop();
                     await agent.homeTop();
+                    final jsonData = loginResp.data.rawMap;
+                    final friendCode = mstData.user?.friendCode;
+                    if (jsonData != null && friendCode != null) {
+                      for (final user in db.userData.users) {
+                        if (user.lastImportId == friendCode) {
+                          final fp = File(joinPaths(db.paths.userDir, 'sniff', user.id));
+                          await fp.parent.create(recursive: true);
+                          await fp.writeAsString(jsonEncode(jsonData));
+                        }
+                      }
+                    }
                   });
                 },
               ).showDialog(context);

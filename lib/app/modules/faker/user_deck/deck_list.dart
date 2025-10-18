@@ -235,7 +235,7 @@ extension BattleTeamFormationX on BattleTeamFormation {
     required BattleEntity battleEntity,
     required MasterDataManager mstData,
   }) {
-    final userSvts = {for (final svt in battleEntity.battleInfo?.userSvt ?? <BattleUserServantData>[]) svt.id: svt};
+    final userSvts = battleEntity.battleInfo?.userSvtMap ?? {};
     final userEquip = mstData.userEquip[battleEntity.battleInfo?.userEquipId];
     return BattleTeamFormation.fromList(
       mysticCode: MysticCodeSaveData(mysticCodeId: userEquip?.equipId, level: userEquip?.lv ?? 0),

@@ -7,6 +7,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/descriptors/skill_descriptor.dart';
+import 'package:chaldea/app/modules/buff/buff_list.dart';
 import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/app/modules/common/misc.dart';
 import 'package:chaldea/generated/l10n.dart';
@@ -1492,10 +1493,16 @@ class FuncDescriptor extends StatelessWidget {
                 SharedBuilder.textButtonSpan(
                   context: context,
                   text: buffType == null ? 'BuffType ${condBuffValue.buffType}' : Transl.buffType(buffType).l,
+                  onTap: () => router.push(
+                    url: Routes.buffs,
+                    child: BuffListPage(type: buff.type),
+                    detail: false,
+                  ),
                 ),
               ],
-              if (condBuffValue.buffType != null && buffIndivs.isNotEmpty) const TextSpan(text: ' - '),
+              if (condBuffValue.buffType != null && buffIndivs.isNotEmpty) const TextSpan(text: ' & '),
               if (buffIndivs.isNotEmpty) ...[
+                TextSpan(text: ' ${S.current.trait} '),
                 ...SharedBuilder.traitSpans(
                   context: context,
                   traits: buffIndivs,

@@ -377,7 +377,6 @@ class ValDsc extends StatelessWidget {
     } else if (triggers != null) {
       for (final trigger in triggers) {
         final triggerVal = trigger(vals);
-        if (triggerVal.skill == null) continue;
         if (triggerVal.level != null) {
           parts.add('Lv.${triggerVal.level}');
         } else if (triggerVal.skill != null) {
