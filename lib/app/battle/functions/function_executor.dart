@@ -241,7 +241,6 @@ class FunctionExecutor {
     return await battleData.withFunction(() async {
       for (final target in targets) {
         battleData.setFuncResult(target.uniqueId, false);
-        target.receivedFunctionsList.add(function);
       }
 
       final funcQuestTvalsMatch = checkSignedIndividualities2(
@@ -553,6 +552,11 @@ class FunctionExecutor {
         case FuncType.changeEnemyStatusUiType:
       }
 
+      for (final target in targets) {
+        if (battleData.getCurFuncResult(target.uniqueId) == true) {
+          target.receivedFunctionsList.add(function);
+        }
+      }
       battleData.updateLastFuncResults(function.funcId, funcIndex);
       battleData.checkActorStatus();
 

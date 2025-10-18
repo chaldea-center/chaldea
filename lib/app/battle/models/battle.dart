@@ -206,6 +206,10 @@ class BattleData {
     _curFuncResults.last[uniqueId] = result;
   }
 
+  bool getCurFuncResult(final int uniqueId) {
+    return _curFuncResults.last[uniqueId] ?? false;
+  }
+
   Future<T> withFunctions<T>(final FutureOr<T> Function() onExecute) async {
     final sanityCheck = _functionResultsStack.length;
     final List<Map<int, bool>?> funcsStacks = [];
