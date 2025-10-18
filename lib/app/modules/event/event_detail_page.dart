@@ -17,6 +17,7 @@ import 'package:chaldea/widgets/carousel_util.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../common/not_found.dart';
 import '../item/item_select.dart';
+import '../quest/quest_list.dart';
 import 'detail/_bonus_enemy_cond.dart';
 import 'detail/bonus.dart';
 import 'detail/bulletin_board.dart';
@@ -925,59 +926,70 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
         children.add(
           TileGroup(
             header: S.current.interlude,
-            children: quests.map((quest) {
-              final svtId = quest.releaseConditions
-                  .firstWhereOrNull((release) => [CondType.svtGet, CondType.svtFriendship].contains(release.type))
-                  ?.targetId;
-              final svt = db.gameData.servantsById[svtId];
-              final status = svt?.status;
-              final releaseOverwrites = quest.releaseOverwrites.where((e) => e.eventId == event.id).toList();
-              releaseOverwrites.sortByList((e) => [e.startedAt, e.endedAt, e.priority]);
-              final sameReleaseTime = releaseOverwrites.map((e) => '${e.startedAt}-${e.endedAt}').toSet().length <= 1;
-              List<Widget> releaseChildren = [];
-              Widget fmtDateRange(int start, int end) => Text(
-                '${start.sec2date().toCustomString(second: false)} ~ ${start.sec2date().toCustomString(year: false, second: false)}',
-                style: const TextStyle(fontSize: 12),
-              );
-              for (final (index, release) in releaseOverwrites.indexed) {
-                releaseChildren.add(
-                  CondTargetValueDescriptor(
-                    condType: release.condType,
-                    target: release.condId,
-                    value: release.condNum,
-                    unknownMsg: release.closedMessage,
-                    style: Theme.of(context).textTheme.bodySmall,
-                  ),
+            children: [
+              ListTile(
+                dense: true,
+                title: Text('${quests.length} ${S.current.interlude}'),
+                trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
+                onTap: () {
+                  router.pushPage(QuestListPage.ids(ids: quests.map((e) => e.id).toList(), needSort: false));
+                },
+              ),
+              kIndentDivider,
+              ...quests.map((quest) {
+                final svtId = quest.releaseConditions
+                    .firstWhereOrNull((release) => [CondType.svtGet, CondType.svtFriendship].contains(release.type))
+                    ?.targetId;
+                final svt = db.gameData.servantsById[svtId];
+                final status = svt?.status;
+                final releaseOverwrites = quest.releaseOverwrites.where((e) => e.eventId == event.id).toList();
+                releaseOverwrites.sortByList((e) => [e.startedAt, e.endedAt, e.priority]);
+                final sameReleaseTime = releaseOverwrites.map((e) => '${e.startedAt}-${e.endedAt}').toSet().length <= 1;
+                List<Widget> releaseChildren = [];
+                Widget fmtDateRange(int start, int end) => Text(
+                  '${start.sec2date().toCustomString(second: false)} ~ ${start.sec2date().toCustomString(year: false, second: false)}',
+                  style: const TextStyle(fontSize: 12),
                 );
-                if (!sameReleaseTime) {
-                  final nextRelease = releaseOverwrites.getOrNull(index + 1);
-                  if (nextRelease == null ||
-                      nextRelease.startedAt != release.startedAt ||
-                      nextRelease.endedAt != release.endedAt) {
-                    releaseChildren.add(fmtDateRange(release.startedAt, release.endedAt));
+                for (final (index, release) in releaseOverwrites.indexed) {
+                  releaseChildren.add(
+                    CondTargetValueDescriptor(
+                      condType: release.condType,
+                      target: release.condId,
+                      value: release.condNum,
+                      unknownMsg: release.closedMessage,
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                  );
+                  if (!sameReleaseTime) {
+                    final nextRelease = releaseOverwrites.getOrNull(index + 1);
+                    if (nextRelease == null ||
+                        nextRelease.startedAt != release.startedAt ||
+                        nextRelease.endedAt != release.endedAt) {
+                      releaseChildren.add(fmtDateRange(release.startedAt, release.endedAt));
+                    }
                   }
                 }
-              }
-              if (sameReleaseTime &&
-                  releaseOverwrites.isNotEmpty &&
-                  (releaseOverwrites.first.startedAt != event.startedAt ||
-                      releaseOverwrites.first.endedAt != event.endedAt)) {
-                releaseChildren.add(fmtDateRange(releaseOverwrites.first.startedAt, releaseOverwrites.first.endedAt));
-              }
+                if (sameReleaseTime &&
+                    releaseOverwrites.isNotEmpty &&
+                    (releaseOverwrites.first.startedAt != event.startedAt ||
+                        releaseOverwrites.first.endedAt != event.endedAt)) {
+                  releaseChildren.add(fmtDateRange(releaseOverwrites.first.startedAt, releaseOverwrites.first.endedAt));
+                }
 
-              return ListTile(
-                leading: svt == null
-                    ? const SizedBox.shrink()
-                    : svt.iconBuilder(
-                        context: context,
-                        width: 40,
-                        text: status != null && status.favorite ? 'NP${status.cur.npLv}' : '',
-                      ),
-                title: Text(quest.lName.l),
-                subtitle: Column(crossAxisAlignment: CrossAxisAlignment.start, children: releaseChildren),
-                onTap: quest.routeTo,
-              );
-            }).toList(),
+                return ListTile(
+                  leading: svt == null
+                      ? const SizedBox.shrink()
+                      : svt.iconBuilder(
+                          context: context,
+                          width: 40,
+                          text: status != null && status.favorite ? 'NP${status.cur.npLv}' : '',
+                        ),
+                  title: Text(quest.lName.l),
+                  subtitle: Column(crossAxisAlignment: CrossAxisAlignment.start, children: releaseChildren),
+                  onTap: quest.routeTo,
+                );
+              }),
+            ],
           ),
         );
       }

@@ -32,7 +32,6 @@ class _DragCEData {
 typedef EventDeckRequestParam = ({int eventId, int questId, int questPhase, int deckNo});
 
 // TODO: check grand board battle
-// TODO: change svt dispLimitCount
 class UserDeckSetupPage extends StatefulWidget {
   final FakerRuntime runtime;
   final int activeDeckId;
@@ -252,40 +251,44 @@ class _UserDeckSetupPageState extends State<UserDeckSetupPage> with FakerRuntime
     if (!deckSvt.isFollowerSvt && userSvt != null) {
       baseSvtWidget = GestureDetector(
         onLongPress: () {
-          SimpleDialog(
-            title: Text(svt?.lName.l ?? 'svt ${userSvt.svtId}'),
-            children: [
-              SimpleDialogOption(
-                child: Text.rich(
-                  TextSpan(
-                    children: [
-                      if (svt != null) CenterWidgetSpan(child: svt.iconBuilder(context: context, width: 24)),
-                      TextSpan(text: ' pos ${deckSvt.id}  Lv.${userSvt.lv}'),
-                    ],
+          router.showDialog(
+            builder: (context) => SimpleDialog(
+              title: Text(svt?.lName.l ?? 'svt ${userSvt.svtId}'),
+              children: [
+                SimpleDialogOption(
+                  child: Text.rich(
+                    TextSpan(
+                      children: [
+                        if (svt != null) CenterWidgetSpan(child: svt.iconBuilder(context: context, width: 24)),
+                        TextSpan(text: ' pos ${deckSvt.id}  Lv.${userSvt.lv}'),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-              kDefaultDivider,
-              ListTile(
-                contentPadding: const EdgeInsets.symmetric(horizontal: 24),
-                title: Text('从者强化'),
-                trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
-                onTap: () {
-                  runtime.agent.user.svtCombine.baseUserSvtId = userSvt.id;
-                  router.pushPage(SvtCombinePage(runtime: runtime));
-                },
-              ),
-              ListTile(
-                contentPadding: const EdgeInsets.symmetric(horizontal: 24),
-                title: Text('Clear Servant'),
-                onTap: () {
-                  deckSvt.userSvtId = 0;
-                  deckSvt.userSvtEquipIds.fillRange(0, deckSvt.userSvtEquipIds.length, 0);
-                  if (mounted) setState(() {});
-                },
-              ),
-            ],
-          ).showDialog(context);
+                kDefaultDivider,
+                ListTile(
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 24),
+                  title: Text('从者强化'),
+                  trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
+                  onTap: () {
+                    Navigator.pop(context);
+                    runtime.agent.user.svtCombine.baseUserSvtId = userSvt.id;
+                    router.pushPage(SvtCombinePage(runtime: runtime));
+                  },
+                ),
+                ListTile(
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 24),
+                  title: Text('Clear Servant'),
+                  onTap: () {
+                    Navigator.pop(context);
+                    deckSvt.userSvtId = 0;
+                    deckSvt.userSvtEquipIds.fillRange(0, deckSvt.userSvtEquipIds.length, 0);
+                    if (mounted) setState(() {});
+                  },
+                ),
+              ],
+            ),
+          );
         },
         child: baseSvtWidget,
       );

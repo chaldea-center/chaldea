@@ -170,14 +170,6 @@ class UserDeckListPageState extends State<UserDeckListPage> {
   Widget buildEventDeck(UserEventDeckEntity deck) {
     final param = widget.eventDeckParam;
     List<Widget> buttons = [
-      if (widget.onSelected != null)
-        FilledButton(
-          onPressed: () {
-            Navigator.pop(context);
-            widget.onEventDeckSelected!(deck);
-          },
-          child: Text(S.current.select),
-        ),
       if (widget.enableEdit &&
           widget.runtime != null &&
           param != null &&
@@ -199,6 +191,14 @@ class UserDeckListPageState extends State<UserDeckListPage> {
             if (mounted) setState(() {});
           },
           child: Text(S.current.edit),
+        ),
+      if (widget.onSelected != null)
+        FilledButton(
+          onPressed: () {
+            Navigator.pop(context);
+            widget.onEventDeckSelected!(deck);
+          },
+          child: Text(S.current.select),
         ),
     ];
 
