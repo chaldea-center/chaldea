@@ -779,8 +779,8 @@ class BuffData {
       isAct &= hpRatio <= buff.script.HP_LOWER!;
     }
 
-    if (buff.script.condBuffValue != null && buff.script.condBuffValue!.isNotEmpty) {
-      final condBuffValue = buff.script.condBuffValue!;
+    final condBuffValue = buff.script.condBuffValue;
+    if (condBuffValue != null && condBuffValue.isNotEmpty) {
       bool match = false;
       for (final cond in condBuffValue) {
         final condType = cond.valueCondTargetTypeEnum;

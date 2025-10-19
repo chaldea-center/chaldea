@@ -1875,6 +1875,7 @@ class BattleServantData {
     bool isAttack = true,
     List<int>? addTraits,
     bool skipDamage = false, // special logic for defender in damage calculation
+    Map<int, int>? highestValuePerGroup,
   }) async {
     final actionDetails = ConstData.buffActions[buffAction];
     // not actionable if no actionDetails present
@@ -1927,6 +1928,13 @@ class BattleServantData {
         value = (value * (toModifier(buffRate))).toInt();
 
         if (actionDetails.plusTypes.contains(buff.buff.type)) {
+          final fieldGroup = buff.vals.ApplyHighestValueInFieldGroup;
+          if (fieldGroup != null && highestValuePerGroup != null) {
+            final currentHighest = highestValuePerGroup[fieldGroup] ?? 0;
+            highestValuePerGroup[fieldGroup] = max(currentHighest, value);
+            value = max(0, value - currentHighest);
+          }
+
           totalVal += value;
         } else {
           totalVal -= value;
@@ -2136,42 +2144,6 @@ class BattleServantData {
   }) async {
     return await getBuff(battleData, buffAction, opponent: opponent, card: card, addTraits: addTraits, useBuff: true) !=
         null;
-  }
-
-  // TODO: remove when substituteSubState & substituteInstantDeath have plusAction populated
-  Future<BuffData?> getBuffOfType(
-    final BattleData battleData,
-    final BuffType buffType, {
-    final BattleServantData? opponent,
-    final CommandCardData? card,
-    final List<int>? addTraits,
-    final bool useBuff = true,
-  }) async {
-    for (final buff in collectBuffsPerType(battleBuff.validBuffs, buffType)) {
-      final List<int> selfTraits = fetchSelfTraits(
-        BuffAction.unknown,
-        buff,
-        this,
-        cardData: card,
-        addTraits: addTraits,
-      );
-      final List<int>? opponentTraits = fetchOpponentTraits(
-        BuffAction.unknown,
-        buff,
-        opponent,
-        self: this,
-        cardData: card,
-        addTraits: addTraits,
-      );
-
-      if (await buff.shouldActivateBuff(battleData, selfTraits, opponentTraits: opponentTraits)) {
-        if (useBuff) {
-          buff.setUsed(this, battleData);
-        }
-        return buff;
-      }
-    }
-    return null;
   }
 
   Future<BuffData?> getBuff(

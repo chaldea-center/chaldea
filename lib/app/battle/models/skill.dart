@@ -246,8 +246,13 @@ class BattleSkillInfoData {
     param?.selectAddIndex = selectedActionIndex;
     int effectiveness = 1000;
     if (type == SkillInfoType.masterEquip) {
+      final highestValuePerGroup = <int, int>{};
       for (final svt in battleData.nonnullPlayers) {
-        effectiveness += await svt.getBuffValue(battleData, BuffAction.masterSkillValueUp);
+        effectiveness += await svt.getBuffValue(
+          battleData,
+          BuffAction.masterSkillValueUp,
+          highestValuePerGroup: highestValuePerGroup,
+        );
       }
     }
 

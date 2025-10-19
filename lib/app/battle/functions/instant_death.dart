@@ -24,8 +24,7 @@ class InstantDeath {
       final previousHp = target.hp;
       final isForceInstantDeath = force || (activator == target && dataVals.ForceSelfInstantDeath == 1);
 
-      // TODO: change to buffAction once plusAction etc. is available
-      final substituteInstantDeath = await target.getBuffOfType(battleData, BuffType.substituteInstantDeath);
+      final substituteInstantDeath = await target.getBuff(battleData, BuffAction.substituteInstantDeath);
       if (await shouldInstantDeath(
         battleData,
         dataVals,

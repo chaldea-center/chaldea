@@ -31,8 +31,7 @@ class SubState {
       for (int index = listToInspect.length - 1; index >= 0; index -= 1) {
         final buff = listToInspect[index];
 
-        // TODO: change to buffAction once plusAction etc. is available
-        final substituteAddState = await target.getBuffOfType(battleData, BuffType.substituteAddState);
+        final substituteAddState = await target.getBuff(battleData, BuffAction.substituteAddState);
         if (buff.checkField() &&
             await shouldSubState(
               battleData,
