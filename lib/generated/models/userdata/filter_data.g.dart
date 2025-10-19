@@ -72,7 +72,7 @@ SvtFilterData _$SvtFilterDataFromJson(Map json) => $checkedCreate('SvtFilterData
       'sortKeys',
       (v) => (v as List<dynamic>?)?.map((e) => $enumDecodeNullable(_$SvtCompareEnumMap, e)).toList(),
     ),
-    sortReversed: $checkedConvert('sortReversed', (v) => (v as List<dynamic>?)?.map((e) => e as bool).toList()),
+    sortReversed: $checkedConvert('sortReversed', (v) => (v as List<dynamic>?)?.map((e) => e as bool?).toList()),
   );
   return val;
 });
@@ -88,7 +88,7 @@ Map<String, dynamic> _$SvtFilterDataToJson(SvtFilterData instance) => <String, d
 const _$FavoriteStateEnumMap = {FavoriteState.all: 'all', FavoriteState.owned: 'owned', FavoriteState.other: 'other'};
 
 const _$SvtCompareEnumMap = {
-  SvtCompare.no: 'no',
+  SvtCompare.collectionNo: 'collectionNo',
   SvtCompare.className: 'className',
   SvtCompare.rarity: 'rarity',
   SvtCompare.atk: 'atk',

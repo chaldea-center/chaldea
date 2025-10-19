@@ -207,7 +207,7 @@ class SvtFilterData with FilterDataMixin {
   @JsonKey()
   List<SvtCompare> sortKeys;
   @JsonKey()
-  List<bool> sortReversed;
+  List<bool?> sortReversed;
 
   //
   final svtClass = FilterGroupData<SvtClass>();
@@ -249,7 +249,7 @@ class SvtFilterData with FilterDataMixin {
     this.favorite = FavoriteState.all,
     this.planFavorite = FavoriteState.all,
     List<SvtCompare?>? sortKeys,
-    List<bool>? sortReversed,
+    List<bool?>? sortReversed,
   }) : sortKeys = List.generate(
          SvtCompare.values.length,
          (index) => sortKeys?.getOrNull(index) ?? SvtCompare.values[index],
@@ -257,7 +257,7 @@ class SvtFilterData with FilterDataMixin {
        ),
        sortReversed = List.generate(
          SvtCompare.values.length,
-         (index) => sortReversed?.getOrNull(index) ?? true,
+         (index) => sortReversed?.getOrNull(index),
          growable: false,
        );
 
@@ -304,21 +304,33 @@ class SvtFilterData with FilterDataMixin {
 
   Map<String, dynamic> toJson() => _$SvtFilterDataToJson(this);
 
-  static int compareId(int a, int b, {List<SvtCompare>? keys, List<bool>? reversed, User? user}) {
+  static int compareId(
+    int a,
+    int b, {
+    List<SvtCompare>? keys = SvtCompare.kRarityFirstKeys,
+    List<bool?>? reversed,
+    User? user,
+  }) {
     final aa = db.gameData.servantsById[a], bb = db.gameData.servantsById[b];
     if (aa == null && bb == null) return a.compareTo(b);
     return compare(aa, bb, keys: keys, reversed: reversed, user: user);
   }
 
-  static int compare(Servant? a, Servant? b, {List<SvtCompare>? keys, List<bool>? reversed, User? user}) {
+  static int compare(
+    Servant? a,
+    Servant? b, {
+    List<SvtCompare>? keys = SvtCompare.kRarityFirstKeys,
+    List<bool?>? reversed,
+    User? user,
+  }) {
     if (a == null && b == null) return 0;
     if (a == null) return -1;
     if (b == null) return 1;
     user ??= db.curUser;
 
     keys ??= [];
-    if (!keys.contains(SvtCompare.no)) {
-      keys = [...keys, SvtCompare.no];
+    if (!keys.contains(SvtCompare.collectionNo)) {
+      keys = [...keys, SvtCompare.collectionNo];
     }
     int _classSortKey(int clsId) {
       if (db.gameData.constData.classInfo.isNotEmpty) {
@@ -328,10 +340,10 @@ class SvtFilterData with FilterDataMixin {
       return k < 0 ? 999 + clsId : k;
     }
 
-    for (var i = 0; i < keys.length; i++) {
+    for (final (i, key) in keys.indexed) {
       int r;
       switch (keys[i]) {
-        case SvtCompare.no:
+        case SvtCompare.collectionNo:
           r = a.originalCollectionNo - b.originalCollectionNo;
           if (r == 0) r = a.collectionNo - b.collectionNo;
           if (r == 0) r = a.id - b.id;
@@ -362,7 +374,7 @@ class SvtFilterData with FilterDataMixin {
           break;
       }
       if (r != 0) {
-        return (reversed?.getOrNull(i) ?? false) ? -r : r;
+        return (reversed?.getOrNull(i) ?? key.defaultReversed) ? -r : r;
       }
     }
     return 0;
@@ -795,7 +807,7 @@ class EnemyFilterData with FilterDataMixin {
   List<SvtCompare> sortKeys;
   List<bool> sortReversed;
 
-  static const enemyCompares = [SvtCompare.no, SvtCompare.className, SvtCompare.rarity];
+  static const enemyCompares = [SvtCompare.collectionNo, SvtCompare.className, SvtCompare.rarity];
 
   bool onlyShowQuestEnemy;
   // filter
@@ -847,7 +859,7 @@ class EnemyFilterData with FilterDataMixin {
     if (b == null) return 1;
 
     if (keys == null || keys.isEmpty) {
-      keys = [SvtCompare.no];
+      keys = [SvtCompare.collectionNo];
     }
     int _classSortKey(int clsId) {
       final p = db.gameData.constData.classInfo[clsId]?.priority;
@@ -855,20 +867,12 @@ class EnemyFilterData with FilterDataMixin {
     }
 
     for (var i = 0; i < keys.length; i++) {
-      int r;
-      switch (keys[i]) {
-        case SvtCompare.no:
-          r = a.id - b.id;
-          break;
-        case SvtCompare.className:
-          r = _classSortKey(a.classId) - _classSortKey(b.classId);
-          break;
-        case SvtCompare.rarity:
-          r = a.rarity - b.rarity;
-          break;
-        default:
-          r = 0;
-      }
+      int r = switch (keys[i]) {
+        SvtCompare.collectionNo => a.id - b.id,
+        SvtCompare.className => _classSortKey(a.classId) - _classSortKey(b.classId),
+        SvtCompare.rarity => a.rarity - b.rarity,
+        _ => 0,
+      };
       if (r != 0) {
         return (reversed?.getOrNull(i) ?? false) ? -r : r;
       }
@@ -878,7 +882,7 @@ class EnemyFilterData with FilterDataMixin {
 }
 
 class FfoPartFilterData with FilterDataMixin {
-  static const kSortKeys = [SvtCompare.no, SvtCompare.className, SvtCompare.rarity];
+  static const kSortKeys = [SvtCompare.collectionNo, SvtCompare.className, SvtCompare.rarity];
 
   bool useGrid = false;
   final rarity = FilterGroupData<int>();
@@ -895,7 +899,7 @@ class FfoPartFilterData with FilterDataMixin {
     if (b == null) return 1;
 
     if (keys == null || keys.isEmpty) {
-      keys = [SvtCompare.no];
+      keys = [SvtCompare.collectionNo];
     }
     int _classSortKey(SvtClass? cls) {
       int k = cls == null ? -1 : SvtClassX.regularAll.indexOf(cls);
@@ -903,20 +907,12 @@ class FfoPartFilterData with FilterDataMixin {
     }
 
     for (var i = 0; i < keys.length; i++) {
-      int r;
-      switch (keys[i]) {
-        case SvtCompare.no:
-          r = a.collectionNo - b.collectionNo;
-          break;
-        case SvtCompare.className:
-          r = _classSortKey(a.svtClass) - _classSortKey(b.svtClass);
-          break;
-        case SvtCompare.rarity:
-          r = a.rarity - b.rarity;
-          break;
-        default:
-          r = 0;
-      }
+      int r = switch (keys[i]) {
+        SvtCompare.collectionNo => a.collectionNo - b.collectionNo,
+        SvtCompare.className => _classSortKey(a.svtClass) - _classSortKey(b.svtClass),
+        SvtCompare.rarity => a.rarity - b.rarity,
+        _ => 0,
+      };
       if (r != 0) {
         return (reversed?.getOrNull(i) ?? false) ? -r : r;
       }
@@ -929,34 +925,32 @@ class FfoPartFilterData with FilterDataMixin {
 
 /// Servant
 enum SvtCompare {
-  no,
-  className,
-  rarity,
-  atk,
-  hp,
-  priority,
-  tdLv,
-  bondLv;
+  collectionNo(true),
+  className(false),
+  rarity(true),
+  atk(true),
+  hp(true),
+  priority(true),
+  tdLv(true),
+  bondLv(true);
+
+  const SvtCompare(this.defaultReversed);
+  final bool defaultReversed;
+
+  static const kRarityFirstKeys = <SvtCompare>[SvtCompare.rarity, SvtCompare.className, SvtCompare.collectionNo];
+  static const kClassFirstKeys = <SvtCompare>[SvtCompare.className, SvtCompare.rarity, SvtCompare.collectionNo];
 
   String get showName {
-    switch (this) {
-      case SvtCompare.no:
-        return S.current.filter_sort_number;
-      case SvtCompare.className:
-        return S.current.svt_class;
-      case SvtCompare.rarity:
-        return S.current.filter_sort_rarity;
-      case SvtCompare.atk:
-        return 'ATK';
-      case SvtCompare.hp:
-        return 'HP';
-      case SvtCompare.priority:
-        return S.current.priority;
-      case SvtCompare.tdLv:
-        return '${S.current.np_short} Lv';
-      case SvtCompare.bondLv:
-        return '${S.current.bond} Lv';
-    }
+    return switch (this) {
+      SvtCompare.collectionNo => S.current.filter_sort_number,
+      SvtCompare.className => S.current.svt_class,
+      SvtCompare.rarity => S.current.filter_sort_rarity,
+      SvtCompare.atk => 'ATK',
+      SvtCompare.hp => 'HP',
+      SvtCompare.priority => S.current.priority,
+      SvtCompare.tdLv => '${S.current.np_short} Lv',
+      SvtCompare.bondLv => '${S.current.bond} Lv',
+    };
   }
 }
 
@@ -966,18 +960,12 @@ enum SvtEffectScope {
   append,
   td;
 
-  String get shownName {
-    switch (this) {
-      case SvtEffectScope.active:
-        return S.current.active_skill_short;
-      case SvtEffectScope.passive:
-        return S.current.passive_skill_short;
-      case SvtEffectScope.append:
-        return S.current.append_skill_short;
-      case SvtEffectScope.td:
-        return S.current.np_short;
-    }
-  }
+  String get shownName => switch (this) {
+    SvtEffectScope.active => S.current.active_skill_short,
+    SvtEffectScope.passive => S.current.passive_skill_short,
+    SvtEffectScope.append => S.current.append_skill_short,
+    SvtEffectScope.td => S.current.np_short,
+  };
 }
 
 enum EffectTarget {
@@ -1026,21 +1014,19 @@ enum SvtStatusState {
   // append10
   ;
 
-  String get shownName {
-    return switch (this) {
-      SvtStatusState.asc3 => '<4',
-      SvtStatusState.asc4 => '=4',
-      SvtStatusState.active8 => '<9/9/9',
-      SvtStatusState.active9 => '9/9/9',
-      SvtStatusState.active10 => '10/10/10',
-      SvtStatusState.appendTwo8 => 'A2|<9',
-      SvtStatusState.appendTwo9 => 'A2|≥9',
-      // SvtStatusState.appendTwo10 => 'A2|10',
-      SvtStatusState.append8 => 'A|<9',
-      SvtStatusState.append9 => 'A|≥9',
-      // SvtStatusState.append10 => 'A|≥10',
-    };
-  }
+  String get shownName => switch (this) {
+    SvtStatusState.asc3 => '<4',
+    SvtStatusState.asc4 => '=4',
+    SvtStatusState.active8 => '<9/9/9',
+    SvtStatusState.active9 => '9/9/9',
+    SvtStatusState.active10 => '10/10/10',
+    SvtStatusState.appendTwo8 => 'A2|<9',
+    SvtStatusState.appendTwo9 => 'A2|≥9',
+    // SvtStatusState.appendTwo10 => 'A2|10',
+    SvtStatusState.append8 => 'A|<9',
+    SvtStatusState.append9 => 'A|≥9',
+    // SvtStatusState.append10 => 'A|≥10',
+  };
 }
 
 enum CompareOperator {

@@ -37,12 +37,7 @@ class _BondTotalStateTable extends State<BondTotalTable> {
       group.sort((a, b) {
         final dx = b.$1 - a.$1;
         if (dx != 0) return dx;
-        return SvtFilterData.compare(
-          a.$2,
-          b.$2,
-          keys: [SvtCompare.rarity, SvtCompare.className, SvtCompare.no],
-          reversed: [true, false, true],
-        );
+        return SvtFilterData.compare(a.$2, b.$2);
       });
     }
     groups = sortDict(groups, reversed: true);

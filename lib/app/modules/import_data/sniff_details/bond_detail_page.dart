@@ -102,8 +102,7 @@ class _SvtBondDetailPageState extends State<SvtBondDetailPage> with SingleTicker
           return SvtFilterData.compare(
             db.gameData.servantsById[a.ce.bondEquipOwner],
             db.gameData.servantsById[b.ce.bondEquipOwner],
-            keys: [SvtCompare.className, SvtCompare.rarity, SvtCompare.no],
-            reversed: [false, true, false],
+            keys: SvtCompare.kClassFirstKeys,
           );
         });
         break;
@@ -112,8 +111,7 @@ class _SvtBondDetailPageState extends State<SvtBondDetailPage> with SingleTicker
           return SvtFilterData.compare(
             db.gameData.servantsById[a.ce.bondEquipOwner],
             db.gameData.servantsById[b.ce.bondEquipOwner],
-            keys: [SvtCompare.rarity, SvtCompare.className, SvtCompare.no],
-            reversed: [false, false, false],
+            keys: SvtCompare.kRarityFirstKeys,
           );
         });
         break;
@@ -127,22 +125,12 @@ class _SvtBondDetailPageState extends State<SvtBondDetailPage> with SingleTicker
         break;
       case _SvtSortType.cls:
         shownCollections.sort((a, b) {
-          return SvtFilterData.compare(
-            a.svt,
-            b.svt,
-            keys: [SvtCompare.className, SvtCompare.rarity, SvtCompare.no],
-            reversed: [false, true, false],
-          );
+          return SvtFilterData.compare(a.svt, b.svt, keys: SvtCompare.kClassFirstKeys);
         });
         break;
       case _SvtSortType.rarity:
         shownCollections.sort((a, b) {
-          return SvtFilterData.compare(
-            a.svt,
-            b.svt,
-            keys: [SvtCompare.rarity, SvtCompare.className, SvtCompare.no],
-            reversed: [false, false, false],
-          );
+          return SvtFilterData.compare(a.svt, b.svt, keys: SvtCompare.kRarityFirstKeys);
         });
         break;
       case _SvtSortType.bondRank:

@@ -18,7 +18,7 @@ class ServantDemandDetailStat extends StatefulWidget {
 
 class _ServantDemandDetailStatState extends State<ServantDemandDetailStat> {
   final typeFilter = FilterRadioData<SvtMatCostDetailType>.nonnull(SvtMatCostDetailType.demands);
-  SvtCompare sortOrder = SvtCompare.no;
+  SvtCompare sortOrder = SvtCompare.collectionNo;
   bool sortReversed = true;
 
   @override
@@ -30,25 +30,13 @@ class _ServantDemandDetailStatState extends State<ServantDemandDetailStat> {
     data.removeWhere((key, value) => value.all.values.every((v) => v <= 0));
     final servants = data.keys.toList();
     List<SvtCompare> orders;
-    List<bool> reversed;
-    switch (sortOrder) {
-      case SvtCompare.className:
-        orders = [sortOrder, SvtCompare.no];
-        reversed = [sortReversed, false];
-        break;
-      case SvtCompare.rarity:
-        orders = [sortOrder, SvtCompare.className, SvtCompare.no];
-        reversed = [sortReversed, false, false];
-        break;
-      case SvtCompare.priority:
-        orders = [sortOrder, SvtCompare.rarity, SvtCompare.className, SvtCompare.no];
-        reversed = [sortReversed, true, false, false];
-        break;
-      default:
-        orders = [sortOrder];
-        reversed = [sortReversed];
-    }
-    servants.sort((a, b) => SvtFilterData.compare(a, b, keys: orders, reversed: reversed));
+    orders = switch (sortOrder) {
+      SvtCompare.className => SvtCompare.kClassFirstKeys,
+      SvtCompare.rarity => SvtCompare.kRarityFirstKeys,
+      SvtCompare.priority => [sortOrder, ...SvtCompare.kRarityFirstKeys],
+      _ => [sortOrder, SvtCompare.collectionNo],
+    };
+    servants.sort((a, b) => SvtFilterData.compare(a, b, keys: orders, reversed: [sortReversed]));
     return Column(
       children: [
         Expanded(
@@ -148,7 +136,12 @@ class _ServantDemandDetailStatState extends State<ServantDemandDetailStat> {
             DropdownButton<SvtCompare>(
               value: sortOrder,
               items: [
-                for (final order in [SvtCompare.no, SvtCompare.className, SvtCompare.rarity, SvtCompare.priority])
+                for (final order in [
+                  SvtCompare.collectionNo,
+                  SvtCompare.className,
+                  SvtCompare.rarity,
+                  SvtCompare.priority,
+                ])
                   DropdownMenuItem(value: order, child: Text(order.showName)),
               ],
               onChanged: (v) {

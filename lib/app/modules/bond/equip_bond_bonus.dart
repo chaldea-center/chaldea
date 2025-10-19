@@ -92,10 +92,7 @@ class _EquipBondBonusTabState extends State<EquipBondBonusTab> {
   Map<int, ({CraftEssence ce, List<List<int>> traits, int rateCount})> allCeData = {};
   Map<int, Map<int, List<int>>> allCeMatchSvtData = {}; //<ceId, <svtId, [limitCount]>>
 
-  final svtFilterData = SvtFilterData(
-    sortKeys: [SvtCompare.rarity, SvtCompare.className, SvtCompare.no],
-    sortReversed: [true, false, true],
-  );
+  final svtFilterData = SvtFilterData(sortKeys: SvtCompare.kRarityFirstKeys);
   final extraFilterData = _ExtraFilterData();
 
   _FilterType getCeState(int ceId) => extraFilterData.ceStates[ceId] ??= _FilterType.none;

@@ -1043,14 +1043,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
       }
     }
 
-    servants.sort(
-      (a, b) => SvtFilterData.compare(
-        a.first.dbSvt,
-        b.first.dbSvt,
-        keys: [SvtCompare.rarity, SvtCompare.className, SvtCompare.no],
-        reversed: [true, false, false],
-      ),
-    );
+    servants.sort((a, b) => SvtFilterData.compare(a.first.dbSvt, b.first.dbSvt));
     for (final group in servants) {
       group.sort((a, b) {
         // lv higher, active skills higher, created earlier, id

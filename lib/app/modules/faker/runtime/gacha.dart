@@ -188,14 +188,7 @@ extension FakerRuntimeGacha on FakerRuntime {
         commandCodeUserIds: sellCommandCodes.map((e) => e.id).toList(),
       );
       gachaResultStat.lastSellServants = sellUserSvts.toList();
-      gachaResultStat.lastSellServants.sort(
-        (a, b) => SvtFilterData.compareId(
-          a.svtId,
-          b.svtId,
-          keys: const [SvtCompare.rarity, SvtCompare.className],
-          reversed: const [true, false],
-        ),
-      );
+      gachaResultStat.lastSellServants.sort((a, b) => SvtFilterData.compareId(a.svtId, b.svtId));
     }
     update();
   }

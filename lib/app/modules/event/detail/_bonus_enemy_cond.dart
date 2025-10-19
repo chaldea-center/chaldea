@@ -235,14 +235,7 @@ class _BonusEnemyCondPageState extends State<BonusEnemyCondPage> {
       final svts = db.gameData.servantsById.values
           .where((svt) => svt.traitAdd.expand((e) => e.trait).contains(trait))
           .toList();
-      svts.sort(
-        (a, b) => SvtFilterData.compare(
-          a,
-          b,
-          keys: [SvtCompare.className, SvtCompare.rarity, SvtCompare.no],
-          reversed: [false, true, true],
-        ),
-      );
+      svts.sort((a, b) => SvtFilterData.compare(a, b, keys: SvtCompare.kClassFirstKeys));
       for (final svt in svts) {
         cards.add(svt.iconBuilder(context: context, width: 32));
       }

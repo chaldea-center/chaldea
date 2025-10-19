@@ -293,14 +293,7 @@ class _MCSummonCreatePageState extends State<MCSummonCreatePage> {
     }
     puSvts = puSvts.toSet().toList();
     puCEs = puCEs.toSet().toList();
-    puSvts.sort(
-      (a, b) => SvtFilterData.compare(
-        db.gameData.servantsNoDup[a],
-        db.gameData.servantsNoDup[b],
-        keys: [SvtCompare.rarity, SvtCompare.no],
-        reversed: [true, false],
-      ),
-    );
+    puSvts.sort((a, b) => SvtFilterData.compare(db.gameData.servantsNoDup[a], db.gameData.servantsNoDup[b]));
     puCEs.sort(
       (a, b) => CraftFilterData.compare(
         db.gameData.craftEssences[a],

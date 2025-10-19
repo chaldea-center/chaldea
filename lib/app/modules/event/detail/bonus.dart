@@ -79,14 +79,7 @@ class _EventBonusTabState extends State<EventBonusTab> {
 
   Widget svtDetail(BaseSkill skill, List<Servant> servants) {
     servants.retainWhere((e) => ServantFilterPage.filter(svtFilterData, e));
-    servants.sort(
-      (a, b) => SvtFilterData.compare(
-        a,
-        b,
-        keys: [SvtCompare.className, SvtCompare.rarity, SvtCompare.no],
-        reversed: [false, true, true],
-      ),
-    );
+    servants.sort((a, b) => SvtFilterData.compare(a, b, keys: SvtCompare.kClassFirstKeys));
     return TileGroup(
       children: [
         SkillDescriptor(

@@ -134,9 +134,7 @@ class _NpChargePageState extends State<NpChargePage> {
     for (final details in groupedData.values) {
       for (final detail in details) {
         // [self,other,all,special]
-        final nps = skillDetails
-            .putIfAbsent(detail.svt.collectionNo, () => {})
-            .putIfAbsent(detail.skill.id, () => [0, 0, 0, 0]);
+        final nps = skillDetails.putIfAbsent(detail.svt.id, () => {}).putIfAbsent(detail.skill.id, () => [0, 0, 0, 0]);
         switch (detail.func.effectTarget) {
           case EffectTarget.self:
             nps[0] += detail.sortValue;
@@ -165,9 +163,9 @@ class _NpChargePageState extends State<NpChargePage> {
     Map<int, Map<String, List<int>>> svtDetails = {};
     for (final details in groupedData.values) {
       for (final detail in details) {
-        final svtDetail = svtDetails.putIfAbsent(detail.svt.collectionNo, () => {});
+        final svtDetail = svtDetails.putIfAbsent(detail.svt.id, () => {});
         final nps = svtDetail[detail.pos] ??= [0, 0, 0, 0];
-        final skillNps = skillDetails[detail.svt.collectionNo]![detail.skill.id]!;
+        final skillNps = skillDetails[detail.svt.id]![detail.skill.id]!;
         for (int index = 0; index < nps.length; index++) {
           nps[index] = max(nps[index], skillNps[index]);
         }
@@ -196,12 +194,7 @@ class _NpChargePageState extends State<NpChargePage> {
     }
     for (final svts in groupedServants.values) {
       svts.sort(
-        (a, b) => SvtFilterData.compare(
-          db.gameData.servantsNoDup[a],
-          db.gameData.servantsNoDup[b],
-          keys: filterData.svtSortKeys,
-          reversed: filterData.sortReversed,
-        ),
+        (a, b) => SvtFilterData.compareId(a, b, keys: filterData.svtSortKeys, reversed: filterData.sortReversed),
       );
     }
     List<Widget> children = [];
@@ -235,7 +228,7 @@ class _NpChargePageState extends State<NpChargePage> {
               ),
             ),
             for (final svtId in svtIds)
-              db.gameData.servantsNoDup[svtId]?.iconBuilder(context: context, width: 45) ?? Text(svtId.toString()),
+              db.gameData.servantsById[svtId]?.iconBuilder(context: context, width: 45) ?? Text(svtId.toString()),
           ],
         ),
       );
@@ -437,7 +430,7 @@ class _NpChargePageState extends State<NpChargePage> {
     }
     for (final svt in db.gameData.servantsNoDup.values) {
       if (!filterData.isSvt) break;
-      if (!filterData.favorite.radioValue!.check(db.curUser.svtStatusOf(svt.collectionNo).favorite)) {
+      if (!filterData.favorite.radioValue!.check(svt.status.favorite)) {
         continue;
       }
       if (!filterData.tdCardType.matchAny(svt.noblePhantasms.map((e) => e.svt.card))) {
@@ -518,7 +511,7 @@ class _NpChargePageState extends State<NpChargePage> {
         } else if (a.svt is CraftEssence && b.svt is CraftEssence) {
           return CraftFilterData.compare(a.svt as CraftEssence, b.svt as CraftEssence);
         } else {
-          return a.svt.toString().compareTo(b.svt.toString());
+          return a.svt.id.compareTo(b.svt.id);
         }
       });
     }

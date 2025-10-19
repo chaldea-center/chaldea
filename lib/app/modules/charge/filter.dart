@@ -46,9 +46,9 @@ class NpFilterData with FilterDataMixin {
   final bond = FilterGroupData<SvtBondStage>();
   final changeable = FilterGroupData<bool>();
 
-  List<SvtCompare> svtSortKeys = [SvtCompare.no, SvtCompare.no];
+  List<SvtCompare> svtSortKeys = [SvtCompare.collectionNo, SvtCompare.collectionNo];
   List<CraftCompare> ceSortKeys = [CraftCompare.no, CraftCompare.no];
-  List<bool> sortReversed = [false, false];
+  List<bool> sortReversed = [true, true];
 
   @override
   List<FilterGroupData> get groups => [

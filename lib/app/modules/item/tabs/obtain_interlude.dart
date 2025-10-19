@@ -96,23 +96,12 @@ class _ItemObtainInterludeTabState extends State<ItemObtainInterludeTab> {
   }
 
   List<Servant> sortSvts(List<Servant> svts) {
-    List<SvtCompare> sortKeys;
-    List<bool> sortReversed;
-    switch (db.settings.display.itemDetailSvtSort) {
-      case ItemDetailSvtSort.collectionNo:
-        sortKeys = [SvtCompare.no];
-        sortReversed = [true];
-        break;
-      case ItemDetailSvtSort.clsName:
-        sortKeys = [SvtCompare.className, SvtCompare.rarity, SvtCompare.no];
-        sortReversed = [false, true, true];
-        break;
-      case ItemDetailSvtSort.rarity:
-        sortKeys = [SvtCompare.rarity, SvtCompare.className, SvtCompare.no];
-        sortReversed = [true, false, true];
-        break;
-    }
-    svts.sort((a, b) => SvtFilterData.compare(a, b, keys: sortKeys, reversed: sortReversed));
+    List<SvtCompare> sortKeys = switch (db.settings.display.itemDetailSvtSort) {
+      ItemDetailSvtSort.collectionNo => [SvtCompare.collectionNo],
+      ItemDetailSvtSort.clsName => SvtCompare.kClassFirstKeys,
+      ItemDetailSvtSort.rarity => SvtCompare.kRarityFirstKeys,
+    };
+    svts.sort((a, b) => SvtFilterData.compare(a, b, keys: sortKeys));
     return svts;
   }
 }

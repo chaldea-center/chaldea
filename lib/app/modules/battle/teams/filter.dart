@@ -246,14 +246,7 @@ class _TeamFilterPageState extends FilterPageState<TeamFilterData, TeamFilterPag
       ...filterData.useSvts.options,
       ...filterData.blockSvts.options,
     }.toList();
-    availableSvts.sort(
-      (a, b) => SvtFilterData.compare(
-        db.gameData.servantsById[a],
-        db.gameData.servantsById[b],
-        keys: [SvtCompare.rarity, SvtCompare.className, SvtCompare.no],
-        reversed: [true, false, true],
-      ),
-    );
+    availableSvts.sort((a, b) => SvtFilterData.compareId(a, b));
     final availableCEs = {...widget.availableCEs, ...filterData.blockCEs.options}.toList();
     availableCEs.sort(
       (a, b) => CraftFilterData.compare(

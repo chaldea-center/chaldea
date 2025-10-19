@@ -291,7 +291,7 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData, ServantFilt
                       filterData.sortKeys[i] = key ?? filterData.sortKeys[i];
                       update();
                     },
-                    reversed: filterData.sortReversed[i],
+                    reversed: filterData.sortReversed[i] ?? filterData.sortKeys[i].defaultReversed,
                     onSortDirectional: (reversed) {
                       filterData.sortReversed[i] = reversed;
                       update();

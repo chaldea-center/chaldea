@@ -509,14 +509,7 @@ class _SvtTotalNumListState extends State<_SvtTotalNumList> {
   @override
   Widget build(BuildContext context) {
     final svtIds = {...widget.countsOwned.keys, ...widget.countsAll.keys}.toList();
-    svtIds.sort((a, b) {
-      return SvtFilterData.compare(
-        db.gameData.servantsById[a],
-        db.gameData.servantsById[b],
-        keys: [SvtCompare.className, SvtCompare.no],
-        reversed: [false, false],
-      );
-    });
+    svtIds.sort((a, b) => SvtFilterData.compareId(a, b, keys: SvtCompare.kClassFirstKeys));
     List<Widget> children = [];
     for (final svtId in svtIds) {
       final owned = widget.countsOwned[svtId] ?? 0;
