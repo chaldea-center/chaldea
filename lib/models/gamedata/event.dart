@@ -586,7 +586,7 @@ class MstMasterMission with RouteInfo {
     final b = id ~/ 10000;
     if (b == 8) return MissionType.complete;
     if (id == MasterMission.kExtraMasterMissionId) return MissionType.extra;
-    // TODO: [MissionType.servant]
+    // [MissionType.servant]
     return MissionType.none;
   }
 

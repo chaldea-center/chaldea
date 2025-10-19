@@ -33,7 +33,6 @@ class _DragCEData {
 
 typedef EventDeckRequestParam = ({int eventId, int questId, int questPhase, int deckNo});
 
-// TODO: check grand board battle
 class UserDeckSetupPage extends StatefulWidget {
   final FakerRuntime runtime;
   final int activeDeckId;

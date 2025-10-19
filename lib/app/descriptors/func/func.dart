@@ -1231,7 +1231,7 @@ class FuncDescriptor extends StatelessWidget {
     void _addParamAddIndiv(String targetText, {List<int>? traitIds, List<List<int>>? andCheckTraitIds}) {
       final targetType = vals?.ParamAddIndividualityTargetType;
       if (targetType != null) {
-        final funcTargetType = FuncTargetType.values.firstWhereOrNull((e) => e.value == targetType);
+        final funcTargetType = FuncTargetType.fromId(targetType);
         targetText = funcTargetType == null ? 'TargetType$targetType' : Transl.funcTargetType(funcTargetType).l;
       }
 
@@ -1333,25 +1333,35 @@ class FuncDescriptor extends StatelessWidget {
     }
     if (func.funcType != FuncType.subState) {
       final overwriteTvals = func.getOverwriteTvalsList();
+      List<InlineSpan> _traitSpans;
       if (overwriteTvals.isNotEmpty) {
-        _condSpans.add([
-          TextSpan(text: Transl.special.funcTargetVals),
-          ...divideList([
-            for (final traits in overwriteTvals)
-              TextSpan(
-                children: SharedBuilder.traitSpans(context: context, traits: traits, useAndJoin: true),
-              ),
-          ], const TextSpan(text: '  /  ')),
-          const TextSpan(text: ' '), // not let recognizer extends its width
-        ]);
+        _traitSpans = SharedBuilder.traitsListSpans(context: context, traitsList: overwriteTvals);
       } else if (func.traitVals.join(',') != func.functvals.join(',')) {
-        final targetTypeInt = vals?.FuncCheckTargetIndividualityTargetType;
-        final targetType = FuncTargetType.values.firstWhereOrNull((e) => e.value == targetTypeInt);
-        String text = Transl.special.funcTargetVals;
-        if (targetType != null) {
-          text = "(${Transl.funcTargetType(targetType).l})$text";
+        _traitSpans = SharedBuilder.traitSpans(context: context, traits: func.functvals);
+      } else {
+        _traitSpans = [];
+      }
+      String prefixWithTarget = Transl.special.funcTargetVals;
+      final targetTypeInt = vals?.FuncCheckTargetIndividualityTargetType;
+      if (targetTypeInt != null) {
+        final targetType = FuncTargetType.fromId(targetTypeInt);
+        prefixWithTarget =
+            "(${targetType == null ? 'Target$targetTypeInt' : Transl.funcTargetType(targetType).l})$prefixWithTarget";
+      }
+
+      List<InlineSpan> countConds = [];
+      for (final (v, op) in [
+        (vals?.FuncCheckTargetIndividualityCountEqual, '='),
+        (vals?.FuncCheckTargetIndividualityCountHigher, '≥'),
+        (vals?.FuncCheckTargetIndividualityCountLower, '≤'),
+      ]) {
+        if (v != null) {
+          countConds.add(TextSpan(text: '$op$v'));
         }
-        _addTraits(text, func.functvals);
+      }
+
+      if (_traitSpans.isNotEmpty) {
+        _condSpans.add([TextSpan(text: prefixWithTarget), ..._traitSpans, ...countConds, const TextSpan(text: ' ')]);
       }
     }
     // if (func.funcType != FuncType.subState ||

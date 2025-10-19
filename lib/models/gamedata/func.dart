@@ -676,6 +676,10 @@ enum FuncTargetType {
   const FuncTargetType(this.value);
   final int value;
 
+  static FuncTargetType? fromId(int value) {
+    return FuncTargetType.values.firstWhereOrNull((e) => e.value == value);
+  }
+
   bool get isEnemy => name.toLowerCase().startsWith('enemy') && this != FuncTargetType.enemyOneNoTargetNoAction;
   bool get isAlly =>
       name.toLowerCase().startsWith('pt') ||

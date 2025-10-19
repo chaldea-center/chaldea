@@ -972,10 +972,11 @@ class FunctionExecutor {
     BattleServantData? targetedEnemy,
     bool defaultToPlayer,
   ) async {
-    if (dataVals.FuncCheckTargetIndividualityTargetType == null) return true;
+    final targetTypeInt = dataVals.FuncCheckTargetIndividualityTargetType;
+    if (targetTypeInt == null) return true;
     final traitTargets = await acquireFunctionTarget(
       battleData,
-      FuncTargetType.values.firstWhere((type) => type.value == dataVals.FuncCheckTargetIndividualityTargetType!),
+      FuncTargetType.fromId(targetTypeInt)!,
       activator,
       targetedAlly: targetedAlly,
       targetedEnemy: targetedEnemy,

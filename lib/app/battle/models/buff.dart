@@ -196,7 +196,7 @@ class BuffData {
       final fieldAndCheck = vals.ParamAddFieldIndividualityAndCheck;
       final addIndividualityTargetType = vals.ParamAddIndividualityTargetType;
       final targetOverride = addIndividualityTargetType != null
-          ? FuncTargetType.values.firstWhereOrNull((type) => type.value == addIndividualityTargetType)
+          ? FuncTargetType.fromId(addIndividualityTargetType)
           : null;
       if (selfAndCheck != null) {
         final List<BattleServantData> targetList = targetOverride != null && battleData != null
@@ -650,7 +650,7 @@ class BuffData {
 
     final individualityCondTargetType = buff.script.individualityCondTargetType;
     final condTargetOverride = individualityCondTargetType != null && individualityCondTargetType > 0
-        ? BuffConditionTargetType.values.firstWhereOrNull((type) => type.value == individualityCondTargetType)
+        ? BuffConditionTargetType.fromId(individualityCondTargetType)
         : null;
 
     if (buff.script.INDIVIDUALITIE_OR != null) {
