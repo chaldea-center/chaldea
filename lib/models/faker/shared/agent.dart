@@ -196,7 +196,6 @@ abstract class FakerAgent<
 
   Future<FResponse> deckSetup({required int64_t activeDeckId, required UserDeckEntity userDeck});
   Future<FResponse> userFormationSetup({required int32_t deckNo, required int64_t userEquipId});
-
   Future<FResponse> eventDeckSetup({
     required UserEventDeckEntity? userEventDeck, // original, but only userEventDeck.deckInfo used
     required DeckServantEntity? deckInfo,
@@ -206,6 +205,7 @@ abstract class FakerAgent<
     int32_t restartWave = 0,
     List<GrandSvtInfo> grandSvtInfos = const [],
   });
+  Future<FResponse> deckEditName({required int64_t deckId, required String deckName});
 
   Future<FResponse> battleScenario({
     required int32_t questId,

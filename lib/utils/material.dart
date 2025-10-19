@@ -43,3 +43,11 @@ bool get isBuildingWidget =>
       SchedulerPhase.persistentCallbacks,
     ].contains(WidgetsBinding.instance.schedulerPhase) ||
     WidgetsBinding.instance.rootElement == null;
+
+extension ScrollPositionX on ScrollMetrics {
+  double guessPixelsAt(int index, int total) {
+    if (index <= 0 || total <= 0) return 0;
+    if (maxScrollExtent.isInfinite || maxScrollExtent <= 0 || minScrollExtent.isInfinite || extentTotal <= 0) return 0;
+    return (extentTotal * (index + 1 / 2) / total - extentInside / 2).clamp(0, maxScrollExtent);
+  }
+}

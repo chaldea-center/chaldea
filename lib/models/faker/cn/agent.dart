@@ -651,6 +651,11 @@ class FakerAgentCN extends FakerAgent<FRequestCN, AutoLoginDataCN, NetworkManage
   }
 
   @override
+  Future<FResponse> deckEditName({required int64_t deckId, required String deckName}) {
+    return _acPhp(key: 'deckeditName', nid: 'deck_edit_name', params2: {"deckId": deckId, "deckName": deckName});
+  }
+
+  @override
   Future<FResponse> battleScenario({
     required int32_t questId,
     required int32_t questPhase,

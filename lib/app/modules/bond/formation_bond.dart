@@ -367,7 +367,11 @@ class _FormationBondTabState extends State<FormationBondTab> {
                   text: Maths.sum(results.map((e) => e.totalBond)).toString(),
                   style: TextStyle(color: Theme.of(context).colorScheme.secondary),
                 ),
-                TextSpan(text: '  COST ${option.formation.totalCost}'),
+                const TextSpan(text: '  COST '),
+                TextSpan(
+                  text: option.formation.totalCost.toString(),
+                  style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+                ),
               ],
             ),
             textAlign: TextAlign.center,
@@ -582,11 +586,13 @@ class _FormationBondTabState extends State<FormationBondTab> {
     final deckSvt = option.formation.svts.getOrNull(index);
     if (deckSvt == null || deckSvt.svt == null) return const SizedBox.shrink();
     final detail = option.svtBonus[index];
-    if (deckSvt.supportType.isSupport || detail.isBond15) {
+    if (deckSvt.supportType.isSupport) {
       return Text('-', style: Theme.of(context).textTheme.bodySmall);
+    } else if (detail.isBond15) {
+      return Text('Lv.15', style: Theme.of(context).textTheme.bodySmall);
     }
 
-    Widget _row(String text) {
+    Widget _row(String text, [double? textScaleFactor]) {
       return InkWell(
         onTap: () {
           Widget _param(String name, String value) {
@@ -617,7 +623,7 @@ class _FormationBondTabState extends State<FormationBondTab> {
             ),
           ).showDialog(context);
         },
-        child: AutoSizeText(text, maxLines: 1, maxFontSize: 16, minFontSize: 2),
+        child: AutoSizeText(text, maxLines: 1, maxFontSize: 16, minFontSize: 2, textScaleFactor: textScaleFactor),
       );
     }
 
@@ -625,7 +631,7 @@ class _FormationBondTabState extends State<FormationBondTab> {
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.center,
-      children: [_row('+${totalBond - result.baseValue}'), _row(totalBond.toString())],
+      children: [_row('+${totalBond - result.baseValue}', 0.9), _row(totalBond.toString())],
     );
   }
 }

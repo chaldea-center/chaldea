@@ -17,6 +17,8 @@ import '../_shared/svt_select.dart';
 import '../card_enhance/svt_combine.dart';
 import 'deck_list.dart';
 
+const int _kMaxDeckNameLength = 20;
+
 class _DragSvtData {
   final DeckServantData svt;
 
@@ -57,17 +59,6 @@ class _UserDeckSetupPageState extends State<UserDeckSetupPage> with FakerRuntime
 
   late final bool isEventDeck = widget.activeDeckId == 0 && (widget.eventDeckParam?.deckNo ?? 0) != 0;
 
-  void refreshDeckInfo() {
-    if (isEventDeck) {
-      final param = widget.eventDeckParam!;
-      _userEventDeckEntity = mstData.userEventDeck[UserEventDeckEntity.createPK(param.eventId, param.deckNo)];
-      _originalDeckInfo = _userEventDeckEntity?.deckInfo;
-    } else {
-      _userDeckEntity = mstData.userDeck[widget.activeDeckId];
-      _originalDeckInfo = _userDeckEntity?.deckInfo;
-    }
-  }
-
   @override
   void initState() {
     super.initState();
@@ -80,6 +71,17 @@ class _UserDeckSetupPageState extends State<UserDeckSetupPage> with FakerRuntime
       deckInfo = DeckServantEntity.fromJson(Map.from(jsonDecode(jsonEncode(_originalDeckInfo!))));
     } else {
       deckInfo = DeckServantEntity();
+    }
+  }
+
+  void refreshDeckInfo() {
+    if (isEventDeck) {
+      final param = widget.eventDeckParam!;
+      _userEventDeckEntity = mstData.userEventDeck[UserEventDeckEntity.createPK(param.eventId, param.deckNo)];
+      _originalDeckInfo = _userEventDeckEntity?.deckInfo;
+    } else {
+      _userDeckEntity = mstData.userDeck[widget.activeDeckId];
+      _originalDeckInfo = _userDeckEntity?.deckInfo;
     }
   }
 
@@ -100,6 +102,25 @@ class _UserDeckSetupPageState extends State<UserDeckSetupPage> with FakerRuntime
           Expanded(
             child: ListView(
               children: [
+                if (_userDeckEntity != null)
+                  ListTile(
+                    dense: true,
+                    title: Text('Deck Name'),
+                    trailing: TextButton(
+                      onPressed: () {
+                        InputCancelOkDialog(
+                          title: 'Deck Name',
+                          initValue: _userDeckEntity?.name,
+                          maxLength: _kMaxDeckNameLength,
+                          validate: isDeckNameValid,
+                          onSubmit: (value) {
+                            runtime.runTask(() => doDeckEditName(value));
+                          },
+                        ).showDialog(context);
+                      },
+                      child: Text(_userDeckEntity!.name),
+                    ),
+                  ),
                 DividerWithTitle(title: 'Original'),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -124,6 +145,7 @@ class _UserDeckSetupPageState extends State<UserDeckSetupPage> with FakerRuntime
                   child: Row(
                     spacing: 4,
                     mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       for (final svt in deckInfo.svts) Flexible(flex: 10, child: buildSvt(svt)),
                       Flexible(flex: 8, child: buildMasterEquip()),
@@ -302,7 +324,17 @@ class _UserDeckSetupPageState extends State<UserDeckSetupPage> with FakerRuntime
     );
     svtIcon = Draggable<_DragSvtData>(data: _DragSvtData(deckSvt), feedback: svtIcon, child: svtIcon);
 
-    final userSvtEquip = mstData.userSvt[deckSvt.userSvtEquipIds.firstOrNull];
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.start,
+      spacing: 1,
+      children: [svtIcon, for (final (index, _) in deckSvt.userSvtEquipIds.indexed) buildSvtEquip(deckSvt, index)],
+    );
+  }
+
+  Widget buildSvtEquip(DeckServantData deckSvt, int position) {
+    final userSvtEquip = mstData.userSvt[deckSvt.userSvtEquipIds[position]];
     final svtEquip = db.gameData.craftEssencesById[userSvtEquip?.svtId];
 
     Widget baseSvtEquipWidget = GameCardMixin.cardIconBuilder(
@@ -318,7 +350,7 @@ class _UserDeckSetupPageState extends State<UserDeckSetupPage> with FakerRuntime
         // fontSize: 14,
         alignment: Alignment.bottomLeft,
       ),
-      onTap: deckSvt.isFollowerSvt
+      onTap: deckSvt.isFollowerSvt || deckSvt.isGrandSvt()
           ? null
           : () {
               router.pushBuilder(
@@ -327,6 +359,14 @@ class _UserDeckSetupPageState extends State<UserDeckSetupPage> with FakerRuntime
                   inUseUserSvtIds: deckInfo.svts.expand((e) => e.userSvtEquipIds).toList(),
                   onSelected: (selectedSvtEquip) {
                     if (deckSvt.userSvtEquipIds.isEmpty) deckSvt.userSvtEquipIds = [0];
+                    final grandSvtUserEquipIds = deckInfo.svts
+                        .where((e) => e.isGrandSvt())
+                        .expand((e) => e.userSvtEquipIds)
+                        .toList();
+                    if (grandSvtUserEquipIds.contains(selectedSvtEquip.id)) {
+                      EasyLoading.showInfo('Already in-use by Grand Svt');
+                      return;
+                    }
                     deckSvt.userSvtEquipIds[0] = selectedSvtEquip.id;
                     for (final _deckSvt in deckInfo.svts) {
                       if (_deckSvt != deckSvt && _deckSvt.userSvtEquipIds.firstOrNull == selectedSvtEquip.id) {
@@ -371,13 +411,7 @@ class _UserDeckSetupPageState extends State<UserDeckSetupPage> with FakerRuntime
       },
     );
     svtEquipIcon = Draggable<_DragCEData>(data: _DragCEData(deckSvt), feedback: svtEquipIcon, child: svtEquipIcon);
-
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      spacing: 1,
-      children: [svtIcon, svtEquipIcon],
-    );
+    return svtEquipIcon;
   }
 
   void onDrag(DeckServantData from, DeckServantData to, bool isCE) {
@@ -389,6 +423,11 @@ class _UserDeckSetupPageState extends State<UserDeckSetupPage> with FakerRuntime
     if (isCE) {
       if (from.isFollowerSvt || to.isFollowerSvt) return;
       if (from.userSvtId == 0 || to.userSvtId == 0) return;
+      if (from.isGrandSvt() || to.isGrandSvt()) {
+        EasyLoading.showInfo('Do edit grand svt inside game');
+        return;
+      }
+      assert(from.userSvtEquipIds.isNotEmpty && to.userSvtEquipIds.isNotEmpty);
       if (from.userSvtEquipIds.isEmpty) from.userSvtEquipIds.add(0);
       if (to.userSvtEquipIds.isEmpty) to.userSvtEquipIds.add(0);
       int fromId = from.userSvtEquipIds[0];
@@ -494,6 +533,29 @@ class _UserDeckSetupPageState extends State<UserDeckSetupPage> with FakerRuntime
     );
     initData();
     if (mounted) setState(() {});
+  }
+
+  Future<void> doDeckEditName(String name) async {
+    final deck = _userDeckEntity;
+    if (deck == null) {
+      throw SilentException('UserDeck is null');
+    }
+    if (!isDeckNameValid(name)) {
+      throw SilentException('Invalid name: "$name"');
+    }
+    await agent.deckEditName(deckId: deck.id, deckName: name);
+    initData();
+    if (mounted) setState(() {});
+  }
+
+  bool isDeckNameValid(String name) {
+    name = name.trim();
+    if (name.isEmpty) return false;
+    if (name == _userDeckEntity?.name) return false;
+    if (kEmojiRegExp.hasMatch(name)) return false;
+    if (name.length > _kMaxDeckNameLength) return false; // PARTY_ORGANIZATION_INPUT_DECK_NAME_EXPLANATION
+    // LocalizationManager.ReplaceNameTag(name)
+    return true;
   }
 
   int getTotalCost() {

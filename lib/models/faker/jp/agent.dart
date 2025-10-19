@@ -502,6 +502,14 @@ class FakerAgentJP extends FakerAgent<FRequestJP, AutoLoginDataJP, NetworkManage
   }
 
   @override
+  Future<FResponse> deckEditName({required int64_t deckId, required String deckName}) {
+    final request = FRequestJP(network: network, path: '/deck/editName');
+    request.addFieldInt64("deckId", deckId);
+    request.addFieldStr("deckName", deckName);
+    return request.beginRequestAndCheckError('deck_edit_name');
+  }
+
+  @override
   Future<FResponse> battleScenario({
     required int32_t questId,
     required int32_t questPhase,

@@ -9,6 +9,7 @@ class InputCancelOkDialog extends StatefulWidget {
   final String? title;
   final String? initValue;
   final int? maxLines;
+  final int? maxLength;
   final String? hintText;
   final String? helperText;
   final String? errorText;
@@ -23,6 +24,7 @@ class InputCancelOkDialog extends StatefulWidget {
     this.title,
     this.initValue,
     this.maxLines,
+    this.maxLength,
     this.hintText,
     this.helperText,
     this.errorText,
@@ -37,6 +39,7 @@ class InputCancelOkDialog extends StatefulWidget {
     this.title,
     int? initValue,
     this.maxLines,
+    this.maxLength,
     this.hintText,
     this.helperText,
     this.errorText,
@@ -107,6 +110,7 @@ class _InputCancelOkDialogState extends State<InputCancelOkDialog> {
       autocorrect: false,
       keyboardType: widget.keyboardType,
       maxLines: widget.maxLines ?? 1,
+      maxLength: widget.maxLength,
       decoration: InputDecoration(
         hintText: widget.hintText,
         helperText: widget.helperText,

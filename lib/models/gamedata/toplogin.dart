@@ -421,6 +421,8 @@ class DataMaster<K, V extends DataEntityBase<K>> with Iterable<V> {
   @override
   int get length => lookup.length;
 
+  bool containsKey(K key) => lookup.containsKey(key);
+
   V? operator [](Object? key) => lookup[key];
 
   Map<K, V> toMap() => Map.of(lookup);
@@ -689,12 +691,12 @@ typedef _IntStr = int;
 String _createPK2(Object k1, Object k2) => '$k1:$k2';
 // String _createPK3(Object k1, Object k2, Object k3) => '$k1:$k2:$k3';
 
-abstract class DataEntityBase<T> {
+mixin DataEntityBase<T> {
   T get primaryKey;
 }
 
 @JsonSerializable(createToJson: false)
-class UserItemEntity extends DataEntityBase<_IntStr> {
+class UserItemEntity with DataEntityBase<_IntStr> {
   // int userId;
   int itemId;
   int num;
@@ -710,7 +712,7 @@ class UserItemEntity extends DataEntityBase<_IntStr> {
 }
 
 @JsonSerializable(createToJson: false)
-class UserServantEntity extends DataEntityBase<int> {
+class UserServantEntity with DataEntityBase<int> {
   int id; // unique id for every card
   int svtId;
 
@@ -877,7 +879,7 @@ class UserServantEntity extends DataEntityBase<int> {
 }
 
 @JsonSerializable(createToJson: false)
-class UserServantCollectionEntity extends DataEntityBase<_IntStr> {
+class UserServantCollectionEntity with DataEntityBase<_IntStr> {
   int userId;
   int svtId;
 
@@ -988,7 +990,7 @@ class UserServantCollectionEntity extends DataEntityBase<_IntStr> {
 }
 
 @JsonSerializable(createToJson: false)
-class UserServantGrandEntity extends DataEntityBase<int> {
+class UserServantGrandEntity with DataEntityBase<int> {
   int userId;
   int grandGraphId;
   int userSvtId;
@@ -1088,7 +1090,7 @@ class UserServantGrandEntity extends DataEntityBase<int> {
 }
 
 @JsonSerializable(createToJson: true)
-class UserGameEntity extends DataEntityBase<int> {
+class UserGameEntity with DataEntityBase<int> {
   int userId;
   String name;
   int? birthDay;
@@ -1251,7 +1253,7 @@ class UserGameEntity extends DataEntityBase<int> {
 }
 
 @JsonSerializable(createToJson: false)
-class TblUserEntity extends DataEntityBase<int> {
+class TblUserEntity with DataEntityBase<int> {
   int userId;
   int friendPoint;
 
@@ -1266,7 +1268,7 @@ class TblUserEntity extends DataEntityBase<int> {
 }
 
 @JsonSerializable(createToJson: false)
-class UserLoginEntity extends DataEntityBase<int> {
+class UserLoginEntity with DataEntityBase<int> {
   int userId;
   int seqLoginCount;
   int totalLoginCount;
@@ -1287,7 +1289,7 @@ class UserLoginEntity extends DataEntityBase<int> {
 }
 
 @JsonSerializable(createToJson: false)
-class UserServantAppendPassiveSkillEntity extends DataEntityBase<_IntStr> {
+class UserServantAppendPassiveSkillEntity with DataEntityBase<_IntStr> {
   int userId;
   List<int> unlockNums;
   int svtId;
@@ -1307,7 +1309,7 @@ class UserServantAppendPassiveSkillEntity extends DataEntityBase<_IntStr> {
 }
 
 @JsonSerializable(createToJson: false)
-class UserSvtCoinEntity extends DataEntityBase<_IntStr> {
+class UserSvtCoinEntity with DataEntityBase<_IntStr> {
   int userId;
   int svtId;
   int num;
@@ -1326,7 +1328,7 @@ class UserSvtCoinEntity extends DataEntityBase<_IntStr> {
 }
 
 @JsonSerializable(createToJson: false)
-class UserCoinRoomEntity extends DataEntityBase<_IntStr> {
+class UserCoinRoomEntity with DataEntityBase<_IntStr> {
   int userId;
   int cnt;
   int num;
@@ -1351,7 +1353,7 @@ class UserCoinRoomEntity extends DataEntityBase<_IntStr> {
 }
 
 @JsonSerializable(createToJson: false)
-class UserServantAppendPassiveSkillLvEntity extends DataEntityBase<int> {
+class UserServantAppendPassiveSkillLvEntity with DataEntityBase<int> {
   int userSvtId;
   List<int> appendPassiveSkillNums;
   List<int> appendPassiveSkillLvs;
@@ -1372,7 +1374,7 @@ class UserServantAppendPassiveSkillLvEntity extends DataEntityBase<int> {
 }
 
 @JsonSerializable(createToJson: false)
-class UserEquipEntity extends DataEntityBase<int> {
+class UserEquipEntity with DataEntityBase<int> {
   int id;
   // int userId;
   int equipId;
@@ -1395,7 +1397,7 @@ class UserEquipEntity extends DataEntityBase<int> {
 }
 
 @JsonSerializable(createToJson: false)
-class UserCommandCodeCollectionEntity extends DataEntityBase<_IntStr> {
+class UserCommandCodeCollectionEntity with DataEntityBase<_IntStr> {
   int userId;
   int commandCodeId;
   int status; // 0-find, 2-got
@@ -1419,7 +1421,7 @@ class UserCommandCodeCollectionEntity extends DataEntityBase<_IntStr> {
 }
 
 @JsonSerializable(createToJson: false)
-class UserCommandCodeEntity extends DataEntityBase<int> {
+class UserCommandCodeEntity with DataEntityBase<int> {
   int id;
   // int userId;
   int commandCodeId;
@@ -1445,7 +1447,7 @@ class UserCommandCodeEntity extends DataEntityBase<int> {
 }
 
 @JsonSerializable(createToJson: false)
-class UserServantCommandCodeEntity extends DataEntityBase<_IntStr> {
+class UserServantCommandCodeEntity with DataEntityBase<_IntStr> {
   int userId;
   List<int> userCommandCodeIds;
   int svtId;
@@ -1465,7 +1467,7 @@ class UserServantCommandCodeEntity extends DataEntityBase<_IntStr> {
 }
 
 @JsonSerializable(createToJson: false)
-class UserServantCommandCardEntity extends DataEntityBase<_IntStr> {
+class UserServantCommandCardEntity with DataEntityBase<_IntStr> {
   int userId;
   List<int> commandCardParam;
   int svtId;
@@ -1485,7 +1487,7 @@ class UserServantCommandCardEntity extends DataEntityBase<_IntStr> {
 }
 
 @JsonSerializable(createToJson: false)
-class UserSupportDeckEntity extends DataEntityBase<_IntStr> {
+class UserSupportDeckEntity with DataEntityBase<_IntStr> {
   int userId;
   int supportDeckId;
   String name;
@@ -1504,7 +1506,7 @@ class UserSupportDeckEntity extends DataEntityBase<_IntStr> {
 }
 
 @JsonSerializable(createToJson: false)
-class UserServantLeaderEntity extends DataEntityBase<String> {
+class UserServantLeaderEntity with DataEntityBase<String> {
   int userId;
   int supportDeckId;
   int classId;
@@ -1705,7 +1707,7 @@ class CommandCodeStatus {
 }
 
 @JsonSerializable(createToJson: false)
-class UserClassBoardSquareEntity extends DataEntityBase<_IntStr> {
+class UserClassBoardSquareEntity with DataEntityBase<_IntStr> {
   int userId;
   int classBoardBaseId;
   List<int> classBoardSquareIds;
@@ -1734,7 +1736,7 @@ class UserClassBoardSquareEntity extends DataEntityBase<_IntStr> {
 enum UserPresentBoxFlag { importantForEvent, indefinitePeriod, payTypeRarePri, importantForLimit }
 
 @JsonSerializable(createToJson: false)
-class UserPresentBoxEntity extends DataEntityBase<_IntStr> {
+class UserPresentBoxEntity with DataEntityBase<_IntStr> {
   int receiveUserId;
   int presentId;
   int messageRefType;
@@ -1813,7 +1815,7 @@ enum PresentFromType {
 }
 
 @JsonSerializable(createToJson: false)
-class UserPresentHistoryEntity extends DataEntityBase<_IntStr> {
+class UserPresentHistoryEntity with DataEntityBase<_IntStr> {
   int id;
   int userId;
   int giftType;
@@ -1858,7 +1860,7 @@ class UserPresentHistoryEntity extends DataEntityBase<_IntStr> {
 }
 
 @JsonSerializable(createToJson: false)
-class UserGachaEntity extends DataEntityBase<_IntStr> {
+class UserGachaEntity with DataEntityBase<_IntStr> {
   int userId;
   int gachaId;
   int num;
@@ -1892,7 +1894,7 @@ class UserGachaEntity extends DataEntityBase<_IntStr> {
 // public long updatedAt;
 
 @JsonSerializable(createToJson: false)
-class UserEventEntity extends DataEntityBase<_IntStr> {
+class UserEventEntity with DataEntityBase<_IntStr> {
   int userId;
   int eventId;
   int value;
@@ -1927,7 +1929,7 @@ class UserEventEntity extends DataEntityBase<_IntStr> {
 }
 
 @JsonSerializable(createToJson: false)
-class UserEventMissionEntity extends DataEntityBase<_IntStr> {
+class UserEventMissionEntity with DataEntityBase<_IntStr> {
   int userId;
   int missionId;
   int missionTargetId;
@@ -1957,7 +1959,7 @@ class UserEventMissionEntity extends DataEntityBase<_IntStr> {
 }
 
 @JsonSerializable(createToJson: false)
-class UserEventMissionFixEntity extends DataEntityBase<_IntStr> {
+class UserEventMissionFixEntity with DataEntityBase<_IntStr> {
   int userId;
   int missionId;
   int progressType;
@@ -1977,7 +1979,7 @@ class UserEventMissionFixEntity extends DataEntityBase<_IntStr> {
 }
 
 @JsonSerializable(createToJson: false)
-class UserEventMissionCondDetailEntity extends DataEntityBase<_IntStr> {
+class UserEventMissionCondDetailEntity with DataEntityBase<_IntStr> {
   int userId;
   int conditionDetailId;
   int missionTargetId;
@@ -2008,7 +2010,7 @@ class UserEventMissionCondDetailEntity extends DataEntityBase<_IntStr> {
 }
 
 @JsonSerializable(createToJson: false)
-class UserEventRandomMissionEntity extends DataEntityBase<_IntStr> {
+class UserEventRandomMissionEntity with DataEntityBase<_IntStr> {
   int userId;
   int missionId;
   int missionTargetId;
@@ -2048,7 +2050,7 @@ class UserEventRandomMissionEntity extends DataEntityBase<_IntStr> {
 }
 
 @JsonSerializable(createToJson: false)
-class UserEventPointEntity extends DataEntityBase<String> {
+class UserEventPointEntity with DataEntityBase<String> {
   int userId;
   int eventId;
   int groupId;
@@ -2068,7 +2070,7 @@ class UserEventPointEntity extends DataEntityBase<String> {
 }
 
 @JsonSerializable(createToJson: false)
-class UserEventTradeEntity extends DataEntityBase<_IntStr> {
+class UserEventTradeEntity with DataEntityBase<_IntStr> {
   int eventId;
   int updatedAt;
   List<EventTradeInfo> tradeList;
@@ -2149,7 +2151,7 @@ class EventCraftPickupInfo {
 }
 
 @JsonSerializable(createToJson: false)
-class EventRaidEntity extends DataEntityBase<String> {
+class EventRaidEntity with DataEntityBase<String> {
   static const int kSubGroupIndexStart = 1;
   int eventId;
   int day;
@@ -2217,7 +2219,7 @@ class EventRaidEntity extends DataEntityBase<String> {
 }
 
 @JsonSerializable(createToJson: false)
-class UserEventRaidEntity extends DataEntityBase<String> {
+class UserEventRaidEntity with DataEntityBase<String> {
   int userId;
   int eventId;
   int day;
@@ -2237,7 +2239,7 @@ class UserEventRaidEntity extends DataEntityBase<String> {
 }
 
 @JsonSerializable(createToJson: false)
-class TotalEventRaidEntity extends DataEntityBase<String> {
+class TotalEventRaidEntity with DataEntityBase<String> {
   int eventId;
   int day;
   int totalDamage;
@@ -2289,7 +2291,7 @@ class BattleSuperBossResult {
 }
 
 @JsonSerializable(createToJson: false)
-class UserBoxGachaEntity extends DataEntityBase<_IntStr> {
+class UserBoxGachaEntity with DataEntityBase<_IntStr> {
   int userId;
   int boxGachaId;
   int resetNum;
@@ -2328,7 +2330,7 @@ class UserBoxGachaEntity extends DataEntityBase<_IntStr> {
 // 	RETURN_RARE_PRI_SHOP = 16;
 // }
 @JsonSerializable(createToJson: false)
-class UserShopEntity extends DataEntityBase<_IntStr> {
+class UserShopEntity with DataEntityBase<_IntStr> {
   int userId;
   int shopId;
   int num;
@@ -2362,7 +2364,7 @@ class UserShopEntity extends DataEntityBase<_IntStr> {
 }
 
 @JsonSerializable(createToJson: false)
-class UserQuestEntity extends DataEntityBase<_IntStr> {
+class UserQuestEntity with DataEntityBase<_IntStr> {
   int userId;
   int questId;
   int questPhase;
@@ -2414,7 +2416,7 @@ class UserQuestEntity extends DataEntityBase<_IntStr> {
 }
 
 @JsonSerializable(createToJson: false)
-class UserFollowerEntity extends DataEntityBase<int> {
+class UserFollowerEntity with DataEntityBase<int> {
   List<FollowerInfo> followerInfo;
   int64_t userId;
   int64_t expireAt;
@@ -2608,7 +2610,7 @@ class ServantLeaderInfo {
 }
 
 @JsonSerializable(createToJson: false)
-class UserAccountLinkageEntity extends DataEntityBase<int> {
+class UserAccountLinkageEntity with DataEntityBase<int> {
   int userId;
   int type; // 1-aniplex, 2=0?
   int linkedAt;
@@ -2626,13 +2628,13 @@ class UserAccountLinkageEntity extends DataEntityBase<int> {
   factory UserAccountLinkageEntity.fromJson(Map<String, dynamic> data) => _$UserAccountLinkageEntityFromJson(data);
 }
 
-mixin UserDeckEntityBase {
+sealed class UserDeckEntityBase {
   int get deckNo;
   DeckServantEntity? get deckInfo;
 }
 
 @JsonSerializable(createToJson: true)
-class UserDeckEntity extends DataEntityBase<int> with UserDeckEntityBase {
+class UserDeckEntity extends UserDeckEntityBase with DataEntityBase<int> {
   int id;
   int userId;
   @override
@@ -2660,7 +2662,7 @@ class UserDeckEntity extends DataEntityBase<int> with UserDeckEntityBase {
 }
 
 @JsonSerializable(createToJson: false)
-class UserEventDeckEntity extends DataEntityBase<String> with UserDeckEntityBase {
+class UserEventDeckEntity extends UserDeckEntityBase with DataEntityBase<String> {
   int userId;
   int eventId;
   @override
@@ -2710,6 +2712,8 @@ class DeckServantData {
   int? initPos;
   int? equipTarget2SkillChange;
 
+  bool isGrandSvt() => userSvtEquipIds.length > 1; // only when isUseGrandBoard
+
   DeckServantData({
     dynamic id,
     dynamic userSvtId,
@@ -2755,7 +2759,7 @@ class GrandSvtInfo {
 }
 
 @JsonSerializable(createToJson: false)
-class BattleEntity extends DataEntityBase<int> {
+class BattleEntity with DataEntityBase<int> {
   BattleInfoData? battleInfo;
   int64_t id;
   int battleType;
