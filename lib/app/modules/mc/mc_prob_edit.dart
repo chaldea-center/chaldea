@@ -96,7 +96,7 @@ class _MCGachaProbEditPageState extends State<MCGachaProbEditPage> {
                       spacing: 4,
                       runSpacing: 4,
                       children: [
-                        for (final svtId in gacha.featuredSvtIds)
+                        for (final svtId in gacha.featuredSvtIds.toList()..sort(SvtFilterData.compareId))
                           db.gameData.servantsById[svtId]?.iconBuilder(context: context, width: 48) ??
                               Text('No.$svtId'),
                       ],

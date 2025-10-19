@@ -7,6 +7,7 @@ import 'package:flutter/gestures.dart';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/app.dart';
@@ -32,6 +33,7 @@ import 'details/dialogs.dart';
 import 'details/raids.dart';
 import 'gacha/gacha_draw.dart';
 import 'history.dart';
+import 'mission/mission_receive.dart';
 import 'option_list.dart';
 import 'present_box/present_box.dart';
 import 'state.dart';
@@ -556,6 +558,40 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
         );
       }
     }
+
+    const int _kMissionWarningDay = 2;
+    for (final mm in runtime.gameData.timerData.masterMissions) {
+      if (const [MissionType.none, MissionType.daily].contains(mm.type)) continue;
+      if (mm.missions.isEmpty) continue;
+      if (mm.closedAt < now || mm.startedAt > now || mm.endedAt - now > _kMissionWarningDay * kSecsPerDay) continue;
+      Map<MissionProgressType, int> progresses = {};
+      for (final mission in mm.missions) {
+        final int progress =
+            mstData.userEventMission[mission.id]?.missionProgressType ?? MissionProgressType.none.value;
+        progresses.addNum(MissionProgressType.fromValue(progress), 1);
+      }
+      bool needWarning = mm.endedAt > now
+          ? progresses.keys.any((e) => e != MissionProgressType.achieve)
+          : progresses.containsKey(MissionProgressType.clear);
+      if (needWarning) {
+        String subtitle = [
+          mm.endedAt.sec2date().toCustomString(year: false, second: false),
+          for (final type in progresses.keys.toList()..sort2((e) => e.value)) '${type.name} ${progresses[type]}',
+        ].join(', ');
+        children.add(
+          ListTile(
+            leading: const FaIcon(FontAwesomeIcons.listCheck, size: 18),
+            title: Text('[${Transl.enums(mm.type, (e) => e.missionType).l}] ${mm.getDispName()}'),
+            subtitle: Text(subtitle),
+            trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
+            onTap: () {
+              router.pushPage(UserEventMissionReceivePage(runtime: runtime, initId: mm.id));
+            },
+          ),
+        );
+      }
+    }
+
     if (children.isEmpty) return const SizedBox.shrink();
     return TileGroup(header: S.current.hint, children: children);
   }

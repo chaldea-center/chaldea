@@ -16,7 +16,8 @@ import '../state.dart';
 
 class UserEventMissionReceivePage extends StatefulWidget {
   final FakerRuntime runtime;
-  const UserEventMissionReceivePage({super.key, required this.runtime});
+  final int? initId;
+  const UserEventMissionReceivePage({super.key, required this.runtime, this.initId});
 
   @override
   State<UserEventMissionReceivePage> createState() => _UserEventMissionReceivePageState();
@@ -51,6 +52,7 @@ class _UserEventMissionReceivePageState extends State<UserEventMissionReceivePag
     final now = DateTime.now().timestamp;
 
     mms.retainWhere((mm) {
+      if (mm.id == widget.initId) return true;
       if (const [MissionType.event, MissionType.random].contains(mm.type)) return false;
       if (mm.startedAt > now || mm.closedAt < now) return false;
       if (mm.type == MissionType.daily) {
@@ -103,12 +105,15 @@ class _UserEventMissionReceivePageState extends State<UserEventMissionReceivePag
     // mms.removeWhere((mm) => mm.type == MissionType.daily && mm.endedAt - mm.startedAt > kSecsPerDay * 40);
     mms.sortByList((e) => [e.endedAt, e.closedAt, e.id]);
     if (mms.isNotEmpty) {
-      onSelectMM(
-        mms.firstWhere(
-          (mm) => mm.missions.any((e) => getMissionProgress(e.id) != MissionProgressType.achieve),
-          orElse: () => mms.first,
-        ),
+      MasterMission? mm;
+      if (widget.initId != null) {
+        mm = mms.firstWhereOrNull((e) => e.id == widget.initId);
+      }
+      mm ??= mms.firstWhere(
+        (mm) => mm.missions.any((e) => getMissionProgress(e.id) != MissionProgressType.achieve),
+        orElse: () => mms.first,
       );
+      onSelectMM(mm);
     }
     if (mounted) setState(() {});
   }
