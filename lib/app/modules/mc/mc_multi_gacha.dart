@@ -294,14 +294,7 @@ class _MCSummonCreatePageState extends State<MCSummonCreatePage> {
     puSvts = puSvts.toSet().toList();
     puCEs = puCEs.toSet().toList();
     puSvts.sort((a, b) => SvtFilterData.compare(db.gameData.servantsNoDup[a], db.gameData.servantsNoDup[b]));
-    puCEs.sort(
-      (a, b) => CraftFilterData.compare(
-        db.gameData.craftEssences[a],
-        db.gameData.craftEssences[b],
-        keys: [CraftCompare.rarity, CraftCompare.no],
-        reversed: [true, false],
-      ),
-    );
+    puCEs.sort((a, b) => CraftFilterData.compare(db.gameData.craftEssences[a], db.gameData.craftEssences[b]));
 
     String svtNames = puSvts.map((e) => db.gameData.servantsNoDup[e]?.extra.mcLink ?? "从者$e").join(',');
     String ceNames = puCEs.map((e) => db.gameData.craftEssences[e]?.extra.mcLink ?? "礼装$e").join(',');

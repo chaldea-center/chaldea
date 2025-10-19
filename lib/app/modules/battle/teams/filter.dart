@@ -249,12 +249,7 @@ class _TeamFilterPageState extends FilterPageState<TeamFilterData, TeamFilterPag
     availableSvts.sort((a, b) => SvtFilterData.compareId(a, b));
     final availableCEs = {...widget.availableCEs, ...filterData.blockCEs.options}.toList();
     availableCEs.sort(
-      (a, b) => CraftFilterData.compare(
-        db.gameData.craftEssencesById[a],
-        db.gameData.craftEssencesById[b],
-        keys: [CraftCompare.rarity, CraftCompare.no],
-        reversed: [true, true],
-      ),
+      (a, b) => CraftFilterData.compare(db.gameData.craftEssencesById[a], db.gameData.craftEssencesById[b]),
     );
     final availableMCs = {0, ...widget.availableMCs, ...filterData.mysticCode.options}.toList()..sort();
     final availableEventWarIds = {...widget.availableEventWarIds, ...filterData.eventWarId.options}.toList()

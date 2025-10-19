@@ -117,7 +117,7 @@ Map<String, dynamic> _$CraftFilterDataToJson(CraftFilterData instance) => <Strin
 };
 
 const _$CraftCompareEnumMap = {
-  CraftCompare.no: 'no',
+  CraftCompare.collectionNo: 'collectionNo',
   CraftCompare.rarity: 'rarity',
   CraftCompare.atk: 'atk',
   CraftCompare.hp: 'hp',

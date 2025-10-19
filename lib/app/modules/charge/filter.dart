@@ -47,7 +47,7 @@ class NpFilterData with FilterDataMixin {
   final changeable = FilterGroupData<bool>();
 
   List<SvtCompare> svtSortKeys = [SvtCompare.collectionNo, SvtCompare.collectionNo];
-  List<CraftCompare> ceSortKeys = [CraftCompare.no, CraftCompare.no];
+  List<CraftCompare> ceSortKeys = [CraftCompare.collectionNo, CraftCompare.collectionNo];
   List<bool> sortReversed = [true, true];
 
   @override

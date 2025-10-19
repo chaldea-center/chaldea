@@ -99,16 +99,16 @@ class _CraftFilterPageState extends FilterPageState<CraftFilterData, CraftFilter
           getGroup(
             header: S.current.filter_sort,
             children: [
-              for (int i = 0; i < CraftCompare.values.length; i++)
+              for (int i = 0; i < filterData.sortKeys.length; i++)
                 getSortButton<CraftCompare>(
                   prefix: '${i + 1}',
                   value: filterData.sortKeys[i],
                   items: {for (final e in CraftCompare.values) e: e.shownName},
                   onSortAttr: (key) {
-                    filterData.sortKeys[i] = key ?? filterData.sortKeys[i];
+                    if (key != null) filterData.sortKeys[i] = key;
                     update();
                   },
-                  reversed: filterData.sortReversed[i],
+                  reversed: filterData.sortReversed[i] ?? filterData.sortKeys[i].defaultReversed,
                   onSortDirectional: (reversed) {
                     filterData.sortReversed[i] = reversed;
                     update();

@@ -252,7 +252,7 @@ class SvtFilterData with FilterDataMixin {
     List<bool?>? sortReversed,
   }) : sortKeys = List.generate(
          SvtCompare.values.length,
-         (index) => sortKeys?.getOrNull(index) ?? SvtCompare.values[index],
+         (index) => sortKeys?.getOrNull(index) ?? SvtCompare.collectionNo,
          growable: false,
        ),
        sortReversed = List.generate(
@@ -384,23 +384,22 @@ class SvtFilterData with FilterDataMixin {
 /// Craft Essence
 
 enum CraftCompare {
-  no,
-  rarity,
-  atk,
-  hp;
+  collectionNo(true),
+  rarity(true),
+  atk(true),
+  hp(true);
 
-  String get shownName {
-    switch (this) {
-      case CraftCompare.no:
-        return S.current.filter_sort_number;
-      case CraftCompare.rarity:
-        return S.current.filter_sort_rarity;
-      case CraftCompare.atk:
-        return 'ATK';
-      case CraftCompare.hp:
-        return 'HP';
-    }
-  }
+  const CraftCompare(this.defaultReversed);
+  final bool defaultReversed;
+
+  static const kRarityFirstKeys = [CraftCompare.rarity, CraftCompare.collectionNo];
+
+  String get shownName => switch (this) {
+    CraftCompare.collectionNo => S.current.filter_sort_number,
+    CraftCompare.rarity => S.current.filter_sort_rarity,
+    CraftCompare.atk => 'ATK',
+    CraftCompare.hp => 'HP',
+  };
 }
 
 enum CraftATKType {
@@ -419,7 +418,7 @@ class CraftFilterData with FilterDataMixin {
   @JsonKey()
   List<CraftCompare> sortKeys;
   @JsonKey()
-  List<bool> sortReversed;
+  List<bool?> sortReversed;
 
   // filter
   final rarity = FilterGroupData<int>();
@@ -436,12 +435,12 @@ class CraftFilterData with FilterDataMixin {
   CraftFilterData({this.useGrid = false, List<CraftCompare?>? sortKeys, List<bool>? sortReversed})
     : sortKeys = List.generate(
         CraftCompare.values.length,
-        (index) => sortKeys?.getOrNull(index) ?? CraftCompare.values[index],
+        (index) => sortKeys?.getOrNull(index) ?? CraftCompare.collectionNo,
         growable: false,
       ),
       sortReversed = List.generate(
         CraftCompare.values.length,
-        (index) => sortReversed?.getOrNull(index) ?? true,
+        (index) => sortReversed?.getOrNull(index),
         growable: false,
       );
 
@@ -473,34 +472,30 @@ class CraftFilterData with FilterDataMixin {
 
   Map<String, dynamic> toJson() => _$CraftFilterDataToJson(this);
 
-  static int compare(CraftEssence? a, CraftEssence? b, {List<CraftCompare>? keys, List<bool>? reversed}) {
+  static int compare(
+    CraftEssence? a,
+    CraftEssence? b, {
+    List<CraftCompare>? keys = CraftCompare.kRarityFirstKeys,
+    List<bool?>? reversed,
+  }) {
     if (a == null && b == null) return 0;
     if (a == null) return -1;
     if (b == null) return 1;
 
     keys ??= [];
 
-    if (!keys.contains(CraftCompare.no)) {
-      keys = [...keys, CraftCompare.no];
+    if (!keys.contains(CraftCompare.collectionNo)) {
+      keys = [...keys, CraftCompare.collectionNo];
     }
-    for (var i = 0; i < keys.length; i++) {
-      int r;
-      switch (keys[i]) {
-        case CraftCompare.no:
-          r = (a.sortId ?? a.collectionNo).compareTo((b.sortId ?? b.collectionNo));
-          break;
-        case CraftCompare.rarity:
-          r = a.rarity - b.rarity;
-          break;
-        case CraftCompare.atk:
-          r = a.atkMax - b.atkMax;
-          break;
-        case CraftCompare.hp:
-          r = a.hpMax - b.hpMax;
-          break;
-      }
+    for (final (index, key) in keys.indexed) {
+      int r = switch (key) {
+        CraftCompare.collectionNo => (a.sortId ?? a.collectionNo).compareTo((b.sortId ?? b.collectionNo)),
+        CraftCompare.rarity => a.rarity - b.rarity,
+        CraftCompare.atk => a.atkMax - b.atkMax,
+        CraftCompare.hp => a.hpMax - b.hpMax,
+      };
       if (r != 0) {
-        return (reversed?.getOrNull(i) ?? false) ? -r : r;
+        return (reversed?.getOrNull(index) ?? key.defaultReversed) ? -r : r;
       }
     }
     return 0;
@@ -512,14 +507,10 @@ enum CmdCodeCompare {
   no,
   rarity;
 
-  String get shownName {
-    switch (this) {
-      case CmdCodeCompare.no:
-        return S.current.filter_sort_number;
-      case CmdCodeCompare.rarity:
-        return S.current.filter_sort_rarity;
-    }
-  }
+  String get shownName => switch (this) {
+    CmdCodeCompare.no => S.current.filter_sort_number,
+    CmdCodeCompare.rarity => S.current.filter_sort_rarity,
+  };
 }
 
 @JsonSerializable(ignoreUnannotated: true)
@@ -580,15 +571,10 @@ class CmdCodeFilterData with FilterDataMixin {
       keys = [CmdCodeCompare.no];
     }
     for (var i = 0; i < keys.length; i++) {
-      int r;
-      switch (keys[i]) {
-        case CmdCodeCompare.no:
-          r = a.collectionNo - b.collectionNo;
-          break;
-        case CmdCodeCompare.rarity:
-          r = a.rarity - b.rarity;
-          break;
-      }
+      int r = switch (keys[i]) {
+        CmdCodeCompare.no => a.collectionNo - b.collectionNo,
+        CmdCodeCompare.rarity => a.rarity - b.rarity,
+      };
       if (r != 0) {
         return (reversed?.getOrNull(i) ?? false) ? -r : r;
       }
@@ -633,38 +619,23 @@ enum FavoriteState {
   owned,
   other;
 
-  IconData get icon {
-    switch (this) {
-      case FavoriteState.all:
-        return Icons.remove_circle_outline;
-      case FavoriteState.owned:
-        return Icons.favorite;
-      case FavoriteState.other:
-        return Icons.favorite_border;
-    }
-  }
+  IconData get icon => switch (this) {
+    FavoriteState.all => Icons.remove_circle_outline,
+    FavoriteState.owned => Icons.favorite,
+    FavoriteState.other => Icons.favorite_border,
+  };
 
-  String get shownName {
-    switch (this) {
-      case FavoriteState.all:
-        return S.current.general_all;
-      case FavoriteState.owned:
-        return S.current.item_own;
-      case FavoriteState.other:
-        return S.current.general_others;
-    }
-  }
+  String get shownName => switch (this) {
+    FavoriteState.all => S.current.general_all,
+    FavoriteState.owned => S.current.item_own,
+    FavoriteState.other => S.current.general_others,
+  };
 
-  bool check(bool favorite) {
-    switch (this) {
-      case FavoriteState.all:
-        return true;
-      case FavoriteState.owned:
-        return favorite;
-      case FavoriteState.other:
-        return !favorite;
-    }
-  }
+  bool check(bool favorite) => switch (this) {
+    FavoriteState.all => true,
+    FavoriteState.owned => favorite,
+    FavoriteState.other => !favorite,
+  };
 }
 
 // event

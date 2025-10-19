@@ -551,9 +551,7 @@ class FakerRuntime {
       count -= 1;
       gachaResultStat.lastEnhanceBaseCE = targetCE;
       gachaResultStat.lastEnhanceMaterialCEs = combineMaterialCEs.toList();
-      gachaResultStat.lastEnhanceMaterialCEs.sort(
-        (a, b) => CraftFilterData.compare(a.dbCE, b.dbCE, keys: const [CraftCompare.rarity], reversed: const [true]),
-      );
+      gachaResultStat.lastEnhanceMaterialCEs.sort((a, b) => CraftFilterData.compare(a.dbCE, b.dbCE));
       update();
     }
   }
