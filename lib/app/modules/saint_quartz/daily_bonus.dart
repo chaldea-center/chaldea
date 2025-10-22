@@ -93,12 +93,7 @@ class DailyBonusTabState extends State<DailyBonusTab> {
     return ListTile(
       dense: true,
       tileColor: tileColor,
-      leading: Gift(
-        id: 0,
-        type: GiftType.fromId(present.giftType),
-        objectId: present.objectId,
-        num: present.num,
-      ).iconBuilder(context: context, width: 32),
+      leading: present.toGift().iconBuilder(context: context, width: 32),
       title: Text('${GameCardMixin.anyCardItemName(present.objectId).l} ×${present.num}'),
       subtitle: Text.rich(
         TextSpan(

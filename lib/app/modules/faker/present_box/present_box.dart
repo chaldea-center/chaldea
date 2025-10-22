@@ -187,14 +187,6 @@ class _UserPresentBoxManagePageState extends State<UserPresentBoxManagePage> wit
     );
   }
 
-  int getPresentExpireAt(UserPresentBoxEntity present) {
-    if (present.flags.contains(UserPresentBoxFlag.indefinitePeriod)) return DateTime(2099).timestamp;
-    int expireAt = present.createdAt + ConstData.constants.presentValidTime;
-    final item = items[present.objectId];
-    if (item == null) return expireAt;
-    return min(item.endedAt, expireAt);
-  }
-
   bool isItemSelect(int presentId) {
     return items[userPresents[presentId]?.objectId]?.type == ItemType.itemSelect;
   }
@@ -205,7 +197,7 @@ class _UserPresentBoxManagePageState extends State<UserPresentBoxManagePage> wit
     if (present.giftType == GiftType.item.value) {
       item = items[present.objectId];
     }
-    final expireAt = getPresentExpireAt(present);
+    final expireAt = present.getExpireAt(item);
     Duration leftDur = Duration(seconds: expireAt - DateTime.now().timestamp);
     String leftDurStr = leftDur.isNegative ? '-' : '';
     leftDur = leftDur.abs();
@@ -218,12 +210,7 @@ class _UserPresentBoxManagePageState extends State<UserPresentBoxManagePage> wit
     }
     return CheckboxListTile(
       dense: true,
-      secondary: Gift(
-        id: 0,
-        type: GiftType.fromId(present.giftType),
-        objectId: present.objectId,
-        num: present.num,
-      ).iconBuilder(context: context, width: 32),
+      secondary: present.toGift().iconBuilder(context: context, width: 32),
       title: Text('${GameCardMixin.anyCardItemName(present.objectId).l} ×${present.num}'),
       subtitle: Text.rich(
         TextSpan(

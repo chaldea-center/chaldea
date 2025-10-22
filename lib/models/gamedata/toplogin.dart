@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math' show min;
 
 import 'package:flutter/foundation.dart';
 
@@ -12,6 +13,7 @@ import 'command_code.dart';
 import 'common.dart';
 import 'gift.dart';
 import 'item.dart';
+import 'quest.dart' show GiftType, Gift;
 import 'servant.dart';
 
 export 'mst_data_methods.dart';
@@ -1733,7 +1735,18 @@ class UserClassBoardSquareEntity with DataEntityBase<_IntStr> {
   factory UserClassBoardSquareEntity.fromJson(Map<String, dynamic> data) => _$UserClassBoardSquareEntityFromJson(data);
 }
 
-enum UserPresentBoxFlag { importantForEvent, indefinitePeriod, payTypeRarePri, importantForLimit }
+// UserPresentBoxMaster static fields, not enum
+enum UserPresentBoxFlag {
+  importantForEvent(1),
+  indefinitePeriod(2),
+  payTypeRarePri(3),
+  importantForLimit(4);
+
+  const UserPresentBoxFlag(this.flagIndex);
+  final int flagIndex;
+
+  int get value => 1 << flagIndex;
+}
 
 @JsonSerializable(createToJson: false)
 class UserPresentBoxEntity with DataEntityBase<_IntStr> {
@@ -1754,7 +1767,7 @@ class UserPresentBoxEntity with DataEntityBase<_IntStr> {
 
   List<UserPresentBoxFlag> get flags => [
     for (final v in UserPresentBoxFlag.values)
-      if (flag & (1 << (v.index + 1)) != 0) v,
+      if (flag & v.value != 0) v,
   ];
 
   @override
@@ -1792,6 +1805,17 @@ class UserPresentBoxEntity with DataEntityBase<_IntStr> {
        updatedAt = _toInt(updatedAt),
        createdAt = _toInt(createdAt);
   factory UserPresentBoxEntity.fromJson(Map<String, dynamic> data) => _$UserPresentBoxEntityFromJson(data);
+
+  int getExpireAt(Item? item) {
+    if (flags.contains(UserPresentBoxFlag.indefinitePeriod)) return DateTime(2099).timestamp;
+    int expireAt = createdAt + ConstData.constants.presentValidTime;
+    if (item != null && giftType == GiftType.item.value && item.id == objectId) return min(item.endedAt, expireAt);
+    return expireAt;
+  }
+
+  Gift toGift() {
+    return Gift(id: 0, objectId: objectId, num: num, type: GiftType.fromId(giftType));
+  }
 }
 
 enum PresentFromType {

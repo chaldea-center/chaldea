@@ -89,7 +89,6 @@ class BattleServantData {
     return max(_maxHp + addition + percentAddition, 1);
   }
 
-  // TODO: adjustable?
   int bond = 5;
   int startingPosition = 0;
   // initScript will set initial value
@@ -2472,7 +2471,6 @@ class BattleServantData {
   }
 
   Future<void> death(final BattleData battleData) async {
-    // TODO: collect buffs and activate each,
     // DataVals.OpponentOnly? revengeOpp : revenge
     if (await activateBuff(battleData, BuffAction.functionDead)) {
       for (final svt in battleData.nonnullActors) {

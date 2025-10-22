@@ -592,6 +592,29 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
       }
     }
 
+    for (final present in mstData.userPresentBox) {
+      final expireAt = present.getExpireAt(runtime.gameData.timerData.items[present.objectId]);
+      if (expireAt < now + 30 * kSecsPerDay) {
+        final gift = present.toGift();
+        children.add(
+          ListTile(
+            leading: Icon(Icons.card_giftcard),
+            title: Text.rich(
+              TextSpan(
+                children: [
+                  CenterWidgetSpan(child: gift.iconBuilder(context: context, width: 24)),
+                  TextSpan(text: ' ${gift.shownName} ×${gift.num}'),
+                ],
+              ),
+            ),
+            subtitle: Text(expireAt.sec2date().toCustomString()),
+            trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
+            onTap: () => router.pushPage(UserPresentBoxManagePage(runtime: runtime)),
+          ),
+        );
+      }
+    }
+
     if (children.isEmpty) return const SizedBox.shrink();
     return TileGroup(header: S.current.hint, children: children);
   }

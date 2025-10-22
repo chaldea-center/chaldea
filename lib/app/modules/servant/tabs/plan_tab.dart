@@ -292,12 +292,33 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
           },
           detailPageBuilder: (context) => const SimpleConfirmDialog(title: Text('Not Used yet')),
         ),
+      if (showDetail(SvtPlanDetail.bondLimit))
+        buildPlanRow(
+          useSlider: sliderMode,
+          leading: db.getIconImage(
+            "https://static.atlasacademy.io/JP/Terminal/Info/CommonUIAtlas/img_bond_category.png",
+            width: 33,
+          ),
+          title: S.current.game_kizuna,
+          start: status.bond,
+          minVal: 0,
+          maxVal: 15,
+          onValueChanged: (_start, _) {
+            status.favorite = true;
+            status.bond = _start;
+            curVal.bondLimit = curVal.bondLimit.clamp(_start, 15);
+            targetVal.bondLimit = targetVal.bondLimit.clamp(curVal.bondLimit, 15);
+            updateState();
+          },
+          detailPageBuilder: (context) =>
+              SimpleConfirmDialog(title: Text('${S.current.bond} (${S.current.current_})'), showCancel: false),
+        ),
       SwitchListTile.adaptive(
         dense: true,
         value: status.grandSvt,
         secondary: db.getIconImage(
           SvtClassX.clsIcon(db.gameData.grandGraphDetails[svt.classId]?.grandClassId ?? svt.classId, 5),
-          width: 32,
+          width: 28,
         ),
         onChanged: (v) async {
           if (v) {
@@ -341,7 +362,7 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
       ),
     ];
     if (extraParts1.isNotEmpty) {
-      children.add(TileGroup(children: extraParts1));
+      children.add(TileGroup(header: S.current.general_others, children: extraParts1));
     }
 
     // Extra part2: grail/fou-kun
@@ -421,27 +442,6 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
             updateState();
           },
           detailPageBuilder: null,
-        ),
-      if (showDetail(SvtPlanDetail.bondLimit))
-        buildPlanRow(
-          useSlider: sliderMode,
-          leading: db.getIconImage(
-            "https://static.atlasacademy.io/JP/Terminal/Info/CommonUIAtlas/img_bond_category.png",
-            width: 33,
-          ),
-          title: S.current.game_kizuna,
-          start: status.bond,
-          minVal: 0,
-          maxVal: 15,
-          onValueChanged: (_start, _) {
-            status.favorite = true;
-            status.bond = _start;
-            curVal.bondLimit = curVal.bondLimit.clamp(_start, 15);
-            targetVal.bondLimit = targetVal.bondLimit.clamp(curVal.bondLimit, 15);
-            updateState();
-          },
-          detailPageBuilder: (context) =>
-              SimpleConfirmDialog(title: Text('${S.current.bond} (${S.current.current_})'), showCancel: false),
         ),
     ];
     if (extraParts2.isNotEmpty) {

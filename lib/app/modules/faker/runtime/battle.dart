@@ -6,11 +6,11 @@ extension FakerRuntimeBattle on FakerRuntime {
     if (battleInfo == null) {
       throw SilentException("battle ${battleEntity.id}: null battleInfo");
     }
-    final skillShiftEnemies = [
-      ...battleInfo.enemyDeck,
-      ...battleInfo.callDeck,
-      ...battleInfo.shiftDeck,
-    ].expand((e) => e.svts).where((e) => e.isSkillShift()).toList();
+    final skillShiftEnemies = {
+      for (final deck in [...battleInfo.enemyDeck, ...battleInfo.callDeck, ...battleInfo.shiftDeck])
+        for (final svt in deck.svts)
+          if (svt.isSkillShift()) '${svt.uniqueId}-${svt.npcId}': svt,
+    };
 
     if (skillShiftEnemies.isEmpty) return true;
 
@@ -25,7 +25,7 @@ extension FakerRuntimeBattle on FakerRuntime {
     final skillShiftEnemyUniqueIds = await showLocalDialog<List<int>?>(
       _SkillShiftEnemySelectDialog(
         battleInfo: battleInfo,
-        skillShiftEnemies: skillShiftEnemies,
+        skillShiftEnemies: skillShiftEnemies.values.toList(),
         skillShiftEnemyUniqueIds: battleOption.skillShiftEnemyUniqueIds,
       ),
     );
@@ -33,12 +33,12 @@ extension FakerRuntimeBattle on FakerRuntime {
       throw SilentException('cancel skillShift');
     }
 
-    final itemDroppedSkillShiftEnemies = skillShiftEnemies
+    final itemDroppedSkillShiftEnemies = skillShiftEnemies.values
         .where((e) => skillShiftEnemyUniqueIds.contains(e.uniqueId))
         .toList();
     if (itemDroppedSkillShiftEnemies.length != skillShiftEnemyUniqueIds.length) {
       throw SilentException(
-        'valid skillShift uniqueIds: ${skillShiftEnemies.map((e) => e.uniqueId).toSet()}, '
+        'valid skillShift uniqueId-npcId: ${skillShiftEnemies.keys.toList()}, '
         'but received $skillShiftEnemyUniqueIds',
       );
     }
