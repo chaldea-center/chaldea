@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.5.23
+- Support grand assassin battle mechanisms
+- Fix multiple grand servants all applying master skill effectiveness up
+- Fix Doraco not following overwrite class relation buffs
+
 ## 2.5.22
 
 - Summer Lip skills

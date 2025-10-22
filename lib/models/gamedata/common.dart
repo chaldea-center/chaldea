@@ -484,7 +484,8 @@ enum SvtClass {
   final int? baseClassId;
   const SvtClass(this.value, [this.shortName = '?', this.baseClassId]);
 
-  static SvtClass? fromInt(int clsId) => SvtClass.values.firstWhereOrNull((e) => e.value == clsId);
+  static SvtClass? fromInt(int clsId) =>
+      clsId == beastDoraco.value ? beastDoraco : SvtClass.values.firstWhereOrNull((e) => e.value == clsId);
 }
 
 class SvtClassConverter implements JsonConverter<SvtClass, dynamic> {
@@ -520,6 +521,7 @@ class SvtClassConverter implements JsonConverter<SvtClass, dynamic> {
 
   static final Map<String, SvtClass> deprecatedTypes = {
     "alterEgo": SvtClass.alterego,
+    "beast": SvtClass.beastDoraco,
     //
   };
 
