@@ -1892,6 +1892,7 @@ class EventCampaign {
   int value;
   EventCombineCalc calcType;
   // String entryCondMessage;
+  EventCampaignScript? script;
 
   EventCampaign({
     this.targetIds = const [],
@@ -1900,13 +1901,34 @@ class EventCampaign {
     this.target = CombineAdjustTarget.none,
     this.idx = 0,
     required this.value,
-    this.calcType = EventCombineCalc.multiplication,
+    this.calcType = EventCombineCalc.none,
     // this.entryCondMessage = '',
+    this.script,
   });
 
   factory EventCampaign.fromJson(Map<String, dynamic> json) => _$EventCampaignFromJson(json);
 
   Map<String, dynamic> toJson() => _$EventCampaignToJson(this);
+}
+
+@JsonSerializable()
+class EventCampaignScript with DataScriptBase {
+  int? get isNotDispEntryCondMessage => getScript('isNotDispEntryCondMessage');
+  // ignore: non_constant_identifier_names
+  int? get OnlyMaxFuncGroupId => getScript('OnlyMaxFuncGroupId');
+  int? get showBoardMessageOnWarGroupId => getScript('showBoardMessageOnWarGroupId');
+  String? get addPassiveIconOrganization => getScript('addPassiveIconOrganization');
+  String? get addPassiveContentOrganization => getScript('addPassiveContentOrganization');
+  String? get addPassiveContentDetail => getScript('addPassiveContentDetail');
+  String? get addPassiveDescriptionDetail => getScript('addPassiveDescriptionDetail');
+  int? get addPassiveSkillId => getScript('addPassiveSkillId');
+
+  EventCampaignScript();
+
+  factory EventCampaignScript.fromJson(Map<String, dynamic> json) =>
+      _$EventCampaignScriptFromJson(json)..setSource(json);
+
+  Map<String, dynamic> toJson() => Map.from(source)..addAll(_$EventCampaignScriptToJson(this));
 }
 
 /// If [questId]=0 and [phase]=0, means all quests
@@ -2258,18 +2280,21 @@ enum CombineAdjustTarget {
   exchangeSvt,
   questItemFirstTime,
   questUseRewardAddItem,
-  equipExp,
+  questEquipExp,
+  questPassiveSkill,
 }
 
 enum EventCombineCalc {
   addition,
   multiplication,
-  fixedValue;
+  fixedValue,
+  none;
 
   String get operatorText => switch (this) {
     addition => '+',
     multiplication => '×',
     fixedValue => '=',
+    none => '',
   };
 }
 

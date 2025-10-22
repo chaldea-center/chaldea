@@ -1461,7 +1461,10 @@ EventCampaign _$EventCampaignFromJson(Map json) => EventCampaign(
   target: $enumDecodeNullable(_$CombineAdjustTargetEnumMap, json['target']) ?? CombineAdjustTarget.none,
   idx: (json['idx'] as num?)?.toInt() ?? 0,
   value: (json['value'] as num).toInt(),
-  calcType: $enumDecodeNullable(_$EventCombineCalcEnumMap, json['calcType']) ?? EventCombineCalc.multiplication,
+  calcType: $enumDecodeNullable(_$EventCombineCalcEnumMap, json['calcType']) ?? EventCombineCalc.none,
+  script: json['script'] == null
+      ? null
+      : EventCampaignScript.fromJson(Map<String, dynamic>.from(json['script'] as Map)),
 );
 
 Map<String, dynamic> _$EventCampaignToJson(EventCampaign instance) => <String, dynamic>{
@@ -1472,6 +1475,7 @@ Map<String, dynamic> _$EventCampaignToJson(EventCampaign instance) => <String, d
   'idx': instance.idx,
   'value': instance.value,
   'calcType': _$EventCombineCalcEnumMap[instance.calcType]!,
+  'script': instance.script?.toJson(),
 };
 
 const _$CombineAdjustTargetEnumMap = {
@@ -1512,14 +1516,20 @@ const _$CombineAdjustTargetEnumMap = {
   CombineAdjustTarget.exchangeSvt: 'exchangeSvt',
   CombineAdjustTarget.questItemFirstTime: 'questItemFirstTime',
   CombineAdjustTarget.questUseRewardAddItem: 'questUseRewardAddItem',
-  CombineAdjustTarget.equipExp: 'equipExp',
+  CombineAdjustTarget.questEquipExp: 'questEquipExp',
+  CombineAdjustTarget.questPassiveSkill: 'questPassiveSkill',
 };
 
 const _$EventCombineCalcEnumMap = {
   EventCombineCalc.addition: 'addition',
   EventCombineCalc.multiplication: 'multiplication',
   EventCombineCalc.fixedValue: 'fixedValue',
+  EventCombineCalc.none: 'none',
 };
+
+EventCampaignScript _$EventCampaignScriptFromJson(Map json) => EventCampaignScript();
+
+Map<String, dynamic> _$EventCampaignScriptToJson(EventCampaignScript instance) => <String, dynamic>{};
 
 EventQuest _$EventQuestFromJson(Map json) => EventQuest(
   questId: (json['questId'] as num).toInt(),

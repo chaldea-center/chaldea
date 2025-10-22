@@ -254,6 +254,7 @@ class _FormationBondTabState extends State<FormationBondTab> {
               case EventCombineCalc.multiplication:
                 selfResult.eventAddRate += max(0, campaign.value - 1000);
               case EventCombineCalc.fixedValue:
+              case EventCombineCalc.none:
                 break;
             }
           }

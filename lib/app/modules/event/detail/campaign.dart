@@ -88,6 +88,22 @@ class EventCampaignDetail extends StatelessWidget {
       ListTile(title: const Text("Value"), trailing: fmtValue(context, campaign), dense: true),
       ListTile(title: const Text("Calc Type"), trailing: Text(campaign.calcType.name), dense: true),
     ];
+    final addPassiveSkillId = campaign.script?.addPassiveSkillId;
+    if (campaign.target == CombineAdjustTarget.questPassiveSkill && addPassiveSkillId != null) {
+      // final iconName = campaign.script?.addPassiveIconOrganization;
+      children.add(
+        ListTile(
+          dense: true,
+          // leading: iconName == null ? null : db.getIconImage(iconUrl),
+          title: Text(S.current.passive_skill),
+          subtitle: Text('$addPassiveSkillId'),
+          trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
+          onTap: () {
+            router.push(url: Routes.skillI(addPassiveSkillId), region: region);
+          },
+        ),
+      );
+    }
 
     bool targetSame =
         campaign.target == CombineAdjustTarget.questAp && campaign.targetIds.length == event.campaignQuests.length;
@@ -152,17 +168,6 @@ class EventCampaignDetail extends StatelessWidget {
     return children;
   }
 
-  String getCalcType(EventCombineCalc calcType) {
-    switch (calcType) {
-      case EventCombineCalc.addition:
-        return '+';
-      case EventCombineCalc.multiplication:
-        return '×';
-      case EventCombineCalc.fixedValue:
-        return '=';
-    }
-  }
-
   Widget fmtValue(BuildContext context, EventCampaign campaign) {
     if (campaign.target == CombineAdjustTarget.questUseContinueItem) {
       final item = db.gameData.items[campaign.value];
@@ -213,7 +218,7 @@ class EventCampaignDetail extends StatelessWidget {
       case CombineAdjustTarget.exchangeSvtCombineExp:
       case CombineAdjustTarget.questUseFriendshipUpItem:
       case CombineAdjustTarget.questFriendship:
-      case CombineAdjustTarget.equipExp:
+      case CombineAdjustTarget.questEquipExp:
         percentBase = 10;
         break;
       case CombineAdjustTarget.activeSkill:
@@ -240,6 +245,7 @@ class EventCampaignDetail extends StatelessWidget {
       case CombineAdjustTarget.exchangeSvt:
       case CombineAdjustTarget.questItemFirstTime:
       case CombineAdjustTarget.questUseRewardAddItem:
+      case CombineAdjustTarget.questPassiveSkill:
         break;
     }
     if (campaign.calcType == EventCombineCalc.fixedValue) {
@@ -247,7 +253,7 @@ class EventCampaignDetail extends StatelessWidget {
     }
     return Text(
       [
-        getCalcType(campaign.calcType),
+        campaign.calcType.operatorText,
         percentBase == null
             ? campaign.value.toString()
             : campaign.value.format(percent: true, base: percentBase.toDouble()),
@@ -298,7 +304,7 @@ class EventCampaignDetail extends StatelessWidget {
       }
       return Text.rich(SharedBuilder.textButtonSpan(context: context, text: id.toString(), onTap: _onTap));
     }
-    if (campaign.target == CombineAdjustTarget.equipExp) {
+    if (campaign.target == CombineAdjustTarget.questEquipExp) {
       final equip = db.gameData.mysticCodes[id];
       if (equip != null) {
         return equip.iconBuilder(context: context, width: 48, onTap: equip.routeTo);
