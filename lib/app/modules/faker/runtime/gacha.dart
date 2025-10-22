@@ -44,9 +44,7 @@ extension FakerRuntimeGacha on FakerRuntime {
       );
     }
     final option = agent.user.gacha;
-    final gacha =
-        gameData.timerData.gachas.firstWhereOrNull((e) => e.id == option.gachaId) ??
-        await AtlasApi.gacha(option.gachaId, region: region);
+    final gacha = gameData.timerData.gachas[option.gachaId] ?? await AtlasApi.gacha(option.gachaId, region: region);
     if (gacha == null) {
       throw SilentException('Gacha ${option.gachaId} not found');
     }

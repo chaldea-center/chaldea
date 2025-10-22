@@ -48,7 +48,7 @@ class _UserEventMissionReceivePageState extends State<UserEventMissionReceivePag
   }
 
   Future<void> initData() async {
-    mms = runtime.gameData.timerData.masterMissions.toList();
+    mms = runtime.gameData.timerData.masterMissions.values.toList();
     final now = DateTime.now().timestamp;
 
     mms.retainWhere((mm) {
@@ -61,7 +61,7 @@ class _UserEventMissionReceivePageState extends State<UserEventMissionReceivePag
       return true;
     });
 
-    for (final event in runtime.gameData.timerData.events) {
+    for (final event in runtime.gameData.timerData.events.values) {
       if (!(event.startedAt <= now && event.endedAt > now && event.missions.isNotEmpty)) continue;
       List<EventMission> eventMissions = [], randomMissions = [];
       for (final mission in event.missions) {

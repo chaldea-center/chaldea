@@ -26,7 +26,7 @@ class ShopEventListPage extends StatelessWidget {
           title: Text(Transl.enums(shopType, (enums) => enums.shopType).l),
           trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
           onTap: () async {
-            List<NiceShop>? shops = runtime.gameData.timerData.shops
+            List<NiceShop>? shops = runtime.gameData.timerData.shops.values
                 .where((shop) => shop.shopType == shopType && shop.openedAt <= now && shop.closedAt > now)
                 .toList();
             if (shopType == ShopType.revivalItem) {
@@ -45,7 +45,7 @@ class ShopEventListPage extends StatelessWidget {
         ),
     ];
 
-    final events = runtime.gameData.timerData.events
+    final events = runtime.gameData.timerData.events.values
         .where((e) => e.shop.isNotEmpty && e.startedAt <= now && e.shopClosedAt > now)
         .toList();
     events.sort2((e) => -e.bannerPriority);

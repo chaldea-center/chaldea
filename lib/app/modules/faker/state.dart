@@ -797,7 +797,7 @@ class _FakerGameData {
   Map<int, Item> get teapots {
     final now = DateTime.now().timestamp;
     return {
-      for (final item in timerData.items)
+      for (final item in timerData.items.values)
         if (item.type == ItemType.friendshipUpItem && item.endedAt > now) item.id: item,
     };
   }
@@ -865,10 +865,9 @@ class RandomMissionLoopStat {
 
   Future<void> load(FakerRuntime runtime) async {
     Event? event;
-    final eventMap = {for (final e in runtime.gameData.timerData.events) e.id: e};
     final now = DateTime.now().timestamp;
     for (final userRandomMission in runtime.mstData.userEventRandomMission) {
-      final _event = eventMap[userRandomMission.missionTargetId];
+      final _event = runtime.gameData.timerData.events[userRandomMission.missionTargetId];
       if (_event != null && _event.startedAt < now && _event.endedAt > now) {
         event = _event;
         break;

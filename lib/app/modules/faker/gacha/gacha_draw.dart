@@ -46,7 +46,7 @@ class _GachaDrawPageState extends State<GachaDrawPage> with FakerRuntimeStateMix
 
   Future<void> _onChangeGacha() async {
     final _gacha =
-        runtime.gameData.timerData.gachas.firstWhereOrNull((e) => e.id == gachaOption.gachaId) ??
+        runtime.gameData.timerData.gachas[gachaOption.gachaId] ??
         await AtlasApi.gacha(gachaOption.gachaId, region: runtime.region);
     if (_gacha != null) _cachedGachas[_gacha.id] = _gacha;
     if (mounted) setState(() {});
@@ -169,7 +169,7 @@ class _GachaDrawPageState extends State<GachaDrawPage> with FakerRuntimeStateMix
               ),
               IconButton(
                 onPressed: () {
-                  final gachas = runtime.gameData.timerData.gachas
+                  final gachas = runtime.gameData.timerData.gachas.values
                       .where((e) => e.isFpGacha || e.freeDrawFlag > 0)
                       .toList();
                   router.showDialog(

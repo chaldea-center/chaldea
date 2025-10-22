@@ -412,7 +412,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
       [2, 3],
       [4, 5],
     ];
-    for (final gacha in runtime.gameData.timerData.gachas) {
+    for (final gacha in runtime.gameData.timerData.gachas.values) {
       if (gacha.freeDrawFlag == 0 || gacha.openedAt > now || gacha.closedAt <= now) continue;
       if (conflictGachaGroups.any((group) {
         return group.contains(gacha.id) &&
@@ -456,7 +456,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
       );
     }
 
-    for (final shop in runtime.gameData.timerData.shops) {
+    for (final shop in runtime.gameData.timerData.shops.values) {
       if (shop.openedAt > now || now >= shop.closedAt) continue;
       final userShop = mstData.userShop[shop.id];
       if (userShop != null && userShop.num >= shop.limitNum) continue;
@@ -525,7 +525,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
     }
 
     final interludeCampaignIds = {
-      for (final event in runtime.gameData.timerData.events)
+      for (final event in runtime.gameData.timerData.events.values)
         if (event.type == EventType.interludeCampaign && event.startedAt <= now && event.endedAt > now) event.id,
     };
     if (interludeCampaignIds.isNotEmpty) {
@@ -560,7 +560,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
     }
 
     const int _kMissionWarningDay = 2;
-    for (final mm in runtime.gameData.timerData.masterMissions) {
+    for (final mm in runtime.gameData.timerData.masterMissions.values) {
       if (const [MissionType.none, MissionType.daily].contains(mm.type)) continue;
       if (mm.missions.isEmpty) continue;
       if (mm.closedAt < now || mm.startedAt > now || mm.endedAt - now > _kMissionWarningDay * kSecsPerDay) continue;

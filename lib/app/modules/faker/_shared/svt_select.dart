@@ -63,7 +63,7 @@ class _SelectUserSvtPageState extends State<SelectUserSvtPage> {
       // CombineAdjustTarget.exchangeSvt: 2,
     };
     final now = DateTime.now().timestamp;
-    for (final event in runtime.gameData.timerData.events) {
+    for (final event in runtime.gameData.timerData.events.values) {
       if (event.startedAt > now || event.endedAt <= now) continue;
       // skip if ended in 1y+?
       final svtIds = <int>{

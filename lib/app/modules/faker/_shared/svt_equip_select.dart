@@ -53,7 +53,7 @@ class _SelectUserSvtEquipPageState extends State<SelectUserSvtEquipPage> {
     super.initState();
 
     final now = DateTime.now().timestamp;
-    for (final event in runtime.gameData.timerData.events) {
+    for (final event in runtime.gameData.timerData.events.values) {
       if (event.startedAt > now || event.endedAt <= now) continue;
       final ceIds = <int>{
         if (event.type == EventType.eventQuest)

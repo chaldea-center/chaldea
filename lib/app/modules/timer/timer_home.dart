@@ -51,7 +51,7 @@ class _TimerHomePageState extends State<TimerHomePage>
   @override
   Future<GameTimerData?> fetchData(Region? r, {Duration? expireAfter}) async {
     final data = await AtlasApi.timerData(r ?? Region.jp, expireAfter: expireAfter);
-    final events = data?.events ?? [];
+    final events = data?.events.values.toList() ?? [];
     for (final event in events) {
       event.calcItems(db.gameData);
     }
@@ -117,9 +117,9 @@ class _TimerHomePageState extends State<TimerHomePage>
       controller: _tabController,
       children: [
         _AllItemTab(region: region, timerData: timerData, filterData: filterData),
-        TimerEventTab(region: region, events: timerData.events, filterData: filterData),
-        TimerGachaTab(region: region, gachas: timerData.gachas, filterData: filterData),
-        TimerMissionTab(region: region, mms: timerData.masterMissions, filterData: filterData),
+        TimerEventTab(region: region, events: timerData.events.values.toList(), filterData: filterData),
+        TimerGachaTab(region: region, gachas: timerData.gachas.values.toList(), filterData: filterData),
+        TimerMissionTab(region: region, mms: timerData.masterMissions.values.toList(), filterData: filterData),
         TimerShopTab(region: region, shops: timerData.shownShops, filterData: filterData),
         RegionTimeTab(region: region),
       ],
@@ -188,9 +188,9 @@ class _AllItemTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     List<TimerItem> items = [
-      ...TimerEventItem.group(timerData.events, region),
-      ...timerData.gachas.map((e) => TimerGachaItem(e, region)),
-      ...timerData.masterMissions.map((e) => TimerMissionItem(e, region)),
+      ...TimerEventItem.group(timerData.events.values.toList(), region),
+      ...timerData.gachas.values.map((e) => TimerGachaItem(e, region)),
+      ...timerData.masterMissions.values.map((e) => TimerMissionItem(e, region)),
       ...TimerShopItem.group(timerData.shownShops, region),
     ];
     items = filterData.getSorted(items);
