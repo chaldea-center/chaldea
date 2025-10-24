@@ -4,8 +4,8 @@ import 'dart:typed_data';
 import 'package:archive/archive.dart';
 import 'package:crypto/crypto.dart';
 
-import 'package:chaldea/models/faker/quiz/cipher.dart';
 import 'package:chaldea/packages/logger.dart';
+import 'cipher.dart';
 
 // for bilibili ver
 class CryptData {
