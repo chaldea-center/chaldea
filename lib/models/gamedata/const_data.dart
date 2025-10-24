@@ -145,6 +145,18 @@ class ConstGameData {
     ];
   }
 
+  CardInfo getCardInfo(int cardType, int? pos) {
+    final cards = cardInfo[cardType];
+    if (cards == null) {
+      throw StateError('CardInfo of $cardType not found');
+    }
+    final info = pos == null ? cards.values.firstOrNull : cards[pos];
+    if (info == null) {
+      throw StateError('CardInfo of $cardType at pos $pos not found');
+    }
+    return info;
+  }
+
   int getClassIdRelation(final int attacker, final int defender) {
     return classRelation[classInfo[attacker]?.relationId]?[classInfo[defender]?.relationId] ?? 1000;
   }

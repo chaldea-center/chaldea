@@ -42,13 +42,13 @@ int calculateDamage(final DamageParameters param) {
   }
 
   final int chainPos = param.isNp ? 1 : param.chainPos;
-  final Float cardCorrection = toModifierFloat(ConstData.cardInfo[param.currentCardType]?[chainPos]?.adjustAtk ?? 1000);
+  final Float cardCorrection = toModifierFloat(ConstData.getCardInfo(param.currentCardType, chainPos).adjustAtk);
 
   final Float firstCardBonus = shouldIgnoreFirstCardBonus(param.isNp, param.firstCardType)
       ? 0.toFloat()
       : param.chainType.isMightyChain()
-      ? toModifierFloat(ConstData.cardInfo[CardType.buster.value]![1]!.addAtk)
-      : toModifierFloat(ConstData.cardInfo[param.firstCardType]![1]!.addAtk);
+      ? toModifierFloat(ConstData.getCardInfo(CardType.buster.value, 1).addAtk)
+      : toModifierFloat(ConstData.getCardInfo(param.firstCardType, 1).addAtk);
 
   final Float criticalModifier = param.critical ? toModifierFloat(ConstData.constants.criticalAttackRate) : 1.toFloat();
 
@@ -129,13 +129,13 @@ int calculateAttackNpGain(final AttackNpGainParameters param) {
   }
 
   final chainPos = param.isNp ? 1 : param.chainPos;
-  final cardCorrection = toModifierFloat(ConstData.cardInfo[param.currentCardType]![chainPos]!.adjustTdGauge);
+  final cardCorrection = toModifierFloat(ConstData.getCardInfo(param.currentCardType, chainPos).adjustTdGauge);
 
   final firstCardBonus = shouldIgnoreFirstCardBonus(param.isNp, param.firstCardType)
       ? 0.toFloat()
       : param.chainType.isMightyChain()
-      ? toModifierFloat(ConstData.cardInfo[CardType.arts.value]![1]!.addTdGauge)
-      : toModifierFloat(ConstData.cardInfo[param.firstCardType]![1]!.addTdGauge);
+      ? toModifierFloat(ConstData.getCardInfo(CardType.arts.value, 1).addTdGauge)
+      : toModifierFloat(ConstData.getCardInfo(param.firstCardType, 1).addTdGauge);
   final criticalModifier = param.critical ? toModifierFloat(ConstData.constants.criticalTdPointRate) : 1.toFloat();
   final cardBuff = toModifierFloat(param.cardBuff);
   final cardResist = toModifierFloat(param.cardResist);
@@ -177,13 +177,13 @@ int calculateStar(final StarParameters param) {
   }
 
   final int chainPos = param.isNp ? 1 : param.chainPos;
-  final int cardCorrection = ConstData.cardInfo[param.currentCardType]![chainPos]!.adjustCritical;
+  final int cardCorrection = ConstData.getCardInfo(param.currentCardType, chainPos).adjustCritical;
 
   final int firstCardBonus = shouldIgnoreFirstCardBonus(param.isNp, param.firstCardType)
       ? 0
       : param.chainType.isMightyChain()
-      ? ConstData.cardInfo[CardType.quick.value]![1]!.addCritical
-      : ConstData.cardInfo[param.firstCardType]![1]!.addCritical;
+      ? ConstData.getCardInfo(CardType.quick.value, 1).addCritical
+      : ConstData.getCardInfo(param.firstCardType, 1).addCritical;
   final int criticalModifier = param.critical ? ConstData.constants.criticalStarRate : 0;
 
   final int defenderStarRate = param.defenderStarRate;

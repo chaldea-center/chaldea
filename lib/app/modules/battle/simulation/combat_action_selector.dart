@@ -533,7 +533,7 @@ class _EnemyCombatActionSelectorState extends State<EnemyCombatActionSelector> {
                   cardDetail: detail,
                   cardIndex: 1,
                   isTD: false,
-                  traits: ConstData.cardInfo[cardType]?[1]?.individuality.toList() ?? [],
+                  traits: ConstData.getCardInfo(cardType, 1).individuality.toList(),
                 );
                 if (CardType.isQAB(cardType)) {
                   cardData.critical = critical;

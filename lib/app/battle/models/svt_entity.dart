@@ -674,7 +674,7 @@ class BattleServantData {
         cardIndex: index,
         isTD: false,
         npGain: getNPGain(cardType),
-        traits: ConstData.cardInfo[cardType]!.values.first.individuality.toList(),
+        traits: ConstData.getCardInfo(cardType, null).individuality.toList(),
         commandCode: isCardInDeck ? playerSvtData!.commandCodes.getOrNull(index) : null,
         cardStrengthen: isCardInDeck ? playerSvtData!.cardStrengthens.getOrNull(index) ?? 0 : 0,
         critical: CardType.isStrength(cardType),
@@ -785,7 +785,7 @@ class BattleServantData {
         isTD: false,
         counterBuff: buff,
         npGain: getNPGain(cardId),
-        traits: ConstData.cardInfo[cardId]?.values.first.individuality.toList() ?? [],
+        traits: ConstData.getCardInfo(cardId, null).individuality.toList(),
       );
     } else {
       return null;
@@ -810,7 +810,7 @@ class BattleServantData {
       cardIndex: -1,
       isTD: false,
       npGain: getNPGain(cardType),
-      traits: ConstData.cardInfo[cardType]!.values.first.individuality.toList(),
+      traits: ConstData.getCardInfo(cardType, null).individuality.toList(),
     );
   }
 
@@ -823,7 +823,7 @@ class BattleServantData {
       return baseCardType;
     }
 
-    final selfTraits = getTraits(addTraits: ConstData.cardInfo[baseCardType]!.values.first.individuality.toList());
+    final selfTraits = getTraits(addTraits: ConstData.getCardInfo(baseCardType, null).individuality.toList());
     if (overwriteSvtCardTypeBuff.shouldActivateBuffNoProbabilityCheck(selfTraits)) {
       return overwriteSvtCardTypeBuff.param;
     } else {
