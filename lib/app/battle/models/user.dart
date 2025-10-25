@@ -536,8 +536,8 @@ class BattleOptionsRuntime extends BattleOptionsEnv {
 class BattleTeamSetup {
   final List<PlayerSvtData> svts;
 
-  List<PlayerSvtData> getOnFieldSvtDataList() => List.generate(3, (index) => svts[index]);
-  List<PlayerSvtData> getBackupSvtDataList() => List.generate(3, (index) => svts[index + 3]);
+  List<PlayerSvtData> getOnFieldSvtDataList() => svts.sublist(0, 3);
+  List<PlayerSvtData> getBackupSvtDataList() => svts.sublist(3, 6);
 
   final MysticCodeData mysticCodeData;
 
@@ -589,5 +589,13 @@ class BattleOptions extends BattleOptionsRuntime {
       ..tailoredExecution = tailoredExecution
       ..manualAllySkillTarget = manualAllySkillTarget
       ..formation = formation.copy();
+  }
+
+  void validate({required bool isUseGrandBoard}) {
+    if (!isUseGrandBoard) {
+      for (final svt in formation.svts) {
+        svt.classBoardData.clearGrandData();
+      }
+    }
   }
 }

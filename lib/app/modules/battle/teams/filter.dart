@@ -12,6 +12,7 @@ enum TeamFilterMiscType {
   noAppendSkill,
   noGrailFou,
   noLv100,
+  noClassBoard,
   noSameSvt,
   noDoubleCastoria,
   noDoubleKoyan,
@@ -23,6 +24,7 @@ enum TeamFilterMiscType {
       noAppendSkill => S.current.team_no_append_skill,
       noGrailFou => S.current.team_no_grail_fou,
       noLv100 => S.current.team_no_lv100,
+      noClassBoard => S.current.team_no_class_board,
       noSameSvt => S.current.team_no_same_svt,
       noDoubleCastoria => S.current.team_no_double_castoria,
       noDoubleKoyan => S.current.team_no_double_koyan,
@@ -192,6 +194,13 @@ class TeamFilterData with FilterDataMixin {
             final dbSvt = db.gameData.servantsById[svt?.svtId];
             if (svt == null || dbSvt == null) continue;
             if (svt.lv > 100) {
+              return false;
+            }
+          }
+          break;
+        case TeamFilterMiscType.noClassBoard:
+          for (final svt in data.formation.svts) {
+            if (svt?.classBoardData?.classBoardSquares.isNotEmpty == true) {
               return false;
             }
           }

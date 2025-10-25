@@ -607,6 +607,12 @@ class ClassBoardStatisticsData {
     return result;
   }
 
+  void clearGrandData() {
+    grandClassBoardSquares.clear();
+    grandBondEquipSkillChange = false;
+    classStatistics.clear();
+  }
+
   factory ClassBoardStatisticsData.fromJson(Map<String, dynamic> json) => _$ClassBoardStatisticsDataFromJson(json);
 
   Map<String, dynamic> toJson() => _$ClassBoardStatisticsDataToJson(this);

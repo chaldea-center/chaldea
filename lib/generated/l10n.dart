@@ -767,10 +767,10 @@ class S {
   }
 
   /// `Change Bond CE effect`
-  String get bond_equi_change_skill {
+  String get bond_equip_change_skill {
     return Intl.message(
       'Change Bond CE effect',
-      name: 'bond_equi_change_skill',
+      name: 'bond_equip_change_skill',
       desc: '',
       locale: localeName,
       args: [],
@@ -5515,6 +5515,11 @@ class S {
     return Intl.message('No Append Skill', name: 'team_no_append_skill', desc: '', locale: localeName, args: []);
   }
 
+  /// `No class score`
+  String get team_no_class_board {
+    return Intl.message('No class score', name: 'team_no_class_board', desc: '', locale: localeName, args: []);
+  }
+
   /// `No Double Castoria`
   String get team_no_double_castoria {
     return Intl.message('No Double Castoria', name: 'team_no_double_castoria', desc: '', locale: localeName, args: []);
@@ -5890,10 +5895,10 @@ class S {
     );
   }
 
-  /// `Upload current team?\n\nAttention: to service more players.\n- don't upload team which contains unreleased servants!\n- Please try to keep your team configuration as low as possible (unnecessary grailed lv, append skill, NP Lv, unused backup servant).\n- Uploaded data may be deleted due to future updates, data incompatibility etc.`
+  /// `Upload current team?\n\nAttention: to service more players.\n- don't upload team which contains unreleased servants!\n- Please try to keep your team configuration as low as possible (unnecessary class score, grailed lv, append skill, NP Lv, unused backup servant).\n- Uploaded data may be deleted due to future updates, data incompatibility etc.`
   String get upload_team_confirmation {
     return Intl.message(
-      'Upload current team?\n\nAttention: to service more players.\n- don\'t upload team which contains unreleased servants!\n- Please try to keep your team configuration as low as possible (unnecessary grailed lv, append skill, NP Lv, unused backup servant).\n- Uploaded data may be deleted due to future updates, data incompatibility etc.',
+      'Upload current team?\n\nAttention: to service more players.\n- don\'t upload team which contains unreleased servants!\n- Please try to keep your team configuration as low as possible (unnecessary class score, grailed lv, append skill, NP Lv, unused backup servant).\n- Uploaded data may be deleted due to future updates, data incompatibility etc.',
       name: 'upload_team_confirmation',
       desc: '',
       locale: localeName,

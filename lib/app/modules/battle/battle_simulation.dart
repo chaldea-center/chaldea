@@ -59,6 +59,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
   void initState() {
     super.initState();
 
+    runtime.originalOptions.validate(isUseGrandBoard: questPhase.isUseGrandBoard);
     battleData
       ..options = runtime.originalOptions.copy()
       ..context = context;

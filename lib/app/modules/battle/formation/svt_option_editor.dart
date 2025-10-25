@@ -584,7 +584,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
                     playerSvtData.classBoardData.grandBondEquipSkillChange = v!;
                   });
                 },
-                title: Text(S.current.bond_equi_change_skill),
+                title: Text(S.current.bond_equip_change_skill),
                 subtitle: Text('${changeSkill?.lName.l ?? skillId}'),
                 contentPadding: EdgeInsetsDirectional.only(start: 18),
                 secondary: db.getIconImage(changeSkill?.icon ?? Atlas.common.emptySkillIcon, width: 28),

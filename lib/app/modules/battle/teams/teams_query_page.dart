@@ -360,6 +360,41 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
         TextSpan(text: '${S.current.battle_probability_threshold} ${minThreshold.format(percent: true, base: 10)}'),
       );
     }
+
+    Map<ClassBoard, String> classBoardValues = {};
+    for (final svtData in team.formation.svts) {
+      final svt = db.gameData.servantsById[svtData?.svtId];
+      final classBoardData = svtData?.classBoardData;
+      if (svtData == null || svt == null || classBoardData == null) continue;
+      final board = ClassBoard.getClassBoard(svt.classId), grandBoard = ClassBoard.getGrandClassBoard(svt.classId);
+      if (classBoardData.classBoardSquares.isNotEmpty && board != null) {
+        classBoardValues[board] ??= '${classBoardData.classBoardSquares.length}/${board.getSkillSquares().length}';
+      }
+      if (svtData.grandSvt && classBoardData.grandClassBoardSquares.isNotEmpty && grandBoard != null) {
+        classBoardValues[grandBoard] ??=
+            '${classBoardData.grandClassBoardSquares.length}/${grandBoard.getSkillSquares().length}';
+      }
+    }
+    if (classBoardValues.isNotEmpty) {
+      spans.add(
+        TextSpan(
+          text: S.current.class_board,
+          children: [
+            TextSpan(
+              style: const TextStyle(fontSize: 10),
+              children: [
+                const TextSpan(text: '('),
+                ...divideList([
+                  for (final (board, value) in classBoardValues.items) TextSpan(text: '${board.dispName} $value'),
+                ], const TextSpan(text: ', ')),
+                const TextSpan(text: ')'),
+              ],
+            ),
+          ],
+        ),
+      );
+    }
+
     final normalAttackCount = team.normalAttackCount;
     if (normalAttackCount > 0) {
       spans.add(TextSpan(text: '$normalAttackCount ${S.current.battle_command_card}'));

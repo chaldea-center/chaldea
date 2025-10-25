@@ -219,7 +219,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "bond_bonus": MessageLookupByLibrary.simpleMessage("Bond Bonus"),
     "bond_craft": MessageLookupByLibrary.simpleMessage("Bond Craft"),
     "bond_eff": MessageLookupByLibrary.simpleMessage("Bond Eff"),
-    "bond_equi_change_skill": MessageLookupByLibrary.simpleMessage("Change Bond CE effect"),
+    "bond_equip_change_skill": MessageLookupByLibrary.simpleMessage("Change Bond CE effect"),
     "bond_limit": MessageLookupByLibrary.simpleMessage("Bond Limit"),
     "bootstrap_page_title": MessageLookupByLibrary.simpleMessage("Bootstrap Page"),
     "branch_quest": MessageLookupByLibrary.simpleMessage("Branch Quest"),
@@ -1099,6 +1099,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "team_block_servant": MessageLookupByLibrary.simpleMessage("Block Servant"),
     "team_local": MessageLookupByLibrary.simpleMessage("Local Teams"),
     "team_no_append_skill": MessageLookupByLibrary.simpleMessage("No Append Skill"),
+    "team_no_class_board": MessageLookupByLibrary.simpleMessage("No class score"),
     "team_no_double_castoria": MessageLookupByLibrary.simpleMessage("No Double Castoria"),
     "team_no_double_koyan": MessageLookupByLibrary.simpleMessage("No Double Koyan"),
     "team_no_double_oberon": MessageLookupByLibrary.simpleMessage("No Double Oberon"),
@@ -1165,7 +1166,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "upload_not_eligible_hint": MessageLookupByLibrary.simpleMessage("Current team is not eligible for upload:"),
     "upload_paused": m32,
     "upload_team_confirmation": MessageLookupByLibrary.simpleMessage(
-      "Upload current team?\n\nAttention: to service more players.\n- don\'t upload team which contains unreleased servants!\n- Please try to keep your team configuration as low as possible (unnecessary grailed lv, append skill, NP Lv, unused backup servant).\n- Uploaded data may be deleted due to future updates, data incompatibility etc.",
+      "Upload current team?\n\nAttention: to service more players.\n- don\'t upload team which contains unreleased servants!\n- Please try to keep your team configuration as low as possible (unnecessary class score, grailed lv, append skill, NP Lv, unused backup servant).\n- Uploaded data may be deleted due to future updates, data incompatibility etc.",
     ),
     "upload_team_critical_team_warning": MessageLookupByLibrary.simpleMessage(
       "Too many normal cards, please reduce unnecessary cards. If it\'s indeed critical-based team, check:",

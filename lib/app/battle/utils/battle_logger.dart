@@ -328,7 +328,10 @@ class BattleRecordManager {
       if (svtData.grandSvt) {
         reasons.setUpload('${S.current.grand_servant}: ${S.current.only_grand_battle_hint}');
       } else if (svtData.classBoardData.isNotEmpty) {
-        reasons.setUpload('${S.current.class_board}: ${S.current.only_grand_battle_hint}');
+        // 2025/10/8 3300万DL
+        // if (questPhase.closedAt < DateTime.utc(2025, 10, 8).timestamp) {
+        //   reasons.setUpload('${S.current.class_board}: ${S.current.only_grand_battle_hint}');
+        // }
       }
     }
 
@@ -406,6 +409,8 @@ class BattleRecordManager {
 
     List<String> unreleasedSvts = [];
     int r5td5 = 0;
+    Set<int> classBoardClassIds = {};
+
     for (final svtData in runtime.originalOptions.formation.svts) {
       final svt = svtData.svt;
       if (svt == null) continue;
@@ -417,6 +422,10 @@ class BattleRecordManager {
       if (svt.rarity == 5 && svtData.tdLv >= 5) {
         r5td5 += 1;
       }
+
+      if (svtData.classBoardData.classBoardSquares.isNotEmpty) {
+        classBoardClassIds.add(svt.classId);
+      }
     }
     if (unreleasedSvts.isNotEmpty) {
       reasons2.setWarning(
@@ -425,6 +434,11 @@ class BattleRecordManager {
     }
     if (r5td5 >= 2) {
       reasons2.setWarning(S.current.too_many_td5_svts_warning(r5td5));
+    }
+    if (classBoardClassIds.isNotEmpty) {
+      reasons2.setWarning(
+        '${S.current.class_board}: ${classBoardClassIds.map((e) => Transl.svtClassId(e).l).join("/")}',
+      );
     }
 
     int totalCards = 0, attackedCards = 0;
