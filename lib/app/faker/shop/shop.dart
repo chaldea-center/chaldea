@@ -241,65 +241,7 @@ class _UserShopsPageState extends State<UserShopsPage> with SingleTickerProvider
   }
 
   bool isReleaseOpen(ShopRelease release) {
-    final List<int> condValues = release.condValues;
-    final int condValue = release.condValues.firstOrNull ?? 0;
-    final int condNum = release.condNum;
-    switch (release.condType) {
-      case CondType.svtGet:
-        return mstData.userSvtCollection[condValue]?.status == 2;
-      case CondType.notSvtHaving:
-        return mstData.userSvt.followedBy(mstData.userSvtStorage).every((e) => e.svtId != condValue);
-      case CondType.svtHaving:
-        return mstData.userSvt.followedBy(mstData.userSvtStorage).any((e) => e.svtId == condValue);
-      case CondType.questClear:
-        return (mstData.userQuest[condValue]?.clearNum ?? 0) > 0;
-      case CondType.questNotClear:
-        return (mstData.userQuest[condValue]?.clearNum ?? 0) == 0;
-      case CondType.questNotClearAnd:
-        if (condValues.isEmpty) return false;
-        for (final questId in condValues) {
-          if ((mstData.userQuest[questId]?.clearNum ?? 0) > 0) {
-            return false;
-          }
-        }
-        return true;
-      case CondType.questClearPhase:
-        final userQuest = mstData.userQuest[condValue];
-        return userQuest != null && userQuest.questPhase >= condNum;
-      case CondType.notShopPurchase:
-        for (final shopId in condValues) {
-          if ((mstData.userShop[shopId]?.num ?? 0) == 0) return true;
-        }
-        return false;
-      case CondType.purchaseShop:
-        int num2 = 0;
-        for (final shopId in condValues) {
-          num2 += (mstData.userShop[shopId]?.num ?? 0);
-        }
-        return condNum > 0 && num2 == condNum;
-      case CondType.date:
-        return DateTime.now().timestamp > condNum;
-      case CondType.eventMissionAchieve:
-        return mstData.userEventMission[condValue]?.missionProgressType == MissionProgressType.achieve.value;
-      case CondType.notEquipGet:
-        return mstData.userEquip.every((e) => e.equipId != condValue);
-      case CondType.equipGet:
-        return mstData.userEquip.any((e) => e.equipId == condValue);
-      // case CondType.questGroupClear:
-      // case CondType.eventPoint:
-      // case CondType.itemGet:
-      // case CondType.notSvtCostumeReleased:
-      // case CondType.shopGroupLimitNum:
-      // case CondType.commonRelease:
-      // case CondType.purchaseQpShop:
-      // case CondType.shopReleased:
-      case CondType.forceFalse:
-        return false;
-      default:
-      //
-    }
-
-    return true;
+    return runtime.condCheck.isCondOpen2(release.condType, release.condValues, release.condNum, defaultResult: true);
   }
 }
 

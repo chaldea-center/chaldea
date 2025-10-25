@@ -309,28 +309,9 @@ class _UserEventMissionReceivePageState extends State<UserEventMissionReceivePag
       }
       for (final cond in mission.conds) {
         if (cond.missionProgressType != MissionProgressType.clear) continue;
-        if (cond.condType == CondType.missionConditionDetail) {
-          final condDetailId = cond.targetIds.firstOrNull;
-          if (condDetailId == null) continue;
-          progressNum ??= runtime.mstData.userEventMissionCondDetail[condDetailId]?.progressNum;
-        } else if (cond.condType == CondType.eventMissionClear) {
-          progressNum ??= cond.targetIds.where((mid) {
-            final progressType = runtime.mstData.userEventMission[mid]?.missionProgressType;
-            return progressType == MissionProgressType.clear.value || progressType == MissionProgressType.achieve.value;
-          }).length;
-        } else if (cond.condType == CondType.eventMissionAchieve) {
-          progressNum ??= cond.targetIds.where((mid) {
-            final progressType = runtime.mstData.userEventMission[mid]?.missionProgressType;
-            return progressType == MissionProgressType.achieve.value;
-          }).length;
-        } else if (cond.condType == CondType.questClear) {
-          progressNum ??= cond.targetIds.where((questId) {
-            return (runtime.mstData.userQuest[questId]?.clearNum ?? 0) > 0;
-          }).length;
-        } else {
-          // don't set targetNum
-          continue;
-        }
+        final _progressNum = runtime.condCheck.getProgressNum(cond.condType, cond.targetIds, cond.targetNum);
+        progressNum ??= _progressNum;
+        if (_progressNum == null) continue; // don't set targetNum
         targetNum = cond.targetNum;
       }
 
@@ -349,15 +330,27 @@ class _UserEventMissionReceivePageState extends State<UserEventMissionReceivePag
       child: ListTile(
         title: title,
         subtitle: subtitle,
-        enabled: progressType == MissionProgressType.clear || progressType == MissionProgressType.achieve,
+        enabled: shouldShowEnable(mission, progressType),
         trailing: trailing,
         onTap: () {
           setState(() {
-            selectedMissions.toggle(mission.id);
+            if (progressType == MissionProgressType.clear) selectedMissions.toggle(mission.id);
           });
         },
       ),
     );
+  }
+
+  bool shouldShowEnable(EventMission mission, MissionProgressType progressType) {
+    if (progressType.isClearOrAchieve) return true;
+    for (final cond in mission.conds) {
+      if (const [MissionProgressType.openCondition, MissionProgressType.start].contains(cond.missionProgressType)) {
+        if (runtime.condCheck.isCondOpen2(cond.condType, cond.targetIds, cond.targetNum)) {
+          return true;
+        }
+      }
+    }
+    return false;
   }
 
   Widget buildButtonBar() {

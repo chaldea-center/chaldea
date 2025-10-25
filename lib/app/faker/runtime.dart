@@ -19,6 +19,7 @@ import '../modules/master_mission/solver/solver.dart';
 import '_shared/menu_button.dart';
 import 'history.dart';
 
+part '_shared/cond.dart';
 part 'runtimes/battle.dart';
 part 'runtimes/random_mission.dart';
 part 'runtimes/gacha.dart';
@@ -43,6 +44,7 @@ class FakerRuntime {
   final randomMissionStat = RandomMissionLoopStat();
   // common
   late final mstData = agent.network.mstData;
+  late final condCheck = FakerCondCheck(this);
   Region get region => agent.user.region;
   AutoBattleOptions get battleOption => agent.user.curBattleOption;
 
