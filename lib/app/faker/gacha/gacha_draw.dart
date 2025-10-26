@@ -533,7 +533,7 @@ class _GachaDrawPageState extends State<GachaDrawPage> with FakerRuntimeStateMix
   }
 
   Widget buildLastResult() {
-    final cards = runtime.gachaResultStat.lastDrawResult.toList();
+    final cards = runtime.data.gachaResultStat.lastDrawResult.toList();
     if (cards.length == 100) {
       cards.sortByList((info) {
         final entity = db.gameData.entities[info.objectId];
@@ -594,7 +594,7 @@ class _GachaDrawPageState extends State<GachaDrawPage> with FakerRuntimeStateMix
   }
 
   Widget buildGachaStat() {
-    final stat = runtime.gachaResultStat;
+    final stat = runtime.data.gachaResultStat;
     final userGacha = mstData.userGacha[gachaOption.gachaId];
     Set<int> shownSvtIds = {}, shownCeIds = {};
     shownCeIds.addAll(gachaOption.sellKeepSvtIds.where((e) => db.gameData.craftEssencesById.containsKey(e)));
@@ -751,7 +751,7 @@ class _GachaDrawPageState extends State<GachaDrawPage> with FakerRuntimeStateMix
       return FilledButton.tonal(onPressed: enabled ? onPressed : null, style: buttonStyle, child: Text(text));
     }
 
-    final hasFreeDraw = gacha != null && runtime.checkHasFreeGachaDraw(gacha);
+    final hasFreeDraw = gacha != null && runtime.gacha.checkHasFreeGachaDraw(gacha);
     List<List<Widget>> btnGroups = [
       [
         gacha != null && gacha.type == GachaType.payGacha.value
@@ -764,7 +764,7 @@ class _GachaDrawPageState extends State<GachaDrawPage> with FakerRuntimeStateMix
                         ).showDialog(context);
                         if (confirm != true) return;
                         runtime.runTask(() async {
-                          return runtime.gachaDraw(hundredDraw: false);
+                          return runtime.gacha.gachaDraw(hundredDraw: false);
                         });
                       }
                     : null,
@@ -787,7 +787,7 @@ class _GachaDrawPageState extends State<GachaDrawPage> with FakerRuntimeStateMix
                             onPressed: () {
                               Navigator.pop(context);
                               runtime.runTask(() async {
-                                return runtime.gachaDraw(hundredDraw: false);
+                                return runtime.gacha.gachaDraw(hundredDraw: false);
                               });
                             },
                             child: Text('10'),
@@ -797,7 +797,7 @@ class _GachaDrawPageState extends State<GachaDrawPage> with FakerRuntimeStateMix
                               onPressed: () {
                                 Navigator.pop(context);
                                 runtime.runTask(() async {
-                                  return runtime.gachaDraw(hundredDraw: true);
+                                  return runtime.gacha.gachaDraw(hundredDraw: true);
                                 });
                               },
                               child: Text('100'),
@@ -815,7 +815,7 @@ class _GachaDrawPageState extends State<GachaDrawPage> with FakerRuntimeStateMix
               title: const Text('sell'),
               onTapOk: () {
                 runtime.runTask(() async {
-                  return runtime.sellServant();
+                  return runtime.gacha.sellServant();
                 });
               },
             ).showDialog(context);
@@ -839,7 +839,7 @@ class _GachaDrawPageState extends State<GachaDrawPage> with FakerRuntimeStateMix
                       onPressed: () {
                         Navigator.pop(context);
                         runtime.runTask(() async {
-                          return runtime.svtEquipCombine();
+                          return runtime.combine.svtEquipCombine();
                         });
                       },
                       child: Text('${S.current.enhance}×1'),
@@ -848,7 +848,7 @@ class _GachaDrawPageState extends State<GachaDrawPage> with FakerRuntimeStateMix
                       onPressed: () {
                         Navigator.pop(context);
                         runtime.runTask(() async {
-                          return runtime.svtEquipCombine(10);
+                          return runtime.combine.svtEquipCombine(10);
                         });
                       },
                       child: Text('${S.current.enhance}×10'),
@@ -868,7 +868,7 @@ class _GachaDrawPageState extends State<GachaDrawPage> with FakerRuntimeStateMix
             SimpleConfirmDialog(
               title: Text('Loop ×${agent.user.gacha.loopCount}'),
               onTapOk: () {
-                runtime.runTask(() => runtime.withWakeLock('loop-fp-$hashCode', runtime.loopFpGachaDraw));
+                runtime.runTask(() => runtime.withWakeLock('loop-fp-$hashCode', runtime.gacha.loopFpGachaDraw));
               },
             ).showDialog(context);
           },

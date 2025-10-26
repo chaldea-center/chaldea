@@ -1,23 +1,34 @@
-part of '../runtime.dart';
+import 'package:chaldea/app/api/atlas.dart';
+import 'package:chaldea/generated/l10n.dart';
+import 'package:chaldea/models/faker/faker.dart';
+import 'package:chaldea/models/gamedata/toplogin.dart';
+import 'package:chaldea/models/models.dart';
+import 'package:chaldea/packages/logger.dart';
+import 'package:chaldea/utils/utils.dart';
+import '_base.dart';
 
-extension FakerRuntimeGacha on FakerRuntime {
+class FakerRuntimeGacha extends FakerRuntimeBase {
+  FakerRuntimeGacha(super.runtime);
+
+  late final gachaStat = runtime.data.gachaResultStat;
+
   Future<void> loopFpGachaDraw() async {
     final initCount = agent.user.gacha.loopCount;
     while (agent.user.gacha.loopCount > 0) {
-      _checkStop();
-      displayToast('Draw FP gacha ${initCount - agent.user.gacha.loopCount + 1}/$initCount...');
+      runtime.checkStop();
+      runtime.displayToast('Draw FP gacha ${initCount - agent.user.gacha.loopCount + 1}/$initCount...');
       await gachaDraw(hundredDraw: agent.user.gacha.hundredDraw);
       agent.user.gacha.loopCount -= 1;
-      update();
+      runtime.update();
 
       final counts = mstData.countSvtKeep();
       final userGame = mstData.user!;
       if (counts.svtCount >= userGame.svtKeep + 100 ||
-          counts.ccCount >= gameData.timerData.constants.maxUserCommandCode + 100) {
+          counts.ccCount >= runtime.gameData.timerData.constants.maxUserCommandCode + 100) {
         await sellServant();
       }
       if (counts.svtEquipCount >= userGame.svtEquipKeep + 100) {
-        await svtEquipCombine(30);
+        await runtime.combine.svtEquipCombine(30);
       }
     }
   }
@@ -26,7 +37,7 @@ extension FakerRuntimeGacha on FakerRuntime {
     final now = DateTime.now().timestamp;
     final userGacha = mstData.userGacha[gacha.id];
     return userGacha != null &&
-        DateTimeX.findNextHourAt(userGacha.freeDrawAt, region.getGachaResetUTC(gacha.type)) < now;
+        DateTimeX.findNextHourAt(userGacha.freeDrawAt, runtime.region.getGachaResetUTC(gacha.type)) < now;
   }
 
   Future<void> gachaDraw({bool hundredDraw = false}) async {
@@ -38,13 +49,15 @@ extension FakerRuntimeGacha on FakerRuntime {
     if (counts.svtEquipCount >= userGame.svtEquipKeep + 100) {
       throw SilentException('${S.current.craft_essence}: ${counts.svtEquipCount}>=${userGame.svtEquipKeep}+100');
     }
-    if (counts.ccCount >= gameData.timerData.constants.maxUserCommandCode + 100) {
+    if (counts.ccCount >= runtime.gameData.timerData.constants.maxUserCommandCode + 100) {
       throw SilentException(
-        '${S.current.command_code}: ${counts.ccCount}>=${gameData.timerData.constants.maxUserCommandCode}+100',
+        '${S.current.command_code}: ${counts.ccCount}>=${runtime.gameData.timerData.constants.maxUserCommandCode}+100',
       );
     }
     final option = agent.user.gacha;
-    final gacha = gameData.timerData.gachas[option.gachaId] ?? await AtlasApi.gacha(option.gachaId, region: region);
+    final gacha =
+        runtime.gameData.timerData.gachas[option.gachaId] ??
+        await AtlasApi.gacha(option.gachaId, region: runtime.region);
     if (gacha == null) {
       throw SilentException('Gacha ${option.gachaId} not found');
     }
@@ -128,13 +141,13 @@ extension FakerRuntimeGacha on FakerRuntime {
     try {
       final infos = resp.data.getResponseNull('gacha_draw')?.success?['gachaInfos'];
       if (infos != null) {
-        gachaResultStat.lastDrawResult = (infos as List).map((e) => GachaInfos.fromJson(e)).toList();
+        gachaStat.lastDrawResult = (infos as List).map((e) => GachaInfos.fromJson(e)).toList();
         if (gacha.isFpGacha) {
-          gachaResultStat.totalCount += gachaResultStat.lastDrawResult.length;
-          for (final info in gachaResultStat.lastDrawResult) {
-            gachaResultStat.servants.addNum(info.objectId, info.num);
+          gachaStat.totalCount += gachaStat.lastDrawResult.length;
+          for (final info in gachaStat.lastDrawResult) {
+            gachaStat.servants.addNum(info.objectId, info.num);
             if (info.svtCoinNum > 0 && info.type == GiftType.servant.value) {
-              gachaResultStat.coins.addNum(info.objectId, info.svtCoinNum);
+              gachaStat.coins.addNum(info.objectId, info.svtCoinNum);
             }
           }
         }
@@ -179,15 +192,15 @@ extension FakerRuntimeGacha on FakerRuntime {
     sellUserSvts = sellUserSvts.take(200).toList();
     sellCommandCodes.sort2((e) => -e.id);
     sellCommandCodes = sellCommandCodes.take(100).toList();
-    displayToast('Sell ${sellUserSvts.length} servants, ${sellCommandCodes.length} Command Codes');
+    runtime.displayToast('Sell ${sellUserSvts.length} servants, ${sellCommandCodes.length} Command Codes');
     if (sellUserSvts.isNotEmpty || sellCommandCodes.isNotEmpty) {
       await agent.sellServant(
         servantUserIds: sellUserSvts.map((e) => e.id).toList(),
         commandCodeUserIds: sellCommandCodes.map((e) => e.id).toList(),
       );
-      gachaResultStat.lastSellServants = sellUserSvts.toList();
-      gachaResultStat.lastSellServants.sort((a, b) => SvtFilterData.compareId(a.svtId, b.svtId));
+      gachaStat.lastSellServants = sellUserSvts.toList();
+      gachaStat.lastSellServants.sort((a, b) => SvtFilterData.compareId(a.svtId, b.svtId));
     }
-    update();
+    runtime.update();
   }
 }

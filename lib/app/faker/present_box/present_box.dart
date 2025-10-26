@@ -30,7 +30,7 @@ class UserPresentBoxManagePage extends StatefulWidget {
 class _UserPresentBoxManagePageState extends State<UserPresentBoxManagePage> with FakerRuntimeStateMixin {
   @override
   late final runtime = widget.runtime;
-  late final userPresents = runtime.mstData.userPresentBox;
+  late final userPresents = mstData.userPresentBox;
 
   Map<int, Item> items = {};
   final selectedPresents = <int>{};
@@ -58,7 +58,7 @@ class _UserPresentBoxManagePageState extends State<UserPresentBoxManagePage> wit
   }
 
   List<UserPresentBoxEntity> filterPresents() {
-    final presents = runtime.mstData.userPresentBox.toList();
+    final presents = mstData.userPresentBox.toList();
     if (showSelectedOnly) {
       presents.retainWhere((e) => selectedPresents.contains(e.presentId));
     }
@@ -141,7 +141,7 @@ class _UserPresentBoxManagePageState extends State<UserPresentBoxManagePage> wit
     final shownPresents = filterPresents();
     return Scaffold(
       appBar: AppBar(
-        title: Text('${S.current.present_box} (${shownPresents.length}/${runtime.mstData.userPresentBox.length})'),
+        title: Text('${S.current.present_box} (${shownPresents.length}/${mstData.userPresentBox.length})'),
         actions: [
           IconButton(
             onPressed: () {
@@ -255,8 +255,8 @@ class _UserPresentBoxManagePageState extends State<UserPresentBoxManagePage> wit
   }
 
   Widget buttonBar(List<UserPresentBoxEntity> shownPresents) {
-    final cardCounts = runtime.mstData.countSvtKeep();
-    final userGame = runtime.mstData.user;
+    final cardCounts = mstData.countSvtKeep();
+    final userGame = mstData.user;
     final cardInfo = [
       '${S.current.servant} ${cardCounts.svtCount}/${userGame?.svtKeep}',
       '${S.current.craft_essence_short} ${cardCounts.svtEquipCount}/${userGame?.svtEquipKeep}',
@@ -363,11 +363,11 @@ class _UserPresentBoxManagePageState extends State<UserPresentBoxManagePage> wit
     if (presents.isEmpty) return;
     if (!mounted) return;
     final itemSelect = await router.showDialog<ItemSelect>(
-      builder: (context) => _ItemSelectListDialog(item: item, mstData: runtime.mstData),
+      builder: (context) => _ItemSelectListDialog(item: item, mstData: mstData),
     );
     if (itemSelect == null || itemSelect.gifts.isEmpty) return;
     int? selectNum = await router.showDialog<int>(
-      builder: (context) => _ItemSelectCountDialog(item: item, itemSelect: itemSelect, mstData: runtime.mstData),
+      builder: (context) => _ItemSelectCountDialog(item: item, itemSelect: itemSelect, mstData: mstData),
     );
     if (selectNum == null || selectNum <= 0) return;
     presents = userPresents.where((e) => e.giftType == GiftType.item.value && e.objectId == item.id).toList();

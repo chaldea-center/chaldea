@@ -23,9 +23,9 @@ class UserEventMissionReceivePage extends StatefulWidget {
   State<UserEventMissionReceivePage> createState() => _UserEventMissionReceivePageState();
 }
 
-class _UserEventMissionReceivePageState extends State<UserEventMissionReceivePage> {
+class _UserEventMissionReceivePageState extends State<UserEventMissionReceivePage> with FakerRuntimeStateMixin {
+  @override
   late final runtime = widget.runtime;
-  late final userEventMissions = runtime.mstData.userEventMission;
   final thisYear = DateTime.now().year;
   List<MasterMission> mms = [];
   // late final mms = runtime.gameData.masterMissions.values.toList();
@@ -66,7 +66,7 @@ class _UserEventMissionReceivePageState extends State<UserEventMissionReceivePag
       List<EventMission> eventMissions = [], randomMissions = [];
       for (final mission in event.missions) {
         if (mission.type == MissionType.random) {
-          if (runtime.mstData.userEventRandomMission[mission.id]?.isInProgress == true) {
+          if (mstData.userEventRandomMission[mission.id]?.isInProgress == true) {
             randomMissions.add(mission);
           }
         } else {
@@ -119,7 +119,7 @@ class _UserEventMissionReceivePageState extends State<UserEventMissionReceivePag
   }
 
   MissionProgressType getMissionProgress(int eventMissionId) {
-    final progress = userEventMissions[eventMissionId]?.missionProgressType;
+    final progress = mstData.userEventMission[eventMissionId]?.missionProgressType;
     if (progress == null) return MissionProgressType.none;
     return MissionProgressType.fromValue(progress);
   }
@@ -302,7 +302,7 @@ class _UserEventMissionReceivePageState extends State<UserEventMissionReceivePag
       );
     } else {
       int? progressNum, targetNum;
-      final eventMissionFix = runtime.mstData.userEventMissionFix[mission.id];
+      final eventMissionFix = mstData.userEventMissionFix[mission.id];
       if (eventMissionFix != null) {
         // progressType=eventMissionFix.progressType;
         progressNum = eventMissionFix.num;

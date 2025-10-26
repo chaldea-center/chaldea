@@ -11,8 +11,8 @@ import 'package:chaldea/packages/method_channel/method_channel_chaldea.dart';
 import 'package:chaldea/packages/packages.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
-import '../modules/common/filter_group.dart';
-import '../modules/import_data/autologin/read_auth_page.dart';
+import '../../modules/common/filter_group.dart';
+import '../../modules/import_data/autologin/read_auth_page.dart';
 
 class FakerAccountEditPage extends StatefulWidget {
   final AutoLoginData user;

@@ -289,7 +289,7 @@ class _BoxGachaDrawPageState extends State<BoxGachaDrawPage> with FakerRuntimeSt
           onPressed: () {
             if (runtime.runningTask.value) return;
             runtime.runTask(() async {
-              await runtime.boxGachaDraw(lottery: lottery!, num: drawNumOnce, loopCount: Ref(1));
+              await runtime.event.boxGachaDraw(lottery: lottery!, num: drawNumOnce, loopCount: Ref(1));
               if (mounted) setState(() {});
             });
           },
@@ -304,7 +304,7 @@ class _BoxGachaDrawPageState extends State<BoxGachaDrawPage> with FakerRuntimeSt
                 runtime.runTask(
                   () => runtime.withWakeLock(
                     'loop-box-gacha-$hashCode',
-                    () => runtime.boxGachaDraw(lottery: lottery!, num: drawNumOnce, loopCount: loopCount),
+                    () => runtime.event.boxGachaDraw(lottery: lottery!, num: drawNumOnce, loopCount: loopCount),
                   ),
                 );
               },

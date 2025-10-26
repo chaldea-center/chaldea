@@ -12,11 +12,11 @@ import '../card_enhance/svt_combine.dart';
 import '../details/box_gacha.dart';
 import '../details/trade.dart';
 import '../gacha/gacha_draw.dart';
-import '../history.dart';
 import '../mission/mission_receive.dart';
 import '../random_mission/random_mission_loop.dart';
 import '../runtime.dart';
 import '../shop/shop_event_list.dart';
+import 'history.dart';
 
 class _ButtonData {
   final IconData icon;
@@ -43,7 +43,6 @@ class _FakerMenuButtonState extends State<FakerMenuButton> with FakerRuntimeStat
   Widget build(BuildContext context) {
     final gameTop = runtime.agent.network.gameTop;
     final timerData = runtime.gameData.timerData;
-    final mstData = runtime.mstData;
 
     final bool isLoggedIn = mstData.user != null;
 
@@ -94,7 +93,7 @@ class _FakerMenuButtonState extends State<FakerMenuButton> with FakerRuntimeStat
                 name: S.current.import_data,
                 enabled: isLoggedIn,
                 onTap: () {
-                  router.pushPage(ImportHttpPage(mstData: runtime.mstData));
+                  router.pushPage(ImportHttpPage(mstData: mstData));
                 },
               ),
               _ButtonData(

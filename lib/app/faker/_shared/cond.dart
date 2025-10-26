@@ -3,7 +3,7 @@ part of '../runtime.dart';
 class FakerCondCheck {
   final FakerRuntime runtime;
   final MasterDataManager mstData;
-  FakerCondCheck(this.runtime) : mstData = runtime.mstData;
+  FakerCondCheck(this.runtime) : mstData = runtime.agent.network.mstData;
 
   bool isCondOpen2(CondType condType, List<int> targetIds, int targetNum, {bool defaultResult = true}) {
     switch (condType) {
@@ -88,17 +88,17 @@ class FakerCondCheck {
         return mstData.userEventMissionCondDetail[condDetailId]?.progressNum ?? 0;
       case CondType.eventMissionClear:
         return targetIds.where((mid) {
-          final progressType = runtime.mstData.userEventMission[mid]?.missionProgressType;
+          final progressType = mstData.userEventMission[mid]?.missionProgressType;
           return progressType == MissionProgressType.clear.value || progressType == MissionProgressType.achieve.value;
         }).length;
       case CondType.eventMissionAchieve:
         return targetIds.where((mid) {
-          final progressType = runtime.mstData.userEventMission[mid]?.missionProgressType;
+          final progressType = mstData.userEventMission[mid]?.missionProgressType;
           return progressType == MissionProgressType.achieve.value;
         }).length;
       case CondType.questClear:
         return targetIds.where((questId) {
-          return (runtime.mstData.userQuest[questId]?.clearNum ?? 0) > 0;
+          return (mstData.userQuest[questId]?.clearNum ?? 0) > 0;
         }).length;
       default:
         return null;

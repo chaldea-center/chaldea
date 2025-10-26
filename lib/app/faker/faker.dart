@@ -27,10 +27,10 @@ import 'package:chaldea/utils/notification.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../modules/shop/shop.dart';
+import '_shared/history.dart';
 import 'details/dialogs.dart';
 import 'details/raids.dart';
 import 'gacha/gacha_draw.dart';
-import 'history.dart';
 import 'mission/mission_receive.dart';
 import 'option_list.dart';
 import 'present_box/present_box.dart';
@@ -682,19 +682,19 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
         headerBuilder: (context, _) {
           return ListTile(
             dense: true,
-            title: Text('Drop Statistics (${runtime.totalDropStat.totalCount} runs)'),
-            subtitle: runtime.totalRewards.isEmpty
+            title: Text('Drop Statistics (${runtime.data.totalDropStat.totalCount} runs)'),
+            subtitle: runtime.data.battleTotalRewards.isEmpty
                 ? null
                 : Wrap(
                     spacing: 2,
                     runSpacing: 2,
-                    children: (runtime.totalRewards.keys.toList()..sort(Item.compare)).map((itemId) {
+                    children: (runtime.data.battleTotalRewards.keys.toList()..sort(Item.compare)).map((itemId) {
                       return GameCardMixin.anyCardItemBuilder(
                         context: context,
                         id: itemId,
                         width: 30,
                         text: [
-                          '+${runtime.totalRewards[itemId]?.format()}',
+                          '+${runtime.data.battleTotalRewards[itemId]?.format()}',
                           mstData
                               .getItemOrSvtNum(
                                 itemId,
@@ -708,17 +708,17 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
           );
         },
         contentBuilder: (context) {
-          runtime.totalDropStat.items.removeWhere((k, v) => v == 0);
+          runtime.data.totalDropStat.items.removeWhere((k, v) => v == 0);
           final questDropIds = db.gameData.dropData.freeDrops2[battleOption.questId]?.items.keys.toList() ?? [];
           for (final itemId in questDropIds.followedBy(battleOption.targetDrops.keys)) {
-            runtime.totalDropStat.items.putIfAbsent(itemId, () => 0);
+            runtime.data.totalDropStat.items.putIfAbsent(itemId, () => 0);
           }
           return Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               for (final (header, dropStats) in [
-                ('Total', runtime.totalDropStat),
-                ('Current Loop', runtime.curLoopDropStat),
+                ('Total', runtime.data.totalDropStat),
+                ('Current Loop', runtime.data.curLoopDropStat),
               ])
                 ListTile(
                   dense: true,
@@ -731,7 +731,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
                           text: 'clear',
                           onTap: () {
                             setState(() {
-                              if (dropStats == runtime.totalDropStat) runtime.totalRewards.clear();
+                              if (dropStats == runtime.data.totalDropStat) runtime.data.battleTotalRewards.clear();
                               dropStats.reset();
                             });
                           },
@@ -2080,7 +2080,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
         buildButton(
           enabled: loggedIn && !inBattle,
           onPressed: () async {
-            runtime.runTask(() => runtime.battleSetupWithOptions(battleOption));
+            runtime.runTask(() => runtime.battle.battleSetupWithOptions(battleOption));
           },
           text: 'b.setup',
         ),
@@ -2089,7 +2089,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
           onPressed: () async {
             runtime.runTask(() async {
               final battleEntity = agent.curBattle!;
-              await runtime.battleResultWithOptions(
+              await runtime.battle.battleResultWithOptions(
                 battleEntity: battleEntity,
                 resultType: battleOption.resultType,
                 options: battleOption,
@@ -2110,7 +2110,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
               validate: (v) => v > 0,
               onSubmit: (v) {
                 battleOption.loopCount = v;
-                runtime.runTask(() => runtime.withWakeLock('loop-$hashCode', runtime.startLoop));
+                runtime.runTask(() => runtime.withWakeLock('loop-$hashCode', runtime.battle.startLoop));
               },
             ).showDialog(context);
           },
@@ -2176,7 +2176,9 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
                   title: 'Seed Count (waiting)',
                   validate: (v) => v > 0,
                   onSubmit: (v) {
-                    runtime.runTask(() => runtime.withWakeLock('seed-wait-$hashCode', () => runtime.seedWait(v)));
+                    runtime.runTask(
+                      () => runtime.withWakeLock('seed-wait-$hashCode', () => runtime.battle.seedWait(v)),
+                    );
                   },
                 ).showDialog(context);
               },

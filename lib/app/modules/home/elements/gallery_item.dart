@@ -22,7 +22,7 @@ import 'package:chaldea/packages/app_info.dart';
 import 'package:chaldea/packages/platform/platform.dart';
 import 'package:chaldea/utils/extension.dart';
 import 'package:chaldea/widgets/theme.dart';
-import '../../../faker/accounts.dart';
+import '../../../faker/account/accounts.dart';
 import '../../april_fool/april_fool_home.dart';
 import '../../bgm/bgm_list.dart';
 import '../../buff/buff_list.dart';

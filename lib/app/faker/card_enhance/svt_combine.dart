@@ -195,7 +195,7 @@ class _SvtCombinePageState extends State<SvtCombinePage> with FakerRuntimeStateM
                 ? null
                 : () {
                     runtime.runTask(() async {
-                      await runtime.svtCombine(loopCount: 1);
+                      await runtime.combine.svtCombine(loopCount: 1);
                       if (mounted) setState(() {});
                     });
                   },
@@ -208,7 +208,7 @@ class _SvtCombinePageState extends State<SvtCombinePage> with FakerRuntimeStateM
                     SimpleConfirmDialog(
                       title: Text('Loop ×${options.loopCount}'),
                       onTapOk: () {
-                        runtime.runTask(() => runtime.svtCombine());
+                        runtime.runTask(() => runtime.combine.svtCombine());
                       },
                     ).showDialog(context);
                   },
@@ -275,7 +275,7 @@ class _SvtCombinePageState extends State<SvtCombinePage> with FakerRuntimeStateM
             ],
           ),
           trailing: FilledButton(
-            onPressed: runtime.checkSvtLvExceed(baseUserSvt.id)
+            onPressed: checkSvtLvExceed(baseUserSvt.id)
                 ? () {
                     final grailNum = mstData.getItemOrSvtNum(Items.grailId),
                         coinNum = mstData.userSvtCoin[baseUserSvt.svtId]?.num ?? 0;
@@ -682,6 +682,16 @@ class _SvtCombinePageState extends State<SvtCombinePage> with FakerRuntimeStateM
         },
       ),
     );
+  }
+
+  bool checkSvtLvExceed(int userSvtId) {
+    final baseUserSvt = mstData.userSvt[userSvtId];
+    final svt = baseUserSvt?.dbSvt;
+    if (baseUserSvt == null || svt == null) return false;
+    if (baseUserSvt.lv < svt.lvMax || baseUserSvt.lv >= 120 || baseUserSvt.lv != baseUserSvt.maxLv) return false;
+    if (mstData.getItemOrSvtNum(Items.grailId) < 1) return false;
+    if (baseUserSvt.lv >= 100 && (mstData.userSvtCoin[baseUserSvt.svtId]?.num ?? 0) < 30) return false;
+    return true;
   }
 
   Future<void> unlockIndex(int svtId, List<int> indexes) async {

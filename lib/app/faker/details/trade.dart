@@ -23,7 +23,7 @@ class _UserEventTradePageState extends State<UserEventTradePage>
     with SingleTickerProviderStateMixin, FakerRuntimeStateMixin {
   @override
   late final runtime = widget.runtime;
-  late final userEventTrades = runtime.mstData.userEventTrade;
+  late final userEventTrades = mstData.userEventTrade;
   _UserTradeData data = _UserTradeData(null);
   late final tabController = TabController(length: 3, vsync: this);
   bool sortByEndTime = true;
@@ -133,7 +133,7 @@ class _UserEventTradePageState extends State<UserEventTradePage>
                         item: null,
                         itemId: itemId,
                         text: [
-                          runtime.mstData.getItemOrSvtNum(itemId).format(),
+                          mstData.getItemOrSvtNum(itemId).format(),
                           (demandItems[itemId] ?? 0).format(),
                         ].join('\n'),
                       ),
@@ -277,7 +277,7 @@ class _UserEventTradePageState extends State<UserEventTradePage>
             context: context,
             width: 32,
             text: [
-              runtime.mstData.getItemOrSvtNum(gift.objectId).format(),
+              mstData.getItemOrSvtNum(gift.objectId).format(),
               (db.itemCenter.itemLeft[gift.objectId] ?? 0).format(),
             ].join('\n'),
           ),
@@ -300,7 +300,7 @@ class _UserEventTradePageState extends State<UserEventTradePage>
             _buildButton(
               onPressed:
                   (tradeInfo != null && tradeInfo.tradeNum >= tradeInfo.maxTradeNum) ||
-                      tradeGood.consumes.any((e) => runtime.mstData.getItemOrSvtNum(e.objectId) < e.num)
+                      tradeGood.consumes.any((e) => mstData.getItemOrSvtNum(e.objectId) < e.num)
                   ? null
                   : () async {
                       int tradeGoodsNum = 1;
@@ -318,7 +318,7 @@ class _UserEventTradePageState extends State<UserEventTradePage>
                         tradeGoodsNum = Maths.min([
                           tradeInfo.maxTradeNum - tradeInfo.tradeNum,
                           for (final consume in tradeGood.consumes)
-                            (runtime.mstData.getItemOrSvtNum(consume.objectId) / consume.num).floor(),
+                            (mstData.getItemOrSvtNum(consume.objectId) / consume.num).floor(),
                         ]);
                       } else {
                         final confirm = await SimpleConfirmDialog(

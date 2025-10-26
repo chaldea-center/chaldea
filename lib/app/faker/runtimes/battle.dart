@@ -1,6 +1,214 @@
-part of '../runtime.dart';
+import 'dart:math';
 
-extension FakerRuntimeBattle on FakerRuntime {
+import 'package:chaldea/app/api/atlas.dart';
+import 'package:chaldea/generated/l10n.dart';
+import 'package:chaldea/models/faker/faker.dart';
+import 'package:chaldea/models/gamedata/toplogin.dart';
+import 'package:chaldea/models/models.dart';
+import 'package:chaldea/packages/logger.dart';
+import 'package:chaldea/utils/utils.dart';
+import 'package:chaldea/widgets/widgets.dart';
+import '_base.dart';
+
+class FakerRuntimeBattle extends FakerRuntimeBase {
+  FakerRuntimeBattle(super.runtime);
+
+  AutoBattleOptions get battleOption => agent.user.curBattleOption;
+
+  Future<void> startLoop({bool dialog = true}) async {
+    if (agent.curBattle != null) {
+      throw SilentException('last battle not finished');
+    }
+    final battleOption = this.battleOption;
+    if (battleOption.loopCount <= 0) {
+      throw SilentException('loop count (${battleOption.loopCount}) must >0');
+    }
+    // if (battleOption.targetDrops.values.any((v) => v < 0)) {
+    //   throw SilentException('loop target drop num must >=0 (0=always)');
+    // }
+    if (battleOption.winTargetItemNum.values.any((v) => v <= 0)) {
+      throw SilentException('win target drop num must >0');
+    }
+    if (battleOption.recoverIds.isNotEmpty && battleOption.waitApRecover) {
+      throw SilentException('Do not turn on both apple recover and wait AP recover');
+    }
+    final questPhaseEntity = await AtlasApi.questPhase(
+      battleOption.questId,
+      battleOption.questPhase,
+      region: agent.user.region,
+    );
+    if (questPhaseEntity == null) {
+      throw SilentException('quest not found');
+    }
+    if (battleOption.loopCount > 1 &&
+        !(questPhaseEntity.afterClear == QuestAfterClearType.repeatLast &&
+            battleOption.questPhase == questPhaseEntity.phases.lastOrNull)) {
+      throw SilentException('Not repeatable quest or phase');
+    }
+    final now = DateTime.now().timestamp;
+    if (questPhaseEntity.openedAt > now || questPhaseEntity.closedAt < now) {
+      throw SilentException('quest not open');
+    }
+    if (battleOption.winTargetItemNum.isNotEmpty && !questPhaseEntity.flags.contains(QuestFlag.actConsumeBattleWin)) {
+      throw SilentException('Win target drops should be used only if Quest has flag actConsumeBattleWin');
+    }
+    final shouldUseEventDeck = db.gameData.others.shouldUseEventDeck(questPhaseEntity.id);
+    if (battleOption.useEventDeck != null && battleOption.useEventDeck != shouldUseEventDeck) {
+      throw SilentException('This quest should set "Use Event Deck"=$shouldUseEventDeck');
+    }
+    int finishedCount = 0, totalCount = battleOption.loopCount;
+    List<int> elapseSeconds = [];
+    runtime.data.curLoopDropStat.reset();
+    agent.network.lastTaskStartedAt = 0;
+    runtime.displayToast('Battle $finishedCount/$totalCount', progress: finishedCount / totalCount);
+    while (finishedCount < totalCount) {
+      runtime.checkStop();
+      runtime.checkSvtKeep();
+      if (battleOption.stopIfBondLimit) {
+        _checkFriendship(battleOption, questPhaseEntity);
+      }
+
+      final int startTime = DateTime.now().timestamp;
+      final msg =
+          'Battle ${finishedCount + 1}/$totalCount, ${Maths.mean(elapseSeconds).round()}s/${(Maths.sum(elapseSeconds) / 60).toStringAsFixed(1)}m';
+      logger.t(msg);
+      runtime.displayToast(msg, progress: (finishedCount + 0.5) / totalCount);
+
+      await _ensureEnoughApItem(quest: questPhaseEntity, option: battleOption);
+
+      runtime.update();
+      FResponse setupResp;
+      try {
+        setupResp = await battleSetupWithOptions(battleOption);
+      } on NidCheckException catch (e, s) {
+        if (e.nid == 'battle_setup' && e.detail?.resCode == '99' && e.detail?.fail?['errorType'] == 0) {
+          logger.e('battle setup failed with nid check, retry', e, s);
+          await Future.delayed(Duration(seconds: 10));
+          setupResp = await battleSetupWithOptions(battleOption);
+        } else {
+          rethrow;
+        }
+      }
+      runtime.update();
+
+      FResponse resultResp;
+      if (setupResp.data.mstData.battles.isEmpty) {
+        if (setupResp.request.normKey.contains('scenario')) {
+          // do nothing
+          resultResp = setupResp;
+        } else {
+          throw SilentException('[${setupResp.request.key}] battle data not found');
+        }
+      } else {
+        final battleEntity = setupResp.data.mstData.battles.single;
+        final curBattleDrops = battleEntity.battleInfo?.getTotalDrops() ?? {};
+        logger.t('battle id: ${battleEntity.id}');
+
+        bool shouldRetire = false;
+        if (battleOption.winTargetItemNum.isNotEmpty) {
+          shouldRetire = true;
+          for (final (itemId, targetNum) in battleOption.winTargetItemNum.items) {
+            if ((curBattleDrops[itemId] ?? 0) >= targetNum) {
+              shouldRetire = false;
+              break;
+            }
+          }
+        }
+
+        if (questPhaseEntity.flags.contains(QuestFlag.raid)) {
+          await agent.battleTurn(battleId: battleEntity.id);
+        }
+
+        if (shouldRetire) {
+          resultResp = await battleResultWithOptions(
+            battleEntity: battleEntity,
+            resultType: BattleResultType.cancel,
+            options: battleOption,
+            sendDelay: const Duration(seconds: 1),
+          );
+        } else {
+          final delay = battleOption.battleDuration ?? (agent.network.gameTop.region == Region.cn ? 40 : 20);
+          resultResp = await battleResultWithOptions(
+            battleEntity: battleEntity,
+            resultType: BattleResultType.win,
+            options: battleOption,
+            sendDelay: Duration(seconds: delay),
+          );
+          // if win
+          runtime.data.totalDropStat.totalCount += 1;
+          runtime.data.curLoopDropStat.totalCount += 1;
+          Map<int, int> resultBattleDrops;
+          final lastBattleResultData = agent.lastBattleResultData;
+          if (lastBattleResultData != null && lastBattleResultData.battleId == battleEntity.id) {
+            resultBattleDrops = {};
+            for (final drop in lastBattleResultData.resultDropInfos) {
+              resultBattleDrops.addNum(drop.objectId, drop.num);
+            }
+            for (final reward in lastBattleResultData.rewardInfos) {
+              runtime.data.battleTotalRewards.addNum(reward.objectId, reward.num);
+            }
+            for (final reward in lastBattleResultData.friendshipRewardInfos) {
+              runtime.data.battleTotalRewards.addNum(reward.objectId, reward.num);
+            }
+          } else {
+            resultBattleDrops = curBattleDrops;
+            logger.t('last battle result data not found, use cur_battle_drops');
+          }
+          runtime.data.totalDropStat.items.addDict(resultBattleDrops);
+          runtime.data.curLoopDropStat.items.addDict(resultBattleDrops);
+          runtime.data.battleTotalRewards.addDict(resultBattleDrops);
+
+          // check total drop target of this loop
+          if (battleOption.targetDrops.isNotEmpty) {
+            for (final (itemId, targetNum) in battleOption.targetDrops.items.toList()) {
+              final dropNum = resultBattleDrops[itemId];
+              if (dropNum == null || dropNum <= 0) continue;
+              battleOption.targetDrops[itemId] = targetNum - dropNum;
+            }
+            final reachedItems = battleOption.targetDrops.keys
+                .where((itemId) => resultBattleDrops.containsKey(itemId) && battleOption.targetDrops[itemId]! <= 0)
+                .toList();
+            if (reachedItems.isNotEmpty) {
+              throw SilentException(
+                'Target drop reaches: ${reachedItems.map((e) => GameCardMixin.anyCardItemName(e).l).join(', ')}',
+              );
+            }
+          }
+        }
+      }
+
+      final userQuest = mstData.userQuest[questPhaseEntity.id];
+      if (userQuest != null && userQuest.clearNum == 0 && questPhaseEntity.phases.contains(userQuest.questPhase + 1)) {
+        battleOption.questPhase = userQuest.questPhase + 1;
+      }
+      for (final item in resultResp.data.mstData.userItem) {
+        runtime.data.battleTotalRewards.addNum(item.itemId, 0);
+      }
+
+      finishedCount += 1;
+      battleOption.loopCount -= 1;
+
+      elapseSeconds.add(DateTime.now().timestamp - startTime);
+      runtime.update();
+      if (questPhaseEntity.flags.contains(QuestFlag.raid) && finishedCount % 5 == 1) {
+        // update raid info
+        await agent.homeTop();
+      }
+      runtime.update();
+      await Future.delayed(const Duration(milliseconds: 100));
+      if (battleOption.stopIfBondLimit) {
+        _checkFriendship(battleOption, questPhaseEntity);
+      }
+    }
+    logger.t('finished all $finishedCount battles');
+    if (dialog) {
+      runtime.showLocalDialog(
+        SimpleConfirmDialog(title: const Text('Finished'), content: Text('$finishedCount battles'), showCancel: false),
+        barrierDismissible: false,
+      );
+    }
+  }
+
   Future<FResponse> battleSetupWithOptions(AutoBattleOptions options) async {
     final region = agent.network.user.region;
     final quest = db.gameData.quests[options.questId];
@@ -412,11 +620,11 @@ extension FakerRuntimeBattle on FakerRuntime {
       throw SilentException('skillShift not enabled: ${skillShiftEnemies.length} skillShift enemies');
     }
 
-    if (!mounted) {
+    if (!runtime.mounted) {
       throw SilentException('found skillShift but not mounted');
     }
 
-    final skillShiftEnemyUniqueIds = await showLocalDialog<List<int>?>(
+    final skillShiftEnemyUniqueIds = await runtime.showLocalDialog<List<int>?>(
       _SkillShiftEnemySelectDialog(
         battleInfo: battleInfo,
         skillShiftEnemies: skillShiftEnemies.values.toList(),
@@ -439,6 +647,126 @@ extension FakerRuntimeBattle on FakerRuntime {
 
     options.skillShiftEnemyUniqueIds = skillShiftEnemyUniqueIds.toList();
     return true;
+  }
+
+  Future<void> seedWait(final int maxBuyCount) async {
+    int boughtCount = 0;
+    while (boughtCount < maxBuyCount) {
+      const int apUnit = 40, seedUnit = 1;
+      final apCount = mstData.user?.calCurAp() ?? 0;
+      final seedCount = mstData.getItemOrSvtNum(Items.blueSaplingId);
+      if (seedCount <= 0) {
+        throw SilentException('no Blue Sapling left');
+      }
+      int buyCount = Maths.min([maxBuyCount, apCount ~/ apUnit, seedCount ~/ seedUnit]);
+      if (buyCount > 0) {
+        await agent.terminalApSeedExchange(buyCount);
+        boughtCount += buyCount;
+      }
+      runtime.update();
+      runtime.displayToast('Seed $boughtCount/$maxBuyCount - waiting...');
+      await Future.delayed(const Duration(minutes: 1));
+      runtime.checkStop();
+    }
+  }
+
+  Future<void> _ensureEnoughApItem({required QuestPhase quest, required AutoBattleOptions option}) async {
+    if (quest.consumeType.useItem) {
+      for (final item in quest.consumeItem) {
+        final own = mstData.getItemOrSvtNum(item.itemId);
+        if (own < item.amount) {
+          throw SilentException('Consume Item not enough: ${item.itemId}: $own<${item.amount}');
+        }
+      }
+    }
+    if (quest.consumeType.useAp) {
+      final apConsume = option.isApHalf ? quest.consume ~/ 2 : quest.consume;
+      if (mstData.user!.calCurAp() >= apConsume) {
+        return;
+      }
+      for (final recoverId in option.recoverIds) {
+        final recover = mstRecovers[recoverId];
+        if (recover == null) continue;
+        int dt = mstData.user!.actRecoverAt - DateTime.now().timestamp;
+        if ((recover.id == 1 || recover.id == 2) && option.waitApRecoverGold && dt > 300 && dt % 300 < 240) {
+          final waitUntil = DateTime.now().timestamp + dt % 300 + 2;
+          while (true) {
+            final now = DateTime.now().timestamp;
+            if (now >= waitUntil) break;
+            runtime.displayToast('Wait ${waitUntil - now} seconds...');
+            await Future.delayed(Duration(seconds: min(5, waitUntil - now)));
+            runtime.checkStop();
+          }
+        }
+        if (recover.recoverType == RecoverType.stone && mstData.user!.stone > 0) {
+          await agent.shopPurchaseByStone(id: recover.targetId, num: 1);
+          break;
+        } else if (recover.recoverType == RecoverType.item) {
+          final item = db.gameData.items[recover.targetId];
+          if (item == null) continue;
+          if (item.type == ItemType.apAdd) {
+            final count = ((apConsume - mstData.user!.calCurAp()) / item.value).ceil();
+            if (count > 0 && count < mstData.getItemOrSvtNum(item.id)) {
+              await agent.itemRecover(recoverId: recoverId, num: count);
+              break;
+            }
+          } else if (item.type == ItemType.apRecover) {
+            final count = ((apConsume - mstData.user!.calCurAp()) / (item.value / 1000 * mstData.user!.actMax).ceil())
+                .ceil();
+            if (count > 0 && count <= mstData.getItemOrSvtNum(item.id)) {
+              await agent.itemRecover(recoverId: recoverId, num: count);
+              break;
+            }
+          }
+        } else {
+          continue;
+        }
+      }
+      if (mstData.user!.calCurAp() >= apConsume) {
+        return;
+      }
+      if (option.waitApRecover) {
+        while (mstData.user!.calCurAp() < apConsume) {
+          runtime.update();
+          runtime.displayToast('Battle - waiting AP recover...');
+          await Future.delayed(const Duration(minutes: 1));
+          runtime.checkStop();
+        }
+        return;
+      }
+      throw SilentException('AP not enough: ${mstData.user!.calCurAp()}<$apConsume');
+    }
+  }
+
+  void _checkFriendship(AutoBattleOptions option, QuestPhase questPhase) {
+    final deck = questPhase.isUseUserEventDeck()
+        ? mstData.userEventDeck[UserEventDeckEntity.createPK(
+            questPhase.logicEventId ?? 0,
+            questPhase.extraDetail?.useEventDeckNo ?? 1,
+          )]
+        : mstData.userDeck[battleOption.deckId];
+    final svts = deck?.deckInfo?.svts ?? [];
+    for (final svt in svts) {
+      if (svt.userSvtId > 0) {
+        final userSvt = mstData.userSvt[svt.userSvtId];
+        if (userSvt == null) {
+          throw SilentException('UserSvt ${svt.userSvtId} not found');
+        }
+        final dbSvt = db.gameData.servantsById[userSvt.svtId];
+        if (dbSvt == null) {
+          throw SilentException('Unknown Servant ID ${userSvt.svtId}');
+        }
+        final svtCollection = mstData.userSvtCollection[userSvt.svtId];
+        if (svtCollection == null) {
+          throw SilentException('UserServantCollection ${userSvt.svtId} not found');
+        }
+        if (svtCollection.friendshipRank >= svtCollection.maxFriendshipRank) {
+          throw SilentException(
+            'Svt No.${dbSvt.collectionNo} ${dbSvt.lName.l} reaches max bond Lv.${svtCollection.maxFriendshipRank}',
+          );
+        }
+      }
+    }
   }
 }
 

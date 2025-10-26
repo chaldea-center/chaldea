@@ -1,12 +1,24 @@
-part of '../runtime.dart';
+import 'dart:math';
+
+import 'package:chaldea/app/api/atlas.dart';
+import 'package:chaldea/app/modules/master_mission/solver/scheme.dart';
+import 'package:chaldea/app/modules/master_mission/solver/solver.dart';
+import 'package:chaldea/models/models.dart';
+import 'package:chaldea/packages/logger.dart';
+import 'package:chaldea/utils/utils.dart';
+import '_base.dart';
 
 const int kMaxRandomMissionCount = 20;
 
-extension FakerRandomMission on FakerRuntime {
-  RandomMissionOption get _option => agent.user.randomMission;
+class FakerRuntimeEvent extends FakerRuntimeBase {
+  FakerRuntimeEvent(super.runtime);
+
+  // random mission
+  late final randomMissionStat = runtime.data.randomMissionStat;
+  late final _randomMissionOption = agent.user.randomMission;
 
   Future<void> startRandomMissionLoop() async {
-    if (_option.maxFreeCount <= 0) return;
+    if (_randomMissionOption.maxFreeCount <= 0) return;
     if (randomMissionStat.cqs0.length != 1) {
       throw Exception('${randomMissionStat.cqs0.length} CQ, need 1.');
     }
@@ -17,11 +29,11 @@ extension FakerRandomMission on FakerRuntime {
 
     final bestIds = <int>{
       for (final mission in randomMissionStat.eventMissions.values)
-        if (_option.getItemWeight(mission.gifts.first.objectId) >= 2) mission.id,
+        if (_randomMissionOption.getItemWeight(mission.gifts.first.objectId) >= 2) mission.id,
     };
     randomMissionStat.curLoopData = RandomMissionOption();
-    for (final _ in range(_option.maxFreeCount)) {
-      for (final i in range(max(1, _option.discardLoopCount))) {
+    for (final _ in range(_randomMissionOption.maxFreeCount)) {
+      for (final i in range(max(1, _randomMissionOption.discardLoopCount))) {
         if (i > 0) {
           await _discardMission(2);
         }
@@ -45,7 +57,10 @@ extension FakerRandomMission on FakerRuntime {
 
   Future<int> _discardMission(int maxCount) async {
     final randomMissionProgress = mstData.randomMissionProgress;
-    final removeItemIds = _option.itemWeights.entries.where((e) => e.value <= 0).map((e) => e.key).toList();
+    final removeItemIds = _randomMissionOption.itemWeights.entries
+        .where((e) => e.value <= 0)
+        .map((e) => e.key)
+        .toList();
     List<int> removeMissionIds = randomMissionProgress.keys.where((e) {
       final mission = randomMissionStat.eventMissions[e];
       return mission != null && mission.gifts.every((e) => removeItemIds.contains(e.objectId));
@@ -53,14 +68,14 @@ extension FakerRandomMission on FakerRuntime {
     removeMissionIds.sortByList((e) {
       final mission = randomMissionStat.eventMissions[e]!;
       return <int>[
-        (_option.getItemWeight(mission.gifts.first.objectId) * 100).toInt(),
+        (_randomMissionOption.getItemWeight(mission.gifts.first.objectId) * 100).toInt(),
         mission.clearConds.first.targetNum,
         randomMissionProgress[e]!,
       ];
     });
-    if (removeMissionIds.length > _option.discardMissionMinLeftNum) {
+    if (removeMissionIds.length > _randomMissionOption.discardMissionMinLeftNum) {
       removeMissionIds = removeMissionIds
-          .take(removeMissionIds.length - _option.discardMissionMinLeftNum)
+          .take(removeMissionIds.length - _randomMissionOption.discardMissionMinLeftNum)
           .take(maxCount)
           .toList();
     }
@@ -74,7 +89,7 @@ extension FakerRandomMission on FakerRuntime {
     if (quest.flags.contains(QuestFlag.dropFirstTimeOnly) != isCQ || (quest.consume == 5) != isCQ) {
       throw SilentException('Quest ${quest.id}(${quest.lName.l}), isCQ=$isCQ.');
     }
-    final battleOptionIndex = isCQ ? _option.cqTeamIndex : _option.fqTeamIndex;
+    final battleOptionIndex = isCQ ? _randomMissionOption.cqTeamIndex : _randomMissionOption.fqTeamIndex;
     if (battleOptionIndex < 0 || battleOptionIndex >= agent.user.battleOptions.length) {
       throw SilentException('Invalid battleOptionIndex=$battleOptionIndex (0~${agent.user.battleOptions.length - 1})');
     }
@@ -87,13 +102,13 @@ extension FakerRandomMission on FakerRuntime {
     final startTime = DateTime.now().timestamp;
     final beforeClearNums = {for (final m in mstData.userEventRandomMission) m.missionId: m.clearNum};
     final beforeMissionIds = mstData.randomMissionProgress.keys.toSet();
-    await startLoop(dialog: false);
+    await runtime.battle.startLoop(dialog: false);
     final afterClearNums = {for (final m in mstData.userEventRandomMission) m.missionId: m.clearNum};
     final afterMissionIds = mstData.randomMissionProgress.keys.toSet();
     randomMissionStat.lastAddedMissionIds = afterMissionIds.difference(beforeMissionIds);
 
     void addStuff(void Function(RandomMissionOption o) change) {
-      change(_option);
+      change(_randomMissionOption);
       change(randomMissionStat.curLoopData);
     }
 
@@ -131,7 +146,7 @@ extension FakerRandomMission on FakerRuntime {
     } else {
       randomMissionStat.lastBattleResultData = battleResultData;
       addStuff((o) => o.fqCount += 1);
-      _option.maxFreeCount -= 1;
+      _randomMissionOption.maxFreeCount -= 1;
     }
     for (final drop in battleResultData.resultDropInfos) {
       addStuff((o) => o.dropItems.addNum(drop.objectId, drop.num));
@@ -157,11 +172,13 @@ extension FakerRandomMission on FakerRuntime {
         } else {
           addProgress = progress / customMission.count;
         }
-        score += Maths.sum(mission.gifts.map((e) => _option.getItemWeight(e.objectId) * e.num * addProgress));
+        score += Maths.sum(
+          mission.gifts.map((e) => _randomMissionOption.getItemWeight(e.objectId) * e.num * addProgress),
+        );
         score2 += Maths.sum(
           mission.gifts
-              .where((e) => _option.getItemWeight(e.objectId) >= 2)
-              .map((e) => _option.getItemWeight(e.objectId) * e.num * addProgress),
+              .where((e) => _randomMissionOption.getItemWeight(e.objectId) >= 2)
+              .map((e) => _randomMissionOption.getItemWeight(e.objectId) * e.num * addProgress),
         );
       }
       return (quest: quest, completeNum: completeNum, score: score, score2: score2);
@@ -175,5 +192,39 @@ extension FakerRandomMission on FakerRuntime {
     //   return stats[random.nextInt(3)].quest;
     // }
     return stats.first.quest;
+  }
+
+  // box gacha
+  Future<void> boxGachaDraw({required EventLottery lottery, required int num, required Ref<int> loopCount}) async {
+    final boxGachaId = lottery.id;
+    while (loopCount.value > 0) {
+      final userBoxGacha = mstData.userBoxGacha[boxGachaId];
+      if (userBoxGacha == null) throw SilentException('BoxGacha $boxGachaId not in user data');
+      final maxNum = lottery.getMaxNum(userBoxGacha.boxIndex);
+      if (userBoxGacha.isReset && userBoxGacha.drawNum == maxNum) {
+        await agent.boxGachaReset(gachaId: boxGachaId);
+        runtime.update();
+        continue;
+      }
+      // if (userBoxGacha.isReset) throw SilentException('isReset=true, not tested');
+      num = min(num, maxNum - userBoxGacha.drawNum);
+      if (userBoxGacha.resetNum <= 10 && num > 10) {
+        throw SilentException('Cannot draw $num times in first 10 lotteries');
+      }
+      final ownItemCount = mstData.userItem[lottery.cost.itemId]?.num ?? 0;
+      if (ownItemCount < lottery.cost.amount) {
+        throw SilentException('Item noy enough: $ownItemCount');
+      }
+      num = min(num, ownItemCount ~/ lottery.cost.amount);
+      if (num <= 0 || num > 100) {
+        throw SilentException('Invalid draw num: $num');
+      }
+      if (mstData.userPresentBox.length >= (runtime.gameData.timerData.constants.maxPresentBoxNum - 10)) {
+        throw SilentException('Present Box Full');
+      }
+      await agent.boxGachaDraw(gachaId: boxGachaId, num: num);
+      loopCount.value -= 1;
+      runtime.update();
+    }
   }
 }

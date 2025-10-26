@@ -12,6 +12,7 @@ import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../option_list.dart';
 import '../runtime.dart';
+import '../runtimes/event.dart';
 import '../user_deck/deck_list.dart';
 import 'item_weight.dart';
 import 'quest_edit.dart';
@@ -32,7 +33,7 @@ class _RandomMissionLoopPageState extends State<RandomMissionLoopPage> with Fake
   late final option = user.randomMission;
 
   //
-  late final stat = runtime.randomMissionStat;
+  late final stat = runtime.data.randomMissionStat;
 
   @override
   void initState() {
@@ -102,7 +103,7 @@ class _RandomMissionLoopPageState extends State<RandomMissionLoopPage> with Fake
               enabled: !runtime.runningTask.value,
               onPressed: () {
                 runtime.runTask(
-                  () => runtime.withWakeLock('loop-random-mission-$hashCode', runtime.startRandomMissionLoop),
+                  () => runtime.withWakeLock('loop-random-mission-$hashCode', runtime.event.startRandomMissionLoop),
                 );
               },
               text: 'Loop×${option.maxFreeCount}',
@@ -285,7 +286,7 @@ class _RandomMissionLoopPageState extends State<RandomMissionLoopPage> with Fake
                 agent.user.curBattleOptionIndex = index;
                 final battleOption = agent.user.curBattleOption;
                 battleOption.loopCount = 1;
-                await runtime.startLoop();
+                await runtime.battle.startLoop();
               });
             },
             child: Text(S.current.start),
