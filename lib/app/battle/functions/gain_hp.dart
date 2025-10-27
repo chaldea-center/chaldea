@@ -50,7 +50,8 @@ class GainHP {
     if (functionRate < battleData.options.threshold) {
       return;
     }
-    final isLethal = lethalFuncTypes.contains(funcType);
+    final battleWinCheck = !battleData.isBattleWin || dataVals.EvenIfWinDie == 1;
+    final isLethal = lethalFuncTypes.contains(funcType) && battleWinCheck;
     final isPercent = percentFuncTypes.contains(funcType);
 
     for (final target in targets) {

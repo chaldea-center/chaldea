@@ -987,11 +987,16 @@ class FunctionExecutor {
 
     final activeOnly = dataVals.IncludePassiveIndividuality != 1;
     final includeIgnoreIndividuality = dataVals.IncludeIgnoreIndividuality == 1;
+    final excludeUnsubstate = dataVals.ExcludeUnSubStateIndiv == 1;
     final List<int> selfTraits = [];
     for (final svt in traitTargets) {
       selfTraits.addAll(
         svt.getTraits(
-          addTraits: svt.getBuffTraits(activeOnly: activeOnly, includeIgnoreIndiv: includeIgnoreIndividuality),
+          addTraits: svt.getBuffTraits(
+            activeOnly: activeOnly,
+            includeIgnoreIndiv: includeIgnoreIndividuality,
+            ignoreIndivUnreleaseable: excludeUnsubstate,
+          ),
         ),
       );
     }
@@ -1034,12 +1039,17 @@ class FunctionExecutor {
     final List<List<int>> overwriteTvals = function.getOverwriteTvalsList();
     final activeOnly = dataVals.IncludePassiveIndividuality != 1;
     final includeIgnoreIndividuality = dataVals.IncludeIgnoreIndividuality == 1;
+    final excludeUnsubstate = dataVals.ExcludeUnSubStateIndiv == 1;
 
     // update base on traits
     if (overwriteTvals.isNotEmpty) {
       targets.retainWhere((svt) {
         final List<int> selfTraits = svt.getTraits(
-          addTraits: svt.getBuffTraits(activeOnly: activeOnly, includeIgnoreIndiv: includeIgnoreIndividuality),
+          addTraits: svt.getBuffTraits(
+            activeOnly: activeOnly,
+            includeIgnoreIndiv: includeIgnoreIndividuality,
+            ignoreIndivUnreleaseable: excludeUnsubstate,
+          ),
         );
         for (final List<int> requiredTraits in overwriteTvals) {
           // Currently assuming the first array is OR. Need more samples on this
@@ -1059,7 +1069,11 @@ class FunctionExecutor {
       targets.retainWhere(
         (svt) => checkSignedIndividualities2(
           myTraits: svt.getTraits(
-            addTraits: svt.getBuffTraits(activeOnly: activeOnly, includeIgnoreIndiv: includeIgnoreIndividuality),
+            addTraits: svt.getBuffTraits(
+              activeOnly: activeOnly,
+              includeIgnoreIndiv: includeIgnoreIndividuality,
+              ignoreIndivUnreleaseable: excludeUnsubstate,
+            ),
           ),
           requiredTraits: function.functvals,
         ),
