@@ -459,13 +459,13 @@ class QuestPhaseAiNpcWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final enemy = aiNpc.detail;
     return EnemyThumbBase(
-      icon: enemy?.icon ?? aiNpc.npc.svt.icon,
+      icon: enemy?.icon ?? aiNpc.npc?.svt.icon,
       showFace: showFace,
       hidden: enemy?.misc?.displayType == 2 && !showTrueName,
-      name: (showTrueName ? enemy?.svt.lName.l : enemy?.lShownName) ?? aiNpc.npc.svt.lName.l,
-      classId: enemy?.dispClassId ?? aiNpc.npc.svt.classId,
-      rarity: enemy?.svt.rarity ?? aiNpc.npc.svt.rarity,
-      hp: enemy?.atk ?? aiNpc.npc.hp,
+      name: (showTrueName ? enemy?.svt.lName.l : enemy?.lShownName) ?? aiNpc.npc?.svt.lName.l ?? aiNpc.npcId.toString(),
+      classId: enemy?.dispClassId ?? aiNpc.npc?.svt.classId,
+      rarity: enemy?.svt.rarity ?? aiNpc.npc?.svt.rarity,
+      hp: enemy?.atk ?? aiNpc.npc?.hp ?? 0,
       deck: [if (showDeck) '[${DeckType.aiNpc.name}]', '*'].join(),
       onTap: () {
         if (enemy != null) {

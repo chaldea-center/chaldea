@@ -1779,11 +1779,12 @@ class FieldAi {
 
 @JsonSerializable()
 class QuestPhaseAiNpc {
-  NpcServant npc;
+  int npcId;
+  NpcServant? npc;
   QuestEnemy? detail;
   List<int> aiIds;
 
-  QuestPhaseAiNpc({required this.npc, this.detail, this.aiIds = const []});
+  QuestPhaseAiNpc({required this.npcId, this.npc, this.detail, this.aiIds = const []});
 
   factory QuestPhaseAiNpc.fromJson(Map<String, dynamic> json) => _$QuestPhaseAiNpcFromJson(json);
 

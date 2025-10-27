@@ -1080,13 +1080,15 @@ Map<String, dynamic> _$FieldAiToJson(FieldAi instance) => <String, dynamic>{
 };
 
 QuestPhaseAiNpc _$QuestPhaseAiNpcFromJson(Map json) => QuestPhaseAiNpc(
-  npc: NpcServant.fromJson(Map<String, dynamic>.from(json['npc'] as Map)),
+  npcId: (json['npcId'] as num).toInt(),
+  npc: json['npc'] == null ? null : NpcServant.fromJson(Map<String, dynamic>.from(json['npc'] as Map)),
   detail: json['detail'] == null ? null : QuestEnemy.fromJson(Map<String, dynamic>.from(json['detail'] as Map)),
   aiIds: (json['aiIds'] as List<dynamic>?)?.map((e) => (e as num).toInt()).toList() ?? const [],
 );
 
 Map<String, dynamic> _$QuestPhaseAiNpcToJson(QuestPhaseAiNpc instance) => <String, dynamic>{
-  'npc': instance.npc.toJson(),
+  'npcId': instance.npcId,
+  'npc': instance.npc?.toJson(),
   'detail': instance.detail?.toJson(),
   'aiIds': instance.aiIds,
 };
