@@ -253,6 +253,7 @@ class FateTopLogin {
   }
 }
 
+// ResponseData.cs
 @JsonSerializable(createToJson: false)
 class FateResponseDetail {
   String? resCode;
@@ -3292,6 +3293,136 @@ class GachaInfos extends MstGiftBase {
 
   @override
   Map<String, dynamic> toJson() => _$GachaInfosToJson(this);
+}
+
+@JsonSerializable(createToJson: false, createFieldMap: true)
+class LoginResultData {
+  // List<LoginMessageData> loginMessages;
+  List<LoginBonusData> totalLoginBonus;
+  List<LoginBonusData> seqLoginBonus;
+  // List<FortuneBonusData> loginFortuneBonus;
+  List<CampaignBonusData> campaignBonus;
+  // List<LeaveSvtData> leaveSvt;
+  // List<int> materialAddSvtIds;
+  // List<int> returnRarePriShopIds;
+  // List<int> freeShopIds;
+  List<Map<String, dynamic>> campaignDirectBonus; // List<CampaignDirectBonusData>
+
+  LoginResultData({
+    List<LoginBonusData>? totalLoginBonus,
+    List<LoginBonusData>? seqLoginBonus,
+    List<CampaignBonusData>? campaignBonus,
+    List<Map<String, dynamic>>? campaignDirectBonus,
+  }) : totalLoginBonus = totalLoginBonus ?? [],
+       seqLoginBonus = seqLoginBonus ?? [],
+       campaignBonus = campaignBonus ?? [],
+       campaignDirectBonus = campaignDirectBonus ?? [];
+
+  factory LoginResultData.fromJson(Map<dynamic, dynamic> data) => _$LoginResultDataFromJson(data);
+
+  static const fieldMap = _$LoginResultDataFieldMap;
+
+  List<List<dynamic>> getLists() => [totalLoginBonus, seqLoginBonus, campaignBonus, campaignDirectBonus];
+
+  bool get isEmpty => getLists().every((e) => e.isEmpty);
+  bool get isNotEmpty => !isEmpty;
+
+  void mergeLoginBonus(LoginResultData target) {
+    totalLoginBonus = [...totalLoginBonus, ...target.totalLoginBonus];
+    seqLoginBonus = [...seqLoginBonus, ...target.seqLoginBonus];
+    campaignBonus = [...campaignBonus, ...target.campaignBonus];
+    campaignDirectBonus = [...campaignDirectBonus, ...target.campaignDirectBonus];
+  }
+}
+
+sealed class LoginBonusBase {
+  List<LoginBonusItemData> get items;
+  Map<String, dynamic> get script;
+
+  String get key;
+
+  @JsonKey(includeFromJson: false)
+  Map srcData = {};
+
+  List<({String? bannerUrl, String? urlLink})> getBanners(Region region) {
+    List<({String? bannerUrl, String? urlLink})> result = [];
+    final List<Map> banners = List.from(script['banners'] ?? []);
+    for (final banner in banners) {
+      String? bannerUrl = banner['bannerUrl'], urlLink = banner['urlLink'];
+      if (bannerUrl == null && urlLink == null) continue;
+      if (bannerUrl != null && !bannerUrl.toLowerCase().startsWith('http')) {
+        switch (region) {
+          case Region.jp:
+            const baseUrl = 'https://view.fate-go.jp';
+            bannerUrl = Uri.parse(baseUrl).resolve(bannerUrl).toString();
+          default:
+            break;
+        }
+      }
+      result.add((bannerUrl: bannerUrl, urlLink: urlLink));
+    }
+    return result;
+  }
+}
+
+@JsonSerializable(createToJson: false)
+class LoginBonusData extends LoginBonusBase {
+  int num;
+  @override
+  List<LoginBonusItemData> items;
+  String message;
+  @override
+  Map<String, dynamic> script;
+
+  LoginBonusData({dynamic num, this.items = const [], dynamic message, this.script = const {}})
+    : num = _toInt(num),
+      message = message?.toString() ?? '';
+
+  factory LoginBonusData.fromJson(Map<dynamic, dynamic> data) => _$LoginBonusDataFromJson(data)..srcData = data;
+
+  @override
+  String get key => 'day $num';
+}
+
+@JsonSerializable(createToJson: false)
+class CampaignBonusData extends LoginBonusBase {
+  String name;
+  String detail;
+  String addDetail;
+  bool isDeemedLogin;
+  @override
+  List<LoginBonusItemData> items;
+  @override
+  Map<String, dynamic> script;
+  int eventId;
+  int day;
+
+  CampaignBonusData({
+    this.name = '',
+    this.detail = '',
+    this.addDetail = '',
+    this.isDeemedLogin = false,
+    this.items = const [],
+    this.script = const {},
+    dynamic eventId,
+    dynamic day,
+  }) : eventId = _toInt(eventId),
+       day = _toInt(day);
+
+  factory CampaignBonusData.fromJson(Map<dynamic, dynamic> data) => _$CampaignBonusDataFromJson(data)..srcData = data;
+
+  @override
+  String get key => '$eventId-day$day';
+}
+
+@JsonSerializable(createToJson: false)
+class LoginBonusItemData {
+  String name;
+  int num;
+
+  LoginBonusItemData({this.name = '', dynamic num}) : num = _toInt(num);
+
+  factory LoginBonusItemData.fromJson(Map<dynamic, dynamic> data) => _$LoginBonusItemDataFromJson(data);
 }
 
 enum UserStatusFlagKind {

@@ -29,6 +29,7 @@ import 'package:chaldea/widgets/widgets.dart';
 import '../modules/shop/shop.dart';
 import '_shared/history.dart';
 import 'details/dialogs.dart';
+import 'details/login_result.dart';
 import 'details/raids.dart';
 import 'gacha/gacha_draw.dart';
 import 'mission/mission_receive.dart';
@@ -218,6 +219,25 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
         ),
       ]);
     }
+
+    if (agent.data.loginResultData.isNotEmpty) {
+      onTapBonus() => router.pushPage(LoginResultPage(runtime: runtime));
+      subtitle.addAll([
+        TextSpan(text: '  '),
+        CenterWidgetSpan(
+          child: db.getIconImage(
+            "https://static.atlasacademy.io/file/aa-fgo-extract-jp/Terminal/OrdealCall/CommonUIAtlas/icon_play.png",
+            width: 20,
+            onTap: onTapBonus,
+          ),
+        ),
+        TextSpan(
+          text: ' ${Maths.sum(agent.data.loginResultData.getLists().map((e) => e.length))}',
+          recognizer: TapGestureRecognizer()..onTap = onTapBonus,
+        ),
+      ]);
+    }
+
     children.add(
       ListTile(
         dense: true,
@@ -618,8 +638,8 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
   }
 
   Widget get battleDetailSection {
-    final battleEntity = agent.curBattle ?? agent.lastBattle;
-    final lastResult = agent.lastBattleResultData;
+    final battleEntity = agent.data.curBattle ?? agent.data.lastBattle;
+    final lastResult = agent.data.lastBattleResultData;
     List<Widget> children = [];
     if (battleEntity == null) {
       children.add(const ListTile(dense: true, title: Text('No battle')));
@@ -868,7 +888,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
     return TileGroup(
       header: battleEntity == null
           ? 'Battle Details'
-          : 'Battle ${battleEntity.id} - ${agent.curBattle == null ? "${resultType?.name}" : "ongoing"}'
+          : 'Battle ${battleEntity.id} - ${agent.data.curBattle == null ? "${resultType?.name}" : "ongoing"}'
                 ' (${battleEntity.createdAt.sec2date().toCustomString(year: false)})',
       children: children,
     );
@@ -889,7 +909,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
     Widget? title, subtitle;
     if (eventId != null && day != null) {
       final mstRaid = mstData.mstEventRaid[EventRaidEntity.createPK(eventId, day)];
-      final record = agent.getRaidRecord(eventId, day).history.lastOrNull;
+      final record = agent.data.getRaidRecord(eventId, day).history.lastOrNull;
       title = Text(
         [
           'Raid day $day ${mstRaid?.name ?? ""}',
@@ -1994,7 +2014,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
       return FilledButton.tonal(onPressed: enabled ? onPressed : null, style: buttonStyle, child: Text(text));
     }
 
-    final bool loggedIn = mstData.user != null, inBattle = agent.curBattle != null;
+    final bool loggedIn = mstData.user != null, inBattle = agent.data.curBattle != null;
 
     List<List<Widget>> btnGroups = [
       [
@@ -2088,7 +2108,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
           enabled: loggedIn && inBattle,
           onPressed: () async {
             runtime.runTask(() async {
-              final battleEntity = agent.curBattle!;
+              final battleEntity = agent.data.curBattle!;
               await runtime.battle.battleResultWithOptions(
                 battleEntity: battleEntity,
                 resultType: battleOption.resultType,
@@ -2155,7 +2175,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
             //         return;
             //       }
             //       final data = FateTopLogin.parseAny(jsonDecode(files.first.readAsStringSync()));
-            //       agent.curBattle = data.mstData.battles.firstOrNull ?? agent.curBattle;
+            //       agent.data.curBattle = data.mstData.battles.firstOrNull ?? agent.data.curBattle;
             //     });
             //   },
             //   child: const Text('loadBattle'),
@@ -2218,18 +2238,12 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
               enabled: !runtime.runningTask.value && inBattle,
               onTap: () async {
                 runtime.runTask(() async {
-                  runtime.agent.curBattle = null;
+                  runtime.agent.data.curBattle = null;
                 });
               },
               child: const Text('Clear Battle'),
             ),
-            if (kDebugMode)
-              PopupMenuItem(
-                child: const Text('Test'),
-                onTap: () async {
-                  runtime.runTask(() => Future.delayed(Duration(seconds: 15)));
-                },
-              ),
+            if (kDebugMode) PopupMenuItem(onTap: _testFunc, child: const Text('Test')),
           ],
         ),
       ],
@@ -2413,7 +2427,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
                 // '\n${collection.friendship}'
                 '\n${-bondData.next}';
             // battle result
-            final oldCollection = agent.lastBattleResultData?.oldUserSvtCollection.firstWhereOrNull(
+            final oldCollection = agent.data.lastBattleResultData?.oldUserSvtCollection.firstWhereOrNull(
               (e) => e.svtId == collection.svtId,
             );
             if (oldCollection != null) {
@@ -2456,5 +2470,9 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
       );
     }
     return children;
+  }
+
+  Future<void> _testFunc() async {
+    //
   }
 }

@@ -66,7 +66,7 @@ class FakerAgentJP extends FakerAgent<FRequestJP, AutoLoginDataJP, NetworkManage
 
   @override
   Future<FResponse> loginTop() async {
-    raidRecords.clear();
+    data.raidRecords.clear();
     final request = FRequestJP(network: network, path: '/login/top');
     request.addBaseField();
     if (network.gameTop.region == Region.jp) {
@@ -571,8 +571,8 @@ class FakerAgentJP extends FakerAgent<FRequestJP, AutoLoginDataJP, NetworkManage
     final resp = await request.beginRequestAndCheckError('battle_setup');
     final battleEntity = resp.data.mstData.battles.firstOrNull;
     if (battleEntity != null) {
-      lastBattle = curBattle ?? battleEntity;
-      curBattle = battleEntity;
+      data.lastBattle = data.curBattle ?? battleEntity;
+      data.curBattle = battleEntity;
     }
     updateRaidInfo(battleSetupResp: resp);
     return resp;
@@ -593,8 +593,8 @@ class FakerAgentJP extends FakerAgent<FRequestJP, AutoLoginDataJP, NetworkManage
     final resp = await request.beginRequestAndCheckError('battle_resume');
     final battleEntity = resp.data.mstData.battles.firstOrNull;
     if (battleEntity != null) {
-      lastBattle = curBattle ?? battleEntity;
-      curBattle = battleEntity;
+      data.lastBattle = data.curBattle ?? battleEntity;
+      data.curBattle = battleEntity;
     }
     return resp;
   }
@@ -699,10 +699,10 @@ class FakerAgentJP extends FakerAgent<FRequestJP, AutoLoginDataJP, NetworkManage
     request.addFieldStr('result', network.catMouseGame.encryptBattleResult(dictionary));
 
     final resp = await request.beginRequestAndCheckError('battle_result');
-    lastBattle = curBattle;
-    curBattle = null;
+    data.lastBattle = data.curBattle;
+    data.curBattle = null;
     try {
-      lastBattleResultData = BattleResultData.fromJson(resp.data.getResponse('battle_result').success!);
+      data.lastBattleResultData = BattleResultData.fromJson(resp.data.getResponse('battle_result').success!);
     } catch (e, s) {
       logger.e('parse battle result data failed', e, s);
     }

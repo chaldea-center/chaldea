@@ -127,8 +127,8 @@ class FakerRuntimeEvent extends FakerRuntimeBase {
       }
     }
 
-    final battleEntity = agent.lastBattle;
-    final battleResultData = agent.lastBattleResultData;
+    final battleEntity = agent.data.lastBattle;
+    final battleResultData = agent.data.lastBattleResultData;
     if (battleEntity == null) {
       throw SilentException('Battle data not found');
     }

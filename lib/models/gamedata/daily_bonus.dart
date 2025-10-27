@@ -43,28 +43,3 @@ class DailyBonusAccountInfo {
 
   factory DailyBonusAccountInfo.fromJson(Map<String, dynamic> json) => _$DailyBonusAccountInfoFromJson(json);
 }
-
-@JsonSerializable(createToJson: false)
-class CampaignBonusData {
-  String name;
-  String detail;
-  String addDetail;
-  bool isDeemedLogin;
-  List<Map> items;
-  Map<String, dynamic> script;
-  int eventId;
-  int day;
-
-  CampaignBonusData({
-    required this.name,
-    required this.detail,
-    required this.addDetail,
-    required this.isDeemedLogin,
-    this.items = const [],
-    required this.script,
-    required this.eventId,
-    required this.day,
-  });
-
-  factory CampaignBonusData.fromJson(Map<String, dynamic> json) => _$CampaignBonusDataFromJson(json);
-}

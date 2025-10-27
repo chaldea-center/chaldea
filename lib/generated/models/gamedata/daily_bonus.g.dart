@@ -14,10 +14,7 @@ DailyBonusData _$DailyBonusDataFromJson(Map json) => DailyBonusData(
           .toList() ??
       const [],
   campaignbonus:
-      (json['campaignbonus'] as List<dynamic>?)
-          ?.map((e) => CampaignBonusData.fromJson(Map<String, dynamic>.from(e as Map)))
-          .toList() ??
-      const [],
+      (json['campaignbonus'] as List<dynamic>?)?.map((e) => CampaignBonusData.fromJson(e as Map)).toList() ?? const [],
 );
 
 DailyBonusAccountInfo _$DailyBonusAccountInfoFromJson(Map json) => DailyBonusAccountInfo(
@@ -26,15 +23,4 @@ DailyBonusAccountInfo _$DailyBonusAccountInfoFromJson(Map json) => DailyBonusAcc
   start: (json['start'] as num).toInt(),
   startSeqLoginCount: (json['startSeqLoginCount'] as num).toInt(),
   startTotalLoginCount: (json['startTotalLoginCount'] as num).toInt(),
-);
-
-CampaignBonusData _$CampaignBonusDataFromJson(Map json) => CampaignBonusData(
-  name: json['name'] as String,
-  detail: json['detail'] as String,
-  addDetail: json['addDetail'] as String,
-  isDeemedLogin: json['isDeemedLogin'] as bool,
-  items: (json['items'] as List<dynamic>?)?.map((e) => e as Map).toList() ?? const [],
-  script: Map<String, dynamic>.from(json['script'] as Map),
-  eventId: (json['eventId'] as num).toInt(),
-  day: (json['day'] as num).toInt(),
 );

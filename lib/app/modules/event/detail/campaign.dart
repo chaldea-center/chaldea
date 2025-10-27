@@ -90,13 +90,18 @@ class EventCampaignDetail extends StatelessWidget {
     ];
     final addPassiveSkillId = campaign.script?.addPassiveSkillId;
     if (campaign.target == CombineAdjustTarget.questPassiveSkill && addPassiveSkillId != null) {
-      // final iconName = campaign.script?.addPassiveIconOrganization;
+      final iconName = campaign.script?.addPassiveIconOrganization;
       children.add(
         ListTile(
           dense: true,
-          // leading: iconName == null ? null : db.getIconImage(iconUrl),
-          title: Text(S.current.passive_skill),
-          subtitle: Text('$addPassiveSkillId'),
+          leading: iconName == null ? null : db.getIconImage(AssetURL.i.eventUi(iconName), width: 28),
+          title: Text('${S.current.passive_skill} $addPassiveSkillId'),
+          subtitle: Text(
+            [
+              campaign.script?.addPassiveDescriptionDetail,
+              campaign.script?.addPassiveContentDetail,
+            ].whereType<String>().join(' '),
+          ),
           trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
           onTap: () {
             router.push(url: Routes.skillI(addPassiveSkillId), region: region);

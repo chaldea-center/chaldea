@@ -570,8 +570,8 @@ class _RandomMissionLoopPageState extends State<RandomMissionLoopPage> with Fake
   }
 
   Widget get battleDetailSection {
-    final battleEntity = agent.curBattle ?? agent.lastBattle;
-    final lastResult = agent.lastBattleResultData;
+    final battleEntity = agent.data.curBattle ?? agent.data.lastBattle;
+    final lastResult = agent.data.lastBattleResultData;
     List<Widget> children = [];
     if (battleEntity == null) {
       children.add(const ListTile(dense: true, title: Text('No battle')));
@@ -627,7 +627,7 @@ class _RandomMissionLoopPageState extends State<RandomMissionLoopPage> with Fake
     return TileGroup(
       header: battleEntity == null
           ? 'Battle Details'
-          : 'Battle ${battleEntity.id} - ${agent.curBattle == null ? "${resultType?.name}" : "ongoing"}'
+          : 'Battle ${battleEntity.id} - ${agent.data.curBattle == null ? "${resultType?.name}" : "ongoing"}'
                 ' (${battleEntity.createdAt.sec2date().toCustomString(year: false)})',
       children: children,
     );

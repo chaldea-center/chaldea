@@ -4,7 +4,10 @@ import 'package:chaldea/models/gamedata/toplogin.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/utils/extension.dart';
+import 'agent_data.dart';
 import 'network.dart';
+
+export 'agent_data.dart';
 
 abstract class FakerAgent<
   TRequest extends FRequestBase,
@@ -12,19 +15,11 @@ abstract class FakerAgent<
   TNetworkManager extends NetworkManagerBase<TRequest, TUser>
 > {
   final TNetworkManager network;
+  final data = FakerAgentData();
   FakerAgent({required this.network});
 
   TUser get user => network.user;
   UserGameEntity? get userGame => network.mstData.user ?? user.userGame;
-
-  BattleEntity? curBattle;
-  BattleEntity? lastBattle;
-  BattleResultData? lastBattleResultData;
-  FResponse? lastResp;
-
-  Map<int, Map<int, EventRaidInfoRecord>> raidRecords = {};
-  EventRaidInfoRecord getRaidRecord(int eventId, int day) =>
-      raidRecords.putIfAbsent(eventId, () => {}).putIfAbsent(day, () => EventRaidInfoRecord());
 
   Future<FResponse> gamedataTop({bool checkAppUpdate = true});
 
@@ -291,10 +286,10 @@ abstract class FakerAgent<
     // home top
     if (homeResp != null) {
       for (final eventRaid in homeResp.data.mstData.mstEventRaid) {
-        getRaidRecord(eventRaid.eventId, eventRaid.day).eventRaid = eventRaid;
+        data.getRaidRecord(eventRaid.eventId, eventRaid.day).eventRaid = eventRaid;
       }
       for (final raid in homeResp.data.mstData.totalEventRaid) {
-        final record = getRaidRecord(raid.eventId, raid.day);
+        final record = data.getRaidRecord(raid.eventId, raid.day);
         record.history.add((
           timestamp: homeResp.data.serverTime?.timestamp ?? now,
           raidInfo: BattleRaidInfo(
@@ -312,7 +307,7 @@ abstract class FakerAgent<
     final setupRaidInfos = battleEntity?.battleInfo?.raidInfo ?? [];
     if (battleEntity != null && setupRaidInfos.isNotEmpty) {
       for (final raid in setupRaidInfos) {
-        getRaidRecord(battleEntity.eventId, raid.day).history.add((
+        data.getRaidRecord(battleEntity.eventId, raid.day).history.add((
           timestamp: battleSetupResp?.data.serverTime?.timestamp ?? now,
           raidInfo: raid,
           battleId: battleEntity.id,
@@ -326,7 +321,7 @@ abstract class FakerAgent<
       final battleId = int.tryParse(battleTurnResp.request.params['battleId'] ?? '');
       if (battleId != null) {
         int? eventId;
-        for (final (eId, records) in raidRecords.items) {
+        for (final (eId, records) in data.raidRecords.items) {
           if (records.values.expand((e) => e.history).any((e) => e.battleId == battleId)) {
             eventId = eId;
             break;
@@ -335,7 +330,7 @@ abstract class FakerAgent<
         if (eventId != null) {
           for (final rawRaid in raidInfos) {
             final raid = BattleRaidInfo.fromJson(Map<String, dynamic>.from(rawRaid as Map));
-            getRaidRecord(eventId, raid.day).history.add((
+            data.getRaidRecord(eventId, raid.day).history.add((
               timestamp: battleTurnResp.data.serverTime?.timestamp ?? now,
               raidInfo: raid,
               battleId: battleId,
@@ -403,9 +398,4 @@ enum PresentOverflowType {
 
   const PresentOverflowType(this.value);
   final int value;
-}
-
-class EventRaidInfoRecord {
-  EventRaidEntity? eventRaid;
-  List<({int timestamp, BattleRaidInfo raidInfo, int? battleId})> history = [];
 }

@@ -226,7 +226,7 @@ class FakerAgentCN extends FakerAgent<FRequestCN, AutoLoginDataCN, NetworkManage
 
   @override
   Future<FResponse> loginTop() async {
-    raidRecords.clear();
+    data.raidRecords.clear();
     await _member();
     await _loginToMemberCenter();
     await Future.delayed(const Duration(seconds: 2));
@@ -724,8 +724,8 @@ class FakerAgentCN extends FakerAgent<FRequestCN, AutoLoginDataCN, NetworkManage
     );
     final battleEntity = resp.data.mstData.battles.firstOrNull;
     if (battleEntity != null) {
-      lastBattle = curBattle ?? battleEntity;
-      curBattle = battleEntity;
+      data.lastBattle = data.curBattle ?? battleEntity;
+      data.curBattle = battleEntity;
     }
     updateRaidInfo(battleSetupResp: resp);
     return resp;
@@ -746,8 +746,8 @@ class FakerAgentCN extends FakerAgent<FRequestCN, AutoLoginDataCN, NetworkManage
 
     final battleEntity = resp.data.mstData.battles.firstOrNull;
     if (battleEntity != null) {
-      lastBattle = curBattle ?? battleEntity;
-      curBattle = battleEntity;
+      data.lastBattle = data.curBattle ?? battleEntity;
+      data.curBattle = battleEntity;
     }
     return resp;
   }
@@ -859,10 +859,10 @@ class FakerAgentCN extends FakerAgent<FRequestCN, AutoLoginDataCN, NetworkManage
       },
       sendDelay: sendDelay,
     );
-    lastBattle = curBattle;
-    curBattle = null;
+    data.lastBattle = data.curBattle;
+    data.curBattle = null;
     try {
-      lastBattleResultData = BattleResultData.fromJson(resp.data.getResponse('battle_result').success!);
+      data.lastBattleResultData = BattleResultData.fromJson(resp.data.getResponse('battle_result').success!);
     } catch (e, s) {
       logger.e('parse battle result data failed', e, s);
     }

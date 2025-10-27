@@ -19,7 +19,7 @@ class _RaidsPageState extends State<RaidsPage> with SingleTickerProviderStateMix
 
   @override
   Widget build(BuildContext context) {
-    final raids = runtime.agent.raidRecords[widget.eventId]?.values.toList() ?? [];
+    final raids = runtime.agent.data.raidRecords[widget.eventId]?.values.toList() ?? [];
     raids.sort2((e) => e.eventRaid?.day ?? 0);
 
     return Scaffold(

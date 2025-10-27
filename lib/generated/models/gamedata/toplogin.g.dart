@@ -946,3 +946,40 @@ Map<String, dynamic> _$GachaInfosToJson(GachaInfos instance) => <String, dynamic
   'sellMana': instance.sellMana,
   'svtCoinNum': instance.svtCoinNum,
 };
+
+LoginResultData _$LoginResultDataFromJson(Map json) => LoginResultData(
+  totalLoginBonus: (json['totalLoginBonus'] as List<dynamic>?)?.map((e) => LoginBonusData.fromJson(e as Map)).toList(),
+  seqLoginBonus: (json['seqLoginBonus'] as List<dynamic>?)?.map((e) => LoginBonusData.fromJson(e as Map)).toList(),
+  campaignBonus: (json['campaignBonus'] as List<dynamic>?)?.map((e) => CampaignBonusData.fromJson(e as Map)).toList(),
+  campaignDirectBonus: (json['campaignDirectBonus'] as List<dynamic>?)
+      ?.map((e) => Map<String, dynamic>.from(e as Map))
+      .toList(),
+);
+
+const _$LoginResultDataFieldMap = <String, String>{
+  'totalLoginBonus': 'totalLoginBonus',
+  'seqLoginBonus': 'seqLoginBonus',
+  'campaignBonus': 'campaignBonus',
+  'campaignDirectBonus': 'campaignDirectBonus',
+};
+
+LoginBonusData _$LoginBonusDataFromJson(Map json) => LoginBonusData(
+  num: json['num'],
+  items: (json['items'] as List<dynamic>?)?.map((e) => LoginBonusItemData.fromJson(e as Map)).toList() ?? const [],
+  message: json['message'],
+  script: (json['script'] as Map?)?.map((k, e) => MapEntry(k as String, e)) ?? const {},
+);
+
+CampaignBonusData _$CampaignBonusDataFromJson(Map json) => CampaignBonusData(
+  name: json['name'] as String? ?? '',
+  detail: json['detail'] as String? ?? '',
+  addDetail: json['addDetail'] as String? ?? '',
+  isDeemedLogin: json['isDeemedLogin'] as bool? ?? false,
+  items: (json['items'] as List<dynamic>?)?.map((e) => LoginBonusItemData.fromJson(e as Map)).toList() ?? const [],
+  script: (json['script'] as Map?)?.map((k, e) => MapEntry(k as String, e)) ?? const {},
+  eventId: json['eventId'],
+  day: json['day'],
+);
+
+LoginBonusItemData _$LoginBonusItemDataFromJson(Map json) =>
+    LoginBonusItemData(name: json['name'] as String? ?? '', num: json['num']);

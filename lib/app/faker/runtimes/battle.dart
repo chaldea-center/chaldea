@@ -16,7 +16,7 @@ class FakerRuntimeBattle extends FakerRuntimeBase {
   AutoBattleOptions get battleOption => agent.user.curBattleOption;
 
   Future<void> startLoop({bool dialog = true}) async {
-    if (agent.curBattle != null) {
+    if (agent.data.curBattle != null) {
       throw SilentException('last battle not finished');
     }
     final battleOption = this.battleOption;
@@ -138,7 +138,7 @@ class FakerRuntimeBattle extends FakerRuntimeBase {
           runtime.data.totalDropStat.totalCount += 1;
           runtime.data.curLoopDropStat.totalCount += 1;
           Map<int, int> resultBattleDrops;
-          final lastBattleResultData = agent.lastBattleResultData;
+          final lastBattleResultData = agent.data.lastBattleResultData;
           if (lastBattleResultData != null && lastBattleResultData.battleId == battleEntity.id) {
             resultBattleDrops = {};
             for (final drop in lastBattleResultData.resultDropInfos) {
