@@ -149,6 +149,7 @@ class BattleSkillInfoData {
     CommandCardData? card,
     bool defaultToPlayer = true,
     BattleSkillParams? param,
+    bool isTransform = false,
   }) async {
     final curSkill = skill;
     if (curSkill == null) {
@@ -271,6 +272,7 @@ class BattleSkillInfoData {
       effectiveness: effectiveness,
       defaultToPlayer: defaultToPlayer,
       param: param,
+      isTransform: isTransform,
     );
 
     if (curSkill.type == SkillType.active) {

@@ -1490,7 +1490,7 @@ class BattleServantData {
 
     for (final skill in passives) {
       final skillInfo = BattleSkillInfoData(skill, type: SkillInfoType.svtClassPassive);
-      await skillInfo.activate(battleData, activator: this);
+      await skillInfo.activate(battleData, activator: this, isTransform: true);
     }
   }
 
@@ -1531,7 +1531,7 @@ class BattleServantData {
 
     for (final skill in passives) {
       final skillInfo = BattleSkillInfoData(skill, type: SkillInfoType.svtClassPassive);
-      await skillInfo.activate(battleData, activator: this);
+      await skillInfo.activate(battleData, activator: this, isTransform: true);
     }
   }
 

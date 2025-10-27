@@ -83,6 +83,7 @@ class FunctionExecutor {
     final int? effectiveness,
     final bool defaultToPlayer = true,
     final BattleSkillParams? param,
+    final bool isTransform = false,
   }) async {
     await battleData.withFunctions(() async {
       Map<int, List<NiceFunction>> actSets = {};
@@ -122,6 +123,9 @@ class FunctionExecutor {
           if (!(db.curUser.isGirl ? actMasterGenderType == 2 : actMasterGenderType == 1)) {
             continue;
           }
+        }
+        if (isTransform && dataVal.NotExecOnTransform == 1) {
+          continue;
         }
 
         final updatedResult = await FunctionExecutor.executeFunction(

@@ -172,6 +172,7 @@ class BuffScript with DataScriptBase {
   int? get useFirstTimeInTurn => toInt('useFirstTimeInTurn');
   int? get fromMasterEquip => toInt('fromMasterEquip');
   int? get fromCommandSpell => toInt('fromCommandSpell');
+  int? get ExcludeUnSubStateIndiv => toInt('ExcludeUnSubStateIndiv');
 
   int? get IndvAddBuffPassive => toInt('IndvAddBuffPassive');
   List<int>? get ckSelfCountIndividuality => toList('ckSelfCountIndividuality');

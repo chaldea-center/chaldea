@@ -652,6 +652,8 @@ class BuffData {
     final condTargetOverride = individualityCondTargetType != null && individualityCondTargetType > 0
         ? BuffConditionTargetType.fromId(individualityCondTargetType)
         : null;
+    final includeIgnore = buff.script.IncludeIgnoreIndividuality == 1;
+    final ignoreUnreleaseable = buff.script.ExcludeUnSubStateIndiv == 1;
 
     if (buff.script.INDIVIDUALITIE_OR != null) {
       final List<int> traitsToCheck;
@@ -660,7 +662,10 @@ class BuffData {
         final List<BattleServantData> targetList = battleData.getBuffConditionTargets(condTargetOverride, owner);
         for (final target in targetList) {
           final traits = target.getTraits(
-            addTraits: target.getBuffTraits(includeIgnoreIndiv: buff.script.IncludeIgnoreIndividuality == 1),
+            addTraits: target.getBuffTraits(
+              includeIgnoreIndiv: includeIgnore,
+              ignoreIndivUnreleaseable: ignoreUnreleaseable,
+            ),
           );
           traitsToCheck.addAll(traits);
         }
@@ -680,7 +685,10 @@ class BuffData {
         bool anyMatch = false;
         for (final target in targetList) {
           final traits = target.getTraits(
-            addTraits: target.getBuffTraits(includeIgnoreIndiv: buff.script.IncludeIgnoreIndividuality == 1),
+            addTraits: target.getBuffTraits(
+              includeIgnoreIndiv: includeIgnore,
+              ignoreIndivUnreleaseable: ignoreUnreleaseable,
+            ),
           );
           anyMatch |= Individuality.checkSignedIndividualities2(
             self: traits,
@@ -710,7 +718,10 @@ class BuffData {
         bool anyMatch = false;
         for (final target in targetList) {
           final traits = target.getTraits(
-            addTraits: target.getBuffTraits(includeIgnoreIndiv: buff.script.IncludeIgnoreIndividuality == 1),
+            addTraits: target.getBuffTraits(
+              includeIgnoreIndiv: includeIgnore,
+              ignoreIndivUnreleaseable: ignoreUnreleaseable,
+            ),
           );
           if (countAbove <= 0 && countBelow <= 0) {
             anyMatch |= Individuality.checkSignedIndividualities2(
@@ -756,13 +767,17 @@ class BuffData {
     // written based on Chen Gong np & passive. Right now only Chen Gong uses this
     if (vals.OnFieldCount == -1 && buff.script.TargetIndiv != null) {
       final List<BattleServantData> allies = owner.isPlayer ? battleData.nonnullPlayers : battleData.nonnullEnemies;
-      final includeIgnoreIndividuality = buff.script.IncludeIgnoreIndividuality == 1;
       isAct &= allies
           .where(
             (svt) =>
                 svt != owner &&
                 checkSignedIndividualities2(
-                  myTraits: svt.getTraits(addTraits: svt.getBuffTraits(includeIgnoreIndiv: includeIgnoreIndividuality)),
+                  myTraits: svt.getTraits(
+                    addTraits: svt.getBuffTraits(
+                      includeIgnoreIndiv: includeIgnore,
+                      ignoreIndivUnreleaseable: ignoreUnreleaseable,
+                    ),
+                  ),
                   requiredTraits: [buff.script.TargetIndiv!],
                 ),
           )
