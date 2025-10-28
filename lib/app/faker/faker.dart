@@ -22,6 +22,7 @@ import 'package:chaldea/models/faker/quiz/crypt_data.dart';
 import 'package:chaldea/models/gamedata/toplogin.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/models/userdata/version.dart';
+import 'package:chaldea/packages/alarm.dart';
 import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/utils/notification.dart';
 import 'package:chaldea/utils/utils.dart';
@@ -1796,9 +1797,26 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
                   LocalNotificationUtil.plugin.cancel(notification.id);
                 }
               }
+              await AlarmX.stopAll();
             }
           },
         ),
+        if (AlarmX.isSupported)
+          SwitchListTile.adaptive(
+            dense: true,
+            value: fakerSettings.apRecoveredAlarm,
+            title: const Text('AP Fully Recovered Alarm (Global)'),
+            onChanged: (v) async {
+              setState(() {
+                fakerSettings.apRecoveredAlarm = v;
+              });
+              if (v) {
+                await agent.network.setLocalNotification();
+              } else {
+                await AlarmX.stopAll();
+              }
+            },
+          ),
         ListTile(
           dense: true,
           title: const Text('Notify when AP recovered at'),
@@ -1834,34 +1852,69 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
             icon: const Icon(Icons.add),
           ),
         ),
-        Center(
-          child: TextButton(
-            onPressed: () async {
-              final pendings = await LocalNotificationUtil.plugin.pendingNotificationRequests();
-              if (pendings.isEmpty) {
-                EasyLoading.showInfo('No notifications');
-                return;
-              }
-              pendings.sort2((e) => e.id);
-              router.showDialog(
-                builder: (context) {
-                  return SimpleDialog(
-                    title: Text('${pendings.length} Pending Notifications'),
-                    children: divideList([
-                      for (final notification in pendings)
-                        ListTile(
-                          dense: true,
-                          contentPadding: EdgeInsets.symmetric(horizontal: 24),
-                          title: Text(notification.title ?? 'no title'),
-                          subtitle: Text([if (kDebugMode) 'id ${notification.id}', '${notification.body}'].join('\n')),
-                        ),
-                    ], const Divider(height: 1)),
+        Wrap(
+          alignment: WrapAlignment.center,
+          children: [
+            TextButton(
+              onPressed: () async {
+                final pendings = await LocalNotificationUtil.plugin.pendingNotificationRequests();
+                if (pendings.isEmpty) {
+                  EasyLoading.showInfo('No notifications');
+                  return;
+                }
+                pendings.sort2((e) => e.id);
+                router.showDialog(
+                  builder: (context) {
+                    return SimpleDialog(
+                      title: Text('${pendings.length} Pending Notifications'),
+                      children: divideList([
+                        for (final notification in pendings)
+                          ListTile(
+                            dense: true,
+                            contentPadding: EdgeInsets.symmetric(horizontal: 24),
+                            title: Text(notification.title ?? 'no title'),
+                            subtitle: Text(
+                              [if (kDebugMode) 'id ${notification.id}', '${notification.body}'].join('\n'),
+                            ),
+                          ),
+                      ], const Divider(height: 1)),
+                    );
+                  },
+                );
+              },
+              child: const Text('Notifications'),
+            ),
+            if (AlarmX.isSupported)
+              TextButton(
+                onPressed: () async {
+                  final alarms = await AlarmX.getAlarms();
+                  if (alarms.isEmpty) {
+                    EasyLoading.showInfo('No alarm');
+                    return;
+                  }
+                  alarms.sort2((e) => e.id);
+                  router.showDialog(
+                    builder: (context) {
+                      return SimpleDialog(
+                        title: Text('${alarms.length} Alarms'),
+                        children: divideList([
+                          for (final alarm in alarms)
+                            ListTile(
+                              dense: true,
+                              contentPadding: EdgeInsets.symmetric(horizontal: 24),
+                              title: Text(alarm.notificationSettings.title),
+                              subtitle: Text(
+                                [if (kDebugMode) 'id ${alarm.id}', alarm.notificationSettings.body].join('\n'),
+                              ),
+                            ),
+                        ], const Divider(height: 1)),
+                      );
+                    },
                   );
                 },
-              );
-            },
-            child: const Text('Pending Notifications'),
-          ),
+                child: const Text('Alarms'),
+              ),
+          ],
         ),
         ListTile(
           dense: true,

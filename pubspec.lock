@@ -9,6 +9,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "91.0.0"
+  alarm:
+    dependency: "direct main"
+    description:
+      name: alarm
+      sha256: "1c85123c606586b449b6a6e27f808152c1cae759323aefbe4354317092d55dc9"
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.1.5"
   analyzer:
     dependency: transitive
     description:
@@ -430,6 +438,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.5"
+  flutter_fgbg:
+    dependency: transitive
+    description:
+      name: flutter_fgbg
+      sha256: eb6da9b2047372566a6e17b505975fe5bace94af01f6fc825c4b6f81baa6c447
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.7.1"
   flutter_hooks:
     dependency: "direct main"
     description:

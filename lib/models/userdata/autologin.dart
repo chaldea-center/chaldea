@@ -13,6 +13,7 @@ part '../../generated/models/userdata/autologin.g.dart';
 class FakerSettings {
   bool dumpResponse;
   bool apRecoveredNotification;
+  bool apRecoveredAlarm = false;
   int maxFollowerListRetryCount;
   bool showProgressToast = true;
   List<AutoLoginDataJP> jpAutoLogins;
@@ -21,6 +22,7 @@ class FakerSettings {
   FakerSettings({
     this.dumpResponse = false,
     this.apRecoveredNotification = false,
+    this.apRecoveredAlarm = false,
     this.maxFollowerListRetryCount = 20,
     this.showProgressToast = true,
     List<AutoLoginDataJP>? jpAutoLogins,

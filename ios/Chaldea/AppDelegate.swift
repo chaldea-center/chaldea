@@ -1,6 +1,8 @@
 import Flutter
 import UIKit
 import flutter_local_notifications
+import UserNotifications
+import alarm
 
 @main
 @objc class AppDelegate: FlutterAppDelegate {
@@ -15,6 +17,8 @@ import flutter_local_notifications
     if #available(iOS 10.0, *) {
       UNUserNotificationCenter.current().delegate = self as UNUserNotificationCenterDelegate
     }
+    
+    SwiftAlarmPlugin.registerBackgroundTasks()
 
     let controller : FlutterViewController = window?.rootViewController as! FlutterViewController
     let chaldeaChannel = FlutterMethodChannel(name: "chaldea.narumi.cc/chaldea",

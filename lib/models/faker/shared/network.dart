@@ -11,6 +11,7 @@ import 'package:chaldea/models/db.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
 import 'package:chaldea/models/gamedata/toplogin.dart';
 import 'package:chaldea/models/userdata/autologin.dart';
+import 'package:chaldea/packages/alarm.dart';
 import 'package:chaldea/packages/packages.dart';
 import 'package:chaldea/utils/notification.dart';
 import 'package:chaldea/utils/utils.dart';
@@ -323,7 +324,12 @@ abstract class NetworkManagerBase<TRequest extends FRequestBase, TUser extends A
     }
   }
 
-  Future<void> setLocalNotification({List<int>? removedAps, UserGameEntity? oldUserGame, TRequest? request}) async {
+  Future<void> setLocalNotification({
+    List<int>? removedAps,
+    UserGameEntity? oldUserGame,
+    TRequest? request,
+    bool? alarm,
+  }) async {
     if (!LocalNotificationUtil.supported) return;
     if (!db.settings.fakerSettings.apRecoveredNotification) return;
     if (!(await LocalNotificationUtil.checkPermission())) return;
@@ -333,6 +339,7 @@ abstract class NetworkManagerBase<TRequest extends FRequestBase, TUser extends A
       for (final targetAp in removedAps) {
         final int id = LocalNotificationUtil.generateUserApRecoverId(user.region.index, userGame.userId, targetAp);
         await LocalNotificationUtil.plugin.cancel(id);
+        await AlarmX.stop(id);
       }
     }
     for (final targetAp in user.recoveredAps) {
@@ -345,6 +352,7 @@ abstract class NetworkManagerBase<TRequest extends FRequestBase, TUser extends A
         recoverAt = userGame.actRecoverAt - (userGame.actMax - targetAp) * 60 * 5;
       } else {
         await LocalNotificationUtil.plugin.cancel(id);
+        await AlarmX.stop(id);
         continue;
       }
       final now = DateTime.now().timestamp;
@@ -379,15 +387,21 @@ abstract class NetworkManagerBase<TRequest extends FRequestBase, TUser extends A
         notifyAt = now + 2;
       }
 
-      await LocalNotificationUtil.scheduleNotification(
-        id: id,
-        dateTime: notifyAt.sec2date(),
-        title: isFull ? S.current.ap_fully_recovered : 'AP $targetAp!',
-        body: [
-          '[${user.serverName}] ${userGame.name}',
-          recoverAt.sec2date().toCustomString(year: false, millisecond: false),
-        ].join('\n'),
-      );
+      String title = isFull ? S.current.ap_fully_recovered : 'AP $targetAp!';
+      String body = [
+        '[${user.serverName}] ${userGame.name}',
+        recoverAt.sec2date().toCustomString(year: false, millisecond: false),
+      ].join('\n');
+      await LocalNotificationUtil.scheduleNotification(id: id, dateTime: notifyAt.sec2date(), title: title, body: body);
+      alarm ??= db.settings.fakerSettings.apRecoveredAlarm;
+      if (alarm && isFull) {
+        await AlarmX.schedule(
+          id: id,
+          dateTime: notifyAt.sec2date().add(Duration(seconds: 240)),
+          title: S.current.ap_fully_recovered,
+          body: body,
+        );
+      }
     }
   }
 }

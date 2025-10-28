@@ -27,6 +27,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
 
+  alarm: ^5.1.5
   android_id: ^0.4.0
   archive: ^4.0.1
   args: ^2.6.0
