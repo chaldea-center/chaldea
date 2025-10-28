@@ -5,7 +5,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/db.dart';
-import 'package:chaldea/models/gamedata/toplogin.dart';
+import 'package:chaldea/models/gamedata/mst_data.dart';
 import 'package:chaldea/models/models.dart' show GameCardMixin;
 import 'package:chaldea/packages/packages.dart';
 import 'package:chaldea/utils/utils.dart';
@@ -13,7 +13,7 @@ import 'package:chaldea/widgets/widgets.dart';
 import '../../modules/battle/formation/formation_card.dart';
 import '../_shared/svt_equip_select.dart';
 import '../_shared/svt_select.dart';
-import '../card_enhance/svt_combine.dart';
+import '../combine/svt_combine.dart';
 import '../runtime.dart';
 import 'deck_list.dart';
 

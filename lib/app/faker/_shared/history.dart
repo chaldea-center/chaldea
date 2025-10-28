@@ -4,7 +4,7 @@ import 'package:chaldea/app/app.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/faker/faker.dart';
 import 'package:chaldea/models/faker/quiz/cat_mouse.dart';
-import 'package:chaldea/models/gamedata/toplogin.dart';
+import 'package:chaldea/models/gamedata/mst_data.dart';
 import 'package:chaldea/packages/json_viewer/json_viewer.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';

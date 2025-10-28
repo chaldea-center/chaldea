@@ -10,7 +10,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:chaldea/app/modules/common/filter_page_base.dart';
 import 'package:chaldea/app/modules/servant/filter.dart';
 import 'package:chaldea/generated/l10n.dart';
-import 'package:chaldea/models/gamedata/toplogin.dart';
+import 'package:chaldea/models/gamedata/mst_data.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/packages/platform/platform.dart';

@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/faker/faker.dart';
-import 'package:chaldea/models/gamedata/toplogin.dart';
+import 'package:chaldea/models/gamedata/mst_data.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/utils/utils.dart';
@@ -16,7 +16,7 @@ class FakerRuntimeBattle extends FakerRuntimeBase {
   AutoBattleOptions get battleOption => agent.user.curBattleOption;
 
   Future<void> startLoop({bool dialog = true}) async {
-    if (agent.data.curBattle != null) {
+    if (runtime.agentData.curBattle != null) {
       throw SilentException('last battle not finished');
     }
     final battleOption = this.battleOption;
@@ -58,7 +58,7 @@ class FakerRuntimeBattle extends FakerRuntimeBase {
     }
     int finishedCount = 0, totalCount = battleOption.loopCount;
     List<int> elapseSeconds = [];
-    runtime.data.curLoopDropStat.reset();
+    runtime.agentData.curLoopDropStat.reset();
     agent.network.lastTaskStartedAt = 0;
     runtime.displayToast('Battle $finishedCount/$totalCount', progress: finishedCount / totalCount);
     while (finishedCount < totalCount) {
@@ -135,28 +135,28 @@ class FakerRuntimeBattle extends FakerRuntimeBase {
             sendDelay: Duration(seconds: delay),
           );
           // if win
-          runtime.data.totalDropStat.totalCount += 1;
-          runtime.data.curLoopDropStat.totalCount += 1;
+          runtime.agentData.totalDropStat.totalCount += 1;
+          runtime.agentData.curLoopDropStat.totalCount += 1;
           Map<int, int> resultBattleDrops;
-          final lastBattleResultData = agent.data.lastBattleResultData;
+          final lastBattleResultData = runtime.agentData.lastBattleResultData;
           if (lastBattleResultData != null && lastBattleResultData.battleId == battleEntity.id) {
             resultBattleDrops = {};
             for (final drop in lastBattleResultData.resultDropInfos) {
               resultBattleDrops.addNum(drop.objectId, drop.num);
             }
             for (final reward in lastBattleResultData.rewardInfos) {
-              runtime.data.battleTotalRewards.addNum(reward.objectId, reward.num);
+              runtime.agentData.battleTotalRewards.addNum(reward.objectId, reward.num);
             }
             for (final reward in lastBattleResultData.friendshipRewardInfos) {
-              runtime.data.battleTotalRewards.addNum(reward.objectId, reward.num);
+              runtime.agentData.battleTotalRewards.addNum(reward.objectId, reward.num);
             }
           } else {
             resultBattleDrops = curBattleDrops;
             logger.t('last battle result data not found, use cur_battle_drops');
           }
-          runtime.data.totalDropStat.items.addDict(resultBattleDrops);
-          runtime.data.curLoopDropStat.items.addDict(resultBattleDrops);
-          runtime.data.battleTotalRewards.addDict(resultBattleDrops);
+          runtime.agentData.totalDropStat.items.addDict(resultBattleDrops);
+          runtime.agentData.curLoopDropStat.items.addDict(resultBattleDrops);
+          runtime.agentData.battleTotalRewards.addDict(resultBattleDrops);
 
           // check total drop target of this loop
           if (battleOption.targetDrops.isNotEmpty) {
@@ -182,7 +182,7 @@ class FakerRuntimeBattle extends FakerRuntimeBase {
         battleOption.questPhase = userQuest.questPhase + 1;
       }
       for (final item in resultResp.data.mstData.userItem) {
-        runtime.data.battleTotalRewards.addNum(item.itemId, 0);
+        runtime.agentData.battleTotalRewards.addNum(item.itemId, 0);
       }
 
       finishedCount += 1;

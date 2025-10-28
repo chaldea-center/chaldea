@@ -1,6 +1,6 @@
 import '_helper.dart';
 import 'common.dart';
-import 'toplogin.dart';
+import 'mst_tables.dart';
 
 part '../../generated/models/gamedata/daily_bonus.g.dart';
 

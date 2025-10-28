@@ -6,7 +6,7 @@ import 'package:dio/dio.dart';
 import 'package:uuid/uuid.dart';
 
 import 'package:chaldea/app/api/chaldea.dart';
-import 'package:chaldea/models/gamedata/toplogin.dart';
+import 'package:chaldea/models/gamedata/mst_data.dart';
 import 'package:chaldea/packages/packages.dart';
 import 'package:chaldea/utils/utils.dart';
 import '../../userdata/autologin.dart';
@@ -23,24 +23,28 @@ class FRequestJP extends FRequestBase {
   final Map<String, int> paramInteger = {};
   final Map<String, String> paramString = {};
 
+  void _assertDuplicateKey(Map<String, dynamic> params, String key) {
+    assert(!params.containsKey(key), '$key: ${params.keys.toList()}');
+  }
+
   // int64/long, float, double should convert to string
   void addFieldInt32(String fieldName, int data, {bool replace = false}) {
-    if (!replace) assert(!paramInteger.containsKey(fieldName));
+    if (!replace) _assertDuplicateKey(paramInteger, fieldName);
     paramInteger[fieldName] = data;
   }
 
   void addFieldInt64(String fieldName, int data, {bool replace = false}) {
-    if (!replace) assert(!paramString.containsKey(fieldName));
+    if (!replace) _assertDuplicateKey(paramString, fieldName);
     paramString[fieldName] = data.toString();
   }
 
   void addFieldFloat(String fieldName, double data, {bool replace = false}) {
-    if (!replace) assert(!paramString.containsKey(fieldName));
+    if (!replace) _assertDuplicateKey(paramString, fieldName);
     paramString[fieldName] = data.toString();
   }
 
   void addFieldStr(String fieldName, String data, {bool replace = false}) {
-    if (!replace) assert(!paramString.containsKey(fieldName));
+    if (!replace) _assertDuplicateKey(paramString, fieldName);
     paramString[fieldName] = data;
   }
 

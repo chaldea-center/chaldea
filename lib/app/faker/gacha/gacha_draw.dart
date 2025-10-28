@@ -533,7 +533,7 @@ class _GachaDrawPageState extends State<GachaDrawPage> with FakerRuntimeStateMix
   }
 
   Widget buildLastResult() {
-    final cards = runtime.data.gachaResultStat.lastDrawResult.toList();
+    final cards = runtime.agentData.gachaResultStat.lastDrawResult.toList();
     if (cards.length == 100) {
       cards.sortByList((info) {
         final entity = db.gameData.entities[info.objectId];
@@ -594,7 +594,7 @@ class _GachaDrawPageState extends State<GachaDrawPage> with FakerRuntimeStateMix
   }
 
   Widget buildGachaStat() {
-    final stat = runtime.data.gachaResultStat;
+    final stat = runtime.agentData.gachaResultStat;
     final userGacha = mstData.userGacha[gachaOption.gachaId];
     Set<int> shownSvtIds = {}, shownCeIds = {};
     shownCeIds.addAll(gachaOption.sellKeepSvtIds.where((e) => db.gameData.craftEssencesById.containsKey(e)));

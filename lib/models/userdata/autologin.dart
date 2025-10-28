@@ -4,7 +4,7 @@ import '../faker/jp/network.dart';
 import '../gamedata/common.dart';
 import '../gamedata/item.dart';
 import '../gamedata/mappings.dart';
-import '../gamedata/toplogin.dart';
+import '../gamedata/mst_tables.dart';
 import '_helper.dart';
 
 part '../../generated/models/userdata/autologin.g.dart';

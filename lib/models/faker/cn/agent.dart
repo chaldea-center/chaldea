@@ -4,7 +4,7 @@ import 'package:archive/archive.dart';
 import 'package:dio/dio.dart';
 import 'package:uuid/uuid.dart';
 
-import 'package:chaldea/models/gamedata/toplogin.dart';
+import 'package:chaldea/models/gamedata/mst_data.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/models/userdata/version.dart';
 import 'package:chaldea/packages/logger.dart';
@@ -226,7 +226,7 @@ class FakerAgentCN extends FakerAgent<FRequestCN, AutoLoginDataCN, NetworkManage
 
   @override
   Future<FResponse> loginTop() async {
-    data.raidRecords.clear();
+    network.agentData.raidRecords.clear();
     await _member();
     await _loginToMemberCenter();
     await Future.delayed(const Duration(seconds: 2));
@@ -256,7 +256,7 @@ class FakerAgentCN extends FakerAgent<FRequestCN, AutoLoginDataCN, NetworkManage
   @override
   Future<FResponse> homeTop() async {
     final resp = await _acPhp(key: 'home', nid: 'home');
-    updateRaidInfo(homeResp: resp);
+    network.agentData.updateRaidInfo(homeResp: resp);
     return resp;
   }
 
@@ -722,12 +722,7 @@ class FakerAgentCN extends FakerAgent<FRequestCN, AutoLoginDataCN, NetworkManage
         // "useRewardAddItemIds": jsonEncode(useRewardAddItemIds),
       },
     );
-    final battleEntity = resp.data.mstData.battles.firstOrNull;
-    if (battleEntity != null) {
-      data.lastBattle = data.curBattle ?? battleEntity;
-      data.curBattle = battleEntity;
-    }
-    updateRaidInfo(battleSetupResp: resp);
+    network.agentData.onBattleSetup(resp);
     return resp;
   }
 
@@ -746,8 +741,8 @@ class FakerAgentCN extends FakerAgent<FRequestCN, AutoLoginDataCN, NetworkManage
 
     final battleEntity = resp.data.mstData.battles.firstOrNull;
     if (battleEntity != null) {
-      data.lastBattle = data.curBattle ?? battleEntity;
-      data.curBattle = battleEntity;
+      network.agentData.lastBattle = network.agentData.curBattle ?? battleEntity;
+      network.agentData.curBattle = battleEntity;
     }
     return resp;
   }
@@ -859,21 +854,14 @@ class FakerAgentCN extends FakerAgent<FRequestCN, AutoLoginDataCN, NetworkManage
       },
       sendDelay: sendDelay,
     );
-    data.lastBattle = data.curBattle;
-    data.curBattle = null;
-    try {
-      data.lastBattleResultData = BattleResultData.fromJson(resp.data.getResponse('battle_result').success!);
-    } catch (e, s) {
-      logger.e('parse battle result data failed', e, s);
-    }
-    network.mstData.battles.clear();
+    network.agentData.onBattleResult(resp);
     return resp;
   }
 
   @override
   Future<FResponse> battleTurn({required int64_t battleId}) async {
     final resp = await _acPhp(key: 'battleturn', nid: 'battle_turn', params2: {"battleId": battleId});
-    updateRaidInfo(battleTurnResp: resp);
+    network.agentData.updateRaidInfo(battleTurnResp: resp);
     return resp;
   }
 }

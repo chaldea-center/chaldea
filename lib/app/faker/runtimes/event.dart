@@ -14,7 +14,7 @@ class FakerRuntimeEvent extends FakerRuntimeBase {
   FakerRuntimeEvent(super.runtime);
 
   // random mission
-  late final randomMissionStat = runtime.data.randomMissionStat;
+  late final randomMissionStat = runtime.agentData.randomMissionStat;
   late final _randomMissionOption = agent.user.randomMission;
 
   Future<void> startRandomMissionLoop() async {
@@ -127,8 +127,8 @@ class FakerRuntimeEvent extends FakerRuntimeBase {
       }
     }
 
-    final battleEntity = agent.data.lastBattle;
-    final battleResultData = agent.data.lastBattleResultData;
+    final battleEntity = runtime.agentData.lastBattle;
+    final battleResultData = runtime.agentData.lastBattleResultData;
     if (battleEntity == null) {
       throw SilentException('Battle data not found');
     }

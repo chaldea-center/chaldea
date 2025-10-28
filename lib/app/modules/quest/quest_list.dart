@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:chaldea/app/modules/quest/quest.dart';
 import 'package:chaldea/generated/l10n.dart';
-import 'package:chaldea/models/gamedata/toplogin.dart' show MasterDataManager;
+import 'package:chaldea/models/gamedata/mst_data.dart' show MasterDataManager;
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/language.dart';
 import 'package:chaldea/utils/utils.dart';

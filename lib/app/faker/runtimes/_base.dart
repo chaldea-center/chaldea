@@ -1,8 +1,8 @@
 import 'package:chaldea/models/faker/shared/agent.dart';
-import 'package:chaldea/models/gamedata/toplogin.dart';
+import 'package:chaldea/models/gamedata/mst_data.dart';
 import '../runtime.dart';
 
-class FakerRuntimeBase {
+abstract class FakerRuntimeBase {
   final FakerRuntime runtime;
   final MasterDataManager mstData;
   final FakerAgent agent;

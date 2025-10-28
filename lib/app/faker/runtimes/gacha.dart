@@ -1,7 +1,7 @@
 import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/faker/faker.dart';
-import 'package:chaldea/models/gamedata/toplogin.dart';
+import 'package:chaldea/models/gamedata/mst_data.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/utils/utils.dart';
@@ -10,7 +10,7 @@ import '_base.dart';
 class FakerRuntimeGacha extends FakerRuntimeBase {
   FakerRuntimeGacha(super.runtime);
 
-  late final gachaStat = runtime.data.gachaResultStat;
+  late final gachaStat = runtime.agentData.gachaResultStat;
 
   Future<void> loopFpGachaDraw() async {
     final initCount = agent.user.gacha.loopCount;

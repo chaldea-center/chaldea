@@ -2,7 +2,7 @@ import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/modules/common/filter_group.dart';
 import 'package:chaldea/app/modules/master_mission/solver/input_tab.dart';
 import 'package:chaldea/generated/l10n.dart';
-import 'package:chaldea/models/gamedata/toplogin.dart';
+import 'package:chaldea/models/gamedata/mst_data.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/language.dart';
 import 'package:chaldea/utils/utils.dart';

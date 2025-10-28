@@ -9,13 +9,14 @@ import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
-import 'package:chaldea/models/gamedata/toplogin.dart';
+import 'package:chaldea/models/gamedata/mst_data.dart';
 import 'package:chaldea/models/userdata/autologin.dart';
 import 'package:chaldea/packages/alarm.dart';
 import 'package:chaldea/packages/packages.dart';
 import 'package:chaldea/utils/notification.dart';
 import 'package:chaldea/utils/utils.dart';
 import '../quiz/cat_mouse.dart';
+import 'agent_data.dart';
 
 int getNowTimestamp() => DateTime.now().timestamp;
 
@@ -118,7 +119,8 @@ abstract class NetworkManagerBase<TRequest extends FRequestBase, TUser extends A
   GameTop gameTop;
   final TUser user;
   final CatMouseGame catMouseGame;
-  final mstData = MasterDataManager();
+  final agentData = FakerAgentData();
+  late final mstData = agentData.mstData_;
 
   List<FRequestRecord<TRequest>> history = [];
 
@@ -244,6 +246,8 @@ abstract class NetworkManagerBase<TRequest extends FRequestBase, TUser extends A
             }
           }
           mstData.updateCache(resp.data.cache);
+
+          // post-processing
           final newUserGame = resp.data.mstData.user;
           if (newUserGame != null) {
             user.userGame = UserGameEntity.fromJson(newUserGame.toJson());
@@ -254,6 +258,8 @@ abstract class NetworkManagerBase<TRequest extends FRequestBase, TUser extends A
               user.userItems[itemId] = count;
             }
           }
+          agentData.updateLoginResult(resp.data);
+          // end post-processing
 
           record.response = resp;
           setLocalNotification(oldUserGame: oldUserGame, request: request);

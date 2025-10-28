@@ -2,7 +2,7 @@ import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/app/modules/saint_quartz/common.dart' show SaintLocalized;
 import 'package:chaldea/generated/l10n.dart';
-import 'package:chaldea/models/gamedata/toplogin.dart';
+import 'package:chaldea/models/gamedata/mst_data.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/json_viewer/json_viewer.dart';
 import 'package:chaldea/widgets/widgets.dart';
@@ -18,7 +18,7 @@ class LoginResultPage extends StatefulWidget {
 
 class _LoginResultPageState extends State<LoginResultPage> {
   late final runtime = widget.runtime;
-  late final loginResultData = widget.runtime.agent.data.loginResultData;
+  late final loginResultData = runtime.agentData.loginResultData;
 
   Map<String, List<int>> itemNames = {};
 

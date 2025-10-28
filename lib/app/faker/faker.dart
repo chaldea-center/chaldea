@@ -19,7 +19,7 @@ import 'package:chaldea/app/modules/servant/servant_list.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/faker/faker.dart';
 import 'package:chaldea/models/faker/quiz/crypt_data.dart';
-import 'package:chaldea/models/gamedata/toplogin.dart';
+import 'package:chaldea/models/gamedata/mst_data.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/models/userdata/version.dart';
 import 'package:chaldea/packages/alarm.dart';
@@ -221,7 +221,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
       ]);
     }
 
-    if (agent.data.loginResultData.isNotEmpty) {
+    if (runtime.agentData.loginResultData.isNotEmpty) {
       onTapBonus() => router.pushPage(LoginResultPage(runtime: runtime));
       subtitle.addAll([
         TextSpan(text: '  '),
@@ -233,7 +233,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
           ),
         ),
         TextSpan(
-          text: ' ${Maths.sum(agent.data.loginResultData.getLists().map((e) => e.length))}',
+          text: ' ${Maths.sum(runtime.agentData.loginResultData.getLists().map((e) => e.length))}',
           recognizer: TapGestureRecognizer()..onTap = onTapBonus,
         ),
       ]);
@@ -639,8 +639,8 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
   }
 
   Widget get battleDetailSection {
-    final battleEntity = agent.data.curBattle ?? agent.data.lastBattle;
-    final lastResult = agent.data.lastBattleResultData;
+    final battleEntity = runtime.agentData.curBattle ?? runtime.agentData.lastBattle;
+    final lastResult = runtime.agentData.lastBattleResultData;
     List<Widget> children = [];
     if (battleEntity == null) {
       children.add(const ListTile(dense: true, title: Text('No battle')));
@@ -703,19 +703,19 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
         headerBuilder: (context, _) {
           return ListTile(
             dense: true,
-            title: Text('Drop Statistics (${runtime.data.totalDropStat.totalCount} runs)'),
-            subtitle: runtime.data.battleTotalRewards.isEmpty
+            title: Text('Drop Statistics (${runtime.agentData.totalDropStat.totalCount} runs)'),
+            subtitle: runtime.agentData.battleTotalRewards.isEmpty
                 ? null
                 : Wrap(
                     spacing: 2,
                     runSpacing: 2,
-                    children: (runtime.data.battleTotalRewards.keys.toList()..sort(Item.compare)).map((itemId) {
+                    children: (runtime.agentData.battleTotalRewards.keys.toList()..sort(Item.compare)).map((itemId) {
                       return GameCardMixin.anyCardItemBuilder(
                         context: context,
                         id: itemId,
                         width: 30,
                         text: [
-                          '+${runtime.data.battleTotalRewards[itemId]?.format()}',
+                          '+${runtime.agentData.battleTotalRewards[itemId]?.format()}',
                           mstData
                               .getItemOrSvtNum(
                                 itemId,
@@ -729,17 +729,17 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
           );
         },
         contentBuilder: (context) {
-          runtime.data.totalDropStat.items.removeWhere((k, v) => v == 0);
+          runtime.agentData.totalDropStat.items.removeWhere((k, v) => v == 0);
           final questDropIds = db.gameData.dropData.freeDrops2[battleOption.questId]?.items.keys.toList() ?? [];
           for (final itemId in questDropIds.followedBy(battleOption.targetDrops.keys)) {
-            runtime.data.totalDropStat.items.putIfAbsent(itemId, () => 0);
+            runtime.agentData.totalDropStat.items.putIfAbsent(itemId, () => 0);
           }
           return Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               for (final (header, dropStats) in [
-                ('Total', runtime.data.totalDropStat),
-                ('Current Loop', runtime.data.curLoopDropStat),
+                ('Total', runtime.agentData.totalDropStat),
+                ('Current Loop', runtime.agentData.curLoopDropStat),
               ])
                 ListTile(
                   dense: true,
@@ -752,7 +752,9 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
                           text: 'clear',
                           onTap: () {
                             setState(() {
-                              if (dropStats == runtime.data.totalDropStat) runtime.data.battleTotalRewards.clear();
+                              if (dropStats == runtime.agentData.totalDropStat) {
+                                runtime.agentData.battleTotalRewards.clear();
+                              }
                               dropStats.reset();
                             });
                           },
@@ -889,7 +891,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
     return TileGroup(
       header: battleEntity == null
           ? 'Battle Details'
-          : 'Battle ${battleEntity.id} - ${agent.data.curBattle == null ? "${resultType?.name}" : "ongoing"}'
+          : 'Battle ${battleEntity.id} - ${runtime.agentData.curBattle == null ? "${resultType?.name}" : "ongoing"}'
                 ' (${battleEntity.createdAt.sec2date().toCustomString(year: false)})',
       children: children,
     );
@@ -910,7 +912,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
     Widget? title, subtitle;
     if (eventId != null && day != null) {
       final mstRaid = mstData.mstEventRaid[EventRaidEntity.createPK(eventId, day)];
-      final record = agent.data.getRaidRecord(eventId, day).history.lastOrNull;
+      final record = runtime.agentData.getRaidRecord(eventId, day).history.lastOrNull;
       title = Text(
         [
           'Raid day $day ${mstRaid?.name ?? ""}',
@@ -2067,7 +2069,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
       return FilledButton.tonal(onPressed: enabled ? onPressed : null, style: buttonStyle, child: Text(text));
     }
 
-    final bool loggedIn = mstData.user != null, inBattle = agent.data.curBattle != null;
+    final bool loggedIn = mstData.user != null, inBattle = runtime.agentData.curBattle != null;
 
     List<List<Widget>> btnGroups = [
       [
@@ -2161,7 +2163,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
           enabled: loggedIn && inBattle,
           onPressed: () async {
             runtime.runTask(() async {
-              final battleEntity = agent.data.curBattle!;
+              final battleEntity = runtime.agentData.curBattle!;
               await runtime.battle.battleResultWithOptions(
                 battleEntity: battleEntity,
                 resultType: battleOption.resultType,
@@ -2228,7 +2230,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
             //         return;
             //       }
             //       final data = FateTopLogin.parseAny(jsonDecode(files.first.readAsStringSync()));
-            //       agent.data.curBattle = data.mstData.battles.firstOrNull ?? agent.data.curBattle;
+            //       agentData.curBattle = data.mstData.battles.firstOrNull ?? agentData.curBattle;
             //     });
             //   },
             //   child: const Text('loadBattle'),
@@ -2291,7 +2293,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
               enabled: !runtime.runningTask.value && inBattle,
               onTap: () async {
                 runtime.runTask(() async {
-                  runtime.agent.data.curBattle = null;
+                  runtime.agentData.curBattle = null;
                 });
               },
               child: const Text('Clear Battle'),
@@ -2480,7 +2482,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
                 // '\n${collection.friendship}'
                 '\n${-bondData.next}';
             // battle result
-            final oldCollection = agent.data.lastBattleResultData?.oldUserSvtCollection.firstWhereOrNull(
+            final oldCollection = runtime.agentData.lastBattleResultData?.oldUserSvtCollection.firstWhereOrNull(
               (e) => e.svtId == collection.svtId,
             );
             if (oldCollection != null) {
@@ -2526,6 +2528,15 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
   }
 
   Future<void> _testFunc() async {
-    //
+    final files = Directory(
+      agent.network.fakerDir,
+    ).listSync().where((e) => e.path.endsWith('.json') && e.path.contains('login')).whereType<File>().toList();
+    files.sort((a, b) => b.path.compareTo(a.path));
+    print('${files.length} files');
+    for (final fp in files.take(200)) {
+      final resp = FateTopLogin.fromJson(jsonDecode(await (fp).readAsString()));
+      runtime.agentData.updateLoginResult(resp);
+    }
+    if (mounted) setState(() {});
   }
 }

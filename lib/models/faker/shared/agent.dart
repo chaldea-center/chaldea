@@ -1,10 +1,9 @@
 import 'dart:typed_data';
 
-import 'package:chaldea/models/gamedata/toplogin.dart';
+import 'package:chaldea/models/gamedata/mst_data.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/utils/extension.dart';
-import 'agent_data.dart';
 import 'network.dart';
 
 export 'agent_data.dart';
@@ -15,7 +14,6 @@ abstract class FakerAgent<
   TNetworkManager extends NetworkManagerBase<TRequest, TUser>
 > {
   final TNetworkManager network;
-  final data = FakerAgentData();
   FakerAgent({required this.network});
 
   TUser get user => network.user;
@@ -279,66 +277,6 @@ abstract class FakerAgent<
     // shop 13000000
     // item_103 + 40AP
     return shopPurchase(id: 13000000, num: buyCount, anotherPayFlag: 0);
-  }
-
-  void updateRaidInfo({FResponse? homeResp, FResponse? battleSetupResp, FResponse? battleTurnResp}) {
-    final now = DateTime.now().timestamp;
-    // home top
-    if (homeResp != null) {
-      for (final eventRaid in homeResp.data.mstData.mstEventRaid) {
-        data.getRaidRecord(eventRaid.eventId, eventRaid.day).eventRaid = eventRaid;
-      }
-      for (final raid in homeResp.data.mstData.totalEventRaid) {
-        final record = data.getRaidRecord(raid.eventId, raid.day);
-        record.history.add((
-          timestamp: homeResp.data.serverTime?.timestamp ?? now,
-          raidInfo: BattleRaidInfo(
-            day: raid.day,
-            uniqueId: 0,
-            maxHp: record.eventRaid?.maxHp ?? 0,
-            totalDamage: raid.totalDamage,
-          ),
-          battleId: null,
-        ));
-      }
-    }
-    // battle setup
-    final battleEntity = battleSetupResp?.data.mstData.battles.firstOrNull;
-    final setupRaidInfos = battleEntity?.battleInfo?.raidInfo ?? [];
-    if (battleEntity != null && setupRaidInfos.isNotEmpty) {
-      for (final raid in setupRaidInfos) {
-        data.getRaidRecord(battleEntity.eventId, raid.day).history.add((
-          timestamp: battleSetupResp?.data.serverTime?.timestamp ?? now,
-          raidInfo: raid,
-          battleId: battleEntity.id,
-        ));
-      }
-    }
-    // battle turn
-    final turnSuccess = battleTurnResp?.data.getResponseNull('battle_turn')?.success;
-    if (battleTurnResp != null && turnSuccess != null) {
-      final raidInfos = (turnSuccess['raidInfo'] as List?) ?? [];
-      final battleId = int.tryParse(battleTurnResp.request.params['battleId'] ?? '');
-      if (battleId != null) {
-        int? eventId;
-        for (final (eId, records) in data.raidRecords.items) {
-          if (records.values.expand((e) => e.history).any((e) => e.battleId == battleId)) {
-            eventId = eId;
-            break;
-          }
-        }
-        if (eventId != null) {
-          for (final rawRaid in raidInfos) {
-            final raid = BattleRaidInfo.fromJson(Map<String, dynamic>.from(rawRaid as Map));
-            data.getRaidRecord(eventId, raid.day).history.add((
-              timestamp: battleTurnResp.data.serverTime?.timestamp ?? now,
-              raidInfo: raid,
-              battleId: battleId,
-            ));
-          }
-        }
-      }
-    }
   }
 }
 

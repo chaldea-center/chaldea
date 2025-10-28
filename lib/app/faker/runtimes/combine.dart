@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:chaldea/models/gamedata/toplogin.dart';
+import 'package:chaldea/models/gamedata/mst_data.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/utils/utils.dart';
@@ -58,9 +58,9 @@ class FakerRuntimeCombine extends FakerRuntimeBase {
         materialSvtIds: combineMaterialCEs.map((e) => e.id).toList(),
       );
       count -= 1;
-      runtime.data.gachaResultStat.lastEnhanceBaseCE = targetCE;
-      runtime.data.gachaResultStat.lastEnhanceMaterialCEs = combineMaterialCEs.toList();
-      runtime.data.gachaResultStat.lastEnhanceMaterialCEs.sort((a, b) => CraftFilterData.compare(a.dbCE, b.dbCE));
+      runtime.agentData.gachaResultStat.lastEnhanceBaseCE = targetCE;
+      runtime.agentData.gachaResultStat.lastEnhanceMaterialCEs = combineMaterialCEs.toList();
+      runtime.agentData.gachaResultStat.lastEnhanceMaterialCEs.sort((a, b) => CraftFilterData.compare(a.dbCE, b.dbCE));
       runtime.update();
     }
   }

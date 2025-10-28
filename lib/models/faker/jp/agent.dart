@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:archive/archive.dart' show getCrc32;
 
 import 'package:chaldea/app/api/atlas.dart';
-import 'package:chaldea/models/gamedata/toplogin.dart';
+import 'package:chaldea/models/gamedata/mst_data.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/models/userdata/version.dart';
 import 'package:chaldea/packages/logger.dart';
@@ -66,7 +66,7 @@ class FakerAgentJP extends FakerAgent<FRequestJP, AutoLoginDataJP, NetworkManage
 
   @override
   Future<FResponse> loginTop() async {
-    data.raidRecords.clear();
+    network.agentData.raidRecords.clear();
     final request = FRequestJP(network: network, path: '/login/top');
     request.addBaseField();
     if (network.gameTop.region == Region.jp) {
@@ -82,21 +82,14 @@ class FakerAgentJP extends FakerAgent<FRequestJP, AutoLoginDataJP, NetworkManage
     if (network.gameTop.region == Region.na) {
       request.addFieldInt32('country', network.user.country.countryId);
     }
-    final resp = await network.requestStart(request);
-    resp.throwError('login');
-    // topLogin = resp;
-    final userGame = resp.data.mstData.user;
-    if (userGame != null) {
-      network.user.userGame = userGame;
-    }
-    return resp.throwError('login');
+    return request.beginRequestAndCheckError('login', addBaseFields: false);
   }
 
   @override
   Future<FResponse> homeTop() async {
     final request = FRequestJP(network: network, path: '/home/top');
     final resp = await request.beginRequestAndCheckError('home');
-    updateRaidInfo(homeResp: resp);
+    network.agentData.updateRaidInfo(homeResp: resp);
     return resp;
   }
 
@@ -569,12 +562,7 @@ class FakerAgentJP extends FakerAgent<FRequestJP, AutoLoginDataJP, NetworkManage
     request.addFieldInt32("restartWave", restartWave);
     request.addFieldStr("useRewardAddItemIds", jsonEncode(useRewardAddItemIds));
     final resp = await request.beginRequestAndCheckError('battle_setup');
-    final battleEntity = resp.data.mstData.battles.firstOrNull;
-    if (battleEntity != null) {
-      data.lastBattle = data.curBattle ?? battleEntity;
-      data.curBattle = battleEntity;
-    }
-    updateRaidInfo(battleSetupResp: resp);
+    network.agentData.onBattleSetup(resp);
     return resp;
   }
 
@@ -593,8 +581,8 @@ class FakerAgentJP extends FakerAgent<FRequestJP, AutoLoginDataJP, NetworkManage
     final resp = await request.beginRequestAndCheckError('battle_resume');
     final battleEntity = resp.data.mstData.battles.firstOrNull;
     if (battleEntity != null) {
-      data.lastBattle = data.curBattle ?? battleEntity;
-      data.curBattle = battleEntity;
+      network.agentData.lastBattle = network.agentData.curBattle ?? battleEntity;
+      network.agentData.curBattle = battleEntity;
     }
     return resp;
   }
@@ -699,14 +687,7 @@ class FakerAgentJP extends FakerAgent<FRequestJP, AutoLoginDataJP, NetworkManage
     request.addFieldStr('result', network.catMouseGame.encryptBattleResult(dictionary));
 
     final resp = await request.beginRequestAndCheckError('battle_result');
-    data.lastBattle = data.curBattle;
-    data.curBattle = null;
-    try {
-      data.lastBattleResultData = BattleResultData.fromJson(resp.data.getResponse('battle_result').success!);
-    } catch (e, s) {
-      logger.e('parse battle result data failed', e, s);
-    }
-    network.mstData.battles.clear();
+    network.agentData.onBattleResult(resp);
     return resp;
   }
 
@@ -715,7 +696,7 @@ class FakerAgentJP extends FakerAgent<FRequestJP, AutoLoginDataJP, NetworkManage
     final request = FRequestJP(network: network, path: '/battle/turn');
     request.addFieldInt64("battleId", battleId);
     final resp = await request.beginRequestAndCheckError('battle_turn');
-    updateRaidInfo(battleTurnResp: resp);
+    network.agentData.updateRaidInfo(battleTurnResp: resp);
     return resp;
   }
 }

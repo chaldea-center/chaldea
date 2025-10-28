@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:chaldea/app/descriptors/cond_target_value.dart';
 import 'package:chaldea/app/modules/summon/gacha/gacha_banner.dart';
 import 'package:chaldea/generated/l10n.dart';
-import 'package:chaldea/models/gamedata/toplogin.dart';
+import 'package:chaldea/models/gamedata/mst_data.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 

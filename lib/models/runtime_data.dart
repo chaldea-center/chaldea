@@ -13,7 +13,7 @@ import '../packages/app_info.dart';
 import 'api/api.dart';
 import 'api/recognizer.dart';
 import 'gamedata/gamedata.dart';
-import 'gamedata/toplogin.dart';
+import 'gamedata/mst_data.dart';
 import 'userdata/local_settings.dart';
 import 'userdata/version.dart';
 

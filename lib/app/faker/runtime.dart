@@ -9,7 +9,7 @@ import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/routes/delegate.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/faker/faker.dart';
-import 'package:chaldea/models/gamedata/toplogin.dart';
+import 'package:chaldea/models/gamedata/mst_data.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/utils/utils.dart';
@@ -22,7 +22,6 @@ import 'runtimes/event.dart';
 import 'runtimes/gacha.dart';
 
 part '_shared/cond.dart';
-part 'data.dart';
 
 class FakerRuntime {
   static final Map<AutoLoginData, FakerRuntime> runtimes = {};
@@ -32,11 +31,11 @@ class FakerRuntime {
   final _FakerGameData gameData;
   FakerRuntime._(this.agent) : gameData = _FakerGameData(agent.user.region);
 
-  final data = _FakerRuntimeData();
   final runningTask = ValueNotifier<bool>(false);
   final activeToast = ValueNotifier<String?>(null);
   // common
   late final mstData = agent.network.mstData;
+  late final agentData = agent.network.agentData;
   late final condCheck = FakerCondCheck(this);
   // runtimes
   late final battle = FakerRuntimeBattle(this);
@@ -322,5 +321,34 @@ mixin FakerRuntimeStateMixin<T extends StatefulWidget> on State<T> {
   void dispose() {
     super.dispose();
     runtime.removeDependency(this);
+  }
+}
+
+class _FakerGameData {
+  final Region region;
+  _FakerGameData(this.region);
+
+  GameTimerData timerData = GameTimerData();
+
+  Map<int, Item> get teapots {
+    final now = DateTime.now().timestamp;
+    return {
+      for (final item in timerData.items.values)
+        if (item.type == ItemType.friendshipUpItem && item.endedAt > now) item.id: item,
+    };
+  }
+
+  Future<void> init({GameTop? gameTop, bool refresh = false}) async {
+    GameTimerData? _timerData;
+    if (gameTop != null && !refresh) {
+      final localTimerData = await AtlasApi.timerData(region, expireAfter: kExpireCacheOnly);
+      if (localTimerData != null && localTimerData.updatedAt > DateTime.now().timestamp - 3 * kSecsPerDay) {
+        if (localTimerData.hash != null && localTimerData.hash == gameTop.hash) {
+          _timerData = localTimerData;
+        }
+      }
+    }
+    _timerData ??= await AtlasApi.timerData(region, expireAfter: refresh ? Duration.zero : null);
+    timerData = _timerData ?? timerData;
   }
 }
