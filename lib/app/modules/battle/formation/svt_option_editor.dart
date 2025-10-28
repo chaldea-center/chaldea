@@ -1249,22 +1249,38 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
                     icon: const Icon(Icons.remove_circle_outline, size: 18),
                     tooltip: S.current.remove,
                   ),
-                  Padding(
-                    padding: const EdgeInsetsDirectional.only(start: 8),
-                    child: SliderWithPrefix(
-                      titled: true,
-                      label: S.current.card_strengthen,
-                      min: 0,
-                      max: 500,
-                      value: playerSvtData.cardStrengthens[index],
-                      // valueFormatter: (v) => v.toString(),
-                      onChange: (v) {
-                        _updateState(() {
-                          playerSvtData.cardStrengthens[index] = v.round() ~/ 20 * 20;
-                        });
-                      },
-                    ),
+                  // TODO: https://github.com/flutter/flutter/issues/174133
+                  TextButton(
+                    onPressed: () {
+                      InputCancelOkDialog.number(
+                        title: S.current.card_strengthen,
+                        initValue: playerSvtData.cardStrengthens[index],
+                        validate: (v) => v >= 0 && v <= 500,
+                        onSubmit: (value) {
+                          _updateState(() {
+                            playerSvtData.cardStrengthens[index] = value.round() ~/ 20 * 20;
+                          });
+                        },
+                      ).showDialog(context);
+                    },
+                    child: Text('${S.current.card_strengthen}: ${playerSvtData.cardStrengthens[index]}'),
                   ),
+                  // Padding(
+                  //   padding: const EdgeInsetsDirectional.only(start: 8),
+                  //   child: SliderWithPrefix(
+                  //     titled: true,
+                  //     label: S.current.card_strengthen,
+                  //     min: 0,
+                  //     max: 500,
+                  //     value: playerSvtData.cardStrengthens[index],
+                  //     // valueFormatter: (v) => v.toString(),
+                  //     onChange: (v) {
+                  //       _updateState(() {
+                  //         playerSvtData.cardStrengthens[index] = v.round() ~/ 20 * 20;
+                  //       });
+                  //     },
+                  //   ),
+                  // ),
                 ],
               );
             }),

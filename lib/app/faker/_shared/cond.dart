@@ -42,29 +42,29 @@ class FakerCondCheck {
     return isCondOpen(condType, targetIds.isEmpty ? 0 : targetIds[0], targetNum, defaultResult: defaultResult);
   }
 
-  bool isCondOpen(CondType condType, int targetId, int condValue, {bool defaultResult = true}) {
+  bool isCondOpen(CondType condType, int targetId, int targetNum, {bool defaultResult = true}) {
     switch (condType) {
       case CondType.svtGet:
-        return mstData.userSvtCollection[condValue]?.status == 2;
+        return mstData.userSvtCollection[targetId]?.status == 2;
       case CondType.notSvtHaving:
-        return mstData.userSvt.followedBy(mstData.userSvtStorage).every((e) => e.svtId != condValue);
+        return mstData.userSvt.followedBy(mstData.userSvtStorage).every((e) => e.svtId != targetId);
       case CondType.svtHaving:
-        return mstData.userSvt.followedBy(mstData.userSvtStorage).any((e) => e.svtId == condValue);
+        return mstData.userSvt.followedBy(mstData.userSvtStorage).any((e) => e.svtId == targetId);
       case CondType.questClear:
-        return (mstData.userQuest[condValue]?.clearNum ?? 0) > 0;
+        return (mstData.userQuest[targetId]?.clearNum ?? 0) > 0;
       case CondType.questNotClear:
-        return (mstData.userQuest[condValue]?.clearNum ?? 0) == 0;
+        return (mstData.userQuest[targetId]?.clearNum ?? 0) == 0;
       case CondType.questClearPhase:
-        final userQuest = mstData.userQuest[condValue];
-        return userQuest != null && userQuest.questPhase >= condValue;
+        final userQuest = mstData.userQuest[targetId];
+        return userQuest != null && userQuest.questPhase >= targetNum;
       case CondType.date:
-        return DateTime.now().timestamp > condValue;
+        return DateTime.now().timestamp > targetNum;
       case CondType.eventMissionAchieve:
-        return mstData.userEventMission[condValue]?.missionProgressType == MissionProgressType.achieve.value;
+        return mstData.userEventMission[targetId]?.missionProgressType == MissionProgressType.achieve.value;
       case CondType.notEquipGet:
-        return mstData.userEquip.every((e) => e.equipId != condValue);
+        return mstData.userEquip.every((e) => e.equipId != targetId);
       case CondType.equipGet:
-        return mstData.userEquip.any((e) => e.equipId == condValue);
+        return mstData.userEquip.any((e) => e.equipId == targetId);
       // case CondType.questGroupClear:
       // case CondType.eventPoint:
       // case CondType.itemGet:
