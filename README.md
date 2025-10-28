@@ -32,7 +32,6 @@ For more details or usage, please check our document: [English](https://docs.cha
 - import user data
   - all needed account data from captured https traffic when login to CN/TW/JP/NA server
   - import item/active skill/append skill data from game screenshots (realized on server side)
-  - from <https://fgosim.github.io/Material>
 
 ### Laplace
 
@@ -46,9 +45,9 @@ For more details or usage, please check our document: [English](https://docs.cha
 | Platform | Minimum Version            |
 | -------- | -------------------------- |
 | Android  | Android 6.0 (API level 23) |
-| iOS      | iOS 12.0                   |
+| iOS      | iOS 13.0                   |
 | Windows  | Windows 10, x64            |
-| macOS    | macOS 10.14                |
+| macOS    | macOS 10.15                |
 | Linux    | Debian 10 & above          |
 | Web      | Any modern browser         |
 
@@ -60,8 +59,6 @@ More about [Supported Platforms](https://docs.flutter.dev/reference/supported-pl
 
 [<img alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png' width="137.5px"/>](https://play.google.com/store/apps/details?id=cc.narumi.chaldea)
 [<img alt='Get it on F-droid' src='https://fdroid.gitlab.io/artwork/badge/get-it-on.png' width="137.5px"/>](https://f-droid.org/packages/cc.narumi.chaldea.fdroid/)
-
-> MUST Uninstall v1.x then install v2.x
 
 ### App Store
 

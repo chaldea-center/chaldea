@@ -1,6 +1,7 @@
 # Changelog
 
 ## 2.5.23
+
 - Support grand assassin battle mechanisms
 - Fix multiple grand servants all applying master skill effectiveness up
 - Fix Doraco not following overwrite class relation buffs
@@ -21,7 +22,8 @@
 
 ## 2.5.21
 
-Happy 10th Anniversary! 
+Happy 10th Anniversary!
+
 - Grand Class Score mechanisms
 - 10th anniversary servant mechanisms
 - Fix NP Counter not working
