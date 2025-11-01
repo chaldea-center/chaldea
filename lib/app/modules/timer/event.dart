@@ -3,27 +3,14 @@ import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import 'base.dart';
 
-class TimerEventTab extends StatelessWidget {
-  final Region region;
-  final List<Event> events;
-  final TimerFilterData filterData;
-  const TimerEventTab({super.key, required this.region, required this.events, required this.filterData});
-
-  @override
-  Widget build(BuildContext context) {
-    final groups = filterData.getSorted(TimerEventItem.group(events, region));
-    return ListView(children: [for (final group in groups) group.buildItem(context, expanded: true)]);
-  }
-}
-
 class TimerEventItem with TimerItem {
   final List<Event> events;
   final Region region;
   TimerEventItem(this.events, this.region);
 
-  static List<TimerEventItem> group(List<Event> events, Region region) {
+  static List<TimerEventItem> group(Iterable<Event> _events, Region region) {
     Map<String, List<Event>> groups = {};
-    events = events.toList();
+    final events = _events.toList();
     events.sort2((e) => e.endedAt);
     for (final event in events) {
       groups.putIfAbsent([event.startedAt, event.endedAt, event.shopClosedAt].join('-'), () => []).add(event);

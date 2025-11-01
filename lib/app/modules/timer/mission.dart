@@ -7,26 +7,6 @@ import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import 'base.dart';
 
-class TimerMissionTab extends StatelessWidget {
-  final Region region;
-  final List<MasterMission> mms;
-  final TimerFilterData filterData;
-  const TimerMissionTab({super.key, required this.region, required this.mms, required this.filterData});
-
-  @override
-  Widget build(BuildContext context) {
-    final groups = filterData.getSorted(mms.map((e) => TimerMissionItem(e, region)).toList());
-    return ListView.separated(
-      itemBuilder: (context, index) {
-        final group = groups[index];
-        return group.buildItem(context, expanded: group.mm.missions.length <= 10);
-      },
-      separatorBuilder: (_, _) => const SizedBox(height: 0),
-      itemCount: groups.length,
-    );
-  }
-}
-
 class TimerMissionItem with TimerItem {
   final MasterMission mm;
   final Region region;
@@ -36,6 +16,13 @@ class TimerMissionItem with TimerItem {
   int get startedAt => mm.startedAt;
   @override
   int get endedAt => mm.endedAt;
+
+  @override
+  bool get defaultExpanded => mm.missions.length <= 10;
+
+  static List<TimerMissionItem> group(Iterable<MasterMission> mms, Region region) {
+    return [for (final mm in mms) TimerMissionItem(mm, region)];
+  }
 
   @override
   Widget buildItem(BuildContext context, {bool expanded = false}) {

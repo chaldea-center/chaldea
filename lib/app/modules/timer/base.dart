@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:chaldea/generated/l10n.dart';
-import 'package:chaldea/models/userdata/filter_data.dart';
+import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 
@@ -12,6 +12,7 @@ String padInt(int v, [int width = 2]) {
 mixin TimerItem {
   int get startedAt;
   int get endedAt;
+
   OngoingStatus get status {
     final now = DateTime.now().timestamp;
     return now > endedAt
@@ -20,6 +21,10 @@ mixin TimerItem {
         ? OngoingStatus.notStarted
         : OngoingStatus.ongoing;
   }
+
+  bool get defaultExpanded => true;
+
+  // static List<TimerItem> group(List<T> items, Region region);
 
   Widget buildItem(BuildContext context, {bool expanded = false});
 
@@ -61,6 +66,31 @@ class TimerFilterData {
         break;
     }
     return items;
+  }
+}
+
+// widgets
+
+class TimerTabBase<T extends TimerItem> extends StatelessWidget {
+  final List<T> groups;
+  final TimerFilterData filterData;
+  final Region region;
+  const TimerTabBase({super.key, required this.groups, required this.filterData, required this.region});
+
+  @override
+  Widget build(BuildContext context) {
+    final shownGroups = filterData.getSorted(groups);
+    if (shownGroups.isEmpty) {
+      return Center(child: Text(S.current.empty_hint));
+    }
+    return ListView.separated(
+      itemBuilder: (context, index) {
+        final group = shownGroups[index];
+        return group.buildItem(context, expanded: group.defaultExpanded);
+      },
+      separatorBuilder: (_, _) => const Divider(indent: 16, endIndent: 16),
+      itemCount: shownGroups.length,
+    );
   }
 }
 

@@ -4,27 +4,22 @@ import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import 'base.dart';
 
-class TimerQuestTab extends StatelessWidget {
-  final Region region;
-  final List<Quest> quests;
-  final TimerFilterData filterData;
-  const TimerQuestTab({super.key, required this.region, required this.quests, required this.filterData});
-
-  @override
-  Widget build(BuildContext context) {
-    final groups = filterData.getSorted(TimerQuestItem.group(quests, region));
-    return ListView(children: [for (final group in groups) group.buildItem(context, expanded: true)]);
-  }
-}
-
 class TimerQuestItem with TimerItem {
   final List<Quest> quests;
   final Region region;
   TimerQuestItem(this.quests, this.region);
 
-  static List<TimerQuestItem> group(List<Quest> quests, Region region) {
+  static List<TimerQuestItem> group(Iterable<Quest> _quests, Region region) {
     Map<String, List<Quest>> groups = {};
-    quests = quests.toList();
+    final quests = _quests.toList();
+    if (quests.isEmpty) {
+      final now = DateTime.now().timestamp;
+      quests.addAll(
+        db.gameData.wars[9999]!.quests.where(
+          (e) => e.openedAt > now - 180 * kSecsPerDay && e.closedAt < now + 60 * kSecsPerDay,
+        ),
+      );
+    }
     quests.sortByList((e) => [e.closedAt, e.openedAt, e.id]);
     for (final quest in quests) {
       groups.putIfAbsent([quest.type, quest.id ~/ 100, quest.closedAt].join('-'), () => []).add(quest);

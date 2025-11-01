@@ -113,17 +113,21 @@ class _TimerHomePageState extends State<TimerHomePage>
   }
 
   @override
-  Widget buildContent(BuildContext context, GameTimerData data) {
+  Widget buildContent(BuildContext context, GameTimerData timerData) {
     final region = this.region!;
+    Widget _toTab(List<TimerItem> groups) {
+      return TimerTabBase(groups: groups, filterData: filterData, region: region);
+    }
+
     final view = TabBarView(
       controller: _tabController,
       children: [
         _AllItemTab(region: region, timerData: timerData, filterData: filterData),
-        TimerEventTab(region: region, events: timerData.events.values.toList(), filterData: filterData),
-        TimerGachaTab(region: region, gachas: timerData.gachas.values.toList(), filterData: filterData),
-        TimerMissionTab(region: region, mms: timerData.masterMissions.values.toList(), filterData: filterData),
-        TimerShopTab(region: region, shops: timerData.shops.values.toList(), filterData: filterData),
-        TimerQuestTab(region: region, quests: timerData.quests.values.toList(), filterData: filterData),
+        _toTab(TimerEventItem.group(timerData.events.values, region)),
+        _toTab(TimerGachaItem.group(timerData.gachas.values, region)),
+        _toTab(TimerMissionItem.group(timerData.masterMissions.values, region)),
+        _toTab(TimerShopItem.group(timerData.shops.values, region)),
+        _toTab(TimerQuestItem.group(timerData.quests.values, region)),
         RegionTimeTab(region: region),
       ],
     );
@@ -191,11 +195,11 @@ class _AllItemTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     List<TimerItem> items = [
-      ...TimerEventItem.group(timerData.events.values.toList(), region),
-      ...TimerQuestItem.group(timerData.quests.values.toList(), region),
-      ...timerData.gachas.values.map((e) => TimerGachaItem(e, region)),
-      ...timerData.masterMissions.values.map((e) => TimerMissionItem(e, region)),
-      ...TimerShopItem.group(timerData.shops.values.toList(), region),
+      ...TimerEventItem.group(timerData.events.values, region),
+      ...TimerGachaItem.group(timerData.gachas.values, region),
+      ...TimerMissionItem.group(timerData.masterMissions.values, region),
+      ...TimerShopItem.group(timerData.shops.values, region),
+      ...TimerQuestItem.group(timerData.quests.values, region),
     ];
     items = filterData.getSorted(items);
     return ListView.separated(

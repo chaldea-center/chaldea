@@ -5,23 +5,6 @@ import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import 'base.dart';
 
-class TimerGachaTab extends StatelessWidget {
-  final Region region;
-  final List<NiceGacha> gachas;
-  final TimerFilterData filterData;
-  const TimerGachaTab({super.key, required this.region, required this.gachas, required this.filterData});
-
-  @override
-  Widget build(BuildContext context) {
-    final groups = filterData.getSorted(gachas.map((e) => TimerGachaItem(e, region)).toList());
-    return ListView.separated(
-      itemBuilder: (context, index) => groups[index].buildItem(context, expanded: true),
-      separatorBuilder: (_, _) => const SizedBox(height: 16),
-      itemCount: groups.length,
-    );
-  }
-}
-
 class TimerGachaItem with TimerItem {
   final NiceGacha gacha;
   final Region region;
@@ -31,6 +14,10 @@ class TimerGachaItem with TimerItem {
   int get startedAt => gacha.openedAt;
   @override
   int get endedAt => gacha.closedAt;
+
+  static List<TimerGachaItem> group(Iterable<NiceGacha> gachas, Region region) {
+    return [for (final gacha in gachas) TimerGachaItem(gacha, region)];
+  }
 
   @override
   Widget buildItem(BuildContext context, {bool expanded = false}) {

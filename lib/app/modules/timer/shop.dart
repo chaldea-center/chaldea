@@ -4,30 +4,18 @@ import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import 'base.dart';
 
-class TimerShopTab extends StatelessWidget {
-  final Region region;
-  final List<NiceShop> shops;
-  final TimerFilterData filterData;
-  const TimerShopTab({super.key, required this.region, required this.shops, required this.filterData});
-
-  @override
-  Widget build(BuildContext context) {
-    final groups = filterData.getSorted(TimerShopItem.group(shops, region));
-    return ListView(children: [for (final group in groups) group.buildItem(context, expanded: true)]);
-  }
-}
-
 class TimerShopItem with TimerItem {
   final List<NiceShop> shops;
   final Region region;
   TimerShopItem(this.shops, this.region);
 
-  static List<TimerShopItem> group(List<NiceShop> shops, Region region) {
+  static List<TimerShopItem> group(Iterable<NiceShop> _shops, Region region) {
     final now = DateTime.now().timestamp;
     Map<String, List<NiceShop>> groups = {};
-    shops = shops.toList();
+    final shops = _shops.toList();
     shops.sortByList((e) => [e.closedAt > now ? -1 : 1, (e.closedAt - now).abs(), e.priority]);
     for (final shop in shops) {
+      if (shop.payType == PayType.anonymous) continue;
       groups.putIfAbsent([shop.openedAt, shop.closedAt, shop.payType.name].join('-'), () => []).add(shop);
     }
     return groups.values.map((e) => TimerShopItem(e, region)).toList();
