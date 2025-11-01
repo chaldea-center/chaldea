@@ -218,6 +218,9 @@ GameTimerData _$GameTimerDataFromJson(Map json) => GameTimerData(
   events:
       (json['events'] as List<dynamic>?)?.map((e) => Event.fromJson(Map<String, dynamic>.from(e as Map))).toList() ??
       const [],
+  quests:
+      (json['quests'] as List<dynamic>?)?.map((e) => Quest.fromJson(Map<String, dynamic>.from(e as Map))).toList() ??
+      const [],
   gachas:
       (json['gachas'] as List<dynamic>?)
           ?.map((e) => NiceGacha.fromJson(Map<String, dynamic>.from(e as Map)))

@@ -48,9 +48,10 @@ class TimerFilterData {
 
   List<T> getSorted<T extends TimerItem>(List<T> items) {
     items = items.where((e) => e.shouldShow(this)).toList();
+    final now = DateTime.now().timestamp;
     switch (sortType.radioValue!) {
       case TimerSortType.auto:
-        items.sortByList((e) => [e.status == OngoingStatus.ended ? 1 : -1, e.endedAt, e.startedAt]);
+        items.sortByList((e) => [e.status == OngoingStatus.ended ? 1 : -1, (now - e.endedAt).abs(), e.startedAt]);
         break;
       case TimerSortType.startTime:
         items.sort2((e) => e.startedAt);

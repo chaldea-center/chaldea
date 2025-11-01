@@ -785,6 +785,7 @@ class GameTimerData {
   String? hash;
   int timestamp;
   Map<int, Event> events;
+  Map<int, Quest> quests;
   Map<int, NiceGacha> gachas;
   Map<int, MasterMission> masterMissions;
   Map<int, NiceShop> shops;
@@ -796,6 +797,7 @@ class GameTimerData {
     this.hash,
     int? timestamp,
     List<Event> events = const [],
+    List<Quest> quests = const [],
     List<NiceGacha> gachas = const [],
     List<MasterMission> masterMissions = const [],
     List<NiceShop> shops = const [],
@@ -803,13 +805,12 @@ class GameTimerData {
     GameConstants? constants,
   }) : timestamp = timestamp ?? updatedAt,
        events = {for (final e in events) e.id: e},
+       quests = {for (final e in quests) e.id: e},
        gachas = {for (final e in gachas) e.id: e},
        masterMissions = {for (final e in masterMissions) e.id: e},
        shops = {for (final e in shops) e.id: e},
        items = {for (final e in items) e.id: e},
        constants = constants ?? ConstData.constants;
-
-  List<NiceShop> get shownShops => shops.values.where((e) => e.payType != PayType.anonymous).toList();
 
   factory GameTimerData.fromJson(Map<String, dynamic> json) => _$GameTimerDataFromJson(json);
 }
