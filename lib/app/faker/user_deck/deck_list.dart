@@ -153,7 +153,15 @@ class UserDeckListPageState extends State<UserDeckListPage> {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        DividerWithTitle(title: '[${deck.id}] No.${deck.deckNo} ${deck.name}'),
+        DividerWithTitle(
+          titleWidget: Text(
+            '[${deck.id}] No.${deck.deckNo} ${deck.name}',
+            style: TextStyle(
+              color: deck.id == widget.activeDeckId ? Theme.of(context).colorScheme.primary : null,
+              fontSize: Theme.of(context).textTheme.bodySmall?.fontSize,
+            ),
+          ),
+        ),
         FormationCard(
           formation: BattleTeamFormationX.fromUserDeck(
             deckInfo: deck.deckInfo,

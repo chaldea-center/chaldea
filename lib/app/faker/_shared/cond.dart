@@ -10,7 +10,7 @@ class FakerCondCheck {
       case CondType.questNotClearAnd:
         if (targetIds.isEmpty) return false;
         for (final questId in targetIds) {
-          if ((mstData.userQuest[questId]?.clearNum ?? 0) > 0) {
+          if (mstData.isQuestCleared(questId)) {
             return false;
           }
         }
@@ -27,7 +27,7 @@ class FakerCondCheck {
         }
         return targetNum > 0 && num2 == targetNum;
       case CondType.questClear: // {1: [94149606] - 1, 2: [94034014, 94034112] - 2}
-        return targetIds.where(isQuestClear).length >= targetNum;
+        return targetIds.where(mstData.isQuestCleared).length >= targetNum;
       case CondType.eventMissionClear: // {1: [11861] - 1}
         return targetIds.where((targetId) => mstData.getMissionProgress(targetId).isClearOrAchieve).length >= targetNum;
       case CondType.eventMissionAchieve: // {1: [80576268] - 1}
@@ -51,9 +51,9 @@ class FakerCondCheck {
       case CondType.svtHaving:
         return mstData.userSvt.followedBy(mstData.userSvtStorage).any((e) => e.svtId == targetId);
       case CondType.questClear:
-        return (mstData.userQuest[targetId]?.clearNum ?? 0) > 0;
+        return mstData.isQuestCleared(targetId);
       case CondType.questNotClear:
-        return (mstData.userQuest[targetId]?.clearNum ?? 0) == 0;
+        return !mstData.isQuestCleared(targetId);
       case CondType.questClearPhase:
         final userQuest = mstData.userQuest[targetId];
         return userQuest != null && userQuest.questPhase >= targetNum;
@@ -97,15 +97,9 @@ class FakerCondCheck {
           return progressType == MissionProgressType.achieve.value;
         }).length;
       case CondType.questClear:
-        return targetIds.where((questId) {
-          return (mstData.userQuest[questId]?.clearNum ?? 0) > 0;
-        }).length;
+        return targetIds.where(mstData.isQuestCleared).length;
       default:
         return null;
     }
-  }
-
-  bool isQuestClear(int questId) {
-    return (mstData.userQuest[questId]?.clearNum ?? 0) > 0;
   }
 }

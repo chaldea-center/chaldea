@@ -184,6 +184,10 @@ class FateResponseDetail {
 }
 
 class MasterDataManager extends MasterDataManagerBase {
+  bool get isLoggedIn => user != null && userSvt.isNotEmpty;
+
+  bool isQuestCleared(int questId) => (userQuest[questId]?.clearNum ?? 0) > 0;
+
   List<int> getSvtAppendSkillLv(UserServantEntity userSvt) {
     final Map<int, int> lvs = Map.fromIterable(
       userSvtAppendPassiveSkill[userSvt.svtId]?.unlockNums ?? <int>[],
@@ -310,7 +314,7 @@ class MasterDataManager extends MasterDataManagerBase {
       } else if (cond.condType == CondType.eventMissionClear) {
         progressNum = cond.targetIds.where((missionId) => getMissionProgress(missionId).isClearOrAchieve).length;
       } else if (cond.condType == CondType.questClear) {
-        progressNum = cond.targetIds.where((questId) => (userQuest[questId]?.clearNum ?? 0) > 0).length;
+        progressNum = cond.targetIds.where(isQuestCleared).length;
       }
       progresses.add((progress: progressNum, targetNum: cond.targetNum));
     }

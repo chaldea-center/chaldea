@@ -438,10 +438,7 @@ class _SvtCombinePageState extends State<SvtCombinePage> with FakerRuntimeStateM
                 if (collection == null) return false;
                 if (baseUserSvt.lv < skill.condLv) return false;
                 if (baseUserSvt.limitCount < skill.condLimitCount) return false;
-                if (skill.condQuestId > 0) {
-                  final clearNum = mstData.userQuest[skill.condQuestId]?.clearNum ?? 0;
-                  if (clearNum <= 0) return false;
-                }
+                if (skill.condQuestId > 0 && !mstData.isQuestCleared(skill.condQuestId)) return false;
                 return true;
               });
               skills.sort2((e) => e.svt.priority);

@@ -18,6 +18,7 @@ class QuestListPage extends StatefulWidget {
   final bool groupWar; // not implemented yet
   final NiceWar? war;
   final bool? groupByWar;
+  final MasterDataManager? mstData;
 
   const QuestListPage({
     super.key,
@@ -27,6 +28,7 @@ class QuestListPage extends StatefulWidget {
     this.groupWar = false,
     this.war,
     this.groupByWar,
+    this.mstData,
   }) : ids = const [];
 
   const QuestListPage.ids({
@@ -37,6 +39,7 @@ class QuestListPage extends StatefulWidget {
     this.groupWar = false,
     this.war,
     this.groupByWar,
+    this.mstData,
   }) : quests = const [];
 
   @override
@@ -44,7 +47,7 @@ class QuestListPage extends StatefulWidget {
 }
 
 class _QuestListPageState extends State<QuestListPage> {
-  MasterDataManager? mstData;
+  late MasterDataManager? mstData = widget.mstData;
 
   @override
   Widget build(BuildContext context) {

@@ -771,7 +771,7 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
                 TextSpan(
                   children: [
                     TextSpan(
-                      text: '[${hint.title}] ',
+                      text: '[${hint.title.setMaxLines(1)}] ',
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
                     TextSpan(text: hint.message.setMaxLines(1)),

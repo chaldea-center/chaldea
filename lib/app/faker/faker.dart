@@ -7,7 +7,6 @@ import 'package:flutter/gestures.dart';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/app.dart';
@@ -27,13 +26,11 @@ import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/utils/notification.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
-import '../modules/shop/shop.dart';
 import '_shared/history.dart';
 import 'details/dialogs.dart';
 import 'details/login_result.dart';
 import 'details/raids.dart';
-import 'gacha/gacha_draw.dart';
-import 'mission/mission_receive.dart';
+import 'home/reminders.dart';
 import 'option_list.dart';
 import 'present_box/present_box.dart';
 import 'runtime.dart';
@@ -178,7 +175,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
             children: [
               optionSelector,
               const Divider(height: 8),
-              warningDetails,
+              FakerReminders(runtime: runtime),
               battleDetailSection,
               battleSetupOptionSection,
               battleResultOptionSection,
@@ -200,7 +197,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
     List<Widget> children = [];
     final userGame = mstData.user ?? agent.user.userGame;
     List<InlineSpan> subtitle = [TextSpan(text: userGame?.friendCode ?? '')];
-    if (mstData.user != null) {
+    if (mstData.isLoggedIn) {
       onTapPresentBox() => router.pushPage(UserPresentBoxManagePage(runtime: runtime));
       subtitle.addAll([
         TextSpan(text: '  '),
@@ -418,224 +415,6 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
       );
     }
     return TileGroup(header: 'Misc Info', children: children);
-  }
-
-  Widget get warningDetails {
-    if (mstData.user == null || mstData.userSvt.isEmpty) {
-      return const SizedBox.shrink();
-    }
-    final now = DateTime.now().timestamp;
-    List<Widget> children = [];
-
-    const conflictGachaGroups = [
-      [2, 3],
-      [4, 5],
-    ];
-    for (final gacha in runtime.gameData.timerData.gachas.values) {
-      if (gacha.freeDrawFlag == 0 || gacha.openedAt > now || gacha.closedAt <= now) continue;
-      if (conflictGachaGroups.any((group) {
-        return group.contains(gacha.id) &&
-            group.any((gachaId) => gachaId != gacha.id && mstData.userGacha[gachaId] != null);
-      })) {
-        continue;
-      }
-      int resetHourUTC;
-      switch (gacha.gachaType) {
-        case GachaType.freeGacha:
-          resetHourUTC = runtime.region.fpFreeGachaResetUTC;
-        case GachaType.payGacha:
-          resetHourUTC = runtime.region.storyFreeGachaResetUTC;
-        default:
-          continue;
-      }
-      int? nextFreeDrawAt;
-      final userGacha = mstData.userGacha[gacha.id];
-      nextFreeDrawAt = DateTimeX.findNextHourAt(userGacha?.freeDrawAt ?? gacha.openedAt, resetHourUTC);
-      bool hasFreeDraw = nextFreeDrawAt < now;
-      if (!hasFreeDraw) continue;
-      children.add(
-        ListTile(
-          dense: true,
-          title: Text('[${gacha.id}] ${gacha.lName}'),
-          subtitle: Text(
-            'Free ${userGacha?.freeDrawAt.sec2date().toCustomString(year: false)}'
-            ' → ${nextFreeDrawAt.sec2date().toCustomString(year: false)}',
-          ),
-          trailing: TextButton(
-            onPressed: hasFreeDraw
-                ? () {
-                    if (runtime.runningTask.value) return;
-                    agent.user.gacha.gachaId = gacha.id;
-                    router.pushPage(GachaDrawPage(runtime: runtime));
-                  }
-                : null,
-            child: Text(S.current.summon),
-          ),
-        ),
-      );
-    }
-
-    for (final shop in runtime.gameData.timerData.shops.values) {
-      if (shop.openedAt > now || now >= shop.closedAt) continue;
-      final userShop = mstData.userShop[shop.id];
-      if (userShop != null && userShop.num >= shop.limitNum) continue;
-      final targetIds = shop.getItemAndCardIds().where((targetId) {
-        if (agent.user.shopTargetIds.contains(targetId)) return true;
-        final item = runtime.gameData.teapots[targetId] ?? db.gameData.items[targetId];
-        if (item != null) {
-          if (item.type == ItemType.friendshipUpItem || item.type == ItemType.stormpod) return true;
-          if (shop.shopType == ShopType.mana && item.type == ItemType.commandCardPrmUp) return true;
-        }
-        final entity = db.gameData.entities[targetId];
-        if (entity != null) {
-          if (entity.flags.contains(SvtFlag.svtEquipManaExchange)) return true;
-          if (shop.shopType == ShopType.mana && entity.type == SvtType.statusUp && entity.rarity >= 4) return true;
-        }
-        return false;
-      }).toSet();
-      if (targetIds.isNotEmpty) {
-        children.add(
-          ListTile(
-            dense: true,
-            leading: GameCardMixin.anyCardItemBuilder(context: context, id: targetIds.first, width: 32),
-            title: Text(shop.name),
-            subtitle: Text.rich(
-              TextSpan(
-                children: [
-                  CenterWidgetSpan(
-                    child: Item.iconBuilder(
-                      context: context,
-                      item: shop.cost?.item,
-                      width: 16,
-                      text: shop.setNum > 1 ? '×${shop.setNum}' : null,
-                    ),
-                  ),
-                  TextSpan(text: ' ${shop.cost?.amount}'),
-                  if (shop.limitNum > 1) TextSpan(text: '×${shop.limitNum}'),
-                  TextSpan(text: ',  ${shop.closedAt.sec2date().toCustomString(year: false, second: false)}'),
-                ],
-              ),
-            ),
-            trailing: Text('${userShop?.num ?? 0}/${shop.limitNum}'),
-            onTap: () {
-              router.pushPage(ShopDetailPage(shop: shop, region: runtime.region));
-            },
-          ),
-        );
-      }
-    }
-
-    final userCoinRoom = mstData.userCoinRoom.firstOrNull;
-    const int maxCoinRoomNum = 2;
-    if (userCoinRoom != null && userCoinRoom.num < maxCoinRoomNum) {
-      children.add(
-        ListTile(
-          leading: Item.iconBuilder(context: context, item: Items.grail, width: 32),
-          title: Text('聖杯鋳造'),
-          trailing: Text(
-            [
-              '${userCoinRoom.num}/$maxCoinRoomNum/${userCoinRoom.totalNum}',
-              if (userCoinRoom.cnt != 0) '${S.current.servant_coin_short} ${userCoinRoom.cnt}',
-            ].join('\n'),
-            textAlign: TextAlign.end,
-          ),
-        ),
-      );
-    }
-
-    final interludeCampaignIds = {
-      for (final event in runtime.gameData.timerData.events.values)
-        if (event.type == EventType.interludeCampaign && event.startedAt <= now && event.endedAt > now) event.id,
-    };
-    if (interludeCampaignIds.isNotEmpty) {
-      for (final quest in db.gameData.quests.values) {
-        if (quest.releaseOverwrites.every((e) => !interludeCampaignIds.contains(e.eventId))) continue;
-        final userQuest = mstData.userQuest[quest.id];
-        if (userQuest != null && userQuest.clearNum > 0) continue;
-        final interludeSvt =
-            db.gameData.servantsById[quest.releaseConditions
-                .firstWhereOrNull((release) => const [CondType.svtGet, CondType.svtFriendship].contains(release.type))
-                ?.targetId];
-        // 谜之女主角X: 遭難者Ｘの帰還
-        if (quest.id == 91601804 && const [94054830, 94041930].any((e) => (mstData.userQuest[e]?.clearNum ?? 0) > 0)) {
-          continue;
-        }
-        children.add(
-          ListTile(
-            dense: true,
-            leading: interludeSvt?.iconBuilder(context: context),
-            title: Text('[${S.current.interlude}] ${quest.lName.l}', maxLines: 1, overflow: TextOverflow.ellipsis),
-            subtitle: Text('${quest.id}: phase ${userQuest?.questPhase ?? "-"} clear ${userQuest?.clearNum ?? "-"}'),
-            trailing: IconButton(
-              onPressed: () {
-                copyToClipboard(quest.id.toString(), toast: true);
-              },
-              icon: Icon(Icons.copy),
-            ),
-            onTap: quest.routeTo,
-          ),
-        );
-      }
-    }
-
-    const int _kMissionWarningDay = 2;
-    for (final mm in runtime.gameData.timerData.masterMissions.values) {
-      if (const [MissionType.none, MissionType.daily].contains(mm.type)) continue;
-      if (mm.missions.isEmpty) continue;
-      if (mm.closedAt < now || mm.startedAt > now || mm.endedAt - now > _kMissionWarningDay * kSecsPerDay) continue;
-      Map<MissionProgressType, int> progresses = {};
-      for (final mission in mm.missions) {
-        final int progress =
-            mstData.userEventMission[mission.id]?.missionProgressType ?? MissionProgressType.none.value;
-        progresses.addNum(MissionProgressType.fromValue(progress), 1);
-      }
-      bool needWarning = mm.endedAt > now
-          ? progresses.keys.any((e) => e != MissionProgressType.achieve)
-          : progresses.containsKey(MissionProgressType.clear);
-      if (needWarning) {
-        String subtitle = [
-          mm.endedAt.sec2date().toCustomString(year: false, second: false),
-          for (final type in progresses.keys.toList()..sort2((e) => e.value)) '${type.name} ${progresses[type]}',
-        ].join(', ');
-        children.add(
-          ListTile(
-            leading: const FaIcon(FontAwesomeIcons.listCheck, size: 18),
-            title: Text('[${Transl.enums(mm.type, (e) => e.missionType).l}] ${mm.getDispName()}'),
-            subtitle: Text(subtitle),
-            trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
-            onTap: () {
-              router.pushPage(UserEventMissionReceivePage(runtime: runtime, initId: mm.id));
-            },
-          ),
-        );
-      }
-    }
-
-    for (final present in mstData.userPresentBox) {
-      final expireAt = present.getExpireAt(runtime.gameData.timerData.items[present.objectId]);
-      if (expireAt < now + 30 * kSecsPerDay) {
-        final gift = present.toGift();
-        children.add(
-          ListTile(
-            leading: Icon(Icons.card_giftcard),
-            title: Text.rich(
-              TextSpan(
-                children: [
-                  CenterWidgetSpan(child: gift.iconBuilder(context: context, width: 24)),
-                  TextSpan(text: ' ${gift.shownName} ×${gift.num}'),
-                ],
-              ),
-            ),
-            subtitle: Text(expireAt.sec2date().toCustomString()),
-            trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
-            onTap: () => router.pushPage(UserPresentBoxManagePage(runtime: runtime)),
-          ),
-        );
-      }
-    }
-
-    if (children.isEmpty) return const SizedBox.shrink();
-    return TileGroup(header: S.current.hint, children: children);
   }
 
   Widget get battleDetailSection {
@@ -1249,7 +1028,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
                     if (quest != null && !quest.flags.contains(QuestFlag.superBoss)) {
                       battleOption.questId = questId;
                       final userQuest = mstData.userQuest[questId];
-                      if (mstData.user != null) {
+                      if (mstData.isLoggedIn) {
                         if (userQuest != null && userQuest.clearNum > 0) {
                           battleOption.questPhase = userQuest.questPhase;
                         } else {
@@ -2069,7 +1848,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
       return FilledButton.tonal(onPressed: enabled ? onPressed : null, style: buttonStyle, child: Text(text));
     }
 
-    final bool loggedIn = mstData.user != null, inBattle = runtime.agentData.curBattle != null;
+    final bool loggedIn = mstData.isLoggedIn, inBattle = runtime.agentData.curBattle != null;
 
     List<List<Widget>> btnGroups = [
       [

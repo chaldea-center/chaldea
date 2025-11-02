@@ -89,9 +89,9 @@ class FakerRuntimeGacha extends FakerRuntimeBase {
         if (sub.openedAt > now || sub.closedAt <= now) return false;
         bool? condMatch = CommonRelease.check(sub.releaseConditions, (release) {
           if (release.condType == CondType.questClear) {
-            return (mstData.userQuest[release.condId]?.clearNum ?? 0) > 0;
+            return mstData.isQuestCleared(release.condId);
           } else if (release.condType == CondType.questNotClear) {
-            return (mstData.userQuest[release.condId]?.clearNum ?? 0) <= 0;
+            return !mstData.isQuestCleared(release.condId);
           } else if (release.condType == CondType.eventScriptPlay) {
             final userEvent = mstData.userEvent[release.condId];
             return userEvent != null && (userEvent.scriptFlag & (1 << release.condNum) != 0);
@@ -118,7 +118,7 @@ class FakerRuntimeGacha extends FakerRuntimeBase {
       final storyAdjustIds = gacha.storyAdjusts
           .where((adjust) {
             if (adjust.condType == CondType.questClear) {
-              if ((mstData.userQuest[adjust.targetId]?.clearNum ?? 0) <= 0) return false;
+              if (!mstData.isQuestCleared(adjust.targetId)) return false;
             } else {
               throw SilentException(
                 'Story Adjust cond not supported: ${adjust.condType}-${adjust.targetId}-${adjust.value}',

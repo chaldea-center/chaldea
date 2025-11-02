@@ -44,7 +44,7 @@ class _FakerMenuButtonState extends State<FakerMenuButton> with FakerRuntimeStat
     final gameTop = runtime.agent.network.gameTop;
     final timerData = runtime.gameData.timerData;
 
-    final bool isLoggedIn = mstData.user != null;
+    final bool isLoggedIn = mstData.isLoggedIn;
 
     return AlertDialog(
       title: const Text('Fake/Grand Order'),
