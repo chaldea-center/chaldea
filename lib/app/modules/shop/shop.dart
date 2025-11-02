@@ -256,7 +256,7 @@ class ShopHelper {
     bool showSpecialName = false,
     bool showSvtLvAsc = false,
   }) sync* {
-    final shopName = TextSpan(text: '\n(${shop.name})', style: Theme.of(context).textTheme.bodySmall);
+    final shopName = TextSpan(text: '\n(${shop.lName})', style: Theme.of(context).textTheme.bodySmall);
     switch (shop.purchaseType) {
       case PurchaseType.quest:
         yield (
@@ -326,7 +326,7 @@ class ShopHelper {
     bool showSpecialName = false,
     bool showSvtLvAsc = false,
   }) sync* {
-    final shopName = TextSpan(text: '\n(${shop.name})', style: Theme.of(context).textTheme.bodySmall);
+    final shopName = TextSpan(text: '\n(${shop.lName})', style: Theme.of(context).textTheme.bodySmall);
 
     switch (purchaseType) {
       case PurchaseType.none:
@@ -438,7 +438,7 @@ class ShopHelper {
         );
         return;
       case PurchaseType.lotteryShop:
-        yield (null, TextSpan(text: 'A random shop ${shop.name}'));
+        yield (null, TextSpan(text: 'A random shop ${shop.lName}'));
         return;
       case PurchaseType.eventFactory:
         yield (null, TextSpan(text: 'Event Factory $targetId: ${shop.name}'));

@@ -276,7 +276,7 @@ class MultiDescriptor {
         final shop = db.gameData.shops[id];
         return ListTile(
           dense: true,
-          title: Text('Shop $id ${shop?.name ?? ""}'),
+          title: Text('Shop $id ${shop?.lName ?? ""}'),
           onTap: () => router.push(url: Routes.shopI(id)),
         );
       }, useAnd),

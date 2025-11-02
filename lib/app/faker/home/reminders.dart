@@ -112,7 +112,7 @@ class FakerReminders extends StatelessWidget {
         ListTile(
           dense: true,
           leading: GameCardMixin.anyCardItemBuilder(context: context, id: targetIds.first, width: 32),
-          title: Text(shop.name),
+          title: Text(shop.lName),
           subtitle: Text.rich(
             TextSpan(
               children: [

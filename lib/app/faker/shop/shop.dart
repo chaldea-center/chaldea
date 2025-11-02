@@ -123,7 +123,7 @@ class _UserShopsPageState extends State<UserShopsPage> with SingleTickerProvider
       key: Key('userShop-${shop.id}'),
       dense: true,
       leading: leading,
-      title: Text(shop.name),
+      title: Text(shop.lName),
       subtitle: Text.rich(
         TextSpan(
           children: [
@@ -263,7 +263,7 @@ class __BuyCountDialogState extends State<_BuyCountDialog> {
   Widget build(BuildContext context) {
     final consumes = widget.shop.getConsumeItems();
     return AlertDialog(
-      title: Text(widget.shop.name),
+      title: Text(widget.shop.lName),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [

@@ -847,6 +847,29 @@ class NiceShop with RouteInfo {
         if (consume.type == CommonConsumeType.item) consume.objectId: consume.num,
     };
   }
+
+  String get lName {
+    String baseName;
+    String prefix = '';
+    final segs = name.split('】');
+    if (segs.length > 1) {
+      baseName = segs.last.trimLeft();
+      prefix = name.substring(0, name.length - baseName.length);
+    } else {
+      baseName = name;
+    }
+    final md = Transl.md;
+    final names =
+        md.itemNames[baseName] ??
+        md.svtNames[baseName] ??
+        md.ceNames[baseName] ??
+        md.entityNames[baseName] ??
+        md.ccNames[baseName] ??
+        md.mcNames[baseName];
+    String? name2 = names?.l;
+    if (name2 == null) return name;
+    return prefix + name2;
+  }
 }
 
 @JsonSerializable()

@@ -193,7 +193,7 @@ class _ShopListPageState extends State<ShopListPage> with SearchableListState<Ni
 
   @override
   Iterable<String?> getSummary(NiceShop shop) sync* {
-    yield shop.name;
+    yield* {shop.name, shop.lName};
     yield shop.detail;
   }
 
