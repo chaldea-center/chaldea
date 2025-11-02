@@ -226,6 +226,11 @@ class _ScriptReaderPageState extends State<ScriptReaderPage> {
 
     questSpans = questSpans.divided((index) => const TextSpan(text: '\n'));
 
+    final routeSelects = {
+      for (final select in data.components.whereType<ScriptSelect>())
+        if (select.routeId != null) select.routeId.toString(),
+    };
+
     return CustomTable(
       children: [
         CustomTableRow(
@@ -240,6 +245,25 @@ class _ScriptReaderPageState extends State<ScriptReaderPage> {
           CustomTableRow(
             children: [TableCellData(child: Text.rich(TextSpan(children: questSpans)))],
           ),
+        if (routeSelects.isNotEmpty) ...[
+          CustomTableRow.fromTexts(texts: ['Route Select'], isHeader: true),
+          CustomTableRow.fromChildren(
+            children: [
+              Text.rich(
+                TextSpan(
+                  children: divideList([
+                    for (final route in routeSelects)
+                      TextSpan(
+                        text: route,
+                        style: TextStyle(color: Colors.amber),
+                      ),
+                  ], const TextSpan(text: ' / ')),
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+        ],
         CustomTableRow.fromChildren(children: [navButtons]),
       ],
     );

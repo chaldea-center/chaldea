@@ -23,8 +23,8 @@ class ScriptParsedData {
 
   Uri? get uri => _uri;
 
-  void init(String scritUrl, [Region? overrideRegion]) {
-    _uri = Uri.parse(scritUrl);
+  void init(String scriptUrl, [Region? overrideRegion]) {
+    _uri = Uri.parse(scriptUrl);
     state.region = overrideRegion ?? RegionX.tryParse(_uri!.pathSegments.first) ?? Region.jp;
     _uri = _uri!.replace(pathSegments: [state.region.upper, ..._uri!.pathSegments.skip(1)]);
     state.fullscreen = false;
@@ -72,17 +72,19 @@ class ScriptParsedData {
         continue;
       }
       if (line == '？！' || line == '?!') {
-        children.add(ScriptSelect(line, null, []));
+        children.add(ScriptSelect(line, null, null, []));
         continue;
       }
       // ？1,1000：狩りに行く（ロビンフッド同行）
-      final selectMatch = RegExp(r'^[？?]([\d,]+)[：:](.*)$').firstMatch(line);
+      final selectMatch = ScriptSelect.regexp.firstMatch(line);
       if (selectMatch != null) {
+        final index = selectMatch.group(1), routeId = selectMatch.group(2);
         children.add(
           ScriptSelect(
             selectMatch.group(0)!,
-            int.parse(selectMatch.group(1)!.split(',').first),
-            _parseDialog(selectMatch.group(2)!),
+            index,
+            routeId == null ? null : int.parse(routeId),
+            _parseDialog(selectMatch.group(3)!),
           ),
         );
         continue;
@@ -287,10 +289,13 @@ class ScriptTexts extends ScriptComponent {
 }
 
 class ScriptSelect extends ScriptTexts {
-  int? index; // null = select end
-  ScriptSelect(super.src, this.index, super.contents);
+  String? index; // "?"=no select(skip) (?), null = select end
+  int? routeId;
+  ScriptSelect(super.src, this.index, this.routeId, super.contents);
 
   static const _choiceStyle = TextStyle(color: Colors.blue);
+
+  static RegExp get regexp => RegExp(r'^[？?]\s*(\d+|[\?？])?\s*(?:[,，]\s*(\d+)\s*)?[：:](.*)$');
 
   @override
   List<InlineSpan> build(BuildContext context, ScriptState state) {
@@ -301,8 +306,13 @@ class ScriptSelect extends ScriptTexts {
       ];
     }
     return [
-      if (!kIsWeb && index == 1) const WidgetSpan(child: Divider(thickness: 2)),
+      if (!kIsWeb && index == 1.toString()) const WidgetSpan(child: Divider(thickness: 2)),
       state.textSpan(text: '${S.current.script_choice} $index: ', style: _choiceStyle),
+      if (routeId != null)
+        TextSpan(
+          text: ' 【Route $routeId】',
+          style: const TextStyle(color: Colors.amber),
+        ),
       for (final p in contents) ...p.build(context, state),
       // const TextSpan(text: '\n'),
     ];

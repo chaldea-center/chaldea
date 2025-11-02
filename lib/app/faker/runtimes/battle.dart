@@ -268,6 +268,13 @@ class FakerRuntimeBattle extends FakerRuntimeBase {
       }
     }
 
+    for (final script in questPhaseEntity.scripts) {
+      final routes = script.getRouteSelects();
+      if (routes.isNotEmpty) {
+        throw SilentException('Script ${script.shortId()} has ${routes.length} route selects: $routes');
+      }
+    }
+
     int campaignItemId = 0;
     if (options.useCampaignItem) {
       // should check campaign time rather item endedAt

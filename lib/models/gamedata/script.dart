@@ -56,6 +56,8 @@ class ScriptLink with RouteInfo {
     return 'https://static.atlasacademy.io/JP/Script/$scriptPath.txt';
   }
 
+  List<String> getRouteSelects() => ConstData.routeSelects[scriptId] ?? [];
+
   factory ScriptLink.fromJson(Map<String, dynamic> json) => _$ScriptLinkFromJson(json);
 
   String removePrefix(String? prefix) {

@@ -55,6 +55,7 @@ class ConstGameData {
   final Map<int, List<int>> subEvents = {
     80557: [80569, 80560, 80561, 80562, 80563, 80564, 80565, 80566, 80567, 80568],
   };
+  final Map<String, List<String>> routeSelects;
   final ConstDataConfig config;
 
   ConstGameData({
@@ -82,6 +83,7 @@ class ConstGameData {
     this.destinyOrderClasses = const {},
     this.extraWarEventMapping = const {},
     this.sameQuestRemap = const {},
+    this.routeSelects = const {},
   }) : buffTypeActionMap = {} {
     _fixBuffActions();
   }
