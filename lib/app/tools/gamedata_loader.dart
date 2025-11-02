@@ -92,6 +92,7 @@ class GameDataLoader {
     error = null;
     cancelToken = CancelToken();
     try {
+      await JsonHelper.init();
       final result = await _loadJson(offline, force, connectTimeout, db.settings.removeOldDataRegion);
       if (result.isValid) {
         if (!completer.isCompleted) completer.complete(result);
@@ -108,6 +109,7 @@ class GameDataLoader {
       if (!completer.isCompleted) completer.complete(null);
     } finally {
       tmp.reset();
+      JsonHelper.dispose();
     }
     return completer.future;
   }

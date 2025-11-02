@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:isolate';
 import 'dart:math' as math;
 import 'dart:ui' as ui;
 
@@ -6,13 +7,13 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:image/image.dart' as lib_image;
-import 'package:worker_manager/worker_manager.dart';
 
 import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/utils/utils.dart';
 
 Future<Uint8List> compressToJpgAsync({required Uint8List src, int quality = 90, int? maxWidth, int? maxHeight}) async {
-  return workerManager.execute(() => _compressToJpg(src, quality, maxWidth, maxHeight));
+  if (kIsWeb) return _compressToJpg(src, quality, maxWidth, maxHeight);
+  return Isolate.run(() => _compressToJpg(src, quality, maxWidth, maxHeight));
 }
 
 Uint8List compressToJpg({required Uint8List src, int quality = 90, int? maxWidth, int? maxHeight}) =>
