@@ -313,6 +313,8 @@ class FakerRuntimeBattle extends FakerRuntimeBase {
       if (!questPhaseEntity.flags.contains(QuestFlag.noBattle)) {
         throw SilentException('No stage, but don not have noBattle flag.');
       }
+      await agent.battleSetupScenario(questId: questPhaseEntity.id, questPhase: questPhaseEntity.phase);
+      await Future.delayed(Duration(seconds: 10));
       return agent.battleScenario(questId: questPhaseEntity.id, questPhase: questPhaseEntity.phase, routeSelect: []);
     }
     int eventId =

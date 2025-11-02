@@ -503,6 +503,14 @@ class FakerAgentJP extends FakerAgent<FRequestJP, AutoLoginDataJP, NetworkManage
   }
 
   @override
+  Future<FResponse> battleSetupScenario({required int32_t questId, required int32_t questPhase}) {
+    final request = FRequestJP(network: network, path: '/battle/setupScenario');
+    request.addFieldInt32("questId", questId);
+    request.addFieldInt32("questPhase", questPhase);
+    return request.beginRequestAndCheckError('battle_setup_scenario');
+  }
+
+  @override
   Future<FResponse> battleScenario({
     required int32_t questId,
     required int32_t questPhase,

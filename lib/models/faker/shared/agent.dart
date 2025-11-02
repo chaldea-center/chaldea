@@ -197,6 +197,9 @@ abstract class FakerAgent<
   });
   Future<FResponse> deckEditName({required int64_t deckId, required String deckName});
 
+  // if have QuestFlag.noBattle, battleSetupScenario then battleScenario
+  Future<FResponse> battleSetupScenario({required int32_t questId, required int32_t questPhase});
+
   Future<FResponse> battleScenario({
     required int32_t questId,
     required int32_t questPhase,

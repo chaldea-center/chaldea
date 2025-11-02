@@ -656,6 +656,15 @@ class FakerAgentCN extends FakerAgent<FRequestCN, AutoLoginDataCN, NetworkManage
   }
 
   @override
+  Future<FResponse> battleSetupScenario({required int32_t questId, required int32_t questPhase}) {
+    return _acPhp(
+      key: 'battlesetupscenario',
+      nid: 'battle_setup_scenario',
+      params4: {"questId": questId, "questPhase": questPhase},
+    );
+  }
+
+  @override
   Future<FResponse> battleScenario({
     required int32_t questId,
     required int32_t questPhase,
