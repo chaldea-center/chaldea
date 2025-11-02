@@ -2451,6 +2451,7 @@ enum QuestExtensionSubType {
 }
 
 enum QuestAfterActionCommand {
+  unknown(-1), // custom
   none(0),
   spotHide(100),
   spotGray(101),
@@ -2526,4 +2527,10 @@ enum QuestAfterActionCommand {
 
   const QuestAfterActionCommand(this.value);
   final int value;
+
+  static final Map<int, QuestAfterActionCommand> kValueMapping = {
+    for (final v in QuestAfterActionCommand.values) v.value: v,
+  };
+
+  static QuestAfterActionCommand fromValue(int value) => kValueMapping[value] ?? QuestAfterActionCommand.unknown;
 }

@@ -107,6 +107,12 @@ class AtlasApi {
     return cache;
   }
 
+  static Future<Map?> rawQuest(int questId, int? phase, {Region region = Region.jp, Duration? expireAfter}) {
+    String url = '$atlasApiHost/raw/${region.upper}/quest/$questId';
+    if (phase != null && phase != 0) url += '/$phase';
+    return cacheManager.getModel(url, (data) => data as Map, expireAfter: expireAfter);
+  }
+
   static Future<List<MasterMission>?> masterMissions({Region region = Region.jp, Duration? expireAfter}) {
     return cacheManager.getModel(
       _tBump('$atlasApiHost/export/${region.upper}/nice_master_mission.json', expireAfter),

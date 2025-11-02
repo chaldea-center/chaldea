@@ -12,6 +12,7 @@ import 'package:chaldea/widgets/widgets.dart';
 import '../battle/teams/teams_query_page.dart';
 import '../common/filter_group.dart';
 import '../mc/mc_quest.dart';
+import 'breakdown/action_vals.dart';
 
 class QuestDetailPage extends StatefulWidget {
   final int? id;
@@ -180,8 +181,8 @@ class _QuestDetailPageState extends State<QuestDetailPage> {
                   },
                   child: Text('${S.current.copy} ID'),
                 ),
-                if (region == Region.jp && Language.isZH) ...[
-                  const PopupMenuDivider(),
+                const PopupMenuDivider(),
+                if (region == Region.jp && Language.isZH)
                   PopupMenuItem(
                     onTap: _quest == null
                         ? null
@@ -190,7 +191,13 @@ class _QuestDetailPageState extends State<QuestDetailPage> {
                           },
                     child: const Text("导出至Mooncell"),
                   ),
-                ],
+                PopupMenuItem(
+                  onTap: () {
+                    router.pushPage(QuestActionValsPage(questId: questId ?? 0, phase: phase, region: region));
+                  },
+                  enabled: (questId ?? 0) != 0,
+                  child: Text('Check Actions'),
+                ),
               ];
             },
           ),
