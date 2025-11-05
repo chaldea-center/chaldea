@@ -33,6 +33,7 @@ class Event with RouteInfo {
   // int materialOpenedAt;
   List<int> _warIds;
   List<EventAdd> eventAdds;
+  EventDetail? eventDetail;
   List<EventSvt> svts;
   List<NiceShop> shop;
   List<EventRewardScene> rewardScenes;
@@ -89,6 +90,7 @@ class Event with RouteInfo {
     // required this.materialOpenedAt,
     List<int> warIds = const [],
     this.eventAdds = const [],
+    this.eventDetail,
     this.svts = const [],
     this.shop = const [],
     this.pointRewards = const [],
@@ -538,6 +540,39 @@ class EventAdd {
   factory EventAdd.fromJson(Map<String, dynamic> json) => _$EventAddFromJson(json);
 
   Map<String, dynamic> toJson() => _$EventAddToJson(this);
+}
+
+@JsonSerializable(converters: [CondTypeConverter()])
+class EventDetail {
+  List<EventFlag> flags;
+  int pointImageId;
+  // int rewardButtonImageId;
+  // int eventGaugeType;
+  int condQuestId;
+  int condQuestPhase;
+  String condMessage;
+  int shopCondQuestId;
+  int shopCondQuestPhase;
+  String shopCondMessage;
+  String entryCondMessage;
+  // List<String> tutorialImageIds;
+  // Map<String, dynamic> script;
+
+  EventDetail({
+    this.flags = const [],
+    this.pointImageId = 0,
+    this.condQuestId = 0,
+    this.condQuestPhase = 0,
+    this.condMessage = "",
+    this.shopCondQuestId = 0,
+    this.shopCondQuestPhase = 0,
+    this.shopCondMessage = "",
+    this.entryCondMessage = "",
+  });
+
+  factory EventDetail.fromJson(Map<String, dynamic> json) => _$EventDetailFromJson(json);
+
+  Map<String, dynamic> toJson() => _$EventDetailToJson(this);
 }
 
 @JsonSerializable()
@@ -2071,6 +2106,56 @@ class EventSvtScript {
 }
 
 enum EventOverwriteType { unknown, bgImage, bgm, name, banner, noticeBanner }
+
+enum EventFlag {
+  typePoint,
+  typeExchangeShop,
+  typeBoxGacha,
+  typeRanking,
+  typeBonusSkill,
+  typeMission,
+  typeRaid,
+  typeEventShop,
+  materialAddQuestGroup,
+  materialAddEventEnd,
+  superBoss,
+  raidDefeatCount,
+  bp,
+  noMaterialBanner,
+  eventPoint,
+  eventGroupPoint,
+  eventVoicePlay,
+  dailyMission,
+  eventGroupRanking,
+  eventTower,
+  eventFatigue,
+  noDispArrow,
+  forcedAdjustmentDialog,
+  shiftHelpInfo,
+  closePurchaseShop,
+  timeStatusRecord,
+  useEventSupportDeck,
+  eventDairyPoint,
+  eventActivityPoint,
+  eventOnlyEquip,
+  mapSwitchButtonTop,
+  eventRevival,
+  eventConquest,
+  eventPointByQp,
+  allUsersBoxGachaCount,
+  notDisplayBonusOnSupportSet,
+  friendPointBoostItem,
+  eventBoardGame,
+  notDisplayDaVinci,
+  isMainInterlude,
+  questCooltime,
+  eventPanel,
+  eventAssist,
+  treasureBox,
+  hideAfterPurchase,
+  alloutBattle,
+  spotCooltime,
+}
 
 enum PurchaseType {
   none,

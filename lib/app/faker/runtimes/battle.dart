@@ -45,14 +45,10 @@ class FakerRuntimeBattle extends FakerRuntimeBase {
             battleOption.questPhase == questPhaseEntity.phases.lastOrNull)) {
       throw SilentException('Not repeatable quest or phase');
     }
-    final now = DateTime.now().timestamp;
-    if (questPhaseEntity.openedAt > now || questPhaseEntity.closedAt < now) {
-      throw SilentException('quest not open');
-    }
     if (battleOption.winTargetItemNum.isNotEmpty && !questPhaseEntity.flags.contains(QuestFlag.actConsumeBattleWin)) {
       throw SilentException('Win target drops should be used only if Quest has flag actConsumeBattleWin');
     }
-    final shouldUseEventDeck = db.gameData.others.shouldUseEventDeck(questPhaseEntity.id);
+    final shouldUseEventDeck = db.gameData.others.isNeedUseEventQuestSupport(questPhaseEntity.id);
     if (battleOption.useEventDeck != null && battleOption.useEventDeck != shouldUseEventDeck) {
       throw SilentException('This quest should set "Use Event Deck"=$shouldUseEventDeck');
     }
@@ -77,18 +73,7 @@ class FakerRuntimeBattle extends FakerRuntimeBase {
       await _ensureEnoughApItem(quest: questPhaseEntity, option: battleOption);
 
       runtime.update();
-      FResponse setupResp;
-      try {
-        setupResp = await battleSetupWithOptions(battleOption);
-      } on NidCheckException catch (e, s) {
-        if (e.nid == 'battle_setup' && e.detail?.resCode == '99' && e.detail?.fail?['errorType'] == 0) {
-          logger.e('battle setup failed with nid check, retry', e, s);
-          await Future.delayed(Duration(seconds: 10));
-          setupResp = await battleSetupWithOptions(battleOption);
-        } else {
-          rethrow;
-        }
-      }
+      FResponse setupResp = await battleSetupWithOptions(battleOption);
       runtime.update();
 
       FResponse resultResp;
@@ -231,16 +216,18 @@ class FakerRuntimeBattle extends FakerRuntimeBase {
       throw Exception('Quest ${options.questId}/${options.questPhase} not found');
     }
 
-    final notSuppportedFlags = const {
+    final notSupportedFlags = const {
       QuestFlag.notSingleSupportOnly,
       QuestFlag.superBoss,
       QuestFlag.branch,
       QuestFlag.branchHaving,
       QuestFlag.branchScenario,
     }.intersection(questPhaseEntity.flags.toSet());
-    if (notSuppportedFlags.isNotEmpty) {
-      throw SilentException('Finding support but not supported flags: $notSuppportedFlags');
+    if (notSupportedFlags.isNotEmpty) {
+      throw SilentException('Finding support but not supported flags: $notSupportedFlags');
     }
+
+    await _checkQuestCondition(questPhaseEntity, options.checkQuestCondition);
 
     if (questPhaseEntity.extraDetail?.questSelect?.isNotEmpty == true) {
       throw SilentException('questSelect not supported');
@@ -254,9 +241,9 @@ class FakerRuntimeBattle extends FakerRuntimeBase {
 
     final curAp = mstData.user!.calCurAp();
     if (questPhaseEntity.consumeType.useAp) {
-      final consume = options.isApHalf ? quest.consume ~/ 2 : quest.consume;
+      final consume = options.isApHalf ? questPhaseEntity.consume ~/ 2 : questPhaseEntity.consume;
       if (curAp < consume) {
-        throw Exception('AP not enough: $curAp<${questPhaseEntity.consume}');
+        throw Exception('AP not enough: $curAp<$consume');
       }
     }
     if (questPhaseEntity.consumeType.useItem) {
@@ -376,7 +363,7 @@ class FakerRuntimeBattle extends FakerRuntimeBase {
       final bool isUseGrandBoard = questPhaseEntity.isUseGrandBoard;
       final (follower, followerSvt) = await _getValidSupport(
         questPhaseEntity: questPhaseEntity,
-        useEventDeck: options.useEventDeck ?? db.gameData.others.shouldUseEventDeck(options.questId),
+        useEventDeck: options.useEventDeck ?? db.gameData.others.isNeedUseEventQuestSupport(options.questId),
         myDeck: myDeck,
         enforceRefreshSupport: options.enfoceRefreshSupport,
         supportSvtIds: options.supportSvtIds.toList(),
@@ -530,11 +517,14 @@ class FakerRuntimeBattle extends FakerRuntimeBase {
         battleEntity.questPhase,
         region: agent.network.gameTop.region,
       );
+      if (quest == null) {
+        throw SilentException('quest not found');
+      }
       final _usedTurnArray = List.generate(stageCount, (index) {
         int baseTurn = index == stageCount - 1 ? 1 : 0;
         final enemyCount = battleInfo.enemyDeck.getOrNull(index)?.svts.length;
         if (enemyCount != null) {
-          final posCount = quest?.stages.getOrNull(index)?.enemyFieldPosCountReal ?? 3;
+          final posCount = quest.stages.getOrNull(index)?.enemyFieldPosCountReal ?? 3;
           baseTurn += (enemyCount / posCount).ceil().clamp(1, 10) - 1;
         }
         return baseTurn;
@@ -555,7 +545,7 @@ class FakerRuntimeBattle extends FakerRuntimeBase {
 
       List<BattleRaidResult> raidResults = [];
       for (final enemy in enemies) {
-        final raidDay1 = enemy.enemyScript?['raid'] as int?;
+        final raidDay1 = enemy.enemyScript?.raid;
         if (raidDay1 == null) continue;
         final userSvt = userSvtIdMap[enemy.userSvtId]!;
         final raidDay = battleInfo.raidInfo.firstWhereOrNull((e) => e.uniqueId == enemy.uniqueId)?.day ?? -1;
@@ -565,6 +555,21 @@ class FakerRuntimeBattle extends FakerRuntimeBase {
         raidResults.add(BattleRaidResult(uniqueId: enemy.uniqueId, day: raidDay, addDamage: userSvt.hp));
       }
 
+      // alive
+      List<int> aliveUniqueIds = [];
+      if (options.customAliveUniqueId) {
+        if (!runtime.mounted) throw SilentException('Need custom alive uniqueIds but not mounted');
+        final _aliveUniqueIds = await runtime.showLocalDialog<List<int>>(
+          _AliveEnemySelectDialog(battleInfo: battleInfo, questPhase: quest),
+          barrierDismissible: false,
+        );
+        if (_aliveUniqueIds == null) {
+          throw SilentException('cancel alive uniqueId selection');
+        }
+        aliveUniqueIds = _aliveUniqueIds;
+      }
+
+      // call deck
       final callDeckEnemies = battleInfo.callDeck.expand((e) => e.svts).toList();
       List<int> calledEnemyUniqueIdArray = callDeckEnemies
           .where((e) => e.dropInfos.isNotEmpty)
@@ -572,6 +577,7 @@ class FakerRuntimeBattle extends FakerRuntimeBase {
           .toList();
       calledEnemyUniqueIdArray = callDeckEnemies.map((e) => e.uniqueId).toList();
 
+      // skillShift
       final skillShiftEnemies = [
         ...battleInfo.enemyDeck,
         ...battleInfo.callDeck,
@@ -583,7 +589,8 @@ class FakerRuntimeBattle extends FakerRuntimeBase {
       final itemDroppedSkillShiftEnemies = skillShiftEnemies
           .where((e) => options.skillShiftEnemyUniqueIds.contains(e.uniqueId))
           .toList();
-      if (itemDroppedSkillShiftEnemies.length != options.skillShiftEnemyUniqueIds.length) {
+      if (skillShiftEnemies.isNotEmpty &&
+          itemDroppedSkillShiftEnemies.length != options.skillShiftEnemyUniqueIds.length) {
         throw SilentException(
           'valid skillShift uniqueIds: ${skillShiftEnemies.map((e) => e.uniqueId).toSet()}, '
           'but received ${options.skillShiftEnemyUniqueIds}',
@@ -600,7 +607,7 @@ class FakerRuntimeBattle extends FakerRuntimeBase {
         ),
         usedTurnArray: usedTurnArray,
         raidResult: raidResults,
-        aliveUniqueIds: [],
+        aliveUniqueIds: aliveUniqueIds,
         calledEnemyUniqueIdArray: calledEnemyUniqueIdArray,
         waveNum: stageCount,
         skillShiftUniqueIdArray: itemDroppedSkillShiftEnemies.map((e) => e.uniqueId).toList(),
@@ -609,6 +616,31 @@ class FakerRuntimeBattle extends FakerRuntimeBase {
       );
     } else {
       throw Exception('resultType=$resultType not supported');
+    }
+  }
+
+  Future<void> _checkQuestCondition(QuestPhase questPhase, bool checkCond) async {
+    final now = DateTime.now().timestamp;
+    if (questPhase.openedAt > now || questPhase.closedAt < now) {
+      throw SilentException('quest not open');
+    }
+
+    if (checkCond) {
+      for (final release in questPhase.releaseOverwrites) {
+        if (release.startedAt > now || now > release.endedAt) continue;
+        if (runtime.condCheck.isCondOpen(release.condType, release.condId, release.condNum) ?? false) {
+          return;
+        }
+      }
+
+      for (final release in questPhase.releaseConditions) {
+        if (!(runtime.condCheck.isCondOpen(release.type, release.targetId, release.value) ?? false)) {
+          throw SilentException(
+            'Condition failed: ${release.type.name}-${release.targetId}-${release.value}\n${release.closedMessage}'
+                .trim(),
+          );
+        }
+      }
     }
   }
 
@@ -623,7 +655,10 @@ class FakerRuntimeBattle extends FakerRuntimeBase {
           if (svt.isSkillShift()) '${svt.uniqueId}-${svt.npcId}': svt,
     };
 
-    if (skillShiftEnemies.isEmpty) return true;
+    if (skillShiftEnemies.isEmpty) {
+      options.skillShiftEnemyUniqueIds.clear();
+      return true;
+    }
 
     if (!options.enableSkillShift) {
       throw SilentException('skillShift not enabled: ${skillShiftEnemies.length} skillShift enemies');
@@ -776,6 +811,89 @@ class FakerRuntimeBattle extends FakerRuntimeBase {
         }
       }
     }
+  }
+}
+
+class _AliveEnemySelectDialog extends StatefulWidget {
+  final BattleInfoData battleInfo;
+  final QuestPhase questPhase;
+
+  const _AliveEnemySelectDialog({required this.battleInfo, required this.questPhase});
+
+  @override
+  State<_AliveEnemySelectDialog> createState() => __AliveEnemySelectDialogState();
+}
+
+class __AliveEnemySelectDialogState extends State<_AliveEnemySelectDialog> {
+  late final battleInfo = widget.battleInfo;
+  late final questPhase = widget.questPhase;
+  late final userSvtMap = battleInfo.userSvtMap;
+
+  final Set<int> _aliveUniqueIds = {};
+
+  @override
+  Widget build(BuildContext context) {
+    Set<BattleDeckServantData> stageEnemies = {};
+    final callEnemies = {for (final svt in battleInfo.callDeck.expand((e) => e.svts)) svt.npcId: svt};
+    final shiftEnemies = {for (final svt in battleInfo.shiftDeck.expand((e) => e.svts)) svt.npcId: svt};
+
+    void _addEnemy(BattleDeckServantData? enemy) {
+      if (enemy == null || stageEnemies.contains(enemy)) return;
+      stageEnemies.add(enemy);
+
+      final callNpcIds = {...?enemy.enemyScript?.call};
+      for (final npcId in callNpcIds) {
+        _addEnemy(callEnemies[npcId]);
+      }
+      final shiftNpcIds = {...?enemy.enemyScript?.shift, ...?enemy.enemyScript?.skillShift};
+      for (final npcId in shiftNpcIds) {
+        _addEnemy(shiftEnemies[npcId]);
+      }
+    }
+
+    for (final enemy in battleInfo.enemyDeck.last.svts) {
+      _addEnemy(enemy);
+    }
+    for (final npcId in questPhase.stages.lastOrNull?.call ?? <int>[]) {
+      _addEnemy(callEnemies[npcId]);
+    }
+
+    return AlertDialog(
+      scrollable: true,
+      title: Text('${_aliveUniqueIds.length}/${stageEnemies.length} Alive Unique Ids'),
+      content: Column(mainAxisSize: MainAxisSize.min, children: [for (final enemy in stageEnemies) buildEnemy(enemy)]),
+      actions: [
+        TextButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          child: Text(S.current.cancel),
+        ),
+        TextButton(
+          onPressed: () {
+            Navigator.pop(context, _aliveUniqueIds.toList());
+          },
+          child: Text(S.current.confirm),
+        ),
+      ],
+    );
+  }
+
+  Widget buildEnemy(BattleDeckServantData enemy) {
+    final userSvt = userSvtMap[enemy.userSvtId];
+    final svt = db.gameData.entities[userSvt?.svtId];
+    return CheckboxListTile.adaptive(
+      value: _aliveUniqueIds.contains(enemy.uniqueId),
+      secondary: svt?.iconBuilder(context: context),
+      title: Text(enemy.name ?? svt?.lName.l ?? 'npcId ${enemy.npcId}'),
+      subtitle: Text('id=${enemy.id} uniqueId=${enemy.uniqueId} npcId=${enemy.npcId}'),
+      controlAffinity: ListTileControlAffinity.trailing,
+      onChanged: (value) {
+        setState(() {
+          _aliveUniqueIds.toggle(enemy.uniqueId);
+        });
+      },
+    );
   }
 }
 

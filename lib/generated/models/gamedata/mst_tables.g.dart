@@ -791,7 +791,9 @@ BattleDeckServantData _$BattleDeckServantDataFromJson(Map json) => BattleDeckSer
           .toList() ??
       const [],
   npcId: json['npcId'],
-  enemyScript: json['enemyScript'] as Map?,
+  enemyScript: json['enemyScript'] == null
+      ? null
+      : EnemyScript.fromJson(Map<String, dynamic>.from(json['enemyScript'] as Map)),
   index: json['index'],
   id: json['id'],
   userSvtId: json['userSvtId'],
@@ -949,6 +951,7 @@ LoginBonusData _$LoginBonusDataFromJson(Map json) => LoginBonusData(
   items: (json['items'] as List<dynamic>?)?.map((e) => LoginBonusItemData.fromJson(e as Map)).toList() ?? const [],
   message: json['message'],
   script: (json['script'] as Map?)?.map((k, e) => MapEntry(k as String, e)) ?? const {},
+  createdAt: json['createdAt'],
 );
 
 CampaignBonusData _$CampaignBonusDataFromJson(Map json) => CampaignBonusData(
@@ -960,6 +963,7 @@ CampaignBonusData _$CampaignBonusDataFromJson(Map json) => CampaignBonusData(
   script: (json['script'] as Map?)?.map((k, e) => MapEntry(k as String, e)) ?? const {},
   eventId: json['eventId'],
   day: json['day'],
+  createdAt: json['createdAt'],
 );
 
 LoginBonusItemData _$LoginBonusItemDataFromJson(Map json) =>

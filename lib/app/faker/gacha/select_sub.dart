@@ -87,9 +87,9 @@ class _SelectGachaSubPageState extends State<SelectGachaSubPage> {
       }
       bool? matchCond;
       if (release.condType == CondType.questClear) {
-        matchCond = widget.mstData.isQuestCleared(release.condId);
+        matchCond = widget.mstData.isQuestClear(release.condId);
       } else if (release.condType == CondType.questNotClear) {
-        matchCond = !widget.mstData.isQuestCleared(release.condId);
+        matchCond = !widget.mstData.isQuestClear(release.condId);
       } else if (release.condType == CondType.eventScriptPlay) {
         final scriptFlag = widget.mstData.userEvent[release.condId]?.scriptFlag;
         matchCond = scriptFlag != null && (scriptFlag & (1 << release.condNum) != 0);

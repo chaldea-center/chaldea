@@ -204,14 +204,14 @@ class FakerReminders extends StatelessWidget {
         for (final questId in svt.relateQuestIds) questId: svt,
     };
     bool _isQuestNeedClear(int questId, {Quest? quest, bool checkSvt = true}) {
-      if (mstData.isQuestCleared(questId)) return false;
+      if (mstData.isQuestClear(questId)) return false;
       quest ??= db.gameData.quests[questId];
       if (quest != null) {
         final war = quest.war;
         if (quest.type == QuestType.main &&
             war != null &&
             war.lastQuestId != 0 &&
-            mstData.isQuestCleared(war.lastQuestId)) {
+            mstData.isQuestClear(war.lastQuestId)) {
           return false;
         }
         if (quest.flags.contains(QuestFlag.branch) || quest.flags.contains(QuestFlag.branchScenario)) {
@@ -240,7 +240,7 @@ class FakerReminders extends StatelessWidget {
                 .firstWhereOrNull((release) => const [CondType.svtGet, CondType.svtFriendship].contains(release.type))
                 ?.targetId];
         // 谜之女主角X: 遭難者Ｘの帰還
-        if (quest.id == 91601804 && const [94054830, 94041930].any(mstData.isQuestCleared)) {
+        if (quest.id == 91601804 && const [94054830, 94041930].any(mstData.isQuestClear)) {
           continue;
         }
         yield ListTile(
@@ -340,7 +340,7 @@ class FakerReminders extends StatelessWidget {
 
     // no war event quests
     final timerQuests = runtime.gameData.timerData.quests.values
-        .where((quest) => quest.openedAt <= now && quest.closedAt > now && !mstData.isQuestCleared(quest.id))
+        .where((quest) => quest.openedAt <= now && quest.closedAt > now && !mstData.isQuestClear(quest.id))
         .toList();
     if (timerQuests.isNotEmpty) {
       yield ListTile(

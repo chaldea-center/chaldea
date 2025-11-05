@@ -345,7 +345,7 @@ class _UserEventMissionReceivePageState extends State<UserEventMissionReceivePag
     if (progressType.isClearOrAchieve) return true;
     for (final cond in mission.conds) {
       if (const [MissionProgressType.openCondition, MissionProgressType.start].contains(cond.missionProgressType)) {
-        if (runtime.condCheck.isCondOpen2(cond.condType, cond.targetIds, cond.targetNum)) {
+        if (runtime.condCheck.isCondOpen2(cond.condType, cond.targetIds, cond.targetNum) ?? true) {
           return true;
         }
       }

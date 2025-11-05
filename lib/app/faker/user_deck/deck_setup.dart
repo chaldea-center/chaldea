@@ -6,6 +6,7 @@ import 'package:chaldea/app/app.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/models/gamedata/mst_data.dart';
+import 'package:chaldea/models/gamedata/quest.dart';
 import 'package:chaldea/models/models.dart' show GameCardMixin;
 import 'package:chaldea/packages/packages.dart';
 import 'package:chaldea/utils/utils.dart';
@@ -31,7 +32,7 @@ class _DragCEData {
   _DragCEData(this.svt);
 }
 
-typedef EventDeckRequestParam = ({int eventId, int questId, int questPhase, int deckNo});
+typedef EventDeckRequestParam = ({int eventId, int questId, int phase, int deckNo, QuestPhase? questPhase});
 
 class UserDeckSetupPage extends StatefulWidget {
   final FakerRuntime runtime;
@@ -233,10 +234,13 @@ class _UserDeckSetupPageState extends State<UserDeckSetupPage> with FakerRuntime
     final userSvt = mstData.userSvt[deckSvt.userSvtId];
     final userSvtCollection = mstData.userSvtCollection[userSvt?.svtId];
     final svt = db.gameData.servantsById[userSvt?.svtId];
+    final fixedSupport = widget.eventDeckParam?.questPhase?.supportServants.firstWhereOrNull(
+      (e) => deckSvt.initPos != null && e.script?.eventDeckIndex == deckSvt.initPos,
+    );
 
     Widget baseSvtWidget = GameCardMixin.cardIconBuilder(
       context: context,
-      icon: svt?.ascendIcon(userSvt?.dispLimitCount ?? -1) ?? Atlas.common.emptySvtIcon,
+      icon: svt?.ascendIcon(userSvt?.dispLimitCount ?? -1) ?? fixedSupport?.svt.icon ?? Atlas.common.emptySvtIcon,
       width: 56,
       aspectRatio: 132 / 144,
       option: ImageWithTextOption(
@@ -314,6 +318,15 @@ class _UserDeckSetupPageState extends State<UserDeckSetupPage> with FakerRuntime
         child: baseSvtWidget,
       );
     }
+    if (deckSvt.isFollowerSvt) {
+      baseSvtWidget = Stack(
+        clipBehavior: Clip.none,
+        children: [
+          baseSvtWidget,
+          Positioned(top: -5, right: -5, child: db.getIconImage(AssetURL.i.items(12), width: 24, aspectRatio: 1)),
+        ],
+      );
+    }
 
     Widget svtIcon = DragTarget<_DragSvtData>(
       builder: (context, candidateData, rejectedData) => baseSvtWidget,
@@ -328,17 +341,24 @@ class _UserDeckSetupPageState extends State<UserDeckSetupPage> with FakerRuntime
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.start,
       spacing: 1,
-      children: [svtIcon, for (final (index, _) in deckSvt.userSvtEquipIds.indexed) buildSvtEquip(deckSvt, index)],
+      children: [
+        Text.rich(TextSpan(text: deckSvt.initPos.toString()), style: Theme.of(context).textTheme.bodySmall),
+        svtIcon,
+        for (final (index, _) in deckSvt.userSvtEquipIds.indexed) buildSvtEquip(deckSvt, index),
+      ],
     );
   }
 
   Widget buildSvtEquip(DeckServantData deckSvt, int position) {
     final userSvtEquip = mstData.userSvt[deckSvt.userSvtEquipIds[position]];
     final svtEquip = db.gameData.craftEssencesById[userSvtEquip?.svtId];
+    final fixedSupport = widget.eventDeckParam?.questPhase?.supportServants.firstWhereOrNull(
+      (e) => deckSvt.initPos != null && e.script?.eventDeckIndex == deckSvt.initPos,
+    );
 
     Widget baseSvtEquipWidget = GameCardMixin.cardIconBuilder(
       context: context,
-      icon: svtEquip?.extraAssets.equipFace.equip?.values.firstOrNull ?? Atlas.common.emptyCeIcon,
+      icon: svtEquip?.equipFace ?? fixedSupport?.equips.firstOrNull?.equip.equipFace ?? Atlas.common.emptyCeIcon,
       width: 56,
       aspectRatio: 150 / 68,
       text: userSvtEquip == null
@@ -419,6 +439,18 @@ class _UserDeckSetupPageState extends State<UserDeckSetupPage> with FakerRuntime
     final fromIndex = allSvts.indexOf(from), toIndex = allSvts.indexOf(to);
 
     if (fromIndex < 0 || toIndex < 0 || fromIndex == toIndex) return;
+    final fixedPositions = widget.eventDeckParam?.questPhase?.supportServants
+        .map((e) => e.script?.eventDeckIndex)
+        .whereType<int>()
+        .toList();
+    bool hasFixedSupport =
+        fixedPositions != null &&
+        fixedPositions.isNotEmpty &&
+        (fixedPositions.contains(from.initPos) || fixedPositions.contains(to.initPos));
+    if (hasFixedSupport &&
+        widget.eventDeckParam?.questPhase?.flags.contains(QuestFlag.supportSvtEditablePosition) != true) {
+      return;
+    }
     if (isCE) {
       if (from.isFollowerSvt || to.isFollowerSvt) return;
       if (from.userSvtId == 0 || to.userSvtId == 0) return;
@@ -426,6 +458,7 @@ class _UserDeckSetupPageState extends State<UserDeckSetupPage> with FakerRuntime
         EasyLoading.showInfo('Do edit grand svt inside game');
         return;
       }
+      if (hasFixedSupport) return;
       assert(from.userSvtEquipIds.isNotEmpty && to.userSvtEquipIds.isNotEmpty);
       if (from.userSvtEquipIds.isEmpty) from.userSvtEquipIds.add(0);
       if (to.userSvtEquipIds.isEmpty) to.userSvtEquipIds.add(0);
@@ -528,7 +561,7 @@ class _UserDeckSetupPageState extends State<UserDeckSetupPage> with FakerRuntime
       deckInfo: deckInfo,
       eventId: param.eventId,
       questId: param.questId,
-      phase: param.questPhase,
+      phase: param.phase,
     );
     initData();
     if (mounted) setState(() {});

@@ -26,6 +26,9 @@ Event _$EventFromJson(Map json) => Event(
           ?.map((e) => EventAdd.fromJson(Map<String, dynamic>.from(e as Map)))
           .toList() ??
       const [],
+  eventDetail: json['eventDetail'] == null
+      ? null
+      : EventDetail.fromJson(Map<String, dynamic>.from(json['eventDetail'] as Map)),
   svts:
       (json['svts'] as List<dynamic>?)?.map((e) => EventSvt.fromJson(Map<String, dynamic>.from(e as Map))).toList() ??
       const [],
@@ -167,6 +170,7 @@ Map<String, dynamic> _$EventToJson(Event instance) => <String, dynamic>{
   'endedAt': instance.endedAt,
   'finishedAt': instance.finishedAt,
   'eventAdds': instance.eventAdds.map((e) => e.toJson()).toList(),
+  'eventDetail': instance.eventDetail?.toJson(),
   'svts': instance.svts.map((e) => e.toJson()).toList(),
   'shop': instance.shop.map((e) => e.toJson()).toList(),
   'rewardScenes': instance.rewardScenes.map((e) => e.toJson()).toList(),
@@ -262,6 +266,80 @@ const _$EventOverwriteTypeEnumMap = {
   EventOverwriteType.name: 'name',
   EventOverwriteType.banner: 'banner',
   EventOverwriteType.noticeBanner: 'noticeBanner',
+};
+
+EventDetail _$EventDetailFromJson(Map json) => EventDetail(
+  flags: (json['flags'] as List<dynamic>?)?.map((e) => $enumDecode(_$EventFlagEnumMap, e)).toList() ?? const [],
+  pointImageId: (json['pointImageId'] as num?)?.toInt() ?? 0,
+  condQuestId: (json['condQuestId'] as num?)?.toInt() ?? 0,
+  condQuestPhase: (json['condQuestPhase'] as num?)?.toInt() ?? 0,
+  condMessage: json['condMessage'] as String? ?? "",
+  shopCondQuestId: (json['shopCondQuestId'] as num?)?.toInt() ?? 0,
+  shopCondQuestPhase: (json['shopCondQuestPhase'] as num?)?.toInt() ?? 0,
+  shopCondMessage: json['shopCondMessage'] as String? ?? "",
+  entryCondMessage: json['entryCondMessage'] as String? ?? "",
+);
+
+Map<String, dynamic> _$EventDetailToJson(EventDetail instance) => <String, dynamic>{
+  'flags': instance.flags.map((e) => _$EventFlagEnumMap[e]!).toList(),
+  'pointImageId': instance.pointImageId,
+  'condQuestId': instance.condQuestId,
+  'condQuestPhase': instance.condQuestPhase,
+  'condMessage': instance.condMessage,
+  'shopCondQuestId': instance.shopCondQuestId,
+  'shopCondQuestPhase': instance.shopCondQuestPhase,
+  'shopCondMessage': instance.shopCondMessage,
+  'entryCondMessage': instance.entryCondMessage,
+};
+
+const _$EventFlagEnumMap = {
+  EventFlag.typePoint: 'typePoint',
+  EventFlag.typeExchangeShop: 'typeExchangeShop',
+  EventFlag.typeBoxGacha: 'typeBoxGacha',
+  EventFlag.typeRanking: 'typeRanking',
+  EventFlag.typeBonusSkill: 'typeBonusSkill',
+  EventFlag.typeMission: 'typeMission',
+  EventFlag.typeRaid: 'typeRaid',
+  EventFlag.typeEventShop: 'typeEventShop',
+  EventFlag.materialAddQuestGroup: 'materialAddQuestGroup',
+  EventFlag.materialAddEventEnd: 'materialAddEventEnd',
+  EventFlag.superBoss: 'superBoss',
+  EventFlag.raidDefeatCount: 'raidDefeatCount',
+  EventFlag.bp: 'bp',
+  EventFlag.noMaterialBanner: 'noMaterialBanner',
+  EventFlag.eventPoint: 'eventPoint',
+  EventFlag.eventGroupPoint: 'eventGroupPoint',
+  EventFlag.eventVoicePlay: 'eventVoicePlay',
+  EventFlag.dailyMission: 'dailyMission',
+  EventFlag.eventGroupRanking: 'eventGroupRanking',
+  EventFlag.eventTower: 'eventTower',
+  EventFlag.eventFatigue: 'eventFatigue',
+  EventFlag.noDispArrow: 'noDispArrow',
+  EventFlag.forcedAdjustmentDialog: 'forcedAdjustmentDialog',
+  EventFlag.shiftHelpInfo: 'shiftHelpInfo',
+  EventFlag.closePurchaseShop: 'closePurchaseShop',
+  EventFlag.timeStatusRecord: 'timeStatusRecord',
+  EventFlag.useEventSupportDeck: 'useEventSupportDeck',
+  EventFlag.eventDairyPoint: 'eventDairyPoint',
+  EventFlag.eventActivityPoint: 'eventActivityPoint',
+  EventFlag.eventOnlyEquip: 'eventOnlyEquip',
+  EventFlag.mapSwitchButtonTop: 'mapSwitchButtonTop',
+  EventFlag.eventRevival: 'eventRevival',
+  EventFlag.eventConquest: 'eventConquest',
+  EventFlag.eventPointByQp: 'eventPointByQp',
+  EventFlag.allUsersBoxGachaCount: 'allUsersBoxGachaCount',
+  EventFlag.notDisplayBonusOnSupportSet: 'notDisplayBonusOnSupportSet',
+  EventFlag.friendPointBoostItem: 'friendPointBoostItem',
+  EventFlag.eventBoardGame: 'eventBoardGame',
+  EventFlag.notDisplayDaVinci: 'notDisplayDaVinci',
+  EventFlag.isMainInterlude: 'isMainInterlude',
+  EventFlag.questCooltime: 'questCooltime',
+  EventFlag.eventPanel: 'eventPanel',
+  EventFlag.eventAssist: 'eventAssist',
+  EventFlag.treasureBox: 'treasureBox',
+  EventFlag.hideAfterPurchase: 'hideAfterPurchase',
+  EventFlag.alloutBattle: 'alloutBattle',
+  EventFlag.spotCooltime: 'spotCooltime',
 };
 
 MstMasterMission _$MstMasterMissionFromJson(Map json) => MstMasterMission(

@@ -922,6 +922,7 @@ class CraftEssence extends BasicCraftEssence {
   @override
   String? get borderedIcon => collectionNo > 0 && !db.gameData.isJustAddedCard(id) ? bordered(icon) : icon;
 
+  String? get equipFace => extraAssets.equipFace.equip?[id];
   String? get charaGraph => extraAssets.charaGraph.equip?[id];
 
   CraftEssenceExtra get extra =>

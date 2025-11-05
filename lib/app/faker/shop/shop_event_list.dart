@@ -4,6 +4,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/app.dart';
+import 'package:chaldea/app/modules/timer/base.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
@@ -19,31 +20,33 @@ class ShopEventListPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final now = DateTime.now().timestamp;
     final List<ShopType> _kShownShopTypes = [ShopType.mana, ShopType.rarePri, ShopType.revivalItem];
-    List<Widget> children = [
-      for (final shopType in _kShownShopTypes)
-        ListTile(
-          dense: true,
-          title: Text(Transl.enums(shopType, (enums) => enums.shopType).l),
-          trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
-          onTap: () async {
-            List<NiceShop>? shops = runtime.gameData.timerData.shops.values
-                .where((shop) => shop.shopType == shopType && shop.openedAt <= now && shop.closedAt > now)
-                .toList();
-            if (shopType == ShopType.revivalItem) {
-              shops = await showEasyLoading<List<NiceShop>?>(
-                () => AtlasApi.searchShop(type: shopType, eventId: 0, region: runtime.region),
-              );
-            }
-            if (shops == null || shops.isEmpty) {
-              EasyLoading.showError(S.current.empty_hint);
-              return;
-            }
-            router.pushPage(
-              UserShopsPage(runtime: runtime, title: Transl.enums(shopType, (enums) => enums.shopType).l, shops: shops),
-            );
-          },
-        ),
-    ];
+    List<Widget> children = _kShownShopTypes.map((shopType) {
+      List<NiceShop> shops = runtime.gameData.timerData.shops.values
+          .where((shop) => shop.shopType == shopType && shop.openedAt <= now && shop.closedAt > now)
+          .toList();
+      return ListTile(
+        dense: true,
+        title: Text(Transl.enums(shopType, (enums) => enums.shopType).l),
+        subtitle: shops.isEmpty ? null : CountDown(endedAt: _getShopClosedAt(shops).sec2date(), fitted: false),
+        trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
+        onTap: () async {
+          if (shopType == ShopType.revivalItem) {
+            shops =
+                await showEasyLoading<List<NiceShop>?>(
+                  () => AtlasApi.searchShop(type: shopType, eventId: 0, region: runtime.region),
+                ) ??
+                [];
+          }
+          if (shops.isEmpty) {
+            EasyLoading.showError(S.current.empty_hint);
+            return;
+          }
+          router.pushPage(
+            UserShopsPage(runtime: runtime, title: Transl.enums(shopType, (enums) => enums.shopType).l, shops: shops),
+          );
+        },
+      );
+    }).toList();
 
     final events = runtime.gameData.timerData.events.values
         .where((e) => e.shop.isNotEmpty && e.startedAt <= now && e.shopClosedAt > now)
@@ -69,6 +72,11 @@ class ShopEventListPage extends StatelessWidget {
           ListTile(
             dense: true,
             title: Text(event.lName.l),
+            subtitle: CountDown(
+              endedAt: event.endedAt.sec2date(),
+              endedAt2: _getShopClosedAt(shops, event.endedAt).sec2date(),
+              fitted: false,
+            ),
             trailing: bannerWidget,
             onTap: () {
               router.pushPage(
@@ -83,12 +91,18 @@ class ShopEventListPage extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              ListTile(dense: true, title: Text(event.lName.l), trailing: bannerWidget),
+              ListTile(
+                dense: true,
+                title: Text(event.lName.l),
+                subtitle: CountDown(endedAt: event.endedAt.sec2date()),
+                trailing: bannerWidget,
+              ),
               for (final slot in groups.keys.toList()..sort())
                 ListTile(
                   dense: true,
                   leading: const SizedBox.shrink(),
                   title: Text('Slot $slot'),
+                  subtitle: CountDown(endedAt: _getShopClosedAt(groups[slot]!).sec2date()),
                   trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
                   onTap: () {
                     router.pushPage(
@@ -111,9 +125,16 @@ class ShopEventListPage extends StatelessWidget {
       appBar: AppBar(title: Text(S.current.shop)),
       body: ListView.separated(
         itemBuilder: (context, index) => children[index],
-        separatorBuilder: (context, _) => Divider(),
+        separatorBuilder: (context, _) => const Divider(),
         itemCount: children.length,
       ),
     );
+  }
+
+  int _getShopClosedAt(List<NiceShop> shops, [int eventEndedAt = 0]) {
+    final shopClosedAt = Maths.min(shops.map((e) => e.closedAt));
+    if (eventEndedAt == 0) return shopClosedAt;
+    if (shopClosedAt > eventEndedAt + 60) return shopClosedAt;
+    return eventEndedAt;
   }
 }

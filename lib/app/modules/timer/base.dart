@@ -144,7 +144,10 @@ class CountDown extends StatelessWidget {
               ],
               if (endedAt.isBefore(_now)) TextSpan(text: '${S.current.ended}\n', style: const TextStyle(fontSize: 12)),
               buildOne(context, endedAt, startedAt),
-              if (endedAt2 != null) ...[const TextSpan(text: '\n'), buildOne(context, endedAt2!, startedAt2)],
+              if (endedAt2 != null && endedAt2 != endedAt) ...[
+                const TextSpan(text: '\n'),
+                buildOne(context, endedAt2!, startedAt2),
+              ],
             ],
           ),
           textScaler: const TextScaler.linear(0.9),

@@ -9,7 +9,7 @@ import 'command_code.dart';
 import 'common.dart';
 import 'gift.dart';
 import 'item.dart';
-import 'quest.dart' show GiftType, Gift;
+import 'quest.dart' show GiftType, Gift, EnemyScript;
 import 'servant.dart';
 
 part '../../generated/models/gamedata/mst_tables.g.dart';
@@ -2632,7 +2632,7 @@ class BattleDeckServantData {
   int? roleType;
   List<DropInfo> dropInfos;
   int npcId;
-  Map? enemyScript;
+  EnemyScript? enemyScript;
   // Map? infoScript;
   int? index;
   int id;
@@ -2671,7 +2671,7 @@ class BattleDeckServantData {
 
   factory BattleDeckServantData.fromJson(Map<String, dynamic> data) => _$BattleDeckServantDataFromJson(data);
 
-  bool isSkillShift() => enemyScript?['skillShift'] != null;
+  bool isSkillShift() => enemyScript?.skillShift != null;
 }
 
 @JsonSerializable(createToJson: false)
@@ -3046,7 +3046,24 @@ class LoginResultData {
 
   static const fieldMap = _$LoginResultDataFieldMap;
 
-  List<List<dynamic>> getLists() => [totalLoginBonus, seqLoginBonus, campaignBonus, campaignDirectBonus];
+  List<List<LoginBonusBase>> getLists() => [totalLoginBonus, seqLoginBonus, campaignBonus /*campaignDirectBonus*/];
+
+  void clear() {
+    totalLoginBonus = [];
+    seqLoginBonus = [];
+    campaignBonus = [];
+    campaignDirectBonus = [];
+  }
+
+  void updateServerTime(int? t) {
+    if (t != null && t > 0) {
+      for (final bonusList in getLists()) {
+        for (final bonus in bonusList) {
+          bonus.createdAt = t;
+        }
+      }
+    }
+  }
 
   bool get isEmpty => getLists().every((e) => e.isEmpty);
   bool get isNotEmpty => !isEmpty;
@@ -3060,8 +3077,11 @@ class LoginResultData {
 }
 
 sealed class LoginBonusBase {
-  List<LoginBonusItemData> get items;
-  Map<String, dynamic> get script;
+  List<LoginBonusItemData> items;
+  Map<String, dynamic> script;
+  int createdAt;
+
+  LoginBonusBase({this.items = const [], this.script = const {}, dynamic createdAt}) : createdAt = _toInt(createdAt);
 
   String get key;
 
@@ -3092,13 +3112,9 @@ sealed class LoginBonusBase {
 @JsonSerializable(createToJson: false)
 class LoginBonusData extends LoginBonusBase {
   int num;
-  @override
-  List<LoginBonusItemData> items;
   String message;
-  @override
-  Map<String, dynamic> script;
 
-  LoginBonusData({dynamic num, this.items = const [], dynamic message, this.script = const {}})
+  LoginBonusData({dynamic num, super.items, dynamic message, super.script, super.createdAt})
     : num = _toInt(num),
       message = message?.toString() ?? '';
 
@@ -3114,10 +3130,6 @@ class CampaignBonusData extends LoginBonusBase {
   String detail;
   String addDetail;
   bool isDeemedLogin;
-  @override
-  List<LoginBonusItemData> items;
-  @override
-  Map<String, dynamic> script;
   int eventId;
   int day;
 
@@ -3126,10 +3138,11 @@ class CampaignBonusData extends LoginBonusBase {
     this.detail = '',
     this.addDetail = '',
     this.isDeemedLogin = false,
-    this.items = const [],
-    this.script = const {},
+    super.items,
+    super.script,
     dynamic eventId,
     dynamic day,
+    super.createdAt,
   }) : eventId = _toInt(eventId),
        day = _toInt(day);
 

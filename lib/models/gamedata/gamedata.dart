@@ -197,13 +197,14 @@ class GameData with _GameDataExtra {
       final inferLatest = DateTime.now().timestamp - (removeOldDataRegion!.eventDelayMonth + 3) * 30 * 24 * 3600;
       final warIdsToRemove = <int>{};
       this.events.removeWhere((eventId, event) {
+        if (event.endedAt > kNeverClosedTimestamp) return false;
         final eventAdd = this.wiki.events[eventId];
-        final remove = _shouldRemove(event.startedAt, eventAdd?.startTime, latest, null);
+        final remove = _shouldRemove(event.endedAt, eventAdd?.endTime, latest, null);
         if (remove) warIdsToRemove.addAll(event.warIds);
         return remove;
       });
       this.campaigns.removeWhere((eventId, event) {
-        return _shouldRemove(event.startedAt, this.wiki.events[eventId]?.startTime, latest, inferLatest);
+        return _shouldRemove(event.endedAt, this.wiki.events[eventId]?.endTime, latest, inferLatest);
       });
       this.wars.removeWhere((warId, war) {
         if (war.isMainStory) return false;
@@ -709,9 +710,14 @@ class _ProcessedData {
     return group;
   }
 
-  bool shouldUseEventDeck(int questId) {
+  bool isNeedUseEventQuestSupport(int questId) {
     for (final (eventId, questIds) in eventQuestGroups.items) {
       if (eventId > 0 && questIds.contains(questId)) {
+        final eventDetail = gameData.events[eventId]?.eventDetail;
+        if (eventDetail != null) {
+          return eventDetail.flags.contains(EventFlag.useEventSupportDeck);
+        }
+        // compatible with no-detail version
         return true;
       }
     }

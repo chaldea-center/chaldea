@@ -378,6 +378,9 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
         ),
       );
     }
+    if (event.eventDetail?.flags.isNotEmpty == true) {
+      rows.add(CustomTableRow.fromTexts(texts: [event.eventDetail!.flags.map((e) => e.name).join(" / ")]));
+    }
 
     children.add(CustomTable(selectable: true, children: rows));
     if (event.type == EventType.questCampaign) {

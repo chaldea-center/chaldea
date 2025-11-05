@@ -111,6 +111,7 @@ class FakerRuntime {
         router.pushPage(FakerHistoryViewer(agent: agent));
       },
       icon: const Icon(Icons.history),
+      tooltip: S.current.history,
     );
   }
 
@@ -120,6 +121,7 @@ class FakerRuntime {
         router.showDialog(builder: (context) => FakerMenuButton(runtime: this));
       },
       icon: Icon(Icons.grid_view_rounded),
+      tooltip: 'Menu',
     );
   }
 

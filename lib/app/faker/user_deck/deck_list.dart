@@ -191,17 +191,7 @@ class UserDeckListPageState extends State<UserDeckListPage> {
           deck.deckNo == param.deckNo)
         FilledButton.tonal(
           onPressed: () async {
-            await router.pushPage(
-              UserDeckSetupPage.event(
-                runtime: widget.runtime!,
-                eventDeckParam: (
-                  eventId: deck.eventId,
-                  questId: param.questId,
-                  questPhase: param.questPhase,
-                  deckNo: deck.deckNo,
-                ),
-              ),
-            );
+            await router.pushPage(UserDeckSetupPage.event(runtime: widget.runtime!, eventDeckParam: param));
             if (mounted) setState(() {});
           },
           child: Text(S.current.edit),
@@ -323,13 +313,25 @@ extension BattleTeamFormationX on BattleTeamFormation {
     final svtsMap = {for (final svt in svts) svt.id: svt};
 
     SvtSaveData? cvtSvt(DeckServantData? svtData) {
-      final userSvt = mstData.userSvt[svtData?.userSvtId];
-      if (svtData == null || userSvt == null || svtData.isFollowerSvt == true) return null;
+      if (svtData == null) return null;
+      if (svtData.isFollowerSvt) {
+        final equipId = svtData.svtEquipIds?.firstOrNull ?? 0;
+        return SvtSaveData(
+          svtId: svtData.svtId,
+          supportType: svtData.npcFollowerSvtId != 0 ? SupportSvtType.npc : SupportSvtType.friend,
+          equip1: equipId == 0 ? null : SvtEquipSaveData(id: equipId),
+        );
+      }
+
+      final userSvt = mstData.userSvt[svtData.userSvtId];
+      if (userSvt == null) return null;
 
       SvtEquipSaveData? getEquipData(SvtEquipTarget equipTarget) {
         final userCE = mstData.userSvt[svtData.userSvtEquipIds.getOrNull(equipTarget.value)];
-        if (userCE == null) return null;
-        return SvtEquipSaveData(id: userCE.svtId, lv: userCE.lv, limitBreak: userCE.limitCount == 4);
+        if (userCE != null) {
+          return SvtEquipSaveData(id: userCE.svtId, lv: userCE.lv, limitBreak: userCE.limitCount == 4);
+        }
+        return null;
       }
 
       return SvtSaveData(

@@ -186,7 +186,14 @@ class FateResponseDetail {
 class MasterDataManager extends MasterDataManagerBase {
   bool get isLoggedIn => user != null && userSvt.isNotEmpty;
 
-  bool isQuestCleared(int questId) => (userQuest[questId]?.clearNum ?? 0) > 0;
+  bool isQuestClear(int questId) => (userQuest[questId]?.clearNum ?? 0) > 0;
+
+  bool isQuestPhaseClear(int questId, int questPhase) {
+    if (questPhase <= 0) return isQuestClear(questId);
+    final _userQuest = userQuest[questId];
+    if (_userQuest == null) return false;
+    return _userQuest.questPhase >= questPhase;
+  }
 
   List<int> getSvtAppendSkillLv(UserServantEntity userSvt) {
     final Map<int, int> lvs = Map.fromIterable(
@@ -314,7 +321,7 @@ class MasterDataManager extends MasterDataManagerBase {
       } else if (cond.condType == CondType.eventMissionClear) {
         progressNum = cond.targetIds.where((missionId) => getMissionProgress(missionId).isClearOrAchieve).length;
       } else if (cond.condType == CondType.questClear) {
-        progressNum = cond.targetIds.where(isQuestCleared).length;
+        progressNum = cond.targetIds.where(isQuestClear).length;
       }
       progresses.add((progress: progressNum, targetNum: cond.targetNum));
     }

@@ -119,7 +119,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
       // if (quest.warId == WarId.ordealCall || (quest.warId > 1000 && (quest.isAnyFree || quest.isAnyRaid)))
       'Lv.${(phaseDetail?.recommendLv ?? quest.recommendLv)}',
       ?enemyCounts,
-      quest.lDispName.setMaxLines(1),
+      (quest.isMainStoryFree ? quest.lDispName : quest.lNameWithChapter).setMaxLines(1),
       'P$phase',
       if (quest.war != null) '@${quest.war?.lShortName.setMaxLines(1)}',
     ].join(' ');
@@ -279,15 +279,8 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
         child: Text.rich(
           TextSpan(
             children: [
-              TextSpan(
-                children: [
-                  CenterWidgetSpan(
-                    child: Item.iconBuilder(context: context, item: null, itemId: Items.stoneId, width: 20),
-                  ),
-                  TextSpan(text: '×${userGame?.stone ?? 0}  '),
-                ],
-              ),
               for (final itemId in <int>{
+                Items.stoneId,
                 ...Items.loginSaveItems,
                 ...?db.gameData.quests[battleOption.questId]?.consumeItem.map((e) => e.itemId),
               })
@@ -296,8 +289,9 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
                     CenterWidgetSpan(
                       child: Item.iconBuilder(context: context, item: null, itemId: itemId, width: 20),
                     ),
+                    TextSpan(text: '×', style: TextStyle(fontSize: 12)),
                     TextSpan(
-                      text: '×${mstData.getItemOrSvtNum(itemId, defaultValue: agent.user.userItems[itemId] ?? 0)}  ',
+                      text: '${mstData.getItemOrSvtNum(itemId, defaultValue: agent.user.userItems[itemId] ?? 0)}  ',
                     ),
                   ],
                 ),
@@ -1064,6 +1058,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
                     runtime.lockTask(() {
                       InputCancelOkDialog.number(
                         title: 'Quest Phase',
+                        initValue: battleOption.questPhase,
                         onSubmit: (phase) async {
                           if (quest.phases.contains(phase)) {
                             battleOption.questPhase = phase;
@@ -1489,7 +1484,9 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
           value: battleOption.useEventDeck,
           tristate: true,
           title: Text("${S.current.support_servant_short} - Use Event Deck"),
-          subtitle: Text("Supposed: ${db.gameData.quests[battleOption.questId]?.logicEventId != null ? 'Yes' : 'No'}"),
+          subtitle: Text(
+            "Supposed: ${db.gameData.quests[battleOption.questId]?.isUseUserEventDeck() == true ? 'Yes' : 'No'}",
+          ),
           onChanged: (v) {
             runtime.lockTask(() {
               setState(() {
@@ -1507,6 +1504,32 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
             runtime.lockTask(() {
               setState(() {
                 battleOption.enfoceRefreshSupport = v!;
+              });
+            });
+          },
+          controlAffinity: ListTileControlAffinity.trailing,
+        ),
+        CheckboxListTile.adaptive(
+          dense: true,
+          value: battleOption.checkQuestCondition,
+          title: const Text("Check quest release condition"),
+          onChanged: (v) {
+            runtime.lockTask(() {
+              setState(() {
+                battleOption.checkQuestCondition = v!;
+              });
+            });
+          },
+          controlAffinity: ListTileControlAffinity.trailing,
+        ),
+        CheckboxListTile.adaptive(
+          dense: true,
+          value: battleOption.customAliveUniqueId,
+          title: const Text("Custom Alive UniqueIds"),
+          onChanged: (v) {
+            runtime.lockTask(() {
+              setState(() {
+                battleOption.customAliveUniqueId = v!;
               });
             });
           },
@@ -2183,7 +2206,8 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
                     eventId: eventId,
                     deckNo: eventDeckNo,
                     questId: battleOption.questId,
-                    questPhase: battleOption.questPhase,
+                    phase: battleOption.questPhase,
+                    questPhase: questPhase,
                   ),
                   enableEdit: true,
                 ),
@@ -2307,15 +2331,6 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
   }
 
   Future<void> _testFunc() async {
-    final files = Directory(
-      agent.network.fakerDir,
-    ).listSync().where((e) => e.path.endsWith('.json') && e.path.contains('login')).whereType<File>().toList();
-    files.sort((a, b) => b.path.compareTo(a.path));
-    print('${files.length} files');
-    for (final fp in files.take(200)) {
-      final resp = FateTopLogin.fromJson(jsonDecode(await (fp).readAsString()));
-      runtime.agentData.updateLoginResult(resp);
-    }
     if (mounted) setState(() {});
   }
 }

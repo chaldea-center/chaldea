@@ -81,7 +81,9 @@ class EasyThrottle {
     }
     completer = Completer<T>();
     _tasks[tag] = completer;
-    onExecute().then((value) => completer!.complete(value), onError: completer.completeError);
+    onExecute()
+        .then((value) => completer!.complete(value), onError: completer.completeError)
+        .whenComplete(() => _tasks.remove(tag));
     return completer.future;
   }
 

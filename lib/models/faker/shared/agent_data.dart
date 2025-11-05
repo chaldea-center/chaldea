@@ -11,18 +11,22 @@ class FakerAgentData {
   // login result
   final loginResultData = LoginResultData();
 
-  void updateLoginResult(FateTopLogin resp) {
+  LoginResultData? updateLoginResult(FateTopLogin resp) {
+    LoginResultData? result;
     for (final response in resp.responses) {
       if (!response.isSuccess()) continue;
       final success = response.success ?? {};
       if (LoginResultData.fieldMap.values.any(success.containsKey)) {
         try {
-          loginResultData.mergeLoginBonus(LoginResultData.fromJson(success));
+          result = LoginResultData.fromJson(success);
+          result.updateServerTime(resp.serverTime?.timestamp);
+          loginResultData.mergeLoginBonus(result);
         } catch (e) {
           logger.e('LoginResultData parse failed in nid [${response.nid}]');
         }
       }
     }
+    return result;
   }
 
   // battle

@@ -40,6 +40,7 @@ class _QuestActionValsPageState extends State<QuestActionValsPage>
   void initState() {
     super.initState();
     region = widget.region;
+    if (phase == 0 && phases.isNotEmpty) phase = phases.first;
     doFetchData();
   }
 
@@ -94,7 +95,7 @@ class _QuestActionValsPageState extends State<QuestActionValsPage>
             ),
           ),
           FilterGroup<int>(
-            options: {0, ...phases, phase}.toList(),
+            options: {...phases, phase}.toList()..sort(),
             values: FilterRadioData.nonnull(phase),
             combined: true,
             onFilterChanged: (optionData, lastChanged) {

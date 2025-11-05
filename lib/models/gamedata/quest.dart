@@ -267,6 +267,10 @@ class Quest with RouteInfo {
     return db.gameData.events[logicEventId];
   }
 
+  bool isNeedUseEventQuestSupport() {
+    return logicEvent?.eventDetail?.flags.contains(EventFlag.useEventSupportDeck) == true;
+  }
+
   int get eventIdPriorWarId => event?.id ?? warId;
 
   bool get is90PlusFree =>
@@ -1627,6 +1631,9 @@ class EnemyScript with DataScriptBase {
   List<int>? get change => toList('change');
 
   EnemyScript({this.deathType, this.hpBarType, this.leader, this.call, this.shift});
+
+  List<int>? get skillShift => toList('skillShift');
+  int? get raid => toInt('raid');
 
   // the enemy is one of possible versions or not appear
   bool get isRare => (toInt('probability_type') ?? 0) != 0;

@@ -227,15 +227,17 @@ class _FakerAccountsPageState extends State<FakerAccountsPage> {
         onPressed: users.length <= 1
             ? null
             : () async {
-                await showEasyLoading(AtlasApi.gametopsRaw);
-                for (final (index, user) in users.indexed) {
-                  if (index != 0) {
-                    rootRouter.appState.addWindow();
-                    await Future.delayed(const Duration(milliseconds: 100));
+                EasyThrottle.throttleAsync('faker-open-all', () async {
+                  await showEasyLoading(AtlasApi.gametopsRaw);
+                  for (final (index, user) in users.indexed) {
+                    if (index != 0) {
+                      rootRouter.appState.addWindow();
+                      await Future.delayed(const Duration(milliseconds: 100));
+                    }
+                    router.pushPage(FakeGrandOrder(user: user));
+                    await Future.delayed(const Duration(milliseconds: 400));
                   }
-                  router.pushPage(FakeGrandOrder(user: user));
-                  await Future.delayed(const Duration(milliseconds: 400));
-                }
+                });
               },
         label: const Text('Open All'),
         icon: const Icon(Icons.select_all),

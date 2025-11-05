@@ -241,7 +241,7 @@ class _UserShopsPageState extends State<UserShopsPage> with SingleTickerProvider
   }
 
   bool isReleaseOpen(ShopRelease release) {
-    return runtime.condCheck.isCondOpen2(release.condType, release.condValues, release.condNum, defaultResult: true);
+    return runtime.condCheck.isCondOpen2(release.condType, release.condValues, release.condNum) ?? true;
   }
 }
 
