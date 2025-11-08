@@ -38,11 +38,12 @@ class FormationCard extends StatelessWidget {
 
   Widget _buildServantIcons(BuildContext context, final SvtSaveData? storedData) {
     String svtInfo = '';
-    final svtCollection = userSvtCollections?[storedData?.svtId];
+    final svtCollection = storedData?.supportType.isSupport == true ? null : userSvtCollections?[storedData?.svtId];
     if (storedData != null) {
       if (storedData.svtId != null && storedData.svtId != 0) {
         svtInfo = [
-          if (showBond && svtCollection != null) ' ◈ ${svtCollection.friendshipRank}',
+          if (showBond && svtCollection != null && !storedData.supportType.isSupport)
+            ' ◈ ${svtCollection.friendshipRank}',
           ' Lv.${storedData.lv} NP${storedData.tdLv} ',
           if (storedData.atkFou != 1000 || storedData.hpFou != 1000) ' ${storedData.atkFou}/${storedData.hpFou}',
           ' ${storedData.skillLvs.join("/")}',
@@ -53,9 +54,11 @@ class FormationCard extends StatelessWidget {
 
     final svt = db.gameData.servantsById[storedData?.svtId];
     final basicSvt = db.gameData.entities[storedData?.svtId];
+    String? svtIconUrl = svt?.ascendIcon(storedData!.limitCount) ?? basicSvt?.icon;
+    if (storedData?.supportType == SupportSvtType.npc) svtIconUrl = GameCardMixin.unBordered(svtIconUrl);
     Widget svtIcon = GameCardMixin.cardIconBuilder(
       context: context,
-      icon: svt?.ascendIcon(storedData!.limitCount) ?? basicSvt?.icon ?? Atlas.common.emptySvtIcon,
+      icon: svtIconUrl ?? Atlas.common.emptySvtIcon,
       // width: 80,
       aspectRatio: 132 / 144,
       text: svtInfo,
@@ -86,13 +89,16 @@ class FormationCard extends StatelessWidget {
           storedData?.allowedExtraSkills.isNotEmpty == true ||
           storedData?.classBoardData?.isNotEmpty == true)
         db.getIconImage(AssetURL.i.buffIcon(302), width: 18, aspectRatio: 1),
-      if (userSvtCollections?[storedData?.svtId]?.isReachBondLimit == true)
+      if (storedData?.supportType.isSupport != true && userSvtCollections?[storedData?.svtId]?.isReachBondLimit == true)
         db.getIconImage(
           'https://static.atlasacademy.io/file/aa-fgo-extract-jp/Battle/Common/CommonUIAtlas/img_bond_category.png',
           width: 16,
           aspectRatio: 1,
         ),
-      if (storedData?.supportType.isSupport == true) db.getIconImage(AssetURL.i.items(12), width: 24, aspectRatio: 1),
+      if (storedData?.supportType.isSupport == true)
+        storedData?.supportType == SupportSvtType.npc
+            ? Opacity(opacity: 0.6, child: db.getIconImage(AssetURL.i.items(12), width: 18, aspectRatio: 1))
+            : db.getIconImage(AssetURL.i.items(12), width: 24, aspectRatio: 1),
     ];
     Widget? grandSvtIcon;
     if (storedData != null && storedData.grandSvt && svt != null) {
@@ -121,7 +127,7 @@ class FormationCard extends StatelessWidget {
       );
     }
 
-    final bondData = svtCollection == null
+    final bondData = svtCollection == null || storedData?.supportType.isSupport == true
         ? null
         : svt?.getCurLvBondData(svtCollection.friendshipRank, svtCollection.friendship);
 

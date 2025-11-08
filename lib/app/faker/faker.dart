@@ -2184,7 +2184,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
     );
 
     if ((questPhase ?? quest)?.isUseUserEventDeck() != true) {
-      return [kIndentDivider, normalDeckTile, ..._buildUserDeck(formation?.deckInfo)];
+      return [kIndentDivider, normalDeckTile, ..._buildUserDeck(formation?.deckInfo, questPhase)];
     }
 
     final eventId = quest?.logicEventId ?? 0;
@@ -2242,11 +2242,11 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
         ),
       ),
       showNormalDeck ? normalDeckTile : eventDeckTile,
-      ..._buildUserDeck((showNormalDeck ? formation : eventFormation)?.deckInfo),
+      ..._buildUserDeck((showNormalDeck ? formation : eventFormation)?.deckInfo, questPhase),
     ];
   }
 
-  List<Widget> _buildUserDeck(DeckServantEntity? deckInfo) {
+  List<Widget> _buildUserDeck(DeckServantEntity? deckInfo, QuestPhase? questPhase) {
     const int kSvtNumPerRow = 6;
     final svts = deckInfo?.svts ?? [];
     final svtsMap = {for (final svt in svts) svt.id: svt};
@@ -2261,6 +2261,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
               deckInfo: deckInfo,
               mstData: mstData,
               posOffset: row * kSvtNumPerRow,
+              questPhase: questPhase,
             ),
             userSvtCollections: mstData.userSvtCollection.lookup,
           ),

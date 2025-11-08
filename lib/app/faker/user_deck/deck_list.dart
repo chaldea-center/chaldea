@@ -113,19 +113,65 @@ class UserDeckListPageState extends State<UserDeckListPage> {
     }
   }
 
+  bool isActiveDeck(UserDeckEntityBase deck) {
+    return switch (deck) {
+      UserDeckEntity() => deck.id == widget.activeDeckId,
+      UserEventDeckEntity() =>
+        deck.eventId == widget.eventDeckParam?.eventId && deck.deckNo == widget.eventDeckParam?.deckNo,
+    };
+  }
+
   @override
   Widget build(BuildContext context) {
     final decks = getDecks();
+    final eventParam = widget.eventDeckParam;
+    final noEventDeckFound = eventParam != null && !decks.any(isActiveDeck);
     return Scaffold(
-      appBar: AppBar(title: Text(isUseEventDeck ? "Event ${widget.eventDeckParam!.eventId} Decks" : "User Decks")),
-      body: ListView.builder(
-        controller: scrollController,
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-        itemBuilder: (context, index) => switch (decks[index]) {
-          UserDeckEntity deck => buildUserDeck(deck),
-          UserEventDeckEntity deck => buildEventDeck(deck),
-        },
-        itemCount: decks.length,
+      appBar: AppBar(title: Text(isUseEventDeck ? "Event ${eventParam!.eventId} Decks" : "User Decks")),
+      body: Column(
+        children: [
+          Expanded(
+            child: ListView.builder(
+              controller: scrollController,
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+              itemBuilder: (context, index) => switch (decks[index]) {
+                UserDeckEntity deck => buildUserDeck(deck),
+                UserEventDeckEntity deck => buildEventDeck(deck),
+              },
+              itemCount: decks.length,
+            ),
+          ),
+          if (noEventDeckFound)
+            SafeArea(
+              child: OverflowBar(
+                alignment: MainAxisAlignment.center,
+                children: [
+                  FilledButton(
+                    onPressed: () async {
+                      await router.pushPage(
+                        UserDeckSetupPage.event(
+                          runtime: widget.runtime!,
+                          eventDeckParam: widget.eventDeckParam!,
+                          newEventDeck: UserEventDeckEntity(
+                            userId: mstData.user?.userId ?? 0,
+                            eventId: eventParam.eventId,
+                            deckNo: eventParam.deckNo,
+                            deckInfo: DeckServantEntity.empty(
+                              userEquipId: mstData.user?.userEquipId ?? mstData.userEquip.last.id,
+                              eventDeckNoSupport:
+                                  eventParam.questPhase?.flags.contains(QuestFlag.eventDeckNoSupport) == true,
+                            ),
+                          ),
+                        ),
+                      );
+                      if (mounted) setState(() {});
+                    },
+                    child: Text('New Event Deck ${widget.eventDeckParam?.deckNo}'),
+                  ),
+                ],
+              ),
+            ),
+        ],
       ),
     );
   }
@@ -156,10 +202,9 @@ class UserDeckListPageState extends State<UserDeckListPage> {
         DividerWithTitle(
           titleWidget: Text(
             '[${deck.id}] No.${deck.deckNo} ${deck.name}',
-            style: TextStyle(
-              color: deck.id == widget.activeDeckId ? Theme.of(context).colorScheme.primary : null,
-              fontSize: Theme.of(context).textTheme.bodySmall?.fontSize,
-            ),
+            style: isActiveDeck(deck)
+                ? TextStyle(color: Theme.of(context).colorScheme.errorContainer)
+                : TextStyle(fontSize: Theme.of(context).textTheme.bodySmall?.fontSize),
           ),
         ),
         FormationCard(
@@ -167,6 +212,7 @@ class UserDeckListPageState extends State<UserDeckListPage> {
             deckInfo: deck.deckInfo,
             mstData: mstData,
             maxSvtCount: isGrand ? 8 : null,
+            questPhase: widget.eventDeckParam?.questPhase,
           ),
           userSvtCollections: mstData.userSvtCollection.lookup,
           showBond: true,
@@ -216,11 +262,20 @@ class UserDeckListPageState extends State<UserDeckListPage> {
                   router.push(url: Routes.eventI(deck.eventId));
                 },
           child: DividerWithTitle(
-            title: '${param?.eventId == deck.eventId ? "※ " : ""}[${deck.eventId}] No.${deck.deckNo}',
+            titleWidget: Text(
+              '${param?.eventId == deck.eventId ? "※ " : ""}[${deck.eventId}] No.${deck.deckNo}',
+              style: isActiveDeck(deck)
+                  ? TextStyle(color: Theme.of(context).colorScheme.errorContainer)
+                  : TextStyle(fontSize: Theme.of(context).textTheme.bodySmall?.fontSize),
+            ),
           ),
         ),
         FormationCard(
-          formation: BattleTeamFormationX.fromUserDeck(deckInfo: deck.deckInfo, mstData: mstData),
+          formation: BattleTeamFormationX.fromUserDeck(
+            deckInfo: deck.deckInfo,
+            mstData: mstData,
+            questPhase: widget.eventDeckParam?.questPhase,
+          ),
           userSvtCollections: mstData.userSvtCollection.lookup,
           showBond: true,
         ),
@@ -307,6 +362,7 @@ extension BattleTeamFormationX on BattleTeamFormation {
     required MasterDataManager mstData,
     int posOffset = 0,
     int? maxSvtCount,
+    QuestPhase? questPhase,
   }) {
     final userEquip = mstData.userEquip.firstWhereOrNull((e) => e.id == deckInfo?.userEquipId);
     final svts = deckInfo?.svts ?? [];
@@ -315,11 +371,22 @@ extension BattleTeamFormationX on BattleTeamFormation {
     SvtSaveData? cvtSvt(DeckServantData? svtData) {
       if (svtData == null) return null;
       if (svtData.isFollowerSvt) {
-        final equipId = svtData.svtEquipIds?.firstOrNull ?? 0;
+        final npc = svtData.npcFollowerSvtId == 0
+            ? null
+            : questPhase?.supportServants.firstWhereOrNull((e) => e.npcSvtFollowerId == svtData.npcFollowerSvtId);
+        final npcEquip = npc?.equips.firstOrNull;
+        final equipId = npcEquip?.equip.id ?? svtData.svtEquipIds?.firstOrNull ?? 0;
         return SvtSaveData(
-          svtId: svtData.svtId,
+          svtId: npc?.svt.id ?? svtData.svtId,
+          limitCount: npc?.limit.limitCount ?? 0,
+          lv: npc?.lv ?? 1,
+          skillIds: npc?.skills.skillIds.toList(),
+          skillLvs: npc?.skills.skillLvs.map((e) => e ?? 0).toList(),
+          tdLv: npc?.noblePhantasm.noblePhantasmLv ?? 0,
           supportType: svtData.npcFollowerSvtId != 0 ? SupportSvtType.npc : SupportSvtType.friend,
-          equip1: equipId == 0 ? null : SvtEquipSaveData(id: equipId),
+          equip1: equipId == 0
+              ? null
+              : SvtEquipSaveData(id: equipId, lv: npcEquip?.lv ?? 1, limitBreak: npcEquip?.limitCount == 4),
         );
       }
 

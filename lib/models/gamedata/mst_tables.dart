@@ -2444,6 +2444,19 @@ class DeckServantEntity {
       waveSvts = waveSvts ?? [];
   factory DeckServantEntity.fromJson(Map<String, dynamic> data) => _$DeckServantEntityFromJson(data);
   Map<String, dynamic> toJson() => _$DeckServantEntityToJson(this);
+
+  factory DeckServantEntity.empty({required int userEquipId, required bool eventDeckNoSupport}) {
+    return DeckServantEntity(
+      svts: List.generate(
+        6,
+        (index) => index == 2 && !eventDeckNoSupport
+            ? DeckServantData.support(pos: index + 1)
+            : DeckServantData.user(pos: index + 1),
+      ),
+      userEquipId: userEquipId,
+      waveSvts: [],
+    );
+  }
 }
 
 @JsonSerializable(createToJson: true, includeIfNull: false)
@@ -2462,6 +2475,7 @@ class DeckServantData {
   int? equipTarget2SkillChange;
 
   bool isGrandSvt() => userSvtEquipIds.length > 1; // only when isUseGrandBoard
+  bool get isFollowerNPC => isFollowerSvt && npcFollowerSvtId != 0;
 
   DeckServantData({
     dynamic id,
@@ -2485,9 +2499,55 @@ class DeckServantData {
        npcFollowerSvtId = _toInt(npcFollowerSvtId),
        followerType = _toIntNull(followerType),
        initPos = _toIntNull(initPos),
-       equipTarget2SkillChange = _toIntNull(equipTarget2SkillChange);
+       equipTarget2SkillChange = _toIntNull(equipTarget2SkillChange) {
+    if (this.userSvtEquipIds.isEmpty) this.userSvtEquipIds = [0];
+    if (this.svtEquipIds?.isEmpty == true) this.svtEquipIds = [0];
+  }
+
   factory DeckServantData.fromJson(Map<String, dynamic> data) => _$DeckServantDataFromJson(data);
   Map<String, dynamic> toJson() => _$DeckServantDataToJson(this);
+
+  DeckServantData.user({
+    required int pos,
+    int? initPos,
+    this.userSvtId = 0,
+    List<int> userSvtEquipIds = const [0],
+    int? equipTarget2SkillChange,
+  }) : id = pos,
+       userId = 0,
+       svtId = 0,
+       userSvtEquipIds = userSvtEquipIds.isEmpty ? [0] : userSvtEquipIds.toList(),
+       svtEquipIds = [0],
+       isFollowerSvt = false,
+       npcFollowerSvtId = 0,
+       followerType = -1,
+       initPos = initPos ?? pos,
+       equipTarget2SkillChange = 0;
+
+  DeckServantData.support({int pos = 2, int? initPos})
+    : id = pos,
+      userSvtId = 0,
+      userId = 0,
+      svtId = 0,
+      userSvtEquipIds = [0],
+      svtEquipIds = [0],
+      isFollowerSvt = true,
+      npcFollowerSvtId = 0,
+      followerType = -1,
+      initPos = initPos ?? pos,
+      equipTarget2SkillChange = 0;
+
+  DeckServantData.npc({required int pos, int? initPos, required this.npcFollowerSvtId})
+    : id = pos,
+      userSvtId = 0,
+      userId = 0,
+      svtId = 0,
+      userSvtEquipIds = [0],
+      svtEquipIds = [0],
+      isFollowerSvt = true,
+      followerType = -1,
+      initPos = initPos ?? pos,
+      equipTarget2SkillChange = 0;
 }
 
 @JsonSerializable(createToJson: true, includeIfNull: false)

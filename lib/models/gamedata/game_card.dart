@@ -29,6 +29,14 @@ mixin GameCardMixin implements RouteInfo {
     return icon.replaceAll('.png', '_bordered.png');
   }
 
+  static String? unBordered(String? icon) {
+    const suffix = '_bordered.png';
+    if (icon != null && icon.endsWith(suffix)) {
+      return '${icon.substring(0, icon.length - suffix.length)}.png';
+    }
+    return icon;
+  }
+
   Transl<String, String> get lName;
 
   @override

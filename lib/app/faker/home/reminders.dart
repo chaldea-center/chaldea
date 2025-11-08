@@ -71,12 +71,24 @@ class FakerReminders extends StatelessWidget {
           'Free ${userGacha?.freeDrawAt.sec2date().toCustomString(year: false)}'
           ' → ${nextFreeDrawAt.sec2date().toCustomString(year: false)}',
         ),
+        onTap: () {
+          if (runtime.runningTask.value) return;
+          runtime.agent.user.gacha.gachaId = gacha.id;
+          router.pushPage(GachaDrawPage(runtime: runtime));
+        },
         trailing: TextButton(
           onPressed: hasFreeDraw
               ? () {
-                  if (runtime.runningTask.value) return;
-                  runtime.agent.user.gacha.gachaId = gacha.id;
-                  router.pushPage(GachaDrawPage(runtime: runtime));
+                  SimpleConfirmDialog(
+                    title: Text('Free Draw'),
+                    content: Text('[${gacha.id}] ${gacha.lName}'),
+                    onTapOk: () {
+                      runtime.runTask(() async {
+                        runtime.agent.user.gacha.gachaId = gacha.id;
+                        return runtime.gacha.gachaDraw(hundredDraw: false);
+                      });
+                    },
+                  ).showDialog(context);
                 }
               : null,
           child: Text(S.current.summon),
@@ -152,9 +164,7 @@ class FakerReminders extends StatelessWidget {
             mstData.userEventMission[mission.id]?.missionProgressType ?? MissionProgressType.none.value;
         progresses.addNum(MissionProgressType.fromValue(progress), 1);
       }
-      bool needWarning = mm.endedAt > now
-          ? progresses.keys.any((e) => e != MissionProgressType.achieve)
-          : progresses.containsKey(MissionProgressType.clear);
+      bool needWarning = progresses.keys.any((e) => e != MissionProgressType.achieve);
       if (needWarning) {
         String subtitle = [
           mm.endedAt.sec2date().toCustomString(year: false, second: false),
@@ -199,6 +209,7 @@ class FakerReminders extends StatelessWidget {
   }
 
   Iterable<Widget> getQuests(BuildContext context, int now) sync* {
+    Set<int> _shownQuestIds = {};
     Map<int, Servant> svtQuests = {
       for (final svt in db.gameData.servantsNoDup.values)
         for (final questId in svt.relateQuestIds) questId: svt,
@@ -243,6 +254,7 @@ class FakerReminders extends StatelessWidget {
         if (quest.id == 91601804 && const [94054830, 94041930].any(mstData.isQuestClear)) {
           continue;
         }
+        _shownQuestIds.add(quest.id);
         yield ListTile(
           dense: true,
           leading: interludeSvt?.iconBuilder(context: context),
@@ -277,6 +289,7 @@ class FakerReminders extends StatelessWidget {
       }
       questIds.retainWhere((questId) => _isQuestNeedClear(questId));
       if (questIds.isEmpty) continue;
+      _shownQuestIds.addAll(questIds);
       yield ListTile(
         dense: true,
         leading: Icon(Icons.flag),
@@ -319,6 +332,7 @@ class FakerReminders extends StatelessWidget {
         }).toList();
         // final uncleared = questIds.take(10).toList();
         if (uncleared.isEmpty) continue;
+        _shownQuestIds.addAll(uncleared);
 
         yield ListTile(
           dense: true,
@@ -340,8 +354,15 @@ class FakerReminders extends StatelessWidget {
 
     // no war event quests
     final timerQuests = runtime.gameData.timerData.quests.values
-        .where((quest) => quest.openedAt <= now && quest.closedAt > now && !mstData.isQuestClear(quest.id))
+        .where(
+          (quest) =>
+              quest.openedAt <= now &&
+              quest.closedAt > now &&
+              !mstData.isQuestClear(quest.id) &&
+              !const [WarId.interlude].contains(quest.warId),
+        )
         .toList();
+    timerQuests.removeWhere((e) => _shownQuestIds.contains(e.id));
     if (timerQuests.isNotEmpty) {
       yield ListTile(
         dense: true,

@@ -1,8 +1,10 @@
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'package:chaldea/app/app.dart';
+import 'package:chaldea/app/modules/quest/breakdown/quest_phase.dart' show QuestRestrictionPage;
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/models/gamedata/mst_data.dart';
@@ -38,10 +40,17 @@ class UserDeckSetupPage extends StatefulWidget {
   final FakerRuntime runtime;
   final int activeDeckId;
   final EventDeckRequestParam? eventDeckParam;
+  final UserEventDeckEntity? newEventDeck;
 
-  const UserDeckSetupPage({super.key, required this.runtime, required this.activeDeckId}) : eventDeckParam = null;
-  const UserDeckSetupPage.event({super.key, required this.runtime, required EventDeckRequestParam this.eventDeckParam})
-    : activeDeckId = 0;
+  const UserDeckSetupPage({super.key, required this.runtime, required this.activeDeckId})
+    : eventDeckParam = null,
+      newEventDeck = null;
+  const UserDeckSetupPage.event({
+    super.key,
+    required this.runtime,
+    required EventDeckRequestParam this.eventDeckParam,
+    this.newEventDeck,
+  }) : activeDeckId = 0;
 
   @override
   State<UserDeckSetupPage> createState() => _UserDeckSetupPageState();
@@ -52,12 +61,13 @@ class _UserDeckSetupPageState extends State<UserDeckSetupPage> with FakerRuntime
   late final FakerRuntime runtime = widget.runtime;
 
   late DeckServantEntity deckInfo;
+  late final eventDeckParam = widget.eventDeckParam;
   // in mstData
   DeckServantEntity? _originalDeckInfo;
   UserDeckEntity? _userDeckEntity;
   UserEventDeckEntity? _userEventDeckEntity;
 
-  late final bool isEventDeck = widget.activeDeckId == 0 && (widget.eventDeckParam?.deckNo ?? 0) != 0;
+  late final bool isEventDeck = widget.activeDeckId == 0 && (eventDeckParam?.deckNo ?? 0) != 0;
 
   @override
   void initState() {
@@ -70,14 +80,18 @@ class _UserDeckSetupPageState extends State<UserDeckSetupPage> with FakerRuntime
     if (_originalDeckInfo != null) {
       deckInfo = DeckServantEntity.fromJson(Map.from(jsonDecode(jsonEncode(_originalDeckInfo!))));
     } else {
-      deckInfo = DeckServantEntity();
+      deckInfo = DeckServantEntity.empty(
+        userEquipId: mstData.user?.userEquipId ?? 0,
+        eventDeckNoSupport: eventDeckParam?.questPhase?.flags.contains(QuestFlag.eventDeckNoSupport) == true,
+      );
     }
   }
 
   void refreshDeckInfo() {
     if (isEventDeck) {
       final param = widget.eventDeckParam!;
-      _userEventDeckEntity = mstData.userEventDeck[UserEventDeckEntity.createPK(param.eventId, param.deckNo)];
+      _userEventDeckEntity =
+          mstData.userEventDeck[UserEventDeckEntity.createPK(param.eventId, param.deckNo)] ?? widget.newEventDeck;
       _originalDeckInfo = _userEventDeckEntity?.deckInfo;
     } else {
       _userDeckEntity = mstData.userDeck[widget.activeDeckId];
@@ -88,11 +102,13 @@ class _UserDeckSetupPageState extends State<UserDeckSetupPage> with FakerRuntime
   @override
   Widget build(BuildContext context) {
     refreshDeckInfo();
+    final eventParam = widget.eventDeckParam;
+    final questPhase = eventParam?.questPhase;
     return Scaffold(
       appBar: AppBar(
         title: Text(
           isEventDeck
-              ? 'Event Deck ${widget.eventDeckParam?.eventId}-${widget.eventDeckParam?.deckNo}'
+              ? 'Event Deck ${eventParam?.eventId}-${eventParam?.deckNo}'
               : 'Deck ${_userDeckEntity?.deckNo ?? widget.activeDeckId} ${_userDeckEntity?.name ?? ""}',
         ),
         actions: [runtime.buildMenuButton(context)],
@@ -125,7 +141,11 @@ class _UserDeckSetupPageState extends State<UserDeckSetupPage> with FakerRuntime
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   child: FormationCard(
-                    formation: BattleTeamFormationX.fromUserDeck(deckInfo: _originalDeckInfo, mstData: mstData),
+                    formation: BattleTeamFormationX.fromUserDeck(
+                      deckInfo: _originalDeckInfo,
+                      mstData: mstData,
+                      questPhase: questPhase,
+                    ),
                     userSvtCollections: mstData.userSvtCollection.lookup,
                     showBond: true,
                   ),
@@ -134,7 +154,11 @@ class _UserDeckSetupPageState extends State<UserDeckSetupPage> with FakerRuntime
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   child: FormationCard(
-                    formation: BattleTeamFormationX.fromUserDeck(deckInfo: deckInfo, mstData: mstData),
+                    formation: BattleTeamFormationX.fromUserDeck(
+                      deckInfo: deckInfo,
+                      mstData: mstData,
+                      questPhase: questPhase,
+                    ),
                     userSvtCollections: mstData.userSvtCollection.lookup,
                     showBond: true,
                   ),
@@ -188,6 +212,43 @@ class _UserDeckSetupPageState extends State<UserDeckSetupPage> with FakerRuntime
                       ),
                   ],
                 ),
+                if (questPhase != null) ...[
+                  kDefaultDivider,
+                  ListTile(
+                    dense: true,
+                    title: Text(questPhase.lNameWithChapter),
+                    subtitle: Text('phase ${questPhase.phase}/${Maths.max(questPhase.phases)}'),
+                    trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
+                    onTap: questPhase.routeTo,
+                  ),
+                  if (questPhase.restrictions.isNotEmpty)
+                    ListTile(
+                      dense: true,
+                      title: Text('${questPhase.restrictions.length} ${S.current.quest_restriction}'),
+                      trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
+                      onTap: () {
+                        router.pushPage(QuestRestrictionPage(restrictions: questPhase.restrictions));
+                      },
+                    ),
+                  if (questPhase.flags.isNotEmpty)
+                    ListTile(
+                      dense: true,
+                      title: const Text('flags'),
+                      subtitle: Text.rich(
+                        TextSpan(
+                          children: divideList([
+                            for (final flag in questPhase.flags)
+                              TextSpan(
+                                text: flag.name,
+                                style: flag.name.toLowerCase().contains('support')
+                                    ? TextStyle(color: Colors.blue)
+                                    : null,
+                              ),
+                          ], const TextSpan(text: ' / ')),
+                        ),
+                      ),
+                    ),
+                ],
               ],
             ),
           ),
@@ -231,16 +292,25 @@ class _UserDeckSetupPageState extends State<UserDeckSetupPage> with FakerRuntime
   }
 
   Widget buildSvt(DeckServantData deckSvt) {
+    final questPhase = widget.eventDeckParam?.questPhase;
     final userSvt = mstData.userSvt[deckSvt.userSvtId];
     final userSvtCollection = mstData.userSvtCollection[userSvt?.svtId];
-    final svt = db.gameData.servantsById[userSvt?.svtId];
-    final fixedSupport = widget.eventDeckParam?.questPhase?.supportServants.firstWhereOrNull(
+    final mySvt = db.gameData.servantsById[userSvt?.svtId];
+    final npc = deckSvt.npcFollowerSvtId == 0
+        ? null
+        : questPhase?.supportServants.firstWhereOrNull(
+            (support) => support.npcSvtFollowerId == deckSvt.npcFollowerSvtId,
+          );
+    final fixedSupport = questPhase?.supportServants.firstWhereOrNull(
       (e) => deckSvt.initPos != null && e.script?.eventDeckIndex == deckSvt.initPos,
     );
 
     Widget baseSvtWidget = GameCardMixin.cardIconBuilder(
       context: context,
-      icon: svt?.ascendIcon(userSvt?.dispLimitCount ?? -1) ?? fixedSupport?.svt.icon ?? Atlas.common.emptySvtIcon,
+      icon:
+          mySvt?.ascendIcon(userSvt?.dispLimitCount ?? -1) ??
+          (npc ?? fixedSupport)?.svt.icon ??
+          Atlas.common.emptySvtIcon,
       width: 56,
       aspectRatio: 132 / 144,
       option: ImageWithTextOption(
@@ -249,9 +319,11 @@ class _UserDeckSetupPageState extends State<UserDeckSetupPage> with FakerRuntime
         alignment: Alignment.bottomLeft,
         errorWidget: (context, url, error) => CachedImage(imageUrl: Atlas.common.unknownEnemyIcon),
       ),
-      text: userSvt == null
-          ? null
-          : ' ◈ ${userSvtCollection?.friendshipRank}\n Lv.${userSvt.lv} NP${userSvt.treasureDeviceLv1}',
+      text: userSvt != null
+          ? ' ◈ ${userSvtCollection?.friendshipRank}\n Lv.${userSvt.lv} NP${userSvt.treasureDeviceLv1}'
+          : deckSvt.npcFollowerSvtId != 0 && npc == null
+          ? ' NPC ${deckSvt.npcFollowerSvtId}'
+          : null,
       onTap: deckSvt.isFollowerSvt
           ? null
           : () {
@@ -273,24 +345,91 @@ class _UserDeckSetupPageState extends State<UserDeckSetupPage> with FakerRuntime
               );
             },
     );
-    if (!deckSvt.isFollowerSvt && userSvt != null) {
-      baseSvtWidget = GestureDetector(
-        onLongPress: () {
-          router.showDialog(
-            builder: (context) => SimpleDialog(
-              title: Text(svt?.lName.l ?? 'svt ${userSvt.svtId}'),
-              children: [
-                SimpleDialogOption(
-                  child: Text.rich(
-                    TextSpan(
-                      children: [
-                        if (svt != null) CenterWidgetSpan(child: svt.iconBuilder(context: context, width: 24)),
-                        TextSpan(text: ' pos ${deckSvt.id}  Lv.${userSvt.lv}'),
-                      ],
-                    ),
-                  ),
+
+    baseSvtWidget = GestureDetector(
+      onLongPress: () {
+        void _setDeckSvt(DeckServantData newDeck) {
+          final index = deckInfo.svts.indexOf(deckSvt);
+          if (index < 0) {
+            EasyLoading.showError('not found in deck list');
+            return;
+          }
+          deckInfo.svts[index] = newDeck;
+          if (mounted) setState(() {});
+        }
+
+        router.showDialog(
+          builder: (context) => SimpleDialog(
+            title: Text(mySvt?.lName.l ?? npc?.lName.l ?? fixedSupport?.lName.l ?? 'svt ${deckSvt.svtId}'),
+            children: [
+              ListTile(
+                dense: true,
+                contentPadding: const EdgeInsets.symmetric(horizontal: 24),
+                leading:
+                    mySvt?.iconBuilder(context: context) ?? (npc ?? fixedSupport)?.svt.iconBuilder(context: context),
+                title: Text(mySvt?.lName.l ?? (npc ?? fixedSupport)?.svt.lName.l ?? 'svt ${deckSvt.userSvtId}'),
+                subtitle: Text(
+                  <String>[
+                    'pos ${deckSvt.id}',
+                    if (mySvt != null) "mySvt ${deckSvt.userSvtId}(No.${mySvt.collectionNo})",
+                    if (npc != null) "npc ${npc.npcSvtFollowerId}(No.${npc.svt.shownId})",
+                    if (fixedSupport != null)
+                      "fixedSupport ${fixedSupport.npcSvtFollowerId}(No.${fixedSupport.svt.shownId})",
+                    if (deckSvt.isFollowerSvt) "isFollower",
+                  ].join(', '),
                 ),
-                kDefaultDivider,
+              ),
+              kDefaultDivider,
+              ListTile(
+                contentPadding: const EdgeInsets.symmetric(horizontal: 24),
+                title: Text(S.current.clear),
+                onTap: () {
+                  Navigator.pop(context);
+                  _setDeckSvt(DeckServantData.user(pos: deckSvt.id, initPos: deckSvt.initPos));
+                },
+              ),
+              ListTile(
+                contentPadding: const EdgeInsets.symmetric(horizontal: 24),
+                title: Text('Set Support'),
+                onTap: () {
+                  Navigator.pop(context);
+                  _setDeckSvt(DeckServantData.support(pos: deckSvt.id, initPos: deckSvt.initPos));
+                },
+              ),
+              if (questPhase != null && questPhase.supportServants.isNotEmpty)
+                ListTile(
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 24),
+                  title: Text('Choose NPC'),
+                  onTap: () {
+                    Navigator.pop(context);
+                    if (!mounted) return;
+                    router.showDialog(
+                      builder: (context) {
+                        return SimpleDialog(
+                          title: Text('Choose NPC'),
+                          children: [
+                            for (final support in questPhase.supportServants)
+                              ListTile(
+                                dense: true,
+                                contentPadding: const EdgeInsets.symmetric(horizontal: 24),
+                                leading: support.svt.iconBuilder(context: context),
+                                title: Text(support.lName.l),
+                                subtitle: Text('npcId ${support.npcSvtFollowerId}'),
+                                onTap: () {
+                                  Navigator.pop(context);
+                                  _setDeckSvt(
+                                    DeckServantData.npc(pos: deckSvt.id, npcFollowerSvtId: support.npcSvtFollowerId),
+                                  );
+                                },
+                              ),
+                          ],
+                        );
+                      },
+                    );
+                  },
+                ),
+              if (userSvt != null) kDefaultDivider,
+              if (userSvt != null)
                 ListTile(
                   contentPadding: const EdgeInsets.symmetric(horizontal: 24),
                   title: Text('从者强化'),
@@ -301,29 +440,25 @@ class _UserDeckSetupPageState extends State<UserDeckSetupPage> with FakerRuntime
                     router.pushPage(SvtCombinePage(runtime: runtime));
                   },
                 ),
-                ListTile(
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 24),
-                  title: Text('Clear Servant'),
-                  onTap: () {
-                    Navigator.pop(context);
-                    deckSvt.userSvtId = 0;
-                    deckSvt.userSvtEquipIds.fillRange(0, deckSvt.userSvtEquipIds.length, 0);
-                    if (mounted) setState(() {});
-                  },
-                ),
-              ],
-            ),
-          );
-        },
-        child: baseSvtWidget,
-      );
-    }
+            ],
+          ),
+        );
+      },
+      child: baseSvtWidget,
+    );
     if (deckSvt.isFollowerSvt) {
       baseSvtWidget = Stack(
         clipBehavior: Clip.none,
         children: [
           baseSvtWidget,
-          Positioned(top: -5, right: -5, child: db.getIconImage(AssetURL.i.items(12), width: 24, aspectRatio: 1)),
+          Positioned(
+            top: -5,
+            right: -5,
+            child: Opacity(
+              opacity: deckSvt.isFollowerNPC ? 0.6 : 1,
+              child: db.getIconImage(AssetURL.i.items(12), width: deckSvt.isFollowerNPC ? 18 : 24, aspectRatio: 1),
+            ),
+          ),
         ],
       );
     }
@@ -344,26 +479,33 @@ class _UserDeckSetupPageState extends State<UserDeckSetupPage> with FakerRuntime
       children: [
         Text.rich(TextSpan(text: deckSvt.initPos.toString()), style: Theme.of(context).textTheme.bodySmall),
         svtIcon,
-        for (final (index, _) in deckSvt.userSvtEquipIds.indexed) buildSvtEquip(deckSvt, index),
+        for (final index in range(max(1, deckSvt.userSvtEquipIds.length))) buildSvtEquip(deckSvt, index),
       ],
     );
   }
 
   Widget buildSvtEquip(DeckServantData deckSvt, int position) {
+    if (deckSvt.userSvtEquipIds.length <= position) deckSvt.userSvtEquipIds.fixLength(position + 1, () => 0);
     final userSvtEquip = mstData.userSvt[deckSvt.userSvtEquipIds[position]];
     final svtEquip = db.gameData.craftEssencesById[userSvtEquip?.svtId];
+    final npc = deckSvt.npcFollowerSvtId == 0
+        ? null
+        : widget.eventDeckParam?.questPhase?.supportServants.firstWhereOrNull(
+            (support) => support.npcSvtFollowerId == deckSvt.npcFollowerSvtId,
+          );
     final fixedSupport = widget.eventDeckParam?.questPhase?.supportServants.firstWhereOrNull(
       (e) => deckSvt.initPos != null && e.script?.eventDeckIndex == deckSvt.initPos,
     );
 
     Widget baseSvtEquipWidget = GameCardMixin.cardIconBuilder(
       context: context,
-      icon: svtEquip?.equipFace ?? fixedSupport?.equips.firstOrNull?.equip.equipFace ?? Atlas.common.emptyCeIcon,
+      icon:
+          svtEquip?.equipFace ?? (npc ?? fixedSupport)?.equips.firstOrNull?.equip.equipFace ?? Atlas.common.emptyCeIcon,
       width: 56,
       aspectRatio: 150 / 68,
-      text: userSvtEquip == null
-          ? null
-          : [' Lv.${userSvtEquip.lv}', if (userSvtEquip.limitCount == 4) ' $kStarChar2'].join(),
+      text: userSvtEquip != null
+          ? [' Lv.${userSvtEquip.lv}', if (userSvtEquip.limitCount == 4) ' $kStarChar2'].join()
+          : null,
       option: ImageWithTextOption(
         textAlign: TextAlign.left,
         // fontSize: 14,

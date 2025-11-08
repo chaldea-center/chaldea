@@ -294,9 +294,10 @@ class Quest with RouteInfo {
   String get route => Routes.questI(id);
 
   @override
-  void routeTo({Widget? child, bool popDetails = false, Region? region}) {
+  void routeTo({Widget? child, int? phase, bool popDetails = false, Region? region}) {
+    if (this is QuestPhase) phase ??= (this as QuestPhase).phase;
     super.routeTo(
-      child: child ?? QuestDetailPage(quest: this, region: region),
+      child: child ?? QuestDetailPage(quest: this, phase: phase, region: region),
       popDetails: popDetails,
     );
   }

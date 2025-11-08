@@ -729,13 +729,13 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
   Widget? buildRestriction(List<QuestPhaseRestriction> restrictions) {
     if (restrictions.isEmpty || widget.battleOnly || widget.offline) return null;
     final shortMsg = restrictions
-        .map((e) => _QuestRestriction.getText(restriction: e, all: false, leading: false))
+        .map((e) => QuestRestrictionPage.getText(restriction: e, all: false, leading: false))
         .firstWhereOrNull((e) => e.isNotEmpty);
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 3),
       child: InkWell(
         onTap: () {
-          router.pushPage(_QuestRestriction(restrictions: restrictions));
+          router.pushPage(QuestRestrictionPage(restrictions: restrictions));
         },
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -1116,9 +1116,9 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
   }
 }
 
-class _QuestRestriction extends StatelessWidget {
+class QuestRestrictionPage extends StatelessWidget {
   final List<QuestPhaseRestriction> restrictions;
-  const _QuestRestriction({required this.restrictions});
+  const QuestRestrictionPage({super.key, required this.restrictions});
 
   @override
   Widget build(BuildContext context) {
@@ -1140,10 +1140,10 @@ class _QuestRestriction extends StatelessWidget {
           rangeText += 'NotEqual(≠) ';
           break;
         case RestrictionRangeType.above:
-          rangeText += 'Above(>)';
+          rangeText += 'Above(≥)';
           break;
         case RestrictionRangeType.below:
-          rangeText += 'Below(<)';
+          rangeText += 'Below(≤)';
           break;
         case RestrictionRangeType.between:
           rangeText += 'Between(a≤x≤b)';
@@ -1202,7 +1202,7 @@ class _QuestRestriction extends StatelessWidget {
         val > 99
             ? SharedBuilder.textButtonSpan(
                 context: context,
-                text: val.toString(),
+                text: Transl.trait(val).l,
                 onTap: () {
                   if (type == RestrictionType.alloutBattleUniqueSvt) {
                     router.push(url: Routes.eventI(val));
