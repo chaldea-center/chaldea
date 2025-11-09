@@ -325,7 +325,7 @@ class FunctionExecutor {
           );
           break;
         case FuncType.subState:
-          await SubState.subState(battleData, function.traitVals, dataVals, activator, targets);
+          await SubState.subState(battleData, function.vals, dataVals, activator, targets);
           break;
         case FuncType.moveState:
           await MoveState.moveState(battleData, dataVals, activator!, targetedAlly, targetedEnemy);
@@ -343,13 +343,13 @@ class FunctionExecutor {
           GainNp.gainMultiplyNp(battleData, dataVals, targets, isNegative: isNegative);
           break;
         case FuncType.gainNpIndividualSum:
-          GainNp.gainNpPerIndividual(battleData, dataVals, activator, targets, function.traitVals);
+          GainNp.gainNpPerIndividual(battleData, dataVals, activator, targets, function.vals);
           break;
         case FuncType.gainNpBuffIndividualSum:
-          GainNp.gainNpPerBuffIndividual(battleData, dataVals, targets, function.traitVals);
+          GainNp.gainNpPerBuffIndividual(battleData, dataVals, targets, function.vals);
           break;
         case FuncType.gainNpTargetSum:
-          GainNpTargetSum.gainNpTargetSum(battleData, dataVals, targets, function.traitVals);
+          GainNpTargetSum.gainNpTargetSum(battleData, dataVals, targets, function.vals);
           break;
         case FuncType.gainNpCriticalstarSum:
           GainNp.gainNpCriticalStarSum(battleData, dataVals, targets);

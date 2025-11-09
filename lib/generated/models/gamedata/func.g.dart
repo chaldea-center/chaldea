@@ -29,7 +29,7 @@ NiceFunction _$NiceFunctionFromJson(Map json) => NiceFunction(
           ?.map((e) => FuncGroup.fromJson(Map<String, dynamic>.from(e as Map)))
           .toList() ??
       const [],
-  traitVals: json['traitVals'] == null ? const [] : const TraitListConverter().fromJson(json['traitVals'] as Object),
+  vals: json['traitVals'] == null ? const [] : const TraitListConverter().fromJson(json['traitVals'] as Object),
   buffs:
       (json['buffs'] as List<dynamic>?)?.map((e) => Buff.fromJson(Map<String, dynamic>.from(e as Map))).toList() ??
       const [],
@@ -63,7 +63,7 @@ Map<String, dynamic> _$NiceFunctionToJson(NiceFunction instance) => <String, dyn
   'overWriteTvalsList': const Trait2dListConverter().toJson(instance.overWriteTvalsList),
   'funcquestTvals': const TraitListConverter().toJson(instance.funcquestTvals),
   'funcGroup': instance.funcGroup.map((e) => e.toJson()).toList(),
-  'traitVals': const TraitListConverter().toJson(instance.traitVals),
+  'traitVals': const TraitListConverter().toJson(instance.vals),
   'buffs': instance.buffs.map((e) => e.toJson()).toList(),
   'script': instance.script?.toJson(),
   'svals': instance.svals.map((e) => e.toJson()).toList(),
@@ -133,7 +133,7 @@ BaseFunction _$BaseFunctionFromJson(Map json) => BaseFunction(
           ?.map((e) => FuncGroup.fromJson(Map<String, dynamic>.from(e as Map)))
           .toList() ??
       const [],
-  traitVals: json['traitVals'] == null ? const [] : const TraitListConverter().fromJson(json['traitVals'] as Object),
+  vals: json['traitVals'] == null ? const [] : const TraitListConverter().fromJson(json['traitVals'] as Object),
   buffs:
       (json['buffs'] as List<dynamic>?)?.map((e) => Buff.fromJson(Map<String, dynamic>.from(e as Map))).toList() ??
       const [],
@@ -151,7 +151,7 @@ Map<String, dynamic> _$BaseFunctionToJson(BaseFunction instance) => <String, dyn
   'overWriteTvalsList': const Trait2dListConverter().toJson(instance.overWriteTvalsList),
   'funcquestTvals': const TraitListConverter().toJson(instance.funcquestTvals),
   'funcGroup': instance.funcGroup.map((e) => e.toJson()).toList(),
-  'traitVals': const TraitListConverter().toJson(instance.traitVals),
+  'traitVals': const TraitListConverter().toJson(instance.vals),
   'buffs': instance.buffs.map((e) => e.toJson()).toList(),
   'script': instance.script?.toJson(),
 };

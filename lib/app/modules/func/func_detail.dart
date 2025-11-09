@@ -218,6 +218,13 @@ class _FuncDetailPageState extends State<FuncDetailPage>
               ),
             ],
           ),
+        if (func.vals.isNotEmpty && func.traitVals.isEmpty)
+          CustomTableRow(
+            children: [
+              TableCellData(text: "vals", isHeader: true),
+              TableCellData(text: func.vals.join(' / '), flex: 3, alignment: AlignmentDirectional.centerEnd),
+            ],
+          ),
         ..._buildScript(),
         if (func.buffs.isNotEmpty) ...[
           CustomTableRow.fromTexts(texts: const ["Buff"], isHeader: true),

@@ -61,7 +61,7 @@ class GainNpFromTargets {
       functvals: dependFunction.functvals,
       funcquestTvals: dependFunction.funcquestTvals,
       funcGroup: dependFunction.funcGroup,
-      traitVals: dependFunction.traitVals,
+      vals: dependFunction.vals,
       buffs: dependFunction.buffs,
       svals: [dependVal],
     );

@@ -316,12 +316,12 @@ class SkillEffect {
   static SkillEffect subStatePositive = SkillEffect._func(
     'subStatePositive',
     FuncType.subState,
-    validate: (func) => func.traitVals.contains(Trait.buffPositiveEffect.value),
+    validate: (func) => func.vals.contains(Trait.buffPositiveEffect.value),
   );
   static SkillEffect subStateNegative = SkillEffect._func(
     'subStateNegative',
     FuncType.subState,
-    validate: (func) => func.traitVals.contains(Trait.buffNegativeEffect.value),
+    validate: (func) => func.vals.contains(Trait.buffNegativeEffect.value),
   );
   // 强化解除耐性提升
   static SkillEffect upToleranceSubstate = SkillEffect._buff('upToleranceSubstate', BuffType.upToleranceSubstate);

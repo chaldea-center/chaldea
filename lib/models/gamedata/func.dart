@@ -44,7 +44,8 @@ class NiceFunction with RouteInfo implements BaseFunction {
   List<FuncGroup> get funcGroup => _baseFunc.funcGroup;
   @override
   @TraitListConverter()
-  List<int> get traitVals => _baseFunc.traitVals;
+  @JsonKey(name: 'traitVals')
+  List<int> get vals => _baseFunc.vals;
   @override
   List<Buff> get buffs => _baseFunc.buffs;
   @override
@@ -68,7 +69,7 @@ class NiceFunction with RouteInfo implements BaseFunction {
     List<List<int>> overWriteTvalsList = const [],
     List<int> funcquestTvals = const [],
     List<FuncGroup> funcGroup = const [],
-    List<int> traitVals = const [],
+    List<int> vals = const [],
     List<Buff> buffs = const [],
     FuncScript? script,
     List<DataVals>? svals,
@@ -88,7 +89,7 @@ class NiceFunction with RouteInfo implements BaseFunction {
          overWriteTvalsList: overWriteTvalsList,
          funcquestTvals: funcquestTvals,
          funcGroup: funcGroup,
-         traitVals: traitVals,
+         vals: vals,
          buffs: buffs,
          script: script,
        ),
@@ -222,7 +223,7 @@ class NiceFunction with RouteInfo implements BaseFunction {
               ?.map((e) => FuncGroup.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
-      traitVals: const TraitListConverter().fromJsonNull(json['traitVals'] as List<dynamic>?) ?? const [],
+      vals: const TraitListConverter().fromJsonNull(json['traitVals'] as List<dynamic>?) ?? const [],
       buffs:
           (json['buffs'] as List<dynamic>?)?.map((e) => Buff.fromJson(Map<String, dynamic>.from(e as Map))).toList() ??
           const [],
@@ -333,7 +334,8 @@ class BaseFunction with RouteInfo {
   final List<int> funcquestTvals;
   final List<FuncGroup> funcGroup;
   @TraitListConverter()
-  final List<int> traitVals;
+  @JsonKey(name: 'traitVals')
+  final List<int> vals; // from func.vals, could be not trait id or buff id.
   final List<Buff> buffs;
   final FuncScript? script;
 
@@ -348,7 +350,7 @@ class BaseFunction with RouteInfo {
     this.overWriteTvalsList = const [],
     this.funcquestTvals = const [],
     this.funcGroup = const [],
-    this.traitVals = const [],
+    this.vals = const [],
     this.buffs = const [],
     this.script,
   });
@@ -364,7 +366,7 @@ class BaseFunction with RouteInfo {
     List<List<int>> overWriteTvalsList = const [],
     List<int> funcquestTvals = const [],
     List<FuncGroup> funcGroup = const [],
-    List<int> traitVals = const [],
+    List<int> vals = const [],
     List<Buff> buffs = const [],
     FuncScript? script,
   }) => GameDataLoader.instance.tmp.getFunc(
@@ -380,7 +382,7 @@ class BaseFunction with RouteInfo {
       overWriteTvalsList: overWriteTvalsList,
       funcquestTvals: funcquestTvals,
       funcGroup: funcGroup,
-      traitVals: traitVals,
+      vals: vals,
       buffs: buffs,
       script: script,
     ),
@@ -450,6 +452,13 @@ extension BaseFunctionX on BaseFunction {
     if (funcquestTvals.any(Trait.isEventField)) return true;
     return false;
   }
+
+  List<int> get traitVals {
+    if (!FuncType.kAddStateFuncTypes.contains(funcType) && !FuncType.kValsNotBuffOrTraitFuncTypes.contains(funcType)) {
+      return vals;
+    }
+    return [];
+  }
 }
 
 @JsonSerializable()
@@ -498,8 +507,6 @@ const kEventFuncTypes = [
   FuncType.eventPointRateUp,
   FuncType.eventFortificationPointUp,
 ];
-
-const kAddStateFuncTypes = [FuncType.addState, FuncType.addStateShort, FuncType.addFieldChangeToField];
 
 @JsonEnum(alwaysCreate: true)
 enum FuncType {
@@ -632,6 +639,13 @@ enum FuncType {
 
   final int value;
   const FuncType(this.value);
+
+  static const kAddStateFuncTypes = [FuncType.addState, FuncType.addStateShort, FuncType.addFieldChangeToField];
+  static const kValsNotBuffOrTraitFuncTypes = [
+    FuncType.addBattleValue,
+    FuncType.setBattleValue,
+    FuncType.setBattleMissionValue,
+  ];
 
   bool get isDamageNp => name.startsWith('damageNp') && !ConstData.constantStr.functionTypeNotNpDamage.contains(value);
 

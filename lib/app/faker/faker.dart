@@ -992,6 +992,23 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
       }
     }
 
+    List<Event> campaigns = [];
+    for (final event in runtime.gameData.timerData.events.values) {
+      if (event.startedAt > now || event.endedAt <= now) continue;
+      for (final campaign in event.campaigns) {
+        if (!const [
+          CombineAdjustTarget.questAp,
+          CombineAdjustTarget.questApFirstTime,
+          CombineAdjustTarget.questItemFirstTime,
+        ].contains(campaign.target)) {
+          continue;
+        }
+        if (event.isCampaignQuest(battleOption.questId)) {
+          campaigns.add(event);
+        }
+      }
+    }
+
     return TileGroup(
       headerWidget: SHeader.rich(
         TextSpan(
@@ -1079,6 +1096,21 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
             child: Text(battleOption.questPhase.toString()),
           ),
         ),
+        if (campaigns.isNotEmpty)
+          ListTile(
+            dense: true,
+            title: Text('${campaigns.length} ${S.current.event_campaign}'),
+            subtitle: Text(campaigns.map((e) => e.lName.l).join(' / '), maxLines: 1, overflow: TextOverflow.ellipsis),
+            onTap: () {
+              SimpleDialog(
+                title: Text(S.current.event_campaign),
+                children: [
+                  for (final campaign in campaigns)
+                    SimpleDialogOption(onPressed: campaign.routeTo, child: Text('[${campaign.id}] ${campaign.lName.l}')),
+                ],
+              ).showDialog(context);
+            },
+          ),
         ...getUserDeckSection(quest, questPhase),
         DividerWithTitle(title: S.current.support_servant_short, indent: 16),
         ListTile(

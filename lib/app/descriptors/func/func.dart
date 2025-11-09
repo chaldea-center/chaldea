@@ -1365,7 +1365,7 @@ class FuncDescriptor extends StatelessWidget {
       }
     }
     // if (func.funcType != FuncType.subState ||
-    //     func.traitVals.map((e) => e.id).join(',') != func.functvals.map((e) => e.id).join(',')) {
+    //     func.vals.map((e) => e.id).join(',') != func.functvals.map((e) => e.id).join(',')) {
     //   _addTraits(Transl.special.funcTargetVals, func.functvals);
     // }
     if ([
@@ -1760,7 +1760,7 @@ class FuncDescriptor extends StatelessWidget {
       "popupText": func.lPopupText.l,
       if (func.functvals.isNotEmpty) "targetTraits": _traitList(func.functvals),
       if (func.funcquestTvals.isNotEmpty) "fieldTraits": _traitList(func.funcquestTvals),
-      if (func.traitVals.isNotEmpty) "funcTargetTraits": _traitList(func.traitVals),
+      if (func.vals.isNotEmpty) "funcTargetTraits": _traitList(func.vals),
       if (buff != null) ...{
         "----buff----": "↓",
         "id": buff.id,
@@ -2001,7 +2001,7 @@ class ___LazyFuncState extends State<_LazyFunc> with FuncsDescriptor {
                   functvals: _func.functvals,
                   funcquestTvals: _func.funcquestTvals,
                   funcGroup: _func.funcGroup,
-                  traitVals: _func.traitVals,
+                  vals: _func.vals,
                   buffs: _func.buffs,
                   svals: _getDependVals(widget.trigger.svals),
                   svals2: _getDependVals(widget.trigger.svals2),
