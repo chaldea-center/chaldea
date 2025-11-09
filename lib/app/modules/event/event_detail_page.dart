@@ -379,7 +379,12 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
       );
     }
     if (event.eventDetail?.flags.isNotEmpty == true) {
-      rows.add(CustomTableRow.fromTexts(texts: [event.eventDetail!.flags.map((e) => e.name).join(" / ")]));
+      rows.add(
+        CustomTableRow.fromTexts(
+          texts: [event.eventDetail!.flags.map((e) => e.name).join(" / ")],
+          defaults: TableCellData(textAlign: TextAlign.center),
+        ),
+      );
     }
 
     children.add(CustomTable(selectable: true, children: rows));

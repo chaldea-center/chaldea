@@ -358,6 +358,7 @@ class FakerReminders extends StatelessWidget {
           (quest) =>
               quest.openedAt <= now &&
               quest.closedAt > now &&
+              quest.closedAt < now + 365 * kSecsPerDay &&
               !mstData.isQuestClear(quest.id) &&
               !const [WarId.interlude].contains(quest.warId),
         )
@@ -369,7 +370,7 @@ class FakerReminders extends StatelessWidget {
         leading: Icon(Icons.flag),
         title: Text('Event quests', maxLines: 1, overflow: TextOverflow.ellipsis),
         subtitle: Text(
-          '${timerQuests.length} uncleared quests, ${Maths.min(timerQuests.map((e) => e.closedAt)).sec2date().toCustomString(year: false, second: false)}',
+          '${timerQuests.length} uncleared, ${Maths.min(timerQuests.map((e) => e.closedAt)).sec2date().toCustomString(year: false, second: false)}',
         ),
         onTap: () {
           router.pushPage(QuestListPage(quests: timerQuests, mstData: mstData));

@@ -48,8 +48,8 @@ class _BuffDetailPageState extends State<BuffDetailPage>
 
   @override
   void dispose() {
-    super.dispose();
     controller.dispose();
+    super.dispose();
   }
 
   @override
@@ -66,17 +66,15 @@ class _BuffDetailPageState extends State<BuffDetailPage>
           dropdownRegion(shownNone: widget.buff != null),
           popupMenu,
         ],
-        bottom: data == null
-            ? null
-            : FixedHeight.tabBar(
-                TabBar(
-                  controller: controller,
-                  tabs: const [
-                    Tab(text: "Info"),
-                    Tab(text: 'Func'),
-                  ],
-                ),
-              ),
+        bottom: FixedHeight.tabBar(
+          TabBar(
+            controller: controller,
+            tabs: const [
+              Tab(text: "Info"),
+              Tab(text: 'Func'),
+            ],
+          ),
+        ),
       ),
       body: buildBody(context),
     );

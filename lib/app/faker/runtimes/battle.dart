@@ -262,6 +262,19 @@ class FakerRuntimeBattle extends FakerRuntimeBase {
       }
     }
 
+    int questSelect = 0;
+    final questSelects = questPhaseEntity.extraDetail?.questSelect ?? [];
+    if (questSelects.isNotEmpty) {
+      if (!runtime.mounted) {
+        throw SilentException('questSelect: $questSelects, not mounted');
+      }
+      final select = await runtime.showLocalDialog<int>(_QuestSelectBranchDialog(questSelects: questSelects));
+      if (select == null) {
+        throw SilentException('questSelect: $questSelects, canceled');
+      }
+      questSelect = select;
+    }
+
     int campaignItemId = 0;
     if (options.useCampaignItem) {
       // should check campaign time rather item endedAt
@@ -388,6 +401,8 @@ class FakerRuntimeBattle extends FakerRuntimeBase {
       followerType: followerType,
       followerSupportDeckId: followerSupportDeckId,
       followerGrandGraphId: followerGrandGraphId,
+      enemySelect: questSelect,
+      questSelect: questSelect,
       campaignItemId: campaignItemId,
       userEquipId: userEquipId,
     );
@@ -969,6 +984,27 @@ class __SkillShiftEnemySelectDialogState extends State<_SkillShiftEnemySelectDia
           selectedUniqueIds.toggle(enemy.uniqueId);
         });
       },
+    );
+  }
+}
+
+class _QuestSelectBranchDialog extends StatelessWidget {
+  final List<int> questSelects;
+  const _QuestSelectBranchDialog({required this.questSelects});
+
+  @override
+  Widget build(BuildContext context) {
+    return SimpleDialog(
+      title: Text('Select Branch'),
+      children: [
+        for (final (index, questId) in questSelects.indexed)
+          SimpleDialogOption(
+            onPressed: () {
+              Navigator.pop(context, index);
+            },
+            child: Text('No.$index - $questId'),
+          ),
+      ],
     );
   }
 }

@@ -386,7 +386,7 @@ class _QuestEnemyDetailState extends State<QuestEnemyDetail> {
 
   List<Widget> enemyScriptInfo() {
     List<Widget> children = [
-      if (enemy.enemyScript.leader == true) CustomTableRow.fromTexts(texts: [S.current.enemy_leader_hint]),
+      if (enemy.enemyScript.leader == 1) CustomTableRow.fromTexts(texts: [S.current.enemy_leader_hint]),
     ];
     if (children.isNotEmpty) {
       children.insert(0, CustomTableRow.fromTexts(texts: const ['Hint'], isHeader: true));

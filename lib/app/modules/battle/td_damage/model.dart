@@ -515,7 +515,7 @@ class TdDmgSolver {
     enemy2
       ..deck = DeckType.enemy
       ..deckId = 1;
-    enemy.enemyScript.shift = null;
+    enemy.enemyScript.setValue('shift', null);
     return enemy2;
   }
 }

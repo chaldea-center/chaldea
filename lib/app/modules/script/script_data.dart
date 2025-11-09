@@ -47,14 +47,16 @@ class ScriptParsedData {
     }
 
     final fp = await AtlasIconLoader.i.get(_uri!.toString(), allowWeb: true);
+    String? fulltext;
     if (fp != null) {
-      state.fulltext = await FilePlus(fp).readAsString();
+      fulltext = await FilePlus(fp).readAsString();
     }
-    _parseScript(state.fulltext ?? "");
+    _parseScript(fulltext ?? "");
   }
 
   void _parseScript(String fulltext) {
     reset();
+    state.fulltext = fulltext;
     final lines = const LineSplitter().convert(fulltext.trim());
     List<ScriptComponent> children = [];
     ScriptDialog? lastDialog;

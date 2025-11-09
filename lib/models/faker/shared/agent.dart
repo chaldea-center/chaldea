@@ -215,8 +215,8 @@ abstract class FakerAgent<
     required int32_t followerGrandGraphId,
     int32_t itemId = 0,
     int32_t boostId = 0,
-    int32_t enemySelect = 0,
-    int32_t questSelect = 0,
+    int32_t enemySelect = 0, // from INPUT_SELECT_BRANCH
+    int32_t questSelect = 0, // =0 if script.questSelect invalid else same as enemySelect
     int64_t userEquipId = 0,
     required int32_t followerType,
     List<int> routeSelect = const [],

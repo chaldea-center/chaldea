@@ -156,13 +156,12 @@ class _ScriptReaderPageState extends State<ScriptReaderPage> {
               launch('${Atlas.appHost}${data.state.region.upper}/script/${widget.script.scriptId}', external: true);
             },
           ),
-          if (db.runtimeData.enableDebugTools)
-            PopupMenuItem(
-              child: const Text('Source Script'),
-              onTap: () {
-                launch(data.uri?.toString() ?? widget.script.script, external: true);
-              },
-            ),
+          PopupMenuItem(
+            child: const Text('Source Script'),
+            onTap: () {
+              launch(data.uri?.toString() ?? widget.script.script, external: true);
+            },
+          ),
           PopupMenuItem(
             child: Text(S.current.settings_tab_name),
             onTap: () {
@@ -264,6 +263,8 @@ class _ScriptReaderPageState extends State<ScriptReaderPage> {
             ],
           ),
         ],
+        if (data.state.fulltext?.contains('INPUT_SELECT_BRANCH') == true)
+          CustomTableRow.fromTexts(texts: ['SELECT_BRANCH / questSelect']),
         CustomTableRow.fromChildren(children: [navButtons]),
       ],
     );

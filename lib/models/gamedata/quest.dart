@@ -940,6 +940,8 @@ class Stage with DataScriptBase {
     setSource(originalScript);
   }
 
+  int? get enemySelect => toInt('enemySelect');
+
   factory Stage.fromJson(Map<String, dynamic> json) => _$StageFromJson(json);
 
   int get enemyFieldPosCountReal => enemyFieldPosCount ?? 3;
@@ -1622,16 +1624,15 @@ class EnemyServerMod {
 // voice
 @JsonSerializable(includeIfNull: false)
 class EnemyScript with DataScriptBase {
-  // lots of fields are skipped
-  SvtDeathType? deathType;
-  int? hpBarType;
-  bool? leader;
-  List<int>? call; // npcId
-  List<int>? shift; // npcId
+  EnemyScript();
+
+  int? get death => toInt('death'); // [SvtDeathType]
+  int? get hpBarType => toInt('hpBarType');
+  int? get leader => toInt('leader');
+  List<int>? get call => toList('call'); // npcId
+  List<int>? get shift => toList('shift'); // npcId
   List<int>? get shiftClear => const TraitListConverter().fromJsonNull(source["shiftClear"]);
   List<int>? get change => toList('change');
-
-  EnemyScript({this.deathType, this.hpBarType, this.leader, this.call, this.shift});
 
   List<int>? get skillShift => toList('skillShift');
   int? get raid => toInt('raid');
@@ -1644,7 +1645,7 @@ class EnemyScript with DataScriptBase {
   int? get entryByUserDeckFormationCondId => toInt('entryByUserDeckFormationCondId');
   int? get isGrandSvt => toInt('isGrandSvt');
 
-  factory EnemyScript.fromJson(Map<String, dynamic> json) => _$EnemyScriptFromJson(json);
+  factory EnemyScript.fromJson(Map<String, dynamic> json) => _$EnemyScriptFromJson(json)..setSource(json);
 
   Map<String, dynamic> toJson() => Map.from(source)..addAll(_$EnemyScriptToJson(this));
 }

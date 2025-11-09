@@ -202,6 +202,9 @@ mixin DataScriptBase {
   Map<String, dynamic> _source = {};
   Map<String, dynamic> get source => _source;
   void setSource(Map<String, dynamic>? json) => json == null ? null : _source = Map.from(json);
+
+  void setValue(String key, Object? value) => value == null ? _source.remove(key) : _source[key] = null;
+
   List<T>? toList<T>(String key) {
     final v = _source[key];
     if (v == null) {
@@ -217,7 +220,20 @@ mixin DataScriptBase {
     throw ArgumentError('${v.runtimeType}: $v cannot be converted to List<$T>');
   }
 
-  int? toInt(String key) => (_source[key] as int?);
+  int? toInt(String key) {
+    final v = _source[key];
+    if (v is bool) return v ? 1 : 0;
+    if (v is int) return v;
+    return null;
+  }
+
+  bool? toBool(String key) {
+    final v = _source[key];
+    if (v is int) return v != 0;
+    if (v is bool) return v;
+    return null;
+  }
+
   T? getScript<T>(String key) => _source[key] as T?;
 }
 
