@@ -579,6 +579,7 @@ class BattleData {
           }
           if (nextSvt != null) {
             onFieldAllyServants[index] = nextSvt;
+            nextSvt.fieldIndex = index;
             newActors.add(nextSvt);
           }
         }
@@ -609,6 +610,7 @@ class BattleData {
           }
           if (nextSvt != null) {
             onFieldEnemies[fieldIndex] = nextSvt;
+            nextSvt.fieldIndex = fieldIndex;
             newActors.add(nextSvt);
           }
         }
