@@ -395,6 +395,8 @@ const _$BuffTypeEnumMap = {
   BuffType.addBaseHp: 'addBaseHp',
   BuffType.substituteInstantDeath: 'substituteInstantDeath',
   BuffType.substituteAddState: 'substituteAddState',
+  BuffType.otherTreasureDevicePreBeforeFunction: 'otherTreasureDevicePreBeforeFunction',
+  BuffType.attackPhaseStartFunction: 'attackPhaseStartFunction',
   BuffType.toFieldChangeField: 'toFieldChangeField',
   BuffType.toFieldAvoidBuff: 'toFieldAvoidBuff',
   BuffType.toFieldSubIndividualityField: 'toFieldSubIndividualityField',

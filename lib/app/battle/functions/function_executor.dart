@@ -483,6 +483,8 @@ class FunctionExecutor {
           break;
         case FuncType.updateEnemyEntryMaxCountEachTurn:
         case FuncType.swapFieldPosition:
+        case FuncType.addStateToField:
+        case FuncType.addStateShortToField:
         // ↑↑↑ should be implemented ↑↑↑
         case FuncType.damageValueSafeOnce:
         case FuncType.subFieldBuff:

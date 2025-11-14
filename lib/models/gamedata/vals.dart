@@ -414,6 +414,7 @@ class DataVals {
   List<int>? get SubstituteEffectList => _list('SubstituteEffectList');
   List<int>? get ResistEffectList => _list('ResistEffectList');
   int? get EnablePassiveBuffConvert => _get('EnablePassiveBuffConvert');
+  int? get FieldBuffApplyTarget => _get('FieldBuffApplyTarget'); // enum FieldBuffApplyTargetType
 
   int? get Individuality => _get('Individuality');
   int? get EventId => _get('EventId');
@@ -503,4 +504,14 @@ class ValDamageRateBattlePointPhase {
       _$ValDamageRateBattlePointPhaseFromJson(json);
 
   Map<String, dynamic> toJson() => _$ValDamageRateBattlePointPhaseToJson(this);
+}
+
+enum FieldBuffApplyTargetType {
+  none(0),
+  player(1),
+  enemy(2),
+  all(3);
+
+  const FieldBuffApplyTargetType(this.value);
+  final int value;
 }

@@ -329,6 +329,8 @@ const _$FuncTypeEnumMap = {
   FuncType.changeEnemyStatusUiType: 'changeEnemyStatusUiType',
   FuncType.swapFieldPosition: 'swapFieldPosition',
   FuncType.setDisplayDirectBattleMessageInFsm: 'setDisplayDirectBattleMessageInFsm',
+  FuncType.addStateToField: 'addStateToField',
+  FuncType.addStateShortToField: 'addStateShortToField',
 };
 
 const _$FuncApplyTargetEnumMap = {

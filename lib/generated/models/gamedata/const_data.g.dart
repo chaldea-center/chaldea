@@ -1291,5 +1291,7 @@ const _$BuffActionEnumMap = {
   BuffAction.baseHpValue: 'baseHpValue',
   BuffAction.substituteInstantDeath: 'substituteInstantDeath',
   BuffAction.substituteAddState: 'substituteAddState',
+  BuffAction.functionOtherTreasureDevicePreBefore: 'functionOtherTreasureDevicePreBefore',
+  BuffAction.functionAttackPhaseStart: 'functionAttackPhaseStart',
   BuffAction.functionClassboardCommandSpellAfter: 'functionClassboardCommandSpellAfter',
 };

@@ -1429,6 +1429,8 @@ enum BuffAction {
   baseHpValue(163),
   substituteInstantDeath(164),
   substituteAddState(165),
+  functionOtherTreasureDevicePreBefore(166),
+  functionAttackPhaseStart(167),
   // custom
   functionClassboardCommandSpellAfter(301);
 

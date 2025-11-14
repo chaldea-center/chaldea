@@ -537,6 +537,8 @@ enum BuffType {
   addBaseHp(237),
   substituteInstantDeath(238),
   substituteAddState(239),
+  otherTreasureDevicePreBeforeFunction(240),
+  attackPhaseStartFunction(241),
 
   toFieldChangeField(10001),
   toFieldAvoidBuff(10002),

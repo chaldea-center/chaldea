@@ -626,7 +626,9 @@ enum FuncType {
   setBattleMissionValue(156),
   changeEnemyStatusUiType(157),
   swapFieldPosition(158),
-  setDisplayDirectBattleMessageInFsm(159);
+  setDisplayDirectBattleMessageInFsm(159),
+  addStateToField(160),
+  addStateShortToField(161);
 
   final int value;
   const FuncType(this.value);
