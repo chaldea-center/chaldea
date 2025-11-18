@@ -55,6 +55,8 @@ class FakerCondCheck {
 
   bool? isCondOpen(CondType condType, int targetId, int targetNum) {
     switch (condType) {
+      case CondType.none:
+        return true;
       case CondType.svtGet:
         return _checkSvtCollection(targetId, (e) => e.isOwned);
       case CondType.notSvtHaving:
@@ -125,7 +127,6 @@ class FakerCondCheck {
       case CondType.eventNormaPointClear:
       case CondType.eventStatus:
       case CondType.elapsedTimeAfterQuestClear:
-      case CondType.none:
       case CondType.notEventMissionAchieve:
       case CondType.eventFlagOff:
       case CondType.notSvtCostumeReleased:

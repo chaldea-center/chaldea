@@ -49,6 +49,24 @@ class QuestListPage extends StatefulWidget {
 class _QuestListPageState extends State<QuestListPage> {
   late MasterDataManager? mstData = widget.mstData;
 
+  Set<int> allMapIds = {};
+  int _selectedMapId = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    for (final quest in widget.quests) {
+      allMapIds.add(quest.mapId);
+    }
+    for (final questId in widget.ids) {
+      final quest = db.gameData.quests[questId];
+      if (quest != null) {
+        allMapIds.add(quest.mapId);
+      }
+    }
+    allMapIds.remove(0);
+  }
+
   @override
   Widget build(BuildContext context) {
     final allQuestsMap = Map.of(db.gameData.quests);
@@ -57,6 +75,14 @@ class _QuestListPageState extends State<QuestListPage> {
       allQuestsMap[q.id] = q;
     }
     final questIds = widget.quests.isEmpty ? widget.ids.toList() : widget.quests.map((e) => e.id).toList();
+
+    if (_selectedMapId != 0) {
+      questIds.removeWhere((questId) {
+        final quest = allQuestsMap[questId];
+        return quest != null && quest.mapId != _selectedMapId;
+      });
+    }
+
     if (widget.needSort) {
       if (const [WarId.rankup, WarId.interlude].contains(widget.war?.id)) {
         questIds.sortByList((questId) {
@@ -82,19 +108,16 @@ class _QuestListPageState extends State<QuestListPage> {
       final leading = spot == null || spot.shownImage == null
           ? (hasSpot ? const SizedBox(width: 56) : null)
           : db.getIconImage(spot.shownImage, width: 56);
-      String? userQuestInfo;
+      List<String> userQuestInfo = [];
       final userQuest = mstData?.userQuest[questId];
       if (mstData != null) {
         bool hasSvt = mstData!.userSvtCollection[owner?.id]?.isOwned == true;
         if (userQuest != null) {
-          userQuestInfo =
-              'phase ${userQuest.questPhase} clear ${userQuest.clearNum} challenge ${userQuest.challengeNum}';
+          userQuestInfo.add(userQuest.getText());
         } else if (hasSvt) {
-          userQuestInfo = '❤';
+          userQuestInfo.add('❤');
         }
-      }
-      if (userQuest != null) {
-        userQuestInfo = 'phase ${userQuest.questPhase} clear ${userQuest.clearNum} challenge ${userQuest.challengeNum}';
+        userQuestInfo.add('$questId  ${quest?.openedAt.sec2date().toCustomString(second: false)}');
       }
 
       if (quest == null) {
@@ -102,7 +125,7 @@ class _QuestListPageState extends State<QuestListPage> {
           leading: leading,
           // minLeadingWidth: 16,
           title: Text('Quest $questId', textScaler: const TextScaler.linear(0.85)),
-          subtitle: userQuestInfo == null ? null : Text(userQuestInfo),
+          subtitle: userQuestInfo.isEmpty ? null : Text(userQuestInfo.join('\n')),
           contentPadding: leading == null ? null : const EdgeInsetsDirectional.fromSTEB(4, 0, 16, 0),
           horizontalTitleGap: 8,
           onTap: () {
@@ -189,8 +212,8 @@ class _QuestListPageState extends State<QuestListPage> {
       } else {
         subtitle = quest.lSpot.l;
       }
-      if (userQuestInfo != null) {
-        subtitle += '\n$userQuestInfo';
+      if (userQuestInfo.isNotEmpty) {
+        subtitle = [if (subtitle.isNotEmpty) subtitle, ...userQuestInfo].join('\n');
       }
 
       return ListTile(
@@ -285,6 +308,29 @@ class _QuestListPageState extends State<QuestListPage> {
               onTap: () {
                 final quests = questIds.map((e) => allQuestsMap[e]).whereType<Quest>().toList();
                 router.pushPage(MCQuestListConvertPage(title: widget.title, quests: quests, war: widget.war));
+              },
+            ),
+          if (allMapIds.length > 1 && allMapIds.length < 50)
+            PopupMenuItem(
+              child: const Text('Map filter'),
+              onTap: () {
+                final mapIds = [0, ...allMapIds]..sort();
+                router.showDialog(
+                  builder: (context) => SimpleDialog(
+                    title: Text('Map ID'),
+                    children: [
+                      for (final mapId in mapIds)
+                        SimpleDialogOption(
+                          child: Text(mapId == 0 ? S.current.reset : '$mapId'),
+                          onPressed: () {
+                            Navigator.pop(context);
+                            _selectedMapId = mapId;
+                            if (mounted) setState(() {});
+                          },
+                        ),
+                    ],
+                  ),
+                );
               },
             ),
           if (db.runtimeData.clipBoard.mstData != null)

@@ -179,7 +179,12 @@ class _GachaDrawPageState extends State<GachaDrawPage> with FakerRuntimeStateMix
                         children: [
                           for (final gacha in gachas)
                             SimpleDialogOption(
-                              child: Text('[${gacha.id}]${gacha.lName}'),
+                              child: Text(
+                                '[${gacha.id}]${gacha.lName}\n${gacha.closedAt.sec2date().toStringShort(omitSec: true)}',
+                                style: gacha.closedAt > DateTime.now().timestamp
+                                    ? null
+                                    : TextStyle(color: Theme.of(context).textTheme.bodySmall?.color),
+                              ),
                               onPressed: () {
                                 runtime.lockTask(() async {
                                   gachaOption.gachaId = gacha.id;

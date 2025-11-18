@@ -363,7 +363,9 @@ class FakerReminders extends StatelessWidget {
               !const [WarId.interlude].contains(quest.warId),
         )
         .toList();
-    timerQuests.removeWhere((e) => _shownQuestIds.contains(e.id));
+    timerQuests.removeWhere(
+      (e) => _shownQuestIds.contains(e.id) || e.type == QuestType.friendship || e.warId == WarId.rankup,
+    );
     if (timerQuests.isNotEmpty) {
       yield ListTile(
         dense: true,

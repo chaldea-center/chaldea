@@ -103,6 +103,7 @@ class _QuestDetailPageState extends State<QuestDetailPage> {
   @override
   Widget build(BuildContext context) {
     final sameQuestIds = ConstData.getSimilarQuestIds(questId ?? 0);
+    final userQuest = db.runtimeData.clipBoard.mstData?.userQuest[questId];
     return Scaffold(
       appBar: AppBar(
         title: AutoSizeText(_quest?.lNameWithChapter ?? 'Quest $questId', maxLines: 1, minFontSize: 12),
@@ -250,6 +251,8 @@ class _QuestDetailPageState extends State<QuestDetailPage> {
                       style: TextStyle(color: Colors.amber),
                     ),
                   ),
+                if (userQuest != null)
+                  SFooter('${db.runtimeData.clipBoard.mstData?.user?.name}: ${userQuest.getText()}'),
                 if (quest.isLaplaceSharable) sharedTeamsButton,
                 if (db.gameData.dropData.domusAurea.questIds.contains(quest.id)) blacklistButton,
                 SFooter(S.current.quest_region_has_enemy_hint),

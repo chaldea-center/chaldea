@@ -113,7 +113,7 @@ class _UserShopsPageState extends State<UserShopsPage> with SingleTickerProvider
   Widget buildShop(NiceShop shop) {
     final reward = ShopHelper.purchases(context, shop, showSpecialName: true).firstOrNull;
     final userShop = mstData.userShop[shop.id];
-    final bool canBuy = !isSoldOut(shop) && shop.releaseConditions.every(isReleaseOpen);
+    final bool canBuy = !isSoldOut(shop) && isShopReleased(shop);
     final TextStyle? textStyle = canBuy ? null : TextStyle(color: Theme.of(context).disabledColor);
     Widget? leading = reward?.$1;
     if (leading != null && !canBuy) {
@@ -237,7 +237,8 @@ class _UserShopsPageState extends State<UserShopsPage> with SingleTickerProvider
   }
 
   bool isShopReleased(NiceShop shop) {
-    return shop.releaseConditions.every(isReleaseOpen);
+    final now = DateTime.now().timestamp;
+    return shop.openedAt <= now && shop.closedAt > now && shop.releaseConditions.every(isReleaseOpen);
   }
 
   bool isReleaseOpen(ShopRelease release) {

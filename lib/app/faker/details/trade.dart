@@ -196,7 +196,14 @@ class _UserEventTradePageState extends State<UserEventTradePage>
     final tradeInfo = data.tradeInfos[tradeGood.id];
     final pickup = data.pickups[tradeGood.id];
     final now = DateTime.now().timestamp;
-    final isCraftPickup = pickup != null && pickup.startedAt <= now && pickup.endedAt >= now;
+    final supportToolItem = data.supportToolItem;
+    final canUseSupportTool =
+        supportToolItem != null &&
+        mstData.getItemOrSvtNum(supportToolItem.id) > 0 &&
+        tradeInfo != null &&
+        tradeInfo.endedAt > now &&
+        tradeGood.boardType == EventTradeGoodsBoardType.craft &&
+        (pickup == null || pickup.endedAt - now < kSecsPerDay);
 
     double getLeastReceiveNum() {
       return data.getLeastReceiveNum(tradeGood.id);
@@ -204,7 +211,6 @@ class _UserEventTradePageState extends State<UserEventTradePage>
 
     Widget tile = ListTile(
       dense: true,
-      selected: isCraftPickup,
       horizontalTitleGap: 8,
       contentPadding: EdgeInsetsDirectional.only(start: 16),
       leading: tradeGood.goodsIcon == null ? null : db.getIconImage(tradeGood.goodsIcon, width: 32),
@@ -243,6 +249,15 @@ class _UserEventTradePageState extends State<UserEventTradePage>
                 tradeInfo.startedAt,
                 tradeInfo.endedAt,
               ].map((e) => e.sec2date().toCustomString(year: false, second: false)).join(' ~ '),
+            ),
+          if (pickup != null)
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text('Support Tool: '),
+                CountDown(endedAt: pickup.endedAt.sec2date(), fitted: false),
+              ],
             ),
         ],
       ),
@@ -305,7 +320,7 @@ class _UserEventTradePageState extends State<UserEventTradePage>
                   : () async {
                       int tradeGoodsNum = 1;
                       final curIdxs = data.tradeInfos.values.map((e) => e.storeIdx).toSet();
-                      final idx = tradeInfo?.storeIdx ?? range(1, 8).firstWhereOrNull((e) => !curIdxs.contains(e));
+                      final idx = tradeInfo?.storeIdx ?? range(1, 13).firstWhereOrNull((e) => !curIdxs.contains(e));
                       if (idx == null) {
                         EasyLoading.showToast('No valid idx');
                         return;
@@ -370,6 +385,52 @@ class _UserEventTradePageState extends State<UserEventTradePage>
               text: 'Trade',
             ),
             if (tradeInfo != null) ...[
+              if (supportToolItem != null)
+                _buildButton(
+                  onPressed: canUseSupportTool
+                      ? () async {
+                          final now = DateTime.now().timestamp;
+
+                          final idx = tradeInfo.storeIdx;
+                          if (mstData.getItemOrSvtNum(supportToolItem.id) <= 0) {
+                            EasyLoading.showToast('Not enough support tool');
+                            return;
+                          }
+                          if (pickup != null) {
+                            if (supportToolItem.id != pickup.itemId) {
+                              EasyLoading.showToast(
+                                'Mismatch support tool itemId: ${supportToolItem.id} - ${pickup.itemId}',
+                              );
+                              return;
+                            }
+                            if (pickup.endedAt - now > kSecsPerDay) {
+                              EasyLoading.showToast('Max 2 support tools per trade');
+                              return;
+                            }
+                          }
+                          final endedAt = pickup == null || pickup.endedAt < now ? now : pickup.endedAt;
+                          SimpleConfirmDialog(
+                            title: Text('Use Support Tool'),
+                            content: Text(
+                              'Time left: \n${Duration(seconds: endedAt - now)} →\n'
+                              '${Duration(seconds: endedAt - now + kSecsPerDay)}',
+                            ),
+                            onTapOk: () {
+                              runTask(
+                                () => runtime.agent.eventTradeStart(
+                                  eventId: data.eventId,
+                                  tradeStoreIdx: idx,
+                                  tradeGoodsId: tradeGood.id,
+                                  tradeGoodsNum: 0,
+                                  itemId: supportToolItem.id,
+                                ),
+                              );
+                            },
+                          ).showDialog(context);
+                        }
+                      : null,
+                  text: 'Support',
+                ),
               _buildButton(
                 color: tradeInfo.getNum > 0 || getLeastReceiveNum().floor() > 0 ? Colors.green : null,
                 onPressed: tradeInfo.tradeNum == 0
@@ -525,6 +586,7 @@ class _UserTradeData {
   Map<int, EventTradeInfo> tradeInfos = {};
   Map<int, EventTradeResultInfo> results = {};
   Map<int, EventCraftPickupInfo> pickups = {};
+  Item? supportToolItem;
 
   _UserTradeData(this.userEventTrade) {
     final entity = userEventTrade;
@@ -536,6 +598,9 @@ class _UserTradeData {
       tradeInfos = {for (final v in entity.tradeList) v.tradeGoodsId: v};
       results = {for (final v in entity.resultList) v.tradeGoodsId: v};
       pickups = {for (final v in entity.pickupList) v.tradeGoodsId: v};
+      supportToolItem = db.gameData.items.values.firstWhereOrNull(
+        (e) => e.type == ItemType.reduceTradeTime && e.eventId == eventId,
+      );
     }
   }
 

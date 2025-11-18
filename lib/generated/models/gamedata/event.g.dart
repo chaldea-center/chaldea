@@ -1433,6 +1433,8 @@ const _$EventWorkTypeEnumMap = {
 EventTradeGoods _$EventTradeGoodsFromJson(Map json) => EventTradeGoods(
   id: (json['id'] as num).toInt(),
   name: json['name'] as String? ?? "",
+  boardType:
+      $enumDecodeNullable(_$EventTradeGoodsBoardTypeEnumMap, json['boardType']) ?? EventTradeGoodsBoardType.trade,
   goodsIcon: json['goodsIcon'] as String?,
   gifts: json['gifts'] == null ? const [] : const GiftsConverter().fromJson(json['gifts'] as List),
   consumes:
@@ -1462,6 +1464,7 @@ EventTradeGoods _$EventTradeGoodsFromJson(Map json) => EventTradeGoods(
 
 Map<String, dynamic> _$EventTradeGoodsToJson(EventTradeGoods instance) => <String, dynamic>{
   'id': instance.id,
+  'boardType': _$EventTradeGoodsBoardTypeEnumMap[instance.boardType]!,
   'name': instance.name,
   'goodsIcon': instance.goodsIcon,
   'gifts': const GiftsConverter().toJson(instance.gifts),
@@ -1474,6 +1477,11 @@ Map<String, dynamic> _$EventTradeGoodsToJson(EventTradeGoods instance) => <Strin
   'releaseConditions': instance.releaseConditions.map((e) => e.toJson()).toList(),
   'closedMessage': instance.closedMessage,
   'pickups': instance.pickups.map((e) => e.toJson()).toList(),
+};
+
+const _$EventTradeGoodsBoardTypeEnumMap = {
+  EventTradeGoodsBoardType.trade: 'trade',
+  EventTradeGoodsBoardType.craft: 'craft',
 };
 
 EventTradePickup _$EventTradePickupFromJson(Map json) => EventTradePickup(

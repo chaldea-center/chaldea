@@ -326,7 +326,7 @@ class FakerAgentCN extends FakerAgent<FRequestCN, AutoLoginDataCN, NetworkManage
         'tradeStoreIdx': tradeStoreIdx,
         'tradeGoodsId': tradeGoodsId,
         'tradeGoodsNum': tradeGoodsNum,
-        // 'reduceTimeItemId': itemId,
+        'reduceTimeItemId': itemId,
       },
     );
   }
@@ -716,7 +716,7 @@ class FakerAgentCN extends FakerAgent<FRequestCN, AutoLoginDataCN, NetworkManage
         "questId": questId,
         "questPhase": questPhase,
         "followerClassId": followerClassId,
-        // "followerGrandGraphId": followerGrandGraphId,
+        "followerGrandGraphId": followerGrandGraphId,
         "itemId": itemId,
         "boostId": boostId,
         "enemySelect": enemySelect,
@@ -725,10 +725,10 @@ class FakerAgentCN extends FakerAgent<FRequestCN, AutoLoginDataCN, NetworkManage
         "followerRandomLimitCount": followerRandomLimitCount,
         "followerSpoilerProtectionLimitCount": followerSpoilerProtectionLimitCount,
         "followerSupportDeckId": followerSupportDeckId,
-        // "recommendSupportIdx": 0,
+        "recommendSupportIdx": 0,
         "campaignItemId": campaignItemId,
-        // "restartWave": restartWave,
-        // "useRewardAddItemIds": jsonEncode(useRewardAddItemIds),
+        "restartWave": restartWave,
+        "useRewardAddItemIds": jsonEncode(useRewardAddItemIds),
       },
     );
     network.agentData.onBattleSetup(resp);
@@ -843,7 +843,7 @@ class FakerAgentCN extends FakerAgent<FRequestCN, AutoLoginDataCN, NetworkManage
     dictionary['usedTurnList'] = usedTurnArray;
     dictionary['waveInfo'] = "[]";
 
-    // dictionary['reachedWave'] = waveNum;
+    dictionary['reachedWave'] = waveNum;
 
     // List<int> battleMissionTargetIds = battleMissionValueDict.keys.toList();
     // battleMissionTargetIds.sort();

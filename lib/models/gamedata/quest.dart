@@ -354,6 +354,9 @@ class Quest with RouteInfo {
     return '';
   }
 
+  int get mapId => db.gameData.spots[spotId]?.mapId ?? 0;
+  WarMap? get map => db.gameData.maps[mapId];
+
   bool get isMainStoryFree =>
       type == QuestType.free &&
       afterClear == QuestAfterClearType.repeatLast &&

@@ -1833,6 +1833,7 @@ class EventFortification {
 @JsonSerializable()
 class EventTradeGoods {
   int id;
+  EventTradeGoodsBoardType boardType;
   String name;
   String? goodsIcon;
   @GiftsConverter()
@@ -1851,6 +1852,7 @@ class EventTradeGoods {
   EventTradeGoods({
     required this.id,
     this.name = "",
+    this.boardType = EventTradeGoodsBoardType.trade,
     String? goodsIcon,
     this.gifts = const [],
     this.consumes = const [],
@@ -2455,4 +2457,9 @@ enum UserShopFlag {
 
   const UserShopFlag(this.value);
   final int value;
+}
+
+enum EventTradeGoodsBoardType {
+  trade, // 0
+  craft, // 1
 }

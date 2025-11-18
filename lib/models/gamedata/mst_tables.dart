@@ -2162,6 +2162,8 @@ class UserQuestEntity with DataEntityBase<_IntStr> {
        createdAt = _toInt(createdAt);
 
   factory UserQuestEntity.fromJson(Map<String, dynamic> data) => _$UserQuestEntityFromJson(data);
+
+  String getText() => 'phase $questPhase clear $clearNum challenge $challengeNum';
 }
 
 @JsonSerializable(createToJson: false)

@@ -1106,7 +1106,10 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
                 title: Text(S.current.event_campaign),
                 children: [
                   for (final campaign in campaigns)
-                    SimpleDialogOption(onPressed: campaign.routeTo, child: Text('[${campaign.id}] ${campaign.lName.l}')),
+                    SimpleDialogOption(
+                      onPressed: campaign.routeTo,
+                      child: Text('[${campaign.id}] ${campaign.lName.l}'),
+                    ),
                 ],
               ).showDialog(context);
             },

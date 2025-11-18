@@ -32,7 +32,7 @@ class Item {
   int startedAt;
   int endedAt;
   List<ItemSelect> itemSelects;
-  int eventId;
+  int eventId; // CN may be 0 even if JP not 0: 94136610. use script.eventId
   int eventGroupId;
 
   Item({
@@ -342,7 +342,7 @@ class Items {
   static const int purePrismId = 46;
   static const int rarePrismId = 18;
   static const int grailToCrystalId = 19;
-  static const int evocationLeafId = 48;
+  static const int revivalItemId = 48;
   static const int stormPodId = 49;
   static const int stellarSandId = 50;
   static const int torchNovaId = 51;
@@ -376,6 +376,8 @@ class Items {
 
   static Item? get rarePrism => _items[rarePrismId];
 
+  static Item? get revivalItem => _items[revivalItemId];
+
   static Item? get summonTicket => _items[summonTicketId];
 
   static Item? get bronzeApple => _items[bronzeAppleId];
@@ -395,7 +397,7 @@ class Items {
   static const List<int> specialItems = [
     //
     qpId, stoneId, quartzFragmentId, manaPrismId, purePrismId, rarePrismId,
-    evocationLeafId, stellarSandId, torchNovaId, torchMorningStarId, torchPolarStarId,
+    revivalItemId, stellarSandId, torchNovaId, torchMorningStarId, torchPolarStarId,
     summonTicketId, goldAppleId, silverAppleId, bronzeAppleId, blueSaplingId,
     blueAppleId, grailFragId, grailId, grailToCrystalId, lanternId,
   ];
