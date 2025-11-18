@@ -29,10 +29,10 @@ class AppState extends ChangeNotifier {
   /// windows(routers)
   List<AppRouterDelegate> get children => List.unmodifiable(_children);
 
-  int get activeIndex => _activeIndex;
+  int get activeIndex => _activeIndex.clamp(0, _children.length);
   int _activeIndex = 0;
 
-  AppRouterDelegate get activeRouter => _children[_activeIndex];
+  AppRouterDelegate get activeRouter => _children[activeIndex];
 
   set activeIndex(int index) {
     if (index >= 0 && index < _children.length && index != _activeIndex) {
@@ -42,13 +42,8 @@ class AppState extends ChangeNotifier {
   }
 
   int addWindow() {
-    if (kDebugMode && 1 > 2) {
-      _children.insert(_activeIndex + 1, AppRouterDelegate(_root));
-      _activeIndex += 1;
-    } else {
-      _children.add(AppRouterDelegate(_root));
-      _activeIndex = _children.length - 1;
-    }
+    _children.add(AppRouterDelegate(_root));
+    _activeIndex = _children.length - 1;
     notifyListeners();
     return _activeIndex;
   }
@@ -60,11 +55,25 @@ class AppState extends ChangeNotifier {
     }
     if (_children.length == 1) return -1;
     final active = activeRouter;
-    _children.removeAt(index);
+    final int _oldIndex = _activeIndex;
+    final removedChild = _children.removeAt(index);
     int newIndex = _children.indexOf(active);
-    _activeIndex = newIndex >= 0 ? newIndex : 0;
+    _activeIndex = newIndex >= 0 ? newIndex : _oldIndex.clamp(0, _children.length - 1);
+    removedChild.popAll();
     notifyListeners();
     return _activeIndex;
+  }
+
+  void onReorder(int oldIndex, int newIndex) {
+    if (oldIndex == newIndex) return;
+    if (oldIndex < newIndex) {
+      newIndex -= 1;
+    }
+    final _activeChild = activeRouter;
+    final child = _children.removeAt(oldIndex);
+    _children.insert(newIndex, child);
+    _activeIndex = _children.indexOf(_activeChild);
+    notifyListeners();
   }
 
   WindowStateEnum _windowState = WindowStateEnum.single;

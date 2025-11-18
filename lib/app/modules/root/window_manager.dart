@@ -312,10 +312,10 @@ class _MultipleWindowState extends State<MultipleWindow> {
         padding: const EdgeInsetsDirectional.fromSTEB(8, 8, 8, 72),
         mainAxisSpacing: 8,
         crossAxisSpacing: 8,
-        children: List.generate(
-          widget.root.appState.children.length,
-          (index) => WindowThumb(key: ObjectKey(widget.root.appState.children[index]), root: widget.root, index: index),
-        ),
+        children: [
+          for (final (index, child) in widget.root.appState.children.indexed)
+            WindowThumb(key: ObjectKey(child), root: widget.root, index: index),
+        ],
       ),
     );
   }
@@ -450,13 +450,65 @@ class WindowThumb extends StatelessWidget {
           root.appState.windowState = WindowStateEnum.single;
           WindowManagerFab.markNeedRebuild();
         },
-        onLongPress: url == null || url.isEmpty
-            ? null
-            : () async {
-                final fullUrl = ChaldeaUrl.deepLink(url);
-                await copyToClipboard(fullUrl);
-                EasyLoading.showToast('${S.current.copied}\n$fullUrl');
-              },
+        onLongPress: () {
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              Widget child = SimpleDialog(
+                title: Text('Window $index'),
+                children: [
+                  ListTile(
+                    enabled: url != null && url.isNotEmpty,
+                    title: Text('Copy URL'),
+                    onTap: url == null || url.isEmpty
+                        ? null
+                        : () async {
+                            Navigator.pop(context);
+                            final fullUrl = ChaldeaUrl.deepLink(url);
+                            await copyToClipboard(fullUrl);
+                            EasyLoading.showToast('${S.current.copied}\n$fullUrl');
+                          },
+                  ),
+                  kIndentDivider,
+                  ListTile(
+                    enabled: index > 0,
+                    title: Text('Move Up'),
+                    onTap: () {
+                      Navigator.pop(context);
+                      root.appState.onReorder(index, index - 1);
+                    },
+                  ),
+                  ListTile(
+                    enabled: index < root.appState.children.length - 1,
+                    title: Text('Move Down'),
+                    onTap: () {
+                      Navigator.pop(context);
+                      root.appState.onReorder(index, index + 2);
+                    },
+                  ),
+                  kIndentDivider,
+                  ListTile(
+                    enabled: index > 0,
+                    title: Text('Move Top'),
+                    onTap: () {
+                      Navigator.pop(context);
+                      root.appState.onReorder(index, 0);
+                    },
+                  ),
+                  ListTile(
+                    enabled: index < root.appState.children.length - 1,
+                    title: Text('Move Bottom'),
+                    onTap: () {
+                      Navigator.pop(context);
+                      root.appState.onReorder(index, root.appState.children.length);
+                    },
+                  ),
+                ],
+              );
+              return ListTileTheme.merge(child: child, contentPadding: const EdgeInsets.symmetric(horizontal: 24.0));
+            },
+          );
+        },
         child: child,
       );
     }
