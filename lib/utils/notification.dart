@@ -30,7 +30,7 @@ abstract class LocalNotificationUtil {
       );
       await plugin.initialize(
         const InitializationSettings(
-          android: AndroidInitializationSettings('ic_stat'),
+          android: AndroidInitializationSettings('@mipmap/ic_launcher'),
           iOS: darwinSettings,
           macOS: darwinSettings,
         ),

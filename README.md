@@ -44,7 +44,7 @@ For more details or usage, please check our document: [English](https://docs.cha
 
 | Platform | Minimum Version            |
 | -------- | -------------------------- |
-| Android  | Android 6.0 (API level 23) |
+| Android  | Android 7.0 (API level 24) |
 | iOS      | iOS 13.0                   |
 | Windows  | Windows 10, x64            |
 | macOS    | macOS 10.15                |

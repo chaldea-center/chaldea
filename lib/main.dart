@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:catcher_2/catcher_2.dart';
-import 'package:worker_manager/worker_manager.dart';
 
 import 'package:chaldea/app/tools/app_window.dart';
 import 'package:chaldea/packages/home_widget.dart';
@@ -31,7 +30,6 @@ void main() async {
   Catcher2Options? catcherOptions;
   try {
     await _initiateCommon();
-    workerManager.init();
     await db.initiate();
     AppAnalysis.instance.initiate();
     catcherOptions = CatcherUtil.getOptions(
