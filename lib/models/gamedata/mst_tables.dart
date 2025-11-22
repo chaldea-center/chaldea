@@ -2477,7 +2477,7 @@ class DeckServantData {
   int? equipTarget2SkillChange;
 
   bool isGrandSvt() => userSvtEquipIds.length > 1; // only when isUseGrandBoard
-  bool get isFollowerNPC => isFollowerSvt && npcFollowerSvtId != 0;
+  bool get isFollowerNPC => npcFollowerSvtId != 0;
 
   DeckServantData({
     dynamic id,
@@ -2546,7 +2546,7 @@ class DeckServantData {
       svtId = 0,
       userSvtEquipIds = [0],
       svtEquipIds = [0],
-      isFollowerSvt = true,
+      isFollowerSvt = false,
       followerType = -1,
       initPos = initPos ?? pos,
       equipTarget2SkillChange = 0;

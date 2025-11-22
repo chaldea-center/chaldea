@@ -10,6 +10,7 @@ import 'package:chaldea/models/db.dart';
 import 'package:chaldea/models/gamedata/mst_data.dart';
 import 'package:chaldea/models/gamedata/quest.dart';
 import 'package:chaldea/models/models.dart' show GameCardMixin;
+import 'package:chaldea/packages/json_viewer/json_viewer.dart';
 import 'package:chaldea/packages/packages.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
@@ -181,6 +182,12 @@ class _UserDeckSetupPageState extends State<UserDeckSetupPage> with FakerRuntime
                   alignment: WrapAlignment.center,
                   spacing: 8,
                   children: [
+                    TextButton(
+                      onPressed: () {
+                        router.pushPage(JsonViewerPage(jsonDecode(jsonEncode(deckInfo))));
+                      },
+                      child: Text('JSON'),
+                    ),
                     TextButton(
                       onPressed: () {
                         initData();
@@ -446,7 +453,7 @@ class _UserDeckSetupPageState extends State<UserDeckSetupPage> with FakerRuntime
       },
       child: baseSvtWidget,
     );
-    if (deckSvt.isFollowerSvt) {
+    if (deckSvt.isFollowerSvt || deckSvt.isFollowerNPC) {
       baseSvtWidget = Stack(
         clipBehavior: Clip.none,
         children: [

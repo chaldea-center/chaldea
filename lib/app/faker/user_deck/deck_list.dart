@@ -370,24 +370,41 @@ extension BattleTeamFormationX on BattleTeamFormation {
 
     SvtSaveData? cvtSvt(DeckServantData? svtData) {
       if (svtData == null) return null;
-      if (svtData.isFollowerSvt) {
-        final npc = svtData.npcFollowerSvtId == 0
-            ? null
-            : questPhase?.supportServants.firstWhereOrNull((e) => e.npcSvtFollowerId == svtData.npcFollowerSvtId);
-        final npcEquip = npc?.equips.firstOrNull;
-        final equipId = npcEquip?.equip.id ?? svtData.svtEquipIds?.firstOrNull ?? 0;
-        return SvtSaveData(
-          svtId: npc?.svt.id ?? svtData.svtId,
-          limitCount: npc?.limit.limitCount ?? 0,
-          lv: npc?.lv ?? 1,
-          skillIds: npc?.skills.skillIds.toList(),
-          skillLvs: npc?.skills.skillLvs.map((e) => e ?? 0).toList(),
-          tdLv: npc?.noblePhantasm.noblePhantasmLv ?? 0,
-          supportType: svtData.npcFollowerSvtId != 0 ? SupportSvtType.npc : SupportSvtType.friend,
-          equip1: equipId == 0
-              ? null
-              : SvtEquipSaveData(id: equipId, lv: npcEquip?.lv ?? 1, limitBreak: npcEquip?.limitCount == 4),
-        );
+      if (svtData.userSvtId == 0) {
+        final npc = questPhase?.supportServants.firstWhereOrNull((support) {
+          if (svtData.npcFollowerSvtId != 0 && support.npcSvtFollowerId == svtData.npcFollowerSvtId) return true;
+          // fixed NPC only shown in edit mode?
+          if (support.script?.eventDeckIndex == svtData.id) return true;
+          return false;
+        });
+        // is npc
+        if (npc != null) {
+          final npcEquip = npc.equips.firstOrNull;
+          return SvtSaveData(
+            svtId: npc.svt.id,
+            limitCount: npc.limit.limitCount,
+            lv: npc.lv,
+            skillIds: npc.skills.skillIds.toList(),
+            skillLvs: npc.skills.skillLvs.map((e) => e ?? 0).toList(),
+            tdLv: npc.noblePhantasm.noblePhantasmLv,
+            supportType: SupportSvtType.npc,
+            equip1: SvtEquipSaveData(
+              id: npcEquip?.equip.id,
+              lv: npcEquip?.lv ?? 1,
+              limitBreak: npcEquip?.limitCount == 4,
+            ),
+          );
+        }
+
+        // is fiend support
+        if (svtData.isFollowerSvt) {
+          // assert(svtData.npcFollowerSvtId == 0);
+          return SvtSaveData(
+            supportType: SupportSvtType.friend,
+            svtId: svtData.svtId,
+            equip1: SvtEquipSaveData(id: svtData.svtEquipIds?.firstOrNull),
+          );
+        }
       }
 
       final userSvt = mstData.userSvt[svtData.userSvtId];
