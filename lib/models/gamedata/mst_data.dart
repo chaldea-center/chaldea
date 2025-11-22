@@ -1,11 +1,13 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 
 import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/utils/utils.dart';
 import '../db.dart';
+import '../userdata/userdata.dart';
 import '_helper.dart';
 import 'common.dart';
 import 'event.dart';
@@ -327,5 +329,41 @@ class MasterDataManager extends MasterDataManagerBase {
     }
 
     return (progressType: getMissionProgress(mission.id), progresses: progresses);
+  }
+
+  SvtStatus getSvtStatus(UserServantEntity userSvt) {
+    final svtId = userSvt.svtId;
+    final svt = db.gameData.servantsById[svtId];
+    if (svt == null || svt.collectionNo == 0) return SvtStatus();
+    final status0 = db.curUser.svtStatusOf(svt.collectionNo);
+    final collection = userSvtCollection[svtId];
+    SvtStatus status = SvtStatus(
+      cur: SvtPlan(
+        favorite: true,
+        ascension: userSvt.limitCount,
+        skills: userSvt.skillLvs,
+        appendSkills: getSvtAppendSkillLv(userSvt),
+        costumes: collection?.costumeIdsTo01(),
+        grail: userSvt.exceedCount,
+        fouHp: max(0, (userSvt.adjustHp - 100) ~/ 2),
+        fouAtk: max(0, (userSvt.adjustAtk - 100) ~/ 2),
+        fouHp3: min(100, userSvt.adjustHp ~/ 5),
+        fouAtk3: min(100, userSvt.adjustAtk ~/ 5),
+        bondLimit: collection == null ? 10 : min(collection.friendshipRank + 1, collection.maxFriendshipRank),
+        npLv: userSvt.treasureDeviceLv1,
+      ),
+      priority: status0.priority,
+      bond: collection?.friendshipRank ?? 0,
+      equipCmdCodes: userSvtCommandCode[svtId]?.userCommandCodeIds
+          .map((userCCId) => db.gameData.commandCodesById[userCommandCode[userCCId]?.commandCodeId]?.collectionNo)
+          .toList(),
+      cmdCardStrengthen: userSvtCommandCard[svtId]?.commandCardParam.map((e) => e ~/ 20).toList(),
+      grandSvt: userSvtGrand.lookup.values.any((e) => e.userSvtId == userSvt.id),
+    );
+    return status;
+  }
+
+  CraftStatus getSvtEquipStatus(UserServantEntity userSvt) {
+    return CraftStatus(status: CraftStatus.owned, lv: userSvt.lv, limitCount: userSvt.limitCount);
   }
 }

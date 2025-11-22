@@ -26,9 +26,16 @@ class ServantFilterPage extends FilterPage<SvtFilterData> {
   @override
   _ServantFilterPageState createState() => _ServantFilterPageState();
 
-  static bool filter(SvtFilterData filterData, Servant svt, {bool planMode = false, int eventId = 0}) {
-    final svtStat = db.curUser.svtStatusOf(svt.collectionNo);
-    final svtPlan = db.curUser.svtPlanOf(svt.collectionNo);
+  static bool filter(
+    SvtFilterData filterData,
+    Servant svt, {
+    bool planMode = false,
+    int eventId = 0,
+    SvtStatus? svtStat,
+    SvtPlan? svtPlan,
+  }) {
+    svtStat ??= db.curUser.svtStatusOf(svt.collectionNo);
+    svtPlan ??= db.curUser.svtPlanOf(svt.collectionNo);
     final favoriteState = planMode ? filterData.planFavorite : filterData.favorite;
     if (!favoriteState.check(svtStat.cur.favorite)) {
       return false;
@@ -84,7 +91,8 @@ class ServantFilterPage extends FilterPage<SvtFilterData> {
     }
     final comparedBond = filterData.bondValue.radioValue;
     if (comparedBond != null && filterData.bondCompare.options.isNotEmpty) {
-      if (filterData.bondCompare.options.every((c) => !c.test(svtStat.bond, comparedBond))) {
+      final bond = svtStat.bond;
+      if (filterData.bondCompare.options.every((c) => !c.test(bond, comparedBond))) {
         return false;
       }
     }
@@ -327,6 +335,45 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData, ServantFilt
               update();
             },
           ),
+          getGroup(
+            header: S.current.bond,
+            children: [
+              FilterGroup<CompareOperator>(
+                combined: true,
+                padding: EdgeInsets.zero,
+                options: CompareOperator.values,
+                values: filterData.bondCompare,
+                optionBuilder: (v) => Text(v.text),
+                onFilterChanged: (v, last) {
+                  if (v.contain(CompareOperator.lessThan) && v.contain(CompareOperator.moreThan)) {
+                    if (last == CompareOperator.lessThan) {
+                      v.options.remove(CompareOperator.moreThan);
+                    } else if (last == CompareOperator.moreThan) {
+                      v.options.remove(CompareOperator.lessThan);
+                    }
+                  }
+                  if (v.options.isEmpty && last != null) {
+                    v.options.add(last);
+                  }
+                  setState(() {
+                    update();
+                  });
+                },
+              ),
+              FilterGroup<int>(
+                combined: true,
+                padding: EdgeInsets.zero,
+                options: const [5, 6, 10, 15],
+                minimumSize: const Size(36, 36),
+                values: filterData.bondValue,
+                onFilterChanged: (v, _) {
+                  setState(() {
+                    update();
+                  });
+                },
+              ),
+            ],
+          ),
           buildGroupDivider(text: S.current.plan),
           FilterGroup<int>(
             title: Text(
@@ -433,45 +480,6 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData, ServantFilt
                 update();
               });
             },
-          ),
-          getGroup(
-            header: S.current.bond,
-            children: [
-              FilterGroup<CompareOperator>(
-                combined: true,
-                padding: EdgeInsets.zero,
-                options: CompareOperator.values,
-                values: filterData.bondCompare,
-                optionBuilder: (v) => Text(v.text),
-                onFilterChanged: (v, last) {
-                  if (v.contain(CompareOperator.lessThan) && v.contain(CompareOperator.moreThan)) {
-                    if (last == CompareOperator.lessThan) {
-                      v.options.remove(CompareOperator.moreThan);
-                    } else if (last == CompareOperator.moreThan) {
-                      v.options.remove(CompareOperator.lessThan);
-                    }
-                  }
-                  if (v.options.isEmpty && last != null) {
-                    v.options.add(last);
-                  }
-                  setState(() {
-                    update();
-                  });
-                },
-              ),
-              FilterGroup<int>(
-                combined: true,
-                padding: EdgeInsets.zero,
-                options: const [5, 6, 10, 15],
-                minimumSize: const Size(36, 36),
-                values: filterData.bondValue,
-                onFilterChanged: (v, _) {
-                  setState(() {
-                    update();
-                  });
-                },
-              ),
-            ],
           ),
           buildGroupDivider(text: S.current.gamedata),
           FilterGroup<Region>(

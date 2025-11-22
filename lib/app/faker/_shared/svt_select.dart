@@ -84,7 +84,7 @@ class _SelectUserSvtPageState extends State<SelectUserSvtPage> {
     if (svt == null || svt.collectionNo <= 0) return false;
     if (!userSvt.isLocked()) return false;
     if (eventSvtIds[userSvtFilterData.eventId]?.svtIds.contains(userSvt.svtId) == false) return false;
-    if (!ServantFilterPage.filter(filterData, svt)) return false;
+    if (!ServantFilterPage.filter(filterData, svt, svtStat: mstData.getSvtStatus(userSvt))) return false;
     final coinNum = mstData.userSvtCoin[userSvt.svtId]?.num ?? 0;
     final combineTypes = userSvtFilterData.availableCombines.options.where((combineType) {
       switch (combineType) {
@@ -94,11 +94,6 @@ class _SelectUserSvtPageState extends State<SelectUserSvtPage> {
           return userSvt.limitCount < Maths.max<int>(svt.limits.keys, 0);
         case _CombineType.grail:
           return userSvt.lv >= 100 && userSvt.lv < 120 && coinNum >= 30;
-        case _CombineType.bondLimit:
-          final collection = mstData.userSvtCollection[userSvt.svtId];
-          return collection != null &&
-              collection.friendshipRank < 15 &&
-              collection.friendshipRank == collection.maxFriendshipRank;
         case _CombineType.skill:
           return userSvt.skillLvs.any((e) => e < 9);
         case _CombineType.append2:
@@ -108,6 +103,14 @@ class _SelectUserSvtPageState extends State<SelectUserSvtPage> {
           return mstData
               .getSvtAppendSkillLv(userSvt)
               .any((appendLv) => appendLv == 0 && coinNum >= 120 || (appendLv > 0 && appendLv < 9));
+        case _CombineType.bondLimit:
+          final collection = mstData.userSvtCollection[userSvt.svtId];
+          return collection != null &&
+              collection.friendshipRank < 15 &&
+              collection.friendshipRank == collection.maxFriendshipRank;
+        case _CombineType.bondLessThan10:
+          final collection = mstData.userSvtCollection[userSvt.svtId];
+          return collection != null && collection.friendshipRank < 10;
       }
     }).toList();
     if (!userSvtFilterData.availableCombines.matchAny(combineTypes)) return false;
@@ -152,7 +155,10 @@ class _SelectUserSvtPageState extends State<SelectUserSvtPage> {
                     showMatchAll: true,
                     options: _CombineType.values,
                     values: userSvtFilterData.availableCombines,
-                    optionBuilder: (v) => Text(v.name),
+                    optionBuilder: (v) => Text(switch (v) {
+                      _CombineType.bondLessThan10 => 'bond≤10',
+                      _ => v.name,
+                    }),
                     onFilterChanged: (value, _) {
                       if (mounted) setState(() {});
                       update();
@@ -269,4 +275,4 @@ class _UserSvtFilterData with FilterDataMixin {
   }
 }
 
-enum _CombineType { level, ascension, grail, bondLimit, skill, append2, appendAny }
+enum _CombineType { level, ascension, grail, skill, append2, appendAny, bondLimit, bondLessThan10 }

@@ -16,7 +16,7 @@ class CraftFilterPage extends FilterPage<CraftFilterData> {
   @override
   _CraftFilterPageState createState() => _CraftFilterPageState();
 
-  static bool filter(CraftFilterData filterData, CraftEssence ce) {
+  static bool filter(CraftFilterData filterData, CraftEssence ce, {CraftStatus? status}) {
     if (!filterData.rarity.matchOne(ce.rarity)) {
       return false;
     }
@@ -33,10 +33,12 @@ class CraftFilterPage extends FilterPage<CraftFilterData> {
     if (!filterData.atkType.matchOne(ce.atkType)) {
       return false;
     }
-    if (!filterData.limitCount.matchOne(ce.status.limitCount)) {
+
+    status ??= ce.status;
+    if (!filterData.limitCount.matchOne(status.limitCount)) {
       return false;
     }
-    if (!filterData.status.matchOne(ce.status.status)) {
+    if (!filterData.status.matchOne(status.status)) {
       return false;
     }
 

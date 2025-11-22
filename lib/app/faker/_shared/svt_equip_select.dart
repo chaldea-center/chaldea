@@ -72,7 +72,7 @@ class _SelectUserSvtEquipPageState extends State<SelectUserSvtEquipPage> {
     if (!userSvtFilterData.locked.matchOne(userSvt.isLocked())) return false;
     if (!userSvtFilterData.maxLimitBreak.matchOne(userSvt.limitCount == 4)) return false;
     if (eventCeIds[userSvtFilterData.eventId]?.ceIds.contains(userSvt.svtId) == false) return false;
-    if (!CraftFilterPage.filter(filterData, equip)) return false;
+    if (!CraftFilterPage.filter(filterData, equip, status: mstData.getSvtEquipStatus(userSvt))) return false;
     return true;
   }
 
