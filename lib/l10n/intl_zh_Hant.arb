@@ -258,7 +258,7 @@
   "duplicated_servant": "2號機",
   "duplicated_servant_duplicated": "2號機",
   "duplicated_servant_primary": "初號機",
-  "edge_swipe_pop_gesture": "側滑彈出頁面",
+  "edge_swipe_pop_gesture": "強制開啟側滑彈出頁面",
   "edit": "編輯",
   "effect_scope": "效果範圍",
   "effect_search": "效果檢索",

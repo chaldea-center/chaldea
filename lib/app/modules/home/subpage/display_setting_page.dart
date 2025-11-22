@@ -306,11 +306,11 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
                 ),
               if (!SplitRoute.isPopGestureAlwaysDisabled)
                 SwitchListTile.adaptive(
-                  value: db.settings.enableEdgeSwipePopGesture,
+                  value: db.settings.forceEdgeSwipePopGesture,
                   title: Text(S.current.edge_swipe_pop_gesture),
                   onChanged: (v) {
                     setState(() {
-                      db.settings.enableEdgeSwipePopGesture = v;
+                      db.settings.forceEdgeSwipePopGesture = v;
                     });
                     db.notifyAppUpdate();
                   },

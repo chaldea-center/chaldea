@@ -354,7 +354,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "duplicated_servant": MessageLookupByLibrary.simpleMessage("2號機"),
     "duplicated_servant_duplicated": MessageLookupByLibrary.simpleMessage("2號機"),
     "duplicated_servant_primary": MessageLookupByLibrary.simpleMessage("初號機"),
-    "edge_swipe_pop_gesture": MessageLookupByLibrary.simpleMessage("側滑彈出頁面"),
+    "edge_swipe_pop_gesture": MessageLookupByLibrary.simpleMessage("強制開啟側滑彈出頁面"),
     "edit": MessageLookupByLibrary.simpleMessage("編輯"),
     "effect_scope": MessageLookupByLibrary.simpleMessage("效果範圍"),
     "effect_search": MessageLookupByLibrary.simpleMessage("效果檢索"),

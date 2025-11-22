@@ -1657,10 +1657,10 @@ class S {
     return Intl.message('Primary', name: 'duplicated_servant_primary', desc: '', locale: localeName, args: []);
   }
 
-  /// `Edge-swipe pop gesture`
+  /// `Force Enable Edge-swipe pop gesture`
   String get edge_swipe_pop_gesture {
     return Intl.message(
-      'Edge-swipe pop gesture',
+      'Force Enable Edge-swipe pop gesture',
       name: 'edge_swipe_pop_gesture',
       desc: '',
       locale: localeName,

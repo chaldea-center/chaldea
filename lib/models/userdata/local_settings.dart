@@ -53,7 +53,7 @@ class LocalSettings {
   bool proxyServer; // when change this, also change Hosts.cn
   ProxySettings proxy;
   bool autoRotate;
-  bool enableEdgeSwipePopGesture;
+  bool forceEdgeSwipePopGesture;
   // ignore: unused_field
   FavoriteState? _preferredFavorite;
   bool preferApRate;
@@ -116,7 +116,7 @@ class LocalSettings {
     ProxySettings? proxy,
     this.autoUpdateApp = true,
     this.autoRotate = true,
-    this.enableEdgeSwipePopGesture = true,
+    this.forceEdgeSwipePopGesture = false,
     FavoriteState? preferredFavorite,
     this.preferApRate = true,
     this.preferredQuestRegion,

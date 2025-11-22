@@ -111,9 +111,7 @@ class AppRouterDelegate extends RouterDelegate<RouteConfiguration>
   }
 
   void popAll() {
-    while (canPop()) {
-      _doPop();
-    }
+    navigatorKey.currentState?.popUntil((route) => route.isFirst);
     notifyListeners();
   }
 

@@ -39,7 +39,7 @@ LocalSettings _$LocalSettingsFromJson(Map json) => $checkedCreate('LocalSettings
     ),
     autoUpdateApp: $checkedConvert('autoUpdateApp', (v) => v as bool? ?? true),
     autoRotate: $checkedConvert('autoRotate', (v) => v as bool? ?? true),
-    enableEdgeSwipePopGesture: $checkedConvert('enableEdgeSwipePopGesture', (v) => v as bool? ?? true),
+    forceEdgeSwipePopGesture: $checkedConvert('forceEdgeSwipePopGesture', (v) => v as bool? ?? false),
     preferredFavorite: $checkedConvert('preferredFavorite', (v) => $enumDecodeNullable(_$FavoriteStateEnumMap, v)),
     preferApRate: $checkedConvert('preferApRate', (v) => v as bool? ?? true),
     preferredQuestRegion: $checkedConvert(
@@ -149,7 +149,7 @@ Map<String, dynamic> _$LocalSettingsToJson(LocalSettings instance) => <String, d
   'proxyServer': instance.proxyServer,
   'proxy': instance.proxy.toJson(),
   'autoRotate': instance.autoRotate,
-  'enableEdgeSwipePopGesture': instance.enableEdgeSwipePopGesture,
+  'forceEdgeSwipePopGesture': instance.forceEdgeSwipePopGesture,
   'preferApRate': instance.preferApRate,
   'preferredQuestRegion': _$JsonConverterToJson<String, Region>(
     instance.preferredQuestRegion,
