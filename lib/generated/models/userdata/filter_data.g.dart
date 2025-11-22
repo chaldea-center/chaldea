@@ -105,7 +105,7 @@ CraftFilterData _$CraftFilterDataFromJson(Map json) => $checkedCreate('CraftFilt
       'sortKeys',
       (v) => (v as List<dynamic>?)?.map((e) => $enumDecodeNullable(_$CraftCompareEnumMap, e)).toList(),
     ),
-    sortReversed: $checkedConvert('sortReversed', (v) => (v as List<dynamic>?)?.map((e) => e as bool).toList()),
+    sortReversed: $checkedConvert('sortReversed', (v) => (v as List<dynamic>?)?.map((e) => e as bool?).toList()),
   );
   return val;
 });
@@ -131,7 +131,7 @@ CmdCodeFilterData _$CmdCodeFilterDataFromJson(Map json) => $checkedCreate('CmdCo
       'sortKeys',
       (v) => (v as List<dynamic>?)?.map((e) => $enumDecodeNullable(_$CmdCodeCompareEnumMap, e)).toList(),
     ),
-    sortReversed: $checkedConvert('sortReversed', (v) => (v as List<dynamic>?)?.map((e) => e as bool).toList()),
+    sortReversed: $checkedConvert('sortReversed', (v) => (v as List<dynamic>?)?.map((e) => e as bool?).toList()),
   );
   return val;
 });

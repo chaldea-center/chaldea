@@ -2707,6 +2707,11 @@ class S {
     return Intl.message('History', name: 'history', desc: '', locale: localeName, args: []);
   }
 
+  /// `Home Page Icon Size`
+  String get home_page_icon_size {
+    return Intl.message('Home Page Icon Size', name: 'home_page_icon_size', desc: '', locale: localeName, args: []);
+  }
+
   /// `(JP/NA/CN/TW)Capture the data when logging in`
   String get http_sniff_hint {
     return Intl.message(

@@ -432,6 +432,7 @@
   "high_difficulty_quest": "高難度關卡",
   "hint": "提示",
   "history": "歷史紀錄",
+  "home_page_icon_size": null,
   "http_sniff_hint": "(簡中/繁中/日/美)帳號登入時的數據",
   "https_sniff": "Https監聽",
   "hunting_quest": "狩獵關卡",

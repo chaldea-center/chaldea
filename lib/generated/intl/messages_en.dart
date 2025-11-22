@@ -578,6 +578,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "high_difficulty_quest": MessageLookupByLibrary.simpleMessage("High DIfficulty Quest"),
     "hint": MessageLookupByLibrary.simpleMessage("Hint"),
     "history": MessageLookupByLibrary.simpleMessage("History"),
+    "home_page_icon_size": MessageLookupByLibrary.simpleMessage("Home Page Icon Size"),
     "http_sniff_hint": MessageLookupByLibrary.simpleMessage("(JP/NA/CN/TW)Capture the data when logging in"),
     "https_sniff": MessageLookupByLibrary.simpleMessage("Https Sniffing"),
     "hunting_quest": MessageLookupByLibrary.simpleMessage("Hunting Quests"),

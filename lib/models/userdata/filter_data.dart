@@ -432,7 +432,7 @@ class CraftFilterData with FilterDataMixin {
   final effectType = FilterGroupData<SkillEffect>();
   final isEventEffect = FilterGroupData<bool>();
 
-  CraftFilterData({this.useGrid = false, List<CraftCompare?>? sortKeys, List<bool>? sortReversed})
+  CraftFilterData({this.useGrid = false, List<CraftCompare?>? sortKeys, List<bool?>? sortReversed})
     : sortKeys = List.generate(
         CraftCompare.values.length,
         (index) => sortKeys?.getOrNull(index) ?? CraftCompare.collectionNo,
@@ -536,7 +536,7 @@ class CmdCodeFilterData with FilterDataMixin {
     this.useGrid = false,
     this.favorite = false,
     List<CmdCodeCompare?>? sortKeys,
-    List<bool>? sortReversed,
+    List<bool?>? sortReversed,
   }) : sortKeys = List.generate(
          CmdCodeCompare.values.length,
          (index) => sortKeys?.getOrNull(index) ?? CmdCodeCompare.values[index],
@@ -792,7 +792,7 @@ class EnemyFilterData with FilterDataMixin {
     this.useGrid = false,
     this.onlyShowQuestEnemy = false,
     List<SvtCompare?>? sortKeys,
-    List<bool>? sortReversed,
+    List<bool?>? sortReversed,
   }) : sortKeys = List.generate(
          enemyCompares.length,
          (index) => sortKeys?.getOrNull(index) ?? enemyCompares[index],

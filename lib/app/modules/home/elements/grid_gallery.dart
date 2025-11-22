@@ -27,27 +27,33 @@ class _GridGalleryState extends State<GridGallery> {
 
   @override
   Widget build(BuildContext context) {
+    const int _kMinCrossCount = 4, _kMaxCrossCount = 8;
+
+    double? gridWidth;
     int crossCount;
-    if (widget.maxWidth != null && widget.maxWidth! > 0 && widget.maxWidth != double.infinity) {
+    if (widget.maxWidth != null && widget.maxWidth! > 0 && widget.maxWidth!.isFinite) {
       crossCount = widget.maxWidth! ~/ 80;
-      crossCount = crossCount.clamp(2, 8);
+      crossCount = crossCount.clamp(_kMinCrossCount, _kMaxCrossCount);
+      crossCount += switch (db.settings.display.galleryIconSize) {
+        .small => 1,
+        .medium => 0,
+        .large => -1,
+      };
+      gridWidth = widget.maxWidth! / crossCount;
     } else {
-      crossCount = 4;
-    }
-    if (crossCount < 4) {
-      crossCount = 4;
+      crossCount = _kMinCrossCount;
     }
 
     Widget grid = _editMode
         ? Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              _getGrid(crossCount, true),
+              _getGrid(crossCount, gridWidth, true),
               const Divider(indent: 16, endIndent: 16),
-              _getGrid(crossCount, false),
+              _getGrid(crossCount, gridWidth, false),
             ],
           )
-        : _getGrid(crossCount, true);
+        : _getGrid(crossCount, gridWidth, true);
 
     if (!db.gameData.isValid) {
       grid = GestureDetector(
@@ -64,7 +70,7 @@ class _GridGalleryState extends State<GridGallery> {
     return grid;
   }
 
-  Widget _getGrid(int crossCount, bool active) {
+  Widget _getGrid(int crossCount, double? gridWidth, bool active) {
     final themeData = Theme.of(context);
     List<GalleryItem> items = GalleryItem.allItems.where((item) {
       final v = galleries[item.name] ?? item.shownDefault;
@@ -77,7 +83,11 @@ class _GridGalleryState extends State<GridGallery> {
 
     List<Widget> children = List.generate(items.length, (index) {
       final item = items[index];
-      Widget child = item.buildIcon(context, color: active ? null : themeData.disabledColor);
+      Widget child = item.buildIcon(
+        context,
+        color: active ? null : themeData.disabledColor,
+        size: gridWidth == null ? null : gridWidth * 0.5,
+      );
       if (item.titleBuilder == null) {
         child = Center(child: child);
       } else {

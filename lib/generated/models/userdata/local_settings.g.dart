@@ -237,6 +237,10 @@ Map<String, dynamic> _$ProxySettingsToJson(ProxySettings instance) => <String, d
 
 DisplaySettings _$DisplaySettingsFromJson(Map json) => $checkedCreate('DisplaySettings', json, ($checkedConvert) {
   final val = DisplaySettings(
+    galleryIconSize: $checkedConvert(
+      'galleryIconSize',
+      (v) => $enumDecodeNullable(_$GalleryIconSizeEnumMap, v) ?? .medium,
+    ),
     showAccountAtHome: $checkedConvert('showAccountAtHome', (v) => v as bool? ?? true),
     showWindowFab: $checkedConvert('showWindowFab', (v) => v as bool? ?? true),
     svtPlanInputMode: $checkedConvert(
@@ -277,6 +281,7 @@ DisplaySettings _$DisplaySettingsFromJson(Map json) => $checkedCreate('DisplaySe
 });
 
 Map<String, dynamic> _$DisplaySettingsToJson(DisplaySettings instance) => <String, dynamic>{
+  'galleryIconSize': _$GalleryIconSizeEnumMap[instance.galleryIconSize]!,
   'showAccountAtHome': instance.showAccountAtHome,
   'showWindowFab': instance.showWindowFab,
   'svtPlanInputMode': _$SvtPlanInputModeEnumMap[instance.svtPlanInputMode]!,
@@ -294,6 +299,12 @@ Map<String, dynamic> _$DisplaySettingsToJson(DisplaySettings instance) => <Strin
   'splitMasterRatio': instance.splitMasterRatio,
   'enableSplitView': instance.enableSplitView,
   'ad': instance.ad.toJson(),
+};
+
+const _$GalleryIconSizeEnumMap = {
+  GalleryIconSize.small: 'small',
+  GalleryIconSize.medium: 'medium',
+  GalleryIconSize.large: 'large',
 };
 
 const _$SvtPlanInputModeEnumMap = {SvtPlanInputMode.dropdown: 'dropdown', SvtPlanInputMode.slider: 'slider'};

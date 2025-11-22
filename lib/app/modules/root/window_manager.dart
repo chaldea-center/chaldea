@@ -231,6 +231,7 @@ class _MultipleWindowState extends State<MultipleWindow> {
         appBar: AppBar(
           toolbarHeight: 42,
           title: const Text(kAppName),
+          centerTitle: true,
           actions: [
             DropdownButton<int>(
               value: db.userData.curUserKey,

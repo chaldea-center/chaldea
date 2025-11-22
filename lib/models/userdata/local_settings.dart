@@ -258,6 +258,7 @@ class ProxySettings {
 
 @JsonSerializable()
 class DisplaySettings {
+  GalleryIconSize galleryIconSize = .medium;
   bool showAccountAtHome;
   bool showWindowFab;
   SvtPlanInputMode svtPlanInputMode;
@@ -277,6 +278,7 @@ class DisplaySettings {
   AdSetting ad;
 
   DisplaySettings({
+    this.galleryIconSize = .medium,
     this.showAccountAtHome = true,
     this.showWindowFab = true,
     this.svtPlanInputMode = SvtPlanInputMode.dropdown,
@@ -719,4 +721,16 @@ enum ColorSeed {
   const ColorSeed(this.label, this.color);
   final String label;
   final Color color;
+}
+
+enum GalleryIconSize {
+  small,
+  medium,
+  large;
+
+  String get zhName => switch (this) {
+    small => '小',
+    medium => '中',
+    large => '大',
+  };
 }

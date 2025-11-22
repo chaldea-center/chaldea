@@ -10,6 +10,7 @@ import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/ads/ads.dart';
 import 'package:chaldea/packages/app_info.dart';
+import 'package:chaldea/packages/language.dart';
 import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/packages/platform/platform.dart';
 import 'package:chaldea/packages/split_route/split_route.dart';
@@ -71,6 +72,25 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
                 onTap: () {
                   router.pushPage(MasterRatioSetting());
                 },
+              ),
+              ListTile(
+                title: Text(S.current.home_page_icon_size),
+                trailing: DropdownButtonHideUnderline(
+                  child: DropdownButton<GalleryIconSize>(
+                    value: db.settings.display.galleryIconSize,
+                    items: [
+                      for (final size in GalleryIconSize.values)
+                        DropdownMenuItem(value: size, child: Text(Language.isZH ? size.zhName : size.name)),
+                    ],
+                    onChanged: (v) {
+                      setState(() {
+                        if (v != null) db.settings.display.galleryIconSize = v;
+                        db.saveSettings();
+                      });
+                      db.notifyAppUpdate();
+                    },
+                  ),
+                ),
               ),
             ],
           ),

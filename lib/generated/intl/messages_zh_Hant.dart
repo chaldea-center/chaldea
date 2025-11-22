@@ -534,6 +534,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "high_difficulty_quest": MessageLookupByLibrary.simpleMessage("高難度關卡"),
     "hint": MessageLookupByLibrary.simpleMessage("提示"),
     "history": MessageLookupByLibrary.simpleMessage("歷史紀錄"),
+    "home_page_icon_size": MessageLookupByLibrary.simpleMessage("首页图标大小"),
     "http_sniff_hint": MessageLookupByLibrary.simpleMessage("(簡中/繁中/日/美)帳號登入時的數據"),
     "https_sniff": MessageLookupByLibrary.simpleMessage("Https監聽"),
     "hunting_quest": MessageLookupByLibrary.simpleMessage("狩獵關卡"),

@@ -72,10 +72,10 @@ extension LoggerUtils on Logger {
         level: Level.trace,
         printer: _CustomPrettyPrinter(
           methodCount: 2,
+          errorMethodCount: 8,
           colors: false,
           printEmojis: false,
           printTime: true,
-          lineLength: 10,
         ),
         output: MultiOutput([ConsoleOutput(), if (!kIsWeb && fp != null) FileOutput(file: File(fp))]),
       ),
@@ -105,7 +105,7 @@ extension LoggerUtils on Logger {
 class _CustomPrettyPrinter extends PrettyPrinter {
   _CustomPrettyPrinter({
     super.methodCount = 2,
-    super.lineLength = 10,
+    super.errorMethodCount = 8,
     super.colors = true,
     super.printEmojis = true,
     super.printTime = false,

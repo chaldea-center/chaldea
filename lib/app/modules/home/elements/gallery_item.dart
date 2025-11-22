@@ -80,7 +80,8 @@ class GalleryItem {
     this.persist = false,
   }) : assert(icon != null || child != null);
 
-  Widget buildIcon(BuildContext context, {double size = 40, Color? color}) {
+  Widget buildIcon(BuildContext context, {double? size, Color? color}) {
+    size ??= 40;
     if (child != null) return child!;
     var _iconColor =
         color ?? (Theme.of(context).useMaterial3 ? Theme.of(context).colorScheme.primary : AppTheme(context).tertiary);
