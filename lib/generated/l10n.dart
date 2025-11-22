@@ -377,11 +377,6 @@ class S {
     );
   }
 
-  /// `After 7th`
-  String get battle_after_7th {
-    return Intl.message('After 7th', name: 'battle_after_7th', desc: '', locale: localeName, args: []);
-  }
-
   /// `Ally`
   String get battle_ally {
     return Intl.message('Ally', name: 'battle_ally', desc: '', locale: localeName, args: []);

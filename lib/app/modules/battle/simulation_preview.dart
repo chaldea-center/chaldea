@@ -57,7 +57,6 @@ class _SimulationPreviewState extends State<SimulationPreview> {
       _questPhase = v;
     } else {
       _questPhase = QuestPhase.fromJson(v.toJson());
-      options.mightyChain = v.shouldEnableMightyChain();
     }
   }
 
@@ -797,17 +796,6 @@ class _SimulationPreviewState extends State<SimulationPreview> {
         onChanged: (v) {
           setState(() {
             options.simulateAi = v ?? options.simulateAi;
-          });
-        },
-      ),
-      kIndentDivider,
-      CheckboxListTile(
-        dense: true,
-        value: options.mightyChain,
-        title: Text('${S.current.battle_after_7th} (QAB Chain)'),
-        onChanged: (v) {
-          setState(() {
-            options.mightyChain = v ?? options.mightyChain;
           });
         },
       ),

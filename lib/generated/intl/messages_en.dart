@@ -152,7 +152,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "backup_history": MessageLookupByLibrary.simpleMessage("Backup History"),
     "battle_activate_custom_skill": MessageLookupByLibrary.simpleMessage("Activate Custom Skill"),
     "battle_activate_probability": MessageLookupByLibrary.simpleMessage("Activation Probability"),
-    "battle_after_7th": MessageLookupByLibrary.simpleMessage("After 7th"),
     "battle_ally": MessageLookupByLibrary.simpleMessage("Ally"),
     "battle_atk_np_parameters": MessageLookupByLibrary.simpleMessage("Attack NP Parameters"),
     "battle_attack": MessageLookupByLibrary.simpleMessage("Attack"),

@@ -89,7 +89,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "backup": MessageLookupByLibrary.simpleMessage("Резервная копия"),
     "backup_failed": MessageLookupByLibrary.simpleMessage("Сбой копирования"),
     "backup_history": MessageLookupByLibrary.simpleMessage("Копировать Историю"),
-    "battle_after_7th": MessageLookupByLibrary.simpleMessage("После 7-го года"),
     "battle_ally": MessageLookupByLibrary.simpleMessage("Союзник"),
     "battle_atk_np_parameters": MessageLookupByLibrary.simpleMessage("Параметрый атаки НФ"),
     "battle_attack": MessageLookupByLibrary.simpleMessage("Атака"),

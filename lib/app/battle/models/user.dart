@@ -462,7 +462,6 @@ class MysticCodeData {
 
 // won't change in entire battle
 class BattleOptionsEnv {
-  bool mightyChain = true;
   bool disableEvent = false;
   bool simulateAi = false;
   bool simulateEnemy = false;
@@ -472,7 +471,6 @@ class BattleOptionsEnv {
 
   BattleOptionsEnv copy() {
     return BattleOptionsEnv()
-      ..mightyChain = mightyChain
       ..disableEvent = disableEvent
       ..simulateAi = simulateAi
       ..simulateEnemy = simulateEnemy
@@ -482,7 +480,6 @@ class BattleOptionsEnv {
 
   void fromShareData(BattleShareDataOption src) {
     this
-      ..mightyChain = src.mightyChain
       ..disableEvent = src.disableEvent ?? disableEvent
       ..simulateAi = src.simulateAi ?? simulateAi
       ..simulateEnemy = false
@@ -499,7 +496,7 @@ class BattleOptionsEnv {
 
   BattleShareDataOption toShareData() {
     return BattleShareDataOption(
-      mightyChain: mightyChain,
+      mightyChain: true,
       disableEvent: disableEvent,
       simulateAi: simulateAi,
       pointBuffs: pointBuffs.isEmpty ? null : pointBuffs.map((key, value) => MapEntry(key, value.id)),
@@ -518,7 +515,6 @@ class BattleOptionsRuntime extends BattleOptionsEnv {
   @override
   BattleOptionsRuntime copy() {
     return BattleOptionsRuntime()
-      ..mightyChain = mightyChain
       ..disableEvent = disableEvent
       ..simulateAi = simulateAi
       ..simulateEnemy = simulateEnemy
@@ -578,7 +574,6 @@ class BattleOptions extends BattleOptionsRuntime {
   @override
   BattleOptions copy() {
     return BattleOptions()
-      ..mightyChain = mightyChain
       ..disableEvent = disableEvent
       ..simulateAi = simulateAi
       ..simulateEnemy = simulateEnemy

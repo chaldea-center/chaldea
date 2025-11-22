@@ -277,17 +277,6 @@ class Quest with RouteInfo {
       (isAnyFree || isRepeatRaid) &&
       ((recommendLv.startsWith('90') && recommendLv != '90') || recommendLv.startsWith('100'));
 
-  bool shouldEnableMightyChain() {
-    final war = this.war;
-    final event = war?.eventReal;
-    final checkTime = DateTime(2022, 7, 31).timestamp;
-    if (war != null && !war.isMainStory && event != null && event.endedAt < checkTime && closedAt < checkTime) {
-      return false;
-    } else {
-      return true;
-    }
-  }
-
   bool isUseUserEventDeck() => flags.contains(QuestFlag.userEventDeck) || flags.contains(QuestFlag.eventDeckNoSupport);
 
   @override

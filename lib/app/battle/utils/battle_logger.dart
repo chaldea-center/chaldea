@@ -217,10 +217,7 @@ class BattleRecordManager {
     if (options.simulateEnemy) {
       reasons.setUpload('${S.current.options}: ${S.current.simulate_enemy_actions}');
     }
-    final shouldMightyChain = questPhase.shouldEnableMightyChain();
-    if (options.mightyChain != shouldMightyChain) {
-      reasons.setUpload("Mighty Chain(QAB Chain) should be ${shouldMightyChain ? 'ON' : 'OFF'}");
-    }
+
     if (questPhase.isLaplaceNeedAi) {
       if (!options.simulateAi) {
         reasons.setUpload("${S.current.options}: ${S.current.simulate_simple_ai} must be enabled");

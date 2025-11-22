@@ -69,10 +69,9 @@ class BattleData {
   static const kMaxCommand = 3;
   static const playerOnFieldCount = 3;
 
-  static final DataVals artsChain = DataVals({'Rate': 5000, 'Value': 2000});
-  static final DataVals quickChainBefore7thAnni = DataVals({'Rate': 5000, 'Value': 10});
-  static final DataVals quickChainAfter7thAnni = DataVals({'Rate': 5000, 'Value': 20});
-  static final DataVals cardDamage = DataVals({'Rate': 1000, 'Value': 1000});
+  static final DataVals artsChainVals = DataVals({'Rate': 5000, 'Value': 2000});
+  static final DataVals quickChainVals = DataVals({'Rate': 5000, 'Value': 20});
+  static final DataVals cardDamageVals = DataVals({'Rate': 1000, 'Value': 1000});
 
   /// Log all action histories, pop/undo/copy should not involve this filed!
   final List<BattleData> snapshots = [];
@@ -986,7 +985,7 @@ class BattleData {
           }
         }
 
-        final chainType = _decideChainType(actions, options.mightyChain);
+        final chainType = _decideChainType(actions);
         if (chainType.isBraveChain()) {
           final actor = actions[0].actor;
           final extraCard = actor.getExtraCard();
@@ -997,10 +996,8 @@ class BattleData {
         }
 
         final int firstCardType =
-            // mightyChain=after 7th Anni, invalid first card can provide bonus
-            actions.isNotEmpty && (options.mightyChain || actions.first.isValid(this))
-            ? actions.first.cardData.cardType
-            : CardType.blank.value;
+            // after 7th Anniversary, invalid first card can provide bonus
+            actions.isNotEmpty ? actions.first.cardData.cardType : CardType.blank.value;
         await _applyColorChainFunction(chainType, actions);
 
         // confirm card selection & set targetNum
@@ -1075,7 +1072,7 @@ class BattleData {
     );
   }
 
-  BattleChainType _decideChainType(List<CombatAction> actions, bool enableMightyChain) {
+  BattleChainType _decideChainType(List<CombatAction> actions) {
     BattleChainType _decideNoCheckValid(List<CombatAction> _actions) {
       final cardTypesSet = _actions.map((action) => action.cardData.cardType).toSet();
       if (_actions.length != kMaxCommand) return BattleChainType.none;
@@ -1085,7 +1082,6 @@ class BattleData {
         busterChain: cardTypesSet.every(CardType.isBuster),
         quickChain: cardTypesSet.every(CardType.isQuick),
         mightyChain:
-            enableMightyChain &&
             cardTypesSet.any(CardType.isArts) &&
             cardTypesSet.any(CardType.isBuster) &&
             cardTypesSet.any(CardType.isQuick),
@@ -1389,7 +1385,7 @@ class BattleData {
         await Damage.damage(
           this,
           null,
-          cardDamage,
+          cardDamageVals,
           actor,
           targets,
           card,
@@ -1411,11 +1407,11 @@ class BattleData {
     await withFunctions(() async {
       await withFunction(() async {
         if (chainType.isQuickChain()) {
-          final dataValToUse = options.mightyChain ? quickChainAfter7thAnni : quickChainBefore7thAnni;
+          final dataValToUse = quickChainVals;
           GainStar.gainStar(this, dataValToUse, null);
         } else if (chainType.isArtsChain()) {
           final targets = actions.map((action) => action.actor).toSet();
-          GainNp.gainNp(this, artsChain, targets);
+          GainNp.gainNp(this, artsChainVals, targets);
         }
       });
     });

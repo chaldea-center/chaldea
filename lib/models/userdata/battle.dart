@@ -284,6 +284,7 @@ class BattleShareData {
 
 @JsonSerializable()
 class BattleShareDataOption {
+  @protected
   bool mightyChain;
   bool? disableEvent;
   Map<int, int>? pointBuffs; // <groupId, pointBuffId>

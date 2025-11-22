@@ -445,29 +445,9 @@ void main() async {
     expect(avoidStateBuff.count, 1);
   });
 
-  test('Stun does not provide firstCardBonus before 7th anni', () async {
-    final List<PlayerSvtData> lipAndJinako = [PlayerSvtData.id(1000100)..lv = 80, PlayerSvtData.id(2300300)..lv = 90];
-    final battle = BattleData();
-    battle.options.mightyChain = false;
-    await battle.init(db.gameData.questPhases[9300040603]!, lipAndJinako, null);
-
-    final lip = battle.onFieldAllyServants[0]!;
-    final jinako = battle.onFieldAllyServants[1]!;
-
-    await battle.activateSvtSkill(0, 2); // lip is stunned
-
-    expect(jinako.np, 0);
-    await battle.playerTurn([CombatAction(lip, lip.getCards()[1]), CombatAction(jinako, jinako.getCards()[4])]);
-    expect(jinako.np, 0);
-    expect(lip.canAttack(), isTrue);
-    await battle.playerTurn([CombatAction(lip, lip.getCards()[1]), CombatAction(jinako, jinako.getCards()[4])]);
-    expect(jinako.np, greaterThan(0));
-  });
-
   test('Stun provides firstCardBonus after 7th anni', () async {
     final List<PlayerSvtData> lipAndJinako = [PlayerSvtData.id(1000100)..lv = 80, PlayerSvtData.id(2300300)..lv = 90];
     final battle = BattleData();
-    battle.options.mightyChain = true;
     await battle.init(db.gameData.questPhases[9300040603]!, lipAndJinako, null);
 
     final lip = battle.onFieldAllyServants[0]!;
@@ -479,33 +459,6 @@ void main() async {
     expect(lip.canAttack(), false);
     await battle.playerTurn([CombatAction(lip, lip.getCards()[1]), CombatAction(jinako, jinako.getCards()[4])]);
     expect(jinako.np, greaterThan(0));
-  });
-
-  test('Stun does not provide typeChain before 7th anni', () async {
-    final List<PlayerSvtData> lipAndJinako = [PlayerSvtData.id(1000100)..lv = 80, PlayerSvtData.id(2300300)..lv = 90];
-    final battle = BattleData();
-    await battle.init(db.gameData.questPhases[9300040603]!, lipAndJinako, null);
-
-    battle.options.mightyChain = false;
-    final lip = battle.onFieldAllyServants[0]!;
-    final jinako = battle.onFieldAllyServants[1]!;
-
-    await battle.activateSvtSkill(0, 2); // lip is stunned
-
-    expect(lip.np, 0);
-    await battle.playerTurn([
-      CombatAction(lip, lip.getCards()[1]),
-      CombatAction(jinako, jinako.getCards()[1]),
-      CombatAction(jinako, jinako.getCards()[2]),
-    ]);
-    expect(lip.np, 0);
-
-    await battle.playerTurn([
-      CombatAction(lip, lip.getCards()[1]),
-      CombatAction(jinako, jinako.getCards()[1]),
-      CombatAction(jinako, jinako.getCards()[2]),
-    ]);
-    expect(lip.np, greaterThan(20));
   });
 
   test('Stun does not provide braveChain', () async {

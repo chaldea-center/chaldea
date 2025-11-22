@@ -142,7 +142,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "backup_history": MessageLookupByLibrary.simpleMessage("歷史備份"),
     "battle_activate_custom_skill": MessageLookupByLibrary.simpleMessage("發動自訂技能"),
     "battle_activate_probability": MessageLookupByLibrary.simpleMessage("發動機率"),
-    "battle_after_7th": MessageLookupByLibrary.simpleMessage("七週年後"),
     "battle_ally": MessageLookupByLibrary.simpleMessage("我方"),
     "battle_atk_np_parameters": MessageLookupByLibrary.simpleMessage("攻擊NP參數"),
     "battle_attack": MessageLookupByLibrary.simpleMessage("攻擊"),
