@@ -69,16 +69,30 @@ class _UserEventTradePageState extends State<UserEventTradePage>
     }
 
     final consumeItemIds = tradeGoodsList.expand((e) => e.consumes).map((e) => e.objectId).toSet().toList();
-    consumeItemIds.sort();
 
-    final demandItems = <int, int>{};
+    final demandItems = <int, double>{};
     for (final tradeInfo in data.tradeInfos.values) {
       final tradeGoods = data.tradeGoodsMap[tradeInfo.tradeGoodsId];
       if (tradeGoods == null) continue;
       for (final consume in tradeGoods.consumes) {
-        demandItems.addNum(consume.objectId, consume.num * (kSecsPerDay / tradeGoods.tradeTime).round());
+        double tradeTime = tradeGoods.tradeTime.toDouble();
+        if (data.supportToolItem != null &&
+            data.supportToolItem!.value != 0 &&
+            (data.pickups[tradeGoods.id]?.endedAt ?? 0) > DateTime.now().timestamp) {
+          tradeTime *= data.supportToolItem!.value / 1000;
+        }
+        demandItems[consume.objectId] = (demandItems[consume.objectId] ?? 0) + consume.num * (kSecsPerDay / tradeTime);
       }
     }
+    if (data.supportToolItem != null) {
+      consumeItemIds.add(data.supportToolItem!.id);
+      demandItems[data.supportToolItem!.id] = data.pickups.values
+          .where((e) => e.endedAt > DateTime.now().timestamp)
+          .length
+          .toDouble();
+    }
+
+    consumeItemIds.sort();
     sortDict(demandItems, inPlace: true, compare: (a, b) => b.key.compareTo(a.key));
     return Scaffold(
       appBar: AppBar(
@@ -100,8 +114,8 @@ class _UserEventTradePageState extends State<UserEventTradePage>
             controller: tabController,
             tabs: [
               Tab(text: 'Trades'),
-              Tab(text: 'Results'),
               Tab(text: 'Pickups'),
+              Tab(text: 'Results'),
             ],
           ),
         ),
@@ -134,7 +148,7 @@ class _UserEventTradePageState extends State<UserEventTradePage>
                         itemId: itemId,
                         text: [
                           mstData.getItemOrSvtNum(itemId).format(),
-                          (demandItems[itemId] ?? 0).format(),
+                          (demandItems[itemId] ?? 0).round().format(),
                         ].join('\n'),
                       ),
                   ],
@@ -180,12 +194,12 @@ class _UserEventTradePageState extends State<UserEventTradePage>
             ],
           ),
           ListView.builder(
-            itemBuilder: (context, index) => buildResult(data.userEventTrade!.resultList[index]),
-            itemCount: data.userEventTrade?.resultList.length ?? 0,
-          ),
-          ListView.builder(
             itemBuilder: (context, index) => buildPickup(data.userEventTrade!.pickupList[index]),
             itemCount: data.userEventTrade?.pickupList.length ?? 0,
+          ),
+          ListView.builder(
+            itemBuilder: (context, index) => buildResult(data.userEventTrade!.resultList[index]),
+            itemCount: data.userEventTrade?.resultList.length ?? 0,
           ),
         ],
       ),
@@ -203,7 +217,7 @@ class _UserEventTradePageState extends State<UserEventTradePage>
         tradeInfo != null &&
         tradeInfo.endedAt > now &&
         tradeGood.boardType == EventTradeGoodsBoardType.craft &&
-        (pickup == null || pickup.endedAt - now < kSecsPerDay);
+        (pickup == null || pickup.endedAt - now <= kSecsPerDay);
 
     double getLeastReceiveNum() {
       return data.getLeastReceiveNum(tradeGood.id);
@@ -412,8 +426,8 @@ class _UserEventTradePageState extends State<UserEventTradePage>
                           SimpleConfirmDialog(
                             title: Text('Use Support Tool'),
                             content: Text(
-                              'Time left: \n${Duration(seconds: endedAt - now)} →\n'
-                              '${Duration(seconds: endedAt - now + kSecsPerDay)}',
+                              'Time left: \n${Duration(seconds: endedAt - now).toStringX()} →\n'
+                              '${Duration(seconds: endedAt - now + kSecsPerDay).toStringX()}',
                             ),
                             onTapOk: () {
                               runTask(
@@ -509,19 +523,55 @@ class _UserEventTradePageState extends State<UserEventTradePage>
     return ListTile(
       dense: true,
       title: Text(goods == null ? '${result.tradeGoodsId}' : goods.lName),
-      subtitle: goods == null ? null : buildGifts(goods),
-      trailing: Text('×${result.getNum}'),
+      trailing: Text.rich(
+        TextSpan(
+          children: [
+            if (goods != null)
+              for (final gift in goods.gifts)
+                CenterWidgetSpan(
+                  child: gift.iconBuilder(context: context, width: 32, text: '×${(result.getNum * gift.num).format()}'),
+                ),
+          ],
+        ),
+      ),
     );
   }
 
   Widget buildPickup(EventCraftPickupInfo pickup) {
     final goods = data.tradeGoodsMap[pickup.tradeGoodsId];
+    final tradeInfo = data.tradeInfos[pickup.tradeGoodsId];
     return ListTile(
       dense: true,
+      enabled: tradeInfo != null && tradeInfo.endedAt > DateTime.now().timestamp,
       title: Text(goods == null ? '${pickup.tradeGoodsId}' : goods.lName),
       subtitle: buildTime(pickup.startedAt, pickup.endedAt),
       // trailing: Item.iconBuilder(context: context, item: null, itemId: pickup.itemId),
       trailing: goods == null ? null : buildGifts(goods),
+      onTap: () {
+        final now = DateTime.now().timestamp;
+        if (goods == null || goods.boardType != .craft || tradeInfo == null || tradeInfo.endedAt < now) return;
+        if (pickup.endedAt - now > kSecsPerDay) return;
+        if (mstData.getItemOrSvtNum(pickup.itemId) <= 0) return;
+        final endedAt = pickup.endedAt < now ? now : pickup.endedAt;
+        SimpleConfirmDialog(
+          title: Text('Use Support Tool'),
+          content: Text(
+            'Time left: \n${Duration(seconds: endedAt - now).toStringX()} →\n'
+            '${Duration(seconds: endedAt - now + kSecsPerDay).toStringX()}',
+          ),
+          onTapOk: () {
+            runTask(
+              () => runtime.agent.eventTradeStart(
+                eventId: data.eventId,
+                tradeStoreIdx: tradeInfo.storeIdx,
+                tradeGoodsId: pickup.tradeGoodsId,
+                tradeGoodsNum: 0,
+                itemId: pickup.itemId,
+              ),
+            );
+          },
+        ).showDialog(context);
+      },
     );
   }
 
@@ -547,7 +597,7 @@ class _UserEventTradePageState extends State<UserEventTradePage>
         runSpacing: 2,
         alignment: WrapAlignment.start,
         children: [
-          for (final gift in goods.gifts) gift.iconBuilder(context: context, width: 32, showOne: true),
+          for (final gift in goods.gifts) gift.iconBuilder(context: context, width: 32, showOne: false),
           if (goods.eventPointItem != null && goods.eventPointNum != 0)
             Item.iconBuilder(
               context: context,

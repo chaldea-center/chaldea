@@ -229,10 +229,6 @@ class FakerRuntimeBattle extends FakerRuntimeBase {
 
     await _checkQuestCondition(questPhaseEntity, options.checkQuestCondition);
 
-    if (questPhaseEntity.extraDetail?.questSelect?.isNotEmpty == true) {
-      throw SilentException('questSelect not supported');
-    }
-
     if (questPhaseEntity.restrictions.any(
       (restriction) => restriction.restriction.type == RestrictionType.dataLostBattleUniqueSvt,
     )) {

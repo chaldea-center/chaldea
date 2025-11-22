@@ -29,6 +29,7 @@ Item _$ItemFromJson(Map json) => Item(
       const [],
   eventId: (json['eventId'] as num?)?.toInt() ?? 0,
   eventGroupId: (json['eventGroupId'] as num?)?.toInt() ?? 0,
+  script: json['script'] == null ? null : ItemScript.fromJson(Map<String, dynamic>.from(json['script'] as Map)),
 );
 
 Map<String, dynamic> _$ItemToJson(Item instance) => <String, dynamic>{
@@ -48,6 +49,7 @@ Map<String, dynamic> _$ItemToJson(Item instance) => <String, dynamic>{
   'itemSelects': instance.itemSelects.map((e) => e.toJson()).toList(),
   'eventId': instance.eventId,
   'eventGroupId': instance.eventGroupId,
+  'script': instance.script?.toJson(),
 };
 
 const _$ItemTypeEnumMap = {
@@ -112,6 +114,10 @@ const _$ItemBGTypeEnumMap = {
   ItemBGType.questClearQPReward: 'questClearQPReward',
   ItemBGType.aquaBlue: 'aquaBlue',
 };
+
+ItemScript _$ItemScriptFromJson(Map json) => ItemScript();
+
+Map<String, dynamic> _$ItemScriptToJson(ItemScript instance) => <String, dynamic>{};
 
 ItemSelect _$ItemSelectFromJson(Map json) => ItemSelect(
   idx: (json['idx'] as num).toInt(),

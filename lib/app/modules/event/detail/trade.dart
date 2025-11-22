@@ -16,6 +16,16 @@ class _EventTradePageState extends State<EventTradePage> {
   final controller = ScrollController();
 
   Set<int> selectedGoodIds = {};
+  Set<int> useSupportToolGoodIds = {};
+  Item? supportToolItem;
+
+  @override
+  void initState() {
+    super.initState();
+    supportToolItem = db.gameData.items.values.firstWhereOrNull(
+      (e) => e.type == ItemType.reduceTradeTime && e.eventId == widget.event.id,
+    );
+  }
 
   @override
   void dispose() {
@@ -32,7 +42,11 @@ class _EventTradePageState extends State<EventTradePage> {
       final goods = widget.event.tradeGoods.firstWhereOrNull((e) => e.id == goodId);
       if (goods != null) {
         for (final consume in goods.consumes) {
-          oneDayCost.addNum(consume.objectId, (kSecsPerDay / goods.tradeTime * consume.num).round());
+          double tradeTime = goods.tradeTime.toDouble();
+          if (supportToolItem != null && supportToolItem!.value != 0 && useSupportToolGoodIds.contains(goodId)) {
+            tradeTime = tradeTime * supportToolItem!.value / 1000;
+          }
+          oneDayCost.addNum(consume.objectId, (kSecsPerDay / tradeTime * consume.num).round());
         }
       }
     }
@@ -54,7 +68,12 @@ class _EventTradePageState extends State<EventTradePage> {
               spacing: 1,
               runSpacing: 1,
               children: [
-                Text('${selectedGoodIds.length}${S.current.event_trade} 24h: '),
+                Text(
+                  [
+                    if (supportToolItem != null) '${useSupportToolGoodIds.length} pickups',
+                    '${selectedGoodIds.length}${S.current.event_trade} 24h: ',
+                  ].join(' '),
+                ),
                 for (final (itemId, count) in oneDayCost.items)
                   Item.iconBuilder(context: context, item: null, itemId: itemId, width: 32, text: count.format()),
               ],
@@ -65,6 +84,7 @@ class _EventTradePageState extends State<EventTradePage> {
   }
 
   Widget itemBuilder(BuildContext context, EventTradeGoods trade) {
+    final pickup = useSupportToolGoodIds.contains(trade.id);
     return SimpleAccordion(
       headerBuilder: (context, _) {
         return ListTile(
@@ -79,7 +99,9 @@ class _EventTradePageState extends State<EventTradePage> {
             alignment: WrapAlignment.start,
             crossAxisAlignment: WrapCrossAlignment.center,
             children: [
-              Text('(${getTradeTime(trade.tradeTime, trade.maxTradeTime)})  '),
+              Text(
+                '(${getTradeTime(trade.tradeTime, trade.maxTradeTime, pickup ? supportToolItem?.value : null)}) ${pickup ? "↑" : ""} ',
+              ),
               for (final consume in trade.consumes) ...[
                 Item.iconBuilder(
                   context: context,
@@ -98,7 +120,16 @@ class _EventTradePageState extends State<EventTradePage> {
               runSpacing: 2,
               alignment: WrapAlignment.start,
               children: [
-                for (final gift in trade.gifts) gift.iconBuilder(context: context, width: 32, showOne: true),
+                for (final gift in trade.gifts)
+                  gift.iconBuilder(
+                    context: context,
+                    width: 32,
+                    text: [
+                      if (gift.num != 1) '×${gift.num.format()}',
+                      (db.curUser.items[gift.objectId] ?? 0).format(),
+                      (db.itemCenter.itemLeft[gift.objectId] ?? 0).format(),
+                    ].join('\n'),
+                  ),
                 if (trade.eventPointItem != null && trade.eventPointNum != 0)
                   Item.iconBuilder(
                     context: context,
@@ -125,6 +156,18 @@ class _EventTradePageState extends State<EventTradePage> {
             },
             controlAffinity: ListTileControlAffinity.trailing,
           ),
+          if (supportToolItem != null)
+            CheckboxListTile(
+              dense: true,
+              value: useSupportToolGoodIds.contains(trade.id),
+              title: Text('Use Support Tool (time ×${supportToolItem!.value.format(base: 10, percent: true)})'),
+              onChanged: (v) {
+                setState(() {
+                  useSupportToolGoodIds.toggle(trade.id);
+                });
+              },
+              controlAffinity: ListTileControlAffinity.trailing,
+            ),
           if (trade.releaseConditions.isNotEmpty || trade.closedMessage.isNotEmpty)
             TileGroup(
               header: S.current.condition,
@@ -175,8 +218,8 @@ class _EventTradePageState extends State<EventTradePage> {
     );
   }
 
-  String getTradeTime(int tradeTime, int maxTradeTime, [int timeRate = 1000]) {
-    final duration = Duration(seconds: tradeTime * timeRate ~/ 1000);
+  String getTradeTime(int tradeTime, int maxTradeTime, [int? timeRate]) {
+    final duration = Duration(seconds: tradeTime * (timeRate ?? 1000) ~/ 1000);
     final hours = duration.inHours, minutes = duration.inMinutes % 60, seconds = duration.inSeconds % 60;
     String timeText = '${hours}h';
     if (minutes != 0 || seconds != 0) {

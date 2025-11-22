@@ -27,12 +27,13 @@ class _LoginResultPageState extends State<LoginResultPage> {
   late final loginResultData = runtime.agentData.loginResultData;
   final typeFilter = FilterGroupData<_LoginResultDataType>();
 
-  Map<String, List<int>> itemNames = {}; // jp name -> item cache
+  Map<String, int> itemNames = {}; // item name -> item cache
 
   @override
   void initState() {
     super.initState();
 
+    Map<String, List<int>> allItemNames = {};
     for (final item in db.gameData.items.values) {
       if (const [
         ItemType.chargeStone,
@@ -41,14 +42,27 @@ class _LoginResultPageState extends State<LoginResultPage> {
       ].contains(item.type)) {
         continue;
       }
-      itemNames.putIfAbsent(item.name, () => []).add(item.id);
+      allItemNames.putIfAbsent(item.name, () => []).add(item.id);
     }
     for (final svt in db.gameData.entities.values) {
       if (svt.classId == SvtClass.ALL.value) {
-        itemNames.putIfAbsent(svt.name, () => []).add(svt.id);
+        allItemNames.putIfAbsent(svt.name, () => []).add(svt.id);
       }
     }
-    itemNames.removeWhere((k, v) => v.length != 1);
+    itemNames = {
+      for (final (k, v) in allItemNames.items)
+        if (v.length == 1) k: v.single,
+    };
+    for (final (k, v) in allItemNames.items) {
+      if (v.length != 1) continue;
+      itemNames[k] = v.single;
+      if (runtime.region != Region.jp) {
+        final transl = Transl.md.itemNames[k]?.ofRegion(runtime.region);
+        if (transl != null) {
+          itemNames[transl] ??= v.single;
+        }
+      }
+    }
   }
 
   @override
@@ -182,7 +196,7 @@ class _LoginResultPageState extends State<LoginResultPage> {
     return TextSpan(
       text: '${bonus.createdAt.sec2date().toCustomString(year: false, second: false)}  ${bonus.key}  ',
       children: bonus.items.map((item) {
-        final itemId = itemNames[item.name]?.single;
+        final itemId = itemNames[item.name];
         return TextSpan(
           children: [
             itemId == null

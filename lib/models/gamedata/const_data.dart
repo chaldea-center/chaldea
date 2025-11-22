@@ -567,6 +567,7 @@ class GameConstants {
   final int grandSvtSupportFriendPoint; // 100
   final int heroineChangecardvoice; // 800104
   final int hydeSvtId; // 600710
+  final int individualityIsPlayer; // 7001
   final int individualityIsSupport; // 7000
   final int isEventPointMenu; // 1
   final int isIosExamination; // 0
@@ -895,6 +896,7 @@ class GameConstants {
     this.grandSvtSupportFriendPoint = 100,
     this.heroineChangecardvoice = 800104,
     this.hydeSvtId = 600710,
+    this.individualityIsPlayer = 7001,
     this.individualityIsSupport = 7000,
     this.isEventPointMenu = 1,
     this.isIosExamination = 0,

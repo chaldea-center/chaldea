@@ -34,6 +34,7 @@ class Item {
   List<ItemSelect> itemSelects;
   int eventId; // CN may be 0 even if JP not 0: 94136610. use script.eventId
   int eventGroupId;
+  ItemScript? script;
 
   Item({
     required this.id,
@@ -52,7 +53,13 @@ class Item {
     this.itemSelects = const [],
     this.eventId = 0,
     this.eventGroupId = 0,
-  });
+    this.script,
+  }) {
+    // some CN items' eventId is 0 but script one is not
+    final _eventId = script?.eventId ?? 0, _eventGroupId = script?.eventGroupId ?? 0;
+    if (_eventId != 0 && eventId == 0) eventId = _eventId;
+    if (_eventGroupId != 0 && eventGroupId == 0) eventGroupId = _eventGroupId;
+  }
 
   factory Item.fromJson(Map<String, dynamic> json) {
     return GameDataLoader.instance.tmp.getItem(json["id"] as int, () => _$ItemFromJson(json));
@@ -417,6 +424,22 @@ class Items {
   static const int ember5 = 9770500;
 
   static const loginSaveItems = [...apples, stormPodId];
+}
+
+@JsonSerializable()
+class ItemScript with DataScriptBase {
+  @protected
+  int? get eventId => toInt('eventId');
+  @protected
+  int? get eventGroupId => toInt('eventGroupId');
+  int? get maxNum => toInt('maxNum');
+  List<int>? get validClassIds => toList('validClassIds');
+
+  ItemScript();
+
+  factory ItemScript.fromJson(Map<String, dynamic> json) => _$ItemScriptFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ItemScriptToJson(this);
 }
 
 @JsonSerializable()

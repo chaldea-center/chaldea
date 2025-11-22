@@ -59,12 +59,15 @@ class _FakerMenuButtonState extends State<FakerMenuButton> with FakerRuntimeStat
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 8),
             child: Text(
-              (gameTop.hash, gameTop.timestamp) == (timerData.hash, timerData.timestamp)
-                  ? fmtVer('data: ', gameTop.hash, gameTop.timestamp)
-                  : [
-                      fmtVer('top = ', gameTop.hash, gameTop.timestamp),
-                      fmtVer('timer=', timerData.hash ?? "", timerData.timestamp),
-                    ].join('\n'),
+              [
+                '[${runtime.agent.user.serverName}] ${runtime.agent.user.userGame?.friendCode}',
+                if ((gameTop.hash, gameTop.timestamp) == (timerData.hash, timerData.timestamp))
+                  fmtVer('data: ', gameTop.hash, gameTop.timestamp)
+                else ...[
+                  fmtVer('top = ', gameTop.hash, gameTop.timestamp),
+                  fmtVer('timer=', timerData.hash ?? "", timerData.timestamp),
+                ],
+              ].join('\n'),
               style: Theme.of(context).textTheme.bodySmall?.merge(kMonoStyle),
             ),
           ),
