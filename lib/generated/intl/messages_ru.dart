@@ -54,9 +54,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "add_condition": MessageLookupByLibrary.simpleMessage("Условие"),
     "add_feedback_details_warning": MessageLookupByLibrary.simpleMessage("Пожалуйста, добавьте детали обратной связи"),
     "add_mission": MessageLookupByLibrary.simpleMessage("Добавить Миссию"),
-    "add_not_svt_trait_to_traum_enemy": MessageLookupByLibrary.simpleMessage(
-      "Добавить черту [NotBasedOnServant] для врагов с Траума",
-    ),
     "add_to_blacklist": MessageLookupByLibrary.simpleMessage("Добавить в черный список"),
     "anniversary": MessageLookupByLibrary.simpleMessage("Юбилей"),
     "ap": MessageLookupByLibrary.simpleMessage("ТД"),

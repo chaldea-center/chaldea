@@ -160,17 +160,6 @@ class S {
     return Intl.message('Add Mission', name: 'add_mission', desc: '', locale: localeName, args: []);
   }
 
-  /// `Add [NotBasedOnServant] trait for Traum Enemies`
-  String get add_not_svt_trait_to_traum_enemy {
-    return Intl.message(
-      'Add [NotBasedOnServant] trait for Traum Enemies',
-      name: 'add_not_svt_trait_to_traum_enemy',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
   /// `Add to blacklist`
   String get add_to_blacklist {
     return Intl.message('Add to blacklist', name: 'add_to_blacklist', desc: '', locale: localeName, args: []);

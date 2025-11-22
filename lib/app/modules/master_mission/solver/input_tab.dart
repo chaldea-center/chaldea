@@ -23,7 +23,6 @@ class _MissionSolverOptions {
   bool _isRegionNA = false;
   bool get isRegionNA => warId < 1000 ? false : _isRegionNA;
   set isRegionNA(bool v) => _isRegionNA = v;
-  bool addNotBasedOnSvtForTraum = false; // remove in 2025.10
 
   MasterMissionOptions get preset => db.settings.masterMissionOptions;
 }
@@ -562,7 +561,7 @@ class _MissionInputTabState extends State<MissionInputTab> {
         return;
       }
       final missionsCopy = options.missions.map((e) => e.copy()).toList();
-      final solverOptions = MissionSolverOptions(addNotBasedOnSvtForTraum: options.addNotBasedOnSvtForTraum);
+      final solverOptions = MissionSolverOptions();
       final result = await solver.solve(quests: validQuests, missions: missionsCopy, options: solverOptions);
       final solution = MissionSolution(
         result: result,
@@ -601,17 +600,6 @@ class __OptionsDialogState extends State<_OptionsDialog> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SwitchListTile(
-            dense: true,
-            title: Text(S.current.add_not_svt_trait_to_traum_enemy),
-            value: options.addNotBasedOnSvtForTraum,
-            onChanged: (v) {
-              setState(() {
-                options.addNotBasedOnSvtForTraum = v;
-              });
-            },
-          ),
-          const Divider(),
           SwitchListTile(
             dense: true,
             title: Text(S.current.exclude_random_enemy_quests),

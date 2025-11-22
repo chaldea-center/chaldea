@@ -105,7 +105,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "add_condition": MessageLookupByLibrary.simpleMessage("添加條件"),
     "add_feedback_details_warning": MessageLookupByLibrary.simpleMessage("請填寫回饋內容"),
     "add_mission": MessageLookupByLibrary.simpleMessage("添加任務"),
-    "add_not_svt_trait_to_traum_enemy": MessageLookupByLibrary.simpleMessage("添加Traum敵人的[非從者]特性"),
     "add_to_blacklist": MessageLookupByLibrary.simpleMessage("加入黑名單"),
     "additional_enemy": MessageLookupByLibrary.simpleMessage("追加敵人"),
     "anniversary": MessageLookupByLibrary.simpleMessage("週年"),

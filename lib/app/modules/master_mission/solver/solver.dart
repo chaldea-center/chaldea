@@ -88,13 +88,6 @@ class MissionSolver extends BaseLPSolver {
         }
         final results = mission.conds.map((cond) {
           final enemyTraits = enemy.traits.toList();
-          if (quest.warId == 310 &&
-              options != null &&
-              options.addNotBasedOnSvtForTraum & MissionSolverOptions.kTraumClassEnemyIds.contains(enemy.svt.id)) {
-            if (enemyTraits.every((e) => e != Trait.notBasedOnServant.value)) {
-              enemyTraits.add(Trait.notBasedOnServant.value);
-            }
-          }
           switch (cond.type) {
             case CustomMissionType.trait:
               return cond.useAnd
