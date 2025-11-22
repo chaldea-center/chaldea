@@ -583,17 +583,6 @@ class S {
     return Intl.message('Remaining HP', name: 'battle_remaining_hp', desc: '', locale: localeName, args: []);
   }
 
-  /// `require {actorName} on field`
-  String battle_require_actor_on_field(Object actorName) {
-    return Intl.message(
-      'require $actorName on field',
-      name: 'battle_require_actor_on_field',
-      desc: '',
-      locale: localeName,
-      args: [actorName],
-    );
-  }
-
   /// `Required field traits`
   String get battle_require_field_traits {
     return Intl.message(
@@ -610,17 +599,6 @@ class S {
     return Intl.message(
       'Required opponent traits',
       name: 'battle_require_opponent_traits',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Required self traits`
-  String get battle_require_self_traits {
-    return Intl.message(
-      'Required self traits',
-      name: 'battle_require_self_traits',
       desc: '',
       locale: localeName,
       args: [],
@@ -2648,11 +2626,6 @@ class S {
   /// `Hide`
   String get hide {
     return Intl.message('Hide', name: 'hide', desc: '', locale: localeName, args: []);
-  }
-
-  /// `Hide Outdated`
-  String get hide_outdated {
-    return Intl.message('Hide Outdated', name: 'hide_outdated', desc: '', locale: localeName, args: []);
   }
 
   /// `Hide Plan Detail`

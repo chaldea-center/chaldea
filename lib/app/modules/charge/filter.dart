@@ -176,11 +176,6 @@ class _NpChargeFilterPageState extends FilterPageState<NpFilterData, NpChargeFil
             },
           ),
           if (filterData.isSvt)
-            SFooter(
-              '* ${S.current.np_charge_type_instant_sum} testing...',
-              padding: const EdgeInsetsDirectional.fromSTEB(12, 0, 12, 5),
-            ),
-          if (filterData.isSvt)
             getGroup(
               header: S.current.level,
               children: [

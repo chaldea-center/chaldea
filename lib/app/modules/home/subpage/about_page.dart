@@ -95,6 +95,45 @@ class _AboutPageState extends State<AboutPage> {
           TileGroup(
             header: S.current.about_app,
             children: [
+              ListTile(
+                title: Text(S.current.project_homepage),
+                onTap: () {
+                  launch(kProjectHomepage);
+                },
+              ),
+              ListTile(
+                title: const Text('README'),
+                onTap: () {
+                  router.pushPage(
+                    const _GithubMarkdownPage(
+                      title: 'README',
+                      link: '$kProjectHomepage/blob/main/README.md',
+                      assetKey: 'README.md',
+                    ),
+                  );
+                  // launch('$kProjectHomepage/blob/main/CHANGELOG.md');
+                },
+              ),
+              ListTile(
+                title: const Text('CONTRIBUTORS'),
+                onTap: () {
+                  router.pushPage(
+                    const _GithubMarkdownPage(
+                      title: 'CONTRIBUTORS',
+                      link: '$kProjectHomepage/blob/main/CONTRIBUTORS',
+                      assetKey: 'CONTRIBUTORS',
+                      disableMd: true,
+                    ),
+                  );
+                },
+              ),
+              ListTile(
+                title: Text(S.current.change_log),
+                onTap: () {
+                  launch(ChaldeaUrl.doc('install#releases'));
+                },
+              ),
+              kIndentDivider,
               if (!kIsWeb && !AppInfo.isMacStoreApp && (!PlatformU.isIOS || db.runtimeData.upgradableVersion != null))
                 ListTile(
                   title: Text(S.current.check_update),
@@ -144,38 +183,6 @@ class _AboutPageState extends State<AboutPage> {
                     });
                   },
                 ),
-              ListTile(
-                title: Text(S.current.change_log),
-                onTap: () {
-                  launch(ChaldeaUrl.doc('install#releases'));
-                },
-              ),
-              ListTile(
-                title: const Text('README'),
-                onTap: () {
-                  router.pushPage(
-                    const _GithubMarkdownPage(
-                      title: 'README',
-                      link: '$kProjectHomepage/blob/main/README.md',
-                      assetKey: 'README.md',
-                    ),
-                  );
-                  // launch('$kProjectHomepage/blob/main/CHANGELOG.md');
-                },
-              ),
-              ListTile(
-                title: const Text('CONTRIBUTORS'),
-                onTap: () {
-                  router.pushPage(
-                    const _GithubMarkdownPage(
-                      title: 'CONTRIBUTORS',
-                      link: '$kProjectHomepage/blob/main/CONTRIBUTORS',
-                      assetKey: 'CONTRIBUTORS',
-                      disableMd: true,
-                    ),
-                  );
-                },
-              ),
             ],
           ),
           ListTile(title: Text(S.current.about_app_declaration_text)),

@@ -21,18 +21,16 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'ja';
 
-  static String m13(actorName) => "${actorName}のフィールドにいるが必要";
-
   static String m0(url) =>
       "Chaldea - クロスプラットフォームのFate/GOアイテム計画アプリ。ゲーム情報の閲覧、サーヴァント/イベント/アイテム計画、マスターミッション計画、ガチャシミュレーターなどの機能をサポートします。\n\n詳細はこちら: \n${url}\n";
 
-  static String m16(version, curVer) => "最低限のアプリバージョン: ≥ ${version} (現在: ${curVer})";
+  static String m15(version, curVer) => "最低限のアプリバージョン: ≥ ${version} (現在: ${curVer})";
 
   static String m1(n) => "最大${n}ボックス";
 
   static String m2(n, total) => "聖杯は伝承結晶${n}/${total}個に置き換わります";
 
-  static String m17(filename, hash, localHash) =>
+  static String m16(filename, hash, localHash) =>
       "File ${filename} not found or mismatched hash: ${hash} - ${localHash}";
 
   static String m3(error) => "インポートに失敗しました、エラー:\n${error}";
@@ -41,13 +39,13 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m5(site) => "${site}へ";
 
-  static String m21(shown, total) => "表示${shown}/合計${total}";
+  static String m20(shown, total) => "表示${shown}/合計${total}";
 
-  static String m22(shown, ignore, total) => "表示${shown}/無視${ignore}/合計${total}";
+  static String m21(shown, ignore, total) => "表示${shown}/無視${ignore}/合計${total}";
 
   static String m6(first) => "${Intl.select(first, {'true': '最初のもの', 'false': '最後のもの', 'other': '最後のもの'})}";
 
-  static String m23(layer) => "第${layer}層";
+  static String m22(layer) => "第${layer}層";
 
   static String m7(n) => "第${n}節";
 
@@ -57,7 +55,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m10(n) => "プラン${n}をリセット(表示のみ)";
 
-  static String m28(battles, ap) => "共${battles}回戦闘、${ap} AP";
+  static String m27(battles, ap) => "共${battles}回戦闘、${ap} AP";
 
   static String m11(n) => "プロフィール${n}";
 
@@ -131,10 +129,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "battle_probability_threshold": MessageLookupByLibrary.simpleMessage("確率閾値"),
     "battle_quest_from": MessageLookupByLibrary.simpleMessage("選択"),
     "battle_random": MessageLookupByLibrary.simpleMessage("ランダム"),
-    "battle_require_actor_on_field": m13,
     "battle_require_field_traits": MessageLookupByLibrary.simpleMessage("必要なフィールド特性"),
     "battle_require_opponent_traits": MessageLookupByLibrary.simpleMessage("必要な相手の特性"),
-    "battle_require_self_traits": MessageLookupByLibrary.simpleMessage("必要な自身の特性"),
     "battle_select_activator": MessageLookupByLibrary.simpleMessage("発動者を選択"),
     "battle_select_card": MessageLookupByLibrary.simpleMessage("コマンドカードを選択"),
     "battle_select_effect": MessageLookupByLibrary.simpleMessage("効果を選択"),
@@ -287,7 +283,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "error": MessageLookupByLibrary.simpleMessage("エラー"),
     "error_no_data_found": MessageLookupByLibrary.simpleMessage("データが見つかりません"),
     "error_no_internet": MessageLookupByLibrary.simpleMessage("インターネットに接続できません"),
-    "error_required_app_version": m16,
+    "error_required_app_version": m15,
     "event": MessageLookupByLibrary.simpleMessage("イベント"),
     "event_ap_cost_half": MessageLookupByLibrary.simpleMessage("消費AP 50% DOWN"),
     "event_bonus": MessageLookupByLibrary.simpleMessage("ボーナス"),
@@ -330,7 +326,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "ffo_missing_data_hint": MessageLookupByLibrary.simpleMessage("まずFFOリソースをダウンロードまたはインポートしてください↗"),
     "ffo_same_svt": MessageLookupByLibrary.simpleMessage("同じ鯖"),
     "fgo_domus_aurea": MessageLookupByLibrary.simpleMessage("効率劇場"),
-    "file_not_found_or_mismatched_hash": m17,
+    "file_not_found_or_mismatched_hash": m16,
     "filename": MessageLookupByLibrary.simpleMessage("ファイル名"),
     "filter": MessageLookupByLibrary.simpleMessage("フィルター"),
     "filter_atk_hp_type": MessageLookupByLibrary.simpleMessage("属性"),
@@ -371,7 +367,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "guda_female": MessageLookupByLibrary.simpleMessage("ぐだ子"),
     "guda_male": MessageLookupByLibrary.simpleMessage("ぐだ男"),
     "help": MessageLookupByLibrary.simpleMessage("ヘルプ"),
-    "hide_outdated": MessageLookupByLibrary.simpleMessage("期限切れを非表示"),
     "high_difficulty_quest": MessageLookupByLibrary.simpleMessage("高難易度クエスト"),
     "http_sniff_hint": MessageLookupByLibrary.simpleMessage("(JP/NA/CN/TW)アカウントがログインしているときにデータ"),
     "https_sniff": MessageLookupByLibrary.simpleMessage("Httpsスニッフィング"),
@@ -465,8 +460,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "level": MessageLookupByLibrary.simpleMessage("レベル"),
     "limited_event": MessageLookupByLibrary.simpleMessage("期間限定イベント"),
     "link": MessageLookupByLibrary.simpleMessage("リンク"),
-    "list_count_shown_all": m21,
-    "list_count_shown_hidden_all": m22,
+    "list_count_shown_all": m20,
+    "list_count_shown_hidden_all": m21,
     "list_end_hint": m6,
     "login_bonus": MessageLookupByLibrary.simpleMessage("ログインボーナス"),
     "login_change_name": MessageLookupByLibrary.simpleMessage("ユーザー名を変更"),
@@ -496,7 +491,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "main_quest": MessageLookupByLibrary.simpleMessage("メインクエスト"),
     "main_story": MessageLookupByLibrary.simpleMessage("シナリオ"),
     "main_story_chapter": MessageLookupByLibrary.simpleMessage("チャプター"),
-    "map_layer_n": m23,
+    "map_layer_n": m22,
     "master_affection": MessageLookupByLibrary.simpleMessage("マスター好感度"),
     "master_detail_width": MessageLookupByLibrary.simpleMessage("Master-Detail width"),
     "master_mission": MessageLookupByLibrary.simpleMessage("マスターミッション"),
@@ -649,7 +644,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "skill_up": MessageLookupByLibrary.simpleMessage("スキル強化"),
     "solution_battle_count": MessageLookupByLibrary.simpleMessage("カウント"),
     "solution_target_count": MessageLookupByLibrary.simpleMessage("目標カウント"),
-    "solution_total_battles_ap": m28,
+    "solution_total_battles_ap": m27,
     "sort_order": MessageLookupByLibrary.simpleMessage("ソート"),
     "spirit_origin_release_quest": MessageLookupByLibrary.simpleMessage("霊基解放クエスト"),
     "sprites": MessageLookupByLibrary.simpleMessage("モデル"),

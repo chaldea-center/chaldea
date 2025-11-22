@@ -21,12 +21,10 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'ru';
 
-  static String m13(actorName) => "Нужен ${actorName} на поле";
-
   static String m0(url) =>
       "Халдея — кроссплатформенная утилита для Fate/GO. Поддержка просмотра игровых данных, планирования слуг/событий/предметов, планирования основных миссий, симулятор призыва и т. д. Подробности: ${url}";
 
-  static String m15(count) => "Зарядить NP до ${count}";
+  static String m14(count) => "Зарядить NP до ${count}";
 
   static String m3(error) => "Импорт не удался. Ошибка:\n${error}";
 
@@ -122,10 +120,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "battle_random": MessageLookupByLibrary.simpleMessage("Случайно"),
     "battle_records": MessageLookupByLibrary.simpleMessage("Записи"),
     "battle_remaining_hp": MessageLookupByLibrary.simpleMessage("Осталось ХП"),
-    "battle_require_actor_on_field": m13,
     "battle_require_field_traits": MessageLookupByLibrary.simpleMessage("Обязательные характеристики поля"),
     "battle_require_opponent_traits": MessageLookupByLibrary.simpleMessage("Требуемые характеристики противника"),
-    "battle_require_self_traits": MessageLookupByLibrary.simpleMessage("Необходимые характеристики"),
     "battle_select_card": MessageLookupByLibrary.simpleMessage("Выбрать карту"),
     "battle_select_critical_card_hint": MessageLookupByLibrary.simpleMessage(
       "Нажмите на Командную карту несколько раз чтобы она стала Критической",
@@ -166,7 +162,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "chaldea_share_msg": m0,
     "change_log": MessageLookupByLibrary.simpleMessage("Изменить Лог"),
     "characters_in_card": MessageLookupByLibrary.simpleMessage("Персонажи"),
-    "charge_np_to": m15,
+    "charge_np_to": m14,
     "check_file_hash": MessageLookupByLibrary.simpleMessage("Проверка целостности файлов"),
     "check_update": MessageLookupByLibrary.simpleMessage("Проверка обновления"),
     "clear": MessageLookupByLibrary.simpleMessage("Очистить"),

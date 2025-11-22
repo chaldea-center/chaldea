@@ -543,13 +543,6 @@ class GalleryItem {
     isDetail: true,
     shownDefault: false,
   );
-  // static GalleryItem more = GalleryItem(
-  //   name: 'more',
-  //   titleBuilder: () => S.current.more,
-  //   icon: Icons.add,
-  //   page: EditGalleryPage(),
-  //   isDetail: true,
-  // );
 
   /// debug only
   // static GalleryItem palette = GalleryItem(
@@ -557,22 +550,6 @@ class GalleryItem {
   //   titleBuilder: () => 'Palette',
   //   icon: Icons.palette_outlined,
   //   page: DarkLightThemePalette(),
-  //   isDetail: true,
-  // );
-
-  /// unpublished pages
-  // static GalleryItem apCal = GalleryItem(
-  //   name: 'ap_cal',
-  //   titleBuilder: () => S.current.ap_calc_title,
-  //   icon: Icons.directions_run,
-  //   page: APCalcPage(),
-  //   isDetail: true,
-  // );
-  // static GalleryItem damageCalc = GalleryItem(
-  //   name: 'damage_calc',
-  //   titleBuilder: () => S.current.calculator,
-  //   icon: Icons.keyboard,
-  //   page: DamageCalcPage(),
   //   isDetail: true,
   // );
 }

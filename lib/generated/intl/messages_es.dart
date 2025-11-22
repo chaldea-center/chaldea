@@ -28,7 +28,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m2(n, total) => "Griales a Lore: ${n}/${total}";
 
-  static String m17(filename, hash, localHash) =>
+  static String m16(filename, hash, localHash) =>
       "Archivo ${filename} no encontrado o el hash no coincide: ${hash} - ${localHash}";
 
   static String m3(error) => "La importación ha fallado. Error:\n${error}";
@@ -37,9 +37,9 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m5(site) => "Ir a ${site}";
 
-  static String m21(shown, total) => "${shown} mostrado (total ${total})";
+  static String m20(shown, total) => "${shown} mostrado (total ${total})";
 
-  static String m22(shown, ignore, total) => "${shown} mostrado, ${ignore} ignorado (total ${total})";
+  static String m21(shown, ignore, total) => "${shown} mostrado, ${ignore} ignorado (total ${total})";
 
   static String m6(first) =>
       "${Intl.select(first, {'true': 'Ya es el primero', 'false': 'Ya es el último', 'other': 'No más'})}";
@@ -52,7 +52,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m10(n) => "Restablecer plan ${n} (Mostrado)";
 
-  static String m28(battles, ap) => "Total de batallas: ${battles}, ${ap} AP";
+  static String m27(battles, ap) => "Total de batallas: ${battles}, ${ap} AP";
 
   static String m11(n) => "Perfil ${n}";
 
@@ -242,7 +242,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "ffo_missing_data_hint": MessageLookupByLibrary.simpleMessage("Primero descargue o importe los datos de FFO↗"),
     "ffo_same_svt": MessageLookupByLibrary.simpleMessage("Mismo Servant"),
     "fgo_domus_aurea": MessageLookupByLibrary.simpleMessage("Domus Áurea"),
-    "file_not_found_or_mismatched_hash": m17,
+    "file_not_found_or_mismatched_hash": m16,
     "filename": MessageLookupByLibrary.simpleMessage("nombre del archivo"),
     "filter": MessageLookupByLibrary.simpleMessage("Filtro"),
     "filter_atk_hp_type": MessageLookupByLibrary.simpleMessage("Tipo"),
@@ -280,7 +280,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "guda_female": MessageLookupByLibrary.simpleMessage("Gudako"),
     "guda_male": MessageLookupByLibrary.simpleMessage("Gudao"),
     "help": MessageLookupByLibrary.simpleMessage("Ayuda"),
-    "hide_outdated": MessageLookupByLibrary.simpleMessage("Ocultar desactualizado"),
     "http_sniff_hint": MessageLookupByLibrary.simpleMessage("(JP/NA/CN/TW) Capture los datos al iniciar sesión"),
     "https_sniff": MessageLookupByLibrary.simpleMessage("Https Sniffing"),
     "hunting_quest": MessageLookupByLibrary.simpleMessage("Hunting Quests"),
@@ -372,8 +371,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "level": MessageLookupByLibrary.simpleMessage("Nivel"),
     "limited_event": MessageLookupByLibrary.simpleMessage("Evento Limitado"),
     "link": MessageLookupByLibrary.simpleMessage("enlace"),
-    "list_count_shown_all": m21,
-    "list_count_shown_hidden_all": m22,
+    "list_count_shown_all": m20,
+    "list_count_shown_hidden_all": m21,
     "list_end_hint": m6,
     "login_change_name": MessageLookupByLibrary.simpleMessage("Cambiar nombre"),
     "login_change_password": MessageLookupByLibrary.simpleMessage("Cambiar contraseña"),
@@ -547,7 +546,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "skill_up": MessageLookupByLibrary.simpleMessage("Subir Skill"),
     "solution_battle_count": MessageLookupByLibrary.simpleMessage("Conteo de Batallas"),
     "solution_target_count": MessageLookupByLibrary.simpleMessage("Conteo de Objetivos"),
-    "solution_total_battles_ap": m28,
+    "solution_total_battles_ap": m27,
     "sort_order": MessageLookupByLibrary.simpleMessage("Ordenar"),
     "sprites": MessageLookupByLibrary.simpleMessage("Sprites"),
     "sq_fragment_convert": MessageLookupByLibrary.simpleMessage("21 Fragmentos = 3 SQ"),

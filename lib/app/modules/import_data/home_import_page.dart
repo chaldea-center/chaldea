@@ -83,7 +83,6 @@ class _ImportPageHomeState extends State<ImportPageHome> {
               ),
             ],
           ),
-          // SHeader(S.current.testing),
           TileGroup(
             children: [
               ListTile(

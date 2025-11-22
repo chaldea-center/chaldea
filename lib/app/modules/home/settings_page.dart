@@ -92,19 +92,6 @@ class _SettingsPageState extends State<SettingsPage> {
               ),
             ],
           ),
-          // TileGroup(
-          //   header: S.current.event_progress,
-          //   footer:
-          //       '${S.current.limited_event}/${S.current.main_story}/${S.current.summon}',
-          //   children: const [
-          //     Padding(
-          //       padding: EdgeInsets.symmetric(horizontal: 16),
-          //       child: ListTile(
-          //         title: Text('TODO'),
-          //       ),
-          //     ),
-          //   ],
-          // ),
           TileGroup(
             header: S.current.settings_data,
             children: <Widget>[

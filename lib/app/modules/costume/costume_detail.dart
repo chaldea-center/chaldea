@@ -97,11 +97,6 @@ class CostumeDetailPage extends StatelessWidget {
             ),
           ],
         ),
-        // CustomTableRow(children: [
-        //   TableCellData(text: S.current.obtain_methods, isHeader: true)
-        // ]),
-        // CustomTableRow(
-        //     children: [TableCellData(child: Text(costume.lObtain))]),
         CustomTableRow(children: [TableCellData(text: S.current.card_description, isHeader: true)]),
         if (costume.lDetail.l != costume.detail)
           CustomTableRow(

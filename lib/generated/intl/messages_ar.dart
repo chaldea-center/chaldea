@@ -301,7 +301,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "guda_female": MessageLookupByLibrary.simpleMessage("غوداكو"),
     "guda_male": MessageLookupByLibrary.simpleMessage("غودو"),
     "help": MessageLookupByLibrary.simpleMessage("مساعدة"),
-    "hide_outdated": MessageLookupByLibrary.simpleMessage("اخفي المنتهية"),
     "hide_svt_plan_details": MessageLookupByLibrary.simpleMessage("اخفاء تفاصيل الخطة"),
     "icons": MessageLookupByLibrary.simpleMessage("الأيقونات"),
     "ignore": MessageLookupByLibrary.simpleMessage("تجاهل"),
