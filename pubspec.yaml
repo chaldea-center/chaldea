@@ -79,6 +79,7 @@ dependencies:
   logger: ^2.3.0
   lpinyin: ^2.0.3
   markdown: ^7.0.0
+  meta: ^1.17.0
   modal_bottom_sheet: ^3.0.0
   msgpack_dart: ^1.0.1
   octo_image: ^2.0.0

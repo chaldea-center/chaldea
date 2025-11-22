@@ -1,4 +1,4 @@
-import 'package:flutter/foundation.dart' show protected;
+import 'package:meta/meta.dart' show protected;
 
 import 'package:chaldea/utils/basic.dart' show Maths;
 import 'package:chaldea/utils/extension.dart';
