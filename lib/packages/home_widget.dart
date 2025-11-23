@@ -8,10 +8,11 @@ import 'platform/platform.dart';
 class HomeWidgetX {
   const HomeWidgetX._();
 
-  static final bool isSupported = PlatformU.isIOS;
+  static final bool isSupported = PlatformU.isIOS || PlatformU.isAndroid;
 
   static Future<bool?> init() async {
-    if (isSupported) {
+    if (!isSupported) return null;
+    if (PlatformU.isIOS) {
       return HomeWidget.setAppGroupId('group.cc.narumi.chaldea.shared');
     }
     return null;
@@ -45,6 +46,11 @@ class HomeWidgetX {
 
   static Future<bool?> updateFakerStatus() async {
     if (!isSupported) return null;
-    return HomeWidget.updateWidget(name: 'FakerStatusWidget', iOSName: 'FakerStatusWidget');
+    return HomeWidget.updateWidget(
+      name: 'FakerStatusWidget',
+      iOSName: 'FakerStatusWidget',
+      androidName: "FakerStatusWidgetReceiver",
+      // qualifiedAndroidName: 'com.narumi.chaldea.FakerStatusWidgetReceiver',
+    );
   }
 }

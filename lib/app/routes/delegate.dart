@@ -239,7 +239,12 @@ class AppRouterDelegate extends RouterDelegate<RouteConfiguration>
     if (_history.isEmpty || _history.first.name != Routes.home) {
       _history.insert(0, RouteConfiguration.home().createPage());
     }
-    if (configuration.url != _history.last.name) {
+    final url = configuration.url;
+    if (url != _history.last.name) {
+      // skip android widget callback
+      if (url != null && url.startsWith('/CALLBACK') && url.contains('appWidgetId')) {
+        return SynchronousFuture(null);
+      }
       _history.add(configuration.createPage());
     }
     return SynchronousFuture(null);

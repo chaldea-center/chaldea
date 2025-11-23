@@ -1,8 +1,18 @@
+plugins {
+    id("org.jetbrains.kotlin.android") version "2.2.20" apply false
+}
+
 allprojects {
     repositories {
-        // maven{ url 'https://maven.aliyun.com/repository/central' }
-        // maven{ url 'https://maven.aliyun.com/repository/public' }
-        // maven{ url 'https://maven.aliyun.com/repository/gradle-plugin'}
+        //  maven {
+        //      setUrl("https://maven.aliyun.com/repository/central")
+        //  }
+        //  maven {
+        //      setUrl("https://maven.aliyun.com/repository/public")
+        //  }
+        //  maven {
+        //      setUrl("https://maven.aliyun.com/repository/gradle-plugin")
+        //  }
         google()
         mavenCentral()
     }
