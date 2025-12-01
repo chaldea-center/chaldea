@@ -147,11 +147,11 @@ abstract class FakerAgent<
   }
 
   Future<FResponse> cardStatusSync({
-    required List<int64_t> changeUserSvtIds,
-    required List<int64_t> revokeUserSvtIds,
-    bool isStorage = false,
-    bool isLock = false,
-    bool isChoice = false,
+    required List<int64_t> changeUserSvtIds, // unlock → lock
+    required List<int64_t> revokeUserSvtIds, // lock → unlock
+    required bool isStorage,
+    required bool isLock,
+    required bool isChoice,
   });
   Future<FResponse> servantCombine({
     required int64_t baseUserSvtId,

@@ -9,7 +9,38 @@ import '_base.dart';
 class FakerRuntimeCombine extends FakerRuntimeBase {
   FakerRuntimeCombine(super.runtime);
 
-  Future<void> svtEquipCombine([int count = 1]) async {
+  Future<void> svtEquipCombine({required int targetUserSvtId, required List<int> combineMaterials}) async {
+    final target = mstData.userSvt[targetUserSvtId];
+    final targetCE = target?.dbCE;
+    if (target == null) {
+      throw SilentException('Unknown target CE userSvtId: $targetUserSvtId');
+    }
+    if (targetCE == null) {
+      throw SilentException('Unknown target CE: $targetUserSvtId');
+    }
+    for (final userSvtId in combineMaterials) {
+      if (userSvtId == targetUserSvtId) {
+        throw SilentException('Combine material should not be same as target: $userSvtId');
+      }
+      final userSvt = mstData.userSvt[userSvtId];
+      if (userSvt == null) {
+        throw SilentException('Unknown material CE userSvtId: $userSvtId');
+      }
+      final ce = userSvt.dbCE;
+      if (ce == null) {
+        throw SilentException('Unknown material CE: $userSvtId');
+      }
+      if (userSvt.isLocked()) {
+        throw SilentException('Unlock CE first: $userSvtId');
+      }
+      if (userSvt.isChoice()) {
+        throw SilentException('CE in choice! $userSvtId');
+      }
+    }
+    await agent.servantEquipCombine(baseUserSvtId: targetUserSvtId, materialSvtIds: combineMaterials.toList());
+  }
+
+  Future<void> loopSvtEquipCombine([int count = 1]) async {
     final gachaOption = agent.user.gacha;
     runtime.displayToast('Combine Craft Essence ...');
     while (count > 0) {
@@ -30,29 +61,15 @@ class FakerRuntimeCombine extends FakerRuntimeBase {
       }
       targetCEs.sort2((e) => e.lv);
       final targetCE = targetCEs.first;
-      List<UserServantEntity> combineMaterialCEs = mstData.userSvt.where((userSvt) {
-        final ce = db.gameData.craftEssencesById[userSvt.svtId];
-        if (ce == null || userSvt.isLocked() || userSvt.lv != 1) return false;
-        final bool isExp = ce.flags.contains(SvtFlag.svtEquipExp);
-        if (ce.rarity > 4) {
-          return false;
-        } else if (ce.rarity == 4) {
-          return gachaOption.feedExp4 && isExp;
-        } else if (ce.rarity == 3) {
-          if (isExp) {
-            return gachaOption.feedExp3;
-          }
-          return ce.obtain == CEObtain.permanent;
-        } else {
-          return true;
-        }
-      }).toList();
-      combineMaterialCEs.sort2((e) => -e.createdAt);
+      List<UserServantEntity> combineMaterialCEs = getMaterialSvtEquips(
+        baseUserSvtId: targetCE.id,
+        includeExp3: gachaOption.feedExp3,
+        includeExp4: gachaOption.feedExp4,
+      );
       if (combineMaterialCEs.isEmpty) {
         runtime.update();
         return;
       }
-      combineMaterialCEs = combineMaterialCEs.take(20).toList();
       await agent.servantEquipCombine(
         baseUserSvtId: targetCE.id,
         materialSvtIds: combineMaterialCEs.map((e) => e.id).toList(),
@@ -63,6 +80,35 @@ class FakerRuntimeCombine extends FakerRuntimeBase {
       runtime.agentData.gachaResultStat.lastEnhanceMaterialCEs.sort((a, b) => CraftFilterData.compare(a.dbCE, b.dbCE));
       runtime.update();
     }
+  }
+
+  List<UserServantEntity> getMaterialSvtEquips({
+    int baseUserSvtId = 0,
+    bool includeExp3 = false,
+    bool includeExp4 = false,
+  }) {
+    List<UserServantEntity> materialCEs = mstData.userSvt.where((userSvt) {
+      if (userSvt.id == baseUserSvtId) return false;
+      final ce = db.gameData.craftEssencesById[userSvt.svtId];
+      if (ce == null || userSvt.isLocked() || userSvt.isChoice() || userSvt.lv != 1) return false;
+      final bool isExp = ce.flags.contains(SvtFlag.svtEquipExp);
+      if (ce.rarity > 4) {
+        return false;
+      } else if (ce.rarity == 4) {
+        return includeExp4 && isExp;
+      } else if (ce.rarity == 3) {
+        if (isExp) {
+          return includeExp3;
+        }
+        return ce.obtain == CEObtain.permanent;
+      } else {
+        if (ce.collectionNo <= 10) return false; // won't in FP gacha
+        return true;
+      }
+    }).toList();
+    materialCEs.sort2((e) => -e.createdAt);
+    materialCEs = materialCEs.take(20).toList();
+    return materialCEs;
   }
 
   //

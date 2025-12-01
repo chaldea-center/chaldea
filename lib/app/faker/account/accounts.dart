@@ -2,6 +2,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/app.dart';
+import 'package:chaldea/app/routes/delegate.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/home_widget.dart';
@@ -223,26 +224,31 @@ class _FakerAccountsPageState extends State<FakerAccountsPage> {
 
   Widget buildButtons(List<AutoLoginData> users) {
     List<Widget> buttons = [
-      FilledButton.icon(
-        onPressed: users.length <= 1
-            ? null
-            : () async {
-                EasyThrottle.throttleAsync('faker-open-all', () async {
-                  await showEasyLoading(AtlasApi.gametopsRaw);
-                  for (final (index, user) in users.indexed) {
-                    if (index != 0) {
-                      rootRouter.appState.addWindow();
-                      await Future.delayed(const Duration(milliseconds: 100));
+      for (final login in const [false, true])
+        FilledButton.icon(
+          onPressed: users.length <= 1
+              ? null
+              : () async {
+                  EasyThrottle.throttleAsync('faker-open-all', () async {
+                    await showEasyLoading(AtlasApi.gametopsRaw);
+                    for (final (index, user) in users.indexed) {
+                      AppRouterDelegate _router;
+                      if (index != 0) {
+                        rootRouter.appState.addWindow();
+                        _router = rootRouter.appState.activeRouter;
+                        await Future.delayed(const Duration(milliseconds: 100));
+                      } else {
+                        _router = rootRouter.appState.activeRouter;
+                      }
+                      _router.pushPage(FakeGrandOrder(user: user, autoLogin: login));
+                      await Future.delayed(const Duration(milliseconds: 400));
                     }
-                    router.pushPage(FakeGrandOrder(user: user));
-                    await Future.delayed(const Duration(milliseconds: 400));
-                  }
-                });
-              },
-        label: const Text('Open All'),
-        icon: const Icon(Icons.select_all),
-      ),
+                  });
+                },
+          label: Text(login ? 'Login All' : 'Open All'),
+          icon: const Icon(Icons.select_all),
+        ),
     ];
-    return Column(mainAxisSize: MainAxisSize.min, spacing: 4, children: buttons);
+    return Wrap(alignment: WrapAlignment.center, spacing: 8, children: buttons);
   }
 }

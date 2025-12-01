@@ -46,7 +46,10 @@ class _SelectUserSvtPageState extends State<SelectUserSvtPage> {
   late final runtime = widget.runtime;
   late final mstData = runtime.mstData;
 
-  static SvtFilterData filterData = SvtFilterData();
+  static SvtFilterData filterData = SvtFilterData(
+    sortKeys: [SvtCompare.bondLv, ...SvtCompare.kRarityFirstKeys],
+    sortReversed: [false],
+  );
   static _UserSvtFilterData userSvtFilterData = _UserSvtFilterData();
 
   Map<int, ({Event event, Set<int> svtIds})> eventSvtIds = {};
@@ -79,59 +82,78 @@ class _SelectUserSvtPageState extends State<SelectUserSvtPage> {
     }
   }
 
-  bool filter(UserServantEntity userSvt) {
-    final svt = db.gameData.servantsById[userSvt.svtId];
-    if (svt == null || svt.collectionNo <= 0) return false;
-    if (!userSvt.isLocked()) return false;
-    if (eventSvtIds[userSvtFilterData.eventId]?.svtIds.contains(userSvt.svtId) == false) return false;
-    if (!ServantFilterPage.filter(filterData, svt, svtStat: mstData.getSvtStatus(userSvt))) return false;
-    final coinNum = mstData.userSvtCoin[userSvt.svtId]?.num ?? 0;
-    final combineTypes = userSvtFilterData.availableCombines.options.where((combineType) {
-      switch (combineType) {
-        case _CombineType.level:
-          return userSvt.lv < (userSvt.maxLv ?? svt.lvMax);
-        case _CombineType.ascension:
-          return userSvt.limitCount < Maths.max<int>(svt.limits.keys, 0);
-        case _CombineType.grail:
-          return userSvt.lv >= 100 && userSvt.lv < 120 && coinNum >= 30;
-        case _CombineType.skill:
-          return userSvt.skillLvs.any((e) => e < 9);
-        case _CombineType.append2:
-          final appendLv = mstData.getSvtAppendSkillLv(userSvt)[1];
-          return appendLv == 0 && coinNum >= 120 || (appendLv > 0 && appendLv < 9);
-        case _CombineType.appendAny:
-          return mstData
-              .getSvtAppendSkillLv(userSvt)
-              .any((appendLv) => appendLv == 0 && coinNum >= 120 || (appendLv > 0 && appendLv < 9));
-        case _CombineType.bondLimit:
-          final collection = mstData.userSvtCollection[userSvt.svtId];
-          return collection != null &&
-              collection.friendshipRank < 15 &&
-              collection.friendshipRank == collection.maxFriendshipRank;
-        case _CombineType.bondLessThan10:
-          final collection = mstData.userSvtCollection[userSvt.svtId];
-          return collection != null && collection.friendshipRank < 10;
-      }
-    }).toList();
-    if (!userSvtFilterData.availableCombines.matchAny(combineTypes)) return false;
-    return true;
-  }
+  List<UserServantEntity> getShownUserSvts() {
+    final userData = User();
+    SvtStatus getSvtStatus(UserServantEntity userSvt) {
+      final collectionNo = userSvt.dbSvt?.collectionNo ?? 0;
+      if (collectionNo == 0) return mstData.getSvtStatus(userSvt);
+      return userData.servants[collectionNo] ??= mstData.getSvtStatus(userSvt);
+    }
 
-  int compareUserSvt(UserServantEntity a, UserServantEntity b) {
-    final r = ListX.compareByList(
-      a,
-      b,
-      (v) => <int>[widget.inUseUserSvtIds?.contains(v.id) == true ? 0 : 1, v.isChoice() ? 0 : 1],
-    );
-    if (r != 0) return r;
-    return SvtFilterData.compareId(a.svtId, b.svtId, keys: filterData.sortKeys, reversed: filterData.sortReversed);
+    bool filter(UserServantEntity userSvt) {
+      final svt = db.gameData.servantsById[userSvt.svtId];
+      if (svt == null || svt.collectionNo <= 0) return false;
+      if (!userSvt.isLocked()) return false;
+      if (eventSvtIds[userSvtFilterData.eventId]?.svtIds.contains(userSvt.svtId) == false) return false;
+      final coinNum = mstData.userSvtCoin[userSvt.svtId]?.num ?? 0;
+      final combineTypes = userSvtFilterData.availableCombines.options.where((combineType) {
+        switch (combineType) {
+          case _CombineType.level:
+            return userSvt.lv < (userSvt.maxLv ?? svt.lvMax);
+          case _CombineType.ascension:
+            return userSvt.limitCount < Maths.max<int>(svt.limits.keys, 0);
+          case _CombineType.grail:
+            return userSvt.lv >= 100 && userSvt.lv < 120 && coinNum >= 30;
+          case _CombineType.skill:
+            return userSvt.skillLvs.any((e) => e < 9);
+          case _CombineType.append2:
+            final appendLv = mstData.getSvtAppendSkillLv(userSvt)[1];
+            return appendLv == 0 && coinNum >= 120 || (appendLv > 0 && appendLv < 9);
+          case _CombineType.appendAny:
+            return mstData
+                .getSvtAppendSkillLv(userSvt)
+                .any((appendLv) => appendLv == 0 && coinNum >= 120 || (appendLv > 0 && appendLv < 9));
+          case _CombineType.bondLimit:
+            final collection = mstData.userSvtCollection[userSvt.svtId];
+            return collection != null &&
+                collection.friendshipRank < 15 &&
+                collection.friendshipRank == collection.maxFriendshipRank;
+          case _CombineType.bondLessThan10:
+            final collection = mstData.userSvtCollection[userSvt.svtId];
+            return collection != null && collection.friendshipRank < 10;
+        }
+      }).toList();
+      if (!userSvtFilterData.availableCombines.matchAny(combineTypes)) return false;
+
+      if (!ServantFilterPage.filter(filterData, svt, svtStat: getSvtStatus(userSvt))) return false;
+
+      return true;
+    }
+
+    int compareUserSvt(UserServantEntity a, UserServantEntity b) {
+      final r = ListX.compareByList(
+        a,
+        b,
+        (v) => <int>[widget.inUseUserSvtIds?.contains(v.id) == true ? 0 : 1, v.isChoice() ? 0 : 1],
+      );
+      if (r != 0) return r;
+      return SvtFilterData.compareId(
+        a.svtId,
+        b.svtId,
+        keys: filterData.sortKeys,
+        reversed: filterData.sortReversed,
+        user: userData,
+      );
+    }
+
+    final userSvts = mstData.userSvt.where(filter).toList();
+    userSvts.sort(compareUserSvt);
+    return userSvts;
   }
 
   @override
   Widget build(BuildContext context) {
-    final userSvts = mstData.userSvt.where(filter).toList();
-    userSvts.sort(compareUserSvt);
-
+    final userSvts = getShownUserSvts();
     return Scaffold(
       appBar: AppBar(
         title: Text('Select User Svt'),
@@ -156,7 +178,7 @@ class _SelectUserSvtPageState extends State<SelectUserSvtPage> {
                     options: _CombineType.values,
                     values: userSvtFilterData.availableCombines,
                     optionBuilder: (v) => Text(switch (v) {
-                      _CombineType.bondLessThan10 => 'bond≤10',
+                      _CombineType.bondLessThan10 => 'bond<10',
                       _ => v.name,
                     }),
                     onFilterChanged: (value, _) {

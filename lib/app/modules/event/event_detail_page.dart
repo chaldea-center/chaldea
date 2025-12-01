@@ -362,6 +362,7 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
       CustomTableRow.fromChildren(
         children: [
           _EventTime(
+            event: event,
             startTime: startTime,
             endTime: endTime,
             shownRegions: {Region.jp, db.curUser.region, widget.region},
@@ -1303,11 +1304,18 @@ class __ArchiveEventDialogState extends State<_ArchiveEventDialog> {
 }
 
 class _EventTime extends StatefulWidget {
+  final Event event;
   final MappingBase<int> startTime;
   final MappingBase<int>? endTime;
   final Iterable<Region> shownRegions;
   final String Function(int? time) format;
-  const _EventTime({required this.startTime, this.endTime, required this.shownRegions, required this.format});
+  const _EventTime({
+    required this.event,
+    required this.startTime,
+    this.endTime,
+    required this.shownRegions,
+    required this.format,
+  });
 
   @override
   State<_EventTime> createState() => __EventTimeState();
@@ -1320,20 +1328,28 @@ class __EventTimeState extends State<_EventTime> {
   Widget build(BuildContext context) {
     List<Widget> children = [];
     bool hasExtra = false;
+    final now = DateTime.now().timestamp;
     final shownRegions = widget.shownRegions.toList();
-    for (final region in Region.values) {
+    final bool noData = widget.startTime.values.every((e) => e == null);
+    for (final region in [if (noData) null, ...Region.values]) {
       String? timeStr;
-      final start = widget.startTime.ofRegion(region),
-          end = widget.endTime?.ofRegion(region),
-          now = DateTime.now().timestamp;
-      if (start == null && end == null && region != Region.jp) continue;
-      if (widget.endTime == null) {
-        timeStr = '${region.upper}: ${widget.format(start)}';
+      int? start, end;
+      if (region == null) {
+        start = widget.event.startedAt;
+        end = widget.event.endedAt;
       } else {
-        timeStr = '${region.upper}: ${widget.format(start)} ~ ${widget.format(end)}';
+        start = widget.startTime.ofRegion(region);
+        end = widget.endTime?.ofRegion(region);
+      }
+
+      if (start == null && end == null && region != Region.jp && region != null) continue;
+      if (widget.endTime == null) {
+        timeStr = '${region?.upper ?? "?"}: ${widget.format(start)}';
+      } else {
+        timeStr = '${region?.upper ?? "?"}: ${widget.format(start)} ~ ${widget.format(end)}';
       }
       bool ongoing = start != null && end != null && now >= start && now <= end;
-      if (shownRegions.contains(region) || showAll) {
+      if (region == null || shownRegions.contains(region) || showAll) {
         children.add(
           Text.rich(
             TextSpan(
@@ -1350,7 +1366,7 @@ class __EventTimeState extends State<_EventTime> {
           ),
         );
       }
-      if (!shownRegions.contains(region)) hasExtra = true;
+      if (region != null && !shownRegions.contains(region)) hasExtra = true;
     }
     Widget child = Column(
       mainAxisSize: MainAxisSize.min,

@@ -269,9 +269,9 @@ class MasterDataManager extends MasterDataManagerBase {
     return count ?? defaultValue;
   }
 
-  ({int svtCount, int svtEquipCount, int ccCount, int unknownCount}) countSvtKeep() {
+  ({int svtCount, int svtEquipCount, int ccCount, int unknownCount}) countSvtKeep({bool isStorage = false}) {
     int svtCount = 0, svtEquipCount = 0, unknownCount = 0;
-    for (final svt in userSvt) {
+    for (final svt in (isStorage ? userSvtStorage : userSvt)) {
       // may contains region specific CEs
       final ce = db.gameData.craftEssencesById[svt.svtId];
       if (ce != null) {

@@ -214,8 +214,13 @@ class FakerReminders extends StatelessWidget {
       for (final svt in db.gameData.servantsNoDup.values)
         for (final questId in svt.relateQuestIds) questId: svt,
     };
+    const _kXInterlude = [91601804, 94054830, 94041930];
     bool _isQuestNeedClear(int questId, {Quest? quest, bool checkSvt = true}) {
       if (mstData.isQuestClear(questId)) return false;
+      if (_kXInterlude.contains(questId) && _kXInterlude.any(mstData.isQuestClear)) {
+        return false;
+      }
+
       quest ??= db.gameData.quests[questId];
       if (quest != null) {
         final war = quest.war;
@@ -251,7 +256,7 @@ class FakerReminders extends StatelessWidget {
                 .firstWhereOrNull((release) => const [CondType.svtGet, CondType.svtFriendship].contains(release.type))
                 ?.targetId];
         // 谜之女主角X: 遭難者Ｘの帰還
-        if (quest.id == 91601804 && const [94054830, 94041930].any(mstData.isQuestClear)) {
+        if (_kXInterlude.contains(quest.id) && _kXInterlude.any(mstData.isQuestClear)) {
           continue;
         }
         _shownQuestIds.add(quest.id);
@@ -287,7 +292,7 @@ class FakerReminders extends StatelessWidget {
           questIds.add(selection.quest.id);
         }
       }
-      questIds.retainWhere((questId) => _isQuestNeedClear(questId));
+      questIds.retainWhere(_isQuestNeedClear);
       if (questIds.isEmpty) continue;
       _shownQuestIds.addAll(questIds);
       yield ListTile(

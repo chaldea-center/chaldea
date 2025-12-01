@@ -193,10 +193,7 @@ class _UserEventTradePageState extends State<UserEventTradePage>
               ),
             ],
           ),
-          ListView.builder(
-            itemBuilder: (context, index) => buildPickup(data.userEventTrade!.pickupList[index]),
-            itemCount: data.userEventTrade?.pickupList.length ?? 0,
-          ),
+          buildPickups(),
           ListView.builder(
             itemBuilder: (context, index) => buildResult(data.userEventTrade!.resultList[index]),
             itemCount: data.userEventTrade?.resultList.length ?? 0,
@@ -444,6 +441,7 @@ class _UserEventTradePageState extends State<UserEventTradePage>
                         }
                       : null,
                   text: 'Support',
+                  color: pickup != null && pickup.endedAt > now ? Colors.amber : null,
                 ),
               _buildButton(
                 color: tradeInfo.getNum > 0 || getLeastReceiveNum().floor() > 0 ? Colors.green : null,
@@ -535,6 +533,20 @@ class _UserEventTradePageState extends State<UserEventTradePage>
         ),
       ),
     );
+  }
+
+  Widget buildPickups() {
+    final supportTool = data.supportToolItem;
+    List<Widget> children = [
+      if (supportTool != null)
+        ListTile(
+          dense: true,
+          leading: Item.iconBuilder(context: context, item: supportTool),
+          title: Text('${supportTool.lName.l} ×${mstData.getItemOrSvtNum(supportTool.id)}'),
+        ),
+      for (final pickup in data.userEventTrade!.pickupList) buildPickup(pickup),
+    ];
+    return ListView.builder(itemBuilder: (context, index) => children[index], itemCount: children.length);
   }
 
   Widget buildPickup(EventCraftPickupInfo pickup) {

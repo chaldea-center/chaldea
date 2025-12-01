@@ -38,7 +38,8 @@ import 'user_deck/deck_list.dart';
 
 class FakeGrandOrder extends StatefulWidget {
   final AutoLoginData user;
-  const FakeGrandOrder({super.key, required this.user});
+  final bool autoLogin;
+  const FakeGrandOrder({super.key, required this.user, this.autoLogin = false});
 
   @override
   State<FakeGrandOrder> createState() => _FakeGrandOrderState();
@@ -78,6 +79,9 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
       await runtime.loadInitData();
       _runtime = runtime;
       _onChangeQuest();
+      if (widget.autoLogin && !runtime.mstData.isLoggedIn && agent.user.lastRequestOptions?.success != false) {
+        _startLogin();
+      }
     } catch (e, s) {
       if (mounted) {
         SimpleConfirmDialog(
@@ -91,12 +95,14 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
     if (mounted) setState(() {});
   }
 
+  (int, int) _lastQuestKey = (0, 0);
   void _onChangeQuest() async {
     final cache = AtlasApi.questPhaseCache(battleOption.questId, battleOption.questPhase, null, runtime.region);
     if (cache == null) {
-      await AtlasApi.questPhase(battleOption.questId, battleOption.questPhase, region: runtime.region);
       if (mounted) setState(() {});
+      await AtlasApi.questPhase(battleOption.questId, battleOption.questPhase, region: runtime.region);
     }
+    if (mounted) setState(() {});
   }
 
   int getEventIdByQuest(int? questId) {
@@ -133,6 +139,11 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
         body: kIsWeb ? const Center(child: Text('Not supported')) : const Center(child: CircularProgressIndicator()),
       );
     }
+    if (_lastQuestKey != (battleOption.questId, battleOption.questPhase)) {
+      _lastQuestKey = (battleOption.questId, battleOption.questPhase);
+      _onChangeQuest();
+    }
+
     return Scaffold(
       appBar: AppBar(
         leading: BackButton(
@@ -1927,26 +1938,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
               if (confirm != true) return;
             }
             if (mounted) {
-              await SimpleConfirmDialog(
-                title: const Text('Login'),
-                onTapOk: () {
-                  runtime.runTask(() async {
-                    final loginResp = await agent.loginTop();
-                    await agent.homeTop();
-                    final jsonData = loginResp.data.rawMap;
-                    final friendCode = mstData.user?.friendCode;
-                    if (jsonData != null && friendCode != null) {
-                      for (final user in db.userData.users) {
-                        if (user.lastImportId == friendCode) {
-                          final fp = File(joinPaths(db.paths.userDir, 'sniff', user.id));
-                          await fp.parent.create(recursive: true);
-                          await fp.writeAsString(jsonEncode(jsonData));
-                        }
-                      }
-                    }
-                  });
-                },
-              ).showDialog(context);
+              await SimpleConfirmDialog(title: const Text('Login'), onTapOk: _startLogin).showDialog(context);
             }
           },
           text: 'login',
@@ -2368,5 +2360,23 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
 
   Future<void> _testFunc() async {
     if (mounted) setState(() {});
+  }
+
+  Future<void> _startLogin() async {
+    return runtime.runTask(() async {
+      final loginResp = await agent.loginTop();
+      await agent.homeTop();
+      final jsonData = loginResp.data.rawMap;
+      final friendCode = mstData.user?.friendCode;
+      if (jsonData != null && friendCode != null) {
+        for (final user in db.userData.users) {
+          if (user.lastImportId == friendCode) {
+            final fp = File(joinPaths(db.paths.userDir, 'sniff', user.id));
+            await fp.parent.create(recursive: true);
+            await fp.writeAsString(jsonEncode(jsonData));
+          }
+        }
+      }
+    });
   }
 }

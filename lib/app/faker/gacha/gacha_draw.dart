@@ -844,7 +844,7 @@ class _GachaDrawPageState extends State<GachaDrawPage> with FakerRuntimeStateMix
                       onPressed: () {
                         Navigator.pop(context);
                         runtime.runTask(() async {
-                          return runtime.combine.svtEquipCombine();
+                          return runtime.combine.loopSvtEquipCombine();
                         });
                       },
                       child: Text('${S.current.enhance}×1'),
@@ -853,7 +853,7 @@ class _GachaDrawPageState extends State<GachaDrawPage> with FakerRuntimeStateMix
                       onPressed: () {
                         Navigator.pop(context);
                         runtime.runTask(() async {
-                          return runtime.combine.svtEquipCombine(10);
+                          return runtime.combine.loopSvtEquipCombine(10);
                         });
                       },
                       child: Text('${S.current.enhance}×10'),

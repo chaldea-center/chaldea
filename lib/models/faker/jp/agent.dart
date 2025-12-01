@@ -126,7 +126,7 @@ class FakerAgentJP extends FakerAgent<FRequestJP, AutoLoginDataJP, NetworkManage
     if (anotherPayFlag > 0) {
       request.addFieldInt32('anotherPayFlag', anotherPayFlag);
     }
-    return request.beginRequest();
+    return request.beginRequestAndCheckError('purchase');
   }
 
   @override
@@ -134,7 +134,7 @@ class FakerAgentJP extends FakerAgent<FRequestJP, AutoLoginDataJP, NetworkManage
     final request = FRequestJP(network: network, path: '/shop/purchaseByStone');
     request.addFieldInt32('id', id);
     request.addFieldInt32('num', num);
-    return request.beginRequest();
+    return request.beginRequestAndCheckError('purchase_by_stone');
   }
 
   @override
@@ -195,7 +195,7 @@ class FakerAgentJP extends FakerAgent<FRequestJP, AutoLoginDataJP, NetworkManage
     request.addFieldStr('presentIds', network.catMouseGame.encodeJsonMsgpackBase64(presentIds));
     request.addFieldInt32('itemSelectIdx', itemSelectIdx);
     request.addFieldInt32('itemSelectNum', itemSelectNum);
-    return request.beginRequest();
+    return request.beginRequestAndCheckError('present_receive');
   }
 
   @override
@@ -310,9 +310,9 @@ class FakerAgentJP extends FakerAgent<FRequestJP, AutoLoginDataJP, NetworkManage
   Future<FResponse> cardStatusSync({
     required List<int64_t> changeUserSvtIds,
     required List<int64_t> revokeUserSvtIds,
-    bool isStorage = false,
-    bool isLock = false,
-    bool isChoice = false,
+    required bool isStorage,
+    required bool isLock,
+    required bool isChoice,
   }) {
     final request = FRequestJP(network: network, path: '/card/statusSync');
     if (changeUserSvtIds.isNotEmpty) {
@@ -352,7 +352,7 @@ class FakerAgentJP extends FakerAgent<FRequestJP, AutoLoginDataJP, NetworkManage
   Future<FResponse> servantLimitCombine({required int64_t baseUserSvtId}) {
     final request = FRequestJP(network: network, path: '/card/combineLimit');
     request.addFieldInt64("baseUserSvtId", baseUserSvtId);
-    return request.beginRequest();
+    return request.beginRequestAndCheckError('card_limit');
   }
 
   @override

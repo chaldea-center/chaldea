@@ -480,7 +480,7 @@ class UserServantEntity with DataEntityBase<int> {
   int exceedCount; // grail
   int createdAt;
   int updatedAt;
-  // @protected
+  @protected
   int? isLock; //cn only
   int hp;
   int atk;
@@ -1850,7 +1850,7 @@ class EventTradeInfo {
   int storeIdx;
   int tradeGoodsId;
   int tradeNum;
-  int maxTradeNum;
+  int maxTradeNum; // not reliable
   int getNum;
   int startedAt;
   int endedAt;
@@ -2546,7 +2546,7 @@ class DeckServantData {
       svtId = 0,
       userSvtEquipIds = [0],
       svtEquipIds = [0],
-      isFollowerSvt = false,
+      isFollowerSvt = true,
       followerType = -1,
       initPos = initPos ?? pos,
       equipTarget2SkillChange = 0;

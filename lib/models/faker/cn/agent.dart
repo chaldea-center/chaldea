@@ -470,9 +470,9 @@ class FakerAgentCN extends FakerAgent<FRequestCN, AutoLoginDataCN, NetworkManage
   Future<FResponse> cardStatusSync({
     required List<int64_t> changeUserSvtIds,
     required List<int64_t> revokeUserSvtIds,
-    bool isStorage = false,
-    bool isLock = false,
-    bool isChoice = false,
+    required bool isStorage,
+    required bool isLock,
+    required bool isChoice,
   }) {
     return _acPhp(
       key: 'cardstatussync',

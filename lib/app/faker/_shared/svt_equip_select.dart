@@ -28,7 +28,7 @@ class SelectUserSvtEquipPage extends StatefulWidget {
       [
         if (inUseUserSvtIds != null && inUseUserSvtIds.contains(userSvt.id)) '🟢 ',
         if (userSvt.isChoice()) '✴️ ', // ⭐ 🌟
-        // if(userSvt.isLocked()) '🔐 ',
+        if (userSvt.isLocked()) '🔐 ',
       ].join(''),
       'Lv${userSvt.lv}/${userSvt.maxLv} ',
       ' ${userSvt.limitCount}/4 ${userSvt.limitCount == 4 ? kStarChar2 : ""} ',
@@ -43,7 +43,7 @@ class _SelectUserSvtEquipPageState extends State<SelectUserSvtEquipPage> {
   late final runtime = widget.runtime;
   late final mstData = runtime.mstData;
 
-  static CraftFilterData filterData = CraftFilterData();
+  static CraftFilterData filterData = CraftFilterData(sortKeys: CraftCompare.kRarityFirstKeys);
   static _UserSvtFilterData userSvtFilterData = _UserSvtFilterData();
 
   Map<int, ({Event event, Set<int> ceIds})> eventCeIds = {};
@@ -114,7 +114,6 @@ class _SelectUserSvtEquipPageState extends State<SelectUserSvtEquipPage> {
                 customFilters: (_, update) => [
                   FilterGroup<bool>(
                     title: Text('Lock status'),
-                    showMatchAll: true,
                     options: const [false, true],
                     values: userSvtFilterData.locked,
                     optionBuilder: (v) => Text(v ? '🔐 Locked' : 'Unlocked'),

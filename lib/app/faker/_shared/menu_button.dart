@@ -9,6 +9,7 @@ import 'package:chaldea/utils/extension.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../../modules/import_data/import_https_page.dart';
 import '../combine/svt_combine.dart';
+import '../combine/svt_equip_combine.dart';
 import '../details/box_gacha.dart';
 import '../details/trade.dart';
 import '../event/random_mission_loop.dart';
@@ -138,6 +139,19 @@ class _FakerMenuButtonState extends State<FakerMenuButton> with FakerRuntimeStat
                 },
               ),
               _ButtonData(
+                icon: FontAwesomeIcons.streetView,
+                name: '礼装强化',
+                enabled: isLoggedIn,
+                onTap: () {
+                  router.pushPage(SvtEquipCombinePage(runtime: runtime));
+                },
+              ),
+            ],
+          ),
+          buildGroup(
+            title: S.current.event,
+            buttons: [
+              _ButtonData(
                 icon: Icons.shop,
                 name: S.current.shop,
                 enabled: isLoggedIn,
@@ -145,38 +159,32 @@ class _FakerMenuButtonState extends State<FakerMenuButton> with FakerRuntimeStat
                   router.pushPage(ShopEventListPage(runtime: runtime));
                 },
               ),
+              if (mstData.userEventTrade.isNotEmpty)
+                _ButtonData(
+                  icon: Icons.event,
+                  name: S.current.event_trade,
+                  onTap: () {
+                    router.pushPage(UserEventTradePage(runtime: runtime));
+                  },
+                ),
+              if (mstData.userBoxGacha.isNotEmpty)
+                _ButtonData(
+                  icon: Icons.event,
+                  name: S.current.event_lottery,
+                  onTap: () {
+                    router.pushPage(BoxGachaDrawPage(runtime: runtime));
+                  },
+                ),
+              if (mstData.userEventRandomMission.isNotEmpty)
+                _ButtonData(
+                  icon: Icons.event,
+                  name: S.current.random_mission,
+                  onTap: () {
+                    router.pushPage(RandomMissionLoopPage(runtime: runtime));
+                  },
+                ),
             ],
           ),
-          if (isLoggedIn)
-            buildGroup(
-              title: S.current.event,
-              buttons: [
-                if (mstData.userEventTrade.isNotEmpty)
-                  _ButtonData(
-                    icon: Icons.event,
-                    name: S.current.event_trade,
-                    onTap: () {
-                      router.pushPage(UserEventTradePage(runtime: runtime));
-                    },
-                  ),
-                if (mstData.userBoxGacha.isNotEmpty)
-                  _ButtonData(
-                    icon: Icons.event,
-                    name: S.current.event_lottery,
-                    onTap: () {
-                      router.pushPage(BoxGachaDrawPage(runtime: runtime));
-                    },
-                  ),
-                if (mstData.userEventRandomMission.isNotEmpty)
-                  _ButtonData(
-                    icon: Icons.event,
-                    name: S.current.random_mission,
-                    onTap: () {
-                      router.pushPage(RandomMissionLoopPage(runtime: runtime));
-                    },
-                  ),
-              ],
-            ),
         ],
       ),
     );

@@ -39,6 +39,7 @@ abstract class FRequestBase {
   Map<String, dynamic> params = {};
 
   String get normKey => key.replaceAll(RegExp(r'[/_]'), '');
+  String get saveKey => key.trimChar('/_').replaceAll(RegExp(r'[/_]'), '');
 
   FRequestBase({required this.path, String? key}) : key = key ?? path;
 
@@ -228,7 +229,7 @@ abstract class NetworkManagerBase<TRequest extends FRequestBase, TUser extends A
           bool dumpResponse = db.settings.fakerSettings.dumpResponse;
           if (!kReleaseMode && request.normKey == 'followerlist') dumpResponse = false;
           if (dumpResponse) {
-            String fn = '${DateTime.now().toSafeFileName()}_${request.key}';
+            String fn = '${DateTime.now().toSafeFileName()}__${request.saveKey}';
             fn = fn.replaceAll(RegExp(r'[/:\s\\]+'), '_');
             await FilePlus(joinPaths(fakerDir, '$fn.json')).writeAsString(jsonEncode(_jsonData));
           }

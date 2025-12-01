@@ -31,7 +31,6 @@ class _UserShopsPageState extends State<UserShopsPage> with SingleTickerProvider
 
   @override
   Widget build(BuildContext context) {
-    shops.sortByList((shop) => <int>[isShopReleased(shop) ? 0 : 1, isSoldOut(shop) ? 1 : 0, shop.priority, shop.id]);
     Set<int> consumeItemIds = {};
     for (final shop in shops) {
       if (shop.cost != null) {
@@ -49,6 +48,9 @@ class _UserShopsPageState extends State<UserShopsPage> with SingleTickerProvider
           .where((shop) => shownConsumeItem.options.intersection(shop.getConsumeItems().keys.toSet()).isNotEmpty)
           .toList();
     }
+    shownShops.sortByList(
+      (shop) => <int>[isSoldOut(shop) ? 1 : 0, isShopReleased(shop) ? 0 : 1, shop.priority, shop.id],
+    );
 
     return Scaffold(
       appBar: AppBar(
@@ -129,7 +131,10 @@ class _UserShopsPageState extends State<UserShopsPage> with SingleTickerProvider
           children: [
             if (shop.cost != null) ...[
               CenterWidgetSpan(
-                child: Item.iconBuilder(context: context, item: shop.cost!.item, width: 24),
+                child: Opacity(
+                  opacity: canBuy ? 1 : 0.5,
+                  child: Item.iconBuilder(context: context, item: shop.cost!.item, width: 24),
+                ),
               ),
               TextSpan(text: '×${shop.cost!.amount}  '),
             ],

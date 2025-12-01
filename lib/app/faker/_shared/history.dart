@@ -1,4 +1,8 @@
 import 'dart:convert';
+import 'dart:io';
+
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:path/path.dart' as pathlib;
 
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/generated/l10n.dart';
@@ -9,9 +13,30 @@ import 'package:chaldea/packages/json_viewer/json_viewer.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 
+class _LocalHistoryData {
+  final String key;
+  final File file;
+
+  bool loaded = false;
+  FateTopLogin? resp;
+  Object? error;
+
+  _LocalHistoryData(this.key, this.file);
+
+  void load() {
+    loaded = true;
+    try {
+      resp = FateTopLogin.fromJson(jsonDecode(file.readAsStringSync()));
+    } catch (e) {
+      error = e;
+    }
+  }
+}
+
 class FakerHistoryViewer extends StatefulWidget {
   final FakerAgent agent;
-  const FakerHistoryViewer({super.key, required this.agent});
+  final List<File> localHistory;
+  const FakerHistoryViewer({super.key, required this.agent, this.localHistory = const []});
 
   @override
   State<FakerHistoryViewer> createState() => _FakerHistoryViewerState();
@@ -19,32 +44,87 @@ class FakerHistoryViewer extends StatefulWidget {
 
 class _FakerHistoryViewerState extends State<FakerHistoryViewer> {
   late final agent = widget.agent;
+
+  late final bool isLocalHistoryMode = widget.localHistory.isNotEmpty;
+
+  List<_LocalHistoryData> localHistory = [];
+  List<String> keys = [];
+  int _currentPage = 0;
+  final int countPerPage = 20;
+
+  final scrollController = ScrollController();
+
+  String? getKeyFromFilename(String fp) {
+    final m = RegExp(r'_\d+_+([^\d_].*?)$').firstMatch(pathlib.basenameWithoutExtension(fp));
+    return m?.group(1);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.localHistory.isNotEmpty) {
+      for (final file in widget.localHistory) {
+        final key = getKeyFromFilename(file.path);
+        if (key == null) continue;
+        localHistory.add(_LocalHistoryData(key, file));
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    scrollController.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    final history = agent.network.history.toList();
     return Scaffold(
       appBar: AppBar(
-        title: Text("History (${history.length})"),
+        title: Text(
+          isLocalHistoryMode ? "Local History (${localHistory.length})" : "History (${agent.network.history.length})",
+        ),
         actions: [
-          IconButton(
-            onPressed: () {
-              setState(() {});
-            },
-            icon: Icon(Icons.replay),
-          ),
-          IconButton(
-            onPressed: () {
-              final history = agent.network.history;
-              if (history.length > 5) {
-                history.removeRange(0, history.length - 5);
-              } else {
-                history.clear();
-              }
-              setState(() {});
-            },
-            icon: const Icon(Icons.clear_all),
-            tooltip: S.current.clear,
-          ),
+          if (!isLocalHistoryMode)
+            IconButton(
+              onPressed: () {
+                setState(() {});
+              },
+              icon: Icon(Icons.replay),
+            ),
+          if (!isLocalHistoryMode)
+            IconButton(
+              onPressed: () {
+                final history = agent.network.history;
+                if (history.length > 5) {
+                  history.removeRange(0, history.length - 5);
+                } else {
+                  history.clear();
+                }
+                setState(() {});
+              },
+              icon: const Icon(Icons.clear_all),
+              tooltip: S.current.clear,
+            ),
+          if (!isLocalHistoryMode)
+            IconButton(
+              onPressed: () async {
+                final confirm = await SimpleConfirmDialog(title: Text('Load local history')).showDialog(context);
+                if (confirm != true) return;
+                final dir = Directory(agent.network.fakerDir);
+                final files = [
+                  for (final file in dir.listSync(recursive: true))
+                    if (file is File && file.path.endsWith('.json')) file,
+                ];
+                files.sort2((e) => e.path, reversed: true);
+                if (files.isEmpty) {
+                  EasyLoading.showInfo('No local history found');
+                  return;
+                }
+                router.pushPage(FakerHistoryViewer(agent: agent, localHistory: files));
+              },
+              icon: Icon(Icons.storage),
+            ),
         ],
       ),
       body: DefaultTextStyle.merge(
@@ -52,19 +132,90 @@ class _FakerHistoryViewerState extends State<FakerHistoryViewer> {
         child: ListTileTheme.merge(
           minTileHeight: 24,
           dense: true,
-          child: ListView.separated(
-            itemBuilder: (context, index) =>
-                buildOne(context, history.length - 1 - index, history[history.length - 1 - index]),
-            separatorBuilder: (context, index) => const Divider(height: 1, color: Colors.transparent),
-            itemCount: history.length,
-          ),
+          child: isLocalHistoryMode ? buildLocalHistory() : buildAgentHistory(),
         ),
       ),
     );
   }
 
-  Widget buildOne(BuildContext context, int index, FRequestRecord record) {
-    final serverTime = record.response?.data.serverTime;
+  Widget buildAgentHistory() {
+    final history = agent.network.history.toList();
+    return ListView.separated(
+      controller: scrollController,
+      itemBuilder: (context, index) =>
+          buildAgentRecord(context, history.length - 1 - index, history[history.length - 1 - index]),
+      separatorBuilder: (context, index) => const Divider(height: 1, color: Colors.transparent),
+      itemCount: history.length,
+    );
+  }
+
+  Widget buildLocalHistory() {
+    int maxPage = (localHistory.length / countPerPage).ceil();
+    if (maxPage < 1) maxPage = 1;
+    final shownItems = localHistory.skip(countPerPage * _currentPage).take(countPerPage).toList();
+    for (final item in shownItems) {
+      if (!item.loaded) item.load();
+    }
+    return Column(
+      children: [
+        Expanded(
+          child: ListView.separated(
+            controller: scrollController,
+            itemBuilder: (context, index) {
+              final item = shownItems[index];
+              if (item.error != null) {
+                return ListTile(subtitle: Text(item.error.toString()));
+              }
+              return buildLocalRecord(context, index, shownItems[index]);
+            },
+            separatorBuilder: (context, index) => const Divider(height: 1, color: Colors.transparent),
+            itemCount: shownItems.length,
+          ),
+        ),
+        SafeArea(
+          child: Row(
+            children: [
+              Expanded(
+                child: TextButton(
+                  onPressed: () {
+                    setState(() {
+                      if (_currentPage > 0) _currentPage -= 1;
+                    });
+                  },
+                  child: Text(S.current.prev_page),
+                ),
+              ),
+              Expanded(child: Center(child: Text('${_currentPage + 1}/$maxPage'))),
+              Expanded(
+                child: TextButton(
+                  onPressed: () {
+                    setState(() {
+                      if (_currentPage < maxPage - 1) {
+                        _currentPage += 1;
+                        scrollController.jumpTo(0);
+                      }
+                    });
+                  },
+                  child: Text(S.current.next_page),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget buildLocalRecord(BuildContext context, int index, _LocalHistoryData record) {
+    return buildRecord(context, index + countPerPage * _currentPage, record.key, record.resp, null);
+  }
+
+  Widget buildAgentRecord(BuildContext context, int index, FRequestRecord record) {
+    return buildRecord(context, index, record.request?.key, record.response?.data, record);
+  }
+
+  Widget buildRecord(BuildContext context, int index, String? key, FateTopLogin? resp, FRequestRecord? record) {
+    final serverTime = resp?.serverTime;
     final footerStyle = TextStyle(
       color: Theme.of(context).textTheme.bodySmall?.color,
       fontSize: 13.0,
@@ -76,34 +227,34 @@ class _FakerHistoryViewerState extends State<FakerHistoryViewer> {
           text: 'No.${index + 1}  ',
           children: [
             TextSpan(
-              text: record.request?.key.trimChar("/") ?? '???',
+              text: key?.trimChar("/") ?? '???',
               style: const TextStyle(color: Colors.amber),
             ),
           ],
         ),
       ),
-      footer: [record.sendedAt, record.receivedAt].map((e) => e?.toTimeString(milliseconds: true)).join(' ~ '),
       footerWidget: ListTile(
         minTileHeight: 8,
-        title: Text(
-          [record.sendedAt, record.receivedAt].map((e) => e?.toTimeString(milliseconds: true)).join(' ~ '),
-          style: footerStyle,
-        ),
+        title: record == null
+            ? null
+            : Text(
+                [record.sendedAt, record.receivedAt].map((e) => e?.toTimeString(milliseconds: true)).join(' ~ '),
+                style: footerStyle,
+              ),
         trailing: serverTime == null ? null : Text('${serverTime.toTimeString()} (server)', style: footerStyle),
       ),
       children: [
-        buildRequestData(record.request?.rawRequest?.data),
-        const Divider(height: 2),
-        ...?record.response?.data.responses.map(buildFateResponse),
+        if (record != null) ...[buildRequestData(record.request?.rawRequest?.data), const Divider(height: 2)],
+        ...?resp?.responses.map(buildFateResponse),
         const Divider(height: 2),
         ListTile(
           title: Container(
             alignment: AlignmentDirectional.centerStart,
-            child: _buildBadge(label: 'master data', color: Colors.blue),
+            child: _buildBadge(label: 'master data', color: resp?.cache.isEmpty == true ? Colors.grey : Colors.blue),
           ),
           // trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
           onTap: () {
-            final cache = Map.from(record.response?.data.cache ?? {});
+            final cache = Map.from(resp?.cache ?? {});
             if (cache.isNotEmpty) {
               for (final key in ['deleted', 'replaced', 'updated']) {
                 if (!cache.containsKey(key)) continue;

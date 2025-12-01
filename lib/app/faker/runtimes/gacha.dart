@@ -28,7 +28,7 @@ class FakerRuntimeGacha extends FakerRuntimeBase {
         await sellServant();
       }
       if (counts.svtEquipCount >= userGame.svtEquipKeep + 100) {
-        await runtime.combine.svtEquipCombine(30);
+        await runtime.combine.loopSvtEquipCombine(30);
       }
     }
   }

@@ -193,7 +193,39 @@ class _ShopListPageState extends State<ShopListPage> with SearchableListState<Ni
 
   @override
   Iterable<String?> getSummary(NiceShop shop) sync* {
-    yield* {shop.name, shop.lName};
+    Set<String> names = {shop.name};
+    if (shop.purchaseType == PurchaseType.equip) {
+      for (final targetId in shop.targetIds) {
+        final equip = db.gameData.mysticCodes[targetId];
+        if (equip != null) {
+          names.add(equip.name);
+          names.add(equip.lName.l);
+        }
+      }
+    } else if (shop.purchaseType == PurchaseType.costumeRelease) {
+      for (final targetId in shop.targetIds) {
+        final costume = db.gameData.servantsById[targetId ~/ 100]?.costume.values.firstWhereOrNull(
+          (e) => e.costumeCollectionNo == targetId % 100,
+        );
+        if (costume != null) {
+          names.add(costume.name);
+          names.add(costume.lName.l);
+        }
+      }
+    } else {
+      for (final targetId in shop.getItemAndCardIds()) {
+        final lName =
+            db.gameData.entities[targetId]?.lName ??
+            db.gameData.commandCodesById[targetId]?.lName ??
+            db.gameData.items[targetId]?.lName;
+        if (lName != null) {
+          names.add(lName.key);
+          names.add(lName.l);
+        }
+      }
+    }
+
+    yield* names;
     yield shop.detail;
   }
 

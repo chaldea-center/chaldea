@@ -971,6 +971,18 @@ class CraftEssence extends BasicCraftEssence {
 
   CraftStatus get status => db.curUser.ceStatusOf(collectionNo);
 
+  ({int total, int elapsed, int next, int curTotal, int nextTotal}) getCurLvExpData(int lv, int exp) {
+    final curTotal = expGrowth.getOrNull(lv - 1) ?? 0, nextTotal = expGrowth.getOrNull(lv) ?? curTotal;
+    exp = exp.clamp(curTotal, nextTotal);
+    return (
+      total: nextTotal - curTotal,
+      elapsed: exp - curTotal,
+      next: nextTotal - exp,
+      curTotal: curTotal,
+      nextTotal: nextTotal,
+    );
+  }
+
   Iterable<NiceSkill> eventSkills(int eventId) {
     return skills.where((skill) => skill.isCraftEventSkill(svtId: id, eventId: eventId));
   }
