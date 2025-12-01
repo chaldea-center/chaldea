@@ -485,6 +485,8 @@ class FunctionExecutor {
         case FuncType.swapFieldPosition:
         case FuncType.addStateToField:
         case FuncType.addStateShortToField:
+        case FuncType.gainNpFromOtherUsedNpValue:
+        case FuncType.hastenNpturnFromOtherUsedNpturn:
         // ↑↑↑ should be implemented ↑↑↑
         case FuncType.damageValueSafeOnce:
         case FuncType.subFieldBuff:

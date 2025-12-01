@@ -251,7 +251,7 @@ class BattleRecordManager {
 
     if (questPhase.isUseGrandBoard) {
       for (final restriction in questPhase.restrictions) {
-        // myGrandSvt, fixedMyGrandSvt, myGrandSvtPositionMain
+        // myGrandSvt, fixedMyGrandSvt, myGrandSvtPositionMain, myGrandSvtOrSupportGrandSvt?
         if (restriction.restriction.type == RestrictionType.myGrandSvt) {
           if (!options.formation.svts.any((svtData) {
             final svtIndivs = svtData.svt?.getIndividuality(questPhase.logicEventId, svtData.limitCount);

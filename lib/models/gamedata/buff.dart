@@ -539,6 +539,7 @@ enum BuffType {
   substituteAddState(239),
   otherTreasureDevicePreBeforeFunction(240),
   attackPhaseStartFunction(241),
+  treasureDevicePostAfterFunction(242),
 
   toFieldChangeField(10001),
   toFieldAvoidBuff(10002),
@@ -619,6 +620,7 @@ final Map<BuffType, List<BuffValueTriggerType Function(DataVals)>> kBuffValueTri
     BuffType.gutsBeforeFunction,
     BuffType.otherTreasureDevicePreBeforeFunction,
     BuffType.attackPhaseStartFunction,
+    BuffType.treasureDevicePostAfterFunction,
   }) {
     types[type] = (v) => BuffValueTriggerType(buffType: type, skill: v.Value, level: v.Value2, rate: v.UseRate);
   }

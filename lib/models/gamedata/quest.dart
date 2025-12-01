@@ -1958,10 +1958,12 @@ class Restriction {
 @JsonSerializable()
 class QuestPhaseRestriction {
   Restriction restriction;
+  // int priority;
   FrequencyType frequencyType;
   String dialogMessage;
   String noticeMessage;
   String title;
+  // script;
 
   QuestPhaseRestriction({
     required this.restriction,
@@ -2347,6 +2349,7 @@ enum RestrictionType {
   myGrandSvt,
   fixedMyGrandSvt,
   myGrandSvtPositionMain,
+  myGrandSvtOrSupportGrandSvt,
   fixedCostume,
 }
 

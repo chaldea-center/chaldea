@@ -1433,6 +1433,7 @@ enum BuffAction {
   substituteAddState(165),
   functionOtherTreasureDevicePreBefore(166),
   functionAttackPhaseStart(167),
+  functionTreasureDevicePostAfter(167),
   // custom
   functionClassboardCommandSpellAfter(301);
 

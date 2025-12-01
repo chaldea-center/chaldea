@@ -835,6 +835,7 @@ class ExtraPassive {
   List<CommonRelease> releaseConditions;
   int startedAt;
   int endedAt;
+  SvtPassiveSkillScript? script;
 
   bool get isLimited => endedAt - startedAt < 700 * kSecsPerDay;
 
@@ -851,11 +852,25 @@ class ExtraPassive {
     this.releaseConditions = const [],
     required this.startedAt,
     required this.endedAt,
+    this.script,
   });
 
   factory ExtraPassive.fromJson(Map<String, dynamic> json) => _$ExtraPassiveFromJson(json);
 
   Map<String, dynamic> toJson() => _$ExtraPassiveToJson(this);
+}
+
+@JsonSerializable()
+class SvtPassiveSkillScript with DataScriptBase {
+  List<int>? get condIndividuality => const TraitListConverter().fromJsonNull('condIndividuality');
+  int? get otherValidEventId => toInt('otherValidEventId');
+
+  SvtPassiveSkillScript();
+
+  factory SvtPassiveSkillScript.fromJson(Map<String, dynamic> json) =>
+      _$SvtPassiveSkillScriptFromJson(json)..setSource(json);
+
+  Map<String, dynamic> toJson() => _$SvtPassiveSkillScriptToJson(this);
 }
 
 @JsonSerializable(includeIfNull: false)

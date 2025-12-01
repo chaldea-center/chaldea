@@ -1196,6 +1196,7 @@ const _$RestrictionTypeEnumMap = {
   RestrictionType.myGrandSvt: 'myGrandSvt',
   RestrictionType.fixedMyGrandSvt: 'fixedMyGrandSvt',
   RestrictionType.myGrandSvtPositionMain: 'myGrandSvtPositionMain',
+  RestrictionType.myGrandSvtOrSupportGrandSvt: 'myGrandSvtOrSupportGrandSvt',
   RestrictionType.fixedCostume: 'fixedCostume',
 };
 

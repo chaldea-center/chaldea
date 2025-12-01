@@ -415,6 +415,11 @@ class DataVals {
   List<int>? get ResistEffectList => _list('ResistEffectList');
   int? get EnablePassiveBuffConvert => _get('EnablePassiveBuffConvert');
   int? get FieldBuffApplyTarget => _get('FieldBuffApplyTarget'); // enum FieldBuffApplyTargetType
+  int? get MaxGainNp => _get('MaxGainNp');
+  int? get MaxHastenNpTurn => _get('MaxHastenNpTurn');
+  int? get FunctionTriggerActorTargetFlag => _get('FunctionTriggerActorTargetFlag'); // enum FuncTriggerActorTargetFlag
+  int? get IsTurnProgressWithoutGrantActor => _get('IsTurnProgressWithoutGrantActor');
+  int? get IsFuncCheckFieldIndividuality => _get('IsFuncCheckFieldIndividuality');
 
   int? get Individuality => _get('Individuality');
   int? get EventId => _get('EventId');
@@ -513,5 +518,17 @@ enum FieldBuffApplyTargetType {
   all(3);
 
   const FieldBuffApplyTargetType(this.value);
+  final int value;
+}
+
+enum FuncTriggerActorTargetFlag {
+  none(0),
+  self(1),
+  partyOther(2),
+  opponents(4),
+  partyOtherAll(8),
+  opponentsAll(16);
+
+  const FuncTriggerActorTargetFlag(this.value);
   final int value;
 }

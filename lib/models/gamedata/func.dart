@@ -635,7 +635,9 @@ enum FuncType {
   swapFieldPosition(158),
   setDisplayDirectBattleMessageInFsm(159),
   addStateToField(160),
-  addStateShortToField(161);
+  addStateShortToField(161),
+  gainNpFromOtherUsedNpValue(162),
+  hastenNpturnFromOtherUsedNpturn(163);
 
   final int value;
   const FuncType(this.value);

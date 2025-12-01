@@ -331,6 +331,8 @@ const _$FuncTypeEnumMap = {
   FuncType.setDisplayDirectBattleMessageInFsm: 'setDisplayDirectBattleMessageInFsm',
   FuncType.addStateToField: 'addStateToField',
   FuncType.addStateShortToField: 'addStateShortToField',
+  FuncType.gainNpFromOtherUsedNpValue: 'gainNpFromOtherUsedNpValue',
+  FuncType.hastenNpturnFromOtherUsedNpturn: 'hastenNpturnFromOtherUsedNpturn',
 };
 
 const _$FuncApplyTargetEnumMap = {

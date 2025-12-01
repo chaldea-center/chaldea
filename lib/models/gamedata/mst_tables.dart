@@ -3284,7 +3284,10 @@ enum UserSvtStatusFlag {
   condJoin(64),
   statusMax(128),
   useLevelExceedItemHeroine(256),
-  useFriendshipExceedItemHeroine(512);
+  useFriendshipExceedItemHeroine(512),
+  isNotSale(1024),
+  isNotCombineResource(2048),
+  isNotSendStorage(4096);
 
   const UserSvtStatusFlag(this.value);
   final int value;

@@ -341,6 +341,9 @@ ExtraPassive _$ExtraPassiveFromJson(Map json) => ExtraPassive(
       const [],
   startedAt: (json['startedAt'] as num).toInt(),
   endedAt: (json['endedAt'] as num).toInt(),
+  script: json['script'] == null
+      ? null
+      : SvtPassiveSkillScript.fromJson(Map<String, dynamic>.from(json['script'] as Map)),
 );
 
 Map<String, dynamic> _$ExtraPassiveToJson(ExtraPassive instance) => <String, dynamic>{
@@ -356,7 +359,12 @@ Map<String, dynamic> _$ExtraPassiveToJson(ExtraPassive instance) => <String, dyn
   'releaseConditions': instance.releaseConditions.map((e) => e.toJson()).toList(),
   'startedAt': instance.startedAt,
   'endedAt': instance.endedAt,
+  'script': instance.script?.toJson(),
 };
+
+SvtPassiveSkillScript _$SvtPassiveSkillScriptFromJson(Map json) => SvtPassiveSkillScript();
+
+Map<String, dynamic> _$SvtPassiveSkillScriptToJson(SvtPassiveSkillScript instance) => <String, dynamic>{};
 
 SkillScript _$SkillScriptFromJson(Map json) => SkillScript(
   actRarity: (json['actRarity'] as List<dynamic>?)
