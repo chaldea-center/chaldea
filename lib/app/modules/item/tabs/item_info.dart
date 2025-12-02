@@ -235,7 +235,7 @@ class _ItemInfoTabState extends State<ItemInfoTab> {
     ...List.generate(3, (index) => 10),
     ...List.generate(6, (index) => 20),
   ];
-  bool _useNewBondCoinRewards = const [Region.jp].contains(db.curUser.region) ? true : false;
+  bool _useNewBondCoinRewards = true;
   int _summonCoin = 90;
   int _baseNp = 1;
   int _offsetNp = 0;
@@ -253,7 +253,7 @@ class _ItemInfoTabState extends State<ItemInfoTab> {
                 children: [
                   const TextSpan(text: ': '),
                   TextSpan(
-                    text: 'NEW',
+                    text: 'NEW(≥9th)',
                     style: _useNewBondCoinRewards ? TextStyle(color: Theme.of(context).colorScheme.primary) : null,
                     recognizer: TapGestureRecognizer()
                       ..onTap = () {

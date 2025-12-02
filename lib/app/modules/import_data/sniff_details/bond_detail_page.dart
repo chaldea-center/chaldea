@@ -1,17 +1,22 @@
 import 'dart:io';
+import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:csv/csv.dart';
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import 'package:chaldea/app/app.dart';
+import 'package:chaldea/app/modules/common/filter_group.dart';
 import 'package:chaldea/app/modules/common/filter_page_base.dart';
 import 'package:chaldea/app/modules/servant/filter.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/gamedata/mst_data.dart';
 import 'package:chaldea/models/models.dart';
+import 'package:chaldea/packages/language.dart';
 import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/packages/platform/platform.dart';
 import 'package:chaldea/packages/sharex.dart';
@@ -173,6 +178,14 @@ class _SvtBondDetailPageState extends State<SvtBondDetailPage> with SingleTicker
       appBar: AppBar(
         title: Text(S.current.bond),
         actions: [
+          IconButton(
+            onPressed: () {
+              final cards = [for (final item in bondCEs) ?item.userCe];
+              if (cards.isEmpty) return;
+              router.pushPage(_BondEquipTimeGraph(bondEquips: cards));
+            },
+            icon: Icon(Icons.bar_chart),
+          ),
           IconButton(
             onPressed: () {
               exportCSV().catchError((e, s) {
@@ -496,3 +509,262 @@ class _SvtBondDetailPageState extends State<SvtBondDetailPage> with SingleTicker
     }
   }
 }
+
+class _BondEquipTimeGraph extends StatefulWidget {
+  final List<UserServantEntity> bondEquips;
+  const _BondEquipTimeGraph({required this.bondEquips});
+
+  @override
+  State<_BondEquipTimeGraph> createState() => __BondEquipTimeGraphState();
+}
+
+class __BondEquipTimeGraphState extends State<_BondEquipTimeGraph> {
+  late final equips = widget.bondEquips;
+  @override
+  Widget build(BuildContext context) {
+    _chartData.update(widget.bondEquips);
+
+    return Scaffold(
+      appBar: AppBar(title: Text(S.current.bond_craft)),
+      body: Container(
+        padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
+        child: Column(
+          crossAxisAlignment: .center,
+          children: [
+            Wrap(
+              crossAxisAlignment: .center,
+              children: [
+                // const Text('Display:  '),
+                FilterGroup<_ChartDisplayType>(
+                  combined: true,
+                  padding: EdgeInsets.zero,
+                  options: _ChartDisplayType.values,
+                  values: FilterRadioData.nonnull(_chartData.type),
+                  optionBuilder: (value) => Text(
+                    Language.isZH
+                        ? switch (value) {
+                            .groupByYear => '按年',
+                            .groupByMonth => '按月',
+                            .oneYear => '1年',
+                          }
+                        : switch (value) {
+                            .groupByYear => 'byYear',
+                            .groupByMonth => 'byMonth',
+                            .oneYear => '1Year',
+                          },
+                  ),
+                  onFilterChanged: (optionData, _) {
+                    setState(() {
+                      _chartData.type = optionData.radioValue!;
+                    });
+                  },
+                ),
+              ],
+            ),
+            ?_buildOneYearSlider(),
+            const SizedBox(height: 24),
+            Expanded(child: buildBarChart()),
+          ],
+        ),
+      ),
+      //
+    );
+  }
+
+  Widget? _buildOneYearSlider() {
+    if (_chartData.type != .oneYear || _chartData.groupData.isEmpty) return null;
+    final value = _chartData.oneYearStart;
+    int maxKey = Maths.max([value, _ChartData._dateToKey(DateTime.now()), ..._chartData.groupData.keys]);
+    maxKey -= 12 - 1;
+    int minKey = Maths.min([value, maxKey, ..._chartData.groupData.keys]);
+    return Row(
+      mainAxisSize: .min,
+      crossAxisAlignment: .center,
+      children: [
+        Text('Start Date: '),
+        ConstrainedBox(constraints: const BoxConstraints(minWidth: 40), child: Text(_chartData.getDateText(value))),
+        Flexible(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 400),
+            child: Slider(
+              min: minKey.toDouble(),
+              max: maxKey.toDouble(),
+              divisions: maxKey > minKey ? maxKey - minKey : null,
+              value: value.toDouble(),
+              label: _chartData.getDateText(value),
+              onChanged: (v) {
+                final _v = v.round();
+                if (_v != _chartData.oneYearStart) {
+                  setState(() {
+                    _chartData.oneYearStart = _v;
+                  });
+                }
+              },
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  final _chartData = _ChartData();
+  Widget buildBarChart() {
+    final (startX, endX) = _chartData.getXs();
+    List<BarChartGroupData> shownBarGroups = [
+      for (final key in range(startX, endX + 1))
+        BarChartGroupData(
+          x: key,
+          barRods: [
+            BarChartRodData(toY: (_chartData.groupData[key]?.length ?? 0).toDouble(), gradient: _barsGradient(key)),
+          ],
+          showingTooltipIndicators: [if (endX - startX < 13) 0],
+        ),
+    ];
+
+    int maxCount = Maths.max([for (final key in range(startX, endX + 1)) _chartData.groupData[key]?.length ?? 0]);
+    int maxY = maxCount < 5 ? 5 : (maxCount / 5 + 0.001).ceil() * 5;
+
+    final yTitles = AxisTitles(
+      sideTitles: SideTitles(
+        showTitles: true,
+        reservedSize: 32,
+        getTitlesWidget: (value, meta) {
+          if (meta.formattedValue.contains('.')) return const SizedBox.shrink();
+          return SideTitleWidget(meta: meta, child: Text(meta.formattedValue));
+        },
+      ),
+    );
+
+    return BarChart(
+      BarChartData(
+        barGroups: shownBarGroups,
+        titlesData: FlTitlesData(
+          show: true,
+          topTitles: AxisTitles(
+            // axisNameWidget: Text('Curves'),
+            axisNameSize: 32,
+            sideTitles: SideTitles(showTitles: false),
+          ),
+          leftTitles: yTitles,
+          rightTitles: yTitles,
+          bottomTitles: AxisTitles(
+            // axisNameWidget: Text('Date'),
+            sideTitles: SideTitles(
+              showTitles: true,
+              reservedSize: 30,
+              // interval: 12,
+              getTitlesWidget: (value, meta) {
+                final label = _chartData.getDateTextOnX(value);
+                if (label.isNotEmpty) {
+                  return SideTitleWidget(meta: meta, child: Text(label));
+                }
+                return const SizedBox.shrink();
+              },
+            ),
+          ),
+        ),
+        barTouchData: BarTouchData(
+          touchTooltipData: BarTouchTooltipData(
+            getTooltipColor: (group) => Colors.transparent,
+            tooltipPadding: EdgeInsets.zero,
+            tooltipMargin: 0,
+            getTooltipItem: (BarChartGroupData group, int groupIndex, BarChartRodData rod, int rodIndex) {
+              if (rod.toY == 0) return null;
+              return BarTooltipItem(switch (_chartData.type) {
+                .groupByMonth => '${rod.toY.round()}\n${_chartData.getDateText(group.x)}',
+                _ => rod.toY.round().toString(),
+              }, TextStyle(color: Colors.cyan.shade100, fontWeight: FontWeight.bold));
+            },
+          ),
+        ),
+        // minY: ,
+        maxY: maxY.toDouble(),
+        // gridData: FlGridData(horizontalInterval: intervalY.toDouble()),
+      ),
+    );
+  }
+
+  LinearGradient _barsGradient(int key) => LinearGradient(
+    colors: key.isEven ? [Colors.cyan, Colors.blue] : [Colors.blue.shade800, Colors.cyan],
+    begin: Alignment.bottomCenter,
+    end: Alignment.topCenter,
+  );
+}
+
+class _ChartData {
+  _ChartDisplayType type = _ChartDisplayType.groupByYear;
+  Map<int, List<UserServantEntity>> groupData = {};
+
+  int oneYearStart = _dateToKey(DateUtils.addMonthsToMonthDate(DateTime.now(), -11));
+
+  _ChartData();
+
+  static int _dateToKey(DateTime date) => date.year * 12 + date.month - 1;
+  static DateTime _keyToDate(int key) => DateTime(key ~/ 12, key % 12 + 1);
+
+  void update(List<UserServantEntity> cards) {
+    groupData.clear();
+    for (final card in cards) {
+      (groupData[getGroupX(card.createdAt.sec2date())] ??= []).add(card);
+    }
+    groupData = sortDict(groupData);
+  }
+
+  (int start, int end) getXs() {
+    int start, end;
+    switch (type) {
+      case .groupByYear:
+      case .groupByMonth:
+        start = Maths.min(groupData.keys);
+        end = Maths.max(groupData.keys);
+      case .oneYear:
+        start = oneYearStart;
+        end = start + 12 - 1;
+    }
+    return (start, end);
+  }
+
+  int getGroupX(DateTime createdAt) {
+    return switch (type) {
+      .groupByYear => createdAt.year,
+      .groupByMonth || .oneYear => _dateToKey(createdAt),
+    };
+  }
+
+  DateTime getGroupDate(num value) {
+    final _value = value.round();
+    return switch (type) {
+      .groupByYear => DateTime(_value),
+      .groupByMonth || .oneYear => _keyToDate(_value),
+    };
+  }
+
+  String getDateText(num value) {
+    final date = getGroupDate(value);
+    switch (type) {
+      case _ChartDisplayType.groupByYear:
+        return date.year.toString();
+      case _ChartDisplayType.groupByMonth:
+      case _ChartDisplayType.oneYear:
+        return '${date.year.toString().substring(2)}/${date.month.toString().padLeft(1, "0")}';
+    }
+  }
+
+  String getDateTextOnX(num value) {
+    final date = getGroupDate(value);
+    switch (type) {
+      case _ChartDisplayType.groupByYear:
+        return date.year.toString();
+      case _ChartDisplayType.groupByMonth:
+        if (date.month == 1) return date.year.toString();
+        return '';
+      case _ChartDisplayType.oneYear:
+        if (date.month == 1) {
+          return '${date.year.toString().substring(2)}/${date.month.toString().padLeft(1, "0")}';
+        }
+        return date.month.toString();
+    }
+  }
+}
+
+enum _ChartDisplayType { groupByYear, groupByMonth, oneYear }
