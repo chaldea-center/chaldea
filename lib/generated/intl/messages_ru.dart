@@ -29,7 +29,8 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m14(count) => "Зарядить NP до ${count}";
 
-  static String m15(version, curVer) => "Требуемая версия приложения: ≥ ${version} (Текущая: ${curVer})";
+  static String m15(version, curVer) =>
+      "Требуемая версия приложения: ≥ ${version} (Текущая: ${curVer})";
 
   static String m1(n) => "Макс. лотерея: ${n}";
 
@@ -42,7 +43,8 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m18(rarity) => "${rarity}☆ SVT Pick Up";
 
-  static String m19(item) => "Возможный связанный ${item} \"УГАДАН\" на основе времени";
+  static String m19(item) =>
+      "Возможный связанный ${item} \"УГАДАН\" на основе времени";
 
   static String m3(error) => "Импорт не удался. Ошибка:\n${error}";
 
@@ -52,7 +54,8 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m20(shown, total) => "${shown} показано (всего ${total})";
 
-  static String m21(shown, ignore, total) => "${shown} показано, ${ignore} проигноророванно (всего ${total})";
+  static String m21(shown, ignore, total) =>
+      "${shown} показано, ${ignore} проигноророванно (всего ${total})";
 
   static String m6(first) =>
       "${Intl.select(first, {'true': 'Это уже первое', 'false': 'Это уже последнее', 'other': 'Больше нет'})}";
@@ -61,11 +64,13 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m7(n) => "Выбор ${n}";
 
-  static String m23(region) => "Что-то пошло не так, или у ${region} нет данных об этом задании";
+  static String m23(region) =>
+      "Что-то пошло не так, или у ${region} нет данных об этом задании";
 
   static String m24(runs) => "Размер выборки: ${runs}";
 
-  static String m25(index, total, enemy) => "Версия ${index}/${total} (${enemy} врагов)";
+  static String m25(index, total, enemy) =>
+      "Версия ${index}/${total} (${enemy} врагов)";
 
   static String m26(unknown, dup, valid, total, selected) =>
       "${unknown} неизвестно, ${dup} дубликат, ${valid}/${total} верно, ${selected} выбрано";
@@ -83,12 +88,14 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m28(color, trait) =>
       "Этот Благородный Фантазм отображается как карта ${color}, но не имеет трейт [${trait}].";
 
-  static String m29(trait) => "Это Благородный Фантазм, но у него нет трейта [${trait}].";
+  static String m29(trait) =>
+      "Это Благородный Фантазм, но у него нет трейта [${trait}].";
 
   static String m30(count) =>
       "${count} NP5 ★5 слуг, пожалуйста, уменьшите требования к слугам настолько, насколько это возможно чтобы поделиться с сообществом";
 
-  static String m31(remain) => "Слишком часто загружаетесь, пожалуйста, подождите ${remain} секунд";
+  static String m31(remain) =>
+      "Слишком часто загружаетесь, пожалуйста, подождите ${remain} секунд";
 
   static String m12(a, b) => "${a} ${b}";
 
@@ -98,7 +105,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "about_app_declaration_text": MessageLookupByLibrary.simpleMessage(
       "Данные, используемые в этом приложении, получены из игры Fate/GO и следующих сайтов. Авторские права на оригинальные тексты, картинки и голоса из игры принадлежат TYPE MOON/FGO PROJECT.\n\n Дизайн программы основан на мини-программе WeChat \"Material Programe\". и iOS-приложение \"Guda\".\n\n Боевой симулятор \"Лаплас\" реализован Yome - автором \"FGO Simulator\". - которая также вдохновлена командой FGO.",
     ),
-    "about_data_source": MessageLookupByLibrary.simpleMessage("Источник данных"),
+    "about_data_source": MessageLookupByLibrary.simpleMessage(
+      "Источник данных",
+    ),
     "about_data_source_footer": MessageLookupByLibrary.simpleMessage(
       "Пожалуйста, сообщите нам, если есть неотмеченный источник или нарушение авторских прав.",
     ),
@@ -109,21 +118,33 @@ class MessageLookup extends MessageLookupByLibrary {
     "ad": MessageLookupByLibrary.simpleMessage("Ad"),
     "add": MessageLookupByLibrary.simpleMessage("Добавить"),
     "add_condition": MessageLookupByLibrary.simpleMessage("Добавить условие"),
-    "add_feedback_details_warning": MessageLookupByLibrary.simpleMessage("Пожалуйста, добавьте детали обратной связи"),
+    "add_feedback_details_warning": MessageLookupByLibrary.simpleMessage(
+      "Пожалуйста, добавьте детали обратной связи",
+    ),
     "add_mission": MessageLookupByLibrary.simpleMessage("Добавить Миссию"),
-    "add_to_blacklist": MessageLookupByLibrary.simpleMessage("Добавить в черный список"),
-    "additional_enemy": MessageLookupByLibrary.simpleMessage("Дополнительный враг"),
+    "add_to_blacklist": MessageLookupByLibrary.simpleMessage(
+      "Добавить в черный список",
+    ),
+    "additional_enemy": MessageLookupByLibrary.simpleMessage(
+      "Дополнительный враг",
+    ),
     "anniversary": MessageLookupByLibrary.simpleMessage("Годовщина"),
     "ap": MessageLookupByLibrary.simpleMessage("AP"),
     "ap_campaign_time_mismatch_hint": MessageLookupByLibrary.simpleMessage(
       "Время начала квестовых кампаний в регионах, не относящихся к JP, может быть неверным.",
     ),
     "ap_efficiency": MessageLookupByLibrary.simpleMessage("доля AP"),
-    "ap_fully_recovered": MessageLookupByLibrary.simpleMessage("Все AP восполнены"),
+    "ap_fully_recovered": MessageLookupByLibrary.simpleMessage(
+      "Все AP восполнены",
+    ),
     "app_data_folder": MessageLookupByLibrary.simpleMessage("Папка с данными"),
-    "app_data_use_external_storage": MessageLookupByLibrary.simpleMessage("Использовать внешнее хранилище (SD-карту)"),
+    "app_data_use_external_storage": MessageLookupByLibrary.simpleMessage(
+      "Использовать внешнее хранилище (SD-карту)",
+    ),
     "appearance": MessageLookupByLibrary.simpleMessage("Внешний вид"),
-    "append_skill": MessageLookupByLibrary.simpleMessage("Дополнительный Навык"),
+    "append_skill": MessageLookupByLibrary.simpleMessage(
+      "Дополнительный Навык",
+    ),
     "append_skill_short": MessageLookupByLibrary.simpleMessage("Доп"),
     "april_fool": MessageLookupByLibrary.simpleMessage("Первое Апреля"),
     "ascension": MessageLookupByLibrary.simpleMessage("Вознесение"),
@@ -138,7 +159,9 @@ class MessageLookup extends MessageLookupByLibrary {
       "Если у вас возникли проблемы с выбором изображений, используйте вместо них файлы",
     ),
     "attachment": MessageLookupByLibrary.simpleMessage("Вложение"),
-    "attack_np_rate": MessageLookupByLibrary.simpleMessage("Восполнение NP от Атак"),
+    "attack_np_rate": MessageLookupByLibrary.simpleMessage(
+      "Восполнение NP от Атак",
+    ),
     "auth_data_hints": MessageLookupByLibrary.simpleMessage(
       "Подсказки: - userId здесь не является кодом друга, который вы видели на странице входа / друга - НЕ передавайте указанные ключи или скриншоты другим лицам!!! - выберите один из следующих методов импорта",
     ),
@@ -150,64 +173,134 @@ class MessageLookup extends MessageLookupByLibrary {
     "autoplay": MessageLookupByLibrary.simpleMessage("Автозапуск"),
     "background": MessageLookupByLibrary.simpleMessage("Фон"),
     "backup": MessageLookupByLibrary.simpleMessage("Резервная копия"),
-    "backup_failed": MessageLookupByLibrary.simpleMessage("Резервная копия не удалась"),
-    "backup_history": MessageLookupByLibrary.simpleMessage("История резервного копирования"),
-    "battle_activate_custom_skill": MessageLookupByLibrary.simpleMessage("Активировать пользовательский навык"),
-    "battle_activate_probability": MessageLookupByLibrary.simpleMessage("Вероятность активации"),
+    "backup_failed": MessageLookupByLibrary.simpleMessage(
+      "Резервная копия не удалась",
+    ),
+    "backup_history": MessageLookupByLibrary.simpleMessage(
+      "История резервного копирования",
+    ),
+    "battle_activate_custom_skill": MessageLookupByLibrary.simpleMessage(
+      "Активировать пользовательский навык",
+    ),
+    "battle_activate_probability": MessageLookupByLibrary.simpleMessage(
+      "Вероятность активации",
+    ),
     "battle_ally": MessageLookupByLibrary.simpleMessage("Союзник"),
-    "battle_atk_np_parameters": MessageLookupByLibrary.simpleMessage("Параметры атаки NP"),
+    "battle_atk_np_parameters": MessageLookupByLibrary.simpleMessage(
+      "Параметры атаки NP",
+    ),
     "battle_attack": MessageLookupByLibrary.simpleMessage("Атака"),
     "battle_battle_log": MessageLookupByLibrary.simpleMessage("Журнал битвы"),
     "battle_buff_permanent": MessageLookupByLibrary.simpleMessage("Постоянный"),
-    "battle_buster_chain": MessageLookupByLibrary.simpleMessage("Урон Buster Цепочки"),
-    "battle_card_deck_simulation": MessageLookupByLibrary.simpleMessage("Отключить использованные командные карты"),
-    "battle_card_np_rate": MessageLookupByLibrary.simpleMessage("Восполнение NP карты"),
-    "battle_card_star_rate": MessageLookupByLibrary.simpleMessage("Шанс крит. звёзд картой"),
-    "battle_change_ascension": MessageLookupByLibrary.simpleMessage("Изменить Вознесение"),
-    "battle_charge_party": MessageLookupByLibrary.simpleMessage("Зарядить NP на 100% всей команде"),
-    "battle_click_to_select_servants": MessageLookupByLibrary.simpleMessage("Нажмите чтобы выбрать Слугу"),
-    "battle_command_card": MessageLookupByLibrary.simpleMessage("Командная карта"),
+    "battle_buster_chain": MessageLookupByLibrary.simpleMessage(
+      "Урон Buster Цепочки",
+    ),
+    "battle_card_deck_simulation": MessageLookupByLibrary.simpleMessage(
+      "Отключить использованные командные карты",
+    ),
+    "battle_card_np_rate": MessageLookupByLibrary.simpleMessage(
+      "Восполнение NP карты",
+    ),
+    "battle_card_star_rate": MessageLookupByLibrary.simpleMessage(
+      "Шанс крит. звёзд картой",
+    ),
+    "battle_change_ascension": MessageLookupByLibrary.simpleMessage(
+      "Изменить Вознесение",
+    ),
+    "battle_charge_party": MessageLookupByLibrary.simpleMessage(
+      "Зарядить NP на 100% всей команде",
+    ),
+    "battle_click_to_select_servants": MessageLookupByLibrary.simpleMessage(
+      "Нажмите чтобы выбрать Слугу",
+    ),
+    "battle_command_card": MessageLookupByLibrary.simpleMessage(
+      "Командная карта",
+    ),
     "battle_damage": MessageLookupByLibrary.simpleMessage("Урон"),
-    "battle_damage_parameters": MessageLookupByLibrary.simpleMessage("Параметры Урона"),
-    "battle_damage_rate": MessageLookupByLibrary.simpleMessage("Показатель Урона"),
+    "battle_damage_parameters": MessageLookupByLibrary.simpleMessage(
+      "Параметры Урона",
+    ),
+    "battle_damage_rate": MessageLookupByLibrary.simpleMessage(
+      "Показатель Урона",
+    ),
     "battle_death": MessageLookupByLibrary.simpleMessage("Повержен"),
-    "battle_edit_servant_option": MessageLookupByLibrary.simpleMessage("Изменить настройки слуги"),
-    "battle_enemy_remaining": MessageLookupByLibrary.simpleMessage("Противников осталось"),
-    "battle_extra_rate": MessageLookupByLibrary.simpleMessage("Показатель доп. Урона"),
-    "battle_first_card_bonus": MessageLookupByLibrary.simpleMessage("Бонус первой карты"),
+    "battle_edit_servant_option": MessageLookupByLibrary.simpleMessage(
+      "Изменить настройки слуги",
+    ),
+    "battle_enemy_remaining": MessageLookupByLibrary.simpleMessage(
+      "Противников осталось",
+    ),
+    "battle_extra_rate": MessageLookupByLibrary.simpleMessage(
+      "Показатель доп. Урона",
+    ),
+    "battle_first_card_bonus": MessageLookupByLibrary.simpleMessage(
+      "Бонус первой карты",
+    ),
     "battle_heal": MessageLookupByLibrary.simpleMessage("Лечение"),
     "battle_invalid": MessageLookupByLibrary.simpleMessage("Неверный"),
-    "battle_misc_config": MessageLookupByLibrary.simpleMessage("Доп. Настройки"),
-    "battle_no_quest_phase": MessageLookupByLibrary.simpleMessage("Фаза квеста не выбрана."),
-    "battle_no_servant": MessageLookupByLibrary.simpleMessage("Слуга не выбран."),
-    "battle_no_skill_selected": MessageLookupByLibrary.simpleMessage("Навык не выбран"),
+    "battle_misc_config": MessageLookupByLibrary.simpleMessage(
+      "Доп. Настройки",
+    ),
+    "battle_no_quest_phase": MessageLookupByLibrary.simpleMessage(
+      "Фаза квеста не выбрана.",
+    ),
+    "battle_no_servant": MessageLookupByLibrary.simpleMessage(
+      "Слуга не выбран.",
+    ),
+    "battle_no_skill_selected": MessageLookupByLibrary.simpleMessage(
+      "Навык не выбран",
+    ),
     "battle_no_source": MessageLookupByLibrary.simpleMessage("Нет информации"),
     "battle_np_card": MessageLookupByLibrary.simpleMessage("NP карта"),
-    "battle_probability_threshold": MessageLookupByLibrary.simpleMessage("Порог Вероятности"),
+    "battle_probability_threshold": MessageLookupByLibrary.simpleMessage(
+      "Порог Вероятности",
+    ),
     "battle_quest_from": MessageLookupByLibrary.simpleMessage("Из"),
     "battle_random": MessageLookupByLibrary.simpleMessage("Случайно"),
     "battle_records": MessageLookupByLibrary.simpleMessage("Записи"),
     "battle_remaining_hp": MessageLookupByLibrary.simpleMessage("Осталось ХП"),
-    "battle_require_field_traits": MessageLookupByLibrary.simpleMessage("Обязательные характеристики поля"),
-    "battle_require_opponent_traits": MessageLookupByLibrary.simpleMessage("Требуемые характеристики противника"),
-    "battle_select_activator": MessageLookupByLibrary.simpleMessage("Выбрать активатор"),
+    "battle_require_field_traits": MessageLookupByLibrary.simpleMessage(
+      "Обязательные характеристики поля",
+    ),
+    "battle_require_opponent_traits": MessageLookupByLibrary.simpleMessage(
+      "Требуемые характеристики противника",
+    ),
+    "battle_select_activator": MessageLookupByLibrary.simpleMessage(
+      "Выбрать активатор",
+    ),
     "battle_select_card": MessageLookupByLibrary.simpleMessage("Выбрать карту"),
     "battle_select_critical_card_hint": MessageLookupByLibrary.simpleMessage(
       "Нажмите несколько раз на командную карту, и она станет красной, и вы сможете использовать критическую атаку.",
     ),
-    "battle_select_effect": MessageLookupByLibrary.simpleMessage("Выбрать эффект"),
-    "battle_should_activate": MessageLookupByLibrary.simpleMessage("Нужно активировать"),
-    "battle_simulation": MessageLookupByLibrary.simpleMessage("Симуляция Битвы"),
-    "battle_simulation_setup": MessageLookupByLibrary.simpleMessage("Настройка Команды"),
-    "battle_skip_current_wave": MessageLookupByLibrary.simpleMessage("Пропустить текущий этап"),
-    "battle_star_parameters": MessageLookupByLibrary.simpleMessage("Параметр крит. звёзд"),
-    "battle_tailored_execution": MessageLookupByLibrary.simpleMessage("Ручной режим случайных значений"),
+    "battle_select_effect": MessageLookupByLibrary.simpleMessage(
+      "Выбрать эффект",
+    ),
+    "battle_should_activate": MessageLookupByLibrary.simpleMessage(
+      "Нужно активировать",
+    ),
+    "battle_simulation": MessageLookupByLibrary.simpleMessage(
+      "Симуляция Битвы",
+    ),
+    "battle_simulation_setup": MessageLookupByLibrary.simpleMessage(
+      "Настройка Команды",
+    ),
+    "battle_skip_current_wave": MessageLookupByLibrary.simpleMessage(
+      "Пропустить текущий этап",
+    ),
+    "battle_star_parameters": MessageLookupByLibrary.simpleMessage(
+      "Параметр крит. звёзд",
+    ),
+    "battle_tailored_execution": MessageLookupByLibrary.simpleMessage(
+      "Ручной режим случайных значений",
+    ),
     "battle_targeted_required_hint": MessageLookupByLibrary.simpleMessage(
       "Сначала убедитесь, что враг/союзник правильно выбран.",
     ),
     "battle_turn": MessageLookupByLibrary.simpleMessage("Ход"),
     "battle_turn_end": MessageLookupByLibrary.simpleMessage("Конец Хода"),
-    "battle_undo": MessageLookupByLibrary.simpleMessage("Отменить последнее действие"),
+    "battle_undo": MessageLookupByLibrary.simpleMessage(
+      "Отменить последнее действие",
+    ),
     "beast_footprint": MessageLookupByLibrary.simpleMessage("След Биста"),
     "bgm": MessageLookupByLibrary.simpleMessage("BGM"),
     "blacklist": MessageLookupByLibrary.simpleMessage("Черный список"),
@@ -215,9 +308,13 @@ class MessageLookup extends MessageLookupByLibrary {
     "bond_bonus": MessageLookupByLibrary.simpleMessage("Бонус Bond-а"),
     "bond_craft": MessageLookupByLibrary.simpleMessage("Bond Craft"),
     "bond_eff": MessageLookupByLibrary.simpleMessage("Bond Eff"),
-    "bond_equip_change_skill": MessageLookupByLibrary.simpleMessage("Изменение эффекта CE Bond-а"),
+    "bond_equip_change_skill": MessageLookupByLibrary.simpleMessage(
+      "Изменение эффекта CE Bond-а",
+    ),
     "bond_limit": MessageLookupByLibrary.simpleMessage("Лимит Bond-а"),
-    "bootstrap_page_title": MessageLookupByLibrary.simpleMessage("Bootstrap-страница"),
+    "bootstrap_page_title": MessageLookupByLibrary.simpleMessage(
+      "Bootstrap-страница",
+    ),
     "branch_quest": MessageLookupByLibrary.simpleMessage("Ответвление квеста"),
     "bronze": MessageLookupByLibrary.simpleMessage("Бронза"),
     "buff_check_opponent": MessageLookupByLibrary.simpleMessage("Оппонент"),
@@ -227,9 +324,13 @@ class MessageLookup extends MessageLookupByLibrary {
     "calculate": MessageLookupByLibrary.simpleMessage("Вычислить"),
     "cancel": MessageLookupByLibrary.simpleMessage("Отмена"),
     "card_asset_chara_figure": MessageLookupByLibrary.simpleMessage("Фигура"),
-    "card_asset_command": MessageLookupByLibrary.simpleMessage("Командная карта"),
+    "card_asset_command": MessageLookupByLibrary.simpleMessage(
+      "Командная карта",
+    ),
     "card_asset_face": MessageLookupByLibrary.simpleMessage("Миниатюра"),
-    "card_asset_narrow_figure": MessageLookupByLibrary.simpleMessage("Формирование"),
+    "card_asset_narrow_figure": MessageLookupByLibrary.simpleMessage(
+      "Формирование",
+    ),
     "card_asset_status": MessageLookupByLibrary.simpleMessage("Статус Иконка"),
     "card_collection_status": MessageLookupByLibrary.simpleMessage("Статус"),
     "card_description": MessageLookupByLibrary.simpleMessage("Описание"),
@@ -241,7 +342,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "card_status_owned": MessageLookupByLibrary.simpleMessage("Владеете"),
     "card_strengthen": MessageLookupByLibrary.simpleMessage("Усиление карты"),
     "carousel": MessageLookupByLibrary.simpleMessage("Карусель"),
-    "cc_equipped_svt": MessageLookupByLibrary.simpleMessage("Экипированные слуги"),
+    "cc_equipped_svt": MessageLookupByLibrary.simpleMessage(
+      "Экипированные слуги",
+    ),
     "ce_custom_skill_hint": MessageLookupByLibrary.simpleMessage(
       "Пожалуйста, добавьте пользовательские навыки/усиления через настройки слуг.",
     ),
@@ -249,7 +352,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "chaldea_account_system_hint": MessageLookupByLibrary.simpleMessage(
       " Несовместимо с данными V1.\n Простая система учетных записей для резервного копирования пользовательских данных на сервер и синхронизации нескольких устройств.\n Гарантия безопасности НЕ предоставляется. ПОЖАЛУЙСТА, НЕ используйте часто используемые пароли!!!\n Не нужно регистрироваться, если вам не нужны эти две функции.",
     ),
-    "chaldea_backup": MessageLookupByLibrary.simpleMessage("Резервное копирование приложения Chaldea"),
+    "chaldea_backup": MessageLookupByLibrary.simpleMessage(
+      "Резервное копирование приложения Chaldea",
+    ),
     "chaldea_gate": MessageLookupByLibrary.simpleMessage("Шлюз Chaldea"),
     "chaldea_server": MessageLookupByLibrary.simpleMessage("Сервер Chaldea"),
     "chaldea_server_cn": MessageLookupByLibrary.simpleMessage("Китай"),
@@ -258,82 +363,136 @@ class MessageLookup extends MessageLookupByLibrary {
     "change_log": MessageLookupByLibrary.simpleMessage("Изменить Лог"),
     "characters_in_card": MessageLookupByLibrary.simpleMessage("Персонажи"),
     "charge_np_to": m14,
-    "check_file_hash": MessageLookupByLibrary.simpleMessage("Проверка целостности файлов"),
+    "check_file_hash": MessageLookupByLibrary.simpleMessage(
+      "Проверка целостности файлов",
+    ),
     "check_update": MessageLookupByLibrary.simpleMessage("Проверка обновлений"),
-    "class_advantage": MessageLookupByLibrary.simpleMessage("Преимущество класса"),
-    "class_attack_rate": MessageLookupByLibrary.simpleMessage("Множитель урона класса"),
+    "class_advantage": MessageLookupByLibrary.simpleMessage(
+      "Преимущество класса",
+    ),
+    "class_attack_rate": MessageLookupByLibrary.simpleMessage(
+      "Множитель урона класса",
+    ),
     "class_board": MessageLookupByLibrary.simpleMessage("Class Score"),
     "class_board_square": MessageLookupByLibrary.simpleMessage("Отметить"),
     "clear": MessageLookupByLibrary.simpleMessage("Очистить"),
     "clear_cache": MessageLookupByLibrary.simpleMessage("Очистить Кэш"),
     "clear_cache_finish": MessageLookupByLibrary.simpleMessage("Кэш очищен"),
-    "clear_cache_hint": MessageLookupByLibrary.simpleMessage("Включая иллюстрации, голоса"),
+    "clear_cache_hint": MessageLookupByLibrary.simpleMessage(
+      "Включая иллюстрации, голоса",
+    ),
     "clear_data": MessageLookupByLibrary.simpleMessage("Очистить Данные"),
     "coin_summon_num": MessageLookupByLibrary.simpleMessage("Монеты призыва"),
-    "command_assist": MessageLookupByLibrary.simpleMessage("Помощь в управлении"),
-    "command_code": MessageLookupByLibrary.simpleMessage("Командный Код"),
+    "command_assist": MessageLookupByLibrary.simpleMessage(
+      "Помощь в управлении",
+    ),
+    "command_code": MessageLookupByLibrary.simpleMessage("Командные Коды"),
     "command_code_short": MessageLookupByLibrary.simpleMessage("CC"),
-    "command_spell": MessageLookupByLibrary.simpleMessage("Командное заклинание"),
+    "command_spell": MessageLookupByLibrary.simpleMessage(
+      "Командное заклинание",
+    ),
     "common_release_group_hint": MessageLookupByLibrary.simpleMessage(
       "Необходимо выполнить только одну *Группу* условий",
     ),
     "condition": MessageLookupByLibrary.simpleMessage("Condition"),
     "confirm": MessageLookupByLibrary.simpleMessage("Подтвердить"),
     "consumed": MessageLookupByLibrary.simpleMessage("Использовано"),
-    "contact_information_not_filled": MessageLookupByLibrary.simpleMessage("Контактная информация не заполнена"),
+    "contact_information_not_filled": MessageLookupByLibrary.simpleMessage(
+      "Контактная информация не заполнена",
+    ),
     "copied": MessageLookupByLibrary.simpleMessage("Скопировано"),
     "copy": MessageLookupByLibrary.simpleMessage("Копировать"),
-    "copy_plan_menu": MessageLookupByLibrary.simpleMessage("Копировать План из..."),
+    "copy_plan_menu": MessageLookupByLibrary.simpleMessage(
+      "Копировать План из...",
+    ),
     "cost": MessageLookupByLibrary.simpleMessage("Стоимость"),
     "costume": MessageLookupByLibrary.simpleMessage("Костюм"),
-    "costume_unlock": MessageLookupByLibrary.simpleMessage("Костюм Разблокирован"),
+    "costume_unlock": MessageLookupByLibrary.simpleMessage(
+      "Костюм Разблокирован",
+    ),
     "counts": MessageLookupByLibrary.simpleMessage("Counts"),
     "craft_essence": MessageLookupByLibrary.simpleMessage("Craft Essence"),
     "craft_essence_short": MessageLookupByLibrary.simpleMessage("CE"),
     "create_account_textfield_helper": MessageLookupByLibrary.simpleMessage(
       "Вы можете добавить дополнительные учетные записи позже в настройках.",
     ),
-    "create_custom_skill": MessageLookupByLibrary.simpleMessage("Создать пользовательский навык"),
-    "create_duplicated_svt": MessageLookupByLibrary.simpleMessage("Создать дубликат"),
-    "create_mooncell_summon": MessageLookupByLibrary.simpleMessage("Создать призыв Mooncell"),
-    "crit_star_mod": MessageLookupByLibrary.simpleMessage("Crit Star Mod"),
+    "create_custom_skill": MessageLookupByLibrary.simpleMessage(
+      "Создать пользовательский навык",
+    ),
+    "create_duplicated_svt": MessageLookupByLibrary.simpleMessage(
+      "Создать дубликат",
+    ),
+    "create_mooncell_summon": MessageLookupByLibrary.simpleMessage(
+      "Создать призыв Mooncell",
+    ),
+    "crit_star_mod": MessageLookupByLibrary.simpleMessage(
+      "Модификатор Крит. Звёзд",
+    ),
     "critical_attack": MessageLookupByLibrary.simpleMessage("Критическая"),
     "critical_star": MessageLookupByLibrary.simpleMessage("Критическая Звезда"),
-    "critical_team": MessageLookupByLibrary.simpleMessage("Критическая Команда"),
+    "critical_team": MessageLookupByLibrary.simpleMessage(
+      "Критическая Команда",
+    ),
     "cur_account": MessageLookupByLibrary.simpleMessage("Текущий Аккаунт"),
     "current_": MessageLookupByLibrary.simpleMessage("Текущий"),
     "current_version": MessageLookupByLibrary.simpleMessage("Текущая Версия"),
-    "custom_chara_figure": MessageLookupByLibrary.simpleMessage("Custom Chara Figure Face"),
+    "custom_chara_figure": MessageLookupByLibrary.simpleMessage(
+      "Custom Chara Figure Face",
+    ),
     "custom_chara_figure_intro": MessageLookupByLibrary.simpleMessage(
       "Нажмите и удерживайте любую иллюстрацию персонажа с отличием (url: /CharaFigure/[id]/), чтобы быстро перейти на следующую страницу. Также можно ввести идентификатор соответствующей иллюстрации или адрес изображения ниже. \n - Слуга - Рисунок карты - Различия в иллюстрациях персонажей \n - Страница \"Ресурсы\" события/основной истории \n - Читать историю - Главное меню - Ресурсы",
     ),
-    "custom_mission": MessageLookupByLibrary.simpleMessage("Пользовательская Миссия"),
+    "custom_mission": MessageLookupByLibrary.simpleMessage(
+      "Пользовательская Миссия",
+    ),
     "custom_mission_mixed_type_hint": MessageLookupByLibrary.simpleMessage(
       "Условия противника и условия задания не должны смешиваться в одной миссии.",
     ),
-    "custom_mission_nothing_hint": MessageLookupByLibrary.simpleMessage("Нет миссии, нажмите +, чтобы добавить миссию"),
-    "custom_mission_source_mission": MessageLookupByLibrary.simpleMessage("Оригинальная Миссия"),
-    "custom_skill": MessageLookupByLibrary.simpleMessage("Пользовательский Навык"),
-    "daily_ember_quest": MessageLookupByLibrary.simpleMessage("Ember Gathering"),
-    "daily_qp_quest": MessageLookupByLibrary.simpleMessage("Enter the Treasure Vault"),
-    "daily_training_quest": MessageLookupByLibrary.simpleMessage("Training Ground"),
+    "custom_mission_nothing_hint": MessageLookupByLibrary.simpleMessage(
+      "Нет миссии, нажмите +, чтобы добавить миссию",
+    ),
+    "custom_mission_source_mission": MessageLookupByLibrary.simpleMessage(
+      "Оригинальная Миссия",
+    ),
+    "custom_skill": MessageLookupByLibrary.simpleMessage(
+      "Пользовательский Навык",
+    ),
+    "daily_ember_quest": MessageLookupByLibrary.simpleMessage(
+      "Ember Gathering",
+    ),
+    "daily_qp_quest": MessageLookupByLibrary.simpleMessage(
+      "Enter the Treasure Vault",
+    ),
+    "daily_training_quest": MessageLookupByLibrary.simpleMessage(
+      "Training Ground",
+    ),
     "damage": MessageLookupByLibrary.simpleMessage("Урон"),
     "damage_np_hp_ratio_max_rate": MessageLookupByLibrary.simpleMessage(
       "More Powerful with Lower/Higher HP: Use MAX Rate",
     ),
-    "damage_np_indiv_sum_count": MessageLookupByLibrary.simpleMessage("More powerful with more stackable traits"),
+    "damage_np_indiv_sum_count": MessageLookupByLibrary.simpleMessage(
+      "More powerful with more stackable traits",
+    ),
     "damage_rate": MessageLookupByLibrary.simpleMessage("Damage Rate"),
-    "damage_recorder_param_hint": MessageLookupByLibrary.simpleMessage("Click to show calculation parameters"),
+    "damage_recorder_param_hint": MessageLookupByLibrary.simpleMessage(
+      "Click to show calculation parameters",
+    ),
     "dark_mode": MessageLookupByLibrary.simpleMessage("Настройка Темы"),
     "dark_mode_dark": MessageLookupByLibrary.simpleMessage("Тёмная"),
     "dark_mode_light": MessageLookupByLibrary.simpleMessage("Светлая"),
     "dark_mode_system": MessageLookupByLibrary.simpleMessage("Система"),
     "database": MessageLookupByLibrary.simpleMessage("База данных"),
-    "database_not_downloaded": MessageLookupByLibrary.simpleMessage("База данных не загружена, продолжить?"),
-    "dataset_version": MessageLookupByLibrary.simpleMessage("Версия Базы данных"),
+    "database_not_downloaded": MessageLookupByLibrary.simpleMessage(
+      "База данных не загружена, продолжить?",
+    ),
+    "dataset_version": MessageLookupByLibrary.simpleMessage(
+      "Версия Базы данных",
+    ),
     "date": MessageLookupByLibrary.simpleMessage("Дата"),
     "death_chance": MessageLookupByLibrary.simpleMessage("Шанс Смерти"),
-    "death_effect_rate": MessageLookupByLibrary.simpleMessage("Death Effect Rate"),
+    "death_effect_rate": MessageLookupByLibrary.simpleMessage(
+      "Death Effect Rate",
+    ),
     "debuff_immune": MessageLookupByLibrary.simpleMessage("Debuff Immune"),
     "debug": MessageLookupByLibrary.simpleMessage("Дебаг"),
     "debug_fab": MessageLookupByLibrary.simpleMessage("Дебаг FAB"),
@@ -346,31 +505,51 @@ class MessageLookup extends MessageLookupByLibrary {
     "defense_np_rate": MessageLookupByLibrary.simpleMessage("Defense NP Rate"),
     "delete": MessageLookupByLibrary.simpleMessage("Удалить"),
     "delete_reason": MessageLookupByLibrary.simpleMessage("Причина удаления"),
-    "delete_unreleased_card": MessageLookupByLibrary.simpleMessage("Удалить невыпущенные карты"),
+    "delete_unreleased_card": MessageLookupByLibrary.simpleMessage(
+      "Удалить невыпущенные карты",
+    ),
     "demands": MessageLookupByLibrary.simpleMessage("Требования"),
     "desktop_only": MessageLookupByLibrary.simpleMessage("Только ПК"),
     "details": MessageLookupByLibrary.simpleMessage("Подробности"),
-    "detective_mission": MessageLookupByLibrary.simpleMessage("Детективные миссии"),
-    "detective_rank": MessageLookupByLibrary.simpleMessage("Детективное звание"),
+    "detective_mission": MessageLookupByLibrary.simpleMessage(
+      "Детективные миссии",
+    ),
+    "detective_rank": MessageLookupByLibrary.simpleMessage(
+      "Детективное звание",
+    ),
     "disable": MessageLookupByLibrary.simpleMessage("Отключить"),
-    "disable_event_effects": MessageLookupByLibrary.simpleMessage("Отключить эффекты событий"),
+    "disable_event_effects": MessageLookupByLibrary.simpleMessage(
+      "Отключить эффекты событий",
+    ),
     "disabled": MessageLookupByLibrary.simpleMessage("Отключено"),
     "disallow_mlb": MessageLookupByLibrary.simpleMessage("Запретить MLB"),
     "display_grid": MessageLookupByLibrary.simpleMessage("Сетка"),
     "display_list": MessageLookupByLibrary.simpleMessage("Список"),
-    "display_setting": MessageLookupByLibrary.simpleMessage("Настройки отображения"),
-    "display_show_window_fab": MessageLookupByLibrary.simpleMessage("Показать кнопку многооконного режима"),
+    "display_setting": MessageLookupByLibrary.simpleMessage(
+      "Настройки отображения",
+    ),
+    "display_show_window_fab": MessageLookupByLibrary.simpleMessage(
+      "Показать кнопку многооконного режима",
+    ),
     "done": MessageLookupByLibrary.simpleMessage("ГОТОВО"),
     "download": MessageLookupByLibrary.simpleMessage("Скачать"),
     "download_latest_gamedata_hint": MessageLookupByLibrary.simpleMessage(
       "Чтобы обеспечить совместимость, перед обновлением обновите приложение до последней версии.",
     ),
-    "download_source": MessageLookupByLibrary.simpleMessage("Скачать исходный код"),
-    "download_source_hint": MessageLookupByLibrary.simpleMessage("Конечная точка CN для материкового Китая"),
+    "download_source": MessageLookupByLibrary.simpleMessage(
+      "Скачать исходный код",
+    ),
+    "download_source_hint": MessageLookupByLibrary.simpleMessage(
+      "Конечная точка CN для материкового Китая",
+    ),
     "downloaded": MessageLookupByLibrary.simpleMessage("Загружено"),
     "downloading": MessageLookupByLibrary.simpleMessage("Загрузка"),
-    "drag_to_sort": MessageLookupByLibrary.simpleMessage("Перетащите для сортировки"),
-    "drop_calc_empty_hint": MessageLookupByLibrary.simpleMessage("Нажмите +, чтобы добавить элементы"),
+    "drag_to_sort": MessageLookupByLibrary.simpleMessage(
+      "Перетащите для сортировки",
+    ),
+    "drop_calc_empty_hint": MessageLookupByLibrary.simpleMessage(
+      "Нажмите +, чтобы добавить элементы",
+    ),
     "drop_calc_min_ap": MessageLookupByLibrary.simpleMessage("Мин AP"),
     "drop_calc_solve": MessageLookupByLibrary.simpleMessage("Решить"),
     "drop_from_all_hashes_hint": MessageLookupByLibrary.simpleMessage(
@@ -380,9 +559,15 @@ class MessageLookup extends MessageLookupByLibrary {
     "drops_warning_has_rare_enemy": MessageLookupByLibrary.simpleMessage(
       "В этом задании есть редкие или дополнительные враги. Пожалуйста, переключитесь на другую версию, чтобы получить правильную информацию о выпадении.",
     ),
-    "duplicated_servant": MessageLookupByLibrary.simpleMessage("Дублированный Слуга"),
-    "duplicated_servant_duplicated": MessageLookupByLibrary.simpleMessage("Дублированный"),
-    "duplicated_servant_primary": MessageLookupByLibrary.simpleMessage("Начальный"),
+    "duplicated_servant": MessageLookupByLibrary.simpleMessage(
+      "Дублированный Слуга",
+    ),
+    "duplicated_servant_duplicated": MessageLookupByLibrary.simpleMessage(
+      "Дублированный",
+    ),
+    "duplicated_servant_primary": MessageLookupByLibrary.simpleMessage(
+      "Начальный",
+    ),
     "edge_swipe_pop_gesture": MessageLookupByLibrary.simpleMessage(
       "Принудительно включить жест «Всплывающее смахивание» от края",
     ),
@@ -394,15 +579,21 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "effect_target": MessageLookupByLibrary.simpleMessage("Цель Эффекта"),
     "effect_type": MessageLookupByLibrary.simpleMessage("Тип Эффекта"),
-    "effective_condition": MessageLookupByLibrary.simpleMessage("Эффективные условия"),
+    "effective_condition": MessageLookupByLibrary.simpleMessage(
+      "Эффективные условия",
+    ),
     "efficiency": MessageLookupByLibrary.simpleMessage("Эффективность"),
     "efficiency_type": MessageLookupByLibrary.simpleMessage("Эффективный"),
     "efficiency_type_ap": MessageLookupByLibrary.simpleMessage("20AP Rate"),
-    "efficiency_type_drop": MessageLookupByLibrary.simpleMessage("Шанс Выпадения"),
+    "efficiency_type_drop": MessageLookupByLibrary.simpleMessage(
+      "Шанс Выпадения",
+    ),
     "email": MessageLookupByLibrary.simpleMessage("Email"),
     "empty_hint": MessageLookupByLibrary.simpleMessage("Пусто"),
     "enable": MessageLookupByLibrary.simpleMessage("Включить"),
-    "enable_split_view": MessageLookupByLibrary.simpleMessage("Включить разделенный вид"),
+    "enable_split_view": MessageLookupByLibrary.simpleMessage(
+      "Включить разделенный вид",
+    ),
     "end_enemy_turn": MessageLookupByLibrary.simpleMessage("Конец Хода Врага"),
     "ended": MessageLookupByLibrary.simpleMessage("Закончен"),
     "enemy": MessageLookupByLibrary.simpleMessage("Враг"),
@@ -410,7 +601,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "enemy_filter_trait_hint": MessageLookupByLibrary.simpleMessage(
       "Фильтр трейторв используется только для врагов в Free Quest-ах основной истории.",
     ),
-    "enemy_leader_hint": MessageLookupByLibrary.simpleMessage("Лидер: битва заканчивается если повержен"),
+    "enemy_leader_hint": MessageLookupByLibrary.simpleMessage(
+      "Лидер: битва заканчивается если повержен",
+    ),
     "enemy_list": MessageLookupByLibrary.simpleMessage("Враги"),
     "enemy_master": MessageLookupByLibrary.simpleMessage("Вражеский Мастер"),
     "enemy_not_servant": MessageLookupByLibrary.simpleMessage("Не Слуга"),
@@ -418,32 +611,54 @@ class MessageLookup extends MessageLookupByLibrary {
     "enemy_only_nps": MessageLookupByLibrary.simpleMessage("Только NP Врагов"),
     "enemy_summary": MessageLookupByLibrary.simpleMessage("Сводка"),
     "enhance": MessageLookupByLibrary.simpleMessage("Усилить"),
-    "enhance_warning": MessageLookupByLibrary.simpleMessage("Следующие предметы будут использованы для усиления"),
+    "enhance_warning": MessageLookupByLibrary.simpleMessage(
+      "Следующие предметы будут использованы для усиления",
+    ),
     "error": MessageLookupByLibrary.simpleMessage("Ошибка"),
-    "error_no_data_found": MessageLookupByLibrary.simpleMessage("Данные не найдены"),
+    "error_no_data_found": MessageLookupByLibrary.simpleMessage(
+      "Данные не найдены",
+    ),
     "error_no_internet": MessageLookupByLibrary.simpleMessage("Нет интернета"),
     "error_required_app_version": m15,
-    "error_widget_hint": MessageLookupByLibrary.simpleMessage("Ошибка! Нажмите чтобы вернуться >_<"),
+    "error_widget_hint": MessageLookupByLibrary.simpleMessage(
+      "Ошибка! Нажмите чтобы вернуться >_<",
+    ),
     "event": MessageLookupByLibrary.simpleMessage("Событие"),
-    "event_ap_cost_half": MessageLookupByLibrary.simpleMessage("AP стоимость 1/2"),
+    "event_ap_cost_half": MessageLookupByLibrary.simpleMessage(
+      "AP стоимость 1/2",
+    ),
     "event_bonus": MessageLookupByLibrary.simpleMessage("Бонус"),
     "event_bulletin_board": MessageLookupByLibrary.simpleMessage("Бюллетень"),
     "event_campaign": MessageLookupByLibrary.simpleMessage("Кампания"),
-    "event_collect_items": MessageLookupByLibrary.simpleMessage("Собирайте материалы"),
+    "event_collect_items": MessageLookupByLibrary.simpleMessage(
+      "Собирайте материалы",
+    ),
     "event_cooltime": MessageLookupByLibrary.simpleMessage("Cooltime"),
-    "event_custom_item": MessageLookupByLibrary.simpleMessage("Пользовательские получаемые элементы"),
-    "event_custom_item_empty_hint": MessageLookupByLibrary.simpleMessage("Нажмите +, чтобы настроить элементы"),
+    "event_custom_item": MessageLookupByLibrary.simpleMessage(
+      "Пользовательские получаемые элементы",
+    ),
+    "event_custom_item_empty_hint": MessageLookupByLibrary.simpleMessage(
+      "Нажмите +, чтобы настроить элементы",
+    ),
     "event_digging": MessageLookupByLibrary.simpleMessage("Копание"),
     "event_fortification": MessageLookupByLibrary.simpleMessage("Фортификация"),
     "event_free_quest": MessageLookupByLibrary.simpleMessage("Event FQ"),
     "event_heel": MessageLookupByLibrary.simpleMessage("Каблук"),
-    "event_item_extra": MessageLookupByLibrary.simpleMessage("Дополнительные предметы"),
-    "event_item_fixed_extra": MessageLookupByLibrary.simpleMessage("Дополнительные фиксированные предметы"),
+    "event_item_extra": MessageLookupByLibrary.simpleMessage(
+      "Дополнительные предметы",
+    ),
+    "event_item_fixed_extra": MessageLookupByLibrary.simpleMessage(
+      "Дополнительные фиксированные предметы",
+    ),
     "event_lottery": MessageLookupByLibrary.simpleMessage("Лотерея"),
     "event_lottery_limit_hint": m1,
-    "event_lottery_limited": MessageLookupByLibrary.simpleMessage("Ограниченная лотерея"),
+    "event_lottery_limited": MessageLookupByLibrary.simpleMessage(
+      "Ограниченная лотерея",
+    ),
     "event_lottery_unit": MessageLookupByLibrary.simpleMessage("Лотерея"),
-    "event_lottery_unlimited": MessageLookupByLibrary.simpleMessage("Неограниченная лотерея"),
+    "event_lottery_unlimited": MessageLookupByLibrary.simpleMessage(
+      "Неограниченная лотерея",
+    ),
     "event_mural": MessageLookupByLibrary.simpleMessage("Фрески"),
     "event_only_trait_hint": MessageLookupByLibrary.simpleMessage(
       "Это может быть трейтом Слуги/врага, ограниченная событием, или трейтом поля. Обычные Слуги/враги могут не иметь этого трейтом, но могут иметь трейт с тем же названием, но разными идентификаторами. Некоторые трейты, хотя и не транслируются явным образом в Слуге, могут быть ограничены событием..",
@@ -460,8 +675,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "event_svt_withdraw": MessageLookupByLibrary.simpleMessage("Изъят"),
     "event_tower": MessageLookupByLibrary.simpleMessage("Башня"),
     "event_trade": MessageLookupByLibrary.simpleMessage("Trade"),
-    "event_treasure_box": MessageLookupByLibrary.simpleMessage("Сундук с сокровищами"),
-    "exchange_count": MessageLookupByLibrary.simpleMessage("Количество обменов"),
+    "event_treasure_box": MessageLookupByLibrary.simpleMessage(
+      "Сундук с сокровищами",
+    ),
+    "exchange_count": MessageLookupByLibrary.simpleMessage(
+      "Количество обменов",
+    ),
     "exchange_ticket": MessageLookupByLibrary.simpleMessage("Билет Обмена"),
     "exchange_ticket_short": MessageLookupByLibrary.simpleMessage("Билет"),
     "exclude_random_enemy_quests": MessageLookupByLibrary.simpleMessage(
@@ -470,24 +689,39 @@ class MessageLookup extends MessageLookupByLibrary {
     "exp_card_plan_lv": MessageLookupByLibrary.simpleMessage("Уровни"),
     "exp_card_plan_next": MessageLookupByLibrary.simpleMessage("ДАЛЕЕ"),
     "exp_card_same_class": MessageLookupByLibrary.simpleMessage("Тот же Класс"),
-    "exp_card_title": MessageLookupByLibrary.simpleMessage("Карта Уровня"),
+    "exp_card_title": MessageLookupByLibrary.simpleMessage("Карта Опыта"),
     "expand": MessageLookupByLibrary.simpleMessage("Расширить"),
     "extra_passive": MessageLookupByLibrary.simpleMessage("Экстра Пассивные"),
     "failed": MessageLookupByLibrary.simpleMessage("Не удалось"),
     "faq": MessageLookupByLibrary.simpleMessage("FAQ"),
     "favorite": MessageLookupByLibrary.simpleMessage("Избранное"),
-    "favorite_all_shown_svt": MessageLookupByLibrary.simpleMessage("Добавить в изобранное всех показанных слуг"),
+    "favorite_all_shown_svt": MessageLookupByLibrary.simpleMessage(
+      "Добавить в изобранное всех показанных слуг",
+    ),
     "favorite_teams": MessageLookupByLibrary.simpleMessage("Избранные команды"),
-    "feedback_add_attachments": MessageLookupByLibrary.simpleMessage("например, скриншоты, файлы."),
-    "feedback_contact": MessageLookupByLibrary.simpleMessage("Контактная информация"),
-    "feedback_content_hint": MessageLookupByLibrary.simpleMessage("Отзыв или предложение"),
-    "feedback_form_alert": MessageLookupByLibrary.simpleMessage("Форма обратной связи не пуста, все равно выйти?"),
+    "feedback_add_attachments": MessageLookupByLibrary.simpleMessage(
+      "например, скриншоты, файлы.",
+    ),
+    "feedback_contact": MessageLookupByLibrary.simpleMessage(
+      "Контактная информация",
+    ),
+    "feedback_content_hint": MessageLookupByLibrary.simpleMessage(
+      "Отзыв или предложение",
+    ),
+    "feedback_form_alert": MessageLookupByLibrary.simpleMessage(
+      "Форма обратной связи не пуста, все равно выйти?",
+    ),
     "feedback_info": MessageLookupByLibrary.simpleMessage(
       "Перед отправкой отзыва ознакомьтесь с разделом <**FAQ**>. Желательны следующие сведения:\n- Как воспроизвести проблему, ожидаемое поведение\n- Версия приложения/набора данных, версия системы устройства\n- Приложите скриншоты и журналы\n- Укажите контактную информацию (адрес электронной почты), если хотите получить ответ\n- НЕ спрашивайте, почему не могу найти слугу xxx",
     ),
     "feedback_send": MessageLookupByLibrary.simpleMessage("Отправить"),
     "feedback_subject": MessageLookupByLibrary.simpleMessage("Subject"),
-    "ffo_missing_data_hint": MessageLookupByLibrary.simpleMessage("Сначала загрузите или импортируйте данные FFO↗"),
+    "ffo_body": MessageLookupByLibrary.simpleMessage("Тело"),
+    "ffo_crop": MessageLookupByLibrary.simpleMessage("Обрезка"),
+    "ffo_head": MessageLookupByLibrary.simpleMessage("Голова"),
+    "ffo_missing_data_hint": MessageLookupByLibrary.simpleMessage(
+      "Сначала загрузите или импортируйте данные FFO↗",
+    ),
     "ffo_same_svt": MessageLookupByLibrary.simpleMessage("Тот же Слуга"),
     "fgo_domus_aurea": MessageLookupByLibrary.simpleMessage("Domus Aurea"),
     "field_ai": MessageLookupByLibrary.simpleMessage("ИИ поля"),
@@ -498,16 +732,24 @@ class MessageLookup extends MessageLookupByLibrary {
     "filter_category": MessageLookupByLibrary.simpleMessage("Категория"),
     "filter_match_all": MessageLookupByLibrary.simpleMessage("Совпадение всех"),
     "filter_obtain": MessageLookupByLibrary.simpleMessage("Получение"),
-    "filter_plan_not_reached": MessageLookupByLibrary.simpleMessage("Plan Not Reach"),
+    "filter_plan_not_reached": MessageLookupByLibrary.simpleMessage(
+      "Plan Not Reach",
+    ),
     "filter_revert": MessageLookupByLibrary.simpleMessage("Отрицание"),
     "filter_shown_type": MessageLookupByLibrary.simpleMessage("Показать"),
     "filter_sort": MessageLookupByLibrary.simpleMessage("Сортировка"),
     "filter_sort_number": MessageLookupByLibrary.simpleMessage("No"),
     "filter_sort_rarity": MessageLookupByLibrary.simpleMessage("Редкость"),
     "fixed_oc": MessageLookupByLibrary.simpleMessage("Fixed OC"),
-    "force_enable_np_se": MessageLookupByLibrary.simpleMessage("Force Enable NP S.E."),
-    "force_instant_death": MessageLookupByLibrary.simpleMessage("Вызвать Смерть"),
-    "forced_update": MessageLookupByLibrary.simpleMessage("Принудительное обновление"),
+    "force_enable_np_se": MessageLookupByLibrary.simpleMessage(
+      "Force Enable NP S.E.",
+    ),
+    "force_instant_death": MessageLookupByLibrary.simpleMessage(
+      "Вызвать Смерть",
+    ),
+    "forced_update": MessageLookupByLibrary.simpleMessage(
+      "Принудительное обновление",
+    ),
     "forgot_password_hint": MessageLookupByLibrary.simpleMessage(
       "Сначала прочтите FAQ о сбросе пароля, а затем свяжитесь с разработчиком и предоставьте необходимую информацию..",
     ),
@@ -515,16 +757,28 @@ class MessageLookup extends MessageLookupByLibrary {
     "fq_plan_decimal_hint": MessageLookupByLibrary.simpleMessage(
       "Десятые не отображаются, возможна погрешность ±1 между отображаемым результатом и рассчитанным результатом.",
     ),
-    "free_exchange_svt": MessageLookupByLibrary.simpleMessage("Слуга Бесплатного Обмена"),
-    "free_progress_newest": MessageLookupByLibrary.simpleMessage("Последнее(JP)"),
+    "free_exchange_svt": MessageLookupByLibrary.simpleMessage(
+      "Слуга Бесплатного Обмена",
+    ),
+    "free_progress_newest": MessageLookupByLibrary.simpleMessage(
+      "Последнее(JP)",
+    ),
     "free_quest": MessageLookupByLibrary.simpleMessage("Free Quest"),
     "free_quest_calculator": MessageLookupByLibrary.simpleMessage("Free Quest"),
-    "free_quest_calculator_short": MessageLookupByLibrary.simpleMessage("Free Quest"),
+    "free_quest_calculator_short": MessageLookupByLibrary.simpleMessage(
+      "Free Quest",
+    ),
     "gacha": MessageLookupByLibrary.simpleMessage("Гача"),
-    "gacha_image_overridden_hint": MessageLookupByLibrary.simpleMessage("Изображение баннера может быть перезаписано"),
-    "gacha_prob_calc": MessageLookupByLibrary.simpleMessage("Калькулятор шансов Гачи"),
+    "gacha_image_overridden_hint": MessageLookupByLibrary.simpleMessage(
+      "Изображение баннера может быть перезаписано",
+    ),
+    "gacha_prob_calc": MessageLookupByLibrary.simpleMessage(
+      "Калькулятор шансов Гачи",
+    ),
     "gacha_prob_ce_pickup": m17,
-    "gacha_prob_custom_rate": MessageLookupByLibrary.simpleMessage("Пользовательский шанс"),
+    "gacha_prob_custom_rate": MessageLookupByLibrary.simpleMessage(
+      "Пользовательский шанс",
+    ),
     "gacha_prob_precision_hint": MessageLookupByLibrary.simpleMessage(
       "Если значение слишком велико или слишком мало, результат вычисления будет неточным из-за проблемы двойной точности.",
     ),
@@ -556,8 +810,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "general_previous": MessageLookupByLibrary.simpleMessage("Предыдущий"),
     "general_special": MessageLookupByLibrary.simpleMessage("Особый"),
     "general_type": MessageLookupByLibrary.simpleMessage("Тип"),
-    "global_text_selection": MessageLookupByLibrary.simpleMessage("Глобально Выделяемый текст"),
-    "glpk_error_no_valid_target": MessageLookupByLibrary.simpleMessage("Неверный ввод или не найдена допустимая цель"),
+    "global_text_selection": MessageLookupByLibrary.simpleMessage(
+      "Глобально Выделяемый текст",
+    ),
+    "glpk_error_no_valid_target": MessageLookupByLibrary.simpleMessage(
+      "Неверный ввод или не найдена допустимая цель",
+    ),
     "gold": MessageLookupByLibrary.simpleMessage("Золотой"),
     "grail": MessageLookupByLibrary.simpleMessage("Грааль"),
     "grail_up": MessageLookupByLibrary.simpleMessage("Палингенез"),
@@ -569,16 +827,26 @@ class MessageLookup extends MessageLookupByLibrary {
     "guessed_on_time_hint": m19,
     "help": MessageLookupByLibrary.simpleMessage("Помощь"),
     "hide": MessageLookupByLibrary.simpleMessage("Скрыть"),
-    "hide_svt_plan_details": MessageLookupByLibrary.simpleMessage("Скрыть детали плана"),
+    "hide_svt_plan_details": MessageLookupByLibrary.simpleMessage(
+      "Скрыть детали плана",
+    ),
     "hide_svt_plan_details_hint": MessageLookupByLibrary.simpleMessage(
       "Он только не отображается на вкладке \"План\", но на самом деле все еще включен в планирование материалов и статистику.",
     ),
-    "hide_unreleased_card": MessageLookupByLibrary.simpleMessage("Скрыть невыпущенные карты"),
-    "high_difficulty_quest": MessageLookupByLibrary.simpleMessage("High DIfficulty Quest"),
+    "hide_unreleased_card": MessageLookupByLibrary.simpleMessage(
+      "Скрыть невыпущенные карты",
+    ),
+    "high_difficulty_quest": MessageLookupByLibrary.simpleMessage(
+      "High DIfficulty Quest",
+    ),
     "hint": MessageLookupByLibrary.simpleMessage("Подсказка"),
     "history": MessageLookupByLibrary.simpleMessage("История"),
-    "home_page_icon_size": MessageLookupByLibrary.simpleMessage("Размер значка домашней страницы"),
-    "http_sniff_hint": MessageLookupByLibrary.simpleMessage("(JP/NA/CN/TW)Capture the data when logging in"),
+    "home_page_icon_size": MessageLookupByLibrary.simpleMessage(
+      "Размер значка домашней страницы",
+    ),
+    "http_sniff_hint": MessageLookupByLibrary.simpleMessage(
+      "(JP/NA/CN/TW)Capture the data when logging in",
+    ),
     "https_sniff": MessageLookupByLibrary.simpleMessage("Https Sniffing"),
     "hunting_quest": MessageLookupByLibrary.simpleMessage("Hunting Quests"),
     "icons": MessageLookupByLibrary.simpleMessage("Иконки"),
@@ -586,40 +854,82 @@ class MessageLookup extends MessageLookupByLibrary {
     "illustration": MessageLookupByLibrary.simpleMessage("Иллюстрация"),
     "illustrator": MessageLookupByLibrary.simpleMessage("Иллюстратор"),
     "image": MessageLookupByLibrary.simpleMessage("Изображение"),
-    "import_active_skill_hint": MessageLookupByLibrary.simpleMessage("Улучшение - Навык"),
-    "import_active_skill_screenshots": MessageLookupByLibrary.simpleMessage("Скриншоты активных навыков"),
-    "import_append_skill_hint": MessageLookupByLibrary.simpleMessage("Улучшение - Append Навык"),
-    "import_append_skill_screenshots": MessageLookupByLibrary.simpleMessage("Скриншоты Append Навыков"),
+    "import_active_skill_hint": MessageLookupByLibrary.simpleMessage(
+      "Улучшение - Навык",
+    ),
+    "import_active_skill_screenshots": MessageLookupByLibrary.simpleMessage(
+      "Скриншоты активных навыков",
+    ),
+    "import_append_skill_hint": MessageLookupByLibrary.simpleMessage(
+      "Улучшение - Append Навык",
+    ),
+    "import_append_skill_screenshots": MessageLookupByLibrary.simpleMessage(
+      "Скриншоты Append Навыков",
+    ),
     "import_auth_file": MessageLookupByLibrary.simpleMessage("Файл Аккаунта"),
-    "import_backup": MessageLookupByLibrary.simpleMessage("Импорт резервной копии"),
+    "import_backup": MessageLookupByLibrary.simpleMessage(
+      "Импорт резервной копии",
+    ),
     "import_csv_export_all": MessageLookupByLibrary.simpleMessage("Все слуги"),
-    "import_csv_export_empty": MessageLookupByLibrary.simpleMessage("Пустой шаблон"),
-    "import_csv_export_favorite": MessageLookupByLibrary.simpleMessage("Только избранные слуги"),
-    "import_csv_export_template": MessageLookupByLibrary.simpleMessage("Экспорт шаблона"),
-    "import_csv_load_csv": MessageLookupByLibrary.simpleMessage("Загрузить CSV"),
+    "import_csv_export_empty": MessageLookupByLibrary.simpleMessage(
+      "Пустой шаблон",
+    ),
+    "import_csv_export_favorite": MessageLookupByLibrary.simpleMessage(
+      "Только избранные слуги",
+    ),
+    "import_csv_export_template": MessageLookupByLibrary.simpleMessage(
+      "Экспорт шаблона",
+    ),
+    "import_csv_load_csv": MessageLookupByLibrary.simpleMessage(
+      "Загрузить CSV",
+    ),
     "import_csv_title": MessageLookupByLibrary.simpleMessage("CSV шаблон"),
     "import_data": MessageLookupByLibrary.simpleMessage("Импортировать"),
     "import_data_error": m3,
-    "import_data_success": MessageLookupByLibrary.simpleMessage("Импорт данных успешно завершен"),
-    "import_from_clipboard": MessageLookupByLibrary.simpleMessage("Из буфера обмена"),
+    "import_data_success": MessageLookupByLibrary.simpleMessage(
+      "Импорт данных успешно завершен",
+    ),
+    "import_from_clipboard": MessageLookupByLibrary.simpleMessage(
+      "Из буфера обмена",
+    ),
     "import_from_file": MessageLookupByLibrary.simpleMessage("Из файла"),
-    "import_http_body_duplicated": MessageLookupByLibrary.simpleMessage("Дублированный"),
-    "import_http_body_locked": MessageLookupByLibrary.simpleMessage("Locked Only"),
+    "import_http_body_duplicated": MessageLookupByLibrary.simpleMessage(
+      "Дублированный",
+    ),
+    "import_http_body_locked": MessageLookupByLibrary.simpleMessage(
+      "Locked Only",
+    ),
     "import_image": MessageLookupByLibrary.simpleMessage("Импорт изображения"),
-    "import_item_hint": MessageLookupByLibrary.simpleMessage("Моя комната — список предметов"),
-    "import_item_screenshots": MessageLookupByLibrary.simpleMessage("Скриншоты предметов"),
-    "import_screenshot": MessageLookupByLibrary.simpleMessage("Импорт скриншотов"),
-    "import_screenshot_hint": MessageLookupByLibrary.simpleMessage("Обновлять только распознанные результаты"),
-    "import_screenshot_update_items": MessageLookupByLibrary.simpleMessage("Обновить предметы"),
-    "import_source_file": MessageLookupByLibrary.simpleMessage("Импорт исходного файла"),
-    "import_userdata_more": MessageLookupByLibrary.simpleMessage("Дополнительные методы импорта"),
+    "import_item_hint": MessageLookupByLibrary.simpleMessage(
+      "Моя комната — список предметов",
+    ),
+    "import_item_screenshots": MessageLookupByLibrary.simpleMessage(
+      "Скриншоты предметов",
+    ),
+    "import_screenshot": MessageLookupByLibrary.simpleMessage(
+      "Импорт скриншотов",
+    ),
+    "import_screenshot_hint": MessageLookupByLibrary.simpleMessage(
+      "Обновлять только распознанные результаты",
+    ),
+    "import_screenshot_update_items": MessageLookupByLibrary.simpleMessage(
+      "Обновить предметы",
+    ),
+    "import_source_file": MessageLookupByLibrary.simpleMessage(
+      "Импорт исходного файла",
+    ),
+    "import_userdata_more": MessageLookupByLibrary.simpleMessage(
+      "Дополнительные методы импорта",
+    ),
     "info_agility": MessageLookupByLibrary.simpleMessage("Ловкость"),
     "info_bond_points": MessageLookupByLibrary.simpleMessage("Очки Bond-а"),
     "info_bond_points_single": MessageLookupByLibrary.simpleMessage("Очко"),
     "info_bond_points_sum": MessageLookupByLibrary.simpleMessage("Сумма"),
     "info_cards": MessageLookupByLibrary.simpleMessage("Карты"),
     "info_charge": MessageLookupByLibrary.simpleMessage("Заряд"),
-    "info_critical_rate": MessageLookupByLibrary.simpleMessage("Приоритет Крит. Звёзд"),
+    "info_critical_rate": MessageLookupByLibrary.simpleMessage(
+      "Приоритет Крит. Звёзд",
+    ),
     "info_cv": MessageLookupByLibrary.simpleMessage("Сэю"),
     "info_death_rate": MessageLookupByLibrary.simpleMessage("Шанс Смерти"),
     "info_endurance": MessageLookupByLibrary.simpleMessage("Выносливость"),
@@ -627,51 +937,91 @@ class MessageLookup extends MessageLookupByLibrary {
     "info_mana": MessageLookupByLibrary.simpleMessage("Мана"),
     "info_np": MessageLookupByLibrary.simpleMessage("NP"),
     "info_np_rate": MessageLookupByLibrary.simpleMessage("Генерация NP"),
-    "info_star_rate": MessageLookupByLibrary.simpleMessage("Генерация Крит. Звёзд"),
+    "info_star_rate": MessageLookupByLibrary.simpleMessage(
+      "Генерация Крит. Звёзд",
+    ),
     "info_strength": MessageLookupByLibrary.simpleMessage("Сила"),
     "info_value": MessageLookupByLibrary.simpleMessage("Значение"),
-    "input_invalid_hint": MessageLookupByLibrary.simpleMessage("Invalid inputs"),
+    "input_invalid_hint": MessageLookupByLibrary.simpleMessage(
+      "Invalid inputs",
+    ),
     "install": MessageLookupByLibrary.simpleMessage("Установить"),
     "instant_death": MessageLookupByLibrary.simpleMessage("Instant Death"),
-    "instant_death_params": MessageLookupByLibrary.simpleMessage("Instant Death Params"),
+    "instant_death_params": MessageLookupByLibrary.simpleMessage(
+      "Instant Death Params",
+    ),
     "interlude": MessageLookupByLibrary.simpleMessage("Интерлюдия"),
-    "interlude_and_rankup": MessageLookupByLibrary.simpleMessage("Интерлюдия & Rank Up"),
+    "interlude_and_rankup": MessageLookupByLibrary.simpleMessage(
+      "Интерлюдия & Rank Up",
+    ),
     "invalid_input": MessageLookupByLibrary.simpleMessage("Invalid input."),
-    "invalid_startup_path": MessageLookupByLibrary.simpleMessage("Неверный путь запуска!"),
+    "invalid_startup_path": MessageLookupByLibrary.simpleMessage(
+      "Неверный путь запуска!",
+    ),
     "invalid_startup_path_info": MessageLookupByLibrary.simpleMessage(
       "Пожалуйста, распакуйте zip-архив в несистемный путь, а затем запустите приложение. \"C:\\\", \"C:\\Program Files\" не допускаются.",
     ),
-    "ios_app_path": MessageLookupByLibrary.simpleMessage("\"Files\" app/On My iPhone/Chaldea"),
+    "ios_app_path": MessageLookupByLibrary.simpleMessage(
+      "\"Files\" app/On My iPhone/Chaldea",
+    ),
     "item": MessageLookupByLibrary.simpleMessage("Предметы"),
     "item_already_exist_hint": m4,
     "item_apple": MessageLookupByLibrary.simpleMessage("Яблоко"),
-    "item_category_bronze": MessageLookupByLibrary.simpleMessage("Бронзовые Предметы"),
+    "item_category_bronze": MessageLookupByLibrary.simpleMessage(
+      "Бронзовые Предметы",
+    ),
     "item_category_gem": MessageLookupByLibrary.simpleMessage("Gem"),
-    "item_category_gold": MessageLookupByLibrary.simpleMessage("Золотые Предметы"),
-    "item_category_magic_gem": MessageLookupByLibrary.simpleMessage("Magic Gem"),
+    "item_category_gold": MessageLookupByLibrary.simpleMessage(
+      "Золотые Предметы",
+    ),
+    "item_category_magic_gem": MessageLookupByLibrary.simpleMessage(
+      "Magic Gem",
+    ),
     "item_category_monument": MessageLookupByLibrary.simpleMessage("Monument"),
     "item_category_piece": MessageLookupByLibrary.simpleMessage("Piece"),
-    "item_category_secret_gem": MessageLookupByLibrary.simpleMessage("Secret Gem"),
-    "item_category_silver": MessageLookupByLibrary.simpleMessage("Silver Items"),
-    "item_category_special": MessageLookupByLibrary.simpleMessage("Специальные предметы"),
-    "item_edit_owned_amount": MessageLookupByLibrary.simpleMessage("Изменить Своё Количество"),
+    "item_category_secret_gem": MessageLookupByLibrary.simpleMessage(
+      "Secret Gem",
+    ),
+    "item_category_silver": MessageLookupByLibrary.simpleMessage(
+      "Silver Items",
+    ),
+    "item_category_special": MessageLookupByLibrary.simpleMessage(
+      "Специальные предметы",
+    ),
+    "item_edit_owned_amount": MessageLookupByLibrary.simpleMessage(
+      "Изменить Своё Количество",
+    ),
     "item_eff": MessageLookupByLibrary.simpleMessage("Item Eff"),
     "item_exceed_hint": MessageLookupByLibrary.simpleMessage(
       "Перед планированием вы можете установить превышенное количество предметов (используется только для планирования Free Quest-ов).",
     ),
     "item_grail2crystal": MessageLookupByLibrary.simpleMessage("Grail → Lore"),
     "item_left": MessageLookupByLibrary.simpleMessage("Слева"),
-    "item_no_free_quests": MessageLookupByLibrary.simpleMessage("Нет Free Quest-ов"),
+    "item_no_free_quests": MessageLookupByLibrary.simpleMessage(
+      "Нет Free Quest-ов",
+    ),
     "item_obtain_event_free_hint": MessageLookupByLibrary.simpleMessage(
       "Обратите внимание на размер выборки для каждого уровня: если размер выборки слишком мал, статистические данные могут быть неточными!",
     ),
-    "item_only_show_lack": MessageLookupByLibrary.simpleMessage("Показывать только недостающие"),
+    "item_only_show_lack": MessageLookupByLibrary.simpleMessage(
+      "Показывать только недостающие",
+    ),
     "item_own": MessageLookupByLibrary.simpleMessage("Полученные"),
-    "item_screenshot": MessageLookupByLibrary.simpleMessage("Скриншот Предмета"),
-    "item_stat_include_owned": MessageLookupByLibrary.simpleMessage("Включить овладаемые"),
-    "item_stat_sub_event": MessageLookupByLibrary.simpleMessage("Вычесть События"),
-    "item_stat_sub_owned": MessageLookupByLibrary.simpleMessage("Вычесть овладаемые"),
-    "join_beta": MessageLookupByLibrary.simpleMessage("Присоединиться к бета-программе"),
+    "item_screenshot": MessageLookupByLibrary.simpleMessage(
+      "Скриншот Предмета",
+    ),
+    "item_stat_include_owned": MessageLookupByLibrary.simpleMessage(
+      "Включить овладаемые",
+    ),
+    "item_stat_sub_event": MessageLookupByLibrary.simpleMessage(
+      "Вычесть События",
+    ),
+    "item_stat_sub_owned": MessageLookupByLibrary.simpleMessage(
+      "Вычесть овладаемые",
+    ),
+    "join_beta": MessageLookupByLibrary.simpleMessage(
+      "Присоединиться к бета-программе",
+    ),
     "jump_to": m5,
     "language": MessageLookupByLibrary.simpleMessage("Русский"),
     "language_en": MessageLookupByLibrary.simpleMessage("Russian"),
@@ -686,13 +1036,17 @@ class MessageLookup extends MessageLookupByLibrary {
       "Найден многошаговый NP, проверьте MIN/MAX RNG, чтобы убедиться, что возврат NP достаточен и позволяет выполнить квест.",
     ),
     "level": MessageLookupByLibrary.simpleMessage("Уровень"),
-    "limited_event": MessageLookupByLibrary.simpleMessage("Ограниченное событие"),
+    "limited_event": MessageLookupByLibrary.simpleMessage(
+      "Ограниченное событие",
+    ),
     "limited_time": MessageLookupByLibrary.simpleMessage("Ограниченное время"),
     "link": MessageLookupByLibrary.simpleMessage("ссылка"),
     "list_count_shown_all": m20,
     "list_count_shown_hidden_all": m21,
     "list_end_hint": m6,
-    "load_ffo_data": MessageLookupByLibrary.simpleMessage("Загрузить данные FFO"),
+    "load_ffo_data": MessageLookupByLibrary.simpleMessage(
+      "Загрузить данные FFO",
+    ),
     "local_team_save_no_replay_warning": MessageLookupByLibrary.simpleMessage(
       "Сохранять только информацию о задании и команде, без данных повторов.",
     ),
@@ -702,32 +1056,54 @@ class MessageLookup extends MessageLookupByLibrary {
     "login_auth": MessageLookupByLibrary.simpleMessage("Login Auth"),
     "login_bonus": MessageLookupByLibrary.simpleMessage("Логин Бонус"),
     "login_change_name": MessageLookupByLibrary.simpleMessage("Изменить Имя"),
-    "login_change_password": MessageLookupByLibrary.simpleMessage("Изменить пароль"),
-    "login_confirm_password": MessageLookupByLibrary.simpleMessage("Подтвердить пароль"),
-    "login_first_hint": MessageLookupByLibrary.simpleMessage("Пожалуйста, сначала войдите в систему"),
+    "login_change_password": MessageLookupByLibrary.simpleMessage(
+      "Изменить пароль",
+    ),
+    "login_confirm_password": MessageLookupByLibrary.simpleMessage(
+      "Подтвердить пароль",
+    ),
+    "login_first_hint": MessageLookupByLibrary.simpleMessage(
+      "Пожалуйста, сначала войдите в систему",
+    ),
     "login_forget_pwd": MessageLookupByLibrary.simpleMessage("Не помню пароль"),
     "login_login": MessageLookupByLibrary.simpleMessage("Войти"),
     "login_logout": MessageLookupByLibrary.simpleMessage("Выйти"),
     "login_new_name": MessageLookupByLibrary.simpleMessage("Новое Имя"),
     "login_new_password": MessageLookupByLibrary.simpleMessage("Новый Пароль"),
     "login_password": MessageLookupByLibrary.simpleMessage("Пароль"),
-    "login_password_error": MessageLookupByLibrary.simpleMessage("6–18 символов, как минимум одна буква алфавита"),
-    "login_password_error_same_as_old": MessageLookupByLibrary.simpleMessage("Не может совпадать со старым паролем."),
+    "login_password_error": MessageLookupByLibrary.simpleMessage(
+      "6–18 символов, как минимум одна буква алфавита",
+    ),
+    "login_password_error_same_as_old": MessageLookupByLibrary.simpleMessage(
+      "Не может совпадать со старым паролем.",
+    ),
     "login_signup": MessageLookupByLibrary.simpleMessage("Зарегестрироваться"),
     "login_username": MessageLookupByLibrary.simpleMessage("Имя пользователя"),
     "login_username_error": MessageLookupByLibrary.simpleMessage(
       "Может содержать только буквы и цифры, начинаться с буквы, не менее 4 цифр.",
     ),
-    "long_press_to_remove": MessageLookupByLibrary.simpleMessage("Длительное нажатие для удаления"),
-    "long_press_to_save_hint": MessageLookupByLibrary.simpleMessage("Длительное нажатие для сохранения"),
-    "lottery_cost_per_roll": MessageLookupByLibrary.simpleMessage("Стоимость 1 прокрута"),
+    "long_press_to_remove": MessageLookupByLibrary.simpleMessage(
+      "Длительное нажатие для удаления",
+    ),
+    "long_press_to_save_hint": MessageLookupByLibrary.simpleMessage(
+      "Длительное нажатие для сохранения",
+    ),
+    "lottery_cost_per_roll": MessageLookupByLibrary.simpleMessage(
+      "Стоимость 1 прокрута",
+    ),
     "lucky_bag": MessageLookupByLibrary.simpleMessage("Lucky Bag"),
     "lucky_bag_best": MessageLookupByLibrary.simpleMessage("Лучшее"),
     "lucky_bag_expectation": MessageLookupByLibrary.simpleMessage("Ожидаемое"),
-    "lucky_bag_expectation_short": MessageLookupByLibrary.simpleMessage("Ожид."),
+    "lucky_bag_expectation_short": MessageLookupByLibrary.simpleMessage(
+      "Ожид.",
+    ),
     "lucky_bag_rating": MessageLookupByLibrary.simpleMessage("Рейтинг"),
-    "lucky_bag_tooltip_unwanted": MessageLookupByLibrary.simpleMessage("Нежелаемый"),
-    "lucky_bag_tooltip_wanted": MessageLookupByLibrary.simpleMessage("Желаемый"),
+    "lucky_bag_tooltip_unwanted": MessageLookupByLibrary.simpleMessage(
+      "Нежелаемый",
+    ),
+    "lucky_bag_tooltip_wanted": MessageLookupByLibrary.simpleMessage(
+      "Желаемый",
+    ),
     "lucky_bag_worst": MessageLookupByLibrary.simpleMessage("Худшее"),
     "main_interlude": MessageLookupByLibrary.simpleMessage("Main Interlude"),
     "main_quest": MessageLookupByLibrary.simpleMessage("Main Quests"),
@@ -735,29 +1111,55 @@ class MessageLookup extends MessageLookupByLibrary {
     "main_story_chapter": MessageLookupByLibrary.simpleMessage("Глава"),
     "map_gimmicks": MessageLookupByLibrary.simpleMessage("Gimmicks"),
     "map_layer_n": m22,
-    "map_show_fq_spots_only": MessageLookupByLibrary.simpleMessage("Только Места FQ"),
-    "map_show_header_image": MessageLookupByLibrary.simpleMessage("Показать изображение заголовка"),
+    "map_show_fq_spots_only": MessageLookupByLibrary.simpleMessage(
+      "Только Места FQ",
+    ),
+    "map_show_header_image": MessageLookupByLibrary.simpleMessage(
+      "Показать изображение заголовка",
+    ),
     "map_show_roads": MessageLookupByLibrary.simpleMessage("Показать дороги"),
     "map_show_spots": MessageLookupByLibrary.simpleMessage("Показать места"),
-    "master_affection": MessageLookupByLibrary.simpleMessage("Привязанность Мастера"),
-    "master_detail_width": MessageLookupByLibrary.simpleMessage("Ширина Master-Detail"),
+    "master_affection": MessageLookupByLibrary.simpleMessage(
+      "Привязанность Мастера",
+    ),
+    "master_detail_width": MessageLookupByLibrary.simpleMessage(
+      "Ширина Master-Detail",
+    ),
     "master_mission": MessageLookupByLibrary.simpleMessage("Master Mission"),
-    "master_mission_related_quest": MessageLookupByLibrary.simpleMessage("Связанные квесты"),
+    "master_mission_related_quest": MessageLookupByLibrary.simpleMessage(
+      "Связанные квесты",
+    ),
     "master_mission_solution": MessageLookupByLibrary.simpleMessage("Решение"),
-    "master_mission_weekly": MessageLookupByLibrary.simpleMessage("Еженедельная миссия"),
-    "max_enemy_act_count": MessageLookupByLibrary.simpleMessage("Максимальное количество действий противника"),
-    "max_enemy_on_stage": MessageLookupByLibrary.simpleMessage("Max enemies on stage"),
+    "master_mission_weekly": MessageLookupByLibrary.simpleMessage(
+      "Еженедельная миссия",
+    ),
+    "max_enemy_act_count": MessageLookupByLibrary.simpleMessage(
+      "Максимальное количество действий противника",
+    ),
+    "max_enemy_on_stage": MessageLookupByLibrary.simpleMessage(
+      "Макс. количество врагов на этапе",
+    ),
     "max_limit_break": MessageLookupByLibrary.simpleMessage("MLB"),
-    "max_window_width": MessageLookupByLibrary.simpleMessage("Максимальная ширина окна"),
+    "max_window_width": MessageLookupByLibrary.simpleMessage(
+      "Максимальная ширина окна",
+    ),
     "media_assets": MessageLookupByLibrary.simpleMessage("Ресурсы"),
     "merge": MessageLookupByLibrary.simpleMessage("Слияние"),
-    "merge_same_drop": MessageLookupByLibrary.simpleMessage("Объединить один и тот же элемент"),
-    "migrate_external_storage_btn_no": MessageLookupByLibrary.simpleMessage("НЕ МИГРИРОВАТЬ"),
-    "migrate_external_storage_btn_yes": MessageLookupByLibrary.simpleMessage("МИГРИРОВАТЬ"),
+    "merge_same_drop": MessageLookupByLibrary.simpleMessage(
+      "Объединить один и тот же элемент",
+    ),
+    "migrate_external_storage_btn_no": MessageLookupByLibrary.simpleMessage(
+      "НЕ МИГРИРОВАТЬ",
+    ),
+    "migrate_external_storage_btn_yes": MessageLookupByLibrary.simpleMessage(
+      "МИГРИРОВАТЬ",
+    ),
     "migrate_external_storage_manual_warning": MessageLookupByLibrary.simpleMessage(
       "Пожалуйста, перенесите данные вручную, иначе после запуска данные будут пустыми..",
     ),
-    "migrate_external_storage_title": MessageLookupByLibrary.simpleMessage("Мигрировать Данные"),
+    "migrate_external_storage_title": MessageLookupByLibrary.simpleMessage(
+      "Мигрировать Данные",
+    ),
     "mission": MessageLookupByLibrary.simpleMessage("Миссия"),
     "mission_target": MessageLookupByLibrary.simpleMessage("Цели Миссии"),
     "move_down": MessageLookupByLibrary.simpleMessage("Двигаться вниз"),
@@ -765,56 +1167,86 @@ class MessageLookup extends MessageLookupByLibrary {
     "my_room": MessageLookupByLibrary.simpleMessage("Моя Комната"),
     "mystic_code": MessageLookupByLibrary.simpleMessage("Мистические Коды"),
     "name": MessageLookupByLibrary.simpleMessage("Имя"),
-    "network_force_online": MessageLookupByLibrary.simpleMessage("Принудительный онлайн-режим"),
+    "network_force_online": MessageLookupByLibrary.simpleMessage(
+      "Принудительный онлайн-режим",
+    ),
     "network_force_online_hint": MessageLookupByLibrary.simpleMessage(
       "Приложение перейдет в автономный режим, если сеть не обнаружена.",
     ),
     "network_settings": MessageLookupByLibrary.simpleMessage("Настройки сети"),
     "network_status": MessageLookupByLibrary.simpleMessage("Статус сети"),
     "new_account": MessageLookupByLibrary.simpleMessage("Новый аккаунт"),
-    "new_data_available": MessageLookupByLibrary.simpleMessage("Доступны новые данные"),
+    "new_data_available": MessageLookupByLibrary.simpleMessage(
+      "Доступны новые данные",
+    ),
     "next_card": MessageLookupByLibrary.simpleMessage("Далее"),
     "next_page": MessageLookupByLibrary.simpleMessage("ДАЛЕЕ"),
-    "no_servant_quest_hint": MessageLookupByLibrary.simpleMessage("Нет ни интерлюдий ни заданий на повышение ранга."),
+    "no_servant_quest_hint": MessageLookupByLibrary.simpleMessage(
+      "Нет ни интерлюдий ни заданий на повышение ранга.",
+    ),
     "no_servant_quest_hint_subtitle": MessageLookupByLibrary.simpleMessage(
       "Нажмите ♡, чтобы просмотреть все задания слуги.",
     ),
     "noble_phantasm": MessageLookupByLibrary.simpleMessage("Фантазм (NP)"),
-    "noble_phantasm_level": MessageLookupByLibrary.simpleMessage("Фантазм (NP)"),
-    "non_favorite_svt_be_skipped": MessageLookupByLibrary.simpleMessage("Не-избранные слуги будут пропущены."),
+    "noble_phantasm_level": MessageLookupByLibrary.simpleMessage(
+      "Фантазм (NP)",
+    ),
+    "non_favorite_svt_be_skipped": MessageLookupByLibrary.simpleMessage(
+      "Не-избранные слуги будут пропущены.",
+    ),
     "normal": MessageLookupByLibrary.simpleMessage("Нормал"),
     "normal_attack": MessageLookupByLibrary.simpleMessage("Нормальная Атака"),
     "not_found": MessageLookupByLibrary.simpleMessage("Не найдено"),
-    "not_implemented": MessageLookupByLibrary.simpleMessage("Пока не реализовано"),
+    "not_implemented": MessageLookupByLibrary.simpleMessage(
+      "Пока не реализовано",
+    ),
     "not_started": MessageLookupByLibrary.simpleMessage("Не начато"),
     "np_charge": MessageLookupByLibrary.simpleMessage("Заряд NP"),
-    "np_charge_type_instant": MessageLookupByLibrary.simpleMessage("Мгновенный"),
-    "np_charge_type_instant_sum": MessageLookupByLibrary.simpleMessage("Мгновенный сумма"),
+    "np_charge_type_instant": MessageLookupByLibrary.simpleMessage(
+      "Мгновенный",
+    ),
+    "np_charge_type_instant_sum": MessageLookupByLibrary.simpleMessage(
+      "Мгновенный сумма",
+    ),
     "np_charge_type_perturn": MessageLookupByLibrary.simpleMessage("За Ход"),
     "np_damage": MessageLookupByLibrary.simpleMessage("Урон NP"),
-    "np_gain_mod": MessageLookupByLibrary.simpleMessage("Модификатор Получения NP"),
+    "np_gain_mod": MessageLookupByLibrary.simpleMessage(
+      "Модификатор Получения NP",
+    ),
     "np_not_enough": MessageLookupByLibrary.simpleMessage("Не достаточно NP"),
     "np_refund": MessageLookupByLibrary.simpleMessage("Возврат NP"),
     "np_refund_short": MessageLookupByLibrary.simpleMessage("Возврат"),
     "np_se": MessageLookupByLibrary.simpleMessage("NP S.E."),
     "np_short": MessageLookupByLibrary.simpleMessage("NP"),
-    "np_sp_damage_rate": MessageLookupByLibrary.simpleMessage("Коэфф. особого урона NP"),
+    "np_sp_damage_rate": MessageLookupByLibrary.simpleMessage(
+      "Коэфф. особого урона NP",
+    ),
     "obtain": MessageLookupByLibrary.simpleMessage("Полученное"),
     "obtain_time": MessageLookupByLibrary.simpleMessage("Время"),
     "ok": MessageLookupByLibrary.simpleMessage("OK"),
     "one_off_quest": MessageLookupByLibrary.simpleMessage("One-off Quest"),
     "ongoing": MessageLookupByLibrary.simpleMessage("Текущий"),
-    "only_grand_battle_hint": MessageLookupByLibrary.simpleMessage("Только для Гранд Битвы"),
+    "only_grand_battle_hint": MessageLookupByLibrary.simpleMessage(
+      "Только для Гранд Битвы",
+    ),
     "only_show_main_story_enemy": MessageLookupByLibrary.simpleMessage(
       "Показывать только врагов из Free Quest-ов основного сюжета",
     ),
-    "only_usuable_for_aoe_np": MessageLookupByLibrary.simpleMessage("Используется только для AoE NP"),
+    "only_usuable_for_aoe_np": MessageLookupByLibrary.simpleMessage(
+      "Используется только для AoE NP",
+    ),
     "open": MessageLookupByLibrary.simpleMessage("Открыть"),
     "open_condition": MessageLookupByLibrary.simpleMessage("Условие"),
-    "open_in_browser": MessageLookupByLibrary.simpleMessage("Открыть в браузере"),
-    "open_in_file_manager": MessageLookupByLibrary.simpleMessage("Пожалуйста, откройте с помощью файлового менеджера"),
+    "open_in_browser": MessageLookupByLibrary.simpleMessage(
+      "Открыть в браузере",
+    ),
+    "open_in_file_manager": MessageLookupByLibrary.simpleMessage(
+      "Пожалуйста, откройте с помощью файлового менеджера",
+    ),
     "opening_time": MessageLookupByLibrary.simpleMessage("Время открытия"),
-    "optional_event_passive": MessageLookupByLibrary.simpleMessage("Необязательная Пассивка События"),
+    "optional_event_passive": MessageLookupByLibrary.simpleMessage(
+      "Необязательная Пассивка События",
+    ),
     "options": MessageLookupByLibrary.simpleMessage("Настройки"),
     "outdated": MessageLookupByLibrary.simpleMessage("Устаревшее"),
     "override_": MessageLookupByLibrary.simpleMessage("Перезаписать"),
@@ -828,17 +1260,27 @@ class MessageLookup extends MessageLookupByLibrary {
     "permanent": MessageLookupByLibrary.simpleMessage("Постоянный"),
     "pin_to_top": MessageLookupByLibrary.simpleMessage("Закрепить наверху"),
     "plan": MessageLookupByLibrary.simpleMessage("План"),
-    "plan_list_only_unlock_append": MessageLookupByLibrary.simpleMessage("Только разблокированные Аппенды"),
-    "plan_list_set_all_current": MessageLookupByLibrary.simpleMessage("Текущий"),
+    "plan_list_only_unlock_append": MessageLookupByLibrary.simpleMessage(
+      "Только разблокированные Аппенды",
+    ),
+    "plan_list_set_all_current": MessageLookupByLibrary.simpleMessage(
+      "Текущий",
+    ),
     "plan_list_set_all_target": MessageLookupByLibrary.simpleMessage("Цель"),
     "plan_objective": MessageLookupByLibrary.simpleMessage("Цель плана"),
     "plan_title": MessageLookupByLibrary.simpleMessage("План"),
-    "planning_free_quest_btn": MessageLookupByLibrary.simpleMessage("Планирование квестов"),
+    "planning_free_quest_btn": MessageLookupByLibrary.simpleMessage(
+      "Планирование квестов",
+    ),
     "player": MessageLookupByLibrary.simpleMessage("Игрок"),
     "player_data": MessageLookupByLibrary.simpleMessage("Данные игрока"),
     "player_only": MessageLookupByLibrary.simpleMessage("Только Игрок"),
-    "prefer_april_fool_icon": MessageLookupByLibrary.simpleMessage("Предпочитать иконку Дня дурака"),
-    "preferred_translation": MessageLookupByLibrary.simpleMessage("Предпочтительный перевод"),
+    "prefer_april_fool_icon": MessageLookupByLibrary.simpleMessage(
+      "Предпочитать иконку Дня дурака",
+    ),
+    "preferred_translation": MessageLookupByLibrary.simpleMessage(
+      "Предпочтительный перевод",
+    ),
     "preferred_translation_footer": MessageLookupByLibrary.simpleMessage(
       "Используется для описания игровых данных, а не языка пользовательского интерфейса. Не все игровые данные переведены на все 5 официальных языков.",
     ),
@@ -853,7 +1295,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "probability": MessageLookupByLibrary.simpleMessage("вероятность"),
     "probability_expectation": MessageLookupByLibrary.simpleMessage("Ожидание"),
     "progress": MessageLookupByLibrary.simpleMessage("Прогресс"),
-    "project_homepage": MessageLookupByLibrary.simpleMessage("Домашняя страница проекта"),
+    "project_homepage": MessageLookupByLibrary.simpleMessage(
+      "Домашняя страница проекта",
+    ),
     "quest": MessageLookupByLibrary.simpleMessage("Квест"),
     "quest_chapter_n": m7,
     "quest_condition": MessageLookupByLibrary.simpleMessage("Условия"),
@@ -873,7 +1317,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "quest_fixed_drop": MessageLookupByLibrary.simpleMessage("Дроп"),
     "quest_fixed_drop_short": MessageLookupByLibrary.simpleMessage("Дроп"),
     "quest_not_found_error": m23,
-    "quest_prefer_region": MessageLookupByLibrary.simpleMessage("Предпочтительный регион"),
+    "quest_prefer_region": MessageLookupByLibrary.simpleMessage(
+      "Предпочтительный регион",
+    ),
     "quest_prefer_region_hint": MessageLookupByLibrary.simpleMessage(
       "Если соответствующее событие квеста не началось в выбранном регионе, оно использует JP.",
     ),
@@ -884,8 +1330,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "quest_reward": MessageLookupByLibrary.simpleMessage("Награды за квесты"),
     "quest_reward_short": MessageLookupByLibrary.simpleMessage("Награды"),
     "quest_runs": m24,
-    "quest_timeline_sort_campaign_open": MessageLookupByLibrary.simpleMessage("AP Cost Event Time"),
-    "quest_timeline_sort_quest_open": MessageLookupByLibrary.simpleMessage("Время открытия квеста"),
+    "quest_timeline_sort_campaign_open": MessageLookupByLibrary.simpleMessage(
+      "AP Cost Event Time",
+    ),
+    "quest_timeline_sort_quest_open": MessageLookupByLibrary.simpleMessage(
+      "Время открытия квеста",
+    ),
     "quest_version": m25,
     "quest_wave": MessageLookupByLibrary.simpleMessage("Волна"),
     "quit": MessageLookupByLibrary.simpleMessage("Выйти"),
@@ -898,13 +1348,25 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "rare_enemy": MessageLookupByLibrary.simpleMessage("Редкий Враг"),
     "rarity": MessageLookupByLibrary.simpleMessage("Редкость"),
-    "rate_app_store": MessageLookupByLibrary.simpleMessage("Оценить в App Store"),
-    "rate_play_store": MessageLookupByLibrary.simpleMessage("Оценить в Google Play"),
-    "raw_gacha_data": MessageLookupByLibrary.simpleMessage("Необработанные Данные Гачи"),
-    "read_device_info": MessageLookupByLibrary.simpleMessage("Прочитать информацию об этом устройстве"),
+    "rate_app_store": MessageLookupByLibrary.simpleMessage(
+      "Оценить в App Store",
+    ),
+    "rate_play_store": MessageLookupByLibrary.simpleMessage(
+      "Оценить в Google Play",
+    ),
+    "raw_gacha_data": MessageLookupByLibrary.simpleMessage(
+      "Необработанные Данные Гачи",
+    ),
+    "read_device_info": MessageLookupByLibrary.simpleMessage(
+      "Прочитать информацию об этом устройстве",
+    ),
     "recognizer_result_count": m26,
-    "recorder_screenshot_current_view": MessageLookupByLibrary.simpleMessage("Текущий вид"),
-    "recorder_screenshot_full_view": MessageLookupByLibrary.simpleMessage("Полный вид"),
+    "recorder_screenshot_current_view": MessageLookupByLibrary.simpleMessage(
+      "Текущий вид",
+    ),
+    "recorder_screenshot_full_view": MessageLookupByLibrary.simpleMessage(
+      "Полный вид",
+    ),
     "refresh": MessageLookupByLibrary.simpleMessage("Обновить"),
     "region_cn": MessageLookupByLibrary.simpleMessage("CN"),
     "region_jp": MessageLookupByLibrary.simpleMessage("JP"),
@@ -912,75 +1374,126 @@ class MessageLookup extends MessageLookupByLibrary {
     "region_na": MessageLookupByLibrary.simpleMessage("NA"),
     "region_notice": m8,
     "region_tw": MessageLookupByLibrary.simpleMessage("TW"),
-    "related_traits": MessageLookupByLibrary.simpleMessage("Связанные Трейты "),
+    "related_traits": MessageLookupByLibrary.simpleMessage("Связанные Трейты"),
     "remove": MessageLookupByLibrary.simpleMessage("Убрать"),
-    "remove_duplicated_svt": MessageLookupByLibrary.simpleMessage("Убрать дублирующиеся"),
-    "remove_from_blacklist": MessageLookupByLibrary.simpleMessage("Убрать из черного списка"),
+    "remove_duplicated_svt": MessageLookupByLibrary.simpleMessage(
+      "Убрать дублирующиеся",
+    ),
+    "remove_from_blacklist": MessageLookupByLibrary.simpleMessage(
+      "Убрать из черного списка",
+    ),
     "remove_mission": MessageLookupByLibrary.simpleMessage("Убрать Миссию"),
     "rename": MessageLookupByLibrary.simpleMessage("Переименовать"),
     "rerun_event": MessageLookupByLibrary.simpleMessage("Повтор"),
     "reset": MessageLookupByLibrary.simpleMessage("Сбросить"),
-    "reset_custom_ascension_icon": MessageLookupByLibrary.simpleMessage("Сбросить пользовательские значки вознесения"),
+    "reset_custom_ascension_icon": MessageLookupByLibrary.simpleMessage(
+      "Сбросить пользовательские значки вознесения",
+    ),
     "reset_plan_all": m9,
     "reset_plan_shown": m10,
     "reset_skill_cd": MessageLookupByLibrary.simpleMessage("Сброс КД навыков"),
-    "resettable_digged_num": MessageLookupByLibrary.simpleMessage("Сбросить количество требуемых раскопок"),
+    "resettable_digged_num": MessageLookupByLibrary.simpleMessage(
+      "Сбросить количество требуемых раскопок",
+    ),
     "resolution": MessageLookupByLibrary.simpleMessage("Разрешение"),
-    "restart_to_apply_changes": MessageLookupByLibrary.simpleMessage("Перезапустите, чтобы изменения вступили в силу"),
+    "restart_to_apply_changes": MessageLookupByLibrary.simpleMessage(
+      "Перезапустите, чтобы изменения вступили в силу",
+    ),
     "restart_to_upgrade_hint": MessageLookupByLibrary.simpleMessage(
       "Перезапустите для обновления. Если обновление не удалось, вручную скопируйте исходную папку в папку назначения.",
     ),
     "restore": MessageLookupByLibrary.simpleMessage("Восстановить"),
     "results": MessageLookupByLibrary.simpleMessage("Результаты"),
-    "saint_quartz_plan": MessageLookupByLibrary.simpleMessage("Планирование Кварца"),
-    "same_event_plan": MessageLookupByLibrary.simpleMessage("Сохраните тот же план событий"),
+    "saint_quartz_plan": MessageLookupByLibrary.simpleMessage("План Кварца"),
+    "same_event_plan": MessageLookupByLibrary.simpleMessage(
+      "Сохраните тот же план событий",
+    ),
     "save": MessageLookupByLibrary.simpleMessage("Сохранить"),
     "save_as": MessageLookupByLibrary.simpleMessage("Сохранить как"),
-    "save_current_team": MessageLookupByLibrary.simpleMessage("Сохранить Текущую Команду"),
+    "save_current_team": MessageLookupByLibrary.simpleMessage(
+      "Сохранить Текущую Команду",
+    ),
     "save_to_photos": MessageLookupByLibrary.simpleMessage("Сохранить в Фото"),
     "saved": MessageLookupByLibrary.simpleMessage("Сохранено"),
     "screen_size": MessageLookupByLibrary.simpleMessage("Размер экрана"),
     "screenshots": MessageLookupByLibrary.simpleMessage("Скриншоты"),
     "script_choice": MessageLookupByLibrary.simpleMessage("Выбор"),
-    "script_choice_end": MessageLookupByLibrary.simpleMessage("Конец ветви выбора"),
+    "script_choice_end": MessageLookupByLibrary.simpleMessage(
+      "Конец ветви выбора",
+    ),
     "script_story": MessageLookupByLibrary.simpleMessage("История"),
     "search": MessageLookupByLibrary.simpleMessage("Поиск"),
     "search_option_basic": MessageLookupByLibrary.simpleMessage("Базовый"),
     "search_options": MessageLookupByLibrary.simpleMessage("Области поиска"),
     "select": MessageLookupByLibrary.simpleMessage("Выбрать"),
     "select_ce": MessageLookupByLibrary.simpleMessage("Выбрать CE"),
-    "select_copy_plan_source": MessageLookupByLibrary.simpleMessage("Выберите источник копирования"),
-    "select_item_title": MessageLookupByLibrary.simpleMessage("Выберите материалы"),
+    "select_copy_plan_source": MessageLookupByLibrary.simpleMessage(
+      "Выберите источник копирования",
+    ),
+    "select_item_title": MessageLookupByLibrary.simpleMessage(
+      "Выберите материалы",
+    ),
     "select_lang": MessageLookupByLibrary.simpleMessage("Выберите язык"),
     "select_plan": MessageLookupByLibrary.simpleMessage("Выберите План"),
     "select_servant": MessageLookupByLibrary.simpleMessage("Выберите Слугу"),
     "select_skill": MessageLookupByLibrary.simpleMessage("Выберите Навык"),
-    "select_skip": MessageLookupByLibrary.simpleMessage("Выберите нет, чтобы пропустить этот эффект."),
-    "send_email_to": MessageLookupByLibrary.simpleMessage("Отправить электронное письмо по адресу"),
+    "select_skip": MessageLookupByLibrary.simpleMessage(
+      "Выберите нет, чтобы пропустить этот эффект.",
+    ),
+    "send_email_to": MessageLookupByLibrary.simpleMessage(
+      "Отправить электронное письмо по адресу",
+    ),
     "sending": MessageLookupByLibrary.simpleMessage("Отправка"),
-    "sending_failed": MessageLookupByLibrary.simpleMessage("Отправка не удалась"),
+    "sending_failed": MessageLookupByLibrary.simpleMessage(
+      "Отправка не удалась",
+    ),
     "sent": MessageLookupByLibrary.simpleMessage("Отправленно"),
     "servant": MessageLookupByLibrary.simpleMessage("Слуга"),
     "servant_coin": MessageLookupByLibrary.simpleMessage("Монета Слуги"),
     "servant_coin_short": MessageLookupByLibrary.simpleMessage("Монета"),
-    "servant_detail_page": MessageLookupByLibrary.simpleMessage("Страница сведений о слуге"),
-    "servant_list_page": MessageLookupByLibrary.simpleMessage("Страница списка слуг"),
+    "servant_detail_page": MessageLookupByLibrary.simpleMessage(
+      "Страница сведений о слуге",
+    ),
+    "servant_list_page": MessageLookupByLibrary.simpleMessage(
+      "Страница списка слуг",
+    ),
     "set_all": MessageLookupByLibrary.simpleMessage("ВЫБРАТЬ ВСЁ"),
-    "set_plan_name": MessageLookupByLibrary.simpleMessage("Установить имя плана"),
-    "setting_always_on_top": MessageLookupByLibrary.simpleMessage("Всегда Сверху"),
+    "set_plan_name": MessageLookupByLibrary.simpleMessage(
+      "Установить имя плана",
+    ),
+    "setting_always_on_top": MessageLookupByLibrary.simpleMessage(
+      "Всегда Сверху",
+    ),
     "setting_auto_rotate": MessageLookupByLibrary.simpleMessage("Автоповорот"),
-    "setting_auto_turn_on_plan_not_reach": MessageLookupByLibrary.simpleMessage("Auto Turn on PlanNotReach"),
+    "setting_auto_turn_on_plan_not_reach": MessageLookupByLibrary.simpleMessage(
+      "Auto Turn on PlanNotReach",
+    ),
     "setting_drag_by_mouse": MessageLookupByLibrary.simpleMessage(
       "Разрешить мышью перетаскивать прокручиваемые элементы",
     ),
-    "setting_home_plan_list_page": MessageLookupByLibrary.simpleMessage("Home-Plan List Page"),
-    "setting_priority_tagging": MessageLookupByLibrary.simpleMessage("Priority Tagging"),
-    "setting_servant_class_filter_style": MessageLookupByLibrary.simpleMessage("Стиль Фильтра Класса Слуг"),
-    "setting_setting_favorite_button_default": MessageLookupByLibrary.simpleMessage("Кнопка «Избранное» по умолчанию"),
-    "setting_show_account_at_homepage": MessageLookupByLibrary.simpleMessage("Показать аккаунт на главной странице"),
-    "setting_split_ratio": MessageLookupByLibrary.simpleMessage("Соотношение сторон разделенного экрана"),
-    "setting_split_ratio_hint": MessageLookupByLibrary.simpleMessage("Для широкого экрана"),
-    "setting_tabs_sorting": MessageLookupByLibrary.simpleMessage("Сортировка Вкладок"),
+    "setting_home_plan_list_page": MessageLookupByLibrary.simpleMessage(
+      "Home-Plan List Page",
+    ),
+    "setting_priority_tagging": MessageLookupByLibrary.simpleMessage(
+      "Priority Tagging",
+    ),
+    "setting_servant_class_filter_style": MessageLookupByLibrary.simpleMessage(
+      "Стиль Фильтра Класса Слуг",
+    ),
+    "setting_setting_favorite_button_default":
+        MessageLookupByLibrary.simpleMessage("Кнопка «Избранное» по умолчанию"),
+    "setting_show_account_at_homepage": MessageLookupByLibrary.simpleMessage(
+      "Показать аккаунт на главной странице",
+    ),
+    "setting_split_ratio": MessageLookupByLibrary.simpleMessage(
+      "Соотношение сторон разделенного экрана",
+    ),
+    "setting_split_ratio_hint": MessageLookupByLibrary.simpleMessage(
+      "Для широкого экрана",
+    ),
+    "setting_tabs_sorting": MessageLookupByLibrary.simpleMessage(
+      "Сортировка Вкладок",
+    ),
     "settings_data": MessageLookupByLibrary.simpleMessage("Данные"),
     "settings_documents": MessageLookupByLibrary.simpleMessage("Документы"),
     "settings_general": MessageLookupByLibrary.simpleMessage("Общее"),
@@ -991,42 +1504,80 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "share": MessageLookupByLibrary.simpleMessage("Поделиться"),
     "shop": MessageLookupByLibrary.simpleMessage("Магазины"),
-    "shop_free_condition": MessageLookupByLibrary.simpleMessage("Условие бесплатности"),
+    "shop_free_condition": MessageLookupByLibrary.simpleMessage(
+      "Условие бесплатности",
+    ),
     "show": MessageLookupByLibrary.simpleMessage("Показать"),
     "show_carousel": MessageLookupByLibrary.simpleMessage("Показать Карусель"),
-    "show_empty_event": MessageLookupByLibrary.simpleMessage("Показать Пустое Событие"),
-    "show_frame_rate": MessageLookupByLibrary.simpleMessage("Показать частоту кадров"),
-    "show_fullscreen": MessageLookupByLibrary.simpleMessage("Показать на весь экран"),
+    "show_empty_event": MessageLookupByLibrary.simpleMessage(
+      "Показать Пустое Событие",
+    ),
+    "show_frame_rate": MessageLookupByLibrary.simpleMessage(
+      "Показать частоту кадров",
+    ),
+    "show_fullscreen": MessageLookupByLibrary.simpleMessage(
+      "Показать на весь экран",
+    ),
     "show_less": MessageLookupByLibrary.simpleMessage("Показать меньше"),
-    "show_mc_campaign": MessageLookupByLibrary.simpleMessage("Показать события кампании"),
+    "show_mc_campaign": MessageLookupByLibrary.simpleMessage(
+      "Показать события кампании",
+    ),
     "show_more": MessageLookupByLibrary.simpleMessage("Показать больше"),
-    "show_original_mission_text": MessageLookupByLibrary.simpleMessage("Показать исходный текст миссии"),
-    "show_outdated": MessageLookupByLibrary.simpleMessage("Показать устаревшее"),
-    "show_system_tray": MessageLookupByLibrary.simpleMessage("Показывать в системном трее"),
+    "show_original_mission_text": MessageLookupByLibrary.simpleMessage(
+      "Показать исходный текст миссии",
+    ),
+    "show_outdated": MessageLookupByLibrary.simpleMessage(
+      "Показать устаревшее",
+    ),
+    "show_system_tray": MessageLookupByLibrary.simpleMessage(
+      "Показывать в системном трее",
+    ),
     "silver": MessageLookupByLibrary.simpleMessage("Серебрянный"),
-    "simulate_enemy_actions": MessageLookupByLibrary.simpleMessage("Имитировать действия противника"),
-    "simulate_simple_ai": MessageLookupByLibrary.simpleMessage("Моделировать простой ИИ"),
+    "simulate_enemy_actions": MessageLookupByLibrary.simpleMessage(
+      "Имитировать действия противника",
+    ),
+    "simulate_simple_ai": MessageLookupByLibrary.simpleMessage(
+      "Моделировать простой ИИ",
+    ),
     "simulator": MessageLookupByLibrary.simpleMessage("Симулятор"),
     "skill": MessageLookupByLibrary.simpleMessage("Навыки"),
     "skill_list": MessageLookupByLibrary.simpleMessage("Список Навыков"),
     "skill_rankup": MessageLookupByLibrary.simpleMessage("Усиление Навыка"),
     "skill_up": MessageLookupByLibrary.simpleMessage("Навык Усилен"),
     "skip": MessageLookupByLibrary.simpleMessage("Пропустить"),
-    "skip_current_turn": MessageLookupByLibrary.simpleMessage("Пропустить текущий ход"),
-    "solution_battle_count": MessageLookupByLibrary.simpleMessage("Количество битв"),
-    "solution_target_count": MessageLookupByLibrary.simpleMessage("Количество целей"),
+    "skip_current_turn": MessageLookupByLibrary.simpleMessage(
+      "Пропустить текущий ход",
+    ),
+    "solution_battle_count": MessageLookupByLibrary.simpleMessage(
+      "Количество битв",
+    ),
+    "solution_target_count": MessageLookupByLibrary.simpleMessage(
+      "Количество целей",
+    ),
     "solution_total_battles_ap": m27,
     "sort_order": MessageLookupByLibrary.simpleMessage("Сортировать"),
     "sound_effect": MessageLookupByLibrary.simpleMessage("Звуковой эффект"),
-    "special_reward_hide": MessageLookupByLibrary.simpleMessage("Скрыть специальные награды"),
-    "special_reward_show": MessageLookupByLibrary.simpleMessage("Показать специальные награды"),
-    "spirit_origin_release_quest": MessageLookupByLibrary.simpleMessage("Spirit Origin Release Quest"),
-    "spoiler_setting": MessageLookupByLibrary.simpleMessage("Настройки спойлеров"),
+    "special_reward_hide": MessageLookupByLibrary.simpleMessage(
+      "Скрыть специальные награды",
+    ),
+    "special_reward_show": MessageLookupByLibrary.simpleMessage(
+      "Показать специальные награды",
+    ),
+    "spirit_origin_release_quest": MessageLookupByLibrary.simpleMessage(
+      "Spirit Origin Release Quest",
+    ),
+    "spoiler_setting": MessageLookupByLibrary.simpleMessage(
+      "Настройки спойлеров",
+    ),
     "sprites": MessageLookupByLibrary.simpleMessage("Спрайты"),
     "sq_buy_pack_unit": MessageLookupByLibrary.simpleMessage("Пак(и)"),
-    "sq_fragment_convert": MessageLookupByLibrary.simpleMessage("21 фрагмент = 3 кварца"),
+    "sq_fragment_convert": MessageLookupByLibrary.simpleMessage(
+      "21 фрагмент = 3 кварца",
+    ),
     "sq_short": MessageLookupByLibrary.simpleMessage("Кварц"),
-    "stage_opening_movie": MessageLookupByLibrary.simpleMessage("Вступительный фильм"),
+    "stage_opening_movie": MessageLookupByLibrary.simpleMessage(
+      "Вступительный фильм",
+    ),
     "start": MessageLookupByLibrary.simpleMessage("Начать"),
     "statistics_title": MessageLookupByLibrary.simpleMessage("Статистика"),
     "story_ce": MessageLookupByLibrary.simpleMessage("CE из стории"),
@@ -1034,26 +1585,40 @@ class MessageLookup extends MessageLookupByLibrary {
       "Добавлено вручную. Пожалуйста, сообщите, если что-то не так.",
     ),
     "strength_status": MessageLookupByLibrary.simpleMessage("Статус силы"),
-    "sub_attribute_advantage": MessageLookupByLibrary.simpleMessage("Преимущество податрибута"),
+    "sub_attribute_advantage": MessageLookupByLibrary.simpleMessage(
+      "Преимущество податрибута",
+    ),
     "success": MessageLookupByLibrary.simpleMessage("Успех"),
     "summon": MessageLookupByLibrary.simpleMessage("Призыв"),
     "summon_banner": MessageLookupByLibrary.simpleMessage("Призыв"),
     "summon_daily": MessageLookupByLibrary.simpleMessage("Ежедневный"),
     "summon_expectation_btn": MessageLookupByLibrary.simpleMessage("Ожидание"),
-    "summon_gacha_footer": MessageLookupByLibrary.simpleMessage("Просто для развлечения"),
+    "summon_gacha_footer": MessageLookupByLibrary.simpleMessage(
+      "Просто для развлечения",
+    ),
     "summon_gacha_result": MessageLookupByLibrary.simpleMessage("Результаты"),
     "summon_info_hint": MessageLookupByLibrary.simpleMessage(
       "Данные о вызове JP от Mooncell. Для других регионов — только справочная информация..",
     ),
     "summon_pull_unit": MessageLookupByLibrary.simpleMessage("Пулл(ы)"),
-    "summon_show_banner": MessageLookupByLibrary.simpleMessage("Показать Баннер"),
+    "summon_show_banner": MessageLookupByLibrary.simpleMessage(
+      "Показать Баннер",
+    ),
     "summon_ticket_short": MessageLookupByLibrary.simpleMessage("Билет"),
-    "super_effective_damage": MessageLookupByLibrary.simpleMessage("СУП.ЭФФ. УРОН"),
-    "support_chaldea": MessageLookupByLibrary.simpleMessage("Поддержка и пожертвования"),
+    "super_effective_damage": MessageLookupByLibrary.simpleMessage(
+      "СУП.ЭФФ. УРОН",
+    ),
+    "support_chaldea": MessageLookupByLibrary.simpleMessage(
+      "Поддержка и пожертвования",
+    ),
     "support_servant": MessageLookupByLibrary.simpleMessage("Слуги Поддержки"),
-    "support_servant_forced": MessageLookupByLibrary.simpleMessage("Вынужденные"),
+    "support_servant_forced": MessageLookupByLibrary.simpleMessage(
+      "Вынужденные",
+    ),
     "support_servant_short": MessageLookupByLibrary.simpleMessage("Саппорт"),
-    "svt_ascension_icon": MessageLookupByLibrary.simpleMessage("Иконка Вознесения"),
+    "svt_ascension_icon": MessageLookupByLibrary.simpleMessage(
+      "Иконка Вознесения",
+    ),
     "svt_attribute": MessageLookupByLibrary.simpleMessage("Мировозрение"),
     "svt_basic_info": MessageLookupByLibrary.simpleMessage("Инфо"),
     "svt_card_deck_incorrect": MessageLookupByLibrary.simpleMessage(
@@ -1063,32 +1628,53 @@ class MessageLookup extends MessageLookupByLibrary {
     "svt_class_dist": MessageLookupByLibrary.simpleMessage("Класс Слуги"),
     "svt_class_filter_auto": MessageLookupByLibrary.simpleMessage("Авто"),
     "svt_class_filter_hide": MessageLookupByLibrary.simpleMessage("Скрыть"),
-    "svt_class_filter_single_row": MessageLookupByLibrary.simpleMessage("<Экстра Класс> Свёрнут\nЕдиная строка"),
-    "svt_class_filter_single_row_expanded": MessageLookupByLibrary.simpleMessage(
-      "<Экстра Класс> Развёрнут\nЕдиная строка",
+    "svt_class_filter_single_row": MessageLookupByLibrary.simpleMessage(
+      "<Экстра Класс> Свёрнут\nЕдиная строка",
     ),
-    "svt_class_filter_two_row": MessageLookupByLibrary.simpleMessage("<Экстра Класс> на второй строке"),
+    "svt_class_filter_single_row_expanded":
+        MessageLookupByLibrary.simpleMessage(
+          "<Экстра Класс> Развёрнут\nЕдиная строка",
+        ),
+    "svt_class_filter_two_row": MessageLookupByLibrary.simpleMessage(
+      "<Экстра Класс> на второй строке",
+    ),
     "svt_fav_btn_remember": MessageLookupByLibrary.simpleMessage("Запомнить"),
-    "svt_fav_btn_show_all": MessageLookupByLibrary.simpleMessage("Показать всё"),
-    "svt_fav_btn_show_favorite": MessageLookupByLibrary.simpleMessage("Показать избранное"),
+    "svt_fav_btn_show_all": MessageLookupByLibrary.simpleMessage(
+      "Показать всё",
+    ),
+    "svt_fav_btn_show_favorite": MessageLookupByLibrary.simpleMessage(
+      "Показать избранное",
+    ),
     "svt_not_planned": MessageLookupByLibrary.simpleMessage("Не Избранный"),
-    "svt_not_release_hint": MessageLookupByLibrary.simpleMessage("Слуги не могут быть освобождены"),
+    "svt_not_release_hint": MessageLookupByLibrary.simpleMessage(
+      "Слуги не могут быть освобождены",
+    ),
     "svt_option_edit_tips": MessageLookupByLibrary.simpleMessage(
       "1. Параметры слуг не зависят от данных плана Халдеи после импорта. Если необходимо повторно синхронизировать запланированные параметры, используйте опцию «Повторная синхронизация» в выпадающем меню в правом верхнем углу.\n2. Статус усиления навыков/NP можно настроить вручную с помощью опций ниже.\n3. Вы можете вручную добавить собственный эффект/усиление.\n4. Параметры Слуг/CE можно закрепить наверху во всплывающем меню на страницах с их подробной информацией.",
     ),
-    "svt_option_resync": MessageLookupByLibrary.simpleMessage("Параметры повторной синхронизации"),
+    "svt_option_resync": MessageLookupByLibrary.simpleMessage(
+      "Параметры повторной синхронизации",
+    ),
     "svt_plan_hidden": MessageLookupByLibrary.simpleMessage("Скрыт"),
     "svt_profile": MessageLookupByLibrary.simpleMessage("Профиль"),
-    "svt_profile_info": MessageLookupByLibrary.simpleMessage("Информация о персонаже"),
+    "svt_profile_info": MessageLookupByLibrary.simpleMessage(
+      "Информация о персонаже",
+    ),
     "svt_profile_n": m11,
     "svt_related_ce": MessageLookupByLibrary.simpleMessage("Связанные CEs"),
     "svt_reset_plan": MessageLookupByLibrary.simpleMessage("Сбросить План"),
     "svt_second_archive": MessageLookupByLibrary.simpleMessage("Второй Архив"),
-    "svt_stat_own_total": MessageLookupByLibrary.simpleMessage("(SkillMax) NPs/Owned/Total"),
+    "svt_stat_own_total": MessageLookupByLibrary.simpleMessage(
+      "(SkillMax) NPs/Owned/Total",
+    ),
     "svt_sub_attribute": MessageLookupByLibrary.simpleMessage("Доп Атрибут"),
-    "svt_switch_slider_dropdown": MessageLookupByLibrary.simpleMessage("Переключить ползунок/раскрывающийся список"),
+    "svt_switch_slider_dropdown": MessageLookupByLibrary.simpleMessage(
+      "Переключить ползунок/раскрывающийся список",
+    ),
     "switch_region": MessageLookupByLibrary.simpleMessage("Сменить регион"),
-    "system_tray_close_hint": MessageLookupByLibrary.simpleMessage("Свернуть окно при закрытии"),
+    "system_tray_close_hint": MessageLookupByLibrary.simpleMessage(
+      "Свернуть окно при закрытии",
+    ),
     "target": MessageLookupByLibrary.simpleMessage("Цель"),
     "td_animation": MessageLookupByLibrary.simpleMessage("Анимация Фантазма"),
     "td_base_hits_hint": MessageLookupByLibrary.simpleMessage(
@@ -1097,22 +1683,44 @@ class MessageLookup extends MessageLookupByLibrary {
     "td_cardcolor_hint": m28,
     "td_cardnp_hint": m29,
     "td_rankup": MessageLookupByLibrary.simpleMessage("Усиление Фантазма"),
-    "td_solver_simple_mode": MessageLookupByLibrary.simpleMessage("Упрощенный Режим"),
-    "td_solver_simple_mode_desc": MessageLookupByLibrary.simpleMessage("Считать только финальное вознесение"),
+    "td_solver_simple_mode": MessageLookupByLibrary.simpleMessage(
+      "Упрощенный Режим",
+    ),
+    "td_solver_simple_mode_desc": MessageLookupByLibrary.simpleMessage(
+      "Считать только финальное вознесение",
+    ),
     "team": MessageLookupByLibrary.simpleMessage("Команда"),
     "team_backup_member": MessageLookupByLibrary.simpleMessage("Резерв"),
     "team_block_ce": MessageLookupByLibrary.simpleMessage("Заблокировать CE"),
-    "team_block_servant": MessageLookupByLibrary.simpleMessage("Заблокировать Слугу"),
+    "team_block_servant": MessageLookupByLibrary.simpleMessage(
+      "Заблокировать Слугу",
+    ),
     "team_local": MessageLookupByLibrary.simpleMessage("Локальные Команды"),
-    "team_no_append_skill": MessageLookupByLibrary.simpleMessage("Без Append Навыка"),
-    "team_no_class_board": MessageLookupByLibrary.simpleMessage("Без class score"),
-    "team_no_double_castoria": MessageLookupByLibrary.simpleMessage("Без Двойной Кастории"),
-    "team_no_double_koyan": MessageLookupByLibrary.simpleMessage("Без Двойной Коянской"),
-    "team_no_double_oberon": MessageLookupByLibrary.simpleMessage("Без Двойного Оберона"),
-    "team_no_grail_fou": MessageLookupByLibrary.simpleMessage("Не граален/☆4 Fou"),
+    "team_no_append_skill": MessageLookupByLibrary.simpleMessage(
+      "Без Append Навыка",
+    ),
+    "team_no_class_board": MessageLookupByLibrary.simpleMessage(
+      "Без class score",
+    ),
+    "team_no_double_castoria": MessageLookupByLibrary.simpleMessage(
+      "Без Двойной Кастории",
+    ),
+    "team_no_double_koyan": MessageLookupByLibrary.simpleMessage(
+      "Без Двойной Коянской",
+    ),
+    "team_no_double_oberon": MessageLookupByLibrary.simpleMessage(
+      "Без Двойного Оберона",
+    ),
+    "team_no_grail_fou": MessageLookupByLibrary.simpleMessage(
+      "Не граален/☆4 Fou",
+    ),
     "team_no_lv100": MessageLookupByLibrary.simpleMessage("Не Lv.100+"),
-    "team_no_order_change": MessageLookupByLibrary.simpleMessage("Без Order Change"),
-    "team_no_same_svt": MessageLookupByLibrary.simpleMessage("Без одинаковых Слуг"),
+    "team_no_order_change": MessageLookupByLibrary.simpleMessage(
+      "Без Order Change",
+    ),
+    "team_no_same_svt": MessageLookupByLibrary.simpleMessage(
+      "Без одинаковых Слуг",
+    ),
     "team_rare_enemy_warning": MessageLookupByLibrary.simpleMessage(
       "В этом задании могут встречаться редкие или дополнительные враги. Если они появляются случайно (появление не может быть гарантировано на 100%), убедитесь, что эта команда подходит для всех возможных вариантов врагов.",
     ),
@@ -1121,34 +1729,52 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "team_shared": MessageLookupByLibrary.simpleMessage("Команды Сообщества"),
     "team_starting_member": MessageLookupByLibrary.simpleMessage("Передовая"),
-    "team_use_servant": MessageLookupByLibrary.simpleMessage("Использовать Слугу"),
+    "team_use_servant": MessageLookupByLibrary.simpleMessage(
+      "Использовать Слугу",
+    ),
     "test": MessageLookupByLibrary.simpleMessage("Тест"),
-    "test_info_pad": MessageLookupByLibrary.simpleMessage("Тестовая информационная панель"),
+    "test_info_pad": MessageLookupByLibrary.simpleMessage(
+      "Тестовая информационная панель",
+    ),
     "time": MessageLookupByLibrary.simpleMessage("Время"),
     "time_close": MessageLookupByLibrary.simpleMessage("Закрыть"),
     "time_end": MessageLookupByLibrary.simpleMessage("Закончить"),
     "time_start": MessageLookupByLibrary.simpleMessage("Начать"),
     "tips": MessageLookupByLibrary.simpleMessage("Cоветы"),
-    "toggle_dark_mode": MessageLookupByLibrary.simpleMessage("Включить темный режим"),
+    "toggle_dark_mode": MessageLookupByLibrary.simpleMessage(
+      "Включить темный режим",
+    ),
     "too_many_td5_svts_warning": m30,
-    "tooltip_refresh_sliders": MessageLookupByLibrary.simpleMessage("Обновить слайды"),
+    "tooltip_refresh_sliders": MessageLookupByLibrary.simpleMessage(
+      "Обновить слайды",
+    ),
     "total": MessageLookupByLibrary.simpleMessage("Итого"),
     "total_ap": MessageLookupByLibrary.simpleMessage("Итого AP"),
     "total_counts": MessageLookupByLibrary.simpleMessage("Итого"),
     "total_np": MessageLookupByLibrary.simpleMessage("Итого NP"),
     "trait": MessageLookupByLibrary.simpleMessage("Трейты"),
-    "treasure_box_draw_cost": MessageLookupByLibrary.simpleMessage("Стоимость розыгрыша"),
-    "treasure_box_extra_gift": MessageLookupByLibrary.simpleMessage("Дополнительные подарки в коробке"),
-    "treasure_box_max_draw_once": MessageLookupByLibrary.simpleMessage("Максимальное количество за раз:"),
+    "treasure_box_draw_cost": MessageLookupByLibrary.simpleMessage(
+      "Стоимость розыгрыша",
+    ),
+    "treasure_box_extra_gift": MessageLookupByLibrary.simpleMessage(
+      "Дополнительные подарки в коробке",
+    ),
+    "treasure_box_max_draw_once": MessageLookupByLibrary.simpleMessage(
+      "Максимальное количество за раз:",
+    ),
     "trial_quest": MessageLookupByLibrary.simpleMessage("Пробный квест"),
-    "turn_remain_limit": MessageLookupByLibrary.simpleMessage("Оставшийся лимих ходов"),
+    "turn_remain_limit": MessageLookupByLibrary.simpleMessage(
+      "Оставшийся лимих ходов",
+    ),
     "turn_remain_limit_lose": MessageLookupByLibrary.simpleMessage(
       "Считается проигрышем после окончания обратного отсчета ходов",
     ),
     "turn_remain_limit_win": MessageLookupByLibrary.simpleMessage(
       "Считается победой после окончания обратного отсчета ходов",
     ),
-    "twice_skill_hint": MessageLookupByLibrary.simpleMessage("Usually for w-Koyan team"),
+    "twice_skill_hint": MessageLookupByLibrary.simpleMessage(
+      "Usually for w-Koyan team",
+    ),
     "twice_skill_if_cd2": MessageLookupByLibrary.simpleMessage(
       "Повторно применяйте умение (если время восстановления сбрасывается через 2 хода).",
     ),
@@ -1158,23 +1784,43 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "unknown": MessageLookupByLibrary.simpleMessage("Неизвестно"),
     "unlock": MessageLookupByLibrary.simpleMessage("Разблокировать"),
-    "unlock_quest": MessageLookupByLibrary.simpleMessage("Разблокировать Квест"),
+    "unlock_quest": MessageLookupByLibrary.simpleMessage(
+      "Разблокировать Квест",
+    ),
     "update": MessageLookupByLibrary.simpleMessage("Обновить"),
-    "update_already_latest": MessageLookupByLibrary.simpleMessage("Уже последняя версия"),
-    "update_data_at_start": MessageLookupByLibrary.simpleMessage("Обновить при запуске"),
+    "update_already_latest": MessageLookupByLibrary.simpleMessage(
+      "Уже последняя версия",
+    ),
+    "update_data_at_start": MessageLookupByLibrary.simpleMessage(
+      "Обновить при запуске",
+    ),
     "update_data_at_start_off_hint": MessageLookupByLibrary.simpleMessage(
       "Загрузка локальных данных с последующим фоновым обновлением, применение обновлений при следующем запуске",
     ),
-    "update_data_at_start_on_hint": MessageLookupByLibrary.simpleMessage("Запуск может занять больше времени"),
-    "update_dataset": MessageLookupByLibrary.simpleMessage("Обновить набор данных"),
-    "update_msg_error": MessageLookupByLibrary.simpleMessage("Не удалось обновить"),
-    "update_msg_no_update": MessageLookupByLibrary.simpleMessage("Нет доступных обновлений"),
+    "update_data_at_start_on_hint": MessageLookupByLibrary.simpleMessage(
+      "Запуск может занять больше времени",
+    ),
+    "update_dataset": MessageLookupByLibrary.simpleMessage(
+      "Обновить набор данных",
+    ),
+    "update_msg_error": MessageLookupByLibrary.simpleMessage(
+      "Не удалось обновить",
+    ),
+    "update_msg_no_update": MessageLookupByLibrary.simpleMessage(
+      "Нет доступных обновлений",
+    ),
     "update_time": MessageLookupByLibrary.simpleMessage("Время обновления"),
     "updated": MessageLookupByLibrary.simpleMessage("Обновлено"),
     "upload": MessageLookupByLibrary.simpleMessage("Загрузить"),
-    "upload_and_close_app": MessageLookupByLibrary.simpleMessage("Загрузить и закрыть"),
-    "upload_and_close_app_alert": MessageLookupByLibrary.simpleMessage("Загрузить данные перед закрытием приложения?"),
-    "upload_before_close_app": MessageLookupByLibrary.simpleMessage("Загрузить перед закрытием"),
+    "upload_and_close_app": MessageLookupByLibrary.simpleMessage(
+      "Загрузить и закрыть",
+    ),
+    "upload_and_close_app_alert": MessageLookupByLibrary.simpleMessage(
+      "Загрузить данные перед закрытием приложения?",
+    ),
+    "upload_before_close_app": MessageLookupByLibrary.simpleMessage(
+      "Загрузить перед закрытием",
+    ),
     "upload_not_eligible_hint": MessageLookupByLibrary.simpleMessage(
       "Текущая команда не может быть загружена по следующим причинам:",
     ),
@@ -1187,19 +1833,35 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "usage": MessageLookupByLibrary.simpleMessage("Использование"),
     "userdata": MessageLookupByLibrary.simpleMessage("Пользовательские данные"),
-    "userdata_download_backup": MessageLookupByLibrary.simpleMessage("Скачать резервную копию"),
-    "userdata_download_choose_backup": MessageLookupByLibrary.simpleMessage("Выберать одну резервную копию"),
-    "userdata_local": MessageLookupByLibrary.simpleMessage("Пользовательские данные (Локально)"),
+    "userdata_download_backup": MessageLookupByLibrary.simpleMessage(
+      "Скачать резервную копию",
+    ),
+    "userdata_download_choose_backup": MessageLookupByLibrary.simpleMessage(
+      "Выберать одну резервную копию",
+    ),
+    "userdata_local": MessageLookupByLibrary.simpleMessage(
+      "Пользовательские данные (Локально)",
+    ),
     "userdata_sync_hint": MessageLookupByLibrary.simpleMessage(
       "ВРЕМЕННО! Только данные учётной записи, без локальных настроек. До 3 резервных копий в течение 1 недели!",
     ),
-    "userdata_sync_server": MessageLookupByLibrary.simpleMessage("Синхронизация данных (Сервер)"),
-    "userdata_upload_backup": MessageLookupByLibrary.simpleMessage("Загрузить резервную копию"),
-    "valentine_craft": MessageLookupByLibrary.simpleMessage("Валентиновая Эссенция"),
-    "valentine_script": MessageLookupByLibrary.simpleMessage("Валентиновый сюжет"),
+    "userdata_sync_server": MessageLookupByLibrary.simpleMessage(
+      "Синхронизация данных (Сервер)",
+    ),
+    "userdata_upload_backup": MessageLookupByLibrary.simpleMessage(
+      "Загрузить резервную копию",
+    ),
+    "valentine_craft": MessageLookupByLibrary.simpleMessage(
+      "Валентиновая Эссенция",
+    ),
+    "valentine_script": MessageLookupByLibrary.simpleMessage(
+      "Валентиновый сюжет",
+    ),
     "version": MessageLookupByLibrary.simpleMessage("Версия"),
     "video": MessageLookupByLibrary.simpleMessage("Видео"),
-    "view_illustration": MessageLookupByLibrary.simpleMessage("Посмотреть иллюстрацию"),
+    "view_illustration": MessageLookupByLibrary.simpleMessage(
+      "Посмотреть иллюстрацию",
+    ),
     "voice": MessageLookupByLibrary.simpleMessage("Голос"),
     "war": MessageLookupByLibrary.simpleMessage("Война"),
     "war_age": MessageLookupByLibrary.simpleMessage("Эпоха"),
