@@ -1953,6 +1953,17 @@ class Restriction {
   factory Restriction.fromJson(Map<String, dynamic> json) => _$RestrictionFromJson(json);
 
   Map<String, dynamic> toJson() => _$RestrictionToJson(this);
+
+  static bool checkSvtIndiv(RestrictionRangeType rangeType, List<int> targetVals, List<int> svtIndivs) {
+    final _targetVals = targetVals.toSet();
+    if (_targetVals.isEmpty || (_targetVals.length == 1 && _targetVals.single == 0)) return true;
+    bool hasTrait = _targetVals.intersection(svtIndivs.toSet()).isNotEmpty;
+    return switch (rangeType) {
+      RestrictionRangeType.equal => hasTrait,
+      RestrictionRangeType.notEqual => !hasTrait,
+      _ => true,
+    };
+  }
 }
 
 @JsonSerializable()

@@ -481,7 +481,11 @@ class FakerRuntimeBattle extends FakerRuntimeBase {
           final traits = dbSvt.getIndividuality(questPhaseEntity.logicEventId, svtInfo.dispLimitCount).toSet();
           if (!questPhaseEntity.restrictions.every((restriction) {
             if (restriction.restriction.type == RestrictionType.individuality) {
-              final hasTrait = restriction.restriction.targetVals.toSet().intersection(traits).isNotEmpty;
+              final hasTrait = Restriction.checkSvtIndiv(
+                restriction.restriction.rangeType,
+                restriction.restriction.targetVals,
+                traits.toList(),
+              );
               return switch (restriction.restriction.rangeType) {
                 RestrictionRangeType.equal => hasTrait,
                 RestrictionRangeType.notEqual => !hasTrait,

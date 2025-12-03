@@ -203,7 +203,7 @@ class Servant extends BasicServant {
   List<NiceSkill> classPassive;
   List<NiceSkill> extraPassive;
   List<NiceSkill> get extraPassiveNonEvent =>
-      extraPassive.where((skill) => skill.extraPassive.every((e) => e.eventId != 0)).toList();
+      extraPassive.where((skill) => skill.extraPassive.every((e) => e.getValidEventIds().isNotEmpty)).toList();
   List<ServantAppendPassiveSkill> appendPassive;
   List<NiceTd> noblePhantasms;
   NiceLore profile;

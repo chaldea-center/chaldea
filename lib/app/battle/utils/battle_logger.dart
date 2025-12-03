@@ -256,7 +256,11 @@ class BattleRecordManager {
           if (!options.formation.svts.any((svtData) {
             final svtIndivs = svtData.svt?.getIndividuality(questPhase.logicEventId, svtData.limitCount);
             if (svtIndivs == null) return false;
-            return _checkGrandSvtIndiv(restriction.restriction, svtIndivs);
+            return Restriction.checkSvtIndiv(
+              restriction.restriction.rangeType,
+              restriction.restriction.targetVals,
+              svtIndivs,
+            );
           })) {
             reasons.setUpload(
               '${S.current.quest_restriction}(My ${S.current.grand_servant} ${restriction.restriction.targetVals.map((e) => Transl.traitName(e)).join("/")}):'
@@ -314,7 +318,11 @@ class BattleRecordManager {
       final svtIndivs = svt.getIndividuality(questPhase.logicEventId, svtData.limitCount);
       for (final restriction in questPhase.restrictions) {
         if (restriction.restriction.type == RestrictionType.individuality) {
-          if (!_checkGrandSvtIndiv(restriction.restriction, svtIndivs)) {
+          if (!Restriction.checkSvtIndiv(
+            restriction.restriction.rangeType,
+            restriction.restriction.targetVals,
+            svtIndivs,
+          )) {
             reasons.setUpload(
               '${S.current.quest_restriction}(${restriction.restriction.targetVals.map((e) => Transl.traitName(e)).join("/")}): ${restriction.dialogMessage}',
             );
@@ -349,14 +357,16 @@ class BattleRecordManager {
     }
   }
 
-  static bool _checkGrandSvtIndiv(Restriction restriction, List<int> svtIndivs) {
-    bool hasTrait = restriction.targetVals.toSet().intersection(svtIndivs.toSet()).isNotEmpty;
-    return switch (restriction.rangeType) {
-      RestrictionRangeType.equal => hasTrait,
-      RestrictionRangeType.notEqual => !hasTrait,
-      _ => true,
-    };
-  }
+  // static bool _checkGrandSvtIndiv(Restriction restriction, List<int> svtIndivs) {
+  //   final targetVals = restriction.targetVals.toSet();
+  //   if (targetVals.isEmpty || (targetVals.length == 1 && targetVals.single == 0)) return true;
+  //   bool hasTrait = targetVals.intersection(svtIndivs.toSet()).isNotEmpty;
+  //   return switch (restriction.rangeType) {
+  //     RestrictionRangeType.equal => hasTrait,
+  //     RestrictionRangeType.notEqual => !hasTrait,
+  //     _ => true,
+  //   };
+  // }
 
   void checkExtraIllegalReason(BattleIllegalReasons reasons2, BattleRuntime runtime) {
     final region = runtime.region;

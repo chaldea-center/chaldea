@@ -1,6 +1,7 @@
 // ignore_for_file: non_constant_identifier_names
 
 import '_helper.dart';
+import 'func.dart' show FuncTargetType;
 
 part '../../generated/models/gamedata/vals.g.dart';
 
@@ -417,7 +418,8 @@ class DataVals {
   int? get FieldBuffApplyTarget => _get('FieldBuffApplyTarget'); // enum FieldBuffApplyTargetType
   int? get MaxGainNp => _get('MaxGainNp');
   int? get MaxHastenNpTurn => _get('MaxHastenNpTurn');
-  int? get FunctionTriggerActorTargetFlag => _get('FunctionTriggerActorTargetFlag'); // enum FuncTriggerActorTargetFlag
+  int? get FunctionTriggerActorTargetFlag =>
+      _get('FunctionTriggerActorTargetFlag'); // flag list, enum FuncTriggerActorTargetFlag
   int? get IsTurnProgressWithoutGrantActor => _get('IsTurnProgressWithoutGrantActor');
   int? get IsFuncCheckFieldIndividuality => _get('IsFuncCheckFieldIndividuality');
 
@@ -519,6 +521,9 @@ enum FieldBuffApplyTargetType {
 
   const FieldBuffApplyTargetType(this.value);
   final int value;
+
+  static FieldBuffApplyTargetType fromValue(int value) =>
+      values.firstWhere((e) => e.value == value, orElse: () => none);
 }
 
 enum FuncTriggerActorTargetFlag {
@@ -531,4 +536,23 @@ enum FuncTriggerActorTargetFlag {
 
   const FuncTriggerActorTargetFlag(this.value);
   final int value;
+
+  static List<FuncTriggerActorTargetFlag> fromValue(int? value) {
+    if (value == null || value == 0) return [];
+    return [
+      for (final v in values)
+        if (v.value != 0 && v.value & value != 0) v,
+    ];
+  }
+
+  FuncTargetType toFuncTarget() {
+    return switch (this) {
+      .none => FuncTargetType.noTarget,
+      .self => FuncTargetType.self,
+      .partyOther => .ptOther,
+      .opponents => .enemyAll,
+      .partyOtherAll => .ptOtherFull,
+      .opponentsAll => .enemyFull,
+    };
+  }
 }

@@ -1508,6 +1508,8 @@ const kFuncValPercentType = <FuncType, int>{
   FuncType.gainNpBuffIndividualSum: 100,
   FuncType.gainNpIndividualSum: 100,
   FuncType.gainNpTargetSum: 100,
+  FuncType.gainNpFromOtherUsedNpValue: 10,
+  FuncType.gainNpCriticalstarSum: 100,
   FuncType.gainMultiplyNp: 10,
   FuncType.lossNp: 100,
   FuncType.lossHpPer: 10,

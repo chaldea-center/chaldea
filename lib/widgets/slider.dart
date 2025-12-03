@@ -36,7 +36,7 @@ class SliderWithPrefix extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Color? lableColor = enableInput ? Theme.of(context).colorScheme.primary : null;
+    Color? labelColor = enableInput ? Theme.of(context).colorScheme.primary : null;
     Widget header;
     final valueText = valueFormatter?.call(value) ?? value.toString();
     if (titled) {
@@ -47,7 +47,7 @@ class SliderWithPrefix extends StatelessWidget {
             const TextSpan(text: ': '),
             TextSpan(
               text: valueText,
-              style: TextStyle(color: lableColor),
+              style: TextStyle(color: labelColor),
             ),
           ],
         ),
@@ -62,9 +62,9 @@ class SliderWithPrefix extends StatelessWidget {
             maxLines: 1,
             minFontSize: 10,
             maxFontSize: 16,
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(color: valueText.isEmpty ? lableColor : null),
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(color: valueText.isEmpty ? labelColor : null),
           ),
-          AutoSizeText(valueText, maxLines: 1, minFontSize: 10, maxFontSize: 14, style: TextStyle(color: lableColor)),
+          AutoSizeText(valueText, maxLines: 1, minFontSize: 10, maxFontSize: 14, style: TextStyle(color: labelColor)),
         ],
       );
     }

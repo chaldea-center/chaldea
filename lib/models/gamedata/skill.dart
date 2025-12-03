@@ -271,14 +271,14 @@ class NiceSkill extends SkillOrTd implements BaseSkill {
     if (!includeHidden && hidePassives.contains(id)) return false;
     if (extraPassive.isEmpty && includeZero) return true;
     for (final passive in extraPassive) {
-      if (passive.eventId == 0) {
+      if (passive.getValidEventIds().isEmpty) {
         // 巡霊の祝祭, 3000日纪念
         if (passive.endedAt - passive.startedAt < 90 * kSecsPerDay || passive.endedAt < kNeverClosedTimestamp) {
           continue;
         }
         if (eventId == 0 || includeZero) return true;
       }
-      if (passive.eventId == eventId) return true;
+      if (passive.getValidEventIds().contains(eventId)) return true;
     }
     return false;
   }
@@ -830,7 +830,7 @@ class ExtraPassive {
   int condLv;
   int condLimitCount;
   int condFriendshipRank;
-  int eventId;
+  int eventId; // also check `script.otherValidEventId`
   int flag;
   List<CommonRelease> releaseConditions;
   int startedAt;
@@ -858,11 +858,16 @@ class ExtraPassive {
   factory ExtraPassive.fromJson(Map<String, dynamic> json) => _$ExtraPassiveFromJson(json);
 
   Map<String, dynamic> toJson() => _$ExtraPassiveToJson(this);
+
+  List<int> getValidEventIds() => [
+    if (eventId != 0) eventId,
+    if ((script?.otherValidEventId ?? 0) != 0) script!.otherValidEventId!,
+  ];
 }
 
 @JsonSerializable()
 class SvtPassiveSkillScript with DataScriptBase {
-  List<int>? get condIndividuality => const TraitListConverter().fromJsonNull('condIndividuality');
+  List<int>? get condIndividuality => const TraitListConverter().fromJsonNull(source['condIndividuality']);
   int? get otherValidEventId => toInt('otherValidEventId');
 
   SvtPassiveSkillScript();

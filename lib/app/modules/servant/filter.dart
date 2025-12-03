@@ -175,7 +175,8 @@ class ServantFilterPage extends FilterPage<SvtFilterData> {
           for (final skill in svt.classPassive) ...skill.filteredFunction(includeTrigger: true),
         if (filterData.effectScope.contain(SvtEffectScope.passive))
           for (final skill in svt.extraPassive)
-            if (skill.extraPassive.any((e) => e.eventId == 0)) ...skill.filteredFunction(includeTrigger: true),
+            if (skill.extraPassive.any((e) => e.getValidEventIds().isEmpty))
+              ...skill.filteredFunction(includeTrigger: true),
         if (filterData.effectScope.contain(SvtEffectScope.append))
           for (final skill in svt.appendPassive) ...skill.skill.filteredFunction(includeTrigger: true),
         if (filterData.effectScope.contain(SvtEffectScope.td))

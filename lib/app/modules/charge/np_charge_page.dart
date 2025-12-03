@@ -544,7 +544,7 @@ class _NpChargePageState extends State<NpChargePage> {
     if (!filterData.effectTarget.matchOne(effectTarget)) return null;
     final sval = func.svalsList.getOrNull(oc - 1)?.getOrNull(lv - 1);
     if (sval == null) return null;
-    String _fmt(int v) => v.format(percent: true, base: 100).trimCharRight('%');
+    String _fmt(int v, [int base = 100]) => v.format(percent: true, base: base).trimCharRight('%');
     int? sortValue;
     String? value;
     NpChargeType? type;
@@ -588,7 +588,13 @@ class _NpChargePageState extends State<NpChargePage> {
     } else if (func.funcType == FuncType.gainMultiplyNp) {
       if (sval.Value != null) {
         sortValue = 0;
-        value = '×(1+${sval.Value!.format(base: 10, percent: true)})';
+        value = '×${(sval.Value! + 1000).format(base: 10, percent: true)}';
+        type = NpChargeType.special;
+      }
+    } else if (func.funcType == FuncType.gainNpFromOtherUsedNpValue) {
+      if (sval.Value != null) {
+        sortValue = 0;
+        value = '${_fmt(sortValue, 10)}×Z';
         type = NpChargeType.special;
       }
     } else if (func.funcType == FuncType.gainNpTargetSum) {

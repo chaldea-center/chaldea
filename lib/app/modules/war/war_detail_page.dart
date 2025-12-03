@@ -163,7 +163,8 @@ class _WarDetailPageState extends State<WarDetailPage> with RegionBasedState<Nic
                     },
                     style: kTextButtonDenseStyle,
                     child: Text(
-                      war.event?.lShortName.l ?? Transl.eventNames(war.eventName).l,
+                      war.event?.lShortName.l ??
+                          (war.eventName.isEmpty ? war.eventId.toString() : Transl.eventNames(war.eventName).l),
                       textAlign: TextAlign.center,
                       textScaler: const TextScaler.linear(0.9),
                     ),

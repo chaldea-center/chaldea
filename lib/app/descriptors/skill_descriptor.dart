@@ -208,7 +208,7 @@ class SkillDescriptor extends StatelessWidget with FuncsDescriptor, _SkillDescri
     final style = Theme.of(context).textTheme.bodySmall;
     for (int index = 0; index < skill.extraPassive.length; index++) {
       final cond = skill.extraPassive[index];
-      List<Widget> condDetails = [];
+      List<Widget> condDetails = [Text('num ${cond.num} priority ${cond.priority}', style: style)];
       if (cond.condQuestId != 0) {
         condDetails.add(
           CondTargetValueDescriptor(
@@ -229,8 +229,22 @@ class SkillDescriptor extends StatelessWidget with FuncsDescriptor, _SkillDescri
       if (cond.condFriendshipRank != 0) {
         condDetails.add(Text(' ꔷ ${S.current.bond} Lv.${cond.condFriendshipRank}', style: style));
       }
-      if (cond.eventId != 0) {
-        final event = db.gameData.events[cond.eventId];
+      if (cond.script != null) print(cond.script?.condIndividuality);
+      if (cond.script?.condIndividuality?.isNotEmpty == true) {
+        condDetails.add(
+          Text.rich(
+            TextSpan(
+              text: ' ꔷ ${S.current.trait}: ',
+              children: SharedBuilder.traitSpans(context: context, traits: cond.script?.condIndividuality ?? []),
+            ),
+            style: style,
+          ),
+        );
+      }
+
+      final eventIds = cond.getValidEventIds();
+      for (final eventId in eventIds) {
+        final event = db.gameData.events[eventId];
         condDetails.add(
           Text.rich(
             TextSpan(
@@ -238,15 +252,16 @@ class SkillDescriptor extends StatelessWidget with FuncsDescriptor, _SkillDescri
               children: [
                 SharedBuilder.textButtonSpan(
                   context: context,
-                  text: event?.lName.l ?? cond.eventId.toString(),
-                  onTap: () => router.push(url: Routes.eventI(cond.eventId)),
+                  text: event?.lName.l ?? eventId.toString(),
+                  onTap: () => router.push(url: Routes.eventI(eventId)),
                 ),
               ],
             ),
             style: style,
           ),
         );
-      } else if (cond.isLimited) {
+      }
+      if (eventIds.isEmpty && cond.isLimited) {
         condDetails.add(
           Text(
             ' ꔷ ${[cond.startedAt, cond.endedAt].map((e) => e.sec2date().toDateString()).join(' ~ ')}',
@@ -263,6 +278,7 @@ class SkillDescriptor extends StatelessWidget with FuncsDescriptor, _SkillDescri
           ),
         );
       }
+      condDetails.add(const SizedBox(height: 4));
       children.add(
         Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: condDetails),
       );

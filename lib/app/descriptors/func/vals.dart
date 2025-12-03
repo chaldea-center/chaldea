@@ -186,6 +186,8 @@ class ValDsc extends StatelessWidget {
       _addPercent(parts, vals.Value, 100, post: (s) => '$s×N');
     } else if (func.funcType == FuncType.gainNpCriticalstarSum) {
       _addPercent(parts, vals.Value, 100, post: (s) => '$s×N');
+    } else if (func.funcType == FuncType.gainNpFromOtherUsedNpValue) {
+      _addPercent(parts, vals.Value, 10, post: (s) => '$s×Z');
     } else if (func.funcType == FuncType.gainNpFromTargets) {
       // Absorb Value, charge Value2
       _addPercent(parts, vals.DependFuncVals?.Value2 ?? vals.DependFuncVals?.Value, 100, post: (s) => '$s×N');

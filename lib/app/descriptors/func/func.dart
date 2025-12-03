@@ -903,8 +903,12 @@ class FuncDescriptor extends StatelessWidget {
       if (actMasterGenderType != null) {
         spans.add(TextSpan(text: '[${actMasterGenderType == 2 ? S.current.guda_female : S.current.guda_male}]'));
       }
-      if (lastFuncTarget == func.funcTargetType) return;
-      spans.add(TextSpan(text: '[${Transl.funcTargetType(func.funcTargetType).l}] '));
+      if (lastFuncTarget != func.funcTargetType) {
+        spans.add(TextSpan(text: '[${Transl.funcTargetType(func.funcTargetType).l}] '));
+      }
+      if (vals?.FieldBuffApplyTarget != null) {
+        spans.add(TextSpan(text: '[[=>${FieldBuffApplyTargetType.fromValue(vals?.FieldBuffApplyTarget ?? 0).name}]]'));
+      }
     }
 
     _addFuncTarget();
@@ -1387,6 +1391,17 @@ class FuncDescriptor extends StatelessWidget {
         TextSpan(text: '(Buff)${Transl.special.funcTargetVals}'),
         ...SharedBuilder.traitsListSpans(context: context, traitsList: vals!.ApplyBuffIndividuality!),
         const TextSpan(text: ' '),
+      ]);
+    }
+
+    if (vals?.FunctionTriggerActorTargetFlag != null) {
+      _condSpans.add([
+        TextSpan(text: 'TriggerActorTarget: '),
+        TextSpan(
+          text: FuncTriggerActorTargetFlag.fromValue(
+            vals!.FunctionTriggerActorTargetFlag!,
+          ).map((e) => Transl.funcTargetType(e.toFuncTarget()).l).join(' / '),
+        ),
       ]);
     }
 

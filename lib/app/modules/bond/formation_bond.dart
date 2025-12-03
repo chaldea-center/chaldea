@@ -229,7 +229,8 @@ class _FormationBondTabState extends State<FormationBondTab> {
           if (skill.id == 970663) continue; // 夢火の導き Bond 15
           final eventPassives = skill.extraPassive.where((eventPassive) {
             if (eventPassive.startedAt > quest.closedAt || eventPassive.endedAt < quest.openedAt) return false;
-            if (eventPassive.eventId != 0 && eventPassive.eventId != eventId) return false;
+            final eventIds = eventPassive.getValidEventIds();
+            if (eventIds.isNotEmpty && !eventIds.contains(eventId)) return false;
             return true;
           }).toList();
           if (eventPassives.isEmpty) continue;
@@ -331,7 +332,7 @@ class _FormationBondTabState extends State<FormationBondTab> {
           for (final skill in svt.extraPassive)
             if (skill.functions.any((e) => e.funcType == FuncType.servantFriendshipUp))
               for (final extraPassive in skill.extraPassive)
-                if (extraPassive.eventId == eventId) skill.id,
+                if (extraPassive.getValidEventIds().contains(eventId)) skill.id,
     }.toList()..sort();
     validate();
     final results = calcResults();

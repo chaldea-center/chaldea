@@ -240,6 +240,7 @@ class SkillEffect {
       FuncType.gainNpTargetSum,
       FuncType.gainNpCriticalstarSum,
       FuncType.gainNpIndividualSum,
+      FuncType.gainNpFromOtherUsedNpValue,
     ],
   );
   static SkillEffect regainNp = SkillEffect._buff('regainNp', BuffType.regainNp);

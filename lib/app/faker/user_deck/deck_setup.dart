@@ -632,6 +632,7 @@ class _UserDeckSetupPageState extends State<UserDeckSetupPage> with FakerRuntime
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
+        Text(' ', style: Theme.of(context).textTheme.bodySmall),
         db.getIconImage(equip?.icon, width: 56, aspectRatio: 1),
         Text("Lv.${userEquip?.lv ?? '-'}", textScaler: const TextScaler.linear(0.9)),
         Text(
