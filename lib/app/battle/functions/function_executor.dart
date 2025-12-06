@@ -331,7 +331,18 @@ class FunctionExecutor {
           await MoveState.moveState(battleData, dataVals, activator!, targetedAlly, targetedEnemy);
           break;
         case FuncType.addFieldChangeToField:
-          AddFieldChangeToField.addFieldChangeToField(battleData, function.buff!, dataVals, activator, targets);
+        case FuncType.addStateToField:
+        case FuncType.addStateShortToField:
+          AddFieldChangeToField.addFieldChangeToField(
+            battleData,
+            function.buff!,
+            dataVals,
+            activator,
+            targets,
+            isShortBuff: function.funcType == FuncType.addStateShortToField,
+          );
+          break;
+        case FuncType.subFieldBuff:
           break;
         case FuncType.gainNp:
         case FuncType.lossNp:
@@ -483,11 +494,8 @@ class FunctionExecutor {
           break;
         case FuncType.updateEnemyEntryMaxCountEachTurn:
         case FuncType.swapFieldPosition:
-        case FuncType.addStateToField:
-        case FuncType.addStateShortToField:
         case FuncType.gainNpFromOtherUsedNpValue:
         case FuncType.hastenNpturnFromOtherUsedNpturn:
-        case FuncType.subFieldBuff:
         // ↑↑↑ should be implemented ↑↑↑
         case FuncType.damageValueSafeOnce:
         case FuncType.damageNpStateIndividual:

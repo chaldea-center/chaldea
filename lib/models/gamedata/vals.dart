@@ -524,6 +524,9 @@ enum FieldBuffApplyTargetType {
 
   static FieldBuffApplyTargetType fromValue(int value) =>
       values.firstWhere((e) => e.value == value, orElse: () => none);
+
+  bool get onPlayer => this == player || this == all;
+  bool get onEnemy => this == enemy || this == all;
 }
 
 enum FuncTriggerActorTargetFlag {

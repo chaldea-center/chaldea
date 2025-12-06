@@ -99,40 +99,34 @@ class AddState {
       buffData.shortenMaxCountEachSkill = dataVals.ShortenMaxCountEachSkill?.toList();
 
       // convert Buff checks
-      for (final convertBuff in collectBuffsPerAction(target.battleBuff.validBuffs, BuffAction.buffConvert)) {
-        if (await convertBuff.shouldActivateBuff(
-          battleData,
-          BattleServantData.fetchSelfTraits(BuffAction.buffConvert, convertBuff, target),
-          opponentTraits: BattleServantData.fetchOpponentTraits(BuffAction.buffConvert, convertBuff, activator),
-          buffToCheck: buff,
-        )) {
-          Buff? convertedBuff;
-          final convert = convertBuff.buff.script.convert;
-          if (convert != null) {
-            switch (convert.convertType) {
-              case BuffConvertType.none:
-                break;
-              case BuffConvertType.buff:
-                for (final (index, targetBuff) in convert.targetBuffs.indexed) {
-                  if (targetBuff.id == buff.id) {
-                    convertedBuff = convert.convertBuffs[index];
-                    break;
-                  }
+      final buffConvert = await target.getBuffConvert(battleData, buffData, buff, activator);
+      if (buffConvert != null) {
+        Buff? convertedBuff;
+        final convert = buffConvert.buff.script.convert;
+        if (convert != null) {
+          switch (convert.convertType) {
+            case BuffConvertType.none:
+              break;
+            case BuffConvertType.buff:
+              for (final (index, targetBuff) in convert.targetBuffs.indexed) {
+                if (targetBuff.id == buff.id) {
+                  convertedBuff = convert.convertBuffs[index];
+                  break;
                 }
-                break;
-              case BuffConvertType.individuality:
-                for (final (index, targetIndiv) in convert.targetIndividualities.indexed) {
-                  if (buff.vals.contains(targetIndiv)) {
-                    convertedBuff = convert.convertBuffs[index];
-                    break;
-                  }
+              }
+              break;
+            case BuffConvertType.individuality:
+              for (final (index, targetIndiv) in convert.targetIndividualities.indexed) {
+                if (buff.vals.contains(targetIndiv)) {
+                  convertedBuff = convert.convertBuffs[index];
+                  break;
                 }
-                break;
-            }
-            if (convertedBuff != null) {
-              buffData.buff = convertedBuff;
-              convertBuff.setUsed(target, battleData);
-            }
+              }
+              break;
+          }
+          if (convertedBuff != null) {
+            buffData.buff = convertedBuff;
+            buffConvert.setUsed(target, battleData);
           }
         }
       }

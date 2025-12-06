@@ -9,8 +9,9 @@ class AddFieldChangeToField {
     final Buff buff,
     final DataVals dataVals,
     final BattleServantData? activator,
-    final List<BattleServantData> targets,
-  ) {
+    final List<BattleServantData> targets, {
+    final bool isShortBuff = false,
+  }) {
     final functionRate = dataVals.Rate ?? 1000;
     if (functionRate < battleData.options.threshold) {
       return;
@@ -23,6 +24,10 @@ class AddFieldChangeToField {
       activatorUniqueId: activator?.uniqueId,
       activatorName: activator?.lBattleName,
     );
+
+    if (isShortBuff) {
+      buffData.logicTurn -= 1;
+    }
     battleData.fieldBuffs.add(buffData);
 
     for (final target in targets) {

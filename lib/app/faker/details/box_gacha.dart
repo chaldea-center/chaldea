@@ -93,10 +93,7 @@ class _BoxGachaDrawPageState extends State<BoxGachaDrawPage> with FakerRuntimeSt
             }
           },
         ),
-        actions: [
-          runtime.buildHistoryButton(context),
-          runtime.buildMenuButton(context),
-        ],
+        actions: [runtime.buildHistoryButton(context), runtime.buildMenuButton(context)],
       ),
       body: PopScope(
         canPop: !runtime.runningTask.value,

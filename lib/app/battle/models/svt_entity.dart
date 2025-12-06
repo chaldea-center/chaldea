@@ -2174,6 +2174,25 @@ class BattleServantData {
     return null;
   }
 
+  Future<BuffData?> getBuffConvert(
+    final BattleData battleData,
+    final BuffData buffData,
+    final Buff buff,
+    final BattleServantData? activator,
+  ) async {
+    for (final convertBuff in collectBuffsPerAction(battleBuff.validBuffs, BuffAction.buffConvert)) {
+      if (await convertBuff.shouldActivateBuff(
+        battleData,
+        fetchSelfTraits(BuffAction.buffConvert, convertBuff, this),
+        opponentTraits: fetchOpponentTraits(BuffAction.buffConvert, convertBuff, activator),
+        buffToCheck: buff,
+      )) {
+        return convertBuff;
+      }
+    }
+    return null;
+  }
+
   // Upon reading code, buff actions might always be active first
   // Future<bool> activateBuffOnActionActiveFirst(final BattleData battleData, final BuffAction buffAction) async {
   //   return await activateBuffsV2(battleData, collectBuffsPerAction(battleBuff.validBuffsActiveFirst, buffAction));
@@ -2585,7 +2604,6 @@ class BattleServantData {
     }
 
     battleBuff.turnProgress();
-
     final delayedFunctions = collectBuffsPerType(battleBuff.validBuffs, BuffType.delayFunction);
     await activateBuff(battleData, BuffAction.functionSelfturnend);
     await activateDelayFunction(battleData, delayedFunctions.where((buff) => buff.logicTurn == 0));
