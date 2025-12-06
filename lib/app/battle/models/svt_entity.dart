@@ -82,6 +82,7 @@ class BattleServantData {
   int baseAtk = 0;
   int hp = 0;
   int _maxHp = 0;
+  // TODO: change to function to allow for fieldBuff with MaxHp related buffs
   int get maxHp {
     final addition = getMaxHpBuffValue(percent: false);
     final percentAddition = toModifier(getMaxHpBuffValue(percent: true) * _maxHp).toInt();
@@ -1651,10 +1652,11 @@ class BattleServantData {
         param: param,
       );
 
+      final allBuffs = getAllBuffs(battleData);
       skillInfo = skillInfoList.getOrNull(skillIndex);
       if (skillInfo != null) {
         int shortenSkillAfterUseSkill = 0;
-        for (final buff in collectBuffsPerAction(battleBuff.validBuffs, BuffAction.shortenSkillAfterUseSkill)) {
+        for (final buff in collectBuffsPerAction(allBuffs, BuffAction.shortenSkillAfterUseSkill)) {
           final curSkillUseCount = buff.shortenMaxCountEachSkill?.getOrNull(skillIndex);
           if (curSkillUseCount == null || curSkillUseCount > 0) {
             buff.shortenMaxCountEachSkill?[skillIndex] -= 1;
@@ -1761,10 +1763,16 @@ class BattleServantData {
     }
   }
 
+  List<BuffData> getAllBuffs(final BattleData battleData, {bool activeFirst = false}) {
+    final selfBuffs = activeFirst ? battleBuff.validBuffsActiveFirst : battleBuff.validBuffs;
+    return [...selfBuffs, ...battleData.getFieldBuffs(isPlayer)];
+  }
+
   Future<List<NiceFunction>> updateNpFunctions(final BattleData battleData, final NiceTd niceTd) async {
     final List<NiceFunction> updatedFunctions = niceTd.functions.toList();
 
-    for (final buff in collectBuffsPerAction(battleBuff.validBuffs, BuffAction.functionNpattack)) {
+    final allBuffs = getAllBuffs(battleData);
+    for (final buff in collectBuffsPerAction(allBuffs, BuffAction.functionNpattack)) {
       if (buff.param < 0 || buff.param >= updatedFunctions.length) {
         // replace index not valid for current function list
         continue;
@@ -1847,7 +1855,8 @@ class BattleServantData {
       return null;
     }
 
-    for (final buff in collectBuffsPerAction(battleBuff.validBuffsActiveFirst, BuffAction.multiattack)) {
+    final allBuffs = getAllBuffs(battleData, activeFirst: true);
+    for (final buff in collectBuffsPerAction(allBuffs, BuffAction.multiattack)) {
       if (await buff.shouldActivateBuff(
         battleData,
         getTraits(addTraits: card.traits),
@@ -1883,8 +1892,8 @@ class BattleServantData {
     int totalVal = 0;
     int? maxRate;
 
-    final List<BuffData> allBuffs = collectBuffsPerAction(battleBuff.validBuffs, buffAction);
-    for (final buff in allBuffs) {
+    final allBuffs = getAllBuffs(battleData);
+    for (final buff in collectBuffsPerAction(allBuffs, buffAction)) {
       final List<int> selfTraits = fetchSelfTraits(
         buffAction,
         buff,
@@ -1959,7 +1968,8 @@ class BattleServantData {
     int totalVal = 0;
     int? maxRate;
 
-    for (final buff in collectBuffsPerAction(battleBuff.validBuffs, buffAction)) {
+    final allBuffs = getAllBuffs(battleData);
+    for (final buff in collectBuffsPerAction(allBuffs, buffAction)) {
       if (await buff.shouldActivateBuff(battleData, selfTraits, opponentTraits: opponentTraits)) {
         buff.setUsed(this, battleData);
 
@@ -2004,7 +2014,8 @@ class BattleServantData {
     int totalVal = 0;
     int? maxRate;
 
-    for (final buff in collectBuffsPerAction(battleBuff.validBuffs, BuffAction.buffRate)) {
+    final allBuffs = getAllBuffs(battleData);
+    for (final buff in collectBuffsPerAction(allBuffs, BuffAction.buffRate)) {
       if (await buff.shouldActivateBuff(battleData, buffTraits)) {
         buff.setUsed(this, battleData);
 
@@ -2032,15 +2043,16 @@ class BattleServantData {
     int nonPreventableValue = 0;
     int preventableValue = 0;
     int? maxRate;
-    final List<BuffData> preventDeaths = collectBuffsPerAction(battleBuff.validBuffs, BuffAction.preventDeathByDamage);
+    final allBuffs = getAllBuffs(battleData);
+    final List<BuffData> preventDeaths = collectBuffsPerAction(allBuffs, BuffAction.preventDeathByDamage);
     final List<BuffData> activatedPreventDeaths = [];
 
     final List<BuffData> turnEndHpReduceToRegainBuffs = collectBuffsPerAction(
-      battleBuff.validBuffs,
+      allBuffs,
       BuffAction.turnendHpReduceToRegain,
     );
 
-    for (final turnEndHpReduce in collectBuffsPerAction(battleBuff.validBuffs, BuffAction.turnendHpReduce)) {
+    for (final turnEndHpReduce in collectBuffsPerAction(allBuffs, BuffAction.turnendHpReduce)) {
       // making assumption that turnendHpReduce should always apply, not checking indivs
 
       // check turnendHpReduceToRegain
@@ -2110,6 +2122,7 @@ class BattleServantData {
   // For doNot type buffActions. Since during rendering can't wait for user input,
   // so assuming these buffs do not check for probability.
   // E.g. a stun buff having 60% chance doesn't make sense
+  // TODO: add battleData
   bool hasBuffNoProbabilityCheck(
     final BuffAction buffAction, {
     final BattleServantData? opponent,
@@ -2153,7 +2166,8 @@ class BattleServantData {
     final List<int>? addTraits,
     final bool useBuff = true,
   }) async {
-    for (final buff in collectBuffsPerAction(battleBuff.validBuffs, buffAction)) {
+    final allBuffs = getAllBuffs(battleData);
+    for (final buff in collectBuffsPerAction(allBuffs, buffAction)) {
       final List<int> selfTraits = fetchSelfTraits(buffAction, buff, this, cardData: card, addTraits: addTraits);
       final List<int>? opponentTraits = fetchOpponentTraits(
         buffAction,
@@ -2180,7 +2194,8 @@ class BattleServantData {
     final Buff buff,
     final BattleServantData? activator,
   ) async {
-    for (final convertBuff in collectBuffsPerAction(battleBuff.validBuffs, BuffAction.buffConvert)) {
+    final allBuffs = getAllBuffs(battleData);
+    for (final convertBuff in collectBuffsPerAction(allBuffs, BuffAction.buffConvert)) {
       if (await convertBuff.shouldActivateBuff(
         battleData,
         fetchSelfTraits(BuffAction.buffConvert, convertBuff, this),
@@ -2192,11 +2207,6 @@ class BattleServantData {
     }
     return null;
   }
-
-  // Upon reading code, buff actions might always be active first
-  // Future<bool> activateBuffOnActionActiveFirst(final BattleData battleData, final BuffAction buffAction) async {
-  //   return await activateBuffsV2(battleData, collectBuffsPerAction(battleBuff.validBuffsActiveFirst, buffAction));
-  // }
 
   Future<bool> activateBuff(
     final BattleData battleData,
@@ -2219,7 +2229,8 @@ class BattleServantData {
   }
 
   Future<int> applyChangeBuffUseRate(BattleData battleData, BuffData buffToApply, List<int>? opponentTraits) async {
-    final overwriteBuffRates = collectBuffsPerAction(battleBuff.validBuffs, BuffAction.overwriteBuffUseRate);
+    final allBuffs = getAllBuffs(battleData);
+    final overwriteBuffRates = collectBuffsPerAction(allBuffs, BuffAction.overwriteBuffUseRate);
     int baseRate = buffToApply.vals.UseRate!;
     for (final overwriteBuffRate in overwriteBuffRates) {
       final shouldApply = await overwriteBuffRate.shouldActivateBuff(
@@ -2253,8 +2264,9 @@ class BattleServantData {
     final List<NiceFunction>? receivedFunctionsList,
   }) async {
     bool activated = false;
+    final allBuffs = getAllBuffs(battleData);
     for (final buffAction in buffActions) {
-      for (final buff in collectBuffsPerAction(battleBuff.validBuffsActiveFirst, buffAction)) {
+      for (final buff in collectBuffsPerAction(allBuffs, buffAction)) {
         final List<int> selfTraits = fetchSelfTraits(buffAction, buff, this, cardData: card);
         List<int>? opponentTraits = fetchOpponentTraits(buffAction, buff, opponent, cardData: card);
 
@@ -2367,8 +2379,8 @@ class BattleServantData {
     final bool isDef,
   ) async {
     int relation = curRelation;
-
-    final List<BuffData> buffs = collectBuffsPerAction(battleBuff.validBuffs, BuffAction.overwriteClassRelation);
+    final allBuffs = getAllBuffs(battleData);
+    final List<BuffData> buffs = collectBuffsPerAction(allBuffs, BuffAction.overwriteClassRelation);
     for (final buff in buffs.reversed) {
       // did not find corresponding buff
       final shouldActivate = await buff.shouldActivateBuff(
@@ -2604,7 +2616,8 @@ class BattleServantData {
     }
 
     battleBuff.turnProgress();
-    final delayedFunctions = collectBuffsPerType(battleBuff.validBuffs, BuffType.delayFunction);
+    final allBuffs = getAllBuffs(battleData);
+    final delayedFunctions = collectBuffsPerType(allBuffs, BuffType.delayFunction);
     await activateBuff(battleData, BuffAction.functionSelfturnend);
     await activateDelayFunction(battleData, delayedFunctions.where((buff) => buff.logicTurn == 0));
 
@@ -2619,7 +2632,8 @@ class BattleServantData {
 
     battleBuff.turnProgress();
 
-    final delayedFunctions = collectBuffsPerType(battleBuff.validBuffs, BuffType.delayFunction);
+    final allBuffs = getAllBuffs(battleData);
+    final delayedFunctions = collectBuffsPerType(allBuffs, BuffType.delayFunction);
     await activateDelayFunction(battleData, delayedFunctions.where((buff) => buff.logicTurn == 0));
     await activateBuff(battleData, BuffAction.functionReflection);
     resetAccumulationDamage();
@@ -2630,7 +2644,8 @@ class BattleServantData {
   Future<bool> activateGuts(final BattleData battleData) async {
     BuffData? gutsToApply;
     final BuffAction gutsActionToCheck = hasNextShift(battleData) ? BuffAction.shiftGuts : BuffAction.guts;
-    for (final buff in collectBuffsPerAction(battleBuff.validBuffs, gutsActionToCheck)) {
+    final allBuffs = getAllBuffs(battleData);
+    for (final buff in collectBuffsPerAction(allBuffs, gutsActionToCheck)) {
       // no code found on whether ckSelf actually checks anything
       final oppoTraits = fetchOpponentTraits(
         BuffAction.guts,

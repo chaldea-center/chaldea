@@ -684,6 +684,13 @@ class BattleData {
     criticalStars = criticalStars.clamp(0, kValidTotalStarMax).toDouble();
   }
 
+  List<BuffData> getFieldBuffs(bool isPlayer) {
+    return fieldBuffs.where((buff) {
+      final applyTarget = FieldBuffApplyTargetType.fromValue(buff.vals.FieldBuffApplyTarget ?? 0);
+      return (isPlayer && applyTarget.onPlayer) || (!isPlayer && applyTarget.onEnemy);
+    }).toList();
+  }
+
   List<int> getQuestIndividuality() {
     final List<int> allTraits = [];
     allTraits.addAll(niceQuest!.questIndividuality);
