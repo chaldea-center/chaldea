@@ -979,7 +979,10 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
     String? questInfoText;
     if (userQuest != null) {
       questInfoText = 'phase ${userQuest.questPhase}  clear ${userQuest.clearNum}  challenge ${userQuest.challengeNum}';
-      final lotteries = quest?.logicEvent?.lotteries ?? [];
+      List<EventLottery> lotteries = quest?.logicEvent?.lotteries ?? [];
+      if (lotteries.isEmpty && quest?.warId == 8407) {
+        lotteries = (runtime.gameData.timerData.events[80586] ?? db.gameData.events[80586])?.lotteries ?? [];
+      }
       for (final lottery in lotteries) {
         final userBoxGacha = mstData.userBoxGacha[lottery.id];
         if (lottery.limited || userBoxGacha == null) continue;

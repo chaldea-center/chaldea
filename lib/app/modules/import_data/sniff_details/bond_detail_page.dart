@@ -610,19 +610,25 @@ class __BondEquipTimeGraphState extends State<_BondEquipTimeGraph> {
   final _chartData = _ChartData();
   Widget buildBarChart() {
     final (startX, endX) = _chartData.getXs();
+    int maxCount = Maths.max([for (final key in range(startX, endX + 1)) _chartData.groupData[key]?.length ?? 0]);
+    int maxY = maxCount < 5 ? 5 : (maxCount / 5 + 0.001).ceil() * 5;
+
     List<BarChartGroupData> shownBarGroups = [
       for (final key in range(startX, endX + 1))
         BarChartGroupData(
           x: key,
           barRods: [
-            BarChartRodData(toY: (_chartData.groupData[key]?.length ?? 0).toDouble(), gradient: _barsGradient(key)),
+            BarChartRodData(
+              toY: (_chartData.groupData[key]?.length ?? 0).toDouble(),
+              gradient: _barsGradient(key),
+              backDrawRodData: _chartData.type == .groupByMonth && _chartData.getGroupDate(key).year.isEven
+                  ? BackgroundBarChartRodData(show: true, toY: maxY.toDouble(), color: Colors.grey.withAlpha(20))
+                  : null,
+            ),
           ],
           showingTooltipIndicators: [if (endX - startX < 13) 0],
         ),
     ];
-
-    int maxCount = Maths.max([for (final key in range(startX, endX + 1)) _chartData.groupData[key]?.length ?? 0]);
-    int maxY = maxCount < 5 ? 5 : (maxCount / 5 + 0.001).ceil() * 5;
 
     final yTitles = AxisTitles(
       sideTitles: SideTitles(
@@ -754,9 +760,9 @@ class _ChartData {
     final date = getGroupDate(value);
     switch (type) {
       case _ChartDisplayType.groupByYear:
-        return date.year.toString();
+        return date.year.toString().substring(2);
       case _ChartDisplayType.groupByMonth:
-        if (date.month == 1) return date.year.toString();
+        if (date.month == 1) return date.year.toString().substring(2);
         return '';
       case _ChartDisplayType.oneYear:
         if (date.month == 1) {

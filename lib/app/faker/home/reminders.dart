@@ -335,6 +335,10 @@ class FakerReminders extends StatelessWidget {
           }
           return true;
         }).toList();
+        if (event.id == 71619) {
+          uncleared.removeWhere((e) => const [94002702, 94002701, 94005501, 94008401, 913300101, 93040451].contains(e));
+        }
+
         // final uncleared = questIds.take(10).toList();
         if (uncleared.isEmpty) continue;
         _shownQuestIds.addAll(uncleared);

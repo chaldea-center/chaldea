@@ -195,7 +195,11 @@ class FakerRuntimeEvent extends FakerRuntimeBase {
   }
 
   // box gacha
-  Future<void> boxGachaDraw({required EventLottery lottery, required int num, required Ref<int> loopCount}) async {
+  Future<void> boxGachaDraw({
+    required EventLottery lottery,
+    required int drawNumOnce,
+    required Ref<int> loopCount,
+  }) async {
     final boxGachaId = lottery.id;
     while (loopCount.value > 0) {
       final userBoxGacha = mstData.userBoxGacha[boxGachaId];
@@ -207,22 +211,22 @@ class FakerRuntimeEvent extends FakerRuntimeBase {
         continue;
       }
       // if (userBoxGacha.isReset) throw SilentException('isReset=true, not tested');
-      num = min(num, maxNum - userBoxGacha.drawNum);
-      if (userBoxGacha.resetNum <= 10 && num > 10) {
-        throw SilentException('Cannot draw $num times in first 10 lotteries');
+      int drawNum = min(drawNumOnce, maxNum - userBoxGacha.drawNum);
+      if (userBoxGacha.resetNum <= 10 && drawNum > 10) {
+        throw SilentException('Cannot draw $drawNum times in first 10 lotteries');
       }
       final ownItemCount = mstData.userItem[lottery.cost.itemId]?.num ?? 0;
       if (ownItemCount < lottery.cost.amount) {
         throw SilentException('Item noy enough: $ownItemCount');
       }
-      num = min(num, ownItemCount ~/ lottery.cost.amount);
-      if (num <= 0 || num > 100) {
-        throw SilentException('Invalid draw num: $num');
+      drawNum = min(drawNum, ownItemCount ~/ lottery.cost.amount);
+      if (drawNum <= 0 || drawNum > 100) {
+        throw SilentException('Invalid draw num: $drawNum');
       }
       if (mstData.userPresentBox.length >= (runtime.gameData.timerData.constants.maxPresentBoxNum - 10)) {
         throw SilentException('Present Box Full');
       }
-      await agent.boxGachaDraw(gachaId: boxGachaId, num: num);
+      await agent.boxGachaDraw(gachaId: boxGachaId, num: drawNum);
       loopCount.value -= 1;
       runtime.update();
     }

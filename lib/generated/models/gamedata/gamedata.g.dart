@@ -180,6 +180,7 @@ GameTop _$GameTopFromJson(Map json) => GameTop(
   serverTimestamp: (json['serverTimestamp'] as num).toInt(),
   dataVer: (json['dataVer'] as num).toInt(),
   dateVer: (json['dateVer'] as num?)?.toInt() ?? 0,
+  assetbundle: json['assetbundle'] == null ? null : RegionAssetBundle.fromJson(json['assetbundle'] as Map),
   assetbundleFolder: json['assetbundleFolder'] as String? ?? "",
   unityVer: json['unityVer'] as String?,
 );
@@ -195,6 +196,7 @@ Map<String, dynamic> _$GameTopToJson(GameTop instance) => <String, dynamic>{
   'serverTimestamp': instance.serverTimestamp,
   'dataVer': instance.dataVer,
   'dateVer': instance.dateVer,
+  'assetbundle': instance.assetbundle?.toJson(),
   'assetbundleFolder': instance.assetbundleFolder,
   'unityVer': instance.unityVer,
 };

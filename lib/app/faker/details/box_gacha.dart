@@ -6,8 +6,6 @@ import 'package:chaldea/models/gamedata/mst_data.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
-import '../combine/svt_combine.dart';
-import '../present_box/present_box.dart';
 import '../runtime.dart';
 
 class BoxGachaDrawPage extends StatefulWidget {
@@ -97,24 +95,7 @@ class _BoxGachaDrawPageState extends State<BoxGachaDrawPage> with FakerRuntimeSt
         ),
         actions: [
           runtime.buildHistoryButton(context),
-          PopupMenuButton(
-            itemBuilder: (context) => [
-              PopupMenuItem(
-                // enabled: !runtime.runningTask.value,
-                onTap: () {
-                  router.pushPage(UserPresentBoxManagePage(runtime: runtime));
-                },
-                child: Text(S.current.present_box),
-              ),
-              PopupMenuItem(
-                // enabled: !runtime.runningTask.value,
-                onTap: () {
-                  router.pushPage(SvtCombinePage(runtime: runtime));
-                },
-                child: Text('从者强化'),
-              ),
-            ],
-          ),
+          runtime.buildMenuButton(context),
         ],
       ),
       body: PopScope(
@@ -289,7 +270,7 @@ class _BoxGachaDrawPageState extends State<BoxGachaDrawPage> with FakerRuntimeSt
           onPressed: () {
             if (runtime.runningTask.value) return;
             runtime.runTask(() async {
-              await runtime.event.boxGachaDraw(lottery: lottery!, num: drawNumOnce, loopCount: Ref(1));
+              await runtime.event.boxGachaDraw(lottery: lottery!, drawNumOnce: drawNumOnce, loopCount: Ref(1));
               if (mounted) setState(() {});
             });
           },
@@ -304,7 +285,7 @@ class _BoxGachaDrawPageState extends State<BoxGachaDrawPage> with FakerRuntimeSt
                 runtime.runTask(
                   () => runtime.withWakeLock(
                     'loop-box-gacha-$hashCode',
-                    () => runtime.event.boxGachaDraw(lottery: lottery!, num: drawNumOnce, loopCount: loopCount),
+                    () => runtime.event.boxGachaDraw(lottery: lottery!, drawNumOnce: drawNumOnce, loopCount: loopCount),
                   ),
                 );
               },

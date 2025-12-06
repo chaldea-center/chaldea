@@ -533,7 +533,7 @@ class GameTop extends GameAppVerCode {
   int serverTimestamp;
   int dataVer; // int32
   int dateVer; // int64
-  // String assetbundle;
+  RegionAssetBundle? assetbundle;
   String assetbundleFolder;
   String? unityVer;
 
@@ -548,7 +548,7 @@ class GameTop extends GameAppVerCode {
     required this.serverTimestamp,
     required this.dataVer,
     this.dateVer = 0, // CN has no dateVer
-    // required this.assetbundle,
+    this.assetbundle,
     this.assetbundleFolder = "",
     this.unityVer,
   });
