@@ -82,7 +82,6 @@ class BattleServantData {
   int baseAtk = 0;
   int hp = 0;
   int _maxHp = 0;
-  // TODO: change to function to allow for fieldBuff with MaxHp related buffs
   int get maxHp {
     final addition = getMaxHpBuffValue(percent: false);
     final percentAddition = toModifier(getMaxHpBuffValue(percent: true) * _maxHp).toInt();
@@ -2122,7 +2121,6 @@ class BattleServantData {
   // For doNot type buffActions. Since during rendering can't wait for user input,
   // so assuming these buffs do not check for probability.
   // E.g. a stun buff having 60% chance doesn't make sense
-  // TODO: add battleData
   bool hasBuffNoProbabilityCheck(
     final BuffAction buffAction, {
     final BattleServantData? opponent,

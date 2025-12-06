@@ -1016,6 +1016,13 @@ class FunctionExecutor {
         ),
       );
     }
+
+    final includeField = dataVals.IsFuncCheckFieldIndividuality == 1;
+    if (includeField) {
+      for (final buff in battleData.fieldBuffs) {
+        selfTraits.addAll(buff.getTraits());
+      }
+    }
     int countAbove = 0, countBelow = 0;
     if (dataVals.FuncCheckTargetIndividualityCountEqual != null) {
       countAbove = countBelow = dataVals.FuncCheckTargetIndividualityCountEqual!;
@@ -1056,16 +1063,27 @@ class FunctionExecutor {
     final activeOnly = dataVals.IncludePassiveIndividuality != 1;
     final includeIgnoreIndividuality = dataVals.IncludeIgnoreIndividuality == 1;
     final excludeUnsubstate = dataVals.ExcludeUnSubStateIndiv == 1;
+    final includeField = dataVals.IsFuncCheckFieldIndividuality == 1;
+
+    final List<int> addBuffs = [];
+    if (includeField) {
+      for (final fieldBuff in battleData.fieldBuffs) {
+        addBuffs.addAll(fieldBuff.getTraits());
+      }
+    }
 
     // update base on traits
     if (overwriteTvals.isNotEmpty) {
       targets.retainWhere((svt) {
         final List<int> selfTraits = svt.getTraits(
-          addTraits: svt.getBuffTraits(
-            activeOnly: activeOnly,
-            includeIgnoreIndiv: includeIgnoreIndividuality,
-            ignoreIndivUnreleaseable: excludeUnsubstate,
-          ),
+          addTraits: [
+            ...addBuffs,
+            ...svt.getBuffTraits(
+              activeOnly: activeOnly,
+              includeIgnoreIndiv: includeIgnoreIndividuality,
+              ignoreIndivUnreleaseable: excludeUnsubstate,
+            ),
+          ],
         );
         for (final List<int> requiredTraits in overwriteTvals) {
           // Currently assuming the first array is OR. Need more samples on this
@@ -1085,11 +1103,14 @@ class FunctionExecutor {
       targets.retainWhere(
         (svt) => checkSignedIndividualities2(
           myTraits: svt.getTraits(
-            addTraits: svt.getBuffTraits(
-              activeOnly: activeOnly,
-              includeIgnoreIndiv: includeIgnoreIndividuality,
-              ignoreIndivUnreleaseable: excludeUnsubstate,
-            ),
+            addTraits: [
+              ...addBuffs,
+              ...svt.getBuffTraits(
+                activeOnly: activeOnly,
+                includeIgnoreIndiv: includeIgnoreIndividuality,
+                ignoreIndivUnreleaseable: excludeUnsubstate,
+              ),
+            ],
           ),
           requiredTraits: function.functvals,
         ),
