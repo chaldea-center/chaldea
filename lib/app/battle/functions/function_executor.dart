@@ -84,6 +84,7 @@ class FunctionExecutor {
     final bool defaultToPlayer = true,
     final BattleSkillParams? param,
     final bool isTransform = false,
+    final int? consumedNp,
   }) async {
     await battleData.withFunctions(() async {
       Map<int, List<NiceFunction>> actSets = {};
@@ -148,6 +149,7 @@ class FunctionExecutor {
           selectedActionIndex: selectedActionIndex,
           effectiveness: effectiveness,
           defaultToPlayer: defaultToPlayer,
+          consumedNp: consumedNp,
         );
         if (!updatedResult) {
           battleData.functionResults.add(null);
@@ -187,6 +189,7 @@ class FunctionExecutor {
     final int? selectedActionIndex,
     final int? effectiveness,
     final bool defaultToPlayer = true,
+    final int? consumedNp,
   }) async {
     if (!validateFunctionTargetTeam(function, activator?.isPlayer ?? defaultToPlayer)) {
       return false;
@@ -492,10 +495,14 @@ class FunctionExecutor {
         case FuncType.addBattlePoint:
           AddBattlePoint.addBattlePoint(battleData, dataVals, targets, overchargeState, ignoreBattlePoints);
           break;
+        case FuncType.gainNpFromOtherUsedNpValue:
+          GainNp.gainNpFromConsumed(battleData, dataVals, consumedNp ?? 0, targets);
+          break;
+        case FuncType.hastenNpturnFromOtherUsedNpturn:
+          await HastenNpturn.hastenNpturnFromConsumed(battleData, dataVals, consumedNp ?? 0, activator, targets);
+          break;
         case FuncType.updateEnemyEntryMaxCountEachTurn:
         case FuncType.swapFieldPosition:
-        case FuncType.gainNpFromOtherUsedNpValue:
-        case FuncType.hastenNpturnFromOtherUsedNpturn:
         // ↑↑↑ should be implemented ↑↑↑
         case FuncType.damageValueSafeOnce:
         case FuncType.damageNpStateIndividual:

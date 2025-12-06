@@ -1729,6 +1729,7 @@ class BattleServantData {
 
       await activateBuff(battleData, BuffAction.functionTreasureDeviceBefore, overchargeState: overchargeLvl - 1);
 
+      final consumedNp = isPlayer ? np : npLineCount;
       np = 0;
       npLineCount = 0;
       usedNpThisTurn = true;
@@ -1753,6 +1754,12 @@ class BattleServantData {
       );
 
       for (final svt in battleData.nonnullActors) {
+        await svt.activateBuff(
+          battleData,
+          BuffAction.functionTreasureDevicePostAfter,
+          opponent: this,
+          consumedNp: consumedNp,
+        );
         await svt.activateBuff(
           battleData,
           BuffAction.functionedFunction,
@@ -2214,6 +2221,7 @@ class BattleServantData {
     final int? overchargeState,
     final BattleSkillInfoData? skillInfo,
     final List<NiceFunction>? receivedFunctionsList,
+    final int? consumedNp,
   }) async {
     return await activateBuffs(
       battleData,
@@ -2223,6 +2231,7 @@ class BattleServantData {
       overchargeState: overchargeState,
       skillInfo: skillInfo,
       receivedFunctionsList: receivedFunctionsList,
+      consumedNp: consumedNp,
     );
   }
 
@@ -2260,6 +2269,7 @@ class BattleServantData {
     final int? overchargeState,
     final BattleSkillInfoData? skillInfo,
     final List<NiceFunction>? receivedFunctionsList,
+    final int? consumedNp,
   }) async {
     bool activated = false;
     final allBuffs = getAllBuffs(battleData);
@@ -2268,6 +2278,15 @@ class BattleServantData {
         final List<int> selfTraits = fetchSelfTraits(buffAction, buff, this, cardData: card);
         List<int>? opponentTraits = fetchOpponentTraits(buffAction, buff, opponent, cardData: card);
 
+        int actorTargetFlag = 0;
+        if (opponent == this) {
+          actorTargetFlag += FuncTriggerActorTargetFlag.self.value;
+        } else if (opponent != null) {
+          actorTargetFlag += isPlayer != opponent.isPlayer
+              ? FuncTriggerActorTargetFlag.opponentsAll.value + FuncTriggerActorTargetFlag.opponents.value
+              : FuncTriggerActorTargetFlag.partyOtherAll.value + FuncTriggerActorTargetFlag.partyOther.value;
+        }
+
         final shouldActivate = await buff.shouldActivateBuff(
           battleData,
           selfTraits,
@@ -2275,6 +2294,7 @@ class BattleServantData {
           skillInfoType: skillInfo?.type,
           receivedFunctionsList: receivedFunctionsList,
           triggeredSkillIds: triggeredSkillIds,
+          actorTargetFlag: actorTargetFlag,
         );
 
         if (!shouldActivate) continue;
@@ -2323,6 +2343,7 @@ class BattleServantData {
           targetedEnemy: opponent,
           skillType: skill.type,
           skillInfoType: null,
+          consumedNp: consumedNp,
         );
         buff.setUsed(this, battleData);
         activated = true;

@@ -334,6 +334,7 @@ class BuffData {
     List<NiceFunction>? receivedFunctionsList,
     List<int>? triggeredSkillIds,
     Buff? buffToCheck,
+    int? actorTargetFlag,
   }) {
     if (!checkAct()) return false;
     if (!checkBuffDataVals(
@@ -341,6 +342,7 @@ class BuffData {
       selfTraits: selfTraits,
       receivedFunctionsList: receivedFunctionsList,
       triggeredSkillIds: triggeredSkillIds,
+      actorTargetFlag: actorTargetFlag,
     )) {
       return false;
     }
@@ -411,6 +413,7 @@ class BuffData {
     List<NiceFunction>? receivedFunctionsList,
     List<int>? triggeredSkillIds,
     Buff? buffToCheck,
+    int? actorTargetFlag,
   }) async {
     return shouldActivateBuffNoProbabilityCheck(
           selfTraits,
@@ -420,6 +423,7 @@ class BuffData {
           receivedFunctionsList: receivedFunctionsList,
           triggeredSkillIds: triggeredSkillIds,
           buffToCheck: buffToCheck,
+          actorTargetFlag: actorTargetFlag,
         ) &&
         await probabilityCheck(battleData, opponentTraits);
   }
@@ -446,6 +450,7 @@ class BuffData {
     List<int>? selfTraits,
     List<NiceFunction>? receivedFunctionsList,
     final List<int>? triggeredSkillIds,
+    final int? actorTargetFlag,
   }) {
     if (!(checkHpReduceToRegainIndiv(selfTraits) &&
         checkTargetFunctionIndividuality(receivedFunctionsList) &&
@@ -463,6 +468,18 @@ class BuffData {
 
     if (vals.ExecOnce == 1 && triggeredSkillIds != null && param != 0 && triggeredSkillIds.contains(param)) {
       return false;
+    }
+
+    final functionTriggerActorTargetFlag = vals.FunctionTriggerActorTargetFlag;
+    if (functionTriggerActorTargetFlag != null) {
+      final requiredFlag = FuncTriggerActorTargetFlag.fromValue(functionTriggerActorTargetFlag).firstOrNull;
+      if (actorTargetFlag == null || requiredFlag == null) {
+        return false;
+      }
+      final flagTypes = FuncTriggerActorTargetFlag.fromValue(actorTargetFlag);
+      if (!flagTypes.contains(requiredFlag)) {
+        return false;
+      }
     }
     return true;
   }

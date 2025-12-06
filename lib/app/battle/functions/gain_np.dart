@@ -43,6 +43,30 @@ class GainNp {
     }
   }
 
+  static void gainNpFromConsumed(
+    final BattleData battleData,
+    final DataVals dataVals,
+    final int consumedNp,
+    final Iterable<BattleServantData> targets, {
+    final bool isNegative = false,
+  }) {
+    final functionRate = dataVals.Rate ?? 1000;
+    if (functionRate < battleData.options.threshold) {
+      return;
+    }
+
+    if (consumedNp <= 0) {
+      return;
+    }
+
+    for (final target in targets) {
+      final changePercent = toModifier(isNegative ? -dataVals.Value! : dataVals.Value!);
+      final change = (consumedNp * changePercent).toInt();
+      target.changeNP(change);
+      battleData.setFuncResult(target.uniqueId, true);
+    }
+  }
+
   static void gainNpPerIndividual(
     final BattleData battleData,
     final DataVals dataVals,
