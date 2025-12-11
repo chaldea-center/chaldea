@@ -2287,7 +2287,7 @@ class BattleServantData {
     final int? consumedNp,
   }) async {
     bool activated = false;
-    final allBuffs = getAllBuffs(battleData);
+    final allBuffs = getAllBuffs(battleData, activeFirst: true);
     for (final buffAction in buffActions) {
       for (final buff in collectBuffsPerAction(allBuffs, buffAction)) {
         final List<int> selfTraits = fetchSelfTraits(buffAction, buff, this, cardData: card);
