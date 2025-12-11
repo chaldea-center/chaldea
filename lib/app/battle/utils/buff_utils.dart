@@ -6,12 +6,13 @@ import 'package:chaldea/models/gamedata/gamedata.dart';
 import 'package:chaldea/models/gamedata/individuality.dart';
 import '../models/svt_entity.dart';
 
-int capBuffValue(final BuffActionInfo buffAction, final int totalVal, final int? maxRate) {
+int capBuffValue(final BuffActionInfo buffAction, final int totalVal, final int? maxRate, [int? minRate]) {
   int adjustValue = buffAction.baseParam + totalVal;
 
   if (buffAction.limit == BuffLimit.normal || buffAction.limit == BuffLimit.lower) {
-    if (adjustValue < 0) {
-      adjustValue = 0;
+    final lowerLimit = minRate ?? 0;
+    if (adjustValue < lowerLimit) {
+      adjustValue = lowerLimit;
     }
   }
 

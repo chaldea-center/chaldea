@@ -1831,6 +1831,7 @@ class BattleServantData {
 
       int totalVal = 0;
       int? maxRate;
+      int? minRate;
 
       for (final buff in collectBuffsPerAction(battleBuff.validBuffs, buffAction)) {
         if (buff.shouldActivateBuffNoProbabilityCheck(getTraits())) {
@@ -1842,9 +1843,11 @@ class BattleServantData {
             totalVal -= value;
           }
           maxRate = maxRate == null ? buff.buff.maxRate : max(maxRate, buff.buff.maxRate);
+          final extendLowerLimit = buff.buff.script.extendLowerLimit ?? 0;
+          minRate = minRate == null ? -extendLowerLimit : min(minRate, -extendLowerLimit);
         }
       }
-      result += capBuffValue(actionDetails, totalVal, maxRate);
+      result += capBuffValue(actionDetails, totalVal, maxRate, minRate);
     }
 
     return result;
@@ -1897,6 +1900,7 @@ class BattleServantData {
 
     int totalVal = 0;
     int? maxRate;
+    int? minRate;
 
     final allBuffs = getAllBuffs(battleData);
     for (final buff in collectBuffsPerAction(allBuffs, buffAction)) {
@@ -1954,9 +1958,11 @@ class BattleServantData {
           totalVal -= value;
         }
         maxRate = maxRate == null ? buff.buff.maxRate : max(maxRate, buff.buff.maxRate);
+        final extendLowerLimit = buff.buff.script.extendLowerLimit ?? 0;
+        minRate = minRate == null ? -extendLowerLimit : min(minRate, -extendLowerLimit);
       }
     }
-    return capBuffValue(actionDetails, totalVal, maxRate);
+    return capBuffValue(actionDetails, totalVal, maxRate, minRate);
   }
 
   // for actions that doesn't follow standard procedure & plusActions
@@ -1973,6 +1979,7 @@ class BattleServantData {
 
     int totalVal = 0;
     int? maxRate;
+    int? minRate;
 
     final allBuffs = getAllBuffs(battleData);
     for (final buff in collectBuffsPerAction(allBuffs, buffAction)) {
@@ -2000,9 +2007,11 @@ class BattleServantData {
           totalVal -= value;
         }
         maxRate = maxRate == null ? buff.buff.maxRate : max(maxRate, buff.buff.maxRate);
+        final extendLowerLimit = buff.buff.script.extendLowerLimit ?? 0;
+        minRate = minRate == null ? -extendLowerLimit : min(minRate, -extendLowerLimit);
       }
     }
-    return capBuffValue(actionDetails, totalVal, maxRate);
+    return capBuffValue(actionDetails, totalVal, maxRate, minRate);
   }
 
   // separate method for buffRate to avoid stackOverflow
@@ -2019,6 +2028,7 @@ class BattleServantData {
 
     int totalVal = 0;
     int? maxRate;
+    int? minRate;
 
     final allBuffs = getAllBuffs(battleData);
     for (final buff in collectBuffsPerAction(allBuffs, BuffAction.buffRate)) {
@@ -2033,9 +2043,11 @@ class BattleServantData {
           totalVal -= value;
         }
         maxRate = maxRate == null ? buff.buff.maxRate : max(maxRate, buff.buff.maxRate);
+        final extendLowerLimit = buff.buff.script.extendLowerLimit ?? 0;
+        minRate = minRate == null ? -extendLowerLimit : min(minRate, -extendLowerLimit);
       }
     }
-    return capBuffValue(actionDetails, totalVal, maxRate);
+    return capBuffValue(actionDetails, totalVal, maxRate, minRate);
   }
 
   // this is too complicated since it also touches preventDeathByDamage & turnendHpReduceToRegain & there are two
@@ -2049,6 +2061,7 @@ class BattleServantData {
     int nonPreventableValue = 0;
     int preventableValue = 0;
     int? maxRate;
+    int? minRate;
     final allBuffs = getAllBuffs(battleData);
     final List<BuffData> preventDeaths = collectBuffsPerAction(allBuffs, BuffAction.preventDeathByDamage);
     final List<BuffData> activatedPreventDeaths = [];
@@ -2112,6 +2125,8 @@ class BattleServantData {
       }
 
       maxRate = maxRate == null ? turnEndHpReduce.buff.maxRate : max(maxRate, turnEndHpReduce.buff.maxRate);
+      final extendLowerLimit = turnEndHpReduce.buff.script.extendLowerLimit ?? 0;
+      minRate = minRate == null ? -extendLowerLimit : min(minRate, -extendLowerLimit);
     }
 
     int finalValue = preventableValue + nonPreventableValue;
@@ -2122,7 +2137,7 @@ class BattleServantData {
       }
     }
 
-    return capBuffValue(actionDetails, finalValue, maxRate);
+    return capBuffValue(actionDetails, finalValue, maxRate, minRate);
   }
 
   // For doNot type buffActions. Since during rendering can't wait for user input,
