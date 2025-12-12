@@ -15,7 +15,7 @@ import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '_shared/history.dart';
-import '_shared/menu_button.dart';
+import '_shared/menu_dialog.dart';
 import 'runtimes/battle.dart';
 import 'runtimes/combine.dart';
 import 'runtimes/event.dart';
@@ -118,7 +118,7 @@ class FakerRuntime {
   Widget buildMenuButton(BuildContext context) {
     return IconButton(
       onPressed: () {
-        router.showDialog(builder: (context) => FakerMenuButton(runtime: this));
+        router.showDialog(builder: (context) => FakerMenuDialog(runtime: this));
       },
       icon: Icon(Icons.grid_view_rounded),
       tooltip: 'Menu',

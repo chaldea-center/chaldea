@@ -29,7 +29,7 @@ import 'package:chaldea/widgets/widgets.dart';
 import '_shared/history.dart';
 import 'details/dialogs.dart';
 import 'details/login_result.dart';
-import 'details/raids.dart';
+import 'event/raids.dart';
 import 'home/reminders.dart';
 import 'option_list.dart';
 import 'present_box/present_box.dart';

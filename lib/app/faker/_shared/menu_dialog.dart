@@ -11,9 +11,9 @@ import 'package:chaldea/widgets/widgets.dart';
 import '../../modules/import_data/import_https_page.dart';
 import '../combine/svt_combine.dart';
 import '../combine/svt_equip_combine.dart';
-import '../details/box_gacha.dart';
-import '../details/trade.dart';
+import '../event/box_gacha.dart';
 import '../event/random_mission_loop.dart';
+import '../event/trade.dart';
 import '../gacha/gacha_draw.dart';
 import '../mission/mission_receive.dart';
 import '../runtime.dart';
@@ -29,15 +29,15 @@ class _ButtonData {
   const _ButtonData({required this.icon, required this.name, this.enabled = true, required this.onTap});
 }
 
-class FakerMenuButton extends StatefulWidget {
+class FakerMenuDialog extends StatefulWidget {
   final FakerRuntime runtime;
-  const FakerMenuButton({super.key, required this.runtime});
+  const FakerMenuDialog({super.key, required this.runtime});
 
   @override
-  State<FakerMenuButton> createState() => _FakerMenuButtonState();
+  State<FakerMenuDialog> createState() => _FakerMenuDialogState();
 }
 
-class _FakerMenuButtonState extends State<FakerMenuButton> with FakerRuntimeStateMixin {
+class _FakerMenuDialogState extends State<FakerMenuDialog> with FakerRuntimeStateMixin {
   @override
   late final runtime = widget.runtime;
 
