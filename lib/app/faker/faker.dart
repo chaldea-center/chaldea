@@ -518,6 +518,15 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
           for (final itemId in questDropIds.followedBy(battleOption.targetDrops.keys)) {
             runtime.agentData.totalDropStat.items.putIfAbsent(itemId, () => 0);
           }
+          final _questPhase = AtlasApi.questPhaseCache(battleOption.questId, battleOption.questPhase);
+          if (_questPhase != null) {
+            for (final drop in _questPhase.drops) {
+              final ce = db.gameData.craftEssencesById[drop.objectId];
+              if (ce != null && ce.rarity == 5) {
+                runtime.agentData.totalDropStat.items.putIfAbsent(drop.objectId, () => 0);
+              }
+            }
+          }
           return Column(
             mainAxisSize: MainAxisSize.min,
             children: [

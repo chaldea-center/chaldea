@@ -100,6 +100,8 @@ class _SelectUserSvtPageState extends State<SelectUserSvtPage> {
         switch (combineType) {
           case _CombineType.level:
             return userSvt.lv < (userSvt.maxLv ?? svt.lvMax);
+          case _CombineType.fou3:
+            return userSvt.adjustAtk < 100 || userSvt.adjustHp < 100;
           case _CombineType.ascension:
             return userSvt.limitCount < Maths.max<int>(svt.limits.keys, 0);
           case _CombineType.grail:
@@ -175,6 +177,7 @@ class _SelectUserSvtPageState extends State<SelectUserSvtPage> {
                   FilterGroup<_CombineType>(
                     title: Text('Available Combine Type'),
                     showMatchAll: true,
+                    showInvert: true,
                     options: _CombineType.values,
                     values: userSvtFilterData.availableCombines,
                     optionBuilder: (v) => Text(switch (v) {
@@ -297,4 +300,4 @@ class _UserSvtFilterData with FilterDataMixin {
   }
 }
 
-enum _CombineType { level, ascension, grail, skill, append2, appendAny, bondLimit, bondLessThan10 }
+enum _CombineType { level, fou3, ascension, grail, skill, append2, appendAny, bondLimit, bondLessThan10 }

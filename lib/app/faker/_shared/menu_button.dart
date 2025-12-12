@@ -2,6 +2,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'package:chaldea/app/app.dart';
+import 'package:chaldea/app/faker/present_box/present_box.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/utils/constants.dart';
@@ -48,8 +49,7 @@ class _FakerMenuButtonState extends State<FakerMenuButton> with FakerRuntimeStat
     final bool isLoggedIn = mstData.isLoggedIn;
 
     return AlertDialog(
-      title: const Text('Fake/Grand Order'),
-      titleTextStyle: const TextStyle(fontSize: 18),
+      title: const Text('Fake/Grand Order', style: TextStyle(fontSize: 18)),
       titlePadding: EdgeInsets.fromLTRB(24, 20, 24, 0),
       contentPadding: EdgeInsets.fromLTRB(24, 4, 24, 20),
       scrollable: true,
@@ -57,19 +57,27 @@ class _FakerMenuButtonState extends State<FakerMenuButton> with FakerRuntimeStat
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8),
-            child: Text(
-              [
-                '[${runtime.agent.user.serverName}] ${runtime.agent.user.userGame?.friendCode}',
-                if ((gameTop.hash, gameTop.timestamp) == (timerData.hash, timerData.timestamp))
-                  fmtVer('data: ', gameTop.hash, gameTop.timestamp)
-                else ...[
-                  fmtVer('top = ', gameTop.hash, gameTop.timestamp),
-                  fmtVer('timer=', timerData.hash ?? "", timerData.timestamp),
-                ],
-              ].join('\n'),
-              style: Theme.of(context).textTheme.bodySmall?.merge(kMonoStyle),
+          InkWell(
+            onTap: () {
+              runtime.runTask(() async {
+                await runtime.agent.network.updateGameTop();
+                await runtime.gameData.init(refresh: true);
+              });
+            },
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8),
+              child: Text(
+                [
+                  '[${runtime.agent.user.serverName}] ${runtime.agent.user.userGame?.friendCode}',
+                  if ((gameTop.hash, gameTop.timestamp) == (timerData.hash, timerData.timestamp))
+                    fmtVer('data: ', gameTop.hash, gameTop.timestamp)
+                  else ...[
+                    fmtVer('top = ', gameTop.hash, gameTop.timestamp),
+                    fmtVer('timer=', timerData.hash ?? "", timerData.timestamp),
+                  ],
+                ].join('\n'),
+                style: Theme.of(context).textTheme.bodySmall?.merge(kMonoStyle),
+              ),
             ),
           ),
           buildGroup(
@@ -83,13 +91,10 @@ class _FakerMenuButtonState extends State<FakerMenuButton> with FakerRuntimeStat
                 },
               ),
               _ButtonData(
-                icon: Icons.refresh,
-                name: S.current.refresh,
+                icon: Icons.mark_email_unread,
+                name: S.current.present_box,
                 onTap: () {
-                  runtime.runTask(() async {
-                    await runtime.agent.network.updateGameTop();
-                    await runtime.gameData.init(refresh: true);
-                  });
+                  router.pushPage(UserPresentBoxManagePage(runtime: runtime));
                 },
               ),
               _ButtonData(
@@ -196,7 +201,7 @@ class _FakerMenuButtonState extends State<FakerMenuButton> with FakerRuntimeStat
     List<Widget> children = [];
     final disabledColor = Theme.of(context).disabledColor;
     for (final button in buttons) {
-      final color = button.enabled ? null : disabledColor;
+      final color = button.enabled ? ButtonTheme.of(context).colorScheme?.tertiaryContainer : disabledColor;
       Widget child = SizedBox(
         width: x.toDouble(),
         height: (y1 + y2).toDouble(),

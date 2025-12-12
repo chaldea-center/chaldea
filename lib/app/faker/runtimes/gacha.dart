@@ -36,8 +36,7 @@ class FakerRuntimeGacha extends FakerRuntimeBase {
   bool checkHasFreeGachaDraw(NiceGacha gacha) {
     final now = DateTime.now().timestamp;
     final userGacha = mstData.userGacha[gacha.id];
-    return userGacha != null &&
-        DateTimeX.findNextHourAt(userGacha.freeDrawAt, runtime.region.getGachaResetUTC(gacha.type)) < now;
+    return DateTimeX.findNextHourAt(userGacha?.freeDrawAt ?? 0, runtime.region.getGachaResetUTC(gacha.type)) < now;
   }
 
   Future<void> gachaDraw({bool hundredDraw = false}) async {

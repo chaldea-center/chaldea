@@ -237,13 +237,19 @@ class _SvtEquipCombinePageState extends State<SvtEquipCombinePage> with FakerRun
           FilledButton(
             onPressed: baseUserSvt == null || options.combineUserSvtIds.isEmpty
                 ? null
-                : () {
+                : () async {
                     for (final userSvtId in options.combineUserSvtIds) {
                       final userSvt = mstData.userSvt[userSvtId];
                       if (userSvt == null) {
                         EasyLoading.showError('ID $userSvtId not found');
                         return;
                       }
+                    }
+                    if (options.combineUserSvtIds.any((e) => (mstData.userSvt[e]?.lv ?? 0) > 1)) {
+                      final confirm = await const SimpleConfirmDialog(
+                        title: Text('Some card Lv>1!'),
+                      ).showDialog(context);
+                      if (confirm != true) return;
                     }
                     runtime.runTask(() async {
                       await runtime.combine.svtEquipCombine(

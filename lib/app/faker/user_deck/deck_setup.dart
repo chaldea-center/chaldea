@@ -195,28 +195,31 @@ class _UserDeckSetupPageState extends State<UserDeckSetupPage> with FakerRuntime
                       },
                       child: Text(S.current.reset),
                     ),
-                    if (!isEventDeck && _userDeckEntity != null)
-                      TextButton(
-                        onPressed: () {
-                          router.pushPage(
-                            UserDeckListPage(
-                              runtime: runtime,
-                              mstData: mstData,
-                              onSelected: (selectedDeck) {
+                    TextButton(
+                      onPressed: () {
+                        router.pushPage(
+                          UserDeckListPage(
+                            runtime: runtime,
+                            mstData: mstData,
+                            onSelected: (selectedDeck) {
+                              if (isEventDeck) {
+                                //
+                              } else {
                                 if (selectedDeck.id == _userDeckEntity?.id) {
                                   EasyLoading.showToast('Do not select same deck');
                                   return;
                                 }
-                                final _deckInfo = makeUserDeckCopy(selectedDeck).deckInfo;
-                                if (_deckInfo != null) deckInfo = _deckInfo;
-                                if (mounted) setState(() {});
-                              },
-                              enableEdit: false,
-                            ),
-                          );
-                        },
-                        child: Text('Copy from'),
-                      ),
+                              }
+                              final _deckInfo = makeUserDeckCopy(selectedDeck).deckInfo;
+                              if (_deckInfo != null) deckInfo = _deckInfo;
+                              if (mounted) setState(() {});
+                            },
+                            enableEdit: false,
+                          ),
+                        );
+                      },
+                      child: Text('Copy from'),
+                    ),
                   ],
                 ),
                 if (questPhase != null) ...[

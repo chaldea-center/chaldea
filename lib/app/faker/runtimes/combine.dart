@@ -173,4 +173,57 @@ class FakerRuntimeCombine extends FakerRuntimeBase {
       runtime.update();
     }
   }
+
+  Future<void> svtStatusUp() async {
+    final options = agent.user.svtCombine;
+    final UserServantEntity? baseUserSvt = mstData.userSvt[options.baseUserSvtId];
+    if (baseUserSvt == null) throw SilentException('user svt ${options.baseUserSvtId} not found');
+    final svt = baseUserSvt.dbSvt;
+    if (svt == null) throw SilentException('svt ${baseUserSvt.svtId} not found');
+    int needHpAdjust = max(0, 100 - baseUserSvt.adjustHp), needAtkAdjust = max(0, 100 - baseUserSvt.adjustAtk);
+    if (needHpAdjust <= 0 && needAtkAdjust <= 0) throw SilentException('Already fou3 max');
+
+    List<UserServantEntity> candidateMaterialSvts = mstData.userSvt.where((userSvt) {
+      final fouSvt = userSvt.dbEntity;
+      if (fouSvt == null || fouSvt.type != SvtType.statusUp) return false;
+      if (userSvt.isLocked() || userSvt.lv != 1) return false;
+      if (fouSvt.rarity > 3) return false;
+      if (!options.svtMaterialRarities.contains(fouSvt.rarity)) return false;
+      if (fouSvt.classId != SvtClass.ALL.value && fouSvt.classId != svt.classId) return false;
+      return true;
+    }).toList();
+    candidateMaterialSvts.sortByList((e) => [e.dbEntity?.rarity ?? 999, -e.createdAt]);
+
+    List<int> materialUserSvtIds = [];
+    int totalUseQp = 0;
+    for (final userSvt in candidateMaterialSvts) {
+      if (materialUserSvtIds.length >= options.maxMaterialCount) break;
+      if (needHpAdjust <= 0 && needAtkAdjust <= 0) break;
+      final fouSvt = userSvt.dbEntity!;
+      bool isAddHp = userSvt.svtId ~/ 100000 == 95, isAddAtk = userSvt.svtId ~/ 100000 == 96;
+      int addValue = const {1: 1, 2: 2, 3: 5, 4: 2, 5: 10}[fouSvt.rarity]!;
+      int useQp = ((100 + (baseUserSvt.lv - 1) * 30) * ([1, 1.5, 2, 4, 6][svt.rarity - 1])).round();
+      if (isAddHp && needHpAdjust > 0) {
+        materialUserSvtIds.add(userSvt.id);
+        needHpAdjust -= addValue;
+        totalUseQp += useQp;
+      } else if (isAddAtk && needAtkAdjust > 0) {
+        materialUserSvtIds.add(userSvt.id);
+        needAtkAdjust -= addValue;
+        totalUseQp += useQp;
+      }
+    }
+
+    if (materialUserSvtIds.isEmpty) {
+      throw SilentException('No valid foukun found');
+    }
+
+    await agent.servantCombine(
+      baseUserSvtId: options.baseUserSvtId,
+      materialSvtIds: materialUserSvtIds,
+      useQp: totalUseQp,
+      getExp: 10 * materialUserSvtIds.length,
+    );
+    runtime.update();
+  }
 }

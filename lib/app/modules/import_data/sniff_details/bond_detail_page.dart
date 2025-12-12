@@ -40,7 +40,7 @@ enum _SvtSortType { no, cls, rarity, bondRank, bondNext, bondTotal }
 enum _CESortType { no, cls, rarity, time }
 
 class _SvtBondDetailPageState extends State<SvtBondDetailPage> with SingleTickerProviderStateMixin {
-  late final _tabController = TabController(length: 2, vsync: this);
+  late final _tabController = TabController(length: 3, vsync: this);
   _SvtSortType svtSortType = _SvtSortType.bondRank;
   _CESortType ceSortType = _CESortType.time;
   bool ceGrid = false;
@@ -48,10 +48,19 @@ class _SvtBondDetailPageState extends State<SvtBondDetailPage> with SingleTicker
   final svtFilter = SvtFilterData();
 
   Map<int, UserServantCollectionEntity> userSvtCollections = {};
+  Map<int, UserServantEntity> userSvts = {};
 
   List<({Servant svt, UserServantCollectionEntity collection})> collections = [];
   List<({Servant svt, UserServantCollectionEntity collection})> shownCollections = [];
-  List<({CraftEssence ce, UserServantEntity? userCe, UserServantCollectionEntity collection})> bondCEs = [];
+  List<
+    ({
+      CraftEssence ce,
+      UserServantEntity? userCe,
+      UserServantCollectionEntity collection,
+      UserServantCollectionEntity? svtCollection,
+    })
+  >
+  bondCEs = [];
 
   @override
   void initState() {
@@ -61,6 +70,7 @@ class _SvtBondDetailPageState extends State<SvtBondDetailPage> with SingleTicker
     });
 
     userSvtCollections = {for (final svt in widget.userSvtCollections) svt.svtId: svt};
+    userSvts = {for (final svt in widget.userSvts) svt.id: svt};
 
     final userCEs = <int, UserServantEntity>{};
     for (final userSvt in widget.userSvts) {
@@ -78,11 +88,22 @@ class _SvtBondDetailPageState extends State<SvtBondDetailPage> with SingleTicker
       }
       final ce = db.gameData.craftEssencesById[collection.svtId];
       if (ce != null && ce.flags.contains(SvtFlag.svtEquipFriendShip)) {
-        bondCEs.add((ce: ce, userCe: userCEs[collection.svtId], collection: collection));
+        bondCEs.add((
+          ce: ce,
+          userCe: userCEs[collection.svtId],
+          collection: collection,
+          svtCollection: userSvtCollections[ce.bondEquipOwner],
+        ));
       }
     }
 
     update();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _tabController.dispose();
   }
 
   void update() {
@@ -203,6 +224,7 @@ class _SvtBondDetailPageState extends State<SvtBondDetailPage> with SingleTicker
             tabs: [
               Tab(text: S.current.bond),
               Tab(text: S.current.bond_craft),
+              Tab(text: S.current.statistics_title),
             ],
           ),
         ),
@@ -210,7 +232,7 @@ class _SvtBondDetailPageState extends State<SvtBondDetailPage> with SingleTicker
       body: Column(
         children: [
           Expanded(
-            child: TabBarView(controller: _tabController, children: [bondTab, bondCETab]),
+            child: TabBarView(controller: _tabController, children: [bondTab, bondCETab, statTab]),
           ),
           SafeArea(child: buttonBar),
         ],
@@ -224,7 +246,7 @@ class _SvtBondDetailPageState extends State<SvtBondDetailPage> with SingleTicker
         maxCrossAxisExtent: 60,
         childAspectRatio: 132 / 144,
         children: bondCEs.map((entry) {
-          final (:ce, :userCe, :collection) = entry;
+          final (:ce, :userCe, :collection, :svtCollection) = entry;
           final t = DateTime.fromMillisecondsSinceEpoch(
             (userCe?.createdAt ?? collection.updatedAt) * 1000,
           ).toDateString().substring(2);
@@ -243,7 +265,7 @@ class _SvtBondDetailPageState extends State<SvtBondDetailPage> with SingleTicker
     }
     return ListView.separated(
       itemBuilder: (context, index) {
-        final (:ce, :userCe, :collection) = bondCEs[index];
+        final (:ce, :userCe, :collection, :svtCollection) = bondCEs[index];
         final svt = db.gameData.servantsById[ce.bondEquipOwner];
         String subtitle;
         if (userCe != null) {
@@ -251,7 +273,7 @@ class _SvtBondDetailPageState extends State<SvtBondDetailPage> with SingleTicker
         } else {
           subtitle = '??? (${collection.createdAt.sec2date().toStringShort(omitSec: true)}?)';
         }
-        subtitle += '  Lv.${userSvtCollections[ce.bondEquipOwner]?.friendshipRank}';
+        subtitle += '  Lv.${svtCollection?.friendshipRank}';
         return ListTile(
           dense: true,
           leading: ce.iconBuilder(context: context),
@@ -364,6 +386,51 @@ class _SvtBondDetailPageState extends State<SvtBondDetailPage> with SingleTicker
             },
             separatorBuilder: (_, _) => kDefaultDivider,
             itemCount: shownCollections.length,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget get statTab {
+    Map<int, int> bondLvStat = {};
+    for (final (svt: _, :collection) in collections) {
+      bondLvStat.addNum(collection.friendshipRank, 1);
+    }
+    int maxLv = Maths.max(bondLvStat.keys), minLv = Maths.min(bondLvStat.keys);
+
+    return ListView(
+      children: [
+        ListTile(
+          dense: true,
+          title: Text(S.current.servant),
+          trailing: Text(collections.where((e) => e.svt.isUserSvt).length.toString()),
+        ),
+        ListTile(dense: true, title: Text(S.current.bond_craft), trailing: Text(bondCEs.length.toString())),
+        ListTile(
+          dense: true,
+          title: Text('Total Bond Level'),
+          trailing: Text(
+            Maths.sum([for (final collection in collections) collection.collection.friendshipRank]).toString(),
+          ),
+        ),
+        ListTile(
+          dense: true,
+          title: Text('Total Bond Value'),
+          trailing: Text(
+            Maths.sum([
+              for (final collection in collections) collection.collection.friendship,
+            ]).format(compact: false, groupSeparator: ','),
+          ),
+        ),
+        kDefaultDivider,
+        ListTile(
+          dense: true,
+          title: Text(
+            [
+              for (int lv = maxLv; lv >= minLv; lv--) 'Lv.${lv.toString().padRight(2)} (${bondLvStat[lv] ?? 0})',
+            ].join('\n'),
+            style: kMonoStyle,
           ),
         ),
       ],
@@ -525,7 +592,7 @@ class __BondEquipTimeGraphState extends State<_BondEquipTimeGraph> {
     _chartData.update(widget.bondEquips);
 
     return Scaffold(
-      appBar: AppBar(title: Text(S.current.bond_craft)),
+      appBar: AppBar(title: Text('${S.current.bond_craft} (${widget.bondEquips.length})')),
       body: Container(
         padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
         child: Column(

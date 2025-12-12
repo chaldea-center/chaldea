@@ -1,5 +1,4 @@
 import 'package:chaldea/app/app.dart';
-import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/app/modules/common/filter_group.dart';
 import 'package:chaldea/app/modules/common/misc.dart';
 import 'package:chaldea/generated/l10n.dart';
@@ -122,27 +121,27 @@ class _SvtCombinePageState extends State<SvtCombinePage> with FakerRuntimeStateM
     final svt = baseUserSvt?.dbSvt;
     Map<int, int> materialCounts = {};
     for (final userSvt in mstData.userSvt) {
-      final svt = userSvt.dbEntity;
-      if (userSvt.isLocked() || svt == null) continue;
-      if (svt.type == SvtType.combineMaterial) {
-        materialCounts.addNum(svt.id, 1);
+      final materialSvt = userSvt.dbEntity;
+      if (userSvt.isLocked() || materialSvt == null) continue;
+      if (materialSvt.type == SvtType.combineMaterial) {
+        materialCounts.addNum(materialSvt.id, 1);
+      } else if (materialSvt.type == SvtType.statusUp) {
+        if (materialSvt.classId == SvtClass.ALL.value || materialSvt.classId == svt?.classId) {
+          materialCounts.addNum(materialSvt.id, 1);
+        }
       }
     }
     materialCounts = Item.sortMapByPriority(materialCounts, removeZero: false, reversed: false);
     List<Widget> children = [
       DividerWithTitle(title: S.current.enhance),
       FilterGroup<int>(
-        title: Text('种火 Rarity'),
+        title: Text(S.current.rarity),
         options: const [1, 2, 3, 4, 5],
         values: FilterGroupData(options: options.svtMaterialRarities),
         onFilterChanged: (v, _) async {
           runtime.lockTask(() => options.svtMaterialRarities = v.options);
           if (mounted) setState(() {});
         },
-      ),
-      Padding(
-        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-        child: SharedBuilder.itemGrid(context: context, items: materialCounts.entries, width: 36),
       ),
       ListTile(
         dense: true,
@@ -169,6 +168,38 @@ class _SvtCombinePageState extends State<SvtCombinePage> with FakerRuntimeStateM
           runtime.lockTask(() => options.doubleExp = v);
         },
       ),
+
+      Padding(
+        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+        child: Wrap(
+          spacing: 1,
+          runSpacing: 1,
+          children: [
+            for (final (itemId, count) in materialCounts.items)
+              ?db.gameData.entities[itemId]?.iconBuilder(
+                context: context,
+                text: count.format(),
+                height: 36 * 144 / 132,
+                width: 36,
+                option: ImageWithTextOption(padding: const EdgeInsets.only(bottom: 10, left: 2, right: 2)),
+              ),
+          ],
+        ),
+      ),
+
+      if (baseUserSvt != null)
+        ListTile(
+          title: Text('${S.current.foukun} 3'),
+          subtitle: Text('HP+${baseUserSvt.adjustHp * 10}  ATK+${baseUserSvt.adjustAtk * 10}'),
+          trailing: TextButton(
+            onPressed: baseUserSvt.adjustHp < 100 || baseUserSvt.adjustAtk < 100
+                ? () {
+                    runtime.runTask(runtime.combine.svtStatusUp);
+                  }
+                : null,
+            child: Text(S.current.enhance),
+          ),
+        ),
       ListTile(
         dense: true,
         title: Text('Loop Count'),
@@ -191,9 +222,10 @@ class _SvtCombinePageState extends State<SvtCombinePage> with FakerRuntimeStateM
         alignment: WrapAlignment.center,
         children: [
           FilledButton(
-            onPressed: baseUserSvt == null
+            onPressed: baseUserSvt == null || baseUserSvt.lv >= (baseUserSvt.maxLv ?? 9999)
                 ? null
                 : () {
+                    if (runtime.runningTask.value) return;
                     runtime.runTask(() async {
                       await runtime.combine.svtCombine(loopCount: 1);
                       if (mounted) setState(() {});
@@ -281,7 +313,12 @@ class _SvtCombinePageState extends State<SvtCombinePage> with FakerRuntimeStateM
                         coinNum = mstData.userSvtCoin[baseUserSvt.svtId]?.num ?? 0;
                     SimpleConfirmDialog(
                       title: Text('圣杯转临'),
-                      content: Text('Grail $grailNum-1, coin $coinNum-30'),
+                      content: Text(
+                        [
+                          'Grail $grailNum-1=${grailNum - 1}',
+                          if (baseUserSvt.lv >= 100) 'coin $coinNum-30=${coinNum - 30}',
+                        ].join(', '),
+                      ),
                       onTapOk: () {
                         runtime.runTask(() {
                           if (grailNum < 1) {

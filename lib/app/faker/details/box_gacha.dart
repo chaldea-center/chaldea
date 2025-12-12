@@ -1,3 +1,5 @@
+import 'package:flutter/gestures.dart';
+
 import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/modules/common/builders.dart';
@@ -6,6 +8,7 @@ import 'package:chaldea/models/gamedata/mst_data.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
+import '../present_box/present_box.dart';
 import '../runtime.dart';
 
 class BoxGachaDrawPage extends StatefulWidget {
@@ -116,15 +119,31 @@ class _BoxGachaDrawPageState extends State<BoxGachaDrawPage> with FakerRuntimeSt
   Widget get headerInfo {
     final userGame = mstData.user ?? agent.user.userGame;
     final cardCounts = mstData.countSvtKeep();
-    String subtitle = [
-      '${S.current.servant} ${cardCounts.svtCount}/${userGame?.svtKeep}',
-      '${S.current.craft_essence_short} ${cardCounts.svtEquipCount}/${userGame?.svtEquipKeep}',
-      '${S.current.command_code_short} ${cardCounts.ccCount}/${runtime.gameData.timerData.constants.maxUserCommandCode}',
-      if (cardCounts.unknownCount != 0) '${S.current.unknown} ${cardCounts.unknownCount}',
-    ].join(' ');
-    subtitle +=
-        '\nQP ${userGame?.qp.format(compact: false, groupSeparator: ",")}  ${S.current.present_box}  '
-        '${mstData.userPresentBox.length}/${runtime.gameData.timerData.constants.maxPresentBoxNum}';
+    List<InlineSpan> subtitles = [
+      TextSpan(
+        text: [
+          '${S.current.servant} ${cardCounts.svtCount}/${userGame?.svtKeep}',
+          '${S.current.craft_essence_short} ${cardCounts.svtEquipCount}/${userGame?.svtEquipKeep}',
+          '${S.current.command_code_short} ${cardCounts.ccCount}/${runtime.gameData.timerData.constants.maxUserCommandCode}',
+          if (cardCounts.unknownCount != 0) '${S.current.unknown} ${cardCounts.unknownCount}',
+        ].join(' '),
+      ),
+      const TextSpan(text: '\n'),
+      CenterWidgetSpan(child: db.getIconImage(Items.qp?.icon, width: 20)),
+      TextSpan(text: 'QP ${userGame?.qp.format(compact: false, groupSeparator: ",")} '),
+      CenterWidgetSpan(
+        child: db.getIconImage(
+          "https://static.atlasacademy.io/file/aa-fgo-extract-jp/Terminal/OrdealCall/TerminalAtlas/status_icongift_open.png",
+          width: 20,
+          onTap: () => router.pushPage(UserPresentBoxManagePage(runtime: runtime)),
+        ),
+      ),
+      TextSpan(
+        text:
+            '${S.current.present_box} ${mstData.userPresentBox.length}/${runtime.gameData.timerData.constants.maxPresentBoxNum}',
+        recognizer: TapGestureRecognizer()..onTap = () => router.pushPage(UserPresentBoxManagePage(runtime: runtime)),
+      ),
+    ];
     return Container(
       color: Theme.of(context).secondaryHeaderColor,
       padding: const EdgeInsets.only(bottom: 4),
@@ -135,7 +154,7 @@ class _BoxGachaDrawPageState extends State<BoxGachaDrawPage> with FakerRuntimeSt
         minLeadingWidth: 20,
         leading: runtime.buildCircularProgress(context: context),
         title: Text('[${agent.user.serverName}] ${userGame?.name}'),
-        subtitle: Text(subtitle),
+        subtitle: Text.rich(TextSpan(children: subtitles)),
       ),
     );
   }
