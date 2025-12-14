@@ -136,44 +136,49 @@ class FakerRuntime {
     return ValueListenableBuilder(
       valueListenable: runningTask,
       builder: (context, running, _) {
-        double? value;
-        if (running) {
-          final offstageParent = context.findAncestorWidgetOfExactType<Offstage>();
-          if (offstageParent != null && offstageParent.offstage) {
-            value = 0.5;
-          }
-        } else {
-          value = 1.0;
-        }
-        Widget child = ConstrainedBox(
-          constraints: BoxConstraints(maxWidth: size, maxHeight: size),
-          child: CircularProgressIndicator(
-            value: value,
-            color: running ? (activeColor ?? Colors.red) : (inactiveColor ?? Colors.green),
-          ),
+        return TimerUpdate(
+          builder: (context, t) {
+            final startedAt = agent.network.lastTaskStartedAt;
+            final dt = min(99, t.timestamp - startedAt);
+
+            double? value;
+            if (running) {
+              final offstageParent = context.findAncestorWidgetOfExactType<Offstage>();
+              if (offstageParent != null && offstageParent.offstage) {
+                value = 0.5;
+              } else if (!db.settings.fakerSettings.animateProgressIndicator) {
+                const int count = 8;
+                value = (t.timestamp % (count + 1)) / count;
+              }
+            } else {
+              value = 1.0;
+            }
+            Widget child = ConstrainedBox(
+              constraints: BoxConstraints(maxWidth: size, maxHeight: size),
+              child: CircularProgressIndicator(
+                value: value,
+                color: running ? (activeColor ?? Colors.red) : (inactiveColor ?? Colors.green),
+              ),
+            );
+            if (showElapsed) {
+              child = Stack(
+                alignment: Alignment.center,
+                children: [
+                  child,
+                  if (running)
+                    ConstrainedBox(
+                      constraints: BoxConstraints(maxWidth: size, maxHeight: size),
+                      child: startedAt <= 0 || dt < 0
+                          ? const SizedBox.shrink()
+                          : Text(dt.toString(), style: TextStyle(fontSize: 10), textAlign: TextAlign.center),
+                    ),
+                ],
+              );
+            }
+            if (padding != null) child = Padding(padding: padding, child: child);
+            return child;
+          },
         );
-        if (showElapsed) {
-          child = Stack(
-            alignment: Alignment.center,
-            children: [
-              child,
-              if (running)
-                ConstrainedBox(
-                  constraints: BoxConstraints(maxWidth: size, maxHeight: size),
-                  child: TimerUpdate(
-                    builder: (context, t) {
-                      final startedAt = agent.network.lastTaskStartedAt;
-                      final dt = min(99, t.timestamp - startedAt);
-                      if (startedAt <= 0 || dt < 0) return const SizedBox.shrink();
-                      return Text(dt.toString(), style: TextStyle(fontSize: 10), textAlign: TextAlign.center);
-                    },
-                  ),
-                ),
-            ],
-          );
-        }
-        if (padding != null) child = Padding(padding: padding, child: child);
-        return child;
       },
     );
   }

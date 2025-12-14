@@ -13,6 +13,7 @@ FakerSettings _$FakerSettingsFromJson(Map json) => $checkedCreate('FakerSettings
     apRecoveredAlarm: $checkedConvert('apRecoveredAlarm', (v) => v as bool? ?? false),
     maxFollowerListRetryCount: $checkedConvert('maxFollowerListRetryCount', (v) => (v as num?)?.toInt() ?? 20),
     showProgressToast: $checkedConvert('showProgressToast', (v) => v as bool? ?? true),
+    animateProgressIndicator: $checkedConvert('animateProgressIndicator', (v) => v as bool? ?? true),
     jpAutoLogins: $checkedConvert(
       'jpAutoLogins',
       (v) => (v as List<dynamic>?)?.map((e) => AutoLoginDataJP.fromJson(Map<String, dynamic>.from(e as Map))).toList(),
@@ -31,6 +32,7 @@ Map<String, dynamic> _$FakerSettingsToJson(FakerSettings instance) => <String, d
   'apRecoveredAlarm': instance.apRecoveredAlarm,
   'maxFollowerListRetryCount': instance.maxFollowerListRetryCount,
   'showProgressToast': instance.showProgressToast,
+  'animateProgressIndicator': instance.animateProgressIndicator,
   'jpAutoLogins': instance.jpAutoLogins.map((e) => e.toJson()).toList(),
   'cnAutoLogins': instance.cnAutoLogins.map((e) => e.toJson()).toList(),
 };

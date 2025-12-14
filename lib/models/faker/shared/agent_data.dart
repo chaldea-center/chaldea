@@ -33,6 +33,7 @@ class FakerAgentData {
   BattleEntity? curBattle;
   BattleEntity? lastBattle;
   BattleResultData? lastBattleResultData;
+  BattleResultData? lastBattleWinResultData;
   FResponse? lastResp;
 
   final battleTotalRewards = <int, int>{};
@@ -53,6 +54,9 @@ class FakerAgentData {
     curBattle = null;
     try {
       lastBattleResultData = BattleResultData.fromJson(resp.data.getResponse('battle_result').success!);
+      if (lastBattleResultData != null && lastBattleResultData!.battleResult == BattleResultType.win.value) {
+        lastBattleWinResultData = lastBattleResultData;
+      }
     } catch (e, s) {
       logger.e('parse battle result data failed', e, s);
     }

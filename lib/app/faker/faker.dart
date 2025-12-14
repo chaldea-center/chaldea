@@ -1864,6 +1864,16 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
             }
           },
         ),
+        SwitchListTile.adaptive(
+          dense: true,
+          value: fakerSettings.animateProgressIndicator,
+          title: const Text('Animated circle progress indicator'),
+          onChanged: (v) async {
+            setState(() {
+              fakerSettings.animateProgressIndicator = v;
+            });
+          },
+        ),
         const Divider(),
         CheckboxListTile.adaptive(
           dense: true,
@@ -2325,7 +2335,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
                 // '\n${collection.friendship}'
                 '\n${-bondData.next}';
             // battle result
-            final oldCollection = runtime.agentData.lastBattleResultData?.oldUserSvtCollection.firstWhereOrNull(
+            final oldCollection = runtime.agentData.lastBattleWinResultData?.oldUserSvtCollection.firstWhereOrNull(
               (e) => e.svtId == collection.svtId,
             );
             if (oldCollection != null) {

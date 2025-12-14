@@ -82,7 +82,7 @@ class _RandomMissionLoopPageState extends State<RandomMissionLoopPage> with Fake
         listenable: runtime.runningTask,
         builder: (context, _) {
           return LinearProgressIndicator(
-            value: runtime.runningTask.value ? null : 1.0,
+            value: runtime.runningTask.value ? (db.settings.fakerSettings.animateProgressIndicator ? null : 0.8) : 1.0,
             color: runtime.runningTask.value ? Colors.red : Colors.green,
           );
         },
