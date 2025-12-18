@@ -1131,7 +1131,17 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
                   for (final campaign in campaigns)
                     SimpleDialogOption(
                       onPressed: campaign.routeTo,
-                      child: Text('[${campaign.id}] ${campaign.lName.l}'),
+                      child: Text.rich(
+                        TextSpan(
+                          text: '[${campaign.id}] ${campaign.lName.l}\n',
+                          children: [
+                            TextSpan(
+                              text: campaign.endedAt.sec2date().toStringShort(omitSec: true),
+                              style: TextStyle(fontSize: 12),
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
                 ],
               ).showDialog(context);
@@ -1508,6 +1518,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
   }
 
   Widget get uncommonSettingSection {
+    final logicEventId = db.gameData.quests[battleOption.questId]?.logicEventId;
     return TileGroup(
       header: 'Other Options',
       children: [
@@ -1539,16 +1550,26 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
         ),
         CheckboxListTile.adaptive(
           dense: true,
-          value: battleOption.useEventDeck,
+          value: battleOption.useEventSupport,
           tristate: true,
-          title: Text("${S.current.support_servant_short} - Use Event Deck"),
-          subtitle: Text(
-            "Supposed: ${db.gameData.quests[battleOption.questId]?.isUseUserEventDeck() == true ? 'Yes' : 'No'}",
+          title: Text("${S.current.support_servant_short} - Use Event Support"),
+          subtitle: Text.rich(
+            TextSpan(
+              children: [
+                TextSpan(
+                  text: 'Event ${logicEventId ?? 0}, ',
+                  recognizer: logicEventId == null
+                      ? null
+                      : (TapGestureRecognizer()..onTap = () => router.push(url: Routes.eventI(logicEventId))),
+                ),
+                TextSpan(text: 'Supposed: ${db.gameData.others.isNeedUseEventQuestSupport(battleOption.questId)}'),
+              ],
+            ),
           ),
           onChanged: (v) {
             runtime.lockTask(() {
               setState(() {
-                battleOption.useEventDeck = v;
+                battleOption.useEventSupport = v;
               });
             });
           },

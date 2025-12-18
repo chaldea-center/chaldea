@@ -49,8 +49,19 @@ class FakerRuntimeBattle extends FakerRuntimeBase {
       throw SilentException('Win target drops should be used only if Quest has flag actConsumeBattleWin');
     }
     final shouldUseEventDeck = db.gameData.others.isNeedUseEventQuestSupport(questPhaseEntity.id);
-    if (battleOption.useEventDeck != null && battleOption.useEventDeck != shouldUseEventDeck) {
-      throw SilentException('This quest should set "Use Event Deck"=$shouldUseEventDeck');
+    if (battleOption.useEventSupport != null && battleOption.useEventSupport != shouldUseEventDeck) {
+      if (!runtime.mounted) {
+        throw SilentException('This quest should set "Use Event Deck"=$shouldUseEventDeck');
+      }
+      final confirm = await runtime.showLocalDialog(
+        SimpleConfirmDialog(
+          title: Text('Use Event Support'),
+          content: Text('Supposed: $shouldUseEventDeck\nSetting: ${battleOption.useEventSupport}'),
+        ),
+      );
+      if (confirm != true) {
+        throw SilentException('Mismatch event support setting.\nSupposed: $shouldUseEventDeck');
+      }
     }
     int finishedCount = 0, totalCount = battleOption.loopCount;
     List<int> elapseSeconds = [];
@@ -372,7 +383,7 @@ class FakerRuntimeBattle extends FakerRuntimeBase {
       final bool isUseGrandBoard = questPhaseEntity.isUseGrandBoard;
       final (follower, followerSvt) = await _getValidSupport(
         questPhaseEntity: questPhaseEntity,
-        useEventDeck: options.useEventDeck ?? db.gameData.others.isNeedUseEventQuestSupport(options.questId),
+        useEventSupport: options.useEventSupport ?? db.gameData.others.isNeedUseEventQuestSupport(options.questId),
         myDeck: myDeck,
         enforceRefreshSupport: options.enfoceRefreshSupport,
         supportSvtIds: options.supportSvtIds.toList(),
@@ -406,7 +417,7 @@ class FakerRuntimeBattle extends FakerRuntimeBase {
 
   Future<(FollowerInfo follower, ServantLeaderInfo followerSvt)> _getValidSupport({
     required QuestPhase questPhaseEntity,
-    required bool useEventDeck,
+    required bool useEventSupport,
     required UserDeckEntityBase myDeck,
     required bool enforceRefreshSupport,
     required List<int> supportSvtIds,
@@ -450,7 +461,7 @@ class FakerRuntimeBattle extends FakerRuntimeBase {
         if (follower.type != FollowerType.friend.value && follower.type != FollowerType.notFriend.value) {
           continue;
         }
-        for (var svtInfo in useEventDeck ? follower.eventUserSvtLeaderHash : follower.userSvtLeaderHash) {
+        for (var svtInfo in useEventSupport ? follower.eventUserSvtLeaderHash : follower.userSvtLeaderHash) {
           if (supportSvtIds.isNotEmpty && !supportSvtIds.contains(svtInfo.svtId)) {
             continue;
           }
@@ -475,22 +486,18 @@ class FakerRuntimeBattle extends FakerRuntimeBase {
               if (grandSupportEquipIds.toSet().intersection(followerEquipIds).isEmpty) continue;
             }
           }
-          // grand duel
           final dbSvt = db.gameData.servantsById[svtInfo.svtId];
           if (dbSvt == null) continue;
+
+          // grand duel etc.
           final traits = dbSvt.getIndividuality(questPhaseEntity.logicEventId, svtInfo.dispLimitCount).toSet();
           if (!questPhaseEntity.restrictions.every((restriction) {
             if (restriction.restriction.type == RestrictionType.individuality) {
-              final hasTrait = Restriction.checkSvtIndiv(
+              return Restriction.checkSvtIndiv(
                 restriction.restriction.rangeType,
                 restriction.restriction.targetVals,
                 traits.toList(),
               );
-              return switch (restriction.restriction.rangeType) {
-                RestrictionRangeType.equal => hasTrait,
-                RestrictionRangeType.notEqual => !hasTrait,
-                _ => true,
-              };
             } else if (restriction.restriction.type == RestrictionType.uniqueSvtOnly) {
               if (myDeck.deckInfo?.svts.any((e) => e.svtId == svtInfo.svtId) ?? true) return false;
             }
@@ -854,6 +861,7 @@ class __AliveEnemySelectDialogState extends State<_AliveEnemySelectDialog> {
 
     void _addEnemy(BattleDeckServantData? enemy) {
       if (enemy == null || stageEnemies.contains(enemy)) return;
+      if (enemy.uniqueId == 0) return;
       stageEnemies.add(enemy);
 
       final callNpcIds = {...?enemy.enemyScript?.call};

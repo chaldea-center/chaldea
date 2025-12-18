@@ -93,6 +93,7 @@ class _FakerMenuDialogState extends State<FakerMenuDialog> with FakerRuntimeStat
               _ButtonData(
                 icon: Icons.mark_email_unread,
                 name: S.current.present_box,
+                enabled: isLoggedIn,
                 onTap: () {
                   router.pushPage(UserPresentBoxManagePage(runtime: runtime));
                 },

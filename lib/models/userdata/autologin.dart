@@ -316,7 +316,7 @@ class AutoBattleOptions {
   int questId;
   int questPhase;
   bool isApHalf = false;
-  bool? useEventDeck;
+  bool? useEventSupport;
   int deckId;
   bool enfoceRefreshSupport;
   Set<int> supportSvtIds;
@@ -350,7 +350,7 @@ class AutoBattleOptions {
     this.name = '',
     this.questId = 0,
     this.questPhase = 0,
-    this.useEventDeck,
+    this.useEventSupport,
     this.isApHalf = false,
     this.deckId = 0,
     this.enfoceRefreshSupport = false,

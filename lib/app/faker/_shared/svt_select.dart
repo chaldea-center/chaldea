@@ -26,13 +26,15 @@ class SelectUserSvtPage extends StatefulWidget {
   });
 
   static String defaultGetStatus(UserServantEntity userSvt, MasterDataManager mstData, List<int>? inUseUserSvtIds) {
+    final collection = mstData.userSvtCollection[userSvt.svtId];
     return [
       [
         if (inUseUserSvtIds != null && inUseUserSvtIds.contains(userSvt.id)) '🟢 ',
         if (userSvt.isChoice()) '✴️ ', // ⭐ 🌟
         // if(userSvt.isLocked()) '🔐 ',
       ].join(''),
-      'Lv${userSvt.lv}/${userSvt.maxLv} B${mstData.userSvtCollection[userSvt.svtId]?.friendshipRank} ',
+      ' Lv${userSvt.lv}/${userSvt.maxLv}  ${userSvt.limitCount}',
+      ' NP${userSvt.treasureDeviceLv1} B${collection?.friendshipRank ?? ""}/${collection?.maxFriendshipRank ?? ""} ',
       ' ${userSvt.skillLv1}/${userSvt.skillLv2}/${userSvt.skillLv3} ',
       ' ${mstData.getSvtAppendSkillLv(userSvt).map((e) => e == 0 ? "-" : e).join("/")} ',
     ].join('\n');

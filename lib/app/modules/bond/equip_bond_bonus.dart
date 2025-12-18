@@ -7,6 +7,7 @@ import 'package:chaldea/app/modules/common/filter_group.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/language.dart';
+import 'package:chaldea/utils/atlas.dart';
 import 'package:chaldea/utils/basic.dart';
 import 'package:chaldea/utils/constants.dart';
 import 'package:chaldea/utils/extension.dart';
@@ -39,7 +40,7 @@ enum _FilterType {
 
   Color? get color {
     return switch (this) {
-      none => null,
+      none => Colors.grey,
       include => Colors.blue,
       exclude => Colors.red,
       hide => Colors.grey,
@@ -254,7 +255,7 @@ class _EquipBondBonusTabState extends State<EquipBondBonusTab> {
     }
 
     // show svts with no bonus for all ces
-    if (extraFilterData.ceStates.values.every((e) => e == _FilterType.none) && _targetSvts.isEmpty) {
+    if (_targetSvts.isEmpty) {
       final bonusSvtIds = <int>{for (final v in allCeMatchSvtData.values) ...v.keys};
       List<({Servant svt, List<int> limitCounts})> svts = [];
       for (final svt in db.gameData.servantsById.values) {
@@ -378,8 +379,10 @@ class _EquipBondBonusTabState extends State<EquipBondBonusTab> {
   }
 
   Widget get buttonBar {
-    final ces = allCeData.values.toList();
-    ces.sortByList((e) => [-e.rateCount, -e.ce.collectionNo]);
+    final ces = [
+      null,
+      ...(allCeData.values.toList()..sortByList((e) => [-e.rateCount, -e.ce.collectionNo])),
+    ];
     final extraBtns = [
       IconButton(
         icon: const Icon(Icons.filter_alt),
@@ -439,43 +442,52 @@ class _EquipBondBonusTabState extends State<EquipBondBonusTab> {
         ),
     ];
     final List<Widget> ceBtns = ces.map((ce) {
-      final curStatus = getCeState(ce.ce.id);
+      final curStatus = ce == null ? _FilterType.none : getCeState(ce.ce.id);
       return InkWell(
         onTap: () {
           router.showDialog(
             builder: (context) => SimpleDialog(
-              title: Text.rich(
-                TextSpan(
-                  children: [
-                    CenterWidgetSpan(
-                      child: ce.ce.iconBuilder(context: context, width: 32, padding: EdgeInsets.all(2)),
+              title: ce == null
+                  ? Text(S.current.general_all)
+                  : Text.rich(
+                      TextSpan(
+                        children: [
+                          CenterWidgetSpan(
+                            child: ce.ce.iconBuilder(context: context, width: 32, padding: EdgeInsets.all(2)),
+                          ),
+                          TextSpan(text: ce.ce.lName.l),
+                        ],
+                      ),
                     ),
-                    TextSpan(text: ce.ce.lName.l),
-                  ],
-                ),
-              ),
               children: [
-                SimpleDialogOption(
-                  onPressed: ce.ce.routeTo,
-                  child: Text.rich(
-                    TextSpan(
-                      text: '[+${ce.rateCount.format(percent: true, base: 10)}] ',
-                      children: SharedBuilder.traitsListSpans(context: context, traitsList: ce.traits),
+                if (ce != null)
+                  SimpleDialogOption(
+                    onPressed: ce.ce.routeTo,
+                    child: Text.rich(
+                      TextSpan(
+                        text: '[+${ce.rateCount.format(percent: true, base: 10)}] ',
+                        children: SharedBuilder.traitsListSpans(context: context, traitsList: ce.traits),
+                      ),
                     ),
                   ),
-                ),
                 kDefaultDivider,
                 for (final type in _FilterType.values)
                   ListTile(
                     dense: true,
                     contentPadding: EdgeInsets.symmetric(horizontal: 24.0),
                     title: Text(
-                      curStatus == type ? '${type.shownName} (${S.current.current_})' : type.shownName,
+                      ce != null && curStatus == type ? '${type.shownName} (${S.current.current_})' : type.shownName,
                       style: TextStyle(color: type.color),
                     ),
                     subtitle: Text(type.hint),
                     onTap: () {
-                      extraFilterData.ceStates[ce.ce.id] = type;
+                      if (ce == null) {
+                        for (final ceId in allCeData.keys) {
+                          extraFilterData.ceStates[ceId] = type;
+                        }
+                      } else {
+                        extraFilterData.ceStates[ce.ce.id] = type;
+                      }
                       Navigator.pop(context);
                       if (mounted) setState(() {});
                     },
@@ -490,19 +502,26 @@ class _EquipBondBonusTabState extends State<EquipBondBonusTab> {
           children: [
             IgnorePointer(
               child: FilterOption(
-                selected: curStatus != _FilterType.none,
-                value: ce.ce.id,
+                selected: ce == null ? false : curStatus != _FilterType.none,
+                value: ce?.ce.id,
                 shrinkWrap: true,
                 constraints: BoxConstraints(),
                 selectedColor: curStatus.color,
-                child: ce.ce.iconBuilder(context: context, jumpToDetail: false, width: 36, padding: EdgeInsets.all(3)),
+                child:
+                    ce?.ce.iconBuilder(context: context, jumpToDetail: false, height: 36, padding: EdgeInsets.all(3)) ??
+                    GameCardMixin.cardIconBuilder(
+                      context: context,
+                      icon: Atlas.common.emptySvtIcon,
+                      height: 36,
+                      padding: EdgeInsets.all(3),
+                    ),
               ),
             ),
             SizedBox(
               width: 36,
               height: 20,
               child: AutoSizeText(
-                curStatus == _FilterType.none ? '-' : curStatus.shownName,
+                ce == null ? S.current.general_all : (curStatus == _FilterType.none ? '-' : curStatus.shownName),
                 maxLines: 1,
                 minFontSize: 2,
                 maxFontSize: 12,
