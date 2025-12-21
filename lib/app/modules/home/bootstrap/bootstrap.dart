@@ -346,6 +346,7 @@ class _BootstrapPageState extends State<BootstrapPage> with SingleTickerProvider
                   onTapOk: () {
                     db.settings.tips.starter = false;
                     db.saveSettings();
+                    rootRouter.appState.activeRouter.clearHistory();
                     rootRouter.appState.dataReady = true;
                   },
                 ),

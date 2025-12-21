@@ -103,6 +103,10 @@ class AppRouterDelegate extends RouterDelegate<RouteConfiguration>
     _history.removeLast().complete(result);
   }
 
+  void clearHistory() {
+    _history.clear();
+  }
+
   void pop([dynamic result]) {
     if (canPop()) {
       _doPop(result);
