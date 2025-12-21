@@ -232,7 +232,7 @@ class BattleRecordManager {
       reasons.setUpload('${S.current.support_servant}: ＞1');
     }
     final maxCost = Maths.max(ConstData.userLevel.values.map((e) => e.maxCost), 115);
-    if (options.formation.totalCost > maxCost) {
+    if ((questPhase.extraDetail?.isInfinityCost ?? 0) == 0 && options.formation.totalCost > maxCost) {
       reasons.setUpload('COST ${options.formation.totalCost}>$maxCost');
     }
 

@@ -280,6 +280,7 @@ const _$NiceAiCondEnumMap = {
   NiceAiCond.countAvailableMasterSkillLower: 'countAvailableMasterSkillLower',
   NiceAiCond.countAvailableMasterSkillEqual: 'countAvailableMasterSkillEqual',
   NiceAiCond.commonReleaseId: 'commonReleaseId',
+  NiceAiCond.existRemainChargeTurnMasterSkill: 'existRemainChargeTurnMasterSkill',
 };
 
 const _$AiTypeEnumMap = {AiType.svt: 'svt', AiType.field: 'field'};
@@ -350,12 +351,17 @@ const _$NiceAiActTypeEnumMap = {
   NiceAiActType.playMotion: 'playMotion',
   NiceAiActType.message: 'message',
   NiceAiActType.messageGroup: 'messageGroup',
+  NiceAiActType.overwriteFieldMotion: 'overwriteFieldMotion',
+  NiceAiActType.overwriteAddUniqueCamera: 'overwriteAddUniqueCamera',
   NiceAiActType.noblePhantasm: 'noblePhantasm',
   NiceAiActType.battleEnd: 'battleEnd',
   NiceAiActType.loseEnd: 'loseEnd',
   NiceAiActType.battleEndNotRelatedSurvivalStatus: 'battleEndNotRelatedSurvivalStatus',
   NiceAiActType.battleEndNotRelatedSurvivalStatusInstantly: 'battleEndNotRelatedSurvivalStatusInstantly',
   NiceAiActType.allBattleEnd: 'allBattleEnd',
+  NiceAiActType.loadMovie: 'loadMovie',
+  NiceAiActType.playMovie: 'playMovie',
+  NiceAiActType.waitFinishMovie: 'waitFinishMovie',
   NiceAiActType.changeThinking: 'changeThinking',
 };
 

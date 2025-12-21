@@ -213,7 +213,6 @@ QuestPhase _$QuestPhaseFromJson(Map json) => QuestPhase(
     json['phaseIndividuality'],
     const TraitListConverter().fromJson,
   ),
-  qp: (json['qp'] as num?)?.toInt() ?? 0,
   exp: (json['exp'] as num?)?.toInt() ?? 0,
   bond: (json['bond'] as num?)?.toInt() ?? 0,
   isNpcOnly: json['isNpcOnly'] as bool? ?? false,
@@ -293,7 +292,6 @@ Map<String, dynamic> _$QuestPhaseToJson(QuestPhase instance) => <String, dynamic
     instance.phaseIndividuality,
     const TraitListConverter().toJson,
   ),
-  'qp': instance.qp,
   'exp': instance.exp,
   'bond': instance.bond,
   'isNpcOnly': instance.isNpcOnly,
@@ -1072,9 +1070,6 @@ Map<String, dynamic> _$QuestPhaseAiNpcToJson(QuestPhaseAiNpc instance) => <Strin
 
 QuestPhaseExtraDetail _$QuestPhaseExtraDetailFromJson(Map json) => QuestPhaseExtraDetail(
   questSelect: (json['questSelect'] as List<dynamic>?)?.map((e) => (e as num).toInt()).toList(),
-  singleForceSvtId: (json['singleForceSvtId'] as num?)?.toInt(),
-  hintTitle: json['hintTitle'] as String?,
-  hintMessage: json['hintMessage'] as String?,
   aiNpc: json['aiNpc'] == null ? null : QuestPhaseAiNpc.fromJson(Map<String, dynamic>.from(json['aiNpc'] as Map)),
   aiMultiNpc: (json['aiMultiNpc'] as List<dynamic>?)
       ?.map((e) => QuestPhaseAiNpc.fromJson(Map<String, dynamic>.from(e as Map)))
@@ -1085,15 +1080,7 @@ QuestPhaseExtraDetail _$QuestPhaseExtraDetailFromJson(Map json) => QuestPhaseExt
   addEquipSkills: json['addEquipSkills'] == null
       ? null
       : OverwriteEquipSkills.fromJson(Map<String, dynamic>.from(json['addEquipSkills'] as Map)),
-  waveSetup: (json['waveSetup'] as num?)?.toInt(),
-  interruptibleQuest: (json['interruptibleQuest'] as num?)?.toInt(),
-  masterImageId: (json['masterImageId'] as num?)?.toInt(),
   IgnoreBattlePointUp: (json['IgnoreBattlePointUp'] as List<dynamic>?)?.map((e) => (e as num).toInt()).toList(),
-  useEventDeckNo: (json['useEventDeckNo'] as num?)?.toInt(),
-  masterSkillDelay: (json['masterSkillDelay'] as num?)?.toInt(),
-  masterSkillDelayInfo: json['masterSkillDelayInfo'] as String?,
-  isUseGrandBoard: (json['isUseGrandBoard'] as num?)?.toInt(),
-  turn: (json['turn'] as num?)?.toInt(),
   LimitAct: $enumDecodeNullable(_$StageLimitActTypeEnumMap, json['LimitAct']),
   fixedMasterEquip: json['fixedMasterEquip'] == null
       ? null
@@ -1102,22 +1089,11 @@ QuestPhaseExtraDetail _$QuestPhaseExtraDetailFromJson(Map json) => QuestPhaseExt
 
 Map<String, dynamic> _$QuestPhaseExtraDetailToJson(QuestPhaseExtraDetail instance) => <String, dynamic>{
   'questSelect': instance.questSelect,
-  'singleForceSvtId': instance.singleForceSvtId,
-  'hintTitle': instance.hintTitle,
-  'hintMessage': instance.hintMessage,
   'aiNpc': instance.aiNpc?.toJson(),
   'aiMultiNpc': instance.aiMultiNpc?.map((e) => e.toJson()).toList(),
   'overwriteEquipSkills': instance.overwriteEquipSkills?.toJson(),
   'addEquipSkills': instance.addEquipSkills?.toJson(),
-  'waveSetup': instance.waveSetup,
-  'interruptibleQuest': instance.interruptibleQuest,
-  'masterImageId': instance.masterImageId,
   'IgnoreBattlePointUp': instance.IgnoreBattlePointUp,
-  'useEventDeckNo': instance.useEventDeckNo,
-  'masterSkillDelay': instance.masterSkillDelay,
-  'masterSkillDelayInfo': instance.masterSkillDelayInfo,
-  'isUseGrandBoard': instance.isUseGrandBoard,
-  'turn': instance.turn,
   'LimitAct': _$StageLimitActTypeEnumMap[instance.LimitAct],
   'fixedMasterEquip': instance.fixedMasterEquip?.toJson(),
 };
@@ -1197,6 +1173,7 @@ const _$RestrictionTypeEnumMap = {
   RestrictionType.fixedMyGrandSvt: 'fixedMyGrandSvt',
   RestrictionType.myGrandSvtPositionMain: 'myGrandSvtPositionMain',
   RestrictionType.myGrandSvtOrSupportGrandSvt: 'myGrandSvtOrSupportGrandSvt',
+  RestrictionType.activeGrandBoard: 'activeGrandBoard',
   RestrictionType.fixedCostume: 'fixedCostume',
 };
 
@@ -1278,7 +1255,6 @@ BasicQuestPhaseDetail _$BasicQuestPhaseDetailFromJson(Map json) => BasicQuestPha
   questId: (json['questId'] as num).toInt(),
   phase: (json['phase'] as num).toInt(),
   classIds: (json['classIds'] as List<dynamic>?)?.map((e) => (e as num).toInt()).toList() ?? const [],
-  qp: (json['qp'] as num?)?.toInt() ?? 0,
   exp: (json['exp'] as num?)?.toInt() ?? 0,
   bond: (json['bond'] as num?)?.toInt() ?? 0,
   giftId: (json['giftId'] as num?)?.toInt() ?? 0,
@@ -1293,7 +1269,6 @@ Map<String, dynamic> _$BasicQuestPhaseDetailToJson(BasicQuestPhaseDetail instanc
   'questId': instance.questId,
   'phase': instance.phase,
   'classIds': instance.classIds,
-  'qp': instance.qp,
   'exp': instance.exp,
   'bond': instance.bond,
   'giftId': instance.giftId,

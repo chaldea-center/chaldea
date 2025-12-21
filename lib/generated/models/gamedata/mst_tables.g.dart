@@ -480,6 +480,7 @@ EventRaidEntity _$EventRaidEntityFromJson(Map json) => EventRaidEntity(
   groupIndex: json['groupIndex'],
   subGroupIndex: json['subGroupIndex'],
   name: json['name'],
+  shortName: json['shortName'],
   maxHp: json['maxHp'],
   iconId: json['iconId'],
   bossColor: json['bossColor'],

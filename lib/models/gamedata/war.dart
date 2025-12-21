@@ -108,6 +108,11 @@ class NiceWar with RouteInfo {
         }
       }
     }
+    if (id == 407 &&
+        banner != null &&
+        (banner.endsWith('questboard_cap409.png') || banner.endsWith('questboard_cap_closed_409.png'))) {
+      banner = banner.replaceAll(RegExp(r'questboard_.*?409\.png'), 'questboard_cap410.png');
+    }
     if (banner == null) return null;
     final event = this.event;
     if (_eventId == 0 || event == null || id == 8348 || id < 1000) {

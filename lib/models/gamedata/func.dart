@@ -637,7 +637,9 @@ enum FuncType {
   addStateToField(160),
   addStateShortToField(161),
   gainNpFromOtherUsedNpValue(162),
-  hastenNpturnFromOtherUsedNpturn(163);
+  hastenNpturnFromOtherUsedNpturn(163),
+  damageFuncType164(164),
+  damageFuncType165(165);
 
   final int value;
   const FuncType(this.value);

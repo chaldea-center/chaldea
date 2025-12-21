@@ -510,6 +510,7 @@ class AiTable extends StatelessWidget {
       case NiceAiCond.countAvailableMasterSkillLower:
       case NiceAiCond.countAvailableMasterSkillEqual:
       case NiceAiCond.commonReleaseId:
+      case NiceAiCond.existRemainChargeTurnMasterSkill:
         return {};
     }
   }

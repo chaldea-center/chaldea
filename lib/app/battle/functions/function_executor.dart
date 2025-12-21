@@ -503,6 +503,8 @@ class FunctionExecutor {
           break;
         case FuncType.updateEnemyEntryMaxCountEachTurn:
         case FuncType.swapFieldPosition:
+        case FuncType.damageFuncType164:
+        case FuncType.damageFuncType165:
         // ↑↑↑ should be implemented ↑↑↑
         case FuncType.damageValueSafeOnce:
         case FuncType.damageNpStateIndividual:

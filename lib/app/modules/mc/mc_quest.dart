@@ -423,7 +423,7 @@ class _MCQuestConverter extends McConverter {
     Set<String> recommendLvs = questPhases.values.map((e) => e.recommendLv).toSet();
     Set<int> bonds = questPhases.values.map((e) => e.bond).toSet();
     Set<int> exps = questPhases.values.map((e) => e.exp).toSet();
-    Set<int> qps = questPhases.values.map((e) => e.qp).toSet();
+    // Set<int> qps = questPhases.values.map((e) => e.qp).toSet();
     bool sameBond = allNoBattle;
     List<String> extraInfo = [];
     final svt = db.gameData.servantsById.values.firstWhereOrNull((e) => e.relateQuestIds.contains(quest.id));
@@ -521,12 +521,12 @@ class _MCQuestConverter extends McConverter {
     }
 
     if (!allNoBattle) {
-      if (recommendLvs.length == 1 && bonds.length == 1 && exps.length == 1 && qps.length == 1) {
+      if (recommendLvs.length == 1 && bonds.length == 1 && exps.length == 1) {
         sameBond = true;
         buffer.writeln("""|推荐等级=${recommendLvs.single}
 |牵绊=${bonds.single}
 |经验=${exps.single}
-|QP=${qps.single}""");
+|QP=""");
       }
     }
     if (quest.flags.contains(QuestFlag.displayLoopmark)) {
@@ -619,7 +619,7 @@ class _MCQuestConverter extends McConverter {
       buffer.writeln("""|$phaseZh推荐等级=${quest.recommendLv}
 |$phaseZh牵绊=${quest.bond}
 |$phaseZh经验=${quest.exp}
-|${phaseZh}QP=${quest.qp}""");
+|${phaseZh}QP=""");
     }
     // spot
     String spotName = quest.spotName;

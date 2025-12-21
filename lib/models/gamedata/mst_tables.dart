@@ -693,7 +693,7 @@ class UserServantCollectionEntity with DataEntityBase<_IntStr> {
        updatedAt = _toInt(updatedAt),
        createdAt = _toInt(createdAt);
 
-  bool get isOwned => status == 2;
+  bool get isOwned => status == SvtCollectionStatus.get.value;
 
   int get maxFriendshipRank => (svtId == 800100 ? 5 : 10) + friendshipExceedCount;
 
@@ -1907,9 +1907,11 @@ class EventRaidEntity with DataEntityBase<String> {
   int groupIndex;
   int subGroupIndex;
   String name;
+  String shortName;
   int maxHp; // maxHp is max battle count for most raids
   int iconId;
   int bossColor;
+  // int finishQuestId;
   // int flag;
   int startedAt;
   int endedAt;
@@ -1924,6 +1926,7 @@ class EventRaidEntity with DataEntityBase<String> {
   int defeatBaseAt;
   int correctStartTime;
   // int damageAdjustId;
+  // Map<String, dynamic> script;
 
   @override
   String get primaryKey => _createPK2(eventId, day);
@@ -1936,6 +1939,7 @@ class EventRaidEntity with DataEntityBase<String> {
     dynamic groupIndex,
     dynamic subGroupIndex,
     dynamic name,
+    dynamic shortName,
     dynamic maxHp,
     dynamic iconId,
     dynamic bossColor,
@@ -1952,6 +1956,7 @@ class EventRaidEntity with DataEntityBase<String> {
        groupIndex = _toInt(groupIndex),
        subGroupIndex = _toInt(subGroupIndex),
        name = name?.toString() ?? "",
+       shortName = shortName?.toString() ?? "",
        maxHp = _toInt(maxHp),
        iconId = _toInt(iconId),
        bossColor = _toInt(bossColor),
@@ -3290,5 +3295,25 @@ enum UserSvtStatusFlag {
   isNotSendStorage(4096);
 
   const UserSvtStatusFlag(this.value);
+  final int value;
+}
+
+enum SvtCollectionStatus {
+  // ↓ can be in userSvtCollection.status
+  notGet(0),
+  find_(1),
+  get(2),
+  // ↓ runtime value
+  enemyCollectionDetail(3),
+  hide(4),
+  npc(5),
+  secret(6),
+  dataLost(7),
+  linkLost(8),
+  linkBad(9),
+  linkClose(10),
+  collectionStatus6(11);
+
+  const SvtCollectionStatus(this.value);
   final int value;
 }

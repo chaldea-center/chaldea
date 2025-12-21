@@ -630,7 +630,10 @@ class _UserDeckSetupPageState extends State<UserDeckSetupPage> with FakerRuntime
   Widget buildMasterEquip() {
     final userEquip = mstData.userEquip[deckInfo.userEquipId];
     final equip = db.gameData.mysticCodes[userEquip?.equipId];
-    final cost = getTotalCost(), maxCost = mstData.user?.costMax ?? 0;
+    int cost = getTotalCost(), maxCost = mstData.user?.costMax ?? 0;
+    if ((widget.eventDeckParam?.questPhase?.extraDetail?.isInfinityCost ?? 0) != 0) {
+      maxCost = 9999;
+    }
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.center,

@@ -324,6 +324,7 @@ enum NiceAiCond {
   countAvailableMasterSkillLower,
   countAvailableMasterSkillEqual,
   commonReleaseId,
+  existRemainChargeTurnMasterSkill,
 }
 
 enum AiTiming {
@@ -366,12 +367,17 @@ enum NiceAiActType {
   playMotion,
   message,
   messageGroup,
+  overwriteFieldMotion,
+  overwriteAddUniqueCamera,
   noblePhantasm,
   battleEnd,
   loseEnd,
   battleEndNotRelatedSurvivalStatus,
   battleEndNotRelatedSurvivalStatusInstantly,
   allBattleEnd,
+  loadMovie,
+  playMovie,
+  waitFinishMovie,
   changeThinking,
 }
 

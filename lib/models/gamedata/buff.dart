@@ -540,6 +540,11 @@ enum BuffType {
   otherTreasureDevicePreBeforeFunction(240),
   attackPhaseStartFunction(241),
   treasureDevicePostAfterFunction(242),
+  buff243(243),
+  buff244(244),
+  buff245(245),
+  limitMaxNp(246),
+  limitMinNp(247),
 
   toFieldChangeField(10001),
   toFieldAvoidBuff(10002),

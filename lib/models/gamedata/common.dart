@@ -203,7 +203,7 @@ mixin DataScriptBase {
   Map<String, dynamic> get source => _source;
   void setSource(Map<String, dynamic>? json) => json == null ? null : _source = Map.from(json);
 
-  void setValue(String key, Object? value) => value == null ? _source.remove(key) : _source[key] = null;
+  void setValue(String key, Object? value) => value == null ? _source.remove(key) : _source[key] = value;
 
   List<T>? toList<T>(String key) {
     final v = _source[key];
@@ -1358,7 +1358,10 @@ enum CondType {
   notPlayedMovie(260),
   notShopGroupLimitNum(263),
   equipGet(264),
-  notEquipGet(265);
+  notEquipGet(265),
+  svtGetBeforeDate(266),
+  svtGetAfterDate(267),
+  notQuestAvailable(268);
 
   const CondType(this.value);
   final int value;

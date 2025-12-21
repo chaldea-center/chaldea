@@ -482,4 +482,7 @@ const _$CondTypeEnumMap = {
   CondType.notShopGroupLimitNum: 'notShopGroupLimitNum',
   CondType.equipGet: 'equipGet',
   CondType.notEquipGet: 'notEquipGet',
+  CondType.svtGetBeforeDate: 'svtGetBeforeDate',
+  CondType.svtGetAfterDate: 'svtGetAfterDate',
+  CondType.notQuestAvailable: 'notQuestAvailable',
 };

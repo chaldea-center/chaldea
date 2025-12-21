@@ -576,7 +576,7 @@ class GameConstants {
   final int largeSuccessMultExp; // 2000
   final int largeSuccessRate; // 100
   final int lastAttackToSelfIndividuality; // 6045
-  final int lastWarId; // 405
+  final int lastWarId; // 407
   final int limitedPeriodVoiceChangeType; // 0
   final int limitedShopRemainDays; // 1000
   final int loginDay; // 1459436400
@@ -631,6 +631,7 @@ class GameConstants {
   final int nothinkAiactid; // 1002
   final int notChangeBehaviorTransformSvtId; // 600700
   final int notFriendPoint; // 10
+  final int noNoblePhantasmIndividuality; // 7030
   final int npcFriendPoint; // 200
   final int npDoubleBurst; // 1000
   final int npTripleBurst; // 1500
@@ -643,6 +644,7 @@ class GameConstants {
   final int overKillNpRate; // 1500
   final int overKillStarAdd; // 300
   final int overKillStarRate; // 1000
+  final int part2FinalChapterCommonReleaseId; // 20151711
   final int perSameCommand; // 0
   final int presentValidTime; // 31536000
   final int prologueQuestId; // 1000000
@@ -744,6 +746,7 @@ class GameConstants {
   final int tutorialQuestId4Phase; // 1
   final int tutorialSupportQuestId; // 1000006
   final int tutorialSupportQuestPhase; // 2
+  final int updateConditionBuffLoopBreakMaxCount; // 6
   final int userAct; // 20
   final int userCost; // 56
   final int userFreeStone; // 30
@@ -905,7 +908,7 @@ class GameConstants {
     this.largeSuccessMultExp = 2000,
     this.largeSuccessRate = 100,
     this.lastAttackToSelfIndividuality = 6045,
-    this.lastWarId = 405,
+    this.lastWarId = 407,
     this.limitedPeriodVoiceChangeType = 0,
     this.limitedShopRemainDays = 1000,
     this.loginDay = 1459436400,
@@ -960,6 +963,7 @@ class GameConstants {
     this.nothinkAiactid = 1002,
     this.notChangeBehaviorTransformSvtId = 600700,
     this.notFriendPoint = 10,
+    this.noNoblePhantasmIndividuality = 7030,
     this.npcFriendPoint = 200,
     this.npDoubleBurst = 1000,
     this.npTripleBurst = 1500,
@@ -972,6 +976,7 @@ class GameConstants {
     this.overKillNpRate = 1500,
     this.overKillStarAdd = 300,
     this.overKillStarRate = 1000,
+    this.part2FinalChapterCommonReleaseId = 20151711,
     this.perSameCommand = 0,
     this.presentValidTime = 31536000,
     this.prologueQuestId = 1000000,
@@ -1073,6 +1078,7 @@ class GameConstants {
     this.tutorialQuestId4Phase = 1,
     this.tutorialSupportQuestId = 1000006,
     this.tutorialSupportQuestPhase = 2,
+    this.updateConditionBuffLoopBreakMaxCount = 6,
     this.userAct = 20,
     this.userCost = 56,
     this.userFreeStone = 30,
@@ -1434,6 +1440,11 @@ enum BuffAction {
   functionOtherTreasureDevicePreBefore(166),
   functionAttackPhaseStart(167),
   functionTreasureDevicePostAfter(167),
+  action169(169),
+  action170(170),
+  action171(171),
+  limitMaxNp(172),
+  limitMinNp(173),
   // custom
   functionClassboardCommandSpellAfter(301);
 

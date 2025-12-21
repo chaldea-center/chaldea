@@ -333,6 +333,8 @@ const _$FuncTypeEnumMap = {
   FuncType.addStateShortToField: 'addStateShortToField',
   FuncType.gainNpFromOtherUsedNpValue: 'gainNpFromOtherUsedNpValue',
   FuncType.hastenNpturnFromOtherUsedNpturn: 'hastenNpturnFromOtherUsedNpturn',
+  FuncType.damageFuncType164: 'damageFuncType164',
+  FuncType.damageFuncType165: 'damageFuncType165',
 };
 
 const _$FuncApplyTargetEnumMap = {

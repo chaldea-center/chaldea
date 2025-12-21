@@ -459,7 +459,7 @@ class TdDmgSolver {
       warId: options.warId,
       individuality: options.fieldTraits.toList(),
       stages: [Stage(wave: 1, enemyFieldPosCount: max(3, enemies.length), enemies: enemies)],
-      extraDetail: QuestPhaseExtraDetail(isUseGrandBoard: options.grandBoard.isNone ? null : 1),
+      extraDetail: QuestPhaseExtraDetail()..setValue('isUseGrandBoard', options.grandBoard.isNone ? null : 1),
     );
   }
 

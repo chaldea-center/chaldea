@@ -422,7 +422,11 @@ class DataVals {
       _get('FunctionTriggerActorTargetFlag'); // flag list, enum FuncTriggerActorTargetFlag
   int? get IsTurnProgressWithoutGrantActor => _get('IsTurnProgressWithoutGrantActor');
   int? get IsFuncCheckFieldIndividuality => _get('IsFuncCheckFieldIndividuality');
+  int? get IgnoreTargetFuncResult => _get('IgnoreTargetFuncResult');
+  int? get ExecuteWhenHideText => _get('ExecuteWhenHideText');
+  int? get SkipCheckAlive => _get('SkipCheckAlive');
 
+  //
   int? get Individuality => _get('Individuality');
   int? get EventId => _get('EventId');
   int? get AddCount => _get('AddCount');

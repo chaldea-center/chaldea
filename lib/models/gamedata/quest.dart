@@ -403,7 +403,7 @@ class QuestPhase extends Quest {
   List<int> individuality;
   @TraitListConverter()
   List<int>? phaseIndividuality;
-  int qp;
+  // int qp;
   int exp;
   int bond;
   bool isNpcOnly;
@@ -472,7 +472,6 @@ class QuestPhase extends Quest {
     this.classIds = const [],
     List<int>? individuality,
     this.phaseIndividuality,
-    this.qp = 0,
     this.exp = 0,
     this.bond = 0,
     this.isNpcOnly = false,
@@ -1793,55 +1792,47 @@ class QuestPhaseAiNpc {
 }
 
 @JsonSerializable()
-class QuestPhaseExtraDetail {
+class QuestPhaseExtraDetail with DataScriptBase {
   List<int>? questSelect;
-  int? singleForceSvtId;
-  String? hintTitle;
-  String? hintMessage;
   QuestPhaseAiNpc? aiNpc;
   List<QuestPhaseAiNpc>? aiMultiNpc;
   OverwriteEquipSkills? overwriteEquipSkills;
   OverwriteEquipSkills? addEquipSkills;
-  int? waveSetup;
-  int? interruptibleQuest;
-  int? masterImageId;
   List<int>? IgnoreBattlePointUp;
-  // int? repeatReward;
-  // List<int>? consumeItemBattleWin;
-  /// default `1`
-  int? useEventDeckNo;
-  int? masterSkillDelay;
-  String? masterSkillDelayInfo;
-  int? isUseGrandBoard;
-  int? turn;
+  int? get turn => getScript('turn');
   StageLimitActType? LimitAct;
   FixedMasterEquip? fixedMasterEquip;
 
+  int? get singleForceSvtId => getScript('singleForceSvtId');
+  String? get hintTitle => getScript('hintTitle');
+  String? get hintMessage => getScript('hintMessage');
+  int? get waveSetup => getScript('waveSetup');
+  int? get interruptibleQuest => getScript('interruptibleQuest');
+  int? get masterImageId => getScript('masterImageId');
+  // int? repeatReward;
+  // List<int>? consumeItemBattleWin;
+  /// default `1`
+  int? get useEventDeckNo => getScript('useEventDeckNo');
+  int? get masterSkillDelay => getScript('masterSkillDelay');
+  String? get masterSkillDelayInfo => getScript('masterSkillDelayInfo');
+  int? get isUseGrandBoard => getScript('isUseGrandBoard');
+  int? get isInfinityCost => getScript('isInfinityCost');
+
   QuestPhaseExtraDetail({
     this.questSelect,
-    this.singleForceSvtId,
-    this.hintTitle,
-    this.hintMessage,
     this.aiNpc,
     this.aiMultiNpc,
     this.overwriteEquipSkills,
     this.addEquipSkills,
-    this.waveSetup,
-    this.interruptibleQuest,
-    this.masterImageId,
     this.IgnoreBattlePointUp,
-    this.useEventDeckNo,
-    this.masterSkillDelay,
-    this.masterSkillDelayInfo,
-    this.isUseGrandBoard,
-    this.turn,
     this.LimitAct,
     this.fixedMasterEquip,
   });
 
-  factory QuestPhaseExtraDetail.fromJson(Map<String, dynamic> json) => _$QuestPhaseExtraDetailFromJson(json);
+  factory QuestPhaseExtraDetail.fromJson(Map<String, dynamic> json) =>
+      _$QuestPhaseExtraDetailFromJson(json)..setSource(json);
 
-  Map<String, dynamic> toJson() => _$QuestPhaseExtraDetailToJson(this);
+  Map<String, dynamic> toJson() => Map.from(source)..addAll(_$QuestPhaseExtraDetailToJson(this));
 
   OverwriteEquipSkills? getMergedOverwriteEquipSkills() {
     if (overwriteEquipSkills?.skills.isNotEmpty == true || addEquipSkills?.skills.isNotEmpty == true) {
@@ -2032,7 +2023,7 @@ class BasicQuestPhaseDetail {
   final int phase;
   final List<int> classIds;
   // final List<int> individuality;
-  final int qp;
+  // final int qp; // removed, only return from server
   final int exp;
   final int bond;
   final int giftId;
@@ -2053,7 +2044,6 @@ class BasicQuestPhaseDetail {
     required this.questId,
     required this.phase,
     this.classIds = const [],
-    this.qp = 0,
     this.exp = 0,
     this.bond = 0,
     this.giftId = 0,
@@ -2361,6 +2351,7 @@ enum RestrictionType {
   fixedMyGrandSvt,
   myGrandSvtPositionMain,
   myGrandSvtOrSupportGrandSvt,
+  activeGrandBoard,
   fixedCostume,
 }
 
@@ -2538,7 +2529,12 @@ enum QuestAfterActionCommand {
   blankEarthObjectDispQuick(1011),
   blankEarthObjectAnimQuick(1012),
   eventEffectPlay(1100),
-  changeDispStateQuestBoard(1200);
+  changeDispStateQuestBoard(1200),
+  eventUiDisable(1300),
+  eventUiEnable(1301),
+  raidUiDisable(1310),
+  raidUiEnable(1311),
+  raidUiDisableQuick(1312);
 
   const QuestAfterActionCommand(this.value);
   final int value;
