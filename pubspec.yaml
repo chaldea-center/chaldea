@@ -19,7 +19,7 @@ version: 2.5.23+985
 
 environment:
   sdk: ">=3.10.0 <4.0.0"
-  flutter: 3.38.3
+  flutter: 3.38.5
 
 dependencies:
   flutter:
@@ -96,7 +96,7 @@ dependencies:
   share_plus: ^12.0.0
   shared_preferences: ^2.2.0
   sliver_tools: ^0.2.12
-  smooth_page_indicator: ^1.1.0
+  smooth_page_indicator: ^2.0.1
   string_validator: ^1.0.0
   table_sticky_headers: ^2.0.1
   timezone: ^0.10.0
