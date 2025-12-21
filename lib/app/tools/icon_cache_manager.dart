@@ -161,6 +161,7 @@ class AtlasIconLoader extends _CachedLoader<String, String> {
     if (const <String>[
       '/JP/Banner/questboard_cap13000.png',
       '/JP/Banner/questboard_cap14000.png',
+      '/JP/Banner/questboard_cap15000.png',
     ].any((e) => url.endsWith(e))) {
       return null;
     }

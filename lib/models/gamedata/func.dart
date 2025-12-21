@@ -651,7 +651,9 @@ enum FuncType {
     FuncType.setBattleMissionValue,
   ];
 
-  bool get isDamageNp => name.startsWith('damageNp') && !ConstData.constantStr.functionTypeNotNpDamage.contains(value);
+  bool get isDamageNp =>
+      (name.startsWith('damageNp') || this == .damageFuncType164 || this == .damageFuncType165) &&
+      !ConstData.constantStr.functionTypeNotNpDamage.contains(value);
 
   bool get isAddState => kAddStateFuncTypes.contains(this);
 }
@@ -760,9 +762,14 @@ class FuncTypeConverter extends JsonConverter<FuncType, String> {
 
   @override
   FuncType fromJson(String value) {
-    return decodeEnumNullable(_$FuncTypeEnumMap, value) ??
-        deprecatedTypes[value] ??
-        decodeEnum(_$FuncTypeEnumMap, value, FuncType.unknown);
+    FuncType? result = decodeEnumNullable(_$FuncTypeEnumMap, value) ?? deprecatedTypes[value];
+    if (result == null) {
+      int? intValue = ConstGameData.deprecatedEnums['FuncType']?[value];
+      if (intValue != null) {
+        result = FuncType.values.firstWhereOrNull((e) => e.value == intValue);
+      }
+    }
+    return result ?? FuncType.unknown;
   }
 
   @override

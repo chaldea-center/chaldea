@@ -1635,6 +1635,9 @@ class EnemyScript with DataScriptBase {
   int? get shiftPosition => toInt('shiftPosition'); // default value -1
   int? get entryByUserDeckFormationCondId => toInt('entryByUserDeckFormationCondId');
   int? get isGrandSvt => toInt('isGrandSvt');
+  int? get hidePersonality => toInt('hidePersonality');
+  int? get hidePolicy => toInt('hidePolicy');
+  int? get hideAttri => toInt('hideAttri');
 
   factory EnemyScript.fromJson(Map<String, dynamic> json) => _$EnemyScriptFromJson(json)..setSource(json);
 

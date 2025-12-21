@@ -138,6 +138,7 @@ class _WarAssetListPageState extends State<WarAssetListPage> with AfterLayoutMix
     if (war != null) {
       bgImages = {
         ...<String?>[
+          war.shownBanner,
           war.banner,
           war.headerImage,
           for (final map in war.maps) ...[map.mapImage, map.headerImage],

@@ -58,6 +58,8 @@ class ConstGameData {
   final Map<String, List<String>> routeSelects;
   final ConstDataConfig config;
 
+  static Map<String, Map<String, int>> deprecatedEnums = {};
+
   ConstGameData({
     this.cnReplace = const {},
     this.attributeRelation = const {},
@@ -1248,13 +1250,22 @@ class BuffActionConverter extends JsonConverter<BuffAction, dynamic> {
   @override
   BuffAction fromJson(dynamic value) {
     if (value == null) return BuffAction.none;
-    if (value is int) {
-      return BuffAction.values.firstWhere((e) => e.value == value, orElse: () => BuffAction.unknown);
-    } else if (value is String) {
-      return deprecatedTypes[value] ?? decodeEnum(_$BuffActionEnumMap, value, BuffAction.unknown);
+
+    int? intValue;
+    if (value is String) {
+      BuffAction? result = deprecatedTypes[value] ?? decodeEnumNullable(_$BuffActionEnumMap, value);
+      if (result != null) return result;
+      intValue = ConstGameData.deprecatedEnums['BuffAction']?[value];
+    } else if (value is int) {
+      intValue = value;
     } else {
       throw UnsupportedError("BuffAction value must be int or string: ${value.runtimeType} $value");
     }
+
+    if (intValue != null) {
+      return BuffAction.values.firstWhere((e) => e.value == intValue, orElse: () => BuffAction.unknown);
+    }
+    return BuffAction.unknown;
   }
 
   @override

@@ -284,6 +284,14 @@ class GameDataLoader {
     _gameJson['removeOldDataRegion'] = removeOldDataRegion == null
         ? null
         : const RegionConverter().toJson(removeOldDataRegion);
+    Map? deprecatedEnums = _gameJson['constData']?['deprecatedEnums'];
+    if (deprecatedEnums != null && deprecatedEnums.isNotEmpty) {
+      ConstGameData.deprecatedEnums = {
+        for (final (k, v) in deprecatedEnums.items)
+          k as String: {for (final (k2, v2) in (v as Map).items) k2 as String: (v2 as num).toInt()},
+      };
+    }
+
     tmp.gameJson = _gameJson;
     GameData _gamedata = GameData.fromJson(_gameJson);
     await _fixGameData(_gamedata);

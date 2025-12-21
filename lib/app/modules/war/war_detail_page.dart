@@ -196,7 +196,9 @@ class _WarDetailPageState extends State<WarDetailPage> with RegionBasedState<Nic
       if (war.id == WarId.grandBoardWar) {
         for (final _w in db.gameData.wars.values) {
           if (_w.parentWarId != WarId.grandBoardWar) continue;
-          final candidateQuests = _w.quests.where((e) => e.isAnyFree).toList();
+          final candidateQuests = _w.quests
+              .where((e) => e.isAnyFree && e.consumeType == ConsumeType.apAndItem)
+              .toList();
           if (candidateQuests.isEmpty) continue;
 
           final maxLv = candidateQuests.map((e) => e.recommendLevel).fold(QuestLevel(-1), (p, e) => e > p ? e : p);

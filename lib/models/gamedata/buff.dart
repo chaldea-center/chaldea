@@ -287,9 +287,14 @@ class BuffTypeConverter extends JsonConverter<BuffType, String> {
 
   @override
   BuffType fromJson(String value) {
-    return decodeEnumNullable(_$BuffTypeEnumMap, value) ??
-        deprecatedTypes[value] ??
-        decodeEnum(_$BuffTypeEnumMap, value, BuffType.unknown);
+    BuffType? result = decodeEnumNullable(_$BuffTypeEnumMap, value) ?? deprecatedTypes[value];
+    if (result == null) {
+      int? intValue = ConstGameData.deprecatedEnums['BuffType']?[value];
+      if (intValue != null) {
+        result = BuffType.fromId(intValue);
+      }
+    }
+    return result ?? BuffType.unknown;
   }
 
   @override
