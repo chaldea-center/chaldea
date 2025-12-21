@@ -166,6 +166,8 @@ AutoLoginDataCN _$AutoLoginDataCNFromJson(Map json) => $checkedCreate('AutoLogin
   final val = AutoLoginDataCN(
     priority: $checkedConvert('priority', (v) => (v as num?)?.toInt() ?? 0),
     region: $checkedConvert('region', (v) => v == null ? Region.cn : const RegionConverter().fromJson(v as String)),
+    biliUserId: $checkedConvert('biliUserId', (v) => v as String? ?? ''),
+    biliPasswd: $checkedConvert('biliPasswd', (v) => v as String? ?? ''),
     gameServer: $checkedConvert(
       'gameServer',
       (v) => $enumDecodeNullable(_$BiliGameServerEnumMap, v) ?? BiliGameServer.android,
@@ -176,6 +178,9 @@ AutoLoginDataCN _$AutoLoginDataCNFromJson(Map json) => $checkedCreate('AutoLogin
     username: $checkedConvert('username', (v) => v as String? ?? ''),
     nickname: $checkedConvert('nickname', (v) => v as String? ?? ''),
     deviceId: $checkedConvert('deviceId', (v) => v as String? ?? ''),
+    bdid: $checkedConvert('bdid', (v) => v as String? ?? ''),
+    buvid: $checkedConvert('buvid', (v) => v as String? ?? ''),
+    sysVer: $checkedConvert('sysVer', (v) => v as String? ?? ''),
     os: $checkedConvert('os', (v) => v as String? ?? ''),
     ptype: $checkedConvert('ptype', (v) => v as String? ?? ''),
     userAgent: $checkedConvert('userAgent', (v) => v as String? ?? ''),
@@ -239,6 +244,8 @@ Map<String, dynamic> _$AutoLoginDataCNToJson(AutoLoginDataCN instance) => <Strin
   'userItems': instance.userItems.map((k, e) => MapEntry(k.toString(), e)),
   'lastRequestOptions': instance.lastRequestOptions?.toJson(),
   'region': const RegionConverter().toJson(instance.region),
+  'biliUserId': instance.biliUserId,
+  'biliPasswd': instance.biliPasswd,
   'gameServer': _$BiliGameServerEnumMap[instance.gameServer]!,
   'isAndroidDevice': instance.isAndroidDevice,
   'uid': instance.uid,
@@ -246,6 +253,9 @@ Map<String, dynamic> _$AutoLoginDataCNToJson(AutoLoginDataCN instance) => <Strin
   'username': instance.username,
   'nickname': instance.nickname,
   'deviceId': instance.deviceId,
+  'bdid': instance.bdid,
+  'buvid': instance.buvid,
+  'sysVer': instance.sysVer,
   'os': instance.os,
   'ptype': instance.ptype,
 };

@@ -245,24 +245,32 @@ class _FakerHistoryViewerState extends State<FakerHistoryViewer> {
       ),
       children: [
         if (record != null) ...[buildRequestData(record.request?.rawRequest?.data), const Divider(height: 2)],
-        ...?resp?.responses.map(buildFateResponse),
-        const Divider(height: 2),
+        if (resp?.responses.isNotEmpty == true) ...[
+          ...?resp?.responses.map(buildFateResponse),
+          const Divider(height: 2),
+        ],
         ListTile(
-          title: Container(
-            alignment: AlignmentDirectional.centerStart,
-            child: _buildBadge(label: 'master data', color: resp?.cache.isEmpty == true ? Colors.grey : Colors.blue),
+          title: Wrap(
+            spacing: 4,
+            runSpacing: 2,
+            children: [
+              _buildBadge(
+                label: 'body',
+                color: record?.response?.rawResponse == null ? Colors.grey : Colors.lightBlue,
+                onTap: () {
+                  final body = record?.response?.rawResponse.data;
+                  router.pushPage(JsonViewerPage(body));
+                },
+              ),
+              _buildBadge(
+                label: 'master data',
+                color: resp?.cache.isEmpty == true ? Colors.grey : Colors.blue,
+                onTap: () => _onTapMasterData(resp),
+              ),
+            ],
           ),
           // trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
-          onTap: () {
-            final cache = Map.from(resp?.cache ?? {});
-            if (cache.isNotEmpty) {
-              for (final key in ['deleted', 'replaced', 'updated']) {
-                if (!cache.containsKey(key)) continue;
-                cache[key] = sortDict(cache[key]);
-              }
-              router.pushPage(JsonViewerPage(cache));
-            }
-          },
+          onTap: () => _onTapMasterData(resp),
         ),
       ],
     );
@@ -337,18 +345,33 @@ class _FakerHistoryViewerState extends State<FakerHistoryViewer> {
     );
   }
 
-  Widget _buildBadge({required String label, required Color color}) {
+  Widget _buildBadge({required String label, required Color color, VoidCallback? onTap}) {
+    Widget child = Padding(
+      padding: const EdgeInsetsDirectional.fromSTEB(8, 2, 8, 4),
+      child: Text(label, style: const TextStyle(color: Colors.white, fontSize: 12)),
+    );
+    if (onTap != null) {
+      child = InkWell(onTap: onTap, child: child);
+    }
     return DecoratedBox(
       decoration: BoxDecoration(
         border: Border.all(width: 0.5, color: color),
         borderRadius: BorderRadius.circular(10),
         color: color,
       ),
-      child: Padding(
-        padding: const EdgeInsetsDirectional.fromSTEB(8, 2, 8, 4),
-        child: Text(label, style: const TextStyle(color: Colors.white, fontSize: 12)),
-      ),
+      child: child,
     );
+  }
+
+  void _onTapMasterData(FateTopLogin? resp) {
+    final cache = Map.from(resp?.cache ?? {});
+    if (cache.isNotEmpty) {
+      for (final key in ['deleted', 'replaced', 'updated']) {
+        if (!cache.containsKey(key)) continue;
+        cache[key] = sortDict(cache[key]);
+      }
+      router.pushPage(JsonViewerPage(cache));
+    }
   }
 }
 

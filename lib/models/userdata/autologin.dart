@@ -224,6 +224,9 @@ class AutoLoginDataCN extends AutoLoginData {
   @override
   Region get region => Region.cn;
 
+  String biliUserId;
+  String biliPasswd;
+
   BiliGameServer gameServer;
   bool isAndroidDevice;
   int uid; // rkuid
@@ -242,12 +245,17 @@ class AutoLoginDataCN extends AutoLoginData {
     BiliGameServer.ios => 2,
     BiliGameServer.uo => 3,
   }; // 账号? ios-2,android-3
+  String bdid = "";
+  String buvid = "";
+  String sysVer;
   String os;
   String ptype;
 
   AutoLoginDataCN({
     super.priority,
     super.region = Region.cn,
+    this.biliUserId = '',
+    this.biliPasswd = '',
     this.gameServer = BiliGameServer.android,
     this.isAndroidDevice = true,
     this.uid = 0,
@@ -258,6 +266,9 @@ class AutoLoginDataCN extends AutoLoginData {
     // this.rkchannel = 24,
     // this.cPlat = 3,
     // this.uPlat = 3,
+    this.bdid = '',
+    this.buvid = '',
+    this.sysVer = '',
     this.os = '',
     this.ptype = '',
     super.userAgent,

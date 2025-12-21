@@ -455,9 +455,10 @@ class _UserPresentBoxManagePageState extends State<UserPresentBoxManagePage> wit
 class _ItemSelectTile extends StatelessWidget {
   final ItemSelect itemSelect;
   final int count;
+  final int? leftCount;
   final VoidCallback? onTap;
   final EdgeInsetsGeometry? padding;
-  const _ItemSelectTile({required this.itemSelect, required this.count, this.onTap, this.padding});
+  const _ItemSelectTile({required this.itemSelect, required this.count, this.leftCount, this.onTap, this.padding});
 
   @override
   Widget build(BuildContext context) {
@@ -465,7 +466,7 @@ class _ItemSelectTile extends StatelessWidget {
     return ListTile(
       dense: true,
       contentPadding: padding,
-      leading: gift?.iconBuilder(context: context, text: count.format(), width: 32),
+      leading: gift?.iconBuilder(context: context, text: [count.format(), ?leftCount?.format()].join('\n'), width: 32),
       title: Wrap(
         crossAxisAlignment: WrapCrossAlignment.center,
         children: [for (final gift in itemSelect.gifts) Text('${gift.shownName} ×${gift.num}  ')],
@@ -491,16 +492,17 @@ class _ItemSelectListDialog extends StatelessWidget {
 
     return SimpleDialog(
       title: Text('${item.lName.l}\n×${presents.length}'),
-      children: [
-        for (final select in item.itemSelects)
-          _ItemSelectTile(
-            itemSelect: select,
-            count: mstData.getItemOrSvtNum(select.gifts.firstOrNull?.objectId ?? -1),
-            onTap: () {
-              Navigator.pop(context, select);
-            },
-          ),
-      ],
+      children: item.itemSelects.map((select) {
+        final itemId = select.gifts.firstOrNull?.objectId ?? -1;
+        return _ItemSelectTile(
+          itemSelect: select,
+          count: mstData.getItemOrSvtNum(itemId),
+          leftCount: mstData.isCurPlanUser ? (db.itemCenter.itemLeft[itemId] ?? 0) : null,
+          onTap: () {
+            Navigator.pop(context, select);
+          },
+        );
+      }).toList(),
     );
   }
 }

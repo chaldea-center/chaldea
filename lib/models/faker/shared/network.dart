@@ -37,6 +37,7 @@ abstract class FRequestBase {
   String key;
   Duration sendDelay = Duration.zero;
   Map<String, dynamic> params = {};
+  Map<String, dynamic>? headers;
 
   String get normKey => key.replaceAll(RegExp(r'[/_]'), '');
   String get saveKey => key.trimChar('/_').replaceAll(RegExp(r'[/_]'), '');

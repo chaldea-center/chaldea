@@ -1,7 +1,11 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:archive/archive.dart';
+import 'package:crypto/crypto.dart';
 import 'package:dio/dio.dart';
+import 'package:encrypter_plus/encrypter_plus.dart';
+import 'package:pointycastle/pointycastle.dart';
 import 'package:uuid/uuid.dart';
 
 import 'package:chaldea/models/gamedata/mst_data.dart';
@@ -9,6 +13,7 @@ import 'package:chaldea/models/models.dart';
 import 'package:chaldea/models/userdata/version.dart';
 import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/utils/extension.dart';
+import '../quiz/cat_mouse.dart' show CatMouseGame;
 import '../quiz/crypt_data.dart';
 import '../shared/agent.dart';
 import 'network.dart';
@@ -37,6 +42,136 @@ class FakerAgentCN extends FakerAgent<FRequestCN, AutoLoginDataCN, NetworkManage
   List<String> encryptApi = [];
 
   static const developmentAuthCode = 'aK8mTxBJCwZyxBjNJSKA5xCWL7zKtgZEQNiZmffXUbyQd5aLun';
+  static const _sdkLoginHost = 'line1-sdk-center-login-sh.biligame.net';
+  static const _androidAppKey = "a4e39619a09d49e9aead9b820980013a"; // version update
+
+  // login by account & passwd
+  // always use android configuration
+  Future<void> biliSdkLogin() async {
+    final cipherData = await _issueCipherV3();
+    await _externalLoginV3(cipherData.cipherHash, cipherData.cipherKey);
+  }
+
+  Map<String, dynamic> _getSdkBaseParams() {
+    return {
+      "cur_buvid": user.buvid,
+      "sdk_type": 1,
+      "merchant_id": 1,
+      "platform": 3,
+      "apk_sign": "4502a02a00395dec05a4134ad593224d", // version update
+      "platform_type": 3,
+      "old_buvid": user.buvid,
+      "udid": user.buvid,
+      "app_id": 112,
+      "game_id": 112,
+      "timestamp": DateTime.now().millisecondsSinceEpoch,
+      "version_code": 225, // version update
+      "bd_id": user.bdid,
+      "server_id": 248,
+      "version": 3,
+      "domain_switch_count": 0,
+      "app_ver": "2.106.1", // version update
+      "domain": _sdkLoginHost,
+      "original_domain": "https://$_sdkLoginHost",
+      "sdk_log_type": 1,
+      "current_env": 0,
+      "sdk_ver": "6.12.0",
+      "channel_id": 1,
+    };
+  }
+
+  Map<String, dynamic> _getSdkHeaders() {
+    return {
+      HttpHeaders.hostHeader: _sdkLoginHost,
+      // 'x-game-request-id': '',
+      HttpHeaders.acceptHeader: '*/*',
+      HttpHeaders.userAgentHeader: 'Mozilla/5.0 BSGameSDK',
+      HttpHeaders.contentTypeHeader: Headers.formUrlEncodedContentType,
+    };
+  }
+
+  Map<String, Object> _sdkSign(Map<String, Object> params) {
+    const _excludeKeys = ['sign']; // token, feign_sign, item_desc, item_name
+    final keys = params.keys.where((e) => !_excludeKeys.contains(e)).toList();
+    keys.sort();
+    final vals = [for (final k in keys) params[k]!];
+    params['sign'] = md5.convert(utf8.encode(vals.join('') + _androidAppKey)).toString();
+    return params;
+  }
+
+  Future<({String cipherHash, String cipherKey})> _issueCipherV3() async {
+    if (user.bdid.length != 64) {
+      throw ArgumentError.value(user.bdid, 'bdid', 'Must be 64 length');
+    }
+    if (user.buvid.length != 37) {
+      throw ArgumentError.value(user.buvid, 'buvid', 'Must be 37 length');
+    }
+    Map<String, dynamic> params = _sdkSign({
+      ..._getSdkBaseParams(),
+      "cipher_type": "bili_login_rsa", //
+    });
+    // print('sdk login data=\n${JsonEncoder.withIndent('  ').convert(params)}');
+
+    final request = FRequestCN(
+      network: network,
+      path: 'https://$_sdkLoginHost/api/external/issue/cipher/v3',
+      key: 'api_issue_cipher',
+    );
+    request.form.addFromMap(Map.from(params));
+    request.headers = _getSdkHeaders();
+    final resp = await request.beginRequest();
+    final apiResult = resp.rawResponse.data as Map;
+    if (apiResult['code'] != 0) {
+      String text = apiResult.toString();
+      try {
+        text = jsonEncode(apiResult);
+      } catch (e) {
+        //
+      }
+      throw Exception('api issue cipher failed: "$text"');
+    }
+    String? cipherHash = apiResult['hash'], cipherKey = apiResult['cipher_key'];
+    if (cipherHash == null || cipherKey == null) {
+      throw Exception('null field: cipherHash=$cipherHash,cipherKey=$cipherKey');
+    }
+    return (cipherHash: cipherHash, cipherKey: cipherKey);
+  }
+
+  Future<void> _externalLoginV3(String cipherHash, String cipherKey) async {
+    final encrypter = Encrypter(RSA(publicKey: RSAKeyParser().parse(cipherKey) as RSAPublicKey));
+    final encryptPwd = encrypter.encrypt(cipherHash + CatMouseGame().decodeBase64Msgpack(user.biliPasswd)).base64;
+
+    Map<String, Object> params = _sdkSign({
+      ..._getSdkBaseParams(),
+      //
+      "user_id": user.biliUserId,
+      "pwd": encryptPwd,
+    });
+
+    final request = FRequestCN(
+      network: network,
+      path: 'https://$_sdkLoginHost/api/external/login/v3',
+      key: 'api_external_login',
+    );
+    request.form.addFromMap(Map.from(params));
+    request.headers = _getSdkHeaders();
+    final resp = await request.beginRequest();
+
+    final apiResult = resp.rawResponse.data as Map;
+    if (apiResult['code'] != 0) {
+      String text = apiResult.toString();
+      try {
+        text = jsonEncode(apiResult);
+      } catch (e) {
+        //
+      }
+      throw Exception('api external login failed: "$text"');
+    }
+
+    user.uid = apiResult['uid'] as int;
+    user.username = apiResult['uname'] as String;
+    user.accessToken = apiResult['access_key'] as String;
+  }
 
   Future<FResponse> _member() async {
     network.cookies.clear();

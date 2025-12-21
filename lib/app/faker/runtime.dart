@@ -185,25 +185,25 @@ class FakerRuntime {
 
   // init
 
-  static Future<FakerRuntime> init(AutoLoginData user, State state) async {
-    final top = (await showEasyLoading(AtlasApi.gametopsRaw))?.of(user.region);
-    if (top == null) {
-      throw SilentException('fetch game data failed');
+  static Future<FakerRuntime> init(AutoLoginData user, State? state) async {
+    if (state != null && !state.mounted) {
+      throw SilentException('State already disposed');
     }
 
-    if (!state.mounted) {
-      throw SilentException('Context already disposed');
-    }
-
-    FakerRuntime runtime = runtimes.putIfAbsent(user, () {
+    FakerRuntime? runtime = runtimes[user];
+    if (runtime == null) {
+      final top = (await showEasyLoading(AtlasApi.gametopsRaw))?.of(user.region);
+      if (top == null) {
+        throw SilentException('fetch game data failed');
+      }
       final FakerAgent agent = switch (user) {
         AutoLoginDataJP() => FakerAgentJP.s(gameTop: top, user: user),
         AutoLoginDataCN() => FakerAgentCN.s(gameTop: top, user: user),
       };
-      return FakerRuntime._(agent);
-    });
-    runtime.agent.network.addListener(runtime.update);
-    runtime._dependencies[state] = true;
+      runtime = runtimes[user] = FakerRuntime._(agent);
+      runtime.agent.network.addListener(runtime.update);
+    }
+    if (state != null) runtime._dependencies[state] = true;
     return runtime;
   }
 

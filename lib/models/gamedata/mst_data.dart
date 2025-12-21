@@ -188,6 +188,8 @@ class FateResponseDetail {
 class MasterDataManager extends MasterDataManagerBase {
   bool get isLoggedIn => user != null && userSvt.isNotEmpty;
 
+  bool get isCurPlanUser => db.curUser.lastImportId != null && db.curUser.lastImportId == user?.friendCode;
+
   bool isQuestClear(int questId) => (userQuest[questId]?.clearNum ?? 0) > 0;
 
   bool isQuestPhaseClear(int questId, int questPhase) {

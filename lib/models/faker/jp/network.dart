@@ -137,15 +137,22 @@ class NetworkManagerJP extends NetworkManagerBase<FRequestJP, AutoLoginDataJP> {
   @override
   Future<Response> requestStartImpl(FRequestJP request) async {
     final (form, authParams) = request.getForm();
-    final Map<String, dynamic> headers = {};
-    headers[HttpHeaders.userAgentHeader] = user.userAgent.isEmpty ? FakerUA.fallback : user.userAgent;
-    updateCookies(headers);
+
+    final Map<String, dynamic> headers;
+    if (request.headers != null) {
+      headers = request.headers!.deepCopy();
+    } else {
+      headers = {};
+      updateCookies(headers);
+      headers[HttpHeaders.contentTypeHeader] ??= Headers.formUrlEncodedContentType;
+      if (user.region.isJP) {
+        headers['X-Unity-Version'] = '2022.3.28f1'; // 2020.3.34f1
+      }
+    }
+    headers[HttpHeaders.userAgentHeader] ??= user.userAgent.isEmpty ? FakerUA.fallback : user.userAgent;
+
     final authCode = getAuthCode(authParams);
     form.addField('authCode', authCode);
-    headers[HttpHeaders.contentTypeHeader] = Headers.formUrlEncodedContentType;
-    if (user.region.isJP) {
-      headers['X-Unity-Version'] = '2022.3.28f1'; // 2020.3.34f1
-    }
 
     request.sendTime = getNowTimestamp();
     Uri uri = Uri.parse(gameTop.host);

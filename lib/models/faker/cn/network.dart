@@ -46,22 +46,27 @@ class NetworkManagerCN extends NetworkManagerBase<FRequestCN, AutoLoginDataCN> {
   @override
   Future<Response> requestStartImpl(FRequestCN request) async {
     assert(request.path.startsWith('https://'));
-    final form = request.form;
-    final Map<String, dynamic> headers = {};
     final String unityVersion = gameTop.unityVer ?? '2022.3.28f1';
+    final form = request.form;
+    final Map<String, dynamic> headers;
+    if (request.headers != null) {
+      headers = request.headers!;
+    } else {
+      headers = {};
 
-    headers[HttpHeaders.contentTypeHeader] = Headers.formUrlEncodedContentType;
-    headers[HttpHeaders.connectionHeader] = 'keep-alive';
-    headers[HttpHeaders.acceptHeader] = '*/*';
-    headers[HttpHeaders.acceptEncodingHeader] = 'gzip, deflate';
-    // bili-sdk(etc): Mozilla/5.0 BSGameSDK
-    headers[HttpHeaders.userAgentHeader] = user.userAgent.isEmpty
+      headers[HttpHeaders.contentTypeHeader] = Headers.formUrlEncodedContentType;
+      headers[HttpHeaders.connectionHeader] = 'keep-alive';
+      headers[HttpHeaders.acceptHeader] = '*/*';
+      headers[HttpHeaders.acceptEncodingHeader] = 'gzip, deflate';
+      // bili-sdk(etc): Mozilla/5.0 BSGameSDK
+      updateCookies(headers);
+      headers['X-Unity-Version'] = unityVersion;
+    }
+    headers[HttpHeaders.userAgentHeader] ??= user.userAgent.isEmpty
         ? (user.isAndroidDevice
               ? "UnityPlayer/$unityVersion (UnityWebRequest/1.0, libcurl/8.4.0-DEV)"
               : "fatego/20 CFNetwork/1327.0.4 Darwin/21.2.0")
         : user.userAgent;
-    updateCookies(headers);
-    headers['X-Unity-Version'] = unityVersion;
 
     request.sendTime = getNowTimestamp();
     Uri uri = Uri.parse(request.path);
