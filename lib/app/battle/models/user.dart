@@ -22,6 +22,7 @@ class PlayerSvtData {
   NiceTd? td;
 
   int lv = 1; // -1=mlb, 90, 100, 120, 0=no ATK/HP
+  int bond = 0;
   int atkFou = 1000;
   int hpFou = 1000;
 
@@ -108,6 +109,7 @@ class PlayerSvtData {
       this
         ..limitCount = defaults.limitCount
         ..lv = defaultLv
+        ..bond = 0
         ..tdLv = defaultTdLv
         ..skillLvs = List.generate(kActiveSkillNums.length, (index) => defaults.activeSkillLv)
         ..appendLvs = defaults.appendLvs.toList()
@@ -129,6 +131,7 @@ class PlayerSvtData {
       ..grandSvt = status.grandSvt
       ..limitCount = limitCount ?? plan.ascension
       ..lv = svt.grailedLv(plan.grail)
+      ..bond = plan.bondLimit.clamp(0, 15)
       ..tdLv = plan.npLv.clamp(1, 5)
       ..skillLvs = plan.skills.toList()
       ..appendLvs = plan.appendSkills.toList()
@@ -276,6 +279,7 @@ class PlayerSvtData {
       ..tdLv = tdLv
       ..td = td
       ..lv = lv
+      ..bond = bond
       ..atkFou = atkFou
       ..hpFou = hpFou
       ..fixedAtk = fixedAtk

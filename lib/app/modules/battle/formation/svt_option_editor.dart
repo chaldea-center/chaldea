@@ -85,6 +85,18 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
     playerSvtData.lv = playerSvtData.lv.clamp(1, min(120, svt.atkGrowth.length));
     final commonSliders = <Widget>[
       SliderWithPrefix(
+        label: S.current.bond,
+        min: 0,
+        max: 15,
+        value: playerSvtData.bond,
+        valueFormatter: (v) => 'Lv.$v',
+        onChange: (v) {
+          _updateState(() {
+            playerSvtData.bond = v.round();
+          });
+        },
+      ),
+      SliderWithPrefix(
         label: S.current.np_short,
         min: 1,
         max: 5,
@@ -203,15 +215,13 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
       return const Center(child: Text('None'));
     }
     const divider = Divider(height: 8, thickness: 1);
-    final extraPassives = playerSvtData.extraPassives
-        .where(
-          (passive) => passive.shouldActiveSvtEventSkill(
-            eventId: questPhase?.war?.eventId ?? 0,
-            svtId: playerSvtData.svt?.id,
-            includeZero: true,
-          ),
-        )
-        .toList();
+    final extraPassives = NiceSkill.getSvtEventSkills(
+      eventSkills: playerSvtData.extraPassives,
+      eventId: questPhase?.war?.eventId ?? 0,
+      svtId: playerSvtData.svt?.id,
+      includeZero: true,
+      bondCheck: playerSvtData.bond,
+    );
     final List<Widget> children = [
       _header(context),
       divider,
@@ -939,7 +949,13 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
       if (skillId >= 960502 && skillId <= 960507) continue;
       final skill = playerSvtData.extraPassives.firstWhereOrNull((skill) => skill.id == skillId);
       if (skill == null) continue;
-      if (!skill.shouldActiveSvtEventSkill(eventId: eventId, svtId: svt.id, includeZero: false, includeHidden: true)) {
+      if (!skill.shouldActiveSvtEventSkill(
+        eventId: eventId,
+        svtId: svt.id,
+        includeZero: false,
+        includeHidden: true,
+        bondCheck: playerSvtData.bond,
+      )) {
         continue;
       }
 

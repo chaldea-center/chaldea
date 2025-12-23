@@ -261,11 +261,40 @@ class NiceSkill extends SkillOrTd implements BaseSkill {
     return _$NiceSkillFromJson(json);
   }
 
+  static List<NiceSkill> getSvtEventSkills({
+    required List<NiceSkill> eventSkills,
+    required int eventId,
+    required int? svtId,
+    required bool includeZero,
+    bool includeHidden = false,
+    int? bondCheck,
+  }) {
+    final Map<int, NiceSkill> eventIdToSkillMap = {};
+    for (final skill in eventSkills) {
+      if (skill.shouldActiveSvtEventSkill(
+        eventId: eventId,
+        svtId: svtId,
+        includeZero: includeZero,
+        includeHidden: includeHidden,
+        bondCheck: bondCheck,
+      )) {
+        final skillEventId = skill.extraPassive.firstOrNull?.eventId ?? 0;
+        final skillPriority = skill.extraPassive.firstOrNull?.priority ?? 0;
+        final curSkill = eventIdToSkillMap[skillEventId];
+        if (curSkill == null || skillPriority > (curSkill.extraPassive.firstOrNull?.priority ?? 0)) {
+          eventIdToSkillMap[skillEventId] = skill;
+        }
+      }
+    }
+    return eventIdToSkillMap.values.toList();
+  }
+
   bool shouldActiveSvtEventSkill({
     required int eventId,
     required int? svtId,
     required bool includeZero,
     bool includeHidden = false,
+    int? bondCheck,
   }) {
     final hidePassives = ConstData.getSvtLimitHides(svtId ?? 0, null).expand((e) => e.addPassives).toList();
     if (!includeHidden && hidePassives.contains(id)) return false;
@@ -278,6 +307,8 @@ class NiceSkill extends SkillOrTd implements BaseSkill {
         }
         if (eventId == 0 || includeZero) return true;
       }
+      final bondRequirement = passive.condFriendshipRank;
+      if (bondCheck != null && bondRequirement > bondCheck) continue;
       if (passive.getValidEventIds().contains(eventId)) return true;
     }
     return false;

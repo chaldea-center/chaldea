@@ -1582,12 +1582,17 @@ void main() async {
   group('Summer Eresh related tests', () {
     test('bond & starting position & dmgBattlePoint', () async {
       final List<PlayerSvtData?> setting = [
-        PlayerSvtData.id(3300200)..lv = 90,
         PlayerSvtData.id(3300200)
           ..lv = 90
+          ..bond = 5,
+        PlayerSvtData.id(3300200)
+          ..lv = 90
+          ..bond = 5
           ..supportType = SupportSvtType.friend,
         null,
-        PlayerSvtData.id(3300200)..lv = 90,
+        PlayerSvtData.id(3300200)
+          ..lv = 90
+          ..bond = 5,
       ];
       final battle = BattleData();
       final quest = db.gameData.questPhases[9300040603]!;
@@ -1625,6 +1630,7 @@ void main() async {
       final List<PlayerSvtData?> setting = [
         PlayerSvtData.id(3300200)
           ..lv = 1
+          ..bond = 5
           ..tdLv = 1
           ..atkFou = 0,
         PlayerSvtData.id(2500900), // dark Koyan for OC + 2
@@ -1695,7 +1701,7 @@ void main() async {
 
     test('only valid command card add points', () async {
       final List<PlayerSvtData?> setting = [
-        PlayerSvtData.id(3300200),
+        PlayerSvtData.id(3300200)..bond = 5,
         PlayerSvtData.id(2501200), // Cnoc for arts seal
       ];
       final battle = BattleData();
@@ -1727,7 +1733,7 @@ void main() async {
 
     test('commandSpell & mysticCode', () async {
       final List<PlayerSvtData?> setting = [
-        PlayerSvtData.id(3300200),
+        PlayerSvtData.id(3300200)..bond = 5,
         PlayerSvtData.id(901400),
         PlayerSvtData.id(901400),
         PlayerSvtData.id(901400),
@@ -1773,7 +1779,7 @@ void main() async {
     });
 
     test('mysticCode party gainStar', () async {
-      final List<PlayerSvtData?> setting = [PlayerSvtData.id(3300200), PlayerSvtData.id(2501200)];
+      final List<PlayerSvtData?> setting = [PlayerSvtData.id(3300200)..bond = 5, PlayerSvtData.id(2501200)];
       final battle = BattleData();
       final quest = db.gameData.questPhases[9300040603]!;
       await battle.init(quest, setting, MysticCodeData()..mysticCode = db.gameData.mysticCodes[130]);
@@ -1795,8 +1801,8 @@ void main() async {
 
     test('mysticCode shuffle', () async {
       final List<PlayerSvtData?> setting = [
-        PlayerSvtData.id(3300200),
-        PlayerSvtData.id(3300200),
+        PlayerSvtData.id(3300200)..bond = 5,
+        PlayerSvtData.id(3300200)..bond = 5,
         PlayerSvtData.id(504400),
       ];
       final battle = BattleData();
@@ -1832,7 +1838,7 @@ void main() async {
 
     test('passive avoidState vs Passive debuff', () async {
       final List<PlayerSvtData?> setting = [
-        PlayerSvtData.id(3300200),
+        PlayerSvtData.id(3300200)..bond = 5,
         PlayerSvtData.id(1101900), // avenger
         PlayerSvtData.id(1101900), // avenger
         PlayerSvtData.id(1101900), // avenger

@@ -177,6 +177,7 @@ class BattleServantData {
       ..baseAtk = enemy.atk
       ..svtId = enemy.svt.id
       ..level = enemy.lv
+      ..bond = 0
       ..deckIndex = enemy.deckId
       ..shiftNpcIds = enemy.enemyScript.shift ?? []
       ..changeNpcIds = enemy.enemyScript.change ?? [];
@@ -227,6 +228,7 @@ class BattleServantData {
       ..niceSvt = psvt
       ..svtId = psvt.id
       ..level = settings.lv
+      ..bond = settings.bond
       ..startingPosition = startingPosition
       .._maxHp = settings.fixedHp ?? ((growCurve.hp.getOrNull(settings.lv - 1) ?? 0) + settings.hpFou)
       ..baseAtk = settings.fixedAtk ?? ((growCurve.atk.getOrNull(settings.lv - 1) ?? 0) + settings.atkFou);
@@ -532,16 +534,17 @@ class BattleServantData {
   Future<void> activateExtraPassive(final BattleData battleData) async {
     if (isPlayer) {
       // TODO: skill num check
-      for (final skill in playerSvtData!.extraPassives) {
+      final extraPassives = NiceSkill.getSvtEventSkills(
+        eventSkills: playerSvtData!.extraPassives,
+        eventId: battleData.niceQuest?.war?.eventId ?? 0,
+        svtId: svtId,
+        includeZero: true,
+        bondCheck: playerSvtData!.bond,
+      );
+      for (final skill in extraPassives) {
         if (playerSvtData!.disabledExtraSkills.contains(skill.id)) continue;
-        if (skill.shouldActiveSvtEventSkill(
-          eventId: battleData.niceQuest?.war?.eventId ?? 0,
-          svtId: svtId,
-          includeZero: true,
-        )) {
-          final skillInfo = BattleSkillInfoData(skill, type: SkillInfoType.svtOtherPassive);
-          await skillInfo.activate(battleData, activator: this);
-        }
+        final skillInfo = BattleSkillInfoData(skill, type: SkillInfoType.svtOtherPassive);
+        await skillInfo.activate(battleData, activator: this);
       }
       for (final skillId in playerSvtData!.allowedExtraSkills) {
         final skill = db.gameData.baseSkills[skillId] ?? await AtlasApi.skill(skillId);
