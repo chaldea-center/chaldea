@@ -977,6 +977,10 @@ class UserGameEntity with DataEntityBase<int> {
   int calCurAp() {
     return (actMax - (actRecoverAt - DateTime.now().timestamp) / 300).floor().clamp(0, actMax) + carryOverActPoint;
   }
+
+  String get displayName {
+    return name.replaceAll(RegExp(r'\[[og]\]'), '');
+  }
 }
 
 @JsonSerializable(createToJson: false)

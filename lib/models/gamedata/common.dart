@@ -1,3 +1,4 @@
+import 'package:chaldea/packages/svg.dart';
 import 'package:chaldea/utils/atlas.dart';
 import 'package:chaldea/utils/extension.dart';
 import '../../app/app.dart';
@@ -42,6 +43,25 @@ enum Region {
     Region.tw => 8,
     Region.na => -8,
     Region.kr => 9,
+  };
+  String get locationName => switch (this) {
+    Region.jp => 'Asia/Tokyo',
+    Region.cn => 'Asia/Shanghai',
+    Region.tw => 'Asia/Shanghai',
+    Region.na => 'America/Los_Angeles',
+    Region.kr => 'Asia/Pyongyang',
+  };
+
+  DateTime getDateTimeByOffset(int timestamp) {
+    return DateTime.fromMillisecondsSinceEpoch(timestamp * 1000).toUtc().add(Duration(hours: timezone));
+  }
+
+  String get svgFlag => switch (this) {
+    jp => SvgStrings.jpFlag,
+    cn => SvgStrings.cnFlag,
+    tw => SvgStrings.twFlag,
+    na => SvgStrings.usFlag,
+    kr => SvgStrings.krFlag,
   };
 
   int get fpFreeGachaResetUTC => 0 - timezone;

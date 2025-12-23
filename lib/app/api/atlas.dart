@@ -380,6 +380,28 @@ class AtlasApi {
     );
   }
 
+  static Future<List<MstGacha>?> fullRawGachas(Region region, {Duration? expireAfter}) async {
+    String url =
+        "https://git.atlasacademy.io/atlasacademy/fgo-game-data/raw/branch/${region.upper}/master/mstGacha.json";
+    if (db.settings.proxy.worker) url = HostsX.proxyWorker(url, onlyCN: false);
+    final mstGachas = await cacheManager.getModel<List<MstGacha>>(
+      url,
+      (data) => (data as List).map((e) => MstGacha.fromJson(Map.from(e))).toList(),
+      expireAfter: expireAfter,
+    );
+    if (region == Region.cn) {
+      final extra = await cacheManager.getModel<List<MstGacha>>(
+        "${HostsX.dataHost}/mstGachaCNExtra.json",
+        (data) => (data as List).map((e) => MstGacha.fromJson(Map.from(e))).toList(),
+        expireAfter: expireAfter,
+      );
+      if (extra != null) {
+        mstGachas?.addAll(extra.map((e) => e..userAdded = true));
+      }
+    }
+    return mstGachas;
+  }
+
   /// search
   static Future<List<NiceShop>?> searchShop({
     ShopType? type,

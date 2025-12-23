@@ -14,6 +14,7 @@ import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/gamedata/mst_data.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/analysis/analysis.dart';
+import 'package:chaldea/packages/language.dart';
 import 'package:chaldea/packages/packages.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
@@ -26,6 +27,7 @@ import 'sniff_details/class_board_mission_demand.dart';
 import 'sniff_details/gacha_history.dart';
 import 'sniff_details/present_box.dart';
 import 'sniff_details/quest_farming.dart';
+import 'sniff_details/report/report.dart';
 
 class ImportHttpPage extends StatefulWidget {
   final String? toploginText;
@@ -681,6 +683,14 @@ class ImportHttpPageState extends State<ImportHttpPage> {
                       );
                     },
               child: Text(S.current.statistics_title),
+            ),
+            FilledButton.tonal(
+              onPressed: mstData == null
+                  ? null
+                  : () {
+                      router.pushPage(FgoAnnualReportPage(mstData: mstData!, region: null));
+                    },
+              child: Text(Language.isZH ? '年度报告' : 'Report'),
             ),
             FilledButton.tonal(
               onPressed: mstData?.user == null ? null : didImportData,
