@@ -89,7 +89,7 @@ class BattleServantData {
     return max(_maxHp + addition + percentAddition, 1);
   }
 
-  int bond = 5;
+  int bondLv = 5;
   int startingPosition = 0;
   // initScript will set initial value
   Map<int, int> curBattlePoints = {};
@@ -177,7 +177,7 @@ class BattleServantData {
       ..baseAtk = enemy.atk
       ..svtId = enemy.svt.id
       ..level = enemy.lv
-      ..bond = 0
+      ..bondLv = 0
       ..deckIndex = enemy.deckId
       ..shiftNpcIds = enemy.enemyScript.shift ?? []
       ..changeNpcIds = enemy.enemyScript.change ?? [];
@@ -228,7 +228,7 @@ class BattleServantData {
       ..niceSvt = psvt
       ..svtId = psvt.id
       ..level = settings.lv
-      ..bond = settings.bond
+      ..bondLv = settings.bondLv
       ..startingPosition = startingPosition
       .._maxHp = settings.fixedHp ?? ((growCurve.hp.getOrNull(settings.lv - 1) ?? 0) + settings.hpFou)
       ..baseAtk = settings.fixedAtk ?? ((growCurve.atk.getOrNull(settings.lv - 1) ?? 0) + settings.atkFou);
@@ -539,7 +539,7 @@ class BattleServantData {
         eventId: battleData.niceQuest?.war?.eventId ?? 0,
         svtId: svtId,
         includeZero: true,
-        bondCheck: playerSvtData!.bond,
+        bondCheck: playerSvtData!.bondLv,
       );
       for (final skill in extraPassives) {
         if (playerSvtData!.disabledExtraSkills.contains(skill.id)) continue;
@@ -2760,7 +2760,7 @@ class BattleServantData {
       ..uniqueId = uniqueId
       ..svtId = svtId
       ..level = level
-      ..bond = bond
+      ..bondLv = bondLv
       ..startingPosition = startingPosition
       ..curBattlePoints = curBattlePoints.deepCopy()
       ..baseAtk = baseAtk

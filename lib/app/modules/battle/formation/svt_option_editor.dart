@@ -88,11 +88,11 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
         label: S.current.bond,
         min: 0,
         max: 15,
-        value: playerSvtData.bond,
+        value: playerSvtData.bondLv,
         valueFormatter: (v) => 'Lv.$v',
         onChange: (v) {
           _updateState(() {
-            playerSvtData.bond = v.round();
+            playerSvtData.bondLv = v.round();
           });
         },
       ),
@@ -220,7 +220,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
       eventId: questPhase?.war?.eventId ?? 0,
       svtId: playerSvtData.svt?.id,
       includeZero: true,
-      bondCheck: playerSvtData.bond,
+      bondCheck: playerSvtData.bondLv,
     );
     final List<Widget> children = [
       _header(context),
@@ -954,7 +954,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
         svtId: svt.id,
         includeZero: false,
         includeHidden: true,
-        bondCheck: playerSvtData.bond,
+        bondCheck: playerSvtData.bondLv,
       )) {
         continue;
       }

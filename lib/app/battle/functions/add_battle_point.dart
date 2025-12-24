@@ -28,7 +28,7 @@ class AddBattlePoint {
 
     for (final target in targets) {
       final friendShipAbove = dataVals.FriendShipAbove ?? 0;
-      if (friendShipAbove > target.bond) {
+      if (friendShipAbove > target.bondLv) {
         continue;
       }
 
