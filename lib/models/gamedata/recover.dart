@@ -28,6 +28,16 @@ class RecoverEntity {
         return db.gameData.items[targetId]?.borderedIcon;
     }
   }
+
+  bool get isRecoverFullAp => switch (recoverType) {
+    .commandSpell => false,
+    .stone => true,
+    .item =>
+      targetId == Items.goldAppleId ||
+          db.gameData.items[targetId]?.type == ItemType.apRecover && db.gameData.items[targetId]?.value == 1000,
+  };
+
+  bool get isGoldApple => recoverType == .item && targetId == Items.goldAppleId;
 }
 
 enum RecoverType {
@@ -61,3 +71,14 @@ const apRecovers = [
 ];
 
 final mstRecovers = {for (final recover in apRecovers) recover.id: recover};
+
+enum RecoverId {
+  stone(1),
+  goldApple(2),
+  silverApple(3),
+  bronzeApple(4),
+  blueApple(5);
+
+  const RecoverId(this.id);
+  final int id;
+}

@@ -9,7 +9,9 @@ import 'package:chaldea/widgets/widgets.dart';
 class RecoverSelectDialog extends StatelessWidget {
   final List<RecoverEntity> recovers;
   final MasterDataManager? mstData;
-  const RecoverSelectDialog({super.key, required this.recovers, this.mstData});
+  final String? title;
+  final bool validateCount;
+  const RecoverSelectDialog({super.key, required this.recovers, this.mstData, this.title, this.validateCount = true});
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +22,7 @@ class RecoverSelectDialog extends StatelessWidget {
       contentPadding: const EdgeInsets.symmetric(horizontal: 24),
       minLeadingWidth: 32,
       child: SimpleDialog(
-        title: const Text("Recover AP"),
+        title: Text(title ?? "Recover AP"),
         children: [for (final recover in recovers) buildRecoverItem(context, recover)],
       ),
     );
@@ -29,7 +31,7 @@ class RecoverSelectDialog extends StatelessWidget {
   Widget buildRecoverItem(BuildContext context, RecoverEntity recover) {
     final userGame = mstData?.user;
     if (mstData != null && userGame == null) {
-      return const SimpleConfirmDialog(title: Text("No user data"));
+      return const SimpleDialogOption(child: Text("No user data"));
     }
     switch (recover.recoverType) {
       case RecoverType.commandSpell:
@@ -39,10 +41,13 @@ class RecoverSelectDialog extends StatelessWidget {
         bool enabled =
             mstData == null ||
             (userGame != null && userGame.stone > 0 && userGame.calCurAp() < userGame.actMax && ownCount > 0);
+        if (mstData == null || !validateCount) enabled = true;
         return ListTile(
           leading: Item.iconBuilder(context: context, item: null, itemId: Items.stoneId),
           title: Text(Items.stone?.lName.l ?? "Saint Quartz"),
-          subtitle: mstData == null ? null : Text("${S.current.item_own}: $ownCount"),
+          subtitle: userGame == null
+              ? null
+              : Text("${S.current.item_own}: ${userGame.freeStone}+${userGame.chargeStone}=$ownCount"),
           enabled: enabled,
           onTap: enabled ? () => Navigator.pop(context, recover) : null,
         );
@@ -50,6 +55,7 @@ class RecoverSelectDialog extends StatelessWidget {
         final item = db.gameData.items[recover.targetId];
         final ownCount = mstData?.getItemOrSvtNum(recover.targetId) ?? 0;
         bool enabled = mstData == null || (userGame != null && ownCount > 0);
+        if (mstData == null || !validateCount) enabled = true;
         return ListTile(
           leading: Item.iconBuilder(context: context, item: item, itemId: recover.targetId),
           title: Text(item?.lName.l ?? "No.${recover.targetId}"),

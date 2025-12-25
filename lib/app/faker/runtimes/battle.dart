@@ -13,6 +13,8 @@ import '_base.dart';
 class FakerRuntimeBattle extends FakerRuntimeBase {
   FakerRuntimeBattle(super.runtime);
 
+  bool stopLoopFlag = false;
+
   AutoBattleOptions get battleOption => agent.user.curBattleOption;
 
   Future<void> startLoop({bool dialog = true}) async {
@@ -70,6 +72,11 @@ class FakerRuntimeBattle extends FakerRuntimeBase {
     runtime.displayToast('Battle $finishedCount/$totalCount', progress: finishedCount / totalCount);
     while (finishedCount < totalCount) {
       runtime.checkStop();
+      if (stopLoopFlag) {
+        stopLoopFlag = false;
+        throw SilentException('Manual Stop Loop');
+      }
+
       runtime.checkSvtKeep();
       if (battleOption.stopIfBondLimit) {
         _checkFriendship(battleOption, questPhaseEntity);
@@ -79,7 +86,7 @@ class FakerRuntimeBattle extends FakerRuntimeBase {
       final msg =
           'Battle ${finishedCount + 1}/$totalCount, ${Maths.mean(elapseSeconds).round()}s/${(Maths.sum(elapseSeconds) / 60).toStringAsFixed(1)}m';
       logger.t(msg);
-      runtime.displayToast(msg, progress: (finishedCount + 0.5) / totalCount);
+      runtime.displayToast('$msg, starting...', progress: (finishedCount + 0.5) / totalCount);
 
       await _ensureEnoughApItem(quest: questPhaseEntity, option: battleOption);
 
@@ -171,6 +178,7 @@ class FakerRuntimeBattle extends FakerRuntimeBase {
             }
           }
         }
+        runtime.displayToast('$msg, finished.', progress: (finishedCount + 1) / totalCount);
       }
 
       final userQuest = mstData.userQuest[questPhaseEntity.id];
@@ -747,23 +755,32 @@ class FakerRuntimeBattle extends FakerRuntimeBase {
     }
     if (quest.consumeType.useAp) {
       final apConsume = option.isApHalf ? quest.consume ~/ 2 : quest.consume;
-      if (mstData.user!.calCurAp() >= apConsume) {
-        return;
+      if (mstData.user!.calCurAp() >= apConsume) return;
+      List<int> recoverIds = option.recoverIds.toList();
+      if (option.goldApplePrior && recoverIds.isNotEmpty) {
+        final firstRecover = mstRecovers[recoverIds.first];
+        if (firstRecover != null && !firstRecover.isRecoverFullAp && recoverIds.contains(RecoverId.goldApple.id)) {
+          recoverIds.remove(RecoverId.goldApple.id);
+          recoverIds.insert(0, RecoverId.goldApple.id);
+        }
       }
-      for (final recoverId in option.recoverIds) {
+
+      for (final recoverId in recoverIds) {
         final recover = mstRecovers[recoverId];
         if (recover == null) continue;
         int dt = mstData.user!.actRecoverAt - DateTime.now().timestamp;
-        if ((recover.id == 1 || recover.id == 2) && option.waitApRecoverGold && dt > 300 && dt % 300 < 240) {
-          final waitUntil = DateTime.now().timestamp + dt % 300 + 2;
+        if (recover.isRecoverFullAp && option.waitApRecoverGold && dt > 0 && dt % 300 < 240) {
+          final waitUntil = DateTime.now().timestamp + dt % 300 + 10;
           while (true) {
             final now = DateTime.now().timestamp;
             if (now >= waitUntil) break;
+            int nextWaitSeconds = min(5, waitUntil - now) + (waitUntil - now) % 5;
             runtime.displayToast('Wait ${waitUntil - now} seconds...');
-            await Future.delayed(Duration(seconds: min(5, waitUntil - now)));
+            await Future.delayed(Duration(seconds: nextWaitSeconds));
             runtime.checkStop();
           }
         }
+        if (mstData.user!.calCurAp() >= apConsume) return;
         if (recover.recoverType == RecoverType.stone && mstData.user!.stone > 0) {
           await agent.shopPurchaseByStone(id: recover.targetId, num: 1);
           break;

@@ -786,7 +786,12 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
           ),
           trailing: IconButton(
             onPressed: () async {
-              final recover = await const RecoverSelectDialog(recovers: apRecovers).showDialog<RecoverEntity>(context);
+              final recover = await RecoverSelectDialog(
+                recovers: apRecovers,
+                mstData: mstData,
+                validateCount: false,
+                title: 'Recover AP (Option)',
+              ).showDialog<RecoverEntity>(context);
               if (recover != null && !battleOption.recoverIds.contains(recover.id)) {
                 battleOption.recoverIds.add(recover.id);
               }
@@ -816,6 +821,19 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
             runtime.lockTask(() {
               setState(() {
                 battleOption.waitApRecoverGold = v!;
+              });
+            });
+          },
+          controlAffinity: ListTileControlAffinity.trailing,
+        ),
+        CheckboxListTile.adaptive(
+          dense: true,
+          value: battleOption.goldApplePrior,
+          title: const Text("Prefer to eat Golden Fruit right after AP changed"),
+          onChanged: (v) {
+            runtime.lockTask(() {
+              setState(() {
+                battleOption.goldApplePrior = v!;
               });
             });
           },
@@ -2113,6 +2131,14 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
                 if (mounted) {
                   runtime.runningTask.value = false;
                   agent.network.clearTask();
+                }
+              },
+            ),
+            PopupMenuItem(
+              child: const Text('Stop Loop'),
+              onTap: () {
+                if (mounted) {
+                  runtime.battle.stopLoopFlag = true;
                 }
               },
             ),

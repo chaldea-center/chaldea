@@ -356,6 +356,7 @@ class AutoBattleOptions {
   int? battleDuration;
   bool waitApRecover = false;
   bool waitApRecoverGold = false;
+  bool goldApplePrior = false;
 
   AutoBattleOptions({
     this.name = '',
@@ -388,6 +389,7 @@ class AutoBattleOptions {
     this.battleDuration,
     this.waitApRecover = false,
     this.waitApRecoverGold = false,
+    this.goldApplePrior = false,
   }) : supportSvtIds = supportSvtIds ?? {},
        supportEquipIds = supportEquipIds ?? {},
        grandSupportEquipIds = grandSupportEquipIds ?? {},
