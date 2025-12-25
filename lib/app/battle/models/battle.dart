@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
+import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/battle/functions/damage.dart';
 import 'package:chaldea/app/battle/functions/gain_np.dart';
 import 'package:chaldea/app/battle/functions/gain_star.dart';
@@ -486,6 +487,7 @@ class BattleData {
 
     // start of ally turn
     await withAction(() async {
+      await checkFinalChapterRaid2FieldAi();
       for (final svt in nonnullPlayers) {
         await svt.startOfMyTurn(this);
       }
@@ -898,6 +900,7 @@ class BattleData {
           recorder.skillActivation(this, servantIndex, skillIndex);
           await svt.activateSkill(this, skillIndex);
           isFirstSkillInTurn = false;
+          await checkFinalChapterRaid2FieldAi();
         });
       },
     );
@@ -920,6 +923,36 @@ class BattleData {
     return true;
   }
 
+  Future<void> checkFinalChapterRaid2FieldAi() async {
+    final questId = niceQuest?.id;
+    if (questId == null || !ConstGameData.finalChapterNo2RaidQuestIds.contains(questId)) return;
+
+    if (criticalStars >= 20) {
+      final aiSkillId = 94152227;
+      BaseSkill? skill = db.gameData.baseSkills[aiSkillId];
+      skill ??= await showEasyLoading(() => AtlasApi.skill(aiSkillId), mask: true);
+      if (skill != null) {
+        final skillInfo = BattleSkillInfoData(skill, type: SkillInfoType.fieldAi);
+        battleLogger.action('Final Chapter No.2 Raid - Field AI Skill: ${skill.lName.l}');
+        await withAction(() async {
+          await skillInfo.activate(this);
+        });
+      }
+    }
+    if (criticalStars >= 30) {
+      final aiSkillId = 94152228;
+      BaseSkill? skill = db.gameData.baseSkills[aiSkillId];
+      skill ??= await showEasyLoading(() => AtlasApi.skill(aiSkillId), mask: true);
+      if (skill != null) {
+        final skillInfo = BattleSkillInfoData(skill, type: SkillInfoType.fieldAi);
+        battleLogger.action('Final Chapter No.2 Raid - Field AI Skill: ${skill.lName.l}');
+        await withAction(() async {
+          await skillInfo.activate(this);
+        });
+      }
+    }
+  }
+
   Future<void> activateMysticCodeSkill(final int skillIndex) async {
     final skillInfo = masterSkillInfo.getOrNull(skillIndex);
     if (skillInfo == null || skillInfo.chargeTurn > 0 || isBattleFinished) {
@@ -939,6 +972,7 @@ class BattleData {
           recorder.skillActivation(this, null, skillIndex);
           await skillInfo.activate(this);
           recorder.skill(battleData: this, activator: null, skill: skillInfo, fromPlayer: true, uploadEligible: true);
+          await checkFinalChapterRaid2FieldAi();
         });
       },
     );
@@ -968,6 +1002,7 @@ class BattleData {
             fromPlayer: isAlly,
             uploadEligible: false,
           );
+          await checkFinalChapterRaid2FieldAi();
         });
       },
     );
