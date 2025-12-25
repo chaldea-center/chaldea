@@ -33,8 +33,8 @@ class SelectUserSvtPage extends StatefulWidget {
         if (userSvt.isChoice()) '✴️ ', // ⭐ 🌟
         // if(userSvt.isLocked()) '🔐 ',
       ].join(''),
-      ' Lv${userSvt.lv}/${userSvt.maxLv}  ${userSvt.limitCount}',
       ' NP${userSvt.treasureDeviceLv1} B${collection?.friendshipRank ?? ""}/${collection?.maxFriendshipRank ?? ""} ',
+      ' Lv${userSvt.lv}/${userSvt.maxLv}  ${userSvt.limitCount}',
       ' ${userSvt.skillLv1}/${userSvt.skillLv2}/${userSvt.skillLv3} ',
       ' ${mstData.getSvtAppendSkillLv(userSvt).map((e) => e == 0 ? "-" : e).join("/")} ',
     ].join('\n');

@@ -734,7 +734,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
         onPressed: eventId == 0
             ? null
             : () {
-                router.pushPage(RaidsPage(runtime: runtime, eventId: eventId ?? 0));
+                router.pushPage(RaidsPage(runtime: runtime, eventId: eventId ?? 0, day: day));
               },
         icon: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
       ),

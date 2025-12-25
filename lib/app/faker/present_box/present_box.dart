@@ -598,6 +598,7 @@ class _SellCombineMaterialDialogState extends State<_SellCombineMaterialDialog> 
       children: [
         buildRarity(3, 200),
         buildRarity(4, 100),
+        buildRarity(5, 50),
         Center(
           child: IconButton(
             onPressed: () {

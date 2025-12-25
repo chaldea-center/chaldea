@@ -1534,7 +1534,7 @@ class LoreStatus {
 
 @JsonSerializable()
 class BasicCostume with RouteInfo {
-  int id;
+  int id; // e.g. 11
   int costumeCollectionNo;
   int battleCharaId;
   String name;

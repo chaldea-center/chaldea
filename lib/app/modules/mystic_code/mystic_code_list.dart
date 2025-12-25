@@ -17,7 +17,7 @@ import 'filter.dart';
 import 'mystic_code.dart';
 
 class MysticCodeListPage extends StatefulWidget {
-  final void Function(MysticCode)? onSelected;
+  final void Function(MysticCode mysticCode)? onSelected;
   final MysticCodeFilterData? filterData;
 
   MysticCodeListPage({super.key, this.onSelected, this.filterData});

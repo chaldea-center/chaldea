@@ -103,7 +103,7 @@ class _FakerMenuDialogState extends State<FakerMenuDialog> with FakerRuntimeStat
                 name: S.current.import_data,
                 enabled: isLoggedIn,
                 onTap: () {
-                  router.pushPage(ImportHttpPage(mstData: mstData));
+                  router.pushPage(ImportHttpPage(mstData: mstData, region: runtime.region));
                 },
               ),
               _ButtonData(

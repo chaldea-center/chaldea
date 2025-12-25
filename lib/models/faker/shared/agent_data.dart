@@ -76,18 +76,27 @@ class FakerAgentData {
       for (final eventRaid in homeResp.data.mstData.mstEventRaid) {
         getRaidRecord(eventRaid.eventId, eventRaid.day).eventRaid = eventRaid;
       }
-      for (final raid in homeResp.data.mstData.totalEventRaid) {
-        final record = getRaidRecord(raid.eventId, raid.day);
+      for (final totalRaid in homeResp.data.mstData.totalEventRaid) {
+        final record = getRaidRecord(totalRaid.eventId, totalRaid.day);
+        record.totalRaid = totalRaid;
         record.history.add((
           timestamp: homeResp.data.serverTime?.timestamp ?? now,
           raidInfo: BattleRaidInfo(
-            day: raid.day,
+            day: totalRaid.day,
             uniqueId: 0,
             maxHp: record.eventRaid?.maxHp ?? 0,
-            totalDamage: raid.totalDamage,
+            totalDamage: totalRaid.totalDamage,
           ),
           battleId: null,
         ));
+      }
+
+      // shrink
+      const raidHistoryMaxLength = 100;
+      for (final record in raidRecords.values.expand((e) => e.values)) {
+        if (record.history.length > raidHistoryMaxLength) {
+          record.history.removeRange(0, record.history.length - raidHistoryMaxLength);
+        }
       }
     }
     // battle setup
@@ -139,6 +148,7 @@ class FakerAgentData {
 class EventRaidInfoRecord {
   EventRaidEntity? eventRaid;
   List<({int timestamp, BattleRaidInfo raidInfo, int? battleId})> history = [];
+  TotalEventRaidEntity? totalRaid;
 }
 
 class _DropStatData {

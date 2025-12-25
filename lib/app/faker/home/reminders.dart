@@ -79,6 +79,7 @@ class FakerReminders extends StatelessWidget {
         trailing: TextButton(
           onPressed: hasFreeDraw
               ? () {
+                  if (runtime.runningTask.value) return;
                   SimpleConfirmDialog(
                     title: Text('Free Draw'),
                     content: Text('[${gacha.id}] ${gacha.lName}'),

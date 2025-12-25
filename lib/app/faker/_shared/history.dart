@@ -258,7 +258,14 @@ class _FakerHistoryViewerState extends State<FakerHistoryViewer> {
                 label: 'body',
                 color: record?.response?.rawResponse == null ? Colors.grey : Colors.lightBlue,
                 onTap: () {
-                  final body = record?.response?.rawResponse.data;
+                  dynamic body = record?.response?.rawResponse.data;
+                  if (body is String) {
+                    try {
+                      body = jsonDecode(body);
+                    } catch (e) {
+                      //
+                    }
+                  }
                   router.pushPage(JsonViewerPage(body));
                 },
               ),

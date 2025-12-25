@@ -700,7 +700,7 @@ class __BondEquipTimeGraphState extends State<_BondEquipTimeGraph> {
     final yTitles = AxisTitles(
       sideTitles: SideTitles(
         showTitles: true,
-        reservedSize: 32,
+        reservedSize: 36,
         getTitlesWidget: (value, meta) {
           if (meta.formattedValue.contains('.')) return const SizedBox.shrink();
           return SideTitleWidget(meta: meta, child: Text(meta.formattedValue));
@@ -719,7 +719,7 @@ class __BondEquipTimeGraphState extends State<_BondEquipTimeGraph> {
             sideTitles: SideTitles(showTitles: false),
           ),
           leftTitles: yTitles,
-          rightTitles: yTitles,
+          rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
           bottomTitles: AxisTitles(
             // axisNameWidget: Text('Date'),
             sideTitles: SideTitles(

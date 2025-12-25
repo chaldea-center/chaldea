@@ -25,6 +25,8 @@ class FreeQuestOverview extends StatefulWidget {
 
 class _FreeQuestOverviewState extends State<FreeQuestOverview> {
   late List<Quest> quests = widget.quests.toList();
+  late final bool hasDomusData = quests.any((q) => db.gameData.dropData.domusAurea.questIds.contains(q.id));
+
   Map<int, QuestPhase> phases = {};
   Map<String, List<Quest>> spots = {};
   bool _loading = false;
@@ -183,7 +185,7 @@ class _FreeQuestOverviewState extends State<FreeQuestOverview> {
                     ),
                     const DataColumn2(label: Text('Lv/AP', textScaler: TextScaler.linear(0.9)), fixedWidth: 56),
                     DataColumn2(label: Text(S.current.svt_class), fixedWidth: 90),
-                    if (widget.war?.isMainStory == true) ...[
+                    if (hasDomusData) ...[
                       DataColumn2(
                         label: Text(S.current.quest_runs("").trim(), textScaler: const TextScaler.linear(0.9)),
                         fixedWidth: 48,
@@ -314,7 +316,7 @@ class _FreeQuestOverviewState extends State<FreeQuestOverview> {
     }
 
     int lines;
-    if (widget.war?.isMainStory == true) {
+    if (hasDomusData) {
       _addRuns(info.domusRuns);
       _addItems(info.domusItems);
       _addRuns(info.rayshiftRuns);
@@ -390,10 +392,10 @@ class _FreeQuestOverviewState extends State<FreeQuestOverview> {
         if (item == null) continue;
         switch (item.category) {
           case ItemCategory.normal:
+          case ItemCategory.other:
             info.normalItems[id] = _withOwnValue(item.id, base.format(percent: true, maxDigits: 3));
             break;
           case ItemCategory.event:
-          case ItemCategory.other:
           case ItemCategory.itemSelectMonth:
             info.eventItems[id] = Item.iconBuilder(
               context: context,
