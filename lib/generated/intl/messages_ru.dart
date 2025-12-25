@@ -27,22 +27,22 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m0(url) =>
       "Chaldea — кроссплатформенная утилита для Fate/GO. Поддерживается просмотр игровых данных, планирование слуг, событий и предметов, планирование заданий мастера, симулятор призыва и т. д.\n\nПодробнее: \n${url}\n";
 
-  static String m14(count) => "Зарядить NP до ${count}";
+  static String m22(count) => "Зарядить NP до ${count}";
 
-  static String m15(version, curVer) => "Требуемая версия приложения: ≥ ${version} (Текущая: ${curVer})";
+  static String m23(version, curVer) => "Требуемая версия приложения: ≥ ${version} (Текущая: ${curVer})";
 
   static String m1(n) => "Макс. лотерея: ${n}";
 
   static String m2(n, total) => "Грааль в кристалл: ${n}/${total}";
 
-  static String m16(filename, hash, localHash) =>
+  static String m24(filename, hash, localHash) =>
       "Файл ${filename} не найден или имеет несоответствующий хэш: ${hash} - ${localHash}";
 
-  static String m17(rarity) => "${rarity}☆ CE Pick Up";
+  static String m25(rarity) => "${rarity}☆ CE Pick Up";
 
-  static String m18(rarity) => "${rarity}☆ SVT Pick Up";
+  static String m26(rarity) => "${rarity}☆ SVT Pick Up";
 
-  static String m19(item) => "Возможный связанный ${item} \"УГАДАН\" на основе времени";
+  static String m27(item) => "Возможный связанный ${item} \"УГАДАН\" на основе времени";
 
   static String m3(error) => "Импорт не удался. Ошибка:\n${error}";
 
@@ -50,24 +50,24 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m5(site) => "Перейти на ${site}";
 
-  static String m20(shown, total) => "${shown} показано (всего ${total})";
+  static String m28(shown, total) => "${shown} показано (всего ${total})";
 
-  static String m21(shown, ignore, total) => "${shown} показано, ${ignore} проигноророванно (всего ${total})";
+  static String m29(shown, ignore, total) => "${shown} показано, ${ignore} проигноророванно (всего ${total})";
 
   static String m6(first) =>
       "${Intl.select(first, {'true': 'Это уже первое', 'false': 'Это уже последнее', 'other': 'Больше нет'})}";
 
-  static String m22(layer) => "Слой ${layer}";
+  static String m30(layer) => "Слой ${layer}";
 
   static String m7(n) => "Выбор ${n}";
 
-  static String m23(region) => "Что-то пошло не так, или у ${region} нет данных об этом задании";
+  static String m31(region) => "Что-то пошло не так, или у ${region} нет данных об этом задании";
 
-  static String m24(runs) => "Размер выборки: ${runs}";
+  static String m32(runs) => "Размер выборки: ${runs}";
 
-  static String m25(index, total, enemy) => "Версия ${index}/${total} (${enemy} врагов)";
+  static String m33(index, total, enemy) => "Версия ${index}/${total} (${enemy} врагов)";
 
-  static String m26(unknown, dup, valid, total, selected) =>
+  static String m34(unknown, dup, valid, total, selected) =>
       "${unknown} неизвестно, ${dup} дубликат, ${valid}/${total} верно, ${selected} выбрано";
 
   static String m8(region) => "Объявление в ${region}";
@@ -76,19 +76,19 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m10(n) => "Сбросить план ${n}(показано)";
 
-  static String m27(battles, ap) => "Всего ${battles} боев, ${ap} AP";
+  static String m35(battles, ap) => "Всего ${battles} боев, ${ap} AP";
 
   static String m11(n) => "Профиль ${n}";
 
-  static String m28(color, trait) =>
+  static String m36(color, trait) =>
       "Этот Благородный Фантазм отображается как карта ${color}, но не имеет трейт [${trait}].";
 
-  static String m29(trait) => "Это Благородный Фантазм, но у него нет трейта [${trait}].";
+  static String m37(trait) => "Это Благородный Фантазм, но у него нет трейта [${trait}].";
 
-  static String m30(count) =>
+  static String m38(count) =>
       "${count} NP5 ★5 слуг, пожалуйста, уменьшите требования к слугам настолько, насколько это возможно чтобы поделиться с сообществом";
 
-  static String m31(remain) => "Слишком часто загружаетесь, пожалуйста, подождите ${remain} секунд";
+  static String m39(remain) => "Слишком часто загружаетесь, пожалуйста, подождите ${remain} секунд";
 
   static String m12(a, b) => "${a} ${b}";
 
@@ -257,7 +257,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "chaldea_share_msg": m0,
     "change_log": MessageLookupByLibrary.simpleMessage("Изменить Лог"),
     "characters_in_card": MessageLookupByLibrary.simpleMessage("Персонажи"),
-    "charge_np_to": m14,
+    "charge_np_to": m22,
     "check_file_hash": MessageLookupByLibrary.simpleMessage("Проверка целостности файлов"),
     "check_update": MessageLookupByLibrary.simpleMessage("Проверка обновлений"),
     "class_advantage": MessageLookupByLibrary.simpleMessage("Преимущество класса"),
@@ -422,7 +422,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "error": MessageLookupByLibrary.simpleMessage("Ошибка"),
     "error_no_data_found": MessageLookupByLibrary.simpleMessage("Данные не найдены"),
     "error_no_internet": MessageLookupByLibrary.simpleMessage("Нет интернета"),
-    "error_required_app_version": m15,
+    "error_required_app_version": m23,
     "error_widget_hint": MessageLookupByLibrary.simpleMessage("Ошибка! Нажмите чтобы вернуться >_<"),
     "event": MessageLookupByLibrary.simpleMessage("Событие"),
     "event_ap_cost_half": MessageLookupByLibrary.simpleMessage("AP стоимость 1/2"),
@@ -494,7 +494,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "ffo_same_svt": MessageLookupByLibrary.simpleMessage("Тот же Слуга"),
     "fgo_domus_aurea": MessageLookupByLibrary.simpleMessage("Domus Aurea"),
     "field_ai": MessageLookupByLibrary.simpleMessage("ИИ поля"),
-    "file_not_found_or_mismatched_hash": m16,
+    "file_not_found_or_mismatched_hash": m24,
     "filename": MessageLookupByLibrary.simpleMessage("filename"),
     "filter": MessageLookupByLibrary.simpleMessage("Фильтр"),
     "filter_atk_hp_type": MessageLookupByLibrary.simpleMessage("Тип"),
@@ -526,12 +526,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "gacha": MessageLookupByLibrary.simpleMessage("Гача"),
     "gacha_image_overridden_hint": MessageLookupByLibrary.simpleMessage("Изображение баннера может быть перезаписано"),
     "gacha_prob_calc": MessageLookupByLibrary.simpleMessage("Калькулятор шансов Гачи"),
-    "gacha_prob_ce_pickup": m17,
+    "gacha_prob_ce_pickup": m25,
     "gacha_prob_custom_rate": MessageLookupByLibrary.simpleMessage("Пользовательский шанс"),
     "gacha_prob_precision_hint": MessageLookupByLibrary.simpleMessage(
       "Если значение слишком велико или слишком мало, результат вычисления будет неточным из-за проблемы двойной точности.",
     ),
-    "gacha_prob_svt_pickup": m18,
+    "gacha_prob_svt_pickup": m26,
     "gacha_svt_count_hint": MessageLookupByLibrary.simpleMessage(
       "Это не относится к 4-звёздным слугам событий и 4-звёздным слугам, призываемым за очки друзей.\n Овладаемые: простая сумма количества Благородных Фантазмов, удерживаемых в Инвентаре, и количества во Втором хранилище, за исключением преобразованных (проданных).\n Общее овладаемое: включает все исторические призывы и «некоторые» выборки, включая преобразованные (проданные). Нажмите на ссылку ниже, чтобы узнать подробности ↓.",
     ),
@@ -569,7 +569,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "growth_curve": MessageLookupByLibrary.simpleMessage("Кривая роста"),
     "guda_female": MessageLookupByLibrary.simpleMessage("Гудако"),
     "guda_male": MessageLookupByLibrary.simpleMessage("Гудао"),
-    "guessed_on_time_hint": m19,
+    "guessed_on_time_hint": m27,
     "help": MessageLookupByLibrary.simpleMessage("Помощь"),
     "hide": MessageLookupByLibrary.simpleMessage("Скрыть"),
     "hide_svt_plan_details": MessageLookupByLibrary.simpleMessage("Скрыть детали плана"),
@@ -692,8 +692,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "limited_event": MessageLookupByLibrary.simpleMessage("Ограниченное событие"),
     "limited_time": MessageLookupByLibrary.simpleMessage("Ограниченное время"),
     "link": MessageLookupByLibrary.simpleMessage("ссылка"),
-    "list_count_shown_all": m20,
-    "list_count_shown_hidden_all": m21,
+    "list_count_shown_all": m28,
+    "list_count_shown_hidden_all": m29,
     "list_end_hint": m6,
     "load_ffo_data": MessageLookupByLibrary.simpleMessage("Загрузить данные FFO"),
     "local_team_save_no_replay_warning": MessageLookupByLibrary.simpleMessage(
@@ -737,7 +737,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "main_story": MessageLookupByLibrary.simpleMessage("Main Record"),
     "main_story_chapter": MessageLookupByLibrary.simpleMessage("Глава"),
     "map_gimmicks": MessageLookupByLibrary.simpleMessage("Gimmicks"),
-    "map_layer_n": m22,
+    "map_layer_n": m30,
     "map_show_fq_spots_only": MessageLookupByLibrary.simpleMessage("Только Места FQ"),
     "map_show_header_image": MessageLookupByLibrary.simpleMessage("Показать изображение заголовка"),
     "map_show_roads": MessageLookupByLibrary.simpleMessage("Показать дороги"),
@@ -875,7 +875,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "quest_fields": MessageLookupByLibrary.simpleMessage("Поля"),
     "quest_fixed_drop": MessageLookupByLibrary.simpleMessage("Дроп"),
     "quest_fixed_drop_short": MessageLookupByLibrary.simpleMessage("Дроп"),
-    "quest_not_found_error": m23,
+    "quest_not_found_error": m31,
     "quest_prefer_region": MessageLookupByLibrary.simpleMessage("Предпочтительный регион"),
     "quest_prefer_region_hint": MessageLookupByLibrary.simpleMessage(
       "Если соответствующее событие квеста не началось в выбранном регионе, оно использует JP.",
@@ -886,10 +886,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "quest_restriction": MessageLookupByLibrary.simpleMessage("Ограничения"),
     "quest_reward": MessageLookupByLibrary.simpleMessage("Награды за квесты"),
     "quest_reward_short": MessageLookupByLibrary.simpleMessage("Награды"),
-    "quest_runs": m24,
+    "quest_runs": m32,
     "quest_timeline_sort_campaign_open": MessageLookupByLibrary.simpleMessage("AP Cost Event Time"),
     "quest_timeline_sort_quest_open": MessageLookupByLibrary.simpleMessage("Время открытия квеста"),
-    "quest_version": m25,
+    "quest_version": m33,
     "quest_wave": MessageLookupByLibrary.simpleMessage("Волна"),
     "quit": MessageLookupByLibrary.simpleMessage("Выйти"),
     "raid_quest": MessageLookupByLibrary.simpleMessage("Рейдовый квест"),
@@ -905,7 +905,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "rate_play_store": MessageLookupByLibrary.simpleMessage("Оценить в Google Play"),
     "raw_gacha_data": MessageLookupByLibrary.simpleMessage("Необработанные Данные Гачи"),
     "read_device_info": MessageLookupByLibrary.simpleMessage("Прочитать информацию об этом устройстве"),
-    "recognizer_result_count": m26,
+    "recognizer_result_count": m34,
     "recorder_screenshot_current_view": MessageLookupByLibrary.simpleMessage("Текущий вид"),
     "recorder_screenshot_full_view": MessageLookupByLibrary.simpleMessage("Полный вид"),
     "refresh": MessageLookupByLibrary.simpleMessage("Обновить"),
@@ -1018,7 +1018,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "skip_current_turn": MessageLookupByLibrary.simpleMessage("Пропустить текущий ход"),
     "solution_battle_count": MessageLookupByLibrary.simpleMessage("Количество битв"),
     "solution_target_count": MessageLookupByLibrary.simpleMessage("Количество целей"),
-    "solution_total_battles_ap": m27,
+    "solution_total_battles_ap": m35,
     "sort_order": MessageLookupByLibrary.simpleMessage("Сортировать"),
     "sound_effect": MessageLookupByLibrary.simpleMessage("Звуковой эффект"),
     "special_reward_hide": MessageLookupByLibrary.simpleMessage("Скрыть специальные награды"),
@@ -1097,8 +1097,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "td_base_hits_hint": MessageLookupByLibrary.simpleMessage(
       "Для одного и того же айди NP разные владельцы могут иметь разные типы карт и распределения попаданий.",
     ),
-    "td_cardcolor_hint": m28,
-    "td_cardnp_hint": m29,
+    "td_cardcolor_hint": m36,
+    "td_cardnp_hint": m37,
     "td_rankup": MessageLookupByLibrary.simpleMessage("Усиление Фантазма"),
     "td_solver_simple_mode": MessageLookupByLibrary.simpleMessage("Упрощенный Режим"),
     "td_solver_simple_mode_desc": MessageLookupByLibrary.simpleMessage("Считать только финальное вознесение"),
@@ -1133,7 +1133,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "time_start": MessageLookupByLibrary.simpleMessage("Начать"),
     "tips": MessageLookupByLibrary.simpleMessage("Cоветы"),
     "toggle_dark_mode": MessageLookupByLibrary.simpleMessage("Включить темный режим"),
-    "too_many_td5_svts_warning": m30,
+    "too_many_td5_svts_warning": m38,
     "tooltip_refresh_sliders": MessageLookupByLibrary.simpleMessage("Обновить слайды"),
     "total": MessageLookupByLibrary.simpleMessage("Итого"),
     "total_ap": MessageLookupByLibrary.simpleMessage("Итого AP"),
@@ -1181,7 +1181,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "upload_not_eligible_hint": MessageLookupByLibrary.simpleMessage(
       "Текущая команда не может быть загружена по следующим причинам:",
     ),
-    "upload_paused": m31,
+    "upload_paused": m39,
     "upload_team_confirmation": MessageLookupByLibrary.simpleMessage(
       "Загрузить текущую команду?\n\nВнимание: для обслуживания большего количества игроков.\n- Не загружайте команду, содержащую невыпущенных слуг!\n- Постарайтесь поддерживать конфигурацию вашей команды на минимально возможном уровне (ненужный Class Score, уровень Грааля, Append Skill, уровень NP, неиспользуемый резервный слуга).\n- Загруженные данные могут быть удалены из-за будущих обновлений, несовместимости данных и т. д.",
     ),

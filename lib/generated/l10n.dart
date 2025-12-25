@@ -912,6 +912,321 @@ class S {
     return Intl.message('Chaldea Gate', name: 'chaldea_gate', desc: '', locale: localeName, args: []);
   }
 
+  /// `5{kstar} Summons`
+  String chaldea_report_5star_pull(Object kstar) {
+    return Intl.message(
+      '5$kstar Summons',
+      name: 'chaldea_report_5star_pull',
+      desc: '',
+      locale: localeName,
+      args: [kstar],
+    );
+  }
+
+  /// `5{kstar} Summon Probability`
+  String chaldea_report_5star_pull_prob(Object kstar) {
+    return Intl.message(
+      '5$kstar Summon Probability',
+      name: 'chaldea_report_5star_pull_prob',
+      desc: '',
+      locale: localeName,
+      args: [kstar],
+    );
+  }
+
+  /// `- Based on historical data, Lucky Bag pulls removed`
+  String get chaldea_report_5star_stat_dis_detail {
+    return Intl.message(
+      '- Based on historical data, Lucky Bag pulls removed',
+      name: 'chaldea_report_5star_stat_dis_detail',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `- For entertainment purpose only`
+  String get chaldea_report_5star_stat_dis_ent {
+    return Intl.message(
+      '- For entertainment purpose only',
+      name: 'chaldea_report_5star_stat_dis_ent',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `5{kstar} Count / NP Lvs`
+  String chaldea_report_5star_svts_count(Object kstar) {
+    return Intl.message(
+      '5$kstar Count / NP Lvs',
+      name: 'chaldea_report_5star_svts_count',
+      desc: '',
+      locale: localeName,
+      args: [kstar],
+    );
+  }
+
+  /// `Master for`
+  String get chaldea_report_account_created {
+    return Intl.message('Master for', name: 'chaldea_report_account_created', desc: '', locale: localeName, args: []);
+  }
+
+  /// `Servant Collections`
+  String get chaldea_report_compendium {
+    return Intl.message(
+      'Servant Collections',
+      name: 'chaldea_report_compendium',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Year {year}`
+  String chaldea_report_cur_year(Object year) {
+    return Intl.message('Year $year', name: 'chaldea_report_cur_year', desc: '', locale: localeName, args: [year]);
+  }
+
+  /// `Favorite`
+  String get chaldea_report_favorite {
+    return Intl.message('Favorite', name: 'chaldea_report_favorite', desc: '', locale: localeName, args: []);
+  }
+
+  /// `Conclusion`
+  String get chaldea_report_likely {
+    return Intl.message('Conclusion', name: 'chaldea_report_likely', desc: '', locale: localeName, args: []);
+  }
+
+  /// `Grand Gacha God`
+  String get chaldea_report_luck_grand_lucky {
+    return Intl.message(
+      'Grand Gacha God',
+      name: 'chaldea_report_luck_grand_lucky',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `You're the chosen one!`
+  String get chaldea_report_luck_grand_lucky_desc {
+    return Intl.message(
+      'You\'re the chosen one!',
+      name: 'chaldea_report_luck_grand_lucky_desc',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Gacha King`
+  String get chaldea_report_luck_lucky {
+    return Intl.message('Gacha King', name: 'chaldea_report_luck_lucky', desc: '', locale: localeName, args: []);
+  }
+
+  /// `The fate favors you.`
+  String get chaldea_report_luck_lucky_desc {
+    return Intl.message(
+      'The fate favors you.',
+      name: 'chaldea_report_luck_lucky_desc',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Gacha Man`
+  String get chaldea_report_luck_mid_lucky {
+    return Intl.message('Gacha Man', name: 'chaldea_report_luck_mid_lucky', desc: '', locale: localeName, args: []);
+  }
+
+  /// `Stablity is a gift.`
+  String get chaldea_report_luck_mid_lucky_desc {
+    return Intl.message(
+      'Stablity is a gift.',
+      name: 'chaldea_report_luck_mid_lucky_desc',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Gacha Gambit`
+  String get chaldea_report_luck_not_lucky {
+    return Intl.message('Gacha Gambit', name: 'chaldea_report_luck_not_lucky', desc: '', locale: localeName, args: []);
+  }
+
+  /// `Saving luck for next time.`
+  String get chaldea_report_luck_not_lucky_desc {
+    return Intl.message(
+      'Saving luck for next time.',
+      name: 'chaldea_report_luck_not_lucky_desc',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Gacha Enjoyer`
+  String get chaldea_report_luck_unlucky {
+    return Intl.message('Gacha Enjoyer', name: 'chaldea_report_luck_unlucky', desc: '', locale: localeName, args: []);
+  }
+
+  /// `Next time for sure!`
+  String get chaldea_report_luck_unlucky_desc {
+    return Intl.message(
+      'Next time for sure!',
+      name: 'chaldea_report_luck_unlucky_desc',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Grand Gacha Enjoyer`
+  String get chaldea_report_luck_very_unlucky {
+    return Intl.message(
+      'Grand Gacha Enjoyer',
+      name: 'chaldea_report_luck_very_unlucky',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `I roll for Mana Prisms.`
+  String get chaldea_report_luck_very_unlucky_desc {
+    return Intl.message(
+      'I roll for Mana Prisms.',
+      name: 'chaldea_report_luck_very_unlucky_desc',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Most Event Free`
+  String get chaldea_report_most_event_free {
+    return Intl.message(
+      'Most Event Free',
+      name: 'chaldea_report_most_event_free',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Most Failures`
+  String get chaldea_report_most_fail {
+    return Intl.message('Most Failures', name: 'chaldea_report_most_fail', desc: '', locale: localeName, args: []);
+  }
+
+  /// `Most Free`
+  String get chaldea_report_most_free {
+    return Intl.message('Most Free', name: 'chaldea_report_most_free', desc: '', locale: localeName, args: []);
+  }
+
+  /// `Most Raid`
+  String get chaldea_report_most_raid {
+    return Intl.message('Most Raid', name: 'chaldea_report_most_raid', desc: '', locale: localeName, args: []);
+  }
+
+  /// `{curYear} Pulls`
+  String chaldea_report_pull_cur_year(Object curYear) {
+    return Intl.message(
+      '$curYear Pulls',
+      name: 'chaldea_report_pull_cur_year',
+      desc: '',
+      locale: localeName,
+      args: [curYear],
+    );
+  }
+
+  /// `All Time`
+  String get chaldea_report_pull_stat_all {
+    return Intl.message('All Time', name: 'chaldea_report_pull_stat_all', desc: '', locale: localeName, args: []);
+  }
+
+  /// `{curYear}`
+  String chaldea_report_pull_stat_cur_year(Object curYear) {
+    return Intl.message(
+      '$curYear',
+      name: 'chaldea_report_pull_stat_cur_year',
+      desc: '',
+      locale: localeName,
+      args: [curYear],
+    );
+  }
+
+  /// `{curYear} Top {count} Pulls`
+  String chaldea_report_pull_stat_top_title(Object curYear, Object count) {
+    return Intl.message(
+      '$curYear Top $count Pulls',
+      name: 'chaldea_report_pull_stat_top_title',
+      desc: '',
+      locale: localeName,
+      args: [curYear, count],
+    );
+  }
+
+  /// `Push`
+  String get chaldea_report_push {
+    return Intl.message('Push', name: 'chaldea_report_push', desc: '', locale: localeName, args: []);
+  }
+
+  /// `Quest Stat`
+  String get chaldea_report_quests_stat {
+    return Intl.message('Quest Stat', name: 'chaldea_report_quests_stat', desc: '', locale: localeName, args: []);
+  }
+
+  /// `Joined for {year}yr {month}mo {day}d`
+  String chaldea_report_since_account_created_date(Object year, Object month, Object day) {
+    return Intl.message(
+      'Joined for ${year}yr ${month}mo ${day}d',
+      name: 'chaldea_report_since_account_created_date',
+      desc: '',
+      locale: localeName,
+      args: [year, month, day],
+    );
+  }
+
+  /// ` Times`
+  String get chaldea_report_times {
+    return Intl.message(' Times', name: 'chaldea_report_times', desc: '', locale: localeName, args: []);
+  }
+
+  /// `Chaldea - FGO Report`
+  String get chaldea_report_title {
+    return Intl.message('Chaldea - FGO Report', name: 'chaldea_report_title', desc: '', locale: localeName, args: []);
+  }
+
+  /// ` Days`
+  String get chaldea_report_total_days {
+    return Intl.message(' Days', name: 'chaldea_report_total_days', desc: '', locale: localeName, args: []);
+  }
+
+  /// `Total Login`
+  String get chaldea_report_total_login {
+    return Intl.message('Total Login', name: 'chaldea_report_total_login', desc: '', locale: localeName, args: []);
+  }
+
+  /// `Servants`
+  String get chaldea_report_total_svts {
+    return Intl.message('Servants', name: 'chaldea_report_total_svts', desc: '', locale: localeName, args: []);
+  }
+
+  /// `Please adjust window size`
+  String get chaldea_report_window_size_warn {
+    return Intl.message(
+      'Please adjust window size',
+      name: 'chaldea_report_window_size_warn',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Chaldea Server`
   String get chaldea_server {
     return Intl.message('Chaldea Server', name: 'chaldea_server', desc: '', locale: localeName, args: []);

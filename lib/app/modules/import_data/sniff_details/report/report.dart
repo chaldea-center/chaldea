@@ -118,7 +118,7 @@ class _FgoAnnualReportPageState extends State<FgoAnnualReportPage> {
           }
           final w = constraints.maxWidth, h = constraints.maxHeight;
           if (w > 700 || w < 200 || h < 400) {
-            errors.add(Text('window size not suitable\n窗口长宽尺寸不合适\nw=200~700,h≥400\n(w=$w,h=$h)'));
+            errors.add(Text('${S.current.chaldea_report_window_size_warn}\nw=200~700,h≥400\n(w=$w,h=$h)'));
           }
           final dataVersion2 = db.runtimeData.upgradableDataVersion;
           if (dataVersion2 != null && dataVersion2.timestamp > db.gameData.version.timestamp + 7 * kSecsPerDay) {
@@ -147,7 +147,7 @@ class _FgoAnnualReportPageState extends State<FgoAnnualReportPage> {
 
           return Scaffold(
             appBar: AppBar(
-              title: Text('Chaldea - FGO报告'),
+              title: Text(S.current.chaldea_report_title),
               actions: [
                 IconButton(
                   onPressed: () {
@@ -227,7 +227,7 @@ class _FgoAnnualReportRealPageState extends State<FgoAnnualReportRealPage> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         centerTitle: true,
-        title: const Text('Chaldea - FGO报告', style: TextStyle(fontWeight: FontWeight.w700)),
+        title: Text(S.current.chaldea_report_title, style: TextStyle(fontWeight: FontWeight.w700)),
         actions: [IconButton(onPressed: doScreenshot, icon: Icon(Icons.share))],
       ),
       body: SingleChildScrollView(
@@ -399,7 +399,7 @@ class _FgoAnnualReportRealPageState extends State<FgoAnnualReportRealPage> {
                 ),
                 const SizedBox(height: 2),
                 AutoSizeText(
-                  '入职$year年$month月$day日',
+                  S.current.chaldea_report_since_account_created_date(year, month, day),
                   style: TextStyle(fontSize: 14, color: _greyColor),
                   maxLines: 1,
                   minFontSize: 8,
@@ -411,7 +411,7 @@ class _FgoAnnualReportRealPageState extends State<FgoAnnualReportRealPage> {
           Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              const Text('成为御主', style: TextStyle(color: _greyColor)),
+              Text(S.current.chaldea_report_account_created, style: TextStyle(color: _greyColor)),
               Text.rich(
                 TextSpan(
                   children: [
@@ -420,14 +420,14 @@ class _FgoAnnualReportRealPageState extends State<FgoAnnualReportRealPage> {
                       style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                     ),
                     TextSpan(
-                      text: ' 天',
+                      text: S.current.chaldea_report_total_days,
                       style: const TextStyle(color: _greyColor),
                     ),
                   ],
                 ),
               ),
               const SizedBox(height: 8),
-              const Text('累积登录', style: TextStyle(color: _greyColor)),
+              Text(S.current.chaldea_report_total_login, style: TextStyle(color: _greyColor)),
               Text.rich(
                 TextSpan(
                   children: [
@@ -436,7 +436,7 @@ class _FgoAnnualReportRealPageState extends State<FgoAnnualReportRealPage> {
                       style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                     ),
                     TextSpan(
-                      text: ' 天',
+                      text: S.current.chaldea_report_total_days,
                       style: const TextStyle(color: _greyColor),
                     ),
                   ],
@@ -548,8 +548,8 @@ class _FgoAnnualReportRealPageState extends State<FgoAnnualReportRealPage> {
                 ),
               ),
               const TextSpan(text: ' '),
-              if (isPush) TextSpan(text: '单推'),
-              if (isFavorite) TextSpan(text: '中意'),
+              if (isPush) TextSpan(text: S.current.chaldea_report_push),
+              if (isFavorite) TextSpan(text: S.current.chaldea_report_favorite),
             ],
             style: TextStyle(fontWeight: .bold),
           ),
@@ -752,11 +752,11 @@ class _FgoAnnualReportRealPageState extends State<FgoAnnualReportRealPage> {
                   ),
                 ),
                 const SizedBox(height: 4),
-                Text('${report.curYear}年', style: TextStyle(color: _greyColor)),
+                Text(S.current.chaldea_report_cur_year(report.curYear), style: TextStyle(color: _greyColor)),
                 Text('$thisYearCount', style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold)),
                 if (report.bond15SvtCollections.isNotEmpty) ...[
                   const SizedBox(height: 4),
-                  Text('羁绊15', style: TextStyle(color: _greyColor)),
+                  Text('${S.current.bond}15', style: TextStyle(color: _greyColor)),
                   Text(
                     '${report.bond15SvtCollections.length}',
                     style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
@@ -866,7 +866,7 @@ class _FgoAnnualReportRealPageState extends State<FgoAnnualReportRealPage> {
     final classColors = _classColorMap;
     final clsKeys = report.ownedSvtCollectionByClass.keys.toList()..sort2((e) => e.value);
     return ReportCard(
-      header: Text('英灵图鉴', style: TextStyle(fontWeight: FontWeight.bold)),
+      header: Text(S.current.chaldea_report_compendium, style: TextStyle(fontWeight: FontWeight.bold)),
       child: Row(
         spacing: 16,
         children: [
@@ -901,7 +901,7 @@ class _FgoAnnualReportRealPageState extends State<FgoAnnualReportRealPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('契约从者', style: TextStyle(color: _greyColor)),
+                Text(S.current.chaldea_report_total_svts, style: TextStyle(color: _greyColor)),
                 Text.rich(
                   TextSpan(
                     children: [
@@ -917,7 +917,7 @@ class _FgoAnnualReportRealPageState extends State<FgoAnnualReportRealPage> {
                   ),
                 ),
                 const SizedBox(height: 8),
-                AutoSizeText('5$kStarChar2契约/宝具数', style: TextStyle(color: _greyColor), maxLines: 1, minFontSize: 8),
+                AutoSizeText(S.current.chaldea_report_5star_svts_count(kStarChar2), style: TextStyle(color: _greyColor), maxLines: 1, minFontSize: 8),
                 AutoSizeText(
                   '${report.ownedSvtCollectionByRarity[5] ?? 0} / ${report.curSsrTdLv}',
                   style: const TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
@@ -988,17 +988,17 @@ class _FgoAnnualReportRealPageState extends State<FgoAnnualReportRealPage> {
     double summonRate = report.summonSsrRate * 100;
     final (luckyGrade, comment) = _luckGrade(summonRate);
     String bgImage = 'https://media.fgo.wiki/a/a6/圣晶石10个.png';
-    if (luckyGrade == '酋长') {
+    if (luckyGrade == S.current.chaldea_report_luck_very_unlucky) {
       bgImage = 'https://static.atlasacademy.io/JP/Servants/Status/1100100/status_servant_1.png';
     }
     return ReportCard(
-      header: Text('5$kStarChar2英灵召唤', style: TextStyle(fontWeight: .bold)),
+      header: Text(S.current.chaldea_report_5star_pull(kStarChar2), style: TextStyle(fontWeight: .bold)),
       onTap: () => SimpleConfirmDialog(
         showCancel: false,
         scrollable: true,
-        title: Text('5$kStarChar2英灵召唤概率'),
-        content: Text("""- 历年卡池的统计，已除去福袋五星出率
-- 欧非仅个人瞎分类，仅供娱乐"""),
+        title: Text(S.current.chaldea_report_5star_pull_prob(kStarChar2)),
+        content: Text("""${S.current.chaldea_report_5star_stat_dis_detail}
+${S.current.chaldea_report_5star_stat_dis_ent}"""),
       ).showDialog(context),
       backgrounds: [
         Positioned(
@@ -1027,7 +1027,7 @@ class _FgoAnnualReportRealPageState extends State<FgoAnnualReportRealPage> {
                         style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
                       ),
                       TextSpan(
-                        text: ' 概率',
+                        text: ' ${S.current.probability}',
                         style: TextStyle(color: _greyColor),
                       ),
                     ],
@@ -1095,7 +1095,7 @@ class _FgoAnnualReportRealPageState extends State<FgoAnnualReportRealPage> {
               mainAxisSize: .min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text('疑似', style: TextStyle(color: _greyColor)),
+                Text(S.current.chaldea_report_likely, style: TextStyle(color: _greyColor)),
                 const SizedBox(height: 6),
                 Text(luckyGrade, style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w800)),
                 const SizedBox(height: 12),
@@ -1110,19 +1110,19 @@ class _FgoAnnualReportRealPageState extends State<FgoAnnualReportRealPage> {
 
   Widget _gachaTopPulls(bool useThisYear) {
     const int kMaxShownQuestCount = 3;
-    String titlePrefix = useThisYear ? '${report.curYear}年度' : '历年';
+    String titlePrefix = useThisYear ? S.current.chaldea_report_pull_stat_cur_year(report.curYear) : S.current.chaldea_report_pull_stat_all;
     final userGachas = useThisYear ? report.mostPullGachasThisYear : report.mostPullGachas;
     return ReportCard(
       header: Padding(
         padding: const .symmetric(horizontal: 16),
-        child: Text('$titlePrefix抽卡次数前$kMaxShownQuestCount', style: TextStyle(fontWeight: .bold)),
+        child: Text(S.current.chaldea_report_pull_stat_top_title(titlePrefix, kMaxShownQuestCount), style: TextStyle(fontWeight: .bold)),
       ),
       padding: .symmetric(vertical: 16),
       onTap: userGachas.isEmpty
           ? null
           : () {
               router.pushPage(
-                UserGachaListPage(report: report, userGachas: userGachas.toList(), title: '$titlePrefix抽卡'),
+                UserGachaListPage(report: report, userGachas: userGachas.toList(), title: S.current.chaldea_report_pull_cur_year(titlePrefix)),
               );
             },
       backgrounds: [
@@ -1225,10 +1225,10 @@ class _FgoAnnualReportRealPageState extends State<FgoAnnualReportRealPage> {
 
   Widget _topQuestRun() {
     final List<(String tag, List<UserQuestStat> stats)> groups = [
-      ('最多的常驻Free', report.mostClearFreeQuests),
-      ('最多的活动Free', report.mostClearEventFreeQuests),
-      ('最多的柱子战', report.mostClearRaidQuests),
-      ('挑战失败次数最多', report.mostChallengeFailQuests),
+      (S.current.chaldea_report_most_free, report.mostClearFreeQuests),
+      (S.current.chaldea_report_most_event_free, report.mostClearEventFreeQuests),
+      (S.current.chaldea_report_most_raid, report.mostClearRaidQuests),
+      (S.current.chaldea_report_most_fail, report.mostChallengeFailQuests),
     ];
     List<Widget> children = [];
     for (final (tag, stats) in groups) {
@@ -1257,8 +1257,8 @@ class _FgoAnnualReportRealPageState extends State<FgoAnnualReportRealPage> {
                   text: ' ${stat.count}',
                   style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
                 ),
-                const TextSpan(
-                  text: ' 次',
+                TextSpan(
+                  text: S.current.chaldea_report_times,
                   style: TextStyle(color: _greyColor),
                 ),
               ],
@@ -1270,7 +1270,7 @@ class _FgoAnnualReportRealPageState extends State<FgoAnnualReportRealPage> {
     }
     return ReportCard(
       padding: .symmetric(vertical: 16),
-      header: Padding(padding: .symmetric(horizontal: 16), child: Text('关卡之最')),
+      header: Padding(padding: .symmetric(horizontal: 16), child: Text(S.current.chaldea_report_quests_stat)),
       onTap: () {
         router.pushPage(UserQuestFarmingStatPage(userQuests: mstData.userQuest.toList()));
       },
@@ -1378,12 +1378,12 @@ class _FgoAnnualReportRealPageState extends State<FgoAnnualReportRealPage> {
   };
 
   (String luckyGrade, String comment) _luckGrade(double ssrRatePercent) {
-    if (ssrRatePercent >= 1.25) return ('Grand 欧皇', '圣晶石在此，恭迎天选之人！');
-    if (ssrRatePercent >= 1.15) return ('欧皇', '闪耀星之光芒，命运格外垂青。');
-    if (ssrRatePercent >= 1.05) return ('中庸', '稳定即是福气，旅程方见真谛。');
-    if (ssrRatePercent >= 1.0) return ('略非', '小遇波澜无碍，蓄力以待转机。');
-    if (ssrRatePercent > 0.85) return ('非酋', '心之所向，下次必达！运气守恒，未来可期。');
-    return ('酋长', '所有漫长等待，终得盛大回响。');
+    if (ssrRatePercent >= 1.25) return (S.current.chaldea_report_luck_grand_lucky, S.current.chaldea_report_luck_grand_lucky_desc);
+    if (ssrRatePercent >= 1.15) return (S.current.chaldea_report_luck_lucky, S.current.chaldea_report_luck_lucky_desc);
+    if (ssrRatePercent >= 1.05) return (S.current.chaldea_report_luck_mid_lucky, S.current.chaldea_report_luck_mid_lucky_desc);
+    if (ssrRatePercent >= 1.0) return (S.current.chaldea_report_luck_not_lucky, S.current.chaldea_report_luck_not_lucky_desc);
+    if (ssrRatePercent > 0.85) return (S.current.chaldea_report_luck_unlucky, S.current.chaldea_report_luck_unlucky_desc);
+    return (S.current.chaldea_report_luck_very_unlucky, S.current.chaldea_report_luck_very_unlucky_desc);
   }
 }
 
