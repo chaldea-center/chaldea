@@ -12,12 +12,17 @@ import 'package:chaldea/app/app.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/gamedata/mst_data.dart';
 import 'package:chaldea/models/models.dart';
+import 'package:chaldea/packages/language.dart';
 import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../bond_detail_page.dart';
+import '../quest_farming.dart';
+import 'details.dart';
 import 'report_data.dart';
 import 'settings.dart';
+
+const _greyColor = Color(0xFFBDBDBD); // Colors.grey.shade400;
 
 class FgoAnnualReportPage extends StatefulWidget {
   final MasterDataManager mstData;
@@ -42,10 +47,10 @@ class _FgoAnnualReportPageState extends State<FgoAnnualReportPage> {
 
   Future<void> loadData({bool refresh = false}) async {
     if (loading) return;
+    loading = true;
     await null;
     if (mounted) setState(() {});
     try {
-      loading = true;
       loadError = null;
       Region? region = widget.region;
       if (region == null) {
@@ -68,9 +73,7 @@ class _FgoAnnualReportPageState extends State<FgoAnnualReportPage> {
         if (region == null) return;
       }
 
-      EasyLoading.show(status: 'Loading data');
       _data = await FgoAnnualReportData.parse(mstData: widget.mstData, region: region);
-      EasyLoading.dismiss();
     } catch (e, s) {
       loadError = e;
       logger.e('load report data failed', e, s);
@@ -109,13 +112,17 @@ class _FgoAnnualReportPageState extends State<FgoAnnualReportPage> {
           List<Widget> errors = [];
           if (data == null) {
             if (loading) {
-              errors.add(const CircularProgressIndicator());
+              errors.add(const Center(child: CircularProgressIndicator()));
             }
             if (loadError != null) errors.add(Text('${S.current.error}:\n$loadError'));
           }
           final w = constraints.maxWidth, h = constraints.maxHeight;
           if (w > 700 || w < 200 || h < 400) {
             errors.add(Text('window size not suitable\n窗口长宽尺寸不合适\nw=200~700,h≥400\n(w=$w,h=$h)'));
+          }
+          final dataVersion2 = db.runtimeData.upgradableDataVersion;
+          if (dataVersion2 != null && dataVersion2.timestamp > db.gameData.version.timestamp + 7 * kSecsPerDay) {
+            errors.add(Text('${S.current.settings_tab_name} -> ${S.current.gamedata} -> ${S.current.update_dataset}'));
           }
           if (data != null) {
             if (!db.settings.spoilerRegion.isJP && db.settings.spoilerRegion != data.region) {
@@ -134,23 +141,24 @@ class _FgoAnnualReportPageState extends State<FgoAnnualReportPage> {
             }
           }
 
-          if (errors.isNotEmpty) {
-            return Scaffold(
-              appBar: AppBar(
-                title: Text('Chaldea - FGO报告'),
-                actions: [
-                  IconButton(
-                    onPressed: () {
-                      loadData(refresh: true);
-                    },
-                    icon: Icon(Icons.refresh),
-                  ),
-                ],
-              ),
-              body: ListView(padding: .all(16), children: errors),
-            );
+          if (errors.isEmpty && data != null) {
+            return FgoAnnualReportRealPage(report: data);
           }
-          return FgoAnnualReportRealPage(report: data!);
+
+          return Scaffold(
+            appBar: AppBar(
+              title: Text('Chaldea - FGO报告'),
+              actions: [
+                IconButton(
+                  onPressed: () {
+                    loadData(refresh: true);
+                  },
+                  icon: Icon(Icons.refresh),
+                ),
+              ],
+            ),
+            body: ListView(padding: .all(16), children: errors),
+          );
         },
       ),
     );
@@ -261,7 +269,7 @@ class _FgoAnnualReportRealPageState extends State<FgoAnnualReportRealPage> {
                   children: [
                     _topTitle(),
                     _userInfoCard(),
-                    ?pushAndFavoriteSvts(),
+                    ?_pushAndFavoriteSvts(),
                     _gachaLuck(),
                     _summonedStats(),
                     _bondCeStats(),
@@ -307,21 +315,28 @@ class _FgoAnnualReportRealPageState extends State<FgoAnnualReportRealPage> {
         await MasterEquipChangeDialog(options: options).showDialog(context);
         if (mounted) setState(() {});
       },
-      background: Positioned.fill(
-        top: 16,
-        bottom: 0,
-        // right: 50,
-        child: Align(
-          alignment: .xy(0.3, 0),
+      backgrounds: [
+        Positioned(
+          top: 5,
+          left: 5,
           child: Opacity(
-            opacity: 0.1,
-            child: ClipPath(
-              clipper: const RelativePolygonClipper([Offset(0, 0), Offset(1, 0), Offset(1, 0.8), Offset(0, 0.8)]),
-              child: Image.asset('res/img/chaldea.png'),
+            opacity: 0.4,
+            child: CachedImage(
+              imageUrl: 'https://static.atlasacademy.io/JP/EventUI/questboard_icon_cap0301.png',
+              width: 90 * 0.5,
+              height: 106 * 0.5,
+              placeholder: _blankPlaceholder,
             ),
+
+            // ClipPath(
+            //   clipper: const RelativePolygonClipper([Offset(0, 0), Offset(1, 0), Offset(1, 0.8), Offset(0, 0.8)]),
+            //   child: Image.asset('res/img/chaldea.png'),
+            //   // https://static.atlasacademy.io/JP/EventUI/questboard_icon_cap0301.png
+            //   // https://static.atlasacademy.io/JP/EventUI/quest_board_icon_301.png
+            // ),
           ),
         ),
-      ),
+      ],
       child: Row(
         children: [
           Container(
@@ -375,7 +390,7 @@ class _FgoAnnualReportRealPageState extends State<FgoAnnualReportRealPage> {
                     children: [
                       TextSpan(
                         // text: ' 加入',
-                        style: TextStyle(fontSize: 14, color: Colors.grey),
+                        style: TextStyle(fontSize: 14, color: _greyColor),
                       ),
                     ],
                   ),
@@ -385,17 +400,18 @@ class _FgoAnnualReportRealPageState extends State<FgoAnnualReportRealPage> {
                 const SizedBox(height: 2),
                 AutoSizeText(
                   '入职$year年$month月$day日',
-                  style: TextStyle(fontSize: 14, color: Colors.grey),
+                  style: TextStyle(fontSize: 14, color: _greyColor),
                   maxLines: 1,
                   minFontSize: 8,
                 ),
               ],
             ),
           ),
+          const SizedBox(width: 4),
           Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              const Text('成为御主', style: TextStyle(color: Colors.grey)),
+              const Text('成为御主', style: TextStyle(color: _greyColor)),
               Text.rich(
                 TextSpan(
                   children: [
@@ -405,13 +421,13 @@ class _FgoAnnualReportRealPageState extends State<FgoAnnualReportRealPage> {
                     ),
                     TextSpan(
                       text: ' 天',
-                      style: const TextStyle(color: Colors.grey),
+                      style: const TextStyle(color: _greyColor),
                     ),
                   ],
                 ),
               ),
               const SizedBox(height: 8),
-              const Text('连续登录', style: TextStyle(color: Colors.grey)),
+              const Text('累积登录', style: TextStyle(color: _greyColor)),
               Text.rich(
                 TextSpan(
                   children: [
@@ -421,7 +437,7 @@ class _FgoAnnualReportRealPageState extends State<FgoAnnualReportRealPage> {
                     ),
                     TextSpan(
                       text: ' 天',
-                      style: const TextStyle(color: Colors.grey),
+                      style: const TextStyle(color: _greyColor),
                     ),
                   ],
                 ),
@@ -465,13 +481,12 @@ class _FgoAnnualReportRealPageState extends State<FgoAnnualReportRealPage> {
     );
   }
 
-  Widget? pushAndFavoriteSvts() {
+  Widget? _pushAndFavoriteSvts() {
     final pushUserSvt = report.mstData.getUserSvt(report.userGame.pushUserSvtId);
     final favoriteUserSvt = report.mstData.getUserSvt(report.userGame.favoriteUserSvtId);
     List<Widget> cards = [];
-    for (final userSvt in [?pushUserSvt, ?favoriteUserSvt]) {
-      final bool isPush = userSvt.id == report.userGame.pushUserSvtId,
-          isFavorite = userSvt.id == report.userGame.favoriteUserSvtId;
+    for (final (isPush, isFavorite, userSvt) in [(true, false, pushUserSvt), (false, true, favoriteUserSvt)]) {
+      if (userSvt == null) continue;
       final svt = userSvt.dbSvt;
       final collection = mstData.userSvtCollection[userSvt.svtId];
 
@@ -507,6 +522,7 @@ class _FgoAnnualReportRealPageState extends State<FgoAnnualReportRealPage> {
         bool isGrand = mstData.userSvtGrand.any((e) => e.userSvtId == userSvt.id);
         int clsIconRarity = rarity;
         if (userSvt.exceedCount > 0) clsIconRarity = max(clsIconRarity, 5);
+        // if (!isGrand && clsIconRarity > 3) clsIconRarity = 3;
         clsIcon = SvtClassX.clsIcon(isGrand ? svt.classId + 10000 : svt.classId, clsIconRarity);
       }
       svtImage ??= 'https://static.atlasacademy.io/JP/Servants/Status/${userSvt.svtId}/status_servant_3.png';
@@ -518,6 +534,7 @@ class _FgoAnnualReportRealPageState extends State<FgoAnnualReportRealPage> {
 
       Widget card = ReportCard(
         onTap: svt?.routeTo,
+        clipBehavior: .antiAlias,
         header: Text.rich(
           TextSpan(
             children: [
@@ -537,9 +554,20 @@ class _FgoAnnualReportRealPageState extends State<FgoAnnualReportRealPage> {
             style: TextStyle(fontWeight: .bold),
           ),
         ),
-        headerTailings: [
+        backgrounds: [
           // if (rarityIcon != null) CachedImage(imageUrl: rarityIcon, height: 10, placeholder: _blankPlaceholder),
-          if (clsIcon != null) CachedImage(imageUrl: clsIcon, width: 20, height: 20, placeholder: _blankPlaceholder),
+          if (clsIcon != null)
+            Positioned(
+              top: 5,
+              right: 5,
+              child: ImageFiltered(
+                imageFilter: ImageFilter.blur(sigmaX: 0, sigmaY: 0),
+                child: Opacity(
+                  opacity: 0.5,
+                  child: CachedImage(imageUrl: clsIcon, width: 40, height: 40, placeholder: _blankPlaceholder),
+                ),
+              ),
+            ),
         ],
         padding: .fromLTRB(16, 16, 16, 8),
         child: Row(
@@ -567,7 +595,7 @@ class _FgoAnnualReportRealPageState extends State<FgoAnnualReportRealPage> {
                       children: [
                         TextSpan(
                           text: 'Lv. ',
-                          style: TextStyle(color: Colors.grey),
+                          style: TextStyle(color: _greyColor),
                         ),
                         TextSpan(
                           text: '${userSvt.lv}',
@@ -632,7 +660,7 @@ class _FgoAnnualReportRealPageState extends State<FgoAnnualReportRealPage> {
                                 if (collection.maxFriendshipRank != collection.friendshipRank)
                                   TextSpan(
                                     text: ' /${collection.maxFriendshipRank}',
-                                    style: TextStyle(color: Colors.grey, fontSize: 10),
+                                    style: TextStyle(color: _greyColor, fontSize: 10),
                                   ),
                               ],
                             ),
@@ -672,14 +700,34 @@ class _FgoAnnualReportRealPageState extends State<FgoAnnualReportRealPage> {
     return ReportCard(
       header: Text(S.current.bond_craft, style: TextStyle(fontWeight: FontWeight.bold)),
       onTap: () {
-        router.push(
-          child: SvtBondDetailPage(
+        router.pushPage(
+          SvtBondDetailPage(
             friendCode: mstData.user?.friendCode,
             userSvtCollections: mstData.userSvtCollection.toList(),
             userSvts: mstData.userSvtAndStorage.toList(),
           ),
         );
       },
+      backgroundAlignment: .topCenter,
+      backgrounds: [
+        Positioned(
+          top: -50,
+          // right: ,
+          child: ImageFiltered(
+            imageFilter: ImageFilter.blur(sigmaX: 1, sigmaY: 1),
+            child: Opacity(
+              opacity: 0.8,
+              child: CachedImage(
+                imageUrl: 'https://static.atlasacademy.io/JP/EventUI/questboard_icon_cap03.png',
+                placeholder: _blankPlaceholder,
+                width: 150,
+                height: 150,
+                cachedOption: CachedImageOption(fit: .contain),
+              ),
+            ),
+          ),
+        ),
+      ],
       child: Row(
         spacing: 4,
         crossAxisAlignment: .end,
@@ -688,7 +736,7 @@ class _FgoAnnualReportRealPageState extends State<FgoAnnualReportRealPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(S.current.total, style: TextStyle(color: Colors.grey)),
+                Text(S.current.total, style: TextStyle(color: _greyColor)),
                 Text.rich(
                   TextSpan(
                     children: [
@@ -698,17 +746,17 @@ class _FgoAnnualReportRealPageState extends State<FgoAnnualReportRealPage> {
                       ),
                       TextSpan(
                         text: ' / $totalReleasedCount',
-                        style: TextStyle(color: Colors.grey),
+                        style: TextStyle(color: _greyColor),
                       ),
                     ],
                   ),
                 ),
                 const SizedBox(height: 4),
-                Text('${report.curYear}年', style: TextStyle(color: Colors.grey)),
+                Text('${report.curYear}年', style: TextStyle(color: _greyColor)),
                 Text('$thisYearCount', style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold)),
                 if (report.bond15SvtCollections.isNotEmpty) ...[
                   const SizedBox(height: 4),
-                  Text('羁绊15', style: TextStyle(color: Colors.grey)),
+                  Text('羁绊15', style: TextStyle(color: _greyColor)),
                   Text(
                     '${report.bond15SvtCollections.length}',
                     style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
@@ -717,7 +765,7 @@ class _FgoAnnualReportRealPageState extends State<FgoAnnualReportRealPage> {
                 const SizedBox(height: 4),
                 Text(
                   '${S.current.progress} ${(bond10Count / totalReleasedCount).format(percent: true, precision: 1)}',
-                  style: TextStyle(color: Colors.grey),
+                  style: TextStyle(color: _greyColor),
                 ),
                 const SizedBox(height: 2),
                 Container(
@@ -754,53 +802,55 @@ class _FgoAnnualReportRealPageState extends State<FgoAnnualReportRealPage> {
             Expanded(
               child: SizedBox(
                 height: 160,
-                child: BarChart(
-                  BarChartData(
-                    gridData: FlGridData(show: false),
-                    titlesData: FlTitlesData(
-                      bottomTitles: AxisTitles(
-                        sideTitles: SideTitles(
-                          showTitles: true,
-                          getTitlesWidget: (v, meta) => Padding(
-                            padding: const EdgeInsets.only(top: 8),
-                            child: Text(v.round().toString().substring(2), style: const TextStyle(fontSize: 10)),
-                          ),
-                          interval: 1,
-                        ),
-                      ),
-                      leftTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                      rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                      topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                    ),
-                    borderData: FlBorderData(show: false),
-                    barGroups: List.generate(years.length, (i) {
-                      final year = years[i];
-                      final y = report.bondEquipHistoryByYear[year]?.length ?? 0;
-                      return BarChartGroupData(
-                        showingTooltipIndicators: [0],
-                        x: year,
-                        barRods: [
-                          BarChartRodData(
-                            toY: y.toDouble(),
-                            gradient: const LinearGradient(
-                              colors: [Color(0xFF7B2CBF), Color.fromARGB(255, 173, 96, 235)],
+                child: IgnorePointer(
+                  child: BarChart(
+                    BarChartData(
+                      gridData: FlGridData(show: false),
+                      titlesData: FlTitlesData(
+                        bottomTitles: AxisTitles(
+                          sideTitles: SideTitles(
+                            showTitles: true,
+                            getTitlesWidget: (v, meta) => Padding(
+                              padding: const EdgeInsets.only(top: 8),
+                              child: Text(v.round().toString().substring(2), style: const TextStyle(fontSize: 10)),
                             ),
+                            interval: 1,
                           ),
-                        ],
-                      );
-                    }),
-                    barTouchData: BarTouchData(
-                      touchTooltipData: BarTouchTooltipData(
-                        getTooltipColor: (group) => Colors.transparent,
-                        tooltipPadding: EdgeInsets.zero,
-                        tooltipMargin: 0,
-                        getTooltipItem: (BarChartGroupData group, int groupIndex, BarChartRodData rod, int rodIndex) {
-                          if (rod.toY == 0) return null;
-                          return BarTooltipItem(
-                            rod.toY.round().toString(),
-                            TextStyle(color: Color.fromARGB(255, 173, 96, 235), fontSize: 10),
-                          );
-                        },
+                        ),
+                        leftTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                        rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                        topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                      ),
+                      borderData: FlBorderData(show: false),
+                      barGroups: List.generate(years.length, (i) {
+                        final year = years[i];
+                        final y = report.bondEquipHistoryByYear[year]?.length ?? 0;
+                        return BarChartGroupData(
+                          showingTooltipIndicators: [0],
+                          x: year,
+                          barRods: [
+                            BarChartRodData(
+                              toY: y.toDouble(),
+                              gradient: const LinearGradient(
+                                colors: [Color(0xFF7B2CBF), Color.fromARGB(255, 173, 96, 235)],
+                              ),
+                            ),
+                          ],
+                        );
+                      }),
+                      barTouchData: BarTouchData(
+                        touchTooltipData: BarTouchTooltipData(
+                          getTooltipColor: (group) => Colors.transparent,
+                          tooltipPadding: EdgeInsets.zero,
+                          tooltipMargin: 0,
+                          getTooltipItem: (BarChartGroupData group, int groupIndex, BarChartRodData rod, int rodIndex) {
+                            if (rod.toY == 0) return null;
+                            return BarTooltipItem(
+                              rod.toY.round().toString(),
+                              TextStyle(color: Color.fromARGB(255, 173, 96, 235), fontSize: 10),
+                            );
+                          },
+                        ),
                       ),
                     ),
                   ),
@@ -836,7 +886,7 @@ class _FgoAnnualReportRealPageState extends State<FgoAnnualReportRealPage> {
                           value: (report.ownedSvtCollectionByClass[svtClass] ?? 0).toDouble(),
                           title: (report.ownedSvtCollectionByClass[svtClass] ?? 0).toString(),
                           titleStyle: const TextStyle(fontSize: 10),
-                          color: classColors[svtClass] ?? Colors.blueGrey,
+                          color: (classColors[svtClass] ?? Colors.blueGrey).withAlpha(180),
                           badgeWidget: db.getIconImage(svtClass.icon(5), width: 24, height: 24),
                           badgePositionPercentageOffset: 0.99,
                         ),
@@ -851,7 +901,7 @@ class _FgoAnnualReportRealPageState extends State<FgoAnnualReportRealPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('契约从者', style: TextStyle(color: Colors.grey)),
+                Text('契约从者', style: TextStyle(color: _greyColor)),
                 Text.rich(
                   TextSpan(
                     children: [
@@ -861,16 +911,18 @@ class _FgoAnnualReportRealPageState extends State<FgoAnnualReportRealPage> {
                       ),
                       TextSpan(
                         text: ' / ${report.regionReleasedPlayableSvtIds.length}',
-                        style: TextStyle(color: Colors.grey),
+                        style: TextStyle(color: _greyColor),
                       ),
                     ],
                   ),
                 ),
                 const SizedBox(height: 8),
-                AutoSizeText('5$kStarChar2契约/宝具数', style: TextStyle(color: Colors.grey), maxLines: 1, minFontSize: 8),
-                Text(
+                AutoSizeText('5$kStarChar2契约/宝具数', style: TextStyle(color: _greyColor), maxLines: 1, minFontSize: 8),
+                AutoSizeText(
                   '${report.ownedSvtCollectionByRarity[5] ?? 0} / ${report.curSsrTdLv}',
                   style: const TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
+                  maxLines: 1,
+                  minFontSize: 8,
                 ),
                 const SizedBox(height: 8),
                 ...range(5, 0, -1).map((rarity) {
@@ -898,7 +950,7 @@ class _FgoAnnualReportRealPageState extends State<FgoAnnualReportRealPage> {
                           width: 20,
                           child: AutoSizeText(
                             '$rarity$kStarChar2',
-                            style: TextStyle(fontSize: 11, color: Colors.grey),
+                            style: TextStyle(fontSize: 11, color: _greyColor),
                             textAlign: .end,
                             maxLines: 1,
                             minFontSize: 4,
@@ -935,8 +987,32 @@ class _FgoAnnualReportRealPageState extends State<FgoAnnualReportRealPage> {
   Widget _gachaLuck() {
     double summonRate = report.summonSsrRate * 100;
     final (luckyGrade, comment) = _luckGrade(summonRate);
+    String bgImage = 'https://media.fgo.wiki/a/a6/圣晶石10个.png';
+    if (luckyGrade == '酋长') {
+      bgImage = 'https://static.atlasacademy.io/JP/Servants/Status/1100100/status_servant_1.png';
+    }
     return ReportCard(
       header: Text('5$kStarChar2英灵召唤', style: TextStyle(fontWeight: .bold)),
+      onTap: () => SimpleConfirmDialog(
+        showCancel: false,
+        scrollable: true,
+        title: Text('5$kStarChar2英灵召唤概率'),
+        content: Text("""- 历年卡池的统计，已除去福袋五星出率
+- 欧非仅个人瞎分类，仅供娱乐"""),
+      ).showDialog(context),
+      backgrounds: [
+        Positioned(
+          right: 10,
+          top: 0,
+          child: ImageFiltered(
+            imageFilter: .blur(sigmaX: 0.1, sigmaY: 0.1),
+            child: Opacity(
+              opacity: 0.8,
+              child: CachedImage(imageUrl: bgImage, width: 90, height: 90 * 4 / 3, placeholder: _blankPlaceholder),
+            ),
+          ),
+        ),
+      ],
       child: Row(
         children: [
           Expanded(
@@ -952,7 +1028,7 @@ class _FgoAnnualReportRealPageState extends State<FgoAnnualReportRealPage> {
                       ),
                       TextSpan(
                         text: ' 概率',
-                        style: TextStyle(color: Colors.grey),
+                        style: TextStyle(color: _greyColor),
                       ),
                     ],
                   ),
@@ -978,8 +1054,8 @@ class _FgoAnnualReportRealPageState extends State<FgoAnnualReportRealPage> {
                         style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                       ),
                       TextSpan(
-                        text: ' / ${report.summonPullCount} 抽',
-                        style: TextStyle(color: Colors.grey),
+                        text: ' / ${report.summonPullCount} ${S.current.summon_pull_unit}',
+                        style: TextStyle(color: _greyColor),
                       ),
                     ],
                   ),
@@ -991,18 +1067,18 @@ class _FgoAnnualReportRealPageState extends State<FgoAnnualReportRealPage> {
                 InkWell(
                   borderRadius: .circular(8),
                   onTap: () {
-                    //
+                    router.pushPage(UserGachaListPage(report: report, userGachas: report.luckyBagGachas.toList()));
                   },
                   child: AutoSizeText.rich(
                     TextSpan(
                       children: [
                         TextSpan(
-                          text: '${report.luckyBagGachas.length}',
+                          text: '+${report.luckyBagGachas.length}',
                           style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                         ),
                         TextSpan(
                           text: ' ${S.current.lucky_bag} ',
-                          style: TextStyle(color: Colors.grey),
+                          style: TextStyle(color: _greyColor),
                         ),
                       ],
                     ),
@@ -1015,32 +1091,15 @@ class _FgoAnnualReportRealPageState extends State<FgoAnnualReportRealPage> {
           ),
           const SizedBox(width: 12),
           Expanded(
-            child: Stack(
-              clipBehavior: .none,
+            child: Column(
+              mainAxisSize: .min,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Positioned(
-                  right: -10,
-                  top: -60,
-                  child: Opacity(
-                    opacity: 0.6,
-                    child: CachedImage(
-                      imageUrl: 'https://media.fgo.wiki/a/a6/圣晶石10个.png',
-                      width: 90,
-                      height: 90 * 4 / 3,
-                      placeholder: _blankPlaceholder,
-                    ),
-                  ),
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text('疑似', style: TextStyle(color: Colors.grey)),
-                    const SizedBox(height: 6),
-                    Text(luckyGrade, style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w800)),
-                    const SizedBox(height: 12),
-                    AutoSizeText(comment, maxLines: 3, minFontSize: 8, style: TextStyle(fontSize: 14)),
-                  ],
-                ),
+                const Text('疑似', style: TextStyle(color: _greyColor)),
+                const SizedBox(height: 6),
+                Text(luckyGrade, style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w800)),
+                const SizedBox(height: 12),
+                AutoSizeText(comment, maxLines: 3, minFontSize: 8, style: TextStyle(fontSize: 14)),
               ],
             ),
           ),
@@ -1050,36 +1109,46 @@ class _FgoAnnualReportRealPageState extends State<FgoAnnualReportRealPage> {
   }
 
   Widget _gachaTopPulls(bool useThisYear) {
+    const int kMaxShownQuestCount = 3;
+    String titlePrefix = useThisYear ? '${report.curYear}年度' : '历年';
+    final userGachas = useThisYear ? report.mostPullGachasThisYear : report.mostPullGachas;
     return ReportCard(
       header: Padding(
         padding: const .symmetric(horizontal: 16),
-        child: Text('${useThisYear ? '${report.curYear}年度' : '历年'}抽卡次数前三', style: TextStyle(fontWeight: .bold)),
+        child: Text('$titlePrefix抽卡次数前$kMaxShownQuestCount', style: TextStyle(fontWeight: .bold)),
       ),
       padding: .symmetric(vertical: 16),
-      background: Positioned(
-        // left: useThisYear ? null : 20,
-        top: useThisYear ? -30 : -90,
-        right: useThisYear ? 20 : 50,
-        bottom: -10,
-        child: ImageFiltered(
-          imageFilter: ImageFilter.blur(sigmaX: 3, sigmaY: 3),
-          child: Opacity(
-            opacity: 0.2,
-            child: CachedImage(
-              // imageUrl: 'https://media.fgo.wiki/5/5c/圣晶石16个.png',
-              imageUrl: useThisYear
-                  ? 'https://media.fgo.wiki/a/a6/圣晶石10个.png'
-                  : 'https://media.fgo.wiki/5/5c/圣晶石16个.png',
-              placeholder: _blankPlaceholder,
-              cachedOption: CachedImageOption(fit: .fitHeight),
+      onTap: userGachas.isEmpty
+          ? null
+          : () {
+              router.pushPage(
+                UserGachaListPage(report: report, userGachas: userGachas.toList(), title: '$titlePrefix抽卡'),
+              );
+            },
+      backgrounds: [
+        Positioned(
+          top: useThisYear ? -30 : -80,
+          // right: useThisYear ? 20 : 50,
+          right: 0,
+          // bottom: 0,
+          child: ImageFiltered(
+            imageFilter: ImageFilter.blur(sigmaX: 0, sigmaY: 0),
+            child: Opacity(
+              opacity: 0.4,
+              child: CachedImage(
+                // imageUrl: 'https://media.fgo.wiki/5/5c/圣晶石16个.png',
+                imageUrl: useThisYear
+                    ? 'https://media.fgo.wiki/a/a6/圣晶石10个.png'
+                    : 'https://media.fgo.wiki/5/5c/圣晶石16个.png',
+                placeholder: _blankPlaceholder,
+                height: useThisYear ? 100 : 140,
+                // cachedOption: CachedImageOption(fit: .fitHeight),
+              ),
             ),
           ),
         ),
-      ),
-      child: Column(
-        mainAxisSize: .min,
-        children: [...(useThisYear ? report.mostPullGachasThisYear : report.mostPullGachas).map(_gachaTile)],
-      ),
+      ],
+      child: Column(mainAxisSize: .min, children: [...userGachas.take(kMaxShownQuestCount).map(_gachaTile)]),
     );
   }
 
@@ -1109,10 +1178,6 @@ class _FgoAnnualReportRealPageState extends State<FgoAnnualReportRealPage> {
                   placeholder: _blankPlaceholder,
                   height: 80,
                   width: 80 * 1344 / 576,
-                  cachedOption: CachedImageOption(
-                    // fit: .scaleDown,
-                    //
-                  ),
                 ),
               ),
             ),
@@ -1120,12 +1185,17 @@ class _FgoAnnualReportRealPageState extends State<FgoAnnualReportRealPage> {
         ListTile(
           dense: true,
           contentPadding: EdgeInsetsDirectional.only(end: 16, start: 16 + 50),
-          title: Text(gacha?.lName.setMaxLines(1) ?? '${userGacha.gachaId}', maxLines: 2),
+          title: Text(
+            gacha?.lName.setMaxLines(1) ?? '${userGacha.gachaId}',
+            textScaler: .linear(0.90),
+            maxLines: 2,
+            overflow: .ellipsis,
+          ),
           subtitle: gacha == null
               ? null
               : Text(
                   [gacha.openedAt, gacha.closedAt].map((e) => e.sec2date().toDateString()).join(' ~ '),
-                  style: const TextStyle(color: Colors.grey),
+                  style: const TextStyle(color: _greyColor),
                 ),
           trailing: Text.rich(
             TextSpan(
@@ -1134,9 +1204,9 @@ class _FgoAnnualReportRealPageState extends State<FgoAnnualReportRealPage> {
                   text: ' ${userGacha.num}',
                   style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                 ),
-                const TextSpan(
-                  text: ' 抽',
-                  style: TextStyle(color: Colors.grey),
+                TextSpan(
+                  text: ' ${S.current.summon_pull_unit}',
+                  style: TextStyle(color: _greyColor),
                 ),
               ],
             ),
@@ -1155,22 +1225,29 @@ class _FgoAnnualReportRealPageState extends State<FgoAnnualReportRealPage> {
 
   Widget _topQuestRun() {
     final List<(String tag, List<UserQuestStat> stats)> groups = [
-      ('地铺本', report.mostClearFreeQuests),
-      ('活动Free', report.mostClearEventFreeQuests),
-      ('柱子战', report.mostClearRaidQuests),
-      ('挑战失败', report.mostChallengeFailQuests),
+      ('最多的常驻Free', report.mostClearFreeQuests),
+      ('最多的活动Free', report.mostClearEventFreeQuests),
+      ('最多的柱子战', report.mostClearRaidQuests),
+      ('挑战失败次数最多', report.mostChallengeFailQuests),
     ];
     List<Widget> children = [];
     for (final (tag, stats) in groups) {
       if (stats.isEmpty) continue;
       final stat = stats.first;
-      String spotIcon =
-          stat.quest.spot?.shownImage ??
-          'https://static.atlasacademy.io/file/aa-fgo-extract-jp/Battle/Common/CommonUIAtlas/img_arrow_under.png';
+      String? spotIcon = stat.quest.spot?.shownImage;
       children.add(
         ListTile(
           dense: true,
-          leading: CachedImage(imageUrl: spotIcon, width: 28, placeholder: _blankPlaceholder),
+          visualDensity: .compact,
+          minTileHeight: 32,
+          leading: CachedImage(
+            imageUrl:
+                spotIcon ??
+                'https://static.atlasacademy.io/file/aa-fgo-extract-jp/Battle/Common/CommonUIAtlas/img_arrow_under.png',
+            width: spotIcon == null ? 24 : 28,
+            placeholder: _blankPlaceholder,
+          ),
+          minLeadingWidth: 28,
           title: Text(stat.quest.lDispName.setMaxLines(1)),
           subtitle: Text(tag),
           trailing: Text.rich(
@@ -1180,10 +1257,10 @@ class _FgoAnnualReportRealPageState extends State<FgoAnnualReportRealPage> {
                   text: ' ${stat.count}',
                   style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
                 ),
-                // const TextSpan(
-                //   text: ' 抽',
-                //   style: TextStyle(color: Colors.grey),
-                // ),
+                const TextSpan(
+                  text: ' 次',
+                  style: TextStyle(color: _greyColor),
+                ),
               ],
             ),
           ),
@@ -1194,29 +1271,71 @@ class _FgoAnnualReportRealPageState extends State<FgoAnnualReportRealPage> {
     return ReportCard(
       padding: .symmetric(vertical: 16),
       header: Padding(padding: .symmetric(horizontal: 16), child: Text('关卡之最')),
+      onTap: () {
+        router.pushPage(UserQuestFarmingStatPage(userQuests: mstData.userQuest.toList()));
+      },
+      backgrounds: [
+        Positioned(
+          top: -50,
+          right: 60,
+          child: ImageFiltered(
+            imageFilter: ImageFilter.blur(sigmaX: 1, sigmaY: 1),
+            child: Opacity(
+              opacity: 0.8,
+              child: CachedImage(
+                imageUrl: 'https://static.atlasacademy.io/JP/EventUI/questboard_icon_cap00.png',
+                placeholder: _blankPlaceholder,
+                width: 150,
+                height: 150,
+                cachedOption: CachedImageOption(fit: .contain),
+              ),
+            ),
+          ),
+        ),
+      ],
       child: Column(mainAxisSize: .min, children: children),
     );
   }
 
   Widget _topTitle() {
-    return Column(
-      children: [
-        CachedImage(
-          imageUrl:
-              'https://static.atlasacademy.io/file/aa-fgo-extract-jp/GrandServantList/DownloadGrandServantListAtlas1/Name_BG_Pattern_Line.png',
-          height: 40,
-          placeholder: _blankPlaceholder,
-        ),
-        Padding(
-          padding: .symmetric(vertical: 8),
-          child: Text(
-            ' Fate / Grand Order ',
-            style: TextStyle(color: Colors.white.withAlpha(200), fontSize: 22, fontWeight: FontWeight.w700),
-            textAlign: TextAlign.center,
+    return Padding(
+      padding: .symmetric(horizontal: 40),
+      child: Column(
+        children: [
+          CachedImage(
+            imageUrl:
+                'https://static.atlasacademy.io/file/aa-fgo-extract-jp/GrandServantList/DownloadGrandServantListAtlas1/Name_BG_Pattern_Line.png',
+            height: 30,
+            placeholder: _blankPlaceholder,
           ),
-        ),
-        const SizedBox(height: 4),
-      ],
+          const SizedBox(height: 2),
+          // Text(
+          //   ' Fate Grand Order ',
+          //   style: TextStyle(
+          //     color: Colors.white.withAlpha(200),
+          //     fontSize: 14,
+          //     fontWeight: FontWeight.w600,
+          //     // letterSpacing: 10.2,
+          //     // fontFamily: 'helvetica',
+          //   ),
+          //   textAlign: TextAlign.center,
+          // ),
+          ColorFiltered(
+            colorFilter: const ColorFilter.matrix(<double>[
+              -1.0, 0.0, 0.0, 0.0, 255.0, //
+              0.0, -1.0, 0.0, 0.0, 255.0, //
+              0.0, 0.0, -1.0, 0.0, 255.0, //
+              0.0, 0.0, 0.0, 1.0, 0.0, //
+            ]),
+            child: CachedImage(
+              imageUrl: 'https://static.atlasacademy.io/JP/Title/logo_title_part2_final.png',
+              height: 24,
+              width: 24 * 604 / 40,
+            ),
+          ),
+          const SizedBox(height: 8),
+        ],
+      ),
     );
   }
 
@@ -1232,12 +1351,12 @@ class _FgoAnnualReportRealPageState extends State<FgoAnnualReportRealPage> {
         children: [
           Text(
             'by Chaldea App',
-            style: const TextStyle(color: Colors.white60, fontSize: 14, fontWeight: FontWeight.w700),
+            style: const TextStyle(color: Colors.white60, fontSize: 14, fontWeight: FontWeight.w500),
             textAlign: .center,
           ),
           Text(
             report.createdAt.toStringShort(omitSec: true),
-            style: TextStyle(color: Colors.grey.withAlpha(150), fontSize: 12),
+            style: TextStyle(color: _greyColor.withAlpha(150), fontSize: 12),
             textAlign: .center,
           ),
         ],
@@ -1245,7 +1364,7 @@ class _FgoAnnualReportRealPageState extends State<FgoAnnualReportRealPage> {
     );
   }
 
-  Map<SvtClass, Color> get _classColorMap => const {
+  final Map<SvtClass, Color> _classColorMap = const {
     SvtClass.saber: Color(0xFFEF476F),
     SvtClass.archer: Color(0xFF06D6A0),
     SvtClass.lancer: Color(0xFF118AB2),
@@ -1263,7 +1382,8 @@ class _FgoAnnualReportRealPageState extends State<FgoAnnualReportRealPage> {
     if (ssrRatePercent >= 1.15) return ('欧皇', '闪耀星之光芒，命运格外垂青。');
     if (ssrRatePercent >= 1.05) return ('中庸', '稳定即是福气，旅程方见真谛。');
     if (ssrRatePercent >= 1.0) return ('略非', '小遇波澜无碍，蓄力以待转机。');
-    return ('非酋', '心之所向，下次必达！运气守恒，未来可期。');
+    if (ssrRatePercent > 0.85) return ('非酋', '心之所向，下次必达！运气守恒，未来可期。');
+    return ('酋长', '所有漫长等待，终得盛大回响。');
   }
 }
 
@@ -1273,8 +1393,10 @@ class ReportCard extends StatelessWidget {
   final Widget? header;
   final List<Widget> headerTailings;
   final Widget child;
-  final Widget? background;
+  final List<Widget> backgrounds;
+  final AlignmentGeometry backgroundAlignment;
   final VoidCallback? onTap;
+  final Clip? clipBehavior;
 
   const ReportCard({
     super.key,
@@ -1283,8 +1405,10 @@ class ReportCard extends StatelessWidget {
     this.header,
     this.headerTailings = const [],
     required this.child,
-    this.background,
+    this.backgrounds = const [],
+    this.backgroundAlignment = AlignmentDirectional.topStart,
     this.onTap,
+    this.clipBehavior,
   });
 
   @override
@@ -1315,14 +1439,15 @@ class ReportCard extends StatelessWidget {
     if (onTap != null) {
       content = InkWell(borderRadius: borderRadius, onTap: onTap, child: content);
     }
-    if (background != null) {
-      content = Stack(children: [?background, content]);
+    if (backgrounds.isNotEmpty) {
+      content = Stack(alignment: backgroundAlignment, children: [...backgrounds, content]);
     }
 
     return Card(
       elevation: 2,
       shape: RoundedRectangleBorder(borderRadius: borderRadius),
       color: color,
+      clipBehavior: clipBehavior,
       child: content,
     );
   }
@@ -1344,3 +1469,8 @@ class RelativePolygonClipper extends CustomClipper<Path> {
 }
 
 Widget _blankPlaceholder(BuildContext context, String url) => const SizedBox.shrink();
+
+// ignore: unused_element
+String _getTranslation(String zh, String en) {
+  return Language.isZH ? zh : en;
+}

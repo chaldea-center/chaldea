@@ -694,7 +694,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
                       final region = await getDecidedRegion();
                       router.pushPage(FgoAnnualReportPage(mstData: mstData!, region: region));
                     },
-              child: Text(Language.isZH ? '年度报告' : 'Report'),
+              child: Text(Language.isZH ? '统计报告' : 'Report'),
             ),
             FilledButton.tonal(
               onPressed: mstData?.user == null ? null : didImportData,

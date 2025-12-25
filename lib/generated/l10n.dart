@@ -5139,9 +5139,9 @@ class S {
     );
   }
 
-  /// `Pull(s)`
+  /// `Pulls`
   String get summon_pull_unit {
-    return Intl.message('Pull(s)', name: 'summon_pull_unit', desc: '', locale: localeName, args: []);
+    return Intl.message('Pulls', name: 'summon_pull_unit', desc: '', locale: localeName, args: []);
   }
 
   /// `Show Banner`

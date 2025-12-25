@@ -148,18 +148,15 @@ class FgoAnnualReportData {
 
     final _userGachas = data.userStoneGachas.values.toList();
     _userGachas.sort2((e) => -e.num);
-    data.mostPullGachas = _userGachas.take(3).toList();
-    data.mostPullGachasThisYear = _userGachas
-        .where((userGacha) {
-          final gacha = data.mstGachas[userGacha.gachaId];
-          if (gacha == null) return false;
-          if (gacha.closedAt - gacha.openedAt >= 365 * kSecsPerDay) return false;
-          final openedAt = region.getDateTimeByOffset(gacha.openedAt),
-              closedAt = region.getDateTimeByOffset(gacha.closedAt);
-          return openedAt.year == data.curYear || closedAt.year == data.curYear;
-        })
-        .take(3)
-        .toList();
+    data.mostPullGachas = _userGachas.toList();
+    data.mostPullGachasThisYear = _userGachas.where((userGacha) {
+      final gacha = data.mstGachas[userGacha.gachaId];
+      if (gacha == null) return false;
+      if (gacha.closedAt - gacha.openedAt >= 365 * kSecsPerDay) return false;
+      final openedAt = region.getDateTimeByOffset(gacha.openedAt),
+          closedAt = region.getDateTimeByOffset(gacha.closedAt);
+      return openedAt.year == data.curYear || closedAt.year == data.curYear;
+    }).toList();
 
     for (final userSvt in data.ownedSvtCollections.values) {
       final svt = db.gameData.servantsById[userSvt.svtId];
@@ -190,6 +187,10 @@ class FgoAnnualReportData {
         data.luckyBagGachas.add(userGacha);
       }
     }
+    data.luckyBagGachas.sortByList((userGacha) {
+      final gacha = data.mstGachas[userGacha.gachaId];
+      return <int>[gacha == null ? 0 : 1, -(gacha?.openedAt ?? userGacha.gachaId), -userGacha.gachaId];
+    });
 
     // quests
     List<UserQuestStat> freeQuests = [];

@@ -1048,7 +1048,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "summon_info_hint": MessageLookupByLibrary.simpleMessage(
       "Данные о вызове JP от Mooncell. Для других регионов — только справочная информация..",
     ),
-    "summon_pull_unit": MessageLookupByLibrary.simpleMessage("Пулл(ы)"),
+    "summon_pull_unit": MessageLookupByLibrary.simpleMessage("Пуллы"),
     "summon_show_banner": MessageLookupByLibrary.simpleMessage("Показать Баннер"),
     "summon_ticket_short": MessageLookupByLibrary.simpleMessage("Билет"),
     "super_effective_damage": MessageLookupByLibrary.simpleMessage("СУП.ЭФФ. УРОН"),

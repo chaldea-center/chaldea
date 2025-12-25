@@ -1033,7 +1033,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "summon_info_hint": MessageLookupByLibrary.simpleMessage(
       "JP summon data from Mooncell. Reference only for other regions.",
     ),
-    "summon_pull_unit": MessageLookupByLibrary.simpleMessage("Pull(s)"),
+    "summon_pull_unit": MessageLookupByLibrary.simpleMessage("Pulls"),
     "summon_show_banner": MessageLookupByLibrary.simpleMessage("Show Banner"),
     "summon_ticket_short": MessageLookupByLibrary.simpleMessage("Ticket"),
     "super_effective_damage": MessageLookupByLibrary.simpleMessage("SP.DMG"),
