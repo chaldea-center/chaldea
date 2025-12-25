@@ -1,8 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
-
-import 'package:dio/dio.dart';
 
 import 'package:chaldea/models/gamedata/raw.dart';
 import 'package:chaldea/packages/rate_limiter.dart';
@@ -381,14 +378,12 @@ class AtlasApi {
   }
 
   static Future<List<MstGacha>?> fullRawGachas(Region region, {Duration? expireAfter}) async {
-    String url =
-        "https://git.atlasacademy.io/atlasacademy/fgo-game-data/raw/branch/${region.upper}/master/mstGacha.json";
-    if (db.settings.proxy.worker) url = HostsX.proxyWorker(url, onlyCN: false);
-    final mstGachas = await cacheManager.getModel<List<MstGacha>>(
-      url,
+    final mstGachas = await mstData(
+      'mstGacha',
       (data) => (data as List).map((e) => MstGacha.fromJson(Map.from(e))).toList(),
       expireAfter: expireAfter,
     );
+
     if (region == Region.cn) {
       final extra = await cacheManager.getModel<List<MstGacha>>(
         "${HostsX.dataHost}/mstGachaCNExtra.json",
@@ -469,9 +464,7 @@ class AtlasApi {
 
   static Future<AssetBundleDecrypt?> assetbundle(Region region, {Duration? expireAfter}) {
     return cacheManager.getModel(
-      HostsX.proxyWorker(
-        'https://git.atlasacademy.io/atlasacademy/fgo-game-data/raw/branch/${region.upper}/metadata/assetbundle.json',
-      ),
+      HostsX.proxyWorker('${HostsX.atlasAssetHost}/${region.upper}/repo/metadata/assetbundle.json'),
       (data) => AssetBundleDecrypt.fromJson(data),
       expireAfter: expireAfter,
     );
@@ -483,21 +476,12 @@ class AtlasApi {
     Region region = Region.jp,
     Duration? expireAfter,
     bool? proxy,
-    String? ref,
+    // String? ref,
   }) {
-    proxy ??= HostsX.proxy.worker;
-    String url;
-    if (ref != null) {
-      url = "https://git.atlasacademy.io/atlasacademy/fgo-game-data/raw/commit/$ref/master/$table.json";
-    } else {
-      url = "https://git.atlasacademy.io/atlasacademy/fgo-game-data/raw/branch/${region.upper}/master/$table.json";
-    }
-    if (proxy) url = HostsX.proxyWorker(url);
     return cacheManager.getModel(
-      url,
+      '${HostsX.atlasAssetHost}/${region.upper}/repo/master/$table.json',
       fromJson,
       expireAfter: expireAfter,
-      options: Options(headers: {if (expireAfter == Duration.zero) HttpHeaders.cacheControlHeader: 'nocache'}),
     );
   }
 

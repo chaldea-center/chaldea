@@ -27,7 +27,7 @@ class _BonusEnemyCondPageState extends State<BonusEnemyCondPage> {
   }
 
   Future<void> loadData({bool refresh = false}) async {
-    final ref = widget.event.extra.script.commitRef;
+    // final ref = widget.event.extra.script.commitRef;
     final expireAfter = refresh ? Duration.zero : null;
     final futures = [
       AtlasApi.mstData(
@@ -49,7 +49,7 @@ class _BonusEnemyCondPageState extends State<BonusEnemyCondPage> {
         (json) => (json as List).map((e) => MstViewEnemy.fromJson(e)).toList(),
         region: widget.region,
         expireAfter: expireAfter,
-        ref: ref,
+        // ref: ref,
       ).then((value) {
         if (value != null) {
           mstViewEnemies.clear();
@@ -64,7 +64,7 @@ class _BonusEnemyCondPageState extends State<BonusEnemyCondPage> {
         (json) => (json as List).map((e) => UserDeckFormationCond.fromJson(e)).toList(),
         region: widget.region,
         expireAfter: expireAfter,
-        ref: ref,
+        // ref: ref,
       ).then((value) {
         if (value != null) {
           userDeckFormationConds.clear();

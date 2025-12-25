@@ -51,29 +51,13 @@ class _SniffGachaHistoryState extends State<SniffGachaHistory> {
   }
 
   Future<List<MstGacha>?> _fetchMst(Region region) async {
-    String url =
-        "https://git.atlasacademy.io/atlasacademy/fgo-game-data/raw/branch/${region.upper}/master/mstGacha.json";
-    if (db.settings.proxy.worker) url = HostsX.proxyWorker(url);
-    AtlasApi.cacheManager.clearFailed();
-    final mstGachas = await AtlasApi.cacheManager.getModel<List<MstGacha>>(
-      url,
-      (data) => (data as List).map((e) => MstGacha.fromJson(Map.from(e))).toList(),
-    );
+    final mstGachas = await AtlasApi.fullRawGachas(region);
     if (mstGachas == null && mounted) {
       SimpleConfirmDialog(
         title: Text(S.current.error),
         content: Text('Download Gacha Data failed, click Refresh to retry\n卡池数据下载失败，请检查网络连接或代理设置'),
         showCancel: false,
       ).showDialog(context);
-    }
-    if (region == Region.cn) {
-      final extra = await AtlasApi.cacheManager.getModel<List<MstGacha>>(
-        "${HostsX.dataHost}/mstGachaCNExtra.json",
-        (data) => (data as List).map((e) => MstGacha.fromJson(Map.from(e))).toList(),
-      );
-      if (extra != null) {
-        mstGachas?.addAll(extra.map((e) => e..userAdded = true));
-      }
     }
     return mstGachas;
   }
