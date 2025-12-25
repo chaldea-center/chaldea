@@ -190,6 +190,9 @@ class MasterDataManager extends MasterDataManagerBase {
 
   bool get isCurPlanUser => db.curUser.lastImportId != null && db.curUser.lastImportId == user?.friendCode;
 
+  Iterable<UserServantEntity> get userSvtAndStorage => userSvt.followedBy(userSvtStorage);
+  UserServantEntity? getUserSvt(int userSvtId) => userSvt[userSvtId] ?? userSvtStorage[userSvtId];
+
   bool isQuestClear(int questId) => (userQuest[questId]?.clearNum ?? 0) > 0;
 
   bool isQuestPhaseClear(int questId, int questPhase) {

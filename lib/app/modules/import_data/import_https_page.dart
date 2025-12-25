@@ -32,8 +32,10 @@ import 'sniff_details/report/report.dart';
 class ImportHttpPage extends StatefulWidget {
   final String? toploginText;
   final MasterDataManager? mstData;
+  final Region? region;
 
-  ImportHttpPage({super.key, this.toploginText, this.mstData}) : assert(toploginText == null || mstData == null);
+  ImportHttpPage({super.key, this.toploginText, this.mstData, this.region})
+    : assert(toploginText == null || mstData == null);
 
   @override
   ImportHttpPageState createState() => ImportHttpPageState();
@@ -71,6 +73,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
   Map<int, CmdCodeStatus> cmdCodes = {}; // code.no: status
 
   MasterDataManager? mstData;
+  late Region? _region = widget.region;
 
   String get tmpPath => joinPaths(db.paths.userDir, 'sniff', db.curUser.id);
 
@@ -687,8 +690,9 @@ class ImportHttpPageState extends State<ImportHttpPage> {
             FilledButton.tonal(
               onPressed: mstData == null
                   ? null
-                  : () {
-                      router.pushPage(FgoAnnualReportPage(mstData: mstData!, region: null));
+                  : () async {
+                      final region = await getDecidedRegion();
+                      router.pushPage(FgoAnnualReportPage(mstData: mstData!, region: region));
                     },
               child: Text(Language.isZH ? '年度报告' : 'Report'),
             ),
@@ -734,37 +738,21 @@ class ImportHttpPageState extends State<ImportHttpPage> {
           child: Text(S.current.present_box),
         ),
         SimpleDialogOption(
-          onPressed: () {
+          onPressed: () async {
             Navigator.pop(context);
             final gachas = _mstData.userGacha;
-            showDialog(
-              context: context,
-              useRootNavigator: false,
-              builder: (context) {
-                return SimpleDialog(
-                  title: Text(S.current.game_server),
-                  children: [
-                    for (final region in Region.values)
-                      SimpleDialogOption(
-                        child: Text(region.localName),
-                        onPressed: () {
-                          Navigator.pop(context);
-                          router.pushPage(
-                            SniffGachaHistory(
-                              records: gachas.toList(),
-                              userSvt: _mstData.userSvt.toList(),
-                              userSvtStorage: _mstData.userSvtStorage.toList(),
-                              userSvtCollection: _mstData.userSvtCollection.toList(),
-                              userShops: _mstData.userShop.toList(),
-                              userItems: _mstData.userItem.toList(),
-                              region: region,
-                            ),
-                          );
-                        },
-                      ),
-                  ],
-                );
-              },
+            final region = await getDecidedRegion(context);
+            if (region == null) return;
+            router.pushPage(
+              SniffGachaHistory(
+                records: gachas.toList(),
+                userSvt: _mstData.userSvt.toList(),
+                userSvtStorage: _mstData.userSvtStorage.toList(),
+                userSvtCollection: _mstData.userSvtCollection.toList(),
+                userShops: _mstData.userShop.toList(),
+                userItems: _mstData.userItem.toList(),
+                region: region,
+              ),
             );
           },
           child: Text(S.current.gacha),
@@ -1096,5 +1084,26 @@ class ImportHttpPageState extends State<ImportHttpPage> {
     }
 
     _refreshValidSvts();
+  }
+
+  Future<Region?> getDecidedRegion([BuildContext? context]) async {
+    if (_region != null) return _region!;
+    _region = await router.showDialog(
+      barrierDismissible: false,
+      context: context ?? (mounted ? this.context : null),
+      builder: (context) => SimpleDialog(
+        title: Text(S.current.game_server),
+        children: [
+          for (final value in Region.values)
+            SimpleDialogOption(
+              child: Text(value.localName),
+              onPressed: () {
+                Navigator.pop(context, value);
+              },
+            ),
+        ],
+      ),
+    );
+    return _region;
   }
 }
