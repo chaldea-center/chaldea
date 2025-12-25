@@ -397,7 +397,7 @@ abstract class NetworkManagerBase<TRequest extends FRequestBase, TUser extends A
 
       String title = isFull ? S.current.ap_fully_recovered : 'AP $targetAp!';
       String body = [
-        '[${user.serverName}] ${userGame.name}',
+        '[${user.serverName}] ${userGame.displayName}',
         recoverAt.sec2date().toCustomString(year: false, millisecond: false),
       ].join('\n');
       await LocalNotificationUtil.scheduleNotification(id: id, dateTime: notifyAt.sec2date(), title: title, body: body);

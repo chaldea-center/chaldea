@@ -262,7 +262,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
             child: runtime.buildCircularProgress(context: context, showElapsed: true, size: 20),
           ),
         ),
-        title: Text('[${agent.user.serverName}] ${userGame?.name ?? "not login"}'),
+        title: Text('[${agent.user.serverName}] ${userGame?.displayName ?? "not login"}'),
         subtitle: Text.rich(TextSpan(children: subtitle)),
         trailing: userGame == null
             ? null

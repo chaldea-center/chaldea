@@ -95,7 +95,7 @@ class _SvtEquipCombinePageState extends State<SvtEquipCombinePage> with FakerRun
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              '[${agent.user.serverName}] ${userGame?.name}   QP ${userGame?.qp.format(compact: false, groupSeparator: ",")}'
+              '[${agent.user.serverName}] ${userGame?.displayName}   QP ${userGame?.qp.format(compact: false, groupSeparator: ",")}'
               '\n所持 ${keepData.svtEquipCount}/${runtime.gameData.timerData.constants.maxUserSvtEquip}'
               ' 保管室 ${storageKeepData.svtEquipCount}/${(userGame?.svtEquipStorageAdjust ?? 0) + runtime.gameData.timerData.constants.maxUserSvtEquipStorage}',
             ),

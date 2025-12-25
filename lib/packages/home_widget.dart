@@ -32,7 +32,7 @@ class HomeWidgetX {
       accounts.add(
         WidgetAccountInfo(
           id: '${account.region.upper}-${userGame.friendCode}',
-          name: userGame.name.replaceAll(RegExp(r'\[(o|g)\]'), ''),
+          name: userGame.displayName,
           gameServer: account.region,
           biliServer: account.serverName,
           actMax: userGame.actMax,

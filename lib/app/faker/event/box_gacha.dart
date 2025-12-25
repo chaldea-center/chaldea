@@ -153,7 +153,7 @@ class _BoxGachaDrawPageState extends State<BoxGachaDrawPage> with FakerRuntimeSt
         visualDensity: VisualDensity.compact,
         minLeadingWidth: 20,
         leading: runtime.buildCircularProgress(context: context),
-        title: Text('[${agent.user.serverName}] ${userGame?.name}'),
+        title: Text('[${agent.user.serverName}] ${userGame?.displayName}'),
         subtitle: Text.rich(TextSpan(children: subtitles)),
       ),
     );

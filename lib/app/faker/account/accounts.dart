@@ -169,7 +169,7 @@ class _FakerAccountsPageState extends State<FakerAccountsPage> {
     return ListTile(
       dense: true,
       key: ObjectKey(user),
-      title: Text('[${user.serverName}] ${user.userGame?.name}'),
+      title: Text('[${user.serverName}] ${user.userGame?.displayName}'),
       subtitle: Text(user.userGame?.friendCode ?? 'null'),
       contentPadding: const EdgeInsetsDirectional.only(start: 16),
       trailing: Row(

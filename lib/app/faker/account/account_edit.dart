@@ -45,7 +45,7 @@ class _FakerAccountEditPageState extends State<FakerAccountEditPage> {
     final user = this.user;
     return Scaffold(
       appBar: AppBar(
-        title: Text('[${user.serverName}] ${user.userGame?.name ?? ""} ${user.userGame?.friendCode}'),
+        title: Text('[${user.serverName}] ${user.userGame?.displayName ?? ""} ${user.userGame?.friendCode}'),
         actions: [?runtime?.buildHistoryButton(context)],
       ),
       body: ListView(

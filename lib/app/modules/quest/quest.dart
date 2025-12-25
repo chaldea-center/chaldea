@@ -252,7 +252,7 @@ class _QuestDetailPageState extends State<QuestDetailPage> {
                     ),
                   ),
                 if (userQuest != null)
-                  SFooter('${db.runtimeData.clipBoard.mstData?.user?.name}: ${userQuest.getText()}'),
+                  SFooter('${db.runtimeData.clipBoard.mstData?.user?.displayName}: ${userQuest.getText()}'),
                 if (quest.isLaplaceSharable) sharedTeamsButton,
                 if (db.gameData.dropData.domusAurea.questIds.contains(quest.id)) blacklistButton,
                 SFooter(S.current.quest_region_has_enemy_hint),

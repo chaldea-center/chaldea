@@ -979,7 +979,7 @@ class UserGameEntity with DataEntityBase<int> {
   }
 
   String get displayName {
-    return name.replaceAll(RegExp(r'\[[og]\]'), '');
+    return name.replaceAll(RegExp(r'\[[og]\]'), '').replaceAll(RegExp(r'\[[0-9a-zA-Z]+\]'), '');
   }
 }
 

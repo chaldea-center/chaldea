@@ -210,7 +210,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
           child: ListTile(
             tileColor: Theme.of(context).cardColor,
             leading: const Icon(Icons.supervised_user_circle),
-            title: Text('${user.name}\n${user.friendCode}'),
+            title: Text('${user.displayName}\n${user.friendCode}'),
             //  ${user.genderType == 1 ? '♂ ${S.current.guda_male}' : '♀ ${S.current.guda_female}'}
             subtitle: Text(mstData?.userLogin.firstOrNull?.lastLoginAt.sec2date().toStringShort() ?? '?'),
             trailing: ExpandIcon(onPressed: null, isExpanded: _showAccount),

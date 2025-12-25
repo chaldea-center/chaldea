@@ -90,7 +90,7 @@ class _SvtCombinePageState extends State<SvtCombinePage> with FakerRuntimeStateM
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              '[${agent.user.serverName}] ${userGame?.name}   QP ${userGame?.qp.format(compact: false, groupSeparator: ",")}',
+              '[${agent.user.serverName}] ${userGame?.displayName}   QP ${userGame?.qp.format(compact: false, groupSeparator: ",")}',
             ),
             if (baseUserSvt != null) ...[
               Text(

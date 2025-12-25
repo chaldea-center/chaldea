@@ -281,7 +281,7 @@ class _AutoLoginPageState extends State<AutoLoginPage> {
     List<Widget> children = [];
     for (final user in allData) {
       Widget title = Text(
-        '[${user.region}] ${user.userGame?.friendCode ?? "Unknown"} ${user.userGame?.name ?? ""}',
+        '[${user.region}] ${user.userGame?.friendCode ?? "Unknown"} ${user.userGame?.displayName ?? ""}',
         style: const TextStyle(fontSize: 13),
       );
       Widget subtitle = Text(

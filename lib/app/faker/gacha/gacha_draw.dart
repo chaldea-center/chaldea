@@ -103,7 +103,7 @@ class _GachaDrawPageState extends State<GachaDrawPage> with FakerRuntimeStateMix
         title: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Expanded(child: Text('[${agent.user.serverName}] ${userGame?.name}')),
+            Expanded(child: Text('[${agent.user.serverName}] ${userGame?.displayName}')),
             Text.rich(
               TextSpan(
                 children: [
