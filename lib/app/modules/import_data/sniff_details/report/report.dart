@@ -277,11 +277,12 @@ class _FgoAnnualReportRealPageState extends State<FgoAnnualReportRealPage> {
               _userInfoCard(),
               ?_pushAndFavoriteSvts(),
               _gachaLuck(),
-              _summonedStats(),
+              _svtCollectionStats(),
               _bondCeStats(),
               _gachaTopPulls(true),
               _gachaTopPulls(false),
               _topQuestRun(),
+              _miscTile(),
               _finalMessage(),
             ],
           ),
@@ -445,7 +446,7 @@ class _FgoAnnualReportRealPageState extends State<FgoAnnualReportRealPage> {
                   children: [
                     TextSpan(
                       text: '$totalDays',
-                      style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                      style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     ),
                     TextSpan(
                       text: S.current.chaldea_report_total_days,
@@ -461,7 +462,7 @@ class _FgoAnnualReportRealPageState extends State<FgoAnnualReportRealPage> {
                   children: [
                     TextSpan(
                       text: '${report.totalLogin}',
-                      style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                      style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     ),
                     TextSpan(
                       text: S.current.chaldea_report_total_days,
@@ -746,7 +747,7 @@ class _FgoAnnualReportRealPageState extends State<FgoAnnualReportRealPage> {
     final bond10Count = report.bond10SvtCollections.length;
     final thisYearCount = report.bondEquipHistoryByYear[report.curYear]?.length ?? 0;
     final totalReleasedCount = report.ownedSvtCollections.values
-        .where((e) => e.svtId != 800100 || report.regionReleasedBondEquipIds.contains(9309050))
+        .where((e) => e.svtId != kMashSvtId || report.regionReleasedBondEquipIds.contains(9309050))
         .length;
     return ReportCard(
       header: Text(S.current.bond_craft, style: TextStyle(fontWeight: FontWeight.bold)),
@@ -913,7 +914,7 @@ class _FgoAnnualReportRealPageState extends State<FgoAnnualReportRealPage> {
     );
   }
 
-  Widget _summonedStats() {
+  Widget _svtCollectionStats() {
     final classColors = _classColorMap;
     final clsKeys = report.ownedSvtCollectionByClass.keys.toList()..sort2((e) => e.value);
     return ReportCard(
@@ -999,7 +1000,7 @@ class _FgoAnnualReportRealPageState extends State<FgoAnnualReportRealPage> {
                     ),
                   );
                   return Padding(
-                    padding: EdgeInsets.symmetric(vertical: 0),
+                    padding: EdgeInsets.symmetric(vertical: 2),
                     child: Row(
                       children: [
                         SizedBox(
@@ -1013,11 +1014,11 @@ class _FgoAnnualReportRealPageState extends State<FgoAnnualReportRealPage> {
                           ),
                         ),
                         const SizedBox(width: 2),
-                        Expanded(
+                        Flexible(
                           child: Stack(
                             alignment: .center,
                             children: [
-                              bar,
+                              ConstrainedBox(constraints: BoxConstraints(maxWidth: 120), child: bar),
                               AutoSizeText(
                                 '$count/$totalCount',
                                 style: TextStyle(fontSize: 7, color: Colors.white54),
@@ -1064,7 +1065,7 @@ ${S.current.chaldea_report_5star_stat_dis_ent}"""),
             imageFilter: .blur(sigmaX: 0.1, sigmaY: 0.1),
             child: Opacity(
               opacity: 0.8,
-              child: CachedImage(imageUrl: bgImage, width: 90, height: 90 * 4 / 3, placeholder: _blankPlaceholder),
+              child: CachedImage(imageUrl: bgImage, width: 80, height: 80 * 4 / 3, placeholder: _blankPlaceholder),
             ),
           ),
         ),
@@ -1362,6 +1363,171 @@ ${S.current.chaldea_report_5star_stat_dis_ent}"""),
     );
   }
 
+  Widget _miscTile() {
+    // 圣晶石购入
+    const largeFontSize = 18.0;
+    return ReportCard(
+      padding: .symmetric(vertical: 16),
+      child: Column(
+        children: [
+          ListTile(
+            dense: true,
+            leading: db.getIconImage(
+              Items.lantern?.icon ?? "https://static.atlasacademy.io/JP/Items/1000.png",
+              width: 24,
+              height: 24,
+            ),
+            title: Text(Items.lantern?.lName.l ?? 'カルデアの夢火'),
+            trailing: Text.rich(
+              TextSpan(
+                children: [
+                  TextSpan(
+                    text: ' ${report.usedLanternCount} ',
+                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: largeFontSize),
+                  ),
+                  TextSpan(
+                    text: ' +${report.mstData.getItemOrSvtNum(Items.lanternId)} ',
+                    style: TextStyle(color: _greyColor),
+                  ),
+                  TextSpan(
+                    text: ' =${report.usedLanternCount + report.mstData.getItemOrSvtNum(Items.lanternId)} ',
+                    style: TextStyle(color: _greyColor),
+                  ),
+                ],
+              ),
+              textAlign: .end,
+            ),
+            onTap: () {
+              router.pushPage(
+                UserSvtFiltratedPage.collection(
+                  title: Text(Items.lantern?.lName.l ?? 'カルデアの夢火'),
+                  userSvtCollections: report.usedLanternSvt,
+                  getCollectionStatus: (collection) {
+                    return [
+                      '+${collection.usedLanternCount}',
+                      '${collection.friendshipRank}/${collection.maxFriendshipRank}',
+                    ].join('\n');
+                  },
+                ),
+              );
+            },
+          ),
+          ListTile(
+            dense: true,
+            leading: db.getIconImage(
+              Items.grail?.icon ?? "https://static.atlasacademy.io/JP/Items/7999.png",
+              width: 24,
+              height: 24,
+            ),
+            title: Text(Items.grail?.lName.l ?? '聖杯'),
+            trailing: Text.rich(
+              TextSpan(
+                children: [
+                  TextSpan(
+                    text: ' ${report.usedGrailCount}',
+                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                  ),
+                  TextSpan(
+                    text: ' +${report.mstData.getItemOrSvtNum(Items.grailId)} ',
+                    style: TextStyle(color: _greyColor),
+                  ),
+                  TextSpan(
+                    text: ' =${report.usedGrailCount + report.mstData.getItemOrSvtNum(Items.grailId)} ',
+                    style: TextStyle(color: _greyColor),
+                  ),
+                ],
+              ),
+              textAlign: .end,
+            ),
+            onTap: () {
+              router.pushPage(
+                UserSvtFiltratedPage.userSvt(
+                  title: Text(Items.grail?.lName.l ?? '聖杯'),
+                  userSvts: report.usedGrailUserSvts.keys.toList(),
+                  getUserSvtStatus: (userSvt) {
+                    return ['+${userSvt.getExceedCountByGrail()}', '${userSvt.lv}/${userSvt.maxLv}'].join('\n');
+                  },
+                ),
+              );
+            },
+          ),
+          ListTile(
+            dense: true,
+            leading: db.getIconImage(
+              Items.crystal?.icon ?? "https://static.atlasacademy.io/JP/Items/6999.png",
+              width: 24,
+              height: 24,
+            ),
+            title: Text(Items.crystal?.lName.l ?? '伝承結晶'),
+            trailing: Text.rich(
+              TextSpan(
+                children: [
+                  TextSpan(
+                    text: ' ${report.usedCrystalCountActive}',
+                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: largeFontSize),
+                  ),
+                  const TextSpan(
+                    text: ' +',
+                    style: TextStyle(color: _greyColor),
+                  ),
+                  TextSpan(
+                    text: '${report.usedCrystalCountPassive}',
+                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: largeFontSize),
+                  ),
+                  TextSpan(
+                    text: ' +${report.mstData.getItemOrSvtNum(Items.crystalId)} ',
+                    style: TextStyle(color: _greyColor),
+                  ),
+                  TextSpan(
+                    text: ' =${report.usedCrystalCount + report.mstData.getItemOrSvtNum(Items.crystalId)} ',
+                    style: TextStyle(color: _greyColor),
+                  ),
+                ],
+              ),
+              textAlign: .end,
+            ),
+          ),
+          ListTile(
+            dense: true,
+            leading: db.getIconImage(
+              Items.svtAnonymous?.icon ?? "https://static.atlasacademy.io/JP/Items/17.png",
+              width: 24,
+              height: 24,
+            ),
+            title: Text(Items.svtAnonymous?.lName.l ?? '無記名霊基'),
+            trailing: Text.rich(
+              TextSpan(
+                children: [
+                  TextSpan(
+                    text: ' ${report.usedSvtAnonymousCount}',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: largeFontSize,
+                      color: report.usedSvtAnonymousCount == 0 ? _greyColor : null,
+                    ),
+                  ),
+                  TextSpan(
+                    text: ' ×10 +${report.mstData.getItemOrSvtNum(Items.svtAnonymousId)} ',
+                    style: TextStyle(color: _greyColor),
+                  ),
+                  TextSpan(
+                    text:
+                        ' =${report.usedSvtAnonymousCount * 10 + report.mstData.getItemOrSvtNum(Items.svtAnonymousId)} ',
+                    style: TextStyle(color: _greyColor),
+                  ),
+                ],
+              ),
+              textAlign: .end,
+            ),
+            onTap: () {
+              router.pushPage(UserShopAnonymousListPage(shops: report.svtAnonymousShops));
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _topTitle() {
     return Padding(
       padding: .symmetric(horizontal: 40),
@@ -1374,16 +1540,18 @@ ${S.current.chaldea_report_5star_stat_dis_ent}"""),
             placeholder: _blankPlaceholder,
           ),
           const SizedBox(height: 2),
-          // Text(
-          //   ' Fate Grand Order ',
+          // AutoSizeText(
+          //   ' Fate / Grand Order ',
           //   style: TextStyle(
           //     color: Colors.white.withAlpha(200),
-          //     fontSize: 14,
-          //     fontWeight: FontWeight.w600,
-          //     // letterSpacing: 10.2,
-          //     // fontFamily: 'helvetica',
+          //     fontSize: 24,
+          //     fontWeight: FontWeight.w100,
+          //     letterSpacing: 15.2,
+          //     fontFamily: 'helvetica',
           //   ),
           //   textAlign: TextAlign.center,
+          //   maxLines: 1,
+          //   minFontSize: 6,
           // ),
           ColorFiltered(
             colorFilter: const ColorFilter.matrix(<double>[
@@ -1394,9 +1562,24 @@ ${S.current.chaldea_report_5star_stat_dis_ent}"""),
             ]),
             child: CachedImage(
               imageUrl: 'https://static.atlasacademy.io/JP/Title/logo_title_part2_final.png',
-              height: 24,
-              width: 24 * 604 / 40,
+              height: 30,
+              width: 30 * 604 / 40,
               placeholder: _blankPlaceholder,
+              cachedOption: CachedImageOption(
+                errorWidget: (context, url, error) => AutoSizeText(
+                  'Fate / Grand Order',
+                  style: TextStyle(
+                    color: Colors.black87,
+                    fontSize: 24,
+                    fontWeight: FontWeight.w300,
+                    letterSpacing: 4,
+                    fontFamily: 'helvetica',
+                  ),
+                  textAlign: TextAlign.center,
+                  maxLines: 1,
+                  minFontSize: 6,
+                ),
+              ),
             ),
           ),
           const SizedBox(height: 8),

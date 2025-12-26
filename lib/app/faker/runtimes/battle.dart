@@ -86,10 +86,10 @@ class FakerRuntimeBattle extends FakerRuntimeBase {
       final msg =
           'Battle ${finishedCount + 1}/$totalCount, ${Maths.mean(elapseSeconds).round()}s/${(Maths.sum(elapseSeconds) / 60).toStringAsFixed(1)}m';
       logger.t(msg);
-      runtime.displayToast('$msg, starting...', progress: (finishedCount + 0.5) / totalCount);
 
       await _ensureEnoughApItem(quest: questPhaseEntity, option: battleOption);
 
+      runtime.displayToast('$msg, starting...', progress: (finishedCount + 0.5) / totalCount);
       runtime.update();
       FResponse setupResp = await battleSetupWithOptions(battleOption);
       runtime.update();
@@ -760,8 +760,11 @@ class FakerRuntimeBattle extends FakerRuntimeBase {
       if (option.goldApplePrior && recoverIds.isNotEmpty) {
         final firstRecover = mstRecovers[recoverIds.first];
         if (firstRecover != null && !firstRecover.isRecoverFullAp && recoverIds.contains(RecoverId.goldApple.id)) {
-          recoverIds.remove(RecoverId.goldApple.id);
-          recoverIds.insert(0, RecoverId.goldApple.id);
+          int dt = mstData.user!.actRecoverAt - DateTime.now().timestamp;
+          if (dt > 0 && dt % 300 > 240) {
+            recoverIds.remove(RecoverId.goldApple.id);
+            recoverIds.insert(0, RecoverId.goldApple.id);
+          }
         }
       }
 

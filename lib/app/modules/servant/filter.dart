@@ -12,6 +12,7 @@ import '../effect_search/util.dart';
 class ServantFilterPage extends FilterPage<SvtFilterData> {
   final bool planMode;
   final bool showSort;
+  final bool showPlans;
   final List<Widget> Function(BuildContext context, VoidCallback update)? customFilters;
 
   const ServantFilterPage({
@@ -20,6 +21,7 @@ class ServantFilterPage extends FilterPage<SvtFilterData> {
     super.onChanged,
     required this.planMode,
     this.showSort = true,
+    this.showPlans = true,
     this.customFilters,
   });
 
@@ -375,113 +377,101 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData, ServantFilt
               ),
             ],
           ),
-          buildGroupDivider(text: S.current.plan),
-          FilterGroup<int>(
-            title: Text(
-              '${S.current.priority} (${S.current.display_setting} - ${S.current.setting_priority_tagging})',
-              style: textStyle,
-            ),
-            options: const [1, 2, 3, 4, 5],
-            values: filterData.priority,
-            optionBuilder: (value) {
-              String text = value.toString();
-              final tag = db.settings.priorityTags[value];
-              if (tag != null && tag.isNotEmpty) {
-                text += ' $tag';
-              }
-              return Text(text);
-            },
-            onFilterChanged: (value, _) {
-              update();
-            },
-          ),
-          FilterGroup<SvtPlanScope>(
-            title: Text(S.current.filter_plan_not_reached, style: textStyle),
-            options: SvtPlanScope.values,
-            values: filterData.planCompletion,
-            showMatchAll: true,
-            optionBuilder: (v) {
-              String text;
-              switch (v) {
-                case SvtPlanScope.all:
-                  text = '(${S.current.general_all})';
-                  break;
-                case SvtPlanScope.ascension:
-                  text = S.current.ascension_short;
-                  break;
-                case SvtPlanScope.active:
-                  text = S.current.active_skill_short;
-                  break;
-                case SvtPlanScope.append:
-                  text = S.current.append_skill_short;
-                  break;
-                case SvtPlanScope.costume:
-                  text = S.current.costume;
-                  break;
-                case SvtPlanScope.misc:
-                  text = S.current.general_others;
-                  break;
-              }
-              return Text(text);
-            },
-            onFilterChanged: (value, lastChanged) {
-              if (lastChanged == SvtPlanScope.all) {
-                if (value.contain(SvtPlanScope.all)) {
-                  value.options = SvtPlanScope.values.toSet();
-                } else {
-                  value.options.clear();
+          if (widget.showPlans) ...[
+            buildGroupDivider(text: S.current.plan),
+            FilterGroup<int>(
+              title: Text(
+                '${S.current.priority} (${S.current.display_setting} - ${S.current.setting_priority_tagging})',
+                style: textStyle,
+              ),
+              options: const [1, 2, 3, 4, 5],
+              values: filterData.priority,
+              optionBuilder: (value) {
+                String text = value.toString();
+                final tag = db.settings.priorityTags[value];
+                if (tag != null && tag.isNotEmpty) {
+                  text += ' $tag';
                 }
-              } else if (lastChanged != null) {
-                value.options.remove(SvtPlanScope.all);
-              }
-              update();
-            },
-          ),
-          FilterGroup<SvtStatusState>(
-            title: Text("${S.current.current_}: ${S.current.ascension_short}/${S.current.active_skill_short}"),
-            options: const [
-              SvtStatusState.asc3,
-              SvtStatusState.asc4,
-              SvtStatusState.active8,
-              SvtStatusState.active9,
-              SvtStatusState.active10,
-            ],
-            values: filterData.curStatus,
-            optionBuilder: (v) => Text(v.shownName),
-            onFilterChanged: (value, _) {
-              update();
-            },
-          ),
-          FilterGroup<SvtStatusState>(
-            title: Text(
-              "${S.current.current_}: ${S.current.append_skill_short}2/${S.current.append_skill_short}(Unlocked only)",
-            ),
-            options: const [
-              SvtStatusState.appendTwo8,
-              SvtStatusState.appendTwo9,
-              // SvtStatusState.appendTwo10,
-              SvtStatusState.append8,
-              SvtStatusState.append9,
-              // SvtStatusState.append10,
-            ],
-            values: filterData.curStatus,
-            optionBuilder: (v) => Text(v.shownName),
-            onFilterChanged: (value, _) {
-              update();
-            },
-          ),
-          FilterGroup<bool>(
-            title: Text(S.current.duplicated_servant),
-            options: const [false, true],
-            values: filterData.svtDuplicated,
-            optionBuilder: (v) =>
-                Text(v ? S.current.duplicated_servant_duplicated : S.current.duplicated_servant_primary),
-            onFilterChanged: (v, _) {
-              setState(() {
+                return Text(text);
+              },
+              onFilterChanged: (value, _) {
                 update();
-              });
-            },
-          ),
+              },
+            ),
+            FilterGroup<SvtPlanScope>(
+              title: Text(S.current.filter_plan_not_reached, style: textStyle),
+              options: SvtPlanScope.values,
+              values: filterData.planCompletion,
+              showMatchAll: true,
+              optionBuilder: (v) {
+                return Text(switch (v) {
+                  SvtPlanScope.all => '(${S.current.general_all})',
+                  SvtPlanScope.ascension => S.current.ascension_short,
+                  SvtPlanScope.active => S.current.active_skill_short,
+                  SvtPlanScope.append => S.current.append_skill_short,
+                  SvtPlanScope.costume => S.current.costume,
+                  SvtPlanScope.misc => S.current.general_others,
+                });
+              },
+              onFilterChanged: (value, lastChanged) {
+                if (lastChanged == SvtPlanScope.all) {
+                  if (value.contain(SvtPlanScope.all)) {
+                    value.options = SvtPlanScope.values.toSet();
+                  } else {
+                    value.options.clear();
+                  }
+                } else if (lastChanged != null) {
+                  value.options.remove(SvtPlanScope.all);
+                }
+                update();
+              },
+            ),
+            FilterGroup<SvtStatusState>(
+              title: Text("${S.current.current_}: ${S.current.ascension_short}/${S.current.active_skill_short}"),
+              options: const [
+                SvtStatusState.asc3,
+                SvtStatusState.asc4,
+                SvtStatusState.active8,
+                SvtStatusState.active9,
+                SvtStatusState.active10,
+              ],
+              values: filterData.curStatus,
+              optionBuilder: (v) => Text(v.shownName),
+              onFilterChanged: (value, _) {
+                update();
+              },
+            ),
+            FilterGroup<SvtStatusState>(
+              title: Text(
+                "${S.current.current_}: ${S.current.append_skill_short}2/${S.current.append_skill_short}(Unlocked only)",
+              ),
+              options: const [
+                SvtStatusState.appendTwo8,
+                SvtStatusState.appendTwo9,
+                // SvtStatusState.appendTwo10,
+                SvtStatusState.append8,
+                SvtStatusState.append9,
+                // SvtStatusState.append10,
+              ],
+              values: filterData.curStatus,
+              optionBuilder: (v) => Text(v.shownName),
+              onFilterChanged: (value, _) {
+                update();
+              },
+            ),
+            FilterGroup<bool>(
+              title: Text(S.current.duplicated_servant),
+              options: const [false, true],
+              values: filterData.svtDuplicated,
+              optionBuilder: (v) =>
+                  Text(v ? S.current.duplicated_servant_duplicated : S.current.duplicated_servant_primary),
+              onFilterChanged: (v, _) {
+                setState(() {
+                  update();
+                });
+              },
+            ),
+          ],
           buildGroupDivider(text: S.current.gamedata),
           FilterGroup<Region>(
             title: Text(S.current.game_server, style: textStyle),

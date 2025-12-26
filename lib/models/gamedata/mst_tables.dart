@@ -578,6 +578,16 @@ class UserServantEntity with DataEntityBase<int> {
   BasicServant? get dbEntity => db.gameData.entities[svtId];
   Servant? get dbSvt => db.gameData.servantsById[svtId];
   CraftEssence? get dbCE => db.gameData.craftEssencesById[svtId];
+
+  static Map<int, List<int>> kExceedAddLvs = {
+    1: [10, 5, 5, 5, 5],
+    0: [5, 5, 5, 5, 5],
+    2: [5, 5, 5, 5, 5],
+    3: [5, 5, 5, 5],
+    4: [5, 5],
+    5: [],
+  }..forEach((k, v) => v.addAll(List.filled(15, 2)));
+
   int? get maxLv {
     if (dbCE != null) return dbCE?.ascensionAdd.lvMax.ascension[limitCount];
     final svt = dbSvt;
@@ -585,21 +595,18 @@ class UserServantEntity with DataEntityBase<int> {
     final baseLv = svt.ascensionAdd.lvMax.ascension[limitCount];
     if (baseLv == null) return null;
     if (exceedCount > 0) {
-      final exceedList = <int, List<int>>{
-        1: [10, 5, 5, 5, 5],
-        0: [5, 5, 5, 5, 5],
-        2: [5, 5, 5, 5, 5],
-        3: [5, 5, 5, 5],
-        4: [5, 5],
-        5: [],
-      }[svt.rarity]!;
-      exceedList.addAll(List.generate(15, (_) => 2));
+      final exceedList = kExceedAddLvs[svt.rarity]!;
       if (exceedCount <= exceedList.length) {
         final addLv = Maths.sum(exceedList.sublist(0, exceedCount));
         return baseLv + addLv;
       }
     }
     return baseLv;
+  }
+
+  int getExceedCountByGrail() {
+    if (svtId == kMashSvtId) return exceedCount - 2;
+    return exceedCount;
   }
 
   List<int> get skillLvs => [skillLv1, skillLv2, skillLv3];
@@ -695,7 +702,8 @@ class UserServantCollectionEntity with DataEntityBase<_IntStr> {
 
   bool get isOwned => status == SvtCollectionStatus.get.value;
 
-  int get maxFriendshipRank => (svtId == 800100 ? 5 : 10) + friendshipExceedCount;
+  int get maxFriendshipRank => (svtId == kMashSvtId ? 5 : 10) + friendshipExceedCount;
+  int get usedLanternCount => svtId == kMashSvtId ? friendshipExceedCount - 5 : friendshipExceedCount;
 
   Map<int, int> costumeIdsTo01() {
     Map<int, int> result = {};
@@ -2119,6 +2127,17 @@ class UserShopEntity with DataEntityBase<_IntStr> {
        createdAt = _toInt(createdAt ?? updatedAt, 0);
 
   factory UserShopEntity.fromJson(Map<String, dynamic> data) => _$UserShopEntityFromJson(data);
+
+  static Map<Region, List<int>> extraAnonymousShops = {
+    Region.tw: [6000897],
+    Region.kr: [20, 8000235],
+  };
+
+  bool isSvtAnonymousShop({Region? region}) {
+    if (shopId ~/ 1000000 == 4) return true;
+    if (region != null && extraAnonymousShops[region]?.contains(shopId) == true) return true;
+    return false;
+  }
 }
 
 @JsonSerializable(createToJson: false)

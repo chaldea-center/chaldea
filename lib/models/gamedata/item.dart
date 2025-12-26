@@ -379,6 +379,8 @@ class Items {
 
   static Item? get friendPoint => _items[friendPointId];
 
+  static Item? get svtAnonymous => _items[svtAnonymousId];
+
   static Item? get purePrism => _items[purePrismId];
 
   static Item? get rarePrism => _items[rarePrismId];

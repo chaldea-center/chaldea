@@ -37,7 +37,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m20(curYear, count) => "${curYear}抽卡次数前${count}";
 
-  static String m21(year, month, day) => "入职${year}年${month}月${day}日";
+  static String m21(year, month, day) => "入职${year}年${month}月${day}天";
 
   static String m0(url) => "Chaldea——一款跨平台的Fate/GO素材规划客户端，支持游戏信息浏览、从者练度/活动/素材规划、周常规划、抽卡模拟器等功能。\n\n详情请见: \n${url}\n";
 
@@ -281,7 +281,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "chaldea_report_quests_stat": MessageLookupByLibrary.simpleMessage("关卡之最"),
     "chaldea_report_since_account_created_date": m21,
     "chaldea_report_times": MessageLookupByLibrary.simpleMessage(" 次"),
-    "chaldea_report_title": MessageLookupByLibrary.simpleMessage("迦勒底纪要"),
+    "chaldea_report_title": MessageLookupByLibrary.simpleMessage("迦勒底报告"),
     "chaldea_report_total_days": MessageLookupByLibrary.simpleMessage(" 天"),
     "chaldea_report_total_login": MessageLookupByLibrary.simpleMessage("累计登录"),
     "chaldea_report_total_svts": MessageLookupByLibrary.simpleMessage("契约从者"),

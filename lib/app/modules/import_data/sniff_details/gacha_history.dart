@@ -109,7 +109,7 @@ class _SniffGachaHistoryState extends State<SniffGachaHistory> {
     final allUserSvts = [...widget.userSvt, ...widget.userSvtStorage];
 
     final curAnonymous = widget.userItems.firstWhereOrNull((e) => e.itemId == Items.svtAnonymousId)?.num ?? 0;
-    final anonymousShops = widget.userShops.where((e) => e.shopId ~/ 1000000 == 4).toList();
+    final anonymousShops = widget.userShops.where((e) => e.isSvtAnonymousShop(region: widget.region)).toList();
     final anonymousBuyCount = Maths.sum(anonymousShops.map((e) => e.num));
     final (hasUnknownLuckyBag, luckyBagCount) = getLuckyBagCount();
 

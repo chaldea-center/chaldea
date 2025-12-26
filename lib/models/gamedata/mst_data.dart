@@ -225,7 +225,11 @@ class MasterDataManager extends MasterDataManagerBase {
       return user?.qp ?? defaultValue;
     } else if (itemId == Items.stoneId) {
       // stone=free+charge
-      return user?.stone ?? defaultValue;
+      if (user != null) {
+        // in CN key=login response, `stone` field not exist in userGame
+        return user.stone == 0 ? user.freeStone + user.chargeStone : user.stone;
+      }
+      return defaultValue;
     } else if (itemId == Items.manaPrismId) {
       return user?.mana ?? defaultValue;
     } else if (itemId == Items.rarePrismId) {

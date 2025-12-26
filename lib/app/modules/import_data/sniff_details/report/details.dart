@@ -1,3 +1,6 @@
+import 'package:chaldea/app/app.dart';
+import 'package:chaldea/app/modules/common/filter_page_base.dart';
+import 'package:chaldea/app/modules/servant/filter.dart';
 import 'package:chaldea/app/modules/summon/gacha/gacha_banner.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/gamedata/mst_data.dart';
@@ -172,5 +175,173 @@ class UserGachaAccordion extends StatelessWidget {
     // 1/2/3-fp, 101-newbie
     if (gacha?.gachaType == GachaType.freeGacha) return true;
     return record.gachaId < 100;
+  }
+}
+
+class UserShopAnonymousListPage extends StatelessWidget {
+  final List<UserShopEntity> shops;
+  const UserShopAnonymousListPage({super.key, required this.shops});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text(Transl.enums(ShopType.svtAnonymous, (e) => e.shopType).l)),
+      body: ListView.builder(
+        itemBuilder: (context, index) {
+          final shop = shops[index];
+          return ListTile(
+            dense: true,
+            title: Text('${S.current.shop} ${shop.shopId}'),
+            trailing: Text('×${shop.num}'),
+            onTap: () => router.push(url: Routes.shopI(shop.shopId)),
+          );
+        },
+        itemCount: shops.length,
+      ),
+    );
+  }
+}
+
+class UserSvtFiltratedPage extends StatefulWidget {
+  final Widget? title;
+  final List<UserServantEntity> userSvts;
+  final String Function(UserServantEntity userSvt)? getUserSvtStatus;
+  final List<UserServantCollectionEntity> userSvtCollections;
+  final String Function(UserServantCollectionEntity collection)? getCollectionStatus;
+
+  const UserSvtFiltratedPage.userSvt({super.key, this.title, this.userSvts = const [], this.getUserSvtStatus})
+    : userSvtCollections = const [],
+      getCollectionStatus = null;
+
+  const UserSvtFiltratedPage.collection({
+    super.key,
+    this.title,
+    this.userSvtCollections = const [],
+    this.getCollectionStatus,
+  }) : userSvts = const [],
+       getUserSvtStatus = null;
+
+  @override
+  State<UserSvtFiltratedPage> createState() => _UserSvtFiltratedPageState();
+}
+
+class _UserSvtFiltratedPageState extends State<UserSvtFiltratedPage> {
+  static SvtFilterData filterData = SvtFilterData(sortKeys: SvtCompare.kRarityFirstKeys);
+
+  List<UserServantEntity> getShownUserSvts() {
+    bool filter(UserServantEntity userSvt) {
+      final svt = db.gameData.servantsById[userSvt.svtId];
+      if (svt != null && !ServantFilterPage.filter(filterData, svt)) {
+        return false;
+      }
+      return true;
+    }
+
+    int compareUserSvt(UserServantEntity a, UserServantEntity b) {
+      return SvtFilterData.compareId(a.svtId, b.svtId, keys: filterData.sortKeys, reversed: filterData.sortReversed);
+    }
+
+    final userSvts = widget.userSvts.where(filter).toList();
+    userSvts.sort(compareUserSvt);
+    return userSvts;
+  }
+
+  List<UserServantCollectionEntity> getShownCollections() {
+    bool filter(UserServantCollectionEntity userSvt) {
+      final svt = db.gameData.servantsById[userSvt.svtId];
+      if (svt != null && !ServantFilterPage.filter(filterData, svt)) {
+        return false;
+      }
+      return true;
+    }
+
+    int compareUserSvt(UserServantCollectionEntity a, UserServantCollectionEntity b) {
+      return SvtFilterData.compareId(a.svtId, b.svtId, keys: filterData.sortKeys, reversed: filterData.sortReversed);
+    }
+
+    final collections = widget.userSvtCollections.where(filter).toList();
+    collections.sort(compareUserSvt);
+    return collections;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    Widget body;
+    if (widget.userSvts.isNotEmpty) {
+      body = buildGrid(getShownUserSvts(), buildUserSvt);
+    } else {
+      body = buildGrid(getShownCollections(), buildCollection);
+    }
+    return Scaffold(
+      appBar: AppBar(
+        title: widget.title ?? Text(S.current.servant),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.filter_alt),
+            tooltip: S.current.filter,
+            onPressed: () => FilterPage.show(
+              context: context,
+              builder: (context) => ServantFilterPage(
+                filterData: filterData,
+                onChanged: (_) {
+                  if (mounted) {
+                    setState(() {});
+                  }
+                },
+                showPlans: false,
+                planMode: false,
+              ),
+            ),
+          ),
+        ],
+      ),
+      body: body,
+    );
+  }
+
+  Widget buildGrid<T>(List<T> entities, Widget Function(T entity) builder) {
+    return GridView.builder(
+      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+      gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+        maxCrossAxisExtent: 64,
+        mainAxisSpacing: 2,
+        crossAxisSpacing: 2,
+        childAspectRatio: 132 / 144,
+      ),
+      itemBuilder: (context, index) => builder(entities[index]),
+      itemCount: entities.length,
+    );
+  }
+
+  Widget buildUserSvt(UserServantEntity userSvt) {
+    final svt = db.gameData.servantsById[userSvt.svtId];
+    final status = widget.getUserSvtStatus?.call(userSvt);
+    Widget child;
+    if (svt == null) {
+      child = Text(['${userSvt.svtId}', if (status != null) status].join('\n'));
+    } else {
+      child = svt.iconBuilder(
+        context: context,
+        text: status,
+        option: ImageWithTextOption(padding: EdgeInsets.fromLTRB(4, 0, 4, 2), fontSize: 12),
+      );
+    }
+    return child;
+  }
+
+  Widget buildCollection(UserServantCollectionEntity collection) {
+    final svt = db.gameData.servantsById[collection.svtId];
+    final status = widget.getCollectionStatus?.call(collection);
+    Widget child;
+    if (svt == null) {
+      child = Text(['${collection.svtId}', if (status != null) status].join('\n'));
+    } else {
+      child = svt.iconBuilder(
+        context: context,
+        text: status,
+        option: ImageWithTextOption(padding: EdgeInsets.fromLTRB(4, 0, 4, 2), fontSize: 12),
+      );
+    }
+    return child;
   }
 }

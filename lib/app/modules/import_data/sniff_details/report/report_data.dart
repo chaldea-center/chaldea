@@ -54,6 +54,20 @@ class FgoAnnualReportData {
   List<UserQuestStat> mostClearRaidQuests = [];
   List<UserQuestStat> mostChallengeFailQuests = [];
 
+  // misc
+  List<UserServantCollectionEntity> usedLanternSvt = [];
+  int get usedLanternCount => Maths.sum(usedLanternSvt.map((e) => e.usedLanternCount));
+
+  List<UserShopEntity> svtAnonymousShops = [];
+  int get usedSvtAnonymousCount => Maths.sum(svtAnonymousShops.map((e) => e.num));
+
+  int usedCrystalCountActive = 0;
+  int usedCrystalCountPassive = 0;
+  int get usedCrystalCount => usedCrystalCountActive + usedCrystalCountPassive;
+
+  Map<UserServantEntity, int> usedGrailUserSvts = {};
+  int get usedGrailCount => Maths.sum(usedGrailUserSvts.values);
+
   FgoAnnualReportData({
     required this.mstData,
     required this.region,
@@ -68,32 +82,32 @@ class FgoAnnualReportData {
     int? year,
     Duration? expireAfter,
   }) async {
-    final data = FgoAnnualReportData(mstData: mstData, region: region, userGame: mstData.user!);
-    data.totalLogin = mstData.userLogin.first.totalLoginCount;
+    final report = FgoAnnualReportData(mstData: mstData, region: region, userGame: mstData.user!);
+    report.totalLogin = mstData.userLogin.first.totalLoginCount;
     if (year == null) {
       final now = DateTime.now();
-      if (now.month == 1 && data.userGame.createdAt.sec2date().year > now.year) {
+      if (now.month == 1 && report.userGame.createdAt.sec2date().year > now.year) {
         year = now.year - 1;
       } else {
         year = now.year;
       }
     }
-    data.curYear = year;
+    report.curYear = year;
 
     // svt stat
     final _regionReleasedSvtIds = db.gameData.mappingData.entityRelease.ofRegion(region);
     for (final svt in db.gameData.servantsById.values) {
       if (svt.collectionNo > 0 && svt.isUserSvt && (region.isJP || _regionReleasedSvtIds?.contains(svt.id) == true)) {
-        data.regionReleasedPlayableSvtIds.add(svt.id);
-        data.regionReleasedPlayableSvtCountByRarity.addNum(svt.rarity, 1);
+        report.regionReleasedPlayableSvtIds.add(svt.id);
+        report.regionReleasedPlayableSvtCountByRarity.addNum(svt.rarity, 1);
       }
     }
-    data.ownedSvtCollections = {
+    report.ownedSvtCollections = {
       for (final collection in mstData.userSvtCollection)
-        if (collection.isOwned && data.regionReleasedPlayableSvtIds.contains(collection.svtId))
+        if (collection.isOwned && report.regionReleasedPlayableSvtIds.contains(collection.svtId))
           collection.svtId: collection,
     };
-    for (final collection in data.ownedSvtCollections.values) {
+    for (final collection in report.ownedSvtCollections.values) {
       final svt = db.gameData.servantsById[collection.svtId];
       SvtClass svtClass = SvtClass.unknown;
       if (svt != null) {
@@ -103,23 +117,34 @@ class FgoAnnualReportData {
             break;
           }
         }
-        data.ownedSvtCollectionByRarity.addNum(svt.rarity, 1);
+        report.ownedSvtCollectionByRarity.addNum(svt.rarity, 1);
       }
-      data.ownedSvtCollectionByClass.addNum(svtClass, 1);
+      report.ownedSvtCollectionByClass.addNum(svtClass, 1);
     }
-    for (final userSvt in mstData.userSvt.followedBy(mstData.userSvtStorage)) {
-      final svt = db.gameData.servantsById[userSvt.svtId];
-      if (svt != null && svt.collectionNo > 0 && svt.isUserSvt && svt.rarity == 5) {
-        data.curSsrTdLv += userSvt.treasureDeviceLv1;
+    for (final userSvt in mstData.userSvtAndStorage) {
+      final grailCount = userSvt.getExceedCountByGrail();
+      if (grailCount > 0) {
+        report.usedGrailUserSvts[userSvt] = grailCount;
       }
+      report.usedCrystalCountActive += userSvt.skillLvs.where((e) => e == 10).length;
+      final svt = db.gameData.servantsById[userSvt.svtId];
+      if (svt == null) continue;
+      if (svt.collectionNo > 0 && svt.isUserSvt && svt.rarity == 5) {
+        report.curSsrTdLv += userSvt.treasureDeviceLv1;
+      }
+    }
+    for (final skill in mstData.userSvtAppendPassiveSkillLv) {
+      report.usedCrystalCountPassive += skill.appendPassiveSkillLvs.where((e) => e == 10).length;
     }
 
     // bond
-    for (final collection in data.ownedSvtCollections.values) {
+    for (final collection in report.ownedSvtCollections.values) {
       final svt = db.gameData.servantsById[collection.svtId];
-      if (!collection.isOwned || svt == null || svt.collectionNo == 0 || !svt.isUserSvt) continue;
-      if (collection.friendshipRank >= 10) data.bond10SvtCollections[collection.svtId] = collection;
-      if (collection.friendshipRank >= 15) data.bond15SvtCollections[collection.svtId] = collection;
+      if (!collection.isOwned) continue;
+      if (svt == null || svt.collectionNo == 0 || !svt.isUserSvt) continue;
+      if (collection.usedLanternCount > 0) report.usedLanternSvt.add(collection);
+      if (collection.friendshipRank >= 10) report.bond10SvtCollections[collection.svtId] = collection;
+      if (collection.friendshipRank >= 15) report.bond15SvtCollections[collection.svtId] = collection;
     }
     final releasedSvtEquipIds = db.gameData.mappingData.entityRelease.ofRegion(region);
     final regionBondEquips = {
@@ -128,10 +153,12 @@ class FgoAnnualReportData {
             (region == Region.jp || releasedSvtEquipIds?.contains(ce.id) == true))
           ce.id: ce,
     };
-    data.regionReleasedBondEquipIds = regionBondEquips.keys.toList();
+    report.regionReleasedBondEquipIds = regionBondEquips.keys.toList();
     for (final userSvtEquip in mstData.userSvt.followedBy(mstData.userSvtStorage)) {
       if (regionBondEquips.containsKey(userSvtEquip.svtId)) {
-        (data.bondEquipHistoryByYear[region.getDateTimeByOffset(userSvtEquip.createdAt).year] ??= []).add(userSvtEquip);
+        (report.bondEquipHistoryByYear[region.getDateTimeByOffset(userSvtEquip.createdAt).year] ??= []).add(
+          userSvtEquip,
+        );
       }
     }
 
@@ -139,41 +166,43 @@ class FgoAnnualReportData {
     final _rawGachas = await AtlasApi.rawGachas(region: region, expireAfter: expireAfter);
     final _extraGachas = await AtlasApi.rawGachasExtra(region: region, expireAfter: expireAfter);
     if (_rawGachas == null || _extraGachas == null) {
-      data.errors.add(
+      report.errors.add(
         Language.isZH ? '卡池数据下载失败，卡池统计结果不准确' : 'Gacha data download failed, gacha statistics not correct',
       );
     }
-    data.mstGachas = {
+    report.mstGachas = {
       for (final gacha in [...?_rawGachas, ...?_extraGachas]) gacha.id: gacha,
     };
 
     for (final userGacha in mstData.userGacha) {
-      final gacha = data.mstGachas[userGacha.gachaId];
+      final gacha = report.mstGachas[userGacha.gachaId];
       if (gacha != null && gacha.isFpGacha) continue; // skip FP summon
       if (userGacha.gachaId < 100) continue;
-      data.userStoneGachas[userGacha.gachaId] = userGacha;
+      if (gacha == null) report.hasUnknownGacha = true;
+      report.userStoneGachas[userGacha.gachaId] = userGacha;
       if (gacha != null && gacha.isLuckyBag) {
-        data.luckyBagGachas.add(userGacha);
+        report.luckyBagGachas.add(userGacha);
       }
-      data.summonPullCount += userGacha.num;
+      report.summonPullCount += userGacha.num;
     }
 
-    final _userGachas = data.userStoneGachas.values.toList();
+    final _userGachas = report.userStoneGachas.values.toList();
     _userGachas.sort2((e) => -e.num);
-    data.mostPullGachas = _userGachas.toList();
-    data.mostPullGachasThisYear = _userGachas.where((userGacha) {
-      final gacha = data.mstGachas[userGacha.gachaId];
+    report.mostPullGachas = _userGachas.toList();
+    report.mostPullGachasThisYear = _userGachas.where((userGacha) {
+      final gacha = report.mstGachas[userGacha.gachaId];
       if (gacha == null) return false;
       if (gacha.closedAt - gacha.openedAt >= 365 * kSecsPerDay) return false;
       final openedAt = region.getDateTimeByOffset(gacha.openedAt),
           closedAt = region.getDateTimeByOffset(gacha.closedAt);
-      return openedAt.year == data.curYear || closedAt.year == data.curYear;
+      return openedAt.year == report.curYear || closedAt.year == report.curYear;
     }).toList();
 
-    for (final userSvt in data.ownedSvtCollections.values) {
-      final svt = db.gameData.servantsById[userSvt.svtId];
+    for (final collection in report.ownedSvtCollections.values) {
+      final svt = db.gameData.servantsById[collection.svtId];
       if (svt == null || svt.rarity != 5) continue;
-      if (const [800100, 2801200].contains(userSvt.svtId)) continue; // Mash, Solomon
+      if (!collection.isOwned) continue;
+      if (const [800100, 2801200].contains(collection.svtId)) continue; // Mash, Solomon
       if (const [
         SvtObtain.eventReward,
         // SvtObtain.friendPoint,
@@ -182,25 +211,17 @@ class FgoAnnualReportData {
       ].any((e) => svt.obtains.contains(e))) {
         continue;
       }
-      data.summonSsrCount += userSvt.totalGetNum;
+      report.summonSsrCount += collection.totalGetNum;
     }
-    data.summonSsrCount -= data.luckyBagGachas.length;
-    data.summonPullCount -= data.luckyBagGachas.length;
-    if (data.summonSsrCount > 0) {
-      data.summonSsrRate = data.summonSsrCount / data.summonPullCount * 100;
+    report.summonSsrCount -= report.luckyBagGachas.length;
+    report.summonPullCount -= report.luckyBagGachas.length;
+    if (report.summonSsrCount > 0) {
+      report.summonSsrRate = report.summonSsrCount / report.summonPullCount * 100;
     }
 
     // lucky bag
-    for (final userGacha in mstData.userGacha) {
-      final gacha = data.mstGachas[userGacha.gachaId];
-      if (gacha == null) {
-        data.hasUnknownGacha = true;
-      } else if (gacha.isLuckyBag) {
-        data.luckyBagGachas.add(userGacha);
-      }
-    }
-    data.luckyBagGachas.sortByList((userGacha) {
-      final gacha = data.mstGachas[userGacha.gachaId];
+    report.luckyBagGachas.sortByList((userGacha) {
+      final gacha = report.mstGachas[userGacha.gachaId];
       return <int>[gacha == null ? 0 : 1, -(gacha?.openedAt ?? userGacha.gachaId), -userGacha.gachaId];
     });
 
@@ -249,12 +270,17 @@ class FgoAnnualReportData {
     raidQuests.sortByList((e) => [-e.count, -e.userQuest.updatedAt, -e.quest.id]);
     challengeFailQuests.sortByList((e) => [-e.count, -e.userQuest.updatedAt, -e.quest.id]);
 
-    data.mostClearFreeQuests = freeQuests.take(3).toList();
-    data.mostClearEventFreeQuests = eventFreeQuests.take(3).toList();
-    data.mostClearRaidQuests = raidQuests.take(3).toList();
-    data.mostChallengeFailQuests = challengeFailQuests.take(3).toList();
+    report.mostClearFreeQuests = freeQuests.take(3).toList();
+    report.mostClearEventFreeQuests = eventFreeQuests.take(3).toList();
+    report.mostClearRaidQuests = raidQuests.take(3).toList();
+    report.mostChallengeFailQuests = challengeFailQuests.take(3).toList();
 
-    return data;
+    // misc
+    for (final shop in mstData.userShop) {
+      if (shop.isSvtAnonymousShop(region: region)) report.svtAnonymousShops.add(shop);
+    }
+
+    return report;
   }
 }
 
