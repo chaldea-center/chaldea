@@ -377,24 +377,32 @@ class AtlasApi {
     );
   }
 
-  static Future<List<MstGacha>?> fullRawGachas(Region region, {Duration? expireAfter}) async {
-    final mstGachas = await mstData(
+  static Future<List<MstGacha>?> rawGachas({required Region region, Duration? expireAfter}) async {
+    return mstData(
       'mstGacha',
       (data) => (data as List).map((e) => MstGacha.fromJson(Map.from(e))).toList(),
+      region: region,
       expireAfter: expireAfter,
     );
+  }
 
+  static Future<List<MstGacha>?> rawGachasExtra({required Region region, Duration? expireAfter}) async {
     if (region == Region.cn) {
-      final extra = await cacheManager.getModel<List<MstGacha>>(
+      return cacheManager.getModel<List<MstGacha>>(
         "${HostsX.dataHost}/mstGachaCNExtra.json",
-        (data) => (data as List).map((e) => MstGacha.fromJson(Map.from(e))).toList(),
+        (data) => (data as List).map((e) => MstGacha.fromJson(Map.from(e))..userAdded = true).toList(),
         expireAfter: expireAfter,
       );
-      if (extra != null) {
-        mstGachas?.addAll(extra.map((e) => e..userAdded = true));
-      }
+    } else {
+      return [];
     }
-    return mstGachas;
+  }
+
+  static Future<List<MstGacha>?> fullRawGachas(Region region, {Duration? expireAfter}) async {
+    final gachas = await rawGachas(region: region, expireAfter: expireAfter);
+    final extraGachas = await rawGachasExtra(region: region, expireAfter: expireAfter);
+    if (gachas == null && extraGachas == null) return null;
+    return [...?gachas, ...?extraGachas];
   }
 
   /// search

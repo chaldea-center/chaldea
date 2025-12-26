@@ -418,6 +418,7 @@
   "free_quest_calculator": "フリークエスト",
   "free_quest_calculator_short": "フリークエスト",
   "gacha": "ガチャ",
+  "gacha_draw_rate": null,
   "gacha_image_overridden_hint": null,
   "gacha_prob_calc": null,
   "gacha_prob_ce_pickup": null,

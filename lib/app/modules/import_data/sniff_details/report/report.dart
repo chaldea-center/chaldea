@@ -39,6 +39,8 @@ class _FgoAnnualReportPageState extends State<FgoAnnualReportPage> {
   bool loading = false;
   Object? loadError;
 
+  final _screenshotController = ScreenshotController();
+
   @override
   void initState() {
     super.initState();
@@ -47,12 +49,13 @@ class _FgoAnnualReportPageState extends State<FgoAnnualReportPage> {
 
   Future<void> loadData({bool refresh = false}) async {
     if (loading) return;
-    loading = true;
-    await null;
-    if (mounted) setState(() {});
     try {
+      Region? region = widget.region ?? _data?.region;
+      loading = true;
       loadError = null;
-      Region? region = widget.region;
+      _data = null;
+      await null;
+      if (mounted) setState(() {});
       if (region == null) {
         if (!mounted) return;
         region = await router.showDialog<Region>(
@@ -73,7 +76,11 @@ class _FgoAnnualReportPageState extends State<FgoAnnualReportPage> {
         if (region == null) return;
       }
 
-      _data = await FgoAnnualReportData.parse(mstData: widget.mstData, region: region);
+      _data = await FgoAnnualReportData.parse(
+        mstData: widget.mstData,
+        region: region,
+        expireAfter: refresh ? Duration.zero : null,
+      );
     } catch (e, s) {
       loadError = e;
       logger.e('load report data failed', e, s);
@@ -141,27 +148,63 @@ class _FgoAnnualReportPageState extends State<FgoAnnualReportPage> {
             }
           }
 
+          Widget body;
+          bool hasData = false;
           if (errors.isEmpty && data != null) {
-            return FgoAnnualReportRealPage(report: data);
+            hasData = true;
+            body = SingleChildScrollView(
+              child: Screenshot(
+                controller: _screenshotController,
+                child: FgoAnnualReportRealPage(report: data),
+              ),
+            );
+          } else {
+            body = ListView(padding: .all(16), children: errors);
           }
 
           return Scaffold(
             appBar: AppBar(
               title: Text(S.current.chaldea_report_title),
+              elevation: 0,
+              centerTitle: true,
               actions: [
-                IconButton(
-                  onPressed: () {
-                    loadData(refresh: true);
-                  },
-                  icon: Icon(Icons.refresh),
-                ),
+                if (data == null || data.errors.isNotEmpty)
+                  IconButton(
+                    onPressed: () {
+                      loadData(refresh: true);
+                    },
+                    icon: Icon(Icons.refresh),
+                  ),
+                IconButton(onPressed: hasData ? doScreenshot : null, icon: Icon(Icons.share)),
               ],
             ),
-            body: ListView(padding: .all(16), children: errors),
+            body: body,
           );
         },
       ),
     );
+  }
+
+  Future<void> doScreenshot() async {
+    try {
+      if (mounted) setState(() {});
+      await null;
+      EasyLoading.show(status: 'Rendering...');
+      final pngBytes = await _screenshotController.capture();
+      if (pngBytes != null) {
+        EasyLoading.dismiss();
+        if (mounted) {
+          await ImageActions.showSaveShare(context: context, data: pngBytes, defaultFilename: 'fgo-chaldea-report.png');
+        }
+      } else {
+        EasyLoading.showError('screenshot failed');
+      }
+    } catch (e, s) {
+      EasyLoading.showError(e.toString());
+      logger.e('screenshot report failed', e, s);
+    } finally {
+      if (mounted) setState(() {});
+    }
   }
 }
 
@@ -181,11 +224,8 @@ class _FgoAnnualReportRealPageState extends State<FgoAnnualReportRealPage> {
 
   Random random = Random();
   // options
-  bool _screenshotMode = false;
   // final String _defaultBackgroundImageUrl = 'https://static.atlasacademy.io/JP/Back/back255400_1344_626.png';
   final String _defaultBackgroundImageUrl = 'https://static.atlasacademy.io/JP/Back/back135100_1344_626.png';
-
-  final _screenshotController = ScreenshotController();
 
   @override
   void initState() {
@@ -194,95 +234,83 @@ class _FgoAnnualReportRealPageState extends State<FgoAnnualReportRealPage> {
     options.masterEquipId = options.getDefaultMasterEquip(region: report.region);
   }
 
-  Future<void> doScreenshot() async {
-    if (_screenshotMode) _screenshotMode;
-    try {
-      _screenshotMode = true;
-      if (mounted) setState(() {});
-      await null;
-      final pngBytes = await _screenshotController.capture();
-      if (pngBytes != null) {
-        if (mounted) {
-          await ImageActions.showSaveShare(context: context, data: pngBytes, defaultFilename: 'fgo-chaldea-report.png');
-        }
-      } else {
-        EasyLoading.showError('screenshot failed');
-      }
-    } catch (e, s) {
-      EasyLoading.showError(e.toString());
-      logger.e('screenshot report failed', e, s);
-    } finally {
-      _screenshotMode = false;
-      if (mounted) setState(() {});
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     random = Random(hashCode);
-    // backgroundImageUrl = _defaultBackgroundImageUrl;
 
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        centerTitle: true,
-        title: Text(S.current.chaldea_report_title, style: TextStyle(fontWeight: FontWeight.w700)),
-        actions: [IconButton(onPressed: doScreenshot, icon: Icon(Icons.share))],
-      ),
-      body: SingleChildScrollView(
-        child: Screenshot(
-          controller: _screenshotController,
-          child: Stack(
+    return Stack(
+      children: [
+        Positioned.fill(
+          child: ImageFiltered(
+            imageFilter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
+            child: ColorFiltered(
+              colorFilter: const ColorFilter.mode(Colors.black45, BlendMode.srcOver),
+              child: CachedImage(
+                imageUrl: _defaultBackgroundImageUrl,
+                cachedOption: CachedImageOption(
+                  fit: BoxFit.cover,
+                  errorWidget: (context, url, error) => CachedImage(imageUrl: _defaultBackgroundImageUrl),
+                  placeholder: (context, url) => CachedImage(imageUrl: _defaultBackgroundImageUrl),
+                ),
+              ),
+            ),
+          ),
+        ),
+        Positioned.fill(
+          child: DecoratedBox(
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [Color(0x332B2D42), Color(0x662B2D42)],
+              ),
+            ),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
-              Positioned.fill(
-                child: ImageFiltered(
-                  imageFilter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
-                  child: ColorFiltered(
-                    colorFilter: const ColorFilter.mode(Colors.black45, BlendMode.srcOver),
-                    child: CachedImage(
-                      imageUrl: _defaultBackgroundImageUrl,
-                      cachedOption: CachedImageOption(
-                        fit: BoxFit.cover,
-                        errorWidget: (context, url, error) => CachedImage(imageUrl: _defaultBackgroundImageUrl),
-                        placeholder: (context, url) => CachedImage(imageUrl: _defaultBackgroundImageUrl),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              Positioned.fill(
-                child: DecoratedBox(
-                  decoration: const BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [Color(0x332B2D42), Color(0x662B2D42)],
-                    ),
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    _topTitle(),
-                    _userInfoCard(),
-                    ?_pushAndFavoriteSvts(),
-                    _gachaLuck(),
-                    _summonedStats(),
-                    _bondCeStats(),
-                    _gachaTopPulls(true),
-                    _gachaTopPulls(false),
-                    _topQuestRun(),
-                    _finalMessage(),
-                  ],
-                ),
-              ),
+              _topTitle(),
+              if (report.errors.isNotEmpty) _warningCard(),
+              _userInfoCard(),
+              ?_pushAndFavoriteSvts(),
+              _gachaLuck(),
+              _summonedStats(),
+              _bondCeStats(),
+              _gachaTopPulls(true),
+              _gachaTopPulls(false),
+              _topQuestRun(),
+              _finalMessage(),
             ],
           ),
         ),
+      ],
+    );
+  }
+
+  Widget _warningCard() {
+    return ReportCard(
+      header: Text(S.current.error),
+      color: Colors.red.withAlpha(100),
+      child: Column(
+        mainAxisSize: .min,
+        children: [
+          for (final error in report.errors)
+            ListTile(
+              dense: true,
+              minTileHeight: 24,
+              title: Text(
+                '$kULLeading ${error.toString()}',
+                maxLines: 3,
+                overflow: .ellipsis,
+                style: TextStyle(
+                  // color:
+                ),
+              ),
+            ),
+        ],
       ),
     );
   }
@@ -486,6 +514,7 @@ class _FgoAnnualReportRealPageState extends State<FgoAnnualReportRealPage> {
     final favoriteUserSvt = report.mstData.getUserSvt(report.userGame.favoriteUserSvtId);
     List<Widget> cards = [];
     for (final (isPush, isFavorite, userSvt) in [(true, false, pushUserSvt), (false, true, favoriteUserSvt)]) {
+      // for (final (isPush, isFavorite, userSvt) in [(true, true, pushUserSvt)]) {
       if (userSvt == null) continue;
       final svt = userSvt.dbSvt;
       final collection = mstData.userSvtCollection[userSvt.svtId];
@@ -538,18 +567,30 @@ class _FgoAnnualReportRealPageState extends State<FgoAnnualReportRealPage> {
         header: Text.rich(
           TextSpan(
             children: [
-              CenterWidgetSpan(
-                child: CachedImage(
-                  imageUrl:
-                      'https://static.atlasacademy.io/file/aa-fgo-extract-jp/Terminal/Info/CommonUIAtlas/${isPush ? "icon_push" : "icon_choice"}.png',
-                  width: 18,
-                  height: 18,
-                  placeholder: _blankPlaceholder,
+              if (isPush) ...[
+                CenterWidgetSpan(
+                  child: CachedImage(
+                    imageUrl:
+                        'https://static.atlasacademy.io/file/aa-fgo-extract-jp/Terminal/Info/CommonUIAtlas/icon_push.png',
+                    width: 18,
+                    height: 18,
+                    placeholder: _blankPlaceholder,
+                  ),
                 ),
-              ),
-              const TextSpan(text: ' '),
-              if (isPush) TextSpan(text: S.current.chaldea_report_push),
-              if (isFavorite) TextSpan(text: S.current.chaldea_report_favorite),
+                TextSpan(text: ' ${S.current.chaldea_report_push}  '),
+              ],
+              if (isFavorite) ...[
+                CenterWidgetSpan(
+                  child: CachedImage(
+                    imageUrl:
+                        'https://static.atlasacademy.io/file/aa-fgo-extract-jp/Terminal/Info/CommonUIAtlas/icon_choice.png',
+                    width: 18,
+                    height: 18,
+                    placeholder: _blankPlaceholder,
+                  ),
+                ),
+                TextSpan(text: ' ${S.current.chaldea_report_favorite}  '),
+              ],
             ],
             style: TextStyle(fontWeight: .bold),
           ),
@@ -572,7 +613,7 @@ class _FgoAnnualReportRealPageState extends State<FgoAnnualReportRealPage> {
         padding: .fromLTRB(16, 16, 16, 8),
         child: Row(
           spacing: 8,
-          crossAxisAlignment: .start,
+          crossAxisAlignment: .center,
           children: [
             Expanded(
               child: ConstrainedBox(
@@ -673,6 +714,16 @@ class _FgoAnnualReportRealPageState extends State<FgoAnnualReportRealPage> {
                 ],
               ),
             ),
+            if (isPush && isFavorite)
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: .start,
+                  children: [
+                    Text(svt?.lName.l ?? ""),
+                    //
+                  ],
+                ),
+              ),
           ],
         ),
       );
@@ -917,7 +968,12 @@ class _FgoAnnualReportRealPageState extends State<FgoAnnualReportRealPage> {
                   ),
                 ),
                 const SizedBox(height: 8),
-                AutoSizeText(S.current.chaldea_report_5star_svts_count(kStarChar2), style: TextStyle(color: _greyColor), maxLines: 1, minFontSize: 8),
+                AutoSizeText(
+                  S.current.chaldea_report_5star_svts_count(kStarChar2),
+                  style: TextStyle(color: _greyColor),
+                  maxLines: 1,
+                  minFontSize: 8,
+                ),
                 AutoSizeText(
                   '${report.ownedSvtCollectionByRarity[5] ?? 0} / ${report.curSsrTdLv}',
                   style: const TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
@@ -985,10 +1041,10 @@ class _FgoAnnualReportRealPageState extends State<FgoAnnualReportRealPage> {
   }
 
   Widget _gachaLuck() {
-    double summonRate = report.summonSsrRate * 100;
-    final (luckyGrade, comment) = _luckGrade(summonRate);
+    double summonRate = report.summonSsrRate;
+    final luckyGrade = report.luckyGrade;
     String bgImage = 'https://media.fgo.wiki/a/a6/圣晶石10个.png';
-    if (luckyGrade == S.current.chaldea_report_luck_very_unlucky) {
+    if (luckyGrade == .veryUnlucky) {
       bgImage = 'https://static.atlasacademy.io/JP/Servants/Status/1100100/status_servant_1.png';
     }
     return ReportCard(
@@ -1027,7 +1083,7 @@ ${S.current.chaldea_report_5star_stat_dis_ent}"""),
                         style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
                       ),
                       TextSpan(
-                        text: ' ${S.current.probability}',
+                        text: ' ${S.current.gacha_draw_rate}',
                         style: TextStyle(color: _greyColor),
                       ),
                     ],
@@ -1097,9 +1153,9 @@ ${S.current.chaldea_report_5star_stat_dis_ent}"""),
               children: [
                 Text(S.current.chaldea_report_likely, style: TextStyle(color: _greyColor)),
                 const SizedBox(height: 6),
-                Text(luckyGrade, style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w800)),
+                Text(luckyGrade.shownName, style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w800)),
                 const SizedBox(height: 12),
-                AutoSizeText(comment, maxLines: 3, minFontSize: 8, style: TextStyle(fontSize: 14)),
+                AutoSizeText(luckyGrade.comment, maxLines: 3, minFontSize: 8, style: TextStyle(fontSize: 14)),
               ],
             ),
           ),
@@ -1110,19 +1166,28 @@ ${S.current.chaldea_report_5star_stat_dis_ent}"""),
 
   Widget _gachaTopPulls(bool useThisYear) {
     const int kMaxShownQuestCount = 3;
-    String titlePrefix = useThisYear ? S.current.chaldea_report_pull_stat_cur_year(report.curYear) : S.current.chaldea_report_pull_stat_all;
+    String titlePrefix = useThisYear
+        ? S.current.chaldea_report_pull_stat_cur_year(report.curYear)
+        : S.current.chaldea_report_pull_stat_all;
     final userGachas = useThisYear ? report.mostPullGachasThisYear : report.mostPullGachas;
     return ReportCard(
       header: Padding(
         padding: const .symmetric(horizontal: 16),
-        child: Text(S.current.chaldea_report_pull_stat_top_title(titlePrefix, kMaxShownQuestCount), style: TextStyle(fontWeight: .bold)),
+        child: Text(
+          S.current.chaldea_report_pull_stat_top_title(titlePrefix, kMaxShownQuestCount),
+          style: TextStyle(fontWeight: .bold),
+        ),
       ),
       padding: .symmetric(vertical: 16),
       onTap: userGachas.isEmpty
           ? null
           : () {
               router.pushPage(
-                UserGachaListPage(report: report, userGachas: userGachas.toList(), title: S.current.chaldea_report_pull_cur_year(titlePrefix)),
+                UserGachaListPage(
+                  report: report,
+                  userGachas: userGachas.toList(),
+                  title: S.current.chaldea_report_pull_cur_year(titlePrefix),
+                ),
               );
             },
       backgrounds: [
@@ -1331,6 +1396,7 @@ ${S.current.chaldea_report_5star_stat_dis_ent}"""),
               imageUrl: 'https://static.atlasacademy.io/JP/Title/logo_title_part2_final.png',
               height: 24,
               width: 24 * 604 / 40,
+              placeholder: _blankPlaceholder,
             ),
           ),
           const SizedBox(height: 8),
@@ -1376,15 +1442,6 @@ ${S.current.chaldea_report_5star_stat_dis_ent}"""),
     SvtClass.EXTRA2: Color(0xFF0096C7),
     SvtClass.unknown: Color(0xFF1D3557),
   };
-
-  (String luckyGrade, String comment) _luckGrade(double ssrRatePercent) {
-    if (ssrRatePercent >= 1.25) return (S.current.chaldea_report_luck_grand_lucky, S.current.chaldea_report_luck_grand_lucky_desc);
-    if (ssrRatePercent >= 1.15) return (S.current.chaldea_report_luck_lucky, S.current.chaldea_report_luck_lucky_desc);
-    if (ssrRatePercent >= 1.05) return (S.current.chaldea_report_luck_mid_lucky, S.current.chaldea_report_luck_mid_lucky_desc);
-    if (ssrRatePercent >= 1.0) return (S.current.chaldea_report_luck_not_lucky, S.current.chaldea_report_luck_not_lucky_desc);
-    if (ssrRatePercent > 0.85) return (S.current.chaldea_report_luck_unlucky, S.current.chaldea_report_luck_unlucky_desc);
-    return (S.current.chaldea_report_luck_very_unlucky, S.current.chaldea_report_luck_very_unlucky_desc);
-  }
 }
 
 class ReportCard extends StatelessWidget {

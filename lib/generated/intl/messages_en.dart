@@ -38,7 +38,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m20(curYear, count) => "${curYear} Top ${count} Pulls";
 
-  static String m21(year, month, day) => "Joined for ${year}yr ${month}mo ${day}d";
+  static String m21(year, month, day) => "for ${year}yr ${month}mo ${day}d";
 
   static String m0(url) =>
       "Chaldea - A cross-platform utility for Fate/GO. Supporting game data review, servant/event/item planning, master mission planning, summon simulator and so on.\n\nFor details: \n${url}\n";
@@ -280,7 +280,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "chaldea_report_luck_lucky": MessageLookupByLibrary.simpleMessage("Gacha King"),
     "chaldea_report_luck_lucky_desc": MessageLookupByLibrary.simpleMessage("The fate favors you."),
     "chaldea_report_luck_mid_lucky": MessageLookupByLibrary.simpleMessage("Gacha Man"),
-    "chaldea_report_luck_mid_lucky_desc": MessageLookupByLibrary.simpleMessage("Stablity is a gift."),
+    "chaldea_report_luck_mid_lucky_desc": MessageLookupByLibrary.simpleMessage("Stability is a gift."),
     "chaldea_report_luck_not_lucky": MessageLookupByLibrary.simpleMessage("Gacha Gambit"),
     "chaldea_report_luck_not_lucky_desc": MessageLookupByLibrary.simpleMessage("Saving luck for next time."),
     "chaldea_report_luck_unlucky": MessageLookupByLibrary.simpleMessage("Gacha Enjoyer"),
@@ -299,7 +299,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "chaldea_report_quests_stat": MessageLookupByLibrary.simpleMessage("Quest Stat"),
     "chaldea_report_since_account_created_date": m21,
     "chaldea_report_times": MessageLookupByLibrary.simpleMessage(" Times"),
-    "chaldea_report_title": MessageLookupByLibrary.simpleMessage("Chaldea - FGO Report"),
+    "chaldea_report_title": MessageLookupByLibrary.simpleMessage("Chaldea Report"),
     "chaldea_report_total_days": MessageLookupByLibrary.simpleMessage(" Days"),
     "chaldea_report_total_login": MessageLookupByLibrary.simpleMessage("Total Login"),
     "chaldea_report_total_svts": MessageLookupByLibrary.simpleMessage("Servants"),
@@ -572,6 +572,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "free_quest_calculator": MessageLookupByLibrary.simpleMessage("Free Quest"),
     "free_quest_calculator_short": MessageLookupByLibrary.simpleMessage("Free Quest"),
     "gacha": MessageLookupByLibrary.simpleMessage("Gacha"),
+    "gacha_draw_rate": MessageLookupByLibrary.simpleMessage("Prob."),
     "gacha_image_overridden_hint": MessageLookupByLibrary.simpleMessage("Banner image may be overridden by"),
     "gacha_prob_calc": MessageLookupByLibrary.simpleMessage("Gacha Prob Calc"),
     "gacha_prob_ce_pickup": m25,

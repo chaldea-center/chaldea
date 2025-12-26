@@ -1,7 +1,9 @@
 import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/faker/runtime.dart';
+import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/gamedata/mst_data.dart';
 import 'package:chaldea/models/models.dart';
+import 'package:chaldea/packages/language.dart';
 import 'package:chaldea/utils/utils.dart';
 
 typedef UserQuestStat = ({UserQuestEntity userQuest, Quest quest, int count});
@@ -10,6 +12,8 @@ class FgoAnnualReportData {
   final MasterDataManager mstData;
   final Region region;
   final UserGameEntity userGame;
+
+  List<Object> errors = [];
 
   DateTime createdAt = DateTime.now();
   int curYear = DateTime.now().year;
@@ -38,7 +42,8 @@ class FgoAnnualReportData {
   bool hasUnknownGacha = false;
   int summonSsrCount = 0;
   int summonPullCount = 0;
-  double summonSsrRate = 0; // 0~1, or NaN
+  double summonSsrRate = 0; // 0~100, or NaN
+  GachaLuckyGrade get luckyGrade => GachaLuckyGrade.fromRate(summonSsrRate);
   String summonComment = ""; // rand
   List<UserGachaEntity> mostPullGachas = [];
   List<UserGachaEntity> mostPullGachasThisYear = [];
@@ -61,6 +66,7 @@ class FgoAnnualReportData {
     required MasterDataManager mstData,
     required Region region,
     int? year,
+    Duration? expireAfter,
   }) async {
     final data = FgoAnnualReportData(mstData: mstData, region: region, userGame: mstData.user!);
     data.totalLogin = mstData.userLogin.first.totalLoginCount;
@@ -130,15 +136,21 @@ class FgoAnnualReportData {
     }
 
     // summon
-    final _gachas = await AtlasApi.fullRawGachas(region);
-    if (_gachas == null) {
-      throw Exception('Download gacha data failed.\n下载卡池数据失败，请尝试科学上网');
+    final _rawGachas = await AtlasApi.rawGachas(region: region, expireAfter: expireAfter);
+    final _extraGachas = await AtlasApi.rawGachasExtra(region: region, expireAfter: expireAfter);
+    if (_rawGachas == null || _extraGachas == null) {
+      data.errors.add(
+        Language.isZH ? '卡池数据下载失败，卡池统计结果不准确' : 'Gacha data download failed, gacha statistics not correct',
+      );
     }
-    data.mstGachas = {for (final gacha in _gachas) gacha.id: gacha};
+    data.mstGachas = {
+      for (final gacha in [...?_rawGachas, ...?_extraGachas]) gacha.id: gacha,
+    };
 
     for (final userGacha in mstData.userGacha) {
       final gacha = data.mstGachas[userGacha.gachaId];
       if (gacha != null && gacha.isFpGacha) continue; // skip FP summon
+      if (userGacha.gachaId < 100) continue;
       data.userStoneGachas[userGacha.gachaId] = userGacha;
       if (gacha != null && gacha.isLuckyBag) {
         data.luckyBagGachas.add(userGacha);
@@ -175,7 +187,7 @@ class FgoAnnualReportData {
     data.summonSsrCount -= data.luckyBagGachas.length;
     data.summonPullCount -= data.luckyBagGachas.length;
     if (data.summonSsrCount > 0) {
-      data.summonSsrRate = data.summonSsrCount / data.summonPullCount;
+      data.summonSsrRate = data.summonSsrCount / data.summonPullCount * 100;
     }
 
     // lucky bag
@@ -244,4 +256,41 @@ class FgoAnnualReportData {
 
     return data;
   }
+}
+
+enum GachaLuckyGrade {
+  grandLucky,
+  lucky,
+  middle,
+  notLucky,
+  unlucky,
+  veryUnlucky;
+
+  // 0-100
+  static GachaLuckyGrade fromRate(double percent) {
+    if (percent > 1.25) return grandLucky;
+    if (percent > 1.15) return lucky;
+    if (percent > 1.05) return middle;
+    if (percent > 1.0) return notLucky;
+    if (percent > 0.85) return unlucky;
+    return veryUnlucky;
+  }
+
+  String get shownName => switch (this) {
+    grandLucky => S.current.chaldea_report_luck_grand_lucky,
+    lucky => S.current.chaldea_report_luck_lucky,
+    middle => S.current.chaldea_report_luck_mid_lucky,
+    notLucky => S.current.chaldea_report_luck_not_lucky,
+    unlucky => S.current.chaldea_report_luck_unlucky,
+    veryUnlucky => S.current.chaldea_report_luck_very_unlucky,
+  };
+
+  String get comment => switch (this) {
+    grandLucky => S.current.chaldea_report_luck_grand_lucky_desc,
+    lucky => S.current.chaldea_report_luck_lucky_desc,
+    middle => S.current.chaldea_report_luck_mid_lucky_desc,
+    notLucky => S.current.chaldea_report_luck_not_lucky_desc,
+    unlucky => S.current.chaldea_report_luck_unlucky_desc,
+    veryUnlucky => S.current.chaldea_report_luck_very_unlucky_desc,
+  };
 }

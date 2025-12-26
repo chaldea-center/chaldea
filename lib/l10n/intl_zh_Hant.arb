@@ -418,6 +418,7 @@
   "free_quest_calculator": "FQ速查",
   "free_quest_calculator_short": "FQ速查",
   "gacha": "抽卡",
+  "gacha_draw_rate": null,
   "gacha_image_overridden_hint": "卡池圖片可能由於重名被以下卡池覆蓋",
   "gacha_prob_calc": "卡池機率計算",
   "gacha_prob_ce_pickup": "{rarity}星禮裝PickUp",

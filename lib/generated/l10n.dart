@@ -1041,10 +1041,10 @@ class S {
     return Intl.message('Gacha Man', name: 'chaldea_report_luck_mid_lucky', desc: '', locale: localeName, args: []);
   }
 
-  /// `Stablity is a gift.`
+  /// `Stability is a gift.`
   String get chaldea_report_luck_mid_lucky_desc {
     return Intl.message(
-      'Stablity is a gift.',
+      'Stability is a gift.',
       name: 'chaldea_report_luck_mid_lucky_desc',
       desc: '',
       locale: localeName,
@@ -1180,10 +1180,10 @@ class S {
     return Intl.message('Quest Stat', name: 'chaldea_report_quests_stat', desc: '', locale: localeName, args: []);
   }
 
-  /// `Joined for {year}yr {month}mo {day}d`
+  /// `for {year}yr {month}mo {day}d`
   String chaldea_report_since_account_created_date(Object year, Object month, Object day) {
     return Intl.message(
-      'Joined for ${year}yr ${month}mo ${day}d',
+      'for ${year}yr ${month}mo ${day}d',
       name: 'chaldea_report_since_account_created_date',
       desc: '',
       locale: localeName,
@@ -1196,9 +1196,9 @@ class S {
     return Intl.message(' Times', name: 'chaldea_report_times', desc: '', locale: localeName, args: []);
   }
 
-  /// `Chaldea - FGO Report`
+  /// `Chaldea Report`
   String get chaldea_report_title {
-    return Intl.message('Chaldea - FGO Report', name: 'chaldea_report_title', desc: '', locale: localeName, args: []);
+    return Intl.message('Chaldea Report', name: 'chaldea_report_title', desc: '', locale: localeName, args: []);
   }
 
   /// ` Days`
@@ -2677,6 +2677,11 @@ class S {
   /// `Gacha`
   String get gacha {
     return Intl.message('Gacha', name: 'gacha', desc: '', locale: localeName, args: []);
+  }
+
+  /// `Prob.`
+  String get gacha_draw_rate {
+    return Intl.message('Prob.', name: 'gacha_draw_rate', desc: '', locale: localeName, args: []);
   }
 
   /// `Banner image may be overridden by`
