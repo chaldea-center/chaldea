@@ -213,7 +213,7 @@ class BattleShareData {
     String data = toDataV2();
     Uri shareUri = Uri.parse(ChaldeaUrl.deepLink('/laplace/share'));
     shareUri = shareUri.replace(
-      queryParameters: {
+      queryParameters: <String, String>{
         "data": data,
         if (quest != null) ...{
           "questId": quest!.id.toString(),

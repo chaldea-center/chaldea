@@ -156,7 +156,7 @@ class _AiPageState extends State<AiPage> with RegionBasedState<NiceAiCollection,
                           launch(
                             Uri.parse("https://apps.atlasacademy.io/db/JP/quests")
                                 .replace(
-                                  queryParameters: {
+                                  queryParameters: <String, String>{
                                     if (widget.aiType == AiType.svt) "enemySvtAiId": id.toString(),
                                     if (widget.aiType == AiType.field) "fieldAiId": id.toString(),
                                   },

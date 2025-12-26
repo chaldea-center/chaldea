@@ -105,7 +105,7 @@ class _RecognizerViewerTabState extends State<RecognizerViewerTab> {
       recentFiles = List.from(
         (await db.apiServerDio.get(
           '/recognizer/viewer/${widget.type.name}/list',
-          queryParameters: {"count": count},
+          queryParameters: <String, String>{"count": count.toString()},
         )).data,
       );
       EasyLoading.dismiss();

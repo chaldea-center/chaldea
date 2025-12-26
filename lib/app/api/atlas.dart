@@ -419,12 +419,12 @@ class AtlasApi {
     return cacheManager.getModel(
       Uri.parse('$atlasApiHost/nice/${region.upper}/shop/search')
           .replace(
-            queryParameters: {
+            queryParameters: <String, String>{
               'type': ?type?.name,
               'eventId': ?eventId?.toString(),
               'payType': ?payType?.name,
               'purchaseType': ?purchaseType?.name,
-              'limit': ?limit,
+              'limit': ?limit?.toString(),
             },
           )
           .toString(),

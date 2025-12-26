@@ -230,7 +230,7 @@ class UserBattleData {
   Uri toShortUri() {
     Uri shareUri = Uri.parse(ChaldeaUrl.deepLink('/laplace/share'));
     shareUri = shareUri.replace(
-      queryParameters: {
+      queryParameters: <String, String>{
         "id": id.toString(),
         // "questId": questId.toString(),
         // "phase": phase.toString(),
@@ -245,7 +245,7 @@ class UserBattleData {
     String? data = detail?.toDataV2();
     Uri shareUri = Uri.parse(ChaldeaUrl.deepLink('/laplace/share'));
     shareUri = shareUri.replace(
-      queryParameters: {
+      queryParameters: <String, String>{
         "data": ?data,
         "questId": (detail?.quest?.id ?? questId).toString(),
         "phase": (detail?.quest?.phase ?? phase).toString(),

@@ -371,10 +371,10 @@ class _Database {
     BaseOptions(
       baseUrl: HostsX.apiHost,
       // baseUrl: kDebugMode ? 'http://localhost:8000/' : Hosts.apiHost,
-      queryParameters: {
+      queryParameters: <String, String>{
         'key': AppInfo.uuid,
         'ver': AppInfo.versionString,
-        'build': AppInfo.buildNumber,
+        'build': AppInfo.buildNumber.toString(),
         'lang': Language.current.code,
         'os': PlatformU.operatingSystem,
       },
