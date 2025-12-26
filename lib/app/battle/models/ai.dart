@@ -99,7 +99,7 @@ class SvtAiManager with _AiManagerBase {
   Future<void> reactionWaveStart(BattleData battleData, BattleServantData actor) async {
     if (aiCollection == null || battleData.niceQuest == null) return;
     final mainAis = NiceAiCollection.sortedAis(aiCollection!.mainAis);
-    final isFinalChapterRaid = ConstGameData.finalChapterRaidQuestIds.contains(battleData.niceQuest!.id);
+    final isFinalChapterRaid = battleData.niceQuest!.isAnyRaid && battleData.niceQuest!.warId == 407;
     if (!hasOnlyOneSkill(mainAis) && !isFinalChapterRaid) return;
     for (final ai in mainAis) {
       if (ai.actNum == NiceAiActNum.reactionWavestart &&

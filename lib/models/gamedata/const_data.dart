@@ -59,12 +59,7 @@ class ConstGameData {
   final ConstDataConfig config;
 
   static Map<String, Map<String, int>> deprecatedEnums = {};
-  // each final chapter raids got debuffed once a raid is cleared, so their AIs are different.
-  // E.g. No.2 raid got no buffs from svtAi once two raids are cleared.
-  // For Laplace, we will only consider the first state (no raid cleared).
-  static Set<int> finalChapterRaidQuestIds = {
-    ...range(4000801, 4000843), // tree No1 ~ No7
-  };
+
   // for the special fieldAi that removes buffs from enemy based on critStar
   static Set<int> finalChapterNo2RaidQuestIds = {
     ...range(4000807, 4000813), // tree No2
