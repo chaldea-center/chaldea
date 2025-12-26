@@ -228,8 +228,6 @@
 				931401562D8EEE4600D2A0B5 /* FakerStatusWidget */,
 			);
 			name = FakerStatusWidgetExtension;
-			packageProductDependencies = (
-			);
 			productName = FakerStatusWidgetExtension;
 			productReference = 931401512D8EEE4600D2A0B5 /* FakerStatusWidgetExtension.appex */;
 			productType = "com.apple.product-type.app-extension";

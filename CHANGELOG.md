@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.5.24
+
+- Add fgo account report in https sniff part
+- Support new mechanisms
+
 ## 2.5.23
 
 - Support grand assassin battle mechanisms
