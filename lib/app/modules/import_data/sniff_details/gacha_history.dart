@@ -43,6 +43,7 @@ class _SniffGachaHistoryState extends State<SniffGachaHistory> {
   Map<int, MstGacha> gachas = {};
   Map<int, MstGacha> cnGachas = {};
   final Map<int, List<MstGacha>> _imageIdMap = {};
+  Map<int, MstShop> shops = {};
 
   @override
   void initState() {
@@ -50,8 +51,8 @@ class _SniffGachaHistoryState extends State<SniffGachaHistory> {
     loadMstData();
   }
 
-  Future<List<MstGacha>?> _fetchMst(Region region) async {
-    final mstGachas = await AtlasApi.fullRawGachas(region);
+  Future<List<MstGacha>?> _fetchMstGacha(Region region, Duration? expireAfter) async {
+    final mstGachas = await AtlasApi.fullRawGachas(region, expireAfter: expireAfter);
     if (mstGachas == null && mounted) {
       SimpleConfirmDialog(
         title: Text(S.current.error),
@@ -62,16 +63,17 @@ class _SniffGachaHistoryState extends State<SniffGachaHistory> {
     return mstGachas;
   }
 
-  Future<void> loadMstData() async {
+  Future<void> loadMstData({bool refresh = false}) async {
+    final expireAfter = refresh ? Duration.zero : null;
     loading.value = true;
     _imageIdMap.clear();
     cnGachas.clear();
-    final data = await _fetchMst(widget.region);
-    if (data != null) {
-      gachas = {for (final v in data) v.id: v};
+    final mstGachas = await _fetchMstGacha(widget.region, expireAfter);
+    if (mstGachas != null) {
+      gachas = {for (final v in mstGachas) v.id: v};
       if (widget.region == Region.tw) {
         // TW doesn't contain closed banners
-        final dataCN = await _fetchMst(Region.cn);
+        final dataCN = await _fetchMstGacha(Region.cn, expireAfter);
         if (dataCN != null) {
           cnGachas = {for (final v in dataCN) v.id: v};
         }
@@ -91,9 +93,25 @@ class _SniffGachaHistoryState extends State<SniffGachaHistory> {
       _imageIdMap.putIfAbsent(gacha.imageId, () => []).add(gacha);
     }
 
+    final _shops = await AtlasApi.rawShops(region: widget.region, expireAfter: expireAfter);
+    if (_shops == null) {
+      //
+    } else {
+      shops = {for (final shop in _shops) shop.id: shop};
+    }
+
     // records = records.reversed.toList();
     loading.value = false;
     if (mounted) setState(() {});
+  }
+
+  bool isAnonymousShop(UserShopEntity userShop) {
+    final shop = shops[userShop.shopId];
+    if (shop == null) {
+      return userShop.isSvtAnonymousShop(region: widget.region);
+    } else {
+      return shop.shopType == ShopType.svtAnonymous.value;
+    }
   }
 
   @override
@@ -109,7 +127,7 @@ class _SniffGachaHistoryState extends State<SniffGachaHistory> {
     final allUserSvts = [...widget.userSvt, ...widget.userSvtStorage];
 
     final curAnonymous = widget.userItems.firstWhereOrNull((e) => e.itemId == Items.svtAnonymousId)?.num ?? 0;
-    final anonymousShops = widget.userShops.where((e) => e.isSvtAnonymousShop(region: widget.region)).toList();
+    final anonymousShops = widget.userShops.where(isAnonymousShop).toList();
     final anonymousBuyCount = Maths.sum(anonymousShops.map((e) => e.num));
     final (hasUnknownLuckyBag, luckyBagCount) = getLuckyBagCount();
 
@@ -127,7 +145,9 @@ class _SniffGachaHistoryState extends State<SniffGachaHistory> {
                 : const SizedBox.shrink(),
           ),
           IconButton(
-            onPressed: gachas.isEmpty ? loadMstData : null,
+            onPressed: () {
+              loadMstData(refresh: true);
+            },
             icon: const Icon(Icons.refresh),
             tooltip: S.current.refresh,
           ),

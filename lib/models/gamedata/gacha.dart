@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/modules/mc/mc_prob_edit.dart';
+import 'package:chaldea/app/modules/shop/shop.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/gamedata/event.dart';
 import 'package:chaldea/utils/extension.dart';
@@ -350,4 +351,80 @@ enum GachaFlag {
   pcMessage, // 2
   bonusSelect, // 8
   displayFeaturedSvt, // 16
+}
+
+@JsonSerializable()
+class MstShop with RouteInfo {
+  List<int> itemIds;
+  List<int> prices;
+  List<int> targetIds;
+  Map<String, dynamic> script;
+  // anotherPayType: Optional[int] = None
+  // anotherItemIds: Optional[list[int]] = None
+  // useAnotherPayCommonReleaseId: Optional[int] = None
+  // freeShopCondId: Optional[int] = None
+  // freeShopCondMessage: Optional[str] = None
+  // hideWarningMessageCondId: Optional[int] = None
+  // freeShopReleaseDate: Optional[int] = None
+  int id;
+  // baseShopId: int  # 80107019
+  int eventId;
+  int slot;
+  int flag;
+  int priority;
+  int purchaseType;
+  int setNum;
+  int payType;
+  int shopType;
+  int limitNum;
+  int defaultLv;
+  int defaultLimitCount;
+  String name;
+  String detail;
+  // infoMessage: str  # ""
+  // warningMessage: str  # ""
+  int imageId;
+  int bgImageId;
+  int openedAt;
+  int closedAt;
+
+  MstShop({
+    this.itemIds = const [],
+    this.prices = const [],
+    this.targetIds = const [],
+    this.script = const {},
+    this.id = 0,
+    this.eventId = 0,
+    this.slot = 0,
+    this.flag = 0,
+    this.priority = 0,
+    this.purchaseType = 0,
+    this.setNum = 0,
+    this.payType = 0,
+    this.shopType = 0,
+    this.limitNum = 0,
+    this.defaultLv = 0,
+    this.defaultLimitCount = 0,
+    this.name = "",
+    this.detail = "",
+    this.imageId = 0,
+    this.bgImageId = 0,
+    this.openedAt = 0,
+    this.closedAt = 0,
+  });
+
+  factory MstShop.fromJson(Map<String, dynamic> json) => _$MstShopFromJson(json);
+
+  Map<String, dynamic> toJson() => _$MstShopToJson(this);
+
+  @override
+  String get route => Routes.shopI(id);
+
+  @override
+  void routeTo({Widget? child, bool popDetails = false, Region? region}) {
+    return super.routeTo(
+      child: child ?? ShopDetailPage(id: id, region: region ?? Region.jp),
+      popDetails: popDetails,
+    );
+  }
 }

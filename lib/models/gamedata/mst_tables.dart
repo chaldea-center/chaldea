@@ -2128,15 +2128,30 @@ class UserShopEntity with DataEntityBase<_IntStr> {
 
   factory UserShopEntity.fromJson(Map<String, dynamic> data) => _$UserShopEntityFromJson(data);
 
-  static Map<Region, List<int>> extraAnonymousShops = {
+  static const Map<Region, List<int>> extraAnonymousShops = {
     Region.tw: [6000897],
     Region.kr: [20, 8000235],
+    Region.na: [-4500470, -4500472, -4500476, -4500481, -4500488],
   };
 
   bool isSvtAnonymousShop({Region? region}) {
-    if (shopId ~/ 1000000 == 4) return true;
-    if (region != null && extraAnonymousShops[region]?.contains(shopId) == true) return true;
-    return false;
+    final _extraIds = extraAnonymousShops[region] ?? const [];
+    if (_extraIds.contains(shopId)) return true;
+    if (_extraIds.contains(-shopId)) return false;
+    const int divider = 100_000;
+    int prefix = shopId ~/ divider, _ = shopId % divider;
+    switch (region) {
+      case null:
+      case Region.jp:
+      case Region.cn:
+      case Region.tw:
+        return prefix == 40;
+      case Region.na:
+        // max 4500493
+        return prefix == 40 || prefix == 45;
+      case Region.kr:
+        return prefix == 40 || (shopId >= 400011 && shopId <= 400134);
+    }
   }
 }
 

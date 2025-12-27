@@ -37,6 +37,7 @@ class FgoAnnualReportData {
 
   // summon
   Map<int, MstGacha> mstGachas = {};
+  Map<int, MstShop> mstShops = {};
   Map<int, UserGachaEntity> userStoneGachas = {};
   List<UserGachaEntity> luckyBagGachas = [];
   bool hasUnknownGacha = false;
@@ -167,12 +168,24 @@ class FgoAnnualReportData {
     final _extraGachas = await AtlasApi.rawGachasExtra(region: region, expireAfter: expireAfter);
     if (_rawGachas == null || _extraGachas == null) {
       report.errors.add(
-        Language.isZH ? '卡池数据下载失败，卡池统计结果不准确' : 'Gacha data download failed, gacha statistics not correct',
+        Language.isZH ? '卡池数据下载失败，卡池统计结果不准确' : 'Gacha data download failed, gacha statistics may be incorrect',
       );
     }
+
     report.mstGachas = {
       for (final gacha in [...?_rawGachas, ...?_extraGachas]) gacha.id: gacha,
     };
+
+    final _shops = await AtlasApi.rawShops(region: region, expireAfter: expireAfter);
+    if (_shops == null) {
+      report.errors.add(
+        Language.isZH
+            ? '商店数据下载失败，无记名灵基统计可能不准确'
+            : 'Shop data download failed, Unregistered Spirit Origin data may be incorrect',
+      );
+    } else {
+      report.mstShops = {for (final shop in _shops) shop.id: shop};
+    }
 
     for (final userGacha in mstData.userGacha) {
       final gacha = report.mstGachas[userGacha.gachaId];
@@ -276,8 +289,15 @@ class FgoAnnualReportData {
     report.mostChallengeFailQuests = challengeFailQuests.take(3).toList();
 
     // misc
-    for (final shop in mstData.userShop) {
-      if (shop.isSvtAnonymousShop(region: region)) report.svtAnonymousShops.add(shop);
+    for (final userShop in mstData.userShop) {
+      final shop = report.mstShops[userShop.shopId];
+      bool isAnonymousShop;
+      if (shop != null) {
+        isAnonymousShop = shop.shopType == ShopType.svtAnonymous.value;
+      } else {
+        isAnonymousShop = userShop.isSvtAnonymousShop(region: region);
+      }
+      if (isAnonymousShop) report.svtAnonymousShops.add(userShop);
     }
 
     return report;
@@ -294,11 +314,11 @@ enum GachaLuckyGrade {
 
   // 0-100
   static GachaLuckyGrade fromRate(double percent) {
-    if (percent > 1.25) return grandLucky;
-    if (percent > 1.15) return lucky;
-    if (percent > 1.05) return middle;
-    if (percent > 1.0) return notLucky;
-    if (percent > 0.85) return unlucky;
+    if (percent >= 1.25) return grandLucky;
+    if (percent >= 1.15) return lucky;
+    if (percent >= 1.05) return middle;
+    if (percent >= 1.0) return notLucky;
+    if (percent >= 0.85) return unlucky;
     return veryUnlucky;
   }
 

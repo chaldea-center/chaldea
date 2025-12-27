@@ -400,6 +400,10 @@ class AtlasApi {
     return [...?gachas, ...?extraGachas];
   }
 
+  static Future<List<MstShop>?> rawShops({required Region region, Duration? expireAfter}) async {
+    return mstData('mstShop', MstShop.fromJson, region: region, expireAfter: expireAfter);
+  }
+
   /// search
   static Future<List<NiceShop>?> searchShop({
     ShopType? type,
