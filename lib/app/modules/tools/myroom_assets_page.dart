@@ -68,19 +68,19 @@ class _MyRoomAssetsPageState extends State<MyRoomAssetsPage>
     final tasks = <Future>[
       AtlasApi.mstData(
         'mstMyroomAdd',
-        (list) => List<Map>.from(list).map((e) => MstMyRoomAdd.fromJson(Map.from(e))).toList(),
+        MstMyRoomAdd.fromJson,
         expireAfter: expireAfter,
         region: r,
       ).then((v) => data.rooms = v ?? data.rooms),
       AtlasApi.mstData(
         'mstStaffPhoto',
-        (list) => List<Map>.from(list).map((e) => MstStaffPhoto.fromJson(Map.from(e))).toList(),
+        MstStaffPhoto.fromJson,
         expireAfter: expireAfter,
         region: r,
       ).then((v) => data.staffPhotos = v ?? data.staffPhotos),
       AtlasApi.mstData(
         'mstStaffPhotoCostume',
-        (list) => List<Map>.from(list).map((e) => MstStaffPhotoCostume.fromJson(Map.from(e))).toList(),
+        MstStaffPhotoCostume.fromJson,
         expireAfter: expireAfter,
         region: r,
       ).then((v) => data.staffPhotoCostumes = v ?? data.staffPhotoCostumes),

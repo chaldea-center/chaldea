@@ -390,7 +390,7 @@ class __ViewEnemyMissionTargetPageState extends State<_ViewEnemyMissionTargetPag
   Future<void> loadData({bool refresh = false}) async {
     final value = await AtlasApi.mstData(
       'viewEnemy',
-      (json) => (json as List).map((e) => MstViewEnemy.fromJson(e)).toList(),
+      MstViewEnemy.fromJson,
       region: widget.region,
       expireAfter: refresh ? Duration.zero : null,
     );

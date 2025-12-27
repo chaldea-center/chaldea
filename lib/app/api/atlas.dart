@@ -378,12 +378,7 @@ class AtlasApi {
   }
 
   static Future<List<MstGacha>?> rawGachas({required Region region, Duration? expireAfter}) async {
-    return mstData(
-      'mstGacha',
-      (data) => (data as List).map((e) => MstGacha.fromJson(Map.from(e))).toList(),
-      region: region,
-      expireAfter: expireAfter,
-    );
+    return mstData('mstGacha', MstGacha.fromJson, region: region, expireAfter: expireAfter);
   }
 
   static Future<List<MstGacha>?> rawGachasExtra({required Region region, Duration? expireAfter}) async {
@@ -478,9 +473,9 @@ class AtlasApi {
     );
   }
 
-  static Future<T?> mstData<T>(
+  static Future<List<T>?> mstData<T>(
     String table,
-    T Function(dynamic json) fromJson, {
+    T Function(Map<String, dynamic> json) fromJson, {
     Region region = Region.jp,
     Duration? expireAfter,
     bool? proxy,
@@ -488,7 +483,7 @@ class AtlasApi {
   }) {
     return cacheManager.getModel(
       '${HostsX.atlasAssetHost}/${region.upper}/repo/master/$table.json',
-      fromJson,
+      (values) => [for (final value in values) fromJson(Map<String, dynamic>.from(value))],
       expireAfter: expireAfter,
     );
   }

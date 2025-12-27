@@ -30,12 +30,9 @@ class _BonusEnemyCondPageState extends State<BonusEnemyCondPage> {
     // final ref = widget.event.extra.script.commitRef;
     final expireAfter = refresh ? Duration.zero : null;
     final futures = [
-      AtlasApi.mstData(
-        'mstQuestHint',
-        (json) => (json as List).map((e) => MstQuestHint.fromJson(e)).toList(),
-        region: widget.region,
-        expireAfter: expireAfter,
-      ).then((value) {
+      AtlasApi.mstData('mstQuestHint', MstQuestHint.fromJson, region: widget.region, expireAfter: expireAfter).then((
+        value,
+      ) {
         if (value != null) {
           mstQuestHints.clear();
           for (final hint in value) {
@@ -46,7 +43,7 @@ class _BonusEnemyCondPageState extends State<BonusEnemyCondPage> {
       }),
       AtlasApi.mstData(
         'viewEnemy',
-        (json) => (json as List).map((e) => MstViewEnemy.fromJson(e)).toList(),
+        MstViewEnemy.fromJson,
         region: widget.region,
         expireAfter: expireAfter,
         // ref: ref,
@@ -61,7 +58,7 @@ class _BonusEnemyCondPageState extends State<BonusEnemyCondPage> {
       }),
       AtlasApi.mstData(
         'mstUserDeckFormationCond',
-        (json) => (json as List).map((e) => UserDeckFormationCond.fromJson(e)).toList(),
+        UserDeckFormationCond.fromJson,
         region: widget.region,
         expireAfter: expireAfter,
         // ref: ref,
@@ -278,10 +275,7 @@ class _UserDeckFormationCondDetailPageState extends State<UserDeckFormationCondD
     final condId = widget.condId ?? 0;
     if (cond == null && condId > 0) {
       final conds = await showEasyLoading(
-        () => AtlasApi.mstData(
-          'mstUserDeckFormationCond',
-          (json) => (json as List).map((e) => UserDeckFormationCond.fromJson(e)).toList(),
-        ),
+        () => AtlasApi.mstData('mstUserDeckFormationCond', UserDeckFormationCond.fromJson),
       );
       cond = conds?.firstWhereOrNull((e) => e.id == condId);
     }

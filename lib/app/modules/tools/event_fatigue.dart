@@ -31,7 +31,7 @@ class _EventFatigueListPageState extends State<EventFatigueListPage>
   Future<List<MstEventSvtFatigue>?> fetchData(Region? r, {Duration? expireAfter}) async {
     return AtlasApi.mstData(
       'mstEventSvtFatigue',
-      (json) => (json as List).map((e) => MstEventSvtFatigue.fromJson(e)).toList(),
+      MstEventSvtFatigue.fromJson,
       region: r ?? Region.jp,
       expireAfter: expireAfter,
     );

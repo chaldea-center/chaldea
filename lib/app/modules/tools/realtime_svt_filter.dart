@@ -25,12 +25,7 @@ class _RealtimeSvtFilterPageState extends State<RealtimeSvtFilterPage>
 
   @override
   Future<List<MstSvtFilter>?> fetchData(Region? r, {Duration? expireAfter}) async {
-    return AtlasApi.mstData(
-      'mstSvtFilter',
-      (json) => (json as List).map((e) => MstSvtFilter.fromJson(e)).toList(),
-      region: r ?? Region.jp,
-      expireAfter: expireAfter,
-    );
+    return AtlasApi.mstData('mstSvtFilter', MstSvtFilter.fromJson, region: r ?? Region.jp, expireAfter: expireAfter);
   }
 
   @override
