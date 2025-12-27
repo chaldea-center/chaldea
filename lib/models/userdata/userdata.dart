@@ -353,10 +353,12 @@ class SvtStatus {
 
   Map<String, dynamic> toJson() => _$SvtStatusToJson(this);
 
+  bool get isReachBondLImit => bond >= cur.bondLimit;
+
   void validate([Servant? svt]) {
     bond = bond.clamp2(0, 15);
     priority = priority.clamp2(1, 5);
-    cur.bondLimit = cur.bondLimit.clamp2(bond, 15);
+    cur.bondLimit = cur.bondLimit.clamp2(max(bond, 10), 15);
     cur.validate(null, svt);
     // equipCmdCodes
     if (cmdCardStrengthen != null) {

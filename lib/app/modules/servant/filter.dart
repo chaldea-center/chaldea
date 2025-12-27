@@ -58,13 +58,14 @@ class ServantFilterPage extends FilterPage<SvtFilterData> {
             (svtPlan.costumes[costume.battleCharaId] ?? 0) > (svtStat.cur.costumes[costume.battleCharaId] ?? 0),
         ].any((e) => e))
           SvtPlanScope.costume,
+        // don't use cur.bondLimit < plan.bondLimit
+        if (!svtStat.isReachBondLImit) SvtPlanScope.bond,
         if ([
           svtPlan.grail > svtStat.cur.grail,
           svtPlan.fouHp > svtStat.cur.fouHp,
           svtPlan.fouAtk > svtStat.cur.fouAtk,
           svtPlan.fouHp3 > svtStat.cur.fouHp3,
           svtPlan.fouAtk3 > svtStat.cur.fouAtk3,
-          svtPlan.bondLimit > svtStat.cur.bondLimit,
         ].any((e) => e))
           SvtPlanScope.misc,
       ];
@@ -410,6 +411,7 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData, ServantFilt
                   SvtPlanScope.active => S.current.active_skill_short,
                   SvtPlanScope.append => S.current.append_skill_short,
                   SvtPlanScope.costume => S.current.costume,
+                  SvtPlanScope.bond => S.current.bond,
                   SvtPlanScope.misc => S.current.general_others,
                 });
               },

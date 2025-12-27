@@ -301,17 +301,21 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
           ),
           title: S.current.game_kizuna,
           start: status.bond,
+          end: curVal.bondLimit,
           minVal: 0,
           maxVal: 15,
-          onValueChanged: (_start, _) {
+          onValueChanged: (_start, _end) {
             status.favorite = true;
             status.bond = _start;
-            curVal.bondLimit = curVal.bondLimit.clamp(_start, 15);
-            targetVal.bondLimit = targetVal.bondLimit.clamp(curVal.bondLimit, 15);
+            curVal.bondLimit = targetVal.bondLimit = _end;
             updateState();
           },
-          detailPageBuilder: (context) =>
-              SimpleConfirmDialog(title: Text('${S.current.bond} (${S.current.current_})'), showCancel: false),
+          detailPageBuilder: (context) => SimpleConfirmDialog(
+            title: Text(S.current.bond),
+            content: Text('${S.current.current_} ${S.current.bond} /  ${S.current.bond_limit}'),
+            showCancel: false,
+          ),
+          separator: '/',
         ),
       SwitchListTile.adaptive(
         dense: true,
@@ -500,6 +504,7 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
     required void Function(int start, int end) onValueChanged,
     bool useSlider = false,
     WidgetBuilder? detailPageBuilder,
+    String? separator,
   }) {
     assert(minVal <= start && start <= maxVal);
     start = start.clamp(minVal, maxVal);
@@ -510,7 +515,7 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
     labelFormatter ??= (v) => v.toString();
     trailingLabelFormatter ??= (a, b) {
       String s = labelFormatter!(a).padLeft(2);
-      if (b != null) s += '→${labelFormatter(b).padRight(2)}';
+      if (b != null) s += '${separator ?? "→"}${labelFormatter(b).padRight(2)}';
       return s;
     };
     if (title != null) {
@@ -613,6 +618,7 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
           onChanged: (_start, _end) {
             onValueChanged(enhanceMode ? start : _start, _end);
           },
+          separator: separator == null ? null : Text('   $separator   '),
         );
       }
       return CustomTile(

@@ -358,7 +358,7 @@ class MasterDataManager extends MasterDataManagerBase {
         fouAtk: max(0, (userSvt.adjustAtk - 100) ~/ 2),
         fouHp3: min(100, userSvt.adjustHp ~/ 5),
         fouAtk3: min(100, userSvt.adjustAtk ~/ 5),
-        bondLimit: collection == null ? 10 : min(collection.friendshipRank + 1, collection.maxFriendshipRank),
+        bondLimit: collection?.maxFriendshipRank ?? 10,
         npLv: userSvt.treasureDeviceLv1,
       ),
       priority: status0.priority,

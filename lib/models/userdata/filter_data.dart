@@ -968,6 +968,7 @@ enum SvtPlanScope {
   active,
   append,
   costume,
+  bond,
   misc, //fou, grail, bond
 }
 
@@ -986,17 +987,17 @@ enum SvtStatusState {
   ;
 
   String get shownName => switch (this) {
-    SvtStatusState.asc3 => '<4',
-    SvtStatusState.asc4 => '=4',
-    SvtStatusState.active8 => '<9/9/9',
-    SvtStatusState.active9 => '9/9/9',
-    SvtStatusState.active10 => '10/10/10',
-    SvtStatusState.appendTwo8 => 'A2|<9',
-    SvtStatusState.appendTwo9 => 'A2|≥9',
-    // SvtStatusState.appendTwo10 => 'A2|10',
-    SvtStatusState.append8 => 'A|<9',
-    SvtStatusState.append9 => 'A|≥9',
-    // SvtStatusState.append10 => 'A|≥10',
+    asc3 => '<4',
+    asc4 => '=4',
+    active8 => '<9/9/9',
+    active9 => '9/9/9',
+    active10 => '10/10/10',
+    appendTwo8 => 'A2|<9',
+    appendTwo9 => 'A2|≥9',
+    // appendTwo10 => 'A2|10',
+    append8 => 'A|<9',
+    append9 => 'A|≥9',
+    // append10 => 'A|≥10',
   };
 }
 

@@ -300,6 +300,7 @@ class RangeSelector<T extends num> extends StatefulWidget {
   final bool startEnabled;
   final bool endEnabled;
   final void Function(T, T)? onChanged;
+  final Widget? separator;
 
   final bool increasing;
 
@@ -314,6 +315,7 @@ class RangeSelector<T extends num> extends StatefulWidget {
     this.endEnabled = true,
     this.increasing = true,
     this.onChanged,
+    this.separator,
   });
 
   @override
@@ -349,7 +351,7 @@ class _RangeSelectorState<T extends num> extends State<RangeSelector<T>> {
                 }
               : null,
         ),
-        const Text('   →   '),
+        widget.separator ?? const Text('   →   '),
         DropdownButton<T>(
           value: widget.end,
           items: widget.endItems
