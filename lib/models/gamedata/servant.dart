@@ -179,7 +179,9 @@ class Servant extends BasicServant {
   List<int> bondGrowth;
   List<int> expFeed;
   Map<int, List<Gift>> bondGifts;
+  @protected
   int bondEquip;
+  List<int> bondEquips;
   List<int> valentineEquip;
   List<ValentineScript> valentineScript;
   int? bondEquipOwner;
@@ -286,6 +288,7 @@ class Servant extends BasicServant {
     this.expFeed = const [],
     this.bondGifts = const {},
     this.bondEquip = 0,
+    List<int>? bondEquips,
     this.valentineEquip = const [],
     this.valentineScript = const [],
     this.bondEquipOwner,
@@ -319,6 +322,7 @@ class Servant extends BasicServant {
        cards = [for (final card in cards) const CardTypeConverter().fromJson(card)],
        cardDetails = cardDetails.map((k, v) => MapEntry(const CardTypeConverter().fromJson(k), v)),
        ascensionAdd = ascensionAdd ?? AscensionAdd(),
+       bondEquips = bondEquips ?? (bondEquip == 0 ? [] : [bondEquip]),
        limits = {for (final limit in limits ?? <SvtLimitEntity>[]) limit.limitCount: limit},
        profile = profile ?? NiceLore() {
     preprocess();
@@ -357,6 +361,7 @@ class Servant extends BasicServant {
       bondGrowth: bondGrowth,
       expFeed: expFeed,
       bondEquip: bondEquip,
+      bondEquips: bondEquips.toList(),
       valentineEquip: valentineEquip,
       valentineScript: valentineScript,
       bondEquipOwner: bondEquipOwner,
@@ -858,7 +863,13 @@ class CraftEssence extends BasicCraftEssence {
   // int hpMax;
   int growthCurve;
   List<int> expFeed;
-  int? bondEquipOwner;
+  int? _bondEquipOwner;
+  int? get bondEquipOwner {
+    if (_bondEquipOwner != null && _bondEquipOwner != 0) return _bondEquipOwner;
+    if (const [9309050, 9311670].contains(id)) return kMashSvtId;
+    return null;
+  }
+
   int? valentineEquipOwner;
   List<ValentineScript> valentineScript;
   AscensionAdd ascensionAdd;
@@ -899,7 +910,7 @@ class CraftEssence extends BasicCraftEssence {
     super.hpMax = 0,
     this.growthCurve = 0,
     this.expFeed = const [],
-    this.bondEquipOwner,
+    int? bondEquipOwner,
     this.valentineEquipOwner,
     this.valentineScript = const [],
     AscensionAdd? ascensionAdd,
@@ -908,6 +919,7 @@ class CraftEssence extends BasicCraftEssence {
     NiceLore? profile,
     super.face = "",
   }) : extraAssets = extraAssets ?? ExtraAssets(),
+       _bondEquipOwner = bondEquipOwner,
        ascensionAdd = ascensionAdd ?? AscensionAdd(),
        profile = profile ?? NiceLore();
 
@@ -941,7 +953,11 @@ class CraftEssence extends BasicCraftEssence {
       return CEObtain.valentine;
     } else if (flags.contains(SvtFlag.svtEquipManaExchange)) {
       if (rarity == 4 && skills.expand((e) => e.functions).any((func) => func.funcType == FuncType.eventDropRateUp)) {
-        return CEObtain.drop;
+        return CEObtain.eventReward;
+      }
+      // Grand Board quest reward ce
+      if (const {9408540, 9408600, 9408650, 9408700, 9408710, 9408840, 9408920, 9408970, 9408980}.contains(id)) {
+        return CEObtain.eventReward;
       }
       return CEObtain.manaShop;
     } else if (flags.contains(SvtFlag.svtEquipEventReward)) {

@@ -9,6 +9,7 @@ import 'package:intl/intl.dart';
 import 'package:screenshot/screenshot.dart';
 
 import 'package:chaldea/app/app.dart';
+import 'package:chaldea/app/modules/quest/quest_list.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/gamedata/mst_data.dart';
 import 'package:chaldea/models/models.dart';
@@ -168,13 +169,13 @@ class _FgoAnnualReportPageState extends State<FgoAnnualReportPage> {
               elevation: 0,
               centerTitle: true,
               actions: [
-                if (data == null || data.errors.isNotEmpty)
-                  IconButton(
-                    onPressed: () {
-                      loadData(refresh: true);
-                    },
-                    icon: Icon(Icons.refresh),
-                  ),
+                // if (data == null || data.errors.isNotEmpty)
+                IconButton(
+                  onPressed: () {
+                    loadData(refresh: true);
+                  },
+                  icon: Icon(Icons.refresh),
+                ),
                 IconButton(onPressed: hasData ? doScreenshot : null, icon: Icon(Icons.share)),
               ],
             ),
@@ -190,7 +191,9 @@ class _FgoAnnualReportPageState extends State<FgoAnnualReportPage> {
       if (mounted) setState(() {});
       await null;
       EasyLoading.show(status: 'Rendering...');
-      final pngBytes = await _screenshotController.capture();
+      final pngBytes = await _screenshotController.capture(
+        pixelRatio: mounted ? MediaQuery.maybeDevicePixelRatioOf(context) : null,
+      );
       if (pngBytes != null) {
         EasyLoading.dismiss();
         if (mounted) {
@@ -746,9 +749,7 @@ class _FgoAnnualReportRealPageState extends State<FgoAnnualReportRealPage> {
     }
     final bond10Count = report.bond10SvtCollections.length;
     final thisYearCount = report.bondEquipHistoryByYear[report.curYear]?.length ?? 0;
-    final totalReleasedCount = report.ownedSvtCollections.values
-        .where((e) => e.svtId != kMashSvtId || report.regionReleasedBondEquipIds.contains(9309050))
-        .length;
+    final totalReleasedCount = report.ownedSvtReleasedBondEquipIds.length;
     return ReportCard(
       header: Text(S.current.bond_craft, style: TextStyle(fontWeight: FontWeight.bold)),
       onTap: () {
@@ -1166,7 +1167,7 @@ ${S.current.chaldea_report_5star_stat_dis_ent}"""),
   }
 
   Widget _gachaTopPulls(bool useThisYear) {
-    const int kMaxShownQuestCount = 3;
+    const int kMaxShownGachaCount = 3;
     String titlePrefix = useThisYear
         ? S.current.chaldea_report_pull_stat_cur_year(report.curYear)
         : S.current.chaldea_report_pull_stat_all;
@@ -1175,7 +1176,7 @@ ${S.current.chaldea_report_5star_stat_dis_ent}"""),
       header: Padding(
         padding: const .symmetric(horizontal: 16),
         child: Text(
-          S.current.chaldea_report_pull_stat_top_title(titlePrefix, kMaxShownQuestCount),
+          S.current.chaldea_report_pull_stat_top_title(titlePrefix, kMaxShownGachaCount),
           style: TextStyle(fontWeight: .bold),
         ),
       ),
@@ -1214,7 +1215,7 @@ ${S.current.chaldea_report_5star_stat_dis_ent}"""),
           ),
         ),
       ],
-      child: Column(mainAxisSize: .min, children: [...userGachas.take(kMaxShownQuestCount).map(_gachaTile)]),
+      child: Column(mainAxisSize: .min, children: [...userGachas.take(kMaxShownGachaCount).map(_gachaTile)]),
     );
   }
 
@@ -1330,7 +1331,17 @@ ${S.current.chaldea_report_5star_stat_dis_ent}"""),
               ],
             ),
           ),
-          onTap: stat.quest.routeTo,
+          onTap: () {
+            router.pushPage(
+              QuestListPage(
+                quests: stats.map((e) => e.quest).toList(),
+                needSort: false,
+                mstData: mstData,
+                groupByWar: false,
+                title: tag,
+              ),
+            );
+          },
         ),
       );
     }
@@ -1520,6 +1531,7 @@ ${S.current.chaldea_report_5star_stat_dis_ent}"""),
               textAlign: .end,
             ),
             onTap: () {
+              if (report.svtAnonymousShops.isEmpty) return;
               router.pushPage(UserShopAnonymousListPage(shops: report.svtAnonymousShops));
             },
           ),

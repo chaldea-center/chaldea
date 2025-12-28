@@ -34,6 +34,13 @@ class FgoAnnualReportData {
   Map<int, UserServantCollectionEntity> bond10SvtCollections = {};
   Map<int, UserServantCollectionEntity> bond15SvtCollections = {};
   Map<int, List<UserServantEntity>> bondEquipHistoryByYear = {};
+  List<int> get ownedSvtReleasedBondEquipIds {
+    List<int> _mineReleasedBondEquipIds = [
+      for (final equipId in regionReleasedBondEquipIds)
+        if (ownedSvtCollections.containsKey(db.gameData.craftEssencesById[equipId]?.bondEquipOwner)) equipId,
+    ];
+    return _mineReleasedBondEquipIds;
+  }
 
   // summon
   Map<int, MstGacha> mstGachas = {};
@@ -50,6 +57,7 @@ class FgoAnnualReportData {
   List<UserGachaEntity> mostPullGachasThisYear = [];
 
   // quests
+  static const int kMaxQuestCount = 100;
   List<UserQuestStat> mostClearFreeQuests = [];
   List<UserQuestStat> mostClearEventFreeQuests = [];
   List<UserQuestStat> mostClearRaidQuests = [];
@@ -251,15 +259,7 @@ class FgoAnnualReportData {
         quests.add((userQuest: userQuest, quest: quest, count: count));
       }
 
-      int successNum, failedNum;
-      if (quest.warId == WarId.daily) {
-        // assume all success. clearNum is not accurate because once reset
-        successNum = userQuest.challengeNum;
-        failedNum = 0;
-      } else {
-        successNum = userQuest.clearNum > 0 ? userQuest.clearNum + userQuest.questPhase - 1 : userQuest.questPhase;
-        failedNum = userQuest.challengeNum - successNum;
-      }
+      final (:successNum, :failNum) = userQuest.getSuccessFailedNum(quest);
 
       if (quest.isRepeatRaid) {
         _add(raidQuests, successNum);
@@ -273,8 +273,8 @@ class FgoAnnualReportData {
         }
       }
 
-      if (failedNum > 0) {
-        _add(challengeFailQuests, failedNum);
+      if (failNum > 0) {
+        _add(challengeFailQuests, failNum);
       }
     }
 
@@ -283,10 +283,10 @@ class FgoAnnualReportData {
     raidQuests.sortByList((e) => [-e.count, -e.userQuest.updatedAt, -e.quest.id]);
     challengeFailQuests.sortByList((e) => [-e.count, -e.userQuest.updatedAt, -e.quest.id]);
 
-    report.mostClearFreeQuests = freeQuests.take(3).toList();
-    report.mostClearEventFreeQuests = eventFreeQuests.take(3).toList();
-    report.mostClearRaidQuests = raidQuests.take(3).toList();
-    report.mostChallengeFailQuests = challengeFailQuests.take(3).toList();
+    report.mostClearFreeQuests = freeQuests.take(kMaxQuestCount).toList();
+    report.mostClearEventFreeQuests = eventFreeQuests.take(kMaxQuestCount).toList();
+    report.mostClearRaidQuests = raidQuests.take(kMaxQuestCount).toList();
+    report.mostChallengeFailQuests = challengeFailQuests.take(kMaxQuestCount).toList();
 
     // misc
     for (final userShop in mstData.userShop) {

@@ -89,9 +89,13 @@ class BattleSimUserData {
         }
       }
     }
-    final bondCE = db.gameData.craftEssencesById[svt?.bondEquip];
-    if (bondCE != null && bondCE.collectionNo > 0) {
-      pinged.add(bondCE.collectionNo);
+    if (svt != null) {
+      for (final ceId in svt.bondEquips) {
+        final bondCE = db.gameData.craftEssencesById[ceId];
+        if (bondCE != null && bondCE.collectionNo > 0) {
+          pinged.add(bondCE.collectionNo);
+        }
+      }
     }
     return pinged;
   }

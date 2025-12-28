@@ -384,7 +384,8 @@ class TdDmgSolver {
     data.grandSvt = options.grandSvt;
     if (data.grandSvt && !options.grandBoard.isNone) {
       if (options.equip2Type != BondEquipType.none) {
-        final equip2 = db.gameData.craftEssencesById[svt.bondEquip];
+        // TODO: Mash has two bond equips
+        final equip2 = db.gameData.craftEssencesById[svt.bondEquips.firstOrNull];
         if (equip2 != null) {
           data.equip2 = SvtEquipData(ce: equip2, limitBreak: true, lv: equip2.lvMax);
         }

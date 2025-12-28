@@ -1702,7 +1702,7 @@ class _CraftEssenceOptionEditPageState extends State<CraftEssenceOptionEditPage>
         pinged: switch (widget.equipTarget) {
           SvtEquipTarget.normal =>
             db.curUser.battleSim.pingedCEsWithEventAndBond(widget.questPhase, playerSvtData.svt).toList(),
-          SvtEquipTarget.bond => [playerSvtData.svt?.bondEquip ?? -1],
+          SvtEquipTarget.bond => playerSvtData.svt?.bondEquips ?? [],
           SvtEquipTarget.reward => [
             for (final ce in db.gameData.craftEssences.values)
               if (ce.canBeGrandSvtRewardEquip && ce.rarity == 5) ce.id,

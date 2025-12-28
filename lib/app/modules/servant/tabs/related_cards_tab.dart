@@ -16,20 +16,28 @@ class SvtRelatedCardTab extends StatelessWidget {
     List<String> tabs = [];
     List<Widget> pages = [];
 
-    final bondCE = db.gameData.craftEssencesById[svt.bondEquip];
-    if (bondCE != null) {
+    final bondCEs = [for (final equipId in svt.bondEquips) ?db.gameData.craftEssencesById[equipId]];
+    if (bondCEs.isNotEmpty) {
+      print([svt.id, svt.lName.l, svt.bondEquips, bondCEs]);
       tabs.add(S.current.bond_craft);
-      pages.add(
-        SingleChildScrollView(
-          child: SafeArea(child: CraftDetailBasePage(ce: bondCE, enableLink: true)),
-        ),
-      );
+      if (bondCEs.length == 1) {
+        pages.add(
+          SingleChildScrollView(
+            child: SafeArea(child: CraftDetailBasePage(ce: bondCEs.single, enableLink: true)),
+          ),
+        );
+      } else {
+        pages.add(
+          ListView.separated(
+            itemCount: bondCEs.length,
+            itemBuilder: (context, index) => SafeArea(child: CraftDetailBasePage(ce: bondCEs[index], enableLink: true)),
+            separatorBuilder: (_, _) => const SizedBox(height: 16),
+          ),
+        );
+      }
     }
 
-    final valentineCEs = svt.valentineEquip
-        .map((e) => db.gameData.craftEssencesById[e])
-        .whereType<CraftEssence>()
-        .toList();
+    final valentineCEs = [for (final equipId in svt.valentineEquip) ?db.gameData.craftEssencesById[equipId]];
     if (valentineCEs.isNotEmpty) {
       tabs.add(S.current.valentine_craft);
       pages.add(

@@ -396,7 +396,7 @@ class ServantDetailPageState extends State<ServantDetailPage> with SingleTickerP
         );
       case SvtTab.relatedCards:
         if (!svt.isServantType) return null;
-        if (svt.bondEquip == 0 &&
+        if (svt.bondEquips.isEmpty &&
             svt.valentineEquip.isEmpty &&
             db.gameData.craftEssences.values.every((e) => !e.extra.characters.contains(svt.originalCollectionNo)) &&
             db.gameData.commandCodes.values.every((e) => !e.extra.characters.contains(svt.originalCollectionNo))) {

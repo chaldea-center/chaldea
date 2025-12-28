@@ -135,6 +135,7 @@ Servant _$ServantFromJson(Map json) => Servant(
       ) ??
       const {},
   bondEquip: (json['bondEquip'] as num?)?.toInt() ?? 0,
+  bondEquips: (json['bondEquips'] as List<dynamic>?)?.map((e) => (e as num).toInt()).toList(),
   valentineEquip: (json['valentineEquip'] as List<dynamic>?)?.map((e) => (e as num).toInt()).toList() ?? const [],
   valentineScript:
       (json['valentineScript'] as List<dynamic>?)
@@ -269,6 +270,7 @@ Map<String, dynamic> _$ServantToJson(Servant instance) => <String, dynamic>{
   'expFeed': instance.expFeed,
   'bondGifts': instance.bondGifts.map((k, e) => MapEntry(k.toString(), e.map((e) => e.toJson()).toList())),
   'bondEquip': instance.bondEquip,
+  'bondEquips': instance.bondEquips,
   'valentineEquip': instance.valentineEquip,
   'valentineScript': instance.valentineScript.map((e) => e.toJson()).toList(),
   'bondEquipOwner': instance.bondEquipOwner,
