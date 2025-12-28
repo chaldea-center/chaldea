@@ -124,7 +124,7 @@ class _UserShopsPageState extends State<UserShopsPage> with SingleTickerProvider
     return ListTile(
       key: Key('userShop-${shop.id}'),
       dense: true,
-      leading: leading,
+      leading: leading == null ? null : ConstrainedBox(constraints: BoxConstraints(maxWidth: 36), child: leading),
       title: Text(shop.lName),
       subtitle: Text.rich(
         TextSpan(

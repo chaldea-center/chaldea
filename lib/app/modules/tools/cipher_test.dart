@@ -260,15 +260,20 @@ class _CipherTestPageState extends State<CipherTestPage> {
         SimpleDialogOption(
           child: Text('Form'),
           onPressed: () {
-            List<MapEntry<String, String>> formData;
-            if (data is Map) {
-              formData = data.entries.map((e) => MapEntry(e.key.toString(), e.value.toString())).toList();
-            } else if (data is String) {
-              formData = Uri.splitQueryString(data).entries.toList();
-            } else {
-              formData = [MapEntry('unknown', data.toString())];
+            try {
+              List<MapEntry<String, String>> formData;
+              if (data is Map) {
+                formData = data.entries.map((e) => MapEntry(e.key.toString(), e.value.toString())).toList();
+              } else if (data is String) {
+                formData = Uri.splitQueryString(data).entries.toList();
+              } else {
+                formData = [MapEntry('unknown', data.toString())];
+              }
+              router.pushPage(FormDataViewer(data: formData));
+            } catch (e, s) {
+              EasyLoading.showError(e.toString());
+              logger.e('decode form failed', e, s);
             }
-            router.pushPage(FormDataViewer(data: formData));
           },
         ),
       ],

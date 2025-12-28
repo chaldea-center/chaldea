@@ -89,7 +89,10 @@ class ServantFilterPage extends FilterPage<SvtFilterData> {
         return false;
       }
     }
-    if (!filterData.svtDuplicated.matchOne(svt.isDupSvt)) {
+    if (!filterData.miscStatus.matchAny([
+      svt.isDupSvt ? SvtStatusMiscType.secondarySvt : SvtStatusMiscType.primarySvt,
+      if (svtStat.grandSvt) SvtStatusMiscType.grandSvt,
+    ])) {
       return false;
     }
     final comparedBond = filterData.bondValue.radioValue;
@@ -461,12 +464,11 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData, ServantFilt
                 update();
               },
             ),
-            FilterGroup<bool>(
-              title: Text(S.current.duplicated_servant),
-              options: const [false, true],
-              values: filterData.svtDuplicated,
-              optionBuilder: (v) =>
-                  Text(v ? S.current.duplicated_servant_duplicated : S.current.duplicated_servant_primary),
+            FilterGroup<SvtStatusMiscType>(
+              title: Text(S.current.general_others),
+              options: SvtStatusMiscType.values,
+              values: filterData.miscStatus,
+              optionBuilder: (v) => Text(v.shownName),
               onFilterChanged: (v, _) {
                 setState(() {
                   update();

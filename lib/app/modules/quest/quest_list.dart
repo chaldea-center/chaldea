@@ -4,6 +4,7 @@ import 'package:chaldea/app/modules/quest/quest.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/gamedata/mst_data.dart' show MasterDataManager;
 import 'package:chaldea/models/models.dart';
+import 'package:chaldea/packages/app_info.dart';
 import 'package:chaldea/packages/language.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
@@ -15,7 +16,6 @@ class QuestListPage extends StatefulWidget {
   final List<int> ids;
   final String? title;
   final bool needSort;
-  final bool groupWar; // not implemented yet
   final NiceWar? war;
   final bool? groupByWar;
   final MasterDataManager? mstData;
@@ -25,7 +25,6 @@ class QuestListPage extends StatefulWidget {
     this.quests = const [],
     this.title,
     this.needSort = true,
-    this.groupWar = false,
     this.war,
     this.groupByWar,
     this.mstData,
@@ -36,7 +35,6 @@ class QuestListPage extends StatefulWidget {
     this.ids = const [],
     this.title,
     this.needSort = true,
-    this.groupWar = false,
     this.war,
     this.groupByWar,
     this.mstData,
@@ -105,9 +103,12 @@ class _QuestListPageState extends State<QuestListPage> {
           ? db.gameData.servantsById.values.firstWhereOrNull((svt) => svt.relateQuestIds.contains(quest.id))
           : null;
 
-      final leading = spot == null || spot.shownImage == null
-          ? (hasSpot ? const SizedBox(width: 56) : null)
-          : db.getIconImage(spot.shownImage, width: 56);
+      String? spotImage = spot?.shownImage;
+      if (hasSpot) {
+        spotImage ??=
+            'https://static.atlasacademy.io/file/aa-fgo-extract-jp/Battle/Common/CommonUIAtlas/img_arrow_under.png';
+      }
+      final leading = spotImage == null ? null : db.getIconImage(spotImage, width: 56);
       List<String> userQuestInfo = [];
       final userQuest = mstData?.userQuest[questId];
       if (mstData != null) {
@@ -117,7 +118,9 @@ class _QuestListPageState extends State<QuestListPage> {
         } else if (hasSvt) {
           userQuestInfo.add('❤');
         }
-        userQuestInfo.add('$questId  ${quest?.openedAt.sec2date().toCustomString(second: false)}');
+        if (AppInfo.isDebugOn) {
+          userQuestInfo.add('$questId  ${quest?.openedAt.sec2date().toCustomString(second: false)}');
+        }
       }
 
       if (quest == null) {

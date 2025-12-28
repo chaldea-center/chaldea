@@ -289,8 +289,8 @@ class SplitRoute<T> extends PageRoute<T> with MaterialRouteTransitionMixin<T> {
     }
     context ??= kAppKey.currentContext;
     if (context == null) return false;
-    final size = MediaQuery.of(context).size;
-    return size.width > size.height && size.width >= 720 && size.height > 320;
+    final size = MediaQuery.maybeSizeOf(context);
+    return size != null && size.width > size.height && size.width >= 720 && size.height > 320;
   }
 
   SplitLayout getLayout(BuildContext context) {

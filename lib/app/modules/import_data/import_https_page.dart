@@ -896,10 +896,14 @@ class ImportHttpPageState extends State<ImportHttpPage> {
         }
         _alreadyAdded.add(svt.svtId);
 
-        status.cur.npLv = svt.treasureDeviceLv1;
+        status
+          ..favorite = true
+          ..bond = collection.friendshipRank
+          ..grandSvt = mstData?.userSvtGrand.any((e) => e.userSvtId == svt.id) == true;
         status.favorite = true;
         status.bond = collection.friendshipRank;
         status.cur
+          ..npLv = svt.treasureDeviceLv1
           ..ascension = svt.limitCount
           ..skills = [svt.skillLv1, svt.skillLv2, svt.skillLv3]
           ..grail = svt.exceedCount

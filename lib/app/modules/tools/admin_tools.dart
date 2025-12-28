@@ -1,9 +1,12 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 
 import 'package:chaldea/app/api/chaldea.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/models/gamedata/common.dart';
+import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 
@@ -15,7 +18,7 @@ class AdminToolsPage extends StatefulWidget {
 }
 
 class _AdminToolsPageState extends State<AdminToolsPage> {
-  List<Response> responses = [];
+  List<_ResponseData> responses = [];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -127,6 +130,62 @@ class _AdminToolsPageState extends State<AdminToolsPage> {
                   icon: Icon(Icons.send),
                 ),
               ),
+              Center(
+                child: Wrap(
+                  alignment: .center,
+                  spacing: 8,
+                  children: [
+                    FilledButton(
+                      onPressed: () {
+                        callRequest(
+                          'GET',
+                          'https://api.atlasacademy.io/openapi.json',
+                          getText: (response) {
+                            Map info = _addTimeStr(Map.from(response.data["info"]!));
+                            info.remove('description');
+                            return JsonEncoder.withIndent('  ').convert(info);
+                          },
+                        );
+                      },
+                      child: Text('openapi'),
+                    ),
+                    FilledButton(
+                      onPressed: () {
+                        callRequest(
+                          'GET',
+                          'https://api.atlasacademy.io/info',
+                          getText: (response) {
+                            Map info = Map.from(response.data!).deepCopy();
+                            info = {for (final (k, v) in info.items) k: _addTimeStr(v)};
+                            return JsonEncoder.withIndent('  ').convert(info);
+                          },
+                        );
+                      },
+                      child: Text('info'),
+                    ),
+                    FilledButton(
+                      onPressed: () {
+                        _RegionSelectDialog(
+                          onSelected: (regions) async {
+                            for (final region in regions) {
+                              await callRequest(
+                                'GET',
+                                'https://api.atlasacademy.io/raw/${region.upper}/info',
+                                getText: (response) {
+                                  final info = _addTimeStr(Map.from(response.data!).deepCopy());
+                                  return JsonEncoder.withIndent('  ').convert(info);
+                                },
+                              );
+                              await Future.delayed(Duration(seconds: 1));
+                            }
+                          },
+                        ).showDialog(context);
+                      },
+                      child: Text('export.info'),
+                    ),
+                  ],
+                ),
+              ),
             ],
           ),
           for (final resp in responses.reversed)
@@ -139,10 +198,16 @@ class _AdminToolsPageState extends State<AdminToolsPage> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
-                      '${resp.statusCode} ${resp.requestOptions.method} ${resp.realUri}',
+                      [
+                        '${resp.response.statusCode} ${resp.response.requestOptions.method} ${resp.response.realUri}',
+                        resp.createdAt.toStringShort(),
+                        if (resp.response.requestOptions.data != null)
+                          'request data=${resp.response.requestOptions.data}',
+                      ].join('\n'),
                       style: Theme.of(context).textTheme.bodySmall,
                     ),
-                    Text(resp.data.toString()),
+                    const Divider(height: 4),
+                    Text(resp.getFinalText()),
                   ],
                 ),
               ),
@@ -158,6 +223,7 @@ class _AdminToolsPageState extends State<AdminToolsPage> {
     String? msg,
     Map<String, String>? headers,
     Object? data,
+    String Function(Response response)? getText,
   }) async {
     final confirm = await SimpleConfirmDialog(
       title: Text(S.current.confirm),
@@ -171,9 +237,20 @@ class _AdminToolsPageState extends State<AdminToolsPage> {
       options.headers = {...?options.headers, ...?headers};
       return await ChaldeaWorkerApi.createDio().request(url, options: options, data: data);
     });
-    responses.add(resp);
+    responses.add(_ResponseData(response: resp, getText: getText));
     if (mounted) setState(() {});
     return resp;
+  }
+
+  Map _addTimeStr(Map data, {List<String> extraKeys = const []}) {
+    Map result = {};
+    for (final (k, v) in data.items) {
+      result[k] = v;
+      if ((k.toString().toLowerCase().contains('timestamp') || extraKeys.contains(k)) && v is int) {
+        result['${k}_str'] = v.sec2date().toStringShort();
+      }
+    }
+    return result;
   }
 }
 
@@ -217,5 +294,24 @@ class __RegionSelectDialogState extends State<_RegionSelectDialog> {
         widget.onSelected(regions);
       },
     );
+  }
+}
+
+class _ResponseData {
+  DateTime createdAt = DateTime.now();
+  Response response;
+  String Function(Response response)? getText;
+
+  _ResponseData({required this.response, this.getText});
+
+  String getFinalText() {
+    if (getText != null) {
+      try {
+        return getText!(response);
+      } catch (e, s) {
+        logger.e('get response text failed', e, s);
+      }
+    }
+    return response.data.toString().substring2(0, 2000);
   }
 }

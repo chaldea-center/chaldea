@@ -511,7 +511,6 @@ class _SvtBondDetailPageState extends State<SvtBondDetailPage> with SingleTicker
                 svtFilter
                   ..planCompletion.reset()
                   ..curStatus.reset()
-                  ..svtDuplicated.reset()
                   ..favorite = FavoriteState.all;
                 update();
               },

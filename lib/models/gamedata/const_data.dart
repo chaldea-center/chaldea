@@ -65,6 +65,8 @@ class ConstGameData {
     ...range(4000807, 4000813), // tree No2
   };
 
+  final List<int> warIdsHasEpilogue = [108];
+
   ConstGameData({
     this.cnReplace = const {},
     this.attributeRelation = const {},
@@ -465,13 +467,14 @@ class GameConstants {
   final int braveChainIndividuality; // 4108
   final int busterChainIndividuality; // 4106
   final int campaignResetAt; // 4
-  final int canSelectSvtMaterialFlag; // 12
+  final int canSelectSvtMaterialFlag; // 26
   final int chainbonusArtsRate; // 200
   final int chainbonusBusterRate; // 200
   final int chainbonusQuick; // 20
   final int chainErrorIndividuality; // 4109
   final int chapter1PrologueWarId; // 100
   final int chapter2EpilogueWarId; // 309
+  final int chapter2LastWarId; // 407
   final int chapter2PrologueWarId; // 300
   final int chapterFEndId; // 1000011
   final int chapterFStartId; // 1000001
@@ -483,7 +486,7 @@ class GameConstants {
   final int coinRoomMaxNum; // 2
   final int coinRoomReleaseQuestId; // 3001101
   final int combineLimitSpecialPrivilegeId; // 100
-  final int comebackTargetDay; // 1743238800
+  final int comebackTargetDay; // 1753261200
   final int commandArts; // 4001
   final int commandBuster; // 4002
   final int commandCardPrmUpMax; // 500
@@ -706,6 +709,7 @@ class GameConstants {
   final int tutorialLabel1stAnniversarySvtKeepAdjust; // 125
   final int tutorialLabelBattleResultWinLose; // 123
   final int tutorialLabelCaldeaGate; // 129
+  final int tutorialLabelChapter2LastWar; // 208
   final int tutorialLabelChapter2Prologue; // 204
   final int tutorialLabelCombine; // 104
   final int tutorialLabelDailyQuest; // 130
@@ -797,13 +801,14 @@ class GameConstants {
     this.braveChainIndividuality = 4108,
     this.busterChainIndividuality = 4106,
     this.campaignResetAt = 4,
-    this.canSelectSvtMaterialFlag = 12,
+    this.canSelectSvtMaterialFlag = 26,
     this.chainbonusArtsRate = 200,
     this.chainbonusBusterRate = 200,
     this.chainbonusQuick = 20,
     this.chainErrorIndividuality = 4109,
     this.chapter1PrologueWarId = 100,
     this.chapter2EpilogueWarId = 309,
+    this.chapter2LastWarId = 407,
     this.chapter2PrologueWarId = 300,
     this.chapterFEndId = 1000011,
     this.chapterFStartId = 1000001,
@@ -815,7 +820,7 @@ class GameConstants {
     this.coinRoomMaxNum = 2,
     this.coinRoomReleaseQuestId = 3001101,
     this.combineLimitSpecialPrivilegeId = 100,
-    this.comebackTargetDay = 1743238800,
+    this.comebackTargetDay = 1753261200,
     this.commandArts = 4001,
     this.commandBuster = 4002,
     this.commandCardPrmUpMax = 500,
@@ -1038,6 +1043,7 @@ class GameConstants {
     this.tutorialLabel1stAnniversarySvtKeepAdjust = 125,
     this.tutorialLabelBattleResultWinLose = 123,
     this.tutorialLabelCaldeaGate = 129,
+    this.tutorialLabelChapter2LastWar = 208,
     this.tutorialLabelChapter2Prologue = 204,
     this.tutorialLabelCombine = 104,
     this.tutorialLabelDailyQuest = 130,
@@ -1502,6 +1508,7 @@ const kBuffActionPercentTypes = {
   BuffAction.giveGainHp: 10,
   BuffAction.grantInstantdeath: 10,
   BuffAction.grantState: 10,
+  BuffAction.grantSubstate: 10,
   BuffAction.grantStateUpOnly: 10,
   BuffAction.hate: 10,
   BuffAction.nonresistInstantdeath: 10,
@@ -1513,7 +1520,6 @@ const kBuffActionPercentTypes = {
   BuffAction.specialdefence: 10,
   BuffAction.starweight: 10,
   BuffAction.toleranceSubstate: 10,
-  BuffAction.turnendNp: 100,
   BuffAction.masterSkillValueUp: 10,
   BuffAction.maxhpRate: 10,
   BuffAction.resistanceDelayNpturn: 10,
@@ -1521,6 +1527,10 @@ const kBuffActionPercentTypes = {
   BuffAction.overwriteBuffUseRate: 10,
   BuffAction.reactiveDamageGainHp: 10,
   BuffAction.baseHpRate: 10,
+  // 100
+  BuffAction.turnendNp: 100,
+  BuffAction.limitMaxNp: 100,
+  BuffAction.limitMinNp: 100,
 };
 
 const kBuffTypePercentType = <BuffType, int>{

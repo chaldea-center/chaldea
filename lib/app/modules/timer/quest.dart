@@ -14,11 +14,12 @@ class TimerQuestItem with TimerItem {
     final quests = _quests.toList();
     if (quests.isEmpty) {
       final now = DateTime.now().timestamp;
-      quests.addAll(
-        db.gameData.wars[9999]!.quests.where(
-          (e) => e.openedAt > now - 180 * kSecsPerDay && e.closedAt < now + 60 * kSecsPerDay,
-        ),
-      );
+      final chaldeaGate = db.gameData.wars[WarId.chaldeaGate];
+      if (chaldeaGate != null) {
+        quests.addAll(
+          chaldeaGate.quests.where((e) => e.openedAt > now - 180 * kSecsPerDay && e.closedAt < now + 60 * kSecsPerDay),
+        );
+      }
     }
     quests.sortByList((e) => [e.closedAt, e.openedAt, e.id]);
     for (final quest in quests) {

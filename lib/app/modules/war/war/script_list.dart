@@ -77,6 +77,23 @@ class _ScriptListPageState extends State<ScriptListPage> {
         ),
       ]);
     }
+    if (ConstData.warIdsHasEpilogue.contains(war.id)) {
+      final epilogueScriptName = 'WarEpilogue${war.id}';
+      mainPart.add(
+        ListTile(
+          dense: true,
+          title: Text(epilogueScriptName, textScaler: const TextScaler.linear(1.1)),
+          contentPadding: EdgeInsets.zero,
+          onTap: () => onTap(
+            ScriptLink(
+              scriptId: epilogueScriptName,
+              script: 'https://static.atlasacademy.io/JP/Script/01/$epilogueScriptName.txt',
+            ),
+          ),
+        ),
+      );
+    }
+
     List<Tab> tabs = [];
     List<Widget> views = [];
     if (mainPart.isNotEmpty) {

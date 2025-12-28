@@ -5,17 +5,17 @@ import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../runtime.dart';
 
-class RaidsPage extends StatefulWidget {
+class EventRaidsPage extends StatefulWidget {
   final int eventId;
   final FakerRuntime runtime;
   final int? day;
-  const RaidsPage({super.key, required this.runtime, required this.eventId, this.day});
+  const EventRaidsPage({super.key, required this.runtime, required this.eventId, this.day});
 
   @override
-  State<RaidsPage> createState() => _RaidsPageState();
+  State<EventRaidsPage> createState() => _EventRaidsPageState();
 }
 
-class _RaidsPageState extends State<RaidsPage> with SingleTickerProviderStateMixin {
+class _EventRaidsPageState extends State<EventRaidsPage> with SingleTickerProviderStateMixin {
   late final runtime = widget.runtime;
 
   @override
@@ -87,13 +87,22 @@ class _RaidsPageState extends State<RaidsPage> with SingleTickerProviderStateMix
           ),
         if (mstRaid != null) ...[
           if (extraInfos.isNotEmpty)
-            ListTile(
-              dense: true,
-              title: Text(extraInfos.map((e) => e.$1).join('\n')),
-              trailing: Text(
-                extraInfos.map((e) => e.$2).join('\n'),
-                textAlign: .end,
-                style: TextStyle(color: Theme.of(context).textTheme.bodySmall?.color),
+            Padding(
+              padding: .symmetric(horizontal: 16, vertical: 4),
+              child: Column(
+                mainAxisSize: .min,
+                children: [
+                  for (final (key, v) in extraInfos)
+                    Row(
+                      children: [
+                        ConstrainedBox(
+                          constraints: BoxConstraints(minWidth: 100),
+                          child: Text(key, style: Theme.of(context).textTheme.bodySmall),
+                        ),
+                        Flexible(child: Text(v)),
+                      ],
+                    ),
+                ],
               ),
             ),
         ],

@@ -364,6 +364,7 @@ const _$WarOverwriteTypeEnumMap = {
   WarOverwriteType.commandSpellIcon: 'commandSpellIcon',
   WarOverwriteType.masterFaceIcon: 'masterFaceIcon',
   WarOverwriteType.priority: 'priority',
+  WarOverwriteType.recommendSupportHeaderImgId: 'recommendSupportHeaderImgId',
 };
 
 WarGroup _$WarGroupFromJson(Map json) => WarGroup(

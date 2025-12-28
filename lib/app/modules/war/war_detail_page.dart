@@ -71,17 +71,8 @@ class _WarDetailPageState extends State<WarDetailPage> with RegionBasedState<Nic
   @override
   Widget buildContent(BuildContext context, NiceWar war) {
     final banners = war.extra.allBanners;
-    final warAdds = war.warAdds.toList()..sort2((e) => -e.startedAt);
     final eventAdds = war.event?.eventAdds ?? [];
-    List<String> warBanners = {
-      for (final warAdd in warAdds) warAdd.overwriteBanner,
-      for (final eventAdd in eventAdds) eventAdd.overwriteBanner,
-    }.whereType<String>().toList();
-    warBanners = {
-      war.shownBanner,
-      if (war.parentWarId != ConstData.constants.grandBoardWarId) war.banner,
-      ...warBanners.take(war.id == WarId.chaldeaGate ? 4 : 6).toList().reversed,
-    }.whereType<String>().toList();
+    List<String> warBanners = war.getShownBanners();
 
     List<Widget> children = [
       if (banners.isNotEmpty) CarouselUtil.limitHeightWidget(context: context, imageUrls: banners),

@@ -214,7 +214,7 @@ class SvtFilterData with FilterDataMixin {
   final rarity = FilterGroupData<int>();
   final attribute = FilterGroupData<ServantSubAttribute>();
 
-  final svtDuplicated = FilterRadioData<bool>();
+  final miscStatus = FilterRadioData<SvtStatusMiscType>();
   final planCompletion = FilterGroupData<SvtPlanScope>();
   final curStatus = FilterGroupData<SvtStatusState>();
   final priority = FilterGroupData<int>(
@@ -268,7 +268,7 @@ class SvtFilterData with FilterDataMixin {
     attribute,
     curStatus,
     planCompletion,
-    svtDuplicated,
+    miscStatus,
     // bondCompare,
     bondValue,
     // priority,
@@ -998,6 +998,18 @@ enum SvtStatusState {
     append8 => 'A|<9',
     append9 => 'A|≥9',
     // append10 => 'A|≥10',
+  };
+}
+
+enum SvtStatusMiscType {
+  primarySvt,
+  secondarySvt,
+  grandSvt;
+
+  String get shownName => switch (this) {
+    primarySvt => S.current.duplicated_servant_primary,
+    secondarySvt => S.current.duplicated_servant_duplicated,
+    grandSvt => S.current.grand_servant,
   };
 }
 

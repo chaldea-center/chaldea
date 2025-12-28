@@ -486,7 +486,7 @@ class AtlasApi {
     // String? ref,
   }) {
     return cacheManager.getModel(
-      '${HostsX.atlasAssetHost}/${region.upper}/repo/master/$table.json',
+      '$atlasApiHost/repo/${region.upper}/master/$table.json',
       (values) => [for (final value in values) fromJson(Map<String, dynamic>.from(value))],
       expireAfter: expireAfter,
     );

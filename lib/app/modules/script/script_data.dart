@@ -790,8 +790,13 @@ class ScriptCommand extends ScriptComponent {
       case 'fsmObjSet':
       case 'tapSkip':
       case 'autoAndBackLog':
+      case 'messageChange':
+      case 'messageAlign':
         return [];
       default:
+        for (final prefix in const ['charaMove', 'subRender']) {
+          if (command.startsWith(prefix)) return [];
+        }
         break;
     }
     return [state.textSpan(text: '[$src]')];

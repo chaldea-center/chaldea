@@ -9,8 +9,9 @@ import 'command_code.dart';
 import 'common.dart';
 import 'gift.dart';
 import 'item.dart';
-import 'quest.dart' show GiftType, Gift, EnemyScript;
+import 'quest.dart';
 import 'servant.dart';
+import 'war.dart' show WarId;
 
 part '../../generated/models/gamedata/mst_tables.g.dart';
 
@@ -2206,7 +2207,33 @@ class UserQuestEntity with DataEntityBase<_IntStr> {
 
   factory UserQuestEntity.fromJson(Map<String, dynamic> data) => _$UserQuestEntityFromJson(data);
 
-  String getText() => 'phase $questPhase clear $clearNum challenge $challengeNum';
+  String getText({bool addFailed = false}) => 'phase $questPhase clear $clearNum challenge $challengeNum';
+
+  ({int successNum, int failNum}) getSuccessFailedNum(Quest? quest) {
+    if (quest != null && quest.id != questId) quest = null;
+
+    int successNum, failNum;
+    bool ignoreFailed = false;
+
+    if (quest != null) {
+      ignoreFailed =
+          quest.warId == WarId.daily ||
+          quest.flags.contains(QuestFlag.harvest) ||
+          (quest.flags.contains(QuestFlag.hideProgress) && clearNum > 0 && questPhase == 0) ||
+          // 罗生门
+          (quest.warId == 8123 || (quest.isRepeatRaid && userId ~/ 100 == 94003727)) ||
+          (quest.phases.length == 1 && quest.flags.contains(QuestFlag.noBattle) && quest.consume == 0);
+    }
+
+    if (ignoreFailed) {
+      successNum = challengeNum;
+      failNum = 0;
+    } else {
+      successNum = clearNum > 0 ? clearNum + questPhase - 1 : questPhase;
+      failNum = challengeNum - successNum;
+    }
+    return (successNum: successNum, failNum: failNum);
+  }
 }
 
 @JsonSerializable(createToJson: false)
@@ -3350,7 +3377,7 @@ enum SvtCollectionStatus {
   linkLost(8),
   linkBad(9),
   linkClose(10),
-  collectionStatus6(11);
+  collectionStatus6(11); // taskOver
 
   const SvtCollectionStatus(this.value);
   final int value;

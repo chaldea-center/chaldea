@@ -128,6 +128,28 @@ class NiceWar with RouteInfo {
     return banner;
   }
 
+  List<String> getShownBanners() {
+    final warAdds = this.warAdds.toList()..sort2((e) => -e.startedAt);
+
+    final eventAdds = event?.eventAdds ?? [];
+    List<String> warBanners = {
+      for (final warAdd in warAdds) ?warAdd.overwriteBanner,
+      for (final eventAdd in eventAdds) ?eventAdd.overwriteBanner,
+    }.toList();
+    warBanners = {
+      ?shownBanner,
+      if (parentWarId != ConstData.constants.grandBoardWarId) ?banner,
+      ...warBanners.take(id == WarId.chaldeaGate ? 4 : 6).toList().reversed,
+    }.toList();
+    warBanners = warBanners.map((url) {
+      if (url.endsWith('questboard_cap409.png')) {
+        url = url.replaceFirst('questboard_cap409.png', 'questboard_cap_closed_409.png');
+      }
+      return url;
+    }).toList();
+    return warBanners;
+  }
+
   int get eventId {
     if (_eventId == 0) return ConstData.extraWarEventMapping[id] ?? _eventId;
     return _eventId;
@@ -643,6 +665,7 @@ enum WarOverwriteType {
   commandSpellIcon,
   masterFaceIcon,
   priority,
+  recommendSupportHeaderImgId,
 }
 
 enum WarStartType { none, script, quest }

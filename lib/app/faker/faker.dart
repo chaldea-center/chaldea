@@ -695,7 +695,8 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
     if (battleEntity != null) {
       eventId = battleEntity.eventId;
       day = battleEntity.battleInfo?.raidInfo.firstOrNull?.day;
-    } else {
+    }
+    if (day == null) {
       final quest = db.gameData.quests[battleOption.questId];
       if (quest != null && quest.flags.contains(QuestFlag.raid)) {
         eventId = quest.logicEventId;
@@ -734,7 +735,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
         onPressed: eventId == 0
             ? null
             : () {
-                router.pushPage(RaidsPage(runtime: runtime, eventId: eventId ?? 0, day: day));
+                router.pushPage(EventRaidsPage(runtime: runtime, eventId: eventId ?? 0, day: day));
               },
         icon: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
       ),
