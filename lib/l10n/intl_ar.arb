@@ -195,7 +195,7 @@
   "dark_mode_light": "الوضع المضيئ",
   "dark_mode_system": "حسب النظام",
   "database": "قاعدة البيانات",
-  "database_not_downloaded": "قاعدة البيانات غير محملة ،ترغب بالاستمرار ؟",
+  "database_not_downloaded_warning": null,
   "dataset_version": "إصدار حزمة البيانات",
   "date": "تاريخ",
   "death_chance": null,

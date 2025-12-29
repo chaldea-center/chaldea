@@ -357,7 +357,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "dark_mode_light": MessageLookupByLibrary.simpleMessage("浅色"),
     "dark_mode_system": MessageLookupByLibrary.simpleMessage("系统"),
     "database": MessageLookupByLibrary.simpleMessage("数据库"),
-    "database_not_downloaded": MessageLookupByLibrary.simpleMessage("数据库未下载，仍然继续?"),
+    "database_not_downloaded_warning": MessageLookupByLibrary.simpleMessage("数据库未下载，请重试。"),
     "dataset_version": MessageLookupByLibrary.simpleMessage("数据版本"),
     "date": MessageLookupByLibrary.simpleMessage("日期"),
     "death_chance": MessageLookupByLibrary.simpleMessage("即死成功率"),

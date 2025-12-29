@@ -208,7 +208,7 @@
   "dark_mode_light": "Светлая",
   "dark_mode_system": "Система",
   "database": "База данных",
-  "database_not_downloaded": "База данных не загружена, продолжить?",
+  "database_not_downloaded_warning": null,
   "dataset_version": "Версия Базы данных",
   "date": "Дата",
   "death_chance": "Шанс Смерти",

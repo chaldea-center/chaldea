@@ -51,6 +51,7 @@ class _TimerHomePageState extends State<TimerHomePage>
 
   @override
   Future<GameTimerData?> fetchData(Region? r, {Duration? expireAfter}) async {
+    if (!db.gameData.isValid) return null;
     final data = await AtlasApi.timerData(r ?? Region.jp, expireAfter: expireAfter);
     final events = data?.events.values.toList() ?? [];
     for (final event in events) {

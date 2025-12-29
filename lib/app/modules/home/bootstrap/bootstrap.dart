@@ -14,6 +14,7 @@ import 'package:chaldea/app/modules/home/subpage/network_settings.dart';
 import 'package:chaldea/app/tools/gamedata_loader.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
+import 'package:chaldea/packages/app_info.dart';
 import 'package:chaldea/packages/file_plus/file_plus_web.dart';
 import 'package:chaldea/packages/language.dart';
 import 'package:chaldea/packages/logger.dart';
@@ -333,24 +334,12 @@ class _BootstrapPageState extends State<BootstrapPage> with SingleTickerProvider
         TextButton(
           child: Text(S.current.done),
           onPressed: () {
-            if (db.gameData.version.timestamp > 0) {
+            if (db.gameData.isValid) {
               db.settings.tips.starter = false;
               rootRouter.appState.dataReady = true;
               db.saveSettings();
             } else {
-              showDialog(
-                context: context,
-                useRootNavigator: false,
-                builder: (context) => SimpleConfirmDialog(
-                  content: Text(S.current.database_not_downloaded),
-                  onTapOk: () {
-                    db.settings.tips.starter = false;
-                    db.saveSettings();
-                    rootRouter.appState.activeRouter.clearHistory();
-                    rootRouter.appState.dataReady = true;
-                  },
-                ),
-              );
+              EasyLoading.showError(S.current.database_not_downloaded_warning);
             }
           },
         ),
@@ -438,12 +427,19 @@ class _DatabaseIntroState extends State<_DatabaseIntro> {
         ),
         ListTile(
           dense: true,
-          title: Text(S.current.current_version),
+          title: Text('App ${S.current.version}'),
+          trailing: Text(
+            '${AppInfo.versionString}-${AppInfo.commitHash}',
+            textAlign: TextAlign.end,
+            textScaler: const TextScaler.linear(0.9),
+          ),
+        ),
+        ListTile(
+          dense: true,
+          title: Text(S.current.dataset_version),
           trailing: Text(
             db.gameData.version.timestamp > 0
-                ? DateTime.fromMillisecondsSinceEpoch(
-                    db.gameData.version.timestamp * 1000,
-                  ).toStringShort().replaceFirst(' ', '\n')
+                ? db.gameData.version.timestamp.sec2date().toStringShort().replaceFirst(' ', '\n')
                 : S.current.not_found,
             textAlign: TextAlign.end,
             textScaler: const TextScaler.linear(0.9),
@@ -522,7 +518,7 @@ class _DatabaseIntroState extends State<_DatabaseIntro> {
               if (progress == 1.0)
                 Icon(
                   _loader.error != null ? Icons.clear_rounded : Icons.done,
-                  size: 80,
+                  size: 60,
                   color: _loader.error != null
                       ? Theme.of(context).colorScheme.error
                       : Theme.of(context).colorScheme.primary,
@@ -531,8 +527,8 @@ class _DatabaseIntroState extends State<_DatabaseIntro> {
                 Text('${(progress * 100).toInt()}%', style: const TextStyle(fontSize: 24)),
               Center(
                 child: SizedBox(
-                  width: 120,
-                  height: 120,
+                  width: 100,
+                  height: 100,
                   child: CircularProgressIndicator(
                     value: progress ?? 0,
                     color: _loader.error != null ? Theme.of(context).colorScheme.error : null,

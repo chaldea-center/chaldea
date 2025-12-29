@@ -247,7 +247,7 @@
   "dark_mode_light": "ライト",
   "dark_mode_system": "システム",
   "database": "データベース",
-  "database_not_downloaded": "データベースはダウンロードしませんが、続きますか？",
+  "database_not_downloaded_warning": "データベースはダウンロードしません。もう一度お試しください。",
   "dataset_version": "データセットのバージョン",
   "date": "日付",
   "death_chance": "即死成功率",

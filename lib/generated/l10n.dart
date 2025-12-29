@@ -1656,11 +1656,11 @@ class S {
     return Intl.message('Database', name: 'database', desc: '', locale: localeName, args: []);
   }
 
-  /// `Database is not downloaded, still continue?`
-  String get database_not_downloaded {
+  /// `Database is not downloaded, please try again.`
+  String get database_not_downloaded_warning {
     return Intl.message(
-      'Database is not downloaded, still continue?',
-      name: 'database_not_downloaded',
+      'Database is not downloaded, please try again.',
+      name: 'database_not_downloaded_warning',
       desc: '',
       locale: localeName,
       args: [],

@@ -247,7 +247,7 @@
   "dark_mode_light": "라이트",
   "dark_mode_system": "시스템",
   "database": "데이터베이스",
-  "database_not_downloaded": "데이터베이스를 다운로드하지 않지만 계속됩니까?",
+  "database_not_downloaded_warning": null,
   "dataset_version": "데이터 세트 버전",
   "date": "일",
   "death_chance": "즉사 성공 확률",

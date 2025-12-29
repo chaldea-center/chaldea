@@ -269,7 +269,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "dark_mode_light": MessageLookupByLibrary.simpleMessage("라이트"),
     "dark_mode_system": MessageLookupByLibrary.simpleMessage("시스템"),
     "database": MessageLookupByLibrary.simpleMessage("데이터베이스"),
-    "database_not_downloaded": MessageLookupByLibrary.simpleMessage("데이터베이스를 다운로드하지 않지만 계속됩니까?"),
     "dataset_version": MessageLookupByLibrary.simpleMessage("데이터 세트 버전"),
     "date": MessageLookupByLibrary.simpleMessage("일"),
     "death_chance": MessageLookupByLibrary.simpleMessage("즉사 성공 확률"),

@@ -233,7 +233,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "dark_mode_light": MessageLookupByLibrary.simpleMessage("ライト"),
     "dark_mode_system": MessageLookupByLibrary.simpleMessage("システム"),
     "database": MessageLookupByLibrary.simpleMessage("データベース"),
-    "database_not_downloaded": MessageLookupByLibrary.simpleMessage("データベースはダウンロードしませんが、続きますか？"),
+    "database_not_downloaded_warning": MessageLookupByLibrary.simpleMessage("データベースはダウンロードしません。もう一度お試しください。"),
     "dataset_version": MessageLookupByLibrary.simpleMessage("データセットのバージョン"),
     "date": MessageLookupByLibrary.simpleMessage("日付"),
     "death_chance": MessageLookupByLibrary.simpleMessage("即死成功率"),

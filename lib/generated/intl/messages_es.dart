@@ -165,9 +165,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "dark_mode_light": MessageLookupByLibrary.simpleMessage("Claro"),
     "dark_mode_system": MessageLookupByLibrary.simpleMessage("Sistema"),
     "database": MessageLookupByLibrary.simpleMessage("Base de datos"),
-    "database_not_downloaded": MessageLookupByLibrary.simpleMessage(
-      "La Base de Datos no ha sido descargada, ¿Seguro de que desea continuar?",
-    ),
     "dataset_version": MessageLookupByLibrary.simpleMessage("Versión de los datos"),
     "date": MessageLookupByLibrary.simpleMessage("Fecha"),
     "debug": MessageLookupByLibrary.simpleMessage("Depurar"),

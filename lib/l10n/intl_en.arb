@@ -247,7 +247,7 @@
   "dark_mode_light": "Light",
   "dark_mode_system": "System",
   "database": "Database",
-  "database_not_downloaded": "Database is not downloaded, still continue?",
+  "database_not_downloaded_warning": "Database is not downloaded, please try again.",
   "dataset_version": "Dataset version",
   "date": "Date",
   "death_chance": "Death Chance",

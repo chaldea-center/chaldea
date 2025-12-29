@@ -165,7 +165,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "dark_mode_light": MessageLookupByLibrary.simpleMessage("الوضع المضيئ"),
     "dark_mode_system": MessageLookupByLibrary.simpleMessage("حسب النظام"),
     "database": MessageLookupByLibrary.simpleMessage("قاعدة البيانات"),
-    "database_not_downloaded": MessageLookupByLibrary.simpleMessage("قاعدة البيانات غير محملة ،ترغب بالاستمرار ؟"),
     "dataset_version": MessageLookupByLibrary.simpleMessage("إصدار حزمة البيانات"),
     "date": MessageLookupByLibrary.simpleMessage("تاريخ"),
     "debug": MessageLookupByLibrary.simpleMessage("تصحيح"),

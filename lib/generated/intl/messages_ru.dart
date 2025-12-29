@@ -329,7 +329,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "dark_mode_light": MessageLookupByLibrary.simpleMessage("Светлая"),
     "dark_mode_system": MessageLookupByLibrary.simpleMessage("Система"),
     "database": MessageLookupByLibrary.simpleMessage("База данных"),
-    "database_not_downloaded": MessageLookupByLibrary.simpleMessage("База данных не загружена, продолжить?"),
     "dataset_version": MessageLookupByLibrary.simpleMessage("Версия Базы данных"),
     "date": MessageLookupByLibrary.simpleMessage("Дата"),
     "death_chance": MessageLookupByLibrary.simpleMessage("Шанс Смерти"),

@@ -247,7 +247,7 @@
   "dark_mode_light": "浅色",
   "dark_mode_system": "系统",
   "database": "数据库",
-  "database_not_downloaded": "数据库未下载，仍然继续?",
+  "database_not_downloaded_warning": "数据库未下载，请重试。",
   "dataset_version": "数据版本",
   "date": "日期",
   "death_chance": "即死成功率",
