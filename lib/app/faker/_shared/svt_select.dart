@@ -128,6 +128,8 @@ class _SelectUserSvtPageState extends State<SelectUserSvtPage> {
           case _CombineType.bondLessThan10:
             final collection = mstData.userSvtCollection[userSvt.svtId];
             return collection != null && collection.friendshipRank < 10;
+          case _CombineType.ccUnlock:
+            return mstData.userSvtCommandCard[userSvt.svtId]?.commandCardParam.any((e) => e == -1) ?? true;
         }
       }).toList();
       if (!userSvtFilterData.availableCombines.matchAny(combineTypes)) return false;
@@ -305,4 +307,4 @@ class _UserSvtFilterData with FilterDataMixin {
   }
 }
 
-enum _CombineType { level, fou3, ascension, grail, skill, append2, appendAny, bondLimit, bondLessThan10 }
+enum _CombineType { level, fou3, ascension, grail, skill, append2, appendAny, bondLimit, bondLessThan10, ccUnlock }

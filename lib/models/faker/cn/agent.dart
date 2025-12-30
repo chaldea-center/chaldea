@@ -702,7 +702,7 @@ class FakerAgentCN extends FakerAgent<FRequestCN, AutoLoginDataCN, NetworkManage
 
   @override
   Future<FResponse> commandCodeUnlock({required int32_t servantId, required int32_t idx}) {
-    throw UnimplementedError();
+    return _acPhp(key: 'commandcodeunlock', nid: 'command_code_unlock', params4: {"svtId": servantId, "idx": idx});
   }
 
   @override

@@ -1189,7 +1189,7 @@ class UserCommandCodeEntity with DataEntityBase<int> {
 @JsonSerializable(createToJson: false)
 class UserServantCommandCodeEntity with DataEntityBase<_IntStr> {
   int userId;
-  List<int> userCommandCodeIds;
+  List<int> userCommandCodeIds; // -1=locked, 1=unlocked, >0=id
   int svtId;
   // createdAt
 
@@ -2219,7 +2219,7 @@ class UserQuestEntity with DataEntityBase<_IntStr> {
       ignoreFailed =
           quest.warId == WarId.daily ||
           quest.flags.contains(QuestFlag.harvest) ||
-          (quest.flags.contains(QuestFlag.hideProgress) && clearNum > 0 && questPhase == 0) ||
+          (clearNum > 0 && questPhase == 0) ||
           // 罗生门
           (quest.warId == 8123 || (quest.isRepeatRaid && userId ~/ 100 == 94003727)) ||
           (quest.phases.length == 1 && quest.flags.contains(QuestFlag.noBattle) && quest.consume == 0);
