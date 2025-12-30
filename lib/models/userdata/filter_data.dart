@@ -226,9 +226,7 @@ class SvtFilterData with FilterDataMixin {
   final bondCompare = FilterGroupData<CompareOperator>(options: {CompareOperator.lessThan});
   final bondValue = FilterRadioData<int>();
   final region = FilterRadioData<Region>();
-  late final obtain = FilterGroupData<SvtObtain>(
-    options: SvtObtain.values.where((e) => e != SvtObtain.unavailable).toSet(),
-  );
+  final obtain = FilterGroupData<SvtObtain>();
   final tdCardType = FilterGroupData<int>();
   final tdType = FilterGroupData<TdEffectFlag>();
   final policy = FilterGroupData<ServantPolicy>(); //秩序 混沌 中庸

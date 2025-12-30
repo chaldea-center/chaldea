@@ -296,3 +296,14 @@ class _AppRouter extends InheritedWidget {
     return oldWidget.router != router;
   }
 }
+
+class RouterValues<T> {
+  final Map<int, T> _values = {};
+  final T Function() init;
+  RouterValues(this.init);
+
+  T of(BuildContext context) {
+    int key = AppRouter.of(context)?.hashCode ?? -1;
+    return _values[key] ??= init();
+  }
+}

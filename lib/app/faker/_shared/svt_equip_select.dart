@@ -2,6 +2,7 @@ import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/modules/common/filter_group.dart';
 import 'package:chaldea/app/modules/common/filter_page_base.dart';
 import 'package:chaldea/app/modules/craft_essence/filter.dart';
+import 'package:chaldea/app/routes/delegate.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/gamedata/mst_data.dart';
 import 'package:chaldea/models/models.dart';
@@ -43,8 +44,13 @@ class _SelectUserSvtEquipPageState extends State<SelectUserSvtEquipPage> {
   late final runtime = widget.runtime;
   late final mstData = runtime.mstData;
 
-  static CraftFilterData filterData = CraftFilterData(sortKeys: CraftCompare.kRarityFirstKeys);
-  static _UserSvtFilterData userSvtFilterData = _UserSvtFilterData();
+  static final _svtFilters = RouterValues<CraftFilterData>(
+    () => CraftFilterData(sortKeys: CraftCompare.kRarityFirstKeys),
+  );
+  static final _userSvtFilters = RouterValues(() => _UserSvtFilterData());
+
+  late final filterData = _svtFilters.of(context);
+  late final userSvtFilterData = _userSvtFilters.of(context);
 
   Map<int, ({Event event, Set<int> ceIds})> eventCeIds = {};
 
