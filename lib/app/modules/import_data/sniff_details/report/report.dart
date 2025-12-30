@@ -129,18 +129,19 @@ class _FgoAnnualReportPageState extends State<FgoAnnualReportPage> {
             errors.add(Text('${S.current.chaldea_report_window_size_warn}\nw=200~700,h≥400\n(w=$w,h=$h)'));
           }
           final dataVersion2 = db.runtimeData.upgradableDataVersion;
-          if (dataVersion2 != null && dataVersion2.timestamp > db.gameData.version.timestamp + 7 * kSecsPerDay) {
+          if (dataVersion2 != null && dataVersion2.timestamp > db.gameData.version.timestamp + 10 * kSecsPerDay) {
             errors.add(Text('${S.current.settings_tab_name} -> ${S.current.gamedata} -> ${S.current.update_dataset}'));
           }
           if (data != null) {
-            if (!db.settings.spoilerRegion.isJP && db.settings.spoilerRegion != data.region) {
+            if ((!db.settings.spoilerRegion.isJP && db.settings.spoilerRegion != data.region) ||
+                db.gameData.spoilerRegion?.isJP == false) {
               errors.add(
                 Text(
                   "${S.current.restart_to_apply_changes}: ${S.current.reset} ${S.current.gamedata} -> ${S.current.delete_unreleased_card}",
                 ),
               );
             }
-            if (db.settings.removeOldDataRegion != null) {
+            if (db.settings.removeOldDataRegion != null || db.gameData.removeOldDataRegion != null) {
               errors.add(
                 Text(
                   '${S.current.restart_to_apply_changes}: ${S.current.reset} ${S.current.gamedata}-> Delete Old Data',

@@ -92,6 +92,19 @@ class FgoAnnualReportData {
     Duration? expireAfter,
   }) async {
     final report = FgoAnnualReportData(mstData: mstData, region: region, userGame: mstData.user!);
+    final dataRequiredAppVer = db.runtimeData.dataRequiredAppVer;
+    if (dataRequiredAppVer != null) {
+      report.errors.add(S.current.error_required_app_version(dataRequiredAppVer.versionString, ''));
+    }
+    final upgradableDataVersion = db.runtimeData.upgradableDataVersion;
+    if (upgradableDataVersion != null &&
+        upgradableDataVersion.timestamp > db.gameData.version.timestamp &&
+        upgradableDataVersion.timestamp > DateTime.now().timestamp - 7 * kSecsPerDay) {
+      report.errors.add(
+        '${S.current.gamedata} ${S.current.outdated}: ${S.current.settings_general}->${S.current.gamedata}->${S.current.update}',
+      );
+    }
+
     report.totalLogin = mstData.userLogin.first.totalLoginCount;
     if (year == null) {
       final now = DateTime.now();
