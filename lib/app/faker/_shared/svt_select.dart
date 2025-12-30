@@ -37,7 +37,7 @@ class SelectUserSvtPage extends StatefulWidget {
       ' NP${userSvt.treasureDeviceLv1} B${collection?.friendshipRank ?? ""}/${collection?.maxFriendshipRank ?? ""} ',
       ' Lv${userSvt.lv}/${userSvt.maxLv}  ${userSvt.limitCount}',
       ' ${userSvt.skillLv1}/${userSvt.skillLv2}/${userSvt.skillLv3} ',
-      ' ${mstData.getSvtAppendSkillLv(userSvt).map((e) => e == 0 ? "-" : e).join("/")} ',
+      ' ${mstData.getSvtAppendSkillLvs(userSvt).map((e) => e == 0 ? "-" : e).join("/")} ',
     ].join('\n');
   }
 
@@ -114,11 +114,11 @@ class _SelectUserSvtPageState extends State<SelectUserSvtPage> {
           case _CombineType.skill:
             return userSvt.skillLvs.any((e) => e < 9);
           case _CombineType.append2:
-            final appendLv = mstData.getSvtAppendSkillLv(userSvt)[1];
+            final appendLv = mstData.getSvtAppendSkillLvs(userSvt)[1];
             return appendLv == 0 && coinNum >= 120 || (appendLv > 0 && appendLv < 9);
           case _CombineType.appendAny:
             return mstData
-                .getSvtAppendSkillLv(userSvt)
+                .getSvtAppendSkillLvs(userSvt)
                 .any((appendLv) => appendLv == 0 && coinNum >= 120 || (appendLv > 0 && appendLv < 9));
           case _CombineType.bondLimit:
             final collection = mstData.userSvtCollection[userSvt.svtId];

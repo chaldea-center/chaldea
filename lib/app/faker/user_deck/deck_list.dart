@@ -423,7 +423,7 @@ extension BattleTeamFormationX on BattleTeamFormation {
         limitCount: userSvt.dispLimitCount,
         skillLvs: [userSvt.skillLv1, userSvt.skillLv2, userSvt.skillLv3],
         skillIds: [null, null, null],
-        appendLvs: mstData.getSvtAppendSkillLv(userSvt),
+        appendLvs: mstData.getSvtAppendSkillLvs(userSvt),
         tdId: 0,
         tdLv: userSvt.treasureDeviceLv1,
         lv: userSvt.lv,

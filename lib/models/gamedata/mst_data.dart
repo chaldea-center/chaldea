@@ -212,7 +212,7 @@ class MasterDataManager extends MasterDataManagerBase {
     return _userQuest.questPhase >= questPhase;
   }
 
-  List<int> getSvtAppendSkillLv(UserServantEntity userSvt) {
+  List<int> getSvtAppendSkillLvs(UserServantEntity userSvt) {
     final Map<int, int> lvs = Map.fromIterable(
       userSvtAppendPassiveSkill[userSvt.svtId]?.unlockNums ?? <int>[],
       value: (_) => 1,
@@ -222,6 +222,19 @@ class MasterDataManager extends MasterDataManagerBase {
       lvs.addAll(Map.fromIterables(appendLv.appendPassiveSkillNums, appendLv.appendPassiveSkillLvs));
     }
     return List.generate(kAppendSkillNums.length, (index) => lvs[100 + index] ?? 0);
+  }
+
+  int getSvtAppendSkillLv(UserServantEntity userSvt, int skillNum) {
+    final appendLv = userSvtAppendPassiveSkillLv[userSvt.id];
+    if (appendLv != null) {
+      for (final (index, skillNum2) in appendLv.appendPassiveSkillNums.indexed) {
+        if (skillNum2 == skillNum) return appendLv.appendPassiveSkillLvs[index];
+      }
+    }
+    if (userSvtAppendPassiveSkill[userSvt.svtId]?.unlockNums.contains(skillNum) == true) {
+      return 1;
+    }
+    return 0;
   }
 
   int getItemOrSvtNum(
@@ -361,7 +374,7 @@ class MasterDataManager extends MasterDataManagerBase {
         favorite: true,
         ascension: userSvt.limitCount,
         skills: userSvt.skillLvs,
-        appendSkills: getSvtAppendSkillLv(userSvt),
+        appendSkills: getSvtAppendSkillLvs(userSvt),
         costumes: collection?.costumeIdsTo01(),
         grail: userSvt.exceedCount,
         fouHp: max(0, (userSvt.adjustHp - 100) ~/ 2),

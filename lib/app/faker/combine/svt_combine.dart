@@ -1,3 +1,5 @@
+import 'package:auto_size_text/auto_size_text.dart';
+
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/modules/common/filter_group.dart';
 import 'package:chaldea/app/modules/common/misc.dart';
@@ -105,7 +107,7 @@ class _SvtCombinePageState extends State<SvtCombinePage> with FakerRuntimeStateM
               if (bondData != null) BondProgress(value: bondData.elapsed, total: bondData.total),
               Text(
                 'skill ${baseUserSvt.skillLv1}/${baseUserSvt.skillLv2}/${baseUserSvt.skillLv3} '
-                ' append ${mstData.getSvtAppendSkillLv(baseUserSvt).join("/")}',
+                ' append ${mstData.getSvtAppendSkillLvs(baseUserSvt).join("/")}',
               ),
             ],
             //
@@ -378,7 +380,7 @@ class _SvtCombinePageState extends State<SvtCombinePage> with FakerRuntimeStateM
               if (skill == null) {
                 return Expanded(child: Text('${S.current.append_skill_short} $skillNum'));
               }
-              final curLv = mstData.getSvtAppendSkillLv(baseUserSvt).getOrNull(skillNum - 1);
+              final curLv = mstData.getSvtAppendSkillLv(baseUserSvt, skillNum2);
               final appendMats = <int, int>{};
               if (curLv == 0) {
                 for (final amount in skill.unlockMaterials) {
@@ -392,7 +394,7 @@ class _SvtCombinePageState extends State<SvtCombinePage> with FakerRuntimeStateM
                 }
               }
               final bool isLacking = appendMats.entries.any((e) => mstData.getItemOrSvtNum(e.key) < e.value);
-              final combineDisabled = isLacking || curLv == null || curLv == 10;
+              final combineDisabled = isLacking || curLv == 10;
               return Expanded(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
@@ -424,6 +426,10 @@ class _SvtCombinePageState extends State<SvtCombinePage> with FakerRuntimeStateM
                               ).showDialog(context);
                               if (!mounted || confirm != true) return;
 
+                              if (mstData.getSvtAppendSkillLv(baseUserSvt, skillNum2) != curLv) {
+                                return;
+                              }
+
                               await runtime.runTask(
                                 () => runtime.agent.appendSkillCombine(
                                   baseUsrSvtId: baseUserSvt.id,
@@ -432,7 +438,27 @@ class _SvtCombinePageState extends State<SvtCombinePage> with FakerRuntimeStateM
                                 ),
                               );
                             },
-                      onLongPress: skill.skill.routeTo,
+                      onLongPress: () {
+                        if (combineDisabled) return;
+                        final startLv = mstData.getSvtAppendSkillLv(baseUserSvt, skillNum2);
+                        if (startLv <= 0) return;
+                        _SkillCombineMultiLevelDialog(
+                          title: Text(
+                            '${S.current.append_skill_short} $skillNum - ${skill.skill.dispName}',
+                            maxLines: 1,
+                            overflow: .ellipsis,
+                          ),
+                          runtime: runtime,
+                          skillMaterials: svt.appendSkillMaterials,
+                          getCurLv: () => mstData.getSvtAppendSkillLv(baseUserSvt, skillNum2),
+                          maxLevel: 9,
+                          callCombine: (curLv) => runtime.agent.appendSkillCombine(
+                            baseUsrSvtId: baseUserSvt.id,
+                            skillNum: skillNum2,
+                            currentSkillLv: curLv,
+                          ),
+                        ).showDialog(context);
+                      },
                       child: Opacity(
                         opacity: combineDisabled ? 0.3 : 1,
                         child: ImageWithText(
@@ -528,7 +554,28 @@ class _SvtCombinePageState extends State<SvtCombinePage> with FakerRuntimeStateM
                                 ),
                               );
                             },
-                      onLongPress: skill.routeTo,
+                      onLongPress: () {
+                        if (combineDisabled) return;
+                        final userSvt = mstData.userSvt[options.baseUserSvtId];
+                        final startLv = userSvt?.skillLvs[skillNum - 1];
+                        if (startLv == null || startLv <= 0) return;
+                        _SkillCombineMultiLevelDialog(
+                          title: Text(
+                            '${S.current.append_skill_short} $skillNum - ${skill.dispName}',
+                            maxLines: 1,
+                            overflow: .ellipsis,
+                          ),
+                          runtime: runtime,
+                          skillMaterials: svt.appendSkillMaterials,
+                          getCurLv: () => mstData.userSvt[options.baseUserSvtId]?.skillLvs[skillNum - 1],
+                          maxLevel: 9,
+                          callCombine: (curLv) => runtime.agent.servantSkillCombine(
+                            baseUsrSvtId: baseUserSvt.id,
+                            selectSkillIndex: skillNum,
+                            selectSkillId: skill.id,
+                          ),
+                        ).showDialog(context);
+                      },
                       child: Opacity(
                         opacity: combineDisabled ? 0.3 : 1,
                         child: ImageWithText(
@@ -749,4 +796,145 @@ int _getCommandCodeUnlockKey(int cardType) {
   int? keyId = {CardType.quick.value: 5000, CardType.arts.value: 5001, CardType.buster.value: 5002}[cardType];
   if (keyId != null) return keyId;
   throw UnimplementedError('Unknown CardType $cardType');
+}
+
+class _SkillCombineMultiLevelDialog extends StatefulWidget {
+  // final bool isActive;
+  final Widget title;
+  final FakerRuntime runtime;
+  final Map<int, LvlUpMaterial> skillMaterials;
+  final int? Function() getCurLv;
+  final int maxLevel;
+  final Future Function(int curLv) callCombine;
+
+  const _SkillCombineMultiLevelDialog({
+    // required this.isActive,
+    required this.title,
+    required this.runtime,
+    required this.skillMaterials,
+    required this.getCurLv,
+    required this.maxLevel,
+    required this.callCombine,
+  });
+
+  @override
+  State<_SkillCombineMultiLevelDialog> createState() => __SkillCombineMultiLevelStateDialog();
+}
+
+class __SkillCombineMultiLevelStateDialog extends State<_SkillCombineMultiLevelDialog> {
+  late final runtime = widget.runtime;
+
+  // int? _displayStartLv;
+
+  int getItemNum(int itemId) => runtime.mstData.getItemOrSvtNum(itemId);
+
+  @override
+  void initState() {
+    super.initState();
+    // _displayStartLv = widget.getCurLv();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    List<Widget> children = [];
+    final curLv = widget.getCurLv();
+    if (curLv != null) {
+      for (int endLv = widget.maxLevel; endLv > curLv; endLv--) {
+        children.add(buildOne(curLv, endLv));
+      }
+    }
+    return SimpleDialog(
+      title: widget.title,
+      children: [
+        Center(child: runtime.buildCircularProgress(context: context)),
+        ...children,
+        Center(
+          child: IconButton(
+            onPressed: () {
+              if (runtime.runningTask.value) {
+                runtime.agent.network.stopFlag = true;
+              }
+              Navigator.pop(context);
+            },
+            icon: Icon(Icons.clear),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget buildOne(int startLv, int endLv) {
+    final leading = SizedBox(width: 32, child: AutoSizeText('$startLv→$endLv', maxLines: 1, minFontSize: 4));
+    Map<int, int> costItems = {};
+    for (int lv = startLv; lv < endLv; lv++) {
+      final materials = widget.skillMaterials[lv];
+      if (materials == null) {
+        return ListTile(dense: true, leading: leading, title: Text('No skill level up material found'), enabled: false);
+      }
+      costItems.addDict(materials.toItemDict());
+    }
+    List<Widget> itemWidgets = [];
+    bool isLackingItem = false;
+    for (final (itemId, itemNum) in costItems.items) {
+      final ownNum = getItemNum(itemId);
+      isLackingItem = isLackingItem || ownNum < itemNum;
+      itemWidgets.add(
+        Item.iconBuilder(
+          context: context,
+          item: null,
+          itemId: itemId,
+          width: 32,
+          text: '${itemNum.format()}\n${ownNum.format()}',
+          option: ownNum < itemNum ? ImageWithTextOption(textStyle: TextStyle(color: Colors.red)) : null,
+        ),
+      );
+    }
+
+    Widget? trailing;
+
+    trailing = IconButton(
+      onPressed: isLackingItem
+          ? null
+          : () {
+              SimpleConfirmDialog(
+                title: widget.title,
+                content: Text('${S.current.level} $startLv→$endLv'),
+                onTapOk: () {
+                  runtime.runTask(() => doLevelUpgrade(endLv));
+                },
+              ).showDialog(context);
+            },
+      icon: Icon(Icons.upgrade),
+    );
+
+    return ListTile(
+      dense: true,
+      leading: leading,
+      title: Wrap(spacing: 2, runSpacing: 2, children: itemWidgets),
+      trailing: trailing,
+    );
+  }
+
+  Future<void> doLevelUpgrade(int endLv) async {
+    int maxLoop = endLv - (widget.getCurLv() ?? endLv);
+    while (maxLoop > 0) {
+      maxLoop -= 1;
+      await Future.delayed(Duration(seconds: 1));
+      int? curLv = widget.getCurLv();
+      if (curLv == null) {
+        throw SilentException('Unexpected curLv=$curLv');
+      }
+      if (curLv >= endLv) return;
+      for (final (itemId, itemNum) in widget.skillMaterials[curLv]!.toItemDict().items) {
+        if (getItemNum(itemId) < itemNum) {
+          throw SilentException('Item ${Item.getName(itemId)} not enough: ${getItemNum(itemId)}<$itemNum');
+        }
+      }
+      if (!mounted) {
+        throw SilentException('Skill multi level up page exited');
+      }
+      await widget.callCombine(curLv);
+      if (mounted) setState(() {});
+    }
+  }
 }

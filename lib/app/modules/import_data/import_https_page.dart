@@ -1024,7 +1024,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
     for (final svt in mstData.userSvt) {
       if ((svt.dbSvt?.collectionNo ?? 0) <= 0) continue;
       svt.inStorage = false;
-      svt.appendLvs = mstData.getSvtAppendSkillLv(svt);
+      svt.appendLvs = mstData.getSvtAppendSkillLvs(svt);
       final group = servants.firstWhereOrNull((group) => group.any((element) => element.svtId == svt.svtId));
       if (group == null) {
         servants.add([svt]);
@@ -1036,7 +1036,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
     for (final svt in mstData.userSvtStorage) {
       if ((svt.dbSvt?.collectionNo ?? 0) <= 0) continue;
       svt.inStorage = true;
-      svt.appendLvs = mstData.getSvtAppendSkillLv(svt);
+      svt.appendLvs = mstData.getSvtAppendSkillLvs(svt);
       final group = servants.firstWhereOrNull((group) => group.any((element) => element.svtId == svt.svtId));
       if (group == null) {
         servants.add([svt]);
