@@ -108,7 +108,6 @@ class ImportHttpPageState extends State<ImportHttpPage> {
 
   @override
   Widget build(BuildContext context) {
-    final url = ChaldeaUrl.doc('import_https/');
     return Scaffold(
       appBar: AppBar(
         titleSpacing: 0,
@@ -134,64 +133,72 @@ class ImportHttpPageState extends State<ImportHttpPage> {
           ),
         ],
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: mstData == null
-                ? Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Column(
-                      children: [
-                        Text(S.current.usage, style: const TextStyle(fontWeight: FontWeight.bold)),
-                        const SizedBox(height: 10),
-                        Text("${S.current.import_source_file} ↗↗"),
-                        TextButton(
-                          onPressed: () {
-                            launch(url);
-                          },
-                          child: Text(url),
+      body: buildBody(),
+    );
+  }
+
+  Widget buildBody() {
+    if (db.runtimeData.remoteConfig?.versionConstraints?.sniff?.isThisAppInvalid() ?? false) {
+      return Center(child: Text(S.current.update_app_hint));
+    }
+    final url = ChaldeaUrl.doc('import_https/');
+    return Column(
+      children: [
+        Expanded(
+          child: mstData == null
+              ? Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    children: [
+                      Text(S.current.usage, style: const TextStyle(fontWeight: FontWeight.bold)),
+                      const SizedBox(height: 10),
+                      Text("${S.current.import_source_file} ↗↗"),
+                      TextButton(
+                        onPressed: () {
+                          launch(url);
+                        },
+                        child: Text(url),
+                      ),
+                      Text.rich(
+                        TextSpan(
+                          text: "For JP/NA, login via ",
+                          children: [
+                            SharedBuilder.textButtonSpan(
+                              context: context,
+                              text: S.current.import_auth_file,
+                              onTap: kIsWeb
+                                  ? null
+                                  : () {
+                                      router.pushPage(const AutoLoginPage());
+                                    },
+                            ),
+                            const TextSpan(text: ' first'),
+                          ],
                         ),
-                        Text.rich(
-                          TextSpan(
-                            text: "For JP/NA, login via ",
-                            children: [
-                              SharedBuilder.textButtonSpan(
-                                context: context,
-                                text: S.current.import_auth_file,
-                                onTap: kIsWeb
-                                    ? null
-                                    : () {
-                                        router.pushPage(const AutoLoginPage());
-                                      },
-                              ),
-                              const TextSpan(text: ' first'),
-                            ],
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                      ],
-                    ),
-                  )
-                : LayoutBuilder(
-                    builder: (context, constraints) => CustomScrollView(
-                      slivers: [
-                        userInfoSliver,
-                        itemSliver(constraints),
-                        svtSliver(false),
-                        svtSliver(true),
-                        craftSliver,
-                        cmdCodeSliver,
-                        classBoardSlider,
-                      ],
-                    ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
                   ),
-          ),
-          kDefaultDivider,
-          SafeArea(
-            child: Padding(padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 4), child: buttonBar),
-          ),
-        ],
-      ),
+                )
+              : LayoutBuilder(
+                  builder: (context, constraints) => CustomScrollView(
+                    slivers: [
+                      userInfoSliver,
+                      itemSliver(constraints),
+                      svtSliver(false),
+                      svtSliver(true),
+                      craftSliver,
+                      cmdCodeSliver,
+                      classBoardSlider,
+                    ],
+                  ),
+                ),
+        ),
+        kDefaultDivider,
+        SafeArea(
+          child: Padding(padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 4), child: buttonBar),
+        ),
+      ],
     );
   }
 

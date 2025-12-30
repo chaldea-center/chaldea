@@ -1,7 +1,6 @@
 import 'package:flutter/foundation.dart';
 
 import 'package:chaldea/generated/l10n.dart';
-import 'package:chaldea/models/userdata/version.dart';
 import 'package:chaldea/packages/app_info.dart';
 import 'package:chaldea/packages/split_route/split_route.dart';
 import 'package:chaldea/utils/utils.dart';
@@ -84,7 +83,7 @@ class _HomePageState extends State<HomePage> with AfterLayoutMixin {
   }
 
   Widget checkValidState(Widget child) {
-    String? forceUpgradeVersion = db.runtimeData.remoteConfig?.forceUpgradeVersion;
+    final appVerConstraints = db.runtimeData.remoteConfig?.versionConstraints?.app;
     List<Widget> errors = [];
     if (!db.gameData.isValid) {
       errors.add(
@@ -101,43 +100,43 @@ class _HomePageState extends State<HomePage> with AfterLayoutMixin {
         ),
       );
     }
-    if (!kIsWeb && forceUpgradeVersion != null) {
-      final version = AppVersion.tryParse(forceUpgradeVersion);
-      if (version != null && AppInfo.version < version) {
-        errors.add(
-          Positioned.fill(
-            child: Container(
-              color: Colors.black38,
-              child: Center(
-                child: SimpleConfirmDialog(
-                  scrollable: true,
-                  title: Text(S.current.update),
-                  content: Text(
-                    "${S.current.forced_update}: ≥$forceUpgradeVersion\n"
-                    "${S.current.current_version}: ${AppInfo.versionString}",
-                    // textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Theme.of(context).colorScheme.error,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
+    if (appVerConstraints != null && appVerConstraints.isThisAppInvalid()) {
+      errors.add(
+        Positioned.fill(
+          child: Container(
+            color: Colors.black38,
+            child: Center(
+              child: SimpleConfirmDialog(
+                scrollable: true,
+                title: Text(S.current.update),
+                content: Text(
+                  [
+                    "${S.current.forced_update}: ${appVerConstraints.toFriendlyString()}",
+                    "${S.current.current_version}: ${AppInfo.versionString} (${AppInfo.commitDate})",
+                    if (kIsWeb) "web: ${S.current.refresh}",
+                  ].join('\n'),
+                  // textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.error,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
                   ),
-                  showCancel: false,
-                  showOk: false,
-                  actions: [
-                    TextButton(
-                      onPressed: () {
-                        launch(ChaldeaUrl.doc("/install"));
-                      },
-                      child: Text(S.current.details),
-                    ),
-                  ],
                 ),
+                showCancel: false,
+                showOk: false,
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      launch(ChaldeaUrl.doc("/install"));
+                    },
+                    child: Text(S.current.details),
+                  ),
+                ],
               ),
             ),
           ),
-        );
-      }
+        ),
+      );
     }
     if (errors.isNotEmpty) {
       child = Stack(

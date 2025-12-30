@@ -975,6 +975,7 @@
   "unlock_quest": null,
   "update": "更新",
   "update_already_latest": "すでに最新バージョンになります",
+  "update_app_hint": null,
   "update_data_at_start": "起動時に更新",
   "update_data_at_start_off_hint": null,
   "update_data_at_start_on_hint": null,

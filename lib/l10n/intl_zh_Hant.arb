@@ -975,6 +975,7 @@
   "unlock_quest": "解鎖關卡",
   "update": "更新",
   "update_already_latest": "已經是最新版本",
+  "update_app_hint": null,
   "update_data_at_start": "啟動時更新",
   "update_data_at_start_off_hint": "讀取本地資料並在背景更新,下次啟動時更新",
   "update_data_at_start_on_hint": "啟動時間可能變長",

@@ -418,7 +418,7 @@ class CarouselSetting {
   Map<String, dynamic> toJson() => _$CarouselSettingToJson(this);
 }
 
-@JsonSerializable(converters: [AppVersionConverter()])
+@JsonSerializable()
 class CarouselItem {
   // 0-default, 1-sticky
   int type;

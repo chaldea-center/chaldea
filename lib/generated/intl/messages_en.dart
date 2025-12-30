@@ -1201,6 +1201,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "unlock_quest": MessageLookupByLibrary.simpleMessage("Unlock Quest"),
     "update": MessageLookupByLibrary.simpleMessage("Update"),
     "update_already_latest": MessageLookupByLibrary.simpleMessage("Already the latest version"),
+    "update_app_hint": MessageLookupByLibrary.simpleMessage("Please upgrade app"),
     "update_data_at_start": MessageLookupByLibrary.simpleMessage("Update on Startup"),
     "update_data_at_start_off_hint": MessageLookupByLibrary.simpleMessage(
       "Load local data then background update, apply updates at next startup",

@@ -17,12 +17,20 @@ class BattleHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Widget body = getBody(context);
+    List<String> disableReasons = [];
     if (!db.gameData.isValid) {
+      disableReasons.add(S.current.game_data_not_found);
+    }
+    if (db.runtimeData.remoteConfig?.versionConstraints?.laplace?.isThisAppInvalid() ?? false) {
+      disableReasons.add(S.current.update_app_hint);
+    }
+    if (disableReasons.isNotEmpty) {
       body = GestureDetector(
         onTap: () {
           SimpleConfirmDialog(
             title: Text(S.current.warning),
-            content: Text(S.current.game_data_not_found),
+            content: Text(disableReasons.join('\n')),
+            scrollable: true,
             showCancel: false,
           ).showDialog(context);
         },

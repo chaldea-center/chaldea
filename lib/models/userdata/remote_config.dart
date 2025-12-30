@@ -2,27 +2,28 @@ import 'package:chaldea/utils/utils.dart';
 import '../db.dart';
 import '_helper.dart';
 import 'local_settings.dart';
+import 'version.dart';
 
 part '../../generated/models/userdata/remote_config.g.dart';
 
 @JsonSerializable()
 class RemoteConfig {
-  String? forceUpgradeVersion;
   List<String> blockedCarousels;
   List<String> blockedErrors;
   ServerUrlConfig urls;
   int silenceStart;
   int silenceEnd;
   AdConfig ad;
+  VersionConstraintsSetting? versionConstraints;
 
   RemoteConfig({
-    this.forceUpgradeVersion,
     this.blockedCarousels = const [],
     this.blockedErrors = const [],
     ServerUrlConfig? urls,
     this.silenceStart = 0,
     this.silenceEnd = 0,
     AdConfig? ad,
+    this.versionConstraints,
   }) : urls = urls ?? ServerUrlConfig(),
        ad = ad ?? AdConfig();
 

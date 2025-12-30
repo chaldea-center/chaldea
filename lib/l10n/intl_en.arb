@@ -975,6 +975,7 @@
   "unlock_quest": "Unlock Quest",
   "update": "Update",
   "update_already_latest": "Already the latest version",
+  "update_app_hint": "Please upgrade app",
   "update_data_at_start": "Update on Startup",
   "update_data_at_start_off_hint": "Load local data then background update, apply updates at next startup",
   "update_data_at_start_on_hint": "May take more time to startup",

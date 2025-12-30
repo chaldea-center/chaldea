@@ -8,7 +8,6 @@ part of '../../../models/userdata/remote_config.dart';
 
 RemoteConfig _$RemoteConfigFromJson(Map json) => $checkedCreate('RemoteConfig', json, ($checkedConvert) {
   final val = RemoteConfig(
-    forceUpgradeVersion: $checkedConvert('forceUpgradeVersion', (v) => v as String?),
     blockedCarousels: $checkedConvert(
       'blockedCarousels',
       (v) => (v as List<dynamic>?)?.map((e) => e as String).toList() ?? const [],
@@ -24,18 +23,22 @@ RemoteConfig _$RemoteConfigFromJson(Map json) => $checkedCreate('RemoteConfig', 
     silenceStart: $checkedConvert('silenceStart', (v) => (v as num?)?.toInt() ?? 0),
     silenceEnd: $checkedConvert('silenceEnd', (v) => (v as num?)?.toInt() ?? 0),
     ad: $checkedConvert('ad', (v) => v == null ? null : AdConfig.fromJson(Map<String, dynamic>.from(v as Map))),
+    versionConstraints: $checkedConvert(
+      'versionConstraints',
+      (v) => v == null ? null : VersionConstraintsSetting.fromJson(Map<String, dynamic>.from(v as Map)),
+    ),
   );
   return val;
 });
 
 Map<String, dynamic> _$RemoteConfigToJson(RemoteConfig instance) => <String, dynamic>{
-  'forceUpgradeVersion': instance.forceUpgradeVersion,
   'blockedCarousels': instance.blockedCarousels,
   'blockedErrors': instance.blockedErrors,
   'urls': instance.urls.toJson(),
   'silenceStart': instance.silenceStart,
   'silenceEnd': instance.silenceEnd,
   'ad': instance.ad.toJson(),
+  'versionConstraints': instance.versionConstraints?.toJson(),
 };
 
 ServerUrlConfig _$ServerUrlConfigFromJson(Map json) => $checkedCreate('ServerUrlConfig', json, ($checkedConvert) {

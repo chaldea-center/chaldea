@@ -1111,6 +1111,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "unlock_quest": MessageLookupByLibrary.simpleMessage("解锁关卡"),
     "update": MessageLookupByLibrary.simpleMessage("更新"),
     "update_already_latest": MessageLookupByLibrary.simpleMessage("已经是最新版本"),
+    "update_app_hint": MessageLookupByLibrary.simpleMessage("请更新应用"),
     "update_data_at_start": MessageLookupByLibrary.simpleMessage("启动时更新"),
     "update_data_at_start_off_hint": MessageLookupByLibrary.simpleMessage("加载本地数据并后台更新,下次启动应用更新"),
     "update_data_at_start_on_hint": MessageLookupByLibrary.simpleMessage("启动时间可能变长"),

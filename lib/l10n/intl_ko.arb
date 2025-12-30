@@ -975,6 +975,7 @@
   "unlock_quest": "퀘스트 해금",
   "update": "갱신",
   "update_already_latest": "이미 최신버전 입니다",
+  "update_app_hint": null,
   "update_data_at_start": "시작 시 업데이트",
   "update_data_at_start_off_hint": "로컬 데이터를 로드하고 백그라운드에서 업데이트한 뒤에, 어플을 재시작하여 업데이트를 적용하세요",
   "update_data_at_start_on_hint": "시작하는 데 시간이 더 걸릴 수 있음",

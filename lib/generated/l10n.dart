@@ -6071,6 +6071,11 @@ class S {
     );
   }
 
+  /// `Please upgrade app`
+  String get update_app_hint {
+    return Intl.message('Please upgrade app', name: 'update_app_hint', desc: '', locale: localeName, args: []);
+  }
+
   /// `Update on Startup`
   String get update_data_at_start {
     return Intl.message('Update on Startup', name: 'update_data_at_start', desc: '', locale: localeName, args: []);
