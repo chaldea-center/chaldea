@@ -11,6 +11,7 @@ typedef UserQuestStat = ({UserQuestEntity userQuest, Quest quest, int count});
 class FgoAnnualReportData {
   final MasterDataManager mstData;
   final Region region;
+  DateTime? serverTime;
   final UserGameEntity userGame;
 
   List<Object> errors = [];
@@ -81,6 +82,7 @@ class FgoAnnualReportData {
     required this.mstData,
     required this.region,
     required this.userGame,
+    required this.serverTime,
     //
   });
 
@@ -88,10 +90,16 @@ class FgoAnnualReportData {
     FakerRuntime? runtime,
     required MasterDataManager mstData,
     required Region region,
+    required DateTime? serverTime,
     int? year,
     Duration? expireAfter,
   }) async {
-    final report = FgoAnnualReportData(mstData: mstData, region: region, userGame: mstData.user!);
+    final report = FgoAnnualReportData(
+      mstData: mstData,
+      region: region,
+      userGame: mstData.user!,
+      serverTime: serverTime,
+    );
     final dataRequiredAppVer = db.runtimeData.dataRequiredAppVer;
     if (dataRequiredAppVer != null) {
       report.errors.add(S.current.error_required_app_version(dataRequiredAppVer.versionString, ''));

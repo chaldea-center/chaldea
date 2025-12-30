@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
+
 import 'package:crypto/crypto.dart';
 import 'package:dio/dio.dart';
 import 'package:uuid/uuid.dart';
@@ -199,13 +201,15 @@ class NetworkManagerJP extends NetworkManagerBase<FRequestJP, AutoLoginDataJP> {
     request.rawRequest = rawResp.requestOptions;
     request.rawResponse = rawResp;
     // buffer.writeln(rawResp.headers);
-    final _jsonData = FateTopLogin.parseToMap(rawResp.data);
-    // final _jsonData = jsonEncode();
-    buffer.writeln(jsonEncode(_jsonData['response'] ?? []).substring2(0, 2000));
-    if (request.path.contains('login/top')) {
-      // buffer.writeln(_jsonData.substring2(0, 000));
-    } else {
-      // buffer.writeln(_jsonData);
+    if (kDebugMode) {
+      final _jsonData = FateTopLogin.parseToMap(rawResp.data);
+      // final _jsonData = jsonEncode();
+      buffer.writeln(jsonEncode(_jsonData['response'] ?? []).substring2(0, 2000));
+      if (request.path.contains('login/top')) {
+        // buffer.writeln(_jsonData.substring2(0, 000));
+      } else {
+        // buffer.writeln(_jsonData);
+      }
     }
     buffer.write('============ end ${request.path} ============');
     // final s = buffer.toString();

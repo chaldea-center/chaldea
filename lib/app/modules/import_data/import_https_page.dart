@@ -73,6 +73,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
   Map<int, CmdCodeStatus> cmdCodes = {}; // code.no: status
 
   MasterDataManager? mstData;
+  DateTime? serverTime;
   late Region? _region = widget.region;
 
   String get tmpPath => joinPaths(db.paths.userDir, 'sniff', db.curUser.id);
@@ -699,7 +700,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
                   ? null
                   : () async {
                       final region = await getDecidedRegion();
-                      router.pushPage(FgoAnnualReportPage(mstData: mstData!, region: region));
+                      router.pushPage(FgoAnnualReportPage(mstData: mstData!, region: region, serverTime: serverTime));
                     },
               child: Text(Language.isZH ? '统计报告' : 'Report'),
             ),
@@ -1006,6 +1007,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
     if (logEvent) {
       AppAnalysis.instance.logEvent("import_toplogin", {"region": _topLogin.region?.upper ?? "unknown"});
     }
+    serverTime = _topLogin.serverTime;
     return _topLogin.mstData;
   }
 

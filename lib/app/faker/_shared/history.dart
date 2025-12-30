@@ -261,7 +261,7 @@ class _FakerHistoryViewerState extends State<FakerHistoryViewer> {
                   dynamic body = record?.response?.rawResponse.data;
                   if (body is String) {
                     try {
-                      body = jsonDecode(body);
+                      body = FateTopLogin.parseToMap(record?.response?.rawResponse.data);
                     } catch (e) {
                       //
                     }

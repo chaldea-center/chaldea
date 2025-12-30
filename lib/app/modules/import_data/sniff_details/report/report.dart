@@ -28,8 +28,9 @@ const _greyColor = Color(0xFFBDBDBD); // Colors.grey.shade400;
 class FgoAnnualReportPage extends StatefulWidget {
   final MasterDataManager mstData;
   final Region? region;
+  final DateTime? serverTime;
 
-  const FgoAnnualReportPage({super.key, required this.mstData, required this.region});
+  const FgoAnnualReportPage({super.key, required this.mstData, required this.region, this.serverTime});
 
   @override
   State<FgoAnnualReportPage> createState() => _FgoAnnualReportPageState();
@@ -80,6 +81,7 @@ class _FgoAnnualReportPageState extends State<FgoAnnualReportPage> {
       _data = await FgoAnnualReportData.parse(
         mstData: widget.mstData,
         region: region,
+        serverTime: widget.serverTime,
         expireAfter: refresh ? Duration.zero : null,
       );
     } catch (e, s) {
@@ -376,7 +378,7 @@ class _FgoAnnualReportRealPageState extends State<FgoAnnualReportRealPage> {
             width: 1024 * graphRation * 0.6,
             height: 1024 * graphRation * 0.65,
             decoration: BoxDecoration(),
-            clipBehavior: Clip.hardEdge,
+            clipBehavior: Clip.antiAlias,
             child: OverflowBox(
               alignment: Alignment.topLeft,
               fit: .deferToChild,
@@ -515,12 +517,14 @@ class _FgoAnnualReportRealPageState extends State<FgoAnnualReportRealPage> {
   }
 
   Widget? _pushAndFavoriteSvts() {
-    final pushUserSvt = report.mstData.getUserSvt(report.userGame.pushUserSvtId);
-    final favoriteUserSvt = report.mstData.getUserSvt(report.userGame.favoriteUserSvtId);
     List<Widget> cards = [];
-    for (final (isPush, isFavorite, userSvt) in [(true, false, pushUserSvt), (false, true, favoriteUserSvt)]) {
-      // for (final (isPush, isFavorite, userSvt) in [(true, true, pushUserSvt)]) {
-      if (userSvt == null) continue;
+    final shownUserSvts = {
+      ?report.mstData.getUserSvt(report.userGame.pushUserSvtId),
+      ?report.mstData.getUserSvt(report.userGame.favoriteUserSvtId),
+    };
+    for (final userSvt in shownUserSvts) {
+      final isPush = report.userGame.pushUserSvtId == userSvt.id;
+      final isFavorite = report.userGame.favoriteUserSvtId == userSvt.id;
       final svt = userSvt.dbSvt;
       final collection = mstData.userSvtCollection[userSvt.svtId];
 
@@ -719,7 +723,7 @@ class _FgoAnnualReportRealPageState extends State<FgoAnnualReportRealPage> {
                 ],
               ),
             ),
-            if (isPush && isFavorite)
+            if (shownUserSvts.length == 1)
               Expanded(
                 child: Column(
                   crossAxisAlignment: .start,
@@ -1233,7 +1237,7 @@ ${S.current.chaldea_report_5star_stat_dis_ent}"""),
             height: 99,
             child: Container(
               decoration: BoxDecoration(color: Colors.transparent),
-              clipBehavior: Clip.hardEdge,
+              clipBehavior: Clip.antiAlias,
               child: OverflowBox(
                 maxWidth: 400,
                 maxHeight: 200,
@@ -1609,15 +1613,22 @@ ${S.current.chaldea_report_5star_stat_dis_ent}"""),
       child: Column(
         mainAxisSize: .min,
         crossAxisAlignment: .stretch,
-        spacing: 4,
+        spacing: 2,
         children: [
           Text(
             'by Chaldea App',
             style: const TextStyle(color: Colors.white60, fontSize: 14, fontWeight: FontWeight.w500),
             textAlign: .center,
           ),
+          const SizedBox(height: 2),
+          if (report.serverTime != null)
+            Text(
+              'Data ${report.serverTime!.toStringShort(omitSec: true)}',
+              style: TextStyle(color: _greyColor.withAlpha(150), fontSize: 12),
+              textAlign: .center,
+            ),
           Text(
-            report.createdAt.toStringShort(omitSec: true),
+            'Report ${report.createdAt.toStringShort(omitSec: true)}',
             style: TextStyle(color: _greyColor.withAlpha(150), fontSize: 12),
             textAlign: .center,
           ),

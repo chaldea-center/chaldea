@@ -170,13 +170,15 @@ class SplitRoute<T> extends PageRoute<T> with MaterialRouteTransitionMixin<T> {
         Widget scope = _modalScope.builder(context);
         final layout = getLayout(context);
         if (layout == SplitLayout.detail) {
-          final size = MediaQuery.of(context).size;
-          final start = size.width * masterRatio / 100 + _kSplitDividerWidth;
-          scope = PositionedDirectional(
-            start: start,
-            top: 0,
-            child: SizedBox(height: size.height, width: size.width - start, child: scope),
-          );
+          final size = MediaQuery.maybeSizeOf(context);
+          if (size != null) {
+            final start = size.width * masterRatio / 100 + _kSplitDividerWidth;
+            scope = PositionedDirectional(
+              start: start,
+              top: 0,
+              child: SizedBox(height: size.height, width: size.width - start, child: scope),
+            );
+          }
         }
         return scope;
       },
@@ -288,7 +290,7 @@ class SplitRoute<T> extends PageRoute<T> with MaterialRouteTransitionMixin<T> {
       context = AppRouter.of(context)?.navigatorKey.currentContext ?? context;
     }
     context ??= kAppKey.currentContext;
-    if (context == null) return false;
+    if (context == null || !context.mounted) return false;
     final size = MediaQuery.maybeSizeOf(context);
     return size != null && size.width > size.height && size.width >= 720 && size.height > 320;
   }
