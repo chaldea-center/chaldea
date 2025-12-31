@@ -446,6 +446,10 @@ class ValDsc extends StatelessWidget {
       parts.add('[HP ${hpRatiosStrings.join('-')}%]');
     }
 
+    if (inList && vals.Turn != null) {
+      _addInt(parts, vals.Turn, post: (v) => Transl.special.funcValTurns(vals.Turn!));
+    }
+
     if (!ignoreCount && vals.Count != null && vals.Count! > 0) {
       _addInt(parts, vals.Count, post: (v) => Transl.special.funcValCountTimes(vals.Count!));
     }

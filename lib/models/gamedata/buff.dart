@@ -631,6 +631,7 @@ final Map<BuffType, List<BuffValueTriggerType Function(DataVals)>> kBuffValueTri
     BuffType.otherTreasureDevicePreBeforeFunction,
     BuffType.attackPhaseStartFunction,
     BuffType.treasureDevicePostAfterFunction,
+    BuffType.buff245,
   }) {
     types[type] = (v) => BuffValueTriggerType(buffType: type, skill: v.Value, level: v.Value2, rate: v.UseRate);
   }
