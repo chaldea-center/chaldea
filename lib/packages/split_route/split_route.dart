@@ -16,16 +16,19 @@
 
 import 'dart:async';
 
-import 'package:flutter/cupertino.dart' show CupertinoRouteTransitionMixin;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
 import 'package:chaldea/app/routes/delegate.dart';
 import 'package:chaldea/models/db.dart';
+import 'package:chaldea/packages/platform/platform.dart';
 import 'package:chaldea/widgets/inherit_selection_area.dart';
 import '../../utils/constants.dart' show kAppKey;
 import '../logger.dart';
+
+import 'package:flutter/cupertino.dart'
+    show CupertinoFullscreenDialogTransition, CupertinoPageTransition, CupertinoRouteTransitionMixin;
 
 part 'master_back_button.dart';
 
@@ -50,7 +53,7 @@ enum SplitLayout {
 }
 
 /// Master-Detail Layout Route for large aspect ratio screen.
-class SplitRoute<T> extends PageRoute<T> with MaterialRouteTransitionMixin<T> {
+class SplitRoute<T> extends PageRoute<T> with CupertinoRouteTransitionMixin<T> {
   static bool enableSplitView = true;
 
   static int _defaultMasterRatio = _kSplitMasterRatio;
@@ -91,6 +94,9 @@ class SplitRoute<T> extends PageRoute<T> with MaterialRouteTransitionMixin<T> {
   @override
   final bool maintainState;
 
+  @override
+  final String? title;
+
   SplitRoute({
     required this.builder,
     super.settings,
@@ -99,13 +105,9 @@ class SplitRoute<T> extends PageRoute<T> with MaterialRouteTransitionMixin<T> {
     Duration? transitionDuration,
     Duration? reverseTransitionDuration,
     bool? opaque,
-    super.requestFocus,
     this.maintainState = true,
-    super.fullscreenDialog,
-    super.allowSnapshotting = true,
-    super.barrierDismissible = false,
-    super.traversalEdgeBehavior,
-    super.directionalTraversalEdgeBehavior,
+    this.title,
+    super.fullscreenDialog = false,
   }) : assert(builder != null),
        assert(masterRatio == null || masterRatio > 0 && masterRatio < 100),
        assert(maintainState != null),
@@ -188,12 +190,9 @@ class SplitRoute<T> extends PageRoute<T> with MaterialRouteTransitionMixin<T> {
   }
 
   static bool get isPopGestureAlwaysDisabled {
-    // if (kIsWeb || !PlatformU.isTargetMobile) return true;
-    if (kIsWeb) return true;
+    if (kIsWeb || !PlatformU.isTargetMobile) return true;
     return false;
   }
-
-  static bool get isPopGestureForceEnabled => db.settings.forceEdgeSwipePopGesture;
 
   static bool get shouldPopGestureEnabled {
     if (isPopGestureAlwaysDisabled) return false;
@@ -230,14 +229,27 @@ class SplitRoute<T> extends PageRoute<T> with MaterialRouteTransitionMixin<T> {
     Animation<double> secondaryAnimation,
     Widget child,
   ) {
-    Widget transition;
-    if (isPopGestureForceEnabled) {
-      const builder = CupertinoPageTransitionsBuilder();
-      transition = builder.buildTransitions<T>(this, context, animation, secondaryAnimation, child);
+    if (!shouldPopGestureEnabled) {
+      const bool linearTransition = false;
+      if (fullscreenDialog) {
+        child = CupertinoFullscreenDialogTransition(
+          primaryRouteAnimation: animation,
+          secondaryRouteAnimation: secondaryAnimation,
+          linearTransition: linearTransition,
+          child: child,
+        );
+      } else {
+        child = CupertinoPageTransition(
+          primaryRouteAnimation: animation,
+          secondaryRouteAnimation: secondaryAnimation,
+          linearTransition: linearTransition,
+          child: child,
+        );
+      }
     } else {
-      transition = super.buildTransitions(context, animation, secondaryAnimation, child);
+      child = super.buildTransitions(context, animation, secondaryAnimation, child);
     }
-    return ClipRect(child: transition);
+    return ClipRect(child: child);
   }
 
   /// create master widget without scope wrapped
@@ -363,6 +375,7 @@ class SplitRoute<T> extends PageRoute<T> with MaterialRouteTransitionMixin<T> {
         transitionDuration: (detail == true && popDetail && n > 0) ? const Duration() : kSplitRouteDuration,
         reverseTransitionDuration: kSplitRouteDuration,
         settings: settings,
+        title: title,
       ),
     );
   }
