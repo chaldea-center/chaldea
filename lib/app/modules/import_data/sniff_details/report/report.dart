@@ -752,7 +752,7 @@ class _FgoAnnualReportRealPageState extends State<FgoAnnualReportRealPage> {
     if (years.length > 10) {
       years = years.skip(years.length - 10).toList();
     }
-    final bond10Count = report.bond10SvtCollections.length;
+    final bond10Count = Maths.sum(report.bondEquipHistoryByYear.values.map((e) => e.length));
     final thisYearCount = report.bondEquipHistoryByYear[report.curYear]?.length ?? 0;
     final totalReleasedCount = report.ownedSvtReleasedBondEquipIds.length;
     return ReportCard(

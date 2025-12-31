@@ -116,7 +116,7 @@ class FgoAnnualReportData {
     report.totalLogin = mstData.userLogin.first.totalLoginCount;
     if (year == null) {
       final now = DateTime.now();
-      if (now.month == 1 && report.userGame.createdAt.sec2date().year > now.year) {
+      if (now.month == 1 && report.userGame.createdAt.sec2date().year < now.year) {
         year = now.year - 1;
       } else {
         year = now.year;
