@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.5.25
+
+Happy New Year!
+
+- bug fix
+- waiting for FGO 3.0
+
 ## 2.5.24
 
 - Add fgo account report in https sniff part
