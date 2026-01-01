@@ -35,27 +35,29 @@ class GachaProbData {
     return output;
   }
 
+  SubSummon toSubSummon() {
+    return SubSummon(
+      title: gacha.name.setMaxLines(1),
+      probs: [
+        for (final group in groups)
+          ProbGroup(
+            isSvt: group.isSvt,
+            rarity: group.rarity,
+            weight: group.guessTotalProb(),
+            display: group.pickup,
+            ids: group.ids,
+          ),
+      ],
+    );
+  }
+
   LimitedSummon toSummon() {
     return LimitedSummon(
       id: gacha.id.toString(),
       name: gacha.lName.setMaxLines(1),
       officialBanner: MappingBase(jp: AssetURL.i.summonBanner(gacha.imageId)),
       type: gacha.isLuckyBag ? SummonType.gssr : SummonType.limited,
-      subSummons: [
-        SubSummon(
-          title: gacha.name.setMaxLines(1),
-          probs: [
-            for (final group in groups)
-              ProbGroup(
-                isSvt: group.isSvt,
-                rarity: group.rarity,
-                weight: group.guessTotalProb(),
-                display: group.pickup,
-                ids: group.ids,
-              ),
-          ],
-        ),
-      ],
+      subSummons: [toSubSummon()],
     );
   }
 

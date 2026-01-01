@@ -292,7 +292,7 @@ class __DebugMenuDialogState extends State<_DebugMenuDialog> {
           onTap: () {
             final ctx = router.navigatorKey.currentContext;
             if (ctx != null && ctx.mounted) {
-              Navigator.pop(ctx);
+              Navigator.maybePop(ctx);
             }
           },
         ),

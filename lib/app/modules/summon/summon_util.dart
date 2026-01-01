@@ -179,7 +179,7 @@ class SummonUtil {
                     )
                     ?.lName
                     .l ??
-                e;
+                fragments[0];
             name2 = fragments.join('(');
           }
           // if (!RegExp(r'[\s\da-zA-Z]+').hasMatch(name2) && !Language.isCN) {

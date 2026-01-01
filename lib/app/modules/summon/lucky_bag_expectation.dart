@@ -99,7 +99,10 @@ class _LuckyBagExpectationState extends State<LuckyBagExpectation> with SingleTi
     );
   }
 
-  Map<int, int> get _svtScores => db.curUser.luckyBagSvtScores.putIfAbsent(widget.summon.id, () => {});
+  final Map<int, int> _svtScoresFallback = {};
+  Map<int, int> get _svtScores => widget.summon.id.isEmpty
+      ? _svtScoresFallback
+      : db.curUser.luckyBagSvtScores.putIfAbsent(widget.summon.id, () => {});
 
   int scoreOf(int id) {
     return _svtScores[id] ?? (db.curUser.svtStatusOf(id).favorite ? _kScoreMin : _kScoreMax);

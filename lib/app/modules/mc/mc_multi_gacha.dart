@@ -1,5 +1,6 @@
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
+import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/modules/common/filter_group.dart';
 import 'package:chaldea/app/modules/mc/converter.dart';
 import 'package:chaldea/generated/l10n.dart';
@@ -7,6 +8,7 @@ import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
+import '../summon/summon_detail_page.dart';
 import 'gacha_parser.dart';
 
 class MCSummonCreatePage extends StatefulWidget {
@@ -158,6 +160,17 @@ class _MCSummonCreatePageState extends State<MCSummonCreatePage> {
               },
             ),
           ),
+        const SizedBox(height: 8),
+        Center(
+          child: FilledButton(
+            onPressed: () {
+              if (gachas.isEmpty) return;
+              final summon = toLimitedSummon();
+              router.pushPage(SummonDetailPage(summon: summon));
+            },
+            child: Text(S.current.simulator),
+          ),
+        ),
         const Divider(height: 16),
         const SizedBox(height: 8),
         TextFormField(
@@ -566,5 +579,51 @@ class _MCSummonCreatePageState extends State<MCSummonCreatePage> {
     if (mounted) {
       setState(() {});
     }
+  }
+
+  LimitedSummon toLimitedSummon() {
+    final name = _findCleanCommonPrefix(gachas.map((e) => e.gacha.name).toList());
+    return LimitedSummon(
+      id: '',
+      name: name,
+      type: gachas.firstOrNull?.gacha.isLuckyBag == true ? .gssr : .limited,
+      startTime: MappingBase(jp: Maths.min(gachas.map((e) => e.gacha.openedAt))),
+      endTime: MappingBase(jp: Maths.min(gachas.map((e) => e.gacha.closedAt))),
+      officialBanner: MappingBase(jp: AssetURL.i.summonBanner(gachas.first.gacha.imageId)),
+      subSummons: gachas.map((gacha) {
+        String title = gacha.gacha.name.substring(name.length).trim();
+        if (title.isEmpty) title = gacha.gacha.name;
+        return gacha.toSubSummon()..title = title;
+      }).toList(),
+    );
+  }
+
+  String _findCleanCommonPrefix(List<String> strings) {
+    if (strings.isEmpty) return '';
+
+    String _findLongestCommonPrefix() {
+      if (strings.isEmpty) return '';
+      String first = strings[0];
+      for (int i = 0; i < first.length; i++) {
+        String currentChar = first[i];
+        for (int j = 1; j < strings.length; j++) {
+          if (i >= strings[j].length || strings[j][i] != currentChar) {
+            return first.substring(0, i);
+          }
+        }
+      }
+      return first;
+    }
+
+    String commonPrefix = _findLongestCommonPrefix();
+    if (commonPrefix.isEmpty) return '';
+
+    const trailingChars = {' ', '　', '(', '（', '【', '[', '「', '『', '｢'};
+    int end = commonPrefix.length - 1;
+    while (end >= 0 && trailingChars.contains(commonPrefix[end])) {
+      end--;
+    }
+    if (end < 0) return '';
+    return commonPrefix.substring(0, end + 1);
   }
 }
