@@ -2576,9 +2576,9 @@ class BattleServantData {
         }
       }
     } else {
-      final skillSealed = hasBuffNoProbabilityCheck(BuffAction.donotSkill);
-      if (!skillSealed) {
-        for (final skill in skillInfoList) {
+      for (int skillIdx = 0; skillIdx < skillInfoList.length; skillIdx++) {
+        final skill = skillInfoList[skillIdx];
+        if (canUseSkillIgnoreCoolDown(battleData, skillIdx)) {
           skill.turnEnd();
         }
       }
