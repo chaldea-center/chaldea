@@ -2699,6 +2699,10 @@ class BattleServantData {
 
     if (gutsToApply != null) {
       await activateBuff(battleData, BuffAction.functionGutsBefore, opponent: lastHitBy);
+      for (final svt in battleData.nonnullActors) {
+        await svt.activateBuff(battleData, BuffAction.action171, opponent: this);
+      }
+
       gutsToApply.setUsed(this, battleData);
       final value = gutsToApply.getValue(this);
       final isRatio = gutsToApply.buff.type == BuffType.gutsRatio || gutsToApply.buff.type == BuffType.shiftGutsRatio;
