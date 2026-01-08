@@ -193,14 +193,15 @@ class MasterDataManager extends MasterDataManagerBase {
   Iterable<UserServantEntity> get userSvtAndStorage => userSvt.followedBy(userSvtStorage);
   UserServantEntity? getUserSvt(int userSvtId) => userSvt[userSvtId] ?? userSvtStorage[userSvtId];
 
-  MagusGrade get magusGrade {
+  MagusGrade? get magusGrade {
     if (isQuestClear(4000709)) {
       return MagusGrade.pride;
     }
     if (isQuestClear(1000822)) {
       return MagusGrade.cause;
     }
-    return MagusGrade.none;
+    // return MagusGrade.none;
+    return null;
   }
 
   bool isQuestClear(int questId) => (userQuest[questId]?.clearNum ?? 0) > 0;
@@ -401,15 +402,21 @@ class MasterDataManager extends MasterDataManagerBase {
 }
 
 enum MagusGrade {
-  none('無'),
-  frame('末子'),
-  count('長子'),
+  // none('無'),
+  // frame('末子'),
+  // count('長子'),
   cause('開位'),
-  fes('祭位'),
-  pride('典位'),
-  brand('色位'),
-  grand('冠位');
+  // fes('祭位'),
+  pride('典位')
+  // brand('色位'),
+  // grand('冠位')
+  ;
 
   const MagusGrade(this.gradeName);
   final String gradeName;
+
+  String? get icon => switch (this) {
+    cause => 'https://static.atlasacademy.io/file/aa-fgo-extract-jp/Battle/Common/CommonUIAtlas/icon_grade_1.png',
+    pride => 'https://static.atlasacademy.io/JP/ClassIcons/icon_grade_2.png',
+  };
 }

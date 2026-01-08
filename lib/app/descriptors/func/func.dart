@@ -1414,6 +1414,10 @@ class FuncDescriptor extends StatelessWidget {
           SharedBuilder.textButtonSpan(context: context, text: Transl.special.variousPositiveBuffs),
           const TextSpan(text: ' '),
         ]);
+      } else if ((buff.type == BuffType.guts || buff.type == BuffType.gutsRatio) &&
+          buff.ckOpIndv.length == 1 &&
+          buff.ckOpIndv.first == -Trait.ignoreGuts.value) {
+        //
       } else {
         _addTraits(Transl.special.buffCheckOpposite, buff.ckOpIndv, useAnd: buff.script.checkIndvTypeAnd == true);
       }
@@ -1441,7 +1445,7 @@ class FuncDescriptor extends StatelessWidget {
         }
         if ((buff.type == BuffType.guts || buff.type == BuffType.gutsRatio) &&
             ownerIndivs.length == 1 &&
-            ownerIndivs.first == -3086 &&
+            ownerIndivs.first == -Trait.gutsBlock.value &&
             countCond == null) {
           // don't show gutsBlock
         } else {

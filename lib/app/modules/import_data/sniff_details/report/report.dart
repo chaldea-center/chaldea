@@ -341,9 +341,11 @@ class _FgoAnnualReportRealPageState extends State<FgoAnnualReportRealPage> {
     String friendCode = options.showFriendCode ? report.userGame.friendCode : '*' * 9;
     // double avatarWidth = 64;
     // double avatarRatio = 128 / 215;
-    double graphRation = 150 / 1024;
+    double graphRatio = 150 / 1024;
 
     final equipUrl = options.getMasterEquipImageUrl();
+
+    final magusGrade = report.mstData.magusGrade?.icon;
 
     return ReportCard(
       onTap: () async {
@@ -351,46 +353,51 @@ class _FgoAnnualReportRealPageState extends State<FgoAnnualReportRealPage> {
         if (mounted) setState(() {});
       },
       backgrounds: [
-        Positioned(
-          top: 5,
-          left: 5,
-          child: Opacity(
-            opacity: 0.4,
-            child: CachedImage(
-              imageUrl: 'https://static.atlasacademy.io/JP/EventUI/questboard_icon_cap0301.png',
-              width: 90 * 0.5,
-              height: 106 * 0.5,
-              placeholder: _blankPlaceholder,
-            ),
-
-            // ClipPath(
-            //   clipper: const RelativePolygonClipper([Offset(0, 0), Offset(1, 0), Offset(1, 0.8), Offset(0, 0.8)]),
-            //   child: Image.asset('res/img/chaldea.png'),
-            //   // https://static.atlasacademy.io/JP/EventUI/questboard_icon_cap0301.png
-            //   // https://static.atlasacademy.io/JP/EventUI/quest_board_icon_301.png
-            // ),
+        // Positioned(
+        //   top: 5,
+        //   left: 5,
+        //   child: Opacity(
+        //     opacity: 0.4,
+        //     child: CachedImage(
+        //       imageUrl: 'https://static.atlasacademy.io/JP/EventUI/questboard_icon_cap0301.png',
+        //       width: 90 * 0.5,
+        //       height: 106 * 0.5,
+        //       placeholder: _blankPlaceholder,
+        //     ),
+        //     // ClipPath(
+        //     //   clipper: const RelativePolygonClipper([Offset(0, 0), Offset(1, 0), Offset(1, 0.8), Offset(0, 0.8)]),
+        //     //   child: Image.asset('res/img/chaldea.png'),
+        //     //   // https://static.atlasacademy.io/JP/EventUI/questboard_icon_cap0301.png
+        //     //   // https://static.atlasacademy.io/JP/EventUI/quest_board_icon_301.png
+        //     // ),
+        //   ),
+        // ),
+        if (magusGrade != null)
+          Positioned(
+            left: 6,
+            top: 6,
+            child: CachedImage(imageUrl: magusGrade, width: 32, height: 32, placeholder: _blankPlaceholder),
           ),
-        ),
       ],
       child: Row(
         children: [
           Container(
-            width: 1024 * graphRation * 0.6,
-            height: 1024 * graphRation * 0.65,
+            width: 1024 * graphRatio * 0.65,
+            height: 1024 * graphRatio * 0.65,
             decoration: BoxDecoration(),
             clipBehavior: Clip.antiAlias,
             child: OverflowBox(
               alignment: Alignment.topLeft,
               fit: .deferToChild,
-              maxWidth: 1024 * graphRation,
-              maxHeight: 1024 * graphRation,
+              maxWidth: 1024 * graphRatio,
+              maxHeight: 1024 * graphRatio,
               child: AnimatedSwitcher(
                 duration: const Duration(milliseconds: 400),
                 child: CachedImage(
                   key: Key(equipUrl),
                   imageUrl: equipUrl,
-                  width: 1024 * graphRation,
-                  height: 1024 * graphRation,
+                  width: 1024 * graphRatio,
+                  height: 1024 * graphRatio,
                   placeholder: _blankPlaceholder,
                 ),
               ),

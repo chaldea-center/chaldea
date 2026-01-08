@@ -467,7 +467,7 @@ class GameConstants {
   final int braveChainIndividuality; // 4108
   final int busterChainIndividuality; // 4106
   final int campaignResetAt; // 4
-  final int canSelectSvtMaterialFlag; // 26
+  final int canSelectSvtMaterialFlag; // 28
   final int chainbonusArtsRate; // 200
   final int chainbonusBusterRate; // 200
   final int chainbonusQuick; // 20
@@ -586,7 +586,7 @@ class GameConstants {
   final int largeSuccessMultExp; // 2000
   final int largeSuccessRate; // 100
   final int lastAttackToSelfIndividuality; // 6045
-  final int lastWarId; // 407
+  final int lastWarId; // 500
   final int limitedPeriodVoiceChangeType; // 0
   final int limitedShopRemainDays; // 1000
   final int loginDay; // 1459436400
@@ -626,7 +626,7 @@ class GameConstants {
   final int maxUserCommandCode; // 1000
   final int maxUserEquipExpUpRatio; // 3000
   final int maxUserItem; // 999999999
-  final int maxUserLv; // 190
+  final int maxUserLv; // 200
   final int maxUserSvt; // 1000
   final int maxUserSvtEquip; // 1000
   final int maxUserSvtEquipStorage; // 100
@@ -669,7 +669,7 @@ class GameConstants {
   final int raidDefeatedEffectTime; // 0
   final int raidMarkdispStep; // 4
   final int raidTutorialQuestId; // 94004504
-  final int recommendSupportFriendPoint; // 200
+  final int recommendSupportFriendPoint; // 100
   final int recoveryValue; // 2
   final int requestRaidUpdateEventMap; // 60
   final int requestTopHomeExpirationDateSecUpdateEventMap; // 900
@@ -801,7 +801,7 @@ class GameConstants {
     this.braveChainIndividuality = 4108,
     this.busterChainIndividuality = 4106,
     this.campaignResetAt = 4,
-    this.canSelectSvtMaterialFlag = 26,
+    this.canSelectSvtMaterialFlag = 28,
     this.chainbonusArtsRate = 200,
     this.chainbonusBusterRate = 200,
     this.chainbonusQuick = 20,
@@ -920,7 +920,7 @@ class GameConstants {
     this.largeSuccessMultExp = 2000,
     this.largeSuccessRate = 100,
     this.lastAttackToSelfIndividuality = 6045,
-    this.lastWarId = 407,
+    this.lastWarId = 500,
     this.limitedPeriodVoiceChangeType = 0,
     this.limitedShopRemainDays = 1000,
     this.loginDay = 1459436400,
@@ -960,7 +960,7 @@ class GameConstants {
     this.maxUserCommandCode = 1000,
     this.maxUserEquipExpUpRatio = 3000,
     this.maxUserItem = 999999999,
-    this.maxUserLv = 190,
+    this.maxUserLv = 200,
     this.maxUserSvt = 1000,
     this.maxUserSvtEquip = 1000,
     this.maxUserSvtEquipStorage = 100,
@@ -1003,7 +1003,7 @@ class GameConstants {
     this.raidDefeatedEffectTime = 0,
     this.raidMarkdispStep = 4,
     this.raidTutorialQuestId = 94004504,
-    this.recommendSupportFriendPoint = 200,
+    this.recommendSupportFriendPoint = 100,
     this.recoveryValue = 2,
     this.requestRaidUpdateEventMap = 60,
     this.requestTopHomeExpirationDateSecUpdateEventMap = 900,

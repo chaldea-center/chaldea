@@ -159,8 +159,9 @@ class AtlasIconLoader extends _CachedLoader<String, String> {
     }
     if (localPath == null) return null;
     if (const <String>[
-      '/JP/Banner/questboard_cap14000.png', // Ordeal Call
-      '/JP/Banner/questboard_cap15000.png', // 終章
+      '/questboard_cap14000.png', // Ordeal Call
+      '/questboard_cap15000.png', // 終章
+      '/questboard_cap16000.png', // ??? (After Part 2)
     ].any((e) => url.endsWith(e))) {
       return null;
     }

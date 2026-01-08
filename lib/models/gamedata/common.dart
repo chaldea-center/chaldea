@@ -1053,6 +1053,7 @@ enum Trait {
   demeritFunction(3098),
   extraBuff(3100),
   buffSpecialInvinciblePierce(3104),
+  ignoreGuts(3139),
   cardArts(4001),
   cardBuster(4002),
   cardQuick(4003),

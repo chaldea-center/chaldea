@@ -48,17 +48,17 @@ class _UserEventMissionReceivePageState extends State<UserEventMissionReceivePag
   }
 
   Future<void> initData() async {
-    mms = runtime.gameData.timerData.masterMissions.values.toList();
+    final _mms = Map.of(runtime.gameData.timerData.masterMissions);
     final now = DateTime.now().timestamp;
 
-    mms.retainWhere((mm) {
-      if (mm.id == widget.initId) return true;
-      if (const [MissionType.event, MissionType.random].contains(mm.type)) return false;
-      if (mm.startedAt > now || mm.closedAt < now) return false;
+    _mms.removeWhere((_, mm) {
+      if (mm.id == widget.initId) return false;
+      if (const [MissionType.event, MissionType.random].contains(mm.type)) return true;
+      if (mm.startedAt > now || mm.closedAt < now) return true;
       if (mm.type == MissionType.daily) {
-        if (mm.endedAt < now - kSecsPerDay * 40) return false;
+        if (mm.endedAt < now - kSecsPerDay * 40) return true;
       }
-      return true;
+      return false;
     });
 
     for (final event in runtime.gameData.timerData.events.values) {
@@ -74,35 +74,32 @@ class _UserEventMissionReceivePageState extends State<UserEventMissionReceivePag
         }
       }
       if (eventMissions.isNotEmpty) {
-        mms.add(
-          MasterMission(
-            id: event.id,
-            startedAt: event.startedAt,
-            endedAt: event.endedAt,
-            closedAt: event.endedAt,
-            missions: eventMissions,
-            script: {MstMasterMission.kMissionIconDetailText: event.lShortName.l.setMaxLines(1)},
-          ),
+        _mms[event.id] ??= MasterMission(
+          id: event.id,
+          startedAt: event.startedAt,
+          endedAt: event.endedAt,
+          closedAt: event.endedAt,
+          missions: eventMissions,
+          script: {MstMasterMission.kMissionIconDetailText: event.lShortName.l.setMaxLines(1)},
         );
       }
       if (randomMissions.isNotEmpty) {
-        mms.add(
-          MasterMission(
-            id: event.id * 100 + 1,
-            startedAt: event.startedAt,
-            endedAt: event.endedAt,
-            closedAt: event.endedAt,
-            missions: randomMissions,
-            script: {
-              MstMasterMission.kMissionIconDetailText:
-                  '[${S.current.random_mission}] ${event.lShortName.l.setMaxLines(1)}',
-            },
-          ),
+        _mms[event.id * 100 + 1] ??= MasterMission(
+          id: event.id * 100 + 1,
+          startedAt: event.startedAt,
+          endedAt: event.endedAt,
+          closedAt: event.endedAt,
+          missions: randomMissions,
+          script: {
+            MstMasterMission.kMissionIconDetailText:
+                '[${S.current.random_mission}] ${event.lShortName.l.setMaxLines(1)}',
+          },
         );
       }
     }
 
     // mms.removeWhere((mm) => mm.type == MissionType.daily && mm.endedAt - mm.startedAt > kSecsPerDay * 40);
+    final mms = _mms.values.toList();
     mms.sortByList((e) => [e.endedAt, e.closedAt, e.id]);
     if (mms.isNotEmpty) {
       MasterMission? mm;

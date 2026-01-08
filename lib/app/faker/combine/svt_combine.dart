@@ -566,7 +566,7 @@ class _SvtCombinePageState extends State<SvtCombinePage> with FakerRuntimeStateM
                             overflow: .ellipsis,
                           ),
                           runtime: runtime,
-                          skillMaterials: svt.appendSkillMaterials,
+                          skillMaterials: svt.skillMaterials,
                           getCurLv: () => mstData.userSvt[options.baseUserSvtId]?.skillLvs[skillNum - 1],
                           maxLevel: 9,
                           callCombine: (curLv) => runtime.agent.servantSkillCombine(
