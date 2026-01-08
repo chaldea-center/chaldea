@@ -60,7 +60,7 @@ part '../../generated/models/gamedata/gamedata.g.dart';
 
 @JsonSerializable(converters: [RegionConverter()], createToJson: false)
 class GameData with _GameDataExtra {
-  static final kMinCompatibleVer = DateTime.utc(2025, 12, 28);
+  static final kMinCompatibleVer = DateTime.utc(2026, 1, 8);
   DataVersion version;
   @protected
   Map<int, Servant> servants;
@@ -305,6 +305,20 @@ class GameData with _GameDataExtra {
     for (final event in events.values) {
       event.calcItems(this);
     }
+    if (events.values.every((event) => event.questReleaseOverwrites.isEmpty)) {
+      for (final quest in quests.values) {
+        for (final release in quest.releaseOverwrites) {
+          final event = events[release.eventId];
+          if (event == null) continue;
+          if (event.questReleaseOverwrites.isEmpty) {
+            // in case it is `const []`
+            event.questReleaseOverwrites = [];
+          }
+          event.questReleaseOverwrites.add(release);
+        }
+      }
+    }
+
     for (final svt in servants.values) {
       svt.extraAssets.charaFigure.story?.keys.forEach((charaId) {
         storyCharaFigures[charaId ~/ 10] = svt.id;

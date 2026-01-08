@@ -129,6 +129,11 @@ Event _$EventFromJson(Map json) => Event(
           ?.map((e) => EventQuest.fromJson(Map<String, dynamic>.from(e as Map)))
           .toList() ??
       const [],
+  questReleaseOverwrites:
+      (json['questReleaseOverwrites'] as List<dynamic>?)
+          ?.map((e) => QuestReleaseOverwrite.fromJson(Map<String, dynamic>.from(e as Map)))
+          .toList() ??
+      const [],
   commandAssists:
       (json['commandAssists'] as List<dynamic>?)
           ?.map((e) => EventCommandAssist.fromJson(Map<String, dynamic>.from(e as Map)))
@@ -193,6 +198,7 @@ Map<String, dynamic> _$EventToJson(Event instance) => <String, dynamic>{
   'tradeGoods': instance.tradeGoods.map((e) => e.toJson()).toList(),
   'campaigns': instance.campaigns.map((e) => e.toJson()).toList(),
   'campaignQuests': instance.campaignQuests.map((e) => e.toJson()).toList(),
+  'questReleaseOverwrites': instance.questReleaseOverwrites.map((e) => e.toJson()).toList(),
   'commandAssists': instance.commandAssists.map((e) => e.toJson()).toList(),
   'heelPortraits': instance.heelPortraits.map((e) => e.toJson()).toList(),
   'murals': instance.murals.map((e) => e.toJson()).toList(),

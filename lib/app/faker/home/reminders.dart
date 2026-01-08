@@ -238,20 +238,24 @@ class FakerReminders extends StatelessWidget {
       final svt = svtQuests[questId];
       if (checkSvt && svt != null) {
         if (mstData.userSvtCollection[svt.id]?.isOwned != true) return false;
+        if (runtime.region != .jp) {
+          final releasedAt = db.gameData.mappingData.questRelease[questId]?.ofRegion(runtime.region);
+          if (releasedAt != null && releasedAt > now) return false;
+        }
       }
       return true;
     }
 
     // interlude campaign
-    final interludeCampaignIds = {
-      for (final event in runtime.gameData.timerData.events.values)
-        if (event.type == EventType.interludeCampaign && event.startedAt <= now && event.endedAt > now) event.id,
-    };
-    if (interludeCampaignIds.isNotEmpty) {
-      for (final quest in db.gameData.quests.values) {
-        if (quest.releaseOverwrites.every((e) => !interludeCampaignIds.contains(e.eventId))) continue;
-        final userQuest = mstData.userQuest[quest.id];
+    for (final event in runtime.gameData.timerData.events.values) {
+      if (event.startedAt > now || event.endedAt <= now) continue;
+      for (final release in event.questReleaseOverwrites) {
+        if (release.startedAt > now || release.endedAt <= now) continue;
+        final userQuest = mstData.userQuest[release.questId];
         if (userQuest != null && userQuest.clearNum > 0) continue;
+        final quest = db.gameData.quests[release.questId];
+        if (quest == null) continue;
+
         final interludeSvt =
             db.gameData.servantsById[quest.releaseConditions
                 .firstWhereOrNull((release) => const [CondType.svtGet, CondType.svtFriendship].contains(release.type))

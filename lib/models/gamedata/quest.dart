@@ -1015,6 +1015,7 @@ class QuestRelease {
 
 @JsonSerializable()
 class QuestReleaseOverwrite {
+  int questId;
   int priority;
   // int imagePriority;
   @CondTypeConverter()
@@ -1028,6 +1029,7 @@ class QuestReleaseOverwrite {
   int endedAt;
 
   QuestReleaseOverwrite({
+    required this.questId,
     this.priority = 0,
     this.condType = CondType.none,
     this.condId = 0,

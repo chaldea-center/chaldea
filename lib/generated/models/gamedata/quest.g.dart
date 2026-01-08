@@ -522,6 +522,7 @@ Map<String, dynamic> _$QuestReleaseToJson(QuestRelease instance) => <String, dyn
 };
 
 QuestReleaseOverwrite _$QuestReleaseOverwriteFromJson(Map json) => QuestReleaseOverwrite(
+  questId: (json['questId'] as num).toInt(),
   priority: (json['priority'] as num?)?.toInt() ?? 0,
   condType: json['condType'] == null ? CondType.none : const CondTypeConverter().fromJson(json['condType'] as String),
   condId: (json['condId'] as num?)?.toInt() ?? 0,
@@ -534,6 +535,7 @@ QuestReleaseOverwrite _$QuestReleaseOverwriteFromJson(Map json) => QuestReleaseO
 );
 
 Map<String, dynamic> _$QuestReleaseOverwriteToJson(QuestReleaseOverwrite instance) => <String, dynamic>{
+  'questId': instance.questId,
   'priority': instance.priority,
   'condType': const CondTypeConverter().toJson(instance.condType),
   'condId': instance.condId,

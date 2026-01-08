@@ -57,6 +57,7 @@ class Event with RouteInfo {
   List<EventTradeGoods> tradeGoods;
   List<EventCampaign> campaigns;
   List<EventQuest> campaignQuests;
+  List<QuestReleaseOverwrite> questReleaseOverwrites;
   List<EventCommandAssist> commandAssists;
   List<HeelPortrait> heelPortraits;
   List<EventMural> murals;
@@ -113,6 +114,7 @@ class Event with RouteInfo {
     this.tradeGoods = const [],
     this.campaigns = const [],
     this.campaignQuests = const [],
+    this.questReleaseOverwrites = const [],
     this.commandAssists = const [],
     this.heelPortraits = const [],
     this.murals = const [],
