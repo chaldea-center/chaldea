@@ -671,6 +671,8 @@ enum WarOverwriteType {
   masterFaceIcon,
   priority,
   recommendSupportHeaderImgId,
+  bgObject,
+  recommendSupportParentWar,
 }
 
 enum WarStartType { none, script, quest }

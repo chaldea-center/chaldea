@@ -278,7 +278,7 @@ Map<String, dynamic> _$CardInfoToJson(CardInfo instance) => <String, dynamic>{
 GrailCostDetail _$GrailCostDetailFromJson(Map json) => GrailCostDetail(
   qp: (json['qp'] as num).toInt(),
   addLvMax: (json['addLvMax'] as num).toInt(),
-  frameType: $enumDecodeNullable(_$SvtFrameTypeEnumMap, json['frameType']) ?? SvtFrameType.gold,
+  frameType: $enumDecodeNullable(_$SvtFrameTypeEnumMap, json['frameType']) ?? SvtFrameType.silver,
 );
 
 Map<String, dynamic> _$GrailCostDetailToJson(GrailCostDetail instance) => <String, dynamic>{
@@ -296,6 +296,10 @@ const _$SvtFrameTypeEnumMap = {
   SvtFrameType.goldRedGreat: 'goldRedGreat',
   SvtFrameType.goldBlack: 'goldBlack',
   SvtFrameType.goldBlackGreat: 'goldBlackGreat',
+  SvtFrameType.hide: 'hide',
+  SvtFrameType.blank: 'blank',
+  SvtFrameType.support: 'support',
+  SvtFrameType.supportOnly: 'supportOnly',
 };
 
 MasterUserLvDetail _$MasterUserLvDetailFromJson(Map json) => MasterUserLvDetail(

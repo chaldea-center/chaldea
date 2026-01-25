@@ -1387,7 +1387,8 @@ enum CondType {
   notEquipGet(265),
   svtGetBeforeDate(266),
   svtGetAfterDate(267),
-  notQuestAvailable(268);
+  notQuestAvailable(268),
+  notImagePartsGroup(269);
 
   const CondType(this.value);
   final int value;

@@ -643,10 +643,7 @@ class FuncDescriptor extends StatelessWidget {
     Buff? buff = func.buff;
     final vals = func.svals.firstOrNull;
 
-    if ((func.funcType == FuncType.addState ||
-            func.funcType == FuncType.addStateShort ||
-            func.funcType == FuncType.addFieldChangeToField) &&
-        buff != null) {
+    if ((func.funcType.isAddState) && buff != null) {
       if (showBuffDetail) {
         funcText.write(Transl.buffDetail(buff.detail).l);
       } else {
@@ -1426,41 +1423,7 @@ class FuncDescriptor extends StatelessWidget {
         _addTraits('Target Indiv: ', [script.TargetIndiv!]);
       }
 
-      List<int> ownerIndivs = [];
-      bool ownerIndivAnd = false;
-      if (buff.script.INDIVIDUALITIE != null) {
-        ownerIndivs.add(buff.script.INDIVIDUALITIE!);
-      } else if (buff.script.INDIVIDUALITIE_AND != null) {
-        ownerIndivs = buff.script.INDIVIDUALITIE_AND!;
-        ownerIndivAnd = true;
-      } else if (buff.script.INDIVIDUALITIE_OR != null) {
-        ownerIndivs = buff.script.INDIVIDUALITIE_OR!;
-      }
-      if (ownerIndivs.isNotEmpty) {
-        String? countCond;
-        if (buff.script.INDIVIDUALITIE_COUNT_ABOVE != null) {
-          countCond = '≥${buff.script.INDIVIDUALITIE_COUNT_ABOVE}';
-        } else if (buff.script.INDIVIDUALITIE_COUNT_BELOW != null) {
-          countCond = '≤${buff.script.INDIVIDUALITIE_COUNT_BELOW}';
-        }
-        if ((buff.type == BuffType.guts || buff.type == BuffType.gutsRatio) &&
-            ownerIndivs.length == 1 &&
-            ownerIndivs.first == -Trait.gutsBlock.value &&
-            countCond == null) {
-          // don't show gutsBlock
-        } else {
-          final ownerIndivSpans = SharedBuilder.replaceSpan(Transl.special.buffOwnerIndiv, '{0}', [
-            ...SharedBuilder.traitSpans(context: context, traits: ownerIndivs, useAndJoin: ownerIndivAnd),
-            if (countCond != null) TextSpan(text: countCond),
-          ]);
-          final targetTypeId = buff.script.individualityCondTargetType;
-          if (targetTypeId != null) {
-            final targetType = BuffConditionTargetType.fromId(targetTypeId);
-            ownerIndivSpans.insert(0, TextSpan(text: "(${targetType?.dispName ?? 'TargetType $targetTypeId'})"));
-          }
-          _condSpans.add(ownerIndivSpans);
-        }
-      }
+      _condSpans.addAll(_buildOwnerIndiv(context, buff, script));
 
       for (final (target, ckCountIndiv) in [
         (Transl.special.buffCheckSelf, buff.script.ckSelfCountIndividuality),
@@ -1641,6 +1604,7 @@ class FuncDescriptor extends StatelessWidget {
       );
     }
 
+    _condSpans.removeWhere((e) => e.isEmpty);
     for (int index = 0; index < _condSpans.length; index++) {
       spans.add(TextSpan(text: index == _condSpans.length - 1 ? '\n ┗ ' : '\n ┣ '));
       spans.addAll(_condSpans[index]);
@@ -1671,6 +1635,67 @@ class FuncDescriptor extends StatelessWidget {
     }
     last = Padding(padding: padding ?? const EdgeInsets.symmetric(horizontal: 16, vertical: 4), child: last);
     return last;
+  }
+
+  List<List<InlineSpan>> _buildOwnerIndiv(BuildContext context, Buff buff, BuffScript script0) {
+    List<List<InlineSpan>> output = [];
+    List<InlineSpan> _buildOneScript(BuffScript script, bool innerLoop) {
+      List<int> ownerIndivs = [];
+      bool ownerIndivAnd = false;
+      if (script.INDIVIDUALITIE != null) {
+        ownerIndivs.add(script.INDIVIDUALITIE!);
+      } else if (script.INDIVIDUALITIE_AND != null) {
+        ownerIndivs = script.INDIVIDUALITIE_AND!;
+        ownerIndivAnd = true;
+      } else if (script.INDIVIDUALITIE_OR != null) {
+        ownerIndivs = script.INDIVIDUALITIE_OR!;
+      }
+      if (ownerIndivs.isEmpty) return [];
+
+      String? countCond;
+      if (script.INDIVIDUALITIE_COUNT_ABOVE != null) {
+        countCond = '≥${script.INDIVIDUALITIE_COUNT_ABOVE}';
+      } else if (script.INDIVIDUALITIE_COUNT_BELOW != null) {
+        countCond = '≤${script.INDIVIDUALITIE_COUNT_BELOW}';
+      }
+      if (!innerLoop &&
+          (buff.type == BuffType.guts || buff.type == BuffType.gutsRatio) &&
+          ownerIndivs.length == 1 &&
+          ownerIndivs.first == -Trait.gutsBlock.value &&
+          countCond == null) {
+        // don't show gutsBlock
+        return [];
+      } else {
+        final ownerIndivSpans = SharedBuilder.replaceSpan(Transl.special.buffOwnerIndiv, '{0}', [
+          ...SharedBuilder.traitSpans(context: context, traits: ownerIndivs, useAndJoin: ownerIndivAnd),
+          if (countCond != null) TextSpan(text: countCond),
+        ]);
+        final targetTypeId = script.individualityCondTargetType;
+        if (targetTypeId != null) {
+          final targetType = BuffConditionTargetType.fromId(targetTypeId);
+          ownerIndivSpans.insert(0, TextSpan(text: "(${targetType?.dispName ?? 'TargetType $targetTypeId'})"));
+        }
+        return ownerIndivSpans;
+      }
+    }
+
+    output.add(_buildOneScript(script0, false));
+    final multiOrIndiv = script0.INDIVIDUALITIE_MULTI_OR;
+    if (multiOrIndiv != null && multiOrIndiv.isNotEmpty) {
+      output.add(
+        divideList([
+          for (final indivScript in multiOrIndiv)
+            TextSpan(
+              children: [
+                const TextSpan(text: '('),
+                ..._buildOneScript(indivScript, true),
+                const TextSpan(text: ')'),
+              ],
+            ),
+        ], const TextSpan(text: ' / ')),
+      );
+    }
+    return output;
   }
 
   List<Widget> _buildTrigger(BuildContext context) {

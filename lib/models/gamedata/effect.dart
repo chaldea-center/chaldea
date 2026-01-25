@@ -368,7 +368,7 @@ class SkillEffect {
   // 特定时发动
   static SkillEffect triggerFunc = SkillEffect(
     'triggerFunc',
-    funcTypes: [FuncType.addState, FuncType.addStateShort],
+    funcTypes: FuncType.kAddStateFuncTypes,
     validate: (func) => kBuffValueTriggerTypes.containsKey(func.buffs.first.type),
   );
 }

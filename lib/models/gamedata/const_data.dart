@@ -341,7 +341,7 @@ class GrailCostDetail {
   int addLvMax;
   SvtFrameType frameType;
 
-  GrailCostDetail({required this.qp, required this.addLvMax, this.frameType = SvtFrameType.gold});
+  GrailCostDetail({required this.qp, required this.addLvMax, this.frameType = SvtFrameType.silver});
 
   factory GrailCostDetail.fromJson(Map<String, dynamic> json) => _$GrailCostDetailFromJson(json);
 
@@ -1253,7 +1253,20 @@ class SvtAllowedExtraPassive {
   Map<String, dynamic> toJson() => _$SvtAllowedExtraPassiveToJson(this);
 }
 
-enum SvtFrameType { black, bronze, silver, gold, goldRed, goldRedGreat, goldBlack, goldBlackGreat }
+enum SvtFrameType {
+  black,
+  bronze,
+  silver, // default
+  gold,
+  goldRed,
+  goldRedGreat,
+  goldBlack,
+  goldBlackGreat,
+  hide,
+  blank,
+  support,
+  supportOnly,
+}
 
 // String or int
 class BuffActionConverter extends JsonConverter<BuffAction, dynamic> {

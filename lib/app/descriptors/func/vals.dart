@@ -170,9 +170,7 @@ class ValDsc extends StatelessWidget {
     }
     // end conditions
 
-    if (func.funcType == FuncType.addState ||
-        func.funcType == FuncType.addStateShort ||
-        func.funcType == FuncType.addFieldChangeToField) {
+    if (func.funcType.isAddState) {
       final buff = func.buff;
       if (buff != null) {
         describeBuff(parts, func.buffs.first, vals, inList: inList, ignoreCount: ignoreCount);

@@ -644,7 +644,13 @@ enum FuncType {
   final int value;
   const FuncType(this.value);
 
-  static const kAddStateFuncTypes = [FuncType.addState, FuncType.addStateShort, FuncType.addFieldChangeToField];
+  static const kAddStateFuncTypes = <FuncType>[
+    addState,
+    addStateShort,
+    addFieldChangeToField,
+    addStateToField,
+    addStateShortToField,
+  ];
   static const kValsNotBuffOrTraitFuncTypes = [
     FuncType.addBattleValue,
     FuncType.setBattleValue,

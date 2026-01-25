@@ -487,4 +487,5 @@ const _$CondTypeEnumMap = {
   CondType.svtGetBeforeDate: 'svtGetBeforeDate',
   CondType.svtGetAfterDate: 'svtGetAfterDate',
   CondType.notQuestAvailable: 'notQuestAvailable',
+  CondType.notImagePartsGroup: 'notImagePartsGroup',
 };

@@ -189,6 +189,12 @@ class BuffScript with DataScriptBase {
     return [for (final x in v) CondBuffValueData.fromJson(Map.from(x))];
   }
 
+  List<BuffScript>? get INDIVIDUALITIE_MULTI_OR {
+    final v = source['INDIVIDUALITIE_MULTI_OR'];
+    if (v == null || v is! List || v.isEmpty) return null;
+    return [for (final x in v) BuffScript.fromJson(Map.from(x))..setSource(Map.from(x))];
+  }
+
   BuffScript({this.checkIndvType, this.CheckOpponentBuffTypes, this.relationId, this.convert});
 
   factory BuffScript.fromJson(Map<String, dynamic> json) => _$BuffScriptFromJson(json);
