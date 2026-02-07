@@ -211,7 +211,7 @@ class ServerFeedbackHandler extends ReportHandler {
       }
     }
     if (_blockedErrors == null) {
-      _blockedErrors = (await CachedApi.remoteConfig())?.blockedErrors ?? [];
+      _blockedErrors = (await CachedApi.remoteConfig()).blockedErrors;
       _blockedErrors?.removeWhere((e) => e.isEmpty);
       // logger_.logger.d('_blockedErrors=${jsonEncode(_blockedErrors)}');
     }

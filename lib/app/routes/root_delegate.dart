@@ -123,7 +123,7 @@ class RootAppRouterDelegate extends RouterDelegate<RouteConfiguration>
   @override
   Widget build(BuildContext context) {
     Widget child = WindowManager(delegate: this);
-    if (db.runtimeData.remoteConfig?.isSilence == true) {
+    if (db.settings.remoteConfig.isSilence == true) {
       child = ColorFiltered(
         colorFilter: const ColorFilter.matrix(<double>[
           // grey scale

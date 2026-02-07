@@ -51,7 +51,7 @@ class ServerUrlConfig {
       worker = UrlProxy(src: worker, kGlobal: Hosts0.kWorkerHostGlobal, kCN: Hosts0.kWorkerHostCN),
       data = UrlProxy(src: data, kGlobal: Hosts0.kDataHostGlobal, kCN: Hosts0.kDataHostCN),
       atlasApi = UrlProxy(src: atlasApi, kGlobal: Hosts0.kAtlasApiHostGlobal, kCN: Hosts0.kAtlasApiHostCN),
-      atlasAsset = UrlProxy(src: atlasApi, kGlobal: Hosts0.kAtlasAssetHostGlobal, kCN: Hosts0.kAtlasAssetHostCN);
+      atlasAsset = UrlProxy(src: atlasAsset, kGlobal: Hosts0.kAtlasAssetHostGlobal, kCN: Hosts0.kAtlasAssetHostCN);
 
   factory ServerUrlConfig.fromJson(Map<String, dynamic> data) => _$ServerUrlConfigFromJson(data);
 
@@ -69,6 +69,9 @@ class UrlProxy {
   @JsonKey(includeFromJson: false, includeToJson: false)
   final String Function(String url)? _post;
 
+  String get global => of(false);
+  String get cn => of(true);
+
   UrlProxy._({String? global, String? cn})
     : _global = _check(global),
       _cn = _check(cn),
@@ -80,9 +83,6 @@ class UrlProxy {
     : _global = _check(src?.global),
       _cn = _check(src?.cn),
       _post = post;
-
-  String get global => of(false);
-  String get cn => of(true);
 
   String of(bool proxy) {
     String url = proxy ? (_cn ?? kCN) : (_global ?? kGlobal);
@@ -99,7 +99,12 @@ class UrlProxy {
 
   factory UrlProxy.fromJson(Map<String, dynamic> data) => _$UrlProxyFromJson(data);
 
-  Map<String, dynamic> toJson() => _$UrlProxyToJson(this);
+  Map<String, dynamic> toJson() {
+    final map = _$UrlProxyToJson(this);
+    if (_global == null) map.remove('global');
+    if (_cn == null) map.remove('cn');
+    return map;
+  }
 }
 
 @JsonSerializable()

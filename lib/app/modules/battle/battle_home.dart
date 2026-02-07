@@ -21,7 +21,7 @@ class BattleHomePage extends StatelessWidget {
     if (!db.gameData.isValid) {
       disableReasons.add(S.current.game_data_not_found);
     }
-    if (db.runtimeData.remoteConfig?.versionConstraints?.laplace?.isThisAppInvalid() ?? false) {
+    if (db.settings.remoteConfig.versionConstraints?.laplace?.isThisAppInvalid() ?? false) {
       disableReasons.add(S.current.update_app_hint);
     }
     if (disableReasons.isNotEmpty) {

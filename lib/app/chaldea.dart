@@ -174,9 +174,7 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin, WindowListener
 
     if (db.settings.showSystemTray) AppWindowUtil.setTray();
 
-    CachedApi.remoteConfig().then((value) {
-      if (value != null) db.settings.remoteConfig = value;
-    });
+    CachedApi.remoteConfig();
     if (db.settings.autoUpdateApp &&
         !kIsWeb &&
         (DateTime.now().timestamp - db.settings.lastLaunchTime > 7 * kSecsPerDay || db.settings.launchTimes % 5 == 0)) {

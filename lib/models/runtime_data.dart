@@ -23,8 +23,6 @@ class RuntimeData {
   DataVersion? upgradableDataVersion;
   AppVersion? dataRequiredAppVer;
 
-  RemoteConfig? remoteConfig;
-
   double? criticalWidth;
   bool showSkillOriginText = false;
 

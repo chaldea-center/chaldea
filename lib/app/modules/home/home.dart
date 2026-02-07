@@ -83,7 +83,7 @@ class _HomePageState extends State<HomePage> with AfterLayoutMixin {
   }
 
   Widget checkValidState(Widget child) {
-    final appVerConstraints = db.runtimeData.remoteConfig?.versionConstraints?.app;
+    final appVerConstraints = db.settings.remoteConfig.versionConstraints?.app;
     List<Widget> errors = [];
     if (!db.gameData.isValid) {
       errors.add(

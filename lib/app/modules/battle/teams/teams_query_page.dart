@@ -69,7 +69,7 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
   @override
   Widget build(BuildContext context) {
     filterShownList();
-    if (db.runtimeData.remoteConfig?.versionConstraints?.laplace?.isThisAppInvalid() ?? false) {
+    if (db.settings.remoteConfig.versionConstraints?.laplace?.isThisAppInvalid() ?? false) {
       return Center(child: Text(S.current.update_app_hint));
     }
     return scrollListener(useGrid: false, appBar: appBar);

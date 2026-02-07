@@ -359,7 +359,7 @@ class AppNewsCarousel extends StatefulWidget {
         carouselSetting.items.clear();
       }
       if ((result.isNotEmpty || updated)) {
-        List<String> blocked = (await CachedApi.remoteConfig())?.blockedCarousels ?? [];
+        List<String> blocked = (await CachedApi.remoteConfig()).blockedCarousels;
         blocked.removeWhere((e) => e.isEmpty);
         result.removeWhere((item) => blocked.any((word) => item.image?.contains(word) == true));
         int priority = 11;

@@ -411,12 +411,16 @@ class CachedApi {
   // silent
   static final ApiCacheManager cacheManager = ApiCacheManager(null);
 
-  static Future<RemoteConfig?> remoteConfig({Duration? expireAfter}) {
-    return cacheManager.getModel(
-      '${HostsX.dataHost}/config.json',
-      (data) => db.runtimeData.remoteConfig = RemoteConfig.fromJson(data),
-      expireAfter: expireAfter,
-    );
+  static Future<RemoteConfig> remoteConfig({Duration? expireAfter}) async {
+    for (final host in {HostsX.dataHost, HostsX.data.global, HostsX.data.cn}) {
+      RemoteConfig? config = await cacheManager.getModel(
+        '$host/config.json',
+        (data) => db.settings.remoteConfig = RemoteConfig.fromJson(data),
+        expireAfter: expireAfter,
+      );
+      if (config != null) return config;
+    }
+    return db.settings.remoteConfig;
   }
 
   static Future<Map?> biliVideoInfo({int? aid, String? bvid, Duration? expireAfter}) async {

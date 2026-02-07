@@ -139,7 +139,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
   }
 
   Widget buildBody() {
-    if (db.runtimeData.remoteConfig?.versionConstraints?.sniff?.isThisAppInvalid() ?? false) {
+    if (db.settings.remoteConfig.versionConstraints?.sniff?.isThisAppInvalid() ?? false) {
       return Center(child: Text(S.current.update_app_hint));
     }
     final url = ChaldeaUrl.doc('import_https/');
