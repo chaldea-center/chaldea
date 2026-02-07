@@ -108,11 +108,9 @@ class AppState extends ChangeNotifier {
 
 class RootAppRouterDelegate extends RouterDelegate<RouteConfiguration>
     with ChangeNotifier, PopNavigatorRouterDelegateMixin<RouteConfiguration> {
-  late final AppState appState;
+  late final AppState appState = AppState(this);
 
-  RootAppRouterDelegate() {
-    appState = AppState(this);
-  }
+  RootAppRouterDelegate();
 
   @override
   RouteConfiguration? get currentConfiguration {

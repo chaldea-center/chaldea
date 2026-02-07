@@ -201,7 +201,7 @@ class SplitRoute<T> extends PageRoute<T> with CupertinoRouteTransitionMixin<T> {
 
   @override
   bool get popGestureEnabled {
-    if (!shouldPopGestureEnabled) return false;
+    // if (!shouldPopGestureEnabled) return false;
     return super.popGestureEnabled;
   }
 

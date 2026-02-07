@@ -4,8 +4,11 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart' as material;
 import 'package:flutter/material.dart';
 
+import 'package:chaldea/models/db.dart';
 import 'package:chaldea/models/gamedata/common.dart';
 import 'package:chaldea/packages/analysis/analysis.dart';
+import 'package:chaldea/packages/method_channel/method_channel_chaldea.dart';
+import 'package:chaldea/packages/platform/platform.dart';
 import 'package:chaldea/utils/extension.dart';
 import '../../packages/split_route/split_route.dart';
 import 'root_delegate.dart';
@@ -23,10 +26,13 @@ class AppShell extends StatefulWidget {
 }
 
 class _AppShellState extends State<AppShell> {
+  late final childBackButtonDispatcher = Router.of(context).backButtonDispatcher?.createChildBackButtonDispatcher();
+
   @override
   Widget build(BuildContext context) {
-    final childBackButtonDispatcher = Router.of(context).backButtonDispatcher?.createChildBackButtonDispatcher();
-    childBackButtonDispatcher?.takePriority();
+    if (widget.active && childBackButtonDispatcher != null) {
+      childBackButtonDispatcher!.takePriority();
+    }
     return Router(routerDelegate: widget.routerDelegate, backButtonDispatcher: childBackButtonDispatcher);
   }
 }
@@ -39,12 +45,12 @@ class AppRouterDelegate extends RouterDelegate<RouteConfiguration>
   final RootAppRouterDelegate _parent;
 
   AppRouterDelegate(this._parent) {
-    addListener(_parent.notifyListeners);
+    // addListener(_parent.notifyListeners);
   }
 
   final List<SplitPage> _history = [];
 
-  List<Page> get pages => List.unmodifiable(_history);
+  List<SplitPage> get pages => List.unmodifiable(_history.where((e) => !e.completer.isCompleted));
 
   int get index => _parent.appState.children.indexOf(this);
 
@@ -95,12 +101,25 @@ class AppRouterDelegate extends RouterDelegate<RouteConfiguration>
     notifyListeners();
   }
 
+  @override
+  Future<bool> popRoute() async {
+    final NavigatorState? navigator = navigatorKey.currentState;
+    if (navigator != null && !navigator.canPop()) {
+      if (PlatformU.isAndroid) {
+        await db.saveAll();
+        MethodChannelChaldea.sendBackground();
+        return true;
+      }
+    }
+    return navigator?.maybePop() ?? SynchronousFuture<bool>(true);
+  }
+
   bool canPop() {
     return _history.length > 1;
   }
 
   void _doPop([dynamic result]) {
-    _history.removeLast().complete(result);
+    _history.removeLast();
   }
 
   void clearHistory() {
@@ -197,7 +216,6 @@ class AppRouterDelegate extends RouterDelegate<RouteConfiguration>
       final page = _history.last;
       if (page.detail == true) {
         _history.remove(page);
-        page.complete(null);
       } else {
         return;
       }
