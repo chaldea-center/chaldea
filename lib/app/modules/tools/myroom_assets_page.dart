@@ -30,6 +30,7 @@ enum _MyRoomChangeType {
 
 class _MyRoomData {
   List<MstMyRoomAdd> rooms = [];
+  Map<int, Map<int, List<MstMyRoomAddBgDiff>>> roomBgDiffs = {};
   List<MstStaffPhoto> staffPhotos = [];
   List<MstStaffPhotoCostume> staffPhotoCostumes = [];
 }
@@ -72,6 +73,15 @@ class _MyRoomAssetsPageState extends State<MyRoomAssetsPage>
         expireAfter: expireAfter,
         region: r,
       ).then((v) => data.rooms = v ?? data.rooms),
+      AtlasApi.mstData('mstMyroomAddBgDiff', MstMyRoomAddBgDiff.fromJson, expireAfter: expireAfter, region: r).then((
+        v,
+      ) {
+        if (v == null) return;
+        data.roomBgDiffs = {};
+        for (final diff in v) {
+          data.roomBgDiffs.putIfAbsent(diff.type, () => {}).putIfAbsent(diff.overwriteId, () => []).add(diff);
+        }
+      }),
       AtlasApi.mstData(
         'mstStaffPhoto',
         MstStaffPhoto.fromJson,
@@ -164,12 +174,17 @@ class _MyRoomAssetsPageState extends State<MyRoomAssetsPage>
             expanded: expanded,
             headerBuilder: (context, _) => buildHeader(context, rooms),
             contentBuilder: (context) {
-              return Column(
-                mainAxisSize: MainAxisSize.min,
-                children: divideList([
-                  for (final room in rooms) buildOneRoom(context, room),
-                ], const SizedBox(height: 4)),
-              );
+              List<Widget> children = [];
+              for (final room in rooms) {
+                children.add(buildOneRoom(context, room, null));
+                final diffs = data.roomBgDiffs[room.type]?[room.overwriteId] ?? [];
+                for (final diff in diffs) {
+                  if (diff.type == MyRoomAddOverwriteType.bgImage.value) {
+                    children.add(buildOneRoom(context, room, diff));
+                  }
+                }
+              }
+              return Column(mainAxisSize: MainAxisSize.min, children: divideList(children, const SizedBox(height: 4)));
             },
           );
         },
@@ -268,13 +283,15 @@ class _MyRoomAssetsPageState extends State<MyRoomAssetsPage>
     );
   }
 
-  Widget buildOneRoom(BuildContext context, MstMyRoomAdd room) {
+  Widget buildOneRoom(BuildContext context, MstMyRoomAdd room, MstMyRoomAddBgDiff? diff) {
     final asset = AssetURL(region ?? Region.jp);
-    switch (room.type2) {
+    final overwriteId = diff?.objectId ?? room.overwriteId;
+    final type = MyRoomAddOverwriteType.fromValue(diff?.type ?? room.type);
+    switch (type) {
       case MyRoomAddOverwriteType.bgImage:
-        return _buildImage(asset.back(room.overwriteId, useFullscreen), 300, useFullscreen ? 1344 / 626 : 1024 / 626);
+        return _buildImage(asset.back(overwriteId, useFullscreen), 300, useFullscreen ? 1344 / 626 : 1024 / 626);
       case MyRoomAddOverwriteType.bgm:
-        final bgm = db.gameData.bgms[room.overwriteId];
+        final bgm = db.gameData.bgms[overwriteId];
         return ListTile(
           dense: true,
           minLeadingWidth: 0,
@@ -286,21 +303,21 @@ class _MyRoomAssetsPageState extends State<MyRoomAssetsPage>
             placeholder: (context) => const SizedBox.shrink(),
           ),
           horizontalTitleGap: 8,
-          title: Text(bgm?.tooltip ?? '${S.current.bgm} ${room.overwriteId}'),
+          title: Text(bgm?.tooltip ?? '${S.current.bgm} $overwriteId'),
           selected: true,
           onTap: () {
-            router.push(url: Routes.bgmI(room.overwriteId));
+            router.push(url: Routes.bgmI(overwriteId));
           },
         );
       case MyRoomAddOverwriteType.servantOverlayObject:
         return _buildImage(
-          '${asset.extractDir}/MyRoom/FrontObject/${room.overwriteId}/${room.overwriteId}.png',
+          '${asset.extractDir}/MyRoom/FrontObject/$overwriteId/$overwriteId.png',
           300 * (useFullscreen ? 1344 / 626 : 1024 / 626),
           1024 / 1024,
         );
       case MyRoomAddOverwriteType.backObject:
         return _buildImage(
-          '${asset.extractDir}/MyRoom/BackObject/${room.overwriteId}/ef_MyRoomObj_at.png',
+          '${asset.extractDir}/MyRoom/BackObject/$overwriteId/ef_MyRoomObj_at.png',
           300 * (useFullscreen ? 1344 / 626 : 1024 / 626),
           1024 / 1024,
         );
@@ -310,7 +327,7 @@ class _MyRoomAssetsPageState extends State<MyRoomAssetsPage>
           dense: true,
           minLeadingWidth: 0,
           contentPadding: const EdgeInsetsDirectional.fromSTEB(4, 0, 4, 0),
-          title: Text('${S.current.unknown}: id ${room.id} type ${room.type}, overwriteId ${room.overwriteId}'),
+          title: Text('${S.current.unknown}: id ${room.id} type ${room.type}, overwriteId $overwriteId'),
         );
     }
   }
