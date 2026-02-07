@@ -6,7 +6,6 @@ import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/tools/gamedata_loader.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
-import 'package:chaldea/packages/language.dart';
 import 'package:chaldea/packages/split_route/split_route.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/region_based.dart';
@@ -31,7 +30,7 @@ class _GachaListPageState extends State<GachaListPage>
   // List<NiceGacha> get gachas => data ?? [];
   final Map<int, List<NiceGacha>> _imageIdMap = {};
   final Set<NiceGacha> _selectedGachas = {};
-  bool get shouldShowMultiChoice => region == Region.jp && Language.isZH;
+  bool get shouldShowMultiChoice => region == Region.jp;
 
   SummonFilterData get filterData => db.settings.filters.gachaFilterData;
 

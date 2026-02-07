@@ -574,8 +574,10 @@ class QuestBonusPlan {
 
   Map<String, dynamic> toJson() => _$QuestBonusPlanToJson(this);
 
-  String getName({bool withName = true}) {
+  String getName({bool withName = true, bool withLv = false}) {
     String s = Quest.getName(questId);
+    final quest = db.gameData.quests[questId];
+    if (withLv && quest != null) s = 'Lv.${quest.recommendLv} $s';
     if (index == 0) return s;
     s += ' @$index';
     if (withName && name.isNotEmpty) s += ' ($name)';

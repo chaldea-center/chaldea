@@ -109,9 +109,8 @@ class _NetworkSettingsPageState extends State<NetworkSettingsPage> {
                 ListTile(
                   dense: true,
                   title: Text(S.current.network_status),
-                  trailing: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  trailing: Wrap(
+                    spacing: 2,
                     children: [
                       for (final result in _connectivity)
                         _textWithIndicator(result.name, result != ConnectivityResult.none),

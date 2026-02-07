@@ -5,24 +5,15 @@ import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 
 class SniffPresentBoxDetailPage extends StatelessWidget {
-  final List<UserPresentBoxEntity> presents;
-  final List<UserEventMissionEntity> missions;
-  final List<UserItemEntity> items;
-  final UserGameEntity? userGame;
-  const SniffPresentBoxDetailPage({
-    super.key,
-    required this.presents,
-    required this.missions,
-    required this.items,
-    required this.userGame,
-  });
+  final MasterDataManager mstData;
+  const SniffPresentBoxDetailPage({super.key, required this.mstData});
 
   @override
   Widget build(BuildContext context) {
     final Map<int, int> ownedItems = {}, missionItems = {}, presentItems = {};
 
     // present box
-    final presents = this.presents.toList();
+    final presents = mstData.userPresentBox.toList();
     presents.sort2((e) => -e.createdAt);
     for (final present in presents) {
       //  // servant/item
@@ -36,7 +27,7 @@ class SniffPresentBoxDetailPage extends StatelessWidget {
       for (final m in db.gameData.extraMasterMission[MasterMission.kExtraMasterMissionId]?.missions ?? <EventMission>[])
         m.id: m,
     };
-    for (final mission in missions) {
+    for (final mission in mstData.userEventMission) {
       if (mission.missionProgressType != MissionProgressType.clear.value) continue;
       final eventMission = extraMissions[mission.missionId];
       if (eventMission == null) continue;
@@ -44,14 +35,19 @@ class SniffPresentBoxDetailPage extends StatelessWidget {
     }
 
     // own items
-    for (final item in items) {
-      if (const [Items.summonTicketId, Items.quartzFragmentId].contains(item.itemId)) {
-        ownedItems[item.itemId] = item.num;
-      }
+    for (final itemId in const [
+      Items.stoneId,
+      Items.summonTicketId,
+      Items.quartzFragmentId,
+      Items.lanternId,
+      Items.grailId,
+      Items.crystalId,
+      ...Items.apples,
+    ]) {
+      final itemNum = mstData.getItemOrSvtNum(itemId);
+      if (itemNum != 0) ownedItems[itemId] = itemNum;
     }
-    if (userGame != null) {
-      ownedItems[Items.stoneId] = userGame!.stone;
-    }
+    final userGame = mstData.user;
     final allItems = Maths.sumDict([presentItems, missionItems, ownedItems]);
     final stoneCount = Maths.sum([
       (allItems[Items.stoneId] ?? 0),
@@ -59,15 +55,31 @@ class SniffPresentBoxDetailPage extends StatelessWidget {
       (allItems[Items.summonTicketId] ?? 0) * 3,
     ]);
     final summonCount = ((stoneCount ~/ 3) * 1.1).toInt();
+    int? maxAp = ConstData.userLevel[userGame?.lv]?.maxAp;
+    int totalAp = 0;
+    if (maxAp != null) {
+      for (final appleId in Items.apples) {
+        final item = db.gameData.items[appleId];
+        if (item == null) continue;
+        final itemNum = mstData.getItemOrSvtNum(appleId);
+        if (item.type == ItemType.apRecover) {
+          totalAp += (item.value / 1000 * maxAp).ceil() * itemNum;
+        } else if (item.type == ItemType.apAdd) {
+          totalAp += item.value * itemNum;
+        }
+      }
+    }
+    double? totalApples = maxAp == null ? null : totalAp / maxAp;
 
     List<Widget> children = [];
     children.addAll([
       oneGroup(context, S.current.present_box, presentItems),
       oneGroup(context, '${S.current.master_mission}(Extra, cleared but not claimed)', missionItems),
-      oneGroup(context, '${S.current.item_own}(Summon items only)', ownedItems),
+      oneGroup(context, '${S.current.item_own}(Important items only)', ownedItems),
       oneGroup(
         context,
-        '${S.current.total}: ${stoneCount.toInt()} ${S.current.sq_short} = ${stoneCount ~/ 3}×1.1 = $summonCount ${S.current.summon_pull_unit}',
+        '${S.current.total}: ${stoneCount.toInt()} ${S.current.sq_short} = ${stoneCount ~/ 3}×1.1 = $summonCount ${S.current.summon_pull_unit}, '
+        ' ${totalApples?.toStringAsFixed(1) ?? "?"}×${maxAp ?? "?"} AP',
         allItems,
       ),
     ]);

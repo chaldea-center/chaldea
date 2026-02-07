@@ -270,10 +270,12 @@ class EventCampaignDetail extends StatelessWidget {
     final entity = db.gameData.servantsById[id];
     if (entity != null) {
       String? text;
-      if (CombineAdjustTarget.questFriendship == campaign.target) {
-        if (entity.status.favorite) text = 'Lv.${entity.status.bond}';
+      // if (CombineAdjustTarget.questFriendship == campaign.target)
+      final status = entity.status;
+      if (entity.collectionNo > 0 && status.favorite) {
+        text = '${status.bond}/${status.cur.bondLimit}\nNP${entity.status.cur.npLv}';
       }
-      return entity.iconBuilder(context: context, width: 48, text: text, option: ImageWithTextOption(fontSize: 12));
+      return entity.iconBuilder(context: context, width: 48, text: text, option: ImageWithTextOption(fontSize: 10));
     }
     final item = db.gameData.items[id];
     if (item != null &&

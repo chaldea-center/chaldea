@@ -408,7 +408,7 @@ class _EventItemInputTabState extends State<EventItemInputTab> {
         solution.countVars.add(
           LPVariable<int>(
             name: plan.questId,
-            displayName: plan.index == 0 ? null : plan.getName(),
+            displayName: plan.getName(withLv: true),
             value: count,
             cost: plan.ap,
             detail: _drops,

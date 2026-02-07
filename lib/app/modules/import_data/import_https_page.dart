@@ -734,14 +734,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
         SimpleDialogOption(
           onPressed: () {
             Navigator.pop(context);
-            router.pushPage(
-              SniffPresentBoxDetailPage(
-                presents: _mstData.userPresentBox.toList(),
-                missions: _mstData.userEventMission.toList(),
-                items: _mstData.userItem.toList(),
-                userGame: _mstData.userGame.firstOrNull,
-              ),
-            );
+            router.pushPage(SniffPresentBoxDetailPage(mstData: _mstData));
           },
           child: Text(S.current.present_box),
         ),
