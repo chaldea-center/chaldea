@@ -290,10 +290,7 @@ class FakerRuntime {
   // helpers
 
   void checkStop() {
-    if (agent.network.stopFlag) {
-      agent.network.stopFlag = false;
-      throw SilentException('Manual Stop');
-    }
+    agent.network.checkStop();
   }
 
   void checkSvtKeep() {

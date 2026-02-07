@@ -276,7 +276,24 @@ class __BuyCountDialogState extends State<_BuyCountDialog> {
           ListTile(
             contentPadding: EdgeInsets.zero,
             title: Text('Buy Count'),
-            trailing: Text('$buyCount/${widget.maxCount}'),
+            trailing: TextButton(
+              child: Text('$buyCount/${widget.maxCount}'),
+              onPressed: () {
+                InputCancelOkDialog.number(
+                  title: 'Buy Count',
+                  initValue: buyCount,
+                  helperText: '${widget.maxCount}',
+                  validate: (v) => v > 0 && v <= widget.maxCount,
+                  onSubmit: (value) {
+                    if (mounted) {
+                      setState(() {
+                        buyCount = value;
+                      });
+                    }
+                  },
+                ).showDialog(context);
+              },
+            ),
           ),
           ...consumes.keys.map((itemId) {
             final int ownNum = mstData.getItemOrSvtNum(itemId), consumeNum = consumes[itemId]! * buyCount;

@@ -166,14 +166,21 @@ struct AccountStatusView: View {
         Text("\(account.currentAP)/\(account.actMax)")
           .font(.caption2).multilineTextAlignment(.trailing)
 
-        Text(
-          Date(timeIntervalSinceNow: account.timeToFullRecover), style: .timer
-        )
-        .font(.system(.caption2, design: .monospaced))
-        .foregroundColor(
-          account.timeToFullRecover < 0 ? .red : .primary.opacity(0.6)
-        )
-        .multilineTextAlignment(.trailing)
+        if account.timeToFullRecover < -99.0 * 3600 {
+          Text("99+h")
+            .font(.system(.caption2, design: .monospaced))
+            .foregroundColor(.red)
+            .multilineTextAlignment(.trailing)
+        } else {
+          Text(
+            Date(timeIntervalSinceNow: account.timeToFullRecover), style: .timer
+          )
+          .font(.system(.caption2, design: .monospaced))
+          .foregroundColor(
+            account.timeToFullRecover < 0 ? .red : .primary.opacity(0.6)
+          )
+          .multilineTextAlignment(.trailing)
+        }
       }
       .frame(alignment: .leading)
     }

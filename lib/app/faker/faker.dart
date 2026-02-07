@@ -2131,7 +2131,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
               onTap: () {
                 if (mounted) {
                   runtime.runningTask.value = false;
-                  agent.network.clearTask();
+                  agent.network.breakAndClearTask();
                 }
               },
             ),

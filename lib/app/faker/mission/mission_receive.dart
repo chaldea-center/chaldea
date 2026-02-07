@@ -99,7 +99,7 @@ class _UserEventMissionReceivePageState extends State<UserEventMissionReceivePag
     }
 
     // mms.removeWhere((mm) => mm.type == MissionType.daily && mm.endedAt - mm.startedAt > kSecsPerDay * 40);
-    final mms = _mms.values.toList();
+    mms = _mms.values.toList();
     mms.sortByList((e) => [e.endedAt, e.closedAt, e.id]);
     if (mms.isNotEmpty) {
       MasterMission? mm;

@@ -247,6 +247,7 @@ class FakerReminders extends StatelessWidget {
     }
 
     // interlude campaign
+    Set<int> _shownInterludes = {};
     for (final event in runtime.gameData.timerData.events.values) {
       if (event.startedAt > now || event.endedAt <= now) continue;
       for (final release in event.questReleaseOverwrites) {
@@ -264,6 +265,8 @@ class FakerReminders extends StatelessWidget {
         if (_kXInterlude.contains(quest.id) && _kXInterlude.any(mstData.isQuestClear)) {
           continue;
         }
+        if (_shownInterludes.contains(quest.id)) continue;
+        _shownInterludes.add(quest.id);
         _shownQuestIds.add(quest.id);
         yield ListTile(
           dense: true,

@@ -90,16 +90,14 @@ class NetworkManagerCN extends NetworkManagerBase<FRequestCN, AutoLoginDataCN> {
 
     if (request.sendDelay > Duration.zero) {
       await Future.delayed(request.sendDelay);
-      if (stopFlag) {
-        stopFlag = false;
-        throw SilentException('Manual Stop Flag, current request: ${request.key}');
-      }
+      checkStop();
       notifyListeners();
     }
     final dio = Dio(BaseOptions(connectTimeout: const Duration(seconds: 10)));
     final Response rawResp = await dio.post(
       uri.toString(),
       data: form.data,
+      cancelToken: cancelToken,
       options: Options(
         headers: headers,
         followRedirects: true,

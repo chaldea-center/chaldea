@@ -348,6 +348,14 @@ class FakerRuntimeBattle extends FakerRuntimeBase {
       if (myDeck == null) {
         throw SilentException('UserEventDeck(eventId=$eventId,deckNo=$activeDeckId) not found');
       }
+    } else if (questPhaseEntity.flags.contains(QuestFlag.supportOnlyBattle) ||
+        questPhaseEntity.flags.contains(QuestFlag.supportOnlyForceBattle)) {
+      activeDeckId = 0;
+      myDeck = mstData.userDeck[activeDeckId];
+      if (myDeck == null) {
+        throw SilentException('UserDeck($activeDeckId) not found');
+      }
+      userEquipId = myDeck.deckInfo?.userEquipId ?? 0;
     } else {
       activeDeckId = options.deckId;
       myDeck = mstData.userDeck[activeDeckId];
@@ -366,7 +374,7 @@ class FakerRuntimeBattle extends FakerRuntimeBase {
         final npc = questPhaseEntity.supportServants.firstWhereOrNull((e) => e.script?.eventDeckIndex == null);
         followerId = npc?.id ?? 0;
         followerClassId = 0;
-        followerType = FollowerType.npc.value;
+        followerType = (npc == null ? FollowerType.none : FollowerType.npc).value;
         followerSupportDeckId = 0;
       }
     } else if (questPhaseEntity.extraDetail?.waveSetup == 1) {

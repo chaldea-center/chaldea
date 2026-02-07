@@ -130,6 +130,14 @@ abstract class NetworkManagerBase<TRequest extends FRequestBase, TUser extends A
   final Map<String, String> cookies = {};
 
   bool stopFlag = false;
+  CancelToken? cancelToken;
+
+  void checkStop() {
+    if (stopFlag) {
+      stopFlag = false;
+      throw SilentException(_runningTask == null ? 'Manual Stop' : 'Manual Stop, cur request: ${_runningTask!.key}');
+    }
+  }
 
   NetworkManagerBase({required this.gameTop, required this.user}) : catMouseGame = CatMouseGame(gameTop.region);
 
@@ -149,8 +157,9 @@ abstract class NetworkManagerBase<TRequest extends FRequestBase, TUser extends A
     return _nowTime;
   }
 
-  void clearTask() {
+  void breakAndClearTask() {
     _runningTask = null;
+    cancelToken?.cancel('Break Running Task!');
     notifyListeners();
   }
 
@@ -199,10 +208,8 @@ abstract class NetworkManagerBase<TRequest extends FRequestBase, TUser extends A
     try {
       while (tryCount < kMaxTries) {
         try {
-          if (stopFlag) {
-            stopFlag = false;
-            throw SilentException('Manual Stop Flag, current request: ${request.key}');
-          }
+          checkStop();
+          cancelToken = CancelToken();
           final oldUserGame = mstData.user;
           final rawResp = await requestStartImpl(request);
           request.rawRequest = rawResp.requestOptions;
@@ -268,6 +275,9 @@ abstract class NetworkManagerBase<TRequest extends FRequestBase, TUser extends A
           hasCalled = true;
           return resp;
         } on DioException catch (e, s) {
+          if (e.type == DioExceptionType.cancel) {
+            rethrow;
+          }
           logger.e('fgo request failed, retry after 5 seconds', e, s);
           EasyLoading.showError('Error: ${e.toString().substring2(0, 100)}');
           await Future.delayed(const Duration(seconds: 5));
@@ -278,6 +288,7 @@ abstract class NetworkManagerBase<TRequest extends FRequestBase, TUser extends A
       }
     } finally {
       _runningTask = null;
+      cancelToken = null;
       notifyListeners();
       request.disposed = true;
       record.receivedAt = DateTime.now();
@@ -305,6 +316,7 @@ abstract class NetworkManagerBase<TRequest extends FRequestBase, TUser extends A
       final Response rawResp = await dio.post(
         saveData.url,
         data: saveData.formData,
+        cancelToken: cancelToken,
         options: Options(
           headers: saveData.headers.deepCopy(),
           followRedirects: true,
