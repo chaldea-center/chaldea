@@ -145,17 +145,16 @@ class _CustomPrettyPrinter extends PrettyPrinter {
     }
 
     dynamic error = event.error;
-    StackTrace? stackTrace = error is DioException ? error.stackTrace : event.stackTrace;
+    StackTrace stackTrace = (error is DioException ? error.stackTrace : event.stackTrace) ?? StackTrace.current;
     String? stackTraceStr;
 
     if (event.level == Level.trace) {
       stackTraceStr = null;
-    } else if (stackTrace == null) {
-      if ((methodCount ?? 0) > 0) {
-        stackTraceStr = formatStackTrace(_fmtStackTrace(StackTrace.current), methodCount);
-      }
-    } else if ((errorMethodCount ?? 0) > 0) {
-      stackTraceStr = formatStackTrace(_fmtStackTrace(stackTrace), errorMethodCount);
+    } else {
+      stackTraceStr = formatStackTrace(
+        _fmtStackTrace(stackTrace),
+        error != null || event.level > Level.error ? errorMethodCount : methodCount,
+      );
     }
     if ((error is DioException && kReleaseMode) || (error is SilentException && error.silent)) {
       stackTraceStr = null;
