@@ -29,7 +29,7 @@ abstract class LocalNotificationUtil {
         defaultPresentSound: false,
       );
       await plugin.initialize(
-        const InitializationSettings(
+        settings: const InitializationSettings(
           android: AndroidInitializationSettings('@mipmap/ic_launcher'),
           iOS: darwinSettings,
           macOS: darwinSettings,
@@ -95,7 +95,12 @@ abstract class LocalNotificationUtil {
 
   static Future<void> showNotification({int? id, required String? title, required String? body}) async {
     if (!supported) return;
-    return plugin.show(id ?? _id++, title, body, const NotificationDetails(android: _defaultAndroidDetails));
+    return plugin.show(
+      id: id ?? _id++,
+      title: title,
+      body: body,
+      notificationDetails: const NotificationDetails(android: _defaultAndroidDetails),
+    );
   }
 
   static Future<void> scheduleNotification({
@@ -107,14 +112,14 @@ abstract class LocalNotificationUtil {
   }) async {
     if (!supported) return;
     if (id != null && autoCancelPrevious) {
-      await plugin.cancel(id);
+      await plugin.cancel(id: id);
     }
     return plugin.zonedSchedule(
-      id ?? _id++,
-      title,
-      body,
-      tz.TZDateTime.from(dateTime, _hasLocalTz ? tz.local : tz.UTC),
-      const NotificationDetails(android: _defaultAndroidDetails),
+      id: id ?? _id++,
+      title: title,
+      body: body,
+      scheduledDate: tz.TZDateTime.from(dateTime, _hasLocalTz ? tz.local : tz.UTC),
+      notificationDetails: const NotificationDetails(android: _defaultAndroidDetails),
       androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
     );
   }

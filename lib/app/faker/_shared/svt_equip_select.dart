@@ -162,7 +162,7 @@ class _SelectUserSvtEquipPageState extends State<SelectUserSvtEquipPage> {
                 final status = widget.getStatus?.call(userSvt, mstData, widget.inUseUserSvtIds);
                 Widget child;
                 if (ce == null) {
-                  child = Text(['${userSvt.svtId}', if (status != null) status].join('\n'));
+                  child = Text(['${userSvt.svtId}', ?status].join('\n'));
                 } else {
                   child = ce.iconBuilder(
                     context: context,

@@ -219,7 +219,7 @@ class _SelectUserSvtPageState extends State<SelectUserSvtPage> {
                 final status = widget.getStatus?.call(userSvt, mstData, widget.inUseUserSvtIds);
                 Widget child;
                 if (svt == null) {
-                  child = Text(['${userSvt.svtId}', if (status != null) status].join('\n'));
+                  child = Text(['${userSvt.svtId}', ?status].join('\n'));
                 } else {
                   child = svt.iconBuilder(
                     context: context,

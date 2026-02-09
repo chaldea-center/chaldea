@@ -358,7 +358,7 @@ abstract class NetworkManagerBase<TRequest extends FRequestBase, TUser extends A
     if (removedAps != null) {
       for (final targetAp in removedAps) {
         final int id = LocalNotificationUtil.generateUserApRecoverId(user.region.index, userGame.userId, targetAp);
-        await LocalNotificationUtil.plugin.cancel(id);
+        await LocalNotificationUtil.plugin.cancel(id: id);
         await AlarmX.stop(id);
       }
     }
@@ -371,7 +371,7 @@ abstract class NetworkManagerBase<TRequest extends FRequestBase, TUser extends A
       } else if (userGame.calCurAp() < targetAp && targetAp < userGame.actMax) {
         recoverAt = userGame.actRecoverAt - (userGame.actMax - targetAp) * 60 * 5;
       } else {
-        await LocalNotificationUtil.plugin.cancel(id);
+        await LocalNotificationUtil.plugin.cancel(id: id);
         await AlarmX.stop(id);
         continue;
       }

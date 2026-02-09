@@ -1696,7 +1696,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
               final notifications = await LocalNotificationUtil.plugin.pendingNotificationRequests();
               for (final notification in notifications) {
                 if (LocalNotificationUtil.isUserApId(notification.id)) {
-                  LocalNotificationUtil.plugin.cancel(notification.id);
+                  LocalNotificationUtil.plugin.cancel(id: notification.id);
                 }
               }
               await AlarmX.stopAll();

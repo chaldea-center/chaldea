@@ -216,7 +216,7 @@ class ItemCenter {
       // Items.lanternId: max(0, target.bondLimit - cur.bondLimit),
       Items.qpId:
           QpCost.grail(svt.rarity, grailStart, target.grail) + QpCost.bondLimit(cur.bondLimit, target.bondLimit),
-      if (coinId != null) coinId: coin,
+      ?coinId: coin,
     };
 
     detail.all = Maths.sumDict(detail.parts);

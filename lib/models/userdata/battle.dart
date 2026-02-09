@@ -868,7 +868,7 @@ class CustomFuncData {
       funcPopupIcon: func.funcPopupIcon,
       functvals: func.functvals.toList(),
       vals: func.vals.toList(),
-      buffs: [if (buff != null) buff],
+      buffs: [?buff],
       svals: [DataVals(vals)],
     );
   }

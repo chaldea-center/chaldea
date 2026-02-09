@@ -19,7 +19,7 @@ version: 2.5.25+987
 
 environment:
   sdk: ">=3.10.0 <4.0.0"
-  flutter: 3.38.5
+  flutter: 3.38.9
 
 dependencies:
   flutter:
@@ -56,7 +56,7 @@ dependencies:
   flutter_cache_manager: ^3.3.1
   flutter_easyloading: ^3.0.5
   flutter_hooks: ^0.21.2
-  flutter_local_notifications: ^19.0.0
+  flutter_local_notifications: ^20.0.0
   flutter_markdown: ^0.7.4
   # flutter_qjs: ^0.3.7
   flutter_js: ^0.8.5
@@ -65,14 +65,14 @@ dependencies:
   font_awesome_flutter: ^10.6.0
   github: ^9.16.0
   hive: ^2.2.3
-  home_widget: ^0.8.0
+  home_widget: ^0.9.0
   html: ^0.15.3
   http: ^1.2.0
   image: ^4.5.0
   image_gallery_saver: # ^1.7.1
     git: https://github.com/chaldea-center/image_gallery_saver.git
   intl: ">=0.19.0 <0.21.0"
-  json_annotation: ^4.9.0
+  json_annotation: ^4.10.0
   just_audio: ^0.10.2
   just_audio_windows: ^0.2.0
   # just_audio_mpv: ^0.1.4  # manually install mpv on linux
@@ -112,8 +112,8 @@ dependencies:
   # webview_flutter_web: ^0.2.2+1
   worker_manager: ^7.2.2
   window_manager: ^0.5.0
-  countly_flutter_np: 25.4.1
-  google_mobile_ads: ^6.0.0
+  countly_flutter_np: 25.4.3
+  google_mobile_ads: ^7.0.0
   # admanager_web: ^0.0.4
 
 dev_dependencies:
@@ -121,7 +121,7 @@ dev_dependencies:
     sdk: flutter
   build_runner: ^2.8.0
   flutter_lints: ^6.0.0
-  json_serializable: ^6.9.0
+  json_serializable: ^6.12.0
   import_sorter: # ^4.6.0
     git: https://github.com/chaldea-center/import_sorter.git
   intl_utils: # ^2.6.1

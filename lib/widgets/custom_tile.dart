@@ -98,7 +98,7 @@ class CustomTile extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: [titleText, if (subtitleText != null) subtitleText],
+            children: [titleText, ?subtitleText],
           ),
         ),
       ),

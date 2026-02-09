@@ -441,7 +441,7 @@ class DataVals {
   List<int> getAddIndividuality() {
     return [
       // ignore: deprecated_member_use_from_same_package
-      if (AddIndividualtyList != null) ...?AddIndividualtyList else if (AddIndividualty != null) AddIndividualty!,
+      if (AddIndividualtyList != null) ...?AddIndividualtyList else ?AddIndividualty,
       ...?AddIndividualityEx,
     ];
   }

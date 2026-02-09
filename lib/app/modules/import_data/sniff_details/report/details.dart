@@ -318,7 +318,7 @@ class _UserSvtFiltratedPageState extends State<UserSvtFiltratedPage> {
     final status = widget.getUserSvtStatus?.call(userSvt);
     Widget child;
     if (svt == null) {
-      child = Text(['${userSvt.svtId}', if (status != null) status].join('\n'));
+      child = Text(['${userSvt.svtId}', ?status].join('\n'));
     } else {
       child = svt.iconBuilder(
         context: context,
@@ -334,7 +334,7 @@ class _UserSvtFiltratedPageState extends State<UserSvtFiltratedPage> {
     final status = widget.getCollectionStatus?.call(collection);
     Widget child;
     if (svt == null) {
-      child = Text(['${collection.svtId}', if (status != null) status].join('\n'));
+      child = Text(['${collection.svtId}', ?status].join('\n'));
     } else {
       child = svt.iconBuilder(
         context: context,

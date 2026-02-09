@@ -1,7 +1,5 @@
 package cc.narumi.chaldea
 
-import HomeWidgetGlanceState
-import HomeWidgetGlanceStateDefinition
 import android.content.Context
 import android.os.SystemClock
 import android.widget.RemoteViews
@@ -39,6 +37,8 @@ import androidx.glance.layout.fillMaxWidth
 import androidx.glance.layout.wrapContentHeight
 import androidx.glance.layout.wrapContentWidth
 import androidx.glance.text.FontFamily
+import es.antonborri.home_widget.HomeWidgetGlanceState
+import es.antonborri.home_widget.HomeWidgetGlanceStateDefinition
 import org.json.JSONArray
 import java.text.SimpleDateFormat
 import java.util.Date

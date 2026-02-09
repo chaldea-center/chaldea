@@ -34,7 +34,7 @@ class WorkerResponse {
 
   String get fullMessage {
     String msg = <String>[
-      if (message != null) message!,
+      ?message,
       if (error != null) error.toString(),
       if (message == null && body != null) body.toString(),
     ].join('\n');
