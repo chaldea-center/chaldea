@@ -32,6 +32,12 @@ class ServantSelector extends StatelessWidget {
   final bool enableEdit;
   final ValueNotifier<String?> hovered;
 
+  /// 是否显示从者信息（等级、技能等级等），默认为 true。某些只需要选择从者但不关心具体信息的场景可以设置为 false 来隐藏这些信息。
+  final bool isShowSvtInfo;
+
+  /// 是否显示从者礼装栏，默认为 true。某些只需要选择从者但不关心礼装的场景可以设置为 false 来隐藏礼装栏。
+  final bool isShowCE;
+
   ServantSelector({
     super.key,
     required this.playerSvtData,
@@ -42,6 +48,8 @@ class ServantSelector extends StatelessWidget {
     this.onDragCE,
     this.enableEdit = true,
     required this.hovered,
+    this.isShowSvtInfo = true,
+    this.isShowCE = true,
   });
 
   SvtFilterData get svtFilterData => db.runtimeData.svtFilters.current;
@@ -69,7 +77,7 @@ class ServantSelector extends StatelessWidget {
       icon: playerSvtData.svt?.ascendIcon(playerSvtData.limitCount) ?? Atlas.common.emptySvtIcon,
       width: 80,
       aspectRatio: 132 / 144,
-      text: svtInfo,
+      text: isShowSvtInfo ? svtInfo : null,
       option: ImageWithTextOption(
         textAlign: TextAlign.left,
         fontSize: 10,
@@ -159,7 +167,9 @@ class ServantSelector extends StatelessWidget {
         ),
       ),
     );
-    children.add(const SizedBox(height: 8));
+    if (isShowCE) {
+      children.add(const SizedBox(height: 8));
+    }
 
     // ce icon
     Widget _buildCeIcon(SvtEquipData equip, {bool showLv = false}) {
@@ -192,84 +202,86 @@ class ServantSelector extends StatelessWidget {
       return _ceIcon;
     }
 
-    Widget equip1Icon = _buildCeIcon(playerSvtData.equip1);
+    if (isShowCE) {
+      Widget equip1Icon = _buildCeIcon(playerSvtData.equip1);
 
-    equip1Icon = _DragHover<_DragCEData>(
-      enableEdit: enableEdit,
-      data: _DragCEData(playerSvtData),
-      hovered: hovered,
-      hoverKey: '${playerSvtData.hashCode}-ce',
-      child: equip1Icon,
-      hoveredBuilder: (context, child) {
-        return _stackActions(
-          context: context,
-          child: child,
-          onTapSelect: () {
-            router.pushPage(
-              CraftListPage(
-                onSelected: (ce) {
-                  playerSvtData.onSelectCE(ce, SvtEquipTarget.normal);
-                  onChanged();
-                },
-                filterData: craftFilterData,
-                pinged: db.curUser.battleSim.pingedCEsWithEventAndBond(questPhase, playerSvtData.svt).toList(),
-              ),
-              detail: true,
-            );
-          },
-          onTapClear: () {
-            playerSvtData.equip1.ce = null;
-            onChanged();
-          },
-          iconSize: 16,
-        );
-      },
-      onTap: () async {
-        if (!enableEdit && playerSvtData.equip1.ce == null) return;
-        await router.pushPage(
-          CraftEssenceOptionEditPage(
-            playerSvtData: enableEdit ? playerSvtData : playerSvtData.copy(),
-            equipTarget: SvtEquipTarget.normal,
-            questPhase: questPhase,
-            onChange: onChanged,
-            craftFilterData: craftFilterData,
-          ),
-        );
-        onChanged();
-      },
-      onAccept: (detail) {
-        onDragCE?.call(detail.data.svt);
-      },
-    );
+      equip1Icon = _DragHover<_DragCEData>(
+        enableEdit: enableEdit,
+        data: _DragCEData(playerSvtData),
+        hovered: hovered,
+        hoverKey: '${playerSvtData.hashCode}-ce',
+        child: equip1Icon,
+        hoveredBuilder: (context, child) {
+          return _stackActions(
+            context: context,
+            child: child,
+            onTapSelect: () {
+              router.pushPage(
+                CraftListPage(
+                  onSelected: (ce) {
+                    playerSvtData.onSelectCE(ce, SvtEquipTarget.normal);
+                    onChanged();
+                  },
+                  filterData: craftFilterData,
+                  pinged: db.curUser.battleSim.pingedCEsWithEventAndBond(questPhase, playerSvtData.svt).toList(),
+                ),
+                detail: true,
+              );
+            },
+            onTapClear: () {
+              playerSvtData.equip1.ce = null;
+              onChanged();
+            },
+            iconSize: 16,
+          );
+        },
+        onTap: () async {
+          if (!enableEdit && playerSvtData.equip1.ce == null) return;
+          await router.pushPage(
+            CraftEssenceOptionEditPage(
+              playerSvtData: enableEdit ? playerSvtData : playerSvtData.copy(),
+              equipTarget: SvtEquipTarget.normal,
+              questPhase: questPhase,
+              onChange: onChanged,
+              craftFilterData: craftFilterData,
+            ),
+          );
+          onChanged();
+        },
+        onAccept: (detail) {
+          onDragCE?.call(detail.data.svt);
+        },
+      );
 
-    children.add(Center(child: equip1Icon));
+      children.add(Center(child: equip1Icon));
 
-    // ce info
-    String equip1Info = '';
-    if (playerSvtData.equip1.ce != null) {
-      equip1Info = 'Lv.${playerSvtData.equip1.lv}';
-      if (playerSvtData.equip1.limitBreak) {
-        equip1Info += ' ${S.current.max_limit_break}';
+      // ce info
+      String equip1Info = '';
+      if (playerSvtData.equip1.ce != null) {
+        equip1Info = 'Lv.${playerSvtData.equip1.lv}';
+        if (playerSvtData.equip1.limitBreak) {
+          equip1Info += ' ${S.current.max_limit_break}';
+        }
+      } else {
+        equip1Info = 'Lv.-';
       }
-    } else {
-      equip1Info = 'Lv.-';
-    }
-    children.add(
-      SizedBox(
-        height: 18,
-        child: AutoSizeText(
-          equip1Info.breakWord,
-          maxLines: 1,
-          minFontSize: 10,
-          textAlign: TextAlign.center,
-          textScaleFactor: 0.9,
-          style: playerSvtData.equip1.ce == null ? notSelectedStyle : null,
+      children.add(
+        SizedBox(
+          height: 18,
+          child: AutoSizeText(
+            equip1Info.breakWord,
+            maxLines: 1,
+            minFontSize: 10,
+            textAlign: TextAlign.center,
+            textScaleFactor: 0.9,
+            style: playerSvtData.equip1.ce == null ? notSelectedStyle : null,
+          ),
         ),
-      ),
-    );
-    if (playerSvtData.grandSvt) {
-      children.add(_buildCeIcon(playerSvtData.equip2, showLv: true));
-      children.add(_buildCeIcon(playerSvtData.equip3, showLv: true));
+      );
+      if (playerSvtData.grandSvt) {
+        children.add(_buildCeIcon(playerSvtData.equip2, showLv: true));
+        children.add(_buildCeIcon(playerSvtData.equip3, showLv: true));
+      }
     }
 
     return Padding(
