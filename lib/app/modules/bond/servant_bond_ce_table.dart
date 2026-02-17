@@ -56,31 +56,25 @@ class _ServantBondCETableTabState extends State<ServantBondCETableTab> {
 
   List<CraftEssence> _getBondCraftEssences() {
     final List<CraftEssence> ces = [];
-    // 使用与 equip_bond_bonus.dart 相同的逻辑
+
     for (final ce in db.gameData.craftEssencesById.values) {
-      if (ce.collectionNo <= 0 || ce.isRegionSpecific) continue;
-      if (ce.rarity < 5) continue;
-      final skills = ce.getActivatedSkills(true)[1] ?? <NiceSkill>[];
-      if (skills.isEmpty) continue;
-      if (skills.length > 1) continue;
+      if (ce.obtain != CEObtain.manaShop) continue;
 
-      final skill = skills.single;
-      final funcs = [
-        for (final func in skill.functions)
-          if (func.funcType == FuncType.servantFriendshipUp &&
-              (func.svals.firstOrNull?.EventId ?? 0) == 0 &&
-              (func.functvals.isNotEmpty || func.overWriteTvalsList.isNotEmpty))
-            func,
-      ];
-      if (funcs.isEmpty) continue;
-      if (funcs.length > 1) continue;
-
-      final func = funcs.single;
-      final rateCount = func.svals.firstOrNull?.RateCount ?? 0;
-      if (rateCount <= 0) continue;
-
-      // 英霊逢魔: 1973-1979, FSN servant +10%
-      if (ce.collectionNo >= 1973 && ce.collectionNo <= 1979) continue;
+      if (!ce
+          .getActivatedSkills(true)
+          .values
+          .expand((t) => t)
+          .any(
+            (skill) => skill.functions.any(
+              (func) =>
+                  func.funcType == FuncType.servantFriendshipUp &&
+                  (func.svals.firstOrNull?.EventId ?? 0) == 0 &&
+                  (func.functvals.isNotEmpty || func.overWriteTvalsList.isNotEmpty) &&
+                  (func.svals.firstOrNull?.RateCount ?? 0) > 0,
+            ),
+          )) {
+        continue;
+      }
 
       ces.add(ce);
     }
