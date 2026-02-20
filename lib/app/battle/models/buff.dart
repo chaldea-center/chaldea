@@ -659,6 +659,27 @@ class BuffData {
   }
 
   void updateActState(final BattleData battleData, final BattleServantData owner) {
+    bool isAct = _checkActState(battleData, owner, buff.script);
+
+    if (buff.script.INDIVIDUALITIE_MULTI_OR != null) {
+      isAct &= buff.script.INDIVIDUALITIE_MULTI_OR!.any((indivOr) => _checkActState(battleData, owner, indivOr));
+    }
+
+    if (isAct) {
+      offState(BuffState.noAct);
+    } else {
+      onState(BuffState.noAct);
+    }
+    setState(BuffState.noAct, !isAct);
+
+    bool isField = true;
+    if (isOnField && activatorUniqueId != null) {
+      isField &= battleData.isActorOnField(activatorUniqueId!);
+    }
+    setState(BuffState.noField, !isField);
+  }
+
+  bool _checkActState(BattleData battleData, BattleServantData owner, BuffScript buffScript) {
     bool isAct = true;
 
     List<int> selfTraits() => [
@@ -666,14 +687,14 @@ class BuffData {
       ...battleData.getQuestIndividuality(),
     ];
 
-    final individualityCondTargetType = buff.script.individualityCondTargetType;
+    final individualityCondTargetType = buffScript.individualityCondTargetType;
     final condTargetOverride = individualityCondTargetType != null && individualityCondTargetType > 0
         ? BuffConditionTargetType.fromId(individualityCondTargetType)
         : null;
-    final includeIgnore = buff.script.IncludeIgnoreIndividuality == 1;
-    final ignoreUnreleaseable = buff.script.ExcludeUnSubStateIndiv == 1;
+    final includeIgnore = buffScript.IncludeIgnoreIndividuality == 1;
+    final ignoreUnreleaseable = buffScript.ExcludeUnSubStateIndiv == 1;
 
-    if (buff.script.INDIVIDUALITIE_OR != null) {
+    if (buffScript.INDIVIDUALITIE_OR != null) {
       final List<int> traitsToCheck;
       if (condTargetOverride != null) {
         traitsToCheck = [];
@@ -692,12 +713,12 @@ class BuffData {
       }
       isAct &= Individuality.checkSignedIndividualitiesPartialMatch(
         selfs: traitsToCheck,
-        signedTargets: buff.script.INDIVIDUALITIE_OR,
+        signedTargets: buffScript.INDIVIDUALITIE_OR,
         matchedFunc: Individuality.isPartialMatchArray,
         mismatchFunc: Individuality.isPartialMatchArray,
       );
     }
-    if (buff.script.INDIVIDUALITIE_AND != null) {
+    if (buffScript.INDIVIDUALITIE_AND != null) {
       if (condTargetOverride != null) {
         final List<BattleServantData> targetList = battleData.getBuffConditionTargets(condTargetOverride, owner);
         bool anyMatch = false;
@@ -726,10 +747,10 @@ class BuffData {
         );
       }
     }
-    if (buff.script.INDIVIDUALITIE != null) {
-      int countAbove = buff.script.INDIVIDUALITIE_COUNT_ABOVE ?? 0;
-      int countBelow = buff.script.INDIVIDUALITIE_COUNT_BELOW ?? 0;
-      List<int> signedTarget = [buff.script.INDIVIDUALITIE!];
+    if (buffScript.INDIVIDUALITIE != null) {
+      int countAbove = buffScript.INDIVIDUALITIE_COUNT_ABOVE ?? 0;
+      int countBelow = buffScript.INDIVIDUALITIE_COUNT_BELOW ?? 0;
+      List<int> signedTarget = [buffScript.INDIVIDUALITIE!];
 
       if (condTargetOverride != null) {
         final List<BattleServantData> targetList = battleData.getBuffConditionTargets(condTargetOverride, owner);
@@ -783,7 +804,7 @@ class BuffData {
     }
 
     // written based on Chen Gong np & passive. Right now only Chen Gong uses this
-    if (vals.OnFieldCount == -1 && buff.script.TargetIndiv != null) {
+    if (vals.OnFieldCount == -1 && buffScript.TargetIndiv != null) {
       final List<BattleServantData> allies = owner.isPlayer ? battleData.nonnullPlayers : battleData.nonnullEnemies;
       isAct &= allies
           .where(
@@ -796,23 +817,23 @@ class BuffData {
                       ignoreIndivUnreleaseable: ignoreUnreleaseable,
                     ),
                   ),
-                  requiredTraits: [buff.script.TargetIndiv!],
+                  requiredTraits: [buffScript.TargetIndiv!],
                 ),
           )
           .isEmpty;
     }
 
-    if (buff.script.HP_HIGHER != null) {
+    if (buffScript.HP_HIGHER != null) {
       final int hpRatio = (owner.hp / owner.maxHp * 1000).toInt();
-      isAct &= hpRatio >= buff.script.HP_HIGHER!;
+      isAct &= hpRatio >= buffScript.HP_HIGHER!;
     }
 
-    if (buff.script.HP_LOWER != null) {
+    if (buffScript.HP_LOWER != null) {
       final int hpRatio = (owner.hp / owner.maxHp * 1000).toInt();
-      isAct &= hpRatio <= buff.script.HP_LOWER!;
+      isAct &= hpRatio <= buffScript.HP_LOWER!;
     }
 
-    final condBuffValue = buff.script.condBuffValue;
+    final condBuffValue = buffScript.condBuffValue;
     if (condBuffValue != null && condBuffValue.isNotEmpty) {
       bool match = false;
       for (final cond in condBuffValue) {
@@ -862,19 +883,7 @@ class BuffData {
     }
 
     isAct &= intervalTurn <= 0;
-
-    if (isAct) {
-      offState(BuffState.noAct);
-    } else {
-      onState(BuffState.noAct);
-    }
-    setState(BuffState.noAct, !isAct);
-
-    bool isField = true;
-    if (isOnField && activatorUniqueId != null) {
-      isField &= battleData.isActorOnField(activatorUniqueId!);
-    }
-    setState(BuffState.noField, !isField);
+    return isAct;
   }
 
   String getParamString() {
