@@ -888,11 +888,15 @@ class CustomFuncData {
   static CustomFuncData get upArts => _buff(-109, 101);
   static CustomFuncData get upBuster => _buff(-118, 102);
   static CustomFuncData get upNpDamage => _buff(-247, 138);
+  static CustomFuncData get upQuickAtk => _buff(-30181, 30070);
+  static CustomFuncData get upArtsAtk => _buff(-30182, 30071);
+  static CustomFuncData get upBusterAtk => _buff(-30183, 30072);
   static CustomFuncData get addDamage => _buff(-265, 136);
   static CustomFuncData get upChargeTd => _buff(-753, 227);
   static CustomFuncData get upCriticaldamage => _buff(-199, 142);
   static CustomFuncData get upDropNp => _buff(-336, 140);
   static CustomFuncData get upCriticalpoint => _buff(-295, 117);
+  static CustomFuncData get regainNp => _buff(-324, 119);
   static CustomFuncData get breakAvoidance => _buff(-288, 154, false);
   static CustomFuncData get pierceInvincible => _buff(-510, 189, false);
   static CustomFuncData get downDef => _debuff(-197, 148);
@@ -910,11 +914,15 @@ class CustomFuncData {
     upArts,
     upBuster,
     upNpDamage,
+    upQuickAtk,
+    upArtsAtk,
+    upBusterAtk,
     addDamage,
     upChargeTd,
     upCriticaldamage,
     upDropNp,
     upCriticalpoint,
+    regainNp,
     breakAvoidance,
     pierceInvincible,
     downDef,
@@ -931,6 +939,9 @@ class CustomFuncData {
     upArts,
     upBuster,
     upNpDamage,
+    upQuickAtk,
+    upArtsAtk,
+    upBusterAtk,
     addDamage,
     upDropNp,
     upCriticalpoint,
